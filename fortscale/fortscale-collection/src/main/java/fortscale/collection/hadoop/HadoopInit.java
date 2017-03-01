@@ -135,12 +135,13 @@ public class HadoopInit implements InitializingBean{
 	}
 
 	private void createTable(String tableName, String fields, String partition, String delimiter, String location) throws IOException{
-		if(!hadoopFs.exists(new Path(location))){
-			hadoopFs.mkdirs(new Path(location));
-			hadoopFs.setOwner(new Path(location),hdfsUserAccount,hdfsUserGroup);
+		final Path path = new Path(location);
+		if(!hadoopFs.exists(path)){
+			hadoopFs.mkdirs(path);
 		}
 		try{
 			impalaClient.createTable(tableName, fields, partition, delimiter, location, true);
+			hadoopFs.setOwner(path, hdfsUserAccount, hdfsUserGroup);
 		} catch(Exception e){
 			// changed to log warning message instead of swallowing the exception as this might lose the details of real errors that might occur
 			// this should be changed so that we won't get exception in case the table exists
