@@ -39,6 +39,9 @@ export default Mixin.create({
       });
       this.send('metaPanelSize', 'min');
       this.send('contextPanelClose');
+
+      const isExpanded = this.get('state.recon.isExpanded');
+      this.transitionTo({ queryParams: { reconSize: isExpanded ? 'max' : 'min' } });
     },
 
     /**
@@ -52,7 +55,6 @@ export default Mixin.create({
       }
       this.get('state.recon').setProperties({
         isOpen: false,
-        isExpanded: false,
         item: undefined,
         endpointId: undefined
       });
@@ -65,8 +67,29 @@ export default Mixin.create({
      * Updates the UI state in order to expand the Recon UI.
      * @public
      */
+    reconSizeReceived(reconSize) {
+      if (!reconSize) {
+        return;
+      }
+
+      const currentlyExpanded = this.get('state.recon.isExpanded');
+
+      if (reconSize === 'min' && currentlyExpanded) {
+        this.send('reconShrink');
+      }
+
+      if (reconSize === 'max' && !currentlyExpanded) {
+        this.send('reconExpand');
+      }
+    },
+
+    /**
+     * Updates the UI state in order to expand the Recon UI.
+     * @public
+     */
     reconExpand() {
       this.set('state.recon.isExpanded', true);
+      this.transitionTo({ queryParams: { reconSize: 'max' } });
     },
 
     /**
@@ -75,6 +98,7 @@ export default Mixin.create({
      */
     reconShrink() {
       this.set('state.recon.isExpanded', false);
+      this.transitionTo({ queryParams: { reconSize: 'min' } });
     },
 
     /**

@@ -3,6 +3,7 @@ import connect from 'ember-redux/components/connect';
 
 import layout from './template';
 import * as DataActions from '../../actions/data-creators';
+import * as VisualActions from '../../actions/visual-creators';
 
 const {
   Component,
@@ -21,7 +22,8 @@ const stateToComputed = ({ recon: { visuals, data } }) => ({
 const dispatchToActions = (dispatch) => ({
   initializeRecon: (inputs) => dispatch(DataActions.initializeRecon(inputs)),
   initializeNotifications: () => dispatch(DataActions.initializeNotifications()),
-  teardownNotifications: () => dispatch(DataActions.teardownNotifications())
+  teardownNotifications: () => dispatch(DataActions.teardownNotifications()),
+  toggleExpanded: (isExpanded) => dispatch(VisualActions.toggleReconExpanded(isExpanded))
 });
 
 const ReconContainer = Component.extend({
@@ -93,7 +95,8 @@ const ReconContainer = Component.extend({
   }),
 
   didReceiveAttrs({ newAttrs, oldAttrs = {} }) {
-    const inputs = this.getProperties('endpointId', 'eventId', 'language', 'meta', 'aliases', 'index', 'total', 'linkToFileAction');
+    const inputs = this.getProperties(
+      'endpointId', 'eventId', 'language', 'meta', 'aliases', 'index', 'total', 'linkToFileAction');
     assert('Cannot instantiate recon without endpointId and eventId.', inputs.endpointId && inputs.eventId);
 
     // guard against re-running init on redux state change
@@ -103,6 +106,13 @@ const ReconContainer = Component.extend({
     }
 
     this.send('initializeRecon', inputs);
+
+    // Containing application can pass in an initial expanded state
+    const isExpanded = this.get('isExpanded');
+    if (isExpanded !== undefined) {
+      this.send('toggleExpanded', isExpanded);
+    }
+
   }
 });
 

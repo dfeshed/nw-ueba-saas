@@ -9,6 +9,11 @@ export default Route.extend({
       refreshModel: true, // execute route.model() when metaPanelSize changes
       replace: true,      // prevents adding a new item to browser's history
       scope: 'controller' // lives beyond model scope
+    },
+    reconSize: {
+      refreshModel: false,
+      replace: true,
+      scope: 'controller'
     }
   },
 
@@ -34,7 +39,7 @@ export default Route.extend({
     run.next(() => {
       // Apply the route URL queryParams to the state model.
       this.send('metaPanelSizeReceived', params.metaPanelSize);
-
+      this.send('reconSizeReceived', params.reconSize);
       this.send('navFindOrAdd', filterAttrs);
     });
     return state;

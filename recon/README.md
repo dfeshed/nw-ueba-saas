@@ -9,6 +9,7 @@ The recon addon can be used by defining just one component in your template:
   meta=model.recon.item.metas
   index=model.recon.index
   total=model.recon.total
+  isExpanded=model.recon.isExpanded
   closeAction=(route-action 'reconClose')
   expandAction=(route-action 'reconExpand')
   shrinkAction=(route-action 'reconShrink')
@@ -24,6 +25,7 @@ The recon addon can be used by defining just one component in your template:
 * `meta`, `Array: Meta`, an array of meta for meta details, if this array is not provided, Recon will fetch it
 * `index`, `Number`, 0 based index of item in result set (if viewing item from result set)
 * `total`, `Number`, Total number of results in result (if viewing item from result set)
+* `isExpanded`, `boolean`, whether or not the recon panel is currently 'expanded'
 * `closeAction`, `Action`, an action to execute when recon wants to close itself
 * `expandAction`, `Action`, an action to execute when recon wants to expand itself
 * `shrinkAction`, `Action`, an action to execute when recon wants to shrink itself
