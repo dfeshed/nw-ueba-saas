@@ -16,7 +16,7 @@
     "build": "ember build",
     "start": "ember server",
     "test": "ember try:each",
-    "postinstall": "node ../scripts/node/fake-out-bower jquery nouislider"
+    "postinstall": "node ../scripts/node/fake-out-bower jquery"
   },
   "dependencies": {
     "@html-next/flexi-config": "2.0.0-beta.12",
@@ -62,8 +62,7 @@
     "ember-resolver": "^2.0.3",
     "eslint-plugin-ember-suave": "^1.0.0",
     "jquery": "3.1.1",
-    "loader.js": "^4.0.10",
-    "nouislider": "^8.0.1"
+    "loader.js": "^4.0.10"
   },
   "engines": {
     "node": ">= 0.12.0"

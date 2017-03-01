@@ -1,9 +1,9 @@
-.rsa-form-slider {
-  display: block;
-  padding: 2rem 1rem 2.5rem 0;
+.noUi-target {
+  border: none;
+  margin: 3rem 1rem 3rem 0;
 
 
-  .noUi-background {
+  &.noUi-background, .noUi-background {
     background: $formSliderBackgroundColor;
     box-shadow: none;
   }
@@ -12,11 +12,7 @@
     background: $formSliderConnectColor;
   }
 
-  .noUi-target {
-    border: none;
-  }
-
-  .noUi-horizontal {
+  &.noUi-horizontal, .noUi-horizontal {
     height: 3px;
   }
 
@@ -61,7 +57,7 @@
   &:hover:not(.is-disabled):not(.is-read-only):not(.is-error) {
     cursor: pointer;
 
-    .noUi-background {
+    &.noUi-background, .noUi-background {
       background: $formSliderHoverBackgroundColor;
     }
     .noUi-handle {
@@ -83,7 +79,7 @@
 
   .noUi-state-drag {
     background: $formSliderHoverBackgroundColor;
-    .noUi-background {
+    &.noUi-background, .noUi-background {
       background: $formSliderHoverBackgroundColor;
     }
     .noUi-handle {
@@ -102,7 +98,7 @@
   &.is-disabled {
     cursor: default;
 
-    .noUi-background {
+    &.noUi-background, .noUi-background {
       background: $formSliderDisabledBackgroundColor;
     }
 
@@ -119,7 +115,7 @@
   &.is-read-only {
     cursor: default;
 
-    .noUi-background {
+    &.noUi-background, .noUi-background {
       background: $formSliderReadOnlyBackgroundColor;
     }
 
@@ -138,7 +134,7 @@
   }
 
   &.is-error {
-    .noUi-background {
+    &.noUi-background, .noUi-background {
       background: $formSliderErrorBackgroundColor;
     }
 

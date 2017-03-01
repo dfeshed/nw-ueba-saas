@@ -834,7 +834,7 @@ broccoli-funnel-reducer@^1.0.0:
   version "1.0.0"
   resolved "https://registry.npmjs.org/broccoli-funnel-reducer/-/broccoli-funnel-reducer-1.0.0.tgz#11365b2a785aec9b17972a36df87eef24c5cc0ea"
 
-broccoli-funnel@^1.0.0, broccoli-funnel@^1.0.1, broccoli-funnel@^1.0.3, broccoli-funnel@^1.0.4, broccoli-funnel@^1.0.6:
+broccoli-funnel@^1.0.0, broccoli-funnel@^1.0.1:
   version "1.0.8"
   resolved "https://registry.npmjs.org/broccoli-funnel/-/broccoli-funnel-1.0.8.tgz#48af6688314561b27898580e23cf6b925951e5c6"
   dependencies:
@@ -853,7 +853,7 @@ broccoli-funnel@^1.0.0, broccoli-funnel@^1.0.1, broccoli-funnel@^1.0.3, broccoli
     symlink-or-copy "^1.0.0"
     walk-sync "^0.3.1"
 
-broccoli-funnel@^1.1.0:
+broccoli-funnel@^1.0.3, broccoli-funnel@^1.0.4, broccoli-funnel@^1.0.6, broccoli-funnel@^1.1.0:
   version "1.1.0"
   resolved "https://registry.npmjs.org/broccoli-funnel/-/broccoli-funnel-1.1.0.tgz#dfb91a37c902456456de4a40a1881948d65b27d9"
   dependencies:
@@ -904,7 +904,7 @@ broccoli-merge-trees@^0.2.3:
     debug "^2.2.0"
     symlink-or-copy "^1.0.0"
 
-broccoli-merge-trees@^1.0.0, broccoli-merge-trees@^1.1.2, broccoli-merge-trees@^1.1.4, broccoli-merge-trees@^1.1.5, broccoli-merge-trees@^1.2.1:
+broccoli-merge-trees@^1.0.0, broccoli-merge-trees@^1.1.2, broccoli-merge-trees@^1.1.3, broccoli-merge-trees@^1.1.4, broccoli-merge-trees@^1.1.5, broccoli-merge-trees@^1.2.1:
   version "1.2.1"
   resolved "https://registry.npmjs.org/broccoli-merge-trees/-/broccoli-merge-trees-1.2.1.tgz#16a7494ed56dbe61611f6c2d4817cfbaad2a3055"
   dependencies:
@@ -917,7 +917,7 @@ broccoli-merge-trees@^1.0.0, broccoli-merge-trees@^1.1.2, broccoli-merge-trees@^
     rimraf "^2.4.3"
     symlink-or-copy "^1.0.0"
 
-broccoli-merge-trees@^1.1.0, broccoli-merge-trees@^1.1.1, broccoli-merge-trees@^1.1.3:
+broccoli-merge-trees@^1.1.0, broccoli-merge-trees@^1.1.1:
   version "1.1.4"
   resolved "https://registry.npmjs.org/broccoli-merge-trees/-/broccoli-merge-trees-1.1.4.tgz#ab9eafd30b0dd8136e882ffd8fb08f3817533ea0"
   dependencies:
@@ -4900,10 +4900,6 @@ normalize-package-data@^2.0.0, normalize-package-data@^2.3.2, normalize-package-
 normalize-path@^2.0.1:
   version "2.0.1"
   resolved "https://registry.npmjs.org/normalize-path/-/normalize-path-2.0.1.tgz#47886ac1662760d4261b7d979d241709d3ce3f7a"
-
-nouislider@^8.0.1:
-  version "8.5.1"
-  resolved "https://registry.npmjs.org/nouislider/-/nouislider-8.5.1.tgz#df8dedd0e0de1afb074c33be1e6cf4d2919662e4"
 
 npm-cache-filename@~1.0.2:
   version "1.0.2"

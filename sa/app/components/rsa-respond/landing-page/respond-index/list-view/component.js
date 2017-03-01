@@ -138,9 +138,6 @@ export default Component.extend({
   // Initial risk score values
   riskScoreStart: riskScoreFilterInitialValues,
 
-  // risk score filter value range
-  riskScoreFilterRange: { 'min': [0], 'max': [100] },
-
   @computed('categoryTags.[]')
   normalizedTreeData: (categoryTags) => IncidentHelper.normalizeCategoryTags(categoryTags),
 

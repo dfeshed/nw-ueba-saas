@@ -13,7 +13,7 @@
     "build": "ember build",
     "start": "ember server",
     "test": "node ./scripts/test",
-    "postinstall": "node ../scripts/node/fake-out-bower jquery nouislider"
+    "postinstall": "node ../scripts/node/fake-out-bower jquery"
   },
   "devDependencies": {
     "@html-next/flexi-config": "2.0.0-beta.12",
@@ -58,8 +58,7 @@
     "flexi": "2.0.0-beta.12",
     "highlightjs": "9.8.0",
     "jquery": "3.1.1",
-    "loader.js": "^4.0.10",
-    "nouislider": "^8.0.1"
+    "loader.js": "^4.0.10"
   },
   "ember-addon": {
     "paths": [

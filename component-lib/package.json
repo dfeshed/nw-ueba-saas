@@ -16,7 +16,7 @@
     "build": "ember build",
     "start": "ember server",
     "test": "node ./scripts/test",
-    "postinstall": "node ../scripts/node/fake-out-bower jquery nouislider"
+    "postinstall": "node ../scripts/node/fake-out-bower jquery"
   },
   "dependencies": {
     "@html-next/flexi-config": "2.0.0-beta.12",
@@ -28,7 +28,7 @@
     "ember-cli-htmlbars": "^1.0.10",
     "ember-cli-node-assets": "0.1.6",
     "ember-cli-node-modules-to-vendor": "0.1.1",
-    "ember-cli-nouislider": "0.10.0",
+    "ember-cli-nouislider": "0.12.0",
     "ember-computed-decorators": "0.3.0",
     "ember-get-config": "0.2.1",
     "ember-i18n": "4.3.2",
@@ -44,7 +44,6 @@
     "ember-wormhole": "0.5.1",
     "flexi": "2.0.0-beta.12",
     "liquid-fire": "0.26.6",
-    "nouislider": "^8.0.1",
     "pikaday-time": "1.4.1",
     "tether": "^1.4.0"
   },

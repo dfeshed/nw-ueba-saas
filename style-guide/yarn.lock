@@ -4882,10 +4882,6 @@ normalize-range@^0.1.2:
   version "0.1.2"
   resolved "https://registry.npmjs.org/normalize-range/-/normalize-range-0.1.2.tgz#2d10c06bdfd312ea9777695a4d28439456b75942"
 
-nouislider@^8.0.1:
-  version "8.5.1"
-  resolved "https://registry.npmjs.org/nouislider/-/nouislider-8.5.1.tgz#df8dedd0e0de1afb074c33be1e6cf4d2919662e4"
-
 npm-cache-filename@~1.0.2:
   version "1.0.2"
   resolved "https://registry.npmjs.org/npm-cache-filename/-/npm-cache-filename-1.0.2.tgz#ded306c5b0bfc870a9e9faf823bc5f283e05ae11"

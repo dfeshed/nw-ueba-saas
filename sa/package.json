@@ -13,7 +13,7 @@
     "build": "ember build",
     "start": "ember server",
     "test": "node ./scripts/test",
-    "postinstall": "node ../scripts/node/fake-out-bower jquery faker,Faker fake-xml-http-request,FakeXMLHttpRequest route-recognizer pretender nouislider"
+    "postinstall": "node ../scripts/node/fake-out-bower jquery faker,Faker fake-xml-http-request,FakeXMLHttpRequest route-recognizer pretender"
   },
   "devDependencies": {
     "@html-next/flexi-config": "2.0.0-beta.12",
@@ -77,7 +77,6 @@
     "loader.js": "^4.0.10",
     "lodash-es": "4.17.4",
     "mock-socket": "2.0.0",
-    "nouislider": "^8.0.1",
     "pretender": "0.11.0",
     "redux": "3.6.0",
     "redux-actions": "1.2.1",

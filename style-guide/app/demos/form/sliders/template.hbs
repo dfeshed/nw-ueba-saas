@@ -6,75 +6,67 @@
   <div class="scroll-box">
     {{#spec-category title="States"}}
       {{#spec-member title="Default"}}
-        {{rsa-form-slider
+        {{range-slider
           start=model.start
-          range=model.range
           step=1
-          onChange="onSliderChange"}}
+          on-change="onSliderChange"}}
         {{!-- BEGIN-SNIPPET slider1
-          {{rsa-form-slider
+          {{range-slider
             start=model.start
-            range=model.range
             step=1
-            onChange="onSliderChange"}}
+            on-change="onSliderChange"}}
         END-SNIPPET --}}
         {{code-snippet name="slider1.hbs"}}
       {{/spec-member}}
 
       {{#spec-member title="Read Only"}}
-        {{rsa-form-slider
+        {{range-slider
           start=model.start
-          range=model.range
           step=1
           isReadOnly=true
-          isDisabled=true
-          onChange="onSliderChange"}}
+          disabled=true
+          on-change="onSliderChange"}}
         {{!-- BEGIN-SNIPPET slider2
-          {{rsa-form-slider
+          {{range-slider
             start=model.start
-            range=model.range
             step=1
             isReadOnly=true
-            isDisabled=true
-            onChange="onSliderChange"}}
+            disabled=true
+            on-change="onSliderChange"}}
         END-SNIPPET --}}
         {{code-snippet name="slider2.hbs"}}
       {{/spec-member}}
 
       {{#spec-member title="Disabled"}}
-        {{rsa-form-slider
+        {{range-slider
           start=model.start
-          range=model.range
           step=1
           tooltips=false
-          isDisabled=true
-          onChange="onSliderChange"}}
+          disabled=true
+          on-change="onSliderChange"}}
         {{!-- BEGIN-SNIPPET slider3
-          {{rsa-form-slider
+          {{range-slider
             start=model.start
-            range=model.range
             step=1
             tooltips=false
-            isDisabled=true
-            onChange="onSliderChange"}}
+            disabled=true
+            on-change="onSliderChange"}}
         END-SNIPPET --}}
         {{code-snippet name="slider3.hbs"}}
       {{/spec-member}}
 
       {{#spec-member title="Error"}}
-        {{rsa-form-slider
+        {{range-slider
           start=model.start
-          range=model.range
           step=1
           isError=true
-          onChange="onSliderChange"}}
+          on-change="onSliderChange"}}
         {{!-- BEGIN-SNIPPET slider4
-          {{rsa-form-slider
+          {{range-slider
             start=model.start
-            range=model.range
             step=1
             isError=true
-            onChange="onSliderChange"}}
+            on-change="onSliderChange"}}
         END-SNIPPET --}}
         {{code-snippet name="slider4.hbs"}}
       {{/spec-member}}

@@ -48,12 +48,11 @@
       </div>
       <div class="rsa-respond-list__filter-panel__risk-score">
         <div class="rsa-respond-list__filter-panel__title">{{t 'incident.fields.riskScore'}}</div>
-        {{rsa-form-slider
+        {{range-slider
           start=riskScoreStart
-          range=riskScoreFilterRange
           step=1
-          isDisabled=isBulkEditInProgress
-          onUpdate=(action "onRiskScoreFilterUpdate")}}
+          disabled=isBulkEditInProgress
+          on-update=(action "onRiskScoreFilterUpdate")}}
       </div>
       <div class="rsa-respond-list__filter-panel__priority">
         <div class="rsa-respond-list__filter-panel__title">{{t 'incident.fields.priority'}}</div>

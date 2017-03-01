@@ -16,7 +16,7 @@
     "build": "ember build",
     "start": "ember server",
     "test": "ember try:each",
-    "postinstall": "node ../scripts/node/fake-out-bower jquery nouislider"
+    "postinstall": "node ../scripts/node/fake-out-bower jquery"
   },
   "dependencies": {
     "@html-next/flexi-config": "2.0.0-beta.12",
@@ -72,7 +72,6 @@
     "jquery": "3.1.1",
     "loader.js": "^4.0.10",
     "lodash-es": "4.17.4",
-    "nouislider": "^8.0.1",
     "redux": "3.6.0",
     "redux-actions": "1.2.1",
     "redux-pack": "0.1.4",

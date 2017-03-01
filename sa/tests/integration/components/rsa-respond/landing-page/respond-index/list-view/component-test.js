@@ -149,7 +149,7 @@ test('Filter panel renders', function(assert) {
   assert.equal(defaultDateTimeFilter.text().trim(), 'All Data', 'Default Date/Time filter is All Data');
 
   assert.ok(this.$('.rsa-respond-list__filter-panel__risk-score'), 'Risk Score filter is present');
-  assert.ok(this.$('.rsa-respond-list__filter-panel__risk-score .rsa-form-slider').length === 1, 'Risk Score slider is present');
+  assert.ok(this.$('.rsa-respond-list__filter-panel__risk-score .noUi-target').length === 1, 'Risk Score slider is present');
 
   assert.ok(this.$('.rsa-respond-list__filter-panel__priority'), 'Priority filter is present');
   assert.ok(this.$('.rsa-respond-list__filter-panel__priority .rsa-form-checkbox').length > 0, 'Priority options are present');
@@ -685,7 +685,7 @@ test('When a bulk edit is active, the filter controls are disabled.', function(a
     users=users
     categoryTags=categoryTags}}`);
 
-  assert.equal(this.$('.rsa-respond-list__filter-panel .rsa-form-slider').hasClass('is-disabled'), false, 'The risk score filter component is not disabled.');
+  assert.equal(this.$('.rsa-respond-list__filter-panel > div').hasClass('is-disabled'), false, 'The risk score filter component is not disabled.');
   assert.equal(this.$('.rsa-respond-list__filter-panel .rsa-respond-list__filter-panel__priority .rsa-form-checkbox').hasClass('disabled'), false, 'The priority filter component is not disabled.');
   assert.equal(this.$('.rsa-respond-list__filter-panel .rsa-respond-list__filter-panel__status .rsa-form-checkbox').hasClass('disabled'), false, 'The status filter component is not disabled.');
   assert.equal(this.$('.rsa-respond-list__filter-panel .rsa-respond-list__filter-panel__source-selector').length, 1, 'The source selector filter component is not disabled.');
@@ -699,7 +699,7 @@ test('When a bulk edit is active, the filter controls are disabled.', function(a
     nativeMouseUp('.ember-power-select-option:eq(0)');
 
     wait().then(() => {
-      assert.equal(this.$('.rsa-respond-list__filter-panel .rsa-form-slider').hasClass('is-disabled'), true, 'The risk score filter component is disabled.');
+      assert.equal(this.$('.rsa-respond-list__filter-panel > div').hasClass('is-disabled'), true, 'The risk score filter component is disabled.');
       assert.equal(this.$('.rsa-respond-list__filter-panel .rsa-respond-list__filter-panel__priority .rsa-form-checkbox').hasClass('disabled'), true, 'The priority filter component is disabled.');
       assert.equal(this.$('.rsa-respond-list__filter-panel .rsa-respond-list__filter-panel__status .rsa-form-checkbox').hasClass('disabled'), true, 'The status filter component is disabled.');
       assert.equal(this.$('.rsa-respond-list__filter-panel .rsa-respond-list__filter-panel__sources .empty-selection').length, 1, 'The source selector placeholder is present.');
