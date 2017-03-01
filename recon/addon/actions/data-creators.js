@@ -284,26 +284,41 @@ const toggleMetaData = (setTo) => {
 };
 
 /**
- * Subscribe to notifications. Notifications tell us when any file downloads are finished/failed.
- * Eventually we will have a standalone notifications UI outside of recon, but for now it's all handled internally in recon.
+ * Subscribe to notifications. Notifications tell us when any file
+ * downloads are finished/failed. Eventually we will have a standalone
+ * notifications UI outside of recon, but for now it's all handled
+ * internally in recon.
+ *
  * @public
  */
 const initializeNotifications = () => {
-  return (dispatch) => {
+  return (dispatch, getState) => {
     fetchNotifications(
-      // on successful init, will received a function for stopping all notification callbacks
+      // on successful init, will received a function for
+      // stopping all notification callbacks
       (response) => {
         dispatch({
           type: ACTION_TYPES.NOTIFICATION_INIT_SUCCESS,
           payload: { cancelFn: response }
         });
       },
-      // some job has finished and is ready for download
+      // some job has finished and is ready for download...
       ({ data }) => {
-        dispatch({
-          type: ACTION_TYPES.FILE_EXTRACT_JOB_SUCCESS,
-          payload: data
-        });
+
+        // ...but is it the right job?
+        //
+        // Verify that a file extraction is actually taking place.
+        // If multiple browsers are open to the file tab of recon,
+        // then all those open sockets will get the notification
+        // that the download is ready, but we do not want to download
+        // from every browser, just the browser where the download originated.
+        const extractStatus = getState().recon.data.fileExtractStatus;
+        if (['init', 'wait'].includes(extractStatus)) {
+          dispatch({
+            type: ACTION_TYPES.FILE_EXTRACT_JOB_SUCCESS,
+            payload: data
+          });
+        }
       },
       // some job failed
       (err) => {
