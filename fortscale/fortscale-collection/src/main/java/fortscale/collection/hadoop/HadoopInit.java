@@ -133,11 +133,14 @@ public class HadoopInit implements InitializingBean{
 
 
 	}
-	
+
 	private void createTable(String tableName, String fields, String partition, String delimiter, String location) throws IOException{
 		Path directoryPath = new Path(location);
 		if(!hadoopFs.exists(directoryPath)){
-			hadoopFs.mkdirs(directoryPath);
+			final boolean created = hadoopFs.mkdirs(directoryPath);
+			if (!created) {
+				hadoopFs.mkdirs(new Path(location));
+			}
 			hadoopFs.setOwner(directoryPath,hdfsUserAccount,hdfsUserGroup);
 		}
 		try{
