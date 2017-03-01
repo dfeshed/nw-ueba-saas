@@ -55,7 +55,7 @@ public class ApiSystemSetupTagsController extends BaseController {
 
     @Autowired
     public ApiSystemSetupTagsController(TagService tagService, UserTagService userTagService, ActiveDirectoryService activeDirectoryService,
-                                        @Qualifier(value = "AdTaskServiceImpl") TaskService userTaggingTaskService, SimpMessagingTemplate simpMessagingTemplate,
+                                        @Qualifier(value = "UserTaggingTaskServiceImpl") TaskService userTaggingTaskService, SimpMessagingTemplate simpMessagingTemplate,
                                         UserTaggingTaskPersistenceService userTaggingTaskPersistenceService) {
         this.tagService = tagService;
         this.userTagService = userTagService;
@@ -214,7 +214,7 @@ public class ApiSystemSetupTagsController extends BaseController {
         return activeTasks.size() > 0;
     }
 
-    private static class UserTaggingExecutionStatus {
+    public static class UserTaggingExecutionStatus {
 
         private final Long lastExecutionFinishTime;
         private final Long lastExecutionStartTime;

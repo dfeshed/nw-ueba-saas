@@ -9,12 +9,11 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.concurrent.Executors;
 
 /**
  * Created by alexp on 16/02/2017.
  */
-@Service
+@Service(value = "UserTaggingTaskServiceImpl")
 public class UserTaggingTaskServiceImpl extends TaskService {
     private static final Logger logger = Logger.getLogger(UserTaggingTaskServiceImpl.class);
 
@@ -37,8 +36,8 @@ public class UserTaggingTaskServiceImpl extends TaskService {
         if (executorService.tryExecute()) {
             try {
                 logger.info("Starting user tagging");
-                final List<ControllerInvokedUserTaggingTask> adTasks = createTaggingTask(simpMessagingTemplate, responseDestination);
-                executorService.executeTasks(adTasks);
+                final List<ControllerInvokedUserTaggingTask> taggingTask = createTaggingTask(simpMessagingTemplate, responseDestination);
+                executorService.executeTasks(taggingTask);
                 return true;
             } finally {
                 executorService.markEndExecution();

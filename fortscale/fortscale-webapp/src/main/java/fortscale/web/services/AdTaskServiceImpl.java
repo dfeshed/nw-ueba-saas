@@ -34,7 +34,7 @@ public class AdTaskServiceImpl extends TaskService {
     }
 
     public boolean executeTasks(SimpMessagingTemplate simpMessagingTemplate, String responseDestination) {
-        initExecutorService(1);
+        initExecutorService(dataSources.size());
         if (executorService.tryExecute()) {
             try {
                 logger.info("Starting Active Directory fetch and ETL");
