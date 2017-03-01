@@ -135,18 +135,8 @@ public class HadoopInit implements InitializingBean{
 	}
 
 	private void createTable(String tableName, String fields, String partition, String delimiter, String location) throws IOException{
-//		Path directoryPath = new Path(location);
-//		if(!hadoopFs.exists(directoryPath)){
-//			final boolean created = hadoopFs.mkdirs(directoryPath);
-//			if (!created) {
-//				hadoopFs.mkdirs(new Path(location));
-//			}
-//			hadoopFs.setOwner(directoryPath,hdfsUserAccount,hdfsUserGroup);
-//		}
-		if(!hadoopFs.exists(new Path(location))) {
-			final boolean mkdirs = hadoopFs.mkdirs(new Path(location));
-			hadoopFs.setOwner(new Path(location),hdfsUserAccount,hdfsUserGroup);
-			System.out.println();
+		if(!hadoopFs.exists(new Path(location))){
+			hadoopFs.mkdirs(new Path(location));
 		}
 		try{
 			impalaClient.createTable(tableName, fields, partition, delimiter, location, true);
