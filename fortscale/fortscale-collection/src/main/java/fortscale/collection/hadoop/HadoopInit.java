@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import org.apache.hadoop.conf.Configuration;
 
 @Component
 public class HadoopInit implements InitializingBean{
@@ -137,11 +138,11 @@ public class HadoopInit implements InitializingBean{
 	private void createTable(String tableName, String fields, String partition, String delimiter, String location) throws IOException{
 		final Path path = new Path(location);
 		if(!hadoopFs.exists(path)){
-			hadoopFs.mkdirs(path);
+			final boolean mkdirs = hadoopFs.mkdirs(path);
+			System.out.println();
 		}
 		try{
 			impalaClient.createTable(tableName, fields, partition, delimiter, location, true);
-			hadoopFs.setOwner(path, hdfsUserAccount, hdfsUserGroup);
 		} catch(Exception e){
 			// changed to log warning message instead of swallowing the exception as this might lose the details of real errors that might occur
 			// this should be changed so that we won't get exception in case the table exists
