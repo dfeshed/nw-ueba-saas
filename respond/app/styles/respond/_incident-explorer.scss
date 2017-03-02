@@ -1,11 +1,44 @@
+$applicationBodyBackgroundColorResolved: rgb(55,68,80) !default;
+$incidentExplorerAsideWidth: 55%;
+$incidentExplorerHeaderHeight: 120px;
+
 .rsa-incident-explorer {
   &__header {
+    position: relative;
+    z-index: 2;
+  }
+
+  &__banner-wrap {
     background-color: rsa-color(gray, darker, $rsa-somewhat-opaque);
     padding: rsa-whitespace(less) rsa-whitespace() rsa-whitespace();
   }
+
+  &__title-and-tools {
+    padding: rsa-whitespace() rsa-whitespace() rsa-whitespace(less);
+
+    h2 {
+      @include rsa-font(heading,small);
+    }
+
+    .rsa-icon {
+      padding: 0 rsa-whitespace(less);
+      margin-right: rsa-whitespace(less);
+      cursor: pointer;
+      color: rsa-color(gray,light);
+
+      &.active,
+      &:hover {
+        color: rsa-color(white);
+      }
+    }
+  }
+
   &__main {
+    position: relative;
+    z-index: 1;
     overflow-y: auto;
   }
+
   &__status {
     &.error {
       .rsa-icon {
@@ -16,6 +49,93 @@
       }
       a {
         color: rsa-color(blue,light);
+      }
+    }
+  }
+
+
+  &__storyline-wrap {
+    margin-right: $incidentExplorerAsideWidth;
+    transition: margin-right 0.3s;
+  }
+
+  &__aside {
+    position: fixed;
+    z-index: 2;
+    top: $incidentExplorerHeaderHeight;
+    bottom: 0;
+    right: 0;
+    width: $incidentExplorerAsideWidth;
+    margin: rsa-whitespace() 0;
+    transition: width 0.3s;
+  }
+
+  .rsa-portlet {
+    position: relative;
+    z-index: 2;
+    margin: 1px rsa-whitespace();
+    color: rsa-color(gray, light);
+    background-color: rsa-color(black,base,$rsa-nearly-transparent);
+
+    /* Hides border by default. */
+    border: 0;
+
+    /* Collapses by portlets by default. Other rules (below) expand them individually when they are open. */
+    overflow: hidden;
+    height: 0;
+
+    /* Allows element to grow or shrink, regardless of cutting off their content */
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+
+    transition-property: height, margin, border-color;
+    transition-duration: 0.3s;
+
+    /* Show border of open panels only. */
+    &.isOpen {
+      border: 1px solid rsa-color(gray,light,$rsa-translucent);
+      padding: rsa-whitespace(less) rsa-whitespace();
+    }
+  }
+
+  /* Inserts small vertical separation between siblings */
+  &.open-panels-count-2 .rsa-portlet.journal.isOpen,
+  &.is-entities-panel-open .rsa-portlet.events.isOpen {
+    xmargin-top: rsa-whitespace(least);
+  }
+
+  /* Distribute the height of the panels evenly depending on how many are open. */
+  &.open-panels-count-1 {
+    &.is-entities-panel-open .rsa-portlet.entities,
+    &.is-events-panel-open .rsa-portlet.events,
+    &.is-journal-panel-open .rsa-portlet.journal {
+      height: 100%;
+    }
+  }
+  &.open-panels-count-2 {
+    &.is-entities-panel-open .rsa-portlet.entities,
+    &.is-events-panel-open .rsa-portlet.events,
+    &.is-journal-panel-open .rsa-portlet.journal {
+      height: 50%;
+    }
+  }
+  &.open-panels-count-3 {
+    &.is-entities-panel-open .rsa-portlet.entities,
+    &.is-events-panel-open .rsa-portlet.events,
+    &.is-journal-panel-open .rsa-portlet.journal {
+      height: 33.333%;
+    }
+  }
+
+  /* When no panels are open, shrink the aside and let the storyline fill the width. */
+  &.open-panels-count-0 {
+    .rsa-incident-explorer {
+      &__aside {
+        width: 0;
+        overflow: hidden;
+      }
+      &__storyline-wrap {
+        margin-right: 0;
       }
     }
   }

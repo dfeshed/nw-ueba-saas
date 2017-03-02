@@ -1,8 +1,11 @@
 import * as ACTION_TYPES from 'respond/actions/types';
 import reduxActions from 'redux-actions';
 import { handle } from 'redux-pack';
+import { load, persist } from './util/local-storage';
 
-const initialState = {
+const localStorageKey = 'rsa::nw::respond::incident';
+
+let initialState = {
   // id of the incident that owns `info` & `storyline`
   id: null,
 
@@ -16,7 +19,24 @@ const initialState = {
   storyline: null,
 
   // either 'wait', 'error' or 'completed'
-  storylineStatus: null
+  storylineStatus: null,
+
+  // true when user toggles "Entities" btn to reveal force-layout graph
+  isEntitiesPanelOpen: false,
+
+  // true when user toggles "Events" btn to reveal events table
+  isEventsPanelOpen: false,
+
+  // true when user toggles "Journal" btn to reveal journal
+  isJournalPanelOpen: false
+};
+
+// Load local storage values and incorporate into initial state
+initialState = load(initialState, localStorageKey);
+
+// Mechanism to persist some of the state to local storage
+const persistIncidentState = (callback) => {
+  return persist(callback, localStorageKey);
 };
 
 const incident = reduxActions.handleActions({
@@ -51,8 +71,22 @@ const incident = reduxActions.handleActions({
       failure: (s) => ({ ...s, storylineStatus: 'error' }),
       success: (s) => ({ ...s, storyline: action.payload.data, storylineStatus: 'completed' })
     });
-  }
+  },
 
+  [ACTION_TYPES.TOGGLE_ENTITIES_PANEL]: persistIncidentState((state) => ({
+    ...state,
+    isEntitiesPanelOpen: !state.isEntitiesPanelOpen
+  })),
+
+  [ACTION_TYPES.TOGGLE_EVENTS_PANEL]: persistIncidentState((state) => ({
+    ...state,
+    isEventsPanelOpen: !state.isEventsPanelOpen
+  })),
+
+  [ACTION_TYPES.TOGGLE_JOURNAL_PANEL]: persistIncidentState((state) => ({
+    ...state,
+    isJournalPanelOpen: !state.isJournalPanelOpen
+  }))
 }, initialState);
 
 export default incident;

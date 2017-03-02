@@ -3,6 +3,7 @@ import { CANNED_FILTER_TYPES_BY_NAME } from 'respond/utils/canned-filter-types';
 import { SORT_TYPES_BY_NAME } from 'respond/utils/sort-types';
 import reduxActions from 'redux-actions';
 import { handle } from 'redux-pack';
+import { load, persist } from './util/local-storage';
 
 const localStorageKey = 'rsa::nw::respond::incidents';
 
@@ -40,37 +41,11 @@ let initialState = {
 };
 
 // Load local storage values and incorporate into initial state
-// Note: this implementation may be replaced either with (a) user preference service calls, or (b) with a more
-// sophisticated solution with local storage
-initialState = {
-  ...initialState,
-  ...(JSON.parse(localStorage.getItem(localStorageKey)) || {})
-};
+initialState = load(initialState, localStorageKey);
 
-/**
- * Mechanism to persist some of the state to local storage
- * Note: this implementation may be replaced either with (a) user preference service calls, or (b) with a more
- * sophisticated solution with local storage
- * @private
- * @param callback
- * @returns {Function}
- */
-const persist = (callback) => {
-  return (function() {
-    const state = callback(...arguments);
-    const { incidentsSort, incidentsFilters, isFilterPanelOpen, isAltThemeActive } = state;
-    try {
-      localStorage.setItem(localStorageKey, JSON.stringify({
-        incidentsFilters,
-        incidentsSort,
-        isFilterPanelOpen,
-        isAltThemeActive
-      }));
-    } catch (e) {
-      localStorage.setItem(localStorageKey, {});
-    }
-    return state;
-  });
+// Mechanism to persist some of the state to local storage
+const persistIncidentsState = (callback) => {
+  return persist(callback, localStorageKey);
 };
 
 const incidents = reduxActions.handleActions({
@@ -94,12 +69,12 @@ const incidents = reduxActions.handleActions({
     isInSelectMode: !state.isInSelectMode
   }),
 
-  [ACTION_TYPES.TOGGLE_FILTER_PANEL]: persist((state) => ({
+  [ACTION_TYPES.TOGGLE_FILTER_PANEL]: persistIncidentsState((state) => ({
     ...state,
     isFilterPanelOpen: !state.isFilterPanelOpen
   })),
 
-  [ACTION_TYPES.TOGGLE_THEME]: persist((state) => ({
+  [ACTION_TYPES.TOGGLE_THEME]: persistIncidentsState((state) => ({
     ...state,
     isAltThemeActive: !state.isAltThemeActive
   })),
@@ -128,12 +103,12 @@ const incidents = reduxActions.handleActions({
     incidentsSelected: []
   }),
 
-  [ACTION_TYPES.SORT_BY]: persist((state, { payload }) => ({
+  [ACTION_TYPES.SORT_BY]: persistIncidentsState((state, { payload }) => ({
     ...state,
     incidentsSort: payload
   })),
 
-  [ACTION_TYPES.UPDATE_INCIDENT_FILTERS]: persist((state, { payload }) => ({
+  [ACTION_TYPES.UPDATE_INCIDENT_FILTERS]: persistIncidentsState((state, { payload }) => ({
     ...state,
     incidentsFilters: {
       ...state.incidentsFilters,
@@ -141,7 +116,7 @@ const incidents = reduxActions.handleActions({
     }
   })),
 
-  [ACTION_TYPES.UPDATE_SELECTED_CANNED_FILTER]: persist((state, { payload }) => ({
+  [ACTION_TYPES.UPDATE_SELECTED_CANNED_FILTER]: persistIncidentsState((state, { payload }) => ({
     ...state,
     incidentsFilters: {
       ...state.incidentsFilters,

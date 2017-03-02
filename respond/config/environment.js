@@ -21,6 +21,6 @@ module.exports = function(environment/* , appConfig */) {
     i18n: {
       defaultLocale: 'en',
       includedLocales: ['en', 'ja']
-    },
+    }
   };
 };

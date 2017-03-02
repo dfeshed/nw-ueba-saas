@@ -26,6 +26,11 @@ module.exports = function(environment) {
     moment: {
       includeLocales: ['en', 'ja'],
       includeTimezone: '2010-2020'
+    },
+    featureFlags: {
+      'show-incident-entities-panel': false,
+      'show-incident-events-panel': false,
+      'show-incident-journal-panel': false
     }
   };
 

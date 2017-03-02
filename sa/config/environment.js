@@ -52,7 +52,10 @@ module.exports = function(environment) {
     },
     featureFlags: {
       'show-respond-route': true,
-      'show-investigate-route': true
+      'show-investigate-route': true,
+      'show-incident-entities-panel': false,
+      'show-incident-events-panel': false,
+      'show-incident-journal-panel': false
     },
     'ember-cli-mirage':  {},
     'ember-cli-mock-socket': {},

@@ -20,6 +20,27 @@ class DataHelper {
   fetchIncidentDetails(payload = incidentDetails) {
     _dispatchFetchIncidentDetails(this.redux, payload);
   }
+  initializeIncident(incidentId) {
+    this.redux.dispatch({
+      type: ACTION_TYPES.INITIALIZE_INCIDENT,
+      incidentId
+    });
+  }
+  toggleIncidentEntitiesPanel() {
+    this.redux.dispatch({
+      type: ACTION_TYPES.TOGGLE_ENTITIES_PANEL
+    });
+  }
+  toggleIncidentEventsPanel() {
+    this.redux.dispatch({
+      type: ACTION_TYPES.TOGGLE_EVENTS_PANEL
+    });
+  }
+  toggleIncidentJournalPanel() {
+    this.redux.dispatch({
+      type: ACTION_TYPES.TOGGLE_JOURNAL_PANEL
+    });
+  }
 }
 
 export default DataHelper;
