@@ -42,8 +42,6 @@ public class HadoopInit implements InitializingBean{
 	private String impalaUserTableName;
 	@Value("${hdfs.user.data.users.path}")
 	private String impalaUsersDirectory;
-	@Value("${hdfs.user.path}")
-	private String hdfsUserPath;
 
 	public void createImpalaTables() throws IOException{
 
