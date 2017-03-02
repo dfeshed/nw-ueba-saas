@@ -139,9 +139,7 @@ public class HadoopInit implements InitializingBean{
 		if(!hadoopFs.exists(path)){
 			final boolean folderCreated = hadoopFs.mkdirs(path);
 			if (!folderCreated) {
-				final String errorMsg = String.format("HDFS folder in path %s couldn't be created. FileSystem is: %s", location, hadoopFs);
-				logger.error(errorMsg);
-				throw new IOException(errorMsg);
+				logger.error("HDFS folder in path {} couldn't be created. FileSystem is: {}", location, hadoopFs);
 			}
 			hadoopFs.setOwner(path, hdfsUserAccount, hdfsUserGroup);
 		}
