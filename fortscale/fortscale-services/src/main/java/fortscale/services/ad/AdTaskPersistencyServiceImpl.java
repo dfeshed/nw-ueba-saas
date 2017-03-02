@@ -2,12 +2,13 @@ package fortscale.services.ad;
 
 import fortscale.domain.ad.AdObject;
 import fortscale.domain.ad.AdTaskType;
+import fortscale.domain.core.ApplicationConfiguration;
 import fortscale.services.ApplicationConfigurationService;
-import fortscale.services.BaseTaskPersistencyService;
 import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -18,6 +19,8 @@ public class AdTaskPersistencyServiceImpl implements AdTaskPersistencyService {
 
     public static final String RESULTS_KEY_DELIMITER = "_";
     public static final String EXECUTION_TIME_KEY_DELIMITER = "_";
+    public static final String RESULTS_DELIMITER = "=";
+    public static final String RESULTS_KEY_SUCCESS = "success";
 
     private final String SYSTEM_SETUP_AD_LAST_EXECUTION_TIME_PREFIX ="system_setup_ad.last_execution_time";
     private final String SYSTEM_SETUP_AD_EXECUTION_START_TIME_PREFIX ="system_setup_ad.execution_start_time";
@@ -30,13 +33,31 @@ public class AdTaskPersistencyServiceImpl implements AdTaskPersistencyService {
 
     @Override
     public Map<String, String> getTaskResults(String resultsKey) {
-        return BaseTaskPersistencyService.getTaskResults(resultsKey, applicationConfigurationService);
+        Map<String, String> taskResults = new HashMap<>();
+        logger.info("getting result for key {}", resultsKey);
+        ApplicationConfiguration queryResult = applicationConfigurationService.getApplicationConfiguration(resultsKey);
+        if (queryResult == null) {
+            logger.error("No result found for result key {}", resultsKey);
+            taskResults.put(RESULTS_KEY_SUCCESS, Boolean.FALSE.toString());
+            return taskResults;
+        }
+
+        final String taskExecutionResult = queryResult.getValue();
+        final String[] split = taskExecutionResult.split(RESULTS_DELIMITER);
+        final String key = split[0];
+        final String value = split[1];
+        taskResults.put(key, value);
+        if (applicationConfigurationService.delete(resultsKey) == 0) {
+            logger.warn("Failed to delete query result with key {}.", resultsKey);
+        }
+
+        return taskResults;
     }
 
     public void writeTaskResults(String dataSource, String taskTypeName, String resultsId, boolean result) {
         String resultsKey = createResultKey(dataSource, taskTypeName, resultsId);
         logger.debug("Inserting status to application configuration in key {}", resultsKey);
-        applicationConfigurationService.insertConfigItem(resultsKey, BaseTaskPersistencyService.RESULTS_KEY_SUCCESS + BaseTaskPersistencyService.RESULTS_DELIMITER + result);
+        applicationConfigurationService.insertConfigItem(resultsKey, RESULTS_KEY_SUCCESS + RESULTS_DELIMITER + result);
     }
 
     public Long getLastExecutionTime(AdTaskType adTaskType, AdObject.AdObjectType dataSource) {

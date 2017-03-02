@@ -214,14 +214,14 @@ public class ApiSystemSetupTagsController extends BaseController {
         }
     }
 
-    @RequestMapping(method = RequestMethod.GET,value = "/tagging_task_status")
+    @RequestMapping(method = RequestMethod.GET, value = "/tagging_task_status")
     @LogException
     public UserTaggingExecutionStatus getJobStatus() {
-        if (isRunning()){
-            return new UserTaggingExecutionStatus(-1l, lastUserTaggingExecutionStartTime, true);
-        }else {
-
-         return new UserTaggingExecutionStatus(userTaggingTaskPersistenceService.getLastExecutionTime(), -1l, false);
+        if (isRunning()) {
+            return new UserTaggingExecutionStatus(-1l, lastUserTaggingExecutionStartTime, true, null);
+        } else {
+            return new UserTaggingExecutionStatus(userTaggingTaskPersistenceService.getLastExecutionTime(), -1l,
+                    false, userTaggingTaskPersistenceService.getTaskResults(ControllerInvokedUserTaggingTask.USER_TAGGING_RESULT_ID).getUsersAffected());
         }
     }
 
@@ -240,12 +240,14 @@ public class ApiSystemSetupTagsController extends BaseController {
         private final Long lastExecutionFinishTime;
         private final Long lastExecutionStartTime;
         private final boolean isRunning;
+        private final Map<String, Long> usersAffected;
 
 
-        public UserTaggingExecutionStatus(Long lastExecutionFinishTime, Long lastExecutionStartTime, boolean isRunning) {
+        public UserTaggingExecutionStatus(Long lastExecutionFinishTime, Long lastExecutionStartTime, boolean isRunning, Map<String, Long> usersAffected) {
             this.lastExecutionFinishTime = lastExecutionFinishTime;
             this.lastExecutionStartTime = lastExecutionStartTime;
             this.isRunning = isRunning;
+            this.usersAffected = usersAffected;
         }
 
         public Long getLastExecutionFinishTime() {
@@ -258,6 +260,10 @@ public class ApiSystemSetupTagsController extends BaseController {
 
         public boolean isRunning() {
             return isRunning;
+        }
+
+        public Map<String, Long> getUsersAffected() {
+            return usersAffected;
         }
     }
 }

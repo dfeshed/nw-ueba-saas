@@ -1,13 +1,10 @@
 package fortscale.services.users.tagging;
 
-import fortscale.domain.core.ApplicationConfiguration;
 import fortscale.services.ApplicationConfigurationService;
-import fortscale.services.BaseTaskPersistencyService;
 import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -16,8 +13,6 @@ public class UserTaggingTaskPersistencyServiceImpl implements UserTaggingTaskPer
 
     private static final Logger logger = Logger.getLogger(UserTaggingTaskPersistencyServiceImpl.class);
 
-    public static final String RESULTS_DELIMITER = "=";
-    public static final String RESULTS_KEY_SUCCESS = "success";
     public static final String RESULTS_KEY_NAME = "user_tagging";
 
     private final String SYSTEM_SETUP_USER_TAGGING_LAST_EXECUTION_TIME ="system_setup_user_tagging.last_execution_time";
@@ -32,8 +27,8 @@ public class UserTaggingTaskPersistencyServiceImpl implements UserTaggingTaskPer
     }
 
     @Override
-    public Map<String, String> getTaskResults(String resultsKey) {
-        return BaseTaskPersistencyService.getTaskResults(resultsKey, applicationConfigurationService);
+    public UserTaggingResult getTaskResults(String resultsKey) {
+        return applicationConfigurationService.getApplicationConfigurationAsObject(resultsKey, UserTaggingResult.class);
     }
 
     public void writeTaskResults(String taskTypeName, String resultsId, boolean result, Map<String, Long> deltaPerTag) {
@@ -65,7 +60,7 @@ public class UserTaggingTaskPersistencyServiceImpl implements UserTaggingTaskPer
     }
 
     private String createResultKey(String resultsId) {
-        return  String.format("%s%s%s", RESULTS_KEY_NAME, applicationConfigurationService.getKeyDelimiter(),resultsId);
+        return  String.format("%s%s%s", RESULTS_KEY_NAME, applicationConfigurationService.getKeyDelimiter(), resultsId);
     }
 
     @Override
@@ -73,7 +68,7 @@ public class UserTaggingTaskPersistencyServiceImpl implements UserTaggingTaskPer
         return Boolean.valueOf(applicationConfigurationService.getApplicationConfigurationAsObject(SYSTEM_SETUP_USER_TAGGING_MONITOR_FILE_DAILY, Boolean.class));
     }
 
-    private static class UserTaggingResult{
+    public static class UserTaggingResult{
         private boolean success;
         private Map<String, Long> usersAffected;
 

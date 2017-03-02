@@ -1,7 +1,7 @@
 package fortscale.web.tasks;
 
-import fortscale.services.BaseTaskPersistencyService;
 import fortscale.services.users.tagging.UserTaggingTaskPersistenceService;
+import fortscale.services.users.tagging.UserTaggingTaskPersistencyServiceImpl;
 import fortscale.utils.logging.Logger;
 import fortscale.web.services.ActivityMonitoringExecutorService;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -19,6 +19,7 @@ public class ControllerInvokedUserTaggingTask extends BaseControllerInvokedTask 
 
     private static final String USER_TAGGING_JOB_NAME = "User";
     private static final String USER_TAGGING_JOB_GROUP = "Tagging";
+    public static final String USER_TAGGING_RESULT_ID = "result";
 
     private final String responseDestination;
     private final UserTaggingTaskPersistenceService userTaggingTaskPersistenceService;
@@ -57,7 +58,7 @@ public class ControllerInvokedUserTaggingTask extends BaseControllerInvokedTask 
             return response.success;
         } catch (Exception e) {
             logger.error("Failed to handle task {}.", USER_TAGGING_JOB_NAME, e);
-            simpMessagingTemplate.convertAndSend(responseDestination, new UserTaggingTaskResponse(false, -1L));
+            simpMessagingTemplate.convertAndSend(responseDestination, new UserTaggingTaskResponse(false, -1L, null));
             return false;
         }
     }
@@ -72,36 +73,36 @@ public class ControllerInvokedUserTaggingTask extends BaseControllerInvokedTask 
         userTaggingTaskPersistenceService.setExecutionStartTime(System.currentTimeMillis());
         notifyTaskStart();
 
-        UUID resultsId = UUID.randomUUID();
+        UUID resultsId = UUID.fromString(USER_TAGGING_RESULT_ID);
         final String resultsKey = userTaggingTaskPersistenceService.createResultKey(resultsId);
 
         /* run task */
-        logger.info("Running user tagging task {} with ID {}", USER_TAGGING_JOB_NAME, resultsId);
+        logger.info("Running user tagging task {}", USER_TAGGING_JOB_NAME);
         if (!runCollectionJob(USER_TAGGING_JOB_NAME, resultsId, USER_TAGGING_JOB_GROUP)) {
             notifyTaskDone();
-            return new UserTaggingTaskResponse(false, -1L);
+            return new UserTaggingTaskResponse(false, -1L, null);
         }
 
 
         /* get task results from file */
         logger.debug("Getting results for task {} with results key {}", USER_TAGGING_JOB_NAME, resultsKey);
-        final Map<String, String> taskResults = userTaggingTaskPersistenceService.getTaskResults(resultsKey);
+        final UserTaggingTaskPersistencyServiceImpl.UserTaggingResult taskResults = userTaggingTaskPersistenceService.getTaskResults(resultsKey);
         if (taskResults == null) {
             notifyTaskDone();
-            return new UserTaggingTaskResponse(false, -1L);
+            return new UserTaggingTaskResponse(false, -1L, null);
         }
 
         /* process results and understand if task finished successfully */
-        final String success = taskResults.get(BaseTaskPersistencyService.RESULTS_KEY_SUCCESS);
+        final Boolean success = taskResults.isSuccess();
         if (success == null) {
             logger.error("Invalid output for task {} . success status is missing. Task Failed", USER_TAGGING_JOB_NAME);
             notifyTaskDone();
-            return new UserTaggingTaskResponse(false, -1L);
+            return new UserTaggingTaskResponse(false, -1L, null);
         }
 
         notifyTaskDone();
         final long lastExecutionTime = System.currentTimeMillis();
-        return new UserTaggingTaskResponse(Boolean.valueOf(success), lastExecutionTime);
+        return new UserTaggingTaskResponse(Boolean.valueOf(success), lastExecutionTime, taskResults.getUsersAffected());
     }
 
     @Override
@@ -115,10 +116,12 @@ public class ControllerInvokedUserTaggingTask extends BaseControllerInvokedTask 
     public static class UserTaggingTaskResponse {
         private boolean success;
         private Long lastExecutionTime;
+        private Map<String, Long> taggingResult;
 
-        public UserTaggingTaskResponse(boolean success, Long lastExecutionTime) {
+        public UserTaggingTaskResponse(boolean success, Long lastExecutionTime, Map<String, Long> taggingResult) {
             this.success = success;
             this.lastExecutionTime = lastExecutionTime;
+            this.taggingResult = taggingResult;
         }
 
         public boolean isSuccess() {
@@ -136,7 +139,16 @@ public class ControllerInvokedUserTaggingTask extends BaseControllerInvokedTask 
         public void setLastExecutionTime(Long lastExecutionTime) {
             this.lastExecutionTime = lastExecutionTime;
         }
+
+        public Map<String, Long> getTaggingResult() {
+            return taggingResult;
+        }
+
+        public void setTaggingResult(Map<String, Long> taggingResult) {
+            this.taggingResult = taggingResult;
+        }
     }
 }
+
 
 
