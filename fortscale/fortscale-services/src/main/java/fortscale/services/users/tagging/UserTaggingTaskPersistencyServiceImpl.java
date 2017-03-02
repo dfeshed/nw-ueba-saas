@@ -27,7 +27,7 @@ public class UserTaggingTaskPersistencyServiceImpl implements UserTaggingTaskPer
 
     @Override
     public UserTaggingResult getTaskResults(String resultsKey) {
-        return applicationConfigurationService.getApplicationConfigurationAsObject(resultsKey, UserTaggingResult.class);
+        return applicationConfigurationService.getApplicationConfigurationAsObject(createResultKey(resultsKey), UserTaggingResult.class);
     }
 
     public void writeTaskResults(String taskTypeName, String resultsId, boolean result, Map<String, Long> deltaPerTag) {
