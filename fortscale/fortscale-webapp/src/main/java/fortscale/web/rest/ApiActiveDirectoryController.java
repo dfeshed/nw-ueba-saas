@@ -253,7 +253,8 @@ public class ApiActiveDirectoryController {
 	 * @return Fetch, ETL or null for not running
 	 */
 	private AdTaskType getRunningMode(AdObjectType datasource) {
-		for (ControllerInvokedAdTask activeThread : adTaskService.getActiveTasks()) {
+		Set<ControllerInvokedAdTask> activeTasks = adTaskService.getActiveTasks();
+		for (ControllerInvokedAdTask activeThread : activeTasks) {
 			if (datasource.equals(activeThread.getDataSource())) {
 				return activeThread.getCurrentAdTaskType();
 			}

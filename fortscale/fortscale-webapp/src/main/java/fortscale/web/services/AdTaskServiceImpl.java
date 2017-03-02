@@ -12,32 +12,29 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 @Service(value = "AdTaskServiceImpl")
-public class AdTaskServiceImpl implements TaskService {
+public class AdTaskServiceImpl extends TaskService {
 
     private static final Logger logger = Logger.getLogger(AdTaskServiceImpl.class);
 
-    private ActivityMonitoringExecutorService<ControllerInvokedAdTask> executorService;
     private ActiveDirectoryService activeDirectoryService;
     private AdTaskPersistencyService adTaskPersistencyService;
     private final Set<AdObject.AdObjectType> dataSources = new HashSet<>(Arrays.asList(AdObject.AdObjectType.values()));
 
     private AdTaskServiceImpl() {
-        initExecutorService();
+        initExecutorService(1);
     }
 
     @Autowired
     public AdTaskServiceImpl(ActiveDirectoryService activeDirectoryService, AdTaskPersistencyService adTaskPersistencyService) {
         this.activeDirectoryService = activeDirectoryService;
         this.adTaskPersistencyService = adTaskPersistencyService;
-        initExecutorService();
+        initExecutorService(1);
     }
 
     public boolean executeTasks(SimpMessagingTemplate simpMessagingTemplate, String responseDestination) {
-        initExecutorService();
+        initExecutorService(dataSources.size());
         if (executorService.tryExecute()) {
             try {
                 logger.info("Starting Active Directory fetch and ETL");
@@ -47,50 +44,10 @@ public class AdTaskServiceImpl implements TaskService {
             } finally {
                 executorService.markEndExecution();
             }
-        }
-        else {
-            return false;
-        }
-    }
-
-    public boolean cancelAllTasks(long terminationTimeout) {
-        if (executorService.isHasActiveTasks()) {
-            logger.info("Attempting to kill all running threads {}", executorService.getActiveTasks());
-            executorService.shutdownNow();
-            try {
-                executorService.awaitTermination(terminationTimeout, TimeUnit.SECONDS);
-                return true;
-            } catch (InterruptedException e) {
-                final String msg = "Failed to await termination of running threads.";
-                logger.error(msg);
-                return false;
-            }
         } else {
-            final String msg = "Attempted to cancel threads was made but there are no running tasks.";
-            logger.warn(msg);
             return false;
         }
     }
-
-    public Set<ControllerInvokedAdTask> getActiveTasks() {
-        return executorService.getActiveTasks();
-    }
-
-    private void initExecutorService() {
-        if (executorService != null && !executorService.isShutdown()) {
-            return; // use the already working executor service
-        }
-        else {
-            executorService = new ActivityMonitoringExecutorServiceImpl<>(
-                    Executors.newFixedThreadPool(dataSources.size(), runnable -> {
-                        Thread thread = new Thread(runnable);
-                        thread.setUncaughtExceptionHandler((exceptionThrowingThread, e) -> logger.error("Thread {} threw an uncaught exception", exceptionThrowingThread.getName(), e));
-                        return thread;
-                    }),
-                    dataSources.size());
-        }
-    }
-
 
     private List<ControllerInvokedAdTask> createAdTasks(SimpMessagingTemplate simpMessagingTemplate, String responseDestination) {
         final List<ControllerInvokedAdTask> tasks = new ArrayList<>();

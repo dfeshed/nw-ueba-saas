@@ -17,12 +17,12 @@ import java.io.IOException;
 
 @Component
 public class HadoopInit implements InitializingBean{
-	
+
 	private static Logger logger = LoggerFactory.getLogger(HadoopInit.class);
-	
+
 	@Autowired
 	private FileSystem hadoopFs;
-	
+
 	@Autowired
 	protected ImpalaClient impalaClient;
 
@@ -133,7 +133,7 @@ public class HadoopInit implements InitializingBean{
 
 
 	}
-	
+
 	private void createTable(String tableName, String fields, String partition, String delimiter, String location) throws IOException{
 		Path directoryPath = new Path(location);
 		if(!hadoopFs.exists(directoryPath)){
@@ -148,9 +148,9 @@ public class HadoopInit implements InitializingBean{
 			logger.error("error creating table " + tableName, e);
 		}
 	}
-	
+
 	@Override
-	public void afterPropertiesSet() throws Exception {	
+	public void afterPropertiesSet() throws Exception {
 		createImpalaTables();
 	}
 }

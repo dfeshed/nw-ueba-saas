@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.UUID;
 
 
-public class ControllerInvokedUserTaggingTask extends BasicControllerInvokedTask implements Runnable {
+public class ControllerInvokedUserTaggingTask extends BaseControllerInvokedTask implements Runnable {
 
 
     private static final Logger logger = Logger.getLogger(ControllerInvokedUserTaggingTask.class);

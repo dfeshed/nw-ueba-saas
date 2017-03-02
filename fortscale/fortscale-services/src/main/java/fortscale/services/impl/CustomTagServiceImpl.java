@@ -47,13 +47,13 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 	public void update() throws Exception {
 		logger.info("starting tagging process");
 		boolean warmedUpCache = false;
-		for (Tag tag : tagService.getAllTags()) {
+		for (Tag tag : tagService.getAllTags(false)) {
 			logger.info("processing tag - {}", tag.getName());
 			Map<String, Set<String>> tagsToAddToUsers = new HashMap<>();
 			Map<String, Set<String>> tagsToRemoveFromUsers = new HashMap<>();
 			Set<String> users = new HashSet<>();
 			for (String rule : tag.getRules()) {
-				boolean removeFlag = rule.startsWith(deletionSymbol) || !tag.getActive();
+				boolean removeFlag = rule.startsWith(deletionSymbol);
 				String searchTerm = removeFlag ? rule.substring(1) : rule;
 				//if group
 				if (searchTerm.toLowerCase().startsWith(GROUP_PREFIX)) {
