@@ -73,7 +73,7 @@ public class ControllerInvokedUserTaggingTask extends BaseControllerInvokedTask 
         userTaggingTaskPersistenceService.setExecutionStartTime(System.currentTimeMillis());
         notifyTaskStart();
 
-        final String resultsKey = userTaggingTaskPersistenceService.createResultKey(USER_TAGGING_RESULT_ID);
+       userTaggingTaskPersistenceService.createResultKey(USER_TAGGING_RESULT_ID);
 
         /* run task */
         logger.info("Running user tagging task {}", USER_TAGGING_JOB_NAME);
@@ -84,10 +84,11 @@ public class ControllerInvokedUserTaggingTask extends BaseControllerInvokedTask 
 
 
         /* get task results from file */
-        logger.debug("Getting results for task {} with results key {}", USER_TAGGING_JOB_NAME, resultsKey);
-        final UserTaggingTaskPersistencyServiceImpl.UserTaggingResult taskResults = userTaggingTaskPersistenceService.getTaskResults(resultsKey);
+        logger.debug("Getting results for task {} with results key {}", USER_TAGGING_JOB_NAME, USER_TAGGING_RESULT_ID);
+        final UserTaggingTaskPersistencyServiceImpl.UserTaggingResult taskResults = userTaggingTaskPersistenceService.getTaskResults(USER_TAGGING_RESULT_ID);
         if (taskResults == null) {
             notifyTaskDone();
+            logger.error("Got task result null");
             return new UserTaggingTaskResponse(false, -1L, null);
         }
 
