@@ -13,6 +13,6 @@ public interface TagRepositoryCustom {
 	void updateTag(Tag tag);
 	void addTag(Tag tag);
 	void removeTag(Tag tag);
-	List<Tag> findAll();
+	List<Tag> findAll(boolean includeDeleted);
 
 }

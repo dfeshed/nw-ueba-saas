@@ -10,6 +10,7 @@ import fortscale.services.UserTagService;
 import fortscale.services.users.tagging.UserTaggingTaskPersistenceService;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
+import fortscale.utils.spring.SpringPropertiesUtil;
 import fortscale.web.BaseController;
 import fortscale.web.beans.DataBean;
 import fortscale.web.beans.ResponseEntityMessage;
@@ -27,6 +28,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.PostConstruct;
 import javax.validation.Valid;
 import java.util.*;
 
@@ -36,6 +40,9 @@ public class ApiSystemSetupTagsController extends BaseController {
 
     private static final Logger logger = Logger.getLogger(ApiSystemSetupTagsController.class);
     public static final String CHARS_TO_REMOVE_FROM_TAG_RULE = "\n";
+
+    private String COLLECTION_TARGET_DIR;
+    private String USER_HOME_DIR;
     private static final long TIMEOUT_IN_SECONDS = 60;
 
     private static final String SUCCESSFUL_RESPONSE = "Successful";
@@ -65,20 +72,32 @@ public class ApiSystemSetupTagsController extends BaseController {
         this.userTaggingTaskPersistenceService = userTaggingTaskPersistenceService;
     }
 
+    @PostConstruct
+    private void getProperties() {
+        final String homeDirProperty = SpringPropertiesUtil.getProperty("user.home.dir");
+        USER_HOME_DIR = homeDirProperty != null ? homeDirProperty : "/home/cloudera";
+
+        COLLECTION_TARGET_DIR =  USER_HOME_DIR + "/fortscale/fortscale-core/fortscale/fortscale-collection/target";
+
+        final String userName = SpringPropertiesUtil.getProperty("user.name");
+    }
+
+
     /**
      * This method gets all the tags in the tags collection
      */
     @RequestMapping(value="/user_tags", method= RequestMethod.GET)
     @ResponseBody
     @LogException
-    public DataBean<List<Tag>> getAllTags() {
+    public DataBean<List<Tag>> getAllTags(@RequestParam(defaultValue = "false") boolean includeDeleted) {
         logger.info("Getting all tags");
-        List<Tag> result = tagService.getAllTags();
+        List<Tag> result = tagService.getAllTags(includeDeleted);
         DataBean<List<Tag>> response = new DataBean<>();
         response.setData(result);
         response.setTotal(result.size());
         return response;
     }
+
 
     /**
      * This method updates tags in the tags collection and removes newly-inactive tags from the users collection
@@ -91,15 +110,35 @@ public class ApiSystemSetupTagsController extends BaseController {
         for (Tag tag: tags) {
             tag.setRules(sanitizeRules(tag.getRules()));
             if (!tagService.updateTag(tag)) {
-                return new ResponseEntity<>(new ResponseEntityMessage("failed to update tag"), HttpStatus.INTERNAL_SERVER_ERROR);
+                return new ResponseEntity<>(new ResponseEntityMessage("failed to update tag "+tag.getDisplayName()), HttpStatus.INTERNAL_SERVER_ERROR);
                 //if update was successful and tag is no longer active - remove that tag from all users
-            } else if (!tag.getActive()) {
-                String tagName = tag.getName();
-                userTagService.removeTagFromAllUsers(tagName);
+            } else if (tag.getDeleted()) {
+                return new ResponseEntity<>(new ResponseEntityMessage("Can't delete deleted tag "+tag.getDisplayName()), HttpStatus.BAD_REQUEST);
             }
         }
         return new ResponseEntity<>(new ResponseEntityMessage(SUCCESSFUL_RESPONSE), HttpStatus.ACCEPTED);
     }
+
+    @RequestMapping(value="/{name}", method=RequestMethod.DELETE)
+    @LogException
+    public ResponseEntity<ResponseEntityMessage> deleteTag(@PathVariable String name) {
+        if (StringUtils.isBlank(name)){
+            return  new ResponseEntity<ResponseEntityMessage>(new ResponseEntityMessage("Tag '"+name+"' not found"),HttpStatus.NOT_FOUND);
+        }
+
+        if (tagService.getTag(name) == null){
+            return  new ResponseEntity<ResponseEntityMessage>(new ResponseEntityMessage("Tag '"+name+"' not found"),HttpStatus.NOT_FOUND);
+        }
+
+        boolean deletedSuccessfully = tagService.deleteTag(name);
+        if (deletedSuccessfully){
+            return  new ResponseEntity<ResponseEntityMessage>(HttpStatus.OK);
+        } else {
+            return  new ResponseEntity<ResponseEntityMessage>(new ResponseEntityMessage(" Cannot delete tag '"+name+"', check log for more information"),HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
 
     private List<String> sanitizeRules(List<String> rules){
         List<String> sanitizedRules = new ArrayList<>();
@@ -129,6 +168,7 @@ public class ApiSystemSetupTagsController extends BaseController {
         }
         return new ResponseEntity<>(new ResponseEntityMessage(SUCCESSFUL_RESPONSE), HttpStatus.OK);
     }
+
 
     @RequestMapping(value="/search", method=RequestMethod.GET)
     @LogException
