@@ -1,0 +1,20 @@
+// styles specific to removing/altering features
+// in investigate for 11.0
+//
+// This entire file is likely to be removed for 11.1
+
+.disable-meta-usage {
+
+  // Making button appear like not a button is best way to get this done
+  // with minimal impact, which means leaving button styles in place
+  // that have to be forcibly overwritten, hence !importants
+  .rsa-form-button {
+    cursor: default !important;
+    border-color: $formButtonDisabledTypeColor !important;
+  }
+
+  .disabled-meta-breadcrumb-title {
+    padding-bottom: 8px;
+    padding-right: 10px;
+  }
+}

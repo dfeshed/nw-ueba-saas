@@ -8,6 +8,7 @@ import computed, { bool, empty } from 'ember-computed-decorators';
 import { uriEncodeEventQuery } from 'investigate/actions/helpers/query-utils';
 import formatUtil from 'investigate/components/events-table-row/format-util';
 import { metaKeyAlias } from 'investigate/helpers/meta-key-alias';
+import config from 'ember-get-config';
 
 const { $, Component, get, run, set } = Ember;
 
@@ -16,6 +17,10 @@ export default Component.extend({
   classNames: 'rsa-investigate-breadcrumb',
   isAddingMeta: false,
   queryString: '',
+
+  classNameBindings: ['canAddMeta::disable-meta-usage'],
+
+  canAddMeta: config.featureFlags['11.1-enabled'],
 
   /**
    * Hash of meta value alias lookup tables, keyed by meta key.
