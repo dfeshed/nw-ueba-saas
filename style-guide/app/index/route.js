@@ -1,4 +1,4 @@
-import RsaApplicationRoute from 'component-lib/routes/application';
+import Route from 'ember-route';
 
-export default RsaApplicationRoute.extend({
+export default Route.extend({
 });

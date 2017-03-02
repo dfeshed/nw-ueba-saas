@@ -73,12 +73,6 @@ module.exports = function(environment) {
       // Used by the initializer "ready-delay". After animation has been sufficiently tested, either
       // delete the initializer, remove this line, or set value to zero.
       readyDelay: 1250, // 1500,
-
-      // Optional DOM selector for the app's "loading" animation that is displayed until app is ready.
-      // Should match a DOM node in index.html.
-      // Used by app's ready() handler to find & hide the loading animation.
-      appLoadingSelector: '.rsa-application-loading .rsa-loader',
-      bodyLoadingClass: 'rsa-application-loading',
       rootElement: 'body'
     },
     'ember-simple-auth': {
@@ -92,6 +86,9 @@ module.exports = function(environment) {
       refreshTokenKey: 'rsa-oauth2-jwt-refresh-token',
       routeAfterAuthentication: 'protected',
       routeIfAlreadyAuthenticated: 'protected'
+    },
+    'ember-load': {
+      loadingIndicatorClass: 'rsa-application-loading'
     },
     contentSecurityPolicy: {
 

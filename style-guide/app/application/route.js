@@ -1,14 +1,8 @@
-import Ember from 'ember';
-import RsaApplicationRoute from 'component-lib/routes/application';
+import $ from 'jquery';
+import Route from 'ember-route';
+import service from 'ember-service/inject';
 
-const {
-  $,
-  inject: {
-    service
-  }
-} = Ember;
-
-export default RsaApplicationRoute.extend({
+export default Route.extend({
   fatalErrors: service(),
 
   dateFormat: service(),

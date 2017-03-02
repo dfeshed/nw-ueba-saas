@@ -1,7 +1,5 @@
-import Ember from 'ember';
+import Route from 'ember-route';
 import UnauthenticatedRouteMixin from 'ember-simple-auth/mixins/unauthenticated-route-mixin';
-
-const { Route } = Ember;
 
 /**
   Responsible for making the login route available to parent application.

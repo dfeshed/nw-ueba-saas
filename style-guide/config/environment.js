@@ -46,19 +46,16 @@ module.exports = function(environment) {
       // Optional artificial delay (in millisec) for testing the app's loading animation.
       // Used by the initializer "ready-delay". After animation has been sufficiently tested, either
       // delete the initializer, remove this line, or set value to zero.
-      readyDelay: 1250, //1500,
-
-      // Optional DOM selector for the app's "loading" animation that is displayed until app is ready.
-      // Should match a DOM node in index.html.
-      // Used by app's ready() handler to find & hide the loading animation.
-      appLoadingSelector: '.rsa-application-loading .rsa-loader',
-      bodyLoadingClass: 'rsa-application-loading'
+      readyDelay: 1250, //1500
     },
     'ember-simple-auth': {
         authenticate: 'authenticator:authenticator',
         authorizer: 'authorizer:authorizer',
         /* Local storage key that holds the CSRF token returned by the server */
         csrfLocalstorageKey: "rsa-x-csrf-token"
+    },
+    'ember-load': {
+      loadingIndicatorClass: 'rsa-application-loading'
     },
     contentSecurityPolicy: {
       // Allows us to use base64 encoded images in HTML/CSS without firing a CSP error.

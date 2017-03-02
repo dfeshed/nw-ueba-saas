@@ -33,11 +33,10 @@ $applicationLoaderColorAlt: rsa-color(blue);
 $applicationLoaderLabelColor: rsa-color(gray, lightest);
 
 // sass-lint:disable-block indentation
-$applicationBodyBackgroundImage:
-  radial-gradient(circle at 0px 25%, rsa-color(blue, darker, .1) 0, rsa-color(blue, darker, 0) 75%),
-  radial-gradient(circle at 70% 0px, rsa-color(blue, darker, .1) 0, rsa-color(blue, darker, 0) 75%),
-  radial-gradient(circle at 35% 65%, rsa-color(blue, darker, .1) 0, rsa-color(blue, darker, 0) 75%),
-  radial-gradient(circle at 85% 85%, rsa-color(blue, darker, .1) 0, rsa-color(blue, darker, 0) 75%);
+$applicationBodyBackgroundImage: radial-gradient(circle at 0px 25%, rsa-color(blue, darker, .1) 0, rsa-color(blue, darker, 0) 75%),
+radial-gradient(circle at 70% 0px, rsa-color(blue, darker, .1) 0, rsa-color(blue, darker, 0) 75%),
+radial-gradient(circle at 35% 65%, rsa-color(blue, darker, .1) 0, rsa-color(blue, darker, 0) 75%),
+radial-gradient(circle at 85% 85%, rsa-color(blue, darker, .1) 0, rsa-color(blue, darker, 0) 75%);
 
 $applicationBodyBackgroundColor: rsa-color(gray, dark);
 
@@ -63,25 +62,25 @@ body {
   background-size: 100% 100%;
 
   scrollbar-base-color: rsa-color(gray);
-  scrollbar-track-color:  rsa-color(gray, darker);
-  scrollbar-arrow-color:  rsa-color(gray);
+  scrollbar-track-color: rsa-color(gray, darker);
+  scrollbar-arrow-color: rsa-color(gray);
 
-  &.rsa-application-loading {
-    .rsa-loader{
+  .rsa-application-loading {
+    &.rsa-loader {
       margin: 0 auto;
       display: block;
       position: relative;
       top: 40vh;
       @include rsa-layer(above);
 
-      .rsa-loader__wheel{
+      .rsa-loader__wheel {
         border-color: $applicationLoaderColor;
         border-top-color: $applicationLoaderColorAlt;
         @include rsa-layer(above);
       }
 
       &.hide {
-        display:none;
+        display: none;
       }
     }
   }
@@ -101,7 +100,6 @@ body {
 ::-webkit-scrollbar-track {
   background: rsa-color(gray, darkest, $rsa-translucent);
 }
-
 
 @import 'application-header';
 @import 'application-content';

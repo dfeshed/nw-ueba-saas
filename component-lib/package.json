@@ -32,6 +32,7 @@
     "ember-computed-decorators": "0.3.0",
     "ember-get-config": "0.2.1",
     "ember-i18n": "4.3.2",
+    "ember-load": "0.0.11",
     "ember-math-helpers": "2.0.5",
     "ember-power-select": "1.5.0-beta.0",
     "ember-radio-button": "1.1.1",
