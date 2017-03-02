@@ -10,7 +10,6 @@ import fortscale.services.UserTagService;
 import fortscale.services.users.tagging.UserTaggingTaskPersistenceService;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
-import fortscale.utils.spring.SpringPropertiesUtil;
 import fortscale.web.BaseController;
 import fortscale.web.beans.DataBean;
 import fortscale.web.beans.ResponseEntityMessage;
@@ -24,13 +23,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.PostConstruct;
 import javax.validation.Valid;
 import java.util.*;
 
@@ -41,8 +35,6 @@ public class ApiSystemSetupTagsController extends BaseController {
     private static final Logger logger = Logger.getLogger(ApiSystemSetupTagsController.class);
     public static final String CHARS_TO_REMOVE_FROM_TAG_RULE = "\n";
 
-    private String COLLECTION_TARGET_DIR;
-    private String USER_HOME_DIR;
     private static final long TIMEOUT_IN_SECONDS = 60;
 
     private static final String SUCCESSFUL_RESPONSE = "Successful";
@@ -71,17 +63,6 @@ public class ApiSystemSetupTagsController extends BaseController {
         this.simpMessagingTemplate = simpMessagingTemplate;
         this.userTaggingTaskPersistenceService = userTaggingTaskPersistenceService;
     }
-
-    @PostConstruct
-    private void getProperties() {
-        final String homeDirProperty = SpringPropertiesUtil.getProperty("user.home.dir");
-        USER_HOME_DIR = homeDirProperty != null ? homeDirProperty : "/home/cloudera";
-
-        COLLECTION_TARGET_DIR =  USER_HOME_DIR + "/fortscale/fortscale-core/fortscale/fortscale-collection/target";
-
-        final String userName = SpringPropertiesUtil.getProperty("user.name");
-    }
-
 
     /**
      * This method gets all the tags in the tags collection
