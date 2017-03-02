@@ -2,7 +2,6 @@ package fortscale.services.users.tagging;
 
 
 import java.util.Map;
-import java.util.UUID;
 
 public interface UserTaggingTaskPersistenceService {
     UserTaggingTaskPersistencyServiceImpl.UserTaggingResult getTaskResults(String resultsKey);
@@ -17,7 +16,7 @@ public interface UserTaggingTaskPersistenceService {
 
     void setExecutionStartTime(Long executionStartTime);
 
-    String createResultKey(UUID resultsId);
+    String createResultKey(String resultsId);
 
     Boolean isMonitorFileDaily();
 }

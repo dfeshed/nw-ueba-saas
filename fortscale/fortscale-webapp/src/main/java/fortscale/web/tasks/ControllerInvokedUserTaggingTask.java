@@ -73,12 +73,11 @@ public class ControllerInvokedUserTaggingTask extends BaseControllerInvokedTask 
         userTaggingTaskPersistenceService.setExecutionStartTime(System.currentTimeMillis());
         notifyTaskStart();
 
-        UUID resultsId = UUID.fromString(USER_TAGGING_RESULT_ID);
-        final String resultsKey = userTaggingTaskPersistenceService.createResultKey(resultsId);
+        final String resultsKey = userTaggingTaskPersistenceService.createResultKey(USER_TAGGING_RESULT_ID);
 
         /* run task */
         logger.info("Running user tagging task {}", USER_TAGGING_JOB_NAME);
-        if (!runCollectionJob(USER_TAGGING_JOB_NAME, resultsId, USER_TAGGING_JOB_GROUP)) {
+        if (!runCollectionJob(USER_TAGGING_JOB_NAME, USER_TAGGING_RESULT_ID, USER_TAGGING_JOB_GROUP)) {
             notifyTaskDone();
             return new UserTaggingTaskResponse(false, -1L, null);
         }

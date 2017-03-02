@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
-import java.util.UUID;
 
 @Service
 public class UserTaggingTaskPersistencyServiceImpl implements UserTaggingTaskPersistenceService {
@@ -55,11 +54,7 @@ public class UserTaggingTaskPersistencyServiceImpl implements UserTaggingTaskPer
     }
 
     @Override
-    public String createResultKey(UUID resultsId) {
-        return createResultKey(resultsId.toString());
-    }
-
-    private String createResultKey(String resultsId) {
+    public String createResultKey(String resultsId) {
         return  String.format("%s%s%s", RESULTS_KEY_NAME, applicationConfigurationService.getKeyDelimiter(), resultsId);
     }
 
