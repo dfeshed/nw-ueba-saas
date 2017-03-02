@@ -4,6 +4,7 @@ import fortscale.collection.configuration.CollectionPropertiesResolver;
 import fortscale.utils.hdfs.partition.PartitionStrategy;
 import fortscale.utils.hdfs.partition.PartitionsUtils;
 import fortscale.utils.impala.ImpalaClient;
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.slf4j.Logger;
@@ -19,8 +20,7 @@ import java.io.IOException;
 public class HadoopInit implements InitializingBean{
 	
 	private static Logger logger = LoggerFactory.getLogger(HadoopInit.class);
-	
-	@Autowired
+
 	private FileSystem hadoopFs;
 	
 	@Autowired
@@ -138,7 +138,7 @@ public class HadoopInit implements InitializingBean{
 		Path directoryPath = new Path(location);
 		if(!hadoopFs.exists(directoryPath)){
 			hadoopFs.mkdirs(directoryPath);
-			hadoopFs.setOwner(directoryPath,hdfsUserAccount,hdfsUserGroup);
+			hadoopFs.setOwner(directoryPath, hdfsUserAccount, hdfsUserGroup);
 		}
 		try{
 			impalaClient.createTable(tableName, fields, partition, delimiter, location, true);
@@ -148,9 +148,26 @@ public class HadoopInit implements InitializingBean{
 			logger.error("error creating table " + tableName, e);
 		}
 	}
-	
+
+	/***
+	 *
+	 * This method initializes the Hadoop FS
+	 *
+	 * @return
+	 * @throws IOException
+	 */
+	private FileSystem getHadoopFileSystem() throws IOException {
+		Configuration hadoopFSConf = new Configuration();
+		hadoopFSConf.addResource(new Path("/etc/hadoop/conf/core-site.xml"));
+		hadoopFSConf.addResource(new Path("/etc/hadoop/conf/hdfs-site.xml"));
+		hadoopFSConf.set("fs.hdfs.impl", org.apache.hadoop.hdfs.DistributedFileSystem.class.getName());
+		hadoopFSConf.set("fs.file.impl", org.apache.hadoop.fs.LocalFileSystem.class.getName());
+		return FileSystem.get(hadoopFSConf);
+	}
+
 	@Override
-	public void afterPropertiesSet() throws Exception {	
+	public void afterPropertiesSet() throws Exception {
+		hadoopFs = getHadoopFileSystem();
 		createImpalaTables();
 	}
 }
