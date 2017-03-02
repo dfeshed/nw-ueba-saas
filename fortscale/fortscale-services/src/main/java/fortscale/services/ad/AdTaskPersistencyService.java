@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.UUID;
 
 public interface AdTaskPersistencyService {
-
     Map<String, String> getTaskResults(String resultsKey);
 
     void writeTaskResults(String dataSource, String taskName, String resultsId, boolean result);
