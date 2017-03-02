@@ -24,7 +24,7 @@ public class Tag extends AbstractDocument{
 	public static final String displayNameField = "displayName";
 	public static final String createsIndicatorField = "createsIndicator";
 	public static final String rulesField = "rules";
-	public static final String activeField = "active";
+	public static final String deletedField = "deleted";
 	public static final String isAssignableField = "isAssignable";
 	public static final String isPredefinedField = "isPredefined";
 
@@ -39,7 +39,7 @@ public class Tag extends AbstractDocument{
 		displayName = name;
 		createsIndicator = false;
 		rules = new ArrayList<>();
-		active = true;
+		deleted = false;
 		isAssignable = true;
 		isPredefined = false;
 	}
@@ -50,7 +50,7 @@ public class Tag extends AbstractDocument{
 		this.isAssignable = isAssignable;
 		createsIndicator = setCreatesIndicator;
 		rules = new ArrayList<>();
-		active = true;
+		deleted = false;
 		this.isPredefined = isPredefined;
 	}
 
@@ -64,7 +64,7 @@ public class Tag extends AbstractDocument{
 	private Boolean createsIndicator;
 
 	@NotNull
-	private Boolean active;
+	private Boolean deleted;
 
 	@NotNull
 	private Boolean isAssignable;
@@ -106,12 +106,12 @@ public class Tag extends AbstractDocument{
 		this.rules = rules;
 	}
 
-	public Boolean getActive() {
-		return active;
+	public Boolean getDeleted() {
+		return deleted;
 	}
 
-	public void setActive(Boolean active) {
-		this.active = active;
+	public void setDeleted(Boolean deleted) {
+		this.deleted = deleted;
 	}
 
 	public Boolean getIsAssignable() {
