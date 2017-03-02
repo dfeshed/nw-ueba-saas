@@ -67,6 +67,9 @@ public class UserTaggingTaskPersistencyServiceImpl implements UserTaggingTaskPer
         private boolean success;
         private Map<String, Long> usersAffected;
 
+        public UserTaggingResult() {
+        }
+
         public UserTaggingResult(boolean success, Map<String, Long> usersAffected) {
             this.success = success;
             this.usersAffected = usersAffected;
