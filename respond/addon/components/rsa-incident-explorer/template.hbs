@@ -62,7 +62,11 @@
       {{rsa-storyline}}
     </div>
     <vbox class="rsa-incident-explorer__aside">
-      <box class="rsa-portlet entities {{if isEntitiesPanelOpen 'isOpen'}}">Entities</box>
+      <box class="rsa-portlet entities {{if isEntitiesPanelOpen 'isOpen'}}">
+        {{#if isEntitiesPanelOpen}}
+          {{rsa-entity-graph}}
+        {{/if}}
+      </box>
       <box class="rsa-portlet events {{if isEventsPanelOpen 'isOpen'}}">Events</box>
       <box class="rsa-portlet journal {{if isJournalPanelOpen 'isOpen'}}">Journal</box>
     </vbox>

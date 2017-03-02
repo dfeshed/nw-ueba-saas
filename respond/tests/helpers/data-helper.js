@@ -4,14 +4,19 @@ import { incidentDetails } from '../server/data';
 
 const { run, RSVP } = Ember;
 
+function _dispatchAction(redux, action) {
+  run(() => {
+    redux.dispatch(action);
+  });
+}
+
 function _dispatchFetchIncidentDetails(redux, payload) {
   const promise = new RSVP.Promise(function(resolve) {
     resolve(payload);
   });
-  run(() => {
-    redux.dispatch({ type: ACTION_TYPES.FETCH_INCIDENT_DETAILS, promise });
-  });
+  _dispatchAction(redux, { type: ACTION_TYPES.FETCH_INCIDENT_DETAILS, promise });
 }
+
 
 class DataHelper {
   constructor(redux) {
@@ -21,23 +26,23 @@ class DataHelper {
     _dispatchFetchIncidentDetails(this.redux, payload);
   }
   initializeIncident(incidentId) {
-    this.redux.dispatch({
+    _dispatchAction(this.redux, {
       type: ACTION_TYPES.INITIALIZE_INCIDENT,
       incidentId
     });
   }
   toggleIncidentEntitiesPanel() {
-    this.redux.dispatch({
+    _dispatchAction(this.redux, {
       type: ACTION_TYPES.TOGGLE_ENTITIES_PANEL
     });
   }
   toggleIncidentEventsPanel() {
-    this.redux.dispatch({
+    _dispatchAction(this.redux, {
       type: ACTION_TYPES.TOGGLE_EVENTS_PANEL
     });
   }
   toggleIncidentJournalPanel() {
-    this.redux.dispatch({
+    _dispatchAction(this.redux, {
       type: ACTION_TYPES.TOGGLE_JOURNAL_PANEL
     });
   }

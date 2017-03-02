@@ -8,8 +8,10 @@ module('Unit | Mixin | storyline selector');
 test('storypoints selector works', function(assert) {
 
   const state = {
-    incident: {
-      storyline: storyline.relatedIndicators
+    respond: {
+      incident: {
+        storyline: storyline.relatedIndicators
+      }
     }
   };
 

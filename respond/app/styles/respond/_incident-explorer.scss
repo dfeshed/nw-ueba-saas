@@ -96,6 +96,10 @@ $incidentExplorerHeaderHeight: 120px;
       border: 1px solid rsa-color(gray,light,$rsa-translucent);
       padding: rsa-whitespace(less) rsa-whitespace();
     }
+
+    .rsa-force-layout {
+      @include rsa-fill-abs();
+    }
   }
 
   /* Inserts small vertical separation between siblings */

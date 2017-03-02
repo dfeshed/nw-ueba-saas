@@ -2,9 +2,9 @@ import List from 'respond/components/rsa-list/component';
 import connect from 'ember-redux/components/connect';
 import { storypoints } from 'respond/selectors/storyline';
 
-const stateToComputed = ({ respond }) => {
+const stateToComputed = (state) => {
   return {
-    items: storypoints(respond)
+    items: storypoints(state)
   };
 };
 
