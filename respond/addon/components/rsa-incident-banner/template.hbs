@@ -81,7 +81,10 @@
   <p class="categories">
     <label>Categories:</label>
     {{#each info.categories as |category|}}
-      <span class="category">{{category}}</span>
+      <span class="category">
+        <span class="parent">{{category.parent}}:</span>
+        <span class="name">{{category.name}}</span>
+      </span>
     {{/each}}
   </p>
 </section>

@@ -43,6 +43,10 @@
     .source,
     .category {
 
+      .parent {
+        padding-right: rsa-whitespace(least);
+      }
+
       &:not(:last-of-type) {
         padding-right: rsa-whitespace(least);
 

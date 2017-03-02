@@ -27,7 +27,8 @@ export default {
     'g00gle.com'
   ],
   'categories': [
-    'Malware', 'Command & Control'
+    { parent: 'Malware', name: 'Command & Control', id: '555179bce4b001922cf620b2' },
+    { parent: 'Misuse', name: 'Privilege abuse', id: '555179bce4b001922cf620c7' }
   ],
   notes: [
     {
