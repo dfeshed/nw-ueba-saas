@@ -8,6 +8,7 @@ import fortscale.services.ActiveDirectoryService;
 import fortscale.services.TagService;
 import fortscale.services.UserTagService;
 import fortscale.services.users.tagging.UserTaggingTaskPersistenceService;
+import fortscale.services.users.tagging.UserTaggingTaskPersistencyServiceImpl;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.BaseController;
@@ -220,8 +221,14 @@ public class ApiSystemSetupTagsController extends BaseController {
         if (isRunning()) {
             return new UserTaggingExecutionStatus(-1l, lastUserTaggingExecutionStartTime, true, null);
         } else {
-            return new UserTaggingExecutionStatus(userTaggingTaskPersistenceService.getLastExecutionTime(), -1l,
-                    false, userTaggingTaskPersistenceService.getTaskResults(ControllerInvokedUserTaggingTask.USER_TAGGING_RESULT_ID).getUsersAffected());
+            UserTaggingTaskPersistencyServiceImpl.UserTaggingResult taskResults = userTaggingTaskPersistenceService.getTaskResults(ControllerInvokedUserTaggingTask.USER_TAGGING_RESULT_ID);
+            if (taskResults!= null) {
+                return new UserTaggingExecutionStatus(userTaggingTaskPersistenceService.getLastExecutionTime(), -1l,
+                        false, taskResults.getUsersAffected());
+            }else{
+                return new UserTaggingExecutionStatus(userTaggingTaskPersistenceService.getLastExecutionTime(), -1l,
+                        false, null);
+            }
         }
     }
 

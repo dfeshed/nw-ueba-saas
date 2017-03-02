@@ -9,7 +9,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.UUID;
 
 /**
  * Created by alexp on 16/02/2017.
@@ -24,7 +23,7 @@ public abstract class BaseControllerInvokedTask {
      * @param resultsId the random id that will be given to this job execution results in application configuration
      * @return true if the execution finished successfully, false otherwise
      */
-    protected boolean runCollectionJob(String jobName, UUID resultsId, String jobGroup) {
+    protected boolean runCollectionJob(String jobName, String resultsId, String jobGroup) {
         Process process;
         try {
             final String scriptPath = ApiActiveDirectoryController.COLLECTION_TARGET_DIR + "/resources/scripts/runAdTask.sh"; // this scripts runs the fetch/etl
