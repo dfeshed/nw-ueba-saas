@@ -4,7 +4,6 @@ import { promiseRequest } from 'streaming-data/services/data-access/requests';
 import { CANNED_FILTER_TYPES_BY_NAME } from 'respond/utils/canned-filter-types';
 import { SORT_TYPES_BY_NAME } from 'respond/utils/sort-types';
 import FilterQuery from 'respond/utils/filter-query';
-import Indicator from 'respond/utils/indicator/indicator';
 
 const {
   Object: EmberObject,
@@ -205,23 +204,7 @@ IncidentsAPI.reopenClass({
       method: 'queryRecord',
       modelName: 'storyline',
       query: query.toJSON()
-    })
-      .then((response) => {
-        let { data: { relatedIndicators = [] } } = response;
-
-        // wrap the `indicator` attr of each array member
-        relatedIndicators.forEach((item) => {
-          item.indicator = Indicator.create(item.indicator);
-        });
-
-        // sort by the indicator timestamps (ascending)
-        relatedIndicators = relatedIndicators.sortBy('indicator.timestamp');
-
-        // flatten `data` by one level
-        response.data = relatedIndicators;
-
-        return response;
-      });
+    });
   },
 
   /**

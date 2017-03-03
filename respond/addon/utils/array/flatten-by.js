@@ -17,7 +17,7 @@
  * @returns {[]}
  * @public
  */
-export default function arrayFlattenBy(arr = [], attrName) {
-  const arrays = arr.mapBy(attrName);
+export default function arrayFlattenBy(arr, attrName) {
+  const arrays = (arr || []).mapBy(attrName);
   return [].concat(...arrays);
 }
