@@ -1,8 +1,12 @@
-import Ember from 'ember';
-
-const { Route } = Ember;
+import Route from 'ember-route';
+import config from 'ember-get-config';
 
 export default Route.extend({
+  beforeModel() {
+    if (config.featureFlags['11.1-enabled']) {
+      window.location.href = '/investigation';
+    }
+  },
   model() {
     // Expose the parent route's state data to this child route's template.
     return this.modelFor('application');

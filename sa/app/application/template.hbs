@@ -20,13 +20,21 @@
   {{#rsa-application-header version=version title=title}}
     {{#if features.showRespondRoute}}
       {{#if accessControl.hasRespondAccess}}
-        {{#link-to "protected.respond" class="rsa-header-nav-respond js-test-nav-respond-link"}}{{t "respond.title"}}{{/link-to}}
+        {{#link-to "protected.respond" class="rsa-header-nav-respond js-test-nav-respond-link"}}
+          {{t "respond.title"}}
+        {{/link-to}}
       {{/if}}
     {{/if}}
 
     {{#if features.showInvestigateRoute}}
       {{#if accessControl.hasInvestigateAccess}}
-        {{#link-to "protected.investigate" class="rsa-header-nav-investigate js-test-nav-investigate-link"}}{{t "investigate.title"}}{{/link-to}}
+        {{#if linkTo11}}
+          {{#link-to "protected.investigate" class="rsa-header-nav-investigate js-test-nav-investigate-link"}}
+            {{t "investigate.title"}}
+          {{/link-to}}
+        {{else}}
+          <a href="/investigation" class="rsa-header-nav-investigate js-test-nav-investigate-link">{{t "investigate.title"}}</a>
+        {{/if}}
       {{/if}}
     {{/if}}
 
@@ -35,11 +43,11 @@
     {{/if}}
 
     {{#if accessControl.hasConfigAccess}}
-      <a href={{accessControl.configUrl}} class="rsa-header-nav-configure js-test-nav-configure-link">{{t "config.title"}}</a>
+      <a href="{{accessControl.configUrl}}" class="rsa-header-nav-configure js-test-nav-configure-link">{{t "config.title"}}</a>
     {{/if}}
 
     {{#if accessControl.hasAdminAccess}}
-      <a href={{accessControl.adminUrl}} class="rsa-header-nav-admin js-test-nav-admin-link">{{t "admin.title"}}</a>
+      <a href="{{accessControl.adminUrl}}" class="rsa-header-nav-admin js-test-nav-admin-link">{{t "admin.title"}}</a>
     {{/if}}
   {{/rsa-application-header}}
 
