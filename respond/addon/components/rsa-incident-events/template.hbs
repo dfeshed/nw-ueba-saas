@@ -1,0 +1,18 @@
+{{#rsa-data-table
+  items=items
+  columnsConfig=columnsConfig
+  fitToWidth=false
+}}
+  {{rsa-data-table/header}}
+  {{#rsa-data-table/body as |item index column|}}
+
+    {{#rsa-data-table/body-cell item=item index=index column=column}}
+      {{#if (eq column.field 'time')}}
+        {{rsa-content-datetime timestamp=item.time}}
+      {{else}}
+        {{get item column.field}}
+      {{/if}}
+    {{/rsa-data-table/body-cell}}
+
+  {{/rsa-data-table/body}}
+{{/rsa-data-table}}

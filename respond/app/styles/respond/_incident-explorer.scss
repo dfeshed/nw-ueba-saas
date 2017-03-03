@@ -97,7 +97,9 @@ $incidentExplorerHeaderHeight: 120px;
       padding: rsa-whitespace(less) rsa-whitespace();
     }
 
-    .rsa-force-layout {
+    .rsa-force-layout,
+    .rsa-data-table,
+    .rsa-incident-journal {
       @include rsa-fill-abs();
     }
   }

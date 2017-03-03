@@ -1,0 +1,16 @@
+<header class="rsa-incident-journal-entry__header">
+  <span class="rsa-incident-journal-entry__author">
+    {{entry.author}}
+  </span>
+  <span class="rsa-incident-journal-entry__created">
+    {{rsa-content-datetime timestamp=entry.created asTimeAgo=false displayTime=true displayDate=true}}
+  </span>
+</header>
+<section class="rsa-incident-journal-entry__note">
+  {{entry.notes}}
+</section>
+{{#if entry.milestone}}
+  <footer class="rsa-incident-journal-entry__milestone">
+    Milestone: {{entry.milestone}}
+  </footer>
+{{/if}}

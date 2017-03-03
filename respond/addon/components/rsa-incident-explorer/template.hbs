@@ -67,8 +67,16 @@
           {{rsa-entity-graph}}
         {{/if}}
       </box>
-      <box class="rsa-portlet events {{if isEventsPanelOpen 'isOpen'}}">Events</box>
-      <box class="rsa-portlet journal {{if isJournalPanelOpen 'isOpen'}}">Journal</box>
+      <box class="rsa-portlet events {{if isEventsPanelOpen 'isOpen'}}">
+        {{#if isEventsPanelOpen}}
+          {{rsa-incident-events}}
+        {{/if}}
+      </box>
+      <box class="rsa-portlet journal {{if isJournalPanelOpen 'isOpen'}}">
+        {{#if isJournalPanelOpen}}
+          {{rsa-incident-journal}}
+        {{/if}}
+      </box>
     </vbox>
   {{/if}}
 </box>
