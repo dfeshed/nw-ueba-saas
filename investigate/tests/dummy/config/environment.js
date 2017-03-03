@@ -33,7 +33,7 @@ module.exports = function(environment) {
       //
       // Set the trailing boolean to true if you want enable
       // the 11.1+ features in prod
-      '11.1-enabled': environment !== 'production' ? true : false // < change last boolean to true/false to enable/disable in prod
+      '11.1-enabled': environment !== 'production' ? true : true // < change last boolean to true/false to enable/disable in prod
     },
 
     APP: {
