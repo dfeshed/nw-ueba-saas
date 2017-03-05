@@ -34,7 +34,7 @@ public class UserTaggingTaskPersistencyServiceImpl implements UserTaggingTaskPer
         String resultsKey = createResultKey(resultsId);
         logger.debug("Inserting status to application configuration in key {}", resultsKey);
         UserTaggingResult userTaggingResult = new UserTaggingResult(result, deltaPerTag);
-        applicationConfigurationService.insertConfigItemAsObject(resultsKey, userTaggingResult);
+        applicationConfigurationService.insertOrUpdateConfigItemAsObject(resultsKey, userTaggingResult);
     }
 
     public Long getLastExecutionTime() {
