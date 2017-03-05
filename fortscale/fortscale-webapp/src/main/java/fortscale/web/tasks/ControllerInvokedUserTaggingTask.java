@@ -7,7 +7,6 @@ import fortscale.web.services.ActivityMonitoringExecutorService;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 import java.util.Map;
-import java.util.UUID;
 
 
 public class ControllerInvokedUserTaggingTask extends BaseControllerInvokedTask implements Runnable {
@@ -20,6 +19,8 @@ public class ControllerInvokedUserTaggingTask extends BaseControllerInvokedTask 
     private static final String USER_TAGGING_JOB_NAME = "User";
     private static final String USER_TAGGING_JOB_GROUP = "Tagging";
     public static final String USER_TAGGING_RESULT_ID = "result";
+    public static final boolean SUCCESS_FALSE = false;
+    public static final long NO_EXECUTION_TIME = -1L;
 
     private final String responseDestination;
     private final UserTaggingTaskPersistenceService userTaggingTaskPersistenceService;
@@ -58,7 +59,7 @@ public class ControllerInvokedUserTaggingTask extends BaseControllerInvokedTask 
             return response.success;
         } catch (Exception e) {
             logger.error("Failed to handle task {}.", USER_TAGGING_JOB_NAME, e);
-            simpMessagingTemplate.convertAndSend(responseDestination, new UserTaggingTaskResponse(false, -1L, null));
+            simpMessagingTemplate.convertAndSend(responseDestination, new UserTaggingTaskResponse(SUCCESS_FALSE, NO_EXECUTION_TIME));
             return false;
         }
     }
@@ -79,7 +80,7 @@ public class ControllerInvokedUserTaggingTask extends BaseControllerInvokedTask 
         logger.info("Running user tagging task {}", USER_TAGGING_JOB_NAME);
         if (!runCollectionJob(USER_TAGGING_JOB_NAME, USER_TAGGING_RESULT_ID, USER_TAGGING_JOB_GROUP)) {
             notifyTaskDone();
-            return new UserTaggingTaskResponse(false, -1L, null);
+            return new UserTaggingTaskResponse(SUCCESS_FALSE, NO_EXECUTION_TIME);
         }
 
 
@@ -89,7 +90,7 @@ public class ControllerInvokedUserTaggingTask extends BaseControllerInvokedTask 
         if (taskResults == null) {
             notifyTaskDone();
             logger.error("Got task result null");
-            return new UserTaggingTaskResponse(false, -1L, null);
+            return new UserTaggingTaskResponse(SUCCESS_FALSE, NO_EXECUTION_TIME);
         }
 
         /* process results and understand if task finished successfully */
@@ -97,7 +98,7 @@ public class ControllerInvokedUserTaggingTask extends BaseControllerInvokedTask 
         if (success == null) {
             logger.error("Invalid output for task {} . success status is missing. Task Failed", USER_TAGGING_JOB_NAME);
             notifyTaskDone();
-            return new UserTaggingTaskResponse(false, -1L, null);
+            return new UserTaggingTaskResponse(SUCCESS_FALSE, NO_EXECUTION_TIME);
         }
 
         notifyTaskDone();
@@ -122,6 +123,11 @@ public class ControllerInvokedUserTaggingTask extends BaseControllerInvokedTask 
             this.success = success;
             this.lastExecutionTime = lastExecutionTime;
             this.taggingResult = taggingResult;
+        }
+
+        public UserTaggingTaskResponse(boolean success, Long lastExecutionTime) {
+            this.success = success;
+            this.lastExecutionTime = lastExecutionTime;
         }
 
         public boolean isSuccess() {
