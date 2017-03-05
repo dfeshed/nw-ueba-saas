@@ -18,7 +18,7 @@ public class ControllerInvokedUserTaggingTask extends BaseControllerInvokedTask 
 
     private static final String USER_TAGGING_JOB_NAME = "User";
     private static final String USER_TAGGING_JOB_GROUP = "Tagging";
-    public static final String USER_TAGGING_RESULT_ID = "result";
+
     public static final boolean SUCCESS_FALSE = false;
     public static final long NO_EXECUTION_TIME = -1L;
 
@@ -74,19 +74,19 @@ public class ControllerInvokedUserTaggingTask extends BaseControllerInvokedTask 
         userTaggingTaskPersistenceService.setExecutionStartTime(System.currentTimeMillis());
         notifyTaskStart();
 
-       userTaggingTaskPersistenceService.createResultKey(USER_TAGGING_RESULT_ID);
+       userTaggingTaskPersistenceService.createResultKey(UserTaggingTaskPersistenceService.USER_TAGGING_RESULT_ID);
 
         /* run task */
         logger.info("Running user tagging task {}", USER_TAGGING_JOB_NAME);
-        if (!runCollectionJob(USER_TAGGING_JOB_NAME, USER_TAGGING_RESULT_ID, USER_TAGGING_JOB_GROUP)) {
+        if (!runCollectionJob(USER_TAGGING_JOB_NAME, UserTaggingTaskPersistenceService.USER_TAGGING_RESULT_ID, USER_TAGGING_JOB_GROUP)) {
             notifyTaskDone();
             return new UserTaggingTaskResponse(SUCCESS_FALSE, NO_EXECUTION_TIME);
         }
 
 
         /* get task results from file */
-        logger.debug("Getting results for task {} with results key {}", USER_TAGGING_JOB_NAME, USER_TAGGING_RESULT_ID);
-        final UserTaggingTaskPersistencyServiceImpl.UserTaggingResult taskResults = userTaggingTaskPersistenceService.getTaskResults(USER_TAGGING_RESULT_ID);
+        logger.debug("Getting results for task {} with results key {}", USER_TAGGING_JOB_NAME, UserTaggingTaskPersistenceService.USER_TAGGING_RESULT_ID);
+        final UserTaggingTaskPersistencyServiceImpl.UserTaggingResult taskResults = userTaggingTaskPersistenceService.getTaskResults(UserTaggingTaskPersistenceService.USER_TAGGING_RESULT_ID);
         if (taskResults == null) {
             notifyTaskDone();
             logger.error("Got task result null");

@@ -57,6 +57,9 @@ public class UserTaggingJob extends FortscaleJob {
 
 		// ID for deployment wizard user tagging results
 		resultsId = jobDataMapExtension.getJobDataMapStringValue(map, "resultsId", false);
+		if (StringUtils.isEmpty(resultsId)){
+		    resultsId = UserTaggingTaskPersistenceService.USER_TAGGING_RESULT_ID;
+        }
 	}
 
 	@Override
