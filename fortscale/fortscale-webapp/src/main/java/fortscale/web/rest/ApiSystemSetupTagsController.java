@@ -226,7 +226,7 @@ public class ApiSystemSetupTagsController extends BaseController {
             lastExecutionStartTime = lastUserTaggingExecutionStartTime;
             isRunning = true;
         } else {
-            UserTaggingTaskPersistencyServiceImpl.UserTaggingResult taskResults = userTaggingTaskPersistenceService.getTaskResults(ControllerInvokedUserTaggingTask.USER_TAGGING_RESULT_ID);
+            UserTaggingTaskPersistencyServiceImpl.UserTaggingResult taskResults = userTaggingTaskPersistenceService.getTaskResults(UserTaggingTaskPersistenceService.USER_TAGGING_RESULT_ID);
             lastExecutionFinishTime = userTaggingTaskPersistenceService.getLastExecutionTime();
             isRunning = false;
             if (taskResults!= null) {
