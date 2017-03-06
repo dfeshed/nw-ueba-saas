@@ -50,4 +50,8 @@ public abstract class AbstractDataRetrieverConf implements FactoryConfig {
 	public PatternReplacementConf getPatternReplacementConf() {
 		return patternReplacementConf;
 	}
+
+	public void setPatternReplacementConf(PatternReplacementConf patternReplacementConf) {
+		this.patternReplacementConf = patternReplacementConf;
+	}
 }
