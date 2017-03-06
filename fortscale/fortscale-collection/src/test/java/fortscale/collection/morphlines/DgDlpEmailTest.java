@@ -2,22 +2,17 @@ package fortscale.collection.morphlines;
 
 import fortscale.utils.impala.ImpalaParser;
 import fortscale.utils.properties.PropertiesResolver;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.List;
 
-/**
- * Created by idanp on 10/5/2016.
- */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath*:META-INF/spring/collection-context-test-light.xml"})
-public class DGVerdasysEmailTest {
+@Ignore
+public class DgDlpEmailTest {
 
 
 	private MorphlinesTester morphlineTester = new MorphlinesTester();
@@ -31,7 +26,6 @@ public class DGVerdasysEmailTest {
 
 	@Before
 	public void setUp() throws Exception {
-
 
 		PropertiesResolver propertiesResolver = new PropertiesResolver("/META-INF/fortscale-collection-test.properties");
 		String kafkaMessageFields = propertiesResolver.getProperty("kafka.verdasys.message.record.fields");
