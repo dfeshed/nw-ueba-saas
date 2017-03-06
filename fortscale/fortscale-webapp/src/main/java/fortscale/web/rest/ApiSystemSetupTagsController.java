@@ -18,6 +18,10 @@ import fortscale.domain.rest.SystemSetupFileConf;
 import fortscale.web.rest.Utils.TaskAction;
 import fortscale.web.services.TaskService;
 import fortscale.web.tasks.ControllerInvokedUserTaggingTask;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -32,6 +36,7 @@ import java.util.*;
 
 @Controller
 @RequestMapping("/api/tags")
+@Api(value="/api/tags", description="This resource manage the tags",produces = "JSON", protocols = "HTTP,HTTPS")
 public class ApiSystemSetupTagsController extends BaseController {
 
     private static final Logger logger = Logger.getLogger(ApiSystemSetupTagsController.class);
@@ -72,6 +77,7 @@ public class ApiSystemSetupTagsController extends BaseController {
     @RequestMapping(value="/user_tags", method= RequestMethod.GET)
     @ResponseBody
     @LogException
+    @ApiOperation(value = "Get all the tags exists in the system", response = DataBean.class)
     public DataBean<List<Tag>> getAllTags(@RequestParam(defaultValue = "false") boolean includeDeleted) {
         logger.info("Getting all tags");
         List<Tag> result = tagService.getAllTags(includeDeleted);
@@ -88,6 +94,7 @@ public class ApiSystemSetupTagsController extends BaseController {
      */
     @RequestMapping(value="/user_tags", method=RequestMethod.POST)
     @LogException
+    @ApiOperation(value = "Update tags")
     public ResponseEntity<ResponseEntityMessage> updateTags(@RequestBody @Valid List<Tag> tags) {
         logger.info("Updating {} tags", tags.size());
         for (Tag tag: tags) {
@@ -104,6 +111,7 @@ public class ApiSystemSetupTagsController extends BaseController {
 
     @RequestMapping(value="/{name}", method=RequestMethod.DELETE)
     @LogException
+    @ApiOperation(value = "Delete tag")
     public ResponseEntity<ResponseEntityMessage> deleteTag(@PathVariable String name) {
         if (StringUtils.isBlank(name)){
             return  new ResponseEntity<ResponseEntityMessage>(new ResponseEntityMessage("Tag '"+name+"' not found"),HttpStatus.NOT_FOUND);
@@ -171,17 +179,20 @@ public class ApiSystemSetupTagsController extends BaseController {
     }
 
     @RequestMapping(value = "/save_tagging_path", method = RequestMethod.PUT)
+    @ApiOperation(value = "Save the tagging file path and mode")
     public ResponseEntity<ResponseEntityMessage> savePath(@RequestBody SystemSetupFileConf request) {
         userTaggingTaskPersistenceService.saveSystemSetupFileConf(request);
         return new ResponseEntity<>(new ResponseEntityMessage("tagging path saved"), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/get_tagging_path", method = RequestMethod.GET)
+    @ApiOperation(value = "Get the tagging file path and mode", response = SystemSetupFileConf.class)
     public SystemSetupFileConf savePath() {
         return userTaggingTaskPersistenceService.getSystemSetupFileConf();
     }
 
     @RequestMapping("/run_tagging_task" )
+    @ApiOperation(value = "Run user tagging job in different process and reports the result to web socket")
     public ResponseEntity<ResponseEntityMessage> runUserTagging() {
         try {
             logger.debug("Executing user tagging");
@@ -205,6 +216,7 @@ public class ApiSystemSetupTagsController extends BaseController {
 
 
     @RequestMapping("/stop_tagging_task" )
+    @ApiOperation(value = "Stop user tagging job which runs in a different process")
     public ResponseEntity<ResponseEntityMessage> cancelUserTaggingExecution() {
         try {
             logger.debug("Cancelling user tagging execution");
@@ -229,6 +241,7 @@ public class ApiSystemSetupTagsController extends BaseController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/tagging_task_status")
     @LogException
+    @ApiOperation(value = "Get user tagging job status")
     public UserTaggingExecutionStatus getJobStatus() {
         Map<String, Long> usersAffected = new HashMap<>();
         long lastExecutionFinishTime = -1;
@@ -259,11 +272,16 @@ public class ApiSystemSetupTagsController extends BaseController {
         return activeTasks.size() > 0;
     }
 
+    @ApiModel()
     public static class UserTaggingExecutionStatus {
 
+        @ApiModelProperty(value = "Last execution finish time")
         private final Long lastExecutionFinishTime;
+        @ApiModelProperty(value = "Last execution start time")
         private final Long lastExecutionStartTime;
+        @ApiModelProperty(value = "Is the tagging process currently running")
         private final boolean isRunning;
+        @ApiModelProperty(value = "Number of users affected by the tagging process per tag")
         private final Map<String, Long> usersAffected;
 
 
