@@ -1,5 +1,6 @@
 package fortscale.ml.model.retriever;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import fortscale.ml.model.retriever.pattern.replacement.PatternReplacementConf;
@@ -21,6 +22,7 @@ import java.util.List;
 		@JsonSubTypes.Type(value = ModelRetrieverConf.class, name = ModelRetrieverConf.MODEL_RETRIEVER),
 		@JsonSubTypes.Type(value = AggregatedFeaturePersonalThresholdModelBuilderDataRetrieverConf.class, name = AggregatedFeaturePersonalThresholdModelBuilderDataRetrieverConf.AGGREGATED_FEATURE_PERSONAL_THRESHOLD_MODEL_BUILDER_DATA_RETRIEVER)
 })
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE, setterVisibility = JsonAutoDetect.Visibility.NONE,isGetterVisibility = JsonAutoDetect.Visibility.NONE)
 public abstract class AbstractDataRetrieverConf implements FactoryConfig {
 	private long timeRangeInSeconds;
 	private List<JSONObject> functions;
