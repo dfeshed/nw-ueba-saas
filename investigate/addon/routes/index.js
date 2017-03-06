@@ -3,7 +3,7 @@ import config from 'ember-get-config';
 
 export default Route.extend({
   beforeModel() {
-    if (config.featureFlags['11.1-enabled']) {
+    if (!config.featureFlags['11.1-enabled']) {
       window.location.href = '/investigation';
     }
   },
