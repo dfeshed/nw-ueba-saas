@@ -176,6 +176,11 @@ public class ApiSystemSetupTagsController extends BaseController {
         return new ResponseEntity<>(new ResponseEntityMessage("tagging path saved"), HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/get_tagging_path", method = RequestMethod.GET)
+    public SystemSetupFileConf savePath() {
+        return userTaggingTaskPersistenceService.getSystemSetupFileConf();
+    }
+
     @RequestMapping("/run_tagging_task" )
     public ResponseEntity<ResponseEntityMessage> runUserTagging() {
         try {
