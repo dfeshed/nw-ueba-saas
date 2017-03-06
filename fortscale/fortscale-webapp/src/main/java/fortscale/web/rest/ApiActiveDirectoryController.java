@@ -16,6 +16,7 @@ import fortscale.utils.spring.SpringPropertiesUtil;
 import fortscale.web.beans.AuthenticationTestResult;
 import fortscale.web.beans.ResponseEntityMessage;
 import fortscale.web.beans.request.ActiveDirectoryRequest;
+import fortscale.web.rest.Utils.TaskAction;
 import fortscale.web.services.AdTaskServiceImpl;
 import fortscale.web.tasks.ControllerInvokedAdTask;
 import fortscale.web.tasks.ControllerInvokedAdTask.AdTaskStatus;
@@ -38,8 +39,6 @@ import javax.naming.NamingException;
 import javax.validation.Valid;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-
 
 @Controller
 @Api(value="/api/active_directory", description="This resource manage the system users in the AD",produces = "JSON", protocols = "HTTP,HTTPS")
@@ -179,7 +178,7 @@ public class ApiActiveDirectoryController {
 			final boolean executedSuccessfully = adTaskService.executeTasks(simpMessagingTemplate, DESTINATION_TASK_RESPONSE);
 			if (executedSuccessfully) {
                 lastAdFetchEtlExecutionStartTime = System.currentTimeMillis();
-				simpMessagingTemplate.convertAndSend(DESTINATION_ACTIONS, FetchEtlAction.EXECUTE);
+				simpMessagingTemplate.convertAndSend(DESTINATION_ACTIONS, TaskAction.EXECUTE);
 				return new ResponseEntity<>(new ResponseEntityMessage("Fetch and ETL is running."), HttpStatus.OK);
             }
             else {
@@ -203,7 +202,7 @@ public class ApiActiveDirectoryController {
                 lastAdFetchEtlExecutionStartTime = null;
                 final String message = "AD fetch and ETL execution has been cancelled successfully";
                 logger.debug(message);
-				simpMessagingTemplate.convertAndSend(DESTINATION_ACTIONS, FetchEtlAction.CANCEL);
+				simpMessagingTemplate.convertAndSend(DESTINATION_ACTIONS, TaskAction.CANCEL);
                 return new ResponseEntity<>(new ResponseEntityMessage(message), HttpStatus.OK);
             }
             else {
@@ -254,7 +253,8 @@ public class ApiActiveDirectoryController {
 	 * @return Fetch, ETL or null for not running
 	 */
 	private AdTaskType getRunningMode(AdObjectType datasource) {
-		for (ControllerInvokedAdTask activeThread : adTaskService.getActiveTasks()) {
+		Set<ControllerInvokedAdTask> activeTasks = adTaskService.getActiveTasks();
+		for (ControllerInvokedAdTask activeThread : activeTasks) {
 			if (datasource.equals(activeThread.getDataSource())) {
 				return activeThread.getCurrentAdTaskType();
 			}
@@ -262,12 +262,6 @@ public class ApiActiveDirectoryController {
 
 		return null;
 	}
-
-
-	private enum FetchEtlAction {
-		EXECUTE, CANCEL
-	}
-
 
 	private static class FetchEtlExecutionStatus {
 
