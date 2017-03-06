@@ -4,7 +4,7 @@ import fortscale.services.ActiveDirectoryService;
 import fortscale.services.ApplicationConfigurationService;
 import fortscale.services.ad.AdTaskPersistencyService;
 import fortscale.services.ad.AdTaskPersistencyServiceImpl;
-import fortscale.web.services.AdTaskService;
+import fortscale.web.services.TaskService;
 import fortscale.web.services.AdTaskServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -25,7 +25,7 @@ public class AdTaskConfig {
     }
 
     @Bean
-    public AdTaskService adTaskService(){
+    public TaskService adTaskService(){
         return new AdTaskServiceImpl(activeDirectoryService, adTaskPersistencyService());
     }
 }
