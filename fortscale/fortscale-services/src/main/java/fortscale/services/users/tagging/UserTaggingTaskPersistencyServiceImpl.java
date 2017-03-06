@@ -12,8 +12,6 @@ public class UserTaggingTaskPersistencyServiceImpl implements UserTaggingTaskPer
 
     private static final Logger logger = Logger.getLogger(UserTaggingTaskPersistencyServiceImpl.class);
 
-    public static final String RESULTS_KEY_NAME = "user_tagging";
-
     private final String SYSTEM_SETUP_USER_TAGGING_LAST_EXECUTION_TIME ="system_setup_user_tagging.last_execution_time";
     private final String SYSTEM_SETUP_USER_TAGGING_EXECUTION_START_TIME ="system_setup_user_tagging.execution_start_time";
     private final String SYSTEM_SETUP_USER_TAGGING_MONITOR_FILE_DAILY ="system_setup_user_tagging.monitor_file_daily";

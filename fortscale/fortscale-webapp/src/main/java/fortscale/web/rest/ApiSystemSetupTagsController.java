@@ -218,18 +218,23 @@ public class ApiSystemSetupTagsController extends BaseController {
     @RequestMapping(method = RequestMethod.GET, value = "/tagging_task_status")
     @LogException
     public UserTaggingExecutionStatus getJobStatus() {
+        Map<String, Long> usersAffected = new HashMap<>();
+        long lastExecutionFinishTime = -1;
+        long lastExecutionStartTime = -1;
+        boolean isRunning = false;
         if (isRunning()) {
-            return new UserTaggingExecutionStatus(-1l, lastUserTaggingExecutionStartTime, true, null);
+            lastExecutionStartTime = lastUserTaggingExecutionStartTime;
+            isRunning = true;
         } else {
-            UserTaggingTaskPersistencyServiceImpl.UserTaggingResult taskResults = userTaggingTaskPersistenceService.getTaskResults(ControllerInvokedUserTaggingTask.USER_TAGGING_RESULT_ID);
+            UserTaggingTaskPersistencyServiceImpl.UserTaggingResult taskResults = userTaggingTaskPersistenceService.getTaskResults(UserTaggingTaskPersistenceService.USER_TAGGING_RESULT_ID);
+            lastExecutionFinishTime = userTaggingTaskPersistenceService.getLastExecutionTime();
+            isRunning = false;
             if (taskResults!= null) {
-                return new UserTaggingExecutionStatus(userTaggingTaskPersistenceService.getLastExecutionTime(), -1l,
-                        false, taskResults.getUsersAffected());
-            }else{
-                return new UserTaggingExecutionStatus(userTaggingTaskPersistenceService.getLastExecutionTime(), -1l,
-                        false, null);
+                usersAffected = taskResults.getUsersAffected();
             }
         }
+
+        return new UserTaggingExecutionStatus(lastExecutionFinishTime, lastExecutionStartTime, isRunning, usersAffected);
     }
 
     /**

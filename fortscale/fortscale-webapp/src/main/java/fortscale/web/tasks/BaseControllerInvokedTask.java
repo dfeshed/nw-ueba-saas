@@ -1,6 +1,7 @@
 package fortscale.web.tasks;
 
 import fortscale.utils.logging.Logger;
+import fortscale.utils.spring.SpringPropertiesUtil;
 import fortscale.web.rest.ApiActiveDirectoryController;
 import fortscale.web.services.ActivityMonitoringExecutorService;
 import org.apache.commons.io.IOUtils;
@@ -26,8 +27,9 @@ public abstract class BaseControllerInvokedTask {
     protected boolean runCollectionJob(String jobName, String resultsId, String jobGroup) {
         Process process;
         try {
+            String userName = SpringPropertiesUtil.getProperty("user.name");
             final String scriptPath = ApiActiveDirectoryController.COLLECTION_TARGET_DIR + "/resources/scripts/runAdTask.sh"; // this scripts runs the fetch/etl
-            final ArrayList<String> arguments = new ArrayList<>(Arrays.asList("/usr/bin/sudo", "-u", "cloudera", scriptPath, jobName , jobGroup, "resultsId="+resultsId));
+            final ArrayList<String> arguments = new ArrayList<>(Arrays.asList("/usr/bin/sudo", "-u", userName, scriptPath, jobName , jobGroup, "resultsId="+resultsId));
             final ProcessBuilder processBuilder = new ProcessBuilder(arguments).redirectErrorStream(true);
             processBuilder.directory(new File(ApiActiveDirectoryController.COLLECTION_TARGET_DIR));
             processBuilder.redirectErrorStream(true);

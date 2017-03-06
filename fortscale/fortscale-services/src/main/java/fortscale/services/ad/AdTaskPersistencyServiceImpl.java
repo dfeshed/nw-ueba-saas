@@ -17,11 +17,6 @@ public class AdTaskPersistencyServiceImpl implements AdTaskPersistencyService {
 
     private static final Logger logger = Logger.getLogger(AdTaskPersistencyServiceImpl.class);
 
-    public static final String RESULTS_KEY_DELIMITER = "_";
-    public static final String EXECUTION_TIME_KEY_DELIMITER = "_";
-    public static final String RESULTS_DELIMITER = "=";
-    public static final String RESULTS_KEY_SUCCESS = "success";
-
     private final String SYSTEM_SETUP_AD_LAST_EXECUTION_TIME_PREFIX ="system_setup_ad.last_execution_time";
     private final String SYSTEM_SETUP_AD_EXECUTION_START_TIME_PREFIX ="system_setup_ad.execution_start_time";
     private final ApplicationConfigurationService applicationConfigurationService;
@@ -37,13 +32,17 @@ public class AdTaskPersistencyServiceImpl implements AdTaskPersistencyService {
         logger.info("getting result for key {}", resultsKey);
         ApplicationConfiguration queryResult = applicationConfigurationService.getApplicationConfiguration(resultsKey);
         if (queryResult == null) {
-            logger.error("No result found for result key {}", resultsKey);
-            taskResults.put(RESULTS_KEY_SUCCESS, Boolean.FALSE.toString());
-            return taskResults;
+            return putSuccessFalse(resultsKey, taskResults,
+                    String.format("No result found for result key {}", resultsKey));
         }
 
         final String taskExecutionResult = queryResult.getValue();
         final String[] split = taskExecutionResult.split(RESULTS_DELIMITER);
+        if (split.length != 2){
+            return putSuccessFalse(resultsKey, taskResults,
+                    String.format("The result for key {} found has the wrong format", resultsKey));
+        }
+
         final String key = split[0];
         final String value = split[1];
         taskResults.put(key, value);
@@ -51,6 +50,12 @@ public class AdTaskPersistencyServiceImpl implements AdTaskPersistencyService {
             logger.warn("Failed to delete query result with key {}.", resultsKey);
         }
 
+        return taskResults;
+    }
+
+    private Map<String, String> putSuccessFalse(String resultsKey, Map<String, String> taskResults, String message) {
+        logger.error(message);
+        taskResults.put(RESULTS_KEY_SUCCESS, Boolean.FALSE.toString());
         return taskResults;
     }
 

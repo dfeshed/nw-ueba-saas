@@ -6,10 +6,9 @@ import fortscale.services.UserTagService;
 import fortscale.services.users.tagging.UserTaggingTaskPersistenceService;
 import fortscale.services.users.tagging.UserTaggingTaskPersistencyServiceImpl;
 import fortscale.utils.logging.Logger;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.math3.util.MathUtils;
+import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -21,6 +20,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.regex.Pattern;
 
+@DisallowConcurrentExecution
 public class UserTaggingJob extends FortscaleJob {
 
 	private static final Logger logger = Logger.getLogger(UserTaggingJob.class);
@@ -36,6 +36,7 @@ public class UserTaggingJob extends FortscaleJob {
 	
 	@Autowired
 	private UserTagService userTagService;
+
 	private String resultsId;
 
 	@Autowired
@@ -54,8 +55,11 @@ public class UserTaggingJob extends FortscaleJob {
 			useFile = userTaggingTaskPersistenceService.isMonitorFileDaily();
 		}
 
-		// random generated ID for deployment wizard user tagging results
+		// ID for deployment wizard user tagging results
 		resultsId = jobDataMapExtension.getJobDataMapStringValue(map, "resultsId", false);
+		if (StringUtils.isEmpty(resultsId)){
+		    resultsId = UserTaggingTaskPersistenceService.USER_TAGGING_RESULT_ID;
+        }
 	}
 
 	@Override
@@ -77,7 +81,7 @@ public class UserTaggingJob extends FortscaleJob {
 			try {
 				updateFromFile();
 			} catch (IOException e) {
-				saveResult(false, null, null);
+				saveResultFailed();
 				throw new JobExecutionException(e);
 			}
 		}
@@ -89,8 +93,14 @@ public class UserTaggingJob extends FortscaleJob {
 		saveResult(true, taggedUsersCountBeforeRun, taggedUsersCountAfterRun);
 	}
 
+	private void saveResultFailed(){
+		saveResult(false, null, null);
+	}
+
 	private void saveResult(boolean success, Map<String, Long> taggedUsersCountBeforeRun, Map<String, Long> taggedUsersCountAfterRun) {
 		if (resultsId != null) {
+			logger.info("Saving the user tagging result to id {}", resultsId);
+
 			Map<String, Long> deltaPerTag = null;
 
 			if (taggedUsersCountAfterRun != null && taggedUsersCountBeforeRun != null) {
@@ -122,13 +132,15 @@ public class UserTaggingJob extends FortscaleJob {
 				Long usersAfter = taggedUsersCountAfterRun.get(tag);
 				Long delta;
 
-				if (usersBefore != null && usersAfter != null) {
-					delta = Math.abs(Math.addExact(usersAfter, -usersBefore));
-				}else if (usersAfter == null){
-					delta = usersBefore;
-				}else {
-					delta = usersAfter;
+				if (usersAfter == null){
+					usersAfter = 0l;
 				}
+				if (usersBefore == null){
+					usersBefore = 0l;
+				}
+
+				// calculate the delta
+				delta = Math.abs(Math.addExact(usersAfter, -usersBefore));
 
 				// If changed
 				if (delta != 0) {
@@ -143,7 +155,7 @@ public class UserTaggingJob extends FortscaleJob {
 	private void updateFromFile() throws IOException, JobExecutionException {
 		if (StringUtils.isEmpty(customTagFilePath)) {
 			logger.error("Job failed. Empty customTagFilePath.");
-			saveResult(false, null, null);
+			saveResultFailed();
 			return;
 		}
 		File tagsFile = new File(customTagFilePath);
@@ -174,7 +186,7 @@ public class UserTaggingJob extends FortscaleJob {
 			}
 			logger.info("tags loaded");
 		} else {
-			saveResult(false, null, null);
+			saveResultFailed();
 			logger.error("Custom tag list file not accessible in path {}", customTagFilePath);
 		}
 	}
