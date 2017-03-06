@@ -14,6 +14,7 @@ import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.BaseController;
 import fortscale.web.beans.DataBean;
 import fortscale.web.beans.ResponseEntityMessage;
+import fortscale.domain.rest.SystemSetupFileConf;
 import fortscale.web.rest.Utils.TaskAction;
 import fortscale.web.services.TaskService;
 import fortscale.web.tasks.ControllerInvokedUserTaggingTask;
@@ -167,6 +168,12 @@ public class ApiSystemSetupTagsController extends BaseController {
             logger.error("Failed to search for groups and OUs", ex);
             return new ResponseEntity<>(Collections.emptyMap(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @RequestMapping(value = "/save_tagging_path", method = RequestMethod.PUT)
+    public ResponseEntity<ResponseEntityMessage> savePath(@RequestBody SystemSetupFileConf request) {
+        userTaggingTaskPersistenceService.saveSystemSetupFileConf(request);
+        return new ResponseEntity<>(new ResponseEntityMessage("tagging path saved"), HttpStatus.OK);
     }
 
     @RequestMapping("/run_tagging_task" )

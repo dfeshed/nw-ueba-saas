@@ -1,6 +1,8 @@
 package fortscale.services.users.tagging;
 
 
+import fortscale.domain.rest.SystemSetupFileConf;
+
 import java.util.Map;
 
 public interface UserTaggingTaskPersistenceService {
@@ -21,5 +23,9 @@ public interface UserTaggingTaskPersistenceService {
 
     String createResultKey(String resultsId);
 
-    Boolean isMonitorFileDaily();
+    SystemSetupFileConf getSystemSetupFileConf();
+
+    void saveSystemSetupFileConf(SystemSetupFileConf systemSetupFileConf);
+
+    void deleteSystemSetupFileConf();
 }

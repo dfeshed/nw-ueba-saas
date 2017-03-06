@@ -1,5 +1,6 @@
 package fortscale.services.users.tagging;
 
+import fortscale.domain.rest.SystemSetupFileConf;
 import fortscale.services.ApplicationConfigurationService;
 import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import java.util.Map;
 public class UserTaggingTaskPersistencyServiceImpl implements UserTaggingTaskPersistenceService {
 
     private static final Logger logger = Logger.getLogger(UserTaggingTaskPersistencyServiceImpl.class);
+    public static final String FILE_CONF_KEY = "file_conf";
 
     private final String SYSTEM_SETUP_USER_TAGGING_LAST_EXECUTION_TIME ="system_setup_user_tagging.last_execution_time";
     private final String SYSTEM_SETUP_USER_TAGGING_EXECUTION_START_TIME ="system_setup_user_tagging.execution_start_time";
@@ -57,8 +59,18 @@ public class UserTaggingTaskPersistencyServiceImpl implements UserTaggingTaskPer
     }
 
     @Override
-    public Boolean isMonitorFileDaily() {
-        return Boolean.valueOf(applicationConfigurationService.getApplicationConfigurationAsObject(SYSTEM_SETUP_USER_TAGGING_MONITOR_FILE_DAILY, Boolean.class));
+    public SystemSetupFileConf getSystemSetupFileConf() {
+        return applicationConfigurationService.getApplicationConfigurationAsObject(createResultKey(FILE_CONF_KEY), SystemSetupFileConf.class);
+    }
+
+    @Override
+    public void saveSystemSetupFileConf(SystemSetupFileConf systemSetupFileConf) {
+        applicationConfigurationService.insertOrUpdateConfigItemAsObject(createResultKey(FILE_CONF_KEY), systemSetupFileConf);
+    }
+
+    @Override
+    public void deleteSystemSetupFileConf() {
+        applicationConfigurationService.delete(createResultKey(FILE_CONF_KEY));
     }
 
     public static class UserTaggingResult{
