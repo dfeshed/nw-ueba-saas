@@ -59,7 +59,7 @@ public class EventsReducerBuilder implements CommandBuilder {
         private final String cacheName;
 
 
-        private long minimalRecordTs = Long.MAX_VALUE;
+        private long minimalRecordThreshold = Long.MAX_VALUE;
         private MorphlineCommandMonitoringHelper commandMonitoringHelper = new MorphlineCommandMonitoringHelper();
 
 
@@ -100,14 +100,14 @@ public class EventsReducerBuilder implements CommandBuilder {
             // cacheRecordTtl is relevant for cases when there was not record to join to an old saved record in the cache.
             // in this case only for the first processed record (in each ETL run) set the cache instance with the relevant time from which will deprecate old cache records.
             // in the case no ttl is desire (save cached records forever) define cacheRecordTtl as -1
-            if (cacheRecordTtl != -1  && minimalRecordTs > currentTime) {
-                minimalRecordTs = currentTime;
-                cache.setDeprecationTs(minimalRecordTs-cacheRecordTtl);
+            if (cacheRecordTtl != -1  && minimalRecordThreshold > currentTime) {
+                minimalRecordThreshold = currentTime;
+                cache.setDeprecationTs(minimalRecordThreshold -cacheRecordTtl);
             }
 
             if (previousEvent==null) {
                 // store the record for later merge
-                logger.info("Storing event {} in cache {} since there were no similar events before.", inputRecord, cache);
+                logger.debug("Storing event {} in cache {} since there were no similar events before.", inputRecord, cache);
                 cache.store(key, inputRecord);
 
                 // mark command as successful, do not pass the record
@@ -124,13 +124,13 @@ public class EventsReducerBuilder implements CommandBuilder {
                 return true;
             } else {
 
-                long delta = (currentTime < cachedTime)? cachedTime - currentTime : currentTime - cachedTime;
+                long delta = Math.abs(cachedTime - currentTime);
 
                 if (delta > timeThreshold)  {
                     // replace the cached record as we encountered a new one that should be saved
                     // if the delta is greater than the threshold we assume that the new events belongs
                     // to a new session
-                    logger.info("Storing event {} in cache {} since delta > timeThreshold.", inputRecord, cache);
+                    logger.debug("Storing event {} in cache {} since delta > timeThreshold.", inputRecord, cache);
                     cache.store(key, inputRecord);
 
                     if (processRecord) {
