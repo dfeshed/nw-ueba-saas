@@ -1,0 +1,324 @@
+{
+  "data-source-scorers": [
+    {
+      "data-source" : "aggr_event.normalized_username_dlpmail_daily.number_of_emails_to_external_single_recipient_dlpmail_daily",
+      "scorers" : [ {
+        "type" : "low-values-score-reducer",
+        "name" : "number_of_emails_to_external_single_recipient.normalized_username.dlpmail.daily.scorer",
+        "base-scorer" : {
+          "type" : "continuous-values-model-scorer",
+          "name" : "number_of_emails_to_external_single_recipient.normalized_username.dlpmail.daily.base_scorer",
+          "model" : {
+            "name" : "number_of_emails_to_external_single_recipient.normalized_username.dlpmail.daily"
+          },
+          "additional-models" : [ ],
+          "quad-poly-calibration-conf" : {
+            "a1" : 1500.0,
+            "a2" : 499999.0,
+            "sensitivity" : 1.0,
+            "is-score-for-small-values" : false,
+            "is-score-for-large-values" : true
+          },
+          "factoryName" : "continuous-values-model-scorer",
+          "number-of-samples-to-influence-enough" : 10,
+          "min-number-of-samples-to-influence" : 1,
+          "use-certainty-to-calculate-score" : true
+        },
+        "reduction-configs" : [ {
+          "reducingFeatureName" : "aggregated_feature_value",
+          "reducingFactor" : 0.1,
+          "maxValueForFullyReduce" : 2.0,
+          "minValueForNotReduce" : 6.0
+        } ]
+      } ]
+    },
+    {
+      "data-source" : "aggr_event.normalized_username_dlpmail_hourly.number_of_emails_to_external_single_recipient_dlpmail_hourly",
+      "scorers" : [ {
+        "type" : "low-values-score-reducer",
+        "name" : "number_of_emails_to_external_single_recipient.normalized_username.dlpmail.hourly.scorer",
+        "base-scorer" : {
+          "type" : "continuous-values-model-scorer",
+          "name" : "number_of_emails_to_external_single_recipient.normalized_username.dlpmail.hourly.base_scorer",
+          "model" : {
+            "name" : "number_of_emails_to_external_single_recipient.normalized_username.dlpmail.hourly"
+          },
+          "additional-models" : [ ],
+          "quad-poly-calibration-conf" : {
+            "a1" : 1500.0,
+            "a2" : 499999.0,
+            "sensitivity" : 1.0,
+            "is-score-for-small-values" : false,
+            "is-score-for-large-values" : true
+          },
+          "factoryName" : "continuous-values-model-scorer",
+          "number-of-samples-to-influence-enough" : 30,
+          "min-number-of-samples-to-influence" : 1,
+          "use-certainty-to-calculate-score" : true
+        },
+        "reduction-configs" : [ {
+          "reducingFeatureName" : "aggregated_feature_value",
+          "reducingFactor" : 0.1,
+          "maxValueForFullyReduce" : 2.0,
+          "minValueForNotReduce" : 6.0
+        } ]
+      } ]
+    },
+    {
+      "data-source" : "aggr_event.normalized_username_dlpmail_daily.number_of_email_attachments_to_external_single_recipient_dlpmail_daily",
+      "scorers" : [ {
+        "type" : "low-values-score-reducer",
+        "name" : "number_of_email_attachments_to_external_single_recipient.normalized_username.dlpmail.daily.scorer",
+        "base-scorer" : {
+          "type" : "continuous-values-model-scorer",
+          "name" : "number_of_email_attachments_to_external_single_recipient.normalized_username.dlpmail.daily.base_scorer",
+          "model" : {
+            "name" : "number_of_email_attachments_to_external_single_recipient.normalized_username.dlpmail.daily"
+          },
+          "additional-models" : [ ],
+          "quad-poly-calibration-conf" : {
+            "a1" : 1500.0,
+            "a2" : 499999.0,
+            "sensitivity" : 1.0,
+            "is-score-for-small-values" : false,
+            "is-score-for-large-values" : true
+          },
+          "factoryName" : "continuous-values-model-scorer",
+          "number-of-samples-to-influence-enough" : 10,
+          "min-number-of-samples-to-influence" : 1,
+          "use-certainty-to-calculate-score" : true
+        },
+        "reduction-configs" : [ {
+          "reducingFeatureName" : "aggregated_feature_value",
+          "reducingFactor" : 0.1,
+          "maxValueForFullyReduce" : 2.0,
+          "minValueForNotReduce" : 6.0
+        } ]
+      } ]
+    },
+    {
+      "data-source" : "aggr_event.normalized_username_dlpmail_hourly.number_of_email_attachments_to_external_single_recipient_dlpmail_hourly",
+      "scorers" : [ {
+        "type" : "low-values-score-reducer",
+        "name" : "number_of_email_attachments_to_external_single_recipient.normalized_username.dlpmail.hourly.scorer",
+        "base-scorer" : {
+          "type" : "continuous-values-model-scorer",
+          "name" : "number_of_email_attachments_to_external_single_recipient.normalized_username.dlpmail.hourly.base_scorer",
+          "model" : {
+            "name" : "number_of_email_attachments_to_external_single_recipient.normalized_username.dlpmail.hourly"
+          },
+          "additional-models" : [ ],
+          "quad-poly-calibration-conf" : {
+            "a1" : 1500.0,
+            "a2" : 499999.0,
+            "sensitivity" : 1.0,
+            "is-score-for-small-values" : false,
+            "is-score-for-large-values" : true
+          },
+          "factoryName" : "continuous-values-model-scorer",
+          "number-of-samples-to-influence-enough" : 30,
+          "min-number-of-samples-to-influence" : 1,
+          "use-certainty-to-calculate-score" : true
+        },
+        "reduction-configs" : [ {
+          "reducingFeatureName" : "aggregated_feature_value",
+          "reducingFactor" : 0.1,
+          "maxValueForFullyReduce" : 2.0,
+          "minValueForNotReduce" : 6.0
+        } ]
+      } ]
+    },
+    {
+      "data-source" : "aggr_event.normalized_username_dlpmail_daily.sum_of_email_attachments_to_external_single_recipient_size_dlpmail_daily",
+      "scorers" : [ {
+        "type" : "low-values-score-reducer",
+        "name" : "sum_of_email_attachments_to_external_single_recipient_size.normalized_username.dlpmail.daily.scorer",
+        "base-scorer" : {
+          "type" : "continuous-values-model-scorer",
+          "name" : "sum_of_email_attachments_to_external_single_recipient_size.normalized_username.dlpmail.daily.base_scorer",
+          "model" : {
+            "name" : "sum_of_email_attachments_to_external_single_recipient_size.normalized_username.dlpmail.daily"
+          },
+          "additional-models" : [ ],
+          "quad-poly-calibration-conf" : {
+            "a1" : 1500.0,
+            "a2" : 499999.0,
+            "sensitivity" : 1.0,
+            "is-score-for-small-values" : false,
+            "is-score-for-large-values" : true
+          },
+          "factoryName" : "continuous-values-model-scorer",
+          "number-of-samples-to-influence-enough" : 10,
+          "min-number-of-samples-to-influence" : 1,
+          "use-certainty-to-calculate-score" : true
+        },
+        "reduction-configs" : [ {
+          "reducingFeatureName" : "aggregated_feature_value",
+          "reducingFactor" : 0.1,
+          "maxValueForFullyReduce" : 2.0,
+          "minValueForNotReduce" : 6.0
+        } ]
+      } ]
+    },
+    {
+      "data-source" : "aggr_event.normalized_username_dlpmail_hourly.sum_of_email_attachments_to_external_single_recipient_size_dlpmail_hourly",
+      "scorers" : [ {
+        "type" : "low-values-score-reducer",
+        "name" : "sum_of_email_attachments_to_external_single_recipient_size.normalized_username.dlpmail.hourly.scorer",
+        "base-scorer" : {
+          "type" : "continuous-values-model-scorer",
+          "name" : "sum_of_email_attachments_to_external_single_recipient_size.normalized_username.dlpmail.hourly.base_scorer",
+          "model" : {
+            "name" : "sum_of_email_attachments_to_external_single_recipient_size.normalized_username.dlpmail.hourly"
+          },
+          "additional-models" : [ ],
+          "quad-poly-calibration-conf" : {
+            "a1" : 1500.0,
+            "a2" : 499999.0,
+            "sensitivity" : 1.0,
+            "is-score-for-small-values" : false,
+            "is-score-for-large-values" : true
+          },
+          "factoryName" : "continuous-values-model-scorer",
+          "number-of-samples-to-influence-enough" : 30,
+          "min-number-of-samples-to-influence" : 1,
+          "use-certainty-to-calculate-score" : true
+        },
+        "reduction-configs" : [ {
+          "reducingFeatureName" : "aggregated_feature_value",
+          "reducingFactor" : 0.1,
+          "maxValueForFullyReduce" : 2.0,
+          "minValueForNotReduce" : 6.0
+        } ]
+      } ]
+    },
+    {
+      "data-source" : "aggr_event.normalized_username_dlpmail_daily.number_of_email_attachments_dlpmail_daily",
+      "scorers" : [ {
+        "type" : "low-values-score-reducer",
+        "name" : "number_of_email_attachments.normalized_username.dlpmail.daily.scorer",
+        "base-scorer" : {
+          "type" : "continuous-values-model-scorer",
+          "name" : "number_of_email_attachments.normalized_username.dlpmail.daily.base_scorer",
+          "model" : {
+            "name" : "number_of_email_attachments.normalized_username.dlpmail.daily"
+          },
+          "additional-models" : [ ],
+          "quad-poly-calibration-conf" : {
+            "a1" : 1500.0,
+            "a2" : 499999.0,
+            "sensitivity" : 1.0,
+            "is-score-for-small-values" : false,
+            "is-score-for-large-values" : true
+          },
+          "factoryName" : "continuous-values-model-scorer",
+          "number-of-samples-to-influence-enough" : 10,
+          "min-number-of-samples-to-influence" : 1,
+          "use-certainty-to-calculate-score" : true
+        },
+        "reduction-configs" : [ {
+          "reducingFeatureName" : "aggregated_feature_value",
+          "reducingFactor" : 0.1,
+          "maxValueForFullyReduce" : 2.0,
+          "minValueForNotReduce" : 6.0
+        } ]
+      } ]
+    },
+    {
+      "data-source" : "aggr_event.normalized_username_dlpmail_hourly.number_of_email_attachments_dlpmail_hourly",
+      "scorers" : [ {
+        "type" : "low-values-score-reducer",
+        "name" : "number_of_email_attachments.normalized_username.dlpmail.hourly.scorer",
+        "base-scorer" : {
+          "type" : "continuous-values-model-scorer",
+          "name" : "number_of_email_attachments.normalized_username.dlpmail.hourly.base_scorer",
+          "model" : {
+            "name" : "number_of_email_attachments.normalized_username.dlpmail.hourly"
+          },
+          "additional-models" : [ ],
+          "quad-poly-calibration-conf" : {
+            "a1" : 1500.0,
+            "a2" : 499999.0,
+            "sensitivity" : 1.0,
+            "is-score-for-small-values" : false,
+            "is-score-for-large-values" : true
+          },
+          "factoryName" : "continuous-values-model-scorer",
+          "number-of-samples-to-influence-enough" : 30,
+          "min-number-of-samples-to-influence" : 1,
+          "use-certainty-to-calculate-score" : true
+        },
+        "reduction-configs" : [ {
+          "reducingFeatureName" : "aggregated_feature_value",
+          "reducingFactor" : 0.1,
+          "maxValueForFullyReduce" : 2.0,
+          "minValueForNotReduce" : 6.0
+        } ]
+      } ]
+    },
+    {
+      "data-source" : "aggr_event.normalized_username_dlpmail_daily.sum_of_email_attachment_file_size_dlpmail_daily",
+      "scorers" : [ {
+        "type" : "low-values-score-reducer",
+        "name" : "sum_of_email_attachment_file_size.normalized_username.dlpmail.daily.scorer",
+        "base-scorer" : {
+          "type" : "continuous-values-model-scorer",
+          "name" : "sum_of_email_attachment_file_size.normalized_username.dlpmail.daily.base_scorer",
+          "model" : {
+            "name" : "sum_of_email_attachment_file_size.normalized_username.dlpmail.daily"
+          },
+          "additional-models" : [ ],
+          "quad-poly-calibration-conf" : {
+            "a1" : 1500.0,
+            "a2" : 499999.0,
+            "sensitivity" : 1.0,
+            "is-score-for-small-values" : false,
+            "is-score-for-large-values" : true
+          },
+          "factoryName" : "continuous-values-model-scorer",
+          "number-of-samples-to-influence-enough" : 10,
+          "min-number-of-samples-to-influence" : 1,
+          "use-certainty-to-calculate-score" : true
+        },
+        "reduction-configs" : [ {
+          "reducingFeatureName" : "aggregated_feature_value",
+          "reducingFactor" : 0.1,
+          "maxValueForFullyReduce" : 2.0,
+          "minValueForNotReduce" : 6.0
+        } ]
+      } ]
+    },
+    {
+      "data-source" : "aggr_event.normalized_username_dlpmail_hourly.sum_of_email_attachment_file_size_dlpmail_hourly",
+      "scorers" : [ {
+        "type" : "low-values-score-reducer",
+        "name" : "sum_of_email_attachment_file_size.normalized_username.dlpmail.hourly.scorer",
+        "base-scorer" : {
+          "type" : "continuous-values-model-scorer",
+          "name" : "sum_of_email_attachment_file_size.normalized_username.dlpmail.hourly.base_scorer",
+          "model" : {
+            "name" : "sum_of_email_attachment_file_size.normalized_username.dlpmail.hourly"
+          },
+          "additional-models" : [ ],
+          "quad-poly-calibration-conf" : {
+            "a1" : 1500.0,
+            "a2" : 499999.0,
+            "sensitivity" : 1.0,
+            "is-score-for-small-values" : false,
+            "is-score-for-large-values" : true
+          },
+          "factoryName" : "continuous-values-model-scorer",
+          "number-of-samples-to-influence-enough" : 30,
+          "min-number-of-samples-to-influence" : 1,
+          "use-certainty-to-calculate-score" : true
+        },
+        "reduction-configs" : [ {
+          "reducingFeatureName" : "aggregated_feature_value",
+          "reducingFactor" : 0.1,
+          "maxValueForFullyReduce" : 2.0,
+          "minValueForNotReduce" : 6.0
+        } ]
+      } ]
+    }
+  ]
+}

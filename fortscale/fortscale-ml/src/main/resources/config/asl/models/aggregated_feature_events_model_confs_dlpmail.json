@@ -1,0 +1,164 @@
+{
+  "ModelConfs": [
+    {
+      "name" : "number_of_emails_to_external_single_recipient.normalized_username.dlpmail.daily",
+      "selector" : {
+        "type" : "aggregated_event_context_selector",
+        "aggregatedFeatureEventConfName" : "number_of_emails_to_external_single_recipient_dlpmail_daily"
+      },
+      "retriever" : {
+        "type" : "accumulated_aggregated_feature_value_retriever",
+        "timeRangeInSeconds" : 7776000,
+        "functions" : [ ],
+        "aggregatedFeatureEventConfName" : "number_of_emails_to_external_single_recipient_dlpmail_daily"
+      },
+      "builder" : {
+        "type" : "continuous_histogram_model_builder"
+      }
+    },
+    {
+      "name" : "number_of_emails_to_external_single_recipient.normalized_username.dlpmail.hourly",
+      "selector" : {
+        "type" : "aggregated_event_context_selector",
+        "aggregatedFeatureEventConfName" : "number_of_emails_to_external_single_recipient_dlpmail_hourly"
+      },
+      "retriever" : {
+        "type" : "accumulated_aggregated_feature_value_retriever",
+        "timeRangeInSeconds" : 7776000,
+        "functions" : [ ],
+        "aggregatedFeatureEventConfName" : "number_of_emails_to_external_single_recipient_dlpmail_hourly"
+      },
+      "builder" : {
+        "type" : "continuous_histogram_model_builder"
+      }
+    },
+    {
+      "name" : "number_of_email_attachments_to_external_single_recipient.normalized_username.dlpmail.daily",
+      "selector" : {
+        "type" : "aggregated_event_context_selector",
+        "aggregatedFeatureEventConfName" : "number_of_email_attachments_to_external_single_recipient_dlpmail_daily"
+      },
+      "retriever" : {
+        "type" : "accumulated_aggregated_feature_value_retriever",
+        "timeRangeInSeconds" : 7776000,
+        "functions" : [ ],
+        "aggregatedFeatureEventConfName" : "number_of_email_attachments_to_external_single_recipient_dlpmail_daily"
+      },
+      "builder" : {
+        "type" : "continuous_histogram_model_builder"
+      }
+    },
+    {
+      "name" : "number_of_email_attachments_to_external_single_recipient.normalized_username.dlpmail.hourly",
+      "selector" : {
+        "type" : "aggregated_event_context_selector",
+        "aggregatedFeatureEventConfName" : "number_of_email_attachments_to_external_single_recipient_dlpmail_hourly"
+      },
+      "retriever" : {
+        "type" : "accumulated_aggregated_feature_value_retriever",
+        "timeRangeInSeconds" : 7776000,
+        "functions" : [ ],
+        "aggregatedFeatureEventConfName" : "number_of_email_attachments_to_external_single_recipient_dlpmail_hourly"
+      },
+      "builder" : {
+        "type" : "continuous_histogram_model_builder"
+      }
+    },
+    {
+      "name" : "sum_of_email_attachments_to_external_single_recipient_size.normalized_username.dlpmail.daily",
+      "selector" : {
+        "type" : "aggregated_event_context_selector",
+        "aggregatedFeatureEventConfName" : "sum_of_email_attachments_to_external_single_recipient_size_dlpmail_daily"
+      },
+      "retriever" : {
+        "type" : "accumulated_aggregated_feature_value_retriever",
+        "timeRangeInSeconds" : 7776000,
+        "functions" : [ ],
+        "aggregatedFeatureEventConfName" : "sum_of_email_attachments_to_external_single_recipient_size_dlpmail_daily"
+      },
+      "builder" : {
+        "type" : "continuous_histogram_model_builder"
+      }
+    },
+    {
+      "name" : "sum_of_email_attachments_to_external_single_recipient_size.normalized_username.dlpmail.hourly",
+      "selector" : {
+        "type" : "aggregated_event_context_selector",
+        "aggregatedFeatureEventConfName" : "sum_of_email_attachments_to_external_single_recipient_size_dlpmail_hourly"
+      },
+      "retriever" : {
+        "type" : "accumulated_aggregated_feature_value_retriever",
+        "timeRangeInSeconds" : 7776000,
+        "functions" : [ ],
+        "aggregatedFeatureEventConfName" : "sum_of_email_attachments_to_external_single_recipient_size_dlpmail_hourly"
+      },
+      "builder" : {
+        "type" : "continuous_histogram_model_builder"
+      }
+    },
+    {
+      "name" : "number_of_email_attachments.normalized_username.dlpmail.daily",
+      "selector" : {
+        "type" : "aggregated_event_context_selector",
+        "aggregatedFeatureEventConfName" : "number_of_email_attachments_dlpmail_daily"
+      },
+      "retriever" : {
+        "type" : "accumulated_aggregated_feature_value_retriever",
+        "timeRangeInSeconds" : 7776000,
+        "functions" : [ ],
+        "aggregatedFeatureEventConfName" : "number_of_email_attachments_dlpmail_daily"
+      },
+      "builder" : {
+        "type" : "continuous_histogram_model_builder"
+      }
+    },
+    {
+      "name" : "number_of_email_attachments.normalized_username.dlpmail.hourly",
+      "selector" : {
+        "type" : "aggregated_event_context_selector",
+        "aggregatedFeatureEventConfName" : "number_of_email_attachments_dlpmail_hourly"
+      },
+      "retriever" : {
+        "type" : "accumulated_aggregated_feature_value_retriever",
+        "timeRangeInSeconds" : 7776000,
+        "functions" : [ ],
+        "aggregatedFeatureEventConfName" : "number_of_email_attachments_dlpmail_hourly"
+      },
+      "builder" : {
+        "type" : "continuous_histogram_model_builder"
+      }
+    },
+    {
+      "name" : "sum_of_email_attachment_file_size.normalized_username.dlpmail.daily",
+      "selector" : {
+        "type" : "aggregated_event_context_selector",
+        "aggregatedFeatureEventConfName" : "sum_of_email_attachment_file_size_dlpmail_daily"
+      },
+      "retriever" : {
+        "type" : "accumulated_aggregated_feature_value_retriever",
+        "timeRangeInSeconds" : 7776000,
+        "functions" : [ ],
+        "aggregatedFeatureEventConfName" : "sum_of_email_attachment_file_size_dlpmail_daily"
+      },
+      "builder" : {
+        "type" : "continuous_histogram_model_builder"
+      }
+    },
+    {
+      "name" : "sum_of_email_attachment_file_size.normalized_username.dlpmail.hourly",
+      "selector" : {
+        "type" : "aggregated_event_context_selector",
+        "aggregatedFeatureEventConfName" : "sum_of_email_attachment_file_size_dlpmail_hourly"
+      },
+      "retriever" : {
+        "type" : "accumulated_aggregated_feature_value_retriever",
+        "timeRangeInSeconds" : 7776000,
+        "functions" : [ ],
+        "aggregatedFeatureEventConfName" : "sum_of_email_attachment_file_size_dlpmail_hourly"
+      },
+      "builder" : {
+        "type" : "continuous_histogram_model_builder"
+      }
+    }
+  ]
+}
