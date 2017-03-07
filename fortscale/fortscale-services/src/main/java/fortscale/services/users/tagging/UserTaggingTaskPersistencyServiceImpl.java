@@ -1,6 +1,5 @@
 package fortscale.services.users.tagging;
 
-import fortscale.domain.rest.SystemSetupFileConf;
 import fortscale.services.ApplicationConfigurationService;
 import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,17 +58,17 @@ public class UserTaggingTaskPersistencyServiceImpl implements UserTaggingTaskPer
     }
 
     @Override
-    public SystemSetupFileConf getSystemSetupFileConf() {
-        return applicationConfigurationService.getApplicationConfigurationAsObject(createResultKey(FILE_CONF_KEY), SystemSetupFileConf.class);
+    public String getSystemSetupUserTaggingFilePath() {
+        return applicationConfigurationService.getApplicationConfigurationAsString(createResultKey(FILE_CONF_KEY)).get();
     }
 
     @Override
-    public void saveSystemSetupFileConf(SystemSetupFileConf systemSetupFileConf) {
-        applicationConfigurationService.insertOrUpdateConfigItemAsObject(createResultKey(FILE_CONF_KEY), systemSetupFileConf);
+    public void saveSystemSetupTaggingFilePath(String filePath) {
+        applicationConfigurationService.insertOrUpdateConfigItemAsObject(createResultKey(FILE_CONF_KEY), filePath);
     }
 
     @Override
-    public void deleteSystemSetupFileConf() {
+    public void deleteSystemSetupTaggingFilePath() {
         applicationConfigurationService.delete(createResultKey(FILE_CONF_KEY));
     }
 

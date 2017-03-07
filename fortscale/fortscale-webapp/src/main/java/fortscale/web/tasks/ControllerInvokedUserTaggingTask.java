@@ -27,14 +27,16 @@ public class ControllerInvokedUserTaggingTask extends BaseControllerInvokedTask 
 
     protected final ActivityMonitoringExecutorService<ControllerInvokedUserTaggingTask> executorService;
     protected SimpMessagingTemplate simpMessagingTemplate;
+    private String userTaggingFilePath;
 
     public ControllerInvokedUserTaggingTask(ActivityMonitoringExecutorService<ControllerInvokedUserTaggingTask> executorService,
                                             SimpMessagingTemplate simpMessagingTemplate, String responseDestination,
-                                            UserTaggingTaskPersistenceService userTaggingTaskPersistenceService) {
+                                            UserTaggingTaskPersistenceService userTaggingTaskPersistenceService, String userTaggingFilePath) {
         this.executorService = executorService;
         this.simpMessagingTemplate = simpMessagingTemplate;
         this.responseDestination = responseDestination;
         this.userTaggingTaskPersistenceService = userTaggingTaskPersistenceService;
+        this.userTaggingFilePath = userTaggingFilePath;
     }
 
     @Override
@@ -78,7 +80,8 @@ public class ControllerInvokedUserTaggingTask extends BaseControllerInvokedTask 
 
         /* run task */
         logger.info("Running user tagging task {}", USER_TAGGING_JOB_NAME);
-        if (!runCollectionJob(USER_TAGGING_JOB_NAME, UserTaggingTaskPersistenceService.USER_TAGGING_RESULT_ID, USER_TAGGING_JOB_GROUP)) {
+        if (!runCollectionJob(USER_TAGGING_JOB_NAME, UserTaggingTaskPersistenceService.USER_TAGGING_RESULT_ID, USER_TAGGING_JOB_GROUP,
+                String.format("filePath=%s",  userTaggingFilePath))) {
             notifyTaskDone();
             return new UserTaggingTaskResponse(SUCCESS_FALSE, NO_EXECUTION_TIME);
         }

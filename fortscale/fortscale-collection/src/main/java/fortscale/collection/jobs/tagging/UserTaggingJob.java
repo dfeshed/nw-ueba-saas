@@ -1,15 +1,13 @@
 package fortscale.collection.jobs.tagging;
 
 import fortscale.collection.jobs.FortscaleJob;
-import fortscale.domain.rest.SystemSetupFileConf;
-import fortscale.domain.rest.SystemSetupFileRunningMode;
 import fortscale.services.UserService;
 import fortscale.services.UserTagService;
 import fortscale.services.users.tagging.UserTaggingTaskPersistenceService;
 import fortscale.services.users.tagging.UserTaggingTaskPersistencyServiceImpl;
 import fortscale.utils.logging.Logger;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
@@ -33,7 +31,6 @@ public class UserTaggingJob extends FortscaleJob {
     private boolean useFile = false;
     private String resultsId;
     private String tagFilePath;
-    private boolean shouldDeleteFilePath = false;
 
     @Autowired
     private UserTagService userTagService;
@@ -45,12 +42,18 @@ public class UserTaggingJob extends FortscaleJob {
     @Override
     protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         JobDataMap map = jobExecutionContext.getMergedJobDataMap();
-
-        SystemSetupFileConf systemSetupFileConf = userTaggingTaskPersistenceService.getSystemSetupFileConf();
-        if (systemSetupFileConf != null) {
+        String filePath = jobDataMapExtension.getJobDataMapStringValue(map, "filePath", false);
+        if (StringUtils.isNotEmpty(filePath)){
+            logger.info("Received file path from the command line. The path {}", filePath);
             useFile = true;
-            tagFilePath = systemSetupFileConf.getPath();
-            shouldDeleteFilePath = systemSetupFileConf.getMode().equals(SystemSetupFileRunningMode.RUN_ONCE);
+            tagFilePath = filePath;
+        }else {
+            filePath = userTaggingTaskPersistenceService.getSystemSetupUserTaggingFilePath();
+            if (StringUtils.isNotEmpty(filePath)) {
+                useFile = true;
+                tagFilePath = filePath;
+                logger.info("Got file path from mongo. The path {}", filePath);
+            }
         }
 
         // ID for deployment wizard user tagging results
@@ -190,12 +193,6 @@ public class UserTaggingJob extends FortscaleJob {
 
             }
             logger.info("tags loaded");
-
-            if (shouldDeleteFilePath){
-                // Delete the tagging file configurations
-                logger.info("Deleting the system setup file config after running the file once");
-                userTaggingTaskPersistenceService.deleteSystemSetupFileConf();
-            }
 
         } else {
             saveResultFailed();
