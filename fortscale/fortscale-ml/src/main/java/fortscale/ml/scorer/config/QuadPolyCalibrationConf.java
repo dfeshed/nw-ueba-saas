@@ -6,13 +6,15 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.util.Assert;
 
-@JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
+@JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE, isGetterVisibility = Visibility.NONE)
 public class QuadPolyCalibrationConf {
 	public static final double DEFAULT_SENSITIVITY = 1.0;
 	public static final boolean DEFAULT_IS_SCORE_FOR_SMALL_VALUES = true;
 	public static final boolean DEFAULT_IS_SCORE_FOR_LARGE_VALUES = true;
 
+	@JsonProperty("a1")
 	private double a1;
+	@JsonProperty("a2")
 	private double a2;
 	@JsonProperty("sensitivity")
 	private double sensitivity = DEFAULT_SENSITIVITY;
@@ -47,5 +49,17 @@ public class QuadPolyCalibrationConf {
 
 	public boolean isScoreForLargeValues() {
 		return isScoreForLargeValues;
+	}
+
+	public void setSensitivity(double sensitivity) {
+		this.sensitivity = sensitivity;
+	}
+
+	public void setScoreForSmallValues(boolean scoreForSmallValues) {
+		isScoreForSmallValues = scoreForSmallValues;
+	}
+
+	public void setScoreForLargeValues(boolean scoreForLargeValues) {
+		isScoreForLargeValues = scoreForLargeValues;
 	}
 }

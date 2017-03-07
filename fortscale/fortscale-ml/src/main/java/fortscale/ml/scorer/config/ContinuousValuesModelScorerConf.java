@@ -8,10 +8,11 @@ import org.springframework.util.Assert;
 
 import java.util.List;
 
-@JsonAutoDetect(fieldVisibility = Visibility.NONE, getterVisibility = Visibility.NONE, setterVisibility = Visibility.ANY)
+@JsonAutoDetect(fieldVisibility = Visibility.NONE, getterVisibility = Visibility.ANY, setterVisibility = Visibility.ANY, isGetterVisibility = Visibility.ANY)
 public class ContinuousValuesModelScorerConf extends ModelScorerConf {
 	public static final String SCORER_TYPE = "continuous-values-model-scorer";
 
+	@JsonProperty("quad-poly-calibration-conf")
 	private QuadPolyCalibrationConf quadPolyCalibrationConf;
 	/*
 	 * Inherited non mandatory fields:
