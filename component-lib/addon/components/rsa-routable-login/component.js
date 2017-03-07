@@ -33,10 +33,10 @@ const _STATUS = {
 };
 
 export default Component.extend({
-  appVersion: service(),
-  session: service(),
-
   ajax: service(),
+  appVersion: service(),
+  request: service(),
+  session: service(),
 
   classNames: ['rsa-login'],
 
@@ -48,6 +48,10 @@ export default Component.extend({
 
   layout,
 
+  newPassword: null,
+
+  newPasswordConfirm: null,
+
   password: null,
 
   tagName: 'centered',
@@ -57,6 +61,8 @@ export default Component.extend({
   status: _STATUS.INIT,
 
   username: null,
+
+  mustChangePassword: false,
 
   @computed('eulaKey')
   displayEula: {
@@ -83,6 +89,16 @@ export default Component.extend({
     return (uidFails || pwFails || waiting);
   },
 
+  @computed('password', 'newPassword', 'newPasswordConfirm', 'status')
+  changePasswordDisabled: (password, newPassword, newPasswordConfirm, status) => {
+    const pwFails = (typeOf(password) !== 'string') || (password.trim().length === 0);
+    const newPwFails = (typeOf(newPassword) !== 'string') || (newPassword.trim().length === 0);
+    const confirmPwFails = (typeOf(newPasswordConfirm) !== 'string') || (newPasswordConfirm.trim().length === 0);
+    const waiting = status === _STATUS.WAIT;
+
+    return (pwFails || newPwFails || confirmPwFails || waiting);
+  },
+
   @readOnly
   @alias('appVersion.version')
   version: null,
@@ -104,10 +120,7 @@ export default Component.extend({
       session.authenticate(auth, this.get('username'), this.get('password')).then(
         // Auth succeeded
         () => {
-          this.setProperties({
-            status: _STATUS.SUCCESS,
-            errorMessage: null
-          });
+          this.updateLoginProperties(_STATUS.SUCCESS);
 
           const query = window.location.search;
 
@@ -118,30 +131,66 @@ export default Component.extend({
 
         // Auth failed
         (message) => {
-          let errorMessage = 'login.genericError';
-          const exception = message.error_description;
+          if (message.user && message.user.mustChangePassword) {
+            this.updateLoginProperties(_STATUS.INIT, null, true);
+          } else {
+            let errorMessage = 'login.genericError';
+            const exception = message.error_description;
 
-          if (exception) {
-            if (exception.includes('locked')) {
-              errorMessage = 'login.userLocked';
-            } else if (exception.includes('disabled')) {
-              errorMessage = 'login.userDisabled';
-            } else if (exception.includes('expired')) {
-              errorMessage = 'login.userDisabled';
+            if (exception) {
+              if (exception.includes('locked')) {
+                errorMessage = 'login.userLocked';
+              } else if (exception.includes('disabled')) {
+                errorMessage = 'login.userDisabled';
+              } else if (exception.includes('expired')) {
+                errorMessage = 'login.userExpired';
+              }
             }
+            this.updateLoginProperties(_STATUS.ERROR, errorMessage);
+
+            this.$('.js-test-login-username-input').focus();
           }
-
-          this.setProperties({
-            status: _STATUS.ERROR,
-            username: null,
-            password: null,
-            errorMessage
-          });
-
-          this.$('.js-test-login-username-input').focus();
         }
       );
     }
+  },
+
+  changePassword() {
+    this.set('status', _STATUS.WAIT);
+
+    if (this.get('newPassword') !== this.get('newPasswordConfirm')) {
+      this.updateLoginProperties(_STATUS.INIT, 'login.passwordMismatch', true);
+    } else if (this.get('newPassword') === this.get('password')) {
+      this.updateLoginProperties(_STATUS.INIT, 'login.passwordNoChange', true);
+    } else {
+      this.set('status', _STATUS.SUCCESS);
+      this.get('request').promiseRequest({
+        method: 'updatePassword',
+        modelName: 'passwords',
+        query: {
+          data: {
+            currentPassword: this.get('password'),
+            newPassword: this.get('newPassword')
+          }
+        }
+      }).then(() => {
+        this.updateLoginProperties(_STATUS.SUCCESS);
+      }).catch(() => {
+        this.updateLoginProperties(_STATUS.INIT, 'login.passwordChangeFailed', true);
+      });
+    }
+  },
+
+  updateLoginProperties(status, errorMessage = null, mustChangePassword = false) {
+    this.setProperties({
+      username: null,
+      password: null,
+      newPassword: null,
+      newPasswordConfirm: null,
+      status,
+      errorMessage,
+      mustChangePassword
+    });
   },
 
   didInsertElement() {
@@ -171,6 +220,10 @@ export default Component.extend({
 
     authenticate() {
       this.authenticate();
+    },
+
+    changePassword() {
+      this.changePassword();
     }
   }
 });

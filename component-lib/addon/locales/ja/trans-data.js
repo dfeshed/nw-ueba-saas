@@ -23,7 +23,13 @@ export default {
     login: 'ja_Login',
     loggingIn: 'ja_Logging In',
     logout: 'ja_Logout',
+    oldPassword: 'ja_Old Password',
+    newPassword: 'ja_New Password',
+    confirmPassword: 'ja_Confirm Password',
     lostPasswordLink: 'ja_Lost Password?',
+    passwordMismatch: 'ja_Password confirmation does not match.',
+    passwordNoChange: 'ja_New password cannot match your old password.',
+    passwordChangeFailed: 'ja_There was an issue while saving your password change. Please try again.',
     genericError: 'ja_Authentication error. Please try again.',
     userLocked: 'ja_User account is locked',
     userDisabled: 'ja_User account is disabled',
@@ -37,6 +43,14 @@ export default {
       title: 'ja_Thank You!',
       description: 'ja_A password reset has been sent to the registered user\'s email account.',
       back: 'ja_Return to Login'
+    },
+    eula: {
+      title: 'ja_End User License Agreement',
+      agree: 'ja_Agree'
+    },
+    forcePassword: {
+      warning: 'ja_You will need to create a new password before you can log in.',
+      changePassword: 'ja_Change Password'
     }
   },
   userPreferences: {

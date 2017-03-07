@@ -118,18 +118,22 @@ export default OAuth2PasswordGrant.extend(csrfToken, oauthToken, {
       }
       this.makeRequest(serverTokenEndpoint, data).then((response, status, jqXHR) => {
         run(() => {
+          const csrfKey = this.get('csrfLocalstorageKey');
+          const csrf = jqXHR.getResponseHeader('X-CSRF-TOKEN') || null;
+
+          if (csrf) {
+            localStorage.setItem(csrfKey, csrf);
+          }
+
+          if (response.user.mustChangePassword) {
+            return reject(response);
+          }
+
           if (response.user.expiryUserNotify) {
             this.get('flashMessages').warning(this.get('i18n').t('login.changePasswordSoon'), {
               iconName: 'report-problem-circle',
               sticky: true
             });
-          }
-
-          const csrfKey = this.get('csrfLocalstorageKey');
-
-          const csrf = jqXHR.getResponseHeader('X-CSRF-TOKEN') || null;
-          if (csrf) {
-            localStorage.setItem(csrfKey, csrf);
           }
 
           const idleSessionTimeout = (parseInt(jqXHR.getResponseHeader('X-NW-Idle-Session-Timeout') || 10, 10)) * 60000;

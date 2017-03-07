@@ -36,8 +36,14 @@ module.exports = function(environment) {
         subscriptionDestination: '/user/queue/administration/timezones/get',
         requestDestination: '/ws/administration/timezones/get'
       }
+    },
+
+    passwords: {
+      socketUrl,
+      updatePassword: {
+        subscriptionDestination: '/user/queue/administration/security/user/updatePassword',
+        requestDestination: '/ws/administration/security/user/updatePassword'
+      }
     }
-
-
   };
 };

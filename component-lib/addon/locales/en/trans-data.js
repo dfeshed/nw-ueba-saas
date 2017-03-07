@@ -23,6 +23,12 @@ export default {
     login: 'Login',
     loggingIn: 'Logging In',
     logout: 'Logout',
+    oldPassword: 'Old Password',
+    newPassword: 'New Password',
+    confirmPassword: 'Confirm Password',
+    passwordMismatch: 'Password confirmation does not match.',
+    passwordNoChange: 'New password cannot match your old password.',
+    passwordChangeFailed: 'There was an issue while saving your password change. Please try again.',
     lostPasswordLink: 'Lost Password?',
     genericError: 'Authentication error. Please try again.',
     userLocked: 'User account is locked',
@@ -37,6 +43,14 @@ export default {
       title: 'Thank You!',
       description: 'A password reset has been sent to the registered user\'s email account.',
       back: 'Return to Login'
+    },
+    eula: {
+      title: 'End User License Agreement',
+      agree: 'Agree'
+    },
+    forcePassword: {
+      warning: 'You will need to create a new password before you can log in.',
+      changePassword: 'Change Password'
     }
   },
   userPreferences: {
