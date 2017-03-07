@@ -10,7 +10,7 @@ import org.springframework.util.Assert;
 import java.util.Collections;
 import java.util.List;
 
-@JsonAutoDetect(fieldVisibility = Visibility.NONE, getterVisibility = Visibility.NONE, setterVisibility = Visibility.ANY)
+@JsonAutoDetect(fieldVisibility = Visibility.NONE, getterVisibility = Visibility.ANY, setterVisibility = Visibility.ANY, isGetterVisibility = Visibility.ANY)
 public abstract class ModelScorerConf extends AbstractScorerConf {
     public static final int ENOUGH_NUM_OF_SAMPLES_TO_INFLUENCE_DEFAULT_VALUE = 1;
     public static final int MIN_NUM_OF_SAMPLES_TO_INFLUENCE_DEFAULT_VALUE = 1;
@@ -18,7 +18,7 @@ public abstract class ModelScorerConf extends AbstractScorerConf {
 
     @JsonProperty("number-of-samples-to-influence-enough")
     private int enoughNumOfSamplesToInfluence = ENOUGH_NUM_OF_SAMPLES_TO_INFLUENCE_DEFAULT_VALUE;
-    @JsonProperty("use-certainty-to-calculate-score")
+
     private boolean isUseCertaintyToCalculateScore = IS_USE_CERTAINTY_TO_CALCULATE_SCORE_DEFAULT_VALUE;
     @JsonProperty("model")
     private ModelInfo modelInfo;
@@ -49,6 +49,7 @@ public abstract class ModelScorerConf extends AbstractScorerConf {
         this.enoughNumOfSamplesToInfluence = enoughNumOfSamplesToInfluence;
     }
 
+    @JsonProperty("use-certainty-to-calculate-score")
     public void setUseCertaintyToCalculateScore(boolean useCertaintyToCalculateScore) {
         isUseCertaintyToCalculateScore = useCertaintyToCalculateScore;
     }
@@ -62,6 +63,7 @@ public abstract class ModelScorerConf extends AbstractScorerConf {
         return enoughNumOfSamplesToInfluence;
     }
 
+    @JsonProperty("use-certainty-to-calculate-score")
     public boolean isUseCertaintyToCalculateScore() {
         return isUseCertaintyToCalculateScore;
     }
