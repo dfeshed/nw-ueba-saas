@@ -20,7 +20,11 @@
     </div>
     <vbox class="rsa-context-panel__liveconnect__field">
       {{rsa-content-definition label=(t 'context.lc.compileTime')}}
-      {{rsa-content-datetime timestamp=liveConnectData.compileTime}}
+      {{#if liveConnectData.compileTime}}
+        {{rsa-content-datetime timestamp=liveConnectData.compileTime}}
+      {{else}}
+        {{t 'context.lc.blankField'}}
+      {{/if}}
     </vbox>
     <div class="rsa-context-panel__liveconnect__field">
       {{rsa-content-definition label=(t 'context.lc.mimeType') value=liveConnectData.mimeType}}

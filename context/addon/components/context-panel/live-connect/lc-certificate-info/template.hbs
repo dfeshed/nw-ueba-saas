@@ -11,11 +11,19 @@
   <vbox>
     <vbox class="rsa-context-panel__liveconnect__field">
       {{rsa-content-definition label=(t 'context.lc.certNotValidBefore')}}
-      {{rsa-content-datetime timestamp=liveConnectData.certNotValidBefore}}
+      {{#if liveConnectData.certNotValidBefore}}
+        {{rsa-content-datetime timestamp=liveConnectData.certNotValidBefore}}
+      {{else}}
+        {{t 'context.lc.blankField'}}
+      {{/if}}
     </vbox>
     <vbox class="rsa-context-panel__liveconnect__field">
       {{rsa-content-definition label=(t 'context.lc.certNotValidAfter')}}
-      {{rsa-content-datetime timestamp=liveConnectData.certNotValidAfter}}
+      {{#if liveConnectData.certNotValidAfter}}
+        {{rsa-content-datetime timestamp=liveConnectData.certNotValidAfter}}
+      {{else}}
+        {{t 'context.lc.blankField'}}
+      {{/if}}
     </vbox>
   </vbox>
 </hbox>

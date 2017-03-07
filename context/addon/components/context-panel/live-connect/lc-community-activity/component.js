@@ -3,7 +3,7 @@ import computed from 'ember-computed-decorators';
 import ContextHelper from 'context/util/util';
 import layout from './template';
 
-const { Component, set } = Ember;
+const { Component, set, isEmpty } = Ember;
 const riskTemplate = {
   'HIGH RISK': {
     desc: 'context.lc.highRiskDesc',
@@ -38,15 +38,22 @@ export default Component.extend({
 
   @computed('liveConnectData')
   trendingSubmissionActivity: (lcData) => ([
-    ContextHelper.filterLast30Days(lcData.customerHighRiskFeedbackPercentageTrend),
-    ContextHelper.filterLast30Days(lcData.customerRiskyFeedbackPercentageTrend),
-    ContextHelper.filterLast30Days(lcData.customerSuspiciousFeedbackPercentageTrend)
+    ContextHelper.filterLast30Days(lcData ? lcData.customerHighRiskFeedbackPercentageTrend : []),
+    ContextHelper.filterLast30Days(lcData ? lcData.customerRiskyFeedbackPercentageTrend : []),
+    ContextHelper.filterLast30Days(lcData ? lcData.customerSuspiciousFeedbackPercentageTrend : [])
   ]),
+
+  @computed('trendingSubmissionActivity')
+  showSubmissionTrend: (submissionTrend) => {
+    return submissionTrend.any((arr) => {
+      return !isEmpty(arr);
+    });
+  },
 
   @computed('liveConnectData.tags', 'allTags')
   riskIndicatorCategories: (riskIndicatorTags, allTags) => {
     // Collect tags to be highlighted
-    const tagsToHighlight = riskIndicatorTags.reduce((hash, tag) => {
+    const tagsToHighlight = (riskIndicatorTags || []).reduce((hash, tag) => {
       hash[tag] = true;
       return hash;
     }, {});

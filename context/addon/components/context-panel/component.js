@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import LiveConnect from 'context/config/live-connect';
+import liveConnectObj from 'context/config/liveconnect-response-schema';
 import layout from './template';
 
 const {
@@ -10,39 +11,12 @@ const {
   run,
   Component,
   Logger,
+  isEmpty,
   String: {
     htmlSafe
   },
   Object: EmberObject
 } = Ember;
-
-const liveConnectObj = {
-  allTags: 'allTags',
-  allReasons: 'allReasons',
-  'LiveConnect-Ip': {
-    info: 'IpInfo',
-    Reputation: 'IpReputation',
-    fetchRelatedEntities: ['lcRelatedFiles', 'lcRelatedDomains'],
-    relatedEntityResponse: 'ips',
-    relatedEntity: 'RelatedIps',
-    relatedEntities_count: ['relatedFilesCount', 'relatedDomainsCount']
-  },
-  'LiveConnect-Domain': {
-    info: 'DomainInfo',
-    Reputation: 'DomainReputation',
-    fetchRelatedEntities: ['lcRelatedIps', 'lcRelatedFiles'],
-    relatedEntityResponse: 'domains',
-    relatedEntity: 'RelatedDomains',
-    relatedEntities_count: ['relatedIpsCount', 'relatedFilesCount']
-  },
-  'LiveConnect-File': {
-    info: 'FileInfo', Reputation: 'FileReputation',
-    fetchRelatedEntities: ['lcRelatedDomains', 'lcRelatedIps'],
-    relatedEntityResponse: 'files',
-    relatedEntity: 'RelatedFiles',
-    relatedEntities_count: ['relatedIpsCount', 'relatedDomainsCount']
-  }
-};
 
 export default Component.extend({
   layout,
@@ -119,6 +93,7 @@ export default Component.extend({
               Logger.error('DataSource group for', entry.dataSourceName, 'is not configured');
             }
           });
+          this._endOfResponse();
         }
       },
       onError: (response) => {
@@ -161,7 +136,7 @@ export default Component.extend({
 
     // Did individual piece of context data have error?
     // store that error so it can be displayed by renderer
-    if (contextDatum.errorMessage) {
+    if (contextDatum.errorMessage || contextDatum.failed) {
       Logger.error('Error processing stream call for context lookup for data source ->', contextDatum.dataSourceName);
       this._enrichDataSourceError(contextDatum);
       contextData.set(`${contextDatum.dataSourceGroup}_ERROR`, contextDatum.errorMessage);
@@ -186,18 +161,14 @@ export default Component.extend({
       case 'LiveConnect-File':
       case 'LiveConnect-Ip':
       case 'LiveConnect-Domain':
-        if (contextDatum.failed) {
-          this.set('model.liveConnectErrorMessage', contextDatum.errorMessage);
-        } else {
-          contextDatum.resultList.forEach((obj) => {
-            if (obj && obj.record && obj.record.length > 2) {
-              this._parseLiveConnectData(contextDatum.dataSourceGroup, obj.record);
-              this._fetchRelatedEntities(liveConnectObj[contextDatum.dataSourceType].fetchRelatedEntities);
-            } else {
-              contextData.set('liveConnectData', null);
-            }
-          });
-        }
+        contextDatum.resultList.forEach((obj) => {
+          if (obj && !isEmpty(obj.record)) {
+            this._parseLiveConnectData(contextDatum.dataSourceGroup, obj.record);
+            this._fetchRelatedEntities(liveConnectObj[contextDatum.dataSourceType].fetchRelatedEntities);
+          } else {
+            contextData.set('liveConnectData', null);
+          }
+        });
         break;
 
       default:
@@ -205,15 +176,50 @@ export default Component.extend({
     }
   },
 
+  _endOfResponse() {
+    if (!this.get('model.contextData.liveConnectData.allTags')) {
+      this.set('model.contextData.liveConnectData', null);
+    }
+  },
+
   _parseLiveConnectData(dataSourceType, record) {
     const lcData = this.get('model.contextData.liveConnectData');
     const entityType = liveConnectObj[dataSourceType];
-    lcData.set(entityType.info, record[0][entityType.info]);
-    lcData.set(entityType.Reputation, record[1][entityType.Reputation]);
-    lcData.set(liveConnectObj.allTags, record[2].LiveConnectApi.riskTagTypes);
-    lcData.set(liveConnectObj.allReasons, record[2].LiveConnectApi.riskReasonTypes);
+    record.forEach((obj) => {
+      if (obj[entityType.info]) {
+        this._checkNullForInfo(entityType, obj);
+        lcData.set(entityType.info, obj[entityType.info]);
+      } else if (obj[entityType.Reputation]) {
+        this._checkNullForReputation(entityType, obj);
+        lcData.set(entityType.Reputation, obj[entityType.Reputation]);
+      } else if (obj.LiveConnectApi) {
+        lcData.set(liveConnectObj.allTags, obj.LiveConnectApi.riskTagTypes);
+        lcData.set(liveConnectObj.allReasons, obj.LiveConnectApi.riskReasonTypes);
+      }
+    });
     entityType.relatedEntities_count.forEach((obj)=> {
-      this.get('model').contextData[obj] = record[1][entityType.Reputation][obj];
+      const reputationObj = record.find((rec) => {
+        return !isEmpty(rec[entityType.Reputation]);
+      });
+      if (reputationObj) {
+        this.get('model').contextData[obj] = reputationObj[entityType.Reputation][obj];
+      }
+    });
+  },
+
+  _checkNullForInfo(entityType, obj) {
+    entityType.checkNullFields.forEach((field) => {
+      if (isEmpty(obj[entityType.info][field])) {
+        obj[entityType.info][field] = this.get('i18n').t('context.lc.blankField');
+      }
+    });
+  },
+
+  _checkNullForReputation(entityType, obj) {
+    liveConnectObj.reputationCheckNullFields.forEach((field) => {
+      if (isEmpty(obj[entityType.Reputation][field])) {
+        obj[entityType.Reputation][field] = '0';
+      }
     });
   },
 
@@ -232,7 +238,7 @@ export default Component.extend({
       },
       streamOptions: { requireRequestId: false },
       onResponse: ({ data }) => {
-        Logger.info('pushing data to relatedEntity model');
+        Logger.debug('pushing data to relatedEntity model');
         if (isArray(data)) {
           data.forEach((entry) => {
             this._populateRelatedEntities(entry);

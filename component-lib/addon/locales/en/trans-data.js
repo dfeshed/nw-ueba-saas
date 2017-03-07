@@ -534,6 +534,10 @@ export default {
     lc: {
       reviewStatus: 'Review Status',
       status: 'Status',
+      notReviewed: 'NOT REVIEWED',
+      noFeedback1: 'No Feedback Analysis Yet',
+      noFeedback2: ' - Be an active member of the Live Connect Threat Community, provide your risk assessment',
+      blankField: '-',
       modifiedDate: 'Modified Date',
       reviewer: 'Reviewer',
       riskConfirmation: 'Risk Confirmation',
@@ -600,7 +604,7 @@ export default {
       whoisEmail: 'Email',
       domain: 'Domain',
       ipAddress: 'IP Address',
-      errorMsg: 'Error occurred while fetching Live Connect data: ',
+      errorMsg: 'Could not fetch data from Live Connect: {{error}}',
       riskAssessment: 'Live Connect Risk Assessment',
       riskReason: 'Risk Reasons',
       highRiskDesc: 'Indicator seen as high risk and deserves focused attention',
@@ -625,7 +629,9 @@ export default {
       select: 'Select...',
       feedbackSubmitted: 'Feedback has been submitted to Live Connect server.',
       feedbackSubmissionFailed: 'Could not submit feedback to Live Connect server.',
-      feedbackFormInvalid: 'Select the \'Risk Confirmation\' and \'Confidence Level\'.'
+      feedbackFormInvalid: 'Select the \'Risk Confirmation\' and \'Confidence Level\'.',
+      noTrendingCommunityActivity: 'There is no new community activity in the past 30 days',
+      noTrendingSubmissionActivity: 'There are no new submissions in the past 30 days'
     },
     error: {
       error: 'Error processing stream call for context lookup.',

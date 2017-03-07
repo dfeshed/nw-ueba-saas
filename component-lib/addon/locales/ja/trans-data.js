@@ -534,6 +534,10 @@ export default {
     lc: {
       reviewStatus: 'ja_Review Status',
       status: 'ja_Status',
+      notReviewed: 'ja_NOT REVIEWED',
+      noFeedback1: 'ja_No Feedback Analysis Yet',
+      noFeedback2: 'ja_ - Be an active member of the Live Connect Threat Community, provide your risk assessment',
+      blankField: '-',
       modifiedDate: 'ja_Modified Date',
       reviewer: 'ja_Reviewer',
       riskConfirmation: 'ja_Risk Confirmation',
@@ -600,7 +604,7 @@ export default {
       whoisEmail: 'ja_Email',
       domain: 'ja_Domain',
       ipAddress: 'ja_IP Address',
-      errorMsg: 'ja_Error occurred while fetching Live Connect data: ',
+      errorMsg: 'ja_Could not fetch data from Live Connect: {{error}}',
       riskAssessment: 'ja_Live Connect Risk Assessment',
       riskReason: 'ja_Risk Reasons',
       highRiskDesc: 'ja_Indicator seen as high risk and deserves focused attention',
@@ -625,7 +629,9 @@ export default {
       select: 'ja_Select...',
       feedbackSubmitted: 'ja_Feedback has been submitted to Live Connect server',
       feedbackSubmissionFailed: 'ja_Could not submit feedback to Live Connect server',
-      feedbackFormInvalid: 'ja_Select the \'Risk Confirmation\' and \'Confidence Level\'.'
+      feedbackFormInvalid: 'ja_Select the \'Risk Confirmation\' and \'Confidence Level\'.',
+      noTrendingCommunityActivity: 'ja_There is no new community activity in the past 30 days',
+      noTrendingSubmissionActivity: 'ja_There are no new submissions in the past 30 days'
     },
     error: {
       error: 'ja_Error processing stream call for context lookup.',

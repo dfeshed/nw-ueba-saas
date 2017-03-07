@@ -3,15 +3,27 @@
   <vbox>
     <vbox class="rsa-context-panel__liveconnect__field">
       {{rsa-content-definition label=(t 'context.lc.whoisCreatedDate')}}
-      {{rsa-content-datetime timestamp=liveConnectData.whoisCreatedDate}}
+      {{#if liveConnectData.whoisCreatedDate}}
+        {{rsa-content-datetime timestamp=liveConnectData.whoisCreatedDate}}
+      {{else}}
+        {{t 'context.lc.blankField'}}
+      {{/if}}
     </vbox>
     <vbox class="rsa-context-panel__liveconnect__field">
       {{rsa-content-definition label=(t 'context.lc.whoisUpdatedDate')}}
-      {{rsa-content-datetime timestamp=liveConnectData.whoisUpdatedDate}}
+      {{#if liveConnectData.whoisUpdatedDate}}
+        {{rsa-content-datetime timestamp=liveConnectData.whoisUpdatedDate}}
+      {{else}}
+        {{t 'context.lc.blankField'}}
+      {{/if}}
     </vbox>
     <vbox class="rsa-context-panel__liveconnect__field">
       {{rsa-content-definition label=(t 'context.lc.whoisExpiredDate')}}
-      {{rsa-content-datetime timestamp=liveConnectData.whoisExpiredDate}}
+      {{#if liveConnectData.whoisExpiredDate}}
+        {{rsa-content-datetime timestamp=liveConnectData.whoisExpiredDate}}
+      {{else}}
+        {{t 'context.lc.blankField'}}
+      {{/if}}
     </vbox>
     <div class="rsa-context-panel__liveconnect__field">
       {{rsa-content-definition label=(t 'context.lc.whoisRegType') value=liveConnectData.whoisRegType}}

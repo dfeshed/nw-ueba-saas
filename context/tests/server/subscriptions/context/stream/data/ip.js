@@ -1488,7 +1488,7 @@ export default [
     'datasourceId': '57c149bfe4b0e8a1f1769a40',
     'currentPageId': 0,
     'pagingEnabled': 'False',
-    'failed': true,
+    'failed': false,
     'errorMessage': null,
     'dataSourceName': 'TestLookUpLiveConnect_LiveConnect_datasource',
     'dataSourceGroup': 'LiveConnect-File',

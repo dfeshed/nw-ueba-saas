@@ -28,9 +28,9 @@ const BodyComponent = Component.extend({
   machineData,
   userData,
 
-  @computed('activeTabName')
-  bodyStyleClass: (activeTabName) => {
-    return activeTabName === 'liveConnect' ? 'rsa-context-panel__body feedback-margin' : 'rsa-context-panel__body';
+  @computed('activeTabName', 'model.contextData.liveConnectData')
+  bodyStyleClass: (activeTabName, liveConnectData) => {
+    return activeTabName === 'liveConnect' && liveConnectData ? 'rsa-context-panel__body feedback-margin' : 'rsa-context-panel__body';
   }
 });
 

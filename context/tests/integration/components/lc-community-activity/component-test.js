@@ -2,11 +2,11 @@ import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 const liveConnectData = {
   'id': '1a708f247cc6a7364b873c029bbdf459',
-  'firstSeen': 1476077742000,
+  'firstSeen': 1488452350455,
   'risk': 'UNSAFE',
   'feedback': {
     'status': 'VIEWED',
-    'dateMarked': 1477388194946
+    'dateMarked': 1488452350655
   },
   'riskReasonTypeList': [
     'BLACKLISTED_BY_ONE_OR_MORE_CUSTOMER',
@@ -15,22 +15,22 @@ const liveConnectData = {
   'customerPercentage': 34.24,
   'customerPercentageTrend': [
     {
-      'time': 1401926400000,
+      'time': new Date().getTime() - 10000,
       'percentage': 9.45
     },
     {
-      'time': 1445731200000,
+      'time': new Date().getTime(), // Only data points for past 30 days are rendered, hence it has to be the time when the test runs
       'percentage': 34.24
     }
   ],
   'customerRiskyFeedbackPercentage': 100.0,
   'customerRiskyFeedbackPercentageTrend': [
     {
-      'time': 1401926400000,
+      'time': new Date().getTime() - 10000,
       'percentage': 55.5
     },
     {
-      'time': 1445731200000,
+      'time': new Date().getTime(),
       'percentage': 45.5
     }
   ],
@@ -55,11 +55,11 @@ const liveConnectData = {
   'customerNotRiskyFeedbackPercentage': 0.0,
   'customerNotRiskyFeedbackPercentageTrend': [
     {
-      'time': 1401926400000,
+      'time': new Date().getTime() - 10000,
       'percentage': 9.45
     },
     {
-      'time': 1445731200000,
+      'time': new Date().getTime(),
       'percentage': 34.24
     }
   ],
@@ -77,7 +77,7 @@ const liveConnectData = {
       'percentage': 9.45
     },
     {
-      'time': 1445731200000,
+      'time': new Date().getTime(),
       'percentage': 34.24
     }
   ],
@@ -95,11 +95,11 @@ const liveConnectData = {
   'customerHighRiskFeedbackPercentage': 0.0,
   'customerHighRiskFeedbackPercentageTrend': [
     {
-      'time': 1401926400000,
+      'time': new Date().getTime() - 10000,
       'percentage': 75.5
     },
     {
-      'time': 1445731200000,
+      'time': new Date().getTime(),
       'percentage': 64.5
     }
   ]

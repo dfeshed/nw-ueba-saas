@@ -175,9 +175,22 @@ radial-gradient(circle at 85% 85%, rsa-color(blue, darker, .1) 0, rsa-color(blue
     &__field {
       padding: rsa-whitespace();
     }
+    &__emptychart {
+      width: 100%;
+      height: 130px;
+      background: rsa-color(gray, darkest);
+      text-align: center;
+      span {
+        display: inline-block;
+        margin-top: 50px;
+      }
+    }
     &__field-name {
       @include rsa-font(header, small);
       padding: rsa-whitespace();
+    }
+    &__no-feedback-label {
+      color: rsa-color(amber, dark);
     }
     &__reviewstatus {
       width: 100%;
