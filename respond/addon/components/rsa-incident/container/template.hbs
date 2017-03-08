@@ -1,0 +1,26 @@
+<header class="rsa-incident-container__header">
+  {{rsa-incident/toolbar}}
+</header>
+<aside class="rsa-incident-container__aside">
+  {{rsa-incident/inspector}}
+</aside>
+<section class="rsa-incident-container__body">
+  <div class="rsa-incident-container__entities-rectangle js-entities-rectangle">
+    {{#if (eq storylineStatus 'wait')}}
+      <fill justify="center" align="center">
+        {{rsa-loader size="large" label=(t 'respond.storyline.loading')}}
+      </fill>
+    {{else if (eq storylineStatus 'error')}}
+      <fill justify="center" align="center">
+        {{rsa-icon name="warning-signal" size="large"}}
+        <h3>{{t 'respond.storyline.error'}}</h3>
+      </fill>
+    {{/if}}
+  </div>
+  {{rsa-incident/entities fitToSize=entitiesRectangle}}
+</section>
+<footer class="rsa-incident-container__footer">
+  {{#if isJournalPanelOpen}}
+    {{rsa-incident/journal}}
+  {{/if}}
+</footer>

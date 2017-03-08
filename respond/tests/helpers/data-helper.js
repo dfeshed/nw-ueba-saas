@@ -47,16 +47,6 @@ class DataHelper {
       { code: 0, data }
     );
   }
-  toggleIncidentEntitiesPanel() {
-    _dispatchAction(this.redux, {
-      type: ACTION_TYPES.TOGGLE_ENTITIES_PANEL
-    });
-  }
-  toggleIncidentEventsPanel() {
-    _dispatchAction(this.redux, {
-      type: ACTION_TYPES.TOGGLE_EVENTS_PANEL
-    });
-  }
   toggleIncidentJournalPanel() {
     _dispatchAction(this.redux, {
       type: ACTION_TYPES.TOGGLE_JOURNAL_PANEL

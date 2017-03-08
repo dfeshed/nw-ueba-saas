@@ -1,0 +1,91 @@
+<header class="header">
+
+  <div class="connector">
+    <div class="line"></div>
+  </div>
+
+  <hbox class="content">
+    <box fill class="source-and-type">
+
+      <p class="is-catalyst">
+        {{#if item.isCatalyst}}
+          {{t 'respond.storyline.catalystIndicator'}}
+        {{else}}
+          {{t 'respond.storyline.relatedIndicator'}}
+        {{/if}}
+      </p>
+
+      {{!Source}}
+      <p class="source">
+        <label>{{t 'respond.storyline.source'}}:</label>
+        <span>{{indicator/source item.indicator}}</span>
+      </p>
+    </box>
+
+    {{!Indicator time + event count}}
+    <vbox fit nowrap align="end" class="time-and-num-events">
+      <p class="time">{{rsa-content-datetime timestamp=item.time displayAsTimeAgo=false displayDate=true displayTime=true}}</p>
+      <p class="num-events">
+        {{item.events.length}}
+        {{#if (eq item.events.length 1)}}
+          {{t 'respond.storyline.event'}}
+        {{else}}
+          {{t 'respond.storyline.events'}}
+        {{/if}}
+      </p>
+    </vbox>
+  </hbox>
+</header>
+
+<section class="main">
+  <div class="connector">
+    <div class="severity">{{item.indicator.alert.severity}}</div>
+    <div class="line"></div>
+  </div>
+
+  <div class="content">
+    {{!Display name}}
+    <h3>{{item.name}}</h3>
+
+    {{!Content only for indicators from outside incident}}
+    {{#unless item.isCatalyst}}
+
+      {{!Related incident}}
+      {{#if item.indicator.partOfIncident}}
+        <p class="incident">
+          <label>{{t 'respond.storyline.partOfIncident'}}:</label>
+          <span>
+            {{#link-to 'incident' item.indicator.incidentId}}
+              {{item.indicator.incidentId}}
+            {{/link-to}}
+          </span>
+        </p>
+      {{/if}}
+
+      {{!Related entities}}
+      {{#if resolvedMatched.length}}
+        <p class="related">
+          <label>{{t 'respond.storyline.relatedBy'}}:</label>
+          <span>
+            {{#each resolvedMatched as |match|}}
+              {{#if match}}
+                <span class="entity">{{match}}</span>
+              {{/if}}
+            {{/each}}
+          </span>
+        </p>
+      {{/if}}
+    {{/unless}}
+
+    {{!Enrichments list}}
+    {{#with enrichments as |ens|}}
+      <ul class="enrichment-list">
+        {{#each ens as |en|}}
+          <li class="enrichment">
+            {{enrichment/desc en.key score=en.score}}
+          </li>
+        {{/each}}
+      </ul>
+    {{/with}}
+  </div>
+</section>

@@ -1,0 +1,68 @@
+{{! Created time}}
+<p class="created">
+  <label>{{t 'respond.incident.created'}}:</label>
+  <span>
+    {{rsa-content-datetime timestamp=info.created asTimeAgo=false displayTime=true displayDate=true}}
+  </span>
+</p>
+
+{{#if info.timeWindowExpiration}}
+
+  {{! We have an expiration date, so display that alongside the Sealed status (boolean)}}
+  <p class="sealed has-expiration">
+    <label>{{t (if info.sealed 'respond.incident.sealed' 'respond.incident.sealsAt')}}:</label>
+    <span>
+      {{rsa-content-datetime timestamp=info.timeWindowExpiration asTimeAgo=false displayTime=true displayDate=true}}
+    </span>
+  </p>
+
+{{else}}
+
+  {{! We don't have an expiration date, so just display the Sealed status (boolean)}}
+  <p class="sealed has-no-expiration">
+    <label>{{t 'respond.incident.sealed'}}:</label>
+    <span>{{if info.sealed 'Yes' 'No'}}</span>
+  </p>
+
+{{/if}}
+
+{{! Created by (rule name or user name)}}
+<p class="by">
+  <label>{{if info.createdFromRule 'Rule' 'By'}}:</label>
+  <span>{{info.createdBy}}</span>
+</p>
+
+{{! Sources ("Event Stream Analysis", "ECAT", etc)}}
+<p class="sources">
+  <label>{{t 'respond.incident.sources'}}:</label>
+  <span>
+    {{#each info.sources as |source|}}
+      <span class="source">{{source}}</span>
+    {{/each}}
+  </span>
+</p>
+
+{{! Categories ("Malware", "C2", etc)}}
+<p class="categories">
+  <label>{{t 'respond.incident.categories'}}:</label>
+  <span>
+    {{#each info.categories as |category|}}
+      <span class="category">
+        <span class="parent">{{category.parent}}:</span>
+        <span class="name">{{category.name}}</span>
+      </span>
+    {{/each}}
+  </span>
+</p>
+
+{{! Alert count}}
+<p class="alert-count">
+  <label>{{t 'respond.incident.alertCount'}}:</label>
+  <span>{{info.alertCount}}</span>
+</p>
+
+{{! Event count}}
+<p class="event-count">
+  <label>{{t 'respond.incident.eventCount'}}:</label>
+  <span>{{info.eventCount}}</span>
+</p>

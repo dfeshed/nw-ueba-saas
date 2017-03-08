@@ -44,8 +44,19 @@ let initialState = {
 initialState = load(initialState, localStorageKey);
 
 // Mechanism to persist some of the state to local storage
+// This function will curry a given reducer (function), enabling it to persist its resulting state to a given
+// local storage key.
+// Note: this implementation may be replaced either with (a) user preference service calls, or (b) with a more
+// sophisticated solution with local storage
+// @param {function} callback A reducer that will update a given state before persisting it to local storage.
+// @returns {Function} The curried reducer.
 const persistIncidentsState = (callback) => {
-  return persist(callback, localStorageKey);
+  return (function() {
+    const state = callback(...arguments);
+    const { incidentsSort, incidentsFilters, isFilterPanelOpen, isAltThemeActive } = state;
+    persist({ incidentsSort, incidentsFilters, isFilterPanelOpen, isAltThemeActive }, localStorageKey);
+    return state;
+  });
 };
 
 const incidents = reduxActions.handleActions({

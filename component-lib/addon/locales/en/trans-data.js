@@ -391,8 +391,46 @@ export default {
       riskScore: 'Risk Score',
       assignee: 'Assignee',
       alertCount: 'Alerts',
+      eventCount: 'Events',
       sealed: 'Sealed',
-      sealsAt: 'Seals At'
+      sealsAt: 'Seals At',
+      sources: 'Sources',
+      categories: 'Categories',
+      backToIncidents: 'Back To Incidents',
+      showOverview: 'Show: Overview',
+      showStoryline: 'Show: Storyline',
+      showEventsTable: 'Show: Events Table'
+    },
+    storyline: {
+      loading: 'Loading incident storyline',
+      error: 'Unable to load incident storyline',
+      catalystIndicator: 'Catalyst Indicator',
+      relatedIndicator: 'Related Indicator',
+      source: 'Source',
+      partOfIncident: 'Part of Incident',
+      relatedBy: 'Related to Catalyst by',
+      event: 'event',
+      events: 'events'
+    },
+    details: {
+      loading: 'Loading incident details',
+      error: 'Unable to load incident details'
+    },
+    journal: {
+      title: 'Journal',
+      close: 'Close',
+      milestone: 'Milestone'
+    },
+    eventsTable: {
+      time: 'Time',
+      user: 'User',
+      host: 'Host',
+      domain: 'Domain',
+      source: 'Source',
+      destination: 'Destination',
+      file: 'File',
+      indicator: 'Indicator',
+      blank: ''
     },
     enrichment: {
       uniformTimeIntervals: 'The time intervals between communication events are very uniform.',

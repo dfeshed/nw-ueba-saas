@@ -106,8 +106,12 @@ export default Component.extend({
     },
     set(value = {}) {
 
-      value.nodes = value.nodes || [];
-      value.links = value.links || [];
+      if (!value.nodes) {
+        set(value, 'nodes', []);
+      }
+      if (!value.links) {
+        set(value, 'links', []);
+      }
 
       // Ensure all the given nodes (if any) have a radius.
       // Doing this here, rather than later, ensures our template doesn't initially render them without a radius.
@@ -381,6 +385,8 @@ export default Component.extend({
     const fitToSize = this.get('fitToSize') || {};
     const fitToWidth = fitToSize.width || width;
     const fitToHeight = fitToSize.height || height;
+    const fitToCenter = (fitToSize.left + fitToSize.width / 2) || (width / 2);
+    const fitToMiddle = (fitToSize.top + fitToSize.height / 2) || (height / 2);
 
     // The transform can also include a scale needed to make the nodes' bounding box fit in the optional properties
     // 'fitToWidth' and 'fitToSize' (if any). Don't go larger scale than 1.5, for cosmetic reasons.
@@ -402,8 +408,8 @@ export default Component.extend({
       `translate(${[(-1 * box.center).toFixed(3), (-1 * box.middle).toFixed(3)]})`,
       // (2) apply the scale factor
       `scale(${k.toFixed(3)})`,
-      // (3) move the bounding box to the center of the component
-      `translate(${[ (width / 2).toFixed(3), (height / 2).toFixed(3)]})`
+      // (3) move the bounding box to the center of the `fitToSize` rectangle (or, if undefined, center of component).
+      `translate(${[ fitToCenter.toFixed(3), fitToMiddle.toFixed(3)]})`
     ].reverse().join(' ');  // Reverse the array order because SVG transforms are applied right to left.
 
     // Apply the transform to SVG, possibly with a transition.
@@ -456,7 +462,7 @@ export default Component.extend({
   afterRender() {
     // Attach resize event listener.
     this._resizeCallback = () => {
-      this.center('none');
+      run.throttle(this, 'center', 'none', 250, false);
     };
     addResizeListener(this.element, this._resizeCallback);
   },

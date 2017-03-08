@@ -21,11 +21,8 @@ let initialState = {
   // either 'wait', 'error' or 'completed'
   storylineStatus: null,
 
-  // true when user toggles "Entities" btn to reveal force-layout graph
-  isEntitiesPanelOpen: false,
-
-  // true when user toggles "Events" btn to reveal events table
-  isEventsPanelOpen: false,
+  // either 'overview', 'storyline' or 'events'
+  viewMode: 'overview',
 
   // true when user toggles "Journal" btn to reveal journal
   isJournalPanelOpen: false
@@ -35,8 +32,19 @@ let initialState = {
 initialState = load(initialState, localStorageKey);
 
 // Mechanism to persist some of the state to local storage
+// This function will curry a given reducer (function), enabling it to persist its resulting state to a given
+// local storage key.
+// Note: this implementation may be replaced either with (a) user preference service calls, or (b) with a more
+// sophisticated solution with local storage
+// @param {function} callback A reducer that will update a given state before persisting it to local storage.
+// @returns {Function} The curried reducer.
 const persistIncidentState = (callback) => {
-  return persist(callback, localStorageKey);
+  return (function() {
+    const state = callback(...arguments);
+    const { viewMode, isJournalPanelOpen } = state;
+    persist({ viewMode, isJournalPanelOpen }, localStorageKey);
+    return state;
+  });
 };
 
 const incident = reduxActions.handleActions({
@@ -73,14 +81,9 @@ const incident = reduxActions.handleActions({
     });
   },
 
-  [ACTION_TYPES.TOGGLE_ENTITIES_PANEL]: persistIncidentState((state) => ({
+  [ACTION_TYPES.SET_VIEW_MODE]: persistIncidentState((state, { payload }) => ({
     ...state,
-    isEntitiesPanelOpen: !state.isEntitiesPanelOpen
-  })),
-
-  [ACTION_TYPES.TOGGLE_EVENTS_PANEL]: persistIncidentState((state) => ({
-    ...state,
-    isEventsPanelOpen: !state.isEventsPanelOpen
+    viewMode: payload
   })),
 
   [ACTION_TYPES.TOGGLE_JOURNAL_PANEL]: persistIncidentState((state) => ({

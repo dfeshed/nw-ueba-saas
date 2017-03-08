@@ -382,7 +382,7 @@ export default {
         sources: 'ja_Source',
         noResultsMessage: 'ja_No matching Incidents were found'
       },
-      footer: 'Showing {{count}} out of {{total}} incidents'
+      footer: 'ja_Showing {{count}} out of {{total}} incidents'
     },
     incident: {
       created: 'ja_Created',
@@ -391,8 +391,46 @@ export default {
       riskScore: 'ja_Risk Score',
       assignee: 'ja_Assignee',
       alertCount: 'ja_Alerts',
+      eventCount: 'ja_Events',
       sealed: 'ja_Sealed',
-      sealsAt: 'ja_Seals At'
+      sealsAt: 'ja_Seals At',
+      sources: 'ja_Sources',
+      categories: 'ja_Categories',
+      backToIncidents: 'ja_Back To Incidents',
+      showOverview: 'ja_Show: Overview',
+      showStoryline: 'ja_Show: Storyline',
+      showEventsTable: 'ja_Show: Events Table'
+    },
+    storyline: {
+      loading: 'ja_Loading incident storyline',
+      error: 'ja_Unable to load incident storyline',
+      catalystIndicator: 'ja_Catalyst Indicator',
+      relatedIndicator: 'ja_Related Indicator',
+      source: 'ja_Source',
+      partOfIncident: 'ja_Part of Incident',
+      relatedBy: 'ja_Related to Catalyst by',
+      event: 'ja_event',
+      events: 'ja_events'
+    },
+    details: {
+      loading: 'ja_Loading incident details',
+      error: 'ja_Unable to load incident details'
+    },
+    journal: {
+      title: 'ja_Journal',
+      close: 'ja_Close',
+      milestone: 'ja_Milestone'
+    },
+    eventsTable: {
+      time: 'ja_Time',
+      user: 'ja_User',
+      host: 'ja_Host',
+      domain: 'ja_Domain',
+      source: 'ja_Source',
+      destination: 'ja_Destination',
+      file: 'ja_File',
+      indicator: 'ja_Indicator',
+      blank: ''
     },
     enrichment: {
       uniformTimeIntervals: 'ja_The time intervals between communication events are very uniform.',

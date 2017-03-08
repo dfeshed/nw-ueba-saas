@@ -1,0 +1,21 @@
+<hbox fit class="rsa-incident-journal__header">
+  <box fill>
+    <h2>{{t 'respond.journal.title'}}</h2>
+  </box>
+  <box fit>
+    {{rsa-icon
+      name="close"
+      size="small"
+      class="js-test-journal-close"
+      title=(t 'respond.journal.close')
+      click=(action "closeAction")
+    }}
+  </box>
+</hbox>
+<box fill class="rsa-incident-journal__body">
+  <div class="list">
+    {{#each entries as |entry|}}
+      {{rsa-incident/journal/entry entry=entry}}
+    {{/each}}
+  </div>
+</box>

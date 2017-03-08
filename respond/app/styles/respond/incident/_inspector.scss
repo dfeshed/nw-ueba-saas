@@ -1,0 +1,97 @@
+$incidentRiskScoreRadius: 1rem;
+
+.rsa-incident-inspector {
+  background-color: rsa-color(black, base, $rsa-translucent);
+  border-right: 1px solid rsa-color(white,base,$rsa-translucent);
+
+  &__header {
+    position: relative;
+    padding: rsa-whitespace();
+    text-align: center;
+    line-height: 1.35;
+
+    .id {
+      @include rsa-font(header,large);
+    }
+
+    .name {
+      @include rsa-font(light);
+    }
+
+    .back {
+      position: absolute;
+      z-index: 2;
+      top: 0;
+      left: 0;
+      bottom: 0;
+    }
+
+    .rsa-loader {
+      margin-top: rsa-whitespace();
+    }
+
+    .risk-score {
+      margin-top: rsa-whitespace();
+
+      > label {
+        @include rsa-font(header,small);
+        color: rsa-color(gray);
+        display: block;
+        margin: 0 auto rsa-whitespace(less) auto;
+      }
+
+      > span {
+        position: relative;
+        width: 2 * $incidentRiskScoreRadius;
+        height: 2 * $incidentRiskScoreRadius;
+        line-height: 2 * $incidentRiskScoreRadius;
+        border: 4px double rsa-color(gray);
+        border-radius: 2 * $incidentRiskScoreRadius;
+        text-align: center;
+        overflow: hidden;
+        display: block;
+        margin: 0 auto;
+      }
+    }
+  }
+
+  &__toolbar {
+    border-bottom: 1px solid rsa-color(gray,light,$rsa-nearly-transparent);
+
+    .rsa-icon {
+      position: relative;
+      border-bottom: 2px solid transparent;
+      transition: border-color 0.3s;
+      margin: 0 rsa-whitespace(less);
+
+      &.active {
+        border-color: rsa-color(blue,light);
+      }
+
+    }
+  }
+  .rsa-icon {
+    padding: rsa-whitespace(less);
+    cursor: pointer;
+    color: rsa-color(white);
+
+    &:hover,
+    &.active {
+      color: rsa-color(blue,light);
+    }
+  }
+  &__body {
+    position: relative;
+
+    .rsa-data-table,
+    .rsa-incident-overview,
+    .rsa-incident-storyline {
+      @include rsa-fill-abs();
+    }
+
+    .rsa-incident-overview,
+    .rsa-incident-storyline {
+      overflow: auto;
+    }
+  }
+}

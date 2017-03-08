@@ -1,0 +1,41 @@
+$incidentOverviewLabelWidth: 6rem;
+
+.rsa-incident-overview {
+  .rsa-incident-info-status {
+    overflow: auto;
+  }
+
+  p {
+    @include rsa-font(body,small);
+    padding: rsa-whitespace() rsa-whitespace(less) rsa-whitespace(less) (rsa-whitespace(less) + $incidentOverviewLabelWidth);
+    color: rsa-color(gray, light);
+    line-height: 1.35;
+    position: relative;
+
+    > label {
+      position: absolute;
+      left: 0;
+      top: 0;
+      margin: rsa-whitespace() rsa-whitespace(less);
+      max-width: $incidentOverviewLabelWidth - rsa-whitespace(less) * 2;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+  }
+  .source,
+  .category {
+
+    .parent {
+      padding-right: rsa-whitespace(least);
+    }
+
+    &:not(:last-of-type) {
+      padding-right: rsa-whitespace(least);
+
+      &::after {
+        content: ',';
+      }
+    }
+  }
+}

@@ -1,3 +1,6 @@
+import Ember from 'ember';
+const { Logger } = Ember;
+
 /**
  * Load local storage values and incorporate into initial state.
  * Note: this implementation may be replaced either with (a) user preference service calls, or (b) with a more
@@ -8,41 +11,32 @@
  * @public
  */
 const load = (initialState, localStorageKey) => {
+  let storedState;
+  try {
+    const json = localStorage.getItem(localStorageKey);
+    storedState = json ? JSON.parse(json) : null;
+  } catch (e) {
+    Logger.warn('Unable to load state from localStorage. Applying defaults.', localStorageKey, e);
+  }
   return {
     ...initialState,
-    ...(JSON.parse(localStorage.getItem(localStorageKey)) || {})
+    ...(storedState || {})
   };
 };
 
 /**
- * Mechanism to persist some of the state to local storage
- * This function will curry a given reducer (function), enabling it to persist its resulting state to a given
- * local storage key.
- * Note: this implementation may be replaced either with (a) user preference service calls, or (b) with a more
- * sophisticated solution with local storage
- * @param {function} callback A reducer that will update a given state before persisting it to local storage.
- * @param {string} localStorageKey The local storage key in which to persist state values.
- * @returns {Function} The curried reducer.
+ * Write local storage values.
+ * @param {object} payload Data to be written to local storage.
+ * @param {string} localStorageKey The local storage key in which to write payload.
  * @public
  */
-const persist = (callback, localStorageKey) => {
-  return (function() {
-    const state = callback(...arguments);
-    const { incidentsSort, incidentsFilters, isFilterPanelOpen, isAltThemeActive } = state;
-    try {
-      localStorage.setItem(localStorageKey, JSON.stringify({
-        incidentsFilters,
-        incidentsSort,
-        isFilterPanelOpen,
-        isAltThemeActive
-      }));
-    } catch (e) {
-      localStorage.setItem(localStorageKey, {});
-    }
-    return state;
-  });
+const persist = (payload, localStorageKey) => {
+  try {
+    localStorage.setItem(localStorageKey, JSON.stringify(payload));
+  } catch (e) {
+    localStorage.setItem(localStorageKey, {});
+  }
 };
-
 
 export {
   load,

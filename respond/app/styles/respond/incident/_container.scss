@@ -1,0 +1,50 @@
+$incidentInspectorWidth: 400px;
+
+.rsa-incident-container {
+  @include rsa-fill-abs();
+
+  &__header {
+    position: absolute;
+    z-index: 2;
+    top: 0;
+    right: 0;
+    margin: rsa-whitespace();
+  }
+
+  &__body {
+    @include rsa-fill-abs();
+    z-index: 1;
+  }
+
+  &__entities-rectangle {
+    @include rsa-fill-abs();
+    left: $incidentInspectorWidth;
+    z-index: -1;
+  }
+
+  &__aside {
+    @include rsa-fill-abs(0,auto);
+    width: $incidentInspectorWidth;
+    z-index: 2;
+  }
+
+  &__footer {
+    @include rsa-fill-abs(auto);
+    height: 0;
+    z-index: 2;
+
+    .rsa-incident-journal {
+      width: 400px;
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      height: 200px;
+      margin: rsa-whitespace();
+    }
+  }
+
+  .rsa-incident-inspector,
+  .rsa-force-layout {
+    @include rsa-fill-abs();
+  }
+}

@@ -1,11 +1,5 @@
 @import "mixins";
-@import "entity-graph";
 @import "force-layout";
-@import "incident-banner";
-@import "incident-explorer";
-@import "incident-journal";
+@import "incident/manifest";
 @import "incidents/manifest";
-@import "severity";
-@import "stat-sign";
-@import "storyline";
 @import "alt_theme";
