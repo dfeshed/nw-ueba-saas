@@ -59,7 +59,7 @@ public class UserTaggingTaskPersistencyServiceImpl implements UserTaggingTaskPer
 
     @Override
     public String getSystemSetupUserTaggingFilePath() {
-        return applicationConfigurationService.getApplicationConfigurationAsString(createResultKey(FILE_CONF_KEY)).get();
+        return applicationConfigurationService.getApplicationConfigurationAsObject(createResultKey(FILE_CONF_KEY), String.class);
     }
 
     @Override
