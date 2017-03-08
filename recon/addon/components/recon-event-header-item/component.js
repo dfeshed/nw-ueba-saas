@@ -3,6 +3,7 @@ import layout from './template';
 import computed from 'ember-computed-decorators';
 
 const { Component } = Ember;
+
 const DATE_DATATYPE = 2;
 
 export default Component.extend({

@@ -130,6 +130,19 @@ export default {
       settings: 'Settings',
       expand: 'Expand/Contract View',
       close: 'Close Reconstruction'
+    },
+    eventHeader: {
+      device: 'Device',
+      session: 'Session ID',
+      id: 'Session ID',
+      type: 'Type',
+      firstPacketTime: 'Collection Time',
+      eventTime: 'Event Time',
+      eventSource: 'Event Source',
+      eventType: 'Event Type',
+      service: 'Service',
+      serviceType: 'Service Type',
+      serviceClass: 'Service Class'
     }
   },
   memsize: {

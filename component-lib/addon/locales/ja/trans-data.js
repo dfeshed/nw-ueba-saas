@@ -130,6 +130,19 @@ export default {
       settings: 'ja_Settings',
       expand: 'ja_Expand/Contract View',
       close: 'ja_Close Reconstruction'
+    },
+    eventHeader: {
+      device: 'ja_Device',
+      session: 'ja_Session ID',
+      id: 'ja_Session ID',
+      type: 'ja_Type',
+      firstPacketTime: 'ja_Collection Time',
+      eventTime: 'ja_Event Time',
+      eventSource: 'ja_Event Source',
+      eventType: 'ja_Event Type',
+      service: 'ja_Service',
+      serviceType: 'ja_Service Type',
+      serviceClass: 'ja_Service Class'
     }
   },
   memsize: {

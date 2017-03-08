@@ -9,9 +9,9 @@
   {{else}}
     {{#if isHeaderOpen}}
       <div class="header-data">
-        {{#if headerItems}}
+        {{#if displayedHeaderItems}}
           <grid responsive>
-            {{#each headerItems as |item|}}
+            {{#each displayedHeaderItems as |item|}}
               {{recon-event-header-item name=item.name value=item.value type=item.type}}
             {{/each}}
           </grid>
