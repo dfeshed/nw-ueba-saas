@@ -29,6 +29,8 @@ public class HadoopInit implements InitializingBean{
 
 	@Autowired
 	CollectionPropertiesResolver env;
+	@Value("${hdfs.user.path}")
+	private String baseHdfsPath;
 	@Value("${user.account.name}")
 	private String hdfsUserAccount;
 	@Value("${user.account.name}")
@@ -76,6 +78,8 @@ public class HadoopInit implements InitializingBean{
 
 
 					partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaDataTablePartitionType);
+					String impalaDataBaseDirectory = env.getEnvPropertyValue("${hdfs.user.data.path}");
+					createDir(new Path(impalaDataBaseDirectory));
 					createTable(impalaDataTableName, impalaDataTableFields, partitionStrategy.getTablePartitionDefinition(), impalaDataTableDelimiter, impalaDataDirectory);
 				}
 
@@ -93,6 +97,8 @@ public class HadoopInit implements InitializingBean{
 					String impalaEnrichedDataTablePartitionType = env.getEnvPropertyValue(String.format("${impala.enricheddata.%s.table.partition.type}", dataSource));
 
 					partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaEnrichedDataTablePartitionType);
+					String impalaEnrichBaseDirectory = env.getEnvPropertyValue("${hdfs.user.enricheddata.path}");
+					createDir(new Path(impalaEnrichBaseDirectory));
 					createTable(impalaEnrichedDataTableName, impalaEnrichedDataTableFields, partitionStrategy.getTablePartitionDefinition(), impalaEnrichedDataTableDelimiter, impalaEnrichedDataDirectory);
 				}
 
@@ -106,6 +112,8 @@ public class HadoopInit implements InitializingBean{
 
 
 				partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaScoringTablePartitionType);
+				String impalaScoredBaseDirectory = env.getEnvPropertyValue("${hdfs.user.processeddata.path}");
+				createDir(new Path(impalaScoredBaseDirectory));
 				createTable(impalaScoringTableName, impalaScoringTableFields, partitionStrategy.getTablePartitionDefinition(), impalaScoringTableDelimiter, impalaScoringDirectory);
 
 
@@ -134,15 +142,22 @@ public class HadoopInit implements InitializingBean{
 
 	}
 
+	private void createDir(Path dirPath) throws IOException {
+		if(!hadoopFs.exists(dirPath))
+		{
+			final boolean folderCreated = hadoopFs.mkdirs(dirPath);
+			if (!folderCreated) {
+				logger.error("HDFS folder in path {} couldn't be created. FileSystem is: {}", dirPath.toString(), hadoopFs);
+			}
+		}
+		if(hadoopFs.exists(dirPath)) {
+			hadoopFs.setOwner(dirPath,hdfsUserAccount,hdfsUserGroup);
+		}
+	}
+
 	private void createTable(String tableName, String fields, String partition, String delimiter, String location) throws IOException {
 		final Path path = new Path(location);
-		if(!hadoopFs.exists(path)){
-			final boolean folderCreated = hadoopFs.mkdirs(path);
-			if (!folderCreated) {
-				logger.error("HDFS folder in path {} couldn't be created. FileSystem is: {}", location, hadoopFs);
-			}
-			hadoopFs.setOwner(path, hdfsUserAccount, hdfsUserGroup);
-		}
+		createDir(path);
 		try{
 			impalaClient.createTable(tableName, fields, partition, delimiter, location, true);
 		} catch(Exception e){
@@ -154,6 +169,12 @@ public class HadoopInit implements InitializingBean{
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
+		createBasePathDir();
 		createImpalaTables();
+	}
+
+	private void createBasePathDir() throws IOException {
+		Path baseHdfsPath = new Path(this.baseHdfsPath);
+		createDir(baseHdfsPath);
 	}
 }
