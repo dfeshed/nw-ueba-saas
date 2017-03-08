@@ -41,6 +41,7 @@ public class UserTaggingTaskServiceImpl extends TaskService {
                 executorService.executeTasks(taggingTask);
                 return true;
             } finally {
+                userTaggingFilePath = null;
                 executorService.markEndExecution();
             }
         } else {
