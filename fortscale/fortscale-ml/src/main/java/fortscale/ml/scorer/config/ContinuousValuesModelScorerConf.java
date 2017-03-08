@@ -3,6 +3,7 @@ package fortscale.ml.scorer.config;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.util.Assert;
 
@@ -34,6 +35,7 @@ public class ContinuousValuesModelScorerConf extends ModelScorerConf {
 		this.quadPolyCalibrationConf = quadPolyCalibrationConf;
 	}
 
+	@JsonIgnore
 	@Override
 	public String getFactoryName() {
 		return SCORER_TYPE;

@@ -19,7 +19,6 @@
             "is-score-for-small-values" : false,
             "is-score-for-large-values" : true
           },
-          "factoryName" : "continuous-values-model-scorer",
           "number-of-samples-to-influence-enough" : 10,
           "min-number-of-samples-to-influence" : 1,
           "use-certainty-to-calculate-score" : true
@@ -51,7 +50,6 @@
             "is-score-for-small-values" : false,
             "is-score-for-large-values" : true
           },
-          "factoryName" : "continuous-values-model-scorer",
           "number-of-samples-to-influence-enough" : 30,
           "min-number-of-samples-to-influence" : 1,
           "use-certainty-to-calculate-score" : true
@@ -83,7 +81,6 @@
             "is-score-for-small-values" : false,
             "is-score-for-large-values" : true
           },
-          "factoryName" : "continuous-values-model-scorer",
           "number-of-samples-to-influence-enough" : 10,
           "min-number-of-samples-to-influence" : 1,
           "use-certainty-to-calculate-score" : true
@@ -115,7 +112,6 @@
             "is-score-for-small-values" : false,
             "is-score-for-large-values" : true
           },
-          "factoryName" : "continuous-values-model-scorer",
           "number-of-samples-to-influence-enough" : 30,
           "min-number-of-samples-to-influence" : 1,
           "use-certainty-to-calculate-score" : true
@@ -147,7 +143,6 @@
             "is-score-for-small-values" : false,
             "is-score-for-large-values" : true
           },
-          "factoryName" : "continuous-values-model-scorer",
           "number-of-samples-to-influence-enough" : 10,
           "min-number-of-samples-to-influence" : 1,
           "use-certainty-to-calculate-score" : true
@@ -179,7 +174,6 @@
             "is-score-for-small-values" : false,
             "is-score-for-large-values" : true
           },
-          "factoryName" : "continuous-values-model-scorer",
           "number-of-samples-to-influence-enough" : 30,
           "min-number-of-samples-to-influence" : 1,
           "use-certainty-to-calculate-score" : true
@@ -211,7 +205,6 @@
             "is-score-for-small-values" : false,
             "is-score-for-large-values" : true
           },
-          "factoryName" : "continuous-values-model-scorer",
           "number-of-samples-to-influence-enough" : 10,
           "min-number-of-samples-to-influence" : 1,
           "use-certainty-to-calculate-score" : true
@@ -243,7 +236,6 @@
             "is-score-for-small-values" : false,
             "is-score-for-large-values" : true
           },
-          "factoryName" : "continuous-values-model-scorer",
           "number-of-samples-to-influence-enough" : 30,
           "min-number-of-samples-to-influence" : 1,
           "use-certainty-to-calculate-score" : true
@@ -275,7 +267,6 @@
             "is-score-for-small-values" : false,
             "is-score-for-large-values" : true
           },
-          "factoryName" : "continuous-values-model-scorer",
           "number-of-samples-to-influence-enough" : 10,
           "min-number-of-samples-to-influence" : 1,
           "use-certainty-to-calculate-score" : true
@@ -307,7 +298,6 @@
             "is-score-for-small-values" : false,
             "is-score-for-large-values" : true
           },
-          "factoryName" : "continuous-values-model-scorer",
           "number-of-samples-to-influence-enough" : 30,
           "min-number-of-samples-to-influence" : 1,
           "use-certainty-to-calculate-score" : true
