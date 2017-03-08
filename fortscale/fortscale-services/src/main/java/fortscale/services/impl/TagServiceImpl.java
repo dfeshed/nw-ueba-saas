@@ -111,7 +111,7 @@ public class TagServiceImpl implements TagService {
 
 	private void verifyDeletedTagsNotExistsOnAnyUser(){
 		for (Tag t : tagRepository.findAll()){
-			if (BooleanUtils.isFalse(t.getDeleted())){ //If false => if not true and not null
+			if (BooleanUtils.isNotFalse(t.getDeleted())){ //If false => if not true and not null
 				userService.removeTagFromAllUsers(t.getName());
 			}
 		}
