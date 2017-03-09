@@ -33,7 +33,7 @@
   {{#each datasourceList as |columns index|}}
     {{#if (or (eq activeTabName columns.dataSourceGroup)(eq activeTabName 'overview')) }}
       {{context-panel/data-table
-        data=(top-records (get contextData columns.dataSourceGroup) activeTabName)
+        data=(top-records (get contextData columns.dataSourceGroup) activeTabName columns.sortColumn)
         title=(t columns.title )
         errorMessage=(get contextData (concat columns.dataSourceGroup '_ERROR'))
         lastUpdated=(get contextData (concat columns.dataSourceGroup '_LASTUPDATED'))
@@ -42,7 +42,6 @@
         headerdata=(get contextData (concat columns.dataSourceGroup '_HEADER'))
         footerdata=columns.footer
         type=columns.dataSourceType
-        sortColumn=columns.sortColumn
 
         activatePanel=(action 'activate' columns.dataSourceGroup)
         tabdata=activeTabName
