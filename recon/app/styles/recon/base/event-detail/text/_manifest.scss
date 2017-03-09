@@ -1,7 +1,6 @@
 .recon-event-detail-text {
   .scroll-box {
     bottom: rsa-whitespace(more);
-    margin-bottom: 2.88rem;
   }
   .rsa-text-entry {
     line-height: 1.75rem;
@@ -10,6 +9,7 @@
       padding: 0.5rem rsa-whitespace(more);
       word-break: break-word;
       @include rsa-font-monospace();
+      margin-top: rsa-whitespace();
     }
   }
   .no-text {
@@ -18,8 +18,5 @@
     right: rsa-whitespace(more);
     left: rsa-whitespace(more);
     text-align: center;
-  }
-  .recon-pager {
-    bottom: 2.893rem;
   }
 }

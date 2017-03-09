@@ -1,23 +1,15 @@
-{{#if shouldShowPacket}}
-  <section class="rsa-packet {{packet.side}}">
-    <vbox class="rsa-text-entry">
-      <hbox class="request-response">
-        <box class="justify-{{packet.side}}" align="center" horizontal>
-          <span>
-            {{rsa-icon name=(concat 'arrow-circle-' arrowDirection '-2')}}
-          </span>
-          <span class="text">
-            {{#if isLog}}
-              raw log
-            {{else}}
-              {{packet.side}}
-            {{/if}}
-          </span>
-        </box>
-      </hbox>
-      <div class="text-container">
-        {{packet.text}}
-      </div>
-    </vbox>
-  </section>
-{{/if}}
+<div class="request-response justify-{{packet.side}}">
+  <span>
+    {{rsa-icon name=(concat 'arrow-circle-' arrowDirection '-2')}}
+  </span>
+  <span class="text">
+    {{#if isLog}}
+      raw log
+    {{else}}
+      {{packet.side}}
+    {{/if}}
+  </span>
+</div>
+<div class="text-container">
+  {{packet.text}}
+</div>

@@ -1,19 +1,13 @@
 <section class="rsa-packet {{packet.side}}">
   <vbox class="rsa-packet__header">
-    <hbox class="request-response">
-      <box class="justify-{{packet.side}}" align="center" horizontal>
-        <span>
-          {{rsa-icon name=(concat 'arrow-circle-' arrowDirection '-2')}}
-        </span>
-        <span class="text">
-          {{#if (eq packet.side 'request')}}
-            request
-          {{else}}
-            response
-          {{/if}}
-        </span>
-      </box>
-    </hbox>
+    <div class="request-response justify-{{packet.side}}">
+      <span>
+        {{rsa-icon name=(concat 'arrow-circle-' arrowDirection '-2')}}
+      </span>
+      <span class="text">
+        {{packet.side}}
+      </span>
+    </div>
     <hbox class="packet-details">
       <box align="center" horizontal>
         <span>

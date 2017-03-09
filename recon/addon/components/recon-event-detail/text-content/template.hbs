@@ -1,6 +1,6 @@
 {{#if textContent}}
   <div class="scroll-box">
-    {{#each textContent as |text index|}}
+    {{#each filteredContent as |text index|}}
       {{recon-event-detail/single-text
         index=index
         isLog=isLogEvent

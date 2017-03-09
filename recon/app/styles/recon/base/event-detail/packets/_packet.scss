@@ -1,15 +1,12 @@
 .rsa-packet {
   border-top: 1px rsa-color(blue) solid;
-  &__header, .rsa-text-entry {
+  &__header,
+  &.rsa-text-entry {
     background-color: rsa-color(gray, dark, 0.5);
     border-color: $dark-border-color-medium;
     color: $dark-fg-color;
     padding: 6px rsa-whitespace();
     position: relative;
-
-    box {
-      margin-left: rsa-whitespace(less);
-    }
 
     h3 {
       color: rsa-color(white);
@@ -22,7 +19,7 @@
 
     .request-response {
       color: rsa-color(blue);
-      width: 100%;
+      position: absolute;
 
       .rsa-icon {
         padding-right: rsa-whitespace(less);
@@ -36,14 +33,14 @@
     }
 
     .justify-response {
-      justify-content: flex-end;
-      margin-right: rsa-whitespace(less);
+      right: rsa-whitespace();
     }
 
     .packet-details {
       @include rsa-font(body, small);
       padding: rsa-whitespace(less) 0;
       text-transform: capitalize;
+      margin-top: rsa-whitespace();
       .label {
         @include rsa-font(header, small);
         color: rsa-color(gray, light);

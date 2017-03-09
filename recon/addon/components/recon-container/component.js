@@ -29,7 +29,7 @@ const dispatchToActions = (dispatch) => ({
 const ReconContainer = Component.extend({
   layout,
   tagName: 'vbox',
-  classNameBindings: [':recon-container'],
+  classNames: ['recon-container'],
 
   // BEGIN Component inputs
   endpointId: null,
