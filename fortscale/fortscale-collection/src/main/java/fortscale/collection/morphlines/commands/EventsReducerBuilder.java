@@ -66,9 +66,12 @@ public class EventsReducerBuilder implements CommandBuilder {
         public EventsReducer(CommandBuilder builder, Config config, Command parent, Command child, MorphlineContext context) {
             super(builder, config, parent, child, context);
             keys = getConfigs().getStringList(config, "keys");
-            currentRecordDateField = getConfigs().getString(config, "currentRecordDateField");
-            cachedRecordDateField = getConfigs().getString(config, "cachedRecordDateField");
-            timeThreshold = getConfigs().getLong(config, "timeThreshold");
+            final String recordDateField = getConfigs().getString(config, "currentRecordDateField");
+            this.currentRecordDateField = recordDateField!=null ? recordDateField : "1";
+            final String cachedRecordDateField = getConfigs().getString(config, "cachedRecordDateField");
+            this.cachedRecordDateField = cachedRecordDateField!=null ? cachedRecordDateField : "2";
+            final long threshold = getConfigs().getLong(config, "timeThreshold");
+            this.timeThreshold = threshold!=0L ? threshold : 99999999L;
             cacheRecordTtl = -1L;
             try {
                 cacheRecordTtl = new Long(morphlineConfigService.getStringValue(getConfigs(), config, "cacheRecordTtlPropertyName"));
@@ -79,7 +82,7 @@ public class EventsReducerBuilder implements CommandBuilder {
             dropFromCache = getConfigs().getBoolean(config, "dropFromCache");
             processRecord =  getConfigs().getBoolean(config, "processRecord",false);
             cacheName = getConfigs().getString(config, "cacheName");
-            cache = EventsJoinerCache.getInstance(cacheName, currentRecordDateField);
+            cache = EventsJoinerCache.getInstance(cacheName, this.currentRecordDateField);
         }
 
         @Override
