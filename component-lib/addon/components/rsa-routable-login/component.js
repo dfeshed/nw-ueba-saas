@@ -17,7 +17,8 @@ const {
     service
   },
   Logger,
-  isEmpty
+  isEmpty,
+  $
 } = Ember;
 
 /**
@@ -131,19 +132,17 @@ export default Component.extend({
 
         // Auth failed
         (message) => {
-          if (message.user && message.user.mustChangePassword) {
+          const exception = message.error_description;
+          if (exception.includes('expired')) {
             this.updateLoginProperties(_STATUS.INIT, null, true);
           } else {
             let errorMessage = 'login.genericError';
-            const exception = message.error_description;
 
             if (exception) {
               if (exception.includes('locked')) {
                 errorMessage = 'login.userLocked';
               } else if (exception.includes('disabled')) {
                 errorMessage = 'login.userDisabled';
-              } else if (exception.includes('expired')) {
-                errorMessage = 'login.userExpired';
               }
             }
             this.updateLoginProperties(_STATUS.ERROR, errorMessage);
@@ -164,18 +163,17 @@ export default Component.extend({
       this.updateLoginProperties(_STATUS.INIT, 'login.passwordNoChange', true);
     } else {
       this.set('status', _STATUS.SUCCESS);
-      this.get('request').promiseRequest({
-        method: 'updatePassword',
-        modelName: 'passwords',
-        query: {
-          data: {
-            currentPassword: this.get('password'),
-            newPassword: this.get('newPassword')
-          }
+      $.ajax({
+        url: '/api/administration/security/user/updatePassword',
+        method: 'POST',
+        data: {
+          'userName': this.get('username'),
+          'currentPassword': this.get('password'),
+          'newPassword': this.get('newPassword')
         }
       }).then(() => {
         this.updateLoginProperties(_STATUS.SUCCESS);
-      }).catch(() => {
+      }).fail(() => {
         this.updateLoginProperties(_STATUS.INIT, 'login.passwordChangeFailed', true);
       });
     }
@@ -183,7 +181,7 @@ export default Component.extend({
 
   updateLoginProperties(status, errorMessage = null, mustChangePassword = false) {
     this.setProperties({
-      username: null,
+      username: mustChangePassword ? this.get('username') : null,
       password: null,
       newPassword: null,
       newPasswordConfirm: null,
