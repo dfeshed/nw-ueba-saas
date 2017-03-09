@@ -6,7 +6,7 @@
  */
 import Ember from 'ember';
 
-const { inject, Mixin, set } = Ember;
+const { inject, Mixin } = Ember;
 
 export default Mixin.create({
 
@@ -16,32 +16,29 @@ export default Mixin.create({
     /**
      * Updates state in order to reveal the Recon UI and feed it a server event record.
      * @param {string} endpointId The Core service ID from which the event came from.
-     * @param {object} item The Core event object to be reconstructed in the Recon UI.
+     * @param {string} eventId The ID of the Core event object to be reconstructed in the Recon UI.
+     * @param {meta[]} metas The array of metas for the event
      * @param {number} index The index of the item relative to the entire result set.
      * @public
      */
-    reconOpen(endpointId, item, index) {
+    reconOpen(endpointId, eventId, metas, index) {
       const total = this.get('state.queryNode.value.results.eventCount.data');
-      if (item && item.metas) {
-        set(item, 'metas', [
-          ['sessionId', item.sessionId],
-          ['time', item.time],
-          ...item.metas
-        ]);
-      }
+
       this.get('state.recon').setProperties({
         isOpen: true,
-        item,
         endpointId,
+        eventId,
         metaPanelSizeWas: this.get('state.meta.panelSize'),
+        metas,
         index,
         total
       });
+
       this.send('metaPanelSize', 'min');
       this.send('contextPanelClose');
 
       const isExpanded = this.get('state.recon.isExpanded');
-      this.transitionTo({ queryParams: { reconSize: isExpanded ? 'max' : 'min' } });
+      this.transitionTo({ queryParams: { eventId, reconSize: isExpanded ? 'max' : 'min' } });
     },
 
     /**
@@ -55,12 +52,14 @@ export default Mixin.create({
       }
       this.get('state.recon').setProperties({
         isOpen: false,
-        item: undefined,
-        endpointId: undefined
+        endpointId: undefined,
+        eventId: undefined,
+        metas: undefined
       });
       if (restoreMetaPanelSize) {
         this.send('metaPanelSize', this.get('state.recon.metaPanelSizeWas'));
       }
+      this.transitionTo({ queryParams: { eventId: -1, metaPanelSize: 'default', reconSize: 'max' } });
     },
 
     /**
@@ -125,7 +124,7 @@ export default Mixin.create({
         const routing = this.get('_routing');
         const url = routing.generateURL(
           routing.get('currentRouteName'),
-          [ `${serviceId}/${start}/${end}/${query}` ]
+          [`${serviceId}/${start}/${end}/${query}`]
         );
         window.open(url, '_blank');
       }

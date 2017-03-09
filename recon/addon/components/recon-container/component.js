@@ -52,12 +52,6 @@ const ReconContainer = Component.extend({
   didInsertElement() {
     this._super(...arguments);
 
-    // containing UI may not remember if recon was expanded when
-    // it was last used, if it was, expand it now
-    if (this.get('isReconExpanded')) {
-      this.sendAction('expandAction');
-    }
-
     // start listening for notifications for the lifetime of this component
     // Use run.next because this action will trigger an update to the `stopNotifications` attr,
     // and without run.next Ember would then throw a warning that we modified an attr during didInsertElement.

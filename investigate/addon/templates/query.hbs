@@ -46,13 +46,13 @@
       <section class="rsa-investigate-query__body-master-main">
         {{events-table
           items=model.queryNode.value.results.events.data
-          selectedEventId=model.recon.item.sessionId
+          selectedEventId=eventId
           columnsConfig=model.eventColumnGroups.selected.columns
           language=model.queryNode.value.language.data
           aliases=model.queryNode.value.aliases
           status=model.queryNode.value.results.events.status
           percent=model.queryNode.value.results.events.percent
-          rowClickAction=(route-action "reconOpen" model.queryNode.value.definition.serviceId)
+          rowClickAction=(route-action "selectEvent")
           loadMoreAction=(route-action "eventsGetMore" model.queryNode)
           loadLogsAction=(route-action "eventsLogsGet" model.queryNode)
           stopAction=(route-action "eventsStop" model.queryNode)
@@ -71,11 +71,11 @@
       </section>
     </section>
     <vbox class="rsa-investigate-query__body-slave">
-      {{#if model.recon.item}}
+      {{#if (and model.recon.endpointId model.recon.eventId)}}
         {{recon-container
           endpointId=model.recon.endpointId
-          eventId=model.recon.item.sessionId
-          meta=model.recon.item.metas
+          eventId=model.recon.eventId
+          meta=model.recon.metas
           index=model.recon.index
           total=model.recon.total
           isExpanded=model.recon.isExpanded

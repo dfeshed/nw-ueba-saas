@@ -5,8 +5,8 @@ const visualsInitialState = {
   isHeaderOpen: true,
   isRequestShown: true,
   isResponseShown: true,
-  isMetaShown: false,
-  isReconExpanded: false,
+  isMetaShown: true,
+  isReconExpanded: true,
   isReconOpen: false,
   packetTooltipData: null
 };

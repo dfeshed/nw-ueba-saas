@@ -1,8 +1,8 @@
-import Ember from 'ember';
-
-const { Controller } = Ember;
+import Controller from 'ember-controller';
 
 export default Controller.extend({
-  queryParams: ['metaPanelSize'],
-  metaPanelSize: 'default'
+  queryParams: ['eventId', 'metaPanelSize', 'reconSize'],
+  eventId: -1,
+  metaPanelSize: 'default',
+  reconSize: 'max'
 });

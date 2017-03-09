@@ -18,7 +18,7 @@ export default EmberObject.extend({
    * @type {boolean}
    * @public
    */
-  isExpanded: false,
+  isExpanded: true,
 
   /**
    * Determines the display state of the recon panel
@@ -39,18 +39,18 @@ export default EmberObject.extend({
   },
 
   /**
-   * The event (session) object from NetWitness Core to be inspected in the recon UI.
-   * @type {object}
-   * @public
-   */
-  item: undefined,
-
-  /**
    * ID of the Core service (broker, concentrator, etc) from which the `item` record came from.
-   * @type {object}
+   * @type {string}
    * @public
    */
   endpointId: undefined,
+
+  /**
+   * The ID of the event (session) object from NetWitness Core to be inspected in the recon UI.
+   * @type {string}
+   * @public
+   */
+  eventId: undefined,
 
   /**
    * Index of result set being passed to recon
@@ -58,6 +58,13 @@ export default EmberObject.extend({
    * @public
    */
   index: undefined,
+
+  /**
+   * The meta array for the event to be reconstructed.
+   * @type {array}
+   * @public
+   */
+  metas: undefined,
 
   /**
    * Total count of results set

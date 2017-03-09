@@ -4,7 +4,6 @@ import { shared } from 'mock-server';
 let eventList;
 const NUMBER_OF_EVENTS = 500;
 const aliases = shared.subscriptions.coreMetaAliasData;
-const MEDIUMS = Object.keys(aliases.medium).map(Number);
 const SERVICES = Object.keys(aliases.service).map(Number);
 const TCP_SRC_PORTS = Object.keys(aliases['tcp.srcport']).map(Number);
 const TCP_DST_PORTS = Object.keys(aliases['tcp.dstport']).map(Number);
@@ -23,7 +22,7 @@ const factory = function(i) {
     time: oneDayAgo + i,
     metas: [
       [ 'service', faker.random.arrayElement(SERVICES) ],
-      [ 'medium', faker.random.arrayElement(MEDIUMS) ],
+      [ 'medium', faker.random.arrayElement([1, 32]) ],
       [ 'size', randInt(15, 2000) ],
       [ 'ip.proto', faker.random.arrayElement(IP_PROTOS) ],
       [ 'ip.src', faker.internet.ip() ],

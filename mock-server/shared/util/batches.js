@@ -39,9 +39,7 @@ function sendBatches({
           data: batches[index]
         };
 
-        if (index + 1 === batches.length) {
-          dataToSend.meta = { complete: true };
-        }
+        dataToSend.meta = { complete: (index + 1) === batches.length };
 
         sendMessage(dataToSend);
       };

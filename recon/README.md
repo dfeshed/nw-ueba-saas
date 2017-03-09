@@ -5,8 +5,8 @@ The recon addon can be used by defining just one component in your template:
 ```hbs
 {{recon-container
   endpointId=model.recon.endpointId
-  eventId=model.recon.item.sessionId
-  meta=model.recon.item.metas
+  eventId=model.recon.sessionId
+  meta=model.recon.metas
   index=model.recon.index
   total=model.recon.total
   isExpanded=model.recon.isExpanded

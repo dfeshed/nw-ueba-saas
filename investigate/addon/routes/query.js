@@ -1,10 +1,13 @@
-import Ember from 'ember';
+import { isEmpty } from 'ember-utils';
+import Route from 'ember-route';
+import run from 'ember-runloop';
 import { parseEventQueryUri } from 'investigate/actions/helpers/query-utils';
-
-const { run, Route } = Ember;
 
 export default Route.extend({
   queryParams: {
+    eventId: {
+      refreshModel: false
+    },
     metaPanelSize: {
       refreshModel: true, // execute route.model() when metaPanelSize changes
       replace: true,      // prevents adding a new item to browser's history
@@ -41,11 +44,24 @@ export default Route.extend({
       this.send('metaPanelSizeReceived', params.metaPanelSize);
       this.send('reconSizeReceived', params.reconSize);
       this.send('navFindOrAdd', filterAttrs);
+
+      const endpointId = state.get('queryNode.value.definition.serviceId');
+      const { eventId } = params;
+
+      if (!isEmpty(endpointId) && !isEmpty(eventId) && eventId !== -1) {
+        this.send('reconOpen', endpointId, eventId);
+      }
     });
     return state;
   },
 
   actions: {
+    selectEvent(item, index) {
+      const state = this.modelFor('application');
+      const endpointId = state.get('queryNode.value.definition.serviceId');
+      const { metas, sessionId } = item;
+      this.send('reconOpen', endpointId, sessionId, metas, index);
+    },
     submitQuery(query) {
       const filterAttrs = this.get('filterAttrs');
       const uri = (filterAttrs.metaFilter.uri && filterAttrs.metaFilter.uri !== '') ? filterAttrs.metaFilter.uri : null;
