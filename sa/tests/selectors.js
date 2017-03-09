@@ -376,7 +376,10 @@ export default Ember$.extend({}, BaseSelectors, {
         'reconSelectAllFiles': '.recon-event-detail-files .rsa-data-table-header .rsa-form-checkbox',
         'reconSelectorItems': '.ember-power-select-options',
         'reconShowPacket': '.recon-event-detail-packets .rsa-icon-arrow-right-12',
-        'reconViewSelector': '.recon-view-selector'
+        'reconViewSelector': '.recon-view-selector',
+        'reconFirstTab': '.recon-event-titlebar .heading-tabs div:nth-child(1)',
+        'reconSecondTab': '.recon-event-titlebar .heading-tabs div:nth-child(2)',
+        'reconThirdTab': '.recon-event-titlebar .heading-tabs div:nth-child(3)'
       },
       'root': '.js-test-investigate-root',
       'selectedService': '.rsa-investigate-query-bar__service .ember-power-select-selected-item',
