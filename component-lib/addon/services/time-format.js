@@ -17,11 +17,11 @@ export default Service.extend({
   options: [{
     key: 'HR12',
     label: 'userPreferences.timeFormat.twelveHour',
-    format: 'hh:mma'
+    format: 'hh:mm:ss.SSS a'
   }, {
     key: 'HR24',
     label: 'userPreferences.timeFormat.twentyFourHour',
-    format: 'HH:mm'
+    format: 'HH:mm:ss.SSS'
   }],
 
   persist(value) {

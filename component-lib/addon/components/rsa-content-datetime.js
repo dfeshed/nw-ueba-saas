@@ -1,12 +1,12 @@
 import Ember from 'ember';
 import layout from '../templates/components/rsa-content-datetime';
+import computed from 'ember-computed-decorators';
 
 const {
   Component,
   inject: {
     service
-  },
-  computed
+  }
 } = Ember;
 
 export default Component.extend({
@@ -27,22 +27,34 @@ export default Component.extend({
 
   displayTime: true,
 
+  displaySeconds: true,
+
+  displayMilliseconds: true,
+
   timezone: service(),
 
   timeFormat: service(),
 
   dateFormat: service(),
 
-  outputFormat: computed('timeFormat.selected.format', 'dateFormat.selected.format', function() {
-    if (this.get('displayDate') && this.get('displayTime')) {
-      return `${this.get('dateFormat.selected.format')} ${this.get('timeFormat.selected.format')}`;
+  @computed('timeFormat.selected.format', 'displayTime', 'displaySeconds', 'displayMilliseconds')
+  adjustedTimeFormat: (format, displayTime, displaySeconds, displayMilliseconds) => {
+    if (displayTime && displaySeconds && displayMilliseconds) {
+      return format;
     } else {
-      if (this.get('displayDate')) {
-        return this.get('dateFormat.selected.format');
-      } else if (this.get('displayTime')) {
-        return this.get('timeFormat.selected.format');
-      }
+      return displayTime ? (displaySeconds ? format.replace(/.SSS/, '') : format.replace(/:ss.SSS/, '')) : '';
     }
-  })
+  },
+
+  @computed('dateFormat.selected.format', 'displayDate')
+  adjustedDateFormat: (format, displayDate) => {
+    return displayDate ? format : '';
+  },
+
+
+  @computed('adjustedTimeFormat', 'adjustedDateFormat')
+  outputFormat: (timeFormat, dateFormat) => {
+    return `${dateFormat} ${timeFormat}`;
+  }
 
 });

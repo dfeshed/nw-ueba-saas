@@ -7,42 +7,58 @@
     {{#spec-category}}
       {{#spec-member title="Default"}}
         {{rsa-content-datetime timestamp=1464108661196}}
-        {{!-- BEGIN-SNIPPET datetime1
+        {{!-- BEGIN-SNIPPET datetimecontent1
         {{rsa-content-datetime timestamp=1464108661196}}
         END-SNIPPET --}}
-        {{code-snippet name="datetime1.hbs"}}
+        {{code-snippet name="datetimecontent1.hbs"}}
       {{/spec-member}}
 
       {{#spec-member title="Date Only"}}
         {{rsa-content-datetime timestamp=1464108661196 displayTime=false}}
-        {{!-- BEGIN-SNIPPET datetime2
+        {{!-- BEGIN-SNIPPET datetimecontent2
         {{rsa-content-datetime timestamp=1464108661196 displayTime=false}}
         END-SNIPPET --}}
-        {{code-snippet name="datetime2.hbs"}}
+        {{code-snippet name="datetimecontent2.hbs"}}
       {{/spec-member}}
 
       {{#spec-member title="Time Only"}}
         {{rsa-content-datetime timestamp=1464108661196 displayDate=false}}
-        {{!-- BEGIN-SNIPPET datetime3
+        {{!-- BEGIN-SNIPPET datetimecontent3
         {{rsa-content-datetime timestamp=1464108661196 displayDate=false}}
         END-SNIPPET --}}
-        {{code-snippet name="datetime3.hbs"}}
+        {{code-snippet name="datetimecontent3.hbs"}}
       {{/spec-member}}
 
       {{#spec-member title="Time Ago"}}
         {{rsa-content-datetime timestamp=1464108661196 asTimeAgo=true}}
-        {{!-- BEGIN-SNIPPET datetime4
+        {{!-- BEGIN-SNIPPET datetimecontent4
         {{rsa-content-datetime timestamp=1464108661196 asTimeAgo=true}}
         END-SNIPPET --}}
-        {{code-snippet name="datetime4.hbs"}}
+        {{code-snippet name="datetimecontent4.hbs"}}
       {{/spec-member}}
 
       {{#spec-member title="Date and Time Ago"}}
         {{rsa-content-datetime timestamp=1464108661196 withTimeAgo=true}}
-        {{!-- BEGIN-SNIPPET datetime5
+        {{!-- BEGIN-SNIPPET datetimecontent5
         {{rsa-content-datetime timestamp=1464108661196 withTimeAgo=true}}
         END-SNIPPET --}}
-        {{code-snippet name="datetime5.hbs"}}
+        {{code-snippet name="datetimecontent5.hbs"}}
+      {{/spec-member}}
+
+      {{#spec-member title="Without Seconds and Milliseconds"}}
+        {{rsa-content-datetime timestamp=1464108661196 displaySeconds=false}}
+        {{!-- BEGIN-SNIPPET datetimecontent6
+        {{rsa-content-datetime timestamp=1464108661196 displaySeconds=false}}
+        END-SNIPPET --}}
+        {{code-snippet name="datetimecontent6.hbs"}}
+      {{/spec-member}}
+
+      {{#spec-member title="Without Milliseconds"}}
+        {{rsa-content-datetime timestamp=1464108661196 displayMilliseconds=false}}
+        {{!-- BEGIN-SNIPPET datetimecontent7
+        {{rsa-content-datetime timestamp=1464108661196 displayMilliseconds=false}}
+        END-SNIPPET --}}
+        {{code-snippet name="datetimecontent7.hbs"}}
       {{/spec-member}}
     {{/spec-category}}
   </div>
