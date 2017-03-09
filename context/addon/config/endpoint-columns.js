@@ -50,6 +50,7 @@ export default [
     header: 'context.iiocs.header',
     footer: '',
     title: 'context.iiocs.title',
+    sortColumn: 'IOCLevel',
     columns: [
       {
         field: 'LastExecuted',

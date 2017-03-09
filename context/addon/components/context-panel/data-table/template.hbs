@@ -11,7 +11,7 @@
   <div class='rsa-context-panel__error-text'>{{errorMessage}}</div>
 {{else if data}}
   <div class="rsa-context-panel__context-data-table__panel">
-    {{#rsa-data-table lazy=true items=data columnsConfig=modulesColumnListConfig}}
+    {{#rsa-data-table lazy=true items=sortedData columnsConfig=modulesColumnListConfig}}
       {{#rsa-data-table/header as |column|}}
         <span class="js-move-handle js-header-cell {{column.class}} title rsa-data-table-title" title="{{if column.title (t column.title) column.field}}">{{if column.title (t column.title) column.field}}</span>
       {{/rsa-data-table/header}}
