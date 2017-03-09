@@ -50,11 +50,25 @@
         }
       }
 
-      .rsa-nav-tab.is-left-aligned-primary {
+      .rsa-nav-tab.is-left-aligned-primary,
+      .tview-heading {
         margin: 0 1rem 0 1rem;
-        padding: .5rem .1rem;
+        padding: .5rem .1rem .36rem .1rem;
+        border-bottom-width: 3px;
       }
 
+      .tview-heading {
+        border-bottom: 3px solid transparent;
+        border-color: rsa-color(blue);
+        cursor:default;
+        .tview-label {
+          text-transform: capitalize;
+          color:rsa-color(gray, lightest);
+          font-weight: 100;
+          font-size: 1.28rem;
+          letter-spacing: 0.05rem;
+        }
+      }
     }
 
     .header-toggle {
