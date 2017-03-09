@@ -703,7 +703,7 @@ export default {
       dataSource: 'ja_Error processing stream call for data source.',
       noData: 'ja_No context data present for this DataSource.',
       listDuplicateName: 'ja_List name already exists!',
-      listValidName: 'ja_Enter valid list name!',
+      listValidName: 'ja_Enter valid list name (Max length is 255 characters)',
       'datasource.query.not.supported': 'ja_Context data is query not supported for given meta.',
       'transport.http.read.failed': 'ja_Context data is not available as the data source is down.',
       'transport.ad.read.failed': 'ja_Context data is not available as the data source is not reachable.',

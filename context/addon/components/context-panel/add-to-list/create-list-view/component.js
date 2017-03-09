@@ -39,10 +39,10 @@ export default Component.extend({
         name: this.get('name'),
         description: this.get('description')
       };
-      if (isEmpty(newList.name)) {
+      if (isEmpty(newList.name) || newList.name.length > 255) {
         this.setProperties({
           isError: true,
-          errorMessage: this.get('i18n').t('listValidName')
+          errorMessage: this.get('i18n').t('context.error.listValidName')
         });
       }
       if (!this.get('isError')) {
