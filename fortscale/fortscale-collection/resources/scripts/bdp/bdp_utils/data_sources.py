@@ -13,7 +13,7 @@ data_source_to_score_tables = {
     'oracle': 'oraclescore',
     'prnlog': 'prnlogscore',
     'ssh': 'sshscores',
-    'dlpmail':'mailscore'
+    'dlpmail':'dlpmailscore'
 }
 
 data_source_to_enriched_tables = {
@@ -28,7 +28,7 @@ data_source_to_enriched_tables = {
     'oracle': 'oracleenriched',
     'prnlog': 'prnlogenriched',
     'ssh': 'sshenriched',
-    'dlpmail':'mailenriched'
+    'dlpmail':'dlpmailenriched'
 }
 
 if set(data_source_to_score_tables.iterkeys()) != set(data_source_to_enriched_tables.iterkeys()):
