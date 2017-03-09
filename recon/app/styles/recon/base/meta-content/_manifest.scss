@@ -1,17 +1,24 @@
 .recon-meta-content {
+  border-top: 1px rsa-color(blue) solid;
   background-color: rsa-color(gray, darkest, $rsa-somewhat-opaque);
   padding: rsa-whitespace();
   margin-bottom: 2.8rem;
   .meta-heading {
-    @include rsa-font(header, large);
-    color: rsa-color(white);
+    @include rsa-font(header, small);
+    font-size: 0.85rem;
+    color: rsa-color(blue);
+    padding-bottom: 1rem;
   }
 }
 .recon-meta-content-item {
   padding: rsa-whitespace(least) 0;
   word-break: break-all;
   .meta-name {
+    @include rsa-font(header, small);
     color: rsa-color(gray, light);
     padding-right: rsa-whitespace();
+  }
+  .meta-value {
+    @include rsa-font(body, small);
   }
 }
