@@ -13,7 +13,8 @@ const {
 } = Ember;
 
 const stateToComputed = ({ context }) => ({
-  activeTabName: context.activeTabName
+  activeTabName: context.activeTabName,
+  dataSources: context.dataSources
 });
 
 const dispatchToActions = (dispatch) => ({

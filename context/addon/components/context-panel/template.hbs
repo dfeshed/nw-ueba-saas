@@ -12,23 +12,18 @@
   </vbox>
 </hbox>
 
-{{#if hasResponse}}
-
+{{#if isReady}}
   {{#if errorMessage}}
-
     <hbox class='rsa-context-panel__loader'>
       <span class='rsa-context-panel__error-text'>
         {{errorMessage}}
       </span>
     </hbox>
-
   {{else}}
     {{context-panel/tabs model=model }}
     {{context-panel/body contextData=model.contextData model=model }}
   {{/if}}
-
 {{else}}
-
   <hbox class='rsa-context-panel__loader'>
     <div class="rsa-loader is-largest">
       <div class="rsa-loader__wheel"></div>

@@ -14,6 +14,7 @@ const {
 } = Ember;
 
 const stateToComputed = ({ context }) => ({
+  dataSources: context.dataSources,
   activeTabName: context.activeTabName
 });
 

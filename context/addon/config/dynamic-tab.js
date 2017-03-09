@@ -6,7 +6,8 @@ export default [{
   columns: [
     {
       field: 'overview',
-      title: 'context.header.overview'
+      title: 'context.header.overview',
+      dataSourceType: 'overview'
     },
     {
       field: 'Modules',
@@ -35,7 +36,8 @@ export default [{
     },
     {
       field: 'liveConnect',
-      title: 'context.header.liveConnect'
+      title: 'context.header.liveConnect',
+      dataSourceType: 'liveConnect'
     }
   ],
 
@@ -73,7 +75,8 @@ export default [{
   columns: [
     {
       field: 'overview',
-      title: 'context.header.overview'
+      title: 'context.header.overview',
+      dataSourceType: 'overview'
     },
     {
       field: 'Users',
@@ -123,7 +126,8 @@ export default [{
   columns: [
     {
       field: 'overview',
-      title: 'context.header.overview'
+      title: 'context.header.overview',
+      dataSourceType: 'overview'
     },
     {
       field: 'Modules',
@@ -152,7 +156,8 @@ export default [{
     },
     {
       field: 'liveConnect',
-      title: 'context.header.liveConnect'
+      title: 'context.header.liveConnect',
+      dataSourceType: 'liveConnect'
     }
 
   ],
@@ -189,7 +194,8 @@ export default [{
   columns: [
     {
       field: 'overview',
-      title: 'context.header.overview'
+      title: 'context.header.overview',
+      dataSourceType: 'overview'
     },
     {
       field: 'Modules',
@@ -249,7 +255,8 @@ export default [{
   columns: [
     {
       field: 'overview',
-      title: 'context.header.overview'
+      title: 'context.header.overview',
+      dataSourceType: 'overview'
     },
     {
       field: 'Incidents',
@@ -296,7 +303,8 @@ export default [{
   columns: [
     {
       field: 'overview',
-      title: 'context.header.overview'
+      title: 'context.header.overview',
+      dataSourceType: 'overview'
     },
     {
       field: 'Incidents',
@@ -315,7 +323,8 @@ export default [{
     },
     {
       field: 'liveConnect',
-      title: 'context.header.liveConnect'
+      title: 'context.header.liveConnect',
+      dataSourceType: 'liveConnect'
     }
   ],
   toolbar: [
@@ -347,7 +356,8 @@ export default [{
   columns: [
     {
       field: 'overview',
-      title: 'context.header.overview'
+      title: 'context.header.overview',
+      dataSourceType: 'overview'
     },
     {
       field: 'Incidents',
@@ -366,7 +376,8 @@ export default [{
     },
     {
       field: 'liveConnect',
-      title: 'context.header.liveConnect'
+      title: 'context.header.liveConnect',
+      dataSourceType: 'liveConnect'
     }
   ],
 

@@ -40,6 +40,15 @@ module.exports = function(environment) {
         cancelDestination: '/ws/administration/context/cancel'
       }
     },
+    'data-sources':{
+      socketUrl,
+      stream: {
+        defaultStreamLimit: 100000,
+        subscriptionDestination: '/user/queue/administration/context/data-sources',
+        requestDestination: '/ws/administration/context/data-sources',
+        cancelDestination: '/ws/administration/context/cancel'
+      }
+    },  
     'related-entity': {
       socketUrl,
       stream: {

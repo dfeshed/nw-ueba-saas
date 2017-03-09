@@ -1,5 +1,8 @@
 import Ember from 'ember';
 import LiveConnect from 'context/config/live-connect';
+import connect from 'ember-redux/components/connect';
+import computed from 'ember-computed-decorators';
+import * as ContextActions from 'context/actions/context-creators';
 import liveConnectObj from 'context/config/liveconnect-response-schema';
 import layout from './template';
 
@@ -8,7 +11,6 @@ const {
     service
   },
   isArray,
-  run,
   Component,
   Logger,
   isEmpty,
@@ -18,7 +20,16 @@ const {
   Object: EmberObject
 } = Ember;
 
-export default Component.extend({
+const stateToComputed = ({ context }) => ({
+  dataSources: context.dataSources,
+  lookupData: context.lookupData
+});
+
+const dispatchToActions = (dispatch) => ({
+  initializeContextPanel: (entityId, entityType) => dispatch(ContextActions.initializeContextPanel(entityId, entityType))
+});
+
+const ContextComponent = Component.extend({
   layout,
   classNames: 'rsa-context-panel-header',
 
@@ -27,21 +38,51 @@ export default Component.extend({
   contextData: null,
   entity: null,
   errorMessage: null,
-  hasResponse: false,
   model: null,
 
-  didReceiveAttrs() {
-    run.once(this, this._initModel);
+  @computed('lookupData', 'dataSources')
+  isReady(lookupData, dataSources) {
+    if (!lookupData || !dataSources) {
+      return;
+    }
+    this._initModel();
+    this.set('errorMessage', null);
+    if (!lookupData) {
+      return;
+    }
+    if (lookupData === 'error') {
+      this.set('errorMessage', this.get('i18n').t('context.error.error'));
+      Logger.error('Error processing stream call for context lookup. ');
+      return true;
+    }
+    if (isArray(lookupData) && lookupData.length === 0) {
+      this.set('errorMessage', this.get('i18n').t('context.error.error'));
+      return true;
+    }
+    Logger.info('pushing data to context model');
+    lookupData.forEach((entry) => {
+      if (entry.dataSourceGroup) {
+        this._populateContextData(entry);
+      } else {
+        Logger.error('DataSource group for', entry.dataSourceName, 'is not configured');
+      }
+    });
+    this._endOfResponse();
+    return true;
   },
 
-  _initModel() {
+  didReceiveAttrs() {
     const { entityId, entityType } = this.getProperties('entityId', 'entityType');
 
     // nothing to do unless passed parameters
     if (!entityId || !entityType) {
       return;
     }
+    this.send('initializeContextPanel', { entityId, entityType });
+  },
 
+  _initModel() {
+    const { entityId, entityType } = this.getProperties('entityId', 'entityType');
     const contextModels = EmberObject.create({
       displayContextPanel: true,
       lookupKey: entityId,
@@ -58,53 +99,6 @@ export default Component.extend({
     });
 
     this.set('model', contextModels);
-    this._doCHLookup(entityId, entityType);
-  },
-
-  /*
-   * Lookup the context data for the given key and meta.
-   * @private
-   */
-  _doCHLookup(lookupKey, meta) {
-    Logger.info('fetching context data for lookup key ', lookupKey);
-
-    this.get('request').streamRequest({
-      method: 'stream',
-      modelName: 'context',
-      query: {
-        filter: [
-          { field: 'meta', value: meta },
-          { field: 'value', value: lookupKey }
-        ]
-      },
-      streamOptions: { requireRequestId: false },
-      onResponse: ({ data }) => {
-        this.set('hasResponse', true);
-        if (!data || data.length === 0) {
-          this.set('errorMessage', this.get('i18n').t('context.error.error'));
-          return;
-        }
-        if (isArray(data)) {
-          Logger.info('pushing data to context model');
-          data.forEach((entry) => {
-            if (entry.dataSourceGroup) {
-              this._populateContextData(entry);
-            } else {
-              Logger.error('DataSource group for', entry.dataSourceName, 'is not configured');
-            }
-          });
-          this._endOfResponse();
-        }
-      },
-      onError: (response) => {
-        if (this.get('hasResponse') === true) {
-          return;
-        }
-        this.set('hasResponse', true);
-        this.set('errorMessage', this.get('i18n').t('context.error.error') + response);
-        Logger.error('Error processing stream call for context lookup.', response);
-      }
-    });
   },
 
   _enrichDataSourceError(contextDatum) {
@@ -267,9 +261,9 @@ export default Component.extend({
   actions: {
     closeAction() {
       this.sendAction('closePanel');
-      this.set('hasResponse', false);
       this.set('errorMessage', null);
     }
   }
 
 });
+export default connect(stateToComputed, dispatchToActions)(ContextComponent);
