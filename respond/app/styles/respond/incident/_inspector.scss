@@ -85,12 +85,13 @@ $incidentRiskScoreRadius: 1rem;
 
     .rsa-data-table,
     .rsa-incident-overview,
-    .rsa-incident-storyline {
+    .rsa-incident-storyline,
+    .rsa-incident-storyline .rsa-list {
       @include rsa-fill-abs();
     }
 
     .rsa-incident-overview,
-    .rsa-incident-storyline {
+    .rsa-incident-storyline .rsa-list {
       overflow: auto;
     }
   }

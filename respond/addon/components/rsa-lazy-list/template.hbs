@@ -1,0 +1,7 @@
+{{#rsa-list items=renderedItems itemComponentClass=itemComponentClass}}
+  {{#unless allItemsAreRendered}}
+    <centered class="rsa-lazy-list__placeholder">
+      {{rsa-loader size="large"}}
+    </centered>
+  {{/unless}}
+{{/rsa-list}}
