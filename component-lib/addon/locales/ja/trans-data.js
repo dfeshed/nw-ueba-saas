@@ -530,7 +530,13 @@ export default {
       postalAddress: 'ja_location',
       manager: 'ja_manager',
       groups: 'ja_groups',
-      jobCodes: 'ja_jobCodes'
+      jobCodes: 'ja_jobCodes',
+      email: 'ja_Email',
+      phone: 'ja_phone',
+      jobTitle: 'jobTitle',
+      lastLogon: 'ja_lastLogon',
+      lastLogonTimeStamp: 'ja_lastLogonTimeStamp',
+      adUserID: 'ja_adUserID'
     },
     addToList: {
       title: 'ja_Add to List',

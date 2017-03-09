@@ -9,7 +9,9 @@ export default [{
   'connectionName': 'AD',
   'resultList': [
     {
+      'employeeID': '1576889',
       'telephoneNumber': '9667845120',
+      'riskScore': 100,
       'mail': 'ittest1@gmail.com',
       'displayName': 'user1',
       'postalCode': '560037',
@@ -18,17 +20,19 @@ export default [{
       'countryCode': '356',
       'objectGUID': '9cNc6UMli0uAiJH2hA/oCw==',
       'company': 'RSA',
+      'postalAddress': 'New York,NY',
       'memberOf': [
         'CN=group1,CN=Users,DC=sub,DC=saserver,DC=local',
         'CN=sagroup,CN=Users,DC=sub,DC=saserver,DC=local'
       ],
-      'sn': '1',
+      'manager': 'CN=sumithra m,CN=Users,DC=saserver,DC=local',
+      'sn': 'Smith',
       'department': 'Sales',
       'userPrincipalName': 'user1@saserver.local',
       'physicalDeliveryOfficeName': 'Bangalore',
       'uSNChanged': '479001',
       'sAMAccountName': 'user1',
-      'givenName': 'user1',
+      'givenName': 'Jake',
       'objectClass': [
         'top',
         'person',

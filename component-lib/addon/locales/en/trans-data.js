@@ -541,12 +541,18 @@ export default {
     },
     ADdata: {
       title: 'User Information',
-      employeeID: 'employeeID',
+      employeeID: 'employee ID',
       department: 'department',
       postalAddress: 'location',
       manager: 'manager',
       groups: 'groups',
-      jobCodes: 'jobCodes'
+      jobCodes: 'jobCodes',
+      email: 'Email',
+      phone: 'phone',
+      jobTitle: 'jobTitle',
+      lastLogon: 'lastLogon',
+      lastLogonTimeStamp: 'lastLogonTimeStamp',
+      adUserID: 'adUserID'
     },
     modules: {
       title: 'Top Suspicious Modules',

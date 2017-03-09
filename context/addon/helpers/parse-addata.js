@@ -12,10 +12,12 @@ const {
 export function parseADData([usersData]) {
   if (usersData) {
     usersData.forEach((userDetails) => {
-      set(userDetails, 'fullName', userDetails.givenName ? (userDetails.givenName).concat((userDetails.sn) ? userDetails.sn : '') : '');
+      set(userDetails, 'fullName', userDetails.givenName ? (userDetails.givenName).concat(' ').concat((userDetails.sn) ? userDetails.sn : '') : '');
       set(userDetails, 'managerName', (userDetails.manager && userDetails.manager.indexOf('CN=') > -1) ? userDetails.manager.split('CN=')[1].replace(',', ' ') : '');
-      const groupName = (userDetails.memberOf) ? [].concat(userDetails.memberOf).join().replace(/CN=|DC=/g, '') : null;
-      set(userDetails, 'groupName', (groupName) ? groupName.slice(0, -2) : '');
+      let groupName = (userDetails.memberOf) ? [].concat(userDetails.memberOf).join().replace(/CN=|DC=/g, '') : null;
+      groupName = groupName ? groupName.split(',') : '';
+      set(userDetails, 'groupName', groupName);
+      set(userDetails, 'groupCount', groupName.length);
     });
     return usersData;
   }

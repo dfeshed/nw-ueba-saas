@@ -5,6 +5,31 @@ radial-gradient(circle at 0px 25%, rsa-color(blue, darker, .1) 0, rsa-color(blue
 radial-gradient(circle at 70% 0px, rsa-color(blue, darker, .1) 0, rsa-color(blue, dark, 0) 65%),
 radial-gradient(circle at 35% 65%, rsa-color(blue, darker, .1) 0, rsa-color(blue, dark, 0) 65%),
 radial-gradient(circle at 85% 85%, rsa-color(blue, darker, .1) 0, rsa-color(blue, dark, 0) 65%);
+.panel-content.bottom-right {
+  bottom: -1rem;
+  left: calc(20% - 1rem - 7px);
+}
+.panel-content.standard {
+  border: none!important;
+  background: rsa-color(black);
+}
+.panel-content.standard svg line {
+  stroke: none!important;
+}
+.panel-content {
+  background: rsa-color(black);
+}
+.panel-content.bottom-right svg {
+  top: -13px;
+}
+.panel-content svg polygon {
+  fill:rsa-color(black); ;
+}
+.panel-content > section {
+  height: 10rem;
+  width: 20%;
+  min-width: 10rem;
+  overflow: auto;}
 .rsa-context-panel{
   position: absolute;
   top: 140px;
@@ -29,7 +54,7 @@ radial-gradient(circle at 85% 85%, rsa-color(blue, darker, .1) 0, rsa-color(blue
   &-header {
     @include rsa-vendor-prefix(flex-grow,0);
     @include rsa-vendor-prefix(flex-shrink,0);
-    height: 100%;  
+    height: 100%;
   }
 
   &__body{
@@ -47,6 +72,22 @@ radial-gradient(circle at 85% 85%, rsa-color(blue, darker, .1) 0, rsa-color(blue
     color: $font-fade-color;
     height: 100%;
     width: -webkit-calc(100% - (4px));
+    &__groupdata{
+      padding-left: rsa-whitespace();
+    }
+    &__Score_width{
+      max-width: 12%;
+    }
+    &__risk-badge {
+      max-width: 180px;
+      svg circle {
+        stroke: rsa-color(red);
+        stroke-width: 4;
+      }
+      .details .score {
+        color: rsa-color(orange);
+      }
+    }
 
     &__itemsContainer {
       position:relative
@@ -108,19 +149,33 @@ radial-gradient(circle at 85% 85%, rsa-color(blue, darker, .1) 0, rsa-color(blue
       padding: rsa-whitespace();
       vbox {
         padding-right: 0rem;
+        padding-left: 1rem;
       }
 
-      &__field-name {
+      &__field-name ,&__row-field-name{
         @include rsa-font(header, small);
-        padding-left: rsa-whitespace(more);
+        padding-top: rsa-whitespace();
       }
-      &__field-value {
+      &__field-value,&__row-field-value,&__header-data{
         color: $font-highlight-color;
         text-align: left;
-        padding-left: rsa-whitespace(more);
-        padding-bottom: rsa-whitespace();
         overflow: hidden;
         text-overflow: ellipsis;
+      }
+      &__groupdata{
+        color:rsa-color(blue,base);
+      }
+      &__row-field-value{
+        padding-bottom: rsa-whitespace();
+      }
+      &__single-column{
+        padding-left: rsa-whitespace();
+        padding-top: rsa-whitespace(less);
+      }
+      &__header-data{
+        @include rsa-font(header, larger);
+        max-height: 60%;
+        padding-left: rsa-whitespace(most);
       }
 
       &__badge-score {

@@ -6,13 +6,18 @@
       {{t 'context.timeWindow'}}{{timeWindow}} |
       {{t 'context.lastUpdated'}}{{rsa-content-datetime timestamp=lastUpdated asTimeAgo=true}}
     </span>
-  {{/if}}    
+  {{/if}}
 </div>
 {{#if errorMessage}}
   <div class='rsa-context-panel__error-text'>{{errorMessage}}</div>
 {{else}}
   {{#if (gt array.length 0)}}
     {{#each array as |data|}}
+      <hbox>
+        <vbox class="rsa-context-panel__grid__host-details__header-data">
+          <span title= {{get data columns.firstRow.field}}>{{get data columns.firstRow.field}}</span>
+        </vbox>
+      </hbox>
       <hbox class="rsa-context-panel__grid__host-details">
         {{#each columns.columns as |columnsdata|}}
           <vbox class={{columnsdata.class}}>
@@ -30,13 +35,25 @@
                   size='small'
                   style=(risk-score-to-badge-level data.IIOCScore)
                 }}
+              {{else if (eq cellData.dataType 'group')}}
+                <vbox class="rsa-context-panel__grid__host-details__field-name">{{t cellData.title}}</vbox>
+                {{#rsa-content-tethered-panel-trigger panel='gridPanel' class=""}}
+                  <vbox class="rsa-context-panel__grid__host-details__groupdata">{{data.groupCount}}</vbox>
+                {{/rsa-content-tethered-panel-trigger}}
+                {{#rsa-content-tethered-panel panelId='gridPanel' displayCloseButton=false position='bottom-right'}}
+                  <section>
+                    {{#each (get data cellData.field) as |cellData index|}}
+                      <div class="rsa-context-panel__grid__host-details__field-value">
+                        <span title= {{cellData}}>{{cellData}}</span>
+                      </div>
+                    {{/each}}
+                  </section>
+                {{/rsa-content-tethered-panel}}
               {{else}}
-                {{#if columnsdata.displayField}}
-                  <div class="rsa-context-panel__grid__host-details__field-name">{{t cellData.title}}</div>
-                {{/if}}
-                <div class="rsa-context-panel__grid__host-details__field-value">
+                <vbox class="rsa-context-panel__grid__host-details__field-name">{{t cellData.title}}</vbox>
+                <vbox class="rsa-context-panel__grid__host-details__field-value">
                   <span title= {{get data cellData.field}}>{{get data cellData.field}}</span>
-                </div>
+                </vbox>
               {{/if}}
             {{/each}}
           </vbox>
