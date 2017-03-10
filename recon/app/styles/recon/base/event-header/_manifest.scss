@@ -1,7 +1,7 @@
 @import "./event-dropdowns";
 
 .recon-event-header {
-  background-color: rsa-color(gray, darkest, $rsa-somewhat-opaque);
+  background-color: rsa-color(gray, darkest, $rsa-nearly-opaque);
 
   .divider {
     border-left: 1px solid rsa-color(white);
@@ -10,7 +10,8 @@
   }
 
   .header-data {
-    background-color: rsa-color(gray, darkest, $rsa-translucent);
+    border-top: 1px solid rsa-color(gray, dark);
+    background-color: rsa-color(gray, darkest, $rsa-transparent);
     padding: rsa-whitespace(less) rsa-whitespace() rsa-whitespace();
     .header-item {
       padding: rsa-whitespace(less);

@@ -2,7 +2,7 @@
   border-top: 1px rsa-color(blue) solid;
   &__header,
   &.rsa-text-entry {
-    background-color: rsa-color(gray, dark, 0.5);
+    background-color: rsa-color(gray, dark, $rsa-transparent);
     border-color: $dark-border-color-medium;
     color: $dark-fg-color;
     padding: 6px rsa-whitespace();
@@ -63,7 +63,7 @@
 
   &__body {
     @include rsa-row(justify,fill);
-    background-color: rsa-color(gray, dark, 0.5);
+    background-color: rsa-color(gray, dark, $rsa-transparent);
     color: $dark-fg-hover-color;
     font-size: 0.85rem;
     padding: 0px rsa-whitespace() rsa-whitespace(least) 0px;
@@ -101,7 +101,7 @@
   }
 
   &.request {
-    background-color: rsa-color(gray, darkest, $rsa-nearly-transparent);
+    background-color: rsa-color(gray, darkest, $rsa-transparent);
     .rsa-packet {
       &__header {
         &::before {

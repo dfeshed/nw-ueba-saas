@@ -8,6 +8,14 @@
   overflow: hidden;
 }
 
+.recon-event-content {
+  background-color: rsa-color(gray, darkest, $rsa-somewhat-opaque);
+}
+
+.event-content-box {
+  background-color: rsa-color(gray, darkest, $rsa-nearly-opaque);
+}
+
 .recon-error {
   padding: rsa-whitespace(more);
 }
