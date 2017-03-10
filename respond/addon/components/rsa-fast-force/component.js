@@ -2,8 +2,10 @@ import Ember from 'ember';
 import computed from 'ember-computed-decorators';
 import { forceSimulation, forceLink, forceManyBody, forceCollide, forceCenter } from 'd3-force';
 import { select } from 'd3-selection';
+import { zoom } from 'd3-zoom';
 import dataJoin from './util/data-join';
 import ticked from './util/ticked';
+import zoomed from './util/zoomed';
 import center from './util/center';
 
 /* global addResizeListener */
@@ -11,7 +13,6 @@ import center from './util/center';
 
 const {
   Component,
-  get,
   set,
   run
 } = Ember;
@@ -32,7 +33,8 @@ export default Component.extend({
   // with its width & height set to 100%.
   tagName: 'div',
   classNames: 'rsa-force-layout',
-  classNameBindings: ['alphaLevelClass'],
+  classNameBindings: ['alphaLevelClass', 'isDragging'],
+  attributeBindings: ['zoom:data-zoom'],
 
   @computed('alphaLevel')
   alphaLevelClass: ((alphaLevel) => `alpha-level-${alphaLevel}`),
@@ -41,8 +43,6 @@ export default Component.extend({
   // For details, see d3 API docs: https://github.com/mbostock/d3/wiki/Force-Layout
   charge: -1000,
   chargeDistance: 250,
-  gravity: 0.1,
-  friction: 0.5,
   linkStrength: 0.5,
   linkDistance: 150,
   centerX: 700,
@@ -68,17 +68,17 @@ export default Component.extend({
    * @readonly
    * @private
    */
-  @computed('alphaInitial', 'alphaCurrent')
-  alphaLevel(initial, current) {
+  @computed('alphaCurrent')
+  alphaLevel(current) {
     let level = 0;
-    if (current > initial * 0.05) {
-      level = 4; // don't update the DOM at all
-    } else if (current > initial * 0.01) {
-      level = 3; // update the nodes but not links
-    } else if (current > initial * 0.0075) {
-      level = 2; // update the nodes & support autoCenter if enabled
-    } else if (current > initial * 0.005) {
-      level = 1; // update the nodes & links & support autoCenter
+    if (current > 0.05) {
+      level = 4;
+    } else if (current > 0.01) {
+      level = 3;
+    } else if (current > 0.0075) {
+      level = 2;
+    } else if (current > 0.005) {
+      level = 1;
     }
     return level;
   },
@@ -108,6 +108,46 @@ export default Component.extend({
    * @public
    */
   nodeMaxStrokeWidth: 1,
+
+  /**
+   * Configurable lower limit on zoom scale.
+   * The user will not be able shrink the graph smaller than this by using scrolling nor gestures.
+   *
+   * @type {number}
+   * @public
+   */
+  zoomMin: 0.1,
+
+  /**
+   * Configurable upper limit on zoom scale.
+   * The user will not be able enlarge the graph larger than this by using scrolling nor gestures.
+   *
+   * @type {number}
+   * @public
+   */
+  zoomMax: 2,
+
+  /**
+   * The current SVG scale factor that is being applied. Read-only.
+   *
+   * When zooming is applied, this property is automatically updated with the current zoom scale value, to 1 decimal
+   * precision.  It is exposed here as an attr in order to use it in an HTML attribute binding, so
+   * we can write zoom-specific conditional CSS. For example, we can choose to enlarge/shrink font sizes based on zoom level.
+   *
+   * @type {number}
+   * @readonly
+   * @private
+   */
+  zoom: 1,
+
+  /**
+   * Indicates whether or not the user is currently panning and/or zooming the visualization.
+   *
+   * @type {number}
+   * @readonly
+   * @public
+   */
+  isDragging: false,
 
   /**
    * An object with `nodes` & `links` properties, which hold an array (possibly empty) of nodes & links (respectively)
@@ -143,11 +183,11 @@ export default Component.extend({
       }
 
       // Ensure all the given nodes (if any) have a radius.
-      // Doing this here, rather than later, ensures our template doesn't initially render them without a radius.
+      // Doing this here, rather than later, saves us from having to check for this later during the simulation.
       const radius = this.get('nodeRadius');
       value.nodes.forEach(function(node) {
-        if (!get(node, 'r')) {
-          set(node, 'r', radius);
+        if (!node.r) {
+          node.r = radius;
         }
       });
 
@@ -186,6 +226,17 @@ export default Component.extend({
   ticked,
 
   /**
+   * Configurable d3 callback to be invoked each time a d3 zoom event is emitted by user interaction.
+   * See d3 zoom docs for more details: https://github.com/d3/d3-zoom
+   * Responsible for applying the zoom transform to DOM.
+   *
+   * @assumes This function will be invoked with its `this` context set to this component instance.
+   * @type {function}
+   * @public
+   */
+  zoomed,
+
+  /**
    * If truthy, instructs this visualization to center its nodes visually whenever either (a) this component is
    * resized, or (b) the simulation is (re-)run.
    *
@@ -203,15 +254,37 @@ export default Component.extend({
    */
   center,
 
+  /**
+   * Specifies whether or not the user has dragged the current `data`.
+   *
+   * This property will automatically be set to `true` after the user drag moves a node in the layout. If the `data`
+   * is reset, then this property will automatically be reset to `false`.
+   *
+   * Initially the data is laid out programmatically by the simulation, but subsequently the user can drag-move nodes
+   * if they want to. If they do, we must resume the simulation (but not from scratch, we just give it a nudge) to adjust
+   * the layout as needed. Typically, if `autoCenter` is truthy, we re-center the graph once the simulation is done,
+   * but if the simulation was restarted only because the user dragged data, then we shouldn't re-center once the
+   * simulation re-finishes.  So this property will help us make that distinction.
+   *
+   * @readonly
+   * @type {boolean}
+   * @private
+   */
+  dataHasBeenDragged: false,
+
   // Triggers a restart of the layout algorithm when new data arrives.
   // Stops current simulation (if any), updates DOM then (re-)starts simulation.
   _dataDidChange() {
+    this.stop();
+
+    // Reset flag that tells us if user has manually dragged this dataset around.
+    this.set('dataHasBeenDragged', false);
+
     const { simulation } = this;
     if (!simulation) {
       // component hasn't rendered yet, exit
       return;
     }
-    simulation.stop();
 
     // Join the data to the DOM using configurable function.
     // Optimization: Cache the result (if any) so that tick handler can use it subsequently.
@@ -219,14 +292,26 @@ export default Component.extend({
 
     // Feed the data to the simulation & restart.
     const { nodes, links } = this.get('data');
-    if (!nodes.length) {
-      return;
-    }
-
     simulation
       .nodes(nodes)
       .force('link').links(links);
 
+    if (nodes.length) {
+      this.start();
+    }
+  },
+
+  /**
+   * Starts the current simulation with its current data set, if any.
+   * Responsible for respecting the `alphaInitial` & `skipFirstFrames` settings.
+   * @public
+   */
+  start() {
+    const { simulation } = this;
+    if (!simulation) {
+      // component hasn't rendered yet, exit
+      return;
+    }
     simulation
       .alpha(this.get('alphaInitial'))
       .restart();
@@ -248,30 +333,34 @@ export default Component.extend({
       charge,
       chargeDistance,
       centerX,
-      centerY
+      centerY,
+      nodeRadius,
+      nodeMaxStrokeWidth
     } = this.getProperties(
       'linkDistance',
       'linkStrength',
       'charge',
       'chargeDistance',
       'centerX',
-      'centerY'
+      'centerY',
+      'nodeRadius',
+      'nodeMaxStrokeWidth'
     );
 
     // Define a link force that pulls nodes together.
     if (linkDistance && linkStrength) {
       const linkForce = forceLink()
         .id((d) => d.id)
-        .distance(this.get('linkDistance'))
-        .strength(this.get('linkStrength'));
+        .distance(linkDistance)
+        .strength(linkStrength);
       simulation.force('link', linkForce);
     }
 
     // Define a charge force that can repel or attract nodes.
     if (charge && chargeDistance) {
       const chargeForce = forceManyBody()
-        .strength(this.get('charge'))
-        .distanceMax(this.get('chargeDistance'));
+        .strength(charge)
+        .distanceMax(chargeDistance);
       simulation.force('charge', chargeForce);
     }
 
@@ -283,7 +372,7 @@ export default Component.extend({
 
     // Define a force that prevents node collisions (overlap).
     const collideForce = forceCollide()
-      .radius(this.get('nodeRadius') * 3 + this.get('nodeMaxStrokeWidth') * 2);
+      .radius(nodeRadius * 3 + nodeMaxStrokeWidth * 2);
     simulation.force('collide', collideForce);
 
     // Wire up tick handler that applies simulation coordinates to DOM.
@@ -291,22 +380,55 @@ export default Component.extend({
 
     // Optimization: Cache some frequently-used DOM.
     const el = select(this.element);
+    this.svg = el.select('svg');
     this.linksLayer = el.select('.links-layer');
     this.nodesLayer = el.select('.nodes-layer');
     this.centeringElement = el.select('.centering-element');
 
+    // Define a callback that responds to d3 "zoom events" by applying the event's pan & scale numbers to DOM.
+    const zoomCallback = run.bind(this, 'zoomed');
+
+    // Wire up a d3 "zoom behavior" that listens for scroll/pinch/drag gestures on our <svg> element, converting those
+    // DOM events into d3 "zoom events" that we can then handle with our callback.
+    this.zoomBehavior = zoom()
+      .scaleExtent([
+        this.get('zoomMin'),
+        this.get('zoomMax')
+      ])
+      .on('start', () => {
+        el.classed('is-panning', true);
+      })
+      .on('end', () => {
+        el.classed('is-panning', false);
+      })
+      .on('zoom', zoomCallback);
+    this.svg.call(this.zoomBehavior);
 
     // Manually kick off simulation if we have data already.
     this._dataDidChange();
   },
 
-  // Releases d3 simulation, clear cached DOM.
-  _teardownSimulation() {
+  /**
+   * Stops the current simulation and resets current alpha property to reflect that the simulation is stopped.
+   *
+   * To stop the simulation, we should always call this method rather than directly calling `simulation.stop()`,
+   * in order to ensure that `alphaCurrent` stays in sync.
+   *
+   * Unfortunately, we can't just attach a listener for simulation `end` events because `.stop()` doesn't trigger one.
+   *
+   * @public
+   */
+  stop() {
     if (this.simulation) {
       this.simulation.stop();
-      this.simulation = null;
+      this.set('alphaCurrent', 0);
     }
-    this.nodesLayer = this.linksLayer = this.centeringElement = this.joined = null;
+  },
+
+  // Releases d3 simulation, clear cached DOM.
+  _teardownSimulation() {
+    this.stop();
+    this.simulation = this.nodesLayer = this.linksLayer = this.centeringElement = this.svg = this.joined = this.zoomBehavior = null;
   },
 
   // Attaches resize event listener if auto-centering is enabled.

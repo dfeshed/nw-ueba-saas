@@ -19,12 +19,14 @@ export default function() {
   const alphaLevelIs = this.get('alphaLevel');
   const alphaLevelChanged = alphaLevelWas !== alphaLevelIs;
 
-  if (alphaLevelIs <= 3) {
+  const isDragging = this.get('isDragging');
+
+  if (isDragging || alphaLevelIs <= 3) {
     this.joined.nodes
       .attr('transform', (d) => `translate(${d.x},${d.y})`);
   }
 
-  if (alphaLevelIs <= 1) {
+  if (isDragging || alphaLevelIs <= 1) {
     this.joined.links
       .each((d) => {
         const { source, target } = d;
@@ -49,14 +51,15 @@ export default function() {
       .attr('transform', (d) => d.coords.textTransform);
   }
 
-  if (alphaLevelIs === 0) {
-    this.simulation.stop();
+  if (!isDragging && alphaLevelIs === 0) {
+    this.stop();
   }
 
-  if (alphaLevelChanged) {
-    const center = this.get('center');
-    if (center) {
-      run(this, center);
-    }
+  // If autoCenter is enabled, we center the graph each time the alpha level changes, EXCEPT if either
+  // (a) the user is dragging a node; or
+  // (b) the user has previously dragged a node.
+  // If dragging is occuring or has occured, autoCenter could disrupt the user's workflow.
+  if (this.get('autoCenter') && alphaLevelChanged && !isDragging && !this.get('dataHasBeenDragged')) {
+    run(this, 'center');
   }
 }

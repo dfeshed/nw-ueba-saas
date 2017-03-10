@@ -16,6 +16,16 @@ $incidentInspectorWidth: 400px;
     z-index: 1;
   }
 
+  .rsa-fast-force__wait {
+    /*
+    By default, the wait icon will be centered on the force graph. But the left-side of the graph is overlapped by
+    the inspector, so it appears to be off-center (even though it isn't). What we'd really like is for the wait icon
+    to be centered relative to the graph area which is NOT overlapped by the inspector. So we nudge it to the right
+    by half the inspector's width.
+    */
+    transform: translateX($incidentInspectorWidth / 2);
+  }
+
   &__entities-rectangle {
     @include rsa-fill-abs();
     margin: rsa-whitespace(most);
@@ -47,5 +57,10 @@ $incidentInspectorWidth: 400px;
   .rsa-incident-inspector,
   .rsa-force-layout {
     @include rsa-fill-abs();
+  }
+
+  &__no-storyline {
+    color: rsa-color(gray);
+    font-style: italic;
   }
 }

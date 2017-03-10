@@ -15,6 +15,12 @@
         {{rsa-icon name="warning-signal" size="large"}}
         <h3>{{t 'respond.storyline.error'}}</h3>
       </fill>
+    {{else}}
+      {{#unless storyline.relatedIndicators.length}}
+        <fill justify="center" align="center">
+          <h3 class="rsa-incident-container__no-storyline">No Results</h3>
+        </fill>
+      {{/unless}}
     {{/if}}
   </div>
   {{rsa-incident/entities fitToSize=entitiesRectangle}}

@@ -1,8 +1,8 @@
 $incidentRiskScoreRadius: 1rem;
 
 .rsa-incident-inspector {
-  background-color: rsa-color(black, base, $rsa-translucent);
-  border-right: 1px solid rsa-color(white,base,$rsa-translucent);
+  background-color: rsa-color(gray,darker, $rsa-nearly-opaque);
+  border-right: 1px solid rsa-color(gray,base,$rsa-translucent);
 
   &__header {
     position: relative;

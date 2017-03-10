@@ -1,7 +1,21 @@
 $forceLayoutTransitionDuration: 0.3s;
 
 .rsa-force-layout {
-  cursor: default;
+  cursor: move; /* fallback if grab cursor is unsupported */
+  cursor: grab;
+  cursor: -moz-grab;
+  cursor: -webkit-grab;
+
+  &.is-panning {
+    cursor: grabbing;
+    cursor: -moz-grabbing;
+    cursor: -webkit-grabbing;
+  }
+
+  &-node,
+  &-link {
+    cursor: default;
+  }
 
   .text {
     font-size: 100%;
@@ -25,6 +39,7 @@ $forceLayoutTransitionDuration: 0.3s;
   }
 
   &-link {
+
     .line {
       marker-end: url("#force-layout__arrow");
     }

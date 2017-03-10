@@ -9,9 +9,10 @@ const {
   run
 } = Ember;
 
-const stateToComputed = ({ respond: { incident: { isJournalPanelOpen, storylineStatus } } }) => ({
+const stateToComputed = ({ respond: { incident: { isJournalPanelOpen, storylineStatus, storyline } } }) => ({
   isJournalPanelOpen,
-  storylineStatus
+  storylineStatus,
+  storyline
 });
 
 const Incident = Component.extend({
@@ -19,6 +20,7 @@ const Incident = Component.extend({
   classNames: ['rsa-incident-container'],
   isJournalPanelOpen: false,
   storylineStatus: null,
+  storyline: null,
 
   /**
    * Rectangle object that specifies the current location & size of the "entities rectangle" DOM element.

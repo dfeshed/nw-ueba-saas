@@ -1,3 +1,9 @@
+import Ember from 'ember';
+import { drag } from 'd3-drag';
+import { event } from 'd3-selection';
+
+const { run } = Ember;
+
 const MAX_TEXT_LENGTH = 30;
 
 // Helper that truncates a text string if it is larger than a given limit and appends "..".
@@ -8,6 +14,30 @@ function truncateText(text) {
   } else {
     return `${text.substr(0, MAX_TEXT_LENGTH)}..`;
   }
+}
+
+// Drag handlers for newly created DOM.
+// When wired up, these will have `this` bound to the component instance.
+function dragstarted(d) {
+  this.set('isDragging', true);
+  if (!event.active) {
+    this.simulation.alphaTarget(0.0075).restart();
+  }
+  d.fx = d.x;
+  d.fy = d.y;
+}
+function dragged(d) {
+  d.fx = event.x;
+  d.fy = event.y;
+}
+function dragended() {
+  if (!event.active) {
+    this.simulation.alphaTarget(0);
+  }
+  this.setProperties({
+    isDragging: false,
+    dataHasBeenDragged: true
+  });
 }
 
 /**
@@ -46,6 +76,12 @@ export default function() {
     .text((d) => truncateText(d.text));
   nodesEnterGroup.append('title')
     .text((d) => d.text);
+  nodesEnterGroup.call(
+    drag()
+      .on('start', run.bind(this, dragstarted))
+      .on('drag', run.bind(this, dragged))
+      .on('end', run.bind(this, dragended))
+  );
 
   const linksAll = this.linksLayer
     .selectAll('.rsa-force-layout-link')

@@ -74,16 +74,17 @@
   #force-layout__grid {
     .grid-axis {
       &.major {
-        stroke: rsa-color(gray, base, $rsa-nearly-transparent);
+        stroke: rsa-color(gray, base, $rsa-translucent);
         stroke-width: 1pt;
       }
       &.minor {
-        stroke: rsa-color(gray, base, $rsa-nearly-transparent / 2);
+        stroke: rsa-color(gray, base, $rsa-nearly-transparent);
         stroke-width: 0.5pt;
       }
     }
   }
 
+  &.is-dragging,
   &.alpha-level-3,
   &.alpha-level-2,
   &.alpha-level-1,
@@ -91,18 +92,19 @@
     .rsa-force-layout {
       &-node {
         opacity: 1;
-        transition: opacity 1s;
+        transition: opacity 0.3s;
       }
     }
   }
 
+  &.is-dragging,
   &.alpha-level-1,
   &.alpha-level-0 {
 
     .rsa-force-layout {
       &-link {
         opacity: 1;
-        transition: opacity 1s;
+        transition: opacity 0.3s;
       }
     }
   }
