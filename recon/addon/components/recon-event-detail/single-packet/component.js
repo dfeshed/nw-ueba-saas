@@ -1,9 +1,9 @@
 import Ember from 'ember';
-import computed from 'ember-computed-decorators';
+import computed, { not, readOnly } from 'ember-computed-decorators';
+import { SpanielObserver } from 'spaniel';
 
 import layout from './template';
-import { not, readOnly } from 'ember-computed-decorators';
-import { SpanielObserver } from 'spaniel';
+
 const { Component, K, run, set } = Ember;
 
 export default Component.extend({

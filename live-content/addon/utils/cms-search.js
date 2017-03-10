@@ -114,7 +114,7 @@ export default EmberObject.extend({
       delete criteria.textSearch;
     }
 
-    Object.keys(criteria).forEach((propertyName)=>{
+    Object.keys(criteria).forEach((propertyName) => {
       const value = criteria[propertyName];
       if (isPresent(value)) {
         const propertyValues = this._createPropertyValues(value);

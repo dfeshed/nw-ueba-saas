@@ -19,7 +19,7 @@ skip('Test context panel should display error in Error cases.', function(assert)
   this.set('entityId', '1.1.1.1');
   this.set('entityType', 'IP');
   const hoverStub = Service.extend({
-    streamRequest: (obj)=> {
+    streamRequest: (obj) => {
       obj.onError('TEST ERROR');
     }
   });
@@ -28,7 +28,7 @@ skip('Test context panel should display error in Error cases.', function(assert)
   const done = assert.async(1);
   this.render(hbs`{{context-panel entityId=entityId entityType=entityType i18n=i18n }}`);
 
-  return waitFor('.rsa-context-panel__error-text').then(() =>{
+  return waitFor('.rsa-context-panel__error-text').then(() => {
     const [errorText] = this.$('.rsa-context-panel__error-text');
     assert.ok(errorText.innerText.indexOf('TEST ERROR') > 0, 'Should Have error message');
     done();
@@ -39,7 +39,7 @@ skip('Test context panel should display error in Error from CH', function(assert
   this.set('entityId', '1.1.1.1');
   this.set('entityType', 'IP');
   const hoverStub = Service.extend({
-    streamRequest: (obj)=> {
+    streamRequest: (obj) => {
       obj.onResponse({});
     }
   });

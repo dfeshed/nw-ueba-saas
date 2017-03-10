@@ -72,7 +72,7 @@ export default Mixin.create({
     return {
       field: this.get('field'),
       container: this.get('pikadayContainer'),
-      bound: this.get('pikadayContainer') ? false : true,
+      bound: !this.get('pikadayContainer'),
       onOpen: run.bind(this, this.onPikadayOpen),
       onClose: run.bind(this, this.onPikadayClose),
       onSelect: run.bind(this, this.onPikadaySelect),

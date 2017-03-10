@@ -152,7 +152,7 @@ skip('User should be able to set Status, Assignee and Priority', function(assert
             Logger.debug('Changing the Priority');
             selectChoose(selectors.pages.respond.card.incTile.prioritySelect, 'Medium');
 
-            andThen(()=> {
+            andThen(() => {
 
               const statusLabel = find(selectors.pages.respond.card.incTile.statusLabel).first();
               const statusVal = statusLabel.text().trim();

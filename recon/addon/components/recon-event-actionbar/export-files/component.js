@@ -26,9 +26,11 @@ const ExportFilesComponent = Component.extend(ReconExport, {
 
   @computed('isDownloading', 'selectedFiles.length')
   caption(isDownloading, count) {
-    return isDownloading ?
-      'Exporting...' : (count > 1) ?
-        `Export Files (${count})` : 'Export File';
+    if (isDownloading) {
+      return 'Exporting...';
+    } else {
+      return (count > 1) ? `Export Files (${count})` : 'Export File';
+    }
   },
 
   @filterBy('files', 'selected', true)

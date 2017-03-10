@@ -47,7 +47,7 @@ export default Component.extend({
   mouseEnter() {
     if (!this.get('isDisabled')) {
       if (this.get('isHover')) {
-        const displayEvent = later(()=> {
+        const displayEvent = later(() => {
           const height = this.$().height();
           const width = this.$().width();
           this.get('eventBus').trigger(`rsa-content-tethered-panel-display-${this.get('panel')}`, height, width, this.get('elementId'));
@@ -60,7 +60,7 @@ export default Component.extend({
   mouseLeave() {
     if (this.get('isHover')) {
       cancel(this.get('displayEvent'));
-      later(()=> {
+      later(() => {
         this.get('eventBus').trigger(`rsa-content-tethered-panel-hide-${this.get('panel')}`);
       }, this.get('hideDelay'));
     }

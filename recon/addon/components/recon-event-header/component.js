@@ -42,7 +42,13 @@ const EventHeaderComponent = Component.extend({
       });
       // Sort the Array by the sort order parameter
       displayedItems.sort(function(a, b) {
-        return (a.so > b.so) ? 1 : ((b.so > a.so) ? -1 : 0);
+        if (a.so > b.so) {
+          return 1;
+        } else if (b.so > a.so) {
+          return -1;
+        } else {
+          return 0;
+        }
       });
       return displayedItems;
     }

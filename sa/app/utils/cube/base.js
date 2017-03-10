@@ -298,7 +298,14 @@ export default EmberObject.extend({
       // Get the dimension object for the field.
       const fieldObject = me.get(`fields.${item.field}`) || me.addField(item.field);
       const opts = item.options || {};
-      const methodName = opts.remove ? 'remove' : (opts.add ? 'add' : 'reset');
+      let methodName;
+      if (opts.remove) {
+        methodName = 'remove';
+      } else if (opts.add) {
+        methodName = 'add';
+      } else {
+        methodName = 'reset';
+      }
       const nativeFilter = fieldObject.get('filter')[methodName](item.value).get('native');
 
       fieldObject.get('dimension').filter(nativeFilter);

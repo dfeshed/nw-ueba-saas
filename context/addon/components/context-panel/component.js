@@ -191,7 +191,7 @@ const ContextComponent = Component.extend({
         lcData.set(liveConnectObj.allReasons, obj.LiveConnectApi.riskReasonTypes);
       }
     });
-    entityType.relatedEntities_count.forEach((obj)=> {
+    entityType.relatedEntities_count.forEach((obj) => {
       const reputationObj = record.find((rec) => {
         return !isEmpty(rec[entityType.Reputation]);
       });

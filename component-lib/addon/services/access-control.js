@@ -1,7 +1,6 @@
 import Ember from 'ember';
-import { intersect, gt } from 'ember-computed-decorators';
+import computed, { intersect, gt } from 'ember-computed-decorators';
 import config from 'ember-get-config';
-import computed from 'ember-computed-decorators';
 
 const {
   Service

@@ -153,7 +153,7 @@ export default Component.extend({
    * @returns {boolean}
    */
   registerWorkflowStep(step) {
-    run.next(()=> {
+    run.next(() => {
       const steps = this.get('registeredSteps');
       this.set('registeredSteps', [...steps, step]);
     });

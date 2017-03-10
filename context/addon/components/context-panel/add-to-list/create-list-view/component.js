@@ -26,9 +26,9 @@ export default Component.extend({
       const rows = this.get('model.list');
       const isDuplicateName = rows.find((list) => list.name.toUpperCase() == name.toUpperCase().trim());
       this.setProperties({
-        isError: isDuplicateName ? true : false,
+        isError: !!isDuplicateName,
         errorMessage: isDuplicateName ? this.get('i18n').t('context.error.listDuplicateName') : null,
-        isDisabled: isDuplicateName ? true : false
+        isDisabled: !!isDuplicateName
       });
     },
 

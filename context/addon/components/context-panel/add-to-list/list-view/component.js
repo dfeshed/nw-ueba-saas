@@ -48,7 +48,7 @@ export default Component.extend({
       return list;
     } else {
       const filterStrCaps = filterStr.toUpperCase();
-      return list.filter((data) =>{
+      return list.filter((data) => {
         const name = data.name.toUpperCase().match(filterStrCaps);
         const desc = data.description && data.description.toUpperCase().match(filterStrCaps);
         return name || desc;

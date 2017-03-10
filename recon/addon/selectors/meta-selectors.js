@@ -10,7 +10,7 @@ export const isHttpData = createSelector(
   meta,
   (meta) => {
     const service = meta.find((d) => d[0] === 'service');
-    return (service && service[1] === HTTP_DATA) ? true : false;
+    return !!service && service[1] === HTTP_DATA;
   }
 );
 

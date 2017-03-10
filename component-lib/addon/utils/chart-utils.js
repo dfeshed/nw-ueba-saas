@@ -106,12 +106,14 @@ export function dateFormatter(is24Hour, timezone) {
     // Evaluate the ternary operators which returns a tzFormatFn() with a
     // formatting string to best format the given date value. That function is
     // run against a date, and a nicely formatted date is returned.
+    /* eslint-disable no-nested-ternary */
     return (timeMinute(date) < date ? tzFormatFn(minuteFormat) :
             timeHour(date) < date ? tzFormatFn(hourFormat) :
             timeDay(date) < date ? tzFormatFn(dayFormat) :
             timeMonth(date) < date ? (timeWeek(date) < date ? tzFormatFn(weekFormat) : tzFormatFn(shortMonthFormat)) :
             timeYear(date) < date ? tzFormatFn(monthFormat) :
             tzFormatFn(yearFormat))(date);
+    /* eslint-enable no-nested-ternary */
   };
 }
 

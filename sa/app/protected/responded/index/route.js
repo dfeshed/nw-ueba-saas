@@ -270,7 +270,7 @@ export default Route.extend(NotificationHelper, {
       // kick off both the async update stream
       this._createNotify(
         [newCube, inProgressCube],
-        (incidents)=> [
+        (incidents) => [
           incidents.filterBy('statusSort', incStatus.NEW),
           incidents.filter((incident) => {
             return (incident.statusSort === incStatus.ASSIGNED) || (incident.statusSort === incStatus.IN_PROGRESS);
@@ -306,7 +306,7 @@ export default Route.extend(NotificationHelper, {
         }
       });
       // kick off both the async update stream
-      this._createNotify([allIncidentsCube], (incidents)=>[incidents]);
+      this._createNotify([allIncidentsCube], (incidents) => [incidents]);
     }
 
     return incidentModels;

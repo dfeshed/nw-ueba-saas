@@ -111,7 +111,7 @@ export default Mixin.create(HasChartParent, {
   draw(datum, xAccessor, duration) {
     const pathFn = (datum.length === 1) ? this.get('symbolFn') : this.get('pathFn');
     const path = select(this.element).datum(datum)
-      .classed('symbol', datum.length === 1 ? true : false);
+      .classed('symbol', datum.length === 1);
 
     path.transition().duration(duration)
       .attr('d', pathFn)

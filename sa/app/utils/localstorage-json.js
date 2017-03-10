@@ -89,7 +89,7 @@ export default EmberObject.extend({
   * @public
   */
   exists() {
-    return (this.get('storage')[this.get('key')]) ? true : false;
+    return !!this.get('storage')[this.get('key')];
   }
 
 });
