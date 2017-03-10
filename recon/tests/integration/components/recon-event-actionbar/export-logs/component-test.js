@@ -36,7 +36,7 @@ test('it renders proper label for log data', function(assert) {
 
   return wait().then(() => {
     const str = this.$().text().trim();
-    assert.equal(str, 'Download Logs');
+    assert.equal(str, 'Download Log');
   });
 });
 

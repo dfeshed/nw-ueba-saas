@@ -1,0 +1,13 @@
+/*
+Designed to be used for recon error messages. It does vertical and horizontal centering.
+*/
+@mixin error-center() {
+  @include rsa-font(body);
+  padding: rsa-whitespace();
+  font-style: italic;
+  color: rsa-color(gray);
+  position: absolute;
+  left: 50%;
+  top: 45%;
+  transform: translateX(-50%) translateY(-50%);
+}

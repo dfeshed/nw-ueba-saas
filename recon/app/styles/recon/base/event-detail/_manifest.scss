@@ -1,7 +1,8 @@
 @import "./files/manifest";
 @import "./packets/manifest";
 @import "./text/manifest";
+@import "../mixins";
 
 .recon-event-detail-feedback {
-  padding: rsa-whitespace();
+  @include error-center();
 }

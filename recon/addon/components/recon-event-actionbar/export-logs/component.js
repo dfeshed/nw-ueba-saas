@@ -6,7 +6,12 @@ import ReconExport from 'recon/mixins/recon-export';
 import layout from './template';
 import { isLogEvent } from 'recon/selectors/event-type-selectors';
 
-const { Component } = Ember;
+const {
+  Component,
+  inject: {
+    service
+  }
+} = Ember;
 
 const stateToComputed = ({ recon, recon: { data } }) => ({
   status: data.fileExtractStatus,
@@ -22,9 +27,11 @@ const dispatchToActions = (dispatch) => ({
 
 const DownloadLogsComponent = Component.extend(ReconExport, {
   layout,
+  i18n: service(),
 
-  @computed('isDownloading')
-  caption: (isDownloading) => isDownloading ? 'Downloading...' : 'Download Logs'
+  @computed('isDownloading', 'i18n')
+  caption: (isDownloading, i18n) => isDownloading ? i18n.t('recon.textView.isDownloading') :
+                                                    i18n.t('recon.textView.downloadLog')
 });
 
 export default connect(stateToComputed, dispatchToActions)(DownloadLogsComponent);

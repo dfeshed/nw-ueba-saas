@@ -1,3 +1,4 @@
+@import "../../mixins";
 .recon-event-detail-text {
   .scroll-box {
     bottom: rsa-whitespace(more);
@@ -13,10 +14,6 @@
     }
   }
   .no-text {
-    position: absolute;
-    top: rsa-whitespace(more);
-    right: rsa-whitespace(more);
-    left: rsa-whitespace(more);
-    text-align: center;
+    @include error-center();
   }
 }

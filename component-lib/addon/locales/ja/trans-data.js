@@ -107,6 +107,10 @@ export default {
     'other': 'ja_updates'
   },
   recon: {
+    textView: {
+      downloadLog: 'ja_Download Log',
+      isDownloading: 'ja_Downloading...'
+    },
     files: {
       fileName: 'ja_File Name',
       extension: 'ja_Extension',
