@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import computed, { or } from 'ember-computed-decorators';
+import computed from 'ember-computed-decorators';
 import connect from 'ember-redux/components/connect';
 
 import layout from './template';
@@ -37,18 +37,6 @@ const TitlebarComponent = Component.extend({
   tagName: 'hbox',
   classNameBindings: ['isReconExpanded:recon-is-expanded'],
   classNames: ['recon-event-titlebar'],
-
-  /**
-   * Determines if we should disable the request/response toggles
-   * @param {boolean} lacksPackets Whether or not the event does not have packets
-   *   If no packets, then on request/response
-   * @param {boolean} isLogEvent Whether the event is a log or not, log events
-   *   do not have request/response
-   * @returns {boolean} Whether icons should be disabled
-   * @public
-   */
-  @or('lacksPackets', 'isLogEvent')
-  disableRequestResponseToggles: null,
 
   /**
   * Processes RECON_VIEWS and setings selected flag for

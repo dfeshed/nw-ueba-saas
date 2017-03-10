@@ -119,13 +119,17 @@ test('request/response toggles enabled for packets', function(assert) {
   });
 });
 
-test('request/response toggles disabled for logs', function(assert) {
-  assert.expect(2);
+test('request/response insure that request, response, Top/Bottom and Side by Side are not generated for logs', function(assert) {
+  assert.expect(6);
   new DataHelper(this.get('redux')).setEventTypeToLog();
   this.render(hbs`{{recon-event-titlebar}}`);
   return wait().then(() => {
-    assert.equal(this.$('.toggle-request').hasClass('disabled'), true, 'Request toggle disabled for log');
-    assert.equal(this.$('.toggle-response').hasClass('disabled'), true, 'Response toggle disabled for log');
+    assert.equal(this.$('.rsa-icon-layout-6').length, true, 'Show/Hide Header button should exist for log');
+    assert.equal(this.$('.toggle-request').length, false, 'Request button does not exist for log');
+    assert.equal(this.$('.toggle-response').length, false, 'Response button does not exist for log');
+    assert.equal(this.$('.rsa-icon-view-agenda').length, false, 'Top/Bottom View button does not exist for log');
+    assert.equal(this.$('.rsa-icon-layout-4').length, false, 'Side by Side View button does not exist for log');
+    assert.equal(this.$('.toggle-meta').length, true, 'Show/Hide Meta button should exist for log');
   });
 });
 

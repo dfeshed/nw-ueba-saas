@@ -37,34 +37,34 @@
   title=(t 'recon.toggles.header')
 }}
 
-{{rsa-icon
-  active=isRequestShown
-  class='toggle-request header-toggle'
-  click=(action "toggleRequest")
-  disabled=disableRequestResponseToggles
-  name='arrow-circle-right-2'
-  title=(t 'recon.toggles.request')}}
+{{#unless isLogEvent}}
+  {{rsa-icon
+    active=isRequestShown
+    class='toggle-request header-toggle'
+    click=(action "toggleRequest")
+    name='arrow-circle-right-2'
+    title=(t 'recon.toggles.request')}}
 
-{{rsa-icon
-  active=isResponseShown
-  class='toggle-response header-toggle'
-  click=(action "toggleResponse")
-  disabled=disableRequestResponseToggles
-  name='arrow-circle-left-2'
-  title=(t 'recon.toggles.response')}}
+  {{rsa-icon
+    active=isResponseShown
+    class='toggle-response header-toggle'
+    click=(action "toggleResponse")
+    name='arrow-circle-left-2'
+    title=(t 'recon.toggles.response')}}
 
-{{rsa-icon
-  active=true
-  class='header-toggle'
-  disabled=lacksPackets
-  name='view-agenda'
-  title=(t 'recon.toggles.topBottom')}}
+  {{rsa-icon
+    active=true
+    class='header-toggle'
+    disabled=lacksPackets
+    name='view-agenda'
+    title=(t 'recon.toggles.topBottom')}}
 
-{{rsa-icon
-  class='header-toggle'
-  disabled=lacksPackets
-  name='layout-4'
-  title=(t 'recon.toggles.sideBySide')}}
+  {{rsa-icon
+    class='header-toggle'
+    disabled=lacksPackets
+    name='layout-4'
+    title=(t 'recon.toggles.sideBySide')}}
+{{/unless}}
 
 {{rsa-icon
   active=isMetaShown
