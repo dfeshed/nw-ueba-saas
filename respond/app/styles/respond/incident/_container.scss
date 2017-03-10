@@ -18,6 +18,7 @@ $incidentInspectorWidth: 400px;
 
   &__entities-rectangle {
     @include rsa-fill-abs();
+    margin: rsa-whitespace(most);
     left: $incidentInspectorWidth;
     z-index: -1;
   }

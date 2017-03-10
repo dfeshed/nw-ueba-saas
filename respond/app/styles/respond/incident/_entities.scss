@@ -2,6 +2,8 @@
 
   .rsa-force-layout {
     &-node {
+      opacity: 0;
+
       .circle {
         stroke: rsa-color(gray,base,$rsa-nearly-opaque);
         fill: rsa-color(black,base,$rsa-nearly-opaque);
@@ -30,6 +32,8 @@
     }
 
     &-link {
+      opacity: 0;
+
       .line {
         stroke: rsa-color(gray,base,$rsa-nearly-opaque);
       }
@@ -80,4 +84,26 @@
     }
   }
 
+  &.alpha-level-3,
+  &.alpha-level-2,
+  &.alpha-level-1,
+  &.alpha-level-0 {
+    .rsa-force-layout {
+      &-node {
+        opacity: 1;
+        transition: opacity 1s;
+      }
+    }
+  }
+
+  &.alpha-level-1,
+  &.alpha-level-0 {
+
+    .rsa-force-layout {
+      &-link {
+        opacity: 1;
+        transition: opacity 1s;
+      }
+    }
+  }
 }
