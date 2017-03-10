@@ -66,6 +66,11 @@ export default [{
         title: 'context.hostSummary.machineStatus'
       },
       {
+        field: 'IIOCRisk',
+        title: 'context.hostSummary.riskScore',
+        dataType: 'CriticalityScore'
+      },
+      {
         field: 'LocalIPAddress',
         title: 'context.hostSummary.ipAddress',
         nested: 'LocalIPAddress',

@@ -870,6 +870,7 @@ export default [
         'UserName': '',
         'MachineStatus': 'Online',
         'IIOCScore': '1024',
+        'IIOCRisk': 'MEDIUM HIGH',
         'IIOCLevel2': '7',
         'IIOCLevel3': '21',
         'BootTime': '5/12/2015 3:57:36 AM',

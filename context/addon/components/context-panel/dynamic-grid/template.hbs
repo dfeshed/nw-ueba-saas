@@ -35,6 +35,11 @@
                   size='small'
                   style=(risk-score-to-badge-level data.IIOCScore)
                 }}
+              {{else if (eq cellData.dataType 'CriticalityScore')}}
+                {{context-panel/criticality-score
+                  label=(t cellData.title)
+                  score=(get data cellData.field)
+                }}
               {{else if (eq cellData.dataType 'group')}}
                 <vbox class="rsa-context-panel__grid__host-details__field-name">{{t cellData.title}}</vbox>
                 {{#rsa-content-tethered-panel-trigger panel='gridPanel' class=""}}
