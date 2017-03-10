@@ -40,17 +40,17 @@ export default Service.extend({
   adminUrl: (intersections) => {
     let url = null;
 
-    if (intersections.includes('viewAppliances')) {
-      url = '/admin/appliances';
-    } else if (intersections.includes('viewServices')) {
+    if (intersections.includes('viewServices') || intersections.includes('*')) {
       url = '/admin/services';
+    } else if (intersections.includes('viewAppliances')) {
+      url = '/admin/appliances';
     } else if (intersections.includes('viewEventSources')) {
       url = '/admin/eventsources';
     } else if (intersections.includes('accessHealthWellness')) {
       url = '/admin/monitoring';
     } else if (intersections.includes('manageSystemSettings')) {
       url = '/admin/system';
-    } else if (intersections.includes('manageSASecurity')) {
+    } else if (intersections.includes('manageSASecurity') || this.containsPermission(intersections, 'security-server')) {
       url = '/admin/security';
     }
 
@@ -61,7 +61,7 @@ export default Service.extend({
   configUrl: (intersections) => {
     let url = null;
 
-    if (intersections.includes('searchLiveResources')) {
+    if (intersections.includes('searchLiveResources') || intersections.includes('*')) {
       url = '/live/search';
     } else if (intersections.includes('accessManageAlertHandlingRules')) {
       url = '/incident/configuration';
@@ -74,5 +74,12 @@ export default Service.extend({
     }
 
     return url;
+  },
+
+  containsPermission(intersections, targetPermission) {
+    return intersections.some((permission) => {
+      return permission.indexOf(targetPermission) >= 0;
+    });
   }
+
 });
