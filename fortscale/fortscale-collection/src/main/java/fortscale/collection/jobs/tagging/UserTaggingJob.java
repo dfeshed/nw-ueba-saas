@@ -76,7 +76,7 @@ public class UserTaggingJob extends FortscaleJob {
     @Override
     protected void runSteps() throws Exception {
         // Get the users count per tag before tagging update
-        Map<String, Long> taggedUsersCountBeforeRun = userService.groupByTags();
+        Map<String, Long> taggedUsersCountBeforeRun = userService.groupByTags(true);
 
         // Running the tagging rules
         logger.info("Updating user tags from mongo");
@@ -94,7 +94,7 @@ public class UserTaggingJob extends FortscaleJob {
         }
 
         // Get the users count per tag after tagging update
-        Map<String, Long> taggedUsersCountAfterRun = userService.groupByTags();
+        Map<String, Long> taggedUsersCountAfterRun = userService.groupByTags(true);
 
         // Save the tagging result
         saveResult(true, taggedUsersCountBeforeRun, taggedUsersCountAfterRun);
