@@ -1,4 +1,6 @@
 .rsa-form-checkbox-label {
+  position: relative;
+
   .rsa-form-checkbox {
     vertical-align: baseline;
     visibility: hidden;
@@ -24,6 +26,7 @@
     width: calc(1rem - 2px);
     padding: 0 2px;
     height: calc(1rem - 2px);
+    line-height: calc(1rem - 2px);
     position: absolute;
     top: 0;
     left: 0;
