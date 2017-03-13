@@ -10,9 +10,13 @@ import formatUtil from 'investigate/components/events-table-row/format-util';
 import { metaKeyAlias } from 'investigate/helpers/meta-key-alias';
 import config from 'ember-get-config';
 
-const { $, Component, get, run, set } = Ember;
+const { $, Component, get, run, set, inject: { service } } = Ember;
 
 export default Component.extend({
+  dateFormat: service(),
+  timeFormat: service(),
+  timezone: service(),
+
   tagName: 'nav',
   classNames: 'rsa-investigate-breadcrumb',
   isAddingMeta: false,
@@ -75,10 +79,12 @@ export default Component.extend({
   // These event types (namely, Network, Log & Correlation) are to be rendered as i18n strings consistently across all
   // deployments, regardless of whether or not the customer has bothered to define aliases for them. Note that there
   // may be other event types found in data; for those, the UI will still support aliases (non-i18n), if defined.
-  @computed('i18n', 'aliases')
+  @computed('i18n', 'aliases', 'dateFormat.selected.format', 'timeFormat.selected.format', 'timezone.selected.zoneId')
   _opts(i18n, aliases) {
     return {
       aliases,
+      dateTimeFormat: `${this.get('dateFormat.selected.format')} ${this.get('timeFormat.selected.format')}`,
+      timeZone: this.get('timezone.selected.zoneId'),
       i18n: i18n && {
         // For these values, display them as i18n strings (rather than alias strings which are not localized).
         medium: {

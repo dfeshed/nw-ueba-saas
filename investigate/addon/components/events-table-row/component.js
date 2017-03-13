@@ -22,10 +22,12 @@ const DEFAULT_WIDTH = 100;
 export default Component.extend(RowMixin, {
   classNames: 'rsa-investigate-events-table-row',
 
+  dateFormat: service(),
+  timeFormat: service(),
   timezone: service(),
 
   // Triggers a repaint when timezone changes to update time value formatting.
-  timezoneDidChange: observer('timezone.selected', function() {
+  datetimeDidChange: observer('timezone.selected', 'dateFormat.selected.format', 'timeFormat.selected.format', function() {
     this._renderCells();
   }),
 
@@ -43,11 +45,12 @@ export default Component.extend(RowMixin, {
   },
 
   // Formatting configuration options. Passed to utils that generate cell DOM.
-  _opts: computed('i18n', 'table.aliases.data', 'timezone.selected', function() {
+  _opts: computed('i18n', 'table.aliases.data', 'timezone.selected', 'dateFormat.selected.format', 'timeFormat.selected.format', function() {
     const i18n = this.get('i18n');
     return {
       defaultWidth: DEFAULT_WIDTH,
       aliases: this.get('table.aliases.data'),
+      dateTimeFormat: `${this.get('dateFormat.selected.format')} ${this.get('timeFormat.selected.format')}`,
       timeZone: this.get('timezone.selected.zoneId'),
       i18n: {
         size: {
