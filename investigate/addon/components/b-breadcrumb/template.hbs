@@ -75,7 +75,9 @@
     <span class="rsa-investigate-breadcrumb__crumb">
       {{!-- canAddMeta = Feature Flagging --}}
       {{#if canAddMeta}}
-        {{#link-to "query" crumb.deleteUri class="delete"}}{{rsa-icon name="close" size="small"}}{{/link-to}}
+        {{#link-to "query" crumb.deleteUri (query-params eventId="-1") class="delete"}}
+          {{rsa-icon name="close" size="small"}}
+        {{/link-to}}
         {{#rsa-content-tethered-panel-trigger triggerEvent="click" panel=(concat 'breadCrumbTooltip-' elementId '-' index)}}
           <button class="has-dropdown js-test-value" title={{crumb.tooltip}}>{{crumb.text}}{{rsa-icon name="arrow-down-12" size="small"}}</button>
         {{/rsa-content-tethered-panel-trigger}}

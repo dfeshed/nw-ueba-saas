@@ -30,15 +30,17 @@ export default Service.extend({
     }
 
     if (hasInvestigateAccess) {
-      options.pushObjects([
-        {
-          key: '/investigate',
-          label: 'userPreferences.defaultLandingPage.investigate'
-        }, {
-          key: '/investigation',
-          label: 'userPreferences.defaultLandingPage.investigateClassic'
-        }
-      ]);
+      // TODO: add this option back when we want to enable the new investigate to clients
+
+      // options.pushObject({
+      //   key: '/investigate',
+      //   label: 'userPreferences.defaultLandingPage.investigate'
+      // });
+
+      options.pushObject({
+        key: '/investigation',
+        label: 'userPreferences.defaultLandingPage.investigateClassic'
+      });
     }
 
     if (hasMonitorAccess) {

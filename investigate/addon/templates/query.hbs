@@ -46,7 +46,7 @@
       <section class="rsa-investigate-query__body-master-main">
         {{events-table
           items=model.queryNode.value.results.events.data
-          selectedEventId=eventId
+          selectedIndex=selectedIndex
           columnsConfig=model.eventColumnGroups.selected.columns
           language=model.queryNode.value.language.data
           aliases=model.queryNode.value.aliases

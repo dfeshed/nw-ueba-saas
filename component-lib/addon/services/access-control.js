@@ -1,10 +1,6 @@
-import Ember from 'ember';
 import computed, { intersect, gt } from 'ember-computed-decorators';
 import config from 'ember-get-config';
-
-const {
-  Service
-} = Ember;
+import Service from 'ember-service';
 
 export default Service.extend({
 

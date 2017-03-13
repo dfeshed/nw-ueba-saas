@@ -56,10 +56,9 @@ export default Mixin.create({
         eventId: undefined,
         metas: undefined
       });
-      if (restoreMetaPanelSize) {
-        this.send('metaPanelSize', this.get('state.recon.metaPanelSizeWas'));
-      }
-      this.transitionTo({ queryParams: { eventId: -1, metaPanelSize: 'default', reconSize: 'max' } });
+      // If restoreMetaPanelSize, use the old one, otherwise use 'default'
+      const metaPanelSize = restoreMetaPanelSize ? this.get('state.recon.metaPanelSizeWas') : 'default';
+      this.transitionTo({ queryParams: { eventId: -1, metaPanelSize, reconSize: 'max' } });
     },
 
     /**

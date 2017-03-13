@@ -1,7 +1,5 @@
-import Ember from 'ember';
 import { contextRiskScoreThreshold } from 'context/config/constants';
-
-const { Helper: { helper } } = Ember;
+import { helper } from 'ember-helper';
 
 export function riskScoreToBadgeLevel(params) {
   const riskScore = params;

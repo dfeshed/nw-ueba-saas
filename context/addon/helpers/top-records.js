@@ -1,5 +1,5 @@
-import Ember from 'ember';
-const { Helper: { helper } } = Ember;
+import { helper } from 'ember-helper';
+
 export function topRecords([params, tabData, columnName]) {
 
   if (params) {

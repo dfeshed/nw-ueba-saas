@@ -40,7 +40,7 @@ test('Iteration: verify all options are available in components', function(asser
     andThen(() => {
       assert.deepEqual(find('.ember-power-select-dropdown .ember-power-select-option')
           .map(trimText).get(),
-          ['Respond', 'Investigate', 'Investigate Classic', 'Monitor', 'Configure', 'Admin'], 'Default Landing Page');
+          ['Respond', 'Investigate Classic', 'Monitor', 'Configure', 'Admin'], 'Default Landing Page');
     });
 
     assert.equal(find('.rsa-application-user-preferences-panel .time-format-radio-group .rsa-form-radio-label.HR24').length, 1);

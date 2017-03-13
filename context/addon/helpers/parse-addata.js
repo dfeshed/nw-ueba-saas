@@ -1,13 +1,5 @@
-import Ember from 'ember';
-const {
-  Helper: {
-    helper
-  }
-} = Ember;
-const {
-  set
-} = Ember;
-
+import { helper } from 'ember-helper';
+import set from 'ember-metal/set';
 
 export function parseADData([usersData]) {
   if (usersData) {
@@ -16,7 +8,7 @@ export function parseADData([usersData]) {
       set(userDetails, 'managerName', (userDetails.manager && userDetails.manager.indexOf('CN=') > -1) ? userDetails.manager.split('CN=')[1].replace(',', ' ') : '');
       const groupName = [];
       if (userDetails.memberOf) {
-        (userDetails.memberOf).forEach((memberOf) =>{
+        (userDetails.memberOf).forEach((memberOf) => {
           groupName.push((memberOf.split('CN=')[1]).replace(',', ''));
         });
       }

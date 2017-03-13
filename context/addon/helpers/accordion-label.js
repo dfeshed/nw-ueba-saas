@@ -1,5 +1,5 @@
-import Ember from 'ember';
-const { Helper: { helper } } = Ember;
+import { helper } from 'ember-helper';
+
 export function accordionLabel([data, columns]) {
   // return an array of values, one per column
   return columns.map(({ field1, field2 }) => {

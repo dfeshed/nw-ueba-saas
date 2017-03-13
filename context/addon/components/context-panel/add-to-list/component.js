@@ -1,7 +1,6 @@
 import Ember from 'ember';
 import layout from './template';
 
-
 const {
   Component,
   Logger,

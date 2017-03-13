@@ -23,7 +23,7 @@ test('it provides the correct options', function(assert) {
     hasRespondAccess: true
   });
   const service = this.subject({ accessControl });
-  assert.equal(service.get('options.length'), 6);
+  assert.equal(service.get('options.length'), 5);
   const options = service.get('options').map(function(option) {
     return option.key;
   });
@@ -32,5 +32,6 @@ test('it provides the correct options', function(assert) {
   assert.ok(options.includes('/investigation'));
   assert.ok(options.includes(service.get('accessControl.adminUrl')));
   assert.ok(options.includes(service.get('accessControl.configUrl')));
-  assert.ok(options.includes('/investigate'));
+  // TODO: uncomment when we ship the new investigate landing page
+  // assert.ok(options.includes('/investigate'));
 });

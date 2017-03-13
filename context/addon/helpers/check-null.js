@@ -1,10 +1,6 @@
-import Ember from 'ember';
-const {
-  Helper: {
-    helper
-  },
-  isEmpty
-} = Ember;
+import { helper } from 'ember-helper';
+import { isEmpty } from 'ember-utils';
+
 export function checkNull([text, altText]) {
   return isEmpty(text) ? altText : text;
 }

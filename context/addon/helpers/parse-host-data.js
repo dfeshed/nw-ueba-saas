@@ -1,8 +1,6 @@
-import Ember from 'ember';
-const { Helper: { helper } } = Ember;
-const {
-  set
-} = Ember;
+import { helper } from 'ember-helper';
+import set from 'ember-metal/set';
+
 export function parseHostData([machinesData, additionalData]) {
   if (machinesData && additionalData) {
     for (let i = 0; i < machinesData.length; i++) {
