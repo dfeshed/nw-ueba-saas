@@ -183,7 +183,10 @@ public class DgMailEventAfterEtlBuilder {
         DgMailEventAfterEtl dgMailEventAfterEtl = new DgMailEventAfterEtl(dateTime, dateTimeUnix, eventDescription, eventType, eventId, username, normalizedUsername, fullName, ipAddress, hostname, normalizedSrcMachine, application, destinationFile, detailFileSize, destinationDirectory, destinationFileExtension, isAttachmentExtensionBlacklisted, emailRecipient, emailRecipientDomain, emailSender, emailSubject, isExternal, numOfRecipients, wasClassified, wasBlocked, scanValueStatusText, policyName, dataSource, lastState);
         dgMailEventAfterEtl = fillGenericValuesForEmptyFields(dgMailEventAfterEtl);
         return dgMailEventAfterEtl;
+    }
 
+    public DgMailEventAfterEtl createEmptyDgEventAfterEtl() {
+        return new DgMailEventAfterEtl();
     }
 
     private DgMailEventAfterEtl fillGenericValuesForEmptyFields(DgMailEventAfterEtl dgMailEventAfterEtl) {

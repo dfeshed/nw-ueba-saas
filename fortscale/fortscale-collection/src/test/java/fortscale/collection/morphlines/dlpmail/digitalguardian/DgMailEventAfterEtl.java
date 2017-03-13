@@ -3,7 +3,7 @@ package fortscale.collection.morphlines.dlpmail.digitalguardian;
 import java.lang.reflect.Field;
 import java.util.StringJoiner;
 
-class DgMailEventAfterEtl {
+public class DgMailEventAfterEtl {
 
     public String dateTime;
     public String dateTimeUnix;
@@ -35,6 +35,8 @@ class DgMailEventAfterEtl {
     public String dataSource;
     public String lastState;
 
+    protected DgMailEventAfterEtl() {
+    }
 
     public DgMailEventAfterEtl(String dateTime, String dateTimeUnix, String eventDescription, String eventType, String eventId, String username, String normalizedUsername, String fullName, String ipAddress, String hostname, String normalizedSrcMachine, String application, String destinationFile, String detailFileSize, String destinationDirectory, String destinationFileExtension, String isAttachmentExtensionBlacklisted, String emailRecipient, String emailRecipientDomain, String emailSender, String emailSubject, String isExternal, String numOfRecipients, String wasClassified, String wasBlocked, String scanValueStatusText, String policyName, String dataSource, String lastState) {
         this.dateTime = dateTime;

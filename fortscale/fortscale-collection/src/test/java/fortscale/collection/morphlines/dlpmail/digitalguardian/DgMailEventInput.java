@@ -4,7 +4,7 @@ import java.lang.reflect.Field;
 import java.util.StringJoiner;
 
 
-class DgMailEventInput {
+public class DgMailEventInput {
 
     public String agentLocalDate;
     public String agentLocalTime;
@@ -113,7 +113,7 @@ class DgMailEventInput {
     public String registryValueType;
 
 
-    private DgMailEventInput() {
+    protected DgMailEventInput() {
     }
 
     public DgMailEventInput(String agentLocalDate, String agentLocalTime, String agentUtcTime, String application, String computerName, String computerType, String customInt4, String customString1, String customString3, String customString4, String customString6, String givenName, String surname, String userId, String username, String eventDisplayName, String companyName, String processSha1Hash, String processSha256Hash, String productName, String productVersion, String scanValueStatus, String scanValueStatusLocalTime, String scanValueStatusText, String dllMD5Hash, String dllName, String dllSHA1Hash, String dllSHA256Hash, String dNSHostname, String emailSender, String emailSubject, String eventDisplayName1, String eventId, String ipAddress, String localPort, String mD5Checksum, String mD5Hash, String networkDirection, String operation, String protocol, String remotePort, String urlPath, String wasBlocked, String wasClassified, String wasFileCaptured, String wasMobileDevice, String wasPkiAuthenticated, String wasPrivateAddress, String wasRemovable, String wasRuleViolation, String wasScreenCaptured, String wasSMIMEEncrypted, String wasSMIMESigned, String wasWireless, String customID, String deviceClass, String deviceID, String driveType, String friendlyName, String productID, String policyName, String serialNumber, String storageBusType, String supportsPredictFailure, String vendor, String vendorID, String blockCode, String bytesRead, String bytesWritten, String destinationDirectory, String destinationFile, String destinationFileEncryption, String destinationFileExtension, String detailEventID, String detailFileSize, String detailWasBlocked, String emailDomainName, String emailRecipient, String emailRecipientType, String printer, String printerJobname, String promptSurveyName, String sourceDirectory, String sourceFile, String sourceFileEncryption, String sourceFileExtension, String userResponse, String wasDestFileCaptured, String wasDestinationClassified, String wasDestinationRemovable, String wasDetailRuleViolation, String wasDetailScreenCaptured, String wasSourceClassified, String wasSourceFileCaptured, String wasSourceRemovable, String sourceDriveType, String sourceDeviceID, String destinationDriveType, String destinationDeviceID, String emailAddress, String employeeId, String registryDestinationPath, String registrySourcePath, String registryValue, String registryValueType) {
