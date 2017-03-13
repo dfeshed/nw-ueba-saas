@@ -491,7 +491,7 @@ export default {
   context: {
     title: 'ja_Context',
     lastUpdated: 'ja_Last Updated:',
-    timeWindow: 'ja_Time Window:',
+    timeWindow: 'ja_Time Window: ',
     header: {
       overview: 'ja_overview',
       iioc: 'ja_iioc',
@@ -541,6 +541,19 @@ export default {
       lastLogon: 'ja_lastLogon',
       lastLogonTimeStamp: 'ja_lastLogonTimeStamp',
       adUserID: 'ja_adUserID'
+    },
+    archer: {
+      title: 'ja_IP Host Information',
+      criticalityRating: 'ja_Criticalty Rating',
+      riskRating: 'ja_Risk Rating',
+      deviceName: 'ja_Device Name',
+      hostName: 'ja_Host Name',
+      deviceId: 'ja_Device Id',
+      deviceType: 'ja_Device Type',
+      deviceOwner: 'ja_Device Owner',
+      deviceOwnerTitle: 'ja_Device Owner Title',
+      businessUnit: 'ja_Business Unit',
+      facility: 'ja_Facility'
     },
     addToList: {
       title: 'ja_Add to List',

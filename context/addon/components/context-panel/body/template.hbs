@@ -64,6 +64,20 @@
       }}
     {{/if}}
   {{/if}}
+
+  {{#if archerDataRequired}}
+    {{#each archerData as |columns index|}}
+      {{context-panel/dynamic-grid
+        array=archerLookupData
+        columns=columns
+        errorMessage=(get contextData 'Archer_ERROR')
+        title=columns.title
+        lastUpdated=(get contextData 'Archer_LASTUPDATED')
+        timeWindow=(get contextData 'Archer_TIMEWINDOW')
+      }}
+    {{/each}}
+  {{/if}}
+
   {{context-panel/live-connect
     model=model
     contextData=contextData

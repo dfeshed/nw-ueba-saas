@@ -491,7 +491,7 @@ export default {
   context: {
     title: 'Context for',
     lastUpdated: 'Last Updated:',
-    timeWindow: 'Time Window:',
+    timeWindow: 'Time Window: ',
     header: {
       overview: 'overview',
       iioc: 'iioc',
@@ -550,13 +550,26 @@ export default {
       postalAddress: 'location',
       manager: 'manager',
       groups: 'groups',
-      jobCodes: 'jobCodes',
+      jobCodes: 'job Codes',
       email: 'Email',
       phone: 'phone',
-      jobTitle: 'jobTitle',
-      lastLogon: 'lastLogon',
-      lastLogonTimeStamp: 'lastLogonTimeStamp',
-      adUserID: 'adUserID'
+      jobTitle: 'job Title',
+      lastLogon: 'last Logon',
+      lastLogonTimeStamp: 'last Logon TimeStamp',
+      adUserID: 'ad User ID'
+    },
+    archer: {
+      title: 'IP Host Information',
+      criticalityRating: 'Criticalty Rating',
+      riskRating: 'Risk Rating',
+      deviceName: 'Device Name',
+      hostName: 'Host Name',
+      deviceId: 'Device Id',
+      deviceType: 'Device Type',
+      deviceOwner: 'Device Owner',
+      deviceOwnerTitle: 'Device Owner Title',
+      businessUnit: 'Business Unit',
+      facility: 'Facility'
     },
     modules: {
       title: 'Top Suspicious Modules',

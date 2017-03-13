@@ -1,4 +1,5 @@
 export default [{
+  class: 'rsa-context-panel__grid__host-details',
   dataSourceGroup: 'Machines',
   header: 'context.incident.header',
   footer: '',
@@ -56,6 +57,10 @@ export default [{
       {
         field: 'OperatingSystem',
         title: 'context.hostSummary.operatingSystem'
+      },
+      {
+        field: '',
+        displayField: true
       }]
     },
     {
@@ -75,6 +80,10 @@ export default [{
         title: 'context.hostSummary.ipAddress',
         nested: 'LocalIPAddress',
         dataType: 'link'
+      },
+      {
+        field: '',
+        displayField: true
       }]
     }
   ]

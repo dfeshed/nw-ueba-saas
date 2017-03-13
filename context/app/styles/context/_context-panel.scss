@@ -1,4 +1,4 @@
-$font-highlight-color: rsa-color(gray, lightest);
+$font-highlight-color: rsa-color(gray, lighter);
 $font-fade-color: rsa-color(gray, light);
 $panelBackgroundImage:
 radial-gradient(circle at 0px 25%, rsa-color(blue, darker, .1) 0, rsa-color(blue, dark, 0) 65%),
@@ -26,10 +26,10 @@ radial-gradient(circle at 85% 85%, rsa-color(blue, darker, .1) 0, rsa-color(blue
   fill:rsa-color(black); ;
 }
 .panel-content > section {
-  height: 10rem;
-  width: 20%;
+  height: 5rem;
   min-width: 10rem;
-  overflow: auto;}
+  overflow: auto;
+}
 .rsa-context-panel{
   position: absolute;
   top: 140px;
@@ -145,7 +145,7 @@ radial-gradient(circle at 85% 85%, rsa-color(blue, darker, .1) 0, rsa-color(blue
       color:$font-fade-color;
       padding: rsa-whitespace();
     }
-    &__host-details {
+    &__host-details,&__archer-details,&__ad-details{
       padding: rsa-whitespace();
       vbox {
         padding-right: 0rem;
@@ -155,6 +155,7 @@ radial-gradient(circle at 85% 85%, rsa-color(blue, darker, .1) 0, rsa-color(blue
       &__field-name ,&__row-field-name{
         @include rsa-font(header, small);
         padding-top: rsa-whitespace();
+        padding-bottom:rsa-whitespace(least);
       }
       &__field-value,&__row-field-value,&__header-data{
         color: $font-highlight-color;
@@ -194,7 +195,9 @@ radial-gradient(circle at 85% 85%, rsa-color(blue, darker, .1) 0, rsa-color(blue
       }
       &__header-data{
         @include rsa-font(header, larger);
+        font-weight: 500;
         max-height: 60%;
+        color:rsa-color(gray, lightest);
         padding-left: rsa-whitespace(most);
       }
 
@@ -205,6 +208,11 @@ radial-gradient(circle at 85% 85%, rsa-color(blue, darker, .1) 0, rsa-color(blue
         max-width: 25%;
         @include rsa-font(default, small);
       }
+    }
+    &__archer-details,&__ad-details {
+      vbox{
+        min-height: 50px;
+     }
     }
 
     &__module-details, &__iioc-details ,&__panel {

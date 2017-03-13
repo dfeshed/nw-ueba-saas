@@ -1,5 +1,40 @@
 export default [
   {
+    'resultId': '0c6a0d0e-0014-490b-a61e-cda7d9e5dec3/2',
+    'queryId': 'af28768f-84c9-404f-914f-1019094fef3d',
+    'datasourceId': '58c14d36233af509378d470d',
+    'dataSourceName': '58c14d36233af509378d470c_Archer_datasource',
+    'dataSourceDescription': null,
+    'dataSourceType': 'Archer',
+    'dataSourceGroup': 'Archer',
+    'connectionName': 'test',
+    'resultList': [
+      {
+        'Risk Rating': 'MEDIUM HIGH',
+        'IP Address': '24.218.91.113',
+        'Business Unit': [ 'Alberta', 'North American IT Shared Services', 'U.S. Finance' ],
+        'Device ID': '218053',
+        'Host Name': 'appserver01.archer-tech.com',
+        'Device Name': 'APPSERVER01',
+        'Criticality Rating': 'MEDIUM HIGH',
+        'Type': 'Web Server',
+        'Device Owner': 'John',
+        'Facilities': ['Corporate Headquarters', 'Kansas City Data Center']
+      }
+    ],
+    'resultMeta': {
+      'timeQuerySubmitted': 1489063820290,
+      'root': null,
+      'limit': 0
+    },
+    'pagingEnabled': false,
+    'currentPageId': 0,
+    'failed': false,
+    'errorMessage': null,
+    'maxPages': 0,
+    'timeQuerySubmitted': 1489063820290
+  },
+  {
     'resultId': 'cd561944-8139-44e7-9511-2823c8c9bb0d/1',
     'queryId': 'f5714b1e-0cc0-4472-8acd-ffbc1e1ce537',
     'datasourceId': null,

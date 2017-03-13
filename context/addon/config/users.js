@@ -1,16 +1,15 @@
 export default [{
+  class: 'rsa-context-panel__grid__ad-details',
   dataSourceGroup: 'Users',
   header: '',
   footer: '',
   title: 'context.ADdata.title',
   columns: [
     {
+      class: 'col-xs-3',
       cell: [{
         field: 'employeeID',
-        title: 'context.ADdata.employeeID',
-        dataType: 'horizontal',
-        displayTitle: true,
-        class: 'col-xs-3'
+        title: 'context.ADdata.employeeID'
       },
       {
         field: 'title',
@@ -22,13 +21,11 @@ export default [{
       }]
     },
     {
+      class: 'col-xs-3',
       displayField: true,
       cell: [{
         field: 'telephoneNumber',
-        title: 'context.ADdata.phone',
-        dataType: 'horizontal',
-        displayTitle: true,
-        class: 'col-xs-3'
+        title: 'context.ADdata.phone'
       },
       {
         field: 'managerName',
@@ -40,16 +37,16 @@ export default [{
       }]
     },
     {
+      class: 'col-xs-3',
       cell: [{
         field: 'mail',
-        title: 'context.ADdata.email',
-        dataType: 'horizontal',
-        class: 'col-xs-3'
+        title: 'context.ADdata.email'
       },
       {
         field: 'groupName',
         title: 'context.ADdata.groups',
-        dataType: 'group'
+        dataType: 'group',
+        count: 'groupCount'
       },
       {
         field: 'lastLogon',
@@ -57,6 +54,7 @@ export default [{
       }]
     },
     {
+      class: 'col-xs-3',
       cell: [{
         field: 'adUserID',
         title: 'context.ADdata.adUserID',
