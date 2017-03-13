@@ -1,0 +1,20 @@
+.rsa-tab {
+  position: relative;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+
+  &.text-only {
+    padding: rsa-whitespace(less) 0;
+    @include rsa-font(navigation,small);
+    line-height: 1.35;
+    color: rsa-color(white);
+
+    &:hover,
+    &.is-active {
+      color: rsa-color(blue,light);
+    }
+    &.is-active {
+      border-color: rsa-color(blue,light);
+    }
+  }
+}

@@ -1,17 +1,23 @@
 import Ember from 'ember';
 import connect from 'ember-redux/components/connect';
 import * as UIStateActions from 'respond/actions/ui-state-creators';
+import { storypointCount, storyEventCount } from 'respond/selectors/storyline';
 
 const {
   Component
 } = Ember;
 
-const stateToComputed = ({ respond: { incident: { id, info, infoStatus, viewMode } } }) => ({
-  incidentId: id,
-  info,
-  infoStatus,
-  viewMode
-});
+const stateToComputed = (state) => {
+  const { respond: { incident: { id, info, infoStatus, viewMode } } } = state;
+  return {
+    incidentId: id,
+    info,
+    infoStatus,
+    viewMode,
+    storypointCount: storypointCount(state),
+    storyEventCount: storyEventCount(state)
+  };
+};
 
 const dispatchToActions = (dispatch) => ({
   setViewModeAction(viewMode) {
@@ -26,7 +32,9 @@ const IncidentInspector = Component.extend({
   info: null,
   infoStatus: null,
   viewMode: null,
-  setViewModeAction: null
+  setViewModeAction: null,
+  storypointCount: null,
+  storyEventCount: null
 });
 
 /**

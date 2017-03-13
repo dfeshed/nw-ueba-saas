@@ -58,26 +58,8 @@ $incidentRiskScoreRadius: 1rem;
   &__toolbar {
     border-bottom: 1px solid rsa-color(gray,light,$rsa-nearly-transparent);
 
-    .rsa-icon {
-      position: relative;
-      border-bottom: 2px solid transparent;
-      transition: border-color 0.3s;
-      margin: 0 rsa-whitespace(less);
-
-      &.active {
-        border-color: rsa-color(blue,light);
-      }
-
-    }
-  }
-  .rsa-icon {
-    padding: rsa-whitespace(less);
-    cursor: pointer;
-    color: rsa-color(white);
-
-    &:hover,
-    &.active {
-      color: rsa-color(blue,light);
+    .rsa-tab {
+      margin: 0 rsa-whitespace();
     }
   }
   &__body {

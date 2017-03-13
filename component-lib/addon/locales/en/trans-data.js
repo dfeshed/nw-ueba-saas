@@ -401,9 +401,9 @@ export default {
       sources: 'Sources',
       categories: 'Categories',
       backToIncidents: 'Back To Incidents',
-      showOverview: 'Show: Overview',
-      showStoryline: 'Show: Storyline',
-      showEventsTable: 'Show: Events Table'
+      overview: 'Overview',
+      indicators: 'Indicators',
+      events: 'Events'
     },
     storyline: {
       loading: 'Loading incident storyline',

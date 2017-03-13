@@ -33,6 +33,13 @@ export const storypoints = createSelector(
   }
 );
 
+// Counts all the storypoints in the storyline.
+export const storypointCount = createSelector(
+  storypoints,
+  (storypoints) => storypoints.length
+);
+
+
 // Collects all the normalized events of a normalized storyline into a single flat array.
 export const storyEvents = createSelector(
   normalizedStoryline,
@@ -41,6 +48,11 @@ export const storyEvents = createSelector(
   }
 );
 
+// Counts all the normalized events in the storyline.
+export const storyEventCount = createSelector(
+  storyEvents,
+  (storyEvents) => storyEvents.length
+);
 // Generates the nodes & links from a given array of normalized events.
 export const storyNodesAndLinks = createSelector(
   [ storyEvents, defaultNodeRadius ],
@@ -48,3 +60,4 @@ export const storyNodesAndLinks = createSelector(
     return eventsToNodesAndLinks(events, radius);
   }
 );
+

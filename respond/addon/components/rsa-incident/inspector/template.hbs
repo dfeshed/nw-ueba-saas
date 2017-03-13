@@ -23,27 +23,21 @@
   </h2>
 </box>
 <hbox fit justify="center" nowrap class="rsa-incident-inspector__toolbar">
-  {{rsa-icon
-    name="information-circle"
-    title=(t 'respond.incident.showOverview')
-    active=(eq viewMode 'overview')
-    class="js-test-view-mode"
-    click=(action "setViewModeAction" "overview")
-  }}
-  {{rsa-icon
-    name="view-list"
-  title=(t 'respond.incident.showStoryline')
-    active=(eq viewMode 'storyline')
-    class="js-test-view-mode"
-    click=(action "setViewModeAction" "storyline")
-  }}
-  {{rsa-icon
-    name="layout-9"
-    title=(t 'respond.incident.showEventsTable')
-    active=(eq viewMode 'events')
-    class="js-test-view-mode"
-    click=(action "setViewModeAction" "events")
-  }}
+  <span
+    class="rsa-tab text-only {{if (eq viewMode 'overview') 'is-active' ''}}"
+    {{action (action "setViewModeAction" "overview")}}>
+    {{t 'respond.incident.overview'}}
+  </span>
+  <span
+    class="rsa-tab text-only {{if (eq viewMode 'storyline') 'is-active' ''}}"
+    {{action (action "setViewModeAction" "storyline")}}>
+    {{t 'respond.incident.indicators'}} {{#with storypointCount as |count|}}({{count}}){{/with}}
+  </span>
+  <span
+    class="rsa-tab text-only {{if (eq viewMode 'events') 'is-active' ''}}"
+    {{action (action "setViewModeAction" "events")}}>
+    {{t 'respond.incident.events'}} {{#with storyEventCount as |count|}}({{count}}){{/with}}
+  </span>
 </hbox>
 <box fill class="rsa-incident-inspector__body">
   {{#if (eq viewMode 'events')}}

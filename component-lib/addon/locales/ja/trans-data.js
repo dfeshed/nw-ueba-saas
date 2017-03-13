@@ -401,9 +401,9 @@ export default {
       sources: 'ja_Sources',
       categories: 'ja_Categories',
       backToIncidents: 'ja_Back To Incidents',
-      showOverview: 'ja_Show: Overview',
-      showStoryline: 'ja_Show: Storyline',
-      showEventsTable: 'ja_Show: Events Table'
+      overview: 'ja_Overview',
+      indicators: 'ja_Indicators',
+      events: 'ja_Events'
     },
     storyline: {
       loading: 'ja_Loading incident storyline',

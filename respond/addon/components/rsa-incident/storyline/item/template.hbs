@@ -17,14 +17,13 @@
 
       {{!Source}}
       <p class="source">
-        <label>{{t 'respond.storyline.source'}}:</label>
         <span>{{indicator/source item.indicator}}</span>
       </p>
     </box>
 
     {{!Indicator time + event count}}
     <vbox fit nowrap align="end" class="time-and-num-events">
-      <p class="time">{{rsa-content-datetime timestamp=item.time displayAsTimeAgo=false displayDate=true displayTime=true}}</p>
+      <p class="time">{{rsa-content-datetime timestamp=item.time displayAsTimeAgo=false displayDate=true displayTime=true displayMilliseconds=false}}</p>
       <p class="num-events">
         {{item.events.length}}
         {{#if (eq item.events.length 1)}}
