@@ -10,7 +10,7 @@
   // that have to be forcibly overwritten, hence !importants
   .rsa-form-button {
     cursor: default !important;
-    border-color: $formButtonDisabledTypeColor !important;
+    border-color: rsa-color(gray, dark) !important;
   }
 
   .disabled-meta-breadcrumb-title {

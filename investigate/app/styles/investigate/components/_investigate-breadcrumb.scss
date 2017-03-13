@@ -1,8 +1,4 @@
 .rsa-investigate-breadcrumb {
-  .rsa-content-tethered-panel-trigger {
-    margin-right: 2px;
-  }
-
   &__crumbs {
     @include rsa-row(left, bottom);
     flex-wrap: wrap;
