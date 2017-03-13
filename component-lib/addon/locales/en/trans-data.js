@@ -5,6 +5,16 @@ export default {
     'en-us': 'English',
     ja: 'Japanese'
   },
+  passwordPolicy: {
+    passwordPolicyRequestError: 'There was an issue retrieving your password policy.',
+    passwordPolicyMinChars: 'Must be at least {{passwordPolicyMinChars}} characters',
+    passwordPolicyMinNumericChars: 'Must contain at least {{passwordPolicyMinNumericChars}} number(s) (0 through 9)',
+    passwordPolicyMinUpperChars: 'Must have at least {{passwordPolicyMinUpperChars}} uppercase character(s)',
+    passwordPolicyMinLowerChars: 'Must have at least {{passwordPolicyMinLowerChars}} lowercase character(s)',
+    passwordPolicyMinNonLatinChars: 'Must contain at least {{passwordPolicyMinNonLatinChars}} Unicode alphabetic character(s) that are not uppercase or lowercase',
+    passwordPolicyMinSpecialChars: 'Must contain at least {{passwordPolicyMinSpecialChars}} non-alphanumeric character(s): (~!@#$%^&*_-+=`|(){}[]:;"\'<>,.?/)',
+    passwordPolicyCannotIncludeId: 'Your password cannot contain your username'
+  },
   forms: {
     cancel: 'Cancel',
     submit: 'Submit',

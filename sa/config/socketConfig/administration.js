@@ -44,6 +44,14 @@ module.exports = function(environment) {
         subscriptionDestination: '/user/queue/administration/security/user/updatePassword',
         requestDestination: '/ws/administration/security/user/updatePassword'
       }
+    },
+
+    passwordPolicies: {
+      socketUrl,
+      getPolicies: {
+        subscriptionDestination: '/user/queue/administration/security/password/policyMessages',
+        requestDestination: '/ws/administration/security/password/policyMessages'
+      }
     }
   };
 };

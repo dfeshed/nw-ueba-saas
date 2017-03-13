@@ -23,46 +23,82 @@
         {{/rsa-form-button}}
       </form>
     {{else if mustChangePassword}}
-      <form class="change-password" {{action "changePassword" on="submit"}}>
-        <p>
-          {{t 'login.forcePassword.warning'}}
-        </p>
+      <grid class="{{if displayPolicies 'display-policies'}}">
+        <vbox xs="6">
+          <h4>Password Format Rules</h4>
+          <ul>
+            {{#if passwordPolicyMinChars}}
+              <li>{{t 'passwordPolicy.passwordPolicyMinChars' passwordPolicyMinChars=passwordPolicyMinChars}}</li>
+            {{/if}}
 
-        {{rsa-form-input
-          class="js-test-login-old-password-input"
-          type="password"
-          label=(t 'login.oldPassword')
-          isError=hasError
-          value=password}}
+            {{#if passwordPolicyMinNumericChars}}
+              <li>{{t 'passwordPolicy.passwordPolicyMinNumericChars' passwordPolicyMinNumericChars=passwordPolicyMinNumericChars}}</li>
+            {{/if}}
 
-        {{rsa-form-input
-          class="js-test-login-new-password-input"
-          type="password"
-          label=(t 'login.newPassword')
-          isError=hasError
-          value=newPassword}}
+            {{#if passwordPolicyMinUpperChars}}
+              <li>{{t 'passwordPolicy.passwordPolicyMinUpperChars' passwordPolicyMinUpperChars=passwordPolicyMinUpperChars}}</li>
+            {{/if}}
 
-        {{rsa-form-input
-          class="js-test-login-confirm-new-password-input"
-          type="password"
-          label=(t 'login.confirmPassword')
-          isError=hasError
-          value=newPasswordConfirm}}
+            {{#if passwordPolicyMinLowerChars}}
+              <li>{{t 'passwordPolicy.passwordPolicyMinLowerChars' passwordPolicyMinLowerChars=passwordPolicyMinLowerChars}}</li>
+            {{/if}}
 
-        {{#if errorMessage}}
-          <div class="form-error-message">
-            {{t errorMessage}}
-          </div>
-        {{/if}}
+            {{#if passwordPolicyMinNonLatinChars}}
+              <li>{{t 'passwordPolicy.passwordPolicyMinNonLatinChars' passwordPolicyMinNonLatinChars=passwordPolicyMinNonLatinChars}}</li>
+            {{/if}}
 
-        {{#rsa-form-button
-          type="submit"
-          style="primary"
-          isFullWidth=true
-          isDisabled=changePasswordDisabled}}
-          {{t 'login.forcePassword.changePassword'}}
-        {{/rsa-form-button}}
-      </form>
+            {{#if passwordPolicyMinSpecialChars}}
+              <li>{{t 'passwordPolicy.passwordPolicyMinSpecialChars' passwordPolicyMinSpecialChars=passwordPolicyMinSpecialChars}}</li>
+            {{/if}}
+
+            {{#if passwordPolicyCannotIncludeId}}
+              <li>{{t 'passwordPolicy.passwordPolicyCannotIncludeId'}}</li>
+            {{/if}}
+          </ul>
+        </vbox>
+        <vbox xs="6">
+          <form class="change-password" {{action "changePassword" on="submit"}}>
+            <p>
+              {{t 'login.forcePassword.warning'}}
+            </p>
+
+            {{rsa-form-input
+              class="js-test-login-old-password-input"
+              type="password"
+              label=(t 'login.oldPassword')
+              isError=hasError
+              value=password}}
+
+            {{rsa-form-input
+              class="js-test-login-new-password-input"
+              type="password"
+              label=(t 'login.newPassword')
+              isError=hasError
+              value=newPassword}}
+
+            {{rsa-form-input
+              class="js-test-login-confirm-new-password-input"
+              type="password"
+              label=(t 'login.confirmPassword')
+              isError=hasError
+              value=newPasswordConfirm}}
+
+            {{#if errorMessage}}
+              <div class="form-error-message">
+                {{t errorMessage}}
+              </div>
+            {{/if}}
+
+            {{#rsa-form-button
+              type="submit"
+              style="primary"
+              isFullWidth=true
+              isDisabled=changePasswordDisabled}}
+              {{t 'login.forcePassword.changePassword'}}
+            {{/rsa-form-button}}
+          </form>
+        </vbox>
+      </grid>
     {{else}}
       <form class="login" autocomplete="off" {{action "authenticate" on="submit"}}>
         {{rsa-form-input

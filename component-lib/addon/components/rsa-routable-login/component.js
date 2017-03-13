@@ -7,6 +7,7 @@
 import Ember from 'ember';
 import layout from './template';
 import computed, { readOnly, alias, notEmpty, equal } from 'ember-computed-decorators';
+import config from 'ember-get-config';
 
 const {
   getOwner,
@@ -47,6 +48,8 @@ export default Component.extend({
 
   eulaKey: 'rsa::netWitness::eulaAccepted',
 
+  displayPolicies: false,
+
   layout,
 
   newPassword: null,
@@ -64,6 +67,20 @@ export default Component.extend({
   username: null,
 
   mustChangePassword: false,
+
+  passwordPolicyMinChars: null,
+
+  passwordPolicyMinNumericChars: null,
+
+  passwordPolicyMinUpperChars: null,
+
+  passwordPolicyMinLowerChars: null,
+
+  passwordPolicyMinNonLatinChars: null,
+
+  passwordPolicyMinSpecialChars: null,
+
+  passwordPolicyCannotIncludeId: null,
 
   @computed('eulaKey')
   displayEula: {
@@ -122,7 +139,6 @@ export default Component.extend({
         // Auth succeeded
         () => {
           this.updateLoginProperties(_STATUS.SUCCESS);
-
           const query = window.location.search;
 
           if (!isEmpty(query)) {
@@ -133,8 +149,9 @@ export default Component.extend({
         // Auth failed
         (message) => {
           const exception = message.error_description;
+
           if (exception.includes('expired')) {
-            this.updateLoginProperties(_STATUS.INIT, null, true);
+            this.fetchPasswordPolicy();
           } else {
             let errorMessage = 'login.genericError';
 
@@ -175,6 +192,29 @@ export default Component.extend({
         this.updateLoginProperties(_STATUS.SUCCESS);
       }).fail(() => {
         this.updateLoginProperties(_STATUS.INIT, 'login.passwordChangeFailed', true);
+      });
+    }
+  },
+
+  fetchPasswordPolicy() {
+    this.updateLoginProperties(_STATUS.INIT, null, true);
+
+    if (config.adminServerAvailable) {
+      this.get('ajax').request('/api/administration/security/password/policyMessages').then((response) => {
+        this.setProperties({
+          displayPolicies: true,
+          passwordPolicyMinChars: response.passwordPolicyMinChars,
+          passwordPolicyMinNumericChars: response.passwordPolicyMinNumericChars,
+          passwordPolicyMinUpperChars: response.passwordPolicyMinUpperChars,
+          passwordPolicyMinLowerChars: response.passwordPolicyMinLowerChars,
+          passwordPolicyMinNonLatinChars: response.passwordPolicyMinNonLatinChars,
+          passwordPolicyMinSpecialChars: response.passwordPolicyMinSpecialChars,
+          passwordPolicyCannotIncludeId: response.passwordPolicyCannotIncludeId
+        });
+      }).catch(() => {
+        this.get('flashMessages').warning(this.get('i18n').t('passwordPolicy.passwordPolicyRequestError'), {
+          iconName: 'report-problem-circle'
+        });
       });
     }
   },

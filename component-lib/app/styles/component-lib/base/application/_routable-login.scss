@@ -54,11 +54,9 @@
     .header {
       @include rsa-font(header, small);
     }
-
   }
 
   .login-wrapper {
-    box-sizing: border-box;
     padding: rsa-whitespace(more);
     background: $applicationLoginBackgroundColor;
     border: 1px solid $applicationLoginBorderColor;
@@ -138,9 +136,43 @@
     }
   }
 
+  grid {
+    &.display-policies {
+      width: calc(#{$applicationLoginWidth} * 3);
+    }
+
+    &:not(.display-policies) {
+      vbox:first-child {
+        display: none;
+      }
+      vbox:last-child {
+        max-width: 100%;
+      }
+    }
+  }
+
+
+  h4 {
+    @include rsa-font(header);
+  }
+
+  ul {
+    margin: rsa-whitespace() rsa-whitespace(most) 0 0;
+
+    li {
+      list-style: disc;
+      @include rsa-font(paragraph, small);
+      margin: 0 rsa-whitespace() rsa-whitespace();
+      color: rsa-color(gray, light);
+    }
+  }
+
+  .login {
+    width: $applicationLoginWidth;
+  }
+
   .login, .change-password {
     overflow: hidden;
-    width: $applicationLoginWidth;
 
     .rsa-form-button {
       margin-bottom: rsa-whitespace();
@@ -163,35 +195,6 @@
     .version {
       float: right;
       color: $applicationLoginVersionColor;
-    }
-  }
-
-  .lost-password,
-  .thank-you {
-    h3 {
-      @include rsa-font(header, larger);
-      margin-bottom: rsa-whitespace(less);
-    }
-
-    p {
-      @include rsa-font(paragraph);
-      margin-bottom: rsa-whitespace(more);
-    }
-  }
-
-  .lost-password {
-    .rsa-form-button-wrapper {
-      margin-right: rsa-whitespace();
-      width: calc(50% - 2px - (#{rsa-whitespace() / 2}));
-      display: inline-block;
-
-      .rsa-form-button {
-        width: 100%;
-      }
-
-      &:last-of-type {
-        margin-right: 0;
-      }
     }
   }
 }
