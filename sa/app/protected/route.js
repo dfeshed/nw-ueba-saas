@@ -111,9 +111,10 @@ export default Route.extend(AuthenticatedRouteMixin, {
             'i18n.locale': userLocale.replace(/_/, '-').toLowerCase(),
             'dateFormat.selected': dateFormat,
             'timeFormat.selected': timeFormat,
-            'timezone.selected': timeZone,
-            'landingPage.selected': defaultComponentUrl
+            'timezone.selected': timeZone
           });
+
+          this.get('landingPage').setDefaultLandingPage(defaultComponentUrl);
 
           resolve();
         }).catch((error) => {

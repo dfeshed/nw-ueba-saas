@@ -91,7 +91,7 @@ export default {
       label: 'ja_Default Landing Page',
       monitor: 'ja_Monitor',
       investigate: 'ja_Investigate',
-      investigateClassic: 'ja_Investigate Classic',
+      investigateClassic: 'ja_Investigate',
       dashboard: 'ja_Monitor',
       live: 'ja_Configure',
       respond: 'ja_Respond',

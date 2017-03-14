@@ -91,7 +91,7 @@ export default {
       label: 'Default Landing Page',
       monitor: 'Monitor',
       investigate: 'Investigate',
-      investigateClassic: 'Investigate Classic',
+      investigateClassic: 'Investigate',
       dashboard: 'Monitor',
       live: 'Configure',
       respond: 'Respond',

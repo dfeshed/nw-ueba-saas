@@ -16,6 +16,8 @@ export default Service.extend({
   hasInvestigateAccess: alias('accessControl.hasInvestigateAccess'),
   hasRespondAccess: alias('accessControl.hasRespondAccess'),
 
+  selected: null,
+
   options: computed('hasAdminAccess', 'hasConfigAccess', 'hasMonitorAccess', 'hasInvestigateAccess', 'hasRespondAccess', function() {
     const { hasAdminAccess, hasConfigAccess, hasMonitorAccess, hasInvestigateAccess, hasRespondAccess } =
       this.getProperties('hasAdminAccess', 'hasConfigAccess', 'hasMonitorAccess', 'hasInvestigateAccess', 'hasRespondAccess');
@@ -67,6 +69,11 @@ export default Service.extend({
     return options;
   }),
 
+  init() {
+    this._super(...arguments);
+    this.set('selected', this.get('options').findBy('key', config.landingPageDefault));
+  },
+
   persist(value) {
     this.get('request').promiseRequest({
       method: 'setPreference',
@@ -84,26 +91,22 @@ export default Service.extend({
     });
   },
 
-  selected: computed({
-    get() {
-      return this.get('_selected') || this.get('options').findBy('key', config.landingPageDefault);
-    },
-
-    set(key, value) {
-      if (value.key) {
-        if (!isNone(this.get('_selected'))) {
-          this.persist(value.key);
-        }
-        this.set('_selected', value);
-        return value;
-      } else {
-        if (!isNone(this.get('_selected'))) {
-          this.persist(value);
-        }
-        this.set('_selected', this.get('options').findBy('key', value));
-        return this.get('_selected');
+  /**
+   * Sets and persists the default landing page the user selects in the preferences menu
+   * @param value The selected landing page
+   * @public
+   */
+  setDefaultLandingPage(value) {
+    if (value.key) {
+      if (!isNone(this.get('selected'))) {
+        this.persist(value.key);
       }
+      this.set('selected', value);
+    } else {
+      if (!isNone(this.get('selected'))) {
+        this.persist(value);
+      }
+      this.set('selected', this.get('options').findBy('key', value));
     }
-  })
-
+  }
 });

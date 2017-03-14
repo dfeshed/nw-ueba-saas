@@ -81,7 +81,7 @@ export default Component.extend(csrfToken, {
     },
 
     setDefaultLandingPage(selection) {
-      this.set('landingPage.selected', selection);
+      this.get('landingPage').setDefaultLandingPage(selection);
     },
 
     setTimezone(selection) {
