@@ -98,7 +98,7 @@ public class ControllerInvokedUserTaggingTask extends BaseControllerInvokedTask 
         final UserTaggingTaskPersistencyServiceImpl.UserTaggingResult taskResults = userTaggingTaskPersistenceService.getTaskResults(UserTaggingTaskPersistenceService.USER_TAGGING_RESULT_ID);
         if (taskResults == null) {
             notifyTaskDone();
-            logger.error("Got task result null");
+            logger.error("Got user tagging task result null from application configuration");
             return new UserTaggingTaskResponse(SUCCESS_FALSE, NO_EXECUTION_TIME);
         }
 

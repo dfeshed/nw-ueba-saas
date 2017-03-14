@@ -30,7 +30,7 @@ public abstract class BaseControllerInvokedTask {
         try {
             String userName = SpringPropertiesUtil.getProperty("user.name");
             final String scriptPath = ApiActiveDirectoryController.COLLECTION_TARGET_DIR + "/resources/scripts/runAdTask.sh"; // this scripts runs the fetch/etl
-            final ArrayList<String> arguments = new ArrayList<>(Arrays.asList("/usr/bin/sudo", "-u", userName, scriptPath, jobName , jobGroup, "resultsId="+resultsId));
+            final ArrayList<String> arguments = new ArrayList<>(Arrays.asList("/usr/bin/sudo", "-u", userName, scriptPath, jobName , jobGroup, String.format("resultsId=%s",resultsId)));
 
             // Adding additional job parameters
             if (StringUtils.isNotEmpty(jobParameters)){
