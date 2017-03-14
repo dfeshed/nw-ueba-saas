@@ -186,6 +186,13 @@ public class ApiSystemSetupTagsController extends BaseController {
         return new ResponseEntity<>(new ResponseEntityMessage("tagging path saved"), HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/delete_tagging_path", method = RequestMethod.DELETE)
+    @ApiOperation(value = "Save the tagging file path and mode")
+    public ResponseEntity<ResponseEntityMessage> deletePath() {
+        userTaggingTaskPersistenceService.deleteSystemSetupTaggingFilePath();
+        return new ResponseEntity<>(new ResponseEntityMessage("tagging path deleted"), HttpStatus.OK);
+    }
+
     @RequestMapping(value = "/get_tagging_path", method = RequestMethod.GET)
     @ApiOperation(value = "Get the tagging file path and mode", response = String.class)
     public String getPath() {
