@@ -45,4 +45,9 @@ $incidentOverviewLineHeight: 1.35;
       }
     }
   }
+  .catalysts-count {
+    span {
+      text-transform: lowercase;
+    }
+  }
 }

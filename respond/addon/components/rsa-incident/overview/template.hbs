@@ -32,6 +32,24 @@
   <span>{{info.createdBy}}</span>
 </p>
 
+{{! Priority}}
+<p class="priority">
+  <label>{{t 'respond.incident.priority'}}:</label>
+  <span>{{t (concat 'respond.priority.' info.prioritySort)}}</span>
+</p>
+
+{{! Status}}
+<p class="status">
+  <label>{{t 'respond.incident.status'}}:</label>
+  <span>{{t (concat 'respond.status.' info.statusSort)}}</span>
+</p>
+
+{{! Assignee}}
+<p class="assignee">
+  <label>{{t 'respond.incident.assignee'}}:</label>
+  <span>{{if info.assignee info.assignee.name (t 'respond.assignee.none')}}</span>
+</p>
+
 {{! Sources ("Event Stream Analysis", "ECAT", etc)}}
 <p class="sources">
   <label>{{t 'respond.incident.sources'}}:</label>
@@ -55,14 +73,11 @@
   </span>
 </p>
 
-{{! Alert count}}
-<p class="alert-count">
-  <label>{{t 'respond.incident.alertCount'}}:</label>
-  <span>{{info.alertCount}}</span>
-</p>
 
-{{! Event count}}
-<p class="event-count">
-  <label>{{t 'respond.incident.eventCount'}}:</label>
-  <span>{{info.eventCount}}</span>
+{{! Alert count}}
+<p class="catalyst-count">
+  <label>{{t 'respond.incident.catalystCount'}}:</label>
+  <span>
+    {{info.alertCount}} {{t 'respond.incident.alertCount'}}, {{info.eventCount}} {{t 'respond.incident.eventCount'}}
+  </span>
 </p>
