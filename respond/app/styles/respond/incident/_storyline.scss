@@ -13,6 +13,7 @@ $storylineConnectorPaddingX: rsa-whitespace(less);
   }
 
   &-item {
+    cursor: pointer;
     line-height: $storylineLineHeight;
 
     h3 {
@@ -183,6 +184,10 @@ $storylineConnectorPaddingX: rsa-whitespace(less);
       span {
         color: rsa-color(amber);
       }
+    }
+
+    &.is-selected {
+      background: rsa-color(blue,base,$rsa-somewhat-opaque);
     }
   }
 }

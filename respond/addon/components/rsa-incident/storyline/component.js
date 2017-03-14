@@ -1,11 +1,12 @@
 import Ember from 'ember';
 import connect from 'ember-redux/components/connect';
-import { storypoints } from 'respond/selectors/storyline';
+import { storyPoints, storyPointSelections } from 'respond/selectors/storyline';
 
 const { Component } = Ember;
 
 const stateToComputed = (state) => ({
-  items: storypoints(state)
+  items: storyPoints(state),
+  selections: storyPointSelections(state)
 });
 
 /**
@@ -17,7 +18,9 @@ const stateToComputed = (state) => ({
 const Storyline = Component.extend({
   // no element needed just the child list
   tagName: '',
-  items: null
+  items: null,
+  selections: null
 });
+
 
 export default connect(stateToComputed)(Storyline);

@@ -1,7 +1,7 @@
 import Ember from 'ember';
 import connect from 'ember-redux/components/connect';
 import * as UIStateActions from 'respond/actions/ui-state-creators';
-import { storypointCount, storyEventCount } from 'respond/selectors/storyline';
+import { storyPointCount, storyEventCount } from 'respond/selectors/storyline';
 
 const {
   Component
@@ -14,7 +14,7 @@ const stateToComputed = (state) => {
     info,
     infoStatus,
     viewMode,
-    storypointCount: storypointCount(state),
+    storyPointCount: storyPointCount(state),
     storyEventCount: storyEventCount(state)
   };
 };
@@ -33,7 +33,7 @@ const IncidentInspector = Component.extend({
   infoStatus: null,
   viewMode: null,
   setViewModeAction: null,
-  storypointCount: null,
+  storyPointCount: null,
   storyEventCount: null
 });
 

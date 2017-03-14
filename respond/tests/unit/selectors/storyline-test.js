@@ -1,11 +1,11 @@
 import { module, test } from 'qunit';
 import StoryPoint from 'respond/utils/storypoint/storypoint';
-import { storypoints } from 'respond/selectors/storyline';
+import { storyPoints } from 'respond/selectors/storyline';
 import { storyline } from '../../server/data';
 
 module('Unit | Mixin | storyline selector');
 
-test('storypoints selector works', function(assert) {
+test('storyPoints selector works', function(assert) {
 
   const state = {
     respond: {
@@ -17,7 +17,7 @@ test('storypoints selector works', function(assert) {
 
   const isStoryPoint = (obj) => obj instanceof StoryPoint;
 
-  const result = storypoints(state);
+  const result = storyPoints(state);
 
   assert.expect(result.length);
   result.forEach((obj) => {

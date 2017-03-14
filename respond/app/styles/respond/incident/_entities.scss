@@ -14,7 +14,8 @@
 
       &.is-hidden {
         .circle {
-          fill: rsa-color(black,base,$rsa-nearly-transparent);
+          stroke: rsa-color(gray,light,$rsa-nearly-transparent);
+          fill: rsa-color(black,base,$rsa-transparent);
         }
         .text {
           fill: rsa-color(gray,light,$rsa-nearly-transparent);
@@ -46,7 +47,7 @@
           stroke: rsa-color(gray,base,$rsa-nearly-transparent);
         }
         .text {
-          fill: rsa-color(gray,base,$rsa-nearly-transparent);
+          fill: rsa-color(gray,base,$rsa-transparent);
         }
       }
 

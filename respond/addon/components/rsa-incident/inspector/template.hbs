@@ -31,7 +31,7 @@
   <span
     class="rsa-tab text-only {{if (eq viewMode 'storyline') 'is-active' ''}}"
     {{action (action "setViewModeAction" "storyline")}}>
-    {{t 'respond.incident.indicators'}} {{#with storypointCount as |count|}}({{count}}){{/with}}
+    {{t 'respond.incident.indicators'}} {{#with storyPointCount as |count|}}({{count}}){{/with}}
   </span>
   <span
     class="rsa-tab text-only {{if (eq viewMode 'events') 'is-active' ''}}"

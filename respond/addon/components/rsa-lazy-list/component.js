@@ -29,6 +29,7 @@ export default Component.extend({
   classNames: ['rsa-lazy-list'],
   layout,
   itemComponentClass: 'rsa-list/item',
+  selections: null, // passed down to rsa-list child; @see rsa-list#selections
 
   /**
    * Configurable number of items to render in a single batch.

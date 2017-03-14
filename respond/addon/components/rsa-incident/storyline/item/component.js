@@ -3,8 +3,18 @@ import ListItem from 'respond/components/rsa-list/item/component';
 import layout from './template';
 import computed from 'ember-computed-decorators';
 import EnrichmentsToDisplay from './enrichments-to-display';
+import connect from 'ember-redux/components/connect';
+import * as UIStateActions from 'respond/actions/ui-state-creators';
 
-const { isEmpty } = Ember;
+const { get, isEmpty } = Ember;
+
+const stateToComputed = () => ({ });
+
+const dispatchToActions = (dispatch) => ({
+  clickAction: (item) => dispatch(UIStateActions.singleSelectStoryPoint(item && get(item, 'id'))),
+  ctrlClickAction: (item) => dispatch(UIStateActions.toggleSelectStoryPoint(item && get(item, 'id'))),
+  shiftClickAction: (item) => dispatch(UIStateActions.toggleSelectStoryPoint(item && get(item, 'id')))
+});
 
 /**
  * @class Storyline Item component
@@ -12,7 +22,7 @@ const { isEmpty } = Ember;
  * about the storypoint's corresponding indicator, and the enrichments in the indicator's events (if any).
  * @public
  */
-export default ListItem.extend({
+const StorylineItem = ListItem.extend({
   tagName: 'vbox',
   classNames: ['rsa-incident-storyline-item'],
   classNameBindings: ['item.indicator.isCatalyst:is-catalyst', 'item.isHidden:is-hidden'],
@@ -72,3 +82,5 @@ export default ListItem.extend({
     return matched.reject(isEmpty);
   }
 });
+
+export default connect(stateToComputed, dispatchToActions)(StorylineItem);

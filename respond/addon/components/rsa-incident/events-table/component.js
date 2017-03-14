@@ -1,16 +1,40 @@
 import Ember from 'ember';
+import computed from 'ember-computed-decorators';
 import connect from 'ember-redux/components/connect';
-import { storyEvents } from 'respond/selectors/storyline';
+import { storyEvents, storyEventSelections } from 'respond/selectors/storyline';
+import * as UIStateActions from 'respond/actions/ui-state-creators';
+import indexOfBy from 'respond/utils/array/index-of-by';
 
-const { Component } = Ember;
+const { Component, get, isEmpty } = Ember;
 
 const stateToComputed = (state) => ({
-  items: storyEvents(state)
+  items: storyEvents(state),
+  selections: storyEventSelections(state)
+});
+
+const dispatchToActions = (dispatch) => ({
+  onRowClick: (item) => dispatch(UIStateActions.singleSelectEvent(item && get(item, 'id')))
 });
 
 const StoryEvents = Component.extend({
   // no element needed, just the child data table
   tagName: '',
+  items: null,
+  selections: null,
+
+  // Computes the index of the first selected id from the current `items` array.
+  // This quantity will be passed down the `rsa-data-table` child, which (for now) only supports a
+  // single selected index. In the future, once the data table is enhanced to support multiple selected indices,
+  // then we will redefine this computed property so it computes multiple selected indices instead of just one.
+  @computed('items.[]', 'selections.[]')
+  selectedIndex(items, selections) {
+    const [ firstId ] = selections || [];
+    if (isEmpty(firstId)) {
+      return -1;
+    } else {
+      return indexOfBy(items, 'id', firstId);
+    }
+  },
 
   /**
    * Column configurations for data table. @see: component-lib/components/rsa-data-table
@@ -24,14 +48,6 @@ const StoryEvents = Component.extend({
       title: 'respond.eventsTable.time',
       width: 100
     }, {
-      field: 'user',
-      title: 'respond.eventsTable.user',
-      width: 50
-    }, {
-      field: 'host',
-      title: 'respond.eventsTable.host',
-      width: 100
-    }, {
       field: 'sourceIp',
       title: 'respond.eventsTable.source',
       width: 100
@@ -42,6 +58,14 @@ const StoryEvents = Component.extend({
     }, {
       field: 'domain',
       title: 'respond.eventsTable.domain',
+      width: 100
+    }, {
+      field: 'user',
+      title: 'respond.eventsTable.user',
+      width: 50
+    }, {
+      field: 'host',
+      title: 'respond.eventsTable.host',
       width: 100
     }, {
       field: 'file',
@@ -59,4 +83,4 @@ const StoryEvents = Component.extend({
   ]
 });
 
-export default connect(stateToComputed)(StoryEvents);
+export default connect(stateToComputed, dispatchToActions)(StoryEvents);

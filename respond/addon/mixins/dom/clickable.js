@@ -84,6 +84,9 @@ export default Mixin.create({
    * @public
    */
   click(e = {}) {
+    // Returns the requested action, whether it is stored as a property or a true Ember action
+    const getAction = (whichAction) => this.get(whichAction) || this.actions[whichAction];
+
     // Detect modifier keys and determine which action to take.
     const { shiftKey, ctrlKey, altKey, metaKey } = e;
     let whichAction;
@@ -96,7 +99,7 @@ export default Mixin.create({
     } else {
       whichAction = 'clickAction';
     }
-    const action = this.get(whichAction) || this.get('clickAction');
+    const action = getAction(whichAction) || getAction('clickAction');
     const data = this.get('clickData');
 
     if (action && data) {

@@ -2,6 +2,7 @@ import * as ACTION_TYPES from 'respond/actions/types';
 import reduxActions from 'redux-actions';
 import { handle } from 'redux-pack';
 import { load, persist } from './util/local-storage';
+import { toggle } from 'respond/utils/immut/array';
 
 const localStorageKey = 'rsa::nw::respond::incident';
 
@@ -25,7 +26,13 @@ let initialState = {
   viewMode: 'overview',
 
   // true when user toggles "Journal" btn to reveal journal
-  isJournalPanelOpen: false
+  isJournalPanelOpen: false,
+
+  // currently selected data in the storyline
+  selection: {
+    type: '', // either 'storyPoint', 'event', 'node' or 'link'; possibly empty
+    ids: [] // array of ids; possibly empty
+  }
 };
 
 // Load local storage values and incorporate into initial state
@@ -89,7 +96,41 @@ const incident = reduxActions.handleActions({
   [ACTION_TYPES.TOGGLE_JOURNAL_PANEL]: persistIncidentState((state) => ({
     ...state,
     isJournalPanelOpen: !state.isJournalPanelOpen
-  }))
+  })),
+
+  [ACTION_TYPES.SET_INCIDENT_SELECTION]: (state, { payload: { type, id } }) => {
+    const { selection: { type: wasType, ids: wasIds } } = state;
+    let newSelection;
+    if (wasType !== type) {
+      // type has changed, so reset selection to given inputs
+      newSelection = { type, ids: id ? [ id ] : [] };
+    } else {
+      // type hasn't changed
+      // was the given id already the only selection? if so toggle it, otherwise reset to it
+      const wasAlreadyOnlySelection = wasIds && (wasIds.length === 1) && (wasIds[0] === id);
+      newSelection = { type, ids: wasAlreadyOnlySelection ? [] : [ id ] };
+    }
+    return {
+      ...state,
+      selection: newSelection
+    };
+  },
+
+  [ACTION_TYPES.TOGGLE_INCIDENT_SELECTION]: (state, { payload: { type, id } }) => {
+    const { selection: { type: wasType, ids: wasIds } } = state;
+    let newSelection;
+    if (wasType !== type) {
+      // type has changed, so reset selection to given inputs
+      newSelection = { type, ids: id ? [ id ] : [] };
+    } else {
+      // type hasn't changed
+      newSelection = { type, ids: toggle(wasIds, id) };
+    }
+    return {
+      ...state,
+      selection: newSelection
+    };
+  }
 }, initialState);
 
 export default incident;

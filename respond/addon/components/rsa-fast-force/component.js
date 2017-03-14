@@ -4,9 +4,11 @@ import { forceSimulation, forceLink, forceManyBody, forceCollide, forceCenter } 
 import { select } from 'd3-selection';
 import { zoom } from 'd3-zoom';
 import dataJoin from './util/data-join';
+import filterJoin from './util/filter-join';
 import ticked from './util/ticked';
 import zoomed from './util/zoomed';
 import center from './util/center';
+import arrayToHashKeys from 'respond/utils/array/to-hash-keys';
 
 /* global addResizeListener */
 /* global removeResizeListener */
@@ -150,6 +152,35 @@ export default Component.extend({
   isDragging: false,
 
   /**
+   * When given, this component will mark all the nodes/links whose `id`s are not included in `filter` as hidden.
+   * Typically used in order to dim/hide a subset of `data` (via CSS) without removing the data & its DOM.
+   *
+   * By default, `filter` is `null` and all nodes & links in `data` are shown.
+   * When `filter` is given, all nodes & links will have their `isHidden` property updated to `true` (if they
+   * are in `filter`) or `false`.
+   *
+   * Note: if `filter` is null, it is considered an empty filter, and all data is shown. In contrast, if `filter`
+   * has an empty array of node/link ids, then none of the nodes/links will be shown.
+   *
+   * @type { { nodeIds: string[], linkIds: string[] } }
+   * @public
+   */
+  @computed
+  filter: {
+    get() {
+      return this._filter;
+    },
+    set(value) {
+      this._filter = value;
+
+      // Must use `run.next` to ensure that when the called function calls `this.get('data')`, this function will
+      // have already returned and Ember will have updated the `data` property value.
+      run.next(this, '_filterDidChange');
+      return this._filter;
+    }
+  },
+
+  /**
    * An object with `nodes` & `links` properties, which hold an array (possibly empty) of nodes & links (respectively)
    * that will be layed out by the d3 force-directed layout algorithm.
    *
@@ -213,6 +244,22 @@ export default Component.extend({
    * @public
    */
   dataJoin,
+
+  /**
+   * Configurable function responsible for showing/hiding DOM according to `filter`.
+   *
+   * This function is analogous to `dataJoin`, except that wherease `dataJoin` is responsible for
+   * building/destroying DOM, this function is responsible for showing/hiding it without adding/removing it.
+   * Typically used to dim/highlight a subset of data.
+   *
+   * Here "data" means the business data in nodes & links, but typically does not mean coordinates.
+   * The coordinates are computed by this component's simulation, which may not yet have started when `filterJoin` is invoked.
+   *
+   * @assumes This function will be invoked with its `this` context set to this component instance.
+   * @type {function}
+   * @public
+   */
+  filterJoin,
 
   /**
    * Configurable d3 callback to be invoked each time a single frame of the simulation if computed.
@@ -290,6 +337,8 @@ export default Component.extend({
     // Optimization: Cache the result (if any) so that tick handler can use it subsequently.
     this.joined = this.get('dataJoin').apply(this, []);
 
+    this._filterDidChange();
+
     // Feed the data to the simulation & restart.
     const { nodes, links } = this.get('data');
     simulation
@@ -298,6 +347,45 @@ export default Component.extend({
 
     if (nodes.length) {
       this.start();
+    }
+  },
+
+  /**
+   * Applies filter to current `data` by updating `isHidden` property of all `data.nodes` & `data.links`.
+   * Typically called after either `filter` changes or `data` changes.
+   * @private
+   */
+  _filterDidChange() {
+    const data = this.get('data');
+    if (!data) {
+      return;
+    }
+    const { nodes = [], links = [] } = data;
+    const filter = this.get('filter');
+    if (!filter) {
+
+      // Filter is not given, mark all nodes & links as not hidden.
+      [ nodes, links ].forEach((arr) => arr.setEach('isHidden', false));
+    } else {
+
+      // Filter is given, let's apply it to data (if any).
+      // Define a util function that will update `isHidden` for a given array of data objects & list of ids.
+      const update = (arr, ids) => {
+        const hash = arrayToHashKeys(ids);
+        arr.forEach((d) => {
+          d.isHidden = !(d.id in hash);
+        });
+      };
+
+      // Use the util to update the nodes & links.
+      update(nodes, filter.nodeIds);
+      update(links, filter.linkIds);
+    }
+
+    // Update the DOM to sync with the updated data.
+    this.get('filterJoin').apply(this, []);
+    if (this.get('autoCenter')) {
+      this.center();
     }
   },
 
