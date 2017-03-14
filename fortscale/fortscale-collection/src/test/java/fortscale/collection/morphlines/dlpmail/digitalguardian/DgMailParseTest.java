@@ -59,13 +59,13 @@ public class DgMailParseTest {
 
 	@Test
 	public void test_remove_verdasys_prefix() {
-		String testCase = "Test that the verdasys\\ prefix is removed";
+		String testCase = "Test that the verdasys\r prefix is removed";
 		DgMailEventInput input = new DgMailEventInputBuilder()
 				.setAgentUtcTime("06/12/2016 16:04")
 				.setOperation("Send Mail")
 				// interesting test stuff starts here
-				.setComputerName("verdasys\\example_hostname")
-				.setUsername("verdasys\\example_username")
+				.setComputerName("verdasys\rexample_hostname")
+				.setUsername("verdasys\rexample_username")
 				.createDgEvent();
 
 		DgMailEventAfterEtl expected = new DgMailEventAfterEtlBuilder()
@@ -375,9 +375,6 @@ public class DgMailParseTest {
 		final String expectedOutput = expected.toString();
 		morphlineTester.testSingleLine(testCase, inputLine, expectedOutput);
 	}
-
-	/* *************************************************************ENRICHMENT************************************************************************************** */
-
 
 }
 
