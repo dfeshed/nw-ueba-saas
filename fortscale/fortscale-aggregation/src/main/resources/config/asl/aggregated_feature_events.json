@@ -19,7 +19,7 @@
       }
     },
     {
-      "name": "number_of_emails_to_external_single_recipient_dlpmail_daily",
+      "name": "number_of_emails_to_external_recipient_dlpmail_daily",
       "type": "F",
       "bucketConfName": "normalized_username_dlpmail_daily",
       "numberOfBuckets": 1,
@@ -28,7 +28,7 @@
       "evidencesFilterStrategy": "HIGHEST_SCORE",
       "aggregatedFeatureNamesMap": {
         "sum": [
-          "emails_to_external_single_recipient_counter"
+          "emails_to_external_recipient_counter"
         ]
       },
       "aggregatedFeatureEventFunction": {
@@ -37,7 +37,7 @@
       "retentionStrategyName": "daily_feature_retention_strategy"
     },
     {
-      "name": "number_of_email_attachments_to_external_single_recipient_dlpmail_daily",
+      "name": "number_of_attachments_to_external_recipient_dlpmail_daily",
       "type": "F",
       "bucketConfName": "normalized_username_dlpmail_daily",
       "numberOfBuckets": 1,
@@ -46,7 +46,7 @@
       "evidencesFilterStrategy": "HIGHEST_SCORE",
       "aggregatedFeatureNamesMap": {
         "sum": [
-          "email_attachments_to_external_single_recipient_counter"
+          "attachments_to_external_recipient_counter"
         ]
       },
       "aggregatedFeatureEventFunction": {
@@ -55,7 +55,7 @@
       "retentionStrategyName": "daily_feature_retention_strategy"
     },
     {
-      "name": "sum_of_email_attachments_to_external_single_recipient_size_dlpmail_daily",
+      "name": "sum_of_attachments_to_external_recipient_size_dlpmail_daily",
       "type": "F",
       "bucketConfName": "normalized_username_dlpmail_daily",
       "numberOfBuckets": 1,
@@ -64,7 +64,7 @@
       "evidencesFilterStrategy": "HIGHEST_SCORE",
       "aggregatedFeatureNamesMap": {
         "sum": [
-          "sum_of_email_attachments_to_external_single_recipient_size"
+          "sum_of_attachments_to_external_recipient_size"
         ]
       },
       "aggregatedFeatureEventFunction": {
@@ -246,7 +246,7 @@
       }
     },
     {
-      "name": "number_of_emails_to_external_single_recipient_dlpmail_hourly",
+      "name": "number_of_emails_to_external_recipient_dlpmail_hourly",
       "type": "F",
       "bucketConfName": "normalized_username_dlpmail_hourly",
       "numberOfBuckets": 1,
@@ -255,7 +255,7 @@
       "evidencesFilterStrategy": "HIGHEST_SCORE",
       "aggregatedFeatureNamesMap": {
         "sum": [
-          "emails_to_external_single_recipient_counter"
+          "emails_to_external_recipient_counter"
         ]
       },
       "aggregatedFeatureEventFunction": {
@@ -264,7 +264,7 @@
       "retentionStrategyName": "hourly_feature_retention_strategy"
     },
     {
-      "name": "number_of_email_attachments_to_external_single_recipient_dlpmail_hourly",
+      "name": "number_of_attachments_to_external_recipient_dlpmail_hourly",
       "type": "F",
       "bucketConfName": "normalized_username_dlpmail_hourly",
       "numberOfBuckets": 1,
@@ -273,7 +273,7 @@
       "evidencesFilterStrategy": "HIGHEST_SCORE",
       "aggregatedFeatureNamesMap": {
         "sum": [
-          "email_attachments_to_external_single_recipient_counter"
+          "attachments_to_external_recipient_counter"
         ]
       },
       "aggregatedFeatureEventFunction": {
@@ -282,7 +282,7 @@
       "retentionStrategyName": "hourly_feature_retention_strategy"
     },
     {
-      "name": "sum_of_email_attachments_to_external_single_recipient_size_dlpmail_hourly",
+      "name": "sum_of_attachments_to_external_recipient_size_dlpmail_hourly",
       "type": "F",
       "bucketConfName": "normalized_username_dlpmail_hourly",
       "numberOfBuckets": 1,
@@ -291,7 +291,7 @@
       "evidencesFilterStrategy": "HIGHEST_SCORE",
       "aggregatedFeatureNamesMap": {
         "sum": [
-          "sum_of_email_attachments_to_external_single_recipient_size"
+          "sum_of_attachments_to_external_recipient_size"
         ]
       },
       "aggregatedFeatureEventFunction": {

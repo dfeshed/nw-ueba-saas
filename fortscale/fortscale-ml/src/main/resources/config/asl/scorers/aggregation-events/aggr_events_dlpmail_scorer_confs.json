@@ -1,15 +1,15 @@
 {
   "data-source-scorers": [
     {
-      "data-source" : "aggr_event.normalized_username_dlpmail_daily.number_of_emails_to_external_single_recipient_dlpmail_daily",
+      "data-source" : "aggr_event.normalized_username_dlpmail_daily.number_of_emails_to_external_recipient_dlpmail_daily",
       "scorers" : [ {
         "type" : "low-values-score-reducer",
-        "name" : "number_of_emails_to_external_single_recipient.normalized_username.dlpmail.daily.scorer",
+        "name" : "number_of_emails_to_external_recipient.normalized_username.dlpmail.daily.scorer",
         "base-scorer" : {
           "type" : "continuous-values-model-scorer",
-          "name" : "number_of_emails_to_external_single_recipient.normalized_username.dlpmail.daily.base_scorer",
+          "name" : "number_of_emails_to_external_recipient.normalized_username.dlpmail.daily.base_scorer",
           "model" : {
-            "name" : "number_of_emails_to_external_single_recipient.normalized_username.dlpmail.daily"
+            "name" : "number_of_emails_to_external_recipient.normalized_username.dlpmail.daily"
           },
           "additional-models" : [ ],
           "quad-poly-calibration-conf" : {
@@ -32,15 +32,15 @@
       } ]
     },
     {
-      "data-source" : "aggr_event.normalized_username_dlpmail_hourly.number_of_emails_to_external_single_recipient_dlpmail_hourly",
+      "data-source" : "aggr_event.normalized_username_dlpmail_hourly.number_of_emails_to_external_recipient_dlpmail_hourly",
       "scorers" : [ {
         "type" : "low-values-score-reducer",
-        "name" : "number_of_emails_to_external_single_recipient.normalized_username.dlpmail.hourly.scorer",
+        "name" : "number_of_emails_to_external_recipient.normalized_username.dlpmail.hourly.scorer",
         "base-scorer" : {
           "type" : "continuous-values-model-scorer",
-          "name" : "number_of_emails_to_external_single_recipient.normalized_username.dlpmail.hourly.base_scorer",
+          "name" : "number_of_emails_to_external_recipient.normalized_username.dlpmail.hourly.base_scorer",
           "model" : {
-            "name" : "number_of_emails_to_external_single_recipient.normalized_username.dlpmail.hourly"
+            "name" : "number_of_emails_to_external_recipient.normalized_username.dlpmail.hourly"
           },
           "additional-models" : [ ],
           "quad-poly-calibration-conf" : {
@@ -63,15 +63,15 @@
       } ]
     },
     {
-      "data-source" : "aggr_event.normalized_username_dlpmail_daily.number_of_email_attachments_to_external_single_recipient_dlpmail_daily",
+      "data-source" : "aggr_event.normalized_username_dlpmail_daily.number_of_attachments_to_external_recipient_dlpmail_daily",
       "scorers" : [ {
         "type" : "low-values-score-reducer",
-        "name" : "number_of_email_attachments_to_external_single_recipient.normalized_username.dlpmail.daily.scorer",
+        "name" : "number_of_attachments_to_external_recipient.normalized_username.dlpmail.daily.scorer",
         "base-scorer" : {
           "type" : "continuous-values-model-scorer",
-          "name" : "number_of_email_attachments_to_external_single_recipient.normalized_username.dlpmail.daily.base_scorer",
+          "name" : "number_of_attachments_to_external_recipient.normalized_username.dlpmail.daily.base_scorer",
           "model" : {
-            "name" : "number_of_email_attachments_to_external_single_recipient.normalized_username.dlpmail.daily"
+            "name" : "number_of_attachments_to_external_recipient.normalized_username.dlpmail.daily"
           },
           "additional-models" : [ ],
           "quad-poly-calibration-conf" : {
@@ -94,15 +94,15 @@
       } ]
     },
     {
-      "data-source" : "aggr_event.normalized_username_dlpmail_hourly.number_of_email_attachments_to_external_single_recipient_dlpmail_hourly",
+      "data-source" : "aggr_event.normalized_username_dlpmail_hourly.number_of_attachments_to_external_recipient_dlpmail_hourly",
       "scorers" : [ {
         "type" : "low-values-score-reducer",
-        "name" : "number_of_email_attachments_to_external_single_recipient.normalized_username.dlpmail.hourly.scorer",
+        "name" : "number_of_attachments_to_external_recipient.normalized_username.dlpmail.hourly.scorer",
         "base-scorer" : {
           "type" : "continuous-values-model-scorer",
-          "name" : "number_of_email_attachments_to_external_single_recipient.normalized_username.dlpmail.hourly.base_scorer",
+          "name" : "number_of_attachments_to_external_recipient.normalized_username.dlpmail.hourly.base_scorer",
           "model" : {
-            "name" : "number_of_email_attachments_to_external_single_recipient.normalized_username.dlpmail.hourly"
+            "name" : "number_of_attachments_to_external_recipient.normalized_username.dlpmail.hourly"
           },
           "additional-models" : [ ],
           "quad-poly-calibration-conf" : {
@@ -125,15 +125,15 @@
       } ]
     },
     {
-      "data-source" : "aggr_event.normalized_username_dlpmail_daily.sum_of_email_attachments_to_external_single_recipient_size_dlpmail_daily",
+      "data-source" : "aggr_event.normalized_username_dlpmail_daily.sum_of_attachments_to_external_recipient_size_dlpmail_daily",
       "scorers" : [ {
         "type" : "low-values-score-reducer",
-        "name" : "sum_of_email_attachments_to_external_single_recipient_size.normalized_username.dlpmail.daily.scorer",
+        "name" : "sum_of_attachments_to_external_recipient_size.normalized_username.dlpmail.daily.scorer",
         "base-scorer" : {
           "type" : "continuous-values-model-scorer",
-          "name" : "sum_of_email_attachments_to_external_single_recipient_size.normalized_username.dlpmail.daily.base_scorer",
+          "name" : "sum_of_attachments_to_external_recipient_size.normalized_username.dlpmail.daily.base_scorer",
           "model" : {
-            "name" : "sum_of_email_attachments_to_external_single_recipient_size.normalized_username.dlpmail.daily"
+            "name" : "sum_of_attachments_to_external_recipient_size.normalized_username.dlpmail.daily"
           },
           "additional-models" : [ ],
           "quad-poly-calibration-conf" : {
@@ -156,15 +156,15 @@
       } ]
     },
     {
-      "data-source" : "aggr_event.normalized_username_dlpmail_hourly.sum_of_email_attachments_to_external_single_recipient_size_dlpmail_hourly",
+      "data-source" : "aggr_event.normalized_username_dlpmail_hourly.sum_of_attachments_to_external_recipient_size_dlpmail_hourly",
       "scorers" : [ {
         "type" : "low-values-score-reducer",
-        "name" : "sum_of_email_attachments_to_external_single_recipient_size.normalized_username.dlpmail.hourly.scorer",
+        "name" : "sum_of_attachments_to_external_recipient_size.normalized_username.dlpmail.hourly.scorer",
         "base-scorer" : {
           "type" : "continuous-values-model-scorer",
-          "name" : "sum_of_email_attachments_to_external_single_recipient_size.normalized_username.dlpmail.hourly.base_scorer",
+          "name" : "sum_of_attachments_to_external_recipient_size.normalized_username.dlpmail.hourly.base_scorer",
           "model" : {
-            "name" : "sum_of_email_attachments_to_external_single_recipient_size.normalized_username.dlpmail.hourly"
+            "name" : "sum_of_attachments_to_external_recipient_size.normalized_username.dlpmail.hourly"
           },
           "additional-models" : [ ],
           "quad-poly-calibration-conf" : {
