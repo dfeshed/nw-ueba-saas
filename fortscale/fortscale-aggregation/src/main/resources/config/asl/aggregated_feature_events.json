@@ -70,6 +70,7 @@
       "aggregatedFeatureEventFunction": {
         "type": "aggr_feature_sum_func"
       }
+      "retentionStrategyName": "daily_feature_retention_strategy"
     },
     {
       "name": "number_of_email_attachments_dlpmail_daily",
@@ -105,6 +106,7 @@
       "aggregatedFeatureEventFunction": {
         "type": "aggr_feature_sum_func"
       }
+      "retentionStrategyName": "daily_feature_retention_strategy"
     },
     {
       "name": "sum_of_highest_normalized_src_machine_scores_dlpmail_daily",
@@ -297,6 +299,7 @@
       "aggregatedFeatureEventFunction": {
         "type": "aggr_feature_sum_func"
       }
+      "retentionStrategyName": "hourly_feature_retention_strategy"
     },
     {
       "name": "number_of_email_attachments_dlpmail_hourly",
@@ -332,6 +335,7 @@
       "aggregatedFeatureEventFunction": {
         "type": "aggr_feature_sum_func"
       }
+      "retentionStrategyName": "hourly_feature_retention_strategy"
     },
     {
       "name": "sum_of_highest_normalized_src_machine_scores_dlpmail_hourly",
