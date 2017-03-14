@@ -1,13 +1,12 @@
 package fortscale.web.tasks;
 
-import fortscale.services.BaseTaskPersistencyService;
 import fortscale.services.users.tagging.UserTaggingTaskPersistenceService;
+import fortscale.services.users.tagging.UserTaggingTaskPersistencyServiceImpl;
 import fortscale.utils.logging.Logger;
 import fortscale.web.services.ActivityMonitoringExecutorService;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 import java.util.Map;
-import java.util.UUID;
 
 
 public class ControllerInvokedUserTaggingTask extends BaseControllerInvokedTask implements Runnable {
@@ -19,6 +18,9 @@ public class ControllerInvokedUserTaggingTask extends BaseControllerInvokedTask 
 
     private static final String USER_TAGGING_JOB_NAME = "User";
     private static final String USER_TAGGING_JOB_GROUP = "Tagging";
+
+    public static final boolean SUCCESS_FALSE = false;
+    public static final long NO_EXECUTION_TIME = -1L;
 
     private final String responseDestination;
     private final UserTaggingTaskPersistenceService userTaggingTaskPersistenceService;
@@ -57,7 +59,7 @@ public class ControllerInvokedUserTaggingTask extends BaseControllerInvokedTask 
             return response.success;
         } catch (Exception e) {
             logger.error("Failed to handle task {}.", USER_TAGGING_JOB_NAME, e);
-            simpMessagingTemplate.convertAndSend(responseDestination, new UserTaggingTaskResponse(false, -1L));
+            simpMessagingTemplate.convertAndSend(responseDestination, new UserTaggingTaskResponse(SUCCESS_FALSE, NO_EXECUTION_TIME));
             return false;
         }
     }
@@ -72,36 +74,36 @@ public class ControllerInvokedUserTaggingTask extends BaseControllerInvokedTask 
         userTaggingTaskPersistenceService.setExecutionStartTime(System.currentTimeMillis());
         notifyTaskStart();
 
-        UUID resultsId = UUID.randomUUID();
-        final String resultsKey = userTaggingTaskPersistenceService.createResultKey(resultsId);
+       userTaggingTaskPersistenceService.createResultKey(UserTaggingTaskPersistenceService.USER_TAGGING_RESULT_ID);
 
         /* run task */
-        logger.info("Running user tagging task {} with ID {}", USER_TAGGING_JOB_NAME, resultsId);
-        if (!runCollectionJob(USER_TAGGING_JOB_NAME, resultsId, USER_TAGGING_JOB_GROUP)) {
+        logger.info("Running user tagging task {}", USER_TAGGING_JOB_NAME);
+        if (!runCollectionJob(USER_TAGGING_JOB_NAME, UserTaggingTaskPersistenceService.USER_TAGGING_RESULT_ID, USER_TAGGING_JOB_GROUP)) {
             notifyTaskDone();
-            return new UserTaggingTaskResponse(false, -1L);
+            return new UserTaggingTaskResponse(SUCCESS_FALSE, NO_EXECUTION_TIME);
         }
 
 
         /* get task results from file */
-        logger.debug("Getting results for task {} with results key {}", USER_TAGGING_JOB_NAME, resultsKey);
-        final Map<String, String> taskResults = userTaggingTaskPersistenceService.getTaskResults(resultsKey);
+        logger.debug("Getting results for task {} with results key {}", USER_TAGGING_JOB_NAME, UserTaggingTaskPersistenceService.USER_TAGGING_RESULT_ID);
+        final UserTaggingTaskPersistencyServiceImpl.UserTaggingResult taskResults = userTaggingTaskPersistenceService.getTaskResults(UserTaggingTaskPersistenceService.USER_TAGGING_RESULT_ID);
         if (taskResults == null) {
             notifyTaskDone();
-            return new UserTaggingTaskResponse(false, -1L);
+            logger.error("Got task result null");
+            return new UserTaggingTaskResponse(SUCCESS_FALSE, NO_EXECUTION_TIME);
         }
 
         /* process results and understand if task finished successfully */
-        final String success = taskResults.get(BaseTaskPersistencyService.RESULTS_KEY_SUCCESS);
+        final Boolean success = taskResults.isSuccess();
         if (success == null) {
             logger.error("Invalid output for task {} . success status is missing. Task Failed", USER_TAGGING_JOB_NAME);
             notifyTaskDone();
-            return new UserTaggingTaskResponse(false, -1L);
+            return new UserTaggingTaskResponse(SUCCESS_FALSE, NO_EXECUTION_TIME);
         }
 
         notifyTaskDone();
         final long lastExecutionTime = System.currentTimeMillis();
-        return new UserTaggingTaskResponse(Boolean.valueOf(success), lastExecutionTime);
+        return new UserTaggingTaskResponse(Boolean.valueOf(success), lastExecutionTime, taskResults.getUsersAffected());
     }
 
     @Override
@@ -115,6 +117,13 @@ public class ControllerInvokedUserTaggingTask extends BaseControllerInvokedTask 
     public static class UserTaggingTaskResponse {
         private boolean success;
         private Long lastExecutionTime;
+        private Map<String, Long> taggingResult;
+
+        public UserTaggingTaskResponse(boolean success, Long lastExecutionTime, Map<String, Long> taggingResult) {
+            this.success = success;
+            this.lastExecutionTime = lastExecutionTime;
+            this.taggingResult = taggingResult;
+        }
 
         public UserTaggingTaskResponse(boolean success, Long lastExecutionTime) {
             this.success = success;
@@ -136,7 +145,16 @@ public class ControllerInvokedUserTaggingTask extends BaseControllerInvokedTask 
         public void setLastExecutionTime(Long lastExecutionTime) {
             this.lastExecutionTime = lastExecutionTime;
         }
+
+        public Map<String, Long> getTaggingResult() {
+            return taggingResult;
+        }
+
+        public void setTaggingResult(Map<String, Long> taggingResult) {
+            this.taggingResult = taggingResult;
+        }
     }
 }
+
 
 
