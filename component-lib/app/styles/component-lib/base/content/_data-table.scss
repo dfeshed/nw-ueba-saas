@@ -89,8 +89,12 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
     white-space: nowrap;
     position: relative;
 
-    .rsa-form-checkbox {
+    .rsa-form-checkbox-label {
       margin: 0;
+
+      &::before {
+        top: 1px;
+      }
     }
   }
 
@@ -114,6 +118,14 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
     &.is-selected:hover {
       margin: 0 calc((#{rsa-whitespace()} + #{rsa-whitespace(least)}) * -1);
       padding: 0 calc(#{rsa-whitespace()} + #{rsa-whitespace(least)});
+
+      .rsa-form-checkbox-label {
+        display: block;
+
+        &::before {
+          top: 3px;
+        }
+      }
     }
 
     &:hover {

@@ -178,12 +178,9 @@
 
           {{#rsa-data-table/header as |column|}}
             {{#if column.headerComponentClass}}
-              {{component
-                column.headerComponentClass
-                item=item
-                index=index
-                column=column
-                change=(action 'toggleItemsSelection' model.items)}}
+              <label class="rsa-form-checkbox-label {{if allItemsChecked 'checked'}}">
+                {{rsa-form-checkbox checked=allItemsChecked change=(action 'toggleItemsSelection' model.items)}}
+              </label>
             {{else}}
               {{column.title}}
             {{/if}}
@@ -192,11 +189,9 @@
           {{#rsa-data-table/body as |item index column|}}
             {{#if column.componentClass}}
               {{#rsa-data-table/body-cell item=item column=column}}
-                {{component
-                  column.componentClass
-                  item=item
-                  checked=item.checked
-                  change=(action 'toggleItemSelection' item)}}
+                <label class="rsa-form-checkbox-label {{if item.checked 'checked'}}">
+                  {{rsa-form-checkbox checked=item.checked change=(action 'toggleItemSelection' item)}}
+                </label>
               {{/rsa-data-table/body-cell}}
             {{else}}
               {{rsa-data-table/body-cell item=item column=column}}
@@ -216,11 +211,9 @@
 
           {{#rsa-data-table/header as |column|}}
             {{#if column.headerComponentClass}}
-              {{component column.headerComponentClass
-                item=item
-                index=index
-                column=column
-                change=(action 'toggleItemsSelection' model.items)}}
+              <label class="rsa-form-checkbox-label {{if allItemsChecked 'checked'}}">
+                {{rsa-form-checkbox checked=allItemsChecked change=(action 'toggleItemsSelection' model.items)}}
+              </label>
             {{else}}
               {{column.title}}
             {{/if}}
@@ -229,10 +222,9 @@
           {{#rsa-data-table/body as |item index column|}}
             {{#if column.componentClass}}
               {{#rsa-data-table/body-cell item=item column=column}}
-                {{component column.componentClass
-                  item=item
-                  checked=item.checked
-                  change=(action 'toggleItemSelection' item)}}
+                <label class="rsa-form-checkbox-label {{if item.checked 'checked'}}">
+                  {{rsa-form-checkbox checked=item.checked change=(action 'toggleItemSelection' item)}}
+                </label>
               {{/rsa-data-table/body-cell}}
             {{else}}
               {{rsa-data-table/body-cell item=item column=column}}

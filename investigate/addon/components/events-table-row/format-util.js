@@ -145,11 +145,7 @@ function _size(value, opts = {}, dontAggregate = false) {
 
 // Formats a given timestamp value into a string using given (optional) format.
 function _time(value, opts = {}) {
-  const mom = moment(value);
-  if (opts.timeZone) {
-    mom.tz(opts.timeZone);
-  }
-  return mom.format(opts.dateTimeFormat || 'YYYY/MM/DD[T]HH:mm:ss');
+  return moment(value).format(opts.dateTimeFormat.replace(/.SSS/, '') || 'YYYY/MM/DD[T]HH:mm:ss');
 }
 
 // Parses a given width value into a number and units (if any).

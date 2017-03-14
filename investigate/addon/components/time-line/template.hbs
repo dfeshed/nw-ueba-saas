@@ -1,6 +1,6 @@
 <section class="rsa-investigate-timeline__body">
   <section class="timestamp">
-    {{rsa-content-datetime timestamp=endDate}}
+    {{rsa-content-datetime timestamp=startDate displayMilliseconds=false}}
   </section>
   {{#rsa-chart class="master"
     data=chartData
@@ -23,13 +23,13 @@
     }}
   {{/rsa-chart}}
   <section class="timestamp right">
-    {{rsa-content-datetime timestamp=endDate}}
+    {{rsa-content-datetime timestamp=endDate displayMilliseconds=false}}
   </section>
   {{rsa-icon size='large' name=toggleIcon click=(action 'toggleContent')}}
   {{#if isExpanded}}
     <section class="hover-data">
       {{#if hoverValue}}
-        {{rsa-content-datetime timestamp=hoverValue.date}}
+        {{rsa-content-datetime timestamp=hoverValue.date displayMilliseconds=false}}
         &ensp;-&ensp;
         {{#each hoverValue.counts as |count index|}}
           <span class="series-{{index}}">{{count}}&emsp;</span>
