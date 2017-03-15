@@ -1,12 +1,17 @@
 package fortscale.domain.eventscache;
 
+import fortscale.domain.core.AbstractAuditableDocument;
 import fortscale.domain.core.AbstractDocument;
+import org.joda.time.DateTime;
 import org.kitesdk.morphline.api.Record;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.TypeAlias;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static fortscale.domain.core.AbstractAuditableDocument.CREATED_AT_FIELD_NAME;
 
 @Document(collection="cachedEventsRecord")
 @TypeAlias(value="CachedRecord")
@@ -20,16 +25,10 @@ public class CachedRecord extends AbstractDocument {
 	private String key;
 	private Record record;
 
-
-	
-/*	public CachedRecord(String cacheName, String key, Record record) {
-
-		this.key = key;
-		this.cacheName = cacheName;
-		this.record = record;
-
-	}*/
-
+	@Indexed(unique = false, expireAfterSeconds=60*60*730) //1 month
+	@CreatedDate
+	@Field(CREATED_AT_FIELD_NAME)
+	private DateTime createdAt;
 	
 	public String getKey() {
 		return key;
