@@ -70,7 +70,7 @@
             </job-data-map>
         </job>
 
-        <!-- idan perez Remove this trigger
+        <!-- for PS
         <trigger>
             <cron>
                 <name>dlpmail_send_to_streaming_hourly_trigger</name>
