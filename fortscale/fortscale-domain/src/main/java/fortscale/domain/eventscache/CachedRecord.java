@@ -1,6 +1,5 @@
 package fortscale.domain.eventscache;
 
-import fortscale.domain.core.AbstractAuditableDocument;
 import fortscale.domain.core.AbstractDocument;
 import org.joda.time.DateTime;
 import org.kitesdk.morphline.api.Record;
