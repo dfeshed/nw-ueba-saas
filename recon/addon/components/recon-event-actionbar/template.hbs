@@ -8,7 +8,9 @@
     {{/if}}
     {{#if isTextView }}
       {{recon-event-actionbar/export-logs}}
-      {{recon-event-actionbar/decode-text}}
+      {{#unless isLogEvent}}
+        {{recon-event-actionbar/decode-text}}
+      {{/unless}}
     {{/if}}
   </hbox>
 </grid>
