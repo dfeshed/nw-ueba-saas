@@ -14,7 +14,7 @@ import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.BaseController;
 import fortscale.web.beans.DataBean;
 import fortscale.web.beans.ResponseEntityMessage;
-import fortscale.web.beans.request.UserTaggingFilePathRequest;
+import fortscale.web.beans.request.UserTaggingFilePath;
 import fortscale.web.rest.Utils.TaskAction;
 import fortscale.web.services.TaskService;
 import fortscale.web.services.UserTaggingTaskServiceImpl;
@@ -181,8 +181,8 @@ public class ApiSystemSetupTagsController extends BaseController {
 
     @RequestMapping(value = "/save_tagging_path", method = RequestMethod.PUT)
     @ApiOperation(value = "Save the tagging file path and mode")
-    public ResponseEntity<ResponseEntityMessage> savePath(@RequestBody UserTaggingFilePathRequest userTaggingFilePathRequest) {
-        userTaggingTaskPersistenceService.saveSystemSetupTaggingFilePath(userTaggingFilePathRequest.getUserTaggingFilePath());
+    public ResponseEntity<ResponseEntityMessage> savePath(@RequestBody UserTaggingFilePath userTaggingFilePath) {
+        userTaggingTaskPersistenceService.saveSystemSetupTaggingFilePath(userTaggingFilePath.getUserTaggingFilePath());
         return new ResponseEntity<>(new ResponseEntityMessage("tagging path saved"), HttpStatus.OK);
     }
 
@@ -194,18 +194,18 @@ public class ApiSystemSetupTagsController extends BaseController {
     }
 
     @RequestMapping(value = "/get_tagging_path", method = RequestMethod.GET)
-    @ApiOperation(value = "Get the tagging file path and mode", response = String.class)
-    public String getPath() {
-        return userTaggingTaskPersistenceService.getSystemSetupUserTaggingFilePath();
+    @ApiOperation(value = "Get the tagging file path and mode", response = UserTaggingFilePath.class)
+    public UserTaggingFilePath getPath() {
+        return new UserTaggingFilePath(userTaggingTaskPersistenceService.getSystemSetupUserTaggingFilePath());
     }
 
     @RequestMapping(value = "/run_tagging_task", method = RequestMethod.POST)
     @ApiOperation(value = "Run user tagging job in different process and reports the result to web socket")
-    public ResponseEntity<ResponseEntityMessage> runUserTagging(@RequestBody UserTaggingFilePathRequest userTaggingFilePathRequest) {
+    public ResponseEntity<ResponseEntityMessage> runUserTagging(@RequestBody UserTaggingFilePath userTaggingFilePath) {
         try {
             logger.debug("Executing user tagging");
-            logger.debug("Adding tagging file path {}", userTaggingFilePathRequest.getUserTaggingFilePath());
-            ((UserTaggingTaskServiceImpl) userTaggingTaskService).setUserTaggingFilePath(userTaggingFilePathRequest.getUserTaggingFilePath());
+            logger.debug("Adding tagging file path {}", userTaggingFilePath.getUserTaggingFilePath());
+            ((UserTaggingTaskServiceImpl) userTaggingTaskService).setUserTaggingFilePath(userTaggingFilePath.getUserTaggingFilePath());
 
             final boolean executedSuccessfully = userTaggingTaskService.executeTasks(simpMessagingTemplate, DESTINATION_TASK_RESPONSE);
             if (executedSuccessfully) {
