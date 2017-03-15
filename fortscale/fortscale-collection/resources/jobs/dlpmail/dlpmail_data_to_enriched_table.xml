@@ -62,18 +62,6 @@
 
         </job>
 
-        <!-- need to comment out when working in multi collector mode
-        <trigger>
-            <cron>
-                <name>dlpmail_send_to_streaming_hourly_trigger</name>
-
-                <group>dlpmail</group>
-                <job-name>Scoring</job-name>
-                <job-group>dlpmailf</job-group>
-                <cron-expression>0 30 * * * ?</cron-expression>
-            </cron>
-        </trigger>
-        -->
     </schedule>
 
 
