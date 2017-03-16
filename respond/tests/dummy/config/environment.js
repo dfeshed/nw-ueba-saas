@@ -1,6 +1,7 @@
 /* eslint-env node */
 
 const socketRouteGenerator = require('../../../config/socketRoutes');
+const common = require('../../../../common');
 
 module.exports = function(environment) {
   const ENV = {
@@ -27,11 +28,7 @@ module.exports = function(environment) {
       includeLocales: ['en', 'ja'],
       includeTimezone: '2010-2020'
     },
-    featureFlags: {
-      'show-incident-entities-panel': false,
-      'show-incident-events-panel': false,
-      'show-incident-journal-panel': false
-    }
+    featureFlags: common.addFeatureFlags(environment)
   };
 
   if (environment === 'development') {

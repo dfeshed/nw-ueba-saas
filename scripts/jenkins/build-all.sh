@@ -1,8 +1,8 @@
 #### Run Entire Build
 #
 # 1) Will ensure node/npm, yarn, bower and ember-cli are
-# installed and with the correct version
-# 2) Will then run builds for the 3 ember apps
+#   installed and with the correct version
+# 2) Will then run builds for the many ember apps
 #   which includes tests and production builds
 #   and re-hosting of style-guide
 # 3) Builds RPM for SA
@@ -13,8 +13,28 @@
 # temp clean up while setting up script
 # rm -rf ~/.node
 
+#### INPUTS
+# export TESTEM_PORTS="7351, 7352, 7353, 7354, 7355, 7356, 7357, 7358, 7359, 7360"
+#   Provides ports for testem to use when running ember tests
+# export MOCK_SERVER_PORTS="9985, 9986, 9987, 9988, 9989"
+#   Provides ports for the mock server to use when running e2e tests
+# export EXTENT=FULL
+#   An indicator of to what extent the build should be run.
+#   Possible values:
+#     FULL: runs everything, tests, builds, RPM, fetch
+#     TEST: runs just the tests, no RPM
+#     RPM: runs everything, but does not copy RPM out of build
+# export FF_ON=11.1-enabled
+#   Sets web application features to true. To set multiple features, comma-delimit
+#   feature names.
+# export FF_OFF=11.1-enabled
+#   Sets web application features to false. To set multiple features, comma-delimit
+#   feature names.
+
+
+
 # turns off noisy jenkins output
-# possibly comment this out to debug problematic build
+# comment this out to debug problematic build
 set +x
 
 # Determine the files that have changed for this build

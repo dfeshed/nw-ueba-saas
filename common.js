@@ -1,5 +1,18 @@
  /* eslint-env node */
 const os = require('os');
+const featureFlagDefaultHash = require('./feature-flags');
+
+let featureFlagConfig;
+let featuresOn = [];
+let featuresOff = [];
+
+if (process.env.FF_ON) {
+  featuresOn = process.env.FF_ON.split(',');
+}
+
+if (process.env.FF_OFF) {
+  featuresOff = process.env.FF_OFF.split(',');
+}
 
 const developedAddons = [];
 
@@ -145,8 +158,55 @@ const mergeSocketConfigs = function(configGenerators, environment) {
     }, {});
 };
 
+/*
+ * Use this function to add defaults to an ember project.
+ *
+ * This function takes a normal feature flag object hash
+ * as input and determines based on environment flags
+ * what the feature flag should be set to.
+ *
+ * The hash value for each flag passed in is considered
+ * the default if no environment flag sets it.
+ *
+ * If the hash value is a function, the determined flag
+ * setting, based on environment settings, is passed into
+ * that function and the return from the function is used
+ * as the feature flag setting. This allows for an override if,
+ * for instance, a flag should always be one way regardless
+ * of feature flags.
+ *
+ */
+const addFeatureFlags = function(environment) {
+
+  if (featureFlagConfig) {
+    return featureFlagConfig;
+  }
+
+  featureFlagConfig = {}
+
+  Object.keys(featureFlagDefaultHash).forEach((featureFlag) => {
+    const providedDefault = featureFlagDefaultHash[featureFlag];
+
+    if (featuresOff.includes(featureFlag)) {
+      featureFlagConfig[featureFlag] = false;
+    } else if (featuresOn.includes(featureFlag)) {
+      featureFlagConfig[featureFlag] = true;
+    } else if (typeof providedDefault === 'boolean') {
+      featureFlagConfig[featureFlag] = providedDefault;
+    }
+
+    // allow for override function
+    if (typeof providedDefault === 'function') {
+      featureFlagConfig[featureFlag] = providedDefault(environment, featureFlagConfig[featureFlag]);
+    }
+  });
+
+  return featureFlagConfig;
+};
+
 module.exports = {
   isDevelopingAddon,
   determineSocketUrl,
-  mergeSocketConfigs
+  mergeSocketConfigs,
+  addFeatureFlags
 };

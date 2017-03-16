@@ -1,6 +1,7 @@
 /* eslint-env node */
 
 const socketRouteGenerator = require('../../../config/socketRoutes');
+const common = require('../../../../common');
 
 module.exports = function(environment) {
   const ENV = {
@@ -19,22 +20,7 @@ module.exports = function(environment) {
       }
     },
 
-    featureFlags: {
-      // some features that have been completed are turned off for 11.0
-      // and will not be included until 11.1.
-      //
-      // for tests, we want to make sure we always have the features enabled
-      // because we do not want to have to remove/rewrite tests to account
-      // for defeatures and we do not want to deal with defeaturing inside
-      // tests themselves. Messy messy.
-      //
-      // For dev we want to leave the features on to make dev more easy, as
-      // those features are vital for using/navigating the application
-      //
-      // Set the trailing boolean to true if you want enable
-      // the 11.1+ features in prod
-      '11.1-enabled': environment !== 'production' ? true : true // < change last boolean to true/false to enable/disable in prod
-    },
+    featureFlags: common.addFeatureFlags(environment),
 
     APP: {
       // Here you can pass flags/options to your application instance
