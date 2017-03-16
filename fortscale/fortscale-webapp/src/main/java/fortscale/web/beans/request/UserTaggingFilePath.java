@@ -6,6 +6,9 @@ package fortscale.web.beans.request;
 public class UserTaggingFilePath {
     String userTaggingFilePath;
 
+    public UserTaggingFilePath() {
+    }
+
     public UserTaggingFilePath(String systemSetupUserTaggingFilePath) {
         this.userTaggingFilePath = systemSetupUserTaggingFilePath;
     }
