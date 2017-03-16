@@ -8,6 +8,11 @@ import java.util.Map;
 import java.util.UUID;
 
 public interface AdTaskPersistencyService {
+    String RESULTS_KEY_DELIMITER = "_";
+    String EXECUTION_TIME_KEY_DELIMITER = "_";
+    String RESULTS_DELIMITER = "=";
+    String RESULTS_KEY_SUCCESS = "success";
+
     Map<String, String> getTaskResults(String resultsKey);
 
     void writeTaskResults(String dataSource, String taskName, String resultsId, boolean result);

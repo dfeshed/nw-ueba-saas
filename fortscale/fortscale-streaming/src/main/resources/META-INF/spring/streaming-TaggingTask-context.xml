@@ -114,13 +114,6 @@
     </bean>
     <bean id="ipToHostnameResolver" class="fortscale.services.ipresolving.IpToHostnameResolver" scope="singleton" />
 
-    <!-- group by tags service cache that uses memory based implementation -->
-    <bean id="groupByTagsCache" class="fortscale.services.cache.MemoryBasedCache">
-        <constructor-arg name="maxSize" value="${computer.service.cache.max.items:0}" />
-        <constructor-arg name="timeToExpire" value="86400" />
-        <constructor-arg name="clazz" value="fortscale.domain.core.Computer" />
-    </bean>
-
     <!-- computer service cache that uses memory based implementation are injected here -->
     <bean id="computerServiceCache" class="fortscale.services.cache.MemoryBasedCache">
         <constructor-arg name="maxSize" value="${computer.service.cache.max.items:10000}" />
