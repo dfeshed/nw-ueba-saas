@@ -35,48 +35,32 @@ function makePackAction(lifecycle, { type, payload, meta = {} }) {
   };
 }
 
-test('When FETCH_INCIDENTS starts, the incidentsStatus changes to wait', function(assert) {
+test('When FETCH_INCIDENTS_TOTAL_COUNT starts, the incidentsStatus changes to wait', function(assert) {
   const initState = copy(initialState);
-  const incidentsStatus = 'wait';
+  const incidentsTotal = '--';
   const expectedEndState = {
     ...initState,
-    incidentsStatus
+    incidentsTotal
   };
-  const action = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.FETCH_INCIDENTS });
+  const action = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.FETCH_INCIDENTS_TOTAL_COUNT });
   const endState = incidentsReducer(initState, action);
   assert.deepEqual(endState, expectedEndState);
 });
 
-test('When FETCH_INCIDENTS fails, the incidentsStatus changes to error', function(assert) {
+test('When FETCH_INCIDENTS_TOTAL_COUNT succeeds, the incidents count is update appropriately', function(assert) {
   const initState = copy(initialState);
-  const incidentsStatus = 'error';
-  const expectedEndState = {
-    ...initState,
-    incidentsStatus
-  };
-  const action = makePackAction(LIFECYCLE.FAILURE, { type: ACTION_TYPES.FETCH_INCIDENTS });
-  const endState = incidentsReducer(initState, action);
-  assert.deepEqual(endState, expectedEndState);
-});
-
-test('When FETCH_INCIDENTS succeeds, the incidents array and incidentsStatus update appropriately', function(assert) {
-  const initState = copy(initialState);
-  const incidents = [{ testing: 123 }];
-  const incidentsStatus = 'completed';
   const incidentsTotal = 1000;
   const expectedEndState = {
     ...initState,
-    incidentsTotal,
-    incidentsStatus,
-    incidents
+    incidentsTotal
   };
 
   const action = makePackAction(LIFECYCLE.SUCCESS, {
-    type: ACTION_TYPES.FETCH_INCIDENTS,
+    type: ACTION_TYPES.FETCH_INCIDENTS_TOTAL_COUNT,
     payload: {
-      data: incidents,
       meta: {
-        total: 1000 }
+        total: 1000
+      }
     }
   });
   const endState = incidentsReducer(initState, action);

@@ -11,7 +11,8 @@ const defaultSort = [{
 }];
 
 const defaultStream = {
-  limit: 1000
+  limit: 1000,
+  batch: 100
 };
 
 test('An FilterQuery object can be created', function(assert) {

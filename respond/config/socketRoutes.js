@@ -9,7 +9,7 @@ module.exports = function(environment) {
   return {
     incidents: {
       socketUrl,
-      query: {
+      stream: {
         subscriptionDestination: '/user/queue/incidents',
         requestDestination: '/ws/response/incidents'
       },
@@ -29,6 +29,13 @@ module.exports = function(environment) {
       deleteRecord: {
         subscriptionDestination: '/user/queue/incidents/delete',
         requestDestination: '/ws/response/incidents/delete'
+      }
+    },
+    'incidents-count': {
+      socketUrl,
+      queryRecord: {
+        subscriptionDestination: '/user/queue/incidents/count',
+        requestDestination: '/ws/response/incidents/count'
       }
     },
     storyline: {

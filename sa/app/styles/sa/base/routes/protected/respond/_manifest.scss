@@ -4,6 +4,6 @@ $appNavigationHeaderHeightPlusToolbar: 80px;
 
 // Respond Engine: This adjusts the layout of the page and the incidents table to account for the NW app navigation header
 // and the toolbar
-.rsa-protected page.respond-engine .rsa-respond-incidents.show-more-filters .incidents-zone {
+.rsa-protected page.respond-engine .rsa-respond-incidents .incidents-zone {
   height: calc(100vh - #{$appNavigationHeaderHeightPlusToolbar});
 }

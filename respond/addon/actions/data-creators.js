@@ -19,13 +19,23 @@ const getIncidents = () => {
   return (dispatch, getState) => {
     const { incidentsFilters: filters, incidentsSort: sort } = getState().respond.incidents;
     dispatch({
-      type: ACTION_TYPES.FETCH_INCIDENTS,
-      promise: Incidents.getIncidents(filters, sort),
+      type: ACTION_TYPES.FETCH_INCIDENTS_TOTAL_COUNT,
+      promise: Incidents.getIncidentsCount(filters, sort),
       meta: {
-        onSuccess: (response) => Logger.debug(ACTION_TYPES.FETCH_INCIDENTS, response),
-        onFailure: (response) => _handleContentRetrievalError(response, 'incidents')
+        onSuccess: (response) => Logger.debug(ACTION_TYPES.FETCH_INCIDENTS_TOTAL_COUNT, response),
+        onFailure: (response) => _handleContentRetrievalError(response, 'incidents count')
       }
     });
+    dispatch({ type: ACTION_TYPES.FETCH_INCIDENTS_STARTED });
+
+    Incidents.getIncidents(
+      filters,
+      sort,
+      {
+        onResponse: (payload) => dispatch({ type: ACTION_TYPES.FETCH_INCIDENTS_RETRIEVE_BATCH, payload }),
+        onError: (response) => _handleContentRetrievalError(response, 'incidents')
+      }
+    );
   };
 };
 

@@ -47,10 +47,19 @@ const FilterQuery = EmberObject.extend({
    */
   limit: 1000,
 
-  @computed('limit')
-  stream(limit) {
+  /**
+   * A stream service will return the data in batches/chunks rather than all at once.
+   * This property defines the size of the batch.
+   * @property batch
+   * @public
+   */
+  batch: 100,
+
+  @computed('limit', 'batch')
+  stream(limit, batch) {
     return {
-      limit
+      limit,
+      batch
     };
   },
 

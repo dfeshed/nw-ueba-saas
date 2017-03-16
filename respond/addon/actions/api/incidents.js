@@ -1,6 +1,6 @@
 import Ember from 'ember';
 import { assert } from 'ember-metal/utils';
-import { promiseRequest } from 'streaming-data/services/data-access/requests';
+import { promiseRequest, streamRequest } from 'streaming-data/services/data-access/requests';
 import { CANNED_FILTER_TYPES_BY_NAME } from 'respond/utils/canned-filter-types';
 import { SORT_TYPES_BY_NAME } from 'respond/utils/sort-types';
 import FilterQuery from 'respond/utils/filter-query';
@@ -10,10 +10,29 @@ const {
   isArray,
   isPresent,
   isEmpty,
+  K,
   isNone,
   typeOf } = Ember;
 
 const IncidentsAPI = EmberObject.extend({});
+
+// utility function for constructing a basic/standard incidents query
+const _buildIncidentsQuery = (filters, sort) => {
+  const {
+    field: cannedFilterField,
+    value: cannedFilterValue } = CANNED_FILTER_TYPES_BY_NAME[filters.cannedFilter].filter;
+
+  const {
+    sortField,
+    isDescending } = SORT_TYPES_BY_NAME[sort];
+
+  const query = FilterQuery.create()
+    .addSortBy(sortField, isDescending)
+    .addFilter(cannedFilterField, cannedFilterValue)
+    .addRangeFilter('created', 0, undefined);
+
+  return query;
+};
 
 IncidentsAPI.reopenClass({
   /**
@@ -24,29 +43,39 @@ IncidentsAPI.reopenClass({
    * @public
    * @param filters The filters to apply against the incidents collection
    * @param sort The sorting information ({ id, isDescending }) for the result set
+   * @param {function} onResponse The callback for the onNext/onResponse event (when data retrieved by chunk)
+   * @param {function} onError The callback for any error during streaming
    * @returns {Promise}
    */
-  getIncidents(filters, sort) {
-    const {
-      field: cannedFilterField,
-      value: cannedFilterValue } = CANNED_FILTER_TYPES_BY_NAME[filters.cannedFilter].filter;
+  getIncidents(filters, sort, { onResponse = K, onError = K }) {
+    const query = _buildIncidentsQuery(filters, sort);
 
-    const {
-      sortField,
-      isDescending } = SORT_TYPES_BY_NAME[sort];
-
-    const query = FilterQuery.create()
-      .addSortBy(sortField, isDescending)
-      .addFilter(cannedFilterField, cannedFilterValue)
-      .addRangeFilter('created', 0, undefined);
-
-    const request = {
-      method: 'query',
+    streamRequest({
+      method: 'stream',
       modelName: 'incidents',
-      query: query.toJSON()
-    };
+      query: query.toJSON(),
+      onResponse,
+      onError
+    });
+  },
 
-    return promiseRequest(request);
+  /**
+   * Retrieves the total count of incidents for a query. This is separated from the getIncidents() call to improve
+   * performance, allowing the first chunk of streamed results to arrive without waiting further for this call
+   * @method getIncidentsCount
+   * @public
+   * @param filters
+   * @param sort
+   * @returns {Promise}
+   */
+  getIncidentsCount(filters, sort) {
+    const query = _buildIncidentsQuery(filters, sort);
+
+    return promiseRequest({
+      method: 'queryRecord',
+      modelName: 'incidents-count',
+      query: query.toJSON()
+    });
   },
 
   /**

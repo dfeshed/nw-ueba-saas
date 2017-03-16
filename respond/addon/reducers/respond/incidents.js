@@ -61,17 +61,30 @@ const persistIncidentsState = (callback) => {
 
 const incidents = reduxActions.handleActions({
 
-  [ACTION_TYPES.FETCH_INCIDENTS]: (state, action) => {
+  [ACTION_TYPES.FETCH_INCIDENTS_TOTAL_COUNT]: (state, action) => {
     return handle(state, action, {
-      start: (s) => ({ ...s, incidentsStatus: 'wait', incidentsTotal: null }),
-      failure: (s) => ({ ...s, incidents: [], incidentsStatus: 'error' }),
-      success: (s) => ({
-        ...s,
-        incidents: action.payload.data,
-        incidentsTotal: action.payload.meta.total,
-        incidentsStatus: 'completed'
-      })
+      start: (s) => ({ ...s, incidentsTotal: '--' }),
+      success: (s) => {
+        return {
+          ...s,
+          incidentsTotal: action.payload.meta.total
+        };
+      }
     });
+  },
+
+  [ACTION_TYPES.FETCH_INCIDENTS_STARTED]: (state) => ({
+    ...state,
+    incidents: [],
+    incidentsStatus: 'wait'
+  }),
+
+  [ACTION_TYPES.FETCH_INCIDENTS_RETRIEVE_BATCH]: (state, { payload: { data, meta } }) => {
+    return {
+      ...state,
+      incidents: [...state.incidents, ...data],
+      incidentsStatus: meta.complete ? 'complete' : 'streaming'
+    };
   },
 
   [ACTION_TYPES.TOGGLE_SELECT_MODE]: (state) => ({

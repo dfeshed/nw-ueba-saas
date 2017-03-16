@@ -29,7 +29,7 @@
         }}
       </box>
       <box class="incidents-footer">
-        {{#if (eq incidentsStatus "completed") }}
+        {{#if (not-eq incidentsStatus "wait") }}
           <centered>{{t 'respond.incidents.footer' count=incidentsCount total=incidentsTotal}}</centered>
         {{/if}}
       </box>
