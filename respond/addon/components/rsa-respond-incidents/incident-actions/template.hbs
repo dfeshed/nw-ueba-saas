@@ -1,0 +1,33 @@
+{{rsa-incident/update-action-button
+  fieldName="priority"
+  options=priorityTypes
+  selectedValue=incident.priority
+  incidentId=incident.id
+  horizontalPosition="right"
+  optionValueProperty='name'
+  iconName="gauge"
+  isIconOnly=true
+  label=(t 'respond.incidents.actions.changePriority')
+}}
+{{rsa-incident/update-action-button
+  fieldName='status'
+  options=statusTypes
+  selectedValue=incident.status
+  incidentId=incident.id
+  optionValueProperty='name'
+  horizontalPosition="right"
+  iconName="flag-1"
+  isIconOnly=true
+  label=(t 'respond.incidents.actions.changeStatus')
+}}
+{{rsa-incident/update-action-button
+  fieldName='assignee'
+  options=users
+  selectedValue=incident.assignee.id
+  incidentId=incident.id
+  optionLabelProperty='name'
+  horizontalPosition="right"
+  isIconOnly=true
+  iconName="female"
+  label=(t 'respond.incidents.actions.changeAssignee')
+}}

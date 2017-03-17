@@ -19,14 +19,14 @@ const SORT_TYPES = [
   },
   {
     name: 'ASSIGNEE_ASC',
-    sortField: 'assignee.lastName',
+    sortField: 'assignee.name',
     isDescending: false,
     label: 'Assignee (ascending)',
     labelKey: 'respond.incidents.sort.assigneeAscending'
   },
   {
     name: 'ASSIGNEE_DESC',
-    sortField: 'assignee.lastName',
+    sortField: 'assignee.name',
     isDescending: true,
     label: 'Assignee (descending)',
     labelKey: 'respond.incidents.sort.assigneeDescending'
@@ -75,14 +75,14 @@ const SORT_TYPES = [
   },
   {
     name: 'PRIORITY_DESC',
-    sortField: 'prioritySort',
+    sortField: 'priority',
     isDescending: true,
     label: 'Priority (descending)',
     labelKey: 'respond.incidents.sort.priorityDescending'
   },
   {
     name: 'PRIORITY_ASC',
-    sortField: 'prioritySort',
+    sortField: 'priority',
     isDescending: false,
     label: 'Priority (ascending)',
     labelKey: 'respond.incidents.sort.priorityAscending'
@@ -103,14 +103,14 @@ const SORT_TYPES = [
   },
   {
     name: 'STATUS_ASC',
-    sortField: 'statusSort',
+    sortField: 'status',
     isDescending: false,
     label: 'Status (ascending)',
     labelKey: 'respond.incidents.sort.statusAscending'
   },
   {
     name: 'STATUS_DESC',
-    sortField: 'statusSort',
+    sortField: 'status',
     isDescending: true,
     label: 'Status (descending)',
     labelKey: 'respond.incidents.sort.statusDescending'

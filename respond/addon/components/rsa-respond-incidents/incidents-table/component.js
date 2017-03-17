@@ -1,21 +1,28 @@
 import Ember from 'ember';
 import columnConfig from './columns';
+import { empty } from 'ember-computed-decorators';
 
 const {
-  Component,
-  inject: { service }
+  Component
 } = Ember;
 
 /**
  * Container component that is responsible for orchestrating Respond Incidents layout and top-level components.
  * @public
  */
-const IncidentsTable = Component.extend({
+export default Component.extend({
   tagName: 'section',
   classNames: 'rsa-respond-incidents-table',
-  classNameBindings: ['isInSelectMode'],
+  classNameBindings: ['isInSelectMode', 'rowIsFocused', 'hasNoFocusedIncidents::has-focused-incident'],
   useLazyRendering: true,
-  i18n: service(),
+  focusedIncident: null,
+
+  /**
+   * @property hasNoFocusedIncidents
+   * @type boolean
+   * @public
+   */
+  @empty('focusedIncident') hasNoFocusedIncidents: true,
 
   /**
    * Whether the user is in bulk-edit selection mode, which allows the user to select the rows in the incidents table
@@ -25,7 +32,7 @@ const IncidentsTable = Component.extend({
   isInSelectMode: false,
 
   /**
-   * The list of incident objects that are currently selected (when the user is in select mode
+   * The list of incident objects that are currently selected (when the user is in select mode)
    * @public
    * @property incidentsSelected
    */
@@ -37,12 +44,13 @@ const IncidentsTable = Component.extend({
     this.set('columns', columnConfig);
   }.on('init'),
 
+  isIncidentFocused(incident) {
+    return incident === this.get('focusedIncident');
+  },
+
   actions: {
-    handleRowClickAction(incident, /* jQueryEvent */) {
-      this.sendAction('viewIncidentDetails', incident);
+    handleRowClickAction(incident) {
+      this.sendAction('select', incident);
     }
   }
 });
-
-
-export default IncidentsTable;

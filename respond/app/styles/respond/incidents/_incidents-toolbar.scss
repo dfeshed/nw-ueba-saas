@@ -65,8 +65,7 @@
   }
 
   .ember-power-select-trigger,
-  .rsa-search-box,
-  .rsa-button {
+  .rsa-search-box{
     @include rsa-vendor-prefix(flex-shrink, 0);
     @include rsa-vendor-prefix(flex-grow, 0);
   }
@@ -77,11 +76,7 @@
   }
 
   .ember-power-select-trigger {
-    // color: black;
     border-bottom: 1px solid transparent;
-    .ember-power-select-selected-item {
-      // color: black;
-    }
     .rsa-view-mode-option .text {
       display: none;
     }
@@ -123,5 +118,19 @@
 .rsa-view-mode-option {
   .text {
     padding: 0 rsa-whitespace(less);
+  }
+}
+
+.rsa-incidents-toolbar__selections-btns {
+  height: 40px;
+  .rsa-button {
+    vertical-align: bottom;
+  }
+  .incident-action-button {
+    display: inline-block;
+
+    .ember-power-select-trigger {
+      margin-right: 0;
+    }
   }
 }

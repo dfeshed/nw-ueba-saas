@@ -37,7 +37,13 @@ let initialState = {
   // map of filters applied to the list of incidents
   incidentsFilters: {
     cannedFilter: CANNED_FILTER_TYPES_BY_NAME.ALL.name
-  }
+  },
+
+  // the incident currently with focus (i.e., highlighted) in the incident list
+  focusedIncident: null,
+
+  // whether or not there is a transaction (e.g., update, fetch) underway
+  isTransactionUnderway: false
 };
 
 // Load local storage values and incorporate into initial state
@@ -57,6 +63,20 @@ const persistIncidentsState = (callback) => {
     persist({ incidentsSort, incidentsFilters, isFilterPanelOpen, isAltThemeActive }, localStorageKey);
     return state;
   });
+};
+
+// Updates the state value with the value updated on the server
+const _handleUpdates = (action) => {
+  return (state) => {
+    const { payload: { request: { updates, incidentIds } } } = action;
+    const updatedIncidents = state.incidents.map((incident) => {
+      return incidentIds.includes(incident.id) ? { ...incident, ...updates } : incident;
+    });
+    return {
+      ...state,
+      incidents: updatedIncidents
+    };
+  };
 };
 
 const incidents = reduxActions.handleActions({
@@ -87,6 +107,14 @@ const incidents = reduxActions.handleActions({
     };
   },
 
+  [ACTION_TYPES.UPDATE_INCIDENT]: (state, action) => {
+    return handle(state, action, {
+      start: (s) => ({ ...s, isTransactionUnderway: true }),
+      success: _handleUpdates(action),
+      finish: (s) => ({ ...s, isTransactionUnderway: false })
+    });
+  },
+
   [ACTION_TYPES.TOGGLE_SELECT_MODE]: (state) => ({
     ...state,
     incidentsSelected: [],
@@ -102,6 +130,12 @@ const incidents = reduxActions.handleActions({
     ...state,
     isAltThemeActive: !state.isAltThemeActive
   })),
+
+  [ACTION_TYPES.TOGGLE_FOCUS_INCIDENT]: (state, { payload: incident }) => ({
+    ...state,
+    // if incident toggled is currently focused, remove from focus, otherwise set new incident to focus
+    focusedIncident: state.focusedIncident === incident ? null : incident
+  }),
 
   [ACTION_TYPES.TOGGLE_INCIDENT_SELECTED]: (state, { payload: incident }) => {
     if (!incident) {

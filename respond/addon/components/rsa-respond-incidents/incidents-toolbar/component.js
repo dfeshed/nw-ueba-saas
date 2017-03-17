@@ -3,7 +3,7 @@ import connect from 'ember-redux/components/connect';
 import * as DataActions from 'respond/actions/data-creators';
 import { CANNED_FILTER_TYPES } from 'respond/utils/canned-filter-types';
 import { SORT_TYPES } from 'respond/utils/sort-types';
-import computed, { alias } from 'ember-computed-decorators';
+import computed, { alias, empty } from 'ember-computed-decorators';
 
 const {
   inject: { service },
@@ -12,15 +12,20 @@ const {
   K
 } = Ember;
 
-const stateToComputed = ({ respond: { incidents } }) => {
+const stateToComputed = ({ respond: { incidents, dictionaries, users } }) => {
   const { incidentsFilters, incidentsSort } = incidents;
 
   return {
     // the name of the canned filter currently applied
     appliedCannedFilterName: incidentsFilters.cannedFilter,
-
     // the name of the sort currently applied
-    appliedSort: incidentsSort
+    appliedSort: incidentsSort,
+    // list of possible incident priorities
+    priorityTypes: dictionaries.priorityTypes,
+    // list of possible incident statuses
+    statusTypes: dictionaries.statusTypes,
+    // list of available users to assigne incidents to
+    users: users.users
   };
 };
 
@@ -50,7 +55,7 @@ const IncidentsToolbar = Component.extend({
   i18n: service(),
 
   // Array of currently selected items. Used to display a counter while in "Select" mode.
-  selections: null,
+  incidentsSelected: null,
 
   // Indicates whether user clicked to toggle on "Select" mode, which shows Select-specific content
   isInSelectMode: false,
@@ -78,6 +83,13 @@ const IncidentsToolbar = Component.extend({
   cannedFilterOptions() {
     return CANNED_FILTER_TYPES.map(this._resolveOptionLabel());
   },
+
+  /**
+   * Boolean true when there are no selected incidents (in edit/select mode)
+   * @property hasNoSelections
+   * @public
+   */
+  @empty('incidentsSelected') hasNoSelections: true,
 
   /**
    * The number of currently selected incidents (when in select-mode)

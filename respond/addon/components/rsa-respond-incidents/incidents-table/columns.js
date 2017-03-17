@@ -3,7 +3,7 @@ export default [
   {
     title: 'respond.incidents.list.select',
     class: 'rsa-form-row-checkbox',
-    width: '40',
+    width: '5%',
     dataType: 'checkbox',
     componentClass: 'rsa-form-checkbox',
     visible: true,
@@ -12,7 +12,7 @@ export default [
   {
     field: 'created',
     title: 'respond.incidents.list.createdDate',
-    width: '100',
+    width: '10%',
     class: 'rsa-respond-list-created',
     dataType: 'date',
     visible: true
@@ -20,7 +20,7 @@ export default [
   {
     field: 'priority',
     title: 'respond.incidents.list.priority',
-    width: '105',
+    width: '10%',
     class: 'rsa-respond-list-priority',
     dataType: 'text',
     visible: true
@@ -29,14 +29,14 @@ export default [
     field: 'id',
     title: 'respond.incidents.list.id',
     class: 'rsa-respond-list-incident-id',
-    width: '70',
+    width: '5%',
     dataType: 'text',
     visible: true
   },
   {
     field: 'name',
     title: 'respond.incidents.list.name',
-    width: '400',
+    width: '20%',
     class: 'rsa-respond-list-name',
     dataType: 'text',
     visible: true
@@ -44,7 +44,7 @@ export default [
   {
     field: 'status',
     title: 'respond.incidents.list.status',
-    width: '100',
+    width: '7%',
     class: 'rsa-respond-list-status',
     dataType: 'text',
     visible: true
@@ -52,7 +52,7 @@ export default [
   {
     field: 'assignee',
     title: 'respond.incidents.list.assignee',
-    width: '80',
+    width: '10%',
     class: 'rsa-respond-list-assignee',
     dataType: 'text',
     visible: true
@@ -60,11 +60,12 @@ export default [
   {
     field: 'alertCount',
     title: 'respond.incidents.list.alertCount',
-    width: '50',
+    width: '5%',
     class: 'rsa-respond-list-alertCount',
     dataType: 'number',
     visible: true
   },
+
   {
     field: 'sources',
     title: 'respond.incidents.list.sources',

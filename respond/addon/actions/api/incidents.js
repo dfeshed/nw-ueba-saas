@@ -190,7 +190,7 @@ IncidentsAPI.reopenClass({
     assert('An incident ID is provided', isPresent(incidentId));
     assert('newAssignee is provided as an object', typeOf(newAssignee) === 'object');
     assert('newAssignee object has all required properties', !isNone(newAssignee.id) &&
-      !isNone(newAssignee.firstName)) && !isNone(newAssignee.lastName) && !isNone(newAssignee.email);
+      !isNone(newAssignee.name));
     return IncidentsAPI.updateIncident(incidentId, 'assignee', newAssignee);
   },
 

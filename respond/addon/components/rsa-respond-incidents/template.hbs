@@ -1,9 +1,9 @@
 <box fit class="toolbar-zone">
   {{rsa-respond-incidents/incidents-toolbar
-    isAltThemeActive=isAltThemeActive
-    isMoreFiltersActive=isFilterPanelOpen
-    isInSelectMode=isInSelectMode
-    incidentsSelected=incidentsSelected
+    isAltThemeActive=(readonly isAltThemeActive)
+    isMoreFiltersActive=(readonly isFilterPanelOpen)
+    isInSelectMode=(readonly isInSelectMode)
+    incidentsSelected=(readonly incidentsSelected)
     toggleIsInSelectMode=(action "toggleIsInSelectMode")
     toggleFilterPanel=(action "toggleFilterPanel")
     toggleTheme=(action "toggleTheme")
@@ -21,11 +21,12 @@
     <box class="incidents-main">
       <box class="incidents-body">
         {{rsa-respond-incidents/incidents-table
-          isInSelectMode=isInSelectMode
-          incidentsSelected=incidentsSelected
+          isInSelectMode=(readonly isInSelectMode)
+          focusedIncident=(readonly focusedIncident)
+          incidentsSelected=(readonly incidentsSelected)
           incidents=(readonly incidents)
           incidentsStatus=(readonly incidentsStatus)
-          viewIncidentDetails=(action "select")
+          select=(action "select")
         }}
       </box>
       <box class="incidents-footer">
@@ -34,6 +35,6 @@
         {{/if}}
       </box>
     </box>
-
   </vbox>
 </hbox>
+<div class="transaction-overlay"></div>

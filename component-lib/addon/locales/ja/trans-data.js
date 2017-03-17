@@ -1,5 +1,6 @@
 export default {
   pageTitle: 'ja_{{section}} - NetWitness Suite',
+  empty: '',
   languages: {
     en: 'ja_English',
     'en-us': 'ja_English',
@@ -357,6 +358,23 @@ export default {
       allTime: 'ja_All time'
     },
     incidents: {
+      actions: {
+        addEntryLabel: 'ja_Add Entry',
+        confirmUpdateTitle: 'ja_Confirm update',
+        changeAssignee: 'ja_Change Assignee',
+        changePriority: 'ja_Change Priority',
+        changeStatus: 'ja_Change Status',
+        addJournalEntry: 'ja_Add Journal Entry',
+        actionMessages: {
+          updateSuccess: 'ja_You successfully changed the {{field}} of {{incidentId}} to {{name}}',
+          updateFailure: 'ja_There was a problem updating the {{field}} for incident {{incidentId}}',
+          bulkUpdateSuccess: 'ja_You successfully changed the {{field}} for ({{count}}) incidents to {{name}}',
+          bulkUpdateFailure: 'ja_There was a problem updating the {{field}} for the ({{count}}) selected incidents',
+          bulkUpdateConfirmation: 'ja_With this change you will set the {{field}} for ({{count}}) incidents to {{selectedValue}}. If this is correct, press Apply',
+          addJournalEntrySuccess: 'ja_You added a journal entry to incident {{incidentId}}',
+          addJournalEntryFailure: 'ja_There was a problem adding a journal entry to incident {{incidentId}}'
+        }
+      },
       label: 'ja_Incidents',
       precannedFilters: {
         all: 'ja_All Incidents',

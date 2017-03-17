@@ -19,7 +19,8 @@ const App = Application.extend({
           'dateFormat',
           'timeFormat',
           'timezone',
-          'i18n'
+          'i18n',
+          'flashMessages'
         ]
       }
     }

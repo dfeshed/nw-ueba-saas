@@ -45,7 +45,11 @@ page.respond-engine {
     .incidents-zone {
       width: 100vw;
 
+      .incidents-body {
+        margin: 0 rsa-whitespace();
+      }
       .incidents-footer {
+        margin: 0 rsa-whitespace();
         max-height: 40px;
         background-color: rsa-color(gray, darker, $rsa-somewhat-opaque);
         color: rsa-color(gray, lightest);
@@ -57,6 +61,12 @@ page.respond-engine {
       .incidents-zone {
         width: calc(100vw - #{$filterPanelMinWidth});
       }
+    }
+
+    &.transaction-in-progress .transaction-overlay {
+      @include rsa-fill-abs();
+      // overlay is fully transparent for now until we determine what (if any) styling it should have
+      background-color: transparent;
     }
   }
 }

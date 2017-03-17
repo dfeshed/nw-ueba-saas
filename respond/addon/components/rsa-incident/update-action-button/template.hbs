@@ -1,0 +1,36 @@
+{{#power-select
+  options=options
+  searchField=optionLabelProperty
+  selected=selected
+  horizontalPosition=horizontalPosition
+  verticalPosition=verticalPosition
+  matchTriggerWidth=false
+  triggerComponent=(component "rsa-incident/update-action-button/trigger"
+    style=style
+    isDisabled=isDisabled
+    isIconOnly=isIconOnly
+    iconName=iconName
+    label=label
+  )
+  onchange=(action "handleChange") as |option|}}
+  {{get option optionLabelProperty}}
+{{/power-select}}
+
+{{#if isBulk}}
+  {{#rsa-application-modal eventId=bulkConfirmationDialogId label=(t "respond.incidents.actions.confirmUpdateTitle") style="standard confirmation-dialog"}}
+    <div class='modal-content rsa-respond-bulk-update-confirm'>
+      <p>{{ t "respond.incidents.actions.actionMessages.bulkUpdateConfirmation" field=fieldName count=incidentId.length selectedValue=stagedLabel }}</p>
+    </div>
+    <footer>
+      <hbox class="modal-footer-buttons">
+        {{#rsa-form-button defaultAction=(action 'cancelBulkUpdate')}}
+          {{t 'forms.cancel'}}
+        {{/rsa-form-button}}
+        {{#rsa-form-button style='danger' defaultAction=(action 'applyBulkUpdate')}}
+          {{t 'forms.apply'}}
+        {{/rsa-form-button}}
+      </hbox>
+    </footer>
+  {{/rsa-application-modal}}
+{{/if}}
+

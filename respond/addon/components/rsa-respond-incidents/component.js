@@ -9,6 +9,42 @@ const {
   inject: { service }
 } = Ember;
 
+
+const stateToComputed = ({ respond: { incidents } }) => {
+
+  return {
+    incidents: incidents.incidents,
+    incidentsStatus: incidents.incidentsStatus,
+    isInSelectMode: incidents.isInSelectMode,
+    incidentsTotal: incidents.incidentsTotal,
+    incidentsSelected: incidents.incidentsSelected,
+    isFilterPanelOpen: incidents.isFilterPanelOpen,
+    isAltThemeActive: incidents.isAltThemeActive,
+    focusedIncident: incidents.focusedIncident,
+    isTransactionUnderway: incidents.isTransactionUnderway
+  };
+};
+
+const dispatchToActions = (dispatch) => {
+  return {
+    initializeIncidents: () => {
+      dispatch(DataActions.getIncidents());
+      dispatch(DataActions.getAllUsers());
+    },
+    toggleFilterPanel: () => dispatch(UIStateActions.toggleFilterPanel()),
+    toggleIsInSelectMode: () => dispatch(UIStateActions.toggleIsInSelectMode()),
+    toggleTheme: () => dispatch(UIStateActions.toggleTheme()),
+
+    select(incident) {
+      if (this.get('isInSelectMode')) {
+        dispatch(UIStateActions.toggleIncidentSelected(incident.id));
+      } else {
+        dispatch(UIStateActions.toggleFocusIncident(incident));
+      }
+    }
+  };
+};
+
 /**
  * Container component that is responsible for orchestrating Respond Incidents layout and top-level components.
  * @public
@@ -16,7 +52,7 @@ const {
 const Incidents = Component.extend({
   tagName: 'vbox',
   classNames: 'rsa-respond-incidents',
-  classNameBindings: ['isFilterPanelOpen:show-more-filters', 'isAltThemeActive:light-theme'],
+  classNameBindings: ['isFilterPanelOpen:show-more-filters', 'isAltThemeActive:light-theme', 'isTransactionUnderway:transaction-in-progress'],
   redux: service(),
   i18n: service(),
 
@@ -30,37 +66,9 @@ const Incidents = Component.extend({
    */
   @gt('incidentsTotal', 0) hasResults: false,
 
-  loadIncidentsData: function() {
-    this.get('redux').dispatch(DataActions.getIncidents());
+  onInit: function() {
+    this.send('initializeIncidents');
   }.on('init')
 });
-
-const stateToComputed = ({ respond: { incidents } }) => {
-  return {
-    incidents: incidents.incidents,
-    incidentsStatus: incidents.incidentsStatus,
-    isInSelectMode: incidents.isInSelectMode,
-    incidentsTotal: incidents.incidentsTotal,
-    incidentsSelected: incidents.incidentsSelected,
-    isFilterPanelOpen: incidents.isFilterPanelOpen,
-    isAltThemeActive: incidents.isAltThemeActive
-  };
-};
-
-const dispatchToActions = (dispatch) => {
-  return {
-    toggleFilterPanel: () => dispatch(UIStateActions.toggleFilterPanel()),
-    toggleIsInSelectMode: () => dispatch(UIStateActions.toggleIsInSelectMode()),
-    toggleTheme: () => dispatch(UIStateActions.toggleTheme()),
-
-    select(incident) {
-      if (this.get('isInSelectMode')) {
-        dispatch(UIStateActions.toggleIncidentSelected(incident));
-      } else {
-        this.sendAction('viewIncidentDetails', incident.id);
-      }
-    }
-  };
-};
 
 export default connect(stateToComputed, dispatchToActions)(Incidents);

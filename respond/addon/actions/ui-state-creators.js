@@ -14,12 +14,14 @@ const singleSelectNode = (id) => ({ type: ACTION_TYPES.SET_INCIDENT_SELECTION, p
 const toggleSelectNode = (id) => ({ type: ACTION_TYPES.TOGGLE_INCIDENT_SELECTION, payload: { type: 'node', id } });
 const singleSelectLink = (id) => ({ type: ACTION_TYPES.SET_INCIDENT_SELECTION, payload: { type: 'link', id } });
 const toggleSelectLink = (id) => ({ type: ACTION_TYPES.TOGGLE_INCIDENT_SELECTION, payload: { type: 'link', id } });
+const toggleFocusIncident = (incident) => ({ type: ACTION_TYPES.TOGGLE_FOCUS_INCIDENT, payload: incident });
 
 export {
   toggleFilterPanel,
   toggleIsInSelectMode,
   toggleTheme,
   toggleIncidentSelected,
+  toggleFocusIncident,
   toggleJournalPanel,
   setViewMode,
   singleSelectStoryPoint,

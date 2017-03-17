@@ -4,6 +4,39 @@
       {{selectionCount}} selected
     </section>
     <section class="rsa-incidents-toolbar__selections-btns">
+      {{rsa-incident/update-action-button
+        fieldName='priority'
+        options=priorityTypes
+        style='primary'
+        incidentId=incidentsSelected
+        optionValueProperty='name'
+        isDisabled=hasNoSelections
+        iconName="gauge"
+        label=(t 'respond.incidents.actions.changePriority')
+      }}
+
+      {{rsa-incident/update-action-button
+        fieldName='status'
+        options=statusTypes
+        style='primary'
+        incidentId=incidentsSelected
+        optionValueProperty='name'
+        isDisabled=hasNoSelections
+        iconName="flag-1"
+        label=(t 'respond.incidents.actions.changeStatus')
+      }}
+
+      {{rsa-incident/update-action-button
+        fieldName='assignee'
+        options=users
+        style='primary'
+        incidentId=incidentsSelected
+        searchField='name'
+        optionLabelProperty='name'
+        isDisabled=hasNoSelections
+        iconName='female'
+        label=(t 'respond.incidents.actions.changeAssignee')
+      }}
       <button class="rsa-button" {{action "handleToggleIsInSelectMode"}}>Done</button>
     </section>
   {{else}}
@@ -11,9 +44,6 @@
       <hbox>
         <div class="toolbar-button more-filters-button" {{action "handleToggleFilterPanel"}}>
           {{rsa-icon name='filter-22'}}
-        </div>
-        <div class="toolbar-button color-theme" {{action "handleToggleColorTheme"}}>
-          {{rsa-icon name='photos-images_camera-night-mode'}}
         </div>
       </hbox>
     </section>

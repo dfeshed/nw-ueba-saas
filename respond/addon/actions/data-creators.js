@@ -6,7 +6,8 @@ import {
 import * as ACTION_TYPES from './types';
 
 const {
-  Logger
+  Logger,
+  K
 } = Ember;
 
 /**
@@ -122,16 +123,24 @@ const bulkDeleteIncidents = (incidentIds) => {
  * @method changeIncidentPriority
  * @public
  * @param incidentId The ID of the incident to update
- * @param newPriorityValue {String} One of { LOW, MEDIUM, HIGH, CRITICAL }
- * @returns {Object}
+ * @param newValue {String} One of { LOW, MEDIUM, HIGH, CRITICAL }
+ * @param {object.onSuccess} onSuccess callback for successful completion of action
+ * @param {object.onFailure} onFailure callback for failed completion of action
+ * @returns {object}
  */
-const changeIncidentPriority = (incidentId, newPriorityValue) => {
+const changeIncidentPriority = (incidentId, newValue, { onSuccess = K, onFailure = K }) => {
   return {
-    type: ACTION_TYPES.UPDATE_INCIDENT_PRIORITY,
-    promise: Incidents.changeIncidentPriority(incidentId, newPriorityValue),
+    type: ACTION_TYPES.UPDATE_INCIDENT,
+    promise: Incidents.changeIncidentPriority(incidentId, newValue),
     meta: {
-      onSuccess: (response) => Logger.debug(ACTION_TYPES.UPDATE_INCIDENT_PRIORITY, response),
-      onFailure: (response) => _handleContentUpdateError(response, `${incidentId} priority to ${newPriorityValue}`)
+      onSuccess: (response) => {
+        Logger.debug(ACTION_TYPES.UPDATE_INCIDENT, response);
+        onSuccess(response);
+      },
+      onFailure: (response) => {
+        _handleContentUpdateError(response, `${incidentId} priority to ${newValue}`);
+        onFailure(response);
+      }
     }
   };
 };
@@ -141,16 +150,24 @@ const changeIncidentPriority = (incidentId, newPriorityValue) => {
  * @method bulkChangeIncidentPriority
  * @public
  * @param incidentIds
- * @param newPriorityValue
+ * @param newValue
+ * @param {object.onSuccess} onSuccess callback for successful completion of action
+ * @param {object.onFailure} onFailure callback for failed completion of action
  * @returns {Object}
  */
-const bulkChangeIncidentPriority = (incidentIds, newPriorityValue) => {
+const bulkChangeIncidentPriority = (incidentIds, newValue, { onSuccess = K, onFailure = K }) => {
   return {
-    type: ACTION_TYPES.UPDATE_INCIDENT_PRIORITY_BULK,
-    promise: Incidents.bulkChangeIncidentPriority(incidentIds, newPriorityValue),
+    type: ACTION_TYPES.UPDATE_INCIDENT,
+    promise: Incidents.bulkChangeIncidentPriority(incidentIds, newValue),
     meta: {
-      onSuccess: (response) => Logger.debug(ACTION_TYPES.UPDATE_INCIDENT_PRIORITY_BULK, response),
-      onFailure: (response) => _handleContentUpdateError(response, `incidents priority to ${newPriorityValue}`)
+      onSuccess: (response) => {
+        Logger.debug(ACTION_TYPES.UPDATE_INCIDENT, response);
+        onSuccess(response);
+      },
+      onFailure: (response) => {
+        _handleContentUpdateError(response, `incidents priority to ${newValue}`);
+        onFailure(response);
+      }
     }
   };
 };
@@ -161,15 +178,23 @@ const bulkChangeIncidentPriority = (incidentIds, newPriorityValue) => {
  * @public
  * @param incidentId The ID of the incident to update
  * @param newValue {String}
+ * @param {object.onSuccess} onSuccess callback for successful completion of action
+ * @param {object.onFailure} onFailure callback for failed completion of action
  * @returns {Object}
  */
-const changeIncidentStatus = (incidentId, newValue) => {
+const changeIncidentStatus = (incidentId, newValue, { onSuccess = K, onFailure = K }) => {
   return {
-    type: ACTION_TYPES.UPDATE_INCIDENT_STATUS,
+    type: ACTION_TYPES.UPDATE_INCIDENT,
     promise: Incidents.changeIncidentStatus(incidentId, newValue),
     meta: {
-      onSuccess: (response) => Logger.debug(ACTION_TYPES.UPDATE_INCIDENT_STATUS, response),
-      onFailure: (response) => _handleContentUpdateError(response, `${incidentId} status to ${newValue}`)
+      onSuccess: (response) => {
+        Logger.debug(ACTION_TYPES.UPDATE_INCIDENT, response);
+        onSuccess(response);
+      },
+      onFailure: (response) => {
+        _handleContentUpdateError(response, `${incidentId} status to ${newValue}`);
+        onFailure(response);
+      }
     }
   };
 };
@@ -180,15 +205,23 @@ const changeIncidentStatus = (incidentId, newValue) => {
  * @public
  * @param incidentIds
  * @param newValue {String}
+ * @param {object.onSuccess} onSuccess callback for successful completion of action
+ * @param {object.onFailure} onFailure callback for failed completion of action
  * @returns {Object}
  */
-const bulkChangeIncidentStatus = (incidentIds, newValue) => {
+const bulkChangeIncidentStatus = (incidentIds, newValue, { onSuccess = K, onFailure = K }) => {
   return {
-    type: ACTION_TYPES.UPDATE_INCIDENT_STATUS_BULK,
+    type: ACTION_TYPES.UPDATE_INCIDENT,
     promise: Incidents.bulkChangeIncidentStatus(incidentIds, newValue),
     meta: {
-      onSuccess: (response) => Logger.debug(ACTION_TYPES.UPDATE_INCIDENT_STATUS_BULK, response),
-      onFailure: (response) => _handleContentUpdateError(response, `incidents priority to ${newValue}`)
+      onSuccess: (response) => {
+        Logger.debug(ACTION_TYPES.UPDATE_INCIDENT, response);
+        onSuccess(response);
+      },
+      onFailure: (response) => {
+        _handleContentUpdateError(response, `incidents priority to ${newValue}`);
+        onFailure(response);
+      }
     }
   };
 };
@@ -199,15 +232,23 @@ const bulkChangeIncidentStatus = (incidentIds, newValue) => {
  * @public
  * @param incidentId The ID of the incident to update
  * @param newValue {Object}
+ * @param {object.onSuccess} onSuccess callback for successful completion of action
+ * @param {object.onFailure} onFailure callback for failed completion of action
  * @returns {Object}
  */
-const changeIncidentAssignee = (incidentId, newValue) => {
+const changeIncidentAssignee = (incidentId, newValue, { onSuccess = K, onFailure = K }) => {
   return {
-    type: ACTION_TYPES.UPDATE_INCIDENT_ASSIGNEE,
+    type: ACTION_TYPES.UPDATE_INCIDENT,
     promise: Incidents.changeIncidentAssignee(incidentId, newValue),
     meta: {
-      onSuccess: (response) => Logger.debug(ACTION_TYPES.UPDATE_INCIDENT_ASSIGNEE, response),
-      onFailure: (response) => _handleContentUpdateError(response, `${incidentId} assignee to ${newValue.lastName}`)
+      onSuccess: (response) => {
+        Logger.debug(ACTION_TYPES.UPDATE_INCIDENT, response);
+        onSuccess(response);
+      },
+      onFailure: (response) => {
+        _handleContentUpdateError(response, `${incidentId} assignee to ${newValue.lastName}`);
+        onFailure(response);
+      }
     }
   };
 };
@@ -218,15 +259,23 @@ const changeIncidentAssignee = (incidentId, newValue) => {
  * @public
  * @param incidentIds
  * @param newValue {String}
+ * @param {object.onSuccess} onSuccess callback for successful completion of action
+ * @param {object.onFailure} onFailure callback for failed completion of action
  * @returns {Object}
  */
-const bulkChangeIncidentAssignee = (incidentIds, newValue) => {
+const bulkChangeIncidentAssignee = (incidentIds, newValue, { onSuccess = K, onFailure = K }) => {
   return {
-    type: ACTION_TYPES.UPDATE_INCIDENT_ASSIGNEE_BULK,
+    type: ACTION_TYPES.UPDATE_INCIDENT,
     promise: Incidents.bulkChangeIncidentAssignee(incidentIds, newValue),
     meta: {
-      onSuccess: (response) => Logger.debug(ACTION_TYPES.UPDATE_INCIDENT_ASSIGNEE_BULK, response),
-      onFailure: (response) => _handleContentUpdateError(response, `incidents assignee to ${newValue.lastName}`)
+      onSuccess: (response) => {
+        Logger.debug(ACTION_TYPES.UPDATE_INCIDENT, response);
+        onSuccess(response);
+      },
+      onFailure: (response) => {
+        _handleContentUpdateError(response, `incidents assignee to ${newValue.name}`);
+        onFailure(response);
+      }
     }
   };
 };
@@ -270,15 +319,23 @@ const getAllUsers = () => {
  * @method createJournalEntry
  * @public
  * @param journalEntry An {Object} containing the incidentId, author, notes and other properties for creating an entry
+ * @param {object.onSuccess} onSuccess callback for successful completion of action
+ * @param {object.onFailure} onFailure callback for failed completion of action
  * @returns {Object}
  */
-const createJournalEntry = (journalEntry) => {
+const createJournalEntry = (journalEntry, { onSuccess = K, onFailure = K }) => {
   return {
     type: ACTION_TYPES.CREATE_JOURNAL_ENTRY,
     promise: Journal.createEntry(journalEntry),
     meta: {
-      onSuccess: (response) => Logger.debug(ACTION_TYPES.CREATE_JOURNAL_ENTRY, response),
-      onFailure: (response) => _handleContentRetrievalError(response, 'journal')
+      onSuccess: (response) => {
+        Logger.debug(ACTION_TYPES.CREATE_JOURNAL_ENTRY, response);
+        onSuccess(response);
+      },
+      onFailure: (response) => {
+        _handleContentRetrievalError(response, 'journal');
+        onFailure(response);
+      }
     }
   };
 };
