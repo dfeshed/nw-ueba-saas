@@ -70,6 +70,20 @@
             </job-data-map>
         </job>
 
+        <!-- for PS
+        <trigger>
+            <cron>
+                <name>dlpmail_send_to_streaming_hourly_trigger</name>
+                <group>DLPMAIL</group>
+                <job-name>Scoring</job-name>
+                <job-group>DLPMAIL</job-group>
+                <cron-expression>0 30 * * * ?</cron-expression>
+            </cron>
+        </trigger>
+        -->
+
+
+
     </schedule>
 
 </job-scheduling-data>
