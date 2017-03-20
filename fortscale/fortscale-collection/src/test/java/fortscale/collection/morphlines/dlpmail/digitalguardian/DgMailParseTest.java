@@ -37,7 +37,7 @@ public class DgMailParseTest {
 	@Test
 	public void test_empty_fields_filter() {
 		String testCase = "Test filter empty events";
-		DgMailEventInput input = new DgMailEventInputBuilder().createDgEvent(); // event with all fields
+		DgMailEventInput input = new DgEventInputBuilder().createDgEvent(); // event with all fields
 		// interesting test stuff starts here
 		input.eventId = ""; //we empty one of the required fields
 
@@ -48,7 +48,7 @@ public class DgMailParseTest {
 	@Test
 	public void test_filter_not_send_mail() {
 		String testCase = "Test filter not \"Send Mail\" events";
-		DgMailEventInput input = new DgMailEventInputBuilder()
+		DgMailEventInput input = new DgEventInputBuilder()
 				// interesting test stuff starts here
 				.setOperation("something that is not Send Mail")
 				.createDgEvent(); // event with all fields
@@ -60,7 +60,7 @@ public class DgMailParseTest {
 	@Test
 	public void test_remove_verdasys_prefix() {
 		String testCase = "Test that the verdasys\r prefix is removed";
-		DgMailEventInput input = new DgMailEventInputBuilder()
+		DgMailEventInput input = new DgEventInputBuilder()
 				.setAgentUtcTime("06/12/2016 16:04")
 				.setOperation("Send Mail")
 				// interesting test stuff starts here
@@ -96,7 +96,7 @@ public class DgMailParseTest {
 	@Test
 	public void test_remove_quotes_from_email_sender_and_recipient() {
 		String testCase = "Test that quotes are removed from email sender and recipient";
-		DgMailEventInput input = new DgMailEventInputBuilder()
+		DgMailEventInput input = new DgEventInputBuilder()
 				.setAgentUtcTime("06/12/2016 16:04")
 				.setOperation("Send Mail")
 				// interesting test stuff starts here
@@ -130,7 +130,7 @@ public class DgMailParseTest {
 	@Test
 	public void test_remove_extract_recipient_domain() {
 		String testCase = "Test that email_recipient_domain is extracted correctly from email_recipient";
-		DgMailEventInput input = new DgMailEventInputBuilder()
+		DgMailEventInput input = new DgEventInputBuilder()
 				.setAgentUtcTime("06/12/2016 16:04")
 				.setOperation("Send Mail")
 				// interesting test stuff starts here
@@ -161,7 +161,7 @@ public class DgMailParseTest {
 	@Test
 	public void test_remove_extract_full_name() {
 		String testCase = "Test that full_name is extracted from first_name and surname";
-		DgMailEventInput input = new DgMailEventInputBuilder()
+		DgMailEventInput input = new DgEventInputBuilder()
 				.setAgentUtcTime("06/12/2016 16:04")
 				.setOperation("Send Mail")
 				.createDgEvent();
@@ -190,7 +190,7 @@ public class DgMailParseTest {
 	@Test
 	public void test_empty_replace_attachment_file_size_with_zero() {
 		String testCase = "Test that empty values in 'attachment_file_size' field  are replaced with '0'";
-		DgMailEventInput input = new DgMailEventInputBuilder()
+		DgMailEventInput input = new DgEventInputBuilder()
 				.setAgentUtcTime("06/12/2016 16:04")
 				.setOperation("Send Mail")
 				// interesting test stuff starts here
@@ -222,7 +222,7 @@ public class DgMailParseTest {
 	@Test
 	public void test_is_external_true() {
 		String testCase = "Test is_external is true";
-		DgMailEventInput input = new DgMailEventInputBuilder()
+		DgMailEventInput input = new DgEventInputBuilder()
 				.setAgentUtcTime("06/12/2016 16:04")
 				.setOperation("Send Mail")
 				// interesting test stuff starts here
@@ -254,7 +254,7 @@ public class DgMailParseTest {
 	@Test
 	public void test_is_external_false() {
 		String testCase = "Test is_external is False";
-		DgMailEventInput input = new DgMailEventInputBuilder()
+		DgMailEventInput input = new DgEventInputBuilder()
 				.setAgentUtcTime("06/12/2016 16:04")
 				.setOperation("Send Mail")
 				// interesting test stuff starts here
@@ -286,7 +286,7 @@ public class DgMailParseTest {
 	@Test
 	public void test_event_type_recipient() {
 		String testCase = "Test events with attachment_file_name=\"message body\" - attachment_file_name should be cleared and event is marked as 'recipient'";
-		DgMailEventInput input = new DgMailEventInputBuilder()
+		DgMailEventInput input = new DgEventInputBuilder()
 				.setAgentUtcTime("06/12/2016 16:04")
 				.setOperation("Send Mail")
 				.setDestinationFile("message body")
@@ -317,7 +317,7 @@ public class DgMailParseTest {
 	@Test
 	public void test_event_type_attachment() {
 		String testCase = "Test events with (attachment_file_name!=\"message body\" && attachment_file_name!=\"\") are marked as 'attachment'";
-		DgMailEventInput input = new DgMailEventInputBuilder()
+		DgMailEventInput input = new DgEventInputBuilder()
 				.setAgentUtcTime("06/12/2016 16:04")
 				.setOperation("Send Mail")
 				.setDestinationFile("somefile.jpg")
@@ -348,7 +348,7 @@ public class DgMailParseTest {
 	@Test
 	public void test_event_type_message_body() {
 		String testCase = "Test events with (attachment_file_name==\"\") are marked as 'message body' (and also the attachment_file_name=\"message body\")";
-		DgMailEventInput input = new DgMailEventInputBuilder()
+		DgMailEventInput input = new DgEventInputBuilder()
 				.setAgentUtcTime("06/12/2016 16:04")
 				.setOperation("Send Mail")
 				.setDestinationFile("")

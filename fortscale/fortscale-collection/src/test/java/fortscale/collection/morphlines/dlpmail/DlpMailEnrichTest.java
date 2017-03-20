@@ -4,7 +4,7 @@ import fortscale.collection.morphlines.MorphlinesTester;
 import fortscale.collection.morphlines.dlpmail.digitalguardian.DgMailEventAfterEtl;
 import fortscale.collection.morphlines.dlpmail.digitalguardian.DgMailEventAfterEtlBuilder;
 import fortscale.collection.morphlines.dlpmail.digitalguardian.DgMailEventInput;
-import fortscale.collection.morphlines.dlpmail.digitalguardian.DgMailEventInputBuilder;
+import fortscale.collection.morphlines.dlpmail.digitalguardian.DgEventInputBuilder;
 import fortscale.utils.impala.ImpalaParser;
 import fortscale.utils.properties.PropertiesResolver;
 import org.junit.After;
@@ -43,7 +43,7 @@ public class DlpMailEnrichTest {
     @Test
     public void test_normalized_src_machine_is_like_hostname() {
         String testCase = "Test that normalized src machine is set to be like hostname field";
-        DgMailEventInput input = new DgMailEventInputBuilder()
+        DgMailEventInput input = new DgEventInputBuilder()
                 .setAgentUtcTime("06/12/2016 16:04")
                 .setOperation("Send Mail")
                 .setComputerName("example_hostname")
@@ -75,7 +75,7 @@ public class DlpMailEnrichTest {
     @Test
     public void test_is_attachment_blacklisted_false() {
         String testCase = "Test that is_attachment_blacklisted is false if extension isn't blacklisted";
-        DgMailEventInput input = new DgMailEventInputBuilder()
+        DgMailEventInput input = new DgEventInputBuilder()
                 .setAgentUtcTime("06/12/2016 16:04")
                 .setOperation("Send Mail")
                 .setDestinationFileExtension("jpeg")
@@ -106,7 +106,7 @@ public class DlpMailEnrichTest {
     @Test
     public void test_is_attachment_blacklisted_true() {
         String testCase = "Test that is_attachment_blacklisted is true if extension is blacklisted";
-        DgMailEventInput input = new DgMailEventInputBuilder()
+        DgMailEventInput input = new DgEventInputBuilder()
                 .setAgentUtcTime("06/12/2016 16:04")
                 .setOperation("Send Mail")
                 .setDestinationFileExtension("wdb")
@@ -137,7 +137,7 @@ public class DlpMailEnrichTest {
     @Test
     public void test_data_source() {
         String testCase = "Test that the data_source is dlpmail";
-        DgMailEventInput input = new DgMailEventInputBuilder()
+        DgMailEventInput input = new DgEventInputBuilder()
                 .setAgentUtcTime("06/12/2016 16:04")
                 .setOperation("Send Mail")
                 .createDgEvent();
@@ -166,7 +166,7 @@ public class DlpMailEnrichTest {
     @Test
     public void test_last_state() {
         String testCase = "Test that the last_state is etl";
-        DgMailEventInput input = new DgMailEventInputBuilder()
+        DgMailEventInput input = new DgEventInputBuilder()
                 .setAgentUtcTime("06/12/2016 16:04")
                 .setOperation("Send Mail")
                 .createDgEvent();
@@ -195,7 +195,7 @@ public class DlpMailEnrichTest {
     @Test
     public void test_dates_formatting() {
         String testCase = "Test dates formatting";
-        DgMailEventInput input = new DgMailEventInputBuilder()
+        DgMailEventInput input = new DgEventInputBuilder()
                 .setOperation("Send Mail")
                 // interesting test stuff starts here
                 .setAgentUtcTime("06/12/2016 16:04")
@@ -225,7 +225,7 @@ public class DlpMailEnrichTest {
     @Test
     public void test_device_entities() {
         String testCase = "Test DEVICE entities";
-        DgMailEventInput input = new DgMailEventInputBuilder()
+        DgMailEventInput input = new DgEventInputBuilder()
                 .setOperation("Send Mail")
                 .setAgentUtcTime("06/12/2016 16:04")
                 // interesting test stuff starts here
@@ -261,7 +261,7 @@ public class DlpMailEnrichTest {
     @Ignore /* we are currently filtering "Attach Mail" events because we only support DG events (when it comes to parsing) */
     public void test_set_event_type_attachment() {
         String testCase = "Test that event type is attachment for events that are \"Attach Mail\" OR \"Send Mail\" with (attachment_file_name!=\"\" | \"message body\"";
-        DgMailEventInput input = new DgMailEventInputBuilder()
+        DgMailEventInput input = new DgEventInputBuilder()
                 .setOperation("Send Mail")
                 .setAgentUtcTime("06/12/2016 16:04")
                 .setDestinationFile("somefile.jpeg")
@@ -292,7 +292,7 @@ public class DlpMailEnrichTest {
     @Test
     public void test_num_of_recipients() { //TODO: update this when num of recipients calculation is finished
         String testCase = "Test  num_of_recipients is calculated correctly";
-        DgMailEventInput input = new DgMailEventInputBuilder()
+        DgMailEventInput input = new DgEventInputBuilder()
                 .setOperation("Send Mail")
                 .setAgentUtcTime("06/12/2016 16:04")
                 // interesting test stuff starts here
