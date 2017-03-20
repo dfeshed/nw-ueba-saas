@@ -1,5 +1,43 @@
+{{rsa-incident/update-action-button
+  fieldName="priority"
+  options=priorityTypes
+  optionValueProperty="name"
+  selectedValue=priority
+  incidentId=incidentId
+  horizontalPosition="right"
+  iconName="gauge"
+  isIconOnly=false
+  label=(t (concat 'respond.priority.' priority))
+  style="primary"
+}}
+{{rsa-incident/update-action-button
+  fieldName='status'
+  options=statusTypes
+  optionValueProperty="name"
+  selectedValue=status
+  incidentId=incidentId
+  horizontalPosition="right"
+  iconName="flag-1"
+  isIconOnly=false
+  label=(t (concat 'respond.status.' status))
+  style="primary"
+}}
+{{rsa-incident/update-action-button
+  fieldName='assignee'
+  options=users
+  optionValueProperty="id"
+  optionLabelProperty="name"
+  selectedValue=assigneeId
+  incidentId=incidentId
+  horizontalPosition="right"
+  isIconOnly=false
+  iconName="female"
+  label=(if assignee assignee.name (t 'respond.assignee.none'))
+  style="primary"
+}}
+
 {{#rsa-form-button
-  style=(if isJournalPanelOpen 'primary' 'standard')
+  style="primary"
   class="journal js-test-journal"
   defaultAction=(action "clickJournalAction")
 }}

@@ -9,18 +9,32 @@ const {
   run
 } = Ember;
 
-const stateToComputed = ({ respond: { incident: { isJournalPanelOpen, storylineStatus, storyline } } }) => ({
+const stateToComputed = ({
+  respond: {
+    incidents: {
+      isTransactionUnderway
+    },
+    incident: {
+      isJournalPanelOpen,
+      storylineStatus,
+      storyline
+    }
+  }
+}) => ({
   isJournalPanelOpen,
   storylineStatus,
-  storyline
+  storyline,
+  isTransactionUnderway
 });
 
 const Incident = Component.extend({
   tagName: 'article',
   classNames: ['rsa-incident-container'],
+  classNameBindings: ['isTransactionUnderway:transaction-in-progress'],
   isJournalPanelOpen: false,
   storylineStatus: null,
   storyline: null,
+  isTransactionUnderway: false,
 
   /**
    * Rectangle object that specifies the current location & size of the "entities rectangle" DOM element.

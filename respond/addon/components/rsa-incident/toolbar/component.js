@@ -6,8 +6,25 @@ const {
   Component
 } = Ember;
 
-const stateToComputed = ({ respond: { incident: { isJournalPanelOpen } } }) => ({
-  isJournalPanelOpen
+const stateToComputed = ({
+  respond: {
+    dictionaries,
+    users,
+    incident: {
+      id,
+      info,
+      isJournalPanelOpen
+    }
+  }
+}) => ({
+  isJournalPanelOpen,
+  priorityTypes: dictionaries && dictionaries.priorityTypes,
+  statusTypes: dictionaries && dictionaries.statusTypes,
+  users: users && users.users,
+  incidentId: id,
+  priority: info && info.priority,
+  status: info && info.status,
+  assigneeId: info && info.assignee && info.assignee.id
 });
 
 const dispatchToActions = (dispatch) => ({

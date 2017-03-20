@@ -30,3 +30,8 @@
     {{rsa-incident/journal}}
   {{/if}}
 </footer>
+{{#if isTransactionUnderway}}
+  <centered class="rsa-incident-container__transaction-overlay">
+    {{rsa-loader size="large"}}
+  </centered>
+{{/if}}

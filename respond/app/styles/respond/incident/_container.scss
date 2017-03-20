@@ -54,6 +54,7 @@ $incidentInspectorWidth: 400px;
     }
   }
 
+  &__transaction-overlay,
   .rsa-incident-inspector,
   .rsa-force-layout {
     @include rsa-fill-abs();

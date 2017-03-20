@@ -499,19 +499,19 @@ export default {
       generic: 'ja_NetWitness'
     },
     status: {
-      0: 'ja_New',
-      1: 'ja_Assigned',
-      2: 'ja_In Progress',
-      3: 'ja_Remediation Requested',
-      4: 'ja_Remediation Complete',
-      5: 'ja_Closed',
-      6: 'ja_False Positive'
+      NEW: 'ja_New',
+      ASSIGNED: 'ja_Assigned',
+      IN_PROGRESS: 'ja_In Progress',
+      REMEDIATION_REQUESTED: 'ja_Remediation Requested',
+      REMEDIATION_COMPLETE: 'ja_Remediation Complete',
+      CLOSED: 'ja_Closed',
+      CLOSED_FALSE_POSITIVE: 'ja_False Positive'
     },
     priority: {
-      0: 'ja_Low',
-      1: 'ja_Medium',
-      2: 'ja_High',
-      3: 'ja_Critical'
+      LOW: 'ja_Low',
+      MEDIUM: 'ja_Medium',
+      HIGH: 'ja_High',
+      CRITICAL: 'ja_Critical'
     },
     assignee: {
       none: 'ja_(Unassigned)'

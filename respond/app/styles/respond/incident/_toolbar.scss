@@ -1,0 +1,14 @@
+.rsa-incident-toolbar {
+  .incident-action-button {
+    margin-right: rsa-whitespace(less);
+
+    /*
+    @workaround Remove the extra area on right that has a border-bottom.
+    Considering applying this to all incident-action-button's if this issue occurs everywhere.
+    */
+    .ember-power-select-trigger {
+      border-bottom: 0;
+      padding-right: 0;
+    }
+  }
+}

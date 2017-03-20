@@ -54,6 +54,21 @@ const persistIncidentState = (callback) => {
   });
 };
 
+// Updates the state value with the value updated on the server.
+// If the updated incidents includes the incident currently in the incident details route,
+// we must update that incident's info as well.
+const _handleUpdates = (action) => {
+  return (state) => {
+    const { payload: { request: { updates, incidentIds } } } = action;
+    const { id, info } = state;
+    const updatedIncidentInfo = incidentIds.includes(id) ? { ...info, ...updates } : info;
+    return {
+      ...state,
+      info: updatedIncidentInfo
+    };
+  };
+};
+
 const incident = reduxActions.handleActions({
 
   [ACTION_TYPES.INITIALIZE_INCIDENT]: (state, { payload }) => {
@@ -130,6 +145,12 @@ const incident = reduxActions.handleActions({
       ...state,
       selection: newSelection
     };
+  },
+
+  [ACTION_TYPES.UPDATE_INCIDENT]: (state, action) => {
+    return handle(state, action, {
+      success: _handleUpdates(action)
+    });
   }
 }, initialState);
 

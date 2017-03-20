@@ -499,19 +499,19 @@ export default {
       generic: 'NetWitness'
     },
     status: {
-      0: 'New',
-      1: 'Assigned',
-      2: 'In Progress',
-      3: 'Remediation Requested',
-      4: 'Remediation Complete',
-      5: 'Closed',
-      6: 'False Positive'
+      NEW: 'New',
+      ASSIGNED: 'Assigned',
+      IN_PROGRESS: 'In Progress',
+      REMEDIATION_REQUESTED: 'Remediation Requested',
+      REMEDIATION_COMPLETE: 'Remediation Complete',
+      CLOSED: 'Closed',
+      CLOSED_FALSE_POSITIVE: 'False Positive'
     },
     priority: {
-      0: 'Low',
-      1: 'Medium',
-      2: 'High',
-      3: 'Critical'
+      LOW: 'Low',
+      MEDIUM: 'Medium',
+      HIGH: 'High',
+      CRITICAL: 'Critical'
     },
     assignee: {
       none: '(Unassigned)'
