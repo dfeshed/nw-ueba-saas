@@ -1,5 +1,6 @@
 .rsa-incident-journal {
-  background-color: rsa-color(black,base,$rsa-translucent);
+  //background-color: rsa-color(black,base,$rsa-translucent);
+  background-color: rsa-color(gray,darker, $rsa-nearly-opaque);
   border: 1px solid rsa-color(white,base,$rsa-translucent);
 
   &__header {

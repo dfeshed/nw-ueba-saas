@@ -465,6 +465,19 @@ export default {
       indicator: 'Indicator',
       blank: ''
     },
+    entity: {
+      legend: {
+        user: 'user(s)',
+        host: 'host(s)',
+        ip: 'IP(s)',
+        domain: 'domain(s)',
+        file: 'file(s)',
+        selection: {
+          storyPoint: 'in {{count}} selected indicator(s)',
+          event: 'in {{count}} selected event(s)'
+        }
+      }
+    },
     enrichment: {
       uniformTimeIntervals: 'The time intervals between communication events are very uniform.',
       newDomainToEnvironment: 'Domain is relatively new to the environment.',

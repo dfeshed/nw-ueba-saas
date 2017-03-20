@@ -71,6 +71,13 @@ $forceLayoutTransitionDuration: 0.3s;
     .line {
       stroke-width: 2pt;
     }
+    #force-layout__grid {
+      .grid-axis {
+        &.minor {
+          display: none;
+        }
+      }
+    }
   }
 
   &[data-zoom="0.3"],
@@ -84,6 +91,13 @@ $forceLayoutTransitionDuration: 0.3s;
     }
     .line {
       stroke-width: 1.5pt;
+    }
+    #force-layout__grid {
+      .grid-axis {
+        &.minor {
+          display: none;
+        }
+      }
     }
   }
 

@@ -6,7 +6,7 @@ import EnrichmentsToDisplay from './enrichments-to-display';
 import connect from 'ember-redux/components/connect';
 import * as UIStateActions from 'respond/actions/ui-state-creators';
 
-const { get, isEmpty } = Ember;
+const { get } = Ember;
 
 const stateToComputed = () => ({ });
 
@@ -79,7 +79,10 @@ const StorylineItem = ListItem.extend({
 
   @computed('item.matched')
   resolvedMatched(matched = []) {
-    return matched.reject(isEmpty);
+    const types = [ 'user', 'host', 'domain', 'ip', 'ip', 'file' ];
+    return matched
+      .map((id, index) => ({ type: types[index], id }))
+      .rejectBy('id', '');
   }
 });
 

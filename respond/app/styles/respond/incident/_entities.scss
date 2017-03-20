@@ -1,3 +1,9 @@
+$entityUserColor: $cyan;
+$entityHostColor: $violet;
+$entityIPColor: $green;
+$entityDomainColor: $yellow;
+$entityFileColor: $base0;
+
 .rsa-incident-entities {
 
   .rsa-force-layout {
@@ -5,11 +11,27 @@
       opacity: 0;
 
       .circle {
-        stroke: rsa-color(gray,base,$rsa-nearly-opaque);
+        stroke: rsa-color(gray,light,$rsa-nearly-opaque);
         fill: rsa-color(black,base,$rsa-nearly-opaque);
       }
+      &.user .circle {
+        fill: $entityUserColor;
+      }
+      &.ip .circle {
+        fill: $entityIPColor;
+      }
+      &.host .circle {
+        fill: $entityHostColor;
+      }
+      &.domain .circle {
+        fill: $entityDomainColor;
+      }
+      &.file .circle {
+        fill: $entityFileColor;
+      }
       .text {
-        fill: rsa-color(amber);
+        //fill: rsa-color(amber);
+        fill: rsa-color(white);
       }
 
       &.is-hidden {
@@ -36,7 +58,7 @@
       opacity: 0;
 
       .line {
-        stroke: rsa-color(gray,base,$rsa-nearly-opaque);
+        stroke: rsa-color(gray,light,$rsa-nearly-opaque);
       }
       .text {
         fill: rsa-color(gray,light);
@@ -62,7 +84,7 @@
     }
   }
   #force-layout__arrow {
-    fill: rsa-color(gray,base,$rsa-nearly-opaque);
+    fill: rsa-color(gray,light,$rsa-nearly-opaque);
 
     &--disabled {
       fill: rsa-color(gray,base,$rsa-nearly-transparent);

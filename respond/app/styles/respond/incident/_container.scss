@@ -60,6 +60,14 @@ $incidentInspectorWidth: 400px;
     @include rsa-fill-abs();
   }
 
+  &__legend-wrap {
+    position: absolute;
+    bottom: 0;
+    left: $incidentInspectorWidth;
+    right: 0;
+    margin: rsa-whitespace();
+  }
+
   &__no-storyline {
     color: rsa-color(gray);
     font-style: italic;

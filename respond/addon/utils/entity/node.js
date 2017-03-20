@@ -56,8 +56,31 @@ function makeNode(type, value) {
   };
 }
 
+/**
+ * Generates a count of the nodes in a given array, grouped by node `type`.
+ *
+ * Returns a hash table whose keys are found node types, and key values are the corresponding node count
+ * for that node type.
+ *
+ * @param {object[]} nodes The array of nodes.
+ * @returns {object}
+ * @public
+ */
+function countNodesByType(nodes = []) {
+  const counts = {};
+  nodes.forEach((node) => {
+    const { type } = node;
+    if (!counts[type]) {
+      counts[type] = 0;
+    }
+    counts[type]++;
+  });
+  return counts;
+}
+
 export {
   makeNodeId,
   parseNodeId,
-  makeNode
+  makeNode,
+  countNodesByType
 };

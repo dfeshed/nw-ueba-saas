@@ -1,0 +1,52 @@
+.rsa-incident-entities-legend {
+  padding: rsa-whitespace(least) rsa-whitespace();
+  @include rsa-font(body,small);
+  line-height: 1.35;
+  text-align: center;
+  background-color: rsa-color(gray,darker, $rsa-nearly-opaque);
+
+  &.has-no-data {
+    display: none;
+  }
+
+  .datum {
+    display: inline-block;
+    white-space: nowrap;
+    padding: 0 rsa-whitespace(less);
+    color: rsa-color(white);
+
+    label {
+      padding-left: rsa-whitespace(least);
+    }
+
+    &.user {
+      label {
+        color: $entityUserColor;
+      }
+    }
+    &.host {
+      label {
+        color: $entityHostColor;
+      }
+    }
+    &.domain {
+      label {
+        color: $entityDomainColor;
+      }
+    }
+    &.ip {
+      label {
+        color: $entityIPColor;
+      }
+    }
+    &.file {
+      label {
+        color: $entityFileColor;
+      }
+    }
+  }
+
+  .selection {
+    color: rsa-color(gray,light);
+  }
+}

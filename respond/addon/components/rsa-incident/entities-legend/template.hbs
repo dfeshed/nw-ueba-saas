@@ -1,0 +1,13 @@
+<div class="totals">
+  {{#each data as |datum|}}
+    <span class="datum {{datum.key}}">
+      <span>{{datum.value}}</span>
+      <label>{{t (concat 'respond.entity.legend.' datum.key)}}</label>
+    </span>
+  {{/each}}
+</div>
+{{#with resolvedSelection as |sel|}}
+  <div class="selection">
+    {{t (concat 'respond.entity.legend.selection.' sel.type) count=sel.ids.length}}
+  </div>
+{{/with}}

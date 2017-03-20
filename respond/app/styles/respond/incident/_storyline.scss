@@ -181,8 +181,24 @@ $storylineConnectorPaddingX: rsa-whitespace(less);
     }
 
     .related {
-      span {
-        color: rsa-color(amber);
+      .entity {
+        color: rsa-color(white);
+
+        &.user {
+          color: $entityUserColor;
+        }
+        &.host {
+          color: $entityHostColor;
+        }
+        &.domain {
+          color: $entityDomainColor;
+        }
+        &.ip {
+          color: $entityIPColor;
+        }
+        &.file {
+          color: $entityFileColor;
+        }
       }
     }
 

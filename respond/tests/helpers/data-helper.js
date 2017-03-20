@@ -33,6 +33,12 @@ class DataHelper {
       incidentId
     });
   }
+  initializeIncidentSelection(payload) {
+    _dispatchAction(this.redux, {
+      type: ACTION_TYPES.SET_INCIDENT_SELECTION,
+      payload
+    });
+  }
   fetchIncidentDetails(data = incidentDetails) {
     _dispatchActionWithPromisePayload(
       this.redux,

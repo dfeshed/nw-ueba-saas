@@ -465,6 +465,19 @@ export default {
       indicator: 'ja_Indicator',
       blank: ''
     },
+    entity: {
+      legend: {
+        user: 'ja_user(s)',
+        host: 'ja_host(s)',
+        ip: 'ja_IP(s)',
+        domain: 'ja_domain(s)',
+        file: 'ja_file(s)',
+        selection: {
+          storyPoint: 'ja_in {{count}} selected indicator(s)',
+          event: 'ja_in {{count}} selected event(s)'
+        }
+      }
+    },
     enrichment: {
       uniformTimeIntervals: 'ja_The time intervals between communication events are very uniform.',
       newDomainToEnvironment: 'ja_Domain is relatively new to the environment.',

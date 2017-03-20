@@ -67,9 +67,7 @@
           <label>{{t 'respond.storyline.relatedBy'}}:</label>
           <span>
             {{#each resolvedMatched as |match|}}
-              {{#if match}}
-                <span class="entity">{{match}}</span>
-              {{/if}}
+              <span class="entity {{match.type}}">{{match.id}}</span>
             {{/each}}
           </span>
         </p>
