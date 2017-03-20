@@ -4,9 +4,9 @@
   optionValueProperty="name"
   selectedValue=priority
   incidentId=incidentId
-  horizontalPosition="right"
   iconName="gauge"
   isIconOnly=false
+  searchEnabled=false
   label=(t (concat 'respond.priority.' priority))
   style="primary"
 }}
@@ -16,9 +16,9 @@
   optionValueProperty="name"
   selectedValue=status
   incidentId=incidentId
-  horizontalPosition="right"
   iconName="flag-1"
   isIconOnly=false
+  searchEnabled=false
   label=(t (concat 'respond.status.' status))
   style="primary"
 }}
@@ -28,7 +28,6 @@
   optionLabelProperty="name"
   selectedValue=assigneeId
   incidentId=incidentId
-  horizontalPosition="right"
   isIconOnly=false
   iconName="female"
   label=(if assignee assignee.name (t 'respond.assignee.none'))
