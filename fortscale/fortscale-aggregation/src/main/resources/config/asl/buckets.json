@@ -164,7 +164,7 @@
           }
         },
         {
-          "name": "email_attachment_counter",
+          "name": "email_attachments_counter",
           "featureNamesMap": {
 
           },
@@ -399,7 +399,7 @@
           }
         },
         {
-          "name": "email_attachment_counter",
+          "name": "email_attachments_counter",
           "featureNamesMap": {
 
           },
