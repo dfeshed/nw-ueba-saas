@@ -46,10 +46,13 @@ radial-gradient(circle at 85% 85%, rsa-color(blue, darker, .1) 0, rsa-color(blue
   }
   &__error-text {
     @include rsa-font();
-    color: $font-fade-color;
+    color: rsa-color(amber,light);
     text-align: center;
     padding: rsa-whitespace(least);
     font-style: italic;
+    span {
+      color: $font-fade-color;  
+    }  
   }
   &-header {
     @include rsa-vendor-prefix(flex-grow,0);

@@ -2,7 +2,7 @@
   {{title}}
 </div>
 {{#if errorMessage}}
-  <div class='rsa-context-panel__error-text'>{{errorMessage}}</div>
+  <div class='rsa-context-panel__error-text'>{{rsa-icon style='lined' name='report-problem-triangle'}} {{errorMessage}}</div>
 {{else if data}}
   <hbox class="rsa-context-tree-table__table_header">
     {{#each columnsConfig as |columnHeaders|}}
@@ -49,5 +49,5 @@
     <div class="border"><button class="button" {{action 'activate' }}>{{t 'context.footer.viewAll'}}</button></div>
   {{/if}}
 {{else}}
-    <div class='rsa-context-panel__error-text'>{{t 'context.error.noData'}}</div>
+  <div class='rsa-context-panel__error-text'><span>{{t 'context.error.noData'}}</span></div>
 {{/if}}

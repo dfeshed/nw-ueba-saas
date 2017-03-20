@@ -9,7 +9,7 @@
   {{/if}}
 </div>
 {{#if errorMessage}}
-  <div class='rsa-context-panel__error-text'>{{errorMessage}}</div>
+  <div class='rsa-context-panel__error-text'>{{rsa-icon style='lined' name='report-problem-triangle'}} {{errorMessage}}</div>
 {{else}}
   {{#if (gt array.length 0)}}
     {{#each array as |data|}}
@@ -86,6 +86,6 @@
       <div class="rsa-context-panel__context-data-table__border"><button class="rsa-context-panel__context-data-table__button" {{action 'activate'}}>{{t 'context.footer.viewAll'}}</button></div>
     {{/if}}
   {{else}}
-    <div class='rsa-context-panel__error-text'>{{t 'context.error.noData'}}</div>
+    <div class='rsa-context-panel__error-text'><span>{{t 'context.error.noData'}}</span></div>
   {{/if}}
 {{/if}}
