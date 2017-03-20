@@ -2534,7 +2534,7 @@ ember-router-generator@^1.0.0:
   dependencies:
     recast "^0.11.3"
 
-ember-runtime-enumerable-includes-polyfill@^1.0.0:
+ember-runtime-enumerable-includes-polyfill@^1.0.0, ember-runtime-enumerable-includes-polyfill@^1.0.1:
   version "1.0.2"
   resolved "https://registry.npmjs.org/ember-runtime-enumerable-includes-polyfill/-/ember-runtime-enumerable-includes-polyfill-1.0.2.tgz#90f557b09a38e75fda0355b3f95adc6d77ffb756"
   dependencies:
@@ -2561,6 +2561,14 @@ ember-test-helpers@^0.5.32:
   resolved "https://registry.npmjs.org/ember-test-helpers/-/ember-test-helpers-0.5.34.tgz#c8439108d1cba1d7d838c212208a5c4061471b83"
   dependencies:
     klassy "^0.1.3"
+
+ember-toggle@4.0.2:
+  version "4.0.2"
+  resolved "https://registry.npmjs.org/ember-toggle/-/ember-toggle-4.0.2.tgz#70a1b38a05ec81e97aee3940bdd46306809065b5"
+  dependencies:
+    ember-cli-babel "^5.1.7"
+    ember-cli-htmlbars "^1.1.1"
+    ember-runtime-enumerable-includes-polyfill "^1.0.1"
 
 ember-try-config@^2.0.1:
   version "2.1.0"

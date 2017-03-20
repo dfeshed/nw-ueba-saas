@@ -72,6 +72,7 @@ Router.map(function() {
       this.route('sliders');
       this.route('datetime');
       this.route('errors');
+      this.route('switch');
     });
 
     this.route('nav', function() {

@@ -88,6 +88,7 @@ export default Component.extend({
         { name: 'Radios', link: 'radios' },
         { name: 'Selects', link: 'selects' },
         { name: 'Sliders', link: 'sliders' },
+        { name: 'Switches', link: 'switch' },
         { name: 'Textareas', link: 'textareas' },
         { name: 'Text Inputs', link: 'inputs' }
       ]

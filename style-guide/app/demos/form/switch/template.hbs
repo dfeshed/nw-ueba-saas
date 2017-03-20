@@ -1,0 +1,49 @@
+<hbox fit>
+  {{spec-masthead model=model}}
+</hbox>
+
+<hbox>
+  <div class="scroll-box">
+    {{#spec-category title="States"}}
+      {{#spec-member title="Default"}}
+        {{x-toggle value=toggledA onToggle=(mut toggledA)}}
+
+        {{!-- BEGIN-SNIPPET switch1
+        {{x-toggle value=toggledA onToggle=(mut toggledA)}}
+        END-SNIPPET --}}
+        {{code-snippet name="switch1.hbs"}}
+      {{/spec-member}}
+
+      {{#spec-member title="Disabled"}}
+        <label>
+          {{x-toggle disabled=true value=toggledC onToggle=(mut toggledC)}}
+        </label>
+
+        {{!-- BEGIN-SNIPPET switch3
+        <label>
+          {{x-toggle disabled=true value=toggledC onToggle=(mut toggledC)}}
+        </label>
+        END-SNIPPET --}}
+        {{code-snippet name="switch3.hbs"}}
+      {{/spec-member}}
+    {{/spec-category}}
+
+    {{#spec-category title="Presentations"}}
+      {{#spec-member title="With Label"}}
+        <label>
+          {{x-toggle value=toggledB onToggle=(mut toggledB)}}
+          Switch Value label
+        </label>
+
+        {{!-- BEGIN-SNIPPET switch2
+        <label>
+          {{x-toggle value=toggledB onToggle=(mut toggledB)}}
+          Switch Value label
+        </label>
+        END-SNIPPET --}}
+        {{code-snippet name="switch2.hbs"}}
+      {{/spec-member}}
+
+    {{/spec-category}}
+  </div>
+</hbox>
