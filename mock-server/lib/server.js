@@ -65,6 +65,7 @@ const start = function({ subscriptionLocations, routes }, cb) {
           if (subscriptions[frame.headers.destination]) {
             ws.subscriptionHandler = subscriptions[frame.headers.destination];
           } else {
+            ws.subscriptionHandler = null;  // clear out the last good subscription handler, if any
             console.error(chalk.red(`No handler exists for [[ ${frame.headers.destination} ]]`));
           }
           break;

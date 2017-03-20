@@ -85,7 +85,7 @@ module.exports = function(environment) {
     },
     users: {
       socketUrl,
-      stream: {
+      findAll: {
         defaultStreamLimit: 1000,
         subscriptionDestination: '/user/queue/users/all',
         requestDestination: '/ws/response/users/all'

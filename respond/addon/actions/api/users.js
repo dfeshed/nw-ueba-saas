@@ -15,7 +15,7 @@ UsersAPI.reopenClass({
    */
   getAllUsers() {
     return promiseRequest({
-      method: 'stream',
+      method: 'findAll',
       modelName: 'users',
       query: {}
     });

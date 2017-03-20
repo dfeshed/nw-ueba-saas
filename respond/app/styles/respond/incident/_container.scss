@@ -60,6 +60,11 @@ $incidentInspectorWidth: 400px;
     @include rsa-fill-abs();
   }
 
+  &__transaction-overlay {
+    z-index: 2;
+    background-color: rsa-color(black,base,$rsa-translucent);
+  }
+
   &__legend-wrap {
     position: absolute;
     bottom: 0;

@@ -68,7 +68,8 @@ const getIncident = (incidentId) => {
  */
 const initializeIncident = (incidentId) => {
   return (dispatch, getState) => {
-    const wasIncidentId = getState().respond.incident.id;
+    const state = getState();
+    const wasIncidentId = state.respond.incident.id;
     if (wasIncidentId !== incidentId) {
       dispatch({
         type: ACTION_TYPES.INITIALIZE_INCIDENT,
@@ -77,6 +78,11 @@ const initializeIncident = (incidentId) => {
       if (incidentId) {
         dispatch(getIncident(incidentId));
         dispatch(getStoryline(incidentId));
+      }
+
+      // If we haven't already fetched users (say, from incidents route), fetch now
+      if (!state.respond.users.usersStatus) {
+        dispatch(getAllUsers());
       }
     }
   };
