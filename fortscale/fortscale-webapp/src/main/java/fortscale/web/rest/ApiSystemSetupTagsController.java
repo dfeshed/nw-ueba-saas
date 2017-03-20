@@ -8,6 +8,7 @@ import fortscale.services.ActiveDirectoryService;
 import fortscale.services.TagService;
 import fortscale.services.UserTagService;
 import fortscale.services.users.tagging.UserTaggingTaskPersistenceService;
+import fortscale.services.users.tagging.UserTaggingTaskPersistencyServiceImpl;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.BaseController;
@@ -214,15 +215,26 @@ public class ApiSystemSetupTagsController extends BaseController {
         }
     }
 
-    @RequestMapping(method = RequestMethod.GET,value = "/tagging_task_status")
+    @RequestMapping(method = RequestMethod.GET, value = "/tagging_task_status")
     @LogException
     public UserTaggingExecutionStatus getJobStatus() {
-        if (isRunning()){
-            return new UserTaggingExecutionStatus(-1l, lastUserTaggingExecutionStartTime, true);
-        }else {
-
-         return new UserTaggingExecutionStatus(userTaggingTaskPersistenceService.getLastExecutionTime(), -1l, false);
+        Map<String, Long> usersAffected = new HashMap<>();
+        long lastExecutionFinishTime = -1;
+        long lastExecutionStartTime = -1;
+        boolean isRunning = false;
+        if (isRunning()) {
+            lastExecutionStartTime = lastUserTaggingExecutionStartTime;
+            isRunning = true;
+        } else {
+            UserTaggingTaskPersistencyServiceImpl.UserTaggingResult taskResults = userTaggingTaskPersistenceService.getTaskResults(UserTaggingTaskPersistenceService.USER_TAGGING_RESULT_ID);
+            lastExecutionFinishTime = userTaggingTaskPersistenceService.getLastExecutionTime();
+            isRunning = false;
+            if (taskResults!= null) {
+                usersAffected = taskResults.getUsersAffected();
+            }
         }
+
+        return new UserTaggingExecutionStatus(lastExecutionFinishTime, lastExecutionStartTime, isRunning, usersAffected);
     }
 
     /**
@@ -240,12 +252,14 @@ public class ApiSystemSetupTagsController extends BaseController {
         private final Long lastExecutionFinishTime;
         private final Long lastExecutionStartTime;
         private final boolean isRunning;
+        private final Map<String, Long> usersAffected;
 
 
-        public UserTaggingExecutionStatus(Long lastExecutionFinishTime, Long lastExecutionStartTime, boolean isRunning) {
+        public UserTaggingExecutionStatus(Long lastExecutionFinishTime, Long lastExecutionStartTime, boolean isRunning, Map<String, Long> usersAffected) {
             this.lastExecutionFinishTime = lastExecutionFinishTime;
             this.lastExecutionStartTime = lastExecutionStartTime;
             this.isRunning = isRunning;
+            this.usersAffected = usersAffected;
         }
 
         public Long getLastExecutionFinishTime() {
@@ -258,6 +272,10 @@ public class ApiSystemSetupTagsController extends BaseController {
 
         public boolean isRunning() {
             return isRunning;
+        }
+
+        public Map<String, Long> getUsersAffected() {
+            return usersAffected;
         }
     }
 }

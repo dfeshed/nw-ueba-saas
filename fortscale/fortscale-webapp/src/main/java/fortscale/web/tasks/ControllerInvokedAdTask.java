@@ -3,7 +3,6 @@ package fortscale.web.tasks;
 import fortscale.domain.ad.AdObject.AdObjectType;
 import fortscale.domain.ad.AdTaskType;
 import fortscale.services.ActiveDirectoryService;
-import fortscale.services.BaseTaskPersistencyService;
 import fortscale.services.ad.AdTaskPersistencyService;
 import fortscale.utils.logging.Logger;
 import fortscale.web.services.ActivityMonitoringExecutorService;
@@ -121,7 +120,7 @@ public class ControllerInvokedAdTask extends BaseControllerInvokedTask implement
         /* run task */
         final String jobName = dataSourceName + "_" + adTaskType.toString();
         logger.info("Running AD task {} with ID {}", jobName, resultsId);
-        if (!runCollectionJob(jobName, resultsId, AD_JOB_GROUP)) {
+        if (!runCollectionJob(jobName, resultsId.toString(), AD_JOB_GROUP)) {
             notifyTaskDone();
             return new AdTaskResponse(adTaskType, false, -1, dataSource, -1L);
         }
@@ -136,7 +135,7 @@ public class ControllerInvokedAdTask extends BaseControllerInvokedTask implement
         }
 
         /* process results and understand if task finished successfully */
-        final String success = taskResults.get(BaseTaskPersistencyService.RESULTS_KEY_SUCCESS);
+        final String success = taskResults.get(AdTaskPersistencyService.RESULTS_KEY_SUCCESS);
         if (success == null) {
             logger.error("Invalid output for task {} for data source {}. success status is missing. Task Failed",
                     adTaskType, dataSourceName);
