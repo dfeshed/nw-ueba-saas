@@ -65,8 +65,8 @@ page.respond-engine {
 
     &.transaction-in-progress .transaction-overlay {
       @include rsa-fill-abs();
-      // overlay is fully transparent for now until we determine what (if any) styling it should have
-      background-color: transparent;
+      z-index: 2;
+      background-color: rsa-color(black,base,$rsa-translucent);
     }
   }
 }

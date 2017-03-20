@@ -18,7 +18,9 @@ const {
  */
 const getIncidents = () => {
   return (dispatch, getState) => {
-    const { incidentsFilters: filters, incidentsSort: sort } = getState().respond.incidents;
+    const { incidentsFilters: filters, incidentsSort: sort, stopIncidentsStream } = getState().respond.incidents;
+
+    // Fetch the total incident count for the current query
     dispatch({
       type: ACTION_TYPES.FETCH_INCIDENTS_TOTAL_COUNT,
       promise: Incidents.getIncidentsCount(filters, sort),
@@ -27,14 +29,27 @@ const getIncidents = () => {
         onFailure: (response) => _handleContentRetrievalError(response, 'incidents count')
       }
     });
+
     dispatch({ type: ACTION_TYPES.FETCH_INCIDENTS_STARTED });
+    // If we already have an incidents stream running, stop it. This prevents a previously started stream
+    // from continuing to deliver results at the same time as the new stream.
+    if (stopIncidentsStream) {
+      stopIncidentsStream();
+    }
 
     Incidents.getIncidents(
       filters,
       sort,
       {
+        onInit: (stopStreamFn) => {
+          dispatch({ type: ACTION_TYPES.FETCH_INCIDENTS_STREAM_INITIALIZED, payload: stopStreamFn });
+        },
+        onCompleted: () => dispatch({ type: ACTION_TYPES.FETCH_INCIDENTS_COMPLETED }),
         onResponse: (payload) => dispatch({ type: ACTION_TYPES.FETCH_INCIDENTS_RETRIEVE_BATCH, payload }),
-        onError: (response) => _handleContentRetrievalError(response, 'incidents')
+        onError: (response) => {
+          dispatch({ type: ACTION_TYPES.FETCH_INCIDENTS_ERROR });
+          _handleContentRetrievalError(response, 'incidents');
+        }
       }
     );
   };

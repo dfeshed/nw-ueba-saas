@@ -63,7 +63,7 @@
         transform: translateX(100%);
         box-sizing: border-box;
         background-color: rsa-color(gray, darkest, $rsa-somewhat-opaque);
-        padding: 0 (rsa-whitespace() + rsa-whitespace(less)) rsa-whitespace(less) rsa-whitespace(less);
+        padding: 0 rsa-whitespace(less) rsa-whitespace(less) rsa-whitespace(less);
 
 
         .incident-action-button {

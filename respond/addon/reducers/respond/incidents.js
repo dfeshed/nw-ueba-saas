@@ -84,36 +84,50 @@ const incidents = reduxActions.handleActions({
   [ACTION_TYPES.FETCH_INCIDENTS_TOTAL_COUNT]: (state, action) => {
     return handle(state, action, {
       start: (s) => ({ ...s, incidentsTotal: '--' }),
-      success: (s) => {
-        return {
-          ...s,
-          incidentsTotal: action.payload.meta.total
-        };
-      }
+      success: (s) => ({
+        ...s,
+        incidentsTotal: action.payload.meta.total
+      })
     });
   },
 
-  [ACTION_TYPES.FETCH_INCIDENTS_STARTED]: (state) => ({
-    ...state,
-    incidents: [],
-    incidentsStatus: 'wait'
-  }),
-
-  [ACTION_TYPES.FETCH_INCIDENTS_RETRIEVE_BATCH]: (state, { payload: { data, meta } }) => {
+  [ACTION_TYPES.FETCH_INCIDENTS_STARTED]: (state) => {
     return {
       ...state,
-      incidents: [...state.incidents, ...data],
-      incidentsStatus: meta.complete ? 'complete' : 'streaming'
+      incidents: [],
+      incidentsStatus: 'wait'
     };
   },
 
-  [ACTION_TYPES.UPDATE_INCIDENT]: (state, action) => {
-    return handle(state, action, {
+  [ACTION_TYPES.FETCH_INCIDENTS_STREAM_INITIALIZED]: (state, { payload }) => {
+    return {
+      ...state,
+      stopIncidentsStream: payload
+    };
+  },
+
+  [ACTION_TYPES.FETCH_INCIDENTS_RETRIEVE_BATCH]: (state, { payload: { data, meta } }) => ({
+    ...state,
+    incidents: [...state.incidents, ...data],
+    incidentsStatus: meta.complete ? 'complete' : 'streaming'
+  }),
+
+  [ACTION_TYPES.FETCH_INCIDENTS_COMPLETED]: (state) => ({
+    ...state,
+    stopIncidentsStream: null
+  }),
+
+  [ACTION_TYPES.FETCH_INCIDENTS_ERROR]: (state) => ({
+    ...state,
+    stopIncidentsStream: null
+  }),
+
+  [ACTION_TYPES.UPDATE_INCIDENT]: (state, action) => (
+    handle(state, action, {
       start: (s) => ({ ...s, isTransactionUnderway: true }),
       success: _handleUpdates(action),
       finish: (s) => ({ ...s, isTransactionUnderway: false })
-    });
-  },
+    })),
 
   [ACTION_TYPES.TOGGLE_SELECT_MODE]: (state) => ({
     ...state,

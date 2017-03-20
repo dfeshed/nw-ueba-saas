@@ -37,4 +37,10 @@
     </box>
   </vbox>
 </hbox>
-<div class="transaction-overlay"></div>
+{{#if isTransactionUnderway}}
+  <div class="transaction-overlay">
+    <centered class="transaction-overlay">
+      {{rsa-loader size="large"}}
+    </centered>
+  </div>
+{{/if}}

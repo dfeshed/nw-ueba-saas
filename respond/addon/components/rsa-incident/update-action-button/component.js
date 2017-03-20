@@ -181,6 +181,14 @@ const IncidentUpdateActionButton = Component.extend({
    * @public
    */
   isDisabled: false,
+
+  /**
+   * Determines whether the resulting power select has search enabled or not
+   * @property searchEnabled
+   * @public
+   */
+  searchEnabled: true,
+
   /**
    * Determines the button styling for the embedded rsa-form-button. This has no impact if the button is shown as an
    * icon only (i.e., isIconOnly=true), but rather impacts the full button look/feel. See rsa-form-button docs in the

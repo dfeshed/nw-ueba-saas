@@ -26,12 +26,10 @@ const _buildIncidentsQuery = (filters, sort) => {
     sortField,
     isDescending } = SORT_TYPES_BY_NAME[sort];
 
-  const query = FilterQuery.create()
+  return FilterQuery.create()
     .addSortBy(sortField, isDescending)
     .addFilter(cannedFilterField, cannedFilterValue)
     .addRangeFilter('created', 0, undefined);
-
-  return query;
 };
 
 IncidentsAPI.reopenClass({
@@ -47,15 +45,17 @@ IncidentsAPI.reopenClass({
    * @param {function} onError The callback for any error during streaming
    * @returns {Promise}
    */
-  getIncidents(filters, sort, { onResponse = K, onError = K }) {
+  getIncidents(filters, sort, { onResponse = K, onError = K, onInit = K, onCompleted = K }) {
     const query = _buildIncidentsQuery(filters, sort);
 
-    streamRequest({
+    return streamRequest({
       method: 'stream',
       modelName: 'incidents',
       query: query.toJSON(),
+      onInit,
       onResponse,
-      onError
+      onError,
+      onCompleted
     });
   },
 
