@@ -25,7 +25,7 @@ const dispatchToActions = (dispatch) => ({
 const StorylineItem = ListItem.extend({
   tagName: 'vbox',
   classNames: ['rsa-incident-storyline-item'],
-  classNameBindings: ['item.indicator.isCatalyst:is-catalyst', 'item.isHidden:is-hidden'],
+  classNameBindings: ['item.isCatalyst:is-catalyst', 'item.isHidden:is-hidden'],
   layout,
 
   /**

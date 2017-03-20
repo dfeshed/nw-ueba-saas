@@ -1,4 +1,5 @@
 $darkStorylineBgColor: rsa-color(gray, light, $rsa-nearly-transparent);
+$lightStorylineBgColor: rsa-color(white);
 $storylineSeverityRadius: 1rem;
 $storylineLineHeight: 1.5;
 $storylineHeadingSize: 1rem;
@@ -170,6 +171,16 @@ $storylineConnectorPaddingX: rsa-whitespace(less);
 
     .severity {
       background-color: $darkStorylineBgColor;
+    }
+
+    &.is-catalyst {
+      .severity {
+        background-color: $lightStorylineBgColor;
+        color: rsa-color(black,base,$rsa-nearly-opaque);
+      }
+      .is-catalyst {
+        color: $lightStorylineBgColor;
+      }
     }
 
     .enrichment {

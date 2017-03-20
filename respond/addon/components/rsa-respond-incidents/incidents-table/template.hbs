@@ -30,7 +30,7 @@
       {{#rsa-data-table/body-cell item=item column=column columnWidth=column.width}}
 
         {{#if (eq column.dataType "date")}}
-          {{rsa-content-datetime timestamp=(get item column.field) displayTime=true}}
+          {{rsa-content-datetime timestamp=(get item column.field) displayTime=true displayMilliseconds=false}}
 
         {{else if (eq column.field "name")}}
           <div class="incident-name">

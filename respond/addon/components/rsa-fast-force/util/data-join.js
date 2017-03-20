@@ -106,6 +106,8 @@ export default function() {
     .attr('y', 0)
     .attr('dy', '-0.2em')
     .text((d) => d.text);
+  linksEnterGroup.append('title')
+    .text((d) => d.text);
 
   return {
     nodes: nodesEnterGroup.merge(nodesAll),
