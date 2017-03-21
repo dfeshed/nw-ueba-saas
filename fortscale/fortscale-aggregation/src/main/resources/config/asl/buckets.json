@@ -20,6 +20,9 @@
           },
           "aggrFeatureFuncJson": {
             "type": "aggr_feature_histogram_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.event_type == 'message_body')]"
           }
         },
         {
@@ -31,6 +34,9 @@
           },
           "aggrFeatureFuncJson": {
             "type": "aggr_feature_histogram_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.event_type == 'message_body')]"
           }
         },
         {
@@ -198,6 +204,9 @@
           },
           "aggrFeatureFuncJson": {
             "type": "aggr_feature_histogram_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.event_type == 'message_body')]"
           }
         },
         {
@@ -209,6 +218,9 @@
           },
           "aggrFeatureFuncJson": {
             "type": "aggr_feature_histogram_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.event_type == 'message_body')]"
           }
         },
         {
@@ -220,6 +232,9 @@
           },
           "aggrFeatureFuncJson": {
             "type": "aggr_feature_histogram_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.event_type == 'recipient')]"
           }
         },
         {
@@ -231,6 +246,9 @@
           },
           "aggrFeatureFuncJson": {
             "type": "aggr_feature_histogram_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.event_type == 'message_body')]"
           }
         },
         {
@@ -242,6 +260,9 @@
           },
           "aggrFeatureFuncJson": {
             "type": "aggr_feature_histogram_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.event_type == 'attachment')]"
           }
         },
         {
@@ -253,6 +274,9 @@
           },
           "aggrFeatureFuncJson": {
             "type": "aggr_feature_histogram_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.event_type == 'attachment')]"
           }
         }
       ]
@@ -446,6 +470,9 @@
           },
           "aggrFeatureFuncJson": {
             "type": "aggr_feature_histogram_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.event_type == 'message_body')]"
           }
         }
       ]
