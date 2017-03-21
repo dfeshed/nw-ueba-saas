@@ -134,7 +134,7 @@ test('it renders correctly with the correct number of expected elements', functi
   assert.equal(this.$('.rsa-context-panel__liveconnect__reviewstatus__col-1').length, 1, 'review status element exists.');
   assert.equal(this.$('.rsa-context-panel__liveconnect__comm-activity__desc').length, 4, 'Community Activity description element exists');
   assert.equal(this.$('.rsa-context-panel__liveconnect__comm-activity').length, 1, 'Community Activity element exists');
-  assert.equal(this.$('.rsa-content-section-header').length, 4, 'Correct number of section header elements found');
+  assert.equal(this.$('.rsa-context-panel__liveconnect__heading').length, 4, 'Correct number of panel headers found');
   assert.equal(this.$('.rsa-content-datetime').length, 2, 'Correct number of rsa-content-datetime elements found');
 
 });

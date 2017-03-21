@@ -37,7 +37,7 @@ export default [{
     {
       field: 'liveConnect',
       title: 'context.header.liveConnect',
-      dataSourceType: 'liveConnect'
+      dataSourceType: 'LiveConnect-Ip'
     }
   ],
 

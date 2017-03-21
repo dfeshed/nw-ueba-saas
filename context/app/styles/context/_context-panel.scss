@@ -278,23 +278,18 @@ radial-gradient(circle at 85% 85%, rsa-color(blue, darker, .1) 0, rsa-color(blue
     &__no-feedback-label {
       color: rsa-color(amber, dark);
     }
-    &__reviewstatus {
-      width: 100%;
-      &__col-1 {
-        min-width: 160px;
-      }
-      &__col-2 {
-        min-width: 250px;
-      }
-      &__col-3 {
-        min-width: 200px;
-      }
-      &__col-4 {
-        min-width: 200px;
-      }
-      &__col-5 {
-        max-width: 100px;
-      }
+    &__heading {
+      @include rsa-font(header, large);
+      color: rsa-color(gray, lighter);
+      padding: rsa-whitespace();
+      border-top: 3px solid rsa-color(gray, darkest);
+    }
+
+    &__heading > span {
+      float: right;
+      color: $font-fade-color;
+      @include rsa-font(header, small);
+      letter-spacing: 0.05rem;
     }
     &__community_trend {
       padding: rsa-whitespace();

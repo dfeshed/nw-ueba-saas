@@ -2,7 +2,7 @@
   <div class="rsa-context-panel__liveconnect__field">{{t 'context.lc.errorMsg' error=liveConnectError}}</div>
 {{else if (or (is-equal tabdata 'overview')(is-equal tabdata 'liveConnect'))}}
   {{#if (eq contextData.liveConnectData null)}}
-    {{#rsa-content-section-header label='Section Heading'}}{{t 'context.lc.noDataMsg'}}{{/rsa-content-section-header}}
+    <div class="rsa-context-panel__liveconnect__heading">{{t 'context.lc.noDataMsg'}}</div>
   {{else if contextData.liveConnectData.allTags}}
     {{#if (is-equal model.meta 'IP')}}
       {{context-panel/live-connect/lc-community-activity

@@ -1,4 +1,4 @@
-{{#rsa-content-section-header label='Section Heading'}}{{t 'context.lc.reviewStatus'}}{{/rsa-content-section-header}}
+<div class="rsa-context-panel__liveconnect__heading">{{t 'context.lc.reviewStatus'}}</div>
 <hbox class="rsa-context-panel__liveconnect__reviewstatus__col-1">
   <div class="rsa-context-panel__liveconnect__field">
     {{rsa-content-definition label=(t 'context.lc.status') value=(check-null liveConnectData.feedback.status (t 'context.lc.notReviewed'))}}
@@ -15,7 +15,7 @@
   </div>
 </hbox>
 
-{{#rsa-content-section-header label='Section Heading'}}{{t 'context.lc.riskAssessment'}}{{/rsa-content-section-header}}
+<div class="rsa-application-layout-panel rsa-context-panel__liveconnect__heading">{{t 'context.lc.riskAssessment'}}</div>
 {{#if liveConnectData.risk}}
   <hbox>
     <div class="rsa-context-panel__liveconnect__risk-badge">{{rsa-content-badge-score class=riskBadgeStyle score=liveConnectData.risk size='small'}}</div>
@@ -33,9 +33,7 @@
     <span class="rsa-context-panel__liveconnect__no-feedback-label">{{t 'context.lc.noFeedback2'}}</span>
   </div>
 {{/if}}
-{{#rsa-content-section-header label='Section Heading'}}
-  {{t 'context.lc.riskIndicators'}}
-{{/rsa-content-section-header}}
+<div class="rsa-context-panel__liveconnect__heading">{{t 'context.lc.riskIndicators'}}</div>
 <hbox class="rsa-context-panel__liveconnect__risk-indicators">
   {{#each riskIndicatorCategories as |category|}}
     <vbox class="rsa-context-panel__liveconnect__risk-indicators__category-panel">
@@ -62,7 +60,7 @@
   {{/each}}
 </hbox>
 
-{{#rsa-content-section-header label='Section Heading'}}{{t 'context.lc.commActivity'}}{{/rsa-content-section-header}}
+<div class="rsa-context-panel__liveconnect__heading">{{t 'context.lc.commActivity'}}</div>
 <div class="rsa-context-panel__liveconnect__comm-activity">
   <hbox fill>
     <vbox class="rsa-context-panel__liveconnect__field">
