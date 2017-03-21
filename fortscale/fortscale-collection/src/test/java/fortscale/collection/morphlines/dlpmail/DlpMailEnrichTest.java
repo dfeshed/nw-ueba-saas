@@ -258,7 +258,6 @@ public class DlpMailEnrichTest {
     }
 
     @Test
-    @Ignore /* we are currently filtering "Attach Mail" events because we only support DG events (when it comes to parsing) */
     public void test_set_event_type_attachment() {
         String testCase = "Test that event type is attachment for events that are \"Attach Mail\" OR \"Send Mail\" with (attachment_file_name!=\"\" | \"message body\"";
         DgMailEventInput input = new DgMailEventInputBuilder()
@@ -287,6 +286,36 @@ public class DlpMailEnrichTest {
         final String inputLine = input.toString();
         final String expectedOutput = expected.toString();
         morphlineTester.testSingleLine(testCase, inputLine, expectedOutput);
+
+        //TODO:
+        /* we are currently filtering "Attach Mail" events because we only support DG events (when it comes to parsing) so we ignore this part for now */
+
+//        DgMailEventInput input2 = new DgMailEventInputBuilder()
+//                .setOperation("Attach Mail")
+//                .setAgentUtcTime("06/12/2016 16:04")
+//                .setDestinationFile("somefile.jpeg")
+//                // interesting test stuff starts here
+//                .createDgEvent();
+//
+//        DgMailEventAfterEtl expected2 = new DgMailEventAfterEtlBuilder()
+//                .setDateTimeUnix("1465747440")
+//                .setDateTime("2016-06-12 16:04:00")
+//                .setEventDescription("Attach Mail")
+//                .setFullName("some_givenName some_surname")
+//                .setIsAttachmentExtensionBlacklisted("false")
+//                .setIsExternal("true")
+//                .setNumOfRecipients("")
+//                .setDataSource("dlpmail")
+//                .setLastState("etl")
+//                .setEmailRecipientDomain("some_emailRecipient") // because the parsing wont find the domain - this is ok for this test
+//                // interesting test stuff starts here
+//                .setDestinationFile("somefile.jpeg")
+//                .setEventType("attachment")
+//                .createDgEventAfterEtl();
+
+//        final String inputLine2 = input2.toString();
+//        final String expectedOutput2 = expected2.toString();
+//        morphlineTester.testSingleLine(testCase, inputLine2, expectedOutput2);
     }
 
 }

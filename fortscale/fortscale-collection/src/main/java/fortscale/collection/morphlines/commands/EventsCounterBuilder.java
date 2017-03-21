@@ -24,14 +24,14 @@ import static fortscale.collection.morphlines.RecordExtensions.getLongValue;
 import static fortscale.utils.time.TimestampUtils.convertToSeconds;
 
 /**
- * This command is responsible for counting events that match certain constraints (example - in dlpmail we count the number of recipients (for a single event_id))
+ * This command is responsible for counting record that match certain constraints (example - in dlpmail we count the number of recipients (for a single event_id))
  */
 public class EventsCounterBuilder implements CommandBuilder {
 
     public static final String EVENT_TYPE_FIELD_NAME = "event_type";
     public static final String EVENT_ID_FIELD_NAME = "event_id";
     public static final String NUM_OF_RECIPIENTS_FIELD_NAME = "num_of_recipients";
-    public static final String FORTSCALE_CONTROL_EVENT_ID = "Fortscale Control";
+    public static final String FORTSCALE_CONTROL_RECORD_EVENT_ID = "Fortscale Control";
     public static final String MESSAGE_BODY_FIELD_NAME = "message body";
     public static final String KEY_DELIMITER = "_";
     private static Logger logger = LoggerFactory.getLogger(EventsReducerBuilder.class);
@@ -56,7 +56,7 @@ public class EventsCounterBuilder implements CommandBuilder {
         private List<String> keys;
         private boolean processRecord;
 
-        private Pair<String, Record> eventsCache = new MutablePair<>();
+        private Pair<String, Record> cache = new MutablePair<>();
         private MorphlineCommandMonitoringHelper commandMonitoringHelper = new MorphlineCommandMonitoringHelper();
 
 
@@ -71,7 +71,7 @@ public class EventsCounterBuilder implements CommandBuilder {
             for (Object event : Notifications.getLifecycleEvents(notification)) {
                 if (event == Notifications.LifecycleEvent.SHUTDOWN ) {
                     logger.info("Clearing cache.");
-                    eventsCache = new MutablePair<>();
+                    cache = new MutablePair<>();
                 }
             }
             super.doNotify(notification);
@@ -79,12 +79,12 @@ public class EventsCounterBuilder implements CommandBuilder {
 
         @Override
         protected boolean doProcess(Record inputRecord) {
-            final Record previousEvent = eventsCache.getValue();
+            final Record previousRecord = cache.getValue();
 
-            if (isControlEvent(inputRecord)) {
-                logger.debug("got fortscale control event.");
-                eventsCache = new MutablePair<>();
-                return continueProcessEvent(previousEvent);
+            if (isControlRecord(inputRecord)) {
+                logger.debug("got fortscale control record.");
+                cache = new MutablePair<>();
+                return continueProcessingRecord(previousRecord);
             }
 
             MorphlineMetrics morphlineMetrics = commandMonitoringHelper.getMorphlineMetrics(inputRecord);
@@ -92,8 +92,8 @@ public class EventsCounterBuilder implements CommandBuilder {
             final String key = getKey(inputRecord);
 
             if (isNewEvent(key)) {
-                if (previousEvent != null) {
-                    return handleFirstEventOfItsKind(inputRecord, previousEvent, morphlineMetrics);
+                if (previousRecord != null) {
+                    return handleFirstRecordOfEvent(inputRecord, previousRecord, morphlineMetrics);
                 }
                 else {
                     return handleFirstEventInFile(inputRecord, morphlineMetrics);
@@ -101,73 +101,73 @@ public class EventsCounterBuilder implements CommandBuilder {
 
             }
             else {
-                return handleNotFirst(inputRecord, previousEvent, morphlineMetrics);
+                return handleRecordNotFirstOfEvent(inputRecord, previousRecord, morphlineMetrics);
             }
         }
 
-        private boolean handleFirstEventOfItsKind(Record inputRecord, Record previousEvent, MorphlineMetrics morphlineMetrics) {
-            logger.debug("Handling first event {} of its kind (key).", inputRecord);
-            saveEventToCache(inputRecord, morphlineMetrics);
-            return continueProcessEvent(previousEvent);
+        private boolean handleFirstRecordOfEvent(Record inputRecord, Record previousRecord, MorphlineMetrics morphlineMetrics) {
+            logger.debug("Handling first record {} of event with key {}.", inputRecord, getKey(inputRecord));
+            saveRecordToCache(inputRecord, morphlineMetrics);
+            return continueProcessingRecord(previousRecord);
         }
 
-        private boolean handleNotFirst(Record inputRecord, Record previousEvent, MorphlineMetrics morphlineMetrics) {
+        private boolean handleRecordNotFirstOfEvent(Record inputRecord, Record previousRecord, MorphlineMetrics morphlineMetrics) {
             final String newEventType = (String) inputRecord.getFirstValue(EVENT_TYPE_FIELD_NAME);
             final boolean isNewEventMessageBody = newEventType != null && newEventType.equals(MESSAGE_BODY_FIELD_NAME);
 
             boolean handledSuccessfully;
             if (isNewEventMessageBody) {
-                handledSuccessfully = handleNotFirstMessageBody(inputRecord, previousEvent, morphlineMetrics);
+                handledSuccessfully = handleRecordNotFirstOfEventMessageBody(inputRecord, previousRecord, morphlineMetrics);
             }
             else {
-                handledSuccessfully = handleNotFirstRecipient(inputRecord, previousEvent);
+                handledSuccessfully = handleRecordNotFirstOfEventRecipient(inputRecord, previousRecord);
             }
 
             return handledSuccessfully;
         }
 
-        private boolean handleNotFirstMessageBody(Record inputRecord, Record previousEvent, MorphlineMetrics morphlineMetrics) {
-            logger.debug("Handling not-first message-body-event {}.", inputRecord);
-            final String previousEventType = (String) previousEvent.getFirstValue(EVENT_TYPE_FIELD_NAME);
+        private boolean handleRecordNotFirstOfEventMessageBody(Record inputRecord, Record previousRecord, MorphlineMetrics morphlineMetrics) {
+            logger.debug("Handling not-first-of-event record of type message-body {}.", inputRecord);
+            final String previousEventType = (String) previousRecord.getFirstValue(EVENT_TYPE_FIELD_NAME);
             final boolean isPreviousEventMessageBody = previousEventType != null && previousEventType.equals(MESSAGE_BODY_FIELD_NAME);
             if (isPreviousEventMessageBody) {
-                logger.error("Error with counting command. there were 2 message bodies for event_id {}", previousEvent.getFields().get(EVENT_ID_FIELD_NAME).get(0));
+                logger.error("Error with counting command. there were 2 message bodies for event_id {}", previousRecord.getFields().get(EVENT_ID_FIELD_NAME).get(0));
                 return false;
             }
             else { //current is message body & previous is recipient
-                String count = (String) previousEvent.getFirstValue(NUM_OF_RECIPIENTS_FIELD_NAME);
-                previousEvent.replaceValues("num_of_recipients", ""); //reset the recipient event (all recipient events have empty num_of_recipients)
+                String count = (String) previousRecord.getFirstValue(NUM_OF_RECIPIENTS_FIELD_NAME);
+                previousRecord.replaceValues("num_of_recipients", ""); //reset the recipient event (all recipient events have empty num_of_recipients)
                 inputRecord.replaceValues("num_of_recipients", count);
-                saveEventToCache(inputRecord, morphlineMetrics);
+                saveRecordToCache(inputRecord, morphlineMetrics);
             }
-            return continueProcessEvent(previousEvent);
+            return continueProcessingRecord(previousRecord);
         }
 
-        private boolean handleNotFirstRecipient(Record inputRecord, Record previousEvent) {
-            logger.debug("Handling not-first recipient-event {}.", inputRecord);
-            String countAsString = (String) previousEvent.getFirstValue(NUM_OF_RECIPIENTS_FIELD_NAME);
+        private boolean handleRecordNotFirstOfEventRecipient(Record inputRecord, Record previousRecord) {
+            logger.debug("Handling not-first-of-event record of type recipient {}.", inputRecord);
+            String countAsString = (String) previousRecord.getFirstValue(NUM_OF_RECIPIENTS_FIELD_NAME);
             Integer count = Integer.parseInt(countAsString);
 
-            previousEvent.replaceValues(NUM_OF_RECIPIENTS_FIELD_NAME, String.valueOf(count+1)); // increase the count by 1
+            previousRecord.replaceValues(NUM_OF_RECIPIENTS_FIELD_NAME, String.valueOf(count+1)); // increase the count by 1
 
-            return continueProcessEvent(inputRecord);
+            return continueProcessingRecord(inputRecord);
         }
 
         private boolean handleFirstEventInFile(Record inputRecord, MorphlineMetrics morphlineMetrics) {
-            logger.debug("Handling first event {} in file.", inputRecord);
+            logger.debug("Handling first record {} in file.", inputRecord);
 
-            saveEventToCache(inputRecord, morphlineMetrics);
+            saveRecordToCache(inputRecord, morphlineMetrics);
             return true;
         }
 
         private boolean isNewEvent(String key) {
-            final String currentKeyInCache = eventsCache.getKey();
+            final String currentKeyInCache = cache.getKey();
             return currentKeyInCache == null || !key.equals(currentKeyInCache);
         }
 
-        private boolean isControlEvent(Record inputRecord) {
+        private boolean isControlRecord(Record inputRecord) {
             final String key = getKey(inputRecord);
-            return key.equals(FORTSCALE_CONTROL_EVENT_ID);
+            return key.equals(FORTSCALE_CONTROL_RECORD_EVENT_ID);
         }
 
         private String getKey(Record inputRecord) {
@@ -180,11 +180,11 @@ public class EventsCounterBuilder implements CommandBuilder {
             return stringJoiner.toString();
         }
 
-        private void saveEventToCache(Record inputRecord, MorphlineMetrics morphlineMetrics) {
-            logger.debug("Storing event {} in cache.", inputRecord);
+        private void saveRecordToCache(Record inputRecord, MorphlineMetrics morphlineMetrics) {
+            logger.debug("Storing record {} in cache.", inputRecord);
             final String eventType = (String) inputRecord.getFirstValue(EVENT_TYPE_FIELD_NAME);
-            final boolean isInputMessageBody = eventType != null && eventType.equals(MESSAGE_BODY_FIELD_NAME);
-            if (isInputMessageBody) {
+            final boolean isInputRecordOfTypeMessageBody = eventType != null && eventType.equals(MESSAGE_BODY_FIELD_NAME);
+            if (isInputRecordOfTypeMessageBody) {
                 if (inputRecord.getFirstValue(NUM_OF_RECIPIENTS_FIELD_NAME).equals("")) {
                     inputRecord.replaceValues(NUM_OF_RECIPIENTS_FIELD_NAME, "0");
                 }
@@ -194,16 +194,16 @@ public class EventsCounterBuilder implements CommandBuilder {
             }
 
             final String key = (String) inputRecord.getFirstValue(EVENT_ID_FIELD_NAME);
-            eventsCache = new MutablePair<>(key, inputRecord);
+            cache = new MutablePair<>(key, inputRecord);
             commandMonitoringHelper.addFilteredEventToMonitoring(inputRecord, CollectionMessages.SAVED_TO_CACHE);
             if (morphlineMetrics != null) {
                 morphlineMetrics.eventSavedToCache++;
             }
         }
 
-        private boolean continueProcessEvent(Record event) {
+        private boolean continueProcessingRecord(Record record) {
             if (processRecord) {
-                return super.doProcess(event);
+                return super.doProcess(record);
             }
             else {
                 return true;
