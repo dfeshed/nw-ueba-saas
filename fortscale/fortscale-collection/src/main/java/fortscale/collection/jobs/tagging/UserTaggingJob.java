@@ -13,6 +13,7 @@ import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.io.File;
 import java.io.IOException;
@@ -38,6 +39,9 @@ public class UserTaggingJob extends FortscaleJob {
     private UserTaggingTaskPersistenceService userTaggingTaskPersistenceService;
     @Autowired
     private UserService userService;
+
+    @Value("${user.list.custom_tags.deletion_symbol:-}")
+    private String deletionSymbol;
 
     @Override
     protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
@@ -184,7 +188,12 @@ public class UserTaggingJob extends FortscaleJob {
                 }
 
                 try {
-                    userTagService.addUserTagsRegex(userRegex, tags);
+                    // When we have "-" before the user name we want to remove the tags from the user
+                    if (userRegex.startsWith(deletionSymbol)){
+                        userTagService.removeUserTags(userRegex.substring(1), tags);
+                    }else {
+                        userTagService.addUserTagsRegex(userRegex, tags);
+                    }
                 } catch (Exception e) {
                     final String errorMessage = String.format("Job failed. File %s format is invalid.", tagFilePath);
                     logger.error(errorMessage, e);
