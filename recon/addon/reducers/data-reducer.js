@@ -141,7 +141,8 @@ const data = handleActions({
     contentLoading: false
   }),
   [ACTION_TYPES.PACKETS_RETRIEVE_PAGE]: (state, { payload }) => {
-    const newPackets = addPacketSide(payload);
+    let newPackets = addPacketSide(payload);
+    newPackets = generateDecodedBytes(newPackets);
     return {
       ...state,
       contentLoading: false,
@@ -220,11 +221,20 @@ const data = handleActions({
   })
 }, dataInitialState);
 
-const addPacketSide = (data) => {
-  return data.map((d) => ({
+const generateDecodedBytes = (data) => {
+  const massagedPackets = data.map((d) => ({
     ...d,
-    side: (d.side === 1) ? 'request' : 'response'
+    bytes: atob(d.bytes || '').split('')
   }));
+
+  return massagedPackets;
+};
+
+const addPacketSide = (data) => {
+  return data.map((d) => {
+    d.side = d.side === 1 ? 'request' : 'response';
+    return d;
+  });
 };
 
 const generateHTMLSafeText = (data) => {

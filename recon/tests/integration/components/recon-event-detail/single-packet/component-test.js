@@ -1,8 +1,51 @@
 import wait from 'ember-test-helpers/wait';
-import Ember from 'ember';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
-const { Object: EmberObject } = Ember;
+
+import { enhancedPackets } from 'recon/selectors/packet-selectors';
+
+const packetFields = [
+  {
+    'length': 6,
+    'name': 'eth.dst',
+    'position': 0
+  },
+  {
+    'length': 6,
+    'name': 'eth.src',
+    'position': 6
+  },
+  {
+    'length': 2,
+    'name': 'eth.type',
+    'position': 12
+  },
+  {
+    'length': 4,
+    'name': 'ip.src',
+    'position': 26
+  },
+  {
+    'length': 4,
+    'name': 'ip.dst',
+    'position': 30
+  },
+  {
+    'length': 1,
+    'name': 'ip.proto',
+    'position': 23
+  },
+  {
+    'length': 2,
+    'name': 'tcp.srcport',
+    'position': 34
+  },
+  {
+    'length': 2,
+    'name': 'tcp.dstport',
+    'position': 36
+  }
+];
 
 moduleForComponent('recon-event-detail/single-packet', 'Integration | Component | recon event detail / single packet', {
   integration: true
@@ -11,66 +54,32 @@ moduleForComponent('recon-event-detail/single-packet', 'Integration | Component 
 test('single packet functionality', function(assert) {
   assert.expect(2);
 
-  this.set('isResponseShown', true);
-  this.set('isRequestShown', true);
-  this.set('index', 0);
-  this.set('packet', EmberObject.create({
-    bytes: 'EA1/dcTIcFaBmpTdCABFAAA0vV5AAEAGUIjAqDoGMhwAE/+qAFDrQBzdIbTfFIAQEABsVwAAAQEICjLkGBsFvHPr',
-    id: 575575,
-    payloadSize: 0,
-    sequence: 3946847453,
-    side: 'request',
-    timestamp: '1449631503741'
-  }));
-  this.set('packetFields', [
-    {
-      'length': 6,
-      'name': 'eth.dst',
-      'position': 0
+  const packets = enhancedPackets({
+    visuals: {
+      isRequestShown: true,
+      isResponseShown: true
     },
-    {
-      'length': 6,
-      'name': 'eth.src',
-      'position': 6
-    },
-    {
-      'length': 2,
-      'name': 'eth.type',
-      'position': 12
-    },
-    {
-      'length': 4,
-      'name': 'ip.src',
-      'position': 26
-    },
-    {
-      'length': 4,
-      'name': 'ip.dst',
-      'position': 30
-    },
-    {
-      'length': 1,
-      'name': 'ip.proto',
-      'position': 23
-    },
-    {
-      'length': 2,
-      'name': 'tcp.srcport',
-      'position': 34
-    },
-    {
-      'length': 2,
-      'name': 'tcp.dstport',
-      'position': 36
+    data: {
+      packetFields,
+      packets: [{
+        bytes: atob('EA1/dcTIcFaBmpTdCABFAAA0vV5AAEAGUIjAqDoGMhwAE/+qAFDrQBzdIbTfFIAQEABsVwAAAQEICjLkGBsFvHPr').split(''),
+        id: 575575,
+        payloadSize: 0,
+        sequence: 3946847453,
+        side: 'request',
+        timestamp: '1449631503741'
+      }]
     }
-  ]);
+  });
+
+  this.set('packetFields', packetFields);
+  this.set('index', 0);
+  this.set('packet', packets[0]);
 
   this.render(hbs`{{recon-event-detail/single-packet
     index=index
     packet=packet
     packetFields=packetFields
-    isResponseShown=isResponseShown
-    isRequestShown=isRequestShown
   }}`);
 
   return wait().then(() => {

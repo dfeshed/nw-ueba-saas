@@ -37,9 +37,7 @@
     <section class="rsa-packet__body">
       <section class="rsa-packet__offsets hex">
         {{recon-event-detail/single-packet/offset-table
-          byteRows=byteRows
-          bytesPerRow=bytesPerRow
-          digits=6
+          byteRows=packet.byteRows
         }}
       </section>
       <section class="rsa-packet__hex">
@@ -47,12 +45,9 @@
           {{recon-event-detail/single-packet/byte-table
             index=index
             byteFormat="hex"
-            byteRows=byteRows
-            bytes=bytes
             packet=packet
             packetFields=packetFields
             byteGrouping=byteGrouping
-            bytesPerRow=bytesPerRow
             selection=selection
             onselect=onselect
             tooltipData=tooltipData
@@ -64,12 +59,9 @@
           {{recon-event-detail/single-packet/byte-table
             index=index
             byteFormat="ascii"
-            byteRows=byteRows
-            bytes=bytes
             packet=packet
             packetFields=packetFields
             byteGrouping=byteGrouping
-            bytesPerRow=bytesPerRow
             selection=selection
             onselect=onselect
             tooltipData=tooltipData

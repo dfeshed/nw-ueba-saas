@@ -18,8 +18,6 @@ const ByteTableComponent = Component.extend({
   classNameBindings: ['byteFormat'],
   cellClass: 'byte-cell',
   headerCellClass: 'header',
-  byteRows: null,
-  bytes: null,
   byteFormat: null,
   packet: null,
   packetFields: null,
@@ -57,7 +55,7 @@ const ByteTableComponent = Component.extend({
     this.detachDomListeners();
   },
 
-  _scheduleAfterRenderTasks: observer('byteRows', function() {
+  _scheduleAfterRenderTasks: observer('packet.byteRows', function() {
     run.schedule('afterRender', this, 'afterRender');
   }),
 
@@ -76,7 +74,7 @@ const ByteTableComponent = Component.extend({
     const table = el.append('table');
     const cells = this._cells = [];
 
-    this.get('byteRows').forEach((byteRow) => {
+    this.get('packet.byteRows').forEach((byteRow) => {
       const tr = table.append('tr');
       byteRow.forEach((byte) => {
         const td = tr.append('td')
@@ -191,7 +189,6 @@ const ByteTableComponent = Component.extend({
     } else {
 
       // Something selected by user.
-      const bytes = this.get('bytes');
       const cells = this._cells || [];
       let start = -1;
       let end = -1;
@@ -222,7 +219,6 @@ const ByteTableComponent = Component.extend({
       this.set('selection', (start === -1) ? null : {
         start,
         end,
-        bytes,
         packet: this.get('packet')
       });
     }
@@ -236,9 +232,6 @@ const ByteTableComponent = Component.extend({
   _clearSelection() {
     const selection = this.get('selection');
     if (selection) {
-      // this.get('bytes').slice(selection.start, selection.end + 1).forEach((byte) => {
-      //  Ember.set(byte, 'isSelected', false);
-      // });
       this.set('selection', null);
     }
   },

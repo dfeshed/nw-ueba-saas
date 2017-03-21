@@ -1,5 +1,5 @@
 <div class="scroll-box">
-  {{#each packetsToView as |packet index|}}
+  {{#each packets as |packet index|}}
     {{#if packet}}
       {{recon-event-detail/single-packet
         index=index
@@ -10,6 +10,7 @@
     {{/if}}
   {{/each}}
 </div>
+
 {{recon-pager
   eventIndex=eventIndex
   eventTotal=eventTotal
