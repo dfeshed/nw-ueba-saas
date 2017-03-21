@@ -15,12 +15,12 @@
       {{/spec-member}}
 
       {{#spec-member title="Disabled"}}
-        <label>
+        <label class="rsa-form-switch">
           {{x-toggle disabled=true value=toggledC onToggle=(mut toggledC)}}
         </label>
 
         {{!-- BEGIN-SNIPPET switch3
-        <label>
+        <label class="rsa-form-switch">
           {{x-toggle disabled=true value=toggledC onToggle=(mut toggledC)}}
         </label>
         END-SNIPPET --}}
@@ -30,13 +30,13 @@
 
     {{#spec-category title="Presentations"}}
       {{#spec-member title="With Label"}}
-        <label>
+        <label class="rsa-form-switch">
           {{x-toggle value=toggledB onToggle=(mut toggledB)}}
           Switch Value label
         </label>
 
         {{!-- BEGIN-SNIPPET switch2
-        <label>
+        <label class="rsa-form-switch">
           {{x-toggle value=toggledB onToggle=(mut toggledB)}}
           Switch Value label
         </label>
