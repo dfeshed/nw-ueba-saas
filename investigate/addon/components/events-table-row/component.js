@@ -45,12 +45,13 @@ export default Component.extend(RowMixin, {
   },
 
   // Formatting configuration options. Passed to utils that generate cell DOM.
-  _opts: computed('i18n', 'table.aliases.data', 'timezone.selected', 'dateFormat.selected.format', 'timeFormat.selected.format', function() {
+  _opts: computed('i18n', 'table.aliases.data', 'timezone.selected.zoneId', 'dateFormat.selected.format', 'timeFormat.selected.format', function() {
     const i18n = this.get('i18n');
     return {
       defaultWidth: DEFAULT_WIDTH,
       aliases: this.get('table.aliases.data'),
       dateTimeFormat: `${this.get('dateFormat.selected.format')} ${this.get('timeFormat.selected.format')}`,
+      locale: this.get('i18n.locale'),
       timeZone: this.get('timezone.selected.zoneId'),
       i18n: {
         size: {

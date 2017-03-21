@@ -145,7 +145,7 @@ function _size(value, opts = {}, dontAggregate = false) {
 
 // Formats a given timestamp value into a string using given (optional) format.
 function _time(value, opts = {}) {
-  return moment(value).format(opts.dateTimeFormat.replace(/.SSS/, '') || 'YYYY/MM/DD[T]HH:mm:ss');
+  return moment(value).locale(opts.locale || 'en').format(opts.dateTimeFormat.replace(/.SSS/, '') || 'YYYY/MM/DD[T]HH:mm:ss');
 }
 
 // Parses a given width value into a number and units (if any).
