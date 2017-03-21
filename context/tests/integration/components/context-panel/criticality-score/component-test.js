@@ -26,3 +26,14 @@ test('Should not show as red incase of NON HIGH rating', function(assert) {
   assert.equal(this.$('.rsa-context-panel__grid__host-details__field-circle__value').text(), 'MEDIUM');
   assert.equal(this.$('.rsa-context-panel__grid__host-details__field-circle__value').css('color'), 'rgb(255, 233, 0)');
 });
+
+test('Should show proper color for medium-high', function(assert) {
+
+  const label = 'RishRating';
+  const score = 'Medium-High';
+  this.set('label', label);
+  this.set('score', score);
+  this.render(hbs`{{context-panel/criticality-score label=label score=score}}`);
+  assert.equal(this.$('.rsa-context-panel__grid__host-details__field-circle__value').text(), score);
+  assert.equal(this.$('.rsa-context-panel__grid__host-details__field-circle__value').css('color'), 'rgb(255, 161, 0)');
+});

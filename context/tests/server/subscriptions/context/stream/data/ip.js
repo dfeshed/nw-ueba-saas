@@ -10,13 +10,13 @@ export default [
     'connectionName': 'test',
     'resultList': [
       {
-        'Risk Rating': 'MEDIUM HIGH',
+        'Risk Rating': 'Medium Low',
         'IP Address': '24.218.91.113',
         'Business Unit': [ 'Alberta', 'North American IT Shared Services', 'U.S. Finance' ],
         'Device ID': '218053',
         'Host Name': 'appserver01.archer-tech.com',
         'Device Name': 'APPSERVER01',
-        'Criticality Rating': 'MEDIUM HIGH',
+        'Criticality Rating': 'Medium-High',
         'Type': 'Web Server',
         'Device Owner': 'John',
         'Facilities': ['Corporate Headquarters', 'Kansas City Data Center']

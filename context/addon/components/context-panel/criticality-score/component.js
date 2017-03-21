@@ -10,8 +10,10 @@ const colorCode = {
   'NOT RATED': '',
   'LOW': ':#00FF3B',
   'MEDIUM LOW': ':#009DFF',
+  'MEDIUM-LOW': ':#009DFF',
   'MEDIUM': ':#FFE900',
   'MEDIUM HIGH': ':#FFA100',
+  'MEDIUM-HIGH': ':#FFA100',
   'HIGH': ':#FF0800'
 };
 
