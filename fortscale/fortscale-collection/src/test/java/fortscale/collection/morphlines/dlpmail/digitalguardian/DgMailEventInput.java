@@ -1,10 +1,14 @@
 package fortscale.collection.morphlines.dlpmail.digitalguardian;
 
 import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.List;
 import java.util.StringJoiner;
 
 
 public class DgMailEventInput {
+
+    private static final List<String> fieldNames = Arrays.asList("agentLocalDate", "agentLocalTime", "agentUtcTime", "application", "computerName", "computerType", "customInt4", "customString1", "customString3", "customString4", "customString6", "givenName", "surname", "userId", "username", "eventDisplayName", "companyName", "processSha1Hash", "processSha256Hash", "productName", "productVersion", "scanValueStatus", "scanValueStatusLocalTime", "scanValueStatusText", "dllMD5Hash", "dllName", "dllSHA1Hash", "dllSHA256Hash", "dNSHostname", "emailSender", "emailSubject", "eventDisplayName1", "eventId", "ipAddress", "localPort", "mD5Checksum", "mD5Hash", "networkDirection", "operation", "protocol", "remotePort", "urlPath", "wasBlocked", "wasClassified", "wasFileCaptured", "wasMobileDevice", "wasPkiAuthenticated", "wasPrivateAddress", "wasRemovable", "wasRuleViolation", "wasScreenCaptured", "wasSMIMEEncrypted", "wasSMIMESigned", "wasWireless", "customID", "deviceClass", "deviceID", "driveType", "friendlyName", "productID", "policyName", "serialNumber", "storageBusType", "supportsPredictFailure", "vendor", "vendorID", "blockCode", "bytesRead", "bytesWritten", "destinationDirectory", "destinationFile", "destinationFileEncryption", "destinationFileExtension", "detailEventID", "detailFileSize", "detailWasBlocked", "emailDomainName", "emailRecipient", "emailRecipientType", "printer", "printerJobname", "promptSurveyName", "sourceDirectory", "sourceFile", "sourceFileEncryption", "sourceFileExtension", "userResponse", "wasDestFileCaptured", "wasDestinationClassified", "wasDestinationRemovable", "wasDetailRuleViolation", "wasDetailScreenCaptured", "wasSourceClassified", "wasSourceFileCaptured", "wasSourceRemovable", "sourceDriveType", "sourceDeviceID", "destinationDriveType", "destinationDeviceID", "emailAddress", "employeeId", "registryDestinationPath", "registrySourcePath", "registryValue", "registryValueType");
 
     public String agentLocalDate;
     public String agentLocalTime;
@@ -227,9 +231,14 @@ public class DgMailEventInput {
     @Override
     public String toString() {
         StringJoiner stringJoiner = new StringJoiner(",");
-        final Field[] fields = this.getClass().getFields();
-        for (Field field : fields) {
+        for (String fieldName : fieldNames) {
             try {
+                final Field field;
+                try {
+                    field = this.getClass().getField(fieldName);
+                } catch (NoSuchFieldException e) {
+                    return null;
+                }
                 stringJoiner.add((String) field.get(this));
             } catch (IllegalAccessException e) {
                 return null;
