@@ -16,7 +16,7 @@ hf=$(echo $ver| awk -F . '{print $4}')
 
 yumdir=/mnt/libhq-SA/YUM/RSA/${major}.${minor}/${major}.${minor}.${sp}/${major}.${minor}.${sp}.${hf}
 
-rm -rf $yumdir/sa-ui-client-*
+rm -rf $yumdir/rsa-nw-ui*
 info "Removed existing yum sa-ui-client RPM(s)"
 
 cp -p $rpmFiles $yumdir/.

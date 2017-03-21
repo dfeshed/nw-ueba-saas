@@ -25,7 +25,7 @@ function writeRPMSpecFile {
 }
 
 function makeRPMDirs() {
-    cleanAndMakeDirs $RPM_BUILD_ROOT $TMP_RPM_BUILD_ROOT/etc $TMP_RPM_BUILD_ROOT/opt/rsa/sa-ui $SA_RPM_ROOT/BUILD $SA_RPM_ROOT/RPMS $SA_RPM_ROOT/SOURCES $SA_RPM_ROOT/SPECS $SA_RPM_ROOT/SRPMS
+    cleanAndMakeDirs $RPM_BUILD_ROOT $TMP_RPM_BUILD_ROOT/etc ${TMP_RPM_BUILD_ROOT}${APP_INSTALL_FOLDER} $SA_RPM_ROOT/BUILD $SA_RPM_ROOT/RPMS $SA_RPM_ROOT/SOURCES $SA_RPM_ROOT/SPECS $SA_RPM_ROOT/SRPMS
 }
 
 function buildRPM() {
@@ -48,7 +48,7 @@ function buildRPM() {
 
 function gzipAssets() {
     # GZIP the JS and CSS in /assets and keep the original as well
-    find $TMP_RPM_BUILD_ROOT/opt/rsa/sa-ui/html/assets -type f \( -name "*.js" -o -name "*.css" \) -exec sh -c "gzip -9 -c -- {} > {}.gz" \;
+    find ${TMP_RPM_BUILD_ROOT}${APP_INSTALL_FOLDER}/html/assets -type f \( -name "*.js" -o -name "*.css" \) -exec sh -c "gzip -9 -c -- {} > {}.gz" \;
 }
 
 rm -f $SA_RPM_ROOT/*.rpm
@@ -57,13 +57,13 @@ timestamp="$(date +%y%m%d%H%M%S)"
 # Build EL6 RPM
 makeRPMDirs
 cp -rf $SA_ROOT/rpm/nginx $TMP_RPM_BUILD_ROOT/etc/nginx
-cp -rf $SA_ROOT/dist $TMP_RPM_BUILD_ROOT/opt/rsa/sa-ui/html
+cp -rf $SA_ROOT/dist ${TMP_RPM_BUILD_ROOT}${APP_INSTALL_FOLDER}/html
 gzipAssets
 buildRPM $timestamp "el6"
 
 # Build EL7 RPM
 makeRPMDirs
-cp -rf $SA_ROOT/dist $TMP_RPM_BUILD_ROOT/opt/rsa/sa-ui/html
+cp -rf $SA_ROOT/dist ${TMP_RPM_BUILD_ROOT}${APP_INSTALL_FOLDER}/html
 gzipAssets
 buildRPM $timestamp "el7"
 

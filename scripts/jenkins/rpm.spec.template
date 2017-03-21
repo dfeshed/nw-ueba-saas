@@ -1,10 +1,11 @@
 %define __jar_repack 0
-Name: sa-ui-client
+Name: rsa-nw-ui
 Version: NETWITNESS_VERSION
 Release: DATE.STABILITY.GIT_COMMIT.VERSION.centos
-Summary: Netwitness UI :: Client :: Netwitness
+Summary: RSA NetWitness UI :: Client
 License: (c) null
 Group: Applications/Internet
+Obsoletes: sa-ui-client
 Requires: nginx
 autoprov: yes
 autoreq: yes
@@ -27,7 +28,7 @@ fi
 %if %has_nginx
     %config  "/etc/nginx"
 %endif
- "/opt/rsa/sa-ui/html"
+ "/opt/rsa/nw-ui/html"
 
 %post
 #!/bin/bash
