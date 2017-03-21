@@ -43,6 +43,9 @@ public class UserTaggingJob extends FortscaleJob {
     @Value("${user.list.custom_tags.deletion_symbol:-}")
     private String deletionSymbol;
 
+    private boolean jobSuccess = true;
+    private String errorMessage;
+
     @Override
     protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         JobDataMap map = jobExecutionContext.getMergedJobDataMap();
@@ -89,26 +92,17 @@ public class UserTaggingJob extends FortscaleJob {
         if (useFile) {
             // Updating the tags from the file
             logger.info("Updating user tags from file {}.", tagFilePath);
-            try {
-                updateFromFile();
-            } catch (IOException e) {
-                saveResultFailed();
-                throw new JobExecutionException(e);
-            }
+            updateFromFile();
         }
 
         // Get the users count per tag after tagging update
         Map<String, Long> taggedUsersCountAfterRun = userService.groupByTags(true);
 
         // Save the tagging result
-        saveResult(true, taggedUsersCountBeforeRun, taggedUsersCountAfterRun);
+        saveResult(taggedUsersCountBeforeRun, taggedUsersCountAfterRun);
     }
 
-    private void saveResultFailed() {
-        saveResult(false, null, null);
-    }
-
-    private void saveResult(boolean success, Map<String, Long> taggedUsersCountBeforeRun, Map<String, Long> taggedUsersCountAfterRun) {
+    private void saveResult(Map<String, Long> taggedUsersCountBeforeRun, Map<String, Long> taggedUsersCountAfterRun) {
         if (resultsId != null) {
             logger.info("Saving the user tagging result to id {}", resultsId);
 
@@ -119,7 +113,7 @@ public class UserTaggingJob extends FortscaleJob {
             }
 
             userTaggingTaskPersistenceService.writeTaskResults(UserTaggingTaskPersistencyServiceImpl.RESULTS_KEY_NAME,
-                    resultsId, success, deltaPerTag);
+                    resultsId, jobSuccess, deltaPerTag, errorMessage);
         }
     }
 
@@ -164,48 +158,50 @@ public class UserTaggingJob extends FortscaleJob {
     }
 
 
-    private void updateFromFile() throws IOException, JobExecutionException {
-        if (StringUtils.isEmpty(tagFilePath)) {
-            logger.error("Job failed. Empty tagFilePath.");
-            saveResultFailed();
-            return;
-        }
-        File tagsFile = new File(tagFilePath);
-
-        //read the custom tag list and update the possible tags to add in the system
-        if (tagsFile.exists() && tagsFile.isFile() && tagsFile.canRead()) {
-            for (String line : FileUtils.readLines(tagsFile)) {
-                final String[] splitLine = line.split(CSV_DELIMITER);
-                String userRegex;
-                List<String> tags;
-                try {
-                    userRegex = splitLine[INDEX_USER_REGEX];
-                    tags = Arrays.asList(splitLine[INDEX_TAGS].split(Pattern.quote(TAGS_DELIMITER)));
-                } catch (Exception e) {
-                    final String errorMessage = String.format("Job failed. File %s format is invalid.", tagFilePath);
-                    logger.error(errorMessage);
-                    throw new JobExecutionException(errorMessage, e);
-                }
-
-                try {
-                    // When we have "-" before the user name we want to remove the tags from the user
-                    if (userRegex.startsWith(deletionSymbol)){
-                        userTagService.removeUserTags(userRegex.substring(1), tags);
-                    }else {
-                        userTagService.addUserTagsRegex(userRegex, tags);
-                    }
-                } catch (Exception e) {
-                    final String errorMessage = String.format("Job failed. File %s format is invalid.", tagFilePath);
-                    logger.error(errorMessage, e);
-                    throw new JobExecutionException(e);
-                }
-
+    private void updateFromFile(){
+        try {
+            if (StringUtils.isEmpty(tagFilePath)) {
+                logger.error("Job failed. Empty tagFilePath.");
+                jobSuccess = false;
+                errorMessage = "No File Path";
+                return;
             }
-            logger.info("tags loaded");
+            File tagsFile = new File(tagFilePath);
 
-        } else {
-            saveResultFailed();
-            logger.error("Custom tag list file not accessible in path {}", tagFilePath);
+            //read the custom tag list and update the possible tags to add in the system
+            if (tagsFile.exists() && tagsFile.isFile() && tagsFile.canRead()) {
+                for (String line : FileUtils.readLines(tagsFile)) {
+                    final String[] splitLine = line.split(CSV_DELIMITER);
+                    String userRegex;
+                    List<String> tags;
+
+                    try {
+                        userRegex = splitLine[INDEX_USER_REGEX];
+                        tags = Arrays.asList(splitLine[INDEX_TAGS].split(Pattern.quote(TAGS_DELIMITER)));
+
+                        // When we have "-" before the user name we want to remove the tags from the user
+                        if (StringUtils.startsWith(userRegex,deletionSymbol)) {
+                            userTagService.removeUserTags(userRegex.substring(1), tags);
+                        } else {
+                            userTagService.addUserTagsRegex(userRegex, tags);
+                        }
+                    } catch (Exception e) {
+                        logger.error(String.format("Job failed. File %s format is invalid.", tagFilePath), e);
+                        jobSuccess = false;
+                        errorMessage = "File format error";
+                    }
+                }
+                logger.info("tags loaded");
+
+            } else {
+                logger.error("Custom tag list file not accessible in path {}", tagFilePath);
+                jobSuccess = false;
+                errorMessage = "File not found";
+            }
+        }
+        catch (Exception e){
+            jobSuccess = false;
+            errorMessage = "Error tagging from file";
         }
     }
 }

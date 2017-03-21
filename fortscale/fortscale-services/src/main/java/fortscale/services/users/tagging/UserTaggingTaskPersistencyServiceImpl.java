@@ -15,7 +15,6 @@ public class UserTaggingTaskPersistencyServiceImpl implements UserTaggingTaskPer
 
     private final String SYSTEM_SETUP_USER_TAGGING_LAST_EXECUTION_TIME ="system_setup_user_tagging.last_execution_time";
     private final String SYSTEM_SETUP_USER_TAGGING_EXECUTION_START_TIME ="system_setup_user_tagging.execution_start_time";
-    private final String SYSTEM_SETUP_USER_TAGGING_MONITOR_FILE_DAILY ="system_setup_user_tagging.monitor_file_daily";
 
     private final ApplicationConfigurationService applicationConfigurationService;
 
@@ -29,10 +28,10 @@ public class UserTaggingTaskPersistencyServiceImpl implements UserTaggingTaskPer
         return applicationConfigurationService.getApplicationConfigurationAsObject(createResultKey(resultsKey), UserTaggingResult.class);
     }
 
-    public void writeTaskResults(String taskTypeName, String resultsId, boolean result, Map<String, Long> deltaPerTag) {
+    public void writeTaskResults(String taskTypeName, String resultsId, boolean result, Map<String, Long> deltaPerTag, String errorMessage) {
         String resultsKey = createResultKey(resultsId);
         logger.debug("Inserting status to application configuration in key {}", resultsKey);
-        UserTaggingResult userTaggingResult = new UserTaggingResult(result, deltaPerTag);
+        UserTaggingResult userTaggingResult = new UserTaggingResult(result, deltaPerTag, errorMessage);
         applicationConfigurationService.insertOrUpdateConfigItemAsObject(resultsKey, userTaggingResult);
     }
 
@@ -73,15 +72,17 @@ public class UserTaggingTaskPersistencyServiceImpl implements UserTaggingTaskPer
     }
 
     public static class UserTaggingResult{
+        private String errorMessage;
         private boolean success;
         private Map<String, Long> usersAffected;
 
         public UserTaggingResult() {
         }
 
-        public UserTaggingResult(boolean success, Map<String, Long> usersAffected) {
+        public UserTaggingResult(boolean success, Map<String, Long> usersAffected, String errorMessage) {
             this.success = success;
             this.usersAffected = usersAffected;
+            this.errorMessage = errorMessage;
         }
 
         public boolean isSuccess() {
@@ -90,6 +91,10 @@ public class UserTaggingTaskPersistencyServiceImpl implements UserTaggingTaskPer
 
         public Map<String, Long> getUsersAffected() {
             return usersAffected;
+        }
+
+        public String getErrorMessage() {
+            return errorMessage;
         }
     }
 }
