@@ -16,6 +16,7 @@ public class DgMailParseTest {
 
 
 	private MorphlinesTester morphlineTester = new MorphlinesTester();
+	private static String DUMMY_EVENT_STRING = ",,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,Fortscale Control,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,";
 
 	@Before
 	public void setUp() throws Exception {
@@ -33,6 +34,20 @@ public class DgMailParseTest {
 	public void tearDown() throws Exception {
 		morphlineTester.close();
 	}
+
+
+	private void runOneLineTestWithDummyEvent(String testCase, DgMailEventInput input, DgMailEventAfterEtl expected) {
+		final String inputLine = input.toString();
+		final String expectedOutput = expected.toString();
+		if (expected.eventType.equals("attachment")) {
+			morphlineTester.testSingleLine(testCase, inputLine, expectedOutput);
+		}
+		else {
+			morphlineTester.runMorphlines(inputLine);
+			morphlineTester.testSingleLine(testCase, DUMMY_EVENT_STRING, expectedOutput);
+		}
+	}
+
 
 	@Test
 	public void test_empty_fields_filter() {
@@ -76,7 +91,7 @@ public class DgMailParseTest {
 				.setEventType("attachment")
 				.setIsAttachmentExtensionBlacklisted("false")
 				.setIsExternal("true")
-				.setNumOfRecipients("0")
+				.setNumOfRecipients("")
 				.setDataSource("dlpmail")
 				.setLastState("etl")
 				.setEmailRecipient("some_emailRecipient") // because the parsing wont find the domain - this is ok for this test
@@ -87,10 +102,7 @@ public class DgMailParseTest {
 				.setUsername("example_username")
 				.createDgEventAfterEtl();
 
-
-		final String inputLine = input.toString();
-		final String expectedOutput = expected.toString();
-		morphlineTester.testSingleLine(testCase, inputLine, expectedOutput);
+		runOneLineTestWithDummyEvent(testCase, input, expected);
 	}
 
 	@Test
@@ -112,7 +124,7 @@ public class DgMailParseTest {
 				.setEventType("attachment")
 				.setIsAttachmentExtensionBlacklisted("false")
 				.setIsExternal("true")
-				.setNumOfRecipients("0")
+				.setNumOfRecipients("")
 				.setDataSource("dlpmail")
 				.setLastState("etl")
 				// interesting test stuff starts here
@@ -122,9 +134,7 @@ public class DgMailParseTest {
 				.createDgEventAfterEtl();
 
 
-		final String inputLine = input.toString();
-		final String expectedOutput = expected.toString();
-		morphlineTester.testSingleLine(testCase, inputLine, expectedOutput);
+		runOneLineTestWithDummyEvent(testCase, input, expected);
 	}
 
 	@Test
@@ -145,7 +155,7 @@ public class DgMailParseTest {
 				.setEventType("attachment")
 				.setIsAttachmentExtensionBlacklisted("false")
 				.setIsExternal("true")
-				.setNumOfRecipients("0")
+				.setNumOfRecipients("")
 				.setDataSource("dlpmail")
 				.setLastState("etl")
 				// interesting test stuff starts here
@@ -153,9 +163,7 @@ public class DgMailParseTest {
 				.setEmailRecipientDomain("somedomain.com") // because the parsing wont find the @ - this is ok for this test
 				.createDgEventAfterEtl();
 
-		final String inputLine = input.toString();
-		final String expectedOutput = expected.toString();
-		morphlineTester.testSingleLine(testCase, inputLine, expectedOutput);
+		runOneLineTestWithDummyEvent(testCase, input, expected);
 	}
 
 	@Test
@@ -173,7 +181,7 @@ public class DgMailParseTest {
 				.setEventType("attachment")
 				.setIsAttachmentExtensionBlacklisted("false")
 				.setIsExternal("true")
-				.setNumOfRecipients("0")
+				.setNumOfRecipients("")
 				.setDataSource("dlpmail")
 				.setLastState("etl")
 				.setEmailRecipient("some_emailRecipient") // because the parsing wont find the @ - this is ok for this test
@@ -182,9 +190,7 @@ public class DgMailParseTest {
 				.setFullName("some_givenName some_surname")
 				.createDgEventAfterEtl();
 
-		final String inputLine = input.toString();
-		final String expectedOutput = expected.toString();
-		morphlineTester.testSingleLine(testCase, inputLine, expectedOutput);
+		runOneLineTestWithDummyEvent(testCase, input, expected);
 	}
 
 	@Test
@@ -205,7 +211,7 @@ public class DgMailParseTest {
 				.setEventType("attachment")
 				.setIsAttachmentExtensionBlacklisted("false")
 				.setIsExternal("true")
-				.setNumOfRecipients("0")
+				.setNumOfRecipients("")
 				.setDataSource("dlpmail")
 				.setLastState("etl")
 				.setEmailRecipient("some_emailRecipient") // because the parsing wont find the @ - this is ok for this test
@@ -214,9 +220,7 @@ public class DgMailParseTest {
 				.setDetailFileSize("0")
 				.createDgEventAfterEtl();
 
-		final String inputLine = input.toString();
-		final String expectedOutput = expected.toString();
-		morphlineTester.testSingleLine(testCase, inputLine, expectedOutput);
+		runOneLineTestWithDummyEvent(testCase, input, expected);
 	}
 
 	@Test
@@ -238,17 +242,14 @@ public class DgMailParseTest {
 				.setIsAttachmentExtensionBlacklisted("false")
 				.setEmailRecipient("somename@externaldomain.com")
 				.setEmailRecipientDomain("externaldomain.com")
-				.setNumOfRecipients("0")
+				.setNumOfRecipients("")
 				.setDataSource("dlpmail")
 				.setLastState("etl")
 				// interesting test stuff starts here
 				.setIsExternal("true")
 				.createDgEventAfterEtl();
 
-
-		final String inputLine = input.toString();
-		final String expectedOutput = expected.toString();
-		morphlineTester.testSingleLine(testCase, inputLine, expectedOutput);
+		runOneLineTestWithDummyEvent(testCase, input, expected);
 	}
 
 	@Test
@@ -270,17 +271,14 @@ public class DgMailParseTest {
 				.setIsAttachmentExtensionBlacklisted("false")
 				.setEmailRecipient("somename@digitalguardian.com")
 				.setEmailRecipientDomain("digitalguardian.com")
-				.setNumOfRecipients("0")
+				.setNumOfRecipients("")
 				.setDataSource("dlpmail")
 				.setLastState("etl")
 				// interesting test stuff starts here
 				.setIsExternal("false")
 				.createDgEventAfterEtl();
 
-
-		final String inputLine = input.toString();
-		final String expectedOutput = expected.toString();
-		morphlineTester.testSingleLine(testCase, inputLine, expectedOutput);
+		runOneLineTestWithDummyEvent(testCase, input, expected);
 	}
 
 	@Test
@@ -299,7 +297,7 @@ public class DgMailParseTest {
 				.setFullName("some_givenName some_surname")
 				.setIsAttachmentExtensionBlacklisted("false")
 				.setIsExternal("true")
-				.setNumOfRecipients("0")
+				.setNumOfRecipients("1")
 				.setDataSource("dlpmail")
 				.setLastState("etl")
 				.setEmailRecipient("some_emailRecipient") // because the parsing wont find the @ - this is ok for this test
@@ -309,9 +307,7 @@ public class DgMailParseTest {
 				.setEventType("recipient")
 				.createDgEventAfterEtl();
 
-		final String inputLine = input.toString();
-		final String expectedOutput = expected.toString();
-		morphlineTester.testSingleLine(testCase, inputLine, expectedOutput);
+		runOneLineTestWithDummyEvent(testCase, input, expected);
 	}
 
 	@Test
@@ -330,7 +326,7 @@ public class DgMailParseTest {
 				.setFullName("some_givenName some_surname")
 				.setIsAttachmentExtensionBlacklisted("false")
 				.setIsExternal("true")
-				.setNumOfRecipients("0")
+				.setNumOfRecipients("")
 				.setDataSource("dlpmail")
 				.setLastState("etl")
 				.setEmailRecipient("some_emailRecipient") // because the parsing wont find the @ - this is ok for this test
@@ -340,9 +336,7 @@ public class DgMailParseTest {
 				.setEventType("attachment")
 				.createDgEventAfterEtl();
 
-		final String inputLine = input.toString();
-		final String expectedOutput = expected.toString();
-		morphlineTester.testSingleLine(testCase, inputLine, expectedOutput);
+		runOneLineTestWithDummyEvent(testCase, input, expected);
 	}
 
 	@Test
@@ -371,11 +365,209 @@ public class DgMailParseTest {
 				.setEventType("message body")
 				.createDgEventAfterEtl();
 
-		final String inputLine = input.toString();
-		final String expectedOutput = expected.toString();
-		morphlineTester.testSingleLine(testCase, inputLine, expectedOutput);
+		runOneLineTestWithDummyEvent(testCase, input, expected);
 	}
 
+	@Test
+	public void test_num_of_recipients_multiple_events_with_closing_dummy_event() throws Exception {
+		/* ******************************************************************* event id = aaa ***************************************************************************/
+
+		DgMailEventInput input1 = new DgMailEventInputBuilder()
+				.setAgentUtcTime("06/12/2016 16:04")
+				.setEventId("aaa")
+				.setOperation("Send Mail")
+				.setDestinationFile("somefile.jpg") //attachment
+				.createDgEvent();
+
+		DgMailEventAfterEtl expected1 = new DgMailEventAfterEtlBuilder()
+				.setDateTime("2016-06-12 16:04:00")
+				.setEventId("aaa")
+				.setDateTimeUnix("1465747440")
+				.setEventDescription("Send Mail")
+				.setFullName("some_givenName some_surname")
+				.setIsAttachmentExtensionBlacklisted("false")
+				.setIsExternal("true")
+				.setNumOfRecipients("")
+				.setDataSource("dlpmail")
+				.setLastState("etl")
+				.setEmailRecipient("some_emailRecipient") // because the parsing wont find the @ - this is ok for this test
+				.setEmailRecipientDomain("some_emailRecipient") // because the parsing wont find the @ - this is ok for this test
+				// interesting test stuff starts here
+				.setDestinationFile("somefile.jpg")
+				.setEventType("attachment")
+				.createDgEventAfterEtl();
+
+		DgMailEventInput input2 = new DgMailEventInputBuilder()
+				.setAgentUtcTime("06/12/2016 16:04")
+				.setEventId("aaa")
+				.setOperation("Send Mail")
+				.setDestinationFile("") //message body
+				.createDgEvent();
+
+		DgMailEventAfterEtl expected2 = new DgMailEventAfterEtlBuilder()
+				.setDateTime("2016-06-12 16:04:00")
+				.setEventId("aaa")
+				.setDateTimeUnix("1465747440")
+				.setEventDescription("Send Mail")
+				.setFullName("some_givenName some_surname")
+				.setIsAttachmentExtensionBlacklisted("false")
+				.setIsExternal("true")
+				.setNumOfRecipients("1")
+				.setDataSource("dlpmail")
+				.setLastState("etl")
+				.setEmailRecipient("some_emailRecipient") // because the parsing wont find the @ - this is ok for this test
+				.setEmailRecipientDomain("some_emailRecipient") // because the parsing wont find the @ - this is ok for this test
+				// interesting test stuff starts here
+				.setDestinationFile("message body")
+				.setEventType("message body")
+				.createDgEventAfterEtl();
+
+		DgMailEventInput input3 = new DgMailEventInputBuilder()
+				.setAgentUtcTime("06/12/2016 16:04")
+				.setEventId("aaa")
+				.setOperation("Send Mail")
+				.setDestinationFile("message body") //recipient
+				.createDgEvent();
+
+		DgMailEventAfterEtl expected3 = new DgMailEventAfterEtlBuilder()
+				.setDateTime("2016-06-12 16:04:00")
+				.setEventId("aaa")
+				.setDateTimeUnix("1465747440")
+				.setEventDescription("Send Mail")
+				.setFullName("some_givenName some_surname")
+				.setIsAttachmentExtensionBlacklisted("false")
+				.setIsExternal("true")
+				.setNumOfRecipients("")
+				.setDataSource("dlpmail")
+				.setLastState("etl")
+				.setEmailRecipient("some_emailRecipient") // because the parsing wont find the @ - this is ok for this test
+				.setEmailRecipientDomain("some_emailRecipient") // because the parsing wont find the @ - this is ok for this test
+				// interesting test stuff starts here
+				.setDestinationFile("")
+				.setEventType("recipient")
+				.createDgEventAfterEtl();
+
+
+
+		/* ******************************************************************* event id = bbb ***************************************************************************/
+
+		DgMailEventInput input4 = new DgMailEventInputBuilder()
+				.setAgentUtcTime("06/12/2016 16:04")
+				.setEventId("bbb")
+				.setOperation("Send Mail")
+				.setDestinationFile("") //message body
+				.createDgEvent();
+
+		DgMailEventAfterEtl expected4 = new DgMailEventAfterEtlBuilder()
+				.setDateTime("2016-06-12 16:04:00")
+				.setEventId("bbb")
+				.setDateTimeUnix("1465747440")
+				.setEventDescription("Send Mail")
+				.setFullName("some_givenName some_surname")
+				.setIsAttachmentExtensionBlacklisted("false")
+				.setIsExternal("true")
+				.setNumOfRecipients("2")
+				.setDataSource("dlpmail")
+				.setLastState("etl")
+				.setEmailRecipient("some_emailRecipient") // because the parsing wont find the @ - this is ok for this test
+				.setEmailRecipientDomain("some_emailRecipient") // because the parsing wont find the @ - this is ok for this test
+				// interesting test stuff starts here
+				.setDestinationFile("message body")
+				.setEventType("message body")
+				.createDgEventAfterEtl();
+
+		DgMailEventInput input5 = new DgMailEventInputBuilder()
+				.setAgentUtcTime("06/12/2016 16:04")
+				.setEventId("bbb")
+				.setOperation("Send Mail")
+				.setDestinationFile("somefile.jpg") //attachment
+				.createDgEvent();
+
+		DgMailEventAfterEtl expected5 = new DgMailEventAfterEtlBuilder()
+				.setDateTime("2016-06-12 16:04:00")
+				.setEventId("bbb")
+				.setDateTimeUnix("1465747440")
+				.setEventDescription("Send Mail")
+				.setFullName("some_givenName some_surname")
+				.setIsAttachmentExtensionBlacklisted("false")
+				.setIsExternal("true")
+				.setNumOfRecipients("")
+				.setDataSource("dlpmail")
+				.setLastState("etl")
+				.setEmailRecipient("some_emailRecipient") // because the parsing wont find the @ - this is ok for this test
+				.setEmailRecipientDomain("some_emailRecipient") // because the parsing wont find the @ - this is ok for this test
+				// interesting test stuff starts here
+				.setDestinationFile("somefile.jpg")
+				.setEventType("attachment")
+				.createDgEventAfterEtl();
+
+		DgMailEventInput input6 = new DgMailEventInputBuilder()
+				.setAgentUtcTime("06/12/2016 16:04")
+				.setEventId("bbb")
+				.setOperation("Send Mail")
+				.setDestinationFile("message body") //recipient
+				.createDgEvent();
+
+		DgMailEventAfterEtl expected6 = new DgMailEventAfterEtlBuilder()
+				.setDateTime("2016-06-12 16:04:00")
+				.setEventId("bbb")
+				.setDateTimeUnix("1465747440")
+				.setEventDescription("Send Mail")
+				.setFullName("some_givenName some_surname")
+				.setIsAttachmentExtensionBlacklisted("false")
+				.setIsExternal("true")
+				.setNumOfRecipients("")
+				.setDataSource("dlpmail")
+				.setLastState("etl")
+				.setEmailRecipient("some_emailRecipient") // because the parsing wont find the @ - this is ok for this test
+				.setEmailRecipientDomain("some_emailRecipient") // because the parsing wont find the @ - this is ok for this test
+				// interesting test stuff starts here
+				.setDestinationFile("")
+				.setEventType("recipient")
+				.createDgEventAfterEtl();
+
+		DgMailEventInput input7 = new DgMailEventInputBuilder()
+				.setAgentUtcTime("06/12/2016 16:04")
+				.setEventId("bbb")
+				.setOperation("Send Mail")
+				.setDestinationFile("message body") //recipient
+				.createDgEvent();
+
+		DgMailEventAfterEtl expected7 = new DgMailEventAfterEtlBuilder()
+				.setDateTime("2016-06-12 16:04:00")
+				.setEventId("bbb")
+				.setDateTimeUnix("1465747440")
+				.setEventDescription("Send Mail")
+				.setFullName("some_givenName some_surname")
+				.setIsAttachmentExtensionBlacklisted("false")
+				.setIsExternal("true")
+				.setNumOfRecipients("")
+				.setDataSource("dlpmail")
+				.setLastState("etl")
+				.setEmailRecipient("some_emailRecipient") // because the parsing wont find the @ - this is ok for this test
+				.setEmailRecipientDomain("some_emailRecipient") // because the parsing wont find the @ - this is ok for this test
+				// interesting test stuff starts here
+				.setDestinationFile("")
+				.setEventType("recipient")
+				.createDgEventAfterEtl();
+
+
+
+		/* ****************************************************************************************************************************************************/
+
+
+		morphlineTester.testSingleLine("1", input1.toString(), expected1.toString()); //id aaa - attachment
+		morphlineTester.testSingleLine("2", input2.toString(), null); //id aaa - message body
+		morphlineTester.testSingleLine("3", input3.toString(), expected3.toString()); //id aaa - recipient
+
+		morphlineTester.testSingleLine("4", input4.toString(), expected2.toString()); //id bbb - msg
+		morphlineTester.testSingleLine("5", input5.toString(), expected5.toString()); //id bbb - attachment
+		morphlineTester.testSingleLine("6", input6.toString(), expected6.toString()); //id bbb - rec
+		morphlineTester.testSingleLine("7", input7.toString(), expected7.toString()); //id bbb - rec
+		morphlineTester.testSingleLine("8", DUMMY_EVENT_STRING, expected4.toString()); //dummy
+
+
+	}
 }
 
 

@@ -56,7 +56,7 @@ public class DlpMailEnrichTest {
                 .setFullName("some_givenName some_surname")
                 .setIsAttachmentExtensionBlacklisted("false")
                 .setIsExternal("true")
-                .setNumOfRecipients("0")
+                .setNumOfRecipients("")
                 .setDataSource("dlpmail")
                 .setLastState("etl")
                 .setEmailRecipient("some_emailRecipient") // because the parsing wont find the @ - this is ok for this test
@@ -87,7 +87,7 @@ public class DlpMailEnrichTest {
                 .setEventDescription("Send Mail")
                 .setFullName("some_givenName some_surname")
                 .setIsExternal("true")
-                .setNumOfRecipients("0")
+                .setNumOfRecipients("")
                 .setDataSource("dlpmail")
                 .setLastState("etl")
                 .setEmailRecipient("some_emailRecipient") // because the parsing wont find the @ - this is ok for this test
@@ -118,7 +118,7 @@ public class DlpMailEnrichTest {
                 .setEventDescription("Send Mail")
                 .setFullName("some_givenName some_surname")
                 .setIsExternal("true")
-                .setNumOfRecipients("0")
+                .setNumOfRecipients("")
                 .setDataSource("dlpmail")
                 .setLastState("etl")
                 .setEmailRecipient("some_emailRecipient") // because the parsing wont find the @ - this is ok for this test
@@ -148,7 +148,7 @@ public class DlpMailEnrichTest {
                 .setEventDescription("Send Mail")
                 .setFullName("some_givenName some_surname")
                 .setIsExternal("true")
-                .setNumOfRecipients("0")
+                .setNumOfRecipients("")
                 .setLastState("etl")
                 .setEmailRecipient("some_emailRecipient") // because the parsing wont find the @ - this is ok for this test
                 .setEmailRecipientDomain("some_emailRecipient") // because the parsing wont find the @ - this is ok for this test
@@ -177,7 +177,7 @@ public class DlpMailEnrichTest {
                 .setEventDescription("Send Mail")
                 .setFullName("some_givenName some_surname")
                 .setIsExternal("true")
-                .setNumOfRecipients("0")
+                .setNumOfRecipients("")
                 .setEmailRecipient("some_emailRecipient") // because the parsing wont find the @ - this is ok for this test
                 .setEmailRecipientDomain("some_emailRecipient") // because the parsing wont find the @ - this is ok for this test
                 .setEventType("attachment")
@@ -207,7 +207,7 @@ public class DlpMailEnrichTest {
                 .setEventType("attachment")
                 .setIsAttachmentExtensionBlacklisted("false")
                 .setIsExternal("true")
-                .setNumOfRecipients("0")
+                .setNumOfRecipients("")
                 .setDataSource("dlpmail")
                 .setLastState("etl")
                 .setEmailRecipientDomain("some_emailRecipient") // because the parsing wont find the domain - this is ok for this test
@@ -241,7 +241,7 @@ public class DlpMailEnrichTest {
                 .setEventType("attachment")
                 .setIsAttachmentExtensionBlacklisted("false")
                 .setIsExternal("true")
-                .setNumOfRecipients("0")
+                .setNumOfRecipients("")
                 .setDataSource("dlpmail")
                 .setLastState("etl")
                 .setEmailRecipientDomain("some_emailRecipient") // because the parsing wont find the domain - this is ok for this test
@@ -275,42 +275,13 @@ public class DlpMailEnrichTest {
                 .setFullName("some_givenName some_surname")
                 .setIsAttachmentExtensionBlacklisted("false")
                 .setIsExternal("true")
-                .setNumOfRecipients("0")
+                .setNumOfRecipients("")
                 .setDataSource("dlpmail")
                 .setLastState("etl")
                 .setEmailRecipientDomain("some_emailRecipient") // because the parsing wont find the domain - this is ok for this test
                 // interesting test stuff starts here
                 .setDestinationFile("somefile.jpeg")
                 .setEventType("attachment")
-                .createDgEventAfterEtl();
-
-        final String inputLine = input.toString();
-        final String expectedOutput = expected.toString();
-        morphlineTester.testSingleLine(testCase, inputLine, expectedOutput);
-    }
-
-    @Test
-    public void test_num_of_recipients() { //TODO: update this when num of recipients calculation is finished
-        String testCase = "Test  num_of_recipients is calculated correctly";
-        DgMailEventInput input = new DgMailEventInputBuilder()
-                .setOperation("Send Mail")
-                .setAgentUtcTime("06/12/2016 16:04")
-                // interesting test stuff starts here
-                .createDgEvent();
-
-        DgMailEventAfterEtl expected = new DgMailEventAfterEtlBuilder()
-                .setDateTimeUnix("1465747440")
-                .setDateTime("2016-06-12 16:04:00")
-                .setEventDescription("Send Mail")
-                .setFullName("some_givenName some_surname")
-                .setIsAttachmentExtensionBlacklisted("false")
-                .setIsExternal("true")
-                .setDataSource("dlpmail")
-                .setLastState("etl")
-                .setEventType("attachment")
-                .setEmailRecipientDomain("some_emailRecipient") // because the parsing wont find the domain - this is ok for this test
-                // interesting test stuff starts here
-                .setNumOfRecipients("0")
                 .createDgEventAfterEtl();
 
         final String inputLine = input.toString();
