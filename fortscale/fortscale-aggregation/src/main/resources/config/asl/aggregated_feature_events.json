@@ -1,6 +1,486 @@
 {
   "AggregatedFeatureEvents": [
     {
+      "name": "highest_date_time_score_dlpfile_daily",
+      "type": "P",
+      "bucketConfName": "normalized_username_dlpfile_daily",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 300,
+      "anomalyType": "event_time",
+      "evidencesFilterStrategy": "HIGHEST_SCORE",
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "highest_date_time_score"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_map_values_max_sum_func"
+      }
+    },
+    {
+      "name": "sum_of_highest_normalized_src_machine_scores_dlpfile_daily",
+      "type": "P",
+      "bucketConfName": "normalized_username_dlpfile_daily",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 300,
+      "anomalyType": "normalized_src_machine",
+      "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "normalized_src_machine_to_highest_score_map"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_map_values_max_sum_func",
+        "includeValues": true,
+        "minScoreToInclude": 1,
+        "pattern": "[0-9]",
+        "replacement": "",
+        "postCondition": "(.*[a-zA-Z]){5}.*"
+      }
+    },
+    {
+      "name": "number_of_distinct_src_network_folder_paths_dlpfile_daily",
+      "type": "F",
+      "bucketConfName": "normalized_username_dlpfile_daily",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 300,
+      "evidencesFilterStrategy": "HIGHEST_SCORE",
+      "aggregatedFeatureNamesMap": {
+        "groupBy": [
+          "src_network_folder_paths_histogram"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_distinct_values_counter_func",
+        "includeValues": false
+      },
+      "retentionStrategyName": "daily_feature_retention_strategy"
+    },
+    {
+      "name": "sum_of_moved_files_to_removable_device_size_dlpfile_daily",
+      "type": "F",
+      "bucketConfName": "normalized_username_dlpfile_daily",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 300,
+      "evidencesFilterStrategy": "HIGHEST_SCORE",
+      "aggregatedFeatureNamesMap": {
+        "sum": [
+          "sum_of_moved_files_to_removable_device_size"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_sum_func"
+      },
+      "retentionStrategyName": "daily_feature_retention_strategy"
+    },
+    {
+      "name": "number_of_moved_files_to_removable_device_dlpfile_daily",
+      "type": "F",
+      "bucketConfName": "normalized_username_dlpfile_daily",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 300,
+      "evidencesFilterStrategy": "HIGHEST_SCORE",
+      "aggregatedFeatureNamesMap": {
+        "sum": [
+          "moved_files_to_removable_device_counter"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_sum_func"
+      },
+      "retentionStrategyName": "daily_feature_retention_strategy"
+    },
+    {
+      "name": "sum_of_copied_files_to_removable_device_size_dlpfile_daily",
+      "type": "F",
+      "bucketConfName": "normalized_username_dlpfile_daily",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 300,
+      "evidencesFilterStrategy": "HIGHEST_SCORE",
+      "aggregatedFeatureNamesMap": {
+        "sum": [
+          "sum_of_copied_files_to_removable_device_size"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_sum_func"
+      },
+      "retentionStrategyName": "daily_feature_retention_strategy"
+    },
+    {
+      "name": "number_of_copied_files_to_removable_device_dlpfile_daily",
+      "type": "F",
+      "bucketConfName": "normalized_username_dlpfile_daily",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 300,
+      "evidencesFilterStrategy": "HIGHEST_SCORE",
+      "aggregatedFeatureNamesMap": {
+        "sum": [
+          "copied_files_to_removable_device_counter"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_sum_func"
+      },
+      "retentionStrategyName": "daily_feature_retention_strategy"
+    },
+    {
+      "name": "sum_of_moved_files_from_remote_device_size_dlpfile_daily",
+      "type": "F",
+      "bucketConfName": "normalized_username_dlpfile_daily",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 300,
+      "evidencesFilterStrategy": "HIGHEST_SCORE",
+      "aggregatedFeatureNamesMap": {
+        "sum": [
+          "sum_of_moved_files_from_remote_device_size"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_sum_func"
+      },
+      "retentionStrategyName": "daily_feature_retention_strategy"
+    },
+    {
+      "name": "number_of_moved_files_from_remote_device_dlpfile_daily",
+      "type": "F",
+      "bucketConfName": "normalized_username_dlpfile_daily",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 300,
+      "evidencesFilterStrategy": "HIGHEST_SCORE",
+      "aggregatedFeatureNamesMap": {
+        "sum": [
+          "moved_files_from_remote_device_counter"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_sum_func"
+      },
+      "retentionStrategyName": "daily_feature_retention_strategy"
+    },
+    {
+      "name": "sum_of_copied_files_from_remote_device_size_dlpfile_daily",
+      "type": "F",
+      "bucketConfName": "normalized_username_dlpfile_daily",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 300,
+      "evidencesFilterStrategy": "HIGHEST_SCORE",
+      "aggregatedFeatureNamesMap": {
+        "sum": [
+          "sum_of_copied_files_from_remote_device_size"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_sum_func"
+      },
+      "retentionStrategyName": "daily_feature_retention_strategy"
+    },
+    {
+      "name": "number_of_copied_files_from_remote_device_dlpfile_daily",
+      "type": "F",
+      "bucketConfName": "normalized_username_dlpfile_daily",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 300,
+      "evidencesFilterStrategy": "HIGHEST_SCORE",
+      "aggregatedFeatureNamesMap": {
+        "sum": [
+          "copied_files_from_remote_device_counter"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_sum_func"
+      },
+      "retentionStrategyName": "daily_feature_retention_strategy"
+    },
+    {
+      "name": "number_of_recycled_or_deleted_files_dlpfile_daily",
+      "type": "F",
+      "bucketConfName": "normalized_username_dlpfile_daily",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 300,
+      "evidencesFilterStrategy": "HIGHEST_SCORE",
+      "aggregatedFeatureNamesMap": {
+        "sum": [
+          "recycled_or_deleted_files_counter"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_sum_func"
+      },
+      "retentionStrategyName": "daily_feature_retention_strategy"
+    },
+    {
+      "name": "number_of_opened_files_dlpfile_daily",
+      "type": "F",
+      "bucketConfName": "normalized_username_dlpfile_daily",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 300,
+      "evidencesFilterStrategy": "HIGHEST_SCORE",
+      "aggregatedFeatureNamesMap": {
+        "sum": [
+          "opened_files_counter"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_sum_func"
+      },
+      "retentionStrategyName": "daily_feature_retention_strategy"
+    },
+    {
+      "name": "highest_date_time_score_dlpfile_hourly",
+      "type": "P",
+      "bucketConfName": "normalized_username_dlpfile_hourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 300,
+      "anomalyType": "event_time",
+      "evidencesFilterStrategy": "HIGHEST_SCORE",
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "highest_date_time_score"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_map_values_max_sum_func"
+      }
+    },
+    {
+      "name": "sum_of_highest_normalized_src_machine_scores_dlpfile_hourly",
+      "type": "P",
+      "bucketConfName": "normalized_username_dlpfile_hourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 300,
+      "anomalyType": "normalized_src_machine",
+      "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "normalized_src_machine_to_highest_score_map"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_map_values_max_sum_func",
+        "includeValues": true,
+        "minScoreToInclude": 1,
+        "pattern": "[0-9]",
+        "replacement": "",
+        "postCondition": "(.*[a-zA-Z]){5}.*"
+      }
+    },
+    {
+      "name": "number_of_distinct_src_network_folder_paths_dlpfile_hourly",
+      "type": "F",
+      "bucketConfName": "normalized_username_dlpfile_hourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 300,
+      "evidencesFilterStrategy": "HIGHEST_SCORE",
+      "aggregatedFeatureNamesMap": {
+        "groupBy": [
+          "src_network_folder_paths_histogram"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_distinct_values_counter_func",
+        "includeValues": false
+      },
+      "retentionStrategyName": "hourly_feature_retention_strategy"
+    },
+    {
+      "name": "sum_of_moved_files_to_removable_device_size_dlpfile_hourly",
+      "type": "F",
+      "bucketConfName": "normalized_username_dlpfile_hourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 300,
+      "evidencesFilterStrategy": "HIGHEST_SCORE",
+      "aggregatedFeatureNamesMap": {
+        "sum": [
+          "sum_of_moved_files_to_removable_device_size"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_sum_func"
+      },
+      "retentionStrategyName": "hourly_feature_retention_strategy"
+    },
+    {
+      "name": "number_of_moved_files_to_removable_device_dlpfile_hourly",
+      "type": "F",
+      "bucketConfName": "normalized_username_dlpfile_hourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 300,
+      "evidencesFilterStrategy": "HIGHEST_SCORE",
+      "aggregatedFeatureNamesMap": {
+        "sum": [
+          "moved_files_to_removable_device_counter"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_sum_func"
+      },
+      "retentionStrategyName": "hourly_feature_retention_strategy"
+    },
+    {
+      "name": "sum_of_copied_files_to_removable_device_size_dlpfile_hourly",
+      "type": "F",
+      "bucketConfName": "normalized_username_dlpfile_hourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 300,
+      "evidencesFilterStrategy": "HIGHEST_SCORE",
+      "aggregatedFeatureNamesMap": {
+        "sum": [
+          "sum_of_copied_files_to_removable_device_size"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_sum_func"
+      },
+      "retentionStrategyName": "hourly_feature_retention_strategy"
+    },
+    {
+      "name": "number_of_copied_files_to_removable_device_dlpfile_hourly",
+      "type": "F",
+      "bucketConfName": "normalized_username_dlpfile_hourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 300,
+      "evidencesFilterStrategy": "HIGHEST_SCORE",
+      "aggregatedFeatureNamesMap": {
+        "sum": [
+          "copied_files_to_removable_device_counter"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_sum_func"
+      },
+      "retentionStrategyName": "hourly_feature_retention_strategy"
+    },
+    {
+      "name": "sum_of_moved_files_from_remote_device_size_dlpfile_hourly",
+      "type": "F",
+      "bucketConfName": "normalized_username_dlpfile_hourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 300,
+      "evidencesFilterStrategy": "HIGHEST_SCORE",
+      "aggregatedFeatureNamesMap": {
+        "sum": [
+          "sum_of_moved_files_from_remote_device_size"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_sum_func"
+      },
+      "retentionStrategyName": "hourly_feature_retention_strategy"
+    },
+    {
+      "name": "number_of_moved_files_from_remote_device_dlpfile_hourly",
+      "type": "F",
+      "bucketConfName": "normalized_username_dlpfile_hourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 300,
+      "evidencesFilterStrategy": "HIGHEST_SCORE",
+      "aggregatedFeatureNamesMap": {
+        "sum": [
+          "moved_files_from_remote_device_counter"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_sum_func"
+      },
+      "retentionStrategyName": "hourly_feature_retention_strategy"
+    },
+    {
+      "name": "sum_of_copied_files_from_remote_device_size_dlpfile_hourly",
+      "type": "F",
+      "bucketConfName": "normalized_username_dlpfile_hourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 300,
+      "evidencesFilterStrategy": "HIGHEST_SCORE",
+      "aggregatedFeatureNamesMap": {
+        "sum": [
+          "sum_of_copied_files_from_remote_device_size"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_sum_func"
+      },
+      "retentionStrategyName": "hourly_feature_retention_strategy"
+    },
+    {
+      "name": "number_of_copied_files_from_remote_device_dlpfile_hourly",
+      "type": "F",
+      "bucketConfName": "normalized_username_dlpfile_hourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 300,
+      "evidencesFilterStrategy": "HIGHEST_SCORE",
+      "aggregatedFeatureNamesMap": {
+        "sum": [
+          "copied_files_from_remote_device_counter"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_sum_func"
+      },
+      "retentionStrategyName": "hourly_feature_retention_strategy"
+    },
+    {
+      "name": "number_of_recycled_or_deleted_files_dlpfile_hourly",
+      "type": "F",
+      "bucketConfName": "normalized_username_dlpfile_hourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 300,
+      "evidencesFilterStrategy": "HIGHEST_SCORE",
+      "aggregatedFeatureNamesMap": {
+        "sum": [
+          "recycled_or_deleted_files_counter"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_sum_func"
+      },
+      "retentionStrategyName": "hourly_feature_retention_strategy"
+    },
+    {
+      "name": "number_of_opened_files_dlpfile_hourly",
+      "type": "F",
+      "bucketConfName": "normalized_username_dlpfile_hourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 300,
+      "evidencesFilterStrategy": "HIGHEST_SCORE",
+      "aggregatedFeatureNamesMap": {
+        "sum": [
+          "opened_files_counter"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_sum_func"
+      },
+      "retentionStrategyName": "hourly_feature_retention_strategy"
+    },
+    {
       "name": "distinct_number_of_normalized_src_machine_kerberos_logins_daily",
       "type": "F",
       "bucketConfName": "normalized_username_kerberos_logins_daily",
