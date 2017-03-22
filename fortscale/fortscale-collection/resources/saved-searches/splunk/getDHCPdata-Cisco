@@ -1,1 +1,0 @@
-index="dhcp" earliest=$args.earliest$ latest=$args.latest$ (ip hn exp) OR (action=EXPIRED OR action=RELEASED) | table _time action ip hn mac exp

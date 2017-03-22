@@ -1,1 +1,0 @@
-﻿index=syslog source=syslog-ng process=dhcpd "DHCPACK on" earliest=$args.earliest$ latest=$args.latest$ | sort 0 _time | table _time _raw

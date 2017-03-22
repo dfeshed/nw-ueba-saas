@@ -1,1 +1,0 @@
-index="win_evt" source="wineventlog:security" (EventCode="4769" OR EventCode="4768" OR EventCode="4771" OR EventCode="4624") earliest=$args.earliest$ latest=$args.latest$ | sort 0 _time | table _time _raw
