@@ -112,7 +112,7 @@ public class ControllerInvokedUserTaggingTask extends BaseControllerInvokedTask 
 
         notifyTaskDone();
         final long lastExecutionTime = System.currentTimeMillis();
-        return new UserTaggingTaskResponse(Boolean.valueOf(success), lastExecutionTime, taskResults.getUsersAffected());
+        return new UserTaggingTaskResponse(Boolean.valueOf(success), lastExecutionTime, taskResults.getUsersAffected(), taskResults.getErrorMessage());
     }
 
     @Override
@@ -124,14 +124,16 @@ public class ControllerInvokedUserTaggingTask extends BaseControllerInvokedTask 
      * This class represents an UserTagging response to the controller that executed it containing various information the controller needs to return the UI
      */
     public static class UserTaggingTaskResponse {
+        private String errorMessage;
         private boolean success;
         private Long lastExecutionTime;
         private Map<String, Long> taggingResult;
 
-        public UserTaggingTaskResponse(boolean success, Long lastExecutionTime, Map<String, Long> taggingResult) {
+        public UserTaggingTaskResponse(boolean success, Long lastExecutionTime, Map<String, Long> taggingResult, String erroorMessage) {
             this.success = success;
             this.lastExecutionTime = lastExecutionTime;
             this.taggingResult = taggingResult;
+            this.errorMessage = erroorMessage;
         }
 
         public UserTaggingTaskResponse(boolean success, Long lastExecutionTime) {

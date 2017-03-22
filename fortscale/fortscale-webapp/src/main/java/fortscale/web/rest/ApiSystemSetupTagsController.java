@@ -258,6 +258,7 @@ public class ApiSystemSetupTagsController extends BaseController {
         long lastExecutionFinishTime = -1;
         long lastExecutionStartTime = -1;
         boolean isRunning = false;
+        String errorMessage = null;
         if (isRunning()) {
             lastExecutionStartTime = lastUserTaggingExecutionStartTime;
             isRunning = true;
@@ -268,9 +269,10 @@ public class ApiSystemSetupTagsController extends BaseController {
             if (taskResults!= null) {
                 usersAffected = taskResults.getUsersAffected();
             }
+            errorMessage =taskResults.getErrorMessage();
         }
 
-        return new UserTaggingExecutionStatus(lastExecutionFinishTime, lastExecutionStartTime, isRunning, usersAffected);
+        return new UserTaggingExecutionStatus(lastExecutionFinishTime, lastExecutionStartTime, isRunning, usersAffected, errorMessage);
     }
 
     /**
@@ -294,13 +296,16 @@ public class ApiSystemSetupTagsController extends BaseController {
         private final boolean isRunning;
         @ApiModelProperty(value = "Number of users affected by the tagging process per tag")
         private final Map<String, Long> usersAffected;
+        @ApiModelProperty(value = "Error message we received during running the tagging")
+        private final String errorMessage;
 
 
-        public UserTaggingExecutionStatus(Long lastExecutionFinishTime, Long lastExecutionStartTime, boolean isRunning, Map<String, Long> usersAffected) {
+        public UserTaggingExecutionStatus(Long lastExecutionFinishTime, Long lastExecutionStartTime, boolean isRunning, Map<String, Long> usersAffected, String errorMessage) {
             this.lastExecutionFinishTime = lastExecutionFinishTime;
             this.lastExecutionStartTime = lastExecutionStartTime;
             this.isRunning = isRunning;
             this.usersAffected = usersAffected;
+            this.errorMessage = errorMessage;
         }
 
         public Long getLastExecutionFinishTime() {
@@ -317,6 +322,10 @@ public class ApiSystemSetupTagsController extends BaseController {
 
         public Map<String, Long> getUsersAffected() {
             return usersAffected;
+        }
+
+        public String getErrorMessage() {
+            return errorMessage;
         }
     }
 }
