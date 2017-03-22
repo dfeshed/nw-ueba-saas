@@ -164,6 +164,14 @@ public class ControllerInvokedUserTaggingTask extends BaseControllerInvokedTask 
         public void setTaggingResult(Map<String, Long> taggingResult) {
             this.taggingResult = taggingResult;
         }
+
+        public String getErrorMessage() {
+            return errorMessage;
+        }
+
+        public void setErrorMessage(String errorMessage) {
+            this.errorMessage = errorMessage;
+        }
     }
 }
 
