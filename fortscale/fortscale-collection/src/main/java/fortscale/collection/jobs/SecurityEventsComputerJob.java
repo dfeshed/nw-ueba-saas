@@ -41,7 +41,7 @@ public class SecurityEventsComputerJob extends GenericSecurityEventsJob {
 		}
 
         sourceName = jobExecutionContext.getJobDetail().getKey().getGroup();
-        jobMetircs = collectionStatsMetricsService.getETLCommonJobMetircs(sourceName);
+        jobMetrics = collectionStatsMetricsService.getETLCommonJobMetrics(sourceName);
         morphlineMetrics = collectionStatsMetricsService.getMorphlineMetrics(sourceName);
 		
 	}

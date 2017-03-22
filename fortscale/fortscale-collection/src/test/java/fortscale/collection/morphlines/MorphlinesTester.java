@@ -4,6 +4,7 @@ import fortscale.collection.monitoring.ItemContext;
 import fortscale.collection.morphlines.metrics.MorphlineMetrics;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.monitoring.stats.StatsService;
+import org.junit.Assert;
 import org.kitesdk.morphline.api.Record;
 import org.kitesdk.morphline.base.Fields;
 import org.springframework.core.io.FileSystemResource;
@@ -86,6 +87,29 @@ public class MorphlinesTester {
 			
 			testSingleLine(testCase, input, expected);
 		}
+	}
+
+
+	public void testSingleLineFiltered(String testCase, String inputLine) {
+		Record parsedRecord = new Record();
+		parsedRecord.put(Fields.MESSAGE, inputLine);
+		ItemContext itemContext = new ItemContext(null, null, morphlineMetrics);
+		for (MorphlinesItemsProcessor subject : subjects) {
+			if (parsedRecord!=null)
+				parsedRecord = subject.process(parsedRecord, itemContext);
+		}
+
+		Assert.assertNull(testCase, parsedRecord);
+
+//			String parsedOutput = "";
+//			String seperator = "";
+//			for (String field : outputFields) {
+//				String parsedField = (null == parsedRecord.getFirstValue(field)) ? "" : parsedRecord.getFirstValue(field).toString() ;
+//				parsedOutput += seperator + parsedField;
+//				seperator = ",";
+//			}
+//			assertEquals("ETL error with " + testCase, expectedOutput ,parsedOutput);
+//		}
 	}
 
 }
