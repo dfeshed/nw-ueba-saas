@@ -13,6 +13,19 @@
       color: rsa-color(white);
     }
 
+    &.is-sticky {
+      // No color exists in our palette like this.
+      // Have to pick an opaque color that matches
+      // the transparent background-color above
+      background-color:rgb(34,41,45);
+
+      border-top: 1px rsa-color(blue) solid;
+
+      // avoid overlapping scrollbar
+      margin-right: 1rem;
+      z-index: 10000;
+    }
+
     &::before {
       border: 1pt solid $dark-border-color-medium;
       background-color: $dark-bg-color;
@@ -37,6 +50,10 @@
       @include rsa-font(paragraph);
       color: rsa-color(gray);
       text-align: center;
+    }
+
+    .toggle-icon {
+      min-width: 20px;
     }
 
     .justify-response {

@@ -1,3 +1,12 @@
+{{#if stickyPacket}}
+  <div class="recon-packet-stuck-header">
+    {{recon-event-detail/single-packet/header
+      isSticky=true
+      packet=stickyPacket
+    }}
+  </div>
+{{/if}}
+
 <div class="scroll-box">
   {{#each packets as |packet index|}}
     {{recon-event-detail/single-packet

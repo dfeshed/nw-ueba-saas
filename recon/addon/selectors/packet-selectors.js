@@ -20,7 +20,9 @@ const isPayloadOnly = (recon) => recon.visuals.isPayloadOnly;
 const visiblePackets = createSelector(
   [packets, isRequestShown, isResponseShown],
   (packets, isRequestShown, isResponseShown) => {
-    let ret = packets;
+    // packets can be null
+    let ret = packets || [];
+
     if (!isRequestShown || !isResponseShown) {
       // we're not showing req or res, so let's filter them out
       ret = packets.filter((p) => {

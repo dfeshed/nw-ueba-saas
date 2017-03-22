@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import computed, { not, readOnly } from 'ember-computed-decorators';
+import { not, readOnly } from 'ember-computed-decorators';
 import { SpanielObserver } from 'spaniel';
 
 import layout from './template';
@@ -9,9 +9,9 @@ const { Component, K, run } = Ember;
 export default Component.extend({
   layout,
   index: null,
+  isPacketExpanded: true,
   packet: null,
   packetFields: null,
-  packetIsExpanded: true,
   selection: null,
   tooltipData: null,
   viewportEntered: false,
@@ -31,28 +31,6 @@ export default Component.extend({
    * @public
    */
   onselect: K,
-
-  /**
-   * Determine the direction, request or response, for the arrow
-   * @param side Request or response
-   * @returns {string} right or left
-   * @public
-   */
-  @computed('packet.side')
-  arrowDirection(side) {
-    return side === 'request' ? 'right' : 'left';
-  },
-
-  /**
-   * Determine the expand/collapse arrow direction for a single packet
-   * @param packetIsExpanded If expanded or not
-   * @returns {string} down or right
-   * @public
-   */
-  @computed('packetIsExpanded')
-  collapseArrowDirection(packetIsExpanded) {
-    return packetIsExpanded ? 'down' : 'right';
-  },
 
   /**
    * Observe the component's this.element intersecting with the root element
@@ -85,8 +63,8 @@ export default Component.extend({
   },
 
   actions: {
-    expandPacket() {
-      this.toggleProperty('packetIsExpanded');
+    togglePacketExpansion(isPacketExpanded) {
+      this.set('isPacketExpanded', isPacketExpanded);
     }
   }
 });

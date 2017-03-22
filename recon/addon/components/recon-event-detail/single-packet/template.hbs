@@ -1,43 +1,12 @@
 <section class="rsa-packet {{packet.side}}">
-  <vbox class="rsa-packet__header">
-    <div class="request-response justify-{{packet.side}}">
-      <span>
-        {{rsa-icon name=(concat 'arrow-circle-' arrowDirection '-2')}}
-      </span>
-      <span class="text">
-        {{packet.side}}
-      </span>
-    </div>
-    {{#if packet.byteRows}}
-      <hbox class="packet-details">
-        <box align="center" horizontal>
-          <span>
-            {{rsa-icon
-              click=(action 'expandPacket')
-              name=(concat 'arrow-' collapseArrowDirection '-12')}}
-          </span>
-          <span class="text">
-            {{t 'list.packet'}}&nbsp;{{packet.position}}
-          </span>
-        </box>
-        <box xs="3" align="end">
-          {{rsa-content-datetime timestamp=packet.timestamp}}
-        </box>
-        <box align="center" justify="end" horizontal>
-          <span class="label">ID</span> {{packet.id}}
-        </box>
-        <box align="center" justify="end" horizontal>
-          <span class="label">SEQ</span> {{packet.sequence}}
-        </box>
-        <box align="center" justify="end" horizontal>
-          <span class="label">PAYLOAD</span> {{packet.payloadSize}} bytes
-        </box>
-      </hbox>
-    {{else}}
-      <p>{{t 'recon.packetView.noPayloadBytes'}}</p>
-    {{/if}}
-  </vbox>
-  {{#if packetIsExpanded}}
+
+  {{recon-event-detail/single-packet/header
+    isSticky=false
+    packet=packet
+    togglePacketExpansion=(action 'togglePacketExpansion')
+  }}
+
+  {{#if isPacketExpanded}}
     <section class="rsa-packet__body">
       <section class="rsa-packet__offsets hex">
         {{recon-event-detail/single-packet/offset-table
@@ -47,7 +16,6 @@
       <section class="rsa-packet__hex">
         {{#if viewportEntered}}
           {{recon-event-detail/single-packet/byte-table
-            index=index
             byteFormat="hex"
             packet=packet
             packetFields=packetFields
@@ -61,7 +29,6 @@
       <section class="rsa-packet__ascii">
         {{#if viewportEntered}}
           {{recon-event-detail/single-packet/byte-table
-            index=index
             byteFormat="ascii"
             packet=packet
             packetFields=packetFields
