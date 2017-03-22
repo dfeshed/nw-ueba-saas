@@ -116,11 +116,17 @@ const ContextComponent = Component.extend({
 
   _setTimeRangeData(contextData) {
     if (contextData.resultMeta && contextData.resultMeta.timeQuerySubmitted) {
-      const timeWindow = contextData.resultMeta['timeFilter.timeUnitCount'] +
-        contextData.resultMeta['timeFilter.timeUnit'];
+      let timeWindow = 'All Data';
+      const timeCount = contextData.resultMeta['timeFilter.timeUnitCount'];
+      if (timeCount) {
+        let timeUnitString = contextData.resultMeta['timeFilter.timeUnit'];
+        const timeUnit = timeCount > 1 ? `${timeUnitString}S` : `${timeUnitString}`;
+        timeUnitString = this.get('i18n').t(`context.timeUnit.${timeUnit}`);
+        timeWindow = `${timeCount} ${timeUnitString}`;
+      }
       this.get('model').contextData[`${contextData.dataSourceGroup}_LASTUPDATED`] =
           contextData.resultMeta.timeQuerySubmitted;
-      this.get('model').contextData[`${contextData.dataSourceGroup}_TIMEWINDOW`] = timeWindow || 'All Data';
+      this.get('model').contextData[`${contextData.dataSourceGroup}_TIMEWINDOW`] = timeWindow;
     }
     return contextData;
   },

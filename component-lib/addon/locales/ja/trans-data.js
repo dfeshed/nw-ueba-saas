@@ -534,6 +534,20 @@ export default {
     title: 'ja_Context',
     lastUpdated: 'ja_Last Updated:',
     timeWindow: 'ja_Time Window: ',
+    timeUnit: {
+      HOUR: 'ja_HOUR',
+      HOURS: 'ja_HOURS',
+      MINUTE: 'ja_MINUTE',
+      MINUTES: 'ja_MINUTES',
+      DAY: 'ja_DAY',
+      DAYS: 'ja_DAYS',
+      MONTH: 'ja_MONTH',
+      MONTHS: 'ja_MONTHS',
+      YEAR: 'ja_YEAR',
+      YEARS: 'ja_YEARS',
+      WEEK: 'ja_WEEK',
+      WEEKS: 'ja_WEEKS'
+    },
     header: {
       overview: 'ja_overview',
       iioc: 'ja_iioc',

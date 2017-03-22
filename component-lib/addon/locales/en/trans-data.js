@@ -534,6 +534,20 @@ export default {
     title: 'Context for',
     lastUpdated: 'Last Updated:',
     timeWindow: 'Time Window: ',
+    timeUnit: {
+      HOUR: 'HOUR',
+      HOURS: 'HOURS',
+      MINUTE: 'MINUTE',
+      MINUTES: 'MINUTES',
+      DAY: 'DAY',
+      DAYS: 'DAYS',
+      MONTH: 'MONTH',
+      MONTHS: 'MONTHS',
+      YEAR: 'YEAR',
+      YEARS: 'YEARS',
+      WEEK: 'WEEK',
+      WEEKS: 'WEEKS'
+    },
     header: {
       overview: 'overview',
       iioc: 'iioc',
