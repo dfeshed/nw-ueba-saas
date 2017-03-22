@@ -141,7 +141,8 @@ const data = handleActions({
     contentLoading: false
   }),
   [ACTION_TYPES.PACKETS_RETRIEVE_PAGE]: (state, { payload }) => {
-    let newPackets = addPacketSide(payload);
+    const lastPosition = state.packets && state.packets.length || 0;
+    let newPackets = augmentPackets(payload, lastPosition);
     newPackets = generateDecodedBytes(newPackets);
     return {
       ...state,
@@ -157,7 +158,7 @@ const data = handleActions({
     contentLoading: false
   }),
   [ACTION_TYPES.TEXT_DECODE_PAGE]: (state, { payload }) => {
-    const newContent = generateHTMLSafeText(addPacketSide(payload));
+    const newContent = generateHTMLSafeText(augmentPackets(payload));
     return {
       ...state,
       contentLoading: false,
@@ -230,11 +231,12 @@ const generateDecodedBytes = (data) => {
   return massagedPackets;
 };
 
-const addPacketSide = (data) => {
-  return data.map((d) => {
-    d.side = d.side === 1 ? 'request' : 'response';
-    return d;
-  });
+const augmentPackets = (data, previousPosition = 0) => {
+  return data.map((d, i) => ({
+    ...d,
+    side: d.side === 1 ? 'request' : 'response',
+    position: previousPosition + i + 1
+  }));
 };
 
 const generateHTMLSafeText = (data) => {

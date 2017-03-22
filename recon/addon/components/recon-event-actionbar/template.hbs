@@ -2,6 +2,12 @@
   <hbox class="dropdowns">
     {{#if isPacketView }}
       {{#rsa-form-button isDisabled=true}}Export PCAP{{/rsa-form-button}}
+      {{#rsa-form-button
+        class='payload-only-button'
+        style=payloadButtonStyle
+        click=(action 'togglePayloadOnly')}}
+        Payload only
+      {{/rsa-form-button}}
     {{/if}}
     {{#if isFileView }}
       {{recon-event-actionbar/export-files}}

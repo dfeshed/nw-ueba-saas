@@ -39,6 +39,7 @@ const toggleReconHeader = _createToggleActionCreator(ACTION_TYPES.TOGGLE_HEADER)
 const toggleRequestData = _createToggleActionCreator(ACTION_TYPES.TOGGLE_REQUEST);
 const toggleResponseData = _createToggleActionCreator(ACTION_TYPES.TOGGLE_RESPONSE);
 const toggleReconExpanded = _createToggleActionCreator(ACTION_TYPES.TOGGLE_EXPANDED);
+const togglePayloadOnly = _createToggleActionCreator(ACTION_TYPES.TOGGLE_PAYLOAD_ONLY);
 
 /**
  * Builds action for closing recon
@@ -51,5 +52,6 @@ export {
   toggleRequestData,
   toggleResponseData,
   toggleReconExpanded,
+  togglePayloadOnly,
   closeRecon
 };

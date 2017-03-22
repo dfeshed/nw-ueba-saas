@@ -59,6 +59,7 @@ export default Component.extend({
    * @private
    */
   didInsertElement() {
+    this._super(...arguments);
     const options = {
       rootMargin: '-1000px 0px -1000px 0px',
       threshold: [{
@@ -79,6 +80,7 @@ export default Component.extend({
   },
 
   willDestroyElement() {
+    this._super(...arguments);
     this.get('observer').disconnect();
   },
 

@@ -8,30 +8,34 @@
         {{packet.side}}
       </span>
     </div>
-    <hbox class="packet-details">
-      <box align="center" horizontal>
-        <span>
-          {{rsa-icon
-            click=(action 'expandPacket')
-            name=(concat 'arrow-' collapseArrowDirection '-12')}}
-        </span>
-        <span class="text">
-          {{t 'list.packet'}}&nbsp;{{add index 1}}
-        </span>
-      </box>
-      <box xs="3" align="end">
-        {{rsa-content-datetime timestamp=packet.timestamp}}
-      </box>
-      <box align="center" justify="end" horizontal>
-        <span class="label">ID</span> {{packet.id}}
-      </box>
-      <box align="center" justify="end" horizontal>
-        <span class="label">SEQ</span> {{packet.sequence}}
-      </box>
-      <box align="center" justify="end" horizontal>
-        {{packet.payloadSize}} bytes
-      </box>
-    </hbox>
+    {{#if packet.byteRows}}
+      <hbox class="packet-details">
+        <box align="center" horizontal>
+          <span>
+            {{rsa-icon
+              click=(action 'expandPacket')
+              name=(concat 'arrow-' collapseArrowDirection '-12')}}
+          </span>
+          <span class="text">
+            {{t 'list.packet'}}&nbsp;{{packet.position}}
+          </span>
+        </box>
+        <box xs="3" align="end">
+          {{rsa-content-datetime timestamp=packet.timestamp}}
+        </box>
+        <box align="center" justify="end" horizontal>
+          <span class="label">ID</span> {{packet.id}}
+        </box>
+        <box align="center" justify="end" horizontal>
+          <span class="label">SEQ</span> {{packet.sequence}}
+        </box>
+        <box align="center" justify="end" horizontal>
+          <span class="label">PAYLOAD</span> {{packet.payloadSize}} bytes
+        </box>
+      </hbox>
+    {{else}}
+      <p>{{t 'recon.packetView.noPayloadBytes'}}</p>
+    {{/if}}
   </vbox>
   {{#if packetIsExpanded}}
     <section class="rsa-packet__body">

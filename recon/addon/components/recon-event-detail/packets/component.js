@@ -1,6 +1,5 @@
 import Ember from 'ember';
 import connect from 'ember-redux/components/connect';
-
 import ReconPager from 'recon/mixins/recon-pager';
 import { enhancedPackets } from 'recon/selectors/packet-selectors';
 import layout from './template';

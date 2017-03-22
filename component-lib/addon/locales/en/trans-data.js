@@ -122,6 +122,9 @@ export default {
       downloadLog: 'Download Log',
       isDownloading: 'Downloading...'
     },
+    packetView: {
+      noPayloadBytes: 'There are no payload bytes for this packet'
+    },
     error: {
       generic: 'An unexpected error has occurred attempting to retrieve this data.',
       missingRecon: 'This event (id = {{id}}) was not saved or has been rolled out of storage. No content to display.'

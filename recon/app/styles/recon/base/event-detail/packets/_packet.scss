@@ -7,6 +7,7 @@
     color: $dark-fg-color;
     padding: 6px rsa-whitespace();
     position: relative;
+    min-height: 2rem;
 
     h3 {
       color: rsa-color(white);
@@ -30,6 +31,12 @@
         font-size: 0.85rem;
         letter-spacing: 1px;
       }
+    }
+
+    p {
+      @include rsa-font(paragraph);
+      color: rsa-color(gray);
+      text-align: center;
     }
 
     .justify-response {

@@ -122,6 +122,9 @@ export default {
       downloadLog: 'ja_Download Log',
       isDownloading: 'ja_Downloading...'
     },
+    packetView: {
+      noPayloadBytes: 'ja_There are no payload bytes for this packet'
+    },
     files: {
       fileName: 'ja_File Name',
       extension: 'ja_Extension',
