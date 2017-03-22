@@ -45,10 +45,10 @@
               {{else if (eq cellData.dataType 'group')}}
                 <vbox>
                   <div class="rsa-context-panel__grid__host-details__field-name">{{t cellData.title}}</div>
-                  {{#rsa-content-tethered-panel-trigger panel=(concat cellData.count index) class=""}}
+                  {{#rsa-content-tethered-panel-trigger class="rsa-context-panel__grid__host-details__tetheredPanel" panel=(concat cellData.count index) }}
                     <div class="rsa-context-panel__grid__host-details__groupdata">{{get data cellData.count}}</div>
                   {{/rsa-content-tethered-panel-trigger}}
-                  {{#rsa-content-tethered-panel panelId=(concat cellData.count index) displayCloseButton=false position='bottom-right'}}
+                  {{#rsa-content-tethered-panel panelId=(concat cellData.count index) displayCloseButton=false position='top-left'}}
                     <section>
                       {{#if (gt (get data cellData.count) 1)}}
                         {{#each (get data cellData.field) as |cellData |}}

@@ -308,7 +308,7 @@ export default [
     ],
     'resultMeta': {
       'timeQuerySubmitted': 1486022329719,
-      'timeFilter.timeUnit': 'DAYS',
+      'timeFilter.timeUnit': 'DAY',
       'timeFilter.timeUnitCount': '7'
     },
     'pagingEnabled': false,
@@ -553,7 +553,7 @@ export default [
     ],
     'resultMeta': {
       'timeQuerySubmitted': 1458242092315,
-      'timeFilter.timeUnit': 'DAYS',
+      'timeFilter.timeUnit': 'DAY',
       'timeFilter.timeUnitCount': '7'
     },
     'pagingEnabled': false,
