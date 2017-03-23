@@ -18,6 +18,7 @@ const getDataSources = () => {
     fetchData(
       {},
       'data-sources',
+      false,
       // some job has finished and is ready for download
       ({ data }) => {
         const dataSources = data.map((v) => {
@@ -52,6 +53,7 @@ const initializeContextPanel = ({ entityId, entityType }) => {
         ]
       },
       'context',
+      true,
       // some job has finished and is ready for download
       ({ data }) => {
         dispatch({

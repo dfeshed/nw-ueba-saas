@@ -47,9 +47,7 @@ const ContextComponent = Component.extend({
     }
     this._initModel();
     this.set('errorMessage', null);
-    if (!lookupData) {
-      return;
-    }
+
     if (lookupData === 'error') {
       this.set('errorMessage', this.get('i18n').t('context.error.error'));
       Logger.error('Error processing stream call for context lookup. ');
@@ -148,7 +146,9 @@ const ContextComponent = Component.extend({
     switch (contextDatum.dataSourceGroup) {
       case 'Modules': {
         contextData.set('additionalData', contextDatum.resultMeta);
-        contextData.set(`${contextDatum.dataSourceGroup}_HEADER`, ` (IIOC Score > ${contextDatum.resultMeta.iocScore_gte})`);
+        if (contextDatum.resultMeta.iocScore_gte) {
+          contextData.set(`${contextDatum.dataSourceGroup}_HEADER`, ` (IIOC Score > ${contextDatum.resultMeta.iocScore_gte})`);
+        }
         contextData.set(contextDatum.dataSourceGroup, contextDatum.resultList);
         break;
       }
