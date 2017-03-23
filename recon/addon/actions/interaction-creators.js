@@ -5,7 +5,7 @@ import { fetchExtractJobId } from './fetch';
 const {
   A,
   Logger,
-  isArray
+  get
 } = Ember;
 
 const fileSelected = (fileId) => {
@@ -19,17 +19,7 @@ const deselectAllFiles = () => ({ type: ACTION_TYPES.FILES_SELECT_ALL });
 
 const selectAllFiles = () => ({ type: ACTION_TYPES.FILES_DESELECT_ALL });
 
-const selectHeaderItem = (headerItems, item) => {
-  let v;
-  if (isArray(headerItems)) {
-    const d = headerItems.find((hi) => hi.name === item);
-
-    if (d && d.hasOwnProperty('value')) {
-      v = d.value;
-    }
-  }
-  return v;
-};
+const getHeaderItem = (headerItems, item) => headerItems.find((d) => d.id === item) || {};
 
 const createFilename = (deviceName, session, files = []) => {
   let fileName = `${deviceName}_SID${session}`;
@@ -51,8 +41,8 @@ const extractFiles = (type = 'FILES') => {
         }
       }
     } = getState();
-    const deviceName = selectHeaderItem(headerItems, 'device');
-    const session = selectHeaderItem(headerItems, 'session');
+    const deviceName = get(getHeaderItem(headerItems, 'service'), 'value'); // device
+    const session = get(getHeaderItem(headerItems, 'id'), 'value');
     const selectedFileNames = (files || A([]))
       .filterBy('selected', true)
       .map((file) => file.fileName);
