@@ -16,17 +16,12 @@ import java.util.List;
 
 import static junitparams.JUnitParamsRunner.$;
 
-/**
- * Created by idanp on 12/17/2015.
- */
-
 @RunWith(JUnitParamsRunner.class)
 public class PrinterLogTest {
 
 	private MorphlinesTester morphlineTester = new MorphlinesTester();
 	private String confFile = "resources/conf-files/parsePRNLOG.conf";
 	private String confEnrichmentFile = "resources/conf-files/enrichment/readPRNLOG_enrich.conf";
-
 
 
 	@SuppressWarnings("resource")
