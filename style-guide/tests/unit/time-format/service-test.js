@@ -1,8 +1,7 @@
 import { moduleFor, test } from 'ember-qunit';
 
 moduleFor('service:time-format', 'Unit | Service | time format', {
-  // Specify the other units that are required for this test.
-  // needs: ['service:foo']
+  needs: ['service:request']
 });
 
 test('it provides the correct options', function(assert) {

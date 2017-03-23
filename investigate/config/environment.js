@@ -1,9 +1,10 @@
-/* eslint-disable */
+/* eslint-env node */
+'use strict';
 
-var contextLookup = require('./context-lookup');
+const contextLookup = require('./context-lookup');
 
-var mockPort = process.env.MOCK_PORT || 9999;
-var mockServerUrl = "http://localhost:" + mockPort;
+const mockPort = process.env.MOCK_PORT || 9999;
+const mockServerUrl = `http://localhost:${mockPort}`;
 
 module.exports = function(environment/* , appConfig */) {
   return {
@@ -20,9 +21,6 @@ module.exports = function(environment/* , appConfig */) {
     moment: {
       includeLocales: ['en', 'ja'],
       includeTimezone: '2010-2020'
-    },
-    i18n: {
-      defaultLocale: 'en'
     }
   };
 };

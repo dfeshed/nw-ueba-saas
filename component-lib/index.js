@@ -1,8 +1,11 @@
-/* eslint-disable */
+/* eslint-env node */
 'use strict';
 
-var isDevelopingAddon = require('../common').isDevelopingAddon;
-var projectName = 'component-lib';
+const EmberApp = require('ember-cli/lib/broccoli/ember-app');
+const { isDevelopingAddon } = require('../common');
+const projectName = 'component-lib';
+const replace = require('broccoli-replace');
+const WebpackWriter = require('broccoli-webpack');
 
 module.exports = {
   name: projectName,
@@ -18,6 +21,60 @@ module.exports = {
       'pikaday-time': {
         import: ['pikaday.js', 'css/pikaday.css']
       },
+      redux: {
+        vendor: {
+          include: ['dist/redux.js'],
+          processTree(tree) {
+            return replace(tree, {
+              files: '**/*.js',
+              patterns: [
+                {
+                  match: /process\.env\.NODE_ENV/g,
+                  replacement: `"${EmberApp.env()}"`
+                },
+                {
+                  match: /import isPlainObject from 'lodash\/isPlainObject'/g,
+                  replacement: "import lodash from 'lodash'\nconst isPlainObject = lodash.isPlainObject"
+                }
+              ]
+            });
+          }
+        }
+      },
+      'redux-actions': {
+        vendor: ['dist/redux-actions.js']
+      },
+      'redux-pack': {
+        vendor: {
+          processTree(tree) {
+            return new WebpackWriter([tree], {
+              entry: './redux-pack/lib/index.js',
+              output: {
+                library: 'redux-pack',
+                libraryTarget: 'amd',
+                filename: 'redux-pack.amd.js'
+              }
+            });
+          }
+        }
+      },
+      'redux-thunk': {
+        vendor: ['dist/redux-thunk.js']
+      },
+      reselect: {
+        vendor: {
+          processTree(tree) {
+            return new WebpackWriter([tree], {
+              entry: './reselect/lib/index.js',
+              output: {
+                library: 'reselect',
+                libraryTarget: 'amd',
+                filename: 'reselect.amd.js'
+              }
+            });
+          }
+        }
+      },
       tether: {
         srcDir: 'dist',
         import: ['js/tether.js']
@@ -29,20 +86,19 @@ module.exports = {
   isDevelopingAddon: isDevelopingAddon(projectName),
 
   // Needed because of this https://github.com/cibernox/ember-power-select/issues/145
-  contentFor: function(type, config) {
-    var emberPowerSelect = this.addons.filter(function(addon) {
+  contentFor(type, config) {
+    const emberPowerSelect = this.addons.filter(function(addon) {
       return addon.name === 'ember-power-select';
-    })[0]
+    })[0];
     return emberPowerSelect.contentFor(type, config);
   },
 
   /**
    * Imports assets (fonts, graphics, etc) into the consuming app.
    * @see https://github.com/ember-cli/ember-cli/blob/master/ADDON_HOOKS.md#included
-   * @param app
    * @public
    */
-  included: function(app) {
+  included() {
     this._super.included.apply(this, arguments);
 
     // Assets that are referenced by CSS must go in the consuming app's /assets/ subdir.
@@ -76,9 +132,22 @@ module.exports = {
 
     // Script & data assets can remain in vendor.
     this.import('vendor/component-lib.json', { destDir: 'vendor/' });
+
+    // Redux dependencies
+    this.import('vendor/redux/dist/redux.js', {
+      using: [{ transformation: 'amd', as: 'redux' }]
+    });
+    this.import('vendor/redux-actions/dist/redux-actions.js', {
+      using: [{ transformation: 'amd', as: 'redux-actions' }]
+    });
+    this.import('vendor/redux-pack.amd.js');
+    this.import('vendor/redux-thunk/dist/redux-thunk.js', {
+      using: [{ transformation: 'amd', as: 'redux-thunk' }]
+    });
+    this.import('vendor/reselect.amd.js');
   },
 
-  init: function(app) {
+  init() {
     this._super.init && this._super.init.apply(this, arguments);
     this.options = this.options || {};
     this.options.babel = this.options.babel || {};

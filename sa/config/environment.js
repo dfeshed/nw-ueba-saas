@@ -1,18 +1,18 @@
-/* eslint-disable */
+/* eslint-env node */
 
-var generateSocketConfiguration = require('./socketConfig');
-var addFeatureFlags = require('../../common').addFeatureFlags;
-var mockPort = process.env.MOCK_PORT || 9999;
-var mockServerUrl = "http://localhost:" + mockPort;
-var useMockServer = !process.env.NOMOCK;
+const generateSocketConfiguration = require('./socketConfig');
+const { addFeatureFlags } = require('../../common');
+const mockPort = process.env.MOCK_PORT || 9999;
+const mockServerUrl = `http://localhost:${mockPort}`;
+const useMockServer = !process.env.NOMOCK;
 
 module.exports = function(environment) {
-  var ENV = {
-    useMockServer: useMockServer,
-    mockServerUrl: mockServerUrl,
-    mockPort: mockPort,
+  const ENV = {
+    environment,
+    useMockServer,
+    mockServerUrl,
+    mockPort,
     modulePrefix: 'sa',
-    environment: environment,
     requestEula: true,
     rootURL: '/',
     locationType: 'auto',
@@ -47,20 +47,16 @@ module.exports = function(environment) {
         Function: true,
         String: true,
         Array: true,
-        Date: false,
+        Date: false
       }
     },
 
     featureFlags: addFeatureFlags(environment),
 
-    'ember-cli-mirage':  {},
+    'ember-cli-mirage': {},
     'ember-cli-mock-socket': {},
     socketRoutes: generateSocketConfiguration(environment),
     socketDebug: false,
-    i18n: {
-      defaultLocale: 'en',
-      includedLocales: ['en', 'ja']
-    },
     APP: {
       // Here you can pass flags/options to your application instance
       // when it is created

@@ -1,9 +1,13 @@
+import { isEmpty } from 'ember-utils';
 import { helper } from 'ember-helper';
 
 export function dataSourceEnabled([dataSources, dataSourceGroup]) {
-  if ('overview' === dataSourceGroup || dataSources.contains(dataSourceGroup)) {
-    return true;
+  if (!isEmpty(dataSourceGroup)) {
+    if (dataSourceGroup === 'overview' || (!isEmpty(dataSources) && dataSources.includes(dataSourceGroup))) {
+      return true;
+    }
   }
+
   return false;
 }
 

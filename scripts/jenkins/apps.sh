@@ -117,7 +117,11 @@ function buildEmberApp {
     runAppYarnInstall $1
 
     # install Bower deps
-    runAppBowerInstall $1
+    if [[ "$1" == "sa" ]]
+    then
+      runAppBowerInstall $1
+    fi
+
   fi
 
   local shouldTestApp=$(doTestApp $1)
@@ -203,10 +207,6 @@ info "Building apps"
 cd scripts/node
 yarn
 cd $CWD
-
-# Run node script that will check bower versions for all projects
-node scripts/node/check-bower-versions.js
-checkError "Bower version mismatch"
 
 # Run node script that will check translation files to ensure
 # translations are all matching and up to date

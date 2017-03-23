@@ -2,7 +2,7 @@ import { moduleFor, test } from 'ember-qunit';
 
 moduleFor('service:date-format', 'Unit | Service | date format', {
   // Specify the other units that are required for this test.
-  // needs: ['service:foo']
+  needs: ['service:i18n', 'service:moment', 'service:request']
 });
 
 test('it provides the correct options', function(assert) {

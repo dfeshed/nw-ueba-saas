@@ -31,7 +31,7 @@ export default Component.extend({
   _buildListData(listData, entityId) {
     return listData.map((list) => {
       const metaInList = list.resultList && list.resultList.length > 0;
-      const listObj = list.resultList.filter((listObj) => Object.values(listObj.data).contains(entityId));
+      const listObj = list.resultList.filter((listObj) => Object.values(listObj.data).includes(entityId));
       return {
         id: list.datasourceId,
         name: list.dataSourceName,

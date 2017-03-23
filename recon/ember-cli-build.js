@@ -1,11 +1,11 @@
-/* eslint-disable */
-var EmberAddon = require('ember-cli/lib/broccoli/ember-addon');
-var shim = require('@html-next/flexi-layouts/lib/pod-templates-shim');
+/* eslint-env node */
+const EmberAddon = require('ember-cli/lib/broccoli/ember-addon');
+const shim = require('@html-next/flexi-layouts/lib/pod-templates-shim');
 
 shim(EmberAddon);
 
 module.exports = function(defaults) {
-  var app = new EmberAddon(defaults, {
+  const app = new EmberAddon(defaults, {
     babel: {
       stage: 0,
       includePolyfill: true

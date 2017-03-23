@@ -1,8 +1,8 @@
-/* eslint-disable */
+/* eslint-env node */
 module.exports = function(environment) {
-  var ENV = {
+  const ENV = {
     modulePrefix: 'style-guide',
-    environment: environment,
+    environment,
     rootURL: '/',
     locationType: 'hash',
     dateFormatDefault: 'MM/dd/yyyy',
@@ -25,10 +25,6 @@ module.exports = function(environment) {
       includeLocales: ['en', 'ja'],
       includeTimezone: '2010-2020'
     },
-    'i18n': {
-      defaultLocale:'en',
-      includedLocales: ['en', 'ja']
-    },
     EmberENV: {
       FEATURES: {
         // Here you can enable experimental features on an ember canary build
@@ -38,7 +34,7 @@ module.exports = function(environment) {
         Function: true,
         String: true,
         Array: true,
-        Date: false,
+        Date: false
       }
     },
     APP: {
@@ -46,20 +42,20 @@ module.exports = function(environment) {
       // Optional artificial delay (in millisec) for testing the app's loading animation.
       // Used by the initializer "ready-delay". After animation has been sufficiently tested, either
       // delete the initializer, remove this line, or set value to zero.
-      readyDelay: 1250, //1500
+      readyDelay: 1250 // 1500
     },
     'ember-simple-auth': {
-        authenticate: 'authenticator:authenticator',
-        authorizer: 'authorizer:authorizer',
-        /* Local storage key that holds the CSRF token returned by the server */
-        csrfLocalstorageKey: "rsa-x-csrf-token"
+      authenticate: 'authenticator:authenticator',
+      authorizer: 'authorizer:authorizer',
+      /* Local storage key that holds the CSRF token returned by the server */
+      csrfLocalstorageKey: 'rsa-x-csrf-token'
     },
     'ember-load': {
       loadingIndicatorClass: 'rsa-application-loading'
     },
     contentSecurityPolicy: {
       // Allows us to use base64 encoded images in HTML/CSS without firing a CSP error.
-      "img-src": "'self' data:",
+      'img-src': "'self' data:",
       'connect-src': "'self' ws:",
       'font-src': "'self' data:",
       'style-src': "'self' 'unsafe-inline'"

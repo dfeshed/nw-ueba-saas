@@ -27,11 +27,6 @@ module.exports = function(environment) {
     moment: {
       includeLocales: ['en', 'ja'],
       includeTimezone: '2010-2020'
-    },
-
-    'i18n': {
-      defaultLocale: 'en-us',
-      includedLocales: ['en-us', 'ja']
     }
   };
 

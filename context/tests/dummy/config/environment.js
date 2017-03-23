@@ -1,11 +1,11 @@
-/* eslint-disable */
+/* eslint-env node */
 
-let socketRouteGenerator = require('../../../config/socketRoutes');
+const socketRouteGenerator = require('../../../config/socketRoutes');
 
 module.exports = function(environment) {
-  var ENV = {
+  const ENV = {
     modulePrefix: 'dummy',
-    environment: environment,
+    environment,
     rootURL: '/',
     locationType: 'auto',
     EmberENV: {
@@ -45,7 +45,7 @@ module.exports = function(environment) {
   }
 
   if (environment === 'production') {
-
+    // Intentionally empty
   }
 
   ENV.socketRoutes = socketRouteGenerator(environment);

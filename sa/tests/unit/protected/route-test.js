@@ -3,7 +3,11 @@ import { moduleFor, test } from 'ember-qunit';
 moduleFor('route:protected', 'Unit | Route | protected', {
   // Specify the other units that are required for this test.
   // needs: ['controller:foo']
-  needs: ['service:assetLoader', 'service:headData']
+  needs: [
+    'service:accessControl', 'service:assetLoader', 'service:dateFormat', 'service:headData',
+    'service:i18n', 'service:landingPage', 'service:session', 'service:timeFormat',
+    'service:timezone', 'service:userActivity', 'service:userIdle'
+  ]
 });
 
 test('it exists', function(assert) {

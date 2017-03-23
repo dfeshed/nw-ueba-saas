@@ -14,7 +14,9 @@ const options = {
   i18n: mockI18nService
 };
 
-moduleFor('service:contextual-help', 'Unit | Service | contextual help', {});
+moduleFor('service:contextual-help', 'Unit | Service | contextual help', {
+  needs: ['service:appVersion', 'service:i18n']
+});
 
 test('it populates the global help url', function(assert) {
   const service = this.subject(options);

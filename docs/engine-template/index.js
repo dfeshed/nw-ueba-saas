@@ -1,8 +1,9 @@
 /* eslint-env node */
+'use strict';
 
 const EngineAddon = require('ember-engines/lib/engine-addon');
 
-const common = require('../common');
+const { isDevelopingAddon } = require('../common');
 const projectName = 'changeme';
 
 module.exports = EngineAddon.extend({
@@ -33,7 +34,7 @@ module.exports = EngineAddon.extend({
   // mockDestinations: path.join(__dirname, 'tests', 'server', 'subscriptions')
 
   // See ../common.js for details on this function
-  isDevelopingAddon: common.isDevelopingAddon(projectName),
+  isDevelopingAddon: isDevelopingAddon(projectName),
 
   outputPaths: {
     vendor: {

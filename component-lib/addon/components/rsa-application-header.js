@@ -17,8 +17,6 @@ export default Component.extend(ContextualHelp, {
 
   layoutService: service('layout'),
 
-  usernameFormat: service(),
-
   timezone: service(),
 
   layout,

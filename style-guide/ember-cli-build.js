@@ -1,12 +1,12 @@
-/* eslint-disable */
-var EmberApp = require('ember-cli/lib/broccoli/ember-app');
-var shim = require('@html-next/flexi-layouts/lib/pod-templates-shim');
-var appEnv = EmberApp.env();
+/* eslint-env node */
+const EmberApp = require('ember-cli/lib/broccoli/ember-app');
+const shim = require('@html-next/flexi-layouts/lib/pod-templates-shim');
+const appEnv = EmberApp.env();
 
 shim(EmberApp);
 
 module.exports = function(defaults) {
-  var app = new EmberApp(defaults, {
+  const app = new EmberApp(defaults, {
     autoprefixer: {
       browsers: ['last 2 versions', 'IE > 10'],
       enabled: appEnv !== 'test'
@@ -20,10 +20,6 @@ module.exports = function(defaults) {
       }
     }
   });
-
-  // Ember template compiler: Optional ember library for compiling templates in browser.
-  // This app uses this compiler to generate live Components from HBS template strings.
-  app.import(app.bowerDirectory + "/ember/ember-template-compiler.js");
 
   return app.toTree();
 };

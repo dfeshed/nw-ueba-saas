@@ -1,17 +1,15 @@
 import Ember from 'ember';
+import Component from 'ember-component';
 import LiveConnect from 'context/config/live-connect';
 import connect from 'ember-redux/components/connect';
 import computed from 'ember-computed-decorators';
 import * as ContextActions from 'context/actions/context-creators';
 import liveConnectObj from 'context/config/liveconnect-response-schema';
 import layout from './template';
+import service from 'ember-service/inject';
 
 const {
-  inject: {
-    service
-  },
   isArray,
-  Component,
   Logger,
   isEmpty,
   String: {
@@ -33,6 +31,7 @@ const ContextComponent = Component.extend({
   layout,
   classNames: 'rsa-context-panel-header',
 
+  i18n: service(),
   request: service(),
 
   contextData: null,

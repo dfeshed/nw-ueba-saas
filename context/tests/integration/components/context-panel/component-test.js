@@ -8,11 +8,7 @@ const {
 } = Ember;
 
 moduleForComponent('context-panel', 'Integration | Component | context-panel', {
-  integration: true,
-  beforeEach() {
-    this.set('i18n', this.container.lookup('service:i18n'));
-    this.set('model', this.container.lookup('service:model'));
-  }
+  integration: true
 });
 
 skip('Test context panel should display error in Error cases.', function(assert) {
@@ -26,7 +22,7 @@ skip('Test context panel should display error in Error cases.', function(assert)
   this.register('service:request', hoverStub);
   this.inject.service('location-service', { as: 'request' });
   const done = assert.async(1);
-  this.render(hbs`{{context-panel entityId=entityId entityType=entityType i18n=i18n }}`);
+  this.render(hbs`{{context-panel entityId=entityId entityType=entityType }}`);
 
   return waitFor('.rsa-context-panel__error-text').then(() => {
     const [errorText] = this.$('.rsa-context-panel__error-text');
@@ -46,7 +42,7 @@ skip('Test context panel should display error in Error from CH', function(assert
   this.register('service:request', hoverStub);
   this.inject.service('location-service', { as: 'request' });
   const done = assert.async(1);
-  this.render(hbs`{{context-panel entityId=entityId entityType=entityType i18n=i18n }}`);
+  this.render(hbs`{{context-panel entityId=entityId entityType=entityType }}`);
 
   return waitFor('.rsa-context-panel__error-text').then(() => {
     const [errorText] = this.$('.rsa-context-panel__error-text');

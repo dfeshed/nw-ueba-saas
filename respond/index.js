@@ -1,4 +1,5 @@
 /* eslint-env node */
+'use strict';
 
 const path = require('path');
 const EngineAddon = require('ember-engines/lib/engine-addon');
