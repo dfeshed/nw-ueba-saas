@@ -373,6 +373,7 @@ export default Ember$.extend({}, BaseSelectors, {
         'reconHideShowHeader': '.recon-event-header .rsa-icon-layout-6',
         'reconHideShowRequest': '.recon-event-header .rsa-icon-arrow-circle-right-2',
         'reconHideShowResponse': '.recon-event-header .rsa-icon-arrow-circle-left-2',
+        'reconHideShowMeta': '.recon-event-header .rsa-icon-layout-2',
         'reconSelectAFile': '.recon-event-detail-files .rsa-data-table-body .rsa-form-checkbox',
         'reconSelectAllFiles': '.recon-event-detail-files .rsa-data-table-header .rsa-form-checkbox',
         'reconSelectorItems': '.ember-power-select-options',
