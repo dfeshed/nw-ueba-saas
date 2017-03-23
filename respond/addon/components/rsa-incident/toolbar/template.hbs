@@ -1,6 +1,8 @@
 {{rsa-incident/update-action-button
   fieldName="priority"
   options=priorityTypes
+  optionLabelProperty='labelKey'
+  translateOptionLabel=true
   optionValueProperty="name"
   selectedValue=priority
   incidentId=incidentId
@@ -13,6 +15,8 @@
 {{rsa-incident/update-action-button
   fieldName='status'
   options=statusTypes
+  optionLabelProperty='labelKey'
+  translateOptionLabel=true
   optionValueProperty="name"
   selectedValue=status
   incidentId=incidentId

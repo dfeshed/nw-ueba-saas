@@ -19,7 +19,6 @@ const stateToComputed = ({ respond: { incidents } }) => {
     incidentsTotal: incidents.incidentsTotal,
     incidentsSelected: incidents.incidentsSelected,
     isFilterPanelOpen: incidents.isFilterPanelOpen,
-    isAltThemeActive: incidents.isAltThemeActive,
     focusedIncident: incidents.focusedIncident,
     isTransactionUnderway: incidents.isTransactionUnderway
   };
@@ -30,6 +29,8 @@ const dispatchToActions = (dispatch) => {
     initializeIncidents: () => {
       dispatch(DataActions.getIncidents());
       dispatch(DataActions.getAllUsers());
+      dispatch(DataActions.getAllPriorityTypes());
+      dispatch(DataActions.getAllStatusTypes());
     },
     toggleFilterPanel: () => dispatch(UIStateActions.toggleFilterPanel()),
     toggleIsInSelectMode: () => dispatch(UIStateActions.toggleIsInSelectMode()),
@@ -52,7 +53,7 @@ const dispatchToActions = (dispatch) => {
 const Incidents = Component.extend({
   tagName: 'vbox',
   classNames: 'rsa-respond-incidents',
-  classNameBindings: ['isFilterPanelOpen:show-more-filters', 'isAltThemeActive:light-theme', 'isTransactionUnderway:transaction-in-progress'],
+  classNameBindings: ['isFilterPanelOpen:show-more-filters', 'isTransactionUnderway:transaction-in-progress'],
   redux: service(),
   i18n: service(),
 

@@ -33,60 +33,6 @@ const stateToComputed = undefined; // no computed properties from app state
 
 const dispatchToActions = (dispatch) => {
   return {
-    handleChange(selectedOption) {
-      const { incidentId, isBulk } = this.getProperties('incidentId', 'isBulk');
-
-      this.set('stagedOption', selectedOption);
-
-      if (isBulk) {
-        this.send('showConfirmationDialog');
-      } else {
-        const id = isArray(incidentId) ? incidentId[0] : incidentId;
-        this.send('updateIncident', id, this.get('stagedValue'));
-      }
-    },
-
-    cancelBulkUpdate() {
-      this.send('closeConfirmationDialog');
-    },
-
-    applyBulkUpdate() {
-      this.send('bulkUpdateIncidents', this.get('incidentId'), this.get('stagedValue'));
-      this.send('closeConfirmationDialog');
-    },
-
-    /**
-     * Convenience method for showing a flash success/error message to the user on update or failure
-     * @method showFlashMessage
-     * @public
-     * @param type
-     * @param i18nKey
-     * @param context
-     */
-    showFlashMessage(type, i18nKey, context) {
-      const { i18n, flashMessages } = this.getProperties('i18n', 'flashMessages');
-
-      flashMessages[type.name](i18n.t(i18nKey, context), { iconName: type.icon });
-    },
-
-    /**
-     * Displays the bulk update confirmation modal dialog
-     * @method showConfirmationDialog
-     * @public
-     */
-    showConfirmationDialog() {
-      this.get('eventBus').trigger(`rsa-application-modal-open-${this.get('bulkConfirmationDialogId')}`);
-    },
-
-    /**
-     * Closes/Cancels the bulk update confirmation modal dialog
-     * @method closeConfirmationDialog
-     * @public
-     */
-    closeConfirmationDialog() {
-      this.get('eventBus').trigger(`rsa-application-modal-close-${this.get('bulkConfirmationDialogId')}`);
-    },
-
     /**
      * Executes the action for updating a single incident's field with a new value and display of a success or failure
      * notification to the user
@@ -168,6 +114,13 @@ const IncidentUpdateActionButton = Component.extend({
   incidentId: null,
 
   /**
+   * The label that is added as the button text when isIconOnly = false
+   * @property label
+   * @public
+   */
+  label: '',
+
+  /**
    * The options that appear in the dropdown control
    * @property options
    * @public
@@ -231,6 +184,13 @@ const IncidentUpdateActionButton = Component.extend({
    * @public
    */
   optionValueProperty: null,
+
+  /**
+   * Whether the label used (looked up via optionLabelProperty) should be translated as an i18nKey
+   * @property translateOptionLabel
+   * @public
+   */
+  translateOptionLabel: false,
 
   /**
    * Represents the current incident value which should be selected in the dropdown when the dropdown opens.
@@ -350,9 +310,10 @@ const IncidentUpdateActionButton = Component.extend({
    * @param optionLabelProperty
    * @returns {{}}
    */
-  @computed('stagedOption', 'optionLabelProperty')
-  stagedLabel(stagedOption = {}, optionLabelProperty) {
-    return isNone(optionLabelProperty) ? stagedOption : stagedOption[optionLabelProperty];
+  @computed('stagedOption', 'optionLabelProperty', 'translateOptionLabel')
+  stagedLabel(stagedOption = {}, optionLabelProperty, translateOptionLabel) {
+    const label = isNone(optionLabelProperty) ? stagedOption : stagedOption[optionLabelProperty];
+    return translateOptionLabel ? this.get('i18n').t(label) : label;
   },
 
   /**
@@ -390,6 +351,61 @@ const IncidentUpdateActionButton = Component.extend({
     this._super(...arguments);
     if (!isArray(this.get('options'))) {
       this.set('options', []);
+    }
+  },
+
+  actions: {
+    handleChange(selectedOption) {
+      const { incidentId, isBulk } = this.getProperties('incidentId', 'isBulk');
+
+      this.set('stagedOption', selectedOption);
+
+      if (isBulk) {
+        this.send('showConfirmationDialog');
+      } else {
+        const id = isArray(incidentId) ? incidentId[0] : incidentId;
+        this.send('updateIncident', id, this.get('stagedValue'));
+      }
+    },
+
+    cancelBulkUpdate() {
+      this.send('closeConfirmationDialog');
+    },
+
+    applyBulkUpdate() {
+      this.send('bulkUpdateIncidents', this.get('incidentId'), this.get('stagedValue'));
+      this.send('closeConfirmationDialog');
+    },
+
+    /**
+     * Convenience method for showing a flash success/error message to the user on update or failure
+     * @method showFlashMessage
+     * @public
+     * @param type
+     * @param i18nKey
+     * @param context
+     */
+    showFlashMessage(type, i18nKey, context) {
+      const { i18n, flashMessages } = this.getProperties('i18n', 'flashMessages');
+      flashMessages[type.name](i18n.t(i18nKey, context), { iconName: type.icon });
+    },
+
+    /**
+     * Displays the bulk update confirmation modal dialog
+     * @method showConfirmationDialog
+     * @public
+     */
+    showConfirmationDialog() {
+      this.get('eventBus').trigger(`rsa-application-modal-open-${this.get('bulkConfirmationDialogId')}`);
+    },
+
+    /**
+     * Closes/Cancels the bulk update confirmation modal dialog
+     * @method closeConfirmationDialog
+     * @public
+     */
+    closeConfirmationDialog() {
+      this.get('eventBus').trigger(`rsa-application-modal-close-${this.get('bulkConfirmationDialogId')}`);
     }
   }
 });

@@ -17,6 +17,10 @@
   right: 0;
   bottom: 0;
 
+  .rsa-data-table-body-cell, .rsa-data-table-header-cell {
+    box-sizing: border-box;
+  }
+
   .rsa-data-table,
   .rsa-data-table-body,
   .rsa-data-table-body-rows,
@@ -35,6 +39,8 @@
 
   .rsa-data-table-body-row {
     cursor: pointer;
+    left: 0;
+    right: 0;
   }
 
   &.is-in-select-mode .incident-actions {

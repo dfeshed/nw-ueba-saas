@@ -90,6 +90,20 @@ module.exports = function(environment) {
         subscriptionDestination: '/user/queue/users/all',
         requestDestination: '/ws/response/users/all'
       }
+    },
+    'priority-types': {
+      socketUrl,
+      findAll: {
+        subscriptionDestination: '/user/queue/options/priority',
+        requestDestination: '/ws/response/options/priority'
+      }
+    },
+    'status-types': {
+      socketUrl,
+      findAll: {
+        subscriptionDestination: '/user/queue/options/status',
+        requestDestination: '/ws/response/options/status'
+      }
     }
   };
 };

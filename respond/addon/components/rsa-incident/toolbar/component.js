@@ -1,31 +1,35 @@
 import Ember from 'ember';
 import connect from 'ember-redux/components/connect';
 import * as UIStateActions from 'respond/actions/ui-state-creators';
+import { priorityOptions, statusOptions } from 'respond/selectors/dictionaries';
 
 const {
   Component
 } = Ember;
 
-const stateToComputed = ({
-  respond: {
-    dictionaries,
-    users,
-    incident: {
-      id,
-      info,
-      isJournalPanelOpen
+const stateToComputed = (state) => {
+  const {
+    respond: {
+      users,
+      incident: {
+        id,
+        info,
+        isJournalPanelOpen
+      }
     }
-  }
-}) => ({
-  isJournalPanelOpen,
-  priorityTypes: dictionaries && dictionaries.priorityTypes,
-  statusTypes: dictionaries && dictionaries.statusTypes,
-  users: users && users.users,
-  incidentId: id,
-  priority: info && info.priority,
-  status: info && info.status,
-  assigneeId: info && info.assignee && info.assignee.id
-});
+  } = state;
+
+  return {
+    isJournalPanelOpen,
+    priorityTypes: priorityOptions(state),
+    statusTypes: statusOptions(state),
+    users: users && users.users,
+    incidentId: id,
+    priority: info && info.priority,
+    status: info && info.status,
+    assigneeId: info && info.assignee && info.assignee.id
+  };
+};
 
 const dispatchToActions = (dispatch) => ({
   clickJournalAction: () => dispatch(UIStateActions.toggleJournalPanel())

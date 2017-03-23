@@ -58,7 +58,8 @@
             isInverted=true
             style=(priority-to-content-style (get item column.field))
           }}
-
+        {{ else if (eq column.field "status")}}
+          {{t (concat 'respond.status.' (get item column.field)) }}
         {{else if (eq column.field "assignee")}}
           {{get item "assignee.name"}}
         {{else}}

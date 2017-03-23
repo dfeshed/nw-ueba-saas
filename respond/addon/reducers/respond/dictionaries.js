@@ -1,19 +1,27 @@
+import * as ACTION_TYPES from 'respond/actions/types';
 import reduxActions from 'redux-actions';
-import { PRIORITY_TYPES } from 'respond/utils/priority-types';
-import { STATUS_TYPES } from 'respond/utils/status-types';
 import { handle } from 'redux-pack';
 
 const initialState = {
-  priorityTypes: PRIORITY_TYPES,
-  statusTypes: STATUS_TYPES
+  priorityTypes: [],
+  statusTypes: []
 };
 
 export default reduxActions.handleActions({
-  dictionaries: (state, action) => {
-    return handle(state, action, {
-      start: (s) => ({ ...s, users: [], usersStatus: 'wait' }),
-      failure: (s) => ({ ...s, usersStatus: 'error' }),
-      success: (s) => ({ ...s, users: action.payload.data, usersStatus: 'completed' })
-    });
-  }
+
+  [ACTION_TYPES.FETCH_PRIORITY_TYPES]: (state, action) => (
+    handle(state, action, {
+      start: (s) => ({ ...s, priorityTypes: [] }),
+      failure: (s) => ({ ...s, priorityTypes: [] }),
+      success: (s) => ({ ...s, priorityTypes: action.payload.data }) }
+    )
+  ),
+
+  [ACTION_TYPES.FETCH_STATUS_TYPES]: (state, action) => (
+    handle(state, action, {
+      start: (s) => ({ ...s, statusTypes: [] }),
+      failure: (s) => ({ ...s, statusTypes: [] }),
+      success: (s) => ({ ...s, statusTypes: action.payload.data }) }
+    )
+  )
 }, initialState);

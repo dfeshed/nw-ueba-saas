@@ -1,13 +1,14 @@
 import Ember from 'ember';
 import connect from 'ember-redux/components/connect';
+import { priorityOptions, statusOptions } from 'respond/selectors/dictionaries';
 
 const { Component } = Ember;
 
-const stateToComputed = ({ respond: { dictionaries, users } }) => {
+const stateToComputed = (state) => {
   return {
-    priorityTypes: dictionaries.priorityTypes,
-    statusTypes: dictionaries.statusTypes,
-    users: users.users
+    priorityTypes: priorityOptions(state),
+    statusTypes: statusOptions(state),
+    users: state.respond.users.users
   };
 };
 

@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import {
+  dictionaries,
   Incidents,
   Journal,
   Users } from './api';
@@ -98,6 +99,12 @@ const initializeIncident = (incidentId) => {
       // If we haven't already fetched users (say, from incidents route), fetch now
       if (!state.respond.users.usersStatus) {
         dispatch(getAllUsers());
+      }
+      if (!state.respond.dictionaries.priorityTypes.length) {
+        dispatch(getAllPriorityTypes());
+      }
+      if (!state.respond.dictionaries.statusTypes.length) {
+        dispatch(getAllStatusTypes());
       }
     }
   };
@@ -336,6 +343,41 @@ const getAllUsers = () => {
 };
 
 /**
+ * Action creator for fetching all known priority types
+ * @method getAllPriorityTypes
+ * @public
+ * @returns {Object}
+ */
+const getAllPriorityTypes = () => {
+  return {
+    type: ACTION_TYPES.FETCH_PRIORITY_TYPES,
+    promise: dictionaries.getAllPriorityTypes(),
+    meta: {
+      onSuccess: (response) => Logger.debug(ACTION_TYPES.FETCH_PRIORITY_TYPES, response),
+      onFailure: (response) => _handleContentRetrievalError(response, 'priority types')
+    }
+  };
+};
+
+
+/**
+ * Action creator for fetching all known status types
+ * @method getAllStatusTypes
+ * @public
+ * @returns {Object}
+ */
+const getAllStatusTypes = () => {
+  return {
+    type: ACTION_TYPES.FETCH_STATUS_TYPES,
+    promise: dictionaries.getAllStatusTypes(),
+    meta: {
+      onSuccess: (response) => Logger.debug(ACTION_TYPES.FETCH_STATUS_TYPES, response),
+      onFailure: (response) => _handleContentRetrievalError(response, 'status types')
+    }
+  };
+};
+
+/**
  * Action creator for creating a journal entry on an incident
  * @method createJournalEntry
  * @public
@@ -470,5 +512,7 @@ export {
   deleteJournalEntry,
   updateIncidentFilters,
   sortBy,
-  initializeIncident
+  initializeIncident,
+  getAllPriorityTypes,
+  getAllStatusTypes
 };

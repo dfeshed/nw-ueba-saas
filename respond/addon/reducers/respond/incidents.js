@@ -81,15 +81,15 @@ const _handleUpdates = (action) => {
 
 const incidents = reduxActions.handleActions({
 
-  [ACTION_TYPES.FETCH_INCIDENTS_TOTAL_COUNT]: (state, action) => {
-    return handle(state, action, {
+  [ACTION_TYPES.FETCH_INCIDENTS_TOTAL_COUNT]: (state, action) => (
+    handle(state, action, {
       start: (s) => ({ ...s, incidentsTotal: '--' }),
       success: (s) => ({
         ...s,
         incidentsTotal: action.payload.meta.total
       })
-    });
-  },
+    })
+  ),
 
   [ACTION_TYPES.FETCH_INCIDENTS_STARTED]: (state) => {
     return {
@@ -126,6 +126,7 @@ const incidents = reduxActions.handleActions({
     handle(state, action, {
       start: (s) => ({ ...s, isTransactionUnderway: true }),
       success: _handleUpdates(action),
+      failure: (s) => ({ ...s }),
       finish: (s) => ({ ...s, isTransactionUnderway: false })
     })),
 

@@ -1,5 +1,6 @@
 {{#power-select
   options=options
+  disabled=isDisabled
   searchEnabled=searchEnabled
   searchField=optionLabelProperty
   selected=selected
@@ -14,7 +15,11 @@
     label=label
   )
   onchange=(action "handleChange") as |option|}}
-  {{get option optionLabelProperty}}
+  {{#if translateOptionLabel}}
+    {{t (get option optionLabelProperty)}}
+  {{else}}
+    {{get option optionLabelProperty}}
+  {{/if}}
 {{/power-select}}
 
 {{#if isBulk}}

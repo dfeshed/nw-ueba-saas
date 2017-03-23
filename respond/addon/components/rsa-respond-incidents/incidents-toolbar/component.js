@@ -4,15 +4,16 @@ import * as DataActions from 'respond/actions/data-creators';
 import { CANNED_FILTER_TYPES } from 'respond/utils/canned-filter-types';
 import { SORT_TYPES } from 'respond/utils/sort-types';
 import computed, { alias, empty } from 'ember-computed-decorators';
+import { priorityOptions, statusOptions } from 'respond/selectors/dictionaries';
 
 const {
   inject: { service },
   Component,
-  Logger,
   K
 } = Ember;
 
-const stateToComputed = ({ respond: { incidents, dictionaries, users } }) => {
+const stateToComputed = (state) => {
+  const { respond: { incidents, users } } = state;
   const { incidentsFilters, incidentsSort } = incidents;
 
   return {
@@ -21,9 +22,9 @@ const stateToComputed = ({ respond: { incidents, dictionaries, users } }) => {
     // the name of the sort currently applied
     appliedSort: incidentsSort,
     // list of possible incident priorities
-    priorityTypes: dictionaries.priorityTypes,
+    priorityTypes: priorityOptions(state),
     // list of possible incident statuses
-    statusTypes: dictionaries.statusTypes,
+    statusTypes: statusOptions(state),
     // list of available users to assigne incidents to
     users: users.users
   };
@@ -68,9 +69,6 @@ const IncidentsToolbar = Component.extend({
 
   // true if the "More Filters" button should be shown as active
   isMoreFiltersActive: false,
-
-  // true if the alternate (color) theme is active
-  isAltThemeActive: false,
 
   noop: K,
 
@@ -153,15 +151,10 @@ const IncidentsToolbar = Component.extend({
   },
 
   actions: {
-    handleSubjectChange() {
-      Logger.warn('Implement handleSubjectChange()');
-    },
     handleToggleFilterPanel() {
       this.sendAction('toggleFilterPanel');
     },
-    handleToggleColorTheme() {
-      this.sendAction('toggleTheme');
-    },
+
     handleToggleIsInSelectMode() {
       this.sendAction('toggleIsInSelectMode');
     }

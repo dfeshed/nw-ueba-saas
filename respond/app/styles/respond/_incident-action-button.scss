@@ -1,5 +1,11 @@
 .incident-action-button {
   box-sizing: border-box;
+  .ember-power-select-trigger {
+    border: none; // remove the default border from the ember power select
+    &[aria-disabled='true'] {
+      background-color: transparent; // remove default ember-power-select styling for disabled EPSs
+    }
+  }
   .rsa-application-modal {
     display: none;
   }
