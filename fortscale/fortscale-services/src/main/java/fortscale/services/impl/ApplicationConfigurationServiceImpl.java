@@ -72,6 +72,15 @@ public class ApplicationConfigurationServiceImpl implements ApplicationConfigura
     }
 
     @Override
+    public void insertOrUpdateConfigItemAsObject(String key, Object value) {
+        if (isApplicationConfigurationExists(key)){
+            updateConfigItemAsObject(key, value);
+        }else {
+            insertConfigItemAsObject(key, value);
+        }
+    }
+
+    @Override
     public void updateConfigItemAsObject(String key, Object value) {
         ObjectMapper mapper = new ObjectMapper();
         try {
