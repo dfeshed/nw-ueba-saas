@@ -61,7 +61,7 @@ public class DgMailParseTest {
 				.setEmailSender("rkeizer@digitalguardian.com")
 				.setEmailSubject("meeting minutes") //supposed to be empty in 'attachment' event types but i edited the line for the sake of the test
 				.setIsExternal("false")
-				.setNumOfRecipients("0")
+				.setNumOfRecipients("0") //modify this when num_of_recipients is fully implemented
 				.setWasClassified("FALSE")
 				.setWasBlocked("FALSE")
 				.setScanValueStatusText("Virus Total: 0 / 56 scans positive.")
