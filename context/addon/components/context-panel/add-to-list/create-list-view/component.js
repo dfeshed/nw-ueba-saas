@@ -1,13 +1,16 @@
 import Ember from 'ember';
 import layout from './template';
+import service from 'ember-service/inject';
+import Component from 'ember-component';
 
 const {
   isEmpty,
-  Component
+  Logger
 } = Ember;
 
 export default Component.extend({
   layout,
+  request: service(),
 
   resetProperties() {
     this.setProperties({
@@ -17,6 +20,30 @@ export default Component.extend({
       isError: false,
       errorMessage: null,
       isDisabled: false
+    });
+  },
+
+  createNewList(list) {
+    this.get('request').promiseRequest({
+      method: 'stream',
+      modelName: 'create-list',
+      query: {
+        filter: [
+          { field: 'name', value: list.name },
+          { field: 'description', value: list.description }
+        ]
+      }
+    }).then(({ data }) => {
+      Logger.debug(`Successfully created list: ${ data }`);
+      list.id = data;
+      this.get('model.list').push(list);
+      this.resetProperties();
+    }).catch((reason) => {
+      Logger.error(`List is not created: ${ reason }`);
+      this.setProperties({
+        isError: true,
+        errorMessage: this.get('i18n').t('context.error.createList')
+      });
     });
   },
 
@@ -46,8 +73,7 @@ export default Component.extend({
         });
       }
       if (!this.get('isError')) {
-        this.get('model.list').push(newList);
-        this.resetProperties();
+        this.createNewList(newList);
       }
     },
 

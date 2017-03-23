@@ -12,6 +12,7 @@ module.exports = function(environment) {
   //
   // const socketUrl = '/administration/socket';
 
+
   return {
     context: {
       socketUrl,
@@ -37,6 +38,15 @@ module.exports = function(environment) {
         defaultStreamLimit: 100000,
         subscriptionDestination: '/user/queue/administration/context/list/save',
         requestDestination: '/ws/administration/context/list/save',
+        cancelDestination: '/ws/administration/context/cancel'
+      }
+    },
+    'create-list':{
+      socketUrl,
+      stream: {
+        defaultStreamLimit: 100000,
+        subscriptionDestination: '/user/queue/administration/context/list/create',
+        requestDestination: '/ws/administration/context/list/create',
         cancelDestination: '/ws/administration/context/cancel'
       }
     },

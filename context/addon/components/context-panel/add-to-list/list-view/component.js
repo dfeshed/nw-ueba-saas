@@ -33,7 +33,6 @@ export default Component.extend({
       return listObj.enabled != listObj.initialEnabled || !listObj.id;
     }).map((listObj) => {
       return {
-        isNew: !listObj.id,
         deleteEntry: listObj.initialEnabled ? listObj.entryId : [],
         id: listObj.id,
         name: listObj.name,

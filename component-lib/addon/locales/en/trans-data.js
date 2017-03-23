@@ -786,6 +786,7 @@ export default {
       noData: 'No context data present for this DataSource.',
       listDuplicateName: 'List name already exists!',
       listValidName: 'Enter valid list name (Max length is 255 characters)',
+      createList: 'List is not created',
       'datasource.query.not.supported': 'Context data is query not supported for given meta.',
       'transport.http.read.failed': 'Context data is not available as the data source is down.',
       'transport.ad.read.failed': 'Context data is not available as the data source is not reachable.',
