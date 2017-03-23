@@ -45,7 +45,7 @@ export default {
     userLocked: 'ja_User account is locked',
     userDisabled: 'ja_User account is disabled',
     userExpired: 'ja_User account has expired',
-    changePasswordSoon: 'ja_Please note that your password to the RSA NetWitness Server will expire soon. We encourage you to change the password before it expires. To change your password, click the preferences button on the top right of the application window.',
+    changePasswordSoon: 'ja_Please note that your password to the RSA NetWitness Server will expire in {{daysRemaining}} day(s). We encourage you to change the password before it expires. To change your password, click the preferences button on the top right of the application window.',
     lostPassword: {
       title: 'ja_Lost Password Recovery',
       description: 'ja_Please submit your username.'
