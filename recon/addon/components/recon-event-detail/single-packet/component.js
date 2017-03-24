@@ -4,7 +4,7 @@ import { SpanielObserver } from 'spaniel';
 
 import layout from './template';
 
-const { Component, K, run } = Ember;
+const { Component, run } = Ember;
 
 export default Component.extend({
   layout,
@@ -30,7 +30,7 @@ export default Component.extend({
    * @type function
    * @public
    */
-  onselect: K,
+  onselect() {},
 
   /**
    * Observe the component's this.element intersecting with the root element

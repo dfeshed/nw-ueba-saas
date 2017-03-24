@@ -5,7 +5,7 @@ import { event, select } from 'd3-selection';
 import Drag from 'recon/utils/drag';
 import * as InteractionActions from 'recon/actions/interaction-creators';
 
-const { $, Component, K, observer, run } = Ember;
+const { $, Component, observer, run } = Ember;
 
 const dispatchToActions = (dispatch) => ({
   tooltipOn: (tooltipData) => dispatch(InteractionActions.showPacketTooltip(tooltipData)),
@@ -40,7 +40,7 @@ const ByteTableComponent = Component.extend({
    * @type function
    * @public
    */
-  onselect: K,
+  onselect() {},
 
   didInsertElement() {
     this._scheduleAfterRenderTasks();
