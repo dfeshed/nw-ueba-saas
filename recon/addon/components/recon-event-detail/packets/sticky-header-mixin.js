@@ -11,6 +11,7 @@ const {
 export default Mixin.create({
 
   indexAtTop: 0,
+  heightOfCurrentSticky: 0,
 
   // didRender is called each time another page of packets is returned
   // from an API call and rendered to the page (keep in mind they stream
@@ -61,6 +62,7 @@ export default Mixin.create({
       }
 
       const indexAtTop = this.get('indexAtTop');
+      const heightOfCurrentSticky = this.get('heightOfCurrentSticky');
 
       // Process each of the headers from top of the page on down
       // to see if any of them need to be the stuck/top header.
@@ -76,7 +78,7 @@ export default Mixin.create({
         // if the previous header is above the top of the view
         // and the current header is below the top of the view
         // then current header needs sticking!
-        if (previousHeaderPosition < 0 && currentHeaderPosition > 0) {
+        if (previousHeaderPosition - heightOfCurrentSticky < 0 && currentHeaderPosition - heightOfCurrentSticky > 0) {
 
           // only set if changing, ember checks if things change,
           // but why bother letting ember bother if we know up front
@@ -85,6 +87,7 @@ export default Mixin.create({
             // header sticking needs to be faaaast
             join(() => {
               this.set('indexAtTop', i);
+              this.set('heightOfCurrentSticky', $headers.eq(i).outerHeight());
             });
           }
 
