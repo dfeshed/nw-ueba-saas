@@ -39,7 +39,7 @@ To continue the Router example above, Ember would expect to find the following f
 
 ### How does my Route specify what model to load?
 
-In Ember, a Route can have an optional `model()` method. If provided, Ember will automatically your Route's `model()` hook whenever the user navigates to your Route. The purpose of this method is to load the appropriate data for this Route.  The method should return either data or a Promise that will resolve with data.  
+In Ember, a Route can have an optional `model()` method. If provided, Ember will automatically your Route's `model()` hook whenever the user navigates to your Route. The purpose of this method is to load the appropriate data for this Route.  The method should return either data or a Promise that will resolve with data.
 
 The `model()` hook can use whatever custom logic you wish to determine what data it should show.  In the simplest case, `model()` may always returns the same data. But most typically, `model()` will want to inspect the URL in order to decide what to load.
 
@@ -91,7 +91,3 @@ To learn more, try our [Components FAQ](components-faq.md).
 ## What is an Ember Addon?
 
 Addons are Ember projects that you can use in your Ember apps. An Addon is the Ember equivalent of a "plug in" or "library".  To learn more about how to use Addons in your app, and how to make your own Addon, you can start with our [Ember Addons FAQ](ember-addon-faq.md);
-
-## What are Fixtures?
-
-Fixtures are mock data.  In Ember, we use the addon `ember-cli-mirage` to mock server data for our automated testing.  See [Mirage docs](http://www.ember-cli-mirage.com/) to learn more.

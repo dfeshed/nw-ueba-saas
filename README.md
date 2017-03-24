@@ -19,12 +19,11 @@ Be patient, this will take some time and kill your processor. Hold your laptop d
 This script will setup:
 * [NVM](https://github.com/creationix/nvm) for managing node versions
 * The currently leveraged [Node.js](http://nodejs.org/) version along with [NPM](https://www.npmjs.com/).
-* [Bower](http://bower.io/) for managing some client dependencies
 * [Ember CLI](http://www.ember-cli.com/) for Ember-ing like a Boss.
-* The **component-lib** addon's NPM/Bower dependencies
-* The **recon** addon's NPM/Bower dependencies
-* The **style-guide** app's NPM/Bower dependencies
-* The **sa** app's NPM/Bower dependencies
+* The **component-lib** addon's NPM dependencies
+* The **recon** addon's NPM dependencies
+* The **style-guide** app's NPM dependencies
+* The **sa** app's NPM dependencies
 
 ## Need to start over?
 

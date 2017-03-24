@@ -40,13 +40,6 @@ function runAppYarnInstall {
   success "Installed $1 NPM dependencies"
 }
 
-function runAppBowerInstall {
-  info "Running 'bower install'' for $1"
-  bower install
-  checkError "Bower install failed for $1"
-  success "Installed $1 bower dependencies"
-}
-
 function runEmberTestWithMockServer {
   local mockPort=${MOCK_SERVER_PORTS_ARRAY[$RANDOM % ${#MOCK_SERVER_PORTS_ARRAY[@]} ]}
   local testemPort=${TESTEM_PORTS_ARRAY[$RANDOM % ${#TESTEM_PORTS_ARRAY[@]} ]}
@@ -105,7 +98,7 @@ function buildEmberApp {
 
   cd $1
 
-  # Yarn/Bower install all app dependencies
+  # Yarn install all app dependencies
   local shouldInstallApp=$(doInstallApp $1)
   if [[ "$shouldInstallApp" == "false" ]]
   then
@@ -115,13 +108,6 @@ function buildEmberApp {
 
     # install Yarn/NPM deps
     runAppYarnInstall $1
-
-    # install Bower deps
-    if [[ "$1" == "sa" ]]
-    then
-      runAppBowerInstall $1
-    fi
-
   fi
 
   local shouldTestApp=$(doTestApp $1)
@@ -212,10 +198,6 @@ cd $CWD
 # translations are all matching and up to date
 node scripts/node/check-translations.js sa/app/locales component-lib/addon/locales style-guide/app/locales
 checkError "Translations do not sync up between languages"
-
-# http://stackoverflow.com/questions/21789683/how-to-fix-bower-ecmderr
-# fixes ecmderr with bower install
-git config --global url."https://".insteadOf git://
 
 setWebProxy
 

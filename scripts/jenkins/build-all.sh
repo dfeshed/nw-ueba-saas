@@ -1,6 +1,6 @@
 #### Run Entire Build
 #
-# 1) Will ensure node/npm, yarn, bower and ember-cli are
+# 1) Will ensure node/npm, yarn, and ember-cli are
 #   installed and with the correct version
 # 2) Will then run builds for the many ember apps
 #   which includes tests and production builds

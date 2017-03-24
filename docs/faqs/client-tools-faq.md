@@ -25,7 +25,7 @@ For example, Ember asks you to follow conventions such as:
 
 2. You should organize your app into certain types of modules: routes, models, components, services, initializers, helpers, utilities, adapters, etc.  Read more about these module types in later sections below.
 
-3. There are conventions about where the module files should be located and what names they should use.   
+3. There are conventions about where the module files should be located and what names they should use.
 
 If you comply with Ember's expectations, then the framework handles many things for you (such as compiling JS & CSS), which leaves you free to focus on building the business logic of your app.  But if you don't comply with Ember's expectations, then you will see diminishing returns for using the framework.
 
@@ -42,13 +42,13 @@ Note: The correct name for Ember CLI in the command line is `ember`, *not* `embe
 While creating your app, Ember CLI helps you follow Ember's conventions and guidelines.  For example, suppose you want to create a new component. You may ask yourself:
 
 * What files do I need to create?
-* Where should I put them?  
+* Where should I put them?
 
 Ember CLI answers these questions for you.  Simply use the `ember generate <type> <name>` command like this:
 
 ````bash
 ember generate component my-component
-````  
+````
 
 Ember CLI will then create the folder and files for your component in the right place  (typically `app/components/my-component/`), even inserting some default boilerplate code into the files to get you started.  Similarly, Ember will also generate folders & files for automated tests for your component (typically in `/tests/components/components/`) to get you started with testing.
 
@@ -90,7 +90,7 @@ Ember is an open source framework, and it leverages other open source resources 
 
 ## What is node? How is it relevant to Ember?
 
-Node (also called "NodeJS") is an open-source run-time environment for developing server-side web applications.  Node apps are written in JavaScript.  
+Node (also called "NodeJS") is an open-source run-time environment for developing server-side web applications.  Node apps are written in JavaScript.
 
 Ember CLI requires Node, so you'll have to [install Node](http://ember-cli.com/user-guide/#node) if you don't have it already. (Personally, I was able to install it easily using [homebrew](http://brew.sh/) on Mac OS X, thanks to the fact that OS X comes with Ruby already installed.)
 
@@ -124,30 +124,6 @@ npm install -g ember-cli
 ```
 
 The `-g` flag causes  `npm install` to put a symlink to the package (`ember-cli`) in your `/usr/local/bin`, so you can run the package from any command line.
-
-## What is bower? How is it relevant to Ember?
-
-If you read the section "What is npm?" above, you know about installing open-source node packages into your Ember app.  But what if you want to install a simple client-only JavaScript library, like jQuery?  That's not a node package, so you wouldn't expect to find it in the npm online repository. You might find it on GitHub. Is there another tool for installing open-source projects from GitHub?  Yes, there is. It's called "bower".
-
-Bower is essentially a shortcut for Git.  It can go and fetch GitHub files for you.  It's un-opinionated, meaning that it doesn't care what kind of files it fetches (JS, CSS, HTML, etc).  In fact, since Bower is lightweight and low-level, it is sometimes used by higher-level package managers, such as [Yeoman](http://yeoman.io/).
-
-Use `bower search <keyword>` to search GitHub for projects with that `<keyword>` in their name.  
-
-Use `bower install <projectname>` to download the source for the given `<projectname>`. In an Ember app, bower will download the source into your Ember app's `bower_components/` subdirectory.  This is similar to npm and it's `node_modules/` subdirectory.
-
-If you add a `--save` flag, then `bower install --save <projectname>` will register that project in your Ember app's `bower.json` file.  This is similar to npm and it's `package.json` file.
-
-Also similarly to npm, you can run the `bower install` command in the path of your `bower.json` file, and bower will install all the dependencies registered in the `bower.json` file.  This is similar to the `npm install` command and its use of the `package.json` file.
-
-To uninstall a bower package, use `bower uninstall <package>`
-
-For performance, bower uses caching.  When bower installs, it caches the downloaded code internally to `~/.bower/<package>` so that it can install from cache next time. To clear the cache, do `bower cache-clean`.
-
-## Should I use bower or npm to install a dependency?
-
-At times, you may find that the dependency you want is available from both bower and npm. So which should you use? Here's a general rule of thumb: if you need the dependency to execute any code on the server, use npm.  Otherwise use bower.
-
-This means that for simple in-browser javascript libraries (such as jQuery, d3, dropJS, clipboardJS, highlightJS, etc.), you can use bower.  For [Ember Addons](ember-addon-faq.md), use npm.
 
 ## How explicit do I need to be with version numbers for my dependencies?
 

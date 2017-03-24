@@ -4,7 +4,6 @@
 #  installing
 # 2) Adds node to the PATH
 # 3) Installs correct version of ember-cli using NPM
-# 4) Installs correct version of bower using NPM
 #
 
 # Creates directory if it needs creating
@@ -86,7 +85,7 @@ function installNPMLibraryIfNecessary {
 info "***********************"
 info "Beginning environment setup"
 
-echo -e "Verifying environment for:\nnode.js: $NODE_VERSION\nember-cli: $EMBER_CLI_VERSION\nbower: $BOWER_VERSION\phantomjs-prebuilt: $PHANTOMJS_VERSION"
+echo -e "Verifying environment for:\nnode.js: $NODE_VERSION\nember-cli: $EMBER_CLI_VERSION\phantomjs-prebuilt: $PHANTOMJS_VERSION"
 
 createDirectoryIfNecessary $LOCAL_CACHE_ROOT
 
@@ -108,7 +107,6 @@ info "Node is now $(which node)"
 
 # install NPM libraries if necessary
 installNPMLibraryIfNecessary "yarn" "yarn" $YARN_COMMAND $YARN_VERSION
-installNPMLibraryIfNecessary "bower" "bower" $BOWER_COMMAND $BOWER_VERSION
 installNPMLibraryIfNecessary "ember-cli" "ember" $EMBER_CLI_COMMAND $EMBER_CLI_VERSION
 installNPMLibraryIfNecessary "phantomjs-prebuilt" "phantomjs" $PHANTOMJS_COMMAND $PHANTOMJS_PREBUILT_VERSION $PHANTOMJS_VERSION
 

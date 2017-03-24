@@ -53,8 +53,6 @@ module.exports = function(environment) {
 
     featureFlags: addFeatureFlags(environment),
 
-    'ember-cli-mirage': {},
-    'ember-cli-mock-socket': {},
     socketRoutes: generateSocketConfiguration(environment),
     socketDebug: false,
     APP: {
@@ -136,8 +134,6 @@ module.exports = function(environment) {
     // @workaround Disable readyDelay to avoid a synchronization issue with automated tests
     ENV.APP.readyDelay = 0;
 
-    ENV['ember-cli-mirage'] = { enabled: true };
-    ENV['ember-cli-mock-socket'].enabled = true;
     ENV.APP.rootElement = '#ember-testing';
   }
 

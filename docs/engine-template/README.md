@@ -2,7 +2,6 @@
 
 1. Copy the contents of this folder to the root of `sa_ui` into a folder named `changeme`
 2. `cd changeme`
-3. Run `bower i`
 4. Run `yarn`
 5. Run `ember s`
 

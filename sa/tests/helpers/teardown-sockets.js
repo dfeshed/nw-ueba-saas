@@ -5,11 +5,6 @@
  * @public
  */
 export default function teardownSockets() {
-  // shut down mock socket servers
-  (window.MockServers || []).forEach((server) => {
-    server.close();
-  });
-
   // disconnect all STOMP clients
   const request = this.application.__container__.lookup('service:request');
   request.disconnectAll();

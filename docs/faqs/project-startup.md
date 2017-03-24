@@ -11,7 +11,7 @@ You may not need to create an Ember app from scratch in some cases. For example,
 3. Enter command: `ember new project1`, where `project1` is the name of your new Ember app.
   - This will generate a new subdirectory `project1/` for the app.
   - This will also generate subdirectories inside `project1/`, including most notably the `app/` subdirectory, which is where most of your code will go.
-  - This will also fetch some 3rd party dependencies, using node & bower, so it may take a couple of minutes.
+  - This will also fetch some 3rd party dependencies, using node, so it may take a couple of minutes.
   - If you don't intend to use Git for your app, use the `--skip-git` flag. Otherwise, the `ember new` command will create a local git repo for your new project, and do an initial commit.
 
 4. Apply a "pod" folder structure to your project, if desired.

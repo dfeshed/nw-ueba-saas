@@ -1,5 +1,5 @@
 # Convienence script to setup the environment
-# sets up nvm, node, bower, ember-cli
+# sets up nvm, node, ember-cli
 
 # Software versions kept in external file for repeated use
 # this brings the following variables in
@@ -15,7 +15,7 @@ source $scriptDir/_util.sh
 # Setting up git hook
 ln -s -f ../../scripts/hooks/pre-commit $scriptDir/../.git/hooks/pre-commit
 
-echo -e "\nInstalling the following libraries:\nnode.js: $NODE_VERSION\nYarn: $YARN_VERSION\nember-cli: $EMBER_CLI_VERSION\nbower: $BOWER_VERSION\nphantomjs-prebuilt: $PHANTOMJS_VERSION\n"
+echo -e "\nInstalling the following libraries:\nnode.js: $NODE_VERSION\nYarn: $YARN_VERSION\nember-cli: $EMBER_CLI_VERSION\nphantomjs-prebuilt: $PHANTOMJS_VERSION\n"
 
 function hasVersion {
   if [[ $($1 --version) =~ "$2" ]]
@@ -78,7 +78,6 @@ function installGlobalDependency {
 
 installGlobalDependency "Yarn" "yarn" "yarn" $YARN_VERSION
 installGlobalDependency "ember-cli" "ember-cli" "ember" $EMBER_CLI_VERSION
-installGlobalDependency "Bower" "bower" "bower" $BOWER_VERSION
 
 # install phantomjs-prebuilt if it hasn't been
 if [[ "$(hasVersion "phantomjs" $PHANTOMJS_VERSION)" == "false" ]]

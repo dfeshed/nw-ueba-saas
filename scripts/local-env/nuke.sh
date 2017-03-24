@@ -17,28 +17,18 @@ function nukeNode {
   touch $1/node_modules/.metadata_never_index
 }
 
-function nukeApp {
-  nukeNode $1
-  info "Removing $1 bower_components"
-  rm -rf $1/bower_components
-  mkdir $1/bower_components
-  touch $1/bower_components/.metadata_never_index
-}
-
 info "Cleaning NPM cache"
 npm cache clean
-info "Cleaning Bower cache"
-bower cache clean
 
 nukeNode mock-server
-nukeApp component-lib
-nukeApp streaming-data
-nukeApp recon
-nukeApp style-guide
-nukeApp investigate
-nukeApp respond
-nukeApp context
-nukeApp sa
+nukeNode component-lib
+nukeNode streaming-data
+nukeNode recon
+nukeNode style-guide
+nukeNode investigate
+nukeNode respond
+nukeNode context
+nukeNode sa
 
 red "                               ________________
                           ____/ (  (    )   )  \___

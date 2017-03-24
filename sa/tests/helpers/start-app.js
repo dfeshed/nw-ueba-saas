@@ -4,11 +4,8 @@ import Ember from 'ember';
 import Application from '../../app';
 import config from '../../config/environment';
 import './authenticate-session';
-import registerPowerSelectHelpers from '../../tests/helpers/ember-power-select';
 
 const { merge, run } = Ember;
-
-registerPowerSelectHelpers();
 
 export default function startApp(attrs) {
   let attributes = merge({}, config.APP);

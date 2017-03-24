@@ -1,9 +1,0 @@
-export default [
-  { 'id': '1', 'name': 'Joe Kasandra', 'email': null, 'description': 'person0@test.com', 'type': null, 'accountId': null, 'disabled': false },
-  { 'id': '2', 'name': 'Jarvis Dwight', 'email': null, 'description': 'person1@test.com', 'type': null, 'accountId': null, 'disabled': false },
-  { 'id': '3', 'name': 'Stanley Nellie', 'email': null, 'description': 'person2@test.com', 'type': null, 'accountId': null, 'disabled': false },
-  { 'id': '4', 'name': 'Sim Boyd', 'email': null, 'description': 'person3@test.com', 'type': null, 'accountId': null, 'disabled': false },
-  { 'id': '5', 'name': 'Cale Tara', 'email': null, 'description': 'person4@test.com', 'type': null, 'accountId': null, 'disabled': false },
-  { 'id': '6', 'name': 'local', 'email': null, 'description': 'local@test.com', 'type': null, 'accountId': null, 'disabled': false },
-  { 'id': 'admin', 'name': 'admin', 'email': 'admin@rsa.com', 'description': null, 'type': null, 'accountId': null, 'disabled': false }
-];

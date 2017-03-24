@@ -5,18 +5,16 @@ const investigateConfigGen = require('../../../investigate').socketRouteGenerato
 const contextConfigGen = require('../../../context').socketRouteGenerator;
 const respondConfigGen = require('../../../respond').socketRouteGenerator;
 const adminConfigGen = require('./administration');
-const testConfigGen = require('./test');
 
 // order matters, first config in wins if there are matching configs
 const configGenerators = [
-  testConfigGen,
   investigateConfigGen,
   respondConfigGen,
   contextConfigGen,
   adminConfigGen
 ];
 
-var socketConfig = null;
+let socketConfig = null;
 
 const generateSocketConfiguration = function(environment) {
 

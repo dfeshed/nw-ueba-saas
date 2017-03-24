@@ -6,13 +6,6 @@ module.exports = function(environment) {
 
   const socketUrl = common.determineSocketUrl(environment, '/administration/socket');
 
-  // Want to run context panel inside sa
-  // while sa still has respond and mirage in it?
-  // Uncomment this line and comment the line above.
-  //
-  // const socketUrl = '/administration/socket';
-
-
   return {
     context: {
       socketUrl,
@@ -58,7 +51,7 @@ module.exports = function(environment) {
         requestDestination: '/ws/administration/context/data-sources',
         cancelDestination: '/ws/administration/context/cancel'
       }
-    },  
+    },
     'related-entity': {
       socketUrl,
       stream: {
