@@ -123,7 +123,8 @@ export default Mixin.create({
         const routing = this.get('_routing');
         const url = routing.generateURL(
           routing.get('currentRouteName'),
-          [`${serviceId}/${start}/${end}/${query}`]
+          [`${serviceId}/${start}/${end}/${query}`],
+          { eventId: -1 }
         );
         window.open(url, '_blank');
       }
