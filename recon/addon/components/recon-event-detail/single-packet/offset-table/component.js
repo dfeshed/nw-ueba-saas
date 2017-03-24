@@ -1,7 +1,7 @@
 import Ember from 'ember';
 
 import layout from './template';
-import { BYTES_PER_ROW } from 'recon/selectors/packet-selectors';
+import { BYTES_PER_ROW } from 'recon/reducers/packets/util';
 
 const { Component } = Ember;
 

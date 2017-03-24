@@ -2,7 +2,8 @@ import wait from 'ember-test-helpers/wait';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 
-import { enhancedPackets } from 'recon/selectors/packet-selectors';
+import { enhancePackets } from 'recon/reducers/packets/util';
+import { payloadProcessedPackets } from 'recon/selectors/packet-selectors';
 
 const packetFields = [
   { length: 6, name: 'eth.dst', position: 0 },
@@ -15,6 +16,16 @@ const packetFields = [
   { length: 2, name: 'tcp.dstport', position: 36 }
 ];
 
+const packets = [{
+  bytes: 'EA1/dcTIcFaBmpTdCABFAAA0vV5AAEAGUIjAqDoGMhwAE/+qAFDrQBzdIbTfFIAQEABsVwAAAQEICjLkGBsFvHPr',
+  id: 575575,
+  payloadSize: 0,
+  position: 1,
+  sequence: 3946847453,
+  side: 'request',
+  timestamp: '1449631503741'
+}];
+
 moduleForComponent('recon-event-detail/single-packet', 'Integration | Component | recon event detail / single packet', {
   integration: true
 });
@@ -22,7 +33,7 @@ moduleForComponent('recon-event-detail/single-packet', 'Integration | Component 
 test('single packet renders default', function(assert) {
   assert.expect(2);
 
-  const packets = enhancedPackets({
+  const processedPackets = payloadProcessedPackets({
     visuals: {
       isRequestShown: true,
       isResponseShown: true,
@@ -30,21 +41,13 @@ test('single packet renders default', function(assert) {
     },
     data: {
       packetFields,
-      packets: [{
-        bytes: atob('EA1/dcTIcFaBmpTdCABFAAA0vV5AAEAGUIjAqDoGMhwAE/+qAFDrQBzdIbTfFIAQEABsVwAAAQEICjLkGBsFvHPr').split(''),
-        id: 575575,
-        payloadSize: 0,
-        position: 1,
-        sequence: 3946847453,
-        side: 'request',
-        timestamp: '1449631503741'
-      }]
+      packets: enhancePackets(packets, packetFields)
     }
   });
 
   this.set('packetFields', packetFields);
   this.set('index', 0);
-  this.set('packet', packets[0]);
+  this.set('packet', processedPackets[0]);
 
   this.render(hbs`{{recon-event-detail/single-packet
     index=index
@@ -62,7 +65,7 @@ test('single packet renders default', function(assert) {
 test('single packet renders with hidden header/footer', function(assert) {
   assert.expect(2);
 
-  const packets = enhancedPackets({
+  const processedPackets = payloadProcessedPackets({
     visuals: {
       isRequestShown: true,
       isResponseShown: true,
@@ -70,21 +73,13 @@ test('single packet renders with hidden header/footer', function(assert) {
     },
     data: {
       packetFields,
-      packets: [{
-        bytes: atob('EA1/dcTIcFaBmpTdCABFAAA0vV5AAEAGUIjAqDoGMhwAE/+qAFDrQBzdIbTfFIAQEABsVwAAAQEICjLkGBsFvHPr').split(''),
-        id: 575575,
-        payloadSize: 0,
-        position: 1,
-        sequence: 3946847453,
-        side: 'request',
-        timestamp: '1449631503741'
-      }]
+      packets: enhancePackets(packets, packetFields)
     }
   });
 
   this.set('packetFields', packetFields);
   this.set('index', 0);
-  this.set('packet', packets[0]);
+  this.set('packet', processedPackets[0]);
 
   this.render(hbs`{{recon-event-detail/single-packet
     index=index

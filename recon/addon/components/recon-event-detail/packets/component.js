@@ -3,14 +3,14 @@ import connect from 'ember-redux/components/connect';
 import computed from 'ember-computed-decorators';
 import ReconPager from 'recon/mixins/recon-pager';
 import StickyHeader from './sticky-header-mixin';
-import { enhancedPackets } from 'recon/selectors/packet-selectors';
+import { payloadProcessedPackets } from 'recon/selectors/packet-selectors';
 import layout from './template';
 
 const { Component } = Ember;
 
 const stateToComputed = ({ recon, recon: { data, visuals } }) => ({
   dataIndex: data.index,
-  packets: enhancedPackets(recon),
+  packets: payloadProcessedPackets(recon),
   eventMeta: data.meta,
   eventTotal: data.total,
   packetFields: data.packetFields,

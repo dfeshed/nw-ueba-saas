@@ -4,6 +4,7 @@ import { EVENT_TYPES } from '../utils/event-types';
 import * as ACTION_TYPES from '../actions/types';
 import { handleActions } from 'redux-actions';
 import { handle } from 'redux-pack';
+import { enhancePackets } from './packets/util';
 
 const { set, String: { htmlSafe } } = Ember;
 
@@ -119,10 +120,25 @@ const data = handleActions({
   // Summary reducing
   [ACTION_TYPES.SUMMARY_RETRIEVE]: (state, action) => {
     return handle(state, action, {
-      start: (s) => ({ ...s, headerItems: null, packetFields: true, headerError: null, headerLoading: true }),
+      start: (s) => ({ ...s, headerItems: null, packetFields: null, headerError: null, headerLoading: true }),
       finish: (s) => ({ ...s, headerLoading: false }),
       failure: (s) => ({ ...s, headerError: true }),
-      success: (s) => ({ ...s, headerItems: action.payload.headerItems, packetFields: action.payload.packetFields })
+      success: (s) => {
+        const returnObject = {
+          ...s,
+          headerItems: action.payload.headerItems,
+          packetFields: action.payload.packetFields
+        };
+
+        // If header fields come in and there are already packets present
+        // then those packets need to be enhanced before they can be used
+        // (can't enhance without the packetFields)
+        if (s.packets) {
+          returnObject.packets = enhancePackets(state.packets, returnObject.packetFields);
+        }
+
+        return returnObject;
+      }
     });
   },
 
@@ -143,7 +159,15 @@ const data = handleActions({
   [ACTION_TYPES.PACKETS_RETRIEVE_PAGE]: (state, { payload }) => {
     const lastPosition = state.packets && state.packets.length || 0;
     let newPackets = augmentPackets(payload, lastPosition);
-    newPackets = generateDecodedBytes(newPackets);
+
+    // if we have packetFields, then enhance the packets.
+    // if we do not have packetFields, then when packetFields
+    // arrive any packets we have accumulated will be enhanced
+    // then all at once
+    if (state.packetFields) {
+      newPackets = enhancePackets(newPackets, state.packetFields);
+    }
+
     return {
       ...state,
       contentLoading: false,
@@ -222,14 +246,6 @@ const data = handleActions({
   })
 }, dataInitialState);
 
-const generateDecodedBytes = (data) => {
-  const massagedPackets = data.map((d) => ({
-    ...d,
-    bytes: atob(d.bytes || '').split('')
-  }));
-
-  return massagedPackets;
-};
 
 const augmentPackets = (data, previousPosition = 0) => {
   return data.map((d, i) => ({
