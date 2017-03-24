@@ -1,5 +1,6 @@
 .rsa-packet {
   border-top: 1px rsa-color(blue) solid;
+
   &__header,
   &.rsa-text-entry {
     background-color: rsa-color(gray, dark, $rsa-transparent);
@@ -14,10 +15,19 @@
     }
 
     &.is-sticky {
-      // No color exists in our palette like this.
+
       // Have to pick an opaque color that matches
-      // the transparent background-color above
-      background-color:rgb(34,41,45);
+      // rsa-color(gray, dark, $rsa-transparent)
+      // No color exists in our palette like this,
+      // So have to make it up.
+      // TODO for later? Maybe don't depend on
+      // transparencies to get the color we want?
+      &.request {
+        background-color:rgb(34,41,45);
+      }
+      &.response {
+        background-color: rgb(30,34,36);
+      }
 
       border-top: 1px rsa-color(blue) solid;
 

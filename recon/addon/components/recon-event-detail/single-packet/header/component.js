@@ -7,7 +7,7 @@ const { Component } = Ember;
 
 export default Component.extend({
   classNames: ['rsa-packet__header'],
-  classNameBindings: ['isSticky'],
+  classNameBindings: ['isSticky', 'packet.side'],
   layout,
   tagName: 'vbox',
 
