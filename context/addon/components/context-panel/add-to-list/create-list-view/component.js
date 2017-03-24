@@ -35,7 +35,7 @@ export default Component.extend({
       }
     }).then(({ data }) => {
       Logger.debug(`Successfully created list: ${ data }`);
-      list.id = data;
+      list.id = data.id;
       this.get('model.list').push(list);
       this.resetProperties();
     }).catch((reason) => {
