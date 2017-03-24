@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import DomWatcher from 'component-lib/mixins/dom/watcher';
+import { EKMixin, keyDown } from 'ember-keyboard';
 
 const {
   computed,
@@ -9,13 +10,14 @@ const {
   Component,
   $,
   Object: EmberObject,
-  run
+  run,
+  on
 } = Ember;
 
 const DEFAULT_COLUMN_WIDTH = 100;
 const DEFAULT_COLUMN_VISIBILITY = true;
 
-export default Component.extend(DomWatcher, {
+export default Component.extend(DomWatcher, EKMixin, {
   tagName: 'section',
   classNames: 'rsa-data-table',
   classNameBindings: ['fitToWidth'],
@@ -54,6 +56,13 @@ export default Component.extend(DomWatcher, {
    * @public
    */
   enableReorderColumns: true,
+
+  /**
+   * If true, triggers onRowClick with the up and down keyboard keys
+   * @type {boolean}
+   * @public
+   */
+  keyboardActivated: true,
 
   /**
    * Optional configurable callback to be invoked when user attempts to reorder columns.
@@ -242,6 +251,54 @@ export default Component.extend(DomWatcher, {
    */
   sortedColumns: computed('columns.@each.displayIndex', function() {
     return this.get('columns').sortBy('displayIndex');
+  }),
+
+  /**
+   * @description Respond to the user pressing down on the keyboard
+   * if nothing is selected, select first record
+   * if first record is selected, select last record
+   * @public
+   */
+  selectNext: on(keyDown('ArrowDown'), function(e) {
+    const fn = this.get('onRowClick');
+
+    if ($.isFunction(fn)) {
+      let selectedItemIndex, selectedItem;
+
+      if (this.get('selectedIndex') === (this.get('items.length') - 1)) {
+        selectedItemIndex = 0;
+        selectedItem = this.get('items').objectAt(0);
+      } else {
+        selectedItemIndex = this.get('selectedIndex') + 1;
+        selectedItem = this.get('items').objectAt(selectedItemIndex);
+      }
+
+      fn(selectedItem, selectedItemIndex, e, this);
+    }
+  }),
+
+  /**
+   * @description Respond to the user pressing up on the keyboard
+   * if nothing is selected, select last record
+   * if last record is selected, select first record
+   * @public
+   */
+  selectPrevious: on(keyDown('ArrowUp'), function(e) {
+    const fn = this.get('onRowClick');
+
+    if ($.isFunction(fn)) {
+      let selectedItemIndex, selectedItem;
+
+      if (this.get('selectedIndex') < 1) {
+        selectedItemIndex = this.get('items.length') - 1;
+        selectedItem = this.get('items').objectAt(selectedItemIndex);
+      } else {
+        selectedItemIndex = this.get('selectedIndex') - 1;
+        selectedItem = this.get('items').objectAt(selectedItemIndex);
+      }
+
+      fn(selectedItem, selectedItemIndex, e, this);
+    }
   }),
 
   actions: {

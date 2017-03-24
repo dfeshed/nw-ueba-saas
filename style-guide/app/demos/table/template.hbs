@@ -174,6 +174,7 @@
       {{#rsa-data-table
         items=model.items
         columnsConfig=model.columnsWithCheckboxConfig}}
+
         {{#rsa-data-table/header as |column|}}
           {{#if column.headerComponentClass}}
             <label class="rsa-form-checkbox-label {{if allItemsChecked 'checked'}}">
@@ -194,6 +195,7 @@
           {{else}}
             {{rsa-data-table/body-cell item=item column=column}}
           {{/if}}
+
         {{/rsa-data-table/body}}
       {{/rsa-data-table}}
 
@@ -288,6 +290,8 @@
       }
       END-SNIPPET --}}
       {{code-snippet name="table6.hbs"}}
+
+
     {{/spec-member}}
   {{/spec-category}}
 
@@ -306,7 +310,9 @@
           {{#rsa-data-table/body-cell column=column}}
             {{get item column.field}}
           {{/rsa-data-table/body-cell}}
+
         {{/rsa-data-table/body}}
+
       {{/rsa-data-table}}
 
       <p>You can pass a custom noResultsMessage to rsa-data-table/body or a default of 'No Results' will be
@@ -315,11 +321,12 @@
       {{!-- BEGIN-SNIPPET noResults1
       {{#rsa-data-table
         items=model.emptyItems
-        columnsConfig=model.columnsWithoutCheckboxConfig
+        columnsConfig=model.columnsConfig
         onRowClick=(action 'toggleSelectedRow')}}
 
         {{rsa-data-table/header}}
 
+        {{!A custom noResultsMessage is passed}}
         {{#rsa-data-table/body
           noResultsMessage=noResultsMessage as |item index column|}}
 
@@ -331,64 +338,7 @@
 
       {{/rsa-data-table}}
       END-SNIPPET --}}
-      {{code-snippet name="table3.hbs"}}
-
-      <p>
-        In your route, component, or controller you will need to create a configuration for the columns.
-      </p>
-      {{!-- BEGIN-SNIPPET table4
-      columnsWithCheckboxConfig: [
-        Object.create({
-          title: '',
-          class: 'rsa-form-row-checkbox',
-          width: '18',
-          dataType: 'checkbox',
-          componentClass: 'rsa-form-checkbox',
-          visible: true,
-          disableSort: true,
-          headerComponentClass: 'rsa-form-checkbox'
-        }),
-        Object.create({
-          field: 'foo',
-          title: 'Foo Column'
-        }),
-        Object.create({
-          field: 'bar',
-          title: 'Bar Column'
-        }),
-        Object.create({
-          field: 'baz',
-          title: 'Baz Column'
-        })
-      ]
-      END-SNIPPET --}}
-      {{code-snippet name="table4.hbs"}}
-
-      <p>
-        Finally, ensure you have actions in your route, controller, or component to support the actions you set in the
-        template.
-      </p>
-
-      {{!-- BEGIN-SNIPPET table6
-      allItemsChecked: false,
-
-      actions: {
-        toggleItemSelection(item) {
-          item.toggleProperty('checked');
-        },
-
-        toggleItemsSelection(items) {
-          if (this.get('allItemsChecked')) {
-            items.setEach('checked', false);
-          } else {
-            items.setEach('checked', true);
-          }
-
-          this.toggleProperty('allItemsChecked');
-        }
-      }
-      END-SNIPPET --}}
-      {{code-snippet name="table6.hbs"}}
+      {{code-snippet name="noResults1.hbs"}}
     {{/spec-member}}
   {{/spec-category}}
 
@@ -416,6 +366,8 @@
         params.
         Here we have used onRowClick to fire an action that sets the selectedIndex on the table to highlight the row:
         toggleSelectedRow(item, index, e, table) { table.set('selectedIndex', index); }
+        By default, the up and down arrow keys can also be used to navigate through the records if onRowClick is passed a function.
+        This behavior can be turned off by setting keyboardActivated to false.
       </p>
 
       {{!-- BEGIN-SNIPPET selectRow1
