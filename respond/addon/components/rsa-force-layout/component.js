@@ -1,4 +1,6 @@
 import Ember from 'ember';
+import Component from 'ember-component';
+import run from 'ember-runloop';
 import computed from 'ember-computed-decorators';
 import boundingBox from 'respond/utils/force-layout/bounding-box';
 import { forceSimulation, forceLink, forceManyBody, forceCollide } from 'd3-force';
@@ -10,10 +12,7 @@ import { select } from 'd3-selection';
 /* global removeResizeListener */
 
 const {
-  Component,
   get,
-  K,
-  run,
   set,
   setProperties
 } = Ember;
@@ -232,7 +231,7 @@ export default Component.extend({
    * @type {function}
    * @public
    */
-  singleSelectAction: K,
+  singleSelectAction() {},
 
   /**
    * Configurable action to be invoked when user does a Ctrl+click on a node or link.
@@ -244,7 +243,7 @@ export default Component.extend({
    * @type {function}
    * @public
    */
-  toggleSelectAction: K,
+  toggleSelectAction() {},
 
   // Updates the `isSelected` property of every node & link currently in `data` to reflect the current `selections`.
   // If the id of a node/link is found in `selections`, then that node's/link's `isSelected` will be set to `true`;

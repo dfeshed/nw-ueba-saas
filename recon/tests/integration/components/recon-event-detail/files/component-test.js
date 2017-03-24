@@ -6,7 +6,8 @@ import DataHelper from '../../../../helpers/data-helper';
 
 moduleForComponent('recon-event-detail-files', 'Integration | Component | recon event detail files', {
   integration: true,
-  setup() {
+  beforeEach() {
+    this.registry.injection('component:rsa-content-memsize', 'i18n', 'service:i18n');
     this.inject.service('redux');
   }
 });

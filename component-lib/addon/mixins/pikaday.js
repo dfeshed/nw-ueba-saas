@@ -1,17 +1,14 @@
 /* globals Pikaday */
+import computed from 'ember-computed';
+import service from 'ember-service/inject';
 import Ember from 'ember';
 import moment from 'moment';
 
 const {
-  inject: {
-    service
-  },
   isPresent,
   run,
   assign,
   Mixin,
-  computed,
-  K,
   isEmpty
 } = Ember;
 
@@ -158,10 +155,10 @@ export default Mixin.create({
     }
   },
 
-  onOpen: K,
-  onClose: K,
-  onSelection: K,
-  onDraw: K,
+  onOpen() {},
+  onClose() {},
+  onSelection() {},
+  onDraw() {},
 
   onPikadaySelect() {
     this.userSelectedDate();

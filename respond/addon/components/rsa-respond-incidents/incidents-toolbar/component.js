@@ -1,16 +1,10 @@
-import Ember from 'ember';
+import Component from 'ember-component';
 import connect from 'ember-redux/components/connect';
 import * as DataActions from 'respond/actions/data-creators';
 import { CANNED_FILTER_TYPES } from 'respond/utils/canned-filter-types';
 import { SORT_TYPES } from 'respond/utils/sort-types';
 import computed, { alias, empty } from 'ember-computed-decorators';
 import { priorityOptions, statusOptions } from 'respond/selectors/dictionaries';
-
-const {
-  inject: { service },
-  Component,
-  K
-} = Ember;
 
 const stateToComputed = (state) => {
   const { respond: { incidents, users } } = state;
@@ -53,7 +47,6 @@ const IncidentsToolbar = Component.extend({
   tagName: 'hbox',
   classNames: 'rsa-respond-incidents-toolbar',
   classNameBindings: [ 'isInSelectMode', 'isMoreFiltersActive:more-filters-active', 'isAltThemeActive:light-theme-active' ],
-  i18n: service(),
 
   // Array of currently selected items. Used to display a counter while in "Select" mode.
   incidentsSelected: null,
@@ -70,7 +63,7 @@ const IncidentsToolbar = Component.extend({
   // true if the "More Filters" button should be shown as active
   isMoreFiltersActive: false,
 
-  noop: K,
+  noop() {},
 
   /**
    * The list of canned filters available for filtering the incidents result set

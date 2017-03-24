@@ -1,17 +1,10 @@
-import Ember from 'ember';
+import Component from 'ember-component';
+import { isEmberArray } from 'ember-array/utils';
 import connect from 'ember-redux/components/connect';
 import computed from 'ember-computed-decorators';
 import { RECON_DISPLAYED_LOG_HEADER } from 'recon/utils/recon-event-header';
 import layout from './template';
 import { isLogEvent } from 'recon/selectors/event-type-selectors';
-
-const {
-  Component,
-  isArray,
-  inject: {
-    service
-  }
-} = Ember;
 
 const stateToComputed = ({ recon, recon: { visuals, data } }) => ({
   isHeaderOpen: visuals.isHeaderOpen,
@@ -23,10 +16,9 @@ const stateToComputed = ({ recon, recon: { visuals, data } }) => ({
 const EventHeaderComponent = Component.extend({
   layout,
   tagName: '',
-  i18n: service(),
   @computed('headerItems', 'isLogEvent')
   displayedHeaderItems(headerItems, isLogEvent) {
-    if (isArray(headerItems) && isLogEvent) {
+    if (isEmberArray(headerItems) && isLogEvent) {
       const displayedItems = [];
       headerItems.forEach((item) => {
         if (item && item.name && RECON_DISPLAYED_LOG_HEADER[item.name]) {

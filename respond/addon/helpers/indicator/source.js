@@ -1,9 +1,4 @@
-import Ember from 'ember';
-
-const {
-  Helper,
-  inject: { service }
-} = Ember;
+import Helper from 'ember-helper';
 
 // Generates a user-friendly name for a given indicator's source.
 export function indicatorSource(i18n, { originalHeaders }) {
@@ -35,7 +30,6 @@ export function indicatorSource(i18n, { originalHeaders }) {
  * @public
  */
 export default Helper.extend({
-  i18n: service(),
   compute([ indicator ]) {
     const i18n = this.get('i18n');
     return indicatorSource(i18n, indicator);

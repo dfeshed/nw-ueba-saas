@@ -1,13 +1,17 @@
-import Ember from 'ember';
+import $ from 'jquery';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from '../../../../helpers/engine-resolver';
 
-const { $, K } = Ember;
+// NOOP function to replace Ember.K
+const NOOP = () => {};
 
 moduleForComponent('rsa-respond-incidents/incidents-toolbar', 'Integration | Component | Respond Incidents Toolbar', {
   integration: true,
-  resolver: engineResolverFor('respond')
+  resolver: engineResolverFor('respond'),
+  beforeEach() {
+    this.registry.injection('component:rsa-respond-incidents/incidents-toolbar', 'i18n', 'service:i18n');
+  }
 });
 
 test('The Incidents toolbar renders to the DOM', function(assert) {
@@ -18,8 +22,8 @@ test('The Incidents toolbar renders to the DOM', function(assert) {
 
 test('The incident action update buttons appear but only when isInSelectMode is true', function(assert) {
   this.set('isInSelectMode', false);
-  this.on('toggleIsInSelectMode', K);
-  this.on('toggleFilterPanel', K);
+  this.on('toggleIsInSelectMode', NOOP);
+  this.on('toggleFilterPanel', NOOP);
 
   this.render(hbs`
     {{rsa-respond-incidents/incidents-toolbar

@@ -16,8 +16,6 @@ export default Service.extend({
 
   moment: service(),
 
-  i18n: service(),
-
   options: [{
     key: 'MM/dd/yyyy',
     label: 'userPreferences.dateFormat.monthFirst',

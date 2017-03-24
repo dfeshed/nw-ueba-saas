@@ -7,18 +7,11 @@
  * Note that the tooltip for this component's DOM will also be set.
  * @public
  */
-import Ember from 'ember';
+import $ from 'jquery';
+import Component from 'ember-component';
 import computed from 'ember-computed-decorators';
 
 import layout from '../templates/components/rsa-content-memsize';
-
-const {
-  $,
-  Component,
-  inject: {
-    service
-  }
-} = Ember;
 
 const byteSizing = {
   label: 'memsize.B',
@@ -41,7 +34,6 @@ export default Component.extend({
   tagName: 'span',
   classNames: 'rsa-content-memsize',
   attributeBindings: ['title'],
-  i18n: service(),
 
   /**
    * Size in bytes.

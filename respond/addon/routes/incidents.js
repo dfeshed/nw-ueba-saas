@@ -1,15 +1,6 @@
-import Ember from 'ember';
-
-const {
-  Route,
-  inject: {
-      service
-  }
-} = Ember;
+import Route from 'ember-route';
 
 export default Route.extend({
-  i18n: service(),
-
   title() {
     return this.get('i18n').t('pageTitle', { section: this.get('i18n').t('respond.title') });
   },

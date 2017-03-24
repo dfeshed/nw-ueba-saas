@@ -1,15 +1,8 @@
-import Ember from 'ember';
+import Component from 'ember-component';
 import computed from 'ember-computed-decorators';
 import connect from 'ember-redux/components/connect';
 import { isPacketView } from 'recon/selectors/type-selectors';
 import layout from './template';
-
-const {
-  Component,
-  inject: {
-    service
-  }
-} = Ember;
 
 const stateToComputed = ({ recon, recon: { data } }) => ({
   currentReconView: data.currentReconView,
@@ -24,7 +17,6 @@ const EventContentComponent = Component.extend({
   layout,
   classNameBindings: [':recon-event-content'],
   tagName: 'vbox',
-  i18n: service(),
 
   /**
    * contentError is a code

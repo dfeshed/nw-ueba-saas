@@ -15,7 +15,6 @@ export default Route.extend(ApplicationRouteMixin, csrfToken, {
   session: service(),
   userActivity: service(),
   userIdle: service(),
-  i18n: service(),
 
   title() {
     return this.get('i18n').t('application.title');

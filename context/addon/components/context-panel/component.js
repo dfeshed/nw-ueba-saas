@@ -31,7 +31,6 @@ const ContextComponent = Component.extend({
   layout,
   classNames: 'rsa-context-panel-header',
 
-  i18n: service(),
   request: service(),
 
   contextData: null,

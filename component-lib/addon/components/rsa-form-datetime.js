@@ -1,13 +1,6 @@
-import Ember from 'ember';
+import Component from 'ember-component';
+import { or } from 'ember-computed';
 import layout from '../templates/components/rsa-form-datetime';
-
-const {
-  Component,
-  K,
-  computed: {
-    or
-  }
-} = Ember;
 
 export default Component.extend({
   layout,
@@ -23,63 +16,35 @@ export default Component.extend({
     'isSuccess',
     'isInline'],
 
-  value: null,
-
-  label: null,
-
-  placeholder: null,
-
-  type: 'text',
-
-  isInline: false,
-
-  isReadOnly: false,
-
-  isDisabled: false,
-
-  isError: false,
-
+  dateFormat: null,
   errorMessage: null,
-
-  isSuccess: false,
-
   firstDay: 1,
-
+  incrementHourBy: null,
+  incrementMinuteBy: null,
+  incrementSecondBy: null,
+  isDisabled: false,
+  isError: false,
+  isInline: false,
+  isReadOnly: false,
+  isSuccess: false,
+  label: null,
   maxDate: null,
-
   minDate: null,
-
-  useUTC: null,
-
+  onDateClose() {},
+  onDateDraw() {},
+  onDateOpen() {},
+  onDateSelection() {},
   options: null,
-
-  resolvedDisabled: or('isDisabled', 'isReadOnly'),
-
+  placeholder: null,
+  showSeconds: null,
+  showTime: null,
+  theme: null,
+  timeLabel: null,
+  type: 'text',
+  use24hour: null,
+  useUTC: null,
+  value: null,
   yearRange: null,
 
-  theme: null,
-
-  dateFormat: null,
-
-  onDateSelection: K,
-
-  onDateOpen: K,
-
-  onDateClose: K,
-
-  onDateDraw: K,
-
-  showTime: null,
-
-  showSeconds: null,
-
-  use24hour: null,
-
-  incrementHourBy: null,
-
-  incrementMinuteBy: null,
-
-  incrementSecondBy: null,
-
-  timeLabel: null
+  resolvedDisabled: or('isDisabled', 'isReadOnly')
 });

@@ -5,7 +5,8 @@ import wait from 'ember-test-helpers/wait';
 
 const {
   Service,
-  Evented } = Ember;
+  Evented
+} = Ember;
 
 const eventBusStub = Service.extend(Evented, {});
 const FIX_ELEMENT_ID = 'tether_fix_style_element';
@@ -15,7 +16,7 @@ function insertTetherFix() {
   styleElement.id = FIX_ELEMENT_ID;
   styleElement.innerText =
     '#ember-testing-container, #ember-testing-container * {' +
-      'position: static !important;' +
+    'position: static !important;' +
     '}';
 
   document.body.appendChild(styleElement);
@@ -51,6 +52,8 @@ moduleForComponent('rsa-data-table', 'Integration | Component | rsa-data-table',
     insertTetherFix();
     this.register('service:event-bus', eventBusStub);
     this.inject.service('event-bus', { as: 'eventBus' });
+    this.registry.injection('component:rsa-data-table/body', 'i18n', 'service:i18n');
+    this.registry.injection('component:rsa-data-table/header-cell', 'i18n', 'service:i18n');
   },
 
   afterEach() {

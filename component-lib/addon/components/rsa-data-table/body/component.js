@@ -1,4 +1,5 @@
-import Ember from 'ember';
+import Component from 'ember-component';
+import set from 'ember-metal/set';
 import HasTableParent from 'component-lib/components/rsa-data-table/mixins/has-table-parent';
 import DomIsReady from 'component-lib/components/rsa-data-table/mixins/dom-is-ready';
 import SizeBindings from 'component-lib/components/rsa-data-table/mixins/size-bindings';
@@ -6,18 +7,10 @@ import ScrollBindings from 'component-lib/components/rsa-data-table/mixins/scrol
 import computed, { alias, empty } from 'ember-computed-decorators';
 import layout from './template';
 
-const {
-  set,
-  Component,
-  inject: { service }
-} = Ember;
-
 export default Component.extend(HasTableParent, DomIsReady, SizeBindings, ScrollBindings, {
   layout,
   tagName: 'section',
   classNames: 'rsa-data-table-body',
-
-  i18n: service(),
 
   /**
    * Name of the Ember.Component class to be used for rendering each row.

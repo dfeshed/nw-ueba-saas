@@ -1,17 +1,10 @@
-import Ember from 'ember';
+import Component from 'ember-component';
 import connect from 'ember-redux/components/connect';
 import computed from 'ember-computed-decorators';
 import * as InteractionActions from 'recon/actions/interaction-creators';
 import ReconExport from 'recon/mixins/recon-export';
 import layout from './template';
 import { isLogEvent } from 'recon/selectors/event-type-selectors';
-
-const {
-  Component,
-  inject: {
-    service
-  }
-} = Ember;
 
 const stateToComputed = ({ recon, recon: { data } }) => ({
   status: data.fileExtractStatus,
@@ -27,11 +20,12 @@ const dispatchToActions = (dispatch) => ({
 
 const DownloadLogsComponent = Component.extend(ReconExport, {
   layout,
-  i18n: service(),
 
   @computed('isDownloading', 'i18n')
-  caption: (isDownloading, i18n) => isDownloading ? i18n.t('recon.textView.isDownloading') :
-                                                    i18n.t('recon.textView.downloadLog')
+  caption(isDownloading, i18n) {
+    return isDownloading ? i18n.t('recon.textView.isDownloading') :
+      i18n.t('recon.textView.downloadLog');
+  }
 });
 
 export default connect(stateToComputed, dispatchToActions)(DownloadLogsComponent);

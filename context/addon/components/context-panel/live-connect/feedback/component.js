@@ -20,7 +20,6 @@ const FeedbackComponent = Component.extend({
   layout,
 
   flashMessages: service(),
-  i18n: service(),
   request: service(),
 
   selectedRiskLevel: null,

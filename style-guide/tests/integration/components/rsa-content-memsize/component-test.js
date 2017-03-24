@@ -2,7 +2,10 @@ import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 
 moduleForComponent('rsa-content-memsize', 'Integration | Component | rsa content memsize', {
-  integration: true
+  integration: true,
+  beforeEach() {
+    this.registry.injection('component:rsa-content-memsize', 'i18n', 'service:i18n');
+  }
 });
 
 test('it renders with the correct class', function(assert) {

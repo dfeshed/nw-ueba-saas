@@ -1,4 +1,4 @@
-import Ember from 'ember';
+import Component from 'ember-component';
 import computed from 'ember-computed-decorators';
 import connect from 'ember-redux/components/connect';
 
@@ -8,8 +8,6 @@ import * as VisualActions from 'recon/actions/visual-creators';
 import * as DataActions from 'recon/actions/data-creators';
 import { isLogEvent } from 'recon/selectors/event-type-selectors';
 import { lacksPackets } from 'recon/selectors/type-selectors';
-
-const { Component } = Ember;
 
 const stateToComputed = ({ recon, recon: { visuals, data } }) => ({
   currentReconView: data.currentReconView,

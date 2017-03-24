@@ -1,12 +1,10 @@
-import Ember from 'ember';
+import Component from 'ember-component';
 import connect from 'ember-redux/components/connect';
 import computed, { filterBy } from 'ember-computed-decorators';
 import * as InteractionActions from 'recon/actions/interaction-creators';
 import ReconExport from 'recon/mixins/recon-export';
 import { isLogEvent } from 'recon/selectors/event-type-selectors';
 import layout from './template';
-
-const { Component } = Ember;
 
 const stateToComputed = ({ recon, recon: { data } }) => ({
   files: data.files,

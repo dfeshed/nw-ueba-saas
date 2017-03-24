@@ -7,9 +7,11 @@ import {
 import * as ACTION_TYPES from './types';
 
 const {
-  Logger,
-  K
+  Logger
 } = Ember;
+
+// NOOP function to replace Ember.K
+const NOOP = () => {};
 
 /**
  * Action creator that dispatches a set of actions for fetching incidents (with or without filters) and sorted by one field.
@@ -156,7 +158,7 @@ const bulkDeleteIncidents = (incidentIds) => {
  * @param {object.onFailure} onFailure callback for failed completion of action
  * @returns {object}
  */
-const changeIncidentPriority = (incidentId, newValue, { onSuccess = K, onFailure = K }) => {
+const changeIncidentPriority = (incidentId, newValue, { onSuccess = NOOP, onFailure = NOOP }) => {
   return {
     type: ACTION_TYPES.UPDATE_INCIDENT,
     promise: Incidents.changeIncidentPriority(incidentId, newValue),
@@ -183,7 +185,7 @@ const changeIncidentPriority = (incidentId, newValue, { onSuccess = K, onFailure
  * @param {object.onFailure} onFailure callback for failed completion of action
  * @returns {Object}
  */
-const bulkChangeIncidentPriority = (incidentIds, newValue, { onSuccess = K, onFailure = K }) => {
+const bulkChangeIncidentPriority = (incidentIds, newValue, { onSuccess = NOOP, onFailure = NOOP }) => {
   return {
     type: ACTION_TYPES.UPDATE_INCIDENT,
     promise: Incidents.bulkChangeIncidentPriority(incidentIds, newValue),
@@ -210,7 +212,7 @@ const bulkChangeIncidentPriority = (incidentIds, newValue, { onSuccess = K, onFa
  * @param {object.onFailure} onFailure callback for failed completion of action
  * @returns {Object}
  */
-const changeIncidentStatus = (incidentId, newValue, { onSuccess = K, onFailure = K }) => {
+const changeIncidentStatus = (incidentId, newValue, { onSuccess = NOOP, onFailure = NOOP }) => {
   return {
     type: ACTION_TYPES.UPDATE_INCIDENT,
     promise: Incidents.changeIncidentStatus(incidentId, newValue),
@@ -237,7 +239,7 @@ const changeIncidentStatus = (incidentId, newValue, { onSuccess = K, onFailure =
  * @param {object.onFailure} onFailure callback for failed completion of action
  * @returns {Object}
  */
-const bulkChangeIncidentStatus = (incidentIds, newValue, { onSuccess = K, onFailure = K }) => {
+const bulkChangeIncidentStatus = (incidentIds, newValue, { onSuccess = NOOP, onFailure = NOOP }) => {
   return {
     type: ACTION_TYPES.UPDATE_INCIDENT,
     promise: Incidents.bulkChangeIncidentStatus(incidentIds, newValue),
@@ -264,7 +266,7 @@ const bulkChangeIncidentStatus = (incidentIds, newValue, { onSuccess = K, onFail
  * @param {object.onFailure} onFailure callback for failed completion of action
  * @returns {Object}
  */
-const changeIncidentAssignee = (incidentId, newValue, { onSuccess = K, onFailure = K }) => {
+const changeIncidentAssignee = (incidentId, newValue, { onSuccess = NOOP, onFailure = NOOP }) => {
   return {
     type: ACTION_TYPES.UPDATE_INCIDENT,
     promise: Incidents.changeIncidentAssignee(incidentId, newValue),
@@ -291,7 +293,7 @@ const changeIncidentAssignee = (incidentId, newValue, { onSuccess = K, onFailure
  * @param {object.onFailure} onFailure callback for failed completion of action
  * @returns {Object}
  */
-const bulkChangeIncidentAssignee = (incidentIds, newValue, { onSuccess = K, onFailure = K }) => {
+const bulkChangeIncidentAssignee = (incidentIds, newValue, { onSuccess = NOOP, onFailure = NOOP }) => {
   return {
     type: ACTION_TYPES.UPDATE_INCIDENT,
     promise: Incidents.bulkChangeIncidentAssignee(incidentIds, newValue),
@@ -386,7 +388,7 @@ const getAllStatusTypes = () => {
  * @param {object.onFailure} onFailure callback for failed completion of action
  * @returns {Object}
  */
-const createJournalEntry = (journalEntry, { onSuccess = K, onFailure = K }) => {
+const createJournalEntry = (journalEntry, { onSuccess = NOOP, onFailure = NOOP }) => {
   return {
     type: ACTION_TYPES.CREATE_JOURNAL_ENTRY,
     promise: Journal.createEntry(journalEntry),

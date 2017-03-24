@@ -6,7 +6,8 @@ import DataHelper from '../../../helpers/data-helper';
 
 moduleForComponent('recon-event-content', 'Integration | Component | recon event content', {
   integration: true,
-  setup() {
+  beforeEach() {
+    this.registry.injection('component:recon-event-content', 'i18n', 'service:i18n');
     this.inject.service('redux');
   }
 });

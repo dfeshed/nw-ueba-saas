@@ -10,11 +10,13 @@ const {
   isArray,
   isPresent,
   isEmpty,
-  K,
   isNone,
   typeOf } = Ember;
 
 const IncidentsAPI = EmberObject.extend({});
+
+// NOOP function to replace Ember.K
+const NOOP = () => {};
 
 // utility function for constructing a basic/standard incidents query
 const _buildIncidentsQuery = (filters, sort) => {
@@ -45,7 +47,7 @@ IncidentsAPI.reopenClass({
    * @param {function} onError The callback for any error during streaming
    * @returns {Promise}
    */
-  getIncidents(filters, sort, { onResponse = K, onError = K, onInit = K, onCompleted = K }) {
+  getIncidents(filters, sort, { onResponse = NOOP, onError = NOOP, onInit = NOOP, onCompleted = NOOP }) {
     const query = _buildIncidentsQuery(filters, sort);
 
     return streamRequest({

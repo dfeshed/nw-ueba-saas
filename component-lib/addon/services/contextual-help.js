@@ -11,7 +11,6 @@ const {
 
 export default Service.extend({
   appVersion: service(),
-  i18n: service(),
 
   locale: computed.alias('i18n.locale'),
   version: computed.readOnly('appVersion.version'),

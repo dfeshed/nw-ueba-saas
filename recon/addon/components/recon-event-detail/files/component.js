@@ -1,4 +1,5 @@
-import Ember from 'ember';
+import $ from 'jquery';
+import Component from 'ember-component';
 import computed, { empty, filterBy, gt } from 'ember-computed-decorators';
 import ReconPager from 'recon/mixins/recon-pager';
 import connect from 'ember-redux/components/connect';
@@ -6,8 +7,6 @@ import connect from 'ember-redux/components/connect';
 import layout from './template';
 import baseColumnsConfig from './columns-config';
 import * as InteractionActions from 'recon/actions/interaction-creators';
-
-const { $, Component } = Ember;
 
 const stateToComputed = ({ recon: { data } }) => ({
   files: data.files,

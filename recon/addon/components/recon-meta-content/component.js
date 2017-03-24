@@ -1,8 +1,6 @@
-import Ember from 'ember';
+import Component from 'ember-component';
 import connect from 'ember-redux/components/connect';
 import layout from './template';
-
-const { Component } = Ember;
 
 const stateToComputed = ({ recon: { data } }) => ({
   meta: data.meta,

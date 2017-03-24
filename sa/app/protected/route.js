@@ -23,15 +23,11 @@ const {
 export default Route.extend(AuthenticatedRouteMixin, {
 
   accessControl: service(),
-
-  session: service(),
-
   dateFormat: service(),
   landingPage: service(),
+  session: service(),
   timeFormat: service(),
   timezone: service(),
-  i18n: service(),
-
   userIdle: service(),
   userActivity: service(),
 

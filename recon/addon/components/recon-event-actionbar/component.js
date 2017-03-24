@@ -1,12 +1,10 @@
-import Ember from 'ember';
+import Component from 'ember-component';
 import computed from 'ember-computed-decorators';
 import connect from 'ember-redux/components/connect';
 import { isTextView, isFileView, isPacketView } from 'recon/selectors/type-selectors';
 import { isLogEvent } from 'recon/selectors/event-type-selectors';
 import * as VisualActions from 'recon/actions/visual-creators';
 import layout from './template';
-
-const { Component } = Ember;
 
 const dispatchToActions = (dispatch) => ({
   togglePayloadOnly: () => dispatch(VisualActions.togglePayloadOnly())

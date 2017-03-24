@@ -5,12 +5,7 @@
  * streamed to the stream's observers.
  * @public
  */
-import Ember from 'ember';
-
-const {
-  Mixin,
-  K
-} = Ember;
+import Mixin from 'ember-metal/mixin';
 
 export default Mixin.create({
 
@@ -123,6 +118,6 @@ export default Mixin.create({
    * @see http://emberjs.com/api/classes/Ember.Array.html#method_addArrayObserver
    * @private
    */
-  arrayWillChange: K
+  arrayWillChange() {}
 
 });

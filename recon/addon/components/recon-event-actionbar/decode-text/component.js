@@ -1,11 +1,9 @@
-import Ember from 'ember';
+import Component from 'ember-component';
 import connect from 'ember-redux/components/connect';
 import computed, { alias } from 'ember-computed-decorators';
 import { decodeText } from 'recon/actions/data-creators';
 import { isNotHttpData } from 'recon/selectors/meta-selectors';
 import layout from './template';
-
-const { Component } = Ember;
 
 const stateToComputed = ({ recon }) => ({
   isNotHttpData: isNotHttpData(recon)

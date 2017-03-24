@@ -55,7 +55,6 @@ const Incidents = Component.extend({
   classNames: 'rsa-respond-incidents',
   classNameBindings: ['isFilterPanelOpen:show-more-filters', 'isTransactionUnderway:transaction-in-progress'],
   redux: service(),
-  i18n: service(),
 
   @alias('incidents.length')
   incidentsCount: null,

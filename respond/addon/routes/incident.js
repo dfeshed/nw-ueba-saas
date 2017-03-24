@@ -10,7 +10,6 @@ const {
 } = Ember;
 
 export default Route.extend({
-  i18n: service(),
   redux: service(),
 
   title() {

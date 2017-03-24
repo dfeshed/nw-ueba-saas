@@ -95,7 +95,6 @@ const dispatchToActions = (dispatch) => {
 const IncidentUpdateActionButton = Component.extend({
   classNames: ['incident-action-button'],
 
-  i18n: service(),
   flashMessages: service(),
   eventBus: service(),
 

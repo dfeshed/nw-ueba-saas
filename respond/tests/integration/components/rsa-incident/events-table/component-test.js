@@ -7,8 +7,10 @@ import DataHelper from '../../../../helpers/data-helper';
 moduleForComponent('rsa-incident-events-table', 'Integration | Component | Incident Events Table', {
   integration: true,
   resolver: engineResolverFor('respond'),
-  setup() {
+  beforeEach() {
     this.inject.service('redux');
+    // TODO figure out what to specifically inject into, rather than all components
+    this.registry.injection('component', 'i18n', 'service:i18n');
   }
 });
 
