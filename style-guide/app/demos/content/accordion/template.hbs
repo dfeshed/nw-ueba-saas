@@ -2,25 +2,23 @@
   {{spec-masthead model=model}}
 </hbox>
 
-<hbox>
-  <div class="scroll-box">
-    {{#spec-category title="Examples"}}
-      {{#spec-member title="Open"}}
-        {{#rsa-content-accordion label='Accordion Label'}}Sample content example.{{/rsa-content-accordion}}
-        {{!-- BEGIN-SNIPPET accordion1
-        {{#rsa-content-accordion label='Accordion Label'}}Sample content example.{{/rsa-content-accordion}}
-        END-SNIPPET --}}
-        {{code-snippet name="accordion1.hbs"}}
+<vbox class="scroll-box">
+  {{#spec-category title="Examples"}}
+    {{#spec-member title="Open"}}
+      {{#rsa-content-accordion label='Accordion Label'}}Sample content example.{{/rsa-content-accordion}}
+      {{!-- BEGIN-SNIPPET accordion1
+      {{#rsa-content-accordion label='Accordion Label'}}Sample content example.{{/rsa-content-accordion}}
+      END-SNIPPET --}}
+      {{code-snippet name="accordion1.hbs"}}
 
-      {{/spec-member}}
+    {{/spec-member}}
 
-      {{#spec-member title="Closed"}}
-        {{#rsa-content-accordion isCollapsed=true label='Accordion Label'}}Sample content example.{{/rsa-content-accordion}}
-        {{!-- BEGIN-SNIPPET accordion2
-        {{#rsa-content-accordion isCollapsed=true label='Accordion Label'}}Sample content example.{{/rsa-content-accordion}}
-        END-SNIPPET --}}
-        {{code-snippet name="accordion2.hbs"}}
-      {{/spec-member}}
-    {{/spec-category}}
-  </div>
-</hbox>
+    {{#spec-member title="Closed"}}
+      {{#rsa-content-accordion isCollapsed=true label='Accordion Label'}}Sample content example.{{/rsa-content-accordion}}
+      {{!-- BEGIN-SNIPPET accordion2
+      {{#rsa-content-accordion isCollapsed=true label='Accordion Label'}}Sample content example.{{/rsa-content-accordion}}
+      END-SNIPPET --}}
+      {{code-snippet name="accordion2.hbs"}}
+    {{/spec-member}}
+  {{/spec-category}}
+</vbox>

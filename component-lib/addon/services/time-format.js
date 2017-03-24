@@ -34,10 +34,7 @@ export default Service.extend({
         }
       }
     }).catch(() => {
-      this.get('flashMessages').error(this.get('i18n').t('userPreferences.timeFormatError'), {
-        iconName: 'delete-1',
-        iconStyle: 'filled'
-      });
+      this.get('flashMessages').error(this.get('i18n').t('userPreferences.timeFormatError'));
     });
   },
 

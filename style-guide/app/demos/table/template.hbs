@@ -2,563 +2,611 @@
   {{spec-masthead model=model}}
 </hbox>
 
-<hbox>
-  <div class="spec-container scroll-box">
-    {{spec-toc toc=toc scrollTo=(route-action 'scrollTo')}}
+<vbox class="scroll-box">
+  {{spec-toc toc=toc scrollTo=(route-action 'scrollTo')}}
 
-    {{#spec-category id="basic-table" title="Basic Table"}}
-      {{#spec-member title="Bare Bones"}}
-        {{#rsa-data-table
-          items=model.items
-          columnsConfig=model.columnsWithoutCheckboxConfig}}
+  {{#spec-category id="basic-table" title="Basic Table"}}
+    {{#spec-member title="Bare Bones"}}
+      {{#rsa-data-table
+        items=model.items
+        columnsConfig=model.columnsWithoutCheckboxConfig}}
 
-          {{#rsa-data-table/header as |column|}}
+        {{#rsa-data-table/header as |column|}}
+          {{column.title}}
+        {{/rsa-data-table/header}}
+
+        {{#rsa-data-table/body as |item index column|}}
+          {{rsa-data-table/body-cell item=item column=column}}
+        {{/rsa-data-table/body}}
+      {{/rsa-data-table}}
+
+      <p>
+        In the template you will want to add the data table component.
+      </p>
+
+      {{!-- BEGIN-SNIPPET table1
+      {{#rsa-data-table
+        items=model.items
+        columnsConfig=model.columnsWithoutCheckboxConfig}}
+
+        {{#rsa-data-table/header as |column|}}
+          {{column.title}}
+        {{/rsa-data-table/header}}
+
+        {{#rsa-data-table/body as |item index column|}}
+          {{rsa-data-table/body-cell item=item column=column}}
+        {{/rsa-data-table/body}}
+      {{/rsa-data-table}}
+      END-SNIPPET --}}
+      {{code-snippet name="table1.hbs"}}
+
+      <p>
+        In your route, component, or controller you will need to create a configuration for the columns.
+      </p>
+
+      {{!-- BEGIN-SNIPPET table1a
+      columnsWithoutCheckboxConfig: [
+        Object.create({
+          field: 'foo',
+          title: 'Foo Column'
+        }),
+        Object.create({
+          field: 'bar',
+          title: 'Bar Column'
+        }),
+        Object.create({
+          field: 'baz',
+          title: 'Baz Column'
+        })
+      ]
+      END-SNIPPET --}}
+      {{code-snippet name="table1a.hbs"}}
+    {{/spec-member}}
+
+    {{#spec-member title="Bare Bones with Defined Column Widths"}}
+      {{#rsa-data-table
+        items=model.items
+        columnsConfig=model.columnsWithWidthConfig}}
+
+        {{#rsa-data-table/header as |column|}}
+          {{column.title}}
+        {{/rsa-data-table/header}}
+
+        {{#rsa-data-table/body as |item index column|}}
+          {{rsa-data-table/body-cell item=item column=column}}
+        {{/rsa-data-table/body}}
+      {{/rsa-data-table}}
+
+      <p>
+        In the template you will want to add the data table component as you normally would.
+      </p>
+
+      {{!-- BEGIN-SNIPPET table1c
+      {{#rsa-data-table
+        items=model.items
+        columnsConfig=model.columnsWithWidthConfig}}
+
+        {{#rsa-data-table/header as |column|}}
+          {{column.title}}
+        {{/rsa-data-table/header}}
+
+        {{#rsa-data-table/body as |item index column|}}
+          {{rsa-data-table/body-cell item=item column=column}}
+        {{/rsa-data-table/body}}
+      {{/rsa-data-table}}
+      END-SNIPPET --}}
+      {{code-snippet name="table1c.hbs"}}
+
+      <p>
+        In your route, component, or controller you will need to create a configuration for the columns as you
+        normally would, but notice how you can pass width to the column configuration.
+      </p>
+
+      {{!-- BEGIN-SNIPPET table1d
+      columnsWithWidthConfig: [
+        Object.create({
+          field: 'foo',
+          title: 'Foo Column',
+          width: 350
+        }),
+        Object.create({
+          field: 'bar',
+          title: 'Bar Column',
+          width: 150
+        }),
+        Object.create({
+          field: 'baz',
+          title: 'Baz Column',
+          width: 150
+        })
+      ]
+      END-SNIPPET --}}
+      {{code-snippet name="table1d.hbs"}}
+    {{/spec-member}}
+
+    {{#spec-member
+      title="Bare Bones with Custom Body Blocks"
+      subtitle="Use this if you need to inject custom markup into your body cells. Be sure to remember to set titles for any content rendered here. With custom body blocks, no assumptions are made about what title to display on hover."}}
+      {{#rsa-data-table
+        items=model.items
+        columnsConfig=model.columnsWithoutCheckboxConfig}}
+
+        {{#rsa-data-table/header as |column|}}
+          {{column.title}}
+        {{/rsa-data-table/header}}
+
+        {{#rsa-data-table/body as |item index column|}}
+          {{#rsa-data-table/body-cell item=item column=column}}
+            <div>{{get item column.field}}</div>
+          {{/rsa-data-table/body-cell}}
+        {{/rsa-data-table/body}}
+      {{/rsa-data-table}}
+
+      <p>
+        Add the table component same as above, but pass a block to the body cell component.
+      </p>
+
+      {{!-- BEGIN-SNIPPET table2
+      {{#rsa-data-table
+        items=model.items
+        columnsConfig=model.columnsWithoutCheckboxConfig}}
+
+        {{#rsa-data-table/header as |column|}}
+          {{column.title}}
+        {{/rsa-data-table/header}}
+
+        {{#rsa-data-table/body as |item index column|}}
+          {{#rsa-data-table/body-cell item=item column=column}}
+            <div>{{get item column.field}}</div>
+          {{/rsa-data-table/body-cell}}
+        {{/rsa-data-table/body}}
+      {{/rsa-data-table}}
+      END-SNIPPET --}}
+      {{code-snippet name="table2.hbs"}}
+
+      <p>
+        Configuring the header works the same way as shown above.
+      </p>
+    {{/spec-member}}
+
+    {{#spec-member
+      title="Bare Bones with Checkbox"}}
+      {{#rsa-data-table
+        items=model.items
+        columnsConfig=model.columnsWithCheckboxConfig}}
+        {{#rsa-data-table/header as |column|}}
+          {{#if column.headerComponentClass}}
+            <label class="rsa-form-checkbox-label {{if allItemsChecked 'checked'}}">
+              {{rsa-form-checkbox checked=allItemsChecked change=(action 'toggleItemsSelection' model.items)}}
+            </label>
+          {{else}}
             {{column.title}}
-          {{/rsa-data-table/header}}
+          {{/if}}
+        {{/rsa-data-table/header}}
 
-          {{#rsa-data-table/body as |item index column|}}
-            {{rsa-data-table/body-cell item=item column=column}}
-          {{/rsa-data-table/body}}
-        {{/rsa-data-table}}
-
-        <p>
-          In the template you will want to add the data table component.
-        </p>
-
-        {{!-- BEGIN-SNIPPET table1
-        {{#rsa-data-table
-          items=model.items
-          columnsConfig=model.columnsWithoutCheckboxConfig}}
-
-          {{#rsa-data-table/header as |column|}}
-            {{column.title}}
-          {{/rsa-data-table/header}}
-
-          {{#rsa-data-table/body as |item index column|}}
-            {{rsa-data-table/body-cell item=item column=column}}
-          {{/rsa-data-table/body}}
-        {{/rsa-data-table}}
-        END-SNIPPET --}}
-        {{code-snippet name="table1.hbs"}}
-
-        <p>
-          In your route, component, or controller you will need to create a configuration for the columns.
-        </p>
-
-        {{!-- BEGIN-SNIPPET table1a
-        columnsWithoutCheckboxConfig: [
-          Object.create({
-            field: 'foo',
-            title: 'Foo Column'
-          }),
-          Object.create({
-            field: 'bar',
-            title: 'Bar Column'
-          }),
-          Object.create({
-            field: 'baz',
-            title: 'Baz Column'
-          })
-        ]
-        END-SNIPPET --}}
-        {{code-snippet name="table1a.hbs"}}
-      {{/spec-member}}
-
-      {{#spec-member title="Bare Bones with Defined Column Widths"}}
-        {{#rsa-data-table
-          items=model.items
-          columnsConfig=model.columnsWithWidthConfig}}
-
-          {{#rsa-data-table/header as |column|}}
-            {{column.title}}
-          {{/rsa-data-table/header}}
-
-          {{#rsa-data-table/body as |item index column|}}
-            {{rsa-data-table/body-cell item=item column=column}}
-          {{/rsa-data-table/body}}
-        {{/rsa-data-table}}
-
-        <p>
-          In the template you will want to add the data table component as you normally would.
-        </p>
-
-        {{!-- BEGIN-SNIPPET table1c
-        {{#rsa-data-table
-          items=model.items
-          columnsConfig=model.columnsWithWidthConfig}}
-
-          {{#rsa-data-table/header as |column|}}
-            {{column.title}}
-          {{/rsa-data-table/header}}
-
-          {{#rsa-data-table/body as |item index column|}}
-            {{rsa-data-table/body-cell item=item column=column}}
-          {{/rsa-data-table/body}}
-        {{/rsa-data-table}}
-        END-SNIPPET --}}
-        {{code-snippet name="table1c.hbs"}}
-
-        <p>
-          In your route, component, or controller you will need to create a configuration for the columns as you
-          normally would, but notice how you can pass width to the column configuration.
-        </p>
-
-        {{!-- BEGIN-SNIPPET table1d
-        columnsWithWidthConfig: [
-          Object.create({
-            field: 'foo',
-            title: 'Foo Column',
-            width: 350
-          }),
-          Object.create({
-            field: 'bar',
-            title: 'Bar Column',
-            width: 150
-          }),
-          Object.create({
-            field: 'baz',
-            title: 'Baz Column',
-            width: 150
-          })
-        ]
-        END-SNIPPET --}}
-        {{code-snippet name="table1d.hbs"}}
-      {{/spec-member}}
-
-      {{#spec-member
-        title="Bare Bones with Custom Body Blocks"
-        subtitle="Use this if you need to inject custom markup into your body cells. Be sure to remember to set titles for any content rendered here. With custom body blocks, no assumptions are made about what title to display on hover."}}
-        {{#rsa-data-table
-          items=model.items
-          columnsConfig=model.columnsWithoutCheckboxConfig}}
-
-          {{#rsa-data-table/header as |column|}}
-            {{column.title}}
-          {{/rsa-data-table/header}}
-
-          {{#rsa-data-table/body as |item index column|}}
+        {{#rsa-data-table/body as |item index column|}}
+          {{#if column.componentClass}}
             {{#rsa-data-table/body-cell item=item column=column}}
-              <div>{{get item column.field}}</div>
+              <label class="rsa-form-checkbox-label {{if item.checked 'checked'}}">
+                {{rsa-form-checkbox checked=item.checked change=(action 'toggleItemSelection' item)}}
+              </label>
             {{/rsa-data-table/body-cell}}
-          {{/rsa-data-table/body}}
-        {{/rsa-data-table}}
+          {{else}}
+            {{rsa-data-table/body-cell item=item column=column}}
+          {{/if}}
+        {{/rsa-data-table/body}}
+      {{/rsa-data-table}}
 
-        <p>
-          Add the table component same as above, but pass a block to the body cell component.
-        </p>
+      <p>
+        In the template you will want to add the checkbox component.
+      </p>
 
-        {{!-- BEGIN-SNIPPET table2
-        {{#rsa-data-table
-          items=model.items
-          columnsConfig=model.columnsWithoutCheckboxConfig}}
+      {{!-- BEGIN-SNIPPET table3
+      {{#rsa-data-table
+        items=model.items
+        columnsConfig=model.columnsWithCheckboxConfig}}
 
-          {{#rsa-data-table/header as |column|}}
+        {{#rsa-data-table/header as |column|}}
+          {{#if column.headerComponentClass}}
+            <label class="rsa-form-checkbox-label {{if allItemsChecked 'checked'}}">
+              {{rsa-form-checkbox checked=allItemsChecked change=(action 'toggleItemsSelection' model.items)}}
+            </label>
+          {{else}}
             {{column.title}}
-          {{/rsa-data-table/header}}
+          {{/if}}
+        {{/rsa-data-table/header}}
 
-          {{#rsa-data-table/body as |item index column|}}
+        {{#rsa-data-table/body as |item index column|}}
+          {{#if column.componentClass}}
             {{#rsa-data-table/body-cell item=item column=column}}
-              <div>{{get item column.field}}</div>
-            {{/rsa-data-table/body-cell}}
-          {{/rsa-data-table/body}}
-        {{/rsa-data-table}}
-        END-SNIPPET --}}
-        {{code-snippet name="table2.hbs"}}
-
-        <p>
-          Configuring the header works the same way as shown above.
-        </p>
-      {{/spec-member}}
-
-      {{#spec-member
-        title="Bare Bones with Checkbox"}}
-        {{#rsa-data-table
-          items=model.items
-          columnsConfig=model.columnsWithCheckboxConfig}}
-
-          {{#rsa-data-table/header as |column|}}
-            {{#if column.headerComponentClass}}
-              <label class="rsa-form-checkbox-label {{if allItemsChecked 'checked'}}">
-                {{rsa-form-checkbox checked=allItemsChecked change=(action 'toggleItemsSelection' model.items)}}
+              <label class="rsa-form-checkbox-label {{if item.checked 'checked'}}">
+                {{rsa-form-checkbox checked=item.checked change=(action 'toggleItemSelection' item)}}
               </label>
-            {{else}}
-              {{column.title}}
-            {{/if}}
-          {{/rsa-data-table/header}}
-
-          {{#rsa-data-table/body as |item index column|}}
-            {{#if column.componentClass}}
-              {{#rsa-data-table/body-cell item=item column=column}}
-                <label class="rsa-form-checkbox-label {{if item.checked 'checked'}}">
-                  {{rsa-form-checkbox checked=item.checked change=(action 'toggleItemSelection' item)}}
-                </label>
-              {{/rsa-data-table/body-cell}}
-            {{else}}
-              {{rsa-data-table/body-cell item=item column=column}}
-            {{/if}}
-
-          {{/rsa-data-table/body}}
-        {{/rsa-data-table}}
-
-        <p>
-          In the template you will want to add the checkbox component.
-        </p>
-
-        {{!-- BEGIN-SNIPPET table3
-        {{#rsa-data-table
-          items=model.items
-          columnsConfig=model.columnsWithCheckboxConfig}}
-
-          {{#rsa-data-table/header as |column|}}
-            {{#if column.headerComponentClass}}
-              <label class="rsa-form-checkbox-label {{if allItemsChecked 'checked'}}">
-                {{rsa-form-checkbox checked=allItemsChecked change=(action 'toggleItemsSelection' model.items)}}
-              </label>
-            {{else}}
-              {{column.title}}
-            {{/if}}
-          {{/rsa-data-table/header}}
-
-          {{#rsa-data-table/body as |item index column|}}
-            {{#if column.componentClass}}
-              {{#rsa-data-table/body-cell item=item column=column}}
-                <label class="rsa-form-checkbox-label {{if item.checked 'checked'}}">
-                  {{rsa-form-checkbox checked=item.checked change=(action 'toggleItemSelection' item)}}
-                </label>
-              {{/rsa-data-table/body-cell}}
-            {{else}}
-              {{rsa-data-table/body-cell item=item column=column}}
-            {{/if}}
-
-          {{/rsa-data-table/body}}
-        {{/rsa-data-table}}
-        END-SNIPPET --}}
-        {{code-snippet name="table3.hbs"}}
-
-        <p>
-          In your route, component, or controller you will need to create a configuration for the columns.
-        </p>
-        {{!-- BEGIN-SNIPPET table4
-        columnsWithCheckboxConfig: [
-          Object.create({
-            title: '',
-            class: 'rsa-form-row-checkbox',
-            width: '18',
-            dataType: 'checkbox',
-            componentClass: 'rsa-form-checkbox',
-            visible: true,
-            disableSort: true,
-            headerComponentClass: 'rsa-form-checkbox'
-          }),
-          Object.create({
-            field: 'foo',
-            title: 'Foo Column'
-          }),
-          Object.create({
-            field: 'bar',
-            title: 'Bar Column'
-          }),
-          Object.create({
-            field: 'baz',
-            title: 'Baz Column'
-          })
-        ]
-        END-SNIPPET --}}
-        {{code-snippet name="table4.hbs"}}
-
-        <p>
-          Finally, ensure you have actions in your route, controller, or component to support the actions you set in the
-          template.
-        </p>
-
-        {{!-- BEGIN-SNIPPET table6
-        allItemsChecked: false,
-
-        actions: {
-          toggleItemSelection(item) {
-            item.toggleProperty('checked');
-          },
-
-          toggleItemsSelection(items) {
-            if (this.get('allItemsChecked')) {
-              items.setEach('checked', false);
-            } else {
-              items.setEach('checked', true);
-            }
-
-            this.toggleProperty('allItemsChecked');
-          }
-        }
-        END-SNIPPET --}}
-        {{code-snippet name="table6.hbs"}}
-
-
-      {{/spec-member}}
-    {{/spec-category}}
-
-    {{#spec-category id="no-results" title="No Results"}}
-      {{#spec-member title="No Results"}}
-        {{#rsa-data-table
-          items=model.emptyItems
-          columnsConfig=model.columnsWithoutCheckboxConfig
-          onRowClick=(action 'toggleSelectedRow')}}
-
-          {{rsa-data-table/header}}
-
-          {{#rsa-data-table/body
-            noResultsMessage=noResultsMessage as |item index column|}}
-
-            {{#rsa-data-table/body-cell column=column}}
-              {{get item column.field}}
             {{/rsa-data-table/body-cell}}
+          {{else}}
+            {{rsa-data-table/body-cell item=item column=column}}
+          {{/if}}
 
-          {{/rsa-data-table/body}}
+        {{/rsa-data-table/body}}
+      {{/rsa-data-table}}
+      END-SNIPPET --}}
+      {{code-snippet name="table3.hbs"}}
 
-        {{/rsa-data-table}}
+      <p>
+        In your route, component, or controller you will need to create a configuration for the columns.
+      </p>
+      {{!-- BEGIN-SNIPPET table4
+      columnsWithCheckboxConfig: [
+        Object.create({
+          title: '',
+          class: 'rsa-form-row-checkbox',
+          width: '18',
+          dataType: 'checkbox',
+          componentClass: 'rsa-form-checkbox',
+          visible: true,
+          disableSort: true,
+          headerComponentClass: 'rsa-form-checkbox'
+        }),
+        Object.create({
+          field: 'foo',
+          title: 'Foo Column'
+        }),
+        Object.create({
+          field: 'bar',
+          title: 'Bar Column'
+        }),
+        Object.create({
+          field: 'baz',
+          title: 'Baz Column'
+        })
+      ]
+      END-SNIPPET --}}
+      {{code-snippet name="table4.hbs"}}
 
-        <p>You can pass a custom noResultsMessage to rsa-data-table/body or a default of 'No Results' will be
-          applied.</p>
+      <p>
+        Finally, ensure you have actions in your route, controller, or component to support the actions you set in the
+        template.
+      </p>
 
-        {{!-- BEGIN-SNIPPET noResults1
-        {{#rsa-data-table
-          items=model.emptyItems
-          columnsConfig=model.columnsConfig
-          onRowClick=(action 'toggleSelectedRow')}}
+      {{!-- BEGIN-SNIPPET table6
+      allItemsChecked: false,
 
-          {{rsa-data-table/header}}
+      actions: {
+        toggleItemSelection(item) {
+          item.toggleProperty('checked');
+        },
 
-          {{!A custom noResultsMessage is passed}}
-          {{#rsa-data-table/body
-            noResultsMessage=noResultsMessage as |item index column|}}
-
-            {{#rsa-data-table/body-cell column=column}}
-              {{get item column.field}}
-            {{/rsa-data-table/body-cell}}
-
-          {{/rsa-data-table/body}}
-
-        {{/rsa-data-table}}
-        END-SNIPPET --}}
-        {{code-snippet name="noResults1.hbs"}}
-      {{/spec-member}}
-    {{/spec-category}}
-
-    {{#spec-category id="row-select" title="Selecting Rows"}}
-      {{#spec-member title="Selecting/onRowClick"}}
-        {{#rsa-data-table
-          items=model.items
-          columnsConfig=model.columnsWithoutCheckboxConfig
-          onRowClick=(action 'toggleSelectedRow')}}
-
-          {{rsa-data-table/header}}
-
-          {{#rsa-data-table/body as |item index column|}}
-
-            {{#rsa-data-table/body-cell column=column}}
-              {{get item column.field}}
-            {{/rsa-data-table/body-cell}}
-
-          {{/rsa-data-table/body}}
-
-        {{/rsa-data-table}}
-
-        <p>
-          You can pass onRowClick as a function to call when a row is clicked. It receives item, index, e, and table as
-          params.
-          Here we have used onRowClick to fire an action that sets the selectedIndex on the table to highlight the row:
-          toggleSelectedRow(item, index, e, table) { table.set('selectedIndex', index); }
-        </p>
-
-        {{!-- BEGIN-SNIPPET selectRow1
-        {{#rsa-data-table
-          items=model.items
-          columnsConfig=model.columnsConfig
-          onRowClick=(action 'toggleSelectedRow')}}
-
-          {{! The default, blockless header automatically wraps in .js-move-handle}}
-          {{rsa-data-table/header}}
-
-          {{#rsa-data-table/body as |item index column|}}
-
-            {{#rsa-data-table/body-cell column=column}}
-              {{get item column.field}}
-            {{/rsa-data-table/body-cell}}
-
-          {{/rsa-data-table/body}}
-
-        {{/rsa-data-table}}
-        END-SNIPPET --}}
-        {{code-snippet name="selectRow1.hbs"}}
-      {{/spec-member}}
-    {{/spec-category}}
-
-    {{#spec-category id="column-reorder-resize" title="Reordering/Resizing Columns"}}
-      {{#spec-member title="Reordering"}}
-        {{#rsa-data-table
-          items=model.items
-          columnsConfig=model.columnsWithoutCheckboxConfig}}
-
-          {{rsa-data-table/header}}
-
-          {{#rsa-data-table/body as |item index column|}}
-
-            {{#rsa-data-table/body-cell column=column}}
-              {{get item column.field}}
-            {{/rsa-data-table/body-cell}}
-
-          {{/rsa-data-table/body}}
-
-        {{/rsa-data-table}}
-        {{!-- BEGIN-SNIPPET reorderColumns1
-        {{#rsa-data-table
-          items=model.items
-          columnsConfig=model.columnsWithoutCheckboxConfig}}
-
-          {{rsa-data-table/header}}
-
-          {{#rsa-data-table/body as |item index column|}}
-
-            {{#rsa-data-table/body-cell column=column}}
-              {{get item column.field}}
-            {{/rsa-data-table/body-cell}}
-
-          {{/rsa-data-table/body}}
-
-        {{/rsa-data-table}}
-        END-SNIPPET --}}
-        {{code-snippet name="reorderColumns1.hbs"}}
-      {{/spec-member}}
-    {{/spec-category}}
-
-    {{#spec-category id="error-handling" title="Error Handling"}}
-      {{#spec-member title="Cell Errors"}}
-        {{#rsa-data-table
-          items=model.items
-          columnsConfig=model.columnsWithoutCheckboxConfig}}
-
-          {{rsa-data-table/header}}
-
-          {{#rsa-data-table/body as |item index column|}}
-
-            {{#rsa-data-table/body-cell column=column isError=(eq (get item column.field) 'Test Foo 2')}}
-              {{get item column.field}}
-            {{/rsa-data-table/body-cell}}
-
-          {{/rsa-data-table/body}}
-
-        {{/rsa-data-table}}
-
-        <p>To apply an is-error class to a cell, just pass an expression that evaluates to true when there is an error.
-          Currently, it seems the best thing to do is keep a list of possible error messages, and compare the content to
-          those,
-          and if it matches, set isError to true.</p>
-        {{!-- BEGIN-SNIPPET tableErrors1
-        {{#rsa-data-table
-          items=model.items
-          columnsConfig=model.columnsWithoutCheckboxConfig}}
-
-          {{rsa-data-table/header}}
-
-          {{#rsa-data-table/body as |item index column|}}
-
-            {{#rsa-data-table/body-cell column=column isError=(eq (get item column.field) 'Test Foo 2')}}
-              {{get item column.field}}
-            {{/rsa-data-table/body-cell}}
-
-          {{/rsa-data-table/body}}
-
-        {{/rsa-data-table}}
-        END-SNIPPET --}}
-        {{code-snippet name="tableErrors1.hbs"}}
-      {{/spec-member}}
-    {{/spec-category}}
-
-    {{#spec-category id="sorting" title="Sorting"}}
-      {{#spec-member title="Basic Sorting"}}
-        {{#rsa-data-table
-          items=model.sortableItems
-          columnsConfig=model.columnsWithoutCheckboxConfig}}
-
-          {{#rsa-data-table/header currentSort=currentSort as |column|}}
-            {{column.title}}
-
-            {{#unless column.disableSort}}
-              {{rsa-icon
-                click=(action 'sort' column)
-                name="arrow-down-7"
-                class="sort"}}
-            {{/unless}}
-          {{/rsa-data-table/header}}
-
-          {{#rsa-data-table/body as |item index column|}}
-            {{#rsa-data-table/body-cell column=column}}
-              {{get item column.field}}
-            {{/rsa-data-table/body-cell}}
-          {{/rsa-data-table/body}}
-        {{/rsa-data-table}}
-
-        <p>
-          Sorting is allowed by default but can be disabled in the column config.
-        </p>
-
-        {{!-- BEGIN-SNIPPET tableSorting1
-        disableSort: true
-        END-SNIPPET --}}
-        {{code-snippet name="tableSorting1.hbs"}}
-
-        <p>
-          Add the icon and action to the template.
-        </p>
-
-        {{!-- BEGIN-SNIPPET tableSorting2
-        {{#rsa-data-table
-          items=model.sortableItems
-          columnsConfig=model.columnsWithoutCheckboxConfig}}
-
-          {{#rsa-data-table/header currentSort=currentSort as |column|}}
-            {{column.title}}
-
-            {{#unless column.disableSort}}
-              {{rsa-icon
-                click=(action 'sort' column)
-                name="arrow-down-7"
-                class="sort"}}
-            {{/unless}}
-          {{/rsa-data-table/header}}
-
-          {{#rsa-data-table/body as |item index column|}}
-            {{#rsa-data-table/body-cell column=column}}
-              {{get item column.field}}
-            {{/rsa-data-table/body-cell}}
-          {{/rsa-data-table/body}}
-        {{/rsa-data-table}}
-        END-SNIPPET --}}
-        {{code-snippet name="tableSorting2.hbs"}}
-
-        <p>
-          Don't forget to add an action to your component, route, or controller to handle the sorting of the data.
-          Whether this means a trip to the server, or a local sort depends on your needs.
-        </p>
-
-        {{!-- BEGIN-SNIPPET tableSorting3
-        sort(column) {
-          if ((this.get('currentSort.field') === column.get('field')) && (this.get('currentSort.direction') === 'desc')) {
-            this.set('currentSort.direction', 'asc');
+        toggleItemsSelection(items) {
+          if (this.get('allItemsChecked')) {
+            items.setEach('checked', false);
           } else {
-            this.set('currentSort', column);
-            this.set('currentSort.direction', 'desc');
+            items.setEach('checked', true);
           }
 
-          const sorted = this.get('model.sortableItems').sortBy(this.get('currentSort.field'));
-          if (this.get('currentSort.direction') === 'asc') {
-            sorted.reverse();
-          }
-          this.set('model.sortableItems', sorted);
-
+          this.toggleProperty('allItemsChecked');
         }
-        END-SNIPPET --}}
-        {{code-snippet name="tableSorting3.hbs"}}
-      {{/spec-member}}
-    {{/spec-category}}
-  </div>
-</hbox>
+      }
+      END-SNIPPET --}}
+      {{code-snippet name="table6.hbs"}}
+    {{/spec-member}}
+  {{/spec-category}}
+
+  {{#spec-category id="no-results" title="No Results"}}
+    {{#spec-member title="No Results"}}
+      {{#rsa-data-table
+        items=model.emptyItems
+        columnsConfig=model.columnsWithoutCheckboxConfig
+        onRowClick=(action 'toggleSelectedRow')}}
+
+        {{rsa-data-table/header}}
+
+        {{#rsa-data-table/body
+          noResultsMessage=noResultsMessage as |item index column|}}
+
+          {{#rsa-data-table/body-cell column=column}}
+            {{get item column.field}}
+          {{/rsa-data-table/body-cell}}
+        {{/rsa-data-table/body}}
+      {{/rsa-data-table}}
+
+      <p>You can pass a custom noResultsMessage to rsa-data-table/body or a default of 'No Results' will be
+        applied.</p>
+
+      {{!-- BEGIN-SNIPPET noResults1
+      {{#rsa-data-table
+        items=model.emptyItems
+        columnsConfig=model.columnsWithoutCheckboxConfig
+        onRowClick=(action 'toggleSelectedRow')}}
+
+        {{rsa-data-table/header}}
+
+        {{#rsa-data-table/body
+          noResultsMessage=noResultsMessage as |item index column|}}
+
+          {{#rsa-data-table/body-cell column=column}}
+            {{get item column.field}}
+          {{/rsa-data-table/body-cell}}
+
+        {{/rsa-data-table/body}}
+
+      {{/rsa-data-table}}
+      END-SNIPPET --}}
+      {{code-snippet name="table3.hbs"}}
+
+      <p>
+        In your route, component, or controller you will need to create a configuration for the columns.
+      </p>
+      {{!-- BEGIN-SNIPPET table4
+      columnsWithCheckboxConfig: [
+        Object.create({
+          title: '',
+          class: 'rsa-form-row-checkbox',
+          width: '18',
+          dataType: 'checkbox',
+          componentClass: 'rsa-form-checkbox',
+          visible: true,
+          disableSort: true,
+          headerComponentClass: 'rsa-form-checkbox'
+        }),
+        Object.create({
+          field: 'foo',
+          title: 'Foo Column'
+        }),
+        Object.create({
+          field: 'bar',
+          title: 'Bar Column'
+        }),
+        Object.create({
+          field: 'baz',
+          title: 'Baz Column'
+        })
+      ]
+      END-SNIPPET --}}
+      {{code-snippet name="table4.hbs"}}
+
+      <p>
+        Finally, ensure you have actions in your route, controller, or component to support the actions you set in the
+        template.
+      </p>
+
+      {{!-- BEGIN-SNIPPET table6
+      allItemsChecked: false,
+
+      actions: {
+        toggleItemSelection(item) {
+          item.toggleProperty('checked');
+        },
+
+        toggleItemsSelection(items) {
+          if (this.get('allItemsChecked')) {
+            items.setEach('checked', false);
+          } else {
+            items.setEach('checked', true);
+          }
+
+          this.toggleProperty('allItemsChecked');
+        }
+      }
+      END-SNIPPET --}}
+      {{code-snippet name="table6.hbs"}}
+    {{/spec-member}}
+  {{/spec-category}}
+
+  {{#spec-category id="row-select" title="Selecting Rows"}}
+    {{#spec-member title="Selecting/onRowClick"}}
+      {{#rsa-data-table
+        items=model.items
+        columnsConfig=model.columnsWithoutCheckboxConfig
+        onRowClick=(action 'toggleSelectedRow')}}
+
+        {{rsa-data-table/header}}
+
+        {{#rsa-data-table/body as |item index column|}}
+
+          {{#rsa-data-table/body-cell column=column}}
+            {{get item column.field}}
+          {{/rsa-data-table/body-cell}}
+
+        {{/rsa-data-table/body}}
+
+      {{/rsa-data-table}}
+
+      <p>
+        You can pass onRowClick as a function to call when a row is clicked. It receives item, index, e, and table as
+        params.
+        Here we have used onRowClick to fire an action that sets the selectedIndex on the table to highlight the row:
+        toggleSelectedRow(item, index, e, table) { table.set('selectedIndex', index); }
+      </p>
+
+      {{!-- BEGIN-SNIPPET selectRow1
+      {{#rsa-data-table
+        items=model.items
+        columnsConfig=model.columnsConfig
+        onRowClick=(action 'toggleSelectedRow')}}
+
+        {{! The default, blockless header automatically wraps in .js-move-handle}}
+        {{rsa-data-table/header}}
+
+        {{#rsa-data-table/body as |item index column|}}
+
+          {{#rsa-data-table/body-cell column=column}}
+            {{get item column.field}}
+          {{/rsa-data-table/body-cell}}
+
+        {{/rsa-data-table/body}}
+
+      {{/rsa-data-table}}
+      END-SNIPPET --}}
+      {{code-snippet name="selectRow1.hbs"}}
+    {{/spec-member}}
+  {{/spec-category}}
+
+  {{#spec-category id="column-reorder-resize" title="Reordering/Resizing Columns"}}
+    {{#spec-member title="Reordering"}}
+      {{#rsa-data-table
+        items=model.items
+        columnsConfig=model.columnsWithoutCheckboxConfig}}
+
+        {{rsa-data-table/header}}
+
+        {{#rsa-data-table/body as |item index column|}}
+
+          {{#rsa-data-table/body-cell column=column}}
+            {{get item column.field}}
+          {{/rsa-data-table/body-cell}}
+
+        {{/rsa-data-table/body}}
+
+      {{/rsa-data-table}}
+      {{!-- BEGIN-SNIPPET reorderColumns1
+      {{#rsa-data-table
+        items=model.items
+        columnsConfig=model.columnsWithoutCheckboxConfig}}
+
+        {{rsa-data-table/header}}
+
+        {{#rsa-data-table/body as |item index column|}}
+
+          {{#rsa-data-table/body-cell column=column}}
+            {{get item column.field}}
+          {{/rsa-data-table/body-cell}}
+
+        {{/rsa-data-table/body}}
+
+      {{/rsa-data-table}}
+      END-SNIPPET --}}
+      {{code-snippet name="reorderColumns1.hbs"}}
+    {{/spec-member}}
+  {{/spec-category}}
+
+  {{#spec-category id="error-handling" title="Error Handling"}}
+    {{#spec-member title="Cell Errors"}}
+      {{#rsa-data-table
+        items=model.items
+        columnsConfig=model.columnsWithoutCheckboxConfig}}
+
+        {{rsa-data-table/header}}
+
+        {{#rsa-data-table/body as |item index column|}}
+
+          {{#rsa-data-table/body-cell column=column isError=(eq (get item column.field) 'Test Foo 2')}}
+            {{get item column.field}}
+          {{/rsa-data-table/body-cell}}
+
+        {{/rsa-data-table/body}}
+
+      {{/rsa-data-table}}
+
+      <p>To apply an is-error class to a cell, just pass an expression that evaluates to true when there is an error.
+        Currently, it seems the best thing to do is keep a list of possible error messages, and compare the content to
+        those,
+        and if it matches, set isError to true.</p>
+      {{!-- BEGIN-SNIPPET tableErrors1
+      {{#rsa-data-table
+        items=model.items
+        columnsConfig=model.columnsWithoutCheckboxConfig}}
+
+        {{rsa-data-table/header}}
+
+        {{#rsa-data-table/body as |item index column|}}
+
+          {{#rsa-data-table/body-cell column=column isError=(eq (get item column.field) 'Test Foo 2')}}
+            {{get item column.field}}
+          {{/rsa-data-table/body-cell}}
+
+        {{/rsa-data-table/body}}
+
+      {{/rsa-data-table}}
+      END-SNIPPET --}}
+      {{code-snippet name="tableErrors1.hbs"}}
+    {{/spec-member}}
+  {{/spec-category}}
+
+  {{#spec-category id="sorting" title="Sorting"}}
+    {{#spec-member title="Basic Sorting"}}
+      {{#rsa-data-table
+        items=model.sortableItems
+        columnsConfig=model.columnsWithoutCheckboxConfig}}
+
+        {{#rsa-data-table/header currentSort=currentSort as |column|}}
+          {{column.title}}
+
+          {{#unless column.disableSort}}
+            {{rsa-icon
+              click=(action 'sort' column)
+              name="arrow-down-7"
+              class="sort"}}
+          {{/unless}}
+        {{/rsa-data-table/header}}
+
+        {{#rsa-data-table/body as |item index column|}}
+          {{#rsa-data-table/body-cell column=column}}
+            {{get item column.field}}
+          {{/rsa-data-table/body-cell}}
+        {{/rsa-data-table/body}}
+      {{/rsa-data-table}}
+
+      <p>
+        Sorting is allowed by default but can be disabled in the column config.
+      </p>
+
+      {{!-- BEGIN-SNIPPET tableSorting1
+      disableSort: true
+      END-SNIPPET --}}
+      {{code-snippet name="tableSorting1.hbs"}}
+
+      <p>
+        Add the icon and action to the template.
+      </p>
+
+      {{!-- BEGIN-SNIPPET tableSorting2
+      {{#rsa-data-table
+        items=model.sortableItems
+        columnsConfig=model.columnsWithoutCheckboxConfig}}
+
+        {{#rsa-data-table/header currentSort=currentSort as |column|}}
+          {{column.title}}
+
+          {{#unless column.disableSort}}
+            {{rsa-icon
+              click=(action 'sort' column)
+              name="arrow-down-7"
+              class="sort"}}
+          {{/unless}}
+        {{/rsa-data-table/header}}
+
+        {{#rsa-data-table/body as |item index column|}}
+          {{#rsa-data-table/body-cell column=column}}
+            {{get item column.field}}
+          {{/rsa-data-table/body-cell}}
+        {{/rsa-data-table/body}}
+      {{/rsa-data-table}}
+      END-SNIPPET --}}
+      {{code-snippet name="tableSorting2.hbs"}}
+
+      <p>
+        Don't forget to add an action to your component, route, or controller to handle the sorting of the data.
+        Whether this means a trip to the server, or a local sort depends on your needs.
+      </p>
+
+      {{!-- BEGIN-SNIPPET tableSorting3
+      sort(column) {
+        if ((this.get('currentSort.field') === column.get('field')) && (this.get('currentSort.direction') === 'desc')) {
+          this.set('currentSort.direction', 'asc');
+        } else {
+          this.set('currentSort', column);
+          this.set('currentSort.direction', 'desc');
+        }
+
+        const sorted = this.get('model.sortableItems').sortBy(this.get('currentSort.field'));
+        if (this.get('currentSort.direction') === 'asc') {
+          sorted.reverse();
+        }
+        this.set('model.sortableItems', sorted);
+
+      }
+      END-SNIPPET --}}
+      {{code-snippet name="tableSorting3.hbs"}}
+    {{/spec-member}}
+  {{/spec-category}}
+</vbox>

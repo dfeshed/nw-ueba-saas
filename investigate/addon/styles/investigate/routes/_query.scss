@@ -304,6 +304,10 @@
     }
   }
 
+  .recon-event-wrapper {
+    flex-shrink: 1;
+  }
+
   .recon-container {
     margin-left: 1px; /* let a sliver of background shows thru as a border */
   }

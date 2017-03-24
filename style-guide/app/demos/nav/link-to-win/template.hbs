@@ -2,32 +2,30 @@
   {{spec-masthead model=model}}
 </hbox>
 
-<hbox>
-  <div class="scroll-box">
-    {{#spec-category}}
-      {{#spec-member title="Same-window example"}}
-        <ul>
-          <li>{{#rsa-link-to-win 'index'}}Style Guide Home{{/rsa-link-to-win}}</li>
-        </ul>
-        {{!-- BEGIN-SNIPPET linktowin1
-        <ul>
-          <li>{{#rsa-link-to-win 'index'}}Style Guide Home{{/rsa-link-to-win}}</li>
-        </ul>
-        END-SNIPPET --}}
-        {{code-snippet name="linktowin1.hbs"}}
-      {{/spec-member}}
+<vbox class="scroll-box">
+  {{#spec-category}}
+    {{#spec-member title="Same-window example"}}
+      <ul>
+        <li>{{#rsa-link-to-win 'index'}}Style Guide Home{{/rsa-link-to-win}}</li>
+      </ul>
+      {{!-- BEGIN-SNIPPET linktowin1
+      <ul>
+        <li>{{#rsa-link-to-win 'index'}}Style Guide Home{{/rsa-link-to-win}}</li>
+      </ul>
+      END-SNIPPET --}}
+      {{code-snippet name="linktowin1.hbs"}}
+    {{/spec-member}}
 
-      {{#spec-member title="New-window example"}}
-        <ul>
-          <li>{{#rsa-link-to-win 'index' target="_blank"}}Style Guide Home(new tab){{/rsa-link-to-win}}</li>
-        </ul>
-        {{!-- BEGIN-SNIPPET linktowin2
-        <ul>
-          <li>{{#rsa-link-to-win 'index' target="_blank"}}Style Guide Home(new tab){{/rsa-link-to-win}}</li>
-        </ul>
-        END-SNIPPET --}}
-        {{code-snippet name="linktowin2.hbs"}}
-      {{/spec-member}}
-    {{/spec-category}}
-  </div>
-</hbox>
+    {{#spec-member title="New-window example"}}
+      <ul>
+        <li>{{#rsa-link-to-win 'index' target="_blank"}}Style Guide Home(new tab){{/rsa-link-to-win}}</li>
+      </ul>
+      {{!-- BEGIN-SNIPPET linktowin2
+      <ul>
+        <li>{{#rsa-link-to-win 'index' target="_blank"}}Style Guide Home(new tab){{/rsa-link-to-win}}</li>
+      </ul>
+      END-SNIPPET --}}
+      {{code-snippet name="linktowin2.hbs"}}
+    {{/spec-member}}
+  {{/spec-category}}
+</vbox>

@@ -2,32 +2,30 @@
   {{spec-masthead model=model}}
 </hbox>
 
-<hbox>
-  <div class="scroll-box">
-    {{#spec-category}}
-      {{#spec-member title="base chart"}}
-        {{#rsa-chart data=model.singleSeries xProp='value' yProp='count' as |params|}}{{/rsa-chart}}
-        {{!-- BEGIN-SNIPPET chart1
-        {{#rsa-chart data=model.singleSeries xProp='value' yProp='count' as |params|}}{{/rsa-chart}}
-        END-SNIPPET --}}
-        {{code-snippet name="chart1.hbs"}}
-      {{/spec-member}}
+<vbox class="scroll-box">
+  {{#spec-category}}
+    {{#spec-member title="base chart"}}
+      {{#rsa-chart data=model.singleSeries xProp='value' yProp='count' as |params|}}{{/rsa-chart}}
+      {{!-- BEGIN-SNIPPET chart1
+      {{#rsa-chart data=model.singleSeries xProp='value' yProp='count' as |params|}}{{/rsa-chart}}
+      END-SNIPPET --}}
+      {{code-snippet name="chart1.hbs"}}
+    {{/spec-member}}
 
-      {{#spec-member title="chart with series and axis"}}
-        {{#rsa-chart data=model.singleSeries xProp='value' yProp='count' width='100%' as |params|}}
-          {{rsa-line-series data=params.data xScale=params.xScale yScale=params.yScale xProp='value' yProp='count'}}
-          {{rsa-x-axis height=params.graphHeight scale=params.xScale rotation=-25}}
-          {{rsa-y-axis scale=params.yScale}}
-        {{/rsa-chart}}
-        {{!-- BEGIN-SNIPPET chart2
-        {{#rsa-chart data=model.singleSeries xProp='value' yProp='count' width='100%' as |params|}}
-          {{rsa-line-series data=params.data xScale=params.xScale yScale=params.yScale xProp='value' yProp='count'}}
-          {{rsa-x-axis height=params.graphHeight scale=params.xScale rotation=-25}}
-          {{rsa-y-axis scale=params.yScale}}
-        {{/rsa-chart}}
-        END-SNIPPET --}}
-        {{code-snippet name="chart2.hbs"}}
-      {{/spec-member}}
-    {{/spec-category}}
-  </div>
-</hbox>
+    {{#spec-member title="chart with series and axis"}}
+      {{#rsa-chart data=model.singleSeries xProp='value' yProp='count' width='100%' as |params|}}
+        {{rsa-line-series data=params.data xScale=params.xScale yScale=params.yScale xProp='value' yProp='count'}}
+        {{rsa-x-axis height=params.graphHeight scale=params.xScale rotation=-25}}
+        {{rsa-y-axis scale=params.yScale}}
+      {{/rsa-chart}}
+      {{!-- BEGIN-SNIPPET chart2
+      {{#rsa-chart data=model.singleSeries xProp='value' yProp='count' width='100%' as |params|}}
+        {{rsa-line-series data=params.data xScale=params.xScale yScale=params.yScale xProp='value' yProp='count'}}
+        {{rsa-x-axis height=params.graphHeight scale=params.xScale rotation=-25}}
+        {{rsa-y-axis scale=params.yScale}}
+      {{/rsa-chart}}
+      END-SNIPPET --}}
+      {{code-snippet name="chart2.hbs"}}
+    {{/spec-member}}
+  {{/spec-category}}
+</vbox>

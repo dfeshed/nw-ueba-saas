@@ -2,34 +2,32 @@
   {{spec-masthead model=model}}
 </hbox>
 
-<hbox>
-  <div class="scroll-box">
-    {{#spec-category}}
-      {{#spec-member title="single series"}}
-        {{#rsa-chart data=model.singleSeries as |params|}}
-          {{rsa-area-series data=params.data xScale=params.xScale yScale=params.yScale height=params.graphHeight}}
-        {{/rsa-chart}}
-        {{!-- BEGIN-SNIPPET area1
-        {{#rsa-chart data=model.singleSeries as |params|}}
-          {{rsa-area-series data=params.data xScale=params.xScale yScale=params.yScale height=params.graphHeight}}
-        {{/rsa-chart}}
-        END-SNIPPET --}}
-        {{code-snippet name="area1.hbs"}}
-      {{/spec-member}}
+<vbox class="scroll-box">
+  {{#spec-category}}
+    {{#spec-member title="single series"}}
+      {{#rsa-chart data=model.singleSeries as |params|}}
+        {{rsa-area-series data=params.data xScale=params.xScale yScale=params.yScale height=params.graphHeight}}
+      {{/rsa-chart}}
+      {{!-- BEGIN-SNIPPET area1
+      {{#rsa-chart data=model.singleSeries as |params|}}
+        {{rsa-area-series data=params.data xScale=params.xScale yScale=params.yScale height=params.graphHeight}}
+      {{/rsa-chart}}
+      END-SNIPPET --}}
+      {{code-snippet name="area1.hbs"}}
+    {{/spec-member}}
 
-      {{#spec-member title="multi series"}}
-        {{#rsa-chart data=model.multiSeries as |params|}}
-          {{rsa-area-series data=params.data dataIndex=0 xScale=params.xScale yScale=params.yScale height=params.graphHeight}}
-          {{rsa-area-series data=params.data dataIndex=1 xScale=params.xScale yScale=params.yScale height=params.graphHeight}}
-        {{/rsa-chart}}
-        {{!-- BEGIN-SNIPPET area2
-        {{#rsa-chart data=model.multiSeries as |params|}}
-          {{rsa-area-series data=params.data dataIndex=0 xScale=params.xScale yScale=params.yScale height=params.graphHeight}}
-          {{rsa-area-series data=params.data dataIndex=1 xScale=params.xScale yScale=params.yScale height=params.graphHeight}}
-        {{/rsa-chart}}
-        END-SNIPPET --}}
-        {{code-snippet name="area2.hbs"}}
-      {{/spec-member}}
-    {{/spec-category}}
-  </div>
-</hbox>
+    {{#spec-member title="multi series"}}
+      {{#rsa-chart data=model.multiSeries as |params|}}
+        {{rsa-area-series data=params.data dataIndex=0 xScale=params.xScale yScale=params.yScale height=params.graphHeight}}
+        {{rsa-area-series data=params.data dataIndex=1 xScale=params.xScale yScale=params.yScale height=params.graphHeight}}
+      {{/rsa-chart}}
+      {{!-- BEGIN-SNIPPET area2
+      {{#rsa-chart data=model.multiSeries as |params|}}
+        {{rsa-area-series data=params.data dataIndex=0 xScale=params.xScale yScale=params.yScale height=params.graphHeight}}
+        {{rsa-area-series data=params.data dataIndex=1 xScale=params.xScale yScale=params.yScale height=params.graphHeight}}
+      {{/rsa-chart}}
+      END-SNIPPET --}}
+      {{code-snippet name="area2.hbs"}}
+    {{/spec-member}}
+  {{/spec-category}}
+</vbox>

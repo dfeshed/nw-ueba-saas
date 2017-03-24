@@ -108,10 +108,7 @@ const FeedbackComponent = Component.extend({
     submit() {
       if (!this._validateForm()) {
         const message = this.get('i18n').t('context.lc.feedbackFormInvalid');
-        this.get('flashMessages').error(message, {
-          iconName: 'delete-1',
-          iconStyle: 'filled'
-        });
+        this.get('flashMessages').error(message);
         return;
       }
       const params = this._getParams();
@@ -155,15 +152,12 @@ const FeedbackComponent = Component.extend({
     }).then(() => {
       Logger.debug('Submitted feedback to LC successfully');
       const message = this.get('i18n').t('context.lc.feedbackSubmitted');
-      this.get('flashMessages').success(message, { iconName: 'check-circle-2' });
+      this.get('flashMessages').success(message);
     }).catch((reason) => {
       const errorMsg = reason.meta ? reason.meta.message : '';
       Logger.error(`Could not submit feedback: ${errorMsg}`);
       const message = this.get('i18n').t('context.lc.feedbackSubmissionFailed');
-      this.get('flashMessages').error(message, {
-        iconName: 'delete-1',
-        iconStyle: 'filled'
-      });
+      this.get('flashMessages').error(message);
     }).finally(() => {
       this.set('inProgress', false);
     });

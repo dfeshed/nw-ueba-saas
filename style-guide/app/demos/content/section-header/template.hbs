@@ -2,16 +2,14 @@
   {{spec-masthead model=model}}
 </hbox>
 
-<hbox>
-  <div class="scroll-box">
-    {{#spec-category}}
-      {{#spec-member}}
-        {{#rsa-content-section-header label='Section Heading'}}Content{{/rsa-content-section-header}}
-        {{!-- BEGIN-SNIPPET sectionheader1
-        {{#rsa-content-section-header label='Section Heading'}}Content{{/rsa-content-section-header}}
-        END-SNIPPET --}}
-        {{code-snippet name="sectionheader1.hbs"}}
-      {{/spec-member}}
-    {{/spec-category}}
-  </div>
-</hbox>
+<vbox class="scroll-box">
+  {{#spec-category}}
+    {{#spec-member}}
+      {{#rsa-content-section-header label='Section Heading'}}Content{{/rsa-content-section-header}}
+      {{!-- BEGIN-SNIPPET sectionheader1
+      {{#rsa-content-section-header label='Section Heading'}}Content{{/rsa-content-section-header}}
+      END-SNIPPET --}}
+      {{code-snippet name="sectionheader1.hbs"}}
+    {{/spec-member}}
+  {{/spec-category}}
+</vbox>

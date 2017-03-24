@@ -200,7 +200,6 @@
 
 .rsa-button-group {
   .rsa-form-button-wrapper, .rsa-content-tethered-panel {
-    float: left;
     margin-right: 1px;
 
     &.is-standard {
@@ -218,8 +217,6 @@
 }
 
 .rsa-icon-button-group {
-  overflow: hidden;
-
   .rsa-form-button-wrapper {
     display: inline-block;
     border-bottom: rsa-whitespace(least) solid transparent;

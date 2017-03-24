@@ -1,16 +1,5 @@
 .rsa-application-content {
-  @include global-nav();
-  @include rsa-layer(panel);
-  top: $applicationHeaderHeight;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  overflow: hidden;
-
-  &.is-full-page {
-    top: 0;
-    left: 0;
-  }
+  height: calc(100vh - #{$applicationHeaderHeight});
 
   &.has-blur {
     transition: blur .65s, -webkit-filter .65s;

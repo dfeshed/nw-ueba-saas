@@ -2,956 +2,954 @@
   {{spec-masthead model=model}}
 </hbox>
 
-<hbox>
-  <div class="spec-container scroll-box">
-    {{spec-toc toc=toc scrollTo=(route-action 'scrollTo')}}
+<vbox class="scroll-box">
+  {{spec-toc toc=toc scrollTo=(route-action 'scrollTo')}}
 
-    {{#spec-category id="multi-trigger" title="Multiple Triggers One Panel"}}
-      {{#spec-member title="Example"}}
-        {{#rsa-content-tethered-panel-trigger panel='panel1'}}
-          {{#rsa-form-button}}
-            Hover to Trigger
-          {{/rsa-form-button}}
-        {{/rsa-content-tethered-panel-trigger}}
-
-        {{#rsa-content-tethered-panel-trigger panel='panel1'}}
-          {{#rsa-form-button}}
-            Hover to Trigger
-          {{/rsa-form-button}}
-        {{/rsa-content-tethered-panel-trigger}}
-
-        {{#rsa-content-tethered-panel position='top' panelId='panel1'}}
-          <header>panel Header</header>
-          <section>Here is the info!</section>
-        {{/rsa-content-tethered-panel}}
-        {{!-- BEGIN-SNIPPET panel1
-        {{#rsa-content-tethered-panel-trigger panel='panel1'}}
-          {{#rsa-form-button}}
-            Hover to Trigger
-          {{/rsa-form-button}}
-        {{/rsa-content-tethered-panel-trigger}}
-
-        {{#rsa-content-tethered-panel-trigger panel='panel1'}}
-          {{#rsa-form-button}}
-            Hover to Trigger
-          {{/rsa-form-button}}
-        {{/rsa-content-tethered-panel-trigger}}
-
-        {{#rsa-content-tethered-panel position='top' panelId='panel1'}}
-          <header>panel Header</header>
-          <section>Here is the info!</section>
-        {{/rsa-content-tethered-panel}}
-        END-SNIPPET --}}
-        {{code-snippet name="panel1.hbs"}}
-      {{/spec-member}}
-    {{/spec-category}}
-
-    {{#spec-category id="events" title="Events"}}
-      {{#spec-member title="Hover"}}
-        {{#rsa-content-tethered-panel-trigger panel='panel2'}}
-          {{#rsa-form-button}}
-            Hover to Trigger
-          {{/rsa-form-button}}
-        {{/rsa-content-tethered-panel-trigger}}
-        {{#rsa-content-tethered-panel position='top' panelId='panel2'}}
-          <header>panel Header</header>
-          <section>Here is the info!</section>
-        {{/rsa-content-tethered-panel}}
-        {{!-- BEGIN-SNIPPET panel2
-        {{#rsa-content-tethered-panel-trigger panel='panel2'}}
-          {{#rsa-form-button}}
-            Hover to Trigger
-          {{/rsa-form-button}}
-        {{/rsa-content-tethered-panel-trigger}}
-        {{#rsa-content-tethered-panel position='top' panelId='panel2'}}
-          <header>panel Header</header>
-          <section>Here is the info!</section>
-        {{/rsa-content-tethered-panel}}
-        END-SNIPPET --}}
-        {{code-snippet name="panel2.hbs"}}
-      {{/spec-member}}
-
-      {{#spec-member title="Click"}}
-        {{#rsa-content-tethered-panel-trigger triggerEvent="click" panel='panel3'}}
-          {{#rsa-form-button}}
-            Hover to Trigger
-          {{/rsa-form-button}}
-        {{/rsa-content-tethered-panel-trigger}}
-        {{#rsa-content-tethered-panel position='top' panelId='panel3'}}
-          <header>panel Header</header>
-          <section>Here is the info!</section>
-        {{/rsa-content-tethered-panel}}
-        {{!-- BEGIN-SNIPPET panel3
-        {{#rsa-content-tethered-panel-trigger triggerEvent="click" panel='panel3'}}
-          {{#rsa-form-button}}
-            Hover to Trigger
-          {{/rsa-form-button}}
-        {{/rsa-content-tethered-panel-trigger}}
-        {{#rsa-content-tethered-panel position='top' panelId='panel3'}}
-          <header>panel Header</header>
-          <section>Here is the info!</section>
-        {{/rsa-content-tethered-panel}}
-        END-SNIPPET --}}
-        {{code-snippet name="panel3.hbs"}}
-      {{/spec-member}}
-    {{/spec-category}}
-
-    {{#spec-category id="styles" title="Styles"}}
-      {{#spec-member title="Default"}}
-        {{#rsa-content-tethered-panel-trigger panel='panel4'}}
-          {{#rsa-form-button}}
-            Hover to Trigger
-          {{/rsa-form-button}}
-        {{/rsa-content-tethered-panel-trigger}}
-        {{#rsa-content-tethered-panel position='top' panelId='panel4'}}
-          <header>panel Header</header>
-          <section>Here is the info!</section>
-        {{/rsa-content-tethered-panel}}
-        {{!-- BEGIN-SNIPPET panel4
-        {{#rsa-content-tethered-panel-trigger panel='panel4'}}
-          {{#rsa-form-button}}
-            Hover to Trigger
-          {{/rsa-form-button}}
-        {{/rsa-content-tethered-panel-trigger}}
-        {{#rsa-content-tethered-panel position='top' panelId='panel4'}}
-          <header>panel Header</header>
-          <section>Here is the info!</section>
-        {{/rsa-content-tethered-panel}}
-        END-SNIPPET --}}
-        {{code-snippet name="panel4.hbs"}}
-      {{/spec-member}}
-
-      {{#spec-member title="Primary"}}
-        {{#rsa-content-tethered-panel-trigger panel='panel5'}}
-          {{#rsa-form-button style='primary'}}
-            Hover to Trigger
-          {{/rsa-form-button}}
-        {{/rsa-content-tethered-panel-trigger}}
-        {{#rsa-content-tethered-panel style="primary" position='top' panelId='panel5'}}
-          <header>panel Header</header>
-          <section>Here is the info!</section>
-        {{/rsa-content-tethered-panel}}
-        {{!-- BEGIN-SNIPPET panel5
-        {{#rsa-content-tethered-panel-trigger panel='panel5'}}
-          {{#rsa-form-button style='primary'}}
-            Hover to Trigger
-          {{/rsa-form-button}}
-        {{/rsa-content-tethered-panel-trigger}}
-        {{#rsa-content-tethered-panel style="primary" position='top' panelId='panel5'}}
-          <header>panel Header</header>
-          <section>Here is the info!</section>
-        {{/rsa-content-tethered-panel}}
-        END-SNIPPET --}}
-        {{code-snippet name="panel5.hbs"}}
-      {{/spec-member}}
-
-      {{#spec-member title="Danger"}}
-        {{#rsa-content-tethered-panel-trigger panel='panel6'}}
-          {{#rsa-form-button style='danger'}}
-            Hover to Trigger
-          {{/rsa-form-button}}
-        {{/rsa-content-tethered-panel-trigger}}
-        {{#rsa-content-tethered-panel style="error" position='top' panelId='panel6'}}
-          <header>panel Header</header>
-          <section>Here is the info!</section>
-        {{/rsa-content-tethered-panel}}
-        {{!-- BEGIN-SNIPPET panel6
-        {{#rsa-content-tethered-panel-trigger panel='panel6'}}
-          {{#rsa-form-button style='danger'}}
-            Hover to Trigger
-          {{/rsa-form-button}}
-        {{/rsa-content-tethered-panel-trigger}}
-        {{#rsa-content-tethered-panel style="error" position='top' panelId='panel6'}}
-          <header>panel Header</header>
-          <section>Here is the info!</section>
-        {{/rsa-content-tethered-panel}}
-        END-SNIPPET --}}
-        {{code-snippet name="panel6.hbs"}}
-      {{/spec-member}}
-    {{/spec-category}}
-
-    {{#spec-category id="misc-config" title="Misc Configuration"}}
-      {{#spec-member title="Hiding the panel Close Button"}}
-        {{#rsa-content-tethered-panel-trigger panel='panel7'}}
-          {{#rsa-form-button}}
-            Hover to Trigger
-          {{/rsa-form-button}}
-        {{/rsa-content-tethered-panel-trigger}}
-        {{#rsa-content-tethered-panel displayCloseButton=false position='top' panelId='panel7'}}
-          <header>panel Header</header>
-          <section>Here is the info!</section>
-        {{/rsa-content-tethered-panel}}
-        {{!-- BEGIN-SNIPPET panel7
-        {{#rsa-content-tethered-panel-trigger panel='panel7'}}
-          {{#rsa-form-button}}
-            Hover to Trigger
-          {{/rsa-form-button}}
-        {{/rsa-content-tethered-panel-trigger}}
-        {{#rsa-content-tethered-panel displayCloseButton=false position='top' panelId='panel7'}}
-          <header>panel Header</header>
-          <section>Here is the info!</section>
-        {{/rsa-content-tethered-panel}}
-        END-SNIPPET --}}
-        {{code-snippet name="panel7.hbs"}}
-      {{/spec-member}}
-    {{/spec-category}}
-
-    {{#spec-category id="content-types" title="Content Types"}}
-      {{#spec-member title="panel Style with Header"}}
-        {{#rsa-content-tethered-panel-trigger panel='panel8'}}
-          {{#rsa-form-button}}
-            Hover to Trigger
-          {{/rsa-form-button}}
-        {{/rsa-content-tethered-panel-trigger}}
-        {{#rsa-content-tethered-panel position='right' panelId='panel8'}}
-          <header>panel Header</header>
-          <section>Here is the info!</section>
-        {{/rsa-content-tethered-panel}}
-        {{!-- BEGIN-SNIPPET panel8
-        {{#rsa-content-tethered-panel-trigger panel='panel8'}}
-          {{#rsa-form-button}}
-            Hover to Trigger
-          {{/rsa-form-button}}
-        {{/rsa-content-tethered-panel-trigger}}
-        {{#rsa-content-tethered-panel position='right' panelId='panel8'}}
-          <header>panel Header</header>
-          <section>Here is the info!</section>
-        {{/rsa-content-tethered-panel}}
-        END-SNIPPET --}}
-        {{code-snippet name="panel8.hbs"}}
-      {{/spec-member}}
-
-      {{#spec-member title="panel Style without Header"}}
-        {{#rsa-content-tethered-panel-trigger panel='panel9'}}
-          {{#rsa-form-button}}
-            Hover to Trigger
-          {{/rsa-form-button}}
-        {{/rsa-content-tethered-panel-trigger}}
-        {{#rsa-content-tethered-panel position='right' panelId='panel9'}}
-          <p>Here is the info! With significantly more content to render into the panel. Let's see how the longer content responds.</p>
-        {{/rsa-content-tethered-panel}}
-        {{!-- BEGIN-SNIPPET panel9
-        {{#rsa-content-tethered-panel-trigger panel='panel9'}}
-          {{#rsa-form-button}}
-            Hover to Trigger
-          {{/rsa-form-button}}
-        {{/rsa-content-tethered-panel-trigger}}
-        {{#rsa-content-tethered-panel position='right' panelId='panel9'}}
-          <p>Here is the info! With significantly more content to render into the panel. Let's see how the longer content responds.</p>
-        {{/rsa-content-tethered-panel}}
-        END-SNIPPET --}}
-        {{code-snippet name="panel9.hbs"}}
-      {{/spec-member}}
-
-      {{#spec-member title="A list of actions"}}
-        {{#rsa-content-tethered-panel-trigger triggerEvent="click" panel='panel10'}}
-          {{#rsa-form-button allowToggleActive=true withDropdown=true}}
-            Click to Trigger
-          {{/rsa-form-button}}
-        {{/rsa-content-tethered-panel-trigger}}
-        {{#rsa-content-tethered-panel isPopover=true displayCloseButton=false position='bottom-right' panelId='panel10'}}
-          <ul class="rsa-dropdown-action-list">
-            <li>Clicking this would trigger an action.</li>
-            <li>Clicking this would trigger an action.</li>
-            <li>Clicking this would trigger an action.</li>
-            <li>Clicking this would trigger an action.</li>
-            <li>Clicking this would trigger an action.</li>
-          </ul>
-        {{/rsa-content-tethered-panel}}
-        {{!-- BEGIN-SNIPPET panel10
-        {{#rsa-content-tethered-panel-trigger triggerEvent="click" panel='panel10'}}
-          {{#rsa-form-button allowToggleActive=true withDropdown=true}}
-            Click to Trigger
-          {{/rsa-form-button}}
-        {{/rsa-content-tethered-panel-trigger}}
-        {{#rsa-content-tethered-panel isPopover=true displayCloseButton=false position='bottom-right' panelId='panel10'}}
-          <ul class="rsa-dropdown-action-list">
-            <li>Clicking this would trigger an action.</li>
-            <li>Clicking this would trigger an action.</li>
-            <li>Clicking this would trigger an action.</li>
-            <li>Clicking this would trigger an action.</li>
-            <li>Clicking this would trigger an action.</li>
-          </ul>
-        {{/rsa-content-tethered-panel}}
-        END-SNIPPET --}}
-        {{code-snippet name="panel10.hbs"}}
-      {{/spec-member}}
-
-      {{#spec-member title="A list of links"}}
-        {{#rsa-content-tethered-panel-trigger triggerEvent="click" panel='panel11'}}
-          {{#rsa-form-button allowToggleActive=true withDropdown=true}}
-            Click to Trigger
-          {{/rsa-form-button}}
-        {{/rsa-content-tethered-panel-trigger}}
-        {{#rsa-content-tethered-panel isPopover=true displayCloseButton=false position='bottom-right' panelId='panel11'}}
-          <ul class="rsa-dropdown-link-list">
-            <li>
-              {{#link-to 'index'}}Go to the homepage{{/link-to}}
-            </li>
-            <li>
-              {{#link-to 'index'}}Go to the homepage{{/link-to}}
-            </li>
-            <li>
-              {{#link-to 'index'}}Go to the homepage{{/link-to}}
-            </li>
-            <li>
-              {{#link-to 'index'}}Go to the homepage{{/link-to}}
-            </li>
-            <li>
-              {{#link-to 'index'}}Go to the homepage{{/link-to}}
-            </li>
-          </ul>
-        {{/rsa-content-tethered-panel}}
-        {{!-- BEGIN-SNIPPET panel11
-        {{#rsa-content-tethered-panel-trigger triggerEvent="click" panel='panel11'}}
-          {{#rsa-form-button allowToggleActive=true withDropdown=true}}
-            Click to Trigger
-          {{/rsa-form-button}}
-        {{/rsa-content-tethered-panel-trigger}}
-        {{#rsa-content-tethered-panel isPopover=true displayCloseButton=false position='bottom-right' panelId='panel11'}}
-          <ul class="rsa-dropdown-link-list">
-            <li>
-              {{#link-to 'index'}}Go to the homepage{{/link-to}}
-            </li>
-            <li>
-              {{#link-to 'index'}}Go to the homepage{{/link-to}}
-            </li>
-            <li>
-              {{#link-to 'index'}}Go to the homepage{{/link-to}}
-            </li>
-            <li>
-              {{#link-to 'index'}}Go to the homepage{{/link-to}}
-            </li>
-            <li>
-              {{#link-to 'index'}}Go to the homepage{{/link-to}}
-            </li>
-          </ul>
-        {{/rsa-content-tethered-panel}}
-        END-SNIPPET --}}
-        {{code-snippet name="panel11.hbs"}}
-      {{/spec-member}}
-    {{/spec-category}}
-
-    {{#spec-category id="position-as-panel" title="Position as a Panel"}}
-      {{#spec-member title="Left"}}
-        {{#rsa-content-tethered-panel-trigger panel='panel12'}}
+  {{#spec-category id="multi-trigger" title="Multiple Triggers One Panel"}}
+    {{#spec-member title="Example"}}
+      {{#rsa-content-tethered-panel-trigger panel='panel1'}}
         {{#rsa-form-button}}
           Hover to Trigger
         {{/rsa-form-button}}
+      {{/rsa-content-tethered-panel-trigger}}
 
-        {{/rsa-content-tethered-panel-trigger}}
-        {{#rsa-content-tethered-panel position='left' panelId='panel12'}}
-          <header>panel Header</header>
-          <section>Here is the info!</section>
-        {{/rsa-content-tethered-panel}}
-        {{!-- BEGIN-SNIPPET panel12
-        {{#rsa-content-tethered-panel-trigger panel='panel12'}}
+      {{#rsa-content-tethered-panel-trigger panel='panel1'}}
         {{#rsa-form-button}}
           Hover to Trigger
         {{/rsa-form-button}}
+      {{/rsa-content-tethered-panel-trigger}}
 
-        {{/rsa-content-tethered-panel-trigger}}
-        {{#rsa-content-tethered-panel position='left' panelId='panel12'}}
-          <header>panel Header</header>
-          <section>Here is the info!</section>
-        {{/rsa-content-tethered-panel}}
-        END-SNIPPET --}}
-        {{code-snippet name="panel12.hbs"}}
-      {{/spec-member}}
-
-      {{#spec-member title="Left Top"}}
-        {{#rsa-content-tethered-panel-trigger panel='panel13'}}
+      {{#rsa-content-tethered-panel position='top' panelId='panel1'}}
+        <header>panel Header</header>
+        <section>Here is the info!</section>
+      {{/rsa-content-tethered-panel}}
+      {{!-- BEGIN-SNIPPET panel1
+      {{#rsa-content-tethered-panel-trigger panel='panel1'}}
         {{#rsa-form-button}}
           Hover to Trigger
         {{/rsa-form-button}}
+      {{/rsa-content-tethered-panel-trigger}}
 
-        {{/rsa-content-tethered-panel-trigger}}
-        {{#rsa-content-tethered-panel position='left-top' panelId='panel13'}}
-          <header>panel Header</header>
-          <section>Here is the info!</section>
-        {{/rsa-content-tethered-panel}}
-        {{!-- BEGIN-SNIPPET panel13
-        {{#rsa-content-tethered-panel-trigger panel='panel13'}}
+      {{#rsa-content-tethered-panel-trigger panel='panel1'}}
         {{#rsa-form-button}}
           Hover to Trigger
         {{/rsa-form-button}}
+      {{/rsa-content-tethered-panel-trigger}}
 
-        {{/rsa-content-tethered-panel-trigger}}
-        {{#rsa-content-tethered-panel position='left-top' panelId='panel13'}}
-          <header>panel Header</header>
-          <section>Here is the info!</section>
-        {{/rsa-content-tethered-panel}}
-        END-SNIPPET --}}
-        {{code-snippet name="panel13.hbs"}}
-      {{/spec-member}}
+      {{#rsa-content-tethered-panel position='top' panelId='panel1'}}
+        <header>panel Header</header>
+        <section>Here is the info!</section>
+      {{/rsa-content-tethered-panel}}
+      END-SNIPPET --}}
+      {{code-snippet name="panel1.hbs"}}
+    {{/spec-member}}
+  {{/spec-category}}
 
-      {{#spec-member title="Left Bottom"}}
-        {{#rsa-content-tethered-panel-trigger panel='panel14'}}
+  {{#spec-category id="events" title="Events"}}
+    {{#spec-member title="Hover"}}
+      {{#rsa-content-tethered-panel-trigger panel='panel2'}}
         {{#rsa-form-button}}
           Hover to Trigger
         {{/rsa-form-button}}
-
-        {{/rsa-content-tethered-panel-trigger}}
-        {{#rsa-content-tethered-panel position='left-bottom' panelId='panel14'}}
-          <header>panel Header</header>
-          <section>Here is the info!</section>
-        {{/rsa-content-tethered-panel}}
-        {{!-- BEGIN-SNIPPET panel14
-        {{#rsa-content-tethered-panel-trigger panel='panel14'}}
+      {{/rsa-content-tethered-panel-trigger}}
+      {{#rsa-content-tethered-panel position='top' panelId='panel2'}}
+        <header>panel Header</header>
+        <section>Here is the info!</section>
+      {{/rsa-content-tethered-panel}}
+      {{!-- BEGIN-SNIPPET panel2
+      {{#rsa-content-tethered-panel-trigger panel='panel2'}}
         {{#rsa-form-button}}
           Hover to Trigger
         {{/rsa-form-button}}
+      {{/rsa-content-tethered-panel-trigger}}
+      {{#rsa-content-tethered-panel position='top' panelId='panel2'}}
+        <header>panel Header</header>
+        <section>Here is the info!</section>
+      {{/rsa-content-tethered-panel}}
+      END-SNIPPET --}}
+      {{code-snippet name="panel2.hbs"}}
+    {{/spec-member}}
 
-        {{/rsa-content-tethered-panel-trigger}}
-        {{#rsa-content-tethered-panel position='left-bottom' panelId='panel14'}}
-          <header>panel Header</header>
-          <section>Here is the info!</section>
-        {{/rsa-content-tethered-panel}}
-        END-SNIPPET --}}
-        {{code-snippet name="panel14.hbs"}}
-      {{/spec-member}}
-
-      {{#spec-member title="Right"}}
-        {{#rsa-content-tethered-panel-trigger panel='panel15'}}
+    {{#spec-member title="Click"}}
+      {{#rsa-content-tethered-panel-trigger triggerEvent="click" panel='panel3'}}
         {{#rsa-form-button}}
           Hover to Trigger
         {{/rsa-form-button}}
-
-        {{/rsa-content-tethered-panel-trigger}}
-        {{#rsa-content-tethered-panel position='right' panelId='panel15'}}
-          <header>panel Header</header>
-          <section>Here is the info!</section>
-        {{/rsa-content-tethered-panel}}
-        {{!-- BEGIN-SNIPPET panel15
-        {{#rsa-content-tethered-panel-trigger panel='panel15'}}
+      {{/rsa-content-tethered-panel-trigger}}
+      {{#rsa-content-tethered-panel position='top' panelId='panel3'}}
+        <header>panel Header</header>
+        <section>Here is the info!</section>
+      {{/rsa-content-tethered-panel}}
+      {{!-- BEGIN-SNIPPET panel3
+      {{#rsa-content-tethered-panel-trigger triggerEvent="click" panel='panel3'}}
         {{#rsa-form-button}}
           Hover to Trigger
         {{/rsa-form-button}}
+      {{/rsa-content-tethered-panel-trigger}}
+      {{#rsa-content-tethered-panel position='top' panelId='panel3'}}
+        <header>panel Header</header>
+        <section>Here is the info!</section>
+      {{/rsa-content-tethered-panel}}
+      END-SNIPPET --}}
+      {{code-snippet name="panel3.hbs"}}
+    {{/spec-member}}
+  {{/spec-category}}
 
-        {{/rsa-content-tethered-panel-trigger}}
-        {{#rsa-content-tethered-panel position='right' panelId='panel15'}}
-          <header>panel Header</header>
-          <section>Here is the info!</section>
-        {{/rsa-content-tethered-panel}}
-        END-SNIPPET --}}
-        {{code-snippet name="panel15.hbs"}}
-      {{/spec-member}}
-
-      {{#spec-member title="Right Top"}}
-        {{#rsa-content-tethered-panel-trigger panel='panel16'}}
+  {{#spec-category id="styles" title="Styles"}}
+    {{#spec-member title="Default"}}
+      {{#rsa-content-tethered-panel-trigger panel='panel4'}}
         {{#rsa-form-button}}
           Hover to Trigger
         {{/rsa-form-button}}
-
-        {{/rsa-content-tethered-panel-trigger}}
-        {{#rsa-content-tethered-panel position='right-top' panelId='panel16'}}
-          <header>panel Header</header>
-          <section>Here is the info!</section>
-        {{/rsa-content-tethered-panel}}
-        {{!-- BEGIN-SNIPPET panel16
-        {{#rsa-content-tethered-panel-trigger panel='panel16'}}
+      {{/rsa-content-tethered-panel-trigger}}
+      {{#rsa-content-tethered-panel position='top' panelId='panel4'}}
+        <header>panel Header</header>
+        <section>Here is the info!</section>
+      {{/rsa-content-tethered-panel}}
+      {{!-- BEGIN-SNIPPET panel4
+      {{#rsa-content-tethered-panel-trigger panel='panel4'}}
         {{#rsa-form-button}}
           Hover to Trigger
         {{/rsa-form-button}}
+      {{/rsa-content-tethered-panel-trigger}}
+      {{#rsa-content-tethered-panel position='top' panelId='panel4'}}
+        <header>panel Header</header>
+        <section>Here is the info!</section>
+      {{/rsa-content-tethered-panel}}
+      END-SNIPPET --}}
+      {{code-snippet name="panel4.hbs"}}
+    {{/spec-member}}
 
-        {{/rsa-content-tethered-panel-trigger}}
-        {{#rsa-content-tethered-panel position='right-top' panelId='panel16'}}
-          <header>panel Header</header>
-          <section>Here is the info!</section>
-        {{/rsa-content-tethered-panel}}
-        END-SNIPPET --}}
-        {{code-snippet name="panel16.hbs"}}
-      {{/spec-member}}
+    {{#spec-member title="Primary"}}
+      {{#rsa-content-tethered-panel-trigger panel='panel5'}}
+        {{#rsa-form-button style='primary'}}
+          Hover to Trigger
+        {{/rsa-form-button}}
+      {{/rsa-content-tethered-panel-trigger}}
+      {{#rsa-content-tethered-panel style="primary" position='top' panelId='panel5'}}
+        <header>panel Header</header>
+        <section>Here is the info!</section>
+      {{/rsa-content-tethered-panel}}
+      {{!-- BEGIN-SNIPPET panel5
+      {{#rsa-content-tethered-panel-trigger panel='panel5'}}
+        {{#rsa-form-button style='primary'}}
+          Hover to Trigger
+        {{/rsa-form-button}}
+      {{/rsa-content-tethered-panel-trigger}}
+      {{#rsa-content-tethered-panel style="primary" position='top' panelId='panel5'}}
+        <header>panel Header</header>
+        <section>Here is the info!</section>
+      {{/rsa-content-tethered-panel}}
+      END-SNIPPET --}}
+      {{code-snippet name="panel5.hbs"}}
+    {{/spec-member}}
 
-      {{#spec-member title="Right Bottom"}}
-        {{#rsa-content-tethered-panel-trigger panel='panel17'}}
+    {{#spec-member title="Danger"}}
+      {{#rsa-content-tethered-panel-trigger panel='panel6'}}
+        {{#rsa-form-button style='danger'}}
+          Hover to Trigger
+        {{/rsa-form-button}}
+      {{/rsa-content-tethered-panel-trigger}}
+      {{#rsa-content-tethered-panel style="error" position='top' panelId='panel6'}}
+        <header>panel Header</header>
+        <section>Here is the info!</section>
+      {{/rsa-content-tethered-panel}}
+      {{!-- BEGIN-SNIPPET panel6
+      {{#rsa-content-tethered-panel-trigger panel='panel6'}}
+        {{#rsa-form-button style='danger'}}
+          Hover to Trigger
+        {{/rsa-form-button}}
+      {{/rsa-content-tethered-panel-trigger}}
+      {{#rsa-content-tethered-panel style="error" position='top' panelId='panel6'}}
+        <header>panel Header</header>
+        <section>Here is the info!</section>
+      {{/rsa-content-tethered-panel}}
+      END-SNIPPET --}}
+      {{code-snippet name="panel6.hbs"}}
+    {{/spec-member}}
+  {{/spec-category}}
+
+  {{#spec-category id="misc-config" title="Misc Configuration"}}
+    {{#spec-member title="Hiding the panel Close Button"}}
+      {{#rsa-content-tethered-panel-trigger panel='panel7'}}
         {{#rsa-form-button}}
           Hover to Trigger
         {{/rsa-form-button}}
-
-        {{/rsa-content-tethered-panel-trigger}}
-        {{#rsa-content-tethered-panel position='right-bottom' panelId='panel17'}}
-          <header>panel Header</header>
-          <section>Here is the info!</section>
-        {{/rsa-content-tethered-panel}}
-        {{!-- BEGIN-SNIPPET panel17
-        {{#rsa-content-tethered-panel-trigger panel='panel17'}}
+      {{/rsa-content-tethered-panel-trigger}}
+      {{#rsa-content-tethered-panel displayCloseButton=false position='top' panelId='panel7'}}
+        <header>panel Header</header>
+        <section>Here is the info!</section>
+      {{/rsa-content-tethered-panel}}
+      {{!-- BEGIN-SNIPPET panel7
+      {{#rsa-content-tethered-panel-trigger panel='panel7'}}
         {{#rsa-form-button}}
           Hover to Trigger
         {{/rsa-form-button}}
+      {{/rsa-content-tethered-panel-trigger}}
+      {{#rsa-content-tethered-panel displayCloseButton=false position='top' panelId='panel7'}}
+        <header>panel Header</header>
+        <section>Here is the info!</section>
+      {{/rsa-content-tethered-panel}}
+      END-SNIPPET --}}
+      {{code-snippet name="panel7.hbs"}}
+    {{/spec-member}}
+  {{/spec-category}}
 
-        {{/rsa-content-tethered-panel-trigger}}
-        {{#rsa-content-tethered-panel position='right-bottom' panelId='panel17'}}
-          <header>panel Header</header>
-          <section>Here is the info!</section>
-        {{/rsa-content-tethered-panel}}
-        END-SNIPPET --}}
-        {{code-snippet name="panel17.hbs"}}
-      {{/spec-member}}
-
-      {{#spec-member title="Top"}}
-        {{#rsa-content-tethered-panel-trigger panel='panel18'}}
+  {{#spec-category id="content-types" title="Content Types"}}
+    {{#spec-member title="panel Style with Header"}}
+      {{#rsa-content-tethered-panel-trigger panel='panel8'}}
         {{#rsa-form-button}}
           Hover to Trigger
         {{/rsa-form-button}}
-
-        {{/rsa-content-tethered-panel-trigger}}
-        {{#rsa-content-tethered-panel position='top' panelId='panel18'}}
-          <header>panel Header</header>
-          <section>Here is the info!</section>
-        {{/rsa-content-tethered-panel}}
-        {{!-- BEGIN-SNIPPET panel18
-        {{#rsa-content-tethered-panel-trigger panel='panel18'}}
+      {{/rsa-content-tethered-panel-trigger}}
+      {{#rsa-content-tethered-panel position='right' panelId='panel8'}}
+        <header>panel Header</header>
+        <section>Here is the info!</section>
+      {{/rsa-content-tethered-panel}}
+      {{!-- BEGIN-SNIPPET panel8
+      {{#rsa-content-tethered-panel-trigger panel='panel8'}}
         {{#rsa-form-button}}
           Hover to Trigger
         {{/rsa-form-button}}
+      {{/rsa-content-tethered-panel-trigger}}
+      {{#rsa-content-tethered-panel position='right' panelId='panel8'}}
+        <header>panel Header</header>
+        <section>Here is the info!</section>
+      {{/rsa-content-tethered-panel}}
+      END-SNIPPET --}}
+      {{code-snippet name="panel8.hbs"}}
+    {{/spec-member}}
 
-        {{/rsa-content-tethered-panel-trigger}}
-        {{#rsa-content-tethered-panel position='top' panelId='panel18'}}
-          <header>panel Header</header>
-          <section>Here is the info!</section>
-        {{/rsa-content-tethered-panel}}
-        END-SNIPPET --}}
-        {{code-snippet name="panel18.hbs"}}
-      {{/spec-member}}
-
-      {{#spec-member title="Top Left"}}
-        {{#rsa-content-tethered-panel-trigger panel='panel19'}}
+    {{#spec-member title="panel Style without Header"}}
+      {{#rsa-content-tethered-panel-trigger panel='panel9'}}
         {{#rsa-form-button}}
           Hover to Trigger
         {{/rsa-form-button}}
-
-        {{/rsa-content-tethered-panel-trigger}}
-        {{#rsa-content-tethered-panel position='top-left' panelId='panel19'}}
-          <header>panel Header</header>
-          <section>Here is the info!</section>
-        {{/rsa-content-tethered-panel}}
-        {{!-- BEGIN-SNIPPET panel19
-        {{#rsa-content-tethered-panel-trigger panel='panel19'}}
+      {{/rsa-content-tethered-panel-trigger}}
+      {{#rsa-content-tethered-panel position='right' panelId='panel9'}}
+        <p>Here is the info! With significantly more content to render into the panel. Let's see how the longer content responds.</p>
+      {{/rsa-content-tethered-panel}}
+      {{!-- BEGIN-SNIPPET panel9
+      {{#rsa-content-tethered-panel-trigger panel='panel9'}}
         {{#rsa-form-button}}
           Hover to Trigger
         {{/rsa-form-button}}
+      {{/rsa-content-tethered-panel-trigger}}
+      {{#rsa-content-tethered-panel position='right' panelId='panel9'}}
+        <p>Here is the info! With significantly more content to render into the panel. Let's see how the longer content responds.</p>
+      {{/rsa-content-tethered-panel}}
+      END-SNIPPET --}}
+      {{code-snippet name="panel9.hbs"}}
+    {{/spec-member}}
 
-        {{/rsa-content-tethered-panel-trigger}}
-        {{#rsa-content-tethered-panel position='top-left' panelId='panel19'}}
-          <header>panel Header</header>
-          <section>Here is the info!</section>
-        {{/rsa-content-tethered-panel}}
-        END-SNIPPET --}}
-        {{code-snippet name="panel19.hbs"}}
-      {{/spec-member}}
+    {{#spec-member title="A list of actions"}}
+      {{#rsa-content-tethered-panel-trigger triggerEvent="click" panel='panel10'}}
+        {{#rsa-form-button allowToggleActive=true withDropdown=true}}
+          Click to Trigger
+        {{/rsa-form-button}}
+      {{/rsa-content-tethered-panel-trigger}}
+      {{#rsa-content-tethered-panel isPopover=true displayCloseButton=false position='bottom-right' panelId='panel10'}}
+        <ul class="rsa-dropdown-action-list">
+          <li>Clicking this would trigger an action.</li>
+          <li>Clicking this would trigger an action.</li>
+          <li>Clicking this would trigger an action.</li>
+          <li>Clicking this would trigger an action.</li>
+          <li>Clicking this would trigger an action.</li>
+        </ul>
+      {{/rsa-content-tethered-panel}}
+      {{!-- BEGIN-SNIPPET panel10
+      {{#rsa-content-tethered-panel-trigger triggerEvent="click" panel='panel10'}}
+        {{#rsa-form-button allowToggleActive=true withDropdown=true}}
+          Click to Trigger
+        {{/rsa-form-button}}
+      {{/rsa-content-tethered-panel-trigger}}
+      {{#rsa-content-tethered-panel isPopover=true displayCloseButton=false position='bottom-right' panelId='panel10'}}
+        <ul class="rsa-dropdown-action-list">
+          <li>Clicking this would trigger an action.</li>
+          <li>Clicking this would trigger an action.</li>
+          <li>Clicking this would trigger an action.</li>
+          <li>Clicking this would trigger an action.</li>
+          <li>Clicking this would trigger an action.</li>
+        </ul>
+      {{/rsa-content-tethered-panel}}
+      END-SNIPPET --}}
+      {{code-snippet name="panel10.hbs"}}
+    {{/spec-member}}
 
-      {{#spec-member title="Top Right"}}
-        {{#rsa-content-tethered-panel-trigger panel='panel20'}}
+    {{#spec-member title="A list of links"}}
+      {{#rsa-content-tethered-panel-trigger triggerEvent="click" panel='panel11'}}
+        {{#rsa-form-button allowToggleActive=true withDropdown=true}}
+          Click to Trigger
+        {{/rsa-form-button}}
+      {{/rsa-content-tethered-panel-trigger}}
+      {{#rsa-content-tethered-panel isPopover=true displayCloseButton=false position='bottom-right' panelId='panel11'}}
+        <ul class="rsa-dropdown-link-list">
+          <li>
+            {{#link-to 'index'}}Go to the homepage{{/link-to}}
+          </li>
+          <li>
+            {{#link-to 'index'}}Go to the homepage{{/link-to}}
+          </li>
+          <li>
+            {{#link-to 'index'}}Go to the homepage{{/link-to}}
+          </li>
+          <li>
+            {{#link-to 'index'}}Go to the homepage{{/link-to}}
+          </li>
+          <li>
+            {{#link-to 'index'}}Go to the homepage{{/link-to}}
+          </li>
+        </ul>
+      {{/rsa-content-tethered-panel}}
+      {{!-- BEGIN-SNIPPET panel11
+      {{#rsa-content-tethered-panel-trigger triggerEvent="click" panel='panel11'}}
+        {{#rsa-form-button allowToggleActive=true withDropdown=true}}
+          Click to Trigger
+        {{/rsa-form-button}}
+      {{/rsa-content-tethered-panel-trigger}}
+      {{#rsa-content-tethered-panel isPopover=true displayCloseButton=false position='bottom-right' panelId='panel11'}}
+        <ul class="rsa-dropdown-link-list">
+          <li>
+            {{#link-to 'index'}}Go to the homepage{{/link-to}}
+          </li>
+          <li>
+            {{#link-to 'index'}}Go to the homepage{{/link-to}}
+          </li>
+          <li>
+            {{#link-to 'index'}}Go to the homepage{{/link-to}}
+          </li>
+          <li>
+            {{#link-to 'index'}}Go to the homepage{{/link-to}}
+          </li>
+          <li>
+            {{#link-to 'index'}}Go to the homepage{{/link-to}}
+          </li>
+        </ul>
+      {{/rsa-content-tethered-panel}}
+      END-SNIPPET --}}
+      {{code-snippet name="panel11.hbs"}}
+    {{/spec-member}}
+  {{/spec-category}}
+
+  {{#spec-category id="position-as-panel" title="Position as a Panel"}}
+    {{#spec-member title="Left"}}
+      {{#rsa-content-tethered-panel-trigger panel='panel12'}}
+      {{#rsa-form-button}}
+        Hover to Trigger
+      {{/rsa-form-button}}
+
+      {{/rsa-content-tethered-panel-trigger}}
+      {{#rsa-content-tethered-panel position='left' panelId='panel12'}}
+        <header>panel Header</header>
+        <section>Here is the info!</section>
+      {{/rsa-content-tethered-panel}}
+      {{!-- BEGIN-SNIPPET panel12
+      {{#rsa-content-tethered-panel-trigger panel='panel12'}}
+      {{#rsa-form-button}}
+        Hover to Trigger
+      {{/rsa-form-button}}
+
+      {{/rsa-content-tethered-panel-trigger}}
+      {{#rsa-content-tethered-panel position='left' panelId='panel12'}}
+        <header>panel Header</header>
+        <section>Here is the info!</section>
+      {{/rsa-content-tethered-panel}}
+      END-SNIPPET --}}
+      {{code-snippet name="panel12.hbs"}}
+    {{/spec-member}}
+
+    {{#spec-member title="Left Top"}}
+      {{#rsa-content-tethered-panel-trigger panel='panel13'}}
+      {{#rsa-form-button}}
+        Hover to Trigger
+      {{/rsa-form-button}}
+
+      {{/rsa-content-tethered-panel-trigger}}
+      {{#rsa-content-tethered-panel position='left-top' panelId='panel13'}}
+        <header>panel Header</header>
+        <section>Here is the info!</section>
+      {{/rsa-content-tethered-panel}}
+      {{!-- BEGIN-SNIPPET panel13
+      {{#rsa-content-tethered-panel-trigger panel='panel13'}}
+      {{#rsa-form-button}}
+        Hover to Trigger
+      {{/rsa-form-button}}
+
+      {{/rsa-content-tethered-panel-trigger}}
+      {{#rsa-content-tethered-panel position='left-top' panelId='panel13'}}
+        <header>panel Header</header>
+        <section>Here is the info!</section>
+      {{/rsa-content-tethered-panel}}
+      END-SNIPPET --}}
+      {{code-snippet name="panel13.hbs"}}
+    {{/spec-member}}
+
+    {{#spec-member title="Left Bottom"}}
+      {{#rsa-content-tethered-panel-trigger panel='panel14'}}
+      {{#rsa-form-button}}
+        Hover to Trigger
+      {{/rsa-form-button}}
+
+      {{/rsa-content-tethered-panel-trigger}}
+      {{#rsa-content-tethered-panel position='left-bottom' panelId='panel14'}}
+        <header>panel Header</header>
+        <section>Here is the info!</section>
+      {{/rsa-content-tethered-panel}}
+      {{!-- BEGIN-SNIPPET panel14
+      {{#rsa-content-tethered-panel-trigger panel='panel14'}}
+      {{#rsa-form-button}}
+        Hover to Trigger
+      {{/rsa-form-button}}
+
+      {{/rsa-content-tethered-panel-trigger}}
+      {{#rsa-content-tethered-panel position='left-bottom' panelId='panel14'}}
+        <header>panel Header</header>
+        <section>Here is the info!</section>
+      {{/rsa-content-tethered-panel}}
+      END-SNIPPET --}}
+      {{code-snippet name="panel14.hbs"}}
+    {{/spec-member}}
+
+    {{#spec-member title="Right"}}
+      {{#rsa-content-tethered-panel-trigger panel='panel15'}}
+      {{#rsa-form-button}}
+        Hover to Trigger
+      {{/rsa-form-button}}
+
+      {{/rsa-content-tethered-panel-trigger}}
+      {{#rsa-content-tethered-panel position='right' panelId='panel15'}}
+        <header>panel Header</header>
+        <section>Here is the info!</section>
+      {{/rsa-content-tethered-panel}}
+      {{!-- BEGIN-SNIPPET panel15
+      {{#rsa-content-tethered-panel-trigger panel='panel15'}}
+      {{#rsa-form-button}}
+        Hover to Trigger
+      {{/rsa-form-button}}
+
+      {{/rsa-content-tethered-panel-trigger}}
+      {{#rsa-content-tethered-panel position='right' panelId='panel15'}}
+        <header>panel Header</header>
+        <section>Here is the info!</section>
+      {{/rsa-content-tethered-panel}}
+      END-SNIPPET --}}
+      {{code-snippet name="panel15.hbs"}}
+    {{/spec-member}}
+
+    {{#spec-member title="Right Top"}}
+      {{#rsa-content-tethered-panel-trigger panel='panel16'}}
+      {{#rsa-form-button}}
+        Hover to Trigger
+      {{/rsa-form-button}}
+
+      {{/rsa-content-tethered-panel-trigger}}
+      {{#rsa-content-tethered-panel position='right-top' panelId='panel16'}}
+        <header>panel Header</header>
+        <section>Here is the info!</section>
+      {{/rsa-content-tethered-panel}}
+      {{!-- BEGIN-SNIPPET panel16
+      {{#rsa-content-tethered-panel-trigger panel='panel16'}}
+      {{#rsa-form-button}}
+        Hover to Trigger
+      {{/rsa-form-button}}
+
+      {{/rsa-content-tethered-panel-trigger}}
+      {{#rsa-content-tethered-panel position='right-top' panelId='panel16'}}
+        <header>panel Header</header>
+        <section>Here is the info!</section>
+      {{/rsa-content-tethered-panel}}
+      END-SNIPPET --}}
+      {{code-snippet name="panel16.hbs"}}
+    {{/spec-member}}
+
+    {{#spec-member title="Right Bottom"}}
+      {{#rsa-content-tethered-panel-trigger panel='panel17'}}
+      {{#rsa-form-button}}
+        Hover to Trigger
+      {{/rsa-form-button}}
+
+      {{/rsa-content-tethered-panel-trigger}}
+      {{#rsa-content-tethered-panel position='right-bottom' panelId='panel17'}}
+        <header>panel Header</header>
+        <section>Here is the info!</section>
+      {{/rsa-content-tethered-panel}}
+      {{!-- BEGIN-SNIPPET panel17
+      {{#rsa-content-tethered-panel-trigger panel='panel17'}}
+      {{#rsa-form-button}}
+        Hover to Trigger
+      {{/rsa-form-button}}
+
+      {{/rsa-content-tethered-panel-trigger}}
+      {{#rsa-content-tethered-panel position='right-bottom' panelId='panel17'}}
+        <header>panel Header</header>
+        <section>Here is the info!</section>
+      {{/rsa-content-tethered-panel}}
+      END-SNIPPET --}}
+      {{code-snippet name="panel17.hbs"}}
+    {{/spec-member}}
+
+    {{#spec-member title="Top"}}
+      {{#rsa-content-tethered-panel-trigger panel='panel18'}}
+      {{#rsa-form-button}}
+        Hover to Trigger
+      {{/rsa-form-button}}
+
+      {{/rsa-content-tethered-panel-trigger}}
+      {{#rsa-content-tethered-panel position='top' panelId='panel18'}}
+        <header>panel Header</header>
+        <section>Here is the info!</section>
+      {{/rsa-content-tethered-panel}}
+      {{!-- BEGIN-SNIPPET panel18
+      {{#rsa-content-tethered-panel-trigger panel='panel18'}}
+      {{#rsa-form-button}}
+        Hover to Trigger
+      {{/rsa-form-button}}
+
+      {{/rsa-content-tethered-panel-trigger}}
+      {{#rsa-content-tethered-panel position='top' panelId='panel18'}}
+        <header>panel Header</header>
+        <section>Here is the info!</section>
+      {{/rsa-content-tethered-panel}}
+      END-SNIPPET --}}
+      {{code-snippet name="panel18.hbs"}}
+    {{/spec-member}}
+
+    {{#spec-member title="Top Left"}}
+      {{#rsa-content-tethered-panel-trigger panel='panel19'}}
+      {{#rsa-form-button}}
+        Hover to Trigger
+      {{/rsa-form-button}}
+
+      {{/rsa-content-tethered-panel-trigger}}
+      {{#rsa-content-tethered-panel position='top-left' panelId='panel19'}}
+        <header>panel Header</header>
+        <section>Here is the info!</section>
+      {{/rsa-content-tethered-panel}}
+      {{!-- BEGIN-SNIPPET panel19
+      {{#rsa-content-tethered-panel-trigger panel='panel19'}}
+      {{#rsa-form-button}}
+        Hover to Trigger
+      {{/rsa-form-button}}
+
+      {{/rsa-content-tethered-panel-trigger}}
+      {{#rsa-content-tethered-panel position='top-left' panelId='panel19'}}
+        <header>panel Header</header>
+        <section>Here is the info!</section>
+      {{/rsa-content-tethered-panel}}
+      END-SNIPPET --}}
+      {{code-snippet name="panel19.hbs"}}
+    {{/spec-member}}
+
+    {{#spec-member title="Top Right"}}
+      {{#rsa-content-tethered-panel-trigger panel='panel20'}}
+      {{#rsa-form-button}}
+        Hover to Trigger
+      {{/rsa-form-button}}
+
+      {{/rsa-content-tethered-panel-trigger}}
+      {{#rsa-content-tethered-panel position='top-right' panelId='panel20'}}
+        <header>panel Header</header>
+        <section>Here is the info!</section>
+      {{/rsa-content-tethered-panel}}
+      {{!-- BEGIN-SNIPPET panel20
+      {{#rsa-content-tethered-panel-trigger panel='panel20'}}
+      {{#rsa-form-button}}
+        Hover to Trigger
+      {{/rsa-form-button}}
+
+      {{/rsa-content-tethered-panel-trigger}}
+      {{#rsa-content-tethered-panel position='top-right' panelId='panel20'}}
+        <header>panel Header</header>
+        <section>Here is the info!</section>
+      {{/rsa-content-tethered-panel}}
+      END-SNIPPET --}}
+      {{code-snippet name="panel20.hbs"}}
+    {{/spec-member}}
+
+    {{#spec-member title="Bottom"}}
+      {{#rsa-content-tethered-panel-trigger panel='panel21'}}
+      {{#rsa-form-button}}
+        Hover to Trigger
+      {{/rsa-form-button}}
+
+      {{/rsa-content-tethered-panel-trigger}}
+      {{#rsa-content-tethered-panel position='bottom' panelId='panel21'}}
+        <header>panel Header</header>
+        <section>Here is the info!</section>
+      {{/rsa-content-tethered-panel}}
+      {{!-- BEGIN-SNIPPET panel21
+      {{#rsa-content-tethered-panel-trigger panel='panel21'}}
+      {{#rsa-form-button}}
+        Hover to Trigger
+      {{/rsa-form-button}}
+
+      {{/rsa-content-tethered-panel-trigger}}
+      {{#rsa-content-tethered-panel position='bottom' panelId='panel21'}}
+        <header>panel Header</header>
+        <section>Here is the info!</section>
+      {{/rsa-content-tethered-panel}}
+      END-SNIPPET --}}
+      {{code-snippet name="panel21.hbs"}}
+    {{/spec-member}}
+
+    {{#spec-member title="Bottom Left"}}
+      {{#rsa-content-tethered-panel-trigger panel='panel22'}}
+      {{#rsa-form-button}}
+        Hover to Trigger
+      {{/rsa-form-button}}
+
+      {{/rsa-content-tethered-panel-trigger}}
+      {{#rsa-content-tethered-panel position='bottom-left' panelId='panel22'}}
+        <header>panel Header</header>
+        <section>Here is the info!</section>
+      {{/rsa-content-tethered-panel}}
+      {{!-- BEGIN-SNIPPET panel22
+      {{#rsa-content-tethered-panel-trigger panel='panel22'}}
+      {{#rsa-form-button}}
+        Hover to Trigger
+      {{/rsa-form-button}}
+
+      {{/rsa-content-tethered-panel-trigger}}
+      {{#rsa-content-tethered-panel position='bottom-left' panelId='panel22'}}
+        <header>panel Header</header>
+        <section>Here is the info!</section>
+      {{/rsa-content-tethered-panel}}
+      END-SNIPPET --}}
+      {{code-snippet name="panel22.hbs"}}
+    {{/spec-member}}
+
+    {{#spec-member title="Bottom Right"}}
+      {{#rsa-content-tethered-panel-trigger panel='panel23'}}
         {{#rsa-form-button}}
           Hover to Trigger
         {{/rsa-form-button}}
-
-        {{/rsa-content-tethered-panel-trigger}}
-        {{#rsa-content-tethered-panel position='top-right' panelId='panel20'}}
-          <header>panel Header</header>
-          <section>Here is the info!</section>
-        {{/rsa-content-tethered-panel}}
-        {{!-- BEGIN-SNIPPET panel20
-        {{#rsa-content-tethered-panel-trigger panel='panel20'}}
+      {{/rsa-content-tethered-panel-trigger}}
+      {{#rsa-content-tethered-panel position='bottom-right' panelId='panel23'}}
+        <header>panel Header</header>
+        <section>Here is the info!</section>
+      {{/rsa-content-tethered-panel}}
+      {{!-- BEGIN-SNIPPET panel23
+      {{#rsa-content-tethered-panel-trigger panel='panel23'}}
         {{#rsa-form-button}}
           Hover to Trigger
         {{/rsa-form-button}}
+      {{/rsa-content-tethered-panel-trigger}}
+      {{#rsa-content-tethered-panel position='bottom-right' panelId='panel23'}}
+        <header>panel Header</header>
+        <section>Here is the info!</section>
+      {{/rsa-content-tethered-panel}}
+      END-SNIPPET --}}
+      {{code-snippet name="panel23.hbs"}}
+    {{/spec-member}}
+  {{/spec-category}}
 
-        {{/rsa-content-tethered-panel-trigger}}
-        {{#rsa-content-tethered-panel position='top-right' panelId='panel20'}}
-          <header>panel Header</header>
-          <section>Here is the info!</section>
-        {{/rsa-content-tethered-panel}}
-        END-SNIPPET --}}
-        {{code-snippet name="panel20.hbs"}}
-      {{/spec-member}}
-
-      {{#spec-member title="Bottom"}}
-        {{#rsa-content-tethered-panel-trigger panel='panel21'}}
+  {{#spec-category id="position-as-popover" title="Position as a Popover"}}
+    {{#spec-member title="Left"}}
+      {{#rsa-content-tethered-panel-trigger panel='panel24'}}
         {{#rsa-form-button}}
           Hover to Trigger
         {{/rsa-form-button}}
-
-        {{/rsa-content-tethered-panel-trigger}}
-        {{#rsa-content-tethered-panel position='bottom' panelId='panel21'}}
-          <header>panel Header</header>
-          <section>Here is the info!</section>
-        {{/rsa-content-tethered-panel}}
-        {{!-- BEGIN-SNIPPET panel21
-        {{#rsa-content-tethered-panel-trigger panel='panel21'}}
+      {{/rsa-content-tethered-panel-trigger}}
+      {{#rsa-content-tethered-panel isPopover=true position='left' panelId='panel24'}}
+        <header>panel Header</header>
+        <section>Here is the info!</section>
+      {{/rsa-content-tethered-panel}}
+      {{!-- BEGIN-SNIPPET panel24
+      {{#rsa-content-tethered-panel-trigger panel='panel24'}}
         {{#rsa-form-button}}
           Hover to Trigger
         {{/rsa-form-button}}
+      {{/rsa-content-tethered-panel-trigger}}
+      {{#rsa-content-tethered-panel isPopover=true position='left' panelId='panel24'}}
+        <header>panel Header</header>
+        <section>Here is the info!</section>
+      {{/rsa-content-tethered-panel}}
+      END-SNIPPET --}}
+      {{code-snippet name="panel24.hbs"}}
+    {{/spec-member}}
 
-        {{/rsa-content-tethered-panel-trigger}}
-        {{#rsa-content-tethered-panel position='bottom' panelId='panel21'}}
-          <header>panel Header</header>
-          <section>Here is the info!</section>
-        {{/rsa-content-tethered-panel}}
-        END-SNIPPET --}}
-        {{code-snippet name="panel21.hbs"}}
-      {{/spec-member}}
+    {{#spec-member title="Left Top"}}
+      {{#rsa-content-tethered-panel-trigger panel='panel25'}}
+      {{#rsa-form-button}}
+        Hover to Trigger
+      {{/rsa-form-button}}
 
-      {{#spec-member title="Bottom Left"}}
-        {{#rsa-content-tethered-panel-trigger panel='panel22'}}
+      {{/rsa-content-tethered-panel-trigger}}
+      {{#rsa-content-tethered-panel isPopover=true position='left-top' panelId='panel25'}}
+        <header>panel Header</header>
+        <section>Here is the info!</section>
+      {{/rsa-content-tethered-panel}}
+      {{!-- BEGIN-SNIPPET panel25
+      {{#rsa-content-tethered-panel-trigger panel='panel25'}}
+      {{#rsa-form-button}}
+        Hover to Trigger
+      {{/rsa-form-button}}
+
+      {{/rsa-content-tethered-panel-trigger}}
+      {{#rsa-content-tethered-panel isPopover=true position='left-top' panelId='panel25'}}
+        <header>panel Header</header>
+        <section>Here is the info!</section>
+      {{/rsa-content-tethered-panel}}
+      END-SNIPPET --}}
+      {{code-snippet name="panel25.hbs"}}
+    {{/spec-member}}
+
+    {{#spec-member title="Left Bottom"}}
+      {{#rsa-content-tethered-panel-trigger panel='panel26'}}
+      {{#rsa-form-button}}
+        Hover to Trigger
+      {{/rsa-form-button}}
+
+      {{/rsa-content-tethered-panel-trigger}}
+      {{#rsa-content-tethered-panel isPopover=true position='left-bottom' panelId='panel26'}}
+        <header>panel Header</header>
+        <section>Here is the info!</section>
+      {{/rsa-content-tethered-panel}}
+      {{!-- BEGIN-SNIPPET panel27
+      {{#rsa-content-tethered-panel-trigger panel='panel26'}}
+      {{#rsa-form-button}}
+        Hover to Trigger
+      {{/rsa-form-button}}
+
+      {{/rsa-content-tethered-panel-trigger}}
+      {{#rsa-content-tethered-panel isPopover=true position='left-bottom' panelId='panel26'}}
+        <header>panel Header</header>
+        <section>Here is the info!</section>
+      {{/rsa-content-tethered-panel}}
+      END-SNIPPET --}}
+      {{code-snippet name="panel27.hbs"}}
+    {{/spec-member}}
+
+    {{#spec-member title="Right"}}
+      {{#rsa-content-tethered-panel-trigger panel='panel27'}}
+      {{#rsa-form-button}}
+        Hover to Trigger
+      {{/rsa-form-button}}
+
+      {{/rsa-content-tethered-panel-trigger}}
+      {{#rsa-content-tethered-panel isPopover=true position='right' panelId='panel27'}}
+        <header>panel Header</header>
+        <section>Here is the info!</section>
+      {{/rsa-content-tethered-panel}}
+      {{!-- BEGIN-SNIPPET panel28
+      {{#rsa-content-tethered-panel-trigger panel='panel27'}}
+      {{#rsa-form-button}}
+        Hover to Trigger
+      {{/rsa-form-button}}
+
+      {{/rsa-content-tethered-panel-trigger}}
+      {{#rsa-content-tethered-panel isPopover=true position='right' panelId='panel27'}}
+        <header>panel Header</header>
+        <section>Here is the info!</section>
+      {{/rsa-content-tethered-panel}}
+      END-SNIPPET --}}
+      {{code-snippet name="panel28.hbs"}}
+    {{/spec-member}}
+
+    {{#spec-member title="Right Top"}}
+      {{#rsa-content-tethered-panel-trigger panel='panel28'}}
+      {{#rsa-form-button}}
+        Hover to Trigger
+      {{/rsa-form-button}}
+
+      {{/rsa-content-tethered-panel-trigger}}
+      {{#rsa-content-tethered-panel isPopover=true position='right-top' panelId='panel28'}}
+        <header>panel Header</header>
+        <section>Here is the info!</section>
+      {{/rsa-content-tethered-panel}}
+      {{!-- BEGIN-SNIPPET panel29
+      {{#rsa-content-tethered-panel-trigger panel='panel28'}}
+      {{#rsa-form-button}}
+        Hover to Trigger
+      {{/rsa-form-button}}
+
+      {{/rsa-content-tethered-panel-trigger}}
+      {{#rsa-content-tethered-panel isPopover=true position='right-top' panelId='panel28'}}
+        <header>panel Header</header>
+        <section>Here is the info!</section>
+      {{/rsa-content-tethered-panel}}
+      END-SNIPPET --}}
+      {{code-snippet name="panel29.hbs"}}
+    {{/spec-member}}
+
+    {{#spec-member title="Right Bottom"}}
+      {{#rsa-content-tethered-panel-trigger panel='panel29'}}
+      {{#rsa-form-button}}
+        Hover to Trigger
+      {{/rsa-form-button}}
+
+      {{/rsa-content-tethered-panel-trigger}}
+      {{#rsa-content-tethered-panel isPopover=true position='right-bottom' panelId='panel29'}}
+        <header>panel Header</header>
+        <section>Here is the info!</section>
+      {{/rsa-content-tethered-panel}}
+      {{!-- BEGIN-SNIPPET panel30
+      {{#rsa-content-tethered-panel-trigger panel='panel29'}}
+      {{#rsa-form-button}}
+        Hover to Trigger
+      {{/rsa-form-button}}
+
+      {{/rsa-content-tethered-panel-trigger}}
+      {{#rsa-content-tethered-panel isPopover=true position='right-bottom' panelId='panel29'}}
+        <header>panel Header</header>
+        <section>Here is the info!</section>
+      {{/rsa-content-tethered-panel}}
+      END-SNIPPET --}}
+      {{code-snippet name="panel30.hbs"}}
+    {{/spec-member}}
+
+    {{#spec-member title="Top"}}
+      {{#rsa-content-tethered-panel-trigger panel='panel30'}}
+      {{#rsa-form-button}}
+        Hover to Trigger
+      {{/rsa-form-button}}
+
+      {{/rsa-content-tethered-panel-trigger}}
+      {{#rsa-content-tethered-panel isPopover=true position='top' panelId='panel30'}}
+        <header>panel Header</header>
+        <section>Here is the info!</section>
+      {{/rsa-content-tethered-panel}}
+      {{!-- BEGIN-SNIPPET panel31
+      {{#rsa-content-tethered-panel-trigger panel='panel30'}}
+      {{#rsa-form-button}}
+        Hover to Trigger
+      {{/rsa-form-button}}
+
+      {{/rsa-content-tethered-panel-trigger}}
+      {{#rsa-content-tethered-panel isPopover=true position='top' panelId='panel30'}}
+        <header>panel Header</header>
+        <section>Here is the info!</section>
+      {{/rsa-content-tethered-panel}}
+      END-SNIPPET --}}
+      {{code-snippet name="panel31.hbs"}}
+    {{/spec-member}}
+
+    {{#spec-member title="Top Left"}}
+      {{#rsa-content-tethered-panel-trigger panel='panel31'}}
+      {{#rsa-form-button}}
+        Hover to Trigger
+      {{/rsa-form-button}}
+
+      {{/rsa-content-tethered-panel-trigger}}
+      {{#rsa-content-tethered-panel isPopover=true position='top-left' panelId='panel31'}}
+        <header>panel Header</header>
+        <section>Here is the info!</section>
+      {{/rsa-content-tethered-panel}}
+      {{!-- BEGIN-SNIPPET panel32
+      {{#rsa-content-tethered-panel-trigger panel='panel31'}}
+      {{#rsa-form-button}}
+        Hover to Trigger
+      {{/rsa-form-button}}
+
+      {{/rsa-content-tethered-panel-trigger}}
+      {{#rsa-content-tethered-panel isPopover=true position='top-left' panelId='panel31'}}
+        <header>panel Header</header>
+        <section>Here is the info!</section>
+      {{/rsa-content-tethered-panel}}
+      END-SNIPPET --}}
+      {{code-snippet name="panel32.hbs"}}
+    {{/spec-member}}
+
+    {{#spec-member title="Top Right"}}
+      {{#rsa-content-tethered-panel-trigger panel='panel32'}}
+      {{#rsa-form-button}}
+        Hover to Trigger
+      {{/rsa-form-button}}
+
+      {{/rsa-content-tethered-panel-trigger}}
+      {{#rsa-content-tethered-panel isPopover=true position='top-right' panelId='panel32'}}
+        <header>panel Header</header>
+        <section>Here is the info!</section>
+      {{/rsa-content-tethered-panel}}
+      {{!-- BEGIN-SNIPPET panel33
+      {{#rsa-content-tethered-panel-trigger panel='panel32'}}
+      {{#rsa-form-button}}
+        Hover to Trigger
+      {{/rsa-form-button}}
+
+      {{/rsa-content-tethered-panel-trigger}}
+      {{#rsa-content-tethered-panel isPopover=true position='top-right' panelId='panel32'}}
+        <header>panel Header</header>
+        <section>Here is the info!</section>
+      {{/rsa-content-tethered-panel}}
+      END-SNIPPET --}}
+      {{code-snippet name="panel33.hbs"}}
+    {{/spec-member}}
+
+    {{#spec-member title="Bottom"}}
+      {{#rsa-content-tethered-panel-trigger panel='panel33'}}
+      {{#rsa-form-button}}
+        Hover to Trigger
+      {{/rsa-form-button}}
+
+      {{/rsa-content-tethered-panel-trigger}}
+      {{#rsa-content-tethered-panel isPopover=true position='bottom' panelId='panel33'}}
+        <header>panel Header</header>
+        <section>Here is the info!</section>
+      {{/rsa-content-tethered-panel}}
+      {{!-- BEGIN-SNIPPET panel34
+      {{#rsa-content-tethered-panel-trigger panel='panel33'}}
+      {{#rsa-form-button}}
+        Hover to Trigger
+      {{/rsa-form-button}}
+
+      {{/rsa-content-tethered-panel-trigger}}
+      {{#rsa-content-tethered-panel isPopover=true position='bottom' panelId='panel33'}}
+        <header>panel Header</header>
+        <section>Here is the info!</section>
+      {{/rsa-content-tethered-panel}}
+      END-SNIPPET --}}
+      {{code-snippet name="panel34.hbs"}}
+    {{/spec-member}}
+
+    {{#spec-member title="Bottom Left"}}
+      {{#rsa-content-tethered-panel-trigger panel='panel34'}}
+      {{#rsa-form-button}}
+        Hover to Trigger
+      {{/rsa-form-button}}
+
+      {{/rsa-content-tethered-panel-trigger}}
+      {{#rsa-content-tethered-panel isPopover=true position='bottom-left' panelId='panel34'}}
+        <header>panel Header</header>
+        <section>Here is the info!</section>
+      {{/rsa-content-tethered-panel}}
+      {{!-- BEGIN-SNIPPET panel35
+      {{#rsa-content-tethered-panel-trigger panel='panel34'}}
+      {{#rsa-form-button}}
+        Hover to Trigger
+      {{/rsa-form-button}}
+
+      {{/rsa-content-tethered-panel-trigger}}
+      {{#rsa-content-tethered-panel isPopover=true position='bottom-left' panelId='panel34'}}
+        <header>panel Header</header>
+        <section>Here is the info!</section>
+      {{/rsa-content-tethered-panel}}
+      END-SNIPPET --}}
+      {{code-snippet name="panel35.hbs"}}
+    {{/spec-member}}
+
+    {{#spec-member title="Bottom Right"}}
+      {{#rsa-content-tethered-panel-trigger panel='panel35'}}
         {{#rsa-form-button}}
           Hover to Trigger
         {{/rsa-form-button}}
-
-        {{/rsa-content-tethered-panel-trigger}}
-        {{#rsa-content-tethered-panel position='bottom-left' panelId='panel22'}}
-          <header>panel Header</header>
-          <section>Here is the info!</section>
-        {{/rsa-content-tethered-panel}}
-        {{!-- BEGIN-SNIPPET panel22
-        {{#rsa-content-tethered-panel-trigger panel='panel22'}}
+      {{/rsa-content-tethered-panel-trigger}}
+      {{#rsa-content-tethered-panel isPopover=true position='bottom-right' panelId='panel35'}}
+        <header>panel Header</header>
+        <section>Here is the info!</section>
+      {{/rsa-content-tethered-panel}}
+      {{!-- BEGIN-SNIPPET panel36
+      {{#rsa-content-tethered-panel-trigger panel='panel35'}}
         {{#rsa-form-button}}
           Hover to Trigger
         {{/rsa-form-button}}
-
-        {{/rsa-content-tethered-panel-trigger}}
-        {{#rsa-content-tethered-panel position='bottom-left' panelId='panel22'}}
-          <header>panel Header</header>
-          <section>Here is the info!</section>
-        {{/rsa-content-tethered-panel}}
-        END-SNIPPET --}}
-        {{code-snippet name="panel22.hbs"}}
-      {{/spec-member}}
-
-      {{#spec-member title="Bottom Right"}}
-        {{#rsa-content-tethered-panel-trigger panel='panel23'}}
-          {{#rsa-form-button}}
-            Hover to Trigger
-          {{/rsa-form-button}}
-        {{/rsa-content-tethered-panel-trigger}}
-        {{#rsa-content-tethered-panel position='bottom-right' panelId='panel23'}}
-          <header>panel Header</header>
-          <section>Here is the info!</section>
-        {{/rsa-content-tethered-panel}}
-        {{!-- BEGIN-SNIPPET panel23
-        {{#rsa-content-tethered-panel-trigger panel='panel23'}}
-          {{#rsa-form-button}}
-            Hover to Trigger
-          {{/rsa-form-button}}
-        {{/rsa-content-tethered-panel-trigger}}
-        {{#rsa-content-tethered-panel position='bottom-right' panelId='panel23'}}
-          <header>panel Header</header>
-          <section>Here is the info!</section>
-        {{/rsa-content-tethered-panel}}
-        END-SNIPPET --}}
-        {{code-snippet name="panel23.hbs"}}
-      {{/spec-member}}
-    {{/spec-category}}
-
-    {{#spec-category id="position-as-popover" title="Position as a Popover"}}
-      {{#spec-member title="Left"}}
-        {{#rsa-content-tethered-panel-trigger panel='panel24'}}
-          {{#rsa-form-button}}
-            Hover to Trigger
-          {{/rsa-form-button}}
-        {{/rsa-content-tethered-panel-trigger}}
-        {{#rsa-content-tethered-panel isPopover=true position='left' panelId='panel24'}}
-          <header>panel Header</header>
-          <section>Here is the info!</section>
-        {{/rsa-content-tethered-panel}}
-        {{!-- BEGIN-SNIPPET panel24
-        {{#rsa-content-tethered-panel-trigger panel='panel24'}}
-          {{#rsa-form-button}}
-            Hover to Trigger
-          {{/rsa-form-button}}
-        {{/rsa-content-tethered-panel-trigger}}
-        {{#rsa-content-tethered-panel isPopover=true position='left' panelId='panel24'}}
-          <header>panel Header</header>
-          <section>Here is the info!</section>
-        {{/rsa-content-tethered-panel}}
-        END-SNIPPET --}}
-        {{code-snippet name="panel24.hbs"}}
-      {{/spec-member}}
-
-      {{#spec-member title="Left Top"}}
-        {{#rsa-content-tethered-panel-trigger panel='panel25'}}
-        {{#rsa-form-button}}
-          Hover to Trigger
-        {{/rsa-form-button}}
-
-        {{/rsa-content-tethered-panel-trigger}}
-        {{#rsa-content-tethered-panel isPopover=true position='left-top' panelId='panel25'}}
-          <header>panel Header</header>
-          <section>Here is the info!</section>
-        {{/rsa-content-tethered-panel}}
-        {{!-- BEGIN-SNIPPET panel25
-        {{#rsa-content-tethered-panel-trigger panel='panel25'}}
-        {{#rsa-form-button}}
-          Hover to Trigger
-        {{/rsa-form-button}}
-
-        {{/rsa-content-tethered-panel-trigger}}
-        {{#rsa-content-tethered-panel isPopover=true position='left-top' panelId='panel25'}}
-          <header>panel Header</header>
-          <section>Here is the info!</section>
-        {{/rsa-content-tethered-panel}}
-        END-SNIPPET --}}
-        {{code-snippet name="panel25.hbs"}}
-      {{/spec-member}}
-
-      {{#spec-member title="Left Bottom"}}
-        {{#rsa-content-tethered-panel-trigger panel='panel26'}}
-        {{#rsa-form-button}}
-          Hover to Trigger
-        {{/rsa-form-button}}
-
-        {{/rsa-content-tethered-panel-trigger}}
-        {{#rsa-content-tethered-panel isPopover=true position='left-bottom' panelId='panel26'}}
-          <header>panel Header</header>
-          <section>Here is the info!</section>
-        {{/rsa-content-tethered-panel}}
-        {{!-- BEGIN-SNIPPET panel27
-        {{#rsa-content-tethered-panel-trigger panel='panel26'}}
-        {{#rsa-form-button}}
-          Hover to Trigger
-        {{/rsa-form-button}}
-
-        {{/rsa-content-tethered-panel-trigger}}
-        {{#rsa-content-tethered-panel isPopover=true position='left-bottom' panelId='panel26'}}
-          <header>panel Header</header>
-          <section>Here is the info!</section>
-        {{/rsa-content-tethered-panel}}
-        END-SNIPPET --}}
-        {{code-snippet name="panel27.hbs"}}
-      {{/spec-member}}
-
-      {{#spec-member title="Right"}}
-        {{#rsa-content-tethered-panel-trigger panel='panel27'}}
-        {{#rsa-form-button}}
-          Hover to Trigger
-        {{/rsa-form-button}}
-
-        {{/rsa-content-tethered-panel-trigger}}
-        {{#rsa-content-tethered-panel isPopover=true position='right' panelId='panel27'}}
-          <header>panel Header</header>
-          <section>Here is the info!</section>
-        {{/rsa-content-tethered-panel}}
-        {{!-- BEGIN-SNIPPET panel28
-        {{#rsa-content-tethered-panel-trigger panel='panel27'}}
-        {{#rsa-form-button}}
-          Hover to Trigger
-        {{/rsa-form-button}}
-
-        {{/rsa-content-tethered-panel-trigger}}
-        {{#rsa-content-tethered-panel isPopover=true position='right' panelId='panel27'}}
-          <header>panel Header</header>
-          <section>Here is the info!</section>
-        {{/rsa-content-tethered-panel}}
-        END-SNIPPET --}}
-        {{code-snippet name="panel28.hbs"}}
-      {{/spec-member}}
-
-      {{#spec-member title="Right Top"}}
-        {{#rsa-content-tethered-panel-trigger panel='panel28'}}
-        {{#rsa-form-button}}
-          Hover to Trigger
-        {{/rsa-form-button}}
-
-        {{/rsa-content-tethered-panel-trigger}}
-        {{#rsa-content-tethered-panel isPopover=true position='right-top' panelId='panel28'}}
-          <header>panel Header</header>
-          <section>Here is the info!</section>
-        {{/rsa-content-tethered-panel}}
-        {{!-- BEGIN-SNIPPET panel29
-        {{#rsa-content-tethered-panel-trigger panel='panel28'}}
-        {{#rsa-form-button}}
-          Hover to Trigger
-        {{/rsa-form-button}}
-
-        {{/rsa-content-tethered-panel-trigger}}
-        {{#rsa-content-tethered-panel isPopover=true position='right-top' panelId='panel28'}}
-          <header>panel Header</header>
-          <section>Here is the info!</section>
-        {{/rsa-content-tethered-panel}}
-        END-SNIPPET --}}
-        {{code-snippet name="panel29.hbs"}}
-      {{/spec-member}}
-
-      {{#spec-member title="Right Bottom"}}
-        {{#rsa-content-tethered-panel-trigger panel='panel29'}}
-        {{#rsa-form-button}}
-          Hover to Trigger
-        {{/rsa-form-button}}
-
-        {{/rsa-content-tethered-panel-trigger}}
-        {{#rsa-content-tethered-panel isPopover=true position='right-bottom' panelId='panel29'}}
-          <header>panel Header</header>
-          <section>Here is the info!</section>
-        {{/rsa-content-tethered-panel}}
-        {{!-- BEGIN-SNIPPET panel30
-        {{#rsa-content-tethered-panel-trigger panel='panel29'}}
-        {{#rsa-form-button}}
-          Hover to Trigger
-        {{/rsa-form-button}}
-
-        {{/rsa-content-tethered-panel-trigger}}
-        {{#rsa-content-tethered-panel isPopover=true position='right-bottom' panelId='panel29'}}
-          <header>panel Header</header>
-          <section>Here is the info!</section>
-        {{/rsa-content-tethered-panel}}
-        END-SNIPPET --}}
-        {{code-snippet name="panel30.hbs"}}
-      {{/spec-member}}
-
-      {{#spec-member title="Top"}}
-        {{#rsa-content-tethered-panel-trigger panel='panel30'}}
-        {{#rsa-form-button}}
-          Hover to Trigger
-        {{/rsa-form-button}}
-
-        {{/rsa-content-tethered-panel-trigger}}
-        {{#rsa-content-tethered-panel isPopover=true position='top' panelId='panel30'}}
-          <header>panel Header</header>
-          <section>Here is the info!</section>
-        {{/rsa-content-tethered-panel}}
-        {{!-- BEGIN-SNIPPET panel31
-        {{#rsa-content-tethered-panel-trigger panel='panel30'}}
-        {{#rsa-form-button}}
-          Hover to Trigger
-        {{/rsa-form-button}}
-
-        {{/rsa-content-tethered-panel-trigger}}
-        {{#rsa-content-tethered-panel isPopover=true position='top' panelId='panel30'}}
-          <header>panel Header</header>
-          <section>Here is the info!</section>
-        {{/rsa-content-tethered-panel}}
-        END-SNIPPET --}}
-        {{code-snippet name="panel31.hbs"}}
-      {{/spec-member}}
-
-      {{#spec-member title="Top Left"}}
-        {{#rsa-content-tethered-panel-trigger panel='panel31'}}
-        {{#rsa-form-button}}
-          Hover to Trigger
-        {{/rsa-form-button}}
-
-        {{/rsa-content-tethered-panel-trigger}}
-        {{#rsa-content-tethered-panel isPopover=true position='top-left' panelId='panel31'}}
-          <header>panel Header</header>
-          <section>Here is the info!</section>
-        {{/rsa-content-tethered-panel}}
-        {{!-- BEGIN-SNIPPET panel32
-        {{#rsa-content-tethered-panel-trigger panel='panel31'}}
-        {{#rsa-form-button}}
-          Hover to Trigger
-        {{/rsa-form-button}}
-
-        {{/rsa-content-tethered-panel-trigger}}
-        {{#rsa-content-tethered-panel isPopover=true position='top-left' panelId='panel31'}}
-          <header>panel Header</header>
-          <section>Here is the info!</section>
-        {{/rsa-content-tethered-panel}}
-        END-SNIPPET --}}
-        {{code-snippet name="panel32.hbs"}}
-      {{/spec-member}}
-
-      {{#spec-member title="Top Right"}}
-        {{#rsa-content-tethered-panel-trigger panel='panel32'}}
-        {{#rsa-form-button}}
-          Hover to Trigger
-        {{/rsa-form-button}}
-
-        {{/rsa-content-tethered-panel-trigger}}
-        {{#rsa-content-tethered-panel isPopover=true position='top-right' panelId='panel32'}}
-          <header>panel Header</header>
-          <section>Here is the info!</section>
-        {{/rsa-content-tethered-panel}}
-        {{!-- BEGIN-SNIPPET panel33
-        {{#rsa-content-tethered-panel-trigger panel='panel32'}}
-        {{#rsa-form-button}}
-          Hover to Trigger
-        {{/rsa-form-button}}
-
-        {{/rsa-content-tethered-panel-trigger}}
-        {{#rsa-content-tethered-panel isPopover=true position='top-right' panelId='panel32'}}
-          <header>panel Header</header>
-          <section>Here is the info!</section>
-        {{/rsa-content-tethered-panel}}
-        END-SNIPPET --}}
-        {{code-snippet name="panel33.hbs"}}
-      {{/spec-member}}
-
-      {{#spec-member title="Bottom"}}
-        {{#rsa-content-tethered-panel-trigger panel='panel33'}}
-        {{#rsa-form-button}}
-          Hover to Trigger
-        {{/rsa-form-button}}
-
-        {{/rsa-content-tethered-panel-trigger}}
-        {{#rsa-content-tethered-panel isPopover=true position='bottom' panelId='panel33'}}
-          <header>panel Header</header>
-          <section>Here is the info!</section>
-        {{/rsa-content-tethered-panel}}
-        {{!-- BEGIN-SNIPPET panel34
-        {{#rsa-content-tethered-panel-trigger panel='panel33'}}
-        {{#rsa-form-button}}
-          Hover to Trigger
-        {{/rsa-form-button}}
-
-        {{/rsa-content-tethered-panel-trigger}}
-        {{#rsa-content-tethered-panel isPopover=true position='bottom' panelId='panel33'}}
-          <header>panel Header</header>
-          <section>Here is the info!</section>
-        {{/rsa-content-tethered-panel}}
-        END-SNIPPET --}}
-        {{code-snippet name="panel34.hbs"}}
-      {{/spec-member}}
-
-      {{#spec-member title="Bottom Left"}}
-        {{#rsa-content-tethered-panel-trigger panel='panel34'}}
-        {{#rsa-form-button}}
-          Hover to Trigger
-        {{/rsa-form-button}}
-
-        {{/rsa-content-tethered-panel-trigger}}
-        {{#rsa-content-tethered-panel isPopover=true position='bottom-left' panelId='panel34'}}
-          <header>panel Header</header>
-          <section>Here is the info!</section>
-        {{/rsa-content-tethered-panel}}
-        {{!-- BEGIN-SNIPPET panel35
-        {{#rsa-content-tethered-panel-trigger panel='panel34'}}
-        {{#rsa-form-button}}
-          Hover to Trigger
-        {{/rsa-form-button}}
-
-        {{/rsa-content-tethered-panel-trigger}}
-        {{#rsa-content-tethered-panel isPopover=true position='bottom-left' panelId='panel34'}}
-          <header>panel Header</header>
-          <section>Here is the info!</section>
-        {{/rsa-content-tethered-panel}}
-        END-SNIPPET --}}
-        {{code-snippet name="panel35.hbs"}}
-      {{/spec-member}}
-
-      {{#spec-member title="Bottom Right"}}
-        {{#rsa-content-tethered-panel-trigger panel='panel35'}}
-          {{#rsa-form-button}}
-            Hover to Trigger
-          {{/rsa-form-button}}
-        {{/rsa-content-tethered-panel-trigger}}
-        {{#rsa-content-tethered-panel isPopover=true position='bottom-right' panelId='panel35'}}
-          <header>panel Header</header>
-          <section>Here is the info!</section>
-        {{/rsa-content-tethered-panel}}
-        {{!-- BEGIN-SNIPPET panel36
-        {{#rsa-content-tethered-panel-trigger panel='panel35'}}
-          {{#rsa-form-button}}
-            Hover to Trigger
-          {{/rsa-form-button}}
-        {{/rsa-content-tethered-panel-trigger}}
-        {{#rsa-content-tethered-panel isPopover=true position='bottom-right' panelId='panel35'}}
-          <header>panel Header</header>
-          <section>Here is the info!</section>
-        {{/rsa-content-tethered-panel}}
-        END-SNIPPET --}}
-        {{code-snippet name="panel36.hbs"}}
-      {{/spec-member}}
-    {{/spec-category}}
-  </div>
-</hbox>
+      {{/rsa-content-tethered-panel-trigger}}
+      {{#rsa-content-tethered-panel isPopover=true position='bottom-right' panelId='panel35'}}
+        <header>panel Header</header>
+        <section>Here is the info!</section>
+      {{/rsa-content-tethered-panel}}
+      END-SNIPPET --}}
+      {{code-snippet name="panel36.hbs"}}
+    {{/spec-member}}
+  {{/spec-category}}
+</vbox>

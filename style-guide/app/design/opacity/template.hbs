@@ -2,93 +2,91 @@
   {{spec-masthead model=model}}
 </hbox>
 
-<hbox>
-  <div class="scroll-box">
-    {{#spec-category}}
-      {{#spec-member title="Opaque"}}
-        <div class='sg-demo-opacity logo'>
-          {{rsa-logo}}
-        </div>
+<vbox class="scroll-box">
+  {{#spec-category}}
+    {{#spec-member title="Opaque"}}
+      <div class='sg-demo-opacity logo'>
+        {{rsa-logo}}
+      </div>
 
-        <div class='sg-demo-opacity overlay opaque'>
-        </div>
-        {{!-- BEGIN-SNIPPET opacity1
-        opacity: $rsa-opaque;
-        END-SNIPPET --}}
-        {{code-snippet name="opacity1.hbs"}}
-        {{!-- BEGIN-SNIPPET opacity2
-        $rsa-opaque: 1
-        END-SNIPPET --}}
-        {{code-snippet name="opacity2.hbs"}}
-      {{/spec-member}}
+      <div class='sg-demo-opacity overlay opaque'>
+      </div>
+      {{!-- BEGIN-SNIPPET opacity1
+      opacity: $rsa-opaque;
+      END-SNIPPET --}}
+      {{code-snippet name="opacity1.hbs"}}
+      {{!-- BEGIN-SNIPPET opacity2
+      $rsa-opaque: 1
+      END-SNIPPET --}}
+      {{code-snippet name="opacity2.hbs"}}
+    {{/spec-member}}
 
-      {{#spec-member title="Nearly Opaque"}}
-        <div class='sg-demo-opacity logo'>
-          {{rsa-logo}}
-        </div>
+    {{#spec-member title="Nearly Opaque"}}
+      <div class='sg-demo-opacity logo'>
+        {{rsa-logo}}
+      </div>
 
-        <div class='sg-demo-opacity overlay nearly-opaque'>
-        </div>
-        {{!-- BEGIN-SNIPPET opacity3
-        opacity: $rsa-nearly-opaque;
-        END-SNIPPET --}}
-        {{code-snippet name="opacity3.hbs"}}
-        {{!-- BEGIN-SNIPPET opacity4
-        $rsa-opaque: .8
-        END-SNIPPET --}}
-        {{code-snippet name="opacity4.hbs"}}
-      {{/spec-member}}
+      <div class='sg-demo-opacity overlay nearly-opaque'>
+      </div>
+      {{!-- BEGIN-SNIPPET opacity3
+      opacity: $rsa-nearly-opaque;
+      END-SNIPPET --}}
+      {{code-snippet name="opacity3.hbs"}}
+      {{!-- BEGIN-SNIPPET opacity4
+      $rsa-opaque: .8
+      END-SNIPPET --}}
+      {{code-snippet name="opacity4.hbs"}}
+    {{/spec-member}}
 
-      {{#spec-member title="Translucent"}}
-        <div class='sg-demo-opacity logo'>
-          {{rsa-logo}}
-        </div>
+    {{#spec-member title="Translucent"}}
+      <div class='sg-demo-opacity logo'>
+        {{rsa-logo}}
+      </div>
 
-        <div class='sg-demo-opacity overlay translucent'>
-        </div>
-        {{!-- BEGIN-SNIPPET opacity5
-        opacity: $rsa-translucent;
-        END-SNIPPET --}}
-        {{code-snippet name="opacity5.hbs"}}
-        {{!-- BEGIN-SNIPPET opacity6
-        $rsa-opaque: .4
-        END-SNIPPET --}}
-        {{code-snippet name="opacity6.hbs"}}
-      {{/spec-member}}
+      <div class='sg-demo-opacity overlay translucent'>
+      </div>
+      {{!-- BEGIN-SNIPPET opacity5
+      opacity: $rsa-translucent;
+      END-SNIPPET --}}
+      {{code-snippet name="opacity5.hbs"}}
+      {{!-- BEGIN-SNIPPET opacity6
+      $rsa-opaque: .4
+      END-SNIPPET --}}
+      {{code-snippet name="opacity6.hbs"}}
+    {{/spec-member}}
 
-      {{#spec-member title="Nearly Transparent"}}
-        <div class='sg-demo-opacity logo'>
-          {{rsa-logo}}
-        </div>
+    {{#spec-member title="Nearly Transparent"}}
+      <div class='sg-demo-opacity logo'>
+        {{rsa-logo}}
+      </div>
 
-        <div class='sg-demo-opacity overlay nearly-transparent'>
-        </div>
-        {{!-- BEGIN-SNIPPET opacity7
-        opacity: $rsa-nearly-transparent;
-        END-SNIPPET --}}
-        {{code-snippet name="opacity7.hbs"}}
-        {{!-- BEGIN-SNIPPET opacity8
-        $rsa-opaque: .2
-        END-SNIPPET --}}
-        {{code-snippet name="opacity8.hbs"}}
-      {{/spec-member}}
+      <div class='sg-demo-opacity overlay nearly-transparent'>
+      </div>
+      {{!-- BEGIN-SNIPPET opacity7
+      opacity: $rsa-nearly-transparent;
+      END-SNIPPET --}}
+      {{code-snippet name="opacity7.hbs"}}
+      {{!-- BEGIN-SNIPPET opacity8
+      $rsa-opaque: .2
+      END-SNIPPET --}}
+      {{code-snippet name="opacity8.hbs"}}
+    {{/spec-member}}
 
-      {{#spec-member title="Transparent"}}
-        <div class='sg-demo-opacity logo'>
-          {{rsa-logo}}
-        </div>
+    {{#spec-member title="Transparent"}}
+      <div class='sg-demo-opacity logo'>
+        {{rsa-logo}}
+      </div>
 
-        <div class='sg-demo-opacity overlay transparent'>
-        </div>
-        {{!-- BEGIN-SNIPPET opacity9
-        opacity: $rsa-transparent;
-        END-SNIPPET --}}
-        {{code-snippet name="opacity9.hbs"}}
-        {{!-- BEGIN-SNIPPET opacity10
-        $rsa-opaque: 0
-        END-SNIPPET --}}
-        {{code-snippet name="opacity10.hbs"}}
-      {{/spec-member}}
-    {{/spec-category}}
-  </div>
-</hbox>
+      <div class='sg-demo-opacity overlay transparent'>
+      </div>
+      {{!-- BEGIN-SNIPPET opacity9
+      opacity: $rsa-transparent;
+      END-SNIPPET --}}
+      {{code-snippet name="opacity9.hbs"}}
+      {{!-- BEGIN-SNIPPET opacity10
+      $rsa-opaque: 0
+      END-SNIPPET --}}
+      {{code-snippet name="opacity10.hbs"}}
+    {{/spec-member}}
+  {{/spec-category}}
+</vbox>

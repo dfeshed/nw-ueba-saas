@@ -3,7 +3,15 @@
     {{#flash-message tagName="li" flash=flash as |component flash|}}
       <hbox align="stretch">
         <centered xs="2">
-          {{rsa-icon name=flash.iconName style=flash.iconStyle size=flash.iconSize}}
+          {{#if (eq flash.type 'success')}}
+            {{rsa-icon name='check-circle-2' style=flash.iconStyle size=flash.iconSize}}
+          {{else if (eq flash.type 'warning')}}
+            {{rsa-icon name='report-problem-circle' style=flash.iconStyle size=flash.iconSize}}
+          {{else if (eq flash.type 'error')}}
+            {{rsa-icon name='delete-1' style='filled' size=flash.iconSize}}
+          {{else}}
+            {{rsa-icon name='information-circle' style=flash.iconStyle size=flash.iconSize}}
+          {{/if}}
         </centered>
         <vbox xs="9" justify="center" class="message">
           {{flash.message}}
@@ -19,17 +27,13 @@
 {{rsa-application-header displayPreferences=false}}
 
 {{#rsa-application-content}}
-  <hbox>
-    <vbox xs="3" class="style-guide-nav">
-      <div class="scroll-box">
-        {{app-nav}}
-      </div>
-    </vbox>
+  <vbox xs="3" class="style-guide-nav scroll-box">
+    {{app-nav}}
+  </vbox>
 
-    <vbox xs="9" class="style-guide-content">
-      {{outlet}}
-    </vbox>
-  </hbox>
+  <vbox xs="9" class="style-guide-content">
+    {{outlet}}
+  </vbox>
 {{/rsa-application-content}}
 
 <div id="modalDestination"></div>

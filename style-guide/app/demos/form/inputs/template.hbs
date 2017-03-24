@@ -2,100 +2,98 @@
   {{spec-masthead model=model}}
 </hbox>
 
-<hbox>
-  <div class="scroll-box">
-    {{#spec-category title="Block Style"}}
-      {{#spec-member title="Default"}}
-        {{rsa-form-input label='Input Label' placeholder='Input Placeholder'}}
-        {{!-- BEGIN-SNIPPET input1 
-        {{rsa-form-input label='Input Label' placeholder='Input Placeholder'}}
-        END-SNIPPET --}}
-        {{code-snippet name="input1.hbs"}}
+<vbox class="scroll-box">
+  {{#spec-category title="Block Style"}}
+    {{#spec-member title="Default"}}
+      {{rsa-form-input label='Input Label' placeholder='Input Placeholder'}}
+      {{!-- BEGIN-SNIPPET input1 
+      {{rsa-form-input label='Input Label' placeholder='Input Placeholder'}}
+      END-SNIPPET --}}
+      {{code-snippet name="input1.hbs"}}
 
-      {{/spec-member}}
+    {{/spec-member}}
 
-      {{#spec-member title="Read Only"}}
-        {{rsa-form-input value='Form input value' label='Input Label' isReadOnly=true}}
-        {{!-- BEGIN-SNIPPET input2
-        {{rsa-form-input value='Form input value' label='Input Label' isReadOnly=true}}
-        END-SNIPPET --}}
-        {{code-snippet name="input2.hbs"}}
+    {{#spec-member title="Read Only"}}
+      {{rsa-form-input value='Form input value' label='Input Label' isReadOnly=true}}
+      {{!-- BEGIN-SNIPPET input2
+      {{rsa-form-input value='Form input value' label='Input Label' isReadOnly=true}}
+      END-SNIPPET --}}
+      {{code-snippet name="input2.hbs"}}
 
-      {{/spec-member}}
+    {{/spec-member}}
 
-      {{#spec-member title="Disabled"}}
-        {{rsa-form-input label='Input Label' isDisabled=true}}
-        {{!-- BEGIN-SNIPPET input3
-        {{rsa-form-input label='Input Label' isDisabled=true}}
-        END-SNIPPET --}}
-        {{code-snippet name="input3.hbs"}}
+    {{#spec-member title="Disabled"}}
+      {{rsa-form-input label='Input Label' isDisabled=true}}
+      {{!-- BEGIN-SNIPPET input3
+      {{rsa-form-input label='Input Label' isDisabled=true}}
+      END-SNIPPET --}}
+      {{code-snippet name="input3.hbs"}}
 
-      {{/spec-member}}
+    {{/spec-member}}
 
-      {{#spec-member title="Success"}}
-        {{rsa-form-input label='Input Label' isSuccess=true}}
-        {{!-- BEGIN-SNIPPET input4
-        {{rsa-form-input label='Input Label' isSuccess=true}}
-        END-SNIPPET --}}
-        {{code-snippet name="input4.hbs"}}
+    {{#spec-member title="Success"}}
+      {{rsa-form-input label='Input Label' isSuccess=true}}
+      {{!-- BEGIN-SNIPPET input4
+      {{rsa-form-input label='Input Label' isSuccess=true}}
+      END-SNIPPET --}}
+      {{code-snippet name="input4.hbs"}}
 
-      {{/spec-member}}
+    {{/spec-member}}
 
-      {{#spec-member title="Error"}}
-        {{rsa-form-input value='Form input value' label='Input Label' isError=true errorMessage='Example error message on the input'}}
-        {{!-- BEGIN-SNIPPET input5
-        {{rsa-form-input value='Form input value' label='Input Label' isError=true errorMessage='Example error message on the input'}}
-        END-SNIPPET --}}
-        {{code-snippet name="input5.hbs"}}
+    {{#spec-member title="Error"}}
+      {{rsa-form-input value='Form input value' label='Input Label' isError=true errorMessage='Example error message on the input'}}
+      {{!-- BEGIN-SNIPPET input5
+      {{rsa-form-input value='Form input value' label='Input Label' isError=true errorMessage='Example error message on the input'}}
+      END-SNIPPET --}}
+      {{code-snippet name="input5.hbs"}}
 
-      {{/spec-member}}
-    {{/spec-category}}
+    {{/spec-member}}
+  {{/spec-category}}
 
-    {{#spec-category title="Inline Style"}}
-      {{#spec-member title="Default"}}
-        {{rsa-form-input label='Input Label' isInline=true}}
-        {{!-- BEGIN-SNIPPET input6
-        {{rsa-form-input label='Input Label' isInline=true}}
-        END-SNIPPET --}}
-        {{code-snippet name="input6.hbs"}}
+  {{#spec-category title="Inline Style"}}
+    {{#spec-member title="Default"}}
+      {{rsa-form-input label='Input Label' isInline=true}}
+      {{!-- BEGIN-SNIPPET input6
+      {{rsa-form-input label='Input Label' isInline=true}}
+      END-SNIPPET --}}
+      {{code-snippet name="input6.hbs"}}
 
-      {{/spec-member}}
+    {{/spec-member}}
 
-      {{#spec-member title="Read Only"}}
-        {{rsa-form-input value='Form input value' label='Input Label' isInline=true isReadOnly=true}}
-        {{!-- BEGIN-SNIPPET input7
-        {{rsa-form-input value='Form input value' label='Input Label' isInline=true isReadOnly=true}}
-        END-SNIPPET --}}
-        {{code-snippet name="input7.hbs"}}
+    {{#spec-member title="Read Only"}}
+      {{rsa-form-input value='Form input value' label='Input Label' isInline=true isReadOnly=true}}
+      {{!-- BEGIN-SNIPPET input7
+      {{rsa-form-input value='Form input value' label='Input Label' isInline=true isReadOnly=true}}
+      END-SNIPPET --}}
+      {{code-snippet name="input7.hbs"}}
 
-      {{/spec-member}}
+    {{/spec-member}}
 
-      {{#spec-member title="Disabled"}}
-        {{rsa-form-input label='Input Label' isInline=true isDisabled=true}}
-        {{!-- BEGIN-SNIPPET input8
-        {{rsa-form-input label='Input Label' isInline=true isDisabled=true}}
-        END-SNIPPET --}}
-        {{code-snippet name="input8.hbs"}}
+    {{#spec-member title="Disabled"}}
+      {{rsa-form-input label='Input Label' isInline=true isDisabled=true}}
+      {{!-- BEGIN-SNIPPET input8
+      {{rsa-form-input label='Input Label' isInline=true isDisabled=true}}
+      END-SNIPPET --}}
+      {{code-snippet name="input8.hbs"}}
 
-      {{/spec-member}}
+    {{/spec-member}}
 
-      {{#spec-member title="Success"}}
-        {{rsa-form-input value='Form input value' label='Input Label' isInline=true isSuccess=true}}
-        {{!-- BEGIN-SNIPPET input9
-        {{rsa-form-input value='Form input value' label='Input Label' isInline=true isSuccess=true}}
-        END-SNIPPET --}}
-        {{code-snippet name="input9.hbs"}}
+    {{#spec-member title="Success"}}
+      {{rsa-form-input value='Form input value' label='Input Label' isInline=true isSuccess=true}}
+      {{!-- BEGIN-SNIPPET input9
+      {{rsa-form-input value='Form input value' label='Input Label' isInline=true isSuccess=true}}
+      END-SNIPPET --}}
+      {{code-snippet name="input9.hbs"}}
 
-      {{/spec-member}}
+    {{/spec-member}}
 
-      {{#spec-member title="Error"}}
-        {{rsa-form-input value='Form input value' label='Input Label' isInline=true isError=true errorMessage='Example error message on the input'}}
-        {{!-- BEGIN-SNIPPET input10
-        {{rsa-form-input value='Form input value' label='Input Label' isInline=true isError=true errorMessage='Example error message on the input'}}
-        END-SNIPPET --}}
-        {{code-snippet name="input10.hbs"}}
+    {{#spec-member title="Error"}}
+      {{rsa-form-input value='Form input value' label='Input Label' isInline=true isError=true errorMessage='Example error message on the input'}}
+      {{!-- BEGIN-SNIPPET input10
+      {{rsa-form-input value='Form input value' label='Input Label' isInline=true isError=true errorMessage='Example error message on the input'}}
+      END-SNIPPET --}}
+      {{code-snippet name="input10.hbs"}}
 
-      {{/spec-member}}
-    {{/spec-category}}
-  </div>
-</hbox>
+    {{/spec-member}}
+  {{/spec-category}}
+</vbox>

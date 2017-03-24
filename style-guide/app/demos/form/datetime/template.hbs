@@ -1,93 +1,91 @@
 <hbox fit>
   {{spec-masthead model=model}}
 </hbox>
-<hbox>
-  <div class="scroll-box">
-    {{#spec-category title="Date"}}
-      {{#spec-member title="Default configurations"}}
-        {{rsa-form-datetime label='Date Label' placeholder='Date Placeholder'}}
-        {{!-- BEGIN-SNIPPET datetime1
-        {{rsa-form-datetime label='Date Label' placeholder='Date Placeholder'}}
-        END-SNIPPET --}}
-        {{code-snippet name="datetime1.hbs"}}
-      {{/spec-member}}
-      {{#spec-member title="Date Picker Year Range configurations"
-        subtitle="You can change the yearRange. It defaults to 10. the yearRange can be a single number or two comma separated years."}}
-        {{rsa-form-datetime label='Date Label' placeholder='Date Placeholder' yearRange="1"}}
-        {{!-- BEGIN-SNIPPET datetime4
-        {{rsa-form-datetime label='Date Label' placeholder='Date Placeholder' yearRange="1"}}
-        END-SNIPPET --}}
-        {{code-snippet name="datetime4.hbs"}}
-      {{/spec-member}}
-      {{#spec-member title="Date Picker year range and current year configurations"}}
-        {{rsa-form-datetime label='Date Label' placeholder='Date Placeholder' yearRange="2004,currentYear"}}
-        {{!-- BEGIN-SNIPPET datetime5
-        {{rsa-form-datetime label='Date Label' placeholder='Date Placeholder' yearRange="2004,currentYear"}}
-        END-SNIPPET --}}
-        {{code-snippet name="datetime5.hbs"}}
-      {{/spec-member}}
-      {{#spec-member title="Date Picker disabled configurations"
-        subtitle="The disabled attribute is supported as binding so you can disabled the datepicker entirely. If the datepicker is shown to the user and it gets disabled it will close the datepicker itself."}}
-        {{rsa-form-datetime label='Date Label' isDisabled=true}}
-        {{!-- BEGIN-SNIPPET datetime6
-        {{rsa-form-datetime label='Date Label' isDisabled=true}}
-        END-SNIPPET --}}
-        {{code-snippet name="datetime6.hbs"}}
-      {{/spec-member}}
-      {{#spec-member title="Date Picker error with message"
-        subtitle="The date returned by ember-pikaday is in your local time zone due to the JavaScript default behaviour of new Date(). This can lead to problems when your application converts the date to UTC. In additive time zones (e.g. +0010) the resulting converted date could be yesterdays date. You can force the component to return a date with the UTC time zone by passing useUTC=true to it."}}
-        {{rsa-form-datetime label='Date Label' isError=true errorMessage='Example error message on the input'}}
-        {{!-- BEGIN-SNIPPET datetime8
-        {{rsa-form-datetime label='Date Label' isError=true errorMessage='Example error message on the input'}}
-        END-SNIPPET --}}
-        {{code-snippet name="datetime8.hbs"}}
-      {{/spec-member}}
-      {{#spec-member title="Date Picker - The value set"
-        subtitle="Setting the value."}}
-        {{rsa-form-datetime label='Date Label' value='12/25/2006'}}
-        {{!-- BEGIN-SNIPPET datetime9
-        {{rsa-form-datetime label='Date Label' value='12/25/2006'}}
-        END-SNIPPET --}}
-        {{code-snippet name="datetime9.hbs"}}
-      {{/spec-member}}
-    {{/spec-category}}
-    {{#spec-category title="Date & Time"}}
-      {{#spec-member title="Date & Time Picker - Show the default date and time selectors"}}
-        {{rsa-form-datetime label='Select Date & Time' showTime=true}}
-        {{!-- BEGIN-SNIPPET datetime10
-        {{rsa-form-datetime label='Select Date & Time' showTime=true}}
-        END-SNIPPET --}}
-        {{code-snippet name="datetime10.hbs"}}
-      {{/spec-member}}
-      {{#spec-member title="Date & Time Picker - Show seconds"}}
-        {{rsa-form-datetime label='Select Date & Time' showTime=true showSeconds=true}}
-        {{!-- BEGIN-SNIPPET datetime11
-        {{rsa-form-datetime label='Select Date & Time' showTime=true showSeconds=true}}
-        END-SNIPPET --}}
-        {{code-snippet name="datetime11.hbs"}}
-      {{/spec-member}}
-      {{#spec-member title="Date & Time Picker - Increment by Minute & Seconds"}}
-        {{rsa-form-datetime label='Select Date & Time' showTime=true showSeconds=true incrementMinuteBy=5 incrementSecondBy=30}}
-        {{!-- BEGIN-SNIPPET datetime12
-        {{rsa-form-datetime label='Select Date & Time' showTime=true showSeconds=true incrementMinuteBy=5 incrementSecondBy=30}}
-        END-SNIPPET --}}
-        {{code-snippet name="datetime12.hbs"}}
-      {{/spec-member}}
-      {{#spec-member title="Date & Time Picker - Time Label"}}
-        {{rsa-form-datetime label='Select Date & Time' showTime=true showSeconds=true incrementMinuteBy=5 incrementSecondBy=30 timeLabel="Time: "}}
-        {{!-- BEGIN-SNIPPET datetime13
-        {{rsa-form-datetime label='Select Date & Time' showTime=true showSeconds=true incrementMinuteBy=5 incrementSecondBy=30 timeLabel="Time: "}}
-        END-SNIPPET --}}
-        {{code-snippet name="datetime13.hbs"}}
-      {{/spec-member}}
-      {{#spec-member title="Date & Time Picker - Set date and time format to show the seconds"}}
-        {{rsa-form-datetime label='Select Date & Time' showTime=true showSeconds=true incrementMinuteBy=5 incrementSecondBy=30  dateFormat="MM/DD/YYYY HH:mm:ss"}}
-        {{!-- BEGIN-SNIPPET datetime14
-        {{rsa-form-datetime label='Select Date & Time' showTime=true showSeconds=true incrementMinuteBy=5 incrementSecondBy=30 dateFormat="MM/DD/YYYY HH:mm:ss"}}
-        END-SNIPPET --}}
-        {{code-snippet name="datetime14.hbs"}}
-      {{/spec-member}}
-    {{/spec-category}}
-  </div>
-</hbox>
-{{outlet}}
+
+<vbox class="scroll-box">
+  {{#spec-category title="Date"}}
+    {{#spec-member title="Default configurations"}}
+      {{rsa-form-datetime label='Date Label' placeholder='Date Placeholder'}}
+      {{!-- BEGIN-SNIPPET datetime1
+      {{rsa-form-datetime label='Date Label' placeholder='Date Placeholder'}}
+      END-SNIPPET --}}
+      {{code-snippet name="datetime1.hbs"}}
+    {{/spec-member}}
+    {{#spec-member title="Date Picker Year Range configurations"
+      subtitle="You can change the yearRange. It defaults to 10. the yearRange can be a single number or two comma separated years."}}
+      {{rsa-form-datetime label='Date Label' placeholder='Date Placeholder' yearRange="1"}}
+      {{!-- BEGIN-SNIPPET datetime4
+      {{rsa-form-datetime label='Date Label' placeholder='Date Placeholder' yearRange="1"}}
+      END-SNIPPET --}}
+      {{code-snippet name="datetime4.hbs"}}
+    {{/spec-member}}
+    {{#spec-member title="Date Picker year range and current year configurations"}}
+      {{rsa-form-datetime label='Date Label' placeholder='Date Placeholder' yearRange="2004,currentYear"}}
+      {{!-- BEGIN-SNIPPET datetime5
+      {{rsa-form-datetime label='Date Label' placeholder='Date Placeholder' yearRange="2004,currentYear"}}
+      END-SNIPPET --}}
+      {{code-snippet name="datetime5.hbs"}}
+    {{/spec-member}}
+    {{#spec-member title="Date Picker disabled configurations"
+      subtitle="The disabled attribute is supported as binding so you can disabled the datepicker entirely. If the datepicker is shown to the user and it gets disabled it will close the datepicker itself."}}
+      {{rsa-form-datetime label='Date Label' isDisabled=true}}
+      {{!-- BEGIN-SNIPPET datetime6
+      {{rsa-form-datetime label='Date Label' isDisabled=true}}
+      END-SNIPPET --}}
+      {{code-snippet name="datetime6.hbs"}}
+    {{/spec-member}}
+    {{#spec-member title="Date Picker error with message"
+      subtitle="The date returned by ember-pikaday is in your local time zone due to the JavaScript default behaviour of new Date(). This can lead to problems when your application converts the date to UTC. In additive time zones (e.g. +0010) the resulting converted date could be yesterdays date. You can force the component to return a date with the UTC time zone by passing useUTC=true to it."}}
+      {{rsa-form-datetime label='Date Label' isError=true errorMessage='Example error message on the input'}}
+      {{!-- BEGIN-SNIPPET datetime8
+      {{rsa-form-datetime label='Date Label' isError=true errorMessage='Example error message on the input'}}
+      END-SNIPPET --}}
+      {{code-snippet name="datetime8.hbs"}}
+    {{/spec-member}}
+    {{#spec-member title="Date Picker - The value set"
+      subtitle="Setting the value."}}
+      {{rsa-form-datetime label='Date Label' value='12/25/2006'}}
+      {{!-- BEGIN-SNIPPET datetime9
+      {{rsa-form-datetime label='Date Label' value='12/25/2006'}}
+      END-SNIPPET --}}
+      {{code-snippet name="datetime9.hbs"}}
+    {{/spec-member}}
+  {{/spec-category}}
+  {{#spec-category title="Date & Time"}}
+    {{#spec-member title="Date & Time Picker - Show the default date and time selectors"}}
+      {{rsa-form-datetime label='Select Date & Time' showTime=true}}
+      {{!-- BEGIN-SNIPPET datetime10
+      {{rsa-form-datetime label='Select Date & Time' showTime=true}}
+      END-SNIPPET --}}
+      {{code-snippet name="datetime10.hbs"}}
+    {{/spec-member}}
+    {{#spec-member title="Date & Time Picker - Show seconds"}}
+      {{rsa-form-datetime label='Select Date & Time' showTime=true showSeconds=true}}
+      {{!-- BEGIN-SNIPPET datetime11
+      {{rsa-form-datetime label='Select Date & Time' showTime=true showSeconds=true}}
+      END-SNIPPET --}}
+      {{code-snippet name="datetime11.hbs"}}
+    {{/spec-member}}
+    {{#spec-member title="Date & Time Picker - Increment by Minute & Seconds"}}
+      {{rsa-form-datetime label='Select Date & Time' showTime=true showSeconds=true incrementMinuteBy=5 incrementSecondBy=30}}
+      {{!-- BEGIN-SNIPPET datetime12
+      {{rsa-form-datetime label='Select Date & Time' showTime=true showSeconds=true incrementMinuteBy=5 incrementSecondBy=30}}
+      END-SNIPPET --}}
+      {{code-snippet name="datetime12.hbs"}}
+    {{/spec-member}}
+    {{#spec-member title="Date & Time Picker - Time Label"}}
+      {{rsa-form-datetime label='Select Date & Time' showTime=true showSeconds=true incrementMinuteBy=5 incrementSecondBy=30 timeLabel="Time: "}}
+      {{!-- BEGIN-SNIPPET datetime13
+      {{rsa-form-datetime label='Select Date & Time' showTime=true showSeconds=true incrementMinuteBy=5 incrementSecondBy=30 timeLabel="Time: "}}
+      END-SNIPPET --}}
+      {{code-snippet name="datetime13.hbs"}}
+    {{/spec-member}}
+    {{#spec-member title="Date & Time Picker - Set date and time format to show the seconds"}}
+      {{rsa-form-datetime label='Select Date & Time' showTime=true showSeconds=true incrementMinuteBy=5 incrementSecondBy=30  dateFormat="MM/DD/YYYY HH:mm:ss"}}
+      {{!-- BEGIN-SNIPPET datetime14
+      {{rsa-form-datetime label='Select Date & Time' showTime=true showSeconds=true incrementMinuteBy=5 incrementSecondBy=30 dateFormat="MM/DD/YYYY HH:mm:ss"}}
+      END-SNIPPET --}}
+      {{code-snippet name="datetime14.hbs"}}
+    {{/spec-member}}
+  {{/spec-category}}
+</vbox>

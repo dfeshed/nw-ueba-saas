@@ -13,7 +13,7 @@ export default Component.extend({
 
   layout,
 
-  tagName: 'page',
+  tagName: 'grid',
 
   eventBus: service(),
 

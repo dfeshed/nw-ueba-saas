@@ -1,10 +1,6 @@
 .rsa-application-header {
-  @include global-nav();
-  @include rsa-layer(controls);
   background: $applicationHeaderBackground;
   height: $applicationHeaderHeight;
-  top: 0;
-  left: 0;
   overflow: hidden;
 
   > a {

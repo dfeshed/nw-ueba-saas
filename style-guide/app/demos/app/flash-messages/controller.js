@@ -13,28 +13,19 @@ export default Controller.extend({
 
   actions: {
     triggerInfoMessage() {
-      this.get('flashMessages').info('Info message', {
-        iconName: 'information-circle'
-      });
+      this.get('flashMessages').info('Info message');
     },
 
     triggerSuccessMessage() {
-      this.get('flashMessages').success('Success message', {
-        iconName: 'check-circle-2'
-      });
+      this.get('flashMessages').success('Success message');
     },
 
     triggerWarningMessage() {
-      this.get('flashMessages').warning('Warning message', {
-        iconName: 'report-problem-circle'
-      });
+      this.get('flashMessages').warning('Warning message');
     },
 
     triggerErrorMessage() {
-      this.get('flashMessages').error('Error message', {
-        iconName: 'delete-1',
-        iconStyle: 'filled'
-      });
+      this.get('flashMessages').error('Error message');
     }
   }
 });

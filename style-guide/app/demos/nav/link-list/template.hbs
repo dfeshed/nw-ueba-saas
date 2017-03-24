@@ -2,26 +2,24 @@
   {{spec-masthead model=model}}
 </hbox>
 
-<hbox>
-  <div class="scroll-box">
-    {{#spec-category}}
-      {{#spec-member title="Example"}}
-        {{#rsa-nav-link-list header='List Title'}}
-          <ul>
-            <li>{{#link-to 'index'}}Link 1{{/link-to}}</li>
-            <li>{{#link-to 'index'}}Link 1{{/link-to}}</li>
-          </ul>
-        {{/rsa-nav-link-list}}
-        {{!-- BEGIN-SNIPPET linklist1
-        {{#rsa-nav-link-list header='List Title'}}
-          <ul>
-            <li>{{#link-to 'index'}}Link 1{{/link-to}}</li>
-            <li>{{#link-to 'index'}}Link 1{{/link-to}}</li>
-          </ul>
-        {{/rsa-nav-link-list}}
-        END-SNIPPET --}}
-        {{code-snippet name="linklist1.hbs"}}
-      {{/spec-member}}
-    {{/spec-category}}
-  </div>
-</hbox>
+<vbox class="scroll-box">
+  {{#spec-category}}
+    {{#spec-member title="Example"}}
+      {{#rsa-nav-link-list header='List Title'}}
+        <ul>
+          <li>{{#link-to 'index'}}Link 1{{/link-to}}</li>
+          <li>{{#link-to 'index'}}Link 1{{/link-to}}</li>
+        </ul>
+      {{/rsa-nav-link-list}}
+      {{!-- BEGIN-SNIPPET linklist1
+      {{#rsa-nav-link-list header='List Title'}}
+        <ul>
+          <li>{{#link-to 'index'}}Link 1{{/link-to}}</li>
+          <li>{{#link-to 'index'}}Link 1{{/link-to}}</li>
+        </ul>
+      {{/rsa-nav-link-list}}
+      END-SNIPPET --}}
+      {{code-snippet name="linklist1.hbs"}}
+    {{/spec-member}}
+  {{/spec-category}}
+</vbox>

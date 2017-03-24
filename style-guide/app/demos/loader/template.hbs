@@ -2,48 +2,46 @@
   {{spec-masthead model=model}}
 </hbox>
 
-<hbox>
-  <div class="scroll-box">
-    {{#spec-category title="Sizes"}}
-      {{#spec-member title="Default"}}
-        {{rsa-loader}}
-        {{!-- BEGIN-SNIPPET default-loader
-        {{rsa-loader}}
-        END-SNIPPET --}}
-        {{code-snippet name="default-loader.hbs"}}
-      {{/spec-member}}
+<vbox class="scroll-box">
+  {{#spec-category title="Sizes"}}
+    {{#spec-member title="Default"}}
+      {{rsa-loader}}
+      {{!-- BEGIN-SNIPPET default-loader
+      {{rsa-loader}}
+      END-SNIPPET --}}
+      {{code-snippet name="default-loader.hbs"}}
+    {{/spec-member}}
 
-      {{#spec-member title="Medium"}}
-        {{rsa-loader size='medium'}}
-        {{!-- BEGIN-SNIPPET medium-loader
-        {{rsa-loader size='medium'}}
-        END-SNIPPET --}}
-        {{code-snippet name="medium-loader.hbs"}}
-      {{/spec-member}}
+    {{#spec-member title="Medium"}}
+      {{rsa-loader size='medium'}}
+      {{!-- BEGIN-SNIPPET medium-loader
+      {{rsa-loader size='medium'}}
+      END-SNIPPET --}}
+      {{code-snippet name="medium-loader.hbs"}}
+    {{/spec-member}}
 
-      {{#spec-member title="Large"}}
-        {{rsa-loader size='large' label='Gathering Data'}}
-        {{!-- BEGIN-SNIPPET large-loader
-        {{rsa-loader size='large' label='Gathering Data'}}
-        END-SNIPPET --}}
-        {{code-snippet name="large-loader.hbs"}}
-      {{/spec-member}}
+    {{#spec-member title="Large"}}
+      {{rsa-loader size='large' label='Gathering Data'}}
+      {{!-- BEGIN-SNIPPET large-loader
+      {{rsa-loader size='large' label='Gathering Data'}}
+      END-SNIPPET --}}
+      {{code-snippet name="large-loader.hbs"}}
+    {{/spec-member}}
 
-      {{#spec-member title="Larger"}}
-        {{rsa-loader size='larger' label='Gathering Data'}}
-        {{!-- BEGIN-SNIPPET larger-loader
-        {{rsa-loader size='larger' label='Gathering Data'}}
-        END-SNIPPET --}}
-        {{code-snippet name="larger-loader.hbs"}}
-      {{/spec-member}}
+    {{#spec-member title="Larger"}}
+      {{rsa-loader size='larger' label='Gathering Data'}}
+      {{!-- BEGIN-SNIPPET larger-loader
+      {{rsa-loader size='larger' label='Gathering Data'}}
+      END-SNIPPET --}}
+      {{code-snippet name="larger-loader.hbs"}}
+    {{/spec-member}}
 
-      {{#spec-member title="Largest"}}
-        {{rsa-loader size='largest' label='Gathering Data'}}
-        {{!-- BEGIN-SNIPPET largest-loader
-        {{rsa-loader size='largest' label='Gathering Data'}}
-        END-SNIPPET --}}
-        {{code-snippet name="largest-loader.hbs"}}
-      {{/spec-member}}
-    {{/spec-category}}
-  </div>
-</hbox>
+    {{#spec-member title="Largest"}}
+      {{rsa-loader size='largest' label='Gathering Data'}}
+      {{!-- BEGIN-SNIPPET largest-loader
+      {{rsa-loader size='largest' label='Gathering Data'}}
+      END-SNIPPET --}}
+      {{code-snippet name="largest-loader.hbs"}}
+    {{/spec-member}}
+  {{/spec-category}}
+</vbox>

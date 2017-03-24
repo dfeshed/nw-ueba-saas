@@ -2,33 +2,31 @@
   {{spec-masthead model=model}}
 </hbox>
 
-<hbox>
-  <div class="scroll-box">
-    {{#spec-category}}
-      {{#spec-member title="single series"}}
-        {{#rsa-chart data=model.singleSeries as |params|}}
-          {{rsa-line-series data=params.data xScale=params.xScale yScale=params.yScale}}
-        {{/rsa-chart}}
-        {{!-- BEGIN-SNIPPET line1
-        {{#rsa-chart data=model.singleSeries as |params|}}
-          {{rsa-line-series data=params.data xScale=params.xScale yScale=params.yScale}}
-        {{/rsa-chart}}
-        END-SNIPPET --}}
-        {{code-snippet name="line1.hbs"}}
-      {{/spec-member}}
-      {{#spec-member title="multi series"}}
-        {{#rsa-chart data=model.multiSeries as |params|}}
-          {{rsa-line-series data=params.data dataIndex=0 xScale=params.xScale yScale=params.yScale}}
-          {{rsa-line-series data=params.data dataIndex=1 xScale=params.xScale yScale=params.yScale}}
-        {{/rsa-chart}}
-        {{!-- BEGIN-SNIPPET line2
-        {{#rsa-chart data=model.multiSeries as |params|}}
-          {{rsa-line-series data=params.data dataIndex=0 xScale=params.xScale yScale=params.yScale}}
-          {{rsa-line-series data=params.data dataIndex=1 xScale=params.xScale yScale=params.yScale}}
-        {{/rsa-chart}}
-        END-SNIPPET --}}
-        {{code-snippet name="line2.hbs"}}
-      {{/spec-member}}
-    {{/spec-category}}
-  </div>
-</hbox>
+<vbox class="scroll-box">
+  {{#spec-category}}
+    {{#spec-member title="single series"}}
+      {{#rsa-chart data=model.singleSeries as |params|}}
+        {{rsa-line-series data=params.data xScale=params.xScale yScale=params.yScale}}
+      {{/rsa-chart}}
+      {{!-- BEGIN-SNIPPET line1
+      {{#rsa-chart data=model.singleSeries as |params|}}
+        {{rsa-line-series data=params.data xScale=params.xScale yScale=params.yScale}}
+      {{/rsa-chart}}
+      END-SNIPPET --}}
+      {{code-snippet name="line1.hbs"}}
+    {{/spec-member}}
+    {{#spec-member title="multi series"}}
+      {{#rsa-chart data=model.multiSeries as |params|}}
+        {{rsa-line-series data=params.data dataIndex=0 xScale=params.xScale yScale=params.yScale}}
+        {{rsa-line-series data=params.data dataIndex=1 xScale=params.xScale yScale=params.yScale}}
+      {{/rsa-chart}}
+      {{!-- BEGIN-SNIPPET line2
+      {{#rsa-chart data=model.multiSeries as |params|}}
+        {{rsa-line-series data=params.data dataIndex=0 xScale=params.xScale yScale=params.yScale}}
+        {{rsa-line-series data=params.data dataIndex=1 xScale=params.xScale yScale=params.yScale}}
+      {{/rsa-chart}}
+      END-SNIPPET --}}
+      {{code-snippet name="line2.hbs"}}
+    {{/spec-member}}
+  {{/spec-category}}
+</vbox>

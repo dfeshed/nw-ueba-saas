@@ -2,16 +2,14 @@
   {{spec-masthead model=model}}
 </hbox>
 
-<hbox>
-  <div class="scroll-box">
-    {{#spec-category}}
-      {{#spec-member}}
-        {{rsa-content-definition label='Data 1' value='A value with a long length'}}
-        {{!-- BEGIN-SNIPPET definition1
-        {{rsa-content-definition label='Data 1' value='A value with a long length'}}
-        END-SNIPPET --}}
-        {{code-snippet name="definition1.hbs"}}
-      {{/spec-member}}
-    {{/spec-category}}
-  </div>
-</hbox>
+<vbox class="scroll-box">
+  {{#spec-category}}
+    {{#spec-member}}
+      {{rsa-content-definition label='Data 1' value='A value with a long length'}}
+      {{!-- BEGIN-SNIPPET definition1
+      {{rsa-content-definition label='Data 1' value='A value with a long length'}}
+      END-SNIPPET --}}
+      {{code-snippet name="definition1.hbs"}}
+    {{/spec-member}}
+  {{/spec-category}}
+</vbox>

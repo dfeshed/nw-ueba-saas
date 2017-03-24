@@ -2,36 +2,34 @@
   {{spec-masthead model=model}}
 </hbox>
 
-<hbox>
-  <div class="scroll-box">
-    {{#spec-category}}
-      {{#spec-member}}
-        {{#rsa-application-modal
-          label="Modal Header"
-          eventId='example'}}
-          <div class='modal-trigger'>
-            Modal Trigger
-          </div>
+<vbox class="scroll-box">
+  {{#spec-category}}
+    {{#spec-member}}
+      {{#rsa-application-modal
+        label="Modal Header"
+        eventId='example'}}
+        <div class='modal-trigger'>
+          Modal Trigger
+        </div>
 
-          <div class='modal-content'>
-            Modal Content
-          </div>
-        {{/rsa-application-modal}}
-        {{!-- BEGIN-SNIPPET modal1
-        {{#rsa-application-modal
-          label="Modal Header"
-          eventId='example'}}
-          <div class='modal-trigger'>
-            Modal Trigger
-          </div>
+        <div class='modal-content'>
+          Modal Content
+        </div>
+      {{/rsa-application-modal}}
+      {{!-- BEGIN-SNIPPET modal1
+      {{#rsa-application-modal
+        label="Modal Header"
+        eventId='example'}}
+        <div class='modal-trigger'>
+          Modal Trigger
+        </div>
 
-          <div class='modal-content'>
-            Modal Content
-          </div>
-        {{/rsa-application-modal}}
-        END-SNIPPET --}}
-        {{code-snippet name="modal1.hbs"}}
-      {{/spec-member}}
-    {{/spec-category}}
-  </div>
-</hbox>
+        <div class='modal-content'>
+          Modal Content
+        </div>
+      {{/rsa-application-modal}}
+      END-SNIPPET --}}
+      {{code-snippet name="modal1.hbs"}}
+    {{/spec-member}}
+  {{/spec-category}}
+</vbox>

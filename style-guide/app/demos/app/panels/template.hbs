@@ -2,840 +2,1156 @@
   {{spec-masthead model=model}}
 </hbox>
 
-<hbox>
-  <div class="scroll-box">
-    {{#spec-category}}
-      {{#spec-member title="Basic panel header with no actions or controls"}}
-        <vbox class="panel-demo-wrapper">
-          <vbox class="rsa-application-layout-panel">
-            <vbox class="rsa-application-layout-panel-header" fit>
-              <hbox>
-                <hbox>
-                  <h2>Panel Title</h2>
-                </hbox>
-              </hbox>
+<vbox class="scroll-box">
+  {{#spec-category title="Generic Layouts with Flexi"}}
+    {{#spec-member title="Header with scrollable content"}}
+      <vbox class="layout-demo">
+        <vbox class="rsa-application-layout-panel-header" xs="12" fit>
+          <h2>Panel Title</h2>
+        </vbox>
+
+        <vbox class="rsa-application-layout-panel-content scroll-box" xs="12">
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+        </vbox>
+      </vbox>
+      {{!-- BEGIN-SNIPPET layout1
+      <vbox class="rsa-application-layout-panel-header" xs="12" fit>
+        <h2>Panel Title</h2>
+      </vbox>
+
+      <vbox class="rsa-application-layout-panel-content scroll-box" xs="12">
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+      </vbox>
+      END-SNIPPET --}}
+      {{code-snippet name="layout1.hbs"}}
+    {{/spec-member}}
+
+    {{#spec-member title="Header spanning panels with scrollable content"}}
+      <vbox class="layout-demo">
+        <vbox xs="12" fit>
+          <h1>Header Text</h1>
+        </vbox>
+
+        <hbox xs="12" class="scrollable-panel-wrapper">
+          <vbox xs="3">
+            <vbox class="rsa-application-layout-panel-header" xs="12" fit>
+              <h2>Panel Title</h2>
             </vbox>
 
-            <vbox class="rsa-application-layout-panel-content">
-              <div class="scroll-box">
-                <p>Panel Content</p>
+            <vbox class="rsa-application-layout-panel-content scroll-box" xs="12">
+              <p>Text</p>
+              <p>Text</p>
+              <p>Text</p>
+              <p>Text</p>
+              <p>Text</p>
+              <p>Text</p>
+              <p>Text</p>
+              <p>Text</p>
+              <p>Text</p>
+              <p>Text</p>
+              <p>Text</p>
+              <p>Text</p>
+              <p>Text</p>
+              <p>Text</p>
+              <p>Text</p>
+            </vbox>
+          </vbox>
+
+          <vbox xs="9">
+            <vbox class="rsa-application-layout-panel-header" xs="12" fit>
+              <h2>Panel Title</h2>
+            </vbox>
+
+            <vbox class="rsa-application-layout-panel-content scroll-box" xs="12">
+              <p>Text</p>
+              <p>Text</p>
+              <p>Text</p>
+              <p>Text</p>
+              <p>Text</p>
+              <p>Text</p>
+              <p>Text</p>
+              <p>Text</p>
+              <p>Text</p>
+              <p>Text</p>
+              <p>Text</p>
+              <p>Text</p>
+              <p>Text</p>
+              <p>Text</p>
+              <p>Text</p>
+            </vbox>
+          </vbox>
+        </hbox>
+      </vbox>
+      {{!-- BEGIN-SNIPPET layout2
+      <vbox xs="12" fit>
+        <h1>Header Text</h1>
+      </vbox>
+
+      <hbox xs="12" class="scrollable-panel-wrapper">
+        <vbox xs="3">
+          <vbox class="rsa-application-layout-panel-header" xs="12" fit>
+            <h2>Panel Title</h2>
+          </vbox>
+
+          <vbox class="rsa-application-layout-panel-content scroll-box" xs="12">
+            <p>Text</p>
+            <p>Text</p>
+            <p>Text</p>
+            <p>Text</p>
+            <p>Text</p>
+            <p>Text</p>
+            <p>Text</p>
+            <p>Text</p>
+            <p>Text</p>
+            <p>Text</p>
+            <p>Text</p>
+            <p>Text</p>
+            <p>Text</p>
+            <p>Text</p>
+            <p>Text</p>
+          </vbox>
+        </vbox>
+
+        <vbox xs="9">
+          <vbox class="rsa-application-layout-panel-header" xs="12" fit>
+            <h2>Panel Title</h2>
+          </vbox>
+
+          <vbox class="rsa-application-layout-panel-content scroll-box" xs="12">
+            <p>Text</p>
+            <p>Text</p>
+            <p>Text</p>
+            <p>Text</p>
+            <p>Text</p>
+            <p>Text</p>
+            <p>Text</p>
+            <p>Text</p>
+            <p>Text</p>
+            <p>Text</p>
+            <p>Text</p>
+            <p>Text</p>
+            <p>Text</p>
+            <p>Text</p>
+            <p>Text</p>
+          </vbox>
+        </vbox>
+      </hbox>
+      END-SNIPPET --}}
+      {{code-snippet name="layout2.hbs"}}
+    {{/spec-member}}
+  {{/spec-category}}
+
+  {{#spec-category}}
+    {{#spec-member title="Basic panel header with no actions or controls"}}
+      <vbox class="layout-demo">
+        <vbox class="rsa-application-layout-panel-header" xs="12" fit>
+          <hbox>
+            <hbox>
+              <h2>Panel Title</h2>
+            </hbox>
+          </hbox>
+        </vbox>
+
+        <vbox class="rsa-application-layout-panel-content scroll-box" xs="12">
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+        </vbox>
+      </vbox>
+
+      {{!-- BEGIN-SNIPPET panelstyle1
+      <vbox class="rsa-application-layout-panel-header" xs="12" fit>
+        <hbox>
+          <hbox>
+            <h2>Panel Title</h2>
+          </hbox>
+        </hbox>
+      </vbox>
+
+      <vbox class="rsa-application-layout-panel-content scroll-box" xs="12">
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+      </vbox>
+      END-SNIPPET --}}
+      {{code-snippet name="panelstyle1.hbs"}}
+    {{/spec-member}}
+
+    {{#spec-member title="Panel header with count, but no actions or controls"}}
+      <vbox class="layout-demo">
+        <vbox class="rsa-application-layout-panel-header" xs="12" fit>
+          <hbox>
+            <hbox>
+              <h2>Panel Title <span class="count">(1234)</span></h2>
+            </hbox>
+          </hbox>
+        </vbox>
+
+        <vbox class="rsa-application-layout-panel-content scroll-box" xs="12">
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+        </vbox>
+      </vbox>
+
+      {{!-- BEGIN-SNIPPET panelstyle2
+      <vbox class="rsa-application-layout-panel-header" xs="12" fit>
+        <hbox>
+          <hbox>
+            <h2>Panel Title <span class="count">(1234)</span></h2>
+          </hbox>
+        </hbox>
+      </vbox>
+
+      <vbox class="rsa-application-layout-panel-content scroll-box" xs="12">
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+      </vbox>
+      END-SNIPPET --}}
+      {{code-snippet name="panelstyle2.hbs"}}
+    {{/spec-member}}
+
+    {{#spec-member title="Panel header with count and stateless actions, but no controls"}}
+      <vbox class="layout-demo">
+        <vbox class="rsa-application-layout-panel-header" xs="12" fit>
+          <hbox>
+            <hbox>
+              <h2>Panel Title <span class="count">(1234)</span></h2>
+            </hbox>
+
+            <hbox fit class="actions">
+              <hbox class="rsa-icon-button-group">
+                {{#rsa-form-button isIconOnly=true}}
+                  {{rsa-icon name='cog'}}
+                {{/rsa-form-button}}
+              </hbox>
+            </hbox>
+          </hbox>
+        </vbox>
+
+        <vbox class="rsa-application-layout-panel-content scroll-box" xs="12">
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+        </vbox>
+      </vbox>
+
+      {{!-- BEGIN-SNIPPET panelstyle3
+      <vbox class="rsa-application-layout-panel-header" xs="12" fit>
+        <hbox>
+          <hbox>
+            <h2>Panel Title <span class="count">(1234)</span></h2>
+          </hbox>
+
+          <hbox fit class="actions">
+            <hbox class="rsa-icon-button-group">
+              {{#rsa-form-button isIconOnly=true}}
+                {{rsa-icon name='cog'}}
+              {{/rsa-form-button}}
+            </hbox>
+          </hbox>
+        </hbox>
+      </vbox>
+
+      <vbox class="rsa-application-layout-panel-content scroll-box" xs="12">
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+      </vbox>
+      END-SNIPPET --}}
+      {{code-snippet name="panelstyle3.hbs"}}
+    {{/spec-member}}
+
+    {{#spec-member title="Panel header with count, stateless actions, and one control group"}}
+      <vbox class="layout-demo">
+        <vbox class="rsa-application-layout-panel-header" xs="12" fit>
+          <hbox>
+            <hbox class="title">
+              <h2>Panel Title <span class="count">(1234)</span></h2>
+            </hbox>
+
+            <hbox fit class="actions">
+              <hbox class="rsa-icon-button-group">
+                {{#rsa-form-button isIconOnly=true}}
+                  {{rsa-icon name='cog'}}
+                {{/rsa-form-button}}
+              </hbox>
+            </hbox>
+          </hbox>
+
+          <hbox>
+            <hbox class="controls">
+              <hbox class="panel-control-group" fit>
+                <hbox class="rsa-button-group">
+                  {{#rsa-form-button}}
+                    Control Button
+                  {{/rsa-form-button}}
+                </hbox>
+
+                <hbox class="rsa-button-group">
+                  {{#rsa-form-button}}
+                    Control Button
+                  {{/rsa-form-button}}
+
+                  {{#rsa-form-button class="rsa-split-dropdown"}}
+                    {{rsa-icon name="arrow-down-12"}}
+                  {{/rsa-form-button}}
+                </hbox>
+              </hbox>
+            </hbox>
+          </hbox>
+        </vbox>
+
+        <vbox class="rsa-application-layout-panel-content scroll-box" xs="12">
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+        </vbox>
+      </vbox>
+
+      {{!-- BEGIN-SNIPPET panelstyle4
+      <vbox class="rsa-application-layout-panel-header" xs="12" fit>
+        <hbox>
+          <hbox class="title">
+            <h2>Panel Title <span class="count">(1234)</span></h2>
+          </hbox>
+
+          <hbox fit class="actions">
+            <hbox class="rsa-icon-button-group">
+              {{#rsa-form-button isIconOnly=true}}
+                {{rsa-icon name='cog'}}
+              {{/rsa-form-button}}
+            </hbox>
+          </hbox>
+        </hbox>
+
+        <hbox>
+          <hbox class="controls">
+            <hbox class="panel-control-group" fit>
+              <hbox class="rsa-button-group">
+                {{#rsa-form-button}}
+                  Control Button
+                {{/rsa-form-button}}
+              </hbox>
+
+              <hbox class="rsa-button-group">
+                {{#rsa-form-button}}
+                  Control Button
+                {{/rsa-form-button}}
+
+                {{#rsa-form-button class="rsa-split-dropdown"}}
+                  {{rsa-icon name="arrow-down-12"}}
+                {{/rsa-form-button}}
+              </hbox>
+            </hbox>
+          </hbox>
+        </hbox>
+      </vbox>
+
+      <vbox class="rsa-application-layout-panel-content scroll-box" xs="12">
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+      </vbox>
+      END-SNIPPET --}}
+      {{code-snippet name="panelstyle4.hbs"}}
+    {{/spec-member}}
+
+    {{#spec-member title="Panel header with count, stateless actions, one control group, and filtering"}}
+      <vbox class="layout-demo">
+        <vbox class="rsa-application-layout-panel-header" xs="12" fit>
+          <hbox>
+            <hbox class="title">
+              <h2>Panel Title <span class="count">(1234)</span></h2>
+            </hbox>
+
+            <hbox fit class="actions">
+              <hbox class="rsa-icon-button-group">
+                {{#rsa-form-button isIconOnly=true}}
+                  {{rsa-icon name='cog'}}
+                {{/rsa-form-button}}
+              </hbox>
+            </hbox>
+          </hbox>
+
+          <hbox>
+            <hbox class="controls">
+              <hbox class="panel-control-group" fit>
+                <hbox class="rsa-button-group">
+                  {{#rsa-form-button}}
+                    Control Button
+                  {{/rsa-form-button}}
+                </hbox>
+
+                <hbox class="rsa-button-group">
+                  {{#rsa-form-button}}
+                    Control Button
+                  {{/rsa-form-button}}
+
+                  {{#rsa-form-button class="rsa-split-dropdown"}}
+                    {{rsa-icon name="arrow-down-12"}}
+                  {{/rsa-form-button}}
+                </hbox>
+              </hbox>
+            </hbox>
+
+            <hbox class="filters" fit>
+              {{rsa-form-input placeholder='Filter results'}}
+            </hbox>
+          </hbox>
+        </vbox>
+
+        <vbox class="rsa-application-layout-panel-content scroll-box" xs="12">
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+        </vbox>
+      </vbox>
+
+      {{!-- BEGIN-SNIPPET panelstyle5
+      <vbox class="rsa-application-layout-panel-header" xs="12" fit>
+        <hbox>
+          <hbox class="title">
+            <h2>Panel Title <span class="count">(1234)</span></h2>
+          </hbox>
+
+          <hbox fit class="actions">
+            <hbox class="rsa-icon-button-group">
+              {{#rsa-form-button isIconOnly=true}}
+                {{rsa-icon name='cog'}}
+              {{/rsa-form-button}}
+            </hbox>
+          </hbox>
+        </hbox>
+
+        <hbox>
+          <hbox class="controls">
+            <hbox class="panel-control-group" fit>
+              <hbox class="rsa-button-group">
+                {{#rsa-form-button}}
+                  Control Button
+                {{/rsa-form-button}}
+              </hbox>
+
+              <hbox class="rsa-button-group">
+                {{#rsa-form-button}}
+                  Control Button
+                {{/rsa-form-button}}
+
+                {{#rsa-form-button class="rsa-split-dropdown"}}
+                  {{rsa-icon name="arrow-down-12"}}
+                {{/rsa-form-button}}
+              </hbox>
+            </hbox>
+          </hbox>
+
+          <hbox class="filters" fit>
+            {{rsa-form-input placeholder='Filter results'}}
+          </hbox>
+        </hbox>
+      </vbox>
+
+      <vbox class="rsa-application-layout-panel-content scroll-box" xs="12">
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+      </vbox>
+      END-SNIPPET --}}
+      {{code-snippet name="panelstyle5.hbs"}}
+    {{/spec-member}}
+
+    {{#spec-member title="Panel header with count, stateless and stateful actions, multiple control groups, and filtering"}}
+      <vbox class="layout-demo">
+        <vbox class="rsa-application-layout-panel-header" xs="12" fit>
+          <hbox>
+            <hbox class="title">
+              <h2>Panel Title <span class="count">(1234)</span></h2>
+            </hbox>
+
+            <hbox fit class="actions">
+              <hbox class="rsa-icon-button-group">
+                {{#rsa-form-button allowToggleActive=true isIconOnly=true}}
+                  {{rsa-icon name='close'}}
+                {{/rsa-form-button}}
+                {{#rsa-form-button allowToggleActive=true isIconOnly=true}}
+                  {{rsa-icon name='cog'}}
+                {{/rsa-form-button}}
+              </hbox>
+
+              <hbox class="rsa-icon-button-group">
+                {{#rsa-form-button isIconOnly=true}}
+                  {{rsa-icon name='close'}}
+                {{/rsa-form-button}}
+                {{#rsa-form-button isIconOnly=true}}
+                  {{rsa-icon name='cog'}}
+                {{/rsa-form-button}}
+              </hbox>
+            </hbox>
+          </hbox>
+
+          <hbox>
+            <hbox class="controls">
+              <hbox class="panel-control-group" fit>
+                <hbox class="rsa-button-group">
+                  {{#rsa-form-button}}
+                    Control Button
+                  {{/rsa-form-button}}
+                </hbox>
+
+                <hbox class="rsa-button-group">
+                  {{#rsa-form-button}}
+                    Control Button
+                  {{/rsa-form-button}}
+
+                  {{#rsa-form-button class="rsa-split-dropdown"}}
+                    {{rsa-icon name="arrow-down-12"}}
+                  {{/rsa-form-button}}
+                </hbox>
+              </hbox>
+
+              <hbox class="panel-control-group">
+                <hbox class="rsa-button-group">
+                  {{#rsa-form-button}}
+                    Control Button
+                  {{/rsa-form-button}}
+                </hbox>
+              </hbox>
+            </hbox>
+
+            <hbox class="filters" fit>
+              {{rsa-form-input placeholder='Filter results'}}
+            </hbox>
+          </hbox>
+        </vbox>
+
+        <vbox class="rsa-application-layout-panel-content scroll-box" xs="12">
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+        </vbox>
+      </vbox>
+
+      {{!-- BEGIN-SNIPPET panelstyle6
+      <vbox class="rsa-application-layout-panel-header" xs="12" fit>
+        <hbox>
+          <hbox class="title">
+            <h2>Panel Title <span class="count">(1234)</span></h2>
+          </hbox>
+
+          <hbox fit class="actions">
+            <hbox class="rsa-icon-button-group">
+              {{#rsa-form-button allowToggleActive=true isIconOnly=true}}
+                {{rsa-icon name='close'}}
+              {{/rsa-form-button}}
+              {{#rsa-form-button allowToggleActive=true isIconOnly=true}}
+                {{rsa-icon name='cog'}}
+              {{/rsa-form-button}}
+            </hbox>
+
+            <hbox class="rsa-icon-button-group">
+              {{#rsa-form-button isIconOnly=true}}
+                {{rsa-icon name='close'}}
+              {{/rsa-form-button}}
+              {{#rsa-form-button isIconOnly=true}}
+                {{rsa-icon name='cog'}}
+              {{/rsa-form-button}}
+            </hbox>
+          </hbox>
+        </hbox>
+
+        <hbox>
+          <hbox class="controls">
+            <hbox class="panel-control-group" fit>
+              <hbox class="rsa-button-group">
+                {{#rsa-form-button}}
+                  Control Button
+                {{/rsa-form-button}}
+              </hbox>
+
+              <hbox class="rsa-button-group">
+                {{#rsa-form-button}}
+                  Control Button
+                {{/rsa-form-button}}
+
+                {{#rsa-form-button class="rsa-split-dropdown"}}
+                  {{rsa-icon name="arrow-down-12"}}
+                {{/rsa-form-button}}
+              </hbox>
+            </hbox>
+
+            <hbox class="panel-control-group">
+              <hbox class="rsa-button-group">
+                {{#rsa-form-button}}
+                  Control Button
+                {{/rsa-form-button}}
+              </hbox>
+            </hbox>
+          </hbox>
+
+          <hbox class="filters" fit>
+            {{rsa-form-input placeholder='Filter results'}}
+          </hbox>
+        </hbox>
+      </vbox>
+
+      <vbox class="rsa-application-layout-panel-content scroll-box" xs="12">
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+      </vbox>
+      END-SNIPPET --}}
+      {{code-snippet name="panelstyle6.hbs"}}
+    {{/spec-member}}
+
+    {{#spec-member title="Panel header with count, stateless and stateful actions, multiple control groups, filtering, and compact subnav"}}
+      <vbox class="layout-demo">
+        <vbox class="rsa-application-layout-panel-header" xs="12" fit>
+          <hbox>
+            <hbox class="title">
+              <h2>
+                {{#rsa-content-tethered-panel-trigger triggerEvent="click" panel='uniquePanelId'}}
+                  Panel Title <span class="count">(1234)</span>
+                  {{rsa-icon name="arrow-down-12" size="smaller"}}
+                {{/rsa-content-tethered-panel-trigger}}
+              </h2>
+
+              {{#rsa-content-tethered-panel position='bottom' panelId='uniquePanelId' displayCloseButton=false}}
+                <ul class="rsa-dropdown-action-list">
+                  <li class="{{if optionOneIsActive 'is-active'}}" {{action 'activate' 'optionOneIsActive'}}>Option 1</li>
+                  <li class="{{if optionTwoIsActive 'is-active'}}" {{action 'activate' 'optionTwoIsActive'}}>Option 2</li>
+                  <li class="{{if optionThreeIsActive 'is-active'}}" {{action 'activate' 'optionThreeIsActive'}}>Option 3</li>
+                </ul>
+              {{/rsa-content-tethered-panel}}
+            </hbox>
+
+            <hbox fit class="actions">
+              <hbox class="rsa-icon-button-group">
+                {{#rsa-form-button allowToggleActive=true isIconOnly=true}}
+                  {{rsa-icon name='close'}}
+                {{/rsa-form-button}}
+                {{#rsa-form-button allowToggleActive=true isIconOnly=true}}
+                  {{rsa-icon name='cog'}}
+                {{/rsa-form-button}}
+              </hbox>
+
+              <hbox class="rsa-icon-button-group">
+                {{#rsa-form-button isIconOnly=true}}
+                  {{rsa-icon name='close'}}
+                {{/rsa-form-button}}
+                {{#rsa-form-button isIconOnly=true}}
+                  {{rsa-icon name='cog'}}
+                {{/rsa-form-button}}
+              </hbox>
+            </hbox>
+          </hbox>
+
+          <hbox>
+            <hbox class="controls">
+              <hbox class="panel-control-group" fit>
+                <hbox class="rsa-button-group">
+                  {{#rsa-form-button}}
+                    Control Button
+                  {{/rsa-form-button}}
+                </hbox>
+
+                <hbox class="rsa-button-group">
+                  {{#rsa-form-button}}
+                    Control Button
+                  {{/rsa-form-button}}
+
+                  {{#rsa-form-button class="rsa-split-dropdown"}}
+                    {{rsa-icon name="arrow-down-12"}}
+                  {{/rsa-form-button}}
+                </hbox>
+              </hbox>
+
+              <div class="panel-control-group">
+                <hbox class="rsa-button-group">
+                  {{#rsa-form-button}}
+                    Control Button
+                  {{/rsa-form-button}}
+                </hbox>
               </div>
-            </vbox>
-          </vbox>
+            </hbox>
+
+            <hbox class="filters" fit>
+              {{rsa-form-input placeholder='Filter results'}}
+            </hbox>
+          </hbox>
         </vbox>
 
-        {{!-- BEGIN-SNIPPET panelstyle1
-        <vbox class="rsa-application-layout-panel">
-          <vbox class="rsa-application-layout-panel-header" fit>
-            <hbox>
-              <hbox>
-                <h2>Panel Title</h2>
+        <vbox class="rsa-application-layout-panel-content scroll-box" xs="12">
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+        </vbox>
+      </vbox>
+
+      {{!-- BEGIN-SNIPPET panelstyle7
+      <vbox class="rsa-application-layout-panel-header" xs="12" fit>
+        <hbox>
+          <hbox class="title">
+            <h2>
+              {{#rsa-content-tethered-panel-trigger triggerEvent="click" panel='uniquePanelId'}}
+                Panel Title <span class="count">(1234)</span>
+                {{rsa-icon name="arrow-down-12" size="smaller"}}
+              {{/rsa-content-tethered-panel-trigger}}
+            </h2>
+
+            {{#rsa-content-tethered-panel position='bottom' panelId='uniquePanelId' displayCloseButton=false}}
+              <ul class="rsa-dropdown-action-list">
+                <li class="{{if optionOneIsActive 'is-active'}}" {{action 'activate' 'optionOneIsActive'}}>Option 1</li>
+                <li class="{{if optionTwoIsActive 'is-active'}}" {{action 'activate' 'optionTwoIsActive'}}>Option 2</li>
+                <li class="{{if optionThreeIsActive 'is-active'}}" {{action 'activate' 'optionThreeIsActive'}}>Option 3</li>
+              </ul>
+            {{/rsa-content-tethered-panel}}
+          </hbox>
+
+          <hbox fit class="actions">
+            <hbox class="rsa-icon-button-group">
+              {{#rsa-form-button allowToggleActive=true isIconOnly=true}}
+                {{rsa-icon name='close'}}
+              {{/rsa-form-button}}
+              {{#rsa-form-button allowToggleActive=true isIconOnly=true}}
+                {{rsa-icon name='cog'}}
+              {{/rsa-form-button}}
+            </hbox>
+
+            <hbox class="rsa-icon-button-group">
+              {{#rsa-form-button isIconOnly=true}}
+                {{rsa-icon name='close'}}
+              {{/rsa-form-button}}
+              {{#rsa-form-button isIconOnly=true}}
+                {{rsa-icon name='cog'}}
+              {{/rsa-form-button}}
+            </hbox>
+          </hbox>
+        </hbox>
+
+        <hbox>
+          <hbox class="controls">
+            <hbox class="panel-control-group" fit>
+              <hbox class="rsa-button-group">
+                {{#rsa-form-button}}
+                  Control Button
+                {{/rsa-form-button}}
+              </hbox>
+
+              <hbox class="rsa-button-group">
+                {{#rsa-form-button}}
+                  Control Button
+                {{/rsa-form-button}}
+
+                {{#rsa-form-button class="rsa-split-dropdown"}}
+                  {{rsa-icon name="arrow-down-12"}}
+                {{/rsa-form-button}}
               </hbox>
             </hbox>
-          </vbox>
 
-          <vbox class="rsa-application-layout-panel-content">
-            <div class="scroll-box">
-              <p>Panel Content</p>
-            </div>
-          </vbox>
-        </vbox>
-        END-SNIPPET --}}
-        {{code-snippet name="panelstyle1.hbs"}}
-      {{/spec-member}}
-
-      {{#spec-member title="Panel header with count, but no actions or controls"}}
-        <vbox class="panel-demo-wrapper">
-          <vbox class="rsa-application-layout-panel">
-            <vbox class="rsa-application-layout-panel-header" fit>
-              <hbox>
-                <hbox>
-                  <h2>Panel Title <span class="count">(1234)</span></h2>
-                </hbox>
+            <div class="panel-control-group">
+              <hbox class="rsa-button-group">
+                {{#rsa-form-button}}
+                  Control Button
+                {{/rsa-form-button}}
               </hbox>
-            </vbox>
+            </div>
+          </hbox>
 
-            <vbox class="rsa-application-layout-panel-content">
-              <div class="scroll-box">
-                <p>Panel Content</p>
+          <hbox class="filters" fit>
+            {{rsa-form-input placeholder='Filter results'}}
+          </hbox>
+        </hbox>
+      </vbox>
+
+      <vbox class="rsa-application-layout-panel-content scroll-box" xs="12">
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+      </vbox>
+      END-SNIPPET --}}
+      {{code-snippet name="panelstyle7.hbs"}}
+    {{/spec-member}}
+
+    {{#spec-member title="Panel header with count, stateless and stateful actions, multiple control groups, filtering, and expanded subnav"}}
+      <vbox class="layout-demo">
+        <vbox class="rsa-application-layout-panel-header" xs="12" fit>
+          <hbox>
+            <hbox class="title">
+              <h2 class="with-separator">Panel Title <span class="count">(1234)</span></h2>
+              <div class="rsa-nav-tab-group">
+                {{#rsa-nav-tab align='left' isActive=optionOneIsActive click=(action 'activate' 'optionOneIsActive')}}
+                  <div class="label">Option 1</div>
+                {{/rsa-nav-tab}}
+
+                {{#rsa-nav-tab align='left' isActive=optionTwoIsActive click=(action 'activate' 'optionTwoIsActive')}}
+                  <div class="label">Option 2</div>
+                {{/rsa-nav-tab}}
+
+                {{#rsa-nav-tab align='left' isActive=optionThreeIsActive click=(action 'activate' 'optionThreeIsActive')}}
+                  <div class="label">Option 3</div>
+                {{/rsa-nav-tab}}
               </div>
-            </vbox>
-          </vbox>
-        </vbox>
+            </hbox>
 
-        {{!-- BEGIN-SNIPPET panelstyle2
-        <vbox class="rsa-application-layout-panel">
-          <vbox class="rsa-application-layout-panel-header" fit>
-            <hbox>
-              <hbox>
-                <h2>Panel Title <span class="count">(1234)</span></h2>
+            <hbox fit class="actions">
+              <hbox class="rsa-icon-button-group">
+                {{#rsa-form-button allowToggleActive=true isIconOnly=true}}
+                  {{rsa-icon name='close'}}
+                {{/rsa-form-button}}
+                {{#rsa-form-button allowToggleActive=true isIconOnly=true}}
+                  {{rsa-icon name='cog'}}
+                {{/rsa-form-button}}
+              </hbox>
+
+              <hbox class="rsa-icon-button-group">
+                {{#rsa-form-button isIconOnly=true}}
+                  {{rsa-icon name='close'}}
+                {{/rsa-form-button}}
+                {{#rsa-form-button isIconOnly=true}}
+                  {{rsa-icon name='cog'}}
+                {{/rsa-form-button}}
               </hbox>
             </hbox>
-          </vbox>
+          </hbox>
 
-          <vbox class="rsa-application-layout-panel-content">
-            <div class="scroll-box">
-              <p>Panel Content</p>
+          <hbox>
+            <hbox class="controls">
+              <hbox class="panel-control-group" fit>
+                <hbox class="rsa-button-group">
+                  {{#rsa-form-button}}
+                    Control Button
+                  {{/rsa-form-button}}
+                </hbox>
+
+                <hbox class="rsa-button-group">
+                  {{#rsa-form-button}}
+                    Control Button
+                  {{/rsa-form-button}}
+
+                  {{#rsa-form-button class="rsa-split-dropdown"}}
+                    {{rsa-icon name="arrow-down-12"}}
+                  {{/rsa-form-button}}
+                </hbox>
+              </hbox>
+
+              <hbox class="panel-control-group">
+                <hbox class="rsa-button-group">
+                  {{#rsa-form-button}}
+                    Control Button
+                  {{/rsa-form-button}}
+                </hbox>
+              </hbox>
+            </hbox>
+
+            <hbox class="filters" fit>
+              {{rsa-form-input placeholder='Filter results'}}
+            </hbox>
+          </hbox>
+        </vbox>
+
+        <vbox class="rsa-application-layout-panel-content scroll-box" xs="12">
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+          <p>Text</p>
+        </vbox>
+      </vbox>
+
+      {{!-- BEGIN-SNIPPET panelstyle8
+      <vbox class="rsa-application-layout-panel-header" xs="12" fit>
+        <hbox>
+          <hbox class="title">
+            <h2 class="with-separator">Panel Title <span class="count">(1234)</span></h2>
+            <div class="rsa-nav-tab-group">
+              {{#rsa-nav-tab align='left' isActive=optionOneIsActive click=(action 'activate' 'optionOneIsActive')}}
+                <div class="label">Option 1</div>
+              {{/rsa-nav-tab}}
+
+              {{#rsa-nav-tab align='left' isActive=optionTwoIsActive click=(action 'activate' 'optionTwoIsActive')}}
+                <div class="label">Option 2</div>
+              {{/rsa-nav-tab}}
+
+              {{#rsa-nav-tab align='left' isActive=optionThreeIsActive click=(action 'activate' 'optionThreeIsActive')}}
+                <div class="label">Option 3</div>
+              {{/rsa-nav-tab}}
             </div>
-          </vbox>
-        </vbox>
-        END-SNIPPET --}}
-        {{code-snippet name="panelstyle2.hbs"}}
-      {{/spec-member}}
+          </hbox>
 
-      {{#spec-member title="Panel header with count and stateless actions, but no controls"}}
-        <vbox class="panel-demo-wrapper">
-          <vbox class="rsa-application-layout-panel">
-            <vbox class="rsa-application-layout-panel-header" fit>
-              <hbox>
-                <hbox>
-                  <h2>Panel Title <span class="count">(1234)</span></h2>
-                </hbox>
-
-                <hbox fit class="actions">
-                  <div class="rsa-icon-button-group">
-                    {{#rsa-form-button isIconOnly=true}}
-                      {{rsa-icon name='cog'}}
-                    {{/rsa-form-button}}
-                  </div>
-                </hbox>
-              </hbox>
-            </vbox>
-
-            <vbox class="rsa-application-layout-panel-content">
-              <div class="scroll-box">
-                <p>Panel Content</p>
-              </div>
-            </vbox>
-          </vbox>
-        </vbox>
-
-        {{!-- BEGIN-SNIPPET panelstyle3
-        <vbox class="rsa-application-layout-panel">
-          <vbox class="rsa-application-layout-panel-header" fit>
-            <hbox>
-              <hbox>
-                <h2>Panel Title <span class="count">(1234)</span></h2>
-              </hbox>
-
-              <hbox fit class="actions">
-                <div class="rsa-icon-button-group">
-                  {{#rsa-form-button isIconOnly=true}}
-                    {{rsa-icon name='cog'}}
-                  {{/rsa-form-button}}
-                </div>
-              </hbox>
+          <hbox fit class="actions">
+            <hbox class="rsa-icon-button-group">
+              {{#rsa-form-button allowToggleActive=true isIconOnly=true}}
+                {{rsa-icon name='close'}}
+              {{/rsa-form-button}}
+              {{#rsa-form-button allowToggleActive=true isIconOnly=true}}
+                {{rsa-icon name='cog'}}
+              {{/rsa-form-button}}
             </hbox>
-          </vbox>
 
-          <vbox class="rsa-application-layout-panel-content">
-            <div class="scroll-box">
-              <p>Panel Content</p>
-            </div>
-          </vbox>
-        </vbox>
-        END-SNIPPET --}}
-        {{code-snippet name="panelstyle3.hbs"}}
-      {{/spec-member}}
+            <hbox class="rsa-icon-button-group">
+              {{#rsa-form-button isIconOnly=true}}
+                {{rsa-icon name='close'}}
+              {{/rsa-form-button}}
+              {{#rsa-form-button isIconOnly=true}}
+                {{rsa-icon name='cog'}}
+              {{/rsa-form-button}}
+            </hbox>
+          </hbox>
+        </hbox>
 
-      {{#spec-member title="Panel header with count, stateless actions, and one control group"}}
-        <vbox class="panel-demo-wrapper">
-          <vbox class="rsa-application-layout-panel">
-            <vbox class="rsa-application-layout-panel-header" fit>
-              <hbox>
-                <hbox class="title">
-                  <h2>Panel Title <span class="count">(1234)</span></h2>
-                </hbox>
-
-                <hbox fit class="actions">
-                  <div class="rsa-icon-button-group">
-                    {{#rsa-form-button isIconOnly=true}}
-                      {{rsa-icon name='cog'}}
-                    {{/rsa-form-button}}
-                  </div>
-                </hbox>
+        <hbox>
+          <hbox class="controls">
+            <hbox class="panel-control-group" fit>
+              <hbox class="rsa-button-group">
+                {{#rsa-form-button}}
+                  Control Button
+                {{/rsa-form-button}}
               </hbox>
 
-              <hbox>
-                <hbox class="controls">
-                  <div class="panel-control-group">
-                    <div class="rsa-button-group">
-                      {{#rsa-form-button}}
-                        Control Button
-                      {{/rsa-form-button}}
-                    </div>
+              <hbox class="rsa-button-group">
+                {{#rsa-form-button}}
+                  Control Button
+                {{/rsa-form-button}}
 
-                    <div class="rsa-button-group">
-                      {{#rsa-form-button}}
-                        Control Button
-                      {{/rsa-form-button}}
-
-                      {{#rsa-form-button class="rsa-split-dropdown"}}
-                        {{rsa-icon name="arrow-down-12"}}
-                      {{/rsa-form-button}}
-                    </div>
-                  </div>
-                </hbox>
-              </hbox>
-            </vbox>
-
-            <vbox class="rsa-application-layout-panel-content">
-              <div class="scroll-box">
-                <p>Panel Content</p>
-              </div>
-            </vbox>
-          </vbox>
-        </vbox>
-
-        {{!-- BEGIN-SNIPPET panelstyle4
-        <vbox class="rsa-application-layout-panel">
-          <vbox class="rsa-application-layout-panel-header" fit>
-            <hbox>
-              <hbox class="title">
-                <h2>Panel Title <span class="count">(1234)</span></h2>
-              </hbox>
-
-              <hbox fit class="actions">
-                <div class="rsa-icon-button-group">
-                  {{#rsa-form-button isIconOnly=true}}
-                    {{rsa-icon name='cog'}}
-                  {{/rsa-form-button}}
-                </div>
+                {{#rsa-form-button class="rsa-split-dropdown"}}
+                  {{rsa-icon name="arrow-down-12"}}
+                {{/rsa-form-button}}
               </hbox>
             </hbox>
 
-            <hbox>
-              <hbox class="controls">
-                <div class="panel-control-group">
-                  <div class="rsa-button-group">
-                    {{#rsa-form-button}}
-                      Control Button
-                    {{/rsa-form-button}}
-                  </div>
-
-                  <div class="rsa-button-group">
-                    {{#rsa-form-button}}
-                      Control Button
-                    {{/rsa-form-button}}
-
-                    {{#rsa-form-button class="rsa-split-dropdown"}}
-                      {{rsa-icon name="arrow-down-12"}}
-                    {{/rsa-form-button}}
-                  </div>
-                </div>
+            <hbox class="panel-control-group">
+              <hbox class="rsa-button-group">
+                {{#rsa-form-button}}
+                  Control Button
+                {{/rsa-form-button}}
               </hbox>
             </hbox>
-          </vbox>
-
-          <vbox class="rsa-application-layout-panel-content">
-            <div class="scroll-box">
-              <p>Panel Content</p>
-            </div>
-          </vbox>
-        </vbox>
-        END-SNIPPET --}}
-        {{code-snippet name="panelstyle4.hbs"}}
-      {{/spec-member}}
-
-      {{#spec-member title="Panel header with count, stateless actions, one control group, and filtering"}}
-        <vbox class="panel-demo-wrapper">
-          <vbox class="rsa-application-layout-panel">
-            <vbox class="rsa-application-layout-panel-header" fit>
-              <hbox>
-                <hbox class="title">
-                  <h2>Panel Title <span class="count">(1234)</span></h2>
-                </hbox>
-
-                <hbox fit class="actions">
-                  <div class="rsa-icon-button-group">
-                    {{#rsa-form-button isIconOnly=true}}
-                      {{rsa-icon name='cog'}}
-                    {{/rsa-form-button}}
-                  </div>
-                </hbox>
-              </hbox>
-
-              <hbox>
-                <hbox class="controls">
-                  <div class="panel-control-group">
-                    <div class="rsa-button-group">
-                      {{#rsa-form-button}}
-                        Control Button
-                      {{/rsa-form-button}}
-                    </div>
-
-                    <div class="rsa-button-group">
-                      {{#rsa-form-button}}
-                        Control Button
-                      {{/rsa-form-button}}
-
-                      {{#rsa-form-button class="rsa-split-dropdown"}}
-                        {{rsa-icon name="arrow-down-12"}}
-                      {{/rsa-form-button}}
-                    </div>
-                  </div>
-                </hbox>
-
-                <hbox class="filters" fit>
-                  {{rsa-form-input placeholder='Filter results'}}
-                </hbox>
-              </hbox>
-            </vbox>
-
-            <vbox class="rsa-application-layout-panel-content">
-              <div class="scroll-box">
-                <p>Panel Content</p>
-              </div>
-            </vbox>
-          </vbox>
-        </vbox>
-
-        {{!-- BEGIN-SNIPPET panelstyle5
-        <vbox class="rsa-application-layout-panel">
-          <vbox class="rsa-application-layout-panel-header" fit>
-            <hbox>
-              <hbox class="title">
-                <h2>Panel Title <span class="count">(1234)</span></h2>
-              </hbox>
-
-              <hbox fit class="actions">
-                <div class="rsa-icon-button-group">
-                  {{#rsa-form-button isIconOnly=true}}
-                    {{rsa-icon name='cog'}}
-                  {{/rsa-form-button}}
-                </div>
-              </hbox>
-            </hbox>
-
-            <hbox>
-              <hbox class="controls">
-                <div class="panel-control-group">
-                  <div class="rsa-button-group">
-                    {{#rsa-form-button}}
-                      Control Button
-                    {{/rsa-form-button}}
-                  </div>
-
-                  <div class="rsa-button-group">
-                    {{#rsa-form-button}}
-                      Control Button
-                    {{/rsa-form-button}}
-
-                    {{#rsa-form-button class="rsa-split-dropdown"}}
-                      {{rsa-icon name="arrow-down-12"}}
-                    {{/rsa-form-button}}
-                  </div>
-                </div>
-              </hbox>
-
-              <hbox class="filters" fit>
-                {{rsa-form-input placeholder='Filter results'}}
-              </hbox>
-            </hbox>
-          </vbox>
-
-          <vbox class="rsa-application-layout-panel-content">
-            <div class="scroll-box">
-              <p>Panel Content</p>
-            </div>
-          </vbox>
-        </vbox>
-        END-SNIPPET --}}
-        {{code-snippet name="panelstyle5.hbs"}}
-      {{/spec-member}}
-
-      {{#spec-member title="Panel header with count, stateless and stateful actions, multiple control groups, and filtering"}}
-        <vbox class="panel-demo-wrapper">
-          <vbox class="rsa-application-layout-panel">
-            <vbox class="rsa-application-layout-panel-header" fit>
-              <hbox>
-                <hbox class="title">
-                  <h2>Panel Title <span class="count">(1234)</span></h2>
-                </hbox>
-
-                <hbox fit class="actions">
-                  <div class="rsa-icon-button-group">
-                    {{#rsa-form-button allowToggleActive=true isIconOnly=true}}
-                      {{rsa-icon name='close'}}
-                    {{/rsa-form-button}}
-                    {{#rsa-form-button allowToggleActive=true isIconOnly=true}}
-                      {{rsa-icon name='cog'}}
-                    {{/rsa-form-button}}
-                  </div>
-
-                  <div class="rsa-icon-button-group">
-                    {{#rsa-form-button isIconOnly=true}}
-                      {{rsa-icon name='close'}}
-                    {{/rsa-form-button}}
-                    {{#rsa-form-button isIconOnly=true}}
-                      {{rsa-icon name='cog'}}
-                    {{/rsa-form-button}}
-                  </div>
-                </hbox>
-              </hbox>
-
-              <hbox>
-                <hbox class="controls">
-                  <div class="panel-control-group">
-                    <div class="rsa-button-group">
-                      {{#rsa-form-button}}
-                        Control Button
-                      {{/rsa-form-button}}
-                    </div>
-
-                    <div class="rsa-button-group">
-                      {{#rsa-form-button}}
-                        Control Button
-                      {{/rsa-form-button}}
-
-                      {{#rsa-form-button class="rsa-split-dropdown"}}
-                        {{rsa-icon name="arrow-down-12"}}
-                      {{/rsa-form-button}}
-                    </div>
-                  </div>
-
-                  <div class="panel-control-group">
-                    <div class="rsa-button-group">
-                      {{#rsa-form-button}}
-                        Control Button
-                      {{/rsa-form-button}}
-                    </div>
-                  </div>
-                </hbox>
-
-                <hbox class="filters" fit>
-                  {{rsa-form-input placeholder='Filter results'}}
-                </hbox>
-              </hbox>
-            </vbox>
-
-            <vbox class="rsa-application-layout-panel-content">
-              <div class="scroll-box">
-                <p>Panel Content</p>
-              </div>
-            </vbox>
-          </vbox>
-        </vbox>
-
-        {{!-- BEGIN-SNIPPET panelstyle6
-        <vbox class="rsa-application-layout-panel">
-          <vbox class="rsa-application-layout-panel-header" fit>
-            <hbox>
-              <hbox class="title">
-                <h2>Panel Title <span class="count">(1234)</span></h2>
-              </hbox>
-
-              <hbox fit class="actions">
-                <div class="rsa-icon-button-group">
-                  {{#rsa-form-button allowToggleActive=true isIconOnly=true}}
-                    {{rsa-icon name='close'}}
-                  {{/rsa-form-button}}
-                  {{#rsa-form-button allowToggleActive=true isIconOnly=true}}
-                    {{rsa-icon name='cog'}}
-                  {{/rsa-form-button}}
-                </div>
-
-                <div class="rsa-icon-button-group">
-                  {{#rsa-form-button isIconOnly=true}}
-                    {{rsa-icon name='close'}}
-                  {{/rsa-form-button}}
-                  {{#rsa-form-button isIconOnly=true}}
-                    {{rsa-icon name='cog'}}
-                  {{/rsa-form-button}}
-                </div>
-              </hbox>
-            </hbox>
-
-            <hbox>
-              <hbox class="controls">
-                <div class="panel-control-group">
-                  <div class="rsa-button-group">
-                    {{#rsa-form-button}}
-                      Control Button
-                    {{/rsa-form-button}}
-                  </div>
-
-                  <div class="rsa-button-group">
-                    {{#rsa-form-button}}
-                      Control Button
-                    {{/rsa-form-button}}
-
-                    {{#rsa-form-button class="rsa-split-dropdown"}}
-                      {{rsa-icon name="arrow-down-12"}}
-                    {{/rsa-form-button}}
-                  </div>
-                </div>
-
-                <div class="panel-control-group">
-                  <div class="rsa-button-group">
-                    {{#rsa-form-button}}
-                      Control Button
-                    {{/rsa-form-button}}
-                  </div>
-                </div>
-              </hbox>
-
-              <hbox class="filters" fit>
-                {{rsa-form-input placeholder='Filter results'}}
-              </hbox>
-            </hbox>
-          </vbox>
-
-          <vbox class="rsa-application-layout-panel-content">
-            <div class="scroll-box">
-              <p>Panel Content</p>
-            </div>
-          </vbox>
-        </vbox>
-        END-SNIPPET --}}
-        {{code-snippet name="panelstyle6.hbs"}}
-      {{/spec-member}}
-
-      {{#spec-member title="Panel header with count, stateless and stateful actions, multiple control groups, filtering, and compact subnav"}}
-        <vbox class="panel-demo-wrapper">
-          <vbox class="rsa-application-layout-panel">
-            <vbox class="rsa-application-layout-panel-header" fit>
-              <hbox>
-                <hbox class="title">
-                  <h2>
-                    {{#rsa-content-tethered-panel-trigger triggerEvent="click" panel='uniquePanelId'}}
-                      Panel Title <span class="count">(1234)</span>
-                      {{rsa-icon name="arrow-down-12" size="smaller"}}
-                    {{/rsa-content-tethered-panel-trigger}}
-                  </h2>
-
-                  {{#rsa-content-tethered-panel position='bottom' panelId='uniquePanelId' displayCloseButton=false}}
-                    <ul class="rsa-dropdown-action-list">
-                      <li class="{{if optionOneIsActive 'is-active'}}" {{action 'activate' 'optionOneIsActive'}}>Option 1</li>
-                      <li class="{{if optionTwoIsActive 'is-active'}}" {{action 'activate' 'optionTwoIsActive'}}>Option 2</li>
-                      <li class="{{if optionThreeIsActive 'is-active'}}" {{action 'activate' 'optionThreeIsActive'}}>Option 3</li>
-                    </ul>
-                  {{/rsa-content-tethered-panel}}
-                </hbox>
-
-                <hbox fit class="actions">
-                  <div class="rsa-icon-button-group">
-                    {{#rsa-form-button allowToggleActive=true isIconOnly=true}}
-                      {{rsa-icon name='close'}}
-                    {{/rsa-form-button}}
-                    {{#rsa-form-button allowToggleActive=true isIconOnly=true}}
-                      {{rsa-icon name='cog'}}
-                    {{/rsa-form-button}}
-                  </div>
-
-                  <div class="rsa-icon-button-group">
-                    {{#rsa-form-button isIconOnly=true}}
-                      {{rsa-icon name='close'}}
-                    {{/rsa-form-button}}
-                    {{#rsa-form-button isIconOnly=true}}
-                      {{rsa-icon name='cog'}}
-                    {{/rsa-form-button}}
-                  </div>
-                </hbox>
-              </hbox>
-
-              <hbox>
-                <hbox class="controls">
-                  <div class="panel-control-group">
-                    <div class="rsa-button-group">
-                      {{#rsa-form-button}}
-                        Control Button
-                      {{/rsa-form-button}}
-                    </div>
-
-                    <div class="rsa-button-group">
-                      {{#rsa-form-button}}
-                        Control Button
-                      {{/rsa-form-button}}
-
-                      {{#rsa-form-button class="rsa-split-dropdown"}}
-                        {{rsa-icon name="arrow-down-12"}}
-                      {{/rsa-form-button}}
-                    </div>
-                  </div>
-
-                  <div class="panel-control-group">
-                    <div class="rsa-button-group">
-                      {{#rsa-form-button}}
-                        Control Button
-                      {{/rsa-form-button}}
-                    </div>
-                  </div>
-                </hbox>
-
-                <hbox class="filters" fit>
-                  {{rsa-form-input placeholder='Filter results'}}
-                </hbox>
-              </hbox>
-            </vbox>
-
-            <vbox class="rsa-application-layout-panel-content">
-              <div class="scroll-box">
-                <p>Panel Content</p>
-              </div>
-            </vbox>
-          </vbox>
-        </vbox>
-
-        {{!-- BEGIN-SNIPPET panelstyle7
-        <vbox class="rsa-application-layout-panel">
-          <vbox class="rsa-application-layout-panel-header" fit>
-            <hbox>
-              <hbox class="title">
-                <h2>
-                  {{#rsa-content-tethered-panel-trigger triggerEvent="click" panel='uniquePanelId'}}
-                    Panel Title <span class="count">(1234)</span>
-                    {{rsa-icon name="arrow-down-12" size="smaller"}}
-                  {{/rsa-content-tethered-panel-trigger}}
-                </h2>
-
-                {{#rsa-content-tethered-panel position='bottom' panelId='uniquePanelId' displayCloseButton=false}}
-                  <ul class="rsa-dropdown-action-list">
-                    <li class="{{if optionOneIsActive 'is-active'}}" {{action 'activate' 'optionOneIsActive'}}>Option 1</li>
-                    <li class="{{if optionTwoIsActive 'is-active'}}" {{action 'activate' 'optionTwoIsActive'}}>Option 2</li>
-                    <li class="{{if optionThreeIsActive 'is-active'}}" {{action 'activate' 'optionThreeIsActive'}}>Option 3</li>
-                  </ul>
-                {{/rsa-content-tethered-panel}}
-              </hbox>
-
-              <hbox fit class="actions">
-                <div class="rsa-icon-button-group">
-                  {{#rsa-form-button allowToggleActive=true isIconOnly=true}}
-                    {{rsa-icon name='close'}}
-                  {{/rsa-form-button}}
-                  {{#rsa-form-button allowToggleActive=true isIconOnly=true}}
-                    {{rsa-icon name='cog'}}
-                  {{/rsa-form-button}}
-                </div>
-
-                <div class="rsa-icon-button-group">
-                  {{#rsa-form-button isIconOnly=true}}
-                    {{rsa-icon name='close'}}
-                  {{/rsa-form-button}}
-                  {{#rsa-form-button isIconOnly=true}}
-                    {{rsa-icon name='cog'}}
-                  {{/rsa-form-button}}
-                </div>
-              </hbox>
-            </hbox>
-
-            <hbox>
-              <hbox class="controls">
-                <div class="panel-control-group">
-                  <div class="rsa-button-group">
-                    {{#rsa-form-button}}
-                      Control Button
-                    {{/rsa-form-button}}
-                  </div>
-
-                  <div class="rsa-button-group">
-                    {{#rsa-form-button}}
-                      Control Button
-                    {{/rsa-form-button}}
-
-                    {{#rsa-form-button class="rsa-split-dropdown"}}
-                      {{rsa-icon name="arrow-down-12"}}
-                    {{/rsa-form-button}}
-                  </div>
-                </div>
-
-                <div class="panel-control-group">
-                  <div class="rsa-button-group">
-                    {{#rsa-form-button}}
-                      Control Button
-                    {{/rsa-form-button}}
-                  </div>
-                </div>
-              </hbox>
-
-              <hbox class="filters" fit>
-                {{rsa-form-input placeholder='Filter results'}}
-              </hbox>
-            </hbox>
-          </vbox>
-
-          <vbox class="rsa-application-layout-panel-content">
-            <div class="scroll-box">
-              <p>Panel Content</p>
-            </div>
-          </vbox>
-        </vbox>
-        END-SNIPPET --}}
-        {{code-snippet name="panelstyle7.hbs"}}
-      {{/spec-member}}
-
-      {{#spec-member title="Panel header with count, stateless and stateful actions, multiple control groups, filtering, and expanded subnav"}}
-        <vbox class="panel-demo-wrapper">
-          <vbox class="rsa-application-layout-panel">
-            <vbox class="rsa-application-layout-panel-header" fit>
-              <hbox>
-                <hbox class="title">
-                  <h2 class="with-separator">Panel Title <span class="count">(1234)</span></h2>
-                  <div class="rsa-nav-tab-group">
-                    {{#rsa-nav-tab align='left' isActive=optionOneIsActive click=(action 'activate' 'optionOneIsActive')}}
-                      <div class="label">Option 1</div>
-                    {{/rsa-nav-tab}}
-
-                    {{#rsa-nav-tab align='left' isActive=optionTwoIsActive click=(action 'activate' 'optionTwoIsActive')}}
-                      <div class="label">Option 2</div>
-                    {{/rsa-nav-tab}}
-
-                    {{#rsa-nav-tab align='left' isActive=optionThreeIsActive click=(action 'activate' 'optionThreeIsActive')}}
-                      <div class="label">Option 3</div>
-                    {{/rsa-nav-tab}}
-                  </div>
-                </hbox>
-
-                <hbox fit class="actions">
-                  <div class="rsa-icon-button-group">
-                    {{#rsa-form-button allowToggleActive=true isIconOnly=true}}
-                      {{rsa-icon name='close'}}
-                    {{/rsa-form-button}}
-                    {{#rsa-form-button allowToggleActive=true isIconOnly=true}}
-                      {{rsa-icon name='cog'}}
-                    {{/rsa-form-button}}
-                  </div>
-
-                  <div class="rsa-icon-button-group">
-                    {{#rsa-form-button isIconOnly=true}}
-                      {{rsa-icon name='close'}}
-                    {{/rsa-form-button}}
-                    {{#rsa-form-button isIconOnly=true}}
-                      {{rsa-icon name='cog'}}
-                    {{/rsa-form-button}}
-                  </div>
-                </hbox>
-              </hbox>
-
-              <hbox>
-                <hbox class="controls">
-                  <div class="panel-control-group">
-                    <div class="rsa-button-group">
-                      {{#rsa-form-button}}
-                        Control Button
-                      {{/rsa-form-button}}
-                    </div>
-
-                    <div class="rsa-button-group">
-                      {{#rsa-form-button}}
-                        Control Button
-                      {{/rsa-form-button}}
-
-                      {{#rsa-form-button class="rsa-split-dropdown"}}
-                        {{rsa-icon name="arrow-down-12"}}
-                      {{/rsa-form-button}}
-                    </div>
-                  </div>
-
-                  <div class="panel-control-group">
-                    <div class="rsa-button-group">
-                      {{#rsa-form-button}}
-                        Control Button
-                      {{/rsa-form-button}}
-                    </div>
-                  </div>
-                </hbox>
-
-                <hbox class="filters" fit>
-                  {{rsa-form-input placeholder='Filter results'}}
-                </hbox>
-              </hbox>
-            </vbox>
-
-            <vbox class="rsa-application-layout-panel-content">
-              <div class="scroll-box">
-                <p>Panel Content</p>
-              </div>
-            </vbox>
-          </vbox>
-        </vbox>
-
-        {{!-- BEGIN-SNIPPET panelstyle8
-        <vbox class="rsa-application-layout-panel">
-          <vbox class="rsa-application-layout-panel-header" fit>
-            <hbox>
-              <hbox class="title">
-                <h2 class="with-separator">Panel Title <span class="count">(1234)</span></h2>
-                <div class="rsa-nav-tab-group">
-                  {{#rsa-nav-tab align='left' isActive=optionOneIsActive click=(action 'activate' 'optionOneIsActive')}}
-                    <div class="label">Option 1</div>
-                  {{/rsa-nav-tab}}
-
-                  {{#rsa-nav-tab align='left' isActive=optionTwoIsActive click=(action 'activate' 'optionTwoIsActive')}}
-                    <div class="label">Option 2</div>
-                  {{/rsa-nav-tab}}
-
-                  {{#rsa-nav-tab align='left' isActive=optionThreeIsActive click=(action 'activate' 'optionThreeIsActive')}}
-                    <div class="label">Option 3</div>
-                  {{/rsa-nav-tab}}
-                </div>
-              </hbox>
-
-              <hbox fit class="actions">
-                <div class="rsa-icon-button-group">
-                  {{#rsa-form-button allowToggleActive=true isIconOnly=true}}
-                    {{rsa-icon name='close'}}
-                  {{/rsa-form-button}}
-                  {{#rsa-form-button allowToggleActive=true isIconOnly=true}}
-                    {{rsa-icon name='cog'}}
-                  {{/rsa-form-button}}
-                </div>
-
-                <div class="rsa-icon-button-group">
-                  {{#rsa-form-button isIconOnly=true}}
-                    {{rsa-icon name='close'}}
-                  {{/rsa-form-button}}
-                  {{#rsa-form-button isIconOnly=true}}
-                    {{rsa-icon name='cog'}}
-                  {{/rsa-form-button}}
-                </div>
-              </hbox>
-            </hbox>
-
-            <hbox>
-              <hbox class="controls">
-                <div class="panel-control-group">
-                  <div class="rsa-button-group">
-                    {{#rsa-form-button}}
-                      Control Button
-                    {{/rsa-form-button}}
-                  </div>
-
-                  <div class="rsa-button-group">
-                    {{#rsa-form-button}}
-                      Control Button
-                    {{/rsa-form-button}}
-
-                    {{#rsa-form-button class="rsa-split-dropdown"}}
-                      {{rsa-icon name="arrow-down-12"}}
-                    {{/rsa-form-button}}
-                  </div>
-                </div>
-
-                <div class="panel-control-group">
-                  <div class="rsa-button-group">
-                    {{#rsa-form-button}}
-                      Control Button
-                    {{/rsa-form-button}}
-                  </div>
-                </div>
-              </hbox>
-
-              <hbox class="filters" fit>
-                {{rsa-form-input placeholder='Filter results'}}
-              </hbox>
-            </hbox>
-          </vbox>
-
-          <vbox class="rsa-application-layout-panel-content">
-            <div class="scroll-box">
-              <p>Panel Content</p>
-            </div>
-          </vbox>
-        </vbox>
-        END-SNIPPET --}}
-        {{code-snippet name="panelstyle8.hbs"}}
-      {{/spec-member}}
-    {{/spec-category}}
-  </div>
-</hbox>
+          </hbox>
+
+          <hbox class="filters" fit>
+            {{rsa-form-input placeholder='Filter results'}}
+          </hbox>
+        </hbox>
+      </vbox>
+
+      <vbox class="rsa-application-layout-panel-content scroll-box" xs="12">
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+        <p>Text</p>
+      </vbox>
+      END-SNIPPET --}}
+      {{code-snippet name="panelstyle8.hbs"}}
+    {{/spec-member}}
+  {{/spec-category}}
+</vbox>

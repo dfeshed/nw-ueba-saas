@@ -2,20 +2,18 @@
   {{spec-masthead model=model}}
 </hbox>
 
-<hbox>
-  <div class="scroll-box">
-    {{#spec-category title="Block Style"}}
-      {{#spec-member title="Default"}}
-        <div class="form-error-message">
-          Error message text goes here.
-        </div>
-        {{!-- BEGIN-SNIPPET formError1 
-        <div class="form-error-message">
-          Error message text goes here.
-        </div>
-        END-SNIPPET --}}
-        {{code-snippet name="formError1.hbs"}}
-      {{/spec-member}}
-    {{/spec-category}}
-  </div>
-</hbox>
+<vbox class="scroll-box">
+  {{#spec-category title="Block Style"}}
+    {{#spec-member title="Default"}}
+      <div class="form-error-message">
+        Error message text goes here.
+      </div>
+      {{!-- BEGIN-SNIPPET formError1 
+      <div class="form-error-message">
+        Error message text goes here.
+      </div>
+      END-SNIPPET --}}
+      {{code-snippet name="formError1.hbs"}}
+    {{/spec-member}}
+  {{/spec-category}}
+</vbox>

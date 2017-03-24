@@ -2,392 +2,390 @@
   {{spec-masthead model=model}}
 </hbox>
 
-<hbox>
-  <div class="spec-container scroll-box">
-    {{spec-toc
-      offset=-210
-      toc=toc
-      scrollTo=(route-action 'scrollTo')}}
+<vbox class="scroll-box">
+  {{spec-toc
+    offset=-210
+    toc=toc
+    scrollTo=(route-action 'scrollTo')}}
 
-    {{#spec-category
-      id="typeface"
-      title="Typeface"
-      subtitle="Open Sans is used exclusively throughout RSA products."
-      description="While Open Sans is the only font used, use of the predefined styles below allow for easy communication of context. Size, weight, spacing, and case can be used to satisfy edge cases not already defined in the style options."}}
+  {{#spec-category
+    id="typeface"
+    title="Typeface"
+    subtitle="Open Sans is used exclusively throughout RSA products."
+    description="While Open Sans is the only font used, use of the predefined styles below allow for easy communication of context. Size, weight, spacing, and case can be used to satisfy edge cases not already defined in the style options."}}
 
-      {{#spec-member}}
-        <div class="rsa-font-header-larger">
-          <div>A B C D E F G H I J K L M N O P Q R S T U V W X Y Z</div>
-          <div>a b c d e f g h i j k l m n o p q r s t u v w x y z</div>
-          <div>0 1 2 3 4 5 6 7 8 9</div>
-        </div>
+    {{#spec-member}}
+      <div class="rsa-font-header-larger">
+        <div>A B C D E F G H I J K L M N O P Q R S T U V W X Y Z</div>
+        <div>a b c d e f g h i j k l m n o p q r s t u v w x y z</div>
+        <div>0 1 2 3 4 5 6 7 8 9</div>
+      </div>
 
-        {{!-- BEGIN-SNIPPET typo1
-        font-family: "Open Sans";
-        END-SNIPPET --}}
-        {{code-snippet name="typo1.hbs"}}
-      {{/spec-member}}
-    {{/spec-category}}
+      {{!-- BEGIN-SNIPPET typo1
+      font-family: "Open Sans";
+      END-SNIPPET --}}
+      {{code-snippet name="typo1.hbs"}}
+    {{/spec-member}}
+  {{/spec-category}}
 
-    {{#spec-category
-      id="styles"
-      title="Styles"
-      subtitle="Predetermined styles that can be used in a variety of scenarios."
-      description=""}}
+  {{#spec-category
+    id="styles"
+    title="Styles"
+    subtitle="Predetermined styles that can be used in a variety of scenarios."
+    description=""}}
 
-      {{#spec-member
-        title="Small Body"}}
-        <div class="rsa-font-body-small">
-          This is an example.
-        </div>
+    {{#spec-member
+      title="Small Body"}}
+      <div class="rsa-font-body-small">
+        This is an example.
+      </div>
 
-        {{!-- BEGIN-SNIPPET typo2
-        @include rsa-font(body, small);
-        END-SNIPPET --}}
-        {{code-snippet name="typo2.hbs"}}
+      {{!-- BEGIN-SNIPPET typo2
+      @include rsa-font(body, small);
+      END-SNIPPET --}}
+      {{code-snippet name="typo2.hbs"}}
 
-        {{!-- BEGIN-SNIPPET typo3
-        font-size: 11.9px;
-        line-height: 11.9px;
-        END-SNIPPET --}}
-        {{code-snippet name="typo3.hbs"}}
-      {{/spec-member}}
+      {{!-- BEGIN-SNIPPET typo3
+      font-size: 11.9px;
+      line-height: 11.9px;
+      END-SNIPPET --}}
+      {{code-snippet name="typo3.hbs"}}
+    {{/spec-member}}
 
-      {{#spec-member
-        title="Default Body"
-        subtitle="Default Body is a catch-all font style."}}
-        <div class="rsa-font-body">
-          This is an example.
-        </div>
+    {{#spec-member
+      title="Default Body"
+      subtitle="Default Body is a catch-all font style."}}
+      <div class="rsa-font-body">
+        This is an example.
+      </div>
 
-        {{!-- BEGIN-SNIPPET typo4
-        @include rsa-font(body);
-        END-SNIPPET --}}
-        {{code-snippet name="typo4.hbs"}}
+      {{!-- BEGIN-SNIPPET typo4
+      @include rsa-font(body);
+      END-SNIPPET --}}
+      {{code-snippet name="typo4.hbs"}}
 
-        {{!-- BEGIN-SNIPPET typo5
-        font-size: 14px;
-        line-height: 14px;
-        END-SNIPPET --}}
-        {{code-snippet name="typo5.hbs"}}
-      {{/spec-member}}
+      {{!-- BEGIN-SNIPPET typo5
+      font-size: 14px;
+      line-height: 14px;
+      END-SNIPPET --}}
+      {{code-snippet name="typo5.hbs"}}
+    {{/spec-member}}
 
-      {{#spec-member
-        title="Paragraph"
-        subtitle="Paragraph is similar to Default Body, but with an increased line-height."}}
-        <div class="rsa-font-paragraph">
-          This is an example.
-        </div>
+    {{#spec-member
+      title="Paragraph"
+      subtitle="Paragraph is similar to Default Body, but with an increased line-height."}}
+      <div class="rsa-font-paragraph">
+        This is an example.
+      </div>
 
-        {{!-- BEGIN-SNIPPET typo6
-        @include rsa-font(paragraph);
-        END-SNIPPET --}}
-        {{code-snippet name="typo6.hbs"}}
+      {{!-- BEGIN-SNIPPET typo6
+      @include rsa-font(paragraph);
+      END-SNIPPET --}}
+      {{code-snippet name="typo6.hbs"}}
 
-        {{!-- BEGIN-SNIPPET typo7
-        font-size: 14px;
-        line-height: 21px;
-        END-SNIPPET --}}
-        {{code-snippet name="typo7.hbs"}}
-      {{/spec-member}}
+      {{!-- BEGIN-SNIPPET typo7
+      font-size: 14px;
+      line-height: 21px;
+      END-SNIPPET --}}
+      {{code-snippet name="typo7.hbs"}}
+    {{/spec-member}}
 
-      {{#spec-member
-        title="Small Header"}}
-        <div class="rsa-font-header-small">
-          This is an example.
-        </div>
+    {{#spec-member
+      title="Small Header"}}
+      <div class="rsa-font-header-small">
+        This is an example.
+      </div>
 
-        {{!-- BEGIN-SNIPPET typo8
-        @include rsa-font(header, small);
-        END-SNIPPET --}}
-        {{code-snippet name="typo8.hbs"}}
+      {{!-- BEGIN-SNIPPET typo8
+      @include rsa-font(header, small);
+      END-SNIPPET --}}
+      {{code-snippet name="typo8.hbs"}}
 
-        {{!-- BEGIN-SNIPPET typo9
-        font-size: 9.8px;
-        line-height: 9.8px;
-        text-transform: uppercase;
-        font-weight: bold;
-        END-SNIPPET --}}
-        {{code-snippet name="typo9.hbs"}}
-      {{/spec-member}}
+      {{!-- BEGIN-SNIPPET typo9
+      font-size: 9.8px;
+      line-height: 9.8px;
+      text-transform: uppercase;
+      font-weight: bold;
+      END-SNIPPET --}}
+      {{code-snippet name="typo9.hbs"}}
+    {{/spec-member}}
 
-      {{#spec-member
-        title="Default Header"}}
-        <div class="rsa-font-header-default">
-          This is an example.
-        </div>
+    {{#spec-member
+      title="Default Header"}}
+      <div class="rsa-font-header-default">
+        This is an example.
+      </div>
 
-        {{!-- BEGIN-SNIPPET typo10
-        @include rsa-font(header);
-        END-SNIPPET --}}
-        {{code-snippet name="typo10.hbs"}}
+      {{!-- BEGIN-SNIPPET typo10
+      @include rsa-font(header);
+      END-SNIPPET --}}
+      {{code-snippet name="typo10.hbs"}}
 
-        {{!-- BEGIN-SNIPPET typo11
-        font-size: 14px;
-        line-height: 14px;
-        text-transform: uppercase;
-        END-SNIPPET --}}
-        {{code-snippet name="typo11.hbs"}}
-      {{/spec-member}}
+      {{!-- BEGIN-SNIPPET typo11
+      font-size: 14px;
+      line-height: 14px;
+      text-transform: uppercase;
+      END-SNIPPET --}}
+      {{code-snippet name="typo11.hbs"}}
+    {{/spec-member}}
 
-      {{#spec-member
-        title="Large Header"}}
-        <div class="rsa-font-header-large">
-          This is an example.
-        </div>
+    {{#spec-member
+      title="Large Header"}}
+      <div class="rsa-font-header-large">
+        This is an example.
+      </div>
 
-        {{!-- BEGIN-SNIPPET typo12
-        @include rsa-font(header, large);
-        END-SNIPPET --}}
-        {{code-snippet name="typo12.hbs"}}
+      {{!-- BEGIN-SNIPPET typo12
+      @include rsa-font(header, large);
+      END-SNIPPET --}}
+      {{code-snippet name="typo12.hbs"}}
 
-        {{!-- BEGIN-SNIPPET typo13
-        font-size: 17.92px;
-        line-height: 17.92px;
-        END-SNIPPET --}}
-        {{code-snippet name="typo13.hbs"}}
-      {{/spec-member}}
+      {{!-- BEGIN-SNIPPET typo13
+      font-size: 17.92px;
+      line-height: 17.92px;
+      END-SNIPPET --}}
+      {{code-snippet name="typo13.hbs"}}
+    {{/spec-member}}
 
-      {{#spec-member
-        title="Larger Header"}}
-        <div class="rsa-font-header-larger">
-          This is an example.
-        </div>
+    {{#spec-member
+      title="Larger Header"}}
+      <div class="rsa-font-header-larger">
+        This is an example.
+      </div>
 
-        {{!-- BEGIN-SNIPPET typo14
-        @include rsa-font(header, larger);
-        END-SNIPPET --}}
-        {{code-snippet name="typo14.hbs"}}
+      {{!-- BEGIN-SNIPPET typo14
+      @include rsa-font(header, larger);
+      END-SNIPPET --}}
+      {{code-snippet name="typo14.hbs"}}
 
-        {{!-- BEGIN-SNIPPET typo15
-        font-size: 24.15px;
-        line-height: 24.15px;
-        END-SNIPPET --}}
-        {{code-snippet name="typo15.hbs"}}
-      {{/spec-member}}
+      {{!-- BEGIN-SNIPPET typo15
+      font-size: 24.15px;
+      line-height: 24.15px;
+      END-SNIPPET --}}
+      {{code-snippet name="typo15.hbs"}}
+    {{/spec-member}}
 
-      {{#spec-member
-        title="Small Navigation"}}
-        <div class="rsa-font-navigation-small">
-          This is an example.
-        </div>
+    {{#spec-member
+      title="Small Navigation"}}
+      <div class="rsa-font-navigation-small">
+        This is an example.
+      </div>
 
-        {{!-- BEGIN-SNIPPET typo16
-        @include rsa-font(navigation, small);
-        END-SNIPPET --}}
-        {{code-snippet name="typo16.hbs"}}
+      {{!-- BEGIN-SNIPPET typo16
+      @include rsa-font(navigation, small);
+      END-SNIPPET --}}
+      {{code-snippet name="typo16.hbs"}}
 
-        {{!-- BEGIN-SNIPPET typo17
-        font-size: 9.8px;
-        line-height: 9.8px;
-        text-transform: uppercase;
-        letter-spacing: 2px;
-        END-SNIPPET --}}
-        {{code-snippet name="typo17.hbs"}}
-      {{/spec-member}}
+      {{!-- BEGIN-SNIPPET typo17
+      font-size: 9.8px;
+      line-height: 9.8px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      END-SNIPPET --}}
+      {{code-snippet name="typo17.hbs"}}
+    {{/spec-member}}
 
-      {{#spec-member
-        title="Default Navigation"}}
-        <div class="rsa-font-navigation-default">
-          This is an example.
-        </div>
+    {{#spec-member
+      title="Default Navigation"}}
+      <div class="rsa-font-navigation-default">
+        This is an example.
+      </div>
 
-        {{!-- BEGIN-SNIPPET typo18
-        @include rsa-font(navigation);
-        END-SNIPPET --}}
-        {{code-snippet name="typo18.hbs"}}
+      {{!-- BEGIN-SNIPPET typo18
+      @include rsa-font(navigation);
+      END-SNIPPET --}}
+      {{code-snippet name="typo18.hbs"}}
 
-        {{!-- BEGIN-SNIPPET typo19
-        font-size: 11.9px;
-        line-height: 11.9px;
-        text-transform: uppercase;
-        letter-spacing: 2px;
-        END-SNIPPET --}}
-        {{code-snippet name="typo19.hbs"}}
-      {{/spec-member}}
+      {{!-- BEGIN-SNIPPET typo19
+      font-size: 11.9px;
+      line-height: 11.9px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      END-SNIPPET --}}
+      {{code-snippet name="typo19.hbs"}}
+    {{/spec-member}}
 
-      {{#spec-member
-        title="Large Navigation"}}
-        <div class="rsa-font-navigation-large">
-          This is an example.
-        </div>
+    {{#spec-member
+      title="Large Navigation"}}
+      <div class="rsa-font-navigation-large">
+        This is an example.
+      </div>
 
-        {{!-- BEGIN-SNIPPET typo20
-        @include rsa-font(navigation, large);
-        END-SNIPPET --}}
-        {{code-snippet name="typo20.hbs"}}
+      {{!-- BEGIN-SNIPPET typo20
+      @include rsa-font(navigation, large);
+      END-SNIPPET --}}
+      {{code-snippet name="typo20.hbs"}}
 
-        {{!-- BEGIN-SNIPPET typo21
-        font-size: 14px;
-        line-height: 14px;
-        font-weight: bold;
-        letter-spacing: 2px;
-        text-transform: uppercase;
-        END-SNIPPET --}}
-        {{code-snippet name="typo21.hbs"}}
-      {{/spec-member}}
-    {{/spec-category}}
+      {{!-- BEGIN-SNIPPET typo21
+      font-size: 14px;
+      line-height: 14px;
+      font-weight: bold;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      END-SNIPPET --}}
+      {{code-snippet name="typo21.hbs"}}
+    {{/spec-member}}
+  {{/spec-category}}
 
-    {{#spec-category
-      id="sizes"
-      title="Sizes"}}
+  {{#spec-category
+    id="sizes"
+    title="Sizes"}}
 
-      {{#spec-member
-        title="Smaller"}}
-        <div class="rsa-font-smaller">
-          This is an example.
-        </div>
+    {{#spec-member
+      title="Smaller"}}
+      <div class="rsa-font-smaller">
+        This is an example.
+      </div>
 
-        {{!-- BEGIN-SNIPPET typo22
-        @include rsa-font(default, smaller);
-        END-SNIPPET --}}
-        {{code-snippet name="typo22.hbs"}}
+      {{!-- BEGIN-SNIPPET typo22
+      @include rsa-font(default, smaller);
+      END-SNIPPET --}}
+      {{code-snippet name="typo22.hbs"}}
 
-        {{!-- BEGIN-SNIPPET typo23
-        font-size: 9.8px;
-        END-SNIPPET --}}
-        {{code-snippet name="typo23.hbs"}}
-      {{/spec-member}}
+      {{!-- BEGIN-SNIPPET typo23
+      font-size: 9.8px;
+      END-SNIPPET --}}
+      {{code-snippet name="typo23.hbs"}}
+    {{/spec-member}}
 
-      {{#spec-member
-        title="Small"}}
-        <div class="rsa-font-small">
-          This is an example.
-        </div>
+    {{#spec-member
+      title="Small"}}
+      <div class="rsa-font-small">
+        This is an example.
+      </div>
 
-        {{!-- BEGIN-SNIPPET typo24
-        @include rsa-font(default, small);
-        END-SNIPPET --}}
-        {{code-snippet name="typo24.hbs"}}
+      {{!-- BEGIN-SNIPPET typo24
+      @include rsa-font(default, small);
+      END-SNIPPET --}}
+      {{code-snippet name="typo24.hbs"}}
 
-        {{!-- BEGIN-SNIPPET typo25
-        font-size: 11.9px;
-        END-SNIPPET --}}
-        {{code-snippet name="typo25.hbs"}}
-      {{/spec-member}}
+      {{!-- BEGIN-SNIPPET typo25
+      font-size: 11.9px;
+      END-SNIPPET --}}
+      {{code-snippet name="typo25.hbs"}}
+    {{/spec-member}}
 
-      {{#spec-member
-        title="Default"}}
-        <div class="rsa-font-default">
-          This is an example.
-        </div>
+    {{#spec-member
+      title="Default"}}
+      <div class="rsa-font-default">
+        This is an example.
+      </div>
 
-        {{!-- BEGIN-SNIPPET typo26
-        @include rsa-font();
-        END-SNIPPET --}}
-        {{code-snippet name="typo26.hbs"}}
+      {{!-- BEGIN-SNIPPET typo26
+      @include rsa-font();
+      END-SNIPPET --}}
+      {{code-snippet name="typo26.hbs"}}
 
-        {{!-- BEGIN-SNIPPET typo27
-        font-size: 14px;
-        END-SNIPPET --}}
-        {{code-snippet name="typo27.hbs"}}
-      {{/spec-member}}
+      {{!-- BEGIN-SNIPPET typo27
+      font-size: 14px;
+      END-SNIPPET --}}
+      {{code-snippet name="typo27.hbs"}}
+    {{/spec-member}}
 
-      {{#spec-member
-        title="Large"}}
-        <div class="rsa-font-large">
-          This is an example.
-        </div>
+    {{#spec-member
+      title="Large"}}
+      <div class="rsa-font-large">
+        This is an example.
+      </div>
 
-        {{!-- BEGIN-SNIPPET typo28
-        @include rsa-font(default, large);
-        END-SNIPPET --}}
-        {{code-snippet name="typo28.hbs"}}
+      {{!-- BEGIN-SNIPPET typo28
+      @include rsa-font(default, large);
+      END-SNIPPET --}}
+      {{code-snippet name="typo28.hbs"}}
 
-        {{!-- BEGIN-SNIPPET typo29
-        font-size: 17.92px;
-        END-SNIPPET --}}
-        {{code-snippet name="typo29.hbs"}}
-      {{/spec-member}}
+      {{!-- BEGIN-SNIPPET typo29
+      font-size: 17.92px;
+      END-SNIPPET --}}
+      {{code-snippet name="typo29.hbs"}}
+    {{/spec-member}}
 
-      {{#spec-member
-        title="Larger"}}
-        <div class="rsa-font-larger">
-          This is an example.
-        </div>
+    {{#spec-member
+      title="Larger"}}
+      <div class="rsa-font-larger">
+        This is an example.
+      </div>
 
-        {{!-- BEGIN-SNIPPET typo30
-        @include rsa-font(default, larger);
-        END-SNIPPET --}}
-        {{code-snippet name="typo30.hbs"}}
+      {{!-- BEGIN-SNIPPET typo30
+      @include rsa-font(default, larger);
+      END-SNIPPET --}}
+      {{code-snippet name="typo30.hbs"}}
 
-        {{!-- BEGIN-SNIPPET typo31
-        font-size: 24.15px;
-        END-SNIPPET --}}
-        {{code-snippet name="typo31.hbs"}}
-      {{/spec-member}}
-    {{/spec-category}}
+      {{!-- BEGIN-SNIPPET typo31
+      font-size: 24.15px;
+      END-SNIPPET --}}
+      {{code-snippet name="typo31.hbs"}}
+    {{/spec-member}}
+  {{/spec-category}}
 
-    {{#spec-category
-      id="weight"
-      title="Weight"}}
-      {{#spec-member
-        title="Light"}}
-        <div class="rsa-font-light">
-          This is an example.
-        </div>
+  {{#spec-category
+    id="weight"
+    title="Weight"}}
+    {{#spec-member
+      title="Light"}}
+      <div class="rsa-font-light">
+        This is an example.
+      </div>
 
-        {{!-- BEGIN-SNIPPET typo32
-        @include rsa-font(light);
-        END-SNIPPET --}}
-        {{code-snippet name="typo32.hbs"}}
+      {{!-- BEGIN-SNIPPET typo32
+      @include rsa-font(light);
+      END-SNIPPET --}}
+      {{code-snippet name="typo32.hbs"}}
 
-        {{!-- BEGIN-SNIPPET typo33
-        font-weight: 300;
-        END-SNIPPET --}}
-        {{code-snippet name="typo33.hbs"}}
-      {{/spec-member}}
+      {{!-- BEGIN-SNIPPET typo33
+      font-weight: 300;
+      END-SNIPPET --}}
+      {{code-snippet name="typo33.hbs"}}
+    {{/spec-member}}
 
-      {{#spec-member
-        title="Regular"}}
-        <div class="rsa-font-regular">
-          This is an example.
-        </div>
+    {{#spec-member
+      title="Regular"}}
+      <div class="rsa-font-regular">
+        This is an example.
+      </div>
 
-        {{!-- BEGIN-SNIPPET typo34
-        @include rsa-font();
-        END-SNIPPET --}}
-        {{code-snippet name="typo34.hbs"}}
+      {{!-- BEGIN-SNIPPET typo34
+      @include rsa-font();
+      END-SNIPPET --}}
+      {{code-snippet name="typo34.hbs"}}
 
-        {{!-- BEGIN-SNIPPET typo35
-        font-weight: 400;
-        END-SNIPPET --}}
-        {{code-snippet name="typo35.hbs"}}
-      {{/spec-member}}
+      {{!-- BEGIN-SNIPPET typo35
+      font-weight: 400;
+      END-SNIPPET --}}
+      {{code-snippet name="typo35.hbs"}}
+    {{/spec-member}}
 
-      {{#spec-member
-        title="Bold"}}
-        <div class="rsa-font-bold">
-          This is an example.
-        </div>
+    {{#spec-member
+      title="Bold"}}
+      <div class="rsa-font-bold">
+        This is an example.
+      </div>
 
-        {{!-- BEGIN-SNIPPET typo36
-        @include rsa-font(bold);
-        END-SNIPPET --}}
-        {{code-snippet name="typo36.hbs"}}
+      {{!-- BEGIN-SNIPPET typo36
+      @include rsa-font(bold);
+      END-SNIPPET --}}
+      {{code-snippet name="typo36.hbs"}}
 
-        {{!-- BEGIN-SNIPPET typo37
-        font-weight: 700;
-        END-SNIPPET --}}
-        {{code-snippet name="typo37.hbs"}}
-      {{/spec-member}}
+      {{!-- BEGIN-SNIPPET typo37
+      font-weight: 700;
+      END-SNIPPET --}}
+      {{code-snippet name="typo37.hbs"}}
+    {{/spec-member}}
 
-      {{#spec-member
-        title="Bolder"}}
-        <div class="rsa-font-bolder">
-          This is an example.
-        </div>
+    {{#spec-member
+      title="Bolder"}}
+      <div class="rsa-font-bolder">
+        This is an example.
+      </div>
 
-        {{!-- BEGIN-SNIPPET typo38
-        @include rsa-font(bolder);
-        END-SNIPPET --}}
-        {{code-snippet name="typo38.hbs"}}
+      {{!-- BEGIN-SNIPPET typo38
+      @include rsa-font(bolder);
+      END-SNIPPET --}}
+      {{code-snippet name="typo38.hbs"}}
 
-        {{!-- BEGIN-SNIPPET typo39
-        font-weight: 800;
-        END-SNIPPET --}}
-        {{code-snippet name="typo39.hbs"}}
-      {{/spec-member}}
-    {{/spec-category}}
-  </div>
-</hbox>
+      {{!-- BEGIN-SNIPPET typo39
+      font-weight: 800;
+      END-SNIPPET --}}
+      {{code-snippet name="typo39.hbs"}}
+    {{/spec-member}}
+  {{/spec-category}}
+</vbox>

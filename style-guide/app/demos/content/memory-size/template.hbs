@@ -2,40 +2,38 @@
   {{spec-masthead model=model}}
 </hbox>
 
-<hbox>
-  <div class="scroll-box">
-    {{#spec-category}}
-      {{#spec-member title="Small left as bytes"}}
-        {{rsa-content-memsize size='256' }}
-        {{!-- BEGIN-SNIPPET memory1
-        {{rsa-content-memsize size='256' }}
-        END-SNIPPET --}}
-        {{code-snippet name="memory1.hbs"}}
-      {{/spec-member}}
+<vbox class="scroll-box">
+  {{#spec-category}}
+    {{#spec-member title="Small left as bytes"}}
+      {{rsa-content-memsize size='256' }}
+      {{!-- BEGIN-SNIPPET memory1
+      {{rsa-content-memsize size='256' }}
+      END-SNIPPET --}}
+      {{code-snippet name="memory1.hbs"}}
+    {{/spec-member}}
 
-      {{#spec-member title="Large Converted to KB"}}
-        {{rsa-content-memsize size='2222' }}
-        {{!-- BEGIN-SNIPPET memory2
-        {{rsa-content-memsize size='2222' }}
-        END-SNIPPET --}}
-        {{code-snippet name="memory2.hbs"}}
-      {{/spec-member}}
+    {{#spec-member title="Large Converted to KB"}}
+      {{rsa-content-memsize size='2222' }}
+      {{!-- BEGIN-SNIPPET memory2
+      {{rsa-content-memsize size='2222' }}
+      END-SNIPPET --}}
+      {{code-snippet name="memory2.hbs"}}
+    {{/spec-member}}
 
-      {{#spec-member title="Larger Converted to MB"}}
-        {{rsa-content-memsize size='2222000' }}
-        {{!-- BEGIN-SNIPPET memory3
-        {{rsa-content-memsize size='2222000' }}
-        END-SNIPPET --}}
-        {{code-snippet name="memory3.hbs"}}
-      {{/spec-member}}
+    {{#spec-member title="Larger Converted to MB"}}
+      {{rsa-content-memsize size='2222000' }}
+      {{!-- BEGIN-SNIPPET memory3
+      {{rsa-content-memsize size='2222000' }}
+      END-SNIPPET --}}
+      {{code-snippet name="memory3.hbs"}}
+    {{/spec-member}}
 
-      {{#spec-member title="Largest Converted to GB"}}
-        {{rsa-content-memsize size='2222000000' }}
-        {{!-- BEGIN-SNIPPET memory4
-        {{rsa-content-memsize size='2222000000' }}
-        END-SNIPPET --}}
-        {{code-snippet name="memory4.hbs"}}
-      {{/spec-member}}
-    {{/spec-category}}
-  </div>
-</hbox>
+    {{#spec-member title="Largest Converted to GB"}}
+      {{rsa-content-memsize size='2222000000' }}
+      {{!-- BEGIN-SNIPPET memory4
+      {{rsa-content-memsize size='2222000000' }}
+      END-SNIPPET --}}
+      {{code-snippet name="memory4.hbs"}}
+    {{/spec-member}}
+  {{/spec-category}}
+</vbox>

@@ -2,74 +2,72 @@
   {{spec-masthead model=model}}
 </hbox>
 
-<hbox>
-  <div class="scroll-box">
-    {{#spec-category title="States"}}
-      {{#spec-member title="Default"}}
+<vbox class="scroll-box">
+  {{#spec-category title="States"}}
+    {{#spec-member title="Default"}}
+      {{range-slider
+        start=model.start
+        step=1
+        on-change="onSliderChange"}}
+      {{!-- BEGIN-SNIPPET slider1
         {{range-slider
           start=model.start
           step=1
           on-change="onSliderChange"}}
-        {{!-- BEGIN-SNIPPET slider1
-          {{range-slider
-            start=model.start
-            step=1
-            on-change="onSliderChange"}}
-        END-SNIPPET --}}
-        {{code-snippet name="slider1.hbs"}}
-      {{/spec-member}}
+      END-SNIPPET --}}
+      {{code-snippet name="slider1.hbs"}}
+    {{/spec-member}}
 
-      {{#spec-member title="Read Only"}}
+    {{#spec-member title="Read Only"}}
+      {{range-slider
+        start=model.start
+        step=1
+        isReadOnly=true
+        disabled=true
+        on-change="onSliderChange"}}
+      {{!-- BEGIN-SNIPPET slider2
         {{range-slider
           start=model.start
           step=1
           isReadOnly=true
           disabled=true
           on-change="onSliderChange"}}
-        {{!-- BEGIN-SNIPPET slider2
-          {{range-slider
-            start=model.start
-            step=1
-            isReadOnly=true
-            disabled=true
-            on-change="onSliderChange"}}
-        END-SNIPPET --}}
-        {{code-snippet name="slider2.hbs"}}
-      {{/spec-member}}
+      END-SNIPPET --}}
+      {{code-snippet name="slider2.hbs"}}
+    {{/spec-member}}
 
-      {{#spec-member title="Disabled"}}
+    {{#spec-member title="Disabled"}}
+      {{range-slider
+        start=model.start
+        step=1
+        tooltips=false
+        disabled=true
+        on-change="onSliderChange"}}
+      {{!-- BEGIN-SNIPPET slider3
         {{range-slider
           start=model.start
           step=1
           tooltips=false
           disabled=true
           on-change="onSliderChange"}}
-        {{!-- BEGIN-SNIPPET slider3
-          {{range-slider
-            start=model.start
-            step=1
-            tooltips=false
-            disabled=true
-            on-change="onSliderChange"}}
-        END-SNIPPET --}}
-        {{code-snippet name="slider3.hbs"}}
-      {{/spec-member}}
+      END-SNIPPET --}}
+      {{code-snippet name="slider3.hbs"}}
+    {{/spec-member}}
 
-      {{#spec-member title="Error"}}
+    {{#spec-member title="Error"}}
+      {{range-slider
+        start=model.start
+        step=1
+        isError=true
+        on-change="onSliderChange"}}
+      {{!-- BEGIN-SNIPPET slider4
         {{range-slider
           start=model.start
           step=1
           isError=true
           on-change="onSliderChange"}}
-        {{!-- BEGIN-SNIPPET slider4
-          {{range-slider
-            start=model.start
-            step=1
-            isError=true
-            on-change="onSliderChange"}}
-        END-SNIPPET --}}
-        {{code-snippet name="slider4.hbs"}}
-      {{/spec-member}}
-    {{/spec-category}}
-  </div>
-</hbox>
+      END-SNIPPET --}}
+      {{code-snippet name="slider4.hbs"}}
+    {{/spec-member}}
+  {{/spec-category}}
+</vbox>

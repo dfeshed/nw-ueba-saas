@@ -2,90 +2,88 @@
   {{spec-masthead model=model}}
 </hbox>
 
-<hbox>
-  <div class="scroll-box">
-    {{#spec-category}}
-      {{#spec-member}}
-        <div class='sg-demo-layer below'>
-          {{!-- BEGIN-SNIPPET layer1
-          @include rsa-layer(below)
+<vbox class="scroll-box">
+  {{#spec-category}}
+    {{#spec-member}}
+      <div class='sg-demo-layer below'>
+        {{!-- BEGIN-SNIPPET layer1
+        @include rsa-layer(below)
+        END-SNIPPET --}}
+        {{code-snippet name="layer1.hbs"}}
+        {{!-- BEGIN-SNIPPET layer2
+        z-index: -1;
+        END-SNIPPET --}}
+        {{code-snippet name="layer2.hbs"}}
+
+        <div class='sg-demo-layer base'>
+          {{!-- BEGIN-SNIPPET layer3
+          @include rsa-layer()
           END-SNIPPET --}}
-          {{code-snippet name="layer1.hbs"}}
-          {{!-- BEGIN-SNIPPET layer2
-          z-index: -1;
+          {{code-snippet name="layer3.hbs"}}
+          {{!-- BEGIN-SNIPPET layer4
+          z-index: 100;
           END-SNIPPET --}}
-          {{code-snippet name="layer2.hbs"}}
+          {{code-snippet name="layer4.hbs"}}
 
-          <div class='sg-demo-layer base'>
-            {{!-- BEGIN-SNIPPET layer3
-            @include rsa-layer()
+          <div class='sg-demo-layer panels'>
+            {{!-- BEGIN-SNIPPET layer5
+            @include rsa-layer(panels)
             END-SNIPPET --}}
-            {{code-snippet name="layer3.hbs"}}
-            {{!-- BEGIN-SNIPPET layer4
-            z-index: 100;
+            {{code-snippet name="layer5.hbs"}}
+            {{!-- BEGIN-SNIPPET layer6
+            z-index: 200;
             END-SNIPPET --}}
-            {{code-snippet name="layer4.hbs"}}
+            {{code-snippet name="layer6.hbs"}}
 
-            <div class='sg-demo-layer panels'>
-              {{!-- BEGIN-SNIPPET layer5
-              @include rsa-layer(panels)
+            <div class='sg-demo-layer controls'>
+              {{!-- BEGIN-SNIPPET layer7
+              @include rsa-layer(controls)
               END-SNIPPET --}}
-              {{code-snippet name="layer5.hbs"}}
-              {{!-- BEGIN-SNIPPET layer6
-              z-index: 200;
+              {{code-snippet name="layer7.hbs"}}
+              {{!-- BEGIN-SNIPPET layer8
+              z-index: 300;
               END-SNIPPET --}}
-              {{code-snippet name="layer6.hbs"}}
+              {{code-snippet name="layer8.hbs"}}
 
-              <div class='sg-demo-layer controls'>
-                {{!-- BEGIN-SNIPPET layer7
-                @include rsa-layer(controls)
+              <div class='sg-demo-layer overlay'>
+                {{!-- BEGIN-SNIPPET layer9
+                @include rsa-layer(overlay)
                 END-SNIPPET --}}
-                {{code-snippet name="layer7.hbs"}}
-                {{!-- BEGIN-SNIPPET layer8
-                z-index: 300;
+                {{code-snippet name="layer9.hbs"}}
+                {{!-- BEGIN-SNIPPET layer10
+                z-index: 400;
                 END-SNIPPET --}}
-                {{code-snippet name="layer8.hbs"}}
+                {{code-snippet name="layer10.hbs"}}
 
-                <div class='sg-demo-layer overlay'>
-                  {{!-- BEGIN-SNIPPET layer9
-                  @include rsa-layer(overlay)
+                <div class='sg-demo-layer modals'>
+                  {{!-- BEGIN-SNIPPET layer11
+                  @include rsa-layer(modals)
                   END-SNIPPET --}}
-                  {{code-snippet name="layer9.hbs"}}
-                  {{!-- BEGIN-SNIPPET layer10
-                  z-index: 400;
+                  {{code-snippet name="layer11.hbs"}}
+                  {{!-- BEGIN-SNIPPET layer12
+                  z-index: 500;
                   END-SNIPPET --}}
-                  {{code-snippet name="layer10.hbs"}}
+                  {{code-snippet name="layer12.hbs"}}
 
-                  <div class='sg-demo-layer modals'>
-                    {{!-- BEGIN-SNIPPET layer11
-                    @include rsa-layer(modals)
+                  <div class='sg-demo-layer tooltips'>
+                    {{!-- BEGIN-SNIPPET layer13
+                    @include rsa-layer(tooltips)
                     END-SNIPPET --}}
-                    {{code-snippet name="layer11.hbs"}}
-                    {{!-- BEGIN-SNIPPET layer12
-                    z-index: 500;
+                    {{code-snippet name="layer13.hbs"}}
+                    {{!-- BEGIN-SNIPPET layer14
+                    z-index: 600;
                     END-SNIPPET --}}
-                    {{code-snippet name="layer12.hbs"}}
+                    {{code-snippet name="layer14.hbs"}}
 
-                    <div class='sg-demo-layer tooltips'>
-                      {{!-- BEGIN-SNIPPET layer13
-                      @include rsa-layer(tooltips)
+                    <div class='sg-demo-layer above'>
+                      {{!-- BEGIN-SNIPPET layer15
+                      @include rsa-layer(above)
                       END-SNIPPET --}}
-                      {{code-snippet name="layer13.hbs"}}
-                      {{!-- BEGIN-SNIPPET layer14
-                      z-index: 600;
+                      {{code-snippet name="layer15.hbs"}}
+                      {{!-- BEGIN-SNIPPET layer16
+                      z-index: 1000;
                       END-SNIPPET --}}
-                      {{code-snippet name="layer14.hbs"}}
-
-                      <div class='sg-demo-layer above'>
-                        {{!-- BEGIN-SNIPPET layer15
-                        @include rsa-layer(above)
-                        END-SNIPPET --}}
-                        {{code-snippet name="layer15.hbs"}}
-                        {{!-- BEGIN-SNIPPET layer16
-                        z-index: 1000;
-                        END-SNIPPET --}}
-                        {{code-snippet name="layer16.hbs"}}
-                      </div>
+                      {{code-snippet name="layer16.hbs"}}
                     </div>
                   </div>
                 </div>
@@ -93,7 +91,7 @@
             </div>
           </div>
         </div>
-      {{/spec-member}}
-    {{/spec-category}}
-  </div>
-</hbox>
+      </div>
+    {{/spec-member}}
+  {{/spec-category}}
+</vbox>

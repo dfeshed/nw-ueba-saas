@@ -2,132 +2,130 @@
   {{spec-masthead model=model}}
 </hbox>
 
-<hbox>
-  <div class="scroll-box">
-    {{#spec-category title="Labels"}}
-      {{#spec-member title="With Label"}}
-        <div class="score-box">
-          {{rsa-content-badge-score score=7.7 label='Risk Score'}}
-        </div>
-        {{!-- BEGIN-SNIPPET badgescore1
+<vbox class="scroll-box">
+  {{#spec-category title="Labels"}}
+    {{#spec-member title="With Label"}}
+      <div class="score-box">
         {{rsa-content-badge-score score=7.7 label='Risk Score'}}
-        END-SNIPPET --}}
-        {{code-snippet name="badgescore1.hbs"}}
-      {{/spec-member}}
+      </div>
+      {{!-- BEGIN-SNIPPET badgescore1
+      {{rsa-content-badge-score score=7.7 label='Risk Score'}}
+      END-SNIPPET --}}
+      {{code-snippet name="badgescore1.hbs"}}
+    {{/spec-member}}
 
-      {{#spec-member title="Without Label"}}
-        <div class="score-box">
-          {{rsa-content-badge-score score=7.7}}
-        </div>
-        {{!-- BEGIN-SNIPPET badgescore2
+    {{#spec-member title="Without Label"}}
+      <div class="score-box">
         {{rsa-content-badge-score score=7.7}}
-        END-SNIPPET --}}
-        {{code-snippet name="badgescore2.hbs"}}
-      {{/spec-member}}
-    {{/spec-category}}
+      </div>
+      {{!-- BEGIN-SNIPPET badgescore2
+      {{rsa-content-badge-score score=7.7}}
+      END-SNIPPET --}}
+      {{code-snippet name="badgescore2.hbs"}}
+    {{/spec-member}}
+  {{/spec-category}}
 
-    {{#spec-category title="Styles"}}
-      {{#spec-member title="Low"}}
-        <div class="score-box">
-          {{rsa-content-badge-score score=33 label='Risk Score' style='low'}}
-        </div>
-        {{!-- BEGIN-SNIPPET badgescore3
+  {{#spec-category title="Styles"}}
+    {{#spec-member title="Low"}}
+      <div class="score-box">
         {{rsa-content-badge-score score=33 label='Risk Score' style='low'}}
-        END-SNIPPET --}}
-        {{code-snippet name="badgescore3.hbs"}}
-      {{/spec-member}}
+      </div>
+      {{!-- BEGIN-SNIPPET badgescore3
+      {{rsa-content-badge-score score=33 label='Risk Score' style='low'}}
+      END-SNIPPET --}}
+      {{code-snippet name="badgescore3.hbs"}}
+    {{/spec-member}}
 
-      {{#spec-member title="Medium"}}
-        <div class="score-box">
-          {{rsa-content-badge-score score=50 label='Risk Score' style='medium'}}
-        </div>
-        {{!-- BEGIN-SNIPPET badgescore4
+    {{#spec-member title="Medium"}}
+      <div class="score-box">
         {{rsa-content-badge-score score=50 label='Risk Score' style='medium'}}
-        END-SNIPPET --}}
-        {{code-snippet name="badgescore4.hbs"}}
-      {{/spec-member}}
+      </div>
+      {{!-- BEGIN-SNIPPET badgescore4
+      {{rsa-content-badge-score score=50 label='Risk Score' style='medium'}}
+      END-SNIPPET --}}
+      {{code-snippet name="badgescore4.hbs"}}
+    {{/spec-member}}
 
-      {{#spec-member title="High"}}
-        <div class="score-box">
-          {{rsa-content-badge-score score=75 label='Risk Score' style='high'}}
-        </div>
-        {{!-- BEGIN-SNIPPET badgescore5
+    {{#spec-member title="High"}}
+      <div class="score-box">
         {{rsa-content-badge-score score=75 label='Risk Score' style='high'}}
-        END-SNIPPET --}}
-        {{code-snippet name="badgescore5.hbs"}}
-      {{/spec-member}}
+      </div>
+      {{!-- BEGIN-SNIPPET badgescore5
+      {{rsa-content-badge-score score=75 label='Risk Score' style='high'}}
+      END-SNIPPET --}}
+      {{code-snippet name="badgescore5.hbs"}}
+    {{/spec-member}}
 
-      {{#spec-member title="Danger"}}
-        <div class="score-box">
-          {{rsa-content-badge-score score=100 label='Risk Score' style='danger'}}
-        </div>
-        {{!-- BEGIN-SNIPPET badgescore6
+    {{#spec-member title="Danger"}}
+      <div class="score-box">
         {{rsa-content-badge-score score=100 label='Risk Score' style='danger'}}
-        END-SNIPPET --}}
-        {{code-snippet name="badgescore6.hbs"}}
-      {{/spec-member}}
-    {{/spec-category}}
+      </div>
+      {{!-- BEGIN-SNIPPET badgescore6
+      {{rsa-content-badge-score score=100 label='Risk Score' style='danger'}}
+      END-SNIPPET --}}
+      {{code-snippet name="badgescore6.hbs"}}
+    {{/spec-member}}
+  {{/spec-category}}
 
-    {{#spec-category title="Sizes"}}
-      {{#spec-member title="Default"}}
-        <div class="score-box">
-          {{rsa-content-badge-score score=75 label='Risk Score'}}
-        </div>
-        {{!-- BEGIN-SNIPPET badgescore7
+  {{#spec-category title="Sizes"}}
+    {{#spec-member title="Default"}}
+      <div class="score-box">
         {{rsa-content-badge-score score=75 label='Risk Score'}}
-        END-SNIPPET --}}
-        {{code-snippet name="badgescore7.hbs"}}
-      {{/spec-member}}
+      </div>
+      {{!-- BEGIN-SNIPPET badgescore7
+      {{rsa-content-badge-score score=75 label='Risk Score'}}
+      END-SNIPPET --}}
+      {{code-snippet name="badgescore7.hbs"}}
+    {{/spec-member}}
 
-      {{#spec-member title="Smaller"}}
-        <div class="score-box-smaller">
-          {{rsa-content-badge-score score=75 label='Risk Score' size='smaller'}}
-        </div>
-        {{!-- BEGIN-SNIPPET badgescore8
+    {{#spec-member title="Smaller"}}
+      <div class="score-box-smaller">
         {{rsa-content-badge-score score=75 label='Risk Score' size='smaller'}}
-        END-SNIPPET --}}
-        {{code-snippet name="badgescore8.hbs"}}
-      {{/spec-member}}
+      </div>
+      {{!-- BEGIN-SNIPPET badgescore8
+      {{rsa-content-badge-score score=75 label='Risk Score' size='smaller'}}
+      END-SNIPPET --}}
+      {{code-snippet name="badgescore8.hbs"}}
+    {{/spec-member}}
 
-      {{#spec-member title="Small"}}
-        <div class="score-box-small">
-          {{rsa-content-badge-score score=75 label='Risk Score' size='small'}}
-        </div>
-        {{!-- BEGIN-SNIPPET badgescore9
+    {{#spec-member title="Small"}}
+      <div class="score-box-small">
         {{rsa-content-badge-score score=75 label='Risk Score' size='small'}}
-        END-SNIPPET --}}
-        {{code-snippet name="badgescore9.hbs"}}
-      {{/spec-member}}
+      </div>
+      {{!-- BEGIN-SNIPPET badgescore9
+      {{rsa-content-badge-score score=75 label='Risk Score' size='small'}}
+      END-SNIPPET --}}
+      {{code-snippet name="badgescore9.hbs"}}
+    {{/spec-member}}
 
-      {{#spec-member title="Large"}}
-        <div class="score-box-large">
-          {{rsa-content-badge-score score=75 label='Risk Score' size='large'}}
-        </div>
-        {{!-- BEGIN-SNIPPET badgescore10
+    {{#spec-member title="Large"}}
+      <div class="score-box-large">
         {{rsa-content-badge-score score=75 label='Risk Score' size='large'}}
-        END-SNIPPET --}}
-        {{code-snippet name="badgescore10.hbs"}}
-      {{/spec-member}}
+      </div>
+      {{!-- BEGIN-SNIPPET badgescore10
+      {{rsa-content-badge-score score=75 label='Risk Score' size='large'}}
+      END-SNIPPET --}}
+      {{code-snippet name="badgescore10.hbs"}}
+    {{/spec-member}}
 
-      {{#spec-member}}
-        <div class="score-box-large">
-          {{rsa-content-badge-score score=75 label='Risk Score' size='larger'}}
-        </div>
-        {{!-- BEGIN-SNIPPET badgescore11
+    {{#spec-member}}
+      <div class="score-box-large">
         {{rsa-content-badge-score score=75 label='Risk Score' size='larger'}}
-        END-SNIPPET --}}
-        {{code-snippet name="badgescore11.hbs"}}
-      {{/spec-member}}
+      </div>
+      {{!-- BEGIN-SNIPPET badgescore11
+      {{rsa-content-badge-score score=75 label='Risk Score' size='larger'}}
+      END-SNIPPET --}}
+      {{code-snippet name="badgescore11.hbs"}}
+    {{/spec-member}}
 
-      {{#spec-member title="Largest"}}
-        <div class="score-box-larger">
-          {{rsa-content-badge-score score=75 label='Risk Score' size='largest'}}
-        </div>
-        {{!-- BEGIN-SNIPPET badgescore12
+    {{#spec-member title="Largest"}}
+      <div class="score-box-larger">
         {{rsa-content-badge-score score=75 label='Risk Score' size='largest'}}
-        END-SNIPPET --}}
-        {{code-snippet name="badgescore12.hbs"}}
-      {{/spec-member}}
-    {{/spec-category}}
-  </div>
-</hbox>
+      </div>
+      {{!-- BEGIN-SNIPPET badgescore12
+      {{rsa-content-badge-score score=75 label='Risk Score' size='largest'}}
+      END-SNIPPET --}}
+      {{code-snippet name="badgescore12.hbs"}}
+    {{/spec-member}}
+  {{/spec-category}}
+</vbox>

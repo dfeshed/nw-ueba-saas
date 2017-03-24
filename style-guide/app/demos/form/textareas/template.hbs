@@ -2,48 +2,46 @@
   {{spec-masthead model=model}}
 </hbox>
 
-<hbox>
-  <div class="scroll-box">
-    {{#spec-category title="States"}}
-      {{#spec-member title="Default"}}
-        {{rsa-form-textarea label='Input Label'}}
-        {{!-- BEGIN-SNIPPET textareas1
-        {{rsa-form-textarea label='Input Label'}}
-        END-SNIPPET --}}
-        {{code-snippet name="textareas1.hbs"}}
-      {{/spec-member}}
+<vbox class="scroll-box">
+  {{#spec-category title="States"}}
+    {{#spec-member title="Default"}}
+      {{rsa-form-textarea label='Input Label'}}
+      {{!-- BEGIN-SNIPPET textareas1
+      {{rsa-form-textarea label='Input Label'}}
+      END-SNIPPET --}}
+      {{code-snippet name="textareas1.hbs"}}
+    {{/spec-member}}
 
-      {{#spec-member title="Read Only"}}
-        {{rsa-form-textarea value='Form input value' label='Input Label' isReadOnly=true}}
-        {{!-- BEGIN-SNIPPET textareas2
-        {{rsa-form-textarea value='Form input value' label='Input Label' isReadOnly=true}}
-        END-SNIPPET --}}
-        {{code-snippet name="textareas2.hbs"}}
-      {{/spec-member}}
+    {{#spec-member title="Read Only"}}
+      {{rsa-form-textarea value='Form input value' label='Input Label' isReadOnly=true}}
+      {{!-- BEGIN-SNIPPET textareas2
+      {{rsa-form-textarea value='Form input value' label='Input Label' isReadOnly=true}}
+      END-SNIPPET --}}
+      {{code-snippet name="textareas2.hbs"}}
+    {{/spec-member}}
 
-      {{#spec-member title="Disabled"}}
-        {{rsa-form-textarea label='Input Label' isDisabled=true}}
-        {{!-- BEGIN-SNIPPET textareas3
-        {{rsa-form-textarea label='Input Label' isDisabled=true}}
-        END-SNIPPET --}}
-        {{code-snippet name="textareas3.hbs"}}
-      {{/spec-member}}
+    {{#spec-member title="Disabled"}}
+      {{rsa-form-textarea label='Input Label' isDisabled=true}}
+      {{!-- BEGIN-SNIPPET textareas3
+      {{rsa-form-textarea label='Input Label' isDisabled=true}}
+      END-SNIPPET --}}
+      {{code-snippet name="textareas3.hbs"}}
+    {{/spec-member}}
 
-      {{#spec-member title="Success"}}
-        {{rsa-form-textarea value='Form input value' label='Input Label' isSuccess=true}}
-        {{!-- BEGIN-SNIPPET textareas4
-        {{rsa-form-textarea value='Form input value' label='Input Label' isSuccess=true}}
-        END-SNIPPET --}}
-        {{code-snippet name="textareas4.hbs"}}
-      {{/spec-member}}
+    {{#spec-member title="Success"}}
+      {{rsa-form-textarea value='Form input value' label='Input Label' isSuccess=true}}
+      {{!-- BEGIN-SNIPPET textareas4
+      {{rsa-form-textarea value='Form input value' label='Input Label' isSuccess=true}}
+      END-SNIPPET --}}
+      {{code-snippet name="textareas4.hbs"}}
+    {{/spec-member}}
 
-      {{#spec-member title="Error"}}
-        {{rsa-form-textarea value='Form input value' label='Input Label' isError=true}}
-        {{!-- BEGIN-SNIPPET textareas5
-        {{rsa-form-textarea value='Form input value' label='Input Label' isError=true}}
-        END-SNIPPET --}}
-        {{code-snippet name="textareas5.hbs"}}
-      {{/spec-member}}
-    {{/spec-category}}
-  </div>
-</hbox>
+    {{#spec-member title="Error"}}
+      {{rsa-form-textarea value='Form input value' label='Input Label' isError=true}}
+      {{!-- BEGIN-SNIPPET textareas5
+      {{rsa-form-textarea value='Form input value' label='Input Label' isError=true}}
+      END-SNIPPET --}}
+      {{code-snippet name="textareas5.hbs"}}
+    {{/spec-member}}
+  {{/spec-category}}
+</vbox>

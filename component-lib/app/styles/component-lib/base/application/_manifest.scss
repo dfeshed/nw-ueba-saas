@@ -86,6 +86,10 @@ body {
   }
 }
 
+::-webkit-scrollbar-corner {
+  background: rsa-color(black);
+}
+
 ::-webkit-scrollbar {
   background: transparent;
   width: rsa-whitespace();
@@ -112,7 +116,7 @@ body {
 @import 'application-error-page';
 
 page, screen {
-  min-height: 100vh;
+  min-height: calc(100vh - #{$applicationHeaderHeight});
 }
 
 page {

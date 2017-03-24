@@ -126,12 +126,10 @@ export default OAuth2PasswordGrant.extend(csrfToken, oauthToken, {
           }
 
           const daysRemaining = response.expiryUserNotify;
-
           if (daysRemaining > -1) {
             this.get('flashMessages').warning(this.get('i18n').t('login.changePasswordSoon', {
               daysRemaining
             }), {
-              iconName: 'report-problem-circle',
               sticky: true
             });
           }

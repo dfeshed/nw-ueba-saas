@@ -2,88 +2,86 @@
   {{spec-masthead model=model}}
 </hbox>
 
-<hbox>
-  <div class="scroll-box">
-    {{#spec-category}}
-      {{#spec-member title="Least"}}
-        <div class='sg-demo-whitespace left least'>
-          <div>margin-right: @include rsa-whitespace(least);</div>
-          <div>padding: @include rsa-whitespace(least);</div>
-        </div>
-        <div class='sg-demo-whitespace right least'></div>
-        {{!-- BEGIN-SNIPPET whitespace1
-        @include rsa-whitespace(least);
-        END-SNIPPET --}}
-        {{code-snippet name="whitespace1.hbs"}}
-        {{!-- BEGIN-SNIPPET whitespace2
-        3.5px
-        END-SNIPPET --}}
-        {{code-snippet name="whitespace2.hbs"}}
-      {{/spec-member}}
+<vbox class="scroll-box">
+  {{#spec-category}}
+    {{#spec-member title="Least"}}
+      <div class='sg-demo-whitespace left least'>
+        <div>margin-right: @include rsa-whitespace(least);</div>
+        <div>padding: @include rsa-whitespace(least);</div>
+      </div>
+      <div class='sg-demo-whitespace right least'></div>
+      {{!-- BEGIN-SNIPPET whitespace1
+      @include rsa-whitespace(least);
+      END-SNIPPET --}}
+      {{code-snippet name="whitespace1.hbs"}}
+      {{!-- BEGIN-SNIPPET whitespace2
+      3.5px
+      END-SNIPPET --}}
+      {{code-snippet name="whitespace2.hbs"}}
+    {{/spec-member}}
 
-      {{#spec-member title="Less"}}
-        <div class='sg-demo-whitespace left less'>
-          <div>margin-right: @include rsa-whitespace(less);</div>
-          <div>padding: @include rsa-whitespace(less);</div>
-        </div>
-        <div class='sg-demo-whitespace right less'></div>
-        {{!-- BEGIN-SNIPPET whitespace3
-        @include rsa-whitespace(less);
-        END-SNIPPET --}}
-        {{code-snippet name="whitespace3.hbs"}}
-        {{!-- BEGIN-SNIPPET whitespace4
-        7px
-        END-SNIPPET --}}
-        {{code-snippet name="whitespace4.hbs"}}
-      {{/spec-member}}
+    {{#spec-member title="Less"}}
+      <div class='sg-demo-whitespace left less'>
+        <div>margin-right: @include rsa-whitespace(less);</div>
+        <div>padding: @include rsa-whitespace(less);</div>
+      </div>
+      <div class='sg-demo-whitespace right less'></div>
+      {{!-- BEGIN-SNIPPET whitespace3
+      @include rsa-whitespace(less);
+      END-SNIPPET --}}
+      {{code-snippet name="whitespace3.hbs"}}
+      {{!-- BEGIN-SNIPPET whitespace4
+      7px
+      END-SNIPPET --}}
+      {{code-snippet name="whitespace4.hbs"}}
+    {{/spec-member}}
 
-      {{#spec-member title="Default"}}
-        <div class='sg-demo-whitespace left base'>
-          <div>margin-right: @include rsa-whitespace();</div>
-          <div>padding: @include rsa-whitespace();</div>
-        </div>
-        <div class='sg-demo-whitespace right base'></div>
-        {{!-- BEGIN-SNIPPET whitespace5
-        @include rsa-whitespace();
-        END-SNIPPET --}}
-        {{code-snippet name="whitespace5.hbs"}}
-        {{!-- BEGIN-SNIPPET whitespace6
-        14px
-        END-SNIPPET --}}
-        {{code-snippet name="whitespace6.hbs"}}
-      {{/spec-member}}
+    {{#spec-member title="Default"}}
+      <div class='sg-demo-whitespace left base'>
+        <div>margin-right: @include rsa-whitespace();</div>
+        <div>padding: @include rsa-whitespace();</div>
+      </div>
+      <div class='sg-demo-whitespace right base'></div>
+      {{!-- BEGIN-SNIPPET whitespace5
+      @include rsa-whitespace();
+      END-SNIPPET --}}
+      {{code-snippet name="whitespace5.hbs"}}
+      {{!-- BEGIN-SNIPPET whitespace6
+      14px
+      END-SNIPPET --}}
+      {{code-snippet name="whitespace6.hbs"}}
+    {{/spec-member}}
 
-      {{#spec-member title="More"}}
-        <div class='sg-demo-whitespace left more'>
-          <div>margin-right: @include rsa-whitespace(more);</div>
-          <div>padding: @include rsa-whitespace(more);</div>
-        </div>
-        <div class='sg-demo-whitespace right more'></div>
-        {{!-- BEGIN-SNIPPET whitespace7
-        @include rsa-whitespace(more);
-        END-SNIPPET --}}
-        {{code-snippet name="whitespace7.hbs"}}
-        {{!-- BEGIN-SNIPPET whitespace8
-        28px
-        END-SNIPPET --}}
-        {{code-snippet name="whitespace8.hbs"}}
-      {{/spec-member}}
+    {{#spec-member title="More"}}
+      <div class='sg-demo-whitespace left more'>
+        <div>margin-right: @include rsa-whitespace(more);</div>
+        <div>padding: @include rsa-whitespace(more);</div>
+      </div>
+      <div class='sg-demo-whitespace right more'></div>
+      {{!-- BEGIN-SNIPPET whitespace7
+      @include rsa-whitespace(more);
+      END-SNIPPET --}}
+      {{code-snippet name="whitespace7.hbs"}}
+      {{!-- BEGIN-SNIPPET whitespace8
+      28px
+      END-SNIPPET --}}
+      {{code-snippet name="whitespace8.hbs"}}
+    {{/spec-member}}
 
-      {{#spec-member title="Most"}}
-        <div class='sg-demo-whitespace left most'>
-          <div>margin-right: @include rsa-whitespace(most);</div>
-          <div>padding: @include rsa-whitespace(most);</div>
-        </div>
-        <div class='sg-demo-whitespace right most'></div>
-        {{!-- BEGIN-SNIPPET whitespace9
-        @include rsa-whitespace(most);
-        END-SNIPPET --}}
-        {{code-snippet name="whitespace9.hbs"}}
-        {{!-- BEGIN-SNIPPET whitespace10
-        49px
-        END-SNIPPET --}}
-        {{code-snippet name="whitespace10.hbs"}}
-      {{/spec-member}}
-    {{/spec-category}}
-  </div>
-</hbox>
+    {{#spec-member title="Most"}}
+      <div class='sg-demo-whitespace left most'>
+        <div>margin-right: @include rsa-whitespace(most);</div>
+        <div>padding: @include rsa-whitespace(most);</div>
+      </div>
+      <div class='sg-demo-whitespace right most'></div>
+      {{!-- BEGIN-SNIPPET whitespace9
+      @include rsa-whitespace(most);
+      END-SNIPPET --}}
+      {{code-snippet name="whitespace9.hbs"}}
+      {{!-- BEGIN-SNIPPET whitespace10
+      49px
+      END-SNIPPET --}}
+      {{code-snippet name="whitespace10.hbs"}}
+    {{/spec-member}}
+  {{/spec-category}}
+</vbox>

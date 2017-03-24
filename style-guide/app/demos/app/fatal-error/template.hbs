@@ -2,15 +2,13 @@
   {{spec-masthead model=model}}
 </hbox>
 
-<hbox>
-  <div class="scroll-box">
-    {{#spec-category}}
-      {{#spec-member title="Example"}}
-      {{!-- BEGIN-SNIPPET errors1
-      this.get('fatalErrors').logError('This is an example error message');
-      END-SNIPPET --}}
-      {{code-snippet name="errors1.hbs"}}
-      {{/spec-member}}
-    {{/spec-category}}
-  </div>
-</hbox>
+<vbox class="scroll-box">
+  {{#spec-category}}
+    {{#spec-member title="Example"}}
+    {{!-- BEGIN-SNIPPET errors1
+    this.get('fatalErrors').logError('This is an example error message');
+    END-SNIPPET --}}
+    {{code-snippet name="errors1.hbs"}}
+    {{/spec-member}}
+  {{/spec-category}}
+</vbox>

@@ -2,382 +2,380 @@
   {{spec-masthead model=model}}
 </hbox>
 
-<hbox>
-  <div class="scroll-box">
-    {{#spec-category title="Styles"}}
-      {{#spec-member title="Default with Icon"}}
-        {{#rsa-form-button}}{{rsa-icon name='account-circle-1'}}Default Button{{/rsa-form-button}}
-        {{!-- BEGIN-SNIPPET button1
-        {{#rsa-form-button}}{{rsa-icon name='account-circle-1'}}Default Button{{/rsa-form-button}}
-        END-SNIPPET --}}
-        {{code-snippet name="button1.hbs"}}
-      {{/spec-member}}
+<vbox class="scroll-box">
+  {{#spec-category title="Styles"}}
+    {{#spec-member title="Default with Icon"}}
+      {{#rsa-form-button}}{{rsa-icon name='account-circle-1'}}Default Button{{/rsa-form-button}}
+      {{!-- BEGIN-SNIPPET button1
+      {{#rsa-form-button}}{{rsa-icon name='account-circle-1'}}Default Button{{/rsa-form-button}}
+      END-SNIPPET --}}
+      {{code-snippet name="button1.hbs"}}
+    {{/spec-member}}
 
-      {{#spec-member title="Default without Icon"}}
-        {{#rsa-form-button}}Default Button{{/rsa-form-button}}
-        {{!-- BEGIN-SNIPPET button2
-        {{#rsa-form-button}}Default Button{{/rsa-form-button}}
-        END-SNIPPET --}}
-        {{code-snippet name="button2.hbs"}}
-      {{/spec-member}}
+    {{#spec-member title="Default without Icon"}}
+      {{#rsa-form-button}}Default Button{{/rsa-form-button}}
+      {{!-- BEGIN-SNIPPET button2
+      {{#rsa-form-button}}Default Button{{/rsa-form-button}}
+      END-SNIPPET --}}
+      {{code-snippet name="button2.hbs"}}
+    {{/spec-member}}
 
-      {{#spec-member title="Full Width"}}
-        {{#rsa-form-button isFullWidth=true}}Full Width Button{{/rsa-form-button}}
-        {{!-- BEGIN-SNIPPET button3
-        {{#rsa-form-button isFullWidth=true}}Full Width Button{{/rsa-form-button}}
-        END-SNIPPET --}}
-        {{code-snippet name="button3.hbs"}}
-      {{/spec-member}}
+    {{#spec-member title="Full Width"}}
+      {{#rsa-form-button isFullWidth=true}}Full Width Button{{/rsa-form-button}}
+      {{!-- BEGIN-SNIPPET button3
+      {{#rsa-form-button isFullWidth=true}}Full Width Button{{/rsa-form-button}}
+      END-SNIPPET --}}
+      {{code-snippet name="button3.hbs"}}
+    {{/spec-member}}
 
-      {{#spec-member title="Primary"}}
-        {{#rsa-form-button style='primary'}}Primary{{/rsa-form-button}}
-        {{!-- BEGIN-SNIPPET button4
-        {{#rsa-form-button style='primary'}}Primary{{/rsa-form-button}}
-        END-SNIPPET --}}
-        {{code-snippet name="button4.hbs"}}
-      {{/spec-member}}
+    {{#spec-member title="Primary"}}
+      {{#rsa-form-button style='primary'}}Primary{{/rsa-form-button}}
+      {{!-- BEGIN-SNIPPET button4
+      {{#rsa-form-button style='primary'}}Primary{{/rsa-form-button}}
+      END-SNIPPET --}}
+      {{code-snippet name="button4.hbs"}}
+    {{/spec-member}}
 
-      {{#spec-member title="Danger"}}
-        {{#rsa-form-button style='danger'}}Danger{{/rsa-form-button}}
-        {{!-- BEGIN-SNIPPET button5
-        {{#rsa-form-button style='danger'}}Danger{{/rsa-form-button}}
-        END-SNIPPET --}}
-        {{code-snippet name="button5.hbs"}}
-      {{/spec-member}}
+    {{#spec-member title="Danger"}}
+      {{#rsa-form-button style='danger'}}Danger{{/rsa-form-button}}
+      {{!-- BEGIN-SNIPPET button5
+      {{#rsa-form-button style='danger'}}Danger{{/rsa-form-button}}
+      END-SNIPPET --}}
+      {{code-snippet name="button5.hbs"}}
+    {{/spec-member}}
 
-      {{#spec-member title="Disabled"}}
-        {{#rsa-form-button isDisabled=true}}Disabled{{/rsa-form-button}}
-        {{!-- BEGIN-SNIPPET button6
-        {{#rsa-form-button isDisabled=true}}Disabled{{/rsa-form-button}}
-        END-SNIPPET --}}
-        {{code-snippet name="button6.hbs"}}
-      {{/spec-member}}
-    {{/spec-category}}
+    {{#spec-member title="Disabled"}}
+      {{#rsa-form-button isDisabled=true}}Disabled{{/rsa-form-button}}
+      {{!-- BEGIN-SNIPPET button6
+      {{#rsa-form-button isDisabled=true}}Disabled{{/rsa-form-button}}
+      END-SNIPPET --}}
+      {{code-snippet name="button6.hbs"}}
+    {{/spec-member}}
+  {{/spec-category}}
 
-    {{#spec-category title="With Dropdown"}}
-      {{#spec-member title="Default"}}
-        {{#rsa-form-button withDropdown=true}}Standard Dropdown{{/rsa-form-button}}
-        {{!-- BEGIN-SNIPPET button7
-        {{#rsa-form-button withDropdown=true}}Standard Dropdown{{/rsa-form-button}}
-        END-SNIPPET --}}
-        {{code-snippet name="button7.hbs"}}
-      {{/spec-member}}
+  {{#spec-category title="With Dropdown"}}
+    {{#spec-member title="Default"}}
+      {{#rsa-form-button withDropdown=true}}Standard Dropdown{{/rsa-form-button}}
+      {{!-- BEGIN-SNIPPET button7
+      {{#rsa-form-button withDropdown=true}}Standard Dropdown{{/rsa-form-button}}
+      END-SNIPPET --}}
+      {{code-snippet name="button7.hbs"}}
+    {{/spec-member}}
 
-      {{#spec-member title="Primary"}}
-        {{#rsa-form-button style='primary' withDropdown=true}}Primary Dropdown{{/rsa-form-button}}
-        {{!-- BEGIN-SNIPPET button8
-        {{#rsa-form-button style='primary' withDropdown=true}}Primary Dropdown{{/rsa-form-button}}
-        END-SNIPPET --}}
-        {{code-snippet name="button8.hbs"}}
-      {{/spec-member}}
+    {{#spec-member title="Primary"}}
+      {{#rsa-form-button style='primary' withDropdown=true}}Primary Dropdown{{/rsa-form-button}}
+      {{!-- BEGIN-SNIPPET button8
+      {{#rsa-form-button style='primary' withDropdown=true}}Primary Dropdown{{/rsa-form-button}}
+      END-SNIPPET --}}
+      {{code-snippet name="button8.hbs"}}
+    {{/spec-member}}
 
-      {{#spec-member title="Danger"}}
-        {{#rsa-form-button style='danger' withDropdown=true}}Danger Dropdown{{/rsa-form-button}}
-        {{!-- BEGIN-SNIPPET button9
-        {{#rsa-form-button style='danger' withDropdown=true}}Danger Dropdown{{/rsa-form-button}}
-        END-SNIPPET --}}
-        {{code-snippet name="button9.hbs"}}
-      {{/spec-member}}
+    {{#spec-member title="Danger"}}
+      {{#rsa-form-button style='danger' withDropdown=true}}Danger Dropdown{{/rsa-form-button}}
+      {{!-- BEGIN-SNIPPET button9
+      {{#rsa-form-button style='danger' withDropdown=true}}Danger Dropdown{{/rsa-form-button}}
+      END-SNIPPET --}}
+      {{code-snippet name="button9.hbs"}}
+    {{/spec-member}}
 
-      {{#spec-member title="Disabled"}}
-        {{#rsa-form-button isDisabled=true withDropdown=true}}Disabled Dropdown{{/rsa-form-button}}
-        {{!-- BEGIN-SNIPPET button10
-        {{#rsa-form-button isDisabled=true withDropdown=true}}Disabled Dropdown{{/rsa-form-button}}
-        END-SNIPPET --}}
-        {{code-snippet name="button10.hbs"}}
-      {{/spec-member}}
-    {{/spec-category}}
+    {{#spec-member title="Disabled"}}
+      {{#rsa-form-button isDisabled=true withDropdown=true}}Disabled Dropdown{{/rsa-form-button}}
+      {{!-- BEGIN-SNIPPET button10
+      {{#rsa-form-button isDisabled=true withDropdown=true}}Disabled Dropdown{{/rsa-form-button}}
+      END-SNIPPET --}}
+      {{code-snippet name="button10.hbs"}}
+    {{/spec-member}}
+  {{/spec-category}}
 
-    {{#spec-category title="Icon Only"}}
-      {{#spec-member title="Default"}}
-        {{#rsa-form-button isIconOnly=true}}{{rsa-icon name='account-circle-1'}}{{/rsa-form-button}}
-        {{!-- BEGIN-SNIPPET button11
-        {{#rsa-form-button isIconOnly=true}}{{rsa-icon name='account-circle-1'}}{{/rsa-form-button}}
-        END-SNIPPET --}}
-        {{code-snippet name="button11.hbs"}}
-      {{/spec-member}}
+  {{#spec-category title="Icon Only"}}
+    {{#spec-member title="Default"}}
+      {{#rsa-form-button isIconOnly=true}}{{rsa-icon name='account-circle-1'}}{{/rsa-form-button}}
+      {{!-- BEGIN-SNIPPET button11
+      {{#rsa-form-button isIconOnly=true}}{{rsa-icon name='account-circle-1'}}{{/rsa-form-button}}
+      END-SNIPPET --}}
+      {{code-snippet name="button11.hbs"}}
+    {{/spec-member}}
 
-      {{#spec-member title="Danger"}}
-        {{#rsa-form-button style='danger' isIconOnly=true}}{{rsa-icon name='account-circle-1'}}{{/rsa-form-button}}
-        {{!-- BEGIN-SNIPPET button12
-        {{#rsa-form-button style='danger' isIconOnly=true}}{{rsa-icon name='account-circle-1'}}{{/rsa-form-button}}
-        END-SNIPPET --}}
-        {{code-snippet name="button12.hbs"}}
-      {{/spec-member}}
+    {{#spec-member title="Danger"}}
+      {{#rsa-form-button style='danger' isIconOnly=true}}{{rsa-icon name='account-circle-1'}}{{/rsa-form-button}}
+      {{!-- BEGIN-SNIPPET button12
+      {{#rsa-form-button style='danger' isIconOnly=true}}{{rsa-icon name='account-circle-1'}}{{/rsa-form-button}}
+      END-SNIPPET --}}
+      {{code-snippet name="button12.hbs"}}
+    {{/spec-member}}
 
-      {{#spec-member title="Disabled"}}
-        {{#rsa-form-button isIconOnly=true isDisabled=true}}{{rsa-icon name='account-circle-1'}}{{/rsa-form-button}}
-        {{!-- BEGIN-SNIPPET button13
-        {{#rsa-form-button isIconOnly=true isDisabled=true}}{{rsa-icon name='account-circle-1'}}{{/rsa-form-button}}
-        END-SNIPPET --}}
-        {{code-snippet name="button13.hbs"}}
-      {{/spec-member}}
-    {{/spec-category}}
+    {{#spec-member title="Disabled"}}
+      {{#rsa-form-button isIconOnly=true isDisabled=true}}{{rsa-icon name='account-circle-1'}}{{/rsa-form-button}}
+      {{!-- BEGIN-SNIPPET button13
+      {{#rsa-form-button isIconOnly=true isDisabled=true}}{{rsa-icon name='account-circle-1'}}{{/rsa-form-button}}
+      END-SNIPPET --}}
+      {{code-snippet name="button13.hbs"}}
+    {{/spec-member}}
+  {{/spec-category}}
 
-    {{#spec-category title="Icon Only with Dropdown"}}
-      {{#spec-member title="Default"}}
-        {{#rsa-form-button withDropdown=true isIconOnly=true}}{{rsa-icon name='account-circle-1'}}{{/rsa-form-button}}
-        {{!-- BEGIN-SNIPPET button14
-        {{#rsa-form-button withDropdown=true isIconOnly=true}}{{rsa-icon name='account-circle-1'}}{{/rsa-form-button}}
-        END-SNIPPET --}}
-        {{code-snippet name="button14.hbs"}}
-      {{/spec-member}}
+  {{#spec-category title="Icon Only with Dropdown"}}
+    {{#spec-member title="Default"}}
+      {{#rsa-form-button withDropdown=true isIconOnly=true}}{{rsa-icon name='account-circle-1'}}{{/rsa-form-button}}
+      {{!-- BEGIN-SNIPPET button14
+      {{#rsa-form-button withDropdown=true isIconOnly=true}}{{rsa-icon name='account-circle-1'}}{{/rsa-form-button}}
+      END-SNIPPET --}}
+      {{code-snippet name="button14.hbs"}}
+    {{/spec-member}}
 
-      {{#spec-member title="Danger"}}
-        {{#rsa-form-button withDropdown=true isIconOnly=true style='danger'}}{{rsa-icon name='account-circle-1'}}{{/rsa-form-button}}
-        {{!-- BEGIN-SNIPPET button15
-        {{#rsa-form-button withDropdown=true isIconOnly=true style='danger'}}{{rsa-icon name='account-circle-1'}}{{/rsa-form-button}}
-        END-SNIPPET --}}
-        {{code-snippet name="button15.hbs"}}
-      {{/spec-member}}
+    {{#spec-member title="Danger"}}
+      {{#rsa-form-button withDropdown=true isIconOnly=true style='danger'}}{{rsa-icon name='account-circle-1'}}{{/rsa-form-button}}
+      {{!-- BEGIN-SNIPPET button15
+      {{#rsa-form-button withDropdown=true isIconOnly=true style='danger'}}{{rsa-icon name='account-circle-1'}}{{/rsa-form-button}}
+      END-SNIPPET --}}
+      {{code-snippet name="button15.hbs"}}
+    {{/spec-member}}
 
-      {{#spec-member title="Disabled"}}
-        {{#rsa-form-button withDropdown=true isIconOnly=true isDisabled=true}}{{rsa-icon name='account-circle-1'}}{{/rsa-form-button}}
-        {{!-- BEGIN-SNIPPET button16
-        {{#rsa-form-button withDropdown=true isIconOnly=true isDisabled=true}}{{rsa-icon name='account-circle-1'}}{{/rsa-form-button}}
-        END-SNIPPET --}}
-        {{code-snippet name="button16.hbs"}}
-      {{/spec-member}}
-    {{/spec-category}}
+    {{#spec-member title="Disabled"}}
+      {{#rsa-form-button withDropdown=true isIconOnly=true isDisabled=true}}{{rsa-icon name='account-circle-1'}}{{/rsa-form-button}}
+      {{!-- BEGIN-SNIPPET button16
+      {{#rsa-form-button withDropdown=true isIconOnly=true isDisabled=true}}{{rsa-icon name='account-circle-1'}}{{/rsa-form-button}}
+      END-SNIPPET --}}
+      {{code-snippet name="button16.hbs"}}
+    {{/spec-member}}
+  {{/spec-category}}
 
-    {{#spec-category title="Active State"}}
-      {{#spec-member title="Default"}}
-        {{#rsa-form-button isActive=true}}Standard Button{{/rsa-form-button}}
-        {{!-- BEGIN-SNIPPET button17
-        {{#rsa-form-button isActive=true}}Standard Button{{/rsa-form-button}}
-        END-SNIPPET --}}
-        {{code-snippet name="button17.hbs"}}
-      {{/spec-member}}
+  {{#spec-category title="Active State"}}
+    {{#spec-member title="Default"}}
+      {{#rsa-form-button isActive=true}}Standard Button{{/rsa-form-button}}
+      {{!-- BEGIN-SNIPPET button17
+      {{#rsa-form-button isActive=true}}Standard Button{{/rsa-form-button}}
+      END-SNIPPET --}}
+      {{code-snippet name="button17.hbs"}}
+    {{/spec-member}}
 
-      {{#spec-member title="Default"}}
-        {{#rsa-form-button allowToggleActive=true}}Click To Toggle Active State{{/rsa-form-button}}
-        {{!-- BEGIN-SNIPPET button18
-        {{#rsa-form-button allowToggleActive=true}}Click To Toggle Active State{{/rsa-form-button}}
-        END-SNIPPET --}}
-        {{code-snippet name="button18.hbs"}}
-      {{/spec-member}}
+    {{#spec-member title="Default"}}
+      {{#rsa-form-button allowToggleActive=true}}Click To Toggle Active State{{/rsa-form-button}}
+      {{!-- BEGIN-SNIPPET button18
+      {{#rsa-form-button allowToggleActive=true}}Click To Toggle Active State{{/rsa-form-button}}
+      END-SNIPPET --}}
+      {{code-snippet name="button18.hbs"}}
+    {{/spec-member}}
 
-      {{#spec-member title="Primary"}}
-        {{#rsa-form-button isActive=true style='primary'}}Primary Button{{/rsa-form-button}}
-        {{!-- BEGIN-SNIPPET button19
-        {{#rsa-form-button isActive=true style='primary'}}Primary Button{{/rsa-form-button}}
-        END-SNIPPET --}}
-        {{code-snippet name="button19.hbs"}}
-      {{/spec-member}}
+    {{#spec-member title="Primary"}}
+      {{#rsa-form-button isActive=true style='primary'}}Primary Button{{/rsa-form-button}}
+      {{!-- BEGIN-SNIPPET button19
+      {{#rsa-form-button isActive=true style='primary'}}Primary Button{{/rsa-form-button}}
+      END-SNIPPET --}}
+      {{code-snippet name="button19.hbs"}}
+    {{/spec-member}}
 
-      {{#spec-member title="Danger"}}
-        {{#rsa-form-button isActive=true style='danger'}}Danger Button{{/rsa-form-button}}
-        {{!-- BEGIN-SNIPPET button20
-        {{#rsa-form-button isActive=true style='danger'}}Danger Button{{/rsa-form-button}}
-        END-SNIPPET --}}
-        {{code-snippet name="button20.hbs"}}
-      {{/spec-member}}
+    {{#spec-member title="Danger"}}
+      {{#rsa-form-button isActive=true style='danger'}}Danger Button{{/rsa-form-button}}
+      {{!-- BEGIN-SNIPPET button20
+      {{#rsa-form-button isActive=true style='danger'}}Danger Button{{/rsa-form-button}}
+      END-SNIPPET --}}
+      {{code-snippet name="button20.hbs"}}
+    {{/spec-member}}
 
-      {{#spec-member title="Default Icon Only"}}
-        {{#rsa-form-button isActive=true isIconOnly=true}}{{rsa-icon name='account-circle-1'}}{{/rsa-form-button}}
-        {{!-- BEGIN-SNIPPET button21
-        {{#rsa-form-button isActive=true isIconOnly=true}}{{rsa-icon name='account-circle-1'}}{{/rsa-form-button}}
-        END-SNIPPET --}}
-        {{code-snippet name="button21.hbs"}}
-      {{/spec-member}}
+    {{#spec-member title="Default Icon Only"}}
+      {{#rsa-form-button isActive=true isIconOnly=true}}{{rsa-icon name='account-circle-1'}}{{/rsa-form-button}}
+      {{!-- BEGIN-SNIPPET button21
+      {{#rsa-form-button isActive=true isIconOnly=true}}{{rsa-icon name='account-circle-1'}}{{/rsa-form-button}}
+      END-SNIPPET --}}
+      {{code-snippet name="button21.hbs"}}
+    {{/spec-member}}
 
-      {{#spec-member title="Danger Icon Only"}}
-        {{#rsa-form-button isActive=true isIconOnly=true style='danger'}}{{rsa-icon name='account-circle-1'}}{{/rsa-form-button}}
-        {{!-- BEGIN-SNIPPET button22
-        {{#rsa-form-button isActive=true isIconOnly=true style='danger'}}{{rsa-icon name='account-circle-1'}}{{/rsa-form-button}}
-        END-SNIPPET --}}
-        {{code-snippet name="button22.hbs"}}
-      {{/spec-member}}
-    {{/spec-category}}
+    {{#spec-member title="Danger Icon Only"}}
+      {{#rsa-form-button isActive=true isIconOnly=true style='danger'}}{{rsa-icon name='account-circle-1'}}{{/rsa-form-button}}
+      {{!-- BEGIN-SNIPPET button22
+      {{#rsa-form-button isActive=true isIconOnly=true style='danger'}}{{rsa-icon name='account-circle-1'}}{{/rsa-form-button}}
+      END-SNIPPET --}}
+      {{code-snippet name="button22.hbs"}}
+    {{/spec-member}}
+  {{/spec-category}}
 
-    {{#spec-category title="Button Groups"}}
-      {{#spec-member title="Default"}}
-        <div class="rsa-button-group">
-          {{#rsa-form-button}}
-            First Button
-          {{/rsa-form-button}}
+  {{#spec-category title="Button Groups"}}
+    {{#spec-member title="Default"}}
+      <hbox class="rsa-button-group">
+        {{#rsa-form-button}}
+          First Button
+        {{/rsa-form-button}}
 
-          {{#rsa-form-button}}
-            Second Button
-          {{/rsa-form-button}}
-        </div>
-        {{!-- BEGIN-SNIPPET button23
-        <div class="rsa-button-group">
-          {{#rsa-form-button}}
-            First Button
-          {{/rsa-form-button}}
+        {{#rsa-form-button}}
+          Second Button
+        {{/rsa-form-button}}
+      </hbox>
+      {{!-- BEGIN-SNIPPET button23
+      <hbox class="rsa-button-group">
+        {{#rsa-form-button}}
+          First Button
+        {{/rsa-form-button}}
 
-          {{#rsa-form-button}}
-            Second Button
-          {{/rsa-form-button}}
-        </div>
-        END-SNIPPET --}}
-        {{code-snippet name="button23.hbs"}}
-      {{/spec-member}}
+        {{#rsa-form-button}}
+          Second Button
+        {{/rsa-form-button}}
+      </hbox>
+      END-SNIPPET --}}
+      {{code-snippet name="button23.hbs"}}
+    {{/spec-member}}
 
-      {{#spec-member title="Primary"}}
-        <div class="rsa-button-group">
-          {{#rsa-form-button style="primary"}}
-            First Button
-          {{/rsa-form-button}}
+    {{#spec-member title="Primary"}}
+      <hbox class="rsa-button-group">
+        {{#rsa-form-button style="primary"}}
+          First Button
+        {{/rsa-form-button}}
 
-          {{#rsa-form-button style="primary"}}
-            Second Button
-          {{/rsa-form-button}}
-        </div>
-        {{!-- BEGIN-SNIPPET button24
-        <div class="rsa-button-group">
-          {{#rsa-form-button style="primary"}}
-            First Button
-          {{/rsa-form-button}}
+        {{#rsa-form-button style="primary"}}
+          Second Button
+        {{/rsa-form-button}}
+      </hbox>
+      {{!-- BEGIN-SNIPPET button24
+      <hbox class="rsa-button-group">
+        {{#rsa-form-button style="primary"}}
+          First Button
+        {{/rsa-form-button}}
 
-          {{#rsa-form-button style="primary"}}
-            Second Button
-          {{/rsa-form-button}}
-        </div>
-        END-SNIPPET --}}
-        {{code-snippet name="button24.hbs"}}
-      {{/spec-member}}
+        {{#rsa-form-button style="primary"}}
+          Second Button
+        {{/rsa-form-button}}
+      </hbox>
+      END-SNIPPET --}}
+      {{code-snippet name="button24.hbs"}}
+    {{/spec-member}}
 
-      {{#spec-member title="Danger"}}
-        <div class="rsa-button-group">
-          {{#rsa-form-button style="danger"}}
-            First Button
-          {{/rsa-form-button}}
+    {{#spec-member title="Danger"}}
+      <hbox class="rsa-button-group">
+        {{#rsa-form-button style="danger"}}
+          First Button
+        {{/rsa-form-button}}
 
-          {{#rsa-form-button style="danger"}}
-            Second Button
-          {{/rsa-form-button}}
-        </div>
-        {{!-- BEGIN-SNIPPET button25
-        <div class="rsa-button-group">
-          {{#rsa-form-button style="danger"}}
-            First Button
-          {{/rsa-form-button}}
+        {{#rsa-form-button style="danger"}}
+          Second Button
+        {{/rsa-form-button}}
+      </hbox>
+      {{!-- BEGIN-SNIPPET button25
+      <hbox class="rsa-button-group">
+        {{#rsa-form-button style="danger"}}
+          First Button
+        {{/rsa-form-button}}
 
-          {{#rsa-form-button style="danger"}}
-            Second Button
-          {{/rsa-form-button}}
-        </div>
-        END-SNIPPET --}}
-        {{code-snippet name="button25.hbs"}}
-      {{/spec-member}}
-    {{/spec-category}}
+        {{#rsa-form-button style="danger"}}
+          Second Button
+        {{/rsa-form-button}}
+      </hbox>
+      END-SNIPPET --}}
+      {{code-snippet name="button25.hbs"}}
+    {{/spec-member}}
+  {{/spec-category}}
 
-    {{#spec-category title="Button with Menu"}}
-      {{#spec-member title="Default"}}
-        <div class="rsa-button-group">
-          {{#rsa-form-button}}
-            Default Button
-          {{/rsa-form-button}}
+  {{#spec-category title="Button with Menu"}}
+    {{#spec-member title="Default"}}
+      <hbox class="rsa-button-group">
+        {{#rsa-form-button}}
+          Default Button
+        {{/rsa-form-button}}
 
-          {{#rsa-form-button class="rsa-split-dropdown"}}
-            {{rsa-icon name="arrow-down-12"}}
-          {{/rsa-form-button}}
-        </div>
-        {{!-- BEGIN-SNIPPET button26
-        <div class="rsa-button-group">
-          {{#rsa-form-button}}
-            Default Button
-          {{/rsa-form-button}}
+        {{#rsa-form-button class="rsa-split-dropdown"}}
+          {{rsa-icon name="arrow-down-12"}}
+        {{/rsa-form-button}}
+      </hbox>
+      {{!-- BEGIN-SNIPPET button26
+      <hbox class="rsa-button-group">
+        {{#rsa-form-button}}
+          Default Button
+        {{/rsa-form-button}}
 
-          {{#rsa-form-button class="rsa-split-dropdown"}}
-            {{rsa-icon name="arrow-down-12"}}
-          {{/rsa-form-button}}
-        </div>
-        END-SNIPPET --}}
-        {{code-snippet name="button26.hbs"}}
-      {{/spec-member}}
+        {{#rsa-form-button class="rsa-split-dropdown"}}
+          {{rsa-icon name="arrow-down-12"}}
+        {{/rsa-form-button}}
+      </hbox>
+      END-SNIPPET --}}
+      {{code-snippet name="button26.hbs"}}
+    {{/spec-member}}
 
-      {{#spec-member title="Primary"}}
-        <div class="rsa-button-group">
-          {{#rsa-form-button style="primary"}}
-            Primary Button
-          {{/rsa-form-button}}
+    {{#spec-member title="Primary"}}
+      <hbox class="rsa-button-group">
+        {{#rsa-form-button style="primary"}}
+          Primary Button
+        {{/rsa-form-button}}
 
-          {{#rsa-form-button class="rsa-split-dropdown" style="primary"}}
-            {{rsa-icon name="arrow-down-12"}}
-          {{/rsa-form-button}}
-        </div>
-        {{!-- BEGIN-SNIPPET button27
-        <div class="rsa-button-group">
-          {{#rsa-form-button style="primary"}}
-            Primary Button
-          {{/rsa-form-button}}
+        {{#rsa-form-button class="rsa-split-dropdown" style="primary"}}
+          {{rsa-icon name="arrow-down-12"}}
+        {{/rsa-form-button}}
+      </hbox>
+      {{!-- BEGIN-SNIPPET button27
+      <hbox class="rsa-button-group">
+        {{#rsa-form-button style="primary"}}
+          Primary Button
+        {{/rsa-form-button}}
 
-          {{#rsa-form-button class="rsa-split-dropdown" style="primary"}}
-            {{rsa-icon name="arrow-down-12"}}
-          {{/rsa-form-button}}
-        </div>
-        END-SNIPPET --}}
-        {{code-snippet name="button27.hbs"}}
-      {{/spec-member}}
+        {{#rsa-form-button class="rsa-split-dropdown" style="primary"}}
+          {{rsa-icon name="arrow-down-12"}}
+        {{/rsa-form-button}}
+      </hbox>
+      END-SNIPPET --}}
+      {{code-snippet name="button27.hbs"}}
+    {{/spec-member}}
 
-      {{#spec-member title="Danger"}}
-        <div class="rsa-button-group">
-          {{#rsa-form-button style="danger"}}
-            Danger Button
-          {{/rsa-form-button}}
+    {{#spec-member title="Danger"}}
+      <hbox class="rsa-button-group">
+        {{#rsa-form-button style="danger"}}
+          Danger Button
+        {{/rsa-form-button}}
 
-          {{#rsa-form-button class="rsa-split-dropdown" style="danger"}}
-            {{rsa-icon name="arrow-down-12"}}
-          {{/rsa-form-button}}
-        </div>
-        {{!-- BEGIN-SNIPPET button28
-        <div class="rsa-button-group">
-          {{#rsa-form-button style="danger"}}
-            Danger Button
-          {{/rsa-form-button}}
+        {{#rsa-form-button class="rsa-split-dropdown" style="danger"}}
+          {{rsa-icon name="arrow-down-12"}}
+        {{/rsa-form-button}}
+      </hbox>
+      {{!-- BEGIN-SNIPPET button28
+      <hbox class="rsa-button-group">
+        {{#rsa-form-button style="danger"}}
+          Danger Button
+        {{/rsa-form-button}}
 
-          {{#rsa-form-button class="rsa-split-dropdown" style="danger"}}
-            {{rsa-icon name="arrow-down-12"}}
-          {{/rsa-form-button}}
-        </div>
-        END-SNIPPET --}}
-        {{code-snippet name="button28.hbs"}}
-      {{/spec-member}}
-    {{/spec-category}}
+        {{#rsa-form-button class="rsa-split-dropdown" style="danger"}}
+          {{rsa-icon name="arrow-down-12"}}
+        {{/rsa-form-button}}
+      </hbox>
+      END-SNIPPET --}}
+      {{code-snippet name="button28.hbs"}}
+    {{/spec-member}}
+  {{/spec-category}}
 
-    {{#spec-category title="Icon Button Group"}}
-      {{#spec-member title="Default"}}
-        <div class="rsa-icon-button-group">
-          {{#rsa-form-button allowToggleActive=true isIconOnly=true}}
-            {{rsa-icon name='account-circle-1'}}
-          {{/rsa-form-button}}
+  {{#spec-category title="Icon Button Group"}}
+    {{#spec-member title="Default"}}
+      <hbox class="rsa-icon-button-group">
+        {{#rsa-form-button allowToggleActive=true isIconOnly=true}}
+          {{rsa-icon name='account-circle-1'}}
+        {{/rsa-form-button}}
 
-          {{#rsa-form-button allowToggleActive=true isIconOnly=true}}
-            {{rsa-icon name='account-circle-1'}}
-          {{/rsa-form-button}}
+        {{#rsa-form-button allowToggleActive=true isIconOnly=true}}
+          {{rsa-icon name='account-circle-1'}}
+        {{/rsa-form-button}}
 
-          {{#rsa-form-button allowToggleActive=true isDisabled=true isIconOnly=true}}
-            {{rsa-icon name='account-circle-1'}}
-          {{/rsa-form-button}}
+        {{#rsa-form-button allowToggleActive=true isDisabled=true isIconOnly=true}}
+          {{rsa-icon name='account-circle-1'}}
+        {{/rsa-form-button}}
 
-          {{#rsa-form-button allowToggleActive=true isIconOnly=true style="danger"}}
-            {{rsa-icon name='account-circle-1'}}
-          {{/rsa-form-button}}
-        </div>
-        {{!-- BEGIN-SNIPPET button29
-        <div class="rsa-icon-button-group">
-          {{#rsa-form-button allowToggleActive=true isIconOnly=true}}
-            {{rsa-icon name='account-circle-1'}}
-          {{/rsa-form-button}}
+        {{#rsa-form-button allowToggleActive=true isIconOnly=true style="danger"}}
+          {{rsa-icon name='account-circle-1'}}
+        {{/rsa-form-button}}
+      </hbox>
+      {{!-- BEGIN-SNIPPET button29
+      <hbox class="rsa-icon-button-group">
+        {{#rsa-form-button allowToggleActive=true isIconOnly=true}}
+          {{rsa-icon name='account-circle-1'}}
+        {{/rsa-form-button}}
 
-          {{#rsa-form-button allowToggleActive=true isIconOnly=true}}
-            {{rsa-icon name='account-circle-1'}}
-          {{/rsa-form-button}}
+        {{#rsa-form-button allowToggleActive=true isIconOnly=true}}
+          {{rsa-icon name='account-circle-1'}}
+        {{/rsa-form-button}}
 
-          {{#rsa-form-button allowToggleActive=true isDisabled=true isIconOnly=true}}
-            {{rsa-icon name='account-circle-1'}}
-          {{/rsa-form-button}}
+        {{#rsa-form-button allowToggleActive=true isDisabled=true isIconOnly=true}}
+          {{rsa-icon name='account-circle-1'}}
+        {{/rsa-form-button}}
 
-          {{#rsa-form-button allowToggleActive=true isIconOnly=true style="danger"}}
-            {{rsa-icon name='account-circle-1'}}
-          {{/rsa-form-button}}
-        </div>
-        END-SNIPPET --}}
-        {{code-snippet name="button29.hbs"}}
-      {{/spec-member}}
-    {{/spec-category}}
-  </div>
-</hbox>
+        {{#rsa-form-button allowToggleActive=true isIconOnly=true style="danger"}}
+          {{rsa-icon name='account-circle-1'}}
+        {{/rsa-form-button}}
+      </hbox>
+      END-SNIPPET --}}
+      {{code-snippet name="button29.hbs"}}
+    {{/spec-member}}
+  {{/spec-category}}
+</vbox>
