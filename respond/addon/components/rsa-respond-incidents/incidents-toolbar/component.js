@@ -1,6 +1,7 @@
 import Component from 'ember-component';
 import connect from 'ember-redux/components/connect';
 import * as DataActions from 'respond/actions/data-creators';
+import * as UIStateCreators from 'respond/actions/ui-state-creators';
 import { CANNED_FILTER_TYPES } from 'respond/utils/canned-filter-types';
 import { SORT_TYPES } from 'respond/utils/sort-types';
 import computed, { alias, empty } from 'ember-computed-decorators';
@@ -34,6 +35,10 @@ const dispatchToActions = (dispatch) => {
 
     handleSortChange(sort) {
       dispatch(DataActions.sortBy(sort.name));
+    },
+
+    handleDeselectAll() {
+      dispatch(UIStateCreators.clearSelectedIncidents());
     }
   };
 };
@@ -62,8 +67,6 @@ const IncidentsToolbar = Component.extend({
 
   // true if the "More Filters" button should be shown as active
   isMoreFiltersActive: false,
-
-  noop() {},
 
   /**
    * The list of canned filters available for filtering the incidents result set

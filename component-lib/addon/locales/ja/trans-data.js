@@ -376,9 +376,11 @@ export default {
           bulkUpdateConfirmation: 'ja_With this change you will set the {{field}} for ({{count}}) incidents to {{selectedValue}}. If this is correct, press Apply',
           addJournalEntrySuccess: 'ja_You added a journal entry to incident {{incidentId}}',
           addJournalEntryFailure: 'ja_There was a problem adding a journal entry to incident {{incidentId}}'
-        }
+        },
+        deselectAll: 'ja_Deselect all'
       },
       label: 'ja_Incidents',
+      selectionCount: 'ja_{{selectionCount}} selected',
       precannedFilters: {
         all: 'ja_All Incidents',
         assignedToMe: 'ja_Assigned to me',

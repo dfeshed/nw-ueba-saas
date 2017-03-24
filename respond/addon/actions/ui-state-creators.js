@@ -4,6 +4,7 @@ const toggleFilterPanel = () => ({ type: ACTION_TYPES.TOGGLE_FILTER_PANEL });
 const toggleIsInSelectMode = () => ({ type: ACTION_TYPES.TOGGLE_SELECT_MODE });
 const toggleTheme = () => ({ type: ACTION_TYPES.TOGGLE_THEME });
 const toggleIncidentSelected = (incident) => ({ type: ACTION_TYPES.TOGGLE_INCIDENT_SELECTED, payload: incident });
+const clearSelectedIncidents = () => ({ type: ACTION_TYPES.CLEAR_SELECTED_INCIDENTS });
 const toggleJournalPanel = () => ({ type: ACTION_TYPES.TOGGLE_JOURNAL_PANEL });
 const setViewMode = (viewMode) => ({ type: ACTION_TYPES.SET_VIEW_MODE, payload: viewMode });
 const singleSelectStoryPoint = (id) => ({ type: ACTION_TYPES.SET_INCIDENT_SELECTION, payload: { type: 'storyPoint', id } });
@@ -21,6 +22,7 @@ export {
   toggleIsInSelectMode,
   toggleTheme,
   toggleIncidentSelected,
+  clearSelectedIncidents,
   toggleFocusIncident,
   toggleJournalPanel,
   setViewMode,

@@ -1,5 +1,9 @@
 .respond-engine .rsa-respond-incidents-toolbar {
 
+  .selection-count {
+    padding-right: rsa-whitespace();
+  }
+
   .toolbar-button {
     padding: rsa-whitespace(less);
     font-size: 20px;

@@ -1,7 +1,12 @@
 {{#liquid-bind isInSelectMode use=(if isInSelectMode "toUp" "toDown") as |currentIsInSelectMode|}}
   {{#if currentIsInSelectMode}}
     <section class="rsa-incidents-toolbar__selections-counter">
-      {{selectionCount}} selected
+      <span class="selection-count">{{ t 'respond.incidents.selectionCount' selectionCount=selectionCount}} </span>
+      {{#if (not hasNoSelections)}}
+        {{#rsa-form-button style='danger' class='deselect-all' defaultAction=(action 'handleDeselectAll')}}
+          {{t 'respond.incidents.actions.deselectAll' }}
+        {{/rsa-form-button}}
+      {{/if}}
     </section>
     <section class="rsa-incidents-toolbar__selections-btns">
       {{rsa-incident/update-action-button
