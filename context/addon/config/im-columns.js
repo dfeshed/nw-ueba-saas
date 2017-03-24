@@ -85,10 +85,12 @@ export default [
         width: '100'
       },
       {
-        field: 'name',
+        field: 'alert.name',
         title: 'context.alerts.name',
         width: '100',
-        nested: 'alert'
+        nested: '_id.$oid',
+        dataType: 'link',
+        path: '/respond/alert/{0}'
       },
       {
         field: 'numEvents',
@@ -109,7 +111,7 @@ export default [
         width: '80',
         nested: 'incidentId',
         dataType: 'link',
-        path: '/respond/incident/{0}/details/catalyst'
+        path: '/respond/incident/{0}'
 
 
       }
