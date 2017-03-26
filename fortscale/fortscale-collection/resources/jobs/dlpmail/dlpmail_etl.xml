@@ -68,7 +68,7 @@
                     <value>${impala.data.dlpmail.table.partition.type}</value>
                 </entry>
                 <entry>
-                    <key>sortShellScript</key>
+                    <key>preProcessScriptPath</key>
                     <value>${collection.shell.scripts.dir.path}/dlpmailpreprocess.py</value>
                 </entry>
             </job-data-map>
