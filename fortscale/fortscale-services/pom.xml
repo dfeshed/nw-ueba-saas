@@ -60,11 +60,6 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>fortscale</groupId>
-			<artifactId>fortscale-geoip</artifactId>
-			<version>${project.parent.version}</version>
-		</dependency>
-		<dependency>
 			<groupId>${project.parent.groupId}</groupId>
 			<artifactId>fortscale-global-config</artifactId>
 			<version>${project.parent.version}</version>

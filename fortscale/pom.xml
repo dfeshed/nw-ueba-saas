@@ -621,7 +621,6 @@
 
 	<modules>
 		<module>fortscale-utils</module>
-		<module>fortscale-geoip</module>
 		<module>fortscale-global-config</module>
 		<module>fortscale-domain</module>
 		<module>fortscale-ml</module>
