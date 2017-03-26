@@ -32,7 +32,7 @@ public class EventsCounterBuilder implements CommandBuilder {
     public static final String EVENT_ID_FIELD_NAME = "event_id";
     public static final String NUM_OF_RECIPIENTS_FIELD_NAME = "num_of_recipients";
     public static final String FORTSCALE_CONTROL_RECORD_EVENT_ID = "Fortscale Control";
-    public static final String MESSAGE_BODY_FIELD_NAME = "message body";
+    public static final String EVENT_TYPE_MESSAGE_BODY = "message_body";
     public static final String KEY_DELIMITER = "_";
     private static Logger logger = LoggerFactory.getLogger(EventsReducerBuilder.class);
 
@@ -113,7 +113,7 @@ public class EventsCounterBuilder implements CommandBuilder {
 
         private boolean handleRecordNotFirstOfEvent(Record inputRecord, Record previousRecord, MorphlineMetrics morphlineMetrics) {
             final String newEventType = (String) inputRecord.getFirstValue(EVENT_TYPE_FIELD_NAME);
-            final boolean isNewEventMessageBody = newEventType != null && newEventType.equals(MESSAGE_BODY_FIELD_NAME);
+            final boolean isNewEventMessageBody = newEventType != null && newEventType.equals(EVENT_TYPE_MESSAGE_BODY);
 
             boolean handledSuccessfully;
             if (isNewEventMessageBody) {
@@ -129,7 +129,7 @@ public class EventsCounterBuilder implements CommandBuilder {
         private boolean handleRecordNotFirstOfEventMessageBody(Record inputRecord, Record previousRecord, MorphlineMetrics morphlineMetrics) {
             logger.debug("Handling not-first-of-event record of type message-body {}.", inputRecord);
             final String previousEventType = (String) previousRecord.getFirstValue(EVENT_TYPE_FIELD_NAME);
-            final boolean isPreviousEventMessageBody = previousEventType != null && previousEventType.equals(MESSAGE_BODY_FIELD_NAME);
+            final boolean isPreviousEventMessageBody = previousEventType != null && previousEventType.equals(EVENT_TYPE_MESSAGE_BODY);
             if (isPreviousEventMessageBody) {
                 logger.error("Error with counting command. there were 2 message bodies for event_id {}", previousRecord.getFields().get(EVENT_ID_FIELD_NAME).get(0));
                 return false;
@@ -183,7 +183,7 @@ public class EventsCounterBuilder implements CommandBuilder {
         private void saveRecordToCache(Record inputRecord, MorphlineMetrics morphlineMetrics) {
             logger.debug("Storing record {} in cache.", inputRecord);
             final String eventType = (String) inputRecord.getFirstValue(EVENT_TYPE_FIELD_NAME);
-            final boolean isInputRecordOfTypeMessageBody = eventType != null && eventType.equals(MESSAGE_BODY_FIELD_NAME);
+            final boolean isInputRecordOfTypeMessageBody = eventType != null && eventType.equals(EVENT_TYPE_MESSAGE_BODY);
             if (isInputRecordOfTypeMessageBody) {
                 if (inputRecord.getFirstValue(NUM_OF_RECIPIENTS_FIELD_NAME).equals("")) {
                     inputRecord.replaceValues(NUM_OF_RECIPIENTS_FIELD_NAME, "0");
