@@ -101,7 +101,7 @@ public class DgFileEventAfterEtl {
                         stringJoiner.add("");
                         break;
                     case "some_malwarePolicyName":
-                        stringJoiner.add("todo");
+                        stringJoiner.add("");
                         break;
                     default:
                         stringJoiner.add(newElement);
