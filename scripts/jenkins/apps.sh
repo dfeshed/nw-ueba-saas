@@ -85,7 +85,7 @@ function runEmberTestNoMockServer {
 
 function runEmberBuild {
   info "Running 'ember build' for $1"
-  FF_ON=$FF_ON FF_OFF=$FF_OFF ember build -e production
+  NODE_ENV=production FF_ON=$FF_ON FF_OFF=$FF_OFF ember build -e production
   checkError "Ember build failed for $1"
   success "'ember build' for $1 was successful"
 }

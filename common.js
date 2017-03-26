@@ -36,6 +36,10 @@ const developedAddons = [];
 const isDevelopingAddon = function(projectName) {
   return function() {
 
+    if (process.env.EMBER_ENV === 'production') {
+      return false;
+    }
+
     // If it is the current project being processed
     // always true
     const projName = this.project.pkg.name;
