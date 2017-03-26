@@ -1,5 +1,6 @@
 package fortscale.ml.model.selector;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import fortscale.utils.factory.FactoryConfig;
@@ -10,4 +11,5 @@ import fortscale.utils.factory.FactoryConfig;
 		@JsonSubTypes.Type(value = AggregatedEventContextSelectorConf.class, name = AggregatedEventContextSelectorConf.AGGREGATED_EVENT_CONTEXT_SELECTOR),
 		@JsonSubTypes.Type(value = EntityEventContextSelectorConf.class, name = EntityEventContextSelectorConf.ENTITY_EVENT_CONTEXT_SELECTOR)
 })
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE, setterVisibility = JsonAutoDetect.Visibility.NONE, isGetterVisibility = JsonAutoDetect.Visibility.NONE)
 public interface IContextSelectorConf extends FactoryConfig {}

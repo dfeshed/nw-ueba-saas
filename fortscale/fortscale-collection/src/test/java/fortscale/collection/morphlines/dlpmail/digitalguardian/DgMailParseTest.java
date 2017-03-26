@@ -405,8 +405,8 @@ public class DgMailParseTest {
 				.setEmailRecipient("some_emailRecipient") // because the parsing wont find the @ - this is ok for this test
 				.setEmailRecipientDomain("some_emailRecipient") // because the parsing wont find the @ - this is ok for this test
 				// interesting test stuff starts here
-				.setDestinationFile("message body")
-				.setEventType("message body")
+				.setDestinationFile("message_body")
+				.setEventType("message_body")
 				.createDgEventAfterEtl();
 
 		final String inputLine = input.toString();

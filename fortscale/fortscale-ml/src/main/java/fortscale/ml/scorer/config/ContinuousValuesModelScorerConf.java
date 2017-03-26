@@ -3,15 +3,17 @@ package fortscale.ml.scorer.config;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.util.Assert;
 
 import java.util.List;
 
-@JsonAutoDetect(fieldVisibility = Visibility.NONE, getterVisibility = Visibility.NONE, setterVisibility = Visibility.ANY)
+@JsonAutoDetect(fieldVisibility = Visibility.NONE, getterVisibility = Visibility.ANY, setterVisibility = Visibility.ANY, isGetterVisibility = Visibility.ANY)
 public class ContinuousValuesModelScorerConf extends ModelScorerConf {
 	public static final String SCORER_TYPE = "continuous-values-model-scorer";
 
+	@JsonProperty("quad-poly-calibration-conf")
 	private QuadPolyCalibrationConf quadPolyCalibrationConf;
 	/*
 	 * Inherited non mandatory fields:
@@ -33,6 +35,7 @@ public class ContinuousValuesModelScorerConf extends ModelScorerConf {
 		this.quadPolyCalibrationConf = quadPolyCalibrationConf;
 	}
 
+	@JsonIgnore
 	@Override
 	public String getFactoryName() {
 		return SCORER_TYPE;

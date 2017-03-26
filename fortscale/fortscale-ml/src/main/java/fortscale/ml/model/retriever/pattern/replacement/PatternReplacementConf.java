@@ -3,10 +3,12 @@ package fortscale.ml.model.retriever.pattern.replacement;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.util.Assert;
 
 @JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class PatternReplacementConf {
 	private String pattern;
 	private String replacement;
@@ -40,5 +42,13 @@ public class PatternReplacementConf {
 
 	public String getPostReplacementCondition() {
 		return postReplacementCondition;
+	}
+
+	public void setPostReplacementCondition(String postReplacementCondition) {
+		this.postReplacementCondition = postReplacementCondition;
+	}
+
+	public void setPreReplacementCondition(String preReplacementCondition) {
+		this.preReplacementCondition = preReplacementCondition;
 	}
 }
