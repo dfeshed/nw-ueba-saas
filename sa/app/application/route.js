@@ -21,7 +21,7 @@ export default Route.extend(ApplicationRouteMixin, csrfToken, {
   },
 
   beforeModel(transition) {
-    if (!this.get('session.isAuthenticated') && transition.targetName !== 'login') {
+    if (!this.get('session.isAuthenticated') && transition.targetName !== 'login' && transition.targetName !== 'protected.index') {
       localStorage.setItem('rsa-post-auth-redirect', transition.targetName);
     }
 

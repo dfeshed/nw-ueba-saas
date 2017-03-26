@@ -46,7 +46,7 @@ export default Service.extend({
       url = '/admin/monitoring';
     } else if (intersections.includes('manageSystemSettings')) {
       url = '/admin/system';
-    } else if (intersections.includes('manageSASecurity') || this.containsPermission(intersections, 'security-server')) {
+    } else if (intersections.includes('manageSASecurity') || intersections.includes('security-server')) {
       url = '/admin/security';
     }
 
@@ -70,12 +70,6 @@ export default Service.extend({
     }
 
     return url;
-  },
-
-  containsPermission(intersections, targetPermission) {
-    return intersections.some((permission) => {
-      return permission.indexOf(targetPermission) >= 0;
-    });
   }
 
 });
