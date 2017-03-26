@@ -3,6 +3,7 @@ package fortscale.ml.model.builder;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.util.Assert;
 
@@ -20,6 +21,7 @@ public class CategoryRarityModelBuilderConf implements IModelBuilderConf {
 		setNumOfBuckets(numOfBuckets);
 	}
 
+	@JsonIgnore
 	@Override
 	public String getFactoryName() {
 		return CATEGORY_RARITY_MODEL_BUILDER;
