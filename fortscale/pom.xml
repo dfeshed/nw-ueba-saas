@@ -626,7 +626,6 @@
 		<module>fortscale-ml</module>
 		<module>fortscale-services</module>
 		<module>fortscale-aggregation</module>
-		<module>fortscale-monitor</module>
 		<module>fortscale-common</module>
 		<module>fortscale-monitoring-daemons</module>
 	</modules>
