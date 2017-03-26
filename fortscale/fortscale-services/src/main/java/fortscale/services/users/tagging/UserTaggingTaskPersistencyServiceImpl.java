@@ -11,10 +11,10 @@ import java.util.Map;
 public class UserTaggingTaskPersistencyServiceImpl implements UserTaggingTaskPersistenceService {
 
     private static final Logger logger = Logger.getLogger(UserTaggingTaskPersistencyServiceImpl.class);
+    public static final String FILE_CONF_KEY = "file_conf";
 
     private final String SYSTEM_SETUP_USER_TAGGING_LAST_EXECUTION_TIME ="system_setup_user_tagging.last_execution_time";
     private final String SYSTEM_SETUP_USER_TAGGING_EXECUTION_START_TIME ="system_setup_user_tagging.execution_start_time";
-    private final String SYSTEM_SETUP_USER_TAGGING_MONITOR_FILE_DAILY ="system_setup_user_tagging.monitor_file_daily";
 
     private final ApplicationConfigurationService applicationConfigurationService;
 
@@ -28,10 +28,10 @@ public class UserTaggingTaskPersistencyServiceImpl implements UserTaggingTaskPer
         return applicationConfigurationService.getApplicationConfigurationAsObject(createResultKey(resultsKey), UserTaggingResult.class);
     }
 
-    public void writeTaskResults(String taskTypeName, String resultsId, boolean result, Map<String, Long> deltaPerTag) {
+    public void writeTaskResults(String taskTypeName, String resultsId, boolean result, Map<String, Long> deltaPerTag, String errorMessage) {
         String resultsKey = createResultKey(resultsId);
         logger.debug("Inserting status to application configuration in key {}", resultsKey);
-        UserTaggingResult userTaggingResult = new UserTaggingResult(result, deltaPerTag);
+        UserTaggingResult userTaggingResult = new UserTaggingResult(result, deltaPerTag, errorMessage);
         applicationConfigurationService.insertOrUpdateConfigItemAsObject(resultsKey, userTaggingResult);
     }
 
@@ -57,20 +57,32 @@ public class UserTaggingTaskPersistencyServiceImpl implements UserTaggingTaskPer
     }
 
     @Override
-    public Boolean isMonitorFileDaily() {
-        return Boolean.valueOf(applicationConfigurationService.getApplicationConfigurationAsObject(SYSTEM_SETUP_USER_TAGGING_MONITOR_FILE_DAILY, Boolean.class));
+    public String getSystemSetupUserTaggingFilePath() {
+        return applicationConfigurationService.getApplicationConfigurationAsObject(createResultKey(FILE_CONF_KEY), String.class);
+    }
+
+    @Override
+    public void saveSystemSetupTaggingFilePath(String filePath) {
+        applicationConfigurationService.insertOrUpdateConfigItemAsObject(createResultKey(FILE_CONF_KEY), filePath);
+    }
+
+    @Override
+    public void deleteSystemSetupTaggingFilePath() {
+        applicationConfigurationService.delete(createResultKey(FILE_CONF_KEY));
     }
 
     public static class UserTaggingResult{
+        private String errorMessage;
         private boolean success;
         private Map<String, Long> usersAffected;
 
         public UserTaggingResult() {
         }
 
-        public UserTaggingResult(boolean success, Map<String, Long> usersAffected) {
+        public UserTaggingResult(boolean success, Map<String, Long> usersAffected, String errorMessage) {
             this.success = success;
             this.usersAffected = usersAffected;
+            this.errorMessage = errorMessage;
         }
 
         public boolean isSuccess() {
@@ -79,6 +91,10 @@ public class UserTaggingTaskPersistencyServiceImpl implements UserTaggingTaskPer
 
         public Map<String, Long> getUsersAffected() {
             return usersAffected;
+        }
+
+        public String getErrorMessage() {
+            return errorMessage;
         }
     }
 }

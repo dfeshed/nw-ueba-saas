@@ -156,12 +156,17 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 	public void addUserTags(String username, List<String> tags) throws Exception {
 		for (String tag: tags) {
 			//if there's no such tag in the system
-			if (tagService.getTag(tag) == null) {
+			Tag tagObject = tagService.getTag(tag);
+			if (tagObject == null) {
 				//try to add the new tag
 				if (!tagService.addTag(new Tag(tag))) {
 					//if failed
 					throw new Exception("failed to add new tag - " + tag);
 				}
+			} else if (tagObject.getDeleted()){
+					//undelete the tag.
+					tagObject.setDeleted(false);
+					tagService.updateTag(tagObject);
 			}
 		}
 		userService.updateUserTagList(tags, null, username);

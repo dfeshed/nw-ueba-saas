@@ -17,6 +17,7 @@ import fortscale.domain.rest.UserRestFilter;
 import fortscale.services.ActiveDirectoryService;
 import fortscale.services.UserApplication;
 import fortscale.services.UserService;
+import fortscale.services.cache.CacheHandler;
 import fortscale.services.classifier.ClassifierHelper;
 import fortscale.services.impl.metrics.UserServiceMetrics;
 import fortscale.services.types.PropertiesDistribution;
@@ -31,6 +32,7 @@ import org.joda.time.DateTimeZone;
 import org.mortbay.log.Log;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -97,6 +99,10 @@ public class UserServiceImpl implements UserService, InitializingBean {
 
 	@Autowired
 	private FavoriteUserFilterRepository favoriteUserFilterRepository;
+
+	@Autowired
+	@Qualifier("groupByTagsCache")
+	private CacheHandler<String, Map<String, Long>> groupByTagsCache;
 
 	@Value("${ad.info.update.read.page.size:1000}")
 	private int readPageSize;
@@ -973,8 +979,14 @@ public class UserServiceImpl implements UserService, InitializingBean {
 	}
 
 	@Override
-	public Map<String, Long> groupByTags() {
-		return userRepository.groupByTags();
+	public Map<String, Long> groupByTags(boolean forceCacheUpdate) {
+		final String TAGS = "tags";
+		Map<String, Long> items = groupByTagsCache.get(TAGS);
+		if (items == null || forceCacheUpdate) {
+			items = userRepository.groupByTags();
+			groupByTagsCache.put(TAGS, items);
+		}
+		return items;
 	}
 
 	@Override
