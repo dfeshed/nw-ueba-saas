@@ -1,6 +1,8 @@
 package fortscale.collection.morphlines.dlpfile.dg;
 
 import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.List;
 import java.util.StringJoiner;
 
 public class DgFileEventAfterEtl {
@@ -38,11 +40,11 @@ public class DgFileEventAfterEtl {
 
     public DgFileEventAfterEtl(String dateTime, String dateTimeUnix, String eventType, String eventId, String username,
                                String normalizedUsername, String fullName, String hostname, String normalizedSrcMachine,
-                               String ipAddress, String application, String sourceDirectory,
-                               String detailFileSize, String sourceDriveType, String destinationDriveType,
-                               String wasClassified, String wasBlocked, String scanValueStatusText, String isAdminActivity,
-                               String isRdp, String isRegistryChanged, String dataSource, String lastState, String sourceFile,
-                               String destinationFile, String malwarePolicyName) {
+                               String ipAddress, String application, String sourceDirectory, String destinationDirectory,
+                               String sourceFile, String destinationFile, String detailFileSize, String sourceDriveType,
+                               String destinationDriveType, String wasClassified, String wasBlocked, String scanValueStatusText,
+                               String malwarePolicyName, String isRdp, String isAdminActivity, String isRegistryChanged,
+                               String dataSource, String lastState) {
         this.dateTime = dateTime;
         this.dateTimeUnix = dateTimeUnix;
         this.eventType = eventType;
@@ -55,30 +57,41 @@ public class DgFileEventAfterEtl {
         this.ipAddress = ipAddress;
         this.application = application;
         this.sourceDirectory = sourceDirectory;
-        this.destinationDirectory = detailFileSize;
+        this.destinationDirectory = destinationDirectory;
+        this.sourceFile = sourceFile;
+        this.destinationFile = destinationFile;
         this.detailFileSize = detailFileSize;
         this.sourceDriveType = sourceDriveType;
         this.destinationDriveType = destinationDriveType;
         this.wasClassified = wasClassified;
         this.wasBlocked = wasBlocked;
         this.scanValueStatusText = scanValueStatusText;
-        this.isAdminActivity= isAdminActivity;
+        this.malwarePolicyName = malwarePolicyName;
         this.isRdp = isRdp;
+        this.isAdminActivity = isAdminActivity;
         this.isRegistryChanged = isRegistryChanged;
         this.dataSource = dataSource;
         this.lastState = lastState;
-        this.sourceFile = sourceFile;
-        this.destinationFile = destinationFile;
-        this.malwarePolicyName = malwarePolicyName;
     }
 
     @Override
     public String toString() {
         StringJoiner stringJoiner = new StringJoiner(",");
-        final Field[] fields = this.getClass().getFields();
-        for (Field field : fields) {
+        List<String> fields = Arrays.asList("dateTime" ,"dateTimeUnix" ,"eventType" ,"eventId" ,"username" ,"normalizedUsername"
+                ,"fullName" ,"hostname" ,"normalizedSrcMachine" ,"ipAddress" ,"application" ,"sourceDirectory" ,"destinationDirectory"
+                ,"sourceFile" ,"destinationFile" ,"detailFileSize" ,"sourceDriveType" ,"destinationDriveType" ,"wasClassified"
+                ,"wasBlocked" ,"scanValueStatusText" ,"malwarePolicyName" ,"isRdp" ,"isAdminActivity" ,"isRegistryChanged", "dataSource", "lastState");
+        for (String fieldName : fields) {
             try {
+                final Field field;
+                try {
+                    field = this.getClass().getField(fieldName);
+                } catch (NoSuchFieldException e) {
+                    return null;
+                }
+
                 final String newElement = (String) field.get(this);
+
                 switch (newElement) {
                     case "some_hostname":
                     case "some_normalizedSrcMachine":
