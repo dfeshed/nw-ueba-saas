@@ -37,6 +37,11 @@
           "normalized_username_prnlog_daily.number_of_total_pages_prnlog_daily",
           "normalized_username_prnlog_daily.number_of_distinct_normalized_src_machines_prnlog_daily",
           "normalized_username_prnlog_daily.sum_of_file_size_prnlog_daily",
+          "normalized_username_dlpmail_daily.number_of_emails_to_external_recipient_dlpmail_daily",
+          "normalized_username_dlpmail_daily.number_of_attachments_to_external_recipient_dlpmail_daily",
+          "normalized_username_dlpmail_daily.sum_of_attachments_to_external_recipient_size_dlpmail_daily",
+          "normalized_username_dlpmail_daily.number_of_email_attachments_dlpmail_daily",
+          "normalized_username_dlpmail_daily.sum_of_email_attachment_file_size_dlpmail_daily",
           "normalized_username_kerberos_tgt_daily.number_of_successful_kerberos_tgt_events_daily",
           "normalized_username_kerberos_tgt_daily.number_of_failed_kerberos_tgt_daily",
           "normalized_username_kerberos_tgt_daily.distinct_number_of_normalized_src_machine_kerberos_tgt_daily",
@@ -73,6 +78,13 @@
           "normalized_username_prnlog_daily.highest_date_time_score_prnlog_daily",
           "normalized_username_prnlog_daily.sum_of_highest_scores_over_normalized_src_machines_prnlog_daily",
           "normalized_username_prnlog_daily.sum_of_highest_scores_over_normalized_dst_machines_prnlog_daily",
+          "normalized_username_dlpmail_daily.highest_date_time_score_dlpmail_daily",
+          "normalized_username_dlpmail_daily.sum_of_highest_normalized_src_machine_scores_dlpmail_daily",
+          "normalized_username_dlpmail_daily.sum_of_highest_email_sender_scores_dlpmail_daily",
+          "normalized_username_dlpmail_daily.sum_of_highest_email_recipient_domain_scores_dlpmail_daily",
+          "normalized_username_dlpmail_daily.sum_of_highest_email_application_scores_dlpmail_daily",
+          "normalized_username_dlpmail_daily.sum_of_highest_attachment_file_extension_scores_dlpmail_daily",
+          "normalized_username_dlpmail_daily.highest_attachment_file_size_score_dlpmail_daily",
           "normalized_username_kerberos_tgt_daily.sum_of_highest_scores_over_normalized_src_machine_kerberos_tgt_daily",
           "normalized_username_kerberos_tgt_daily.highest_scores_over_failure_code_kerberos_tgt_daily",
           "normalized_username_kerberos_tgt_daily.highest_score_over_date_time_events_kerberos_tgt_daily"
@@ -167,6 +179,21 @@
           "sum_of_file_size_prnlog_daily": [
             "normalized_username_prnlog_daily.sum_of_file_size_prnlog_daily"
           ],
+          "number_of_emails_to_external_recipient_dlpmail_daily": [
+            "normalized_username_dlpmail_daily.number_of_emails_to_external_recipient_dlpmail_daily"
+          ],
+          "number_of_attachments_to_external_recipient_dlpmail_daily": [
+            "normalized_username_dlpmail_daily.number_of_attachments_to_external_recipient_dlpmail_daily"
+          ],
+          "sum_of_attachments_to_external_recipient_size_dlpmail_daily": [
+            "normalized_username_dlpmail_daily.sum_of_attachments_to_external_recipient_size_dlpmail_daily"
+          ],
+          "number_of_email_attachments_dlpmail_daily": [
+            "normalized_username_dlpmail_daily.number_of_email_attachments_dlpmail_daily"
+          ],
+          "sum_of_email_attachment_file_size_dlpmail_daily": [
+            "normalized_username_dlpmail_daily.sum_of_email_attachment_file_size_dlpmail_daily"
+          ],
           "successful_kerberos_tgt":[
             "normalized_username_kerberos_tgt_daily.number_of_successful_kerberos_tgt_events_daily"
           ],
@@ -179,6 +206,11 @@
 
         },
         "alphas": {
+          "number_of_emails_to_external_recipient_dlpmail_daily": 0.09,
+          "number_of_attachments_to_external_recipient_dlpmail_daily": 0.09,
+          "sum_of_attachments_to_external_recipient_size_dlpmail_daily": 0.09,
+          "number_of_email_attachments_dlpmail_daily": 0.09,
+          "sum_of_email_attachment_file_size_dlpmail_daily": 0.09,
           "distinct_normalized_src_machine_kerberos_logins": 0.09,
           "distinct_normalized_dst_machine_kerberos_logins": 0.09,
           "failed_kerberos_logins_events": 0.09,
@@ -213,6 +245,13 @@
           "distinct_normalized_src_machine_kerberos_tgt":0.09
         },
         "betas": {
+          "normalized_username_dlpmail_daily.highest_date_time_score_dlpmail_daily": 0.002,
+          "normalized_username_dlpmail_daily.sum_of_highest_normalized_src_machine_scores_dlpmail_daily": 0.002,
+          "normalized_username_dlpmail_daily.sum_of_highest_email_sender_scores_dlpmail_daily": 0.002,
+          "normalized_username_dlpmail_daily.sum_of_highest_email_recipient_domain_scores_dlpmail_daily": 0.002,
+          "normalized_username_dlpmail_daily.sum_of_highest_email_application_scores_dlpmail_daily": 0.002,
+          "normalized_username_dlpmail_daily.sum_of_highest_attachment_file_extension_scores_dlpmail_daily": 0.002,
+          "normalized_username_dlpmail_daily.highest_attachment_file_size_score_dlpmail_daily": 0.002,
           "normalized_username_kerberos_logins_daily.sum_of_highest_scores_over_normalized_src_machine_kerberos_logins_daily": 0.002,
           "normalized_username_kerberos_logins_daily.sum_of_highest_scores_over_normalized_dst_machine_kerberos_logins_daily": 0.002,
           "normalized_username_kerberos_logins_daily.sum_of_highest_scores_over_failure_code_kerberos_logins_daily": 0.002,
@@ -287,6 +326,11 @@
           "normalized_username_prnlog_hourly.number_of_total_pages_prnlog_hourly",
           "normalized_username_prnlog_hourly.number_of_distinct_normalized_src_machines_prnlog_hourly",
           "normalized_username_prnlog_hourly.sum_of_file_size_prnlog_hourly",
+          "normalized_username_dlpmail_hourly.number_of_emails_to_external_recipient_dlpmail_hourly",
+          "normalized_username_dlpmail_hourly.number_of_attachments_to_external_recipient_dlpmail_hourly",
+          "normalized_username_dlpmail_hourly.sum_of_attachments_to_external_recipient_size_dlpmail_hourly",
+          "normalized_username_dlpmail_hourly.number_of_email_attachments_dlpmail_hourly",
+          "normalized_username_dlpmail_hourly.sum_of_email_attachment_file_size_dlpmail_hourly",
           "normalized_username_kerberos_tgt_hourly.number_of_successful_kerberos_tgt_events_hourly",
           "normalized_username_kerberos_tgt_hourly.number_of_failed_kerberos_tgt_hourly",
           "normalized_username_kerberos_tgt_hourly.distinct_number_of_normalized_src_machine_kerberos_tgt_hourly",
@@ -322,6 +366,13 @@
           "normalized_username_prnlog_hourly.highest_date_time_score_prnlog_hourly",
           "normalized_username_prnlog_hourly.sum_of_highest_scores_over_normalized_src_machines_prnlog_hourly",
           "normalized_username_prnlog_hourly.sum_of_highest_scores_over_normalized_dst_machines_prnlog_hourly",
+          "normalized_username_dlpmail_hourly.highest_date_time_score_dlpmail_hourly",
+          "normalized_username_dlpmail_hourly.sum_of_highest_normalized_src_machine_scores_dlpmail_hourly",
+          "normalized_username_dlpmail_hourly.sum_of_highest_email_sender_scores_dlpmail_hourly",
+          "normalized_username_dlpmail_hourly.sum_of_highest_email_recipient_domain_scores_dlpmail_hourly",
+          "normalized_username_dlpmail_hourly.sum_of_highest_email_application_scores_dlpmail_hourly",
+          "normalized_username_dlpmail_hourly.sum_of_highest_attachment_file_extension_scores_dlpmail_hourly",
+          "normalized_username_dlpmail_hourly.highest_attachment_file_size_score_dlpmail_hourly",
           "normalized_username_kerberos_tgt_hourly.sum_of_highest_scores_over_normalized_src_machine_kerberos_tgt_hourly",
           "normalized_username_kerberos_tgt_hourly.highest_scores_over_failure_code_kerberos_tgt_hourly",
           "normalized_username_kerberos_tgt_hourly.highest_score_over_date_time_events_kerberos_tgt_hourly"
@@ -416,6 +467,21 @@
           "sum_of_file_size_prnlog_hourly": [
             "normalized_username_prnlog_hourly.sum_of_file_size_prnlog_hourly"
           ],
+          "number_of_emails_to_external_recipient_dlpmail_hourly": [
+            "normalized_username_dlpmail_hourly.number_of_emails_to_external_recipient_dlpmail_hourly"
+          ],
+          "number_of_attachments_to_external_recipient_dlpmail_hourly": [
+            "normalized_username_dlpmail_hourly.number_of_attachments_to_external_recipient_dlpmail_hourly"
+          ],
+          "sum_of_attachments_to_external_recipient_size_dlpmail_hourly": [
+            "normalized_username_dlpmail_hourly.sum_of_attachments_to_external_recipient_size_dlpmail_hourly"
+          ],
+          "number_of_email_attachments_dlpmail_hourly": [
+            "normalized_username_dlpmail_hourly.number_of_email_attachments_dlpmail_hourly"
+          ],
+          "sum_of_email_attachment_file_size_dlpmail_hourly": [
+            "normalized_username_dlpmail_hourly.sum_of_email_attachment_file_size_dlpmail_hourly"
+          ],
           "successful_kerberos_tgt":[
             "normalized_username_kerberos_tgt_hourly.number_of_successful_kerberos_tgt_events_hourly"
           ],
@@ -428,6 +494,11 @@
 
         },
         "alphas": {
+          "number_of_emails_to_external_recipient_dlpmail_hourly": 0.09,
+          "number_of_attachments_to_external_recipient_dlpmail_hourly": 0.09,
+          "sum_of_attachments_to_external_recipient_size_dlpmail_hourly": 0.09,
+          "number_of_email_attachments_dlpmail_hourly": 0.09,
+          "sum_of_email_attachment_file_size_dlpmail_hourly": 0.09,
           "distinct_normalized_src_machine_kerberos_logins": 0.09,
           "distinct_normalized_dst_machine_kerberos_logins": 0.09,
           "failed_kerberos_logins_events": 0.09,
@@ -461,7 +532,14 @@
           "failed_kerberos_tgt":0.09,
           "distinct_normalized_src_machine_kerberos_tgt":0.09
         },
-        "betas": {
+       "betas": {
+          "normalized_username_dlpmail_hourly.highest_date_time_score_dlpmail_hourly": 0.002,
+          "normalized_username_dlpmail_hourly.sum_of_highest_normalized_src_machine_scores_dlpmail_hourly": 0.002,
+          "normalized_username_dlpmail_hourly.sum_of_highest_email_sender_scores_dlpmail_hourly": 0.002,
+          "normalized_username_dlpmail_hourly.sum_of_highest_email_recipient_domain_scores_dlpmail_hourly": 0.002,
+          "normalized_username_dlpmail_hourly.sum_of_highest_email_application_scores_dlpmail_hourly": 0.002,
+          "normalized_username_dlpmail_hourly.sum_of_highest_attachment_file_extension_scores_dlpmail_hourly": 0.002,
+          "normalized_username_dlpmail_hourly.highest_attachment_file_size_score_dlpmail_hourly": 0.002,
           "normalized_username_kerberos_logins_hourly.sum_of_highest_scores_over_normalized_src_machine_kerberos_logins_hourly": 0.002,
           "normalized_username_kerberos_logins_hourly.sum_of_highest_scores_over_normalized_dst_machine_kerberos_logins_hourly": 0.002,
           "normalized_username_kerberos_logins_hourly.sum_of_highest_scores_over_failure_code_kerberos_logins_hourly": 0.002,
@@ -508,6 +586,10 @@
       ],
       "aggregatedFeatureEventNamesMap": {
         "aggregatedFeatureEventNames": [
+          "normalized_username_dlpmail_daily.number_of_attachments_to_external_recipient_dlpmail_daily",
+          "normalized_username_dlpmail_daily.sum_of_attachments_to_external_recipient_size_dlpmail_daily",
+          "normalized_username_dlpmail_daily.number_of_email_attachments_dlpmail_daily",
+          "normalized_username_dlpmail_daily.sum_of_email_attachment_file_size_dlpmail_daily",
           "normalized_username_vpn_session_daily.sum_of_scores_rate_vpn_session_daily",
           "normalized_username_prnlog_daily.number_of_total_pages_prnlog_daily",
           "normalized_username_prnlog_daily.sum_of_file_size_prnlog_daily"
@@ -515,6 +597,18 @@
       },
       "entityEventFunction": {
         "clusters": {
+          "number_of_attachments_to_external_recipient_dlpmail_daily": [
+            "normalized_username_dlpmail_daily.number_of_attachments_to_external_recipient_dlpmail_daily"
+          ],
+          "sum_of_attachments_to_external_recipient_size_dlpmail_daily": [
+            "normalized_username_dlpmail_daily.sum_of_attachments_to_external_recipient_size_dlpmail_daily"
+          ],
+          "number_of_email_attachments_dlpmail_daily": [
+            "normalized_username_dlpmail_daily.number_of_email_attachments_dlpmail_daily"
+          ],
+          "sum_of_email_attachment_file_size_dlpmail_daily": [
+            "normalized_username_dlpmail_daily.sum_of_email_attachment_file_size_dlpmail_daily"
+          ],
           "number_of_total_pages_prnlog_daily": [
             "normalized_username_prnlog_daily.number_of_total_pages_prnlog_daily"
           ],
@@ -523,6 +617,10 @@
           ]
         },
         "alphas": {
+          "number_of_attachments_to_external_recipient_dlpmail_daily": 0.09,
+          "sum_of_attachments_to_external_recipient_size_dlpmail_daily": 0.09,
+          "number_of_email_attachments_dlpmail_daily": 0.09,
+          "sum_of_email_attachment_file_size_dlpmail_daily": 0.09,
           "number_of_total_pages_prnlog_daily": 0.09,
           "sum_of_file_size_prnlog_daily": 0.09
         },
@@ -539,6 +637,10 @@
       ],
       "aggregatedFeatureEventNamesMap": {
         "aggregatedFeatureEventNames": [
+          "normalized_username_dlpmail_hourly.number_of_attachments_to_external_recipient_dlpmail_hourly",
+          "normalized_username_dlpmail_hourly.sum_of_attachments_to_external_recipient_size_dlpmail_hourly",
+          "normalized_username_dlpmail_hourly.number_of_email_attachments_dlpmail_hourly",
+          "normalized_username_dlpmail_hourly.sum_of_email_attachment_file_size_dlpmail_hourly",
           "normalized_username_vpn_session_hourly.sum_of_scores_rate_vpn_session_hourly",
           "normalized_username_prnlog_hourly.number_of_total_pages_prnlog_hourly",
           "normalized_username_prnlog_hourly.sum_of_file_size_prnlog_hourly"
@@ -546,6 +648,18 @@
       },
       "entityEventFunction": {
         "clusters": {
+          "number_of_attachments_to_external_recipient_dlpmail_hourly": [
+            "normalized_username_dlpmail_hourly.number_of_attachments_to_external_recipient_dlpmail_hourly"
+          ],
+          "sum_of_attachments_to_external_recipient_size_dlpmail_hourly": [
+            "normalized_username_dlpmail_hourly.sum_of_attachments_to_external_recipient_size_dlpmail_hourly"
+          ],
+          "number_of_email_attachments_dlpmail_hourly": [
+            "normalized_username_dlpmail_hourly.number_of_email_attachments_dlpmail_hourly"
+          ],
+          "sum_of_email_attachment_file_size_dlpmail_hourly": [
+            "normalized_username_dlpmail_hourly.sum_of_email_attachment_file_size_dlpmail_hourly"
+          ],
           "number_of_total_pages_prnlog_hourly": [
             "normalized_username_prnlog_hourly.number_of_total_pages_prnlog_hourly"
           ],
@@ -554,6 +668,10 @@
           ]
         },
         "alphas": {
+          "number_of_attachments_to_external_recipient_dlpmail_hourly": 0.09,
+          "sum_of_attachments_to_external_recipient_size_dlpmail_hourly": 0.09,
+          "number_of_email_attachments_dlpmail_hourly": 0.09,
+          "sum_of_email_attachment_file_size_dlpmail_hourly": 0.09,
           "number_of_total_pages_prnlog_hourly": 0.09,
           "sum_of_file_size_prnlog_hourly": 0.09
         },

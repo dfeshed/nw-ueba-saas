@@ -1,5 +1,6 @@
 package fortscale.ml.model.builder;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import fortscale.ml.model.builder.gaussian.ContinuousHistogramModelBuilderConf;
@@ -19,4 +20,5 @@ import fortscale.utils.factory.FactoryConfig;
 		@JsonSubTypes.Type(value = PersonalThresholdModelBuilderConf.class, name = PersonalThresholdModelBuilderConf.PERSONAL_THRESHOLD_MODEL_BUILDER)
 
 })
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE, setterVisibility = JsonAutoDetect.Visibility.NONE, isGetterVisibility = JsonAutoDetect.Visibility.NONE)
 public interface IModelBuilderConf extends FactoryConfig {}

@@ -69,7 +69,7 @@ public class AggregatedFeatureEventsConfService extends AslConfigurationService 
 			AggregatedFeatureEventConf conf = (new ObjectMapper()).readValue(confAsString, AggregatedFeatureEventConf.class);
 			aggregatedFeatureEventConfList.add(conf);
 		} catch (Exception e) {
-			String errorMsg = String.format("Failed to deserialize JSON %s", confAsString);
+			String errorMsg = String.format("Failed to deserialize JSON object to AggregatedFeatureEventConf. the json itself: %s", confAsString);
 			logger.error(errorMsg, e);
 			throw new RuntimeException(errorMsg, e);
 		}
