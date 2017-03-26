@@ -1,5 +1,8 @@
-package fortscale.ml.model.builder;
+package fortscale.ml.model.builder.factories;
 
+import fortscale.ml.model.builder.IModelBuilder;
+import fortscale.ml.model.builder.PersonalThresholdModelBuilder;
+import fortscale.ml.model.builder.PersonalThresholdModelBuilderConf;
 import fortscale.utils.factory.AbstractServiceAutowiringFactory;
 import fortscale.utils.factory.FactoryConfig;
 import org.springframework.stereotype.Component;

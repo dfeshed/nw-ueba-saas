@@ -10,14 +10,17 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-@Service
+
 public class ModelService {
 	private static final Logger logger = Logger.getLogger(ModelService.class);
 
-	@Autowired
 	private ModelConfService modelConfService;
 
 	private Map<String, ModelBuilderManager> modelConfNameToManager;
+
+	public ModelService(ModelConfService modelConfService) {
+		this.modelConfService = modelConfService;
+	}
 
 	public void init() {
 		modelConfNameToManager = new HashMap<>();

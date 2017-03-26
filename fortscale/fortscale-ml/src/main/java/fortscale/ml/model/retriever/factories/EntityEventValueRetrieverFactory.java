@@ -1,6 +1,9 @@
-package fortscale.ml.model.retriever;
+package fortscale.ml.model.retriever.factories;
 
 import fortscale.entity.event.EntityEventDataCachedReaderService;
+import fortscale.ml.model.retriever.AbstractDataRetriever;
+import fortscale.ml.model.retriever.EntityEventValueRetriever;
+import fortscale.ml.model.retriever.EntityEventValueRetrieverConf;
 import fortscale.utils.factory.AbstractServiceAutowiringFactory;
 import fortscale.utils.factory.FactoryConfig;
 import org.springframework.stereotype.Component;

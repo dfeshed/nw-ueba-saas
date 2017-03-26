@@ -2,17 +2,12 @@ package fortscale.ml.scorer.spring.config;
 
 import fortscale.ml.scorer.Scorer;
 import fortscale.ml.scorer.ScorersService;
+import fortscale.ml.scorer.factory.ScorersFactoryConfig;
 import fortscale.utils.factory.FactoryService;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.FilterType;
+import org.springframework.context.annotation.*;
 
 @Configuration
-@ComponentScan(
-        basePackages = "fortscale.ml.scorer",
-        excludeFilters = @ComponentScan.Filter(type = FilterType.ANNOTATION, value = Configuration.class)
-)
+@Import(ScorersFactoryConfig.class)
 public class ScorerSpringConfiguration {
     @Bean
     public FactoryService<Scorer> getScorerFactoryService(){return new FactoryService<>();}

@@ -1,5 +1,8 @@
-package fortscale.ml.model.selector;
+package fortscale.ml.model.selector.factories;
 
+import fortscale.ml.model.selector.EntityEventContextSelector;
+import fortscale.ml.model.selector.EntityEventContextSelectorConf;
+import fortscale.ml.model.selector.IContextSelector;
 import fortscale.utils.factory.AbstractServiceAutowiringFactory;
 import fortscale.utils.factory.FactoryConfig;
 import org.springframework.stereotype.Component;
