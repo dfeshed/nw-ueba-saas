@@ -1,6 +1,6 @@
 import Ember from 'ember';
 import DomWatcher from 'component-lib/mixins/dom/watcher';
-import { EKMixin, keyDown } from 'ember-keyboard';
+import { EKMixin, keyUp } from 'ember-keyboard';
 
 const {
   computed,
@@ -259,20 +259,23 @@ export default Component.extend(DomWatcher, EKMixin, {
    * if first record is selected, select last record
    * @public
    */
-  selectNext: on(keyDown('ArrowDown'), function(e) {
+  selectNext: on(keyUp('ArrowDown'), function(e) {
     const fn = this.get('onRowClick');
 
     if ($.isFunction(fn)) {
-      let selectedItemIndex, selectedItem;
+      let selectedItemIndex, selectedItem, scrollTop;
 
       if (this.get('selectedIndex') === (this.get('items.length') - 1)) {
         selectedItemIndex = 0;
         selectedItem = this.get('items').objectAt(0);
+        scrollTop = 0;
       } else {
         selectedItemIndex = this.get('selectedIndex') + 1;
         selectedItem = this.get('items').objectAt(selectedItemIndex);
+        scrollTop = $('.rsa-data-table-body').scrollTop() + $('.rsa-data-table-body-row').outerHeight() + 1;
       }
 
+      $('.rsa-data-table-body').animate({ scrollTop }, 250);
       fn(selectedItem, selectedItemIndex, e, this);
     }
   }),
@@ -283,20 +286,23 @@ export default Component.extend(DomWatcher, EKMixin, {
    * if last record is selected, select first record
    * @public
    */
-  selectPrevious: on(keyDown('ArrowUp'), function(e) {
+  selectPrevious: on(keyUp('ArrowUp'), function(e) {
     const fn = this.get('onRowClick');
 
     if ($.isFunction(fn)) {
-      let selectedItemIndex, selectedItem;
+      let selectedItemIndex, selectedItem, scrollTop;
 
       if (this.get('selectedIndex') < 1) {
         selectedItemIndex = this.get('items.length') - 1;
         selectedItem = this.get('items').objectAt(selectedItemIndex);
+        scrollTop = $('.rsa-data-table-body').outerHeight();
       } else {
         selectedItemIndex = this.get('selectedIndex') - 1;
         selectedItem = this.get('items').objectAt(selectedItemIndex);
+        scrollTop = $('.rsa-data-table-body').scrollTop() - ($('.rsa-data-table-body-row').outerHeight() + 1);
       }
 
+      $('.rsa-data-table-body').animate({ scrollTop }, 250);
       fn(selectedItem, selectedItemIndex, e, this);
     }
   }),

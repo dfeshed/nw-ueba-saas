@@ -131,10 +131,11 @@ export default Route.extend(AuthenticatedRouteMixin, {
 
     if (redirect && redirect != transition.targetName) {
       this.transitionTo(redirect);
-      localStorage.removeItem('rsa-post-auth-redirect');
     } else if (transition.targetName === 'protected.index') {
       this._checkAccessAndTransition(key);
     }
+
+    localStorage.removeItem('rsa-post-auth-redirect');
   },
 
   actions: {
