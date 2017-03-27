@@ -107,8 +107,8 @@ public class ModelBasedScoreMapperFactoryTest {
 		IModelBuilderConf modelBuilderConf = () -> "dummy-model-factory-name";
 		ModelConf modelConf = new ModelConf(
 				"dummy-model-conf",
-				dataRetrieverConf,
 				isGlobal ? null : contextSelectorConf,
+				dataRetrieverConf,
 				modelBuilderConf
 		);
 		when(modelConfService.getModelConf(modelName)).thenReturn(modelConf);

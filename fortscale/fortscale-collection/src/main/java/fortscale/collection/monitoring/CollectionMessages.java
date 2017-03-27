@@ -22,7 +22,8 @@ public enum CollectionMessages {
     FILTERED_ON_FIELD_NOT_MATCHED,
     TIME_FIELD_EMPTY,
     TIME_FIELD_IS_NOT_VALID,
-    SERVICE_NAME_MATCHES_DC_REGEX;
+    SERVICE_NAME_MATCHES_DC_REGEX,
+    REDUCED_EVENT;
 
     public String getMessageId(){
         return "fortscale.message."+ this.name();

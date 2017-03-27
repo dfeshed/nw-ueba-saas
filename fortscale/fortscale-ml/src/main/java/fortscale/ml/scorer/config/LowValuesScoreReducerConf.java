@@ -11,7 +11,9 @@ import java.util.List;
 public class LowValuesScoreReducerConf extends AbstractScorerConf {
 	public static final String SCORER_TYPE = "low-values-score-reducer";
 
+	@JsonProperty("base-scorer")
 	private IScorerConf baseScorerConf;
+	@JsonProperty("reduction-configs")
 	private List<ReductionConfiguration> reductionConfigs;
 
 	@JsonCreator

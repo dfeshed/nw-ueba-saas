@@ -1,7 +1,7 @@
 package fortscale.collection.jobs;
 
 import fortscale.collection.io.BufferedLineReader;
-import fortscale.collection.metrics.ETLCommonJobMetircs;
+import fortscale.collection.metrics.ETLCommonJobMetrics;
 import fortscale.collection.monitoring.ItemContext;
 import fortscale.collection.morphlines.MorphlinesItemsProcessor;
 import fortscale.collection.morphlines.RecordExtensions;
@@ -51,7 +51,7 @@ public class GenericSecurityEventsJob extends FortscaleJob{
 	protected String jobName;
 	protected String sourceName;
 
-	protected ETLCommonJobMetircs jobMetircs;
+	protected ETLCommonJobMetrics jobMetrics;
 
 	protected  MorphlineMetrics morphlineMetrics;
 
@@ -65,7 +65,7 @@ public class GenericSecurityEventsJob extends FortscaleJob{
 		initTimeStampField(map);
 
 		sourceName = jobExecutionContext.getJobDetail().getKey().getGroup();
-		jobMetircs = collectionStatsMetricsService.getETLCommonJobMetircs(sourceName);
+		jobMetrics = collectionStatsMetricsService.getETLCommonJobMetrics(sourceName);
 		morphlineMetrics = collectionStatsMetricsService.getMorphlineMetrics(sourceName);
 
 	}
