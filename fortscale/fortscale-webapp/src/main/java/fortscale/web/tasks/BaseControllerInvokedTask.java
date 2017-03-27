@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Map;
 
 
 public abstract class BaseControllerInvokedTask {
@@ -20,14 +21,19 @@ public abstract class BaseControllerInvokedTask {
 
     /**
      * This method creates a new PROCESS and runs the given collection job
-     * @param jobName the collection job name for the task (example User_Fetch AD)
-     * @param resultsId the random id that will be given to this job execution results in application configuration
+     * @param jobName the collection job name for the task (example: User_Fetch)
+     * @param jobGroup the collection job group for the task (example: AD)
+     * @param additionalParams a map of the additional params (example: resultsId=12345)
      * @return true if the execution finished successfully, false otherwise
      */
-    protected boolean runCollectionJob(String jobName, String resultsId, String jobGroup) {
+    protected boolean runCollectionJob(String jobName, String jobGroup, Map<String, String> additionalParams) {
         String userName = SpringPropertiesUtil.getProperty("user.name");
         final String scriptPath = ApiActiveDirectoryController.COLLECTION_TARGET_DIR + "/resources/scripts/runAdTask.sh"; // this scripts runs the fetch/etl
-        final ArrayList<String> arguments = new ArrayList<>(Arrays.asList("/usr/bin/sudo", "-u", userName, scriptPath, jobName , jobGroup, "resultsId="+resultsId));
+        StringBuilder stringBuilder = new StringBuilder();
+        for (Map.Entry<String, String> entry : additionalParams.entrySet()) {
+            stringBuilder.append(entry.getKey()).append("=").append(entry.getValue()).append(" ");
+        }
+        final ArrayList<String> arguments = new ArrayList<>(Arrays.asList("/usr/bin/sudo", "-u", userName, scriptPath, jobName , jobGroup, stringBuilder.toString()));
         return ProcessExecutor.executeProcess(jobName, arguments, ApiActiveDirectoryController.COLLECTION_TARGET_DIR);
     }
 
