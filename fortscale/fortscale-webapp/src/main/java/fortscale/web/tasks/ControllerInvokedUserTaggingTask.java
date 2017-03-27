@@ -4,6 +4,7 @@ import fortscale.services.users.tagging.UserTaggingTaskPersistenceService;
 import fortscale.services.users.tagging.UserTaggingTaskPersistencyServiceImpl;
 import fortscale.utils.logging.Logger;
 import fortscale.web.services.ActivityMonitoringExecutorService;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 import java.util.Map;
@@ -27,14 +28,16 @@ public class ControllerInvokedUserTaggingTask extends BaseControllerInvokedTask 
 
     protected final ActivityMonitoringExecutorService<ControllerInvokedUserTaggingTask> executorService;
     protected SimpMessagingTemplate simpMessagingTemplate;
+    private String userTaggingFilePath;
 
     public ControllerInvokedUserTaggingTask(ActivityMonitoringExecutorService<ControllerInvokedUserTaggingTask> executorService,
                                             SimpMessagingTemplate simpMessagingTemplate, String responseDestination,
-                                            UserTaggingTaskPersistenceService userTaggingTaskPersistenceService) {
+                                            UserTaggingTaskPersistenceService userTaggingTaskPersistenceService, String userTaggingFilePath) {
         this.executorService = executorService;
         this.simpMessagingTemplate = simpMessagingTemplate;
         this.responseDestination = responseDestination;
         this.userTaggingTaskPersistenceService = userTaggingTaskPersistenceService;
+        this.userTaggingFilePath = userTaggingFilePath;
     }
 
     @Override
@@ -76,9 +79,15 @@ public class ControllerInvokedUserTaggingTask extends BaseControllerInvokedTask 
 
        userTaggingTaskPersistenceService.createResultKey(UserTaggingTaskPersistenceService.USER_TAGGING_RESULT_ID);
 
+        String filePathParam = null;
+        if (StringUtils.isNotEmpty(userTaggingFilePath)) {
+            filePathParam = String.format("filePath=%s", userTaggingFilePath);
+        }
+
         /* run task */
         logger.info("Running user tagging task {}", USER_TAGGING_JOB_NAME);
-        if (!runCollectionJob(USER_TAGGING_JOB_NAME, UserTaggingTaskPersistenceService.USER_TAGGING_RESULT_ID, USER_TAGGING_JOB_GROUP)) {
+        if (!runCollectionJob(USER_TAGGING_JOB_NAME, UserTaggingTaskPersistenceService.USER_TAGGING_RESULT_ID, USER_TAGGING_JOB_GROUP,
+                filePathParam)) {
             notifyTaskDone();
             return new UserTaggingTaskResponse(SUCCESS_FALSE, NO_EXECUTION_TIME);
         }
@@ -89,7 +98,7 @@ public class ControllerInvokedUserTaggingTask extends BaseControllerInvokedTask 
         final UserTaggingTaskPersistencyServiceImpl.UserTaggingResult taskResults = userTaggingTaskPersistenceService.getTaskResults(UserTaggingTaskPersistenceService.USER_TAGGING_RESULT_ID);
         if (taskResults == null) {
             notifyTaskDone();
-            logger.error("Got task result null");
+            logger.error("Got user tagging task result null from application configuration");
             return new UserTaggingTaskResponse(SUCCESS_FALSE, NO_EXECUTION_TIME);
         }
 
@@ -103,7 +112,7 @@ public class ControllerInvokedUserTaggingTask extends BaseControllerInvokedTask 
 
         notifyTaskDone();
         final long lastExecutionTime = System.currentTimeMillis();
-        return new UserTaggingTaskResponse(Boolean.valueOf(success), lastExecutionTime, taskResults.getUsersAffected());
+        return new UserTaggingTaskResponse(Boolean.valueOf(success), lastExecutionTime, taskResults.getUsersAffected(), taskResults.getErrorMessage());
     }
 
     @Override
@@ -115,14 +124,16 @@ public class ControllerInvokedUserTaggingTask extends BaseControllerInvokedTask 
      * This class represents an UserTagging response to the controller that executed it containing various information the controller needs to return the UI
      */
     public static class UserTaggingTaskResponse {
+        private String errorMessage;
         private boolean success;
         private Long lastExecutionTime;
         private Map<String, Long> taggingResult;
 
-        public UserTaggingTaskResponse(boolean success, Long lastExecutionTime, Map<String, Long> taggingResult) {
+        public UserTaggingTaskResponse(boolean success, Long lastExecutionTime, Map<String, Long> taggingResult, String erroorMessage) {
             this.success = success;
             this.lastExecutionTime = lastExecutionTime;
             this.taggingResult = taggingResult;
+            this.errorMessage = erroorMessage;
         }
 
         public UserTaggingTaskResponse(boolean success, Long lastExecutionTime) {
@@ -152,6 +163,14 @@ public class ControllerInvokedUserTaggingTask extends BaseControllerInvokedTask 
 
         public void setTaggingResult(Map<String, Long> taggingResult) {
             this.taggingResult = taggingResult;
+        }
+
+        public String getErrorMessage() {
+            return errorMessage;
+        }
+
+        public void setErrorMessage(String errorMessage) {
+            this.errorMessage = errorMessage;
         }
     }
 }
