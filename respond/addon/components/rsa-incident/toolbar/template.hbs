@@ -9,7 +9,7 @@
   iconName="gauge"
   isIconOnly=false
   searchEnabled=false
-  label=(t (concat 'respond.priority.' priority))
+  label=(if priority (t (concat 'respond.priority.' priority)) (t 'respond.incident.priority'))
   style="primary"
 }}
 {{rsa-incident/update-action-button
@@ -23,14 +23,14 @@
   iconName="flag-1"
   isIconOnly=false
   searchEnabled=false
-  label=(t (concat 'respond.status.' status))
+  label=(if status (t (concat 'respond.status.' status)) (t 'respond.incident.status'))
   style="primary"
 }}
 {{rsa-incident/update-action-button
   fieldName='assignee'
   options=users
   optionLabelProperty="name"
-  selectedValue=assigneeId
+  selectedValue=assignee.id
   incidentId=incidentId
   isIconOnly=false
   iconName="female"

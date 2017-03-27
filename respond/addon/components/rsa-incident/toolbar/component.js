@@ -27,7 +27,7 @@ const stateToComputed = (state) => {
     incidentId: id,
     priority: info && info.priority,
     status: info && info.status,
-    assigneeId: info && info.assignee && info.assignee.id
+    assignee: info && info.assignee
   };
 };
 

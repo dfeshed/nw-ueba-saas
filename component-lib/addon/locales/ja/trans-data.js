@@ -427,7 +427,7 @@ export default {
       priority: 'ja_Priority',
       riskScore: 'ja_Risk Score',
       assignee: 'ja_Assignee',
-      alertCount: 'ja_Alert(s)',
+      alertCount: 'ja_Indicator(s)',
       eventCount: 'ja_Event(s)',
       catalystCount: 'ja_Catalysts',
       sealed: 'ja_Sealed',

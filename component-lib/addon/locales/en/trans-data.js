@@ -427,7 +427,7 @@ export default {
       priority: 'Priority',
       riskScore: 'Risk Score',
       assignee: 'Assignee',
-      alertCount: 'Alert(s)',
+      alertCount: 'Indicator(s)',
       eventCount: 'Event(s)',
       catalystCount: 'Catalysts',
       sealed: 'Sealed',
