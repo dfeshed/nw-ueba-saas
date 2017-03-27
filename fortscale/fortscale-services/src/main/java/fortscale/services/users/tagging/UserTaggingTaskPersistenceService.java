@@ -9,7 +9,7 @@ public interface UserTaggingTaskPersistenceService {
 
     UserTaggingTaskPersistencyServiceImpl.UserTaggingResult getTaskResults(String resultsKey);
 
-    void writeTaskResults(String taskName, String resultsId, boolean result, Map<String, Long> deltaPerTag);
+    void writeTaskResults(String taskName, String resultsId, boolean result, Map<String, Long> deltaPerTag, String errorMessage);
 
     Long getLastExecutionTime();
 
@@ -21,5 +21,9 @@ public interface UserTaggingTaskPersistenceService {
 
     String createResultKey(String resultsId);
 
-    Boolean isMonitorFileDaily();
+    String getSystemSetupUserTaggingFilePath();
+
+    void saveSystemSetupTaggingFilePath(String systemSetupTaggingFilePath);
+
+    void deleteSystemSetupTaggingFilePath();
 }
