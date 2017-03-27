@@ -305,7 +305,7 @@ public class DgFileParseTest {
                 .setIsAdminActivity("false")
                 .setIsRdp("false")
                 .setIsRegistryChanged("false")
-                .setFullName(" ")
+                .setFullName("")
                 .setIpAddress("")
                 .setSourceDirectory("c:\\program files\\dgagent\\verity\\k2\\_nti40\\bin\\")
                 .setSourceFile("licensekey.dat")
