@@ -155,8 +155,7 @@
         <dependency>
             <groupId>net.minidev</groupId>
             <artifactId>json-smart</artifactId>
-            <version>${json-smart.version}</version>
-        </dependency>
+		</dependency>
 
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>

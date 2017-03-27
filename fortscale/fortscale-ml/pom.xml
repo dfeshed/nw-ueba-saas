@@ -65,13 +65,7 @@
 		<dependency>
 			<groupId>net.minidev</groupId>
 			<artifactId>json-smart</artifactId>
-			<version>${json-smart.version}</version>
 		</dependency>
-
-		
-		
-		
-		
 
 		<!-- test -->
 		<dependency>
@@ -140,7 +134,6 @@
 		<dependency>
 			<groupId>javax.persistence</groupId>
 			<artifactId>persistence-api</artifactId>
-			<version>1.0</version>
 			<scope>provided</scope>
 		</dependency>
 
@@ -149,26 +142,16 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<version>${slf4j.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
-			<version>${logback.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-core</artifactId>
-			<version>${logback.version}</version>
 		</dependency>
-		
-		
-		<!-- samza dependencies -->
-		<dependency>
-			<groupId>org.apache.samza</groupId>
-			<artifactId>samza-api</artifactId>
-			<version>${samza.version}</version>
-		</dependency>
+
 
 		<dependency>
 			<groupId>org.skyscreamer</groupId>
