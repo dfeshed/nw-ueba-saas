@@ -33,7 +33,8 @@ public class UserActivityJob extends FortscaleJob {
     protected int userActivityNumOfLastDaysToCalculate;
 
 	@Autowired
-	Set<UserActivityConfigurationService> userActivityConfigurationServices;
+	private Set<UserActivityConfigurationService> userActivityConfigurationServices;
+
 	@Autowired
 	private UserActivityHandlerFactory userActivityHandlerFactory;
 
@@ -76,7 +77,7 @@ public class UserActivityJob extends FortscaleJob {
         logger.info("Start Executing User Activity job..");
 		ExecutorService activitiesThreadPool;
 		if (runSequential) {
-			activitiesThreadPool = Executors.newFixedThreadPool(1);
+			activitiesThreadPool = Executors.newSingleThreadExecutor();
 		} else {
 			activitiesThreadPool = Executors.newFixedThreadPool(NUMBER_OF_ACTIVITIES);
 		}
@@ -92,7 +93,7 @@ public class UserActivityJob extends FortscaleJob {
 
   
 	private Set<Runnable> createActivitiesTasks() {
-		Set<Runnable> activities = new HashSet();
+		Set<Runnable> activities = new HashSet<>();
 		if (userActivityType != null) {
 			for (UserActivityConfigurationService userActivityConfigurationService: userActivityConfigurationServices) {
 				if (userActivityType == UserActivityType.valueOf(userActivityConfigurationService.getActivityName())) {
@@ -101,8 +102,7 @@ public class UserActivityJob extends FortscaleJob {
 				}
 			}
 		} else {
-			userActivityConfigurationServices.forEach(userActivityConfigurationService -> activities.add(() ->
-					createCalculateActivityRunnable(userActivityConfigurationService)));
+			userActivityConfigurationServices.forEach(userActivityConfigurationService -> activities.add(() -> createCalculateActivityRunnable(userActivityConfigurationService)));
 		}
 		return activities;
 	}

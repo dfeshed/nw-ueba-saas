@@ -62,10 +62,6 @@ public class UserActivityTargetDeviceConfigurationService extends BaseUserActivi
 		return new UserActivityConfiguration(activities, dataSourceToCollection, activityToDataSources);
 	}
 
-	@Override
-	public Logger getLogger() {
-		return logger;
-	}
 
 	@Override
 	public String getActivityName() {

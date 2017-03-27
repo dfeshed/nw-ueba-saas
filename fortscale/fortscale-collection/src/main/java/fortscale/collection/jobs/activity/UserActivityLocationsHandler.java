@@ -9,7 +9,6 @@ import fortscale.domain.core.User;
 import fortscale.domain.core.activities.OrganizationActivityLocationDocument;
 import fortscale.domain.core.activities.UserActivityDocument;
 import fortscale.domain.core.activities.UserActivityLocationDocument;
-import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimestampUtils;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +48,7 @@ public class UserActivityLocationsHandler extends UserActivityBaseHandler {
         locations.getCountryHistogram().putAll(organizationActivityLocationHistogram);
         organizationActivityLocationDocument.setLocations(locations);
 
-        userActivityFeaturesExtractiionsRepositoryUtil.saveDocument(OrganizationActivityLocationDocument.COLLECTION_NAME, organizationActivityLocationDocument);
+        userActivityFeaturesExtractionsRepositoryUtil.saveDocument(OrganizationActivityLocationDocument.COLLECTION_NAME, organizationActivityLocationDocument);
     }
 
     private void updateOrganizationHistogram(Map<String, Double> organizationActivityLocationHistogram, Map<String, UserActivityDocument> userActivityMap) {

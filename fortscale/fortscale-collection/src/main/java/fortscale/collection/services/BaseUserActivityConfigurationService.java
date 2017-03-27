@@ -11,6 +11,8 @@ import java.util.Optional;
 
 public abstract class BaseUserActivityConfigurationService implements UserActivityConfigurationService {
 
+	private static final Logger logger = Logger.getLogger(BaseUserActivityConfigurationService.class);
+
 	private final ObjectMapper objectMapper = new ObjectMapper();
 
 	@Autowired
@@ -53,12 +55,10 @@ public abstract class BaseUserActivityConfigurationService implements UserActivi
 		try {
 			return getUserActivityConfigurationFromDatabase();
 		} catch (RuntimeException e) {
-			getLogger().error(e.getLocalizedMessage());
+			logger.error(e.getLocalizedMessage());
 			throw e;
 		}
 	}
-
-	public abstract Logger getLogger();
 
 	@Override
 	public abstract String getActivityName();

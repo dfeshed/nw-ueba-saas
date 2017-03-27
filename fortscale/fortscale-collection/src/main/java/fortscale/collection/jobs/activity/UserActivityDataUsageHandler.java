@@ -35,7 +35,7 @@ public class UserActivityDataUsageHandler extends UserActivityBaseHandler implem
 	protected List<String> getRelevantFields(String dataSource) throws IllegalArgumentException {
 		final String dataSourceLowerCase = dataSource.toLowerCase();
 		if (collectionToHistogram.containsKey(dataSourceLowerCase)) {
-			return new ArrayList(Arrays.asList(AGGREGATED_FEATURES_PREFIX + "." + collectionToHistogram.
+			return new ArrayList<>(Arrays.asList(AGGREGATED_FEATURES_PREFIX + "." + collectionToHistogram.
 					get(dataSourceLowerCase)));
 		}
 		throw new IllegalArgumentException("Invalid data source: " + dataSource);
@@ -82,7 +82,7 @@ public class UserActivityDataUsageHandler extends UserActivityBaseHandler implem
 
 	@Override
 	protected List<Class> getRelevantDocumentClasses () {
-		return new ArrayList(Collections.singletonList(UserActivityDataUsageDocument.class));
+		return new ArrayList<>(Collections.singletonList(UserActivityDataUsageDocument.class));
 	}
 
 	@Override
@@ -96,7 +96,7 @@ public class UserActivityDataUsageHandler extends UserActivityBaseHandler implem
 
 	@Override
 	protected List<String> getRelevantAggregatedFeaturesFieldsNames() {
-		return new ArrayList(collectionToHistogram.values());
+		return new ArrayList<>(collectionToHistogram.values());
 	}
 
 	@Override

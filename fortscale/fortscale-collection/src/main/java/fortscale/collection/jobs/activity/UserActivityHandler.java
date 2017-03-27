@@ -13,6 +13,7 @@ public interface UserActivityHandler {
      * @param numOfLastDaysToCalculate the num of last days to calculate
      */
     void calculate(int numOfLastDaysToCalculate);
+
     UserActivityType getActivity();
     /**
      * Runs all needs to be done after the calculation finished

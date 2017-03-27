@@ -58,11 +58,6 @@ public class UserActivityNetworkAuthenticationConfigurationService extends BaseU
 	}
 
 	@Override
-	public Logger getLogger() {
-		return logger;
-	}
-
-	@Override
 	public String getActivityName() {
 		return UserActivityType.NETWORK_AUTHENTICATION.name();
 	}

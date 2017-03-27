@@ -32,8 +32,6 @@ import static fortscale.utils.time.TimestampUtils.convertToSeconds;
 /**
  * Abstract class to provide basic functionality of user activity handlers
  *
- * @author gils
- * 31/05/2016
  */
 @Configurable(preConstruction = true)
 @Component
@@ -52,7 +50,7 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
     FeatureBucketStateService featureBucketStateService;
 
     @Autowired
-    protected UserActivityFeaturesExtractionsRepositoryUtil userActivityFeaturesExtractiionsRepositoryUtil;
+    protected UserActivityFeaturesExtractionsRepositoryUtil userActivityFeaturesExtractionsRepositoryUtil;
 
 
 	@Value("${user.activity.mongo.batch.size:10000}")
@@ -84,7 +82,7 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
 
             long fullExecutionStartTime = System.nanoTime();
 
-            UserActivityJobState userActivityJobState = this.userActivityFeaturesExtractiionsRepositoryUtil.
+            UserActivityJobState userActivityJobState = this.userActivityFeaturesExtractionsRepositoryUtil.
                     loadAndUpdateJobState(getActivityName(), numOfLastDaysToCalculate,getRelevantDocumentClasses());
             List<String> dataSources = getDataSources();
             logger.info("Relevant data sources for activity {} : {}", getActivityName(), dataSources);
@@ -117,14 +115,14 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
 
             while (currBucketEndTime <= lastBucketEndTime) {
 
-                if (userActivityJobState.getCompletedExecutionDays().contains(new Long(currBucketStartTime))) {
+                if (userActivityJobState.getCompletedExecutionDays().contains(currBucketStartTime)) {
                     logger.info("Skipping job process for bucket start time {} (already calculated)", TimeUtils.getUTCFormattedTime(TimestampUtils.convertToMilliSeconds(currBucketStartTime)));
                 } else {
                     calculateTimeBucket(dataSourceToUserIds, currBucketStartTime, currBucketEndTime);
                 }
 
                 logger.info("Updating job's state..");
-                this.userActivityFeaturesExtractiionsRepositoryUtil.updateJobState(userActivityJobState, currBucketStartTime);
+                userActivityFeaturesExtractionsRepositoryUtil.updateJobState(userActivityJobState, currBucketStartTime);
                 logger.info("Job state was updated successfully");
 
                 DateTime currDateTime = new DateTime(TimestampUtils.convertToMilliSeconds(currBucketStartTime), DateTimeZone.UTC);
@@ -196,7 +194,7 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
                 logger.info("Update users histogram in memory for {} users took {} seconds", currentUsersChunk.size(), durationInSecondsWithPrecision(updateUsersHistogramInMemoryElapsedTime));
             }
 
-            //If this activity have single uniqe histogram (I.E. global countries for all the system in advance to countries per user)
+            //If this activity have single unique histogram (I.E. global countries for all the system in advance to countries per user)
             //We need to process the additional computation, and store it on additionalActivityHistogram,
             //So the next loop could also read and update additionalActivityHistogram.
             Map<String, Double> histograms = updateAdditionalActivitySpecificHistograms(userActivityMap);
@@ -204,7 +202,7 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
 
             Collection<UserActivityDocument> userActivityToInsertDocument = userActivityMap.values();
 
-            userActivityFeaturesExtractiionsRepositoryUtil.insertUsersActivityToDB(userActivityToInsertDocument,getCollectionName());
+            userActivityFeaturesExtractionsRepositoryUtil.insertUsersActivityToDB(userActivityToInsertDocument,getCollectionName());
 
             numOfHandledUsers += mongoBatchSize;
         }
@@ -213,8 +211,7 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
     private List<String> getDataSources(){
         final UserActivityConfigurationService userActivityConfigurationService = getUserActivityConfigurationService();
         UserActivityConfiguration userActivityConfiguration = userActivityConfigurationService.getUserActivityConfiguration();
-        List<String> dataSources = userActivityConfiguration.getDataSources();
-        return dataSources;
+        return userActivityConfiguration.getDataSources();
     }
 
     private Map<String, String> getDataSourceToCollection(){
@@ -233,11 +230,11 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
 	//This fetches all the active users from a certain point in time.
 	//There is an underlying assumption that we will always search for usernames with the CONTEXT_ID_USERNAME_PREFIX
     protected Map<String, List<String>> fetchUserIdPerDatasource(List<String> dataSources, long startTime, long endTime, Map<String, String> dataSourceToCollection) {
-        Map<String, List<String>> userIds = new HashMap();
+        Map<String, List<String>> userIds = new HashMap<>();
 
         for (String dataSource : dataSources) {
             String collectionName = dataSourceToCollection.get(dataSource);
-            List<String> contextIdList = userActivityFeaturesExtractiionsRepositoryUtil.
+            List<String> contextIdList = userActivityFeaturesExtractionsRepositoryUtil.
                             getContextIdList(startTime,endTime, FeatureBucket.START_TIME_FIELD, FeatureBucket.END_TIME_FIELD, collectionName);
 
 
@@ -262,7 +259,7 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
         }
         long queryStartTime = System.nanoTime();
 
-        List<FeatureBucket> featureBuckets = userActivityFeaturesExtractiionsRepositoryUtil.
+        List<FeatureBucket> featureBuckets = userActivityFeaturesExtractionsRepositoryUtil.
                 getFeatureBuckets(startTime, endTime, usersChunk, collectionName, relevantFields,
                         FeatureBucket.CONTEXT_ID_FIELD,FeatureBucket.START_TIME_FIELD, FeatureBucket.class);
 		long queryElapsedTime = System.nanoTime() - queryStartTime;
