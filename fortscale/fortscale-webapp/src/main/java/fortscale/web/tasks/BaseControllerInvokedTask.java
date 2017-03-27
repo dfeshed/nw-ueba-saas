@@ -6,6 +6,7 @@ import fortscale.utils.spring.SpringPropertiesUtil;
 import fortscale.web.rest.ApiActiveDirectoryController;
 import fortscale.web.services.ActivityMonitoringExecutorService;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 
 import java.io.File;
 import java.io.IOException;

@@ -358,7 +358,7 @@ public class ApiUserController extends BaseController{
 	@LogException
 	public DataBean<List<TagPair>> usersTagsCount() {
 		List<TagPair> result = new ArrayList();
-		Map<String, Long> items = userService.groupByTags();
+		Map<String, Long> items = userService.groupByTags(false);
 		result.addAll(items.entrySet().stream().map(entry -> new TagPair(entry.getKey(), entry.getValue())).
 				collect(Collectors.toList()));
 		DataBean<List<TagPair>> ret = new DataBean();
