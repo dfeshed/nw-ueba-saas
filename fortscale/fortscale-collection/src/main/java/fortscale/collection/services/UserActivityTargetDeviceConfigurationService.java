@@ -55,7 +55,7 @@ public class UserActivityTargetDeviceConfigurationService extends BaseUserActivi
 		for (UserActivityDataSourceConfiguration activity: activityDataSourceConfigurationMap.values()) {
 			activities.add(activity.getPropertyName());
 			dataSourceToCollection.put(activity.getDatasource(), activity.getCollectionName());
-			activityToDataSources.put(activity.getPropertyName(), new ArrayList<>(Arrays.asList(	activity.getDatasource())));
+			activityToDataSources.put(activity.getPropertyName(), new ArrayList<>(Collections.singletonList(activity.getDatasource())));
 		}
 
 
