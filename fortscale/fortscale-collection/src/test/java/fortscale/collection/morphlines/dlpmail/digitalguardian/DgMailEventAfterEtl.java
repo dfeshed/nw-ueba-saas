@@ -85,6 +85,9 @@ public class DgMailEventAfterEtl {
                     case "some_normalizedUsername":
                         stringJoiner.add("");
                         break;
+                    case "some_policyName":
+                        stringJoiner.add("");
+                        break;
                     default:
                         stringJoiner.add(newElement);
                         break;
