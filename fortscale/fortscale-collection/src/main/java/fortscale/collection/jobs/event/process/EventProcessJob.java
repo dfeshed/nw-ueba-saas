@@ -43,6 +43,7 @@ import java.util.List;
 @DisallowConcurrentExecution
 public class EventProcessJob implements Job {
 
+	public static final String EVENT_PROCESS_JOB_PRE_PROCESS_SCRIPT = "EventProcessJob Pre Process Script";
 	private static Logger logger = LoggerFactory.getLogger(EventProcessJob.class);
 	
 	@Value("${collection.fetch.data.path}")
@@ -308,7 +309,7 @@ public class EventProcessJob implements Job {
 
 	private boolean runPreProcessScript(String scriptPath, String fileToPreProcess) {
 		final List<String> arguments = new ArrayList<>(Arrays.asList("python", scriptPath, fileToPreProcess));
-		return ProcessExecutor.executeProcess("EventProcessJob Pre Process Script", arguments);
+		return ProcessExecutor.executeProcess(EVENT_PROCESS_JOB_PRE_PROCESS_SCRIPT, arguments);
 	}
 
 
