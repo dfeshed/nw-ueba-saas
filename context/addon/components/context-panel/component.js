@@ -12,6 +12,7 @@ const {
   isArray,
   Logger,
   isEmpty,
+  run,
   String: {
     htmlSafe
   },
@@ -32,10 +33,12 @@ const ContextComponent = Component.extend({
   classNames: 'rsa-context-panel-header',
 
   request: service(),
+  eventBus: service(),
 
   contextData: null,
   entity: null,
   errorMessage: null,
+  isDisplayed: false,
   model: null,
 
   @computed('lookupData', 'dataSources')
@@ -93,7 +96,6 @@ const ContextComponent = Component.extend({
         liveConnectData: LiveConnect.create()
       })
     });
-
     this.set('model', contextModels);
   },
 
@@ -261,7 +263,34 @@ const ContextComponent = Component.extend({
       });
     }
   },
+  _needToClosePanel(target) {
+    return !this.get('isDisplayed') && target.className !== 'rsa-protected__aside' && (!target.firstElementChild || target.firstElementChild.className.indexOf('rsa-context-panel-header') === -1);
+  },
+  _closeContextPanel(target) {
+    run.next(() => {
+      if (this._needToClosePanel(target)) {
+        this.sendAction('closePanel');
+        this.set('errorMessage', null);
+      }
+    });
+  },
+  mouseEnter() {
+    this.set('isDisplayed', true);
+  },
+  mouseLeave() {
+    this.set('isDisplayed', false);
+  },
 
+  didInsertElement() {
+    run.schedule('afterRender', () => {
+      this.get('eventBus').on('rsa-application-click', (target) => {
+        this._closeContextPanel(target);
+      });
+      this.get('eventBus').on('rsa-application-header-click', (target) => {
+        this._closeContextPanel(target);
+      });
+    });
+  },
   actions: {
     closeAction() {
       this.sendAction('closePanel');

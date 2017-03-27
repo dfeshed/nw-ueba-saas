@@ -25,6 +25,10 @@ export default Component.extend(ContextualHelp, {
 
   displayPreferences: true,
 
+  click(event) {
+    this.get('eventBus').trigger('rsa-application-header-click', event.target);
+  },
+
   actions: {
     toggleUserPreferences() {
       this.get('layoutService').toggleUserPreferences();
