@@ -54,26 +54,6 @@ public class ProductionScorerConfFilesTest {
 		}
 	}
 
-	@Test
-	public void get_kerberos_logins_data_source_scorer_confs() {
-		getDataSourceScorerConfs("kerberos_logins", Collections.singletonList(4));
-	}
-
-	@Test
-	public void get_ssh_data_source_scorer_confs() {
-		getDataSourceScorerConfs("ssh", Collections.singletonList(4));
-	}
-
-	@Test
-	public void get_vpn_data_source_scorer_confs() {
-		getDataSourceScorerConfs("vpn", Collections.singletonList(3));
-	}
-
-	@Test
-	public void get_vpn_session_data_source_scorer_confs() {
-		getDataSourceScorerConfs("vpn_session", Collections.singletonList(3));
-	}
-
 	private void getDataSourceScorerConfs(String dataSource, List<Integer> sizes) {
 		DataSourceScorerConfs dataSourceScorerConfs = scorerConfService.getDataSourceScorerConfs(dataSource);
 
