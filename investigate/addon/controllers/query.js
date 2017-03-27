@@ -2,12 +2,17 @@ import Controller from 'ember-controller';
 import computed from 'ember-computed-decorators';
 import { isEmpty } from 'ember-utils';
 import get from 'ember-metal/get';
+import config from 'ember-get-config';
 
 export default Controller.extend({
+  // Query Params
   queryParams: ['eventId', 'metaPanelSize', 'reconSize'],
   eventId: -1,
   metaPanelSize: 'default',
   reconSize: 'max',
+
+  // Properties
+  elevenOneEnabled: config.featureFlags['11.1-enabled'],
 
   // The index of the `items` member whose id matches `selectedEventId`, if any;
   // -1 otherwise.  This is passed along to the data table.

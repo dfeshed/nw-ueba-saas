@@ -6,43 +6,49 @@
       aliases=model.queryNode.value.aliases.data
       services=model.services.data
       submitQuery=(route-action 'submitQuery')}}
-    {{#if (is-equal model.queryNode.value.results.events.status 'error')}}
-      <div class="query-error">
-        {{or model.queryNode.value.results.events.message (t 'investigate.events.error')}}
-      </div>
-    {{else}}
-      {{time-line
-        data=model.queryNode.value.results.eventTimeline.data
-        status=model.queryNode.value.results.eventTimeline.status
-        retryAction=(route-action "eventTimelineGet" model.queryNode true)
-        startTime=model.queryNode.value.definition.startTime
-        endTime=model.queryNode.value.definition.endTime}}
+
+    {{#if elevenOneEnabled}}
+      {{#if (is-equal model.queryNode.value.results.events.status 'error')}}
+        <div class="query-error">
+          {{or model.queryNode.value.results.events.message (t 'investigate.events.error')}}
+        </div>
+      {{else}}
+        {{time-line
+          data=model.queryNode.value.results.eventTimeline.data
+          status=model.queryNode.value.results.eventTimeline.status
+          retryAction=(route-action "eventTimelineGet" model.queryNode true)
+          startTime=model.queryNode.value.definition.startTime
+          endTime=model.queryNode.value.definition.endTime}}
+      {{/if}}
     {{/if}}
   </header>
-  <section class="rsa-investigate-query__body recon-is-{{model.recon.display}} meta-panel-size-{{model.meta.panelSize}}">
+  <section
+    class="rsa-investigate-query__body recon-is-{{model.recon.display}} meta-panel-size-{{model.meta.panelSize}}">
     {{#if (is-equal model.routeStatus 'wait')}}
       <section class="rsa-investigate-query__body-status">
         {{rsa-loader size="largest"}}
       </section>
     {{/if}}
     <section class="rsa-investigate-query__body-master">
-      <aside class="rsa-investigate-query__body-master-aside">
-        {{m-meta
-          size=model.meta.panelSize
-          group=model.queryNode.value.language.defaultMetaGroup
-          language=model.queryNode.value.language.data
-          aliases=model.queryNode.value.aliases.data
-          metaKeyStates=model.queryNode.value.results.metaKeyStates
-          query=model.queryNode.value.definition
-          minSizeAction=(route-action "metaPanelSize" 'min')
-          maxSizeAction=(route-action "metaPanelSize" 'max')
-          defaultSizeAction=(route-action "metaPanelSize" 'default')
-          onBack=(route-action "metaGroupSet" model.queryNode)
-          onFwd=(route-action "metaGroupSet" model.queryNode)
-          clickValueAction=(route-action "navDrill" model.queryNode)
-          contextLookupAction=(route-action "contextPanelOpen")
-          toggleAction=(route-action "metaGroupKeyToggle" model.queryNode)}}
-      </aside>
+      {{#if elevenOneEnabled}}
+        <aside class="rsa-investigate-query__body-master-aside">
+          {{meta-view
+            size=model.meta.panelSize
+            group=model.queryNode.value.language.defaultMetaGroup
+            language=model.queryNode.value.language.data
+            aliases=model.queryNode.value.aliases.data
+            metaKeyStates=model.queryNode.value.results.metaKeyStates
+            query=model.queryNode.value.definition
+            minSizeAction=(route-action "metaPanelSize" 'min')
+            maxSizeAction=(route-action "metaPanelSize" 'max')
+            defaultSizeAction=(route-action "metaPanelSize" 'default')
+            onBack=(route-action "metaGroupSet" model.queryNode)
+            onFwd=(route-action "metaGroupSet" model.queryNode)
+            clickValueAction=(route-action "navDrill" model.queryNode)
+            contextLookupAction=(route-action "contextPanelOpen")
+            toggleAction=(route-action "metaGroupKeyToggle" model.queryNode)}}
+        </aside>
+      {{/if}}
       <section class="rsa-investigate-query__body-master-main">
         {{events-table
           items=model.queryNode.value.results.events.data

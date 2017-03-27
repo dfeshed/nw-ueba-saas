@@ -2,13 +2,13 @@ import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from '../../../helpers/engine-resolver';
 
-moduleForComponent('meta', 'Integration | Component | m-meta', {
+moduleForComponent('meta', 'Integration | Component | meta-view', {
   integration: true,
   resolver: engineResolverFor('investigate')
 });
 
 test('it renders with appropriate class name', function(assert) {
-  this.render(hbs`{{m-meta}}`);
+  this.render(hbs`{{meta-view}}`);
   assert.equal(this.$('.rsa-investigate-meta').length, 1, 'Expected to find DOM element');
 });
 
@@ -35,7 +35,7 @@ test('it invokes callbacks when clicking its UI elements for setting size', func
     maxSizeAction
   });
 
-  this.render(hbs`{{m-meta
+  this.render(hbs`{{meta-view
     size=size
     defaultSizeAction=defaultSizeAction
     minSizeAction=minSizeAction
@@ -56,7 +56,7 @@ test('it invokes callbacks when clicking its UI elements for setting size', func
 });
 
 test('it renders the meta values panel by default', function(assert) {
-  this.render(hbs`{{m-meta size="default"}}`);
+  this.render(hbs`{{meta-view size="default"}}`);
   assert.equal(this.$('.rsa-investigate-meta-values-panel').length, 1, 'Expected to find meta values panel embedded in DOM');
 });
 
@@ -70,7 +70,7 @@ test('it renders the total count of meta keys in the group, but only if not zero
     }]
   };
   this.set('group', null);
-  this.render(hbs`{{m-meta size="default" group=group}}`);
+  this.render(hbs`{{meta-view size="default" group=group}}`);
   assert.equal(this.$('.js-group-keys-count').length, 0, 'Expected keys count to be omitted from DOM for a null group');
 
   this.set('group', emptyGroup);

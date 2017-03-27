@@ -1,5 +1,5 @@
 {{#each group.keys as |groupKey groupKeyIndex|}}
-  {{m-meta/key-values
+  {{meta-view/key-values
     group=group
     groupKey=groupKey
     values=(get (array-lookup metaKeyStatesForGroup groupKeyIndex) 'values')

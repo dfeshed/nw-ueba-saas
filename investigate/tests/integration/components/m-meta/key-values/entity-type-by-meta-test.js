@@ -1,4 +1,4 @@
-import contextEntityTypeByMeta from 'investigate/components/m-meta/key-values/entity-type-by-meta';
+import contextEntityTypeByMeta from 'investigate/components/meta-view/key-values/entity-type-by-meta';
 import { module, test } from 'qunit';
 import config from 'investigate/config/environment';
 

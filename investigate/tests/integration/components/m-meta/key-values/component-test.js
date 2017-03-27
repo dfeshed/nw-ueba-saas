@@ -5,13 +5,13 @@ import engineResolverFor from '../../../../helpers/engine-resolver';
 
 const { get, set } = Ember;
 
-moduleForComponent('m-meta/key-values', 'Integration | Component | m-meta/key values', {
+moduleForComponent('meta-view/key-values', 'Integration | Component | meta-view/key values', {
   integration: true,
   resolver: engineResolverFor('investigate')
 });
 
 test('it renders', function(assert) {
-  this.render(hbs`{{m-meta/key-values}}`);
+  this.render(hbs`{{meta-view/key-values}}`);
   assert.equal(this.$('.rsa-investigate-meta-key-values').length, 1);
 });
 
@@ -29,7 +29,7 @@ test('it can be toggled open/closed, and responds by toggling instruction DOM an
     groupKey,
     toggleAction
   });
-  this.render(hbs`{{m-meta/key-values groupKey=groupKey toggleAction=toggleAction}}`);
+  this.render(hbs`{{meta-view/key-values groupKey=groupKey toggleAction=toggleAction}}`);
   assert.equal(this.$('.is-open').length, 0, 'Expected hidden meta value body DOM to reflect closed state');
 
   const $el = this.$('.js-toggle-open');
