@@ -22,8 +22,8 @@ public class DgMailEventAfterEtlBuilder {
     private String emailRecipientDomain;
     private String emailSender;
     private String emailSubject;
-    private String isExternal;
-    private String numOfRecipients;
+    private Boolean isExternal;
+    private Integer numOfRecipients;
     private String isAttachmentExtensionBlacklisted;
     private String destinationDirectory;
     private String destinationFileExtension;
@@ -124,12 +124,12 @@ public class DgMailEventAfterEtlBuilder {
         return this;
     }
 
-    public DgMailEventAfterEtlBuilder setIsExternal(String isExternal) {
+    public DgMailEventAfterEtlBuilder setIsExternal(Boolean isExternal) {
         this.isExternal = isExternal;
         return this;
     }
 
-    public DgMailEventAfterEtlBuilder setNumOfRecipients(String numOfRecipients) {
+    public DgMailEventAfterEtlBuilder setNumOfRecipients(Integer numOfRecipients) {
         this.numOfRecipients = numOfRecipients;
         return this;
     }
