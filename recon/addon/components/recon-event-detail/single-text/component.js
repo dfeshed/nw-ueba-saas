@@ -1,10 +1,11 @@
 import Ember from 'ember';
 import computed from 'ember-computed-decorators';
+import SelectionTooltip from './selection-tooltip-mixin';
 import layout from './template';
 
 const { Component } = Ember;
 
-export default Component.extend({
+export default Component.extend(SelectionTooltip, {
   classNames: ['rsa-packet', 'rsa-text-entry'],
   classNameBindings: ['packet.side'],
   index: null,
