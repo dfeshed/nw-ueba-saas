@@ -148,7 +148,7 @@ public class DlpMailEnrichTest {
                 .setEventDescription("Send Mail")
                 .setFullName("some_givenName some_surname")
                 .setIsExternal(true)
-                .setNumOfRecipients(0)
+                .setNumOfRecipients(-1)
                 .setLastState("etl")
                 .setEmailRecipient("some_emailRecipient") // because the parsing wont find the @ - this is ok for this test
                 .setEmailRecipientDomain("some_emailRecipient") // because the parsing wont find the @ - this is ok for this test
@@ -290,20 +290,20 @@ public class DlpMailEnrichTest {
         //TODO:
         /* we are currently filtering "Attach Mail" events because we only support DG events (when it comes to parsing) so we ignore this part for now */
 
-        DgMailEventAfterEtl expected = new DgMailEventAfterEtlBuilder()
-                .setDateTimeUnix("1465747440")
-                .setDateTime("2016-06-12 16:04:00")
-                .setEventDescription("Send Mail")
-                .setFullName("some_givenName some_surname")
-                .setIsAttachmentExtensionBlacklisted("false")
-                .setIsExternal(true)
-                .setDataSource("dlpmail")
-                .setLastState("etl")
-                .setEventType("attachment")
-                .setEmailRecipientDomain("some_emailRecipient") // because the parsing wont find the domain - this is ok for this test
-                // interesting test stuff starts here
-                .setNumOfRecipients(0)
-                .createDgEventAfterEtl();
+//        DgMailEventAfterEtl expected = new DgMailEventAfterEtlBuilder()
+//                .setDateTimeUnix("1465747440")
+//                .setDateTime("2016-06-12 16:04:00")
+//                .setEventDescription("Send Mail")
+//                .setFullName("some_givenName some_surname")
+//                .setIsAttachmentExtensionBlacklisted("false")
+//                .setIsExternal(true)
+//                .setDataSource("dlpmail")
+//                .setLastState("etl")
+//                .setEventType("attachment")
+//                .setEmailRecipientDomain("some_emailRecipient") // because the parsing wont find the domain - this is ok for this test
+//                // interesting test stuff starts here
+//                .setNumOfRecipients(0)
+//                .createDgEventAfterEtl();
 
 //        final String inputLine2 = input2.toString();
 //        final String expectedOutput2 = expected2.toString();

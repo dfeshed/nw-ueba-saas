@@ -135,9 +135,9 @@ public class EventsCounterBuilder implements CommandBuilder {
                 return false;
             }
             else { //current is message body & previous is recipient
-                String count = (String) previousRecord.getFirstValue(NUM_OF_RECIPIENTS_FIELD_NAME);
-                previousRecord.replaceValues("num_of_recipients", ""); //reset the recipient event (all recipient events have empty num_of_recipients)
-                inputRecord.replaceValues("num_of_recipients", count);
+                Integer count = (Integer) previousRecord.getFirstValue(NUM_OF_RECIPIENTS_FIELD_NAME);
+                previousRecord.replaceValues(NUM_OF_RECIPIENTS_FIELD_NAME, -1); //reset the recipient event (all recipient events have empty num_of_recipients)
+                inputRecord.replaceValues(NUM_OF_RECIPIENTS_FIELD_NAME, count);
                 saveRecordToCache(inputRecord, morphlineMetrics);
             }
             return continueProcessingRecord(previousRecord);
@@ -145,8 +145,7 @@ public class EventsCounterBuilder implements CommandBuilder {
 
         private boolean handleRecordNotFirstOfEventRecipient(Record inputRecord, Record previousRecord) {
             logger.debug("Handling not-first-of-event record of type recipient {}.", inputRecord);
-            String countAsString = (String) previousRecord.getFirstValue(NUM_OF_RECIPIENTS_FIELD_NAME);
-            Integer count = Integer.parseInt(countAsString);
+            Integer count = (Integer) previousRecord.getFirstValue(NUM_OF_RECIPIENTS_FIELD_NAME);
 
             previousRecord.replaceValues(NUM_OF_RECIPIENTS_FIELD_NAME, String.valueOf(count+1)); // increase the count by 1
 
@@ -185,12 +184,12 @@ public class EventsCounterBuilder implements CommandBuilder {
             final String eventType = (String) inputRecord.getFirstValue(EVENT_TYPE_FIELD_NAME);
             final boolean isInputRecordOfTypeMessageBody = eventType != null && eventType.equals(EVENT_TYPE_MESSAGE_BODY);
             if (isInputRecordOfTypeMessageBody) {
-                if (inputRecord.getFirstValue(NUM_OF_RECIPIENTS_FIELD_NAME).equals("")) {
-                    inputRecord.replaceValues(NUM_OF_RECIPIENTS_FIELD_NAME, "0");
+                if (inputRecord.getFirstValue(NUM_OF_RECIPIENTS_FIELD_NAME).equals(-1)) {
+                    inputRecord.replaceValues(NUM_OF_RECIPIENTS_FIELD_NAME, 0);
                 }
             }
             else { //recipient
-                inputRecord.replaceValues(NUM_OF_RECIPIENTS_FIELD_NAME, "1");
+                inputRecord.replaceValues(NUM_OF_RECIPIENTS_FIELD_NAME, 1);
             }
 
             final String key = (String) inputRecord.getFirstValue(EVENT_ID_FIELD_NAME);

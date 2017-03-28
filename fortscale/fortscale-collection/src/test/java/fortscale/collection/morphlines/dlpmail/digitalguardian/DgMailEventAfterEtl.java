@@ -18,7 +18,7 @@ public class DgMailEventAfterEtl {
     public String normalizedSrcMachine;
     public String application;
     public String destinationFile;
-    public String detailFileSize;
+    public Integer detailFileSize;
     public String destinationDirectory;
     public String destinationFileExtension;
     public String isAttachmentExtensionBlacklisted;
@@ -76,7 +76,7 @@ public class DgMailEventAfterEtl {
         final Field[] fields = this.getClass().getFields();
         for (Field field : fields) {
             try {
-                final String newElement = (String) field.get(this);
+                final String newElement = field.get(this).toString();
                 switch (newElement) {
                     case "some_hostname":
                     case "some_normalizedSrcMachine":

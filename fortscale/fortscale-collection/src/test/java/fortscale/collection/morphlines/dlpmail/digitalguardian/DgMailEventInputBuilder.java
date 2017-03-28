@@ -83,7 +83,7 @@ public class DgMailEventInputBuilder  {
     private String destinationFileEncryption;
     private String destinationFileExtension;
     private String detailEventID;
-    private String detailFileSize;
+    private Integer detailFileSize;
     private String detailWasBlocked;
     private String emailDomainName;
     private String emailRecipient;
@@ -485,7 +485,7 @@ public class DgMailEventInputBuilder  {
         return this;
     }
 
-    public DgMailEventInputBuilder setDetailFileSize(String detailFileSize) {
+    public DgMailEventInputBuilder setDetailFileSize(Integer detailFileSize) {
         this.detailFileSize = detailFileSize;
         return this;
     }
