@@ -76,7 +76,7 @@ public class DgMailParseTest {
 				.setEmailSender("rkeizer@digitalguardian.com")
 				.setEmailSubject("meeting minutes") //supposed to be empty in 'attachment' event types but i edited the line for the sake of the test
 				.setIsExternal(false)
-				.setNumOfRecipients(0) //modify this when num_of_recipients is fully implemented
+				.setNumOfRecipients(0)
 				.setWasClassified("FALSE")
 				.setWasBlocked("FALSE")
 				.setScanValueStatusText("Virus Total: 0 / 56 scans positive.")
@@ -335,7 +335,7 @@ public class DgMailParseTest {
 				.setFullName("some_givenName some_surname")
 				.setIsAttachmentExtensionBlacklisted("false")
 				.setIsExternal(true)
-				.setNumOfRecipients(0)
+				.setNumOfRecipients(1)
 				.setDataSource("dlpmail")
 				.setLastState("etl")
 				.setEmailRecipient("some_emailRecipient") // because the parsing wont find the @ - this is ok for this test
@@ -425,7 +425,7 @@ public class DgMailParseTest {
 				.setFullName("some_givenName some_surname")
 				.setIsAttachmentExtensionBlacklisted("false")
 				.setIsExternal(true)
-				.setNumOfRecipients(-1)
+				.setNumOfRecipients(0)
 				.setDataSource("dlpmail")
 				.setLastState("etl")
 				.setEmailRecipient("some_emailRecipient") // because the parsing wont find the @ - this is ok for this test
@@ -475,7 +475,7 @@ public class DgMailParseTest {
 				.setFullName("some_givenName some_surname")
 				.setIsAttachmentExtensionBlacklisted("false")
 				.setIsExternal(true)
-				.setNumOfRecipients(-1)
+				.setNumOfRecipients(0)
 				.setDataSource("dlpmail")
 				.setLastState("etl")
 				.setEmailRecipient("some_emailRecipient") // because the parsing wont find the @ - this is ok for this test
@@ -529,7 +529,7 @@ public class DgMailParseTest {
 				.setFullName("some_givenName some_surname")
 				.setIsAttachmentExtensionBlacklisted("false")
 				.setIsExternal(true)
-				.setNumOfRecipients(-1)
+				.setNumOfRecipients(0)
 				.setDataSource("dlpmail")
 				.setLastState("etl")
 				.setEmailRecipient("some_emailRecipient") // because the parsing wont find the @ - this is ok for this test
@@ -554,7 +554,7 @@ public class DgMailParseTest {
 				.setFullName("some_givenName some_surname")
 				.setIsAttachmentExtensionBlacklisted("false")
 				.setIsExternal(true)
-				.setNumOfRecipients(-1)
+				.setNumOfRecipients(0)
 				.setDataSource("dlpmail")
 				.setLastState("etl")
 				.setEmailRecipient("some_emailRecipient") // because the parsing wont find the @ - this is ok for this test
@@ -579,7 +579,7 @@ public class DgMailParseTest {
 				.setFullName("some_givenName some_surname")
 				.setIsAttachmentExtensionBlacklisted("false")
 				.setIsExternal(true)
-				.setNumOfRecipients(-1)
+				.setNumOfRecipients(0)
 				.setDataSource("dlpmail")
 				.setLastState("etl")
 				.setEmailRecipient("some_emailRecipient") // because the parsing wont find the @ - this is ok for this test
@@ -609,7 +609,7 @@ public class DgMailParseTest {
 				.setFullName("some_givenName some_surname")
 				.setIsAttachmentExtensionBlacklisted("false")
 				.setIsExternal(true)
-				.setNumOfRecipients(-1)
+				.setNumOfRecipients(0)
 				.setDataSource("dlpmail")
 				.setLastState("etl")
 				.setEmailRecipient("some_emailRecipient") // because the parsing wont find the @ - this is ok for this test
@@ -634,7 +634,7 @@ public class DgMailParseTest {
 				.setFullName("some_givenName some_surname")
 				.setIsAttachmentExtensionBlacklisted("false")
 				.setIsExternal(true)
-				.setNumOfRecipients(-1)
+				.setNumOfRecipients(0)
 				.setDataSource("dlpmail")
 				.setLastState("etl")
 				.setEmailRecipient("some_emailRecipient") // because the parsing wont find the @ - this is ok for this test

@@ -148,7 +148,7 @@ public class DlpMailEnrichTest {
                 .setEventDescription("Send Mail")
                 .setFullName("some_givenName some_surname")
                 .setIsExternal(true)
-                .setNumOfRecipients(-1)
+                .setNumOfRecipients(0)
                 .setLastState("etl")
                 .setEmailRecipient("some_emailRecipient") // because the parsing wont find the @ - this is ok for this test
                 .setEmailRecipientDomain("some_emailRecipient") // because the parsing wont find the @ - this is ok for this test
