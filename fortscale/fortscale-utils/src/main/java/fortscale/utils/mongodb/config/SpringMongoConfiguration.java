@@ -25,8 +25,10 @@ import java.util.List;
  * Created by rans on 27/10/15.
  */
 @Configuration
+// todo: should be enabled for each service separately
 @EnableMongoRepositories(basePackages = "fortscale")
 // scan converters defined at fortscale domain
+// todo each converter should be imported separately
 @ComponentScan(basePackages = "fortscale.domain",includeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = Converter.class),excludeFilters = @ComponentScan.Filter(type = FilterType.REGEX,pattern = ".*(?<!Converter)$"))
 public class SpringMongoConfiguration extends AbstractMongoConfiguration {
 
@@ -98,6 +100,7 @@ public class SpringMongoConfiguration extends AbstractMongoConfiguration {
 
     @Override
     protected String getMappingBasePackage() {
+        // todo : replace with spring mongo beans package name
         return "fortscale";
     }
 
