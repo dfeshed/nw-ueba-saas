@@ -65,7 +65,7 @@ public class DgMailParseTest {
 				.setWasClassified("FALSE")
 				.setWasBlocked("FALSE")
 				.setScanValueStatusText("Virus Total: 0 / 56 scans positive.")
-				.setPolicyName("removal policy")
+				.setPolicyName("")
 				.setDataSource("dlpmail")
 				.setLastState("etl")
 				.createDgEventAfterEtl();
