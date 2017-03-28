@@ -45,16 +45,16 @@
       }
     },
     {
-      "name" : "normalized_username.normalized_src_machine.dlpmail",
+      "name" : "normalized_username.normalized_src_machine.dlpfile",
       "selector" : {
         "type" : "feature_bucket_context_selector",
-        "featureBucketConfName" : "normalized_src_machine_dlpmail_daily"
+        "featureBucketConfName" : "normalized_src_machine_dlpfile_daily"
       },
       "retriever" : {
         "type" : "context_histogram_retriever",
         "timeRangeInSeconds" : 7776000,
         "functions" : [ ],
-        "featureBucketConfName" : "normalized_src_machine_dlpmail_daily",
+        "featureBucketConfName" : "normalized_src_machine_dlpfile_daily",
         "featureName" : "normalized_username_histogram"
       },
       "builder" : {
