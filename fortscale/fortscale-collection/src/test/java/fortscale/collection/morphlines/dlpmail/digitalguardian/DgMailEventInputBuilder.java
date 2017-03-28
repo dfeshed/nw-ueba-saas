@@ -83,7 +83,7 @@ public class DgMailEventInputBuilder  {
     private String destinationFileEncryption;
     private String destinationFileExtension;
     private String detailEventID;
-    private String detailFileSize;
+    private Integer detailFileSize;
     private String detailWasBlocked;
     private String emailDomainName;
     private String emailRecipient;
@@ -485,8 +485,8 @@ public class DgMailEventInputBuilder  {
         return this;
     }
 
-    public DgMailEventInputBuilder setDetailFileSize(String detailFileSize) {
-        this.detailFileSize = detailFileSize;
+    public DgMailEventInputBuilder setDetailFileSize(Integer detailFileSize) {
+        this.detailFileSize = Integer.valueOf(detailFileSize);
         return this;
     }
 
@@ -656,7 +656,13 @@ public class DgMailEventInputBuilder  {
             try {
                 final Object fieldValue = field.get(dgMailEventInput);
                 if (fieldValue == null) {
-                    field.set(dgMailEventInput, "some_" + field.getName());
+                    final String fieldName = field.getName();
+                    if (fieldName.equals("detailFileSize")) {
+                        field.set(dgMailEventInput, 0);
+                    }
+                    else {
+                        field.set(dgMailEventInput, "some_" + fieldName);
+                    }
                 }
 
             } catch (IllegalAccessException e) {
