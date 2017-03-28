@@ -268,8 +268,8 @@ public class ApiSystemSetupTagsController extends BaseController {
             isRunning = false;
             if (taskResults!= null) {
                 usersAffected = taskResults.getUsersAffected();
+                errorMessage =taskResults.getErrorMessage();
             }
-            errorMessage =taskResults.getErrorMessage();
         }
 
         return new UserTaggingExecutionStatus(lastExecutionFinishTime, lastExecutionStartTime, isRunning, usersAffected, errorMessage);
