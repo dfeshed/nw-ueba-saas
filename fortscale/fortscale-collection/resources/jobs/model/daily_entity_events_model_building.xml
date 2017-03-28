@@ -34,7 +34,7 @@
 				</entry>
 
 				<entry>
-					<key>${fortscale.model.build.message.field.select.high.score.contexts}</key>
+					<key>selectHighScoreContexts</key>
 					<value>true</value>
 				</entry>
 
