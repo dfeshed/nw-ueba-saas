@@ -784,6 +784,7 @@ export default {
     },
     error: {
       error: 'Error processing stream call for context lookup.',
+      noDataSource: 'No data source configured/enabled.',
       dataSource: 'Error processing stream call for data source.',
       noData: 'No context data present for this DataSource.',
       listDuplicateName: 'List name already exists!',

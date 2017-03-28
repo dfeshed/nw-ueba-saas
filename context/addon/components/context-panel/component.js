@@ -48,14 +48,7 @@ const ContextComponent = Component.extend({
     }
     this._initModel();
     this.set('errorMessage', null);
-
-    if (lookupData === 'error') {
-      this.set('errorMessage', this.get('i18n').t('context.error.error'));
-      Logger.error('Error processing stream call for context lookup. ');
-      return true;
-    }
-    if (isArray(lookupData) && lookupData.length === 0) {
-      this.set('errorMessage', this.get('i18n').t('context.error.error'));
+    if (this._checkDataSourceConfigured(lookupData, dataSources)) {
       return true;
     }
     Logger.info('pushing data to context model');
@@ -68,6 +61,23 @@ const ContextComponent = Component.extend({
     });
     this._endOfResponse();
     return true;
+  },
+
+  _checkDataSourceConfigured(lookupData, dataSources) {
+    if (lookupData === 'error') {
+      this.set('errorMessage', this.get('i18n').t('context.error.error'));
+      Logger.error('Error processing stream call for context lookup. ');
+      return true;
+    }
+    if (isArray(dataSources) && dataSources.length === 0) {
+      this.set('errorMessage', this.get('i18n').t('context.error.noDataSource'));
+      return true;
+    }
+    if (isArray(lookupData) && lookupData.length === 0) {
+      this.set('errorMessage', this.get('i18n').t('context.error.error'));
+      return true;
+    }
+    return false;
   },
 
   didReceiveAttrs() {

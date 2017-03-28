@@ -784,6 +784,7 @@ export default {
     },
     error: {
       error: 'ja_Error processing stream call for context lookup.',
+      noDataSource: 'ja_No data source configured/enabled.',
       dataSource: 'ja_Error processing stream call for data source.',
       noData: 'ja_No context data present for this DataSource.',
       listDuplicateName: 'ja_List name already exists!',
