@@ -1,12 +1,14 @@
 package fortscale.collection.jobs.tagging;
 
 import fortscale.collection.jobs.FortscaleJob;
+import fortscale.services.UserService;
 import fortscale.services.UserTagService;
 import fortscale.services.users.tagging.UserTaggingTaskPersistenceService;
 import fortscale.services.users.tagging.UserTaggingTaskPersistencyServiceImpl;
 import fortscale.utils.logging.Logger;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
+import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -15,117 +17,191 @@ import org.springframework.beans.factory.annotation.Value;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Pattern;
 
+@DisallowConcurrentExecution
 public class UserTaggingJob extends FortscaleJob {
 
-	private static final Logger logger = Logger.getLogger(UserTaggingJob.class);
-	private static final String CSV_DELIMITER = ",";
-	private static final int INDEX_USER_REGEX = 0;
-	private static final int INDEX_TAGS = 1;
-	private static final java.lang.String TAGS_DELIMITER = "|";
+    private static final Logger logger = Logger.getLogger(UserTaggingJob.class);
+    private static final String CSV_DELIMITER = ",";
+    private static final int INDEX_USER_REGEX = 0;
+    private static final int INDEX_TAGS = 1;
+    private static final java.lang.String TAGS_DELIMITER = "|";
 
-	private boolean useFile;
+    private boolean useFile = false;
+    private String resultsId;
+    private String tagFilePath;
 
-	@Value("${user.list.user_custom_tags.path:}")
-	private String customTagFilePath;
-	
-	@Autowired
-	private UserTagService userTagService;
-	private String resultsId;
+    @Autowired
+    private UserTagService userTagService;
+    @Autowired
+    private UserTaggingTaskPersistenceService userTaggingTaskPersistenceService;
+    @Autowired
+    private UserService userService;
 
-	@Autowired
-	private UserTaggingTaskPersistenceService userTaggingTaskPersistenceService;
+    @Value("${user.list.custom_tags.deletion_symbol:-}")
+    private String deletionSymbol;
 
-	@Override
-	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-		JobDataMap map = jobExecutionContext.getMergedJobDataMap();
-		final String useFileAsString = jobDataMapExtension.getJobDataMapStringValue(map, "useFile", false);
-		if (useFileAsString != null) {
-			logger.info("Given 'useFile' parameter is useFile={}", useFileAsString);
-			useFile = Boolean.parseBoolean(useFileAsString);
-		}
+    private boolean jobSuccess = true;
+    private String errorMessage;
 
-		// random generated ID for deployment wizard user tagging results
-		resultsId = jobDataMapExtension.getJobDataMapStringValue(map, "resultsId", false);
-	}
+    @Override
+    protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
+        JobDataMap map = jobExecutionContext.getMergedJobDataMap();
+        String filePath = jobDataMapExtension.getJobDataMapStringValue(map, "filePath", false);
+        if (StringUtils.isNotEmpty(filePath)){
+            logger.info("Received file path from the command line. The path {}", filePath);
+            useFile = true;
+            tagFilePath = filePath;
+        }else {
+            filePath = userTaggingTaskPersistenceService.getSystemSetupUserTaggingFilePath();
+            if (StringUtils.isNotEmpty(filePath)) {
+                useFile = true;
+                tagFilePath = filePath;
+                logger.info("Got file path from mongo. The path {}", filePath);
+            }
+        }
 
-	@Override
-	protected int getTotalNumOfSteps() {
-		return 1;
-	}
+        // ID for deployment wizard user tagging results
+        resultsId = jobDataMapExtension.getJobDataMapStringValue(map, "resultsId", false);
+        if (StringUtils.isEmpty(resultsId)) {
+            resultsId = UserTaggingTaskPersistenceService.USER_TAGGING_RESULT_ID;
+        }
+    }
 
-	@Override
-	protected boolean shouldReportDataReceived() {
-		return false;
-	}
+    @Override
+    protected int getTotalNumOfSteps() {
+        return 1;
+    }
 
-	@Override
-	protected void runSteps() throws Exception {
-		if (useFile) {
-			logger.info("Updating user tags from file {}.", customTagFilePath);
-			try {
-				updateFromFile();
-			} catch (IOException e) {
-				saveResult(false);
-				throw new JobExecutionException(e);
-			}
-		}
-		else {
-			logger.info("Updating user tags from mongo");
-			userTagService.update();
-		}
+    @Override
+    protected boolean shouldReportDataReceived() {
+        return false;
+    }
 
-		saveResult(true);
-	}
+    @Override
+    protected void runSteps() throws Exception {
+        // Get the users count per tag before tagging update
+        Map<String, Long> taggedUsersCountBeforeRun = userService.groupByTags(true);
 
-	private void saveResult(boolean success) {
-		if (resultsId != null) {
-			userTaggingTaskPersistenceService.writeTaskResults(UserTaggingTaskPersistencyServiceImpl.RESULTS_KEY_NAME,
-					resultsId, success);
-		}
-	}
+        // Running the tagging rules
+        logger.info("Updating user tags from mongo");
+        userTagService.update();
+
+        if (useFile) {
+            // Updating the tags from the file
+            logger.info("Updating user tags from file {}.", tagFilePath);
+            updateFromFile();
+        }
+
+        // Get the users count per tag after tagging update
+        Map<String, Long> taggedUsersCountAfterRun = userService.groupByTags(true);
+
+        // Save the tagging result
+        saveResult(taggedUsersCountBeforeRun, taggedUsersCountAfterRun);
+    }
+
+    private void saveResult(Map<String, Long> taggedUsersCountBeforeRun, Map<String, Long> taggedUsersCountAfterRun) {
+        if (resultsId != null) {
+            logger.info("Saving the user tagging result to id {}", resultsId);
+
+            Map<String, Long> deltaPerTag = null;
+
+            if (taggedUsersCountAfterRun != null && taggedUsersCountBeforeRun != null) {
+                deltaPerTag = findDelta(taggedUsersCountBeforeRun, taggedUsersCountAfterRun);
+            }
+
+            userTaggingTaskPersistenceService.writeTaskResults(UserTaggingTaskPersistencyServiceImpl.RESULTS_KEY_NAME,
+                    resultsId, jobSuccess, deltaPerTag, errorMessage);
+        }
+    }
+
+    /**
+     * Calculates the number of users per tag that where affected by the tagging job
+     *
+     * @param taggedUsersCountBeforeRun
+     * @param taggedUsersCountAfterRun
+     * @return <tagName, usersAffected></tagName>
+     */
+    protected static Map<String, Long> findDelta(Map<String, Long> taggedUsersCountBeforeRun, Map<String, Long> taggedUsersCountAfterRun) {
+        Map<String, Long> changedUsers = new HashMap<>();
+
+        if (taggedUsersCountAfterRun != null && taggedUsersCountBeforeRun != null) {
+            // Get all the relevant tags
+            Set<String> allTags = (new HashSet<>(taggedUsersCountAfterRun.keySet()));
+            allTags.addAll(taggedUsersCountBeforeRun.keySet());
+
+            // For each tag find the delta
+            for (String tag : allTags) {
+                Long usersBefore = taggedUsersCountBeforeRun.get(tag);
+                Long usersAfter = taggedUsersCountAfterRun.get(tag);
+                Long delta;
+
+                if (usersAfter == null) {
+                    usersAfter = 0l;
+                }
+                if (usersBefore == null) {
+                    usersBefore = 0l;
+                }
+
+                // calculate the delta
+                delta = Math.abs(Math.addExact(usersAfter, -usersBefore));
+
+                // If changed
+                if (delta != 0) {
+                    changedUsers.put(tag, delta);
+                }
+            }
+        }
+        return changedUsers;
+    }
 
 
-	private void updateFromFile() throws IOException, JobExecutionException {
-		if (StringUtils.isEmpty(customTagFilePath)) {
-			logger.error("Job failed. Empty customTagFilePath.");
-			saveResult(false);
-			return;
-		}
-		File tagsFile = new File(customTagFilePath);
+    private void updateFromFile(){
+        try {
+            if (StringUtils.isEmpty(tagFilePath)) {
+                logger.error("Job failed. Empty tagFilePath.");
+                jobSuccess = false;
+                errorMessage = "No File Path";
+                return;
+            }
+            File tagsFile = new File(tagFilePath);
 
-		//read the custom tag list and update the possible tags to add in the system
-		if (tagsFile.exists() && tagsFile.isFile() && tagsFile.canRead()) {
-			for (String line : FileUtils.readLines(tagsFile)) {
-				final String[] splitLine = line.split(CSV_DELIMITER);
-				String userRegex;
-				List<String> tags;
-				try {
-					userRegex = splitLine[INDEX_USER_REGEX];
-					tags = Arrays.asList(splitLine[INDEX_TAGS].split(Pattern.quote(TAGS_DELIMITER)));
-				} catch (Exception e) {
-					final String errorMessage = String.format("Job failed. File %s format is invalid.", customTagFilePath);
-					logger.error(errorMessage);
-					throw new JobExecutionException(errorMessage, e);
-				}
+            //read the custom tag list and update the possible tags to add in the system
+            if (tagsFile.exists() && tagsFile.isFile() && tagsFile.canRead()) {
+                for (String line : FileUtils.readLines(tagsFile)) {
+                    final String[] splitLine = line.split(CSV_DELIMITER);
+                    String userRegex;
+                    List<String> tags;
 
-				try {
-					userTagService.addUserTagsRegex(userRegex, tags);
-				} catch (Exception e) {
-					final String errorMessage = String.format("Job failed. File %s format is invalid.", customTagFilePath);
-					logger.error(errorMessage, e);
-					throw new JobExecutionException(e);
-				}
+                    try {
+                        userRegex = splitLine[INDEX_USER_REGEX];
+                        tags = Arrays.asList(splitLine[INDEX_TAGS].split(Pattern.quote(TAGS_DELIMITER)));
 
-			}
-			logger.info("tags loaded");
-		} else {
-			saveResult(false);
-			logger.error("Custom tag list file not accessible in path {}", customTagFilePath);
-		}
-	}
+                        // When we have "-" before the user name we want to remove the tags from the user
+                        if (StringUtils.startsWith(userRegex,deletionSymbol)) {
+                            userTagService.removeUserTags(userRegex.substring(1), tags);
+                        } else {
+                            userTagService.addUserTagsRegex(userRegex, tags);
+                        }
+                    } catch (Exception e) {
+                        logger.error(String.format("Job failed. File %s format is invalid.", tagFilePath), e);
+                        jobSuccess = false;
+                        errorMessage = "File format error";
+                    }
+                }
+                logger.info("tags loaded");
 
+            } else {
+                logger.error("Custom tag list file not accessible in path {}", tagFilePath);
+                jobSuccess = false;
+                errorMessage = "File not found";
+            }
+        }
+        catch (Exception e){
+            jobSuccess = false;
+            errorMessage = "Error tagging from file";
+        }
+    }
 }

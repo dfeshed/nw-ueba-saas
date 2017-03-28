@@ -171,12 +171,13 @@ public class DgFileEventAfterEtlBuilder {
     }
 
     public DgFileEventAfterEtl createDgEventAfterEtl() {
-        DgFileEventAfterEtl dgFileEventAfterEtl = new DgFileEventAfterEtl( dateTime, dateTimeUnix,  eventType,  eventId,  username,
-                 normalizedUsername,  fullName,  hostname,  normalizedSrcMachine,
-                 ipAddress,  application,  sourceDirectory,
-                 detailFileSize,  sourceDriveType,  destinationDriveType,
-                 wasClassified,  wasBlocked,  scanValueStatusText,  isAdminActivity,
-                 isRdp,  isRegistryChanged,  dataSource,  lastState, sourceFile, destinationFile, malwarePolicyName);
+        DgFileEventAfterEtl dgFileEventAfterEtl = new DgFileEventAfterEtl( dateTime,  dateTimeUnix,  eventType,  eventId,  username,
+                normalizedUsername,  fullName,  hostname,  normalizedSrcMachine,
+                ipAddress,  application,  sourceDirectory,  destinationDirectory,
+                sourceFile,  destinationFile,  detailFileSize,  sourceDriveType,
+                destinationDriveType,  wasClassified,  wasBlocked,  scanValueStatusText,
+                malwarePolicyName,  isRdp,  isAdminActivity,  isRegistryChanged,
+                dataSource,  lastState);
 
         dgFileEventAfterEtl = fillGenericValuesForEmptyFields(dgFileEventAfterEtl);
         return dgFileEventAfterEtl;

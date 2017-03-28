@@ -2,12 +2,14 @@ package fortscale.services.users.tagging;
 
 
 import java.util.Map;
-import java.util.UUID;
 
 public interface UserTaggingTaskPersistenceService {
-    Map<String, String> getTaskResults(String resultsKey);
+    String USER_TAGGING_RESULT_ID = "result";
+    String RESULTS_KEY_NAME = "user_tagging";
 
-    void writeTaskResults(String taskName, String resultsId, boolean result);
+    UserTaggingTaskPersistencyServiceImpl.UserTaggingResult getTaskResults(String resultsKey);
+
+    void writeTaskResults(String taskName, String resultsId, boolean result, Map<String, Long> deltaPerTag, String errorMessage);
 
     Long getLastExecutionTime();
 
@@ -17,5 +19,11 @@ public interface UserTaggingTaskPersistenceService {
 
     void setExecutionStartTime(Long executionStartTime);
 
-    String createResultKey(UUID resultsId);
+    String createResultKey(String resultsId);
+
+    String getSystemSetupUserTaggingFilePath();
+
+    void saveSystemSetupTaggingFilePath(String systemSetupTaggingFilePath);
+
+    void deleteSystemSetupTaggingFilePath();
 }

@@ -979,10 +979,10 @@ public class UserServiceImpl implements UserService, InitializingBean {
 	}
 
 	@Override
-	public Map<String, Long> groupByTags() {
+	public Map<String, Long> groupByTags(boolean forceCacheUpdate) {
 		final String TAGS = "tags";
 		Map<String, Long> items = groupByTagsCache.get(TAGS);
-		if (items == null) {
+		if (items == null || forceCacheUpdate) {
 			items = userRepository.groupByTags();
 			groupByTagsCache.put(TAGS, items);
 		}

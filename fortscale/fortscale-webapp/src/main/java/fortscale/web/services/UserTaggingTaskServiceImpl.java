@@ -19,6 +19,7 @@ public class UserTaggingTaskServiceImpl extends TaskService {
 
     private UserTaggingTaskPersistenceService userTaggingTaskPersistenceService;
     private final Set<AdObject.AdObjectType> dataSources = new HashSet<>(Arrays.asList(AdObject.AdObjectType.values()));
+    private String userTaggingFilePath;
 
     private UserTaggingTaskServiceImpl() {
         initExecutorService(1);
@@ -40,6 +41,7 @@ public class UserTaggingTaskServiceImpl extends TaskService {
                 executorService.executeTasks(taggingTask);
                 return true;
             } finally {
+                userTaggingFilePath = null;
                 executorService.markEndExecution();
             }
         } else {
@@ -49,7 +51,11 @@ public class UserTaggingTaskServiceImpl extends TaskService {
 
     private List<ControllerInvokedUserTaggingTask> createTaggingTask(SimpMessagingTemplate simpMessagingTemplate, String responseDestination) {
         final List<ControllerInvokedUserTaggingTask> tasks = new ArrayList<>();
-        tasks.add(new ControllerInvokedUserTaggingTask(executorService, simpMessagingTemplate, responseDestination, userTaggingTaskPersistenceService));
+        tasks.add(new ControllerInvokedUserTaggingTask(executorService, simpMessagingTemplate, responseDestination, userTaggingTaskPersistenceService, userTaggingFilePath));
         return tasks;
+    }
+
+    public void setUserTaggingFilePath(String userTaggingFilePath) {
+        this.userTaggingFilePath = userTaggingFilePath;
     }
 }
