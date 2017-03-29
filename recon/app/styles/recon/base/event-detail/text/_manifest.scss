@@ -1,6 +1,10 @@
 @import "../../mixins";
 .recon-event-detail-text {
   .scroll-box {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
     bottom: rsa-whitespace(more);
   }
   .rsa-text-entry {
