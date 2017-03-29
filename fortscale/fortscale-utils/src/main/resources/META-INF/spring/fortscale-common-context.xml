@@ -7,19 +7,8 @@
     					http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
                         http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-4.0.xsd">
 
-	<bean id="impalaParser" class="fortscale.utils.impala.ImpalaParser" />
-	<bean id="impalaClient" class="fortscale.utils.impala.ImpalaClient" />
 
-	<bean id="impalaDriver" class="org.apache.hive.jdbc.HiveDriver"/>
-	
-	<bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
-	  <constructor-arg name="driver" ref="impalaDriver"/>
-	  <constructor-arg name="url" value="${impala.url}"/>
-	</bean>
-	
-	<bean id="impalaJdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
-	  <constructor-arg ref="dataSource"/>
-	</bean>
+
 
 	<bean id="cleanupPredicate" class="fortscale.utils.cleanup.CleanupPredicate" />
 
