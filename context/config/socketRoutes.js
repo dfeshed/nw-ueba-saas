@@ -65,6 +65,13 @@ module.exports = function(environment) {
         subscriptionDestination: '/user/queue/administration/context/liveconnect/feedback',
         requestDestination: '/ws/administration/context/liveconnect/feedback'
       }
+    },
+    'skill-level': {
+      socketUrl,
+      queryRecord: {
+        subscriptionDestination: '/user/queue/administration/context/get/liveconnect/userprefs',
+        requestDestination: '/ws/administration/context/get/liveconnect/userprefs'
+      }
     }
   };
 };

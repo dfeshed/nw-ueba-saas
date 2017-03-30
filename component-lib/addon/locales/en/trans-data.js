@@ -780,7 +780,9 @@ export default {
       feedbackSubmissionFailed: 'Could not submit feedback to Live Connect server.',
       feedbackFormInvalid: 'Select the \'Risk Confirmation\' and \'Confidence Level\'.',
       noTrendingCommunityActivity: 'There is no new community activity in the past 30 days',
-      noTrendingSubmissionActivity: 'There are no new submissions in the past 30 days'
+      noTrendingSubmissionActivity: 'There are no new submissions in the past 30 days',
+      skillLevel: 'Analyst Skill Level',
+      skillLevelPrefix: 'Tier {{level}}'
     },
     error: {
       error: 'Error processing stream call for context lookup.',

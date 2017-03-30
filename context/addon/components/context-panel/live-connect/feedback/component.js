@@ -2,6 +2,8 @@ import Ember from 'ember';
 import layout from './template';
 import computed from 'ember-computed-decorators';
 import connect from 'ember-redux/components/connect';
+import riskLevels from './risk-levels';
+import confidenceLevels from './confidence-levels';
 
 const {
   inject: {
@@ -18,6 +20,8 @@ const stateToComputed = ({ context }) => ({
 
 const FeedbackComponent = Component.extend({
   layout,
+  riskLevels,
+  confidenceLevels,
 
   flashMessages: service(),
   request: service(),
@@ -31,43 +35,12 @@ const FeedbackComponent = Component.extend({
 
   inProgress: false,
 
-  riskLevels: [
-    {
-      name: 'context.lc.unknown',
-      value: 'UNKNOWN'
-    },
-    {
-      name: 'context.lc.safe',
-      value: 'NOT_RISKY'
-    },
-    {
-      name: 'context.lc.suspicious',
-      value: 'SUSPICIOUS'
-    },
-    {
-      name: 'context.lc.unsafe',
-      value: 'RISKY'
-    },
-    {
-      name: 'context.lc.highRisk',
-      value: 'HIGH_RISK'
-    }
-  ],
+  skillLevels: [1, 2, 3],
 
-  confidenceLevels: [
-    {
-      name: 'context.lc.high',
-      value: 'HIGH'
-    },
-    {
-      name: 'context.lc.med',
-      value: 'MEDIUM'
-    },
-    {
-      name: 'context.lc.low',
-      value: 'LOW'
-    }
-  ],
+  init() {
+    this._super(...arguments);
+    this._fetchSkillLevel();
+  },
 
   @computed('activeTabName', 'model.contextData.liveConnectData')
   showFeedbackPanel: (activeTabName, lcData) => activeTabName === 'liveConnect' && lcData,
@@ -137,7 +110,8 @@ const FeedbackComponent = Component.extend({
       metaValue: this.get('model.lookupKey'),
       feedback: this.get('selectedRiskLevel').value,
       confidenceType: this.get('selectedConfidenceLevel').value,
-      riskTagTypes: tagValues
+      riskTagTypes: tagValues,
+      skillLevel: this.get('selectedSkillLevel')
     };
   },
 
@@ -159,6 +133,20 @@ const FeedbackComponent = Component.extend({
       this.get('flashMessages').error(message);
     }).finally(() => {
       this.set('inProgress', false);
+    });
+  },
+
+  _fetchSkillLevel() {
+    this.get('request').promiseRequest({
+      method: 'queryRecord',
+      modelName: 'skill-level',
+      query: {}
+    }).then(({ data }) => {
+      Logger.debug(`Fetched skill level ${data.skillLevel}`);
+      this.set('selectedSkillLevel', data.skillLevel || 1);
+    }).catch((reason) => {
+      Logger.error(reason);
+      this.set('selectedSkillLevel', 1); // default level
     });
   }
 });

@@ -1,6 +1,21 @@
 {{#if showFeedbackPanel}}
   <vbox class="rsa-context-panel__liveconnect__feedback">
     {{#rsa-content-section-header label='Section Heading'}}{{t 'context.lc.riskFeedback'}}{{/rsa-content-section-header}}
+    <label class="rsa-form-label power-select rsa-context-panel__liveconnect__field">
+      <span class="label-text">
+        {{t 'context.lc.skillLevel'}}
+      </span>
+
+      {{#power-select
+        options=skillLevels
+        searchEnabled=false
+        selected=selectedSkillLevel
+        triggerClass="inline"
+        placeholder=(t 'context.lc.select')
+        onchange=(action (mut selectedSkillLevel)) as |option|}}
+        {{t 'context.lc.skillLevelPrefix' level=option }}
+      {{/power-select}}
+    </label>
     <hbox>
       <vbox class="risk-level-col">
         <label class="rsa-form-label power-select rsa-context-panel__liveconnect__field">
@@ -9,12 +24,12 @@
           </div>
 
           {{#power-select
-          options=riskLevels
-          searchEnabled=false
-          selected=selectedRiskLevel
-          triggerClass=riskLevelTriggerClass
-          placeholder=(t 'context.lc.select')
-          onchange=(action 'setSelectedRiskLevel') as |option|}}
+            options=riskLevels
+            searchEnabled=false
+            selected=selectedRiskLevel
+            triggerClass=riskLevelTriggerClass
+            placeholder=(t 'context.lc.select')
+            onchange=(action 'setSelectedRiskLevel') as |option|}}
             {{t option.name}}
           {{/power-select}}
         </label>
@@ -27,12 +42,12 @@
           </div>
 
           {{#power-select
-          options=confidenceLevels
-          selected=selectedConfidenceLevel
-          searchEnabled=false
-          triggerClass=confidenceLevelTriggerClass
-          placeholder=(t 'context.lc.select')
-          onchange=(action 'setSelectedConfidenceLevel') as |option|}}
+            options=confidenceLevels
+            selected=selectedConfidenceLevel
+            searchEnabled=false
+            triggerClass=confidenceLevelTriggerClass
+            placeholder=(t 'context.lc.select')
+            onchange=(action 'setSelectedConfidenceLevel') as |option|}}
             {{t option.name}}
           {{/power-select}}
         </label>
