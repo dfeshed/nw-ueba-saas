@@ -100,8 +100,12 @@ public class FieldsCompareWithConfigBuilder implements CommandBuilder {
             return ans;
         }
 
-        private String getProperty(String property) {
-            return SpringPropertiesUtil.getProperty(property);
+        private String getProperty(String propertyKey) {
+            final String propertyValue = SpringPropertiesUtil.getProperty(propertyKey);
+            if (propertyValue == null) {
+                logger.error("Property {} doesn't exist.", propertyKey);
+            }
+            return propertyKey;
         }
 
     }
