@@ -381,7 +381,11 @@ export default Ember$.extend({}, BaseSelectors, {
         'reconViewSelector': '.recon-view-selector',
         'reconFirstTab': '.recon-event-titlebar .heading-tabs div:nth-child(1)',
         'reconSecondTab': '.recon-event-titlebar .heading-tabs div:nth-child(2)',
-        'reconThirdTab': '.recon-event-titlebar .heading-tabs div:nth-child(3)'
+        'reconThirdTab': '.recon-event-titlebar .heading-tabs div:nth-child(3)',
+        'reconEventDetailText': '.recon-event-detail-text .text-container',
+        'reconPacketDetails': '.recon-event-detail-packets',
+        'reconPacketHex': '.recon-event-detail-packets .rsa-packet__hex',
+        'reconPacketASCII': '.recon-event-detail-packets .rsa-packet__ascii'
       },
       'root': '.js-test-investigate-root',
       'selectedService': '.rsa-investigate-query-bar__service .ember-power-select-selected-item',
