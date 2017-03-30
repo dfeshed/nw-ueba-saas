@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import layout from '../templates/components/rsa-content-tethered-panel-trigger';
+import { sendTetherEvent } from 'component-lib/utils/tooltip-trigger';
 
 const {
   Component,
@@ -30,6 +31,10 @@ export default Component.extend({
 
   panel: null,
 
+  // optional arbitrary data, passed from trigger to tooltip via eventBus
+  // useful when re-using 1 tooltip instance with multiple triggers
+  model: null,
+
   displayDelay: 1000,
 
   hideDelay: 1000,
@@ -48,9 +53,13 @@ export default Component.extend({
     if (!this.get('isDisabled')) {
       if (this.get('isHover')) {
         const displayEvent = later(() => {
-          const height = this.$().height();
-          const width = this.$().width();
-          this.get('eventBus').trigger(`rsa-content-tethered-panel-display-${this.get('panel')}`, height, width, this.get('elementId'));
+          sendTetherEvent(
+            this.element,
+            this.get('panel'),
+            this.get('eventBus'),
+            'display',
+            this.get('model')
+          );
         }, this.get('displayDelay'));
         this.set('displayEvent', displayEvent);
       }
@@ -61,7 +70,12 @@ export default Component.extend({
     if (this.get('isHover')) {
       cancel(this.get('displayEvent'));
       later(() => {
-        this.get('eventBus').trigger(`rsa-content-tethered-panel-hide-${this.get('panel')}`);
+        sendTetherEvent(
+          this.element,
+          this.get('panel'),
+          this.get('eventBus'),
+          'hide'
+        );
       }, this.get('hideDelay'));
     }
   },
@@ -69,11 +83,14 @@ export default Component.extend({
   click() {
     if (!this.get('isDisabled')) {
       if (this.get('isClick')) {
-        const height = this.$().height();
-        const width = this.$().width();
-        this.get('eventBus').trigger(`rsa-content-tethered-panel-toggle-${this.get('panel')}`, height, width, this.get('elementId'));
+        sendTetherEvent(
+          this.element,
+          this.get('panel'),
+          this.get('eventBus'),
+          'toggle',
+          this.get('model')
+        );
       }
     }
   }
-
 });

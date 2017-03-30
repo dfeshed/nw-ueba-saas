@@ -1,0 +1,124 @@
+import Ember from 'ember';
+
+const { $ } = Ember;
+
+/**
+ * Sends an event over the event bus that will be heard by an `rsa-content-tethered-panel` component.
+ * Typically used by the panel trigger to send an event to the corresponding panel that it toggles.
+ *
+ * @param {HTMLElement} el The DOM node of the panel trigger.
+ * @param {String} panelId The `panelId` attr of the `rsa-content-tethered-panel` to whom the event is being sent.
+ * @param {Object} eventBus The eventBus service. @see component-lib/addon/services/event-bus
+ * @param {String} eventType Either 'display', 'hide' or 'toggle'.
+ * @param {*} [model] Optional data that will be sent along to the panel when it is toggled. Typically used
+ * to give the panel some additional context about its active trigger. Useful for a panel that works with multiple triggers.
+ * @public
+ */
+const sendTetherEvent = function(el, panelId, eventBus, eventType, model) {
+  const $el = $(el);
+  const height = $el.height();
+  const width = $el.width();
+  eventBus.trigger(
+    `rsa-content-tethered-panel-${eventType}-${panelId}`,
+    height,
+    width,
+    el.id,
+    model
+  );
+};
+
+/**
+ * Wires up the click events of a given element to toggle a given `rsa-content-tethered-panel` component.
+ *
+ * @param {HTMLElement} el The DOM node whose click event is to be wired up.
+ * @param {String} panelId The `panelId` attr of the {{rsa-content-tethered-panel}} component to be toggled.
+ * @param {Object} eventBus The eventBus service. @see component-lib/addon/services/event-bus
+ * @param {Object} [opts] Optional configuration hash.
+ * @param {*} [opts.model] Optional data that will be sent along to the panel when it is toggled. Typically used
+ * to give the panel some additional context about its active trigger. Useful for a panel that works with multiple triggers.
+ * @param {Function} [opts.getIsDisabled] Optional callback that, when invoked, will return true if the trigger
+ * DOM node is enabled or false otherwise.  If given, this callback will be invoked during every trigger click event,
+ * to determine whether the panel component should be toggled. If the callback returns false, the toggle is aborted.
+ * @public
+ */
+const wireTriggerToClick = function(el, panelId, eventBus, opts = {}) {
+  const getIsDisabled = typeof opts.getIsDisabled === 'function' ? opts.getIsDisabled : null;
+
+  $(el).on('click.rsa-tethered-panel-trigger', function() {
+    if (!getIsDisabled || !getIsDisabled()) {
+      sendTetherEvent(this, panelId, eventBus, 'toggle', opts.model);
+    }
+  });
+};
+
+/**
+ * Tears down the click event listener that was attached by `wireTriggerToClick` for a given element.
+ * Typically used when a DOM element is about to be removed/destroyed.
+ *
+ * @param {HTMLElement} el The DOM node whose click event is to be un-wired.
+ * @public
+ */
+const unwireTriggerToClick = function(el) {
+  $(el).off('click.rsa-tethered-panel-trigger');
+};
+
+/**
+ * Wires up the mouseenter & mouseleave events of a given element to toggle a given `rsa-content-tethered-panel` component.
+ *
+ * @param {HTMLElement} el The DOM node whose mouse events is to be wired up.
+ * @param {String} panelId The `panelId` attr of the {{rsa-content-tethered-panel}} component to be toggled.
+ * @param {Object} eventBus The eventBus service. @see component-lib/addon/services/event-bus
+ * @param {Object} [opts] Optional configuration hash.
+ * @param {*} [opts.model] Optional data that will be sent along to the panel when it is toggled. Typically used
+ * to give the panel some context about its active trigger. Useful for a panel that works with multiple triggers.
+ * @param {Function} [opts.getIsDisabled] Optional callback that, when invoked, will return true if the trigger
+ * DOM node is enabled or false otherwise.  If given, this callback will be invoked during every trigger click event,
+ * to determine whether the panel component should be toggled. If the callback returns false, the toggle is aborted.
+ * @public
+ */
+const wireTriggerToHover = function(el, panelId, eventBus, opts = {}) {
+  const getIsDisabled = typeof opts.getIsDisabled === 'function' ? opts.getIsDisabled : null;
+
+  $(el)
+    .on('mouseenter.rsa-tethered-panel-trigger', function() {
+      if (!getIsDisabled || !getIsDisabled()) {
+        sendTetherEvent(this, panelId, eventBus, 'display');
+      }
+    })
+    .on('mouseleave.rsa-tethered-panel-trigger', function() {
+      sendTetherEvent(this, panelId, eventBus, 'hide', opts.model);
+    });
+};
+
+/**
+ * Tears down the mouse event listeners that were attached by `wireTriggerToHover` for a given element.
+ * Typically used when a DOM element is about to be removed/destroyed.
+ *
+ * @param {HTMLElement} el The DOM node whose mouse events are to be un-wired.
+ * @public
+ */
+const unwireTriggerToHover = function(el) {
+  $(el)
+    .off('mouseenter.rsa-tethered-panel-trigger')
+    .off('mouseleave.rsa-tethered-panel-trigger');
+};
+
+/**
+ * @class Tooltip Trigger utilities
+ * Utilities for wiring and unwiring the DOM events of a "trigger" to show/hide an `rsa-content-tethered panel` component.
+ *
+ * Some of these utilities are used by the `rsa-content-tethered-panel-trigger` component to show or hide a
+ * corresponding `rsa-content-tethered-panel` component.  Typically an app developer just uses that trigger
+ * component rather than calling these utilities directly.  However we provide them here anyway so that they can be used
+ * to implement alternative custom triggers, such as a trigger which is just a DOM node but not an Ember component
+ * (e.g., an SVG path or object in a visualization).
+ *
+ * @public
+ */
+export {
+  sendTetherEvent,
+  wireTriggerToHover,
+  unwireTriggerToHover,
+  wireTriggerToClick,
+  unwireTriggerToClick
+};

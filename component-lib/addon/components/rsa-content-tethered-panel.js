@@ -37,6 +37,11 @@ export default Component.extend({
 
   target: null,
 
+  // optional arbitrary data, passed from trigger to here via eventBus
+  // gets passed along in yield, treated as a black box here
+  // useful when re-using 1 tooltip instance with multiple triggers
+  model: null,
+
   isHovering: false,
 
   hideDelay: 500,
@@ -206,7 +211,7 @@ export default Component.extend({
 
   didInsertElement() {
     run.schedule('afterRender', () => {
-      this.get('eventBus').on(`rsa-content-tethered-panel-display-${this.get('panelId')}`, (height, width, elId) => {
+      this.get('eventBus').on(`rsa-content-tethered-panel-display-${this.get('panelId')}`, (height, width, elId, model) => {
         run.next(() => {
           if (!this.get('isDestroyed') && !this.get('isDestroying')) {
             if ($(this.get('targetClass')).length > 1) {
@@ -217,6 +222,7 @@ export default Component.extend({
 
             this.set('anchorHeight', height);
             this.set('anchorWidth', width);
+            this.set('model', model);
             this.set('isDisplayed', true);
 
             run.schedule('afterRender', () => {
@@ -249,7 +255,7 @@ export default Component.extend({
         });
       });
 
-      this.get('eventBus').on(`rsa-content-tethered-panel-toggle-${this.get('panelId')}`, (height, width, elId) => {
+      this.get('eventBus').on(`rsa-content-tethered-panel-toggle-${this.get('panelId')}`, (height, width, elId, model) => {
         run.next(() => {
           if (!this.get('isDestroyed') && !this.get('isDestroying')) {
             if ($(this.get('targetClass')).length > 1) {
@@ -258,6 +264,7 @@ export default Component.extend({
               this.set('target', this.get('targetClass'));
             }
 
+            this.set('model', model);
             this.toggleProperty('isDisplayed');
 
             if (height) {

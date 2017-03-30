@@ -7,38 +7,38 @@
 
   {{#spec-category id="multi-trigger" title="Multiple Triggers One Panel"}}
     {{#spec-member title="Example"}}
-      {{#rsa-content-tethered-panel-trigger panel='panel1'}}
+      {{#rsa-content-tethered-panel-trigger panel='panel1' model='Hello World'}}
         {{#rsa-form-button}}
-          Hover to Trigger
+          Hover to Trigger a "Hello World" panel
         {{/rsa-form-button}}
       {{/rsa-content-tethered-panel-trigger}}
 
-      {{#rsa-content-tethered-panel-trigger panel='panel1'}}
+      {{#rsa-content-tethered-panel-trigger panel='panel1' model='Howdy World'}}
         {{#rsa-form-button}}
-          Hover to Trigger
+          Hover to Trigger a "Howdy World" panel
         {{/rsa-form-button}}
       {{/rsa-content-tethered-panel-trigger}}
 
-      {{#rsa-content-tethered-panel position='top' panelId='panel1'}}
+      {{#rsa-content-tethered-panel position='top' panelId='panel1' as |hide model|}}
         <header>panel Header</header>
-        <section>Here is the info!</section>
+        <section>Here is the panel! {{model}}</section>
       {{/rsa-content-tethered-panel}}
       {{!-- BEGIN-SNIPPET panel1
-      {{#rsa-content-tethered-panel-trigger panel='panel1'}}
+      {{#rsa-content-tethered-panel-trigger panel='panel1' model='Hello World'}}
         {{#rsa-form-button}}
-          Hover to Trigger
+          Hover to Trigger a "Hello World" panel
         {{/rsa-form-button}}
       {{/rsa-content-tethered-panel-trigger}}
 
-      {{#rsa-content-tethered-panel-trigger panel='panel1'}}
+      {{#rsa-content-tethered-panel-trigger panel='panel1' model='Howdy World'}}
         {{#rsa-form-button}}
-          Hover to Trigger
+          Hover to Trigger a "Howdy World" panel
         {{/rsa-form-button}}
       {{/rsa-content-tethered-panel-trigger}}
 
-      {{#rsa-content-tethered-panel position='top' panelId='panel1'}}
+      {{#rsa-content-tethered-panel position='top' panelId='panel1' as |hide model|}}
         <header>panel Header</header>
-        <section>Here is the info!</section>
+        <section>Here is the panel! {{model}}</section>
       {{/rsa-content-tethered-panel}}
       END-SNIPPET --}}
       {{code-snippet name="panel1.hbs"}}
