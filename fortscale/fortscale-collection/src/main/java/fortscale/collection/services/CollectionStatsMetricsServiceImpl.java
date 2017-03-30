@@ -1,6 +1,6 @@
 package fortscale.collection.services;
 
-import fortscale.collection.metrics.ETLCommonJobMetircs;
+import fortscale.collection.metrics.ETLCommonJobMetrics;
 import fortscale.collection.morphlines.metrics.MorphlineMetrics;
 import fortscale.utils.monitoring.stats.StatsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,7 @@ public class CollectionStatsMetricsServiceImpl implements CollectionStatsMetrics
 
 	private HashMap<String,MorphlineMetrics> morphlinesMetrics = new HashMap<>();
 
-	private HashMap<String,ETLCommonJobMetircs> commonJobMetircs = new HashMap<>();
+	private HashMap<String,ETLCommonJobMetrics> commonJobMetrics = new HashMap<>();
 
 	public MorphlineMetrics getMorphlineMetrics(String dataSource)
 	{
@@ -37,16 +37,16 @@ public class CollectionStatsMetricsServiceImpl implements CollectionStatsMetrics
 		return result;
 	}
 
-	public ETLCommonJobMetircs getETLCommonJobMetircs(String dataSource){
+	public ETLCommonJobMetrics getETLCommonJobMetrics(String dataSource){
 
 		//validate if the specific data source ETLCommonMetrics metric exist on the Map
 		//If not create it, insert it to the map and return the new instance
-		ETLCommonJobMetircs result = commonJobMetircs.get(dataSource);
+		ETLCommonJobMetrics result = commonJobMetrics.get(dataSource);
 
 		if(result==null)
 		{
-			result = new ETLCommonJobMetircs(statsService,dataSource);
-			commonJobMetircs.put(dataSource,result);
+			result = new ETLCommonJobMetrics(statsService,dataSource);
+			commonJobMetrics.put(dataSource,result);
 
 		}
 

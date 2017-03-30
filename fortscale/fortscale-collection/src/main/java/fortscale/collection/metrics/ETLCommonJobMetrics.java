@@ -17,9 +17,9 @@ import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 
  */
 @StatsMetricsGroupParams(name = "ETL.event-process.job")
-public class ETLCommonJobMetircs extends StatsMetricsGroup {
+public class ETLCommonJobMetrics extends StatsMetricsGroup {
 
-    public ETLCommonJobMetircs(StatsService statsService, String dataSource) {
+    public ETLCommonJobMetrics(StatsService statsService, String dataSource) {
         // Call parent ctor
         super(statsService, EventProcessJob.class,
                 // Create anonymous attribute class with initializer block since it does not have ctor
