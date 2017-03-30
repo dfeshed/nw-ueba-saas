@@ -8,7 +8,7 @@ import fortscale.common.event.Event;
 import fortscale.common.feature.FeatureNumericValue;
 import fortscale.common.feature.FeatureValue;
 import org.apache.commons.lang3.StringUtils;
-import org.eclipse.jdt.internal.core.Assert;
+import org.springframework.util.Assert;
 
 import static fortscale.utils.ConversionUtils.convertToDouble;
 
