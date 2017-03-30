@@ -120,6 +120,9 @@ export default {
   recon: {
     textView: {
       downloadLog: 'ja_Download Log',
+      downloadCsv: 'ja_Download CSV',
+      downloadXml: 'ja_Download XML',
+      downloadJson: 'ja_Download JSON',
       isDownloading: 'ja_Downloading...'
     },
     packetView: {

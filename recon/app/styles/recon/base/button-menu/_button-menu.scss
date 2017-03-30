@@ -1,0 +1,39 @@
+.recon-button-menu {
+  position: absolute;
+  left: 0;
+  @include rsa-font(body, default, false);
+  z-index: 1000;
+  display: none;
+  float: left;
+  min-width: 151px;
+  list-style: none;
+  background-color: rsa-color(gray, darkest);
+  background-clip: padding-box;
+  border: 1px solid rsa-color(blue);
+  box-shadow: 1px 1px 2px rsa-color(gray, darkest);
+
+  &.expanded {
+    display: block;
+  }
+
+  &.collapsed {
+    display: none;
+  }
+
+  li a {
+    display: block;
+    padding: 10px 20px 10px;
+    clear: both;
+    color: rsa-color(gray, lightest);
+    text-decoration: none;
+  }
+
+  li a:hover {
+    background: rsa-color(blue, darker);
+    cursor: pointer;
+  }
+}
+
+.expanded .rsa-split-dropdown {
+  background: rsa-color(blue, darker);
+}
