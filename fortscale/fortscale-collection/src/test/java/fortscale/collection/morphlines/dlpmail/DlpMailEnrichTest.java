@@ -293,7 +293,7 @@ public class DlpMailEnrichTest {
 //        DgMailEventAfterEtl expected = new DgMailEventAfterEtlBuilder()
 //                .setDateTimeUnix("1465747440")
 //                .setDateTime("2016-06-12 16:04:00")
-//                .setEventDescription("Send Mail")
+//                .setEventDescription("Attach Mail")
 //                .setFullName("some_givenName some_surname")
 //                .setIsAttachmentExtensionBlacklisted("false")
 //                .setIsExternal(true)

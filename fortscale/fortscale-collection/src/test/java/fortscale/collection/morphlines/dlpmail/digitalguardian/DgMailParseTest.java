@@ -239,6 +239,7 @@ public class DgMailParseTest {
 				.setOperation("Send Mail")
 				// interesting test stuff starts here
 				.setDetailFileSize(0)
+				.setDetailFileSize(500)
 				.createDgEvent();
 
 		DgMailEventAfterEtl expected = new DgMailEventAfterEtlBuilder()
@@ -256,6 +257,7 @@ public class DgMailParseTest {
 				.setEmailRecipientDomain("some_emailRecipient") // because the parsing wont find the @ - this is ok for this test
 				// interesting test stuff starts here
 				.setDetailFileSize(0)
+				.setDetailFileSize(500)
 				.createDgEventAfterEtl();
 
 		runOneLineTestWithDummyEvent(testCase, input, expected);

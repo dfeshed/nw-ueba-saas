@@ -134,9 +134,7 @@
         "featureName" : "attachment_file_size_histogram"
       },
       "builder" : {
-        "type" : "category_rarity_model_builder",
-        "numOfBuckets" : 30,
-        "entriesToSaveInModel" : 100
+        "type": "continuous_histogram_model_builder"
       }
     },
     {
