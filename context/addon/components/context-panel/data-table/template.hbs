@@ -18,14 +18,9 @@
       {{#rsa-data-table/body as |item index column|}}
         {{#if (eq column.dataType 'riskscore')}}
           {{#rsa-data-table/body-cell item=item index=index column=column}}
-            {{component column.componentClass
-              item=item
-              index=index
-              column=column
-              score=(get item column.nested )
-              isInline=true
-              style=(risk-score-to-badge-level (get item column.nested ))
-            }}
+            <span class={{get (risk-score-to-badge-level (get item column.nested)) 'style'}}>
+              {{get item column.nested}}
+            </span>
           {{/rsa-data-table/body-cell}}
         {{else if (eq column.dataType 'riskRating')}}
           {{#rsa-data-table/body-cell item=item index=index column=column}}

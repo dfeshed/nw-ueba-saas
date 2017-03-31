@@ -29,11 +29,12 @@
                 </div>
               {{else if (eq cellData.dataType 'riskScore')}}
                 {{rsa-content-badge-score
-                  label=(t cellData.title)
+                  label=(t 'context.iiocScore')
                   class="rsa-context-risk-score"
                   score=(get data cellData.field )
                   size='small'
-                  style=(risk-score-to-badge-level data.IIOCScore)
+                  style=badgeLevel
+                  invertColor=true
                 }}
               {{else if (eq cellData.dataType 'CriticalityScore')}}
                 <vbox>

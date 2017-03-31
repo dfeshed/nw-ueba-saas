@@ -1,13 +1,15 @@
 <hbox>
   <vbox xs='7'>
     <div class="rsa-context-panel-header__header-text">
-      &#9734; <span> {{t 'context.title'}} {{model.meta}} :</span>
+      <span> {{t 'context.title'}} {{t (concat 'context.' model.meta) }} :</span>
       {{model.lookupKey}}
     </div>
   </vbox>
   <vbox>
     <div xs='1'>
-      <button class="rsa-context-panel-header__panel-close" {{action 'closeAction'}}>{{rsa-icon style='filled' name='close'}}</button>
+      <button class="rsa-context-panel-header__panel-close" {{action 'closeAction'}} title= {{t 'context.header.closeButton.title'}}>
+        {{rsa-icon style='filled' name='close'}}
+      </button>
     </div>
   </vbox>
 </hbox>

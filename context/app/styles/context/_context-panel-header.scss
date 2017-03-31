@@ -23,9 +23,9 @@
     letter-spacing: 0.05rem;
   }
   &__header-text {
-    @include rsa-font(header);
+    @include rsa-font(header, large);
     text-transform: capitalize;
-    color: rsa-color(gray, lightest);
+    color: rsa-color(gray, lighter);
     padding: rsa-whitespace(less);
   }
 
@@ -45,6 +45,7 @@
     float: right;
     transform: translate(-100%, 0);
     color: rsa-color(gray, light);
+    margin-top: rsa-whitespace(less);
   }
 
   &__unsafe {
@@ -61,6 +62,7 @@
       margin-left: rsa-whitespace(least);
       font-size: 90%;
     }
+    padding-bottom: rsa-whitespace();
   }
 
   &__tab>span{

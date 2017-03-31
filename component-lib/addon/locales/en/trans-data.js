@@ -542,6 +542,14 @@ export default {
     title: 'Context for',
     lastUpdated: 'Last Updated:',
     timeWindow: 'Time Window: ',
+    iiocScore: 'Iioc Score',
+    IP: 'IP',
+    USER: 'User',
+    MAC_ADDRESS: 'Mac Address',
+    HOST: 'Host',
+    FILE_NAME: 'File Name',
+    FILE_HASH: 'File Hash',
+    DOMAIN: 'Domain',
     timeUnit: {
       HOUR: 'HOUR',
       HOURS: 'HOURS',
@@ -568,7 +576,10 @@ export default {
       lists: 'Lists',
       feeds: 'Feeds',
       liveConnect: 'Live Connect',
-      unsafe: 'Unsafe'
+      unsafe: 'Unsafe',
+      closeButton: {
+        title: 'Close Panel'
+      }
     },
     toolbar: {
       investigate: 'Investigate',

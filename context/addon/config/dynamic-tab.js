@@ -43,22 +43,6 @@ export default [{
 
   toolbar: [
     {
-      field: 'Investigate',
-      title: 'context.toolbar.investigate'
-    },
-    {
-      field: 'ENDPOINT',
-      title: 'context.toolbar.endpoint'
-    },
-    {
-      field: 'Google Lookup',
-      title: 'context.toolbar.googleLookup'
-    },
-    {
-      field: 'VirusTotal Lookup',
-      title: 'context.toolbar.virusTotal'
-    },
-    {
       field: 'Add To List',
       title: 'context.toolbar.addToList',
       componentName: 'add-to-list'
@@ -102,14 +86,6 @@ export default [{
     }
   ],
   toolbar: [
-    {
-      field: 'Investigate',
-      title: 'context.toolbar.investigate'
-    },
-    {
-      field: 'Google Lookup',
-      title: 'context.toolbar.googleLookup'
-    },
     {
       field: 'Add To List',
       title: 'context.toolbar.addToList',
@@ -163,22 +139,6 @@ export default [{
   ],
   toolbar: [
     {
-      field: 'Investigate',
-      title: 'context.toolbar.investigate'
-    },
-    {
-      field: 'ENDPOINT',
-      title: 'context.toolbar.endpoint'
-    },
-    {
-      field: 'Google Lookup',
-      title: 'context.toolbar.googleLookup'
-    },
-    {
-      field: 'VirusTotal Lookup',
-      title: 'context.toolbar.virusTotal'
-    },
-    {
       field: 'Add To List',
       title: 'context.toolbar.addToList',
       componentName: 'add-to-list'
@@ -225,22 +185,6 @@ export default [{
   ],
   toolbar: [
     {
-      field: 'Investigate',
-      title: 'context.toolbar.investigate'
-    },
-    {
-      field: 'ENDPOINT',
-      title: 'context.toolbar.endpoint'
-    },
-    {
-      field: 'Google Lookup',
-      title: 'context.toolbar.googleLookup'
-    },
-    {
-      field: 'VirusTotal Lookup',
-      title: 'context.toolbar.virusTotal'
-    },
-    {
       field: 'Add To List',
       title: 'context.toolbar.addToList',
       componentName: 'add-to-list'
@@ -275,18 +219,6 @@ export default [{
     }
   ],
   toolbar: [
-    {
-      field: 'Investigate',
-      title: 'context.toolbar.investigate'
-    },
-    {
-      field: 'Google Lookup',
-      title: 'context.toolbar.googleLookup'
-    },
-    {
-      field: 'VirusTotal Lookup',
-      title: 'context.toolbar.virusTotal'
-    },
     {
       field: 'Add To List',
       title: 'context.toolbar.addToList',
@@ -329,18 +261,6 @@ export default [{
   ],
   toolbar: [
     {
-      field: 'Investigate',
-      title: 'context.toolbar.investigate'
-    },
-    {
-      field: 'Google Lookup',
-      title: 'context.toolbar.googleLookup'
-    },
-    {
-      field: 'VirusTotal Lookup',
-      title: 'context.toolbar.virusTotal'
-    },
-    {
       field: 'Add To List',
       title: 'context.toolbar.addToList',
       componentName: 'add-to-list'
@@ -382,18 +302,6 @@ export default [{
   ],
 
   toolbar: [
-    {
-      field: 'Investigate',
-      title: 'context.toolbar.investigate'
-    },
-    {
-      field: 'Google Lookup',
-      title: 'context.toolbar.googleLookup'
-    },
-    {
-      field: 'VirusTotal Lookup',
-      title: 'context.toolbar.virusTotal'
-    },
     {
       field: 'Add To List',
       title: 'context.toolbar.addToList',

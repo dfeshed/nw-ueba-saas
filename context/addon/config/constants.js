@@ -4,7 +4,7 @@
  * @public
  */
 export const contextRiskScoreThreshold = {
-  LOW: 15,
-  MEDIUM: 255,
+  LOW: 7,
+  MEDIUM: 127,
   HIGH: 1023
 };

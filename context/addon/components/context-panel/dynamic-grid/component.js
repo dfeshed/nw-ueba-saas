@@ -1,5 +1,7 @@
 import Ember from 'ember';
 import layout from './template';
+import computed from 'ember-computed-decorators';
+import { riskScoreToBadgeLevel } from 'context/helpers/risk-score-to-badge-level';
 
 const {
   Component
@@ -13,5 +15,10 @@ export default Component.extend({
     activate(option) {
       this.sendAction('activatePanel', option);
     }
+  },
+
+  @computed('data.IIOCScore')
+  badgeLevel: (score) => {
+    return riskScoreToBadgeLevel(score).badgeLevel;
   }
 });

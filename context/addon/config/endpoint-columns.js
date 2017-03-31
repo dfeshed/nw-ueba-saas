@@ -24,14 +24,14 @@ export default [
       {
         field: 'AnalyticsScore',
         title: 'context.modules.analyticsScore',
-        width: '100',
+        width: '99',
         class: 'rsa-module-riskScore',
         nested: ''
       },
       {
         field: 'GlobalMachineCount',
         title: 'context.modules.machineCount',
-        width: '100',
+        width: '98',
         class: 'rsa-module-machineCount',
         nested: ''
       },

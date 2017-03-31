@@ -542,6 +542,14 @@ export default {
     title: 'ja_Context',
     lastUpdated: 'ja_Last Updated:',
     timeWindow: 'ja_Time Window: ',
+    iiocScore: 'ja_Iioc Score',
+    IP: 'ja_IP',
+    USER: 'ja_User',
+    MAC_ADDRESS: 'ja_Mac Address',
+    HOST: 'ja_Host',
+    FILE_NAME: 'ja_File Name',
+    FILE_HASH: 'ja_File Hash',
+    DOMAIN: 'ja_Domain',
     timeUnit: {
       HOUR: 'ja_HOUR',
       HOURS: 'ja_HOURS',
@@ -568,7 +576,10 @@ export default {
       lists: 'ja_Lists',
       feeds: 'ja_Feeds',
       liveConnect: 'ja_Live Connect',
-      unsafe: 'ja_Unsafe'
+      unsafe: 'ja_Unsafe',
+      closeButton: {
+        title: 'ja_Close Panel'
+      }
     },
     toolbar: {
       investigate: 'ja_Investigate',

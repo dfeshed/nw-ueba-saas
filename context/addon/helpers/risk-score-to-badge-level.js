@@ -3,14 +3,26 @@ import { helper } from 'ember-helper';
 
 export function riskScoreToBadgeLevel(params) {
   const riskScore = params;
-  if (riskScore < contextRiskScoreThreshold.LOW) {
-    return 'low';
-  } else if (riskScore < contextRiskScoreThreshold.MEDIUM) {
-    return 'medium';
-  } else if (riskScore < contextRiskScoreThreshold.HIGH) {
-    return 'high';
+  if (riskScore <= contextRiskScoreThreshold.LOW) {
+    return {
+      badgeLevel: 'low',
+      style: 'rsa-context-panel__risk-badge__low-risk'
+    };
+  } else if (riskScore <= contextRiskScoreThreshold.MEDIUM) {
+    return {
+      badgeLevel: 'medium',
+      style: 'rsa-context-panel__risk-badge__medium-risk'
+    };
+  } else if (riskScore <= contextRiskScoreThreshold.HIGH) {
+    return {
+      badgeLevel: 'high',
+      style: 'rsa-context-panel__risk-badge__high-risk'
+    };
   } else {
-    return 'danger';
+    return {
+      badgeLevel: 'danger',
+      style: 'rsa-context-panel__risk-badge__danger-risk'
+    };
   }
 }
 
