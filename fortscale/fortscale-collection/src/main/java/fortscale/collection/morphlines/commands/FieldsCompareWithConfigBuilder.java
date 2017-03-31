@@ -1,10 +1,6 @@
 package fortscale.collection.morphlines.commands;
 
 import com.typesafe.config.Config;
-import fortscale.collection.configuration.CollectionPropertiesResolver;
-import fortscale.collection.morphlines.MorphlineConfigService;
-import fortscale.utils.properties.IllegalStructuredProperty;
-import fortscale.utils.properties.PropertyNotExistException;
 import fortscale.utils.spring.SpringPropertiesUtil;
 import org.kitesdk.morphline.api.Command;
 import org.kitesdk.morphline.api.CommandBuilder;
@@ -13,12 +9,6 @@ import org.kitesdk.morphline.api.Record;
 import org.kitesdk.morphline.base.AbstractCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
-import org.springframework.core.env.Environment;
-import org.springframework.core.env.PropertySources;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -32,12 +22,6 @@ import java.util.List;
 public class FieldsCompareWithConfigBuilder implements CommandBuilder {
 
     private static Logger logger = LoggerFactory.getLogger(FieldsCompareWithConfigBuilder.class);
-
-    @Autowired
-    private PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer;
-
-    @Autowired
-    private MorphlineConfigService morphlineConfigService;
 
     @Override
     public Collection<String> getNames() {
@@ -55,7 +39,7 @@ public class FieldsCompareWithConfigBuilder implements CommandBuilder {
     public final class FieldsCompareWithConfig extends AbstractCommand {
         private List<String> fields;
         private List<String> configs;
-        private String compareType;
+        private String comparisonType;
 
 
 
@@ -63,41 +47,37 @@ public class FieldsCompareWithConfigBuilder implements CommandBuilder {
             super(builder, config, parent, child, context);
             fields = getConfigs().getStringList(config, "fields");
             configs = getConfigs().getStringList(config, "configs");
-            compareType = getConfigs().getString(config, "compareType", "equals");
+            comparisonType = getConfigs().getString(config, "comparisonType", "equals");
         }
 
         @Override
         protected boolean doProcess(Record inputRecord) {
-            boolean ans = true;
-            switch(compareType) {
-                case "equals":
-                    for (int i = 0; i < fields.size(); i++) {
-                        final String currFieldKey = fields.get(i);
-                        final String currConfigKey = configs.get(i);
+            for (int i = 0; i < fields.size(); i++) {
+                final String currFieldKey = fields.get(i);
+                final String currConfigKey = configs.get(i);
 
-                        final String currFieldValue = (String)inputRecord.getFirstValue(currFieldKey);
-                        final String currConfigValue = getProperty(currConfigKey);
-                        
-                        ans = currFieldValue.equals(currConfigValue);
+                final String currFieldValue = (String)inputRecord.getFirstValue(currFieldKey);
+                final String currConfigValue = getProperty(currConfigKey);
+                switch(comparisonType) {
+                    case "equals": {
+                        if(!currFieldValue.equals(currConfigValue)) {
+                            return false;
+                        }
+                        break;
                     }
-                    break;
-                case "contains":
-                    for (int i = 0; i < fields.size(); i++) {
-                        final String currFieldKey = fields.get(i);
-                        final String currConfigKey = configs.get(i);
-
-                        final String currFieldValue = (String)inputRecord.getFirstValue(currFieldKey);
-                        final String currConfigValue = getProperty(currConfigKey);
-
-                        ans = currFieldValue.contains(currConfigValue);
-                    }
-                    break;
-                default:
-                    logger.error("Invalid compareType - {}. Valid compare types are: equals,contains");
-                    break;
+                    case "contains":
+                        if(!currFieldValue.contains(currConfigValue)) {
+                            return false;
+                        }
+                        break;
+                    default:
+                        logger.error("Invalid comparisonType - {}. Valid compare types are: equals,contains");
+                        break;
+                }
             }
 
-            return ans;
+
+            return true;
         }
 
         private String getProperty(String propertyKey) {
