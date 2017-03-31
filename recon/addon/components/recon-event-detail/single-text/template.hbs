@@ -1,15 +1,8 @@
-<div class="request-response justify-{{packet.side}}">
-  <span>
-    {{rsa-icon name=(concat 'arrow-circle-' arrowDirection '-2')}}
-  </span>
-  <span class="text">
-    {{#if isLog}}
-      raw log
-    {{else}}
-      {{packet.side}}
-    {{/if}}
-  </span>
-</div>
+{{recon-event-detail/single-text/header
+  isSticky=false
+  isLog=isLog
+  side=packet.side
+}}
 <div class="text-container">
   {{packet.text}}
   {{#rsa-content-tethered-panel position='top' panelId=(concat 'span' index)}}

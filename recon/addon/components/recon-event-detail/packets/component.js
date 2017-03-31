@@ -1,8 +1,7 @@
 import Component from 'ember-component';
 import connect from 'ember-redux/components/connect';
-import computed from 'ember-computed-decorators';
 import ReconPager from 'recon/mixins/recon-pager';
-import StickyHeader from './sticky-header-mixin';
+import StickyHeader from 'recon/mixins/sticky-header-mixin';
 import { payloadProcessedPackets } from 'recon/selectors/packet-selectors';
 import layout from './template';
 
@@ -20,20 +19,8 @@ const PacketReconComponent = Component.extend(ReconPager, StickyHeader, {
   classNames: ['recon-event-detail-packets'],
 
   // For sticky header
-  stickySelector: '.rsa-packet__header:not(.is-sticky)',
-
-  @computed('indexAtTop', 'packets')
-  stickyPacket(index, packets = []) {
-    // if no scrolling has occurred yet
-    // or if no packets
-    // then just let be undef, will not render sticky header
-    if (index === 0 || packets.length === 0) {
-      return;
-    }
-
-    return packets[index - 1];
-  }
-
+  stickyContentKey: 'packets',
+  stickySelector: '.rsa-packet__header:not(.is-sticky)'
 });
 
 export default connect(stateToComputed)(PacketReconComponent);

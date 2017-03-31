@@ -41,7 +41,8 @@
       background-color: $dark-bg-color;
     }
 
-    .request-response {
+    &.request-response-header,
+    .request-response-header {
       color: rsa-color(blue);
       position: absolute;
 
@@ -66,7 +67,7 @@
       min-width: 20px;
     }
 
-    .justify-response {
+    .response {
       right: rsa-whitespace();
     }
 

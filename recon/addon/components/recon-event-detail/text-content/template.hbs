@@ -1,3 +1,13 @@
+{{#if stickyContent}}
+  <div class="recon-packet-stuck-header">
+    {{recon-event-detail/single-text/header
+      isSticky=true
+      isLog=isLog
+      side=stickyContent.side
+    }}
+  </div>
+{{/if}}
+
 {{#if textContent}}
   <div class="scroll-box">
     {{#each filteredContent as |text index|}}

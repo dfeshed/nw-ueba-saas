@@ -21,3 +21,18 @@
     @include error-center();
   }
 }
+
+// Tweaks for sticky header in text view
+.recon-event-detail-text {
+  .is-sticky {
+    padding-bottom: 0;
+
+    &.response {
+      text-align: right;
+      position: relative;
+    }
+    &.request {
+      position: relative;
+    }
+  }
+}

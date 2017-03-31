@@ -1,7 +1,8 @@
 import Ember from 'ember';
-import ReconPager from 'recon/mixins/recon-pager';
 import connect from 'ember-redux/components/connect';
 import computed from 'ember-computed-decorators';
+import ReconPager from 'recon/mixins/recon-pager';
+import StickyHeader from 'recon/mixins/sticky-header-mixin';
 import layout from './template';
 import { isLogEvent } from 'recon/selectors/event-type-selectors';
 
@@ -17,9 +18,13 @@ const stateToComputed = ({ recon, recon: { data, visuals } }) => ({
   isResponseShown: visuals.isResponseShown
 });
 
-const TextReconComponent = Component.extend(ReconPager, {
+const TextReconComponent = Component.extend(ReconPager, StickyHeader, {
   classNames: ['recon-event-detail-text'],
   layout,
+
+  stickyContentKey: 'filteredContent',
+  stickySelector: '.scroll-box .rsa-text-entry',
+  stickyHeaderSelector: '.request-response-header',
 
   @computed('textContent', 'isRequestShown', 'isResponseShown')
   filteredContent(textContent, isRequestShown, isResponseShown) {
