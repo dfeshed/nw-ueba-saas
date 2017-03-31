@@ -385,7 +385,8 @@ export default Ember$.extend({}, BaseSelectors, {
         'reconEventDetailText': '.recon-event-detail-text .text-container',
         'reconPacketDetails': '.recon-event-detail-packets',
         'reconPacketHex': '.recon-event-detail-packets .rsa-packet__hex',
-        'reconPacketASCII': '.recon-event-detail-packets .rsa-packet__ascii'
+        'reconPacketASCII': '.recon-event-detail-packets .rsa-packet__ascii',
+        'reconEventMetaContent': '.recon-meta-content'
       },
       'root': '.js-test-investigate-root',
       'selectedService': '.rsa-investigate-query-bar__service .ember-power-select-selected-item',
