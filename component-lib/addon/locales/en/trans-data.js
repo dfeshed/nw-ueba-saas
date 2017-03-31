@@ -126,7 +126,7 @@ export default {
       isDownloading: 'Downloading...'
     },
     packetView: {
-      noPayloadBytes: 'There are no payload bytes for this packet'
+      noHexData: 'No HEX data was generated during content reconstruction.'
     },
     error: {
       generic: 'An unexpected error has occurred attempting to retrieve this data.',

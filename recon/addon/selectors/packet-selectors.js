@@ -38,18 +38,37 @@ const visiblePackets = createSelector(
 export const payloadProcessedPackets = createSelector(
   [visiblePackets, isPayloadOnly],
   (packets, isPayloadOnly) => {
-
-    const newPackets = packets.map((packet) => {
-      let { bytes } = packet;
+    return packets.reduce((acc, currentPacket) => {
+      let { bytes } = currentPacket;
       if (isPayloadOnly) {
+        // Get the previous packet
+        const previousPacket = acc[acc.length - 1];
+        // Filter out header/footer items from the current packet
         bytes = bytes.filter((b) => !b.isHeader && !b.isFooter);
+        // See if it's the same side
+        if (previousPacket && previousPacket.side === currentPacket.side) {
+          // Same side, so concat bytes to previous packet's bytes
+          previousPacket.bytes = previousPacket.bytes.concat(bytes);
+          // Update the byteRows with the new bytes that were added
+          previousPacket.byteRows = bytesAsRows(previousPacket.bytes);
+        } else {
+          // It's not the same side, so we'll add the current packet to the
+          // accumulator
+          acc.push({
+            ...currentPacket,
+            bytes,
+            byteRows: bytesAsRows(bytes)
+          });
+        }
+      } else {
+        // Augment each packet with a byteRows property.
+        // This code path performs just like a map().
+        acc.push({
+          ...currentPacket,
+          byteRows: bytesAsRows(bytes)
+        });
       }
-      return {
-        ...packet,
-        byteRows: bytesAsRows(bytes)
-      };
-    });
-
-    return newPackets;
+      return acc;
+    }, []);
   }
 );

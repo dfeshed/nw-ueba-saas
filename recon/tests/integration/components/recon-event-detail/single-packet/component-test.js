@@ -4,6 +4,7 @@ import hbs from 'htmlbars-inline-precompile';
 
 import { enhancePackets } from 'recon/reducers/packets/util';
 import { payloadProcessedPackets } from 'recon/selectors/packet-selectors';
+import { togglePayloadOnly } from 'recon/actions/visual-creators';
 
 const packetFields = [
   { length: 6, name: 'eth.dst', position: 0 },
@@ -27,7 +28,10 @@ const packets = [{
 }];
 
 moduleForComponent('recon-event-detail/single-packet', 'Integration | Component | recon event detail / single packet', {
-  integration: true
+  integration: true,
+  beforeEach() {
+    this.inject.service('redux');
+  }
 });
 
 test('single packet renders default', function(assert) {
@@ -63,7 +67,7 @@ test('single packet renders default', function(assert) {
 });
 
 test('single packet renders with hidden header/footer', function(assert) {
-  assert.expect(2);
+  assert.expect(3);
 
   const processedPackets = payloadProcessedPackets({
     visuals: {
@@ -77,6 +81,9 @@ test('single packet renders with hidden header/footer', function(assert) {
     }
   });
 
+  // Toggle the isPayloadOnly redux property
+  this.get('redux').dispatch(togglePayloadOnly());
+
   this.set('packetFields', packetFields);
   this.set('index', 0);
   this.set('packet', processedPackets[0]);
@@ -89,6 +96,7 @@ test('single packet renders with hidden header/footer', function(assert) {
 
   return wait().then(() => {
     assert.ok(this.$('.rsa-icon-arrow-circle-right-2').length === 1, 'Request arrow shown');
-    assert.equal(this.$().text().trim().replace(/\s/g, ''), 'requestTherearenopayloadbytesforthispacket');
+    assert.ok(this.$('.packet-details').length === 0, 'Packet details not shown');
+    assert.equal(this.$().text().trim().replace(/\s/g, ''), 'requestNoHEXdatawasgeneratedduringcontentreconstruction.');
   });
 });

@@ -1,11 +1,16 @@
 import Ember from 'ember';
+import connect from 'ember-redux/components/connect';
 import computed from 'ember-computed-decorators';
 
 import layout from './template';
 
 const { Component } = Ember;
 
-export default Component.extend({
+const stateToComputed = ({ recon: { visuals } }) => ({
+  isPayloadOnly: visuals.isPayloadOnly
+});
+
+const singlePacketHeader = Component.extend({
   classNames: ['rsa-packet__header'],
   classNameBindings: ['isSticky', 'packet.side'],
   layout,
@@ -17,8 +22,8 @@ export default Component.extend({
 
   /**
    * Determine the direction, request or response, for the arrow
-   * @param side Request or response
-   * @returns {string} right or left
+   * @param {String} side Request or response
+   * @returns {String} right or left
    * @public
    */
   @computed('packet.side')
@@ -28,8 +33,8 @@ export default Component.extend({
 
   /**
    * Determine the expand/collapse arrow direction for a single packet
-   * @param packetIsExpanded If expanded or not
-   * @returns {string} down or right
+   * @param {Boolean} packetIsExpanded If expanded or not
+   * @returns {String} down or right
    * @public
    */
   @computed('isPacketExpanded')
@@ -44,3 +49,5 @@ export default Component.extend({
     }
   }
 });
+
+export default connect(stateToComputed)(singlePacketHeader);

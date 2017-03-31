@@ -126,7 +126,7 @@ export default {
       isDownloading: 'ja_Downloading...'
     },
     packetView: {
-      noPayloadBytes: 'ja_There are no payload bytes for this packet'
+      noHexData: 'ja_No HEX data was generated during content reconstruction.'
     },
     files: {
       fileName: 'ja_File Name',

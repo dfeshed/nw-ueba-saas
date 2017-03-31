@@ -6,7 +6,11 @@
     {{packet.side}}
   </span>
 </div>
-{{#if packet.byteRows}}
+{{#if isPayloadOnly}}
+  {{#unless packet.byteRows}}
+    <p>{{t 'recon.packetView.noHexData'}}</p>
+  {{/unless}}
+{{else}}
   <hbox class="packet-details">
     <box align="center" horizontal>
       <span class="toggle-icon">
@@ -33,6 +37,4 @@
       <span class="label">PAYLOAD</span> {{packet.payloadSize}} bytes
     </box>
   </hbox>
-{{else}}
-  <p>{{t 'recon.packetView.noPayloadBytes'}}</p>
 {{/if}}
