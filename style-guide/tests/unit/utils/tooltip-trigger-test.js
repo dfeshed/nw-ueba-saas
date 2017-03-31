@@ -7,6 +7,7 @@ import {
 } from 'component-lib/utils/tooltip-trigger';
 import { module, test } from 'qunit';
 import Ember from 'ember';
+import wait from 'ember-test-helpers/wait';
 
 const {
   Service,
@@ -59,6 +60,7 @@ test('wireTriggerToClick attaches event handlers, unwireTriggerToClick detaches 
 test('wireTriggerToHover attaches event handlers, unwireTriggerToHover detaches them', function(assert) {
   const mouseenterEventName = `rsa-content-tethered-panel-display-${panelId}`;
   const mouseleaveEventName = `rsa-content-tethered-panel-hide-${panelId}`;
+
   eventBus
     .on(mouseenterEventName, function() {
       assert.ok('eventBus display handler was triggered');
@@ -80,4 +82,41 @@ test('wireTriggerToHover attaches event handlers, unwireTriggerToHover detaches 
   eventBus
     .off(mouseenterEventName)
     .off(mouseleaveEventName);
+});
+
+test('wireTriggerToHover supports delays', function(assert) {
+  const mouseenterEventName = `rsa-content-tethered-panel-display-${panelId}`;
+  const mouseleaveEventName = `rsa-content-tethered-panel-hide-${panelId}`;
+  const displayDelay = 10;
+  const hideDelay = 10;
+
+  eventBus
+    .on(mouseenterEventName, function() {
+      assert.ok('eventBus display handler was triggered');
+    })
+    .on(mouseleaveEventName, function() {
+      assert.ok('eventBus hide handler was triggered');
+    });
+
+  assert.expect(2);
+
+  wireTriggerToHover(el, panelId, eventBus, { displayDelay, hideDelay });
+  $el.trigger('mouseenter');
+  return wait().then(() => {
+    $el.trigger('mouseleave');
+    return wait();
+  }).then(() => {
+    unwireTriggerToHover(el);
+    return wait();
+  }).then(() => {
+    $el.trigger('mouseenter'); // shouldn't fire any more asserts
+    return wait();
+  }).then(() => {
+    $el.trigger('mouseleave'); // shouldn't fire any more asserts
+    return wait();
+  }).then(() => {
+    eventBus
+      .off(mouseenterEventName)
+      .off(mouseleaveEventName);
+  });
 });

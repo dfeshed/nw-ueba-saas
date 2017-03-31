@@ -1,6 +1,14 @@
 import Ember from 'ember';
 
-const { $ } = Ember;
+const {
+  $,
+  run: {
+    later,
+    cancel
+  }
+} = Ember;
+
+const timerProp = '__rsa-tethered-panel-trigger-timer';
 
 /**
  * Sends an event over the event bus that will be heard by an `rsa-content-tethered-panel` component.
@@ -74,6 +82,8 @@ const unwireTriggerToClick = function(el) {
  * @param {Function} [opts.getIsDisabled] Optional callback that, when invoked, will return true if the trigger
  * DOM node is enabled or false otherwise.  If given, this callback will be invoked during every trigger click event,
  * to determine whether the panel component should be toggled. If the callback returns false, the toggle is aborted.
+ * @param {Number} [opts.displayDelay=0] Optional pause (in milliseconds) after mouseenter before displaying the tooltip.
+ * @param {Number} [opts.hideDelay=0] Optional pause (in milliseconds) after mouseleave before hiding the tooltip.
  * @public
  */
 const wireTriggerToHover = function(el, panelId, eventBus, opts = {}) {
@@ -82,11 +92,33 @@ const wireTriggerToHover = function(el, panelId, eventBus, opts = {}) {
   $(el)
     .on('mouseenter.rsa-tethered-panel-trigger', function() {
       if (!getIsDisabled || !getIsDisabled()) {
-        sendTetherEvent(this, panelId, eventBus, 'display');
+        const lastTimer = this[timerProp];
+        if (lastTimer) {
+          cancel(lastTimer);
+          this[timerProp] = null;
+        }
+        if (opts.displayDelay) {
+          this[timerProp] = later(() => {
+            sendTetherEvent(this, panelId, eventBus, 'display', opts.model);
+          }, opts.displayDelay);
+        } else {
+          sendTetherEvent(this, panelId, eventBus, 'display', opts.model);
+        }
       }
     })
     .on('mouseleave.rsa-tethered-panel-trigger', function() {
-      sendTetherEvent(this, panelId, eventBus, 'hide', opts.model);
+      const lastTimer = this[timerProp];
+      if (lastTimer) {
+        cancel(lastTimer);
+        this[timerProp] = null;
+      }
+      if (opts.hideDelay) {
+        later(() => {
+          sendTetherEvent(this, panelId, eventBus, 'hide', opts.model);
+        }, opts.hideDelay);
+      } else {
+        sendTetherEvent(this, panelId, eventBus, 'hide', opts.model);
+      }
     });
 };
 
