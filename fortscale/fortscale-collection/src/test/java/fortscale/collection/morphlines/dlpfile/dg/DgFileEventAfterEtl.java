@@ -22,7 +22,7 @@ public class DgFileEventAfterEtl {
     public String destinationDirectory;
     public String sourceFile;
     public String destinationFile;
-    public String detailFileSize;
+    public Long detailFileSize;
     public String sourceDriveType;
     public String destinationDriveType;
     public String wasClassified;
@@ -41,7 +41,7 @@ public class DgFileEventAfterEtl {
     public DgFileEventAfterEtl(String dateTime, String dateTimeUnix, String eventType, String eventId, String username,
                                String normalizedUsername, String fullName, String hostname, String normalizedSrcMachine,
                                String ipAddress, String application, String sourceDirectory, String destinationDirectory,
-                               String sourceFile, String destinationFile, String detailFileSize, String sourceDriveType,
+                               String sourceFile, String destinationFile, Long detailFileSize, String sourceDriveType,
                                String destinationDriveType, String wasClassified, String wasBlocked, String scanValueStatusText,
                                String malwarePolicyName, String isRdp, String isAdminActivity, String isRegistryChanged,
                                String dataSource, String lastState) {
@@ -90,7 +90,7 @@ public class DgFileEventAfterEtl {
                     return null;
                 }
 
-                final String newElement = (String) field.get(this);
+                final String newElement = field.get(this).toString();
 
                 switch (newElement) {
                     case "some_hostname":

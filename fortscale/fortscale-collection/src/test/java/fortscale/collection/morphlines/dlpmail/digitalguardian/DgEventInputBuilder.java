@@ -5,9 +5,9 @@ import fortscale.utils.logging.Logger;
 import java.lang.reflect.Field;
 
 
-public class DgMailEventInputBuilder  {
+public class DgEventInputBuilder {
 
-    private static final Logger logger = Logger.getLogger(DgMailEventInputBuilder.class);
+    private static final Logger logger = Logger.getLogger(DgEventInputBuilder.class);
 
     private String agentLocalDate;
     private String agentLocalTime;
@@ -115,553 +115,553 @@ public class DgMailEventInputBuilder  {
     private String registryValue;
     private String registryValueType;
 
-    public DgMailEventInputBuilder setAgentLocalDate(String agentLocalDate) {
+    public DgEventInputBuilder setAgentLocalDate(String agentLocalDate) {
         this.agentLocalDate = agentLocalDate;
         return this;
     }
 
-    public DgMailEventInputBuilder setAgentLocalTime(String agentLocalTime) {
+    public DgEventInputBuilder setAgentLocalTime(String agentLocalTime) {
         this.agentLocalTime = agentLocalTime;
         return this;
     }
 
-    public DgMailEventInputBuilder setAgentUtcTime(String agentUtcTime) {
+    public DgEventInputBuilder setAgentUtcTime(String agentUtcTime) {
         this.agentUtcTime = agentUtcTime;
         return this;
     }
 
-    public DgMailEventInputBuilder setApplication(String application) {
+    public DgEventInputBuilder setApplication(String application) {
         this.application = application;
         return this;
     }
 
-    public DgMailEventInputBuilder setComputerName(String computerName) {
+    public DgEventInputBuilder setComputerName(String computerName) {
         this.computerName = computerName;
         return this;
     }
 
-    public DgMailEventInputBuilder setComputerType(String computerType) {
+    public DgEventInputBuilder setComputerType(String computerType) {
         this.computerType = computerType;
         return this;
     }
 
-    public DgMailEventInputBuilder setCustomInt4(String customInt4) {
+    public DgEventInputBuilder setCustomInt4(String customInt4) {
         this.customInt4 = customInt4;
         return this;
     }
 
-    public DgMailEventInputBuilder setCustomString1(String customString1) {
+    public DgEventInputBuilder setCustomString1(String customString1) {
         this.customString1 = customString1;
         return this;
     }
 
-    public DgMailEventInputBuilder setCustomString3(String customString3) {
+    public DgEventInputBuilder setCustomString3(String customString3) {
         this.customString3 = customString3;
         return this;
     }
 
-    public DgMailEventInputBuilder setCustomString4(String customString4) {
+    public DgEventInputBuilder setCustomString4(String customString4) {
         this.customString4 = customString4;
         return this;
     }
 
-    public DgMailEventInputBuilder setCustomString6(String customString6) {
+    public DgEventInputBuilder setCustomString6(String customString6) {
         this.customString6 = customString6;
         return this;
     }
 
-    public DgMailEventInputBuilder setGivenName(String givenName) {
+    public DgEventInputBuilder setGivenName(String givenName) {
         this.givenName = givenName;
         return this;
     }
 
-    public DgMailEventInputBuilder setSurname(String surname) {
+    public DgEventInputBuilder setSurname(String surname) {
         this.surname = surname;
         return this;
     }
 
-    public DgMailEventInputBuilder setUserId(String userId) {
+    public DgEventInputBuilder setUserId(String userId) {
         this.userId = userId;
         return this;
     }
 
-    public DgMailEventInputBuilder setUsername(String username) {
+    public DgEventInputBuilder setUsername(String username) {
         this.username = username;
         return this;
     }
 
-    public DgMailEventInputBuilder setEventDisplayName(String eventDisplayName) {
+    public DgEventInputBuilder setEventDisplayName(String eventDisplayName) {
         this.eventDisplayName = eventDisplayName;
         return this;
     }
 
-    public DgMailEventInputBuilder setCompanyName(String companyName) {
+    public DgEventInputBuilder setCompanyName(String companyName) {
         this.companyName = companyName;
         return this;
     }
 
-    public DgMailEventInputBuilder setProcessSha1Hash(String processSha1Hash) {
+    public DgEventInputBuilder setProcessSha1Hash(String processSha1Hash) {
         this.processSha1Hash = processSha1Hash;
         return this;
     }
 
-    public DgMailEventInputBuilder setProcessSha256Hash(String processSha256Hash) {
+    public DgEventInputBuilder setProcessSha256Hash(String processSha256Hash) {
         this.processSha256Hash = processSha256Hash;
         return this;
     }
 
-    public DgMailEventInputBuilder setProductName(String productName) {
+    public DgEventInputBuilder setProductName(String productName) {
         this.productName = productName;
         return this;
     }
 
-    public DgMailEventInputBuilder setProductVersion(String productVersion) {
+    public DgEventInputBuilder setProductVersion(String productVersion) {
         this.productVersion = productVersion;
         return this;
     }
 
-    public DgMailEventInputBuilder setScanValueStatus(String scanValueStatus) {
+    public DgEventInputBuilder setScanValueStatus(String scanValueStatus) {
         this.scanValueStatus = scanValueStatus;
         return this;
     }
 
-    public DgMailEventInputBuilder setScanValueStatusLocalTime(String scanValueStatusLocalTime) {
+    public DgEventInputBuilder setScanValueStatusLocalTime(String scanValueStatusLocalTime) {
         this.scanValueStatusLocalTime = scanValueStatusLocalTime;
         return this;
     }
 
-    public DgMailEventInputBuilder setScanValueStatusText(String scanValueStatusText) {
+    public DgEventInputBuilder setScanValueStatusText(String scanValueStatusText) {
         this.scanValueStatusText = scanValueStatusText;
         return this;
     }
 
-    public DgMailEventInputBuilder setDllMD5Hash(String dllMD5Hash) {
+    public DgEventInputBuilder setDllMD5Hash(String dllMD5Hash) {
         this.dllMD5Hash = dllMD5Hash;
         return this;
     }
 
-    public DgMailEventInputBuilder setDllName(String dllName) {
+    public DgEventInputBuilder setDllName(String dllName) {
         this.dllName = dllName;
         return this;
     }
 
-    public DgMailEventInputBuilder setDllSHA1Hash(String dllSHA1Hash) {
+    public DgEventInputBuilder setDllSHA1Hash(String dllSHA1Hash) {
         this.dllSHA1Hash = dllSHA1Hash;
         return this;
     }
 
-    public DgMailEventInputBuilder setDllSHA256Hash(String dllSHA256Hash) {
+    public DgEventInputBuilder setDllSHA256Hash(String dllSHA256Hash) {
         this.dllSHA256Hash = dllSHA256Hash;
         return this;
     }
 
-    public DgMailEventInputBuilder setDnsHostname(String dNSHostname) {
+    public DgEventInputBuilder setDnsHostname(String dNSHostname) {
         this.dNSHostname = dNSHostname;
         return this;
     }
 
-    public DgMailEventInputBuilder setEmailSender(String emailSender) {
+    public DgEventInputBuilder setEmailSender(String emailSender) {
         this.emailSender = emailSender;
         return this;
     }
 
-    public DgMailEventInputBuilder setEmailSubject(String emailSubject) {
+    public DgEventInputBuilder setEmailSubject(String emailSubject) {
         this.emailSubject = emailSubject;
         return this;
     }
 
-    public DgMailEventInputBuilder setEventDisplayName1(String eventDisplayName1) {
+    public DgEventInputBuilder setEventDisplayName1(String eventDisplayName1) {
         this.eventDisplayName1 = eventDisplayName1;
         return this;
     }
 
-    public DgMailEventInputBuilder setEventId(String eventId) {
+    public DgEventInputBuilder setEventId(String eventId) {
         this.eventId = eventId;
         return this;
     }
 
-    public DgMailEventInputBuilder setIpAddress(String ipAddress) {
+    public DgEventInputBuilder setIpAddress(String ipAddress) {
         this.ipAddress = ipAddress;
         return this;
     }
 
-    public DgMailEventInputBuilder setLocalPort(String localPort) {
+    public DgEventInputBuilder setLocalPort(String localPort) {
         this.localPort = localPort;
         return this;
     }
 
-    public DgMailEventInputBuilder setmD5Checksum(String mD5Checksum) {
+    public DgEventInputBuilder setmD5Checksum(String mD5Checksum) {
         this.mD5Checksum = mD5Checksum;
         return this;
     }
 
-    public DgMailEventInputBuilder setmD5Hash(String mD5Hash) {
+    public DgEventInputBuilder setmD5Hash(String mD5Hash) {
         this.mD5Hash = mD5Hash;
         return this;
     }
 
-    public DgMailEventInputBuilder setNetworkDirection(String networkDirection) {
+    public DgEventInputBuilder setNetworkDirection(String networkDirection) {
         this.networkDirection = networkDirection;
         return this;
     }
 
-    public DgMailEventInputBuilder setOperation(String operation) {
+    public DgEventInputBuilder setOperation(String operation) {
         this.operation = operation;
         return this;
     }
 
-    public DgMailEventInputBuilder setProtocol(String protocol) {
+    public DgEventInputBuilder setProtocol(String protocol) {
         this.protocol = protocol;
         return this;
     }
 
-    public DgMailEventInputBuilder setRemotePort(String remotePort) {
+    public DgEventInputBuilder setRemotePort(String remotePort) {
         this.remotePort = remotePort;
         return this;
     }
 
-    public DgMailEventInputBuilder setUrlPath(String urlPath) {
+    public DgEventInputBuilder setUrlPath(String urlPath) {
         this.urlPath = urlPath;
         return this;
     }
 
-    public DgMailEventInputBuilder setWasBlocked(String wasBlocked) {
+    public DgEventInputBuilder setWasBlocked(String wasBlocked) {
         this.wasBlocked = wasBlocked;
         return this;
     }
 
-    public DgMailEventInputBuilder setWasClassified(String wasClassified) {
+    public DgEventInputBuilder setWasClassified(String wasClassified) {
         this.wasClassified = wasClassified;
         return this;
     }
 
-    public DgMailEventInputBuilder setWasFileCaptured(String wasFileCaptured) {
+    public DgEventInputBuilder setWasFileCaptured(String wasFileCaptured) {
         this.wasFileCaptured = wasFileCaptured;
         return this;
     }
 
-    public DgMailEventInputBuilder setWasMobileDevice(String wasMobileDevice) {
+    public DgEventInputBuilder setWasMobileDevice(String wasMobileDevice) {
         this.wasMobileDevice = wasMobileDevice;
         return this;
     }
 
-    public DgMailEventInputBuilder setWasPkiAuthenticated(String wasPkiAuthenticated) {
+    public DgEventInputBuilder setWasPkiAuthenticated(String wasPkiAuthenticated) {
         this.wasPkiAuthenticated = wasPkiAuthenticated;
         return this;
     }
 
-    public DgMailEventInputBuilder setWasPrivateAddress(String wasPrivateAddress) {
+    public DgEventInputBuilder setWasPrivateAddress(String wasPrivateAddress) {
         this.wasPrivateAddress = wasPrivateAddress;
         return this;
     }
 
-    public DgMailEventInputBuilder setWasRemovable(String wasRemovable) {
+    public DgEventInputBuilder setWasRemovable(String wasRemovable) {
         this.wasRemovable = wasRemovable;
         return this;
     }
 
-    public DgMailEventInputBuilder setWasRuleViolation(String wasRuleViolation) {
+    public DgEventInputBuilder setWasRuleViolation(String wasRuleViolation) {
         this.wasRuleViolation = wasRuleViolation;
         return this;
     }
 
-    public DgMailEventInputBuilder setWasScreenCaptured(String wasScreenCaptured) {
+    public DgEventInputBuilder setWasScreenCaptured(String wasScreenCaptured) {
         this.wasScreenCaptured = wasScreenCaptured;
         return this;
     }
 
-    public DgMailEventInputBuilder setWasSMIMEEncrypted(String wasSMIMEEncrypted) {
+    public DgEventInputBuilder setWasSMIMEEncrypted(String wasSMIMEEncrypted) {
         this.wasSMIMEEncrypted = wasSMIMEEncrypted;
         return this;
     }
 
-    public DgMailEventInputBuilder setWasSMIMESigned(String wasSMIMESigned) {
+    public DgEventInputBuilder setWasSMIMESigned(String wasSMIMESigned) {
         this.wasSMIMESigned = wasSMIMESigned;
         return this;
     }
 
-    public DgMailEventInputBuilder setWasWireless(String wasWireless) {
+    public DgEventInputBuilder setWasWireless(String wasWireless) {
         this.wasWireless = wasWireless;
         return this;
     }
 
-    public DgMailEventInputBuilder setCustomID(String customID) {
+    public DgEventInputBuilder setCustomID(String customID) {
         this.customID = customID;
         return this;
     }
 
-    public DgMailEventInputBuilder setDeviceClass(String deviceClass) {
+    public DgEventInputBuilder setDeviceClass(String deviceClass) {
         this.deviceClass = deviceClass;
         return this;
     }
 
-    public DgMailEventInputBuilder setDeviceID(String deviceID) {
+    public DgEventInputBuilder setDeviceID(String deviceID) {
         this.deviceID = deviceID;
         return this;
     }
 
-    public DgMailEventInputBuilder setDriveType(String driveType) {
+    public DgEventInputBuilder setDriveType(String driveType) {
         this.driveType = driveType;
         return this;
     }
 
-    public DgMailEventInputBuilder setFriendlyName(String friendlyName) {
+    public DgEventInputBuilder setFriendlyName(String friendlyName) {
         this.friendlyName = friendlyName;
         return this;
     }
 
-    public DgMailEventInputBuilder setProductID(String productID) {
+    public DgEventInputBuilder setProductID(String productID) {
         this.productID = productID;
         return this;
     }
 
-    public DgMailEventInputBuilder setRemovalPolicy(String removalPolicy) {
+    public DgEventInputBuilder setRemovalPolicy(String removalPolicy) {
         this.removalPolicy = removalPolicy;
         return this;
     }
 
-    public DgMailEventInputBuilder setSerialNumber(String serialNumber) {
+    public DgEventInputBuilder setSerialNumber(String serialNumber) {
         this.serialNumber = serialNumber;
         return this;
     }
 
-    public DgMailEventInputBuilder setStorageBusType(String storageBusType) {
+    public DgEventInputBuilder setStorageBusType(String storageBusType) {
         this.storageBusType = storageBusType;
         return this;
     }
 
-    public DgMailEventInputBuilder setSupportsPredictFailure(String supportsPredictFailure) {
+    public DgEventInputBuilder setSupportsPredictFailure(String supportsPredictFailure) {
         this.supportsPredictFailure = supportsPredictFailure;
         return this;
     }
 
-    public DgMailEventInputBuilder setVendor(String vendor) {
+    public DgEventInputBuilder setVendor(String vendor) {
         this.vendor = vendor;
         return this;
     }
 
-    public DgMailEventInputBuilder setVendorID(String vendorID) {
+    public DgEventInputBuilder setVendorID(String vendorID) {
         this.vendorID = vendorID;
         return this;
     }
 
-    public DgMailEventInputBuilder setBlockCode(String blockCode) {
+    public DgEventInputBuilder setBlockCode(String blockCode) {
         this.blockCode = blockCode;
         return this;
     }
 
-    public DgMailEventInputBuilder setBytesRead(String bytesRead) {
+    public DgEventInputBuilder setBytesRead(String bytesRead) {
         this.bytesRead = bytesRead;
         return this;
     }
 
-    public DgMailEventInputBuilder setBytesWritten(String bytesWritten) {
+    public DgEventInputBuilder setBytesWritten(String bytesWritten) {
         this.bytesWritten = bytesWritten;
         return this;
     }
 
-    public DgMailEventInputBuilder setDestinationDirectory(String destinationDirectory) {
+    public DgEventInputBuilder setDestinationDirectory(String destinationDirectory) {
         this.destinationDirectory = destinationDirectory;
         return this;
     }
 
-    public DgMailEventInputBuilder setDestinationFile(String destinationFile) {
+    public DgEventInputBuilder setDestinationFile(String destinationFile) {
         this.destinationFile = destinationFile;
         return this;
     }
 
-    public DgMailEventInputBuilder setDestinationFileEncryption(String destinationFileEncryption) {
+    public DgEventInputBuilder setDestinationFileEncryption(String destinationFileEncryption) {
         this.destinationFileEncryption = destinationFileEncryption;
         return this;
     }
 
-    public DgMailEventInputBuilder setDestinationFileExtension(String destinationFileExtension) {
+    public DgEventInputBuilder setDestinationFileExtension(String destinationFileExtension) {
         this.destinationFileExtension = destinationFileExtension;
         return this;
     }
 
-    public DgMailEventInputBuilder setDetailEventID(String detailEventID) {
+    public DgEventInputBuilder setDetailEventID(String detailEventID) {
         this.detailEventID = detailEventID;
         return this;
     }
 
-    public DgMailEventInputBuilder setDetailFileSize(Integer detailFileSize) {
+    public DgEventInputBuilder setDetailFileSize(Integer detailFileSize) {
         this.detailFileSize = Integer.valueOf(detailFileSize);
         return this;
     }
 
-    public DgMailEventInputBuilder setDetailWasBlocked(String detailWasBlocked) {
+    public DgEventInputBuilder setDetailWasBlocked(String detailWasBlocked) {
         this.detailWasBlocked = detailWasBlocked;
         return this;
     }
 
-    public DgMailEventInputBuilder setEmailDomainName(String emailDomainName) {
+    public DgEventInputBuilder setEmailDomainName(String emailDomainName) {
         this.emailDomainName = emailDomainName;
         return this;
     }
 
-    public DgMailEventInputBuilder setEmailRecipient(String emailRecipient) {
+    public DgEventInputBuilder setEmailRecipient(String emailRecipient) {
         this.emailRecipient = emailRecipient;
         return this;
     }
 
-    public DgMailEventInputBuilder setEmailRecipientType(String emailRecipientType) {
+    public DgEventInputBuilder setEmailRecipientType(String emailRecipientType) {
         this.emailRecipientType = emailRecipientType;
         return this;
     }
 
-    public DgMailEventInputBuilder setPrinter(String printer) {
+    public DgEventInputBuilder setPrinter(String printer) {
         this.printer = printer;
         return this;
     }
 
-    public DgMailEventInputBuilder setPrinterJobname(String printerJobname) {
+    public DgEventInputBuilder setPrinterJobname(String printerJobname) {
         this.printerJobname = printerJobname;
         return this;
     }
 
-    public DgMailEventInputBuilder setPromptSurveyName(String promptSurveyName) {
+    public DgEventInputBuilder setPromptSurveyName(String promptSurveyName) {
         this.promptSurveyName = promptSurveyName;
         return this;
     }
 
-    public DgMailEventInputBuilder setSourceDirectory(String sourceDirectory) {
+    public DgEventInputBuilder setSourceDirectory(String sourceDirectory) {
         this.sourceDirectory = sourceDirectory;
         return this;
     }
 
-    public DgMailEventInputBuilder setSourceFile(String sourceFile) {
+    public DgEventInputBuilder setSourceFile(String sourceFile) {
         this.sourceFile = sourceFile;
         return this;
     }
 
-    public DgMailEventInputBuilder setSourceFileEncryption(String sourceFileEncryption) {
+    public DgEventInputBuilder setSourceFileEncryption(String sourceFileEncryption) {
         this.sourceFileEncryption = sourceFileEncryption;
         return this;
     }
 
-    public DgMailEventInputBuilder setSourceFileExtension(String sourceFileExtension) {
+    public DgEventInputBuilder setSourceFileExtension(String sourceFileExtension) {
         this.sourceFileExtension = sourceFileExtension;
         return this;
     }
 
-    public DgMailEventInputBuilder setUserResponse(String userResponse) {
+    public DgEventInputBuilder setUserResponse(String userResponse) {
         this.userResponse = userResponse;
         return this;
     }
 
-    public DgMailEventInputBuilder setWasDestFileCaptured(String wasDestFileCaptured) {
+    public DgEventInputBuilder setWasDestFileCaptured(String wasDestFileCaptured) {
         this.wasDestFileCaptured = wasDestFileCaptured;
         return this;
     }
 
-    public DgMailEventInputBuilder setWasDestinationClassified(String wasDestinationClassified) {
+    public DgEventInputBuilder setWasDestinationClassified(String wasDestinationClassified) {
         this.wasDestinationClassified = wasDestinationClassified;
         return this;
     }
 
-    public DgMailEventInputBuilder setWasDestinationRemovable(String wasDestinationRemovable) {
+    public DgEventInputBuilder setWasDestinationRemovable(String wasDestinationRemovable) {
         this.wasDestinationRemovable = wasDestinationRemovable;
         return this;
     }
 
-    public DgMailEventInputBuilder setWasDetailRuleViolation(String wasDetailRuleViolation) {
+    public DgEventInputBuilder setWasDetailRuleViolation(String wasDetailRuleViolation) {
         this.wasDetailRuleViolation = wasDetailRuleViolation;
         return this;
     }
 
-    public DgMailEventInputBuilder setWasDetailScreenCaptured(String wasDetailScreenCaptured) {
+    public DgEventInputBuilder setWasDetailScreenCaptured(String wasDetailScreenCaptured) {
         this.wasDetailScreenCaptured = wasDetailScreenCaptured;
         return this;
     }
 
-    public DgMailEventInputBuilder setWasSourceClassified(String wasSourceClassified) {
+    public DgEventInputBuilder setWasSourceClassified(String wasSourceClassified) {
         this.wasSourceClassified = wasSourceClassified;
         return this;
     }
 
-    public DgMailEventInputBuilder setWasSourceFileCaptured(String wasSourceFileCaptured) {
+    public DgEventInputBuilder setWasSourceFileCaptured(String wasSourceFileCaptured) {
         this.wasSourceFileCaptured = wasSourceFileCaptured;
         return this;
     }
 
-    public DgMailEventInputBuilder setWasSourceRemovable(String wasSourceRemovable) {
+    public DgEventInputBuilder setWasSourceRemovable(String wasSourceRemovable) {
         this.wasSourceRemovable = wasSourceRemovable;
         return this;
     }
 
-    public DgMailEventInputBuilder setSourceDriveType(String sourceDriveType) {
+    public DgEventInputBuilder setSourceDriveType(String sourceDriveType) {
         this.sourceDriveType = sourceDriveType;
         return this;
     }
 
-    public DgMailEventInputBuilder setSourceDeviceID(String sourceDeviceID) {
+    public DgEventInputBuilder setSourceDeviceID(String sourceDeviceID) {
         this.sourceDeviceID = sourceDeviceID;
         return this;
     }
 
-    public DgMailEventInputBuilder setDestinationDriveType(String destinationDriveType) {
+    public DgEventInputBuilder setDestinationDriveType(String destinationDriveType) {
         this.destinationDriveType = destinationDriveType;
         return this;
     }
 
-    public DgMailEventInputBuilder setDestinationDeviceID(String destinationDeviceID) {
+    public DgEventInputBuilder setDestinationDeviceID(String destinationDeviceID) {
         this.destinationDeviceID = destinationDeviceID;
         return this;
     }
 
-    public DgMailEventInputBuilder setEmailAddress(String emailAddress) {
+    public DgEventInputBuilder setEmailAddress(String emailAddress) {
         this.emailAddress = emailAddress;
         return this;
     }
 
-    public DgMailEventInputBuilder setEmployeeId(String employeeId) {
+    public DgEventInputBuilder setEmployeeId(String employeeId) {
         this.employeeId = employeeId;
         return this;
     }
 
-    public DgMailEventInputBuilder setRegistryDestinationPath(String registryDestinationPath) {
+    public DgEventInputBuilder setRegistryDestinationPath(String registryDestinationPath) {
         this.registryDestinationPath = registryDestinationPath;
         return this;
     }
 
-    public DgMailEventInputBuilder setRegistrySourcePath(String registrySourcePath) {
+    public DgEventInputBuilder setRegistrySourcePath(String registrySourcePath) {
         this.registrySourcePath = registrySourcePath;
         return this;
     }
 
-    public DgMailEventInputBuilder setRegistryValue(String registryValue) {
+    public DgEventInputBuilder setRegistryValue(String registryValue) {
         this.registryValue = registryValue;
         return this;
     }
 
-    public DgMailEventInputBuilder setRegistryValueType(String registryValueType) {
+    public DgEventInputBuilder setRegistryValueType(String registryValueType) {
         this.registryValueType = registryValueType;
         return this;
     }
 
-    public DgMailEventInput createDgEvent() {
-        DgMailEventInput dgMailEventInput = new DgMailEventInput(agentLocalDate, agentLocalTime, agentUtcTime, application, computerName, computerType, customInt4, customString1, customString3, customString4, customString6, givenName, surname, userId, username, eventDisplayName, companyName, processSha1Hash, processSha256Hash, productName, productVersion, scanValueStatus, scanValueStatusLocalTime, scanValueStatusText, dllMD5Hash, dllName, dllSHA1Hash, dllSHA256Hash, dNSHostname, emailSender, emailSubject, eventDisplayName1, eventId, ipAddress, localPort, mD5Checksum, mD5Hash, networkDirection, operation, protocol, remotePort, urlPath, wasBlocked, wasClassified, wasFileCaptured, wasMobileDevice, wasPkiAuthenticated, wasPrivateAddress, wasRemovable, wasRuleViolation, wasScreenCaptured, wasSMIMEEncrypted, wasSMIMESigned, wasWireless, customID, deviceClass, deviceID, driveType, friendlyName, productID, removalPolicy, serialNumber, storageBusType, supportsPredictFailure, vendor, vendorID, blockCode, bytesRead, bytesWritten, destinationDirectory, destinationFile, destinationFileEncryption, destinationFileExtension, detailEventID, detailFileSize, detailWasBlocked, emailDomainName, emailRecipient, emailRecipientType, printer, printerJobname, promptSurveyName, sourceDirectory, sourceFile, sourceFileEncryption, sourceFileExtension, userResponse, wasDestFileCaptured, wasDestinationClassified, wasDestinationRemovable, wasDetailRuleViolation, wasDetailScreenCaptured, wasSourceClassified, wasSourceFileCaptured, wasSourceRemovable, sourceDriveType, sourceDeviceID, destinationDriveType, destinationDeviceID, emailAddress, employeeId, registryDestinationPath, registrySourcePath, registryValue, registryValueType);
-        dgMailEventInput = fillGenericValuesForEmptyFields(dgMailEventInput);
-        return dgMailEventInput;
+    public DgEventInput createDgEvent() {
+        DgEventInput dgEventInput = new DgEventInput(agentLocalDate, agentLocalTime, agentUtcTime, application, computerName, computerType, customInt4, customString1, customString3, customString4, customString6, givenName, surname, userId, username, eventDisplayName, companyName, processSha1Hash, processSha256Hash, productName, productVersion, scanValueStatus, scanValueStatusLocalTime, scanValueStatusText, dllMD5Hash, dllName, dllSHA1Hash, dllSHA256Hash, dNSHostname, emailSender, emailSubject, eventDisplayName1, eventId, ipAddress, localPort, mD5Checksum, mD5Hash, networkDirection, operation, protocol, remotePort, urlPath, wasBlocked, wasClassified, wasFileCaptured, wasMobileDevice, wasPkiAuthenticated, wasPrivateAddress, wasRemovable, wasRuleViolation, wasScreenCaptured, wasSMIMEEncrypted, wasSMIMESigned, wasWireless, customID, deviceClass, deviceID, driveType, friendlyName, productID, removalPolicy, serialNumber, storageBusType, supportsPredictFailure, vendor, vendorID, blockCode, bytesRead, bytesWritten, destinationDirectory, destinationFile, destinationFileEncryption, destinationFileExtension, detailEventID, detailFileSize, detailWasBlocked, emailDomainName, emailRecipient, emailRecipientType, printer, printerJobname, promptSurveyName, sourceDirectory, sourceFile, sourceFileEncryption, sourceFileExtension, userResponse, wasDestFileCaptured, wasDestinationClassified, wasDestinationRemovable, wasDetailRuleViolation, wasDetailScreenCaptured, wasSourceClassified, wasSourceFileCaptured, wasSourceRemovable, sourceDriveType, sourceDeviceID, destinationDriveType, destinationDeviceID, emailAddress, employeeId, registryDestinationPath, registrySourcePath, registryValue, registryValueType);
+        dgEventInput = fillGenericValuesForEmptyFields(dgEventInput);
+        return dgEventInput;
     }
 
-    public DgMailEventInput createEmptyDgEvent() {
-        return new DgMailEventInput();
+    public DgEventInput createEmptyDgEvent() {
+        return new DgEventInput();
     }
 
-    private DgMailEventInput fillGenericValuesForEmptyFields(DgMailEventInput dgMailEventInput) {
-        final Field[] fields = dgMailEventInput.getClass().getFields();
+    private DgEventInput fillGenericValuesForEmptyFields(DgEventInput dgEventInput) {
+        final Field[] fields = dgEventInput.getClass().getFields();
         for (Field field : fields) {
             try {
-                final Object fieldValue = field.get(dgMailEventInput);
+                final Object fieldValue = field.get(dgEventInput);
                 if (fieldValue == null) {
                     final String fieldName = field.getName();
                     if (fieldName.equals("detailFileSize")) {
-                        field.set(dgMailEventInput, 0);
+                        field.set(dgEventInput, 0);
                     }
                     else {
-                        field.set(dgMailEventInput, "some_" + fieldName);
+                        field.set(dgEventInput, "some_" + fieldName);
                     }
                 }
 
@@ -670,7 +670,7 @@ public class DgMailEventInputBuilder  {
                 return null;
             }
         }
-        return dgMailEventInput;
+        return dgEventInput;
     }
 }
 
