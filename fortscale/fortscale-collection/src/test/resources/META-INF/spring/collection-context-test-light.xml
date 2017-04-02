@@ -21,6 +21,20 @@
         <constructor-arg name="clazz" value="org.apache.commons.lang3.Range" />
     </bean>
 
+
+    <bean id="collectionProperties" class="fortscale.utils.spring.SpringPropertiesUtil">
+        <property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE"/>
+        <property name="locations">
+            <list>
+                <value>classpath:META-INF/messages.en.collection.properties</value>
+                <value>classpath:META-INF/messages.en.properties</value>
+                <value>classpath:META-INF/fortscale-collection-test.properties</value>
+            </list>
+        </property>
+        <property name="ignoreUnresolvablePlaceholders" value="true" />
+        <property name="localOverride" value="true" />
+    </bean>
+
     <context:component-scan base-package="fortscale.collection.morphlines"/>
 
     <bean id="computerLoginResolver" class="fortscale.services.ipresolving.ComputerLoginResolver"/>
