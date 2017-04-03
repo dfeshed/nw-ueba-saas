@@ -18,7 +18,7 @@ import java.util.Map;
 public class UserActivityDlpTopApplicationsHandler extends UserActivityBaseHandler {
 
     private static final UserActivityType ACTIVITY = UserActivityType.DLP_TOP_APPLICATIONS;
-    public static final String APPLICATION_HISTOGRAM_FEATURE_NAME = "email_application_histogram"; //todo
+    public static final String APPLICATION_HISTOGRAM_FEATURE_NAME = "application_histogram";
 
     @Autowired
     private UserActivityDlpTopApplicationsService userActivityDlpTopApplicationsConfigurationService;
