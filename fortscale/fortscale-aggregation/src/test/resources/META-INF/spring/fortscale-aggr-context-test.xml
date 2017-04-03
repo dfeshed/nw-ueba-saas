@@ -14,12 +14,4 @@
 	<bean id="aggrFeatureFuncService" class="fortscale.aggregation.feature.functions.AggrFeatureFuncService"/>
 	<bean id="mongoDbUtilService" class="fortscale.aggregation.util.MongoDbUtilService" />
 
-	<!-- supporting information beans-->
-	<bean id="supportingInformationPopulatorFactory" class="fortscale.aggregation.feature.services.historicaldata.SupportingInformationPopulatorFactory"/>
-	<bean id="supportingInformationDataCountPopulator" class="fortscale.aggregation.feature.services.historicaldata.populators.SupportingInformationCountPopulator" scope="prototype"/>
-	<bean id="supportingInformationDataHourlyCountGroupByDayOfWeekPopulator" class="fortscale.aggregation.feature.services.historicaldata.populators.SupportingInformationHourlyCountGroupByDayOfWeekPopulator" scope="prototype"/>
-	<bean id="supportingInformationDistinctEventsByTimePopulator" class="fortscale.aggregation.feature.services.historicaldata.populators.SupportingInformationDistinctEventsByTimePopulator" scope="prototype"/>
-	<bean id="supportingInformationMongoVPNSessionQueryPopulator" class="fortscale.aggregation.feature.services.historicaldata.populators.SupportingInformationVPNSessionPopulator" scope="prototype"/>
-	<bean id="supportingInformationVPNOverlappingSessionPopulator" class="fortscale.aggregation.feature.services.historicaldata.populators.SupportingInformationVPNOverlappingSessionPopulator" scope="prototype"/>
-	<bean id="supportingInformationCountByTimePopulator" class="fortscale.aggregation.feature.services.historicaldata.populators.SupportingInformationCountByTimePopulator" scope="prototype"/>
 </beans>
