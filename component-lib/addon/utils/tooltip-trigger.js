@@ -113,7 +113,7 @@ const wireTriggerToHover = function(el, panelId, eventBus, opts = {}) {
         this[timerProp] = null;
       }
       if (opts.hideDelay) {
-        later(() => {
+        this[timerProp] = later(() => {
           sendTetherEvent(this, panelId, eventBus, 'hide', opts.model);
         }, opts.hideDelay);
       } else {

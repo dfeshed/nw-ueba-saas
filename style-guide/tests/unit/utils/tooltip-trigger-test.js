@@ -120,3 +120,33 @@ test('wireTriggerToHover supports delays', function(assert) {
       .off(mouseleaveEventName);
   });
 });
+
+test('wireTriggerToHover aborts a pending hide event if interrupted by a display event on the same trigger element', function(assert) {
+  const mouseenterEventName = `rsa-content-tethered-panel-display-${panelId}`;
+  const mouseleaveEventName = `rsa-content-tethered-panel-hide-${panelId}`;
+  const displayDelay = 0;
+  const hideDelay = 1000;
+
+  eventBus
+    .on(mouseenterEventName, function() {
+      assert.ok(true, 'eventBus display handler was triggered as expected');
+    })
+    .on(mouseleaveEventName, function() {
+      assert.notOk(true, 'eventBus hide handler was triggered but should not have been');
+    });
+
+  assert.expect(2);
+
+  wireTriggerToHover(el, panelId, eventBus, { displayDelay, hideDelay });
+  $el.trigger('mouseenter');  // should trigger a `display` event in eventBus immediately
+  return wait().then(() => {
+    $el.trigger('mouseleave');  // should wait for `hideDelay` before triggering eventBus
+    $el.trigger('mouseenter');  // should abort the eventBus trigger from mouseleave above and instead trigger another `display` event
+    return wait();
+  }).then(() => {
+    unwireTriggerToHover(el);
+    eventBus
+      .off(mouseenterEventName)
+      .off(mouseleaveEventName);
+  });
+});

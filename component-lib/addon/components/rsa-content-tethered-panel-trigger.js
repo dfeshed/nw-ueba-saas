@@ -52,6 +52,10 @@ export default Component.extend({
   mouseEnter() {
     if (!this.get('isDisabled')) {
       if (this.get('isHover')) {
+        if (this.get('hideEvent')) {
+          cancel(this.get('hideEvent'));
+          this.set('hideEvent', null);
+        }
         const displayEvent = later(() => {
           sendTetherEvent(
             this.element,
@@ -68,8 +72,11 @@ export default Component.extend({
 
   mouseLeave() {
     if (this.get('isHover')) {
-      cancel(this.get('displayEvent'));
-      later(() => {
+      if (this.get('displayEvent')) {
+        cancel(this.get('displayEvent'));
+        this.set('displayEvent', null);
+      }
+      const hideEvent = later(() => {
         sendTetherEvent(
           this.element,
           this.get('panel'),
@@ -77,6 +84,7 @@ export default Component.extend({
           'hide'
         );
       }, this.get('hideDelay'));
+      this.set('hideEvent', hideEvent);
     }
   },
 
