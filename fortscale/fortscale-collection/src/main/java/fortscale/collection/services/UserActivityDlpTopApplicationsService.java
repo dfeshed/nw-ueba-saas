@@ -4,10 +4,12 @@ package fortscale.collection.services;
 import fortscale.collection.jobs.activity.UserActivityBaseHandler;
 import fortscale.collection.jobs.activity.UserActivityType;
 import fortscale.utils.logging.Logger;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.util.*;
 
+@Service("userActivityDlpTopApplicationsService")
 public class UserActivityDlpTopApplicationsService extends BaseUserActivityConfigurationService {
 
     private static final Logger logger = Logger.getLogger(UserActivityDlpTopApplicationsService.class);
