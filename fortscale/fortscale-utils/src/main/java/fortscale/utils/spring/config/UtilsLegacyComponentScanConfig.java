@@ -21,9 +21,7 @@ import org.springframework.context.annotation.Configuration;
             "fortscale.utils.actdir",
             "fortscale.utils.cleanup",
             "fortscale.utils.factory",
-            "fortscale.utils.hdfs",
             "fortscale.utils.image",
-            "fortscale.utils.impala",
             "fortscale.utils.jade",
             "fortscale.utils.jonfig",
             "fortscale.utils.json",
@@ -34,10 +32,7 @@ import org.springframework.context.annotation.Configuration;
             "fortscale.utils.pool",
             "fortscale.utils.prettifiers",
             "fortscale.utils.properties",
-            "fortscale.utils.pxGrid",
-            "fortscale.utils.qradar",
             "fortscale.utils.servlet",
-            "fortscale.utils.splunk",
             "fortscale.utils.syslog",
             "fortscale.utils.time" })
 
