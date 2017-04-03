@@ -46,8 +46,6 @@ public class UserActivityTargetDeviceConfigurationService extends BaseUserActivi
 
 	@Override
 	public UserActivityConfiguration createUserActivityConfiguration() {
-
-
 		final Set<String> activities = new HashSet<>();
 		final Map<String, String> dataSourceToCollection = new HashMap<>();
 		final Map<String, List<String>> activityToDataSources = new HashMap<>();
