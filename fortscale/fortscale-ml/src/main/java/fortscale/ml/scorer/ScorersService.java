@@ -1,6 +1,5 @@
 package fortscale.ml.scorer;
 
-import fortscale.common.event.DataEntitiesConfigWithBlackList;
 import fortscale.common.event.Event;
 import fortscale.common.feature.extraction.FeatureExtractService;
 import fortscale.domain.core.FeatureScore;
@@ -38,9 +37,6 @@ public class ScorersService{
 
     @Autowired
     private FactoryService<Scorer> scorerFactoryService;
-
-    @Autowired
-    private DataEntitiesConfigWithBlackList dataEntitiesConfigWithBlackList;
 
     @Autowired
     private StatsService statsService;

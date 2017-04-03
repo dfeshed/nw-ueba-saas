@@ -12,8 +12,6 @@
 						http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.1.xsd
                         http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-4.0.xsd">
 
-    <bean id="dataEntitiesConfig" class="fortscale.common.dataentity.DataEntitiesConfig" />
-    <bean id="dataEntitiesConfigWithBlackList" class="fortscale.common.event.DataEntitiesConfigWithBlackList" />
 
     <!-- Data Entities -->
     <bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
