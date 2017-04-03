@@ -198,14 +198,11 @@ public class EventProcessJob implements Job {
 					try {
 						jobMetrics.processFiles++;
 						logger.info("starting to process {}", fileName);
-						if(preProcessScriptPath != null) {
-							final boolean preProcessSuccessful = runPreProcessScript(preProcessScriptPath, fileName); //todo: check if need full file name
-							if (!preProcessSuccessful) {
-								throw new Exception(String.format("Error running pre process script %s", preProcessScriptPath));
-							}
-						}
+						preProcess(fileName);
 						// transform events in file
 						boolean success = processFile(file);
+
+						preProcessCleanup(fileName);
 
 						if (success) {
 							jobMetrics.processFilesSuccessfully++;
@@ -217,6 +214,7 @@ public class EventProcessJob implements Job {
 			
 						logger.info("finished processing {}", fileName);
 					} catch (Exception e) {
+						preProcessCleanup(fileName);
 						moveFileToFolder(file, errorPath);
 
 						logger.error("error processing file " + fileName, e);
@@ -284,7 +282,25 @@ public class EventProcessJob implements Job {
 			logger.info("{} {} job finished", jobName, sourceName);
 		}
 	}
-	
+
+	protected void preProcessCleanup(String fileName) throws Exception {
+		if(preProcessScriptPath != null) {
+            final boolean preProcessCleanupSuccessful = runPreProcessScriptCleanup(preProcessScriptPath, fileName);
+            if (!preProcessCleanupSuccessful) {
+                logger.warn("Failed to run preprocess script cleanup {}", preProcessScriptPath);
+            }
+        }
+	}
+
+	protected void preProcess(String fileName) throws Exception {
+		if(preProcessScriptPath != null) {
+            final boolean preProcessSuccessful = runPreProcessScript(preProcessScriptPath, fileName);
+            if (!preProcessSuccessful) {
+                throw new Exception(String.format("Error running pre process script %s", preProcessScriptPath));
+            }
+        }
+	}
+
 	/**
 	 * Gets list of files in the input folder sorted according to the time stamp
 	 */
@@ -308,7 +324,12 @@ public class EventProcessJob implements Job {
 	}
 
 	private boolean runPreProcessScript(String scriptPath, String fileToPreProcess) {
-		final List<String> arguments = new ArrayList<>(Arrays.asList("python", scriptPath, fileToPreProcess));
+		final List<String> arguments = new ArrayList<>(Arrays.asList("python", scriptPath, fileToPreProcess, "preprocess"));
+		return ProcessExecutor.executeProcess(EVENT_PROCESS_JOB_PRE_PROCESS_SCRIPT, arguments);
+	}
+
+	private boolean runPreProcessScriptCleanup(String scriptPath, String fileToPreProcess) {
+		final List<String> arguments = new ArrayList<>(Arrays.asList("python", scriptPath, fileToPreProcess, "cleanup"));
 		return ProcessExecutor.executeProcess(EVENT_PROCESS_JOB_PRE_PROCESS_SCRIPT, arguments);
 	}
 
