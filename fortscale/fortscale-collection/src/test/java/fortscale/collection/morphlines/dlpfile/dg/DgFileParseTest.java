@@ -9,6 +9,7 @@ import fortscale.utils.impala.ImpalaParser;
 import fortscale.utils.properties.PropertiesResolver;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -87,6 +88,7 @@ public class DgFileParseTest {
     }
 
     @Test
+    @Ignore
     public void test_remove_verdasys_prefix() {
         String testCase = "Test that the verdasys\r prefix is removed";
         DgEventInput input = new DgEventInputBuilder()
