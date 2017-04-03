@@ -12,7 +12,6 @@
 
 	<bean id="cleanupPredicate" class="fortscale.utils.cleanup.CleanupPredicate" />
 
-	<bean id="imageUtils" class="fortscale.utils.image.ImageUtils" />
 
 	<bean id="jadeUtils" class="fortscale.utils.jade.JadeUtils" />
 
