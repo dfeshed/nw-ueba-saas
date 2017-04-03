@@ -17,6 +17,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * @author gils
+ *         23/05/2016
+ */
 @DisallowConcurrentExecution
 public class UserActivityJob extends FortscaleJob {
 
@@ -74,7 +78,7 @@ public class UserActivityJob extends FortscaleJob {
     public void runSteps() throws Exception {
         logger.info("Start Executing User Activity job..");
         ExecutorService activitiesThreadPool;
-        if (runSequential) {
+        if (runSequential || userActivityType != null) {
             activitiesThreadPool = Executors.newSingleThreadExecutor();
         } else {
             activitiesThreadPool = Executors.newFixedThreadPool(NUMBER_OF_ACTIVITIES);
