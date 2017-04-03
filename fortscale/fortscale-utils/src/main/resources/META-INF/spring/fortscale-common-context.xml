@@ -12,9 +12,6 @@
 
 	<bean id="cleanupPredicate" class="fortscale.utils.cleanup.CleanupPredicate" />
 
-
-	<bean id="jadeUtils" class="fortscale.utils.jade.JadeUtils" />
-
 	<bean id="clouderaServiceConfig" class="fortscale.services.cloudera.ClouderaServiceConfig" />
 
 </beans>
