@@ -72,8 +72,7 @@ export default [{
       },
       {
         field: 'IIOCRisk',
-        title: 'context.hostSummary.riskScore',
-        dataType: 'CriticalityScore'
+        title: 'context.hostSummary.riskScore'
       },
       {
         field: 'LocalIPAddress',

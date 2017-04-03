@@ -9,8 +9,7 @@ export default [{
       class: 'col-xs-3',
       cell: [{
         field: 'Criticality Rating',
-        title: 'context.archer.criticalityRating',
-        dataType: 'CriticalityScore'
+        title: 'context.archer.criticalityRating'
       },
       {
         field: 'Device ID',
@@ -27,8 +26,7 @@ export default [{
       class: 'col-xs-3',
       cell: [{
         field: 'Risk Rating',
-        title: 'context.archer.riskRating',
-        dataType: 'CriticalityScore'
+        title: 'context.archer.riskRating'
       },
       {
         field: 'Type',

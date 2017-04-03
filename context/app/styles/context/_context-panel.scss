@@ -168,9 +168,8 @@ radial-gradient(circle at 85% 85%, rsa-color(blue, darker, .1) 0, rsa-color(blue
       padding: rsa-whitespace();
     }
     &__host-details,&__archer-details,&__ad-details{
-      padding: rsa-whitespace();
       vbox {
-        padding-right: rsa-whitespace(least);
+        padding-left: rsa-whitespace(less);
       }
 
       &__field-name ,&__row-field-name{
@@ -184,7 +183,6 @@ radial-gradient(circle at 85% 85%, rsa-color(blue, darker, .1) 0, rsa-color(blue
       &__field-value,&__row-field-value,&__header-data{
         color: $font-highlight-color;
         text-align: left;
-        overflow: hidden;
         text-overflow: ellipsis;
       }
       &__field-circle{
@@ -222,7 +220,7 @@ radial-gradient(circle at 85% 85%, rsa-color(blue, darker, .1) 0, rsa-color(blue
         font-weight: 500;
         max-height: 60%;
         color:rsa-color(gray, lightest);
-        padding-left: rsa-whitespace(most);
+        padding-left: rsa-whitespace();
       }
 
       &__badge-score {
