@@ -486,7 +486,7 @@ public class DgMailEventInputBuilder  {
     }
 
     public DgMailEventInputBuilder setDetailFileSize(Integer detailFileSize) {
-        this.detailFileSize = Integer.valueOf(detailFileSize);
+        this.detailFileSize = detailFileSize;
         return this;
     }
 
