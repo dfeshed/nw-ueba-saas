@@ -22,8 +22,4 @@
         <property name="localOverride" value="true"/>
     </bean>
 
-    <bean id="dataQueryHelper" class="fortscale.common.dataqueries.querydto.DataQueryHelper"/>
-    <bean id="dataQueryRunnerFactory" class="fortscale.common.dataqueries.querygenerators.DataQueryRunnerFactory"/>
-    <bean id="mySqlQueryRunner" class="fortscale.common.dataqueries.querygenerators.mysqlgenerator.MySqlQueryRunner"/>
-
 </beans>
