@@ -5,12 +5,16 @@ import fortscale.collection.services.UserActivityDataSourceConfiguration;
 import fortscale.collection.services.UserActivityDlpTopApplicationsService;
 import fortscale.domain.core.activities.UserActivityDlpTopApplicationsDocument;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+@Configurable(preConstruction = true)
+@Component
 public class UserActivityDlpTopApplicationsHandler extends UserActivityBaseHandler {
 
     private static final UserActivityType ACTIVITY = UserActivityType.DLP_TOP_APPLICATIONS;
