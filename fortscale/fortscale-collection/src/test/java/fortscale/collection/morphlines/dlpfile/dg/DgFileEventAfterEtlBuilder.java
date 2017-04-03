@@ -17,7 +17,7 @@ public class DgFileEventAfterEtlBuilder {
     public String sourceDirectory;
     public String destinationDirectory;
     public String sourceFile;
-    public String detailFileSize;
+    public Long detailFileSize;
     public String sourceDriveType;
     public String destinationDriveType;
     public String wasClassified;
@@ -105,7 +105,7 @@ public class DgFileEventAfterEtlBuilder {
         return  this;
     }
 
-    public DgFileEventAfterEtlBuilder setDetailFileSize(String detailFileSize) {
+    public DgFileEventAfterEtlBuilder setDetailFileSize(Long detailFileSize) {
         this.detailFileSize = detailFileSize;
         return  this;
     }
@@ -193,7 +193,13 @@ public class DgFileEventAfterEtlBuilder {
             try {
                 final Object fieldValue = field.get(dgFileEventAfterEtl);
                 if (fieldValue == null) {
-                    field.set(dgFileEventAfterEtl, "some_" + field.getName());
+                    final String fieldName = field.getName();
+                    if (fieldName.equals("detailFileSize")) {
+                        field.set(dgFileEventAfterEtl, 0l);
+                    }
+                    else {
+                        field.set(dgFileEventAfterEtl, "some_" + fieldName);
+                    }
                 }
 
             } catch (IllegalAccessException e) {

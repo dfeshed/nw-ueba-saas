@@ -18,7 +18,7 @@ public class DgMailEventAfterEtl {
     public String normalizedSrcMachine;
     public String application;
     public String destinationFile;
-    public String detailFileSize;
+    public Integer detailFileSize;
     public String destinationDirectory;
     public String destinationFileExtension;
     public String isAttachmentExtensionBlacklisted;
@@ -26,8 +26,8 @@ public class DgMailEventAfterEtl {
     public String emailRecipientDomain;
     public String emailSender;
     public String emailSubject;
-    public String isExternal;
-    public String numOfRecipients;
+    public Boolean isExternal;
+    public Integer numOfRecipients;
     public String wasClassified;
     public String wasBlocked;
     public String scanValueStatusText;
@@ -38,7 +38,7 @@ public class DgMailEventAfterEtl {
     protected DgMailEventAfterEtl() {
     }
 
-    public DgMailEventAfterEtl(String dateTime, String dateTimeUnix, String eventDescription, String eventType, String eventId, String username, String normalizedUsername, String fullName, String ipAddress, String hostname, String normalizedSrcMachine, String application, String destinationFile, String detailFileSize, String destinationDirectory, String destinationFileExtension, String isAttachmentExtensionBlacklisted, String emailRecipient, String emailRecipientDomain, String emailSender, String emailSubject, String isExternal, String numOfRecipients, String wasClassified, String wasBlocked, String scanValueStatusText, String policyName, String dataSource, String lastState) {
+    public DgMailEventAfterEtl(String dateTime, String dateTimeUnix, String eventDescription, String eventType, String eventId, String username, String normalizedUsername, String fullName, String ipAddress, String hostname, String normalizedSrcMachine, String application, String destinationFile, Integer detailFileSize, String destinationDirectory, String destinationFileExtension, String isAttachmentExtensionBlacklisted, String emailRecipient, String emailRecipientDomain, String emailSender, String emailSubject, Boolean isExternal, Integer numOfRecipients, String wasClassified, String wasBlocked, String scanValueStatusText, String policyName, String dataSource, String lastState) {
         this.dateTime = dateTime;
         this.dateTimeUnix = dateTimeUnix;
         this.eventDescription = eventDescription;
@@ -76,7 +76,7 @@ public class DgMailEventAfterEtl {
         final Field[] fields = this.getClass().getFields();
         for (Field field : fields) {
             try {
-                final String newElement = (String) field.get(this);
+                final String newElement = field.get(this).toString();
                 switch (newElement) {
                     case "some_hostname":
                     case "some_normalizedSrcMachine":

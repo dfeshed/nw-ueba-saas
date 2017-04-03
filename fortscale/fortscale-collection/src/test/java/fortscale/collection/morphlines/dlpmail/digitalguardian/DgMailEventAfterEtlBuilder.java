@@ -17,13 +17,13 @@ public class DgMailEventAfterEtlBuilder {
     private String normalizedSrcMachine;
     private String application;
     private String destinationFile;
-    private String detailFileSize;
+    private Integer detailFileSize;
     private String emailRecipient;
     private String emailRecipientDomain;
     private String emailSender;
     private String emailSubject;
-    private String isExternal;
-    private String numOfRecipients;
+    private Boolean isExternal;
+    private Integer numOfRecipients;
     private String isAttachmentExtensionBlacklisted;
     private String destinationDirectory;
     private String destinationFileExtension;
@@ -99,7 +99,7 @@ public class DgMailEventAfterEtlBuilder {
         return this;
     }
 
-    public DgMailEventAfterEtlBuilder setDetailFileSize(String detailFileSize) {
+    public DgMailEventAfterEtlBuilder setDetailFileSize(Integer detailFileSize) {
         this.detailFileSize = detailFileSize;
         return this;
     }
@@ -124,12 +124,12 @@ public class DgMailEventAfterEtlBuilder {
         return this;
     }
 
-    public DgMailEventAfterEtlBuilder setIsExternal(String isExternal) {
+    public DgMailEventAfterEtlBuilder setIsExternal(Boolean isExternal) {
         this.isExternal = isExternal;
         return this;
     }
 
-    public DgMailEventAfterEtlBuilder setNumOfRecipients(String numOfRecipients) {
+    public DgMailEventAfterEtlBuilder setNumOfRecipients(Integer numOfRecipients) {
         this.numOfRecipients = numOfRecipients;
         return this;
     }
@@ -195,7 +195,13 @@ public class DgMailEventAfterEtlBuilder {
             try {
                 final Object fieldValue = field.get(dgMailEventAfterEtl);
                 if (fieldValue == null) {
-                    field.set(dgMailEventAfterEtl, "some_" + field.getName());
+                    final String fieldName = field.getName();
+                    if (fieldName.equals("detailFileSize")) {
+                        field.set(dgMailEventAfterEtl, 0);
+                    }
+                    else {
+                        field.set(dgMailEventAfterEtl, "some_" + fieldName);
+                    }
                 }
 
             } catch (IllegalAccessException e) {

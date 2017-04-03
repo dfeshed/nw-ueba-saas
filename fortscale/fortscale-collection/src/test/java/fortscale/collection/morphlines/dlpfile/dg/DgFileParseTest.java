@@ -295,7 +295,7 @@ public class DgFileParseTest {
                 .setNormalizedSrcMachine("workgroup\\vdely-ConfChecker")
                 .setApplication("explorer.exe")
                 .setDestinationFile("licensekey.dat")
-                .setDetailFileSize("8628")
+                .setDetailFileSize(8628l)
                 .setDestinationDirectory("c:\\program files\\dgagent\\verity\\kv\\_nti40\\bin\\")
                 .setWasClassified("FALSE")
                 .setWasBlocked("FALSE")

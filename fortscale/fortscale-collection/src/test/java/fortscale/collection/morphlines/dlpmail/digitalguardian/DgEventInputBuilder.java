@@ -83,7 +83,7 @@ public class DgEventInputBuilder {
     private String destinationFileEncryption;
     private String destinationFileExtension;
     private String detailEventID;
-    private String detailFileSize;
+    private Integer detailFileSize;
     private String detailWasBlocked;
     private String emailDomainName;
     private String emailRecipient;
@@ -485,8 +485,8 @@ public class DgEventInputBuilder {
         return this;
     }
 
-    public DgEventInputBuilder setDetailFileSize(String detailFileSize) {
-        this.detailFileSize = detailFileSize;
+    public DgEventInputBuilder setDetailFileSize(Integer detailFileSize) {
+        this.detailFileSize = Integer.valueOf(detailFileSize);
         return this;
     }
 
@@ -641,23 +641,7 @@ public class DgEventInputBuilder {
     }
 
     public DgEventInput createDgEvent() {
-        DgEventInput dgEventInput = new DgEventInput(agentLocalDate, agentLocalTime, agentUtcTime, application, computerName,
-                computerType, customInt4, customString1, customString3, customString4, customString6, givenName, surname,
-                userId, username, eventDisplayName, companyName, processSha1Hash, processSha256Hash, productName,
-                productVersion, scanValueStatus, scanValueStatusLocalTime, scanValueStatusText, dllMD5Hash, dllName,
-                dllSHA1Hash, dllSHA256Hash, dNSHostname, emailSender, emailSubject, eventDisplayName1, eventId, ipAddress,
-                localPort, mD5Checksum, mD5Hash, networkDirection, operation, protocol, remotePort, urlPath, wasBlocked,
-                wasClassified, wasFileCaptured, wasMobileDevice, wasPkiAuthenticated, wasPrivateAddress, wasRemovable,
-                wasRuleViolation, wasScreenCaptured, wasSMIMEEncrypted, wasSMIMESigned, wasWireless, customID, deviceClass,
-                deviceID, driveType, friendlyName, productID, removalPolicy, serialNumber, storageBusType, supportsPredictFailure,
-                vendor, vendorID, blockCode, bytesRead, bytesWritten, destinationDirectory, destinationFile,
-                destinationFileEncryption, destinationFileExtension, detailEventID, detailFileSize, detailWasBlocked,
-                emailDomainName, emailRecipient, emailRecipientType, printer, printerJobname, promptSurveyName,
-                sourceDirectory, sourceFile, sourceFileEncryption, sourceFileExtension, userResponse,
-                wasDestFileCaptured, wasDestinationClassified, wasDestinationRemovable, wasDetailRuleViolation,
-                wasDetailScreenCaptured, wasSourceClassified, wasSourceFileCaptured, wasSourceRemovable,
-                sourceDriveType, sourceDeviceID, destinationDriveType, destinationDeviceID, emailAddress,
-                employeeId, registryDestinationPath, registrySourcePath, registryValue, registryValueType);
+        DgEventInput dgEventInput = new DgEventInput(agentLocalDate, agentLocalTime, agentUtcTime, application, computerName, computerType, customInt4, customString1, customString3, customString4, customString6, givenName, surname, userId, username, eventDisplayName, companyName, processSha1Hash, processSha256Hash, productName, productVersion, scanValueStatus, scanValueStatusLocalTime, scanValueStatusText, dllMD5Hash, dllName, dllSHA1Hash, dllSHA256Hash, dNSHostname, emailSender, emailSubject, eventDisplayName1, eventId, ipAddress, localPort, mD5Checksum, mD5Hash, networkDirection, operation, protocol, remotePort, urlPath, wasBlocked, wasClassified, wasFileCaptured, wasMobileDevice, wasPkiAuthenticated, wasPrivateAddress, wasRemovable, wasRuleViolation, wasScreenCaptured, wasSMIMEEncrypted, wasSMIMESigned, wasWireless, customID, deviceClass, deviceID, driveType, friendlyName, productID, removalPolicy, serialNumber, storageBusType, supportsPredictFailure, vendor, vendorID, blockCode, bytesRead, bytesWritten, destinationDirectory, destinationFile, destinationFileEncryption, destinationFileExtension, detailEventID, detailFileSize, detailWasBlocked, emailDomainName, emailRecipient, emailRecipientType, printer, printerJobname, promptSurveyName, sourceDirectory, sourceFile, sourceFileEncryption, sourceFileExtension, userResponse, wasDestFileCaptured, wasDestinationClassified, wasDestinationRemovable, wasDetailRuleViolation, wasDetailScreenCaptured, wasSourceClassified, wasSourceFileCaptured, wasSourceRemovable, sourceDriveType, sourceDeviceID, destinationDriveType, destinationDeviceID, emailAddress, employeeId, registryDestinationPath, registrySourcePath, registryValue, registryValueType);
         dgEventInput = fillGenericValuesForEmptyFields(dgEventInput);
         return dgEventInput;
     }
@@ -672,7 +656,13 @@ public class DgEventInputBuilder {
             try {
                 final Object fieldValue = field.get(dgEventInput);
                 if (fieldValue == null) {
-                    field.set(dgEventInput, "some_" + field.getName());
+                    final String fieldName = field.getName();
+                    if (fieldName.equals("detailFileSize")) {
+                        field.set(dgEventInput, 0);
+                    }
+                    else {
+                        field.set(dgEventInput, "some_" + fieldName);
+                    }
                 }
 
             } catch (IllegalAccessException e) {
