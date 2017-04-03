@@ -26,13 +26,13 @@ public class UserActivityDlpTopApplicationsService extends BaseUserActivityConfi
 //                UserActivityType.DLP_TOP_APPLICATIONS.name()));
 
         activityDataSourceConfigurationMap.put("dlpmail", new UserActivityDataSourceConfiguration("dlpmail",
-                "aggr_normalized_username_dlpmail_hourly",
+                "aggr_normalized_username_dlpmail_daily",
                 UserActivityBaseHandler.AGGREGATED_FEATURES_PREFIX,
                 UserActivityType.DLP_TOP_APPLICATIONS.name()));
 
 
         activityDataSourceConfigurationMap.put("dlpfile", new UserActivityDataSourceConfiguration("dlpfile",
-                "aggr_normalized_username_dlpfile_hourly",
+                "aggr_normalized_username_dlpfile_daily",
                 UserActivityBaseHandler.AGGREGATED_FEATURES_PREFIX,
                 UserActivityType.DLP_TOP_APPLICATIONS.name()));
 
