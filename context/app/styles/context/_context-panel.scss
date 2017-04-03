@@ -111,6 +111,22 @@ radial-gradient(circle at 85% 85%, rsa-color(blue, darker, .1) 0, rsa-color(blue
       }
     }
 
+    .rsa-content-badge-score.is-danger .score {
+      color: rsa-color(red);
+    }
+
+    .rsa-content-badge-score.is-high .score {
+      color: rsa-color(orange);
+    }
+
+    .rsa-content-badge-score.is-medium .score {
+      color: rsa-color(amber);
+    }
+
+    .rsa-content-badge-score.is-low .score {
+      color: rsa-color(green);
+    }
+
     &__itemsContainer {
       position:relative
     }
