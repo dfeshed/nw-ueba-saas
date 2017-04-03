@@ -15,5 +15,13 @@
 			<recover>true</recover>
 		</job>		
 	</schedule>
-	
+	<!--<trigger>
+			<cron>
+				<name>user-tagging-hourly-trigger</name>
+				<group>Tagging</group>
+				<job-name>User</job-name>
+				<job-group>Tagging</job-group>
+				<cron-expression>0 0 12 * * ?</cron-expression>
+			</cron>
+		</trigger>-->
 </job-scheduling-data>
