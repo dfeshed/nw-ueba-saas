@@ -311,8 +311,8 @@ public class DgFileParseTest {
                 .setIpAddress("")
                 .setSourceDirectory("c:\\program files\\dgagent\\verity\\k2\\_nti40\\bin\\")
                 .setSourceFile("licensekey.dat")
-                .setSourceDriveType("Fixed")
-                .setDestinationDriveType("Fixed")
+                .setSourceDriveType("fixed")
+                .setDestinationDriveType("fixed")
                 .createDgEventAfterEtl();
         morphlineTester.testSingleLine(testCase, inputLine, expected.toString());
     }
