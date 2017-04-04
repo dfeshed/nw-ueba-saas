@@ -1,5 +1,6 @@
 package fortscale.ml.model;
 
+import com.google.common.collect.Sets;
 import fortscale.aggregation.feature.bucket.*;
 import fortscale.aggregation.util.MongoDbUtilService;
 import fortscale.common.feature.Feature;
@@ -15,7 +16,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
-import org.python.google.common.collect.Sets;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
