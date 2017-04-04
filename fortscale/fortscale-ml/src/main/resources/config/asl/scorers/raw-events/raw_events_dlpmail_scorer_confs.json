@@ -139,34 +139,7 @@
             "minimum-number-of-distinct-values-to-influence" : 0,
             "enough-number-of-distinct-values-to-influence" : 0,
             "use-certainty-to-calculate-score" : true
-          },
-            {
-              "type": "low-values-score-reducer",
-              "name": "attachment_file_size.normalized_username.dlpmail.scorer",
-              "base-scorer": {
-                "type": "continuous-values-model-scorer",
-                "name": "attachment_file_size.normalized_username.dlpmail.base.scorer",
-                "model": {
-                  "name": "attachment_file_size.normalized_username.dlpmail"
-                },
-                "quad-poly-calibration-conf": {
-                  "a1": 1500.0,
-                  "a2": 499999.0,
-                  "sensitivity": 1.0,
-                  "is-score-for-small-values": false
-                },
-                "number-of-samples-to-influence-enough": 30,
-                "use-certainty-to-calculate-score": true
-              },
-              "reduction-configs": [
-                {
-                  "reducingFeatureName": "attachment_file_size",
-                  "reducingFactor": 0,
-                  "maxValueForFullyReduce": 25000000,
-                  "minValueForNotReduce": 300000000
-                }
-              ]
-            } ]
+          } ]
         }
       ]
     }
