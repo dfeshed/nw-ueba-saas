@@ -10,42 +10,37 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import java.util.*;
 
-@Service("userActivityDlpTopApplicationsService")
-public class UserActivityDlpTopApplicationsService extends BaseUserActivityConfigurationService implements InitializingBean {
+@Service("userActivityTopApplicationsService")
+public class UserActivityTopApplicationsService extends BaseUserActivityConfigurationService implements InitializingBean {
 
-    private static final Logger logger = Logger.getLogger(UserActivityDlpTopApplicationsService.class);
+    private static final Logger logger = Logger.getLogger(UserActivityTopApplicationsService.class);
 
-    private static final String USER_ACTIVITY_DLP_TOP_APPLICATIONS_CONFIGURATION_KEY = "system.user_activity.dlp_top_applications";
+    private static final String USER_ACTIVITY_TOP_APPLICATIONS_CONFIGURATION_KEY = "system.user_activity.top_applications";
     private Map<String, UserActivityDataSourceConfiguration> activityDataSourceConfigurationMap = new HashMap<>();
 
     @PostConstruct
     public void init() throws Exception {
-//        activityDataSourceConfigurationMap.put("prnlog", new UserActivityDataSourceConfiguration("prnlog",
-//                "aggr_normalized_username_prnlog_hourly",
-//                UserActivityBaseHandler.AGGREGATED_FEATURES_PREFIX,
-//                UserActivityType.DLP_TOP_APPLICATIONS.name()));
-
         activityDataSourceConfigurationMap.put("dlpmail", new UserActivityDataSourceConfiguration("dlpmail",
                 "aggr_normalized_username_dlpmail_daily",
                 UserActivityBaseHandler.AGGREGATED_FEATURES_PREFIX,
-                UserActivityType.DLP_TOP_APPLICATIONS.name()));
+                UserActivityType.TOP_APPLICATIONS.name()));
 
 
         activityDataSourceConfigurationMap.put("dlpfile", new UserActivityDataSourceConfiguration("dlpfile",
                 "aggr_normalized_username_dlpfile_daily",
                 UserActivityBaseHandler.AGGREGATED_FEATURES_PREFIX,
-                UserActivityType.DLP_TOP_APPLICATIONS.name()));
+                UserActivityType.TOP_APPLICATIONS.name()));
 
     }
 
     @Override
     public String getActivityName() {
-        return UserActivityType.DLP_TOP_APPLICATIONS.name();
+        return UserActivityType.TOP_APPLICATIONS.name();
     }
 
     @Override
     protected String getConfigurationKey() {
-        return USER_ACTIVITY_DLP_TOP_APPLICATIONS_CONFIGURATION_KEY;
+        return USER_ACTIVITY_TOP_APPLICATIONS_CONFIGURATION_KEY;
     }
 
     @Override

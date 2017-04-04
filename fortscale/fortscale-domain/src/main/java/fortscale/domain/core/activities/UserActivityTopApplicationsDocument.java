@@ -9,12 +9,12 @@ import org.springframework.data.mongodb.core.mapping.Field;
 import java.util.HashMap;
 import java.util.Map;
 
-@Document(collection = UserActivityDlpTopApplicationsDocument.COLLECTION_NAME)
+@Document(collection = UserActivityTopApplicationsDocument.COLLECTION_NAME)
 @CompoundIndexes({@CompoundIndex(name = "user_start_time", def = "{'entityId': -1, 'startTime': 1}")})
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class UserActivityDlpTopApplicationsDocument extends UserActivityDocument {
+public class UserActivityTopApplicationsDocument extends UserActivityDocument {
 
-    public static final String COLLECTION_NAME = "user_activity_dlp_top_applications";
+    public static final String COLLECTION_NAME = "user_activity_top_applications";
     public static final String APPLICATION_FIELD_NAME = "applications";
     public static final String APPLICATION_HISTOGRAM_FIELD_NAME = APPLICATION_FIELD_NAME + "Histogram";
 

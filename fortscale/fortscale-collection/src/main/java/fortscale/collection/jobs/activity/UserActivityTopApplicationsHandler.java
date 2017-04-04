@@ -2,8 +2,8 @@ package fortscale.collection.jobs.activity;
 
 import fortscale.collection.services.UserActivityConfigurationService;
 import fortscale.collection.services.UserActivityDataSourceConfiguration;
-import fortscale.collection.services.UserActivityDlpTopApplicationsService;
-import fortscale.domain.core.activities.UserActivityDlpTopApplicationsDocument;
+import fortscale.collection.services.UserActivityTopApplicationsService;
+import fortscale.domain.core.activities.UserActivityTopApplicationsDocument;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.stereotype.Component;
@@ -15,17 +15,17 @@ import java.util.Map;
 
 @Configurable(preConstruction = true)
 @Component
-public class UserActivityDlpTopApplicationsHandler extends UserActivityBaseHandler {
+public class UserActivityTopApplicationsHandler extends UserActivityBaseHandler {
 
-    private static final UserActivityType ACTIVITY = UserActivityType.DLP_TOP_APPLICATIONS;
+    private static final UserActivityType ACTIVITY = UserActivityType.TOP_APPLICATIONS;
     public static final String APPLICATION_HISTOGRAM_FEATURE_NAME = "application_histogram";
 
     @Autowired
-    private UserActivityDlpTopApplicationsService userActivityDlpTopApplicationsConfigurationService;
+    private UserActivityTopApplicationsService userActivityTopApplicationsConfigurationService;
 
     @Override
     protected String getCollectionName() {
-        return UserActivityDlpTopApplicationsDocument.COLLECTION_NAME;
+        return UserActivityTopApplicationsDocument.COLLECTION_NAME;
     }
 
     @Override
@@ -40,13 +40,13 @@ public class UserActivityDlpTopApplicationsHandler extends UserActivityBaseHandl
 
     @Override
     protected UserActivityConfigurationService getUserActivityConfigurationService() {
-        return userActivityDlpTopApplicationsConfigurationService;
+        return userActivityTopApplicationsConfigurationService;
     }
 
     @Override
     protected List<String> getRelevantFields(String dataSource) throws IllegalArgumentException {
         final String dataSourceLowerCase = dataSource.toLowerCase();
-        UserActivityDataSourceConfiguration conf = userActivityDlpTopApplicationsConfigurationService.getActivityDataSourceConfigurationMap().get(dataSourceLowerCase);
+        UserActivityDataSourceConfiguration conf = userActivityTopApplicationsConfigurationService.getActivityDataSourceConfigurationMap().get(dataSourceLowerCase);
         if (conf != null) {
             return new ArrayList<>(Collections.singletonList(conf.getFeatureName()));
         } else {
@@ -56,7 +56,7 @@ public class UserActivityDlpTopApplicationsHandler extends UserActivityBaseHandl
 
     @Override
     protected List<Class> getRelevantDocumentClasses() {
-        return new ArrayList<>(Collections.singletonList(UserActivityDlpTopApplicationsDocument.class));
+        return new ArrayList<>(Collections.singletonList(UserActivityTopApplicationsDocument.class));
     }
 
     @Override

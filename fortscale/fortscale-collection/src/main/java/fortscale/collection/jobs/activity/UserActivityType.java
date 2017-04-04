@@ -10,11 +10,11 @@ public enum UserActivityType {
     TARGET_DEVICE(UserActivityTargetDeviceDocument.class),
     WORKING_HOUR(UserActivityWorkingHoursDocument.class),
     DATA_USAGE(UserActivityDataUsageDocument.class),
-    DLP_TOP_APPLICATIONS(UserActivityDlpTopApplicationsDocument.class);
+    TOP_APPLICATIONS(UserActivityTopApplicationsDocument.class);
 
     private final Class<? extends UserActivityDocument> documentClass;
 
-    UserActivityType(Class<? extends UserActivityDocument> clazz){
+    UserActivityType(Class<? extends UserActivityDocument> clazz) {
         this.documentClass = clazz;
     }
 
