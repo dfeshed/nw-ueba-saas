@@ -198,4 +198,8 @@ public class MorphlineMetrics extends StatsMetricsGroup {
 	// Number of records that were filtered out because their service name matched the Domain Controller regex
 	@StatsDoubleMetricParams(rateSeconds = 1)
 	public long dcRegexMatches;
+
+	// Number of reduced events (events that were filtered due to being equal to previous events)
+	@StatsDoubleMetricParams(rateSeconds = 1)
+	public long reducedEvents;
 }

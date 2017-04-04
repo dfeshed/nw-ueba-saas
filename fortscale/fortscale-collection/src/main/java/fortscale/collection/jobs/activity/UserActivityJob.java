@@ -11,6 +11,7 @@ import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
@@ -55,8 +56,9 @@ public class UserActivityJob extends FortscaleJob {
             try {
                 userActivityType = UserActivityType.valueOf(activityName.toUpperCase());
             } catch (Exception ex) {
-                logger.error("Activity " + activityName + " not found! exiting...");
-                throw new JobExecutionException("Activity " + activityName + " not found! exiting...");
+                final String msg = String.format("Activity %s not found! Valid activities are: %s. exiting...", activityName, Arrays.toString(UserActivityType.values()));
+                logger.error(msg);
+                throw new JobExecutionException(msg);
             }
         }
         runSequential = jobDataMapExtension.getJobDataMapBooleanValue(map, RUN_SEQUENTIAL_PARAM, false);

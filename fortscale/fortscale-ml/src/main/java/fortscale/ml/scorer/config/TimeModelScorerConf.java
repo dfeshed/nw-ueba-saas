@@ -3,12 +3,13 @@ package fortscale.ml.scorer.config;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.util.Assert;
 
 import java.util.List;
 
-@JsonAutoDetect(fieldVisibility = Visibility.NONE, getterVisibility = Visibility.NONE, setterVisibility = Visibility.ANY)
+@JsonAutoDetect(fieldVisibility = Visibility.NONE, getterVisibility = Visibility.ANY, setterVisibility = Visibility.ANY, isGetterVisibility = Visibility.ANY)
 public class TimeModelScorerConf extends ModelScorerConf {
 	public static final String SCORER_TYPE = "time-model-scorer";
 	public static final int DEFAULT_MAX_RARE_TIMESTAMP_COUNT = 5;
@@ -33,6 +34,7 @@ public class TimeModelScorerConf extends ModelScorerConf {
 		super(name, modelInfo, additionalModelInfos);
 	}
 
+	@JsonIgnore
 	@Override
 	public String getFactoryName() {
 		return SCORER_TYPE;

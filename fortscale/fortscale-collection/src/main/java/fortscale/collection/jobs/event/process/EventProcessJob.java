@@ -2,7 +2,7 @@ package fortscale.collection.jobs.event.process;
 
 import fortscale.collection.JobDataMapExtension;
 import fortscale.collection.io.BufferedLineReader;
-import fortscale.collection.metrics.ETLCommonJobMetircs;
+import fortscale.collection.metrics.ETLCommonJobMetrics;
 import fortscale.collection.monitoring.ItemContext;
 import fortscale.collection.morphlines.MorphlinesItemsProcessor;
 import fortscale.collection.morphlines.RecordExtensions;
@@ -11,6 +11,7 @@ import fortscale.collection.morphlines.metrics.MorphlineMetrics;
 import fortscale.collection.services.CollectionStatsMetricsService;
 import fortscale.services.UserService;
 import fortscale.services.classifier.Classifier;
+import fortscale.services.impl.ProcessExecutor;
 import fortscale.streaming.task.monitor.TaskMonitoringHelper;
 import fortscale.utils.hdfs.BufferedHDFSWriter;
 import fortscale.utils.hdfs.HDFSPartitionsWriter;
@@ -31,6 +32,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -41,6 +43,7 @@ import java.util.List;
 @DisallowConcurrentExecution
 public class EventProcessJob implements Job {
 
+	public static final String EVENT_PROCESS_JOB_PRE_PROCESS_SCRIPT = "EventProcessJob Pre Process Script";
 	private static Logger logger = LoggerFactory.getLogger(EventProcessJob.class);
 	
 	@Value("${collection.fetch.data.path}")
@@ -80,6 +83,7 @@ public class EventProcessJob implements Job {
 	protected String streamingTopic;
 	protected KafkaEventsWriter streamWriter;
     protected PartitionStrategy partitionStrategy;
+    protected String preProcessScriptPath;
 
 	String sourceName;
 
@@ -99,7 +103,7 @@ public class EventProcessJob implements Job {
 	@Autowired
 	protected StatsService statsService;
 
-	protected ETLCommonJobMetircs jobMetircs;
+	protected ETLCommonJobMetrics jobMetrics;
 
 	private MorphlineMetrics morphlineMetrics;
 
@@ -144,6 +148,7 @@ public class EventProcessJob implements Job {
         String strategy = jobDataMapExtension.getJobDataMapStringValue(map, "partitionStrategy");
         partitionStrategy = PartitionsUtils.getPartitionStrategy(strategy);
 
+		preProcessScriptPath = jobDataMapExtension.getJobDataMapStringValue(map, "preProcessScriptPath", false);
 
 	}
 	
@@ -151,12 +156,12 @@ public class EventProcessJob implements Job {
 	public void execute(JobExecutionContext context) throws JobExecutionException {
 
 		sourceName = context.getJobDetail().getKey().getGroup();
-		jobMetircs = collectionStatsMetricsService.getETLCommonJobMetircs(sourceName);
+		jobMetrics = collectionStatsMetricsService.getETLCommonJobMetrics(sourceName);
 		morphlineMetrics = collectionStatsMetricsService.getMorphlineMetrics(sourceName);
 
 		String jobName = context.getJobDetail().getKey().getName();
 
-		jobMetircs.processExecutions++;
+		jobMetrics.processExecutions++;
 		logger.info("{} {} job started", jobName, sourceName);
 
 
@@ -189,26 +194,32 @@ public class EventProcessJob implements Job {
 			// read each file and process lines
 			try {
 				for (File file : files) {
+					final String fileName = file.getName();
 					try {
-						jobMetircs.processFiles++;
-						logger.info("starting to process {}", file.getName());
-						
+						jobMetrics.processFiles++;
+						logger.info("starting to process {}", fileName);
+						if(preProcessScriptPath != null) {
+							final boolean preProcessSuccessful = runPreProcessScript(preProcessScriptPath, fileName); //todo: check if need full file name
+							if (!preProcessSuccessful) {
+								throw new Exception(String.format("Error running pre process script %s", preProcessScriptPath));
+							}
+						}
 						// transform events in file
 						boolean success = processFile(file);
-						
+
 						if (success) {
-							jobMetircs.processFilesSuccessfully++;
+							jobMetrics.processFilesSuccessfully++;
 							moveFileToFolder(file, finishPath);
 						} else {
-							jobMetircs.processFilesFailures++;
-							moveFileToFolder(file, errorPath);	
+							jobMetrics.processFilesFailures++;
+							moveFileToFolder(file, errorPath);
 						}
 			
-						logger.info("finished processing {}", file.getName());
+						logger.info("finished processing {}", fileName);
 					} catch (Exception e) {
 						moveFileToFolder(file, errorPath);
 
-						logger.error("error processing file " + file.getName(), e);
+						logger.error("error processing file " + fileName, e);
 						taskMonitoringHelper.error(currentStep, e.toString());
 					}
 					totalDone++;
@@ -257,15 +268,15 @@ public class EventProcessJob implements Job {
 
 			refreshImpala();
 			taskMonitoringHelper.finishStep(currentStep);
-			jobMetircs.processExecutionsSuccessfully++;
+			jobMetrics.processExecutionsSuccessfully++;
 		} catch (JobExecutionException e) {
 			taskMonitoringHelper.error(currentStep, e.toString());
-			jobMetircs.processExecutionsFailed++;
+			jobMetrics.processExecutionsFailed++;
 			throw e;
 		} catch (Exception exp) {
 			logger.error("unexpected error during event process job: " + exp.toString());
 			taskMonitoringHelper.error(currentStep, exp.toString());
-			jobMetircs.processExecutionsFailed++;
+			jobMetrics.processExecutionsFailed++;
 			throw new JobExecutionException(exp);
 		} finally {
 			//Before job goes down - all monitoring details will be saved to mongo
@@ -281,7 +292,7 @@ public class EventProcessJob implements Job {
 		File inputDir = new File(inputPath);
 		if (!inputDir.exists() || !inputDir.isDirectory()) {
 			logger.error("input path {} does not exists", inputDir.getAbsolutePath());
-			jobMetircs.processExecutionsFailedDirectoryNotExists++;
+			jobMetrics.processExecutionsFailedDirectoryNotExists++;
 			throw new JobExecutionException(String.format("input path %s does not exists", inputPath));
 		}
 
@@ -294,6 +305,11 @@ public class EventProcessJob implements Job {
 		File[] files = inputDir.listFiles(filter);
 		Arrays.sort(files);
 		return files;
+	}
+
+	private boolean runPreProcessScript(String scriptPath, String fileToPreProcess) {
+		final List<String> arguments = new ArrayList<>(Arrays.asList("python", scriptPath, fileToPreProcess));
+		return ProcessExecutor.executeProcess(EVENT_PROCESS_JOB_PRE_PROCESS_SCRIPT, arguments);
 	}
 
 
@@ -331,22 +347,22 @@ public class EventProcessJob implements Job {
 					numOfLines++;
 					//count that new event trying to processed from specific file
 					taskMonitoringHelper.handleNewEvent(file.getName());
-					jobMetircs.lines++;
+					jobMetrics.lines++;
 					Record record = processLine(line, itemContext);
 					if (record != null){
 						numOfSuccessfullyProcessedLines++;
 						//If success - write the event to monitoring. filed event monitoing handled by monitoring
 						Long timestamp = RecordExtensions.getLongValue(record, timestampField);
 						if (timestamp!=null){
-							jobMetircs.lastEventTime = timestamp;
+							jobMetrics.lastEventTime = timestamp;
 							taskMonitoringHelper.handleUnFilteredEvents(itemContext.getSourceName(),timestamp);
 						}
-						jobMetircs.linesSuccessfully++;
+						jobMetrics.linesSuccessfully++;
 					}
 					if (linesPrintEnabled && numOfLines % linesPrintSkip == 0) {
 						logger.info("{}/{} lines processed - {}% done", numOfLines, totalLines,
 								Math.round(((float)numOfLines / (float)totalLines) * 100));
-						jobMetircs.linesTotalFailures++;
+						jobMetrics.linesTotalFailures++;
 					}
 				}
 			}
@@ -356,7 +372,7 @@ public class EventProcessJob implements Job {
 			// flush hadoop
 			flushOutputAppender();
 			if (numOfLines != numOfSuccessfullyProcessedLines){
-				jobMetircs.processFilesSuccessfullyWithFailedLines++;
+				jobMetrics.processFilesSuccessfullyWithFailedLines++;
 			}
 		} catch (IOException e) {
 			logger.error("error processing file " + file.getName(), e);
@@ -390,13 +406,13 @@ public class EventProcessJob implements Job {
 		Record rec = morphline.process(line, itemContext);
 		Record record = null;
 		if(rec == null){
-			jobMetircs.linesFailuresInMorphline++;
+			jobMetrics.linesFailuresInMorphline++;
 			return null;
 		}
 		if (morphlineEnrichment != null) {
 			record = morphlineEnrichment.process(rec, itemContext);
 			if (record == null) {
-				jobMetircs.linesFailuresInMorphlineEnrichment++;
+				jobMetrics.linesFailuresInMorphlineEnrichment++;
 				return null;
 			}
 		} else {
@@ -422,7 +438,7 @@ public class EventProcessJob implements Job {
 
 			return record;
 		} else {
-			jobMetircs.linesFailuresInTecordToHadoopString++;
+			jobMetrics.linesFailuresInTecordToHadoopString++;
 			return null;
 		}
 	}

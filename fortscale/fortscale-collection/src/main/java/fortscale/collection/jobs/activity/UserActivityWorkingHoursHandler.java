@@ -76,6 +76,8 @@ public class UserActivityWorkingHoursHandler extends UserActivityBaseHandler {
                 dataSourceLowerCase.equals(UserActivityWorkingHoursConfigurationService.DATA_SOURCE_WAME_PROPERTY_NAME) ||
                 dataSourceLowerCase.equals(UserActivityWorkingHoursConfigurationService.DATA_SOURCE_PRNLOG_PROPERTY_NAME) ||
                 dataSourceLowerCase.equals(UserActivityWorkingHoursConfigurationService.DATA_SOURCE_NTLM_PROPERTY_NAME) ||
+                dataSourceLowerCase.equals(UserActivityWorkingHoursConfigurationService.DATA_SOURCE_DLPMAIL_PROPERTY_NAME) ||
+                dataSourceLowerCase.equals(UserActivityWorkingHoursConfigurationService.DATA_SOURCE_DLPFILE_PROPERTY_NAME) ||
                 dataSourceLowerCase.equals(UserActivityWorkingHoursConfigurationService.DATA_SOURCE_VPN_PROPERTY_NAME)) {
             return Collections.singletonList(AGGREGATED_FEATURES_HISTOGRAM);
         } else {
