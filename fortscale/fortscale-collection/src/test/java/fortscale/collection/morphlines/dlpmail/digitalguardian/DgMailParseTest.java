@@ -52,7 +52,7 @@ public class DgMailParseTest {
 	@Test
 	public void test_parse_file() {
 		String testCase = "Test the parsing (see if the fields are where we expect them)";
-		final String inputLine = "2016.06.12,06/12/2016 11:04,06/12/2016 16:04,outlook.exe,verdasys\\rkeizer-vm-w81,Windows,,,,,,Robert,Keizer,18E1DA6C-D322-1B41-A10C-E4FCD9446E5A,verdasys\\rkeizer,,microsoft,F022AD53C4EF895E6BA8E5D5BB57C9C11984D7A8,11F98624A0150CE5D067B851EF13E7E9EAE1F09260B1FEBFAEA8D3CD013C0DB8,microsoft outlook,15.0.4823.1000,Scanned,05/12/2016 12:37,Virus Total: 0 / 56 scans positive.,,,,,outlook,rkeizer@digitalguardian.com,meeting minutes,,6F260640-F4E2-1037-2E6E-806E7F2DFDB9,10.9.9.9,,3540464d922ae137393c446234015b4e,4d464035-2a92-37e1-393c-446234015b4e,Outbound,Send Mail,,0,,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,1,FALSE,0,FALSE,FALSE,FALSE,,,,,,,removal policy,,,,,,Not Blocked,286694,0,c:\\users\\rkeizer\\documents\\hr\\forms\\,ppo enroll form - signed.pdf,,pdf,0BC5E66B-30B7-11E6-8279-C869CD986175,286694,FALSE,digitalguardian.com,jmurnane@digitalguardian.com,To,,ppo enroll form - signed.pdf,,c:\\users\\rkeizer\\documents\\hr\\forms\\,ppo enroll form - signed.pdf,,pdf,,FALSE,FALSE,TRUE,0,0,FALSE,FALSE,FALSE,Fixed,c09427ce-3153-ea9f-8483-f28441f4669f,None,,rkeizer@digitalguardian.com,,,,,Unknown";
+		final String inputLine = "2016.06.12,06/12/2016 11:04,06/12/2016 16:04,outlook.exe,keizer-vm-w81,Windows,,,,,,Robert,Keizer,18E1DA6C-D322-1B41-A10C-E4FCD9446E5A,keizer,,microsoft,F022AD53C4EF895E6BA8E5D5BB57C9C11984D7A8,11F98624A0150CE5D067B851EF13E7E9EAE1F09260B1FEBFAEA8D3CD013C0DB8,microsoft outlook,15.0.4823.1000,Scanned,05/12/2016 12:37,Virus Total: 0 / 56 scans positive.,,,,,outlook,rkeizer@digitalguardian.com,meeting minutes,,6F260640-F4E2-1037-2E6E-806E7F2DFDB9,10.9.9.9,,3540464d922ae137393c446234015b4e,4d464035-2a92-37e1-393c-446234015b4e,Outbound,Send Mail,,0,,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,1,FALSE,0,FALSE,FALSE,FALSE,,,,,,,removal policy,,,,,,Not Blocked,286694,0,c:\\users\\rkeizer\\documents\\hr\\forms\\,ppo enroll form - signed.pdf,,pdf,0BC5E66B-30B7-11E6-8279-C869CD986175,286694,FALSE,digitalguardian.com,jmurnane@digitalguardian.com,To,,ppo enroll form - signed.pdf,,c:\\users\\rkeizer\\documents\\hr\\forms\\,ppo enroll form - signed.pdf,,pdf,,FALSE,FALSE,TRUE,0,0,FALSE,FALSE,FALSE,Fixed,c09427ce-3153-ea9f-8483-f28441f4669f,None,,rkeizer@digitalguardian.com,,,,,Unknown";
 
 		DgMailEventAfterEtl expected = new DgMailEventAfterEtlBuilder()
 				.setDateTime("2016-06-12 16:04:00")
@@ -60,11 +60,11 @@ public class DgMailParseTest {
 				.setEventDescription("Send Mail")
 				.setEventType("attachment")
 				.setEventId("6F260640-F4E2-1037-2E6E-806E7F2DFDB9")
-				.setUsername("verdasys\\rkeizer")
+				.setUsername("keizer")
 				.setFullName("Robert Keizer")
 				.setIpAddress("10.9.9.9")
-				.setHostname("verdasys\\rkeizer-vm-w81")
-				.setNormalizedSrcMachine("verdasys\\rkeizer-vm-w81")
+				.setHostname("keizer-vm-w81")
+				.setNormalizedSrcMachine("keizer-vm-w81")
 				.setApplication("outlook.exe")
 				.setDestinationFile("ppo enroll form - signed.pdf")
 				.setDetailFileSize(286694)
@@ -110,38 +110,38 @@ public class DgMailParseTest {
 		morphlineTester.testSingleLineFiltered(testCase, inputLine);
 	}
 
-	@Test
-	public void test_remove_verdasys_prefix() {
-		String testCase = "Test that the verdasys\r prefix is removed";
-		DgMailEventInput input = new DgMailEventInputBuilder()
-				.setAgentUtcTime("06/12/2016 16:04")
-				.setOperation("Send Mail")
-				// interesting test stuff starts here
-				.setComputerName("verdasys\rexample_hostname")
-				.setUsername("verdasys\rexample_username")
-				.createDgEvent();
-
-		DgMailEventAfterEtl expected = new DgMailEventAfterEtlBuilder()
-				.setDateTime("2016-06-12 16:04:00")
-				.setDateTimeUnix("1465747440")
-				.setEventDescription("Send Mail")
-				.setFullName("some_givenName some_surname")
-				.setEventType("attachment")
-				.setIsAttachmentExtensionBlacklisted("false")
-				.setIsExternal(true)
-				.setNumOfRecipients(0)
-				.setDataSource("dlpmail")
-				.setLastState("etl")
-				.setEmailRecipient("some_emailRecipient") // because the parsing wont find the domain - this is ok for this test
-				.setEmailRecipientDomain("some_emailRecipient") // because the parsing wont find the domain - this is ok for this test
-				// interesting test stuff starts here
-				.setHostname("example_hostname")
-				.setNormalizedSrcMachine("example_hostname")
-				.setUsername("example_username")
-				.createDgEventAfterEtl();
-
-		runOneLineTestWithDummyEvent(testCase, input, expected);
-	}
+//	@Test
+//	public void test_remove_verdasys_prefix() {
+//		String testCase = "Test that the verdasys\r prefix is removed";
+//		DgMailEventInput input = new DgMailEventInputBuilder()
+//				.setAgentUtcTime("06/12/2016 16:04")
+//				.setOperation("Send Mail")
+//				// interesting test stuff starts here
+//				.setComputerName("verdasys\rexample_hostname")
+//				.setUsername("verdasys\rexample_username")
+//				.createDgEvent();
+//
+//		DgMailEventAfterEtl expected = new DgMailEventAfterEtlBuilder()
+//				.setDateTime("2016-06-12 16:04:00")
+//				.setDateTimeUnix("1465747440")
+//				.setEventDescription("Send Mail")
+//				.setFullName("some_givenName some_surname")
+//				.setEventType("attachment")
+//				.setIsAttachmentExtensionBlacklisted("false")
+//				.setIsExternal(true)
+//				.setNumOfRecipients(0)
+//				.setDataSource("dlpmail")
+//				.setLastState("etl")
+//				.setEmailRecipient("some_emailRecipient") // because the parsing wont find the domain - this is ok for this test
+//				.setEmailRecipientDomain("some_emailRecipient") // because the parsing wont find the domain - this is ok for this test
+//				// interesting test stuff starts here
+//				.setHostname("example_hostname")
+//				.setNormalizedSrcMachine("example_hostname")
+//				.setUsername("example_username")
+//				.createDgEventAfterEtl();
+//
+//		runOneLineTestWithDummyEvent(testCase, input, expected);
+//	}
 
 	@Test
 	public void test_remove_quotes_from_email_sender_and_recipient() {

@@ -255,8 +255,8 @@ public class ApiSystemSetupTagsController extends BaseController {
     @ApiOperation(value = "Get user tagging job status")
     public UserTaggingExecutionStatus getJobStatus() {
         Map<String, Long> usersAffected = new HashMap<>();
-        long lastExecutionFinishTime = -1;
-        long lastExecutionStartTime = -1;
+        Long lastExecutionFinishTime = null;
+        Long lastExecutionStartTime = null;
         boolean isRunning = false;
         String errorMessage = null;
         if (isRunning()) {
