@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import { not, readOnly } from 'ember-computed-decorators';
+import computed, { not, readOnly } from 'ember-computed-decorators';
 import { SpanielObserver } from 'spaniel';
 
 import layout from './template';
@@ -16,6 +16,12 @@ export default Component.extend({
   tooltipData: null,
   viewportEntered: false,
   @readOnly @not('viewportEntered') viewportExited: null,
+
+  @computed('packet')
+  className: (packet) => {
+    const continuation = packet.isContinuation ? 'is-continuation' : '';
+    return `rsa-packet ${packet.side} ${continuation}`;
+  },
 
   /**
    * The number of bytes to display closely packed together, without a blank space.

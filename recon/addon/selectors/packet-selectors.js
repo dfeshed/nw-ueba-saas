@@ -41,13 +41,13 @@ export const payloadProcessedPackets = createSelector(
     return packets.reduce((acc, currentPacket) => {
       let { bytes } = currentPacket;
       if (isPayloadOnly) {
-        // Get the previous packet
-        const previousPacket = acc[acc.length - 1];
         // Filter out header/footer items from the current packet
         bytes = bytes.filter((b) => !b.isHeader && !b.isFooter);
         // See if it's the same side
-        if (previousPacket && previousPacket.side === currentPacket.side) {
-          // Same side, so concat bytes to previous packet's bytes
+        if (currentPacket.isContinuation) {
+          // Get the previous packet
+          const previousPacket = acc[acc.length - 1];
+          // Concat bytes to previous packet's bytes
           previousPacket.bytes = previousPacket.bytes.concat(bytes);
           // Update the byteRows with the new bytes that were added
           previousPacket.byteRows = bytesAsRows(previousPacket.bytes);

@@ -75,6 +75,18 @@ const allFilesSelection = (setTo) => {
   });
 };
 
+const isContinuation = (() => {
+  let _previousSide;
+  return (side) => {
+    if (side === _previousSide) {
+      return true;
+    } else {
+      _previousSide = side;
+      return false;
+    }
+  };
+})();
+
 const data = handleActions({
   [ACTION_TYPES.INITIALIZE]: (state, { payload }) => {
     // only clear out data if its a new event
@@ -251,6 +263,7 @@ const augmentPackets = (data, previousPosition = 0) => {
   return data.map((d, i) => ({
     ...d,
     side: d.side === 1 ? 'request' : 'response',
+    isContinuation: isContinuation(d.side),
     position: previousPosition + i + 1
   }));
 };

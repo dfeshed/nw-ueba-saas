@@ -1,5 +1,14 @@
 .rsa-packet {
   border-top: 1px rsa-color(blue) solid;
+  &.is-continuation {
+    border-top: none;
+    .request-response-header {
+      display: none;
+    }
+    .packet-details {
+      margin-top: 0;
+    }
+  }
 
   &__header,
   &.rsa-text-entry {
