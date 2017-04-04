@@ -25,12 +25,10 @@ import java.util.List;
  * Created by rans on 27/10/15.
  */
 @Configuration
-// todo: should be enabled for each service separately
-@EnableMongoRepositories(basePackages = "fortscale")
 // scan converters defined at fortscale domain
 // todo each converter should be imported separately
 @ComponentScan(basePackages = "fortscale.domain",includeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = Converter.class),excludeFilters = @ComponentScan.Filter(type = FilterType.REGEX,pattern = ".*(?<!Converter)$"))
-public class SpringMongoConfiguration extends AbstractMongoConfiguration {
+public class MongoConfig extends AbstractMongoConfiguration {
 
     @Autowired
     private List<Converter> converters;
@@ -42,7 +40,7 @@ public class SpringMongoConfiguration extends AbstractMongoConfiguration {
     private int mongoHostPort;
 
     @Value("${mongo.db.name}")
-    private String mongoDBName;
+    protected String mongoDBName;
 
     @Value("${mongo.db.user}")
     private String mongoUserName;
