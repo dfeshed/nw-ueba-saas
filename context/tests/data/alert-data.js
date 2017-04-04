@@ -1,10 +1,10 @@
-export default { 'Alerts': [{
+export default { 'Alerts': {
   'resultId': '5b633727-ca0c-4c6e-b869-db65b1256fa8\/2',
   'queryId': 'd736d47c-8f2a-45b3-b4ad-1b88d6044af8',
   'datasourceId': '57c7e594b3b318b147f79fc6',
   'dataSourceName': 'IMConn_Alerts_datasource',
   'dataSourceType': 'Alerts',
-  'resultList': [
+  'data': [
     {
       '_id': {
         '$oid': '56b2f16de4b07ebea57c4a3c'
@@ -132,4 +132,4 @@ export default { 'Alerts': [{
   'failed': false,
   'errorMessage': null,
   'maxPages': 0
-}] };
+} };

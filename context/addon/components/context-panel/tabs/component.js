@@ -6,7 +6,7 @@ import TabList from 'context/config/dynamic-tab';
 import * as ContextActions from 'context/actions/context-creators';
 import layout from './template';
 
-const NO_COUNT_TABS = ['overview', 'liveConnect'];
+const NO_COUNT_TABS = ['overview', 'LiveConnect-Ip'];
 
 const {
   Component
@@ -14,7 +14,8 @@ const {
 
 const stateToComputed = ({ context }) => ({
   activeTabName: context.activeTabName,
-  dataSources: context.dataSources
+  dataSources: context.dataSources,
+  meta: context.meta
 });
 
 const dispatchToActions = (dispatch) => ({
@@ -25,7 +26,7 @@ const determineTabCountText = (tabName, tabData = []) => {
   if (NO_COUNT_TABS.indexOf(tabName) > -1) {
     return '';
   } else {
-    return `(${tabData.length})`;
+    return (tabData.data) ? `(${tabData.data.length})` : '(0)';
   }
 };
 
@@ -41,15 +42,15 @@ const TabsComponent = Component.extend({
    * for the current meta. Then determines countText to display for each tab.
    * columns only recomputes when the context item changes.
    */
-  @computed('model.meta')
-  tabs(meta) {
+  @computed('meta', 'dataSources')
+  tabs(meta, dataSources) {
     const tabList = TabList.find((tab) => tab.tabType === meta);
 
     // Set the toolbar from the selected tab configuration
     this.set('toolbar', tabList.toolbar);
 
     // Map over the columns and build the tab count text for each tab
-    return tabList.columns.map((tab) => ({
+    return tabList.columns.filter((tab) => tab.tabRequired && (tab.dataSourceType === 'overview' || dataSources.includes(tab.dataSourceType))).map((tab) => ({
       ...tab,
       countText: determineTabCountText(tab.field, this.get('model.contextData')[tab.dataSourceType])
     }));

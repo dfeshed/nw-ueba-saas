@@ -44,6 +44,10 @@ const getDataSources = () => {
 
 const initializeContextPanel = ({ entityId, entityType }) => {
   return (dispatch) => {
+    dispatch({
+      type: ACTION_TYPES.INITIALIZE_CONTEXT_PANEL,
+      payload: { lookupKey: entityId, meta: entityType }
+    });
     dispatch(getDataSources());
     fetchData(
       {

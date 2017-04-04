@@ -1,4 +1,4 @@
-export default [{
+export default {
   class: 'rsa-context-panel__grid__host-details',
   dataSourceGroup: 'Machines',
   header: 'context.incident.header',
@@ -86,4 +86,4 @@ export default [{
       }]
     }
   ]
-}];
+};

@@ -1,1 +1,0 @@
-export { default } from 'context/components/context-panel/date-time/component';

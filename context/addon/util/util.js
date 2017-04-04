@@ -3,36 +3,12 @@
  * @public
  */
 import Ember from 'ember';
-import Iioc from 'context/config/iioc';
 
 const { isEmpty } = Ember;
 
 const THIRTY_DAYS = 1000 * 60 * 60 * 24 * 30;
 
 export default {
-
-  getIocs(iocsData) {
-    const iiocs = [];
-    if (iocsData === undefined || iocsData == null || iocsData.length === 0) {
-      return null;
-    }
-    const iioc = Iioc.create({ 'iiocLevel0': [], 'iiocLevel1': [], 'iiocLevel2': [], 'iiocLevel3': [] });
-
-    iocsData.forEach(function(entry) {
-      if ('0' === entry.IOCLevel) {
-        iioc.iiocLevel0.push(entry.Description);
-      } else if ('1' === entry.IOCLevel) {
-        iioc.iiocLevel1.push(entry.Description);
-      } else if ('2' === entry.IOCLevel) {
-        iioc.iiocLevel2.push(entry.Description);
-      } else if ('3' === entry.IOCLevel) {
-        iioc.iiocLevel3.push(entry.Description);
-      }
-    });
-
-    iiocs.push(iioc);
-    return iiocs;
-  },
 
   /**
    * Filters last 30 days' data

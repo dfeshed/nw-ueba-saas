@@ -1,4 +1,4 @@
-export default [{
+export default {
   class: 'rsa-context-panel__grid__archer-details',
   dataSourceGroup: 'Archer',
   header: '',
@@ -78,4 +78,4 @@ export default [{
     field: 'IP Address',
     title: 'context.hostSummary.riskScore'
   }
-}];
+};

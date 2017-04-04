@@ -12,6 +12,10 @@ moduleForComponent('context-panel/body', 'Integration | Component | context-pane
 
 test('it renders', function(assert) {
   this.set('alertsData', alertData);
+  this.get('redux').dispatch({
+    type: ACTION_TYPES.INITIALIZE_CONTEXT_PANEL,
+    payload: { lookupKey: '1.1.1.1', meta: 'IP' }
+  });
   this.get('redux').dispatch({ type: ACTION_TYPES.GET_ALL_DATA_SOURCES, payload: ['Alerts'] });
   this.render(hbs`{{context-panel/body contextData=alertsData}}`);
   assert.equal(this.$('.rsa-data-table-header-cell').length, 6, 'Testing count of data header cells');

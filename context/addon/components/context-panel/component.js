@@ -122,7 +122,7 @@ const ContextComponent = Component.extend({
     }
   },
 
-  _setTimeRangeData(contextData) {
+  _setTimeRangeData(contextDataForDS, contextData) {
     if (contextData.resultMeta && contextData.resultMeta.timeQuerySubmitted) {
       let timeWindow = 'All Data';
       const timeCount = contextData.resultMeta['timeFilter.timeUnitCount'];
@@ -132,39 +132,48 @@ const ContextComponent = Component.extend({
         timeUnitString = this.get('i18n').t(`context.timeUnit.${timeUnit}`);
         timeWindow = `${timeCount} ${timeUnitString}`;
       }
-      this.get('model').contextData[`${contextData.dataSourceGroup}_LASTUPDATED`] =
-          contextData.resultMeta.timeQuerySubmitted;
-      this.get('model').contextData[`${contextData.dataSourceGroup}_TIMEWINDOW`] = timeWindow;
+      contextDataForDS.lastUpdated = contextData.resultMeta.timeQuerySubmitted;
+      contextDataForDS.timeWindow = timeWindow;
     }
     return contextData;
   },
 
   _populateContextData(contextDatum) {
     const contextData = this.get('model.contextData');
-
+    const contextDataForDS = contextData[contextDatum.dataSourceGroup] || {};
     // Did individual piece of context data have error?
     // store that error so it can be displayed by renderer
     if (contextDatum.errorMessage || contextDatum.failed) {
       Logger.error('Error processing stream call for context lookup for data source ->', contextDatum.dataSourceName);
       this._enrichDataSourceError(contextDatum);
-      contextData.set(`${contextDatum.dataSourceGroup}_ERROR`, contextDatum.errorMessage);
+      contextDataForDS.errorMessage = contextDatum.errorMessage;
+      contextData.set(contextDatum.dataSourceGroup, contextDataForDS);
       return;
     }
 
-    this._setTimeRangeData(contextDatum);
+    this._setTimeRangeData(contextDataForDS, contextDatum);
 
     switch (contextDatum.dataSourceGroup) {
       case 'Modules': {
-        contextData.set('additionalData', contextDatum.resultMeta);
         if (contextDatum.resultMeta.iocScore_gte) {
-          contextData.set(`${contextDatum.dataSourceGroup}_HEADER`, ` (IIOC Score > ${contextDatum.resultMeta.iocScore_gte})`);
+          contextDataForDS.header = ` (IIOC Score > ${contextDatum.resultMeta.iocScore_gte})`;
         }
-        contextData.set(contextDatum.dataSourceGroup, contextDatum.resultList);
+        contextDataForDS.data = contextDatum.resultList;
+        contextDataForDS.resultMeta = contextDatum.resultMeta;
+        contextData.set(contextDatum.dataSourceGroup, contextDataForDS);
         break;
       }
-
+      case 'Machines': {
+        if (contextData.get('Modules.resultMeta.total_modules_count')) {
+          contextDatum.resultList[0].total_modules_count = contextData.get('Modules.resultMeta.total_modules_count');
+        }
+        contextDataForDS.data = contextDatum.resultList;
+        contextData.set(contextDatum.dataSourceGroup, contextDataForDS);
+        break;
+      }
       case 'LIST': {
-        contextData.set('LIST', (contextData.get('LIST') || []).concat(contextDatum));
+        contextDataForDS.data = (contextDataForDS.data || []).concat(contextDatum);
+        contextData.set(contextDatum.dataSourceGroup, contextDataForDS);
         break;
       }
 
@@ -182,7 +191,8 @@ const ContextComponent = Component.extend({
         break;
 
       default:
-        contextData.set(contextDatum.dataSourceGroup, contextDatum.resultList);
+        contextDataForDS.data = contextDatum.resultList;
+        contextData.set(contextDatum.dataSourceGroup, contextDataForDS);
     }
   },
 
@@ -267,8 +277,10 @@ const ContextComponent = Component.extend({
       resultList.forEach((obj) => {
         if (obj && obj.record && obj.record.length) {
           const entityType = liveConnectObj[relatedEntities.dataSourceType];
-          this.get('model').contextData[entityType.relatedEntity] =
-            obj.record[0][entityType.relatedEntity][entityType.relatedEntityResponse];
+          const contextData = this.get('model.contextData');
+          const contextDataForDS = contextData[entityType.relatedEntity] || {};
+          contextDataForDS.data = obj.record[0][entityType.relatedEntity][entityType.relatedEntityResponse];
+          contextData.set(entityType.relatedEntity, contextDataForDS);
         }
       });
     }

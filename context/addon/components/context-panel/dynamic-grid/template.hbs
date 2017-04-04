@@ -1,25 +1,25 @@
 <div class="rsa-context-panel__grid__heading-text">
-  {{t title}}
-  <span title={{t 'context.hostSummary.title'}}></span>
-  {{#if lastUpdated}}
-    <span title={{t 'context.hostSummary.title'}}>
-      {{t 'context.timeWindow'}}{{timeWindow}} |
-      {{t 'context.lastUpdated'}}{{rsa-content-datetime timestamp=lastUpdated asTimeAgo=true}}
+  {{t dSDetails.title}}
+  <span title={{t dSDetails.title}}></span>
+  {{#if contextData.lastUpdated}}
+    <span title={{t dSDetails.title}}>
+      {{t 'context.timeWindow'}}{{contextData.timeWindow}} |
+      {{t 'context.lastUpdated'}}{{rsa-content-datetime timestamp=contextData.lastUpdated asTimeAgo=true}}
     </span>
   {{/if}}
 </div>
-{{#if errorMessage}}
-  <div class='rsa-context-panel__error-text'>{{rsa-icon style='lined' name='report-problem-triangle'}} {{errorMessage}}</div>
+{{#if contextData.errorMessage}}
+  <div class='rsa-context-panel__error-text'>{{rsa-icon style='lined' name='report-problem-triangle'}} {{contextData.errorMessage}}</div>
 {{else}}
-  {{#if (gt array.length 0)}}
-    {{#each array as |data|}}
+  {{#if (gt getDataSourceData.length 0)}}
+    {{#each getDataSourceData as |data|}}
       <hbox>
         <vbox class="rsa-context-panel__grid__host-details__header-data">
-          <span title= {{get data columns.firstRow.field}}>{{get data columns.firstRow.field}}</span>
+          <span title= {{get data dSDetails.firstRow.field}}>{{get data dSDetails.firstRow.field}}</span>
         </vbox>
       </hbox>
-      <hbox class={{columns.class}}>
-        {{#each columns.columns as |columnsdata|}}
+      <hbox class={{dSDetails.columns.class}}>
+        {{#each dSDetails.columns as |columnsdata|}}
           <vbox class={{columnsdata.class}}>
             {{#each columnsdata.cell as |cellData index|}}
               {{#if (eq cellData.dataType 'link')}}
@@ -39,27 +39,7 @@
                   invertColor=true
                 }}
               {{else if (eq cellData.dataType 'group')}}
-                <vbox>
-                  <div class="rsa-context-panel__grid__host-details__field-name">{{t cellData.title}}</div>
-                  {{#rsa-content-tethered-panel-trigger class="rsa-context-panel__grid__host-details__tetheredPanel" panel=(concat cellData.count index) }}
-                    <div class="rsa-context-panel__grid__host-details__groupdata">{{get data cellData.count}}</div>
-                  {{/rsa-content-tethered-panel-trigger}}
-                  {{#rsa-content-tethered-panel panelId=(concat cellData.count index) displayCloseButton=false position='top-left'}}
-                    <section>
-                      {{#if (gt (get data cellData.count) 1)}}
-                        {{#each (get data cellData.field) as |cellData |}}
-                          <div class="rsa-context-panel__grid__host-details__field-value">
-                            <span title= {{cellData}}>{{cellData}}</span>
-                          </div>
-                        {{/each}}
-                      {{else}}
-                        <div class="rsa-context-panel__grid__host-details__field-value">
-                          <span title= {{get data cellData.field}}>{{get data cellData.field}}</span>
-                        </div>
-                      {{/if}}
-                    </section>
-                  {{/rsa-content-tethered-panel}}
-                </vbox>
+                {{context-panel/dynamic-grid/group data=(get data cellData.field) title=cellData.title index=index}}
               {{else}}
                 {{#if cellData.displayField}}
                   <vbox></vbox>

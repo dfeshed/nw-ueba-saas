@@ -1,4 +1,4 @@
-export default [{
+export default {
   class: 'rsa-context-panel__grid__ad-details',
   dataSourceGroup: 'Users',
   header: '',
@@ -77,4 +77,4 @@ export default [{
     field: 'fullName',
     title: 'context.hostSummary.riskScore'
   }
-}];
+};

@@ -1,6 +1,6 @@
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
-import endpointColumns from 'context/config/machines';
+import dSDetails from 'context/config/machines';
 
 
 moduleForComponent('context-panel/dynamic-grid', 'Integration | Component | context panel/dynamic grid', {
@@ -8,7 +8,7 @@ moduleForComponent('context-panel/dynamic-grid', 'Integration | Component | cont
 });
 // TODO: skipping this test for now, as need to change input data according to the dynamic grid
 test('Testing grid rendered', function(assert) {
-  const data = [{
+  const contextData = { data: [{
     'OperatingSystem': 'Microsoft Windows Server 2012 R2 Standard',
     'Platform': '64-bit (x64)',
     'DNS': '10.100.174.10',
@@ -38,12 +38,12 @@ test('Testing grid rendered', function(assert) {
     'OrganizationUnit': '',
     'Country': 'USA',
     'Online': 'True'
-  }];
+  } ] };
 
 
-  this.set('ecatData', data);
-  this.set('ecatColumns', Object.assign({}, ...endpointColumns));
-  this.render(hbs`{{context-panel/dynamic-grid columns=ecatColumns array=ecatData }}`);
+  this.set('contextData', contextData);
+  this.set('dSDetails', dSDetails);
+  this.render(hbs`{{context-panel/dynamic-grid contextData=contextData dSDetails=dSDetails }}`);
 
   assert.equal(this.$('.rsa-context-panel__grid__heading-text').length, 1, 'Testing count of grid header rendered');
   assert.equal(this.$('.rsa-context-panel__grid__host-details__field-value').length, 11, 'Testing count of fields rendered');

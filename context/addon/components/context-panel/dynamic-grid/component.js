@@ -1,19 +1,31 @@
-import Ember from 'ember';
 import layout from './template';
+import connect from 'ember-redux/components/connect';
 import computed from 'ember-computed-decorators';
+import Component from 'ember-component';
+import * as ContextActions from 'context/actions/context-creators';
 import { riskScoreToBadgeLevel } from 'context/helpers/risk-score-to-badge-level';
 
-const {
-  Component
-} = Ember;
 
-export default Component.extend({
+const stateToComputed = ({ context }) => ({
+  activeTabName: context.activeTabName
+});
+
+const dispatchToActions = (dispatch) => ({
+  activate: (tabName) => dispatch(ContextActions.updateActiveTab(tabName))
+});
+
+const DynamicGridComponent = Component.extend({
   layout,
   classNames: 'rsa-context-panel__grid',
 
+  @computed('contextData', 'activeTabName')
+  getDataSourceData: (contextData, activeTabName) => {
+    return (activeTabName === 'overview') ? contextData.data.slice(0, 5) : contextData.data;
+  },
+
   actions: {
     activate(option) {
-      this.sendAction('activatePanel', option);
+      this.send('activatePanel', option);
     }
   },
 
@@ -22,3 +34,4 @@ export default Component.extend({
     return riskScoreToBadgeLevel(score).badgeLevel;
   }
 });
+export default connect(stateToComputed, dispatchToActions)(DynamicGridComponent);

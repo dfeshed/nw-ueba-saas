@@ -1,17 +1,17 @@
 <div class="rsa-context-panel__context-data-table__heading-text" >
-  {{title}}{{headerdata}}
-  {{#if lastUpdated}}
-    <span title= {{title}}>
-      {{t 'context.timeWindow'}}{{timeWindow}} |
-      {{t 'context.lastUpdated'}}{{rsa-content-datetime timestamp=lastUpdated asTimeAgo=true}}
+  {{t dSDetails.title}}{{contextData.header}}
+  {{#if contextData.lastUpdated}}
+    <span title= {{t dSDetails.title}}>
+      {{t 'context.timeWindow'}}{{contextData.timeWindow}} |
+      {{t 'context.lastUpdated'}}{{rsa-content-datetime timestamp=contextData.lastUpdated asTimeAgo=true}}
     </span>
   {{/if}}
 </div>
-{{#if errorMessage}}
-  <div class='rsa-context-panel__error-text'>{{rsa-icon style='lined' name='report-problem-triangle'}} {{errorMessage}}</div>
-{{else if data}}
+{{#if contextData.errorMessage}}
+  <div class='rsa-context-panel__error-text'>{{rsa-icon style='lined' name='report-problem-triangle'}} {{contextData.errorMessage}}</div>
+{{else}}
   <div class="rsa-context-panel__context-data-table__panel">
-    {{#rsa-data-table lazy=true items=data columnsConfig=modulesColumnListConfig}}
+    {{#rsa-data-table lazy=true items=getDataSourceData columnsConfig=dSDetails.columns}}
       {{#rsa-data-table/header as |column|}}
         <span class="js-move-handle js-header-cell {{column.class}} title rsa-data-table-title" title="{{if column.title (t column.title) column.field}}">{{if column.title (t column.title) column.field}}</span>
       {{/rsa-data-table/header}}
@@ -29,7 +29,7 @@
         {{else if (eq column.dataType 'datetime')}}
           {{#rsa-data-table/body-cell item=item index=index column=column}}
             {{#if (eq column.nested '')}}
-              {{rsa-content-datetime timestamp=item }}{{rsa-content-datetime timestamp=item asTimeAgo=true}}
+              {{rsa-content-datetime timestamp=(get item column.field) }}{{rsa-content-datetime timestamp=(get item column.field) asTimeAgo=true}}
             {{else}}
               {{rsa-content-datetime timestamp=(get item column.nested )}}{{rsa-content-datetime timestamp=(get item column.nested )  asTimeAgo=true}}
             {{/if}}
@@ -50,15 +50,13 @@
               <span class={{column.className}} title={{get item column.field}}>{{get item column.field}}</span>
             {{/rsa-data-table/body-cell}}
           {{else}}
-            {{rsa-data-table/body-cell item=(get item column.nested) index=index column=column isInline=true }}
+            {{rsa-data-table/body-cell item=(get item column.nested) column=column isInline=true }}
           {{/if}}
         {{/if}}
       {{/rsa-data-table/body}}
     {{/rsa-data-table}}
   </div>
-  {{#if (eq tabdata 'overview')}}
-    <div class="rsa-context-panel__context-data-table__border"><button class="rsa-context-panel__context-data-table__button" {{action 'activate'}}>{{t 'context.footer.viewAll'}}</button></div>
+  {{#if (eq activeTabName 'overview')}}
+    <div class="rsa-context-panel__context-data-table__border"><button class="rsa-context-panel__context-data-table__button" {{action 'viewAll' dSDetails.dataSourceGroup}}>{{t 'context.footer.viewAll'}}</button></div>
   {{/if}}
-{{else}}
-<div class='rsa-context-panel__error-text'><span>{{t 'context.error.noData'}}</span></div>
 {{/if}}

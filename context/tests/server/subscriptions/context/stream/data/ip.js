@@ -35,116 +35,6 @@ export default [
     'timeQuerySubmitted': 1489063820290
   },
   {
-    'resultId': 'cd561944-8139-44e7-9511-2823c8c9bb0d/1',
-    'queryId': 'f5714b1e-0cc0-4472-8acd-ffbc1e1ce537',
-    'datasourceId': null,
-    'dataSourceName': 'list1',
-    'dataSourceDescription': 'Blacklisted Ip ',
-    'dataSourceGroup': 'LIST',
-    'resultList': [ {
-      'id': '030afa5c-ae5d-49a6-9dff-0b4f6ac1998a',
-      'dataSourceEntryMeta': {
-        'createdTimeStamp': 1475225722540,
-        'lastModifiedTimeStamp': 1475225722540,
-        'createdByUser': 'Tony',
-        'lastModifiedByUser': null
-      },
-      'data': {
-        'DestinationIP': '23.99.221.178',
-        'Time': 1478093501237,
-        'SourceIP': '17.191.140.16',
-        'location': 'Bangalore',
-        'email': 'tony@emc.com',
-        'phone': '9879776682',
-        'createdTimeStamp': 1475225722540,
-        'lastModifiedTimeStamp': 1475225722540,
-        'createdByUser': 'Tony',
-        'lastModifiedByUser': 'Duke'
-      }
-    } ],
-    'pagingEnabled': false,
-    'currentPageId': 0,
-    'failed': false,
-    'errorMessage': null,
-    'tags': [ 'LIST' ],
-    'maxPages': 0
-  }, {
-    'resultId': 'cd561944-8139-44e7-9511-2823c8c9bb0d/2',
-    'queryId': 'f5714b1e-0cc0-4472-8acd-ffbc1e1ce537',
-    'datasourceId': null,
-    'dataSourceName': 'list2',
-    'dataSourceDescription': 'List 2',
-    'dataSourceGroup': 'LIST',
-    'resultList': [ {
-      'id': '06a0275a-ca42-401c-875f-99cdda9a4178',
-      'dataSourceEntryMeta': {
-        'createdTimeStamp': 1475225722946,
-        'lastModifiedTimeStamp': 1475225722946,
-        'createdByUser': 'Duke',
-        'lastModifiedByUser': null
-      },
-      'data': {
-        'LIST': '2.2.2.2'
-      }
-    } ],
-    'pagingEnabled': false,
-    'currentPageId': 0,
-    'failed': false,
-    'errorMessage': null,
-    'tags': [ 'LIST' ],
-    'maxPages': 0
-  }, {
-    'resultId': 'cd561944-8139-44e7-9511-2823c8c9bb0d/3',
-    'queryId': 'f5714b1e-0cc0-4472-8acd-ffbc1e1ce537',
-    'datasourceId': null,
-    'dataSourceName': 'list3',
-    'dataSourceDescription': 'List 3',
-    'dataSourceGroup': 'LIST',
-    'resultList': [ {
-      'id': 'd78c29f4-2328-49f6-9db3-b38c71a01a2d',
-      'dataSourceEntryMeta': {
-        'createdTimeStamp': 1475225722056,
-        'lastModifiedTimeStamp': 1475225722056,
-        'createdByUser': 'Ian',
-        'lastModifiedByUser': null
-      },
-      'data': {
-        'LIST': '2.2.2.2'
-      }
-    } ],
-    'pagingEnabled': false,
-    'currentPageId': 0,
-    'failed': false,
-    'errorMessage': null,
-    'tags': [ 'LIST' ],
-    'maxPages': 0
-  },
-  {
-    'resultId': '58b2f157-5210-4320-8436-d42cab582749/1',
-    'queryId': '05b26147-a16e-44af-b537-8f7ef8eda77c',
-    'datasourceId': null,
-    'dataSourceName': 'list4',
-    'dataSourceDescription': 'List 4',
-    'dataSourceGroup': 'LIST',
-    'resultList': [ {
-      'id': '95775eca-0278-4aa9-b3df-04a2028b1063',
-      'dataSourceEntryMeta': {
-        'createdTimeStamp': 1475053545301,
-        'lastModifiedTimeStamp': 1471910400000,
-        'createdByUser': 'Justin',
-        'lastModifiedByUser': null
-      },
-      'data': {
-        'LIST': '2.2.2.2'
-      }
-    } ],
-    'pagingEnabled': false,
-    'currentPageId': 0,
-    'failed': false,
-    'errorMessage': null,
-    'maxPages': 0
-  },
-  {
     'resultId': '5b633727-ca0c-4c6e-b869-db65b1256fa8\/1',
     'queryId': 'd736d47c-8f2a-45b3-b4ad-1b88d6044af8',
     'datasourceId': '57c7e594b3b318b147f79fc5',
@@ -1835,36 +1725,174 @@ export default [
     'resultId': '8fbd6f6a-1e12-47f4-b609-052f3c4652bd/1',
     'maxPages': 0
   },
-
   {
-    'resultId': '1eca29b7-cab7-4d04-9aac-55b9d50460b5/6',
-    'queryId': '2c253426-4021-4ebf-bdce-e6c369a8ac8f',
-    'datasourceId': '586a8f23d4978a1cf00f1f41',
-    'dataSourceName': '586a8f23d4978a1cf00f1f40_EXTERNAL_LIST_datasource',
-    'dataSourceDescription': null,
-    'dataSourceType': 'EXTERNAL_LIST',
+    'resultId': '32e897ec-3dfe-47ae-b32a-f88893d0b42a/1',
+    'queryId': 'daaeae43-9301-4fa3-84e5-7c1675c653ae',
+    'datasourceId': '58e34255c5c9703a4b124b9d',
+    'dataSourceName': 'test',
+    'dataSourceDescription': 'test',
+    'dataSourceType': 'LIST',
+    'createdBy': 'admin',
     'dataSourceGroup': 'LIST',
+    'connectionName': null,
+    'dataSourceCreatedOn': 1491288661747,
+    'dataSourceLastModifiedOn': 1491288661759,
+    'contentLastModifiedOn': 1491289221578,
     'resultList': [
       {
-        'id': '8c52c13e-5ca1-410a-ba67-9e41669ca561',
-        'dataSourceEntryMeta': {
-          'createdTimeStamp': 1483430271006,
-          'lastModifiedTimeStamp': 1483430271006,
-          'createdByUser': null,
-          'lastModifiedByUser': null
-        },
+        'createdBy': 'admin',
+        'createdOn': 1491288661876,
+        'lastModifiedOn': 1491288661876,
+        'id': 'ad48ecc7-a034-4be2-a01f-63b64150aad2',
         'data': {
-          'IPAddress': '10.101.47.66',
-          'Username': 'corpvaila'
+          'LIST': '10.101.47.107'
         }
       }
     ],
-    'resultMeta': null,
-    'connectionname': 'External_list',
+    'resultMeta': {
+      'timeQuerySubmitted': 1491289231023
+    },
     'pagingEnabled': false,
     'currentPageId': 0,
     'failed': false,
     'errorMessage': null,
-    'maxPages': 0
+    'maxPages': 0,
+    'timeQuerySubmitted': 1491289231023
+  },
+  {
+    'resultId': '32e897ec-3dfe-47ae-b32a-f88893d0b42a/1',
+    'queryId': 'daaeae43-9301-4fa3-84e5-7c1675c653ae',
+    'datasourceId': '58e34255c5c9703a4b124b9d',
+    'dataSourceName': 'WhiteList',
+    'dataSourceDescription': 'WhiteList-IP',
+    'dataSourceType': 'LIST',
+    'createdBy': 'User',
+    'dataSourceGroup': 'LIST',
+    'connectionName': null,
+    'dataSourceCreatedOn': 1491288661700,
+    'dataSourceLastModifiedOn': 1491288661700,
+    'contentLastModifiedOn': 1491289221500,
+    'resultList': [
+      {
+        'createdBy': 'admin',
+        'createdOn': 1491288661876,
+        'lastModifiedOn': 1491288661876,
+        'id': 'ad48ecc7-a034-4be2-a01f-63b64150aad2',
+        'data': {
+          'LIST': '10.101.47.107'
+        }
+      }
+    ],
+    'resultMeta': {
+      'timeQuerySubmitted': 1491289231023
+    },
+    'pagingEnabled': false,
+    'currentPageId': 0,
+    'failed': false,
+    'errorMessage': null,
+    'maxPages': 0,
+    'timeQuerySubmitted': 1491289231023
+  },
+  {
+    'resultId': '32e897ec-3dfe-47ae-b32a-f88893d0b42a/1',
+    'queryId': 'daaeae43-9301-4fa3-84e5-7c1675c653ae',
+    'datasourceId': '58e34255c5c9703a4b124b9d',
+    'dataSourceName': 'BlackList',
+    'dataSourceDescription': 'BlackList-IP',
+    'dataSourceType': 'LIST',
+    'createdBy': 'User',
+    'dataSourceGroup': 'LIST',
+    'connectionName': null,
+    'dataSourceCreatedOn': 1491288661700,
+    'dataSourceLastModifiedOn': 1491288661700,
+    'contentLastModifiedOn': 1491289221500,
+    'resultList': [
+      {
+        'createdBy': 'admin',
+        'createdOn': 1491288661876,
+        'lastModifiedOn': 1491288661876,
+        'id': 'ad48ecc7-a034-4be2-a01f-63b64150aad2',
+        'data': {
+          'LIST': '10.101.47.107'
+        }
+      }
+    ],
+    'resultMeta': {
+      'timeQuerySubmitted': 1491289231023
+    },
+    'pagingEnabled': false,
+    'currentPageId': 0,
+    'failed': false,
+    'errorMessage': null,
+    'maxPages': 0,
+    'timeQuerySubmitted': 1491289231023
+  },
+  {
+    'resultId': '32e897ec-3dfe-47ae-b32a-f88893d0b42a/1',
+    'queryId': 'daaeae43-9301-4fa3-84e5-7c1675c653ae',
+    'datasourceId': '58e34255c5c9703a4b124b9d',
+    'dataSourceName': 'UserCreated',
+    'dataSourceDescription': 'UserCreated-IP',
+    'dataSourceType': 'LIST',
+    'createdBy': 'User1',
+    'dataSourceGroup': 'LIST',
+    'connectionName': null,
+    'dataSourceCreatedOn': 1491288661700,
+    'dataSourceLastModifiedOn': 1491288661700,
+    'contentLastModifiedOn': 1491289221500,
+    'resultList': [
+      {
+        'createdBy': 'admin',
+        'createdOn': 1491288661876,
+        'lastModifiedOn': 1491288661876,
+        'id': 'ad48ecc7-a034-4be2-a01f-63b64150aad2',
+        'data': {
+          'LIST': '10.101.47.107'
+        }
+      }
+    ],
+    'resultMeta': {
+      'timeQuerySubmitted': 1491289231023
+    },
+    'pagingEnabled': false,
+    'currentPageId': 0,
+    'failed': false,
+    'errorMessage': null,
+    'maxPages': 0,
+    'timeQuerySubmitted': 1491289231023
+  },
+  {
+    'resultId': '32e897ec-3dfe-47ae-b32a-f88893d0b42a/1',
+    'queryId': 'daaeae43-9301-4fa3-84e5-7c1675c653ae',
+    'datasourceId': '58e34255c5c9703a4b124b9d',
+    'dataSourceName': 'LogFile',
+    'dataSourceDescription': 'LogFile-Desc',
+    'dataSourceType': 'LIST',
+    'createdBy': 'Administrator',
+    'dataSourceGroup': 'LIST',
+    'connectionName': null,
+    'dataSourceCreatedOn': 1491288661700,
+    'dataSourceLastModifiedOn': 1491288661700,
+    'contentLastModifiedOn': 1491289221500,
+    'resultList': [
+      {
+        'createdBy': 'admin',
+        'createdOn': 1491288661876,
+        'lastModifiedOn': 1491288661876,
+        'id': 'ad48ecc7-a034-4be2-a01f-63b64150aad2',
+        'data': {
+          'LIST': '10.101.47.107'
+        }
+      }
+    ],
+    'resultMeta': {
+      'timeQuerySubmitted': 1491289231023
+    },
+    'pagingEnabled': false,
+    'currentPageId': 0,
+    'failed': false,
+    'errorMessage': null,
+    'maxPages': 0,
+    'timeQuerySubmitted': 1491289231023
   }
 ];

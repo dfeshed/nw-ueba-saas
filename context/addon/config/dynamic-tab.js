@@ -7,37 +7,64 @@ export default [{
     {
       field: 'overview',
       title: 'context.header.overview',
-      dataSourceType: 'overview'
+      dataSourceType: 'overview',
+      tabRequired: true
+    },
+    {
+      field: 'Machines',
+      title: 'context.hostSummary.title',
+      dataSourceType: 'Machines',
+      displayType: 'grid',
+      tabRequired: false
     },
     {
       field: 'Modules',
       title: 'context.header.modules',
-      dataSourceType: 'Modules'
+      dataSourceType: 'Modules',
+      displayType: 'table',
+      tabRequired: true
     },
     {
       field: 'IOC',
       title: 'context.header.iioc',
-      dataSourceType: 'IOC'
+      dataSourceType: 'IOC',
+      displayType: 'table',
+      tabRequired: true
     },
     {
       field: 'Incidents',
       title: 'context.header.incidents',
-      dataSourceType: 'Incidents'
+      dataSourceType: 'Incidents',
+      displayType: 'table',
+      tabRequired: true
     },
     {
       field: 'Alerts',
       title: 'context.header.alerts',
-      dataSourceType: 'Alerts'
+      dataSourceType: 'Alerts',
+      displayType: 'table',
+      tabRequired: true
     },
     {
-      field: 'Lists',
+      field: 'LIST',
       title: 'context.header.lists',
-      dataSourceType: 'LIST'
+      dataSourceType: 'LIST',
+      displayType: 'table',
+      tabRequired: true
     },
     {
-      field: 'liveConnect',
+      field: 'Archer',
+      title: 'context.archer.title',
+      dataSourceType: 'Archer',
+      displayType: 'grid',
+      tabRequired: false
+    },
+    {
+      field: 'LiveConnect-Ip',
       title: 'context.header.liveConnect',
-      dataSourceType: 'LiveConnect-Ip'
+      dataSourceType: 'LiveConnect-Ip',
+      displayType: 'liveConnect',
+      tabRequired: true
     }
   ],
 
@@ -60,29 +87,38 @@ export default [{
     {
       field: 'overview',
       title: 'context.header.overview',
-      dataSourceType: 'overview'
+      dataSourceType: 'overview',
+      tabRequired: true
     },
     {
       field: 'Users',
       title: 'context.header.users',
-      dataSourceType: 'Users'
+      dataSourceType: 'Users',
+      displayType: 'grid',
+      tabRequired: true
 
     },
     {
       field: 'Incidents',
       title: 'context.header.incidents',
-      dataSourceType: 'Incidents'
+      dataSourceType: 'Incidents',
+      displayType: 'table',
+      tabRequired: true
     },
 
     {
       field: 'Alerts',
       title: 'context.header.alerts',
-      dataSourceType: 'Alerts'
+      dataSourceType: 'Alerts',
+      displayType: 'table',
+      tabRequired: true
     },
     {
       field: 'Lists',
       title: 'context.header.lists',
-      dataSourceType: 'LIST'
+      dataSourceType: 'LIST',
+      displayType: 'table',
+      tabRequired: true
     }
   ],
   toolbar: [
@@ -103,37 +139,57 @@ export default [{
     {
       field: 'overview',
       title: 'context.header.overview',
-      dataSourceType: 'overview'
+      dataSourceType: 'overview',
+      tabRequired: true
+    },
+    {
+      field: 'Machines',
+      title: 'context.hostSummary.title',
+      dataSourceType: 'Machines',
+      displayType: 'grid',
+      tabRequired: false
     },
     {
       field: 'Modules',
       title: 'context.header.modules',
-      dataSourceType: 'Modules'
+      dataSourceType: 'Modules',
+      displayType: 'table',
+      tabRequired: true
     },
     {
       field: 'IOC',
       title: 'context.header.iioc',
-      dataSourceType: 'IOC'
+      dataSourceType: 'IOC',
+      displayType: 'table',
+      tabRequired: true
     },
     {
       field: 'Incidents',
       title: 'context.header.incidents',
-      dataSourceType: 'Incidents'
+      dataSourceType: 'Incidents',
+      displayType: 'table',
+      tabRequired: true
     },
     {
       field: 'Alerts',
       title: 'context.header.alerts',
-      dataSourceType: 'Alerts'
+      dataSourceType: 'Alerts',
+      displayType: 'table',
+      tabRequired: true
     },
     {
-      field: 'Lists',
+      field: 'LIST',
       title: 'context.header.lists',
-      dataSourceType: 'LIST'
+      dataSourceType: 'LIST',
+      displayType: 'table',
+      tabRequired: true
     },
     {
-      field: 'liveConnect',
+      field: 'LiveConnect-Ip',
       title: 'context.header.liveConnect',
-      dataSourceType: 'liveConnect'
+      dataSourceType: 'LiveConnect-Ip',
+      displayType: 'liveConnect',
+      tabRequired: true
     }
 
   ],
@@ -155,32 +211,50 @@ export default [{
     {
       field: 'overview',
       title: 'context.header.overview',
-      dataSourceType: 'overview'
+      dataSourceType: 'overview',
+      tabRequired: true
+    },
+    {
+      field: 'Machines',
+      title: 'context.hostSummary.title',
+      dataSourceType: 'Machines',
+      displayType: 'table',
+      tabRequired: true
     },
     {
       field: 'Modules',
       title: 'context.header.modules',
-      dataSourceType: 'Modules'
+      dataSourceType: 'Modules',
+      displayType: 'table',
+      tabRequired: true
     },
     {
       field: 'IOC',
       title: 'context.header.iioc',
-      dataSourceType: 'IOC'
+      dataSourceType: 'IOC',
+      displayType: 'table',
+      tabRequired: true
     },
     {
       field: 'Incidents',
       title: 'context.header.incidents',
-      dataSourceType: 'Incidents'
+      dataSourceType: 'Incidents',
+      displayType: 'table',
+      tabRequired: true
     },
     {
       field: 'Alerts',
       title: 'context.header.alerts',
-      dataSourceType: 'Alerts'
+      dataSourceType: 'Alerts',
+      displayType: 'table',
+      tabRequired: true
     },
     {
-      field: 'Lists',
+      field: 'LIST',
       title: 'context.header.lists',
-      dataSourceType: 'LIST'
+      dataSourceType: 'LIST',
+      displayType: 'table',
+      tabRequired: true
     }
   ],
   toolbar: [
@@ -200,22 +274,29 @@ export default [{
     {
       field: 'overview',
       title: 'context.header.overview',
-      dataSourceType: 'overview'
+      dataSourceType: 'overview',
+      tabRequired: true
     },
     {
       field: 'Incidents',
       title: 'context.header.incidents',
-      dataSourceType: 'Incidents'
+      dataSourceType: 'Incidents',
+      displayType: 'table',
+      tabRequired: true
     },
     {
       field: 'Alerts',
       title: 'context.header.alerts',
-      dataSourceType: 'Alerts'
+      dataSourceType: 'Alerts',
+      displayType: 'table',
+      tabRequired: true
     },
     {
-      field: 'Lists',
+      field: 'LIST',
       title: 'context.header.lists',
-      dataSourceType: 'LIST'
+      dataSourceType: 'LIST',
+      displayType: 'table',
+      tabRequired: true
     }
   ],
   toolbar: [
@@ -236,27 +317,36 @@ export default [{
     {
       field: 'overview',
       title: 'context.header.overview',
-      dataSourceType: 'overview'
+      dataSourceType: 'overview',
+      tabRequired: true
     },
     {
       field: 'Incidents',
       title: 'context.header.incidents',
-      dataSourceType: 'Incidents'
+      dataSourceType: 'Incidents',
+      displayType: 'table',
+      tabRequired: true
     },
     {
       field: 'Alerts',
       title: 'context.header.alerts',
-      dataSourceType: 'Alerts'
+      dataSourceType: 'Alerts',
+      displayType: 'table',
+      tabRequired: true
     },
     {
-      field: 'Lists',
+      field: 'LIST',
       title: 'context.header.lists',
-      dataSourceType: 'LIST'
+      dataSourceType: 'LIST',
+      displayType: 'table',
+      tabRequired: true
     },
     {
-      field: 'liveConnect',
+      field: 'LiveConnect-Ip',
       title: 'context.header.liveConnect',
-      dataSourceType: 'liveConnect'
+      dataSourceType: 'LiveConnect-Ip',
+      displayType: 'liveConnect',
+      tabRequired: true
     }
   ],
   toolbar: [
@@ -277,27 +367,36 @@ export default [{
     {
       field: 'overview',
       title: 'context.header.overview',
-      dataSourceType: 'overview'
+      dataSourceType: 'overview',
+      tabRequired: true
     },
     {
       field: 'Incidents',
       title: 'context.header.incidents',
-      dataSourceType: 'Incidents'
+      dataSourceType: 'Incidents',
+      displayType: 'table',
+      tabRequired: true
     },
     {
       field: 'Alerts',
       title: 'context.header.alerts',
-      dataSourceType: 'Alerts'
+      dataSourceType: 'Alerts',
+      displayType: 'table',
+      tabRequired: true
     },
     {
-      field: 'Lists',
+      field: 'LIST',
       title: 'context.header.lists',
-      dataSourceType: 'LIST'
+      dataSourceType: 'LIST',
+      displayType: 'table',
+      tabRequired: true
     },
     {
-      field: 'liveConnect',
+      field: 'LiveConnect-Ip',
       title: 'context.header.liveConnect',
-      dataSourceType: 'liveConnect'
+      dataSourceType: 'LiveConnect-Ip',
+      displayType: 'liveConnect',
+      tabRequired: true
     }
   ],
 

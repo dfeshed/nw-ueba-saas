@@ -1,88 +1,15 @@
 <section class={{bodyStyleClass}}>
-  {{#if (and (or contextData.Machines contextData.Machines_ERROR) (data-source-enabled dataSources 'Machines'))}}
-    {{#if (eq activeTabName 'overview')}}
-      {{#each machineData as |columns index|}}
-        {{context-panel/dynamic-grid
-          array=(parse-host-data contextData.Machines contextData.additionalData)
-          columns=columns
-          errorMessage=(get contextData 'Machines_ERROR')
-          title=columns.title
-          lastUpdated=(get contextData 'Machines_LASTUPDATED')
-          timeWindow=(get contextData 'Machines_TIMEWINDOW')
-        }}
-      {{/each}}
-    {{/if}}
-  {{/if}}
-  {{#if (and (or contextData.Users contextData.Users_ERROR) (data-source-enabled dataSources 'Users'))}}
-    {{#if (or (eq activeTabName 'Users')(eq activeTabName 'overview')) }}
-      {{#each userData as |columns index|}}
-        {{context-panel/dynamic-grid
-          array=(parse-addata contextData.Users )
-          columns=columns
-          errorMessage=(get contextData 'Users_ERROR')
-          lastUpdated=(get contextData 'Users_LASTUPDATED')
-          timeWindow=(get contextData 'Users_TIMEWINDOW')
-          title=columns.title
-
-          activatePanel=(action 'activate' 'Users')
-          tabdata=activeTabName
-        }}
-      {{/each}}
-    {{/if}}
-  {{/if}}
-  
-  {{#each datasourceList as |columns index|}}
-    {{#if (or (eq activeTabName columns.dataSourceGroup)(eq activeTabName 'overview')) }}
-      {{#if (data-source-enabled dataSources columns.dataSourceGroup)}}
-        {{context-panel/data-table
-          data=(top-records (get contextData columns.dataSourceGroup) activeTabName columns.sortColumn)
-          title=(t columns.title )
-          errorMessage=(get contextData (concat columns.dataSourceGroup '_ERROR'))
-          lastUpdated=(get contextData (concat columns.dataSourceGroup '_LASTUPDATED'))
-          timeWindow=(get contextData (concat columns.dataSourceGroup '_TIMEWINDOW'))
-          modulesColumnListConfig=columns.columns
-          headerdata=(get contextData (concat columns.dataSourceGroup '_HEADER'))
-          footerdata=columns.footer
-          type=columns.dataSourceType
-
-          activatePanel=(action 'activate' columns.dataSourceGroup)
-          tabdata=activeTabName
-        }}
-      {{/if}}
-    {{/if}}
-  {{/each}}
-  
-  {{#if (or (eq activeTabName 'Lists')(eq activeTabName 'overview'))}}
-    {{#if (data-source-enabled dataSources 'LIST')}}
-      {{context-panel/tree-table
-        data=(top-records contextData.LIST activeTabName)
-        type='Lists'
-        errorMessage=(get contextData 'LIST_ERROR')
-
-        activatePanel=(action 'activate' 'Lists')
+  {{#each dataSourceList as |dataSource|}}
+    {{#if (eq dataSource.displayType 'grid')}}
+      {{context-panel/dynamic-grid contextData=(get contextData dataSource.dataSourceType) dSDetails=dataSource.details}}
+    {{else if (eq dataSource.displayType 'table')}}
+      {{context-panel/data-table contextData=(get contextData dataSource.dataSourceType) dSDetails=dataSource.details}}
+    {{else if (eq dataSource.displayType 'liveConnect')}}
+      {{context-panel/live-connect
+        model=model
+        contextData=contextData
         tabdata=activeTabName
       }}
     {{/if}}
-  {{/if}}
-
-  {{#if archerDataRequired}}
-    {{#each archerData as |columns index|}}
-      {{context-panel/dynamic-grid
-        array=archerLookupData
-        columns=columns
-        errorMessage=(get contextData 'Archer_ERROR')
-        title=columns.title
-        lastUpdated=(get contextData 'Archer_LASTUPDATED')
-        timeWindow=(get contextData 'Archer_TIMEWINDOW')
-      }}
-    {{/each}}
-  {{/if}}
-
-  {{context-panel/live-connect
-    model=model
-    contextData=contextData
-
-    tabdata=activeTabName
-  }}
-
+  {{/each}}
 </section>

@@ -1,1 +1,0 @@
-export { default } from 'context/components/context-panel/rsa-context-list/component';
