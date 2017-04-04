@@ -18,11 +18,8 @@
 	<bean id="aggregatedEventQueryService" class="fortscale.aggregation.feature.event.AggregatedEventQueryMongoService"/>
 	<bean id="featureBucketQueryService" class="fortscale.aggregation.feature.event.FeatureBucketQueryMongoService"/>
 	<bean id="mongoDbUtilService" class="fortscale.aggregation.util.MongoDbUtilService" />
-	<bean id="supportingInformationDistinctEventsByTimePopulator" class="fortscale.aggregation.feature.services.historicaldata.populators.SupportingInformationDistinctEventsByTimePopulator" scope="prototype">
-		<property name="aggregatedEventQueryService" ref="aggregatedEventQueryService"/>
-	</bean>
 
 
-    <bean id="dataQueryHelper" class="fortscale.common.dataqueries.querydto.DataQueryHelper"/>
-	
+
+
 </beans>

@@ -12,9 +12,6 @@
 	<mongo:repositories base-package="fortscale.domain" />
 	
 	<bean id="userMachineDAO" class="fortscale.domain.ad.dao.impl.UserMachineDAOImpl"/>
-	
-	<bean id="loginDAO" class="fortscale.domain.fe.dao.impl.LoginDAOImpl"/>
-	
-	<bean id="sshDAO" class="fortscale.domain.fe.dao.impl.SshDAOImpl"/>
+
 
 </beans>

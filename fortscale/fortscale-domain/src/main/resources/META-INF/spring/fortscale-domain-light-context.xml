@@ -11,7 +11,7 @@
 
 	<mongo:auditing />
 
-	<bean id="fsMongoConfiguration" class="fortscale.utils.mongodb.config.SpringMongoConfiguration"/>
+	<bean id="fsMongoConfiguration" class="fortscale.utils.mongodb.config.MongoConfig"/>
 
 
 </beans>

@@ -9,6 +9,7 @@ import fortscale.entity.event.EntityEventMongoStore;
 import fortscale.utils.monitoring.stats.StatsService;
 import fortscale.utils.monitoring.stats.config.NullStatsServiceConfig;
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
+import fortscale.utils.test.mongodb.MongoDbTestProperties;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
@@ -55,7 +56,7 @@ public class EntityEventAccumulatorTest {
         private StatsService statsService;
 
         @Bean
-        public static TestPropertiesPlaceholderConfigurer mainProcessPropertiesConfigurer() {
+        public static TestPropertiesPlaceholderConfigurer EntityAcummainProcessPropertiesConfigurer() {
             Properties properties = new Properties();
             properties.put("streaming.event.field.type.aggr_event", "aggr_event");
             properties.put("streaming.event.field.type.entity_event","entity_event");
@@ -72,6 +73,7 @@ public class EntityEventAccumulatorTest {
             properties.put("fortscale.accumulator.entity.event.from.period.ago.hourly","P1M");
 
             properties.put("fortscale.scored.entity.event.store.page.size",1);
+            properties.putAll(MongoDbTestProperties.getProperties());
 
             return new TestPropertiesPlaceholderConfigurer(properties);
         }

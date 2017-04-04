@@ -5,7 +5,6 @@
 
     <description>services context for testing.</description>
 
-    <import resource="classpath*:META-INF/spring/fortscale-common-entities-context.xml"/>
 
 
     <!-- Data Entities -->

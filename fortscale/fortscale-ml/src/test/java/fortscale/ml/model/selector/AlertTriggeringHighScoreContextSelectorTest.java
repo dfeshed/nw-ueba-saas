@@ -6,6 +6,8 @@ import fortscale.domain.core.AlertFeedback;
 import fortscale.domain.core.AlertStatus;
 import fortscale.domain.core.AlertTimeframe;
 import fortscale.domain.core.dao.AlertsRepository;
+import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
+import fortscale.utils.test.mongodb.MongoDbTestProperties;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,6 +23,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.time.Instant;
 import java.util.Date;
 import java.util.List;
+import java.util.Properties;
 import java.util.Set;
 
 /**
@@ -46,6 +49,13 @@ public class AlertTriggeringHighScoreContextSelectorTest {
         public AlertTriggeringHighScoreContextTestSelector alertTriggeringHighScoreContextTestSelector ()
         {
             return new AlertTriggeringHighScoreContextTestSelector();
+        }
+        @Bean
+        public static TestPropertiesPlaceholderConfigurer mainProcessPropertiesConfigurer() {
+            Properties properties = new Properties();
+            properties.putAll(MongoDbTestProperties.getProperties());
+
+            return new TestPropertiesPlaceholderConfigurer(properties);
         }
     }
 
