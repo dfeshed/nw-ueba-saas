@@ -11,6 +11,7 @@ import fortscale.collection.morphlines.metrics.MorphlineMetrics;
 import fortscale.collection.services.CollectionStatsMetricsService;
 import fortscale.services.UserService;
 import fortscale.services.classifier.Classifier;
+import fortscale.services.impl.ProcessExecutor;
 import fortscale.streaming.task.monitor.TaskMonitoringHelper;
 import fortscale.utils.hdfs.BufferedHDFSWriter;
 import fortscale.utils.hdfs.HDFSPartitionsWriter;
@@ -31,6 +32,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -41,6 +43,7 @@ import java.util.List;
 @DisallowConcurrentExecution
 public class EventProcessJob implements Job {
 
+	public static final String EVENT_PROCESS_JOB_PRE_PROCESS_SCRIPT = "EventProcessJob Pre Process Script";
 	private static Logger logger = LoggerFactory.getLogger(EventProcessJob.class);
 	
 	@Value("${collection.fetch.data.path}")
@@ -80,6 +83,7 @@ public class EventProcessJob implements Job {
 	protected String streamingTopic;
 	protected KafkaEventsWriter streamWriter;
     protected PartitionStrategy partitionStrategy;
+    protected String preProcessScriptPath;
 
 	String sourceName;
 
@@ -144,6 +148,7 @@ public class EventProcessJob implements Job {
         String strategy = jobDataMapExtension.getJobDataMapStringValue(map, "partitionStrategy");
         partitionStrategy = PartitionsUtils.getPartitionStrategy(strategy);
 
+		preProcessScriptPath = jobDataMapExtension.getJobDataMapStringValue(map, "preProcessScriptPath", false);
 
 	}
 	
@@ -189,26 +194,32 @@ public class EventProcessJob implements Job {
 			// read each file and process lines
 			try {
 				for (File file : files) {
+					final String fileName = file.getName();
 					try {
 						jobMetrics.processFiles++;
-						logger.info("starting to process {}", file.getName());
-						
+						logger.info("starting to process {}", fileName);
+						if(preProcessScriptPath != null) {
+							final boolean preProcessSuccessful = runPreProcessScript(preProcessScriptPath, fileName); //todo: check if need full file name
+							if (!preProcessSuccessful) {
+								throw new Exception(String.format("Error running pre process script %s", preProcessScriptPath));
+							}
+						}
 						// transform events in file
 						boolean success = processFile(file);
-						
+
 						if (success) {
 							jobMetrics.processFilesSuccessfully++;
 							moveFileToFolder(file, finishPath);
 						} else {
 							jobMetrics.processFilesFailures++;
-							moveFileToFolder(file, errorPath);	
+							moveFileToFolder(file, errorPath);
 						}
 			
-						logger.info("finished processing {}", file.getName());
+						logger.info("finished processing {}", fileName);
 					} catch (Exception e) {
 						moveFileToFolder(file, errorPath);
 
-						logger.error("error processing file " + file.getName(), e);
+						logger.error("error processing file " + fileName, e);
 						taskMonitoringHelper.error(currentStep, e.toString());
 					}
 					totalDone++;
@@ -294,6 +305,11 @@ public class EventProcessJob implements Job {
 		File[] files = inputDir.listFiles(filter);
 		Arrays.sort(files);
 		return files;
+	}
+
+	private boolean runPreProcessScript(String scriptPath, String fileToPreProcess) {
+		final List<String> arguments = new ArrayList<>(Arrays.asList("python", scriptPath, fileToPreProcess));
+		return ProcessExecutor.executeProcess(EVENT_PROCESS_JOB_PRE_PROCESS_SCRIPT, arguments);
 	}
 
 

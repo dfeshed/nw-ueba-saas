@@ -109,6 +109,10 @@ public class EventsReducerBuilder implements CommandBuilder {
                 // store the record for later merge
                 logger.debug("Storing event {} in cache {} since there were no similar events before.", inputRecord, cache);
                 cache.store(key, inputRecord);
+                commandMonitoringHelper.addFilteredEventToMonitoring(inputRecord, CollectionMessages.SAVED_TO_CACHE);
+                if (morphlineMetrics != null) {
+                    morphlineMetrics.eventSavedToCache++;
+                }
 
                 // mark command as successful, do not pass the record
                 // to chained child command to halt execution
@@ -116,12 +120,9 @@ public class EventsReducerBuilder implements CommandBuilder {
                 if(processRecord) {
                     return super.doProcess(inputRecord);
                 }
-                //Drop record
-                commandMonitoringHelper.addFilteredEventToMonitoring(inputRecord, CollectionMessages.SAVED_TO_CACHE);
-                if (morphlineMetrics != null) {
-                    morphlineMetrics.eventSavedToCache++;
+                else {
+                    return true;
                 }
-                return true;
             } else {
 
                 long delta = Math.abs(cachedTime - currentTime);
@@ -162,7 +163,7 @@ public class EventsReducerBuilder implements CommandBuilder {
                         logger.info("Closing cache {}.", cacheName);
                         cache.close();
                     } catch (IOException e) {
-                        logger.error("error closing EventsJoinerCache {}.", cacheName, e);
+                        logger.error("error closing Events Reducer Cache {}.", cacheName, e);
                     }
                     cache = null;
                 }

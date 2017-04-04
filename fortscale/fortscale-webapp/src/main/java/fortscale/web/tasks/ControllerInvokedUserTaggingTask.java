@@ -7,6 +7,8 @@ import fortscale.web.services.ActivityMonitoringExecutorService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 
@@ -79,15 +81,16 @@ public class ControllerInvokedUserTaggingTask extends BaseControllerInvokedTask 
 
        userTaggingTaskPersistenceService.createResultKey(UserTaggingTaskPersistenceService.USER_TAGGING_RESULT_ID);
 
-        String filePathParam = null;
+        Map<String, String> filePathParam = new HashMap<>();
+        filePathParam.put("resultsId", UserTaggingTaskPersistenceService.USER_TAGGING_RESULT_ID);
         if (StringUtils.isNotEmpty(userTaggingFilePath)) {
-            filePathParam = String.format("filePath=%s", userTaggingFilePath);
+            filePathParam = Collections.singletonMap("filePath", userTaggingFilePath);
         }
 
         /* run task */
         logger.info("Running user tagging task {}", USER_TAGGING_JOB_NAME);
-        if (!runCollectionJob(USER_TAGGING_JOB_NAME, UserTaggingTaskPersistenceService.USER_TAGGING_RESULT_ID, USER_TAGGING_JOB_GROUP,
-                filePathParam)) {
+
+        if (!runCollectionJob(USER_TAGGING_JOB_NAME, USER_TAGGING_JOB_GROUP, filePathParam)) {
             notifyTaskDone();
             return new UserTaggingTaskResponse(SUCCESS_FALSE, NO_EXECUTION_TIME);
         }
