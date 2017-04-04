@@ -48,6 +48,7 @@ public class ApiUserActivityController extends DataQueryController {
     public static final String AUTHENTICATIONS = "authentications";
     public static final String DATA_USAGE = "data-usage";
     public static final String WORKING_HOURS = "working-hours";
+    public static final String TOP_APPLICATIONS = "top-applications";
 
     private final UserActivityService userActivityService;
     private static final Logger logger = Logger.getLogger(ApiUserActivityController.class);
@@ -277,6 +278,24 @@ public class ApiUserActivityController extends DataQueryController {
         return userActivity;
 
     }
+
+    @RequestMapping(value="/"+TOP_APPLICATIONS, method= RequestMethod.GET)
+    @ResponseBody
+    @LogException
+    public DataBean<List<UserActivityData.NameCountTypeEntry>> getTopApplications(@PathVariable String id,
+                                                                       @RequestParam(required = false, defaultValue = DEFAULT_TIME_RANGE, value = "time_range") Integer timePeriodInDays,
+                                                                       @RequestParam(required = false, defaultValue = DEFAULT_RETURN_ENTRIES_LIMIT, value = "limit") Integer limit){
+
+        //Use both "method reference" and lambda function only for examples
+        DataBean<List<UserActivityData.NameCountTypeEntry>> userActivityApplicationsBean = new DataBean<>();
+        userActivityApplicationsBean.setData(Arrays.asList(
+                new UserActivityData.NameCountTypeEntry("outlook",300,"mail"),
+                new UserActivityData.NameCountTypeEntry("explore",32,"bla")
+
+        ));
+        return userActivityApplicationsBean;
+    }
+
 
     /**
      * Convert list of UserActivityWorkingHoursDocument to list of UserActivityData.WorkingHourEntry

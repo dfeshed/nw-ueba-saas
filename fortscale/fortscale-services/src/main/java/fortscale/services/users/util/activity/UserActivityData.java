@@ -56,6 +56,45 @@ public class UserActivityData {
         }
     }
 
+    public static class NameCountTypeEntry implements  BaseUserActivityEntry{
+        private String name;
+        private int count;
+        private String type;
+
+        public NameCountTypeEntry() {
+        }
+
+        public NameCountTypeEntry(String name, int count, String type) {
+            this.name = name;
+            this.count = count;
+            this.type = type;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public int getCount() {
+            return count;
+        }
+
+        public void setCount(int count) {
+            this.count = count;
+        }
+
+        public String getType() {
+            return type;
+        }
+
+        public void setType(String type) {
+            this.type = type;
+        }
+    }
+
   /*  public static class TargetDeviceEntry  implements  BaseUserActivityEntry {
 
         private String deviceName;
