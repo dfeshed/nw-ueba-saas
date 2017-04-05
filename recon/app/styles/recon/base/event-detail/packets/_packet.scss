@@ -1,5 +1,10 @@
 .rsa-packet {
   border-top: 1px rsa-color(blue) solid;
+
+  &:first-of-type {
+    border-top: none;
+  }
+
   &.is-continuation {
     border-top: none;
     .request-response-header {

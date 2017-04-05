@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import computed, { not, readOnly } from 'ember-computed-decorators';
+import { not, readOnly } from 'ember-computed-decorators';
 import { SpanielObserver } from 'spaniel';
 
 import layout from './template';
@@ -7,7 +7,11 @@ import layout from './template';
 const { Component, run } = Ember;
 
 export default Component.extend({
+  classNames: ['rsa-packet'],
+  classNameBindings: ['packet.side', 'packet.isContinuation'],
   layout,
+  tagName: 'section',
+
   index: null,
   isPacketExpanded: true,
   packet: null,
@@ -16,12 +20,6 @@ export default Component.extend({
   tooltipData: null,
   viewportEntered: false,
   @readOnly @not('viewportEntered') viewportExited: null,
-
-  @computed('packet')
-  className: (packet) => {
-    const continuation = packet.isContinuation ? 'is-continuation' : '';
-    return `rsa-packet ${packet.side} ${continuation}`;
-  },
 
   /**
    * The number of bytes to display closely packed together, without a blank space.
@@ -58,7 +56,7 @@ export default Component.extend({
       });
     }, options);
 
-    observer.observe(this.$('.rsa-packet')[0]);
+    observer.observe(this.get('element'));
 
     this.set('observer', observer);
   },

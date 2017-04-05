@@ -16,7 +16,7 @@ export default Mixin.create({
 
   // Interal mixin state, which item in the list of stickables
   // is currently stuck
-  indexAtTop: 0,
+  indexAtTop: null,
 
   // REQUIRED The key of the data, when paired with the index,
   // the result is the data used in the sticky component
@@ -36,7 +36,7 @@ export default Mixin.create({
   @computed('indexAtTop')
   stickyContent(index) {
     // no scrolling has occurred so no content to stick
-    if (index === 0) {
+    if (!index || index === 0) {
       return;
     }
 
@@ -89,12 +89,15 @@ export default Mixin.create({
   _scrolled() {
     const $headers = this.get('$headers');
 
-    if ($headers && $headers.length > 0) {
+    if (!$headers || $headers.length === 0) {
+      this.set('indexAtTop', null);
+    } else {
 
       // fast eject, common use case, is just at the top
       // nothing to do here
-      if ($headers.eq(0).position().top === 0) {
-        this.set('indexAtTop', 0);
+      const positionTop = $headers.eq(0).position().top;
+      if (positionTop === 0 || positionTop === 1) {
+        this.set('indexAtTop', null);
         return;
       }
 

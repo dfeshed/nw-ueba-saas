@@ -1,45 +1,41 @@
-<section class="{{className}}">
+{{recon-event-detail/single-packet/header
+  isSticky=false
+  packet=packet
+  togglePacketExpansion=(action 'togglePacketExpansion')
+}}
 
-  {{recon-event-detail/single-packet/header
-    isSticky=false
-    packet=packet
-    togglePacketExpansion=(action 'togglePacketExpansion')
-  }}
-
-  {{#if isPacketExpanded}}
-    <section class="rsa-packet__body">
-      <section class="rsa-packet__offsets hex">
-        {{recon-event-detail/single-packet/offset-table
-          byteRows=packet.byteRows
-        }}
-      </section>
-      <section class="rsa-packet__hex">
-        {{#if viewportEntered}}
-          {{recon-event-detail/single-packet/byte-table
-            byteFormat="hex"
-            packet=packet
-            packetFields=packetFields
-            byteGrouping=byteGrouping
-            selection=selection
-            onselect=onselect
-            tooltipData=tooltipData
-          }}
-        {{/if}}
-      </section>
-      <section class="rsa-packet__ascii">
-        {{#if viewportEntered}}
-          {{recon-event-detail/single-packet/byte-table
-            byteFormat="ascii"
-            packet=packet
-            packetFields=packetFields
-            byteGrouping=byteGrouping
-            selection=selection
-            onselect=onselect
-            tooltipData=tooltipData
-          }}
-        {{/if}}
-      </section>
+{{#if isPacketExpanded}}
+  <section class="rsa-packet__body">
+    <section class="rsa-packet__offsets hex">
+      {{recon-event-detail/single-packet/offset-table
+        byteRows=packet.byteRows
+      }}
     </section>
-  {{/if}}
-
-</section>
+    <section class="rsa-packet__hex">
+      {{#if viewportEntered}}
+        {{recon-event-detail/single-packet/byte-table
+          byteFormat="hex"
+          packet=packet
+          packetFields=packetFields
+          byteGrouping=byteGrouping
+          selection=selection
+          onselect=onselect
+          tooltipData=tooltipData
+        }}
+      {{/if}}
+    </section>
+    <section class="rsa-packet__ascii">
+      {{#if viewportEntered}}
+        {{recon-event-detail/single-packet/byte-table
+          byteFormat="ascii"
+          packet=packet
+          packetFields=packetFields
+          byteGrouping=byteGrouping
+          selection=selection
+          onselect=onselect
+          tooltipData=tooltipData
+        }}
+      {{/if}}
+    </section>
+  </section>
+{{/if}}
