@@ -1,6 +1,900 @@
 {
   "BucketConfs": [
     {
+      "name": "normalized_username_dlpfile_daily",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "normalized_username"
+      ],
+      "dataSources": [
+        "dlpfile"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "aggrFeatureConfs": [
+        {
+          "name": "date_time_unix_histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "two_minute_resolution_epochtime"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        },
+        {
+          "name": "number_of_events_per_hour_histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "hour"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        },
+        {
+          "name": "highest_date_time_score",
+          "featureNamesMap": {
+            "maximize": [
+              "date_time_score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
+        },
+        {
+          "name": "normalized_src_machine_to_highest_score_map",
+          "featureNamesMap": {
+            "groupBy": [
+              "normalized_src_machine"
+            ],
+            "maximize": [
+              "normalized_src_machine_score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
+        },
+        {
+          "name": "src_network_folder_paths_histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "source_path"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.source_drive_type == 'remote')]"
+          }
+        },
+        {
+          "name": "sum_of_moved_files_to_removable_device_size",
+          "featureNamesMap": {
+            "sum": [
+              "file_size"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.event_type == 'move' && @.destination_drive_type == 'removable')]"
+          }
+        },
+        {
+          "name": "moved_files_to_removable_device_counter",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.event_type == 'move' && @.destination_drive_type == 'removable')]"
+          }
+        },
+        {
+          "name": "sum_of_copied_files_to_removable_device_size",
+          "featureNamesMap": {
+            "sum": [
+              "file_size"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.event_type == 'copy' && @.destination_drive_type == 'removable')]"
+          }
+        },
+        {
+          "name": "copied_files_to_removable_device_counter",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.event_type == 'copy' && @.destination_drive_type == 'removable')]"
+          }
+        },
+        {
+          "name": "sum_of_moved_files_from_remote_device_size",
+          "featureNamesMap": {
+            "sum": [
+              "file_size"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.event_type == 'move' && @.source_drive_type == 'remote')]"
+          }
+        },
+        {
+          "name": "moved_files_from_remote_device_counter",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.event_type == 'move' && @.source_drive_type == 'remote')]"
+          }
+        },
+        {
+          "name": "sum_of_copied_files_from_remote_device_size",
+          "featureNamesMap": {
+            "sum": [
+              "file_size"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.event_type == 'copy' && @.source_drive_type == 'remote')]"
+          }
+        },
+        {
+          "name": "copied_files_from_remote_device_counter",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.event_type == 'copy' && @.source_drive_type == 'remote')]"
+          }
+        },
+        {
+          "name": "recycled_or_deleted_files_counter",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.event_type == 'recycle' || @.event_type == 'delete')]"
+          }
+        },
+        {
+          "name": "opened_files_counter",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.event_type == 'open')]"
+          }
+        },
+        {
+          "name": "normalized_src_machine_histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "normalized_src_machine"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "normalized_username_dlpfile_hourly",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "normalized_username"
+      ],
+      "dataSources": [
+        "dlpfile"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "highest_date_time_score",
+          "featureNamesMap": {
+            "maximize": [
+              "date_time_score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
+        },
+        {
+          "name": "normalized_src_machine_to_highest_score_map",
+          "featureNamesMap": {
+            "groupBy": [
+              "normalized_src_machine"
+            ],
+            "maximize": [
+              "normalized_src_machine_score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
+        },
+        {
+          "name": "src_network_folder_paths_histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "source_path"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.source_drive_type == 'remote')]"
+          }
+        },
+        {
+          "name": "sum_of_moved_files_to_removable_device_size",
+          "featureNamesMap": {
+            "sum": [
+              "file_size"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.event_type == 'move' && @.destination_drive_type == 'removable')]"
+          }
+        },
+        {
+          "name": "moved_files_to_removable_device_counter",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.event_type == 'move' && @.destination_drive_type == 'removable')]"
+          }
+        },
+        {
+          "name": "sum_of_copied_files_to_removable_device_size",
+          "featureNamesMap": {
+            "sum": [
+              "file_size"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.event_type == 'copy' && @.destination_drive_type == 'removable')]"
+          }
+        },
+        {
+          "name": "copied_files_to_removable_device_counter",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.event_type == 'copy' && @.destination_drive_type == 'removable')]"
+          }
+        },
+        {
+          "name": "sum_of_moved_files_from_remote_device_size",
+          "featureNamesMap": {
+            "sum": [
+              "file_size"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.event_type == 'move' && @.source_drive_type == 'remote')]"
+          }
+        },
+        {
+          "name": "moved_files_from_remote_device_counter",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.event_type == 'move' && @.source_drive_type == 'remote')]"
+          }
+        },
+        {
+          "name": "sum_of_copied_files_from_remote_device_size",
+          "featureNamesMap": {
+            "sum": [
+              "file_size"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.event_type == 'copy' && @.source_drive_type == 'remote')]"
+          }
+        },
+        {
+          "name": "copied_files_from_remote_device_counter",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.event_type == 'copy' && @.source_drive_type == 'remote')]"
+          }
+        },
+        {
+          "name": "recycled_or_deleted_files_counter",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.event_type == 'recycle' || @.event_type == 'delete')]"
+          }
+        },
+        {
+          "name": "opened_files_counter",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.event_type == 'open')]"
+          }
+        }
+      ]
+    },
+    {
+      "name": "normalized_src_machine_dlpfile_daily",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "normalized_src_machine"
+      ],
+      "dataSources": [
+        "dlpfile"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "aggrFeatureConfs": [
+        {
+          "name": "normalized_username_histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "normalized_username"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "normalized_username_dlpmail_daily",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "normalized_username"
+      ],
+      "dataSources": [
+        "dlpmail"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "aggrFeatureConfs": [
+        {
+          "name": "date_time_unix_histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "two_minute_resolution_epochtime"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.event_type == 'message_body')]"
+          }
+        },
+        {
+          "name": "number_of_events_per_hour_histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "hour"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.event_type == 'message_body')]"
+          }
+        },
+        {
+          "name": "highest_date_time_score",
+          "featureNamesMap": {
+            "maximize": [
+              "date_time_score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
+        },
+        {
+          "name": "normalized_src_machine_to_highest_score_map",
+          "featureNamesMap": {
+            "groupBy": [
+              "normalized_src_machine"
+            ],
+            "maximize": [
+              "normalized_src_machine_score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
+        },
+        {
+          "name": "email_sender_to_highest_score_map",
+          "featureNamesMap": {
+            "groupBy": [
+              "email_sender"
+            ],
+            "maximize": [
+              "email_sender_score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
+        },
+        {
+          "name": "email_recipient_domain_to_highest_score_map",
+          "featureNamesMap": {
+            "groupBy": [
+              "email_recipient_domain"
+            ],
+            "maximize": [
+              "email_recipient_domain_score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
+        },
+        {
+          "name": "email_application_to_highest_score_map",
+          "featureNamesMap": {
+            "groupBy": [
+              "email_application"
+            ],
+            "maximize": [
+              "email_application_score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
+        },
+        {
+          "name": "attachment_file_extension_to_highest_score_map",
+          "featureNamesMap": {
+            "groupBy": [
+              "attachment_file_extension"
+            ],
+            "maximize": [
+              "attachment_file_extension_score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
+        },
+        {
+          "name": "highest_attachment_file_size_score",
+          "featureNamesMap": {
+            "maximize": [
+              "attachment_file_size_score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
+        },
+        {
+          "name": "emails_to_external_recipient_counter",
+          "featureNamesMap": {
+
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.event_type == 'message_body' && @.is_external == true && @.num_of_recipients == 1)]"
+          }
+        },
+        {
+          "name": "attachments_to_external_recipient_counter",
+          "featureNamesMap": {
+
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.event_type == 'attachment' && @.is_external == true && @.num_of_recipients == 1)]"
+          }
+        },
+        {
+          "name": "sum_of_attachments_to_external_recipient_size",
+          "featureNamesMap": {
+            "sum": [
+              "attachment_file_size"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.event_type == 'attachment' && @.is_external == true && @.num_of_recipients == 1)]"
+          }
+        },
+        {
+          "name": "email_attachments_counter",
+          "featureNamesMap": {
+
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.event_type == 'attachment')]"
+          }
+        },
+        {
+          "name": "sum_of_email_attachment_file_size",
+          "featureNamesMap": {
+            "sum": [
+              "attachment_file_size"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.event_type == 'attachment')]"
+          }
+        },
+        {
+          "name": "normalized_src_machine_histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "normalized_src_machine"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.event_type == 'message_body')]"
+          }
+        },
+        {
+          "name": "email_sender_histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "email_sender"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.event_type == 'message_body')]"
+          }
+        },
+        {
+          "name": "email_recipient_domain_histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "email_recipient_domain"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.event_type == 'recipient')]"
+          }
+        },
+        {
+          "name": "email_application_histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "email_application"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.event_type == 'message_body')]"
+          }
+        },
+        {
+          "name": "attachment_file_extension_histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "attachment_file_extension"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.event_type == 'attachment')]"
+          }
+        },
+        {
+          "name": "attachment_file_size_histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "attachment_file_size"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.event_type == 'attachment')]"
+          }
+        }
+      ]
+    },
+    {
+      "name": "normalized_username_dlpmail_hourly",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "normalized_username"
+      ],
+      "dataSources": [
+        "dlpmail"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "highest_date_time_score",
+          "featureNamesMap": {
+            "maximize": [
+              "date_time_score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
+        },
+        {
+          "name": "normalized_src_machine_to_highest_score_map",
+          "featureNamesMap": {
+            "groupBy": [
+              "normalized_src_machine"
+            ],
+            "maximize": [
+              "normalized_src_machine_score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
+        },
+        {
+          "name": "email_sender_to_highest_score_map",
+          "featureNamesMap": {
+            "groupBy": [
+              "email_sender"
+            ],
+            "maximize": [
+              "email_sender_score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
+        },
+        {
+          "name": "email_recipient_domain_to_highest_score_map",
+          "featureNamesMap": {
+            "groupBy": [
+              "email_recipient_domain"
+            ],
+            "maximize": [
+              "email_recipient_domain_score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
+        },
+        {
+          "name": "email_application_to_highest_score_map",
+          "featureNamesMap": {
+            "groupBy": [
+              "email_application"
+            ],
+            "maximize": [
+              "email_application_score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
+        },
+        {
+          "name": "attachment_file_extension_to_highest_score_map",
+          "featureNamesMap": {
+            "groupBy": [
+              "attachment_file_extension"
+            ],
+            "maximize": [
+              "attachment_file_extension_score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
+        },
+        {
+          "name": "highest_attachment_file_size_score",
+          "featureNamesMap": {
+            "maximize": [
+              "attachment_file_size_score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
+        },
+        {
+          "name": "emails_to_external_recipient_counter",
+          "featureNamesMap": {
+
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.event_type == 'message_body' && @.is_external == true && @.num_of_recipients == 1)]"
+          }
+        },
+        {
+          "name": "attachments_to_external_recipient_counter",
+          "featureNamesMap": {
+
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.event_type == 'attachment' && @.is_external == true && @.num_of_recipients == 1)]"
+          }
+        },
+        {
+          "name": "sum_of_attachments_to_external_recipient_size",
+          "featureNamesMap": {
+            "sum": [
+              "attachment_file_size"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.event_type == 'attachment' && @.is_external == true && @.num_of_recipients == 1)]"
+          }
+        },
+        {
+          "name": "email_attachments_counter",
+          "featureNamesMap": {
+
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.event_type == 'attachment')]"
+          }
+        },
+        {
+          "name": "sum_of_email_attachment_file_size",
+          "featureNamesMap": {
+            "sum": [
+              "attachment_file_size"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.event_type == 'attachment')]"
+          }
+        }
+      ]
+    },
+    {
+      "name": "normalized_src_machine_dlpmail_daily",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "normalized_src_machine"
+      ],
+      "dataSources": [
+        "dlpmail"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "aggrFeatureConfs": [
+        {
+          "name": "normalized_username_histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "normalized_username"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.event_type == 'message_body')]"
+          }
+        }
+      ]
+    },
+    {
+      "name": "email_recipient_domain_dlpmail_daily",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "email_recipient_domain"
+      ],
+      "dataSources": [
+        "dlpmail"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "aggrFeatureConfs": [
+        {
+          "name": "normalized_username_histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "normalized_username"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        }
+      ]
+    },
+    {
       "name": "normalized_username_kerberos_logins_daily",
       "expireAfterSeconds": 31536000,
       "contextFieldNames": [

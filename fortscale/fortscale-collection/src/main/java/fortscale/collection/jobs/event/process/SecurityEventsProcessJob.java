@@ -110,7 +110,7 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 		Record rec = morphline.process(line,itemContext);
 		Record record = null;
 		if (rec==null) {
-			jobMetircs.linesFailuresInMorphline++;
+			jobMetrics.linesFailuresInMorphline++;
 			return null;
 		}
 		// treat the event according to the event type
@@ -136,7 +136,7 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 						record = this.morphlineEnrichment.process(processedRecord, itemContext);
 						if (record == null) {
 							// record was filtered
-							jobMetircs.linesFailuresInMorphlineEnrichment++;
+							jobMetrics.linesFailuresInMorphlineEnrichment++;
 							return null;
 						}
 
@@ -166,16 +166,16 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 
 							return record;
 						} else {
-							jobMetircs.linesFailuresInTecordToHadoopString++;
+							jobMetrics.linesFailuresInTecordToHadoopString++;
 						}
 					}
 
 				} else {//Record is null
-					jobMetircs.linesFailuresInEventCodeMorphline++;
+					jobMetrics.linesFailuresInEventCodeMorphline++;
 				}
 			} else {
 				//Handler is null
-				jobMetircs.linesFailuresHandlerNotFound++;
+				jobMetrics.linesFailuresHandlerNotFound++;
 			}
 		}
 		return null;

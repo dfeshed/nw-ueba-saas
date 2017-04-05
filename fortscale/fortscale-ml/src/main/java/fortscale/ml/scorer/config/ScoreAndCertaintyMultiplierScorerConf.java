@@ -9,6 +9,7 @@ import org.springframework.util.Assert;
 public class ScoreAndCertaintyMultiplierScorerConf extends AbstractScorerConf{
     public static final String SCORER_TYPE = "score-and-certainty-multiplier-scorer";
 
+    @JsonProperty("base-scorer")
     private IScorerConf baseScorerConf;
 
     @JsonCreator

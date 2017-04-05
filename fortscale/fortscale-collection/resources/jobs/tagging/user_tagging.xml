@@ -13,7 +13,15 @@
 			<job-class>fortscale.collection.jobs.tagging.UserTaggingJob</job-class>
 			<durability>true</durability>
 			<recover>true</recover>
-		</job>		
+		</job>
+	<!--<trigger>
+			<cron>
+				<name>user-tagging-hourly-trigger</name>
+				<group>Tagging</group>
+				<job-name>User</job-name>
+				<job-group>Tagging</job-group>
+				<cron-expression>0 0 12 * * ?</cron-expression>
+			</cron>
+		</trigger>-->
 	</schedule>
-	
 </job-scheduling-data>
