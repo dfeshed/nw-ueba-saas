@@ -42,97 +42,97 @@ public class DgFileEventAfterEtlBuilder {
 
     public DgFileEventAfterEtlBuilder setDateTime(String dateTime) {
         this.dateTime = dateTime;
-        return  this;
+        return this;
     }
 
     public DgFileEventAfterEtlBuilder setDateTimeUnix(String dateTimeUnix) {
         this.dateTimeUnix = dateTimeUnix;
-        return  this;
+        return this;
     }
 
     public DgFileEventAfterEtlBuilder setEventType(String eventType) {
         this.eventType = eventType;
-        return  this;
+        return this;
     }
 
     public DgFileEventAfterEtlBuilder setEventId(String eventId) {
         this.eventId = eventId;
-        return  this;
+        return this;
     }
 
     public DgFileEventAfterEtlBuilder setUsername(String username) {
         this.username = username;
-        return  this;
+        return this;
     }
 
     public DgFileEventAfterEtlBuilder setNormalizedUsername(String normalizedUsername) {
         this.normalizedUsername = normalizedUsername;
-        return  this;
+        return this;
     }
 
     public DgFileEventAfterEtlBuilder setFullName(String fullName) {
         this.fullName = fullName;
-        return  this;
+        return this;
     }
 
     public DgFileEventAfterEtlBuilder setHostname(String hostname) {
         this.hostname = hostname;
-        return  this;
+        return this;
     }
 
     public DgFileEventAfterEtlBuilder setNormalizedSrcMachine(String normalizedSrcMachine) {
         this.normalizedSrcMachine = normalizedSrcMachine;
-        return  this;
+        return this;
     }
 
     public DgFileEventAfterEtlBuilder setIpAddress(String ipAddress) {
         this.ipAddress = ipAddress;
-        return  this;
+        return this;
     }
 
     public DgFileEventAfterEtlBuilder setApplication(String application) {
         this.application = application;
-        return  this;
+        return this;
     }
 
     public DgFileEventAfterEtlBuilder setSourceDirectory(String sourceDirectory) {
         this.sourceDirectory = sourceDirectory;
-        return  this;
+        return this;
     }
 
     public DgFileEventAfterEtlBuilder setDestinationDirectory(String destinationDirectory) {
         this.destinationDirectory = destinationDirectory;
-        return  this;
+        return this;
     }
 
     public DgFileEventAfterEtlBuilder setDetailFileSize(Long detailFileSize) {
         this.detailFileSize = detailFileSize;
-        return  this;
+        return this;
     }
 
     public DgFileEventAfterEtlBuilder setSourceDriveType(String sourceDriveType) {
         this.sourceDriveType = sourceDriveType;
-        return  this;
+        return this;
     }
 
     public DgFileEventAfterEtlBuilder setDestinationDriveType(String destinationDriveType) {
         this.destinationDriveType = destinationDriveType;
-        return  this;
+        return this;
     }
 
     public DgFileEventAfterEtlBuilder setWasClassified(String wasClassified) {
         this.wasClassified = wasClassified;
-        return  this;
+        return this;
     }
 
     public DgFileEventAfterEtlBuilder setWasBlocked(String wasBlocked) {
         this.wasBlocked = wasBlocked;
-        return  this;
+        return this;
     }
 
     public DgFileEventAfterEtlBuilder setScanValueStatusText(String scanValueStatusText) {
         this.scanValueStatusText = scanValueStatusText;
-        return  this;
+        return this;
     }
 
     public DgFileEventAfterEtlBuilder setIsAdminActivity(String isAdminActivity) {
@@ -171,13 +171,13 @@ public class DgFileEventAfterEtlBuilder {
     }
 
     public DgFileEventAfterEtl createDgEventAfterEtl() {
-        DgFileEventAfterEtl dgFileEventAfterEtl = new DgFileEventAfterEtl( dateTime,  dateTimeUnix,  eventType,  eventId,  username,
-                normalizedUsername,  fullName,  hostname,  normalizedSrcMachine,
-                ipAddress,  application,  sourceDirectory,  destinationDirectory,
-                sourceFile,  destinationFile,  detailFileSize,  sourceDriveType,
-                destinationDriveType,  wasClassified,  wasBlocked,  scanValueStatusText,
-                malwarePolicyName,  isRdp,  isAdminActivity,  isRegistryChanged,
-                dataSource,  lastState);
+        DgFileEventAfterEtl dgFileEventAfterEtl = new DgFileEventAfterEtl(dateTime, dateTimeUnix, eventType, eventId, username,
+                normalizedUsername, fullName, hostname, normalizedSrcMachine,
+                ipAddress, application, sourceDirectory, destinationDirectory,
+                sourceFile, destinationFile, detailFileSize, sourceDriveType,
+                destinationDriveType, wasClassified, wasBlocked, scanValueStatusText,
+                malwarePolicyName, isRdp, isAdminActivity, isRegistryChanged,
+                dataSource, lastState);
 
         dgFileEventAfterEtl = fillGenericValuesForEmptyFields(dgFileEventAfterEtl);
         return dgFileEventAfterEtl;
@@ -196,9 +196,12 @@ public class DgFileEventAfterEtlBuilder {
                     final String fieldName = field.getName();
                     if (fieldName.equals("detailFileSize")) {
                         field.set(dgFileEventAfterEtl, 0l);
-                    }
-                    else {
-                        field.set(dgFileEventAfterEtl, "some_" + fieldName);
+                    } else {
+                        if (fieldName == "sourceDriveType" || fieldName == "destinationDriveType") {
+                            field.set(dgFileEventAfterEtl, String.format("some_%s", fieldName).toLowerCase());
+                        } else {
+                            field.set(dgFileEventAfterEtl, "some_" + fieldName);
+                        }
                     }
                 }
 
