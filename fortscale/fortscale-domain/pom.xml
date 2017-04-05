@@ -107,12 +107,6 @@
 			<artifactId>fortscale-utils</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		
-		<dependency>
-			<groupId>fortscale</groupId>
-			<artifactId>fortscale-geoip</artifactId>
-			<version>${project.version}</version>
-		</dependency>
 
 		<!-- Spring dependencies -->
 		<dependency>
