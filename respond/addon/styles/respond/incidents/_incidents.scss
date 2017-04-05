@@ -27,8 +27,9 @@ page.respond-engine {
       max-width: 0;
       padding: 0;
       overflow: hidden;
-      @include rsa-vendor-prefix(transition-property, max-width, min-width, padding);
-      @include rsa-vendor-prefix(transition-duration, 0.3s);
+      opacity: $rsa-transparent;
+      @include rsa-vendor-prefix(transition-property, max-width, min-width, padding, opacity);
+      @include rsa-vendor-prefix(transition-duration, 0.3s, 0.3s, 0.3s, 0.1s);
     }
 
     &.show-more-filters {
@@ -39,6 +40,7 @@ page.respond-engine {
         padding: rsa-whitespace();
         overflow: auto;
         overflow-x: hidden;
+        opacity: $rsa-opaque;
       }
     }
 
@@ -67,31 +69,6 @@ page.respond-engine {
       @include rsa-fill-abs();
       z-index: 2;
       background-color: rsa-color(black,base,$rsa-translucent);
-    }
-  }
-}
-
-// Temporary background icons as placeholder content
-.respond-engine {
-
-  .incident-placeholder {
-    .background-icon {
-      font-size: 14rem;
-      color: rsa-color(green);
-    }
-    .placeholder-id {
-      font-size: 2rem;
-      color: rsa-color(orange);
-      border: 1px solid rsa-color(orange);
-      border-radius: 4px;
-      padding: rsa-whitespace();
-      margin-left: rsa-whitespace(more);
-    }
-  }
-  .rsa-respond-incidents {
-    .filter-zone .background-icon {
-      font-size: 7rem;
-      color: rsa-color(green);
     }
   }
 }

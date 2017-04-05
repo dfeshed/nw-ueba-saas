@@ -443,6 +443,16 @@ const updateIncidentFilters = (filters) => {
   };
 };
 
+const resetIncidentFilters = () => {
+  return (dispatch) => {
+    dispatch({
+      type: ACTION_TYPES.RESET_INCIDENT_FILTERS
+    });
+
+    dispatch(getIncidents());
+  };
+};
+
 /**
  * An action creator for updating the sort-by information used in fetching incidents
  * @public
@@ -513,6 +523,7 @@ export {
   createJournalEntry,
   deleteJournalEntry,
   updateIncidentFilters,
+  resetIncidentFilters,
   sortBy,
   initializeIncident,
   getAllPriorityTypes,

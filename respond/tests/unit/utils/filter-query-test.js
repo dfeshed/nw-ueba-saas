@@ -102,7 +102,7 @@ test('Calling addFilter() with either an empty (i.e., null or undefined) field o
 test('Calling addSinceWhenFilter() creates the proper range query', function(assert) {
   const query = FilterQuery.create();
   const field = 'modifiedDate';
-  const from = query.addSinceWhenFilter(field, SINCE_WHEN_TYPES_BY_NAME.LAST_SEVEN_DAYS, true);
+  const from = query.addSinceWhenFilter(field, SINCE_WHEN_TYPES_BY_NAME.LAST_TWENTY_FOUR_HOURS, true);
   const expectedJson = {
     filter: [
       {
@@ -122,8 +122,8 @@ test('Calling addSinceWhenFilter() creates the proper range query', function(ass
 test('Calling addSinceWhenFilter() twice removes the first filter and adds the second', function(assert) {
   const query = FilterQuery.create();
   const field = 'modifiedDate';
-  query.addSinceWhenFilter(field, SINCE_WHEN_TYPES_BY_NAME.LAST_SEVEN_DAYS);
-  const from = query.addSinceWhenFilter(field, SINCE_WHEN_TYPES_BY_NAME.LAST_MONTH, true);
+  query.addSinceWhenFilter(field, SINCE_WHEN_TYPES_BY_NAME.LAST_TWENTY_FOUR_HOURS);
+  const from = query.addSinceWhenFilter(field, SINCE_WHEN_TYPES_BY_NAME.LAST_FORTY_EIGHT_HOURS, true);
   const expectedJson = {
     filter: [
       {

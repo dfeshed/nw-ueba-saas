@@ -1,9 +1,9 @@
 import Ember from 'ember';
 import { assert } from 'ember-metal/utils';
 import { promiseRequest, streamRequest } from 'streaming-data/services/data-access/requests';
-import { CANNED_FILTER_TYPES_BY_NAME } from 'respond/utils/canned-filter-types';
 import { SORT_TYPES_BY_NAME } from 'respond/utils/sort-types';
 import FilterQuery from 'respond/utils/filter-query';
+import moment from 'moment';
 
 const {
   Object: EmberObject,
@@ -21,17 +21,22 @@ const NOOP = () => {};
 // utility function for constructing a basic/standard incidents query
 const _buildIncidentsQuery = (filters, sort) => {
   const {
-    field: cannedFilterField,
-    value: cannedFilterValue } = CANNED_FILTER_TYPES_BY_NAME[filters.cannedFilter].filter;
-
-  const {
     sortField,
     isDescending } = SORT_TYPES_BY_NAME[sort];
 
-  return FilterQuery.create()
-    .addSortBy(sortField, isDescending)
-    .addFilter(cannedFilterField, cannedFilterValue)
-    .addRangeFilter('created', 0, undefined);
+  const query = FilterQuery.create().addSortBy(sortField, isDescending);
+
+  Object.keys(filters).forEach((filterField) => {
+    const value = filters[filterField];
+
+    if (filterField === 'created') {
+      query.addRangeFilter('created', moment().subtract(value.subtract, value.unit).valueOf(), undefined);
+    } else {
+      query.addFilter(filterField, filters[filterField]);
+    }
+  });
+
+  return query;
 };
 
 IncidentsAPI.reopenClass({

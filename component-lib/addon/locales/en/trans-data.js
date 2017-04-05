@@ -354,14 +354,18 @@ export default {
   respond: {
     title: 'Respond',
     timeframeOptions: {
-      lastHour: 'Last hour',
-      lastTwelveHours: 'Last 12 hours',
-      lastTwentyFourHours: 'Last 24 hours',
-      lastFortyEightHours: 'Last 48 hours',
-      lastSevenDays: 'Last 7 days',
-      lastMonth: 'Last month',
-      lastTwelveMonths: 'Last 12 months',
-      allTime: 'All time'
+      LAST_5_MINUTES: 'Last 5 Minutes',
+      LAST_10_MINUTES: 'Last 10 Minutes',
+      LAST_15_MINUTES: 'Last 15 Minutes',
+      LAST_30_MINUTES: 'Last 30 Minutes',
+      LAST_HOUR: 'Last 1 Hour',
+      LAST_3_HOURS: 'Last 3 Hours',
+      LAST_6_HOURS: 'Last 6 Hours',
+      LAST_TWELVE_HOURS: 'Last 12 Hours',
+      LAST_TWENTY_FOUR_HOURS: 'Last 24 Hours',
+      LAST_FORTY_EIGHT_HOURS: 'Last 2 Days',
+      LAST_5_DAYS: 'Last 5 Days',
+      ALL_TIME: 'All Data'
     },
     incidents: {
       actions: {
@@ -381,6 +385,10 @@ export default {
           addJournalEntryFailure: 'There was a problem adding a journal entry to incident {{incidentId}}'
         },
         deselectAll: 'Deselect all'
+      },
+      filters: {
+        timeRange: 'Time Range',
+        reset: 'Reset Filters'
       },
       selectionCount: '{{selectionCount}} selected',
       label: 'Incidents',

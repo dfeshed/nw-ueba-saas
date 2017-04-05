@@ -1,11 +1,21 @@
 import * as ACTION_TYPES from 'respond/actions/types';
-import { CANNED_FILTER_TYPES_BY_NAME } from 'respond/utils/canned-filter-types';
 import { SORT_TYPES_BY_NAME } from 'respond/utils/sort-types';
 import reduxActions from 'redux-actions';
 import { handle } from 'redux-pack';
 import { load, persist } from './util/local-storage';
 
 const localStorageKey = 'rsa::nw::respond::incidents';
+
+const incidentsFilters = {
+  status: [],
+  priority: [],
+  'assignee.id': [],
+  created: {
+    'name': 'ALL_TIME',
+    'unit': 'years',
+    'subtract': 50
+  }
+};
 
 let initialState = {
   // the known list of incidents
@@ -35,9 +45,7 @@ let initialState = {
   incidentsTotal: null,
 
   // map of filters applied to the list of incidents
-  incidentsFilters: {
-    cannedFilter: CANNED_FILTER_TYPES_BY_NAME.ALL.name
-  },
+  incidentsFilters,
 
   // the incident currently with focus (i.e., highlighted) in the incident list
   focusedIncident: null,
@@ -181,13 +189,22 @@ const incidents = reduxActions.handleActions({
     incidentsSort: payload
   })),
 
-  [ACTION_TYPES.UPDATE_INCIDENT_FILTERS]: persistIncidentsState((state, { payload }) => ({
-    ...state,
-    incidentsFilters: {
-      ...state.incidentsFilters,
-      ...payload
+  [ACTION_TYPES.UPDATE_INCIDENT_FILTERS]: persistIncidentsState((state, { payload }) => (
+    {
+      ...state,
+      incidentsFilters: {
+        ...state.incidentsFilters,
+        ...payload
+      }
     }
-  })),
+  )),
+
+  [ACTION_TYPES.RESET_INCIDENT_FILTERS]: persistIncidentsState((state) => (
+    {
+      ...state,
+      incidentsFilters
+    }
+  )),
 
   [ACTION_TYPES.UPDATE_SELECTED_CANNED_FILTER]: persistIncidentsState((state, { payload }) => ({
     ...state,

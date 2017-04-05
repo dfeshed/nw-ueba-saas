@@ -5,50 +5,62 @@
  */
 const SINCE_WHEN_TYPES = [
   {
+    'name': 'LAST_5_MINUTES',
+    'unit': 'minutes',
+    'subtract': 5
+  },
+  {
+    'name': 'LAST_10_MINUTES',
+    'unit': 'minutes',
+    'subtract': 10
+  },
+  {
+    'name': 'LAST_15_MINUTES',
+    'unit': 'minutes',
+    'subtract': 15
+  },
+  {
+    'name': 'LAST_30_MINUTES',
+    'unit': 'minutes',
+    'subtract': 30
+  },
+  {
     'name': 'LAST_HOUR',
-    'labelKey': 'respond.timeframeOptions.lastHour',
     'unit': 'minutes',
     'subtract': 60
   },
   {
+    'name': 'LAST_3_HOURS',
+    'unit': 'hours',
+    'subtract': 3
+  },
+  {
+    'name': 'LAST_6_HOURS',
+    'unit': 'hours',
+    'subtract': 6
+  },
+  {
     'name': 'LAST_TWELVE_HOURS',
-    'labelKey': 'respond.timeframeOptions.lastTwelveHours',
     'unit': 'hours',
     'subtract': 12
   },
   {
     'name': 'LAST_TWENTY_FOUR_HOURS',
-    'labelKey': 'respond.timeframeOptions.lastTwentyFourHours',
     'unit': 'days',
     'subtract': 1
   },
   {
     'name': 'LAST_FORTY_EIGHT_HOURS',
-    'labelKey': 'respond.timeframeOptions.lastFortyEightHours',
     'unit': 'days',
     'subtract': 2
   },
   {
-    'name': 'LAST_SEVEN_DAYS',
-    'labelKey': 'respond.timeframeOptions.lastSevenDays',
+    'name': 'LAST_5_DAYS',
     'unit': 'days',
-    'subtract': 7
-  },
-  {
-    'name': 'LAST_MONTH',
-    'labelKey': 'respond.timeframeOptions.lastMonth',
-    'unit': 'months',
-    'subtract': 1
-  },
-  {
-    'name': 'LAST_TWELVE_MONTHS',
-    'labelKey': 'respond.timeframeOptions.lastTwelveMonths',
-    'unit': 'months',
-    'subtract': 12
+    'subtract': 5
   },
   {
     'name': 'ALL_TIME',
-    'labelKey': 'respond.timeframeOptions.allTime',
     'unit': 'years',
     'subtract': 50
   }
