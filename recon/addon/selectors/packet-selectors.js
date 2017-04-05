@@ -15,18 +15,21 @@ const visiblePackets = createSelector(
   [packets, isRequestShown, isResponseShown],
   (packets, isRequestShown, isResponseShown) => {
 
-    // packets can be null
-    let returnPackets = packets || [];
-
-    if (!isRequestShown || !isResponseShown) {
-      // we're not showing req or res, so let's filter them out
-      returnPackets = packets.filter((p) => {
-        return (p.side === 'request' && isRequestShown) ||
-               (p.side === 'response' && isResponseShown);
-      });
+    // packets can be null, eject
+    if (!packets) {
+      return [];
     }
 
-    return returnPackets;
+    // if showing all packets, just return them
+    if (isRequestShown && isResponseShown) {
+      return packets;
+    }
+
+    // we're not showing req or res, so let's filter them out
+    return packets.filter((p) => {
+      return (p.side === 'request' && isRequestShown) ||
+             (p.side === 'response' && isResponseShown);
+    });
   }
 );
 

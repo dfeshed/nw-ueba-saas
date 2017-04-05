@@ -10,7 +10,7 @@
 
 {{#if textContent}}
   <div class="scroll-box">
-    {{#each filteredContent as |text index|}}
+    {{#each visibleText as |text index|}}
       {{recon-event-detail/single-text
         index=index
         isLog=isLogEvent
