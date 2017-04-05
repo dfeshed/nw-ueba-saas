@@ -155,11 +155,17 @@ const data = handleActions({
   },
 
   // Content reducing
-  [ACTION_TYPES.CONTENT_RETRIEVE_STARTED]: (state) => ({
-    ...state,
-    contentError: null,
-    contentLoading: true
-  }),
+  [ACTION_TYPES.CONTENT_RETRIEVE_STARTED]: (state) => {
+    // isContinuation() is a function we use to track same-side packets. This
+    // needs to be reset to its default state when starting a request for a new
+    // session.
+    isContinuation(null);
+    return {
+      ...state,
+      contentError: null,
+      contentLoading: true
+    };
+  },
   [ACTION_TYPES.FILES_RETRIEVE_SUCCESS]: (state, { payload }) => ({
     ...state,
     files: payload.map((f) => {
