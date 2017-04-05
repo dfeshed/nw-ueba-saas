@@ -83,33 +83,6 @@ public class UserActivityData {
 
     }
 
-    /*  public static class TargetDeviceEntry  implements  BaseUserActivityEntry {
-
-          private String deviceName;
-          private double count;
-
-          public TargetDeviceEntry(String deviceName, double count) {
-              this.deviceName = deviceName;
-              this.count = count;
-          }
-
-          public String getDeviceName() {
-              return deviceName;
-          }
-
-          public void setDeviceName(String deviceName) {
-              this.deviceName = deviceName;
-          }
-
-          public double getCount() {
-              return count;
-          }
-
-          public void setCount(double count) {
-              this.count = count;
-          }
-      }
-  */
     public static class AuthenticationsEntry implements BaseUserActivityEntry {
 
         private double success;
@@ -210,7 +183,7 @@ public class UserActivityData {
 
     }
 
-    public static enum DeviceType {
+    public enum DeviceType {
         Desktop,
         Mobile,
         Server,
