@@ -3,7 +3,9 @@ package fortscale.collection.morphlines.dlpmail.digitalguardian;
 import fortscale.collection.morphlines.MorphlinesTester;
 import fortscale.utils.impala.ImpalaParser;
 import fortscale.utils.properties.PropertiesResolver;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -65,7 +67,7 @@ public class DgMailParseTest {
 				.setIpAddress("10.9.9.9")
 				.setHostname("keizer-vm-w81")
 				.setNormalizedSrcMachine("keizer-vm-w81")
-				.setApplication("outlook.exe")
+				.setExecutingApplication("outlook.exe")
 				.setDestinationFile("ppo enroll form - signed.pdf")
 				.setDetailFileSize(286694)
 				.setDestinationDirectory("c:\\users\\rkeizer\\documents\\hr\\forms\\")

@@ -89,7 +89,7 @@ public class DgMailEventAfterEtlBuilder {
         return this;
     }
 
-    public DgMailEventAfterEtlBuilder setApplication(String application) {
+    public DgMailEventAfterEtlBuilder setExecutingApplication(String application) {
         this.application = application;
         return this;
     }

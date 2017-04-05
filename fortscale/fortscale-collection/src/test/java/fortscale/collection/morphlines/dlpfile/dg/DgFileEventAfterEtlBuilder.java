@@ -90,7 +90,7 @@ public class DgFileEventAfterEtlBuilder {
         return this;
     }
 
-    public DgFileEventAfterEtlBuilder setApplication(String application) {
+    public DgFileEventAfterEtlBuilder setExecutingApplication(String application) {
         this.application = application;
         return this;
     }

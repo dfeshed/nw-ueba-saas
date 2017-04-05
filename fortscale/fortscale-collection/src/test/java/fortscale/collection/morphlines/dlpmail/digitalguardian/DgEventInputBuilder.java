@@ -130,7 +130,7 @@ public class DgEventInputBuilder {
         return this;
     }
 
-    public DgEventInputBuilder setApplication(String application) {
+    public DgEventInputBuilder setExecutingApplication(String application) {
         this.application = application;
         return this;
     }
