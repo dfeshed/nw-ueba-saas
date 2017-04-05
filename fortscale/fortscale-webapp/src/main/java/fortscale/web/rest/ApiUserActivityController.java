@@ -289,8 +289,11 @@ public class ApiUserActivityController extends DataQueryController {
         //Use both "method reference" and lambda function only for examples
         DataBean<List<UserActivityData.NameCountTypeEntry>> userActivityApplicationsBean = new DataBean<>();
         userActivityApplicationsBean.setData(Arrays.asList(
-                new UserActivityData.NameCountTypeEntry("outlook",300,"mail"),
-                new UserActivityData.NameCountTypeEntry("explore",32,"bla")
+                new UserActivityData.NameCountTypeEntry("new",300,"mail"),
+                new UserActivityData.NameCountTypeEntry("gmail",32,"bla"),
+                new UserActivityData.NameCountTypeEntry("outlook.exe",32,"bla"),
+                new UserActivityData.NameCountTypeEntry("explore.exe",32,"bla"),
+                new UserActivityData.NameCountTypeEntry("chrome.exe",32,"bla")
 
         ));
         return userActivityApplicationsBean;
