@@ -2,8 +2,10 @@ package fortscale.ml.scorer;
 
 import fortscale.common.feature.Feature;
 import fortscale.common.feature.FeatureNumericValue;
+import fortscale.common.feature.extraction.FeatureExtractService;
 import fortscale.ml.model.ContinuousDataModel;
 import fortscale.ml.model.Model;
+import fortscale.ml.model.cache.EventModelsCacheService;
 import fortscale.ml.scorer.algorithms.ContinuousValuesModelScorerAlgorithm;
 import fortscale.ml.scorer.config.QuadPolyCalibrationConf;
 import org.springframework.util.Assert;
@@ -24,11 +26,11 @@ public class ContinuousValuesModelScorer extends AbstractModelScorer {
 			List<String> contextFieldNames, List<List<String>> additionalContextFieldNames, String featureName,
 			int minNumOfSamplesToInfluence, int enoughNumOfSamplesToInfluence,
 			boolean isUseCertaintyToCalculateScore,
-			QuadPolyCalibrationConf quadPolyCalibrationConf) {
+			QuadPolyCalibrationConf quadPolyCalibrationConf, FeatureExtractService featureExtractService, EventModelsCacheService eventModelsCacheService) {
 
 		super(scorerName, modelName, additionalModelNames, contextFieldNames, additionalContextFieldNames, featureName,
 				minNumOfSamplesToInfluence, enoughNumOfSamplesToInfluence,
-				isUseCertaintyToCalculateScore);
+				isUseCertaintyToCalculateScore,featureExtractService, eventModelsCacheService);
 
 		Assert.notNull(quadPolyCalibrationConf);
 		quadPolyCalibration = new QuadPolyCalibration(quadPolyCalibrationConf);

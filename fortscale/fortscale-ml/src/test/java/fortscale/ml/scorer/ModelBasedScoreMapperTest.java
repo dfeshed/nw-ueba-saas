@@ -65,7 +65,8 @@ public class ModelBasedScoreMapperTest {
 
     @Autowired
     private FeatureExtractService featureExtractService;
-
+    @Autowired
+    EventModelsCacheService eventModelsCacheService;
     @Autowired
     private ModelsCacheService modelsCacheService;
 
@@ -95,8 +96,8 @@ public class ModelBasedScoreMapperTest {
                 "model name",
                 Collections.singletonList("context field name"),
                 "feature name",
-                baseScorerConf
-        );
+                baseScorerConf,
+                scorerFactoryService, eventModelsCacheService, featureExtractService);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -106,8 +107,8 @@ public class ModelBasedScoreMapperTest {
                 "model name",
                 Collections.singletonList("context field name"),
                 "",
-                baseScorerConf
-        );
+                baseScorerConf,
+                scorerFactoryService, eventModelsCacheService, featureExtractService);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -117,8 +118,8 @@ public class ModelBasedScoreMapperTest {
                 "",
                 Collections.singletonList("context field name"),
                 "feature name",
-                baseScorerConf
-        );
+                baseScorerConf,
+                scorerFactoryService, eventModelsCacheService, featureExtractService);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -128,8 +129,8 @@ public class ModelBasedScoreMapperTest {
                 "model name",
                 null,
                 "feature name",
-                baseScorerConf
-        );
+                baseScorerConf,
+                scorerFactoryService, eventModelsCacheService, featureExtractService);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -139,8 +140,8 @@ public class ModelBasedScoreMapperTest {
                 "model name",
                 Collections.singletonList("context field name"),
                 "feature name",
-                null
-        );
+                null,
+                scorerFactoryService, eventModelsCacheService, featureExtractService);
     }
 
     private FeatureScore calculateScore(String featureScoreName,
@@ -167,8 +168,8 @@ public class ModelBasedScoreMapperTest {
                 "model name",
                 Collections.singletonList(contextFieldName),
                 "feature name",
-                baseScorerConf
-        ).calculateScore(eventMessage, evenEpochTime);
+                baseScorerConf,
+                scorerFactoryService, eventModelsCacheService, featureExtractService).calculateScore(eventMessage, evenEpochTime);
     }
 
     @Test

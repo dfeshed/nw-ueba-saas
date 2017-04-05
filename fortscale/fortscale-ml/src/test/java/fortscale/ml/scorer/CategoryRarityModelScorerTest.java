@@ -9,6 +9,7 @@ import fortscale.ml.model.CategoryRarityModel;
 import fortscale.ml.model.Model;
 import fortscale.ml.model.builder.CategoryRarityModelBuilder;
 import fortscale.ml.model.builder.CategoryRarityModelBuilderConf;
+import fortscale.ml.model.cache.EventModelsCacheService;
 import fortscale.ml.model.cache.ModelsCacheService;
 import net.minidev.json.JSONObject;
 import org.junit.Assert;
@@ -35,7 +36,10 @@ public class CategoryRarityModelScorerTest {
     @Autowired
     FeatureExtractService featureExtractService;
 
-    static void assertScorer(CategoryRarityModelScorer scorer, CategoryRarityModelScorerParams params) {
+    @Autowired
+    EventModelsCacheService eventModelsCacheService;
+
+    private void assertScorer(CategoryRarityModelScorer scorer, CategoryRarityModelScorerParams params) {
 
         Assert.assertEquals(params.getName(), scorer.getName());
         Assert.assertEquals(params.getModelName(), scorer.getModelName());
@@ -51,7 +55,7 @@ public class CategoryRarityModelScorerTest {
 
     }
 
-    static CategoryRarityModelScorer createCategoryRarityModelScorer(CategoryRarityModelScorerParams params) {
+    private CategoryRarityModelScorer createCategoryRarityModelScorer(CategoryRarityModelScorerParams params) {
         return new CategoryRarityModelScorer(params.getName(),
                 params.getModelName(),
                 Collections.emptyList(),
@@ -64,7 +68,7 @@ public class CategoryRarityModelScorerTest {
                 params.getMinimumNumberOfDistinctValuesToInfluence(),
                 params.getEnoughNumberOfDistinctValuesToInfluence(),
                 params.getMaxRareCount(),
-                params.getMaxNumOfRareFeatures());
+                params.getMaxNumOfRareFeatures(), featureExtractService, eventModelsCacheService);
     }
 
 

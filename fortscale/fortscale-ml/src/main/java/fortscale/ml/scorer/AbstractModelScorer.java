@@ -2,14 +2,13 @@ package fortscale.ml.scorer;
 
 import fortscale.common.event.Event;
 import fortscale.common.feature.Feature;
+import fortscale.common.feature.extraction.FeatureExtractService;
 import fortscale.domain.core.FeatureScore;
 import fortscale.domain.core.ModelFeatureScore;
 import fortscale.ml.model.Model;
 import fortscale.ml.model.cache.EventModelsCacheService;
 import fortscale.ml.scorer.config.ModelScorerConf;
 import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.util.Assert;
 
 import java.util.Collections;
@@ -17,7 +16,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-@Configurable(preConstruction = true)
 public abstract class AbstractModelScorer extends AbstractScorer{
 	private String modelName;
 	private List<String> additionalModelNames;
@@ -28,9 +26,9 @@ public abstract class AbstractModelScorer extends AbstractScorer{
 	private int enoughNumOfSamplesToInfluence = ModelScorerConf.ENOUGH_NUM_OF_SAMPLES_TO_INFLUENCE_DEFAULT_VALUE;
 	private boolean isUseCertaintyToCalculateScore = ModelScorerConf.IS_USE_CERTAINTY_TO_CALCULATE_SCORE_DEFAULT_VALUE;
 
-	@Autowired
-	private EventModelsCacheService eventModelsCacheService;
 
+	protected final EventModelsCacheService eventModelsCacheService;
+	protected final FeatureExtractService featureExtractService;
 
     static public void assertMinNumOfSamplesToInfluenceValue(int minNumOfSamplesToInfluence) {
         Assert.isTrue(minNumOfSamplesToInfluence >= 1, String.format("minNumOfSamplesToInfluence (%d) must be >= 1", minNumOfSamplesToInfluence));
@@ -63,8 +61,10 @@ public abstract class AbstractModelScorer extends AbstractScorer{
 							   String featureName,
 							   int minNumOfSamplesToInfluence,
 							   int enoughNumOfSamplesToInfluence,
-							   boolean isUseCertaintyToCalculateScore){
+							   boolean isUseCertaintyToCalculateScore, FeatureExtractService featureExtractService,
+							   EventModelsCacheService eventModelsCacheService){
 		super(scorerName);
+		this.eventModelsCacheService = eventModelsCacheService;
 		Assert.isTrue(StringUtils.isNotBlank(featureName), "feature name cannot be null empty or blank");
 		this.featureName = featureName;
 		this.enoughNumOfSamplesToInfluence = Math.max(enoughNumOfSamplesToInfluence, minNumOfSamplesToInfluence);
@@ -100,6 +100,7 @@ public abstract class AbstractModelScorer extends AbstractScorer{
 		this.additionalModelNames = additionalModelNames;
 		this.contextFieldNames = contextFieldNames;
 		this.additionalContextFieldNames = additionalContextFieldNames;
+		this.featureExtractService = featureExtractService;
 	}
 
 	@Override

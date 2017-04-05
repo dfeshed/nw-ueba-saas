@@ -1,11 +1,16 @@
 package fortscale.ml.scorer.factory;
 
+import fortscale.common.feature.extraction.FeatureExtractService;
 import fortscale.ml.model.ModelConf;
+import fortscale.ml.model.cache.EventModelsCacheService;
 import fortscale.ml.model.retriever.AbstractDataRetriever;
 import fortscale.ml.model.retriever.AbstractDataRetrieverConf;
 import fortscale.ml.scorer.ModelBasedScoreMapper;
+import fortscale.ml.scorer.Scorer;
 import fortscale.ml.scorer.config.ModelBasedScoreMapperConf;
 import fortscale.utils.factory.FactoryConfig;
+import fortscale.utils.factory.FactoryService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
@@ -18,6 +23,13 @@ import java.util.Set;
 public class ModelBasedScoreMapperFactory extends AbstractModelScorerFactory {
 	private static final String FACTORY_CONFIG_TYPE_ERROR_MSG = String.format(
 			"factoryConfig must be an instance of %s.", ModelBasedScoreMapperConf.class.getSimpleName());
+
+	@Autowired
+	private EventModelsCacheService eventModelsCacheService;
+	@Autowired
+	private FactoryService<Scorer> factoryService;
+	@Autowired
+	private FeatureExtractService featureExtractService;
 
 	@Override
 	public String getFactoryName() {
@@ -43,7 +55,7 @@ public class ModelBasedScoreMapperFactory extends AbstractModelScorerFactory {
 				modelName,
 				contextFieldNames,
 				featureName,
-				scorerConf.getBaseScorerConf()
-		);
+				scorerConf.getBaseScorerConf(),
+				factoryService, eventModelsCacheService, featureExtractService);
 	}
 }

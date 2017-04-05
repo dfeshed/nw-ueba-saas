@@ -2,13 +2,13 @@ package fortscale.ml.scorer;
 
 import fortscale.common.event.Event;
 import fortscale.common.feature.Feature;
+import fortscale.common.feature.extraction.FeatureExtractService;
 import fortscale.domain.core.FeatureScore;
 import fortscale.ml.model.ScoreMappingModel;
 import fortscale.ml.model.cache.EventModelsCacheService;
 import fortscale.ml.scorer.config.IScorerConf;
 import fortscale.utils.factory.FactoryService;
 import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.util.Assert;
 
@@ -16,7 +16,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-@Configurable(preConstruction = true)
 public class ModelBasedScoreMapper extends AbstractScorer {
 	private static final ScoreMapping.ScoreMappingConf ZERO_SCORE_MAPPING_CONF = new ScoreMapping.ScoreMappingConf()
 			.setMapping(new HashMap<Double, Double>() {{
@@ -29,17 +28,17 @@ public class ModelBasedScoreMapper extends AbstractScorer {
 	private List<String> contextFieldNames;
 	private String featureName;
 
-	@Autowired
 	private EventModelsCacheService eventModelsCacheService;
 
-	@Autowired
 	private FactoryService<Scorer> factoryService;
+
+	private FeatureExtractService featureExtractService;
 
 	public ModelBasedScoreMapper(String scorerName,
 								 String modelName,
 								 List<String> contextFieldNames,
 								 String featureName,
-								 IScorerConf baseScorerConf) {
+								 IScorerConf baseScorerConf, FactoryService<Scorer> factoryService, EventModelsCacheService eventModelsCacheService, FeatureExtractService featureExtractService) {
 		super(scorerName);
 		Assert.isTrue(StringUtils.isNotBlank(featureName), "feature name cannot be null empty or blank");
 		Assert.isTrue(StringUtils.isNotBlank(modelName), "model name must be provided and cannot be empty or blank.");
@@ -48,7 +47,10 @@ public class ModelBasedScoreMapper extends AbstractScorer {
 		this.modelName = modelName;
 		this.contextFieldNames = contextFieldNames;
 		this.featureName = featureName;
-		baseScorer = factoryService.getProduct(baseScorerConf);
+		this.factoryService = factoryService;
+		this.eventModelsCacheService= eventModelsCacheService;
+		this.featureExtractService=featureExtractService;
+		baseScorer = this.factoryService.getProduct(baseScorerConf);
 	}
 
 	@Override

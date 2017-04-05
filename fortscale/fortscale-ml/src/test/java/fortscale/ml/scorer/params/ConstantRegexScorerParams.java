@@ -54,7 +54,7 @@ public class ConstantRegexScorerParams implements ScorerParams {
 
     @Override
     public Scorer getScorer() {
-        return new ConstantRegexScorer(name, regexFieldName, Pattern.compile(regexPatternString), constantScore);
+        return new ConstantRegexScorer(name, regexFieldName, Pattern.compile(regexPatternString), constantScore, null);
     }
 
     public String getScorerConfJsonString() {

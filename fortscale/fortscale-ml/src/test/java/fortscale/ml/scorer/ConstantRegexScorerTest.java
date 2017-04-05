@@ -26,7 +26,7 @@ public class ConstantRegexScorerTest {
     FeatureExtractService featureExtractService;
 
     ConstantRegexScorer createConstantRegexScorer(ConstantRegexScorerParams params) {
-        return new ConstantRegexScorer(params.getName(), params.getRegexFieldName(), params.getRegexPattern(), params.getConstantScore());
+        return new ConstantRegexScorer(params.getName(), params.getRegexFieldName(), params.getRegexPattern(), params.getConstantScore(), featureExtractService);
     }
 
     private void assertScorerParams(ConstantRegexScorer scorer, ConstantRegexScorerParams params) {

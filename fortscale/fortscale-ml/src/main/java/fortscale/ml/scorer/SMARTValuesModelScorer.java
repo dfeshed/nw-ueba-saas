@@ -2,9 +2,11 @@ package fortscale.ml.scorer;
 
 import fortscale.common.feature.Feature;
 import fortscale.common.feature.FeatureNumericValue;
+import fortscale.common.feature.extraction.FeatureExtractService;
 import fortscale.ml.model.Model;
 import fortscale.ml.model.SMARTValuesModel;
 import fortscale.ml.model.SMARTValuesPriorModel;
+import fortscale.ml.model.cache.EventModelsCacheService;
 import fortscale.ml.scorer.algorithms.SMARTValuesModelScorerAlgorithm;
 
 import java.util.List;
@@ -22,10 +24,11 @@ public class SMARTValuesModelScorer extends AbstractModelScorer {
                                   int minNumOfSamplesToInfluence,
                                   int enoughNumOfSamplesToInfluence,
                                   boolean isUseCertaintyToCalculateScore,
-                                  int globalInfluence) {
+                                  int globalInfluence, FeatureExtractService featureExtractService, EventModelsCacheService eventModelsCacheService) {
 
         super(scorerName, modelName, additionalModelNames, contextFieldNames, additionalContextFieldNames,
-                featureName, minNumOfSamplesToInfluence, enoughNumOfSamplesToInfluence, isUseCertaintyToCalculateScore);
+                featureName, minNumOfSamplesToInfluence, enoughNumOfSamplesToInfluence, isUseCertaintyToCalculateScore,
+                featureExtractService, eventModelsCacheService);
 
         if (additionalModelNames.size() != 1) {
             throw new IllegalArgumentException(this.getClass().getSimpleName() + " expects to get one additional model name");
