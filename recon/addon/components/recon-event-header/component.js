@@ -1,5 +1,5 @@
 import Component from 'ember-component';
-import { isEmberArray } from 'ember-array/utils';
+import { A, isEmberArray } from 'ember-array/utils';
 import connect from 'ember-redux/components/connect';
 import computed from 'ember-computed-decorators';
 import { RECON_DISPLAYED_LOG_HEADER } from 'recon/utils/recon-event-header';
@@ -16,20 +16,25 @@ const stateToComputed = ({ recon, recon: { visuals, data } }) => ({
 const EventHeaderComponent = Component.extend({
   layout,
   tagName: '',
-  @computed('headerItems', 'isLogEvent')
-  displayedHeaderItems(headerItems, isLogEvent) {
+  @computed('headerItems')
+  displayedHeaderItems(headerItems) {
+    const isLogEvent = this.get('isLogEvent');
     if (isEmberArray(headerItems) && isLogEvent) {
-      const displayedItems = [];
+      const displayedItems = A([]);
       headerItems.forEach((item) => {
-        if (item && item.name && RECON_DISPLAYED_LOG_HEADER[item.name]) {
-          // Get the (so)sort order from recon displayed header object.
-          item.so = RECON_DISPLAYED_LOG_HEADER[item.name];
+        // Get the (so)sort order from recon displayed header object.
+        const so = RECON_DISPLAYED_LOG_HEADER[item.name];
+        if (item && item.name && so) {
           // Move the item name to item id
-          item.id = item.name;
+          const id = item.name;
+
           // Replace the item name with a localized string
-          item.name = this.get('i18n').t(`recon.eventHeader.${item.name.camelize()}`);
-          // Add the item to the displayed items.
-          displayedItems.pushObject(item);
+          const name = this.get('i18n').t(`recon.eventHeader.${item.name.camelize()}`);
+
+          const { value } = item;
+
+          // Add the properties we want to override into a new object and add to displayedItems
+          displayedItems.pushObject({ id, name, so, value });
         }
       });
       // Sort the Array by the sort order parameter

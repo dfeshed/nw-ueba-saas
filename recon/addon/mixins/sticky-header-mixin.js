@@ -136,8 +136,10 @@ export default Mixin.create({
             // Gotta run.join this to ensure it gets notified immediately,
             // header sticking needs to be faaaast
             join(() => {
-              this.set('indexAtTop', i);
-              this.set('heightOfCurrentSticky', newStickyHeaderHeight);
+              if (!this.isDestroyed) {
+                this.set('indexAtTop', i);
+                this.set('heightOfCurrentSticky', newStickyHeaderHeight);
+              }
             });
           }
 
