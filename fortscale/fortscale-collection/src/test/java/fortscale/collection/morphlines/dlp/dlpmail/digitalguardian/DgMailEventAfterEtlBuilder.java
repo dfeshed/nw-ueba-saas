@@ -1,4 +1,4 @@
-package fortscale.collection.morphlines.dlpmail.digitalguardian;
+package fortscale.collection.morphlines.dlp.dlpmail.digitalguardian;
 
 
 import java.lang.reflect.Field;
@@ -15,7 +15,7 @@ public class DgMailEventAfterEtlBuilder {
     private String ipAddress;
     private String hostname;
     private String normalizedSrcMachine;
-    private String application;
+    private String executingApplication;
     private String destinationFile;
     private Integer detailFileSize;
     private String emailRecipient;
@@ -89,8 +89,8 @@ public class DgMailEventAfterEtlBuilder {
         return this;
     }
 
-    public DgMailEventAfterEtlBuilder setExecutingApplication(String application) {
-        this.application = application;
+    public DgMailEventAfterEtlBuilder setExecutingApplication(String executingApplication) {
+        this.executingApplication = executingApplication;
         return this;
     }
 
@@ -180,7 +180,7 @@ public class DgMailEventAfterEtlBuilder {
     }
 
     public DgMailEventAfterEtl createDgEventAfterEtl() {
-        DgMailEventAfterEtl dgMailEventAfterEtl = new DgMailEventAfterEtl(dateTime, dateTimeUnix, eventDescription, eventType, eventId, username, normalizedUsername, fullName, ipAddress, hostname, normalizedSrcMachine, application, destinationFile, detailFileSize, destinationDirectory, destinationFileExtension, isAttachmentExtensionBlacklisted, emailRecipient, emailRecipientDomain, emailSender, emailSubject, isExternal, numOfRecipients, wasClassified, wasBlocked, scanValueStatusText, policyName, dataSource, lastState);
+        DgMailEventAfterEtl dgMailEventAfterEtl = new DgMailEventAfterEtl(dateTime, dateTimeUnix, eventDescription, eventType, eventId, username, normalizedUsername, fullName, ipAddress, hostname, normalizedSrcMachine, executingApplication, destinationFile, detailFileSize, destinationDirectory, destinationFileExtension, isAttachmentExtensionBlacklisted, emailRecipient, emailRecipientDomain, emailSender, emailSubject, isExternal, numOfRecipients, wasClassified, wasBlocked, scanValueStatusText, policyName, dataSource, lastState);
         dgMailEventAfterEtl = fillGenericValuesForEmptyFields(dgMailEventAfterEtl);
         return dgMailEventAfterEtl;
     }

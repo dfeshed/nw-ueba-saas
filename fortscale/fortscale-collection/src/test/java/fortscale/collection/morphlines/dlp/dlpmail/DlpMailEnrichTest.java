@@ -1,10 +1,10 @@
-package fortscale.collection.morphlines.dlpmail;
+package fortscale.collection.morphlines.dlp.dlpmail;
 
 import fortscale.collection.morphlines.MorphlinesTester;
-import fortscale.collection.morphlines.dlpmail.digitalguardian.DgEventInput;
-import fortscale.collection.morphlines.dlpmail.digitalguardian.DgEventInputBuilder;
-import fortscale.collection.morphlines.dlpmail.digitalguardian.DgMailEventAfterEtl;
-import fortscale.collection.morphlines.dlpmail.digitalguardian.DgMailEventAfterEtlBuilder;
+import fortscale.collection.morphlines.dlp.dlpmail.digitalguardian.DgEventInput;
+import fortscale.collection.morphlines.dlp.dlpmail.digitalguardian.DgEventInputBuilder;
+import fortscale.collection.morphlines.dlp.dlpmail.digitalguardian.DgMailEventAfterEtl;
+import fortscale.collection.morphlines.dlp.dlpmail.digitalguardian.DgMailEventAfterEtlBuilder;
 import fortscale.utils.impala.ImpalaParser;
 import fortscale.utils.properties.PropertiesResolver;
 import org.junit.After;

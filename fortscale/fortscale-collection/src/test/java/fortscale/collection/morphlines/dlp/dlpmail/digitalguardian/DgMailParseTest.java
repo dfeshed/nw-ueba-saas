@@ -1,10 +1,11 @@
-package fortscale.collection.morphlines.dlpmail.digitalguardian;
+package fortscale.collection.morphlines.dlp.dlpmail.digitalguardian;
 
 import fortscale.collection.morphlines.MorphlinesTester;
 import fortscale.utils.impala.ImpalaParser;
 import fortscale.utils.properties.PropertiesResolver;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -112,38 +113,39 @@ public class DgMailParseTest {
 		morphlineTester.testSingleLineFiltered(testCase, inputLine);
 	}
 
-//	@Test
-//	public void test_remove_verdasys_prefix() {
-//		String testCase = "Test that the verdasys\r prefix is removed";
-//		DgEventInput input = new DgEventInputBuilder()
-//				.setAgentUtcTime("06/12/2016 16:04")
-//				.setOperation("Send Mail")
-//				// interesting test stuff starts here
-//				.setComputerName("verdasys\rexample_hostname")
-//				.setUsername("verdasys\rexample_username")
-//				.createDgEvent();
-//
-//		DgMailEventAfterEtl expected = new DgMailEventAfterEtlBuilder()
-//				.setDateTime("2016-06-12 16:04:00")
-//				.setDateTimeUnix("1465747440")
-//				.setEventDescription("Send Mail")
-//				.setFullName("some_givenName some_surname")
-//				.setEventType("attachment")
-//				.setIsAttachmentExtensionBlacklisted("false")
-//				.setIsExternal(true)
-//				.setNumOfRecipients(0)
-//				.setDataSource("dlpmail")
-//				.setLastState("etl")
-//				.setEmailRecipient("some_emailRecipient") // because the parsing wont find the domain - this is ok for this test
-//				.setEmailRecipientDomain("some_emailRecipient") // because the parsing wont find the domain - this is ok for this test
-//				// interesting test stuff starts here
-//				.setHostname("example_hostname")
-//				.setNormalizedSrcMachine("example_hostname")
-//				.setUsername("example_username")
-//				.createDgEventAfterEtl();
-//
-//		runOneLineTestWithDummyEvent(testCase, input, expected);
-//	}
+	@Test
+	@Ignore
+	public void test_remove_verdasys_prefix() {
+		String testCase = "Test that the verdasys\r prefix is removed";
+		DgEventInput input = new DgEventInputBuilder()
+				.setAgentUtcTime("06/12/2016 16:04")
+				.setOperation("Send Mail")
+				// interesting test stuff starts here
+				.setComputerName("verdasys\rexample_hostname")
+				.setUsername("verdasys\rexample_username")
+				.createDgEvent();
+
+		DgMailEventAfterEtl expected = new DgMailEventAfterEtlBuilder()
+				.setDateTime("2016-06-12 16:04:00")
+				.setDateTimeUnix("1465747440")
+				.setEventDescription("Send Mail")
+				.setFullName("some_givenName some_surname")
+				.setEventType("attachment")
+				.setIsAttachmentExtensionBlacklisted("false")
+				.setIsExternal(true)
+				.setNumOfRecipients(0)
+				.setDataSource("dlpmail")
+				.setLastState("etl")
+				.setEmailRecipient("some_emailRecipient") // because the parsing wont find the domain - this is ok for this test
+				.setEmailRecipientDomain("some_emailRecipient") // because the parsing wont find the domain - this is ok for this test
+				// interesting test stuff starts here
+				.setHostname("example_hostname")
+				.setNormalizedSrcMachine("example_hostname")
+				.setUsername("example_username")
+				.createDgEventAfterEtl();
+
+		runOneLineTestWithDummyEvent(testCase, input, expected);
+	}
 
 	@Test
 	public void test_remove_quotes_from_email_sender_and_recipient() {

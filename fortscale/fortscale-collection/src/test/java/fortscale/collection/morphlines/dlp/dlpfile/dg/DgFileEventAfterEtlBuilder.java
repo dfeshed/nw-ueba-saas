@@ -1,4 +1,4 @@
-package fortscale.collection.morphlines.dlpfile.dg;
+package fortscale.collection.morphlines.dlp.dlpfile.dg;
 
 import java.lang.reflect.Field;
 
@@ -13,7 +13,7 @@ public class DgFileEventAfterEtlBuilder {
     public String hostname;
     public String normalizedSrcMachine;
     public String ipAddress;
-    public String application;
+    public String executingApplication;
     public String sourceDirectory;
     public String destinationDirectory;
     public String sourceFile;
@@ -90,8 +90,8 @@ public class DgFileEventAfterEtlBuilder {
         return this;
     }
 
-    public DgFileEventAfterEtlBuilder setExecutingApplication(String application) {
-        this.application = application;
+    public DgFileEventAfterEtlBuilder setExecutingApplication(String executingApplication) {
+        this.executingApplication = executingApplication;
         return this;
     }
 
@@ -173,7 +173,7 @@ public class DgFileEventAfterEtlBuilder {
     public DgFileEventAfterEtl createDgEventAfterEtl() {
         DgFileEventAfterEtl dgFileEventAfterEtl = new DgFileEventAfterEtl(dateTime, dateTimeUnix, eventType, eventId, username,
                 normalizedUsername, fullName, hostname, normalizedSrcMachine,
-                ipAddress, application, sourceDirectory, destinationDirectory,
+                ipAddress, executingApplication, sourceDirectory, destinationDirectory,
                 sourceFile, destinationFile, detailFileSize, sourceDriveType,
                 destinationDriveType, wasClassified, wasBlocked, scanValueStatusText,
                 malwarePolicyName, isRdp, isAdminActivity, isRegistryChanged,
