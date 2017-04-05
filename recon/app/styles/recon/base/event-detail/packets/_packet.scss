@@ -58,7 +58,6 @@
     &.request-response-header,
     .request-response-header {
       color: rsa-color(blue);
-      position: absolute;
 
       .rsa-icon {
         padding-right: rsa-whitespace(less);
@@ -71,7 +70,7 @@
       }
     }
 
-    p {
+    .no-packets {
       @include rsa-font(paragraph);
       color: rsa-color(gray);
       text-align: center;
@@ -82,7 +81,7 @@
     }
 
     .response {
-      right: rsa-whitespace();
+      text-align: right;
     }
 
     .packet-details {

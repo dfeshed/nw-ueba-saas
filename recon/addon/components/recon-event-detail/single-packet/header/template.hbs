@@ -8,7 +8,7 @@
 </div>
 {{#if isPayloadOnly}}
   {{#unless packet.byteRows}}
-    <p>{{t 'recon.packetView.noHexData'}}</p>
+    <div class="no-packets">{{t 'recon.packetView.noHexData'}}</div>
   {{/unless}}
 {{else}}
   <hbox class="packet-details">
