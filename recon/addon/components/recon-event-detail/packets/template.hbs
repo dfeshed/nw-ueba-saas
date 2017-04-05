@@ -8,7 +8,7 @@
 {{/if}}
 
 <div class="scroll-box">
-  {{#each packets as |packet index|}}
+  {{#each packets key="id" as |packet index|}}
     {{recon-event-detail/single-packet
       index=index
       packet=packet
