@@ -109,9 +109,9 @@
             "reduction-zero-score-weight" : 0.95
           }, {
             "type" : "category-rarity-model-scorer",
-            "name" : "email_application.normalized_username.dlpmail.scorer",
+            "name" : "executing_application.normalized_username.dlpmail.scorer",
             "model" : {
-              "name" : "email_application.normalized_username.dlpmail"
+              "name" : "executing_application.normalized_username.dlpmail"
             },
             "additional-models" : [ ],
             "max-rare-count" : 5,

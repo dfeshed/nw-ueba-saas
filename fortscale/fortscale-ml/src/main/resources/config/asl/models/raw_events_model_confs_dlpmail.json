@@ -83,7 +83,7 @@
       }
     },
     {
-      "name" : "email_application.normalized_username.dlpmail",
+      "name" : "executing_application.normalized_username.dlpmail",
       "selector" : {
         "type" : "feature_bucket_context_selector",
         "featureBucketConfName" : "normalized_username_dlpmail_daily"
@@ -93,7 +93,7 @@
         "timeRangeInSeconds" : 7776000,
         "functions" : [ ],
         "featureBucketConfName" : "normalized_username_dlpmail_daily",
-        "featureName" : "email_application_histogram"
+        "featureName" : "executing_application_histogram"
       },
       "builder" : {
         "type" : "category_rarity_model_builder",

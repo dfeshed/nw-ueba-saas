@@ -497,13 +497,13 @@
           }
         },
         {
-          "name": "email_application_to_highest_score_map",
+          "name": "executing_application_to_highest_score_map",
           "featureNamesMap": {
             "groupBy": [
-              "email_application"
+              "executing_application"
             ],
             "maximize": [
-              "email_application_score"
+              "executing_application_score"
             ]
           },
           "aggrFeatureFuncJson": {
@@ -639,10 +639,10 @@
           }
         },
         {
-          "name": "email_application_histogram",
+          "name": "executing_application_histogram",
           "featureNamesMap": {
             "groupBy": [
-              "email_application"
+              "executing_application"
             ]
           },
           "aggrFeatureFuncJson": {
@@ -747,13 +747,13 @@
           }
         },
         {
-          "name": "email_application_to_highest_score_map",
+          "name": "executing_application_to_highest_score_map",
           "featureNamesMap": {
             "groupBy": [
-              "email_application"
+              "executing_application"
             ],
             "maximize": [
-              "email_application_score"
+              "executing_application_score"
             ]
           },
           "aggrFeatureFuncJson": {
