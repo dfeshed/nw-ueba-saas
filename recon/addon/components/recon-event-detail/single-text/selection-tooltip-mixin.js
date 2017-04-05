@@ -21,7 +21,7 @@ export default Mixin.create({
       const selection = this.getSelected();
       // get the range of the highlighted selection. This range object includes
       // the start and end offsets of the selection.
-      const range = selection.getRangeAt(0);
+      const range = selection.getRangeAt(0).cloneRange();
       // Create a span tag around the highlighted selection. This span tag is used for
       // tethering.
       if (range.startOffset !== range.endOffset) {
@@ -30,6 +30,9 @@ export default Mixin.create({
         const spanClass = `span${index}`;
         newNode.setAttribute('class', spanClass);
         range.surroundContents(newNode);
+        // To persist the browser highlighting after adding span tag on the content
+        selection.removeAllRanges();
+        selection.addRange(range);
         const getClass = this.$(`.${spanClass}`);
         const height = getClass.height();
         const width = getClass.width();
