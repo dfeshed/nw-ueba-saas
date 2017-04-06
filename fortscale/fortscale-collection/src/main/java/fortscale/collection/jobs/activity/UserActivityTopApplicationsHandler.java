@@ -18,7 +18,7 @@ import java.util.Map;
 public class UserActivityTopApplicationsHandler extends UserActivityBaseHandler {
 
     private static final UserActivityType ACTIVITY = UserActivityType.TOP_APPLICATIONS;
-    public static final String APPLICATION_HISTOGRAM_FEATURE_NAME = "application_histogram";
+    public static final String EXECUTING_APPLICATION_HISTOGRAM_FEATURE_NAME = "executing_application_histogram";
 
     @Autowired
     private UserActivityTopApplicationsService userActivityTopApplicationsConfigurationService;
@@ -30,7 +30,7 @@ public class UserActivityTopApplicationsHandler extends UserActivityBaseHandler 
 
     @Override
     protected List<String> getRelevantAggregatedFeaturesFieldsNames() {
-        return new ArrayList<>(Collections.singletonList(APPLICATION_HISTOGRAM_FEATURE_NAME));
+        return new ArrayList<>(Collections.singletonList(EXECUTING_APPLICATION_HISTOGRAM_FEATURE_NAME));
     }
 
     @Override
