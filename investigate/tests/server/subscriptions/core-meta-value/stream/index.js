@@ -36,7 +36,7 @@ function mockMetaValueForKey(metaName) {
   } else if (metaName === 'time') {
     return Number(new Date()) - parseInt(24 * 60 * 60 * 1000 * Math.random(), 10);
   } else {
-    return faker.lorem.words(1)[0];
+    return faker.lorem.words(1);
   }
 }
 
