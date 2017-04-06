@@ -630,16 +630,17 @@ export default {
       title: 'User Information',
       employeeID: 'employee ID',
       department: 'department',
-      postalAddress: 'location',
+      location: 'location',
       manager: 'manager',
       groups: 'groups',
-      jobCodes: 'job Codes',
+      company: 'company',
       email: 'Email',
       phone: 'phone',
       jobTitle: 'job Title',
       lastLogon: 'last Logon',
       lastLogonTimeStamp: 'last Logon TimeStamp',
-      adUserID: 'ad User ID'
+      adUserID: 'ad User ID',
+      distinguishedName: 'Distinguished Name'
     },
     archer: {
       title: 'IP Host Information',

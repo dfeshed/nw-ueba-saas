@@ -73,10 +73,6 @@ const ContextComponent = Component.extend({
       this.set('errorMessage', this.get('i18n').t('context.error.noDataSource'));
       return true;
     }
-    if (isArray(lookupData) && lookupData.length === 0) {
-      this.set('errorMessage', this.get('i18n').t('context.error.error'));
-      return true;
-    }
     return false;
   },
 
@@ -176,6 +172,11 @@ const ContextComponent = Component.extend({
         contextData.set(contextDatum.dataSourceGroup, contextDataForDS);
         break;
       }
+      case 'Users': {
+        contextDataForDS.data = this._addLocation(contextDatum.resultList);
+        contextData.set(contextDatum.dataSourceGroup, contextDataForDS);
+        break;
+      }
 
       case 'LiveConnect-File':
       case 'LiveConnect-Ip':
@@ -200,6 +201,17 @@ const ContextComponent = Component.extend({
     if (!this.get('model.contextData.liveConnectData.allTags')) {
       this.set('model.contextData.liveConnectData', null);
     }
+  },
+
+  _addLocation(resultList) {
+    return resultList.map((list) => {
+      const address = [list.physicalDeliveryOfficeName, list.city, list.state, list.country, list.postalCode];
+      const location = address.join(' ');
+      return {
+        ...list,
+        location
+      };
+    });
   },
 
   _parseLiveConnectData(dataSourceType, record) {

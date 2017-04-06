@@ -18,6 +18,10 @@ export default {
       {
         field: 'department',
         title: 'context.ADdata.department'
+      },
+      {
+        field: 'distinguishedName',
+        title: 'context.ADdata.distinguishedName'
       }]
     },
     {
@@ -28,12 +32,12 @@ export default {
         title: 'context.ADdata.phone'
       },
       {
-        field: 'managerName',
+        field: 'manager',
         title: 'context.ADdata.manager'
       },
       {
-        field: 'postalAddress',
-        title: 'context.ADdata.postalAddress'
+        field: 'location',
+        title: 'context.ADdata.location'
       }]
     },
     {
@@ -43,7 +47,7 @@ export default {
         title: 'context.ADdata.email'
       },
       {
-        field: 'groupName',
+        field: 'memberOf',
         title: 'context.ADdata.groups',
         dataType: 'group',
         count: 'groupCount'
@@ -56,17 +60,17 @@ export default {
     {
       class: 'col-xs-3',
       cell: [{
-        field: 'adUserID',
+        field: 'sAMAccountName',
         title: 'context.ADdata.adUserID',
         dataType: 'horizontal',
         class: 'col-xs-3'
       },
       {
-        field: 'jobCodes',
-        title: 'context.ADdata.jobCodes'
+        field: 'company',
+        title: 'context.ADdata.company'
       },
       {
-        field: 'lastLogonTimeStamp',
+        field: 'lastLogonTimestamp',
         title: 'context.ADdata.lastLogonTimeStamp'
       }]
     }
@@ -74,7 +78,7 @@ export default {
 
   firstRow: {
     class: 'rsa-context-panel__endpoint__host-details col-xs-2',
-    field: 'fullName',
+    field: 'displayName',
     title: 'context.hostSummary.riskScore'
   }
 };

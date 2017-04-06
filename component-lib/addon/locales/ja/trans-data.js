@@ -614,16 +614,17 @@ export default {
       title: 'ja_User Information',
       employeeID: 'ja_employeeID',
       department: 'ja_department',
-      postalAddress: 'ja_location',
+      location: 'ja_location',
       manager: 'ja_manager',
       groups: 'ja_groups',
-      jobCodes: 'ja_jobCodes',
+      company: 'ja_company',
       email: 'ja_Email',
       phone: 'ja_phone',
       jobTitle: 'jobTitle',
       lastLogon: 'ja_lastLogon',
       lastLogonTimeStamp: 'ja_lastLogonTimeStamp',
-      adUserID: 'ja_adUserID'
+      adUserID: 'ja_adUserID',
+      distinguishedName: 'ja_Distinguished Name'
     },
     archer: {
       title: 'ja_IP Host Information',

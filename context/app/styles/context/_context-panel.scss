@@ -199,27 +199,8 @@ radial-gradient(circle at 85% 85%, rsa-color(blue, darker, .1) 0, rsa-color(blue
       &__field-value,&__row-field-value,&__header-data{
         color: $font-highlight-color;
         text-align: left;
+        word-break: break-all;
         text-overflow: ellipsis;
-      }
-      &__field-circle{
-        width: 20px;
-        height: 20px;
-        -webkit-border-radius: 10px;
-        -moz-border-radius: 10px;
-        border-radius: 10px;
-        float: left;
-        margin-top: 1.5*rsa-whitespace(least);
-        margin-right:rsa-whitespace(least);
-        &__value{
-          color: $font-highlight-color;
-          text-align: left;
-          width: calc(100% - 35px);
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-          height: 20px;
-          padding-top: rsa-whitespace(less);
-        }
       }
       &__groupdata{
         color:rsa-color(blue,base);

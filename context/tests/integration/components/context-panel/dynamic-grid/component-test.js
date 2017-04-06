@@ -46,7 +46,7 @@ test('Testing grid rendered', function(assert) {
   this.render(hbs`{{context-panel/dynamic-grid contextData=contextData dSDetails=dSDetails }}`);
 
   assert.equal(this.$('.rsa-context-panel__grid__heading-text').length, 1, 'Testing count of grid header rendered');
-  assert.equal(this.$('.rsa-context-panel__grid__host-details__field-value').length, 11, 'Testing count of fields rendered');
+  assert.equal(this.$('.rsa-context-panel__grid__host-details__field-value').length, 10, 'Testing count of fields rendered');
   assert.equal(this.$('.rsa-context-panel__grid a').length, 1, 'Testing count of link fields rendered');
   assert.equal(this.$('.rsa-context-risk-score').length, 1, 'Testing count of risk score fields rendered');
 });

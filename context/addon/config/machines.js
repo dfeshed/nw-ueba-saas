@@ -71,10 +71,6 @@ export default {
         title: 'context.hostSummary.machineStatus'
       },
       {
-        field: 'IIOCRisk',
-        title: 'context.hostSummary.riskScore'
-      },
-      {
         field: 'LocalIPAddress',
         title: 'context.hostSummary.ipAddress',
         nested: 'LocalIPAddress',
