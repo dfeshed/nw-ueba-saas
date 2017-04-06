@@ -60,6 +60,14 @@ export default Mixin.create({
     const stickySelector = this.get('stickySelector');
     this.set('$headers', this.$(stickySelector));
 
+    // didRender also called when sticky is stuck, need to calculate
+    // height of stuck sticky so smooth sliding out is possible
+    const selector = this.get('stickyHeaderSelector') || '.is-sticky';
+    const $stickyHeader = this.$(selector);
+    if ($stickyHeader && $stickyHeader.length > 0) {
+      this.set('heightOfCurrentSticky', $stickyHeader.outerHeight());
+    }
+
     // Other factors can result in packets being removed from the page
     // like requests/responses being toggled.
     // If headers are eliminated, need to recalc the scroll sticky,
@@ -74,34 +82,30 @@ export default Mixin.create({
     this._super(...arguments);
     this.$('.scroll-box').scroll(() => {
       this._scrolled();
-
-      // Keeping this in case we need it later, seems to be ok right now
-      //
-      // When scrolling fast (like with the scrollbar vs wheel)
-      // occasionally the code can't keep up, ¯\_(ツ)_/¯
-      // need last debounced 'scrolled' call to catch those cases
-      // debounce(() => {
-      //   this._scrolled();
-      // }, 200);
     });
+  },
+
+  _setIndex(index) {
+    if (!this.isDestroyed) {
+      this.set('indexAtTop', index);
+      if (index === null) {
+        this.set('heightOfCurrentSticky', 0);
+      }
+    }
   },
 
   _scrolled() {
     const $headers = this.get('$headers');
 
     if (!$headers || $headers.length === 0) {
-      if (!this.isDestroyed) {
-        this.set('indexAtTop', null);
-      }
+      this._setIndex(null);
     } else {
 
       // fast eject, common use case, is just at the top
       // nothing to do here
       const positionTop = $headers.eq(0).position().top;
       if (positionTop === 0 || positionTop === 1) {
-        if (!this.isDestroyed) {
-          this.set('indexAtTop', null);
-        }
+        this._setIndex(null);
         return;
       }
 
@@ -129,23 +133,11 @@ export default Mixin.create({
           // but why bother letting ember bother if we know up front
           if (indexAtTop !== i) {
 
-            // Determine height of header
-            // Header could be entire element provided, or could
-            // optionally be element nested inside
-            let newStickyHeaderHeight = 0;
-            const stickyHeaderSelector = this.get('stickyHeaderSelector');
-            if (stickyHeaderSelector) {
-              newStickyHeaderHeight = $currentHeader.find(stickyHeaderSelector).outerHeight();
-            } else {
-              newStickyHeaderHeight = $currentHeader.outerHeight();
-            }
-
             // Gotta run.join this to ensure it gets notified immediately,
             // header sticking needs to be faaaast
             join(() => {
               if (!this.isDestroyed) {
-                this.set('indexAtTop', i);
-                this.set('heightOfCurrentSticky', newStickyHeaderHeight);
+                this._setIndex(i);
               }
             });
           }
