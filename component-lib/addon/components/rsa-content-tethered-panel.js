@@ -33,6 +33,11 @@ export default Component.extend({
 
   isDisplayed: false,
 
+  // optional The component that is using the tethered-panel can pass in true/false
+  // for hideOnLeave. By default it is set to true, which means the tooltip will disappear
+  // once the cursor enters the tooltip and then leaves
+  hideOnLeave: true,
+
   panelId: null,
 
   target: null,
@@ -233,7 +238,7 @@ export default Component.extend({
               $(`.${this.get('elementId')}`).on('mouseleave', () => {
                 this.set('isHovering', false);
                 later(() => {
-                  if (!this.get('isHovering')) {
+                  if (!this.get('isHovering') && this.get('hideOnLeave')) {
                     this.set('isDisplayed', false);
                   }
                 }, this.get('hideDelay'));

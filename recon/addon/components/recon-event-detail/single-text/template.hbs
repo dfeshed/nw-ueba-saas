@@ -5,7 +5,7 @@
 }}
 <div class="text-container">
   {{packet.text}}
-  {{#rsa-content-tethered-panel position='top' panelId=(concat 'span' index)}}
+  {{#rsa-content-tethered-panel position='top' panelId=(concat 'span' index) hideOnLeave=false}}
     <header>panel Header</header>
     <section>Here is the info!</section>
   {{/rsa-content-tethered-panel}}
