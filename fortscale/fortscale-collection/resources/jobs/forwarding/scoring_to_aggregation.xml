@@ -159,6 +159,22 @@
                     <value>${impala.score.prnlog.table.partition.type}</value>
                 </entry>
                 <entry>
+                    <key>impalaTableName-dlpfile</key>
+                    <value>${impala.score.dlpfile.table.name}</value>
+                </entry>
+                <entry>
+                    <key>epochtimeField-dlpfile</key>
+                    <value>${impala.score.dlpfile.table.field.epochtime}</value>
+                </entry>
+                <entry>
+                    <key>impalaTableFields-dlpfile</key>
+                    <value>${impala.score.dlpfile.table.fields}</value>
+                </entry>
+                <entry>
+                    <key>impalaTablePartitionType-dlpfile</key>
+                    <value>${impala.score.dlpfile.table.partition.type}</value>
+                </entry>
+                <entry>
                     <key>impalaTableName-dlpmail</key>
                     <value>${impala.score.dlpmail.table.name}</value>
                 </entry>

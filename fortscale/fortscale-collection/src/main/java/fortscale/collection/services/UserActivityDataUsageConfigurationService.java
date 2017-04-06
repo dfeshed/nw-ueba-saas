@@ -65,11 +65,6 @@ public class UserActivityDataUsageConfigurationService extends BaseUserActivityC
 	}
 
 	@Override
-	public Logger getLogger() {
-		return logger;
-	}
-
-	@Override
 	public String getActivityName() {
 		return UserActivityType.DATA_USAGE.name();
 	}

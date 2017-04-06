@@ -46,8 +46,6 @@ public class UserActivityTargetDeviceConfigurationService extends BaseUserActivi
 
 	@Override
 	public UserActivityConfiguration createUserActivityConfiguration() {
-
-
 		final Set<String> activities = new HashSet<>();
 		final Map<String, String> dataSourceToCollection = new HashMap<>();
 		final Map<String, List<String>> activityToDataSources = new HashMap<>();
@@ -62,10 +60,6 @@ public class UserActivityTargetDeviceConfigurationService extends BaseUserActivi
 		return new UserActivityConfiguration(activities, dataSourceToCollection, activityToDataSources);
 	}
 
-	@Override
-	public Logger getLogger() {
-		return logger;
-	}
 
 	@Override
 	public String getActivityName() {

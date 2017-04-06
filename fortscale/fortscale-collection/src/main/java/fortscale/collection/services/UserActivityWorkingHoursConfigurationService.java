@@ -26,6 +26,8 @@ public class UserActivityWorkingHoursConfigurationService extends BaseUserActivi
 	private static final String USER_PRNLOG_COLLECTION = "aggr_normalized_username_prnlog_daily";
 	private static final String USER_NTLM_COLLECTION = "aggr_normalized_username_ntlm_daily";
 	private static final String USER_VPN_COLLECTION = "aggr_normalized_username_vpn_daily";
+	private static final String USER_DLPMAIL_COLLECTION = "aggr_normalized_username_dlpmail_daily";
+	private static final String USER_DLPFILE_COLLECTION = "aggr_normalized_username_dlpfile_daily";
 
 	public static final String DATA_SOURCE_CRMSF_PROPERTY_NAME = "crmsf";
 	public static final String DATA_SOURCE_SSH_PROPERTY_NAME = "ssh";
@@ -37,12 +39,14 @@ public class UserActivityWorkingHoursConfigurationService extends BaseUserActivi
 	public static final String DATA_SOURCE_PRNLOG_PROPERTY_NAME = "prnlog";
 	public static final String DATA_SOURCE_NTLM_PROPERTY_NAME = "ntlm";
 	public static final String DATA_SOURCE_VPN_PROPERTY_NAME = "vpn";
+	public static final String DATA_SOURCE_DLPMAIL_PROPERTY_NAME = "dlpmail";
+	public static final String DATA_SOURCE_DLPFILE_PROPERTY_NAME = "dlpfile";
 
 	@Override
 	public UserActivityConfiguration createUserActivityConfiguration() {
-		final Set<String> activities = new HashSet();
-		final Map<String, String> dataSourceToCollection = new HashMap();
-		final Map<String, List<String>> activityToDataSources = new HashMap();
+		final Set<String> activities = new HashSet<>();
+		final Map<String, String> dataSourceToCollection = new HashMap<>();
+		final Map<String, List<String>> activityToDataSources = new HashMap<>();
 		activities.add(ACTIVITY_WORKING_HOURS_PROPERTY_NAME);
 		dataSourceToCollection.put(DATA_SOURCE_CRMSF_PROPERTY_NAME, USER_CRMSF_COLLECTION);
 		dataSourceToCollection.put(DATA_SOURCE_SSH_PROPERTY_NAME, USER_SSH_COLLECTION);
@@ -54,6 +58,9 @@ public class UserActivityWorkingHoursConfigurationService extends BaseUserActivi
 		dataSourceToCollection.put(DATA_SOURCE_PRNLOG_PROPERTY_NAME, USER_PRNLOG_COLLECTION);
 		dataSourceToCollection.put(DATA_SOURCE_NTLM_PROPERTY_NAME, USER_NTLM_COLLECTION);
 		dataSourceToCollection.put(DATA_SOURCE_VPN_PROPERTY_NAME, USER_VPN_COLLECTION);
+		dataSourceToCollection.put(DATA_SOURCE_DLPMAIL_PROPERTY_NAME, USER_DLPMAIL_COLLECTION);
+		dataSourceToCollection.put(DATA_SOURCE_DLPFILE_PROPERTY_NAME, USER_DLPFILE_COLLECTION);
+
 		activityToDataSources.put(ACTIVITY_WORKING_HOURS_PROPERTY_NAME, new ArrayList<>(Arrays.asList(
 				DATA_SOURCE_CRMSF_PROPERTY_NAME,
 				DATA_SOURCE_SSH_PROPERTY_NAME,
@@ -64,14 +71,10 @@ public class UserActivityWorkingHoursConfigurationService extends BaseUserActivi
 				DATA_SOURCE_WAME_PROPERTY_NAME,
 				DATA_SOURCE_PRNLOG_PROPERTY_NAME,
 				DATA_SOURCE_NTLM_PROPERTY_NAME,
-				DATA_SOURCE_VPN_PROPERTY_NAME)));
+				DATA_SOURCE_VPN_PROPERTY_NAME,
+				DATA_SOURCE_DLPMAIL_PROPERTY_NAME,
+				DATA_SOURCE_DLPFILE_PROPERTY_NAME)));
 		return new UserActivityConfiguration(activities, dataSourceToCollection, activityToDataSources);
-	}
-
-
-	@Override
-	public Logger getLogger() {
-		return logger;
 	}
 
 	@Override

@@ -37,6 +37,17 @@
           "normalized_username_prnlog_daily.number_of_total_pages_prnlog_daily",
           "normalized_username_prnlog_daily.number_of_distinct_normalized_src_machines_prnlog_daily",
           "normalized_username_prnlog_daily.sum_of_file_size_prnlog_daily",
+          "normalized_username_dlpfile_daily.number_of_distinct_src_network_folder_paths_dlpfile_daily",
+          "normalized_username_dlpfile_daily.sum_of_moved_files_to_removable_device_size_dlpfile_daily",
+          "normalized_username_dlpfile_daily.number_of_moved_files_to_removable_device_dlpfile_daily",
+          "normalized_username_dlpfile_daily.sum_of_copied_files_to_removable_device_size_dlpfile_daily",
+          "normalized_username_dlpfile_daily.number_of_copied_files_to_removable_device_dlpfile_daily",
+          "normalized_username_dlpfile_daily.sum_of_moved_files_from_remote_device_size_dlpfile_daily",
+          "normalized_username_dlpfile_daily.number_of_moved_files_from_remote_device_dlpfile_daily",
+          "normalized_username_dlpfile_daily.sum_of_copied_files_from_remote_device_size_dlpfile_daily",
+          "normalized_username_dlpfile_daily.number_of_copied_files_from_remote_device_dlpfile_daily",
+          "normalized_username_dlpfile_daily.number_of_recycled_or_deleted_files_dlpfile_daily",
+          "normalized_username_dlpfile_daily.number_of_opened_files_dlpfile_daily",
           "normalized_username_dlpmail_daily.number_of_emails_to_external_recipient_dlpmail_daily",
           "normalized_username_dlpmail_daily.number_of_attachments_to_external_recipient_dlpmail_daily",
           "normalized_username_dlpmail_daily.sum_of_attachments_to_external_recipient_size_dlpmail_daily",
@@ -78,11 +89,13 @@
           "normalized_username_prnlog_daily.highest_date_time_score_prnlog_daily",
           "normalized_username_prnlog_daily.sum_of_highest_scores_over_normalized_src_machines_prnlog_daily",
           "normalized_username_prnlog_daily.sum_of_highest_scores_over_normalized_dst_machines_prnlog_daily",
+          "normalized_username_dlpfile_daily.highest_date_time_score_dlpfile_daily",
+          "normalized_username_dlpfile_daily.sum_of_highest_normalized_src_machine_scores_dlpfile_daily",
           "normalized_username_dlpmail_daily.highest_date_time_score_dlpmail_daily",
           "normalized_username_dlpmail_daily.sum_of_highest_normalized_src_machine_scores_dlpmail_daily",
           "normalized_username_dlpmail_daily.sum_of_highest_email_sender_scores_dlpmail_daily",
           "normalized_username_dlpmail_daily.sum_of_highest_email_recipient_domain_scores_dlpmail_daily",
-          "normalized_username_dlpmail_daily.sum_of_highest_email_application_scores_dlpmail_daily",
+          "normalized_username_dlpmail_daily.sum_of_highest_executing_application_scores_dlpmail_daily",
           "normalized_username_dlpmail_daily.sum_of_highest_attachment_file_extension_scores_dlpmail_daily",
           "normalized_username_dlpmail_daily.highest_attachment_file_size_score_dlpmail_daily",
           "normalized_username_kerberos_tgt_daily.sum_of_highest_scores_over_normalized_src_machine_kerberos_tgt_daily",
@@ -165,8 +178,8 @@
             "normalized_username_ntlm_daily.distinct_number_of_normalized_src_machine_ntlm_daily"
           ],
           "gwame_events": [
-            "normalized_username_gwame_daily.number_of_events_gwame_daily"
-          ],
+                "normalized_username_gwame_daily.number_of_events_gwame_daily"
+            ],
           "number_of_events_prnlog_daily": [
             "normalized_username_prnlog_daily.number_of_events_prnlog_daily"
           ],
@@ -178,6 +191,39 @@
           ],
           "sum_of_file_size_prnlog_daily": [
             "normalized_username_prnlog_daily.sum_of_file_size_prnlog_daily"
+          ],
+          "number_of_distinct_src_network_folder_paths_dlpfile_daily": [
+            "normalized_username_dlpfile_daily.number_of_distinct_src_network_folder_paths_dlpfile_daily"
+          ],
+          "sum_of_moved_files_to_removable_device_size_dlpfile_daily": [
+            "normalized_username_dlpfile_daily.sum_of_moved_files_to_removable_device_size_dlpfile_daily"
+          ],
+          "number_of_moved_files_to_removable_device_dlpfile_daily": [
+            "normalized_username_dlpfile_daily.number_of_moved_files_to_removable_device_dlpfile_daily"
+          ],
+          "sum_of_copied_files_to_removable_device_size_dlpfile_daily": [
+            "normalized_username_dlpfile_daily.sum_of_copied_files_to_removable_device_size_dlpfile_daily"
+          ],
+          "number_of_copied_files_to_removable_device_dlpfile_daily": [
+            "normalized_username_dlpfile_daily.number_of_copied_files_to_removable_device_dlpfile_daily"
+          ],
+          "sum_of_moved_files_from_remote_device_size_dlpfile_daily": [
+            "normalized_username_dlpfile_daily.sum_of_moved_files_from_remote_device_size_dlpfile_daily"
+          ],
+          "number_of_moved_files_from_remote_device_dlpfile_daily": [
+            "normalized_username_dlpfile_daily.number_of_moved_files_from_remote_device_dlpfile_daily"
+          ],
+          "sum_of_copied_files_from_remote_device_size_dlpfile_daily": [
+            "normalized_username_dlpfile_daily.sum_of_copied_files_from_remote_device_size_dlpfile_daily"
+          ],
+          "number_of_copied_files_from_remote_device_dlpfile_daily": [
+            "normalized_username_dlpfile_daily.number_of_copied_files_from_remote_device_dlpfile_daily"
+          ],
+          "number_of_recycled_or_deleted_files_dlpfile_daily": [
+            "normalized_username_dlpfile_daily.number_of_recycled_or_deleted_files_dlpfile_daily"
+          ],
+          "number_of_opened_files_dlpfile_daily": [
+            "normalized_username_dlpfile_daily.number_of_opened_files_dlpfile_daily"
           ],
           "number_of_emails_to_external_recipient_dlpmail_daily": [
             "normalized_username_dlpmail_daily.number_of_emails_to_external_recipient_dlpmail_daily"
@@ -206,6 +252,17 @@
 
         },
         "alphas": {
+          "number_of_distinct_src_network_folder_paths_dlpfile_daily": 0.09,
+          "sum_of_moved_files_to_removable_device_size_dlpfile_daily": 0.09,
+          "number_of_moved_files_to_removable_device_dlpfile_daily": 0.09,
+          "sum_of_copied_files_to_removable_device_size_dlpfile_daily": 0.09,
+          "number_of_copied_files_to_removable_device_dlpfile_daily": 0.09,
+          "sum_of_moved_files_from_remote_device_size_dlpfile_daily": 0.09,
+          "number_of_moved_files_from_remote_device_dlpfile_daily": 0.09,
+          "sum_of_copied_files_from_remote_device_size_dlpfile_daily": 0.09,
+          "number_of_copied_files_from_remote_device_dlpfile_daily": 0.09,
+          "number_of_recycled_or_deleted_files_dlpfile_daily": 0.09,
+          "number_of_opened_files_dlpfile_daily": 0.09,
           "number_of_emails_to_external_recipient_dlpmail_daily": 0.09,
           "number_of_attachments_to_external_recipient_dlpmail_daily": 0.09,
           "sum_of_attachments_to_external_recipient_size_dlpmail_daily": 0.09,
@@ -245,11 +302,13 @@
           "distinct_normalized_src_machine_kerberos_tgt":0.09
         },
         "betas": {
+          "normalized_username_dlpfile_daily.highest_date_time_score_dlpfile_daily": 0.002,
+          "normalized_username_dlpfile_daily.sum_of_highest_normalized_src_machine_scores_dlpfile_daily": 0.002,
           "normalized_username_dlpmail_daily.highest_date_time_score_dlpmail_daily": 0.002,
           "normalized_username_dlpmail_daily.sum_of_highest_normalized_src_machine_scores_dlpmail_daily": 0.002,
           "normalized_username_dlpmail_daily.sum_of_highest_email_sender_scores_dlpmail_daily": 0.002,
           "normalized_username_dlpmail_daily.sum_of_highest_email_recipient_domain_scores_dlpmail_daily": 0.002,
-          "normalized_username_dlpmail_daily.sum_of_highest_email_application_scores_dlpmail_daily": 0.002,
+          "normalized_username_dlpmail_daily.sum_of_highest_executing_application_scores_dlpmail_daily": 0.002,
           "normalized_username_dlpmail_daily.sum_of_highest_attachment_file_extension_scores_dlpmail_daily": 0.002,
           "normalized_username_dlpmail_daily.highest_attachment_file_size_score_dlpmail_daily": 0.002,
           "normalized_username_kerberos_logins_daily.sum_of_highest_scores_over_normalized_src_machine_kerberos_logins_daily": 0.002,
@@ -326,6 +385,17 @@
           "normalized_username_prnlog_hourly.number_of_total_pages_prnlog_hourly",
           "normalized_username_prnlog_hourly.number_of_distinct_normalized_src_machines_prnlog_hourly",
           "normalized_username_prnlog_hourly.sum_of_file_size_prnlog_hourly",
+          "normalized_username_dlpfile_hourly.number_of_distinct_src_network_folder_paths_dlpfile_hourly",
+          "normalized_username_dlpfile_hourly.sum_of_moved_files_to_removable_device_size_dlpfile_hourly",
+          "normalized_username_dlpfile_hourly.number_of_moved_files_to_removable_device_dlpfile_hourly",
+          "normalized_username_dlpfile_hourly.sum_of_copied_files_to_removable_device_size_dlpfile_hourly",
+          "normalized_username_dlpfile_hourly.number_of_copied_files_to_removable_device_dlpfile_hourly",
+          "normalized_username_dlpfile_hourly.sum_of_moved_files_from_remote_device_size_dlpfile_hourly",
+          "normalized_username_dlpfile_hourly.number_of_moved_files_from_remote_device_dlpfile_hourly",
+          "normalized_username_dlpfile_hourly.sum_of_copied_files_from_remote_device_size_dlpfile_hourly",
+          "normalized_username_dlpfile_hourly.number_of_copied_files_from_remote_device_dlpfile_hourly",
+          "normalized_username_dlpfile_hourly.number_of_recycled_or_deleted_files_dlpfile_hourly",
+          "normalized_username_dlpfile_hourly.number_of_opened_files_dlpfile_hourly",
           "normalized_username_dlpmail_hourly.number_of_emails_to_external_recipient_dlpmail_hourly",
           "normalized_username_dlpmail_hourly.number_of_attachments_to_external_recipient_dlpmail_hourly",
           "normalized_username_dlpmail_hourly.sum_of_attachments_to_external_recipient_size_dlpmail_hourly",
@@ -366,11 +436,13 @@
           "normalized_username_prnlog_hourly.highest_date_time_score_prnlog_hourly",
           "normalized_username_prnlog_hourly.sum_of_highest_scores_over_normalized_src_machines_prnlog_hourly",
           "normalized_username_prnlog_hourly.sum_of_highest_scores_over_normalized_dst_machines_prnlog_hourly",
+          "normalized_username_dlpfile_hourly.highest_date_time_score_dlpfile_hourly",
+          "normalized_username_dlpfile_hourly.sum_of_highest_normalized_src_machine_scores_dlpfile_hourly",
           "normalized_username_dlpmail_hourly.highest_date_time_score_dlpmail_hourly",
           "normalized_username_dlpmail_hourly.sum_of_highest_normalized_src_machine_scores_dlpmail_hourly",
           "normalized_username_dlpmail_hourly.sum_of_highest_email_sender_scores_dlpmail_hourly",
           "normalized_username_dlpmail_hourly.sum_of_highest_email_recipient_domain_scores_dlpmail_hourly",
-          "normalized_username_dlpmail_hourly.sum_of_highest_email_application_scores_dlpmail_hourly",
+          "normalized_username_dlpmail_hourly.sum_of_highest_executing_application_scores_dlpmail_hourly",
           "normalized_username_dlpmail_hourly.sum_of_highest_attachment_file_extension_scores_dlpmail_hourly",
           "normalized_username_dlpmail_hourly.highest_attachment_file_size_score_dlpmail_hourly",
           "normalized_username_kerberos_tgt_hourly.sum_of_highest_scores_over_normalized_src_machine_kerberos_tgt_hourly",
@@ -453,7 +525,7 @@
             "normalized_username_ntlm_hourly.distinct_number_of_normalized_src_machine_ntlm_hourly"
           ],
           "gwame_events": [
-            "normalized_username_gwame_hourly.number_of_events_gwame_hourly"
+              "normalized_username_gwame_hourly.number_of_events_gwame_hourly"
           ],
           "number_of_events_prnlog_hourly": [
             "normalized_username_prnlog_hourly.number_of_events_prnlog_hourly"
@@ -466,6 +538,39 @@
           ],
           "sum_of_file_size_prnlog_hourly": [
             "normalized_username_prnlog_hourly.sum_of_file_size_prnlog_hourly"
+          ],
+          "number_of_distinct_src_network_folder_paths_dlpfile_hourly": [
+            "normalized_username_dlpfile_hourly.number_of_distinct_src_network_folder_paths_dlpfile_hourly"
+          ],
+          "sum_of_moved_files_to_removable_device_size_dlpfile_hourly": [
+            "normalized_username_dlpfile_hourly.sum_of_moved_files_to_removable_device_size_dlpfile_hourly"
+          ],
+          "number_of_moved_files_to_removable_device_dlpfile_hourly": [
+            "normalized_username_dlpfile_hourly.number_of_moved_files_to_removable_device_dlpfile_hourly"
+          ],
+          "sum_of_copied_files_to_removable_device_size_dlpfile_hourly": [
+            "normalized_username_dlpfile_hourly.sum_of_copied_files_to_removable_device_size_dlpfile_hourly"
+          ],
+          "number_of_copied_files_to_removable_device_dlpfile_hourly": [
+            "normalized_username_dlpfile_hourly.number_of_copied_files_to_removable_device_dlpfile_hourly"
+          ],
+          "sum_of_moved_files_from_remote_device_size_dlpfile_hourly": [
+            "normalized_username_dlpfile_hourly.sum_of_moved_files_from_remote_device_size_dlpfile_hourly"
+          ],
+          "number_of_moved_files_from_remote_device_dlpfile_hourly": [
+            "normalized_username_dlpfile_hourly.number_of_moved_files_from_remote_device_dlpfile_hourly"
+          ],
+          "sum_of_copied_files_from_remote_device_size_dlpfile_hourly": [
+            "normalized_username_dlpfile_hourly.sum_of_copied_files_from_remote_device_size_dlpfile_hourly"
+          ],
+          "number_of_copied_files_from_remote_device_dlpfile_hourly": [
+            "normalized_username_dlpfile_hourly.number_of_copied_files_from_remote_device_dlpfile_hourly"
+          ],
+          "number_of_recycled_or_deleted_files_dlpfile_hourly": [
+            "normalized_username_dlpfile_hourly.number_of_recycled_or_deleted_files_dlpfile_hourly"
+          ],
+          "number_of_opened_files_dlpfile_hourly": [
+            "normalized_username_dlpfile_hourly.number_of_opened_files_dlpfile_hourly"
           ],
           "number_of_emails_to_external_recipient_dlpmail_hourly": [
             "normalized_username_dlpmail_hourly.number_of_emails_to_external_recipient_dlpmail_hourly"
@@ -494,6 +599,17 @@
 
         },
         "alphas": {
+          "number_of_distinct_src_network_folder_paths_dlpfile_hourly": 0.09,
+          "sum_of_moved_files_to_removable_device_size_dlpfile_hourly": 0.09,
+          "number_of_moved_files_to_removable_device_dlpfile_hourly": 0.09,
+          "sum_of_copied_files_to_removable_device_size_dlpfile_hourly": 0.09,
+          "number_of_copied_files_to_removable_device_dlpfile_hourly": 0.09,
+          "sum_of_moved_files_from_remote_device_size_dlpfile_hourly": 0.09,
+          "number_of_moved_files_from_remote_device_dlpfile_hourly": 0.09,
+          "sum_of_copied_files_from_remote_device_size_dlpfile_hourly": 0.09,
+          "number_of_copied_files_from_remote_device_dlpfile_hourly": 0.09,
+          "number_of_recycled_or_deleted_files_dlpfile_hourly": 0.09,
+          "number_of_opened_files_dlpfile_hourly": 0.09,
           "number_of_emails_to_external_recipient_dlpmail_hourly": 0.09,
           "number_of_attachments_to_external_recipient_dlpmail_hourly": 0.09,
           "sum_of_attachments_to_external_recipient_size_dlpmail_hourly": 0.09,
@@ -533,11 +649,13 @@
           "distinct_normalized_src_machine_kerberos_tgt":0.09
         },
        "betas": {
+         "normalized_username_dlpfile_hourly.highest_date_time_score_dlpfile_hourly": 0.002,
+         "normalized_username_dlpfile_hourly.sum_of_highest_normalized_src_machine_scores_dlpfile_hourly": 0.002,
           "normalized_username_dlpmail_hourly.highest_date_time_score_dlpmail_hourly": 0.002,
           "normalized_username_dlpmail_hourly.sum_of_highest_normalized_src_machine_scores_dlpmail_hourly": 0.002,
           "normalized_username_dlpmail_hourly.sum_of_highest_email_sender_scores_dlpmail_hourly": 0.002,
           "normalized_username_dlpmail_hourly.sum_of_highest_email_recipient_domain_scores_dlpmail_hourly": 0.002,
-          "normalized_username_dlpmail_hourly.sum_of_highest_email_application_scores_dlpmail_hourly": 0.002,
+          "normalized_username_dlpmail_hourly.sum_of_highest_executing_application_scores_dlpmail_hourly": 0.002,
           "normalized_username_dlpmail_hourly.sum_of_highest_attachment_file_extension_scores_dlpmail_hourly": 0.002,
           "normalized_username_dlpmail_hourly.highest_attachment_file_size_score_dlpmail_hourly": 0.002,
           "normalized_username_kerberos_logins_hourly.sum_of_highest_scores_over_normalized_src_machine_kerberos_logins_hourly": 0.002,
