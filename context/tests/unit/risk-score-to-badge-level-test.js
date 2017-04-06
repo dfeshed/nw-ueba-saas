@@ -5,6 +5,6 @@ module('Unit | Helper | context/risk score to badge level');
 
 // Replace this with your real tests.
 test('it works', function(assert) {
-  const result = riskScoreToBadgeLevel(42);
+  const result = riskScoreToBadgeLevel([42, 'Alerts']);
   assert.ok(result);
 });

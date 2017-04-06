@@ -1,19 +1,19 @@
 import { contextRiskScoreThreshold } from 'context/config/constants';
 import { helper } from 'ember-helper';
 
-export function riskScoreToBadgeLevel(params) {
-  const riskScore = params;
-  if (riskScore <= contextRiskScoreThreshold.LOW) {
+export function riskScoreToBadgeLevel([score, dataSourceType]) {
+  const riskScoreThreshold = getDataSourceRiskScoreThreshold(dataSourceType);
+  if (score <= riskScoreThreshold.LOW) {
     return {
       badgeLevel: 'low',
       style: 'rsa-context-panel__risk-badge__low-risk'
     };
-  } else if (riskScore <= contextRiskScoreThreshold.MEDIUM) {
+  } else if (score <= riskScoreThreshold.MEDIUM) {
     return {
       badgeLevel: 'medium',
       style: 'rsa-context-panel__risk-badge__medium-risk'
     };
-  } else if (riskScore <= contextRiskScoreThreshold.HIGH) {
+  } else if (score <= riskScoreThreshold.HIGH) {
     return {
       badgeLevel: 'high',
       style: 'rsa-context-panel__risk-badge__high-risk'
@@ -23,6 +23,15 @@ export function riskScoreToBadgeLevel(params) {
       badgeLevel: 'danger',
       style: 'rsa-context-panel__risk-badge__danger-risk'
     };
+  }
+}
+
+function getDataSourceRiskScoreThreshold(dataSourceType) {
+  if (dataSourceType === 'Alerts' || dataSourceType === 'Incidents') {
+    return contextRiskScoreThreshold[dataSourceType];
+  } else {
+    // for Endpoint source the dataSourceType will be Machines/Modules/IOC
+    return contextRiskScoreThreshold.Endpoint;
   }
 }
 

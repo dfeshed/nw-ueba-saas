@@ -18,7 +18,7 @@
       {{#rsa-data-table/body as |item index column|}}
         {{#if (eq column.dataType 'riskscore')}}
           {{#rsa-data-table/body-cell item=item index=index column=column}}
-            <span class={{get (risk-score-to-badge-level (get item column.nested)) 'style'}}>
+            <span class={{get (risk-score-to-badge-level (get item column.nested) dSDetails.dataSourceGroup) 'style'}}>
               {{get item column.nested}}
             </span>
           {{/rsa-data-table/body-cell}}

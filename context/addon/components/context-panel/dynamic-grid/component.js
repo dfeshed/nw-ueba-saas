@@ -29,9 +29,9 @@ const DynamicGridComponent = Component.extend({
     }
   },
 
-  @computed('data.IIOCScore')
-  badgeLevel: (score) => {
-    return riskScoreToBadgeLevel(score).badgeLevel;
+  @computed('data.IIOCScore', 'dSDetails')
+  badgeLevel: (score, details) => {
+    return riskScoreToBadgeLevel([score, details.dataSourceGroup]).badgeLevel;
   }
 });
 export default connect(stateToComputed, dispatchToActions)(DynamicGridComponent);
