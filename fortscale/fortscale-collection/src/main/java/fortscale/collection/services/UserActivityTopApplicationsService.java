@@ -20,11 +20,6 @@ public class UserActivityTopApplicationsService extends BaseUserActivityConfigur
 
     @PostConstruct
     public void init() throws Exception {
-        activityDataSourceConfigurationMap.put("prnlog", new UserActivityDataSourceConfiguration("prnlog",
-                "aggr_normalized_username_prnlog_daily",
-                UserActivityBaseHandler.AGGREGATED_FEATURES_PREFIX,
-                UserActivityType.TOP_APPLICATIONS.name()));
-
         activityDataSourceConfigurationMap.put("dlpmail", new UserActivityDataSourceConfiguration("dlpmail",
                 "aggr_normalized_username_dlpmail_daily",
                 UserActivityBaseHandler.AGGREGATED_FEATURES_PREFIX,
