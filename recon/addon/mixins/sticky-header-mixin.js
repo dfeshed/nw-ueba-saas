@@ -43,7 +43,7 @@ export default Mixin.create({
     const content = this.get(this.get('stickyContentKey'));
 
     // no content either, so no header to render
-    if (content.length === 0) {
+    if (!content || content.length === 0) {
       return;
     }
 
@@ -90,14 +90,18 @@ export default Mixin.create({
     const $headers = this.get('$headers');
 
     if (!$headers || $headers.length === 0) {
-      this.set('indexAtTop', null);
+      if (!this.isDestroyed) {
+        this.set('indexAtTop', null);
+      }
     } else {
 
       // fast eject, common use case, is just at the top
       // nothing to do here
       const positionTop = $headers.eq(0).position().top;
       if (positionTop === 0 || positionTop === 1) {
-        this.set('indexAtTop', null);
+        if (!this.isDestroyed) {
+          this.set('indexAtTop', null);
+        }
         return;
       }
 

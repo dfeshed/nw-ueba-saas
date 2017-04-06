@@ -1,5 +1,6 @@
 import { streamRequest } from 'streaming-data/services/data-access/requests';
 import { buildBaseQuery, addStreaming } from './util/query-util';
+import { delayedResponse } from './util/execute-util';
 
 const fetchPacketData = ({ endpointId, eventId, packetsPageSize }, dispatchPage, dispatchError) => {
 
@@ -9,9 +10,7 @@ const fetchPacketData = ({ endpointId, eventId, packetsPageSize }, dispatchPage,
     method: 'stream',
     modelName: 'reconstruction-packet-data',
     query: streamingQuery,
-    onResponse({ data }) {
-      dispatchPage(data);
-    },
+    onResponse: delayedResponse(dispatchPage, (response) => response.data, 100),
     onError: dispatchError
   });
 };
