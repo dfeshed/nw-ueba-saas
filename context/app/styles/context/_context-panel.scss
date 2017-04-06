@@ -494,3 +494,11 @@ radial-gradient(circle at 85% 85%, rsa-color(blue, darker, .1) 0, rsa-color(blue
 .feedback-margin {
   margin-bottom: 175px;
 }
+
+.gray-text-border-top {
+  border-top: 1px solid rsa-color(black, null, $rsa-nearly-transparent);
+  text-align: left;
+  padding: 1rem;
+  color: gray;
+  @include rsa-font(footer, small);
+}
