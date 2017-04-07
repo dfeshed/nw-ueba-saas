@@ -38,6 +38,15 @@
                   style=badgeLevel
                   invertColor=true
                 }}
+              {{else if (eq cellData.dataType 'datetime')}}
+                <vbox>
+                  <div class="rsa-context-panel__grid__host-details__field-name">{{t cellData.title}}</div>
+                  <div class="rsa-context-panel__grid__host-details__field-value">
+                    <span>
+                      {{rsa-content-datetime timestamp=(get data cellData.field) displayMilliseconds=false withTimeAgo=true}}
+                    </span>
+                  </div>
+                </vbox>
               {{else if (eq cellData.dataType 'group')}}
                 {{context-panel/dynamic-grid/group data=(get data cellData.field) title=cellData.title index=index}}
               {{else}}

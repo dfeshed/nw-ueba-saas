@@ -29,9 +29,9 @@
         {{else if (eq column.dataType 'datetime')}}
           {{#rsa-data-table/body-cell item=item index=index column=column}}
             {{#if (eq column.nested '')}}
-              {{rsa-content-datetime timestamp=(get item column.field) }}{{rsa-content-datetime timestamp=(get item column.field) asTimeAgo=true}}
+              {{rsa-content-datetime timestamp=(get item column.field) displayMilliseconds=false withTimeAgo=true}}
             {{else}}
-              {{rsa-content-datetime timestamp=(get item column.nested )}}{{rsa-content-datetime timestamp=(get item column.nested )  asTimeAgo=true}}
+              {{rsa-content-datetime timestamp=(get item column.nested) displayMilliseconds=false withTimeAgo=true}}
             {{/if}}
           {{/rsa-data-table/body-cell}}
         {{else if (eq column.dataType 'link')}}

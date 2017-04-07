@@ -10,7 +10,7 @@ export default {
       title: 'context.iiocs.lastExecuted',
       width: '200',
       class: 'rsa-iioc-iiocLevel2',
-      dataType: 'text',
+      dataType: 'datetime',
       nested: ''
     },
     {

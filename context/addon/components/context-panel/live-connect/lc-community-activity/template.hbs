@@ -7,7 +7,7 @@
     <vbox>
       {{rsa-content-definition label=(t 'context.lc.modifiedDate')}}
       {{#if liveConnectData.feedback.dateMarked}}
-        {{rsa-content-datetime timestamp=liveConnectData.feedback.dateMarked}}
+        {{rsa-content-datetime timestamp=liveConnectData.feedback.dateMarked displayMilliseconds=false withTimeAgo=true}}
       {{else}}
         {{t 'context.lc.blankField'}}
       {{/if}}

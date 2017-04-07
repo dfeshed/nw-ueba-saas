@@ -54,7 +54,8 @@ export default {
       },
       {
         field: 'lastLogon',
-        title: 'context.ADdata.lastLogon'
+        title: 'context.ADdata.lastLogon',
+        dataType: 'datetime'
       }]
     },
     {
@@ -71,7 +72,8 @@ export default {
       },
       {
         field: 'lastLogonTimestamp',
-        title: 'context.ADdata.lastLogonTimeStamp'
+        title: 'context.ADdata.lastLogonTimeStamp',
+        dataType: 'datetime'
       }]
     }
   ],
