@@ -17,10 +17,10 @@ export default {
       nested: ''
     },
     {
-      field: 'createdBy',
+      field: 'dataSourceCreatedBy',
       title: 'context.list.createdByUser',
       width: '100',
-      nested: ''
+      nested: 'resultMeta'
     },
     {
       field: 'dataSourceCreatedOn',

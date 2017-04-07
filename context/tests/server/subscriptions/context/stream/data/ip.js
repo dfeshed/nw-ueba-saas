@@ -1732,7 +1732,6 @@ export default [
     'dataSourceName': 'test',
     'dataSourceDescription': 'test',
     'dataSourceType': 'LIST',
-    'createdBy': 'admin',
     'dataSourceGroup': 'LIST',
     'connectionName': null,
     'dataSourceCreatedOn': 1491288661747,
@@ -1750,7 +1749,8 @@ export default [
       }
     ],
     'resultMeta': {
-      'timeQuerySubmitted': 1491289231023
+      'timeQuerySubmitted': 1491289231023,
+      'dataSourceCreatedBy': 'admin'
     },
     'pagingEnabled': false,
     'currentPageId': 0,
@@ -1766,7 +1766,6 @@ export default [
     'dataSourceName': 'WhiteList',
     'dataSourceDescription': 'WhiteList-IP',
     'dataSourceType': 'LIST',
-    'createdBy': 'User',
     'dataSourceGroup': 'LIST',
     'connectionName': null,
     'dataSourceCreatedOn': 1491288661700,
@@ -1784,7 +1783,8 @@ export default [
       }
     ],
     'resultMeta': {
-      'timeQuerySubmitted': 1491289231023
+      'timeQuerySubmitted': 1491289231023,
+      'dataSourceCreatedBy': 'User'
     },
     'pagingEnabled': false,
     'currentPageId': 0,
@@ -1800,7 +1800,6 @@ export default [
     'dataSourceName': 'BlackList',
     'dataSourceDescription': 'BlackList-IP',
     'dataSourceType': 'LIST',
-    'createdBy': 'User',
     'dataSourceGroup': 'LIST',
     'connectionName': null,
     'dataSourceCreatedOn': 1491288661700,
@@ -1818,7 +1817,8 @@ export default [
       }
     ],
     'resultMeta': {
-      'timeQuerySubmitted': 1491289231023
+      'timeQuerySubmitted': 1491289231023,
+      'dataSourceCreatedBy': 'User'
     },
     'pagingEnabled': false,
     'currentPageId': 0,
@@ -1834,7 +1834,6 @@ export default [
     'dataSourceName': 'UserCreated',
     'dataSourceDescription': 'UserCreated-IP',
     'dataSourceType': 'LIST',
-    'createdBy': 'User1',
     'dataSourceGroup': 'LIST',
     'connectionName': null,
     'dataSourceCreatedOn': 1491288661700,
@@ -1852,7 +1851,8 @@ export default [
       }
     ],
     'resultMeta': {
-      'timeQuerySubmitted': 1491289231023
+      'timeQuerySubmitted': 1491289231023,
+      'dataSourceCreatedBy': 'User1'
     },
     'pagingEnabled': false,
     'currentPageId': 0,
@@ -1868,7 +1868,6 @@ export default [
     'dataSourceName': 'LogFile',
     'dataSourceDescription': 'LogFile-Desc',
     'dataSourceType': 'LIST',
-    'createdBy': 'Administrator',
     'dataSourceGroup': 'LIST',
     'connectionName': null,
     'dataSourceCreatedOn': 1491288661700,
@@ -1886,7 +1885,8 @@ export default [
       }
     ],
     'resultMeta': {
-      'timeQuerySubmitted': 1491289231023
+      'timeQuerySubmitted': 1491289231023,
+      'dataSourceCreatedBy': 'Administrator'
     },
     'pagingEnabled': false,
     'currentPageId': 0,
