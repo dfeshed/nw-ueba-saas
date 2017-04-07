@@ -126,7 +126,18 @@ export default {
       isDownloading: 'ja_Downloading...'
     },
     packetView: {
-      noHexData: 'ja_No HEX data was generated during content reconstruction.'
+      noHexData: 'ja_No HEX data was generated during content reconstruction.',
+      isDownloading: 'ja_Downloading...',
+      defaultDownloadPCAP: 'ja_Download PCAP',
+      downloadPCAP: 'ja_Download Entire PCAP',
+      downloadPayload1: 'ja_Download Request Payload',
+      downloadPayload2: 'ja_Download Response Payload',
+      downloadPayload: 'ja_Download All Payloads Only'
+    },
+    fileView: {
+      downloadFile: 'ja_Download File',
+      downloadFiles: 'ja_Download Files ({{fileCount}})',
+      isDownloading: 'ja_Downloading...'
     },
     files: {
       fileName: 'ja_File Name',

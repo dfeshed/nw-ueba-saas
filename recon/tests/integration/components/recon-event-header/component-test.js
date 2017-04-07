@@ -6,7 +6,8 @@ import DataHelper from '../../../helpers/data-helper';
 
 moduleForComponent('recon-event-header', 'Integration | Component | recon event header', {
   integration: true,
-  setup() {
+  beforeEach() {
+    this.registry.injection('component:recon-event-actionbar/export-packet', 'i18n', 'service:i18n');
     this.inject.service('redux');
   }
 });

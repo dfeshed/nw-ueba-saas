@@ -13,19 +13,21 @@
       margin-right: rsa-whitespace();
     }
   }
-  
+
+  .export-packet-button,
   .export-logs-button,
   .export-files-button {
     .rsa-loader {
       display: inline-block;
       margin-right: rsa-whitespace();
-      
+
       &__text {
         display: none;
       }
     }
   }
 
+  .export-packet-iframe,
   .export-logs-iframe,
   .export-files-iframe {
     display: none;

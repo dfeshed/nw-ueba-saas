@@ -1,11 +1,14 @@
 import reselect from 'reselect';
 import { bytesAsRows } from 'recon/reducers/packets/util';
+import { getHeaderItem } from 'recon/utils/recon-event-header';
 
 const { createSelector } = reselect;
 const packets = (recon) => recon.data.packets;
+const headerItems = (recon) => recon.data.headerItems;
 const isRequestShown = (recon) => recon.visuals.isRequestShown;
 const isResponseShown = (recon) => recon.visuals.isResponseShown;
 const isPayloadOnly = (recon) => recon.visuals.isPayloadOnly;
+
 
 /**
  * A selector that returns a sorted Array of all visible packets.
@@ -105,5 +108,18 @@ export const payloadProcessedPackets = createSelector(
       }
       return acc;
     }, []);
+  }
+);
+
+export const hasPayload = createSelector(
+  headerItems,
+  (headerItems) => {
+    const headerItem = getHeaderItem(headerItems, 'payload size');
+
+    if (headerItem && headerItem.value !== '0 bytes') {
+      return true;
+    }
+
+    return false;
   }
 );

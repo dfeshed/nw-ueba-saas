@@ -1,10 +1,12 @@
 import Ember from 'ember';
 import * as ACTION_TYPES from './types';
 import { fetchExtractJobId } from './fetch';
+import { getHeaderItem } from 'recon/utils/recon-event-header';
 
 const {
   A,
   Logger,
+  isArray,
   get
 } = Ember;
 
@@ -19,13 +21,28 @@ const deselectAllFiles = () => ({ type: ACTION_TYPES.FILES_SELECT_ALL });
 
 const selectAllFiles = () => ({ type: ACTION_TYPES.FILES_DESELECT_ALL });
 
-const getHeaderItem = (headerItems, item) => headerItems.find((d) => d.id === item) || {};
+const createFilename = (headerItems, files = []) => {
+  /*
+    If the file name is empty, the service will return a UUID filename.  And
+    if we do not have the required paramters to make a file name, it is best
+    to allow the service assign an UUID instead of the UI giving an undefined.
+  */
+  let fileName = '';
 
-const createFilename = (deviceName, session, files = []) => {
-  let fileName = `${deviceName}_SID${session}`;
-  if (files.length) {
-    fileName += `_FC${files.length}`;
+  const [ type, service, id, session, device ] =
+  ['type', 'service', 'id', 'session', 'device'].map((k) => {
+    return get(getHeaderItem(headerItems, k), 'value');
+  });
+
+  if (type === 'Network' && device && session) {
+    fileName = `${device}_SID${session}`;
+    if (isArray(files) && files.length) {
+      fileName += `_FC${files.length}`;
+    }
+  } else if (type === 'Log' && service && id) {
+    fileName = `${service}_SID${id}`;
   }
+
   return fileName;
 };
 
@@ -41,12 +58,12 @@ const extractFiles = (type = 'FILES') => {
         }
       }
     } = getState();
-    const deviceName = get(getHeaderItem(headerItems, 'service'), 'value'); // device
-    const session = get(getHeaderItem(headerItems, 'id'), 'value');
+
     const selectedFileNames = (files || A([]))
       .filterBy('selected', true)
       .map((file) => file.fileName);
-    const filename = createFilename(deviceName, session, selectedFileNames);
+
+    const filename = createFilename(headerItems, selectedFileNames);
 
     dispatch({
       type: ACTION_TYPES.FILE_EXTRACT_JOB_ID_RETRIEVE,

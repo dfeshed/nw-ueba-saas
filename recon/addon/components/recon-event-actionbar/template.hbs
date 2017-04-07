@@ -1,7 +1,7 @@
 <grid>
   <hbox class="dropdowns">
     {{#if isPacketView }}
-      {{#rsa-form-button isDisabled=true}}Export PCAP{{/rsa-form-button}}
+      {{recon-event-actionbar/export-packet}}
       {{#rsa-form-button
         class='payload-only-button'
         style=payloadButtonStyle
@@ -13,6 +13,9 @@
       {{recon-event-actionbar/export-files}}
     {{/if}}
     {{#if isTextView }}
+      {{#unless isLogEvent}}
+        {{recon-event-actionbar/export-packet}}
+      {{/unless}}
       {{recon-event-actionbar/export-logs}}
       {{#unless isLogEvent}}
         {{recon-event-actionbar/decode-text}}

@@ -17,6 +17,9 @@ const RECON_DISPLAYED_LOG_HEADER = {
   'event time': 50
 };
 
+const getHeaderItem = (headerItems, item) => headerItems ? headerItems.find((d) => d.id === item) || {} : {};
+
 export {
-  RECON_DISPLAYED_LOG_HEADER
+  RECON_DISPLAYED_LOG_HEADER,
+  getHeaderItem
 };

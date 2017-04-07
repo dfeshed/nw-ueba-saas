@@ -25,9 +25,9 @@ const ExportFilesComponent = Component.extend(ReconExport, {
   @computed('isDownloading', 'selectedFiles.length')
   caption(isDownloading, count) {
     if (isDownloading) {
-      return 'Exporting...';
+      return this.get('i18n').t('recon.fileView.isDownloading');
     } else {
-      return (count > 1) ? `Export Files (${count})` : 'Export File';
+      return (count > 1) ? this.get('i18n').t('recon.fileView.downloadFiles', { 'fileCount': count }) : this.get('i18n').t('recon.fileView.downloadFile');
     }
   },
 

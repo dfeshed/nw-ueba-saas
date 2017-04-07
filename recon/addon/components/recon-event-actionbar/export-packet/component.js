@@ -1,19 +1,15 @@
-import Ember from 'ember';
 import Component from 'ember-component';
 import connect from 'ember-redux/components/connect';
 import computed from 'ember-computed-decorators';
 import * as InteractionActions from 'recon/actions/interaction-creators';
 import ReconExport from 'recon/mixins/recon-export';
 import layout from './template';
-import { isLogEvent } from 'recon/selectors/event-type-selectors';
-
-const { String } = Ember;
+import { hasPayload } from 'recon/selectors/packet-selectors';
 
 const stateToComputed = ({ recon, recon: { data } }) => ({
   status: data.fileExtractStatus,
   extractLink: data.fileExtractLink,
-  eventType: data.eventType,
-  isLogEvent: isLogEvent(recon)
+  hasPayload: hasPayload(recon)
 });
 
 const dispatchToActions = (dispatch) => ({
@@ -24,13 +20,13 @@ const dispatchToActions = (dispatch) => ({
 const menuOffsetsStyle = (el) => {
   if (el) {
     const elRect = el.getBoundingClientRect();
-    return String.htmlSafe(`top: ${elRect.height - 1}px`);
+    return `top: ${elRect.height - 1}px`.htmlSafe();
   } else {
     return null;
   }
 };
 
-const DownloadLogsComponent = Component.extend(ReconExport, {
+const DownloadPacketComponent = Component.extend(ReconExport, {
   layout,
 
   classNameBindings: ['isExpanded:expanded:collapsed'],
@@ -39,13 +35,21 @@ const DownloadLogsComponent = Component.extend(ReconExport, {
 
   offsetsStyle: null,
 
-  @computed('isDownloading', 'i18n')
-  caption(isDownloading, i18n) {
-    return isDownloading ? i18n.t('recon.textView.isDownloading') :
-      i18n.t('recon.textView.downloadLog');
+  @computed('isDownloading')
+  caption(isDownloading) {
+    return isDownloading ? this.get('i18n').t('recon.packetView.isDownloading') :
+      this.get('i18n').t('recon.packetView.defaultDownloadPCAP');
+  },
+
+  @computed('hasPayload', 'isDownloading')
+  isDisabled(hasPayload, isDownloading) {
+    if (hasPayload && !isDownloading) {
+      return false;
+    }
+    return true;
   },
   actions: {
-    processFiles(type) {
+    processDefault(type) {
       if (this.get('isExpanded')) {
         this.toggleProperty('isExpanded');
       }
@@ -68,4 +72,4 @@ const DownloadLogsComponent = Component.extend(ReconExport, {
 
 });
 
-export default connect(stateToComputed, dispatchToActions)(DownloadLogsComponent);
+export default connect(stateToComputed, dispatchToActions)(DownloadPacketComponent);

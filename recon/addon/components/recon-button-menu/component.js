@@ -5,8 +5,9 @@ export default Component.extend({
   layout,
   tagName: 'ul',
   classNames: ['recon-button-menu'],
-  classNameBindings: ['isExpanded:expanded:collapsed'],
+  classNameBindings: ['isExpanded:expanded:collapsed', 'menuStyle'],
   attributeBindings: ['style'],
   style: null,
-  isExanded: false
+  isExanded: false,
+  menuStyle: null
 });

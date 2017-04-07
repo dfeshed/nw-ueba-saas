@@ -1,17 +1,23 @@
 import Ember from 'ember';
 import { basicPromiseRequest } from './util/query-util';
+import Object from 'ember-object';
 
 const { RSVP, A } = Ember;
 
 const _generateHeaderItems = (items) => (
   items.reduce(function(headerItems, item) {
+
+    if (!item.id && item.name) {
+      item.id = item.name;
+    }
     if (item.name === 'destination' || item.name === 'source') {
-      headerItems.pushObjects([{
+      headerItems.pushObject(Object.create({
+        id: `${item.name} IP:PORT`,
         name: `${item.name} IP:PORT`,
         value: item.value
-      }]);
+      }));
     } else {
-      headerItems.pushObject(item);
+      headerItems.pushObject(Object.create(item));
     }
     return headerItems;
   }, A([]))

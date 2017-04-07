@@ -126,7 +126,18 @@ export default {
       isDownloading: 'Downloading...'
     },
     packetView: {
-      noHexData: 'No HEX data was generated during content reconstruction.'
+      noHexData: 'No HEX data was generated during content reconstruction.',
+      isDownloading: 'Downloading...',
+      defaultDownloadPCAP: 'Download PCAP',
+      downloadPCAP: 'Download Entire PCAP',
+      downloadPayload1: 'Download Request Payload',
+      downloadPayload2: 'Download Response Payload',
+      downloadPayload: 'Download All Payloads Only'
+    },
+    fileView: {
+      downloadFile: 'Download File',
+      downloadFiles: 'Download Files ({{fileCount}})',
+      isDownloading: 'Downloading...'
     },
     error: {
       generic: 'An unexpected error has occurred attempting to retrieve this data.',

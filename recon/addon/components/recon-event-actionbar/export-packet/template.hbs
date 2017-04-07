@@ -1,0 +1,34 @@
+<hbox class="rsa-button-group">
+  {{#rsa-form-button
+    class="export-packet-button"
+    defaultAction=(action 'processDefault' 'PCAP')
+    isDisabled=isDisabled
+  }}
+    {{#if isDownloading}}{{rsa-loader size="small"}}{{/if}}
+    {{caption}}
+  {{/rsa-form-button}}
+  {{#click-outside action=(action "clickOutside")}}
+    {{#rsa-form-button
+      class="rsa-split-dropdown"
+      defaultAction=(action 'toggleExpand')
+      isDisabled=isDisabled
+    }}
+      {{rsa-icon name="arrow-down-12"}}
+    {{/rsa-form-button}}
+    {{#recon-button-menu isExpanded=isExpanded style=offsetsStyle menuStyle='export-packet-menu'}}
+      <li>
+        <a {{action 'processMenuItem' 'PCAP'}}>{{t 'recon.packetView.downloadPCAP'}}</a>
+      </li>
+      <li>
+        <a {{action 'processMenuItem' 'PAYLOAD'}}>{{t 'recon.packetView.downloadPayload'}}</a>
+      </li>
+      <li>
+        <a {{action 'processMenuItem' 'PAYLOAD1'}}>{{t 'recon.packetView.downloadPayload1'}}</a>
+      </li>
+      <li>
+        <a {{action 'processMenuItem' 'PAYLOAD2'}}>{{t 'recon.packetView.downloadPayload2'}}</a>
+      </li>
+    {{/recon-button-menu}}
+  {{/click-outside}}
+</hbox>
+<iframe src="{{iframeSrc}}" class="export-packet-iframe js-export-packet-iframe"></iframe>

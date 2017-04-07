@@ -244,10 +244,6 @@ ast-types@0.8.12:
   version "0.8.12"
   resolved "https://registry.npmjs.org/ast-types/-/ast-types-0.8.12.tgz#a0d90e4351bb887716c83fd637ebf818af4adfcc"
 
-ast-types@0.8.15:
-  version "0.8.15"
-  resolved "https://registry.npmjs.org/ast-types/-/ast-types-0.8.15.tgz#8eef0827f04dff0ec8857ba925abe3fea6194e52"
-
 ast-types@0.9.6:
   version "0.9.6"
   resolved "https://registry.npmjs.org/ast-types/-/ast-types-0.9.6.tgz#102c9e9e9005d3e7e3829bf0c4fa24ee862ee9b9"
@@ -2419,7 +2415,7 @@ ember-cli-htmlbars-inline-precompile@^0.3.6:
     ember-cli-htmlbars "^1.0.0"
     hash-for-dep "^1.0.2"
 
-ember-cli-htmlbars@^1.0.0, ember-cli-htmlbars@^1.0.10, ember-cli-htmlbars@^1.0.3, ember-cli-htmlbars@^1.1.0, ember-cli-htmlbars@^1.1.1:
+ember-cli-htmlbars@*, ember-cli-htmlbars@^1.0.0, ember-cli-htmlbars@^1.0.10, ember-cli-htmlbars@^1.0.3, ember-cli-htmlbars@^1.1.0, ember-cli-htmlbars@^1.1.1:
   version "1.2.0"
   resolved "https://registry.npmjs.org/ember-cli-htmlbars/-/ember-cli-htmlbars-1.2.0.tgz#327e1a5dda1c85c6fcf8be888f7894b32c3f393b"
   dependencies:
@@ -2728,6 +2724,13 @@ ember-cli@2.12.1:
     uuid "^3.0.0"
     walk-sync "^0.3.0"
     yam "0.0.22"
+
+ember-click-outside@0.1.6:
+  version "0.1.6"
+  resolved "https://registry.npmjs.org/ember-click-outside/-/ember-click-outside-0.1.6.tgz#b56f14277351cccd84edaa78bcd399d71393871a"
+  dependencies:
+    ember-cli-babel "^5.1.7"
+    ember-cli-htmlbars "*"
 
 ember-computed-decorators@0.3.0:
   version "0.3.0"
@@ -5665,20 +5668,11 @@ readline2@^1.0.1:
     is-fullwidth-code-point "^1.0.0"
     mute-stream "0.0.5"
 
-recast@0.10.33:
+recast@0.10.33, recast@^0.10.10:
   version "0.10.33"
   resolved "https://registry.npmjs.org/recast/-/recast-0.10.33.tgz#942808f7aa016f1fa7142c461d7e5704aaa8d697"
   dependencies:
     ast-types "0.8.12"
-    esprima-fb "~15001.1001.0-dev-harmony-fb"
-    private "~0.1.5"
-    source-map "~0.5.0"
-
-recast@^0.10.10:
-  version "0.10.43"
-  resolved "https://registry.npmjs.org/recast/-/recast-0.10.43.tgz#b95d50f6d60761a5f6252e15d80678168491ce7f"
-  dependencies:
-    ast-types "0.8.15"
     esprima-fb "~15001.1001.0-dev-harmony-fb"
     private "~0.1.5"
     source-map "~0.5.0"
