@@ -75,18 +75,6 @@ const allFilesSelection = (setTo) => {
   });
 };
 
-const isContinuation = (() => {
-  let _previousSide;
-  return (side) => {
-    if (side === _previousSide) {
-      return true;
-    } else {
-      _previousSide = side;
-      return false;
-    }
-  };
-})();
-
 const data = handleActions({
   [ACTION_TYPES.INITIALIZE]: (state, { payload }) => {
     // only clear out data if its a new event
@@ -155,17 +143,11 @@ const data = handleActions({
   },
 
   // Content reducing
-  [ACTION_TYPES.CONTENT_RETRIEVE_STARTED]: (state) => {
-    // isContinuation() is a function we use to track same-side packets. This
-    // needs to be reset to its default state when starting a request for a new
-    // session.
-    isContinuation(null);
-    return {
-      ...state,
-      contentError: null,
-      contentLoading: true
-    };
-  },
+  [ACTION_TYPES.CONTENT_RETRIEVE_STARTED]: (state) => ({
+    ...state,
+    contentError: null,
+    contentLoading: true
+  }),
   [ACTION_TYPES.FILES_RETRIEVE_SUCCESS]: (state, { payload }) => ({
     ...state,
     files: payload.map((f) => {
@@ -269,7 +251,6 @@ const augmentPackets = (data, previousPosition = 0) => {
   return data.map((d, i) => ({
     ...d,
     side: d.side === 1 ? 'request' : 'response',
-    isContinuation: isContinuation(d.side),
     position: previousPosition + i + 1
   }));
 };

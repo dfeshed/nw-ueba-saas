@@ -24,7 +24,6 @@ const packets = [{
   position: 2,
   sequence: 102357698,
   side: 'response',
-  isContinuation: false,
   timestamp: '1485792552869'
 }, {
   bytes: 'pEwR72IB8PdV7Vm/CABFAARPPBZAAH4GgEyJRYNKNvv4u9epAFBv9gLmBhnaw1AYAQAi5wAAR0VUIC9zdGF0cy5waHA/ZXY9c2l0ZTpwbGF5ZXI6bXVzaWNfcXVhbGl0eToxMjhrYnBzJnNvbmdpZD1Fc0FLcGJXSiZfdD0xNDg1NzkyNTUyODE5JmN0PTE5ODIzMjY0MjEgSFRUUC8xLjENCkhvc3Q6IHd3dy5zYWF2bi5jb20NCkNvbm5lY3Rpb246IGtlZXAtYWxpdmUNCkFjY2VwdDogKi8qDQpYLVJlcXVlc3RlZC1XaXRoOiBYTUxIdHRwUmVxdWVzdA0KVXNlci1BZ2VudDogTW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NCkgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgQ2hyb21lLzU1LjAuMjg4My44NyBTYWZhcmkvNTM3LjM2',
@@ -33,7 +32,6 @@ const packets = [{
   position: 4,
   sequence: 1878393574,
   side: 'request',
-  isContinuation: true,
   timestamp: '1485792552870'
 }];
 
@@ -60,8 +58,10 @@ test('single packet renders default', function(assert) {
   });
 
   this.set('packetFields', packetFields);
-  this.set('index', 0);
-  this.set('packet', processedPackets[0]);
+  this.set('index', 2);
+  const [ packet ] = processedPackets;
+  packet.isContinuation = false;
+  this.set('packet', packet);
 
   this.render(hbs`{{recon-event-detail/single-packet
     index=index
@@ -88,7 +88,7 @@ test('single packet renders with hidden header/footer', function(assert) {
     },
     data: {
       packetFields,
-      packets: enhancePackets([packets[0]], packetFields)
+      packets: enhancePackets([packets[1]], packetFields)
     }
   });
 
@@ -96,8 +96,10 @@ test('single packet renders with hidden header/footer', function(assert) {
   this.get('redux').dispatch(togglePayloadOnly());
 
   this.set('packetFields', packetFields);
-  this.set('index', 0);
-  this.set('packet', processedPackets[0]);
+  this.set('index', 4);
+  const [ packet ] = processedPackets;
+  packet.isContinuation = false;
+  this.set('packet', packet);
 
   this.render(hbs`{{recon-event-detail/single-packet
     index=index
@@ -106,40 +108,9 @@ test('single packet renders with hidden header/footer', function(assert) {
   }}`);
 
   return wait().then(() => {
-    assert.ok(this.$('.rsa-icon-arrow-circle-left-2').length === 1, 'Response arrow shown');
-    assert.ok(this.$('.rsa-packet.is-continuation').length === 0, 'Response is not marked as a continuation of the previous');
+    assert.ok(this.$('.rsa-icon-arrow-circle-right-2').length === 1, 'Request arrow shown');
+    assert.ok(this.$('.rsa-packet.is-continuation').length === 0, 'Request is not marked as a continuation of the previous');
     assert.ok(this.$('.packet-details').length === 0, 'Packet details not shown');
-    assert.equal(this.$().text().trim().replace(/\s/g, ''), 'responseNoHEXdatawasgeneratedduringcontentreconstruction.');
-  });
-});
-
-test('single packet (continuous) renders partial header', function(assert) {
-  assert.expect(2);
-
-  const processedPackets = payloadProcessedPackets({
-    visuals: {
-      isRequestShown: true,
-      isResponseShown: true,
-      isPayloadOnly: false
-    },
-    data: {
-      packetFields,
-      packets: enhancePackets([packets[1]], packetFields)
-    }
-  });
-
-  this.set('packetFields', packetFields);
-  this.set('index', 2);
-  this.set('packet', processedPackets[0]);
-
-  this.render(hbs`{{recon-event-detail/single-packet
-    index=index
-    packet=packet
-    packetFields=packetFields
-  }}`);
-
-  return wait().then(() => {
-    assert.ok(this.$('.rsa-packet.is-continuation').length === 1, 'Request is marked as a continuation of the previous');
-    assert.equal(this.$().text().trim().replace(/\s/g, '').substring(0, 200), 'requestpacket4InvaliddateID4804965123547SEQ1878393574PAYLOAD1061bytes0000000000100000200000300000400000500000600000700000800000900000a00000b00000c00000d00000e00000f000010000011000012000013000014000015');
+    assert.equal(this.$().text().trim().replace(/\s/g, '').substring(0, 200), 'request0000000000100000200000300000400000500000600000700000800000900000a00000b00000c00000d00000e00000f0000100000110000120000130000140000150000160000170a44c11ef6201f0f755ed59bf08004500044f3c1640007e068');
   });
 });

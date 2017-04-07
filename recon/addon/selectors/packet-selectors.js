@@ -33,41 +33,73 @@ const visiblePackets = createSelector(
   }
 );
 
+const isSameSequence = (() => {
+  let _previousSequence;
+  return (sequence) => {
+    if (sequence === _previousSequence) {
+      return true;
+    } else {
+      _previousSequence = sequence;
+      return false;
+    }
+  };
+})();
+
 /**
- * Processes visible packets and removes header/footer bytes
- * and then once those bytes are gone, calculates the rows
+ * Processes visible packets. There are several outcomes depending upon what is
+ * desired to be shown to the user.
+ *
+ * If we're showing all packet bytes, we group packets of the same sequence
+ * number, then group the individual bytes into rows to be displayed on the UI.
+ *
+ * If we're showing only payload bytes, we disreguard any packets that have no
+ * payload. The packets that are left over that have the same sequence number
+ * are merged together. Also, continuous same-side packets are marked as
+ * continuous packets so that they appear visually under the same header on the
+ * UI.
+ * @param {Array} packets All of a sessions packets
+ * @param {Boolean} isPayloadOnly Should we remove header/footer bytes
  * @public
  */
 export const payloadProcessedPackets = createSelector(
   [visiblePackets, isPayloadOnly],
   (packets, isPayloadOnly) => {
+    // reset sequence tracking
+    isSameSequence(null);
     return packets.reduce((acc, currentPacket) => {
-      let { bytes } = currentPacket;
+      const { bytes, payloadSize } = currentPacket;
       if (isPayloadOnly) {
+        // if there are no bytes, eject
+        if (payloadSize === 0) {
+          return acc;
+        }
         // Filter out header/footer items from the current packet
-        bytes = bytes.filter((b) => !b.isHeader && !b.isFooter);
-        // See if it's the same side
-        if (currentPacket.isContinuation) {
-          // Get the previous packet
-          const previousPacket = acc[acc.length - 1];
-          // Concat bytes to previous packet's bytes
-          previousPacket.bytes = previousPacket.bytes.concat(bytes);
+        const _bytes = bytes.filter((b) => !b.isHeader && !b.isFooter);
+        // Get the previous packet
+        const previousPacket = acc[acc.length - 1];
+        // if the current packet has the same sequence number as the previous,
+        // then the bytes need to be concated together
+        if (previousPacket && isSameSequence(currentPacket.sequence)) {
+          previousPacket.bytes = previousPacket.bytes.concat(_bytes);
           // Update the byteRows with the new bytes that were added
           previousPacket.byteRows = bytesAsRows(previousPacket.bytes);
         } else {
-          // It's not the same side, so we'll add the current packet to the
-          // accumulator
+          // Set initial sequence number
+          isSameSequence(currentPacket.sequence);
+          // Override isContinuation to mean that the current packet is the
+          // same side as the previous
           acc.push({
             ...currentPacket,
-            bytes,
-            byteRows: bytesAsRows(bytes)
+            isContinuation: (previousPacket && currentPacket.side === previousPacket.side),
+            bytes: _bytes,
+            byteRows: bytesAsRows(_bytes)
           });
         }
       } else {
-        // Augment each packet with a byteRows property.
         // This code path performs just like a map().
         acc.push({
           ...currentPacket,
+          isContinuation: isSameSequence(currentPacket.sequence),
           byteRows: bytesAsRows(bytes)
         });
       }
