@@ -7,7 +7,6 @@
     "dlpmail-event-scorer": "eventscore",
     "dlpmail-event-scorer#date_time_unix.normalized_username.dlpmail.scorer": "date_time_score",
     "dlpmail-event-scorer#normalized_src_machine.normalized_username.dlpmail.scorer": "normalized_src_machine_score",
-    "dlpmail-event-scorer#executing_application.normalized_username.dlpmail.scorer": "executing_application_score",
     "dlpmail-event-scorer#attachment_file_size.normalized_username.dlpmail.scorer": "attachment_file_size_score",
     "dlpmail-event-scorer#email_recipient_domain.normalized_username.dlpmail.scorer": "email_recipient_domain_score",
     "dlpmail-event-scorer#email_sender.normalized_username.dlpmail.scorer": "email_sender_score",

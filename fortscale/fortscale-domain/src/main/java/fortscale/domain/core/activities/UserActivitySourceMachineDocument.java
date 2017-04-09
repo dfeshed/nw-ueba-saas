@@ -39,7 +39,7 @@ public class UserActivitySourceMachineDocument extends UserActivityDeviceDocumen
 	public static class Machines {
 
 		@Field(MACHINE_HISTOGRAM_FIELD_NAME)
-		private Map<String, Double> machinesHistogram = new HashMap();
+		private Map<String, Double> machinesHistogram = new HashMap<>();
 
 		public Map<String, Double> getMachinesHistogram() {
 			return machinesHistogram;
