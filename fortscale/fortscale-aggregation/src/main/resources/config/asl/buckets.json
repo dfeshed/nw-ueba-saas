@@ -525,6 +525,17 @@
           }
         },
         {
+          "name": "highest_attachment_file_size_score",
+          "featureNamesMap": {
+            "maximize": [
+              "attachment_file_size_score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
+        },
+        {
           "name": "emails_to_external_recipient_counter",
           "featureNamesMap": {
           },
@@ -654,6 +665,20 @@
           "filter": {
             "jsonPath": "[?(@.event_type == 'attachment')]"
           }
+        },
+        {
+          "name": "attachment_file_size_histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "attachment_file_size"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.event_type == 'attachment')]"
+          }
         }
       ]
     },
@@ -743,6 +768,17 @@
             ],
             "maximize": [
               "attachment_file_extension_score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
+        },
+        {
+          "name": "highest_attachment_file_size_score",
+          "featureNamesMap": {
+            "maximize": [
+              "attachment_file_size_score"
             ]
           },
           "aggrFeatureFuncJson": {
