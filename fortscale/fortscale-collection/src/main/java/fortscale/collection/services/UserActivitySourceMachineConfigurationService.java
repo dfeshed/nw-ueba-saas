@@ -44,14 +44,6 @@ public class UserActivitySourceMachineConfigurationService extends BaseUserActiv
 				"aggr_normalized_username_vpn_hourly",
 				"aggregatedFeatures",
 				UserActivityType.SOURCE_MACHINE.name()));
-		activityDataSourceConfigurationMap.put("dlpmail", new UserActivityDataSourceConfiguration("dlpmail",
-				"aggr_normalized_username_dlpmail_daily",
-				"aggregatedFeatures",
-				UserActivityType.SOURCE_MACHINE.name()));
-		activityDataSourceConfigurationMap.put("dlpfile", new UserActivityDataSourceConfiguration("dlpfile",
-				"aggr_normalized_username_dlpfile_daily",
-				"aggregatedFeatures",
-				UserActivityType.SOURCE_MACHINE.name()));
 	}
 
 	@Override
