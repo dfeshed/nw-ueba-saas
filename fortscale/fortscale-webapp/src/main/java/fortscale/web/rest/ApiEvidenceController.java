@@ -204,7 +204,8 @@ public class ApiEvidenceController extends DataQueryController {
 		return getListOfEvents(request_total, use_cache, page, size, sort_field, sort_direction, evidence);
 	}
 
-	private DataBean<List<Map<String, Object>>> getListOfEvents(boolean request_total, boolean use_cache, Integer page, Integer size, String sort_field, String sort_direction, Evidence evidence) {
+	private DataBean<List<Map<String, Object>>> getListOfEvents(boolean requestTotal, boolean useCache, Integer page,
+																Integer size, String sortField, String sortDirection, Evidence evidence) {
 
         EntitySupportingInformation entitySupportingInformationFromEvidence = evidence.getSupportingInformation();
 		if ( entitySupportingInformationFromEvidence == null || entitySupportingInformationFromEvidence.generateResult().size() == 0) {
@@ -258,10 +259,10 @@ public class ApiEvidenceController extends DataQueryController {
 
 				// Add custom sort if provided by request
 				// List<String, SortDirection> sortMap = new HashMap<>();
-				if (sort_field != null) {
-					if (sort_direction != null) {
-						sortDir = SortDirection.valueOf(sort_direction);
-						sortFieldStr = sort_field;
+				if (sortField != null) {
+					if (sortDirection != null) {
+						sortDir = SortDirection.valueOf(sortDirection);
+						sortFieldStr = sortField;
 						dataQueryHelper.addQuerySort(querySortList, sortFieldStr, sortDir);
 					}
 				}
@@ -272,7 +273,7 @@ public class ApiEvidenceController extends DataQueryController {
 				dataQueryHelper.addQuerySort(querySortList, timestampField, SortDirection.DESC);
 
 				DataQueryDTO dataQueryObject = dataQueryHelper.createDataQuery(dataEntity, "*", termsMap, querySortList, size, DataQueryDTOImpl.class);
-				return dataQueryHandler(dataQueryObject, request_total, use_cache, page, size);
+				return dataQueryHandler(dataQueryObject, requestTotal, useCache, page, size);
 
 			} else {
 				return null;
