@@ -10,7 +10,7 @@
             <name>ETL</name>
             <group>DLPMAIL</group>
             <description>process Dlpmail events to etl</description>
-            <job-class>fortscale.collection.jobs.event.process.EventProcessJob</job-class> <!-- Important! all generic data sources should have EventProcessJob class! -->
+            <job-class>fortscale.collection.jobs.event.process.DlpMailEventProcessJob</job-class> <!-- Important! all generic data sources should have EventProcessJob class! -->
             <durability>true</durability>
             <recover>true</recover>
 
