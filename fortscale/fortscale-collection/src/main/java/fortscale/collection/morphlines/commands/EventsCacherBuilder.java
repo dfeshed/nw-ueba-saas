@@ -53,7 +53,7 @@ public class EventsCacherBuilder implements CommandBuilder {
                 if (!isDummyRecord(inputRecord)) {
                     dlpMailEventsCache.addRecord(inputRecord);
                 }
-                return true;
+                return super.doProcess(inputRecord);
             } catch (Exception e) {
                 logger.error("Failed to process record {}", inputRecord);
                 return false;
