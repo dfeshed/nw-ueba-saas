@@ -22,6 +22,10 @@ public class DlpMailEventsCache {
         return cache.size();
     }
 
+    public void clearCache() {
+        cache = new HashMap<>();
+    }
+
     public void addRecord(Record record) throws Exception {
         final String eventId = (String) record.getFirstValue(EVENT_ID_FIELD_NAME);
         final Set<String> existingEventsIds = cache.keySet();
@@ -44,8 +48,7 @@ public class DlpMailEventsCache {
     }
 
 
-    public Map.Entry<String, List<Record>> popPreviousEventRecords(Record record) throws Exception {
-        final String newRecordEventId = (String) record.getFirstValue(EVENT_ID_FIELD_NAME);
+    public Map.Entry<String, List<Record>> popPreviousEventRecords(String newRecordEventId) throws Exception {
         final Set<Map.Entry<String, List<Record>>> existingEntries = cache.entrySet();
         for (Map.Entry<String, List<Record>> existingEntry : existingEntries) {
             final String currEventId = existingEntry.getKey();

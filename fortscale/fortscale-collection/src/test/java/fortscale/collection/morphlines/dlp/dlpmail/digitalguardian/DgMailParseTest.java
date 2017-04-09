@@ -15,7 +15,6 @@ import java.util.List;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath*:META-INF/spring/collection-context-test-light.xml"})
-@Ignore
 public class DgMailParseTest {
 
 
@@ -37,19 +36,6 @@ public class DgMailParseTest {
 	@After
 	public void tearDown() throws Exception {
 		morphlineTester.close();
-	}
-
-
-	private void runOneLineTestWithDummyEvent(String testCase, DgEventInput input, DgMailEventAfterEtl expected) {
-		final String inputLine = input.toString();
-		final String expectedOutput = expected.toString();
-		if (expected.eventType.equals("attachment")) {
-			morphlineTester.testSingleLine(testCase, inputLine, expectedOutput);
-		}
-		else {
-			morphlineTester.runMorphlines(inputLine);
-			morphlineTester.testSingleLine(testCase, DUMMY_EVENT_STRING, expectedOutput);
-		}
 	}
 
 
@@ -145,7 +131,7 @@ public class DgMailParseTest {
 				.setUsername("example_username")
 				.createDgEventAfterEtl();
 
-		runOneLineTestWithDummyEvent(testCase, input, expected);
+		morphlineTester.testSingleLine(testCase, input.toString(), expected.toString());
 	}
 
 	@Test
@@ -177,7 +163,7 @@ public class DgMailParseTest {
 				.createDgEventAfterEtl();
 
 
-		runOneLineTestWithDummyEvent(testCase, input, expected);
+		morphlineTester.testSingleLine(testCase, input.toString(), expected.toString());
 	}
 
 	@Test
@@ -206,7 +192,7 @@ public class DgMailParseTest {
 				.setEmailRecipientDomain("somedomain.com") // because the parsing wont find the @ - this is ok for this test
 				.createDgEventAfterEtl();
 
-		runOneLineTestWithDummyEvent(testCase, input, expected);
+		morphlineTester.testSingleLine(testCase, input.toString(), expected.toString());
 	}
 
 	@Test
@@ -233,7 +219,7 @@ public class DgMailParseTest {
 				.setFullName("some_givenName some_surname")
 				.createDgEventAfterEtl();
 
-		runOneLineTestWithDummyEvent(testCase, input, expected);
+		morphlineTester.testSingleLine(testCase, input.toString(), expected.toString());
 	}
 
 	@Test
@@ -265,7 +251,7 @@ public class DgMailParseTest {
 				.setDetailFileSize(500)
 				.createDgEventAfterEtl();
 
-		runOneLineTestWithDummyEvent(testCase, input, expected);
+		morphlineTester.testSingleLine(testCase, input.toString(), expected.toString());
 	}
 
 	@Test
@@ -294,7 +280,7 @@ public class DgMailParseTest {
 				.setIsExternal(true)
 				.createDgEventAfterEtl();
 
-		runOneLineTestWithDummyEvent(testCase, input, expected);
+		morphlineTester.testSingleLine(testCase, input.toString(), expected.toString());
 	}
 
 	@Test
@@ -323,7 +309,7 @@ public class DgMailParseTest {
 				.setIsExternal(false)
 				.createDgEventAfterEtl();
 
-		runOneLineTestWithDummyEvent(testCase, input, expected);
+		morphlineTester.testSingleLine(testCase, input.toString(), expected.toString());
 	}
 
 	@Test
@@ -342,7 +328,7 @@ public class DgMailParseTest {
 				.setFullName("some_givenName some_surname")
 				.setIsAttachmentExtensionBlacklisted("false")
 				.setIsExternal(true)
-				.setNumOfRecipients(1)
+				.setNumOfRecipients(0)
 				.setDataSource("dlpmail")
 				.setLastState("etl")
 				.setEmailRecipient("some_emailRecipient") // because the parsing wont find the @ - this is ok for this test
@@ -352,7 +338,7 @@ public class DgMailParseTest {
 				.setEventType("recipient")
 				.createDgEventAfterEtl();
 
-		runOneLineTestWithDummyEvent(testCase, input, expected);
+		morphlineTester.testSingleLine(testCase, input.toString(), expected.toString());
 	}
 
 	@Test
@@ -381,7 +367,7 @@ public class DgMailParseTest {
 				.setEventType("attachment")
 				.createDgEventAfterEtl();
 
-		runOneLineTestWithDummyEvent(testCase, input, expected);
+		morphlineTester.testSingleLine(testCase, input.toString(), expected.toString());
 	}
 
 	@Test
@@ -410,7 +396,7 @@ public class DgMailParseTest {
 				.setEventType("message_body")
 				.createDgEventAfterEtl();
 
-		runOneLineTestWithDummyEvent(testCase, input, expected);
+		morphlineTester.testSingleLine(testCase, input.toString(), expected.toString());
 	}
 
 }

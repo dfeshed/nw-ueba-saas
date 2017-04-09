@@ -167,7 +167,8 @@ public class DlpMailEventProcessJob extends EventProcessJob {
 
     private List<Record> updatePreviousRecords(Record record) throws Exception {
         final Map.Entry<String, List<Record>> previousRecordsEntry;
-        previousRecordsEntry = dlpMailEventsCache.popPreviousEventRecords(record);
+        final String newRecordEventId = (String) record.getFirstValue(EVENT_ID_FIELD_NAME);
+        previousRecordsEntry = dlpMailEventsCache.popPreviousEventRecords(newRecordEventId);
         updateAggregatedEventFields(previousRecordsEntry);
 
         final List<Record> previousRecords = previousRecordsEntry.getValue();
