@@ -15,6 +15,7 @@ import java.util.List;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath*:META-INF/spring/collection-context-test-light.xml"})
+@Ignore
 public class DgMailParseTest {
 
 
