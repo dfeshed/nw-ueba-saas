@@ -10,6 +10,7 @@ import org.kitesdk.morphline.base.AbstractCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -17,6 +18,7 @@ import java.util.Collections;
 import static fortscale.collection.jobs.event.process.DlpMailEventProcessJob.FORTSCALE_CONTROL_RECORD_EVENT_ID;
 import static fortscale.collection.morphlines.commands.DlpMailEventsCache.EVENT_ID_FIELD_NAME;
 
+@Configurable(preConstruction = true)
 public class EventsCacherBuilder implements CommandBuilder {
 
 
