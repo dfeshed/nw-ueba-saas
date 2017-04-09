@@ -144,7 +144,7 @@ public class EventsReducerBuilder implements CommandBuilder {
                     return true;
                 }
                 else {
-                    logger.info("Filtering event {} since similar event {} is already in the cache.", inputRecord, previousEvent);
+                    logger.debug("Filtering event {} since similar event {} is already in the cache.", inputRecord, previousEvent);
                     //Drop record
                     commandMonitoringHelper.addFilteredEventToMonitoring(inputRecord, CollectionMessages.REDUCED_EVENT);
                     if (morphlineMetrics != null) {
