@@ -16,8 +16,6 @@ public class UserActivitySourceMachineConfigurationService extends BaseUserActiv
 	private static final String USER_ACTIVITY_SOURCE_MACHINE_CONFIGURATION_KEY =
 			"user_activity.source_machine.configuration";
 
-	private Map<String, UserActivityDataSourceConfiguration> activityDataSourceConfigurationMap = new HashMap();
-
 	@PostConstruct
 	public void init(){
 		activityDataSourceConfigurationMap.put("kerberos_logins", new UserActivityDataSourceConfiguration("kerberos_logins",

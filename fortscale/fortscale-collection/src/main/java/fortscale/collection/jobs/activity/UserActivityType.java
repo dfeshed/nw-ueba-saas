@@ -10,7 +10,8 @@ public enum UserActivityType {
     TARGET_DEVICE(UserActivityTargetDeviceDocument.class),
     WORKING_HOUR(UserActivityWorkingHoursDocument.class),
     DATA_USAGE(UserActivityDataUsageDocument.class),
-    TOP_APPLICATIONS(UserActivityTopApplicationsDocument.class);
+    TOP_APPLICATIONS(UserActivityTopApplicationsDocument.class),
+    TOP_DIRECTORIES(UserActivityTopDirectoriesDocument.class);
 
     private final Class<? extends UserActivityDocument> documentClass;
 
