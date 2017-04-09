@@ -321,7 +321,7 @@ public class DlpMailEnrichTest {
     }
 
     @Test
-    public void test_num_of_recipients_multiple_events_with_closing_dummy_event() throws Exception {
+    public void test_events_cacher() throws Exception {
         dlpMailEventsCache.clearCache();
         /* ******************************************************************* event id = aaa ***************************************************************************/
 
