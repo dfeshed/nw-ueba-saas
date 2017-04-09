@@ -220,16 +220,16 @@ public class DlpMailEventProcessJob extends EventProcessJob {
     }
 
     private void updateIsExternal(List<Record> records, List<Record> recipients) {
-        boolean allRecipientsAreExternal = false;
+        boolean atLeastOneRecipientIsExternal = false;
         for (Record recipient : recipients) {
-            allRecipientsAreExternal = Boolean.valueOf((String) recipient.getFirstValue(IS_EXTERNAL_FIELD_NAME));
-            if (allRecipientsAreExternal) {
+            atLeastOneRecipientIsExternal = Boolean.valueOf((String) recipient.getFirstValue(IS_EXTERNAL_FIELD_NAME));
+            if (atLeastOneRecipientIsExternal) {
                 break;
             }
 
         }
         for (Record record : records) {
-            record.replaceValues(IS_EXTERNAL_FIELD_NAME, allRecipientsAreExternal);
+            record.replaceValues(IS_EXTERNAL_FIELD_NAME, atLeastOneRecipientIsExternal);
         }
 
     }
