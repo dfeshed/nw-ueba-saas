@@ -146,7 +146,8 @@ public class DlpMailEnrichTest {
                 .setDateTime("2016-06-12 16:04:00")
                 .setDateTimeUnix("1465747440")
                 .setEventDescription("Send Mail")
-                .setFullName("some_givenName some_surname")
+                .setFullName("some_givenName some" +
+                        "_surname")
                 .setIsExternal(true)
                 .setNumOfRecipients(0)
                 .setLastState("etl")
