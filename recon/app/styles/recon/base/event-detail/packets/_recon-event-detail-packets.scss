@@ -6,4 +6,11 @@
     right: 0;
     bottom: rsa-whitespace(more);
   }
+
+  .no-packets {
+    @include rsa-font(paragraph);
+    color: rsa-color(gray);
+    text-align: center;
+    margin-top: rsa-whitespace(more);
+  }
 }

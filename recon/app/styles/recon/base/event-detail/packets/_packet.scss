@@ -70,12 +70,6 @@
       }
     }
 
-    .no-packets {
-      @include rsa-font(paragraph);
-      color: rsa-color(gray);
-      text-align: center;
-    }
-
     .toggle-icon {
       min-width: 20px;
     }

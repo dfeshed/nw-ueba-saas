@@ -6,35 +6,29 @@
     {{packet.side}}
   </span>
 </div>
-{{#if isPayloadOnly}}
-  {{#unless packet.byteRows}}
-    <div class="no-packets">{{t 'recon.packetView.noHexData'}}</div>
-  {{/unless}}
-{{else}}
-  <hbox class="packet-details">
-    <box align="center" horizontal>
-      <span class="toggle-icon">
-        {{#if (not isSticky)}}
-          {{rsa-icon
-            click=(action 'togglePacketExpansion')
-            name=(concat 'arrow-' collapseArrowDirection '-12')}}
-        {{/if}}
-      </span>
-      <span class="text">
-        {{t 'list.packet'}}&nbsp;{{packet.position}}
-      </span>
-    </box>
-    <box xs="3" align="end">
-      {{rsa-content-datetime timestamp=packet.timestamp}}
-    </box>
-    <box align="center" justify="end" horizontal>
-      <span class="label">ID</span> {{packet.id}}
-    </box>
-    <box align="center" justify="end" horizontal>
-      <span class="label">SEQ</span> {{packet.sequence}}
-    </box>
-    <box align="center" justify="end" horizontal>
-      <span class="label">PAYLOAD</span> {{packet.payloadSize}} bytes
-    </box>
-  </hbox>
-{{/if}}
+<hbox class="packet-details">
+  <box align="center" horizontal>
+    <span class="toggle-icon">
+      {{#if (not isSticky)}}
+        {{rsa-icon
+          click=(action 'togglePacketExpansion')
+          name=(concat 'arrow-' collapseArrowDirection '-12')}}
+      {{/if}}
+    </span>
+    <span class="text">
+      {{t 'list.packet'}}&nbsp;{{packet.position}}
+    </span>
+  </box>
+  <box xs="3" align="end">
+    {{rsa-content-datetime timestamp=packet.timestamp}}
+  </box>
+  <box align="center" justify="end" horizontal>
+    <span class="label">ID</span> {{packet.id}}
+  </box>
+  <box align="center" justify="end" horizontal>
+    <span class="label">SEQ</span> {{packet.sequence}}
+  </box>
+  <box align="center" justify="end" horizontal>
+    <span class="label">PAYLOAD</span> {{packet.payloadSize}} bytes
+  </box>
+</hbox>
