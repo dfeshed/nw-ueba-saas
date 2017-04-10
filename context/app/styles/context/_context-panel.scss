@@ -162,7 +162,7 @@ radial-gradient(circle at 85% 85%, rsa-color(blue, darker, .1) 0, rsa-color(blue
     &__button {
       background:none!important;
       border:none;
-      padding-left:50%;
+      margin-left:50%;
       color:rsa-color(blue,base);
       text-decoration:underline;
       cursor:pointer;

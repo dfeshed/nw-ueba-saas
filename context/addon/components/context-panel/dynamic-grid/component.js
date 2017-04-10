@@ -7,7 +7,8 @@ import { riskScoreToBadgeLevel } from 'context/helpers/risk-score-to-badge-level
 
 
 const stateToComputed = ({ context }) => ({
-  activeTabName: context.activeTabName
+  activeTabName: context.activeTabName,
+  meta: context.meta
 });
 
 const dispatchToActions = (dispatch) => ({
@@ -23,9 +24,12 @@ const DynamicGridComponent = Component.extend({
     return (activeTabName === 'overview') ? contextData.data.slice(0, 5) : contextData.data;
   },
 
+  @computed('activeTabName', 'meta')
+  showViewAll: (activeTabName, meta) => activeTabName === 'overview' && meta === 'USER',
+
   actions: {
     activate(option) {
-      this.send('activatePanel', option);
+      this.send('activate', option);
     }
   },
 

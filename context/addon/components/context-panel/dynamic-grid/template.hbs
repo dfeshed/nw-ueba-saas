@@ -67,8 +67,8 @@
       </hbox>
       <div class="rsa-context-panel__grid__border"></div>
     {{/each}}
-    {{#if (eq tabdata 'overview')}}
-      <div class="rsa-context-panel__context-data-table__border"><button class="rsa-context-panel__context-data-table__button" {{action 'activate'}}>{{t 'context.footer.viewAll'}}</button></div>
+    {{#if showViewAll}}
+      <div class="rsa-context-panel__context-data-table__border"><button class="rsa-context-panel__context-data-table__button" {{action 'activate' dSDetails.dataSourceGroup}}>{{t 'context.footer.viewAll'}}</button></div>
     {{/if}}
   {{else}}
     <div class='rsa-context-panel__error-text'><span>{{t 'context.error.noData'}}</span></div>

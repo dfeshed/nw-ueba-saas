@@ -586,10 +586,10 @@ export default {
     },
     header: {
       overview: 'overview',
-      iioc: 'iioc',
-      users: 'users',
+      iioc: 'IIOC',
+      users: 'Users',
       categoryTags: 'category tags',
-      modules: 'modules',
+      modules: 'Modules',
       incidents: 'Incidents',
       alerts: 'Alerts',
       files: 'Files',

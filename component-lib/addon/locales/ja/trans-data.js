@@ -586,9 +586,9 @@ export default {
     },
     header: {
       overview: 'ja_overview',
-      iioc: 'ja_iioc',
-      modules: 'ja_modules',
-      users: 'ja_users',
+      iioc: 'ja_IIOC',
+      modules: 'ja_Modules',
+      users: 'ja_Users',
       categoryTags: 'ja_category tags',
       incidents: 'ja_Incidents',
       alerts: 'ja_Alerts',
