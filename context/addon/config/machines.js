@@ -36,8 +36,7 @@ export default {
       displayField: true,
       cell: [{
         field: 'LastScan',
-        title: 'context.hostSummary.lastUpdated',
-        dataType: 'datetime'
+        title: 'context.hostSummary.lastUpdated'
       },
       {
         field: 'AdminStatus',
@@ -45,8 +44,7 @@ export default {
       },
       {
         field: 'LastSeen',
-        title: 'context.hostSummary.lastLogin',
-        dataType: 'datetime'
+        title: 'context.hostSummary.lastLogin'
       }]
     },
     {

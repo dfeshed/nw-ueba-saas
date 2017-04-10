@@ -219,7 +219,14 @@ export default [{
       title: 'context.hostSummary.title',
       dataSourceType: 'Machines',
       displayType: 'table',
-      tabRequired: true
+      tabRequired: false
+    },
+    {
+      field: 'Archer',
+      title: 'context.archer.title',
+      dataSourceType: 'Archer',
+      displayType: 'grid',
+      tabRequired: false
     },
     {
       field: 'Modules',

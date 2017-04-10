@@ -42,9 +42,11 @@
                 <vbox>
                   <div class="rsa-context-panel__grid__host-details__field-name">{{t cellData.title}}</div>
                   <div class="rsa-context-panel__grid__host-details__field-value">
-                    <span>
-                      {{rsa-content-datetime timestamp=(get data cellData.field) displayMilliseconds=false withTimeAgo=true}}
-                    </span>
+                    {{#if (get data cellData.field)}}
+                      <span>
+                        {{rsa-content-datetime timestamp=(get data cellData.field) displayMilliseconds=false withTimeAgo=true}}
+                      </span>
+                    {{/if}}
                   </div>
                 </vbox>
               {{else if (eq cellData.dataType 'group')}}

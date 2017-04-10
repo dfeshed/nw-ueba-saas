@@ -24,9 +24,7 @@ const stateToComputed = ({ context }) => ({
   lookupData: context.lookupData
 });
 
-const windowsTimestampToMilliseconds = (windowsTimestamp) => windowsTimestamp / 10000 - 11644473600000;
-
-const convertDateStringToMilliseconds = (dateTimeString) => new Date(dateTimeString).getTime();
+const windowsTimestampToMilliseconds = (windowsTimestamp) => windowsTimestamp ? windowsTimestamp / 10000 - 11644473600000 : null;
 
 const dispatchToActions = (dispatch) => ({
   initializeContextPanel: (entityId, entityType) => dispatch(ContextActions.initializeContextPanel(entityId, entityType))
@@ -167,12 +165,7 @@ const ContextComponent = Component.extend({
         if (contextData.get('Modules.resultMeta.total_modules_count')) {
           contextDatum.resultList[0].total_modules_count = contextData.get('Modules.resultMeta.total_modules_count');
         }
-        contextDataForDS.data = this._transformEndpointDate(contextDatum.resultList);
-        contextData.set(contextDatum.dataSourceGroup, contextDataForDS);
-        break;
-      }
-      case 'IOC': {
-        contextDataForDS.data = this._transformIOCDate(contextDatum.resultList);
+        contextDataForDS.data = contextDatum.resultList;
         contextData.set(contextDatum.dataSourceGroup, contextDataForDS);
         break;
       }
@@ -182,7 +175,7 @@ const ContextComponent = Component.extend({
         break;
       }
       case 'Users': {
-        contextDataForDS.data = this._enrichADFields(contextDatum.resultList);
+        contextDataForDS.data = (contextDataForDS.data || []).concat(this._enrichADFields(contextDatum.resultList));
         contextData.set(contextDatum.dataSourceGroup, contextDataForDS);
         break;
       }
@@ -210,25 +203,6 @@ const ContextComponent = Component.extend({
     if (!this.get('model.contextData.liveConnectData.allTags')) {
       this.set('model.contextData.liveConnectData', null);
     }
-  },
-
-  _transformEndpointDate(resultList) {
-    return resultList.map((list) => {
-      return {
-        ...list,
-        LastExecuted: convertDateStringToMilliseconds(list.LastExecuted)
-      };
-    });
-  },
-
-  _transformIOCDate(resultList) {
-    return resultList.map((list) => {
-      return {
-        ...list,
-        LastScan: convertDateStringToMilliseconds(list.LastScan),
-        LastSeen: convertDateStringToMilliseconds(list.LastSeen)
-      };
-    });
   },
 
   _enrichADFields(resultList) {
