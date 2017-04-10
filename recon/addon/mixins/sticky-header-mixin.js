@@ -85,13 +85,17 @@ export default Mixin.create({
     });
   },
 
+  // Gotta run.join this to ensure it gets notified immediately,
+  // header sticking needs to be faaaast
   _setIndex(index) {
-    if (!this.isDestroyed) {
-      this.set('indexAtTop', index);
-      if (index === null) {
-        this.set('heightOfCurrentSticky', 0);
+    join(() => {
+      if (!this.isDestroyed) {
+        this.set('indexAtTop', index);
+        if (index === null) {
+          this.set('heightOfCurrentSticky', 0);
+        }
       }
-    }
+    });
   },
 
   _scrolled() {
@@ -128,18 +132,10 @@ export default Mixin.create({
         // and the current header is below the top of the view
         // then current header needs sticking!
         if (previousHeaderPosition - heightOfCurrentSticky < 0 && currentHeaderPosition - heightOfCurrentSticky > 0) {
-
           // only set if changing, ember checks if things change,
           // but why bother letting ember bother if we know up front
           if (indexAtTop !== i) {
-
-            // Gotta run.join this to ensure it gets notified immediately,
-            // header sticking needs to be faaaast
-            join(() => {
-              if (!this.isDestroyed) {
-                this._setIndex(i);
-              }
-            });
+            this._setIndex(i);
           }
 
           // the previous header is out of view and the current header is
@@ -147,6 +143,11 @@ export default Mixin.create({
           // they will all have a header above them that is in view, so
           // now we can exit out of each loop, nothing else to do
           return false;
+        } else {
+          // Need to handle the case where the last item needs to be stuck
+          if (indexAtTop === i && ($headers.length - 1) === i) {
+            this._setIndex(i + 1);
+          }
         }
       });
     }
