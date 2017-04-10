@@ -119,6 +119,8 @@ export default {
   },
   recon: {
     textView: {
+      compressToggleLabel: 'Compress Payloads',
+      compressToggleTitle: 'Display HTTP payloads as compressed or not',
       downloadLog: 'Download Log',
       downloadCsv: 'Download CSV',
       downloadXml: 'Download XML',
@@ -132,7 +134,9 @@ export default {
       downloadPCAP: 'Download Entire PCAP',
       downloadPayload1: 'Download Request Payload',
       downloadPayload2: 'Download Response Payload',
-      downloadPayload: 'Download All Payloads Only'
+      downloadPayload: 'Download All Payloads Only',
+      payloadToggleLabel: 'Display Payloads Only',
+      payloadToggleTitle: 'Removes packet headers & footers from display'
     },
     fileView: {
       downloadFile: 'Download File',

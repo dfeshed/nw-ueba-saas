@@ -5,22 +5,22 @@
 <vbox class="scroll-box">
   {{#spec-category title="States"}}
     {{#spec-member title="Default"}}
-      {{x-toggle value=toggledA onToggle=(mut toggledA)}}
+      {{x-toggle value=toggledA onToggle=(action (mut toggledA))}}
 
       {{!-- BEGIN-SNIPPET switch1
-      {{x-toggle value=toggledA onToggle=(mut toggledA)}}
+      {{x-toggle value=toggledA onToggle=(action (mut toggledA))}}
       END-SNIPPET --}}
       {{code-snippet name="switch1.hbs"}}
     {{/spec-member}}
 
     {{#spec-member title="Disabled"}}
       <label class="rsa-form-switch">
-        {{x-toggle disabled=true value=toggledC onToggle=(mut toggledC)}}
+        {{x-toggle disabled=true value=toggledC onToggle=(action (mut toggledC))}}
       </label>
 
       {{!-- BEGIN-SNIPPET switch3
       <label class="rsa-form-switch">
-        {{x-toggle disabled=true value=toggledC onToggle=(mut toggledC)}}
+        {{x-toggle disabled=true value=toggledC onToggle=(action (mut toggledC))}}
       </label>
       END-SNIPPET --}}
       {{code-snippet name="switch3.hbs"}}
@@ -30,13 +30,13 @@
   {{#spec-category title="Presentations"}}
     {{#spec-member title="With Label"}}
       <label class="rsa-form-switch">
-        {{x-toggle value=toggledB onToggle=(mut toggledB)}}
+        {{x-toggle value=toggledB onToggle=(action (mut toggledB))}}
         Switch Value label
       </label>
 
       {{!-- BEGIN-SNIPPET switch2
-      <label class="rsa-form-switch">
-        {{x-toggle value=toggledB onToggle=(mut toggledB)}}
+      <label class="rsa-form-switch" {{action 'flipValue' 'toggledB'}}>
+        {{x-toggle value=toggledB onToggle=(action (mut toggledB))}}
         Switch Value label
       </label>
       END-SNIPPET --}}

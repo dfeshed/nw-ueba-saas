@@ -2,6 +2,7 @@ label.rsa-form-switch {
   @include rsa-font(header, small);
   align-items: center;
   color: rsa-color(gray, light);
+  cursor: pointer;
   display: inline-flex;
   text-transform: uppercase;
 
@@ -11,17 +12,17 @@ label.rsa-form-switch {
 }
 
 .x-toggle-component {
-  display: inline-block;
+  display: inline-flex;
 
   .x-toggle-container {
     padding: 0;
 
-    &.medium {
+    &.medium, &.medium label > .x-toggle-default {
       padding: 0;
       width: 2rem;
     }
 
-    .x-toggle-btn.x-toggle-default {
+    label > .x-toggle-btn.x-toggle-default {
       background-color: transparent;
       border: 1px solid rsa-color(gray);
       border-radius: 10rem;
@@ -50,7 +51,7 @@ label.rsa-form-switch {
     }
 
     &-checked {
-      .x-toggle:checked + .x-toggle-default.x-toggle-btn {
+      .x-toggle:checked + label > .x-toggle-default.x-toggle-btn {
         transition: background-color .3s;
         background-color: rsa-color(blue);
 

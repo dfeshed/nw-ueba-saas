@@ -1,9 +1,17 @@
-{{#rsa-form-button
-  allowToggleActive=true
-  class="decode-text-button"
-  defaultAction=(action 'toggleDecode')
-  isDisabled=isDisabled
-  isActive=(readonly isDecoded)
-}}
-  {{caption}}
-{{/rsa-form-button}}
+{{#rsa-content-tethered-panel-trigger panel='panel1'}}
+  <label class="rsa-form-switch">
+    {{x-toggle
+      disabled=isDisabled
+      onToggle=(action 'decodeText')
+      value=(readonly isDecoded)}}
+    {{t 'recon.textView.compressToggleLabel'}}
+  </label>
+{{/rsa-content-tethered-panel-trigger}}
+
+{{#rsa-content-tethered-panel
+  displayCloseButton=false
+  panelId='panel1'
+  position='top' }}
+  <p>{{t 'recon.textView.compressToggleTitle'}}</p>
+{{/rsa-content-tethered-panel}}
+

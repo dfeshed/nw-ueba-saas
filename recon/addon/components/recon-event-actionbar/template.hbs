@@ -1,18 +1,26 @@
 <grid>
   <hbox class="dropdowns">
-    {{#if isPacketView }}
+    {{#if isPacketView}}
       {{recon-event-actionbar/export-packet}}
-      {{#rsa-form-button
-        class='payload-only-button'
-        style=payloadButtonStyle
-        click=(action 'togglePayloadOnly')}}
-        Payload only
-      {{/rsa-form-button}}
+      {{#rsa-content-tethered-panel-trigger panel='panel1'}}
+        <label class="rsa-form-switch">
+          {{x-toggle
+            onToggle=(action 'togglePayloadOnly')
+            value=(readonly isPayloadOnly)}}
+          {{t 'recon.packetView.payloadToggleLabel'}}
+        </label>
+      {{/rsa-content-tethered-panel-trigger}}
+      {{#rsa-content-tethered-panel
+        displayCloseButton=false
+        panelId='panel1'
+        position='top' }}
+        <p>{{t 'recon.packetView.payloadToggleTitle'}}</p>
+      {{/rsa-content-tethered-panel}}
     {{/if}}
-    {{#if isFileView }}
+    {{#if isFileView}}
       {{recon-event-actionbar/export-files}}
     {{/if}}
-    {{#if isTextView }}
+    {{#if isTextView}}
       {{#unless isLogEvent}}
         {{recon-event-actionbar/export-packet}}
       {{/unless}}
