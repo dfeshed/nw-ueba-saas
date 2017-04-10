@@ -7,8 +7,12 @@ import { sendTetherEvent } from 'component-lib/utils/tooltip-trigger';
 const { run } = Ember;
 
 export default Mixin.create({
-  eventBus: service(),
   didDrag: false,
+  eventBus: service(),
+  // OPTIONAL The component using the SelectionTooltip mixin, can use this isActionClicked
+  // to toggle if/else conditionals of the tooltip panel
+  isActionClicked: false,
+  originalString: null,
   startDragPosition: null,
   spanClass: null,
   spanEl: null,
@@ -24,6 +28,8 @@ export default Mixin.create({
   mouseUp() {
     if (this.get('startDragPosition') && this.get('didDrag')) {
       const selection = this.getSelected();
+      // model contains the highlighted text, this text is used to do encoding/decoding operations
+      const originalString = selection.toString();
       // get the range of the highlighted selection. This range object includes
       // the start and end offsets of the selection.
       const range = selection.getRangeAt(0).cloneRange();
@@ -47,7 +53,7 @@ export default Mixin.create({
           this.get('eventBus'),
           'display'
         );
-        this.setProperties({ didDrag: false, startDragPosition: null, spanEl, spanClass });
+        this.setProperties({ didDrag: false, startDragPosition: null, spanEl, spanClass, originalString });
       }
     }
   },
@@ -63,6 +69,7 @@ export default Mixin.create({
     if (this.get('spanEl')) {
       const { spanEl, spanClass, eventBus } = this.getProperties('spanEl', 'spanClass', 'eventBus');
       sendTetherEvent(spanEl, spanClass, eventBus, 'hide');
+      this.set('isActionClicked', false);
 
       // Delete the span tag that was introduced by mouseUp() without affecting the content
       $(`.text-container > .${spanClass}`).contents().unwrap();
