@@ -2,7 +2,6 @@
   {{#rsa-form-button
     class="export-packet-button"
     defaultAction=(action 'processDefault' 'PCAP')
-    isDisabled=isDisabled
   }}
     {{#if isDownloading}}{{rsa-loader size="small"}}{{/if}}
     {{caption}}
@@ -11,7 +10,6 @@
     {{#rsa-form-button
       class="rsa-split-dropdown"
       defaultAction=(action 'toggleExpand')
-      isDisabled=isDisabled
     }}
       {{rsa-icon name="arrow-down-12"}}
     {{/rsa-form-button}}
@@ -20,13 +18,13 @@
         <a {{action 'processMenuItem' 'PCAP'}}>{{t 'recon.packetView.downloadPCAP'}}</a>
       </li>
       <li>
-        <a {{action 'processMenuItem' 'PAYLOAD'}}>{{t 'recon.packetView.downloadPayload'}}</a>
+        <a {{action 'processMenuItem' 'PAYLOAD'}} class="{{isPayloadDisabled}}">{{t 'recon.packetView.downloadPayload'}}</a>
       </li>
       <li>
-        <a {{action 'processMenuItem' 'PAYLOAD1'}}>{{t 'recon.packetView.downloadPayload1'}}</a>
+        <a {{action 'processMenuItem' 'PAYLOAD1'}} class="{{isPayloadDisabled}}">{{t 'recon.packetView.downloadPayload1'}}</a>
       </li>
       <li>
-        <a {{action 'processMenuItem' 'PAYLOAD2'}}>{{t 'recon.packetView.downloadPayload2'}}</a>
+        <a {{action 'processMenuItem' 'PAYLOAD2'}} class="{{isPayloadDisabled}}">{{t 'recon.packetView.downloadPayload2'}}</a>
       </li>
     {{/recon-button-menu}}
   {{/click-outside}}

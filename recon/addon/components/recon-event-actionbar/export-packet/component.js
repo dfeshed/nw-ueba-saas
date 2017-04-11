@@ -48,6 +48,13 @@ const DownloadPacketComponent = Component.extend(ReconExport, {
     }
     return true;
   },
+  @computed('isDisabled')
+  isPayloadDisabled(isDisabled) {
+    if (isDisabled) {
+      return 'disabled';
+    }
+    return 'enabled';
+  },
   actions: {
     processDefault(type) {
       if (this.get('isExpanded')) {
