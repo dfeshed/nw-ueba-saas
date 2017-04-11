@@ -549,7 +549,7 @@ export default {
       REMEDIATION_REQUESTED: 'Remediation Requested',
       REMEDIATION_COMPLETE: 'Remediation Complete',
       CLOSED: 'Closed',
-      CLOSED_FALSE_POSITIVE: 'False Positive'
+      CLOSED_FALSE_POSITIVE: 'Closed - False Positive'
     },
     priority: {
       LOW: 'Low',

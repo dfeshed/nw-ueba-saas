@@ -549,7 +549,7 @@ export default {
       REMEDIATION_REQUESTED: 'ja_Remediation Requested',
       REMEDIATION_COMPLETE: 'ja_Remediation Complete',
       CLOSED: 'ja_Closed',
-      CLOSED_FALSE_POSITIVE: 'ja_False Positive'
+      CLOSED_FALSE_POSITIVE: 'ja_Closed - False Positive'
     },
     priority: {
       LOW: 'ja_Low',
