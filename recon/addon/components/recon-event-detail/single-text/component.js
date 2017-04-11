@@ -8,7 +8,8 @@ export default Component.extend(SelectionTooltip, {
   classNameBindings: ['packet.side'],
   layout,
 
-  encodedDecodedStr: null,
+  encDecStrBase64: null,
+  encDecStrUrl: null,
   index: null,
   isLog: false,
   packet: null,
@@ -26,17 +27,19 @@ export default Component.extend(SelectionTooltip, {
   _encodedDecoded(operation) {
     const originalString = this.get('originalString');
     const tooltipHeading = (operation === 'decode') ? 'Decoded Text' : 'Encoded Text';
-    let encodedDecodedStr;
+    let encDecStrBase64, encDecStrUrl;
     try {
       if (operation === 'decode') {
-        encodedDecodedStr = decodeURIComponent(escape(window.atob(originalString)));
+        encDecStrBase64 = decodeURIComponent(escape(window.atob(originalString)));
+        encDecStrUrl = decodeURIComponent(originalString);
       } else {
-        encodedDecodedStr = window.btoa(unescape(encodeURIComponent(originalString)));
+        encDecStrBase64 = window.btoa(unescape(encodeURIComponent(originalString)));
+        encDecStrUrl = encodeURIComponent(originalString);
       }
     } catch (err) {
-      encodedDecodedStr = 'The format of the string is not valid.';
+      encDecStrBase64 = encDecStrUrl = 'The format of the string is not valid.';
     }
-    this.setProperties({ isActionClicked: true, tooltipHeading, encodedDecodedStr });
+    this.setProperties({ isActionClicked: true, tooltipHeading, encDecStrBase64, encDecStrUrl });
   },
 
   actions: {
