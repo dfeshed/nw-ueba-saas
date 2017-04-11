@@ -110,8 +110,8 @@ test('single packet renders with hidden header/footer bytes', function(assert) {
   return wait().then(() => {
     assert.ok(this.$('.rsa-icon-arrow-circle-right-2').length === 1, 'Request arrow shown');
     assert.ok(this.$('.rsa-packet.is-continuation').length === 0, 'Request is not marked as a continuation of the previous');
-    assert.ok(this.$('.packet-details').length === 1, 'Packet details shown');
-    assert.equal(this.$().text().trim().replace(/\s/g, '').substring(0, 200), 'requestpacket4InvaliddateID4804965123547SEQ1878393574PAYLOAD1061bytes0000000000100000200000300000400000500000600000700000800000900000a00000b00000c00000d00000e00000f000010000011000012000013000014000015');
+    assert.ok(this.$('.packet-details').length === 0, 'Packet details are not shown');
+    assert.equal(this.$().text().trim().replace(/\s/g, '').substring(0, 200), 'request0000000000100000200000300000400000500000600000700000800000900000a00000b00000c00000d00000e00000f0000100000110000120000130000140000150000160000170a44c11ef6201f0f755ed59bf08004500044f3c1640007e068');
   });
 });
 
@@ -148,7 +148,7 @@ test('single (continuous) packet renders with hidden header/footer bytes', funct
   return wait().then(() => {
     assert.ok(this.$('.rsa-icon-arrow-circle-right-2').length === 1, 'Request arrow shown');
     assert.ok(this.$('.rsa-packet.is-continuation').length === 1, 'Request is marked as a continuation of the previous');
-    assert.ok(this.$('.packet-details').length === 1, 'Packet details shown');
-    assert.equal(this.$().text().trim().replace(/\s/g, '').substring(0, 200), 'requestpacket4InvaliddateID4804965123547SEQ1878393574PAYLOAD1061bytes0000000000100000200000300000400000500000600000700000800000900000a00000b00000c00000d00000e00000f000010000011000012000013000014000015');
+    assert.ok(this.$('.packet-details').length === 0, 'Packet details are not shown');
+    assert.equal(this.$().text().trim().replace(/\s/g, '').substring(0, 200), 'request0000000000100000200000300000400000500000600000700000800000900000a00000b00000c00000d00000e00000f0000100000110000120000130000140000150000160000170a44c11ef6201f0f755ed59bf08004500044f3c1640007e068');
   });
 });

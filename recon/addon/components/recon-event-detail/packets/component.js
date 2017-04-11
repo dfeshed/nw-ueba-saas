@@ -7,7 +7,8 @@ import layout from './template';
 
 const stateToComputed = ({ recon, recon: { data, visuals } }) => ({
   dataIndex: data.index,
-  packets: payloadProcessedPackets(recon),
+  packets: data.packets,
+  processedPackets: payloadProcessedPackets(recon),
   eventMeta: data.meta,
   eventTotal: data.total,
   packetFields: data.packetFields,

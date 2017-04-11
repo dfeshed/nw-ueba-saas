@@ -1,3 +1,5 @@
+@import "../../mixins";
+
 .recon-event-detail-packets {
   .scroll-box {
     position: absolute;
@@ -8,9 +10,6 @@
   }
 
   .no-packets {
-    @include rsa-font(paragraph);
-    color: rsa-color(gray);
-    text-align: center;
-    margin-top: rsa-whitespace(more);
+    @include error-center();
   }
 }
