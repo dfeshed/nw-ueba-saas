@@ -14,7 +14,7 @@ const isPayloadOnly = (recon) => recon.visuals.isPayloadOnly;
  * A selector that returns a sorted Array of all visible packets.
  * @private
  */
-const visiblePackets = createSelector(
+export const visiblePackets = createSelector(
   [packets, isRequestShown, isResponseShown],
   (packets, isRequestShown, isResponseShown) => {
 

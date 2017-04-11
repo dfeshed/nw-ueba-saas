@@ -2,12 +2,12 @@ import Component from 'ember-component';
 import connect from 'ember-redux/components/connect';
 import ReconPager from 'recon/mixins/recon-pager';
 import StickyHeader from 'recon/mixins/sticky-header-mixin';
-import { payloadProcessedPackets } from 'recon/selectors/packet-selectors';
+import { payloadProcessedPackets, visiblePackets } from 'recon/selectors/packet-selectors';
 import layout from './template';
 
 const stateToComputed = ({ recon, recon: { data, visuals } }) => ({
   dataIndex: data.index,
-  packets: data.packets,
+  visiblePackets: visiblePackets(recon),
   processedPackets: payloadProcessedPackets(recon),
   eventMeta: data.meta,
   eventTotal: data.total,
@@ -20,7 +20,7 @@ const PacketReconComponent = Component.extend(ReconPager, StickyHeader, {
   classNames: ['recon-event-detail-packets'],
 
   // For sticky header
-  stickyContentKey: 'packets',
+  stickyContentKey: 'processedPackets',
   stickySelector: '.rsa-packet__header:not(.is-sticky)'
 });
 
