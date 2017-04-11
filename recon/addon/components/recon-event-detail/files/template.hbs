@@ -20,48 +20,46 @@
       {{/if}}
     {{/rsa-data-table/header}}
 
-    <hbox class="scroll-box recon-file-scroll">
-      {{#rsa-data-table/body as |item index column|}}
+    {{#rsa-data-table/body as |item index column|}}
 
-        {{#rsa-data-table/body-cell columnWidth=column.width}}
-          {{#if column.isCheckboxColumn}}
-            {{#unless (eq item.type "link")}}
-              <label class="rsa-form-checkbox-label {{if item.selected 'checked'}}">
-                {{rsa-form-checkbox checked=item.selected change=(action "toggleOne" item.id)}}
-              </label>
-            {{/unless}}
-          {{else if (eq column.field "hashes")}}
-            {{#if (eq item.type "link")}}
-              {{t 'recon.files.linkFile'}}
-            {{else}}
-              {{#each item.hashes as |hash|}}
-                <div class="recon-file-ellipsis" title="{{to-upper-case hash.type}}: {{hash.value}}">
-                  {{to-upper-case hash.type}}: {{hash.value}}
-                </div><br>
-              {{/each}}
-            {{/if}}
-          {{else if (eq column.field "fileSize")}}
-            {{#unless (eq item.type "link")}}
-              <div class="recon-file-ellipsis">
-                {{rsa-content-memsize size=(get item column.field)}}
-              </div>
-            {{/unless}}
-          {{else if (eq column.field "fileName")}}
-            {{#if (eq item.type "link")}}
-              <div class="recon-file-ellipsis recon-file-link" title="{{get item column.field}}"
-              {{action "openLinkedFile" item}}>
-                {{get item column.field}}
-              </div>
-            {{else}}
-              <div class="recon-file-ellipsis" title="{{get item column.field}}">{{get item column.field}}</div>
-            {{/if}}
+      {{#rsa-data-table/body-cell columnWidth=column.width}}
+        {{#if column.isCheckboxColumn}}
+          {{#unless (eq item.type "link")}}
+            <label class="rsa-form-checkbox-label {{if item.selected 'checked'}}">
+              {{rsa-form-checkbox checked=item.selected change=(action "toggleOne" item.id)}}
+            </label>
+          {{/unless}}
+        {{else if (eq column.field "hashes")}}
+          {{#if (eq item.type "link")}}
+            {{t 'recon.files.linkFile'}}
+          {{else}}
+            {{#each item.hashes as |hash|}}
+              <div class="recon-file-ellipsis" title="{{to-upper-case hash.type}}: {{hash.value}}">
+                {{to-upper-case hash.type}}: {{hash.value}}
+              </div><br>
+            {{/each}}
+          {{/if}}
+        {{else if (eq column.field "fileSize")}}
+          {{#unless (eq item.type "link")}}
+            <div class="recon-file-ellipsis">
+              {{rsa-content-memsize size=(get item column.field)}}
+            </div>
+          {{/unless}}
+        {{else if (eq column.field "fileName")}}
+          {{#if (eq item.type "link")}}
+            <div class="recon-file-ellipsis recon-file-link" title="{{get item column.field}}"
+            {{action "openLinkedFile" item}}>
+              {{get item column.field}}
+            </div>
           {{else}}
             <div class="recon-file-ellipsis" title="{{get item column.field}}">{{get item column.field}}</div>
           {{/if}}
-        {{/rsa-data-table/body-cell}}
+        {{else}}
+          <div class="recon-file-ellipsis" title="{{get item column.field}}">{{get item column.field}}</div>
+        {{/if}}
+      {{/rsa-data-table/body-cell}}
 
-      {{/rsa-data-table/body}}
-    </hbox>
+    {{/rsa-data-table/body}}
   {{/rsa-data-table}}
   {{recon-pager
     eventIndex=eventIndex

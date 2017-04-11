@@ -40,7 +40,9 @@
         {{t "investigate.title"}}
       {{/link-to}}
       {{--}}
-      <a href="/investigation" class="rsa-header-nav-investigate js-test-nav-investigate-link">{{t "investigate.title"}}</a>
+      {{#if accessControl.hasInvestigateAccess}}
+        <a href="/investigation" class="rsa-header-nav-investigate js-test-nav-investigate-link">{{t "investigate.title"}}</a>
+      {{/if}}
     {{/if}}
 
     {{#if accessControl.hasMonitorAccess}}

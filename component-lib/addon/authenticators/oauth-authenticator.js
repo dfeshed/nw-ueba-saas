@@ -119,10 +119,16 @@ export default OAuth2PasswordGrant.extend(csrfToken, oauthToken, {
       this.makeRequest(serverTokenEndpoint, data).then((response, status, jqXHR) => {
         run(() => {
           const csrfKey = this.get('csrfLocalstorageKey');
-          const csrf = jqXHR.getResponseHeader('X-CSRF-TOKEN') || null;
 
-          if (csrf) {
-            localStorage.setItem(csrfKey, csrf);
+          if (jqXHR) {
+            const csrf = jqXHR.getResponseHeader('X-CSRF-TOKEN') || null;
+            const idleSessionTimeout = (parseInt(jqXHR.getResponseHeader('X-NW-Idle-Session-Timeout') || 10, 10)) * 60000;
+            localStorage.setItem('rsa-x-idle-session-timeout', idleSessionTimeout);
+            localStorage.setItem('rsa-nw-last-session-access', new Date().getTime());
+
+            if (csrf) {
+              localStorage.setItem(csrfKey, csrf);
+            }
           }
 
           const daysRemaining = response.expiryUserNotify;
@@ -134,9 +140,6 @@ export default OAuth2PasswordGrant.extend(csrfToken, oauthToken, {
             });
           }
 
-          const idleSessionTimeout = (parseInt(jqXHR.getResponseHeader('X-NW-Idle-Session-Timeout') || 10, 10)) * 60000;
-          localStorage.setItem('rsa-x-idle-session-timeout', idleSessionTimeout);
-          localStorage.setItem('rsa-nw-last-session-access', new Date().getTime());
 
           const expiresAt = this._absolutizeExpirationTime(response.expires_in);
           this._scheduleAccessTokenRefresh(response.expires_in, expiresAt, response.refresh_token);
