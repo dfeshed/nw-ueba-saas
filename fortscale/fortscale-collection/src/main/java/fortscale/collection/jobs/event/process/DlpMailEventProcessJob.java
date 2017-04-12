@@ -4,6 +4,7 @@ import fortscale.collection.io.BufferedLineReader;
 import fortscale.collection.monitoring.ItemContext;
 import fortscale.collection.morphlines.RecordExtensions;
 import fortscale.collection.morphlines.commands.DlpMailEventsCache;
+import fortscale.collection.morphlines.commands.EventsJoinerCache;
 import fortscale.utils.logging.Logger;
 import org.apache.commons.lang3.StringUtils;
 import org.kitesdk.morphline.api.Record;
@@ -29,11 +30,12 @@ public class DlpMailEventProcessJob extends EventProcessJob {
     public static final String NUM_OF_RECIPIENTS_FIELD_NAME = "num_of_recipients";
     public static final String EVENT_TYPE_RECIPIENT = "recipient";
     public static final String FORTSCALE_CONTROL_RECORD_EVENT_ID = "Fortscale Control";
+    public static final String DLPMAIL_REDUCER_CACHE_NAME = "dlpmail_reducer";
 
     @Autowired
     private DlpMailEventsCache dlpMailEventsCache;
 
-
+    private EventsJoinerCache eventsJoinerCache = EventsJoinerCache.getInstance(DLPMAIL_REDUCER_CACHE_NAME, "1");
 
 
     /**
@@ -143,6 +145,7 @@ public class DlpMailEventProcessJob extends EventProcessJob {
         Record rec = morphline.process(line, itemContext);
         Record record;
         if(rec == null) {
+//            eventsJoinerCache.
             jobMetrics.linesFailuresInMorphline++;
             return null;
         }
