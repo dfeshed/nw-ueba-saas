@@ -30,7 +30,7 @@ import java.util.List;
 @ComponentScan(basePackages = "fortscale.domain",includeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = Converter.class),excludeFilters = @ComponentScan.Filter(type = FilterType.REGEX,pattern = ".*(?<!Converter)$"))
 public class MongoConfig extends AbstractMongoConfiguration {
 
-    @Autowired
+    @Autowired (required = false)
     private List<Converter> converters;
 
     @Value("${mongo.host.name}")
@@ -105,6 +105,10 @@ public class MongoConfig extends AbstractMongoConfiguration {
     @Bean
     @Override
     public CustomConversions customConversions() {
+        if(converters==null)
+        {
+            return super.customConversions();
+        }
         return new CustomConversions(converters);
     }
 }

@@ -1,13 +1,18 @@
-package fortscale.domain;
+package fortscale.utils.mongo.converter;
 
-import fortscale.domain.core.dao.MongoDbRepositoryUtil;
+import com.mongodb.Mongo;
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
+import fortscale.utils.test.mongodb.MongoDbTestProperties;
+import fortscale.utils.test.mongodb.MongodbTestConfig;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.*;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -16,7 +21,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
+import java.util.Set;
 
 /**
  * Created by barak_schuster on 12/4/16.
@@ -25,26 +30,20 @@ import java.util.Properties;
 @ContextConfiguration
 public class MongoConverterConfigurerTest {
     @Configuration
-    @ImportResource(locations = "classpath*:META-INF/spring/fortscale-domain-light-context.xml")
-    @ComponentScan(basePackageClasses = MongoDbRepositoryUtil.class,includeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = MongoDbRepositoryUtil.class))
+    @Import(MongodbTestConfig.class)
     public static class springConfig {
 
         @Bean
         public static TestPropertiesPlaceholderConfigurer mainProcessPropertiesConfigurer() {
-            Properties properties = new Properties();
-            properties.put("mongo.host.name", "localhost");
-            properties.put("mongo.host.port","27017");
-            properties.put("mongo.db.name","test");
-            properties.put("mongo.map.dot.replacement","#dot#");
-            properties.put("mongo.map.dollar.replacement","#dlr#");
-            properties.put("mongo.db.user", "");
-            properties.put("mongo.db.password", "");
-
-            return new TestPropertiesPlaceholderConfigurer(properties);
+            return new TestPropertiesPlaceholderConfigurer(MongoDbTestProperties.getProperties());
         }
     }
     @Autowired
     private MongoTemplate mongoTemplate;
+    @Autowired
+    private Mongo mongo;
+    @Value("${mongo.db.name}")
+    private String dbName;
 
     @Before
     public void setup()
@@ -93,6 +92,16 @@ public class MongoConverterConfigurerTest {
         mapToConvert.put("$","value2");
         mapToConvert.put("$$key$$","value3");
         mongoTemplate.insert(foo);
+        Map<String, String> retrievedDocConvertedMap = (Map<String, String>) mongo.getDB(dbName).getCollection(Foo.TEST_CONVERTER_COLLECTION).findOne().get("mapToConvert");
+
+        Set<String> retrievedMapKeys = retrievedDocConvertedMap.keySet();
+        Assert.assertEquals(retrievedMapKeys.size(),mapToConvert.keySet().size());
+        retrievedMapKeys.forEach(key -> {
+            Assert.assertTrue(!key.contains("."));
+            Assert.assertTrue(!key.startsWith("$"));
+        });
+
+
         Foo retrievedDocuments = mongoTemplate.findAll(Foo.class).get(0);
 
         Map<String, String> retrievedMap = retrievedDocuments.getMapToConvert();
