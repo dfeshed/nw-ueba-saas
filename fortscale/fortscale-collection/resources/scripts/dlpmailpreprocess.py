@@ -11,7 +11,6 @@ def run():
     control_message = ",,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,Fortscale Control,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,," \
                       ",,,,,,,,,,,,,,,,,,,,,,,,,,,,,"
     file_name = sys.argv[1]
-    method = sys.argv[2]
     with open(file_name, "a") as file:
         if method == "preprocess":
             file.write(control_message)
@@ -53,7 +52,8 @@ def remove_last_line(file_name):  # credit: Saqib@stackoverflow
 
 
 def main():
-    return run()
+    append_control_message()
+    return 0
 
 
 if __name__ == '__main__':

@@ -121,6 +121,23 @@
       }
     },
     {
+      "name" : "attachment_file_size.normalized_username.dlpmail",
+      "selector" : {
+        "type" : "feature_bucket_context_selector",
+        "featureBucketConfName" : "normalized_username_dlpmail_daily"
+      },
+      "retriever" : {
+        "type" : "context_histogram_retriever",
+        "timeRangeInSeconds" : 7776000,
+        "functions" : [ ],
+        "featureBucketConfName" : "normalized_username_dlpmail_daily",
+        "featureName" : "attachment_file_size_histogram"
+      },
+      "builder" : {
+        "type": "continuous_histogram_model_builder"
+      }
+    },
+    {
       "name" : "normalized_username.normalized_src_machine.dlpmail",
       "selector" : {
         "type" : "feature_bucket_context_selector",
