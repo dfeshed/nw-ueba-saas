@@ -10,12 +10,10 @@ import org.kitesdk.morphline.api.CommandBuilder;
 import org.kitesdk.morphline.api.MorphlineContext;
 import org.kitesdk.morphline.api.Record;
 import org.kitesdk.morphline.base.AbstractCommand;
-import org.kitesdk.morphline.base.Notifications;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -154,21 +152,6 @@ public class EventsReducerBuilder implements CommandBuilder {
                 }
             }
         }
-
-        @Override
-        protected void doNotify(Record notification) {
-            for (Object event : Notifications.getLifecycleEvents(notification)) {
-                if (event == Notifications.LifecycleEvent.SHUTDOWN && cache!=null) {
-                    try {
-                        logger.info("Closing cache {}.", cacheName);
-                        cache.close();
-                    } catch (IOException e) {
-                        logger.error("error closing Events Reducer Cache {}.", cacheName, e);
-                    }
-                    cache = null;
-                }
-            }
-            super.doNotify(notification);
-        }
+        
     }
 }
