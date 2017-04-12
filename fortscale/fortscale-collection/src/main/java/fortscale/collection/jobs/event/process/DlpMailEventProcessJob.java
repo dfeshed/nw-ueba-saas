@@ -61,10 +61,10 @@ public class DlpMailEventProcessJob extends EventProcessJob {
             lnr.close();
         }
 
+        String line = null;
         try {
             int numOfLines = 0;
             int numOfSuccessfullyProcessedLines = 0;
-            String line;
             while ((line = reader.readLine()) != null) {
                 if (StringUtils.isNotBlank(line)) {
                     numOfLines++;
@@ -104,7 +104,7 @@ public class DlpMailEventProcessJob extends EventProcessJob {
                 jobMetrics.processFilesSuccessfullyWithFailedLines++;
             }
         } catch (Exception e) {
-            logger.error("error processing file " + file.getName(), e);
+            logger.error("error processing file {}. line: {}.", file.getName(), line, e);
             taskMonitoringHelper.error("Process Files", e.toString());
             return false;
         } finally {
