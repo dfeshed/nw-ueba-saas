@@ -1,6 +1,6 @@
 package fortscale.services.impl;
 
-import fortscale.domain.core.ApplicationConfiguration;
+import fortscale.domain.application.configuration.ApplicationConfiguration;
 import fortscale.services.ApplicationConfigurationService;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.junit.Assert;

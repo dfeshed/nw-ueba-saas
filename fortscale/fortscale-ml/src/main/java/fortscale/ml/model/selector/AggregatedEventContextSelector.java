@@ -11,7 +11,7 @@ import java.util.Date;
 import java.util.Set;
 
 @Configurable(preConstruction = true)
-public class AggregatedEventContextSelector extends AlertTriggeringHighScoreContextSelector {
+public class AggregatedEventContextSelector implements IContextSelector{
     @Autowired
     private AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
     @Autowired

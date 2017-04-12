@@ -3,7 +3,7 @@ package fortscale.entity.event;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.aggregation.feature.event.AggrEvent;
 import fortscale.aggregation.feature.event.AggrFeatureEventBuilderService;
-import fortscale.domain.core.EntityEvent;
+import fortscale.domain.SMART.EntityEvent;
 import fortscale.entity.event.metrics.EntityEventBuilderMetrics;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.monitoring.stats.StatsService;

@@ -2,8 +2,6 @@ package fortscale.ml.model;
 
 import fortscale.ml.model.listener.IModelBuildingListener;
 import fortscale.utils.logging.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -33,11 +31,11 @@ public class ModelService {
 
 	public void process(
 			IModelBuildingListener listener, String sessionId, String modelConfName,
-			Date previousEndTime, Date currentEndTime, boolean selectHighScoreContexts,
+			Date previousEndTime, Date currentEndTime,
 			Set<String> specifiedContextIds) {
 		ModelBuilderManager modelBuilderManager = modelConfNameToManager.get(modelConfName);
 		if (modelBuilderManager != null) {
-			modelBuilderManager.process(listener, sessionId, previousEndTime, currentEndTime, selectHighScoreContexts, specifiedContextIds);
+			modelBuilderManager.process(listener, sessionId, previousEndTime, currentEndTime, specifiedContextIds);
 		} else {
 			logger.error("Ignoring invalid model conf name {}.", modelConfName);
 		}

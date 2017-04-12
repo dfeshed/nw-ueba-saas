@@ -5,7 +5,7 @@ import fortscale.common.feature.Feature;
 import fortscale.common.feature.FeatureNumericValue;
 import fortscale.common.feature.FeatureStringValue;
 import fortscale.common.feature.extraction.FeatureExtractService;
-import fortscale.domain.core.FeatureScore;
+import fortscale.domain.feature.score.FeatureScore;
 import fortscale.ml.scorer.config.ReductionConfiguration;
 import fortscale.utils.logging.Logger;
 import org.springframework.util.Assert;

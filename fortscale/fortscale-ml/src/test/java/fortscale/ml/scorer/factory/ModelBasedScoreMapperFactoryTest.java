@@ -4,7 +4,7 @@ import com.google.common.collect.Sets;
 import fortscale.common.event.Event;
 import fortscale.common.feature.Feature;
 import fortscale.common.feature.extraction.FeatureExtractService;
-import fortscale.domain.core.FeatureScore;
+import fortscale.domain.feature.score.FeatureScore;
 import fortscale.ml.model.ModelBuilderData;
 import fortscale.ml.model.ModelBuilderData.NoDataReason;
 import fortscale.ml.model.ModelConf;
@@ -148,12 +148,6 @@ public class ModelBasedScoreMapperFactoryTest {
 							return Sets.newHashSet("some_user_context");
 						}
 
-						@Override
-						public Set<String> getHighScoreContexts(Date startTime, Date endTime) {
-							HashSet<String> result = new HashSet<>();
-							result.add("some_user_context");
-							return result;
-						}
 					});
 		}
 

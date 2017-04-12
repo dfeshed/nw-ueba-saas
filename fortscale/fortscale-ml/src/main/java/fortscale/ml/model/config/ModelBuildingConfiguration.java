@@ -1,8 +1,5 @@
 package fortscale.ml.model.config;
 
-import fortscale.domain.core.dao.AlertsRepositoryCustom;
-import fortscale.domain.core.dao.AlertsRepositoryImpl;
-import fortscale.domain.core.dao.MongoDbRepositoryUtil;
 import fortscale.ml.model.ModelConfServiceConfig;
 import fortscale.ml.model.ModelServiceConfig;
 import fortscale.ml.model.builder.IModelBuilder;
@@ -13,7 +10,9 @@ import fortscale.ml.model.selector.IContextSelector;
 import fortscale.ml.model.selector.factories.SelectorFactoriesConfig;
 import fortscale.ml.model.store.ModelStore;
 import fortscale.utils.factory.FactoryService;
-import org.springframework.context.annotation.*;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 
 @Configuration
 @Import({ModelConfServiceConfig.class,
@@ -44,13 +43,4 @@ public class ModelBuildingConfiguration {
 		return new FactoryService<>();
 	}
 
-	@Bean
-	public MongoDbRepositoryUtil MongoDbRepositoryUtil() {
-		return new MongoDbRepositoryUtil();
-	}
-
-	@Bean
-	public AlertsRepositoryCustom alertsRepository() {
-		return new AlertsRepositoryImpl();
-	}
 }

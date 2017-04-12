@@ -8,7 +8,6 @@ import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfUtilService;
 import fortscale.aggregation.feature.event.RetentionStrategiesConfService;
 import fortscale.aggregation.feature.event.store.AggregatedFeatureEventsReaderService;
-import fortscale.domain.core.dao.AlertsRepository;
 import fortscale.entity.event.EntityEventConfService;
 import fortscale.entity.event.EntityEventDataReaderService;
 import fortscale.entity.event.EntityEventGlobalParamsConfService;
@@ -25,9 +24,11 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
-import org.springframework.context.annotation.*;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
-import org.springframework.data.hadoop.config.common.annotation.EnableAnnotationConfiguration;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
@@ -39,9 +40,7 @@ import java.util.Properties;
 public class ModelConfProductionConfFilesTest {
 	@Configuration
 	@EnableSpringConfigured
-	@EnableAnnotationConfiguration
-	@ComponentScan(basePackages = "fortscale.ml.model.selector,fortscale.ml.model.retriever,fortscale.ml.model.builder",
-			excludeFilters = @ComponentScan.Filter(type = FilterType.REGEX,pattern = "fortscale.ml.model.selector.AlertTriggeringHighScoreContextSelectorTest*"))
+	@ComponentScan(basePackages = "fortscale.ml.model.selector,fortscale.ml.model.retriever,fortscale.ml.model.builder")
 	@Import(NullStatsServiceConfig.class)
 	static class ContextConfiguration {
 		@Mock private FeatureBucketsReaderService featureBucketsReaderService;
@@ -51,7 +50,6 @@ public class ModelConfProductionConfFilesTest {
 		@Mock private AccumulatedEntityEventStore accumulatedEntityEventStore;
 		@Mock private EntityEventMongoStore entityEventMongoStore;
 		@Mock private ModelStore modelStore;
-		@Mock private AlertsRepository alertsRepository;
 
 		@Bean public FeatureBucketsReaderService getFeatureBucketsReaderService() {return featureBucketsReaderService;}
 		@Bean public AggregatedFeatureEventsReaderService getAggregatedFeatureEventsReaderService() {return aggregatedFeatureEventsReaderService;}
@@ -60,7 +58,6 @@ public class ModelConfProductionConfFilesTest {
 		@Bean public AccumulatedEntityEventStore getAccumulatedEntityEventStore() {return accumulatedEntityEventStore;}
 		@Bean public EntityEventMongoStore getEntityEventMongoStore() {return entityEventMongoStore;}
 		@Bean public ModelStore getModelStore() {return modelStore;}
-		@Bean public AlertsRepository getAlertsRepository() {return alertsRepository;}
 
 		@Bean
 		public BucketConfigurationService bucketConfigurationService() {

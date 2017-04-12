@@ -3,6 +3,7 @@ package fortscale.accumulator.accumulator;
 
 import fortscale.accumulator.entityEvent.EntityEventAccumulator;
 import fortscale.accumulator.entityEvent.event.AccumulatedEntityEvent;
+import fortscale.domain.SMART.EntityEvent;
 
 import java.time.Instant;
 
@@ -14,7 +15,7 @@ import java.time.Instant;
  * and/or when only an aggregated view is needed.
  *
  * i.e. {@link EntityEventAccumulator}:
- * accumulates a group of {@link fortscale.domain.core.EntityEvent} into one {@link AccumulatedEntityEvent} by {@link AccumulationParams}
+ * accumulates a group of {@link EntityEvent} into one {@link AccumulatedEntityEvent} by {@link AccumulationParams}
  *
  * Created by barak_schuster on 10/6/16.
  */

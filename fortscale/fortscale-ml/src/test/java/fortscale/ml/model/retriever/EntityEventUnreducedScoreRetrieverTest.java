@@ -1,6 +1,6 @@
 package fortscale.ml.model.retriever;
 
-import fortscale.domain.core.EntityEvent;
+import fortscale.domain.SMART.EntityEvent;
 import fortscale.entity.event.EntityEventConf;
 import fortscale.entity.event.EntityEventConfService;
 import fortscale.entity.event.EntityEventMongoStore;

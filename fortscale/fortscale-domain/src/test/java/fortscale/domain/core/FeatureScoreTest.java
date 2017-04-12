@@ -3,7 +3,7 @@ package fortscale.domain.core;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import net.minidev.json.JSONObject;
+import fortscale.domain.feature.score.FeatureScore;
 import org.junit.Assert;
 import org.junit.Test;
 
