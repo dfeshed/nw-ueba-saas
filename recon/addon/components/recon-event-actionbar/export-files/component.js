@@ -3,15 +3,13 @@ import connect from 'ember-redux/components/connect';
 import computed, { filterBy } from 'ember-computed-decorators';
 import * as InteractionActions from 'recon/actions/interaction-creators';
 import ReconExport from 'recon/mixins/recon-export';
-import { isLogEvent } from 'recon/selectors/event-type-selectors';
 import layout from './template';
 
-const stateToComputed = ({ recon, recon: { data } }) => ({
+const stateToComputed = ({ recon: { data } }) => ({
   files: data.files,
   status: data.fileExtractStatus,
   extractLink: data.fileExtractLink,
-  eventType: data.eventType,
-  isLogEvent: isLogEvent(recon)
+  eventType: data.eventType
 });
 
 const dispatchToActions = (dispatch) => ({

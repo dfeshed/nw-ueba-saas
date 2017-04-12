@@ -1,11 +1,11 @@
-{{#unless isLogEvent}}
-  {{#rsa-form-button
-    class="export-files-button"
-    defaultAction=(action 'extract')
-    isDisabled=isDisabled
-  }}
-    {{#if isDownloading}}{{rsa-loader size="small"}}{{/if}}
-    {{caption}}
-  {{/rsa-form-button}}
-  <iframe src="{{iframeSrc}}" class="export-files-iframe js-export-files-iframe"></iframe>
-{{/unless}}
+{{#rsa-form-button
+  class="export-files-button"
+  defaultAction=(action 'extract')
+  isDisabled=isDisabled
+}}
+  {{#if isDownloading}}
+    {{rsa-loader size="small"}}
+  {{/if}}
+  {{caption}}
+{{/rsa-form-button}}
+<iframe src="{{iframeSrc}}" class="export-files-iframe js-export-files-iframe"></iframe>

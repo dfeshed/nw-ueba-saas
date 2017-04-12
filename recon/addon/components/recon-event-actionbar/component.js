@@ -2,20 +2,15 @@ import Component from 'ember-component';
 import connect from 'ember-redux/components/connect';
 import { isTextView, isFileView, isPacketView } from 'recon/selectors/type-selectors';
 import { isLogEvent } from 'recon/selectors/event-type-selectors';
-import * as VisualActions from 'recon/actions/visual-creators';
+import { isHttpData } from 'recon/selectors/meta-selectors';
 import layout from './template';
 
-const dispatchToActions = (dispatch) => ({
-  togglePayloadOnly: () => dispatch(VisualActions.togglePayloadOnly())
-});
-
-const stateToComputed = ({ recon, recon: { data, visuals } }) => ({
-  view: data.currentReconView.code,
+const stateToComputed = ({ recon }) => ({
   isTextView: isTextView(recon),
   isFileView: isFileView(recon),
   isPacketView: isPacketView(recon),
   isLogEvent: isLogEvent(recon),
-  isPayloadOnly: visuals.isPayloadOnly
+  isHttpEvent: isHttpData(recon)
 });
 
 const reconEventActionbar = Component.extend({
@@ -23,4 +18,4 @@ const reconEventActionbar = Component.extend({
   classNames: ['recon-event-actionbar']
 });
 
-export default connect(stateToComputed, dispatchToActions)(reconEventActionbar);
+export default connect(stateToComputed)(reconEventActionbar);

@@ -5,15 +5,13 @@ import computed from 'ember-computed-decorators';
 import * as InteractionActions from 'recon/actions/interaction-creators';
 import ReconExport from 'recon/mixins/recon-export';
 import layout from './template';
-import { isLogEvent } from 'recon/selectors/event-type-selectors';
 
 const { String } = Ember;
 
-const stateToComputed = ({ recon, recon: { data } }) => ({
+const stateToComputed = ({ recon: { data } }) => ({
   status: data.fileExtractStatus,
   extractLink: data.fileExtractLink,
-  eventType: data.eventType,
-  isLogEvent: isLogEvent(recon)
+  eventType: data.eventType
 });
 
 const dispatchToActions = (dispatch) => ({

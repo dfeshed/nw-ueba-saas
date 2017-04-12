@@ -21,8 +21,8 @@ test('it renders', function(assert) {
   this.render(hbs`{{recon-event-actionbar/export-logs}}`);
 
   return wait().then(() => {
-    const str = this.$().text().trim();
-    assert.equal(str, '');
+    const str = this.$().text().trim().replace(/\s+/g, '');
+    assert.equal(str, 'DownloadLogDownloadLogDownloadCSVDownloadXMLDownloadJSON');
   });
 });
 
