@@ -31,6 +31,8 @@ public class DlpMailEventProcessJob extends EventProcessJob {
     public static final String EVENT_TYPE_RECIPIENT = "recipient";
     public static final String FORTSCALE_CONTROL_RECORD_EVENT_ID = "Fortscale Control";
     public static final String DLPMAIL_REDUCER_CACHE_NAME = "dlpmail_reducer";
+    public static final int EVENT_ID_INDEX = 32;
+    public static final String LINE_DELIMITER = ",";
 
     @Autowired
     private DlpMailEventsCache dlpMailEventsCache;
@@ -145,9 +147,15 @@ public class DlpMailEventProcessJob extends EventProcessJob {
         Record rec = morphline.process(line, itemContext);
         Record record;
         if(rec == null) {
-//            eventsJoinerCache.
-            jobMetrics.linesFailuresInMorphline++;
-            return null;
+            final String eventId = getEventIdFromLine(line);
+            final boolean eventInCache = eventsJoinerCache.peek(eventId) != null;
+            if (!eventInCache) { // this event was not reduced
+                jobMetrics.linesFailuresInMorphline++;
+                return null;
+            }
+            else {
+                return Collections.emptyList(); //event was reduced(filtered) - return nothing so the processing will continue to the next line
+            }
         }
         if (morphlineEnrichment != null) {
             record = morphlineEnrichment.process(rec, itemContext);
@@ -170,11 +178,9 @@ public class DlpMailEventProcessJob extends EventProcessJob {
         }
     }
 
-
-
-
-
-
+    private String getEventIdFromLine(String line) {
+        return line.split(LINE_DELIMITER)[EVENT_ID_INDEX];
+    }
 
 
     private List<Record> updatePreviousRecords(Record record) throws Exception {
