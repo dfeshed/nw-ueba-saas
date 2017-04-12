@@ -133,7 +133,7 @@ public class DlpMailEventProcessJob extends EventProcessJob {
         //I assume that this.itemContext updated once for each file.
         Record rec = morphline.process(line, itemContext);
         Record record;
-        if(rec == null){
+        if(rec == null) {
             jobMetrics.linesFailuresInMorphline++;
             return null;
         }
