@@ -1,6 +1,5 @@
 package fortscale.ml.model.config;
 
-import fortscale.domain.core.dao.MongoDbRepositoryUtil;
 import fortscale.ml.model.ModelConfServiceConfig;
 import fortscale.ml.model.ModelServiceConfig;
 import fortscale.ml.model.builder.IModelBuilder;
@@ -42,11 +41,6 @@ public class ModelBuildingConfiguration {
 	@Bean
 	public FactoryService<IModelBuilder> modelBuilderFactoryService() {
 		return new FactoryService<>();
-	}
-
-	@Bean
-	public MongoDbRepositoryUtil MongoDbRepositoryUtil() {
-		return new MongoDbRepositoryUtil();
 	}
 
 }
