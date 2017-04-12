@@ -333,10 +333,10 @@ const initializeNotifications = () => {
  * @return {function} redux-thunk
  * @public
  */
-const decodeText = (decode) => {
+const decodeText = () => {
   return (dispatch, getState) => {
     dispatch({ type: ACTION_TYPES.CONTENT_RETRIEVE_STARTED });
-    dispatch({ type: ACTION_TYPES.TOGGLE_TEXT_DECODE, payload: decode });
+    dispatch({ type: ACTION_TYPES.TOGGLE_TEXT_DECODE });
     const dataState = getState().recon.data;
     fetchTextData(
       dataState,

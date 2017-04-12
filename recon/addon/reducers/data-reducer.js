@@ -189,9 +189,9 @@ const data = handleActions({
       textContent: state.textContent ? [...state.textContent, ...newContent] : newContent
     };
   },
-  [ACTION_TYPES.TOGGLE_TEXT_DECODE]: (state, { payload }) => ({
+  [ACTION_TYPES.TOGGLE_TEXT_DECODE]: (state, { payload = {} }) => ({
     ...state,
-    decode: payload,
+    decode: payload.setTo !== undefined ? payload.setTo : !state.decode,
     textContent: []
   }),
 

@@ -1,62 +1,39 @@
-import Ember from 'ember';
-import layout from '../templates/components/rsa-content-tethered-panel-trigger';
+import Component from 'ember-component';
+import { equal } from 'ember-computed';
+import run from 'ember-runloop';
+import service from 'ember-service/inject';
+import layout from './template';
 import { sendTetherEvent } from 'component-lib/utils/tooltip-trigger';
 
-const {
-  Component,
-  inject: {
-    service
-  },
-  run: {
-    later,
-    cancel
-  },
-  computed: {
-    equal
-  }
-
-} = Ember;
-
 export default Component.extend({
-
   tagName: 'span',
-
   layout,
-
   classNames: ['rsa-content-tethered-panel-trigger'],
-
   classNameBindings: ['panel'],
 
   eventBus: service(),
 
-  panel: null,
-
+  displayDelay: 1000,
+  displayEvent: null,
+  hideDelay: 1000,
+  isDisabled: false,
   // optional arbitrary data, passed from trigger to tooltip via eventBus
   // useful when re-using 1 tooltip instance with multiple triggers
   model: null,
-
-  displayDelay: 1000,
-
-  hideDelay: 1000,
-
-  displayEvent: null,
-
+  panel: null,
   triggerEvent: 'hover', // [ 'click', 'hover']
 
   isClick: equal('triggerEvent', 'click'),
-
   isHover: equal('triggerEvent', 'hover'),
-
-  isDisabled: false,
 
   mouseEnter() {
     if (!this.get('isDisabled')) {
       if (this.get('isHover')) {
         if (this.get('hideEvent')) {
-          cancel(this.get('hideEvent'));
+          run.cancel(this.get('hideEvent'));
           this.set('hideEvent', null);
         }
-        const displayEvent = later(() => {
+        const displayEvent = run.later(() => {
           sendTetherEvent(
             this.element,
             this.get('panel'),
@@ -73,16 +50,18 @@ export default Component.extend({
   mouseLeave() {
     if (this.get('isHover')) {
       if (this.get('displayEvent')) {
-        cancel(this.get('displayEvent'));
+        run.cancel(this.get('displayEvent'));
         this.set('displayEvent', null);
       }
-      const hideEvent = later(() => {
-        sendTetherEvent(
-          this.element,
-          this.get('panel'),
-          this.get('eventBus'),
-          'hide'
-        );
+      const hideEvent = run.later(() => {
+        if (!this.get('isDestroyed')) {
+          sendTetherEvent(
+            this.element,
+            this.get('panel'),
+            this.get('eventBus'),
+            'hide'
+          );
+        }
       }, this.get('hideDelay'));
       this.set('hideEvent', hideEvent);
     }

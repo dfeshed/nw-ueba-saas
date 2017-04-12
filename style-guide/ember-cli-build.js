@@ -12,6 +12,7 @@ module.exports = function(defaults) {
       enabled: appEnv !== 'test'
     },
     babel: {
+      includePolyfill: true,
       stage: 0
     },
     nodeAssets: {

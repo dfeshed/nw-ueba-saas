@@ -1,116 +1,36 @@
-import Ember from 'ember';
-import layout from '../templates/components/rsa-content-tethered-panel';
-
-const {
-  Component,
-  $,
-  String: {
-    htmlSafe
-  },
-  inject: {
-    service
-  },
-  run: {
-    later
-  },
-  computed,
-  run
-} = Ember;
+import $ from 'jquery';
+import Component from 'ember-component';
+import computed from 'ember-computed';
+import { htmlSafe } from 'ember-string';
+import run from 'ember-runloop';
+import service from 'ember-service/inject';
+import layout from './template';
 
 export default Component.extend({
-
   layout,
+  classNames: ['rsa-content-tethered-panel'],
 
   eventBus: service(),
 
-  isPopover: false,
-
-  classNames: ['rsa-content-tethered-panel'],
-
-  style: 'standard', // ['standard', 'error', 'primary']
-
-  position: 'right',
-
-  isDisplayed: false,
-
+  anchorHeight: 0,
+  anchorWidth: 0,
+  displayCloseButton: true,
+  hideDelay: 500,
   // optional The component that is using the tethered-panel can pass in true/false
   // for hideOnLeave. By default it is set to true, which means the tooltip will disappear
   // once the cursor enters the tooltip and then leaves
   hideOnLeave: true,
-
-  panelId: null,
-
-  target: null,
-
+  isDisplayed: false,
+  isHovering: false,
+  isPopover: false,
   // optional arbitrary data, passed from trigger to here via eventBus
   // gets passed along in yield, treated as a black box here
   // useful when re-using 1 tooltip instance with multiple triggers
   model: null,
-
-  isHovering: false,
-
-  hideDelay: 500,
-
-  displayCloseButton: true,
-
-  anchorHeight: 0,
-
-  anchorWidth: 0,
-
-  verticalModifier: computed('anchorHeight', function() {
-    const halfAnchorHeight = `${this.get('anchorHeight') / 2}px`;
-    let styleString;
-
-    if (!this.get('isPopover')) {
-      if (this.get('position') == 'left-bottom') {
-        styleString = `margin-top: calc(-1rem - 7px - ${halfAnchorHeight})`;
-      } else if (this.get('position') === 'left-top') {
-        styleString = `margin-bottom: calc(-1rem - 7px - ${halfAnchorHeight})`;
-      } else if (this.get('position') === 'right-bottom') {
-        styleString = `margin-bottom: calc(-1rem - 7px - ${halfAnchorHeight})`;
-      } else if (this.get('position') === 'right-top') {
-        styleString = `margin-top: calc(-1rem - 7px - ${halfAnchorHeight})`;
-      }
-
-      return styleString;
-    }
-  }),
-
-  horizontalModifier: computed('anchorWidth', 'anchorHeight', function() {
-    const anchorWidth = `${this.get('anchorWidth')}px`;
-    const anchorHeight = `${this.get('anchorHeight')}px`;
-    let styleString;
-
-    if (this.get('isPopover')) {
-      if (this.get('position') === 'left-bottom') {
-        styleString = `top: -${anchorHeight}`;
-      } else if (this.get('position') === 'left-top') {
-        styleString = `top: ${anchorHeight}`;
-      } else if (this.get('position') === 'right-bottom') {
-        styleString = `top: -${anchorHeight}`;
-      } else if (this.get('position') === 'right-top') {
-        styleString = `top: ${anchorHeight}`;
-      } else if (this.get('position') === 'top-left') {
-        styleString = `left: ${anchorWidth}`;
-      } else if (this.get('position') === 'top-right') {
-        styleString = `left: -${anchorWidth}`;
-      } else if (this.get('position') === 'bottom-left') {
-        styleString = `left: ${anchorWidth}`;
-      } else if (this.get('position') === 'bottom-right') {
-        styleString = `left: -${anchorWidth}`;
-      }
-
-      return styleString;
-    }
-  }),
-
-  styleModifiers: computed('horizontalModifier', 'verticalModifier', function() {
-    return htmlSafe(`${this.get('horizontalModifier')}; ${this.get('verticalModifier')};`);
-  }),
-
-  targetClass: computed('panelId', function() {
-    return `.${this.get('panelId')}`;
-  }),
+  panelId: null,
+  position: 'right',
+  style: 'standard', // ['standard', 'error', 'primary']
+  target: null,
 
   attachment: computed('position', function() {
     let position = null;
@@ -160,19 +80,11 @@ export default Component.extend({
         break;
 
       case 'left-top':
-        if (this.get('isPopover')) {
-          position = 'bottom right';
-        } else {
-          position = 'bottom right';
-        }
+        position = 'bottom right';
         break;
 
       case 'left-bottom':
-        if (this.get('isPopover')) {
-          position = 'top right';
-        } else {
-          position = 'top right';
-        }
+        position = 'top right';
         break;
 
       case 'right':
@@ -198,6 +110,49 @@ export default Component.extend({
     return position;
   }),
 
+  horizontalModifier: computed('anchorWidth', 'anchorHeight', function() {
+    const anchorWidth = `${this.get('anchorWidth')}px`;
+    const anchorHeight = `${this.get('anchorHeight')}px`;
+    let styleString;
+
+    if (this.get('isPopover')) {
+      if (this.get('position').endsWith('top')) {
+        styleString = `top: ${anchorHeight}`;
+      } else if (this.get('position').endsWith('bottom')) {
+        styleString = `top: -${anchorHeight}`;
+      } else if (this.get('position').endsWith('left')) {
+        styleString = `left: ${anchorWidth}`;
+      } else if (this.get('position').endsWith('right')) {
+        styleString = `left: -${anchorWidth}`;
+      }
+
+      return styleString;
+    }
+  }),
+
+  verticalModifier: computed('anchorHeight', function() {
+    const halfAnchorHeight = `${this.get('anchorHeight') / 2}px`;
+
+    if (!this.get('isPopover')) {
+      let topOrBottom;
+      if (this.get('position') === 'left-bottom' || this.get('position') === 'right-top') {
+        topOrBottom = 'top';
+      } else if (this.get('position') === 'left-top' || this.get('position') === 'right-bottom') {
+        topOrBottom = 'bottom';
+      }
+
+      return `margin-${topOrBottom}: calc(-1rem - 7px - ${halfAnchorHeight})`;
+    }
+  }),
+
+  styleModifiers: computed('horizontalModifier', 'verticalModifier', function() {
+    return htmlSafe(`${this.get('horizontalModifier')}; ${this.get('verticalModifier')};`);
+  }),
+
+  targetClass: computed('panelId', function() {
+    return `.${this.get('panelId')}`;
+  }),
+
   ensureOnlyOneTether: computed('isDisplayed', {
     get() {
       return this.get('isDisplayed');
@@ -216,7 +171,7 @@ export default Component.extend({
 
   didInsertElement() {
     run.schedule('afterRender', () => {
-      this.get('eventBus').on(`rsa-content-tethered-panel-display-${this.get('panelId')}`, (height, width, elId, model) => {
+      this.get('eventBus').on(`rsa-content-tethered-panel-display-${this.get('panelId')}`, (anchorHeight, anchorWidth, elId, model) => {
         run.next(() => {
           if (!this.get('isDestroyed') && !this.get('isDestroying')) {
             if ($(this.get('targetClass')).length > 1) {
@@ -225,10 +180,12 @@ export default Component.extend({
               this.set('target', this.get('targetClass'));
             }
 
-            this.set('anchorHeight', height);
-            this.set('anchorWidth', width);
-            this.set('model', model);
-            this.set('isDisplayed', true);
+            this.setProperties({
+              anchorHeight,
+              anchorWidth,
+              model,
+              isDisplayed: true
+            });
 
             run.schedule('afterRender', () => {
               $(`.${this.get('elementId')}`).on('mouseenter', () => {
@@ -237,7 +194,7 @@ export default Component.extend({
 
               $(`.${this.get('elementId')}`).on('mouseleave', () => {
                 this.set('isHovering', false);
-                later(() => {
+                run.later(() => {
                   if (!this.get('isHovering') && this.get('hideOnLeave')) {
                     this.set('isDisplayed', false);
                   }
@@ -251,11 +208,7 @@ export default Component.extend({
       this.get('eventBus').on(`rsa-content-tethered-panel-hide-${this.get('panelId')}`, () => {
         run.next(() => {
           if (!this.get('isHovering')) {
-            if (!this.get('isDestroyed') && !this.get('isDestroying')) {
-              $(`.${this.get('elementId')}`).off('mouseenter');
-              $(`.${this.get('elementId')}`).off('mouseleave');
-              this.set('isDisplayed', false);
-            }
+            this._hidepanel();
           }
         });
       });
@@ -296,11 +249,15 @@ export default Component.extend({
 
   actions: {
     hidepanel() {
-      $(`.${this.get('elementId')}`).off('mouseenter');
-      $(`.${this.get('elementId')}`).off('mouseleave');
-      if (!this.get('isDestroyed') && !this.get('isDestroying')) {
-        this.set('isDisplayed', false);
-      }
+      this._hidepanel();
+    }
+  },
+
+  _hidepanel() {
+    $(`.${this.get('elementId')}`).off('mouseenter');
+    $(`.${this.get('elementId')}`).off('mouseleave');
+    if (!this.get('isDestroyed') && !this.get('isDestroying')) {
+      this.set('isDisplayed', false);
     }
   }
 });

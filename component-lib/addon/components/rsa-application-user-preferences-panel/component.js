@@ -1,15 +1,13 @@
 import Ember from 'ember';
+import Component from 'ember-component';
 import layout from './template';
+import run from 'ember-runloop';
+import service from 'ember-service/inject';
 import { alias, readOnly } from 'ember-computed-decorators';
 import csrfToken from '../../mixins/csrf-token';
 
 const {
   getOwner,
-  Component,
-  inject: {
-    service
-  },
-  run,
   Logger
 } = Ember;
 

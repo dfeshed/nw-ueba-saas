@@ -6,7 +6,7 @@ import * as VisualActions from 'recon/actions/visual-creators';
 import layout from './template';
 
 const dispatchToActions = (dispatch) => ({
-  togglePayloadOnly: (payloadOnly) => dispatch(VisualActions.togglePayloadOnly(payloadOnly))
+  togglePayloadOnly: () => dispatch(VisualActions.togglePayloadOnly())
 });
 
 const stateToComputed = ({ recon, recon: { data, visuals } }) => ({

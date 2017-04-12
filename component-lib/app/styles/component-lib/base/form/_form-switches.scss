@@ -14,6 +14,15 @@ label.rsa-form-switch {
 .x-toggle-component {
   display: inline-flex;
 
+  // Hack to override padding, until we can get a single label usage working in IE
+  label.off-label, label.on-label {
+    padding: 0;
+  }
+
+  label.toggle-text {
+    padding-left: 0.5rem;
+  }
+
   .x-toggle-container {
     padding: 0;
 
