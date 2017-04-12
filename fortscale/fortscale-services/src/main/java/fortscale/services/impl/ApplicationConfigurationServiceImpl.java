@@ -1,8 +1,8 @@
 package fortscale.services.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import fortscale.domain.core.ApplicationConfiguration;
-import fortscale.domain.core.dao.ApplicationConfigurationRepository;
+import fortscale.domain.application.configuration.ApplicationConfiguration;
+import fortscale.domain.application.configuration.ApplicationConfigurationRepository;
 import fortscale.services.ApplicationConfigurationService;
 import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,6 +1,5 @@
-package fortscale.domain.core.dao;
+package fortscale.domain.application.configuration;
 
-import fortscale.domain.core.ApplicationConfiguration;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 

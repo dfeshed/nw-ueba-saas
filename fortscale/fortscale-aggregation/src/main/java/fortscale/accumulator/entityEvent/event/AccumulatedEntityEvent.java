@@ -1,5 +1,6 @@
 package fortscale.accumulator.entityEvent.event;
 
+import fortscale.domain.SMART.EntityEvent;
 import org.springframework.data.annotation.Id;
 
 import java.time.Instant;
@@ -9,11 +10,11 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * accumulated view of {@link fortscale.domain.core.EntityEvent}
+ * accumulated view of {@link EntityEvent}
  * to handle performance issues at large scale while building models.
  *
  * this object is thinner in manner of amount of fields,
- * and also accumulates several {@link fortscale.domain.core.EntityEvent#aggregated_feature_events#value}
+ * and also accumulates several {@link EntityEvent#aggregated_feature_events#value}
  * into single list {@link this#aggregated_feature_events_values_map}
  *
  * Created by barak_schuster on 10/6/16.

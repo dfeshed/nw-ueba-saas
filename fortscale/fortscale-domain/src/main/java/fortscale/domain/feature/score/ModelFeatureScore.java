@@ -1,4 +1,4 @@
-package fortscale.domain.core;
+package fortscale.domain.feature.score;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 

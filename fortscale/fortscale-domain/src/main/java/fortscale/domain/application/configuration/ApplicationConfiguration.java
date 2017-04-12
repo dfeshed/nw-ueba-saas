@@ -1,6 +1,7 @@
-package fortscale.domain.core;
+package fortscale.domain.application.configuration;
 
 
+import fortscale.domain.core.AbstractDocument;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;

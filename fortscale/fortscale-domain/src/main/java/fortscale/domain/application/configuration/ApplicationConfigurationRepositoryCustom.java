@@ -1,4 +1,4 @@
-package fortscale.domain.core.dao;
+package fortscale.domain.application.configuration;
 
 import java.util.Map;
 

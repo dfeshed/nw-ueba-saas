@@ -2,7 +2,7 @@ package fortscale.ml.scorer;
 
 
 import fortscale.common.event.EventMessage;
-import fortscale.domain.core.FeatureScore;
+import fortscale.domain.feature.score.FeatureScore;
 import fortscale.ml.scorer.params.PriorityScorerParams;
 import net.minidev.json.JSONObject;
 import org.junit.Assert;

@@ -1,6 +1,5 @@
-package fortscale.domain.core;
+package fortscale.domain.feature.score;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 

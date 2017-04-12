@@ -1,7 +1,7 @@
 package fortscale.ml.scorer.factory;
 
 import fortscale.common.event.Event;
-import fortscale.domain.core.FeatureScore;
+import fortscale.domain.feature.score.FeatureScore;
 import fortscale.ml.scorer.ScoreMapper;
 import fortscale.ml.scorer.ScoreMapping;
 import fortscale.ml.scorer.Scorer;

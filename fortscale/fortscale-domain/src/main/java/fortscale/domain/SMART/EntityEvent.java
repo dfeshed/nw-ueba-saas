@@ -1,4 +1,4 @@
-package fortscale.domain.core;
+package fortscale.domain.SMART;
 
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
@@ -7,6 +7,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import fortscale.domain.core.AbstractDocument;
+import fortscale.domain.feature.score.FeatureScore;
 import fortscale.utils.time.TimestampUtils;
 import net.minidev.json.JSONObject;
 import org.springframework.data.mongodb.core.mapping.Field;

@@ -1,7 +1,7 @@
 package fortscale.ml.scorer.params;
 
 import fortscale.common.event.Event;
-import fortscale.domain.core.FeatureScore;
+import fortscale.domain.feature.score.FeatureScore;
 import fortscale.ml.scorer.FieldValueScoreLimiter;
 import fortscale.ml.scorer.FieldValueScoreReducerScorer;
 import fortscale.ml.scorer.Scorer;
