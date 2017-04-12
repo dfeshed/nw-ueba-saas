@@ -72,6 +72,11 @@ public class DlpMailEventProcessJob extends EventProcessJob {
                     taskMonitoringHelper.handleNewEvent(file.getName());
                     jobMetrics.lines++;
                     List<Record> records = processLineWithAggregation(line, itemContext);
+                    if (records == null) {
+                        logger.error("Failed to process line {}", line);
+                        calculateProcessedLines(totalLines, numOfLines);
+                        continue;
+                    }
                     if (records.isEmpty()) {
                         logger.debug("Current line was cached. Moving to process the next line.");
                         continue;
@@ -87,11 +92,7 @@ public class DlpMailEventProcessJob extends EventProcessJob {
                             }
                             jobMetrics.linesSuccessfully++;
                         }
-                        if (linesPrintEnabled && numOfLines % linesPrintSkip == 0) {
-                            logger.info("{}/{} lines processed - {}% done", numOfLines, totalLines,
-                                    Math.round(((float)numOfLines / (float)totalLines) * 100));
-                            jobMetrics.linesTotalFailures++;
-                        }
+                        calculateProcessedLines(totalLines, numOfLines);
                     }
                 }
             }
@@ -125,6 +126,14 @@ public class DlpMailEventProcessJob extends EventProcessJob {
             return true;
         }
         
+    }
+
+    private void calculateProcessedLines(long totalLines, int numOfLines) {
+        if (linesPrintEnabled && numOfLines % linesPrintSkip == 0) {
+            logger.info("{}/{} lines processed - {}% done", numOfLines, totalLines,
+                    Math.round(((float)numOfLines / (float)totalLines) * 100));
+            jobMetrics.linesTotalFailures++;
+        }
     }
 
     protected List<Record> processLineWithAggregation(String line, ItemContext itemContext) throws Exception {
