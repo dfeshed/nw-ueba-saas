@@ -20,7 +20,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
-import org.springframework.data.hadoop.config.common.annotation.EnableAnnotationConfiguration;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
@@ -73,7 +72,6 @@ public class ProductionScorerConfFilesTest {
 
 	@Configuration
 	@EnableSpringConfigured
-	@EnableAnnotationConfiguration
 	@ComponentScan(basePackages = "fortscale.ml.scorer.factory")
 	static class ContextConfiguration {
 		@Bean

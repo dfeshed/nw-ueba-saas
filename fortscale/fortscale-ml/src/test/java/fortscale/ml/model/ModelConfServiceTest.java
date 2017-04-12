@@ -11,7 +11,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.Ordered;
-import org.springframework.data.hadoop.config.common.annotation.EnableAnnotationConfiguration;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
@@ -24,7 +23,6 @@ import java.util.Properties;
 public class ModelConfServiceTest {
 	@Configuration
 	@EnableSpringConfigured
-	@EnableAnnotationConfiguration
 	@Import(NullStatsServiceConfig.class)
 	static class ContextConfiguration {
 		@Bean
