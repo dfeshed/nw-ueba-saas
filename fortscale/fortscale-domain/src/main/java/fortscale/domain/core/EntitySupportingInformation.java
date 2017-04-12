@@ -11,8 +11,7 @@ import java.util.Map;
  * Created by galiar on 20/08/2015.
  */
 @JsonTypeInfo(use= JsonTypeInfo.Id.NAME, include= JsonTypeInfo.As.WRAPPER_OBJECT,property="type")
-@JsonSubTypes({@JsonSubTypes.Type(value = UserSupportingInformation.class,name="userSupportingInformation"),
-        @JsonSubTypes.Type(value = NotificationSupportingInformation.class,name="notificationSupportingInformation")})
+@JsonSubTypes({@JsonSubTypes.Type(value = UserSupportingInformation.class,name="userSupportingInformation")})
 public class EntitySupportingInformation {
 
     public EntitySupportingInformation() {}
