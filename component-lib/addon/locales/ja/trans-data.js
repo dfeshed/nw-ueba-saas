@@ -513,8 +513,8 @@ export default {
       uniformTimeIntervals: 'ja_The time intervals between communication events are very uniform.',
       newDomainToEnvironment: 'ja_Domain is relatively new to the environment.',
       rareDomainInEnvironment: 'ja_The domain is rare in this environment.',
-      newDomainRegistration: 'ja_Domain is relatively new based on the registration date: {{score}} days ago',
-      domainRegistrationExpires: 'ja_The domain registration will expire relatively soon: {{score}} days',
+      newDomainRegistration: 'ja_Domain is relatively new based on the registration date:',
+      domainRegistrationExpires: 'ja_The domain registration will expire relatively soon:',
       rareUserAgent: 'ja_A high percentage of hosts connecting to the domain are using a rare or no user agent.',
       noReferers: 'ja_A high percentage of hosts connecting to the domain are not utilizing referrers.',
       highNumberServersAccessed: 'ja_Abnormally high number of servers accessed today.',
@@ -527,7 +527,11 @@ export default {
       authFromRareLocation: 'ja_Accessed from a rare location.',
       authFromRareServiceProvider: 'ja_Accessed using a rare service provider.',
       authFromNewServiceProvider: 'ja_Accessed using a new service provider.',
-      highNumberVPNFailedLogins: 'ja_High number of VPN login failures.'
+      highNumberVPNFailedLogins: 'ja_High number of VPN login failures.',
+      daysAgo: 'ja_{{days}} day(s) ago',
+      days: 'ja_{{days}} day(s)',
+      domainIsWhitelisted: 'ja_Domain is whitelisted.',
+      domainIsNotWhitelisted: 'ja_Domain is not whitelisted.'
     },
     sources: {
       'C2-Packet': 'ja_User Entity Behavioral Analytics',

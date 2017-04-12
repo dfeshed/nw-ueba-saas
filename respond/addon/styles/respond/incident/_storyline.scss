@@ -6,6 +6,7 @@ $storylineHeadingSize: 1rem;
 $storylineSeverityOffset: -1 * $storylineSeverityRadius + $storylineHeadingSize * $storylineLineHeight / 2;
 $storylineConnectorWidth: $storylineSeverityRadius * 2;
 $storylineConnectorPaddingX: rsa-whitespace(less);
+$storylineConnectorOuterWidth: $storylineConnectorPaddingX * 2 + $storylineConnectorWidth;
 
 .rsa-incident-storyline {
 
@@ -25,16 +26,19 @@ $storylineConnectorPaddingX: rsa-whitespace(less);
       @include rsa-font(body, small);
     }
 
-    .enrichment {
+    .rsa-enrichment {
       @include rsa-font(body, small);
       position: relative;
-      padding-left: 1.25rem;
+      margin-bottom: rsa-whitespace(least);
 
       &::before {
         content: '\2022'; /* filled bullet */
         position: absolute;
         top: 0;
-        left: 0.25rem;
+        /* horizontally centered over the vertical connector line */
+        left: -1 * $storylineConnectorOuterWidth;
+        width: $storylineConnectorOuterWidth;
+        text-align: center;
       }
     }
 
@@ -58,7 +62,7 @@ $storylineConnectorPaddingX: rsa-whitespace(less);
     }
 
     .content {
-      margin-left: $storylineConnectorPaddingX * 2 + $storylineConnectorWidth;
+      margin-left: $storylineConnectorOuterWidth;
     }
 
     .connector {

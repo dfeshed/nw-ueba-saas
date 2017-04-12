@@ -513,8 +513,8 @@ export default {
       uniformTimeIntervals: 'The time intervals between communication events are very uniform.',
       newDomainToEnvironment: 'Domain is relatively new to the environment.',
       rareDomainInEnvironment: 'The domain is rare in this environment.',
-      newDomainRegistration: 'Domain is relatively new based on the registration date: {{score}} days ago',
-      domainRegistrationExpires: 'The domain registration will expire relatively soon: {{score}} days',
+      newDomainRegistration: 'Domain is relatively new based on the registration date:',
+      domainRegistrationExpires: 'The domain registration will expire relatively soon:',
       rareUserAgent: 'A high percentage of hosts connecting to the domain are using a rare or no user agent.',
       noReferers: 'A high percentage of hosts connecting to the domain are not utilizing referrers.',
       highNumberServersAccessed: 'Abnormally high number of servers accessed today.',
@@ -527,7 +527,11 @@ export default {
       authFromRareLocation: 'Accessed from a rare location.',
       authFromRareServiceProvider: 'Accessed using a rare service provider.',
       authFromNewServiceProvider: 'Accessed using a new service provider.',
-      highNumberVPNFailedLogins: 'High number of VPN login failures.'
+      highNumberVPNFailedLogins: 'High number of VPN login failures.',
+      daysAgo: '{{days}} day(s) ago',
+      days: '{{days}} day(s)',
+      domainIsWhitelisted: 'Domain is whitelisted.',
+      domainIsNotWhitelisted: 'Domain is not whitelisted.'
     },
     sources: {
       'C2-Packet': 'User Entity Behavioral Analytics',

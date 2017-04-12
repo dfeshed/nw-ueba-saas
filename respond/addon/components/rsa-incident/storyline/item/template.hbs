@@ -75,12 +75,10 @@
     {{/unless}}
 
     {{!Enrichments list}}
-    {{#with enrichments as |ens|}}
+    {{#with item.indicator.enrichments as |data|}}
       <ul class="enrichment-list">
-        {{#each ens as |en|}}
-          <li class="enrichment">
-            {{enrichment/desc en.key score=en.score}}
-          </li>
+        {{#each enrichmentsToDisplay as |en|}}
+          {{rsa-incident/enrichment dataKey=en.dataKey data=data threshold=en.threshold}}
         {{/each}}
       </ul>
     {{/with}}

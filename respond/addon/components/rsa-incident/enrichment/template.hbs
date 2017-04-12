@@ -1,0 +1,10 @@
+{{#if shouldDisplay}}
+  <div class="rsa-enrichment">
+    <span class="body">{{t i18nKey}}</span>
+    {{#if (eq dataKey 'whois.age_score')}}
+      <span class="suffix">{{t 'respond.enrichment.daysAgo' days=data.whois.estimated_domain_age_days}}</span>
+    {{else if (eq dataKey 'whois.validity_score')}}
+      <span class="suffix">{{t 'respond.enrichment.days' days=data.whois.estimated_domain_validity_days}}</span>
+    {{/if}}
+  </div>
+{{/if}}
