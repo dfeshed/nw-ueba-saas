@@ -18,6 +18,10 @@ export default Mixin.create({
   // is currently stuck
   indexAtTop: null,
 
+  // Tracks whether the area being scrolled exists.
+  // When it does exist, it needs to have scroll handlers attached
+  hasScrollArea: false,
+
   // REQUIRED The key of the data, when paired with the index,
   // the result is the data used in the sticky component
   stickyContentKey: null,
@@ -50,17 +54,38 @@ export default Mixin.create({
     return content[index - 1];
   },
 
-  // didRender is called each time another page of packets is returned
-  // from an API call and rendered to the page (keep in mind they stream
-  // in from the API in batches).
-  // Need to reset the $headers, as each time didRender is called
-  // there will be more of them, one for each packet
+  // didRender is called:
+  // 1. each time another page of packets is returned from an API call and
+  // rendered to the page (keep in mind they stream in from the API in batches).
+  // 2. when sticky is stuck
+  // 3. when data is toggled on/off in the view
   didRender() {
     this._super(...arguments);
+
+    const $scrollBox = this.$('.scroll-box');
+
+    // If scroll box exists...
+    if ($scrollBox.length > 0) {
+      // ...and it didn't previously exist...
+      if (this.get('hasScrollArea') === false) {
+        // ...then attach scroll listener
+        this.set('hasScrollArea', true);
+        $scrollBox.scroll(() => {
+          this._scrolled();
+        });
+      }
+    } else {
+      // if it doesn't exist then track that,
+      // so when it appears we can attach scroll handlers
+      this.set('hasScrollArea', false);
+    }
+
+    // Need to reset the $headers, as each time didRender is called
+    // there may be more/less of stickyable items
     const stickySelector = this.get('stickySelector');
     this.set('$headers', this.$(stickySelector));
 
-    // didRender also called when sticky is stuck, need to calculate
+    // didRender called when sticky is stuck, need to calculate
     // height of stuck sticky so smooth sliding out is possible
     const selector = this.get('stickyHeaderSelector') || '.is-sticky';
     const $stickyHeader = this.$(selector);
@@ -75,14 +100,6 @@ export default Mixin.create({
     debounce(() => {
       this._scrolled();
     }, 100);
-  },
-
-  // Just one time, on insert of element, need to register scroll bindings
-  didInsertElement() {
-    this._super(...arguments);
-    this.$('.scroll-box').scroll(() => {
-      this._scrolled();
-    });
   },
 
   // Gotta run.join this to ensure it gets notified immediately,
