@@ -148,12 +148,6 @@ public class ModelBasedScoreMapperFactoryTest {
 							return Sets.newHashSet("some_user_context");
 						}
 
-						@Override
-						public Set<String> getHighScoreContexts(Date startTime, Date endTime) {
-							HashSet<String> result = new HashSet<>();
-							result.add("some_user_context");
-							return result;
-						}
 					});
 		}
 

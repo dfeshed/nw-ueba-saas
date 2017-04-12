@@ -16,24 +16,4 @@ public abstract class AlertTriggeringHighScoreContextSelector implements IContex
 	@Autowired
 	protected AlertsRepository alertsRepository;
 
-	@Override
-	public Set<String> getHighScoreContexts(Date startTime, Date endTime) {
-		Set<String> modelContexts = getContexts(startTime, endTime);
-		Set<String> alertContexts = alertsRepository.getAlertsByTimeRange(new DateRange(startTime.getTime(), endTime.getTime()), null, true)
-				.stream()
-				.map(Alert::getEntityName)
-				.distinct()
-				.collect(Collectors.toSet());
-
-		// model contexts will contain the intersection between contexts that are relevant to the model and those that have alert
-		if (modelContexts != null && !modelContexts.isEmpty() ) {
-			alertContexts.retainAll(modelContexts);
-			return alertContexts;
-		}
-		// in case there is no data for the specific model, return empty set
-		else
-		{
-			return Sets.newHashSet();
-		}
-	}
 }
