@@ -1,4 +1,4 @@
-package fortscale.collection.morphlines.dlpfile.dg;
+package fortscale.collection.morphlines.dlp.dlpfile.dg;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
@@ -17,7 +17,7 @@ public class DgFileEventAfterEtl {
     public String hostname;
     public String normalizedSrcMachine;
     public String ipAddress;
-    public String application;
+    public String executingApplication;
     public String sourceDirectory;
     public String destinationDirectory;
     public String sourceFile;
@@ -40,7 +40,7 @@ public class DgFileEventAfterEtl {
 
     public DgFileEventAfterEtl(String dateTime, String dateTimeUnix, String eventType, String eventId, String username,
                                String normalizedUsername, String fullName, String hostname, String normalizedSrcMachine,
-                               String ipAddress, String application, String sourceDirectory, String destinationDirectory,
+                               String ipAddress, String executingApplication, String sourceDirectory, String destinationDirectory,
                                String sourceFile, String destinationFile, Long detailFileSize, String sourceDriveType,
                                String destinationDriveType, String wasClassified, String wasBlocked, String scanValueStatusText,
                                String malwarePolicyName, String isRdp, String isAdminActivity, String isRegistryChanged,
@@ -55,7 +55,7 @@ public class DgFileEventAfterEtl {
         this.hostname = hostname;
         this.normalizedSrcMachine = normalizedSrcMachine;
         this.ipAddress = ipAddress;
-        this.application = application;
+        this.executingApplication = executingApplication;
         this.sourceDirectory = sourceDirectory;
         this.destinationDirectory = destinationDirectory;
         this.sourceFile = sourceFile;
@@ -78,7 +78,7 @@ public class DgFileEventAfterEtl {
     public String toString() {
         StringJoiner stringJoiner = new StringJoiner(",");
         List<String> fields = Arrays.asList("dateTime" ,"dateTimeUnix" ,"eventType" ,"eventId" ,"username" ,"normalizedUsername"
-                ,"fullName" ,"hostname" ,"normalizedSrcMachine" ,"ipAddress" ,"application" ,"sourceDirectory" ,"destinationDirectory"
+                ,"fullName" ,"hostname" ,"normalizedSrcMachine" ,"ipAddress" ,"executingApplication" ,"sourceDirectory" ,"destinationDirectory"
                 ,"sourceFile" ,"destinationFile" ,"detailFileSize" ,"sourceDriveType" ,"destinationDriveType" ,"wasClassified"
                 ,"wasBlocked" ,"scanValueStatusText" ,"malwarePolicyName" ,"isRdp" ,"isAdminActivity" ,"isRegistryChanged", "dataSource", "lastState");
         for (String fieldName : fields) {

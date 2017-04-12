@@ -77,12 +77,6 @@ public class UserActivityWorkingHoursConfigurationService extends BaseUserActivi
 		return new UserActivityConfiguration(activities, dataSourceToCollection, activityToDataSources);
 	}
 
-
-	@Override
-	public Logger getLogger() {
-		return logger;
-	}
-
 	@Override
 	public String getActivityName() {
 		return UserActivityType.WORKING_HOUR.name();

@@ -16,7 +16,7 @@ import java.util.Set;
 public class UserActivityRepositoryImpl extends UserActivityBaseRepository implements UserActivityRepositoryCustom {
 
     private static final Logger logger = Logger.getLogger(UserActivityRepositoryImpl.class);
-    
+
     private static final String COLLECTION_NAME_LOCATION = UserActivityLocationDocument.COLLECTION_NAME;
     private static final String COLLECTION_NAME_NETWORK_AUTHENTICATION = UserActivityNetworkAuthenticationDocument.COLLECTION_NAME;
     private static final String COLLECTION_NAME_WORKING_HOURS = UserActivityWorkingHoursDocument.COLLECTION_NAME;
@@ -24,18 +24,19 @@ public class UserActivityRepositoryImpl extends UserActivityBaseRepository imple
     public static final String COLLECTION_NAME_SOURCE_MACHINE = UserActivitySourceMachineDocument.COLLECTION_NAME;
     private static final String COLLECTION_NAME_TARGET_DEVICE = UserActivityTargetDeviceDocument.COLLECTION_NAME;
     private static final String COLLECTION_NAME_DATA_USAGE = UserActivityDataUsageDocument.COLLECTION_NAME;
+    private static final String COLLECTION_NAME_TOP_APPLICATIONS = UserActivityTopApplicationsDocument.COLLECTION_NAME;
 
     @Override
     public List<UserActivityLocationDocument> getUserActivityLocationEntries(String username, int timeRangeInDays) {
         return getUserActivityEntries(username, timeRangeInDays, COLLECTION_NAME_LOCATION,
-				UserActivityLocationDocument.class);
+                UserActivityLocationDocument.class);
     }
 
     @Override
     public List<UserActivityNetworkAuthenticationDocument> getUserActivityNetworkAuthenticationEntries(String username,
-			int timeRangeInDays) {
+                                                                                                       int timeRangeInDays) {
         return getUserActivityEntries(username, timeRangeInDays, COLLECTION_NAME_NETWORK_AUTHENTICATION,
-				UserActivityNetworkAuthenticationDocument.class);
+                UserActivityNetworkAuthenticationDocument.class);
     }
 
     @Override
@@ -46,38 +47,44 @@ public class UserActivityRepositoryImpl extends UserActivityBaseRepository imple
     public List<UserActivityWorkingHoursDocument> getUserActivityWorkingHoursEntries(String username, int timeRangeInDays) {
         return getUserActivityEntries(username, timeRangeInDays, COLLECTION_NAME_WORKING_HOURS, UserActivityWorkingHoursDocument.class);
     }
-    
+
     @Override
     public List<UserActivitySourceMachineDocument> getUserActivitySourceMachineEntries(String username,
-			int timeRangeInDays) {
+                                                                                       int timeRangeInDays) {
         return getUserActivityEntries(username, timeRangeInDays, COLLECTION_NAME_SOURCE_MACHINE,
-				UserActivitySourceMachineDocument.class);
+                UserActivitySourceMachineDocument.class);
     }
 
-    public List<UserActivityTargetDeviceDocument> getUserActivityTargetDeviceEntries(String username, int timeRangeInDays){
+    public List<UserActivityTargetDeviceDocument> getUserActivityTargetDeviceEntries(String username, int timeRangeInDays) {
         return getUserActivityEntries(username, timeRangeInDays, COLLECTION_NAME_TARGET_DEVICE, UserActivityTargetDeviceDocument.class);
     }
 
-	@Override public Set<String> getUserIdByLocation(List<String> locations) {
-		Query query = new Query();
-		String fieldName = String.format("%s.%s.", UserActivityLocationDocument.LOCATIONS_FIELD_NAME, UserActivityLocationDocument.COUNTRY_HISTOGRAM_FIELD_NAME);
+    @Override
+    public List<UserActivityTopApplicationsDocument> getUserActivityTopApplicationsEntries(String username, int timeRangeInDays) {
+        return getUserActivityEntries(username, timeRangeInDays, COLLECTION_NAME_TOP_APPLICATIONS, UserActivityTopApplicationsDocument.class);
+    }
 
-		if (CollectionUtils.isNotEmpty(locations)) {
-			List<Criteria> locationsCriteriaList = new ArrayList<>();
-			locations.stream().forEach(location -> locationsCriteriaList.add(new Criteria(fieldName + location).exists(true)));
-			query.addCriteria(new Criteria().orOperator(locationsCriteriaList.toArray(new Criteria[locations.size()])));
-		}
+    @Override
+    public Set<String> getUserIdByLocation(List<String> locations) {
+        Query query = new Query();
+        String fieldName = String.format("%s.%s.", UserActivityLocationDocument.LOCATIONS_FIELD_NAME, UserActivityLocationDocument.COUNTRY_HISTOGRAM_FIELD_NAME);
 
-		List<String> distinctUserNames = mongoTemplate.getCollection(UserActivityLocationDocument.COLLECTION_NAME)
-				.distinct(UserActivityLocationDocument.ENTITY_ID_FIELD_NAME, query.getQueryObject());
-		return new HashSet<>(distinctUserNames);
-	}
+        if (CollectionUtils.isNotEmpty(locations)) {
+            List<Criteria> locationsCriteriaList = new ArrayList<>();
+            locations.stream().forEach(location -> locationsCriteriaList.add(new Criteria(fieldName + location).exists(true)));
+            query.addCriteria(new Criteria().orOperator(locationsCriteriaList.toArray(new Criteria[locations.size()])));
+        }
 
-	@Override
-	public List<UserActivityDataUsageDocument> getUserActivityDataUsageEntries(String username, int timeRangeInDays) {
-		return getUserActivityEntries(username, timeRangeInDays, COLLECTION_NAME_DATA_USAGE,
-				UserActivityDataUsageDocument.class);
-	}
+        List<String> distinctUserNames = mongoTemplate.getCollection(UserActivityLocationDocument.COLLECTION_NAME)
+                .distinct(UserActivityLocationDocument.ENTITY_ID_FIELD_NAME, query.getQueryObject());
+        return new HashSet<>(distinctUserNames);
+    }
+
+    @Override
+    public List<UserActivityDataUsageDocument> getUserActivityDataUsageEntries(String username, int timeRangeInDays) {
+        return getUserActivityEntries(username, timeRangeInDays, COLLECTION_NAME_DATA_USAGE,
+                UserActivityDataUsageDocument.class);
+    }
 
     @Override
     protected Logger getLogger() {

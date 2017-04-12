@@ -11,60 +11,58 @@ import java.util.Optional;
 
 public abstract class BaseUserActivityConfigurationService implements UserActivityConfigurationService {
 
-	private final ObjectMapper objectMapper = new ObjectMapper();
+    private static final Logger logger = Logger.getLogger(BaseUserActivityConfigurationService.class);
 
-	@Autowired
-	protected ApplicationConfigurationService applicationConfigurationService;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
-	public void afterPropertiesSet() throws Exception {
-		if (applicationConfigurationService != null) {
-			saveUserActivityConfigurationToDatabase();
-		}
-		else {
-			throw new RuntimeException(String.format("Failed to inject ApplicationConfigurationService. User Activity %s Configuration was not set" , getActivityName()));
-		}
-	}
+    @Autowired
+    protected ApplicationConfigurationService applicationConfigurationService;
 
-	public UserActivityConfiguration getUserActivityConfigurationFromDatabase() {
-		final Optional<String> optionalUserActivityConfiguration = applicationConfigurationService.
-				getApplicationConfigurationAsString(getConfigurationKey());
-		if (optionalUserActivityConfiguration.isPresent()) {
-			try {
-				return objectMapper.readValue(optionalUserActivityConfiguration.get(), UserActivityConfiguration.class);
-			} catch (IOException e) {
-				throw new RuntimeException(String.format("Failed to get user activity %s from database",
-						getActivityName()), e);
-			}
-		} else {
-			throw new RuntimeException(String.format("Failed to get user activity %s from database. Got empty response",
-					getActivityName()));
-		}
-	}
+    public void afterPropertiesSet() throws Exception {
+        if (applicationConfigurationService != null) {
+            saveUserActivityConfigurationToDatabase();
+        } else {
+            throw new RuntimeException(String.format("Failed to inject ApplicationConfigurationService. User Activity %s Configuration was not set", getActivityName()));
+        }
+    }
 
-	public void saveUserActivityConfigurationToDatabase() throws JsonProcessingException {
-		UserActivityConfiguration userActivityConfiguration = createUserActivityConfiguration();
-		String userActivityConfigurationAsJsonString = objectMapper.writeValueAsString(userActivityConfiguration);
-		//TODO: replace the saving. Saving as JSON might not work with the UI configuration. Need to be tested
-		applicationConfigurationService.insertConfigItem(getConfigurationKey(), userActivityConfigurationAsJsonString);
-	}
+    public UserActivityConfiguration getUserActivityConfigurationFromDatabase() {
+        final Optional<String> optionalUserActivityConfiguration = applicationConfigurationService.
+                getApplicationConfigurationAsString(getConfigurationKey());
+        if (optionalUserActivityConfiguration.isPresent()) {
+            try {
+                return objectMapper.readValue(optionalUserActivityConfiguration.get(), UserActivityConfiguration.class);
+            } catch (IOException e) {
+                throw new RuntimeException(String.format("Failed to get user activity %s from database",
+                        getActivityName()), e);
+            }
+        } else {
+            throw new RuntimeException(String.format("Failed to get user activity %s from database. Got empty response",
+                    getActivityName()));
+        }
+    }
 
-	@Override
-	public UserActivityConfiguration getUserActivityConfiguration() {
-		try {
-			return getUserActivityConfigurationFromDatabase();
-		} catch (RuntimeException e) {
-			getLogger().error(e.getLocalizedMessage());
-			throw e;
-		}
-	}
+    public void saveUserActivityConfigurationToDatabase() throws JsonProcessingException {
+        UserActivityConfiguration userActivityConfiguration = createUserActivityConfiguration();
+        String userActivityConfigurationAsJsonString = objectMapper.writeValueAsString(userActivityConfiguration);
+        applicationConfigurationService.insertConfigItem(getConfigurationKey(), userActivityConfigurationAsJsonString);
+    }
 
-	public abstract Logger getLogger();
+    @Override
+    public UserActivityConfiguration getUserActivityConfiguration() {
+        try {
+            return getUserActivityConfigurationFromDatabase();
+        } catch (RuntimeException e) {
+            logger.error(e.getLocalizedMessage());
+            throw e;
+        }
+    }
 
-	@Override
-	public abstract String getActivityName();
+    @Override
+    public abstract String getActivityName();
 
-	protected abstract String getConfigurationKey();
+    protected abstract String getConfigurationKey();
 
-	public abstract UserActivityConfiguration createUserActivityConfiguration();
+    public abstract UserActivityConfiguration createUserActivityConfiguration();
 
 }
