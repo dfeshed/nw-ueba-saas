@@ -182,6 +182,10 @@ const mergeSocketConfigs = function(configGenerators, environment) {
  */
 const addFeatureFlags = function(environment) {
 
+  if (!environment) {
+    return {};
+  }
+
   if (featureFlagConfig) {
     return featureFlagConfig;
   }
