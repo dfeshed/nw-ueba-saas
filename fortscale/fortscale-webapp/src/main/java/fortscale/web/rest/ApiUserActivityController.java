@@ -36,16 +36,17 @@ public class ApiUserActivityController extends DataQueryController {
 
     static final String DEFAULT_TIME_RANGE = "90";
     private static final String DEFAULT_RETURN_ENTRIES_LIMIT = "3";
-
     @Value("${working.hours.default.threshold}")
     private String DEFAULT_WORK_HOURS_THRESHOLD;
+
     private static final String LOCATIONS_ACTIVITY = "locations";
-    public static final String SOURCE_DEVICES = "source-devices";
-    public static final String TARGET_DEVICES = "target-devices";
-    public static final String AUTHENTICATIONS = "authentications";
-    public static final String DATA_USAGE = "data-usage";
-    public static final String WORKING_HOURS = "working-hours";
-    public static final String TOP_APPLICATIONS = "top-applications";
+    private static final String SOURCE_DEVICES = "source-devices";
+    private static final String TARGET_DEVICES = "target-devices";
+    private static final String AUTHENTICATIONS = "authentications";
+    private static final String DATA_USAGE = "data-usage";
+    private static final String WORKING_HOURS = "working-hours";
+    private static final String TOP_APPLICATIONS = "top-applications";
+    private static final String TOP_DIRECTORIES = "top-directories";
 
     private final UserActivityService userActivityService;
     private static final Logger logger = Logger.getLogger(ApiUserActivityController.class);
@@ -203,15 +204,24 @@ public class ApiUserActivityController extends DataQueryController {
                 this::convertTopApplicationsDocumentsResponse,
                 TOP_APPLICATIONS);
         return userActivity;
+    }
 
-        //Use both "method reference" and lambda function only for examples
-//        DataBean<List<UserActivityData.NameCountEntry>> userActivityApplicationsBean = new DataBean<>();
-//        userActivityApplicationsBean.setData(Arrays.asList(
-//                new UserActivityData.NameCountEntry("outlook", 300, "mail"),
-//                new UserActivityData.NameCountEntry("explore", 32, "bla")
-//
-//        ));
-//        return userActivityApplicationsBean;
+    @RequestMapping(value = "/" + TOP_DIRECTORIES, method = RequestMethod.GET)
+    @ResponseBody
+    @LogException
+    public DataBean<List<UserActivityData.NameCountEntry>> getTopDirectories(@PathVariable String id,
+                                                                              @RequestParam(required = false, defaultValue = DEFAULT_TIME_RANGE, value = "time_range") Integer timePeriodInDays,
+                                                                              @RequestParam(required = false, defaultValue = "4", value = "limit") Integer limit) {
+
+
+        DataBean<List<UserActivityData.NameCountEntry>> userActivity = getUserAttribute(
+                id,
+                timePeriodInDays,
+                limit,
+                userActivityService::getUserActivityTopDirectoriesEntries,
+                this::convertTopDirectoriesDocumentsResponse,
+                TOP_DIRECTORIES);
+        return userActivity;
     }
 
     /**
@@ -319,11 +329,11 @@ public class ApiUserActivityController extends DataQueryController {
     }
 
     /**
-     * Convert list of UserActivityWorkingHoursDocument to list of UserActivityData.WorkingHourEntry
+     * Convert list of UserActivityTopApplicationsDocument to list of UserActivityData.NameCountEntry
      *
      * @param documentList
      * @param limit
-     * @return list of UserActivityData.WorkingHourEntry
+     * @return list of UserActivityData.NameCountEntry
      */
     private List<UserActivityData.NameCountEntry> convertTopApplicationsDocumentsResponse(List<UserActivityTopApplicationsDocument> documentList, int limit) {
 
@@ -336,14 +346,26 @@ public class ApiUserActivityController extends DataQueryController {
         }
 
         return nameCountEntries;
-//        List<UserActivityData.NameCountEntry> workingHours = hoursToAmountFilteredByThreshold.stream()
-//                .map(Map.Entry::getKey) //get only the hour
-//                .map(Integer::valueOf)  //convert hour as string to Integer
-//                .distinct()             //get each hour only once
-//                .map(UserActivityData.NameCountEntry::new) // convert to WorkingHourEntry
-//                .collect(Collectors.toList());
-//        return workingHours;
+    }
 
+    /**
+     * Convert list of UserActivityTopDirectoriesDocument to list of UserActivityData.NameCountEntry
+     *
+     * @param documentList
+     * @param limit
+     * @return list of UserActivityData.NameCountEntry
+     */
+    private List<UserActivityData.NameCountEntry> convertTopDirectoriesDocumentsResponse(List<UserActivityTopDirectoriesDocument> documentList, int limit) {
+
+        final UserActivityEntryHashMap userActivityDataEntries = userDeviceUtils.getUserActivityDataEntries(documentList, null);
+        final Set<Map.Entry<String, Double>> topEntries = userActivityDataEntries.getTopEntries(limit);
+
+        final ArrayList<UserActivityData.NameCountEntry> nameCountEntries = new ArrayList<>();
+        for (Map.Entry<String, Double> entry : topEntries) {
+            nameCountEntries.add(new UserActivityData.NameCountEntry(entry.getKey(), (entry.getValue().intValue())));
+        }
+
+        return nameCountEntries;
     }
 
     /**

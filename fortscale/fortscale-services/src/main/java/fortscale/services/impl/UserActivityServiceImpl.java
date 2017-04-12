@@ -56,6 +56,11 @@ public class UserActivityServiceImpl implements UserActivityService {
     }
 
     @Override
+    public List<UserActivityTopDirectoriesDocument> getUserActivityTopDirectoriesEntries(String id, int timeRangeInDays) {
+        return userActivityRepository.getUserActivityTopDirectoriesEntries(id, timeRangeInDays);
+    }
+
+    @Override
     public Set<String> getUserIdByUserLocation(List<String> userLocations) {
         return userActivityRepository.getUserIdByLocation(userLocations);
     }

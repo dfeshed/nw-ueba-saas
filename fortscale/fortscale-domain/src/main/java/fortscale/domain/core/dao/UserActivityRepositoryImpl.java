@@ -20,11 +20,12 @@ public class UserActivityRepositoryImpl extends UserActivityBaseRepository imple
     private static final String COLLECTION_NAME_LOCATION = UserActivityLocationDocument.COLLECTION_NAME;
     private static final String COLLECTION_NAME_NETWORK_AUTHENTICATION = UserActivityNetworkAuthenticationDocument.COLLECTION_NAME;
     private static final String COLLECTION_NAME_WORKING_HOURS = UserActivityWorkingHoursDocument.COLLECTION_NAME;
-    public static final String COLLECTION_NAME_ORGANIZATION = OrganizationActivityLocationDocument.COLLECTION_NAME;
-    public static final String COLLECTION_NAME_SOURCE_MACHINE = UserActivitySourceMachineDocument.COLLECTION_NAME;
+    private static final String COLLECTION_NAME_ORGANIZATION = OrganizationActivityLocationDocument.COLLECTION_NAME;
+    private static final String COLLECTION_NAME_SOURCE_MACHINE = UserActivitySourceMachineDocument.COLLECTION_NAME;
     private static final String COLLECTION_NAME_TARGET_DEVICE = UserActivityTargetDeviceDocument.COLLECTION_NAME;
     private static final String COLLECTION_NAME_DATA_USAGE = UserActivityDataUsageDocument.COLLECTION_NAME;
     private static final String COLLECTION_NAME_TOP_APPLICATIONS = UserActivityTopApplicationsDocument.COLLECTION_NAME;
+    private static final String COLLECTION_NAME_TOP_DIRECTORIES = UserActivityTopDirectoriesDocument.COLLECTION_NAME;
 
     @Override
     public List<UserActivityLocationDocument> getUserActivityLocationEntries(String username, int timeRangeInDays) {
@@ -65,13 +66,18 @@ public class UserActivityRepositoryImpl extends UserActivityBaseRepository imple
     }
 
     @Override
+    public List<UserActivityTopDirectoriesDocument> getUserActivityTopDirectoriesEntries(String username, int timeRangeInDays) {
+        return getUserActivityEntries(username, timeRangeInDays, COLLECTION_NAME_TOP_DIRECTORIES, UserActivityTopDirectoriesDocument.class);
+    }
+
+    @Override
     public Set<String> getUserIdByLocation(List<String> locations) {
         Query query = new Query();
         String fieldName = String.format("%s.%s.", UserActivityLocationDocument.LOCATIONS_FIELD_NAME, UserActivityLocationDocument.COUNTRY_HISTOGRAM_FIELD_NAME);
 
         if (CollectionUtils.isNotEmpty(locations)) {
             List<Criteria> locationsCriteriaList = new ArrayList<>();
-            locations.stream().forEach(location -> locationsCriteriaList.add(new Criteria(fieldName + location).exists(true)));
+            locations.forEach(location -> locationsCriteriaList.add(new Criteria(fieldName + location).exists(true)));
             query.addCriteria(new Criteria().orOperator(locationsCriteriaList.toArray(new Criteria[locations.size()])));
         }
 
