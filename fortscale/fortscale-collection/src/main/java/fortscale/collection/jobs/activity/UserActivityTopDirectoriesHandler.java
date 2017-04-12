@@ -6,15 +6,16 @@ import fortscale.collection.services.UserActivityDataSourceConfiguration;
 import fortscale.collection.services.UserActivityTopDirectoriesService;
 import fortscale.domain.core.activities.UserActivityTopDirectoriesDocument;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-public class UserActivityTopDirectoriesHandler extends UserActivityBaseHandler{
-
-
+@Component
+public class UserActivityTopDirectoriesHandler extends UserActivityBaseHandler {
+    
     private static final UserActivityType ACTIVITY = UserActivityType.TOP_DIRECTORIES;
     public static final String SRC_NETWORK_FOLDER_PATHS_HISTOGRAM_FEATURE_NAME = "src_network_folder_paths_histogram";
 
