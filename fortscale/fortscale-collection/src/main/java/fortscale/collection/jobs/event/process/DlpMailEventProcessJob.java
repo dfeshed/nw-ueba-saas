@@ -4,10 +4,12 @@ import fortscale.collection.io.BufferedLineReader;
 import fortscale.collection.monitoring.ItemContext;
 import fortscale.collection.morphlines.RecordExtensions;
 import fortscale.collection.morphlines.commands.DlpMailEventsCache;
+import fortscale.collection.morphlines.commands.EventsJoinerCache;
 import fortscale.utils.logging.Logger;
 import org.apache.commons.lang3.StringUtils;
 import org.kitesdk.morphline.api.Record;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 
 import java.io.File;
 import java.io.FileReader;
@@ -32,6 +34,8 @@ public class DlpMailEventProcessJob extends EventProcessJob {
 
     @Autowired
     private DlpMailEventsCache dlpMailEventsCache;
+
+    private EventsJoinerCache eventsJoinerCache = EventsJoinerCache.getInstance("dlpmail_reducer", "1");
 
 
 
@@ -72,7 +76,8 @@ public class DlpMailEventProcessJob extends EventProcessJob {
                     taskMonitoringHelper.handleNewEvent(file.getName());
                     jobMetrics.lines++;
                     List<Record> records = processLineWithAggregation(line, itemContext);
-                    if (records.isEmpty()) {
+                    if (CollectionUtils.isEmpty(records)) {
+//                        if (records == null && !eventsJoinerCache.)
                         logger.debug("Current line was cached. Moving to process the next line.");
                         continue;
                     }
@@ -124,7 +129,7 @@ public class DlpMailEventProcessJob extends EventProcessJob {
 
             return true;
         }
-        
+
     }
 
     protected List<Record> processLineWithAggregation(String line, ItemContext itemContext) throws Exception {
