@@ -16,7 +16,7 @@ test('packet text', function(assert) {
     'payloadSize': 618,
     'sequence': 3946844195,
     'side': 'response',
-    'text': 'Testing text',
+    'text': ['Testing text'],
     'timestamp': 1449631503277
   }));
 
@@ -84,7 +84,7 @@ test('log text', function(assert) {
     'payloadSize': 618,
     'sequence': 3946844195,
     'side': 1,
-    'text': 'Testing log text',
+    'text': ['Testing log text'],
     'timestamp': 1449631503277
   }));
 

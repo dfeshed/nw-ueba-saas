@@ -6,7 +6,7 @@ import { handleActions } from 'redux-actions';
 import { handle } from 'redux-pack';
 import { enhancePackets } from './packets/util';
 
-const { set, String: { htmlSafe } } = Ember;
+const { set } = Ember;
 
 // State of server jobs for downloading file(s)
 const fileExtractInitialState = {
@@ -255,17 +255,23 @@ const augmentPackets = (data, previousPosition = 0) => {
   }));
 };
 
+/*
+ * Processes an array of text entries and normalizes their content
+ * for use in the browser. Results in an html-ified array of lines
+ * stored in each text entries. Subsequent views will decide what to
+ * do with the lines.
+ */
 const generateHTMLSafeText = (data) => {
   data = Array.isArray(data) ? data : [];
   return data.map((d) => {
     if (typeof(d.text) === 'string') {
-      const safeString = d.text
+      const htmlified = d.text
         .replace(/\</g, '&lt;')
         .replace(/\>/g, '&gt;')
         .replace(/(?:\r\n|\r|\n)/g, '<br>')
         .replace(/\t/g, '&nbsp;&nbsp;')
         .replace(/[\x00-\x1F]/g, '.');
-      set(d, 'text', htmlSafe(safeString));
+      set(d, 'text', htmlified.split('<br>'));
     }
     return d;
   });

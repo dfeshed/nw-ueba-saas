@@ -16,6 +16,10 @@
       @include rsa-font-monospace();
       margin-top: rsa-whitespace();
     }
+    .load-more-text-entries {
+      width: 100%;
+      text-align: center;
+    }
   }
   .no-text {
     @include error-center();

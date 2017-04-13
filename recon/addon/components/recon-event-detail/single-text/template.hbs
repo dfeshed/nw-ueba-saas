@@ -1,10 +1,11 @@
 {{recon-event-detail/single-text/header
-  isSticky=false
   isLog=isLog
+  isSticky=false
   side=packet.side
 }}
 <div class="text-container">
-  {{packet.text}}
+  {{ textEntriesToDisplay }}
+
   {{#rsa-content-tethered-panel position='top' panelId=(concat 'span' index) hideOnLeave=false displayCloseButton=hasCloseButton}}
     {{#if isActionClicked }}
       <header>{{tooltipHeading}}</header>
@@ -22,3 +23,13 @@
     {{/if}}
   {{/rsa-content-tethered-panel}}
 </div>
+
+{{#if remainingLinesHidden}}
+  <div class="load-more-text-entries">
+    {{#rsa-form-button
+      defaultAction=(action 'showRemainingLines')
+      isDisabled=renderingRemainingLines}}
+      {{ remainingLineCountMessage }}
+    {{/rsa-form-button}}
+  </div>
+{{/if}}

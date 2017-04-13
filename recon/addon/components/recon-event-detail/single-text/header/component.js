@@ -7,7 +7,7 @@ export default Component.extend({
   classNames: ['request-response-header'],
   layout,
 
-  isLog: false,
+  isLog: null,
   isSticky: false,
   side: null,
 
