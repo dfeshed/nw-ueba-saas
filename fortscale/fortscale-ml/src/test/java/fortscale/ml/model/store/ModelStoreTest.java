@@ -1,8 +1,8 @@
 package fortscale.ml.model.store;
 
-import fortscale.aggregation.util.MongoDbUtilService;
 import fortscale.ml.model.Model;
 import fortscale.ml.model.ModelConf;
+import fortscale.utils.mongodb.util.MongoDbUtilService;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

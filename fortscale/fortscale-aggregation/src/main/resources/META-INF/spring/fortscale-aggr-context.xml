@@ -17,7 +17,7 @@
 	<bean id="aggrFeatureEventBuilderService" class="fortscale.aggregation.feature.event.AggrFeatureEventBuilderService"/>
 	<bean id="aggregatedEventQueryService" class="fortscale.aggregation.feature.event.AggregatedEventQueryMongoService"/>
 	<bean id="featureBucketQueryService" class="fortscale.aggregation.feature.event.FeatureBucketQueryMongoService"/>
-	<bean id="mongoDbUtilService" class="fortscale.aggregation.util.MongoDbUtilService" />
+	<bean id="mongoDbUtilService" class="fortscale.utils.mongodb.util.MongoDbUtilServiceConfig" />
 
 
 

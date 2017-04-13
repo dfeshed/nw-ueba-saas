@@ -2,13 +2,13 @@ package fortscale.entity.event;
 
 import com.mongodb.BulkWriteResult;
 import fortscale.aggregation.feature.event.ScoredEventsCounterReader;
-import fortscale.aggregation.util.MongoDbUtilService;
 import fortscale.common.metrics.PersistenceTaskStoreMetrics;
 import fortscale.domain.SMART.EntityEvent;
 import fortscale.entity.event.translator.EntityEventTranslationService;
 import fortscale.utils.MongoStoreUtils;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.mongodb.FIndex;
+import fortscale.utils.mongodb.util.MongoDbUtilService;
 import fortscale.utils.monitoring.stats.StatsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

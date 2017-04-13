@@ -1,6 +1,6 @@
 package fortscale.aggregation.feature.bucket.strategy;
 
-import fortscale.aggregation.util.MongoDbUtilService;
+import fortscale.utils.mongodb.util.MongoDbUtilService;
 import fortscale.utils.monitoring.stats.StatsService;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
