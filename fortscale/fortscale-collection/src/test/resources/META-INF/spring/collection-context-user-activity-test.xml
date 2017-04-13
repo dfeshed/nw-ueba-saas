@@ -31,5 +31,8 @@
     <context:spring-configured />
     <context:annotation-config />
     <context:component-scan base-package="fortscale.collection.jobs.activity" />
-    
+
+    <import resource="classpath*:META-INF/spring/collection-context-test-morphline.xml"/>
+
+
 </beans>
