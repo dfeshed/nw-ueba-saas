@@ -1,18 +1,26 @@
 package fortscale.services.impl;
 
+import fortscale.domain.core.ApplicationConfiguration;
 import fortscale.domain.core.activities.*;
 import fortscale.domain.core.dao.UserActivityRepository;
+import fortscale.services.ApplicationConfigurationService;
 import fortscale.services.UserActivityService;
+import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service("UserActivityService")
 public class UserActivityServiceImpl implements UserActivityService {
 
+    private static final Logger logger = Logger.getLogger(UserActivityServiceImpl.class);
+
+    private static final String BLACKLISTED_DIRECTORIES_KEY = "user_activity.directories.blacklisted_directories";
     private final UserActivityRepository userActivityRepository;
+
+    @Autowired
+    private ApplicationConfigurationService applicationConfigurationService;
 
     @Autowired
     public UserActivityServiceImpl(UserActivityRepository userActivityRepository) {
@@ -61,6 +69,18 @@ public class UserActivityServiceImpl implements UserActivityService {
     }
 
     @Override
+    public List<UserActivityTopDirectoriesDocument> getUserActivityTopDirectoriesEntriesWithBlacklistFiltering(String id, int timeRangeInDays) {
+        final List<UserActivityTopDirectoriesDocument> userActivityTopDirectoriesEntries = getUserActivityTopDirectoriesEntries(id, timeRangeInDays);
+        if(!filterBlacklistedDirectories(userActivityTopDirectoriesEntries)) {
+            logger.error("Failed to getUserActivityTopDirectoriesEntriesWithBlacklistFiltering for id:{}, timeRangeInDays:{}", id, timeRangeInDays);
+            return Collections.emptyList();
+        }
+
+        return userActivityTopDirectoriesEntries;
+
+    }
+
+    @Override
     public Set<String> getUserIdByUserLocation(List<String> userLocations) {
         return userActivityRepository.getUserIdByLocation(userLocations);
     }
@@ -69,4 +89,27 @@ public class UserActivityServiceImpl implements UserActivityService {
         return userActivityRepository.getUserActivityTargetDeviceEntries(id, timeRangeInDays);
     }
 
+    protected boolean filterBlacklistedDirectories(List<UserActivityTopDirectoriesDocument> userActivityTopDirectoriesEntries) {
+        for (UserActivityTopDirectoriesDocument userActivityTopDirectoriesEntry : userActivityTopDirectoriesEntries) {
+            final Map<String, Double> histogram = userActivityTopDirectoriesEntry.getHistogram();
+            final Set<String> directories = histogram.keySet();
+            final ApplicationConfiguration blacklistedDirectoriesConfiguration = applicationConfigurationService.getApplicationConfiguration(BLACKLISTED_DIRECTORIES_KEY);
+            if (blacklistedDirectoriesConfiguration == null) {
+                final String msg = "Can't filter blacklisted directories because there's no configuration for blacklisted directories. key : " + BLACKLISTED_DIRECTORIES_KEY;
+                logger.error(msg);
+                return false;
+            }
+            final String blacklistedDirectories = blacklistedDirectoriesConfiguration.getValue();
+            final Map<String, Double> filteredHistogram = new HashMap<>();
+            for (String directory : directories) {
+                if (!blacklistedDirectories.contains(directory)) {
+                    final Double directoryCount = histogram.get(directory);
+                    filteredHistogram.put(directory, directoryCount);
+                }
+            }
+            userActivityTopDirectoriesEntry.getDirectories().setDirectoriesHistogram(filteredHistogram);
+        }
+
+        return true;
+    }
 }

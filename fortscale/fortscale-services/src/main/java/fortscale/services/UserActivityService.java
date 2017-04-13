@@ -26,5 +26,7 @@ public interface UserActivityService {
 
     List<UserActivityTopDirectoriesDocument> getUserActivityTopDirectoriesEntries(String id, int timeRangeInDays);
 
+    List<UserActivityTopDirectoriesDocument> getUserActivityTopDirectoriesEntriesWithBlacklistFiltering(String id, int timeRangeInDays);
+
     Set<String> getUserIdByUserLocation(List<String> userLocations);
 }
