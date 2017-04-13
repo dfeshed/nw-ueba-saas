@@ -401,8 +401,8 @@ public class UserScoreServiceImpl implements UserScoreService {
         // Calculating the score range for each severity
         while (doubleSeverityEntry != null) {
             if (!currSeverity.equals(doubleSeverityEntry.getValue())){
-                rangeMap.put(currSeverity, new Double[]{minLimit, doubleSeverityEntry.getKey()});
-                minLimit = doubleSeverityEntry.getKey();
+                rangeMap.put(currSeverity, new Double[]{minLimit, maxLimit});
+                minLimit = maxLimit;
                 currSeverity = doubleSeverityEntry.getValue();
             }
 
