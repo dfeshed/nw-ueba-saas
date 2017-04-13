@@ -1,9 +1,12 @@
-package fortscale.collection.morphlines.dlpmail.digitalguardian;
+package fortscale.collection.morphlines.dlp.dlpmail.digitalguardian;
 
 import fortscale.collection.morphlines.MorphlinesTester;
 import fortscale.utils.impala.ImpalaParser;
 import fortscale.utils.properties.PropertiesResolver;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -36,19 +39,6 @@ public class DgMailParseTest {
 	}
 
 
-	private void runOneLineTestWithDummyEvent(String testCase, DgEventInput input, DgMailEventAfterEtl expected) {
-		final String inputLine = input.toString();
-		final String expectedOutput = expected.toString();
-		if (expected.eventType.equals("attachment")) {
-			morphlineTester.testSingleLine(testCase, inputLine, expectedOutput);
-		}
-		else {
-			morphlineTester.runMorphlines(inputLine);
-			morphlineTester.testSingleLine(testCase, DUMMY_EVENT_STRING, expectedOutput);
-		}
-	}
-
-
 	@Test
 	public void test_parse_file() {
 		String testCase = "Test the parsing (see if the fields are where we expect them)";
@@ -65,7 +55,7 @@ public class DgMailParseTest {
 				.setIpAddress("10.9.9.9")
 				.setHostname("keizer-vm-w81")
 				.setNormalizedSrcMachine("keizer-vm-w81")
-				.setApplication("outlook.exe")
+				.setExecutingApplication("outlook.exe")
 				.setDestinationFile("ppo enroll form - signed.pdf")
 				.setDetailFileSize(286694)
 				.setDestinationDirectory("c:\\users\\rkeizer\\documents\\hr\\forms\\")
@@ -110,38 +100,39 @@ public class DgMailParseTest {
 		morphlineTester.testSingleLineFiltered(testCase, inputLine);
 	}
 
-//	@Test
-//	public void test_remove_verdasys_prefix() {
-//		String testCase = "Test that the verdasys\r prefix is removed";
-//		DgEventInput input = new DgEventInputBuilder()
-//				.setAgentUtcTime("06/12/2016 16:04")
-//				.setOperation("Send Mail")
-//				// interesting test stuff starts here
-//				.setComputerName("verdasys\rexample_hostname")
-//				.setUsername("verdasys\rexample_username")
-//				.createDgEvent();
-//
-//		DgMailEventAfterEtl expected = new DgMailEventAfterEtlBuilder()
-//				.setDateTime("2016-06-12 16:04:00")
-//				.setDateTimeUnix("1465747440")
-//				.setEventDescription("Send Mail")
-//				.setFullName("some_givenName some_surname")
-//				.setEventType("attachment")
-//				.setIsAttachmentExtensionBlacklisted("false")
-//				.setIsExternal(true)
-//				.setNumOfRecipients(0)
-//				.setDataSource("dlpmail")
-//				.setLastState("etl")
-//				.setEmailRecipient("some_emailRecipient") // because the parsing wont find the domain - this is ok for this test
-//				.setEmailRecipientDomain("some_emailRecipient") // because the parsing wont find the domain - this is ok for this test
-//				// interesting test stuff starts here
-//				.setHostname("example_hostname")
-//				.setNormalizedSrcMachine("example_hostname")
-//				.setUsername("example_username")
-//				.createDgEventAfterEtl();
-//
-//		runOneLineTestWithDummyEvent(testCase, input, expected);
-//	}
+	@Test
+	@Ignore
+	public void test_remove_verdasys_prefix() {
+		String testCase = "Test that the verdasys\r prefix is removed";
+		DgEventInput input = new DgEventInputBuilder()
+				.setAgentUtcTime("06/12/2016 16:04")
+				.setOperation("Send Mail")
+				// interesting test stuff starts here
+				.setComputerName("verdasys\rexample_hostname")
+				.setUsername("verdasys\rexample_username")
+				.createDgEvent();
+
+		DgMailEventAfterEtl expected = new DgMailEventAfterEtlBuilder()
+				.setDateTime("2016-06-12 16:04:00")
+				.setDateTimeUnix("1465747440")
+				.setEventDescription("Send Mail")
+				.setFullName("some_givenName some_surname")
+				.setEventType("attachment")
+				.setIsAttachmentExtensionBlacklisted("false")
+				.setIsExternal(true)
+				.setNumOfRecipients(0)
+				.setDataSource("dlpmail")
+				.setLastState("etl")
+				.setEmailRecipient("some_emailRecipient") // because the parsing wont find the domain - this is ok for this test
+				.setEmailRecipientDomain("some_emailRecipient") // because the parsing wont find the domain - this is ok for this test
+				// interesting test stuff starts here
+				.setHostname("example_hostname")
+				.setNormalizedSrcMachine("example_hostname")
+				.setUsername("example_username")
+				.createDgEventAfterEtl();
+
+		morphlineTester.testSingleLine(testCase, input.toString(), expected.toString());
+	}
 
 	@Test
 	public void test_remove_quotes_from_email_sender_and_recipient() {
@@ -172,7 +163,7 @@ public class DgMailParseTest {
 				.createDgEventAfterEtl();
 
 
-		runOneLineTestWithDummyEvent(testCase, input, expected);
+		morphlineTester.testSingleLine(testCase, input.toString(), expected.toString());
 	}
 
 	@Test
@@ -201,7 +192,7 @@ public class DgMailParseTest {
 				.setEmailRecipientDomain("somedomain.com") // because the parsing wont find the @ - this is ok for this test
 				.createDgEventAfterEtl();
 
-		runOneLineTestWithDummyEvent(testCase, input, expected);
+		morphlineTester.testSingleLine(testCase, input.toString(), expected.toString());
 	}
 
 	@Test
@@ -228,7 +219,7 @@ public class DgMailParseTest {
 				.setFullName("some_givenName some_surname")
 				.createDgEventAfterEtl();
 
-		runOneLineTestWithDummyEvent(testCase, input, expected);
+		morphlineTester.testSingleLine(testCase, input.toString(), expected.toString());
 	}
 
 	@Test
@@ -260,7 +251,7 @@ public class DgMailParseTest {
 				.setDetailFileSize(500)
 				.createDgEventAfterEtl();
 
-		runOneLineTestWithDummyEvent(testCase, input, expected);
+		morphlineTester.testSingleLine(testCase, input.toString(), expected.toString());
 	}
 
 	@Test
@@ -289,7 +280,7 @@ public class DgMailParseTest {
 				.setIsExternal(true)
 				.createDgEventAfterEtl();
 
-		runOneLineTestWithDummyEvent(testCase, input, expected);
+		morphlineTester.testSingleLine(testCase, input.toString(), expected.toString());
 	}
 
 	@Test
@@ -318,7 +309,7 @@ public class DgMailParseTest {
 				.setIsExternal(false)
 				.createDgEventAfterEtl();
 
-		runOneLineTestWithDummyEvent(testCase, input, expected);
+		morphlineTester.testSingleLine(testCase, input.toString(), expected.toString());
 	}
 
 	@Test
@@ -337,7 +328,7 @@ public class DgMailParseTest {
 				.setFullName("some_givenName some_surname")
 				.setIsAttachmentExtensionBlacklisted("false")
 				.setIsExternal(true)
-				.setNumOfRecipients(1)
+				.setNumOfRecipients(0)
 				.setDataSource("dlpmail")
 				.setLastState("etl")
 				.setEmailRecipient("some_emailRecipient") // because the parsing wont find the @ - this is ok for this test
@@ -347,7 +338,7 @@ public class DgMailParseTest {
 				.setEventType("recipient")
 				.createDgEventAfterEtl();
 
-		runOneLineTestWithDummyEvent(testCase, input, expected);
+		morphlineTester.testSingleLine(testCase, input.toString(), expected.toString());
 	}
 
 	@Test
@@ -376,7 +367,7 @@ public class DgMailParseTest {
 				.setEventType("attachment")
 				.createDgEventAfterEtl();
 
-		runOneLineTestWithDummyEvent(testCase, input, expected);
+		morphlineTester.testSingleLine(testCase, input.toString(), expected.toString());
 	}
 
 	@Test
@@ -405,7 +396,7 @@ public class DgMailParseTest {
 				.setEventType("message_body")
 				.createDgEventAfterEtl();
 
-		runOneLineTestWithDummyEvent(testCase, input, expected);
+		morphlineTester.testSingleLine(testCase, input.toString(), expected.toString());
 	}
 
 }

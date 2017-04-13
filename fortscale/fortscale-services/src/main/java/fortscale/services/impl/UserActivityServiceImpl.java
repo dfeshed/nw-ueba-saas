@@ -26,7 +26,7 @@ public class UserActivityServiceImpl implements UserActivityService {
 
     @Override
     public List<UserActivityNetworkAuthenticationDocument> getUserActivityNetworkAuthenticationEntries(String id,
-			int timeRangeInDays) {
+                                                                                                       int timeRangeInDays) {
         return userActivityRepository.getUserActivityNetworkAuthenticationEntries(id, timeRangeInDays);
     }
 
@@ -50,7 +50,13 @@ public class UserActivityServiceImpl implements UserActivityService {
         return userActivityRepository.getUserActivityDataUsageEntries(id, timeRangeInDays);
     }
 
-    @Override public Set<String> getUserIdByUserLocation(List<String> userLocations) {
+    @Override
+    public List<UserActivityTopApplicationsDocument> getUserActivityTopApplicationsEntries(String id, int timeRangeInDays) {
+        return userActivityRepository.getUserActivityTopApplicationsEntries(id, timeRangeInDays);
+    }
+
+    @Override
+    public Set<String> getUserIdByUserLocation(List<String> userLocations) {
         return userActivityRepository.getUserIdByLocation(userLocations);
     }
 

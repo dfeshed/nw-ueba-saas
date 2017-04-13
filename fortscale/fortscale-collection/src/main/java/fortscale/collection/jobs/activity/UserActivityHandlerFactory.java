@@ -5,10 +5,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-/**
- * @author gils
- * 31/05/2016
- */
 @Component
 public class UserActivityHandlerFactory {
 
@@ -23,11 +19,11 @@ public class UserActivityHandlerFactory {
         UserActivityType activityType;
         try {
             activityType = UserActivityType.valueOf(activityName.toUpperCase());
-        } catch (Exception e){
+        } catch (Exception e) {
             throw new UnsupportedOperationException("Could not find activity of type " + activityName);
         }
-        for (UserActivityHandler userActivityHandler : allActivityHandlers){
-            if (userActivityHandler.getActivity().equals(activityType)){
+        for (UserActivityHandler userActivityHandler : allActivityHandlers) {
+            if (userActivityHandler.getActivity().equals(activityType)) {
                 return userActivityHandler;
             }
         }

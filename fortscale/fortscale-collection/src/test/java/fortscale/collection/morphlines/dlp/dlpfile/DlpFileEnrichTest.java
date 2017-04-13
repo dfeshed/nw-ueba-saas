@@ -1,10 +1,10 @@
-package fortscale.collection.morphlines.dlpfile;
+package fortscale.collection.morphlines.dlp.dlpfile;
 
 import fortscale.collection.morphlines.MorphlinesTester;
-import fortscale.collection.morphlines.dlpfile.dg.DgFileEventAfterEtl;
-import fortscale.collection.morphlines.dlpfile.dg.DgFileEventAfterEtlBuilder;
-import fortscale.collection.morphlines.dlpmail.digitalguardian.DgEventInput;
-import fortscale.collection.morphlines.dlpmail.digitalguardian.DgEventInputBuilder;
+import fortscale.collection.morphlines.dlp.dlpfile.dg.DgFileEventAfterEtl;
+import fortscale.collection.morphlines.dlp.dlpfile.dg.DgFileEventAfterEtlBuilder;
+import fortscale.collection.morphlines.dlp.dlpmail.digitalguardian.DgEventInput;
+import fortscale.collection.morphlines.dlp.dlpmail.digitalguardian.DgEventInputBuilder;
 import fortscale.utils.impala.ImpalaParser;
 import fortscale.utils.properties.PropertiesResolver;
 import org.junit.After;
@@ -155,7 +155,7 @@ public class DlpFileEnrichTest {
                 .setOperation("File Open")
                         // interesting test stuff starts here
                 .setAgentUtcTime("06/12/2016 16:04")
-                .setApplication("mstsc.exe")
+                .setExecutingApplication("mstsc.exe")
                 .createDgEvent();
 
         DgFileEventAfterEtl expected = new DgFileEventAfterEtlBuilder()
@@ -166,7 +166,7 @@ public class DlpFileEnrichTest {
                 .setIsAdminActivity("false")
                 .setIsRdp("true")
                 .setIsRegistryChanged("false")
-                .setApplication("mstsc.exe")
+                .setExecutingApplication("mstsc.exe")
                         // interesting test stuff starts here
                 .setDateTimeUnix("1465747440")
                 .setDateTime("2016-06-12 16:04:00")
@@ -185,7 +185,7 @@ public class DlpFileEnrichTest {
                 .setOperation("File Open")
                         // interesting test stuff starts here
                 .setAgentUtcTime("06/12/2016 16:04")
-                .setApplication("powershell.exe")
+                .setExecutingApplication("powershell.exe")
                 .createDgEvent();
 
         DgFileEventAfterEtl expected = new DgFileEventAfterEtlBuilder()
@@ -196,7 +196,7 @@ public class DlpFileEnrichTest {
                 .setIsAdminActivity("true")
                 .setIsRdp("false")
                 .setIsRegistryChanged("false")
-                .setApplication("powershell.exe")
+                .setExecutingApplication("powershell.exe")
                         // interesting test stuff starts here
                 .setDateTimeUnix("1465747440")
                 .setDateTime("2016-06-12 16:04:00")
@@ -215,7 +215,7 @@ public class DlpFileEnrichTest {
                 .setOperation("File Open")
                         // interesting test stuff starts here
                 .setAgentUtcTime("06/12/2016 16:04")
-                .setApplication("regedit.exe")
+                .setExecutingApplication("regedit.exe")
                 .createDgEvent();
 
         DgFileEventAfterEtl expected = new DgFileEventAfterEtlBuilder()
@@ -226,7 +226,7 @@ public class DlpFileEnrichTest {
                 .setIsAdminActivity("false")
                 .setIsRdp("false")
                 .setIsRegistryChanged("true")
-                .setApplication("regedit.exe")
+                .setExecutingApplication("regedit.exe")
                         // interesting test stuff starts here
                 .setDateTimeUnix("1465747440")
                 .setDateTime("2016-06-12 16:04:00")

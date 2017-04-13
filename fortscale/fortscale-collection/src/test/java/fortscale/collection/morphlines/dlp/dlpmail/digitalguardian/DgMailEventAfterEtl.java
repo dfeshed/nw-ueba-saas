@@ -1,4 +1,4 @@
-package fortscale.collection.morphlines.dlpmail.digitalguardian;
+package fortscale.collection.morphlines.dlp.dlpmail.digitalguardian;
 
 import java.lang.reflect.Field;
 import java.util.StringJoiner;
@@ -16,7 +16,7 @@ public class DgMailEventAfterEtl {
     public String ipAddress;
     public String hostname;
     public String normalizedSrcMachine;
-    public String application;
+    public String executingApplication;
     public String destinationFile;
     public Integer detailFileSize;
     public String destinationDirectory;
@@ -38,7 +38,7 @@ public class DgMailEventAfterEtl {
     protected DgMailEventAfterEtl() {
     }
 
-    public DgMailEventAfterEtl(String dateTime, String dateTimeUnix, String eventDescription, String eventType, String eventId, String username, String normalizedUsername, String fullName, String ipAddress, String hostname, String normalizedSrcMachine, String application, String destinationFile, Integer detailFileSize, String destinationDirectory, String destinationFileExtension, String isAttachmentExtensionBlacklisted, String emailRecipient, String emailRecipientDomain, String emailSender, String emailSubject, Boolean isExternal, Integer numOfRecipients, String wasClassified, String wasBlocked, String scanValueStatusText, String policyName, String dataSource, String lastState) {
+    public DgMailEventAfterEtl(String dateTime, String dateTimeUnix, String eventDescription, String eventType, String eventId, String username, String normalizedUsername, String fullName, String ipAddress, String hostname, String normalizedSrcMachine, String executingApplication, String destinationFile, Integer detailFileSize, String destinationDirectory, String destinationFileExtension, String isAttachmentExtensionBlacklisted, String emailRecipient, String emailRecipientDomain, String emailSender, String emailSubject, Boolean isExternal, Integer numOfRecipients, String wasClassified, String wasBlocked, String scanValueStatusText, String policyName, String dataSource, String lastState) {
         this.dateTime = dateTime;
         this.dateTimeUnix = dateTimeUnix;
         this.eventDescription = eventDescription;
@@ -50,7 +50,7 @@ public class DgMailEventAfterEtl {
         this.ipAddress = ipAddress;
         this.hostname = hostname;
         this.normalizedSrcMachine = normalizedSrcMachine;
-        this.application = application;
+        this.executingApplication = executingApplication;
         this.destinationFile = destinationFile;
         this.detailFileSize = detailFileSize;
         this.destinationDirectory = destinationDirectory;

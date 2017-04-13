@@ -3,7 +3,6 @@ package fortscale.collection.morphlines;
 import fortscale.collection.monitoring.ItemContext;
 import fortscale.collection.morphlines.metrics.MorphlineMetrics;
 import fortscale.utils.logging.Logger;
-import fortscale.utils.monitoring.stats.StatsService;
 import org.junit.Assert;
 import org.kitesdk.morphline.api.Record;
 import org.kitesdk.morphline.base.Fields;
@@ -64,16 +63,20 @@ public class MorphlinesTester {
 		}
 		
 		else {
-			assertNotNull("parsed record should not be null", parsedRecord);
-			String parsedOutput = "";
-			String separator = "";
-			for (String field : outputFields) {
-				String parsedField = (null == parsedRecord.getFirstValue(field)) ? "" : parsedRecord.getFirstValue(field).toString() ;
-				parsedOutput += separator + parsedField;
-				separator = ",";
-			}
-			assertEquals("ETL error with " + testCase, expectedOutput ,parsedOutput);
+			testRecordPostProcessing(testCase, expectedOutput, parsedRecord);
 		}
+	}
+
+	public void testRecordPostProcessing(String testCase, String expectedOutput, Record parsedRecord) {
+		assertNotNull("parsed record should not be null", parsedRecord);
+		String parsedOutput = "";
+		String separator = "";
+		for (String field : outputFields) {
+            String parsedField = (null == parsedRecord.getFirstValue(field)) ? "" : parsedRecord.getFirstValue(field).toString() ;
+            parsedOutput += separator + parsedField;
+            separator = ",";
+        }
+		assertEquals("ETL error with " + testCase, expectedOutput ,parsedOutput);
 	}
 
 	public void runMorphlines(String inputLine) {

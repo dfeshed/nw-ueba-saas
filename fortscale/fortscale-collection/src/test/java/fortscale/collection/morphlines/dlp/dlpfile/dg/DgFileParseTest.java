@@ -1,10 +1,8 @@
-package fortscale.collection.morphlines.dlpfile.dg;
+package fortscale.collection.morphlines.dlp.dlpfile.dg;
 
 import fortscale.collection.morphlines.MorphlinesTester;
-import fortscale.collection.morphlines.dlpmail.digitalguardian.DgEventInput;
-import fortscale.collection.morphlines.dlpmail.digitalguardian.DgEventInputBuilder;
-import fortscale.collection.morphlines.dlpmail.digitalguardian.DgMailEventAfterEtl;
-import fortscale.collection.morphlines.dlpmail.digitalguardian.DgMailEventAfterEtlBuilder;
+import fortscale.collection.morphlines.dlp.dlpmail.digitalguardian.DgEventInput;
+import fortscale.collection.morphlines.dlp.dlpmail.digitalguardian.DgEventInputBuilder;
 import fortscale.utils.impala.ImpalaParser;
 import fortscale.utils.properties.PropertiesResolver;
 import org.junit.After;
@@ -295,9 +293,9 @@ public class DgFileParseTest {
                 .setUsername("vdely-ConfChecker\\vincent")
                 .setHostname("workgroup\\vdely-ConfChecker")
                 .setNormalizedSrcMachine("workgroup\\vdely-ConfChecker")
-                .setApplication("explorer.exe")
+                .setExecutingApplication("explorer.exe")
                 .setDestinationFile("licensekey.dat")
-                .setDetailFileSize(8628l)
+                .setDetailFileSize(8628L)
                 .setDestinationDirectory("c:\\program files\\dgagent\\verity\\kv\\_nti40\\bin\\")
                 .setWasClassified("FALSE")
                 .setWasBlocked("FALSE")

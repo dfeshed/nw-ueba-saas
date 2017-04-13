@@ -83,7 +83,7 @@
       }
     },
     {
-      "name" : "email_application.normalized_username.dlpmail",
+      "name" : "executing_application.normalized_username.dlpmail",
       "selector" : {
         "type" : "feature_bucket_context_selector",
         "featureBucketConfName" : "normalized_username_dlpmail_daily"
@@ -93,7 +93,7 @@
         "timeRangeInSeconds" : 7776000,
         "functions" : [ ],
         "featureBucketConfName" : "normalized_username_dlpmail_daily",
-        "featureName" : "email_application_histogram"
+        "featureName" : "executing_application_histogram"
       },
       "builder" : {
         "type" : "category_rarity_model_builder",
@@ -118,6 +118,23 @@
         "type" : "category_rarity_model_builder",
         "numOfBuckets" : 30,
         "entriesToSaveInModel" : 100
+      }
+    },
+    {
+      "name" : "attachment_file_size.normalized_username.dlpmail",
+      "selector" : {
+        "type" : "feature_bucket_context_selector",
+        "featureBucketConfName" : "normalized_username_dlpmail_daily"
+      },
+      "retriever" : {
+        "type" : "context_histogram_retriever",
+        "timeRangeInSeconds" : 7776000,
+        "functions" : [ ],
+        "featureBucketConfName" : "normalized_username_dlpmail_daily",
+        "featureName" : "attachment_file_size_histogram"
+      },
+      "builder" : {
+        "type": "continuous_histogram_model_builder"
       }
     },
     {

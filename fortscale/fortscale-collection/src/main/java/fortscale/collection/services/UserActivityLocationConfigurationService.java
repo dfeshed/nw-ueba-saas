@@ -24,13 +24,13 @@ public class UserActivityLocationConfigurationService extends BaseUserActivityCo
 
     @Override
     public UserActivityConfiguration createUserActivityConfiguration() {
-        final Set<String> activities = new HashSet();
-        final Map<String, List<String>> activityToDataSources = new HashMap();
-        final Map<String, String> dataSourceToCollection = new HashMap();
+        final Set<String> activities = new HashSet<>();
+        final Map<String, List<String>> activityToDataSources = new HashMap<>();
+        final Map<String, String> dataSourceToCollection = new HashMap<>();
         activities.add(ACTIVITY_LOCATIONS_PROPERTY_NAME);
         dataSourceToCollection.put(DATA_SOURCE_VPN_PROPERTY_NAME, USER_VPN_COLLECTION);
         dataSourceToCollection.put(DATA_SOURCE_CRMSF_PROPERTY_NAME, USER_CRMSF_COLLECTION);
-        activityToDataSources.put(ACTIVITY_LOCATIONS_PROPERTY_NAME, new ArrayList(Arrays.
+        activityToDataSources.put(ACTIVITY_LOCATIONS_PROPERTY_NAME, new ArrayList<>(Arrays.
                 asList(DATA_SOURCE_VPN_PROPERTY_NAME, DATA_SOURCE_CRMSF_PROPERTY_NAME)));
         return new UserActivityConfiguration(activities, dataSourceToCollection, activityToDataSources);
     }
@@ -39,11 +39,6 @@ public class UserActivityLocationConfigurationService extends BaseUserActivityCo
     @Override
     public String getActivityName() {
         return UserActivityType.LOCATIONS.name();
-    }
-
-    @Override
-    public Logger getLogger() {
-        return logger;
     }
 
     @Override

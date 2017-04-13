@@ -19,7 +19,7 @@ public class UserActivityWorkingHoursHandler extends UserActivityBaseHandler {
 
     private static final UserActivityType ACTIVITY_TYPE = UserActivityType.WORKING_HOUR;
     private static final String FEATURE_NAME_DATE_TIME_UNIX = "date_time_unix_histogram";
-    private static final String AGGREGATED_FEATURES_HISTOGRAM = "aggregatedFeatures." + FEATURE_NAME_DATE_TIME_UNIX;
+    private static final String AGGREGATED_FEATURES_HISTOGRAM = AGGREGATED_FEATURES_PREFIX + "." + FEATURE_NAME_DATE_TIME_UNIX;
 
     @Autowired
     private UserActivityWorkingHoursConfigurationService userActivityWorkingHoursConfigurationService;
@@ -38,8 +38,7 @@ public class UserActivityWorkingHoursHandler extends UserActivityBaseHandler {
             return histogram;
         } else {
             final String errorMessage = String.format("Can't convert %s object of class %s", objectToConvert, objectToConvert.getClass());
-            logger
-                    .error(errorMessage);
+            logger.error(errorMessage);
             throw new RuntimeException(errorMessage);
         }
     }

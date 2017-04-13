@@ -1,8 +1,6 @@
 package fortscale.collection.services;
 
-/**
- * Created by shays on 14/06/2016.
- */
+
 public class UserActivityDataSourceConfiguration {
     private String datasource;
     private String collectionName;
@@ -10,10 +8,10 @@ public class UserActivityDataSourceConfiguration {
     private String propertyName;
 
     public UserActivityDataSourceConfiguration(String datasource, String collectionName, String featureName, String propertyName) {
+        this.datasource = datasource;
         this.collectionName = collectionName;
         this.featureName = featureName;
         this.propertyName = propertyName;
-        this.datasource = datasource;
     }
 
     public String getDatasource() {
