@@ -89,34 +89,55 @@ export default Component.extend(SelectionTooltip, {
   @alias('isActionClicked') hasCloseButton: null,
 
   /**
-   * @description Function used to encode/decode the original string selected by the user
+   * @description Function used to do Base64 encode/decode the original string
    * @param {string} - Signifies which operation encode or decode to be done
    * @private
    */
-  _encodedDecoded(operation) {
+  _encodedDecodedBase64(operation) {
     const originalString = this.get('originalString');
-    const tooltipHeading = (operation === 'decode') ? 'Decoded Text' : 'Encoded Text';
-    let encDecStrBase64, encDecStrUrl;
+    let encDecStrBase64;
     try {
       if (operation === 'decode') {
         encDecStrBase64 = decodeURIComponent(escape(window.atob(originalString)));
-        encDecStrUrl = decodeURIComponent(originalString);
       } else {
         encDecStrBase64 = window.btoa(unescape(encodeURIComponent(originalString)));
+      }
+    } catch (err) {
+      encDecStrBase64 = 'The format of the string is not valid.';
+    }
+    this.set('encDecStrBase64', encDecStrBase64);
+  },
+
+  /**
+   * @description Function used to URL encode/decode the original string
+   * @param {string} - Signifies which operation encode or decode to be done
+   * @private
+   */
+  _encodedDecodedUrl(operation) {
+    const originalString = this.get('originalString');
+    let encDecStrUrl;
+    try {
+      if (operation === 'decode') {
+        encDecStrUrl = decodeURIComponent(originalString);
+      } else {
         encDecStrUrl = encodeURIComponent(originalString);
       }
     } catch (err) {
-      encDecStrBase64 = encDecStrUrl = 'The format of the string is not valid.';
+      encDecStrUrl = 'The format of the string is not valid.';
     }
-    this.setProperties({ isActionClicked: true, tooltipHeading, encDecStrBase64, encDecStrUrl });
+    this.set('encDecStrUrl', encDecStrUrl);
   },
 
   actions: {
     decodeText() {
-      this._encodedDecoded('decode');
+      this._encodedDecodedBase64('decode');
+      this._encodedDecodedUrl('decode');
+      this.setProperties({ isActionClicked: true, tooltipHeading: 'Decoded Text' });
     },
     encodeText() {
-      this._encodedDecoded('encode');
+      this._encodedDecodedBase64('encode');
+      this._encodedDecodedUrl('encode');
+      this.setProperties({ isActionClicked: true, tooltipHeading: 'Encoded Text' });
     },
     showRemainingLines() {
 
