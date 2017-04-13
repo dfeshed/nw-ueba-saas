@@ -185,6 +185,27 @@ public class DataQueryHelper {
     public Term createCustomTerm(String dataEntity, CustomedFilter filter){
 
         // Create new term
+        ConditionField customTerm = createTerm(dataEntity, filter);
+
+        // Return the term
+        return customTerm;
+    }
+
+    public List<Term> createCustomTerms(String dataEntity, List<CustomedFilter> filters){
+        List<Term> customTerms = new ArrayList<>();
+
+        filters.forEach(filter -> {
+            // Create new term
+            ConditionField customTerm = createTerm(dataEntity, filter);
+
+            customTerms.add(customTerm);
+        });
+
+        // Return the term
+        return customTerms;
+    }
+
+    private ConditionField createTerm(String dataEntity, CustomedFilter filter) {
         ConditionField customTerm = new ConditionField();
 
         // Set the query operator
@@ -199,11 +220,8 @@ public class DataQueryHelper {
         dataQueryField.setId(filter.getKey());
         dataQueryField.setEntity(dataEntity);
         customTerm.setField(dataQueryField);
-
-        // Return the term
         return customTerm;
     }
-
 
 
     /**

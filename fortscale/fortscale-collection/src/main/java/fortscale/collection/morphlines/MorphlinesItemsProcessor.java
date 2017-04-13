@@ -1,19 +1,19 @@
 package fortscale.collection.morphlines;
 
-import java.io.Closeable;
-import java.io.IOException;
-
 import fortscale.collection.monitoring.ItemContext;
 import org.kitesdk.morphline.api.Command;
 import org.kitesdk.morphline.api.MorphlineContext;
 import org.kitesdk.morphline.api.Record;
-import org.kitesdk.morphline.base.Fields;
 import org.kitesdk.morphline.base.Compiler;
+import org.kitesdk.morphline.base.Fields;
 import org.kitesdk.morphline.base.Notifications;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 import org.springframework.util.Assert;
+
+import java.io.Closeable;
+import java.io.IOException;
 
 /**
  * process items using a given kite (A.K.A morphline) conf file
@@ -72,6 +72,8 @@ public class MorphlinesItemsProcessor implements Closeable {
 		// return the result record
 		return processed;
 	}
+
+
 
 	/**
 	 *

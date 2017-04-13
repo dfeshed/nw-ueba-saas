@@ -1,6 +1,7 @@
 package fortscale.collection.morphlines.dlp.dlpmail;
 
 import fortscale.collection.morphlines.MorphlinesTester;
+import fortscale.collection.morphlines.commands.DlpMailEventsCache;
 import fortscale.collection.morphlines.dlp.dlpmail.digitalguardian.DgEventInput;
 import fortscale.collection.morphlines.dlp.dlpmail.digitalguardian.DgEventInputBuilder;
 import fortscale.collection.morphlines.dlp.dlpmail.digitalguardian.DgMailEventAfterEtl;
@@ -11,17 +12,25 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kitesdk.morphline.api.Record;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath*:META-INF/spring/collection-context-test-light.xml"})
 public class DlpMailEnrichTest {
 
+    @Autowired
+    private DlpMailEventsCache dlpMailEventsCache;
+
     private MorphlinesTester morphlineTester = new MorphlinesTester();
     private static String DUMMY_EVENT_STRING = ",,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,Fortscale Control,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,";
+    private static String DUMMY_EVENT_STRING_AFTER = ",,,fortscale control,Fortscale Control,,,,,,,,,,,,,,,,,,,,,,,,";
 
     @Before
     public void setUp() throws Exception {
@@ -146,7 +155,8 @@ public class DlpMailEnrichTest {
                 .setDateTime("2016-06-12 16:04:00")
                 .setDateTimeUnix("1465747440")
                 .setEventDescription("Send Mail")
-                .setFullName("some_givenName some_surname")
+                .setFullName("some_givenName some" +
+                        "_surname")
                 .setIsExternal(true)
                 .setNumOfRecipients(0)
                 .setLastState("etl")
@@ -311,8 +321,9 @@ public class DlpMailEnrichTest {
     }
 
     @Test
-    public void test_num_of_recipients_multiple_events_with_closing_dummy_event() throws Exception {
-		/* ******************************************************************* event id = aaa ***************************************************************************/
+    public void test_events_cacher() throws Exception {
+        dlpMailEventsCache.clearCache();
+        /* ******************************************************************* event id = aaa ***************************************************************************/
 
         DgEventInput input1 = new DgEventInputBuilder()
                 .setAgentUtcTime("06/12/2016 16:04")
@@ -354,7 +365,7 @@ public class DlpMailEnrichTest {
                 .setFullName("some_givenName some_surname")
                 .setIsAttachmentExtensionBlacklisted("false")
                 .setIsExternal(true)
-                .setNumOfRecipients(1)
+                .setNumOfRecipients(0) //1
                 .setDataSource("dlpmail")
                 .setLastState("etl")
                 .setEmailRecipient("some_emailRecipient") // because the parsing wont find the @ - this is ok for this test
@@ -408,7 +419,7 @@ public class DlpMailEnrichTest {
                 .setFullName("some_givenName some_surname")
                 .setIsAttachmentExtensionBlacklisted("false")
                 .setIsExternal(true)
-                .setNumOfRecipients(2)
+                .setNumOfRecipients(0) //2
                 .setDataSource("dlpmail")
                 .setLastState("etl")
                 .setEmailRecipient("some_emailRecipient") // because the parsing wont find the @ - this is ok for this test
@@ -563,7 +574,7 @@ public class DlpMailEnrichTest {
                 .setFullName("some_givenName some_surname")
                 .setIsAttachmentExtensionBlacklisted("false")
                 .setIsExternal(true)
-                .setNumOfRecipients(1)
+                .setNumOfRecipients(0) //1
                 .setDataSource("dlpmail")
                 .setLastState("etl")
                 .setEmailRecipient("some_emailRecipient") // because the parsing wont find the @ - this is ok for this test
@@ -577,23 +588,36 @@ public class DlpMailEnrichTest {
 
 		/* eventId = aaa */
         morphlineTester.testSingleLine("1", input1.toString(), expected1.toString()); //id aaa - attachment
-        morphlineTester.testSingleLine("2", input2.toString(), null);  //id aaa - message_body
+        morphlineTester.testSingleLine("2", input2.toString(), expected2.toString());  //id aaa - message_body
         morphlineTester.testSingleLine("3", input3.toString(), expected3.toString()); //id aaa - recipient
 
+
 		/* eventId = bbb */
-        morphlineTester.testSingleLine("4", input4.toString(), expected2.toString()); //id bbb - message_body
+        morphlineTester.testSingleLine("4", input4.toString(), expected4.toString()); //id bbb - message_body
+        checkCache(input4.eventId, Arrays.asList(expected1.toString(), expected2.toString(), expected3.toString()));
         morphlineTester.testSingleLine("5", input5.toString(), expected5.toString()); //id bbb - attachment
         morphlineTester.testSingleLine("6", input6.toString(), expected6.toString()); //id bbb - recipient
         morphlineTester.testSingleLine("7", input7.toString(), expected7.toString()); //id bbb - recipient
 
+
 		/* eventId = ccc */
         morphlineTester.testSingleLine("8", input8.toString(), expected8.toString()); //id ccc - attachment
-        morphlineTester.testSingleLine("10", input9.toString(), expected4.toString());//id ccc - recipient
-        morphlineTester.testSingleLine("9", input10.toString(), expected9.toString());  //id ccc - message_body
+        checkCache(input8.eventId, Arrays.asList(expected4.toString(), expected5.toString(), expected6.toString(),  expected7.toString()));
+        morphlineTester.testSingleLine("9", input9.toString(), expected9.toString());//id ccc - recipient
+        morphlineTester.testSingleLine("10", input10.toString(), expected10.toString());  //id ccc - message_body
 
 
-        morphlineTester.testSingleLine("11", DUMMY_EVENT_STRING, expected10.toString()); //dummy
+        morphlineTester.testSingleLine("11", DUMMY_EVENT_STRING, DUMMY_EVENT_STRING_AFTER); //dummy
+        checkCache("Fortscale Control", Arrays.asList(expected8.toString(), expected9.toString(), expected10.toString()));
+    }
 
+    private void checkCache(String eventId, List<String> expected) throws Exception {
+        final Map.Entry<String, List<Record>> stringListEntry = dlpMailEventsCache.popPreviousEventRecords(eventId);
+        final List<Record> previousRecords = stringListEntry.getValue();
+        for (int i = 0; i < previousRecords.size(); i++) {
+            morphlineTester.testRecordPostProcessing("cache check for eventId " + eventId , expected.get(i) , previousRecords.get(i));
+
+        }
 
     }
 

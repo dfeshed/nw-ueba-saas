@@ -140,6 +140,8 @@
 		<constructor-arg name="clazz" value="org.apache.commons.lang3.Range" />
 	</bean>
 
+	<bean id="dlpmailEventsCache" class="fortscale.collection.morphlines.commands.DlpMailEventsCache"/>
+
 
 	<!-- ip to hostname singleton service bean for use in fortscale collection -->
 	<bean id="dnsResolver" class="fortscale.services.ipresolving.DnsResolver" scope="singleton" />

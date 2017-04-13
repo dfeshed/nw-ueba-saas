@@ -105,7 +105,7 @@ public class EventProcessJob implements Job {
 
 	protected ETLCommonJobMetrics jobMetrics;
 
-	private MorphlineMetrics morphlineMetrics;
+	protected MorphlineMetrics morphlineMetrics;
 
 	/**
 	 * taskMonitoringHelper is holding all the steps, errors, arrived events, successfully processed events,

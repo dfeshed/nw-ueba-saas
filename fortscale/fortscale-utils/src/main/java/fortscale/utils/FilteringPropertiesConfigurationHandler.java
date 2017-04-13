@@ -1,8 +1,10 @@
 package fortscale.utils;
 
 import fortscale.utils.spring.SpringPropertiesUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.commons.lang.StringUtils;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -22,35 +24,33 @@ public class FilteringPropertiesConfigurationHandler {
 	 * @param key
 	 * @return
 	 */
-	public CustomedFilter getFilter(String key, Map<String, String> evidenceMap) {
+	public List<CustomedFilter> getFilter(String key, Map<String, String> evidenceMap) {
 
 		// Getting raw value from config in a form of:
 		// KEY %%%OPERATOR%%%VALUE
-		String rawValue = SpringPropertiesUtil.getProperty(key);
-		if (rawValue == null) {
-			return null;
-		}
+		Map<String, String> filterProperties = SpringPropertiesUtil.getPropertyMapByPrefix(key);
+		List<CustomedFilter> filters = new ArrayList<>();
 
-		// Spilt the raw value
-		String[] filter = rawValue.split(DELIMITER);
+		filterProperties.values().stream().filter(StringUtils::isNotEmpty).forEach(rawValue -> {
+			// Spilt the raw value
+			String[] filter = rawValue.split(DELIMITER);
 
-		// Check filter structure
-		if (filter.length != 3) {
-			return null;
-		}
-
-		//if filter contains a value of type {{somevalue}} then strip the {{ }} from the filter and get the value of the evidence field with that name
-		if (filter[2].startsWith(VARIABLE_ANNOTATION_PREFIX) && filter[2].endsWith(VARIABLE_ANNOTATION_SUFFIX)) {
-			String field = filter[2].substring(VARIABLE_ANNOTATION_PREFIX.length(), filter[2].length() -
-					VARIABLE_ANNOTATION_SUFFIX.length());
-			if (evidenceMap != null && evidenceMap.containsKey(field)) {
-				filter[2] = evidenceMap.get(field);
-			} else {
-				return null;
+			// Check filter structure
+			if (filter.length == 3) {
+				//if filter contains a value of type {{somevalue}} then strip the {{ }} from the filter and get the value of the evidence field with that name
+				if (filter[2].startsWith(VARIABLE_ANNOTATION_PREFIX) && filter[2].endsWith(VARIABLE_ANNOTATION_SUFFIX)) {
+					String field = filter[2].substring(VARIABLE_ANNOTATION_PREFIX.length(), filter[2].length() -
+							VARIABLE_ANNOTATION_SUFFIX.length());
+					if (evidenceMap != null && evidenceMap.containsKey(field)) {
+						filter[2] = evidenceMap.get(field);
+					}
+				}
 			}
-		}
 
-		//Create CustomedFilter from raw value
-		return new CustomedFilter(filter[0], filter[1], filter[2]);
+			//Create CustomedFilter from raw value
+			filters.add(new CustomedFilter(filter[0], filter[1], filter[2]));
+		});
+
+		return filters;
 	}
 }
