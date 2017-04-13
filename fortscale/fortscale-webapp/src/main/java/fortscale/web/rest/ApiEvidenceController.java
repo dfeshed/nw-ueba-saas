@@ -241,9 +241,9 @@ public class ApiEvidenceController extends DataQueryController {
 					} catch (Exception ex) {
 						logger.error("failed to convert evidence object to map");
 					}
-					CustomedFilter customedFilter = eventsFilter.getFilter(evidence.getAnomalyTypeFieldName(), evidenceMap);
-					if (customedFilter != null) {
-						termsMap.add(dataQueryHelper.createCustomTerm(dataEntity, customedFilter));
+					List<CustomedFilter> customFilter = eventsFilter.getFilter(evidence.getAnomalyTypeFieldName(), evidenceMap);
+					if (customFilter != null) {
+						termsMap.addAll(dataQueryHelper.createCustomTerms(dataEntity, customFilter));
 					}
 				}
 				//add condition about time range
