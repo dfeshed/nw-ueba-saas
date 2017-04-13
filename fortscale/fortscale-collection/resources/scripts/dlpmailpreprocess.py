@@ -3,23 +3,32 @@ import os
 import sys
 from subprocess import PIPE,Popen
 
+control_message = ",,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,Fortscale Control,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,," \
+                  ",,,,,,,,,,,,,,,,,,,,,,,,,,,,,"
 
 def run():
     if len(sys.argv) != 3:
-        print "Bad number of arguments. should be 2 (file name & method(preprocess | cleanup)"
+        print "Bad number of arguments. should be 2 (file name & method(preprocess | cleanup))"
         sys.exit(1)
-    control_message = ",,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,Fortscale Control,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,," \
-                      ",,,,,,,,,,,,,,,,,,,,,,,,,,,,,"
     file_name = sys.argv[1]
+    method = sys.argv[2]
     with open(file_name, "a") as file:
+        last_line = Popen(['tail', '-1', file_name], stdout=PIPE).communicate()[0].rstrip()
         if method == "preprocess":
-            file.write(control_message)
+            if not last_line.rstrip():
+                file.write(os.linesep + control_message)
+            else:
+                file.write(control_message)
         elif method == "cleanup":
-            line = Popen(['tail', '-1', file_name], stdout=PIPE).communicate()[0]
-            if line == control_message:
+            if last_line == control_message:
                 remove_last_line(file_name)
+                file.write(os.linesep)
+            else:
+                error_message = "Can't cleanup since the last line is not a control message. last line = " + last_line + os.linesep
+                sys.stderr.write(error_message)
+                return -1
         else:
-            error_message = "bad method: " + method + ". valid methods are: preprocess, cleanup" + os.linesep
+            error_message = "Bad method: " + method + ". valid methods are: preprocess, cleanup" + os.linesep
             sys.stderr.write(error_message)
             return -1
     return 0
@@ -52,7 +61,7 @@ def remove_last_line(file_name):  # credit: Saqib@stackoverflow
 
 
 def main():
-    append_control_message()
+    run()
     return 0
 
 
