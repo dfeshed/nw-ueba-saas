@@ -218,7 +218,7 @@ export default [{
       field: 'Machines',
       title: 'context.hostSummary.title',
       dataSourceType: 'Machines',
-      displayType: 'table',
+      displayType: 'grid',
       tabRequired: false
     },
     {

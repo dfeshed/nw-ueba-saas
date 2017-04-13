@@ -1,9 +1,9 @@
 <vbox>
   <div class="rsa-context-panel__grid__host-details__field-name">{{t title}}</div>
-  {{#rsa-content-tethered-panel-trigger class="rsa-context-panel__grid__host-details__tetheredPanel" panel=(concat 'group' count index) }}
+  {{#rsa-content-tethered-panel-trigger class="rsa-context-panel__grid__host-details__tetheredPanel" panel=tetherPanelId}}
     <div class="rsa-context-panel__grid__host-details__groupdata">{{count}}</div>
   {{/rsa-content-tethered-panel-trigger}}
-  {{#rsa-content-tethered-panel panelId=(concat 'group' count index) displayCloseButton=false position='top-left'}}
+  {{#rsa-content-tethered-panel panelId=tetherPanelId displayCloseButton=false position='top-left'}}
     <section>
       {{#if (gt count 1)}}
         {{#each data as |cellData |}}

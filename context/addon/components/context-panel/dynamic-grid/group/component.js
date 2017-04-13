@@ -6,5 +6,9 @@ export default Component.extend({
   layout,
 
   @computed('data')
-  count: (data) => (data) ? [].concat(data).length : ''
+  count: (data) => (data) ? [].concat(data).length : '',
+
+  @computed('title', 'index')
+  tetherPanelId: (title, index) => title.camelize().concat(index)
+
 });

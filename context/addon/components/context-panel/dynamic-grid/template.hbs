@@ -12,7 +12,7 @@
   <div class='rsa-context-panel__error-text'>{{rsa-icon style='lined' name='report-problem-triangle'}} {{contextData.errorMessage}}</div>
 {{else}}
   {{#if (gt getDataSourceData.length 0)}}
-    {{#each getDataSourceData as |data|}}
+    {{#each getDataSourceData as |data index|}}
       <hbox>
         <vbox class="rsa-context-panel__grid__host-details__header-data">
           <span title= {{get data dSDetails.firstRow.field}}>{{get data dSDetails.firstRow.field}}</span>
@@ -21,7 +21,7 @@
       <hbox class={{dSDetails.class}}>
         {{#each dSDetails.columns as |columnsdata|}}
           <vbox class={{columnsdata.class}}>
-            {{#each columnsdata.cell as |cellData index|}}
+            {{#each columnsdata.cell as |cellData|}}
               {{#if (eq cellData.dataType 'link')}}
                 <vbox>
                   <div class="rsa-context-panel__grid__host-details__field-name">{{t cellData.title}}</div>

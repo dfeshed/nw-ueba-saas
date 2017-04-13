@@ -263,4 +263,43 @@ export default [ {
   'failed': false,
   'errorMessage': null,
   'maxPages': 0
-} ];
+}, {
+  'resultId': '8227ee94-62d3-4459-a311-47ff718f1bf1/4',
+  'queryId': 'e57ca555-6f0a-4ceb-a4a7-da73f626f936',
+  'datasourceId': '58edb0fe4586a7686157d1c7',
+  'dataSourceName': '58edb0fe4586a7686157d1c6_Archer_datasource',
+  'dataSourceDescription': null,
+  'dataSourceType': 'Archer',
+  'dataSourceGroup': 'Archer',
+  'connectionName': 'Archer',
+  'dataSourceCreatedOn': 1491972350065,
+  'dataSourceLastModifiedOn': 1491972350065,
+  'contentLastModifiedOn': 0,
+  'resultList': [
+    {
+      'Risk Rating': 'Low',
+      'IP Address': '20.20.20.2',
+      'Device Owner': ['jauditor'],
+      'Type': 'Desktop',
+      'Business Unit': 'North American IT Shared Services',
+      'Device ID': '218057',
+      'Host Name': 'appsrv004.archer-tech.com',
+      'Device Name': 'APPSRV004',
+      'Criticality Rating': 'Not Rated',
+      'Facilities': 'Colorado Call Center'
+    }
+  ],
+  'resultMeta': {
+    'timeQuerySubmitted': 1492059791924,
+    'dataSourceCreatedBy': 'admin',
+    'root': null,
+    'limit': 0
+  },
+  'pagingEnabled': false,
+  'currentPageId': 0,
+  'failed': false,
+  'errorMessage': null,
+  'maxPages': 0,
+  'timeQuerySubmitted': 1492059791924
+}
+];
