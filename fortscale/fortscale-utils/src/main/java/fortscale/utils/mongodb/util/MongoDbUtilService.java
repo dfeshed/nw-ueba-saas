@@ -1,9 +1,7 @@
-package fortscale.aggregation.util;
+package fortscale.utils.mongodb.util;
 
 import com.mongodb.MongoInternalException;
 import fortscale.utils.logging.Logger;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.UncategorizedMongoDbException;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
@@ -12,19 +10,18 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 
 
-public class MongoDbUtilService implements InitializingBean {
+public class MongoDbUtilService {
     private static final Logger logger = Logger.getLogger(MongoDbUtilService.class);
     public static final String COLLECTION_ALREADY_EXISTS_ERR_MSG = "collection already exists";
     public static final String TOO_LARGE_OBJECT_MONGO_ERR_MSG = "is larger than MaxDocumentSize";
 
-    @Autowired
     private MongoTemplate mongoTemplate;
 
     private Set<String> collectionNames;
 
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        collectionNames = new HashSet<>(mongoTemplate.getCollectionNames());
+    public MongoDbUtilService(MongoTemplate mongoTemplate) {
+        this.mongoTemplate = mongoTemplate;
+        this.collectionNames = new HashSet<>(mongoTemplate.getCollectionNames());
     }
 
     public boolean collectionExists(String collectionName) {
