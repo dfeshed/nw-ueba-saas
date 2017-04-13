@@ -51,20 +51,14 @@ export default Mixin.create({
 
   timeFormat: service(),
 
-  timezone: service(),
-
   _defaultOptions() {
     const firstDay = this.get('firstDay');
     const prefTimeKey = this.get('timeFormat.selected.key') || 'HR24';
-    const prefTimeZone = this.get('timezone.selected.zoneId') || 'America/New_York';
     const is24 = (prefTimeKey === 'HR24') || false;
     const lc = localStorage[this.get('localeKey')] || 'en';
 
     // Set this locale for this instance of moment.
     moment.locale(lc);
-
-    // Set timezone for momemt tz
-    moment.tz.setDefault(prefTimeZone);
 
     return {
       field: this.get('field'),
@@ -100,13 +94,13 @@ export default Mixin.create({
     }
   }),
 
-  didUpdateAttrs({ newAttrs }) {
+  didUpdateAttrs() {
     this._super(...arguments);
     this.setMinDate();
     this.setMaxDate();
     this.setPikadayDate();
 
-    if (newAttrs.options) {
+    if (this.get('options')) {
       this._updateOptions();
     }
   },

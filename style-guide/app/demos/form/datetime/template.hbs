@@ -87,5 +87,12 @@
       END-SNIPPET --}}
       {{code-snippet name="datetime14.hbs"}}
     {{/spec-member}}
+    {{#spec-member title="Actions and Events - To see events firing, open your browser debug window"}}
+      {{rsa-form-datetime label='Select Date & Time' showTime=true showSeconds=true incrementMinuteBy=5 incrementSecondBy=30  dateFormat="MM/DD/YYYY HH:mm:ss" options=(hash onSelect=(action 'selectEvent') onOpen=(action 'openEvent') onClose=(action 'closeEvent') onDraw=(action 'drawEvent'))}}
+      {{!-- BEGIN-SNIPPET datetime15
+      {{rsa-form-datetime label='Select Date & Time' showTime=true showSeconds=true incrementMinuteBy=5 incrementSecondBy=30  dateFormat="MM/DD/YYYY HH:mm:ss" options=(hash onSelect=(action 'selectEvent') onOpen=(action 'openEvent') onClose=(action 'closeEvent') onDraw=(action 'drawEvent'))}}
+      END-SNIPPET --}}
+      {{code-snippet name="datetime15.hbs"}}
+    {{/spec-member}}
   {{/spec-category}}
 </vbox>
