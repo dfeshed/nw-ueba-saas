@@ -3,11 +3,8 @@ package fortscale.utils.test.mongodb;
 import com.github.fakemongo.Fongo;
 import com.mongodb.Mongo;
 import fortscale.utils.mongodb.config.MongoConfig;
-import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import java.util.Properties;
+import org.springframework.context.annotation.Import;
 
 /**
  * TL;DR configuration class that should be used in test that enables work with the popular object {@link org.springframework.data.mongodb.core.MongoTemplate}
@@ -21,6 +18,7 @@ import java.util.Properties;
  * Created by barak_schuster on 12/22/16.
  */
 @Configuration
+@Import(MongodbTestPropertiesConfig.class)
 public class MongodbTestConfig extends MongoConfig {
 
     @Override

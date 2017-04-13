@@ -1,6 +1,7 @@
 package fortscale.utils.mongo.converter;
 
 import com.mongodb.Mongo;
+import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
 import org.junit.Assert;
 import org.junit.Before;
@@ -8,6 +9,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.annotation.Id;
@@ -18,6 +20,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 
 /**
@@ -30,7 +33,13 @@ public class MongoConverterConfigurerTest {
     @Import(MongodbTestConfig.class)
     public static class springConfig {
 
+        @Bean
+        public static TestPropertiesPlaceholderConfigurer mainProcessPropertiesConfigurer() {
+            Properties properties = new Properties();
+            TestPropertiesPlaceholderConfigurer configurer = new TestPropertiesPlaceholderConfigurer(properties);
 
+            return configurer;
+        }
     }
     @Autowired
     private MongoTemplate mongoTemplate;

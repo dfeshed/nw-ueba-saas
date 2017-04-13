@@ -11,7 +11,6 @@ import fortscale.aggregation.feature.event.store.AggregatedFeatureEventsMongoSto
 import fortscale.utils.monitoring.stats.StatsService;
 import fortscale.utils.monitoring.stats.config.NullStatsServiceConfig;
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
-import fortscale.utils.test.mongodb.MongoDbTestProperties;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -84,7 +83,6 @@ public class AggregatedFeatureEventsAccumulatorTest {
             properties.put("fortscale.accumulator.aggr.feature.event.retention.hourly","P1M");
             properties.put("fortscale.accumulator.aggr.feature.event.from.period.ago.daily","P3M");
             properties.put("fortscale.accumulator.aggr.feature.event.from.period.ago.hourly","P1M");
-            properties.putAll(MongoDbTestProperties.getProperties());
 
             return new TestPropertiesPlaceholderConfigurer(properties);
         }
