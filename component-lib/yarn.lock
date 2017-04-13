@@ -2315,6 +2315,12 @@ ember-basic-dropdown@^0.24.0:
     ember-native-dom-helpers "^0.2.0"
     ember-wormhole "^0.5.1"
 
+ember-browser-checker@0.0.6:
+  version "0.0.6"
+  resolved "https://registry.npmjs.org/ember-browser-checker/-/ember-browser-checker-0.0.6.tgz#cd0fd75f5bd7098041df69e3a0c7adb8633801be"
+  dependencies:
+    ember-cli-babel "^5.1.6"
+
 ember-cli-app-version@^2.0.0:
   version "2.0.2"
   resolved "https://registry.npmjs.org/ember-cli-app-version/-/ember-cli-app-version-2.0.2.tgz#aaeede608e92fae6c2e11f63d28a373c1cc3f070"
@@ -3049,10 +3055,11 @@ ember-text-measurer@^0.3.3:
   dependencies:
     ember-cli-babel "^5.1.6"
 
-ember-toggle@5.0.0-alpha.3:
-  version "5.0.0-alpha.3"
-  resolved "https://registry.npmjs.org/ember-toggle/-/ember-toggle-5.0.0-alpha.3.tgz#ae49f032ba792bb91a06365e1a58bb70ab0f311f"
+ember-toggle@5.0.0-alpha.4:
+  version "5.0.0-alpha.4"
+  resolved "https://registry.npmjs.org/ember-toggle/-/ember-toggle-5.0.0-alpha.4.tgz#a7a612cb5299a5e1391072de4b0cf29660913ff8"
   dependencies:
+    ember-browser-checker "0.0.6"
     ember-cli-babel "^5.1.7"
     ember-cli-htmlbars "^1.1.1"
     ember-runtime-enumerable-includes-polyfill "^1.0.1"

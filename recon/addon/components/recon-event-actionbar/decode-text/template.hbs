@@ -1,14 +1,12 @@
 {{#rsa-content-tethered-panel-trigger panel='panel1'}}
-  <label class="rsa-form-switch">
-    {{#x-toggle
-      onLabel=(t 'recon.textView.compressToggleLabel')
-      onToggle=(action 'decodeText')
-      showLabels=true
-      value=(readonly isCompressed) as |toggle|}}
-      {{toggle.switch}}
-      {{toggle.onLabel value=(readonly (not isCompressed))}}
-    {{/x-toggle}}
-  </label>
+  {{#x-toggle
+    onLabel=(t 'recon.textView.compressToggleLabel')
+    onToggle=(action 'decodeText')
+    showLabels=true
+    value=(readonly isCompressed) as |toggle|}}
+    {{toggle.switch}}
+    {{toggle.onLabel value=(readonly (not isCompressed))}}
+  {{/x-toggle}}
 {{/rsa-content-tethered-panel-trigger}}
 
 {{#rsa-content-tethered-panel
