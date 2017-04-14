@@ -1,0 +1,57 @@
+.rsa-packet {
+
+  border-top: 1px rsa-color(blue) solid;
+
+  &:first-of-type {
+    border-top: none;
+  }
+
+  &.is-continuation {
+    border-top: none;
+    .recon-request-response-header {
+      display: none;
+    }
+    .packet-details {
+      margin-top: 0;
+    }
+  }
+
+  &__body {
+    @include rsa-row(justify,fill);
+    background-color: rsa-color(gray, dark, $rsa-transparent);
+    color: $dark-fg-hover-color;
+    font-size: 0.85rem;
+    padding: 0px rsa-whitespace() rsa-whitespace(least) 0px;
+  }
+
+  &__offsets {
+    width: $packet-offsets-width;
+    @include rsa-vendor-prefix(flex-basis, $packet-offsets-width);
+    @include rsa-vendor-prefix(flex-shrink, 0);
+
+    &.hex {
+      td {
+        padding-left: 2.75rem;
+      }
+    }
+
+    &.ascii {
+      margin-left: rsa-whitespace();
+      td {
+        text-align: left;
+      }
+    }
+  }
+
+  &__hex {
+    @include rsa-vendor-prefix(flex-basis, 66%);
+    @include rsa-vendor-prefix(flex-shrink, 1);
+    @include rsa-vendor-prefix(flex-grow, 1);
+    margin-right: rsa-whitespace();
+  }
+
+  &__ascii {
+    @include rsa-vendor-prefix(flex-basis, 33%);
+    @include rsa-vendor-prefix(flex-shrink, 1);
+  }
+}

@@ -1,0 +1,37 @@
+// Tweaks for tooltip in text view
+.list-item {
+  padding: rsa-whitespace(less) rsa-whitespace();
+
+  &:hover {
+    cursor: pointer;
+    color: rsa-color(gray, lightest);
+    background-color: rsa-color(blue);
+  }
+}
+
+.panel-content.standard {
+  border: 1px solid rsa-color(blue);
+
+  svg line {
+    stroke: rsa-color(blue);
+  }
+}
+
+.panel-content {
+  header {
+    padding: rsa-whitespace(less) rsa-whitespace();
+  }
+
+  .selection-name {
+    @include rsa-font(header, small);
+    color: rsa-color(gray, light);
+    padding: rsa-whitespace() rsa-whitespace() rsa-whitespace(less);
+  }
+
+  .selection-value {
+    @include rsa-font(body, small);
+    padding: 0 rsa-whitespace() rsa-whitespace(less);
+    max-width: 12.5rem;
+    word-wrap: break-word;
+  }
+}

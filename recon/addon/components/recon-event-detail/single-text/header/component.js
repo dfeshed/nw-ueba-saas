@@ -3,8 +3,8 @@ import computed from 'ember-computed-decorators';
 import layout from './template';
 
 export default Component.extend({
-  classNameBindings: ['isSticky', 'side', 'isSticky:rsa-packet__header'],
-  classNames: ['request-response-header'],
+  classNameBindings: ['isSticky', 'side'],
+  classNames: ['recon-request-response-header'],
   layout,
 
   isLog: null,

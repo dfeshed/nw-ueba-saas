@@ -1,8 +1,63 @@
+@import "../mixins";
 @import "./files/manifest";
 @import "./packets/manifest";
 @import "./text/manifest";
-@import "../mixins";
 
-.recon-event-detail-feedback {
-  @include error-center();
+.recon-request-response-header {
+  color: rsa-color(blue);
+
+  .rsa-icon {
+    padding-right: rsa-whitespace(less);
+  }
+
+  .text {
+    @include rsa-font(header, small);
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+  }
+
+  &.response {
+    text-align: right;
+  }
+}
+
+.recon-event-content {
+
+  .request {
+    background-color:rgb(34,41,45);
+  }
+
+  .response {
+    background-color: rgb(30,34,36);
+  }
+
+  .is-sticky {
+    border-top: none;
+
+    // avoid overlapping scrollbar
+    margin-right: 1rem;
+    z-index: 1000;
+  }
+
+  .no-items {
+    @include error-center();
+  }
+
+  .scroll-box {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: rsa-whitespace(more);
+
+    // Handles borders for text view
+    // TODO, move packet view so this'll work for it as well
+    > div {
+      border-top: 1px rsa-color(blue) solid;
+
+      &:first-of-type {
+        border-top: none;
+      }
+    }
+  }
 }

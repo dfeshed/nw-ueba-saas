@@ -22,7 +22,7 @@ const TextReconComponent = Component.extend(ReconPager, StickyHeader, {
 
   stickyContentKey: 'visibleText',
   stickySelector: '.scroll-box .rsa-text-entry',
-  stickyHeaderSelector: '.is-sticky.request-response-header'
+  stickyHeaderSelector: '.is-sticky.recon-request-response-header'
 });
 
 export default connect(stateToComputed)(TextReconComponent);

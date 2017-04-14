@@ -1,0 +1,18 @@
+.rsa-text-entry {
+  padding: 6px rsa-whitespace();
+  min-height: 2rem;
+  line-height: 1.75rem;
+
+  .text-container {
+    overflow-x: hidden;
+    padding: 0.5rem rsa-whitespace(more);
+    word-break: break-word;
+    @include rsa-font-monospace();
+    margin-top: rsa-whitespace();
+  }
+
+  .load-more-text-entries {
+    width: 100%;
+    text-align: center;
+  }
+}

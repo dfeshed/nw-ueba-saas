@@ -10,7 +10,7 @@ const HIDE_PACKETS_LINE_COUNT = 250;
 const SHOW_TRUNCATED_AMOUNT = 100;
 
 export default Component.extend(SelectionTooltip, {
-  classNames: ['rsa-packet', 'rsa-text-entry'],
+  classNames: ['rsa-text-entry'],
   classNameBindings: ['packet.side'],
   layout,
 
