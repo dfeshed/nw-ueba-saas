@@ -1,11 +1,10 @@
 .rsa-byte-table-tooltip {
+  background-color: rsa-color(blue);
   border: 1px solid rsa-color(blue);
   box-shadow: 1px 1px 2px 0 $dark-box-shadow-color;
-  background-color: rgba($dark-bg-color, .9);
-  color: $dark-fg-hover-color;
   display: none; /* to be set at run-time by javascript */
   min-width: 5rem;
-  padding: 3px 0;
+  padding: rsa-whitespace(less);
   position: absolute;
   transition: left 100ms, top 100ms;
   z-index: 10000;
@@ -15,10 +14,28 @@
   }
 
   div {
-    color: rsa-color(gray, light);
-    padding: 3px 12px 4px;
-    .label {
+    color: rsa-color(gray, lightest);
+
+    &.label {
       @include rsa-font(header, small);
+      padding-bottom: rsa-whitespace(less);
+    }
+  }
+
+  svg {
+    bottom: -15px;
+    height: 14px;
+    left: calc(50% - 7.5px);
+    position: absolute;
+    width: 14px;
+
+    line {
+      stroke: rsa-color(blue);
+      stroke-width: 1;
+    }
+
+    polygon {
+      fill: rsa-color(blue);
     }
   }
 }

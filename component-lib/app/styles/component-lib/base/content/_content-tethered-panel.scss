@@ -76,7 +76,8 @@
     }
   }
 
-  &.primary {
+  &.primary,
+  &.highlighted {
     border: 1px solid rsa-color(blue);
 
     header {
@@ -85,6 +86,27 @@
 
     svg line {
       stroke: rsa-color(blue);
+    }
+  }
+
+  &.highlighted {
+    background-color: rsa-color(blue);
+    padding: rsa-whitespace(least) 0;
+
+    header {
+      color: rsa-color(gray, lightest);
+      @include rsa-font(header, small);
+      padding: rsa-whitespace(less) rsa-whitespace() rsa-whitespace(least);
+    }
+
+    section {
+      padding: 0 rsa-whitespace() rsa-whitespace(least);
+      @include rsa-font(paragraph);
+    }
+
+    polygon {
+      stroke: rsa-color(blue);
+      fill: rsa-color(blue);
     }
   }
 

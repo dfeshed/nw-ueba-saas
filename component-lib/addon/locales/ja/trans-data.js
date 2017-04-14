@@ -136,7 +136,10 @@ export default {
       downloadPayload2: 'ja_Download Response Payload',
       downloadPayload: 'ja_Download All Payloads Only',
       payloadToggleLabel: 'ja_Display Payloads Only',
-      payloadToggleTitle: 'ja_Removes packet headers & footers from display'
+      payloadToggleTitle: 'ja_Removes packet headers & footers from display',
+      headerMeta: 'ja_Header Meta',
+      headerAttribute: 'ja_Header Attribute',
+      headerDisplayLabel: 'ja_{{label}} = {{displayValue}}'
     },
     fileView: {
       downloadFile: 'ja_Download File',

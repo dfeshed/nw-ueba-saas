@@ -144,6 +144,30 @@
       {{code-snippet name="panel5.hbs"}}
     {{/spec-member}}
 
+    {{#spec-member title="Highlighted"}}
+      {{#rsa-content-tethered-panel-trigger panel='panel5a'}}
+        {{#rsa-form-button style='primary'}}
+          Hover to Trigger
+        {{/rsa-form-button}}
+      {{/rsa-content-tethered-panel-trigger}}
+      {{#rsa-content-tethered-panel style="highlighted" position='top' panelId='panel5a'}}
+        <header>panel Header</header>
+        <section>Here is the info!</section>
+      {{/rsa-content-tethered-panel}}
+      {{!-- BEGIN-SNIPPET panel5a
+      {{#rsa-content-tethered-panel-trigger panel='panel5a'}}
+        {{#rsa-form-button style='primary'}}
+          Hover to Trigger
+        {{/rsa-form-button}}
+      {{/rsa-content-tethered-panel-trigger}}
+      {{#rsa-content-tethered-panel style="highlighted" position='top' panelId='panel5a'}}
+        <header>panel Header</header>
+        <section>Here is the info!</section>
+      {{/rsa-content-tethered-panel}}
+      END-SNIPPET --}}
+      {{code-snippet name="panel5a.hbs"}}
+    {{/spec-member}}
+
     {{#spec-member title="Danger"}}
       {{#rsa-content-tethered-panel-trigger panel='panel6'}}
         {{#rsa-form-button style='danger'}}

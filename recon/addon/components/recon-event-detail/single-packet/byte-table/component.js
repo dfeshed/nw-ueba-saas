@@ -82,13 +82,13 @@ const ByteTableComponent = Component.extend({
           .datum(byte);
 
         if (byte.isHeader) {
-          td.on('mouseenter', (d) => {
+          td.on('mousemove', (d) => {
             const packetField = d && d.packetField;
             const tooltipData = !packetField ? null : {
               field: packetField.field,
               index: packetField.index,
               values: packetField.values,
-              position: { x: event.pageX, y: event.pageY },
+              position: { x: event.pageX, y: $(event.target).offset().top },
               packetId: this.get('packet.id')
             };
             this.send('tooltipOn', tooltipData);

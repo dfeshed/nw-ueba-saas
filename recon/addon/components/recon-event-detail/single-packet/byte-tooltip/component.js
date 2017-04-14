@@ -1,6 +1,6 @@
 import Ember from 'ember';
 import connect from 'ember-redux/components/connect';
-import computed, { alias, notEmpty } from 'ember-computed-decorators';
+import computed, { alias, notEmpty, equal } from 'ember-computed-decorators';
 
 import intToHex from 'recon/utils/int-to-hex';
 import hexToInt from 'recon/utils/hex-to-int';
@@ -24,6 +24,13 @@ const DEFAULT_TYPE_OF_FIELD = {
   'tcp.srcport': 'int',
   'tcp.dstport': 'int'
 };
+
+const HEADER_ATTRIBUTES = [
+  'ip.ttl',
+  'ip.checksum',
+  'ip.frag_offset',
+  'ipv6.hlim'
+];
 
 function valsToHexArray(arr) {
   return arr.map((part) => {
@@ -97,6 +104,9 @@ const ByteTooltipComponent = Component.extend({
   @alias('tooltipData.values') values: null,
   @alias('tooltipData.position') position: null,
 
+  @equal('headerType', 'attribute') isAttribute: null,
+  @equal('headerType', 'meta') isMeta: null,
+
   @notEmpty('tooltipData') visible: null,
 
   @computed('label', 'values', 'type')
@@ -129,6 +139,11 @@ const ByteTooltipComponent = Component.extend({
     }
   },
 
+  @computed('label')
+  headerType(label) {
+    return HEADER_ATTRIBUTES.includes(label) ? 'attribute' : 'meta';
+  },
+
   positionDidChange: observer('position', function() {
     if (this.element) {
       run.schedule('afterRender', this, '_move');
@@ -152,8 +167,8 @@ const ByteTooltipComponent = Component.extend({
   _move() {
     const position = this.get('position');
     if (position) {
-      this.element.style.left = `${position.x - 125}px`;
-      this.element.style.top = `${position.y - 65}px`;
+      this.element.style.left = `${position.x - ($(this.element).width() / 2) - 7}px`;
+      this.element.style.top = `${position.y - 63}px`;
     }
   }
 });
