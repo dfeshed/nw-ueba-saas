@@ -2,7 +2,6 @@ package fortscale.utils.mongo.converter;
 
 import com.mongodb.Mongo;
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
-import fortscale.utils.test.mongodb.MongoDbTestProperties;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
 import org.junit.Assert;
 import org.junit.Before;
@@ -21,6 +20,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 
 /**
@@ -35,7 +35,10 @@ public class MongoConverterConfigurerTest {
 
         @Bean
         public static TestPropertiesPlaceholderConfigurer mainProcessPropertiesConfigurer() {
-            return new TestPropertiesPlaceholderConfigurer(MongoDbTestProperties.getProperties());
+            Properties properties = new Properties();
+            TestPropertiesPlaceholderConfigurer configurer = new TestPropertiesPlaceholderConfigurer(properties);
+
+            return configurer;
         }
     }
     @Autowired

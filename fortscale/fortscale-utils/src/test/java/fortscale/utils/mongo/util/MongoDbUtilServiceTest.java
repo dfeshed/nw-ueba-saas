@@ -1,5 +1,6 @@
-package fortscale.aggregation.util;
+package fortscale.utils.mongo.util;
 
+import fortscale.utils.mongodb.util.MongoDbUtilService;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,7 +31,7 @@ public class MongoDbUtilServiceTest {
         @Bean
         public MongoDbUtilService mongoDbUtilService()
         {
-            return new MongoDbUtilService();
+            return new MongoDbUtilService(mongoTemplate());
         }
     }
 

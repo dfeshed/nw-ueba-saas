@@ -4,7 +4,6 @@ import fortscale.aggregation.feature.bucket.repository.state.FeatureBucketStateR
 import fortscale.aggregation.feature.bucket.state.config.FeatureBucketStateServiceConfig;
 import fortscale.utils.monitoring.stats.config.NullStatsServiceConfig;
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
-import fortscale.utils.test.mongodb.MongoDbTestProperties;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
 import org.junit.Assert;
 import org.junit.Before;
@@ -47,7 +46,6 @@ public class FeatureBucketStateServiceTest {
         @Bean
         public static TestPropertiesPlaceholderConfigurer mainProcessPropertiesConfigurer() {
             Properties properties = new Properties();
-            properties.putAll(MongoDbTestProperties.getProperties());
 
             return new TestPropertiesPlaceholderConfigurer(properties);
         }

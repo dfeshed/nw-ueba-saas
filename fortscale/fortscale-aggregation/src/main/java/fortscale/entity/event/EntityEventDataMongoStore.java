@@ -1,7 +1,7 @@
 package fortscale.entity.event;
 
-import fortscale.aggregation.util.MongoDbUtilService;
 import fortscale.utils.mongodb.FIndex;
+import fortscale.utils.mongodb.util.MongoDbUtilService;
 import fortscale.utils.time.TimestampUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
