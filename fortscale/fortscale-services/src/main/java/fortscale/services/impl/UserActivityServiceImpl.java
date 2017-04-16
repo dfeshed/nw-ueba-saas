@@ -9,7 +9,10 @@ import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @Service("UserActivityService")
 public class UserActivityServiceImpl implements UserActivityService {
@@ -71,13 +74,7 @@ public class UserActivityServiceImpl implements UserActivityService {
     @Override
     public List<UserActivityTopDirectoriesDocument> getUserActivityTopDirectoriesEntriesWithBlacklistFiltering(String id, int timeRangeInDays) {
         final List<UserActivityTopDirectoriesDocument> userActivityTopDirectoriesEntries = getUserActivityTopDirectoriesEntries(id, timeRangeInDays);
-        if(!filterBlacklistedDirectories(userActivityTopDirectoriesEntries)) {
-            logger.error("Failed to getUserActivityTopDirectoriesEntriesWithBlacklistFiltering for id:{}, timeRangeInDays:{}", id, timeRangeInDays);
-            return Collections.emptyList();
-        }
-
-        return userActivityTopDirectoriesEntries;
-
+        return getFilteredBlacklistedDirectories(userActivityTopDirectoriesEntries);
     }
 
     @Override
@@ -89,27 +86,30 @@ public class UserActivityServiceImpl implements UserActivityService {
         return userActivityRepository.getUserActivityTargetDeviceEntries(id, timeRangeInDays);
     }
 
-    protected boolean filterBlacklistedDirectories(List<UserActivityTopDirectoriesDocument> userActivityTopDirectoriesEntries) {
-        for (UserActivityTopDirectoriesDocument userActivityTopDirectoriesEntry : userActivityTopDirectoriesEntries) {
-            final Map<String, Double> histogram = userActivityTopDirectoriesEntry.getHistogram();
-            final Set<String> directories = histogram.keySet();
-            final ApplicationConfiguration blacklistedDirectoriesConfiguration = applicationConfigurationService.getApplicationConfiguration(BLACKLISTED_DIRECTORIES_KEY);
-            if (blacklistedDirectoriesConfiguration == null) {
-                final String msg = "Can't filter blacklisted directories because there's no configuration for blacklisted directories. key : " + BLACKLISTED_DIRECTORIES_KEY;
-                logger.error(msg);
-                return false;
-            }
-            final String blacklistedDirectories = blacklistedDirectoriesConfiguration.getValue();
-            final Map<String, Double> filteredHistogram = new HashMap<>();
-            for (String directory : directories) {
-                if (!blacklistedDirectories.contains(directory)) {
+    protected List<UserActivityTopDirectoriesDocument> getFilteredBlacklistedDirectories(List<UserActivityTopDirectoriesDocument> userActivityTopDirectoriesEntries) {
+        final ApplicationConfiguration blacklistedDirectoriesConfiguration = applicationConfigurationService.getApplicationConfiguration(BLACKLISTED_DIRECTORIES_KEY);
+        if (blacklistedDirectoriesConfiguration == null) {
+            logger.info("Can't filter blacklisted directories because there's no configuration for blacklisted directories. key : {}", BLACKLISTED_DIRECTORIES_KEY);
+        }
+        else {
+            for (UserActivityTopDirectoriesDocument userActivityTopDirectoriesEntry : userActivityTopDirectoriesEntries) {
+                final Map<String, Double> histogram = userActivityTopDirectoriesEntry.getHistogram();
+                final Set<String> directories = histogram.keySet();
+                final String blacklistedDirectories = blacklistedDirectoriesConfiguration.getValue();
+                final Map<String, Double> filteredHistogram = new HashMap<>();
+                for (String directory : directories) {
                     final Double directoryCount = histogram.get(directory);
-                    filteredHistogram.put(directory, directoryCount);
+                    if (!blacklistedDirectories.contains(directory)) {
+                        filteredHistogram.put(directory, directoryCount);
+                    }
+                    else {
+                        logger.debug("Filtered directory {} with count {} from top directories.", directory, directoryCount);
+                    }
                 }
+                userActivityTopDirectoriesEntry.getDirectories().setDirectoriesHistogram(filteredHistogram);
             }
-            userActivityTopDirectoriesEntry.getDirectories().setDirectoriesHistogram(filteredHistogram);
         }
 
-        return true;
+        return userActivityTopDirectoriesEntries;
     }
 }
