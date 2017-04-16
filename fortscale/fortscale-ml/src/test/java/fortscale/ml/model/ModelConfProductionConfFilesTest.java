@@ -4,9 +4,8 @@ import fortscale.accumulator.aggregation.store.AccumulatedAggregatedFeatureEvent
 import fortscale.accumulator.entityEvent.store.AccumulatedEntityEventStore;
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.aggregation.feature.bucket.FeatureBucketsReaderService;
-import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
-import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfUtilService;
 import fortscale.aggregation.feature.event.RetentionStrategiesConfService;
+import fortscale.aggregation.feature.event.config.AggregatedFeatureEventsConfServiceConfig;
 import fortscale.aggregation.feature.event.store.AggregatedFeatureEventsReaderService;
 import fortscale.entity.event.EntityEventConfService;
 import fortscale.entity.event.EntityEventDataReaderService;
@@ -41,7 +40,7 @@ public class ModelConfProductionConfFilesTest {
 	@Configuration
 	@EnableSpringConfigured
 	@ComponentScan(basePackages = "fortscale.ml.model.selector,fortscale.ml.model.retriever,fortscale.ml.model.builder")
-	@Import(NullStatsServiceConfig.class)
+	@Import({NullStatsServiceConfig.class, AggregatedFeatureEventsConfServiceConfig.class})
 	static class ContextConfiguration {
 		@Mock private FeatureBucketsReaderService featureBucketsReaderService;
 		@Mock private AggregatedFeatureEventsReaderService aggregatedFeatureEventsReaderService;
@@ -62,16 +61,6 @@ public class ModelConfProductionConfFilesTest {
 		@Bean
 		public BucketConfigurationService bucketConfigurationService() {
 			return new BucketConfigurationService();
-		}
-
-		@Bean
-		public AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService() {
-			return new AggregatedFeatureEventsConfService();
-		}
-
-		@Bean
-		public AggregatedFeatureEventsConfUtilService aggregatedFeatureEventsConfUtilService() {
-			return new AggregatedFeatureEventsConfUtilService();
 		}
 
 		@Bean

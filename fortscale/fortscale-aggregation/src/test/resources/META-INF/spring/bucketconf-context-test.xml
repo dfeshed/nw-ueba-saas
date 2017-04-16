@@ -9,10 +9,11 @@
 	<import resource="classpath*:META-INF/spring/fortscale-aggr-context-test.xml" />
 	<bean id="aggrEventTopologyService" class="fortscale.aggregation.feature.event.AggrEventTopologyServiceForTest"/>
 	<bean id="nullStatsServiceConfig" class="fortscale.utils.monitoring.stats.config.NullStatsServiceConfig" />
+	<bean id="aggregatedFeatureEventsConfUtilServiceConfig" class="fortscale.aggregation.feature.event.config.AggregatedFeatureEventsConfUtilServiceConfig"/>
 
 	<context:spring-configured />
 	<context:annotation-config />
-	<context:component-scan base-package="fortscale.global,fortscale.aggregation.feature.event,fortscale.domain.core.dao"/>
+	<context:component-scan base-package="fortscale.global"/>
 	<bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
 		<property name="location" value="classpath:BucketConfigurationServiceTest.properties"/>
 		<property name="order" value="#{T(org.springframework.core.Ordered).HIGHEST_PRECEDENCE}"/>

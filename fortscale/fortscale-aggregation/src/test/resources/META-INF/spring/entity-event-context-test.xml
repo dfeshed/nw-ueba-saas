@@ -8,8 +8,8 @@
     <bean id="entityEventGlobalParamsConfService" class="fortscale.entity.event.EntityEventGlobalParamsConfService"/>
     <bean id="entityEventConfService" class="fortscale.entity.event.EntityEventConfService"/>
     <bean id="entityEventDataStore" class="fortscale.entity.event.EntityEventDataTestStore"/>
-    <bean id="aggregatedFeatureEventsConfUtilService" class="fortscale.aggregation.feature.event.AggregatedFeatureEventsConfUtilService"/>
-    <bean id="aggrFeatureEventBuilderService" class="fortscale.aggregation.feature.event.AggrFeatureEventBuilderService"/>
+    <bean id="aggregatedFeatureEventsConfUtilServiceConfig" class="fortscale.aggregation.feature.event.config.AggregatedFeatureEventsConfUtilServiceConfig"/>
+    <bean id="aggrFeatureEventBuilderServiceConfig" class="fortscale.aggregation.feature.event.config.AggrFeatureEventBuilderServiceConfig"/>
 
     <context:spring-configured/>
     <context:annotation-config/>

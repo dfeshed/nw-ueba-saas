@@ -8,14 +8,12 @@ import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
 import net.minidev.json.parser.ParseException;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Component
 public class AggregatedFeatureEventsConfUtilService {
 	private static final String OUTPUT_AGGREGATED_FEATURE_CONF_NAME_SUFFIX = "histogram";
 	
