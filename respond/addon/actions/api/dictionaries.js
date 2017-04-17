@@ -29,5 +29,13 @@ export default {
       modelName: 'status-types',
       query: {}
     });
+  },
+
+  getAllCategories() {
+    return promiseRequest({
+      method: 'findAll',
+      modelName: 'category-tags',
+      query: {}
+    });
   }
 };

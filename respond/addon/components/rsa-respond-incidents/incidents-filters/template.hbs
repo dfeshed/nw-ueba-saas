@@ -4,6 +4,7 @@
     {{#power-select
       options=timeframes
       selected=selectedTimeframe
+      searchEnabled=false
       onchange=(action "onChangeTimeframe") as |time|}}
       {{t (concat 'respond.timeframeOptions.' time.name) }}
     {{/power-select}}
@@ -38,6 +39,15 @@
       searchField="name"
       onchange=(action "assigneeChanged") as |users|}}
       {{users.name}}
+    {{/power-select-multiple}}
+  </section>
+  <section class="filter-option category-filter">
+    <h2>{{ t 'respond.incident.categories'}}</h2>
+    {{#power-select-multiple
+      options=categoryTags
+      selected=selectedCategories
+      onchange=(action "categoryChanged") as |category|}}
+      {{category}}
     {{/power-select-multiple}}
   </section>
 </section>

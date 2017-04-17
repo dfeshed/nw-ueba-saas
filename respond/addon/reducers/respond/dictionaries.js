@@ -4,10 +4,45 @@ import { handle } from 'redux-pack';
 
 const initialState = {
   priorityTypes: [],
-  statusTypes: []
+  statusTypes: [],
+  categoryTags: []
 };
 
+/**
+ * Converts the category-tag values (an array of objects with a name and parent name), into an array of
+ * groups with the members of the group set as an array of options on the group. This conforms with the
+ * expected model for ember-power-select group format. Cf http://www.ember-power-select.com/docs/groups
+ * @param categories
+ * @returns {Array}
+ * @private
+ */
+function _constructCategoryGroups(categories) {
+  const groupsByName = categories.reduce((previousValue, { name, parent }) => {
+    if (!previousValue[parent]) {
+      previousValue[parent] = [];
+    }
+    previousValue[parent].push(name);
+    return previousValue;
+  }, {});
+
+  const groups = Object.keys(groupsByName).map((groupName) => {
+    return {
+      groupName,
+      options: groupsByName[groupName]
+    };
+  });
+
+  return groups;
+}
+
 export default reduxActions.handleActions({
+  [ACTION_TYPES.FETCH_CATEGORY_TAGS]: (state, action) => (
+    handle(state, action, {
+      start: (s) => ({ ...s, categoryTags: [] }),
+      failure: (s) => ({ ...s, categoryTags: [] }),
+      success: (s) => ({ ...s, categoryTags: _constructCategoryGroups(action.payload.data) }) }
+    )
+  ),
 
   [ACTION_TYPES.FETCH_PRIORITY_TYPES]: (state, action) => (
     handle(state, action, {

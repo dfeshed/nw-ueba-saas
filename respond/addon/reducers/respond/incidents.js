@@ -9,6 +9,7 @@ const localStorageKey = 'rsa::nw::respond::incidents';
 const incidentsFilters = {
   status: [],
   priority: [],
+  'categories.name': [],
   'assignee.id': [],
   created: {
     'name': 'ALL_TIME',

@@ -453,6 +453,17 @@ const resetIncidentFilters = () => {
   };
 };
 
+const getAllCategories = () => {
+  return {
+    type: ACTION_TYPES.FETCH_CATEGORY_TAGS,
+    promise: dictionaries.getAllCategories(),
+    meta: {
+      onSuccess: (response) => Logger.debug(ACTION_TYPES.FETCH_CATEGORY_TAGS, response),
+      onFailure: (response) => _handleContentRetrievalError(response, 'category tags')
+    }
+  };
+};
+
 /**
  * An action creator for updating the sort-by information used in fetching incidents
  * @public
@@ -527,5 +538,6 @@ export {
   sortBy,
   initializeIncident,
   getAllPriorityTypes,
-  getAllStatusTypes
+  getAllStatusTypes,
+  getAllCategories
 };

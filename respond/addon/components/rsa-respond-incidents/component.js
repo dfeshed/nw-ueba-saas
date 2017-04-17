@@ -31,6 +31,7 @@ const dispatchToActions = (dispatch) => {
       dispatch(DataActions.getAllUsers());
       dispatch(DataActions.getAllPriorityTypes());
       dispatch(DataActions.getAllStatusTypes());
+      dispatch(DataActions.getAllCategories());
     },
     toggleFilterPanel: () => dispatch(UIStateActions.toggleFilterPanel()),
     toggleIsInSelectMode: () => dispatch(UIStateActions.toggleIsInSelectMode()),

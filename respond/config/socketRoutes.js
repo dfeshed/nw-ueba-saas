@@ -47,7 +47,7 @@ module.exports = function(environment) {
     },
     'category-tags': {
       socketUrl,
-      stream: {
+      findAll: {
         subscriptionDestination: '/user/queue/categories',
         requestDestination: '/ws/response/categories'
       }

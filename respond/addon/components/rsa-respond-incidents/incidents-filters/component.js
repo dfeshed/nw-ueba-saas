@@ -6,14 +6,23 @@ import computed from 'ember-computed-decorators';
 import { SINCE_WHEN_TYPES } from 'respond/utils/since-when-types';
 
 const stateToComputed = (state) => {
+  const {
+    respond: {
+      dictionaries: { categoryTags },
+      incidents: { incidentsFilters }
+    }
+  } = state;
+
   return {
-    priorityFilters: state.respond.incidents.incidentsFilters.priority,
-    statusFilters: state.respond.incidents.incidentsFilters.status,
-    assigneeFilters: state.respond.incidents.incidentsFilters['assignee.id'],
+    priorityFilters: incidentsFilters.priority,
+    statusFilters: incidentsFilters.status,
+    assigneeFilters: incidentsFilters['assignee.id'],
     priorityTypes: priorityOptions(state),
     statusTypes: statusOptions(state),
+    categoryFilters: incidentsFilters['categories.name'],
+    categoryTags,
     users: state.respond.users.users,
-    timeframeFilter: state.respond.incidents.incidentsFilters.created
+    timeframeFilter: incidentsFilters.created
   };
 };
 
@@ -50,6 +59,17 @@ const IncidentsFilters = Component.extend({
     }).compact();
   },
 
+  @computed('categoryTags', 'categoryFilters')
+  selectedCategories(categories, categoryFilters = []) {
+    return categories.mapBy('options')      // pull out the options array from each group
+      .reduce((previousValue, item) => {    // reduce to one big array of the category options
+        return previousValue.concat(item);
+      }, [])
+      .map((category) => {                  // find all the matching categories that are applied as a filter
+        return categoryFilters.includes(category) ? category : null;
+      }).compact();
+  },
+
   actions: {
     toggleStatusFilter(status) {
       const statusFilters = this.get('statusFilters');
@@ -72,6 +92,11 @@ const IncidentsFilters = Component.extend({
     },
     onChangeTimeframe(created) {
       this.send('updateFilter', { created });
+    },
+    categoryChanged(selections) {
+      this.send('updateFilter', {
+        'categories.name': selections
+      });
     }
   }
 });
