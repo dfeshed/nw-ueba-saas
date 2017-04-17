@@ -1,8 +1,7 @@
 import Component from 'ember-component';
 import connect from 'ember-redux/components/connect';
 import { isTextView, isFileView, isPacketView } from 'recon/selectors/type-selectors';
-import { isLogEvent } from 'recon/selectors/event-type-selectors';
-import { isHttpData } from 'recon/selectors/meta-selectors';
+import { isHttpData, isLogEvent } from 'recon/reducers/meta/selectors';
 import layout from './template';
 
 const stateToComputed = ({ recon }) => ({

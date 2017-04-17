@@ -1,15 +1,14 @@
-import * as ACTION_TYPES from '../actions/types';
 import { handleActions } from 'redux-actions';
+
+import * as ACTION_TYPES from 'recon/actions/types';
 
 const visualsInitialState = {
   isHeaderOpen: true,
   isRequestShown: true,
   isResponseShown: true,
-  isPayloadOnly: false,
   isMetaShown: true,
   isReconExpanded: true,
-  isReconOpen: false,
-  packetTooltipData: null
+  isReconOpen: false
 };
 
 const visuals = handleActions({
@@ -31,11 +30,6 @@ const visuals = handleActions({
   [ACTION_TYPES.TOGGLE_RESPONSE]: (state, { payload = {} }) => ({
     ...state,
     isResponseShown: payload.setTo !== undefined ? payload.setTo : !state.isResponseShown
-  }),
-
-  [ACTION_TYPES.TOGGLE_PAYLOAD_ONLY]: (state, { payload = {} }) => ({
-    ...state,
-    isPayloadOnly: payload.setTo !== undefined ? payload.setTo : !state.isPayloadOnly
   }),
 
   [ACTION_TYPES.CLOSE_RECON]: (state) => ({
@@ -65,18 +59,7 @@ const visuals = handleActions({
       isMetaShown,
       isReconExpanded
     };
-  },
-
-  [ACTION_TYPES.SHOW_PACKET_TOOLTIP]: (state, { payload }) => ({
-    ...state,
-    packetTooltipData: payload
-  }),
-
-  [ACTION_TYPES.HIDE_PACKET_TOOLTIP]: (state) => ({
-    ...state,
-    packetTooltipData: null
-  })
-
+  }
 }, visualsInitialState);
 
 export default visuals;

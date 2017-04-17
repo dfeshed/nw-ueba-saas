@@ -3,7 +3,7 @@ import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 
 import { enhancePackets } from 'recon/reducers/packets/util';
-import { payloadProcessedPackets } from 'recon/selectors/packet-selectors';
+import { payloadProcessedPackets } from 'recon/reducers/packets/selectors';
 import { togglePayloadOnly } from 'recon/actions/visual-creators';
 
 const packetFields = [
@@ -51,7 +51,7 @@ test('single packet renders default', function(assert) {
       isResponseShown: true,
       isPayloadOnly: false
     },
-    data: {
+    packets: {
       packetFields,
       packets: enhancePackets([packets[0]], packetFields)
     }
@@ -86,7 +86,7 @@ test('single packet renders with hidden header/footer bytes', function(assert) {
       isResponseShown: true,
       isPayloadOnly: true
     },
-    data: {
+    packets: {
       packetFields,
       packets: enhancePackets([packets[1]], packetFields)
     }
@@ -124,7 +124,7 @@ test('single (continuous) packet renders with hidden header/footer bytes', funct
       isResponseShown: true,
       isPayloadOnly: true
     },
-    data: {
+    packets: {
       packetFields,
       packets: enhancePackets([packets[1]], packetFields)
     }

@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import { basicPromiseRequest } from './util/query-util';
+import { basicPromiseRequest } from '../util/query-util';
 import Object from 'ember-object';
 
 const { RSVP, A } = Ember;

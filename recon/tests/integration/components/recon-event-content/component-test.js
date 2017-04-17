@@ -39,7 +39,6 @@ test('it renders spinner', function(assert) {
 test('log events redirect to text view', function(assert) {
   new DataHelper(this.get('redux'))
     .initializeData({ eventId: 1, endpointId: 2, meta: [['medium', 32]] })
-    .setEventTypeToLog()
     .setViewToText();
 
   this.render(hbs`{{recon-event-content}}`);

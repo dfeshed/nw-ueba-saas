@@ -2,10 +2,10 @@ import Component from 'ember-component';
 import connect from 'ember-redux/components/connect';
 import layout from './template';
 
-const stateToComputed = ({ recon: { data } }) => ({
-  meta: data.meta,
-  metaError: data.metaError,
-  metaLoading: data.metaLoading
+const stateToComputed = ({ recon: { meta } }) => ({
+  meta: meta.meta,
+  metaError: meta.metaError,
+  metaLoading: meta.metaLoading
 });
 
 const MetaContentComponent = Component.extend({

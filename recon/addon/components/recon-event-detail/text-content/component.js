@@ -3,7 +3,7 @@ import connect from 'ember-redux/components/connect';
 import ReconPager from 'recon/mixins/recon-pager';
 import StickyHeader from 'recon/mixins/sticky-header-mixin';
 import layout from './template';
-import { isLogEvent } from 'recon/selectors/event-type-selectors';
+import { isLogEvent } from 'recon/reducers/meta/selectors';
 import { visibleText } from 'recon/selectors/text-selectors';
 
 const { Component } = Ember;

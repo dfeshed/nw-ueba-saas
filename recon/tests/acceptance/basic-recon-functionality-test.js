@@ -23,7 +23,7 @@ skip('show/hide meta', (assert) => {
     assert.ok(find('.recon-meta-content').length === 0, 'Meta is hidden');
     click('.recon-event-titlebar .toggle-meta');
   });
-  waitForReduxStateChange('recon.data.meta');
+  waitForReduxStateChange('recon.meta.meta');
   andThen(() => {
     assert.ok(find('.recon-meta-content').length === 1, 'Meta is shown');
   });
@@ -32,7 +32,7 @@ skip('show/hide meta', (assert) => {
 skip('change recon views', (assert) => {
   visit('/');
 
-  waitForReduxStateChange('recon.data.packets');
+  waitForReduxStateChange('recon.packets.packets');
 
   andThen(() => {
     assert.ok(find('.recon-event-detail-packets').length > 0, 'Recon initially on packet view');
@@ -50,7 +50,7 @@ skip('change recon views', (assert) => {
 skip('toggle request on/off', (assert) => {
   visit('/');
 
-  waitForReduxStateChange('recon.data.packets');
+  waitForReduxStateChange('recon.packets.packets');
   andThen(() => {
     click('.rsa-icon-arrow-circle-right-2');
   });
@@ -65,7 +65,7 @@ skip('toggle request on/off', (assert) => {
 
 skip('toggle response on/off', (assert) => {
   visit('/');
-  waitForReduxStateChange('recon.data.packets');
+  waitForReduxStateChange('recon.packets.packets');
   click('.rsa-icon-arrow-circle-left-2');
   andThen(() => {
     // Height should be 0, as the response ones are hidden, but their containers are still there

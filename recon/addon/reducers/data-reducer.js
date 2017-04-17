@@ -1,10 +1,10 @@
 import Ember from 'ember';
-import { RECON_VIEW_TYPES_BY_NAME } from '../utils/reconstruction-types';
-import { EVENT_TYPES } from '../utils/event-types';
-import * as ACTION_TYPES from '../actions/types';
 import { handleActions } from 'redux-actions';
 import { handle } from 'redux-pack';
-import { enhancePackets } from './packets/util';
+
+import { RECON_VIEW_TYPES_BY_NAME } from '../utils/reconstruction-types';
+import * as ACTION_TYPES from '../actions/types';
+import { augmentResult } from './util';
 
 const { set } = Ember;
 
@@ -28,18 +28,13 @@ const dataInitialState = {
   decode: true,
 
   // Recon inputs or fetched if not provided
-  meta: null,
   aliases: null,
   language: null,
 
   // Fetched data
-  eventType: EVENT_TYPES[1],
   headerItems: null,
   headerLoading: null,
   files: null,
-  packetFields: null,
-  packets: null,
-  packetsPageSize: 100,
   textContent: null,
 
   ...fileExtractInitialState,
@@ -55,13 +50,11 @@ const dataInitialState = {
   stopNotifications: null,
 
   // Error state
-  metaError: null,
   headerError: null,
   contentError: null,
 
   // loading states
-  contentLoading: false,
-  metaLoading: false
+  contentLoading: false
 };
 
 const allFilesSelection = (setTo) => {
@@ -76,69 +69,25 @@ const allFilesSelection = (setTo) => {
 };
 
 const data = handleActions({
-  [ACTION_TYPES.INITIALIZE]: (state, { payload }) => {
-    // only clear out data if its a new event
-    if (state.eventId === payload.eventId) {
-      return {
-        ...state,
-        ...payload
-      };
-    } else {
-      // reset to initial data state
-      // then persist user's current recon view
-      // and persist the notifications cancel callback because that's not event-specific
-      // then overlay the inputs
-      return {
-        ...dataInitialState,
-        currentReconView: state.currentReconView,
-        stopNotifications: state.stopNotifications,
-        ...payload
-      };
-    }
-  },
+  [ACTION_TYPES.INITIALIZE]: (state, { payload }) => ({
+    ...dataInitialState,
+    currentReconView: state.currentReconView,
+    stopNotifications: state.stopNotifications,
+    ...payload
+  }),
 
   [ACTION_TYPES.CHANGE_RECON_VIEW]: (state, { payload: { newView } }) => ({
     ...state,
     currentReconView: newView
   }),
 
-  // Meta reducing
-  [ACTION_TYPES.META_RETRIEVE]: (state, action) => {
-    return handle(state, action, {
-      start: (s) => ({ ...s, metaError: null, metaLoading: true }),
-      finish: (s) => ({ ...s, metaLoading: false }),
-      failure: (s) => ({ ...s, metaError: true, meta: null }),
-      success: (s) => ({ ...s, meta: action.payload })
-    });
-  },
-
-  [ACTION_TYPES.SET_EVENT_TYPE]: (state, { payload: eventType }) => ({
-    ...state,
-    eventType
-  }),
-
   // Summary reducing
   [ACTION_TYPES.SUMMARY_RETRIEVE]: (state, action) => {
     return handle(state, action, {
-      start: (s) => ({ ...s, headerItems: null, packetFields: null, headerError: null, headerLoading: true }),
+      start: (s) => ({ ...s, headerItems: null, headerError: null, headerLoading: true }),
       finish: (s) => ({ ...s, headerLoading: false }),
       failure: (s) => ({ ...s, headerError: true }),
-      success: (s) => {
-        const returnObject = {
-          ...s,
-          headerItems: action.payload.headerItems,
-          packetFields: action.payload.packetFields
-        };
-
-        // If header fields come in and there are already packets present
-        // then those packets need to be enhanced before they can be used
-        // (can't enhance without the packetFields)
-        if (s.packets) {
-          returnObject.packets = enhancePackets(state.packets, returnObject.packetFields);
-        }
-
-        return returnObject;
-      }
+      success: (s) => ({ ...s, headerItems: action.payload.headerItems })
     });
   },
 
@@ -148,6 +97,10 @@ const data = handleActions({
     contentError: null,
     contentLoading: true
   }),
+  [ACTION_TYPES.PACKETS_RETRIEVE_PAGE]: (state) => ({
+    ...state,
+    contentLoading: false
+  }),
   [ACTION_TYPES.FILES_RETRIEVE_SUCCESS]: (state, { payload }) => ({
     ...state,
     files: payload.map((f) => {
@@ -156,33 +109,13 @@ const data = handleActions({
     }),
     contentLoading: false
   }),
-  [ACTION_TYPES.PACKETS_RETRIEVE_PAGE]: (state, { payload }) => {
-    const lastPosition = state.packets && state.packets.length || 0;
-    let newPackets = augmentPackets(payload, lastPosition);
-
-    // if we have packetFields, then enhance the packets.
-    // if we do not have packetFields, then when packetFields
-    // arrive any packets we have accumulated will be enhanced
-    // then all at once
-    if (state.packetFields) {
-      newPackets = enhancePackets(newPackets, state.packetFields);
-    }
-
-    return {
-      ...state,
-      contentLoading: false,
-      // have packets already? then this is another page of packets from API
-      // Need to create new packet array with new ones at end
-      packets: state.packets ? [...state.packets, ...newPackets] : newPackets
-    };
-  },
   [ACTION_TYPES.CONTENT_RETRIEVE_FAILURE]: (state, { payload }) => ({
     ...state,
     contentError: payload,
     contentLoading: false
   }),
   [ACTION_TYPES.TEXT_DECODE_PAGE]: (state, { payload }) => {
-    const newContent = generateHTMLSafeText(augmentPackets(payload));
+    const newContent = generateHTMLSafeText(augmentResult(payload));
     return {
       ...state,
       contentLoading: false,
@@ -245,15 +178,6 @@ const data = handleActions({
     stopNotifications: null
   })
 }, dataInitialState);
-
-
-const augmentPackets = (data, previousPosition = 0) => {
-  return data.map((d, i) => ({
-    ...d,
-    side: d.side === 1 ? 'request' : 'response',
-    position: previousPosition + i + 1
-  }));
-};
 
 /*
  * Processes an array of text entries and normalizes their content

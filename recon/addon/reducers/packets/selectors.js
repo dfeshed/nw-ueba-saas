@@ -1,13 +1,13 @@
 import reselect from 'reselect';
-import { bytesAsRows } from 'recon/reducers/packets/util';
+import { bytesAsRows } from './util';
 import { getHeaderItem } from 'recon/utils/recon-event-header';
 
 const { createSelector } = reselect;
-const packets = (recon) => recon.data.packets;
+const packets = (recon) => recon.packets.packets;
 const headerItems = (recon) => recon.data.headerItems;
 const isRequestShown = (recon) => recon.visuals.isRequestShown;
 const isResponseShown = (recon) => recon.visuals.isResponseShown;
-const isPayloadOnly = (recon) => recon.visuals.isPayloadOnly;
+const isPayloadOnly = (recon) => recon.packets.isPayloadOnly;
 
 
 /**

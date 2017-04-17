@@ -33,8 +33,7 @@ test('text view renders decoded text', function(assert) {
 // in the Text view for log data?
 test('text view renders log text', function(assert) {
   new DataHelper(this.get('redux'))
-    .initializeData()
-    .setEventTypeToLog()
+    .initializeData({ meta: [['medium', 32]] })
     .setViewToText();
   this.render(hbs`{{recon-event-detail/text-content}}`);
   return wait().then(() => {

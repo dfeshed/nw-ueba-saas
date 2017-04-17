@@ -1,5 +1,4 @@
 import Ember from 'ember';
-import { EVENT_TYPES_BY_NAME } from 'recon/utils/event-types';
 import { RECON_VIEW_TYPES_BY_NAME } from 'recon/utils/reconstruction-types';
 import * as ACTION_TYPES from 'recon/actions/types';
 import VisualActions from 'recon/actions/visual-creators';
@@ -32,10 +31,6 @@ const _setViewTo = function(redux, newView) {
   redux.dispatch({ type: ACTION_TYPES.CHANGE_RECON_VIEW, payload: { newView } });
 };
 
-const _setEventTypeTo = function(redux, newEventType) {
-  redux.dispatch({ type: ACTION_TYPES.SET_EVENT_TYPE, payload: newEventType });
-};
-
 class DataHelper {
   constructor(redux) {
     this.redux = redux;
@@ -53,11 +48,6 @@ class DataHelper {
 
   setViewToFile() {
     _setViewTo(this.redux, RECON_VIEW_TYPES_BY_NAME.FILE);
-    return this;
-  }
-
-  setEventTypeToLog() {
-    _setEventTypeTo(this.redux, EVENT_TYPES_BY_NAME.LOG);
     return this;
   }
 

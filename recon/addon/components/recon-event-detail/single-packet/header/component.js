@@ -6,8 +6,8 @@ import layout from './template';
 
 const { Component } = Ember;
 
-const stateToComputed = ({ recon: { visuals } }) => ({
-  isPayloadOnly: visuals.isPayloadOnly
+const stateToComputed = ({ recon: { packets } }) => ({
+  isPayloadOnly: packets.isPayloadOnly
 });
 
 const singlePacketHeader = Component.extend({

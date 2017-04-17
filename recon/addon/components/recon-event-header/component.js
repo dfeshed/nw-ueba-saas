@@ -4,7 +4,7 @@ import connect from 'ember-redux/components/connect';
 import computed from 'ember-computed-decorators';
 import { RECON_DISPLAYED_LOG_HEADER } from 'recon/utils/recon-event-header';
 import layout from './template';
-import { isLogEvent } from 'recon/selectors/event-type-selectors';
+import { isLogEvent } from 'recon/reducers/meta/selectors';
 
 const stateToComputed = ({ recon, recon: { visuals, data } }) => ({
   isHeaderOpen: visuals.isHeaderOpen,

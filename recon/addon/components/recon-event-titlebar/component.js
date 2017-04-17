@@ -6,7 +6,7 @@ import layout from './template';
 import { RECON_VIEW_TYPES } from 'recon/utils/reconstruction-types';
 import * as VisualActions from 'recon/actions/visual-creators';
 import * as DataActions from 'recon/actions/data-creators';
-import { isLogEvent } from 'recon/selectors/event-type-selectors';
+import { isLogEvent } from 'recon/reducers/meta/selectors';
 import { lacksPackets } from 'recon/selectors/type-selectors';
 
 const stateToComputed = ({ recon, recon: { visuals, data } }) => ({

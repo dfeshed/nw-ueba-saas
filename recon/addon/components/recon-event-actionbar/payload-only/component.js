@@ -7,8 +7,8 @@ const dispatchToActions = (dispatch) => ({
   togglePayloadOnly: () => dispatch(VisualActions.togglePayloadOnly())
 });
 
-const stateToComputed = ({ recon: { visuals } }) => ({
-  isPayloadOnly: visuals.isPayloadOnly
+const stateToComputed = ({ recon: { packets } }) => ({
+  isPayloadOnly: packets.isPayloadOnly
 });
 
 const PayloadOnlyComponent = Component.extend({

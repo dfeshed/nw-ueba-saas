@@ -102,7 +102,7 @@ test('all views enabled for network sessions', function(assert) {
 
 test('just text view exists for log events', function(assert) {
   assert.expect(1);
-  new DataHelper(this.get('redux')).setEventTypeToLog().setViewToText();
+  new DataHelper(this.get('redux')).initializeData({ meta: [['medium', 32]] }).setViewToText();
   this.render(hbs`{{recon-event-titlebar}}`);
   return wait().then(() => {
     assert.equal(this.$().text().trim(), 'Text View');
@@ -121,7 +121,7 @@ test('request/response toggles enabled for packets', function(assert) {
 
 test('request/response insure that request, response, Top/Bottom and Side by Side are not generated for logs', function(assert) {
   assert.expect(6);
-  new DataHelper(this.get('redux')).setEventTypeToLog();
+  new DataHelper(this.get('redux')).initializeData({ meta: [['medium', 32]] });
   this.render(hbs`{{recon-event-titlebar}}`);
   return wait().then(() => {
     assert.equal(this.$('.rsa-icon-layout-6').length, true, 'Show/Hide Header button should exist for log');

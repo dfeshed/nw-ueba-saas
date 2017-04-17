@@ -5,7 +5,7 @@ import {
   addSessionIdsFilter,
   addFileSelectionsFilter,
   addFilenameFilter
-} from './util/query-util';
+} from '../util/query-util';
 
 /**
  * Retrieves an ID from server for a job to extract the files of a given event id.

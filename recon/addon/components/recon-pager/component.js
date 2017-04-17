@@ -45,7 +45,7 @@ export default Component.extend({
    * @type Number
    * @default 0
    * @public
-   * @see /reducers/data-reducers#packetsPageSize
+   * @see /reducers/packet-reducers#packetsPageSize
    */
   packetTotal: 0,
 

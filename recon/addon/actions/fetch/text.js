@@ -3,8 +3,8 @@ import {
   buildBaseQuery,
   addStreaming,
   addDecode
-} from './util/query-util';
-import { timedBatchResponse } from './util/execute-util';
+} from '../util/query-util';
+import { timedBatchResponse } from '../util/execute-util';
 
 const BATCH_SIZE = 10;
 const TIME_BETWEEN_BATCHES = 800;

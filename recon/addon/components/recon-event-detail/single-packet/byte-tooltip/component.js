@@ -88,8 +88,8 @@ function valsToInt(arr) {
   return hexArrayToInt(valsToHexArray(arr));
 }
 
-const stateToComputed = ({ recon: { visuals } }) => ({
-  tooltipData: visuals.packetTooltipData
+const stateToComputed = ({ recon: { packets } }) => ({
+  tooltipData: packets.packetTooltipData
 });
 
 const ByteTooltipComponent = Component.extend({

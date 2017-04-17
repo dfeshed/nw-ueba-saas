@@ -4,7 +4,7 @@ import computed from 'ember-computed-decorators';
 import * as InteractionActions from 'recon/actions/interaction-creators';
 import ReconExport from 'recon/mixins/recon-export';
 import layout from './template';
-import { hasPayload } from 'recon/selectors/packet-selectors';
+import { hasPayload } from 'recon/reducers/packets/selectors';
 
 const stateToComputed = ({ recon, recon: { data } }) => ({
   status: data.fileExtractStatus,

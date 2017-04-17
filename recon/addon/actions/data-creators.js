@@ -12,7 +12,7 @@
 import Ember from 'ember';
 
 import * as ACTION_TYPES from './types';
-import { determineEventType } from 'recon/utils/event-types';
+import { eventTypeFromMetaArray } from 'recon/reducers/meta/selectors';
 import { RECON_VIEW_TYPES_BY_NAME } from '../utils/reconstruction-types';
 import {
   fetchAliases,
@@ -64,6 +64,13 @@ const _handleContentError = (dispatch, response, type) => {
   });
 };
 
+const _getTextAndPacketInputs = ({ recon: { data, packets } }) => ({
+  endpointId: data.endpointId,
+  eventId: data.eventId,
+  packetsPageSize: packets.packetsPageSize,
+  decode: data.decode
+});
+
 /**
  * An Action Creator thunk creator for changing a recon view.
  *
@@ -110,14 +117,14 @@ const setNewReconView = (newView) => {
           break;
         case RECON_VIEW_TYPES_BY_NAME.PACKET.code:
           fetchPacketData(
-            dataState,
+            _getTextAndPacketInputs(getState()),
             (payload) => dispatch({ type: ACTION_TYPES.PACKETS_RETRIEVE_PAGE, payload }),
             (response) => _handleContentError(dispatch, response, 'packet')
           );
           break;
         case RECON_VIEW_TYPES_BY_NAME.TEXT.code:
           fetchTextData(
-            dataState,
+            _getTextAndPacketInputs(getState()),
             (payload) => dispatch({ type: ACTION_TYPES.TEXT_DECODE_PAGE, payload }),
             (response) => _handleContentError(dispatch, response, 'text')
           );
@@ -225,17 +232,8 @@ const initializeRecon = (reconInputs) => {
  * or when it is retrieved
  */
 const _dispatchEvent = (dispatch, reconView, meta) => {
-  // TODO we should optimize this and do the meta hashing in redux or a central location
-  // we currently do this here and for the event table
-  const eventType = determineEventType(meta);
-
-  dispatch({
-    type: ACTION_TYPES.SET_EVENT_TYPE,
-    payload: eventType
-  });
-
   // If we need to force a specific view based on eventType, do so
-  const newReconView = eventType.forcedView || reconView;
+  const newReconView = eventTypeFromMetaArray(meta).forcedView || reconView;
 
   // Taking advantage of existing action creator that handles
   // changing the recon view AND fetching the appropriate data
@@ -257,14 +255,14 @@ const _dispatchEvent = (dispatch, reconView, meta) => {
  */
 const toggleMetaData = (setTo) => {
   return (dispatch, getState) => {
-    const { recon: { visuals, data } } = getState();
+    const { recon: { visuals, meta } } = getState();
 
     // if 1) currently meta not shown
     // 2) not purposefully setting to closed
     // 3) Meta not already fetched
     // then meta is about to open and needs retrieving
-    if (visuals.isMetaShown === false && setTo !== false && !data.meta) {
-      _dispatchMeta(dispatch, data);
+    if (visuals.isMetaShown === false && setTo !== false && !meta.meta) {
+      _dispatchMeta(dispatch, meta);
     }
 
     // Handle setting of visual flag to

@@ -6,7 +6,7 @@ import {
   addSessionQueryFilter,
   endpointFilter,
   addCatchAllTimeRange
-} from './util/query-util';
+} from '../util/query-util';
 
 const { RSVP } = Ember;
 

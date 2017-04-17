@@ -1,4 +1,9 @@
-import { isHttpData, isNotHttpData } from 'recon/selectors/meta-selectors';
+import {
+  isHttpData,
+  isNotHttpData,
+  isLogEvent,
+  isNetworkEvent
+} from 'recon/reducers/meta/selectors';
 import { module, test } from 'qunit';
 
 module('Unit | Mixin | meta-selectors');
@@ -6,17 +11,17 @@ module('Unit | Mixin | meta-selectors');
 const generateHttpDataTests = function(selector) {
   return {
     shouldNotBeHttpData: selector({
-      data: {
+      meta: {
         meta: []
       }
     }),
     shouldAlsoNotBeHttpData: selector({
-      data: {
+      meta: {
         meta: [['service', 0]]
       }
     }),
     shouldBeHttpData: selector({
-      data: {
+      meta: {
         meta: [['service', 80]]
       }
     })
@@ -37,4 +42,44 @@ test('isNotHttpData', function(assert) {
   assert.equal(tests.shouldNotBeHttpData, true, 'isNotHttpData should return true when no meta');
   assert.equal(tests.shouldAlsoNotBeHttpData, true, 'isNotHttpData should return true for non http service');
   assert.equal(tests.shouldBeHttpData, false, 'isNotHttpData should return false for http events');
+});
+
+test('isLogEvent', function(assert) {
+  assert.expect(2);
+
+  const tests = {
+    shouldNotBeLogEvent: isLogEvent({
+      meta: {
+        meta: [['medium', 1]]
+      }
+    }),
+    shouldBeLogEvent: isLogEvent({
+      meta: {
+        meta: [['medium', 32]]
+      }
+    })
+  };
+
+  assert.equal(tests.shouldNotBeLogEvent, false, 'isLogEvent should return false for non log events');
+  assert.equal(tests.shouldBeLogEvent, true, 'isLogEvent should return true for log events');
+});
+
+test('isNetworkEvent', function(assert) {
+  assert.expect(2);
+
+  const tests = {
+    shouldNotBeNetworkEvent: isNetworkEvent({
+      meta: {
+        meta: [['medium', 32]]
+      }
+    }),
+    shouldBeNetworkEvent: isNetworkEvent({
+      meta: {
+        meta: [['medium', 1]]
+      }
+    })
+  };
+
+  assert.equal(tests.shouldNotBeNetworkEvent, false, 'isNetworkEvent should return false for non network events');
+  assert.equal(tests.shouldBeNetworkEvent, true, 'isNetworkEvent should return true for network events');
 });

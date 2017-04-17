@@ -78,7 +78,6 @@ const ReconContainer = Component.extend({
     }
 
     this.set('oldEventId', eventId);
-
     this.send('initializeRecon', inputs);
 
     // Containing application can pass in an initial expanded state
