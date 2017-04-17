@@ -383,6 +383,9 @@ export default {
       LAST_TWENTY_FOUR_HOURS: 'Last 24 Hours',
       LAST_FORTY_EIGHT_HOURS: 'Last 2 Days',
       LAST_5_DAYS: 'Last 5 Days',
+      LAST_7_DAYS: 'Last 7 Days',
+      LAST_14_DAYS: 'Last 14 Days',
+      LAST_30_DAYS: 'Last 30 Days',
       ALL_TIME: 'All Data'
     },
     incidents: {

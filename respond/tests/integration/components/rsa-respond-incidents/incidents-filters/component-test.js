@@ -62,7 +62,7 @@ test('All of the time range options appear in power select, and selecting one di
     this.render(hbs`{{rsa-respond-incidents/incidents-filters}}`);
     const selector = '.filter-option.created-filter';
     clickTrigger(selector);
-    assert.equal($('.ember-power-select-options li.ember-power-select-option').length, 12, 'There are 12 time ranges listed');
+    assert.equal($('.ember-power-select-options li.ember-power-select-option').length, 15, 'There are 15 time ranges listed');
     selectFirstOption();
     assert.ok(dispatchSpy.calledOnce);
   });

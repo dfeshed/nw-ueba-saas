@@ -383,6 +383,9 @@ export default {
       LAST_TWENTY_FOUR_HOURS: 'ja_Last 24 Hours',
       LAST_FORTY_EIGHT_HOURS: 'ja_Last 2 Days',
       LAST_5_DAYS: 'ja_Last 5 Days',
+      LAST_7_DAYS: 'ja_Last 7 Days',
+      LAST_14_DAYS: 'ja_Last 14 Days',
+      LAST_30_DAYS: 'ja_Last 30 Days',
       ALL_TIME: 'ja_All Data'
     },
     incidents: {

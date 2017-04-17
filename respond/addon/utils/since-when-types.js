@@ -60,6 +60,21 @@ const SINCE_WHEN_TYPES = [
     'subtract': 5
   },
   {
+    'name': 'LAST_7_DAYS',
+    'unit': 'days',
+    'subtract': 7
+  },
+  {
+    'name': 'LAST_14_DAYS',
+    'unit': 'days',
+    'subtract': 14
+  },
+  {
+    'name': 'LAST_30_DAYS',
+    'unit': 'days',
+    'subtract': 30
+  },
+  {
     'name': 'ALL_TIME',
     'unit': 'years',
     'subtract': 50
