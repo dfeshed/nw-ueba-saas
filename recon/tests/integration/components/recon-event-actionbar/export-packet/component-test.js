@@ -49,11 +49,9 @@ test('the menu renders properly and has the correct labels for export pcap menu'
 });
 
 test('it renders proper label when export pcap data', function(assert) {
-  const _data = {
-    ...data,
-    fileExtractStatus: 'wait'
-  };
-  new DataHelper(this.get('redux')).initializeData(_data);
+  new DataHelper(this.get('redux'))
+    .initializeData(data)
+    .startDownloadingData();
 
   this.render(hbs`{{recon-event-actionbar/export-packet}}`);
 

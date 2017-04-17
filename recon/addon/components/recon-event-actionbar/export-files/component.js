@@ -7,10 +7,10 @@ import { eventType } from 'recon/reducers/meta/selectors';
 import ReconExport from 'recon/mixins/recon-export';
 import layout from './template';
 
-const stateToComputed = ({ recon, recon: { data } }) => ({
-  files: data.files,
-  status: data.fileExtractStatus,
-  extractLink: data.fileExtractLink,
+const stateToComputed = ({ recon, recon: { files } }) => ({
+  files: files.files,
+  status: files.fileExtractStatus,
+  extractLink: files.fileExtractLink,
   eventType: eventType(recon)
 });
 

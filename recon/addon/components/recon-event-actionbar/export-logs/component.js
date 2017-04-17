@@ -10,9 +10,9 @@ import layout from './template';
 
 const { String } = Ember;
 
-const stateToComputed = ({ recon, recon: { data } }) => ({
-  status: data.fileExtractStatus,
-  extractLink: data.fileExtractLink,
+const stateToComputed = ({ recon, recon: { files } }) => ({
+  status: files.fileExtractStatus,
+  extractLink: files.fileExtractLink,
   eventType: eventType(recon)
 });
 
@@ -44,6 +44,7 @@ const DownloadLogsComponent = Component.extend(ReconExport, {
     return isDownloading ? i18n.t('recon.textView.isDownloading') :
       i18n.t('recon.textView.downloadLog');
   },
+
   actions: {
     processFiles(type) {
       if (this.get('isExpanded')) {

@@ -6,9 +6,9 @@ import ReconExport from 'recon/mixins/recon-export';
 import layout from './template';
 import { hasPayload } from 'recon/reducers/packets/selectors';
 
-const stateToComputed = ({ recon, recon: { data } }) => ({
-  status: data.fileExtractStatus,
-  extractLink: data.fileExtractLink,
+const stateToComputed = ({ recon, recon: { files } }) => ({
+  status: files.fileExtractStatus,
+  extractLink: files.fileExtractLink,
   hasPayload: hasPayload(recon)
 });
 

@@ -1,4 +1,6 @@
 import Ember from 'ember';
+import { LIFECYCLE, KEY } from 'redux-pack';
+
 import { RECON_VIEW_TYPES_BY_NAME } from 'recon/utils/reconstruction-types';
 import * as ACTION_TYPES from 'recon/actions/types';
 import VisualActions from 'recon/actions/visual-creators';
@@ -13,6 +15,17 @@ import {
 const DEFAULT_INITIALIZE = { eventId: 1, endpointId: 2, meta: [['medium', 1]] };
 
 const { run, RSVP } = Ember;
+
+const makePackAction = (lifecycle, { type, payload, meta = {} }) => {
+  return {
+    type,
+    payload,
+    meta: {
+      ...meta,
+      [KEY.LIFECYCLE]: lifecycle
+    }
+  };
+};
 
 const _dispatchInitializeData = (redux, inputs) => {
 
@@ -82,6 +95,19 @@ class DataHelper {
     return this;
   }
 
+  startDownloadingData() {
+    const action = makePackAction(
+      LIFECYCLE.SUCCESS,
+      {
+        type: ACTION_TYPES.FILE_EXTRACT_JOB_ID_RETRIEVE,
+        payload: {
+          data: {
+            jobId: 10
+          }
+        }
+      });
+    this.redux.dispatch(action);
+  }
 }
 
 export default DataHelper;

@@ -38,7 +38,7 @@ skip('change recon views', (assert) => {
     assert.ok(find('.recon-event-detail-packets').length > 0, 'Recon initially on packet view');
     selectChoose('.recon-view-selector', 'File View');
     andThen(() => {
-      waitForReduxStateChange('recon.data.files');
+      waitForReduxStateChange('recon.files.files');
       andThen(() => {
         assert.ok(find('.recon-event-detail-files').length > 0, 'Recon can change to file view');
         assert.ok(find('.recon-event-detail-packets').length === 0, 'Packet view is gone');

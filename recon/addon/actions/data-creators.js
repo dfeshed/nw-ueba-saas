@@ -310,7 +310,7 @@ const initializeNotifications = () => {
         // then all those open sockets will get the notification
         // that the download is ready, but we do not want to download
         // from every browser, just the browser where the download originated.
-        const extractStatus = getState().recon.data.fileExtractStatus;
+        const extractStatus = getState().recon.files.fileExtractStatus;
         if (['init', 'wait'].includes(extractStatus)) {
           dispatch({
             type: ACTION_TYPES.FILE_EXTRACT_JOB_SUCCESS,

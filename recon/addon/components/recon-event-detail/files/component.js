@@ -8,9 +8,9 @@ import layout from './template';
 import baseColumnsConfig from './columns-config';
 import * as InteractionActions from 'recon/actions/interaction-creators';
 
-const stateToComputed = ({ recon: { data } }) => ({
-  files: data.files,
-  linkToFileAction: data.linkToFileAction,
+const stateToComputed = ({ recon: { data, files } }) => ({
+  files: files.files,
+  linkToFileAction: files.linkToFileAction,
   eventTotal: data.total,
   dataIndex: data.index
 });
