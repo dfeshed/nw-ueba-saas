@@ -6,6 +6,7 @@ import { CANNED_FILTER_TYPES } from 'respond/utils/canned-filter-types';
 import { SORT_TYPES } from 'respond/utils/sort-types';
 import computed, { alias, empty } from 'ember-computed-decorators';
 import { priorityOptions, statusOptions } from 'respond/selectors/dictionaries';
+import { hasSelectedClosedIncidents } from 'respond/selectors/incidents';
 
 const stateToComputed = (state) => {
   const { respond: { incidents, users } } = state;
@@ -21,7 +22,9 @@ const stateToComputed = (state) => {
     // list of possible incident statuses
     statusTypes: statusOptions(state),
     // list of available users to assigne incidents to
-    users: users.users
+    users: users.users,
+    // true if there are any selected incidents that are closed
+    hasSelectedClosedIncidents: hasSelectedClosedIncidents(state)
   };
 };
 

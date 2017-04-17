@@ -17,7 +17,7 @@
         optionLabelProperty='labelKey'
         translateOptionLabel=true
         optionValueProperty='name'
-        isDisabled=hasNoSelections
+        isDisabled=(or hasNoSelections hasSelectedClosedIncidents)
         searchEnabled=false
         iconName="gauge"
         label=(t 'respond.incidents.actions.changePriority')
@@ -44,7 +44,7 @@
         incidentId=incidentsSelected
         searchField='name'
         optionLabelProperty='name'
-        isDisabled=hasNoSelections
+        isDisabled=(or hasNoSelections hasSelectedClosedIncidents)
         iconName='female'
         label=(t 'respond.incidents.actions.changeAssignee')
       }}

@@ -3,6 +3,7 @@
   options=priorityTypes
   selectedValue=incident.priority
   incidentId=incident.id
+  isDisabled=(or (eq incident.status 'CLOSED') (eq incident.status 'CLOSED_FALSE_POSITIVE'))
   horizontalPosition="right"
   optionValueProperty='name'
   optionLabelProperty='labelKey'
@@ -29,6 +30,7 @@
 {{rsa-incident/update-action-button
   fieldName='assignee'
   options=users
+  isDisabled=(or (eq incident.status 'CLOSED') (eq incident.status 'CLOSED_FALSE_POSITIVE'))
   selectedValue=incident.assignee.id
   incidentId=incident.id
   optionLabelProperty='name'
