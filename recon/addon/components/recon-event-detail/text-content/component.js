@@ -4,7 +4,7 @@ import ReconPager from 'recon/mixins/recon-pager';
 import StickyHeader from 'recon/mixins/sticky-header-mixin';
 import layout from './template';
 import { isLogEvent } from 'recon/reducers/meta/selectors';
-import { visibleText } from 'recon/selectors/text-selectors';
+import { visibleText } from 'recon/reducers/text/selectors';
 
 const { Component } = Ember;
 
@@ -12,7 +12,7 @@ const stateToComputed = ({ recon }) => ({
   dataIndex: recon.data.index,
   eventTotal: recon.data.total,
   isLogEvent: isLogEvent(recon),
-  textContent: recon.data.textContent,
+  textContent: recon.text.textContent,
   visibleText: visibleText(recon)
 });
 

@@ -5,7 +5,7 @@ import { decodeText } from 'recon/actions/data-creators';
 import layout from './template';
 
 const stateToComputed = ({ recon }) => ({
-  isDecoded: recon.data.decode
+  isDecoded: recon.text.decode
 });
 
 const dispatchToActions = (dispatch) => ({

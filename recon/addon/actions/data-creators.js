@@ -64,11 +64,11 @@ const _handleContentError = (dispatch, response, type) => {
   });
 };
 
-const _getTextAndPacketInputs = ({ recon: { data, packets } }) => ({
+const _getTextAndPacketInputs = ({ recon: { data, packets, text } }) => ({
   endpointId: data.endpointId,
   eventId: data.eventId,
   packetsPageSize: packets.packetsPageSize,
-  decode: data.decode
+  decode: text.decode
 });
 
 /**
@@ -335,9 +335,8 @@ const decodeText = () => {
   return (dispatch, getState) => {
     dispatch({ type: ACTION_TYPES.CONTENT_RETRIEVE_STARTED });
     dispatch({ type: ACTION_TYPES.TOGGLE_TEXT_DECODE });
-    const dataState = getState().recon.data;
     fetchTextData(
-      dataState,
+      _getTextAndPacketInputs(getState()),
       (payload) => dispatch({ type: ACTION_TYPES.TEXT_DECODE_PAGE, payload }),
       (response) => _handleContentError(dispatch, response, 'decode')
     );

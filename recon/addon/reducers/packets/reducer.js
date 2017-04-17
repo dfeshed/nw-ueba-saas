@@ -14,8 +14,9 @@ const packetsInitialState = {
 };
 
 const packetReducer = handleActions({
-  [ACTION_TYPES.INITIALIZE]: () => ({
-    ...packetsInitialState
+  [ACTION_TYPES.INITIALIZE]: (state) => ({
+    ...packetsInitialState,
+    isPayloadOnly: state.isPayloadOnly // let whatever isPayloadOnly is remain
   }),
 
   [ACTION_TYPES.SUMMARY_RETRIEVE]: (state, action) => {

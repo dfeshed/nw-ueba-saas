@@ -4,7 +4,6 @@ import { handle } from 'redux-pack';
 
 import { RECON_VIEW_TYPES_BY_NAME } from '../utils/reconstruction-types';
 import * as ACTION_TYPES from '../actions/types';
-import { augmentResult } from './util';
 
 const { set } = Ember;
 
@@ -25,7 +24,6 @@ const dataInitialState = {
   eventId: null,
   total: null,
   index: null,
-  decode: true,
 
   // Recon inputs or fetched if not provided
   aliases: null,
@@ -35,7 +33,6 @@ const dataInitialState = {
   headerItems: null,
   headerLoading: null,
   files: null,
-  textContent: null,
 
   ...fileExtractInitialState,
 
@@ -97,10 +94,6 @@ const data = handleActions({
     contentError: null,
     contentLoading: true
   }),
-  [ACTION_TYPES.PACKETS_RETRIEVE_PAGE]: (state) => ({
-    ...state,
-    contentLoading: false
-  }),
   [ACTION_TYPES.FILES_RETRIEVE_SUCCESS]: (state, { payload }) => ({
     ...state,
     files: payload.map((f) => {
@@ -114,18 +107,15 @@ const data = handleActions({
     contentError: payload,
     contentLoading: false
   }),
-  [ACTION_TYPES.TEXT_DECODE_PAGE]: (state, { payload }) => {
-    const newContent = generateHTMLSafeText(augmentResult(payload));
-    return {
-      ...state,
-      contentLoading: false,
-      textContent: state.textContent ? [...state.textContent, ...newContent] : newContent
-    };
-  },
-  [ACTION_TYPES.TOGGLE_TEXT_DECODE]: (state, { payload = {} }) => ({
+
+  // TODO: future DRY possibility here
+  [ACTION_TYPES.TEXT_DECODE_PAGE]: (state) => ({
     ...state,
-    decode: payload.setTo !== undefined ? payload.setTo : !state.decode,
-    textContent: []
+    contentLoading: false
+  }),
+  [ACTION_TYPES.PACKETS_RETRIEVE_PAGE]: (state) => ({
+    ...state,
+    contentLoading: false
   }),
 
   // Download reducing
@@ -148,8 +138,6 @@ const data = handleActions({
   },
   [ACTION_TYPES.FILES_DESELECT_ALL]: allFilesSelection(false),
   [ACTION_TYPES.FILES_SELECT_ALL]: allFilesSelection(true),
-
-  // Summary Reducing
   [ACTION_TYPES.FILE_EXTRACT_JOB_ID_RETRIEVE]: (state, action) => {
     return handle(state, action, {
       start: (s) => ({ ...s, ...fileExtractInitialState, fileExtractStatus: 'init' }),
@@ -166,6 +154,8 @@ const data = handleActions({
     ...state,
     ...fileExtractInitialState
   }),
+
+  // Notifications
   [ACTION_TYPES.NOTIFICATION_INIT_SUCCESS]: (state, { payload }) => ({
     ...state,
     stopNotifications: payload.cancelFn
@@ -178,27 +168,5 @@ const data = handleActions({
     stopNotifications: null
   })
 }, dataInitialState);
-
-/*
- * Processes an array of text entries and normalizes their content
- * for use in the browser. Results in an html-ified array of lines
- * stored in each text entries. Subsequent views will decide what to
- * do with the lines.
- */
-const generateHTMLSafeText = (data) => {
-  data = Array.isArray(data) ? data : [];
-  return data.map((d) => {
-    if (typeof(d.text) === 'string') {
-      const htmlified = d.text
-        .replace(/\</g, '&lt;')
-        .replace(/\>/g, '&gt;')
-        .replace(/(?:\r\n|\r|\n)/g, '<br>')
-        .replace(/\t/g, '&nbsp;&nbsp;')
-        .replace(/[\x00-\x1F]/g, '.');
-      set(d, 'text', htmlified.split('<br>'));
-    }
-    return d;
-  });
-};
 
 export default data;

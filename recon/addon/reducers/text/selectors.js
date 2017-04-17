@@ -1,7 +1,7 @@
 import reselect from 'reselect';
 
 const { createSelector } = reselect;
-const textContent = (recon) => recon.data.textContent;
+const textContent = (recon) => recon.text.textContent;
 const isRequestShown = (recon) => recon.visuals.isRequestShown;
 const isResponseShown = (recon) => recon.visuals.isResponseShown;
 
