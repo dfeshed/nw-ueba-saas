@@ -119,7 +119,7 @@ export default {
   },
   recon: {
     textView: {
-      compressToggleLabel: 'Compress Payloads',
+      compressToggleLabel: 'Display Compressed Payloads',
       compressToggleTitle: 'Display HTTP payloads as compressed or not',
       downloadLog: 'Download Log',
       downloadCsv: 'Download CSV',
