@@ -409,7 +409,11 @@ export default {
       },
       filters: {
         timeRange: 'Time Range',
-        reset: 'Reset Filters'
+        reset: 'Reset Filters',
+        customDateRange: 'Custom Date Range',
+        customStartDate: 'Start Date',
+        customEndDate: 'End Date',
+        customDateErrorStartAfterEnd: 'The start date and time cannot be the same or later than the end date'
       },
       selectionCount: '{{selectionCount}} selected',
       label: 'Incidents',

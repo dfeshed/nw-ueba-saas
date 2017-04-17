@@ -409,7 +409,11 @@ export default {
       },
       filters: {
         timeRange: 'ja_Time Range',
-        reset: 'ja_Reset Filters'
+        reset: 'ja_Reset Filters',
+        customDateRange: 'ja_Custom Date Range',
+        customStartDate: 'ja_Start Date',
+        customEndDate: 'ja_End Date',
+        customDateErrorStartAfterEnd: 'ja_The start date and time cannot be the same or later than the end date'
       },
       label: 'ja_Incidents',
       selectionCount: 'ja_{{selectionCount}} selected',

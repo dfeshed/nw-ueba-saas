@@ -465,6 +465,19 @@ const getAllCategories = () => {
 };
 
 /**
+ * Toggles between standardized date/time ranges and custom range selection, initiating a search when the change is
+ * completed
+ * @public
+ * @returns {function(*)}
+ */
+const toggleCustomDateRestriction = () => {
+  return (dispatch) => {
+    dispatch({ type: ACTION_TYPES.TOGGLE_CUSTOM_DATE_RESTRICTION });
+    dispatch(getIncidents());
+  };
+};
+
+/**
  * An action creator for updating the sort-by information used in fetching incidents
  * @public
  * @method sortBy Object { id: [field name (string) to sort by], isDescending: [boolean] }
@@ -539,5 +552,6 @@ export {
   initializeIncident,
   getAllPriorityTypes,
   getAllStatusTypes,
-  getAllCategories
+  getAllCategories,
+  toggleCustomDateRestriction
 };

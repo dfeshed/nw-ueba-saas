@@ -1,14 +1,9 @@
-import Ember from 'ember';
+import Component from 'ember-component';
 import connect from 'ember-redux/components/connect';
 import { gt, alias } from 'ember-computed-decorators';
 import * as DataActions from 'respond/actions/data-creators';
 import * as UIStateActions from 'respond/actions/ui-state-creators';
-
-const {
-  Component,
-  inject: { service }
-} = Ember;
-
+import service from 'ember-service/inject';
 
 const stateToComputed = ({ respond: { incidents } }) => {
 

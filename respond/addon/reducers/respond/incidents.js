@@ -6,16 +6,27 @@ import { load, persist } from './util/local-storage';
 
 const localStorageKey = 'rsa::nw::respond::incidents';
 
+function defaultCustomDateRange() {
+  return {
+    start: null,
+    end: null
+  };
+}
+
+function defaultDateRange() {
+  return {
+    'name': 'ALL_TIME',
+    'unit': 'years',
+    'subtract': 50
+  };
+}
+
 const incidentsFilters = {
   status: [],
   priority: [],
   'categories.name': [],
   'assignee.id': [],
-  created: {
-    'name': 'ALL_TIME',
-    'unit': 'years',
-    'subtract': 50
-  }
+  created: defaultDateRange()
 };
 
 let initialState = {
@@ -52,7 +63,9 @@ let initialState = {
   focusedIncident: null,
 
   // whether or not there is a transaction (e.g., update, fetch) underway
-  isTransactionUnderway: false
+  isTransactionUnderway: false,
+
+  hasCustomDateRestriction: false
 };
 
 // Load local storage values and incorporate into initial state
@@ -68,8 +81,8 @@ initialState = load(initialState, localStorageKey);
 const persistIncidentsState = (callback) => {
   return (function() {
     const state = callback(...arguments);
-    const { incidentsSort, incidentsFilters, isFilterPanelOpen, isAltThemeActive } = state;
-    persist({ incidentsSort, incidentsFilters, isFilterPanelOpen, isAltThemeActive }, localStorageKey);
+    const { incidentsSort, incidentsFilters, isFilterPanelOpen, isAltThemeActive, hasCustomDateRestriction } = state;
+    persist({ incidentsSort, incidentsFilters, isFilterPanelOpen, isAltThemeActive, hasCustomDateRestriction }, localStorageKey);
     return state;
   });
 };
@@ -180,6 +193,15 @@ const incidents = reduxActions.handleActions({
     };
   },
 
+  [ACTION_TYPES.TOGGLE_CUSTOM_DATE_RESTRICTION]: persistIncidentsState((state) => ({
+    ...state,
+    hasCustomDateRestriction: !state.hasCustomDateRestriction,
+    incidentsFilters: {
+      ...state.incidentsFilters,
+      created: !state.hasCustomDateRestriction ? defaultCustomDateRange() : defaultDateRange()
+    }
+  })),
+
   [ACTION_TYPES.CLEAR_SELECTED_INCIDENTS]: (state) => ({
     ...state,
     incidentsSelected: []
@@ -203,7 +225,8 @@ const incidents = reduxActions.handleActions({
   [ACTION_TYPES.RESET_INCIDENT_FILTERS]: persistIncidentsState((state) => (
     {
       ...state,
-      incidentsFilters
+      incidentsFilters,
+      hasCustomDateRestriction: false
     }
   )),
 

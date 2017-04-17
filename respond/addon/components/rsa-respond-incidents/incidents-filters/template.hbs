@@ -1,13 +1,36 @@
 <section class="body">
   <section class="filter-option created-filter">
-    <h2>{{ t 'respond.incidents.filters.timeRange'}}</h2>
-    {{#power-select
-      options=timeframes
-      selected=selectedTimeframe
-      searchEnabled=false
-      onchange=(action "onChangeTimeframe") as |time|}}
-      {{t (concat 'respond.timeframeOptions.' time.name) }}
-    {{/power-select}}
+    <hbox class="time-range-label">
+      <h2>{{ t 'respond.incidents.filters.timeRange'}}</h2>
+      <label class="rsa-form-switch" {{action 'toggleCustomDate' }}>
+        {{x-toggle value=hasCustomDate onToggle=(action 'toggleCustomDate')}}
+        {{t 'respond.incidents.filters.customDateRange'}}
+      </label>
+    </hbox>
+    {{#liquid-bind hasCustomDate use=(if hasCustomDate "toUp" "toDown") as |currentIsCustomRange|}}
+      {{#if currentIsCustomRange}}
+        {{rsa-form-datetime
+          label=(t 'respond.incidents.filters.customStartDate')
+          showTime=true
+          isError=hasCustomDateError
+          value=(readonly customDateRangeStart)
+          onDateClose=(action 'customStartDateChanged')
+          errorMessage=customDateErrorMessage}}
+
+        {{rsa-form-datetime
+          label=(t 'respond.incidents.filters.customEndDate')
+          showTime=true
+          value=(readonly customDateRangeEnd)
+          onDateClose=(action 'customEndDateChanged')}}
+      {{else}}
+        {{#power-select
+          options=timeframes
+          selected=selectedTimeframe
+          onchange=(action "onChangeTimeframe") as |time|}}
+          {{t (concat 'respond.timeframeOptions.' time.name) }}
+        {{/power-select}}
+      {{/if}}
+    {{/liquid-bind}}
   </section>
   <section class="filter-option priority-filter">
     <h2>{{ t 'respond.incident.priority'}}</h2>

@@ -1,17 +1,10 @@
-import Ember from 'ember';
+import EmberObject from 'ember-object';
 import { assert } from 'ember-metal/utils';
 import { promiseRequest, streamRequest } from 'streaming-data/services/data-access/requests';
 import { SORT_TYPES_BY_NAME } from 'respond/utils/sort-types';
 import FilterQuery from 'respond/utils/filter-query';
 import moment from 'moment';
-
-const {
-  Object: EmberObject,
-  isArray,
-  isPresent,
-  isEmpty,
-  isNone,
-  typeOf } = Ember;
+import { isEmpty, isPresent, typeOf, isNone, isArray } from 'ember-utils';
 
 const IncidentsAPI = EmberObject.extend({});
 
@@ -30,7 +23,11 @@ const _buildIncidentsQuery = (filters, sort) => {
     const value = filters[filterField];
 
     if (filterField === 'created') {
-      query.addRangeFilter('created', moment().subtract(value.subtract, value.unit).valueOf(), undefined);
+      if ('start' in value) {  // Custom Range Filter
+        query.addRangeFilter('created', value.start || 0, value.end || undefined);
+      } else { // Canned range filter
+        query.addRangeFilter('created', moment().subtract(value.subtract, value.unit).valueOf(), undefined);
+      }
     } else {
       query.addFilter(filterField, filters[filterField]);
     }

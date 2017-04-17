@@ -38,7 +38,7 @@ export default Component.extend(PikadayMixin, {
     const pikadayValue = this.get('pikaday').getDate();
     const val = this.$().val();
 
-    if (this.get('pikaday').getDate() === null || isEmpty(this.$().val())) {
+    if (this.get('pikaday').getDate() === null || isEmpty(val)) {
       this.set('value', null);
       this.sendAction('onCloseAction', null);
       this.get('onSelection')(null);
@@ -47,7 +47,7 @@ export default Component.extend(PikadayMixin, {
       this.sendAction('onCloseAction', pikadayValue);
     }
 
-    this.get('onClose')();
+    this.get('onClose')(isEmpty(val) ? null : pikadayValue);
   }
 
 });

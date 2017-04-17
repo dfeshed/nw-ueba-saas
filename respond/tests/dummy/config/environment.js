@@ -9,6 +9,20 @@ module.exports = function(environment) {
     environment,
     rootURL: '/',
     locationType: 'auto',
+    dateFormatDefault: 'MM/dd/yyyy',
+    timeFormatDefault: 'HR24',
+    timezoneDefault: 'America/New_York',
+    timezones: [
+      {
+        'displayLabel': 'UTC (GMT+00:00)',
+        'offset': 'GMT+00:00',
+        'zoneId': 'UTC'
+      },
+      {
+        'displayLabel': 'America/New York (GMT-04:00)',
+        'offset': 'GMT-04:00',
+        'zoneId': 'America/New_York'
+      }],
     flashMessageDefaults: {
       timeout: 5000,
       extendedTimeout: 0,
