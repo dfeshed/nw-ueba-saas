@@ -22,7 +22,7 @@
 
         {{#power-select
           options=locales
-          selected=(or pendingLocale i18n.locale)
+          selected=i18n.locale
           searchEnabled=false
           onchange=(action 'setLocale') as |option|}}
           {{t (concat 'languages.' option )}}
@@ -41,7 +41,7 @@
         {{#power-select
           options=timezone.options
           searchField="displayLabel"
-          selected=(or pendingTimezone timezone.selected)
+          selected=timezone.selected
           onchange=(action 'setTimezone') as |option|}}
           {{option.displayLabel}}
         {{/power-select}}
@@ -58,7 +58,7 @@
 
         {{#power-select
           options=dateFormat.options
-          selected=(or pendingDateFormat dateFormat.selected)
+          selected=dateFormat.selected
           searchEnabled=false
           onchange=(action 'setDateFormat') as |option|}}
           {{t option.label}}
@@ -91,7 +91,7 @@
 
         {{#power-select
           options=landingPage.options
-          selected=(or pendingLandingPage landingPage.selected)
+          selected=landingPage.selected
           searchEnabled=false
           onchange=(action 'setDefaultLandingPage') as |option|}}
           {{t option.label}}

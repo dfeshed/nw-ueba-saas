@@ -39,7 +39,7 @@ export default Component.extend({
 
   @computed('timeFormat.selected.format', 'displayTime', 'displaySeconds', 'displayMilliseconds')
   adjustedTimeFormat: (format, displayTime, displaySeconds, displayMilliseconds) => {
-    if (displayTime) {
+    if (format && displayTime) {
       if (displaySeconds) {
         if (displayMilliseconds) {
           return format;
@@ -49,9 +49,9 @@ export default Component.extend({
       }
 
       return format.replace(/:ss.SSS/, '');
+    } else {
+      return '';
     }
-
-    return '';
   },
 
   @computed('dateFormat.selected.format', 'displayDate')

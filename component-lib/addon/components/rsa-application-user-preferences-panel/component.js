@@ -5,10 +5,12 @@ import run from 'ember-runloop';
 import service from 'ember-service/inject';
 import { alias, readOnly } from 'ember-computed-decorators';
 import csrfToken from '../../mixins/csrf-token';
+import config from 'ember-get-config';
 
 const {
   getOwner,
-  Logger
+  Logger,
+  isEmpty
 } = Ember;
 
 export default Component.extend(csrfToken, {
@@ -39,6 +41,24 @@ export default Component.extend(csrfToken, {
 
     this.get('eventBus').on('rsa-application-user-preferences-panel-will-toggle', () => {
       this.toggleProperty('isExpanded');
+    });
+
+    run.schedule('afterRender', () => {
+      if (isEmpty(this.get('timezone.selected'))) {
+        this.set('timezone.selected', this.get('timezone.options').findBy('zoneId', config.timezoneDefault));
+      }
+
+      if (isEmpty(this.get('dateFormat.selected'))) {
+        this.set('dateFormat.selected', this.get('dateFormat.options').findBy('key', config.dateFormatDefault));
+      }
+
+      if (isEmpty(this.get('timeFormat.selected'))) {
+        this.set('timeFormat.selected', this.get('timeFormat.options').findBy('key', config.timeFormatDefault));
+      }
+
+      if (isEmpty(this.get('landingPage.selected'))) {
+        this.set('landingPage.selected', this.get('landingPage.options').findBy('key', config.landingPageDefault));
+      }
     });
   },
 

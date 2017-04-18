@@ -1,5 +1,4 @@
 import Ember from 'ember';
-import config from 'ember-get-config';
 
 const {
   Service,
@@ -46,11 +45,11 @@ export default Service.extend({
 
   selected: computed({
     get() {
-      return this.get('_selected') || this.get('options').findBy('key', config.dateFormatDefault);
+      return this.get('_selected');
     },
 
     set(key, value) {
-      if (value.key) {
+      if (value && value.key) {
         if (!isNone(this.get('_selected'))) {
           this.persist(value.key);
         }

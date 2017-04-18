@@ -32,11 +32,11 @@ export default Service.extend({
 
   selected: computed({
     get() {
-      return this.get('_selected') || this.get('options').findBy('zoneId', config.timezoneDefault);
+      return this.get('_selected');
     },
 
     set(key, value) {
-      if (value.zoneId) {
+      if (value && value.zoneId) {
         if (!isNone(this.get('_selected'))) {
           this.persist(value.zoneId);
         }

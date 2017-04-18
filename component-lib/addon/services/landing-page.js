@@ -3,7 +3,6 @@ import computed, { alias } from 'ember-computed';
 import { isNone } from 'ember-utils';
 import Service from 'ember-service';
 import service from 'ember-service/inject';
-import config from 'ember-get-config';
 
 export default Service.extend({
 
@@ -69,11 +68,6 @@ export default Service.extend({
     return options;
   }),
 
-  init() {
-    this._super(...arguments);
-    this.set('selected', this.get('options').findBy('key', config.landingPageDefault));
-  },
-
   persist(value) {
     this.get('request').promiseRequest({
       method: 'setPreference',
@@ -94,7 +88,7 @@ export default Service.extend({
    * @public
    */
   setDefaultLandingPage(value) {
-    if (value.key) {
+    if (value && value.key) {
       if (!isNone(this.get('selected'))) {
         this.persist(value.key);
       }
