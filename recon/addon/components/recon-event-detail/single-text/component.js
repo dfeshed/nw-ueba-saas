@@ -75,13 +75,23 @@ export default Component.extend(SelectionTooltip, {
    * Determines the text entries to display, truncated or not, and then
    * formats them for display.
    */
-  @computed('packet.text', 'areRemainingLinesToShow')
-  textEntriesToDisplay(textEntries = [], areRemainingLinesToShow) {
+  @computed('packet.text', 'areRemainingLinesToShow', 'metaToHighlight.value')
+  textEntriesToDisplay(textEntries = [], areRemainingLinesToShow, metaToHighlight) {
     let textEntriesReturn = textEntries;
     if (areRemainingLinesToShow) {
       textEntriesReturn = textEntriesReturn.slice(0, SHOW_TRUNCATED_AMOUNT);
     }
-    return htmlSafe(textEntriesReturn.join('<br>'));
+
+    textEntriesReturn = textEntriesReturn.join('<br>');
+
+    if (metaToHighlight) {
+      const metaString = String(metaToHighlight);
+      if (textEntriesReturn.includes(metaString)) {
+        textEntriesReturn = textEntriesReturn.replace(metaString, `<span class='highlighted-meta'>${metaString}</span>`);
+      }
+    }
+
+    return htmlSafe(textEntriesReturn);
   },
 
   // Tooltip has two views depending upon being in IF/ELSE conditional

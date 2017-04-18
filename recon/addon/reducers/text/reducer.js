@@ -8,6 +8,8 @@ const { set } = Ember;
 
 const textInitialState = {
   decode: true,
+  // The string to look for in the text
+  metaToHighlight: null,
   textContent: null
 };
 
@@ -15,6 +17,11 @@ const textReducer = handleActions({
   [ACTION_TYPES.INITIALIZE]: (state) => ({
     ...textInitialState,
     decode: state.decode // let whatever decode is remain
+  }),
+
+  [ACTION_TYPES.TEXT_HIGHLIGHT_META]: (state, { payload }) => ({
+    ...state,
+    metaToHighlight: payload
   }),
 
   [ACTION_TYPES.TEXT_DECODE_PAGE]: (state, { payload }) => {

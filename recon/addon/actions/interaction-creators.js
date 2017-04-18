@@ -86,12 +86,18 @@ const showPacketTooltip = (tootipData) => ({
 
 const hidePacketTooltip = () => ({ type: ACTION_TYPES.HIDE_PACKET_TOOLTIP });
 
+const highlightMeta = (metaToHighlight) => ({
+  type: ACTION_TYPES.TEXT_HIGHLIGHT_META,
+  payload: metaToHighlight
+});
+
 export {
   deselectAllFiles,
   selectAllFiles,
   extractFiles,
   didDownloadFiles,
   fileSelected,
+  highlightMeta,
   showPacketTooltip,
   hidePacketTooltip
 };

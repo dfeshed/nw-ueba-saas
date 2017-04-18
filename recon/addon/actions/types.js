@@ -22,6 +22,7 @@ export const PACKETS_RETRIEVE_PAGE = 'RECON::PACKETS_RETRIEVE_PAGE';
 
 // Text action types
 export const TEXT_DECODE_PAGE = 'RECON::TEXT_DECODE_PAGE';
+export const TEXT_HIGHLIGHT_META = 'RECON::TEXT_HIGHLIGHT_META';
 export const TOGGLE_TEXT_DECODE = 'RECON::TOGGLE_TEXT_DECODE';
 
 // Data action types

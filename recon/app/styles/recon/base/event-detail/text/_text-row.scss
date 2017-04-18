@@ -15,4 +15,9 @@
     width: 100%;
     text-align: center;
   }
+
+  .highlighted-meta {
+    background-color: rsa-color(blue);
+    color: rsa-color(gray, lightest);
+  }
 }

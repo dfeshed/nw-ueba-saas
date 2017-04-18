@@ -12,6 +12,7 @@ const stateToComputed = ({ recon }) => ({
   dataIndex: recon.data.index,
   eventTotal: recon.data.total,
   isLogEvent: isLogEvent(recon),
+  metaToHighlight: recon.text.metaToHighlight,
   textContent: recon.text.textContent,
   visibleText: visibleText(recon)
 });

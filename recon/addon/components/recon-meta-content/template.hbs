@@ -14,7 +14,10 @@
       </hbox>
 
       {{#each meta as |item|}}
-        {{recon-meta-content-item item=item}}
+        {{recon-meta-content-item
+          isTextView=isTextView
+          item=item
+          metaToHighlight=metaToHighlight}}
       {{/each}}
     {{/if}}
   {{/if}}

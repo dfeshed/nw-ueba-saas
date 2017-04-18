@@ -1,10 +1,17 @@
-<hbox xs="5" class="meta-name">
+<hbox xs="4" class="meta-name" align="center">
   {{name}}
 </hbox>
-<hbox xs="7" class="meta-value">
+<hbox xs="7" class="meta-value" align="center">
   {{#if (eq name 'time')}}
     {{rsa-content-datetime timestamp=value}}
   {{else}}
     {{value}}
+  {{/if}}
+</hbox>
+<hbox xs="1" align="center">
+  {{#if (or isHovering isSelected)}}
+    {{rsa-icon
+      click=(action 'clickBinoculars')
+      name="binoculars"}}
   {{/if}}
 </hbox>

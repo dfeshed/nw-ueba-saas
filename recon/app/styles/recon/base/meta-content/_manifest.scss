@@ -1,15 +1,30 @@
 .recon-meta-content {
-  padding: rsa-whitespace();
   .meta-heading {
     @include rsa-font(header, small);
     font-size: 0.85rem;
     color: rsa-color(blue);
-    padding-bottom: 1rem;
+    padding: rsa-whitespace() rsa-whitespace() 1rem;
   }
 }
+
 .recon-meta-content-item {
-  padding: rsa-whitespace(least) 0;
+  line-height: 1.71rem;
+  padding: 0 rsa-whitespace();
   word-break: break-all;
+  i {
+    &:hover {
+      cursor: pointer;
+    }
+  }
+  &.is-hovering {
+    background-color: rsa-color(gray, darkest);
+  }
+  &.is-selected {
+    background-color: rsa-color(blue);
+    &, .meta-name {
+      color: rsa-color(gray, lightest);
+    }
+  }
   .meta-name {
     @include rsa-font(header, small);
     color: rsa-color(gray, light);
