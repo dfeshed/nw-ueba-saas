@@ -8,7 +8,9 @@
 
         http://www.mockito.org/spring/mockito http://www.mockito.org/spring/mockito.xsd">
 
-<bean  class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
+    <import resource="classpath*:META-INF/spring/collection-context-test-morphline.xml"/>
+
+    <bean  class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
         <property name="location" value="classpath:META-INF/fortscale-collection-test.properties"/>
         <property name="order" value="#{T(org.springframework.core.Ordered).HIGHEST_PRECEDENCE}"/>
         <property name="ignoreUnresolvablePlaceholders" value="true"/>
@@ -67,5 +69,4 @@
 
     <context:spring-configured />
 
-    <import resource="classpath*:META-INF/spring/collection-context-test-morphline.xml"/>
 </beans>
