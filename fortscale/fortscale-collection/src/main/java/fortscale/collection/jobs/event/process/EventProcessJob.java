@@ -330,6 +330,11 @@ public class EventProcessJob implements Job {
 		return ProcessExecutor.executeProcess(EVENT_PROCESS_JOB_PRE_PROCESS_SCRIPT + "_" + method, arguments);
 	}
 
+	private boolean runPreProcessScriptCleanup(String scriptPath, String fileToPreProcess) {
+		final List<String> arguments = new ArrayList<>(Arrays.asList("python", scriptPath, fileToPreProcess, "cleanup"));
+		return ProcessExecutor.executeProcess(EVENT_PROCESS_JOB_PRE_PROCESS_SCRIPT, arguments);
+	}
+
 
 	/**
 	 * Iterate each line of the file and process each line.
