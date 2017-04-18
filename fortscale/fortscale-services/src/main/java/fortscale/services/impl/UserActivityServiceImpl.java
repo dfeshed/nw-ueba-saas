@@ -64,4 +64,8 @@ public class UserActivityServiceImpl implements UserActivityService {
         return userActivityRepository.getUserActivityTargetDeviceEntries(id, timeRangeInDays);
     }
 
+    @Override
+    public List<UserActivityEmailRecipientDomainDocument> getUserActivityEmailRecipientDomainEntries(String id, int timeRangeInDays) {
+        return userActivityRepository.getUserActivityEmailRecipientDomainEntries(id, timeRangeInDays);
+    }
 }

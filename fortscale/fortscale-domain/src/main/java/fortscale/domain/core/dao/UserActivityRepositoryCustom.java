@@ -24,6 +24,8 @@ public interface UserActivityRepositoryCustom {
 
     List<UserActivityTopApplicationsDocument> getUserActivityTopApplicationsEntries(String username, int timeRangeInDays);
 
+    List<UserActivityEmailRecipientDomainDocument> getUserActivityEmailRecipientDomainEntries(String username, int timeRangeInDays);
+
     Set<String> getUserIdByLocation(List<String> locations);
 
 }

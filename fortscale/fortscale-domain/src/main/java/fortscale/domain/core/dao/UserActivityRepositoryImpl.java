@@ -25,6 +25,7 @@ public class UserActivityRepositoryImpl extends UserActivityBaseRepository imple
     private static final String COLLECTION_NAME_TARGET_DEVICE = UserActivityTargetDeviceDocument.COLLECTION_NAME;
     private static final String COLLECTION_NAME_DATA_USAGE = UserActivityDataUsageDocument.COLLECTION_NAME;
     private static final String COLLECTION_NAME_TOP_APPLICATIONS = UserActivityTopApplicationsDocument.COLLECTION_NAME;
+    private static final String COLLECTION_NAME_EMAIL_RECIPIENT_DOMAIN = UserActivityEmailRecipientDomainDocument.COLLECTION_NAME;
 
     @Override
     public List<UserActivityLocationDocument> getUserActivityLocationEntries(String username, int timeRangeInDays) {
@@ -62,6 +63,11 @@ public class UserActivityRepositoryImpl extends UserActivityBaseRepository imple
     @Override
     public List<UserActivityTopApplicationsDocument> getUserActivityTopApplicationsEntries(String username, int timeRangeInDays) {
         return getUserActivityEntries(username, timeRangeInDays, COLLECTION_NAME_TOP_APPLICATIONS, UserActivityTopApplicationsDocument.class);
+    }
+
+    @Override
+    public List<UserActivityEmailRecipientDomainDocument> getUserActivityEmailRecipientDomainEntries(String username, int timeRangeInDays) {
+        return getUserActivityEntries(username, timeRangeInDays, COLLECTION_NAME_EMAIL_RECIPIENT_DOMAIN, UserActivityEmailRecipientDomainDocument.class);
     }
 
     @Override

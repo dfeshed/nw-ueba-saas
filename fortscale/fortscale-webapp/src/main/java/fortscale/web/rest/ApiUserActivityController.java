@@ -46,6 +46,7 @@ public class ApiUserActivityController extends DataQueryController {
     public static final String DATA_USAGE = "data-usage";
     public static final String WORKING_HOURS = "working-hours";
     public static final String TOP_APPLICATIONS = "top-applications";
+    public static final String EMAIL_RECIPIENT_DOMAIN = "email-recipient-domain";
 
     private final UserActivityService userActivityService;
     private static final Logger logger = Logger.getLogger(ApiUserActivityController.class);
@@ -187,12 +188,29 @@ public class ApiUserActivityController extends DataQueryController {
 
     }
 
+    @RequestMapping(value = "/" + EMAIL_RECIPIENT_DOMAIN, method = RequestMethod.GET)
+    @ResponseBody
+    @LogException
+    public DataBean<List<UserActivityData.NameCountEntry>> getEmailRecipientDomain(@PathVariable String id,
+          @RequestParam(required = false, defaultValue = DEFAULT_TIME_RANGE, value = "time_range") Integer timePeriodInDays,
+          @RequestParam(required = false, defaultValue = DEFAULT_RETURN_ENTRIES_LIMIT, value = "limit") Integer limit) {
+
+        DataBean<List<UserActivityData.NameCountEntry>> userActivity = getUserAttribute(
+                id,
+                timePeriodInDays,
+                limit,
+                userActivityService::getUserActivityEmailRecipientDomainEntries,
+                this::convertDocumentsResponse,
+                EMAIL_RECIPIENT_DOMAIN);
+        return userActivity;
+    }
+
     @RequestMapping(value = "/" + TOP_APPLICATIONS, method = RequestMethod.GET)
     @ResponseBody
     @LogException
     public DataBean<List<UserActivityData.NameCountEntry>> getTopApplications(@PathVariable String id,
-                                                                              @RequestParam(required = false, defaultValue = DEFAULT_TIME_RANGE, value = "time_range") Integer timePeriodInDays,
-                                                                              @RequestParam(required = false, defaultValue = DEFAULT_RETURN_ENTRIES_LIMIT, value = "limit") Integer limit) {
+          @RequestParam(required = false, defaultValue = DEFAULT_TIME_RANGE, value = "time_range") Integer timePeriodInDays,
+          @RequestParam(required = false, defaultValue = DEFAULT_RETURN_ENTRIES_LIMIT, value = "limit") Integer limit) {
 
 
         DataBean<List<UserActivityData.NameCountEntry>> userActivity = getUserAttribute(
@@ -200,18 +218,9 @@ public class ApiUserActivityController extends DataQueryController {
                 timePeriodInDays,
                 limit,
                 userActivityService::getUserActivityTopApplicationsEntries,
-                this::convertTopApplicationsDocumentsResponse,
+                this::convertDocumentsResponse,
                 TOP_APPLICATIONS);
         return userActivity;
-
-        //Use both "method reference" and lambda function only for examples
-//        DataBean<List<UserActivityData.NameCountEntry>> userActivityApplicationsBean = new DataBean<>();
-//        userActivityApplicationsBean.setData(Arrays.asList(
-//                new UserActivityData.NameCountEntry("outlook", 300, "mail"),
-//                new UserActivityData.NameCountEntry("explore", 32, "bla")
-//
-//        ));
-//        return userActivityApplicationsBean;
     }
 
     /**
@@ -319,13 +328,13 @@ public class ApiUserActivityController extends DataQueryController {
     }
 
     /**
-     * Convert list of UserActivityWorkingHoursDocument to list of UserActivityData.WorkingHourEntry
+     * Convert list of UserActivityDocument to list of UserActivityData.NameCountEntry
      *
      * @param documentList
      * @param limit
-     * @return list of UserActivityData.WorkingHourEntry
+     * @return list of UserActivityData.NameCountEntry
      */
-    private List<UserActivityData.NameCountEntry> convertTopApplicationsDocumentsResponse(List<UserActivityTopApplicationsDocument> documentList, int limit) {
+    private List<UserActivityData.NameCountEntry> convertDocumentsResponse(List<? extends UserActivityDocument> documentList, int limit) {
 
         final UserActivityEntryHashMap userActivityDataEntries = userDeviceUtils.getUserActivityDataEntries(documentList, null);
         final Set<Map.Entry<String, Double>> topEntries = userActivityDataEntries.getTopEntries(limit);
@@ -336,14 +345,6 @@ public class ApiUserActivityController extends DataQueryController {
         }
 
         return nameCountEntries;
-//        List<UserActivityData.NameCountEntry> workingHours = hoursToAmountFilteredByThreshold.stream()
-//                .map(Map.Entry::getKey) //get only the hour
-//                .map(Integer::valueOf)  //convert hour as string to Integer
-//                .distinct()             //get each hour only once
-//                .map(UserActivityData.NameCountEntry::new) // convert to WorkingHourEntry
-//                .collect(Collectors.toList());
-//        return workingHours;
-
     }
 
     /**

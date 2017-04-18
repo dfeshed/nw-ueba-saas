@@ -24,5 +24,7 @@ public interface UserActivityService {
 
     List<UserActivityTopApplicationsDocument> getUserActivityTopApplicationsEntries(String id, int timeRangeInDays);
 
+    List<UserActivityEmailRecipientDomainDocument> getUserActivityEmailRecipientDomainEntries(String id, int timeRangeInDays);
+
     Set<String> getUserIdByUserLocation(List<String> userLocations);
 }
