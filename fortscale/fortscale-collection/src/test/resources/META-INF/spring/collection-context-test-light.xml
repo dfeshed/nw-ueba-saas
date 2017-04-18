@@ -66,5 +66,6 @@
     <mockito:mock id="computerService" class="fortscale.services.impl.ComputerServiceImpl"/>
 
     <context:spring-configured />
-    
+
+    <import resource="classpath*:META-INF/spring/collection-context-test-morphline.xml"/>
 </beans>

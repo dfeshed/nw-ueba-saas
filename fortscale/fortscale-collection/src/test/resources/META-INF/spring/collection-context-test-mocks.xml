@@ -76,4 +76,6 @@
     <!-- DcServiceFilter related beans -->
     <bean id="serversListConfiguration" class="fortscale.services.impl.ServersListConfigurationImpl"/>
     <mockito:mock id="activeDirectoryService" class="fortscale.services.ActiveDirectoryService"/>
+
+    <import resource="classpath*:META-INF/spring/collection-context-test-morphline.xml"/>
 </beans>
