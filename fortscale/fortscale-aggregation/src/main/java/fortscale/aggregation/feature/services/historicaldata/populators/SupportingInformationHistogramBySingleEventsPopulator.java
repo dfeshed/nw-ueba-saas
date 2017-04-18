@@ -192,10 +192,12 @@ public abstract class SupportingInformationHistogramBySingleEventsPopulator exte
     private List<Term> getTermsForCustomEventsFilter(String dataEntity, Evidence evidence) {
         ObjectMapper objectMapper = new ObjectMapper();
         Map evidenceMap = null;
-        try {
-            evidenceMap = objectMapper.convertValue(evidence, Map.class);
-        } catch (Exception ex) {
-            logger.error("failed to convert evidence object to map");
+        if (evidence != null) {
+            try {
+                evidenceMap = objectMapper.convertValue(evidence, Map.class);
+            } catch (Exception ex) {
+                logger.error("failed to convert evidence object to map {}",evidence);
+            }
         }
 
 
@@ -204,6 +206,7 @@ public abstract class SupportingInformationHistogramBySingleEventsPopulator exte
             return dataQueryHelper.createCustomTerms(dataEntity, customFilter);
         }
         return Collections.emptyList();
+
     }
 
 
