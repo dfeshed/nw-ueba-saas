@@ -386,6 +386,7 @@ export default Ember$.extend({}, BaseSelectors, {
         'reconPacketDetails': '.recon-event-detail-packets',
         'reconPacketHex': '.recon-event-detail-packets .rsa-packet__hex',
         'reconPacketASCII': '.recon-event-detail-packets .rsa-packet__ascii',
+        'reconToggle': '.x-toggle-container',
         'reconEventMetaContent': '.recon-meta-content'
       },
       'root': '.js-test-investigate-root',
