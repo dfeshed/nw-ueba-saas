@@ -32,7 +32,7 @@ const { Logger } = Ember;
  *
  * @private
  */
-const _dispatchMeta = (dispatch, dataState) => {
+const _dispatchMeta = (dispatch, dataState, view) => {
   dispatch({
     type: ACTION_TYPES.META_RETRIEVE,
     promise: fetchMeta(dataState),
@@ -40,7 +40,7 @@ const _dispatchMeta = (dispatch, dataState) => {
       onSuccess(data) {
         // have new meta, now need to possibly set to new recon view
         // and fetch data for that view
-        _dispatchEvent(dispatch, dataState.currentReconView, data);
+        _dispatchEvent(dispatch, view, data);
       },
       onFailure(response) {
         Logger.error('Could not retrieve event meta', response);
@@ -213,11 +213,11 @@ const initializeRecon = (reconInputs) => {
       // (even if its not being displayed) as we need to
       // use meta to determine which data to fetch and
       // which recon view to display
+      const { recon: { visuals: { currentReconView } } } = getState();
       if (!reconInputs.meta) {
-        reconInputs.currentReconView = dataState.currentReconView;
-        _dispatchMeta(dispatch, reconInputs);
+        _dispatchMeta(dispatch, reconInputs, currentReconView);
       } else {
-        _dispatchEvent(dispatch, dataState.currentReconView, reconInputs.meta);
+        _dispatchEvent(dispatch, currentReconView, reconInputs.meta);
       }
     }
   };
@@ -258,7 +258,7 @@ const toggleMetaData = (setTo) => {
     // 3) Meta not already fetched
     // then meta is about to open and needs retrieving
     if (visuals.isMetaShown === false && setTo !== false && !meta.meta) {
-      _dispatchMeta(dispatch, meta);
+      _dispatchMeta(dispatch, meta, visuals.currentReconView);
     }
 
     // Handle setting of visual flag to

@@ -5,7 +5,7 @@ moduleForAcceptance('Acceptance | basic recon functionality');
 
 skip('show/hide header items', (assert) => {
   visit('/');
-  waitForReduxStateChange('recon.data.headerItems');
+  waitForReduxStateChange('recon.header.headerItems');
   andThen(() => {
     assert.equal(find('.recon-event-header .header-item').length, 12, 'Header items shown');
     click('.recon-event-titlebar .toggle-header');
@@ -18,7 +18,7 @@ skip('show/hide header items', (assert) => {
 
 skip('show/hide meta', (assert) => {
   visit('/');
-  waitForReduxStateChange('recon.data.headerItems');
+  waitForReduxStateChange('recon.header.headerItems');
   andThen(() => {
     assert.ok(find('.recon-meta-content').length === 0, 'Meta is hidden');
     click('.recon-event-titlebar .toggle-meta');

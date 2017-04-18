@@ -4,7 +4,7 @@ import { RECON_VIEW_TYPES_BY_NAME } from 'recon/utils/reconstruction-types';
 
 const { createSelector } = reselect;
 
-const typeCode = (recon) => recon.data.currentReconView.code;
+const typeCode = (recon) => recon.visuals.currentReconView.code;
 
 export const isTextView = createSelector(
   typeCode,

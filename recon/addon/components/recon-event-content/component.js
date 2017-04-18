@@ -1,14 +1,14 @@
 import Component from 'ember-component';
 import computed from 'ember-computed-decorators';
 import connect from 'ember-redux/components/connect';
-import { isPacketView } from 'recon/selectors/type-selectors';
+import { isPacketView } from 'recon/reducers/visuals/selectors';
 import layout from './template';
 
-const stateToComputed = ({ recon, recon: { data } }) => ({
-  currentReconView: data.currentReconView,
+const stateToComputed = ({ recon, recon: { data, header, visuals } }) => ({
+  currentReconView: visuals.currentReconView,
   contentError: data.contentError,
   contentLoading: data.contentLoading,
-  headerLoading: data.headerLoading,
+  headerLoading: header.headerLoading,
   eventId: data.eventId,
   isPacketView: isPacketView(recon)
 });

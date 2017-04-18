@@ -8,11 +8,11 @@ import layout from './template';
 import * as DataActions from '../../actions/data-creators';
 import * as VisualActions from '../../actions/visual-creators';
 
-const stateToComputed = ({ recon: { visuals, data } }) => ({
+const stateToComputed = ({ recon: { visuals, notifications } }) => ({
   isMetaShown: visuals.isMetaShown,
   isReconExpanded: visuals.isReconExpanded,
   isReconOpen: visuals.isReconOpen,
-  stopNotifications: data.stopNotifications
+  stopNotifications: notifications.stopNotifications
 });
 
 const dispatchToActions = (dispatch) => ({

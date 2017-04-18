@@ -4,7 +4,7 @@ import { getHeaderItem } from 'recon/utils/recon-event-header';
 
 const { createSelector } = reselect;
 const packets = (recon) => recon.packets.packets;
-const headerItems = (recon) => recon.data.headerItems;
+const headerItems = (recon) => recon.header.headerItems;
 const isRequestShown = (recon) => recon.visuals.isRequestShown;
 const isResponseShown = (recon) => recon.visuals.isResponseShown;
 const isPayloadOnly = (recon) => recon.packets.isPayloadOnly;

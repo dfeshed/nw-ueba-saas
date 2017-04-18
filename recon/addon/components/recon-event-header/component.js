@@ -6,10 +6,10 @@ import { RECON_DISPLAYED_LOG_HEADER } from 'recon/utils/recon-event-header';
 import layout from './template';
 import { isLogEvent } from 'recon/reducers/meta/selectors';
 
-const stateToComputed = ({ recon, recon: { visuals, data } }) => ({
+const stateToComputed = ({ recon, recon: { visuals, header } }) => ({
   isHeaderOpen: visuals.isHeaderOpen,
-  headerItems: data.headerItems,
-  headerError: data.headerError,
+  headerItems: header.headerItems,
+  headerError: header.headerError,
   isLogEvent: isLogEvent(recon)
 });
 

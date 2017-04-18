@@ -7,10 +7,10 @@ import { RECON_VIEW_TYPES } from 'recon/utils/reconstruction-types';
 import * as VisualActions from 'recon/actions/visual-creators';
 import * as DataActions from 'recon/actions/data-creators';
 import { isLogEvent } from 'recon/reducers/meta/selectors';
-import { lacksPackets } from 'recon/selectors/type-selectors';
+import { lacksPackets } from 'recon/reducers/visuals/selectors';
 
-const stateToComputed = ({ recon, recon: { visuals, data } }) => ({
-  currentReconView: data.currentReconView,
+const stateToComputed = ({ recon, recon: { visuals } }) => ({
+  currentReconView: visuals.currentReconView,
   isHeaderOpen: visuals.isHeaderOpen,
   isRequestShown: visuals.isRequestShown,
   isResponseShown: visuals.isResponseShown,

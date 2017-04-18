@@ -1,5 +1,5 @@
 import { RECON_VIEW_TYPES_BY_NAME } from 'recon/utils/reconstruction-types';
-import { isTextView, isFileView, isPacketView, lacksPackets } from 'recon/selectors/type-selectors';
+import { isTextView, isFileView, isPacketView, lacksPackets } from 'recon/reducers/visuals/selectors';
 import { module, test } from 'qunit';
 
 module('Unit | Mixin | event-type-selector');
@@ -7,21 +7,21 @@ module('Unit | Mixin | event-type-selector');
 const generateTests = function(selector) {
   return {
     textView: selector({
-      data: {
+      visuals: {
         currentReconView: {
           code: RECON_VIEW_TYPES_BY_NAME.TEXT.code
         }
       }
     }),
     fileView: selector({
-      data: {
+      visuals: {
         currentReconView: {
           code: RECON_VIEW_TYPES_BY_NAME.FILE.code
         }
       }
     }),
     packetView: selector({
-      data: {
+      visuals: {
         currentReconView: {
           code: RECON_VIEW_TYPES_BY_NAME.PACKET.code
         }

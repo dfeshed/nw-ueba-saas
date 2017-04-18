@@ -1,6 +1,6 @@
 import Component from 'ember-component';
 import connect from 'ember-redux/components/connect';
-import { isTextView, isFileView, isPacketView } from 'recon/selectors/type-selectors';
+import { isTextView, isFileView, isPacketView } from 'recon/reducers/visuals/selectors';
 import { isHttpData, isLogEvent } from 'recon/reducers/meta/selectors';
 import layout from './template';
 

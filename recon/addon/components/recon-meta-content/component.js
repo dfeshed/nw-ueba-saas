@@ -1,6 +1,6 @@
 import Component from 'ember-component';
 import connect from 'ember-redux/components/connect';
-import { isTextView } from 'recon/selectors/type-selectors';
+import { isTextView } from 'recon/reducers/visuals/selectors';
 import layout from './template';
 
 const stateToComputed = ({ recon, recon: { meta, text } }) => ({

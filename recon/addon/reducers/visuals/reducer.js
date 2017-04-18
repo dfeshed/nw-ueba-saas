@@ -1,20 +1,27 @@
 import { handleActions } from 'redux-actions';
 
+import { RECON_VIEW_TYPES_BY_NAME } from 'recon/utils/reconstruction-types';
 import * as ACTION_TYPES from 'recon/actions/types';
 
 const visualsInitialState = {
+  currentReconView: RECON_VIEW_TYPES_BY_NAME.PACKET,   // view defaults to packet
   isHeaderOpen: true,
-  isRequestShown: true,
-  isResponseShown: true,
   isMetaShown: true,
   isReconExpanded: true,
-  isReconOpen: false
+  isReconOpen: false,
+  isRequestShown: true,
+  isResponseShown: true
 };
 
 const visuals = handleActions({
   [ACTION_TYPES.OPEN_RECON]: (state) => ({
     ...state,
     isReconOpen: true
+  }),
+
+  [ACTION_TYPES.CHANGE_RECON_VIEW]: (state, { payload: { newView } }) => ({
+    ...state,
+    currentReconView: newView
   }),
 
   [ACTION_TYPES.TOGGLE_HEADER]: (state, { payload = {} }) => ({
