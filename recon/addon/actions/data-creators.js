@@ -172,35 +172,31 @@ const initializeRecon = (reconInputs) => {
       // language is optional parameter for recon
       // may be passed in, if not, fetch
       if (!reconInputs.language) {
-        fetchLanguage(reconInputs)
-          .then(({ data }) => {
-            dispatch({
-              type: ACTION_TYPES.LANGUAGE_RETRIEVE_SUCCESS,
-              payload: data
-            });
-          })
-          .catch((response) => {
-            // failure to get language is no good, but
-            // is not critical error no need to dispatch
-            Logger.error('Could not retrieve language', response);
-          });
+        dispatch({
+          type: ACTION_TYPES.LANGUAGE_RETRIEVE,
+          promise: fetchLanguage(reconInputs),
+          meta: {
+            onFailure(response) {
+              // failure to get language is no good, but
+              // is not critical error no need to dispatch
+              Logger.error('Could not retrieve language', response);
+            }
+          }
+        });
       }
 
       // aliases is optional parameter for recon
       // may be passed in, if not, fetch
       if (!reconInputs.aliases) {
-        fetchAliases(reconInputs)
-          .then(({ data }) => {
-            dispatch({
-              type: ACTION_TYPES.ALIASES_RETRIEVE_SUCCESS,
-              payload: data
-            });
-          })
-          .catch((response) => {
-            // failure to get aliases is no good, but
-            // is not critical error no need to dispatch
-            Logger.error('Could not retrieve aliases', response);
-          });
+        dispatch({
+          type: ACTION_TYPES.ALIASES_RETRIEVE,
+          promise: fetchAliases(reconInputs),
+          meta: {
+            onFailure(response) {
+              Logger.error('Could not retrieve aliases', response);
+            }
+          }
+        });
       }
 
       dispatch({

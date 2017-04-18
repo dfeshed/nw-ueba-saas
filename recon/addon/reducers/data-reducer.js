@@ -14,24 +14,20 @@ const dataInitialState = {
   total: null,
   index: null,
 
-  // Recon inputs or fetched if not provided
-  aliases: null,
-  language: null,
-
   // Fetched data
   headerItems: null,
-  headerLoading: null,
-
-  // callback for stopping notifications
-  // (obtained at run-time as a result from notifications initialization)
-  stopNotifications: null,
 
   // Error state
   headerError: null,
   contentError: null,
 
   // loading states
-  contentLoading: false
+  contentLoading: false,
+  headerLoading: null,
+
+  // callback for stopping notifications
+  // (obtained at run-time as a result from notifications initialization)
+  stopNotifications: null
 };
 
 const dataReceivedDoneLoading = (state) => ({
@@ -44,7 +40,10 @@ const data = handleActions({
     ...dataInitialState,
     currentReconView: state.currentReconView,
     stopNotifications: state.stopNotifications,
-    ...payload
+    endpointId: payload.endpointId,
+    eventId: payload.eventId,
+    total: payload.total,
+    index: payload.index
   }),
 
   [ACTION_TYPES.CHANGE_RECON_VIEW]: (state, { payload: { newView } }) => ({

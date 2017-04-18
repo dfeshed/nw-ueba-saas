@@ -6,7 +6,7 @@ import packets from './packets/reducer';
 import meta from './meta/reducer';
 import text from './text/reducer';
 import files from './files/reducer';
-
+import dictionaries from './dictionaries/reducer';
 
 export default {
   recon: redux.combineReducers({
@@ -15,6 +15,7 @@ export default {
     packets,
     meta,
     text,
-    files
+    files,
+    dictionaries
   })
 };

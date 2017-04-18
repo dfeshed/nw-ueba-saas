@@ -68,16 +68,17 @@ const ReconContainer = Component.extend({
     this._super(...arguments);
     const inputs = this.getProperties(
       'endpointId', 'eventId', 'language', 'meta', 'aliases', 'index', 'total', 'linkToFileAction');
+
     assert('Cannot instantiate recon without endpointId and eventId.', inputs.endpointId && inputs.eventId);
 
-    const { eventId, oldEventId } = this.getProperties('eventId', 'oldEventId');
-    // guard against re-running init on redux state change
+    const oldEventId = this.get('oldEventId');
+    // guard against re-running init on any redux state change,
     // if same id, no need to do anything
-    if (oldEventId && eventId === oldEventId) {
+    if (oldEventId && inputs.eventId === oldEventId) {
       return;
     }
 
-    this.set('oldEventId', eventId);
+    this.set('oldEventId', inputs.eventId);
     this.send('initializeRecon', inputs);
 
     // Containing application can pass in an initial expanded state
