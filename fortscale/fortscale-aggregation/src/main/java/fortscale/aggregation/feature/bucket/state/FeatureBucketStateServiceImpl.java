@@ -7,6 +7,7 @@ import fortscale.utils.monitoring.stats.StatsService;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
 
 /**
  * Created by alexp on 11/12/16.
@@ -43,7 +44,8 @@ public class FeatureBucketStateServiceImpl implements FeatureBucketStateService 
         if (featureBucketState == null){
             featureBucketState = new FeatureBucketState(lastEventDate);
         // Updating the last synced date in case that the last event date is after the lst sync date
-        }else {
+        // but not more than 1 day from system time
+        }else if (!lastEventDate.isAfter(Instant.now().plus(1, ChronoUnit.DAYS))){
             if (featureBucketState.getLastSyncedEventDate().isBefore(lastEventDate)) {
                 // Updating the lastSyncedEventDate
                 featureBucketState.setLastSyncedEventDate(lastEventDate);
@@ -57,7 +59,11 @@ public class FeatureBucketStateServiceImpl implements FeatureBucketStateService 
                                     getFeatureBucketState().getLastSyncedEventDate(), lastEventDate));
                 }
             }
+        }else {
+            logger.warn("Trying to update last daily aggregation date with date that is too far ahead - {}", lastEventDate);
+            shouldSave = false;
         }
+
 
         try {
             if (shouldSave) {
