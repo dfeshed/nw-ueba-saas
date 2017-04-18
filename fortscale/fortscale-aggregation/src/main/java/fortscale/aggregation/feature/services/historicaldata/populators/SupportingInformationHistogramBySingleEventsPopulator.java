@@ -1,5 +1,6 @@
 package fortscale.aggregation.feature.services.historicaldata.populators;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.aggregation.feature.bucket.FeatureBucket;
 import fortscale.aggregation.feature.bucket.FeatureBucketConf;
@@ -13,15 +14,14 @@ import fortscale.common.dataqueries.querygenerators.exceptions.InvalidQueryExcep
 import fortscale.domain.core.Evidence;
 import fortscale.domain.historical.data.SupportingInformationKey;
 import fortscale.utils.CustomedFilter;
+import fortscale.utils.FilteringPropertiesConfigurationHandler;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimeUtils;
 import fortscale.utils.time.TimestampUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Abstract class with generic implementation for supporting information histogram populator of single events
@@ -50,6 +50,9 @@ public abstract class SupportingInformationHistogramBySingleEventsPopulator exte
     @Autowired
     protected DataQueryRunnerFactory dataQueryRunnerFactory;
 
+    @Autowired
+    private FilteringPropertiesConfigurationHandler eventsFilter;
+
     public SupportingInformationHistogramBySingleEventsPopulator(String contextType, String dataEntity, String featureName) {
         super(contextType, dataEntity, featureName);
     }
@@ -64,7 +67,7 @@ public abstract class SupportingInformationHistogramBySingleEventsPopulator exte
     @Override
     public SupportingInformationGenericData<Double> createSupportingInformationData(Evidence evidence, String contextValue, long evidenceEndTime, Integer timePeriodInDays) {
 
-        Map<SupportingInformationKey, Double> histogramMap = createSupportingInformationHistogram(contextValue, evidenceEndTime, timePeriodInDays);
+        Map<SupportingInformationKey, Double> histogramMap = createSupportingInformationHistogram(contextValue, evidenceEndTime, timePeriodInDays,evidence);
 
         if (isAnomalyIndicationRequired(evidence)) {
             SupportingInformationKey anomalySupportingInformationKey = createAnomalyHistogramKey(evidence, featureName);
@@ -78,9 +81,9 @@ public abstract class SupportingInformationHistogramBySingleEventsPopulator exte
         }
     }
 
-    public SupportingInformationGenericData<Double> createSupportingInformationData(String contextValue, long endTime, Integer timePeriodInDays) {
+    public SupportingInformationGenericData<Double> createSupportingInformationData(String contextValue, long endTime, Integer timePeriodInDays, Evidence evidence) {
 
-        Map<SupportingInformationKey, Double> histogramMap = createSupportingInformationHistogram(contextValue, endTime, timePeriodInDays);
+        Map<SupportingInformationKey, Double> histogramMap = createSupportingInformationHistogram(contextValue, endTime, timePeriodInDays,evidence);
         return new SupportingInformationGenericData<>(histogramMap);
     }
 
@@ -121,9 +124,10 @@ public abstract class SupportingInformationHistogramBySingleEventsPopulator exte
      * @param contextValue - The value of the normalized context field - i.e test@somebigcomapny.com
      * @param endTime - The time of the anomaly
      * @param dataEntity - The data entity - i.e kerberos_logins
+     * @param evidence - required to build a filter of event, and get only events from the last day which required by the indicator. If null - ignore
      * @return
      */
-    protected Map<SupportingInformationKey, Double> createLastDayBucket(String normalizedContextType, String contextValue, long endTime, String dataEntity) {
+    protected Map<SupportingInformationKey, Double> createLastDayBucket(String normalizedContextType, String contextValue, long endTime, String dataEntity, Evidence evidence) {
 
         String QueryFieldsAsCSV = normalizedContextType.concat(",").concat(featureName);
 
@@ -136,6 +140,13 @@ public abstract class SupportingInformationHistogramBySingleEventsPopulator exte
         Term dateRangeTerm = getDateRangeTerm(TimestampUtils.toStartOfDay(endTime), endTime);
         if (dateRangeTerm != null) {
             termsMap.add(dateRangeTerm);
+        }
+
+        if (evidence != null && eventsFilter != null){
+            List<Term> customFilterTerms = getTermsForCustomEventsFilter(dataEntity, evidence);
+            if (CollectionUtils.isNotEmpty(customFilterTerms)){
+                termsMap.addAll(customFilterTerms);
+            }
         }
 
 
@@ -156,7 +167,9 @@ public abstract class SupportingInformationHistogramBySingleEventsPopulator exte
 
         List<Map<String, Object>> queryList;
         try {
+
             DataQueryRunner dataQueryRunner = dataQueryRunnerFactory.getDataQueryRunner(dataQueryObject);
+
             // Generates query
             String query = dataQueryRunner.generateQuery(dataQueryObject);
             logger.debug("Running the query: {}", query);
@@ -168,6 +181,29 @@ public abstract class SupportingInformationHistogramBySingleEventsPopulator exte
             logger.error(e.getMessage());
         }
         return null;
+    }
+
+    /**
+     * This method translate additional query terms based on the evidence and data entity
+     * @param dataEntity
+     * @param evidence
+     * @return
+     */
+    private List<Term> getTermsForCustomEventsFilter(String dataEntity, Evidence evidence) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        Map evidenceMap = null;
+        try {
+            evidenceMap = objectMapper.convertValue(evidence, Map.class);
+        } catch (Exception ex) {
+            logger.error("failed to convert evidence object to map");
+        }
+
+
+        List<CustomedFilter> customFilter = eventsFilter.getFilter(evidence.getAnomalyTypeFieldName(), evidenceMap);
+        if (customFilter != null) {
+            return dataQueryHelper.createCustomTerms(dataEntity, customFilter);
+        }
+        return Collections.emptyList();
     }
 
 
