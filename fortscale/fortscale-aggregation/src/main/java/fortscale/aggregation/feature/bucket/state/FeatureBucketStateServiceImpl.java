@@ -7,7 +7,6 @@ import fortscale.utils.monitoring.stats.StatsService;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
 
 /**
  * Created by alexp on 11/12/16.
