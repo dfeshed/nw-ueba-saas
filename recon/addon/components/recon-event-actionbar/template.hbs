@@ -2,7 +2,12 @@
   <hbox class="dropdowns">
     {{#if isPacketView}}
       {{recon-event-actionbar/export-packet}}
-      {{recon-event-actionbar/payload-only}}
+      <hbox justify="end">
+        {{#if isPayloadOnly}}
+          {{recon-event-actionbar/stylize-bytes class="option-toggle"}}
+        {{/if}}
+        {{recon-event-actionbar/payload-only class="option-toggle"}}
+      </hbox>
     {{/if}}
 
     {{#if isFileView}}

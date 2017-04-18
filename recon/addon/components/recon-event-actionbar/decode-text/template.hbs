@@ -1,4 +1,4 @@
-{{#rsa-content-tethered-panel-trigger panel='panel1'}}
+{{#rsa-content-tethered-panel-trigger panel='decodePanel'}}
   {{#x-toggle
     onLabel=(t 'recon.textView.compressToggleLabel')
     onToggle=(action 'decodeText')
@@ -11,7 +11,7 @@
 
 {{#rsa-content-tethered-panel
   displayCloseButton=false
-  panelId='panel1'
+  panelId='decodePanel'
   position='top' }}
   <p>{{t 'recon.textView.compressToggleTitle'}}</p>
 {{/rsa-content-tethered-panel}}

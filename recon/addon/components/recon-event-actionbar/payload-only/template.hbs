@@ -1,4 +1,4 @@
-{{#rsa-content-tethered-panel-trigger panel='panel1'}}
+{{#rsa-content-tethered-panel-trigger panel='payloadPanel'}}
   {{#x-toggle
     onLabel=(t 'recon.packetView.payloadToggleLabel')
     onToggle=(action 'togglePayloadOnly')
@@ -10,7 +10,7 @@
 {{/rsa-content-tethered-panel-trigger}}
 {{#rsa-content-tethered-panel
   displayCloseButton=false
-  panelId='panel1'
+  panelId='payloadPanel'
   position='top' }}
   <p>{{t 'recon.packetView.payloadToggleTitle'}}</p>
 {{/rsa-content-tethered-panel}}

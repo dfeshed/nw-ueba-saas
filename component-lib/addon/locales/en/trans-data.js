@@ -137,6 +137,8 @@ export default {
       downloadPayload: 'Download All Payloads Only',
       payloadToggleLabel: 'Display Payloads Only',
       payloadToggleTitle: 'Removes packet headers & footers from display',
+      stylizeBytesLabel: 'Shade Bytes',
+      stylizeBytesTitle: 'Enable to help distinguish patterns within the data',
       headerMeta: 'Header Meta',
       headerAttribute: 'Header Attribute',
       headerDisplayLabel: '{{label}} = {{displayValue}}'

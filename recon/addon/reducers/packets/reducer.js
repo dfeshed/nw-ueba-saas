@@ -7,6 +7,7 @@ import { augmentResult } from '../util';
 
 const packetsInitialState = {
   isPayloadOnly: false,
+  hasStyledBytes: true,
   packetFields: null,
   packets: null,
   packetsPageSize: 100,
@@ -16,7 +17,8 @@ const packetsInitialState = {
 const packetReducer = handleActions({
   [ACTION_TYPES.INITIALIZE]: (state) => ({
     ...packetsInitialState,
-    isPayloadOnly: state.isPayloadOnly // let whatever isPayloadOnly is remain
+    isPayloadOnly: state.isPayloadOnly, // let whatever isPayloadOnly is remain
+    hasStyledBytes: state.hasStyledBytes // let whatever hasStyledBytes is remain
   }),
 
   [ACTION_TYPES.SUMMARY_RETRIEVE]: (state, action) => {
@@ -59,6 +61,11 @@ const packetReducer = handleActions({
       packets: state.packets ? [...state.packets, ...newPackets] : newPackets
     };
   },
+
+  [ACTION_TYPES.TOGGLE_BYTE_STYLING]: (state, { payload = {} }) => ({
+    ...state,
+    hasStyledBytes: payload.setTo !== undefined ? payload.setTo : !state.hasStyledBytes
+  }),
 
   [ACTION_TYPES.TOGGLE_PACKET_PAYLOAD_ONLY]: (state, { payload = {} }) => ({
     ...state,

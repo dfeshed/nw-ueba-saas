@@ -1,11 +1,19 @@
 import Ember from 'ember';
 import connect from 'ember-redux/components/connect';
+import { scaleLinear } from 'd3-scale';
 import { event, select } from 'd3-selection';
 
 import Drag from 'recon/utils/drag';
 import * as InteractionActions from 'recon/actions/interaction-creators';
 
 const { $, Component, observer, run } = Ember;
+
+const scale = scaleLinear().domain([0, 255]).range([0.06, 1]);
+
+const stateToComputed = ({ recon: { packets } }) => ({
+  hasStyledBytes: packets.hasStyledBytes,
+  isPayloadOnly: packets.isPayloadOnly
+});
 
 const dispatchToActions = (dispatch) => ({
   tooltipOn: (tooltipData) => dispatch(InteractionActions.showPacketTooltip(tooltipData)),
@@ -55,7 +63,7 @@ const ByteTableComponent = Component.extend({
     this.detachDomListeners();
   },
 
-  _scheduleAfterRenderTasks: observer('packet.byteRows', function() {
+  _scheduleAfterRenderTasks: observer('packet.byteRows', 'hasStyledBytes', function() {
     run.schedule('afterRender', this, 'afterRender');
   }),
 
@@ -66,7 +74,9 @@ const ByteTableComponent = Component.extend({
   },
 
   renderTable() {
-    const { cellClass, headerCellClass, byteFormat } = this.getProperties('cellClass', 'headerCellClass', 'byteFormat');
+    const {
+      cellClass, headerCellClass, byteFormat, hasStyledBytes, isPayloadOnly
+    } = this.getProperties('cellClass', 'headerCellClass', 'byteFormat', 'hasStyledBytes', 'isPayloadOnly');
     const el = select(this.element);
 
     el.select('table').remove();
@@ -99,6 +109,9 @@ const ByteTableComponent = Component.extend({
         }
 
         td.append('span')
+          .attr('style', (d) => {
+            return (isPayloadOnly && hasStyledBytes) ? `opacity: ${scale(d.int)}` : 'opacity: 1';
+          })
           .text(byte[byteFormat]);
 
         cells.push(td.nodes()[0]);
@@ -267,4 +280,4 @@ const ByteTableComponent = Component.extend({
   })
 });
 
-export default connect(undefined, dispatchToActions)(ByteTableComponent);
+export default connect(stateToComputed, dispatchToActions)(ByteTableComponent);

@@ -4,12 +4,13 @@ import { isTextView, isFileView, isPacketView } from 'recon/selectors/type-selec
 import { isHttpData, isLogEvent } from 'recon/reducers/meta/selectors';
 import layout from './template';
 
-const stateToComputed = ({ recon }) => ({
+const stateToComputed = ({ recon, recon: { packets } }) => ({
   isTextView: isTextView(recon),
   isFileView: isFileView(recon),
   isPacketView: isPacketView(recon),
   isLogEvent: isLogEvent(recon),
-  isHttpEvent: isHttpData(recon)
+  isHttpEvent: isHttpData(recon),
+  isPayloadOnly: packets.isPayloadOnly
 });
 
 const reconEventActionbar = Component.extend({

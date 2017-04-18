@@ -40,6 +40,7 @@ const toggleRequestData = _createToggleActionCreator(ACTION_TYPES.TOGGLE_REQUEST
 const toggleResponseData = _createToggleActionCreator(ACTION_TYPES.TOGGLE_RESPONSE);
 const toggleReconExpanded = _createToggleActionCreator(ACTION_TYPES.TOGGLE_EXPANDED);
 const togglePayloadOnly = _createToggleActionCreator(ACTION_TYPES.TOGGLE_PACKET_PAYLOAD_ONLY);
+const toggleByteStyling = _createToggleActionCreator(ACTION_TYPES.TOGGLE_BYTE_STYLING);
 
 /**
  * Builds action for closing recon
@@ -53,5 +54,6 @@ export {
   toggleResponseData,
   toggleReconExpanded,
   togglePayloadOnly,
+  toggleByteStyling,
   closeRecon
 };
