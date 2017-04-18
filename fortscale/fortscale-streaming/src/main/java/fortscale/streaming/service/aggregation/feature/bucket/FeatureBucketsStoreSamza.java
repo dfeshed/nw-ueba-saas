@@ -116,7 +116,7 @@ public class FeatureBucketsStoreSamza extends FeatureBucketsMongoStore {
 
 			Map<String, List<FeatureBucketMetadata>> featureBucketConfNameToFeatureBucketMetaDataMap = mapFeatureBucketConfNameToFeatureBucketMetadataList(featureBucketMetadataList);
 
-			String errorMsg = "";
+			StringBuilder errorMsg = new StringBuilder();
 			boolean error = false;
 
 			for(String featureBucketConfName : featureBucketConfNameToFeatureBucketMetaDataMap.keySet())
@@ -132,7 +132,7 @@ public class FeatureBucketsStoreSamza extends FeatureBucketsMongoStore {
 							featureBuckets.add(featureBucket);
 						}
 					} else {
-						errorMsg += String.format("\nFailed to sync bucktConfName %s, bucketId %s", featureBucketMetadata.getFeatureBucketConfName(), featureBucketMetadata.getBucketId());
+						errorMsg.append(String.format("\nFailed to sync bucktConfName %s, bucketId %s", featureBucketMetadata.getFeatureBucketConfName(), featureBucketMetadata.getBucketId()));
 						error = true;
 					}
 					if (featureBuckets.size() >= storeSyncPageSize) {
@@ -147,8 +147,8 @@ public class FeatureBucketsStoreSamza extends FeatureBucketsMongoStore {
 			featureBucketStateService.updateFeatureBucketState(endTimeLt);
 
 			if(error){
-				logger.error(errorMsg);
-				throw new RuntimeException(errorMsg);
+				logger.error(errorMsg.toString());
+				throw new RuntimeException(errorMsg.toString());
 			}
 		}
 	}
