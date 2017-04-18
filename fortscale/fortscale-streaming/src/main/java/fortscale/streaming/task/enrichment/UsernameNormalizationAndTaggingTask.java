@@ -171,7 +171,7 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 					logger.error("message {} does not contains username in field {}", messageText, usernameNormalizationConfig.getNormalizationBasedField());
 					taskMonitoringHelper.countNewFilteredEvents(configKey,MonitorMessaages.CANNOT_EXTRACT_USER_NAME_MESSAGE);
 					taskMetrics.emptyUsernameMessages++;
-					throw new StreamMessageNotContainFieldException(messageText, usernameNormalizationConfig.getNormalizationBasedField());
+					return;
 				}
 
 				// get domain
