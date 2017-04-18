@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath*:META-INF/spring/collection-context-test-light.xml"})
+@ContextConfiguration(locations = {"classpath*:META-INF/spring/collection-context-test-light.xml", "classpath*:META-INF/spring/collection-context-test-morphline.xml"})
 public class DlpMailEnrichTest {
 
     @Autowired
