@@ -22,7 +22,7 @@ import static fortscale.collection.morphlines.commands.DlpMailEventsCache.EVENT_
 public class EventsCacherBuilder implements CommandBuilder {
 
 
-    private static Logger logger = LoggerFactory.getLogger(EventsCacherBuilder.class);
+    private static Logger logger = LoggerFactory.getLogger(EventsReducerBuilder.class);
 
     @Autowired
     private DlpMailEventsCache dlpMailEventsCache;

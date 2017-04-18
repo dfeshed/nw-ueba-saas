@@ -4,7 +4,6 @@ import fortscale.collection.io.BufferedLineReader;
 import fortscale.collection.monitoring.ItemContext;
 import fortscale.collection.morphlines.RecordExtensions;
 import fortscale.collection.morphlines.commands.DlpMailEventsCache;
-import fortscale.collection.morphlines.commands.EventsJoinerCache;
 import fortscale.utils.logging.Logger;
 import org.apache.commons.lang3.StringUtils;
 import org.kitesdk.morphline.api.Record;
@@ -30,14 +29,11 @@ public class DlpMailEventProcessJob extends EventProcessJob {
     public static final String NUM_OF_RECIPIENTS_FIELD_NAME = "num_of_recipients";
     public static final String EVENT_TYPE_RECIPIENT = "recipient";
     public static final String FORTSCALE_CONTROL_RECORD_EVENT_ID = "Fortscale Control";
-    public static final String DLPMAIL_REDUCER_CACHE_NAME = "dlpmail_reducer";
-    public static final int EVENT_ID_INDEX = 32;
-    public static final String LINE_DELIMITER = ",";
 
     @Autowired
     private DlpMailEventsCache dlpMailEventsCache;
 
-    private EventsJoinerCache eventsJoinerCache = EventsJoinerCache.getInstance(DLPMAIL_REDUCER_CACHE_NAME, "1");
+
 
 
     /**
@@ -65,10 +61,10 @@ public class DlpMailEventProcessJob extends EventProcessJob {
             lnr.close();
         }
 
-        String line = null;
         try {
             int numOfLines = 0;
             int numOfSuccessfullyProcessedLines = 0;
+            String line;
             while ((line = reader.readLine()) != null) {
                 if (StringUtils.isNotBlank(line)) {
                     numOfLines++;
@@ -76,11 +72,6 @@ public class DlpMailEventProcessJob extends EventProcessJob {
                     taskMonitoringHelper.handleNewEvent(file.getName());
                     jobMetrics.lines++;
                     List<Record> records = processLineWithAggregation(line, itemContext);
-                    if (records == null) {
-                        logger.error("Failed to process line {}", line);
-                        calculateProcessedLines(totalLines, numOfLines);
-                        continue;
-                    }
                     if (records.isEmpty()) {
                         logger.debug("Current line was cached. Moving to process the next line.");
                         continue;
@@ -96,7 +87,11 @@ public class DlpMailEventProcessJob extends EventProcessJob {
                             }
                             jobMetrics.linesSuccessfully++;
                         }
-                        calculateProcessedLines(totalLines, numOfLines);
+                        if (linesPrintEnabled && numOfLines % linesPrintSkip == 0) {
+                            logger.info("{}/{} lines processed - {}% done", numOfLines, totalLines,
+                                    Math.round(((float)numOfLines / (float)totalLines) * 100));
+                            jobMetrics.linesTotalFailures++;
+                        }
                     }
                 }
             }
@@ -109,7 +104,7 @@ public class DlpMailEventProcessJob extends EventProcessJob {
                 jobMetrics.processFilesSuccessfullyWithFailedLines++;
             }
         } catch (Exception e) {
-            logger.error("error processing file {}. line: {}.", file.getName(), line, e);
+            logger.error("error processing file " + file.getName(), e);
             taskMonitoringHelper.error("Process Files", e.toString());
             return false;
         } finally {
@@ -132,30 +127,15 @@ public class DlpMailEventProcessJob extends EventProcessJob {
         
     }
 
-    private void calculateProcessedLines(long totalLines, int numOfLines) {
-        if (linesPrintEnabled && numOfLines % linesPrintSkip == 0) {
-            logger.info("{}/{} lines processed - {}% done", numOfLines, totalLines,
-                    Math.round(((float)numOfLines / (float)totalLines) * 100));
-            jobMetrics.linesTotalFailures++;
-        }
-    }
-
     protected List<Record> processLineWithAggregation(String line, ItemContext itemContext) throws Exception {
         // process each line
 
         //I assume that this.itemContext updated once for each file.
         Record rec = morphline.process(line, itemContext);
         Record record;
-        if(rec == null) {
-            final String eventId = getEventIdFromLine(line);
-            final boolean eventInCache = eventsJoinerCache.peek(eventId) != null;
-            if (!eventInCache) { // this event was not reduced
-                jobMetrics.linesFailuresInMorphline++;
-                return null;
-            }
-            else {
-                return Collections.emptyList(); //event was reduced(filtered) - return nothing so the processing will continue to the next line
-            }
+        if(rec == null){
+            jobMetrics.linesFailuresInMorphline++;
+            return null;
         }
         if (morphlineEnrichment != null) {
             record = morphlineEnrichment.process(rec, itemContext);
@@ -178,9 +158,11 @@ public class DlpMailEventProcessJob extends EventProcessJob {
         }
     }
 
-    private String getEventIdFromLine(String line) {
-        return line.split(LINE_DELIMITER)[EVENT_ID_INDEX];
-    }
+
+
+
+
+
 
 
     private List<Record> updatePreviousRecords(Record record) throws Exception {
