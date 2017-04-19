@@ -1,10 +1,11 @@
 import Ember from 'ember';
+
 import * as ACTION_TYPES from './types';
 import { fetchExtractJobId } from './fetch';
 import { getHeaderItem } from 'recon/utils/recon-event-header';
+import { selectedFiles } from 'recon/reducers/files/selectors';
 
 const {
-  A,
   Logger,
   isArray,
   get
@@ -49,20 +50,17 @@ const createFilename = (headerItems, files = []) => {
 const extractFiles = (type = 'FILES') => {
   return (dispatch, getState) => {
     const {
+      recon,
       recon: {
         data: {
           endpointId,
           eventId,
-          files,
           headerItems
         }
       }
     } = getState();
 
-    const selectedFileNames = (files || A([]))
-      .filterBy('selected', true)
-      .map((file) => file.fileName);
-
+    const selectedFileNames = selectedFiles(recon).map(({ fileName }) => fileName);
     const filename = createFilename(headerItems, selectedFileNames);
 
     dispatch({

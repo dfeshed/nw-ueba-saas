@@ -1,10 +1,7 @@
-import Ember from 'ember';
 import { handleActions } from 'redux-actions';
 import { handle } from 'redux-pack';
 
 import * as ACTION_TYPES from 'recon/actions/types';
-
-const { set } = Ember;
 
 // State of server jobs for downloading file(s)
 const fileExtractInitialState = {
@@ -16,6 +13,7 @@ const fileExtractInitialState = {
 
 const filesInitialState = {
   files: null,
+  selectedFileIds: [],
   ...fileExtractInitialState,
 
   // Linked files are not extracted like normal files.
@@ -23,17 +21,6 @@ const filesInitialState = {
   // When the user clicks on a linked file, recon invokes a configurable callback
   // that is responsible for handling it (e.g., launching a new query).
   linkToFileAction: null
-};
-
-const allFilesSelection = (setTo) => {
-  return (state) => ({
-    ...state,
-    files: state.files.map((f) => ({
-      ...f,
-      // linked files cannot be selected for extraction
-      selected: (f.type === 'link') ? false : setTo
-    }))
-  });
 };
 
 const filesReducer = handleActions({
@@ -44,32 +31,30 @@ const filesReducer = handleActions({
 
   [ACTION_TYPES.FILES_RETRIEVE_SUCCESS]: (state, { payload }) => ({
     ...state,
-    files: payload.map((f) => {
-      set(f, 'selected', false);
-      return f;
-    })
+    files: payload
   }),
 
-  // Download reducing
   [ACTION_TYPES.FILES_FILE_TOGGLED]: (state, { payload: fileId }) => {
-    const newFiles = state.files.map((f) => {
-      if (f.id === fileId) {
-        return {
-          ...f,
-          selected: !f.selected
-        };
-      } else {
-        return f;
-      }
-    });
+    let selectedFileIds = [];
+    if (state.selectedFileIds.includes(fileId)) {
+      selectedFileIds = state.selectedFileIds.filter((id) => id !== fileId);
+    } else {
+      selectedFileIds = [...state.selectedFileIds, fileId];
+    }
 
     return {
       ...state,
-      files: newFiles
+      selectedFileIds
     };
   },
-  [ACTION_TYPES.FILES_DESELECT_ALL]: allFilesSelection(false),
-  [ACTION_TYPES.FILES_SELECT_ALL]: allFilesSelection(true),
+  [ACTION_TYPES.FILES_DESELECT_ALL]: (state) => ({
+    ...state,
+    selectedFileIds: []
+  }),
+  [ACTION_TYPES.FILES_SELECT_ALL]: (state) => ({
+    ...state,
+    selectedFileIds: (state.files || []).map(({ id }) => id)
+  }),
 
   [ACTION_TYPES.FILE_EXTRACT_JOB_ID_RETRIEVE]: (state, action) => {
     return handle(state, action, {

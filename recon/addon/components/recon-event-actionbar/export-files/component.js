@@ -1,17 +1,18 @@
 import Component from 'ember-component';
 import connect from 'ember-redux/components/connect';
-import computed, { filterBy } from 'ember-computed-decorators';
+import computed from 'ember-computed-decorators';
 
 import * as InteractionActions from 'recon/actions/interaction-creators';
 import { eventType } from 'recon/reducers/meta/selectors';
+import { selectedFiles } from 'recon/reducers/files/selectors';
 import ReconExport from 'recon/mixins/recon-export';
 import layout from './template';
 
 const stateToComputed = ({ recon, recon: { files } }) => ({
-  files: files.files,
-  status: files.fileExtractStatus,
+  selectedFiles: selectedFiles(recon),
+  eventType: eventType(recon),
   extractLink: files.fileExtractLink,
-  eventType: eventType(recon)
+  status: files.fileExtractStatus
 });
 
 const dispatchToActions = (dispatch) => ({
@@ -30,9 +31,6 @@ const ExportFilesComponent = Component.extend(ReconExport, {
       return (count > 1) ? this.get('i18n').t('recon.fileView.downloadFiles', { 'fileCount': count }) : this.get('i18n').t('recon.fileView.downloadFile');
     }
   },
-
-  @filterBy('files', 'selected', true)
-  selectedFiles: [],
 
   @computed('isDownloading', 'selectedFiles.length')
   isDisabled(isDownloading, count) {

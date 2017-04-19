@@ -6,10 +6,11 @@ import connect from 'ember-redux/components/connect';
 
 import layout from './template';
 import baseColumnsConfig from './columns-config';
+import { filesWithSelection } from 'recon/reducers/files/selectors';
 import * as InteractionActions from 'recon/actions/interaction-creators';
 
-const stateToComputed = ({ recon: { data, files } }) => ({
-  files: files.files,
+const stateToComputed = ({ recon, recon: { data, files } }) => ({
+  files: filesWithSelection(recon),
   linkToFileAction: files.linkToFileAction,
   eventTotal: data.total,
   dataIndex: data.index
