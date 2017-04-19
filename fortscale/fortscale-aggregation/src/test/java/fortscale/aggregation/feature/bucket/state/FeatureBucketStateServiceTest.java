@@ -82,10 +82,28 @@ public class FeatureBucketStateServiceTest {
         // Updating first time
         featureBucketStateService.updateFeatureBucketState(time);
         Instant date = Instant.ofEpochSecond(time);
-        date.plus(Duration.ofDays(1));
+        Instant futureDate = date.plus(Duration.ofDays(1));
 
         // Updating with next date
-        featureBucketStateService.updateFeatureBucketState(date.getEpochSecond());
+        featureBucketStateService.updateFeatureBucketState(futureDate.getEpochSecond());
+
+        FeatureBucketState actual = featureBucketStateService.getFeatureBucketState();
+        FeatureBucketState expected = new FeatureBucketState(futureDate);
+        Assert.assertNotNull(actual);
+        Assert.assertEquals(expected.getLastSyncedEventDate(), actual.getLastSyncedEventDate());
+    }
+
+    @Test
+    public void testUpdateState_UpdateNextWeek(){
+        long time = System.currentTimeMillis()/1000;
+
+        // Updating first time
+        featureBucketStateService.updateFeatureBucketState(time);
+        Instant date = Instant.ofEpochSecond(time);
+        Instant futureDate = date.plus(Duration.ofDays(7));
+
+        // Updating with next date
+        featureBucketStateService.updateFeatureBucketState(futureDate.getEpochSecond());
 
         FeatureBucketState actual = featureBucketStateService.getFeatureBucketState();
         FeatureBucketState expected = new FeatureBucketState(date);
