@@ -15,6 +15,7 @@ import fortscale.common.feature.Feature;
 import fortscale.common.util.GenericHistogram;
 import fortscale.domain.core.*;
 import fortscale.domain.rest.HistoricalDataRestFilter;
+import fortscale.utils.FilteringPropertiesConfigurationHandler;
 import fortscale.utils.time.TimestampUtils;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -46,6 +47,10 @@ import static org.mockito.Mockito.when;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(loader = SpringockitoContextLoader.class, locations = { "classpath*:META-INF/spring/supporting-information-service-context-test.xml" })
 public class SupportingInformationServiceTest {
+
+    @Autowired
+    @ReplaceWithMock
+    FilteringPropertiesConfigurationHandler filteringPropertiesConfigurationHandler;
 
     @Autowired
     @ReplaceWithMock

@@ -38,10 +38,10 @@ public class SupportingInformationCountPopulator extends SupportingInformationHi
 	}
 
 	@Override protected Map<SupportingInformationKey, Double> createSupportingInformationHistogram(String contextValue,
-			long endTime, Integer timePeriodInDays) {
+			long endTime, Integer timePeriodInDays,Evidence evidence) {
 		List<FeatureBucket> featureBuckets = fetchRelevantFeatureBuckets(contextValue, endTime, timePeriodInDays);
 
-        Map<SupportingInformationKey, Double> lastDayMap = createLastDayBucket(getNormalizedContextType(contextType), contextValue, endTime, dataEntity);
+        Map<SupportingInformationKey, Double> lastDayMap = createLastDayBucket(getNormalizedContextType(contextType), contextValue, endTime, dataEntity,evidence);
 
         if ((CollectionUtils.isEmpty(featureBuckets)) && (MapUtils.isEmpty(lastDayMap))) {
             throw new SupportingInformationException("Could not find any relevant bucket for histogram creation");

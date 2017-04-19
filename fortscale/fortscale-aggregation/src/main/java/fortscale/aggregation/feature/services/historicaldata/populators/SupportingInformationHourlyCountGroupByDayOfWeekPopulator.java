@@ -40,14 +40,14 @@ public class SupportingInformationHourlyCountGroupByDayOfWeekPopulator extends S
         super(contextType, dataEntity, featureName);
     }
 
-    protected Map<SupportingInformationKey, Double> createSupportingInformationHistogram(String contextValue, long evidenceEndTime, Integer timePeriodInDays) {
+    protected Map<SupportingInformationKey, Double> createSupportingInformationHistogram(String contextValue, long evidenceEndTime, Integer timePeriodInDays,Evidence evidence) {
         List<FeatureBucket> featureBuckets = fetchRelevantFeatureBuckets(contextValue, evidenceEndTime, timePeriodInDays);
 
         if (featureBuckets.isEmpty()) {
             throw new SupportingInformationException("Could not find any relevant bucket for histogram creation");
         }
 
-        Map<SupportingInformationKey, Double> lastDayMap = createLastDayBucket(getNormalizedContextType(contextType), contextValue, evidenceEndTime, dataEntity);
+        Map<SupportingInformationKey, Double> lastDayMap = createLastDayBucket(getNormalizedContextType(contextType), contextValue, evidenceEndTime, dataEntity,evidence);
 
         return createSupportingInformationHistogram(featureBuckets, lastDayMap);
     }

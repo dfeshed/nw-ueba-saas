@@ -46,7 +46,7 @@ public class SupportingInformationDistinctEventsByTimePopulator extends Supporti
     @Override
     public SupportingInformationGenericData<Double> createSupportingInformationData(Evidence evidence, String contextValue, long evidenceEndTime, Integer timePeriodInDays) {
 
-        Map<SupportingInformationKey, Double> histogramMap = createSupportingInformationHistogram(contextValue, evidenceEndTime, timePeriodInDays);
+        Map<SupportingInformationKey, Double> histogramMap = createSupportingInformationHistogram(contextValue, evidenceEndTime, timePeriodInDays, evidence);
 
         SupportingInformationGenericData<Double> supportingInformationData;
 
@@ -69,7 +69,7 @@ public class SupportingInformationDistinctEventsByTimePopulator extends Supporti
         return supportingInformationData;
     }
 
-    protected Map<SupportingInformationKey, Double> createSupportingInformationHistogram(String contextValue, long evidenceEndTime, Integer timePeriodInDays) {
+    protected Map<SupportingInformationKey, Double> createSupportingInformationHistogram(String contextValue, long evidenceEndTime, Integer timePeriodInDays,Evidence evidence) {
 
         String normalizedContextType = getNormalizedContextType(contextType);
 
