@@ -18,7 +18,7 @@ import java.util.Map;
 public class UserActivityEmailRecipientDomainHandler extends UserActivityBaseHandler {
 
     private static final UserActivityType EMAIL_RECIPIENT_DOMAIN = UserActivityType.EMAIL_RECIPIENT_DOMAIN;
-    public static final String EXECUTING_EMAIL_RECIPIENT_DOMAIN_HISTOGRAM_FEATURE_NAME = "executing_email_recipient_domain_histogram";
+    public static final String EXECUTING_EMAIL_RECIPIENT_DOMAIN_HISTOGRAM_FEATURE_NAME = "email_recipient_domain_histogram";
 
     @Autowired
     private UserActivityEmailRecipientDomainService userActivityEmailRecipientDomainService;
