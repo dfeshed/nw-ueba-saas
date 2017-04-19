@@ -13,6 +13,7 @@ import fortscale.streaming.alert.subscribers.evidence.decider.AlertDeciderServic
 import fortscale.streaming.service.alert.EvidencesForAlertResolverService;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimeUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -100,69 +101,72 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 						}
 						default: {
 							logger.warn("Cannot handle entity of type {}", entityType);
-
 							continue;
 						}
 					}
 
-					AlertTimeframe timeframe = (AlertTimeframe) eventStreamByUserAndTimeframe.get("timeframe");
+					if (StringUtils.isEmpty(entityId)){
+						logger.error("Failed to find entity {} with the name {} for the alert", entityType, entityName);
+					}else {
+						AlertTimeframe timeframe = (AlertTimeframe) eventStreamByUserAndTimeframe.get("timeframe");
 
-					Long startDate = (Long) eventStreamByUserAndTimeframe.get("startDate");
-					Long endDate = (Long) eventStreamByUserAndTimeframe.get("endDate");
+						Long startDate = (Long) eventStreamByUserAndTimeframe.get("startDate");
+						Long endDate = (Long) eventStreamByUserAndTimeframe.get("endDate");
 
-					Map[] rawEventArr = (Map[]) eventStreamByUserAndTimeframe.get("eventList");
+						Map[] rawEventArr = (Map[]) eventStreamByUserAndTimeframe.get("eventList");
 
-					logger.info("Going to create Alert for user {}. Start time = {} ({}). End time = {} ({}). # of received events in window = {}", entityName, startDate, TimeUtils.getUTCFormattedTime(startDate), endDate, TimeUtils.getUTCFormattedTime(endDate), rawEventArr.length);
+						logger.info("Going to create Alert for user {}. Start time = {} ({}). End time = {} ({}). # of received events in window = {}", entityName, startDate, TimeUtils.getUTCFormattedTime(startDate), endDate, TimeUtils.getUTCFormattedTime(endDate), rawEventArr.length);
 
-					List<EnrichedFortscaleEvent> eventList = convertToFortscaleEventList(rawEventArr);
+						List<EnrichedFortscaleEvent> eventList = convertToFortscaleEventList(rawEventArr);
 
-					//create the list of evidences to apply to the decider
-					List<EnrichedFortscaleEvent> evidencesEligibleForDecider = evidencesApplicableToAlertService.createIndicatorListApplicableForDecider(
-							eventList, startDate, endDate, timeframe);
+						//create the list of evidences to apply to the decider
+						List<EnrichedFortscaleEvent> evidencesEligibleForDecider = evidencesApplicableToAlertService.createIndicatorListApplicableForDecider(
+								eventList, startDate, endDate, timeframe);
 
-					if (CollectionUtils.isEmpty(evidencesEligibleForDecider)) {
-						logger.warn("Failed to find eligible events for alert creation");
-						continue;
-					}
+						if (CollectionUtils.isEmpty(evidencesEligibleForDecider)) {
+							logger.warn("Failed to find eligible events for alert creation");
+							continue;
+						}
 
-					String title = decider.decideName(evidencesEligibleForDecider,timeframe);
-					Integer roundScore = decider.decideScore(evidencesEligibleForDecider, timeframe);
+						String title = decider.decideName(evidencesEligibleForDecider, timeframe);
+						Integer roundScore = decider.decideScore(evidencesEligibleForDecider, timeframe);
 
-					Set<String> userTags = userService.getUserTags(entityName);
-					Severity severity = getSeverity(entityName, roundScore, userTags);
+						Set<String> userTags = userService.getUserTags(entityName);
+						Severity severity = getSeverity(entityName, roundScore, userTags);
 
-					if (title != null && severity != null) {
-						logger.info("Alert title = {}. Alert Severity = {}", title, severity);
+						if (title != null && severity != null) {
+							logger.info("Alert title = {}. Alert Severity = {}", title, severity);
 
-						List<Evidence> attachedNotifications = evidencesForAlertResolverService.handleNotifications(eventList.stream().
-                                filter(event -> (event.getEvidenceType() == EvidenceType.Notification)).collect(Collectors.toList()));
+							List<Evidence> attachedNotifications = evidencesForAlertResolverService.handleNotifications(eventList.stream().
+									filter(event -> (event.getEvidenceType() == EvidenceType.Notification)).collect(Collectors.toList()));
 
-						logger.info("Attaching {} notification indicators to Alert: {}", attachedNotifications.size(), attachedNotifications);
+							logger.info("Attaching {} notification indicators to Alert: {}", attachedNotifications.size(), attachedNotifications);
 
-						List<Evidence> attachedEntityEventIndicators = evidencesForAlertResolverService.handleEntityEvents(eventList.stream().
-                                filter(event -> (event.getEvidenceType() == EvidenceType.Smart)).collect(Collectors.toList()));
-						logger.info("Attaching {} F/P indicators to Alert: {}", attachedEntityEventIndicators.size(), attachedEntityEventIndicators);
+							List<Evidence> attachedEntityEventIndicators = evidencesForAlertResolverService.handleEntityEvents(eventList.stream().
+									filter(event -> (event.getEvidenceType() == EvidenceType.Smart)).collect(Collectors.toList()));
+							logger.info("Attaching {} F/P indicators to Alert: {}", attachedEntityEventIndicators.size(), attachedEntityEventIndicators);
 
-						List<Evidence> attachedTags = evidencesForAlertResolverService.handleTags(userTags,entityType, entityName, startDate, endDate);
-						logger.info("Attaching {} tag indicators to Alert: {}", attachedTags.size(), attachedTags);
+							List<Evidence> attachedTags = evidencesForAlertResolverService.handleTags(userTags, entityType, entityName, startDate, endDate);
+							logger.info("Attaching {} tag indicators to Alert: {}", attachedTags.size(), attachedTags);
 
-						List<Evidence> finalIndicatorsListForAlert = new ArrayList<>();
-						finalIndicatorsListForAlert.addAll(attachedNotifications);
-						finalIndicatorsListForAlert.addAll(attachedEntityEventIndicators);
+							List<Evidence> finalIndicatorsListForAlert = new ArrayList<>();
+							finalIndicatorsListForAlert.addAll(attachedNotifications);
+							finalIndicatorsListForAlert.addAll(attachedEntityEventIndicators);
 
-						if (finalIndicatorsListForAlert.isEmpty()) {
-							logger.info("Alert is not created, since there aren't any notifications nor indicators. Event value = {}", eventStreamByUserAndTimeframe);
-						} else {
-							// Add tag indicators
-							finalIndicatorsListForAlert.addAll(attachedTags);
-							double alertUserScoreContribution = userScoreService.getUserScoreContributionForAlertSeverity(severity, AlertFeedback.None, startDate);
-							Alert alert = new Alert(title, startDate, endDate, entityType, entityName, finalIndicatorsListForAlert, finalIndicatorsListForAlert.size(),
-									roundScore, severity, AlertStatus.Open, AlertFeedback.None, entityId, timeframe, alertUserScoreContribution, alertUserScoreContribution > 0);
-							logger.info("Saving alert in DB: {}", alert);
-							alertsService.saveAlertInRepository(alert);
-							logger.info("Alert was saved successfully");
-							alertTypesHisotryCache.updateCache(alert);
-							forwardingService.forwardNewAlert(alert);
+							if (finalIndicatorsListForAlert.isEmpty()) {
+								logger.info("Alert is not created, since there aren't any notifications nor indicators. Event value = {}", eventStreamByUserAndTimeframe);
+							} else {
+								// Add tag indicators
+								finalIndicatorsListForAlert.addAll(attachedTags);
+								double alertUserScoreContribution = userScoreService.getUserScoreContributionForAlertSeverity(severity, AlertFeedback.None, startDate);
+								Alert alert = new Alert(title, startDate, endDate, entityType, entityName, finalIndicatorsListForAlert, finalIndicatorsListForAlert.size(),
+										roundScore, severity, AlertStatus.Open, AlertFeedback.None, entityId, timeframe, alertUserScoreContribution, alertUserScoreContribution > 0);
+								logger.info("Saving alert in DB: {}", alert);
+								alertsService.saveAlertInRepository(alert);
+								logger.info("Alert was saved successfully");
+								alertTypesHisotryCache.updateCache(alert);
+								forwardingService.forwardNewAlert(alert);
+							}
 						}
 					}
 				} catch (Exception e) {
