@@ -96,15 +96,15 @@ const setNewReconView = (newView) => {
     // No need to fetch/dispatch recon view data if it already exists
     // in state. Means this recon view, for this event, has already had
     // its data fetched. On INITIALIZE the recon view data is wiped out
-    const dataState = getState().recon.data;
-    if (!dataState[newView.dataKey]) {
+    const reconState = getState().recon;
+    if (!newView.doesStateHaveViewData(reconState)) {
       dispatch({ type: ACTION_TYPES.CONTENT_RETRIEVE_STARTED });
 
       // if is file recon, time to kick of request
       // for file recon data
       switch (newView.code) {
         case RECON_VIEW_TYPES_BY_NAME.FILE.code:
-          fetchReconFiles(dataState)
+          fetchReconFiles(reconState.data)
             .then(({ data }) => {
               dispatch({
                 type: ACTION_TYPES.FILES_RETRIEVE_SUCCESS,

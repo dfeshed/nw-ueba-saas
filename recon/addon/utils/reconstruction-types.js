@@ -1,3 +1,9 @@
+import get from 'ember-metal/get';
+
+const doesStateHaveViewData = function(state) {
+  return !!get(state, this.dataKey);
+};
+
 /*
  * code: id
  * name: is used by RECON_VIEW_TYPES_BY_NAME below, when
@@ -12,21 +18,23 @@ const RECON_VIEW_TYPES = [{
   name: 'PACKET',
   label: 'Packet View',
   component: 'recon-event-detail/packets',
-  dataKey: 'packets'
+  dataKey: 'packets.packets',
+  doesStateHaveViewData
 }, {
   code: 2,
   name: 'FILE',
   label: 'File View',
   component: 'recon-event-detail/files',
-  dataKey: 'files'
+  dataKey: 'files.files',
+  doesStateHaveViewData
 }, {
   code: 3,
   name: 'TEXT',
   label: 'Text View',
   component: 'recon-event-detail/text-content',
-  dataKey: 'textContent'
-}
-];
+  dataKey: 'text.textContent',
+  doesStateHaveViewData
+}];
 
 const RECON_VIEW_TYPES_BY_NAME = {};
 RECON_VIEW_TYPES.forEach((t) => RECON_VIEW_TYPES_BY_NAME[t.name] = t);
