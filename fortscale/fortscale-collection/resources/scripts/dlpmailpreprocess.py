@@ -12,6 +12,10 @@ def run():
         sys.exit(1)
     file_name = sys.argv[1]
     method = sys.argv[2]
+    if not os.path.isfile(file_name):
+        msg = "Failed to perform {0} on file {1}. File {2} doesn't exist {3}".format(method, file_name, file_name, os.linesep)
+        sys.stderr.write(msg)
+        return -1
     with open(file_name, "a") as file:
         last_line = Popen(['tail', '-1', file_name], stdout=PIPE).communicate()[0].rstrip()
         if method == "preprocess":
