@@ -10,6 +10,8 @@
 
         http://www.mockito.org/spring/mockito http://www.mockito.org/spring/mockito.xsd">
 
+    <import resource="classpath*:META-INF/spring/collection-context-test-morphline.xml"/>
+
     <mockito:mock id="jobProgressReporter" class="fortscale.monitor.mongo.MongoJobProgressReporter"/>
 
     <mockito:mock id="jobDataMapExtension" class="fortscale.collection.JobDataMapExtension"/>
@@ -31,8 +33,5 @@
     <context:spring-configured />
     <context:annotation-config />
     <context:component-scan base-package="fortscale.collection.jobs.activity" />
-
-    <import resource="classpath*:META-INF/spring/collection-context-test-morphline.xml"/>
-
 
 </beans>
