@@ -6,6 +6,7 @@ import fortscale.services.ApplicationConfigurationService;
 import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.util.Optional;
 
@@ -18,6 +19,7 @@ public abstract class BaseUserActivityConfigurationService implements UserActivi
     @Autowired
     protected ApplicationConfigurationService applicationConfigurationService;
 
+    @PostConstruct
     public void afterPropertiesSet() throws Exception {
         if (applicationConfigurationService != null) {
             saveUserActivityConfigurationToDatabase();
@@ -45,7 +47,9 @@ public abstract class BaseUserActivityConfigurationService implements UserActivi
     public void saveUserActivityConfigurationToDatabase() throws JsonProcessingException {
         UserActivityConfiguration userActivityConfiguration = createUserActivityConfiguration();
         String userActivityConfigurationAsJsonString = objectMapper.writeValueAsString(userActivityConfiguration);
-        applicationConfigurationService.insertConfigItem(getConfigurationKey(), userActivityConfigurationAsJsonString);
+        final String configurationKey = getConfigurationKey();
+        applicationConfigurationService.delete(configurationKey);
+        applicationConfigurationService.insertConfigItem(configurationKey, userActivityConfigurationAsJsonString);
     }
 
     @Override
