@@ -2,7 +2,6 @@ package fortscale.web.rest;
 
 import fortscale.common.datastructures.UserActivityEntryHashMap;
 import fortscale.domain.core.activities.*;
-import fortscale.services.ComputerService;
 import fortscale.services.UserActivityService;
 import fortscale.services.cache.CacheHandler;
 import fortscale.services.users.util.UserAndOrganizationActivityHelper;
@@ -50,8 +49,6 @@ public class ApiUserActivityController extends DataQueryController {
     private final UserActivityService userActivityService;
     private static final Logger logger = Logger.getLogger(ApiUserActivityController.class);
 
-    private ComputerService computerService;
-
     @Autowired
     private UserDeviceUtils userDeviceUtils;
 
@@ -64,10 +61,8 @@ public class ApiUserActivityController extends DataQueryController {
     @Autowired
     public ApiUserActivityController(
             UserActivityService userActivityService,
-            ComputerService computerService,
             UserAndOrganizationActivityHelper userAndOrganizationActivityHelper) {
         this.userActivityService = userActivityService;
-        this.computerService = computerService;
         this.userAndOrganizationActivityHelper = userAndOrganizationActivityHelper;
     }
 
@@ -203,15 +198,6 @@ public class ApiUserActivityController extends DataQueryController {
                 this::convertTopApplicationsDocumentsResponse,
                 TOP_APPLICATIONS);
         return userActivity;
-
-        //Use both "method reference" and lambda function only for examples
-//        DataBean<List<UserActivityData.NameCountEntry>> userActivityApplicationsBean = new DataBean<>();
-//        userActivityApplicationsBean.setData(Arrays.asList(
-//                new UserActivityData.NameCountEntry("outlook", 300, "mail"),
-//                new UserActivityData.NameCountEntry("explore", 32, "bla")
-//
-//        ));
-//        return userActivityApplicationsBean;
     }
 
     /**
@@ -336,14 +322,6 @@ public class ApiUserActivityController extends DataQueryController {
         }
 
         return nameCountEntries;
-//        List<UserActivityData.NameCountEntry> workingHours = hoursToAmountFilteredByThreshold.stream()
-//                .map(Map.Entry::getKey) //get only the hour
-//                .map(Integer::valueOf)  //convert hour as string to Integer
-//                .distinct()             //get each hour only once
-//                .map(UserActivityData.NameCountEntry::new) // convert to WorkingHourEntry
-//                .collect(Collectors.toList());
-//        return workingHours;
-
     }
 
     /**
