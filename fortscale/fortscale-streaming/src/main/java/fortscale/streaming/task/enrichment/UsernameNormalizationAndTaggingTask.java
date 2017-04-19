@@ -160,7 +160,7 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 				taskMetrics.unknownNormalizationConfigurationMessages++;
 			}
 
-			// get the normalized username from input record - if he doesn't exist  its sign that we should normalized the username field
+			// get the normalized username from the input record - if it doesn't exist it's a sign that we should normalize the username field
 			String normalizedUsername = convertToString(message.get(usernameNormalizationConfig.getNormalizedUsernameField()));
 			if (StringUtils.isEmpty(normalizedUsername)) {
 				taskMetrics.emptyNormalizedUsernameMessages++;
