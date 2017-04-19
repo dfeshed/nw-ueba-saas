@@ -45,14 +45,14 @@ public class EventProcessJob implements Job {
 
 	public static final String EVENT_PROCESS_JOB_PRE_PROCESS_SCRIPT = "EventProcessJob Pre Process Script";
 	private static Logger logger = LoggerFactory.getLogger(EventProcessJob.class);
-	
+
 	@Value("${collection.fetch.data.path}")
 	protected String inputPath;
 	@Value("${collection.fetch.error.data.path}")
 	protected String errorPath;
 	@Value("${collection.fetch.finish.data.path}")
 	protected String finishPath;
-	
+
 	@Value("${impala.data.table.fields.normalized_username}")
 	private String normalizedUsernameField;
 	@Value("${impala.table.fields.username}")
@@ -82,8 +82,8 @@ public class EventProcessJob implements Job {
 	protected String timestampField;
 	protected String streamingTopic;
 	protected KafkaEventsWriter streamWriter;
-    protected PartitionStrategy partitionStrategy;
-    protected String preProcessScriptPath;
+	protected PartitionStrategy partitionStrategy;
+	protected String preProcessScriptPath;
 
 	String sourceName;
 
@@ -91,10 +91,10 @@ public class EventProcessJob implements Job {
 
 	@Autowired
 	protected ImpalaClient impalaClient;
-	
+
 	@Autowired
 	protected JobDataMapExtension jobDataMapExtension;
-	
+
 	@Autowired
 	protected UserService userService;
 	@Autowired
@@ -113,9 +113,9 @@ public class EventProcessJob implements Job {
 	 */
 	@Autowired
 	protected TaskMonitoringHelper<String> taskMonitoringHelper;
-	
-	
-		
+
+
+
 	public String getUsernameField() {
 		return usernameField;
 	}
@@ -131,7 +131,7 @@ public class EventProcessJob implements Job {
 		timestampField = jobDataMapExtension.getJobDataMapStringValue(map, "timestampField");
 		streamingTopic = jobDataMapExtension.getJobDataMapStringValue(map, "streamingTopic", "");
 		sendToKafka = jobDataMapExtension.getJobDataMapBooleanValue(map, "sendToKafka", defaultSendToKafka);
-		
+
 		// build record to items processor
 		String outputFields = jobDataMapExtension.getJobDataMapStringValue(map, "outputFields");
 		String messageOutputFields = jobDataMapExtension.getJobDataMapStringValue(map,"messageOutputFields");
@@ -145,13 +145,13 @@ public class EventProcessJob implements Job {
 
 		// get the job group name to be used using monitoring
 
-        String strategy = jobDataMapExtension.getJobDataMapStringValue(map, "partitionStrategy");
-        partitionStrategy = PartitionsUtils.getPartitionStrategy(strategy);
+		String strategy = jobDataMapExtension.getJobDataMapStringValue(map, "partitionStrategy");
+		partitionStrategy = PartitionsUtils.getPartitionStrategy(strategy);
 
 		preProcessScriptPath = jobDataMapExtension.getJobDataMapStringValue(map, "preProcessScriptPath", false);
 
 	}
-	
+
 	@Override
 	public void execute(JobExecutionContext context) throws JobExecutionException {
 
@@ -165,7 +165,7 @@ public class EventProcessJob implements Job {
 		logger.info("{} {} job started", jobName, sourceName);
 
 
-		
+
 		String currentStep = "Get Job Parameters";
 		try {
 			// get parameters from job data map
@@ -211,7 +211,7 @@ public class EventProcessJob implements Job {
 							jobMetrics.processFilesFailures++;
 							moveFileToFolder(file, errorPath);
 						}
-			
+
 						logger.info("finished processing {}", fileName);
 					} catch (Exception e) {
 						preProcessCleanup(fileName);
@@ -328,11 +328,6 @@ public class EventProcessJob implements Job {
 		return ProcessExecutor.executeProcess(EVENT_PROCESS_JOB_PRE_PROCESS_SCRIPT, arguments);
 	}
 
-	private boolean runPreProcessScriptCleanup(String scriptPath, String fileToPreProcess) {
-		final List<String> arguments = new ArrayList<>(Arrays.asList("python", scriptPath, fileToPreProcess, "cleanup"));
-		return ProcessExecutor.executeProcess(EVENT_PROCESS_JOB_PRE_PROCESS_SCRIPT, arguments);
-	}
-
 
 	/**
 	 * Iterate each line of the file and process each line.
@@ -345,19 +340,19 @@ public class EventProcessJob implements Job {
 	protected boolean processFile(File file) throws IOException {
 
 
-        long totalLines=0;
+		long totalLines=0;
 
 		BufferedLineReader reader = new BufferedLineReader();
 		reader.open(file);
 		ItemContext itemContext = new ItemContext(file.getName(),taskMonitoringHelper,morphlineMetrics);
 
-        //read the line number only in case that the linesPrintEnabled flag is turned on
-        if (linesPrintEnabled) {
-            LineNumberReader lnr = new LineNumberReader(new FileReader(file));
-            lnr.skip(Long.MAX_VALUE);
-            totalLines = lnr.getLineNumber() + 1; //Add 1 because line index starts at 0
-            lnr.close();
-        }
+		//read the line number only in case that the linesPrintEnabled flag is turned on
+		if (linesPrintEnabled) {
+			LineNumberReader lnr = new LineNumberReader(new FileReader(file));
+			lnr.skip(Long.MAX_VALUE);
+			totalLines = lnr.getLineNumber() + 1; //Add 1 because line index starts at 0
+			lnr.close();
+		}
 
 		try {
 			int numOfLines = 0;
@@ -389,7 +384,7 @@ public class EventProcessJob implements Job {
 			}
 
 			logger.info("Successfully processed {} out of {} lines in file {}", numOfSuccessfullyProcessedLines, numOfLines, file.getName());
-			
+
 			// flush hadoop
 			flushOutputAppender();
 			if (numOfLines != numOfSuccessfullyProcessedLines){
@@ -403,7 +398,7 @@ public class EventProcessJob implements Job {
 			reader.close();
 		}
 
-		
+
 		if (reader.HasErrors()) {
 			logger.error("error processing file " + file.getName(), reader.getException());
 			taskMonitoringHelper.error("Process Files", reader.getException().toString());
@@ -446,7 +441,7 @@ public class EventProcessJob implements Job {
 
 		String outputToHadoop = recordToHadoopString.process(record);
 
-		
+
 		// append to hadoop, if there is data to be written
 		if (outputToHadoop!=null) {
 			// append to hadoop
@@ -465,36 +460,36 @@ public class EventProcessJob implements Job {
 	}
 
 
-	
+
 	protected Classifier getClassifier(){
 		return null;
 	}
-	
+
 	protected boolean isOnlyUpdateUser(Record record){
 		return true;
 	}
-	
+
 	protected boolean isUpdateAppUsername(){
 		return true;
 	}
-		
+
 	protected String extractUsernameFromRecord(Record record){
 		return RecordExtensions.getStringValue(record, getUsernameField());
 	}
-	
+
 	protected String extractNormalizedUsernameFromRecord(Record record){
 		return RecordExtensions.getStringValue(record, normalizedUsernameField);
 	}
-	
+
 	protected void refreshImpala() throws JobExecutionException {
 
 		List<Exception> exceptions = new LinkedList<Exception>();
-		
+
 		// declare new partitions for impala
 		HDFSPartitionsWriter partitionsWriter = (HDFSPartitionsWriter)appender.getWriter();
 		for (String partition : partitionsWriter.getNewPartitions()) {
 			try {
-				impalaClient.addPartitionToTable(impalaTableName, partition); 
+				impalaClient.addPartitionToTable(impalaTableName, partition);
 			} catch (Exception e) {
 				exceptions.add(e);
 			}
@@ -512,7 +507,7 @@ public class EventProcessJob implements Job {
 		} catch (Exception e) {
 			exceptions.add(e);
 		}
-		
+
 		// log all errors if any
 		for (Exception e : exceptions) {
 			logger.error("error refreshing impala", e);
@@ -523,7 +518,7 @@ public class EventProcessJob implements Job {
 			throw new JobExecutionException("got exception while refreshing impala", exceptions.get(0));
 		}
 	}
-	
+
 	protected void createOutputAppender() throws JobExecutionException {
 		logger.debug("initializing hadoop appender in {}", hadoopPath);
 
@@ -531,33 +526,33 @@ public class EventProcessJob implements Job {
 		HDFSPartitionsWriter writer = new HDFSPartitionsWriter(hadoopPath, getPartitionStrategy(), getFileSplitStrategy(), outputSeparator);
 		appender = new BufferedHDFSWriter(writer, hadoopFilename, maxBufferSize);
 	}
-	
-	/*** Initialize the streaming appender upon job start to be able to produce messages to */ 
+
+	/*** Initialize the streaming appender upon job start to be able to produce messages to */
 	protected void initializeStreamingAppender() throws JobExecutionException {
 		if (StringUtils.isNotEmpty(streamingTopic))
 			streamWriter = new KafkaEventsWriter(streamingTopic);
 	}
-	
+
 	/*** Send the message produced by the morphline ETL to the streaming platform */
 	protected void streamMessage(String key, String message) throws IOException {
 		if (streamWriter!=null && sendToKafka == true)
 			streamWriter.send(key, message);
 	}
-	
+
 	/*** Close the streaming appender upon job finish to free resources */
 	protected void closeStreamingAppender() throws JobExecutionException {
 		if (streamWriter!=null)
 			streamWriter.close();
 	}
-	
+
 	protected PartitionStrategy getPartitionStrategy(){
 		return this.partitionStrategy;
 	}
-	
+
 	protected FileSplitStrategy getFileSplitStrategy(){
 		return new DailyFileSplitStrategy();
 	}
-	
+
 	protected void flushOutputAppender() throws IOException {
 		try {
 			logger.info("Flushing output to HDFS partition (" + hadoopPath + ")..");
@@ -569,18 +564,18 @@ public class EventProcessJob implements Job {
 			throw e;
 		}
 	}
-	
+
 	protected void closeOutputAppender() throws JobExecutionException {
 		try {
 			logger.debug("flushing hdfs paritions at {}", hadoopPath);
-			appender.close(); 
+			appender.close();
 		} catch (IOException e) {
 			logger.error("error closing hdfs partitions writer at " + hadoopPath, e);
 			taskMonitoringHelper.error("Process Files", String.format("error closing partitions at %s: \n %s",  hadoopPath, e.toString()));
 			throw new JobExecutionException("error closing partitions at " + hadoopPath, e);
 		}
 	}
-	
+
 	protected void moveFileToFolder(File file, String path) {
 		File renamed = null;
 		if (path.endsWith(File.separator))
@@ -595,7 +590,7 @@ public class EventProcessJob implements Job {
 				return;
 			}
 		}
-		
+
 		if (!file.renameTo(renamed))
 			logger.error("failed moving file {} to path {}", file.getName(), path);
 	}
