@@ -44,24 +44,17 @@ public class UserActivityDataUsageConfigurationService extends BaseUserActivityC
 		final Map<String, String> dataSourceToCollection = new HashMap<>();
 		final Map<String, List<String>> activityToDataSources = new HashMap<>();
 		activities.add(ACTIVITY_DATA_USAGE_PROPERTY_NAME);
-		DataUsageConfiguration dataUsageConfigurations = applicationConfigurationService.
-				getApplicationConfigurationAsObject(USER_ACTIVITY_DATA_USAGE_DATA_SOURCES_CONFIGURATION_KEY,
-						DataUsageConfiguration.class);
-		if (dataUsageConfigurations == null) {
-			//set default values
-			DataUsageConfiguration dataUsageConfiguration = new DataUsageConfiguration();
-			collectionToHistogram = new HashMap<>();
-			collectionToHistogram.put(DATA_SOURCE_PRINT_LOG_PROPERTY_NAME, FILE_SIZE_HISTOGRAM);
-			collectionToHistogram.put(DATA_SOURCE_ORACLE_PROPERTY_NAME, DB_OBJECT_HISTOGRAM);
-			collectionToHistogram.put(DATA_SOURCE_VPN_SESSION_PROPERTY_NAME, DATABUCKET_HISTOGRAM);
-			collectionToHistogram.put(DATA_SOURCE_DLPMAIL_PROPERTY_NAME, ATTACHMENT_FILE_SIZE_HISTOGRAM);
-			collectionToHistogram.put(DATA_SOURCE_DLPFILE_PROPERTY_NAME, SUM_OF_COPIED_FILES_TO_REMOVABLE_DEVICE_SIZE_HISTOGRAM);
-			dataUsageConfiguration.setCollectionToHistogram(collectionToHistogram);
-			applicationConfigurationService.insertConfigItemAsObject(
-					USER_ACTIVITY_DATA_USAGE_DATA_SOURCES_CONFIGURATION_KEY, dataUsageConfiguration);
-		} else {
-			collectionToHistogram = dataUsageConfigurations.getCollectionToHistogram();
-		}
+		//set default values
+		DataUsageConfiguration dataUsageConfiguration = new DataUsageConfiguration();
+		collectionToHistogram = new HashMap<>();
+		collectionToHistogram.put(DATA_SOURCE_PRINT_LOG_PROPERTY_NAME, FILE_SIZE_HISTOGRAM);
+		collectionToHistogram.put(DATA_SOURCE_ORACLE_PROPERTY_NAME, DB_OBJECT_HISTOGRAM);
+		collectionToHistogram.put(DATA_SOURCE_VPN_SESSION_PROPERTY_NAME, DATABUCKET_HISTOGRAM);
+		collectionToHistogram.put(DATA_SOURCE_DLPMAIL_PROPERTY_NAME, ATTACHMENT_FILE_SIZE_HISTOGRAM);
+		collectionToHistogram.put(DATA_SOURCE_DLPFILE_PROPERTY_NAME, SUM_OF_COPIED_FILES_TO_REMOVABLE_DEVICE_SIZE_HISTOGRAM);
+		dataUsageConfiguration.setCollectionToHistogram(collectionToHistogram);
+		applicationConfigurationService.insertConfigItemAsObject(USER_ACTIVITY_DATA_USAGE_DATA_SOURCES_CONFIGURATION_KEY, dataUsageConfiguration);
+		
 		for (Map.Entry<String, String> entry: collectionToHistogram.entrySet()) {
 			dataSourceToCollection.put(entry.getKey(), String.format(COLLECTION_TEMPLATE, entry.getKey()));
 		}
