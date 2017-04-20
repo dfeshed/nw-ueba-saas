@@ -43,15 +43,15 @@ public class UserActivitySourceMachineConfigurationService extends BaseUserActiv
 				"aggregatedFeatures",
 				UserActivityType.SOURCE_MACHINE.name()));
 		activityDataSourceConfigurationMap.put("prnlog", new UserActivityDataSourceConfiguration("prnlog",
-				"aggr_normalized_username_prnlog_daily",
+				"aggr_normalized_username_prnlog_hourly",
 				"aggregatedFeatures",
 				UserActivityType.SOURCE_MACHINE.name()));
 		activityDataSourceConfigurationMap.put("dlpmail", new UserActivityDataSourceConfiguration("dlpmail",
-				"aggr_normalized_username_dlpmail_daily",
+				"aggr_normalized_username_dlpmail_hourly",
 				"aggregatedFeatures",
 				UserActivityType.SOURCE_MACHINE.name()));
 		activityDataSourceConfigurationMap.put("dlpfile", new UserActivityDataSourceConfiguration("dlpfile",
-				"aggr_normalized_username_dlpfile_daily",
+				"aggr_normalized_username_dlpfile_hourly",
 				"aggregatedFeatures",
 				UserActivityType.SOURCE_MACHINE.name()));
 	}
