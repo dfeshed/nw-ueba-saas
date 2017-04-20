@@ -1,13 +1,15 @@
 import Component from 'ember-component';
-import computed, { and, alias } from 'ember-computed-decorators';
-import { htmlSafe } from 'ember-string';
+import computed, { alias } from 'ember-computed-decorators';
 import { later } from 'ember-runloop';
 
 import SelectionTooltip from './selection-tooltip-mixin';
+import { retrieveTranslatedData, prepareLinesForDisplay } from './util';
 import layout from './template';
 
 const HIDE_PACKETS_LINE_COUNT = 250;
 const SHOW_TRUNCATED_AMOUNT = 100;
+const CHUNK_SIZE = 250;
+const TIME_BETWEEN_CHUNKS = 250;
 
 export default Component.extend(SelectionTooltip, {
   classNames: ['rsa-text-entry'],
@@ -19,9 +21,16 @@ export default Component.extend(SelectionTooltip, {
   index: null,
   isLog: null,
   packet: null,
-  remainingLinesHidden: false,
+  renderedAll: false,
   renderingRemainingLines: false,
   tooltipHeading: null,
+
+  // Tooltip has two views depending upon being in IF/ELSE conditional
+  // The IF conditional shows the final encoded/decoded text that has the closeButton X
+  @alias('isActionClicked') hasCloseButton: null,
+
+  @computed('shouldBeTruncated', 'renderedAll')
+  displayShowAllButton: (shouldBeTruncated, renderedAll) => shouldBeTruncated && !renderedAll,
 
   /*
    * Up front determination if the packet data should be truncated
@@ -38,22 +47,8 @@ export default Component.extend(SelectionTooltip, {
       return false;
     }
 
-    const shouldTruncate = textEntries.length > HIDE_PACKETS_LINE_COUNT;
-    if (shouldTruncate) {
-      this.set('remainingLinesHidden', true);
-    }
-    return shouldTruncate;
+    return textEntries.length > HIDE_PACKETS_LINE_COUNT;
   },
-
-  /*
-   * Used to determine if a UI block that allows the user
-   * to show remaining lines should be shown.
-   *
-   * If the content should have been truncated, and they haven't
-   * since been shown, then the block should be shown.
-   */
-  @and('shouldBeTruncated', 'remainingLinesHidden')
-  areRemainingLinesToShow: true,
 
   /*
    * Builds message indicating how many lines are left to show
@@ -75,92 +70,67 @@ export default Component.extend(SelectionTooltip, {
    * Determines the text entries to display, truncated or not, and then
    * formats them for display.
    */
-  @computed('packet.text', 'areRemainingLinesToShow', 'metaToHighlight.value')
-  textEntriesToDisplay(textEntries = [], areRemainingLinesToShow, metaToHighlight) {
+  @computed('packet.text', 'shouldBeTruncated', 'metaToHighlight.value')
+  initialTextEntriesToDisplay(textEntries = [], shouldBeTruncated, metaToHighlight) {
     let textEntriesReturn = textEntries;
-    if (areRemainingLinesToShow) {
+    if (shouldBeTruncated) {
       textEntriesReturn = textEntriesReturn.slice(0, SHOW_TRUNCATED_AMOUNT);
     }
 
-    textEntriesReturn = textEntriesReturn.join('<br>');
-
-    if (metaToHighlight) {
-      const metaString = String(metaToHighlight);
-      if (textEntriesReturn.includes(metaString)) {
-        textEntriesReturn = textEntriesReturn.replace(metaString, `<span class='highlighted-meta'>${metaString}</span>`);
-      }
-    }
-
-    return htmlSafe(textEntriesReturn);
+    return prepareLinesForDisplay(textEntriesReturn, metaToHighlight);
   },
 
-  // Tooltip has two views depending upon being in IF/ELSE conditional
-  // The IF conditional shows the final encoded/decoded text that has the closeButton X
-  @alias('isActionClicked') hasCloseButton: null,
-
-  /**
-   * @description Function used to do Base64 encode/decode the original string
-   * @param {string} - Signifies which operation encode or decode to be done
-   * @private
-   */
-  _encodedDecodedBase64(operation) {
-    const originalString = this.get('originalString');
-    let encDecStrBase64;
-    try {
-      if (operation === 'decode') {
-        encDecStrBase64 = decodeURIComponent(escape(window.atob(originalString)));
-      } else {
-        encDecStrBase64 = window.btoa(unescape(encodeURIComponent(originalString)));
-      }
-    } catch (err) {
-      encDecStrBase64 = 'The format of the string is not valid.';
-    }
-    this.set('encDecStrBase64', encDecStrBase64);
+  _handleEncodeDecode(type, label) {
+    const string = this.get('originalString');
+    const { encDecStrBase64, encDecStrUrl } = retrieveTranslatedData(type, string);
+    this.setProperties({
+      isActionClicked: true,
+      tooltipHeading: `${label} Text`,
+      encDecStrBase64,
+      encDecStrUrl
+    });
   },
 
-  /**
-   * @description Function used to URL encode/decode the original string
-   * @param {string} - Signifies which operation encode or decode to be done
-   * @private
-   */
-  _encodedDecodedUrl(operation) {
-    const originalString = this.get('originalString');
-    let encDecStrUrl;
-    try {
-      if (operation === 'decode') {
-        encDecStrUrl = decodeURIComponent(originalString);
-      } else {
-        encDecStrUrl = encodeURIComponent(originalString);
-      }
-    } catch (err) {
-      encDecStrUrl = 'The format of the string is not valid.';
+  _renderRemainingLines() {
+    // Update rendering button to show status message
+    this.set('renderingRemainingLines', true);
+
+    // Build array of text chunks to render
+    const remainingLines = this.get('packet.text').slice(SHOW_TRUNCATED_AMOUNT);
+    const mth = this.get('metaToHighlight');
+    let i = 0;
+    while (remainingLines.length > 0) {
+      const chunk = remainingLines.splice(0, CHUNK_SIZE);
+      // Schedule those chunks for rendering
+      later(() => {
+        // NOTE: this needs to be done with $ as opposed to any
+        // sort of Ember-y thing. Any use of sub-components would
+        // render additional unwanted DOM (and be needless code).
+        // Any manipulation of text to display attached to a computed
+        // will re-render the text each time. So have to brute
+        // force this in.
+        const text = prepareLinesForDisplay(chunk, mth);
+        this.$('.text-container').append(`<br>${text}`);
+      }, i++ * TIME_BETWEEN_CHUNKS);
     }
-    this.set('encDecStrUrl', encDecStrUrl);
+
+    // And now when all is done, set flag indicating all have been rendered.
+    later(() => {
+      this.set('renderedAll', true);
+    }, (i - 1) * TIME_BETWEEN_CHUNKS);
   },
 
   actions: {
     decodeText() {
-      this._encodedDecodedBase64('decode');
-      this._encodedDecodedUrl('decode');
-      this.setProperties({ isActionClicked: true, tooltipHeading: 'Decoded Text' });
+      this._handleEncodeDecode('decode', 'Decoded');
     },
-    encodeText() {
-      this._encodedDecodedBase64('encode');
-      this._encodedDecodedUrl('encode');
-      this.setProperties({ isActionClicked: true, tooltipHeading: 'Encoded Text' });
-    },
-    showRemainingLines() {
 
-      // Want to get the rendering message in place
-      // before rendering the remaining lines, so update
-      // flag to indicate rendering is taking place,
-      // then wait until next run loop to make
-      // rendering happen
-      this.set('renderingRemainingLines', true);
-      later(() => {
-        this.set('remainingLinesHidden', false);
-        this.set('renderingRemainingLines', false);
-      }, 50);
+    encodeText() {
+      this._handleEncodeDecode('encode', 'Encoded');
+    },
+
+    showRemainingLines() {
+      this._renderRemainingLines();
     }
   }
 });
