@@ -104,7 +104,7 @@ public class UserActivityLocationsHandler extends UserActivityBaseHandler {
         long updateOrgHistogramInMongoStartTime = System.nanoTime();
         updateOrgHistogramInDB(currBucketStartTime, currBucketEndTime, dataSources, additionalActivityHistogram);
         long updateOrgHistogramInMemoryElapsedTime = System.nanoTime() - updateOrgHistogramInMongoStartTime;
-        logger.info("Update org histogram in Mongo took {} seconds", TimeUnit.MILLISECONDS.convert(updateOrgHistogramInMemoryElapsedTime, TimeUnit.NANOSECONDS));
+        logger.debug("Update org histogram in Mongo took {} seconds", TimeUnit.MILLISECONDS.convert(updateOrgHistogramInMemoryElapsedTime, TimeUnit.NANOSECONDS));
     }
 
     @Override

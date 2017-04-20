@@ -19,8 +19,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 /**
- * @author gils
- *         23/05/2016
  */
 @DisallowConcurrentExecution
 public class UserActivityJob extends FortscaleJob {

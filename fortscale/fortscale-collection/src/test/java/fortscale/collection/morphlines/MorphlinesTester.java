@@ -68,15 +68,15 @@ public class MorphlinesTester {
 	}
 
 	public void testRecordPostProcessing(String testCase, String expectedOutput, Record parsedRecord) {
-		assertNotNull("parsed record should not be null", parsedRecord);
-		String parsedOutput = "";
+		assertNotNull(String.format("%s parsed record should not be null. expected: %s", testCase, expectedOutput), parsedRecord);
+		StringBuilder parsedOutput = new StringBuilder();
 		String separator = "";
 		for (String field : outputFields) {
             String parsedField = (null == parsedRecord.getFirstValue(field)) ? "" : parsedRecord.getFirstValue(field).toString() ;
-            parsedOutput += separator + parsedField;
+            parsedOutput.append(separator).append(parsedField);
             separator = ",";
         }
-		assertEquals("ETL error with " + testCase, expectedOutput ,parsedOutput);
+		assertEquals("ETL error with " + testCase, expectedOutput , parsedOutput.toString());
 	}
 
 	public void runMorphlines(String inputLine) {

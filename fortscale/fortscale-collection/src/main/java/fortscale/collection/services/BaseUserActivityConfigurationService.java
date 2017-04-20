@@ -8,13 +8,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
-import java.util.Optional;
+import java.util.*;
 
 public abstract class BaseUserActivityConfigurationService implements UserActivityConfigurationService {
 
     private static final Logger logger = Logger.getLogger(BaseUserActivityConfigurationService.class);
 
     private final ObjectMapper objectMapper = new ObjectMapper();
+
+    protected Map<String, UserActivityDataSourceConfiguration> activityDataSourceConfigurationMap = new HashMap<>();
 
     @Autowired
     protected ApplicationConfigurationService applicationConfigurationService;
@@ -67,6 +69,19 @@ public abstract class BaseUserActivityConfigurationService implements UserActivi
 
     protected abstract String getConfigurationKey();
 
-    public abstract UserActivityConfiguration createUserActivityConfiguration();
+    public UserActivityConfiguration createUserActivityConfiguration() {
+        final Set<String> activities = new HashSet<>();
+        final Map<String, String> dataSourceToCollection = new HashMap<>();
+        final Map<String, List<String>> activityToDataSources = new HashMap<>();
+
+        for (UserActivityDataSourceConfiguration activity : activityDataSourceConfigurationMap.values()) {
+            activities.add(activity.getPropertyName());
+            dataSourceToCollection.put(activity.getDatasource(), activity.getCollectionName());
+            activityToDataSources.put(activity.getPropertyName(), new ArrayList<>(Collections.singletonList(activity.getDatasource())));
+        }
+
+
+        return new UserActivityConfiguration(activities, dataSourceToCollection, activityToDataSources);
+    }
 
 }

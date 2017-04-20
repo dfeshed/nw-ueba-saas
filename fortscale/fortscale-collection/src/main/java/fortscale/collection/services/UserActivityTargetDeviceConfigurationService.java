@@ -6,7 +6,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-import java.util.*;
+import java.util.Map;
 
 @Service("userActivityTargetDeviceConfigurationService")
 public class UserActivityTargetDeviceConfigurationService extends BaseUserActivityConfigurationService implements InitializingBean {
@@ -14,7 +14,6 @@ public class UserActivityTargetDeviceConfigurationService extends BaseUserActivi
 
 	private static final String USER_ACTIVITY_TARGET_DEVICE_CONFIGURATION_KEY = "user_activity.target_device.configuration";
 	private static final Logger logger = Logger.getLogger(UserActivityTargetDeviceConfigurationService.class);
-	private Map<String, UserActivityDataSourceConfiguration> activityDataSourceConfigurationMap = new HashMap<>();
 
 	@PostConstruct
 	public void init(){
@@ -41,23 +40,6 @@ public class UserActivityTargetDeviceConfigurationService extends BaseUserActivi
 				"aggregatedFeatures",
 				UserActivityType.TARGET_DEVICE.name()));
 
-	}
-
-
-	@Override
-	public UserActivityConfiguration createUserActivityConfiguration() {
-		final Set<String> activities = new HashSet<>();
-		final Map<String, String> dataSourceToCollection = new HashMap<>();
-		final Map<String, List<String>> activityToDataSources = new HashMap<>();
-
-		for (UserActivityDataSourceConfiguration activity: activityDataSourceConfigurationMap.values()) {
-			activities.add(activity.getPropertyName());
-			dataSourceToCollection.put(activity.getDatasource(), activity.getCollectionName());
-			activityToDataSources.put(activity.getPropertyName(), new ArrayList<>(Arrays.asList(	activity.getDatasource())));
-		}
-
-
-		return new UserActivityConfiguration(activities, dataSourceToCollection, activityToDataSources);
 	}
 
 
