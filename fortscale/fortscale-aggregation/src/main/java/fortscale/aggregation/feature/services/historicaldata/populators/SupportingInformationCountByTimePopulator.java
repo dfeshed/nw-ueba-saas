@@ -49,7 +49,7 @@ public class SupportingInformationCountByTimePopulator extends SupportingInforma
                                                                                     long evidenceEndTime,
                                                                                     Integer timePeriodInDays) {
         Map<SupportingInformationKey, Double> histogramMap = createSupportingInformationHistogram(contextValue,
-                evidenceEndTime, timePeriodInDays);
+                evidenceEndTime, timePeriodInDays,evidence);
         SupportingInformationGenericData<Double> supportingInformationData;
         if (isAnomalyIndicationRequired(evidence)) {
             SupportingInformationKey anomalySupportingInformationKey = createAnomalyHistogramKey(evidence, featureName);
@@ -67,7 +67,8 @@ public class SupportingInformationCountByTimePopulator extends SupportingInforma
 
     protected Map<SupportingInformationKey, Double> createSupportingInformationHistogram(String contextValue,
                                                                                          long evidenceEndTime,
-                                                                                         Integer timePeriodInDays) {
+                                                                                         Integer timePeriodInDays,
+                                                                                         Evidence evidence) {
         String normalizedContextType = getNormalizedContextType(contextType);
         Long startTime = TimeUtils.calculateStartingTime(evidenceEndTime, timePeriodInDays);
         List<FeatureBucket> featureBucketsByContextAndTimeRange = featureBucketQueryService.

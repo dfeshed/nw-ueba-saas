@@ -64,7 +64,7 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
     public void calculate(int numOfLastDaysToCalculate) {
         // Getting the last day the aggregation process finished processing
         Instant lastClosedDailyBucketDate = featureBucketStateService.getFeatureBucketState().getLastSyncedEventDate();
-        logger.info("Starting user activity calculation, the last event date is {}", lastClosedDailyBucketDate);
+        logger.debug("Starting user activity calculation, the last event date is {}", lastClosedDailyBucketDate);
 
         if (lastClosedDailyBucketDate != null) {
             // Get the date of last closed daily bucket
@@ -74,7 +74,7 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
 
             logger.info("Going to handle {} Activity..", getActivityName());
             try {
-                logger.info("Start Time = {}  ### End time = {}", TimeUtils.getUTCFormattedTime(TimestampUtils.convertToMilliSeconds(startingTime)), TimeUtils.getUTCFormattedTime(TimestampUtils.convertToMilliSeconds(endTime)));
+                logger.debug("Start Time = {}  ### End time = {}", TimeUtils.getUTCFormattedTime(TimestampUtils.convertToMilliSeconds(startingTime)), TimeUtils.getUTCFormattedTime(TimestampUtils.convertToMilliSeconds(endTime)));
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -84,7 +84,7 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
             UserActivityJobState userActivityJobState = userActivityFeaturesExtractionsRepositoryUtil.
                     loadAndUpdateJobState(getActivityName(), numOfLastDaysToCalculate, getRelevantDocumentClasses());
             List<String> dataSources = getDataSources();
-            logger.info("Relevant data sources for activity {} : {}", getActivityName(), dataSources);
+            logger.debug("Relevant data sources for activity {} : {}", getActivityName(), dataSources);
 
             DateTime dateStartTime = new DateTime(TimestampUtils.convertToMilliSeconds(startingTime), DateTimeZone.UTC);
             long firstBucketStartTime = TimestampUtils.convertToSeconds(dateStartTime.withTimeAtStartOfDay().getMillis());
@@ -103,7 +103,7 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
                 }
             }
             if (totalNumberOfUsers > 0) {
-                logger.info("Found {} active users for {} activity", getActivityName(), totalNumberOfUsers);
+                logger.debug("Found {} active users for {} activity", getActivityName(), totalNumberOfUsers);
             } else {
                 logger.warn("Could not find any users. Abort job");
                 return;
@@ -115,21 +115,21 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
             while (currBucketEndTime <= lastBucketEndTime) {
 
                 if (userActivityJobState.getCompletedExecutionDays().contains(currBucketStartTime)) {
-                    logger.info("Skipping job process for bucket start time {} (already calculated)", TimeUtils.getUTCFormattedTime(TimestampUtils.convertToMilliSeconds(currBucketStartTime)));
+                    logger.debug("Skipping job process for bucket start time {} (already calculated)", TimeUtils.getUTCFormattedTime(TimestampUtils.convertToMilliSeconds(currBucketStartTime)));
                 } else {
                     calculateTimeBucket(dataSourceToUserIds, currBucketStartTime, currBucketEndTime);
                 }
 
-                logger.info("Updating job's state..");
+                logger.debug("Updating job's state..");
                 userActivityFeaturesExtractionsRepositoryUtil.updateJobState(userActivityJobState, currBucketStartTime);
-                logger.info("Job state was updated successfully");
+                logger.debug("Job state was updated successfully");
 
                 DateTime currDateTime = new DateTime(TimestampUtils.convertToMilliSeconds(currBucketStartTime), DateTimeZone.UTC);
                 currBucketStartTime = TimestampUtils.convertToSeconds(currDateTime.plusDays(1).getMillis());
                 currBucketEndTime = TimestampUtils.convertToSeconds(currDateTime.plusDays(2).minus(1).getMillis());
             }
             long fullExecutionElapsedTime = System.nanoTime() - fullExecutionStartTime;
-            logger.info("Full execution of Location Activity ({} active users) took {} seconds", totalNumberOfUsers,
+            logger.info("Full execution of Activity {} ({} active users) took {} seconds", getActivityName(), totalNumberOfUsers,
                     durationInSecondsWithPrecision(fullExecutionElapsedTime));
         } else {
             logger.warn("No aggregation data to process");
@@ -147,7 +147,7 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
             Map<String, List<String>> dataSourceToUserIds,
             long currBucketStartTime,
             long currBucketEndTime) {
-        logger.info("Going to fetch from Bucket Start Time = {}  till Bucket End time = {}", TimeUtils.getUTCFormattedTime(TimestampUtils.convertToMilliSeconds(currBucketStartTime)), TimeUtils.getUTCFormattedTime(TimestampUtils.convertToMilliSeconds(currBucketEndTime)));
+        logger.debug("Going to fetch from Bucket Start Time = {}  till Bucket End time = {}", TimeUtils.getUTCFormattedTime(TimestampUtils.convertToMilliSeconds(currBucketStartTime)), TimeUtils.getUTCFormattedTime(TimestampUtils.convertToMilliSeconds(currBucketEndTime)));
         Map<String, Double> additionalActivityHistogram = new HashMap<>();
 
         List<String> dataSources = getDataSources();
@@ -181,7 +181,7 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
 
             Map<String, UserActivityDocument> userActivityMap = new HashMap<>(currentUsersChunk.size());
 
-            logger.info("Handling chunk of {} users ({} to {})", actualUserChunkSize, currentUsersChunkStartIndex, currentUsersChunkEndIndex);
+            logger.debug("Handling chunk of {} users ({} to {})", actualUserChunkSize, currentUsersChunkStartIndex, currentUsersChunkEndIndex);
 
             List<FeatureBucket> bucketsForDataSource = retrieveBuckets(currBucketStartTime, currBucketEndTime, currentUsersChunk, dataSource, collectionName);
 
@@ -189,7 +189,7 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
                 long updateUsersHistogramInMemoryStartTime = System.nanoTime();
                 updateUsersHistogram(userActivityMap, bucketsForDataSource, currBucketStartTime, currBucketEndTime, dataSource);
                 long updateUsersHistogramInMemoryElapsedTime = System.nanoTime() - updateUsersHistogramInMemoryStartTime;
-                logger.info("Update users histogram in memory for {} users took {} seconds", currentUsersChunk.size(), durationInSecondsWithPrecision(updateUsersHistogramInMemoryElapsedTime));
+                logger.debug("Update users histogram in memory for {} users took {} seconds", currentUsersChunk.size(), durationInSecondsWithPrecision(updateUsersHistogramInMemoryElapsedTime));
             }
 
             //If this activity have single unique histogram (I.E. global countries for all the system in advance to countries per user)
@@ -258,7 +258,7 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
         List<FeatureBucket> featureBuckets = userActivityFeaturesExtractionsRepositoryUtil.getFeatureBuckets(startTime, endTime, usersChunk, collectionName, relevantFields,
                 FeatureBucket.CONTEXT_ID_FIELD, FeatureBucket.START_TIME_FIELD, FeatureBucket.class);
         long queryElapsedTime = System.nanoTime() - queryStartTime;
-        logger.info("Query {} aggregation collection for {} users took {} seconds",
+        logger.debug("Query {} aggregation collection for {} users took {} seconds",
                 dataSource, usersChunk.size(), durationInSecondsWithPrecision(queryElapsedTime));
         return featureBuckets;
     }

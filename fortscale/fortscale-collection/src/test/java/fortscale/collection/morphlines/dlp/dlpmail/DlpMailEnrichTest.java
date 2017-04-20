@@ -83,7 +83,7 @@ public class DlpMailEnrichTest {
 
     @Test
     public void test_is_attachment_blacklisted_false() {
-        String testCase = "Test that is_attachment_blacklisted is false if extension isn't blacklisted";
+        String testCase = "Test that is_attachment_blacklisted is false if extension is not blacklisted";
         DgEventInput input = new DgEventInputBuilder()
                 .setAgentUtcTime("06/12/2016 16:04")
                 .setOperation("Send Mail")
