@@ -1,11 +1,16 @@
+import $ from 'jquery';
 import Component from 'ember-component';
+import run from 'ember-runloop';
 import layout from './template';
 import computed, { alias } from 'ember-computed-decorators';
 import connect from 'ember-redux/components/connect';
 import * as InteractionActions from 'recon/actions/interaction-creators';
 
 const dispatchToActions = (dispatch) => ({
-  highlightMeta: (metaToHighlight) => dispatch(InteractionActions.highlightMeta(metaToHighlight))
+  highlightMeta(metaToHighlight) {
+    this._scrollToFirstHighlightedMeta();
+    return dispatch(InteractionActions.highlightMeta(metaToHighlight));
+  }
 });
 
 const MetaContentItem = Component.extend({
@@ -65,6 +70,17 @@ const MetaContentItem = Component.extend({
       }
       this.send('highlightMeta', newlySelected);
     }
+  },
+  /**
+   * Scroll to the first highlighted meta in the text
+   * @private
+   */
+  _scrollToFirstHighlightedMeta() {
+    run.scheduleOnce('afterRender', this, function() {
+      const firstHighlightedMeta = $('.highlighted-meta').first();
+      const scrollTop = firstHighlightedMeta.length ? firstHighlightedMeta.position().top - 30 : 0;
+      $('.recon-event-detail-text .scroll-box').animate({ scrollTop }, 1000);
+    });
   }
 });
 

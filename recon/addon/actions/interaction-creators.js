@@ -1,15 +1,13 @@
 import Ember from 'ember';
+import get from 'ember-metal/get';
+import { isEmberArray } from 'ember-array/utils';
 
 import * as ACTION_TYPES from './types';
 import { fetchExtractJobId } from './fetch';
 import { getHeaderItem } from 'recon/utils/recon-event-header';
 import { selectedFiles } from 'recon/reducers/files/selectors';
 
-const {
-  Logger,
-  isArray,
-  get
-} = Ember;
+const { Logger } = Ember;
 
 const fileSelected = (fileId) => {
   return {
@@ -24,20 +22,20 @@ const selectAllFiles = () => ({ type: ACTION_TYPES.FILES_DESELECT_ALL });
 
 const createFilename = (headerItems, files = []) => {
   /*
-    If the file name is empty, the service will return a UUID filename.  And
-    if we do not have the required paramters to make a file name, it is best
-    to allow the service assign an UUID instead of the UI giving an undefined.
-  */
+   If the file name is empty, the service will return a UUID filename.  And
+   if we do not have the required paramters to make a file name, it is best
+   to allow the service assign an UUID instead of the UI giving an undefined.
+   */
   let fileName = '';
 
-  const [ type, service, id, session, device ] =
-  ['type', 'service', 'id', 'session', 'device'].map((k) => {
-    return get(getHeaderItem(headerItems, k), 'value');
-  });
+  const [type, service, id, session, device] =
+    ['type', 'service', 'id', 'session', 'device'].map((k) => {
+      return get(getHeaderItem(headerItems, k), 'value');
+    });
 
   if (type === 'Network' && device && session) {
     fileName = `${device}_SID${session}`;
-    if (isArray(files) && files.length) {
+    if (isEmberArray(files) && files.length) {
       fileName += `_FC${files.length}`;
     }
   } else if (type === 'Log' && service && id) {

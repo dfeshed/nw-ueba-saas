@@ -1,10 +1,8 @@
-import Ember from 'ember';
+import set from 'ember-metal/set';
 import { handleActions } from 'redux-actions';
 
 import * as ACTION_TYPES from 'recon/actions/types';
 import { augmentResult } from 'recon/reducers/util';
-
-const { set } = Ember;
 
 const textInitialState = {
   decode: true,
