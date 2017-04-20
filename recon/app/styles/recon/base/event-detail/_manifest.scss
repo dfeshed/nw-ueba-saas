@@ -1,4 +1,3 @@
-@import "../mixins";
 @import "./files/manifest";
 @import "./packets/manifest";
 @import "./text/manifest";
@@ -37,10 +36,6 @@
     // avoid overlapping scrollbar
     margin-right: 1rem;
     z-index: 1000;
-  }
-
-  .no-items {
-    @include error-center();
   }
 
   .scroll-box {

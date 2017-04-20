@@ -41,8 +41,8 @@ test('the menu renders properly and has the correct labels for export pcap menu'
     const ulElChildren = ulEl.children();
 
     assert.equal(ulEl.hasClass('expanded'), true);
-    assert.equal(ulElChildren[0].innerText.trim(), 'Download Entire PCAP');
-    assert.equal(ulElChildren[1].innerText.trim(), 'Download All Payloads Only');
+    assert.equal(ulElChildren[0].innerText.trim(), 'Download PCAP');
+    assert.equal(ulElChildren[1].innerText.trim(), 'Download All Payloads');
     assert.equal(ulElChildren[2].innerText.trim(), 'Download Request Payload');
     assert.equal(ulElChildren[3].innerText.trim(), 'Download Response Payload');
   });

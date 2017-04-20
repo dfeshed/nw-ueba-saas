@@ -38,6 +38,6 @@ test('text view renders log text', function(assert) {
   this.render(hbs`{{recon-event-detail/text-content}}`);
   return wait().then(() => {
     const str = this.$().text().trim().replace(/\s/g, '').substring(0, 200);
-    assert.equal(str, 'Error:Notextdatawasgeneratedduringcontentreconstruction.Thiscouldmeanthattheeventdatawascorruptorinvalid.Checktheotherreconstructionviews.');
+    assert.equal(str, 'Notextdatawasgeneratedduringcontentreconstruction.Thiscouldmeanthattheeventdatawascorruptorinvalid.Checktheotherreconstructionviews.');
   });
 });

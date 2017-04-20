@@ -22,7 +22,8 @@ export default Component.extend({
         { name: 'Flash Messages', link: 'flash-messages' },
         { name: 'Modals', link: 'modal' },
         { name: 'Page Titles', link: 'page-titles' },
-        { name: 'Panels', link: 'panels' }
+        { name: 'Panels', link: 'panels' },
+        { name: 'Panel Message', link: 'panel-message' }
       ]
     },
     {

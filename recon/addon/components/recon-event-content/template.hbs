@@ -4,9 +4,7 @@
   </div>
 {{else}}
   {{#if contentError}}
-    <div class="recon-error">
-      {{errorMessage}}
-    </div>
+    {{rsa-panel-message message=errorMessage}}
   {{else}}
     {{component currentReconView.component}}
   {{/if}}

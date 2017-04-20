@@ -82,16 +82,14 @@
           {{rsa-loader size="small" label=(t 'investigate.loading')}}
         </div>
       {{else if (is-equal status 'rejected')}}
-        <div class="rejected js-test-rejected">
+        {{#rsa-panel-message messageType='rejected' testCss='js-test-rejected'}}
           <p>
             <span>{{t 'investigate.error.title'}}</span>
             <a class="js-test-retry" {{action "safeCallback" retryAction}}>{{t 'investigate.tryAgain'}}</a>
           </p>
-        </div>
+        {{/rsa-panel-message}}
       {{else if isDataEmpty}}
-        <div class="empty js-test-empty">
-          <p>{{t 'investigate.empty.title'}}</p>
-        </div>
+        {{rsa-panel-message messageType='empty-time-line' testCss='js-test-empty' message=(t 'investigate.empty.title')}}
       {{/if}}
     </div>
   {{/if}}

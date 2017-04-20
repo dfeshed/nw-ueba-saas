@@ -24,7 +24,7 @@ test('it renders content error', function(assert) {
   new DataHelper(this.get('redux')).contentRetrieveFailure(2);
   this.render(hbs`{{recon-event-content}}`);
   return wait().then(() => {
-    assert.equal(this.$().find('.recon-error').length, 1);
+    assert.equal(this.$().find('.rsa-panel-message').length, 1);
   });
 });
 

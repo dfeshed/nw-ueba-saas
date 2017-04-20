@@ -20,17 +20,6 @@
     @include rsa-vendor-prefix(flex-shrink, 1);
     margin: 1px 0;
     padding: rsa-whitespace(less) rsa-whitespace();
-    .query-error {
-      @include rsa-font(header, large);
-      background-color: rsa-color(red, darker);
-      color: rsa-color(white);
-      padding: rsa-whitespace();
-      margin-top: rsa-whitespace(less);
-      text-align: center;
-      &::first-letter {
-        text-transform: capitalize;
-      }
-    }
   }
 
   &__body {
@@ -126,22 +115,6 @@
           display: none;
         }
       }
-    }
-  }
-
-  &__empty {
-    z-index: 2;
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    @include rsa-col(center,middle);
-
-    h2 {
-      @include rsa-font(header, large);
-      padding: rsa-whitespace(less) 0;
-      white-space: nowrap;
     }
   }
 

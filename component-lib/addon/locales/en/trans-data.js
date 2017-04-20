@@ -131,10 +131,10 @@ export default {
       noHexData: 'No HEX data was generated during content reconstruction.',
       isDownloading: 'Downloading...',
       defaultDownloadPCAP: 'Download PCAP',
-      downloadPCAP: 'Download Entire PCAP',
+      downloadPCAP: 'Download PCAP',
       downloadPayload1: 'Download Request Payload',
       downloadPayload2: 'Download Response Payload',
-      downloadPayload: 'Download All Payloads Only',
+      downloadPayload: 'Download All Payloads',
       payloadToggleLabel: 'Display Payloads Only',
       payloadToggleTitle: 'Removes packet headers & footers from display',
       stylizeBytesLabel: 'Shade Bytes',
@@ -150,7 +150,8 @@ export default {
     },
     error: {
       generic: 'An unexpected error has occurred attempting to retrieve this data.',
-      missingRecon: 'This event (id = {{id}}) was not saved or has been rolled out of storage. No content to display.'
+      missingRecon: 'This event (id = {{id}}) was not saved or has been rolled out of storage. No content to display.',
+      noTextContentData: 'No text data was generated during content reconstruction. This could mean that the event data was corrupt or invalid. Check the other reconstruction views.'
     },
     files: {
       fileName: 'File Name',

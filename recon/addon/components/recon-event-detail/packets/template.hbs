@@ -30,7 +30,7 @@
       other than just pure visibility, currently that something else is the fact that there is
       no hex data (packets with just headers)
     --}}
-    <div class="no-items">{{t 'recon.packetView.noHexData'}}</div>
+    {{rsa-panel-message message=(t 'recon.packetView.noHexData')}}
   {{/if}}
 
   {{recon-pager

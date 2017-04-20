@@ -3,7 +3,6 @@
 @import "./meta-content/manifest";
 @import "./pager/manifest";
 @import "./button-menu/manifest";
-@import "mixins";
 
 .recon-container {
   height: 100%;
@@ -16,10 +15,6 @@
 
 .event-content-box {
   background-color: rsa-color(gray, darkest, $rsa-nearly-opaque);
-}
-
-.recon-error {
-  @include error-center();
 }
 
 .recon-noscroll {

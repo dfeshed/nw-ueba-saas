@@ -24,9 +24,5 @@
     eventTotal=eventTotal
   }}
 {{else}}
-  <p class="no-items">
-    Error: No text data was generated during content reconstruction.
-    This could mean that the event data was corrupt or invalid.
-    Check the other reconstruction views.
-  </p>
+  {{rsa-panel-message message=(t 'recon.error.noTextContentData')}}
 {{/if}}

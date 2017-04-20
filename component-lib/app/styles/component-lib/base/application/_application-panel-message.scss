@@ -1,0 +1,63 @@
+.rsa-panel-message {
+  @include rsa-font(body);
+  font-style: italic;
+  color: rsa-color(gray);
+  padding: rsa-whitespace(most);
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  text-align: center;
+  z-index: 2;
+
+  &.query-error {
+    position: static;
+  }
+
+  &.empty-time-line {
+    position: static;
+  }
+
+  div, h1 {
+    margin: rsa-whitespace(less) 0;
+  }
+
+  &.center {
+    @include rsa-col(center,middle);
+  }
+
+  &.right {
+    @include rsa-col(right,middle);
+  }
+
+  &.left {
+    @include rsa-col(left,middle);
+  }
+
+  a {
+    color: rsa-color(blue);
+    cursor: pointer;
+    padding: 0 rsa-whitespace(less);
+    font-style: italic;
+    &:hover {
+      text-decoration: underline;
+      font-style: italic;
+    }
+  }
+
+  .capitalize {
+    &::first-letter {
+      text-transform: capitalize;
+    }
+  }
+  .message {
+    @include rsa-font(body);
+    font-style: italic;
+  }
+
+  .title {
+    @include rsa-font(header, larger);
+    font-style: italic;
+  }
+}

@@ -131,10 +131,10 @@ export default {
       noHexData: 'ja_No HEX data was generated during content reconstruction.',
       isDownloading: 'ja_Downloading...',
       defaultDownloadPCAP: 'ja_Download PCAP',
-      downloadPCAP: 'ja_Download Entire PCAP',
+      downloadPCAP: 'ja_Download PCAP',
       downloadPayload1: 'ja_Download Request Payload',
       downloadPayload2: 'ja_Download Response Payload',
-      downloadPayload: 'ja_Download All Payloads Only',
+      downloadPayload: 'ja_Download All Payloads',
       payloadToggleLabel: 'ja_Display Payloads Only',
       payloadToggleTitle: 'ja_Removes packet headers & footers from display',
       stylizeBytesLabel: 'ja_Shade Bytes',
@@ -159,7 +159,8 @@ export default {
     },
     error: {
       generic: 'ja_An unexpected error has occurred attempting to retrieve this data.',
-      missingRecon: 'ja_This event (id = {{id}}) was not saved or has been rolled out of storage. No content to display.'
+      missingRecon: 'ja_This event (id = {{id}}) was not saved or has been rolled out of storage. No content to display.',
+      noTextContentData: 'ja_No text data was generated during content reconstruction. This could mean that the event data was corrupt or invalid. Check the other reconstruction views.'
     },
     toggles: {
       header: 'ja_Show/Hide Header',
