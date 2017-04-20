@@ -6,6 +6,7 @@
   optionValueProperty="name"
   selectedValue=priority
   incidentId=incidentId
+  isDisabled=(or (eq status 'CLOSED') (eq status 'CLOSED_FALSE_POSITIVE'))
   iconName="gauge"
   isIconOnly=false
   searchEnabled=false
@@ -32,6 +33,7 @@
   optionLabelProperty="name"
   selectedValue=assignee.id
   incidentId=incidentId
+  isDisabled=(or (eq status 'CLOSED') (eq status 'CLOSED_FALSE_POSITIVE'))
   isIconOnly=false
   iconName="female"
   label=(if assignee assignee.name (t 'respond.assignee.none'))

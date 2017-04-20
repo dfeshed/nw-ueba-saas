@@ -22,6 +22,7 @@ moduleForComponent('rsa-respond-incidents', 'Integration | Component | Respond I
 
     // initialize all of the required data into redux app state
     initialize = RSVP.allSettled([
+      redux.dispatch(DataActions.resetIncidentFilters()),
       redux.dispatch(DataActions.getAllUsers()),
       redux.dispatch(DataActions.getAllPriorityTypes()),
       redux.dispatch(DataActions.getAllStatusTypes())
