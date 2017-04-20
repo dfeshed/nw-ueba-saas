@@ -11,6 +11,7 @@ public enum UserActivityType {
     WORKING_HOUR(UserActivityWorkingHoursDocument.class),
     DATA_USAGE(UserActivityDataUsageDocument.class),
     TOP_APPLICATIONS(UserActivityTopApplicationsDocument.class),
+    EMAIL_RECIPIENT_DOMAIN(UserActivityEmailRecipientDomainDocument.class),
     TOP_DIRECTORIES(UserActivityTopDirectoriesDocument.class);
 
     private final Class<? extends UserActivityDocument> documentClass;

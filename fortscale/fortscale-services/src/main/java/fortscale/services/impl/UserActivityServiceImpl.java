@@ -86,6 +86,10 @@ public class UserActivityServiceImpl implements UserActivityService {
         return userActivityRepository.getUserActivityTargetDeviceEntries(id, timeRangeInDays);
     }
 
+    @Override
+    public List<UserActivityEmailRecipientDomainDocument> getUserActivityEmailRecipientDomainEntries(String id, int timeRangeInDays) {
+        return userActivityRepository.getUserActivityEmailRecipientDomainEntries(id, timeRangeInDays);
+    }
     protected List<UserActivityTopDirectoriesDocument> getFilteredBlacklistedDirectories(List<UserActivityTopDirectoriesDocument> userActivityTopDirectoriesEntries) {
         final ApplicationConfiguration blacklistedDirectoriesConfiguration = applicationConfigurationService.getApplicationConfiguration(BLACKLISTED_DIRECTORIES_KEY);
         if (blacklistedDirectoriesConfiguration == null) {
