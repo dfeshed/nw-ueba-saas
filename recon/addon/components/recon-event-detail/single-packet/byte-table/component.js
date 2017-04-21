@@ -136,7 +136,7 @@ const ByteTableComponent = Component.extend({
 
         td.append('span')
           .attr('style', (d) => {
-            return (isPayloadOnly && hasStyledBytes) ? `opacity: ${scale(d.int)}` : 'opacity: 1';
+            return (hasStyledBytes && !byte.isHeader && !byte.isFooter) ? `opacity: ${scale(d.int)}` : 'opacity: 1';
           })
           .text(byte[byteFormat]);
 
