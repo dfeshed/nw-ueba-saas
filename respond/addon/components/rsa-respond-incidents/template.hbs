@@ -1,8 +1,5 @@
 <box fit class="toolbar-zone">
   {{rsa-respond-incidents/incidents-toolbar
-    isMoreFiltersActive=(readonly isFilterPanelOpen)
-    isInSelectMode=(readonly isInSelectMode)
-    incidentsSelected=(readonly incidentsSelected)
     toggleIsInSelectMode=(action "toggleIsInSelectMode")
     toggleFilterPanel=(action "toggleFilterPanel")
   }}

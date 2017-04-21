@@ -7,6 +7,7 @@ import { priorityOptions, statusOptions } from 'respond/selectors/dictionaries';
 import computed from 'ember-computed-decorators';
 import { SINCE_WHEN_TYPES } from 'respond/utils/since-when-types';
 import moment from 'moment';
+import config from 'ember-get-config';
 
 const stateToComputed = (state) => {
   const {
@@ -71,7 +72,7 @@ const IncidentsFilters = Component.extend({
    * @param timestamp (UTC timestamp)
    * @returns {Number}
    */
-  @computed('timeframeFilter.start')
+  @computed('timeframeFilter.start', 'timezone.selected.zoneId', 'dateFormat.selected.format', 'timeFormat.selected.format')
   customDateRangeStart(timestamp) {
     return this._toLocalTime(timestamp);
   },
@@ -85,7 +86,7 @@ const IncidentsFilters = Component.extend({
    * @param timestamp (UTC timestamp)
    * @returns {Number}
    */
-  @computed('timeframeFilter.end')
+  @computed('timeframeFilter.end', 'timezone.selected.zoneId', 'dateFormat.selected.format', 'timeFormat.selected.format')
   customDateRangeEnd(timestamp) {
     return this._toLocalTime(timestamp);
   },
@@ -166,11 +167,34 @@ const IncidentsFilters = Component.extend({
    */
   _toLocalTime(timestamp) {
     if (typeOf(timestamp) === 'number') {
-      const timezone = this.get('timezone.selected.zoneId');
-      return moment.tz(timestamp, timezone).format(`${this.get('dateFormat.selected.format')} ${this.get('timeFormat.selected.format')}`);
+      return moment.tz(timestamp, this._getTimezone()).format(`${this._getDateFormat()} ${this._getTimeFormat()}`);
     } else {
       return null;
     }
+  },
+
+  /**
+   * Returns the timezone id for the user (e.g., America/Los_Angeles)
+   * @private
+   */
+  _getTimezone() {
+    return this.get('timezone.selected.zoneId') || this.get('timezone.options').findBy('zoneId', config.timezoneDefault).zoneId;
+  },
+
+  /**
+   * Returns the user's date format (e.g., MM/DD/YYYY)
+   * @private
+   */
+  _getDateFormat() {
+    return this.get('dateFormat.selected.format') || this.get('dateFormat.options').findBy('key', config.dateFormatDefault).format;
+  },
+
+  /**
+   * Returns the user's time format (e.g., HH:mm)
+   * @private
+   */
+  _getTimeFormat() {
+    return this.get('timeFormat.selected.format') || this.get('timeFormat.options').findBy('key', config.timeFormatDefault).format;
   },
 
   /**
@@ -183,9 +207,8 @@ const IncidentsFilters = Component.extend({
    * @private
    */
   _toUTCTimestamp(date) {
-    const timezone = this.get('timezone.selected.zoneId');
     const dateParts = [date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes()];
-    return moment.tz(dateParts, timezone).valueOf();
+    return moment.tz(dateParts, this._getTimezone()).valueOf();
   },
 
   actions: {

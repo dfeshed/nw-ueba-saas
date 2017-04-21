@@ -20,15 +20,22 @@ export default Route.extend({
     // When running in sa, these are set as part of protected route,
     // just setting defaults here so preferences exist
     this.setProperties({
-      'timezone.options': [{
-        'displayLabel': 'UTC (GMT+00:00)',
-        'offset': 'GMT+00:00',
-        'zoneId': 'UTC'
-      }],
+      'timezone.options': [
+        {
+          'displayLabel': 'UTC (GMT+00:00)',
+          'offset': 'GMT+00:00',
+          'zoneId': 'UTC'
+        },
+        {
+          'displayLabel': 'America/Los_Angeles (GMT-07:00)',
+          'offset': 'GMT-07:00',
+          'zoneId': 'America/Los_Angeles'
+        }
+      ],
       'i18n.locale': 'en-us',
       'dateFormat.selected': 'MM/dd/yyyy',
       'timeFormat.selected': 'HR24',
-      'timezone.selected': 'UTC'
+      'timezone.selected': 'America/Los_Angeles'
     });
 
     // When running microservices, need to login and get cookie

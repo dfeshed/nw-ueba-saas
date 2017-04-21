@@ -11,7 +11,7 @@ module.exports = function(environment) {
     locationType: 'auto',
     dateFormatDefault: 'MM/dd/yyyy',
     timeFormatDefault: 'HR24',
-    timezoneDefault: 'America/New_York',
+    timezoneDefault: 'America/Los_Angeles',
     timezones: [
       {
         'displayLabel': 'UTC (GMT+00:00)',
@@ -19,9 +19,9 @@ module.exports = function(environment) {
         'zoneId': 'UTC'
       },
       {
-        'displayLabel': 'America/New York (GMT-04:00)',
-        'offset': 'GMT-04:00',
-        'zoneId': 'America/New_York'
+        'displayLabel': 'America/Los Angeles (GMT-07:00)',
+        'offset': 'GMT-07:00',
+        'zoneId': 'America/Los_Angeles'
       }],
     flashMessageDefaults: {
       timeout: 5000,

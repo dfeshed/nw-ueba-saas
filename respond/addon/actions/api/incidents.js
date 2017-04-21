@@ -4,7 +4,8 @@ import { promiseRequest, streamRequest } from 'streaming-data/services/data-acce
 import { SORT_TYPES_BY_NAME } from 'respond/utils/sort-types';
 import FilterQuery from 'respond/utils/filter-query';
 import moment from 'moment';
-import { isEmpty, isPresent, typeOf, isNone, isArray } from 'ember-utils';
+import { isEmpty, isPresent, typeOf, isNone } from 'ember-utils';
+import { isEmberArray } from 'ember-array/utils';
 
 const IncidentsAPI = EmberObject.extend({});
 
@@ -112,7 +113,7 @@ IncidentsAPI.reopenClass({
    * @returns {*}
    */
   updateIncident(incidentId, field, updatedValue) {
-    const incidentIds = isArray(incidentId) ? incidentId : [incidentId];
+    const incidentIds = isEmberArray(incidentId) ? incidentId : [incidentId];
 
     return promiseRequest({
       method: 'updateRecord',
@@ -150,7 +151,7 @@ IncidentsAPI.reopenClass({
    * @returns {Promise}
    */
   bulkChangeIncidentPriority(incidentIds, newPriorityValue) {
-    assert('bulkChangeIncidentPriority is provided array of incident IDs', isArray(incidentIds) && !isEmpty(incidentIds));
+    assert('bulkChangeIncidentPriority is provided array of incident IDs', isEmberArray(incidentIds) && !isEmpty(incidentIds));
     return IncidentsAPI.changeIncidentPriority(incidentIds, newPriorityValue);
   },
 
@@ -178,7 +179,7 @@ IncidentsAPI.reopenClass({
    * @returns {Promise}
    */
   bulkChangeIncidentStatus(incidentIds, newStatusValue) {
-    assert('bulkChangeIncidentStatus is provided array of incident IDs', isArray(incidentIds) && !isEmpty(incidentIds));
+    assert('bulkChangeIncidentStatus is provided array of incident IDs', isEmberArray(incidentIds) && !isEmpty(incidentIds));
     return IncidentsAPI.changeIncidentStatus(incidentIds, newStatusValue);
   },
 
@@ -208,7 +209,7 @@ IncidentsAPI.reopenClass({
    * @returns {Promise}
    */
   bulkChangeIncidentAssignee(incidentIds, newAssignee) {
-    assert('bulkChangeIncidentAssignee is provided array of incident IDs', isArray(incidentIds) && !isEmpty(incidentIds));
+    assert('bulkChangeIncidentAssignee is provided array of incident IDs', isEmberArray(incidentIds) && !isEmpty(incidentIds));
     return IncidentsAPI.changeIncidentAssignee(incidentIds, newAssignee);
   },
 

@@ -13,6 +13,12 @@ const stateToComputed = (state) => {
   const { incidentsFilters, incidentsSort } = incidents;
 
   return {
+    // whether the user is in select/edit mode
+    isInSelectMode: incidents.isInSelectMode,
+    // whether the filter panel is open
+    isMoreFiltersActive: incidents.isFilerPanelOpen,
+    // the selected incident ids
+    incidentsSelected: incidents.incidentsSelected,
     // the name of the canned filter currently applied
     appliedCannedFilterName: incidentsFilters.cannedFilter,
     // the name of the sort currently applied
@@ -56,20 +62,11 @@ const IncidentsToolbar = Component.extend({
   classNames: 'rsa-respond-incidents-toolbar',
   classNameBindings: [ 'isInSelectMode', 'isMoreFiltersActive:more-filters-active', 'isAltThemeActive:light-theme-active' ],
 
-  // Array of currently selected items. Used to display a counter while in "Select" mode.
-  incidentsSelected: null,
-
-  // Indicates whether user clicked to toggle on "Select" mode, which shows Select-specific content
-  isInSelectMode: false,
-
   // Action to be invoked by clicking the "Select" button
   toggleSelectModeAction: null,
 
   // Action to be invoked by clicking the "More Filters" button
   toggleMoreFiltersAction: null,
-
-  // true if the "More Filters" button should be shown as active
-  isMoreFiltersActive: false,
 
   /**
    * The list of canned filters available for filtering the incidents result set
