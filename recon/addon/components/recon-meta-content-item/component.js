@@ -6,10 +6,12 @@ import computed, { alias } from 'ember-computed-decorators';
 import connect from 'ember-redux/components/connect';
 import * as InteractionActions from 'recon/actions/interaction-creators';
 
+import metaToLimit from './limited-meta';
+
 const dispatchToActions = (dispatch) => ({
   highlightMeta(metaToHighlight) {
+    dispatch(InteractionActions.highlightMeta(metaToHighlight));
     this._scrollToFirstHighlightedMeta();
-    return dispatch(InteractionActions.highlightMeta(metaToHighlight));
   }
 });
 
@@ -44,15 +46,15 @@ const MetaContentItem = Component.extend({
 
     return false;
   },
+  @computed('isHovering', 'isSelected', 'isTextView')
+  shouldShowBinoculars(isHovering, isSelected, isTextView) {
+    return (isHovering || isSelected) && isTextView && metaToLimit.includes(this.get('name'));
+  },
   mouseEnter() {
-    if (this.get('isTextView')) {
-      this.toggleProperty('isHovering');
-    }
+    this.set('isHovering', true);
   },
   mouseLeave() {
-    if (this.get('isTextView')) {
-      this.toggleProperty('isHovering');
-    }
+    this.set('isHovering', false);
   },
   actions: {
     /**

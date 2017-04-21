@@ -9,7 +9,7 @@
   {{/if}}
 </hbox>
 <hbox xs="1" align="center">
-  {{#if (or isHovering isSelected)}}
+  {{#if shouldShowBinoculars}}
     {{rsa-icon
       click=(action 'clickBinoculars')
       name="binoculars"}}

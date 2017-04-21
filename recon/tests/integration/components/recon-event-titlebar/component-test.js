@@ -72,7 +72,7 @@ test('clicking meta toggle executes actions', function(assert) {
   const actionSpy = sinon.spy(DataActions, 'toggleMetaData');
   this.render(hbs`{{recon-event-titlebar}}`);
   this.$('.rsa-icon-layout-2').click();
-  assert.ok(dispatchSpy.calledOnce);
+  assert.ok(dispatchSpy.calledTwice);
   assert.ok(actionSpy.calledOnce);
   actionSpy.reset();
 });

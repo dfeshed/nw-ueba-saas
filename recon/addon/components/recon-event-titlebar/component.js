@@ -6,6 +6,7 @@ import layout from './template';
 import { RECON_VIEW_TYPES } from 'recon/utils/reconstruction-types';
 import * as VisualActions from 'recon/actions/visual-creators';
 import * as DataActions from 'recon/actions/data-creators';
+import * as InteractionActions from 'recon/actions/interaction-creators';
 import { isLogEvent } from 'recon/reducers/meta/selectors';
 import { lacksPackets } from 'recon/reducers/visuals/selectors';
 
@@ -24,7 +25,11 @@ const dispatchToActions = (dispatch) => ({
   toggleHeader: () => dispatch(VisualActions.toggleReconHeader()),
   toggleRequest: () => dispatch(VisualActions.toggleRequestData()),
   toggleResponse: () => dispatch(VisualActions.toggleResponseData()),
-  toggleMeta: () => dispatch(DataActions.toggleMetaData()),
+  toggleMeta: () => {
+    dispatch(DataActions.toggleMetaData());
+    // We need to null out the highlighted meta when the meta view is closed
+    dispatch(InteractionActions.highlightMeta(null));
+  },
   toggleExpanded: () => dispatch(VisualActions.toggleReconExpanded()),
   closeRecon: () => dispatch(VisualActions.closeRecon()),
   updateReconstructionView: (newView) => dispatch(DataActions.setNewReconView(newView))

@@ -49,9 +49,10 @@ export const prepareLinesForDisplay = function(lines, metaToHighlight) {
   let text = lines.join('<br>');
 
   if (metaToHighlight) {
-    const metaString = String(metaToHighlight);
-    if (text.includes(metaString)) {
-      text = text.replace(metaString, `<span class='highlighted-meta'>${metaString}</span>`);
+    const metaStringRegex = new RegExp(String(metaToHighlight), 'i');
+    const foundMatch = text.match(metaStringRegex);
+    if (foundMatch) {
+      text = text.replace(metaStringRegex, `<span class='highlighted-meta'>${foundMatch[0]}</span>`);
     }
   }
 
