@@ -7,6 +7,7 @@ const toggleIncidentSelected = (incident) => ({ type: ACTION_TYPES.TOGGLE_INCIDE
 const clearSelectedIncidents = () => ({ type: ACTION_TYPES.CLEAR_SELECTED_INCIDENTS });
 const toggleJournalPanel = () => ({ type: ACTION_TYPES.TOGGLE_JOURNAL_PANEL });
 const setViewMode = (viewMode) => ({ type: ACTION_TYPES.SET_VIEW_MODE, payload: viewMode });
+const resizeIncidentInspector = (width) => ({ type: ACTION_TYPES.RESIZE_INCIDENT_INSPECTOR, payload: width });
 const singleSelectStoryPoint = (id) => ({ type: ACTION_TYPES.SET_INCIDENT_SELECTION, payload: { type: 'storyPoint', id } });
 const toggleSelectStoryPoint = (id) => ({ type: ACTION_TYPES.TOGGLE_INCIDENT_SELECTION, payload: { type: 'storyPoint', id } });
 const singleSelectEvent = (id) => ({ type: ACTION_TYPES.SET_INCIDENT_SELECTION, payload: { type: 'event', id } });
@@ -26,6 +27,7 @@ export {
   toggleFocusIncident,
   toggleJournalPanel,
   setViewMode,
+  resizeIncidentInspector,
   singleSelectStoryPoint,
   toggleSelectStoryPoint,
   singleSelectEvent,

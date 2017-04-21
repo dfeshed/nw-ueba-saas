@@ -1,35 +1,39 @@
 <header class="rsa-incident-container__header">
   {{rsa-incident/toolbar}}
 </header>
-<aside class="rsa-incident-container__aside">
-  {{rsa-incident/inspector}}
-</aside>
-<section class="rsa-incident-container__body">
-  <div class="rsa-incident-container__entities-rectangle js-entities-rectangle">
-    {{#if (eq storylineStatus 'wait')}}
-      <fill justify="center" align="center">
-        {{rsa-loader size="large" label=(t 'respond.storyline.loading')}}
-      </fill>
-    {{else if (eq storylineStatus 'error')}}
-      <fill justify="center" align="center">
-        {{rsa-icon name="warning-signal" size="large"}}
-        <h3>{{t 'respond.storyline.error'}}</h3>
-      </fill>
-    {{else}}
-      {{#unless storyline.relatedIndicators.length}}
-        <fill justify="center" align="center">
-          <h3 class="rsa-incident-container__no-storyline">No Results</h3>
-        </fill>
-      {{/unless}}
-    {{/if}}
-  </div>
+<section class="rsa-incident-container__background">
   {{rsa-incident/entities fitToSize=entitiesRectangle}}
-  <div class="rsa-incident-container__legend-wrap">
-    <centered>
-      {{rsa-incident/entities-legend}}
-    </centered>
-  </div>
 </section>
+<hbox nowrap class="rsa-incident-container__main">
+  <box fit class="rsa-incident-container__main-aside">
+    {{rsa-incident/inspector}}
+  </box>
+  <vbox nowrap fill class="rsa-incident-container__main-body js-entities-rectangle">
+    <box fill class="rsa-incident-container__main-status">
+      {{#if (eq storylineStatus 'wait')}}
+        <fill justify="center" align="center">
+          {{rsa-loader size="large" label=(t 'respond.storyline.loading')}}
+        </fill>
+      {{else if (eq storylineStatus 'error')}}
+        <fill justify="center" align="center">
+          {{rsa-icon name="warning-signal" size="large"}}
+          <h3>{{t 'respond.storyline.error'}}</h3>
+        </fill>
+      {{else}}
+        {{#unless storyline.relatedIndicators.length}}
+          <fill justify="center" align="center">
+            <h3 class="rsa-incident-container__no-storyline">No Results</h3>
+          </fill>
+        {{/unless}}
+      {{/if}}
+    </box>
+    <box fit class="rsa-incident-container__legend-wrap">
+      <centered>
+        {{rsa-incident/entities-legend}}
+      </centered>
+    </box>
+  </vbox>
+</hbox>
 <footer class="rsa-incident-container__footer">
   {{#if isJournalPanelOpen}}
     {{rsa-incident/journal}}

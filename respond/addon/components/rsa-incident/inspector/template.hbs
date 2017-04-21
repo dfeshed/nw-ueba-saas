@@ -1,50 +1,55 @@
-<box fit class="rsa-incident-inspector__header">
-  <vbox justify="center" class="back">
-    {{#link-to 'incidents'}}
-      {{rsa-icon name="arrow-left-12" title=(t 'respond.incident.backToIncidents')}}
-    {{/link-to}}
-  </vbox>
-  <h2>
-    <div class="id">{{incidentId}}</div>
-    {{#if (eq infoStatus 'wait')}}
-      {{rsa-loader size="large" label=(t 'respond.details.loading')}}
-    {{else if (eq infoStatus 'error')}}
-      <div class="error">
-        {{rsa-icon name="signal-warning" size="large"}}
-        <div>{{t 'respond.details.error'}}</div>
-      </div>
+<vbox nowrap class="rsa-incident-inspector__wrap">
+  <box fit class="rsa-incident-inspector__header">
+    <vbox justify="center" class="back">
+      {{#link-to 'incidents'}}
+        {{rsa-icon name="arrow-left-12" title=(t 'respond.incident.backToIncidents')}}
+      {{/link-to}}
+    </vbox>
+    <h2>
+      <div class="id">{{incidentId}}</div>
+      {{#if (eq infoStatus 'wait')}}
+        {{rsa-loader size="large" label=(t 'respond.details.loading')}}
+      {{else if (eq infoStatus 'error')}}
+        <div class="error">
+          {{rsa-icon name="signal-warning" size="large"}}
+          <div>{{t 'respond.details.error'}}</div>
+        </div>
+      {{else}}
+        <div class="name">{{info.name}}</div>
+        <div class="risk-score">
+          <label>{{t 'respond.incident.riskScore'}}</label>
+          <span>{{info.riskScore}}</span>
+        </div>
+      {{/if}}
+    </h2>
+  </box>
+  <hbox fit justify="center" nowrap class="rsa-incident-inspector__toolbar">
+    <span
+      class="rsa-tab text-only {{if (eq viewMode 'overview') 'is-active' ''}}"
+      {{action (action "setViewModeAction" "overview")}}>
+      {{t 'respond.incident.overview'}}
+    </span>
+    <span
+      class="rsa-tab text-only {{if (eq viewMode 'storyline') 'is-active' ''}}"
+      {{action (action "setViewModeAction" "storyline")}}>
+      {{t 'respond.incident.indicators'}} {{#with storyPointCount as |count|}}({{count}}){{/with}}
+    </span>
+    <span
+      class="rsa-tab text-only {{if (eq viewMode 'events') 'is-active' ''}}"
+      {{action (action "setViewModeAction" "events")}}>
+      {{t 'respond.incident.events'}} {{#with storyEventCount as |count|}}({{count}}){{/with}}
+    </span>
+  </hbox>
+  <box fill class="rsa-incident-inspector__body">
+    {{#if (eq viewMode 'events')}}
+      {{rsa-incident/events-table}}
+    {{else if (eq viewMode 'storyline')}}
+      {{rsa-incident/storyline}}
     {{else}}
-      <div class="name">{{info.name}}</div>
-      <div class="risk-score">
-        <label>{{t 'respond.incident.riskScore'}}</label>
-        <span>{{info.riskScore}}</span>
-      </div>
+      {{rsa-incident/overview}}
     {{/if}}
-  </h2>
-</box>
-<hbox fit justify="center" nowrap class="rsa-incident-inspector__toolbar">
-  <span
-    class="rsa-tab text-only {{if (eq viewMode 'overview') 'is-active' ''}}"
-    {{action (action "setViewModeAction" "overview")}}>
-    {{t 'respond.incident.overview'}}
-  </span>
-  <span
-    class="rsa-tab text-only {{if (eq viewMode 'storyline') 'is-active' ''}}"
-    {{action (action "setViewModeAction" "storyline")}}>
-    {{t 'respond.incident.indicators'}} {{#with storyPointCount as |count|}}({{count}}){{/with}}
-  </span>
-  <span
-    class="rsa-tab text-only {{if (eq viewMode 'events') 'is-active' ''}}"
-    {{action (action "setViewModeAction" "events")}}>
-    {{t 'respond.incident.events'}} {{#with storyEventCount as |count|}}({{count}}){{/with}}
-  </span>
-</hbox>
-<box fill class="rsa-incident-inspector__body">
-  {{#if (eq viewMode 'events')}}
-    {{rsa-incident/events-table}}
-  {{else if (eq viewMode 'storyline')}}
-    {{rsa-incident/storyline}}
-  {{else}}
-    {{rsa-incident/overview}}
-  {{/if}}
-</box>
+  </box>
+</vbox>
+<div class="rsa-incident-inspector__resizer js-incident-inspector-resizer">
+  <div class="rsa-incident-inspector__resize-cover"></div>
+</div>

@@ -1,8 +1,53 @@
 $incidentRiskScoreRadius: 1rem;
+$incidentInspectorResizerWidth: 5px;
+$incidentInspectorResizerBleed: ($incidentInspectorResizerWidth - 1px) / 2;
 
 .rsa-incident-inspector {
+  position: relative;
   background-color: rsa-color(gray,darker, $rsa-nearly-opaque);
   border-right: 1px solid rsa-color(gray,base,$rsa-translucent);
+
+  &__wrap {
+    position: absolute;
+    @include rsa-fill-abs(0, $incidentInspectorResizerBleed, 0, 0);
+  }
+
+  &__resizer {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: -1 * $incidentInspectorResizerBleed;
+    width: $incidentInspectorResizerWidth;
+    cursor: ew-resize;
+
+    &:hover {
+      background-color: rsa-color(blue,base,$rsa-nearly-opaque);
+    }
+  }
+
+  &__resize-cover {
+    display: none;
+  }
+
+  /* Styles for only while user is resizing the component (via drag). */
+  &.is-resizing {
+    .rsa-incident-inspector {
+      &__resizer {
+        background-color: rsa-color(blue,base,$rsa-nearly-opaque);
+      }
+      &__resize-cover {
+        /* Covers the entire screen with a transparent overlay whose cursor is a left-right resize arrow. */
+        display: block;
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        cursor: ew-resize;
+        z-index: 1000;
+      }
+    }
+  }
 
   &__header {
     position: relative;

@@ -25,6 +25,9 @@ let initialState = {
   // either 'overview', 'storyline' or 'events'
   viewMode: 'overview',
 
+  // width of the incident details inspector UI, in pixels
+  inspectorWidth: 400,
+
   // true when user toggles "Journal" btn to reveal journal
   isJournalPanelOpen: false,
 
@@ -48,8 +51,8 @@ initialState = load(initialState, localStorageKey);
 const persistIncidentState = (callback) => {
   return (function() {
     const state = callback(...arguments);
-    const { viewMode, isJournalPanelOpen } = state;
-    persist({ viewMode, isJournalPanelOpen }, localStorageKey);
+    const { viewMode, isJournalPanelOpen, inspectorWidth } = state;
+    persist({ viewMode, isJournalPanelOpen, inspectorWidth }, localStorageKey);
     return state;
   });
 };
@@ -75,7 +78,8 @@ const incident = reduxActions.handleActions({
     // reset state for a new incident id, even if it matches the old incident id,
     // because we don't want to reuse info, we want to reload it in case it may have changed on server
     ...initialState,
-    id: payload
+    id: payload,
+    inspectorWidth: state.inspectorWidth || initialState.inspectorWidth
   }),
 
   [ACTION_TYPES.FETCH_INCIDENT_DETAILS]: (state, action) => {
@@ -97,6 +101,11 @@ const incident = reduxActions.handleActions({
   [ACTION_TYPES.SET_VIEW_MODE]: persistIncidentState((state, { payload }) => ({
     ...state,
     viewMode: payload
+  })),
+
+  [ACTION_TYPES.RESIZE_INCIDENT_INSPECTOR]: persistIncidentState((state, { payload }) => ({
+    ...state,
+    inspectorWidth: payload
   })),
 
   [ACTION_TYPES.TOGGLE_JOURNAL_PANEL]: persistIncidentState((state) => ({

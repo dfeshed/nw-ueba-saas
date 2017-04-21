@@ -1,5 +1,3 @@
-$incidentInspectorWidth: 400px;
-
 .rsa-incident-container {
   @include rsa-fill-abs();
 
@@ -11,32 +9,34 @@ $incidentInspectorWidth: 400px;
     margin: rsa-whitespace();
   }
 
-  &__body {
+  &__background {
+    @include rsa-fill-abs();
+    z-index: 0;
+  }
+
+  &__main {
     @include rsa-fill-abs();
     z-index: 1;
-  }
 
-  .rsa-fast-force__wait {
-    /*
-    By default, the wait icon will be centered on the force graph. But the left-side of the graph is overlapped by
-    the inspector, so it appears to be off-center (even though it isn't). What we'd really like is for the wait icon
-    to be centered relative to the graph area which is NOT overlapped by the inspector. So we nudge it to the right
-    by half the inspector's width.
-    */
-    transform: translateX($incidentInspectorWidth / 2);
-  }
+    // all mouse events should punch thru to the background layer (the entities nodal diagram)
+    pointer-events: none;
 
-  &__entities-rectangle {
-    @include rsa-fill-abs();
-    margin: rsa-whitespace(most);
-    left: $incidentInspectorWidth;
-    z-index: -1;
-  }
+    &-aside {
+      position: relative;
+      z-index: 2;
 
-  &__aside {
-    @include rsa-fill-abs(0,auto);
-    width: $incidentInspectorWidth;
-    z-index: 2;
+      // this section DOES capture mouse events
+      pointer-events: auto;
+
+      .rsa-incident-inspector {
+        height: 100%;
+      }
+    }
+
+    &-body {
+      // all mouse events should punch thru to the background layer (the entities nodal diagram)
+      pointer-events: none;
+    }
   }
 
   &__footer {
@@ -55,7 +55,6 @@ $incidentInspectorWidth: 400px;
   }
 
   &__transaction-overlay,
-  .rsa-incident-inspector,
   .rsa-force-layout {
     @include rsa-fill-abs();
   }
@@ -66,10 +65,7 @@ $incidentInspectorWidth: 400px;
   }
 
   &__legend-wrap {
-    position: absolute;
-    bottom: 0;
-    left: $incidentInspectorWidth;
-    right: 0;
+    position: relative;
     margin: rsa-whitespace();
   }
 
