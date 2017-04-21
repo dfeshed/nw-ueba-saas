@@ -95,6 +95,7 @@ export default EmberObject.extend({
         destinationIp,
         file,
         domain,
+        normalized: evt,
         enrichment: evt.enrichment
       };
     }).sortBy('time');

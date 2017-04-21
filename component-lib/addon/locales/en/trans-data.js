@@ -501,6 +501,9 @@ export default {
       close: 'Close',
       milestone: 'Milestone'
     },
+    eventDetails: {
+      title: 'Event Details'
+    },
     eventsTable: {
       time: 'Time',
       user: 'User',

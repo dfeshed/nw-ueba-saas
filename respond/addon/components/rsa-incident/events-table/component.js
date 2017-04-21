@@ -1,11 +1,16 @@
 import Ember from 'ember';
+import Component from 'ember-component';
+import service from 'ember-service/inject';
 import computed from 'ember-computed-decorators';
 import connect from 'ember-redux/components/connect';
 import { storyEvents, storyEventSelections } from 'respond/selectors/storyline';
 import * as UIStateActions from 'respond/actions/ui-state-creators';
 import indexOfBy from 'respond/utils/array/index-of-by';
 
-const { Component, get, isEmpty } = Ember;
+const {
+  get,
+  isEmpty
+} = Ember;
 
 const stateToComputed = (state) => ({
   items: storyEvents(state),
@@ -17,6 +22,8 @@ const dispatchToActions = (dispatch) => ({
 });
 
 const StoryEvents = Component.extend({
+  eventBus: service(),
+
   // no element needed, just the child data table
   tagName: '',
   items: null,
@@ -80,7 +87,36 @@ const StoryEvents = Component.extend({
       title: 'respond.eventsTable.blank',
       width: 'auto'
     }
-  ]
+  ],
+
+  /**
+   * The `panelId` for the Event Details modal dialog, to be launched by clicking on the individual
+   * event rows in the events table.
+   * @type {string}
+   * @private
+   */
+  eventDetailsPanelId: 'event-details-panel-1',
+
+  /**
+   * The alert event object whose data is to be shown in the event details dialog.
+   * @type {object}
+   * @private
+   */
+  eventDetailsModel: null,
+
+  actions: {
+    // Shows the modal dialog with the details of the given alert event object.
+    showEventDetails(model) {
+      this.set('eventDetailsModel', model);
+      this.get('eventBus').trigger(`rsa-application-modal-open-${this.get('eventDetailsPanelId')}`);
+    },
+
+    // Hides the modal dialog that displays event details.
+    hideEventDetails() {
+      this.get('eventBus').trigger(`rsa-application-modal-close-${this.get('eventDetailsPanelId')}`);
+      this.set('eventDetailsModel', null);
+    }
+  }
 });
 
 export default connect(stateToComputed, dispatchToActions)(StoryEvents);

@@ -1,0 +1,20 @@
+<table>
+  {{#each keys as |key|}}
+    <tr class="key">
+      <td class="key-name">
+        {{key.name}}
+      </td>
+      <td class="key-value">
+        {{#if (eq key.type 'object')}}
+          {{#if objectValueComponentClass}}
+            {{component objectValueComponentClass model=key.value}}
+          {{else}}
+            {{key.value}}
+          {{/if}}
+        {{else}}
+          {{key.value}}
+        {{/if}}
+      </td>
+    </tr>
+  {{/each}}
+</table>

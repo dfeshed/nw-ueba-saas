@@ -501,6 +501,9 @@ export default {
       close: 'ja_Close',
       milestone: 'ja_Milestone'
     },
+    eventDetails: {
+      title: 'ja_Event Details'
+    },
     eventsTable: {
       time: 'ja_Time',
       user: 'ja_User',
