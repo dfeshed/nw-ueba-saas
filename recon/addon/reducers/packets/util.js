@@ -30,7 +30,7 @@ export const enhancePackets = (packets, packetFields) => {
  * `bytesPerRow` number of bytes.
  * @param {Array} bytes An Array of byte objects
  * @return {Array}
- * @private
+ * @public
  */
 export const bytesAsRows = (bytes) => {
   const rows = [];
@@ -42,14 +42,15 @@ export const bytesAsRows = (bytes) => {
 };
 
 /**
- * Convert a raw byte String into an Object with integers, hex & ascii
- * representations of the byte. The return Object has the properties:
+ * Convert an Array of raw byte into Objects with integer, hex, & ascii
+ * representations of the byte. The returned Objects have the properties:
  * - `index`: The index if the byte
  * - `int`: The byte value as an integer
  * - `hex`: The byte value as a hexadecimal
  * - `ascii`: The byte value as an ascii character
  * - `isHeader`: If true, indicates that this byte is in the packet's header section
  * - `isFooter`: If true, indicates that this byte is in the packet's footer section
+ * - `isKnown`: Is this byte part of a known file signature
  * @param {String} bytes A string of bytes
  * @param {Number} payloadOffset The index of the beginning of the payload
  * @param {Number} footerOffset The index of the beginning of the footer
@@ -57,15 +58,26 @@ export const bytesAsRows = (bytes) => {
  * @private
  */
 const convertBytes = (bytes, payloadOffset, footerOffset) => {
+  const signatures = findKnownSignatures(bytes.join(''));
   return bytes.map((char, index) => {
     const int = char.charCodeAt(0);
+    let isKnown;
+    if (signatures.length > 0) {
+      // see if this byte falls within the range for each known signature found
+      isKnown = signatures.find((sig) => {
+        const start = sig.index;
+        const end = sig.index + sig.length;
+        return index >= start && index < end;
+      });
+    }
     return {
       index,
       int,
       hex: (`0${int.toString(16)}`).slice(-2),
       ascii: (int > 31) ? char : '.',
       isHeader: index < payloadOffset,
-      isFooter: index >= footerOffset
+      isFooter: index >= footerOffset,
+      isKnown
     };
   });
 };
@@ -112,8 +124,8 @@ const enhanceHeaderBytes = (bytes, decodedBytes, packetFields) => {
 /**
  * Searches `packetFields` for a field whose position and size include the given
  * byte index. If found, returns an Object with the following properties:
- * - `field` The packet's field
- * - `index` The field's index within `packetFields`
+ * - `field`: The packet's field
+ * - `index`: The field's index within `packetFields`
  * @param {Array} packetFields From the summary call
  * @param {Number} byteIndex Index of the byte we're looking for
  * @returns {Object}
@@ -125,4 +137,74 @@ const findPacketFieldForByte = (packetFields, byteIndex) => {
            (byteIndex < (field.position + field.length));
   });
   return field ? { field, index: packetFields.indexOf(field) } : null;
+};
+
+/**
+ * List of known file signatures that we're going to look for. Each signature
+ * has the properties:
+ * - `hex`: The signature of the file as hex. This may not be the full signature
+ * - `length`: The full length of the signature
+ * - `type`: The common name for the type of file
+ * @return {Array}
+ * @private
+ */
+const FILE_SIGNATURES = [
+  { hex: '4D 5A', length: 2, type: 'DOS Executable' },
+  { hex: '5A 4D', length: 2, type: 'Non Portable Executable' },
+  { hex: '89 50 4E 47 0D 0A 1A 0A', length: 8, type: 'PNG' },
+  { hex: 'FF D8', length: 2, type: 'JPEG' },
+  { hex: '4A 46 49 46', length: 4, type: 'JPEG/JFIF' },
+  { hex: '45 78 69 66', length: 4, type: 'JPEG/EXIF' },
+  { hex: '47 49 46 38 37 61', length: 6, type: 'GIF87a' },
+  { hex: '47 49 46 38 39 61', length: 6, type: 'GIF89a' },
+  { hex: '42 4D', length: 2, type: 'BMP' },
+  { hex: '25 50 44 46', length: 4, type: 'PDF' },
+  { hex: 'DO CF 11 E0', length: 8, type: 'Office Document' },
+  { hex: '50 4B', length: 4, type: 'ZIP based file' },
+  { hex: '37 7A BC AF 27 1C', length: 6, type: '7z' },
+  { hex: 'CA FE BA BE', length: 4, type: 'Java Class' },
+  { hex: '25 21 50 53', length: 4, type: 'Postscript' },
+  { hex: '23 21', length: 2, type: 'Unix Shell Script' },
+  { hex: '7F 45 4C 46', length: 4, type: 'Executable and Linkable Format' }
+];
+
+/**
+ * Known file signatures augmented with a searchable `signature` string. We
+ * create this list from FILE_SIGNATURES because some of the signatures
+ * contain unprintable characters that would difficult or confusing to type
+ * out. The `signature` string is meant to match what we get from the server
+ * after performing `atob(p.bytes)` in `enhancePackets()`.
+ * @return {Array}
+ * @private
+ */
+const KNOWN_SIGNATURES = FILE_SIGNATURES.map((file) => {
+  const hexValues = file.hex.split(' ');
+  const intValues = hexValues.map((hex) => parseInt(hex, 16));
+  const signature = String.fromCharCode(...intValues);
+  return {
+    ...file,
+    signature
+  };
+});
+
+/**
+ * Search a byte string looking for known file signatures. If we find any,
+ * augment the signature with the index at which it was found.
+ * @param {String} bytes Bytes in String format
+ * @return {Array} List of know file signatures
+ * @private
+ */
+const findKnownSignatures = (bytes) => {
+  return KNOWN_SIGNATURES.reduce((acc, value) => {
+    const index = bytes.indexOf(value.signature);
+    if (index >= 0) {
+      acc.push({
+        ...value,
+        index
+      });
+      return acc;
+    } else {
+      return acc;
+    }
+  }, []);
 };

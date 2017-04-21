@@ -1,0 +1,1 @@
+export { default } from 'recon/components/recon-event-actionbar/common-file-patterns/component';

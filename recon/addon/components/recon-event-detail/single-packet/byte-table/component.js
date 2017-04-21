@@ -1,4 +1,7 @@
-import Ember from 'ember';
+import Component from 'ember-component';
+import observer from 'ember-metal/observer';
+import { schedule } from 'ember-runloop';
+import $ from 'jquery';
 import connect from 'ember-redux/components/connect';
 import { scaleLinear } from 'd3-scale';
 import { event, select } from 'd3-selection';
@@ -6,11 +9,10 @@ import { event, select } from 'd3-selection';
 import Drag from 'recon/utils/drag';
 import * as InteractionActions from 'recon/actions/interaction-creators';
 
-const { $, Component, observer, run } = Ember;
-
 const scale = scaleLinear().domain([0, 255]).range([0.06, 1]);
 
 const stateToComputed = ({ recon: { packets } }) => ({
+  hasSignaturesHighlighted: packets.hasSignaturesHighlighted,
   hasStyledBytes: packets.hasStyledBytes,
   isPayloadOnly: packets.isPayloadOnly
 });
@@ -19,6 +21,21 @@ const dispatchToActions = (dispatch) => ({
   tooltipOn: (tooltipData) => dispatch(InteractionActions.showPacketTooltip(tooltipData)),
   tooltipOff: () => dispatch(InteractionActions.hidePacketTooltip())
 });
+
+const compact = (array) => {
+  const length = array == null ? 0 : array.length;
+  const result = [];
+  let index = -1;
+  let resIndex = 0;
+
+  while (++index < length) {
+    const value = array[index];
+    if (value) {
+      result[resIndex++] = value;
+    }
+  }
+  return result;
+};
 
 const ByteTableComponent = Component.extend({
   tagName: 'section',
@@ -63,8 +80,8 @@ const ByteTableComponent = Component.extend({
     this.detachDomListeners();
   },
 
-  _scheduleAfterRenderTasks: observer('packet.byteRows', 'hasStyledBytes', function() {
-    run.schedule('afterRender', this, 'afterRender');
+  _scheduleAfterRenderTasks: observer('packet.byteRows', 'hasStyledBytes', 'hasSignaturesHighlighted', function() {
+    schedule('afterRender', this, 'afterRender');
   }),
 
   afterRender() {
@@ -75,8 +92,8 @@ const ByteTableComponent = Component.extend({
 
   renderTable() {
     const {
-      cellClass, headerCellClass, byteFormat, hasStyledBytes, isPayloadOnly
-    } = this.getProperties('cellClass', 'headerCellClass', 'byteFormat', 'hasStyledBytes', 'isPayloadOnly');
+      cellClass, headerCellClass, byteFormat, hasStyledBytes, hasSignaturesHighlighted, isPayloadOnly
+    } = this.getProperties('cellClass', 'headerCellClass', 'byteFormat', 'hasStyledBytes', 'hasSignaturesHighlighted', 'isPayloadOnly');
     const el = select(this.element);
 
     el.select('table').remove();
@@ -91,16 +108,25 @@ const ByteTableComponent = Component.extend({
           .attr('class', this.getByteClass(byte, cellClass, headerCellClass))
           .datum(byte);
 
-        if (byte.isHeader) {
+        if (byte.isHeader || byte.isKnown) {
           td.on('mousemove', (d) => {
-            const packetField = d && d.packetField;
-            const tooltipData = !packetField ? null : {
-              field: packetField.field,
-              index: packetField.index,
-              values: packetField.values,
-              position: { x: event.pageX, y: $(event.target).offset().top },
-              packetId: this.get('packet.id')
-            };
+            let tooltipData = null;
+            if (byte.isHeader) {
+              const packetField = d && d.packetField;
+              tooltipData = !packetField ? null : {
+                field: packetField.field,
+                values: packetField.values,
+                position: { x: event.pageX, y: $(event.target).offset().top },
+                packetId: this.get('packet.id')
+              };
+            } else if (isPayloadOnly && hasSignaturesHighlighted && byte.isKnown) {
+              tooltipData = {
+                field: { name: 'signature', type: 'sig' },
+                values: byte.isKnown.type,
+                position: { x: event.pageX, y: $(event.target).offset().top },
+                packetId: this.get('packet.id')
+              };
+            }
             this.send('tooltipOn', tooltipData);
           })
           .on('mouseleave', () => {
@@ -120,13 +146,22 @@ const ByteTableComponent = Component.extend({
   },
 
   /**
-   * Appends appropriate cell, header and footer classes to the byteRow.
-   * @returns {{list of classes}}
+   * Appends appropriate cell, role, header, footer, and known classes to the
+   * byteRow.
+   * @param {Object} byte The byte object
+   * @param {String} cellClass A class name
+   * @param {String} headerCellClass A class to designate byte as a header item
+   * @returns {{String}}
    * @public
    */
   getByteClass(byte, cellClass, headerCellClass) {
-    return `${cellClass} ${byte.packetField ? byte.packetField.roles : ''} ${byte.isHeader ?
-            headerCellClass : ''} ${byte.isFooter ? 'footer' : ''}`;
+    const isPayloadOnly = this.get('isPayloadOnly');
+    const hasSignaturesHighlighted = this.get('hasSignaturesHighlighted');
+    const role = byte.packetField ? byte.packetField.roles : false;
+    const header = byte.isHeader ? headerCellClass : false;
+    const footer = byte.isFooter ? 'footer' : false;
+    const known = (isPayloadOnly && hasSignaturesHighlighted && byte.isKnown) ? 'is-known' : false;
+    return compact([cellClass, role, header, footer, known]).join(' ');
   },
 
   attachDomListeners() {

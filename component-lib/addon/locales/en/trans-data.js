@@ -139,8 +139,11 @@ export default {
       payloadToggleTitle: 'Removes packet headers & footers from display',
       stylizeBytesLabel: 'Shade Bytes',
       stylizeBytesTitle: 'Enable to help distinguish patterns within the data',
+      commonFilePatternLabel: 'Common File Patterns',
+      commonFilePatternTitle: 'Enable to highlight common file signature patterns',
       headerMeta: 'Header Meta',
       headerAttribute: 'Header Attribute',
+      headerSignature: 'Interesting Bytes',
       headerDisplayLabel: '{{label}} = {{displayValue}}'
     },
     fileView: {

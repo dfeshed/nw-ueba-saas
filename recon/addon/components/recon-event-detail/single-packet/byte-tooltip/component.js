@@ -1,12 +1,14 @@
-import Ember from 'ember';
+import Component from 'ember-component';
+import observer from 'ember-metal/observer';
+import { schedule } from 'ember-runloop';
+import service from 'ember-service/inject';
+import $ from 'jquery';
 import connect from 'ember-redux/components/connect';
 import computed, { alias, notEmpty, equal } from 'ember-computed-decorators';
 
 import intToHex from 'recon/utils/int-to-hex';
 import hexToInt from 'recon/utils/hex-to-int';
 import layout from './template';
-
-const { $, Component, observer, run } = Ember;
 
 // Default data types for known fields in packet headers.
 const DEFAULT_TYPE_OF_FIELD = {
@@ -96,8 +98,9 @@ const ByteTooltipComponent = Component.extend({
   layout,
   tagName: 'section',
   classNames: 'rsa-byte-table-tooltip',
-  classNameBindings: ['visible'],
+  classNameBindings: ['visible', 'isSignature'],
   tooltipData: null,
+  i18n: service(),
 
   @alias('tooltipData.field.name') label: null,
   @alias('tooltipData.field.type') type: null,
@@ -106,8 +109,22 @@ const ByteTooltipComponent = Component.extend({
 
   @equal('headerType', 'attribute') isAttribute: null,
   @equal('headerType', 'meta') isMeta: null,
+  @equal('headerType', 'signature') isSignature: null,
 
   @notEmpty('tooltipData') visible: null,
+
+  @computed('isMeta', 'isAttribute')
+  tooltipTitle(isMeta, isAttribute) {
+    let lbl;
+    if (isMeta) {
+      lbl = 'recon.packetView.headerMeta';
+    } else if (isAttribute) {
+      lbl = 'recon.packetView.headerAttribute';
+    } else {
+      lbl = 'recon.packetView.headerSignature';
+    }
+    return this.get('i18n').t(lbl);
+  },
 
   @computed('label', 'values', 'type')
   displayValue(label, values, type) {
@@ -134,6 +151,9 @@ const ByteTooltipComponent = Component.extend({
       case 'int':
         return valsToInt(values);
 
+      case 'sig':
+        return values;
+
       default:
         return valsToInt(values);
     }
@@ -141,18 +161,26 @@ const ByteTooltipComponent = Component.extend({
 
   @computed('label')
   headerType(label) {
-    return HEADER_ATTRIBUTES.includes(label) ? 'attribute' : 'meta';
+    let lbl;
+    if (HEADER_ATTRIBUTES.includes(label)) {
+      lbl = 'attribute';
+    } else if (label === 'signature') {
+      lbl = 'signature';
+    } else {
+      lbl = 'meta';
+    }
+    return lbl;
   },
 
   positionDidChange: observer('position', function() {
     if (this.element) {
-      run.schedule('afterRender', this, '_move');
+      schedule('afterRender', this, '_move');
     }
   }),
 
   // @todo Use ember-wormhole!
   didInsertElement() {
-    run.schedule('afterRender', this, '_tunnel');
+    schedule('afterRender', this, '_tunnel');
   },
 
   // clean up DOM

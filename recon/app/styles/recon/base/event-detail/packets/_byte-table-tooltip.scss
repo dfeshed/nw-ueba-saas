@@ -13,6 +13,17 @@
     display: block;
   }
 
+  &.is-signature {
+    background-color: rsa-color(orange);
+    border: 1px solid rsa-color(orange);
+    svg {
+      line, polygon {
+        stroke: rsa-color(orange);
+        fill: rsa-color(orange);
+      }
+    }
+  }
+
   div {
     color: rsa-color(gray, lightest);
 

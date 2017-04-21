@@ -4,6 +4,7 @@
       {{recon-event-actionbar/export-packet}}
       <hbox justify="end">
         {{#if isPayloadOnly}}
+          {{recon-event-actionbar/common-file-patterns class="option-toggle"}}
           {{recon-event-actionbar/stylize-bytes class="option-toggle"}}
         {{/if}}
         {{recon-event-actionbar/payload-only class="option-toggle"}}
