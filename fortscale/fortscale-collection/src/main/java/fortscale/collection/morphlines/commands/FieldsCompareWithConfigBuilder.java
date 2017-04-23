@@ -1,7 +1,7 @@
 package fortscale.collection.morphlines.commands;
 
 import com.typesafe.config.Config;
-import fortscale.collection.configuration.CollectionPropertiesResolver;
+import fortscale.collection.morphlines.MorphlineConfigService;
 import fortscale.utils.properties.IllegalStructuredProperty;
 import fortscale.utils.properties.PropertyNotExistException;
 import org.kitesdk.morphline.api.Command;
@@ -27,7 +27,7 @@ public class FieldsCompareWithConfigBuilder implements CommandBuilder {
     private static Logger logger = LoggerFactory.getLogger(FieldsCompareWithConfigBuilder.class);
 
     @Autowired
-    private CollectionPropertiesResolver collectionPropertiesResolver;
+    private MorphlineConfigService morphlineConfigService;
 
     @Override
     public Collection<String> getNames() {
@@ -94,7 +94,7 @@ public class FieldsCompareWithConfigBuilder implements CommandBuilder {
         }
 
         private String getProperty(String propertyKey) throws IllegalStructuredProperty, PropertyNotExistException {
-            return collectionPropertiesResolver.getEnvPropertyValue(propertyKey);
+            return morphlineConfigService.getStringValue(propertyKey);
         }
 
     }
