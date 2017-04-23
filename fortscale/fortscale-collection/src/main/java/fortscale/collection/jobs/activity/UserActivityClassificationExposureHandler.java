@@ -34,7 +34,7 @@ public class UserActivityClassificationExposureHandler extends UserActivityBaseH
 
     @Override
     protected String getCollectionName() {
-        return UserActivityTopApplicationsDocument.COLLECTION_NAME;
+        return UserActivityClassificationExposureDocument.COLLECTION_NAME;
     }
 
     @Override
