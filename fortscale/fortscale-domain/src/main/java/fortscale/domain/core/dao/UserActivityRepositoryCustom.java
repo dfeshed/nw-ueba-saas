@@ -30,4 +30,5 @@ public interface UserActivityRepositoryCustom {
 
     Set<String> getUserIdByLocation(List<String> locations);
 
+    List<UserActivityClassificationExposureDocument> getUserActivityClassificationExposureEntries(String username, int timeRangeInDays);
 }

@@ -383,4 +383,20 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
      */
     protected abstract void updateAdditionalActivitySpecificDocumentInDatabase(List<String> dataSources, long currBucketStartTime, long currBucketEndTime, Map<String, Double> additionalActivityHistogram);
 
+    protected Double convertAggregatedFeatureValueToDouble(Object featureValue) {
+        if (featureValue instanceof Double) {
+            return (Double) featureValue;
+        } else if (featureValue instanceof Float) {
+            logger.debug("Expected featureValue Double got Float");
+            return ((Float) featureValue).doubleValue();
+        } else if (featureValue instanceof Long) {
+            logger.debug("Expected featureValue Double got Long");
+            return ((Long) featureValue).doubleValue();
+        } else if (featureValue instanceof Integer) {
+            logger.debug("Expected featureValue Double got Integer");
+            return ((Integer) featureValue).doubleValue();
+        }
+        throw new RuntimeException("Cannot convert featureValue to Double");
+    }
+
 }
