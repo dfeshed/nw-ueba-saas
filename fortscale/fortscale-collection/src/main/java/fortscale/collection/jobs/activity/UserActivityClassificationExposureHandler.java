@@ -23,8 +23,6 @@ public class UserActivityClassificationExposureHandler extends UserActivityBaseH
 
     public static final String EVENTS_COUNTER_HISTOGRAM_FEATURE_NAME = "events_counter";
     public static final String CLASSIFIED_FILES_COUNTER_HISTOGRAM_FEATURE_NAME = "classified_files_counter";
-    public static final String EVENT_COUNTER_HISTOGRAM_FEATURE_NAME = "event_counter";
-    public static final String WAS_CLASSIFIED_HISTOGRAM_FEATURE_NAME = "classified_files_counter";
 
     @Autowired
     private UserActivityClassificationExposureService userActivityClassificationExposureService;
@@ -79,11 +77,11 @@ public class UserActivityClassificationExposureHandler extends UserActivityBaseH
         if (objectToConvert instanceof Feature && ((Feature) objectToConvert).getValue() instanceof AggrFeatureValue) {
             final FeatureValue featureValue = ((Feature) objectToConvert).getValue();
             switch (histogramFeatureName) {
-                case EVENT_COUNTER_HISTOGRAM_FEATURE_NAME:
+                case EVENTS_COUNTER_HISTOGRAM_FEATURE_NAME:
                     histogram.add(UserActivityClassificationExposureDocument.FIELD_NAME_HISTOGRAM_EVENT_COUNTER,
                             convertAggregatedFeatureValueToDouble(((AggrFeatureValue) featureValue).getValue()));
                     break;
-                case WAS_CLASSIFIED_HISTOGRAM_FEATURE_NAME:
+                case CLASSIFIED_FILES_COUNTER_HISTOGRAM_FEATURE_NAME:
                     histogram.add(UserActivityClassificationExposureDocument.FIELD_NAME_HISTOGRAM_WAS_CLASSIFIED,
                             convertAggregatedFeatureValueToDouble(((AggrFeatureValue) featureValue).getValue()));
                     break;
