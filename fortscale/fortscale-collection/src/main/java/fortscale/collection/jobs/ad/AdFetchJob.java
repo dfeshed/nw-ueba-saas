@@ -215,7 +215,11 @@ public class AdFetchJob extends FortscaleJob {
 							value = (String) values.nextElement();
 							final boolean isPossibleBase64String = !value.isEmpty() && !value.contains(" ") && Base64.isBase64(value);
 							if (isPossibleBase64String) {
-								value = new String(java.util.Base64.getDecoder().decode(value));
+								try {
+									value = new String(Base64.decodeBase64(value));
+								} catch (Exception e) {
+									logger.warn("streetAddress is possibly in Base64 but it can't be decoded. streetAddress: {} .", value);
+								}
 								fileWriter.append(key).append(": ").append(value);
 								elementWritten=true;
 							}
