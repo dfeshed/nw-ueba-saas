@@ -2,7 +2,6 @@ package fortscale.web.rest;
 
 import fortscale.common.datastructures.UserActivityEntryHashMap;
 import fortscale.domain.core.activities.*;
-import fortscale.services.ComputerService;
 import fortscale.services.UserActivityService;
 import fortscale.services.cache.CacheHandler;
 import fortscale.services.users.util.UserAndOrganizationActivityHelper;
@@ -54,8 +53,6 @@ public class ApiUserActivityController extends DataQueryController {
     private final UserActivityService userActivityService;
     private static final Logger logger = Logger.getLogger(ApiUserActivityController.class);
 
-    private ComputerService computerService;
-
     @Autowired
     private UserDeviceUtils userDeviceUtils;
 
@@ -68,10 +65,8 @@ public class ApiUserActivityController extends DataQueryController {
     @Autowired
     public ApiUserActivityController(
             UserActivityService userActivityService,
-            ComputerService computerService,
             UserAndOrganizationActivityHelper userAndOrganizationActivityHelper) {
         this.userActivityService = userActivityService;
-        this.computerService = computerService;
         this.userAndOrganizationActivityHelper = userAndOrganizationActivityHelper;
     }
 
@@ -362,7 +357,7 @@ public class ApiUserActivityController extends DataQueryController {
                     .collect(Collectors.toList());
             return workingHours;
 
-        }
+    }
 
 
     /**
