@@ -49,7 +49,7 @@ public class ApiUserActivityController extends DataQueryController {
     private static final String TOP_APPLICATIONS = "top-applications";
     private static final String TOP_DIRECTORIES = "top-directories";
     private static final String EMAIL_RECIPIENT_DOMAIN = "email-recipient-domain";
-    private static final String CLASSIFICATIO_EXPOSURE = "classification-exposure";
+    private static final String CLASSIFICATION_EXPOSURE = "classification-exposure";
 
     private final UserActivityService userActivityService;
     private static final Logger logger = Logger.getLogger(ApiUserActivityController.class);
@@ -162,7 +162,7 @@ public class ApiUserActivityController extends DataQueryController {
         return userActivityAuthenticationsBean;
     }
 
-    @RequestMapping(value = "/" + CLASSIFICATIO_EXPOSURE, method = RequestMethod.GET)
+    @RequestMapping(value = "/" + CLASSIFICATION_EXPOSURE, method = RequestMethod.GET)
     @ResponseBody
     @LogException
     public DataBean<List<UserActivityData.ClassificationExposureEntry>> getClassificationExposure(@PathVariable String id,
@@ -174,7 +174,7 @@ public class ApiUserActivityController extends DataQueryController {
                 0,
                 userActivityService::getUserActivityClassificationExposureEntries,
                 (documentList, limit1) -> convertClassificationExposureDocumentsResponse(documentList, limit1),
-                CLASSIFICATIO_EXPOSURE);
+                CLASSIFICATION_EXPOSURE);
         return userActivityClassificationExposureBean;
     }
 
