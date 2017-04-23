@@ -1,7 +1,9 @@
 package fortscale.collection.morphlines.commands;
 
 import com.typesafe.config.Config;
-import fortscale.utils.spring.SpringPropertiesUtil;
+import fortscale.collection.configuration.CollectionPropertiesResolver;
+import fortscale.utils.properties.IllegalStructuredProperty;
+import fortscale.utils.properties.PropertyNotExistException;
 import org.kitesdk.morphline.api.Command;
 import org.kitesdk.morphline.api.CommandBuilder;
 import org.kitesdk.morphline.api.MorphlineContext;
@@ -9,6 +11,7 @@ import org.kitesdk.morphline.api.Record;
 import org.kitesdk.morphline.base.AbstractCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -22,6 +25,9 @@ import java.util.List;
 public class FieldsCompareWithConfigBuilder implements CommandBuilder {
 
     private static Logger logger = LoggerFactory.getLogger(FieldsCompareWithConfigBuilder.class);
+
+    @Autowired
+    private CollectionPropertiesResolver collectionPropertiesResolver;
 
     @Override
     public Collection<String> getNames() {
@@ -57,7 +63,14 @@ public class FieldsCompareWithConfigBuilder implements CommandBuilder {
                 final String currConfigKey = configs.get(i);
 
                 final String currFieldValue = (String)inputRecord.getFirstValue(currFieldKey);
-                final String currConfigValue = getProperty(currConfigKey);
+                final String currConfigValue;
+                try {
+                    currConfigValue = getProperty(currConfigKey);
+                } catch (IllegalStructuredProperty | PropertyNotExistException e) {
+                    logger.error("Property {} doesn't exist.", currConfigKey);
+                    return false;
+                }
+
                 switch(comparisonType) {
                     case "equals": {
                         if(!currFieldValue.equals(currConfigValue)) {
@@ -72,7 +85,7 @@ public class FieldsCompareWithConfigBuilder implements CommandBuilder {
                         break;
                     default:
                         logger.error("Invalid comparisonType - {}. Valid compare types are: equals,contains");
-                        break;
+                        return false;
                 }
             }
 
@@ -80,12 +93,8 @@ public class FieldsCompareWithConfigBuilder implements CommandBuilder {
             return true;
         }
 
-        private String getProperty(String propertyKey) {
-            final String propertyValue = SpringPropertiesUtil.getProperty(propertyKey);
-            if (propertyValue == null) {
-                logger.error("Property {} doesn't exist.", propertyKey);
-            }
-            return propertyValue;
+        private String getProperty(String propertyKey) throws IllegalStructuredProperty, PropertyNotExistException {
+            return collectionPropertiesResolver.getEnvPropertyValue(propertyKey);
         }
 
     }
