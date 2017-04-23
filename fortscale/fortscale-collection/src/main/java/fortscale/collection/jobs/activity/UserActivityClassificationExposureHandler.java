@@ -8,16 +8,12 @@ import fortscale.common.feature.Feature;
 import fortscale.common.feature.FeatureValue;
 import fortscale.common.util.GenericHistogram;
 import fortscale.domain.core.activities.UserActivityClassificationExposureDocument;
-import fortscale.domain.core.activities.UserActivityNetworkAuthenticationDocument;
 import fortscale.domain.core.activities.UserActivityTopApplicationsDocument;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Configurable(preConstruction = true)
 @Component
@@ -25,7 +21,8 @@ public class UserActivityClassificationExposureHandler extends UserActivityBaseH
 
     private static final UserActivityType ACTIVITY = UserActivityType.CLASSIFICATION_EXPOSURE;
 
-    public static final String CLASSIFICATION_EXPOSURE_HISTOGRAM_FEATURE_NAME = "classification_exposure_histogram";
+    public static final String EVENTS_COUNTER_HISTOGRAM_FEATURE_NAME = "events_counter";
+    public static final String CLASSIFIED_FILES_COUNTER_HISTOGRAM_FEATURE_NAME = "classified_files_counter";
     public static final String EVENT_COUNTER_HISTOGRAM_FEATURE_NAME = "event_counter";
     public static final String WAS_CLASSIFIED_HISTOGRAM_FEATURE_NAME = "classified_files_counter";
 
@@ -39,7 +36,7 @@ public class UserActivityClassificationExposureHandler extends UserActivityBaseH
 
     @Override
     protected List<String> getRelevantAggregatedFeaturesFieldsNames() {
-        return new ArrayList<>(Collections.singletonList(CLASSIFICATION_EXPOSURE_HISTOGRAM_FEATURE_NAME));
+        return new ArrayList<>(Arrays.asList(EVENTS_COUNTER_HISTOGRAM_FEATURE_NAME, CLASSIFIED_FILES_COUNTER_HISTOGRAM_FEATURE_NAME));
     }
 
     @Override
