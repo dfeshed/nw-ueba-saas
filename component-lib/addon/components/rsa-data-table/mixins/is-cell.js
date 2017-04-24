@@ -4,15 +4,11 @@
  * which in turn is computed from either a `width` or `column.width` attribute.
  * @public
  */
-import Ember from 'ember';
-import CspStyleMixin from 'ember-cli-csp-style/mixins/csp-style';
 import HasTableParent from './has-table-parent';
 import computed, { equal } from 'ember-computed-decorators';
-
-const {
-  isEmpty,
-  Mixin
-} = Ember;
+import { htmlSafe } from 'ember-string';
+import { isEmpty } from 'ember-utils';
+import Mixin from 'ember-metal/mixin';
 
 // Default column width if none given.
 const DEFAULT_WIDTH = 100;
@@ -37,9 +33,16 @@ function _parseNumberAndUnits(value) {
   return null;
 }
 
-export default Mixin.create(CspStyleMixin, HasTableParent, {
+export default Mixin.create(HasTableParent, {
   classNameBindings: ['_resolvedWidthIsAuto:auto-width', 'isError', 'isSorted:is-sorted', 'sortDir'],
-  styleBindings: ['_resolvedWidth:width'],
+
+  attributeBindings: ['style'],
+
+  @computed('_resolvedWidth')
+  style(_resolvedWidth) {
+    return htmlSafe(`width: ${_resolvedWidth};`);
+  },
+
 
   /**
    * Optional width for this cell.

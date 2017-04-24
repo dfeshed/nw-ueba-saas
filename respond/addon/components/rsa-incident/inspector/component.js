@@ -1,15 +1,11 @@
-import Ember from 'ember';
 import connect from 'ember-redux/components/connect';
 import computed from 'ember-computed-decorators';
 import * as UIStateActions from 'respond/actions/ui-state-creators';
 import { storyPointCount, storyEventCount } from 'respond/selectors/storyline';
-import CspStyleMixin from 'ember-cli-csp-style/mixins/csp-style';
 import DragBehavior from 'respond/utils/behaviors/drag';
-
-const {
-  $,
-  Component
-} = Ember;
+import { htmlSafe } from 'ember-string';
+import { Component } from 'ember-component';
+import $ from 'jquery';
 
 const stateToComputed = (state) => {
   const { respond: { incident: { id, info, infoStatus, viewMode, inspectorWidth } } } = state;
@@ -35,11 +31,11 @@ const dispatchToActions = (dispatch) => ({
 
 const MINIMUM_WIDTH = 350;
 
-const IncidentInspector = Component.extend(CspStyleMixin, {
+const IncidentInspector = Component.extend({
+  attributeBindings: ['style'],
   tagName: 'article',
   classNames: ['rsa-incident-inspector'],
   classNameBindings: ['isResizing'],
-  styleBindings: ['resolvedWidth:width[px]'],
   incidentId: null,
   info: null,
   infoStatus: null,
@@ -54,6 +50,11 @@ const IncidentInspector = Component.extend(CspStyleMixin, {
   @computed('width')
   resolvedWidth(width) {
     return Math.max((width || 0), MINIMUM_WIDTH);
+  },
+
+  @computed('resolvedWidth')
+  style(width) {
+    return htmlSafe(`width: ${width}px;`);
   },
 
   // Wire up a drag behavior on resizer DOM node to invoke the "resizeAction".

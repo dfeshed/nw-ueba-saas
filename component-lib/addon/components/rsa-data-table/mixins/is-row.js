@@ -3,23 +3,24 @@
  * Uses the ember-cli-csp-style addon to bind a component's DOM element to a `top` attribute.
  * @public
  */
-import Ember from 'ember';
 import computed from 'ember-computed-decorators';
-import CspStyleMixin from 'ember-cli-csp-style/mixins/csp-style';
 import SizeBindings from './size-bindings';
 import DomIsReady from './dom-is-ready';
 import HasTableParent from './has-table-parent';
+import { htmlSafe } from 'ember-string';
+import set from 'ember-metal/set';
+import $ from 'jquery';
+import Mixin from 'ember-metal/mixin';
 
-const {
-  $,
-  Mixin,
-  set
-} = Ember;
-
-export default Mixin.create(HasTableParent, DomIsReady, SizeBindings, CspStyleMixin, {
+export default Mixin.create(HasTableParent, DomIsReady, SizeBindings, {
   classNames: 'rsa-data-table-body-row',
   classNameBindings: ['isSelected'],
-  styleBindings: ['top[px]'],
+  attributeBindings: ['style'],
+
+  @computed('top')
+  style(top) {
+    return htmlSafe(`top: ${top}px;`);
+  },
 
   /**
    * Data object corresponding to this row.

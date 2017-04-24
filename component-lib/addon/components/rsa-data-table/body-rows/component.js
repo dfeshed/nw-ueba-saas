@@ -1,18 +1,21 @@
-import Ember from 'ember';
-import CspStyleMixin from 'ember-cli-csp-style/mixins/csp-style';
 import HasTableParent from '../mixins/has-table-parent';
 import layout from './template';
+import computed from 'ember-computed-decorators';
+import { htmlSafe } from 'ember-string';
+import Component from 'ember-component';
+import set from 'ember-metal/set';
 
-const { set, Component } = Ember;
-
-export default Component.extend(HasTableParent, CspStyleMixin, {
+export default Component.extend(HasTableParent, {
   layout,
   tagName: 'section',
   classNames: 'rsa-data-table-body-rows',
 
-  // Applies `minHeight` to the component's `element`.
-  // @see ember-cli-csp-style/mixins/csp-style
-  styleBindings: ['minHeight:min-height[px]'],
+  attributeBindings: ['style'],
+
+  @computed('minHeight')
+  style(minHeight) {
+    return htmlSafe(`min-height: ${minHeight}px;`);
+  },
 
   /**
    * The minimum height of this component, in pixels.

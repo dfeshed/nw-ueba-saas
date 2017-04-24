@@ -8,7 +8,10 @@ moduleForComponent('b-breadcrumb', 'Unit | Component | b-breadcrumb', {
     'component:rsa-content-tethered-panel',
     'component:rsa-form-button',
     'component:rsa-icon',
-    'component:time-range'
+    'component:time-range',
+    'service:timezone',
+    'service:dateFormat',
+    'service:timeFormat'
   ],
   unit: true,
   resolver: engineResolverFor('investigate')
