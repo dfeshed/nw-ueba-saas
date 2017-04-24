@@ -35,7 +35,7 @@ public class ADParser {
 	}
 	public boolean shayTestToDelete(){
 		if (1=1)
-			retuen true;
+			return true;
 		else
 			return false;
 	}
