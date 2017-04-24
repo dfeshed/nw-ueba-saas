@@ -30,14 +30,6 @@ export default Service.extend({
     format: 'YYYY/MM/DD'
   }],
 
-  init() {
-    this._super(...arguments);
-
-    if (isEmpty(this.get('selected'))) {
-      this.set('selected', this.get('options').findBy('key', config.dateFormatDefault));
-    }
-  },
-
   persist(value) {
     this.get('request').promiseRequest({
       method: 'setPreference',
@@ -54,7 +46,7 @@ export default Service.extend({
 
   selected: computed({
     get() {
-      return this.get('_selected');
+      isEmpty(this.get('_selected')) ? this.get('options').findBy('key', config.dateFormatDefault) : this.get('_selected');
     },
 
     set(key, value) {

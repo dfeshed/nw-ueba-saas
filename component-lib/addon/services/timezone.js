@@ -30,17 +30,9 @@ export default Service.extend({
     });
   },
 
-  init() {
-    this._super(...arguments);
-
-    if (isEmpty(this.get('selected'))) {
-      this.set('selected', this.get('options').findBy('zoneId', config.timezoneDefault));
-    }
-  },
-
   selected: computed({
     get() {
-      return this.get('_selected');
+      isEmpty(this.get('_selected')) ? this.get('options').findBy('zoneId', config.timezoneDefault) : this.get('_selected');
     },
 
     set(key, value) {
