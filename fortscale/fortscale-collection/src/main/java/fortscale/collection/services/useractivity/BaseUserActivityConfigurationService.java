@@ -50,7 +50,6 @@ public abstract class BaseUserActivityConfigurationService implements UserActivi
         UserActivityConfiguration userActivityConfiguration = createUserActivityConfiguration();
         String userActivityConfigurationAsJsonString = objectMapper.writeValueAsString(userActivityConfiguration);
         final String configurationKey = getConfigurationKey();
-        applicationConfigurationService.delete(configurationKey);
         applicationConfigurationService.insertConfigItem(configurationKey, userActivityConfigurationAsJsonString);
     }
 
