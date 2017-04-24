@@ -36,21 +36,6 @@ public class UserActivityEmailRecipientDomainService extends BaseUserActivityCon
         return USER_ACTIVITY_EMAIL_RECIPIENT_DOMAIN_CONFIGURATION_KEY;
     }
 
-    @Override
-    public UserActivityConfiguration createUserActivityConfiguration() {
-        final Set<String> activities = new HashSet<>();
-        final Map<String, String> dataSourceToCollection = new HashMap<>();
-        final Map<String, List<String>> activityToDataSources = new HashMap<>();
-
-        for (UserActivityDataSourceConfiguration activity : activityDataSourceConfigurationMap.values()) {
-            activities.add(activity.getPropertyName());
-            dataSourceToCollection.put(activity.getDatasource(), activity.getCollectionName());
-            activityToDataSources.put(activity.getPropertyName(), new ArrayList<>(Collections.singletonList(activity.getDatasource())));
-        }
-
-        return new UserActivityConfiguration(activities, dataSourceToCollection, activityToDataSources);
-    }
-
     public Map<String, UserActivityDataSourceConfiguration> getActivityDataSourceConfigurationMap() {
         return activityDataSourceConfigurationMap;
     }

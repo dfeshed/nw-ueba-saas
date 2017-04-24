@@ -15,10 +15,7 @@ public class UserActivityTargetDeviceConfigurationService extends BaseUserActivi
 	private static final String USER_ACTIVITY_TARGET_DEVICE_CONFIGURATION_KEY = "user_activity.target_device.configuration";
 	private static final Logger logger = Logger.getLogger(UserActivityTargetDeviceConfigurationService.class);
 
-	@PostConstruct
-	public void init(){
-
-
+	public UserActivityTargetDeviceConfigurationService(){
 		activityDataSourceConfigurationMap.put("crmsf", new UserActivityDataSourceConfiguration("crmsf",
 				"aggr_normalized_username_crmsf_hourly",
 				"aggregatedFeatures",
@@ -39,7 +36,6 @@ public class UserActivityTargetDeviceConfigurationService extends BaseUserActivi
 				"aggr_normalized_username_ssh_hourly",
 				"aggregatedFeatures",
 				UserActivityType.TARGET_DEVICE.name()));
-
 	}
 
 

@@ -16,12 +16,11 @@ public class UserActivitySourceMachineConfigurationService extends BaseUserActiv
 	private static final String USER_ACTIVITY_SOURCE_MACHINE_CONFIGURATION_KEY =
 			"user_activity.source_machine.configuration";
 
-	@PostConstruct
-	public void init(){
+	public UserActivitySourceMachineConfigurationService(){
 		activityDataSourceConfigurationMap.put("kerberos_logins", new UserActivityDataSourceConfiguration("kerberos_logins",
-																									  "aggr_normalized_username_kerberos_logins_hourly",
-																									  "aggregatedFeatures",
-																										UserActivityType.SOURCE_MACHINE.name()));
+			  	"aggr_normalized_username_kerberos_logins_hourly",
+			  	"aggregatedFeatures",
+				UserActivityType.SOURCE_MACHINE.name()));
 		activityDataSourceConfigurationMap.put("kerberos_tgt", new UserActivityDataSourceConfiguration("kerberos_tgt",
 				"aggr_normalized_username_kerberos_tgt_hourly",
 				"aggregatedFeatures",
@@ -55,20 +54,6 @@ public class UserActivitySourceMachineConfigurationService extends BaseUserActiv
 				"aggregatedFeatures",
 				UserActivityType.SOURCE_MACHINE.name()));
 	}
-
-	@Override
-	public UserActivityConfiguration createUserActivityConfiguration() {
-		final Set<String> activities = new HashSet();
-		final Map<String, String> dataSourceToCollection = new HashMap();
-		final Map<String, List<String>> activityToDataSources = new HashMap();
-		for (UserActivityDataSourceConfiguration activity: activityDataSourceConfigurationMap.values()) {
-			activities.add(activity.getPropertyName());
-			dataSourceToCollection.put(activity.getDatasource(), activity.getCollectionName());
-			activityToDataSources.put(activity.getPropertyName(), new ArrayList<>(Arrays.asList(	activity.getDatasource())));
-		}
-		return new UserActivityConfiguration(activities, dataSourceToCollection, activityToDataSources);
-	}
-
 
 	@Override
 	public String getActivityName() {

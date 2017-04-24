@@ -17,8 +17,7 @@ public class UserActivityTopApplicationsService extends BaseUserActivityConfigur
 
     private static final String USER_ACTIVITY_TOP_APPLICATIONS_CONFIGURATION_KEY = "system.user_activity.top_applications";
 
-    @PostConstruct
-    public void init() throws Exception {
+    public UserActivityTopApplicationsService() throws Exception {
         activityDataSourceConfigurationMap.put("dlpmail", new UserActivityDataSourceConfiguration("dlpmail",
                 "aggr_normalized_username_dlpmail_daily",
                 UserActivityBaseHandler.AGGREGATED_FEATURES_PREFIX,
@@ -29,7 +28,6 @@ public class UserActivityTopApplicationsService extends BaseUserActivityConfigur
                 "aggr_normalized_username_dlpfile_daily",
                 UserActivityBaseHandler.AGGREGATED_FEATURES_PREFIX,
                 UserActivityType.TOP_APPLICATIONS.name()));
-
     }
 
     @Override
