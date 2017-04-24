@@ -67,24 +67,27 @@ public class FieldsCompareWithConfigBuilder implements CommandBuilder {
                 return false;
             }
             final List<String> valuesToCompare = Arrays.asList(configValue.split(","));
-            for (String valueToCompare : valuesToCompare) {
-                switch(comparisonType) {
-                    case "equals": {
-                        if(fieldValue.equals(valueToCompare)) {
+            switch(comparisonType) {
+                case "equals": {
+                    for (String valueToCompare : valuesToCompare) {
+                        if (fieldValue.equals(valueToCompare)) {
                             return true;
                         }
-                        break;
                     }
-                    case "contains":
-                        if(fieldValue.contains(valueToCompare)) {
+                    break;
+                }
+                case "contains":
+                    for (String valueToCompare : valuesToCompare) {
+                        if (fieldValue.contains(valueToCompare)) {
                             return true;
                         }
-                        break;
-                    default:
-                        logger.error("Invalid comparisonType - {}. Valid compare types are: equals,contains");
-                        return false;
-                }
+                    }
+                    break;
+                default:
+                    logger.error("Invalid comparisonType - {}. Valid compare types are: equals,contains");
+                    return false;
             }
+
 
             return false;
         }
