@@ -18,8 +18,8 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * This Command does a compare action on given fields from the record with some value from configuration.
- * Supports comparison of configuration as a comma-separated-list (will check if the fields is equal/contains/etc to at least one of the values in the list)
+ * This Command does a compare action on given a field from the record with some value (or a comma-separated-list of values) from configuration.
+ * Supports comparison of configuration as a comma-separated-list (will check if the field in the inputRecord is equals/contains/etc to at least one of the values in the list)
  * Valid comparison types are: equals, contains. default comparison type is: equals
  */
 public class FieldsCompareWithConfigBuilder implements CommandBuilder {
