@@ -2,42 +2,44 @@
   {{spec-masthead model=model}}
 </hbox>
 
-<vbox class="scroll-box">
-  {{#spec-category title="Styles"}}
-    {{#spec-member title="Default/Info"}}
-      {{#rsa-form-button defaultAction=(action 'triggerInfoMessage')}}Show Info Message{{/rsa-form-button}}
+<hbox>
+  <fill block class="scroll-box">
+    {{#spec-category title="Styles"}}
+      {{#spec-member title="Default/Info"}}
+        {{#rsa-form-button defaultAction=(action 'triggerInfoMessage')}}Show Info Message{{/rsa-form-button}}
 
-      {{!-- BEGIN-SNIPPET flashmessages1
-      this.get('flashMessages').info('Info message');
-      END-SNIPPET --}}
-      {{code-snippet name="flashmessages1.hbs"}}
-    {{/spec-member}}
+        {{!-- BEGIN-SNIPPET flashmessages1
+        this.get('flashMessages').info('Info message');
+        END-SNIPPET --}}
+        {{code-snippet name="flashmessages1.hbs"}}
+      {{/spec-member}}
 
-    {{#spec-member title="Success"}}
-      {{#rsa-form-button defaultAction=(action 'triggerSuccessMessage')}}Show Success Message{{/rsa-form-button}}
+      {{#spec-member title="Success"}}
+        {{#rsa-form-button defaultAction=(action 'triggerSuccessMessage')}}Show Success Message{{/rsa-form-button}}
 
-      {{!-- BEGIN-SNIPPET flashmessages2
-      this.get('flashMessages').success('Success message');
-      END-SNIPPET --}}
-      {{code-snippet name="flashmessages2.hbs"}}
-    {{/spec-member}}
+        {{!-- BEGIN-SNIPPET flashmessages2
+        this.get('flashMessages').success('Success message');
+        END-SNIPPET --}}
+        {{code-snippet name="flashmessages2.hbs"}}
+      {{/spec-member}}
 
-    {{#spec-member title="Warning"}}
-      {{#rsa-form-button defaultAction=(action 'triggerWarningMessage')}}Show Warning Message{{/rsa-form-button}}
+      {{#spec-member title="Warning"}}
+        {{#rsa-form-button defaultAction=(action 'triggerWarningMessage')}}Show Warning Message{{/rsa-form-button}}
 
-      {{!-- BEGIN-SNIPPET flashmessages3
-      this.get('flashMessages').warning('Warning message');
-      END-SNIPPET --}}
-      {{code-snippet name="flashmessages3.hbs"}}
-    {{/spec-member}}
+        {{!-- BEGIN-SNIPPET flashmessages3
+        this.get('flashMessages').warning('Warning message');
+        END-SNIPPET --}}
+        {{code-snippet name="flashmessages3.hbs"}}
+      {{/spec-member}}
 
-    {{#spec-member title="Error"}}
-      {{#rsa-form-button defaultAction=(action 'triggerErrorMessage')}}Show Error Message{{/rsa-form-button}}
+      {{#spec-member title="Error"}}
+        {{#rsa-form-button defaultAction=(action 'triggerErrorMessage')}}Show Error Message{{/rsa-form-button}}
 
-      {{!-- BEGIN-SNIPPET flashmessages4
-      this.get('flashMessages').error('Error message');
-      END-SNIPPET --}}
-      {{code-snippet name="flashmessages4.hbs"}}
-    {{/spec-member}}
-  {{/spec-category}}
-</vbox>
+        {{!-- BEGIN-SNIPPET flashmessages4
+        this.get('flashMessages').error('Error message');
+        END-SNIPPET --}}
+        {{code-snippet name="flashmessages4.hbs"}}
+      {{/spec-member}}
+    {{/spec-category}}
+  </fill>
+</hbox>

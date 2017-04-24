@@ -2,7 +2,8 @@
   {{spec-masthead model=model}}
 </hbox>
 
-<vbox class="scroll-box">
+<hbox>
+  <fill block class="scroll-box">
   {{#spec-category title="Sizes"}}
     {{#spec-member title="Default"}}
       {{rsa-loader}}
@@ -44,4 +45,5 @@
       {{code-snippet name="largest-loader.hbs"}}
     {{/spec-member}}
   {{/spec-category}}
-</vbox>
+</fill>
+</hbox>

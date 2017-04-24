@@ -27,13 +27,17 @@
 {{rsa-application-header displayPreferences=false}}
 
 {{#rsa-application-content}}
-  <vbox xs="3" class="style-guide-nav scroll-box">
-    {{app-nav}}
-  </vbox>
+  <hbox>
+    <vbox xs="3" class="style-guide-nav">
+      <fill block class="scroll-box">
+        {{app-nav}}
+      </fill>
+    </vbox>
 
-  <vbox xs="9" class="style-guide-content">
-    {{outlet}}
-  </vbox>
+    <vbox xs="9" class="style-guide-content">
+      {{outlet}}
+    </vbox>
+  </hbox>
 {{/rsa-application-content}}
 
 <div id="modalDestination"></div>

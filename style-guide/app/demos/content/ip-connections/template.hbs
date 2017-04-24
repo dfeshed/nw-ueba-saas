@@ -2,7 +2,8 @@
   {{spec-masthead model=model}}
 </hbox>
 
-<vbox class="scroll-box">
+<hbox>
+  <fill block class="scroll-box">
   {{#spec-category title="Horizontal Layout"}}
     {{#spec-member title="With Single IP"}}
       {{rsa-content-ip-connections flow="horizontal" toIPs=model.singleIP fromIPs=model.singleIP}}
@@ -56,4 +57,5 @@
       {{code-snippet name="ip6.hbs"}}
     {{/spec-member}}
   {{/spec-category}}
-</vbox>
+</fill>
+</hbox>

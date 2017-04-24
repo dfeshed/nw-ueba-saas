@@ -2,7 +2,8 @@
   {{spec-masthead model=model}}
 </hbox>
 
-<vbox class="scroll-box">
+<hbox>
+  <fill block class="scroll-box">
   {{spec-toc toc=toc scrollTo=(route-action 'scrollTo')}}
 
   {{#spec-category id="multi-trigger" title="Multiple Triggers One Panel"}}
@@ -976,4 +977,5 @@
       {{code-snippet name="panel36.hbs"}}
     {{/spec-member}}
   {{/spec-category}}
-</vbox>
+</fill>
+</hbox>

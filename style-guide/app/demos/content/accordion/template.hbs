@@ -2,7 +2,8 @@
   {{spec-masthead model=model}}
 </hbox>
 
-<vbox class="scroll-box">
+<hbox>
+  <fill block class="scroll-box">
   {{#spec-category title="Examples"}}
     {{#spec-member title="Open"}}
       {{#rsa-content-accordion label='Accordion Label'}}Sample content example.{{/rsa-content-accordion}}
@@ -21,4 +22,5 @@
       {{code-snippet name="accordion2.hbs"}}
     {{/spec-member}}
   {{/spec-category}}
-</vbox>
+</fill>
+</hbox>

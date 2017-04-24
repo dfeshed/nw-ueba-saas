@@ -2,30 +2,32 @@
   {{spec-masthead model=model}}
 </hbox>
 
-<vbox class="scroll-box">
-  {{#spec-category}}
-    {{#spec-member title="default axis"}}
-      {{#rsa-chart data=model.singleSeries as |params|}}
-        {{rsa-y-axis scale=params.yScale}}
-      {{/rsa-chart}}
-      {{!-- BEGIN-SNIPPET y1
-      {{#rsa-chart data=model.singleSeries as |params|}}
-        {{rsa-y-axis scale=params.yScale}}
-      {{/rsa-chart}}
-      END-SNIPPET --}}
-      {{#code-snippet name="y1.hbs"}}
-      {{/code-snippet}}
-    {{/spec-member}}
-    {{#spec-member title="rotation and tickcount"}}
-      {{#rsa-chart data=model.singleSeries as |params|}}
-        {{rsa-y-axis scale=params.yScale rotation=-45 tickCount=8}}
-      {{/rsa-chart}}
-      {{!-- BEGIN-SNIPPET y2
-      {{#rsa-chart data=model.singleSeries as |params|}}
-        {{rsa-y-axis scale=params.yScale rotation=-45 tickCount=8}}
-      {{/rsa-chart}}
-      END-SNIPPET --}}
-      {{code-snippet name="y2.hbs"}}
-    {{/spec-member}}
-  {{/spec-category}}
-</vbox>
+<hbox>
+  <fill block class="scroll-box">
+    {{#spec-category}}
+      {{#spec-member title="default axis"}}
+        {{#rsa-chart data=model.singleSeries as |params|}}
+          {{rsa-y-axis scale=params.yScale}}
+        {{/rsa-chart}}
+        {{!-- BEGIN-SNIPPET y1
+        {{#rsa-chart data=model.singleSeries as |params|}}
+          {{rsa-y-axis scale=params.yScale}}
+        {{/rsa-chart}}
+        END-SNIPPET --}}
+        {{#code-snippet name="y1.hbs"}}
+        {{/code-snippet}}
+      {{/spec-member}}
+      {{#spec-member title="rotation and tickcount"}}
+        {{#rsa-chart data=model.singleSeries as |params|}}
+          {{rsa-y-axis scale=params.yScale rotation=-45 tickCount=8}}
+        {{/rsa-chart}}
+        {{!-- BEGIN-SNIPPET y2
+        {{#rsa-chart data=model.singleSeries as |params|}}
+          {{rsa-y-axis scale=params.yScale rotation=-45 tickCount=8}}
+        {{/rsa-chart}}
+        END-SNIPPET --}}
+        {{code-snippet name="y2.hbs"}}
+      {{/spec-member}}
+    {{/spec-category}}
+  </fill>
+</hbox>

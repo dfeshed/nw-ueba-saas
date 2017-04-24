@@ -2,7 +2,8 @@
   {{spec-masthead model=model}}
 </hbox>
 
-<vbox class="scroll-box">
+<hbox>
+  <fill block class="scroll-box">
   {{#spec-category}}
     {{#spec-member title="Opaque"}}
       <div class='sg-demo-opacity logo'>
@@ -89,4 +90,5 @@
       {{code-snippet name="opacity10.hbs"}}
     {{/spec-member}}
   {{/spec-category}}
-</vbox>
+</fill>
+</hbox>

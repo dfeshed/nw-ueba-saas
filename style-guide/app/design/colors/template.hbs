@@ -2,7 +2,8 @@
   {{spec-masthead model=model}}
 </hbox>
 
-<vbox class="scroll-box">
+<hbox>
+  <fill block class="scroll-box">
   {{#spec-category}}
     {{#spec-member title="Absolutes"}}
       {{color-swatch
@@ -222,4 +223,5 @@
         sass="rsa-color(green, darker)"}}
     {{/spec-member}}
   {{/spec-category}}
-</vbox>
+</fill>
+</hbox>

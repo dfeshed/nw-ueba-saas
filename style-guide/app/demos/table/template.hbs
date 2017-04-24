@@ -2,7 +2,8 @@
   {{spec-masthead model=model}}
 </hbox>
 
-<vbox class="scroll-box">
+<hbox>
+  <fill block class="scroll-box">
   {{spec-toc toc=toc scrollTo=(route-action 'scrollTo')}}
 
   {{#spec-category id="basic-table" title="Basic Table"}}
@@ -561,4 +562,5 @@
       {{code-snippet name="tableSorting3.hbs"}}
     {{/spec-member}}
   {{/spec-category}}
-</vbox>
+</fill>
+</hbox>

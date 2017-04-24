@@ -2,39 +2,41 @@
   {{spec-masthead model=model}}
 </hbox>
 
-<vbox class="scroll-box">
-  {{#spec-category}}
-    {{#spec-member title="Adding new permissions"}}
-      <p>
-        You can assume the roles property of the accessControl service has aleady been populated at run time.
-      </p>
+<hbox>
+  <fill block class="scroll-box">
+    {{#spec-category}}
+      {{#spec-member title="Adding new permissions"}}
+        <p>
+          You can assume the roles property of the accessControl service has aleady been populated at run time.
+        </p>
 
-      <p>
-        To add a new permission, first a new group of roles.
-      </p>
+        <p>
+          To add a new permission, first a new group of roles.
+        </p>
 
-      {{!-- BEGIN-SNIPPET perm1
-        newRoles: ['roleName1', 'roleName2']
-      END-SNIPPET --}}
-      {{code-snippet name="perm1.hbs"}}
+        {{!-- BEGIN-SNIPPET perm1
+          newRoles: ['roleName1', 'roleName2']
+        END-SNIPPET --}}
+        {{code-snippet name="perm1.hbs"}}
 
-      <p>
-        Then add an intersection to look for matches between the new roles you added, and the roles of the user.
-      </p>
+        <p>
+          Then add an intersection to look for matches between the new roles you added, and the roles of the user.
+        </p>
 
-      {{!-- BEGIN-SNIPPET perm2
-      @intersect('new', 'roles') newRoleAccessIntersections
-      END-SNIPPET --}}
-      {{code-snippet name="perm2.hbs"}}
+        {{!-- BEGIN-SNIPPET perm2
+        @intersect('new', 'roles') newRoleAccessIntersections
+        END-SNIPPET --}}
+        {{code-snippet name="perm2.hbs"}}
 
-      <p>
-        Lastly, add a computed property to verify matches in the intersection you added.
-      </p>
+        <p>
+          Lastly, add a computed property to verify matches in the intersection you added.
+        </p>
 
-      {{!-- BEGIN-SNIPPET perm3
-      @gt('newRoleAccessIntersections.length', 0) hasNewRoleAccess,
-      END-SNIPPET --}}
-      {{code-snippet name="perm3.hbs"}}
-    {{/spec-member}}
-  {{/spec-category}}
-</vbox>
+        {{!-- BEGIN-SNIPPET perm3
+        @gt('newRoleAccessIntersections.length', 0) hasNewRoleAccess,
+        END-SNIPPET --}}
+        {{code-snippet name="perm3.hbs"}}
+      {{/spec-member}}
+    {{/spec-category}}
+  </fill>
+</hbox>

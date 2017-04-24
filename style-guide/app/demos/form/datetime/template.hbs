@@ -2,7 +2,8 @@
   {{spec-masthead model=model}}
 </hbox>
 
-<vbox class="scroll-box">
+<hbox>
+  <fill block class="scroll-box">
   {{#spec-category title="Date"}}
     {{#spec-member title="Default configurations"}}
       {{rsa-form-datetime label='Date Label' placeholder='Date Placeholder'}}
@@ -95,4 +96,5 @@
       {{code-snippet name="datetime15.hbs"}}
     {{/spec-member}}
   {{/spec-category}}
-</vbox>
+</fill>
+</hbox>

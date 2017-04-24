@@ -2,7 +2,8 @@
   {{spec-masthead model=model}}
 </hbox>
 
-<vbox class="scroll-box">
+<hbox>
+  <fill block class="scroll-box">
   {{#spec-category title="States"}}
     {{#spec-member title="Default"}}
       {{x-toggle value=toggledA onToggle=(action (mut toggledA))}}
@@ -43,4 +44,5 @@
       {{code-snippet name="switch2.hbs"}}
     {{/spec-member}}
   {{/spec-category}}
-</vbox>
+</fill>
+</hbox>

@@ -2,7 +2,8 @@
   {{spec-masthead model=model}}
 </hbox>
 
-<vbox class="scroll-box">
+<hbox>
+  <fill block class="scroll-box">
   {{#spec-category}}
     {{#spec-member title="Example"}}
       {{#rsa-nav-link-list header='List Title'}}
@@ -22,4 +23,5 @@
       {{code-snippet name="linklist1.hbs"}}
     {{/spec-member}}
   {{/spec-category}}
-</vbox>
+</fill>
+</hbox>

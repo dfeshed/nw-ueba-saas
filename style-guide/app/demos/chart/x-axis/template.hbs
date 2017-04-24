@@ -2,29 +2,31 @@
   {{spec-masthead model=model}}
 </hbox>
 
-<vbox class="scroll-box">
-  {{#spec-category}}
-    {{#spec-member title="default axis"}}
-      {{#rsa-chart data=model.singleSeries as |params|}}
-        {{rsa-x-axis height=params.graphHeight scale=params.xScale}}
-      {{/rsa-chart}}
-      {{!-- BEGIN-SNIPPET x1
-      {{#rsa-chart data=model.singleSeries as |params|}}
-        {{rsa-x-axis height=params.graphHeight scale=params.xScale}}
-      {{/rsa-chart}}
-      END-SNIPPET --}}
-      {{code-snippet name="x1.hbs"}}
-    {{/spec-member}}
-    {{#spec-member title="rotation"}}
-      {{#rsa-chart data=model.singleSeries as |params|}}
-        {{rsa-x-axis height=params.graphHeight scale=params.xScale rotation=-25}}
-      {{/rsa-chart}}
-      {{!-- BEGIN-SNIPPET x2
-      {{#rsa-chart data=model.singleSeries as |params|}}
-        {{rsa-x-axis height=params.graphHeight scale=params.xScale rotation=-25}}
-      {{/rsa-chart}}
-      END-SNIPPET --}}
-      {{code-snippet name="x2.hbs"}}
-    {{/spec-member}}
-  {{/spec-category}}
-</vbox>
+<hbox>
+  <fill block class="scroll-box">
+    {{#spec-category}}
+      {{#spec-member title="default axis"}}
+        {{#rsa-chart data=model.singleSeries as |params|}}
+          {{rsa-x-axis height=params.graphHeight scale=params.xScale}}
+        {{/rsa-chart}}
+        {{!-- BEGIN-SNIPPET x1
+        {{#rsa-chart data=model.singleSeries as |params|}}
+          {{rsa-x-axis height=params.graphHeight scale=params.xScale}}
+        {{/rsa-chart}}
+        END-SNIPPET --}}
+        {{code-snippet name="x1.hbs"}}
+      {{/spec-member}}
+      {{#spec-member title="rotation"}}
+        {{#rsa-chart data=model.singleSeries as |params|}}
+          {{rsa-x-axis height=params.graphHeight scale=params.xScale rotation=-25}}
+        {{/rsa-chart}}
+        {{!-- BEGIN-SNIPPET x2
+        {{#rsa-chart data=model.singleSeries as |params|}}
+          {{rsa-x-axis height=params.graphHeight scale=params.xScale rotation=-25}}
+        {{/rsa-chart}}
+        END-SNIPPET --}}
+        {{code-snippet name="x2.hbs"}}
+      {{/spec-member}}
+    {{/spec-category}}
+  </fill>
+</hbox>

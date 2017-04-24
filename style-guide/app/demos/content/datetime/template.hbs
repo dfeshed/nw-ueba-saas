@@ -2,7 +2,8 @@
   {{spec-masthead model=model}}
 </hbox>
 
-<vbox class="scroll-box">
+<hbox>
+  <fill block class="scroll-box">
   {{#spec-category}}
     {{#spec-member title="Default"}}
       {{rsa-content-datetime timestamp=1464108661196}}
@@ -60,4 +61,5 @@
       {{code-snippet name="datetimecontent7.hbs"}}
     {{/spec-member}}
   {{/spec-category}}
-</vbox>
+</fill>
+</hbox>

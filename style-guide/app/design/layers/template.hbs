@@ -2,7 +2,8 @@
   {{spec-masthead model=model}}
 </hbox>
 
-<vbox class="scroll-box">
+<hbox>
+  <fill block class="scroll-box">
   {{#spec-category}}
     {{#spec-member}}
       <div class='sg-demo-layer below'>
@@ -94,4 +95,5 @@
       </div>
     {{/spec-member}}
   {{/spec-category}}
-</vbox>
+</fill>
+</hbox>

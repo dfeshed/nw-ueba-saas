@@ -2,53 +2,55 @@
   {{spec-masthead model=model}}
 </hbox>
 
-<vbox class="scroll-box">
-  {{#spec-category}}
-    {{#spec-member title="Updating the global help link"}}
-      <p>
-        The global help link can be found in the application header on the right.
-        To update this link, begin by extending the route or component where you want to update from with the contextual help mixin.
-      </p>
+<hbox>
+  <fill block class="scroll-box">
+    {{#spec-category}}
+      {{#spec-member title="Updating the global help link"}}
+        <p>
+          The global help link can be found in the application header on the right.
+          To update this link, begin by extending the route or component where you want to update from with the contextual help mixin.
+        </p>
 
-      {{!-- BEGIN-SNIPPET help1
-      import ContextualHelp from '../mixins/contextual-help';
-      END-SNIPPET --}}
-      {{code-snippet name="help1.hbs"}}
+        {{!-- BEGIN-SNIPPET help1
+        import ContextualHelp from '../mixins/contextual-help';
+        END-SNIPPET --}}
+        {{code-snippet name="help1.hbs"}}
 
-      <p>
-        You can use the contextual-help service to directly set the module and topic for the help link.
-        Standardized module and topic ids can be found in the contextual help service.
-        Don't forget to unset values when needed, for example in the deactivate stage of a route.
-      </p>
+        <p>
+          You can use the contextual-help service to directly set the module and topic for the help link.
+          Standardized module and topic ids can be found in the contextual help service.
+          Don't forget to unset values when needed, for example in the deactivate stage of a route.
+        </p>
 
-      {{!-- BEGIN-SNIPPET help2
-      this.set('contextualHelp.module', 'moduleId');
-      this.set('contextualHelp.topic', 'topicId');
-      END-SNIPPET --}}
-      {{code-snippet name="help2.hbs"}}
-    {{/spec-member}}
+        {{!-- BEGIN-SNIPPET help2
+        this.set('contextualHelp.module', 'moduleId');
+        this.set('contextualHelp.topic', 'topicId');
+        END-SNIPPET --}}
+        {{code-snippet name="help2.hbs"}}
+      {{/spec-member}}
 
-    {{#spec-member title="Creating topical help links"}}
-      <p>
-        A topical help link can be created by first extending your component with the contextual-help mixin.
-      </p>
+      {{#spec-member title="Creating topical help links"}}
+        <p>
+          A topical help link can be created by first extending your component with the contextual-help mixin.
+        </p>
 
-      {{code-snippet name="help1.hbs"}}
+        {{code-snippet name="help1.hbs"}}
 
-      <p>
-        Next, add an icon button to your template and set the defaultAction to 'goToHelp'.
-        Pass the relevant module and the topic in that order and you're done.
-        Standardized module and topic ids can be found in the contextual help service.
-      </p>
+        <p>
+          Next, add an icon button to your template and set the defaultAction to 'goToHelp'.
+          Pass the relevant module and the topic in that order and you're done.
+          Standardized module and topic ids can be found in the contextual help service.
+        </p>
 
-      {{!-- BEGIN-SNIPPET help3
-      {{#rsa-form-button
-        isIconOnly=true
-        defaultAction=(action 'goToHelp' 'moduleId' 'topicId')}}
-        {{rsa-icon name="help-circle" style="lined"}}
-      {{/rsa-form-button}}
-      END-SNIPPET --}}
-      {{code-snippet name="help3.hbs"}}
-    {{/spec-member}}
-  {{/spec-category}}
-</vbox>
+        {{!-- BEGIN-SNIPPET help3
+        {{#rsa-form-button
+          isIconOnly=true
+          defaultAction=(action 'goToHelp' 'moduleId' 'topicId')}}
+          {{rsa-icon name="help-circle" style="lined"}}
+        {{/rsa-form-button}}
+        END-SNIPPET --}}
+        {{code-snippet name="help3.hbs"}}
+      {{/spec-member}}
+    {{/spec-category}}
+  </fill>
+</hbox>

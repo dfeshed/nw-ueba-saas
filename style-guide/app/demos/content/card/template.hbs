@@ -2,7 +2,8 @@
   {{spec-masthead model=model}}
 </hbox>
 
-<vbox class="scroll-box">
+<hbox>
+  <fill block class="scroll-box">
   {{#spec-category}}
     {{#spec-member title="Collapsed"}}
       {{#rsa-content-card isCollapsed=true}}Content{{/rsa-content-card}}
@@ -20,4 +21,5 @@
       {{code-snippet name="card2.hbs"}}
     {{/spec-member}}
   {{/spec-category}}
-</vbox>
+</fill>
+</hbox>

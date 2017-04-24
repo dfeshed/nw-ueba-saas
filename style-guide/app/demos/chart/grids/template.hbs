@@ -2,42 +2,44 @@
   {{spec-masthead model=model}}
 </hbox>
 
-<vbox class="scroll-box">
-  {{#spec-category}}
-    {{#spec-member title="example"}}
-      {{#rsa-chart data=model.singleSeries as |params|}}
-        {{rsa-chart-grids xScale=params.xScale yScale=params.yScale width=params.graphWidth height=params.graphHeight}}
-      {{/rsa-chart}}
-      {{!-- BEGIN-SNIPPET grid1
-      {{#rsa-chart data=model.singleSeries as |params|}}
-        {{rsa-chart-grids xScale=params.xScale yScale=params.yScale width=params.graphWidth height=params.graphHeight}}
-      {{/rsa-chart}}
-      END-SNIPPET --}}
-      {{code-snippet name="grid1.hbs"}}
-    {{/spec-member}}
+<hbox>
+  <fill block class="scroll-box">
+    {{#spec-category}}
+      {{#spec-member title="example"}}
+        {{#rsa-chart data=model.singleSeries as |params|}}
+          {{rsa-chart-grids xScale=params.xScale yScale=params.yScale width=params.graphWidth height=params.graphHeight}}
+        {{/rsa-chart}}
+        {{!-- BEGIN-SNIPPET grid1
+        {{#rsa-chart data=model.singleSeries as |params|}}
+          {{rsa-chart-grids xScale=params.xScale yScale=params.yScale width=params.graphWidth height=params.graphHeight}}
+        {{/rsa-chart}}
+        END-SNIPPET --}}
+        {{code-snippet name="grid1.hbs"}}
+      {{/spec-member}}
 
-    {{#spec-member title="hide X grid lines"}}
-      {{#rsa-chart data=model.singleSeries as |params|}}
-        {{rsa-chart-grids showXGrid=false yScale=params.yScale width=params.graphWidth}}
-      {{/rsa-chart}}
-      {{!-- BEGIN-SNIPPET grid2
-      {{#rsa-chart data=model.singleSeries as |params|}}
-        {{rsa-chart-grids showXGrid=false yScale=params.yScale width=params.graphWidth}}
-      {{/rsa-chart}}
-      END-SNIPPET --}}
-      {{code-snippet name="grid2.hbs"}}
-    {{/spec-member}}
+      {{#spec-member title="hide X grid lines"}}
+        {{#rsa-chart data=model.singleSeries as |params|}}
+          {{rsa-chart-grids showXGrid=false yScale=params.yScale width=params.graphWidth}}
+        {{/rsa-chart}}
+        {{!-- BEGIN-SNIPPET grid2
+        {{#rsa-chart data=model.singleSeries as |params|}}
+          {{rsa-chart-grids showXGrid=false yScale=params.yScale width=params.graphWidth}}
+        {{/rsa-chart}}
+        END-SNIPPET --}}
+        {{code-snippet name="grid2.hbs"}}
+      {{/spec-member}}
 
-    {{#spec-member title="hide Y grid lines"}}
-      {{#rsa-chart data=model.singleSeries as |params|}}
-        {{rsa-chart-grids showYGrid=false xScale=params.xScale height=params.graphHeight}}
-      {{/rsa-chart}}
-      {{!-- BEGIN-SNIPPET grid3
-      {{#rsa-chart data=model.singleSeries as |params|}}
-        {{rsa-chart-grids showYGrid=false xScale=params.xScale height=params.graphHeight}}
-      {{/rsa-chart}}
-      END-SNIPPET --}}
-      {{code-snippet name="grid3.hbs"}}
-    {{/spec-member}}
-  {{/spec-category}}
-</vbox>
+      {{#spec-member title="hide Y grid lines"}}
+        {{#rsa-chart data=model.singleSeries as |params|}}
+          {{rsa-chart-grids showYGrid=false xScale=params.xScale height=params.graphHeight}}
+        {{/rsa-chart}}
+        {{!-- BEGIN-SNIPPET grid3
+        {{#rsa-chart data=model.singleSeries as |params|}}
+          {{rsa-chart-grids showYGrid=false xScale=params.xScale height=params.graphHeight}}
+        {{/rsa-chart}}
+        END-SNIPPET --}}
+        {{code-snippet name="grid3.hbs"}}
+      {{/spec-member}}
+    {{/spec-category}}
+  </fill>
+</hbox>

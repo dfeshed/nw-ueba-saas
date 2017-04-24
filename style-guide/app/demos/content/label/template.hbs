@@ -2,7 +2,8 @@
   {{spec-masthead model=model}}
 </hbox>
 
-<vbox class="scroll-box">
+<hbox>
+  <fill block class="scroll-box">
   {{#spec-category title="Styles"}}
     {{#spec-member title="Default"}}
       {{rsa-content-label label='label'}}
@@ -110,4 +111,5 @@
       {{code-snippet name="label11.hbs"}}
     {{/spec-member}}
   {{/spec-category}}
-</vbox>
+</fill>
+</hbox>

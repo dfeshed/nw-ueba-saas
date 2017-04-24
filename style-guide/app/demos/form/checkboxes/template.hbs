@@ -2,7 +2,8 @@
   {{spec-masthead model=model}}
 </hbox>
 
-<vbox class="scroll-box">
+<hbox>
+  <fill block class="scroll-box">
   {{#spec-category title="States"}}
     {{#spec-member title="Default"}}
       <label class="rsa-form-checkbox-label {{if isChecked 'checked'}}">
@@ -63,4 +64,5 @@
       {{code-snippet name="checkbox4.hbs"}}
     {{/spec-member}}
   {{/spec-category}}
-</vbox>
+</fill>
+</hbox>
