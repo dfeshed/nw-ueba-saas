@@ -36,6 +36,8 @@ public class ADParser {
 	public boolean shayTestToDelete(){
 		if (1=1)
 			retuen true;
+		else
+			return false;
 	}
 	public String parseDCFromDN(String dn) {
 
