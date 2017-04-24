@@ -12,14 +12,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
 /**
  * This Command does a compare action on given fields from the record with some value from configuration.
- * Supports comparison of lists of fields & config-values (according to order - first in fields-list will be compared with first from configs-list and so on...)
- * Valid comparison types are: equals, contains (please notice that the contains is the normal String contains (not like the morphline command contains)). default comparison type is: equals
+ * Supports comparison of configuration as a comma-separated-list (will check if the fields is equal/contains/etc to at least one of the values in the list)
+ * Valid comparison types are: equals, contains. default comparison type is: equals
  */
 public class FieldsCompareWithConfigBuilder implements CommandBuilder {
 
@@ -44,47 +45,44 @@ public class FieldsCompareWithConfigBuilder implements CommandBuilder {
         @Autowired
         private CollectionPropertiesResolver collectionPropertiesResolver;
 
-        private List<String> fields;
-        private List<String> configs;
+        private String field;
+        private String configuration;
         private String comparisonType;
 
 
 
         public FieldsCompareWithConfig(CommandBuilder builder, Config config, Command parent, Command child, MorphlineContext context) {
             super(builder, config, parent, child, context);
-            fields = getConfigs().getStringList(config, "fields");
-            configs = getConfigs().getStringList(config, "configs");
+            field = getConfigs().getString(config, "field");
+            configuration = getConfigs().getString(config, "configuration");
             comparisonType = getConfigs().getString(config, "comparisonType", "equals");
         }
 
         @Override
         protected boolean doProcess(Record inputRecord) {
-            for (int i = 0; i < fields.size(); i++) {
-                final String currFieldKey = fields.get(i);
-                final String currConfigKey = configs.get(i);
-
-                final String currFieldValue = (String)inputRecord.getFirstValue(currFieldKey);
-                final String currConfigValue = getProperty(currConfigKey);
+            final String fieldValue = (String)inputRecord.getFirstValue(field);
+            final String configValue = getProperty(configuration); // this can be a CSV list as a single string
+            final List<String> valuesToCompare = Arrays.asList(configValue.split(","));
+            for (String valueToCompare : valuesToCompare) {
                 switch(comparisonType) {
                     case "equals": {
-                        if(!currFieldValue.equals(currConfigValue)) {
-                            return false;
+                        if(fieldValue.equals(valueToCompare)) {
+                            return true;
                         }
                         break;
                     }
                     case "contains":
-                        if(!currFieldValue.contains(currConfigValue)) {
-                            return false;
+                        if(fieldValue.contains(valueToCompare)) {
+                            return true;
                         }
                         break;
                     default:
                         logger.error("Invalid comparisonType - {}. Valid compare types are: equals,contains");
-                        break;
+                        return false;
                 }
             }
 
-
-            return true;
+            return false;
         }
 
         private String getProperty(String propertyKey) {
