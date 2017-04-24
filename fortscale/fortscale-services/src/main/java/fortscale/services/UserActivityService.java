@@ -26,11 +26,11 @@ public interface UserActivityService {
 
     List<UserActivityEmailRecipientDomainDocument> getUserActivityEmailRecipientDomainEntries(String id, int timeRangeInDays);
 
-    List<UserActivityEmailRecipientDomainDocument> getUserActivityEmailRecipientDomainEntriesWithBlackList(String id, int timeRangeInDays);
+    List<UserActivityEmailRecipientDomainDocument> getUserActivityEmailRecipientDomainEntriesWithBlacklist(String id, int timeRangeInDays);
 
     List<UserActivityTopDirectoriesDocument> getUserActivityTopDirectoriesEntries(String id, int timeRangeInDays);
 
-    List<UserActivityTopDirectoriesDocument> getUserActivityTopDirectoriesEntriesWithBlacklistFiltering(String id, int timeRangeInDays);
+    List<UserActivityTopDirectoriesDocument> getUserActivityTopDirectoriesEntriesWithBlacklist(String id, int timeRangeInDays);
 
     Set<String> getUserIdByUserLocation(List<String> userLocations);
 }

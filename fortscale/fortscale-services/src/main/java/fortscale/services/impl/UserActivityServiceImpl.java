@@ -9,10 +9,7 @@ import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Service("UserActivityService")
 public class UserActivityServiceImpl implements UserActivityService {
@@ -73,46 +70,15 @@ public class UserActivityServiceImpl implements UserActivityService {
     }
 
     @Override
-    public List<UserActivityEmailRecipientDomainDocument> getUserActivityEmailRecipientDomainEntriesWithBlackList(String id, int timeRangeInDays) {
+    public List<UserActivityEmailRecipientDomainDocument> getUserActivityEmailRecipientDomainEntriesWithBlacklist(String id, int timeRangeInDays) {
         List<UserActivityEmailRecipientDomainDocument> userActivityEmailRecipientDomainEntries = getUserActivityEmailRecipientDomainEntries(id, timeRangeInDays);
-        return filterEmailRecipientDomainsInBlackList(userActivityEmailRecipientDomainEntries);
-    }
-
-    private List<UserActivityEmailRecipientDomainDocument> filterEmailRecipientDomainsInBlackList(List<UserActivityEmailRecipientDomainDocument> userActivityEmailRecipientDomainEntries) {
-        final ApplicationConfiguration blacklistedDomainsConfiguration = applicationConfigurationService.getApplicationConfiguration(EMAIL_RECIPIENT_BLACKLIST_DOMAINS);
-        if (blacklistedDomainsConfiguration == null) {
-            logger.info("Can't filter blacklisted domains because there's no configuration. key : {}", EMAIL_RECIPIENT_BLACKLIST_DOMAINS);
-        }
-        else {
-            for (UserActivityEmailRecipientDomainDocument userActivityEmailRecipientDomainDocument : userActivityEmailRecipientDomainEntries) {
-                final Map<String, Double> filteredHistogram = filterBlacklist(blacklistedDomainsConfiguration, userActivityEmailRecipientDomainDocument);
-                userActivityEmailRecipientDomainDocument.getRecipientDomains().setRecipientHistogram(filteredHistogram);
-            }
-        }
-
-        return userActivityEmailRecipientDomainEntries;
-    }
-
-    private Map<String, Double> filterBlacklist(ApplicationConfiguration blacklistedDomainsConfiguration, UserActivityDocument userActivityDocument) {
-        final Map<String, Double> histogram = userActivityDocument.getHistogram();
-        final Set<String> blacklist = histogram.keySet();
-        final String blacklistValue = blacklistedDomainsConfiguration.getValue();
-        final Map<String, Double> filteredHistogram = new HashMap<>();
-        for (String filterValue : blacklist) {
-            final Double directoryCount = histogram.get(filterValue);
-            if (!blacklistValue.contains(filterValue)) {
-                filteredHistogram.put(filterValue, directoryCount);
-            } else {
-                logger.debug("Filtered {} with count {} ", filterValue, directoryCount);
-            }
-        }
-        return filteredHistogram;
+        return filterBlacklistedEmailRecipientDomains(userActivityEmailRecipientDomainEntries);
     }
 
     @Override
-    public List<UserActivityTopDirectoriesDocument> getUserActivityTopDirectoriesEntriesWithBlacklistFiltering(String id, int timeRangeInDays) {
+    public List<UserActivityTopDirectoriesDocument> getUserActivityTopDirectoriesEntriesWithBlacklist(String id, int timeRangeInDays) {
         final List<UserActivityTopDirectoriesDocument> userActivityTopDirectoriesEntries = getUserActivityTopDirectoriesEntries(id, timeRangeInDays);
-        return getFilteredBlacklistedDirectories(userActivityTopDirectoriesEntries);
+        return filterBlacklistedDirectories(userActivityTopDirectoriesEntries);
     }
 
     @Override
@@ -129,18 +95,50 @@ public class UserActivityServiceImpl implements UserActivityService {
         return userActivityRepository.getUserActivityEmailRecipientDomainEntries(id, timeRangeInDays);
     }
 
-    protected List<UserActivityTopDirectoriesDocument> getFilteredBlacklistedDirectories(List<UserActivityTopDirectoriesDocument> userActivityTopDirectoriesEntries) {
+    protected List<UserActivityTopDirectoriesDocument> filterBlacklistedDirectories(List<UserActivityTopDirectoriesDocument> userActivityTopDirectoriesEntries) {
         final ApplicationConfiguration blacklistedDirectoriesConfiguration = applicationConfigurationService.getApplicationConfiguration(BLACKLISTED_DIRECTORIES_KEY);
         if (blacklistedDirectoriesConfiguration == null) {
             logger.info("Can't filter blacklisted directories because there's no configuration for blacklisted directories. key : {}", BLACKLISTED_DIRECTORIES_KEY);
         }
         else {
             for (UserActivityTopDirectoriesDocument userActivityTopDirectoriesEntry : userActivityTopDirectoriesEntries) {
-                final Map<String, Double> filteredHistogram = filterBlacklist(blacklistedDirectoriesConfiguration, userActivityTopDirectoriesEntry);
+                final Map<String, Double> filteredHistogram = filterByBlacklist(blacklistedDirectoriesConfiguration, userActivityTopDirectoriesEntry);
                 userActivityTopDirectoriesEntry.getDirectories().setDirectoriesHistogram(filteredHistogram);
             }
         }
 
         return userActivityTopDirectoriesEntries;
+    }
+
+    private List<UserActivityEmailRecipientDomainDocument> filterBlacklistedEmailRecipientDomains(List<UserActivityEmailRecipientDomainDocument> userActivityEmailRecipientDomainEntries) {
+        final ApplicationConfiguration blacklistedDomainsConfiguration = applicationConfigurationService.getApplicationConfiguration(EMAIL_RECIPIENT_BLACKLIST_DOMAINS);
+        if (blacklistedDomainsConfiguration == null) {
+            logger.info("Can't filter blacklisted domains because there's no configuration. key : {}", EMAIL_RECIPIENT_BLACKLIST_DOMAINS);
+        }
+        else {
+            for (UserActivityEmailRecipientDomainDocument userActivityEmailRecipientDomainDocument : userActivityEmailRecipientDomainEntries) {
+                final Map<String, Double> filteredHistogram = filterByBlacklist(blacklistedDomainsConfiguration, userActivityEmailRecipientDomainDocument);
+                userActivityEmailRecipientDomainDocument.getRecipientDomains().setRecipientHistogram(filteredHistogram);
+            }
+        }
+
+        return userActivityEmailRecipientDomainEntries;
+    }
+
+    private Map<String, Double> filterByBlacklist(ApplicationConfiguration blacklistedValuesConfiguration, UserActivityDocument userActivityDocument) {
+        final Map<String, Double> histogram = userActivityDocument.getHistogram();
+        final Set<String> allValues = histogram.keySet();
+        final String blacklistValue = blacklistedValuesConfiguration.getValue();
+        final Map<String, Double> filteredHistogram = new HashMap<>();
+        final List<String> valueToBlacklist = Arrays.asList(blacklistValue.split(","));
+        for (String value : allValues) {
+            final Double count = histogram.get(value);
+            if (!valueToBlacklist.contains(value)) {
+                filteredHistogram.put(value, count);
+            } else {
+                logger.debug("Filtered {} with count {} ", value, count);
+            }
+        }
+        return filteredHistogram;
     }
 }

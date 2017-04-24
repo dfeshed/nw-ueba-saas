@@ -197,7 +197,7 @@ public class ApiUserActivityController extends DataQueryController {
                 id,
                 timePeriodInDays,
                 limit,
-                userActivityService::getUserActivityEmailRecipientDomainEntriesWithBlackList,
+                userActivityService::getUserActivityEmailRecipientDomainEntriesWithBlacklist,
                 this::convertDocumentsResponse,
                 EMAIL_RECIPIENT_DOMAIN);
         return userActivity;
@@ -233,7 +233,7 @@ public class ApiUserActivityController extends DataQueryController {
                 id,
                 timePeriodInDays,
                 limit,
-                userActivityService::getUserActivityTopDirectoriesEntriesWithBlacklistFiltering,
+                userActivityService::getUserActivityTopDirectoriesEntriesWithBlacklist,
                 this::convertTopDirectoriesDocumentsResponse,
                 TOP_DIRECTORIES,
                 false);
