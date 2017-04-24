@@ -34,7 +34,6 @@ $contentUpdateIndicatorBackgroundColor: rsa-color(blue);
 $contentUpdateIndicatorBorderColor: rsa-color(gray, lightest);
 $contentUpdateIndicatorTypeColor: rsa-color(gray, light);
 
-@import 'carousel';
 @import 'chart';
 @import 'content-accordion';
 @import 'content-badge-icon';
@@ -48,7 +47,6 @@ $contentUpdateIndicatorTypeColor: rsa-color(gray, light);
 @import 'icons';
 @import 'loader';
 @import 'logo';
-@import 'spacer';
 @import 'update-indicator';
 @import 'content-tethered-panel';
 @import 'content-tethered-panel-trigger';
