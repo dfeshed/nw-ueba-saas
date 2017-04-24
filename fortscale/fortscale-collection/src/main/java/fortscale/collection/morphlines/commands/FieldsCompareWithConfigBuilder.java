@@ -62,6 +62,10 @@ public class FieldsCompareWithConfigBuilder implements CommandBuilder {
         protected boolean doProcess(Record inputRecord) {
             final String fieldValue = (String)inputRecord.getFirstValue(field);
             final String configValue = getProperty(configuration); // this can be a CSV list as a single string
+            if (configValue == null) {
+                logger.error("Tried to get configuration {} but it does not exist");
+                return false;
+            }
             final List<String> valuesToCompare = Arrays.asList(configValue.split(","));
             for (String valueToCompare : valuesToCompare) {
                 switch(comparisonType) {
@@ -93,9 +97,6 @@ public class FieldsCompareWithConfigBuilder implements CommandBuilder {
                 logger.error("Property {} doesn't exist.", propertyKey);
             }
 
-            if (propertyValue == null) {
-                logger.warn("Tried to get property {} but it does not exist");
-            }
             return propertyValue;
         }
 
