@@ -11,6 +11,9 @@ export default Component.extend({
   @computed('type')
   isDate: (type) => type === DATE_DATATYPE,
 
+  @computed('name', 'type')
+  isByteSize: (name, type) => type === 3 && name === 'payloadSize' || name === 'packetSize',
+
   @computed('value')
   asInteger: (dateString) => parseInt(dateString, 10),
 

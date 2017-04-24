@@ -44,64 +44,59 @@ export default {
   ],
   'summaryAttributes': [
     {
-      'name': 'device',
-      'value': 'devicename',
-      'type': 1
+      'name': 'nwService',
+      'type': 1,
+      'value': 'concentrator'
     },
     {
-      'name': 'session',
-      'value': '14639',
-      'type': 1
+      'name': 'sessionId',
+      'type': 1,
+      'value': '59664'
     },
     {
       'name': 'type',
-      'value': 'network session',
-      'type': 1
+      'type': 1,
+      'value': 'network'
     },
     {
       'name': 'source',
-      'value': '192.168.58.6 : 65450',
-      'type': 1
+      'type': 1,
+      'value': '10.4.61.43'
     },
     {
       'name': 'destination',
-      'value': '50.28.0.19 : 80',
-      'type': 1
+      'type': 1,
+      'value': '10.4.61.53'
     },
     {
       'name': 'service',
-      'value': '80',
-      'type': 1
+      'type': 1,
+      'value': '443'
     },
     {
-      'name': 'first packet time',
-      'value': '1485792552870',
-      'type': 2
+      'name': 'firstPacketTime',
+      'type': 2,
+      'value': '1491232720485'
     },
     {
-      'name': 'last packet time',
-      'value': '1485793531329',
-      'type': 2
+      'name': 'lastPacketTime',
+      'type': 2,
+      'value': '1491232720513'
     },
     {
-      'name': 'packet size',
-      'value': '191,731 bytes',
-      'type': 1
+      'name': 'packetSize',
+      'type': 3,
+      'value': '7361'
     },
     {
-      'name': 'payload size',
-      'value': '176,135 bytes',
-      'type': 1
+      'name': 'payloadSize',
+      'type': 3,
+      'value': '5233'
     },
     {
-      'name': 'packet count',
-      'value': '236',
-      'type': 1
-    },
-    {
-      'name': 'flags',
-      'value': 'Keep, Assembled, App Meta, Network Meta',
-      'type': 1
+      'name': 'packetCount',
+      'type': 3,
+      'value': '32'
     }
   ]
 };

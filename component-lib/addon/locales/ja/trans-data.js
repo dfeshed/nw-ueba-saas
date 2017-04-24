@@ -177,17 +177,23 @@ export default {
       close: 'ja_Close Reconstruction'
     },
     eventHeader: {
-      device: 'ja_Device',
-      session: 'ja_Session ID',
-      id: 'ja_Session ID',
+      nwService: 'ja_NW Service',
+      sessionId: 'ja_Session ID',
       type: 'ja_Type',
-      firstPacketTime: 'ja_Collection Time',
-      eventTime: 'ja_Event Time',
-      eventSource: 'ja_Event Source',
-      eventType: 'ja_Event Type',
+      source: 'ja_Source IP:PORT',
+      destination: 'ja_Destination IP:PORT',
       service: 'ja_Service',
-      serviceType: 'ja_Service Type',
-      serviceClass: 'ja_Service Class'
+      firstPacketTime: 'ja_First Packet Time',
+      lastPacketTime: 'ja_Last Packet Time',
+      packetSize: 'ja_Packet Size',
+      payloadSize: 'ja_Payload Size',
+      packetCount: 'ja_Packet Count',
+      deviceIp: 'ja_Device IP',
+      deviceType: 'ja_Device Type',
+      deviceClass: 'ja_Device Class',
+      eventCategory: 'ja_Event Category',
+      collectionTime: 'ja_Collection Time',
+      eventTime: 'ja_Event Time'
     }
   },
   memsize: {

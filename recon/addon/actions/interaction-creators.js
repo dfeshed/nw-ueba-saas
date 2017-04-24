@@ -28,18 +28,16 @@ const createFilename = (headerItems, files = []) => {
    */
   let fileName = '';
 
-  const [type, service, id, session, device] =
-    ['type', 'service', 'id', 'session', 'device'].map((k) => {
+  const [nwService, sessionId] =
+    ['nwService', 'sessionId'].map((k) => {
       return get(getHeaderItem(headerItems, k), 'value');
     });
 
-  if (type === 'Network' && device && session) {
-    fileName = `${device}_SID${session}`;
+  if (nwService && sessionId) {
+    fileName = `${nwService}_SID${sessionId}`;
     if (isEmberArray(files) && files.length) {
       fileName += `_FC${files.length}`;
     }
-  } else if (type === 'Log' && service && id) {
-    fileName = `${service}_SID${id}`;
   }
 
   return fileName;
@@ -50,15 +48,18 @@ const extractFiles = (type = 'FILES') => {
     const {
       recon,
       recon: {
+        header: {
+          headerItems
+        },
         data: {
           endpointId,
-          eventId,
-          headerItems
+          eventId
         }
       }
     } = getState();
 
     const selectedFileNames = selectedFiles(recon).map(({ fileName }) => fileName);
+
     const filename = createFilename(headerItems, selectedFileNames);
 
     dispatch({

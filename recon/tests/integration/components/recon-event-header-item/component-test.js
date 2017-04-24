@@ -6,11 +6,10 @@ moduleForComponent('recon-event-header-item', 'Integration | Component | recon e
 });
 
 test('header item name and value render', function(assert) {
-  this.set('name', 'foo');
-  this.set('value', 'bar');
+  this.set('name', 'nwService');
+  this.set('value', 'concentrator');
 
   this.render(hbs`{{recon-event-header-item name=name value=value}}`);
-
-  assert.equal(this.$('.name').first().text().trim(), 'foo');
-  assert.equal(this.$('.value').first().text().trim(), 'bar');
+  assert.equal(this.$('.name').first().text().trim(), 'NW Service');
+  assert.equal(this.$('.value').first().text().trim(), 'concentrator');
 });

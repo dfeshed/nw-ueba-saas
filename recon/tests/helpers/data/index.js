@@ -11,14 +11,12 @@ const { A } = Ember;
 // TODO: this is duplicated from client code
 const _generateHeaderItems = (items) => (
   items.reduce(function(headerItems, item) {
-    if (item.name === 'destination' || item.name === 'source') {
-      headerItems.pushObjects([{
-        name: `${item.name} IP:PORT`,
-        value: item.value
-      }]);
-    } else {
-      headerItems.pushObject(item);
+    if (!item.id && item.name) {
+      item.id = item.name;
     }
+
+    headerItems.pushObject(Object.create(item));
+
     return headerItems;
   }, A([]))
 );

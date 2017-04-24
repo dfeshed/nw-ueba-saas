@@ -2,39 +2,33 @@ import Component from 'ember-component';
 import { A, isEmberArray } from 'ember-array/utils';
 import connect from 'ember-redux/components/connect';
 import computed from 'ember-computed-decorators';
-import { RECON_DISPLAYED_LOG_HEADER } from 'recon/utils/recon-event-header';
+import { RECON_DISPLAYED_HEADER } from 'recon/utils/recon-event-header';
 import layout from './template';
-import { isLogEvent } from 'recon/reducers/meta/selectors';
 
-const stateToComputed = ({ recon, recon: { visuals, header } }) => ({
+const stateToComputed = ({ recon: { visuals, header } }) => ({
   isHeaderOpen: visuals.isHeaderOpen,
   headerItems: header.headerItems,
-  headerError: header.headerError,
-  isLogEvent: isLogEvent(recon)
+  headerError: header.headerError
 });
 
 const EventHeaderComponent = Component.extend({
   layout,
   tagName: '',
+
   @computed('headerItems')
   displayedHeaderItems(headerItems) {
-    const isLogEvent = this.get('isLogEvent');
-    if (isEmberArray(headerItems) && isLogEvent) {
+    if (isEmberArray(headerItems)) {
       const displayedItems = A([]);
+
       headerItems.forEach((item) => {
         // Get the (so)sort order from recon displayed header object.
-        const so = RECON_DISPLAYED_LOG_HEADER[item.name];
-        if (item && item.name && so) {
-          // Move the item name to item id
-          const id = item.name;
-
-          // Replace the item name with a localized string
-          const name = this.get('i18n').t(`recon.eventHeader.${item.name.camelize()}`);
-
-          const { value } = item;
+        const so = RECON_DISPLAYED_HEADER[item.id];
+        if (item && item.name && so >= 0) {
+          // Add sort order to object
+          item.so = so;
 
           // Add the properties we want to override into a new object and add to displayedItems
-          displayedItems.pushObject({ id, name, so, value });
+          displayedItems.pushObject(item);
         }
       });
       // Sort the Array by the sort order parameter

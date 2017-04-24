@@ -114,9 +114,9 @@ export const payloadProcessedPackets = createSelector(
 export const hasPayload = createSelector(
   headerItems,
   (headerItems) => {
-    const headerItem = getHeaderItem(headerItems, 'payload size');
+    const headerItem = getHeaderItem(headerItems, 'payloadSize');
 
-    if (headerItem && headerItem.value !== '0 bytes') {
+    if (headerItem && headerItem.value !== '0') {
       return true;
     }
 

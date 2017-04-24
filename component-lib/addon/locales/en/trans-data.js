@@ -177,17 +177,23 @@ export default {
       close: 'Close Reconstruction'
     },
     eventHeader: {
-      device: 'Device',
-      session: 'Session ID',
-      id: 'Session ID',
+      nwService: 'NW Service',
+      sessionId: 'Session ID',
       type: 'Type',
-      firstPacketTime: 'Collection Time',
-      eventTime: 'Event Time',
-      eventSource: 'Event Source',
-      eventType: 'Event Type',
+      source: 'Source IP:PORT',
+      destination: 'Destination IP:PORT',
       service: 'Service',
-      serviceType: 'Service Type',
-      serviceClass: 'Service Class'
+      firstPacketTime: 'First Packet Time',
+      lastPacketTime: 'Last Packet Time',
+      packetSize: 'Packet Size',
+      payloadSize: 'Payload Size',
+      packetCount: 'Packet Count',
+      deviceIp: 'Device IP',
+      deviceType: 'Device Type',
+      deviceClass: 'Device Class',
+      eventCategory: 'Event Category',
+      collectionTime: 'Collection Time',
+      eventTime: 'Event Time'
     }
   },
   memsize: {

@@ -16,9 +16,9 @@ test('headerItems render correctly', function(assert) {
   new DataHelper(this.get('redux')).initializeData();
   this.render(hbs`{{recon-event-header}}`);
   return wait().then(() => {
-    assert.equal(this.$('.header-item').length, 12);
-    assert.equal(this.$('.header-item .name').first().text().trim(), 'device');
-    assert.equal(this.$('.header-item .value').first().text().trim(), 'devicename');
+    assert.equal(this.$('.header-item').length, 11);
+    assert.equal(this.$('.header-item .name').first().text().trim(), 'NW Service');
+    assert.equal(this.$('.header-item .value').first().text().trim(), 'concentrator');
   });
 });
 
@@ -26,13 +26,12 @@ test('isHeaderOpen can toggle header visibility', function(assert) {
   const dataHelper = new DataHelper(this.get('redux'))
     .initializeData()
     .toggleHeader();
-
   this.render(hbs`{{recon-event-header}}`);
   return wait().then(() => {
     assert.equal(this.$('.header-item').length, 0);
     dataHelper.toggleHeader();
     return wait().then(() => {
-      assert.equal(this.$('.header-item').length, 12);
+      assert.equal(this.$('.header-item').length, 11);
     });
   });
 });
