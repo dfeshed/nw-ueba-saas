@@ -1,11 +1,12 @@
 import Ember from 'ember';
+import config from 'ember-get-config';
+import { isNone, isEmpty } from 'ember-utils';
 
 const {
   Service,
   inject: {
     service
   },
-  isNone,
   computed
 } = Ember;
 
@@ -28,6 +29,14 @@ export default Service.extend({
     label: 'userPreferences.dateFormat.yearFirst',
     format: 'YYYY/MM/DD'
   }],
+
+  init() {
+    this._super(...arguments);
+
+    if (isEmpty(this.get('selected'))) {
+      this.set('selected', this.get('options').findBy('key', config.dateFormatDefault));
+    }
+  },
 
   persist(value) {
     this.get('request').promiseRequest({

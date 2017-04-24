@@ -1,8 +1,9 @@
 import { A } from 'ember-array/utils';
 import computed, { alias } from 'ember-computed';
-import { isNone } from 'ember-utils';
+import { isNone, isEmpty } from 'ember-utils';
 import Service from 'ember-service';
 import service from 'ember-service/inject';
+import config from 'ember-get-config';
 
 export default Service.extend({
 
@@ -67,6 +68,13 @@ export default Service.extend({
 
     return options;
   }),
+
+  init() {
+    this._super(...arguments);
+    if (isEmpty(this.get('selected'))) {
+      this.set('selected', this.get('options').findBy('key', config.landingPageDefault));
+    }
+  },
 
   persist(value) {
     this.get('request').promiseRequest({

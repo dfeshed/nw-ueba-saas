@@ -1,12 +1,13 @@
 import Ember from 'ember';
+import config from 'ember-get-config';
+import { isNone, isEmpty } from 'ember-utils';
 
 const {
   Service,
   computed,
   inject: {
     service
-  },
-  isNone
+  }
 } = Ember;
 
 export default Service.extend({
@@ -22,6 +23,14 @@ export default Service.extend({
     label: 'userPreferences.timeFormat.twentyFourHour',
     format: 'HH:mm:ss.SSS'
   }],
+
+  init() {
+    this._super(...arguments);
+
+    if (isEmpty(this.get('selected'))) {
+      this.set('selected', this.get('options').findBy('key', config.timeFormatDefault));
+    }
+  },
 
   persist(value) {
     this.get('request').promiseRequest({
