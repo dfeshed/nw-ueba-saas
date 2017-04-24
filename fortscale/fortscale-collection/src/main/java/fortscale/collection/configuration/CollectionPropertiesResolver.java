@@ -147,7 +147,11 @@ public class CollectionPropertiesResolver implements InitializingBean{
 	 * @return
 	 */
 	public String getPropertyValue(String key) {
-		return properties.getProperty(key);
+		String propertyValue = properties.getProperty(key);
+		if (propertyValue == null) {
+			propertyValue = env.getProperty(key);
+		}
+		return propertyValue;
 	}
 
 }
