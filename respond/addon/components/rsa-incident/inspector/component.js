@@ -31,6 +31,9 @@ const dispatchToActions = (dispatch) => ({
 
 const MINIMUM_WIDTH = 350;
 
+// Validates a given width and enforces a minimum value.
+const resolveWidth = (width) => Math.max((isNaN(width) ? 0 : width), MINIMUM_WIDTH);
+
 const IncidentInspector = Component.extend({
   attributeBindings: ['style'],
   tagName: 'article',
@@ -46,10 +49,10 @@ const IncidentInspector = Component.extend({
   storyPointCount: null,
   storyEventCount: null,
 
-  // Same as `width`, but enforces minimum & maximum.
+  // Same as `width`, but enforces minimum.
   @computed('width')
   resolvedWidth(width) {
-    return Math.max((width || 0), MINIMUM_WIDTH);
+    return resolveWidth(width);
   },
 
   @computed('resolvedWidth')
@@ -68,7 +71,7 @@ const IncidentInspector = Component.extend({
     const dragmove = (e, ctxt) => {
       const delta = ctxt.get('delta') || [];
       const width = this.get('widthWas') + delta[0];
-      this.send('resizeAction', width);
+      this.send('resizeAction', resolveWidth(width));
     };
     const dragend = () => {
       this.set('isResizing', false);
