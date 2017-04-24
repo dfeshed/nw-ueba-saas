@@ -11,7 +11,12 @@
     <import resource="classpath*:META-INF/spring/collection-context-test-morphline.xml"/>
 
     <bean  class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
-        <property name="location" value="classpath:META-INF/fortscale-collection-test.properties"/>
+        <property name="locations">
+            <list>
+                <value>classpath:fortscale-collection-overriding.properties</value>
+                <value>classpath:META-INF/fortscale-collection-test.properties</value>
+            </list>
+        </property>
         <property name="order" value="#{T(org.springframework.core.Ordered).HIGHEST_PRECEDENCE}"/>
         <property name="ignoreUnresolvablePlaceholders" value="true"/>
         <property name="localOverride" value="true"/>
@@ -49,11 +54,11 @@
 
     <bean id="serversListConfiguration" class="fortscale.services.impl.ServersListConfigurationImpl"/>
 
+    <bean id="collectionPropertiesResolver" class="fortscale.collection.configuration.CollectionPropertiesResolver"/>
+
     <mockito:mock id="activeDirectoryService" class="fortscale.services.ActiveDirectoryService"/>
 
     <mockito:mock id="filterMachinesService" class="fortscale.services.computer.filtering.impl.FilterMachinesServiceImpl"/>
-
-    <mockito:mock id="collectionPropertiesResolver" class = "fortscale.collection.configuration.CollectionPropertiesResolver"/>
 
     <mockito:mock id="computerLoginEventRepository" class = "fortscale.domain.events.dao.ComputerLoginEventRepository"/>
 
