@@ -1,7 +1,7 @@
 package fortscale.collection.jobs.activity;
 
-import fortscale.collection.services.UserActivityConfigurationService;
-import fortscale.collection.services.UserActivityDataUsageConfigurationService;
+import fortscale.collection.services.useractivity.UserActivityConfigurationService;
+import fortscale.collection.services.useractivity.UserActivityDataUsageConfigurationService;
 import fortscale.common.feature.AggrFeatureValue;
 import fortscale.common.feature.Feature;
 import fortscale.common.feature.FeatureValue;

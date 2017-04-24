@@ -1,15 +1,13 @@
-package fortscale.collection.services;
+package fortscale.collection.services.useractivity;
 
 import fortscale.collection.jobs.activity.UserActivityType;
 import fortscale.utils.logging.Logger;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.util.Map;
 
 @Service("userActivityTargetDeviceConfigurationService")
-public class UserActivityTargetDeviceConfigurationService extends BaseUserActivityConfigurationService implements InitializingBean {
+public class UserActivityTargetDeviceConfigurationService extends BaseUserActivityConfigurationService {
 
 
 	private static final String USER_ACTIVITY_TARGET_DEVICE_CONFIGURATION_KEY = "user_activity.target_device.configuration";
@@ -52,6 +50,4 @@ public class UserActivityTargetDeviceConfigurationService extends BaseUserActivi
 	public Map<String, UserActivityDataSourceConfiguration> getActivityDataSourceConfigurationMap() {
 		return activityDataSourceConfigurationMap;
 	}
-
-
 }

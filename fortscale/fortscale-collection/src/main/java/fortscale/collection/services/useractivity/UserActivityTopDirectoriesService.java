@@ -1,17 +1,15 @@
-package fortscale.collection.services;
+package fortscale.collection.services.useractivity;
 
 
 import fortscale.collection.jobs.activity.UserActivityBaseHandler;
 import fortscale.collection.jobs.activity.UserActivityType;
 import fortscale.utils.logging.Logger;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.util.Map;
 
 @Service("userActivityTopDirectoriesService")
-public class UserActivityTopDirectoriesService extends BaseUserActivityConfigurationService implements InitializingBean {
+public class UserActivityTopDirectoriesService extends BaseUserActivityConfigurationService {
 
     private static final Logger logger = Logger.getLogger(UserActivityTopDirectoriesService.class);
 

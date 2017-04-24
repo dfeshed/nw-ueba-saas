@@ -1,8 +1,8 @@
 package fortscale.collection.jobs.activity;
 
 import fortscale.aggregation.feature.functions.AggGenericNAFeatureValues;
-import fortscale.collection.services.UserActivityConfigurationService;
-import fortscale.collection.services.UserActivityLocationConfigurationService;
+import fortscale.collection.services.useractivity.UserActivityConfigurationService;
+import fortscale.collection.services.useractivity.UserActivityLocationConfigurationService;
 import fortscale.domain.core.User;
 import fortscale.domain.core.activities.OrganizationActivityLocationDocument;
 import fortscale.domain.core.activities.UserActivityDocument;

@@ -1,8 +1,8 @@
 package fortscale.collection.jobs.activity;
 
-import fortscale.collection.services.UserActivityConfigurationService;
-import fortscale.collection.services.UserActivityDataSourceConfiguration;
-import fortscale.collection.services.UserActivityTargetDeviceConfigurationService;
+import fortscale.collection.services.useractivity.UserActivityConfigurationService;
+import fortscale.collection.services.useractivity.UserActivityDataSourceConfiguration;
+import fortscale.collection.services.useractivity.UserActivityTargetDeviceConfigurationService;
 import fortscale.domain.core.activities.UserActivityTargetDeviceDocument;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

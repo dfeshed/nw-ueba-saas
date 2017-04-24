@@ -1,4 +1,4 @@
-package fortscale.collection.services;
+package fortscale.collection.services.useractivity;
 
 import fortscale.utils.logging.Logger;
 

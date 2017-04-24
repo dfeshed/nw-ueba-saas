@@ -1,8 +1,8 @@
 package fortscale.collection.jobs.activity;
 
-import fortscale.collection.services.UserActivityConfigurationService;
-import fortscale.collection.services.UserActivityDataSourceConfiguration;
-import fortscale.collection.services.UserActivityEmailRecipientDomainService;
+import fortscale.collection.services.useractivity.UserActivityConfigurationService;
+import fortscale.collection.services.useractivity.UserActivityDataSourceConfiguration;
+import fortscale.collection.services.useractivity.UserActivityEmailRecipientDomainService;
 import fortscale.domain.core.activities.UserActivityEmailRecipientDomainDocument;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
