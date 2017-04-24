@@ -95,6 +95,9 @@ public class FieldsCompareWithConfigBuilder implements CommandBuilder {
                 logger.error("Property {} doesn't exist.", propertyKey);
             }
 
+            if (propertyValue == null) {
+                logger.warn("Tried to get property {} but it does not exist");
+            }
             return propertyValue;
         }
 

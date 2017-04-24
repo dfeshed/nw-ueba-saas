@@ -151,6 +151,9 @@ public class CollectionPropertiesResolver implements InitializingBean{
 		if (propertyValue == null) {
 			propertyValue = env.getProperty(key);
 		}
+		if (propertyValue == null) {
+			logger.info("Tried to get property {} but it does not exist");
+		}
 		return propertyValue;
 	}
 
