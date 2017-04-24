@@ -1,4 +1,4 @@
-package fortscale.collection.services;
+package fortscale.collection.services.useractivity;
 
 
 import fortscale.collection.jobs.activity.UserActivityBaseHandler;
@@ -11,7 +11,7 @@ import javax.annotation.PostConstruct;
 import java.util.Map;
 
 @Service("userActivityClassificationExposureService")
-public class UserActivityClassificationExposureService extends BaseUserActivityConfigurationService implements InitializingBean {
+public class UserActivityClassificationExposureService extends BaseUserActivityConfigurationService{
 
     private static final Logger logger = Logger.getLogger(UserActivityClassificationExposureService.class);
 
