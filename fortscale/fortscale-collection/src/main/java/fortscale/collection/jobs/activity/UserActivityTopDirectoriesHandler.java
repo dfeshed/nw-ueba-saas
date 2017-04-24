@@ -1,9 +1,9 @@
 package fortscale.collection.jobs.activity;
 
 
-import fortscale.collection.services.UserActivityConfigurationService;
-import fortscale.collection.services.UserActivityDataSourceConfiguration;
-import fortscale.collection.services.UserActivityTopDirectoriesService;
+import fortscale.collection.services.useractivity.UserActivityConfigurationService;
+import fortscale.collection.services.useractivity.UserActivityDataSourceConfiguration;
+import fortscale.collection.services.useractivity.UserActivityTopDirectoriesService;
 import fortscale.domain.core.activities.UserActivityTopDirectoriesDocument;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

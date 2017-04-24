@@ -30,7 +30,7 @@ public class AdGroupProcessJob extends AdProcessJob {
 
 	@Override
 	protected boolean isTimestampAlreadyProcessed(String runtime) {
-		return adGroupRepository.countByRuntime(runtime) > 0 ? true : false;
+		return adGroupRepository.countByRuntime(runtime) > 0;
 	}
 
 	@Override
@@ -42,7 +42,7 @@ public class AdGroupProcessJob extends AdProcessJob {
 		}
 		final AdGroup existingGroup = adGroupRepository.findByObjectGUID(adGroup.getObjectGUID());
 		if (existingGroup != null) {
-			logger.info("Updating group with objectGUID {}", existingGroup.getObjectGUID());
+			logger.debug("Updating group with objectGUID {}", existingGroup.getObjectGUID());
 			adGroupRepository.delete(existingGroup);
 		}
 

@@ -1,27 +1,24 @@
-package fortscale.collection.services;
+package fortscale.collection.services.useractivity;
 
 import fortscale.collection.jobs.activity.UserActivityType;
 import fortscale.utils.logging.Logger;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.util.*;
 
 @Service("userActivitySourceMachineConfigurationService")
-public class UserActivitySourceMachineConfigurationService extends BaseUserActivityConfigurationService implements InitializingBean {
+public class UserActivitySourceMachineConfigurationService extends BaseUserActivityConfigurationService {
 
 
 	private static final Logger logger = Logger.getLogger(UserActivitySourceMachineConfigurationService.class);
 	private static final String USER_ACTIVITY_SOURCE_MACHINE_CONFIGURATION_KEY =
 			"user_activity.source_machine.configuration";
 
-	@PostConstruct
-	public void init(){
+	public UserActivitySourceMachineConfigurationService(){
 		activityDataSourceConfigurationMap.put("kerberos_logins", new UserActivityDataSourceConfiguration("kerberos_logins",
-																									  "aggr_normalized_username_kerberos_logins_hourly",
-																									  "aggregatedFeatures",
-																										UserActivityType.SOURCE_MACHINE.name()));
+			  	"aggr_normalized_username_kerberos_logins_hourly",
+			  	"aggregatedFeatures",
+				UserActivityType.SOURCE_MACHINE.name()));
 		activityDataSourceConfigurationMap.put("kerberos_tgt", new UserActivityDataSourceConfiguration("kerberos_tgt",
 				"aggr_normalized_username_kerberos_tgt_hourly",
 				"aggregatedFeatures",
@@ -43,32 +40,18 @@ public class UserActivitySourceMachineConfigurationService extends BaseUserActiv
 				"aggregatedFeatures",
 				UserActivityType.SOURCE_MACHINE.name()));
 		activityDataSourceConfigurationMap.put("prnlog", new UserActivityDataSourceConfiguration("prnlog",
-				"aggr_normalized_username_prnlog_daily",
+				"aggr_normalized_username_prnlog_hourly",
 				"aggregatedFeatures",
 				UserActivityType.SOURCE_MACHINE.name()));
 		activityDataSourceConfigurationMap.put("dlpmail", new UserActivityDataSourceConfiguration("dlpmail",
-				"aggr_normalized_username_dlpmail_daily",
+				"aggr_normalized_username_dlpmail_hourly",
 				"aggregatedFeatures",
 				UserActivityType.SOURCE_MACHINE.name()));
 		activityDataSourceConfigurationMap.put("dlpfile", new UserActivityDataSourceConfiguration("dlpfile",
-				"aggr_normalized_username_dlpfile_daily",
+				"aggr_normalized_username_dlpfile_hourly",
 				"aggregatedFeatures",
 				UserActivityType.SOURCE_MACHINE.name()));
 	}
-
-	@Override
-	public UserActivityConfiguration createUserActivityConfiguration() {
-		final Set<String> activities = new HashSet();
-		final Map<String, String> dataSourceToCollection = new HashMap();
-		final Map<String, List<String>> activityToDataSources = new HashMap();
-		for (UserActivityDataSourceConfiguration activity: activityDataSourceConfigurationMap.values()) {
-			activities.add(activity.getPropertyName());
-			dataSourceToCollection.put(activity.getDatasource(), activity.getCollectionName());
-			activityToDataSources.put(activity.getPropertyName(), new ArrayList<>(Arrays.asList(	activity.getDatasource())));
-		}
-		return new UserActivityConfiguration(activities, dataSourceToCollection, activityToDataSources);
-	}
-
 
 	@Override
 	public String getActivityName() {

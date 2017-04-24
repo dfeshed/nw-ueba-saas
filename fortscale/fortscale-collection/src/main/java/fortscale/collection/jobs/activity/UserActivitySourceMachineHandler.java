@@ -1,8 +1,8 @@
 package fortscale.collection.jobs.activity;
 
-import fortscale.collection.services.UserActivityConfigurationService;
-import fortscale.collection.services.UserActivityDataSourceConfiguration;
-import fortscale.collection.services.UserActivitySourceMachineConfigurationService;
+import fortscale.collection.services.useractivity.UserActivityConfigurationService;
+import fortscale.collection.services.useractivity.UserActivityDataSourceConfiguration;
+import fortscale.collection.services.useractivity.UserActivitySourceMachineConfigurationService;
 import fortscale.domain.core.User;
 import fortscale.domain.core.activities.UserActivitySourceMachineDocument;
 import fortscale.services.UserActivityService;

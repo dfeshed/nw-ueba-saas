@@ -241,6 +241,17 @@
       "strategyName": "fixed_duration_hourly",
       "aggrFeatureConfs": [
         {
+          "name": "normalized_src_machine_histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "normalized_src_machine"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        },
+        {
           "name": "highest_date_time_score",
           "featureNamesMap": {
             "maximize": [
@@ -710,6 +721,17 @@
       ],
       "strategyName": "fixed_duration_hourly",
       "aggrFeatureConfs": [
+        {
+          "name": "normalized_src_machine_histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "normalized_src_machine"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        },
         {
           "name": "highest_date_time_score",
           "featureNamesMap": {

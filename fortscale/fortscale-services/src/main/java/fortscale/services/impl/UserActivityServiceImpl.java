@@ -9,10 +9,7 @@ import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Service("UserActivityService")
 public class UserActivityServiceImpl implements UserActivityService {
@@ -20,6 +17,7 @@ public class UserActivityServiceImpl implements UserActivityService {
     private static final Logger logger = Logger.getLogger(UserActivityServiceImpl.class);
 
     private static final String BLACKLISTED_DIRECTORIES_KEY = "user_activity.directories.blacklisted_directories";
+    private static final String EMAIL_RECIPIENT_BLACKLIST_DOMAINS = "user_activity.email_recipient.blacklisted_domains";
     private final UserActivityRepository userActivityRepository;
 
     @Autowired
@@ -72,9 +70,15 @@ public class UserActivityServiceImpl implements UserActivityService {
     }
 
     @Override
-    public List<UserActivityTopDirectoriesDocument> getUserActivityTopDirectoriesEntriesWithBlacklistFiltering(String id, int timeRangeInDays) {
+    public List<UserActivityEmailRecipientDomainDocument> getUserActivityEmailRecipientDomainEntriesWithBlacklist(String id, int timeRangeInDays) {
+        List<UserActivityEmailRecipientDomainDocument> userActivityEmailRecipientDomainEntries = getUserActivityEmailRecipientDomainEntries(id, timeRangeInDays);
+        return filterBlacklistedEmailRecipientDomains(userActivityEmailRecipientDomainEntries);
+    }
+
+    @Override
+    public List<UserActivityTopDirectoriesDocument> getUserActivityTopDirectoriesEntriesWithBlacklist(String id, int timeRangeInDays) {
         final List<UserActivityTopDirectoriesDocument> userActivityTopDirectoriesEntries = getUserActivityTopDirectoriesEntries(id, timeRangeInDays);
-        return getFilteredBlacklistedDirectories(userActivityTopDirectoriesEntries);
+        return filterBlacklistedDirectories(userActivityTopDirectoriesEntries);
     }
 
     @Override
@@ -91,35 +95,50 @@ public class UserActivityServiceImpl implements UserActivityService {
         return userActivityRepository.getUserActivityEmailRecipientDomainEntries(id, timeRangeInDays);
     }
 
-    @Override
-    public List<UserActivityClassificationExposureDocument> getUserActivityClassificationExposureEntries(String id, int timeRangeInDays) {
-        return userActivityRepository.getUserActivityClassificationExposureEntries(id, timeRangeInDays);
-    }
-
-    protected List<UserActivityTopDirectoriesDocument> getFilteredBlacklistedDirectories(List<UserActivityTopDirectoriesDocument> userActivityTopDirectoriesEntries) {
+    protected List<UserActivityTopDirectoriesDocument> filterBlacklistedDirectories(List<UserActivityTopDirectoriesDocument> userActivityTopDirectoriesEntries) {
         final ApplicationConfiguration blacklistedDirectoriesConfiguration = applicationConfigurationService.getApplicationConfiguration(BLACKLISTED_DIRECTORIES_KEY);
         if (blacklistedDirectoriesConfiguration == null) {
             logger.info("Can't filter blacklisted directories because there's no configuration for blacklisted directories. key : {}", BLACKLISTED_DIRECTORIES_KEY);
         }
         else {
             for (UserActivityTopDirectoriesDocument userActivityTopDirectoriesEntry : userActivityTopDirectoriesEntries) {
-                final Map<String, Double> histogram = userActivityTopDirectoriesEntry.getHistogram();
-                final Set<String> directories = histogram.keySet();
-                final String blacklistedDirectories = blacklistedDirectoriesConfiguration.getValue();
-                final Map<String, Double> filteredHistogram = new HashMap<>();
-                for (String directory : directories) {
-                    final Double directoryCount = histogram.get(directory);
-                    if (!blacklistedDirectories.contains(directory)) {
-                        filteredHistogram.put(directory, directoryCount);
-                    }
-                    else {
-                        logger.debug("Filtered directory {} with count {} from top directories.", directory, directoryCount);
-                    }
-                }
+                final Map<String, Double> filteredHistogram = filterByBlacklist(blacklistedDirectoriesConfiguration, userActivityTopDirectoriesEntry);
                 userActivityTopDirectoriesEntry.getDirectories().setDirectoriesHistogram(filteredHistogram);
             }
         }
 
         return userActivityTopDirectoriesEntries;
+    }
+
+    private List<UserActivityEmailRecipientDomainDocument> filterBlacklistedEmailRecipientDomains(List<UserActivityEmailRecipientDomainDocument> userActivityEmailRecipientDomainEntries) {
+        final ApplicationConfiguration blacklistedDomainsConfiguration = applicationConfigurationService.getApplicationConfiguration(EMAIL_RECIPIENT_BLACKLIST_DOMAINS);
+        if (blacklistedDomainsConfiguration == null) {
+            logger.info("Can't filter blacklisted domains because there's no configuration. key : {}", EMAIL_RECIPIENT_BLACKLIST_DOMAINS);
+        }
+        else {
+            for (UserActivityEmailRecipientDomainDocument userActivityEmailRecipientDomainDocument : userActivityEmailRecipientDomainEntries) {
+                final Map<String, Double> filteredHistogram = filterByBlacklist(blacklistedDomainsConfiguration, userActivityEmailRecipientDomainDocument);
+                userActivityEmailRecipientDomainDocument.getRecipientDomains().setRecipientHistogram(filteredHistogram);
+            }
+        }
+
+        return userActivityEmailRecipientDomainEntries;
+    }
+
+    private Map<String, Double> filterByBlacklist(ApplicationConfiguration blacklistedValuesConfiguration, UserActivityDocument userActivityDocument) {
+        final Map<String, Double> histogram = userActivityDocument.getHistogram();
+        final Set<String> allValues = histogram.keySet();
+        final String blacklistValue = blacklistedValuesConfiguration.getValue();
+        final Map<String, Double> filteredHistogram = new HashMap<>();
+        final List<String> valueToBlacklist = Arrays.asList(blacklistValue.split(","));
+        for (String value : allValues) {
+            final Double count = histogram.get(value);
+            if (!valueToBlacklist.contains(value)) {
+                filteredHistogram.put(value, count);
+            } else {
+                logger.debug("Filtered {} with count {} ", value, count);
+            }
+        }
+        return filteredHistogram;
     }
 }

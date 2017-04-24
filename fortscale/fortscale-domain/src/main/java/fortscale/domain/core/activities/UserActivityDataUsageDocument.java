@@ -32,7 +32,7 @@ public class UserActivityDataUsageDocument extends UserActivityDocument {
 
 	public static class DataUsage {
 
-		private Map<String, Double> dataUsageHistogram = new HashMap();
+		private Map<String, Double> dataUsageHistogram = new HashMap<>();
 
 		@Field(DATA_USAGE_HISTOGRAM_FIELD_NAME)
 		public Map<String, Double> getDataUsageHistogram() {

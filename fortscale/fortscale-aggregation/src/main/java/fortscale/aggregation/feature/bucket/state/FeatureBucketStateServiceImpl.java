@@ -59,7 +59,7 @@ public class FeatureBucketStateServiceImpl implements FeatureBucketStateService 
                 }
             }
         }else {
-            logger.warn("Trying to update last daily aggregation date with date that is too far ahead - {}", lastEventDate);
+            logger.error("Trying to update last daily aggregation date with date that is too far ahead - {}", lastEventDate);
             shouldSave = false;
         }
 

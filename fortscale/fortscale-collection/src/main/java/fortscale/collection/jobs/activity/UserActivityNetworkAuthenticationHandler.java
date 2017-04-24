@@ -1,7 +1,7 @@
 package fortscale.collection.jobs.activity;
 
-import fortscale.collection.services.UserActivityConfigurationService;
-import fortscale.collection.services.UserActivityNetworkAuthenticationConfigurationService;
+import fortscale.collection.services.useractivity.UserActivityConfigurationService;
+import fortscale.collection.services.useractivity.UserActivityNetworkAuthenticationConfigurationService;
 import fortscale.common.feature.AggrFeatureValue;
 import fortscale.common.feature.Feature;
 import fortscale.common.feature.FeatureValue;
