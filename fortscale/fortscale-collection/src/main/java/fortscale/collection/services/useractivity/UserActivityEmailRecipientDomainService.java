@@ -15,7 +15,6 @@ public class UserActivityEmailRecipientDomainService extends BaseUserActivityCon
     private static final Logger logger = Logger.getLogger(UserActivityEmailRecipientDomainService.class);
 
     private static final String USER_ACTIVITY_EMAIL_RECIPIENT_DOMAIN_CONFIGURATION_KEY = "system.user_activity.email_recipient_domain";
-    private Map<String, UserActivityDataSourceConfiguration> activityDataSourceConfigurationMap = new HashMap<>();
 
     public UserActivityEmailRecipientDomainService() throws Exception {
         activityDataSourceConfigurationMap.put("dlpmail", new UserActivityDataSourceConfiguration("dlpmail",
