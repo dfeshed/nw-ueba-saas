@@ -32,5 +32,7 @@ public interface UserActivityService {
 
     List<UserActivityTopDirectoriesDocument> getUserActivityTopDirectoriesEntriesWithBlacklist(String id, int timeRangeInDays);
 
+    List<UserActivityClassificationExposureDocument> getUserActivityClassificationExposureEntries(String id, int timeRangeInDays);
+
     Set<String> getUserIdByUserLocation(List<String> userLocations);
 }

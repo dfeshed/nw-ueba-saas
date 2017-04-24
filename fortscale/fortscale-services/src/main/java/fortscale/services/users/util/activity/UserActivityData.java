@@ -131,6 +131,53 @@ public class UserActivityData {
 
     }
 
+    public static class ClassificationExposureEntry implements BaseUserActivityEntry {
+
+        private double total;
+        private double classified;
+
+        public ClassificationExposureEntry(double total, double classified) {
+            this.total = total;
+            this.classified = classified;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(total, classified);
+        }
+
+        @Override
+        public boolean equals(Object other) {
+            if (other == null) {
+                return false;
+            }
+            if (other == this) {
+                return true;
+            }
+            if (!(other instanceof ClassificationExposureEntry)) {
+                return false;
+            }
+            ClassificationExposureEntry otherAuthenticationsEntry = (ClassificationExposureEntry) other;
+            return otherAuthenticationsEntry.total == total && otherAuthenticationsEntry.classified == classified;
+        }
+
+        public double getTotal() {
+            return total;
+        }
+
+        public void setTotal(double total) {
+            this.total = total;
+        }
+
+        public double getClassified() {
+            return classified;
+        }
+
+        public void setClassified(double classified) {
+            this.classified = classified;
+        }
+    }
+
     public static class WorkingHourEntry implements BaseUserActivityEntry {
 
         private double hour;

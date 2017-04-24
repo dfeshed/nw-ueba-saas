@@ -209,6 +209,23 @@
           "aggrFeatureFuncJson": {
             "type": "aggr_feature_histogram_func"
           }
+        },
+        {
+          "name": "events_counter",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          }
+        },
+        {
+          "name": "classified_files_counter",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.was_classified == 'true')]"
+          }
         }
       ]
     },
