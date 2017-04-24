@@ -14,15 +14,11 @@ public class MorphlineConfigService {
 
 	@Autowired
 	CollectionPropertiesResolver propertiesResolver;
-	
-	
+
+
 	public String getStringValue(Configs configs, Config config,String path) throws PropertyNotExistException, IllegalStructuredProperty{
 		String value = configs.getString(config, path);
-		
-		return propertiesResolver.getEnvPropertyValue(value);
-	}
 
-	public String getStringValue (String key) throws IllegalStructuredProperty, PropertyNotExistException {
-		return propertiesResolver.getEnvPropertyValue(key);
+		return propertiesResolver.getEnvPropertyValue(value);
 	}
 }
