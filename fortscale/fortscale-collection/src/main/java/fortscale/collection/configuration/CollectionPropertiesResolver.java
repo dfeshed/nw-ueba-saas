@@ -63,7 +63,14 @@ public class CollectionPropertiesResolver implements InitializingBean{
 			}
 		}
 	}
-	
+
+	/**
+	 * this method returns the resolved value of an env variable (example ${somevalue})
+	 * @param value
+	 * @return
+	 * @throws PropertyNotExistException
+	 * @throws IllegalStructuredProperty
+	 */
 	public String getEnvPropertyValue(String value) throws PropertyNotExistException, IllegalStructuredProperty{
 		String ret = value;
 		while(ret.contains(ENV_PROP_PERFIX)){			
@@ -133,4 +140,14 @@ public class CollectionPropertiesResolver implements InitializingBean{
 			return false ;
 		}
 	}
+
+	/**
+	 * this method returns the resolved value of a regular variable (for an env variable see getEnvPropertyValue)
+	 * @param key
+	 * @return
+	 */
+	public String getPropertyValue(String key) {
+		return properties.getProperty(key);
+	}
+
 }
