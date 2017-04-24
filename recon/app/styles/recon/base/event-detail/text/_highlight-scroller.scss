@@ -1,0 +1,17 @@
+.meta-highlight-scroller {
+  background-color: rsa-color(blue);
+  // So you aren't supposed to use inline-block
+  // and float together, however, I'm just using
+  // inline-block to ensure the width of the
+  // element always fits its content
+  display: inline-block;
+  float: right;
+  margin-right: 1rem;
+  padding: rsa-whitespace(less);
+  position: relative;
+  z-index: 1000;
+
+  a {
+    cursor: pointer;
+  }
+}

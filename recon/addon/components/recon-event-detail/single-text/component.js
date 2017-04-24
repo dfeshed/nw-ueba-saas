@@ -1,6 +1,6 @@
 import Component from 'ember-component';
 import computed, { alias } from 'ember-computed-decorators';
-import { later } from 'ember-runloop';
+import { later, scheduleOnce } from 'ember-runloop';
 
 import SelectionTooltip from './selection-tooltip-mixin';
 import { retrieveTranslatedData, prepareLinesForDisplay } from './util';
@@ -20,6 +20,7 @@ export default Component.extend(SelectionTooltip, {
   encDecStrUrl: null,
   index: null,
   isLog: null,
+  metaToHighlight: null,
   packet: null,
   renderedAll: false,
   renderingRemainingLines: false,
@@ -38,15 +39,8 @@ export default Component.extend(SelectionTooltip, {
    * of the text has highlighted stuff. If content is highlighted
    * then have to make it show up.
    */
-  @computed('packet.text', 'packet.containsHighlightedText')
-  shouldBeTruncated(textEntries = [], forceOpen = false) {
-    // If the packet has highlighted text, then need to force
-    // it to be open no matter how big it is so the user
-    // can see the highlighted text when scrolling
-    if (forceOpen) {
-      return false;
-    }
-
+  @computed('packet.text')
+  shouldBeTruncated(textEntries = []) {
     return textEntries.length > HIDE_PACKETS_LINE_COUNT;
   },
 
@@ -80,6 +74,33 @@ export default Component.extend(SelectionTooltip, {
     return prepareLinesForDisplay(textEntriesReturn, metaToHighlight);
   },
 
+  // when we first render, need to highlight meta,
+  // but if the meta to highlight then changes we need to
+  // redo all the checks
+  didReceiveAttrs() {
+    this._super(...arguments);
+    scheduleOnce('afterRender', this, this._checkForRenderRemainingLines);
+  },
+
+  // checks to see if presence of meta to highlight
+  // means rest of text should be shown
+  _checkForRenderRemainingLines() {
+    const metaToHighlight = this.get('metaToHighlight.value');
+
+    // If meta to highlight is there, and
+    // the content is truncated...
+    if (metaToHighlight && this.get('shouldBeTruncated') && !this.get('renderedAll')) {
+      const remainingLines = this.get('packet.text').slice(SHOW_TRUNCATED_AMOUNT);
+      const metaStringRegex = new RegExp(String(metaToHighlight), 'gi');
+      const foundMatch = remainingLines.join('<br>').match(metaStringRegex);
+      // ...and the hidden content has the meta to highlight in it
+      // then need to render that content
+      if (foundMatch) {
+        this._renderRemainingLines();
+      }
+    }
+  },
+
   _handleEncodeDecode(type, label) {
     const string = this.get('originalString');
     const { encDecStrBase64, encDecStrUrl } = retrieveTranslatedData(type, string);
@@ -97,7 +118,7 @@ export default Component.extend(SelectionTooltip, {
 
     // Build array of text chunks to render
     const remainingLines = this.get('packet.text').slice(SHOW_TRUNCATED_AMOUNT);
-    const mth = this.get('metaToHighlight');
+    const mth = this.get('metaToHighlight.value');
     let i = 0;
     while (remainingLines.length > 0) {
       const chunk = remainingLines.splice(0, CHUNK_SIZE);

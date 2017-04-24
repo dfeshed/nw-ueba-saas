@@ -8,6 +8,12 @@
   </div>
 {{/if}}
 
+{{#if metaToHighlight}}
+  {{recon-event-detail/text-content/meta-highlight-scroller
+    metaToHighlight=metaToHighlight
+  }}
+{{/if}}
+
 {{#if textContent}}
   <div class="scroll-box">
     {{#each visibleText as |text index|}}

@@ -1,6 +1,4 @@
-import $ from 'jquery';
 import Component from 'ember-component';
-import run from 'ember-runloop';
 import layout from './template';
 import computed, { alias } from 'ember-computed-decorators';
 import connect from 'ember-redux/components/connect';
@@ -9,10 +7,7 @@ import * as InteractionActions from 'recon/actions/interaction-creators';
 import metaToLimit from './limited-meta';
 
 const dispatchToActions = (dispatch) => ({
-  highlightMeta(metaToHighlight) {
-    dispatch(InteractionActions.highlightMeta(metaToHighlight));
-    this._scrollToFirstHighlightedMeta();
-  }
+  highlightMeta: (metaToHighlight) => dispatch(InteractionActions.highlightMeta(metaToHighlight))
 });
 
 const MetaContentItem = Component.extend({
@@ -22,6 +17,8 @@ const MetaContentItem = Component.extend({
   classNameBindings: ['isHovering', 'isSelected'],
   isHovering: false,
 
+  // Passed in, boolean, whether or not the event has payload to view
+  eventHasPayload: undefined,
   // Passed in, boolean for if text view or not
   isTextView: undefined,
   // Passed in, null or object with {name, value}
@@ -46,16 +43,27 @@ const MetaContentItem = Component.extend({
 
     return false;
   },
-  @computed('isHovering', 'isSelected', 'isTextView')
-  shouldShowBinoculars(isHovering, isSelected, isTextView) {
-    return (isHovering || isSelected) && isTextView && metaToLimit.includes(this.get('name'));
+
+  /*
+   * Only show meta highlight binoculars if:
+   * 1) User is hovering or has already selected the item
+   * 2) And the user is on text view
+   * 3) And the event actually has payload to highlight
+   * 4) And the meta is one of the metas that are highlightable
+   */
+  @computed('isHovering', 'isSelected', 'isTextView', 'eventHasPayload')
+  shouldShowBinoculars(isHovering, isSelected, isTextView, eventHasPayload) {
+    return (isHovering || isSelected) && isTextView && eventHasPayload && metaToLimit.includes(this.get('name'));
   },
+
   mouseEnter() {
     this.set('isHovering', true);
   },
+
   mouseLeave() {
     this.set('isHovering', false);
   },
+
   actions: {
     /**
      * Select/deselect meta when binoculars are clicked
@@ -72,18 +80,8 @@ const MetaContentItem = Component.extend({
       }
       this.send('highlightMeta', newlySelected);
     }
-  },
-  /**
-   * Scroll to the first highlighted meta in the text
-   * @private
-   */
-  _scrollToFirstHighlightedMeta() {
-    run.scheduleOnce('afterRender', this, function() {
-      const firstHighlightedMeta = $('.highlighted-meta').first();
-      const scrollTop = firstHighlightedMeta.length ? firstHighlightedMeta.position().top - 30 : 0;
-      $('.recon-event-detail-text .scroll-box').animate({ scrollTop }, 1000);
-    });
   }
+
 });
 
 export default connect(null, dispatchToActions)(MetaContentItem);
