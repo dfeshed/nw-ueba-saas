@@ -17,8 +17,7 @@ public class UserActivityEmailRecipientDomainService extends BaseUserActivityCon
     private static final String USER_ACTIVITY_EMAIL_RECIPIENT_DOMAIN_CONFIGURATION_KEY = "system.user_activity.email_recipient_domain";
     private Map<String, UserActivityDataSourceConfiguration> activityDataSourceConfigurationMap = new HashMap<>();
 
-    @PostConstruct
-    public void init() throws Exception {
+    public UserActivityEmailRecipientDomainService() throws Exception {
         activityDataSourceConfigurationMap.put("dlpmail", new UserActivityDataSourceConfiguration("dlpmail",
                 "aggr_normalized_username_dlpmail_daily",
                 UserActivityBaseHandler.AGGREGATED_FEATURES_PREFIX,

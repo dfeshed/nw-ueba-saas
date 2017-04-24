@@ -15,7 +15,7 @@ public class UserActivityTopDirectoriesService extends BaseUserActivityConfigura
 
     private static final String USER_ACTIVITY_TOP_DIRECTORIES_CONFIGURATION_KEY = "system.user_activity.top_directories";
 
-    public void UserActivityTopDirectoriesService() throws Exception {
+    public UserActivityTopDirectoriesService() throws Exception {
         activityDataSourceConfigurationMap.put("dlpfile", new UserActivityDataSourceConfiguration("dlpfile",
                 "aggr_normalized_username_dlpfile_daily",
                 UserActivityBaseHandler.AGGREGATED_FEATURES_PREFIX,
