@@ -76,12 +76,6 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
 
   &-body-rows {
     position: relative;
-
-    &:hover {
-      .rsa-data-table-body-row {
-        color: rsa-color(gray, light);
-      }
-    }
   }
 
   &-body-row,
@@ -111,7 +105,7 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
     right: calc(#{rsa-whitespace()} + #{rsa-whitespace(least)});
     @include rsa-font(paragraph, small);
     border-top: 1px solid rsa-color(gray, darker);
-    color: rsa-color(gray, lighter);
+    color: rsa-color(gray, lightest);
 
     &:hover,
     &.is-selected,
@@ -129,7 +123,6 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
     }
 
     &:hover {
-      color: rsa-color(gray, lighter)!important;
       background-color: rsa-color(gray, darkest, $rsa-nearly-transparent);
       border-top: 1px solid transparent;
 
