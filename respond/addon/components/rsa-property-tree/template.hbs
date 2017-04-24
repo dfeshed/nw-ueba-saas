@@ -1,20 +1,32 @@
 <table>
-  {{#each keys as |key|}}
-    <tr class="key">
-      <td class="key-name">
-        {{key.name}}
-      </td>
-      <td class="key-value">
-        {{#if (eq key.type 'object')}}
-          {{#if objectValueComponentClass}}
-            {{component objectValueComponentClass model=key.value}}
+  {{#if (eq modelType 'array')}}
+    {{!model is an array}}
+    {{#each members as |member|}}
+      <tr class="key">
+        <td class="key-value">
+          {{#if member.isNestedValue}}
+            {{component nestedValueComponentClass model=member.value}}
+          {{else}}
+            {{member.value}}
+          {{/if}}
+        </td>
+      </tr>
+    {{/each}}
+  {{else}}
+    {{!assume model is an object}}
+    {{#each keys as |key|}}
+      <tr class="key">
+        <td class="key-name">
+          {{key.name}}
+        </td>
+        <td class="key-value">
+          {{#if key.isNestedValue}}
+            {{component nestedValueComponentClass model=key.value}}
           {{else}}
             {{key.value}}
           {{/if}}
-        {{else}}
-          {{key.value}}
-        {{/if}}
-      </td>
-    </tr>
-  {{/each}}
+        </td>
+      </tr>
+    {{/each}}
+  {{/if}}
 </table>

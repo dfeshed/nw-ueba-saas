@@ -15,36 +15,77 @@ const { typeOf } = Ember;
  */
 export default Component.extend({
   classNames: ['rsa-property-tree'],
+
+  /**
+   * The data structure whose properties are to be displayed. Either an Object or an Array.
+   * @type {Object|Array}
+   * @public
+   */
   model: null,
 
   /**
-   * An array of information about the properties of `model` and their respective values & data types.
-   * The array will be sorted by property name, in ascending order.
-   * @type {{key: String, value: *, type: String}[]}
+   * The data type of `model`.
+   * @type {string}
    * @private
    */
   @computed('model')
-  keys(model) {
-    model = model || {};
-    return Object.keys(model)
-      .sort()
-      .map((name) => {
-        const value = model[name];
-        const type = typeOf(value);
-        return {
-          name,
-          value,
-          type
-        };
-      });
+  modelType(model) {
+    return typeOf(model);
   },
 
   /**
-   * Configurable name of the Ember Component class to be used for rendering property values that
-   * are of type 'object'. If missing, native rendering will be used, which typically results in '[object Object]'
-   * (unless the object has defined a custom `.toString()` method).
+   * An array of information about the properties of an object-type `model` and their respective values & data types.
+   * The array will be sorted by property name, in ascending order.
+   * @type {{key: String, value: *, type: String, isNestedValue: Boolean}[]}
+   * @private
+   */
+  @computed('model', 'modelType')
+  keys(model, modelType) {
+    if (modelType === 'object') {
+      return Object.keys(model)
+        .sort()
+        .map((name) => {
+          const value = model[name];
+          const type = typeOf(value);
+          return {
+            name,
+            value,
+            type,
+            isNestedValue: (type === 'object') || (type === 'array')
+          };
+        });
+    } else {
+      return [];
+    }
+  },
+
+  /**
+   * An array of information about the members of an array-type `model`, i.e. their respective values & data types.
+   * This array's order will match order of the original array members.
+   * @type {value: *, type: String, isNestedValue: Boolean}[]}
+   * @private
+   */
+  @computed('model', 'modelType')
+  members(model, modelType) {
+    if (modelType === 'array') {
+      return model.map((value) => {
+        const type = typeOf(value);
+        return {
+          value,
+          type,
+          isNestedValue: (type === 'object') || (type === 'array')
+        };
+      });
+    } else {
+      return [];
+    }
+  },
+
+  /**
+   * Required configurable name of the Ember Component class to be used for rendering property values that
+   * are of type 'object' or 'array'.
    * @type {string}
    * @public
    */
-  objectValueComponentClass: 'rsa-property-tree'
+  nestedValueComponentClass: 'rsa-property-tree'
 });
