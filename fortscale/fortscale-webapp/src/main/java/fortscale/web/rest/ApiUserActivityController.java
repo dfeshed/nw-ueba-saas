@@ -197,7 +197,7 @@ public class ApiUserActivityController extends DataQueryController {
                 id,
                 timePeriodInDays,
                 limit,
-                userActivityService::getUserActivityEmailRecipientDomainEntries,
+                userActivityService::getUserActivityEmailRecipientDomainEntriesWithBlackList,
                 this::convertDocumentsResponse,
                 EMAIL_RECIPIENT_DOMAIN);
         return userActivity;
