@@ -92,8 +92,8 @@ const ByteTableComponent = Component.extend({
 
   renderTable() {
     const {
-      cellClass, headerCellClass, byteFormat, hasStyledBytes, hasSignaturesHighlighted, isPayloadOnly
-    } = this.getProperties('cellClass', 'headerCellClass', 'byteFormat', 'hasStyledBytes', 'hasSignaturesHighlighted', 'isPayloadOnly');
+      cellClass, headerCellClass, byteFormat, hasStyledBytes, hasSignaturesHighlighted
+    } = this.getProperties('cellClass', 'headerCellClass', 'byteFormat', 'hasStyledBytes', 'hasSignaturesHighlighted');
     const el = select(this.element);
 
     el.select('table').remove();
@@ -119,7 +119,7 @@ const ByteTableComponent = Component.extend({
                 position: { x: event.pageX, y: $(event.target).offset().top },
                 packetId: this.get('packet.id')
               };
-            } else if (isPayloadOnly && hasSignaturesHighlighted && byte.isKnown) {
+            } else if (hasSignaturesHighlighted && byte.isKnown) {
               tooltipData = {
                 field: { name: 'signature', type: 'sig' },
                 values: byte.isKnown.type,
@@ -155,12 +155,11 @@ const ByteTableComponent = Component.extend({
    * @public
    */
   getByteClass(byte, cellClass, headerCellClass) {
-    const isPayloadOnly = this.get('isPayloadOnly');
     const hasSignaturesHighlighted = this.get('hasSignaturesHighlighted');
     const role = byte.packetField ? byte.packetField.roles : false;
     const header = byte.isHeader ? headerCellClass : false;
     const footer = byte.isFooter ? 'footer' : false;
-    const known = (isPayloadOnly && hasSignaturesHighlighted && byte.isKnown) ? 'is-known' : false;
+    const known = (hasSignaturesHighlighted && byte.isKnown) ? 'is-known' : false;
     return compact([cellClass, role, header, footer, known]).join(' ');
   },
 
