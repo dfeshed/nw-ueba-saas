@@ -1,29 +1,25 @@
-package fortscale.collection.services;
+package fortscale.collection.services.useractivity;
 
 
 import fortscale.collection.jobs.activity.UserActivityBaseHandler;
 import fortscale.collection.jobs.activity.UserActivityType;
 import fortscale.utils.logging.Logger;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.util.Map;
 
 @Service("userActivityTopDirectoriesService")
-public class UserActivityTopDirectoriesService extends BaseUserActivityConfigurationService implements InitializingBean {
+public class UserActivityTopDirectoriesService extends BaseUserActivityConfigurationService {
 
     private static final Logger logger = Logger.getLogger(UserActivityTopDirectoriesService.class);
 
     private static final String USER_ACTIVITY_TOP_DIRECTORIES_CONFIGURATION_KEY = "system.user_activity.top_directories";
 
-    @PostConstruct
-    public void init() throws Exception {
+    public UserActivityTopDirectoriesService() throws Exception {
         activityDataSourceConfigurationMap.put("dlpfile", new UserActivityDataSourceConfiguration("dlpfile",
                 "aggr_normalized_username_dlpfile_daily",
                 UserActivityBaseHandler.AGGREGATED_FEATURES_PREFIX,
                 UserActivityType.TOP_DIRECTORIES.name()));
-
     }
 
     @Override

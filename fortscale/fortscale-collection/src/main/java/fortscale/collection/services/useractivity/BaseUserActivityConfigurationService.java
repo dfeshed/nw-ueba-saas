@@ -1,4 +1,4 @@
-package fortscale.collection.services;
+package fortscale.collection.services.useractivity;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -50,7 +50,6 @@ public abstract class BaseUserActivityConfigurationService implements UserActivi
         UserActivityConfiguration userActivityConfiguration = createUserActivityConfiguration();
         String userActivityConfigurationAsJsonString = objectMapper.writeValueAsString(userActivityConfiguration);
         final String configurationKey = getConfigurationKey();
-        applicationConfigurationService.delete(configurationKey);
         applicationConfigurationService.insertConfigItem(configurationKey, userActivityConfigurationAsJsonString);
     }
 

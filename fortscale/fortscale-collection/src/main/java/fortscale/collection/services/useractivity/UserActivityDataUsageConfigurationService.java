@@ -1,18 +1,16 @@
-package fortscale.collection.services;
+package fortscale.collection.services.useractivity;
 
 import fortscale.collection.jobs.activity.UserActivityType;
 import fortscale.domain.core.activities.dao.DataUsageConfiguration;
 import fortscale.services.ApplicationConfigurationService;
 import fortscale.utils.logging.Logger;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
 @Service("userActivityDataUsageConfigurationService")
-public class UserActivityDataUsageConfigurationService extends BaseUserActivityConfigurationService
-		implements InitializingBean {
+public class UserActivityDataUsageConfigurationService extends BaseUserActivityConfigurationService {
 
 	private static final Logger logger = Logger.getLogger(UserActivityDataUsageConfigurationService.class);
 

@@ -1,14 +1,13 @@
-package fortscale.collection.services;
+package fortscale.collection.services.useractivity;
 
 import fortscale.collection.jobs.activity.UserActivityType;
 import fortscale.utils.logging.Logger;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
 @Service("userActivityLocationConfigurationService")
-public class UserActivityLocationConfigurationService extends BaseUserActivityConfigurationService implements InitializingBean {
+public class UserActivityLocationConfigurationService extends BaseUserActivityConfigurationService {
 
     private static final Logger logger = Logger.getLogger(UserActivityLocationConfigurationService.class);
 

@@ -1,8 +1,8 @@
 package fortscale.collection.jobs.activity;
 
 import fortscale.collection.jobs.FortscaleJob;
-import fortscale.collection.services.UserActivityConfiguration;
-import fortscale.collection.services.UserActivityConfigurationService;
+import fortscale.collection.services.useractivity.UserActivityConfiguration;
+import fortscale.collection.services.useractivity.UserActivityConfigurationService;
 import fortscale.utils.logging.Logger;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobDataMap;
