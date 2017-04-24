@@ -17,8 +17,7 @@ public class UserActivityClassificationExposureService extends BaseUserActivityC
 
     private static final String USER_ACTIVITY_CLASSIFICATION_EXPOSURE_CONFIGURATION_KEY = "system.user_activity.classification_exposure";
 
-    @PostConstruct
-    public void init() throws Exception {
+    public UserActivityClassificationExposureService() throws Exception {
         activityDataSourceConfigurationMap.put("dlpfile", new UserActivityDataSourceConfiguration("dlpfile",
                 "aggr_normalized_username_dlpfile_daily",
                 UserActivityBaseHandler.AGGREGATED_FEATURES_PREFIX,
