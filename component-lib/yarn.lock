@@ -2872,7 +2872,7 @@ ember-load@0.0.11:
     ember-cli-htmlbars "^1.0.10"
     ember-cli-version-checker "^1.1.4"
 
-ember-lodash-shim@^2.0.1:
+ember-lodash-shim@2.0.2:
   version "2.0.2"
   resolved "https://registry.npmjs.org/ember-lodash-shim/-/ember-lodash-shim-2.0.2.tgz#14e9303bf131353a0afec39ace880a1635fd1d19"
   dependencies:
