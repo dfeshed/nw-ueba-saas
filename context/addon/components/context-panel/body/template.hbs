@@ -1,9 +1,9 @@
 <section class={{bodyStyleClass}}>
   {{#each dataSourceList as |dataSource|}}
     {{#if (eq dataSource.displayType 'grid')}}
-      {{context-panel/dynamic-grid contextData=(get contextData dataSource.dataSourceType) dSDetails=dataSource.details}}
+      {{context-panel/dynamic-grid dSDetails=dataSource.details}}
     {{else if (eq dataSource.displayType 'table')}}
-      {{context-panel/data-table contextData=(get contextData dataSource.dataSourceType) dSDetails=dataSource.details}}
+      {{context-panel/data-table dSDetails=dataSource.details}}
     {{else if (eq dataSource.displayType 'liveConnect')}}
       {{context-panel/live-connect
         model=model
@@ -15,6 +15,11 @@
   {{#if needToRenderNoDs}}
     <div class="gray-text-border-top">
       {{t 'context.noValues'}}{{dataSourcesWithNoData}}
+    </div>
+  {{/if}}
+  {{#if needToRenderNoDsConfigured}}
+    <div class="gray-text-border-top">
+      {{t 'context.dsNotConfigured'}}{{dataSourcesNotConfigured}}
     </div>
   {{/if}}
 </section>

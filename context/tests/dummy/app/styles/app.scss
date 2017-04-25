@@ -5,8 +5,17 @@
 /* Import context styles */
 @import 'context/manifest';
 
+
+
+.ember-application > DIV:nth-child(4) {
+ height: 100%;
+    > grid {
+      height :100%;    
+    }    
+}
+
 page {
-  min-height: 100vh;
+  height: 100%;
   min-width: 0;
 }
 

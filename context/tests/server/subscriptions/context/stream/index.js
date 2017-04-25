@@ -4,17 +4,19 @@ export default {
   subscriptionDestination: '/user/queue/administration/context/lookup',
   requestDestination: '/ws/administration/context/lookup',
   cancelDestination: '/ws/administration/context/cancel',
-  message(frame) {
-    // get the metaType out of the request
+  page(frame, sendMessage) {
     const filters = JSON.parse(frame.body).filter;
     if (filters) {
       const metaType = filters.find((f) => f.field === 'meta').value;
-      return {
-        data: data[metaType] || data.IP,  // use IP as default
-        meta: {
-          complete: true
-        }
-      };
+      const dataForMeta = data[metaType] || data.IP;
+      dataForMeta.forEach((dataObj, index) => {
+      // one sec delay
+        setTimeout(() => {
+          sendMessage({
+            data: [dataObj]
+          });
+        }, 1000 * (index + 1));
+      });
     }
   }
 };

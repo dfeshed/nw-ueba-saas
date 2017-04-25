@@ -8,8 +8,7 @@ export default [
       {
         field: 'risk',
         title: 'context.lc.risk',
-        width: '12%',
-        nested: '',
+        width: '100',
         dataType: 'riskRating',
         class: {
           UNSAFE: 'rsa-context-panel__liveconnect__risk-rating-unsafe',
@@ -20,36 +19,31 @@ export default [
       {
         field: 'id',
         title: 'context.lc.ipAddress',
-        nested: '',
-        width: '12%',
+        width: '100',
         dataType: 'id',
         className: 'rsa-context-panel__liveconnect__entity-value'
       },
       {
         field: 'domain',
         title: 'context.lc.domain',
-        nested: '',
-        width: '15%',
+        width: '100',
         dataType: 'domain',
         className: 'rsa-context-panel__liveconnect__entity-value'
       },
       {
         field: 'asnNumber',
         title: 'context.lc.asnShort',
-        width: '15%',
-        nested: ''
+        width: '100'
       },
       {
         field: 'asnOrganization',
         title: 'context.lc.organization',
-        width: '20%',
-        nested: ''
+        width: '100'
       },
       {
         field: 'country',
         title: 'context.lc.country',
-        width: '20%',
-        nested: ''
+        width: '100'
       }
     ]
   },
@@ -62,8 +56,7 @@ export default [
       {
         field: 'risk',
         title: 'context.lc.risk',
-        width: '12%',
-        nested: '',
+        width: '100',
         dataType: 'riskRating',
         class: {
           UNSAFE: 'rsa-context-panel__liveconnect__risk-rating-unsafe',
@@ -74,29 +67,25 @@ export default [
       {
         field: 'fileName',
         title: 'context.lc.fileName',
-        nested: '',
-        width: '18%',
+        width: '100',
         dataType: 'filename',
         className: 'rsa-context-panel__liveconnect__entity-value'
       },
       {
         field: 'id',
         title: 'context.lc.md5',
-        width: '26%',
-        nested: ''
+        width: '100'
       },
       {
         field: 'compileTime',
         title: 'context.lc.compiledTime',
-        width: '18%',
-        dataType: 'datetime',
-        nested: ''
+        width: '100',
+        dataType: 'datetime'
       },
       {
         field: 'impHash',
         title: 'context.lc.importHashFunction',
-        width: '35%',
-        nested: ''
+        width: '400'
       }
 
     ]
@@ -110,8 +99,7 @@ export default [
       {
         field: 'risk',
         title: 'context.lc.risk',
-        width: '12%',
-        nested: '',
+        width: '100',
         dataType: 'riskRating',
         class: {
           UNSAFE: 'rsa-context-panel__liveconnect__risk-rating-unsafe',
@@ -122,37 +110,32 @@ export default [
       {
         field: 'id',
         title: 'context.lc.domain',
-        width: '17%',
+        width: '150',
         style: 'color:blue',
         dataType: 'domain',
-        nested: '',
         className: 'rsa-context-panel__liveconnect__entity-value'
       },
       {
         field: 'whoisCountry',
         title: 'context.lc.country',
-        width: '14%',
-        nested: ''
+        width: '150'
       },
       {
         field: 'whoisCreatedDate',
         title: 'context.lc.registeredDate',
         dataType: 'datetime',
-        width: '13%',
-        nested: ''
+        width: '150'
       },
       {
         field: 'whoisExpiredDate',
         title: 'context.lc.expiredDate',
         dataType: 'datetime',
-        width: '13%',
-        nested: ''
+        width: '100'
       },
       {
         field: 'whoisEmail',
         title: 'context.lc.email',
-        width: '25%',
-        nested: ''
+        width: '200'
       }
     ]
   }

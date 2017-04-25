@@ -1,30 +1,46 @@
 import * as ACTION_TYPES from '../actions/types';
 import { handleActions } from 'redux-actions';
+import { contextDataParser } from 'context/helpers/context-data-parser';
+import * as DataUtil from 'context/util/context-data-modifier';
+import TabList from 'context/config/dynamic-tab';
 
 const initialState = {
   meta: null,
   lookupKey: null,
   activeTabName: 'overview',
   dataSources: null,
-  lookupData: null
+  errorMessage: null,
+  toolbar: null,
+  lookupData: [],
+  tabs: null
 };
 
 const context = handleActions({
   [ACTION_TYPES.INITIALIZE_CONTEXT_PANEL]: (state, { payload }) => ({
     ...state,
+    activeTabName: 'overview',
+    dataSources: null,
+    errorMessage: null,
+    lookupData: [],
+    toolbar: TabList.find((tab) => tab.tabType === payload.meta).toolbar,
     ...payload
   }),
   [ACTION_TYPES.UPDATE_ACTIVE_TAB]: (state, { payload }) => ({
     ...state,
-    activeTabName: payload
+    activeTabName: DataUtil.getTabEnabled(state.lookupData, payload) ? payload : state.activeTabName
   }),
   [ACTION_TYPES.GET_ALL_DATA_SOURCES]: (state, { payload }) => ({
     ...state,
-    dataSources: payload
+    dataSources: payload,
+    tabs: DataUtil.getTabs(state.meta, payload)
+  }),
+  [ACTION_TYPES.CONTEXT_ERROR]: (state, { payload }) => ({
+    ...state,
+    errorMessage: payload
   }),
   [ACTION_TYPES.GET_LOOKUP_DATA]: (state, { payload }) => ({
     ...state,
-    lookupData: payload
+    lookupData: [].concat(contextDataParser([payload, state.lookupData]))
   })
 }, initialState);
 

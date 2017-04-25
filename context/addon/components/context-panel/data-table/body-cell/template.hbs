@@ -1,0 +1,23 @@
+{{#rsa-data-table/body-cell item=item index=index column=column}}
+  {{#if (eq column.dataType 'riskscore')}}
+    <span class={{get (risk-score-to-badge-level (get item column.field) dSDetails.dataSourceGroup) 'style'}}>
+      {{get item column.field}}
+    </span>
+  {{else if (eq column.dataType 'riskRating')}}
+    <span class={{get column.class (get item  column.field)}}>
+      {{get item column.field}}
+    </span>
+  {{else if (eq column.dataType 'datetime')}}
+    {{rsa-content-datetime timestamp=(get item column.field )  withTimeAgo=true}}
+  {{else if (eq column.dataType 'link')}}
+    <div class="rsa-context-panel__context-data-table__itemsContainer">
+      <a href={{call-method this 'constructPath' (get item column.field)  column.path}} target="_blank">
+        <span class="rsa-context-panel__context-data-table link" title={{get item column.field}}>{{get item column.field}}</span>
+      </a>
+    </div>
+  {{else}}
+    <span title={{get item column.field}}>
+      {{get item column.field}}
+    </span>
+  {{/if}}
+{{/rsa-data-table/body-cell}}

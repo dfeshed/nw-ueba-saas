@@ -1,36 +1,60 @@
-<hbox>
-  <vbox xs='7'>
-    <div class="rsa-context-panel-header__header-text">
-      <span> {{t 'context.title'}} {{t (concat 'context.' entityType) }} :</span>
-      {{entityId}}
-    </div>
-  </vbox>
-  <vbox>
-    <div xs='1'>
-      <button class="rsa-context-panel-header__panel-close" {{action 'closeAction'}} title= {{t 'context.header.closeButton.title'}}>
-        {{rsa-icon style='filled' name='close'}}
-      </button>
-    </div>
-  </vbox>
-</hbox>
-
-{{#if isReady}}
-  {{#if errorMessage}}
-    <hbox class='rsa-context-panel__loader'>
-      <span class='rsa-context-panel__error-text'>
-        {{rsa-icon style='lined' name='report-problem-triangle'}} {{errorMessage}}
-      </span>
-    </hbox>
-  {{else}}
+<div class='rsa-context-panel__tabs'>
+  {{#if isReady}}    
     {{context-panel/tabs model=model }}
-    {{context-panel/body contextData=model.contextData model=model }}
-  {{/if}}
-{{else}}
-  <hbox class='rsa-context-panel__loader'>
-    <div class="rsa-loader is-largest">
-      <div class="rsa-loader__wheel"></div>
-      <div class="rsa-loader__text"></div>
-    </div>
-  </hbox>
-{{/if}}
-{{context-panel/live-connect/feedback model=model}}
+  {{/if}}    
+</div>
+<div class='rsa-context-panel__layout'>
+  <div>    
+    <hbox>
+      <vbox xs='7'>
+        <div class="rsa-context-panel-header__header-text">
+          <span> {{t 'context.title'}} {{t (concat 'context.' entityType) }} :</span>
+          {{entityId}}
+        </div>
+      </vbox>
+      <vbox>
+        <div xs='1'>
+          <button class="rsa-context-panel-header__panel-close" {{action 'closeAction'}} title= {{t 'context.header.closeButton.title'}}>
+            {{rsa-icon style='filled' name='close'}}
+          </button>
+        </div>
+      </vbox>
+    </hbox>
+    <hbox class="rsa-context-panel-header__tab">
+      {{#each toolbar as | buttons | }}
+        {{#if (eq buttons.componentName 'add-to-list')}}
+          {{context-panel/add-to-list entityId=model.lookupKey entityType=model.meta}}
+        {{else}}
+          {{#rsa-form-button}}{{t buttons.title}}{{/rsa-form-button}}
+        {{/if}}
+      {{/each}}
+    </hbox>  
+  </div>
+  <div class='rsa-context-panel__body_layout'>
+    {{#if isReady}}
+      {{#if errorMessage}}
+        <hbox class='rsa-context-panel__loader'>
+          <span class='rsa-context-panel__error-text'>
+            {{rsa-icon style='lined' name='report-problem-triangle'}} {{errorMessage}}
+          </span>
+        </hbox>
+      {{else}}
+        <hbox>  
+          {{context-panel/body contextData=model.contextData model=model }}
+        </hbox>    
+      {{/if}}
+      <hbox>
+        {{context-panel/live-connect/feedback model=model}}
+      </hbox>      
+    {{else}}
+      <hbox class='rsa-context-panel__loader'>
+        <div class="rsa-loader is-largest">
+          <div class="rsa-loader__wheel"></div>
+          <div class="rsa-loader__text"></div>
+        </div>
+      </hbox>
+    {{/if}}  
+  </div>      
+</div>
+
+

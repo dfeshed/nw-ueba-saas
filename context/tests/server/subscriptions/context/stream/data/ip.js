@@ -1735,7 +1735,7 @@ export default [
     'dataSourceGroup': 'LIST',
     'connectionName': null,
     'dataSourceCreatedOn': 1491288661747,
-    'dataSourceLastModifiedOn': 1491288661759,
+    'dataSourceLastModifiedOn': 1484045933000,
     'contentLastModifiedOn': 1491289221578,
     'resultList': [
       {

@@ -591,6 +591,8 @@ export default {
     }
   },
   context: {
+    noResults: '(No Results)',
+    notConfigured: '(Not Configured)',
     title: 'Context for',
     lastUpdated: 'Last Updated:',
     timeWindow: 'Time Window: ',
@@ -603,7 +605,9 @@ export default {
     FILE_HASH: 'File Hash',
     DOMAIN: 'Domain',
     noValues: 'Context Sources with no values: ',
+    dsNotConfigured: 'Context Sources not configured: ',
     timeUnit: {
+      allData: 'ALL DATA',
       HOUR: 'HOUR',
       HOURS: 'HOURS',
       MINUTE: 'MINUTE',
@@ -855,6 +859,7 @@ export default {
     error: {
       error: 'Error processing stream call for context lookup.',
       noDataSource: 'No data source configured/enabled.',
+      dataSourcesFailed: 'Unable to fetch data source configured data sources.',
       dataSource: 'Error processing stream call for data source.',
       noData: 'No context data present for this DataSource.',
       listDuplicateName: 'List name already exists!',

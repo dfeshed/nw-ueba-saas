@@ -3,9 +3,11 @@ import connect from 'ember-redux/components/connect';
 import computed from 'ember-computed-decorators';
 import Component from 'ember-component';
 import * as ContextActions from 'context/actions/context-creators';
+import * as DataUtil from 'context/util/context-data-modifier';
 
 const stateToComputed = ({ context }) => ({
-  activeTabName: context.activeTabName
+  activeTabName: context.activeTabName,
+  lookupData: context.lookupData
 });
 
 const dispatchToActions = (dispatch) => ({
@@ -21,21 +23,20 @@ const DataTableComponent = Component.extend({
       this.send('activate', option);
     }
   },
-  @computed('contextData', 'activeTabName', 'dSDetails')
-  getDataSourceData: (contextData, activeTabName, dSDetails) => {
-    if (!contextData) {
-      return;
-    }
-    if (dSDetails.sortColumn) {
-      contextData.data.sort((a, b) => (a[dSDetails.sortColumn] - b[dSDetails.sortColumn]));
-    }
-    return (activeTabName === 'overview') ? contextData.data.slice(0, 5) : contextData.data;
-  },
-
   constructPath(incId, path) {
     path = path.replace('{0}', incId);
     return window.location.origin.concat(path);
-  }
+  },
 
+  @computed('contextData', 'lookupData.[]', 'activeTabName', 'dSDetails')
+  getDataSourceData(contextData, [lookupData], activeTabName, dSDetails) {
+    if (contextData) {
+      return contextData.data;
+    }
+    return DataUtil.getData(lookupData, dSDetails, activeTabName);
+  },
+
+  @computed('contextData', 'lookupData.[]', 'dSDetails')
+  needToDisplay: (contextData, [lookupData], dSDetails) => DataUtil.needToDisplay(contextData, lookupData, dSDetails)
 });
 export default connect(stateToComputed, dispatchToActions)(DataTableComponent);

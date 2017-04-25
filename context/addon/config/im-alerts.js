@@ -5,18 +5,16 @@ export default {
   title: 'context.alerts.title',
   columns: [
     {
-      field: 'risk_score',
+      field: 'alert.risk_score',
       title: 'context.alerts.risk_score',
       width: '100',
       dataType: 'riskscore',
-      nested: 'alert.risk_score',
       class: 'rsa-module-riskscore',
       componentClass: 'rsa-content-badge-score'
     },
     {
-      field: 'source',
+      field: 'alert.source',
       title: 'context.alerts.source',
-      nested: 'alert',
       width: '100'
     },
     {
@@ -28,23 +26,20 @@ export default {
       path: '/respond/alert/{0}'
     },
     {
-      field: 'numEvents',
+      field: 'alert.numEvents',
       title: 'context.alerts.numEvents',
-      width: '100',
-      nested: 'alert'
+      width: '100'
     },
     {
-      field: 'created',
+      field: 'alert.timestamp.$date.created',
       title: 'context.alerts.created',
       width: '100',
-      dataType: 'datetime',
-      nested: 'alert.timestamp.$date'
+      dataType: 'datetime'
     },
     {
       field: 'incidentId',
       title: 'context.alerts.id',
       width: '80',
-      nested: 'incidentId',
       dataType: 'link',
       path: '/respond/incident/{0}'
     }

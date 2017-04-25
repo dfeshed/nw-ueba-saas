@@ -1,17 +1,20 @@
 <div class="rsa-nav-tab-group">
   {{#each tabsActive as |tab|}}
-    {{#rsa-nav-tab isCompact=true isActive=tab.isActive click=(action 'activate' tab.field)}}
-      <div class="label">{{ t tab.title }} {{tab.countText}} </div>
-    {{/rsa-nav-tab}}
+    {{#rsa-content-tethered-panel-trigger  panel=(concat 'tabs' tab.field) }}
+      {{#rsa-nav-tab isCompact=true isActive=tab.isActive click=(action 'activate' tab.field)}}
+        {{#if tab.loadingIcon}}
+          {{rsa-loader class='rsa-context-panel__tabs__icon-loader' size='medium'}}
+        {{/if}}
+        <div class="{{unless tab.toolTipText 'rsa-context-panel__tabs__enabled'}}">
+          {{rsa-icon style='filled' name=tab.class size='medium'}}
+        </div>
+      {{/rsa-nav-tab}}
+    {{/rsa-content-tethered-panel-trigger}}
+    {{#rsa-content-tethered-panel panelId=(concat 'tabs' tab.field) position='left' displayCloseButton=false}}
+      <div  class ='rsa-context-panel__tabs__tooltip'>
+        {{t tab.title}} {{unless tab.loadingIcon tab.toolTipText}}
+      </div>
+    {{/rsa-content-tethered-panel}}
   {{/each}}
 </div>
-<hbox class="rsa-context-panel-header__tab">
-  {{#each toolbar as | buttons | }}
-    {{#if (eq buttons.componentName 'add-to-list')}}
-      {{context-panel/add-to-list entityId=model.lookupKey entityType=model.meta}}
-    {{else}}
-      {{#rsa-form-button}}{{t buttons.title}}{{/rsa-form-button}}
-    {{/if}}
-  {{/each}}
-</hbox>
 

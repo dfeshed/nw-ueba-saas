@@ -10,23 +10,21 @@ export default {
       title: 'context.iiocs.lastExecuted',
       width: '200',
       class: 'rsa-iioc-iiocLevel2',
-      nested: ''
+      dataType: 'text'
     },
     {
       field: 'IOCLevel',
       title: 'context.iiocs.iOCLevel',
       width: '200',
       class: 'rsa-iioc-iiocLevel1',
-      dataType: 'text',
-      nested: ''
+      dataType: 'text'
     },
     {
       field: 'Description',
       title: 'context.iiocs.description',
       width: '200',
       class: 'rsa-iioc-iiocLevel0',
-      dataType: 'text',
-      nested: ''
+      dataType: 'text'
     }
   ]
 };

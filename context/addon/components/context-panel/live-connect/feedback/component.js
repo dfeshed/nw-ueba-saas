@@ -43,7 +43,7 @@ const FeedbackComponent = Component.extend({
   },
 
   @computed('activeTabName', 'model.contextData.liveConnectData')
-  showFeedbackPanel: (activeTabName, lcData) => activeTabName === 'liveConnect' && lcData,
+  showFeedbackPanel: (activeTabName, lcData) => activeTabName === 'LiveConnect-Ip' && lcData,
 
   @computed('model.contextData.liveConnectData.allTags')
   riskTags: (tags) => {

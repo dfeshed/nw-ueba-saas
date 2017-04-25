@@ -31,13 +31,42 @@ radial-gradient(circle at 85% 85%, rsa-color(blue, darker, .1) 0, rsa-color(blue
   overflow: auto;
 }
 .rsa-context-panel{
-  position: absolute;
-  top: 125px;
-  bottom: 0;
-  left: 0;
-  right: 0;
-
-  @include rsa-col(justify,fill);
+  @include rsa-vendor-prefix(flex-grow,0);
+  @include rsa-vendor-prefix(flex-shrink,0);
+   @include rsa-col(justify,fill);    
+  background-color: rsa-color(gray, darker);
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+   .rsa-nav-tab-group{
+    display: flex;
+    flex-direction: column;
+    }
+    .rsa-nav-tab.is-left-aligned-primary{
+    padding: 5px;
+    margin: 5px;
+    font-size: 20px;
+    color: rsa-color(gray, dark);   
+    }
+    &__tabs{
+        height: inherit;
+      &__enabled{
+        color: rsa-color(gray, light);
+      }
+        &__tooltip{
+          padding: rsa-whitespace(less) rsa-whitespace(); 
+        }
+      &__icon-loader{
+        position: absolute;
+        left: 0;
+        padding-left: rsa-whitespace(less);
+      }
+    }  
+    &__layout{
+        height: inherit;
+        width: -webkit-calc(100% - (40px));
+        display: inline-block;
+    }    
   &__loader {
     display: flex;
     justify-content: center;
@@ -57,16 +86,26 @@ radial-gradient(circle at 85% 85%, rsa-color(blue, darker, .1) 0, rsa-color(blue
   &-header {
     @include rsa-vendor-prefix(flex-grow,0);
     @include rsa-vendor-prefix(flex-shrink,0);
-    height: 100%;
+    min-height: inherit;
   }
-
+  &__body_layout{
+    @include rsa-vendor-prefix(flex-grow,1);
+    @include rsa-vendor-prefix(flex-shrink,1);
+    position: relative;
+    color: rsa-color(white);
+    position: relative;
+    height: -webkit-calc(100% - 100px);  
+    overflow: auto;
+    background-image: $panelBackgroundImage;
+    background-color: rsa-color(gray, darker);
+  }
   &__body{
     @include rsa-vendor-prefix(flex-grow,1);
     @include rsa-vendor-prefix(flex-shrink,1);
     position: relative;
     color: rsa-color(white);
     position: relative;
-    overflow: auto;
+    width: 100%;  
     background-image: $panelBackgroundImage;
     background-color: rsa-color(gray, darker);
   }
@@ -187,14 +226,13 @@ radial-gradient(circle at 85% 85%, rsa-color(blue, darker, .1) 0, rsa-color(blue
       vbox {
         padding-left: rsa-whitespace(less);
       }
-
+      &__tetheredPanel {
+        width: rsa-whitespace(less);
+      } 
       &__field-name ,&__row-field-name{
         @include rsa-font(header, small);
         padding-top: rsa-whitespace();
         padding-bottom:rsa-whitespace(less);
-      }
-      &__tetheredPanel{
-        width: rsa-whitespace();
       }
       &__field-value,&__row-field-value,&__header-data{
         color: $font-highlight-color;

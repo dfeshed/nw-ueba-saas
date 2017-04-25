@@ -4,7 +4,8 @@ export default {
   'datasourceId': '57c7e594b3b318b147f79fc6',
   'dataSourceName': 'IMConn_Alerts_datasource',
   'dataSourceType': 'Alerts',
-  'data': [
+  'dataSourceGroup': 'Alerts',
+  'resultList': [
     {
       '_id': {
         '$oid': '56b2f16de4b07ebea57c4a3c'

@@ -5,41 +5,36 @@ export default {
   title: 'context.modules.title',
   columns: [
     {
-      field: 'Score',
+      field: 'IOCScore.Score',
       title: 'context.modules.iiocScore',
       dataType: 'riskscore',
       width: '100',
       class: 'rsa-module-riskscore',
-      componentClass: 'rsa-content-badge-score',
-      nested: 'IOCScore.Score'
+      componentClass: 'rsa-content-badge-score'
     },
     {
       field: 'Name',
       title: 'context.modules.moduleName',
       width: '100',
-      class: 'rsa-module-moduleName',
-      nested: ''
+      class: 'rsa-module-moduleName'
     },
     {
       field: 'AnalyticsScore',
       title: 'context.modules.analyticsScore',
       width: '100',
-      class: 'rsa-module-riskScore',
-      nested: ''
+      class: 'rsa-module-riskScore'
     },
     {
       field: 'GlobalMachineCount',
       title: 'context.modules.machineCount',
       width: '100',
-      class: 'rsa-module-machineCount',
-      nested: ''
+      class: 'rsa-module-machineCount'
     },
     {
       field: 'Signature',
       title: 'context.modules.signature',
       width: '100',
-      class: 'rsa-module-signature',
-      nested: ''
+      class: 'rsa-module-signature'
     }
   ]
 };

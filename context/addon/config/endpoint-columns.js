@@ -6,7 +6,7 @@ export default [
     title: 'context.modules.title',
     columns: [
       {
-        field: 'Score',
+        field: 'IOCScore',
         title: 'context.modules.iiocScore',
         dataType: 'riskscore',
         width: '100',
@@ -18,29 +18,25 @@ export default [
         field: 'Name',
         title: 'context.modules.moduleName',
         width: '100',
-        class: 'rsa-module-moduleName',
-        nested: ''
+        class: 'rsa-module-moduleName'
       },
       {
         field: 'AnalyticsScore',
         title: 'context.modules.analyticsScore',
         width: '99',
-        class: 'rsa-module-riskScore',
-        nested: ''
+        class: 'rsa-module-riskScore'
       },
       {
         field: 'GlobalMachineCount',
         title: 'context.modules.machineCount',
         width: '98',
-        class: 'rsa-module-machineCount',
-        nested: ''
+        class: 'rsa-module-machineCount'
       },
       {
         field: 'Signature',
         title: 'context.modules.signature',
         width: '100',
-        class: 'rsa-module-signature',
-        nested: ''
+        class: 'rsa-module-signature'
       }
     ]
   },

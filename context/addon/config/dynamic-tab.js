@@ -8,6 +8,7 @@ export default [{
       field: 'overview',
       title: 'context.header.overview',
       dataSourceType: 'overview',
+      class: 'information-circle',
       tabRequired: true
     },
     {
@@ -15,6 +16,7 @@ export default [{
       title: 'context.hostSummary.title',
       dataSourceType: 'Machines',
       displayType: 'grid',
+      class: 'network-computers-2',
       tabRequired: false
     },
     {
@@ -22,6 +24,7 @@ export default [{
       title: 'context.header.modules',
       dataSourceType: 'Modules',
       displayType: 'table',
+      class: 'graph',
       tabRequired: true
     },
     {
@@ -29,6 +32,7 @@ export default [{
       title: 'context.header.iioc',
       dataSourceType: 'IOC',
       displayType: 'table',
+      class: 'report-problem-diamond',
       tabRequired: true
     },
     {
@@ -36,6 +40,7 @@ export default [{
       title: 'context.header.incidents',
       dataSourceType: 'Incidents',
       displayType: 'table',
+      class: 'flag-square-2',
       tabRequired: true
     },
     {
@@ -43,6 +48,7 @@ export default [{
       title: 'context.header.alerts',
       dataSourceType: 'Alerts',
       displayType: 'table',
+      class: 'alarm-sound',
       tabRequired: true
     },
     {
@@ -50,6 +56,7 @@ export default [{
       title: 'context.header.lists',
       dataSourceType: 'LIST',
       displayType: 'table',
+      class: 'list-bullets-1',
       tabRequired: true
     },
     {
@@ -64,6 +71,7 @@ export default [{
       title: 'context.header.liveConnect',
       dataSourceType: 'LiveConnect-Ip',
       displayType: 'liveConnect',
+      class: 'network-live',
       tabRequired: true
     }
   ],
@@ -73,7 +81,6 @@ export default [{
       field: 'Add To List',
       title: 'context.toolbar.addToList',
       componentName: 'add-to-list'
-
     }
   ]
 },
@@ -88,6 +95,7 @@ export default [{
       field: 'overview',
       title: 'context.header.overview',
       dataSourceType: 'overview',
+      class: 'information-circle',
       tabRequired: true
     },
     {
@@ -95,6 +103,7 @@ export default [{
       title: 'context.header.users',
       dataSourceType: 'Users',
       displayType: 'grid',
+      class: 'account-circle-1',
       tabRequired: true
 
     },
@@ -103,6 +112,7 @@ export default [{
       title: 'context.header.incidents',
       dataSourceType: 'Incidents',
       displayType: 'table',
+      class: 'flag-square-2',
       tabRequired: true
     },
 
@@ -111,6 +121,7 @@ export default [{
       title: 'context.header.alerts',
       dataSourceType: 'Alerts',
       displayType: 'table',
+      class: 'alarm-sound',
       tabRequired: true
     },
     {
@@ -118,6 +129,7 @@ export default [{
       title: 'context.header.lists',
       dataSourceType: 'LIST',
       displayType: 'table',
+      class: 'list-bullets-1',
       tabRequired: true
     }
   ],
@@ -140,6 +152,7 @@ export default [{
       field: 'overview',
       title: 'context.header.overview',
       dataSourceType: 'overview',
+      class: 'information-circle',
       tabRequired: true
     },
     {
@@ -147,6 +160,7 @@ export default [{
       title: 'context.hostSummary.title',
       dataSourceType: 'Machines',
       displayType: 'grid',
+      class: 'network-computers-2',
       tabRequired: false
     },
     {
@@ -154,6 +168,7 @@ export default [{
       title: 'context.header.modules',
       dataSourceType: 'Modules',
       displayType: 'table',
+      class: 'graph',
       tabRequired: true
     },
     {
@@ -161,6 +176,7 @@ export default [{
       title: 'context.header.iioc',
       dataSourceType: 'IOC',
       displayType: 'table',
+      class: 'report-problem-diamond',
       tabRequired: true
     },
     {
@@ -168,6 +184,7 @@ export default [{
       title: 'context.header.incidents',
       dataSourceType: 'Incidents',
       displayType: 'table',
+      class: 'flag-square-2',
       tabRequired: true
     },
     {
@@ -175,6 +192,7 @@ export default [{
       title: 'context.header.alerts',
       dataSourceType: 'Alerts',
       displayType: 'table',
+      class: 'alarm-sound',
       tabRequired: true
     },
     {
@@ -182,6 +200,7 @@ export default [{
       title: 'context.header.lists',
       dataSourceType: 'LIST',
       displayType: 'table',
+      class: 'list-bullets-1',
       tabRequired: true
     },
     {
@@ -189,6 +208,7 @@ export default [{
       title: 'context.header.liveConnect',
       dataSourceType: 'LiveConnect-Ip',
       displayType: 'liveConnect',
+      class: 'network-live',
       tabRequired: true
     }
 
@@ -212,12 +232,14 @@ export default [{
       field: 'overview',
       title: 'context.header.overview',
       dataSourceType: 'overview',
+      class: 'information-circle',
       tabRequired: true
     },
     {
       field: 'Machines',
       title: 'context.hostSummary.title',
       dataSourceType: 'Machines',
+      class: 'network-computers-2',
       displayType: 'grid',
       tabRequired: false
     },
@@ -233,6 +255,7 @@ export default [{
       title: 'context.header.modules',
       dataSourceType: 'Modules',
       displayType: 'table',
+      class: 'graph',
       tabRequired: true
     },
     {
@@ -240,6 +263,7 @@ export default [{
       title: 'context.header.iioc',
       dataSourceType: 'IOC',
       displayType: 'table',
+      class: 'report-problem-diamond',
       tabRequired: true
     },
     {
@@ -247,6 +271,7 @@ export default [{
       title: 'context.header.incidents',
       dataSourceType: 'Incidents',
       displayType: 'table',
+      class: 'flag-square-2',
       tabRequired: true
     },
     {
@@ -254,6 +279,7 @@ export default [{
       title: 'context.header.alerts',
       dataSourceType: 'Alerts',
       displayType: 'table',
+      class: 'alarm-sound',
       tabRequired: true
     },
     {
@@ -261,6 +287,7 @@ export default [{
       title: 'context.header.lists',
       dataSourceType: 'LIST',
       displayType: 'table',
+      class: 'list-bullets-1',
       tabRequired: true
     }
   ],
@@ -282,6 +309,7 @@ export default [{
       field: 'overview',
       title: 'context.header.overview',
       dataSourceType: 'overview',
+      class: 'information-circle',
       tabRequired: true
     },
     {
@@ -289,6 +317,7 @@ export default [{
       title: 'context.header.incidents',
       dataSourceType: 'Incidents',
       displayType: 'table',
+      class: 'flag-square-2',
       tabRequired: true
     },
     {
@@ -296,6 +325,7 @@ export default [{
       title: 'context.header.alerts',
       dataSourceType: 'Alerts',
       displayType: 'table',
+      class: 'alarm-sound',
       tabRequired: true
     },
     {
@@ -303,6 +333,7 @@ export default [{
       title: 'context.header.lists',
       dataSourceType: 'LIST',
       displayType: 'table',
+      class: 'list-bullets-1',
       tabRequired: true
     }
   ],
@@ -325,6 +356,7 @@ export default [{
       field: 'overview',
       title: 'context.header.overview',
       dataSourceType: 'overview',
+      class: 'information-circle',
       tabRequired: true
     },
     {
@@ -332,6 +364,7 @@ export default [{
       title: 'context.header.incidents',
       dataSourceType: 'Incidents',
       displayType: 'table',
+      class: 'flag-square-2',
       tabRequired: true
     },
     {
@@ -339,6 +372,7 @@ export default [{
       title: 'context.header.alerts',
       dataSourceType: 'Alerts',
       displayType: 'table',
+      class: 'alarm-sound',
       tabRequired: true
     },
     {
@@ -346,6 +380,7 @@ export default [{
       title: 'context.header.lists',
       dataSourceType: 'LIST',
       displayType: 'table',
+      class: 'list-bullets-1',
       tabRequired: true
     },
     {
@@ -353,6 +388,7 @@ export default [{
       title: 'context.header.liveConnect',
       dataSourceType: 'LiveConnect-Ip',
       displayType: 'liveConnect',
+      class: 'network-live',
       tabRequired: true
     }
   ],
@@ -375,6 +411,7 @@ export default [{
       field: 'overview',
       title: 'context.header.overview',
       dataSourceType: 'overview',
+      class: 'information-circle',
       tabRequired: true
     },
     {
@@ -382,6 +419,7 @@ export default [{
       title: 'context.header.incidents',
       dataSourceType: 'Incidents',
       displayType: 'table',
+      class: 'flag-square-2',
       tabRequired: true
     },
     {
@@ -389,6 +427,7 @@ export default [{
       title: 'context.header.alerts',
       dataSourceType: 'Alerts',
       displayType: 'table',
+      class: 'alarm-sound',
       tabRequired: true
     },
     {
@@ -396,6 +435,7 @@ export default [{
       title: 'context.header.lists',
       dataSourceType: 'LIST',
       displayType: 'table',
+      class: 'list-bullets-1',
       tabRequired: true
     },
     {
@@ -403,6 +443,7 @@ export default [{
       title: 'context.header.liveConnect',
       dataSourceType: 'LiveConnect-Ip',
       displayType: 'liveConnect',
+      class: 'network-live',
       tabRequired: true
     }
   ],
