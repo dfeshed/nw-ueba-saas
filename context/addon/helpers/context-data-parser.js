@@ -23,14 +23,15 @@ const _enrichADFields = (resultList) => {
 };
 
 const _enrichListData = (contextDataForDS, dataSourceData, firstDSEntry) => {
-  if (!isEmpty(contextDataForDS)) {
-    if (firstDSEntry) {
-      contextDataForDS.resultList = [];
-    }
+  const results = dataSourceData.resultList;
+  if (firstDSEntry) {
+    contextDataForDS.resultList = [];
+  }
+  if (!isEmpty(results)) {
     set(contextDataForDS, 'dataSourceLastModifiedOn', contextDataForDS.dataSourceLastModifiedOn > contextDataForDS.contentLastModifiedOn ? contextDataForDS.dataSourceLastModifiedOn : contextDataForDS.contentLastModifiedOn);
     contextDataForDS.resultList = contextDataForDS.resultList.concat([dataSourceData]);
-    return contextDataForDS;
   }
+  return contextDataForDS;
 };
 
 

@@ -21,9 +21,9 @@ export default {
       field: 'alert.name',
       title: 'context.alerts.name',
       width: '100',
-      nested: '_id.$oid',
       dataType: 'link',
-      path: '/respond/alert/{0}'
+      path: '/respond/alert/{0}',
+      linkField: '_id.$oid'
     },
     {
       field: 'alert.numEvents',

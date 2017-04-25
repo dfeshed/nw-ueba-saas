@@ -23,10 +23,6 @@ const DataTableComponent = Component.extend({
       this.send('activate', option);
     }
   },
-  constructPath(incId, path) {
-    path = path.replace('{0}', incId);
-    return window.location.origin.concat(path);
-  },
 
   @computed('contextData', 'lookupData.[]', 'activeTabName', 'dSDetails')
   getDataSourceData(contextData, [lookupData], activeTabName, dSDetails) {
