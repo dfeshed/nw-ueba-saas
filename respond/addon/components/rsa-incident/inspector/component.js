@@ -4,7 +4,7 @@ import * as UIStateActions from 'respond/actions/ui-state-creators';
 import { storyPointCount, storyEventCount } from 'respond/selectors/storyline';
 import DragBehavior from 'respond/utils/behaviors/drag';
 import { htmlSafe } from 'ember-string';
-import { Component } from 'ember-component';
+import Component from 'ember-component';
 import $ from 'jquery';
 
 const stateToComputed = (state) => {
