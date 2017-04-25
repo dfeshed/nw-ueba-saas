@@ -1,5 +1,5 @@
 import Component from 'ember-component';
-import { schedule, debounce, later } from 'ember-runloop';
+import { scheduleOnce, debounce } from 'ember-runloop';
 import computed, { gt, and } from 'ember-computed-decorators';
 import connect from 'ember-redux/components/connect';
 
@@ -14,10 +14,7 @@ const MetaHighlightScrollerComponent = Component.extend({
   classNames: ['meta-highlight-scroller'],
   layout,
 
-  $highlightedMetas: [],
   index: 0,
-  $parent: null,
-  $scrollBox: null,
 
   @gt('index', 0)
   showPrevious: false,
@@ -35,54 +32,28 @@ const MetaHighlightScrollerComponent = Component.extend({
   @computed('hasMatches', 'index')
   shownIndex: (hasMatches, index) => hasMatches ? index + 1 : 0,
 
-  didUpdateAttrs() {
-    // New meta has been selected for highlighting.
-    // Wait until after rendering of new highlight meta
-    // wrappers are complete, then reset scrolling.
-    schedule('afterRender', this, this._resetToFirstHighlightedMeta);
-  },
-
-  didInsertElement() {
+  // when we first render, need to highlight meta,
+  // but if the meta to highlight then changes we need to
+  // redo all the checks
+  didReceiveAttrs() {
     this._super(...arguments);
-
-    // First time rendered, save off parent/scroll-box
-    // so we don't have to get them again
-    const $parent = this.$().parent();
-    const $scrollBox = $parent.find('.scroll-box');
-    this.setProperties({ $parent, $scrollBox });
-    this._resetToFirstHighlightedMeta();
-  },
-
-  // Meta can be revealed after initial rendering of the text entries.
-  // They are revealed incrementally for performance reasons.
-  // We know how many metas there should be, so keep attempting to find them
-  // all until all of them are present in the DOM.
-  _checkHighlightedMeta() {
-    const { $highlightedMetas, $parent } = this.getProperties('$highlightedMetas', '$parent');
-    if (this.get('numberOfHighlightedMetas') !== $highlightedMetas.length) {
-      this.set('$highlightedMetas', $parent.find('.highlighted-meta'));
-      later(this, this._checkHighlightedMeta, 500);
-    }
+    scheduleOnce('afterRender', this, this._resetToFirstHighlightedMeta);
   },
 
   // When first rendered or when meta changes, need to
-  // get list of highlighted metas, save off, then scroll
-  // to first meta
+  // reset the index, then scroll to first meta
   _resetToFirstHighlightedMeta() {
     if (this.get('hasMatches')) {
-      const $parent = this.get('$parent');
-      const $highlightedMetas = $parent.find('.highlighted-meta');
-      this.setProperties({ $highlightedMetas, index: 0 });
-      this._checkHighlightedMeta();
+      this.set('index', 0);
       this._scrollToMeta();
     }
   },
 
   _scrollToMeta() {
-    const { index, $highlightedMetas, $parent, $scrollBox } =
-      this.getProperties('index', '$highlightedMetas', '$parent', '$scrollBox');
-
-    const $meta = $highlightedMetas.eq(index);
+    const index = this.get('index');
+    const $parent = this.$().parent();
+    const $scrollBox = $parent.find('.scroll-box');
+    const $meta = $parent.find('.highlighted-meta').eq(index);
 
     // calculate what the scroll top needs to be
     // Need the offset of the parent...
