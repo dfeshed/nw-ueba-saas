@@ -1,5 +1,5 @@
 .rsa-panel-message {
-  @include rsa-font(body);
+  @include rsa-font(light);
   font-style: italic;
   color: rsa-color(gray);
   padding: rsa-whitespace(most);
@@ -52,12 +52,11 @@
     }
   }
   .message {
-    @include rsa-font(body);
     font-style: italic;
   }
 
   .title {
-    @include rsa-font(header, larger);
+    @include rsa-font(light, large);
     font-style: italic;
   }
 }

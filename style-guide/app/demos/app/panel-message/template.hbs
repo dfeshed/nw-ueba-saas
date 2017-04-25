@@ -2,43 +2,47 @@
   {{spec-masthead model=model}}
 </hbox>
 
-<vbox class="scroll-box">
-  {{#spec-category title="Panel Message"}}
-    {{#spec-member title="Panel Message: Block"}}
-      <vbox class="layout-demo">
-        <vbox class="rsa-application-layout-panel-header" xs="12" fit>
-          <h2>Panel Title</h2>
-        </vbox>
+<hbox>
+  <fill block class="scroll-box">
+    <vbox class="scroll-box">
+      {{#spec-category title="Panel Message"}}
+        {{#spec-member title="Panel Message: Block"}}
+          <vbox class="layout-demo">
+            <vbox class="rsa-application-layout-panel-header" xs="12" fit>
+              <h2>Panel Title</h2>
+            </vbox>
 
-        <vbox class="rsa-application-layout-panel-content scroll-box" xs="12">
-          {{rsa-panel-message title="Error" message='A message or an error.'}}
-        </vbox>
-      </vbox>
-      {{!-- BEGIN-SNIPPET panelMessagelayout1
-        {{rsa-panel-message title="Error" message='A message or an error.'}}
-      END-SNIPPET --}}
-      {{code-snippet name="panelMessagelayout1.hbs"}}
-    {{/spec-member}}
-    {{#spec-member title="Panel Message: With HTML and other components."}}
-      <vbox class="layout-demo">
-        <vbox class="rsa-application-layout-panel-header" xs="12" fit>
-          <h2>Panel Title</h2>
-        </vbox>
+            <vbox class="rsa-application-layout-panel-content scroll-box" xs="12">
+              {{rsa-panel-message message='A message or an error.'}}
+            </vbox>
+          </vbox>
+          {{!-- BEGIN-SNIPPET panelMessagelayout1
+            {{rsa-panel-message message='A message or an error.'}}
+          END-SNIPPET --}}
+          {{code-snippet name="panelMessagelayout1.hbs"}}
+        {{/spec-member}}
+        {{#spec-member title="Panel Message: With HTML and other components."}}
+          <vbox class="layout-demo">
+            <vbox class="rsa-application-layout-panel-header" xs="12" fit>
+              <h2>Panel Title</h2>
+            </vbox>
 
-        <vbox class="rsa-application-layout-panel-content scroll-box" xs="12">
-          {{#rsa-panel-message title="Error"}}
-            <div>A message or an error. <a href="#/demos/app/panel-message">Click Here</a></div>
-            {{#rsa-form-button style='primary'}}{{rsa-icon name='account-circle-1'}}Default Button{{/rsa-form-button}}
-          {{/rsa-panel-message}}
-        </vbox>
-      </vbox>
-      {{!-- BEGIN-SNIPPET panelMessagelayout2
-          {{#rsa-panel-message title="Error"}}
-            <div>A message or an error. <a href="#/demos/app/panel-message">Click Here</a></div>
-            {{#rsa-form-button style='primary'}}{{rsa-icon name='account-circle-1'}}Default Button{{/rsa-form-button}}
-          {{/rsa-panel-message}}
-      END-SNIPPET --}}
-      {{code-snippet name="panelMessagelayout2.hbs"}}
-    {{/spec-member}}
-  {{/spec-category}}
-</vbox>
+            <vbox class="rsa-application-layout-panel-content scroll-box" xs="12">
+              {{#rsa-panel-message title="Error"}}
+                <div>A message or an error. <a href="#/demos/app/panel-message">Click Here</a></div>
+                {{#rsa-form-button style='primary'}}{{rsa-icon name='account-circle-1'}}Default Button{{/rsa-form-button}}
+              {{/rsa-panel-message}}
+            </vbox>
+          </vbox>
+          {{!-- BEGIN-SNIPPET panelMessagelayout2
+              {{#rsa-panel-message title="Error"}}
+                <div>A message or an error. <a href="#/demos/app/panel-message">Click Here</a></div>
+                {{#rsa-form-button style='primary'}}{{rsa-icon name='account-circle-1'}}Default Button{{/rsa-form-button}}
+              {{/rsa-panel-message}}
+          END-SNIPPET --}}
+          {{code-snippet name="panelMessagelayout2.hbs"}}
+        {{/spec-member}}
+      {{/spec-category}}
+    </vbox>
+  </fill>
+</hbox>
