@@ -10,7 +10,9 @@
         {{#if displayedHeaderItems}}
           <grid responsive>
             {{#each displayedHeaderItems as |item|}}
-              {{recon-event-header-item name=item.name value=item.value type=item.type}}
+              {{#if item.value}}
+                {{recon-event-header-item name=item.name value=item.value type=item.type}}
+              {{/if}}
             {{/each}}
           </grid>
         {{/if}}
