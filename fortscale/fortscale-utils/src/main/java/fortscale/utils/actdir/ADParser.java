@@ -33,10 +33,7 @@ public class ADParser {
 		}
 		return dn.substring(ouStartIndex, ouLastIndex);  
 	}
-	public boolean shayTestToDelete(){
--		if (1==1)
--			return true;
--	}
+	
 	public String parseDCFromDN(String dn) {
 
 		String [] splited = dn.split(ATTRIBUTE_DC_PREFIX);
