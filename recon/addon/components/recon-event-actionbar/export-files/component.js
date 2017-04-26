@@ -2,7 +2,7 @@ import Component from 'ember-component';
 import connect from 'ember-redux/components/connect';
 import computed from 'ember-computed-decorators';
 
-import * as InteractionActions from 'recon/actions/interaction-creators';
+import { extractFiles, didDownloadFiles } from 'recon/actions/interaction-creators';
 import { eventType } from 'recon/reducers/meta/selectors';
 import { selectedFiles } from 'recon/reducers/files/selectors';
 import ReconExport from 'recon/mixins/recon-export';
@@ -15,10 +15,10 @@ const stateToComputed = ({ recon, recon: { files } }) => ({
   status: files.fileExtractStatus
 });
 
-const dispatchToActions = (dispatch) => ({
-  extractFiles: () => dispatch(InteractionActions.extractFiles('FILES')),
-  didDownloadFiles: () => dispatch(InteractionActions.didDownloadFiles())
-});
+const dispatchToActions = {
+  extractFiles: () => extractFiles('FILES'),
+  didDownloadFiles
+};
 
 const ExportFilesComponent = Component.extend(ReconExport, {
   layout,

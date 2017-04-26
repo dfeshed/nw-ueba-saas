@@ -9,3 +9,14 @@ export const augmentResult = (data, previousPosition = 0) => {
     position: previousPosition + i + 1
   }));
 };
+
+/*
+ * Takes a stateVal and a payload for a toggle action
+ * and determines what the state val should be.
+ * Handles case where payload isn't a boolean (like with
+ * action creators bound directly to ember actions)
+ */
+export const handleSetTo = (payload, stateVal) => {
+  const hasSetTo = payload.setTo !== undefined && typeof payload.setTo === 'boolean';
+  return hasSetTo ? payload.setTo : !stateVal;
+};

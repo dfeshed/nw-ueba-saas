@@ -1,11 +1,11 @@
 import Component from 'ember-component';
 import connect from 'ember-redux/components/connect';
-import * as VisualActions from 'recon/actions/visual-creators';
+import { togglePayloadOnly } from 'recon/actions/visual-creators';
 import layout from './template';
 
-const dispatchToActions = (dispatch) => ({
-  togglePayloadOnly: () => dispatch(VisualActions.togglePayloadOnly())
-});
+const dispatchToActions = {
+  togglePayloadOnly
+};
 
 const stateToComputed = ({ recon: { packets } }) => ({
   isPayloadOnly: packets.isPayloadOnly

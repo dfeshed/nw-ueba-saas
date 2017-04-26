@@ -4,9 +4,14 @@ import connect from 'ember-redux/components/connect';
 
 import layout from './template';
 import { RECON_VIEW_TYPES } from 'recon/utils/reconstruction-types';
-import * as VisualActions from 'recon/actions/visual-creators';
-import * as DataActions from 'recon/actions/data-creators';
-import * as InteractionActions from 'recon/actions/interaction-creators';
+import {
+  toggleReconHeader,
+  toggleRequestData,
+  toggleResponseData,
+  toggleReconExpanded,
+  closeRecon
+} from 'recon/actions/visual-creators';
+import { toggleMetaData, setNewReconView } from 'recon/actions/data-creators';
 import { isLogEvent } from 'recon/reducers/meta/selectors';
 import { lacksPackets } from 'recon/reducers/visuals/selectors';
 
@@ -21,19 +26,15 @@ const stateToComputed = ({ recon, recon: { visuals } }) => ({
   lacksPackets: lacksPackets(recon)
 });
 
-const dispatchToActions = (dispatch) => ({
-  toggleHeader: () => dispatch(VisualActions.toggleReconHeader()),
-  toggleRequest: () => dispatch(VisualActions.toggleRequestData()),
-  toggleResponse: () => dispatch(VisualActions.toggleResponseData()),
-  toggleMeta: () => {
-    dispatch(DataActions.toggleMetaData());
-    // We need to null out the highlighted meta when the meta view is closed
-    dispatch(InteractionActions.highlightMeta(null));
-  },
-  toggleExpanded: () => dispatch(VisualActions.toggleReconExpanded()),
-  closeRecon: () => dispatch(VisualActions.closeRecon()),
-  updateReconstructionView: (newView) => dispatch(DataActions.setNewReconView(newView))
-});
+const dispatchToActions = {
+  toggleMetaData,
+  toggleReconHeader,
+  toggleRequestData,
+  toggleResponseData,
+  toggleReconExpanded,
+  closeRecon,
+  setNewReconView
+};
 
 const TitlebarComponent = Component.extend({
   layout,
@@ -69,7 +70,7 @@ const TitlebarComponent = Component.extend({
     findNewReconstructionView({ code }) {
       const newView = RECON_VIEW_TYPES.findBy('code', parseInt(code, 10));
       if (newView) {
-        this.send('updateReconstructionView', newView);
+        this.send('setNewReconView', newView);
       }
     }
   }

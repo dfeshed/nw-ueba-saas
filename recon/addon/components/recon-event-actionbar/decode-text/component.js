@@ -8,9 +8,9 @@ const stateToComputed = ({ recon }) => ({
   isDecoded: recon.text.decode
 });
 
-const dispatchToActions = (dispatch) => ({
-  decodeText: () => dispatch(decodeText())
-});
+const dispatchToActions = {
+  decodeText
+};
 
 const DecodeTextComponent = Component.extend({
   layout,

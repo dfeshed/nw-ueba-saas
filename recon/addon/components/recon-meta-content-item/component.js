@@ -2,13 +2,13 @@ import Component from 'ember-component';
 import layout from './template';
 import computed, { alias } from 'ember-computed-decorators';
 import connect from 'ember-redux/components/connect';
-import * as InteractionActions from 'recon/actions/interaction-creators';
+import { highlightMeta } from 'recon/actions/interaction-creators';
 
 import metaToLimit from './limited-meta';
 
-const dispatchToActions = (dispatch) => ({
-  highlightMeta: (metaToHighlight) => dispatch(InteractionActions.highlightMeta(metaToHighlight))
-});
+const dispatchToActions = {
+  highlightMeta
+};
 
 const MetaContentItem = Component.extend({
   layout,

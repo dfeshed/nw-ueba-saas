@@ -2,7 +2,7 @@ import set from 'ember-metal/set';
 import { handleActions } from 'redux-actions';
 
 import * as ACTION_TYPES from 'recon/actions/types';
-import { augmentResult } from 'recon/reducers/util';
+import { augmentResult, handleSetTo } from 'recon/reducers/util';
 
 const textInitialState = {
   decode: true,
@@ -22,6 +22,12 @@ const textReducer = handleActions({
     metaToHighlight: payload
   }),
 
+  // If meta is toggled, need to clear metaToHighlight
+  [ACTION_TYPES.TOGGLE_META]: (state) => ({
+    ...state,
+    metaToHighlight: null
+  }),
+
   [ACTION_TYPES.TEXT_DECODE_PAGE]: (state, { payload }) => {
     const newContent = generateHTMLSafeText(augmentResult(payload));
     return {
@@ -32,7 +38,7 @@ const textReducer = handleActions({
 
   [ACTION_TYPES.TOGGLE_TEXT_DECODE]: (state, { payload = {} }) => ({
     ...state,
-    decode: payload.setTo !== undefined ? payload.setTo : !state.decode,
+    decode: handleSetTo(payload, state.decode),
     textContent: []
   })
 

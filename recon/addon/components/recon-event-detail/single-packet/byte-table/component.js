@@ -7,7 +7,7 @@ import { scaleLinear } from 'd3-scale';
 import { event, select } from 'd3-selection';
 
 import Drag from 'recon/utils/drag';
-import * as InteractionActions from 'recon/actions/interaction-creators';
+import { showPacketTooltip, hidePacketTooltip } from 'recon/actions/interaction-creators';
 
 const scale = scaleLinear().domain([0, 255]).range([0.06, 1]);
 
@@ -17,10 +17,10 @@ const stateToComputed = ({ recon: { packets } }) => ({
   isPayloadOnly: packets.isPayloadOnly
 });
 
-const dispatchToActions = (dispatch) => ({
-  tooltipOn: (tooltipData) => dispatch(InteractionActions.showPacketTooltip(tooltipData)),
-  tooltipOff: () => dispatch(InteractionActions.hidePacketTooltip())
-});
+const dispatchToActions = {
+  showPacketTooltip,
+  hidePacketTooltip
+};
 
 const compact = (array) => {
   const length = array == null ? 0 : array.length;
@@ -127,10 +127,10 @@ const ByteTableComponent = Component.extend({
                 packetId: this.get('packet.id')
               };
             }
-            this.send('tooltipOn', tooltipData);
+            this.send('showPacketTooltip', tooltipData);
           })
           .on('mouseleave', () => {
-            this.send('tooltipOff');
+            this.send('hidePacketTooltip');
           });
         }
 

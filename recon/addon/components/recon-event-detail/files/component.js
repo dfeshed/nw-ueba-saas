@@ -7,7 +7,11 @@ import connect from 'ember-redux/components/connect';
 import layout from './template';
 import baseColumnsConfig from './columns-config';
 import { filesWithSelection } from 'recon/reducers/files/selectors';
-import * as InteractionActions from 'recon/actions/interaction-creators';
+import {
+  fileSelected,
+  selectAllFiles,
+  deselectAllFiles
+} from 'recon/actions/interaction-creators';
 
 const stateToComputed = ({ recon, recon: { data, files } }) => ({
   files: filesWithSelection(recon),
@@ -16,11 +20,11 @@ const stateToComputed = ({ recon, recon: { data, files } }) => ({
   dataIndex: data.index
 });
 
-const dispatchToActions = (dispatch) => ({
-  fileSelectionToggled: (fileId) => dispatch(InteractionActions.fileSelected(fileId)),
-  selectAllFiles: () => dispatch(InteractionActions.selectAllFiles()),
-  deselectAllFiles: () => dispatch(InteractionActions.deselectAllFiles())
-});
+const dispatchToActions = {
+  fileSelected,
+  selectAllFiles,
+  deselectAllFiles
+};
 
 const calculateColumnWidth = (text) => {
   const canvas = document.createElement('canvas');
@@ -106,7 +110,7 @@ const FileReconComponent = Component.extend(ReconPager, {
       // get click events on span and input
       // only want input
       if (e.target.tagName === 'INPUT') {
-        this.send('fileSelectionToggled', id);
+        this.send('fileSelected', id);
       }
     },
 

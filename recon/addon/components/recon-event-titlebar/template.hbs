@@ -32,7 +32,7 @@
 {{rsa-icon
   active=isHeaderOpen
   class='toggle-header header-toggle'
-  click=(action "toggleHeader")
+  click=(action 'toggleReconHeader')
   name='layout-6'
   title=(t 'recon.toggles.header')
 }}
@@ -41,14 +41,14 @@
   {{rsa-icon
     active=isRequestShown
     class='toggle-request header-toggle'
-    click=(action "toggleRequest")
+    click=(action 'toggleRequestData')
     name='arrow-circle-right-2'
     title=(t 'recon.toggles.request')}}
 
   {{rsa-icon
     active=isResponseShown
     class='toggle-response header-toggle'
-    click=(action "toggleResponse")
+    click=(action 'toggleResponseData')
     name='arrow-circle-left-2'
     title=(t 'recon.toggles.response')}}
 
@@ -76,7 +76,7 @@
 {{rsa-icon
   active=isMetaShown
   class='toggle-meta header-toggle'
-  click=(action 'toggleMeta')
+  click=(action 'toggleMetaData')
   name='layout-2'
   title=(t 'recon.toggles.meta')}}
 
@@ -89,7 +89,7 @@
 
 {{rsa-icon
   class='header-toggle'
-  click=(action 'toggleExpanded')
+  click=(action 'toggleReconExpanded')
   name=(concat 'arrow-' arrowDirection '-9')
   title=(t 'recon.toggles.expand')}}
 

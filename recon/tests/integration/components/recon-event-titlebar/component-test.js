@@ -7,7 +7,6 @@ import { clickTrigger, nativeMouseUp } from '../../../helpers/ember-power-select
 
 import { RECON_VIEW_TYPES_BY_NAME } from 'recon/utils/reconstruction-types';
 import * as ACTION_TYPES from 'recon/actions/types';
-import DataActions from 'recon/actions/data-creators';
 const { $ } = Ember;
 
 import DataHelper from '../../../helpers/data-helper';
@@ -53,13 +52,11 @@ test('clicking shrink, then grow, executes multiple actions', function(assert) {
 });
 
 test('calls action when reconstruction view is changed', function(assert) {
-  const actionSpy = sinon.spy(DataActions, 'setNewReconView');
   this.render(hbs`{{recon-event-titlebar}}`);
   clickTrigger();
   nativeMouseUp('.ember-power-select-option:contains("File View")');
   assert.ok(dispatchSpy.calledOnce);
-  assert.equal(actionSpy.args[0][0].code, 2);
-  actionSpy.reset();
+  assert.ok(typeof dispatchSpy.args[0][0] === 'function', 'Dispatch called with function (thunk)');
 });
 
 test('clicking header toggle executes action', function(assert) {
@@ -69,12 +66,10 @@ test('clicking header toggle executes action', function(assert) {
 });
 
 test('clicking meta toggle executes actions', function(assert) {
-  const actionSpy = sinon.spy(DataActions, 'toggleMetaData');
   this.render(hbs`{{recon-event-titlebar}}`);
   this.$('.rsa-icon-layout-2').click();
-  assert.ok(dispatchSpy.calledTwice);
-  assert.ok(actionSpy.calledOnce);
-  actionSpy.reset();
+  assert.ok(dispatchSpy.calledOnce, 'Dispatch called once');
+  assert.ok(typeof dispatchSpy.args[0][0] === 'function', 'Dispatch called with function (thunk)');
 });
 
 const initializeData = { total: 555, index: 25, meta: [['medium', 1]] };

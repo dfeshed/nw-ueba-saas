@@ -5,8 +5,12 @@ import observer from 'ember-metal/observer';
 import run from 'ember-runloop';
 
 import layout from './template';
-import * as DataActions from '../../actions/data-creators';
-import * as VisualActions from '../../actions/visual-creators';
+import {
+  initializeRecon,
+  initializeNotifications,
+  teardownNotifications
+} from '../../actions/data-creators';
+import { toggleReconExpanded } from '../../actions/visual-creators';
 
 const stateToComputed = ({ recon: { visuals, notifications } }) => ({
   isMetaShown: visuals.isMetaShown,
@@ -15,12 +19,12 @@ const stateToComputed = ({ recon: { visuals, notifications } }) => ({
   stopNotifications: notifications.stopNotifications
 });
 
-const dispatchToActions = (dispatch) => ({
-  initializeRecon: (inputs) => dispatch(DataActions.initializeRecon(inputs)),
-  initializeNotifications: () => dispatch(DataActions.initializeNotifications()),
-  teardownNotifications: () => dispatch(DataActions.teardownNotifications()),
-  toggleExpanded: (isExpanded) => dispatch(VisualActions.toggleReconExpanded(isExpanded))
-});
+const dispatchToActions = {
+  initializeRecon,
+  initializeNotifications,
+  teardownNotifications,
+  toggleReconExpanded
+};
 
 const ReconContainer = Component.extend({
   layout,
@@ -84,7 +88,7 @@ const ReconContainer = Component.extend({
     // Containing application can pass in an initial expanded state
     const isExpanded = this.get('isExpanded');
     if (isExpanded !== undefined) {
-      this.send('toggleExpanded', isExpanded);
+      this.send('toggleReconExpanded', isExpanded);
     }
   },
 

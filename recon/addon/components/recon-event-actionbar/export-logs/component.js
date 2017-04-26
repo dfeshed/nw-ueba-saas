@@ -4,7 +4,7 @@ import connect from 'ember-redux/components/connect';
 import computed from 'ember-computed-decorators';
 
 import { eventType } from 'recon/reducers/meta/selectors';
-import * as InteractionActions from 'recon/actions/interaction-creators';
+import { didDownloadFiles, extractFiles } from 'recon/actions/interaction-creators';
 import ReconExport from 'recon/mixins/recon-export';
 import layout from './template';
 
@@ -16,10 +16,10 @@ const stateToComputed = ({ recon, recon: { files } }) => ({
   eventType: eventType(recon)
 });
 
-const dispatchToActions = (dispatch) => ({
-  extractFiles: (type) => dispatch(InteractionActions.extractFiles(type)),
-  didDownloadFiles: () => dispatch(InteractionActions.didDownloadFiles())
-});
+const dispatchToActions = {
+  extractFiles,
+  didDownloadFiles
+};
 
 const menuOffsetsStyle = (el) => {
   if (el) {

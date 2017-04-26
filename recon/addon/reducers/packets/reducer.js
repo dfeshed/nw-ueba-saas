@@ -3,7 +3,7 @@ import { handleActions } from 'redux-actions';
 
 import * as ACTION_TYPES from 'recon/actions/types';
 import { enhancePackets } from './util';
-import { augmentResult } from '../util';
+import { augmentResult, handleSetTo } from 'recon/reducers/util';
 
 const packetsInitialState = {
   isPayloadOnly: false,
@@ -67,17 +67,17 @@ const packetReducer = handleActions({
 
   [ACTION_TYPES.TOGGLE_BYTE_STYLING]: (state, { payload = {} }) => ({
     ...state,
-    hasStyledBytes: payload.setTo !== undefined ? payload.setTo : !state.hasStyledBytes
+    hasStyledBytes: handleSetTo(payload, state.hasStyledBytes)
   }),
 
   [ACTION_TYPES.TOGGLE_KNOWN_SIGNATURES]: (state, { payload = {} }) => ({
     ...state,
-    hasSignaturesHighlighted: payload.setTo !== undefined ? payload.setTo : !state.hasSignaturesHighlighted
+    hasSignaturesHighlighted: handleSetTo(payload, state.hasSignaturesHighlighted)
   }),
 
   [ACTION_TYPES.TOGGLE_PACKET_PAYLOAD_ONLY]: (state, { payload = {} }) => ({
     ...state,
-    isPayloadOnly: payload.setTo !== undefined ? payload.setTo : !state.isPayloadOnly
+    isPayloadOnly: handleSetTo(payload, state.isPayloadOnly)
   }),
 
   [ACTION_TYPES.SHOW_PACKET_TOOLTIP]: (state, { payload }) => ({
