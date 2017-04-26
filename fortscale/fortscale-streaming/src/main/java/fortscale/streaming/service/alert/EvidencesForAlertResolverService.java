@@ -96,7 +96,7 @@ public class EvidencesForAlertResolverService {
         if (CollectionUtils.isNotEmpty(eventList)) {
             // Get all the evidence ids
             List<String> evidenceIds = new ArrayList<>();
-            eventList.stream().forEach(enrichedFortscaleEvent -> {
+            eventList.forEach(enrichedFortscaleEvent -> {
                 evidenceIds.add(enrichedFortscaleEvent.getId());
             });
 
