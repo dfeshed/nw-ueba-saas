@@ -15,8 +15,8 @@ export default Service.extend({
 
   adminRoles: ['*', 'accessAdminModule', 'viewAppliances', 'viewServices', 'viewEventSources', 'accessHealthWellness', 'manageSystemSettings', 'manageSASecurity'],
   configRoles: ['*', 'searchLiveResources', 'accessManageAlertHandlingRules', 'accessViewRules', 'manageLiveResources', 'manageLiveFeeds'],
-  investigationRoles: ['*', 'accessInvestigationModule', 'investigate.*'],
-  respondRoles: ['*', 'accessIncidentModule', 'response.*'],
+  investigationRoles: ['*', 'accessInvestigationModule', 'investigate-server.*'],
+  respondRoles: ['*', 'accessIncidentModule', 'response-server.*'],
 
   // computed intersections between roles and role groups
 
