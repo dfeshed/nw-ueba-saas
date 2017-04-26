@@ -92,13 +92,13 @@ IncidentsAPI.reopenClass({
    * @param incidentId The ID of the incident to fetch
    * @returns {Promise}
    */
-  getIncidentDetails(entityId) {
+  getIncidentDetails(incidentId) {
     return promiseRequest({
       method: 'queryRecord',
       modelName: 'incidents',
       query: {
         id: null,
-        entityId
+        incidentId
       }
     });
   },
