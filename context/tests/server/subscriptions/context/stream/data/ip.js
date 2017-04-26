@@ -48,82 +48,8 @@ export default [
         'created': {
           '$date': '2016-02-09T04:17:06.156Z'
         },
-        'name': 'High Risk Alerts: Reporting Engine for 90.0',
-        'priority': 'CRITICAL',
-        'status': 'NEW'
-      },
-      {
-        '_id': 'INC-134',
-        'alertCount': 240,
-        'averageAlertRiskScore': 90,
-        'created': {
-          '$date': '2016-02-05T04:45:06.206Z'
-        },
-        'name': 'High Risk Alerts: Reporting Engine for 90.0',
-        'priority': 'CRITICAL',
-        'status': 'NEW'
-      },
-      {
-        '_id': 'INC-132',
-        'alertCount': 600,
-        'averageAlertRiskScore': 90,
-        'created': {
-          '$date': '2016-02-04T06:01:39.644Z'
-        },
-        'name': 'High Risk Alerts: Reporting Engine for 90.0',
-        'priority': 'CRITICAL',
-        'status': 'NEW'
-      },
-      {
-        '_id': 'INC-230',
-        'alertCount': 5,
-        'averageAlertRiskScore': 90,
-        'created': {
-          '$date': '2016-02-09T04:17:06.156Z'
-        },
-        'name': 'High Risk Alerts: Reporting Engine for 90.0',
-        'priority': 'CRITICAL',
-        'status': 'NEW'
-      },
-      {
-        '_id': 'INC-230',
-        'alertCount': 5,
-        'averageAlertRiskScore': 90,
-        'created': {
-          '$date': '2016-02-09T04:17:06.156Z'
-        },
-        'name': 'High Risk Alerts: Reporting Engine for 90.0',
-        'priority': 'CRITICAL',
-        'status': 'NEW'
-      },
-      {
-        '_id': 'INC-230',
-        'alertCount': 5,
-        'averageAlertRiskScore': 90,
-        'created': {
-          '$date': '2016-02-09T04:17:06.156Z'
-        },
-        'name': 'High Risk Alerts: Reporting Engine for 90.0',
-        'priority': 'CRITICAL',
-        'status': 'NEW'
-      },
-      {
-        '_id': 'INC-230',
-        'alertCount': 5,
-        'averageAlertRiskScore': 90,
-        'created': {
-          '$date': '2016-02-09T04:17:06.156Z'
-        },
-        'name': 'High Risk Alerts: Reporting Engine for 90.0',
-        'priority': 'CRITICAL',
-        'status': 'NEW'
-      },
-      {
-        '_id': 'INC-230',
-        'alertCount': 5,
-        'averageAlertRiskScore': 90,
-        'created': {
-          '$date': '2016-02-09T04:17:06.156Z'
+        'assignee': {
+          'name': 'Administrator'
         },
         'name': 'High Risk Alerts: Reporting Engine for 90.0',
         'priority': 'CRITICAL',
@@ -136,6 +62,9 @@ export default [
         'created': {
           '$date': '2016-02-05T04:45:06.206Z'
         },
+        'assignee': {
+          'name': 'Administrator'
+        },
         'name': 'High Risk Alerts: Reporting Engine for 90.0',
         'priority': 'CRITICAL',
         'status': 'NEW'
@@ -147,16 +76,8 @@ export default [
         'created': {
           '$date': '2016-02-04T06:01:39.644Z'
         },
-        'name': 'High Risk Alerts: Reporting Engine for 90.0',
-        'priority': 'CRITICAL',
-        'status': 'NEW'
-      },
-      {
-        '_id': 'INC-230',
-        'alertCount': 5,
-        'averageAlertRiskScore': 90,
-        'created': {
-          '$date': '2016-02-09T04:17:06.156Z'
+        'assignee': {
+          'name': 'Administrator'
         },
         'name': 'High Risk Alerts: Reporting Engine for 90.0',
         'priority': 'CRITICAL',
@@ -169,16 +90,8 @@ export default [
         'created': {
           '$date': '2016-02-09T04:17:06.156Z'
         },
-        'name': 'High Risk Alerts: Reporting Engine for 90.0',
-        'priority': 'CRITICAL',
-        'status': 'NEW'
-      },
-      {
-        '_id': 'INC-230',
-        'alertCount': 5,
-        'averageAlertRiskScore': 90,
-        'created': {
-          '$date': '2016-02-09T04:17:06.156Z'
+        'assignee': {
+          'name': 'Administrator'
         },
         'name': 'High Risk Alerts: Reporting Engine for 90.0',
         'priority': 'CRITICAL',
@@ -190,6 +103,135 @@ export default [
         'averageAlertRiskScore': 90,
         'created': {
           '$date': '2016-02-09T04:17:06.156Z'
+        },
+        'assignee': {
+          'name': 'Administrator'
+        },
+        'name': 'High Risk Alerts: Reporting Engine for 90.0',
+        'priority': 'CRITICAL',
+        'status': 'NEW'
+      },
+      {
+        '_id': 'INC-230',
+        'alertCount': 5,
+        'averageAlertRiskScore': 90,
+        'created': {
+          '$date': '2016-02-09T04:17:06.156Z'
+        },
+        'assignee': {
+          'name': 'Administrator'
+        },
+        'name': 'High Risk Alerts: Reporting Engine for 90.0',
+        'priority': 'CRITICAL',
+        'status': 'NEW'
+      },
+      {
+        '_id': 'INC-230',
+        'alertCount': 5,
+        'averageAlertRiskScore': 90,
+        'created': {
+          '$date': '2016-02-09T04:17:06.156Z'
+        },
+        'assignee': {
+          'name': 'Administrator'
+        },
+        'name': 'High Risk Alerts: Reporting Engine for 90.0',
+        'priority': 'CRITICAL',
+        'status': 'NEW'
+      },
+      {
+        '_id': 'INC-230',
+        'alertCount': 5,
+        'averageAlertRiskScore': 90,
+        'created': {
+          '$date': '2016-02-09T04:17:06.156Z'
+        },
+        'assignee': {
+          'name': 'Administrator'
+        },
+        'name': 'High Risk Alerts: Reporting Engine for 90.0',
+        'priority': 'CRITICAL',
+        'status': 'NEW'
+      },
+      {
+        '_id': 'INC-134',
+        'alertCount': 240,
+        'averageAlertRiskScore': 90,
+        'created': {
+          '$date': '2016-02-05T04:45:06.206Z'
+        },
+        'assignee': {
+          'name': 'Administrator'
+        },
+        'name': 'High Risk Alerts: Reporting Engine for 90.0',
+        'priority': 'CRITICAL',
+        'status': 'NEW'
+      },
+      {
+        '_id': 'INC-132',
+        'alertCount': 600,
+        'averageAlertRiskScore': 90,
+        'created': {
+          '$date': '2016-02-04T06:01:39.644Z'
+        },
+        'assignee': {
+          'name': 'Administrator'
+        },
+        'name': 'High Risk Alerts: Reporting Engine for 90.0',
+        'priority': 'CRITICAL',
+        'status': 'NEW'
+      },
+      {
+        '_id': 'INC-230',
+        'alertCount': 5,
+        'averageAlertRiskScore': 90,
+        'created': {
+          '$date': '2016-02-09T04:17:06.156Z'
+        },
+        'assignee': {
+          'name': 'Administrator'
+        },
+        'name': 'High Risk Alerts: Reporting Engine for 90.0',
+        'priority': 'CRITICAL',
+        'status': 'NEW'
+      },
+      {
+        '_id': 'INC-230',
+        'alertCount': 5,
+        'averageAlertRiskScore': 90,
+        'created': {
+          '$date': '2016-02-09T04:17:06.156Z'
+        },
+        'assignee': {
+          'name': 'Administrator'
+        },
+        'name': 'High Risk Alerts: Reporting Engine for 90.0',
+        'priority': 'CRITICAL',
+        'status': 'NEW'
+      },
+      {
+        '_id': 'INC-230',
+        'alertCount': 5,
+        'averageAlertRiskScore': 90,
+        'created': {
+          '$date': '2016-02-09T04:17:06.156Z'
+        },
+        'assignee': {
+          'name': 'Administrator'
+        },
+        'name': 'High Risk Alerts: Reporting Engine for 90.0',
+        'priority': 'CRITICAL',
+        'status': 'NEW'
+      },
+      {
+        '_id': 'INC-230',
+        'alertCount': 5,
+        'averageAlertRiskScore': 90,
+        'created': {
+          '$date': '2016-02-09T04:17:06.156Z'
+        },
+        'assignee': {
+          'name': 'Administrator'
         },
         'name': 'High Risk Alerts: Reporting Engine for 90.0',
         'priority': 'CRITICAL',

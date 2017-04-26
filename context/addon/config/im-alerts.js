@@ -7,7 +7,7 @@ export default {
     {
       field: 'alert.risk_score',
       title: 'context.alerts.risk_score',
-      width: '100',
+      width: '10vh',
       dataType: 'riskscore',
       class: 'rsa-module-riskscore',
       componentClass: 'rsa-content-badge-score'
@@ -15,12 +15,12 @@ export default {
     {
       field: 'alert.source',
       title: 'context.alerts.source',
-      width: '100'
+      width: '20vh'
     },
     {
       field: 'alert.name',
       title: 'context.alerts.name',
-      width: '100',
+      width: '20vh',
       dataType: 'link',
       path: '/respond/alert/{0}',
       linkField: '_id.$oid'
@@ -28,20 +28,20 @@ export default {
     {
       field: 'alert.numEvents',
       title: 'context.alerts.numEvents',
-      width: '100'
-    },
-    {
-      field: 'alert.timestamp.$date.created',
-      title: 'context.alerts.created',
-      width: '100',
-      dataType: 'datetime'
+      width: '10vh'
     },
     {
       field: 'incidentId',
       title: 'context.alerts.id',
-      width: '80',
+      width: '15vh',
       dataType: 'link',
       path: '/respond/incident/{0}'
+    },
+    {
+      field: 'alert.timestamp.$date.created',
+      title: 'context.alerts.created',
+      width: '25vh',
+      dataType: 'datetime'
     }
   ]
 };

@@ -8,21 +8,21 @@ export default {
     {
       field: 'LastExecuted',
       title: 'context.iiocs.lastExecuted',
-      width: '200',
+      width: '30vh',
       class: 'rsa-iioc-iiocLevel2',
       dataType: 'text'
     },
     {
       field: 'IOCLevel',
       title: 'context.iiocs.iOCLevel',
-      width: '200',
+      width: '10vh',
       class: 'rsa-iioc-iiocLevel1',
       dataType: 'text'
     },
     {
       field: 'Description',
       title: 'context.iiocs.description',
-      width: '200',
+      width: '60vh',
       class: 'rsa-iioc-iiocLevel0',
       dataType: 'text'
     }

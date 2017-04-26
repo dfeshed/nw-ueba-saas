@@ -9,28 +9,28 @@ export default {
     {
       field: 'dataSourceName',
       title: 'context.list.dataSourceName',
-      width: '100'
+      width: '20vh'
     },
     {
       field: 'dataSourceDescription',
       title: 'context.list.dataSourceDescription',
-      width: '100'
+      width: '20vh'
     },
     {
       field: 'resultMeta.dataSourceCreatedBy',
       title: 'context.list.createdByUser',
-      width: '100'
+      width: '20vh'
     },
     {
       field: 'dataSourceCreatedOn',
       title: 'context.list.createdTimeStamp',
-      width: '100',
+      width: '20vh',
       dataType: 'datetime'
     },
     {
       field: 'dataSourceLastModifiedOn',
       title: 'context.list.lastModifiedTimeStamp',
-      width: '80',
+      width: '20vh',
       dataType: 'datetime'
     }
   ]

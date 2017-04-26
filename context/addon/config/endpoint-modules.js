@@ -8,32 +8,32 @@ export default {
       field: 'IOCScore.Score',
       title: 'context.modules.iiocScore',
       dataType: 'riskscore',
-      width: '100',
+      width: '10vh',
       class: 'rsa-module-riskscore',
       componentClass: 'rsa-content-badge-score'
     },
     {
       field: 'Name',
       title: 'context.modules.moduleName',
-      width: '100',
+      width: '20vh',
       class: 'rsa-module-moduleName'
     },
     {
       field: 'AnalyticsScore',
       title: 'context.modules.analyticsScore',
-      width: '100',
+      width: '15vh',
       class: 'rsa-module-riskScore'
     },
     {
       field: 'GlobalMachineCount',
       title: 'context.modules.machineCount',
-      width: '100',
+      width: '15vh',
       class: 'rsa-module-machineCount'
     },
     {
       field: 'Signature',
       title: 'context.modules.signature',
-      width: '100',
+      width: '40vh',
       class: 'rsa-module-signature'
     }
   ]
