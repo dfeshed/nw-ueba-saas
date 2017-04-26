@@ -16,6 +16,7 @@ import fortscale.streaming.task.EvidenceCreationTask;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimestampUtils;
 import net.minidev.json.JSONObject;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DuplicateKeyException;
@@ -92,10 +93,15 @@ public class EvidencesForAlertResolverService {
     public List<Evidence> handleNotifications(List<EnrichedFortscaleEvent> eventList) {
         List<Evidence> notifications = new ArrayList<>();
 
-        for (EnrichedFortscaleEvent event : eventList) {
-            Evidence notification = handleNotification(event);
+        if (CollectionUtils.isNotEmpty(eventList)) {
+            // Get all the evidence ids
+            List<String> evidenceIds = new ArrayList<>();
+            eventList.forEach(enrichedFortscaleEvent -> {
+                evidenceIds.add(enrichedFortscaleEvent.getId());
+            });
 
-            notifications.add(notification);
+            // Get the evidence from mongo
+            notifications = evidencesService.getEvidencesById(evidenceIds);
         }
 
         return notifications;
@@ -140,15 +146,6 @@ public class EvidencesForAlertResolverService {
         else {
             logger.warn("Received an Entity Event with no aggregated features: {}", smartEvent);
         }
-    }
-
-    private Evidence handleNotification(EnrichedFortscaleEvent notificationEvent) {
-        // create a reference to the notification object in mongo
-
-        Evidence e = new Evidence(notificationEvent.getId());
-        e.setAnomalyTypeFieldName(notificationEvent.getAnomalyTypeFieldName());
-        e.setDataEntitiesIds(notificationEvent.getDataEntitiesIds());
-        return e;
     }
 
     private void handleAggregatedFeature(AggrEvent aggregatedFeatureEvent, Set<Evidence> existingEvidencesForAlert, Set<Evidence> newEvidencesForAlert) {
