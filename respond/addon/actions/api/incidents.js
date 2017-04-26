@@ -92,13 +92,13 @@ IncidentsAPI.reopenClass({
    * @param incidentId The ID of the incident to fetch
    * @returns {Promise}
    */
-  getIncidentDetails(incidentId) {
+  getIncidentDetails(entityId) {
     return promiseRequest({
       method: 'queryRecord',
       modelName: 'incidents',
       query: {
         id: null,
-        incidentId
+        entityId
       }
     });
   },
@@ -113,13 +113,13 @@ IncidentsAPI.reopenClass({
    * @returns {*}
    */
   updateIncident(incidentId, field, updatedValue) {
-    const incidentIds = isEmberArray(incidentId) ? incidentId : [incidentId];
+    const entityIds = isEmberArray(incidentId) ? incidentId : [incidentId];
 
     return promiseRequest({
       method: 'updateRecord',
       modelName: 'incidents',
       query: {
-        incidentIds,
+        entityIds,
         updates: {
           [field]: updatedValue
         }

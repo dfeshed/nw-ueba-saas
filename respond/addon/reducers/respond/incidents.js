@@ -90,9 +90,9 @@ const persistIncidentsState = (callback) => {
 // Updates the state value with the value updated on the server
 const _handleUpdates = (action) => {
   return (state) => {
-    const { payload: { request: { updates, incidentIds } } } = action;
+    const { payload: { request: { updates, entityIds } } } = action;
     const updatedIncidents = state.incidents.map((incident) => {
-      return incidentIds.includes(incident.id) ? { ...incident, ...updates } : incident;
+      return entityIds.includes(incident.id) ? { ...incident, ...updates } : incident;
     });
     return {
       ...state,

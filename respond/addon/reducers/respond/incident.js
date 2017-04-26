@@ -62,9 +62,9 @@ const persistIncidentState = (callback) => {
 // we must update that incident's info as well.
 const _handleUpdates = (action) => {
   return (state) => {
-    const { payload: { request: { updates, incidentIds } } } = action;
+    const { payload: { request: { updates, entityIds } } } = action;
     const { id, info } = state;
-    const updatedIncidentInfo = incidentIds.includes(id) ? { ...info, ...updates } : info;
+    const updatedIncidentInfo = entityIds.includes(id) ? { ...info, ...updates } : info;
     return {
       ...state,
       info: updatedIncidentInfo
