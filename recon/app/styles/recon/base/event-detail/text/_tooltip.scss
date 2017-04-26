@@ -35,3 +35,16 @@
     word-wrap: break-word;
   }
 }
+
+// Tweaks to persist the default text highlight color when going out of focus
+::selection {  /* WebKit/Blink Browsers */
+  background: rsa-color(blue);
+}
+::-moz-selection { /* Gecko Browsers */
+  background: rsa-color(blue);
+}
+.text-container {
+  span {
+    background: rsa-color(blue);
+  }
+}

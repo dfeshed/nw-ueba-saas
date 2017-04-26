@@ -41,9 +41,9 @@ export default Mixin.create({
         const spanClass = `span${index}`;
         newNode.setAttribute('class', spanClass);
         range.surroundContents(newNode);
-        // To persist the browser highlighting after adding span tag on the content
+        // Remove the browser highlighting after adding span tag on the content
+        // since we are highlighting span tag on our own
         selection.removeAllRanges();
-        selection.addRange(range);
 
         const spanEl = this.$(`.${spanClass}`).get(0); // get the raw DOM element used for tethering
 
