@@ -4,6 +4,8 @@ import fortscale.domain.core.EntityType;
 import fortscale.domain.core.Evidence;
 import fortscale.domain.core.EvidenceType;
 import org.springframework.data.mongodb.repository.MongoRepository;
+
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -61,5 +63,5 @@ public interface EvidencesRepository extends MongoRepository<Evidence,String>, E
 
 	List<Evidence> findByStartDateBetweenAndAnomalyTypeFieldNameAndEntityName(Long afterDate, Long beforeDate, String anomalyType, String entityName);
 
-	List<Evidence> findByIdIn(String[] id);
+	List<Evidence> findByIdIn(Collection<String> id);
 }

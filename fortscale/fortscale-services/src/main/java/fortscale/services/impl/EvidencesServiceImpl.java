@@ -187,6 +187,6 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 
 	@Override
 	public List<Evidence> getEvidencesById(List<String> evidenceIds) {
-		return evidencesRepository.findByIdIn((String[]) evidenceIds.toArray());
+		return evidencesRepository.findByIdIn(evidenceIds);
 	}
 }
