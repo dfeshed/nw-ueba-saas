@@ -36,12 +36,13 @@ export const visiblePackets = createSelector(
   }
 );
 
-const isSameSequence = (() => {
-  let _previousSequence;
-  return (sequence) => {
-    if (sequence === _previousSequence) {
+const isContinuation = (() => {
+  let _previousSide, _previousSequence;
+  return (side, sequence) => {
+    if (side === _previousSide && sequence === _previousSequence) {
       return true;
     } else {
+      _previousSide = side;
       _previousSequence = sequence;
       return false;
     }
@@ -67,8 +68,8 @@ const isSameSequence = (() => {
 export const payloadProcessedPackets = createSelector(
   [visiblePackets, isPayloadOnly],
   (packets, isPayloadOnly) => {
-    // reset sequence tracking
-    isSameSequence(null);
+    // reset continuation tracking
+    isContinuation(null, null);
     return packets.reduce((acc, currentPacket) => {
       const { bytes, payloadSize } = currentPacket;
       if (isPayloadOnly) {
@@ -80,15 +81,15 @@ export const payloadProcessedPackets = createSelector(
         const _bytes = bytes.filter((b) => !b.isHeader && !b.isFooter);
         // Get the previous packet
         const previousPacket = acc[acc.length - 1];
-        // if the current packet has the same sequence number as the previous,
+        // If the current packet is a continuation of the previous,
         // then the bytes need to be concated together
-        if (previousPacket && isSameSequence(currentPacket.sequence)) {
+        if (previousPacket && isContinuation(currentPacket.side, currentPacket.sequence)) {
           previousPacket.bytes = previousPacket.bytes.concat(_bytes);
           // Update the byteRows with the new bytes that were added
           previousPacket.byteRows = bytesAsRows(previousPacket.bytes);
         } else {
-          // Set initial sequence number
-          isSameSequence(currentPacket.sequence);
+          // Set initial continuation tracking
+          isContinuation(currentPacket.side, currentPacket.sequence);
           // Override isContinuation to mean that the current packet is the
           // same side as the previous
           acc.push({
@@ -102,7 +103,7 @@ export const payloadProcessedPackets = createSelector(
         // This code path performs just like a map().
         acc.push({
           ...currentPacket,
-          isContinuation: isSameSequence(currentPacket.sequence),
+          isContinuation: isContinuation(currentPacket.side, currentPacket.sequence),
           byteRows: bytesAsRows(bytes)
         });
       }
