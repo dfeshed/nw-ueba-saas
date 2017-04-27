@@ -1,0 +1,92 @@
+$contextTooltipDatumWidth: 70px;
+
+.rsa-context-tooltip {
+  padding: rsa-whitespace(less);
+
+  &__header {
+    @include rsa-font(default);
+  }
+
+  &__body {
+    margin-top: rsa-whitespace(less);
+    line-height: 1.35;
+  }
+
+  &__content,
+  &__aside {
+
+    &-header {
+      @include rsa-font(header, small);
+      white-space: nowrap;
+      line-height: 1.35;
+      color:rsa-color(gray);
+      padding: rsa-whitespace(least) 0;
+    }
+  }
+
+  &__content {
+    border-right: 1px solid rsa-color(gray, dark);
+    padding-right: rsa-whitespace();
+
+    &-body {
+      margin: 0 rsa-whitespace();
+      max-width: 3 * $contextTooltipDatumWidth;
+    }
+
+    &-footer {
+      @include rsa-font(header, small);
+    }
+  }
+
+  &__aside {
+    /* temporarily hide the actions list until we wire up their clicks */
+    display: none;
+    padding-left: rsa-whitespace();
+  }
+}
+
+.rsa-context-tooltip-actions {
+  .action {
+    @include rsa-font(body, small);
+    padding: rsa-whitespace(least) 0;
+    color: rsa-color(gray, lighter);
+
+    .icon {
+      padding-right: rsa-whitespace(less);
+    }
+  }
+}
+
+.rsa-context-tooltip-records {
+  &__record {
+    display: inline-block;
+    height: 60px;
+    width: $contextTooltipDatumWidth;
+    padding: 0;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    border-bottom: 3px solid transparent;
+
+    &:hover {
+      border-bottom-color: rsa-color(blue, light);
+    }
+
+    .value {
+      @include rsa-font(base, large, uppercase);
+      color: rsa-color(white);
+    }
+
+    .text {
+      @include rsa-font(base, smaller, uppercase);
+      color: rsa-color(gray, light);
+    }
+
+    .subtext,
+    .subtext .rsa-content-datetime .time-ago {
+      @include rsa-font(light, smaller, uppercase);
+      color: rsa-color(gray);
+    }
+  }
+}

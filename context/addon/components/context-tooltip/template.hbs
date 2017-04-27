@@ -1,0 +1,47 @@
+{{#rsa-content-tethered-panel
+  position="top"
+  panelId=panelId
+as |hide model|
+}}
+  <div class="rsa-context-tooltip">
+    <h2 class="rsa-context-tooltip__header">{{model.id}}</h2>
+    <hbox class="rsa-context-tooltip__body">
+      <vbox fill class="rsa-context-tooltip__content">
+        {{#unless model.type}}
+          <centered class="rsa-context-tooltip__content-error">
+            <h3>{{t 'context.tooltip.contextUnavailable'}}</h3>
+          </centered>
+        {{else}}
+          <box fit class="rsa-context-tooltip__content-header">
+            {{t 'context.tooltip.contextHighlights'}}
+          </box>
+          <hbox fill class="rsa-context-tooltip__content-body">
+            {{context-tooltip/records model=model}}
+          </hbox>
+          {{#if openOverviewAction}}
+            <box fit class="rsa-context-tooltip__content-footer">
+              <centered>
+                {{#rsa-form-button
+                  class="rsa-context-tooltip__content-open-overview js-open-overview"
+                  style="primary"
+                  defaultAction=(action "safeCallback" openOverviewAction model)
+                }}
+                  {{t 'context.tooltip.viewOverview'}}
+                {{/rsa-form-button}}
+              </centered>
+            </box>
+          {{/if}}
+        {{/unless}}
+      </vbox>
+      <vbox fit class="rsa-context-tooltip__aside">
+        <h3 class="rsa-context-tooltip__aside-header">
+          {{t 'context.tooltip.actions'}}
+        </h3>
+        {{context-tooltip/actions
+          class="rsa-context-tooltip__aside-body"
+          entityType=model.type
+        }}
+      </vbox>
+    </hbox>
+  </div>
+{{/rsa-content-tethered-panel}}

@@ -1,0 +1,14 @@
+{{#each actionList as |action|}}
+  <li class="action">
+    <span class="icon">
+      {{#if action.glyph}}
+        <span class="glyph">{{action.htmlSafeGlyph}}</span>
+      {{else}}
+        {{rsa-icon name=action.icon size="small"}}
+      {{/if}}
+    </span>
+    <label class="label">
+      {{t (concat 'context.tooltip.' action.text)}}
+    </label>
+  </li>
+{{/each}}

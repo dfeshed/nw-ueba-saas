@@ -1,0 +1,21 @@
+{{#if modelSummary}}
+  <div class="rsa-context-tooltip-records__records">
+    {{#each modelSummary as |record|}}
+      <div class="rsa-context-tooltip-records__record">
+        <h4 class="value">
+          {{record.count}}
+        </h4>
+        <p class="text">
+          {{record.name}}
+        </p>
+        <p class="subtext">
+          {{rsa-content-datetime timestamp=record.lastUpdated asTimeAgo=true}}
+        </p>
+      </div>
+    {{/each}}
+  </div>
+{{else}}
+  <centered class="rsa-context-tooltip-records__wait">
+    {{rsa-loader}}
+  </centered>
+{{/if}}
