@@ -72,6 +72,21 @@ module.exports = function(environment) {
         subscriptionDestination: '/user/queue/administration/context/get/liveconnect/userprefs',
         requestDestination: '/ws/administration/context/get/liveconnect/userprefs'
       }
+    },
+    'entity-type': {
+      socketUrl,
+      findAll: {
+        subscriptionDestination: '/user/queue/administration/context/types',
+        requestDestination: '/ws/administration/context/types'
+      }
+    },
+    'entity-summary': {
+      socketUrl,
+      stream: {
+        subscriptionDestination: '/user/queue/administration/context/flagging',
+        requestDestination: '/ws/administration/context/flagging',
+        cancelDestination: '/ws/administration/context/cancel'
+      }
     }
   };
 };

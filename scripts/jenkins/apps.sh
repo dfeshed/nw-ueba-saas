@@ -205,7 +205,7 @@ buildMockServer
 buildEmberApp streaming-data false true
 buildEmberApp component-lib false
 buildEmberApp recon false true
-buildEmberApp context false
+buildEmberApp context false true
 buildEmberApp style-guide true
 buildEmberApp investigate false
 buildEmberApp respond false true
