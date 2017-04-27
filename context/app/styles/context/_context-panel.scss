@@ -64,7 +64,7 @@ radial-gradient(circle at 85% 85%, rsa-color(blue, darker, .1) 0, rsa-color(blue
     }  
     &__layout{
         height: inherit;
-        width: -webkit-calc(100% - (40px));
+        width: calc(100% - 40px);
         display: inline-block;
     }    
   &__loader {
@@ -94,10 +94,12 @@ radial-gradient(circle at 85% 85%, rsa-color(blue, darker, .1) 0, rsa-color(blue
     position: relative;
     color: rsa-color(white);
     position: relative;
-    height: -webkit-calc(100% - 100px);  
-    overflow: auto;
+    height: calc(100% - 100px);
     background-image: $panelBackgroundImage;
     background-color: rsa-color(gray, darker);
+  }
+  &__body_size{
+    height: 100%
   }
   &__body{
     @include rsa-vendor-prefix(flex-grow,1);
@@ -105,7 +107,8 @@ radial-gradient(circle at 85% 85%, rsa-color(blue, darker, .1) 0, rsa-color(blue
     position: relative;
     color: rsa-color(white);
     position: relative;
-    width: 100%;  
+    width: 100%;
+    height: 100%;
     background-image: $panelBackgroundImage;
     background-color: rsa-color(gray, darker);
   }
@@ -131,7 +134,7 @@ radial-gradient(circle at 85% 85%, rsa-color(blue, darker, .1) 0, rsa-color(blue
   &__grid, &__context-data-table {
     color: $font-fade-color;
     height: 100%;
-    width: -webkit-calc(100% - (4px));
+    width: calc(100%- 4px);
     &__groupdata{
       padding-left: rsa-whitespace();
     }
@@ -274,11 +277,16 @@ radial-gradient(circle at 85% 85%, rsa-color(blue, darker, .1) 0, rsa-color(blue
 
     &__module-details, &__iioc-details ,&__panel {
       width: 100%;
+      height: calc(100% - 80px);
       margin: 0 rsa-whitespace(least) 0 rsa-whitespace(least);
 
       .rsa-data-table {
+        height: 100%;
         &-header-cell{
           @include rsa-font(header, small);
+        }
+        &-body {
+          height: 100%;
         }
         &-body-cell{
           color: $font-highlight-color;
@@ -310,7 +318,7 @@ radial-gradient(circle at 85% 85%, rsa-color(blue, darker, .1) 0, rsa-color(blue
 
   &__liveconnect {
     color: $font-fade-color;
-    width: -webkit-calc(100% - (4px));
+    width: calc(100% - 4px);
     &__field {
       padding: rsa-whitespace();
     }

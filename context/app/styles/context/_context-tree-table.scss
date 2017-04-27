@@ -110,14 +110,16 @@
       color:rsa-color(gray, light);
     }
 
+    .list-desc{
+      height: 270px;
+    }
+
     .rsa-form-button{
       width:90%;
     }
     .rsa-form-textarea {
       padding-bottom: 12%;
       padding-top: 5%;
-      padding-top: 5%;
-
     }
     .rsa-form-input{
       width:100%;
@@ -138,18 +140,6 @@
       @include rsa-font(header);
     }
   }
-
-  /*&__filter-button{
-    color: rsa-color(grey);
-
-    .rsa-context-tree-table__filter {
-      border-bottom: 1px solid rsa-color(grey);
-      padding: rsa-whitespace() rsa-whitespace();
-    }
-    .rsa-icon {
-      padding: 0 rsa-whitespace(less);
-    }
-  }*/
 
   &__table_header{
     padding: rsa-whitespace(less);
