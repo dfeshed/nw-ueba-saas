@@ -25,7 +25,7 @@ test('The Incidents table renders to the DOM', function(assert) {
 
 test('The Incidents table shows appropriate message when there are no incidents', function(assert) {
   assert.expect(1);
-  const selector = `${dataTableSelector} .no-results`;
+  const selector = `${dataTableSelector} .rsa-panel-message`;
   this.render(hbs`{{rsa-respond-incidents/incidents-table}}`);
 
   assert.equal(this.$(selector).text().trim(), 'No matching Incidents were found', 'The Incidents table should show a custom no-results message');

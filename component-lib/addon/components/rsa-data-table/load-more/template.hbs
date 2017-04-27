@@ -5,9 +5,5 @@
     {{rsa-loader size="small" label=(t 'investigate.loading')}}
   {{else if (is-equal status 'stopped')}}
     {{#rsa-form-button}}<span {{action "safeCallback" clickAction}}>{{t 'investigate.loadMore'}}</span>{{/rsa-form-button}}
-  {{else if _isStatusError}}
-    <h2>{{t 'investigate.error.title'}}</h2>
-    <p>{{t 'investigate.error.description'}}</p>
-    {{#rsa-form-button}}<span {{action "safeCallback" clickAction}}>{{t 'investigate.tryAgain'}}</span>{{/rsa-form-button}}
   {{/if}}
 {{/if}}

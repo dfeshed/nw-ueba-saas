@@ -14,9 +14,6 @@
       as |firstRowItem firstRowIndex column|}}
       {{yield firstRowItem firstRowIndex column}}
     {{/component}}
-
-  {{else}}
-    <centered class="no-results">{{_noResultsMessage}}</centered>
   {{/if}}
 
   {{!also render each of the items that fit within the current viewport}}
@@ -35,3 +32,7 @@
   {{/each}}
 
 {{/rsa-data-table/body-rows}}
+{{!The error must be outside of the body rows - so that the message can show in the center/middle of the panel}}
+{{#unless items.length}}
+  {{rsa-panel-message message=_noResultsMessage}}
+{{/unless}}

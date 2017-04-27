@@ -48,4 +48,9 @@
     {{events-table-body buffer=5 rowComponentClass="events-table-row"}}
     {{rsa-data-table/load-more status=status clickAction=loadMoreAction}}
   {{/rsa-data-table}}
+  {{#if _isStatusError}}
+    {{#rsa-panel-message title=(t 'investigate.error.title') message=(t 'investigate.error.description')}}
+      {{#rsa-form-button}}<span {{action 'loadMoreAction'}}>{{t 'investigate.tryAgain'}}</span>{{/rsa-form-button}}
+    {{/rsa-panel-message}}
+  {{/if}}
 </section>
