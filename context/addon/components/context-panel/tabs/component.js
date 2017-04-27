@@ -1,13 +1,9 @@
-import Ember from 'ember';
+import Component from 'ember-component';
 import connect from 'ember-redux/components/connect';
 import computed from 'ember-computed-decorators';
 import * as ContextActions from 'context/actions/context-creators';
 import layout from './template';
 import { getCount } from 'context/util/context-data-modifier';
-
-const {
-  Component
-} = Ember;
 
 const stateToComputed = ({ context }) => ({
   activeTabName: context.activeTabName,
@@ -22,7 +18,7 @@ const dispatchToActions = (dispatch) => ({
 });
 
 const getToolTipText = (lookupData, dataSourceType, i18n) => {
-  if (dataSourceType !== 'overview' && getCount(lookupData, dataSourceType) === 0) {
+  if (getCount(lookupData, dataSourceType) === 0) {
     return i18n.t('context.noResults');
   }
 };
@@ -39,11 +35,14 @@ const TabsComponent = Component.extend({
    */
   @computed('activeTabName', 'tabs', 'lookupData.[]')
   tabsActive(activeTabName, tabs, [lookupData]) {
+    if (!tabs) {
+      return;
+    }
     return tabs.map((tab) => ({
       ...tab,
       toolTipText: getToolTipText(lookupData, tab.dataSourceType, this.get('i18n')),
       isActive: tab.field === activeTabName,
-      loadingIcon: tab.dataSourceType !== 'overview' && (!lookupData || !lookupData[tab.dataSourceType])
+      loadingIcon: !lookupData || !lookupData[tab.dataSourceType]
     }));
   }
 });

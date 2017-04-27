@@ -5,13 +5,6 @@ export default [{
   title: 'context.modules.title',
   columns: [
     {
-      field: 'overview',
-      title: 'context.header.overview',
-      dataSourceType: 'overview',
-      class: 'information-circle',
-      tabRequired: true
-    },
-    {
       field: 'Machines',
       title: 'context.hostSummary.title',
       dataSourceType: 'Machines',
@@ -64,7 +57,8 @@ export default [{
       title: 'context.archer.title',
       dataSourceType: 'Archer',
       displayType: 'grid',
-      tabRequired: false
+      tabRequired: true,
+      class: 'network-connecting'
     },
     {
       field: 'LiveConnect-Ip',
@@ -91,13 +85,6 @@ export default [{
   footer: '',
   title: 'context.iiocs.title',
   columns: [
-    {
-      field: 'overview',
-      title: 'context.header.overview',
-      dataSourceType: 'overview',
-      class: 'information-circle',
-      tabRequired: true
-    },
     {
       field: 'Users',
       title: 'context.header.users',
@@ -148,13 +135,6 @@ export default [{
   footer: ' ',
   title: 'context.modules.title',
   columns: [
-    {
-      field: 'overview',
-      title: 'context.header.overview',
-      dataSourceType: 'overview',
-      class: 'information-circle',
-      tabRequired: true
-    },
     {
       field: 'Machines',
       title: 'context.hostSummary.title',
@@ -229,13 +209,6 @@ export default [{
   title: 'context.modules.title',
   columns: [
     {
-      field: 'overview',
-      title: 'context.header.overview',
-      dataSourceType: 'overview',
-      class: 'information-circle',
-      tabRequired: true
-    },
-    {
       field: 'Machines',
       title: 'context.hostSummary.title',
       dataSourceType: 'Machines',
@@ -248,7 +221,8 @@ export default [{
       title: 'context.archer.title',
       dataSourceType: 'Archer',
       displayType: 'grid',
-      tabRequired: false
+      tabRequired: true,
+      class: 'network-connecting'
     },
     {
       field: 'Modules',
@@ -306,13 +280,6 @@ export default [{
   title: 'context.modules.title',
   columns: [
     {
-      field: 'overview',
-      title: 'context.header.overview',
-      dataSourceType: 'overview',
-      class: 'information-circle',
-      tabRequired: true
-    },
-    {
       field: 'Incidents',
       title: 'context.header.incidents',
       dataSourceType: 'Incidents',
@@ -352,13 +319,6 @@ export default [{
   footer: ' ',
   title: 'context.modules.title',
   columns: [
-    {
-      field: 'overview',
-      title: 'context.header.overview',
-      dataSourceType: 'overview',
-      class: 'information-circle',
-      tabRequired: true
-    },
     {
       field: 'Incidents',
       title: 'context.header.incidents',
@@ -407,13 +367,6 @@ export default [{
   footer: ' ',
   title: 'context.modules.title',
   columns: [
-    {
-      field: 'overview',
-      title: 'context.header.overview',
-      dataSourceType: 'overview',
-      class: 'information-circle',
-      tabRequired: true
-    },
     {
       field: 'Incidents',
       title: 'context.header.incidents',

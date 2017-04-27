@@ -1,19 +1,15 @@
-import Ember from 'ember';
+import { warn, log } from 'ember-debug';
 import Component from 'ember-component';
 import connect from 'ember-redux/components/connect';
 import computed from 'ember-computed-decorators';
-import * as ContextActions from 'context/actions/context-creators';
+import { initializeContextPanel } from 'context/actions/context-creators';
 import liveConnectObj from 'context/config/liveconnect-response-schema';
 import layout from './template';
 import service from 'ember-service/inject';
-
-const {
-  isArray,
-  Logger,
-  isEmpty,
-  run,
-  Object: EmberObject
-} = Ember;
+import { isEmpty } from 'ember-utils';
+import { isEmberArray } from 'ember-array/utils';
+import { once, next, schedule } from 'ember-runloop';
+import EmberObject from 'ember-object';
 
 const stateToComputed = ({ context }) => ({
   dataSources: context.dataSources,
@@ -22,9 +18,9 @@ const stateToComputed = ({ context }) => ({
   errorMessage: context.errorMessage
 });
 
-const dispatchToActions = (dispatch) => ({
-  initializeContextPanel: (entityId, entityType) => dispatch(ContextActions.initializeContextPanel(entityId, entityType))
-});
+const dispatchToActions = {
+  initializeContextPanel
+};
 
 const ContextComponent = Component.extend({
   layout,
@@ -58,7 +54,7 @@ const ContextComponent = Component.extend({
     if (!entityId || !entityType) {
       return;
     }
-    run.once(this, this._initializeContextPanel);
+    once(this, this._initializeContextPanel);
   },
   _initializeContextPanel() {
     const { entityId, entityType } = this.getProperties('entityId', 'entityType');
@@ -161,15 +157,15 @@ const ContextComponent = Component.extend({
       },
       streamOptions: { requireRequestId: false },
       onResponse: ({ data }) => {
-        Logger.debug('pushing data to relatedEntity model');
-        if (isArray(data)) {
+        log('pushing data to relatedEntity model');
+        if (isEmberArray(data)) {
           data.forEach((entry) => {
             this._populateRelatedEntities(entry);
           });
         }
       },
       onError(response) {
-        Logger.error('Error processing stream call for context lookup.', response);
+        warn('Error processing stream call for context lookup.', response);
       }
     });
   },
@@ -192,7 +188,7 @@ const ContextComponent = Component.extend({
     return !this.get('isDisplayed') && target.className !== 'rsa-protected__aside' && (!target.firstElementChild || target.firstElementChild.className.indexOf('rsa-context-panel-header') === -1);
   },
   _closeContextPanel(target) {
-    run.next(() => {
+    next(() => {
       if (this._needToClosePanel(target)) {
         this.sendAction('closePanel');
       }
@@ -206,7 +202,7 @@ const ContextComponent = Component.extend({
   },
 
   didInsertElement() {
-    run.schedule('afterRender', () => {
+    schedule('afterRender', () => {
       this.get('eventBus').on('rsa-application-click', (target) => {
         this._closeContextPanel(target);
       });

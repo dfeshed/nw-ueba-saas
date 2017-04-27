@@ -1,10 +1,11 @@
 import TabList from 'context/config/dynamic-tab';
+import { isEmpty } from 'ember-utils';
 
 const getCount = (contextData, dataSourceGroup) => {
   return (contextData && contextData[dataSourceGroup] && contextData[dataSourceGroup].resultList) ? contextData[dataSourceGroup].resultList.length : 0;
 };
 
-const getData = (lookupData, { dataSourceGroup, sortColumn, sortOrder }, activeTabName) => {
+const getData = (lookupData, { dataSourceGroup, sortColumn, sortOrder }) => {
   if (!lookupData || !lookupData[dataSourceGroup]) {
     return;
   }
@@ -15,8 +16,7 @@ const getData = (lookupData, { dataSourceGroup, sortColumn, sortOrder }, activeT
       lookupData[dataSourceGroup].resultList.sort((a, b) => (a[sortColumn] - b[sortColumn]));
     }
   }
-  const data = lookupData[dataSourceGroup].resultList;
-  return (activeTabName === 'overview') ? data.slice(0, 3) : data;
+  return lookupData[dataSourceGroup].resultList;
 };
 
 const getHeaderData = (dsData, i18n) => {
@@ -66,20 +66,28 @@ const getTabs = (meta, dataSources) => {
     return dataSource.dataSourceType;
   });
   // Map over the columns and build the tab count text for each tab
-  return tabList.columns.filter((tab) => tab.tabRequired && (tab.dataSourceType === 'overview' || dataSourcesNames.includes(tab.dataSourceType))).map((tab) => ({
+  return tabList.columns.filter((tab) => tab.tabRequired && dataSourcesNames.includes(tab.dataSourceType)).map((tab) => ({
     ...tab,
     panelId: `tabs${tab.field.camelize()}`
   }));
 };
 
 const getTabEnabled = ([ lookupData ], dataSourceType) => {
-  if (dataSourceType === 'overview') {
-    return true;
-  }
   if (0 === getCount(lookupData, dataSourceType)) {
     return false;
   }
   return true;
+};
+
+const getActiveTabName = (activeTabName, data) => {
+  if (activeTabName != null || !data) {
+    return activeTabName;
+  }
+  const firstDataSourceWithData = data.find((dataSource) => {
+    return dataSource && !isEmpty(dataSource.resultList);
+  });
+
+  return firstDataSourceWithData ? firstDataSourceWithData.dataSourceGroup : activeTabName;
 };
 
 export {
@@ -88,5 +96,6 @@ export {
   getHeaderData,
   needToDisplay,
   getTabs,
-  getTabEnabled
+  getTabEnabled,
+  getActiveTabName
 };

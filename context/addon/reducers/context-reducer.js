@@ -7,7 +7,7 @@ import TabList from 'context/config/dynamic-tab';
 const initialState = {
   meta: null,
   lookupKey: null,
-  activeTabName: 'overview',
+  activeTabName: null,
   dataSources: null,
   errorMessage: null,
   toolbar: null,
@@ -18,10 +18,11 @@ const initialState = {
 const context = handleActions({
   [ACTION_TYPES.INITIALIZE_CONTEXT_PANEL]: (state, { payload }) => ({
     ...state,
-    activeTabName: 'overview',
+    activeTabName: null,
     dataSources: null,
     errorMessage: null,
     lookupData: [],
+    tabs: null,
     toolbar: TabList.find((tab) => tab.tabType === payload.meta).toolbar,
     ...payload
   }),
@@ -40,7 +41,8 @@ const context = handleActions({
   }),
   [ACTION_TYPES.GET_LOOKUP_DATA]: (state, { payload }) => ({
     ...state,
-    lookupData: [].concat(contextDataParser([payload, state.lookupData]))
+    lookupData: [].concat(contextDataParser([payload, state.lookupData])),
+    activeTabName: DataUtil.getActiveTabName(state.activeTabName, payload)
   })
 }, initialState);
 

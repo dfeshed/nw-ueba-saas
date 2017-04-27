@@ -12,14 +12,4 @@
       }}
     {{/if}}
   {{/each}}
-  {{#if needToRenderNoDs}}
-    <div class="gray-text-border-top">
-      {{t 'context.noValues'}}{{dataSourcesWithNoData}}
-    </div>
-  {{/if}}
-  {{#if needToRenderNoDsConfigured}}
-    <div class="gray-text-border-top">
-      {{t 'context.dsNotConfigured'}}{{dataSourcesNotConfigured}}
-    </div>
-  {{/if}}
 </section>
