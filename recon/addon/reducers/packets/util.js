@@ -13,8 +13,7 @@ export const enhancePackets = (packets, packetFields) => {
   const newPackets = packets.map((p) => {
     const bytes = atob(p.bytes || '').split('');
     const byteCount = bytes.get('length') || 0;
-    const payloadOffset = byteCount - (p.payloadSize || 0);
-    const convertedBytes = convertBytes(bytes, payloadOffset, p.footerPosition);
+    const convertedBytes = convertBytes(bytes, p.payloadPosition, p.footerPosition);
     const enhancedBytes = enhanceHeaderBytes(convertedBytes, bytes, packetFields);
     return {
       ...p,
