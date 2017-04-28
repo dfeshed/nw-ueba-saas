@@ -1,7 +1,7 @@
 import Ember from 'ember';
 import computed, { notEmpty } from 'ember-computed-decorators';
 import layout from './template';
-import arrayToHashKeys from 'respond/utils/array/to-hash-keys';
+import arrayToHashKeys from 'component-lib/utils/array/to-hash-keys';
 
 const { Component, get, set } = Ember;
 

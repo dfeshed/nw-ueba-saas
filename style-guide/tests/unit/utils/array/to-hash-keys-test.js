@@ -1,4 +1,4 @@
-import arrayToHashKeys from 'respond/utils/array/to-hash-keys';
+import arrayToHashKeys from 'component-lib/utils/array/to-hash-keys';
 import { module, test } from 'qunit';
 
 module('Unit | Utility | array/to hash keys');

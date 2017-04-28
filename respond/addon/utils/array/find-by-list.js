@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import arrayToHashKeys from './to-hash-keys';
+import arrayToHashKeys from 'component-lib/utils/array/to-hash-keys';
 
 const { get } = Ember;
 

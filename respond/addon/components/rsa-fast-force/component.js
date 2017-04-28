@@ -8,7 +8,7 @@ import filterJoin from './util/filter-join';
 import ticked from './util/ticked';
 import zoomed from './util/zoomed';
 import center from './util/center';
-import arrayToHashKeys from 'respond/utils/array/to-hash-keys';
+import arrayToHashKeys from 'component-lib/utils/array/to-hash-keys';
 
 /* global addResizeListener */
 /* global removeResizeListener */
