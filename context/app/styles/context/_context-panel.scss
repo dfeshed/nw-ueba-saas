@@ -48,6 +48,12 @@ radial-gradient(circle at 85% 85%, rsa-color(blue, darker, .1) 0, rsa-color(blue
     font-size: 20px;
     color: rsa-color(gray, dark);   
     }
+
+  .rsa-nav-tab.is-active{
+    background-color: rsa-color(blue);
+  }
+
+
     &__tabs{
         height: inherit;
       &__enabled{
@@ -97,6 +103,7 @@ radial-gradient(circle at 85% 85%, rsa-color(blue, darker, .1) 0, rsa-color(blue
     height: calc(100% - 100px);
     background-image: $panelBackgroundImage;
     background-color: rsa-color(gray, darker);
+    overflow: auto;
   }
   &__body_size{
     height: 100%
@@ -539,6 +546,10 @@ radial-gradient(circle at 85% 85%, rsa-color(blue, darker, .1) 0, rsa-color(blue
 }
 .feedback-margin {
   margin-bottom: 175px;
+}
+
+.tab-active-background {
+  background-color: rsa-color(blue);
 }
 
 .gray-text-border-top {

@@ -18,8 +18,7 @@ export default {
       {
         field: 'Device Owner',
         count: 'deviceCount',
-        title: 'context.archer.deviceOwner',
-        dataType: 'group'
+        title: 'context.archer.deviceOwner'
       }]
     },
     {
@@ -46,8 +45,7 @@ export default {
       {
         field: 'Business Unit',
         count: 'businessUnitCount',
-        title: 'context.archer.businessUnit',
-        dataType: 'group'
+        title: 'context.archer.businessUnit'
       },
       {
         field: '',
@@ -63,7 +61,6 @@ export default {
       {
         field: 'Facilities',
         title: 'context.archer.facility',
-        dataType: 'group',
         count: 'facilitiesCount'
       },
       {

@@ -42,7 +42,8 @@ const TabsComponent = Component.extend({
       ...tab,
       toolTipText: getToolTipText(lookupData, tab.dataSourceType, this.get('i18n')),
       isActive: tab.field === activeTabName,
-      loadingIcon: !lookupData || !lookupData[tab.dataSourceType]
+      loadingIcon: !lookupData || !lookupData[tab.dataSourceType],
+      tabClass: tab.field === activeTabName ? 'tab-active-background' : ''
     }));
   }
 });

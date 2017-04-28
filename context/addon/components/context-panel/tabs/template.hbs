@@ -1,6 +1,6 @@
 <div class="rsa-nav-tab-group">
   {{#each tabsActive as |tab|}}
-    {{#rsa-content-tethered-panel-trigger  panel=(concat 'tabs' tab.field) }}
+    {{#rsa-content-tethered-panel-trigger  panel=(concat 'tabs' tab.field) class=tab.tabClass}}
       {{#rsa-nav-tab isCompact=true isActive=tab.isActive click=(action 'activate' tab.field)}}
         {{#if tab.loadingIcon}}
           {{rsa-loader class='rsa-context-panel__tabs__icon-loader' size='medium'}}
@@ -10,7 +10,7 @@
         </div>
       {{/rsa-nav-tab}}
     {{/rsa-content-tethered-panel-trigger}}
-    {{#rsa-content-tethered-panel panelId=(concat 'tabs' tab.field) position='left' displayCloseButton=false}}
+    {{#rsa-content-tethered-panel panelId=(concat 'tabs' tab.field) style="primary" position='left' displayCloseButton=false}}
       <div  class ='rsa-context-panel__tabs__tooltip'>
         {{t tab.title}} {{unless tab.loadingIcon tab.toolTipText}}
       </div>
