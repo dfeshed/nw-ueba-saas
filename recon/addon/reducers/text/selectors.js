@@ -57,9 +57,7 @@ export const eventHasPayload = createSelector(
       return false;
     }
 
-    // text is an array, gotta join it up
-    const aTextEntryWithPayload =
-      textEntries.find((t) => t.text && t.text.join('').length > 0);
+    const aTextEntryWithPayload = textEntries.find((t) => t.text && t.text.length > 0);
 
     return !!aTextEntryWithPayload;
   }

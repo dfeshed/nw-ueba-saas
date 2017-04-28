@@ -125,7 +125,9 @@ export default {
       downloadCsv: 'Download CSV',
       downloadXml: 'Download XML',
       downloadJson: 'Download JSON',
-      isDownloading: 'Downloading...'
+      isDownloading: 'Downloading...',
+      showRemaining: 'Show Remaining {{remainingPercent}}%',
+      renderRemaining: 'Rendering Remaining {{remainingPercent}}%..'
     },
     packetView: {
       noHexData: 'No HEX data was generated during content reconstruction.',

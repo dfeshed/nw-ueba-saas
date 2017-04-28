@@ -5,7 +5,7 @@
 }}
 
 <div class="text-container">
-  {{ initialTextEntriesToDisplay }}
+  {{ initialTextToDisplay }}
 </div>
 
 {{#rsa-content-tethered-panel position='top' panelId=(concat 'span' index) hideOnLeave=false displayCloseButton=hasCloseButton}}
@@ -28,9 +28,9 @@
 {{#if displayShowAllButton}}
   <div class="load-more-text-entries">
     {{#rsa-form-button
-      defaultAction=(action 'showRemainingLines')
-      isDisabled=renderingRemainingLines}}
-      {{ remainingLineCountMessage }}
+      defaultAction=(action 'showRemainingText')
+      isDisabled=renderingRemainingText}}
+      {{ remainingTextMessage }}
     {{/rsa-form-button}}
   </div>
 {{/if}}

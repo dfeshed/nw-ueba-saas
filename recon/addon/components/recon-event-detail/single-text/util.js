@@ -45,14 +45,15 @@ export const retrieveTranslatedData = function(operation, string) {
   };
 };
 
-export const prepareLinesForDisplay = function(lines, metaToHighlight) {
-  let text = lines.join('<br>');
-
+export const prepareTextForDisplay = function(text, metaToHighlight) {
   if (metaToHighlight) {
     const metaStringRegex = new RegExp(String(metaToHighlight), 'gi');
     const foundMatch = text.match(metaStringRegex);
     if (foundMatch) {
-      text = text.replace(metaStringRegex, `<span class='highlighted-meta'>${foundMatch[0]}</span>`);
+      text = text.replace(
+        metaStringRegex,
+        `<span class='highlighted-meta'>${foundMatch[0]}</span>`
+      );
     }
   }
 

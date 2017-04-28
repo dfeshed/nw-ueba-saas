@@ -71,7 +71,7 @@ const generateHTMLSafeText = (data) => {
         .replace(/(?:\r\n|\r|\n)/g, '<br>')
         .replace(/\t/g, '&nbsp;&nbsp;')
         .replace(/[\x00-\x1F]/g, '.');
-      set(d, 'text', htmlified.split('<br>'));
+      set(d, 'text', htmlified);
     }
     return d;
   });

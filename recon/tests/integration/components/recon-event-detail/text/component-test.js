@@ -4,9 +4,11 @@ import hbs from 'htmlbars-inline-precompile';
 
 import DataHelper from '../../../../helpers/data-helper';
 
-moduleForComponent('recon-event-detail-text', 'Integration | Component | recon event detail text', {
+moduleForComponent('recon-event-detail/text-content', 'Integration | Component | recon event detail text', {
   integration: true,
-  setup() {
+  beforeEach() {
+    this.registry.injection('component:recon-event-detail/text-content', 'i18n', 'service:i18n');
+    this.registry.injection('component:recon-event-detail/single-text', 'i18n', 'service:i18n');
     this.inject.service('redux');
   }
 });

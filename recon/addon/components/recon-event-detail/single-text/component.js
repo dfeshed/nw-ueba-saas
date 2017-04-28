@@ -3,13 +3,13 @@ import computed, { alias } from 'ember-computed-decorators';
 import { later, scheduleOnce } from 'ember-runloop';
 
 import SelectionTooltip from './selection-tooltip-mixin';
-import { retrieveTranslatedData, prepareLinesForDisplay } from './util';
+import { retrieveTranslatedData, prepareTextForDisplay } from './util';
 import layout from './template';
 
-const HIDE_PACKETS_LINE_COUNT = 250;
-const SHOW_TRUNCATED_AMOUNT = 100;
-const CHUNK_SIZE = 250;
-const TIME_BETWEEN_CHUNKS = 250;
+const HIDE_CONTENT_CHARACTER_COUNT = 3000;
+const SHOW_TRUNCATED_AMOUNT = 2000;
+const CHUNK_SIZE = 10000;
+const TIME_BETWEEN_CHUNKS = 500;
 
 export default Component.extend(SelectionTooltip, {
   classNames: ['rsa-text-entry'],
@@ -23,12 +23,13 @@ export default Component.extend(SelectionTooltip, {
   metaToHighlight: null,
   packet: null,
   renderedAll: false,
-  renderingRemainingLines: false,
+  renderingRemainingText: false,
   tooltipHeading: null,
 
   // Tooltip has two views depending upon being in IF/ELSE conditional
   // The IF conditional shows the final encoded/decoded text that has the closeButton X
-  @alias('isActionClicked') hasCloseButton: null,
+  @alias('isActionClicked')
+  hasCloseButton: null,
 
   @computed('shouldBeTruncated', 'renderedAll')
   displayShowAllButton: (shouldBeTruncated, renderedAll) => shouldBeTruncated && !renderedAll,
@@ -40,22 +41,23 @@ export default Component.extend(SelectionTooltip, {
    * then have to make it show up.
    */
   @computed('packet.text')
-  shouldBeTruncated(textEntries = []) {
-    return textEntries.length > HIDE_PACKETS_LINE_COUNT;
+  shouldBeTruncated(text) {
+    return text.length > HIDE_CONTENT_CHARACTER_COUNT;
   },
 
   /*
-   * Builds message indicating how many lines are left to show
+   * Builds message indicating how much text is left to show
    * or are in the process of rendering
    */
-  @computed('packet.text', 'renderingRemainingLines')
-  remainingLineCountMessage(textEntries = [], renderingRemainingLines) {
-    const remainingLineCount = textEntries.length - SHOW_TRUNCATED_AMOUNT;
+  @computed('packet.text', 'renderingRemainingText')
+  remainingTextMessage(text, renderingRemainingText) {
+    const remainingCharacterCount = text.length - SHOW_TRUNCATED_AMOUNT;
+    const remainingPercent = Math.floor((remainingCharacterCount / text.length) * 100);
     let msg = '';
-    if (renderingRemainingLines) {
-      msg = `Rendering ${remainingLineCount} more lines...`;
+    if (renderingRemainingText) {
+      msg = this.get('i18n').t('recon.textView.renderRemaining', { remainingPercent });
     } else {
-      msg = `Show Remaining ${remainingLineCount} Lines`;
+      msg = this.get('i18n').t('recon.textView.showRemaining', { remainingPercent });
     }
     return msg;
   },
@@ -65,13 +67,13 @@ export default Component.extend(SelectionTooltip, {
    * formats them for display.
    */
   @computed('packet.text', 'shouldBeTruncated', 'metaToHighlight.value')
-  initialTextEntriesToDisplay(textEntries = [], shouldBeTruncated, metaToHighlight) {
-    let textEntriesReturn = textEntries;
+  initialTextToDisplay(text, shouldBeTruncated, metaToHighlight) {
+    let textEntriesReturn = text;
     if (shouldBeTruncated) {
-      textEntriesReturn = textEntriesReturn.slice(0, SHOW_TRUNCATED_AMOUNT);
+      textEntriesReturn = text.substr(0, SHOW_TRUNCATED_AMOUNT);
     }
 
-    return prepareLinesForDisplay(textEntriesReturn, metaToHighlight);
+    return prepareTextForDisplay(textEntriesReturn, metaToHighlight);
   },
 
   // when we first render, need to highlight meta,
@@ -79,24 +81,24 @@ export default Component.extend(SelectionTooltip, {
   // redo all the checks
   didReceiveAttrs() {
     this._super(...arguments);
-    scheduleOnce('afterRender', this, this._checkForRenderRemainingLines);
+    scheduleOnce('afterRender', this, this._checkForRenderRemainingText);
   },
 
   // checks to see if presence of meta to highlight
   // means rest of text should be shown
-  _checkForRenderRemainingLines() {
+  _checkForRenderRemainingText() {
     const metaToHighlight = this.get('metaToHighlight.value');
 
     // If meta to highlight is there, and
     // the content is truncated...
     if (metaToHighlight && this.get('shouldBeTruncated') && !this.get('renderedAll')) {
-      const remainingLines = this.get('packet.text').slice(SHOW_TRUNCATED_AMOUNT);
+      const remainingText = this.get('packet.text').substring(SHOW_TRUNCATED_AMOUNT);
       const metaStringRegex = new RegExp(String(metaToHighlight), 'gi');
-      const foundMatch = remainingLines.join('<br>').match(metaStringRegex);
+      const foundMatch = remainingText.match(metaStringRegex);
       // ...and the hidden content has the meta to highlight in it
       // then need to render that content
       if (foundMatch) {
-        this._renderRemainingLines();
+        this._renderRemainingText();
       }
     }
   },
@@ -112,16 +114,19 @@ export default Component.extend(SelectionTooltip, {
     });
   },
 
-  _renderRemainingLines() {
+  _renderRemainingText() {
     // Update rendering button to show status message
-    this.set('renderingRemainingLines', true);
+    this.set('renderingRemainingText', true);
 
     // Build array of text chunks to render
-    const remainingLines = this.get('packet.text').slice(SHOW_TRUNCATED_AMOUNT);
+    let remainingText = this.get('packet.text').substr(SHOW_TRUNCATED_AMOUNT);
     const mth = this.get('metaToHighlight.value');
     let i = 0;
-    while (remainingLines.length > 0) {
-      const chunk = remainingLines.splice(0, CHUNK_SIZE);
+    while (remainingText.length > 0) {
+      // get next chunk
+      const chunk = remainingText.substr(0, CHUNK_SIZE);
+      // remove that chunk from the string
+      remainingText = remainingText.replace(chunk, '');
       // Schedule those chunks for rendering
       later(() => {
         // NOTE: this needs to be done with $ as opposed to any
@@ -130,8 +135,14 @@ export default Component.extend(SelectionTooltip, {
         // Any manipulation of text to display attached to a computed
         // will re-render the text each time. So have to brute
         // force this in.
-        const text = prepareLinesForDisplay(chunk, mth);
-        this.$('.text-container').append(`<br>${text}`);
+        const text = prepareTextForDisplay(chunk, mth);
+
+        // append the next batch of text and remove the
+        // text node that creates an extra space between
+        // this batch and the previous
+        const $contents = this.$('.text-container').contents();
+        this.$('.text-container').append(text.string);
+        $contents.get($contents.length - 1).remove();
       }, i++ * TIME_BETWEEN_CHUNKS);
     }
 
@@ -150,8 +161,8 @@ export default Component.extend(SelectionTooltip, {
       this._handleEncodeDecode('encode', 'Encoded');
     },
 
-    showRemainingLines() {
-      this._renderRemainingLines();
+    showRemainingText() {
+      this._renderRemainingText();
     }
   }
 });

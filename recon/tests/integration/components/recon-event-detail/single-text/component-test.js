@@ -4,8 +4,12 @@ import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 const { Object: EmberObject } = Ember;
 
-moduleForComponent('recon-event-detail-single-text', 'Integration | Component | recon event detail single text', {
-  integration: true
+moduleForComponent('recon-event-detail/single-text', 'Integration | Component | recon event detail single text', {
+  integration: true,
+  beforeEach() {
+    this.registry.injection('component:recon-event-detail/single-text', 'i18n', 'service:i18n');
+    this.inject.service('redux');
+  }
 });
 
 test('packet text', function(assert) {

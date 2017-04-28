@@ -125,7 +125,9 @@ export default {
       downloadCsv: 'ja_Download CSV',
       downloadXml: 'ja_Download XML',
       downloadJson: 'ja_Download JSON',
-      isDownloading: 'ja_Downloading...'
+      isDownloading: 'ja_Downloading...',
+      showRemaining: 'ja_Show Remaining {{remainingPercent}}%',
+      renderRemaining: 'ja_Rendering Remaining {{remainingPercent}}%..'
     },
     packetView: {
       noHexData: 'ja_No HEX data was generated during content reconstruction.',
