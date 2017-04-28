@@ -15,10 +15,16 @@ const visualsInitialState = {
 };
 
 const visuals = handleActions({
-  [ACTION_TYPES.REHYDRATE]: (state, { payload }) => ({
-    ...state,
-    ...payload.recon.visuals
-  }),
+  [ACTION_TYPES.REHYDRATE]: (state, { payload }) => {
+    let reducerState = {};
+    if (payload && payload.recon && payload.recon.visuals) {
+      reducerState = payload.recon.visuals;
+    }
+    return {
+      ...state,
+      ...reducerState
+    };
+  },
 
   [ACTION_TYPES.OPEN_RECON]: (state) => ({
     ...state,

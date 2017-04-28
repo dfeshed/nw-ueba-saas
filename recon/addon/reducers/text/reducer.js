@@ -12,10 +12,16 @@ const textInitialState = {
 };
 
 const textReducer = handleActions({
-  [ACTION_TYPES.REHYDRATE]: (state, { payload }) => ({
-    ...state,
-    ...payload.recon.text
-  }),
+  [ACTION_TYPES.REHYDRATE]: (state, { payload }) => {
+    let reducerState = {};
+    if (payload && payload.recon && payload.recon.text) {
+      reducerState = payload.recon.text;
+    }
+    return {
+      ...state,
+      ...reducerState
+    };
+  },
 
   [ACTION_TYPES.INITIALIZE]: (state) => ({
     ...textInitialState,

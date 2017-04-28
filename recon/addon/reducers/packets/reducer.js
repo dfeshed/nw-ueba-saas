@@ -17,10 +17,16 @@ const packetsInitialState = {
 
 const packetReducer = handleActions({
 
-  [ACTION_TYPES.REHYDRATE]: (state, { payload }) => ({
-    ...state,
-    ...payload.recon.packets
-  }),
+  [ACTION_TYPES.REHYDRATE]: (state, { payload }) => {
+    let reducerState = {};
+    if (payload && payload.recon && payload.recon.packets) {
+      reducerState = payload.recon.packets;
+    }
+    return {
+      ...state,
+      ...reducerState
+    };
+  },
 
   [ACTION_TYPES.INITIALIZE]: (state) => ({
     ...packetsInitialState,

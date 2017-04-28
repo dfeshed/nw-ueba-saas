@@ -150,7 +150,7 @@ const initializeRecon = (reconInputs) => {
     if (!getState().recon.data.eventId) {
       getStoredState({}, (err, storedState) => {
         let starterView;
-        if (!err && storedState && storedState.recon.visuals.currentReconView) {
+        if (!err && storedState && storedState.recon && storedState.recon.visuals.currentReconView) {
           starterView = RECON_VIEW_TYPES_BY_NAME[storedState.recon.visuals.currentReconView.name];
         }
         dispatch(_initializeRecon(reconInputs, starterView));
