@@ -9,20 +9,20 @@
 </div>
 
 {{#rsa-content-tethered-panel position='top' panelId=(concat 'span' index) hideOnLeave=false displayCloseButton=hasCloseButton}}
-  {{#if isActionClicked }}
-    <header>{{tooltipHeading}}</header>
-    <div class='selection-name'>Original Selection</div>
-    <div class='selection-value'>{{originalString}}</div>
-    <div class='selection-name'>Base64 Format</div>
-    <div class='selection-value'>{{encDecStrBase64}}</div>
-    <div class='selection-name'>URL Format</div>
-    <div class='selection-value'>{{encDecStrUrl}}</div>
-  {{else}}
-    <ul>
-      <li class="list-item" {{action 'decodeText'}}>Decode Selected Text</li>
-      <li class="list-item" {{action 'encodeText'}}>Encode Selected Text</li>
-    </ul>
-  {{/if}}
+  <div class="reconTooltip">
+    {{#if isActionClicked }}
+      <header>{{tooltipHeading}}</header>
+      <div class='selection-name'>Original Selection</div>
+      <div class='selection-value'>{{originalString}}</div>
+      <div class='selection-name'>Base64 Format</div>
+      <div class='selection-value'>{{encDecStrBase64}}</div>
+      <div class='selection-name'>URL Format</div>
+      <div class='selection-value'>{{encDecStrUrl}}</div>
+    {{else}}
+      <div class="list-item" {{action 'decodeText'}}>Decode Selected Text</div>
+      <div class="list-item" {{action 'encodeText'}}>Encode Selected Text</div>
+    {{/if}}
+  </div>
 {{/rsa-content-tethered-panel}}
 
 {{#if displayShowAllButton}}
