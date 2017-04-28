@@ -6,5 +6,14 @@
 /* Import context styles from addon */
 @import 'context/manifest';
 
+/* Import investigate styles from engine */
+@import 'investigate/manifest';
+
+/* Import recon styles from addon */
+@import 'recon/manifest';
+
+/* Imports all styles from respond engine */
+@import 'respond/manifest';
+
 /* Imports styles specific for this sa app. */
 @import 'sa/manifest';
