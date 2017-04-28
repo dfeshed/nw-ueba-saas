@@ -58,6 +58,23 @@ module.exports = {
           }
         }
       },
+      'redux-persist': {
+        vendor: ['dist/redux-persist.js']
+      },
+      'redux-persist-transform-filter': {
+        vendor: {
+          processTree(tree) {
+            return new WebpackWriter([tree], {
+              entry: './redux-persist-transform-filter/dist/index.js',
+              output: {
+                library: 'redux-persist-transform-filter',
+                libraryTarget: 'amd',
+                filename: 'redux-persist-transform-filter.amd.js'
+              }
+            });
+          }
+        }
+      },
       'redux-thunk': {
         vendor: ['dist/redux-thunk.js']
       },
@@ -144,6 +161,10 @@ module.exports = {
     this.import('vendor/redux-thunk/dist/redux-thunk.js', {
       using: [{ transformation: 'amd', as: 'redux-thunk' }]
     });
+    this.import('vendor/redux-persist/dist/redux-persist.js', {
+      using: [{ transformation: 'amd', as: 'redux-persist' }]
+    });
+    this.import('vendor/redux-persist-transform-filter.amd.js');
     this.import('vendor/reselect.amd.js');
   },
 

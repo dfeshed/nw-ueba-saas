@@ -10,7 +10,6 @@ import {
   initializeNotifications,
   teardownNotifications
 } from '../../actions/data-creators';
-import { toggleReconExpanded } from '../../actions/visual-creators';
 
 const stateToComputed = ({ recon: { visuals, notifications } }) => ({
   isMetaShown: visuals.isMetaShown,
@@ -22,8 +21,7 @@ const stateToComputed = ({ recon: { visuals, notifications } }) => ({
 const dispatchToActions = {
   initializeRecon,
   initializeNotifications,
-  teardownNotifications,
-  toggleReconExpanded
+  teardownNotifications
 };
 
 const ReconContainer = Component.extend({
@@ -84,12 +82,6 @@ const ReconContainer = Component.extend({
 
     this.set('oldEventId', inputs.eventId);
     this.send('initializeRecon', inputs);
-
-    // Containing application can pass in an initial expanded state
-    const isExpanded = this.get('isExpanded');
-    if (isExpanded !== undefined) {
-      this.send('toggleReconExpanded', isExpanded);
-    }
   },
 
   didInsertElement() {

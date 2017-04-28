@@ -16,6 +16,12 @@ const packetsInitialState = {
 };
 
 const packetReducer = handleActions({
+
+  [ACTION_TYPES.REHYDRATE]: (state, { payload }) => ({
+    ...state,
+    ...payload.recon.packets
+  }),
+
   [ACTION_TYPES.INITIALIZE]: (state) => ({
     ...packetsInitialState,
     // Persist the following state

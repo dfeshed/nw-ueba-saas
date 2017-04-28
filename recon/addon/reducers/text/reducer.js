@@ -12,6 +12,11 @@ const textInitialState = {
 };
 
 const textReducer = handleActions({
+  [ACTION_TYPES.REHYDRATE]: (state, { payload }) => ({
+    ...state,
+    ...payload.recon.text
+  }),
+
   [ACTION_TYPES.INITIALIZE]: (state) => ({
     ...textInitialState,
     decode: state.decode // let whatever decode is remain

@@ -1,5 +1,7 @@
 // Sring values of actions must be prefixed with RECON::
 
+export const REHYDRATE = 'persist/REHYDRATE';
+
 export const INITIALIZE = 'RECON::INITIALIZE';
 
 // Visual action types

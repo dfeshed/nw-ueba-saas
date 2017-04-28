@@ -10,6 +10,7 @@
  */
 
 import Ember from 'ember';
+import { getStoredState } from 'redux-persist';
 
 import * as ACTION_TYPES from './types';
 import { eventTypeFromMetaArray } from 'recon/reducers/meta/selectors';
@@ -134,6 +135,32 @@ const setNewReconView = (newView) => {
   };
 };
 
+/*
+ * The first time recon is opened, need to check and see if currentReconView is in the storedState
+ * and update that here. This allows the reconView to be retained in localStorage between
+ * sessions
+ */
+const initializeRecon = (reconInputs) => {
+  return (dispatch, getState) => {
+    // is there not an eventId in state? then is first time in recon.
+    // check to see if should use localStorage reconView to keep user
+    // in same place. Can't rely on rehydration into state because
+    // rehydration is an action like any other any may not complete
+    // before decisions are made based on what view we are starting at.
+    if (!getState().recon.data.eventId) {
+      getStoredState({}, (err, storedState) => {
+        let starterView;
+        if (!err && storedState && storedState.recon.visuals.currentReconView) {
+          starterView = RECON_VIEW_TYPES_BY_NAME[storedState.recon.visuals.currentReconView.name];
+        }
+        dispatch(_initializeRecon(reconInputs, starterView));
+      });
+    } else {
+      dispatch(_initializeRecon(reconInputs));
+    }
+  };
+};
+
 /**
  * An Action Creator thunk that builds/sends action for initializing recon.
  *
@@ -151,7 +178,8 @@ const setNewReconView = (newView) => {
  * @returns {function} redux-thunk
  * @public
  */
-const initializeRecon = (reconInputs) => {
+const _initializeRecon = (reconInputs, starterView) => {
+
   return (dispatch, getState) => {
     const dataState = getState().recon.data;
 
@@ -209,11 +237,16 @@ const initializeRecon = (reconInputs) => {
         }
       });
 
+      // currentReconView is either provided when Recon first boots (from local storage)
+      // or we will use whatever is in currentReconView (current redux state).
+      // This allows for initializing with one view, and then using whatever view the user
+      // changes to after that.
+      const currentReconView = starterView || getState().recon.visuals.currentReconView;
+
       // if meta not passed in then need to fetch it now
       // (even if its not being displayed) as we need to
       // use meta to determine which data to fetch and
       // which recon view to display
-      const { recon: { visuals: { currentReconView } } } = getState();
       if (!reconInputs.meta) {
         _dispatchMeta(dispatch, reconInputs, currentReconView);
       } else {

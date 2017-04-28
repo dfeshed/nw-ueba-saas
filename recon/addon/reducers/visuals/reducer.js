@@ -15,6 +15,11 @@ const visualsInitialState = {
 };
 
 const visuals = handleActions({
+  [ACTION_TYPES.REHYDRATE]: (state, { payload }) => ({
+    ...state,
+    ...payload.recon.visuals
+  }),
+
   [ACTION_TYPES.OPEN_RECON]: (state) => ({
     ...state,
     isReconOpen: true
