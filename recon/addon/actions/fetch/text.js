@@ -1,12 +1,8 @@
 import { streamRequest } from 'streaming-data/services/data-access/requests';
-import {
-  buildBaseQuery,
-  addStreaming,
-  addDecode
-} from '../util/query-util';
+import { buildBaseQuery, addStreaming, addDecode } from '../util/query-util';
 import { timedBatchResponse } from '../util/execute-util';
 
-const BATCH_SIZE = 10;
+const BATCH_CHARACTER_SIZE = 10000;
 const TIME_BETWEEN_BATCHES = 800;
 
 const selector = (response) => {
@@ -16,7 +12,11 @@ const selector = (response) => {
   return [];
 };
 
-const fetchTextData = ({ endpointId, eventId, packetsPageSize, decode }, dispatchPage, dispatchError) => {
+const fetchTextData = (
+  { endpointId, eventId, packetsPageSize, decode },
+  dispatchPage,
+  dispatchError
+) => {
   const basicQuery = buildBaseQuery(endpointId, eventId);
   const streamingQuery = addStreaming(basicQuery, packetsPageSize);
   const decodeQuery = addDecode(streamingQuery, decode);
@@ -24,7 +24,12 @@ const fetchTextData = ({ endpointId, eventId, packetsPageSize, decode }, dispatc
     method: 'stream',
     modelName: 'reconstruction-text-data',
     query: decodeQuery,
-    onResponse: timedBatchResponse(dispatchPage, selector, BATCH_SIZE, TIME_BETWEEN_BATCHES),
+    onResponse: timedBatchResponse(
+      dispatchPage,
+      selector,
+      BATCH_CHARACTER_SIZE,
+      TIME_BETWEEN_BATCHES
+    ),
     onError: dispatchError
   });
 };
