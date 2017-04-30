@@ -188,8 +188,7 @@
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
-			<version>${guava.version}</version>
-		</dependency>
+        </dependency>
 		<dependency>
 			<groupId>com.github.fakemongo</groupId>
 			<artifactId>fongo</artifactId>
@@ -207,6 +206,7 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>${maven-compiler-plugin.version}</version>
 				<configuration>
+					<encoding>${project.build.sourceEncoding}</encoding>
 					<source>${java-lang-config.version}</source>
 					<target>${java-lang-config.version}</target>
 				</configuration>

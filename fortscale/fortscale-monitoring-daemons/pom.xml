@@ -294,7 +294,6 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>18.0</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -311,6 +310,7 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${maven-compiler-plugin.version}</version>
                 <configuration>
+                    <encoding>${project.build.sourceEncoding}</encoding>
                     <source>${java-lang-config.version}</source>
                     <target>${java-lang-config.version}</target>
                 </configuration>

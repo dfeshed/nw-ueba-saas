@@ -62,6 +62,8 @@
 	</pluginRepositories>
 
 	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <!--RPM VERSION-->
         <rpm.version>3.0.0</rpm.version>
 		<!-- NOTE: ALL dependencies' versions should be here -->
@@ -606,6 +608,11 @@
 			<artifactId>commons-validator</artifactId>
 			<version>${commons-validator.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>${guava.version}</version>
+		</dependency>
 	</dependencies>
 
 	</dependencyManagement>
@@ -672,6 +679,7 @@
 				<configuration>
 					<source>${java-lang-config.version}</source>
 					<target>${java-lang-config.version}</target>
+					<encoding>${project.build.sourceEncoding}</encoding>
 				</configuration>
 			</plugin>
 
