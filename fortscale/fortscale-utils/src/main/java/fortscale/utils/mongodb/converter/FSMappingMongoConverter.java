@@ -24,7 +24,7 @@ public class FSMappingMongoConverter extends MappingMongoConverter {
      *
      * @see #setMapKeyDollarReplacement(String)
      * @param source
-     * @return
+     * @return replacement to key starting with $
      */
     @Override
     protected String potentiallyEscapeMapKey(String source)
