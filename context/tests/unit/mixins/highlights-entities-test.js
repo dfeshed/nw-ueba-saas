@@ -90,13 +90,13 @@ const innerHTML = values
     data-meta-key="${metaKey}"><text>${id}</text></g>`)
   .join('');
 
-const element = document.createElement('svg');
-element.id = 'highlights-entities-test-element-1';
-element.innerHTML = innerHTML;
-document.body.appendChild(element);
-
 test('it applies CSS classes, wires up clicks, and fires callbacks correctly', function(assert) {
   assert.expect(12);  // 11 = 8 + 2 asserts * every callback to onEntityContextFound = 6 + 2 * 2
+
+  const element = document.createElement('svg');
+  element.id = 'highlights-entities-test-element-1';
+  element.innerHTML = innerHTML;
+  document.body.appendChild(element);
 
   const subject = FakeComponentClass.create({
     element,
@@ -155,5 +155,50 @@ test('it applies CSS classes, wires up clicks, and fires callbacks correctly', f
 
     });
 
+  });
+});
+
+test('it supports launching the tooltip from right clicks', function(assert) {
+  assert.expect(3);
+
+  const element2 = document.createElement('svg');
+  element2.id = 'highlights-entities-test-element-2';
+  element2.innerHTML = innerHTML;
+  document.body.appendChild(element2);
+
+  const subject = FakeComponentClass.create({
+    element: element2,
+    entityTooltipTriggerEvent: 'contextmenu'
+  });
+  subject.didInsertElement();
+  const done = assert.async();
+
+  // Use `next()` to wait long enough for `didInsertElement` to call the mixin's `highlightEntities()`.
+  next(() => {
+
+    // Use `next()` to wait long enough for `highlightEntities()` to complete DOM manipulations.
+    next(() => {
+      let spyCounter = 0;
+      const tooltipSpy = () => {
+        spyCounter++;
+        assert.ok(true, 'An event was heard that was intended to display the tooltip.');
+      };
+
+      const tooltipDisplayEventName = `rsa-content-tethered-panel-toggle-${entityTooltipPanelId}`;
+      eventBusStub.on(tooltipDisplayEventName, tooltipSpy);
+
+      // "Normal" clicking on a context-enable DOM node should NOT trigger an eventBus event. No assert expected!
+      subject.$('.is-context-enabled').first().click();
+      assert.equal(spyCounter, 0, 'Expected no asserts yet');
+
+      // Right-clicking on a context-enabled DOM node should trigger an eventBus event to display the tooltip. Assert expected!
+      subject.$('.is-context-enabled').first().trigger('contextmenu');
+      assert.equal(spyCounter, 1, 'Expected just one assert from the contextmenu event');
+
+      eventBusStub.off(tooltipDisplayEventName, tooltipSpy);
+
+      subject.willDestroyElement();
+      done();
+    });
   });
 });

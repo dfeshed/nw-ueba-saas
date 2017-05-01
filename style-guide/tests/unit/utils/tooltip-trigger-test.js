@@ -57,6 +57,31 @@ test('wireTriggerToClick attaches event handlers, unwireTriggerToClick detaches 
   eventBus.off(eventName);
 });
 
+test('wireTriggerToClick supports an option for triggering only for right clicks', function(assert) {
+  const eventType = 'toggle';
+  const eventName = `rsa-content-tethered-panel-${eventType}-${panelId}`;
+  let spyCounter = 0;
+  eventBus.on(eventName, function() {
+    spyCounter++;
+    assert.ok('eventBus handler was triggered');
+  });
+
+  assert.expect(3);
+
+  wireTriggerToClick(el, panelId, eventBus, { rightClick: true });
+  $el.trigger('click'); // shouldn't fire an event to eventBus
+  assert.equal(spyCounter, 0, 'Expected no eventBus triggers from click event');
+  $el.trigger('contextmenu'); // should fire an event to eventBus
+  assert.equal(spyCounter, 1, 'Expected 1 eventBus trigger from contextmenu event');
+
+  unwireTriggerToClick(el);
+  $el.trigger('contextmenu'); // shouldn't fire any more asserts
+  $el.trigger('click'); // shouldn't fire any more asserts
+
+  eventBus.off(eventName);
+
+});
+
 test('wireTriggerToHover attaches event handlers, unwireTriggerToHover detaches them', function(assert) {
   const mouseenterEventName = `rsa-content-tethered-panel-display-${panelId}`;
   const mouseleaveEventName = `rsa-content-tethered-panel-hide-${panelId}`;

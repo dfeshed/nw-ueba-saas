@@ -362,10 +362,16 @@ export default Mixin.create({
       entityTooltipHideDelay: hideDelay
     } = this.getProperties('entityTooltipPanelId', 'eventBus', 'entityTooltipDisplayDelay', 'entityTooltipHideDelay');
 
-    const wireFn = (this.get('entityTooltipTriggerEvent') === 'hover') ?
+    const triggerEvent = this.get('entityTooltipTriggerEvent');
+    const wireFn = (triggerEvent === 'hover') ?
       wireTriggerToHover : wireTriggerToClick;
 
-    wireFn($el[0], entityTooltipPanelId, eventBus, { model: { type, id }, displayDelay, hideDelay });
+    wireFn($el[0], entityTooltipPanelId, eventBus, {
+      model: { type, id },
+      displayDelay,
+      hideDelay,
+      rightClick: triggerEvent === 'contextmenu'
+    });
   },
 
   // Unwires a given DOM node from the context tooltip.

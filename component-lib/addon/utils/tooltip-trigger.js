@@ -47,6 +47,7 @@ const sendTetherEvent = function(el, panelId, eventBus, eventType, model) {
  * @param {Function} [opts.getIsDisabled] Optional callback that, when invoked, will return true if the trigger
  * DOM node is enabled or false otherwise.  If given, this callback will be invoked during every trigger click event,
  * to determine whether the panel component should be toggled. If the callback returns false, the toggle is aborted.
+ * @param {Boolean} [opts.rightClick=false] If true, the click handler will only respond to 'contextmenu' events.
  * @public
  */
 const wireTriggerToClick = function(el, panelId, eventBus, opts = {}) {
@@ -59,7 +60,8 @@ const wireTriggerToClick = function(el, panelId, eventBus, opts = {}) {
     $el.addClass(panelId);
   }
 
-  $el.on('click.rsa-tethered-panel-trigger', function() {
+  const eventName = opts.rightClick ? 'contextmenu' : 'click';
+  $el.on(`${eventName}.rsa-tethered-panel-trigger`, function() {
     if (!getIsDisabled || !getIsDisabled()) {
       sendTetherEvent(this, panelId, eventBus, 'toggle', opts.model);
     }
@@ -74,7 +76,7 @@ const wireTriggerToClick = function(el, panelId, eventBus, opts = {}) {
  * @public
  */
 const unwireTriggerToClick = function(el) {
-  $(el).off('click.rsa-tethered-panel-trigger');
+  $(el).off('.rsa-tethered-panel-trigger'); // unwires both click & contextmenu
 };
 
 /**
