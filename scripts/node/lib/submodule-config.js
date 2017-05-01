@@ -50,7 +50,8 @@ const saModuleDependants = {
   'style-guide': [], // style-guide is an end state app, nothing depends on it
   context: [
     'sa',
-    'investigate'
+    'investigate',
+    'respond'
   ]
 };
 
@@ -85,7 +86,8 @@ const saModuleDependencies = {
   respond: [
     'component-lib',
     'streaming-data',
-    'mock-server'
+    'mock-server',
+    'context'
   ],
   scripts: ALL_SUBMODULES,
   'streaming-data': [

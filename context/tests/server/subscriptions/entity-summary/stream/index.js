@@ -39,7 +39,7 @@ export default {
     // and each `values` is an array of entity ids.
     // Transform that into a simple 1-D array of `{ type: String, id: String }` pairs.
     const entities = [];
-    (filter || {}).forEach((condition) => {
+    (filter || []).forEach((condition) => {
       const { field: type, values } = condition;
       (values || []).forEach((id) => {
         entities.push({ type, id });

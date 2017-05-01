@@ -1,8 +1,8 @@
 /* eslint-env node */
 
 const common = require('../../common');
-
-module.exports = function(environment) {
+const contextConfigGen = require('../../context').socketRouteGenerator;
+const respondConfigGen = function(environment) {
 
   const socketUrl = common.determineSocketUrl(environment, '/response/socket');
 
@@ -107,3 +107,28 @@ module.exports = function(environment) {
     }
   };
 };
+
+// order matters, first config in wins if there are matching configs
+const configGenerators = [
+  respondConfigGen,
+  contextConfigGen
+];
+
+let socketConfig = null;
+
+const generateSocketConfiguration = function(environment) {
+
+  // this gets called a looooot on ember start up so use cache
+  if (socketConfig) {
+    return socketConfig;
+  }
+
+  socketConfig = common.mergeSocketConfigs(configGenerators, environment);
+
+  // UNCOMMENT to see combined socketConfig on startup
+  // console.log(socketConfig)
+
+  return socketConfig;
+};
+
+module.exports = generateSocketConfiguration;

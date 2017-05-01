@@ -1,5 +1,7 @@
-/* eslint-env node */
+/* eslint-disable */
+
+var contextMockDirectory = require('../../../context').mockDestinations;
 
 require('mock-server').startServer({
-  subscriptionLocations: [__dirname]
+  subscriptionLocations: [__dirname, contextMockDirectory]
 });
