@@ -1,0 +1,82 @@
+.respond-engine .rsa-explorer-toolbar {
+
+  .selection-count {
+    padding-right: rsa-whitespace();
+  }
+
+  .toolbar-button {
+    padding: rsa-whitespace(less);
+    font-size: 20px;
+    width: 23px;
+    color: rsa-color(gray, lighter);
+    margin-right: rsa-whitespace(least);
+    cursor: pointer;
+  }
+
+  &.more-filters-active {
+    .more-filters-button {
+      color: rsa-color(green);
+      border-bottom: 2px solid rsa-color(green);
+    }
+  }
+
+  &__filters {
+    @include rsa-row(left, middle);
+    @include rsa-vendor-prefix(flex-shrink, 0);
+    @include rsa-vendor-prefix(flex-grow, 1);
+  }
+
+  &__views,
+  &__btns {
+    @include rsa-row(right, middle);
+    @include rsa-vendor-prefix(flex-shrink, 0);
+    @include rsa-vendor-prefix(flex-grow, 0);
+  }
+
+  &__views {
+    margin-right: rsa-whitespace(more);
+  }
+
+  &__selections-counter {
+    @include rsa-vendor-prefix(flex-shrink, 0);
+    @include rsa-vendor-prefix(flex-grow, 1);
+  }
+
+  &__selections-actions,
+  &__selections-btns {
+    text-align: right;
+    @include rsa-vendor-prefix(flex-shrink, 0);
+    @include rsa-vendor-prefix(flex-grow, 0);
+  }
+
+  &__selections-btns {
+    text-align: right;
+  }
+
+  .rsa-button {
+    padding: rsa-whitespace(least) rsa-whitespace(less);
+    height: 2rem;
+    border: 1px solid transparent;
+    cursor: pointer;
+
+    &[disabled="true"],
+    &:disabled {
+      cursor: default;
+      color: rsa-color(gray);
+    }
+  }
+}
+
+.rsa-incidents-toolbar__selections-btns {
+  height: 40px;
+  .rsa-button {
+    vertical-align: bottom;
+  }
+  .incident-action-button {
+    display: inline-block;
+
+    .ember-power-select-trigger {
+      margin-right: 0;
+    }
+  }
+}

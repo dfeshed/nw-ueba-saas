@@ -1,0 +1,19 @@
+{{#if (eq column.field 'selectItem')}}
+  {{#rsa-data-table/body-cell item=item column=column columnWidth=column.width}}
+    <label class="rsa-form-checkbox-label {{if (contains item.id table.selectedItems) 'checked'}}">
+      {{rsa-form-checkbox checked=(contains item.id table.selectedItems) change=(action table.select item)}}
+    </label>
+  {{/rsa-data-table/body-cell}}
+{{/if}}
+
+{{#if table.columnsDefinedDeclaratively}}
+
+  {{yield item index null}}
+
+{{else}}
+
+  {{#each table.visibleColumns as |column|}}
+    {{yield item index column}}
+  {{/each}}
+
+{{/if}}

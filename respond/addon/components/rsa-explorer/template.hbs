@@ -1,0 +1,59 @@
+<box fit class="toolbar-zone">
+  {{yield (hash name='explorer-toolbar' toolbar=(component 'rsa-explorer/explorer-toolbar'
+    isFilterPanelOpen=isFilterPanelOpen
+    itemsSelected=itemsSelected
+    hasNoSelections=hasNoSelections
+    selectionCount=selectionCount
+    toggleFilterPanel=(action 'toggleFilterPanel')
+  ))}}
+</box>
+<hbox class="main-zone {{if focusedItem 'show-inspector'}}">
+  <vbox class="filter-zone">
+    {{yield (hash name='explorer-filters' filters=(component 'rsa-explorer/explorer-filters'
+      timeframeFilter=timeframeFilter
+      hasCustomDate=hasCustomDate
+      updateFilter=(action 'updateFilter')
+      resetFilters=(action 'resetFilters')
+      toggleCustomDate=(action 'toggleCustomDate')
+    ))}}
+
+  </vbox>
+  <vbox class="items-zone">
+    <box class="items-main">
+      <box class="items-body">
+        {{yield (hash name='explorer-table' instance=this table=(component 'rsa-explorer/explorer-table'
+          columns=columns
+          focusedItem=focusedItem
+          itemsSelected=itemsSelected
+          isSelectAll=isSelectAll
+          items=items
+          fetchStatus=itemsStatus
+          noResultsMessage=noResultsMessage
+          sortBy=(action 'sortBy')
+          toggleSelectAll=(action 'toggleSelectAll')
+          focus=(action 'focus')
+          sortField=sortField
+          isSortDescending=isSortDescending
+          select=(action 'select'))
+          select=(action 'select')
+        )}}
+      </box>
+      <box class="items-footer">
+        {{#if (not-eq itemsStatus "wait") }}
+          <centered>{{t 'respond.explorer.footer' count=itemsCount total=itemsTotal}}</centered>
+        {{/if}}
+      </box>
+    </box>
+  </vbox>
+  <vbox class="inspector-zone">
+    {{yield (hash name='explorer-inspector' instance=this inspector=(component 'rsa-explorer/explorer-inspector' info=focusedItem ))}}
+    {{#rsa-form-button class="close-inspector" isIconOnly=true defaultAction=(action "clearFocusItem")}}{{rsa-icon name='close'}}{{/rsa-form-button}}
+  </vbox>
+</hbox>
+{{#if isTransactionUnderway}}
+  <div class="transaction-overlay">
+    <centered class="transaction-overlay">
+      {{rsa-loader size="large"}}
+    </centered>
+  </div>
+{{/if}}

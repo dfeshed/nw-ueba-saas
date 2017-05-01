@@ -1,0 +1,48 @@
+{{#rsa-data-table
+  focusedItem=focusedItem
+  selectedItems=itemsSelected
+  select=(action select)
+  items=(readonly items)
+  lazy=(readonly useLazyRendering)
+  onRowClick=(action "handleRowClickAction")
+  fitToWidth=false
+  columnsConfig=(readonly columns)}}
+
+  {{#rsa-data-table/header translateTitles=true as |column|}}
+
+    {{#if (eq column.dataType 'checkbox')}}
+      <label class="rsa-form-checkbox-label {{if isSelectAll 'checked'}}">
+        {{rsa-form-checkbox
+          checked=isSelectAll
+          change=(action toggleSelectAll)
+        }}
+      </label>
+    {{else}}
+      {{t column.title}}
+    {{/if}}
+
+    {{! COLUMN SORT }}
+    {{#unless column.disableSort}}
+      <button class={{unless (eq sortField column.field) "column-sort hideSort expand" "column-sort expand"}} {{action sortBy column.field (if isSortDescending false true)  on='click'}}>
+        {{rsa-icon size="small" name=(if isSortDescending "arrow-down-12" "arrow-up-12")}}
+      </button>
+    {{/unless}}
+  {{/rsa-data-table/header}}
+
+  {{#if (eq fetchStatus 'wait')}}
+    <centered>
+      {{rsa-loader size='larger'}}
+    </centered>
+
+  {{else}}
+    {{#rsa-data-table/body
+      rowComponentClass='rsa-explorer/explorer-table/row'
+      noResultsMessage=noResultsMessage
+      as |item index column|}}
+
+      {{yield (hash cell=(component 'rsa-data-table/body-cell' item=item column=column columnWidth=column.width))}}
+
+    {{/rsa-data-table/body}}
+  {{/if}}
+
+{{/rsa-data-table}}

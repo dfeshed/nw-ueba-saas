@@ -1,0 +1,66 @@
+.rsa-explorer-table {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  .rsa-data-table-body-cell, .rsa-data-table-header-cell {
+    box-sizing: border-box;
+  }
+
+  .rsa-data-table,
+  .rsa-data-table-body,
+  .rsa-data-table-body-rows,
+  .rsa-data-table-body .no-results {
+    height: 100%;
+    font-size: 2rem;
+  }
+
+  .rsa-data-table-header {
+    border-bottom: 1px solid rsa-color(gray, dark);
+    .rsa-data-table-header-cell {
+      &:first-child {
+        padding: 0 0 0 0.5rem;
+      }
+      button {
+        cursor: pointer;
+      }
+    }
+  }
+
+  .rsa-data-table-body-rows {
+    overflow-x: hidden; // fit to width table should have no horizontal scroll bar
+  }
+
+  .rsa-data-table-body-row {
+    cursor: pointer;
+    left: 0;
+    right: 0;
+    margin: 0;
+    padding: 0;
+
+    &.has-focus {
+      background-color: rsa-color(blue, base, $rsa-nearly-transparent);
+    }
+  }
+
+  .rsa-item-selected {
+    color: rsa-color(blue, base);
+  }
+
+  .rsa-data-table-body-cell {
+    .rsa-content-label {
+      padding: 0 rsa-whitespace(least);
+      width: 96%;
+      text-align: center;
+    }
+    .number-type {
+      text-align: right;
+    }
+  }
+
+  .rsa-data-table-body-cell .rsa-form-checkbox-label, .rsa-data-table-header-cell .rsa-form-checkbox-label {
+    min-width: 12px;
+  }
+}

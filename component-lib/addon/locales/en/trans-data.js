@@ -396,6 +396,10 @@ export default {
   },
   respond: {
     title: 'Respond',
+    common: {
+      yes: 'Yes',
+      no: 'No'
+    },
     timeframeOptions: {
       LAST_5_MINUTES: 'Last 5 Minutes',
       LAST_10_MINUTES: 'Last 10 Minutes',
@@ -412,6 +416,20 @@ export default {
       LAST_14_DAYS: 'Last 14 Days',
       LAST_30_DAYS: 'Last 30 Days',
       ALL_TIME: 'All Data'
+    },
+    explorer: {
+      filters: {
+        timeRange: 'Time Range',
+        reset: 'Reset Filters',
+        customDateRange: 'Custom Date Range',
+        customStartDate: 'Start Date',
+        customEndDate: 'End Date',
+        customDateErrorStartAfterEnd: 'The start date and time cannot be the same or later than the end date'
+      },
+      inspector: {
+        overview: 'Overview'
+      },
+      footer: 'Showing {{count}} out of {{total}} items'
     },
     incidents: {
       actions: {

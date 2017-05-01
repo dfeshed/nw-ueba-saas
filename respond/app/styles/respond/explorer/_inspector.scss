@@ -1,0 +1,103 @@
+$metadataLabelWidth: 8rem;
+$metadataLineHeight: 1.35;
+
+.rsa-explorer-inspector {
+  position: relative;
+  background-color: rsa-color(gray, darker);
+  border-right: 1px solid rsa-color(gray,base,$rsa-translucent);
+  height: 100%;
+  overflow: hidden;
+
+  &__header {
+    position: relative;
+    padding: rsa-whitespace();
+    text-align: center;
+    line-height: 1.35;
+
+    .id {
+      @include rsa-font(header,large);
+    }
+
+    .name {
+      @include rsa-font(light);
+    }
+
+    .back {
+      position: absolute;
+      z-index: 2;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      padding: rsa-whitespace();
+    }
+
+    .rsa-loader {
+      margin-top: rsa-whitespace();
+    }
+  }
+
+  &__toolbar {
+    border-bottom: 1px solid rsa-color(gray, light, $rsa-nearly-transparent);
+    .rsa-tab {
+      margin: 0 rsa-whitespace();
+    }
+  }
+  &__body {
+    overflow: auto;
+    position: relative;
+    padding-left: rsa-whitespace();
+    height: 100%;
+    .rsa-data-table,
+    .rsa-explorer-inspector-overview {
+      @include rsa-fill-abs();
+    }
+
+    .rsa-explorer-inspector-overview {
+      overflow: auto;
+    }
+
+    .rsa-form-textarea {
+      @include rsa-font(body, small);
+    }
+
+    p.metadata {
+      @include rsa-font(body, small);
+      padding: rsa-whitespace() rsa-whitespace(less) rsa-whitespace(less) (rsa-whitespace(less) + $metadataLabelWidth);
+      color: rsa-color(gray, light);
+      line-height: $metadataLineHeight;
+      position: relative;
+
+      > label {
+        position: absolute;
+        left: 0;
+        top: 0;
+        margin: rsa-whitespace() rsa-whitespace(less);
+        max-width: $metadataLabelWidth - rsa-whitespace(less) * 2;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+
+      > span {
+        padding-left: rsa-whitespace();
+        display: inline-block;
+        min-height: 1em * $metadataLineHeight;
+        color: rsa-color(white);
+      }
+    }
+
+    p.text {
+      @include rsa-font(body, small);
+      padding: rsa-whitespace(less);
+      line-height: 1.2rem;
+      > label {
+        display: block;
+        padding-bottom: rsa-whitespace(less);
+        color: rsa-color(gray, light);
+      }
+      i {
+        font-style: italic;
+      }
+    }
+  }
+}

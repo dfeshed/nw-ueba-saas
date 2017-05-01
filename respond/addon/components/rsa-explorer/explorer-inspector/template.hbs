@@ -1,0 +1,17 @@
+<box fit class="rsa-explorer-inspector__header">
+  <h2>
+    <div class="id">{{info.id}}</div>
+    <div class="name">{{info.name}}</div>
+    {{yield 'inspector-header'}}
+  </h2>
+</box>
+<hbox fit justify="center" nowrap class="rsa-explorer-inspector__toolbar">
+  <span class="rsa-tab text-only {{if (eq viewMode 'overview') 'is-active' ''}}"
+    {{action 'changeViewMode' "overview"}}>
+    {{t 'respond.explorer.inspector.overview'}}
+  </span>
+  {{yield 'inspector-toolbar' (get this 'viewMode')}}
+</hbox>
+<box class="rsa-explorer-inspector__body">
+  {{yield 'inspector-body'}}
+</box>

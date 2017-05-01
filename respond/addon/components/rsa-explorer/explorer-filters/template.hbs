@@ -1,0 +1,43 @@
+<section class="body">
+  <section class="filter-option created-filter">
+    <hbox class="time-range-label">
+      <h2>{{ t 'respond.explorer.filters.timeRange'}}</h2>
+      <label class="rsa-form-switch" {{action 'toggleCustomDate' }}>
+        {{x-toggle value=hasCustomDate onToggle=(action 'toggleCustomDate')}}
+        {{t 'respond.explorer.filters.customDateRange'}}
+      </label>
+    </hbox>
+    {{#liquid-bind hasCustomDate use=(if hasCustomDate "toUp" "toDown") as |currentIsCustomRange|}}
+      {{#if currentIsCustomRange}}
+        {{rsa-form-datetime
+          label=(t 'respond.explorer.filters.customStartDate')
+          showTime=true
+          isError=hasCustomDateError
+          value=(readonly customDateRangeStart)
+          onDateClose=(action 'customStartDateChanged')
+          errorMessage=customDateErrorMessage}}
+
+        {{rsa-form-datetime
+          label=(t 'respond.explorer.filters.customEndDate')
+          showTime=true
+          value=(readonly customDateRangeEnd)
+          onDateClose=(action 'customEndDateChanged')}}
+      {{else}}
+        {{#power-select
+          options=timeframes
+          selected=selectedTimeframe
+          onchange=(action "onChangeTimeframe") as |time|}}
+          {{t (concat 'respond.timeframeOptions.' time.name) }}
+        {{/power-select}}
+      {{/if}}
+    {{/liquid-bind}}
+  </section>
+  {{yield}}
+</section>
+<footer>
+  {{#rsa-form-button
+    isFullWidth=true
+    defaultAction='reset'}}
+    {{t 'respond.explorer.filters.reset'}}
+  {{/rsa-form-button}}
+</footer>
