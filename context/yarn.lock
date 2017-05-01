@@ -2540,9 +2540,9 @@ ember-qunit@^2.0.0-beta.1:
   dependencies:
     ember-test-helpers "^0.6.0-beta.1"
 
-ember-redux@^2.3.0:
-  version "2.3.0"
-  resolved "https://registry.npmjs.org/ember-redux/-/ember-redux-2.3.0.tgz#9a224ff17e965a6d134444c73393b1459a25f99e"
+ember-redux@2.4.0:
+  version "2.4.0"
+  resolved "https://registry.npmjs.org/ember-redux/-/ember-redux-2.4.0.tgz#abe446357832c5b7827f7193781beae4f835265c"
   dependencies:
     ember-cli-babel "^6.0.0-beta.3"
 
