@@ -118,6 +118,17 @@ export default {
     'other': 'updates'
   },
   recon: {
+    titleBar: {
+      titles: {
+        network: 'Network Event Details',
+        log: 'Log Event Details'
+      },
+      views: {
+        text: 'Text Analysis',
+        packet: 'Packet Analysis',
+        file: 'File Analysis'
+      }
+    },
     textView: {
       compressToggleLabel: 'Display Compressed Payloads',
       compressToggleTitle: 'Display HTTP payloads as compressed or not',

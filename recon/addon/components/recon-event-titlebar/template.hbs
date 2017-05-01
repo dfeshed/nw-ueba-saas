@@ -1,13 +1,15 @@
 <hbox class='heading'>
   {{#unless isLogEvent}}
+    <div class="event-title">{{t 'recon.titleBar.titles.network'}}</div>
+    <hr class="event-title seperator">
     <div class="heading-select">
       {{#power-select
         triggerClass='recon-view-selector'
         onchange=(action 'findNewReconstructionView')
         options=reconViewsConfig
-        placeholder=currentReconView.label
+        placeholder=(t (concat 'recon.titleBar.views.' currentReconView.id))
         searchEnabled=false as |option|}}
-        {{option.label}}
+        {{t (concat 'recon.titleBar.views.' option.id)}}
       {{/power-select}}
     </div>
     <div class="rsa-nav-tab-group heading-tabs">
@@ -17,17 +19,18 @@
           isActive=viewConfig.selected
           click=(action 'findNewReconstructionView' viewConfig)
         }}
-          <div class="label">{{viewConfig.label}}</div>
+          <div class="label">{{t (concat 'recon.titleBar.views.' viewConfig.id)}}</div>
         {{/rsa-nav-tab}}
       {{/each}}
     </div>
   {{else}}
+    <div class="event-title">{{t 'recon.titleBar.titles.log'}}</div>
+    <hr class="event-title seperator">
     <div class="tview-heading">
-      <div class="tview-label">{{currentReconView.label}}</div>
+      <div class="tview-label">{{t (concat 'recon.titleBar.views.' currentReconView.id)}}</div>
     </div>
   {{/unless}}
 </hbox>
-
 
 {{rsa-icon
   active=isHeaderOpen

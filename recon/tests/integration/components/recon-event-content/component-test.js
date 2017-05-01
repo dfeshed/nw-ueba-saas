@@ -16,7 +16,7 @@ test('it renders child view', function(assert) {
   new DataHelper(this.get('redux')).initializeData();
   this.render(hbs`{{recon-event-content}}`);
   return wait().then(() => {
-    assert.equal(this.$().find('.recon-event-detail-packets').length, 1);
+    assert.equal(this.$().find('.recon-event-detail-text').length, 1);
   });
 });
 

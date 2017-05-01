@@ -5,7 +5,6 @@ import hbs from 'htmlbars-inline-precompile';
 import sinon from 'sinon';
 import { clickTrigger, nativeMouseUp } from '../../../helpers/ember-power-select';
 
-import { RECON_VIEW_TYPES_BY_NAME } from 'recon/utils/reconstruction-types';
 import * as ACTION_TYPES from 'recon/actions/types';
 const { $ } = Ember;
 
@@ -27,7 +26,7 @@ moduleForComponent('recon-event-titlebar', 'Integration | Component | recon even
 
 test('no index or total shows just label for recon type', function(assert) {
   this.render(hbs`{{recon-event-titlebar }}`);
-  assert.equal(this.$('.ember-power-select-trigger').text().trim(), RECON_VIEW_TYPES_BY_NAME.PACKET.label);
+  assert.equal(this.$('.ember-power-select-trigger').text().trim(), 'Text Analysis');
 });
 
 test('clicking close executes action', function(assert) {
@@ -54,7 +53,7 @@ test('clicking shrink, then grow, executes multiple actions', function(assert) {
 test('calls action when reconstruction view is changed', function(assert) {
   this.render(hbs`{{recon-event-titlebar}}`);
   clickTrigger();
-  nativeMouseUp('.ember-power-select-option:contains("File View")');
+  nativeMouseUp('.ember-power-select-option:contains("File Analysis")');
   assert.ok(dispatchSpy.calledOnce);
   assert.ok(typeof dispatchSpy.args[0][0] === 'function', 'Dispatch called with function (thunk)');
 });
@@ -78,7 +77,7 @@ test('title renders', function(assert) {
   new DataHelper(this.get('redux')).initializeData(initializeData);
   this.render(hbs`{{recon-event-titlebar}}`);
   return wait().then(() => {
-    assert.equal(this.$('.ember-power-select-trigger').text().trim(), RECON_VIEW_TYPES_BY_NAME.PACKET.label);
+    assert.equal(this.$('.ember-power-select-trigger').text().trim(), 'Text Analysis');
   });
 });
 
@@ -100,7 +99,7 @@ test('just text view exists for log events', function(assert) {
   new DataHelper(this.get('redux')).initializeData({ meta: [['medium', 32]] }).setViewToText();
   this.render(hbs`{{recon-event-titlebar}}`);
   return wait().then(() => {
-    assert.equal(this.$().text().trim(), 'Text View');
+    assert.equal(this.$('.event-title').text().trim(), 'Log Event Details');
   });
 });
 

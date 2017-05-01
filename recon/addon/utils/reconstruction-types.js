@@ -14,25 +14,25 @@ const doesStateHaveViewData = function(state) {
  *   used for determining if data for type already exists in redux
  */
 const RECON_VIEW_TYPES = [{
+  code: 3,
+  id: 'text',
+  name: 'TEXT',
+  component: 'recon-event-detail/text-content',
+  dataKey: 'text.textContent',
+  doesStateHaveViewData
+}, {
   code: 1,
+  id: 'packet',
   name: 'PACKET',
-  label: 'Packet View',
   component: 'recon-event-detail/packets',
   dataKey: 'packets.packets',
   doesStateHaveViewData
 }, {
   code: 2,
+  id: 'file',
   name: 'FILE',
-  label: 'File View',
   component: 'recon-event-detail/files',
   dataKey: 'files.files',
-  doesStateHaveViewData
-}, {
-  code: 3,
-  name: 'TEXT',
-  label: 'Text View',
-  component: 'recon-event-detail/text-content',
-  dataKey: 'text.textContent',
   doesStateHaveViewData
 }];
 

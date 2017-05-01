@@ -5,7 +5,7 @@ import * as ACTION_TYPES from 'recon/actions/types';
 import { handleSetTo } from 'recon/reducers/util';
 
 const visualsInitialState = {
-  currentReconView: RECON_VIEW_TYPES_BY_NAME.PACKET,   // view defaults to packet
+  currentReconView: RECON_VIEW_TYPES_BY_NAME.TEXT,   // view defaults to Text Analysis
   isHeaderOpen: true,
   isMetaShown: true,
   isReconExpanded: true,
