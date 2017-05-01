@@ -51,8 +51,15 @@ const sendTetherEvent = function(el, panelId, eventBus, eventType, model) {
  */
 const wireTriggerToClick = function(el, panelId, eventBus, opts = {}) {
   const getIsDisabled = typeof opts.getIsDisabled === 'function' ? opts.getIsDisabled : null;
+  const $el = $(el);
 
-  $(el).on('click.rsa-tethered-panel-trigger', function() {
+  // rsa-content-tethered-panel assumes its trigger ("target") DOM node has a
+  // css class that matches its the panelId
+  if (!$el.hasClass(panelId)) {
+    $el.addClass(panelId);
+  }
+
+  $el.on('click.rsa-tethered-panel-trigger', function() {
     if (!getIsDisabled || !getIsDisabled()) {
       sendTetherEvent(this, panelId, eventBus, 'toggle', opts.model);
     }
@@ -88,8 +95,15 @@ const unwireTriggerToClick = function(el) {
  */
 const wireTriggerToHover = function(el, panelId, eventBus, opts = {}) {
   const getIsDisabled = typeof opts.getIsDisabled === 'function' ? opts.getIsDisabled : null;
+  const $el = $(el);
 
-  $(el)
+  // rsa-content-tethered-panel assumes its trigger ("target") DOM node has a
+  // css class that matches its the panelId
+  if (!$el.hasClass(panelId)) {
+    $el.addClass(panelId);
+  }
+
+  $el
     .on('mouseenter.rsa-tethered-panel-trigger', function() {
       if (!getIsDisabled || !getIsDisabled()) {
         const lastTimer = this[timerProp];
