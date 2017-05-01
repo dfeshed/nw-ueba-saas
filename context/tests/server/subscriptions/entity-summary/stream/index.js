@@ -34,10 +34,17 @@ export default {
     const { body } = frame;
     const bodyParsed = JSON.parse(body);
     const { filter } = bodyParsed;
-    const [ entitiesFilter ] = (filter || []).filter(function(condition) {
-      return condition.field === 'entities';
+
+    // The filter should be an array of `{ field: String, values: [] }` pairs, where each `field` is an entity type,
+    // and each `values` is an array of entity ids.
+    // Transform that into a simple 1-D array of `{ type: String, id: String }` pairs.
+    const entities = [];
+    (filter || {}).forEach((condition) => {
+      const { field: type, values } = condition;
+      (values || []).forEach((id) => {
+        entities.push({ type, id });
+      });
     });
-    const entities = (entitiesFilter || {}).values;
 
     // Create batches of responses. Each one will be just 1 record at a time, for easy testing.
     const batches = [];

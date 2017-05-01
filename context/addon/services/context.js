@@ -128,18 +128,42 @@ export default Service.extend({
    * Responsible for wiring up the server stream, for caching the request & its callback, and
    * for generating stop function for cancelling the request.
    *
-   * @param {Object[]} entities The list of entity type-id pairs for whom data is being requested.
+   * This method will transform the given array of entities into a filter structure expected by the server API, namely:
+   * `[ { field: String, values: String[] }, ..]`.
+   *
+   * @example
+   * ```js
+   * // Server API expects a `query` input param with the following `filter` object:
+   * [
+   *   { field: 'IP', values: ['10.20.30.40', '128.20.30.40'] },
+   *   { field: 'DOMAIN', values: ['g00gle.com'] },
+   *   { field: ..some entity type.., values: [ .. ] },
+   *   ..
+   * ]
+   * ```
+   *
+   * @param {{type: String, id: String}[]} entities The list of entity type-id pairs for whom data is being requested.
    * @param {Function} [callback] Optional callback to be invoked with server responses.
    * @private
    */
   _onRequest(entities, callback) {
+
+    // Transform the `entities` input array into the filter structure expected by server API.
+    const filter = [];
+    entities.forEach(({ type, id }) => {
+      let entry = filter.findBy('field', type);
+      if (!entry) {
+        entry = { field: type, values: [] };
+        filter.pushObject(entry);
+      }
+      entry.values.push(id);
+    });
+
     this.get('request').streamRequest({
       modelName: 'entity-summary',
       method: 'stream',
       query: {
-        filter: [
-          { field: 'entities', values: entities }
-        ]
+        filter
       },
       onInit: (stop) => {
         this.get('_summariesCache').add(entities, callback, stop);
