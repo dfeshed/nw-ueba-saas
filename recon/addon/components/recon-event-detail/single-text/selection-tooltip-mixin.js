@@ -33,8 +33,8 @@ export default Mixin.create({
       // get the range of the highlighted selection. This range object includes
       // the start and end offsets of the selection.
       const range = selection.getRangeAt(0).cloneRange();
-      const startContainer = range.startContainer.parentElement.className;
-      const endContainer = range.endContainer.parentElement.className;
+      const startContainer = range.startContainer.parentNode.className;
+      const endContainer = range.endContainer.parentNode.className;
 
       // Create a span tag around the highlighted selection. This span tag is used for
       // tethering.
@@ -65,36 +65,31 @@ export default Mixin.create({
   },
 
   mouseDown(e) {
-    this.ensureOnlyOneTether();
     this.set('startDragPosition', { left: e.pageX, top: e.pageY });
-    // Make sure span element is present before we do un-tether
-    if (this.get('spanEl')) {
-      const { spanEl, spanClass, eventBus } = this.getProperties('spanEl', 'spanClass', 'eventBus');
-      sendTetherEvent(spanEl, spanClass, eventBus, 'hide');
-      this.set('isActionClicked', false);
-
-      // Delete the span tag that was introduced by mouseUp() without affecting the content
-      $(`.text-container > .${spanClass}`).contents().unwrap();
-    }
+    this.unTether();
   },
 
   // Make sure there is no tether DOM element active on the page from the previous states.
   // ember-tether attaches the tooltip panel that pops up on selection at the root of the
   // page before the closed body element. Find it and remove from the DOM
+  // This ensures we don't have two tooltips at the same time
   ensureOnlyOneTether() {
     const childEl = $('.ember-tether').get(0);
     if (childEl) {
-      const parentEl = childEl.parentElement; // parentEl is the body element
+      const parentEl = childEl.parentNode; // parentNode is the body element
       parentEl.removeChild(childEl);
     }
   },
 
-  // unTether does the cleanup of the tooltip
+  // unTether does the teardown/cleanup of the tooltip
   unTether() {
-    if (this.get('spanEl') && $('.ember-tether').length) {
-      this.ensureOnlyOneTether();
-      const spanClass = this.get('spanClass');
+    this.ensureOnlyOneTether();
+    if (this.get('spanEl')) {
+      const { spanEl, spanClass, eventBus } = this.getProperties('spanEl', 'spanClass', 'eventBus');
+      sendTetherEvent(spanEl, spanClass, eventBus, 'hide');
+      // Delete the span tag that was introduced by mouseUp() without affecting the content
       $(`.text-container > .${spanClass}`).contents().unwrap();
+      this.setProperties({ isActionClicked: false, spanEl: null });
     }
   },
 
