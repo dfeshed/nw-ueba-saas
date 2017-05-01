@@ -156,7 +156,7 @@ export default Mixin.create({
    */
   @computed()
   _entityTypesPromise() {
-    return this.get('context').types().then(arrayToHashKeys);
+    return this.get('context').types().then(({ data }) => arrayToHashKeys(data));
   },
 
   /**
@@ -183,7 +183,7 @@ export default Mixin.create({
   _entityMetasPromise(endpointId) {
     return !endpointId ?
       rsvp.resolve({}) :
-      this.get('context').metas(endpointId);
+      this.get('context').metas(endpointId).then(({ data }) => data);
   },
 
   /**

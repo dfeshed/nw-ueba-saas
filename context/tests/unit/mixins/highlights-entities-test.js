@@ -8,14 +8,20 @@ import { next } from 'ember-runloop';
 
 module('Unit | Mixin | highlights entities');
 
-const entityTypes = [
-  'IP',
-  'HOST'
-];
+const entityTypes = {
+  code: 0,
+  data: [
+    'IP',
+    'HOST'
+  ]
+};
 const entityMetas = {
-  'ip.src': 'IP',
-  'ip.dst': 'IP',
-  'hostname.alias': 'HOST'
+  code: 0,
+  data: {
+    'ip.src': 'IP',
+    'ip.dst': 'IP',
+    'hostname.alias': 'HOST'
+  }
 };
 
 const entityEndpointId = 'CONCENTRATOR-1';
@@ -77,10 +83,10 @@ const values = [{
 
 // Create DOM for our tests. We want to ensure this works with SVG as well as normal HTML, so test SVG.
 const innerHTML = values
-  .map(({ cssClass, type, id, metaKey }) => `<g 
-    class="${cssClass}" 
-    data-entity-id="${id}" 
-    ${(cssClass === 'entity') ? ` data-entity-type="${type}" ` : ' '} 
+  .map(({ cssClass, type, id, metaKey }) => `<g
+    class="${cssClass}"
+    data-entity-id="${id}"
+    ${(cssClass === 'entity') ? ` data-entity-type="${type}" ` : ' '}
     data-meta-key="${metaKey}"><text>${id}</text></g>`)
   .join('');
 
