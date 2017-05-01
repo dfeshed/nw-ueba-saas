@@ -22,6 +22,7 @@
     .rsa-data-table-header-cell {
       &:first-child {
         padding: 0 0 0 0.5rem;
+        min-width: 30px;
       }
       button {
         cursor: pointer;
@@ -50,6 +51,7 @@
   }
 
   .rsa-data-table-body-cell {
+    min-width: 30px;
     .rsa-content-label {
       padding: 0 rsa-whitespace(least);
       width: 96%;

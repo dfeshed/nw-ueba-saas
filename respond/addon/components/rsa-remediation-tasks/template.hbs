@@ -1,0 +1,48 @@
+{{#rsa-explorer columns=columns namespace='remediation-tasks' as |explorer|}}
+  {{#explorer.toolbar}}
+    {{! Add additional toolbar controls here }}
+  {{/explorer.toolbar}}
+
+  {{#explorer.filters}}
+    {{! Add additional filter controls here }}
+  {{/explorer.filters}}
+
+  {{#explorer.table as |row|}}
+    {{#row.cell as |item index column|}}
+      {{#if (eq column.dataType 'date')}}
+        {{rsa-content-datetime timestamp=(get item column.field) displayTime=true displayMilliseconds=false}}
+
+      {{else if (eq column.dataType 'number')}}
+        <div class="number-type">{{get item column.field}}</div>
+
+      {{else if (eq column.dataType 'checkbox') }}
+        <label class="rsa-form-checkbox-label {{if (contains item.id explorer.instance.itemsSelected) 'checked'}}">
+          {{rsa-form-checkbox checked=(contains item.id explorer.instance.itemsSelected) change=(action explorer.select item)}}
+        </label>
+
+      {{ else if (eq column.field 'priority')}}
+        {{rsa-content-label
+          size='small'
+          label=(get item 'priority')
+          isInverted=true
+          style=(priority-to-content-style (get item column.field))
+        }}
+      {{ else if (eq column.field 'escalated')}}
+        {{if item.escalated (t 'respond.common.yes') (t 'respond.common.no')}}
+      {{ else if (eq column.field 'status')}}
+        {{t (concat 'respond.status.' (get item column.field)) }}
+      {{ else if (eq column.field 'incidentId')}}
+        <span>{{#link-to 'incident' item.incidentId}}{{item.incidentId}}{{/link-to}}</span>
+      {{else}}
+        {{get item column.field}}
+      {{/if}}
+    {{/row.cell}}
+  {{/explorer.table}}
+
+  {{#explorer.inspector as |section viewMode|}}
+    {{#if (eq section 'inspector-body')}}
+      {{rsa-remediation-tasks/task-overview info=explorer.instance.focusedItem}}
+    {{/if}}
+
+  {{/explorer.inspector}}
+{{/rsa-explorer}}

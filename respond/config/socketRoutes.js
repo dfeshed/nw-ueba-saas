@@ -104,6 +104,36 @@ const respondConfigGen = function(environment) {
         subscriptionDestination: '/user/queue/options/status',
         requestDestination: '/ws/response/options/status'
       }
+    },
+    'remediation-tasks': {
+      socketUrl,
+      stream: {
+        subscriptionDestination: '/user/queue/remediation/tasks',
+        requestDestination: '/ws/response/remediation/tasks'
+      },
+      query: {
+        subscriptionDestination: '/user/queue/remediation/tasks',
+        requestDestination: '/ws/response/remediation/tasks'
+      },
+      createRecord: {
+        subscriptionDestination: '/user/queue/remediation/tasks/create',
+        requestDestination: '/ws/response/remediation/tasks/create'
+      },
+      updateRecord: {
+        subscriptionDestination: '/user/queue/remediation/tasks/update',
+        requestDestination: '/ws/response/remediation/tasks/update'
+      },
+      deleteRecord: {
+        subscriptionDestination: '/user/queue/remediation/tasks/delete',
+        requestDestination: '/ws/response/remediation/tasks/delete'
+      }
+    },
+    'remediation-tasks-count': {
+      socketUrl,
+      queryRecord: {
+        subscriptionDestination: '/user/queue/remediation/tasks/count',
+        requestDestination: '/ws/response/remediation/tasks/count'
+      }
     }
   };
 };

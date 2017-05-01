@@ -43,7 +43,7 @@ let initialState = {
   isInSelectMode: false,
 
   // true when user toggles "More Filters" to reveal filter panel
-  isFilerPanelOpen: false,
+  isFilterPanelOpen: false,
 
   // true if the user is using the alternate theme (light instead of dark). Temporary property.
   isAltThemeActive: false,
@@ -161,11 +161,6 @@ const incidents = reduxActions.handleActions({
   [ACTION_TYPES.TOGGLE_FILTER_PANEL]: persistIncidentsState((state) => ({
     ...state,
     isFilterPanelOpen: !state.isFilterPanelOpen
-  })),
-
-  [ACTION_TYPES.TOGGLE_THEME]: persistIncidentsState((state) => ({
-    ...state,
-    isAltThemeActive: !state.isAltThemeActive
   })),
 
   [ACTION_TYPES.TOGGLE_FOCUS_INCIDENT]: (state, { payload: incident }) => ({

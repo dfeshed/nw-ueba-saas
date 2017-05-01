@@ -9,17 +9,17 @@
 // Beautification of dummy app splash page for Engine dummy app -- purely cosmetic with no effect on application code
 body.respond-engine-dummy {
   color: rsa-color(gray, light);
-
-  .rsa-logo {
-    .rsa-logo__title {
-      color: rsa-color(green);
-      text-align: center;
-      font-size: 25px;
+  .engine-splash-page {
+    .rsa-logo {
+      .rsa-logo__title {
+        color: rsa-color(green);
+        text-align: center;
+        font-size: 25px;
+      }
     }
-  }
-
-  a:-webkit-any-link {
-    text-decoration: none;
+    a:-webkit-any-link {
+      text-decoration: none;
+    }
   }
 }
 

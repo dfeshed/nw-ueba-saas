@@ -82,14 +82,18 @@ page.respond-engine {
       }
     }
 
+    .main-zone.show-inspector .items-zone {
+      width: calc(100vw - #{$inspectorPanelWidth});
+      @include rsa-vendor-prefix(transition-property, width);
+      @include rsa-vendor-prefix(transition-duration, 0.3s);
+    }
+
     &.show-filters {
       .items-zone {
         width: calc(100vw - #{$filterPanelMinWidth});
       }
       .main-zone.show-inspector .items-zone {
         width: calc(100vw - #{$filterPanelMinWidth + $inspectorPanelWidth});
-        @include rsa-vendor-prefix(transition-property, width);
-        @include rsa-vendor-prefix(transition-duration, 0.3s);
       }
     }
 

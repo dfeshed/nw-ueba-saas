@@ -30,7 +30,6 @@ const dispatchToActions = (dispatch) => {
     },
     toggleFilterPanel: () => dispatch(UIStateActions.toggleFilterPanel()),
     toggleIsInSelectMode: () => dispatch(UIStateActions.toggleIsInSelectMode()),
-    toggleTheme: () => dispatch(UIStateActions.toggleTheme()),
 
     select(incident) {
       if (this.get('isInSelectMode')) {

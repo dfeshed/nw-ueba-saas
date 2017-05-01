@@ -16,7 +16,7 @@ const stateToComputed = (state) => {
     // whether the user is in select/edit mode
     isInSelectMode: incidents.isInSelectMode,
     // whether the filter panel is open
-    isMoreFiltersActive: incidents.isFilerPanelOpen,
+    isFilterPanelOpen: incidents.isFilterPanelOpen,
     // the selected incident ids
     incidentsSelected: incidents.incidentsSelected,
     // the name of the canned filter currently applied
@@ -60,7 +60,7 @@ const dispatchToActions = (dispatch) => {
 const IncidentsToolbar = Component.extend({
   tagName: 'hbox',
   classNames: 'rsa-respond-incidents-toolbar',
-  classNameBindings: [ 'isInSelectMode', 'isMoreFiltersActive:more-filters-active', 'isAltThemeActive:light-theme-active' ],
+  classNameBindings: [ 'isInSelectMode', 'isFilterPanelOpen:more-filters-active'],
 
   // Action to be invoked by clicking the "Select" button
   toggleSelectModeAction: null,

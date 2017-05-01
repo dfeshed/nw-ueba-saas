@@ -431,6 +431,26 @@ export default {
       },
       footer: 'Showing {{count}} out of {{total}} items'
     },
+    remediationTasks: {
+      list: {
+        priority: 'Priority',
+        select: 'Select',
+        id: 'ID',
+        name: 'Name',
+        createdDate: 'Created',
+        status: 'Status',
+        assignee: 'Assignee',
+        noResultsMessage: 'No matching Tasks were found',
+        incidentId: 'Incident ID',
+        targetQueue: 'Target Queue',
+        remediationType: 'Type',
+        escalated: 'Escalated',
+        lastUpdated: 'Last Updated',
+        description: 'Description',
+        createdBy: 'Created By'
+      },
+      noDescription: 'There is no description for this task'
+    },
     incidents: {
       actions: {
         addEntryLabel: 'Add Entry',
@@ -609,7 +629,10 @@ export default {
       REMEDIATION_REQUESTED: 'Remediation Requested',
       REMEDIATION_COMPLETE: 'Remediation Complete',
       CLOSED: 'Closed',
-      CLOSED_FALSE_POSITIVE: 'Closed - False Positive'
+      CLOSED_FALSE_POSITIVE: 'Closed - False Positive',
+      REMEDIATED: 'Remediated',
+      RISK_ACCEPTED: 'Risk Accepted',
+      NOT_APPLICABLE: 'Not Applicable'
     },
     priority: {
       LOW: 'Low',

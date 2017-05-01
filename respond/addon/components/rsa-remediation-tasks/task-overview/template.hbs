@@ -1,0 +1,62 @@
+{{! Incident ID}}
+<p class="metadata">
+  <label>{{t 'respond.remediationTasks.list.incidentId'}}:</label>
+  <span>{{#link-to "incident" info.incidentId}}{{info.incidentId}}{{/link-to}}</span>
+</p>
+
+<p class="metadata">
+  <label>{{t 'respond.remediationTasks.list.createdDate'}}:</label>
+  <span>{{rsa-content-datetime timestamp=info.created displayTime=true displayMilliseconds=false}}</span>
+</p>
+
+<p class="metadata">
+  <label>{{t 'respond.remediationTasks.list.lastUpdated'}}:</label>
+  <span>{{rsa-content-datetime timestamp=info.lastUpdated displayTime=true displayMilliseconds=false}}</span>
+</p>
+
+<p class="metadata">
+  <label>{{t 'respond.remediationTasks.list.targetQueue'}}:</label>
+  <span>{{info.targetQueue}}</span>
+</p>
+
+<p class="metadata">
+  <label>{{t 'respond.remediationTasks.list.remediationType'}}:</label>
+  <span>{{info.remediationType}}</span>
+</p>
+
+{{! Priority}}
+<p class="metadata">
+  <label>{{t 'respond.remediationTasks.list.priority'}}:</label>
+  <span>{{t (concat 'respond.priority.' info.priority)}}</span>
+</p>
+
+{{! Status}}
+<p class="metadata">
+  <label>{{t 'respond.remediationTasks.list.status'}}:</label>
+  <span>{{t (concat 'respond.status.' info.status)}}</span>
+</p>
+
+{{! Status}}
+<p class="metadata">
+  <label>{{t 'respond.remediationTasks.list.escalated'}}:</label>
+  <span>{{if info.escalated (t 'respond.common.yes') (t 'respond.common.no')}}</span>
+</p>
+
+{{! Assignee}}
+<p class="metadata">
+  <label>{{t 'respond.remediationTasks.list.assignee'}}:</label>
+  <span>{{if info.assignee info.assignee (t 'respond.assignee.none')}}</span>
+</p>
+
+<p class="metadata">
+
+</p>
+<p class="text">
+  <label>{{t 'respond.remediationTasks.list.description'}}</label>
+  {{#if info.description}}
+    {{info.description}}
+  {{else}}
+    <i>{{t 'respond.remediationTasks.noDescription'}}</i>
+  {{/if}}
+</p>
+

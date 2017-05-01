@@ -397,8 +397,8 @@ export default {
   respond: {
     title: 'ja_Respond',
     common: {
-      yes: 'Yes',
-      no: 'No'
+      yes: 'ja_Yes',
+      no: 'ja_No'
     },
     timeframeOptions: {
       LAST_5_MINUTES: 'ja_Last 5 Minutes',
@@ -430,6 +430,26 @@ export default {
         overview: 'ja_Overview'
       },
       footer: 'ja_Showing {{count}} out of {{total}} items'
+    },
+    remediationTasks: {
+      list: {
+        priority: 'ja_Priority',
+        select: 'ja_Select',
+        id: 'ja_ID',
+        name: 'ja_Name',
+        createdDate: 'ja_Created',
+        status: 'ja_Status',
+        assignee: 'ja_Assignee',
+        noResultsMessage: 'ja_No matching Tasks were found',
+        incidentId: 'ja_Incident ID',
+        targetQueue: 'ja_Target Queue',
+        remediationType: 'ja_Type',
+        escalated: 'ja_Escalated',
+        lastUpdated: 'ja_Last Updated',
+        description: 'ja_Description',
+        createdBy: 'ja_Created By'
+      },
+      noDescription: 'ja_There is no description for this task'
     },
     incidents: {
       actions: {
@@ -609,7 +629,10 @@ export default {
       REMEDIATION_REQUESTED: 'ja_Remediation Requested',
       REMEDIATION_COMPLETE: 'ja_Remediation Complete',
       CLOSED: 'ja_Closed',
-      CLOSED_FALSE_POSITIVE: 'ja_Closed - False Positive'
+      CLOSED_FALSE_POSITIVE: 'ja_Closed - False Positive',
+      REMEDIATED: 'ja_Remediated',
+      RISK_ACCEPTED: 'ja_Risk Accepted',
+      NOT_APPLICABLE: 'ja_Not Applicable'
     },
     priority: {
       LOW: 'ja_Low',

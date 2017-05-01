@@ -1,6 +1,4 @@
-// import actionCreators from './creators'; <-- This will be uncommented in a near term PR
-
-const actionCreators = {}; // Temporary object that will be replaced with the above import, which will group action creators by namespace
+import actionCreators from './creators';
 
 /**
  * The Action (Creator) Broker is responsible for looking up a redux action creator function and dispatching it.
