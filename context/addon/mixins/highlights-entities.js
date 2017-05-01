@@ -3,6 +3,7 @@ import service from 'ember-service/inject';
 import computed from 'ember-computed-decorators';
 import arrayToHashKeys from 'component-lib/utils/array/to-hash-keys';
 import { next } from 'ember-runloop';
+import { isEmpty } from 'ember-utils';
 import $ from 'jquery';
 import rsvp from 'rsvp';
 import {
@@ -19,6 +20,8 @@ const CSS_CLASS_HAS_CONTEXT_DATA = 'has-context-data';
 const HTML_ATTR_ENTITY_TYPE = 'data-entity-type';
 const HTML_ATTR_ENTITY_ID = 'data-entity-id';
 const HTML_ATTR_META_KEY = 'data-meta-key';
+
+let freeIdCounter = 0;
 
 /**
  * @class HighlightsEntities Mixin
@@ -45,6 +48,14 @@ const HTML_ATTR_META_KEY = 'data-meta-key';
  * <!-- This requires an entityEndpointId (e.g., "CONCENTRATOR-1"): -->
  * <span class="entity" data-entity-id="10.20.30.40" data-meta-key="ip.src">10.20.30.40</span>
  * ```
+ *
+ * Note that any DOM elements found by this mixin and determined to be enabled for context-lookups will be checked for
+ * an `id` attribute.  Those elements which don't have an `id` will be assigned an automatically generated id like
+ * `rsa-entity-<#>` where `<#>` is an auto-generated number.  This is done for two reasons:
+ * 1. The current implementation of rsa-content-tethered-panel uses the element id; and
+ * 2. An id enables us to avoid caching a reference to the DOM node object itself, which is risky because it can lead to
+ * memory leaks; instead, we can simply cache the DOM node is, which is not vulnerable to memory leaks.
+ *
  * @public
  */
 export default Mixin.create({
@@ -234,10 +245,15 @@ export default Mixin.create({
           const isContextEnabled = this._highlightEntity($el, types, metas);
           if (isContextEnabled) {
 
+            // Ensure the node has an id; auto-assign it one, if needed.
+            if (isEmpty(el.id)) {
+              el.id = `rsa-entity-${freeIdCounter++}`;
+            }
+
             // Wire the node up to context tooltip.
             const { type, id } = isContextEnabled;
             this._wireEntityToTooltip($el, type, id);
-            found.push({ entity: { type, id }, $element: $el });
+            found.push({ entity: { type, id }, elementId: el.id });
           }
         });
 
@@ -278,7 +294,8 @@ export default Mixin.create({
         .filter(({ entity }) => {
           return (entity.type === type) && (entity.id === id);
         })
-        .forEach(({ $element }) => {
+        .forEach(({ elementId }) => {
+          const $element = $(`#${elementId}`);
           $element.addClass(CSS_CLASS_HAS_CONTEXT_DATA);
           if (onEntityContextFound) {
             onEntityContextFound(type, id, $element, records);
@@ -360,12 +377,10 @@ export default Mixin.create({
   },
 
   /**
-   * Releases internal cache of entity DOM nodes. Also unwires the entity DOM nodes from tooltips, unless otherwise
+   * Releases internal cache of entity DOM node ids. Also unwires the entity DOM nodes from tooltips, unless otherwise
    * requested.
    *
-   * This cleanup method helps prevent memory leaks. This mixin keeps internal references to the entity DOM nodes that
-   * it finds. If those cached references are not cleared out once the DOM nodes are removed, memory leaks may result.
-   * Therefore this mixin will automatically call this method from `willDestroyElement`.  However, the method is
+   * This mixin will automatically call this method from `willDestroyElement`.  However, the method is
    * exposed publicly anyway so that Components which destroy/rebuild their DOM even before `willDestroyElement` can
    * manually call this method anytime they remove entity DOM nodes.
    *
@@ -374,7 +389,8 @@ export default Mixin.create({
    */
   teardownEntities(dontUnwireTooltips = false) {
     if (dontUnwireTooltips !== true) {
-      (this._requests || []).forEach(({ $element }) => {
+      (this._requests || []).forEach(({ elementId }) => {
+        const $element = $(`#${elementId}`);
         this._unwireEntityToTooltip($element);
       });
     }

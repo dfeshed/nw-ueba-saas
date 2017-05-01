@@ -90,7 +90,7 @@ element.innerHTML = innerHTML;
 document.body.appendChild(element);
 
 test('it applies CSS classes, wires up clicks, and fires callbacks correctly', function(assert) {
-  assert.expect(11);  // 11 = 7 + 2 asserts * every callback to onEntityContextFound = 6 + 2 * 2
+  assert.expect(12);  // 11 = 8 + 2 asserts * every callback to onEntityContextFound = 6 + 2 * 2
 
   const subject = FakeComponentClass.create({
     element,
@@ -116,6 +116,8 @@ test('it applies CSS classes, wires up clicks, and fires callbacks correctly', f
         'Expected DOM nodes whose entity type was resolved to have a data-entity-type HTML attribute"');
       assert.equal(subject.$('.is-context-enabled').length, 2,
         'Expected DOM nodes with valid entity types, or with meta keys that map to valid entity types, to be context enabled');
+      assert.equal(subject.$('[id]').length, 2,
+        'Expected DOM nodes with valid entity types, or with meta keys that map to valid entity types, to be auto-assigned ids');
       assert.equal(subject.$('.is-not-context-enabled').length, 1,
         'Expected DOM node with invalid entity type to be context disabled');
 
