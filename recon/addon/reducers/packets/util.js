@@ -148,22 +148,22 @@ const findPacketFieldForByte = (packetFields, byteIndex) => {
  * @private
  */
 const FILE_SIGNATURES = [
-  { hex: '4D 5A', length: 2, type: 'DOS Executable' },
+  { hex: '4D 5A', length: 2, type: 'DOS Executable / Windows PE' },
   { hex: '5A 4D', length: 2, type: 'Non Portable Executable' },
   { hex: '89 50 4E 47 0D 0A 1A 0A', length: 8, type: 'PNG' },
-  { hex: 'FF D8', length: 2, type: 'JPEG' },
+  { hex: 'FF D8 FF', length: 4, type: 'JPEG' },
   { hex: '4A 46 49 46', length: 4, type: 'JPEG/JFIF' },
   { hex: '45 78 69 66', length: 4, type: 'JPEG/EXIF' },
   { hex: '47 49 46 38 37 61', length: 6, type: 'GIF87a' },
   { hex: '47 49 46 38 39 61', length: 6, type: 'GIF89a' },
   { hex: '42 4D', length: 2, type: 'BMP' },
   { hex: '25 50 44 46', length: 4, type: 'PDF' },
-  { hex: 'DO CF 11 E0', length: 8, type: 'Office Document' },
-  { hex: '50 4B', length: 4, type: 'ZIP based file' },
+  { hex: 'D0 CF 11 E0', length: 8, type: 'MS Office Document' },
+  { hex: '50 4B', length: 4, type: 'ZIP based' },
   { hex: '37 7A BC AF 27 1C', length: 6, type: '7z' },
   { hex: 'CA FE BA BE', length: 4, type: 'Java Class' },
   { hex: '25 21 50 53', length: 4, type: 'Postscript' },
-  { hex: '23 21', length: 2, type: 'Unix Shell Script' },
+  { hex: '23 21', length: 2, type: 'Unix/Linux Shell Script' },
   { hex: '7F 45 4C 46', length: 4, type: 'Executable and Linkable Format' }
 ];
 
