@@ -24,7 +24,7 @@ function defaultDateRange() {
 const incidentsFilters = {
   status: [],
   priority: [],
-  'categories.name': [],
+  categories: [],
   'assignee.id': [],
   created: defaultDateRange()
 };

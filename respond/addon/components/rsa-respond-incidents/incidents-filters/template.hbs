@@ -26,6 +26,7 @@
         {{#power-select
           options=timeframes
           selected=selectedTimeframe
+          searchEnabled=false
           onchange=(action "onChangeTimeframe") as |time|}}
           {{t (concat 'respond.timeframeOptions.' time.name) }}
         {{/power-select}}
@@ -68,9 +69,10 @@
     <h2>{{ t 'respond.incident.categories'}}</h2>
     {{#power-select-multiple
       options=categoryTags
+      searchField='name'
       selected=selectedCategories
       onchange=(action "categoryChanged") as |category|}}
-      {{category}}
+      {{category.name}}
     {{/power-select-multiple}}
   </section>
 </section>

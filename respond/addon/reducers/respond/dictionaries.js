@@ -17,11 +17,13 @@ const initialState = {
  * @private
  */
 function _constructCategoryGroups(categories) {
-  const groupsByName = categories.reduce((previousValue, { name, parent }) => {
+  const groupsByName = categories.reduce((previousValue, category) => {
+    const { parent } = category;
+
     if (!previousValue[parent]) {
       previousValue[parent] = [];
     }
-    previousValue[parent].push(name);
+    previousValue[parent].push(category);
     return previousValue;
   }, {});
 
