@@ -1,7 +1,9 @@
-<div class="event-info">
-  <span class="lighter">{{eventIndex}} of {{eventTotal}}</span>
-  events
-</div>
+{{#if (and eventIndex eventTotal)}}
+  <div class="event-info">
+    <span class="lighter">{{eventIndex}} of {{eventTotal}}</span>
+    events
+  </div>
+{{/if}}
 {{#if isPacket}}
   <div class="packet-info">
     Rendered

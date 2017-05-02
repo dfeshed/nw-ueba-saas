@@ -9,7 +9,7 @@ export default Mixin.create({
     return index + 1;
   },
 
-  @alias('packets.length')
+  @alias('visiblePackets.length')
   packetCount: 0,
 
   @computed('eventMeta')

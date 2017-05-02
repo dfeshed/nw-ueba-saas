@@ -6,8 +6,6 @@ const dataInitialState = {
   // Recon inputs
   endpointId: null,
   eventId: null,
-  total: null,
-  index: null,
 
   contentError: null,
   contentLoading: false
@@ -22,9 +20,7 @@ const data = handleActions({
   [ACTION_TYPES.INITIALIZE]: (state, { payload }) => ({
     ...dataInitialState,
     endpointId: payload.endpointId,
-    eventId: payload.eventId,
-    total: payload.total,
-    index: payload.index
+    eventId: payload.eventId
   }),
 
   // Generic content handling
@@ -40,7 +36,12 @@ const data = handleActions({
   }),
   [ACTION_TYPES.TEXT_DECODE_PAGE]: dataReceivedDoneLoading,
   [ACTION_TYPES.PACKETS_RETRIEVE_PAGE]: dataReceivedDoneLoading,
-  [ACTION_TYPES.FILES_RETRIEVE_SUCCESS]: dataReceivedDoneLoading
+  [ACTION_TYPES.FILES_RETRIEVE_SUCCESS]: dataReceivedDoneLoading,
+  [ACTION_TYPES.SET_INDEX_AND_TOTAL]: (state, { payload: { index, total } }) => ({
+    ...state,
+    index,
+    total
+  })
 }, dataInitialState);
 
 export default data;

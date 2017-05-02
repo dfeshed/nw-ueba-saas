@@ -4,6 +4,8 @@ export const REHYDRATE = 'persist/REHYDRATE';
 
 export const INITIALIZE = 'RECON::INITIALIZE';
 
+export const SET_INDEX_AND_TOTAL = 'RECON::SET_INDEX_AND_TOTAL';
+
 // Visual action types
 export const CHANGE_RECON_VIEW = 'RECON::CHANGE_RECON_VIEW';
 export const TOGGLE_HEADER = 'RECON::TOGGLE_HEADER';

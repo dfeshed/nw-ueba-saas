@@ -8,6 +8,7 @@ import layout from './template';
 import {
   initializeRecon,
   initializeNotifications,
+  setIndexAndTotal,
   teardownNotifications
 } from '../../actions/data-creators';
 
@@ -21,6 +22,7 @@ const stateToComputed = ({ recon: { visuals, notifications } }) => ({
 const dispatchToActions = {
   initializeRecon,
   initializeNotifications,
+  setIndexAndTotal,
   teardownNotifications
 };
 
@@ -69,19 +71,21 @@ const ReconContainer = Component.extend({
   didReceiveAttrs() {
     this._super(...arguments);
     const inputs = this.getProperties(
-      'endpointId', 'eventId', 'language', 'meta', 'aliases', 'index', 'total', 'linkToFileAction');
+      'endpointId', 'eventId', 'language', 'meta', 'aliases', 'linkToFileAction');
 
     assert('Cannot instantiate recon without endpointId and eventId.', inputs.endpointId && inputs.eventId);
 
     const oldEventId = this.get('oldEventId');
     // guard against re-running init on any redux state change,
     // if same id, no need to do anything
-    if (oldEventId && inputs.eventId === oldEventId) {
-      return;
+    if (!oldEventId || (oldEventId && inputs.eventId !== oldEventId)) {
+      this.send('initializeRecon', inputs);
     }
 
     this.set('oldEventId', inputs.eventId);
-    this.send('initializeRecon', inputs);
+
+    const { index, total } = this.getProperties('index', 'total');
+    this.send('setIndexAndTotal', index, total);
   },
 
   didInsertElement() {

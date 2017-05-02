@@ -3,7 +3,7 @@
   color: rsa-color(gray);
   border-top: 1px solid rsa-color(gray, dark);
   background-color: rsa-color(gray, darkest, $rsa-translucent);
-  position: fixed;
+  position: absolute;
   bottom: 0;
   width: 100%;
   height: rsa-whitespace(more);

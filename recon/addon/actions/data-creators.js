@@ -73,6 +73,22 @@ const _getTextAndPacketInputs = ({ recon: { data, packets, text } }) => ({
 });
 
 /**
+ * We need to set the index and total for the event footer, after we receive them from investigate
+ * @param index The event index in the list
+ * @param total The total number of events
+ * @returns {function(*)}
+ * @public
+ */
+const setIndexAndTotal = (index, total) => {
+  return (dispatch) => {
+    dispatch({
+      type: ACTION_TYPES.SET_INDEX_AND_TOTAL,
+      payload: { index, total }
+    });
+  };
+};
+
+/**
  * An Action Creator thunk creator for changing a recon view.
  *
  * Dispatches action to update visual indicators, then, if
@@ -378,6 +394,7 @@ export {
   decodeText,
   initializeNotifications,
   initializeRecon,
+  setIndexAndTotal,
   setNewReconView,
   teardownNotifications,
   toggleMetaData

@@ -16,11 +16,12 @@ export default Controller.extend({
 
   // The index of the `items` member whose id matches `selectedEventId`, if any;
   // -1 otherwise.  This is passed along to the data table.
-  @computed('eventId', 'model.queryNode.value.results.events.data.[]')
-  selectedIndex(eventId, items) {
+  @computed('eventId', 'model.queryNode.value.results.events.data.[]', 'model.queryNode.value.results.eventCount.data')
+  selectedIndex(eventId, items, total) {
     if (eventId !== -1 && !isEmpty(items)) {
       const index = this._indexOfBy(items, 'sessionId', eventId);
       this.set('model.recon.index', index);
+      this.set('model.recon.total', total);
       return index;
     }
 
