@@ -20,5 +20,10 @@ export default Component.extend({
   @computed('side')
   arrowDirection(side) {
     return side === 'request' ? 'right' : 'left';
+  },
+
+  @computed('displayedPercent', 'renderedAll')
+  showPercentMessage(displayedPercent, allContentIsRendered) {
+    return !allContentIsRendered && displayedPercent !== 100;
   }
 });

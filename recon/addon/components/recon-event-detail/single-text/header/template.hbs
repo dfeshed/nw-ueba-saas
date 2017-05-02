@@ -1,3 +1,9 @@
+{{#if showPercentMessage}}
+  <div class="header-percent-complete">
+    {{t 'recon.textView.headerShowing'}} {{displayedPercent}}%
+  </div>
+{{/if}}
+
 <div class="{{side}}">
   <span>
     {{rsa-icon name=(concat 'arrow-circle-' arrowDirection '-2')}}
@@ -10,3 +16,5 @@
     {{/if}}
   </span>
 </div>
+
+

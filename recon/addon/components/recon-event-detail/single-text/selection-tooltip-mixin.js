@@ -40,7 +40,7 @@ export default Mixin.create({
       // tethering.
       if (startContainer === 'text-container' && endContainer === 'text-container' && !range.collapsed) {
         const newNode = document.createElement('span');
-        const index = this.get('index'); // index is appended at the end of each span class
+        const index = this.elementId; // index is appended at the end of each span class
         const spanClass = `span${index}`;
         newNode.setAttribute('class', spanClass);
         range.surroundContents(newNode);
@@ -93,43 +93,56 @@ export default Mixin.create({
     }
   },
 
+  // Hide the tooltip on scroll. Throttling the scroll handler, so that unTether
+  // is never called frequently than the spacing period
+  _handleScroll() {
+    run.throttle(this, this.unTether, 500);
+  },
+
+  // For the click events outside the recon component; close the recon tooltip if it is open
+  _handleWindowClick(e) {
+    // using offsets to detect clicks outside recon component, click events within the boundaries
+    // of recon are ignored
+    const $reconContainer = $('.recon-event-content');
+    const xstart = $reconContainer.offset().left;
+    const xend = xstart + $reconContainer.width();
+    const ystart = $reconContainer.offset().top;
+    const yend = ystart + $reconContainer.height();
+
+    // Consider the cases where the tooltip falls outside the recon boundaries and flag the clicks
+    // within that as inside clicks
+    const $targetParent = $(e.target.parentElement);
+    let isClickInsideTooltip = false;
+    if (!$targetParent.length || $targetParent.attr('class') === 'reconTooltip') {
+      isClickInsideTooltip = true;
+    }
+    // Get x and y coordinates of the click event
+    const xx = e.clientX;
+    const yy = e.clientY;
+
+    if (!((xx >= xstart && xx <= xend) && (yy >= ystart && yy <= yend)) && !isClickInsideTooltip) {
+      // The click is outside the recon bondaries, so cleanup the tooltip if it is open
+      this.unTether();
+    }
+  },
+
   didInsertElement() {
-    // Also hide the tooltip on scroll
-    $('.recon-event-detail-text .scroll-box').scroll(() => {
-      // Throttling the scroll handler, so that unTether is never called frequently than the
-      // spacing period
-      run.throttle(this, this.unTether, 500);
-    });
-    // For the click events outside the recon component; close the recon tooltip if it is open
-    $(window).click((e) => {
-      // using offsets to detect clicks outside recon component, click events within the boundaries
-      // of recon are ignored
-      const $reconContainer = $('.recon-event-content');
-      const xstart = $reconContainer.offset().left;
-      const xend = xstart + $reconContainer.width();
-      const ystart = $reconContainer.offset().top;
-      const yend = ystart + $reconContainer.height();
-
-      // Consider the cases where the tooltip falls outside the recon boundaries and flag the clicks
-      // within that as inside clicks
-      const $targetParent = $(e.target.parentElement);
-      let isClickInsideTooltip = false;
-      if (!$targetParent.length || $targetParent.attr('class') === 'reconTooltip') {
-        isClickInsideTooltip = true;
-      }
-      // Get x and y coordinates of the click event
-      const xx = e.clientX;
-      const yy = e.clientY;
-
-      if (!((xx >= xstart && xx <= xend) && (yy >= ystart && yy <= yend)) && !isClickInsideTooltip) {
-        // The click is outside the recon bondaries, so cleanup the tooltip if it is open
-        this.unTether();
-      }
-    });
+    // if is sticky, no content, so no tooltips
+    if (!this.get('isSticky')) {
+      const scrollFunct = this._handleScroll.bind(this);
+      const windowClickFunct = this._handleWindowClick.bind(this);
+      $('.recon-event-detail-text .scroll-box').scroll(scrollFunct);
+      $(window).click(windowClickFunct);
+      this.setProperties({ scrollFunct, windowClickFunct });
+    }
   },
 
   willDestroyElement() {
-    $('.recon-event-detail-text .scroll-box').off('scroll');
-    $(window).off('click');
+    const { scrollFunct, windowClickFunct } = this.getProperties('scrollFunct', 'windowClickFunct');
+    // if one exists they both exist
+    if (scrollFunct) {
+      $('.recon-event-detail-text .scroll-box').off('scroll', scrollFunct);
+      $(window).off('click', windowClickFunct);
+    }
   }
 });

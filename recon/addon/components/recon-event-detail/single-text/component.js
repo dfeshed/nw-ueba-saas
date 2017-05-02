@@ -12,14 +12,13 @@ const CHUNK_SIZE = 10000;
 const TIME_BETWEEN_CHUNKS = 500;
 
 export default Component.extend(SelectionTooltip, {
-  classNames: ['rsa-text-entry'],
-  classNameBindings: ['packet.side'],
+  classNameBindings: ['packet.side', 'isSticky::rsa-text-entry'],
   layout,
 
   encDecStrBase64: null,
   encDecStrUrl: null,
-  index: null,
   isLog: null,
+  isSticky: false,
   metaToHighlight: null,
   packet: null,
   renderedAll: false,
@@ -31,33 +30,39 @@ export default Component.extend(SelectionTooltip, {
   @alias('isActionClicked')
   hasCloseButton: null,
 
+  /*
+   * Up front determination if the packet data should be truncated
+   * based on the size of the array and whether this is a stuck
+   * version of the component.
+   */
+  @computed('isSticky', 'packet.text')
+  shouldBeTruncated(isSticky, text) {
+    return !isSticky && text.length > HIDE_CONTENT_CHARACTER_COUNT;
+  },
+
   @computed('shouldBeTruncated', 'renderedAll')
   displayShowAllButton: (shouldBeTruncated, renderedAll) => shouldBeTruncated && !renderedAll,
 
-  /*
-   * Up front determination if the packet data should be truncated
-   * based on the size of the array and whether or not the content
-   * of the text has highlighted stuff. If content is highlighted
-   * then have to make it show up.
-   */
   @computed('packet.text')
-  shouldBeTruncated(text) {
-    return text.length > HIDE_CONTENT_CHARACTER_COUNT;
+  displayedPercent(text) {
+    if (text.length < HIDE_CONTENT_CHARACTER_COUNT) {
+      return 100;
+    }
+    const displayedPercent = Math.floor((SHOW_TRUNCATED_AMOUNT / text.length) * 100);
+    return displayedPercent;
   },
 
   /*
    * Builds message indicating how much text is left to show
    * or are in the process of rendering
    */
-  @computed('packet.text', 'renderingRemainingText')
-  remainingTextMessage(text, renderingRemainingText) {
-    const remainingCharacterCount = text.length - SHOW_TRUNCATED_AMOUNT;
-    const remainingPercent = Math.floor((remainingCharacterCount / text.length) * 100);
+  @computed('displayedPercent', 'renderingRemainingText')
+  remainingTextMessage(displayedPercent, renderingRemainingText) {
     let msg = '';
     if (renderingRemainingText) {
-      msg = this.get('i18n').t('recon.textView.renderRemaining', { remainingPercent });
+      msg = this.get('i18n').t('recon.textView.renderRemaining', { remainingPercent: 100 - displayedPercent });
     } else {
-      msg = this.get('i18n').t('recon.textView.showRemaining', { remainingPercent });
+      msg = this.get('i18n').t('recon.textView.showRemaining', { remainingPercent: 100 - displayedPercent });
     }
     return msg;
   },
@@ -81,7 +86,9 @@ export default Component.extend(SelectionTooltip, {
   // redo all the checks
   didReceiveAttrs() {
     this._super(...arguments);
-    scheduleOnce('afterRender', this, this._checkForRenderRemainingText);
+    if (!this.get('isSticky')) {
+      scheduleOnce('afterRender', this, this._checkForRenderRemainingText);
+    }
   },
 
   // checks to see if presence of meta to highlight
@@ -117,6 +124,7 @@ export default Component.extend(SelectionTooltip, {
   _renderRemainingText() {
     // Update rendering button to show status message
     this.set('renderingRemainingText', true);
+    this.sendAction('showMoreClicked', this.get('packet.firstPacketId'));
 
     // Build array of text chunks to render
     let remainingText = this.get('packet.text').substr(SHOW_TRUNCATED_AMOUNT);

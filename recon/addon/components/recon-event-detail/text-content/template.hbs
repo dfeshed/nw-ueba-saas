@@ -1,9 +1,10 @@
 {{#if stickyContent}}
   <div class="recon-packet-stuck-header">
-    {{recon-event-detail/single-text/header
-      isSticky=true
+    {{recon-event-detail/single-text
       isLog=isLogEvent
-      side=stickyContent.side
+      isSticky=true
+      packet=stickyContent
+      renderedAll=hideStickyShowMore
     }}
   </div>
 {{/if}}
@@ -16,12 +17,13 @@
 
 {{#if textContent}}
   <div class="scroll-box">
-    {{#each visibleText as |text index|}}
+    {{#each visibleText as |text|}}
       {{recon-event-detail/single-text
-        index=index
         isLog=isLogEvent
+        isSticky=false
         metaToHighlight=metaToHighlight
         packet=text
+        showMoreClicked=(action 'showMoreClicked')
       }}
     {{/each}}
   </div>

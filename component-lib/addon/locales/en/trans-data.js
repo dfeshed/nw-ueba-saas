@@ -138,7 +138,8 @@ export default {
       downloadJson: 'Download JSON',
       isDownloading: 'Downloading...',
       showRemaining: 'Show Remaining {{remainingPercent}}%',
-      renderRemaining: 'Rendering Remaining {{remainingPercent}}%..'
+      renderRemaining: 'Rendering Remaining {{remainingPercent}}%..',
+      headerShowing: 'Showing'
     },
     packetView: {
       noHexData: 'No HEX data was generated during content reconstruction.',

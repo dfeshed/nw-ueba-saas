@@ -8,4 +8,14 @@
       text-align: right;
     }
   }
+
+  .header-percent-complete {
+    position: absolute;
+    right: 0;
+    left: 0;
+    margin: 0 auto;
+    text-align: center;
+    color: rsa-color(gray);
+  }
 }
+

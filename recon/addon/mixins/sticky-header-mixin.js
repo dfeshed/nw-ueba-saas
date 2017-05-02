@@ -60,46 +60,58 @@ export default Mixin.create({
   // 2. when sticky is stuck
   // 3. when data is toggled on/off in the view
   didRender() {
-    this._super(...arguments);
 
-    const $scrollBox = this.$('.scroll-box');
+    // if this component isn't stuck itself...
+    if (!this.get('isSticky')) {
+      this._super(...arguments);
 
-    // If scroll box exists...
-    if ($scrollBox.length > 0) {
-      // ...and it didn't previously exist...
-      if (this.get('hasScrollArea') === false) {
-        // ...then attach scroll listener
-        this.set('hasScrollArea', true);
-        $scrollBox.scroll(() => {
-          this._scrolled();
-        });
+      const $scrollBox = this.$('.scroll-box');
+
+      // If scroll box exists...
+      if ($scrollBox.length > 0) {
+        // ...and it didn't previously exist...
+        if (this.get('hasScrollArea') === false) {
+          // ...then attach scroll listener
+          const scrollFunct = this._scrolled.bind(this);
+          this.setProperties({ scrollFunct, 'hasScrollArea': true });
+          $scrollBox.scroll(scrollFunct);
+        }
+      } else {
+        // if it doesn't exist then track that,
+        // so when it appears we can attach scroll handlers
+        this.set('hasScrollArea', false);
       }
-    } else {
-      // if it doesn't exist then track that,
-      // so when it appears we can attach scroll handlers
-      this.set('hasScrollArea', false);
+
+      // Need to reset the $headers, as each time didRender is called
+      // there may be more/less of stickyable items
+      const stickySelector = this.get('stickySelector');
+      this.set('$headers', this.$(stickySelector));
+
+      // didRender called when sticky is stuck, need to calculate
+      // height of stuck sticky so smooth sliding out is possible
+      const selector = this.get('stickyHeaderSelector') || '.is-sticky';
+      const $stickyHeader = this.$(selector);
+      if ($stickyHeader && $stickyHeader.length > 0) {
+        this.set('heightOfCurrentSticky', $stickyHeader.outerHeight());
+      }
+
+      // Other factors can result in packets being removed from the page
+      // like requests/responses being toggled.
+      // If headers are eliminated, need to recalc the scroll sticky,
+      // debounce as scroll can be finicky.
+      debounce(() => {
+        this._scrolled();
+      }, 100);
     }
+  },
 
-    // Need to reset the $headers, as each time didRender is called
-    // there may be more/less of stickyable items
-    const stickySelector = this.get('stickySelector');
-    this.set('$headers', this.$(stickySelector));
-
-    // didRender called when sticky is stuck, need to calculate
-    // height of stuck sticky so smooth sliding out is possible
-    const selector = this.get('stickyHeaderSelector') || '.is-sticky';
-    const $stickyHeader = this.$(selector);
-    if ($stickyHeader && $stickyHeader.length > 0) {
-      this.set('heightOfCurrentSticky', $stickyHeader.outerHeight());
+  // Destroy the scroll handler
+  willDestroyElement() {
+    const scrollFunct = this.get('scrollFunct');
+    if (scrollFunct) {
+      const $scrollBox = this.$('.scroll-box');
+      $scrollBox.off('scroll', scrollFunct);
     }
-
-    // Other factors can result in packets being removed from the page
-    // like requests/responses being toggled.
-    // If headers are eliminated, need to recalc the scroll sticky,
-    // debounce as scroll can be finicky.
-    debounce(() => {
-      this._scrolled();
-    }, 100);
   },
 
   // Gotta run.join this to ensure it gets notified immediately,
