@@ -1,6 +1,8 @@
 /* eslint-env node */
 'use strict';
 
+const contextMetas = require('./contextMetas');
+
 module.exports = function(/* environment, appConfig */) {
   return {
     flashMessageDefaults: {
@@ -12,6 +14,7 @@ module.exports = function(/* environment, appConfig */) {
     },
     moment: {
       includeTimezone: '2010-2020'
-    }
+    },
+    contextMetas
   };
 };

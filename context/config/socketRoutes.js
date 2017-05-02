@@ -87,6 +87,13 @@ module.exports = function(environment) {
         requestDestination: '/ws/administration/context/flagging',
         cancelDestination: '/ws/administration/context/cancel'
       }
+    },
+    'entity-meta': {
+      socketUrl,
+      findAll: {
+        subscriptionDestination: '/user/queue/administration/context/metas',
+        requestDestination: '/ws/administration/context/metas'
+      }
     }
   };
 };

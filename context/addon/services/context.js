@@ -1,8 +1,10 @@
 import Service from 'ember-service';
+import computed from 'ember-computed-decorators';
 import SummariesCache from 'context/utils/summaries-cache';
 import service from 'ember-service/inject';
 import { bind } from 'ember-runloop';
 import { warn } from 'ember-debug';
+import rsvp from 'rsvp';
 
 /**
  * @class Context service
@@ -14,6 +16,14 @@ import { warn } from 'ember-debug';
  */
 export default Service.extend({
   request: service(),
+
+  /**
+   * Configuration object, injected from context addon's config/environment file.
+   * Used for reading defaults, such as the meta key map for IM Normalized Alert Events.
+   * This will be injected dynamically in the file 'app/services/context'.
+   * @private
+   */
+  config: null,
 
   /**
    * Returns a promise for the list of enabled entity types. Disabled entity types are omitted.
@@ -56,6 +66,87 @@ export default Service.extend({
 
   // Cache of promise for list of entity types.
   _typesPromise: null,
+
+  /**
+   * Returns a promise for a mapping of entity types to meta keys for a given
+   * endpoint (concentrator or broker).
+   *
+   * When this method is invoked multiple times with the same endpointId, it
+   * re-uses the last promise for that endpoint, if that promise is either still
+   * pending or successful.
+   *
+   * The mapping of entity types to meta keys is structured as follows:
+   * @example
+   * ```js
+   * [ 'IP', 'USER', 'HOST', 'DOMAIN', 'FILE' ]
+   * ```
+   * @param {String} endpointId The ID of the concentrator or broker. The ID 'IM' is reserved. If 'IM' is given,
+   * returns a mapping of fields for Normalized Alert Events used by NetWitness' Incident Management module.
+   * @returns {Promise}
+   * @public
+   */
+  metas(endpointId) {
+
+    // If we already have a promise, re-use it
+    const promises = this.get('_metasPromises');
+    let promise = promises[endpointId];
+    if (!promise) {
+      const config = this.get('config') || {};
+
+      // We don't have a promise already, create a new one to fetch the requested data.
+      // Look for the data in our config; if not there, fetch it from server-side endpoint.
+      if (endpointId in config.contextMetas) {
+
+        // Return a (hard-coded) map for Incident Management Normalized Alert Event properties.
+        promise = rsvp.resolve({
+          code: 0,
+          data: config.contextMetas[endpointId]
+        });
+      } else {
+
+        // Fetch map data from concentrator/broker.
+        promise = this.get('request').promiseRequest({
+          modelName: 'entity-meta',
+          method: 'findAll',
+          query: {
+            filter: [{
+              field: 'endpointId',
+              value: endpointId
+            }]
+          }
+        })
+        // If promise fails, clear cached promise, don't re-use
+          .catch((err) => {
+            warn('Error fetching context entity meta', endpointId, err);
+            promises[endpointId] = null;
+          });
+      }
+
+      // Once we have the data, flatten the JSON into a simple hash for ease of use (e.g. hash[metaKey] => entityType).
+      promise = promise.then(({ data }) => {
+        const hash = {};
+        (data || [])
+          .filterBy('enabled', true)  // omit disabled entries from our output hash
+          .forEach(({ name, metaKeys }) => {
+            (metaKeys || []).forEach((metaKey) => {
+              hash[metaKey] = name;
+            });
+          });
+        return hash;
+      });
+
+      // Cache promise for reuse
+      promises[endpointId] = promise;
+    }
+
+    return promise;
+  },
+
+  // Cache of promise for list of entity types.
+  @computed
+  _metasPromises() {
+    return {};
+  },
 
   /**
    * Requests a stream of summary-level data records for a given list of entities.

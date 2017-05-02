@@ -63,3 +63,70 @@ test('it can stream summary data for an entity, and the given stop function will
     }
   });
 });
+
+test('it can fetch a map of meta keys to entity types for an endpoint', function(assert) {
+  assert.expect(2);
+
+  const service = this.subject();
+  assert.ok(service);
+
+  const done = assert.async();
+  service.metas('endpointId1').then((response) => {
+    assert.ok(response, 'Expected promise callback to be invoked with a response.');
+    done();
+  });
+});
+
+test('fetching meta key maps twice for the same endpoint will piggyback on the first request', function(assert) {
+  assert.expect(2);
+
+  const service = this.subject();
+  const done = assert.async();
+
+  // Request the entity types once...
+  const firstPromise = service.metas('endpointId1');
+  firstPromise.then((firstResponse) => {
+
+    // ...and after it succeeds, request the entity types again.
+    const secondPromise = service.metas('endpointId1');
+    secondPromise.then((secondResponse) => {
+      assert.equal(firstPromise, secondPromise, 'Expected first promise to be re-used for second request.');
+      assert.equal(firstResponse, secondResponse, 'Expected first response to be re-used as second response.');
+      done();
+    });
+  });
+});
+
+test('fetching meta key maps for 2 different endpoints will not piggyback on the first request', function(assert) {
+  assert.expect(2);
+
+  const service = this.subject();
+  const done = assert.async();
+
+  // Request the entity types once...
+  const firstPromise = service.metas('endpointId1');
+  firstPromise.then((firstResponse) => {
+
+    // ...and after it succeeds, request the entity types again.
+    const secondPromise = service.metas('endpointId2');
+    secondPromise.then((secondResponse) => {
+      assert.notEqual(firstPromise, secondPromise, 'Expected first promise to not be re-used for second request.');
+      assert.notEqual(firstResponse, secondResponse, 'Expected first response to not be re-used as second response.');
+      done();
+    });
+  });
+});
+
+test('it retrieves the meta key map for Incident Management from this addon\'s config', function(assert) {
+  assert.expect(2);
+
+  const service = this.subject();
+  assert.ok(service);
+
+  const done = assert.async();
+  service.metas('IM').then((response) => {
+    assert.ok(response, 'Expected promise callback to be invoked with a response.');
+    done();
+  });
+});
+
