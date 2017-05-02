@@ -3,6 +3,9 @@
 /* pulling in component-lib from inside respond */
 @import 'component-lib/manifest';
 
+/* pulling in context from inside respond */
+@import 'context/manifest';
+
 /* Pulling in local respond styles */
 @import 'respond/manifest';
 

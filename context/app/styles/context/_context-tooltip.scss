@@ -1,4 +1,5 @@
 $contextTooltipDatumWidth: 70px;
+$contextTooltipDatumPadding: 4px;
 
 .rsa-context-tooltip {
   padding: rsa-whitespace(less);
@@ -25,12 +26,16 @@ $contextTooltipDatumWidth: 70px;
   }
 
   &__content {
+    /*
+    temporarily hide the divider while we hide the actions list.
+    decomment these next 2 lines once we add the actions list back in.
     border-right: 1px solid rsa-color(gray, dark);
     padding-right: rsa-whitespace();
+    */
 
     &-body {
       margin: 0 rsa-whitespace();
-      max-width: 3 * $contextTooltipDatumWidth;
+      max-width: 3 * ($contextTooltipDatumWidth + $contextTooltipDatumPadding);
     }
 
     &-footer {
@@ -58,6 +63,8 @@ $contextTooltipDatumWidth: 70px;
 }
 
 .rsa-context-tooltip-records {
+  @include rsa-row(justify,top);
+  
   &__record {
     display: inline-block;
     height: 60px;
@@ -70,7 +77,15 @@ $contextTooltipDatumWidth: 70px;
     border-bottom: 3px solid transparent;
 
     &:hover {
+      /*
+      temporarily hide the hover effect until we implement click action.
+      decomment this next line once we add the actions to the records.
       border-bottom-color: rsa-color(blue, light);
+      */
+
+      .subtext {
+        opacity: 1;
+      }
     }
 
     .value {
@@ -83,10 +98,16 @@ $contextTooltipDatumWidth: 70px;
       color: rsa-color(gray, light);
     }
 
+    .subtext {
+      opacity: 0;
+    }
+
     .subtext,
     .subtext .rsa-content-datetime .time-ago {
       @include rsa-font(light, smaller, uppercase);
+      font-size: 75%;
       color: rsa-color(gray);
     }
+
   }
 }

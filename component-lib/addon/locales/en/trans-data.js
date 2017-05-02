@@ -931,6 +931,18 @@ export default {
     },
     footer: {
       viewAll: 'VIEW All'
+    },
+    tooltip: {
+      contextHighlights: 'Context Highlights',
+      viewOverview: 'View Overview',
+      actions: 'Actions',
+      investigate: 'Pivot to Investigate',
+      addToList: 'Add to list',
+      virusTotal: 'Virus Total Lookup',
+      googleLookup: 'Google Lookup',
+      ecat: 'Pivot to Endpoint',
+      events: 'Pivot to Events',
+      contextUnavailable: 'No context data available at this time'
     }
   }
 };

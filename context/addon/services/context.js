@@ -123,7 +123,9 @@ export default Service.extend({
       }
 
       // Once we have the data, flatten the JSON into a simple hash for ease of use (e.g. hash[metaKey] => entityType).
-      promise = promise.then(({ data }) => {
+      promise = promise.then((response) => {
+        response = response || {};
+        const { data } = response;
         const hash = {};
         (data || [])
           .filterBy('enabled', true)  // omit disabled entries from our output hash
@@ -132,7 +134,10 @@ export default Service.extend({
               hash[metaKey] = name;
             });
           });
-        return hash;
+        return {
+          ...response,
+          data: hash
+        };
       });
 
       // Cache promise for reuse
