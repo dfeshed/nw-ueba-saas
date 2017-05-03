@@ -24,6 +24,8 @@ public interface UserActivityService {
 
     List<UserActivityTopApplicationsDocument> getUserActivityTopApplicationsEntries(String id, int timeRangeInDays);
 
+    List<UserActivityTopApplicationsDocument> getUserActivityTopApplicationsEntriesWithBlacklist(String id, int timeRangeInDays);
+
     List<UserActivityEmailRecipientDomainDocument> getUserActivityEmailRecipientDomainEntries(String id, int timeRangeInDays);
 
     List<UserActivityEmailRecipientDomainDocument> getUserActivityEmailRecipientDomainEntriesWithBlacklist(String id, int timeRangeInDays);
