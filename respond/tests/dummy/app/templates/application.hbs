@@ -20,7 +20,9 @@
     {{outlet}}
   </section>
   <aside fit class="respond-engine-dummy__main-aside">
-    {{context-panel entityId=entityId entityType=entityType closePanel=(route-action 'closeContextPanel')}}
+    {{#if (and entityId entityType)}}
+      {{context-panel entityId=entityId entityType=entityType closePanel=(route-action 'closeContextPanel')}}
+    {{/if}}
   </aside>
 </article>
 <div id='modalDestination'></div>

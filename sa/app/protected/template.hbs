@@ -4,7 +4,9 @@
       {{outlet}}
     </page>
     <aside class="rsa-protected__aside">
-      {{context-panel entityId=entityId entityType=entityType closePanel=(route-action 'closeContextPanel')}}
+      {{#if (and entityId entityType)}}
+        {{context-panel entityId=entityId entityType=entityType closePanel=(route-action 'closeContextPanel')}}
+      {{/if}}
     </aside>
   </page>
   {{context-tooltip openOverviewAction=(route-action 'openContextPanel')}}
