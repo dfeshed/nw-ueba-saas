@@ -91,6 +91,10 @@
 			logout-url="/api/analyst/logout" />
 		<!--<custom-filter ref="csrfHeaderFilter"  before="CSRF_FILTER"/>-->
 		<csrf disabled="true"/>
+
+		<headers>
+			<frame-options policy="SAMEORIGIN" />
+		</headers>
 	</http>
 
 	<beans:bean id="mongoAuthenticationProvider" class="fortscale.services.security.MongoAuthenticationProvider">
