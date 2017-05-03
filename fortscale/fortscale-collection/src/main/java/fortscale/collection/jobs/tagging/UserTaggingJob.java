@@ -16,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -25,7 +24,7 @@ public class UserTaggingJob extends FortscaleJob {
 
     private static final Logger logger = Logger.getLogger(UserTaggingJob.class);
     private static final String CSV_DELIMITER = ",";
-    private static final int INDEX_USER_REGEX = 0;
+    private static final int INDEX_USER_NAME = 0;
     private static final int INDEX_TAGS = 1;
     private static final java.lang.String TAGS_DELIMITER = "|";
 
@@ -172,18 +171,18 @@ public class UserTaggingJob extends FortscaleJob {
             if (tagsFile.exists() && tagsFile.isFile() && tagsFile.canRead()) {
                 for (String line : FileUtils.readLines(tagsFile)) {
                     final String[] splitLine = line.split(CSV_DELIMITER);
-                    String userRegex;
+                    String userName;
                     List<String> tags;
 
                     try {
-                        userRegex = splitLine[INDEX_USER_REGEX];
+                        userName = splitLine[INDEX_USER_NAME];
                         tags = Arrays.asList(splitLine[INDEX_TAGS].split(Pattern.quote(TAGS_DELIMITER)));
 
                         // When we have "-" before the user name we want to remove the tags from the user
-                        if (StringUtils.startsWith(userRegex,deletionSymbol)) {
-                            userTagService.removeUserTags(userRegex.substring(1), tags);
+                        if (StringUtils.startsWith(userName,deletionSymbol)) {
+                            userTagService.removeUserTags(userName.substring(1), tags);
                         } else {
-                            userTagService.addUserTagsRegex(userRegex, tags);
+                            userTagService.addUserTags(userName, tags);
                         }
                     } catch (Exception e) {
                         logger.error(String.format("Job failed. File %s format is invalid.", tagFilePath), e);
