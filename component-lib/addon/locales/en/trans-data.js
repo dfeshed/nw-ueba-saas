@@ -646,6 +646,7 @@ export default {
     }
   },
   context: {
+    noData: 'No matching context is available',
     noResults: '(No Results)',
     notConfigured: '(Not Configured)',
     title: 'Context for',
@@ -677,6 +678,7 @@ export default {
       WEEKS: 'WEEKS'
     },
     header: {
+      archer: 'Archer',
       overview: 'overview',
       iioc: 'IIOC',
       users: 'Users',

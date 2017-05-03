@@ -42,7 +42,8 @@ const context = handleActions({
   [ACTION_TYPES.GET_LOOKUP_DATA]: (state, { payload }) => ({
     ...state,
     lookupData: [].concat(contextDataParser([payload, state.lookupData])),
-    activeTabName: DataUtil.getActiveTabName(state.activeTabName, payload)
+    activeTabName: DataUtil.getActiveTabName(state.activeTabName, payload),
+    errorMessage: DataUtil.noDataToDisplayMessage(state.dataSources, state.lookupData)
   })
 }, initialState);
 

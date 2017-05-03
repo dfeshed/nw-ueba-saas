@@ -55,6 +55,7 @@ export default [{
     {
       field: 'Archer',
       title: 'context.archer.title',
+      tabTitle: 'context.header.archer',
       dataSourceType: 'Archer',
       displayType: 'grid',
       tabRequired: true,
@@ -112,7 +113,7 @@ export default [{
       tabRequired: true
     },
     {
-      field: 'Lists',
+      field: 'LIST',
       title: 'context.header.lists',
       dataSourceType: 'LIST',
       displayType: 'table',
@@ -219,6 +220,7 @@ export default [{
     {
       field: 'Archer',
       title: 'context.archer.title',
+      tabTitle: 'context.header.archer',
       dataSourceType: 'Archer',
       displayType: 'grid',
       tabRequired: true,

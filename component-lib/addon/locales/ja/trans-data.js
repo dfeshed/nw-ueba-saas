@@ -646,6 +646,7 @@ export default {
     }
   },
   context: {
+    noData: 'ja_No matching context is available',
     noResults: 'ja_(No Results)',
     notConfigured: 'ja_(Not Configured)',
     title: 'ja_Context',
@@ -677,6 +678,7 @@ export default {
       WEEKS: 'ja_WEEKS'
     },
     header: {
+      archer: 'ja_Archer',
       overview: 'ja_overview',
       iioc: 'ja_IIOC',
       modules: 'ja_Modules',

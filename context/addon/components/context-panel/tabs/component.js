@@ -8,7 +8,6 @@ import { getCount } from 'context/util/context-data-modifier';
 const stateToComputed = ({ context }) => ({
   activeTabName: context.activeTabName,
   dataSources: context.dataSources,
-  meta: context.meta,
   lookupData: context.lookupData,
   tabs: context.tabs
 });
@@ -17,7 +16,10 @@ const dispatchToActions = (dispatch) => ({
   activate: (tabName) => dispatch(ContextActions.updateActiveTab(tabName))
 });
 
-const getToolTipText = (lookupData, dataSourceType, i18n) => {
+const getToolTipText = (lookupData, { dataSourceType, isConfigured }, i18n) => {
+  if (!isConfigured) {
+    return i18n.t('context.notConfigured');
+  }
   if (getCount(lookupData, dataSourceType) === 0) {
     return i18n.t('context.noResults');
   }
@@ -40,9 +42,10 @@ const TabsComponent = Component.extend({
     }
     return tabs.map((tab) => ({
       ...tab,
-      toolTipText: getToolTipText(lookupData, tab.dataSourceType, this.get('i18n')),
+      toolTipText: getToolTipText(lookupData, tab, this.get('i18n')),
+      title: tab.tabTitle || tab.title,
       isActive: tab.field === activeTabName,
-      loadingIcon: !lookupData || !lookupData[tab.dataSourceType],
+      loadingIcon: (!lookupData || !lookupData[tab.dataSourceType]) && tab.isConfigured,
       tabClass: tab.field === activeTabName ? 'tab-active-background' : ''
     }));
   }

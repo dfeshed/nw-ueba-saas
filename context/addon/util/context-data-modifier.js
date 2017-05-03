@@ -62,14 +62,15 @@ const needToDisplay = (contextData, lookupData, dSDetails) => {
 
 const getTabs = (meta, dataSources) => {
   const tabList = TabList.find((tab) => tab.tabType === meta);
-  const dataSourcesNames = dataSources.map((dataSource) => {
-    return dataSource.dataSourceType;
-  });
   // Map over the columns and build the tab count text for each tab
-  return tabList.columns.filter((tab) => tab.tabRequired && dataSourcesNames.includes(tab.dataSourceType)).map((tab) => ({
-    ...tab,
-    panelId: `tabs${tab.field.camelize()}`
-  }));
+  return tabList.columns.filter((tab) => tab.tabRequired).map((tab) => {
+    const dataSourceDetails = dataSources.find((dataSource) => dataSource.dataSourceType === tab.dataSourceType);
+    return {
+      ...tab,
+      isConfigured: dataSourceDetails ? dataSourceDetails.isConfigured : false,
+      panelId: `tabs${tab.field.camelize()}`
+    };
+  });
 };
 
 const getTabEnabled = ([ lookupData ], dataSourceType) => {
@@ -90,6 +91,19 @@ const getActiveTabName = (activeTabName, data) => {
   return firstDataSourceWithData ? firstDataSourceWithData.dataSourceGroup : activeTabName;
 };
 
+const noDataToDisplayMessage = (dataSourceList, [lookupData]) => {
+  if (!lookupData || !dataSourceList) {
+    return;
+  }
+  const dataSourcesConfigured = dataSourceList.filter((dataSource) => {
+    return dataSource.isConfigured;
+  });
+  const dataSourcesWithNoData = dataSourcesConfigured.filter((dataSource) => {
+    return lookupData[dataSource.dataSourceType] ? getCount(lookupData, dataSource.dataSourceType) === 0 : false;
+  });
+  return dataSourcesWithNoData && dataSourcesWithNoData.length === dataSourcesConfigured.length ? 'context.noData' : '';
+};
+
 export {
   getCount,
   getData,
@@ -97,5 +111,6 @@ export {
   needToDisplay,
   getTabs,
   getTabEnabled,
-  getActiveTabName
+  getActiveTabName,
+  noDataToDisplayMessage
 };
