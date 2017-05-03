@@ -15,6 +15,28 @@ export default Route.extend({
   timeFormat: service(),
   timezone: service(),
 
+  queryParams: {
+    /**
+     * The type of entity to be looked up in the Context Panel.
+     * Entity types are defined in configurable Admin settings, but typically include 'IP', 'USER', 'DOMAIN', 'HOST', etc.
+     * @type {string}
+     * @public
+     */
+    entityType: {
+      refreshModel: false,
+      replace: true
+    },
+    /**
+     * The ID of the entity to be looked up in the Context Panel (e.g., an IP address, a user name, a domain name, etc).
+     * @type {string|number}
+     * @public
+     */
+    entityId: {
+      refreshModel: false,
+      replace: true
+    }
+  },
+
   model() {
 
     // When running in sa, these are set as part of protected route,
@@ -50,6 +72,23 @@ export default Route.extend({
       // model hook returning promise, then ensures
       // log in occurs before engine loads
       return auth.authenticate('local', 'changeMe');
+    }
+  },
+
+  actions: {
+    openContextPanel(entity) {
+      const { type, id } = entity || {};
+      this.get('controller').setProperties({
+        entityId: id,
+        entityType: type
+      });
+    },
+
+    closeContextPanel() {
+      this.get('controller').setProperties({
+        entityId: undefined,
+        entityType: undefined
+      });
     }
   }
 });

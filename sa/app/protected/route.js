@@ -139,6 +139,13 @@ export default Route.extend(AuthenticatedRouteMixin, {
   },
 
   actions: {
+    openContextPanel(entity) {
+      const { type, id } = entity || {};
+      this.get('controller').setProperties({
+        entityId: id,
+        entityType: type
+      });
+    },
     closeContextPanel() {
       this.get('controller').setProperties({
         entityId: undefined,

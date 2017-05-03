@@ -15,5 +15,13 @@
     {{/flash-message}}
   {{/each}}
 </ul>
-{{outlet}}
+<article class="respond-engine-dummy__main {{if (and entityId entityType) 'has-entity-info'}}">
+  <section fill class="respond-engine-dummy__main-body">
+    {{outlet}}
+  </section>
+  <aside fit class="respond-engine-dummy__main-aside">
+    {{context-panel entityId=entityId entityType=entityType closePanel=(route-action 'closeContextPanel')}}
+  </aside>
+</article>
 <div id='modalDestination'></div>
+{{context-tooltip openOverviewAction=(route-action 'openContextPanel')}}
