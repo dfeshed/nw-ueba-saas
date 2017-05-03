@@ -232,9 +232,9 @@ public class ApiUserActivityController extends DataQueryController {
                 id,
                 timePeriodInDays,
                 limit,
-                userActivityService::getUserActivityTopApplicationsEntries,
+                userActivityService::getUserActivityTopApplicationsEntriesWithBlacklist,
                 this::convertDocumentsResponse,
-                TOP_APPLICATIONS);
+                TOP_APPLICATIONS, false);
         return userActivity;
     }
 

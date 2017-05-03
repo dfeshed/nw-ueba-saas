@@ -18,6 +18,8 @@ public class UserActivityServiceImpl implements UserActivityService {
 
     private static final String BLACKLISTED_DIRECTORIES_KEY = "user_activity.directories.blacklisted_directories";
     private static final String EMAIL_RECIPIENT_BLACKLIST_DOMAINS = "user_activity.email_recipient.blacklisted_domains";
+    private static final String TOP_APPLICATIONS_BLACKLIST_DOMAINS = "user_activity.top_applications.blacklisted_applications";
+
     private final UserActivityRepository userActivityRepository;
 
     @Autowired
@@ -62,6 +64,12 @@ public class UserActivityServiceImpl implements UserActivityService {
     @Override
     public List<UserActivityTopApplicationsDocument> getUserActivityTopApplicationsEntries(String id, int timeRangeInDays) {
         return userActivityRepository.getUserActivityTopApplicationsEntries(id, timeRangeInDays);
+    }
+
+    @Override
+    public List<UserActivityTopApplicationsDocument> getUserActivityTopApplicationsEntriesWithBlacklist(String id, int timeRangeInDays) {
+        List<UserActivityTopApplicationsDocument> userActivityTopApplicationsEntries = getUserActivityTopApplicationsEntries(id, timeRangeInDays);
+        return filterBlacklistedTopApplications(userActivityTopApplicationsEntries);
     }
 
     @Override
@@ -113,6 +121,21 @@ public class UserActivityServiceImpl implements UserActivityService {
         }
 
         return userActivityTopDirectoriesEntries;
+    }
+
+    private List<UserActivityTopApplicationsDocument> filterBlacklistedTopApplications(List<UserActivityTopApplicationsDocument> userActivityTopApplicationsEntries) {
+        final ApplicationConfiguration blacklistedApplicationsConfiguration = applicationConfigurationService.getApplicationConfiguration(TOP_APPLICATIONS_BLACKLIST_DOMAINS);
+        if (blacklistedApplicationsConfiguration == null) {
+            logger.info("Can't filter blacklisted applications because there's no configuration. key : {}", TOP_APPLICATIONS_BLACKLIST_DOMAINS);
+        }
+        else {
+            for (UserActivityTopApplicationsDocument userActivityTopApplicationsDocument : userActivityTopApplicationsEntries) {
+                final Map<String, Double> filteredHistogram = filterByBlacklist(blacklistedApplicationsConfiguration, userActivityTopApplicationsDocument);
+                userActivityTopApplicationsDocument.getApplications().setApplicationsHistogram(filteredHistogram);
+            }
+        }
+
+        return userActivityTopApplicationsEntries;
     }
 
     private List<UserActivityEmailRecipientDomainDocument> filterBlacklistedEmailRecipientDomains(List<UserActivityEmailRecipientDomainDocument> userActivityEmailRecipientDomainEntries) {
