@@ -124,14 +124,14 @@ public class UserActivityServiceImpl implements UserActivityService {
     }
 
     private List<UserActivityTopApplicationsDocument> filterBlacklistedTopApplications(List<UserActivityTopApplicationsDocument> userActivityTopApplicationsEntries) {
-        final ApplicationConfiguration blacklistedDomainsConfiguration = applicationConfigurationService.getApplicationConfiguration(TOP_APPLICATIONS_BLACKLIST_DOMAINS);
-        if (blacklistedDomainsConfiguration == null) {
+        final ApplicationConfiguration blacklistedApplicationsConfiguration = applicationConfigurationService.getApplicationConfiguration(TOP_APPLICATIONS_BLACKLIST_DOMAINS);
+        if (blacklistedApplicationsConfiguration == null) {
             logger.info("Can't filter blacklisted applications because there's no configuration. key : {}", TOP_APPLICATIONS_BLACKLIST_DOMAINS);
         }
         else {
-            for (UserActivityTopApplicationsDocument userActivityEmailRecipientDomainDocument : userActivityTopApplicationsEntries) {
-                final Map<String, Double> filteredHistogram = filterByBlacklist(blacklistedDomainsConfiguration, userActivityEmailRecipientDomainDocument);
-                userActivityEmailRecipientDomainDocument.getApplications().setApplicationsHistogram(filteredHistogram);
+            for (UserActivityTopApplicationsDocument userActivityTopApplicationsDocument : userActivityTopApplicationsEntries) {
+                final Map<String, Double> filteredHistogram = filterByBlacklist(blacklistedApplicationsConfiguration, userActivityTopApplicationsDocument);
+                userActivityTopApplicationsDocument.getApplications().setApplicationsHistogram(filteredHistogram);
             }
         }
 

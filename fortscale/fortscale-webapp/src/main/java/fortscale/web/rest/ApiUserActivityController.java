@@ -234,7 +234,7 @@ public class ApiUserActivityController extends DataQueryController {
                 limit,
                 userActivityService::getUserActivityTopApplicationsEntriesWithBlacklist,
                 this::convertDocumentsResponse,
-                TOP_APPLICATIONS);
+                TOP_APPLICATIONS, false);
         return userActivity;
     }
 
