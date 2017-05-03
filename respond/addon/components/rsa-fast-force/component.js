@@ -1,4 +1,6 @@
-import Ember from 'ember';
+import Component from 'ember-component';
+import layout from './template';
+import set from 'ember-metal/set';
 import computed from 'ember-computed-decorators';
 import { forceSimulation, forceLink, forceManyBody, forceCollide, forceCenter } from 'd3-force';
 import { select } from 'd3-selection';
@@ -9,15 +11,10 @@ import ticked from './util/ticked';
 import zoomed from './util/zoomed';
 import center from './util/center';
 import arrayToHashKeys from 'component-lib/utils/array/to-hash-keys';
+import run from 'ember-runloop';
 
 /* global addResizeListener */
 /* global removeResizeListener */
-
-const {
-  Component,
-  set,
-  run
-} = Ember;
 
 /**
  * @class d3 Fast Force Layout component
@@ -34,6 +31,7 @@ export default Component.extend({
   // Wrap the SVG canvas in a div. The div can be set to any size, while the SVG element by default fills the div
   // with its width & height set to 100%.
   tagName: 'div',
+  layout,
   classNames: 'rsa-force-layout',
   classNameBindings: ['alphaLevelClass', 'isDragging'],
   attributeBindings: ['zoom:data-zoom'],
