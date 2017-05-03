@@ -63,6 +63,33 @@ export default Mixin.create({
   eventBus: service(),
 
   /**
+   * Determines whether the consuming Component will automatically attempt to find & highlight entities after
+   * it has initially rendered.
+   *
+   * This is effectively a setting that enables this Mixin's functionality.  If `autoHighlightEntities` is truthy
+   * at the time that the consuming Component is rendered, then the `highlightEntities()` method will automatically be
+   * invoked after `didInsertElement`. Otherwise if `autoHighlightEntities` is falsey, `highlightEntities()` will not
+   * be invoked automatically, and it becomes the responsibility of the consuming Component to manually invoke it
+   * if & when desired.
+   *
+   * Therefore if `autoHighlightEntities` is falsey (which it is by default) and the consuming Component does NOT
+   * manually invoke `highlightEntities()` then this Mixin's functionality is essentially dormant and not used.
+   * Thus, `autoHighlightEntities` enables us to harmlessly apply this Mixin to our Component subclasses without
+   * significant overhead, leaving this Mixin's functionality dormant by default, and then enabling the Mixin's
+   * functionality on a case-by-case basis for specific instances of that Component subclass.
+   *
+   * Note: `autoHighlightEntities` is only read once when the Component is initially rendered. After that it is no
+   * longer used.
+   *
+   * Note: The consuming Component can still manually call `highlightEntities()` at any time, even if
+   * `autoHighlightEntities` if falsey.
+   *
+   * @type {Boolean}
+   * @public
+   */
+  autoHighlightEntities: false,
+
+  /**
    * The querySelector for finding DOM nodes that represent entities.
    * @type {String}
    * @public
@@ -405,7 +432,9 @@ export default Mixin.create({
 
   didInsertElement() {
     this._super();
-    next(this, 'highlightEntities');
+    if (this.get('autoHighlightEntities')) {
+      next(this, 'highlightEntities');
+    }
   },
 
   willDestroyElement() {
