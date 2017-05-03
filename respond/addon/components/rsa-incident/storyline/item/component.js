@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import ListItem from 'respond/components/rsa-list/item/component';
+import HighlightsEntities from 'context/mixins/highlights-entities';
 import layout from './template';
 import computed from 'ember-computed-decorators';
 import connect from 'ember-redux/components/connect';
@@ -14,6 +15,7 @@ const dispatchToActions = (dispatch) => ({
   ctrlClickAction: (item) => dispatch(UIStateActions.toggleSelectStoryPoint(item && get(item, 'id'))),
   shiftClickAction: (item) => dispatch(UIStateActions.toggleSelectStoryPoint(item && get(item, 'id')))
 });
+
 
 // Ordered list of enrichments to be displayed.
 const enrichmentsToDisplay = [
@@ -50,18 +52,24 @@ const enrichmentsToDisplay = [
  * about the storypoint's corresponding indicator, and the enrichments in the indicator's events (if any).
  * @public
  */
-const StorylineItem = ListItem.extend({
+const StorylineItem = ListItem.extend(HighlightsEntities, {
   tagName: 'vbox',
   classNames: ['rsa-incident-storyline-item'],
   classNameBindings: ['item.isCatalyst:is-catalyst', 'item.isHidden:is-hidden'],
   layout,
   enrichmentsToDisplay,
 
+  // Specifies the endpoint from which the normalized event objects originated (in this case, 'IM' refers to the
+  // Netwitness Incident Management module). Used by the HighlightEntities mixin to map event properties to entity types.
+  // @see context/mixins/highlights-entities
+  autoHighlightEntities: true,
+  entityEndpointId: 'IM',
+
   @computed('item.matched')
   resolvedMatched(matched = []) {
-    const types = [ 'user', 'host', 'domain', 'ip', 'ip', 'file' ];
+    const metaKeys = [ 'user', 'host', 'domain', 'ip', 'ip', 'file' ];
     return matched
-      .map((id, index) => ({ type: types[index], id }))
+      .map((id, index) => ({ id, metaKey: metaKeys[index] }))
       .rejectBy('id', '');
   }
 });
