@@ -54,7 +54,7 @@ const FileReconComponent = Component.extend(ReconPager, {
       return this.get('calculatedConfig');
     }
 
-    let calculatedConfig = baseColumnsConfig.map((conf) => {
+    const calculatedConfig = baseColumnsConfig.map((conf) => {
       const { field } = conf;
 
       // first column has empty field, not calculating anything for it
@@ -71,16 +71,6 @@ const FileReconComponent = Component.extend(ReconPager, {
       // treat the configured width as a minimum to accommodate header
       const width = Math.max(conf.width, calculatedWidth + 5);
 
-      return { ...conf, width };
-    });
-    // Calculate the sum of widths of cells
-    const sumWidths = calculatedConfig.reduce((p, { width }) => {
-      return p + width;
-    }, 0);
-
-    // Convert the widths to relative percentages
-    calculatedConfig = calculatedConfig.map((conf) => {
-      const width = `${(conf.width / sumWidths) * 100}%`;
       return { ...conf, width };
     });
 
