@@ -1,8 +1,7 @@
-import Ember from 'ember';
 import Component from 'ember-component';
 import computed from 'ember-computed-decorators';
-
-const { typeOf } = Ember;
+import HighlightsEntities from 'context/mixins/highlights-entities';
+import { typeOf } from 'ember-utils';
 
 /**
  * @file Property Tree Component
@@ -13,7 +12,7 @@ const { typeOf } = Ember;
  *
  * @public
  */
-export default Component.extend({
+export default Component.extend(HighlightsEntities, {
   classNames: ['rsa-property-tree'],
 
   /**
@@ -22,6 +21,13 @@ export default Component.extend({
    * @public
    */
   model: null,
+
+  /**
+   * The property path of `model`. Used only when rendering nested models.
+   * @type {String}
+   * @public
+   */
+  modelPath: '',
 
   /**
    * The data type of `model`.
@@ -87,5 +93,10 @@ export default Component.extend({
    * @type {string}
    * @public
    */
-  nestedValueComponentClass: 'rsa-property-tree'
+  nestedValueComponentClass: 'rsa-property-tree',
+
+  // Configuration for wiring up entities to context lookups.
+  // @see context/mixins/highlights-entities
+  entitySelector: '.scalar-value',
+  entityEndpointId: 'IM'
 });

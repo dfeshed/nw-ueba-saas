@@ -29,7 +29,11 @@
 {{#rsa-application-modal eventId=eventDetailsPanelId label=(t 'respond.eventDetails.title') style="standard rsa-incident-event-details-modal"}}
   <vbox class='modal-content'>
     <box fill class="modal-content-body">
-      {{rsa-property-tree class="rsa-incident-event-details-modal__tree" model=(or eventDetailsModel.normalized eventDetailsModel)}}
+      {{rsa-property-tree
+        class="rsa-incident-event-details-modal__tree"
+        model=(or eventDetailsModel.normalized eventDetailsModel)
+        autoHighlightEntities=true
+      }}
     </box>
     <box fit class="modal-content-footer">
       <hbox justify="end">

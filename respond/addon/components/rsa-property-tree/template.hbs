@@ -5,9 +5,9 @@
       <tr class="key">
         <td class="key-value">
           {{#if member.isNestedValue}}
-            {{component nestedValueComponentClass model=member.value}}
+            {{component nestedValueComponentClass model=member.value modelPath=modelPath}}
           {{else}}
-            {{member.value}}
+            <span class="scalar-value" data-meta-key="{{modelPath}}" data-entity-id="{{member.value}}">{{member.value}}</span>
           {{/if}}
         </td>
       </tr>
@@ -21,9 +21,9 @@
         </td>
         <td class="key-value">
           {{#if key.isNestedValue}}
-            {{component nestedValueComponentClass model=key.value}}
+            {{component nestedValueComponentClass model=key.value modelPath="{{key.name}}"}}
           {{else}}
-            {{key.value}}
+            <span class="scalar-value" data-meta-key="{{key.name}}" data-entity-id="{{key.value}}">{{key.value}}</span>
           {{/if}}
         </td>
       </tr>
