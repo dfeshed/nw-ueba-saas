@@ -160,8 +160,7 @@
 		</dependency>
 
 
-		<!-- javax persistence needed by aspectj compile time depenceny injection 
-			with spring [SPR-6819] -->
+		<!-- javax persistence needed by aspectj compile time depenceny injection with spring [SPR-6819] -->
 		<dependency>
 			<groupId>javax.persistence</groupId>
 			<artifactId>persistence-api</artifactId>
