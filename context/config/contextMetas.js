@@ -13,7 +13,9 @@ module.exports = {
         'device.ip',
         'paddr',
         'ip.addr',
-        'alias.ip'
+        'alias.ip',
+        'sourceIp',
+        'destinationIp'
       ]
     },
     {

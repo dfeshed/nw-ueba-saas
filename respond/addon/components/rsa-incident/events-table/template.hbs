@@ -8,14 +8,18 @@
   onRowClick=(action "onRowClick")
 }}
   {{rsa-data-table/header translateTitles=true}}
-  {{#rsa-data-table/body as |item index column|}}
+  {{#rsa-data-table/body
+    rowComponentClass="rsa-incident/events-table-row"
+    as |item index column|}}
 
     {{#rsa-data-table/body-cell item=item index=index column=column}}
       {{#if (eq column.field 'time')}}
         {{rsa-content-datetime timestamp=item.time}}
         <div class="event-details-link" {{action "showEventDetails" item}}>Details</div>
       {{else}}
-        {{get item column.field}}
+        <span class="entity" data-meta-key="{{column.field}}" data-entity-id="{{get item column.field}}">
+          {{get item column.field}}
+        </span>
       {{/if}}
     {{/rsa-data-table/body-cell}}
 
