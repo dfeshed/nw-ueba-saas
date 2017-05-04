@@ -59,6 +59,9 @@ $storylineConnectorOuterWidth: $storylineConnectorPaddingX * 2 + $storylineConne
           }
         }
       }
+      .has-context-data {
+        @include rsa-has-context-data();
+      }
     }
 
     .content {

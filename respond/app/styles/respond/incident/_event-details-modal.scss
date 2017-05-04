@@ -47,6 +47,10 @@
         border-bottom: 1px solid rsa-color(black,base,$rsa-nearly-transparent);
       }
     }
+
+    .has-context-data {
+      @include rsa-has-context-data();
+    }
   }
 
 }

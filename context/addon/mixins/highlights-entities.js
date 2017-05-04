@@ -307,8 +307,12 @@ export default Mixin.create({
       onEntityContextFound = null;
     }
 
+    // Cache the given requests for future reference.
+    // If we have previous requests already cached, don't lose them; just append to them.
+    this._requests = this._requests || [];
+    this._requests.pushObjects(requests);
+
     // Define a callback that will update our DOM when entity records stream back from server.
-    this._requests = requests;
     const callback = (type, id, records) => {
 
       // If we waited too long and this component's DOM has been trashed, exit.

@@ -12,3 +12,11 @@
   left: $left;
   right: $right;
 }
+
+@mixin rsa-has-context-data($isSvg: false) {
+  text-decoration: underline;
+
+  @if ($isSvg == false) {
+    text-decoration-style: dashed;
+  }
+}

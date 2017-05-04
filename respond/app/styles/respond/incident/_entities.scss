@@ -34,6 +34,12 @@ $entityFileColor: $base0;
         fill: rsa-color(white);
       }
 
+      &.has-context-data {
+        .text {
+          @include rsa-has-context-data(true);
+        }
+      }
+
       &.is-hidden {
         .circle {
           stroke: rsa-color(gray,light,$rsa-nearly-transparent);
@@ -83,6 +89,8 @@ $entityFileColor: $base0;
       }
     }
   }
+
+
   #force-layout__arrow {
     fill: rsa-color(gray,light,$rsa-nearly-opaque);
 

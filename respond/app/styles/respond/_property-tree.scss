@@ -7,4 +7,8 @@
   td {
     @include rsa-font(paragraph,small);
   }
+
+  .has-context-data {
+    @include rsa-has-context-data();
+  }
 }
