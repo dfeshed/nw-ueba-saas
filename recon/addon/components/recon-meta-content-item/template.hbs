@@ -2,7 +2,7 @@
   {{name}}
 </hbox>
 <hbox xs="7" class="meta-value" align="center">
-  {{#if (eq name 'time')}}
+  {{#if (or (eq name 'time') (eq name 'event.time'))}}
     {{rsa-content-datetime
       displayMilliseconds=false
       timestamp=value}}
