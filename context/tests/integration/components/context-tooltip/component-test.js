@@ -36,18 +36,13 @@ moduleForComponent('context-tooltip', 'Integration | Component | context tooltip
   }
 });
 
-test('it renders and fires the openOverviewAction when button is clicked', function(assert) {
-  assert.expect(4);
+test('it renders', function(assert) {
+  assert.expect(1);
 
   const model = { type: 'IP', id: '10.20.30.40' };
-  const openOverviewAction = (arg) => {
-    assert.ok(true, 'Expected callback action to be invoked.');
-    assert.equal(arg, model, 'Expected callback action to receive the model as an input argument.');
-  };
-  this.set('openOverviewAction', openOverviewAction);
 
   // rsa-content-tethered-panel requires us to render an element whose class matches the tooltip's panelId.
-  this.render(hbs`<a class="foo">Link</a>{{context-tooltip panelId="foo" openOverviewAction=openOverviewAction}}`);
+  this.render(hbs`<a class="foo">Link</a>{{context-tooltip panelId="foo"}}`);
 
 
   return wait()
@@ -58,8 +53,5 @@ test('it renders and fires the openOverviewAction when button is clicked', funct
     })
     .then(() => {
       assert.equal(this.$('.rsa-context-tooltip').length, 1, 'Expected to find root DOM node');
-      assert.equal(this.$('.js-open-overview button').length, 1, 'Expected to find Open Overview DOM node');
-      this.$('.js-open-overview button').click();
-      return wait();
     });
 });

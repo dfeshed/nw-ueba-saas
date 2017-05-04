@@ -66,10 +66,10 @@ $contextTooltipDatumPadding: 4px;
   @include rsa-row(justify,top);
   
   &__record {
+    cursor: pointer;
     display: inline-block;
-    height: 60px;
     width: $contextTooltipDatumWidth;
-    padding: 0;
+    padding: 0 0 rsa-whitespace(least) 0;
     text-align: center;
     white-space: nowrap;
     overflow: hidden;
@@ -77,15 +77,7 @@ $contextTooltipDatumPadding: 4px;
     border-bottom: 3px solid transparent;
 
     &:hover {
-      /*
-      temporarily hide the hover effect until we implement click action.
-      decomment this next line once we add the actions to the records.
       border-bottom-color: rsa-color(blue, light);
-      */
-
-      .subtext {
-        opacity: 1;
-      }
     }
 
     .value {
@@ -98,15 +90,15 @@ $contextTooltipDatumPadding: 4px;
       color: rsa-color(gray, light);
     }
 
-    .subtext {
-      opacity: 0;
-    }
-
     .subtext,
     .subtext .rsa-content-datetime .time-ago {
+      display: none;
+      /*
+      Temporarily hiding subtext pending UX review.
       @include rsa-font(light, smaller, uppercase);
       font-size: 75%;
       color: rsa-color(gray);
+      */
     }
 
   }

@@ -2,6 +2,7 @@ import Component from 'ember-component';
 import layout from './template';
 import service from 'ember-service/inject';
 import computed from 'ember-computed-decorators';
+import safeCallback from 'component-lib/utils/safe-callback';
 
 export default Component.extend({
   tagName: 'section',
@@ -16,6 +17,15 @@ export default Component.extend({
    * @public
    */
   model: null,
+
+  /**
+   * Configurable optional action to be invoked when user clicks on a data record.
+   * When invoked, the function will receive one input parameter:
+   * - entity: ({type: String, id: String}} An object specifying the entity type (e.g., "IP") & identifier (e.g., "10.20.30.40").
+   * @type {Function}
+   * @public
+   */
+  clickDataAction: null,
 
   /**
    * An array of streaming summary-level data for the current `model`.
@@ -41,5 +51,9 @@ export default Component.extend({
       );
     }
     return result;
+  },
+
+  actions: {
+    safeCallback
   }
 });

@@ -10,11 +10,15 @@ export default Component.extend({
   panelId: 'context-tooltip-1',
 
   /**
-   * Configurable optional action to be invoked when user clicks on "Open Overview" button.
+   * Configurable optional action to be invoked when user clicks on a data record (e.g., the incidents count or
+   * the alerts count).
+   * When invoked, the function will receive two input parameters:
+   * - entity: ({type: String, id: String}} An object specifying the entity type (e.g., "IP") & identifier (e.g., "10.20.30.40").
+   * - data: {{name: String, count: Number, severity: String, lastUpdated: Number}) The clicked data record.
    * @type {Function}
    * @public
    */
-  openOverviewAction: null,
+  clickDataAction: null,
 
   actions: {
     safeCallback

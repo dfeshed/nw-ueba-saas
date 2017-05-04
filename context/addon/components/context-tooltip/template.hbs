@@ -16,21 +16,11 @@ as |hide model|
             {{t 'context.tooltip.contextHighlights'}}
           </box>
           <hbox fill class="rsa-context-tooltip__content-body">
-            {{context-tooltip/records model=model}}
+            {{context-tooltip/records
+              model=model
+              clickDataAction=(action "safeCallback" clickDataAction model)
+            }}
           </hbox>
-          {{#if openOverviewAction}}
-            <box fit class="rsa-context-tooltip__content-footer">
-              <centered>
-                {{#rsa-form-button
-                  class="rsa-context-tooltip__content-open-overview js-open-overview"
-                  style="primary"
-                  defaultAction=(action "safeCallback" openOverviewAction model)
-                }}
-                  {{t 'context.tooltip.viewOverview'}}
-                {{/rsa-form-button}}
-              </centered>
-            </box>
-          {{/if}}
         {{/unless}}
       </vbox>
       <vbox fit class="rsa-context-tooltip__aside">
