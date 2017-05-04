@@ -9,7 +9,7 @@ const selector = (response) => {
   if (response.data && response.data.length > 0) {
     return response.data[0];
   }
-  return [];
+  return null;
 };
 
 const fetchTextData = (

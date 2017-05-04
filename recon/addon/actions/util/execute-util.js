@@ -78,8 +78,16 @@ export const timedBatchResponse = (
     // incorporate any truncation length since
     // we know we can render faster once character
     // truncation is done
-    const size = JSON.stringify(data).length;
-    responsesQueue.push([data, size]);
+    if (data) {
+      const size = JSON.stringify(data).length;
+      responsesQueue.push([data, size]);
+    } else {
+      // The server returned a response with no data, rather than do nothing
+      // send an empty array in case there are side effects related to an
+      // no data vs has data
+      batchCallback([]);
+    }
+
     if (response.meta && response.meta.complete === true) {
       done = true;
     }
