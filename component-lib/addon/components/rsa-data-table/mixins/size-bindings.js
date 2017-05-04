@@ -68,12 +68,15 @@ export default Mixin.create({
       return;
     }
     const callback = run.bind(this, function() {
-      this.setProperties({
-        clientWidth: element.clientWidth,
-        clientHeight: element.clientHeight
-      });
-      if ($.isFunction(this.sizeDidChange)) {
-        this.sizeDidChange();
+      if (element.clientWidth && element.clientHeight) {
+        this.setProperties({
+          clientWidth: element.clientWidth,
+          clientHeight: element.clientHeight
+        });
+
+        if ($.isFunction(this.sizeDidChange)) {
+          this.sizeDidChange();
+        }
       }
     });
     this.set('_sizeBindingsCallback', callback);

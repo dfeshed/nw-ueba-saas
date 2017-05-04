@@ -36,12 +36,14 @@
         </h2>
       {{/with}}
     {{/rsa-data-table/header}}
-    {{events-table-body buffer=5 rowComponentClass="events-table-row"}}
+    {{events-table-body buffer=5 rowComponentClass="events-table-row" showNoResultMessage=false}}
     {{rsa-data-table/load-more status=status clickAction=loadMoreAction}}
   {{/rsa-data-table}}
   {{#if _isStatusError}}
     {{#rsa-panel-message title=(t 'investigate.error.title') message=(t 'investigate.error.description')}}
       {{#rsa-form-button}}<span {{action 'loadMoreAction'}}>{{t 'investigate.tryAgain'}}</span>{{/rsa-form-button}}
     {{/rsa-panel-message}}
+  {{else if (is-equal totalCount 0)}}
+    {{rsa-panel-message title=(t 'investigate.empty.title') message=(t 'investigate.empty.description')}}
   {{/if}}
 </section>

@@ -32,7 +32,9 @@
   {{/each}}
 
 {{/rsa-data-table/body-rows}}
-{{!The error must be outside of the body rows - so that the message can show in the center/middle of the panel}}
-{{#unless items.length}}
-  {{rsa-panel-message message=_noResultsMessage}}
-{{/unless}}
+{{#if showNoResultMessage}}
+  {{!The error must be outside of the body rows - so that the message can show in the center/middle of the panel}}
+  {{#unless items.length}}
+    {{rsa-panel-message message=_noResultsMessage messageType='no-results-message'}}
+  {{/unless}}
+{{/if}}

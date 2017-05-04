@@ -68,9 +68,6 @@
           totalStatus=model.queryNode.value.results.eventCount.status
           totalRetryAction=(route-action "eventCountGet" model.queryNode)
         }}
-        {{#if (is-equal model.queryNode.value.results.eventCount.data 0)}}
-          {{rsa-panel-message title=(t 'investigate.empty.title') message=(t 'investigate.empty.description')}}
-        {{/if}}
       </section>
     </section>
     <vbox class="rsa-investigate-query__body-slave">

@@ -39,6 +39,14 @@ export default Component.extend(HasTableParent, DomIsReady, SizeBindings, Scroll
   buffer: 0,
 
   /**
+   *  Configurable option not to show "No Results" when items are empty
+   * @type boolean
+   * @default true
+   * @public
+   */
+  showNoResultMessage: true,
+
+  /**
    * The message to display when there are no results in the table
    * @param message The optional message to display
    * @returns {*|string} either your passed message or 'No Results'
