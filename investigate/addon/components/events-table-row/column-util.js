@@ -237,7 +237,10 @@ function buildMetaKeyAndValue(metaKey, item, opts) {
 function buildTimeContent($content, item, opts) {
   const tooltip = formatUtil.tooltip('time', item.time, opts);
   const text = formatUtil.text('time', item.time, opts);
-  const [ date, time ] = text.split('T');
+  const firstSpace = text.indexOf(' ');
+  const date = text.slice(0, firstSpace);
+  const time = text.slice(firstSpace, text.length);
+
   $content
     .attr('title', tooltip)
     .append('div')

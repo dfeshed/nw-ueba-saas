@@ -13,9 +13,10 @@ $investigateReconExpandedWidth: 75%;
   &__nav {
     @include rsa-vendor-prefix(flex-shrink, 0);
     @include rsa-vendor-prefix(flex-grow, 0);
-    background-color: rsa-color(black,base,$rsa-translucent);
+    background-color: rsa-color(gray, darker);
     margin-top: 1px;
     @include rsa-row(justify, middle);
+    border-bottom: 1px solid rsa-color(blue);
 
     ul {
       &:first-of-type {
@@ -31,16 +32,16 @@ $investigateReconExpandedWidth: 75%;
         display: inline;
       }
       a {
-        @include rsa-font(navigation,small);
+        @include rsa-font(navigation);
         display: inline-block;
-        padding: rsa-whitespace(less) rsa-whitespace();
+        padding: rsa-whitespace();
         text-decoration: none;
         white-space: nowrap;
-        color: rsa-color(white,base,$rsa-nearly-opaque);
+        color: rsa-color(gray, light);
 
         &.active,
         &:hover {
-          color: rsa-color(white,base,$rsa-opaque);
+          color: rsa-color(gray, lightest);
         }
       }
     }

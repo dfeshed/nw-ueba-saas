@@ -9,16 +9,16 @@
     {{#rsa-content-tethered-panel-trigger triggerEvent="click" panel=(concat 'breadCrumbServiceTooltip-' elementId)}}
       {{#rsa-form-button
         class="rsa-investigate-breadcrumb__crumb"
-        allowToggleActive=true
+        allowToggleActive=canAddMeta
         title=serviceObject.displayName
         withDropdown=canAddMeta}}
+        {{rsa-icon style='lined' name='server-3'}}
         <span class="js-test-service">{{serviceObject.displayName}}</span>
       {{/rsa-form-button}}
     {{/rsa-content-tethered-panel-trigger}}
 
     {{!-- canAddMeta = Feature Flagging --}}
     {{#if canAddMeta}}
-
       {{#rsa-content-tethered-panel
         displayCloseButton=false
         isPopover=true
@@ -42,9 +42,10 @@
 
   {{#rsa-content-tethered-panel-trigger triggerEvent="click" panel=(concat 'breadCrumbTimeTooltip-' elementId)}}
     {{#rsa-form-button
-      allowToggleActive=true
+      allowToggleActive=canAddMeta
       withDropdown=canAddMeta
       class="rsa-investigate-breadcrumb__crumb"}}
+      {{rsa-icon style='lined' name='clock-2'}}
       {{time-range startTime=query.startTime endTime=query.endTime}}
     {{/rsa-form-button}}
   {{/rsa-content-tethered-panel-trigger}}
@@ -84,9 +85,10 @@
       {{else}}
         {{#rsa-form-button
           class="rsa-investigate-breadcrumb__crumb"
-          allowToggleActive=true
+          allowToggleActive=canAddMeta
           title=crumb.tooltip
           withDropdown=false}}
+          {{rsa-icon style='lined' name='search'}}
           <span class="js-test-service">{{crumb.text}}</span>
         {{/rsa-form-button}}
       {{/if}}

@@ -96,22 +96,27 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
     @include rsa-font(header, small);
     text-transform: uppercase;
     height: 30px;
-    color: rsa-color(gray, light);
+    color: rsa-color(gray, lightest);
   }
 
   &-body-row {
     position: absolute;
-    left: calc(#{rsa-whitespace()} + #{rsa-whitespace(least)});
-    right: calc(#{rsa-whitespace()} + #{rsa-whitespace(least)});
+    left: rsa-whitespace(less);
+    right: rsa-whitespace(less);
     @include rsa-font(paragraph, small);
-    border-top: 1px solid rsa-color(gray, darker);
-    color: rsa-color(gray, lightest);
+    color: rsa-color(grey, light);
+    border-top: 1px solid rsa-color(grey, darkest);
 
     &:hover,
     &.is-selected,
     &.is-selected:hover {
-      margin: 0 calc((#{rsa-whitespace()} + #{rsa-whitespace(least)}) * -1);
-      padding: 0 calc(#{rsa-whitespace()} + #{rsa-whitespace(least)});
+      margin: 0 calc(#{rsa-whitespace(less)} * -1);
+      padding: 0 rsa-whitespace(less);
+      border-top: 1px solid transparent;
+
+      + .rsa-data-table-body-row {
+        border-top: 1px solid transparent;
+      }
 
       .rsa-form-checkbox-label {
         display: block;
@@ -124,17 +129,12 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
 
     &:hover {
       background-color: rsa-color(gray, darkest, $rsa-nearly-transparent);
-      border-top: 1px solid transparent;
-
-      + .rsa-data-table-body-row {
-        border-top: 1px solid transparent;
-      }
     }
 
     &.is-selected,
     &.is-selected:hover {
-      background-color: rsa-color(blue, base, 0.6);
       color: rsa-color(gray, lighter)!important;
+      background-color: rsa-color(blue, base, 0.6);
     }
 
     &:first-child {
@@ -164,9 +164,11 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
 
   &-body-cell {
     padding: rsa-whitespace(less);
-    padding: rsa-whitespace(less) calc(#{rsa-whitespace()} + #{rsa-whitespace(less)}) rsa-whitespace(less) rsa-whitespace(less);
-
     align-items: flex-start;
+
+    br {
+      display: none;
+    }
 
     &.is-error {
       background-color: rsa-color(red, base, 0.2);
@@ -201,12 +203,12 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
     transition: transform 0.125s;
     position: relative; /* enables absolute positioning for the .resize-handle children */
     line-height: 30px;
-    padding: 0 calc(#{rsa-whitespace()} + #{rsa-whitespace(less)}) 0 rsa-whitespace(less);
+    padding: 0 rsa-whitespace(less);
     border-right: 1px solid rsa-color(gray, dark);
     margin-right: -1px;
 
     &:first-child {
-      padding-left: calc((#{rsa-whitespace()} + #{rsa-whitespace(least)} + #{rsa-whitespace(less)}) - 1px);
+      padding-left: calc(#{rsa-whitespace()} - 1px);
     }
 
     &:last-child {

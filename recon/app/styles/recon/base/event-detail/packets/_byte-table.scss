@@ -4,6 +4,7 @@ $packet-byte-border-width: 1px;
 
 .rsa-byte-table {
   cursor: default;
+  margin-right: rsa-whitespace();
 
   table {
     width: 100%;

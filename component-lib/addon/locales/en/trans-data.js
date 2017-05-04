@@ -319,7 +319,7 @@ export default {
       clickToOpen: 'Click to open'
     },
     events: {
-      title: 'Events',
+      title: 'All Events',
       error: 'An unexpected error occurred when executing this query.'
     },
     services: {

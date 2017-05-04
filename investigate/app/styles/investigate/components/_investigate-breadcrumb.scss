@@ -1,10 +1,19 @@
 .rsa-investigate-breadcrumb {
+  padding: rsa-whitespace(less) 0;
+
   &__crumbs {
-    @include rsa-row(left, bottom);
+    @include rsa-row(left, middle);
     flex-wrap: wrap;
   }
 
-  &__crumb {
+  .disabled-meta-breadcrumb-title {
+    color: rsa-color(gray, light);
+    @include rsa-font(header, large);
+    margin-right: rsa-whitespace();
+  }
+
+  &__crumb,
+  &__more {
     list-style: none;
     position: relative; // enables positioning & z-indexing of children
 
@@ -27,60 +36,28 @@
       padding: rsa-whitespace(less) rsa-whitespace();
       padding-left: rsa-whitespace(less) + rsa-whitespace(more);
       white-space: nowrap;
-      border: 1px solid $formButtonBorderColor;
-      color: $formButtonTypeColor;
-
-      &.has-dropdown:hover {
-        color: $formButtonHoverTypeColor;
-        border-color: $formButtonHoverBorderColor;
-        cursor: pointer;
-      }
+      margin-right: rsa-whitespace(least);
+      border: 1px solid rsa-color(gray)!important;
+      color: rsa-color(gray, light)!important;
 
       .rsa-icon {
-        padding-left: rsa-whitespace(less);
+        color: rsa-color(gray);
       }
     }
-  }
 
-  &__more {
-    display: inline;
-    margin-left: rsa-whitespace(least);
-    .rsa-icon {
-      color: rsa-color(grey);
-      margin-left: rsa-whitespace(less);
+    &:hover,
+    &:active {
+      cursor: default!important;
+      background-color: inherit!important;
+
+      button {
+        cursor: default!important;
+        background-color: inherit!important;
+      }
     }
   }
 
   .rsa-investigate-time-range {
     display: inline;
-  }
-
-  .rsa-investigate-query-input {
-    @include rsa-vendor-prefix(flex-grow, 1);
-    margin: 0 rsa-whitespace() 0 rsa-whitespace(least);
-    color: rsa-color(grey);
-    .rsa-icon {
-      margin-left: rsa-whitespace();
-    }
-  }
-
-  /*
-    @workaround Overwrite rsa-form-button dropdown CSS so that child hyperlinks fill their entire parent <li>s.
-    Otherwise, we will have pixels of the <li> which surround the child hyperlink but do not belong to it.  These pixels
-    will be "dead space", where the default CSS of the <li> will create a hover effect but clicking does nothing
-    (because the pixel is outside the child hyperlink)! Gives the apperance of a broken dropdown item.
-  */
-  li {
-    padding: 0 !important;
-    border: 0 !important;
-  }
-  a {
-    padding: 0 rsa-whitespace();
-    display: block;
-  }
-  /* END @workaround */
-
-  a {
-    text-decoration: none;
   }
 }

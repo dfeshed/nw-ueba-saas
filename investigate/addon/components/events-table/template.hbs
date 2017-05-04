@@ -1,28 +1,19 @@
 <header class="rsa-investigate-events-table__header">
   <h2>
     {{t "investigate.events.title"}}
-    <span class="rsa-investigate-events-table__sums">
-      ({{event-counter
-        class="rsa-investigate-events-table__sums-count"
-        count=items.length
-        status=status
-        goAction=goAction
-        stopAction=stopAction
-        retryAction=retryAction
-      }}
-      {{#if totalCount}}
-        <span class="rsa-investigate-events-table__sums-of">{{t 'list.of'}}</span>
+    {{#if totalCount}}
+      <span class="rsa-investigate-events-table__sums">
         {{event-counter
           class="rsa-investigate-events-table__sums-total"
           count=totalCount
           status=totalStatus
           threshold=totalThreshold
-          retryAction=totalRetryAction
-        }}
-      {{/if}})
-    </span>
+          retryAction=totalRetryAction}}
+      </span>
+    {{/if}}
   </h2>
 </header>
+
 <section class="rsa-investigate-events-table__body">
   {{progress-bar
     percent=percent

@@ -4,10 +4,27 @@
   &__header {
     @include rsa-vendor-prefix(flex-shrink,0);
     @include rsa-vendor-prefix(flex-grow,0);
+    background-color: rsa-color(gray, darker);
+    border-bottom: 1px solid rsa-color(gray, dark);
 
     h2 {
-      @include rsa-font(header, small);
-      padding: rsa-whitespace(less) rsa-whitespace();
+      @include rsa-font(header, large);
+      padding: rsa-whitespace();
+      color: rsa-color(gray, light);
+
+      .rsa-investigate-events-table__sums {
+        .rsa-investigate-event-counter__count {
+          font-size: .85em;
+          &::before {
+            content: '(';
+            margin-right: -4px;
+          }
+          &::after {
+            content: ')';
+            margin-left: -4px;
+          }
+        }
+      }
     }
   }
 
@@ -33,45 +50,19 @@
     z-index: 1;
 
     &-header {
+      background-color: rsa-color(gray, darker);
       /* @workaround Clear defaults that were introduced for Response UI. */
       margin: 0;
       padding: 0;
       border: 0;
     }
 
-    &-header-cell {
-      &:first-child {
-        .title {
-          padding-left: rsa-whitespace();
-        }
-      }
-      .title {
-        display: block;
-        padding: rsa-whitespace(less) 0;
-      }
-    }
-
     &-body-row {
-      color: rsa-color(grey, lighter);
       cursor: default;
     }
 
     &-body-cell {
-      .content {
-        display: block;
-        padding: rsa-whitespace(less) 0;
-      }
-
-      .time {
-        padding-left: rsa-whitespace();
-        &:first-child {
-          padding-bottom: rsa-whitespace(least);
-        }
-      }
-
       .meta-key-and-value {
-        display: block;
-        padding-bottom: rsa-whitespace(least);
         .key {
           color: rsa-color(white, base, $rsa-translucent);
           padding-right: rsa-whitespace();
@@ -86,7 +77,6 @@
       .meta-src-dst-pair {
         display: block;
         white-space: nowrap;
-        padding-bottom: rsa-whitespace(least);
 
         .arrow {
           display: inline-block;
@@ -99,33 +89,22 @@
       &[data-field="custom.meta-summary"] {
         position: relative;
 
-        .content {
-          position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          overflow: hidden;
-          padding: 0;
-        }
-
         .meta-key-and-value,
         .meta-src-dst-pair {
           display: inline-block;
-          padding: rsa-whitespace(least) rsa-whitespace();
         }
 
         .meta-key-value-pairs {
-          color: rsa-color(grey, light);
           .value {
-            color: rsa-color(grey, lighter);
+            color: rsa-color(grey, lightest);
             padding-left: rsa-whitespace(least);
           }
         }
 
         .meta-key-value-pairs,
         .log-data {
-          padding: rsa-whitespace(least) 0;
+          padding-left: 0;
+          padding-right: 0;
           overflow: hidden;
           text-overflow: ellipsis;
         }

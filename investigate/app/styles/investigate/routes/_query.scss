@@ -16,10 +16,10 @@
   @include rsa-col(justify,fill);
 
   &__header {
-    background-color: rsa-color(black,base,$rsa-translucent);
+    background-color: rsa-color(gray, darkest, $rsa-translucent);
+    border-bottom: 1px solid rsa-color(black);
     @include rsa-vendor-prefix(flex-shrink, 1);
-    margin: 1px 0;
-    padding: rsa-whitespace(less) rsa-whitespace();
+    padding: rsa-whitespace(least) rsa-whitespace();
   }
 
   &__body {
@@ -264,17 +264,6 @@
     bottom: 0;
     left: 0;
     right: 0;
-
-    &__header {
-      background-color: rsa-color(black,base,$rsa-nearly-transparent);
-    }
-
-    .rsa-data-table {
-      &-header,
-      &-body-row {
-        border-bottom: 1px solid rsa-color(black,base,$rsa-nearly-transparent);
-      }
-    }
   }
 
   .recon-event-wrapper {
