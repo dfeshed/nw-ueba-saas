@@ -34,7 +34,7 @@
             {{#each item.hashes as |hash|}}
               <div class="recon-file-ellipsis" title="{{to-upper-case hash.type}}: {{hash.value}}">
                 {{to-upper-case hash.type}}: {{hash.value}}
-              </div><br>
+              </div>
             {{/each}}
           {{/if}}
         {{else if (eq column.field "fileSize")}}
