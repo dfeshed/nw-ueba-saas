@@ -58,9 +58,7 @@ export default {
   getAllRemediationStatusTypes() {
     const statusTypes = ['NEW', 'ASSIGNED', 'IN_PROGRESS', 'REMEDIATED', 'RISK_ACCEPTED', 'NOT_APPLICABLE'];
 
-    return new RSVP.Promise(function(resolve) {
-      resolve(statusTypes);
-    });
+    return RSVP.resolve(statusTypes);
   },
 
   /**
@@ -82,13 +80,10 @@ export default {
 
     const CONTENT_IMPROVEMENT = ['UPDATE_RULES', 'UPDATE_FEEDS', 'CUSTOM'];
 
-    return new RSVP.Promise(function(resolve) {
-      resolve({
-        OPERATIONS,
-        GRC,
-        CONTENT_IMPROVEMENT
-      });
+    return RSVP.resolve({
+      OPERATIONS,
+      GRC,
+      CONTENT_IMPROVEMENT
     });
   }
-
 };

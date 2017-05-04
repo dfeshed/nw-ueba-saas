@@ -106,13 +106,13 @@ test('All of the assignees appear in the dropdown, and selecting one calls dispa
   });
 });
 
-test('All of the categories appear in the dropdown, and selecting one calls dispatch', function(assert) {
+test('All of the parent categories appear in the dropdown, and selecting one calls dispatch', function(assert) {
   assert.expect(2);
   return initialize.then(() => {
     this.render(hbs`{{rsa-respond-incidents/incidents-filters}}`);
     const selector = '.filter-option.category-filter';
     clickTrigger(selector);
-    assert.equal($('.ember-power-select-options li.ember-power-select-option').length, 130, 'There are 130 categories available');
+    assert.equal($('.ember-power-select-options li.ember-power-select-option').length, 7, 'There are 7 parent categories available');
     selectFirstOption();
     assert.ok(dispatchSpy.calledOnce);
   });

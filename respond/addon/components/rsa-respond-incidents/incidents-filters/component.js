@@ -6,7 +6,6 @@ import * as DataActions from 'respond/actions/data-creators';
 import { priorityOptions, statusOptions } from 'respond/selectors/dictionaries';
 import computed from 'ember-computed-decorators';
 import { SINCE_WHEN_TYPES } from 'respond/utils/since-when-types';
-import arrayFlattenBy from 'respond/utils/array/flatten-by';
 import moment from 'moment';
 import config from 'ember-get-config';
 
@@ -24,7 +23,7 @@ const stateToComputed = (state) => {
     assigneeFilters: incidentsFilters['assignee.id'],
     priorityTypes: priorityOptions(state),
     statusTypes: statusOptions(state),
-    categoryFilters: incidentsFilters.categories,
+    categoryFilters: incidentsFilters['categories.parent'],
     categoryTags,
     users: state.respond.users.users,
     timeframeFilter: incidentsFilters.created,
@@ -151,12 +150,7 @@ const IncidentsFilters = Component.extend({
 
   @computed('categoryTags', 'categoryFilters')
   selectedCategories(categories, categoryFilters = []) {
-    return arrayFlattenBy(categories, 'options')  // pull out options array from each group and flatten to one big array
-      .filter((category) => {                     // find all the matching categories that are applied as a filter
-        return categoryFilters.some((catFilter) => {
-          return catFilter.name === category.name && catFilter.parent === category.parent;
-        });
-      });
+    return categories.map((item) => (categoryFilters.includes(item) ? item : null)).compact();
   },
 
   /**
@@ -240,7 +234,7 @@ const IncidentsFilters = Component.extend({
 
     categoryChanged(selections) {
       this.send('updateFilter', {
-        'categories': selections.map(({ name, parent }) => ({ parent, name }))
+        'categories.parent': selections
       });
     },
 

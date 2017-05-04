@@ -25,7 +25,7 @@ const itemsFilters = () => ({
 const _handleUpdates = (action) => {
   return (state) => {
     const { payload: { request: { updates, entityIds } } } = action;
-    const updatedIncidents = state.items.map((entity) => {
+    const updatedEntities = state.items.map((entity) => {
       const updatedEntity = entityIds.includes(entity.id) ? { ...entity, ...updates } : entity;
       // reset the focus item to the newly updated entity, if it exists
       if (state.focusedItem && state.focusedItem.id === updatedEntity.id) {
@@ -35,7 +35,7 @@ const _handleUpdates = (action) => {
     });
     return {
       ...state,
-      items: updatedIncidents
+      items: updatedEntities
     };
   };
 };
