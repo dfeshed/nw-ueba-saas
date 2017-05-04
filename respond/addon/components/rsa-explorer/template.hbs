@@ -47,7 +47,11 @@
     </box>
   </vbox>
   <vbox class="inspector-zone">
-    {{yield (hash name='explorer-inspector' instance=this inspector=(component 'rsa-explorer/explorer-inspector' info=focusedItem ))}}
+    {{yield (hash name='explorer-inspector'
+      instance=this
+      inspector=(component 'rsa-explorer/explorer-inspector' info=focusedItem)
+      updateItem=(action 'updateItem')
+    )}}
     {{#rsa-form-button class="close-inspector" isIconOnly=true defaultAction=(action "clearFocusItem")}}{{rsa-icon name='close'}}{{/rsa-form-button}}
   </vbox>
 </hbox>

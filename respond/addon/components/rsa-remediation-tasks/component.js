@@ -1,6 +1,21 @@
 import Component from 'ember-component';
+import connect from 'ember-redux/components/connect';
+import * as DataActions from 'respond/actions/data-creators';
+import * as DictionaryActions from 'respond/actions/creators/dictionary-creators';
 import columns from './columns';
 
-export default Component.extend({
+const dispatchToActions = (dispatch) => {
+  return {
+    bootstrap() {
+      dispatch(DataActions.getAllPriorityTypes());
+      dispatch(DictionaryActions.getAllRemediationStatusTypes());
+      dispatch(DictionaryActions.getAllRemediationTypes());
+    }
+  };
+};
+
+const RemediationTasks = Component.extend({
   columns
 });
+
+export default connect(undefined, dispatchToActions)(RemediationTasks);

@@ -418,6 +418,12 @@ export default {
       LAST_30_DAYS: 'Last 30 Days',
       ALL_TIME: 'All Data'
     },
+    entities: {
+      actionMessages: {
+        updateSuccess: 'Your change was successful',
+        updateFailure: 'There was a problem updating the field for this record'
+      }
+    },
     explorer: {
       filters: {
         timeRange: 'Time Range',
@@ -449,6 +455,32 @@ export default {
         lastUpdated: 'Last Updated',
         description: 'Description',
         createdBy: 'Created By'
+      },
+      type: {
+        QUARANTINE_HOST: 'Quarantine Host',
+        QUARANTINE_NETORK_DEVICE: 'Quarantine Network Device',
+        BLOCK_IP_PORT: 'Block IP/Port',
+        BLOCK_EXTERNAL_ACCESS_TO_DMZ: 'Block External Access To DMZ',
+        BLOCK_VPN_ACCESS: 'Block VPN Access',
+        REIMAGE_HOST: 'Reimage Host',
+        UPDATE_FIREWALL_POLICY: 'Update Firewall Policy',
+        UPDATE_IDS_IPS_POLICY: 'Update IDS/IPS Policy',
+        UPDATE_WEB_PROXY_POLICY: 'Update Web Proxy Policy',
+        UPDATE_ACCESS_POLICY: 'Update Access Policy',
+        UPDATE_VPN_POLICY: 'Update VPN Policy',
+        CUSTOM: 'Custom',
+        MITIGATE_RISK: 'Mitigate Risk',
+        MITIGATE_COMPLIANCE_VIOLATION: 'Mitigate Compliance Violation',
+        MITIGATE_VULNERABILITY_THREAT: 'Mitigate Vulnerability Threat',
+        UPDATE_CORPORATE_BUSINESS_POLICY: 'Update Corporate Business Policy',
+        NOTIFY_BC_DR_TEAM: 'Notify BC/DR Team',
+        UPDATE_RULES: 'Update Rule(s)',
+        UPDATE_FEEDS: 'Update Feed(s)'
+      },
+      targetQueue: {
+        OPERATIONS: 'Operations',
+        GRC: 'GRC',
+        CONTENT_IMPROVEMENT: 'Content Improvement'
       },
       noDescription: 'There is no description for this task'
     },

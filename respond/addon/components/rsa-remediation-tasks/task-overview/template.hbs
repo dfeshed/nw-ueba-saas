@@ -1,62 +1,101 @@
-{{! Incident ID}}
-<p class="metadata">
-  <label>{{t 'respond.remediationTasks.list.incidentId'}}:</label>
-  <span>{{#link-to "incident" info.incidentId}}{{info.incidentId}}{{/link-to}}</span>
-</p>
+<div>
+  {{! Incident ID}}
+  <div class="metadata">
+    <label>{{t 'respond.remediationTasks.list.incidentId'}}:</label>
+    <span>{{#link-to "incident" info.incidentId}}{{info.incidentId}}{{/link-to}}</span>
+  </div>
 
-<p class="metadata">
-  <label>{{t 'respond.remediationTasks.list.createdDate'}}:</label>
-  <span>{{rsa-content-datetime timestamp=info.created displayTime=true displayMilliseconds=false}}</span>
-</p>
+  <div class="metadata">
+    <label>{{t 'respond.remediationTasks.list.createdDate'}}:</label>
+    <span>{{rsa-content-datetime timestamp=info.created displayTime=true displayMilliseconds=false}}</span>
+  </div>
 
-<p class="metadata">
-  <label>{{t 'respond.remediationTasks.list.lastUpdated'}}:</label>
-  <span>{{rsa-content-datetime timestamp=info.lastUpdated displayTime=true displayMilliseconds=false}}</span>
-</p>
+  <div class="metadata">
+    <label>{{t 'respond.remediationTasks.list.lastUpdated'}}:</label>
+    <span>{{rsa-content-datetime timestamp=info.lastUpdated displayTime=true displayMilliseconds=false}}</span>
+  </div>
 
-<p class="metadata">
-  <label>{{t 'respond.remediationTasks.list.targetQueue'}}:</label>
-  <span>{{info.targetQueue}}</span>
-</p>
+  <div class="metadata">
+    <label>{{t 'respond.remediationTasks.list.targetQueue'}}:</label>
+    {{#if info.targetQueue}}
+      <span>{{t (concat 'respond.remediationTasks.targetQueue.' info.targetQueue)}}</span>
+    {{/if}}
+  </div>
 
-<p class="metadata">
-  <label>{{t 'respond.remediationTasks.list.remediationType'}}:</label>
-  <span>{{info.remediationType}}</span>
-</p>
+  <div class="metadata">
+    <label>{{t 'respond.remediationTasks.list.remediationType'}}:</label>
+    {{#if remediationTypeOptions.length}}
+      <div class="edit-button">
+        {{#power-select
+          options=remediationTypeOptions
+          selected=info.remediationType
+          matchTriggerWidth=false
+          searchEnabled=false
+          triggerComponent=(component "respond-common/button-trigger"
+            label=(t (concat 'respond.remediationTasks.type.' info.remediationType)))
+          onchange=(action 'update' info.id 'remediationType') as |option|}}
+          {{t (concat 'respond.remediationTasks.type.' option)}}
+        {{/power-select}}
+      </div>
+    {{else}}
+      <span>{{info.remediationType}}</span>
+    {{/if}}
+  </div>
 
-{{! Priority}}
-<p class="metadata">
-  <label>{{t 'respond.remediationTasks.list.priority'}}:</label>
-  <span>{{t (concat 'respond.priority.' info.priority)}}</span>
-</p>
+  {{! Priority}}
+  <div class="metadata">
+    <label>{{t 'respond.remediationTasks.list.priority'}}:</label>
+    <div class="edit-button">
+      {{#power-select
+        options=priorityTypes
+        selected=info.priority
+        matchTriggerWidth=false
+        searchEnabled=false
+        triggerComponent=(component "respond-common/button-trigger"
+          label=(t (concat 'respond.priority.' info.priority)))
+        onchange=(action 'update' info.id 'priority') as |option|}}
+        {{t (concat 'respond.priority.' option)}}
+      {{/power-select}}
+    </div>
+  </div>
 
-{{! Status}}
-<p class="metadata">
-  <label>{{t 'respond.remediationTasks.list.status'}}:</label>
-  <span>{{t (concat 'respond.status.' info.status)}}</span>
-</p>
+  {{! Status}}
+  <div class="metadata">
+    <label>{{t 'respond.remediationTasks.list.status'}}:</label>
+    <div class="edit-button">
+      {{#power-select
+        options=remediationStatusTypes
+        selected=info.status
+        matchTriggerWidth=false
+        searchEnabled=false
+        triggerComponent=(component "respond-common/button-trigger"
+          label=(t (concat 'respond.status.' info.status)))
+        onchange=(action 'update' info.id 'status') as |option|}}
+        {{t (concat 'respond.status.' option)}}
+      {{/power-select}}
+    </div>
+  </div>
 
-{{! Status}}
-<p class="metadata">
-  <label>{{t 'respond.remediationTasks.list.escalated'}}:</label>
-  <span>{{if info.escalated (t 'respond.common.yes') (t 'respond.common.no')}}</span>
-</p>
+  {{! Escalated}}
+  <div class="metadata">
+    <label>{{t 'respond.remediationTasks.list.escalated'}}:</label>
+    <span>{{if info.escalated (t 'respond.common.yes') (t 'respond.common.no')}}</span>
+  </div>
 
-{{! Assignee}}
-<p class="metadata">
-  <label>{{t 'respond.remediationTasks.list.assignee'}}:</label>
-  <span>{{if info.assignee info.assignee (t 'respond.assignee.none')}}</span>
-</p>
+  {{! Assignee}}
+  <div class="metadata">
+    <label>{{t 'respond.remediationTasks.list.assignee'}}:</label>
+    <span>{{if info.assignee info.assignee (t 'respond.assignee.none')}}</span>
+  </div>
 
-<p class="metadata">
+  {{! Description}}
+  <div class="text">
+    <label>{{t 'respond.remediationTasks.list.description'}}</label>
+    {{#if info.description}}
+      {{info.description}}
+    {{else}}
+      <i>{{t 'respond.remediationTasks.noDescription'}}</i>
+    {{/if}}
+  </div>
 
-</p>
-<p class="text">
-  <label>{{t 'respond.remediationTasks.list.description'}}</label>
-  {{#if info.description}}
-    {{info.description}}
-  {{else}}
-    <i>{{t 'respond.remediationTasks.noDescription'}}</i>
-  {{/if}}
-</p>
-
+</div>

@@ -8,6 +8,25 @@ import { camelize } from 'ember-string';
 import { isPresent } from 'ember-utils';
 import { gt, alias, empty } from 'ember-computed-decorators';
 
+const FLASH_MESSAGE_TYPES = {
+  SUCCESS: {
+    name: 'success',
+    icon: 'check-circle-2'
+  },
+  INFO: {
+    name: 'info',
+    icon: 'information-circle'
+  },
+  WARNING: {
+    name: 'warning',
+    icon: 'report-problem-circle'
+  },
+  ERROR: {
+    name: 'error',
+    icon: 'delete-1'
+  }
+};
+
 /**
  * The Explorer component's redux state will always use the same base set of properties (e.g., items, itemsSelected,
  * focusedItem, etc), independent of the domain for which it's used (e.g., incidents, alerts, remediation tasks, etc).
@@ -63,6 +82,10 @@ const dispatchToActions = function(dispatch) {
   const namespace = this.get('namespace');
   return {
     initializeItems: () => actionBroker(dispatch, namespace, 'getItems'),
+    updateItem: (entityId, fieldName, value) => actionBroker(dispatch, namespace, 'updateItem', entityId, fieldName, value, {
+      onSuccess: () => (this.send('showFlashMessage', FLASH_MESSAGE_TYPES.SUCCESS, 'respond.entities.actionMessages.updateSuccess')),
+      onFailure: () => (this.send('showFlashMessage', FLASH_MESSAGE_TYPES.ERROR, 'respond.entities.actionMessages.updateFailure'))
+    }),
     toggleFilterPanel: () => actionBroker(dispatch, namespace, 'toggleFilterPanel'),
     updateFilter: (change) => actionBroker(dispatch, namespace, 'updateFilter', change),
     resetFilters: () => actionBroker(dispatch, namespace, 'resetFilters'),
@@ -96,6 +119,8 @@ const Explorer = Component.extend({
   classNames: ['rsa-respond-explorer', 'flexi-fit'],
   classNameBindings: ['isFilterPanelOpen:show-filters', 'isTransactionUnderway:transaction-in-progress'],
   redux: service(),
+  flashMessages: service(),
+  eventBus: service(),
   namespace: '',
 
   onInit: function() {
@@ -137,7 +162,22 @@ const Explorer = Component.extend({
    * @property selectionCount
    */
   @alias('itemsSelected.length')
-  selectionCount: null
+  selectionCount: null,
+
+  actions: {
+    /**
+     * Convenience method for showing a flash success/error message to the user on update or failure
+     * @method showFlashMessage
+     * @public
+     * @param type
+     * @param i18nKey
+     * @param context
+     */
+    showFlashMessage(type, i18nKey, context) {
+      const { i18n, flashMessages } = this.getProperties('i18n', 'flashMessages');
+      flashMessages[type.name](i18n.t(i18nKey, context), { iconName: type.icon });
+    }
+  }
 });
 
 export default connect(stateToComputed, dispatchToActions)(Explorer);

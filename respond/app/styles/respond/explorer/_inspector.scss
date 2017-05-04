@@ -60,7 +60,7 @@ $metadataLineHeight: 1.35;
       @include rsa-font(body, small);
     }
 
-    p.metadata {
+    .metadata {
       @include rsa-font(body, small);
       padding: rsa-whitespace() rsa-whitespace(less) rsa-whitespace(less) (rsa-whitespace(less) + $metadataLabelWidth);
       color: rsa-color(gray, light);
@@ -79,14 +79,25 @@ $metadataLineHeight: 1.35;
       }
 
       > span {
-        padding-left: rsa-whitespace();
         display: inline-block;
         min-height: 1em * $metadataLineHeight;
         color: rsa-color(white);
       }
+
+      > .edit-button {
+        display: inline-block;
+        width: auto;
+        min-height: 30px;
+
+        .ember-power-select-trigger {
+          width: auto;
+          padding: 0;
+          border: none;
+        }
+      }
     }
 
-    p.text {
+    .text {
       @include rsa-font(body, small);
       padding: rsa-whitespace(less);
       line-height: 1.2rem;

@@ -24,9 +24,14 @@ const itemsFilters = () => ({
 // Updates the state value with the value updated on the server
 const _handleUpdates = (action) => {
   return (state) => {
-    const { payload: { request: { updates, incidentIds } } } = action;
-    const updatedIncidents = state.items.map((incident) => {
-      return incidentIds.includes(incident.id) ? { ...incident, ...updates } : incident;
+    const { payload: { request: { updates, entityIds } } } = action;
+    const updatedIncidents = state.items.map((entity) => {
+      const updatedEntity = entityIds.includes(entity.id) ? { ...entity, ...updates } : entity;
+      // reset the focus item to the newly updated entity, if it exists
+      if (state.focusedItem && state.focusedItem.id === updatedEntity.id) {
+        state.focusedItem = updatedEntity;
+      }
+      return updatedEntity;
     });
     return {
       ...state,
@@ -53,6 +58,15 @@ const fetchItemCount = (state, action) => (
       ...s,
       itemsTotal: action.payload.data
     })
+  })
+);
+
+const updateItem = (state, action) => (
+  handle(state, action, {
+    start: (s) => ({ ...s, isTransactionUnderway: true }),
+    success: _handleUpdates(action),
+    failure: (s) => ({ ...s }),
+    finish: (s) => ({ ...s, isTransactionUnderway: false })
   })
 );
 
@@ -147,6 +161,7 @@ export default {
   _handleUpdates,
   fetchItems,
   fetchItemCount,
+  updateItem,
   updateFilter,
   toggleFilterPanel,
   toggleCustomDateRestriction,

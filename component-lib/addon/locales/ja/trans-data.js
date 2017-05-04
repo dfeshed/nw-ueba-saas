@@ -418,6 +418,12 @@ export default {
       LAST_30_DAYS: 'ja_Last 30 Days',
       ALL_TIME: 'ja_All Data'
     },
+    entities: {
+      actionMessages: {
+        updateSuccess: 'ja_Your change was successful',
+        updateFailure: 'ja_There was a problem updating the field for this record'
+      }
+    },
     explorer: {
       filters: {
         timeRange: 'ja_Time Range',
@@ -449,6 +455,32 @@ export default {
         lastUpdated: 'ja_Last Updated',
         description: 'ja_Description',
         createdBy: 'ja_Created By'
+      },
+      type: {
+        QUARANTINE_HOST: 'ja_Quarantine Host',
+        QUARANTINE_NETORK_DEVICE: 'ja_Quarantine Network Device',
+        BLOCK_IP_PORT: 'ja_Block IP/Port',
+        BLOCK_EXTERNAL_ACCESS_TO_DMZ: 'ja_Block External Access To DMZ',
+        BLOCK_VPN_ACCESS: 'ja_Block VPN Access',
+        REIMAGE_HOST: 'ja_Reimage Host',
+        UPDATE_FIREWALL_POLICY: 'ja_Update Firewall Policy',
+        UPDATE_IDS_IPS_POLICY: 'ja_Update IDS/IPS Policy',
+        UPDATE_WEB_PROXY_POLICY: 'ja_Update Web Proxy Policy',
+        UPDATE_ACCESS_POLICY: 'ja_Update Access Policy',
+        UPDATE_VPN_POLICY: 'ja_Update VPN Policy',
+        CUSTOM: 'ja_Custom',
+        MITIGATE_RISK: 'ja_Mitigate Risk',
+        MITIGATE_COMPLIANCE_VIOLATION: 'ja_Mitigate Compliance Violation',
+        MITIGATE_VULNERABILITY_THREAT: 'ja_Mitigate Vulnerability Threat',
+        UPDATE_CORPORATE_BUSINESS_POLICY: 'ja_Update Corporate Business Policy',
+        NOTIFY_BC_DR_TEAM: 'ja_Notify BC/DR Team',
+        UPDATE_RULES: 'ja_Update Rule(s)',
+        UPDATE_FEEDS: 'ja_Update Feed(s)'
+      },
+      targetQueue: {
+        OPERATIONS: 'ja_Operations',
+        GRC: 'ja_GRC',
+        CONTENT_IMPROVEMENT: 'ja_Content Improvement'
       },
       noDescription: 'ja_There is no description for this task'
     },

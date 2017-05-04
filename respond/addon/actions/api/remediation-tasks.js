@@ -1,6 +1,7 @@
 import { promiseRequest } from 'streaming-data/services/data-access/requests';
 import FilterQuery from 'respond/utils/filter-query';
 import moment from 'moment';
+import { isEmberArray } from 'ember-array/utils';
 
 // utility function for constructing a basic/standard incidents query
 const _buildQuery = (filters = { created: { name: 'ALL_TIME', unit: 'years', subtract: 50 } }, { sortField, isSortDescending = true }) => {
@@ -64,9 +65,40 @@ const RemediationTasksAPI = {
   },
 
   /**
+   * Updates one property of the Remediation Task record on one or more remediation tasks
+   * @method updateRemediationTask
+   * @public
+   * @param entityId {string} - The ID of the remediation task to update
+   * @param field {string} - The name of the field on the record (e.g., 'priority' or 'status') to update
+   * @param updatedValue {*} - The value to be set/updated on the record's field
+   */
+  updateRemediationTask(entityId, field, updatedValue) {
+    const entityIds = isEmberArray(entityId) ? entityId : [entityId];
+
+    return promiseRequest({
+      method: 'updateRecord',
+      modelName: 'remediation-tasks',
+      query: {
+        entityIds,
+        updates: {
+          [field]: updatedValue
+        }
+      }
+    });
+  },
+
+  /**
+   * Creates a remediation task
    * @method createRemediationTask
    * @public
-   * @param task
+   * @param task {Object} - The task object
+   * @param task.incidentId {string} - The ID of the incident to which this remediation task should be added
+   * @param task.name {string} - The name of the remediation task
+   * @param task.priority {string} - The priority for the remediation task (LOW, MEDIUM, HIGH, CRITICAL)
+   * @param task.status {string} - The status for the remediation task (NEW, ASSIGNED, IN_PROGRESS, REMEDIATED, RISK_ACCEPTED, NOT_APPLICABLE)
+   * @param task.targetQueue {string} - The target queue for the task (OPERATIONS, GRC, CONTENT_IMPROVEMENT)
+   * @param task.remediationType {string} - The remediationType options depend on the target queue selected
+   * @param task.assignee {string} - Individual assigned to work on the remediation
    * @returns {*}
    */
   createRemediationTask(task) {

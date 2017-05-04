@@ -39,6 +39,35 @@ const getItems = () => {
 };
 
 /**
+ * An action creator that updates a field on a remediation task
+ * @method updateItem
+ * @public
+ * @param entityId {string} - The ID of the remediation task to update
+ * @param field {string} - The name of the field on the record (e.g., 'priority' or 'status') to update
+ * @param updatedValue {*} - The value to be set/updated on the record's field
+ * @param callbacks
+ * @param callbacks.onSuccess {function} - The callback to be executed when the operation is successful (e.g., showing a flash notification)
+ * @param callbacks.onFailure {function} - The callback to be executed when the operation fails
+ * @returns {Promise}
+ */
+const updateItem = (entityId, field, updatedValue, callbacks) => {
+  return {
+    type: ACTION_TYPES.UPDATE_REMEDIATION_TASK,
+    promise: RemediationTasks.updateRemediationTask(entityId, field, updatedValue),
+    meta: {
+      onSuccess: (response) => {
+        Logger.debug(ACTION_TYPES.UPDATE_REMEDIATION_TASK, response);
+        callbacks.onSuccess(response);
+      },
+      onFailure: (response) => {
+        ErrorHandlers.handleContentUpdateError(response, `${entityId} ${field} to ${updatedValue}`);
+        callbacks.onFailure(response);
+      }
+    }
+  };
+};
+
+/**
  * An action creator that dispatches a set of actions for updating remediation tasks filter criteria and re-running fetch of the
  * tasks using that new criteria
  * @public
@@ -129,6 +158,7 @@ const toggleFilterPanel = () => ({ type: ACTION_TYPES.TOGGLE_FILTER_PANEL_REMEDI
 
 export {
   getItems,
+  updateItem,
   updateFilter,
   createRemediationTask,
   sortBy,

@@ -1,4 +1,9 @@
-{{#rsa-explorer columns=columns namespace='remediation-tasks' as |explorer|}}
+{{#rsa-explorer
+  columns=columns
+  namespace='remediation-tasks'
+  bootstrap=(action 'bootstrap')
+  as |explorer|}}
+
   {{#explorer.toolbar}}
     {{! Add additional toolbar controls here }}
   {{/explorer.toolbar}}
@@ -41,7 +46,11 @@
 
   {{#explorer.inspector as |section viewMode|}}
     {{#if (eq section 'inspector-body')}}
-      {{rsa-remediation-tasks/task-overview info=explorer.instance.focusedItem}}
+
+      {{rsa-remediation-tasks/task-overview
+        info=explorer.instance.focusedItem
+        updateEntity=(action explorer.updateItem)}}
+
     {{/if}}
 
   {{/explorer.inspector}}

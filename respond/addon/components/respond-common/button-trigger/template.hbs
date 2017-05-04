@@ -1,0 +1,13 @@
+<button class="rsa-form-button" disabled={{isDisabled}}>
+  {{#if iconName}}
+    {{rsa-icon name=iconName title=label}}
+  {{/if}}
+
+  {{#unless isIconOnly}}
+    {{#if label}}
+      {{label}}
+    {{else}}
+      {{yield}}
+    {{/if}}
+  {{/unless}}
+</button>
