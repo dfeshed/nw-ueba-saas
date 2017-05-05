@@ -1,8 +1,17 @@
 import TabList from 'context/config/dynamic-tab';
 import { isEmpty } from 'ember-utils';
 
-const getCount = (contextData, dataSourceGroup) => {
+const getResultListSize = (contextData, dataSourceGroup) => {
   return (contextData && contextData[dataSourceGroup] && contextData[dataSourceGroup].resultList) ? contextData[dataSourceGroup].resultList.length : 0;
+};
+
+const getCount = (contextData, dataSourceGroup) => {
+  if (dataSourceGroup === 'Endpoint') {
+    return getResultListSize(contextData, 'Machines') +
+      getResultListSize(contextData, 'Modules') +
+      getResultListSize(contextData, 'IOC');
+  }
+  return getResultListSize(contextData, dataSourceGroup);
 };
 
 const getData = (lookupData, { dataSourceGroup, sortColumn, sortOrder }) => {

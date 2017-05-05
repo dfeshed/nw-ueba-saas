@@ -10,13 +10,41 @@ const updateActiveTab = (activeTab) => {
   };
 };
 
+const updateIsConfigured = (dataSources, tab) => {
+  if (tab.dataSourceType === 'Endpoint') {
+    return dataSources.includes('Machines') || dataSources.includes('Modules') || dataSources.includes('IOC');
+  }
+  return dataSources.includes(tab.dataSourceType);
+};
+
+const updateDataSourceDetails = (tab, dataSources) => {
+  if (tab.dataSourceType === 'Endpoint') {
+    tab.details = {
+      Machines: {
+        details: dataSourceCoulmns.MACHINES,
+        isConfigured: dataSources.includes('Machines')
+      },
+      IOC: {
+        details: dataSourceCoulmns.IOC,
+        isConfigured: dataSources.includes('IOC')
+      },
+      Modules: {
+        details: dataSourceCoulmns.MODULES,
+        isConfigured: dataSources.includes('Modules')
+      }
+    };
+    return tab.details;
+  }
+  return dataSourceCoulmns[tab.dataSourceType.toUpperCase()];
+};
+
 const findDataSource = (dataSources, meta) => {
   return dataSourceMetaMap.find((dataSource) => {
     return dataSource.tabType === meta;
   }).columns.map((tab) => ({
     ...tab,
-    isConfigured: dataSources.includes(tab.dataSourceType),
-    details: dataSourceCoulmns[tab.dataSourceType.toUpperCase()]
+    isConfigured: updateIsConfigured(dataSources, tab),
+    details: updateDataSourceDetails(tab, dataSources)
   }));
 };
 /**

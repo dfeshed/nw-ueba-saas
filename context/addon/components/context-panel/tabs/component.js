@@ -25,6 +25,17 @@ const getToolTipText = (lookupData, { dataSourceType, isConfigured }, i18n) => {
   }
 };
 
+const getLoadingIcon = (lookupData, dataSourceType) => {
+  if (!lookupData) {
+    return false;
+  }
+  if (dataSourceType === 'Endpoint') {
+    return lookupData.IOC || lookupData.Machines || lookupData.Modules;
+  } else {
+    return lookupData[dataSourceType];
+  }
+};
+
 const TabsComponent = Component.extend({
   layout,
   tagName: '',
@@ -45,7 +56,7 @@ const TabsComponent = Component.extend({
       toolTipText: getToolTipText(lookupData, tab, this.get('i18n')),
       title: tab.tabTitle || tab.title,
       isActive: tab.field === activeTabName,
-      loadingIcon: (!lookupData || !lookupData[tab.dataSourceType]) && tab.isConfigured,
+      loadingIcon: !getLoadingIcon(lookupData, tab.dataSourceType) && tab.isConfigured,
       tabClass: tab.field === activeTabName ? 'tab-active-background' : ''
     }));
   }

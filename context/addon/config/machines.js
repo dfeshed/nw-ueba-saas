@@ -8,7 +8,7 @@ export default {
   title: 'context.hostSummary.title',
   columns: [
     {
-      class: 'rsa-context-panel__endpoint__host-details__badge-score col-xs-2',
+      class: 'rsa-context-panel__endpoint__host-details__badge-score col-xs-1',
       displayField: true,
       cell: [{
         field: 'IIOCScore',
@@ -65,7 +65,7 @@ export default {
       }]
     },
     {
-      class: 'col-xs-2',
+      class: 'col-xs-3',
       displayField: true,
       cell: [{
         field: 'MachineStatus',

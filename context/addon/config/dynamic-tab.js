@@ -1,82 +1,109 @@
+const datasources = {
+  endpoint: {
+    field: 'Endpoint',
+    title: 'context.header.endpoint',
+    dataSourceType: 'Endpoint',
+    displayType: 'endpoint',
+    details: {
+      Machines: {
+        field: 'Machines',
+        title: 'context.hostSummary.title',
+        dataSourceType: 'Machines',
+        displayType: 'grid',
+        tabRequired: false
+      },
+      Modules: {
+        field: 'Modules',
+        title: 'context.header.modules',
+        dataSourceType: 'Modules',
+        displayType: 'table',
+        tabRequired: false
+      },
+      IOC: {
+        field: 'IOC',
+        title: 'context.header.iioc',
+        dataSourceType: 'IOC',
+        displayType: 'table',
+        tabRequired: false
+      }
+    },
+    class: 'network-computers-2',
+    tabRequired: true
+  },
+  incident: {
+    field: 'Incidents',
+    title: 'context.header.incidents',
+    dataSourceType: 'Incidents',
+    displayType: 'table',
+    class: 'flag-square-2',
+    tabRequired: true
+  },
+  alert: {
+    field: 'Alerts',
+    title: 'context.header.alerts',
+    dataSourceType: 'Alerts',
+    displayType: 'table',
+    class: 'alarm-sound',
+    tabRequired: true
+  },
+  list: {
+    field: 'LIST',
+    title: 'context.header.lists',
+    dataSourceType: 'LIST',
+    displayType: 'table',
+    class: 'list-bullets-1',
+    tabRequired: true
+  },
+  archer: {
+    field: 'Archer',
+    title: 'context.archer.title',
+    tabTitle: 'context.header.archer',
+    dataSourceType: 'Archer',
+    displayType: 'grid',
+    tabRequired: true,
+    class: 'network-connecting'
+  },
+  liveConnect: {
+    field: 'LiveConnect-Ip',
+    title: 'context.header.liveConnect',
+    dataSourceType: 'LiveConnect-Ip',
+    displayType: 'liveConnect',
+    class: 'network-live',
+    tabRequired: true
+  },
+  user: {
+    field: 'Users',
+    title: 'context.header.users',
+    dataSourceType: 'Users',
+    displayType: 'grid',
+    class: 'account-circle-1',
+    tabRequired: true
+  }
+};
+
+const toolbar = {
+  addToList: {
+    field: 'Add To List',
+    title: 'context.toolbar.addToList',
+    componentName: 'add-to-list'
+  }
+};
+
 export default [{
   tabType: 'IP',
   header: 'context.modules.header',
   footer: ' ',
   title: 'context.modules.title',
   columns: [
-    {
-      field: 'Machines',
-      title: 'context.hostSummary.title',
-      dataSourceType: 'Machines',
-      displayType: 'grid',
-      class: 'network-computers-2',
-      tabRequired: false
-    },
-    {
-      field: 'Modules',
-      title: 'context.header.modules',
-      dataSourceType: 'Modules',
-      displayType: 'table',
-      class: 'graph',
-      tabRequired: true
-    },
-    {
-      field: 'IOC',
-      title: 'context.header.iioc',
-      dataSourceType: 'IOC',
-      displayType: 'table',
-      class: 'report-problem-diamond',
-      tabRequired: true
-    },
-    {
-      field: 'Incidents',
-      title: 'context.header.incidents',
-      dataSourceType: 'Incidents',
-      displayType: 'table',
-      class: 'flag-square-2',
-      tabRequired: true
-    },
-    {
-      field: 'Alerts',
-      title: 'context.header.alerts',
-      dataSourceType: 'Alerts',
-      displayType: 'table',
-      class: 'alarm-sound',
-      tabRequired: true
-    },
-    {
-      field: 'LIST',
-      title: 'context.header.lists',
-      dataSourceType: 'LIST',
-      displayType: 'table',
-      class: 'list-bullets-1',
-      tabRequired: true
-    },
-    {
-      field: 'Archer',
-      title: 'context.archer.title',
-      tabTitle: 'context.header.archer',
-      dataSourceType: 'Archer',
-      displayType: 'grid',
-      tabRequired: true,
-      class: 'network-connecting'
-    },
-    {
-      field: 'LiveConnect-Ip',
-      title: 'context.header.liveConnect',
-      dataSourceType: 'LiveConnect-Ip',
-      displayType: 'liveConnect',
-      class: 'network-live',
-      tabRequired: true
-    }
+    datasources.endpoint,
+    datasources.incident,
+    datasources.alert,
+    datasources.list,
+    datasources.archer,
+    datasources.liveConnect
   ],
-
   toolbar: [
-    {
-      field: 'Add To List',
-      title: 'context.toolbar.addToList',
-      componentName: 'add-to-list'
-    }
+    toolbar.addToList
   ]
 },
 
@@ -86,47 +113,13 @@ export default [{
   footer: '',
   title: 'context.iiocs.title',
   columns: [
-    {
-      field: 'Users',
-      title: 'context.header.users',
-      dataSourceType: 'Users',
-      displayType: 'grid',
-      class: 'account-circle-1',
-      tabRequired: true
-
-    },
-    {
-      field: 'Incidents',
-      title: 'context.header.incidents',
-      dataSourceType: 'Incidents',
-      displayType: 'table',
-      class: 'flag-square-2',
-      tabRequired: true
-    },
-
-    {
-      field: 'Alerts',
-      title: 'context.header.alerts',
-      dataSourceType: 'Alerts',
-      displayType: 'table',
-      class: 'alarm-sound',
-      tabRequired: true
-    },
-    {
-      field: 'LIST',
-      title: 'context.header.lists',
-      dataSourceType: 'LIST',
-      displayType: 'table',
-      class: 'list-bullets-1',
-      tabRequired: true
-    }
+    datasources.user,
+    datasources.incident,
+    datasources.alert,
+    datasources.list
   ],
   toolbar: [
-    {
-      field: 'Add To List',
-      title: 'context.toolbar.addToList',
-      componentName: 'add-to-list'
-    }
+    toolbar.addToList
   ]
 },
 
@@ -136,70 +129,14 @@ export default [{
   footer: ' ',
   title: 'context.modules.title',
   columns: [
-    {
-      field: 'Machines',
-      title: 'context.hostSummary.title',
-      dataSourceType: 'Machines',
-      displayType: 'grid',
-      class: 'network-computers-2',
-      tabRequired: false
-    },
-    {
-      field: 'Modules',
-      title: 'context.header.modules',
-      dataSourceType: 'Modules',
-      displayType: 'table',
-      class: 'graph',
-      tabRequired: true
-    },
-    {
-      field: 'IOC',
-      title: 'context.header.iioc',
-      dataSourceType: 'IOC',
-      displayType: 'table',
-      class: 'report-problem-diamond',
-      tabRequired: true
-    },
-    {
-      field: 'Incidents',
-      title: 'context.header.incidents',
-      dataSourceType: 'Incidents',
-      displayType: 'table',
-      class: 'flag-square-2',
-      tabRequired: true
-    },
-    {
-      field: 'Alerts',
-      title: 'context.header.alerts',
-      dataSourceType: 'Alerts',
-      displayType: 'table',
-      class: 'alarm-sound',
-      tabRequired: true
-    },
-    {
-      field: 'LIST',
-      title: 'context.header.lists',
-      dataSourceType: 'LIST',
-      displayType: 'table',
-      class: 'list-bullets-1',
-      tabRequired: true
-    },
-    {
-      field: 'LiveConnect-Ip',
-      title: 'context.header.liveConnect',
-      dataSourceType: 'LiveConnect-Ip',
-      displayType: 'liveConnect',
-      class: 'network-live',
-      tabRequired: true
-    }
-
+    datasources.endpoint,
+    datasources.incident,
+    datasources.alert,
+    datasources.list,
+    datasources.liveConnect
   ],
   toolbar: [
-    {
-      field: 'Add To List',
-      title: 'context.toolbar.addToList',
-      componentName: 'add-to-list'
-    }
+    toolbar.addToList
   ]
 },
 
@@ -209,109 +146,29 @@ export default [{
   footer: ' ',
   title: 'context.modules.title',
   columns: [
-    {
-      field: 'Machines',
-      title: 'context.hostSummary.title',
-      dataSourceType: 'Machines',
-      class: 'network-computers-2',
-      displayType: 'grid',
-      tabRequired: false
-    },
-    {
-      field: 'Archer',
-      title: 'context.archer.title',
-      tabTitle: 'context.header.archer',
-      dataSourceType: 'Archer',
-      displayType: 'grid',
-      tabRequired: true,
-      class: 'network-connecting'
-    },
-    {
-      field: 'Modules',
-      title: 'context.header.modules',
-      dataSourceType: 'Modules',
-      displayType: 'table',
-      class: 'graph',
-      tabRequired: true
-    },
-    {
-      field: 'IOC',
-      title: 'context.header.iioc',
-      dataSourceType: 'IOC',
-      displayType: 'table',
-      class: 'report-problem-diamond',
-      tabRequired: true
-    },
-    {
-      field: 'Incidents',
-      title: 'context.header.incidents',
-      dataSourceType: 'Incidents',
-      displayType: 'table',
-      class: 'flag-square-2',
-      tabRequired: true
-    },
-    {
-      field: 'Alerts',
-      title: 'context.header.alerts',
-      dataSourceType: 'Alerts',
-      displayType: 'table',
-      class: 'alarm-sound',
-      tabRequired: true
-    },
-    {
-      field: 'LIST',
-      title: 'context.header.lists',
-      dataSourceType: 'LIST',
-      displayType: 'table',
-      class: 'list-bullets-1',
-      tabRequired: true
-    }
+    datasources.endpoint,
+    datasources.incident,
+    datasources.alert,
+    datasources.list,
+    datasources.archer
   ],
   toolbar: [
-    {
-      field: 'Add To List',
-      title: 'context.toolbar.addToList',
-      componentName: 'add-to-list'
-    }
+    toolbar.addToList
   ]
 },
+
 {
   tabType: 'FILE_NAME',
   header: 'context.modules.header',
   footer: ' ',
   title: 'context.modules.title',
   columns: [
-    {
-      field: 'Incidents',
-      title: 'context.header.incidents',
-      dataSourceType: 'Incidents',
-      displayType: 'table',
-      class: 'flag-square-2',
-      tabRequired: true
-    },
-    {
-      field: 'Alerts',
-      title: 'context.header.alerts',
-      dataSourceType: 'Alerts',
-      displayType: 'table',
-      class: 'alarm-sound',
-      tabRequired: true
-    },
-    {
-      field: 'LIST',
-      title: 'context.header.lists',
-      dataSourceType: 'LIST',
-      displayType: 'table',
-      class: 'list-bullets-1',
-      tabRequired: true
-    }
+    datasources.incident,
+    datasources.alert,
+    datasources.list
   ],
   toolbar: [
-    {
-      field: 'Add To List',
-      title: 'context.toolbar.addToList',
-      componentName: 'add-to-list'
-    }
+    toolbar.addToList
   ]
 },
 
@@ -321,45 +178,13 @@ export default [{
   footer: ' ',
   title: 'context.modules.title',
   columns: [
-    {
-      field: 'Incidents',
-      title: 'context.header.incidents',
-      dataSourceType: 'Incidents',
-      displayType: 'table',
-      class: 'flag-square-2',
-      tabRequired: true
-    },
-    {
-      field: 'Alerts',
-      title: 'context.header.alerts',
-      dataSourceType: 'Alerts',
-      displayType: 'table',
-      class: 'alarm-sound',
-      tabRequired: true
-    },
-    {
-      field: 'LIST',
-      title: 'context.header.lists',
-      dataSourceType: 'LIST',
-      displayType: 'table',
-      class: 'list-bullets-1',
-      tabRequired: true
-    },
-    {
-      field: 'LiveConnect-Ip',
-      title: 'context.header.liveConnect',
-      dataSourceType: 'LiveConnect-Ip',
-      displayType: 'liveConnect',
-      class: 'network-live',
-      tabRequired: true
-    }
+    datasources.incident,
+    datasources.alert,
+    datasources.list,
+    datasources.liveConnect
   ],
   toolbar: [
-    {
-      field: 'Add To List',
-      title: 'context.toolbar.addToList',
-      componentName: 'add-to-list'
-    }
+    toolbar.addToList
   ]
 },
 
@@ -369,46 +194,12 @@ export default [{
   footer: ' ',
   title: 'context.modules.title',
   columns: [
-    {
-      field: 'Incidents',
-      title: 'context.header.incidents',
-      dataSourceType: 'Incidents',
-      displayType: 'table',
-      class: 'flag-square-2',
-      tabRequired: true
-    },
-    {
-      field: 'Alerts',
-      title: 'context.header.alerts',
-      dataSourceType: 'Alerts',
-      displayType: 'table',
-      class: 'alarm-sound',
-      tabRequired: true
-    },
-    {
-      field: 'LIST',
-      title: 'context.header.lists',
-      dataSourceType: 'LIST',
-      displayType: 'table',
-      class: 'list-bullets-1',
-      tabRequired: true
-    },
-    {
-      field: 'LiveConnect-Ip',
-      title: 'context.header.liveConnect',
-      dataSourceType: 'LiveConnect-Ip',
-      displayType: 'liveConnect',
-      class: 'network-live',
-      tabRequired: true
-    }
+    datasources.incident,
+    datasources.alert,
+    datasources.list,
+    datasources.liveConnect
   ],
-
   toolbar: [
-    {
-      field: 'Add To List',
-      title: 'context.toolbar.addToList',
-      componentName: 'add-to-list'
-    }
+    toolbar.addToList
   ]
-}
-];
+}];

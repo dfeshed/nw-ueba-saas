@@ -4,6 +4,8 @@
       {{context-panel/dynamic-grid dSDetails=dataSource.details}}
     {{else if (eq dataSource.displayType 'table')}}
       {{context-panel/data-table dSDetails=dataSource.details}}
+    {{else if (eq dataSource.displayType 'endpoint')}}
+      {{context-panel/endpoint dataSource=dataSource.details}}
     {{else if (eq dataSource.displayType 'liveConnect')}}
       {{context-panel/live-connect
         model=model
