@@ -243,7 +243,7 @@ public class ApiUserActivityController extends DataQueryController {
     @LogException
     public DataBean<List<UserActivityData.NameCountEntry>> getTopDirectories(@PathVariable String id,
                                                                              @RequestParam(required = false, defaultValue = DEFAULT_TIME_RANGE, value = "time_range") Integer timePeriodInDays,
-                                                                             @RequestParam(required = false, defaultValue = "4", value = "limit") Integer limit) {
+                                                                             @RequestParam(required = false, defaultValue = DEFAULT_RETURN_ENTRIES_LIMIT, value = "limit") Integer limit) {
 
 
         DataBean<List<UserActivityData.NameCountEntry>> userActivity = getUserAttribute(
