@@ -22,13 +22,13 @@ export default {
     {
       field: 'AnalyticsScore',
       title: 'context.modules.analyticsScore',
-      width: '15vh',
+      width: '10vh',
       class: 'rsa-module-riskScore'
     },
     {
       field: 'GlobalMachineCount',
       title: 'context.modules.machineCount',
-      width: '15vh',
+      width: '10vh',
       class: 'rsa-module-machineCount'
     },
     {

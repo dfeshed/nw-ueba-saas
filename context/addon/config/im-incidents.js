@@ -16,7 +16,7 @@ export default {
     {
       field: '_id',
       title: 'context.incident._id',
-      width: '8vh',
+      width: '7vh',
       dataType: 'link',
       path: '/respond/incident/{0}'
 
@@ -24,12 +24,12 @@ export default {
     {
       field: 'name',
       title: 'context.incident.name',
-      width: '14vh'
+      width: '20vh'
     },
     {
       field: 'created.$date',
       title: 'context.incident.created',
-      width: '20vh',
+      width: '25vh',
       dataType: 'datetime'
     },
     {

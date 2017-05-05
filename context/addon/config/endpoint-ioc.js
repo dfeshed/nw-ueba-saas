@@ -7,13 +7,6 @@ export default {
   sortColumn: 'IOCLevel',
   columns: [
     {
-      field: 'LastExecuted',
-      title: 'context.iiocs.lastExecuted',
-      width: '30vh',
-      class: 'rsa-iioc-iiocLevel2',
-      dataType: 'text'
-    },
-    {
       field: 'IOCLevel',
       title: 'context.iiocs.iOCLevel',
       width: '10vh',
@@ -23,8 +16,15 @@ export default {
     {
       field: 'Description',
       title: 'context.iiocs.description',
-      width: '60vh',
+      width: '30vh',
       class: 'rsa-iioc-iiocLevel0',
+      dataType: 'text'
+    },
+    {
+      field: 'LastExecuted',
+      title: 'context.iiocs.lastExecuted',
+      width: '20vh',
+      class: 'rsa-iioc-iiocLevel2',
       dataType: 'text'
     }
   ]

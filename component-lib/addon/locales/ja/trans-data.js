@@ -721,6 +721,7 @@ export default {
       files: 'ja_Files',
       lists: 'ja_Lists',
       feeds: 'ja_Feeds',
+      endpoint: 'ja_Endpoint',
       liveConnect: 'ja_Live Connect',
       unsafe: 'ja_Unsafe',
       closeButton: {
@@ -766,7 +767,7 @@ export default {
     },
     archer: {
       title: 'ja_IP Host Information',
-      criticalityRating: 'ja_Criticalty Rating',
+      criticalityRating: 'ja_Criticality Rating',
       riskRating: 'ja_Risk Rating',
       deviceName: 'ja_Device Name',
       hostName: 'ja_Host Name',

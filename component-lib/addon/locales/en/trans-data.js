@@ -721,6 +721,7 @@ export default {
       files: 'Files',
       lists: 'Lists',
       feeds: 'Feeds',
+      endpoint: 'Endpoint',
       liveConnect: 'Live Connect',
       unsafe: 'Unsafe',
       closeButton: {
@@ -782,7 +783,7 @@ export default {
     },
     archer: {
       title: 'IP Host Information',
-      criticalityRating: 'Criticalty Rating',
+      criticalityRating: 'Criticality Rating',
       riskRating: 'Risk Rating',
       deviceName: 'Device Name',
       hostName: 'Host Name',
