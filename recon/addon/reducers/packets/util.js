@@ -50,6 +50,8 @@ export const bytesAsRows = (bytes) => {
  * - `isHeader`: If true, indicates that this byte is in the packet's header section
  * - `isFooter`: If true, indicates that this byte is in the packet's footer section
  * - `isKnown`: Is this byte part of a known file signature
+ * This also markes a byte if it has a known signature. It will mark a byte with
+ * the first known signature.
  * @param {String} bytes A string of bytes
  * @param {Number} payloadOffset The index of the beginning of the payload
  * @param {Number} footerOffset The index of the beginning of the footer
@@ -144,6 +146,7 @@ const findPacketFieldForByte = (packetFields, byteIndex) => {
  * - `hex`: The signature of the file as hex. This may not be the full signature
  * - `length`: The full length of the signature
  * - `type`: The common name for the type of file
+ * Order is important when you have signatures that have similar hex.
  * @return {Array}
  * @private
  */
@@ -159,7 +162,11 @@ const FILE_SIGNATURES = [
   { hex: '42 4D', length: 2, type: 'BMP' },
   { hex: '25 50 44 46', length: 4, type: 'PDF' },
   { hex: 'D0 CF 11 E0', length: 8, type: 'MS Office Document' },
-  { hex: '50 4B', length: 4, type: 'ZIP based' },
+  { hex: '50 4B 03 04 14 00 01 00', length: 8, type: 'ZLock Pro encrypted ZIP' },
+  { hex: '50 4B 4C 49 54 45', length: 6, type: 'PKLITE archive' },
+  { hex: '50 4B 53 70 58', length: 5, type: 'PKSFX archive' },
+  { hex: '50 4B', length: 4, type: 'PKZIP archive' },
+  { hex: '57 69 6E 5A 69 70', length: 6, type: 'WinZip compressed archive' },
   { hex: '37 7A BC AF 27 1C', length: 6, type: '7z' },
   { hex: 'CA FE BA BE', length: 4, type: 'Java Class' },
   { hex: '25 21 50 53', length: 4, type: 'Postscript' },
