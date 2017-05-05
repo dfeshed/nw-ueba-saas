@@ -46,6 +46,8 @@ export const retrieveTranslatedData = function(operation, string) {
 };
 
 export const prepareTextForDisplay = function(text, metaToHighlight) {
+  text = _generateHTMLSafeText(text);
+
   if (metaToHighlight) {
     const metaStringRegex = new RegExp(String(metaToHighlight), 'gi');
     const foundMatch = text.match(metaStringRegex);
@@ -58,4 +60,19 @@ export const prepareTextForDisplay = function(text, metaToHighlight) {
   }
 
   return htmlSafe(text);
+};
+
+
+/*
+ * Processes text content and normalizes it for use in
+ * the browser. Results in an html-ified string.
+ */
+const _generateHTMLSafeText = (text) => {
+  return text
+    .replace(/\</g, '&lt;')
+    .replace(/\>/g, '&gt;')
+    .replace(/(?:\r\n|\r|\n)/g, '<br>')
+    .replace(/\t/g, '&nbsp;&nbsp;')
+    .replace(/ /g, '&nbsp;')
+    .replace(/[\x00-\x1F]/g, '.');
 };

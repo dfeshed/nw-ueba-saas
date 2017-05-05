@@ -1,4 +1,3 @@
-import set from 'ember-metal/set';
 import { handleActions } from 'redux-actions';
 
 import * as ACTION_TYPES from 'recon/actions/types';
@@ -40,7 +39,7 @@ const textReducer = handleActions({
   }),
 
   [ACTION_TYPES.TEXT_DECODE_PAGE]: (state, { payload }) => {
-    const newContent = generateHTMLSafeText(augmentResult(payload));
+    const newContent = augmentResult(payload);
     return {
       ...state,
       textContent: state.textContent ? [...state.textContent, ...newContent] : newContent
@@ -54,27 +53,5 @@ const textReducer = handleActions({
   })
 
 }, textInitialState);
-
-/*
- * Processes an array of text entries and normalizes their content
- * for use in the browser. Results in an html-ified array of lines
- * stored in each text entries. Subsequent views will decide what to
- * do with the lines.
- */
-const generateHTMLSafeText = (data) => {
-  data = Array.isArray(data) ? data : [];
-  return data.map((d) => {
-    if (typeof(d.text) === 'string') {
-      const htmlified = d.text
-        .replace(/\</g, '&lt;')
-        .replace(/\>/g, '&gt;')
-        .replace(/(?:\r\n|\r|\n)/g, '<br>')
-        .replace(/\t/g, '&nbsp;&nbsp;')
-        .replace(/[\x00-\x1F]/g, '.');
-      set(d, 'text', htmlified);
-    }
-    return d;
-  });
-};
 
 export default textReducer;
