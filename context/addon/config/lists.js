@@ -3,6 +3,7 @@ export default {
   header: 'context.list.title',
   footer: '',
   title: 'context.list.title',
+  timeWindowRequired: true,
   sortColumn: 'dataSourceLastModifiedOn',
   sortOrder: 'descending',
   columns: [

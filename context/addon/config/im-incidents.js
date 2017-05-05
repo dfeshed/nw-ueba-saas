@@ -2,6 +2,7 @@ export default {
   dataSourceGroup: 'Incidents',
   header: 'context.incident.header',
   footer: '',
+  timeWindowRequired: true,
   title: 'context.incident.title',
   columns: [
     {

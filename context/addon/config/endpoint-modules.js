@@ -2,6 +2,7 @@ export default {
   dataSourceGroup: 'Modules',
   header: 'context.modules.header',
   footer: ' ',
+  timeWindowRequired: false,
   title: 'context.modules.title',
   columns: [
     {

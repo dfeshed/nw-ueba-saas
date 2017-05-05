@@ -2,6 +2,7 @@ export default {
   class: 'rsa-context-panel__grid__host-details',
   dataSourceGroup: 'Machines',
   header: 'context.incident.header',
+  timeWindowRequired: true,
   footer: '',
   width: '2',
   title: 'context.hostSummary.title',

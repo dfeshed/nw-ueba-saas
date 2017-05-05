@@ -1,6 +1,7 @@
 export default {
   class: 'rsa-context-panel__grid__archer-details',
   dataSourceGroup: 'Archer',
+  timeWindowRequired: true,
   header: '',
   footer: '',
   title: 'context.archer.title',

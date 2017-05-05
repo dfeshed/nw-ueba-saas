@@ -1,6 +1,7 @@
 export default {
   dataSourceGroup: 'IOC',
   header: 'context.iiocs.header',
+  timeWindowRequired: false,
   footer: '',
   title: 'context.iiocs.title',
   sortColumn: 'IOCLevel',

@@ -2,6 +2,7 @@ export default {
   class: 'rsa-context-panel__grid__ad-details',
   dataSourceGroup: 'Users',
   header: '',
+  timeWindowRequired: true,
   footer: '',
   title: 'context.ADdata.title',
   columns: [

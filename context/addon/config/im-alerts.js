@@ -2,6 +2,7 @@ export default {
   dataSourceGroup: 'Alerts',
   header: 'context.alerts.header',
   footer: '',
+  timeWindowRequired: true,
   title: 'context.alerts.title',
   columns: [
     {

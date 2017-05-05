@@ -1,6 +1,6 @@
 <div class="rsa-context-panel__context-data-table__heading-text">
   {{t dSDetails.title}}{{dsData.header}}
-  {{#if headerData.lastUpdated}}
+  {{#if (and headerData.lastUpdated dSDetails.timeWindowRequired)}}
     <span title= {{t dSDetails.title}}>
       {{t 'context.timeWindow'}}{{headerData.timeWindow}} |
       {{t 'context.lastUpdated'}}{{rsa-content-datetime timestamp=headerData.lastUpdated asTimeAgo=true}}
