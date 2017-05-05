@@ -12,7 +12,7 @@
   .header-data {
     border-top: 1px solid rsa-color(gray, dark);
     background-color: rsa-color(gray, darkest, $rsa-transparent);
-    padding: rsa-whitespace(less) rsa-whitespace() rsa-whitespace();
+    padding: rsa-whitespace(less) rsa-whitespace(less) rsa-whitespace();
     .header-item {
       padding: rsa-whitespace(less);
       word-break: break-word;

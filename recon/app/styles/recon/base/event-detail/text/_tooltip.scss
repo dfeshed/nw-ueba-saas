@@ -24,12 +24,11 @@
 
   .selection-name {
     @include rsa-font(header, small);
-    color: rsa-color(gray, light);
     padding: rsa-whitespace() rsa-whitespace() rsa-whitespace(less);
   }
 
   .selection-value {
-    @include rsa-font(body, small);
+    @include rsa-font(body);
     padding: 0 rsa-whitespace() rsa-whitespace(less);
     max-width: 12.5rem;
     word-wrap: break-word;

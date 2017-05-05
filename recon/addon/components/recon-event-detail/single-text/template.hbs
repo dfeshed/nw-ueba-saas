@@ -11,7 +11,13 @@
     {{ initialTextToDisplay }}
   </div>
 
-  {{#rsa-content-tethered-panel position='top' panelId=(concat 'span' elementId) hideOnLeave=false displayCloseButton=hasCloseButton}}
+  {{#rsa-content-tethered-panel
+    position='top'
+    panelId=(concat 'span' elementId)
+    hideOnLeave=false
+    displayCloseButton=hasCloseButton
+    style='highlighted'
+  }}
     <div class="reconTooltip">
       {{#if isActionClicked }}
         <header>{{tooltipHeading}}</header>

@@ -21,7 +21,7 @@
     background-color: rsa-color(gray, dark, $rsa-transparent);
     color: $dark-fg-hover-color;
     font-size: 0.85rem;
-    padding: 0px rsa-whitespace() rsa-whitespace(least) 0px;
+    padding-bottom: 1.25rem;
   }
 
   &__offsets {

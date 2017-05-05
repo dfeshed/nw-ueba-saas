@@ -1,28 +1,23 @@
 .rsa-packet__header {
   color: $dark-fg-color;
-  padding: 6px rsa-whitespace();
+  padding: 0 rsa-whitespace();
   min-height: 2rem;
-
-  .toggle-icon {
-    min-width: 20px;
-  }
 
   .packet-details {
     @include rsa-font(body, small);
-    padding: rsa-whitespace(less) 0;
     text-transform: capitalize;
-    margin-top: rsa-whitespace();
-
+    padding-bottom: rsa-whitespace();
     .label {
       @include rsa-font(header, small);
       color: rsa-color(gray, light);
       margin-right: rsa-whitespace(least);
     }
-
+    .toggle-icon {
+      min-width: 20px;
+    }
     .rsa-icon:hover {
       cursor: pointer;
     }
-
     .text {
       @include rsa-font(body);
       margin-left: rsa-whitespace(least);

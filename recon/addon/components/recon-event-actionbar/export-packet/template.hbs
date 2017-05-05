@@ -3,10 +3,12 @@
     class="export-packet-button"
     defaultAction=(action 'processDefault' 'PCAP')
   }}
-    {{#if isDownloading}}{{rsa-loader size="small"}}{{/if}}
+    {{#if isDownloading}}
+      {{rsa-loader}}
+    {{/if}}
     {{caption}}
   {{/rsa-form-button}}
-  {{#click-outside action=(action "clickOutside")}}
+  {{#click-outside action=(action 'clickOutside')}}
     {{#rsa-form-button
       class="rsa-split-dropdown"
       defaultAction=(action 'toggleExpand')

@@ -4,19 +4,21 @@
 
 .recon-request-response-header {
   color: rsa-color(blue);
-
+  padding: 0.8rem 0 rsa-whitespace();
+  &.response {
+    text-align: right;
+  }
+  span {
+    display: inline-block;
+    vertical-align: middle;
+  }
   .rsa-icon {
     padding-right: rsa-whitespace(less);
   }
-
   .text {
     @include rsa-font(header, small);
     font-size: 0.85rem;
     letter-spacing: 1px;
-  }
-
-  &.response {
-    text-align: right;
   }
 }
 
@@ -34,7 +36,7 @@
     border-top: none;
 
     // avoid overlapping scrollbar
-    margin-right: 1rem;
+    margin-right: rsa-whitespace();
     z-index: 1000;
   }
 

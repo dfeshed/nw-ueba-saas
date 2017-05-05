@@ -1,7 +1,7 @@
 // Tweaks for sticky header in text view
 .recon-event-detail-text {
   .is-sticky {
-    padding: 6px rsa-whitespace();
+    padding: 0.8rem 0 0.8rem rsa-whitespace();
     position: relative;
 
     &.response {

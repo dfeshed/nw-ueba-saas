@@ -22,8 +22,8 @@
   .export-files-button {
     .rsa-loader {
       display: inline-block;
-      margin-right: rsa-whitespace();
-
+      vertical-align: middle;
+      margin: -4px rsa-whitespace() -2px 0;
       &__text {
         display: none;
       }
