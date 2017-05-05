@@ -2767,9 +2767,9 @@ ember-concurrency@^0.7.15:
     ember-getowner-polyfill "^1.1.0"
     ember-maybe-import-regenerator "^0.1.4"
 
-ember-d3@0.3.0:
-  version "0.3.0"
-  resolved "https://registry.npmjs.org/ember-d3/-/ember-d3-0.3.0.tgz#853f98110607a41fd8caff06652251d260403f5b"
+ember-d3@0.3.2:
+  version "0.3.2"
+  resolved "https://registry.npmjs.org/ember-d3/-/ember-d3-0.3.2.tgz#14988346cd94104d1d4560c21fc6ba1f56135c0c"
   dependencies:
     broccoli-filter "^1.2.4"
     broccoli-funnel "^1.0.3"

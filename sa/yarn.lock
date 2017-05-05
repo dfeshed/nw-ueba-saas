@@ -2552,9 +2552,9 @@ ember-cli@2.12.1:
     walk-sync "^0.3.0"
     yam "0.0.22"
 
-ember-d3@0.3.0:
-  version "0.3.0"
-  resolved "https://registry.npmjs.org/ember-d3/-/ember-d3-0.3.0.tgz#853f98110607a41fd8caff06652251d260403f5b"
+ember-d3@0.3.2:
+  version "0.3.2"
+  resolved "https://registry.npmjs.org/ember-d3/-/ember-d3-0.3.2.tgz#14988346cd94104d1d4560c21fc6ba1f56135c0c"
   dependencies:
     broccoli-filter "^1.2.4"
     broccoli-funnel "^1.0.3"
