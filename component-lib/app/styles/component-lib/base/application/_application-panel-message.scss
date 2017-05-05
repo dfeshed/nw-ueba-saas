@@ -1,7 +1,7 @@
 .rsa-panel-message {
   @include rsa-font(light);
   font-style: italic;
-  color: rsa-color(gray);
+  color: rsa-color(gray, light);
   padding: rsa-whitespace(most);
   position: absolute;
   text-align: center;
