@@ -61,18 +61,6 @@
             </job-data-map>
 
         </job>
-
-        <!-- need to comment out when working in multi collector mode
-        <trigger>
-            <cron>
-                <name>dlpfile_send_to_streaming_hourly_trigger</name>
-
-                <group>dlpfile</group>
-                <job-name>Scoring</job-name>
-                <job-group>dlpfile</job-group>
-                <cron-expression>0 30 * * * ?</cron-expression>
-            </cron>
-        </trigger>
-        -->
+        
     </schedule>
 </job-scheduling-data>
