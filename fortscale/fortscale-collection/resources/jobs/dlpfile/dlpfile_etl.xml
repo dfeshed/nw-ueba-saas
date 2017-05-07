@@ -72,9 +72,9 @@
         <!-- for PS
        <trigger>
            <cron>
-               <name>dlpfile_send_to_streaming_hourly_trigger</name>
+               <name>process_dlpfile_events_to_etl_hourly_trigger</name>
                <group>DLPFILE</group>
-               <job-name>Scoring</job-name>
+               <job-name>ETL</job-name>
                <job-group>DLPFILE</job-group>
                <cron-expression>0 30 * * * ?</cron-expression>
            </cron>
