@@ -63,7 +63,7 @@
 
 	<properties>
         <!--RPM VERSION-->
-        <rpm.version>3.0.0</rpm.version>
+        <rpm.version>3.1.0</rpm.version>
 		<!-- NOTE: ALL dependencies' versions should be here -->
 		<cglib.version>3.2.1</cglib.version>
 		<influxdb.version>2.1</influxdb.version>
