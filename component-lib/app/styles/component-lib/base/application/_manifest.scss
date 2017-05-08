@@ -61,10 +61,6 @@ body {
   background-attachment: fixed;
   background-size: 100% 100%;
 
-  scrollbar-base-color: rsa-color(gray);
-  scrollbar-track-color: rsa-color(gray, darker);
-  scrollbar-arrow-color: rsa-color(gray);
-
   .rsa-application-loading {
     &.rsa-loader {
       margin: 0 auto;
@@ -84,25 +80,6 @@ body {
       }
     }
   }
-}
-
-::-webkit-scrollbar-corner {
-  background: rsa-color(black);
-}
-
-::-webkit-scrollbar {
-  background: transparent;
-  width: rsa-whitespace();
-}
-
-::-webkit-scrollbar-thumb {
-  background: rsa-color(gray);
-  border-radius: rsa-whitespace(most);
-  border: 1px solid rsa-color(gray, dark);
-}
-
-::-webkit-scrollbar-track {
-  background: rsa-color(gray, darkest, $rsa-translucent);
 }
 
 @import 'application-header';

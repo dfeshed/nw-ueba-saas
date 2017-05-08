@@ -268,7 +268,7 @@
 
   .recon-event-wrapper {
     border-top: 1px solid rsa-color(blue);
-    flex-shrink: 1;
+    flex: 1 1 auto;
   }
 
   .recon-container {
@@ -277,5 +277,11 @@
 
   .recon-meta-content {
     margin-left: 1px; /* let a sliver of background shows thru as a border */
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: auto;
   }
 }

@@ -4,6 +4,6 @@
   {{#if (is-equal status 'streaming')}}
     {{rsa-loader size="small" label=(t 'investigate.loading')}}
   {{else if (is-equal status 'stopped')}}
-    {{#rsa-form-button}}<span {{action "safeCallback" clickAction}}>{{t 'investigate.loadMore'}}</span>{{/rsa-form-button}}
+    {{#rsa-form-button defaultAction=clickAction}}{{t 'investigate.loadMore'}}{{/rsa-form-button}}
   {{/if}}
 {{/if}}

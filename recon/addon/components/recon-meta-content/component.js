@@ -15,7 +15,7 @@ const stateToComputed = ({ recon, recon: { meta, text } }) => ({
 
 const MetaContentComponent = Component.extend({
   layout,
-  classNameBindings: [':recon-meta-content', ':scroll-box']
+  classNameBindings: [':recon-meta-content']
 });
 
 export default connect(stateToComputed)(MetaContentComponent);

@@ -15,7 +15,7 @@ const stateToComputed = ({ recon, recon: { data, header, visuals } }) => ({
 
 const EventContentComponent = Component.extend({
   layout,
-  classNameBindings: [':recon-event-content'],
+  classNameBindings: [':recon-event-content', ':col-xs-8'],
   tagName: 'vbox',
 
   /**

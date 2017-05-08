@@ -5,7 +5,7 @@
 @import "./button-menu/manifest";
 
 .recon-container {
-  height: 100%;
+  flex: 1 1 auto;
   overflow: hidden;
 }
 
@@ -14,7 +14,6 @@
 }
 
 .event-content-box {
-  margin-left: 1px;
   background-color: rsa-color(gray, darkest, $rsa-nearly-opaque);
 }
 
