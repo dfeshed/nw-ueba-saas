@@ -4,6 +4,7 @@ import computed from 'ember-computed-decorators';
 import * as ContextActions from 'context/actions/context-creators';
 import layout from './template';
 import { getCount } from 'context/util/context-data-modifier';
+import { setProperties } from 'ember-metal/set';
 
 const stateToComputed = ({ context }) => ({
   activeTabName: context.activeTabName,
@@ -42,12 +43,12 @@ const TabsComponent = Component.extend({
   model: null,
 
   /*
-   * When the active tab changes, sets an isActive flag.
-   * Using new computed to store collection with active flag to avoid
+   * The list of tabs, independent of which tab is currently active.
+   * Using new computed to store collection without active flag to avoid
    * recalculating entire tabList when tab is clicked
    */
-  @computed('activeTabName', 'tabs', 'lookupData.[]')
-  tabsActive(activeTabName, tabs, [lookupData]) {
+  @computed('tabs', 'lookupData.[]')
+  tabsActive(tabs, [lookupData]) {
     if (!tabs) {
       return;
     }
@@ -55,10 +56,25 @@ const TabsComponent = Component.extend({
       ...tab,
       toolTipText: getToolTipText(lookupData, tab, this.get('i18n')),
       title: tab.tabTitle || tab.title,
-      isActive: tab.field === activeTabName,
-      loadingIcon: !getLoadingIcon(lookupData, tab.dataSourceType) && tab.isConfigured,
-      tabClass: tab.field === activeTabName ? 'tab-active-background' : ''
+      loadingIcon: !getLoadingIcon(lookupData, tab.dataSourceType) && tab.isConfigured
     }));
+  },
+
+  /*
+   * When the active tab changes, updates `isActive` & `tabClass` of each tab.
+   * Returns the same value as `tabsActive`, just updates tab properties.
+   */
+  @computed('tabsActive', 'activeTabName')
+  statefulTabsActive(tabsActive, activeTabName) {
+    if (tabsActive) {
+      tabsActive.forEach((tab) => {
+        setProperties(tab, {
+          isActive: tab.field === activeTabName,
+          tabClass: tab.field === activeTabName ? 'tab-active-background' : ''
+        });
+      });
+    }
+    return tabsActive;
   }
 });
 

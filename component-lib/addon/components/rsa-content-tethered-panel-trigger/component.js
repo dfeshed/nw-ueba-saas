@@ -34,6 +34,10 @@ export default Component.extend({
           this.set('hideEvent', null);
         }
         const displayEvent = run.later(() => {
+          if (this.get('isDestroying') || this.get('isDestroyed') || !this.element) {
+            // The element has been destroyed since the time when the delay started
+            return;
+          }
           sendTetherEvent(
             this.element,
             this.get('panel'),
@@ -54,7 +58,7 @@ export default Component.extend({
         this.set('displayEvent', null);
       }
       const hideEvent = run.later(() => {
-        if (!this.get('isDestroyed')) {
+        if (!this.get('isDestroying') && !this.get('isDestroyed') && this.element) {
           sendTetherEvent(
             this.element,
             this.get('panel'),
