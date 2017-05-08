@@ -14,5 +14,5 @@ test('it renders', function(assert) {
   this.set('dSDetails', dSDetails);
   this.render(hbs`{{context-panel/ds-header contextData=contextData dSDetails=dSDetails}}`);
 
-  assert.equal(this.$().text().trim(), 'Host Summary');
+  assert.equal(this.$().text().trim(), 'Endpoint');
 });

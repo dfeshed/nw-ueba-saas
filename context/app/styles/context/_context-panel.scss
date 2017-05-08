@@ -156,6 +156,10 @@ radial-gradient(circle at 85% 85%, rsa-color(blue, darker, .1) 0, rsa-color(blue
     color: $font-fade-color;
     height: 100%;
     width: calc(100%- 4px);
+    &__box {
+      overflow: auto;
+      height:calc(100% - 60px);
+    }
     &__groupdata{
       padding-left: rsa-whitespace();
     }

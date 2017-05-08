@@ -1,7 +1,7 @@
 import * as ACTION_TYPES from '../actions/types';
 import { handleActions } from 'redux-actions';
 import { contextDataParser } from 'context/helpers/context-data-parser';
-import * as DataUtil from 'context/util/context-data-modifier';
+import { getActiveTabName, noDataToDisplayMessage, getTabs, needToDisplay } from 'context/util/context-data-modifier';
 import TabList from 'context/config/dynamic-tab';
 
 const initialState = {
@@ -28,23 +28,27 @@ const context = handleActions({
   }),
   [ACTION_TYPES.UPDATE_ACTIVE_TAB]: (state, { payload }) => ({
     ...state,
-    activeTabName: DataUtil.getTabEnabled(state.lookupData, payload) ? payload : state.activeTabName
+    activeTabName: needToDisplay(null, state.lookupData[0], { dataSourceGroup: payload }, state.dataSources) ? payload : state.activeTabName
   }),
   [ACTION_TYPES.GET_ALL_DATA_SOURCES]: (state, { payload }) => ({
     ...state,
     dataSources: payload,
-    tabs: DataUtil.getTabs(state.meta, payload)
+    tabs: getTabs(state.meta, payload),
+    errorMessage: noDataToDisplayMessage(payload, state.lookupData)
   }),
   [ACTION_TYPES.CONTEXT_ERROR]: (state, { payload }) => ({
     ...state,
     errorMessage: payload
   }),
-  [ACTION_TYPES.GET_LOOKUP_DATA]: (state, { payload }) => ({
-    ...state,
-    lookupData: [].concat(contextDataParser([payload, state.lookupData])),
-    activeTabName: DataUtil.getActiveTabName(state.activeTabName, payload),
-    errorMessage: DataUtil.noDataToDisplayMessage(state.dataSources, state.lookupData)
-  })
+  [ACTION_TYPES.GET_LOOKUP_DATA]: (state, { payload }) => {
+    const lookupData = [].concat(contextDataParser([payload, state.lookupData]));
+    return {
+      ...state,
+      lookupData,
+      activeTabName: getActiveTabName(state.activeTabName, payload),
+      errorMessage: noDataToDisplayMessage(state.dataSources, lookupData)
+    };
+  }
 }, initialState);
 
 export default context;

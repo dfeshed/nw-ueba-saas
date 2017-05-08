@@ -2,10 +2,10 @@
   {{context-panel/dynamic-grid dSDetails=dataSource.Machines.details}}
 </div>
 <div class='rsa-context-panel__endpoint__data-table'>
-  <div class='col-xs-7'>
+  <div class={{columnLength.Modules}}>
     {{context-panel/data-table dSDetails=dataSource.Modules.details}}
   </div>
-  <div class='col-xs-5'>
+  <div class={{columnLength.IOC}}>
     {{context-panel/data-table dSDetails=dataSource.IOC.details}}
   </div>
 </div>

@@ -3,7 +3,7 @@ import connect from 'ember-redux/components/connect';
 import computed from 'ember-computed-decorators';
 import * as ContextActions from 'context/actions/context-creators';
 import layout from './template';
-import { getCount } from 'context/util/context-data-modifier';
+import { isDataSourceEnabled } from 'context/util/context-data-modifier';
 import { setProperties } from 'ember-metal/set';
 
 const stateToComputed = ({ context }) => ({
@@ -21,20 +21,16 @@ const getToolTipText = (lookupData, { dataSourceType, isConfigured }, i18n) => {
   if (!isConfigured) {
     return i18n.t('context.notConfigured');
   }
-  if (getCount(lookupData, dataSourceType) === 0) {
+  if (!isDataSourceEnabled(lookupData, dataSourceType)) {
     return i18n.t('context.noResults');
   }
 };
 
-const getLoadingIcon = (lookupData, dataSourceType) => {
+const getLoadingIcon = (lookupData, { dataSourceType }) => {
   if (!lookupData) {
     return false;
   }
-  if (dataSourceType === 'Endpoint') {
-    return lookupData.IOC || lookupData.Machines || lookupData.Modules;
-  } else {
-    return lookupData[dataSourceType];
-  }
+  return (dataSourceType === 'Endpoint') ? (lookupData.IOC || lookupData.Machines || lookupData.Modules) : lookupData[dataSourceType];
 };
 
 const TabsComponent = Component.extend({
@@ -55,8 +51,7 @@ const TabsComponent = Component.extend({
     return tabs.map((tab) => ({
       ...tab,
       toolTipText: getToolTipText(lookupData, tab, this.get('i18n')),
-      title: tab.tabTitle || tab.title,
-      loadingIcon: !getLoadingIcon(lookupData, tab.dataSourceType) && tab.isConfigured
+      loadingIcon: !getLoadingIcon(lookupData, tab) && tab.isConfigured
     }));
   },
 

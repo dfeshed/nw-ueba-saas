@@ -736,7 +736,7 @@ export default {
       addToList: 'Add to List'
     },
     hostSummary: {
-      title: 'Host Summary',
+      title: 'Endpoint',
       riskScore: 'Risk Score',
       modulesCount: '# of Modules',
       iioc0: 'Iioc 0',
@@ -782,7 +782,7 @@ export default {
       distinguishedName: 'Distinguished Name'
     },
     archer: {
-      title: 'IP Host Information',
+      title: 'Archer',
       criticalityRating: 'Criticality Rating',
       riskRating: 'Risk Rating',
       deviceName: 'Device Name',

@@ -1,62 +1,64 @@
 {{#if needToDisplay}}
   {{context-panel/ds-header dSDetails=dSDetails}}
   {{#if (gt getDataSourceData.length 0)}}
-    {{#each getDataSourceData as |data index|}}
-      <hbox>
-        <vbox class="rsa-context-panel__grid__host-details__header-data">
-          <span title= {{get data dSDetails.firstRow.field}}>{{get data dSDetails.firstRow.field}}</span>
-        </vbox>
-      </hbox>
-      <hbox class={{dSDetails.class}}>
-        {{#each dSDetails.columns as |columnsdata|}}
-          <vbox class={{columnsdata.class}}>
-            {{#each columnsdata.cell as |cellData|}}
-              {{#if (eq cellData.dataType 'link')}}
-                <vbox>
-                  <div class="rsa-context-panel__grid__host-details__field-name">{{t cellData.title}}</div>
-                  <div class="rsa-context-panel__grid__host-details__field-value rsa-context-panel__grid link">
-                    <a href={{concat 'ecatui://' (get data cellData.field)  }} target="_blank">{{get data cellData.field}}</a>
-                  </div>
-                </vbox>
-              {{else if (eq cellData.dataType 'riskScore')}}
-                {{rsa-content-badge-score
-                  label=(t 'context.iiocScore')
-                  class="rsa-context-risk-score"
-                  score=(get data cellData.field )
-                  size='small'
-                  style=badgeLevel
-                  invertColor=true
-                }}
-              {{else if (eq cellData.dataType 'datetime')}}
-                <vbox>
-                  <div class="rsa-context-panel__grid__host-details__field-name">{{t cellData.title}}</div>
-                  <div class="rsa-context-panel__grid__host-details__field-value">
-                    {{#if (get data cellData.field)}}
-                      <span>
-                        {{rsa-content-datetime timestamp=(get data cellData.field) displayMilliseconds=false withTimeAgo=true}}
-                      </span>
-                    {{/if}}
-                  </div>
-                </vbox>
-              {{else if (eq cellData.dataType 'group')}}
-                {{context-panel/dynamic-grid/group data=(get data cellData.field) title=cellData.title index=index}}
-              {{else}}
-                {{#if cellData.displayField}}
-                  <vbox></vbox>
-                {{else}}
+    <div class="rsa-context-panel__grid__box">
+      {{#each getDataSourceData as |data index|}}
+        <hbox>
+          <vbox class="rsa-context-panel__grid__host-details__header-data">
+            <span title= {{get data dSDetails.firstRow.field}}>{{get data dSDetails.firstRow.field}}</span>
+          </vbox>
+        </hbox>
+        <hbox class={{dSDetails.class}}>
+          {{#each dSDetails.columns as |columnsData|}}
+            <vbox class={{columnsData.class}}>
+              {{#each columnsData.cell as |cellData|}}
+                {{#if (eq cellData.dataType 'link')}}
+                  <vbox>
+                    <div class="rsa-context-panel__grid__host-details__field-name">{{t cellData.title}}</div>
+                    <div class="rsa-context-panel__grid__host-details__field-value rsa-context-panel__grid link">
+                      <a href={{concat 'ecatui://' (get data cellData.field)  }} target="_blank">{{get data cellData.field}}</a>
+                    </div>
+                  </vbox>
+                {{else if (eq cellData.dataType 'riskScore')}}
+                  {{rsa-content-badge-score
+                    label=(t 'context.iiocScore')
+                    class="rsa-context-risk-score"
+                    score=(get data cellData.field )
+                    size='small'
+                    style=badgeLevel
+                    invertColor=true
+                  }}
+                {{else if (eq cellData.dataType 'datetime')}}
                   <vbox>
                     <div class="rsa-context-panel__grid__host-details__field-name">{{t cellData.title}}</div>
                     <div class="rsa-context-panel__grid__host-details__field-value">
-                      <span title= {{get data cellData.field}}>{{get data cellData.field}}</span>
+                      {{#if (get data cellData.field)}}
+                        <span>
+                          {{rsa-content-datetime timestamp=(get data cellData.field) displayMilliseconds=false withTimeAgo=true}}
+                        </span>
+                      {{/if}}
                     </div>
                   </vbox>
+                {{else if (eq cellData.dataType 'group')}}
+                  {{context-panel/dynamic-grid/group data=(get data cellData.field) title=cellData.title index=index}}
+                {{else}}
+                  {{#if cellData.displayField}}
+                    <vbox></vbox>
+                  {{else}}
+                    <vbox>
+                      <div class="rsa-context-panel__grid__host-details__field-name">{{t cellData.title}}</div>
+                      <div class="rsa-context-panel__grid__host-details__field-value">
+                        <span title= {{get data cellData.field}}>{{get data cellData.field}}</span>
+                      </div>
+                    </vbox>
+                  {{/if}}
                 {{/if}}
-              {{/if}}
-            {{/each}}
-          </vbox>
-        {{/each}}
-      </hbox>
-      <div class="rsa-context-panel__grid__border"></div>
-    {{/each}}
+              {{/each}}
+            </vbox>
+          {{/each}}
+        </hbox>
+        <div class="rsa-context-panel__grid__border"></div>
+      {{/each}}
+    </div>
   {{/if}}
 {{/if}}

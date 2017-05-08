@@ -2,11 +2,11 @@ import layout from './template';
 import connect from 'ember-redux/components/connect';
 import computed from 'ember-computed-decorators';
 import Component from 'ember-component';
-import * as DataUtil from 'context/util/context-data-modifier';
+import { needToDisplay, getData } from 'context/util/context-data-modifier';
 
 const stateToComputed = ({ context }) => ({
-  activeTabName: context.activeTabName,
-  lookupData: context.lookupData
+  lookupData: context.lookupData,
+  dataSources: context.dataSources
 });
 
 const DataTableComponent = Component.extend({
@@ -14,14 +14,9 @@ const DataTableComponent = Component.extend({
   classNames: 'rsa-context-panel__context-data-table',
 
   @computed('contextData', 'lookupData.[]', 'dSDetails')
-  getDataSourceData(contextData, [lookupData], dSDetails) {
-    if (contextData) {
-      return contextData.data;
-    }
-    return DataUtil.getData(lookupData, dSDetails);
-  },
+  getDataSourceData: (contextData, [lookupData], dSDetails) => contextData ? contextData.data : getData(lookupData, dSDetails),
 
-  @computed('contextData', 'lookupData.[]', 'dSDetails')
-  needToDisplay: (contextData, [lookupData], dSDetails) => DataUtil.needToDisplay(contextData, lookupData, dSDetails)
+  @computed('contextData', 'lookupData.[]', 'dSDetails', 'dataSources')
+  needToDisplay: (contextData, [lookupData], dSDetails, dataSources) => needToDisplay(contextData, lookupData, dSDetails, dataSources)
 });
 export default connect(stateToComputed)(DataTableComponent);

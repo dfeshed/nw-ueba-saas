@@ -736,7 +736,7 @@ export default {
       addToList: 'ja_Add to List'
     },
     hostSummary: {
-      title: 'ja_Host Summary',
+      title: 'ja_Endpoint',
       riskScore: 'ja_Risk Score',
       modulesCount: 'ja_# of Modules',
       iioc0: 'ja_Iioc 0',
@@ -766,7 +766,7 @@ export default {
       distinguishedName: 'ja_Distinguished Name'
     },
     archer: {
-      title: 'ja_IP Host Information',
+      title: 'ja_Archer',
       criticalityRating: 'ja_Criticality Rating',
       riskRating: 'ja_Risk Rating',
       deviceName: 'ja_Device Name',

@@ -19,7 +19,7 @@ const updateIsConfigured = (dataSources, tab) => {
 
 const updateDataSourceDetails = (tab, dataSources) => {
   if (tab.dataSourceType === 'Endpoint') {
-    tab.details = {
+    return {
       Machines: {
         details: dataSourceCoulmns.MACHINES,
         isConfigured: dataSources.includes('Machines')
@@ -33,7 +33,6 @@ const updateDataSourceDetails = (tab, dataSources) => {
         isConfigured: dataSources.includes('Modules')
       }
     };
-    return tab.details;
   }
   return dataSourceCoulmns[tab.dataSourceType.toUpperCase()];
 };

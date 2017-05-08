@@ -1,17 +1,27 @@
 import TabList from 'context/config/dynamic-tab';
 import { isEmpty } from 'ember-utils';
 
-const getResultListSize = (contextData, dataSourceGroup) => {
-  return (contextData && contextData[dataSourceGroup] && contextData[dataSourceGroup].resultList) ? contextData[dataSourceGroup].resultList.length : 0;
+const endPoint = ['Modules', 'IOC', 'Machines'];
+
+const isNotEmpty = (contextData, dataSourceGroup, defaultEnable) => {
+  if (!contextData) {
+    return defaultEnable;
+  }
+  const dsGroup = contextData[dataSourceGroup];
+  return (dsGroup && dsGroup.resultList) ? (dsGroup.resultList.length > 0) : defaultEnable;
 };
 
-const getCount = (contextData, dataSourceGroup) => {
+const isNotError = (contextData, dataSourceGroup) => {
+  return !(contextData && contextData[dataSourceGroup] && contextData[dataSourceGroup].errorMessage);
+};
+
+const isDataSourceEnabled = (contextData, dataSourceGroup, defaultEnable) => {
   if (dataSourceGroup === 'Endpoint') {
-    return getResultListSize(contextData, 'Machines') +
-      getResultListSize(contextData, 'Modules') +
-      getResultListSize(contextData, 'IOC');
+    return isNotEmpty(contextData, 'Machines', defaultEnable) || !isNotError(contextData, 'Machines') ||
+      isNotEmpty(contextData, 'Modules', defaultEnable) || !isNotError(contextData, 'Modules') ||
+      isNotEmpty(contextData, 'IOC', defaultEnable) || !isNotError(contextData, 'IOC');
   }
-  return getResultListSize(contextData, dataSourceGroup);
+  return isNotEmpty(contextData, dataSourceGroup, defaultEnable) || !isNotError(contextData, dataSourceGroup);
 };
 
 const getData = (lookupData, { dataSourceGroup, sortColumn, sortOrder }) => {
@@ -59,14 +69,21 @@ const getHeaderData = (dsData, i18n) => {
   return headerData;
 };
 
-const needToDisplay = (contextData, lookupData, dSDetails) => {
-  if (contextData || !lookupData || !lookupData[dSDetails.dataSourceGroup]) {
+const isDataSourcesConfigured = (dataSources, dataSourceGroup) => {
+  if (endPoint.includes(dataSourceGroup)) {
+    return dataSources.find((dataSource) => dataSource.dataSourceType === 'Endpoint').details[dataSourceGroup].isConfigured;
+  }
+  return dataSources.find((dataSource) => dataSource.dataSourceType === dataSourceGroup).isConfigured;
+};
+
+const needToDisplay = (contextData, lookupData, { dataSourceGroup }, dataSources) => {
+  if (contextData || !lookupData || !dataSources) {
     return true;
   }
-  if (0 === getCount(lookupData, dSDetails.dataSourceGroup)) {
+  if (!isDataSourcesConfigured(dataSources, dataSourceGroup)) {
     return false;
   }
-  return true;
+  return isDataSourceEnabled(lookupData, dataSourceGroup);
 };
 
 const getTabs = (meta, dataSources) => {
@@ -82,44 +99,39 @@ const getTabs = (meta, dataSources) => {
   });
 };
 
-const getTabEnabled = ([ lookupData ], dataSourceType) => {
-  if (0 === getCount(lookupData, dataSourceType)) {
-    return false;
-  }
-  return true;
-};
-
 const getActiveTabName = (activeTabName, data) => {
   if (activeTabName != null || !data) {
     return activeTabName;
   }
-  const firstDataSourceWithData = data.find((dataSource) => {
-    return dataSource && !isEmpty(dataSource.resultList);
+  const dataSourceWithData = data.find((dataSource) => {
+    return dataSource && (!isEmpty(dataSource.resultList) || !isEmpty(dataSource.errorMessage));
   });
+  if (!dataSourceWithData) {
+    return;
+  }
 
-  return firstDataSourceWithData ? firstDataSourceWithData.dataSourceGroup : activeTabName;
+  if (endPoint.includes(dataSourceWithData.dataSourceGroup)) {
+    return 'Endpoint';
+  }
+  return dataSourceWithData.dataSourceGroup ? dataSourceWithData.dataSourceGroup : activeTabName;
 };
 
 const noDataToDisplayMessage = (dataSourceList, [lookupData]) => {
   if (!lookupData || !dataSourceList) {
     return;
   }
-  const dataSourcesConfigured = dataSourceList.filter((dataSource) => {
-    return dataSource.isConfigured;
-  });
-  const dataSourcesWithNoData = dataSourcesConfigured.filter((dataSource) => {
-    return lookupData[dataSource.dataSourceType] ? getCount(lookupData, dataSource.dataSourceType) === 0 : false;
-  });
+  const dataSourcesConfigured = dataSourceList.filter((dataSource) => dataSource.isConfigured);
+  const dataSourcesWithNoData = dataSourcesConfigured.filter((dataSource) => !isDataSourceEnabled(lookupData, dataSource.dataSourceType, true));
+
   return dataSourcesWithNoData && dataSourcesWithNoData.length === dataSourcesConfigured.length ? 'context.noData' : '';
 };
 
 export {
-  getCount,
+  isDataSourceEnabled,
   getData,
   getHeaderData,
   needToDisplay,
   getTabs,
-  getTabEnabled,
   getActiveTabName,
   noDataToDisplayMessage
 };
