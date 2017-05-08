@@ -12,13 +12,11 @@ const entityRecords = function() {
   const all = [
     { name: 'Incidents', count: String(randInt()), lastUpdated },
     { name: 'Alerts', count: String(randInt()), lastUpdated },
+    { name: 'LIST', count: String(randInt()), lastUpdated },
     { name: 'Users', count: String(randInt()), lastUpdated },
-    { name: 'Lists', count: String(randInt()), lastUpdated },
-    { name: 'Files', count: String(randInt()), lastUpdated },
-    { name: 'Domains', count: String(randInt()), lastUpdated },
-    { name: 'IPs', count: String(randInt()), lastUpdated },
-    { name: 'Comments', count: String(randInt()), lastUpdated },
-    { name: 'Risk Score', count: String(randInt()), lastUpdated }
+    { name: 'IOC', count: String(randInt()), lastUpdated },
+    { name: 'Modules', count: String(randInt()), lastUpdated },
+    { name: 'Machines', count: null, severity: 'HIGH', lastUpdated }
   ];
   // overshoot length to improve chances of including all array items
   const size = randInt(1, all.length + 1);

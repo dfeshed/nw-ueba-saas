@@ -3,8 +3,23 @@ import layout from './template';
 import service from 'ember-service/inject';
 import computed from 'ember-computed-decorators';
 import safeCallback from 'component-lib/utils/safe-callback';
+import connect from 'ember-redux/components/connect';
+import { updateActiveTab } from 'context/actions/context-creators';
 
-export default Component.extend({
+const dispatchToActions = {
+  // Sets the active tab of the context panel's state.
+  updateActiveTab
+};
+
+// Maps the dataSource name from summary records to the name of a
+// tab on the `context-panel` component. By default, if tab name
+// is not found in this map, we assume it matches the dataSource name of record.
+const recordNameToTabMap = {
+  IOC: 'Endpoint',
+  Modules: 'Endpoint'
+};
+
+const ContextTooltipRecords = Component.extend({
   tagName: 'section',
   classNames: ['rsa-context-tooltip-records'],
   layout,
@@ -54,6 +69,15 @@ export default Component.extend({
   },
 
   actions: {
-    safeCallback
+    // Handles clicks on each data record.
+    clickRecord(record) {
+      safeCallback(this.get('clickDataAction'), record);
+      if (record && record.name) {
+        const tabName = recordNameToTabMap[record.name] || record.name;
+        this.send('updateActiveTab', tabName);
+      }
+    }
   }
 });
+
+export default connect(undefined, dispatchToActions)(ContextTooltipRecords);

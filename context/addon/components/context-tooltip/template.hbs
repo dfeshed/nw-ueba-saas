@@ -15,12 +15,21 @@ as |hide model|
           <box fit class="rsa-context-tooltip__content-header">
             {{t 'context.tooltip.contextHighlights'}}
           </box>
-          <hbox fill class="rsa-context-tooltip__content-body">
+          <hbox fill justify="center" class="rsa-context-tooltip__content-body">
             {{context-tooltip/records
               model=model
-              clickDataAction=(action "safeCallback" clickDataAction model)
+              clickDataAction=(action "handleClick" hide clickDataAction model)
             }}
           </hbox>
+          <centered fit class="rsa-context-tooltip__content-footer">
+            {{#rsa-form-button
+              class="js-open-overview"
+              style="primary"
+              defaultAction=(action "handleClick" hide clickDataAction model)
+            }}
+              {{t 'context.tooltip.viewOverview'}}
+            {{/rsa-form-button}}
+          </centered>
         {{/unless}}
       </vbox>
       <vbox fit class="rsa-context-tooltip__aside">

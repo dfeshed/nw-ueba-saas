@@ -37,13 +37,18 @@ moduleForComponent('context-tooltip', 'Integration | Component | context tooltip
 });
 
 test('it renders', function(assert) {
-  assert.expect(1);
+  assert.expect(4);
 
   const model = { type: 'IP', id: '10.20.30.40' };
 
-  // rsa-content-tethered-panel requires us to render an element whose class matches the tooltip's panelId.
-  this.render(hbs`<a class="foo">Link</a>{{context-tooltip panelId="foo"}}`);
+  const clickDataAction = (arg) => {
+    assert.ok(true, 'Expected callback action to be invoked.');
+    assert.equal(arg, model, 'Expected callback action to receive the model as an input argument.');
+  };
+  this.set('clickDataAction', clickDataAction);
 
+  // rsa-content-tethered-panel requires us to render an element whose class matches the tooltip's panelId.
+  this.render(hbs`<a class="foo">Link</a>{{context-tooltip panelId="foo" clickDataAction=clickDataAction}}`);
 
   return wait()
     .then(() => {
@@ -53,5 +58,8 @@ test('it renders', function(assert) {
     })
     .then(() => {
       assert.equal(this.$('.rsa-context-tooltip').length, 1, 'Expected to find root DOM node');
+      assert.equal(this.$('.js-open-overview button').length, 1, 'Expected to find Open Overview DOM node');
+      this.$('.js-open-overview button').click();
+      return wait();
     });
 });
