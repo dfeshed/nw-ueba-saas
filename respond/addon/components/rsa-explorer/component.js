@@ -48,6 +48,7 @@ const stateToComputed = function(state) {
   const { respond } = state;
   const namespace = this.get('namespace');
   const stateSpace = respond[camelize(namespace)] || {};
+  const itemsFilters = stateSpace.itemsFilters || {};
 
   return {
     items: stateSpace.items,
@@ -58,7 +59,7 @@ const stateToComputed = function(state) {
     focusedItem: stateSpace.focusedItem,
     isTransactionUnderway: stateSpace.isTransactionUnderway,
     hasCustomDate: stateSpace.hasCustomDateRestriction,
-    timeframeFilter: stateSpace.itemsFilters.created,
+    timeframeFilter: itemsFilters.created,
     isSelectAll: stateSpace.isSelectAll,
     sortField: stateSpace.sortField,
     isSortDescending: stateSpace.isSortDescending
@@ -117,7 +118,7 @@ const dispatchToActions = function(dispatch) {
 const Explorer = Component.extend({
   tagName: 'vbox',
   classNames: ['rsa-respond-explorer', 'flexi-fit'],
-  classNameBindings: ['isFilterPanelOpen:show-filters', 'isTransactionUnderway:transaction-in-progress'],
+  classNameBindings: ['isFilterPanelOpen:show-filters', 'focusedItem:show-inspector', 'isTransactionUnderway:transaction-in-progress'],
   redux: service(),
   flashMessages: service(),
   eventBus: service(),

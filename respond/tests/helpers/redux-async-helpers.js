@@ -22,11 +22,16 @@ const getDescendantProp = function(obj, desc) {
 };
 
 const visitAndWaitForReduxStateChange = function(app, url, stateString) {
-  return RSVP.allSettled([visit(url), waitForReduxStateChange(app, stateString)]);
+  return RSVP.allSettled([visit(url), waitForReduxStateChangeAppTest(app, stateString)]);
 };
 
-const waitForReduxStateChange = function(app, stateString) {
+const waitForReduxStateChangeAppTest = function(app, stateString) {
   const redux = app.__container__.lookup('service:redux');
+
+  return waitForReduxStateChange(redux, stateString);
+};
+
+const waitForReduxStateChange = function(redux, stateString) {
 
   return new TestPromise(function(resolve) {
     // inform the test framework that there is an async operation in progress,
@@ -48,7 +53,9 @@ const waitForReduxStateChange = function(app, stateString) {
         // wait until the afterRender queue to resolve this promise,
         // to give any side effects of the promise resolving a chance to
         // occur and settle
-        schedule('afterRender', null, resolve);
+        schedule('afterRender', null, () => {
+          resolve(currentValue);
+        });
       }
     });
   });
@@ -92,3 +99,5 @@ registerAsyncHelper('waitForReduxStateChange', waitForReduxStateChange);
 registerAsyncHelper('waitForReduxStateToEqual', waitForReduxStateToEqual);
 registerAsyncHelper('dispatchReduxAction', dispatchReduxAction);
 registerAsyncHelper('visitAndWaitForReduxStateChange', visitAndWaitForReduxStateChange);
+
+export default waitForReduxStateChange;

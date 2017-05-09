@@ -471,8 +471,8 @@ export default {
         CUSTOM: 'Custom',
         MITIGATE_RISK: 'Mitigate Risk',
         MITIGATE_COMPLIANCE_VIOLATION: 'Mitigate Compliance Violation',
-        MITIGATE_VULNERABILITY_THREAT: 'Mitigate Vulnerability Threat',
-        UPDATE_CORPORATE_BUSINESS_POLICY: 'Update Corporate Business Policy',
+        MITIGATE_VULNERABILITY_THREAT: 'Mitigate Vulnerability/Threat',
+        UPDATE_CORPORATE_BUSINESS_POLICY: 'Update Corporate/Business Policy',
         NOTIFY_BC_DR_TEAM: 'Notify BC/DR Team',
         UPDATE_RULES: 'Update Rule(s)',
         UPDATE_FEEDS: 'Update Feed(s)'

@@ -23,7 +23,7 @@
 
     {{! COLUMN SORT }}
     {{#unless column.disableSort}}
-      <button class={{unless (eq sortField column.field) "column-sort hideSort expand" "column-sort expand"}} {{action sortBy column.field (if isSortDescending false true)  on='click'}}>
+      <button class={{unless (or (eq sortField column.field) (eq sortField column.sortField)) "column-sort hideSort expand" "column-sort expand"}} {{action sortBy (if column.sortField column.sortField column.field) (if isSortDescending false true)  on='click'}}>
         {{rsa-icon size="small" name=(if isSortDescending "arrow-down-12" "arrow-up-12")}}
       </button>
     {{/unless}}

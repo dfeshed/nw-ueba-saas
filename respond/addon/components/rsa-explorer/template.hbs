@@ -7,7 +7,7 @@
     toggleFilterPanel=(action 'toggleFilterPanel')
   ))}}
 </box>
-<hbox class="main-zone {{if focusedItem 'show-inspector'}}">
+<hbox class="main-zone">
   <vbox class="filter-zone">
     {{yield (hash name='explorer-filters' filters=(component 'rsa-explorer/explorer-filters'
       timeframeFilter=timeframeFilter

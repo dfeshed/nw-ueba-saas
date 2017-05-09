@@ -8,6 +8,10 @@ $metadataLineHeight: 1.35;
   height: 100%;
   overflow: hidden;
 
+  a {
+    color: rsa-color(blue, light);
+  }
+
   &__header {
     position: relative;
     padding: rsa-whitespace();

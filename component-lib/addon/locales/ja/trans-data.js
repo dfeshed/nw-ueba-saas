@@ -471,8 +471,8 @@ export default {
         CUSTOM: 'ja_Custom',
         MITIGATE_RISK: 'ja_Mitigate Risk',
         MITIGATE_COMPLIANCE_VIOLATION: 'ja_Mitigate Compliance Violation',
-        MITIGATE_VULNERABILITY_THREAT: 'ja_Mitigate Vulnerability Threat',
-        UPDATE_CORPORATE_BUSINESS_POLICY: 'ja_Update Corporate Business Policy',
+        MITIGATE_VULNERABILITY_THREAT: 'ja_Mitigate Vulnerability/Threat',
+        UPDATE_CORPORATE_BUSINESS_POLICY: 'ja_Update Corporate/Business Policy',
         NOTIFY_BC_DR_TEAM: 'ja_Notify BC/DR Team',
         UPDATE_RULES: 'ja_Update Rule(s)',
         UPDATE_FEEDS: 'ja_Update Feed(s)'

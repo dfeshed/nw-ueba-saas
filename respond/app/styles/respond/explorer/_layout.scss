@@ -46,7 +46,7 @@ page.respond-engine {
       }
     }
 
-    .show-inspector .inspector-zone {
+    &.show-inspector .inspector-zone {
       border-right: 1px solid $zoneBorderColor;
       max-width: $inspectorPanelWidth;
       min-width: $inspectorPanelWidth;
@@ -66,7 +66,6 @@ page.respond-engine {
     }
 
     .items-zone {
-      width: 100vw;
       @include rsa-vendor-prefix(transition-property, width);
       @include rsa-vendor-prefix(transition-duration, 0.3s);
 
@@ -92,7 +91,7 @@ page.respond-engine {
       .items-zone {
         width: calc(100vw - #{$filterPanelMinWidth});
       }
-      .main-zone.show-inspector .items-zone {
+      &.show-inspector .items-zone {
         width: calc(100vw - #{$filterPanelMinWidth + $inspectorPanelWidth});
       }
     }
@@ -101,6 +100,20 @@ page.respond-engine {
       @include rsa-fill-abs();
       z-index: 2;
       background-color: rsa-color(black,base,$rsa-translucent);
+    }
+  }
+}
+
+// Collapse the filter panel if both the filter panel and the inspector panel is open and the width of the screen is less than 1280
+@media screen and (max-width: 1536px){
+  .respond-engine {
+    .rsa-respond-explorer.show-filters.show-inspector {
+      .filter-zone {
+        max-width: 0;
+        min-width: 0;
+        overflow: hidden;
+        padding: 0;
+      }
     }
   }
 }

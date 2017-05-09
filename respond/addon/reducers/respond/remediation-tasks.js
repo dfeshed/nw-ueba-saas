@@ -19,8 +19,8 @@ const initialState = load(explorerInitialState, localStorageKey);
 const persistState = (callback) => {
   return (function() {
     const state = callback(...arguments);
-    const { itemsSort, itemsFilters, isFilterPanelOpen, hasCustomDateRestriction } = state;
-    persist({ itemsSort, itemsFilters, isFilterPanelOpen, hasCustomDateRestriction }, localStorageKey);
+    const { sortField, isSortDescending, itemsFilters, isFilterPanelOpen, hasCustomDateRestriction } = state;
+    persist({ sortField, isSortDescending, itemsFilters, isFilterPanelOpen, hasCustomDateRestriction }, localStorageKey);
     return state;
   });
 };
@@ -38,7 +38,7 @@ const remdiationTasks = reduxActions.handleActions({
   [ACTION_TYPES.CLEAR_FOCUS_REMEDIATION_TASK]: explorerReducers.clearFocusItem,
   [ACTION_TYPES.TOGGLE_REMEDIATION_TASK_SELECTED]: explorerReducers.toggleSelectItem,
   [ACTION_TYPES.TOGGLE_SELECT_ALL_REMEDIATION_TASKS]: explorerReducers.toggleSelectAll,
-  [ACTION_TYPES.REMEDIATION_TASK_SORT_BY]: explorerReducers.sortBy
+  [ACTION_TYPES.REMEDIATION_TASK_SORT_BY]: persistState(explorerReducers.sortBy)
 
 }, initialState);
 

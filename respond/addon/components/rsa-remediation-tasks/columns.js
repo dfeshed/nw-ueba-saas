@@ -19,6 +19,7 @@ export default [
   },
   {
     field: 'priority',
+    sortField: 'prioritySort',
     title: 'respond.remediationTasks.list.priority',
     width: '10%',
     dataType: 'text',
@@ -47,6 +48,7 @@ export default [
   },
   {
     field: 'status',
+    sortField: 'statusSort',
     title: 'respond.remediationTasks.list.status',
     width: '7%',
     dataType: 'text',

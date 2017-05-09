@@ -17,9 +17,9 @@
 
   <div class="metadata">
     <label>{{t 'respond.remediationTasks.list.targetQueue'}}:</label>
-    {{#if info.targetQueue}}
-      <span>{{t (concat 'respond.remediationTasks.targetQueue.' info.targetQueue)}}</span>
-    {{/if}}
+    <span>
+      {{if info.targetQueue (t (concat 'respond.remediationTasks.targetQueue.' info.targetQueue)) ''}}
+    </span>
   </div>
 
   <div class="metadata">
