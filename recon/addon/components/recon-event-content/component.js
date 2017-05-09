@@ -10,12 +10,13 @@ const stateToComputed = ({ recon, recon: { data, header, visuals } }) => ({
   contentLoading: data.contentLoading,
   headerLoading: header.headerLoading,
   eventId: data.eventId,
+  isMetaShown: visuals.isMetaShown,
   isPacketView: isPacketView(recon)
 });
 
 const EventContentComponent = Component.extend({
   layout,
-  classNameBindings: [':recon-event-content', ':col-xs-8'],
+  classNameBindings: [':recon-event-content', 'isMetaShown:col-xs-8:col-xs-12'],
   tagName: 'vbox',
 
   /**

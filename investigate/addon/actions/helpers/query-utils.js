@@ -398,7 +398,7 @@ function nwEncodeMetaFilterConditions(conditions = [], language) {
       if (isKeyValuePair) {
         const keyDefinition = language.findBy('metaName', key);
         const useQuotes = String(get(keyDefinition || {}, 'format')).toLowerCase() === 'text';
-        const valueEncoded = useQuotes ? `'${String(value).replace(/\'/g, '\\\'')}'` : value;
+        const valueEncoded = useQuotes ? `'${String(value).replace(/[\'\"]/g, '')}'` : value;
         return `${key}=${valueEncoded}`;
       } else {
         return queryString;
