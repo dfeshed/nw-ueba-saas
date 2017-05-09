@@ -3,17 +3,19 @@ import observer from 'ember-metal/observer';
 import { schedule } from 'ember-runloop';
 import $ from 'jquery';
 import connect from 'ember-redux/components/connect';
-import { scaleLinear } from 'd3-scale';
+import { scaleQuantize } from 'd3-scale';
 import { event, select } from 'd3-selection';
 
 import Drag from 'recon/utils/drag';
 import { showPacketTooltip, hidePacketTooltip } from 'recon/actions/interaction-creators';
 
-const scale = scaleLinear().domain([0, 255]).range([0.06, 1]);
+// A quantize scale will map a continuous domain to a discrete range
+const scale = scaleQuantize()
+  .domain([0, 255])
+  .range([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]);
 
 const stateToComputed = ({ recon: { packets } }) => ({
   hasSignaturesHighlighted: packets.hasSignaturesHighlighted,
-  hasStyledBytes: packets.hasStyledBytes,
   isPayloadOnly: packets.isPayloadOnly
 });
 
@@ -80,7 +82,7 @@ const ByteTableComponent = Component.extend({
     this.detachDomListeners();
   },
 
-  _scheduleAfterRenderTasks: observer('packet.byteRows', 'hasStyledBytes', 'hasSignaturesHighlighted', function() {
+  _scheduleAfterRenderTasks: observer('packet.byteRows', function() {
     schedule('afterRender', this, 'afterRender');
   }),
 
@@ -92,8 +94,8 @@ const ByteTableComponent = Component.extend({
 
   renderTable() {
     const {
-      cellClass, headerCellClass, byteFormat, hasStyledBytes, hasSignaturesHighlighted
-    } = this.getProperties('cellClass', 'headerCellClass', 'byteFormat', 'hasStyledBytes', 'hasSignaturesHighlighted');
+      cellClass, headerCellClass, byteFormat
+    } = this.getProperties('cellClass', 'headerCellClass', 'byteFormat');
     const el = select(this.element);
 
     el.select('table').remove();
@@ -110,24 +112,7 @@ const ByteTableComponent = Component.extend({
 
         if (byte.isHeader || byte.isKnown) {
           td.on('mousemove', (d) => {
-            let tooltipData = null;
-            if (byte.isHeader) {
-              const packetField = d && d.packetField;
-              tooltipData = !packetField ? null : {
-                field: packetField.field,
-                values: packetField.values,
-                position: { x: event.pageX, y: $(event.target).offset().top },
-                packetId: this.get('packet.id')
-              };
-            } else if (hasSignaturesHighlighted && byte.isKnown) {
-              tooltipData = {
-                field: { name: 'signature', type: 'sig' },
-                values: byte.isKnown.type,
-                position: { x: event.pageX, y: $(event.target).offset().top },
-                packetId: this.get('packet.id')
-              };
-            }
-            this.send('showPacketTooltip', tooltipData);
+            this.mousemoveHandler(d, byte);
           })
           .on('mouseleave', () => {
             this.send('hidePacketTooltip');
@@ -135,14 +120,34 @@ const ByteTableComponent = Component.extend({
         }
 
         td.append('span')
-          .attr('style', (d) => {
-            return (hasStyledBytes && !byte.isHeader && !byte.isFooter) ? `opacity: ${scale(d.int)}` : 'opacity: 1';
-          })
+          .attr('class', (d) => (!byte.isHeader && !byte.isFooter) ? `shade-${scale(d.int)}` : null)
           .text(byte[byteFormat]);
 
         cells.push(td.nodes()[0]);
       });
     });
+  },
+
+  mousemoveHandler(d, byte) {
+    const hasSignaturesHighlighted = this.get('hasSignaturesHighlighted');
+    let tooltipData = null;
+    if (byte.isHeader) {
+      const packetField = d && d.packetField;
+      tooltipData = !packetField ? null : {
+        field: packetField.field,
+        values: packetField.values,
+        position: { x: event.pageX, y: $(event.target).offset().top },
+        packetId: this.get('packet.id')
+      };
+    } else if (hasSignaturesHighlighted && byte.isKnown) {
+      tooltipData = {
+        field: { name: 'signature', type: 'sig' },
+        values: byte.isKnown.type,
+        position: { x: event.pageX, y: $(event.target).offset().top },
+        packetId: this.get('packet.id')
+      };
+    }
+    this.send('showPacketTooltip', tooltipData);
   },
 
   /**
@@ -155,11 +160,10 @@ const ByteTableComponent = Component.extend({
    * @public
    */
   getByteClass(byte, cellClass, headerCellClass) {
-    const hasSignaturesHighlighted = this.get('hasSignaturesHighlighted');
     const role = byte.packetField ? byte.packetField.roles : false;
     const header = byte.isHeader ? headerCellClass : false;
     const footer = byte.isFooter ? 'footer' : false;
-    const known = (hasSignaturesHighlighted && byte.isKnown) ? 'is-known' : false;
+    const known = byte.isKnown ? 'is-known' : false;
     return compact([cellClass, role, header, footer, known]).join(' ');
   },
 

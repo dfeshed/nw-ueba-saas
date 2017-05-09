@@ -1,14 +1,24 @@
-import Ember from 'ember';
+import Component from 'ember-component';
+import { join } from 'ember-runloop';
+import connect from 'ember-redux/components/connect';
 import { not, readOnly } from 'ember-computed-decorators';
 import { SpanielObserver } from 'spaniel';
 
 import layout from './template';
 
-const { Component, run } = Ember;
+const stateToComputed = ({ recon: { packets } }) => ({
+  hasSignaturesHighlighted: packets.hasSignaturesHighlighted,
+  hasStyledBytes: packets.hasStyledBytes
+});
 
-export default Component.extend({
+const SinglePacketComponent = Component.extend({
   classNames: ['rsa-packet'],
-  classNameBindings: ['packet.side', 'packet.isContinuation'],
+  classNameBindings: [
+    'packet.side',
+    'packet.isContinuation',
+    'hasStyledBytes',
+    'hasSignaturesHighlighted'
+  ],
   layout,
   tagName: 'section',
 
@@ -51,7 +61,7 @@ export default Component.extend({
     };
 
     const observer = new SpanielObserver(([entry]) => {
-      run.join(() => {
+      join(() => {
         this.set('viewportEntered', entry.entering);
       });
     }, options);
@@ -72,3 +82,5 @@ export default Component.extend({
     }
   }
 });
+
+export default connect(stateToComputed)(SinglePacketComponent);

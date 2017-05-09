@@ -6,7 +6,6 @@
   min-width: 5rem;
   padding: rsa-whitespace(less);
   position: absolute;
-  transition: left 100ms, top 100ms;
   z-index: 10000;
 
   &.visible {

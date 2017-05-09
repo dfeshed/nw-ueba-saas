@@ -120,20 +120,6 @@ $packet-byte-border-width: 1px;
         color: rsa-color(white);
       }
 
-      &.is-known {
-        // orange @ 20% opacity, but we don't actually want opacity
-        background-color: #4b2c24;
-        color: rsa-color(white);
-        &[data-is-hover="true"] {
-          &.packet-field-value {
-            span {
-              background-color: rsa-color(orange, darkest);
-              color: rsa-color(white);
-            }
-          }
-        }
-      }
-
       &[data-is-selected="true"] {
         background-color: $selected-bg-color;
         color: $selected-color;

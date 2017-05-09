@@ -1,3 +1,5 @@
+$base-color: rsa-color(white);
+
 .rsa-packet {
 
   border-top: 1px rsa-color(blue) solid;
@@ -54,5 +56,76 @@
   &__ascii {
     @include rsa-vendor-prefix(flex-basis, 33%);
     @include rsa-vendor-prefix(flex-shrink, 1);
+  }
+
+  &.has-styled-bytes {
+    .byte-cell {
+      .shade-1 {
+        color: rgba($base-color, .06 );
+      }
+      .shade-2 {
+        color: rgba($base-color, .13 );
+      }
+      .shade-3 {
+        color: rgba($base-color, .19 );
+      }
+      .shade-4 {
+        color: rgba($base-color, .25 );
+      }
+      .shade-5 {
+        color: rgba($base-color, .31 );
+      }
+      .shade-6 {
+        color: rgba($base-color, .38 );
+      }
+      .shade-7 {
+        color: rgba($base-color, .44 );
+      }
+      .shade-8 {
+        color: rgba($base-color, .50 );
+      }
+      .shade-9 {
+        color: rgba($base-color, .56 );
+      }
+      .shade-10 {
+        color: rgba($base-color, .63 );
+      }
+      .shade-11 {
+        color: rgba($base-color, .69 );
+      }
+      .shade-12 {
+        color: rgba($base-color, .75 );
+      }
+      .shade-13 {
+        color: rgba($base-color, .81 );
+      }
+      .shade-14 {
+        color: rgba($base-color, .88 );
+      }
+      .shade-15 {
+        color: rgba($base-color, .94 );
+      }
+      .shade-16 {
+        color: rgba($base-color, 1 );
+      }
+    }
+  }
+
+  &.has-signatures-highlighted {
+    .byte-cell {
+      &.is-known {
+        // orange @ 20% opacity, but we don't actually want opacity
+        background-color: #4b2c24;
+        color: rsa-color(white);
+        &[data-is-hover="true"] {
+          &.packet-field-value {
+            span {
+              background-color: rsa-color(orange, darkest);
+              color: rsa-color(white);
+            }
+          }
+        }
+      }
+    }
   }
 }
