@@ -41,8 +41,8 @@ setup(name='presidio',
       install_requires=[
           'airflow[devel]',
       ],
-      tests_require=['pytest'],
       cmdclass={'test': Tox},
+      tests_require=['pytest'],
       setup_requires=['pytest-runner'],
       include_package_data=True,
       zip_safe=False)
