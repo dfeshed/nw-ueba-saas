@@ -53,10 +53,12 @@
   }
   .message {
     font-style: italic;
+    width: 100%;
   }
 
   .title {
     @include rsa-font(light, large);
     font-style: italic;
+    width: 100%;
   }
 }
