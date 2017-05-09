@@ -150,6 +150,7 @@
 
 		<syslog-java-client.version>1.0.6</syslog-java-client.version>
 		<commons-validator.version>1.4.1</commons-validator.version>
+		<jacoco-maven-plugin.version>0.7.9</jacoco-maven-plugin.version>
 	</properties>
 
 	<dependencyManagement>
@@ -682,7 +683,12 @@
 					<encoding>${project.build.sourceEncoding}</encoding>
 				</configuration>
 			</plugin>
-
+			<!-- code coverage plugin-->
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>${jacoco-maven-plugin.version}</version>
+			</plugin>
 
 		      <plugin>
 				<groupId>com.github.koraktor</groupId>
@@ -821,7 +827,24 @@
 			</plugins>
 		</pluginManagement>
 	</build>
-
+	<project>
+		<reporting>
+			<plugins>
+				<plugin>
+					<groupId>org.jacoco</groupId>
+					<artifactId>jacoco-maven-plugin</artifactId>
+					<reportSets>
+						<reportSet>
+							<reports>
+								<!-- select non-aggregate reports -->
+								<report>report</report>
+							</reports>
+						</reportSet>
+					</reportSets>
+				</plugin>
+			</plugins>
+		</reporting>
+	</project>
 	<modules>
 		<module>fortscale-utils</module>
 		<module>fortscale-global-config</module>
