@@ -247,14 +247,18 @@ export default Service.extend({
     // Transform the `entities` input array into the filter structure expected by server API.
     const filter = [];
     entities.forEach(({ type, id }) => {
-      let entry = filter.findBy('field', type);
-      if (!entry) {
-        entry = { field: type, values: [] };
-        filter.pushObject(entry);
+      if (id) {
+        let entry = filter.findBy('field', type);
+        if (!entry) {
+          entry = { field: type, values: [] };
+          filter.pushObject(entry);
+        }
+        entry.values.push(id);
       }
-      entry.values.push(id);
     });
-
+    if (filter.length === 0) {
+      return;
+    }
     this.get('request').streamRequest({
       modelName: 'entity-summary',
       method: 'stream',
@@ -328,14 +332,14 @@ export default Service.extend({
    */
   _onResponse(response = {}) {
     const summaries = this.get('_summariesCache');
-    const { data = {} } = response;
+    const summaryData = response.data;
 
     // For each entity in the response...
-    Object.keys(data).forEach((id) => {
+    Object.keys(summaryData).forEach((id) => {
 
       // Parse out the records for that entity.
-      const { type, prefetchData } = data[id];
-      const records = prefetchData.map(({ name, count, severity, lastUpdated }) => ({
+      const { type, data } = summaryData[id];
+      const records = data.map(({ name, count, severity, lastUpdated }) => ({
         name,
         count: Number(count),
         severity,

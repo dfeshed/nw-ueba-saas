@@ -66,7 +66,7 @@ export default {
         const data = {};
         data[id] = {
           type,
-          prefetchData: [ record ]
+          data: [ record ]
         };
         sendMessage({
           data
