@@ -1,14 +1,6 @@
-{{#each actionList as |action|}}
-  <li class="action">
-    <span class="icon">
-      {{#if action.glyph}}
-        <span class="glyph">{{action.htmlSafeGlyph}}</span>
-      {{else}}
-        {{rsa-icon name=action.icon size="small"}}
-      {{/if}}
-    </span>
-    <label class="label">
-      {{t (concat 'context.tooltip.' action.text)}}
-    </label>
-  </li>
-{{/each}}
+<li class="action" {{action "openAddToListModal"}}>
+  {{rsa-icon name="list-bullets-1" size="small"}}
+  <label class="label">
+    {{t 'context.addToList.title'}}
+  </label>
+</li>

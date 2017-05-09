@@ -1,11 +1,7 @@
 {{#rsa-application-modal label=(t 'context.addToList.title') eventId='addToList'}}
-  {{#rsa-form-button class='modal-trigger' click=(action 'getAllList' entityValue)}}
-    {{t 'context.addToList.title'}}
-  {{/rsa-form-button}}
-
   <div class='modal-content'>
     {{#if createList}}
-      {{context-panel/add-to-list/list-view createList=createList model=model entityId=entityId}}
+      {{context-panel/add-to-list/list-view createList=createList model=model entityId=entity.id}}
     {{else}}
       {{context-panel/add-to-list/create-list-view createList=createList model=model}}
     {{/if}}

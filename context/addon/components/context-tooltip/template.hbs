@@ -1,7 +1,7 @@
 {{#rsa-content-tethered-panel
   position="top"
   panelId=panelId
-as |hide model|
+as |hideAction model|
 }}
   <div class="rsa-context-tooltip">
     <h2 class="rsa-context-tooltip__header">{{model.id}}</h2>
@@ -18,14 +18,14 @@ as |hide model|
           <hbox fill justify="center" class="rsa-context-tooltip__content-body">
             {{context-tooltip/records
               model=model
-              clickDataAction=(action "handleClick" hide clickDataAction model)
+              clickDataAction=(action "handleClick" hideAction clickDataAction model)
             }}
           </hbox>
           <centered fit class="rsa-context-tooltip__content-footer">
             {{#rsa-form-button
               class="js-open-overview"
               style="primary"
-              defaultAction=(action "handleClick" hide clickDataAction model)
+              defaultAction=(action "handleClick" hideAction clickDataAction model)
             }}
               {{t 'context.tooltip.viewOverview'}}
             {{/rsa-form-button}}
@@ -39,6 +39,9 @@ as |hide model|
         {{context-tooltip/actions
           class="rsa-context-tooltip__aside-body"
           entityType=model.type
+          entityId=model.id
+          addToListAction=(route-action 'openContextAddToList')
+          hideAction=hideAction
         }}
       </vbox>
     </hbox>

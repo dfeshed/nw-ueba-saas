@@ -14,6 +14,8 @@ const {
   Logger
 } = Ember;
 
+const contextAddToListModalId = 'addToList';
+
 /**
  * Add AuthenticatedRouteMixin to ensure the routes extending from this
  * route are not accessible for unauthenticated users. Without authentication,
@@ -30,6 +32,7 @@ export default Route.extend(AuthenticatedRouteMixin, {
   timezone: service(),
   userIdle: service(),
   userActivity: service(),
+  eventBus: service(),
 
   queryParams: {
     /**
@@ -151,6 +154,20 @@ export default Route.extend(AuthenticatedRouteMixin, {
         entityId: undefined,
         entityType: undefined
       });
+    },
+
+    // Actions to open & close the Context addon's "Add To List" application dialog.
+    openContextAddToList(entity) {
+      const { type, id } = entity || {};
+      const eventName = (type && id) ?
+        `rsa-application-modal-open-${contextAddToListModalId}` :
+        `rsa-application-modal-close-${contextAddToListModalId}`;
+      this.get('controller').set('entityToAddToList', entity);
+      this.get('eventBus').trigger(eventName);
+    },
+    closeContextAddToList() {
+      this.get('eventBus').trigger(`rsa-application-modal-close-${contextAddToListModalId}`);
+      this.get('controller').set('entityToAddToList', undefined);
     }
   },
 

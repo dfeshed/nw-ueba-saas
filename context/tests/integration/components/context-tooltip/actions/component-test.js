@@ -6,43 +6,39 @@ moduleForComponent('context-tooltip', 'Integration | Component | context tooltip
   integration: true
 });
 
-const defaultAction = { glyph: 'defaultGlyph', text: 'defaultText' };
-const ipAction = { icon: 'ipIcon', text: 'ipText' };
-const ipAction2 = { icon: 'ipIcon2', text: 'ipText2' };
-const actionsMap = {
-  default: [ defaultAction ],
-  IP: [ ipAction, ipAction2 ]
-};
+const entityType = 'IP';
+const entityId = '10.20.30.40';
 
 test('it renders an actionsList based on the entityType', function(assert) {
-  let actionIcons, actionGlyphs;
+  assert.expect(6);
+
+  const hideAction = () => {
+    assert.ok(true, 'hideAction was invoked');
+  };
+  const addToListAction = (entity = {}) => {
+    assert.ok(true, 'addToListAction was invoked');
+    assert.equal(entity.id, entityId, 'Expected addToListAction to receive entity object.');
+    assert.equal(entity.type, entityType, 'Expected addToListAction to receive entity object.');
+  };
 
   this.setProperties({
-    actionsMap,
-    entityType: 'IP'
+    entityType,
+    entityId,
+    hideAction,
+    addToListAction
   });
 
-  this.render(hbs`{{context-tooltip/actions entityType=entityType actionsMap=actionsMap}}`);
+  this.render(hbs`{{context-tooltip/actions 
+    entityType=entityType 
+    entityId=entityId 
+    hideAction=hideAction 
+    addToListAction=addToListAction}}`);
 
   return wait()
     .then(() => {
       assert.equal(this.$('.rsa-context-tooltip-actions').length, 1, 'Expected to find root DOM node');
-
-      actionIcons = this.$('.action .icon .rsa-icon');
-      assert.equal(actionIcons.length, 2, 'Expected to find two action icons');
-
-      actionGlyphs = this.$('.action .icon .glyph');
-      assert.notOk(actionGlyphs.length, 'Expected to not find any glyphs');
-
-      this.set('entityType', 'unknown');
-
+      assert.equal(this.$('.action').length, 1, 'Expected to find one action menu option');
+      this.$('.action').trigger('click');
       return wait();
-    })
-    .then(() => {
-      actionIcons = this.$('.action .icon .rsa-icon');
-      assert.notOk(actionIcons.length, 'Expected to not find any icons');
-
-      actionGlyphs = this.$('.action .icon .glyph');
-      assert.ok(actionGlyphs.text().trim(), 'Expected to find one action glyph');
     });
 });

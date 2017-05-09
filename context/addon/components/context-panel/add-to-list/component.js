@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import layout from './template';
+import computed from 'ember-computed-decorators';
 
 const {
   Component,
@@ -19,6 +20,31 @@ export default Component.extend({
   isError: false,
   errorMessage: null,
   isDisabled: false,
+
+  /**
+   * The type and id of the entity which is to be added to a list.
+   * @type {{type: String, id: String}}
+   * @public
+   */
+  @computed
+  entity: {
+    get() {
+      return this._entity;
+    },
+    set(value) {
+      const { type, id } = value || {};
+      const was = this._entity;
+      const { type: wasType, id: wasId } = was || {};
+      const changed = (type !== wasType) || (id !== wasId);
+
+      // If entity has changed, request new server data for it.
+      if (changed) {
+        this._entity = value;
+        this._getAllList(value);
+      }
+      return this._entity;
+    }
+  },
 
   _populateListData(listData, entityId) {
     const listModels = EmberObject.create({
@@ -43,37 +69,33 @@ export default Component.extend({
     });
   },
 
-  actions: {
-
-    /*
-     * getting complete list and its details
-     * @private
-     */
-
-    getAllList() {
-      const { entityId, entityType } = this.getProperties('entityId', 'entityType');
-      this.set('createList', true);
-      this.get('request').streamRequest({
-        method: 'stream',
-        modelName: 'list',
-        query: {
-          filter: [
-            { field: 'meta', value: entityType },
-            { field: 'value', value: entityId }
-          ]
-        },
-        streamOptions: { requireRequestId: false },
-        onResponse: ({ data }) => {
-          this.set('hasResponse', true);
-          this._populateListData(data, entityId);
-        },
-        onError: (response) => {
-          if (this.get('hasResponse') === true) {
-            return;
-          }
-          Logger.error('Error processing stream call for context lookup.', response);
+  /*
+   * getting complete list and its details
+   * @private
+   */
+  _getAllList(entity) {
+    const { id: entityId, type: entityType } = entity || {};
+    this.set('createList', true);
+    this.get('request').streamRequest({
+      method: 'stream',
+      modelName: 'list',
+      query: {
+        filter: [
+          { field: 'meta', value: entityType },
+          { field: 'value', value: entityId }
+        ]
+      },
+      streamOptions: { requireRequestId: false },
+      onResponse: ({ data }) => {
+        this.set('hasResponse', true);
+        this._populateListData(data, entityId);
+      },
+      onError: (response) => {
+        if (this.get('hasResponse') === true) {
+          return;
         }
-      });
-    }
+        Logger.error('Error processing stream call for context lookup.', response);
+      }
+    });
   }
 });

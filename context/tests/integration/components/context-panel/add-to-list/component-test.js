@@ -8,5 +8,5 @@ moduleForComponent('context-panel/add-to-list', 'Integration | Component | conte
 test('Test to Display Add To List window.', function(assert) {
   this.render(hbs`{{context-panel/add-to-list entityId=entityId entityType=entityType}}`);
 
-  assert.ok(this.$().text().indexOf('Add to List') != -1);
+  assert.ok(this.$('.modal-content').length);
 });

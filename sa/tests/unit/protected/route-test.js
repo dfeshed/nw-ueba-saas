@@ -6,7 +6,7 @@ moduleFor('route:protected', 'Unit | Route | protected', {
   needs: [
     'service:accessControl', 'service:assetLoader', 'service:dateFormat', 'service:headData',
     'service:i18n', 'service:landingPage', 'service:session', 'service:timeFormat',
-    'service:timezone', 'service:userActivity', 'service:userIdle'
+    'service:timezone', 'service:userActivity', 'service:userIdle', 'service:eventBus'
   ]
 });
 

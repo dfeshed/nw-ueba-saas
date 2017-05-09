@@ -23,7 +23,11 @@
     <hbox class="rsa-context-panel-header__tab">
       {{#each toolbar as | buttons | }}
         {{#if (eq buttons.componentName 'add-to-list')}}
-          {{context-panel/add-to-list entityId=model.lookupKey entityType=model.meta}}
+          {{#rsa-form-button
+            defaultAction=(route-action "openContextAddToList" (hash type=entityType id=entityId))
+          }}
+            {{t 'context.addToList.title'}}
+          {{/rsa-form-button}}
         {{else}}
           {{#rsa-form-button}}{{t buttons.title}}{{/rsa-form-button}}
         {{/if}}

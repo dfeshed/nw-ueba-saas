@@ -26,12 +26,8 @@ $contextTooltipDatumPadding: 4px;
   }
 
   &__content {
-    /*
-    temporarily hide the divider while we hide the actions list.
-    decomment these next 2 lines once we add the actions list back in.
     border-right: 1px solid rsa-color(gray, dark);
     padding-right: rsa-whitespace();
-    */
 
     &-body {
       margin: 0 rsa-whitespace();
@@ -44,8 +40,6 @@ $contextTooltipDatumPadding: 4px;
   }
 
   &__aside {
-    /* temporarily hide the actions list until we wire up their clicks */
-    display: none;
     padding-left: rsa-whitespace();
   }
 }

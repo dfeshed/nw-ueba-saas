@@ -9,11 +9,14 @@ const {
   }
 } = Ember;
 
+const contextAddToListModalId = 'addToList';
+
 export default Route.extend({
   classNames: ['test123'],
   dateFormat: service(),
   timeFormat: service(),
   timezone: service(),
+  eventBus: service(),
 
   queryParams: {
     /**
@@ -89,6 +92,20 @@ export default Route.extend({
         entityId: undefined,
         entityType: undefined
       });
+    },
+
+    openContextAddToList(entity) {
+      const { type, id } = entity || {};
+      const eventName = (type && id) ?
+        `rsa-application-modal-open-${contextAddToListModalId}` :
+        `rsa-application-modal-close-${contextAddToListModalId}`;
+      this.get('controller').set('entityToAddToList', entity);
+      this.get('eventBus').trigger(eventName);
+    },
+
+    closeContextAddToList() {
+      this.get('eventBus').trigger(`rsa-application-modal-close-${contextAddToListModalId}`);
+      this.get('controller').set('entityToAddToList', undefined);
     }
   }
 });
