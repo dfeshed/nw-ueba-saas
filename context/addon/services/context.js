@@ -287,8 +287,8 @@ export default Service.extend({
    * Specifically, the server response structure is as follows:
    * The response is an Object with `code` and `data` properties. When the response is successful, `code` is `0` and
    * `data` is a hash. Each hash key is an entity id (e.g., "10.20.30.40") and each corresponding hash value
-   * is an Object with `type` (the entity type) and `prefetchData` (an array of entity records) properties.  Each
-   * record in the `prefetchData` array has 4 String properties: `name`, `count`, `severity` & `lastUpdated`.
+   * is an Object with `type` (the entity type) and `data` (an array of entity records) properties.  Each
+   * record in the `data` array has 4 String properties: `name`, `count`, `severity` & `lastUpdated`.
    * @example
    * Here's a sample response that contains summary records for two entities (IPs):
    * ```js
@@ -297,7 +297,7 @@ export default Service.extend({
    *   data: {
    *     "192.168.1.1": {
    *       type: "IP",
-   *       prefetchData: [
+   *       data: [
    *         {
    *           name: "Incidents",
    *           count: "2",
@@ -308,7 +308,7 @@ export default Service.extend({
    *     },
    *     "1.1.1.1": {
    *      type: "IP",
-   *      prefetchData: [
+   *      data: [
    *        {
    *           name: "Alerts",
    *           count: "3",

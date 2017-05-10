@@ -350,7 +350,7 @@ Since the summary-level data may come from multiple sources, its retrieval is in
   data: {
     "10.20.30.40" : { // entity id
       "type" : "IP",  // entity type
-      "prefetchData" : [  // summary-level data records
+      "data" : [  // summary-level data records
         {
           "name" : "incidents",
           "count" : 1,
