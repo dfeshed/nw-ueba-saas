@@ -23,8 +23,8 @@ export default {
   // map of filters applied to the list of items
   itemsFilters: defaultFilters,
 
-  // the incident currently with focus (i.e., highlighted) in the incident list
-  focusedIncident: null,
+  // the item currently with focus (i.e., highlighted and/or shown in the inspector) in the item list
+  focusedItem: null,
 
   // whether or not there is a transaction (e.g., update, fetch) underway
   isTransactionUnderway: false,

@@ -16,8 +16,6 @@ function defaultDateRange() {
 }
 
 const itemsFilters = () => ({
-  status: [],
-  priority: [],
   created: defaultDateRange()
 });
 

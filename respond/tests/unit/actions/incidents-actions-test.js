@@ -1,10 +1,11 @@
 import Ember from 'ember';
 import { module, test } from 'qunit';
-import { LIFECYCLE, KEY } from 'redux-pack';
+import { LIFECYCLE } from 'redux-pack';
 import incidentsReducer from 'respond/reducers/respond/incidents';
 import ACTION_TYPES from 'respond/actions/types';
 import { CANNED_FILTER_TYPES_BY_NAME } from 'respond/utils/canned-filter-types';
 import { SORT_TYPES_BY_NAME } from 'respond/utils/sort-types';
+import makePackAction from '../../helpers/make-pack-action';
 
 const { copy } = Ember;
 
@@ -22,18 +23,6 @@ const initialState = {
 };
 
 module('Unit | Utility | Incidents Actions - Reducers');
-
-// this utility method will make an action that redux pack understands
-function makePackAction(lifecycle, { type, payload, meta = {} }) {
-  return {
-    type,
-    payload,
-    meta: {
-      ...meta,
-      [KEY.LIFECYCLE]: lifecycle
-    }
-  };
-}
 
 test('When FETCH_INCIDENTS_TOTAL_COUNT starts, the incidentsStatus changes to wait', function(assert) {
   const initState = copy(initialState);

@@ -104,7 +104,7 @@ page.respond-engine {
   }
 }
 
-// Collapse the filter panel if both the filter panel and the inspector panel is open and the width of the screen is less than 1280
+// Collapse the filter panel if both the filter panel and the inspector panel is open and the width of the screen is smaller
 @media screen and (max-width: 1536px){
   .respond-engine {
     .rsa-respond-explorer.show-filters.show-inspector {

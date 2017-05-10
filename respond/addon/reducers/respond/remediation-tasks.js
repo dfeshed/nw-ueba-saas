@@ -1,7 +1,7 @@
 import * as ACTION_TYPES from 'respond/actions/types';
 import reduxActions from 'redux-actions';
 import { load, persist } from './util/local-storage';
-import explorerInitialState from './util/explorer-reducer-inital-state';
+import explorerInitialState from './util/explorer-reducer-initial-state';
 import explorerReducers from './util/explorer-reducer-fns';
 
 const localStorageKey = 'rsa::nw::respond::remediation-tasks';

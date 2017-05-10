@@ -1,8 +1,9 @@
 import Ember from 'ember';
 import { module, test } from 'qunit';
-import { LIFECYCLE, KEY } from 'redux-pack';
+import { LIFECYCLE } from 'redux-pack';
 import incidentReducer from 'respond/reducers/respond/incident';
 import ACTION_TYPES from 'respond/actions/types';
+import makePackAction from '../../helpers/make-pack-action';
 
 const { copy } = Ember;
 
@@ -12,18 +13,6 @@ const initialState = {
 };
 
 module('Unit | Utility | Incident Storyline Actions - Reducers');
-
-// this utility method will make an action that redux pack understands
-function makePackAction(lifecycle, { type, payload, meta = {} }) {
-  return {
-    type,
-    payload,
-    meta: {
-      ...meta,
-      [KEY.LIFECYCLE]: lifecycle
-    }
-  };
-}
 
 test('When FETCH_INCIDENT_STORYLINE starts, the storylineStatus changes to wait', function(assert) {
   const initState = copy(initialState);
