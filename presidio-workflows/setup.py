@@ -1,6 +1,5 @@
 import sys
 
-from setuptools import find_packages
 from setuptools import setup
 from setuptools.command.test import test as TestCommand
 
@@ -36,8 +35,7 @@ setup(name='presidio',
       url='https://bitbucket.org/fortscale/presidio-core',
       author='fortscale',
       author_email='fsgit@fortscale.com',
-      packages=find_packages('presidio'),
-      package_dir={'': 'presidio'},
+      packages=['presidio'],
       install_requires=[
           'airflow[devel]',
       ],
