@@ -71,11 +71,19 @@ const convertBytes = (bytes, payloadOffset, footerOffset) => {
         return index >= start && index < end;
       });
     }
+    let ascii = char;
+    if (int <= 31) {
+      // Non-printable characters will be represented as a period
+      ascii = '.';
+    } else if (int === 32 || int === 173) {
+      // "Space" characters are converted to "&nbsp;"
+      ascii = String.fromCharCode(160);
+    }
     return {
       index,
       int,
       hex: (`0${int.toString(16)}`).slice(-2),
-      ascii: (int > 31) ? char : '.',
+      ascii,
       isHeader: index < payloadOffset,
       isFooter: index >= footerOffset,
       isKnown
