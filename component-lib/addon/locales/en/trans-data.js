@@ -792,7 +792,8 @@ export default {
       deviceOwner: 'Device Owner',
       deviceOwnerTitle: 'Device Owner Title',
       businessUnit: 'Business Unit',
-      facility: 'Facility'
+      facility: 'Facility',
+      ipAddress: 'Internal IP Address'
     },
     modules: {
       title: 'Top Suspicious Modules',

@@ -4,6 +4,8 @@ export default {
   footer: '',
   timeWindowRequired: true,
   title: 'context.alerts.title',
+  sortColumn: 'alert.timestamp.$date.created',
+  sortOrder: 'descending',
   columns: [
     {
       field: 'alert.risk_score',
@@ -41,7 +43,7 @@ export default {
     {
       field: 'alert.timestamp.$date.created',
       title: 'context.alerts.created',
-      width: '25vh',
+      width: '40vh',
       dataType: 'datetime'
     }
   ]

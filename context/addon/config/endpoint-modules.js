@@ -4,12 +4,14 @@ export default {
   footer: ' ',
   timeWindowRequired: false,
   title: 'context.modules.title',
+  sortColumn: 'IOCScore.Score',
+  sortOrder: 'descending',
   columns: [
     {
       field: 'IOCScore.Score',
       title: 'context.modules.iiocScore',
       dataType: 'riskscore',
-      width: '10vh',
+      width: '12vh',
       class: 'rsa-module-riskscore',
       componentClass: 'rsa-content-badge-score'
     },
@@ -34,7 +36,7 @@ export default {
     {
       field: 'Signature',
       title: 'context.modules.signature',
-      width: '40vh',
+      width: '38vh',
       class: 'rsa-module-signature'
     }
   ]

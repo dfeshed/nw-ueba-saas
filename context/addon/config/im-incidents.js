@@ -4,11 +4,13 @@ export default {
   footer: '',
   timeWindowRequired: true,
   title: 'context.incident.title',
+  sortColumn: 'created.$date',
+  sortOrder: 'descending',
   columns: [
     {
       field: 'averageAlertRiskScore',
       title: 'context.incident.averageAlertRiskScore',
-      width: '8vh',
+      width: '10vh',
       class: 'rsa-module-riskscore',
       componentClass: 'rsa-content-badge-score',
       dataType: 'riskscore'

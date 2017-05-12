@@ -13,6 +13,22 @@ export default {
         title: 'context.archer.criticalityRating'
       },
       {
+        field: 'IP Address',
+        title: 'context.archer.ipAddress'
+      },
+      {
+        field: 'Facilities',
+        title: 'context.archer.facility',
+        count: 'facilitiesCount'
+      }]
+    },
+    {
+      class: 'col-xs-3',
+      cell: [{
+        field: 'Risk Rating',
+        title: 'context.archer.riskRating'
+      },
+      {
         field: 'Device ID',
         title: 'context.archer.deviceId'
       },
@@ -25,8 +41,8 @@ export default {
     {
       class: 'col-xs-3',
       cell: [{
-        field: 'Risk Rating',
-        title: 'context.archer.riskRating'
+        field: 'Device Name',
+        title: 'context.archer.deviceName'
       },
       {
         field: 'Type',
@@ -40,8 +56,8 @@ export default {
     {
       class: 'col-xs-3',
       cell: [{
-        field: 'Device Name',
-        title: 'context.archer.deviceName'
+        field: 'Host Name',
+        title: 'context.archer.hostName'
       },
       {
         field: 'Business Unit',
@@ -52,28 +68,6 @@ export default {
         field: '',
         displayField: true
       }]
-    },
-    {
-      class: 'col-xs-3',
-      cell: [{
-        field: 'Host Name',
-        title: 'context.archer.hostName'
-      },
-      {
-        field: 'Facilities',
-        title: 'context.archer.facility',
-        count: 'facilitiesCount'
-      },
-      {
-        field: '',
-        displayField: true
-      }]
     }
-  ],
-
-  firstRow: {
-    class: 'rsa-context-panel__endpoint__host-details col-xs-2',
-    field: 'IP Address',
-    title: 'context.hostSummary.riskScore'
-  }
+  ]
 };

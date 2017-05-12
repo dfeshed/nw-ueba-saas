@@ -776,7 +776,8 @@ export default {
       deviceOwner: 'ja_Device Owner',
       deviceOwnerTitle: 'ja_Device Owner Title',
       businessUnit: 'ja_Business Unit',
-      facility: 'ja_Facility'
+      facility: 'ja_Facility',
+      ipAddress: 'ja_Internal IP Address'
     },
     addToList: {
       title: 'ja_Add to List',
