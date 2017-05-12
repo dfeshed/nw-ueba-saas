@@ -73,7 +73,7 @@ test('single packet renders default', function(assert) {
     assert.ok(this.$('.rsa-icon-arrow-circle-left-2').length === 1, 'Response arrow shown');
     assert.ok(this.$('.rsa-packet.is-continuation').length === 0, 'Response is not marked as a continuation of the previous');
     assert.equal(this.$().text().trim().replace(/\s/g, '').substring(0, 200),
-      'responsepacket2InvaliddateID4804965123532SEQ102357698PAYLOAD0bytes000000000010000020000030000040f0f755ed59bfa44c11ef6201080045000034dc5c00003e06642136fbf8bb8945834a0050d7a90619dac26ff602e6801216d0f053');
+      'responsepacket2InvaliddateID4804965123532SEQ102357698PAYLOAD0bytes000000000016000032000048000064f0f755ed59bfa44c11ef6201080045000034dc5c00003e06642136fbf8bb8945834a0050d7a90619dac26ff602e6801216d0f053');
   });
 });
 
@@ -111,7 +111,7 @@ test('single packet renders with hidden header/footer bytes', function(assert) {
     assert.ok(this.$('.rsa-icon-arrow-circle-right-2').length === 1, 'Request arrow shown');
     assert.ok(this.$('.rsa-packet.is-continuation').length === 0, 'Request is not marked as a continuation of the previous');
     assert.ok(this.$('.packet-details').length === 0, 'Packet details are not shown');
-    assert.equal(this.$().text().trim().replace(/\s/g, '').substring(0, 200), 'request0000000000100000200000300000400000500000600000700000800000900000a00000b00000c00000d00000e00000f0000100000110000120000130000140000150000160000170a44c11ef6201f0f755ed59bf08004500044f3c1640007e068');
+    assert.equal(this.$().text().trim().replace(/\s/g, '').substring(0, 200), 'request000000000016000032000048000064000080000096000112000128000144000160000176000192000208000224000240000256000272000288000304000320000336000352000368a44c11ef6201f0f755ed59bf08004500044f3c1640007e068');
   });
 });
 
@@ -149,6 +149,6 @@ test('single (continuous) packet renders with hidden header/footer bytes', funct
     assert.ok(this.$('.rsa-icon-arrow-circle-right-2').length === 1, 'Request arrow shown');
     assert.ok(this.$('.rsa-packet.is-continuation').length === 1, 'Request is marked as a continuation of the previous');
     assert.ok(this.$('.packet-details').length === 0, 'Packet details are not shown');
-    assert.equal(this.$().text().trim().replace(/\s/g, '').substring(0, 200), 'request0000000000100000200000300000400000500000600000700000800000900000a00000b00000c00000d00000e00000f0000100000110000120000130000140000150000160000170a44c11ef6201f0f755ed59bf08004500044f3c1640007e068');
+    assert.equal(this.$().text().trim().replace(/\s/g, '').substring(0, 200), 'request000000000016000032000048000064000080000096000112000128000144000160000176000192000208000224000240000256000272000288000304000320000336000352000368a44c11ef6201f0f755ed59bf08004500044f3c1640007e068');
   });
 });
