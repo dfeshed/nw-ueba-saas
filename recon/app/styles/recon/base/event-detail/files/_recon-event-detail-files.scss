@@ -14,6 +14,11 @@
     }
   }
 
+  .recon-file-linkfile {
+    overflow: hidden;
+    white-space: normal;
+  }
+
   .rsa-data-table {
     position: absolute;
     top: 0;
@@ -24,5 +29,17 @@
 
   .rsa-form-checkbox {
     margin-top: .1rem
+  }
+
+  .rsa-data-table-header-cell {
+    &:first-child {
+      text-overflow: clip;
+    }
+  }
+
+  .rsa-data-table-body-cell {
+    &:first-child {
+      text-overflow: clip;
+    }
   }
 }

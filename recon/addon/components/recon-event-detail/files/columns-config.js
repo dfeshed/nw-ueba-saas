@@ -4,7 +4,7 @@ export default [
   {
     field: '',
     title: '',
-    width: 15,
+    width: 18,
     isCheckboxColumn: true
   },
   {

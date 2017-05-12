@@ -29,7 +29,9 @@
           {{/unless}}
         {{else if (eq column.field "hashes")}}
           {{#if (eq item.type "link")}}
-            {{t 'recon.files.linkFile'}}
+            <div class="recon-file-linkfile">
+              {{t 'recon.files.linkFile'}}
+            </div>
           {{else}}
             {{#each item.hashes as |hash|}}
               <div class="recon-file-ellipsis" title="{{to-upper-case hash.type}}: {{hash.value}}">
