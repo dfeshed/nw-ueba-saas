@@ -19,6 +19,10 @@ const visuals = handleActions({
     let reducerState = {};
     if (payload && payload.recon && payload.recon.visuals) {
       reducerState = payload.recon.visuals;
+      // Ignore currentReconView as that is handled elsewhere
+      if (reducerState.currentReconView) {
+        delete reducerState.currentReconView;
+      }
     }
     return {
       ...state,

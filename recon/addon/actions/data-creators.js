@@ -33,21 +33,23 @@ const { Logger } = Ember;
  *
  * @private
  */
-const _dispatchMeta = (dispatch, dataState, view) => {
-  dispatch({
-    type: ACTION_TYPES.META_RETRIEVE,
-    promise: fetchMeta(dataState),
-    meta: {
-      onSuccess(data) {
-        // have new meta, now need to possibly set to new recon view
-        // and fetch data for that view
-        _dispatchEvent(dispatch, view, data);
-      },
-      onFailure(response) {
-        Logger.error('Could not retrieve event meta', response);
+const _retrieveMeta = (dataState) => {
+  return (dispatch) => {
+    dispatch({
+      type: ACTION_TYPES.META_RETRIEVE,
+      promise: fetchMeta(dataState),
+      meta: {
+        onSuccess(data) {
+          // have new meta, now need to possibly set to new recon view
+          // and fetch data for that view
+          dispatch(_determineReconView(data));
+        },
+        onFailure(response) {
+          Logger.error('Could not retrieve event meta', response);
+        }
       }
-    }
-  });
+    });
+  };
 };
 
 /**
@@ -151,32 +153,6 @@ const setNewReconView = (newView) => {
   };
 };
 
-/*
- * The first time recon is opened, need to check and see if currentReconView is in the storedState
- * and update that here. This allows the reconView to be retained in localStorage between
- * sessions
- */
-const initializeRecon = (reconInputs) => {
-  return (dispatch, getState) => {
-    // is there not an eventId in state? then is first time in recon.
-    // check to see if should use localStorage reconView to keep user
-    // in same place. Can't rely on rehydration into state because
-    // rehydration is an action like any other any may not complete
-    // before decisions are made based on what view we are starting at.
-    if (!getState().recon.data.eventId) {
-      getStoredState({}, (err, storedState) => {
-        let starterView;
-        if (!err && storedState && storedState.recon && storedState.recon.visuals.currentReconView) {
-          starterView = RECON_VIEW_TYPES_BY_NAME[storedState.recon.visuals.currentReconView.name];
-        }
-        dispatch(_initializeRecon(reconInputs, starterView));
-      });
-    } else {
-      dispatch(_initializeRecon(reconInputs));
-    }
-  };
-};
-
 /**
  * An Action Creator thunk that builds/sends action for initializing recon.
  *
@@ -194,7 +170,7 @@ const initializeRecon = (reconInputs) => {
  * @returns {function} redux-thunk
  * @public
  */
-const _initializeRecon = (reconInputs, starterView) => {
+const initializeRecon = (reconInputs) => {
 
   return (dispatch, getState) => {
     const dataState = getState().recon.data;
@@ -253,20 +229,14 @@ const _initializeRecon = (reconInputs, starterView) => {
         }
       });
 
-      // currentReconView is either provided when Recon first boots (from local storage)
-      // or we will use whatever is in currentReconView (current redux state).
-      // This allows for initializing with one view, and then using whatever view the user
-      // changes to after that.
-      const currentReconView = starterView || getState().recon.visuals.currentReconView;
-
       // if meta not passed in then need to fetch it now
       // (even if its not being displayed) as we need to
       // use meta to determine which data to fetch and
       // which recon view to display
       if (!reconInputs.meta) {
-        _dispatchMeta(dispatch, reconInputs, currentReconView);
+        dispatch(_retrieveMeta(reconInputs));
       } else {
-        _dispatchEvent(dispatch, currentReconView, reconInputs.meta);
+        dispatch(_determineReconView(reconInputs.meta));
       }
     }
   };
@@ -276,13 +246,23 @@ const _initializeRecon = (reconInputs, starterView) => {
  * Function reused whenever meta is determined, either when it is passed in
  * or when it is retrieved
  */
-const _dispatchEvent = (dispatch, reconView, meta) => {
-  // If we need to force a specific view based on eventType, do so
-  const newReconView = eventTypeFromMetaArray(meta).forcedView || reconView;
-
-  // Taking advantage of existing action creator that handles
-  // changing the recon view AND fetching the appropriate data
-  dispatch(setNewReconView(newReconView));
+const _determineReconView = (meta) => {
+  return (dispatch, getState) => {
+    const { forcedView } = eventTypeFromMetaArray(meta);
+    if (forcedView) {
+      // Taking advantage of existing action creator that handles
+      // changing the recon view AND fetching the appropriate data
+      dispatch(setNewReconView(forcedView));
+    } else {
+      getStoredState({}, (err, storedState) => {
+        let newView = getState().recon.visuals.currentReconView;
+        if (!err && storedState && storedState.recon && storedState.recon.visuals.currentReconView) {
+          newView = RECON_VIEW_TYPES_BY_NAME[storedState.recon.visuals.currentReconView.name];
+        }
+        dispatch(setNewReconView(newView));
+      });
+    }
+  };
 };
 
 /**
@@ -307,7 +287,7 @@ const toggleMetaData = (setTo) => {
     // 3) Meta not already fetched
     // then meta is about to open and needs retrieving
     if (visuals.isMetaShown === false && setTo !== false && !meta.meta) {
-      _dispatchMeta(dispatch, meta, visuals.currentReconView);
+      dispatch(_retrieveMeta(meta));
     }
 
     // Handle setting of visual flag to
