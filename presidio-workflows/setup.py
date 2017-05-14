@@ -1,7 +1,6 @@
 import sys
 
-from setuptools import find_packages
-from setuptools import setup
+from setuptools import setup, find_packages
 from setuptools.command.test import test as TestCommand
 
 
@@ -24,7 +23,7 @@ class Tox(TestCommand):
         errno = tox.cmdline(args=self.tox_args.split())
         sys.exit(errno)
 
-setup(name='presidio',
+setup(name='presidio-workflows',
       version='1.0',
       description='Industry\'s First Embedded User and Entity Behavioral Analytics Engine. - python packages',
       long_description=readme(),
@@ -36,8 +35,7 @@ setup(name='presidio',
       url='https://bitbucket.org/fortscale/presidio-core',
       author='fortscale',
       author_email='fsgit@fortscale.com',
-      packages=find_packages('presidio'),
-      package_dir={'': 'presidio'},
+      packages=find_packages(),
       install_requires=[
           'airflow[devel]',
       ],
