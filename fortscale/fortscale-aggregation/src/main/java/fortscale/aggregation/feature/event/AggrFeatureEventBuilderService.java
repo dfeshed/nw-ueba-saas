@@ -4,15 +4,14 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.common.feature.AggrFeatureValue;
 import fortscale.common.feature.Feature;
-import fortscale.domain.core.FeatureScore;
-import fortscale.domain.core.FeatureScoreList;
+import fortscale.domain.feature.score.FeatureScore;
+import fortscale.domain.feature.score.FeatureScoreList;
 import fortscale.utils.ConversionUtils;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -22,7 +21,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@Component
 public class AggrFeatureEventBuilderService {
 
     private static final SimpleDateFormat format = getSimpleDateFormat();

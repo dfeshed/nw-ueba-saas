@@ -2,7 +2,6 @@ package fortscale.entity.event;
 
 import fortscale.aggregation.configuration.AslConfigurationService;
 import fortscale.utils.logging.Logger;
-import groovy.json.JsonException;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -45,7 +44,7 @@ public class EntityEventGlobalParamsConfService extends AslConfigurationService 
 		if (jsonObj == null) {
 			String errorMsg = String.format("JSON file does not contain node name %s", GLOBAL_PARAMS_JSON_FIELD_NAME);
 			logger.error(errorMsg);
-			throw new JsonException(errorMsg);
+			throw new RuntimeException(errorMsg);
 		}
 
 		for (Map.Entry<String, Object> entry : jsonObj.entrySet()) {

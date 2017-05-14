@@ -1,7 +1,7 @@
 package fortscale.utils.influxdb;
 
+import org.junit.After;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -9,9 +9,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.retry.backoff.FixedBackOffPolicy;
 import org.springframework.retry.policy.SimpleRetryPolicy;
+import org.springframework.retry.support.RetryTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.retry.support.RetryTemplate;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -23,17 +24,18 @@ import static org.mockito.Mockito.*;
 @ContextConfiguration
 public class InfluxdbServiceTest {
 
-    @Configuration
+	static InfluxdbService remoteService = mock(InfluxdbService.class);
+
+	@Configuration
     @EnableRetry
     public static class influxdbTestSpringConfig {
 
         @Bean
         public InfluxdbService influxdbClient() throws Exception {
-			InfluxdbService remoteService = mock(InfluxdbService.class);
-            when(remoteService.describeDatabases())
-                    .thenThrow(new RuntimeException("Remote Exception 1"))
-                    .thenThrow(new RuntimeException("Remote Exception 2"))
-                    .thenReturn(Arrays.asList("Completed"));
+			when(remoteService.describeDatabases())
+					.thenThrow(new RuntimeException("Remote Exception 1"))
+					.thenThrow(new RuntimeException("Remote Exception 2"))
+					.thenReturn(Arrays.asList("Completed"));
             return remoteService;
         }
 		@Bean
@@ -52,8 +54,7 @@ public class InfluxdbServiceTest {
     }
 	@Autowired
 	private RetryTemplate retryTemplate;
-	@Autowired
-	InfluxdbService remoteService;
+
 
 	@Test
 	public void shouldRetryThreeTimes()
@@ -61,6 +62,10 @@ public class InfluxdbServiceTest {
 		List<String> databases = this.retryTemplate.execute(context -> this.remoteService.describeDatabases());
 		verify(remoteService,times(3)).describeDatabases();
 		assertThat(databases,is(Arrays.asList("Completed")));
+		verifyNoMoreInteractions(remoteService);
 	}
-
+	@After
+	public void validate() {
+		validateMockitoUsage();
+	}
 }

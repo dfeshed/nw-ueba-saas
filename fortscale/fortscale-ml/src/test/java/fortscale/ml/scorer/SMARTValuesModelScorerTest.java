@@ -29,7 +29,7 @@ public class SMARTValuesModelScorerTest {
                 1,
                 1,
                 false,
-                globalInfluence);
+                globalInfluence, null, null);
     }
 
     @Test(expected = IllegalArgumentException.class)

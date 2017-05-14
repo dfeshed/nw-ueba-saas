@@ -59,7 +59,7 @@ public class ModelBuilderManager {
     }
 
     public void process(IModelBuildingListener listener, String sessionId, Date previousEndTime,
-                        Date currentEndTime, boolean selectHighScoreContexts, Set<String> specifiedContextIds) {
+                        Date currentEndTime, Set<String> specifiedContextIds) {
         Assert.notNull(currentEndTime);
 
         metrics.process++;
@@ -67,7 +67,7 @@ public class ModelBuilderManager {
         logger.info("<<< Starting building models for {}, sessionId {}, previousEndTime {}, currentEndTime {}",
                 modelConf.getName(), sessionId, previousEndTime, currentEndTime);
 
-        Set<String> contextIds = getContextIds(previousEndTime, currentEndTime, selectHighScoreContexts, specifiedContextIds);
+        Set<String> contextIds = getContextIds(previousEndTime, currentEndTime, specifiedContextIds);
 
         long numOfSuccesses = 0;
         long numOfFailures = 0;
@@ -100,14 +100,9 @@ public class ModelBuilderManager {
     }
 
     private Set<String> getContextIds(Date previousEndTime,
-                                       Date currentEndTime,
-                                       boolean selectHighScoreContexts,
-                                       Set<String> specifiedContextIds) {
+                                      Date currentEndTime,
+                                      Set<String> specifiedContextIds) {
         if (!specifiedContextIds.isEmpty()) {
-            if (selectHighScoreContexts) {
-                metrics.illegalRequest++;
-                return Collections.emptySet();
-            }
             metrics.specifiedContextIds++;
             if (contextSelector != null) {
                 // global models can operate only on all of the users
@@ -116,11 +111,7 @@ public class ModelBuilderManager {
             return Collections.emptySet();
         }
 
-        if (selectHighScoreContexts) {
-            metrics.getHighScoreContexts++;
-        } else {
-            metrics.getContexts++;
-        }
+        metrics.getContexts++;
 
         Set<String> contextIds;
         if (contextSelector != null) {
@@ -134,17 +125,10 @@ public class ModelBuilderManager {
                 previousEndTime = new Date(currentEndTime.getTime() - TimeUnit.SECONDS.toMillis(selectorDeltaInSeconds));
             }
 
-            if (selectHighScoreContexts) {
-                contextIds = contextSelector.getHighScoreContexts(previousEndTime, currentEndTime);
-            } else {
-                contextIds = contextSelector.getContexts(previousEndTime, currentEndTime);
-            }
+            contextIds = contextSelector.getContexts(previousEndTime, currentEndTime);
         } else {
             contextIds = new HashSet<>();
-            if (!selectHighScoreContexts) {
-                // global models can operate only on all of the users
-                contextIds.add(null);
-            }
+            contextIds.add(null);
         }
 
         metrics.contextIds += contextIds.size();

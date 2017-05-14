@@ -6,7 +6,7 @@ import fortscale.accumulator.entityEvent.event.AccumulatedEntityEvent;
 import fortscale.accumulator.entityEvent.metrics.EntityEventAccumulatorMetrics;
 import fortscale.accumulator.entityEvent.store.AccumulatedEntityEventStore;
 import fortscale.aggregation.feature.event.AggrEvent;
-import fortscale.domain.core.EntityEvent;
+import fortscale.domain.SMART.EntityEvent;
 import fortscale.entity.event.EntityEventMongoStore;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.monitoring.stats.StatsService;

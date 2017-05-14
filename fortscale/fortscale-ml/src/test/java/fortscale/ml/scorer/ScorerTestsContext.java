@@ -7,7 +7,6 @@ import fortscale.common.feature.extraction.FeatureExtractService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
-import org.springframework.data.hadoop.config.common.annotation.EnableAnnotationConfiguration;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
@@ -15,7 +14,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @Configuration
-@EnableAnnotationConfiguration
 @EnableSpringConfigured
 public class ScorerTestsContext {
 	@Bean

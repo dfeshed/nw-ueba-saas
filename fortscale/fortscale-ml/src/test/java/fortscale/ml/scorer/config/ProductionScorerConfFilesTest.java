@@ -20,7 +20,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
-import org.springframework.data.hadoop.config.common.annotation.EnableAnnotationConfiguration;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
@@ -54,26 +53,6 @@ public class ProductionScorerConfFilesTest {
 		}
 	}
 
-	@Test
-	public void get_kerberos_logins_data_source_scorer_confs() {
-		getDataSourceScorerConfs("kerberos_logins", Collections.singletonList(4));
-	}
-
-	@Test
-	public void get_ssh_data_source_scorer_confs() {
-		getDataSourceScorerConfs("ssh", Collections.singletonList(4));
-	}
-
-	@Test
-	public void get_vpn_data_source_scorer_confs() {
-		getDataSourceScorerConfs("vpn", Collections.singletonList(3));
-	}
-
-	@Test
-	public void get_vpn_session_data_source_scorer_confs() {
-		getDataSourceScorerConfs("vpn_session", Collections.singletonList(3));
-	}
-
 	private void getDataSourceScorerConfs(String dataSource, List<Integer> sizes) {
 		DataSourceScorerConfs dataSourceScorerConfs = scorerConfService.getDataSourceScorerConfs(dataSource);
 
@@ -93,7 +72,6 @@ public class ProductionScorerConfFilesTest {
 
 	@Configuration
 	@EnableSpringConfigured
-	@EnableAnnotationConfiguration
 	@ComponentScan(basePackages = "fortscale.ml.scorer.factory")
 	static class ContextConfiguration {
 		@Bean

@@ -7,9 +7,7 @@
 						http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd 
 						http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 	<import resource="classpath*:META-INF/spring/fortscale-global-config-context.xml"/>
-	<import resource="classpath*:META-INF/spring/fortscale-common-entities-context.xml" />
 
-	<import resource="classpath*:META-INF/spring/fortscale-common-entities-context.xml" />
 	<context:spring-configured />
 	<context:annotation-config />
 	<context:component-scan base-package="fortscale.global,fortscale.common.feature.extraction"/>

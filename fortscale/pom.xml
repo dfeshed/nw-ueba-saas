@@ -62,6 +62,8 @@
 	</pluginRepositories>
 
 	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <!--RPM VERSION-->
         <rpm.version>3.1.0</rpm.version>
 		<!-- NOTE: ALL dependencies' versions should be here -->
@@ -98,6 +100,7 @@
 		<test.int.exgroups></test.int.exgroups>
 		<org.aspectj-version>1.7.3</org.aspectj-version>
 		<guava.version>15.0</guava.version>
+		<cloudera-manager-api.version>5.4.7</cloudera-manager-api.version>
 		<!-- maven plugins versions -->
 		<maven-download-plugin.version>1.1.0</maven-download-plugin.version>
 		<maven-resources-plugin.version>2.6</maven-resources-plugin.version>
@@ -107,6 +110,7 @@
 		<mavanagaiata.version>0.7.0</mavanagaiata.version>
 		<maven-jar-plugin.version>2.4</maven-jar-plugin.version>
 		<maven-surefire-plugin.version>2.16</maven-surefire-plugin.version>
+		<maven-source-plugin.version>2.1.1</maven-source-plugin.version>
 		<maven-failsafe-plugin.version>2.16</maven-failsafe-plugin.version>
 		<servlet-api.version>3.1.0</servlet-api.version>
 		<java-lang-config.version>1.8</java-lang-config.version>
@@ -130,11 +134,23 @@
 		<!-- eclipse plugins versions -->
 
 		<asm-commons.version>5.0.3</asm-commons.version>
+		<janino.version>2.5.15</janino.version>
+		<perf4j.version>0.9.7</perf4j.version>
+		<jade4j.version>1.1.4</jade4j.version>
+		<commons-jexl.version>1.1</commons-jexl.version>
 
-
-
+		<commons-httpclient.version>3.0.1</commons-httpclient.version>
+		<commons-lang.version>2.6</commons-lang.version>
+		<org-json.version>20140107</org-json.version>
+		<commons-lang3.version>3.1</commons-lang3.version>
+		<commons-pool.version>1.4</commons-pool.version>
 		<commons-codec.version>1.9</commons-codec.version>
 		<h2.version>1.4.193</h2.version>
+		<joda-time.version>2.3</joda-time.version>
+
+		<syslog-java-client.version>1.0.6</syslog-java-client.version>
+		<commons-validator.version>1.4.1</commons-validator.version>
+		<jacoco-maven-plugin.version>0.7.9</jacoco-maven-plugin.version>
 	</properties>
 
 	<dependencyManagement>
@@ -163,7 +179,7 @@
 			<artifactId>jdk.tools</artifactId>
 			<version>${java-lang-config.version}</version>
 			<scope>system</scope>
-			<systemPath>${JAVA_HOME}/lib/tools.jar</systemPath>
+			<systemPath>${java.home}/../lib/tools.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>
@@ -409,6 +425,195 @@
 			<artifactId>springfox-swagger-ui</artifactId>
 			<version>${swager.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>javax.persistence</groupId>
+			<artifactId>persistence-api</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.2</version>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>1.0.13</version>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-core</artifactId>
+			<version>1.0.13</version>
+		</dependency>
+		<dependency>
+			<groupId>net.minidev</groupId>
+			<artifactId>json-smart</artifactId>
+			<version>2.2.1</version>
+		</dependency>
+		<dependency>
+			<groupId>net.sourceforge.argparse4j</groupId>
+			<artifactId>argparse4j</artifactId>
+			<version>${argparse4j.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.shell</groupId>
+			<artifactId>spring-shell</artifactId>
+			<version>${spring-shell.version}</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>cglib</artifactId>
+					<groupId>cglib</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.influxdb</groupId>
+			<artifactId>influxdb-java</artifactId>
+			<version>${influxdb.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>joda-time</groupId>
+			<artifactId>joda-time</artifactId>
+			<version>${joda-time.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>${commons-lang3.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+			<version>${commons-lang.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-pool</groupId>
+			<artifactId>commons-pool</artifactId>
+			<version>${commons-pool.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>${org-json.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.codehaus.janino</groupId>
+			<artifactId>janino</artifactId>
+			<version>${janino.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.perf4j</groupId>
+			<artifactId>perf4j</artifactId>
+			<version>${perf4j.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-jexl</groupId>
+			<artifactId>commons-jexl</artifactId>
+			<version>${commons-jexl.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-httpclient</groupId>
+			<artifactId>commons-httpclient</artifactId>
+			<version>${commons-httpclient.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.scala-lang</groupId>
+			<artifactId>scala-library</artifactId>
+			<version>${scala.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.retry</groupId>
+			<artifactId>spring-retry</artifactId>
+			<version>${springretry.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>cglib</groupId>
+			<artifactId>cglib</artifactId>
+			<version>${cglib.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<version>${h2.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>de.neuland-bfi</groupId>
+			<artifactId>jade4j</artifactId>
+			<version>${jade4j.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.kafka</groupId>
+			<artifactId>kafka_${scala-kafka.version}</artifactId>
+			<version>${kafka.version}</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>log4j</artifactId>
+					<groupId>log4j</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>jmxri</artifactId>
+					<groupId>com.sun.jmx</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>jmxtools</artifactId>
+					<groupId>com.sun.jdmk</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>jms</artifactId>
+					<groupId>javax.jms</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>zookeeper</artifactId>
+					<groupId>org.apache.zookeeper</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>com.cloudbees</groupId>
+			<artifactId>syslog-java-client</artifactId>
+			<version>${syslog-java-client.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.cloudera.api</groupId>
+			<artifactId>cloudera-manager-api</artifactId>
+			<version>5.4.7</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>cxf-rt-frontend-jaxrs</artifactId>
+					<groupId>org.apache.cxf</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>jackson-databind</artifactId>
+					<groupId>com.fasterxml.jackson.core</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>javax.servlet-api</artifactId>
+					<groupId>javax.servlet</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>servlet-api</artifactId>
+					<groupId>javax.servlet</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>jsp-api</artifactId>
+					<groupId>javax.servlet.jsp</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>servlet-api-2.5</artifactId>
+					<groupId>org.mortbay.jetty</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>commons-validator</groupId>
+			<artifactId>commons-validator</artifactId>
+			<version>${commons-validator.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>${guava.version}</version>
+		</dependency>
 	</dependencies>
 
 	</dependencyManagement>
@@ -416,7 +621,6 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<version>${slf4j.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -441,7 +645,6 @@
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-core</artifactId>
-			<version>${logback.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
@@ -477,9 +680,53 @@
 				<configuration>
 					<source>${java-lang-config.version}</source>
 					<target>${java-lang-config.version}</target>
+					<encoding>${project.build.sourceEncoding}</encoding>
 				</configuration>
 			</plugin>
-
+			<!-- code coverage plugin-->
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>${jacoco-maven-plugin.version}</version>
+				<executions>
+					<!--
+                        Prepares the property pointing to the JaCoCo runtime agent which
+                        is passed as VM argument when Maven the Surefire plugin is executed.
+                    -->
+					<execution>
+						<id>pre-unit-test</id>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+						<configuration>
+							<!-- Sets the path to the file which contains the execution data. -->
+							<destFile>${project.build.directory}/coverage-reports/jacoco-ut.exec</destFile>
+							<!--
+                                Sets the name of the property containing the settings
+                                for JaCoCo runtime agent.
+                            -->
+							<propertyName>surefireArgLine</propertyName>
+						</configuration>
+					</execution>
+					<!--
+                        Ensures that the code coverage report for unit tests is created after
+                        unit tests have been run.
+                    -->
+					<execution>
+						<id>post-unit-test</id>
+						<phase>test</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+						<configuration>
+							<!-- Sets the path to the file which contains the execution data. -->
+							<dataFile>${project.build.directory}/coverage-reports/jacoco-ut.exec</dataFile>
+							<!-- Sets the output directory for the code coverage report. -->
+							<outputDirectory>${project.reporting.outputDirectory}/jacoco-ut</outputDirectory>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 
 		      <plugin>
 				<groupId>com.github.koraktor</groupId>
@@ -526,6 +773,8 @@
 					</dependency>
 				</dependencies>
 				<configuration>
+					<!-- Sets the VM argument line used when unit tests are run. -->
+					<argLine>${surefireArgLine}</argLine>
 					<excludes>
 						<exclude>${test.exclude}</exclude>
 					</excludes>
@@ -566,6 +815,8 @@
 					</dependency>
 				</dependencies>
 				<configuration>
+					<!-- Sets the VM argument line used when integration tests are run. -->
+					<argLine>${failsafeArgLine}</argLine>
 					<systemPropertyVariables>
 						<org.quartz.properties>resources/jobs/quartz.properties</org.quartz.properties>
 					</systemPropertyVariables>
@@ -618,20 +869,13 @@
 			</plugins>
 		</pluginManagement>
 	</build>
-
 	<modules>
 		<module>fortscale-utils</module>
-		<module>fortscale-geoip</module>
 		<module>fortscale-global-config</module>
 		<module>fortscale-domain</module>
 		<module>fortscale-ml</module>
 		<module>fortscale-services</module>
 		<module>fortscale-aggregation</module>
-		<module>fortscale-monitor</module>
-		<module>fortscale-webapp</module>
-		<module>fortscale-collection</module>
-		<module>fortscale-streaming</module>
-		<module>fortscale-flume</module>
 		<module>fortscale-common</module>
 		<module>fortscale-monitoring-daemons</module>
 	</modules>

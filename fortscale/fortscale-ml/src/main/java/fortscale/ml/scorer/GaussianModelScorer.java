@@ -2,9 +2,11 @@ package fortscale.ml.scorer;
 
 import fortscale.common.feature.Feature;
 import fortscale.common.feature.FeatureNumericValue;
+import fortscale.common.feature.extraction.FeatureExtractService;
 import fortscale.ml.model.ContinuousDataModel;
 import fortscale.ml.model.GaussianPriorModel;
 import fortscale.ml.model.Model;
+import fortscale.ml.model.cache.EventModelsCacheService;
 import fortscale.ml.scorer.algorithms.GaussianModelScorerAlgorithm;
 
 import java.util.List;
@@ -14,18 +16,19 @@ public class GaussianModelScorer extends AbstractModelScorer {
     private GaussianModelScorerAlgorithm algorithm;
 
     public GaussianModelScorer(String scorerName,
-							   String modelName,
-							   List<String> additionalModelNames,
-							   List<String> contextFieldNames,
-							   List<List<String>> additionalContextFieldNames,
-							   String featureName,
-							   int minNumOfSamplesToInfluence,
-							   int enoughNumOfSamplesToInfluence,
-							   boolean isUseCertaintyToCalculateScore,
-							   int globalInfluence) {
+                               String modelName,
+                               List<String> additionalModelNames,
+                               List<String> contextFieldNames,
+                               List<List<String>> additionalContextFieldNames,
+                               String featureName,
+                               int minNumOfSamplesToInfluence,
+                               int enoughNumOfSamplesToInfluence,
+                               boolean isUseCertaintyToCalculateScore,
+                               int globalInfluence, FeatureExtractService featureExtractService, EventModelsCacheService eventModelsCacheService) {
 
         super(scorerName, modelName, additionalModelNames, contextFieldNames, additionalContextFieldNames,
-                featureName, minNumOfSamplesToInfluence, enoughNumOfSamplesToInfluence, isUseCertaintyToCalculateScore);
+                featureName, minNumOfSamplesToInfluence, enoughNumOfSamplesToInfluence, isUseCertaintyToCalculateScore,
+                featureExtractService, eventModelsCacheService);
 
         if (additionalModelNames.size() != 1) {
             throw new IllegalArgumentException(this.getClass().getSimpleName() + " expects to get one additional model name");

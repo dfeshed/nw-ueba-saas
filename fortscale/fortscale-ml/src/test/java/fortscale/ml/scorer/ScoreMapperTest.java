@@ -1,7 +1,7 @@
 package fortscale.ml.scorer;
 
 import fortscale.common.event.Event;
-import fortscale.domain.core.FeatureScore;
+import fortscale.domain.feature.score.FeatureScore;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

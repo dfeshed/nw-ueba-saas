@@ -70,7 +70,6 @@
 		<dependency>
 			<groupId>net.minidev</groupId>
 			<artifactId>json-smart</artifactId>
-			<version>${json-smart.version}</version>
 		</dependency>
 
 		<dependency>
@@ -157,16 +156,14 @@
 		<dependency>
 			<groupId>fortscale</groupId>
 			<artifactId>fortscale-common</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>${project.version}</version>
 		</dependency>
 
 
-		<!-- javax persistence needed by aspectj compile time depenceny injection 
-			with spring [SPR-6819] -->
+		<!-- javax persistence needed by aspectj compile time depenceny injection with spring [SPR-6819] -->
 		<dependency>
 			<groupId>javax.persistence</groupId>
 			<artifactId>persistence-api</artifactId>
-			<version>1.0</version>
 			<scope>provided</scope>
 		</dependency>
 
@@ -175,7 +172,6 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<version>${slf4j.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
@@ -185,15 +181,13 @@
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-core</artifactId>
-			<version>${logback.version}</version>
 		</dependency>
 
 
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
-			<version>${guava.version}</version>
-		</dependency>
+        </dependency>
 		<dependency>
 			<groupId>com.github.fakemongo</groupId>
 			<artifactId>fongo</artifactId>
@@ -211,6 +205,7 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>${maven-compiler-plugin.version}</version>
 				<configuration>
+					<encoding>${project.build.sourceEncoding}</encoding>
 					<source>${java-lang-config.version}</source>
 					<target>${java-lang-config.version}</target>
 				</configuration>

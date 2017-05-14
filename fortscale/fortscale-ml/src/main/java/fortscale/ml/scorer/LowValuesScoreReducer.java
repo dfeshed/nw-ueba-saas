@@ -4,27 +4,28 @@ import fortscale.common.event.Event;
 import fortscale.common.feature.Feature;
 import fortscale.common.feature.FeatureNumericValue;
 import fortscale.common.feature.FeatureStringValue;
-import fortscale.domain.core.FeatureScore;
+import fortscale.common.feature.extraction.FeatureExtractService;
+import fortscale.domain.feature.score.FeatureScore;
 import fortscale.ml.scorer.config.ReductionConfiguration;
 import fortscale.utils.logging.Logger;
-import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.util.Assert;
 
 import java.util.Collections;
 import java.util.List;
 
-@Configurable(preConstruction = true)
 public class LowValuesScoreReducer extends AbstractScorer {
 	private static final Logger logger = Logger.getLogger(LowValuesScoreReducer.class);
 
 	private Scorer baseScorer;
 	private List<ReductionConfiguration> reductionConfigs;
-
-	public LowValuesScoreReducer(String name, Scorer baseScorer, List<ReductionConfiguration> reductionConfigs) {
+	private final FeatureExtractService featureExtractService;
+	public LowValuesScoreReducer(String name, Scorer baseScorer, List<ReductionConfiguration> reductionConfigs, FeatureExtractService featureExtractService) {
 		super(name);
 		Assert.notNull(baseScorer);
 		Assert.notNull(reductionConfigs);
 		this.baseScorer = baseScorer;
+		this.featureExtractService = featureExtractService;
+
 		this.reductionConfigs = reductionConfigs;
 	}
 

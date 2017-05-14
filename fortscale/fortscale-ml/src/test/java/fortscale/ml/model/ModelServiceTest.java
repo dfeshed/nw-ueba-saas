@@ -1,12 +1,13 @@
 package fortscale.ml.model;
 
+import com.google.common.collect.Sets;
 import fortscale.aggregation.feature.bucket.*;
-import fortscale.aggregation.util.MongoDbUtilService;
 import fortscale.common.feature.Feature;
 import fortscale.common.util.GenericHistogram;
 import fortscale.ml.model.listener.IModelBuildingListener;
 import fortscale.ml.model.listener.ModelBuildingStatus;
 import fortscale.ml.model.store.ModelDAO;
+import fortscale.utils.mongodb.util.MongoDbUtilService;
 import fortscale.utils.monitoring.stats.config.NullStatsServiceConfig;
 import fortscale.utils.time.TimestampUtils;
 import net.minidev.json.JSONObject;
@@ -15,7 +16,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
-import org.python.google.common.collect.Sets;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -140,7 +140,7 @@ public class ModelServiceTest {
 		// Consistent with the name in the configuration
 		String modelConfName = "first_test_model_conf";
 		Date currentEndTime = new Date(currentEndTimeInMillis);
-		modelService.process(listener, sessionId, modelConfName, null, currentEndTime, false, Collections.emptySet());
+		modelService.process(listener, sessionId, modelConfName, null, currentEndTime, Collections.emptySet());
 
 		// Assert listener
 		JSONObject expectedStatusForId1 = buildStatus(modelConfName, "id1", currentEndTime, true);

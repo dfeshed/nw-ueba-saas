@@ -11,7 +11,7 @@ import java.util.Date;
 import java.util.Set;
 
 @Configurable(preConstruction = true)
-public class FeatureBucketContextSelector extends AlertTriggeringHighScoreContextSelector {
+public class FeatureBucketContextSelector implements IContextSelector {
 	@Autowired
 	private BucketConfigurationService bucketConfigurationService;
 	@Autowired

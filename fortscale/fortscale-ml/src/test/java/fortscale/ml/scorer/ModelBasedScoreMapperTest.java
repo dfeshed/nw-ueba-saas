@@ -3,7 +3,7 @@ package fortscale.ml.scorer;
 import fortscale.common.event.Event;
 import fortscale.common.feature.Feature;
 import fortscale.common.feature.extraction.FeatureExtractService;
-import fortscale.domain.core.FeatureScore;
+import fortscale.domain.feature.score.FeatureScore;
 import fortscale.ml.model.Model;
 import fortscale.ml.model.ScoreMappingModel;
 import fortscale.ml.model.cache.EventModelsCacheService;
@@ -19,7 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
-import org.springframework.data.hadoop.config.common.annotation.EnableAnnotationConfiguration;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
@@ -37,7 +36,6 @@ public class ModelBasedScoreMapperTest {
 
     @Configuration
     @EnableSpringConfigured
-    @EnableAnnotationConfiguration
     static class ContextConfiguration {
         @Bean
         public FactoryService<Scorer> scorerFactoryService() {
@@ -65,7 +63,8 @@ public class ModelBasedScoreMapperTest {
 
     @Autowired
     private FeatureExtractService featureExtractService;
-
+    @Autowired
+    EventModelsCacheService eventModelsCacheService;
     @Autowired
     private ModelsCacheService modelsCacheService;
 
@@ -95,8 +94,8 @@ public class ModelBasedScoreMapperTest {
                 "model name",
                 Collections.singletonList("context field name"),
                 "feature name",
-                baseScorerConf
-        );
+                baseScorerConf,
+                scorerFactoryService, eventModelsCacheService, featureExtractService);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -106,8 +105,8 @@ public class ModelBasedScoreMapperTest {
                 "model name",
                 Collections.singletonList("context field name"),
                 "",
-                baseScorerConf
-        );
+                baseScorerConf,
+                scorerFactoryService, eventModelsCacheService, featureExtractService);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -117,8 +116,8 @@ public class ModelBasedScoreMapperTest {
                 "",
                 Collections.singletonList("context field name"),
                 "feature name",
-                baseScorerConf
-        );
+                baseScorerConf,
+                scorerFactoryService, eventModelsCacheService, featureExtractService);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -128,8 +127,8 @@ public class ModelBasedScoreMapperTest {
                 "model name",
                 null,
                 "feature name",
-                baseScorerConf
-        );
+                baseScorerConf,
+                scorerFactoryService, eventModelsCacheService, featureExtractService);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -139,8 +138,8 @@ public class ModelBasedScoreMapperTest {
                 "model name",
                 Collections.singletonList("context field name"),
                 "feature name",
-                null
-        );
+                null,
+                scorerFactoryService, eventModelsCacheService, featureExtractService);
     }
 
     private FeatureScore calculateScore(String featureScoreName,
@@ -167,8 +166,8 @@ public class ModelBasedScoreMapperTest {
                 "model name",
                 Collections.singletonList(contextFieldName),
                 "feature name",
-                baseScorerConf
-        ).calculateScore(eventMessage, evenEpochTime);
+                baseScorerConf,
+                scorerFactoryService, eventModelsCacheService, featureExtractService).calculateScore(eventMessage, evenEpochTime);
     }
 
     @Test

@@ -1,7 +1,8 @@
 package fortscale.ml.scorer;
 
 import fortscale.common.event.Event;
-import fortscale.domain.core.FeatureScore;
+import fortscale.common.feature.extraction.FeatureExtractService;
+import fortscale.domain.feature.score.FeatureScore;
 import org.springframework.util.Assert;
 
 import java.util.regex.Pattern;
@@ -15,8 +16,8 @@ public class ConstantRegexScorer extends RegexScorer{
 		Assert.isTrue(constantScore>=0 && constantScore <= 100, String.format(INVALID_CONSTANT_SCORE_ERROR_MSG, constantScore));
 	}
 
-	public ConstantRegexScorer(String scorerName, String featureFieldName, Pattern regexPattern, int constantScore) {
-		super(scorerName, featureFieldName, regexPattern);
+	public ConstantRegexScorer(String scorerName, String featureFieldName, Pattern regexPattern, int constantScore, FeatureExtractService featureExtractService) {
+		super(scorerName, featureFieldName, regexPattern, featureExtractService);
 		assertConstantScoreValue(constantScore);
 		this.constantScore = constantScore;
 	}

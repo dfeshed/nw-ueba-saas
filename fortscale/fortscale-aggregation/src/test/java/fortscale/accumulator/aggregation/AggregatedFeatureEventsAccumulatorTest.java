@@ -6,6 +6,7 @@ import fortscale.accumulator.aggregation.config.AggregatedFeatureEventsAccumulat
 import fortscale.accumulator.aggregation.event.AccumulatedAggregatedFeatureEvent;
 import fortscale.accumulator.aggregation.translator.AccumulatedAggregatedFeatureEventTranslator;
 import fortscale.aggregation.feature.event.AggrEvent;
+import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.aggregation.feature.event.store.AggregatedFeatureEventsMongoStore;
 import fortscale.utils.monitoring.stats.StatsService;
 import fortscale.utils.monitoring.stats.config.NullStatsServiceConfig;
@@ -19,7 +20,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
-import org.springframework.data.hadoop.config.common.annotation.EnableAnnotationConfiguration;
 import org.springframework.data.mongodb.MongoDbFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
@@ -43,7 +43,6 @@ public class AggregatedFeatureEventsAccumulatorTest {
             AggregatedFeatureEventsAccumulatorConfig.class
     })
     @EnableSpringConfigured
-    @EnableAnnotationConfiguration
     @Profile("test")
     public static class springConfig {
         private static final String FORTSCALE_TEST_DB = "fortscaleTestDb";
@@ -98,10 +97,12 @@ public class AggregatedFeatureEventsAccumulatorTest {
     private AggregatedFeatureEventsAccumulator accumulator;
     @Autowired
     private MongoTemplate mongoTemplate;
+    @Autowired
+    private AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
 
     @Test
     public void shouldAccumulateAggrEvents() throws Exception {
-        String featureName = "distinct_number_of_normalized_src_machine_kerberos_logins_daily";
+        String featureName = aggregatedFeatureEventsConfService.getFAggrFeatureEventNameList().stream().filter(x->x.endsWith("daily")).findFirst().get();
         long creationEpochTimeSeconds = Instant.parse("2016-10-09T01:00:00Z").getEpochSecond();
         long startTimeUnixSeconds = Instant.parse("2016-10-09T01:00:00Z").getEpochSecond();
         long endTimeUnixSeconds = Instant.parse("2016-10-09T02:00:00Z").getEpochSecond();

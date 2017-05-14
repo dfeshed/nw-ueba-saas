@@ -4,7 +4,7 @@ import fortscale.accumulator.accumulator.AccumulationParams;
 import fortscale.accumulator.entityEvent.config.EntityEventAccumulatorConfig;
 import fortscale.accumulator.entityEvent.event.AccumulatedEntityEvent;
 import fortscale.aggregation.feature.event.AggrEvent;
-import fortscale.domain.core.EntityEvent;
+import fortscale.domain.SMART.EntityEvent;
 import fortscale.entity.event.EntityEventMongoStore;
 import fortscale.utils.monitoring.stats.StatsService;
 import fortscale.utils.monitoring.stats.config.NullStatsServiceConfig;
@@ -21,7 +21,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
-import org.springframework.data.hadoop.config.common.annotation.EnableAnnotationConfiguration;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -49,13 +48,12 @@ public class EntityEventAccumulatorTest {
             MongodbTestConfig.class
     })
     @EnableSpringConfigured
-    @EnableAnnotationConfiguration
     public static class springConfig {
         @Autowired
         private StatsService statsService;
 
         @Bean
-        public static TestPropertiesPlaceholderConfigurer mainProcessPropertiesConfigurer() {
+        public static TestPropertiesPlaceholderConfigurer EntityAcummainProcessPropertiesConfigurer() {
             Properties properties = new Properties();
             properties.put("streaming.event.field.type.aggr_event", "aggr_event");
             properties.put("streaming.event.field.type.entity_event","entity_event");

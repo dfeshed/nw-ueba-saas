@@ -14,15 +14,12 @@
 	<bean id="retentionStrategiesConfService" class="fortscale.aggregation.feature.event.RetentionStrategiesConfService"/>
 	<bean id="aggregatedFeatureEventsConfService" class="fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService"/>
 	<bean id="aggrFeatureFuncService" class="fortscale.aggregation.feature.functions.AggrFeatureFuncService"/>
-	<bean id="aggrFeatureEventBuilderService" class="fortscale.aggregation.feature.event.AggrFeatureEventBuilderService"/>
+	<bean id="aggrFeatureEventBuilderServiceConfig" class="fortscale.aggregation.feature.event.config.AggrFeatureEventBuilderServiceConfig"/>
 	<bean id="aggregatedEventQueryService" class="fortscale.aggregation.feature.event.AggregatedEventQueryMongoService"/>
 	<bean id="featureBucketQueryService" class="fortscale.aggregation.feature.event.FeatureBucketQueryMongoService"/>
-	<bean id="mongoDbUtilService" class="fortscale.aggregation.util.MongoDbUtilService" />
-	<bean id="supportingInformationDistinctEventsByTimePopulator" class="fortscale.aggregation.feature.services.historicaldata.populators.SupportingInformationDistinctEventsByTimePopulator" scope="prototype">
-		<property name="aggregatedEventQueryService" ref="aggregatedEventQueryService"/>
-	</bean>
+	<bean id="mongoDbUtilServiceConfig" class="fortscale.utils.mongodb.util.MongoDbUtilServiceConfig" />
 
 
-    <bean id="dataQueryHelper" class="fortscale.common.dataqueries.querydto.DataQueryHelper"/>
-	
+
+
 </beans>

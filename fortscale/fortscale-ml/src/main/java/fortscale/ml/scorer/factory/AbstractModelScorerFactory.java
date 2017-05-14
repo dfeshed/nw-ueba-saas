@@ -1,6 +1,8 @@
 package fortscale.ml.scorer.factory;
 
+import fortscale.common.feature.extraction.FeatureExtractService;
 import fortscale.ml.model.ModelConfService;
+import fortscale.ml.model.cache.EventModelsCacheService;
 import fortscale.ml.model.retriever.AbstractDataRetriever;
 import fortscale.ml.scorer.Scorer;
 import fortscale.ml.scorer.config.ModelInfo;
@@ -15,6 +17,12 @@ public abstract class AbstractModelScorerFactory extends AbstractServiceAutowiri
 
     @Autowired
     protected ModelConfService modelConfService;
+
+    @Autowired
+    protected FeatureExtractService featureExtractService;
+
+    @Autowired
+    protected EventModelsCacheService eventModelsCacheService;
 
     protected void validateModelScorerConf(ModelScorerConf modelScorerConf) {
         ModelInfo modelInfo = modelScorerConf.getModelInfo();

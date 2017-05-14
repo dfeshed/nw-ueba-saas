@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import fortscale.ml.scorer.ReductionScorer;
-import org.eclipse.jdt.internal.core.Assert;
+import org.springframework.util.Assert;
 
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.NONE, getterVisibility = JsonAutoDetect.Visibility.NONE, setterVisibility = JsonAutoDetect.Visibility.ANY)
 public class ReductionScorerConf extends AbstractScorerConf{
@@ -25,8 +25,8 @@ public class ReductionScorerConf extends AbstractScorerConf{
                                @JsonProperty("reduction-scorer") IScorerConf reductingScorerConf,
                                @JsonProperty("reduction-weight")double reductionWeight) {
         super(name);
-        Assert.isNotNull(mainScorerConf, "mainScorerConf must not be null");
-        Assert.isNotNull(reductingScorerConf, "reductingScorerConf must not be null");
+        Assert.notNull(mainScorerConf, "mainScorerConf must not be null");
+        Assert.notNull(reductingScorerConf, "reductingScorerConf must not be null");
         Assert.isTrue(reductionWeight >0 && reductionWeight < 1.0,String.format("reductionWeight (%f) must be > 0 and < 1.0", reductionWeight));
 
         this.mainScorerConf = mainScorerConf;

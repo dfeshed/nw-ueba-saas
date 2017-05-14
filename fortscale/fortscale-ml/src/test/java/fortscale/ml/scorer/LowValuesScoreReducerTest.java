@@ -1,12 +1,14 @@
 package fortscale.ml.scorer;
 
 import fortscale.common.event.Event;
-import fortscale.domain.core.FeatureScore;
+import fortscale.common.feature.extraction.FeatureExtractService;
+import fortscale.domain.feature.score.FeatureScore;
 import fortscale.ml.scorer.config.ReductionConfiguration;
 import net.minidev.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
@@ -18,6 +20,9 @@ import static org.mockito.Mockito.*;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = ScorerTestsContext.class)
 public class LowValuesScoreReducerTest {
+	@Autowired
+	private FeatureExtractService featureExtractService;
+
 	private static final String DEFAULT_LOW_VALUES_SCORE_REDUCER_NAME = "myLowValuesScoreReducer";
 	private static final long DEFAULT_EVENT_EPOCHTIME = 1451606400;
 
@@ -40,10 +45,10 @@ public class LowValuesScoreReducerTest {
 		return reductionConfig;
 	}
 
-	private static LowValuesScoreReducer getReducer(
+	private LowValuesScoreReducer getReducer(
 			String name, Scorer baseScorer, ReductionConfiguration... reductionConfigs) {
 
-		return new LowValuesScoreReducer(name, baseScorer, Arrays.asList(reductionConfigs));
+		return new LowValuesScoreReducer(name, baseScorer, Arrays.asList(reductionConfigs), featureExtractService);
 	}
 
 	private static Event getEvent(String featureName, Object featureValue) {

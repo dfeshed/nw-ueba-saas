@@ -2,6 +2,7 @@ package fortscale.ml.scorer;
 
 import fortscale.common.event.Event;
 import fortscale.common.feature.Feature;
+import fortscale.common.feature.extraction.FeatureExtractService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.Assert;
 
@@ -14,14 +15,16 @@ public abstract class RegexScorer extends AbstractScorer {
 
 	protected Pattern regexPattern;
 	private String regexFieldName;
+	private final FeatureExtractService featureExtractService;
 
-	public RegexScorer(String scorerName, String featureFieldName, Pattern pattern){
+	public RegexScorer(String scorerName, String featureFieldName, Pattern pattern, FeatureExtractService featureExtractService){
 		super(scorerName);
 		Assert.isTrue(StringUtils.isNotEmpty(featureFieldName) && StringUtils.isNotBlank(featureFieldName), EMPTY_FEATURE_FIELD_NAME_ERROR_MSG);
 		Assert.notNull(pattern, NULL_REGEX_ERROR_MSG);
 
 		this.regexFieldName = featureFieldName;
 		this.regexPattern = pattern;
+		this.featureExtractService = featureExtractService;
 	}
 	
 	protected boolean matches(Event eventMessage){

@@ -5,7 +5,7 @@ import fortscale.common.event.Event;
 import fortscale.common.event.EventMessage;
 import fortscale.common.feature.Feature;
 import fortscale.common.feature.extraction.FeatureExtractService;
-import fortscale.domain.core.FeatureScore;
+import fortscale.domain.feature.score.FeatureScore;
 import fortscale.ml.scorer.params.ConstantRegexScorerParams;
 import net.minidev.json.JSONObject;
 import org.junit.Assert;
@@ -26,7 +26,7 @@ public class ConstantRegexScorerTest {
     FeatureExtractService featureExtractService;
 
     ConstantRegexScorer createConstantRegexScorer(ConstantRegexScorerParams params) {
-        return new ConstantRegexScorer(params.getName(), params.getRegexFieldName(), params.getRegexPattern(), params.getConstantScore());
+        return new ConstantRegexScorer(params.getName(), params.getRegexFieldName(), params.getRegexPattern(), params.getConstantScore(), featureExtractService);
     }
 
     private void assertScorerParams(ConstantRegexScorer scorer, ConstantRegexScorerParams params) {

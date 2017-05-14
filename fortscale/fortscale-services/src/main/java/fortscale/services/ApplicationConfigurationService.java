@@ -1,6 +1,6 @@
 package fortscale.services;
 
-import fortscale.domain.core.ApplicationConfiguration;
+import fortscale.domain.application.configuration.ApplicationConfiguration;
 
 import java.util.List;
 import java.util.Map;
