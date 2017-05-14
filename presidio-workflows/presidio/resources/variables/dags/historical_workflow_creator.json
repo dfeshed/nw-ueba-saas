@@ -1,5 +1,5 @@
 {
-    "historical_dags":
+    "dags_configs":
     [
       {
         "dag_id": "some_dag_id",
