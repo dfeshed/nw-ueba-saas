@@ -22,8 +22,8 @@ public class ModelConf {
 
     @JsonCreator
     public ModelConf(@JsonProperty("name") String name,
-                     @JsonProperty("retriever") AbstractDataRetrieverConf dataRetrieverConf,
                      @JsonProperty("selector") IContextSelectorConf contextSelectorConf,
+                     @JsonProperty("retriever") AbstractDataRetrieverConf dataRetrieverConf,
                      @JsonProperty("builder") IModelBuilderConf modelBuilderConf) {
 
         Assert.hasText(name);

@@ -1,0 +1,356 @@
+{
+  "ModelConfs": [
+    {
+      "name" : "number_of_distinct_src_network_folder_paths.normalized_username.dlpfile.daily",
+      "selector" : {
+        "type" : "aggregated_event_context_selector",
+        "aggregatedFeatureEventConfName" : "number_of_distinct_src_network_folder_paths_dlpfile_daily"
+      },
+      "retriever" : {
+        "type" : "accumulated_aggregated_feature_value_retriever",
+        "timeRangeInSeconds" : 7776000,
+        "functions" : [ ],
+        "aggregatedFeatureEventConfName" : "number_of_distinct_src_network_folder_paths_dlpfile_daily"
+      },
+      "builder" : {
+        "type" : "continuous_histogram_model_builder"
+      }
+    },
+    {
+      "name" : "number_of_distinct_src_network_folder_paths.normalized_username.dlpfile.hourly",
+      "selector" : {
+        "type" : "aggregated_event_context_selector",
+        "aggregatedFeatureEventConfName" : "number_of_distinct_src_network_folder_paths_dlpfile_hourly"
+      },
+      "retriever" : {
+        "type" : "accumulated_aggregated_feature_value_retriever",
+        "timeRangeInSeconds" : 7776000,
+        "functions" : [ ],
+        "aggregatedFeatureEventConfName" : "number_of_distinct_src_network_folder_paths_dlpfile_hourly"
+      },
+      "builder" : {
+        "type" : "continuous_histogram_model_builder"
+      }
+    },
+    {
+      "name" : "sum_of_moved_files_to_removable_device_size.normalized_username.dlpfile.daily",
+      "selector" : {
+        "type" : "aggregated_event_context_selector",
+        "aggregatedFeatureEventConfName" : "sum_of_moved_files_to_removable_device_size_dlpfile_daily"
+      },
+      "retriever" : {
+        "type" : "accumulated_aggregated_feature_value_retriever",
+        "timeRangeInSeconds" : 7776000,
+        "functions" : [ ],
+        "aggregatedFeatureEventConfName" : "sum_of_moved_files_to_removable_device_size_dlpfile_daily"
+      },
+      "builder" : {
+        "type" : "continuous_histogram_model_builder"
+      }
+    },
+    {
+      "name" : "sum_of_moved_files_to_removable_device_size.normalized_username.dlpfile.hourly",
+      "selector" : {
+        "type" : "aggregated_event_context_selector",
+        "aggregatedFeatureEventConfName" : "sum_of_moved_files_to_removable_device_size_dlpfile_hourly"
+      },
+      "retriever" : {
+        "type" : "accumulated_aggregated_feature_value_retriever",
+        "timeRangeInSeconds" : 7776000,
+        "functions" : [ ],
+        "aggregatedFeatureEventConfName" : "sum_of_moved_files_to_removable_device_size_dlpfile_hourly"
+      },
+      "builder" : {
+        "type" : "continuous_histogram_model_builder"
+      }
+    },
+    {
+      "name" : "number_of_moved_files_to_removable_device.normalized_username.dlpfile.daily",
+      "selector" : {
+        "type" : "aggregated_event_context_selector",
+        "aggregatedFeatureEventConfName" : "number_of_moved_files_to_removable_device_dlpfile_daily"
+      },
+      "retriever" : {
+        "type" : "accumulated_aggregated_feature_value_retriever",
+        "timeRangeInSeconds" : 7776000,
+        "functions" : [ ],
+        "aggregatedFeatureEventConfName" : "number_of_moved_files_to_removable_device_dlpfile_daily"
+      },
+      "builder" : {
+        "type" : "continuous_histogram_model_builder"
+      }
+    },
+    {
+      "name" : "number_of_moved_files_to_removable_device.normalized_username.dlpfile.hourly",
+      "selector" : {
+        "type" : "aggregated_event_context_selector",
+        "aggregatedFeatureEventConfName" : "number_of_moved_files_to_removable_device_dlpfile_hourly"
+      },
+      "retriever" : {
+        "type" : "accumulated_aggregated_feature_value_retriever",
+        "timeRangeInSeconds" : 7776000,
+        "functions" : [ ],
+        "aggregatedFeatureEventConfName" : "number_of_moved_files_to_removable_device_dlpfile_hourly"
+      },
+      "builder" : {
+        "type" : "continuous_histogram_model_builder"
+      }
+    },
+    {
+      "name" : "sum_of_copied_files_to_removable_device_size.normalized_username.dlpfile.daily",
+      "selector" : {
+        "type" : "aggregated_event_context_selector",
+        "aggregatedFeatureEventConfName" : "sum_of_copied_files_to_removable_device_size_dlpfile_daily"
+      },
+      "retriever" : {
+        "type" : "accumulated_aggregated_feature_value_retriever",
+        "timeRangeInSeconds" : 7776000,
+        "functions" : [ ],
+        "aggregatedFeatureEventConfName" : "sum_of_copied_files_to_removable_device_size_dlpfile_daily"
+      },
+      "builder" : {
+        "type" : "continuous_histogram_model_builder"
+      }
+    },
+    {
+      "name" : "sum_of_copied_files_to_removable_device_size.normalized_username.dlpfile.hourly",
+      "selector" : {
+        "type" : "aggregated_event_context_selector",
+        "aggregatedFeatureEventConfName" : "sum_of_copied_files_to_removable_device_size_dlpfile_hourly"
+      },
+      "retriever" : {
+        "type" : "accumulated_aggregated_feature_value_retriever",
+        "timeRangeInSeconds" : 7776000,
+        "functions" : [ ],
+        "aggregatedFeatureEventConfName" : "sum_of_copied_files_to_removable_device_size_dlpfile_hourly"
+      },
+      "builder" : {
+        "type" : "continuous_histogram_model_builder"
+      }
+    },
+    {
+      "name" : "number_of_copied_files_to_removable_device.normalized_username.dlpfile.daily",
+      "selector" : {
+        "type" : "aggregated_event_context_selector",
+        "aggregatedFeatureEventConfName" : "number_of_copied_files_to_removable_device_dlpfile_daily"
+      },
+      "retriever" : {
+        "type" : "accumulated_aggregated_feature_value_retriever",
+        "timeRangeInSeconds" : 7776000,
+        "functions" : [ ],
+        "aggregatedFeatureEventConfName" : "number_of_copied_files_to_removable_device_dlpfile_daily"
+      },
+      "builder" : {
+        "type" : "continuous_histogram_model_builder"
+      }
+    },
+    {
+      "name" : "number_of_copied_files_to_removable_device.normalized_username.dlpfile.hourly",
+      "selector" : {
+        "type" : "aggregated_event_context_selector",
+        "aggregatedFeatureEventConfName" : "number_of_copied_files_to_removable_device_dlpfile_hourly"
+      },
+      "retriever" : {
+        "type" : "accumulated_aggregated_feature_value_retriever",
+        "timeRangeInSeconds" : 7776000,
+        "functions" : [ ],
+        "aggregatedFeatureEventConfName" : "number_of_copied_files_to_removable_device_dlpfile_hourly"
+      },
+      "builder" : {
+        "type" : "continuous_histogram_model_builder"
+      }
+    },
+    {
+      "name" : "sum_of_moved_files_from_remote_device_size.normalized_username.dlpfile.daily",
+      "selector" : {
+        "type" : "aggregated_event_context_selector",
+        "aggregatedFeatureEventConfName" : "sum_of_moved_files_from_remote_device_size_dlpfile_daily"
+      },
+      "retriever" : {
+        "type" : "accumulated_aggregated_feature_value_retriever",
+        "timeRangeInSeconds" : 7776000,
+        "functions" : [ ],
+        "aggregatedFeatureEventConfName" : "sum_of_moved_files_from_remote_device_size_dlpfile_daily"
+      },
+      "builder" : {
+        "type" : "continuous_histogram_model_builder"
+      }
+    },
+    {
+      "name" : "sum_of_moved_files_from_remote_device_size.normalized_username.dlpfile.hourly",
+      "selector" : {
+        "type" : "aggregated_event_context_selector",
+        "aggregatedFeatureEventConfName" : "sum_of_moved_files_from_remote_device_size_dlpfile_hourly"
+      },
+      "retriever" : {
+        "type" : "accumulated_aggregated_feature_value_retriever",
+        "timeRangeInSeconds" : 7776000,
+        "functions" : [ ],
+        "aggregatedFeatureEventConfName" : "sum_of_moved_files_from_remote_device_size_dlpfile_hourly"
+      },
+      "builder" : {
+        "type" : "continuous_histogram_model_builder"
+      }
+    },
+    {
+      "name" : "number_of_moved_files_from_remote_device.normalized_username.dlpfile.daily",
+      "selector" : {
+        "type" : "aggregated_event_context_selector",
+        "aggregatedFeatureEventConfName" : "number_of_moved_files_from_remote_device_dlpfile_daily"
+      },
+      "retriever" : {
+        "type" : "accumulated_aggregated_feature_value_retriever",
+        "timeRangeInSeconds" : 7776000,
+        "functions" : [ ],
+        "aggregatedFeatureEventConfName" : "number_of_moved_files_from_remote_device_dlpfile_daily"
+      },
+      "builder" : {
+        "type" : "continuous_histogram_model_builder"
+      }
+    },
+    {
+      "name" : "number_of_moved_files_from_remote_device.normalized_username.dlpfile.hourly",
+      "selector" : {
+        "type" : "aggregated_event_context_selector",
+        "aggregatedFeatureEventConfName" : "number_of_moved_files_from_remote_device_dlpfile_hourly"
+      },
+      "retriever" : {
+        "type" : "accumulated_aggregated_feature_value_retriever",
+        "timeRangeInSeconds" : 7776000,
+        "functions" : [ ],
+        "aggregatedFeatureEventConfName" : "number_of_moved_files_from_remote_device_dlpfile_hourly"
+      },
+      "builder" : {
+        "type" : "continuous_histogram_model_builder"
+      }
+    },
+    {
+      "name" : "sum_of_copied_files_from_remote_device_size.normalized_username.dlpfile.daily",
+      "selector" : {
+        "type" : "aggregated_event_context_selector",
+        "aggregatedFeatureEventConfName" : "sum_of_copied_files_from_remote_device_size_dlpfile_daily"
+      },
+      "retriever" : {
+        "type" : "accumulated_aggregated_feature_value_retriever",
+        "timeRangeInSeconds" : 7776000,
+        "functions" : [ ],
+        "aggregatedFeatureEventConfName" : "sum_of_copied_files_from_remote_device_size_dlpfile_daily"
+      },
+      "builder" : {
+        "type" : "continuous_histogram_model_builder"
+      }
+    },
+    {
+      "name" : "sum_of_copied_files_from_remote_device_size.normalized_username.dlpfile.hourly",
+      "selector" : {
+        "type" : "aggregated_event_context_selector",
+        "aggregatedFeatureEventConfName" : "sum_of_copied_files_from_remote_device_size_dlpfile_hourly"
+      },
+      "retriever" : {
+        "type" : "accumulated_aggregated_feature_value_retriever",
+        "timeRangeInSeconds" : 7776000,
+        "functions" : [ ],
+        "aggregatedFeatureEventConfName" : "sum_of_copied_files_from_remote_device_size_dlpfile_hourly"
+      },
+      "builder" : {
+        "type" : "continuous_histogram_model_builder"
+      }
+    },
+    {
+      "name" : "number_of_copied_files_from_remote_device.normalized_username.dlpfile.daily",
+      "selector" : {
+        "type" : "aggregated_event_context_selector",
+        "aggregatedFeatureEventConfName" : "number_of_copied_files_from_remote_device_dlpfile_daily"
+      },
+      "retriever" : {
+        "type" : "accumulated_aggregated_feature_value_retriever",
+        "timeRangeInSeconds" : 7776000,
+        "functions" : [ ],
+        "aggregatedFeatureEventConfName" : "number_of_copied_files_from_remote_device_dlpfile_daily"
+      },
+      "builder" : {
+        "type" : "continuous_histogram_model_builder"
+      }
+    },
+    {
+      "name" : "number_of_copied_files_from_remote_device.normalized_username.dlpfile.hourly",
+      "selector" : {
+        "type" : "aggregated_event_context_selector",
+        "aggregatedFeatureEventConfName" : "number_of_copied_files_from_remote_device_dlpfile_hourly"
+      },
+      "retriever" : {
+        "type" : "accumulated_aggregated_feature_value_retriever",
+        "timeRangeInSeconds" : 7776000,
+        "functions" : [ ],
+        "aggregatedFeatureEventConfName" : "number_of_copied_files_from_remote_device_dlpfile_hourly"
+      },
+      "builder" : {
+        "type" : "continuous_histogram_model_builder"
+      }
+    },
+    {
+      "name" : "number_of_recycled_or_deleted_files.normalized_username.dlpfile.daily",
+      "selector" : {
+        "type" : "aggregated_event_context_selector",
+        "aggregatedFeatureEventConfName" : "number_of_recycled_or_deleted_files_dlpfile_daily"
+      },
+      "retriever" : {
+        "type" : "accumulated_aggregated_feature_value_retriever",
+        "timeRangeInSeconds" : 7776000,
+        "functions" : [ ],
+        "aggregatedFeatureEventConfName" : "number_of_recycled_or_deleted_files_dlpfile_daily"
+      },
+      "builder" : {
+        "type" : "continuous_histogram_model_builder"
+      }
+    },
+    {
+      "name" : "number_of_recycled_or_deleted_files.normalized_username.dlpfile.hourly",
+      "selector" : {
+        "type" : "aggregated_event_context_selector",
+        "aggregatedFeatureEventConfName" : "number_of_recycled_or_deleted_files_dlpfile_hourly"
+      },
+      "retriever" : {
+        "type" : "accumulated_aggregated_feature_value_retriever",
+        "timeRangeInSeconds" : 7776000,
+        "functions" : [ ],
+        "aggregatedFeatureEventConfName" : "number_of_recycled_or_deleted_files_dlpfile_hourly"
+      },
+      "builder" : {
+        "type" : "continuous_histogram_model_builder"
+      }
+    },
+    {
+      "name" : "number_of_opened_files.normalized_username.dlpfile.daily",
+      "selector" : {
+        "type" : "aggregated_event_context_selector",
+        "aggregatedFeatureEventConfName" : "number_of_opened_files_dlpfile_daily"
+      },
+      "retriever" : {
+        "type" : "accumulated_aggregated_feature_value_retriever",
+        "timeRangeInSeconds" : 7776000,
+        "functions" : [ ],
+        "aggregatedFeatureEventConfName" : "number_of_opened_files_dlpfile_daily"
+      },
+      "builder" : {
+        "type" : "continuous_histogram_model_builder"
+      }
+    },
+    {
+      "name" : "number_of_opened_files.normalized_username.dlpfile.hourly",
+      "selector" : {
+        "type" : "aggregated_event_context_selector",
+        "aggregatedFeatureEventConfName" : "number_of_opened_files_dlpfile_hourly"
+      },
+      "retriever" : {
+        "type" : "accumulated_aggregated_feature_value_retriever",
+        "timeRangeInSeconds" : 7776000,
+        "functions" : [ ],
+        "aggregatedFeatureEventConfName" : "number_of_opened_files_dlpfile_hourly"
+      },
+      "builder" : {
+        "type" : "continuous_histogram_model_builder"
+      }
+    }
+  ]
+}
