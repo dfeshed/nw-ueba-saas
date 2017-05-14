@@ -1,0 +1,179 @@
+{
+  "ModelConfs": [
+    {
+      "name" : "date_time_unix.normalized_username.dlpmail",
+      "selector" : {
+        "type" : "feature_bucket_context_selector",
+        "featureBucketConfName" : "normalized_username_dlpmail_daily"
+      },
+      "retriever" : {
+        "type" : "context_histogram_retriever",
+        "timeRangeInSeconds" : 7776000,
+        "functions" : [ ],
+        "featureBucketConfName" : "normalized_username_dlpmail_daily",
+        "featureName" : "date_time_unix_histogram"
+      },
+      "builder" : {
+        "type" : "time_model_builder",
+        "timeResolution" : 86400,
+        "bucketSize" : 600,
+        "maxRareTimestampCount" : 10
+      }
+    },
+    {
+      "name" : "normalized_src_machine.normalized_username.dlpmail",
+      "selector" : {
+        "type" : "feature_bucket_context_selector",
+        "featureBucketConfName" : "normalized_username_dlpmail_daily"
+      },
+      "retriever" : {
+        "type" : "context_histogram_retriever",
+        "timeRangeInSeconds" : 7776000,
+        "functions" : [ ],
+        "featureBucketConfName" : "normalized_username_dlpmail_daily",
+        "featureName" : "normalized_src_machine_histogram",
+        "patternReplacementConf" : {
+          "pattern" : "[0-9]",
+          "replacement" : "",
+          "postReplacementCondition" : "(.*[a-zA-Z]){5}.*"
+        }
+      },
+      "builder" : {
+        "type" : "category_rarity_model_builder",
+        "numOfBuckets" : 30,
+        "entriesToSaveInModel" : 100
+      }
+    },
+    {
+      "name" : "email_sender.normalized_username.dlpmail",
+      "selector" : {
+        "type" : "feature_bucket_context_selector",
+        "featureBucketConfName" : "normalized_username_dlpmail_daily"
+      },
+      "retriever" : {
+        "type" : "context_histogram_retriever",
+        "timeRangeInSeconds" : 7776000,
+        "functions" : [ ],
+        "featureBucketConfName" : "normalized_username_dlpmail_daily",
+        "featureName" : "email_sender_histogram"
+      },
+      "builder" : {
+        "type" : "category_rarity_model_builder",
+        "numOfBuckets" : 30,
+        "entriesToSaveInModel" : 100
+      }
+    },
+    {
+      "name" : "email_recipient_domain.normalized_username.dlpmail",
+      "selector" : {
+        "type" : "feature_bucket_context_selector",
+        "featureBucketConfName" : "normalized_username_dlpmail_daily"
+      },
+      "retriever" : {
+        "type" : "context_histogram_retriever",
+        "timeRangeInSeconds" : 7776000,
+        "functions" : [ ],
+        "featureBucketConfName" : "normalized_username_dlpmail_daily",
+        "featureName" : "email_recipient_domain_histogram"
+      },
+      "builder" : {
+        "type" : "category_rarity_model_builder",
+        "numOfBuckets" : 30,
+        "entriesToSaveInModel" : 100
+      }
+    },
+    {
+      "name" : "executing_application.normalized_username.dlpmail",
+      "selector" : {
+        "type" : "feature_bucket_context_selector",
+        "featureBucketConfName" : "normalized_username_dlpmail_daily"
+      },
+      "retriever" : {
+        "type" : "context_histogram_retriever",
+        "timeRangeInSeconds" : 7776000,
+        "functions" : [ ],
+        "featureBucketConfName" : "normalized_username_dlpmail_daily",
+        "featureName" : "executing_application_histogram"
+      },
+      "builder" : {
+        "type" : "category_rarity_model_builder",
+        "numOfBuckets" : 30,
+        "entriesToSaveInModel" : 100
+      }
+    },
+    {
+      "name" : "attachment_file_extension.normalized_username.dlpmail",
+      "selector" : {
+        "type" : "feature_bucket_context_selector",
+        "featureBucketConfName" : "normalized_username_dlpmail_daily"
+      },
+      "retriever" : {
+        "type" : "context_histogram_retriever",
+        "timeRangeInSeconds" : 7776000,
+        "functions" : [ ],
+        "featureBucketConfName" : "normalized_username_dlpmail_daily",
+        "featureName" : "attachment_file_extension_histogram"
+      },
+      "builder" : {
+        "type" : "category_rarity_model_builder",
+        "numOfBuckets" : 30,
+        "entriesToSaveInModel" : 100
+      }
+    },
+    {
+      "name" : "attachment_file_size.normalized_username.dlpmail",
+      "selector" : {
+        "type" : "feature_bucket_context_selector",
+        "featureBucketConfName" : "normalized_username_dlpmail_daily"
+      },
+      "retriever" : {
+        "type" : "context_histogram_retriever",
+        "timeRangeInSeconds" : 7776000,
+        "functions" : [ ],
+        "featureBucketConfName" : "normalized_username_dlpmail_daily",
+        "featureName" : "attachment_file_size_histogram"
+      },
+      "builder" : {
+        "type": "continuous_histogram_model_builder"
+      }
+    },
+    {
+      "name" : "normalized_username.normalized_src_machine.dlpmail",
+      "selector" : {
+        "type" : "feature_bucket_context_selector",
+        "featureBucketConfName" : "normalized_src_machine_dlpmail_daily"
+      },
+      "retriever" : {
+        "type" : "context_histogram_retriever",
+        "timeRangeInSeconds" : 7776000,
+        "functions" : [ ],
+        "featureBucketConfName" : "normalized_src_machine_dlpmail_daily",
+        "featureName" : "normalized_username_histogram"
+      },
+      "builder" : {
+        "type" : "category_rarity_model_builder",
+        "numOfBuckets" : 30,
+        "entriesToSaveInModel" : 100
+      }
+    },
+    {
+      "name" : "normalized_username.email_recipient_domain.dlpmail",
+      "selector" : {
+        "type" : "feature_bucket_context_selector",
+        "featureBucketConfName" : "email_recipient_domain_dlpmail_daily"
+      },
+      "retriever" : {
+        "type" : "context_histogram_retriever",
+        "timeRangeInSeconds" : 7776000,
+        "functions" : [ ],
+        "featureBucketConfName" : "email_recipient_domain_dlpmail_daily",
+        "featureName" : "normalized_username_histogram"
+      },
+      "builder" : {
+        "type" : "category_rarity_model_builder",
+        "numOfBuckets" : 30,
+        "entriesToSaveInModel" : 100
+      }
+    }
+  ]
+}
