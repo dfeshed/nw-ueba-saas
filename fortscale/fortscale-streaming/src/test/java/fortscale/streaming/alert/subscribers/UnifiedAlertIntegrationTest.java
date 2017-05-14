@@ -4,6 +4,7 @@ import fortscale.domain.core.*;
 import fortscale.domain.core.Alert;
 import fortscale.domain.core.AlertStatus;
 import fortscale.domain.core.AlertTimeframe;
+import fortscale.services.UserService;
 import fortscale.streaming.alert.event.wrappers.EnrichedFortscaleEvent;
 
 
@@ -20,6 +21,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.*;
 
+import static org.mockito.Matchers.anyString;
+
 /**
  * Created by shays on 20/03/2016.
  * This test tests the creation of alert per user from collection fo smart entities and semantic alerts
@@ -30,7 +33,6 @@ import java.util.*;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath*:META-INF/spring/streaming-UnifiedAlertGenerator-test-context.xml")
 public class UnifiedAlertIntegrationTest {
-
 
     @InjectMocks
     @Autowired
@@ -45,8 +47,12 @@ public class UnifiedAlertIntegrationTest {
     @Autowired
     private LimitGeoHoppingPreAlertCreation limitGeoHoppingPreAlertCreation;
 
+    @Autowired
+    private UserService userService;
+
     @Before
     public void setUp() throws Exception {
+        unifiedAlertIntegrationTestHelper.resetMocks();
 
         //Make sure that we have at least one evidence
         List<Evidence> evidences = Arrays.asList(Mockito.mock(Evidence.class));
@@ -54,18 +60,38 @@ public class UnifiedAlertIntegrationTest {
         //This test is not focus on the filters.
 
         Mockito.doReturn(true).when(limitGeoHoppingPreAlertCreation).canCreateAlert(Mockito.any(), Mockito.anyLong(), Mockito.anyLong(), Mockito.any());
-
-
     }
 
+    /**
+     * This test accept one smart entity event with user entity that doesn't exist and should fail to create the Alert
+     */
+    @Test
+    public void alertCreationSubscriber_CreateAlertWithNoUser() {
+        /**
+         * Init data with one smart
+         */
+        EnrichedFortscaleEventBuilder enrichedFortscaleEventBuilder = new EnrichedFortscaleEventBuilder()
+                .setAnomalyTypeFieldName("normalized_username_hourly").setEvidenceType(EvidenceType.Smart)
+                .setEntityEventType("normalized_username_hourly")
+                .setEntityEventName("normalized_username_hourly")
+                .setAggregated_feature_events(unifiedAlertIntegrationTestHelper.getAggregatedFeatureEvents());
+
+        Map[] insertStream = new Map[1];
+        insertStream[0] = unifiedAlertIntegrationTestHelper.createEvidenceWrapper(enrichedFortscaleEventBuilder);
+        Mockito.doReturn(null).when(userService).getUserId(anyString());
+
+        //Execute
+        alertCreationSubscriber.update(insertStream, null);
+
+        unifiedAlertIntegrationTestHelper.assertAlertWasntCreated();
+    }
 
     /**
      * This test accept one smart entity event and create the relevant alert
      */
     @Test
-    public void alertCreationSubscriberSmartOnlyTest(){
-
-
+    public void alertCreationSubscriberSmartOnlyTest() {
+        Mockito.doReturn("123").when(userService).getUserId(anyString());
         /**
          * Init data with one smart
          */
@@ -88,9 +114,7 @@ public class UnifiedAlertIntegrationTest {
         //Verify flow
         unifiedAlertIntegrationTestHelper.assertCreateIndicatorListApplicableForDecider(expected, expected);
         unifiedAlertIntegrationTestHelper.assertScoreDecider(expected, "normalized_username_hourly", AlertTimeframe.Hourly);
-        unifiedAlertIntegrationTestHelper.assertScoreDecider(expected, 50,AlertTimeframe.Hourly);
-
-
+        unifiedAlertIntegrationTestHelper.assertScoreDecider(expected, 50, AlertTimeframe.Hourly);
 
 
         //Verify alert creation save alert
@@ -102,22 +126,14 @@ public class UnifiedAlertIntegrationTest {
         expectedAlert.setEntityName("user@fortscale.com");
         expectedAlert.setEntityType(EntityType.User);
         unifiedAlertIntegrationTestHelper.assertAlertCreation(expectedAlert);
-
-
     }
 
-/*
     @Test
-    public void alertCreationSubscriberSmartSemanticTest(){
-
-    }
-*/
-    @Test
-    public void alertCreationSubscriberRegularSemanticTest(){
+    public void alertCreationSubscriberRegularSemanticTest() {
+        Mockito.doReturn("123").when(userService).getUserId(anyString());
         /**
          * Init data with one smart and one semantic smart
          */
-
         EnrichedFortscaleEventBuilder geoHoppingBuilder = new EnrichedFortscaleEventBuilder()
                 .setAnomalyTypeFieldName("vpn_geo_hopping").setEvidenceType(EvidenceType.Notification)
                 .setEntityEventType("user")
@@ -153,12 +169,13 @@ public class UnifiedAlertIntegrationTest {
     }
 
     /**
-     *  Test following combination
-     *  Smart
-     *  SemanticSmart
+     * Test following combination
+     * Smart
+     * SemanticSmart
      */
     @Test
-    public void alertCreationSubscriberSmartWithSemanticSmart(){
+    public void alertCreationSubscriberSmartWithSemanticSmart() {
+        Mockito.doReturn("123").when(userService).getUserId(anyString());
         /**
          * Init data with one smart and one semantic smart
          */
@@ -187,7 +204,7 @@ public class UnifiedAlertIntegrationTest {
 
         //Verify flow
         unifiedAlertIntegrationTestHelper.assertCreateIndicatorListApplicableForDecider(expected, expected);
-        unifiedAlertIntegrationTestHelper.assertScoreDecider(expected, "brute_force_normalized_username_hourly",AlertTimeframe.Hourly);
+        unifiedAlertIntegrationTestHelper.assertScoreDecider(expected, "brute_force_normalized_username_hourly", AlertTimeframe.Hourly);
         unifiedAlertIntegrationTestHelper.assertScoreDecider(expected, 50, AlertTimeframe.Hourly);
 
         //Verify alert creation save alert
@@ -201,20 +218,11 @@ public class UnifiedAlertIntegrationTest {
         expectedAlert.setEntityType(EntityType.User);
 
         unifiedAlertIntegrationTestHelper.assertAlertCreation(expectedAlert);
-
     }
 
-
-
-
-/*
     @Test
-    public void alertCreationSubscriberSmartWithRegularSemantic(){
-
-    }
-*/
-    @Test
-    public void alertCreationSubscriberSmartWithRegularSemanticWithSemanticSmart(){
+    public void alertCreationSubscriberSmartWithRegularSemanticWithSemanticSmart() {
+        Mockito.doReturn("123").when(userService).getUserId(anyString());
 
         /**
          * Init data with one smart and one semantic smart
@@ -239,7 +247,7 @@ public class UnifiedAlertIntegrationTest {
                 .setAggregated_feature_events(unifiedAlertIntegrationTestHelper.getAggregatedFeatureEvents());
 
         Map[] insertStream = new Map[1];
-        insertStream[0] = unifiedAlertIntegrationTestHelper.createEvidenceWrapper(smartEventBuilder, evidenceBuilder,geoHoppingBuilder);
+        insertStream[0] = unifiedAlertIntegrationTestHelper.createEvidenceWrapper(smartEventBuilder, evidenceBuilder, geoHoppingBuilder);
         insertStream[0].put("timeframe", AlertTimeframe.Daily);
 
 
@@ -268,19 +276,4 @@ public class UnifiedAlertIntegrationTest {
 
         unifiedAlertIntegrationTestHelper.assertAlertCreation(expectedAlert);
     }
-
-/*
-    @Test
-    public void alertCreationSubscriber_TwoSemanticIndicators(){
-
-    }
-
-    @Test
-    public void alertCreationSubscriber_TwoSmartSemanticIndicators(){
-
-    }
-*/
-
-
-
 }

@@ -118,7 +118,7 @@ public interface UserService {
 
 	Set<String> findUsernamesByTags(String[] tags);
 
-	Map<String, Long> groupByTags();
+	Map<String, Long> groupByTags(boolean forceCacheUpdate);
 
 	/**
 	 * Count how many users exists in the USERS table with the same display name.

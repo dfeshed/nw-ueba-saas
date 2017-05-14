@@ -10,6 +10,8 @@
 
         http://www.mockito.org/spring/mockito http://www.mockito.org/spring/mockito.xsd">
 
+    <import resource="classpath*:META-INF/spring/collection-context-test-morphline.xml"/>
+
     <mockito:mock id="jobProgressReporter" class="fortscale.monitor.mongo.MongoJobProgressReporter"/>
 
     <mockito:mock id="jobDataMapExtension" class="fortscale.collection.JobDataMapExtension"/>
@@ -18,7 +20,7 @@
 
     <bean id="userActivityJob" class="fortscale.collection.jobs.activity.UserActivityJob"/>
 
-    <bean id="userActivityLocationConfigurationService" class="fortscale.collection.services.UserActivityLocationConfigurationService"/>
+    <bean id="userActivityLocationConfigurationService" class="fortscale.collection.services.useractivity.UserActivityLocationConfigurationService"/>
 
     <bean id="userActivityHandlerFactory" class="fortscale.collection.jobs.activity.UserActivityHandlerFactory"/>
 
@@ -31,5 +33,5 @@
     <context:spring-configured />
     <context:annotation-config />
     <context:component-scan base-package="fortscale.collection.jobs.activity" />
-    
+
 </beans>

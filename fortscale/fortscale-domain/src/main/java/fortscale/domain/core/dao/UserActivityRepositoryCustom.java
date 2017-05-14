@@ -7,14 +7,28 @@ import java.util.Set;
 
 public interface UserActivityRepositoryCustom {
 
-	List<UserActivityLocationDocument> getUserActivityLocationEntries(String username, int timeRangeInDays);
-	List<UserActivityNetworkAuthenticationDocument> getUserActivityNetworkAuthenticationEntries(String username,
-			int timeRangeInDays);
-	List<UserActivityDataUsageDocument> getUserActivityDataUsageEntries(String username, int timeRangeInDays);
-	List<OrganizationActivityLocationDocument> getOrganizationActivityLocationEntries(int timeRangeInDays);
-	List<UserActivityWorkingHoursDocument> getUserActivityWorkingHoursEntries(String username, int timeRangeInDays);
-	List<UserActivitySourceMachineDocument> getUserActivitySourceMachineEntries(String id, int timeRangeInDays);
-	List<UserActivityTargetDeviceDocument> getUserActivityTargetDeviceEntries(String username, int timeRangeInDays);
-	Set<String> getUserIdByLocation(List<String> locations);
+    List<UserActivityLocationDocument> getUserActivityLocationEntries(String username, int timeRangeInDays);
 
+    List<UserActivityNetworkAuthenticationDocument> getUserActivityNetworkAuthenticationEntries(String username,
+                                                                                                int timeRangeInDays);
+
+    List<UserActivityDataUsageDocument> getUserActivityDataUsageEntries(String username, int timeRangeInDays);
+
+    List<OrganizationActivityLocationDocument> getOrganizationActivityLocationEntries(int timeRangeInDays);
+
+    List<UserActivityWorkingHoursDocument> getUserActivityWorkingHoursEntries(String username, int timeRangeInDays);
+
+    List<UserActivitySourceMachineDocument> getUserActivitySourceMachineEntries(String id, int timeRangeInDays);
+
+    List<UserActivityTargetDeviceDocument> getUserActivityTargetDeviceEntries(String username, int timeRangeInDays);
+
+    List<UserActivityTopApplicationsDocument> getUserActivityTopApplicationsEntries(String username, int timeRangeInDays);
+
+    List<UserActivityTopDirectoriesDocument> getUserActivityTopDirectoriesEntries(String username, int timeRangeInDays);
+
+    List<UserActivityEmailRecipientDomainDocument> getUserActivityEmailRecipientDomainEntries(String username, int timeRangeInDays);
+
+    Set<String> getUserIdByLocation(List<String> locations);
+
+    List<UserActivityClassificationExposureDocument> getUserActivityClassificationExposureEntries(String username, int timeRangeInDays);
 }

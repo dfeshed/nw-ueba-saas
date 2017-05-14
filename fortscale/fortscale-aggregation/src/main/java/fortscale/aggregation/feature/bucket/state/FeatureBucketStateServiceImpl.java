@@ -43,7 +43,8 @@ public class FeatureBucketStateServiceImpl implements FeatureBucketStateService 
         if (featureBucketState == null){
             featureBucketState = new FeatureBucketState(lastEventDate);
         // Updating the last synced date in case that the last event date is after the lst sync date
-        }else {
+        // but not more than 1 day from system time
+        }else if (!lastEventDate.isAfter(Instant.now().plus(1, ChronoUnit.DAYS))){
             if (featureBucketState.getLastSyncedEventDate().isBefore(lastEventDate)) {
                 // Updating the lastSyncedEventDate
                 featureBucketState.setLastSyncedEventDate(lastEventDate);
@@ -57,7 +58,11 @@ public class FeatureBucketStateServiceImpl implements FeatureBucketStateService 
                                     getFeatureBucketState().getLastSyncedEventDate(), lastEventDate));
                 }
             }
+        }else {
+            logger.error("Trying to update last daily aggregation date with date that is too far ahead - {}", lastEventDate);
+            shouldSave = false;
         }
+
 
         try {
             if (shouldSave) {

@@ -12,6 +12,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.*;
 import java.util.ArrayList;
@@ -28,7 +29,6 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 
 	final String TAG_ANOMALY_TYPE_FIELD_NAME = "tag";
 	final String TAG_DATA_ENTITY ="active_directory";
-
 
 	/**
 	 * Mongo repository for evidences
@@ -49,7 +49,6 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 	protected int high;
 	@Value("${evidence.severity.critical:95}")
 	protected int critical;
-
 	@Value("${collection.evidence.tag.score:50}")
 	protected double tagScore;
 
@@ -57,7 +56,6 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 	 * Keeps mapping between score and severity
 	 */
 	private NavigableMap<Integer,Severity> scoreToSeverity = new TreeMap<>();
-
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
@@ -68,13 +66,11 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 		scoreToSeverity.put(critical, Severity.Critical);
 	}
 
-
 	@Override
 	public Evidence createTransientEvidence(EntityType entityType, String entityTypeFieldName, String entityName,
 											EvidenceType evidenceType, Date startDate, Date endDate,
 											List<String> dataEntitiesIds, Double score, String anomalyValue,
 											String anomalyTypeFieldName, Integer totalAmountOfEvents, EvidenceTimeframe evidenceTimeframe) {
-
 		// casting score to int
 		int intScore = score.intValue();
 
@@ -136,8 +132,6 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 	 * Finds evidences in mongo based on entity, time and type of feature
 	 * @param entityEvent
 	 * @param entityName
-	 * @param startDate - the end time of the feature would be equal or after that startDate
-	 * @param endDate - the end time of the feature would be equal or before that endDate
 	 * @param dataEntities
 	 * @param featureName
 	 * @return
@@ -177,26 +171,22 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 		return evidencesRepository.save(evidence);
 	}
 
-
 	public long count(long fromTime, long toTime){
 		return  evidencesRepository.countWithParameters(fromTime, toTime);
 	}
 
 	@Override
 	public List getDistinctByFieldName(String fieldName) {
-
 		return evidencesRepository.getDistinctByFieldName(fieldName);
-
 	}
-
-//	@Override
-//	public List<String> getEvidenceIdsByAnomalyTypeFiledNames(List<DataSourceAnomalyTypePair> anomalyTypesList) {
-//		return evidencesRepository.getEvidenceIdsByAnomalyTypeFiledNames(anomalyTypesList);
-//	}
 
 	@Override
 	public List<String> getDistinctAnomalyType() {
 		return evidencesRepository.getDistinctAnomalyType();
 	}
 
+	@Override
+	public List<Evidence> getEvidencesById(List<String> evidenceIds) {
+		return evidencesRepository.findByIdIn(evidenceIds);
+	}
 }

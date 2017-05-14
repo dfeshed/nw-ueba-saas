@@ -8,6 +8,8 @@
 
         http://www.mockito.org/spring/mockito http://www.mockito.org/spring/mockito.xsd">
 
+    <import resource="classpath*:META-INF/spring/collection-context-test-morphline.xml"/>
+
     <context:property-placeholder location="classpath:META-INF/fortscale-collection-local-timezone-test.properties" />
 
     <mockito:mock id="impalaJdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate"/>

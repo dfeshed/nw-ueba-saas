@@ -16,7 +16,7 @@ import java.util.Map;
 		@CompoundIndex(name = "user_start_time", def = "{'entityId': -1, 'startTime': 1}")
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
-public abstract class UserActivityDocument extends AbstractAuditableDocument { //Todo: when you subclass this make sure that you add the new document class to UserActivityDocumentFactory.getInstanceByActivityName(String activityName)
+public abstract class UserActivityDocument extends AbstractAuditableDocument {
 	public static final String ENTITY_ID_FIELD_NAME = "entityId";
 	public static final String START_TIME_FIELD_NAME = "startTime";
 	public static final String END_TIME_FIELD_NAME = "endTime";

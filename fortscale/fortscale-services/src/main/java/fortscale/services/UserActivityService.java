@@ -3,7 +3,6 @@ package fortscale.services;
 import fortscale.domain.core.activities.*;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 public interface UserActivityService {
@@ -11,7 +10,8 @@ public interface UserActivityService {
     List<UserActivityLocationDocument> getUserActivityLocationEntries(String id, int timeRangeInDays);
 
     List<UserActivityNetworkAuthenticationDocument> getUserActivityNetworkAuthenticationEntries(String id,
-            int timeRangeInDays);
+                                                                                                int timeRangeInDays);
+
     List<OrganizationActivityLocationDocument> getOrganizationActivityLocationEntries(int timeRangeInDays);
 
     List<UserActivityWorkingHoursDocument> getUserActivityWorkingHoursEntries(String id, int timeRangeInDays);
@@ -21,6 +21,20 @@ public interface UserActivityService {
     List<UserActivityTargetDeviceDocument> getUserActivityTargetDeviceEntries(String id, int timeRangeInDays);
 
     List<UserActivityDataUsageDocument> getUserActivityDataUsageEntries(String id, int timeRangeInDays);
+
+    List<UserActivityTopApplicationsDocument> getUserActivityTopApplicationsEntries(String id, int timeRangeInDays);
+
+    List<UserActivityTopApplicationsDocument> getUserActivityTopApplicationsEntriesWithBlacklist(String id, int timeRangeInDays);
+
+    List<UserActivityEmailRecipientDomainDocument> getUserActivityEmailRecipientDomainEntries(String id, int timeRangeInDays);
+
+    List<UserActivityEmailRecipientDomainDocument> getUserActivityEmailRecipientDomainEntriesWithBlacklist(String id, int timeRangeInDays);
+
+    List<UserActivityTopDirectoriesDocument> getUserActivityTopDirectoriesEntries(String id, int timeRangeInDays);
+
+    List<UserActivityTopDirectoriesDocument> getUserActivityTopDirectoriesEntriesWithBlacklist(String id, int timeRangeInDays);
+
+    List<UserActivityClassificationExposureDocument> getUserActivityClassificationExposureEntries(String id, int timeRangeInDays);
 
     Set<String> getUserIdByUserLocation(List<String> userLocations);
 }

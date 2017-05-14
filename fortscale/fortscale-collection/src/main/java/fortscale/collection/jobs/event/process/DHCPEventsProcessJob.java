@@ -58,14 +58,14 @@ public class DHCPEventsProcessJob extends EventProcessJob {
 
 		// skip records that failed on parsing
 		if (record==null) {
-			jobMetircs.linesFailuresInMorphline++;
+			jobMetrics.linesFailuresInMorphline++;
 			return null;
 		}
 
 		// pass parsed records to the shared morphline
 		record = sharedMorphline.process(record,itemContext);
 		if (record==null) {
-			jobMetircs.linesFailuresInSharedMorphline++;
+			jobMetrics.linesFailuresInSharedMorphline++;
 			return null;
 		}
 		try {

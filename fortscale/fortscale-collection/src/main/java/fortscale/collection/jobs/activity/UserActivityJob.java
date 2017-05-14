@@ -1,7 +1,8 @@
 package fortscale.collection.jobs.activity;
 
 import fortscale.collection.jobs.FortscaleJob;
-import fortscale.collection.services.*;
+import fortscale.collection.services.useractivity.UserActivityConfiguration;
+import fortscale.collection.services.useractivity.UserActivityConfigurationService;
 import fortscale.utils.logging.Logger;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobDataMap;
@@ -10,6 +11,7 @@ import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
@@ -17,47 +19,48 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 /**
- * @author gils
- * 23/05/2016
  */
 @DisallowConcurrentExecution
 public class UserActivityJob extends FortscaleJob {
 
-	private static Logger logger = Logger.getLogger(UserActivityJob.class);
+    private static Logger logger = Logger.getLogger(UserActivityJob.class);
 
     private static final int NUMBER_OF_ACTIVITIES = 6;
-	private static final String ACTIVITY_PARAM = "activity";
-	private static final String RUN_SEQUENTIAL_PARAM = "sequential";
+    private static final String ACTIVITY_PARAM = "activity";
+    private static final String RUN_SEQUENTIAL_PARAM = "sequential";
 
     @Value("${user.activity.num.of.last.days.to.calculate:90}")
     protected int userActivityNumOfLastDaysToCalculate;
 
-	@Autowired
-	Set<UserActivityConfigurationService> userActivityConfigurationServices;
-	@Autowired
-	private UserActivityHandlerFactory userActivityHandlerFactory;
+    @Autowired
+    private Set<UserActivityConfigurationService> userActivityConfigurationServices;
 
-	private UserActivityType userActivityType;
-	private boolean runSequential;
+    @Autowired
+    private UserActivityHandlerFactory userActivityHandlerFactory;
 
-    public UserActivityJob() {}
+    private UserActivityType userActivityType;
+    private boolean runSequential;
+
+    public UserActivityJob() {
+    }
 
     @Override
     protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         logger.info("Loading Entity Activity Job Parameters..");
         JobDataMap map = jobExecutionContext.getMergedJobDataMap();
         // get parameters values from the job data map
-		if (map.containsKey(ACTIVITY_PARAM)) {
-			String activityName = jobDataMapExtension.getJobDataMapStringValue(map, ACTIVITY_PARAM);
-			try {
-				userActivityType = UserActivityType.valueOf(activityName.toUpperCase());
-			} catch (Exception ex) {
-				logger.error("Activity " + activityName + " not found! exiting...");
-				throw new JobExecutionException("Activity " + activityName + " not found! exiting...");
-			}
-		}
-		runSequential = jobDataMapExtension.getJobDataMapBooleanValue(map, RUN_SEQUENTIAL_PARAM, false);
-		logger.info("Finished Loading Entity Activity Job Parameters");
+        if (map.containsKey(ACTIVITY_PARAM)) {
+            String activityName = jobDataMapExtension.getJobDataMapStringValue(map, ACTIVITY_PARAM);
+            try {
+                userActivityType = UserActivityType.valueOf(activityName.toUpperCase());
+            } catch (Exception ex) {
+                final String msg = String.format("Activity %s not found! Valid activities are: %s. exiting...", activityName, Arrays.toString(UserActivityType.values()));
+                logger.error(msg);
+                throw new JobExecutionException(msg);
+            }
+        }
+        runSequential = jobDataMapExtension.getJobDataMapBooleanValue(map, RUN_SEQUENTIAL_PARAM, false);
+        logger.info("Finished Loading Entity Activity Job Parameters");
     }
 
     @Override
@@ -74,12 +77,12 @@ public class UserActivityJob extends FortscaleJob {
     @Override
     public void runSteps() throws Exception {
         logger.info("Start Executing User Activity job..");
-		ExecutorService activitiesThreadPool;
-		if (runSequential) {
-			activitiesThreadPool = Executors.newFixedThreadPool(1);
-		} else {
-			activitiesThreadPool = Executors.newFixedThreadPool(NUMBER_OF_ACTIVITIES);
-		}
+        ExecutorService activitiesThreadPool;
+        if (runSequential || userActivityType != null) {
+            activitiesThreadPool = Executors.newSingleThreadExecutor();
+        } else {
+            activitiesThreadPool = Executors.newFixedThreadPool(NUMBER_OF_ACTIVITIES);
+        }
         Set<Runnable> activitiesTasks = createActivitiesTasks();
         try {
             activitiesTasks.forEach(activitiesThreadPool::execute);
@@ -90,39 +93,36 @@ public class UserActivityJob extends FortscaleJob {
         logger.info("Finished executing User Activity job");
     }
 
-  
-	private Set<Runnable> createActivitiesTasks() {
-		Set<Runnable> activities = new HashSet();
-		if (userActivityType != null) {
-			for (UserActivityConfigurationService userActivityConfigurationService: userActivityConfigurationServices) {
-				if (userActivityType == UserActivityType.valueOf(userActivityConfigurationService.getActivityName())) {
-					createCalculateActivityRunnable(userActivityConfigurationService);
-					break;
-				}
-			}
-		} else {
-			userActivityConfigurationServices.forEach(userActivityConfigurationService -> activities.add(() ->
-					createCalculateActivityRunnable(userActivityConfigurationService)));
-		}
-		return activities;
-	}
 
-     
+    private Set<Runnable> createActivitiesTasks() {
+        Set<Runnable> activities = new HashSet<>();
+        if (userActivityType != null) {
+            for (UserActivityConfigurationService userActivityConfigurationService : userActivityConfigurationServices) {
+                if (userActivityType == UserActivityType.valueOf(userActivityConfigurationService.getActivityName())) {
+                    createCalculateActivityRunnable(userActivityConfigurationService);
+                    break;
+                }
+            }
+        } else {
+            userActivityConfigurationServices.forEach(userActivityConfigurationService -> activities.add(() -> createCalculateActivityRunnable(userActivityConfigurationService)));
+        }
+        return activities;
+    }
+
 
     private void createCalculateActivityRunnable(UserActivityConfigurationService userActivityConfigurationService) {
-        final String activityName = userActivityConfigurationService.getUserActivityConfiguration().getActivities().
-				toString();
+        final String activityName = userActivityConfigurationService.getUserActivityConfiguration().getActivities().toString();
         Thread.currentThread().setName(String.format("Activity-%s-thread", activityName));
-		try {
-			calculateActivity(userActivityConfigurationService);
-		} catch (Exception ex) {
-			logger.error("Activity {} failed with exception - {}", activityName, ex.toString());
-		}
+        try {
+            calculateActivity(userActivityConfigurationService);
+        } catch (Exception ex) {
+            logger.error("Activity {} failed with exception - {}", activityName, ex.toString());
+        }
     }
 
     private void calculateActivity(UserActivityConfigurationService userActivityConfigurationService) {
         final UserActivityConfiguration userActivityConfiguration = userActivityConfigurationService.
-				getUserActivityConfiguration();
+                getUserActivityConfiguration();
         Set<String> activityNames = userActivityConfiguration.getActivities();
         for (String activity : activityNames) {
             logger.debug("Executing calculation for activity: {}", activity);

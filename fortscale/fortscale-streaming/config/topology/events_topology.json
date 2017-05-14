@@ -16,7 +16,9 @@
             "ntlm": "fortscale-generic-data-access-event-score",
             "gwame": "fortscale-generic-data-access-event-score",
             "prnlog": "fortscale-generic-data-access-event-score",
-            "oracle": "fortscale-generic-data-access-event-score"
+            "oracle": "fortscale-generic-data-access-event-score",
+            "dlpfile": "fortscale-generic-data-access-event-score",
+            "dlpmail":"fortscale-generic-data-access-event-score"
           }
         }
       ],
@@ -34,7 +36,9 @@
             "ntlm": "fortscale-generic-data-access-event-score",
             "gwame": "fortscale-generic-data-access-event-score",
             "prnlog": "fortscale-generic-data-access-event-score",
-            "oracle": "fortscale-generic-data-access-event-score"
+            "oracle": "fortscale-generic-data-access-event-score",
+            "dlpfile": "fortscale-generic-data-access-event-score",
+            "dlpmail": "fortscale-generic-data-access-event-score"
           }
         }
       ]

@@ -199,18 +199,11 @@ public class Evidence extends AbstractDocument{
 		this.setId(ObjectId.get().toString());
 	}
 
-	// used to create references to evidences within alerts (see BasicAlertSubscriber)
-	public Evidence(String id) {
-		this.setId(id);
-	}
-
 	// For JSON serialization
 	public Evidence() {
 	}
 
 	// Setters
-
-
     public void setAnomalyTypeFieldName(String anomalyTypeFieldName) {
         this.anomalyTypeFieldName = anomalyTypeFieldName;
     }

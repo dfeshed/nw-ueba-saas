@@ -50,7 +50,7 @@ public class PxGridEventsProcessJob extends EventProcessJob {
 
 		// skip records that failed on parsing
 		if (record==null) {
-			jobMetircs.linesFailuresInMorphline++;
+			jobMetrics.linesFailuresInMorphline++;
 			return null;
 		}
 		try {

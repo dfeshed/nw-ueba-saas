@@ -42,7 +42,7 @@ public class CaptorMetricsDecider implements IMetricsDecider {
 								metricToCapture, metrics.get(metricToCapture));
 					} catch (JSONException e) {
 						// this should never happened since we have the "has" filter
-						logger.error("error capturing metirc={}",metricToCapture,e);
+						logger.error("error capturing metric={}",metricToCapture,e);
 					}
 				});
 

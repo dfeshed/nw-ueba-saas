@@ -24,7 +24,7 @@ public abstract class SupportingInformationBaseHistogramPopulator implements Sup
         this.featureName = featureName;
     }
 
-    abstract Map<SupportingInformationKey, Double> createSupportingInformationHistogram(String contextValue, long evidenceEndTime, Integer timePeriodInDays);
+    abstract Map<SupportingInformationKey, Double> createSupportingInformationHistogram(String contextValue, long evidenceEndTime, Integer timePeriodInDays,Evidence evidence);
 
     abstract SupportingInformationKey createAnomalyHistogramKey(Evidence evidence, String featureName);
 

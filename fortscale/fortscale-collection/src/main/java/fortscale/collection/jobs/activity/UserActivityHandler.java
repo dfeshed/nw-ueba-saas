@@ -3,8 +3,6 @@ package fortscale.collection.jobs.activity;
 /**
  * Interface for user activity calculations
  *
- * @author gils
- * 24/05/2016
  */
 public interface UserActivityHandler {
     /**
@@ -13,6 +11,7 @@ public interface UserActivityHandler {
      * @param numOfLastDaysToCalculate the num of last days to calculate
      */
     void calculate(int numOfLastDaysToCalculate);
+
     UserActivityType getActivity();
     /**
      * Runs all needs to be done after the calculation finished

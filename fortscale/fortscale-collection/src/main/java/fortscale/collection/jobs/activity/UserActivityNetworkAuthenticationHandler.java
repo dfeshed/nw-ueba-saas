@@ -1,13 +1,12 @@
 package fortscale.collection.jobs.activity;
 
-import fortscale.collection.services.UserActivityConfigurationService;
-import fortscale.collection.services.UserActivityNetworkAuthenticationConfigurationService;
+import fortscale.collection.services.useractivity.UserActivityConfigurationService;
+import fortscale.collection.services.useractivity.UserActivityNetworkAuthenticationConfigurationService;
 import fortscale.common.feature.AggrFeatureValue;
 import fortscale.common.feature.Feature;
 import fortscale.common.feature.FeatureValue;
 import fortscale.common.util.GenericHistogram;
 import fortscale.domain.core.activities.UserActivityNetworkAuthenticationDocument;
-import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -16,109 +15,91 @@ import java.util.*;
 @Component
 public class UserActivityNetworkAuthenticationHandler extends UserActivityBaseHandler {
 
-	private static final UserActivityType ACTIVITY = UserActivityType.NETWORK_AUTHENTICATION;
-	private static final String AUTHENTICATION_HISTOGRAM_FEATURE_NAME_SUCCESS = "success_events_counter";
-	private static final String AUTHENTICATION_HISTOGRAM_FEATURE_NAME_FAILURE = "failed_events_counter";
-	private static final String AGGREGATED_FEATURES_EVENTS_COUNTER_SUCCESS = "aggregatedFeatures." + AUTHENTICATION_HISTOGRAM_FEATURE_NAME_SUCCESS;
-	private static final String AGGREGATED_FEATURES_EVENTS_COUNTER_FAILURE = "aggregatedFeatures." + AUTHENTICATION_HISTOGRAM_FEATURE_NAME_FAILURE;
+    private static final UserActivityType ACTIVITY = UserActivityType.NETWORK_AUTHENTICATION;
+    private static final String AUTHENTICATION_HISTOGRAM_FEATURE_NAME_SUCCESS = "success_events_counter";
+    private static final String AUTHENTICATION_HISTOGRAM_FEATURE_NAME_FAILURE = "failed_events_counter";
+    private static final String AGGREGATED_FEATURES_EVENTS_COUNTER_SUCCESS = AGGREGATED_FEATURES_PREFIX + "." + AUTHENTICATION_HISTOGRAM_FEATURE_NAME_SUCCESS;
+    private static final String AGGREGATED_FEATURES_EVENTS_COUNTER_FAILURE = AGGREGATED_FEATURES_PREFIX + "." + AUTHENTICATION_HISTOGRAM_FEATURE_NAME_FAILURE;
 
 
-	@Autowired
-	private UserActivityNetworkAuthenticationConfigurationService userActivityNetworkAuthenticationConfigurationService;
+    @Autowired
+    private UserActivityNetworkAuthenticationConfigurationService userActivityNetworkAuthenticationConfigurationService;
 
-	@Override
-	protected List<String> getRelevantFields(String dataSource) throws IllegalArgumentException {
-		final String dataSourceLowerCase = dataSource.toLowerCase();
-		if (dataSourceLowerCase.equals(UserActivityNetworkAuthenticationConfigurationService.DATA_SOURCE_CRMSF_PROPERTY_NAME) ||
-				dataSourceLowerCase.equals(UserActivityNetworkAuthenticationConfigurationService.DATA_SOURCE_SSH_PROPERTY_NAME) ||
-				dataSourceLowerCase.equals(UserActivityNetworkAuthenticationConfigurationService.DATA_SOURCE_KERBEROS_LOGINS_PROPERTY_NAME) ||
-				dataSourceLowerCase.equals(UserActivityNetworkAuthenticationConfigurationService.DATA_SOURCE_ORACLE_PROPERTY_NAME) ||
-				dataSourceLowerCase.equals(UserActivityNetworkAuthenticationConfigurationService.DATA_SOURCE_NTLM_PROPERTY_NAME) ||
-				dataSourceLowerCase.equals(UserActivityNetworkAuthenticationConfigurationService.DATA_SOURCE_VPN_PROPERTY_NAME) ||
-				dataSourceLowerCase.equals(UserActivityNetworkAuthenticationConfigurationService.DATA_SOURCE_KERBEROS_TGT_PROPERTY_NAME)) {
-			return new ArrayList<>(Arrays.asList(AGGREGATED_FEATURES_EVENTS_COUNTER_SUCCESS, AGGREGATED_FEATURES_EVENTS_COUNTER_FAILURE));
-		}
-		else {
-			throw new IllegalArgumentException("Invalid data source: " + dataSource);
-		}
-	}
+    @Override
+    protected List<String> getRelevantFields(String dataSource) throws IllegalArgumentException {
+        final String dataSourceLowerCase = dataSource.toLowerCase();
+        if (dataSourceLowerCase.equals(UserActivityNetworkAuthenticationConfigurationService.DATA_SOURCE_CRMSF_PROPERTY_NAME) ||
+                dataSourceLowerCase.equals(UserActivityNetworkAuthenticationConfigurationService.DATA_SOURCE_SSH_PROPERTY_NAME) ||
+                dataSourceLowerCase.equals(UserActivityNetworkAuthenticationConfigurationService.DATA_SOURCE_KERBEROS_LOGINS_PROPERTY_NAME) ||
+                dataSourceLowerCase.equals(UserActivityNetworkAuthenticationConfigurationService.DATA_SOURCE_ORACLE_PROPERTY_NAME) ||
+                dataSourceLowerCase.equals(UserActivityNetworkAuthenticationConfigurationService.DATA_SOURCE_NTLM_PROPERTY_NAME) ||
+                dataSourceLowerCase.equals(UserActivityNetworkAuthenticationConfigurationService.DATA_SOURCE_VPN_PROPERTY_NAME) ||
+                dataSourceLowerCase.equals(UserActivityNetworkAuthenticationConfigurationService.DATA_SOURCE_KERBEROS_TGT_PROPERTY_NAME)) {
+            return new ArrayList<>(Arrays.asList(AGGREGATED_FEATURES_EVENTS_COUNTER_SUCCESS, AGGREGATED_FEATURES_EVENTS_COUNTER_FAILURE));
+        } else {
+            throw new IllegalArgumentException("Invalid data source: " + dataSource);
+        }
+    }
 
-	private Double convertAggregatedFeatureValueToDouble(Object featureValue) {
-		if (featureValue instanceof Double) {
-			return (Double)featureValue;
-		} else if (featureValue instanceof Float) {
-			logger.debug("Expected featureValue Double got Float");
-			return ((Float)featureValue).doubleValue();
-		} else if (featureValue instanceof Long) {
-			logger.debug("Expected featureValue Double got Long");
-			return ((Long)featureValue).doubleValue();
-		} else if (featureValue instanceof Integer) {
-			logger.debug("Expected featureValue Double got Integer");
-			return ((Integer)featureValue).doubleValue();
-		}
-		throw new RuntimeException("Cannot convert featureValue to Double");
-	}
+    @Override
+    protected GenericHistogram convertFeatureToHistogram(Object objectToConvert, String histogramFeatureName) {
+        GenericHistogram histogram = new GenericHistogram();
+        if (objectToConvert == null) { //this is legitimate scenario (e.g no failures happened)
+            return histogram;
+        }
+        if (objectToConvert instanceof Feature && ((Feature) objectToConvert).getValue() instanceof AggrFeatureValue) {
+            final FeatureValue featureValue = ((Feature) objectToConvert).getValue();
+            switch (histogramFeatureName) {
+                case AUTHENTICATION_HISTOGRAM_FEATURE_NAME_SUCCESS:
+                    histogram.add(UserActivityNetworkAuthenticationDocument.FIELD_NAME_HISTOGRAM_SUCCESSES,
+                            convertAggregatedFeatureValueToDouble(((AggrFeatureValue) featureValue).getValue()));
+                    break;
+                case AUTHENTICATION_HISTOGRAM_FEATURE_NAME_FAILURE:
+                    histogram.add(UserActivityNetworkAuthenticationDocument.FIELD_NAME_HISTOGRAM_FAILURES,
+                            convertAggregatedFeatureValueToDouble(((AggrFeatureValue) featureValue).getValue()));
+                    break;
+                default:
+                    String errorMessage = String.format("Can't convert object %s to histogram. value is invalid: %s", objectToConvert, ((AggrFeatureValue) featureValue).getValue());
+                    logger.error(errorMessage);
+                    throw new RuntimeException(errorMessage);
+            }
+        } else {
+            String errorMessage = String.format("Can't convert object %s object of class %s to histogram", objectToConvert, objectToConvert.getClass());
+            logger.error(errorMessage);
+            throw new RuntimeException(errorMessage);
+        }
+        return histogram;
+    }
 
-	@Override
-	protected GenericHistogram convertFeatureToHistogram(Object objectToConvert, String histogramFeatureName) {
-		GenericHistogram histogram = new GenericHistogram();
-		if (objectToConvert == null) { //this is legitimate scenario (e.g no failures happened)
-			return histogram;
-		}
-		if (objectToConvert instanceof Feature && ((Feature) objectToConvert).getValue() instanceof AggrFeatureValue) {
-			final FeatureValue featureValue = ((Feature) objectToConvert).getValue();
-			switch (histogramFeatureName) {
-				case AUTHENTICATION_HISTOGRAM_FEATURE_NAME_SUCCESS:
-					histogram.add(UserActivityNetworkAuthenticationDocument.FIELD_NAME_HISTOGRAM_SUCCESSES,
-							convertAggregatedFeatureValueToDouble(((AggrFeatureValue) featureValue).getValue()));
-					break;
-				case AUTHENTICATION_HISTOGRAM_FEATURE_NAME_FAILURE:
-					histogram.add(UserActivityNetworkAuthenticationDocument.FIELD_NAME_HISTOGRAM_FAILURES,
-							convertAggregatedFeatureValueToDouble(((AggrFeatureValue) featureValue).getValue()));
-					break;
-				default:
-					String errorMessage = String.format("Can't convert object %s to histogram. value is invalid: %s", objectToConvert, ((AggrFeatureValue) featureValue).getValue());
-					logger.error(errorMessage);
-					throw new RuntimeException(errorMessage);
-			}
-		}
-		else {
-			String errorMessage = String.format("Can't convert object %s object of class %s to histogram", objectToConvert, objectToConvert.getClass());
-			logger.error(errorMessage);
-			throw new RuntimeException(errorMessage);
-		}
-		return histogram;
-	}
+    @Override
+    protected List<Class> getRelevantDocumentClasses() {
+        return new ArrayList<>(Collections.singletonList(UserActivityNetworkAuthenticationDocument.class));
+    }
 
-	@Override
-	protected List<Class> getRelevantDocumentClasses () {
-		return new ArrayList<>(Collections.singletonList(UserActivityNetworkAuthenticationDocument.class));
-	}
+    @Override
+    protected void updateAdditionalActivitySpecificDocumentInDatabase(List<String> dataSources, long currBucketStartTime, long currBucketEndTime, Map<String, Double> additionalActivityHistogram) {
+        //do nothing
+    }
 
-	@Override
-	protected void updateAdditionalActivitySpecificDocumentInDatabase(List<String> dataSources, long currBucketStartTime, long currBucketEndTime, Map<String, Double> additionalActivityHistogram) {
-		//do nothing
-	}
-
-	@Override
-	protected String getCollectionName() {
-		return UserActivityNetworkAuthenticationDocument.COLLECTION_NAME;
-	}
+    @Override
+    protected String getCollectionName() {
+        return UserActivityNetworkAuthenticationDocument.COLLECTION_NAME;
+    }
 
 
-	@Override
-	protected List<String> getRelevantAggregatedFeaturesFieldsNames() {
-		return new ArrayList<>(Arrays.asList(AUTHENTICATION_HISTOGRAM_FEATURE_NAME_SUCCESS, AUTHENTICATION_HISTOGRAM_FEATURE_NAME_FAILURE));
-	}
+    @Override
+    protected List<String> getRelevantAggregatedFeaturesFieldsNames() {
+        return new ArrayList<>(Arrays.asList(AUTHENTICATION_HISTOGRAM_FEATURE_NAME_SUCCESS, AUTHENTICATION_HISTOGRAM_FEATURE_NAME_FAILURE));
+    }
 
-	@Override
-	public UserActivityType getActivity() {
-		return ACTIVITY;
-	}
+    @Override
+    public UserActivityType getActivity() {
+        return ACTIVITY;
+    }
 
-	@Override
-	protected UserActivityConfigurationService getUserActivityConfigurationService() {
-		return userActivityNetworkAuthenticationConfigurationService;
-	}
+    @Override
+    protected UserActivityConfigurationService getUserActivityConfigurationService() {
+        return userActivityNetworkAuthenticationConfigurationService;
+    }
 
 }

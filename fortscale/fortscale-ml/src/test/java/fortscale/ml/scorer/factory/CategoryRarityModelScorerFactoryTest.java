@@ -70,7 +70,7 @@ public class CategoryRarityModelScorerFactoryTest {
         };
         IContextSelectorConf contextSelectorConf = () -> "dummy-context-selector-factory-name";
         IModelBuilderConf modelBuilderConf = () -> "dummy-model-factory-name";
-        ModelConf modelConf = new ModelConf("dummy-model-conf", dataRetrieverConf, contextSelectorConf, modelBuilderConf);
+        ModelConf modelConf = new ModelConf("dummy-model-conf", contextSelectorConf, dataRetrieverConf, modelBuilderConf);
         List<String> contextFieldNames = new ArrayList<>();
         contextFieldNames.add("context-field1");
         Set<String> featureNamesSet = new HashSet<>();
