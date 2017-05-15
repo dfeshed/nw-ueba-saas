@@ -81,7 +81,6 @@ class JarOperator(BashOperator):
 
         bash_command = [elem for elem in bash_command if (elem != "''" and elem != "")]
         bash_command = ' '.join(bash_command)
-        print bash_command
         return bash_command
 
     def jvm_memory_allocation(self, bash_command):
