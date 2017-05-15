@@ -973,7 +973,7 @@ export default {
     },
     tooltip: {
       contextHighlights: 'Context Highlights',
-      viewOverview: 'View Overview',
+      viewOverview: 'View Context',
       actions: 'Actions',
       investigate: 'Pivot to Investigate',
       addToList: 'Add to list',
