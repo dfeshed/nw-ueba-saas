@@ -71,11 +71,11 @@ class JarOperator(BashOperator):
 
         self.logback(bash_command)
 
-        self.remote_debug_params(bash_command)
+        self.remote_debug_options(bash_command)
 
         self.jmx(bash_command)
 
-        self.path_to_jar(bash_command)
+        self.jar_path(bash_command)
 
         self.extra_args(bash_command)
 
@@ -107,7 +107,7 @@ class JarOperator(BashOperator):
         if self.merged_args.get('extra_args') is not None:
             bash_command.extend(self.merged_args.get('extra_args').split(' '))
 
-    def path_to_jar(self, bash_command):
+    def jar_path(self, bash_command):
         """
         
         Validate that main_class, jar_path or class_path exist in merged_args, 
@@ -143,8 +143,15 @@ class JarOperator(BashOperator):
         :return: 
         """
         if self.merged_args.get('jmx_enabled') is True:
-            jmx = '-Djavax.management.builder.initial= -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=%s %s' % (
-                self.merged_args.get('jmx_port'), self.merged_args.get('jmx_args'))
+            if self.merged_args.get('jmx_port') is not None:
+                jmx = '-Djavax.management.builder.initial= -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=%s' % (
+                    self.merged_args.get('jmx_port'))
+                if self.merged_args.get('jmx_args') is not None:
+                    jmx += ' %s' % (self.merged_args.get('jmx_args'))
+            else:
+                logging.error('Could not find jmx_port')
+                raise ValueError('Please set jmx_port')
+
             bash_command.extend(jmx.split(' '))
 
     def timezone(self, bash_command):
@@ -156,7 +163,7 @@ class JarOperator(BashOperator):
         if self.merged_args['timezone'] is not None:
             bash_command.append(self.merged_args['timezone'])
 
-    def remote_debug_params(self, bash_command):
+    def remote_debug_options(self, bash_command):
         """
         
         Handle debug options
