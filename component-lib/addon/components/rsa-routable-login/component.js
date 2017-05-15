@@ -150,7 +150,7 @@ export default Component.extend({
         (message) => {
           const exception = message.error_description;
 
-          if (exception.includes('expired')) {
+          if (exception.includes('expired') || exception.includes('Password does not meet requirements')) {
             this.fetchPasswordPolicy();
           } else {
             let errorMessage = 'login.genericError';
