@@ -1,6 +1,8 @@
 import Component from 'ember-component';
 import layout from './template';
 import safeCallback from 'component-lib/utils/safe-callback';
+import computed from 'ember-computed-decorators';
+import { isEmpty } from 'ember-utils';
 
 export default Component.extend({
   tagName: 'ul',
@@ -36,6 +38,16 @@ export default Component.extend({
    * @public
    */
   addToListAction: null,
+
+  /**
+   * Indicates whether or not to show the link to NetWitness Endpoint thick client ("ECAT").
+   * @type {Boolean}
+   * @private
+  */
+  @computed('entityType', 'entityId')
+  showEndpointLink(entityType, entityId) {
+    return !isEmpty(entityId) && !!(String(entityType).match(/IP|HOST|MAC\_ADDRESS/));
+  },
 
   actions: {
     openAddToListModal() {

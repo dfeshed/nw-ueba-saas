@@ -45,10 +45,15 @@ $contextTooltipDatumPadding: 4px;
 }
 
 .rsa-context-tooltip-actions {
+  a {
+    text-decoration: none;
+  }
+
   .action {
     @include rsa-font(body, small);
     padding: rsa-whitespace(least) 0;
     color: rsa-color(gray, lighter);
+    cursor: pointer;
 
     .icon {
       padding-right: rsa-whitespace(less);

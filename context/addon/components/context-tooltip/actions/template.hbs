@@ -1,3 +1,13 @@
+{{#if showEndpointLink}}
+  <a href="ecatui://{{entityId}}">
+    <li class="action js-test-endpoint-link">
+      {{rsa-icon name="search" size="small"}}
+      <span class="label">
+        {{t 'context.tooltip.ecat'}}
+      </span>
+    </li>
+  </a>
+{{/if}}
 <li class="action" {{action "openAddToListModal"}}>
   {{rsa-icon name="list-bullets-1" size="small"}}
   <label class="label">
