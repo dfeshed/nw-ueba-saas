@@ -16,7 +16,7 @@ class PresidioDag(AbstractDynamicDag):
             pass
 
         def create(self, **dag_params):
-            configuration_reader = dag_params.get('variable_reader')
+            configuration_reader = dag_params.get('conf_reader')
             dags_configs = configuration_reader.read(conf_key='dags_configs')
             created_dags = self.create_dags(dags_configs=dags_configs)
             return created_dags

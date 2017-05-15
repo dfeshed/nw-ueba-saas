@@ -1,3 +1,6 @@
+from presidio.factories.presidio_dag_factory import PresidioDag
+
+
 class DagsFactory:
     factories = {}
 
