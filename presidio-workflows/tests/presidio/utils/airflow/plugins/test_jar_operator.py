@@ -1,8 +1,9 @@
-from airflow.operators import JarOperator
+from presidio.operators.jar_operator import JarOperator
 from datetime import datetime, timedelta
 import pytest
-from airflow import DAG
 import logging
+from airflow import DAG
+import os
 
 DEFAULT_DATE = datetime(2014, 1, 1)
 
@@ -29,10 +30,198 @@ def java_args():
     }
 
 
-# Test task with all options
-def test_jar_operator_all_params(default_args, java_args):
+def test_jvm_memory_allocation(default_args, java_args):
+    """
+
+    Test xmx and xmx
+    :param default_args: default_args to dag
+    :type default_args: dict
+    :param java_args: 
+    :type java_args: dict
+    :return: 
+    """
+    logging.info('Test xms and xmx options:')
+    jvm_args = {
+        'xms': 500,
+        'xmx': 2050,
+        'jar_path': '/home/presidio/dev-projects/presidio-core/presidio-workflows/tests/resources/jars/test.jar',
+        'main_class': 'HelloWorld.Main',
+    }
+
+    dag = DAG(
+        'test_jvm_memory_allocation_dag', default_args=default_args, schedule_interval=timedelta(1))
+
+    task = JarOperator(
+        task_id='run_jar_file',
+        jvm_args=jvm_args,
+        java_args=java_args,
+        dag=dag)
+
+    task.execute(context={})
+
+
+def test_timezone(default_args, java_args):
+    """
+
+    Test timezone
+    :param default_args: default_args to dag
+    :type default_args: dict
+    :param java_args: 
+    :type java_args: dict
+    :return: 
+    """
+    logging.info('Test timezone:')
+    jvm_args = {
+        'timezone': '-Duser.timezone=Europe/Madrid',
+        'jar_path': '/home/presidio/dev-projects/presidio-core/presidio-workflows/tests/resources/jars/test.jar',
+        'main_class': 'HelloWorld.Main',
+    }
+
+    dag = DAG(
+        'test_timezone_dag', default_args=default_args, schedule_interval=timedelta(1))
+
+    task = JarOperator(
+        task_id='run_jar_file',
+        jvm_args=jvm_args,
+        java_args=java_args,
+        dag=dag)
+
+    task.execute(context={})
+
+
+def test_logback(default_args, java_args):
+    """
+
+    Test logback
+    :param default_args: default_args to dag
+    :type default_args: dict
+    :param java_args: 
+    :type java_args: dict
+    :return: 
+    """
+    logging.info('Test logback:')
+    jvm_args = {
+        'java_overriding_logback_conf_path': '/home/presidio/dev-projects/presidio-core/presidio-workflows/tests/resources/xmls/test.xml',
+        'jar_path': '/home/presidio/dev-projects/presidio-core/presidio-workflows/tests/resources/jars/test.jar',
+        'main_class': 'HelloWorld.Main',
+    }
+
+    dag = DAG(
+        'test_logback_dag', default_args=default_args, schedule_interval=timedelta(1))
+
+    task = JarOperator(
+        task_id='run_jar_file',
+        jvm_args=jvm_args,
+        java_args=java_args,
+        dag=dag)
+
+    task.execute(context={})
+
+
+def test_remote_debug(default_args, java_args):
+    """
+
+    Test remote debug
+    :param default_args: default_args to dag
+    :type default_args: dict
+    :param java_args: 
+    :type java_args: dict
+    :return: 
+    """
+    logging.info('test remote debug:')
+    jvm_args = {
+        'remote_debug_enabled': True,
+        'remote_debug_port': 9200,
+        'remote_debug_suspend': False,
+        'jar_path': '/home/presidio/dev-projects/presidio-core/presidio-workflows/tests/resources/jars/test.jar',
+        'main_class': 'HelloWorld.Main',
+    }
+
+    dag = DAG(
+        'test_remote_debug_dag', default_args=default_args, schedule_interval=timedelta(1))
+
+    task = JarOperator(
+        task_id='run_jar_file',
+        jvm_args=jvm_args,
+        java_args=java_args,
+        dag=dag)
+
+    task.execute(context={})
+
+
+@pytest.mark.skipif(os.geteuid() != 0,reason="The test should to be skipped if user is not root")
+def test_jmx(default_args, java_args):
+    """
+    
+    The test should to be skipped if user is not root, jmxremote.password file readable only for root.
+
+    Test remote jmx
+    :param default_args: default_args to dag
+    :type default_args: dict
+    :param java_args:
+    :type java_args: dict
+    :return:
+    """
+    logging.info('test jmx:')
+    jvm_args = {
+        'jmx_enabled': True,
+        'jmx_port': 9302,
+        'jar_path': '/home/presidio/dev-projects/presidio-core/presidio-workflows/tests/resources/jars/test.jar',
+        'main_class': 'HelloWorld.Main',
+    }
+
+    dag = DAG(
+        'test_jmx_dag', default_args=default_args, schedule_interval=timedelta(1))
+
+    task = JarOperator(
+        task_id='run_jar_file',
+        jvm_args=jvm_args,
+        java_args=java_args,
+        dag=dag)
+
+    task.execute(context={})
+
+
+def test_jar_path(default_args, java_args):
+    """
+
+    Test jar path
+    :param default_args: default_args to dag
+    :type default_args: dict
+    :param java_args: 
+    :type java_args: dict
+    :return: 
+    """
+    logging.info('test jar path:')
+    jvm_args = {
+        'jar_path': '/home/presidio/dev-projects/presidio-core/presidio-workflows/tests/resources/jars/test.jar',
+        'main_class': 'HelloWorld.Main',
+    }
+
+    dag = DAG(
+        'test_jar_path_dag', default_args=default_args, schedule_interval=timedelta(1))
+
+    task = JarOperator(
+        task_id='run_jar_file',
+        jvm_args=jvm_args,
+        java_args=java_args,
+        dag=dag)
+
+    task.execute(context={})
+
+
+def test_all_params(default_args, java_args):
+    """
+    
+    Test task with all options of jvm_args
+    :param default_args: default_args to dag
+    :type default_args: dict
+    :param java_args: 
+    :type java_args: dict
+    :return: 
+    """
     logging.info('test jar operator with all params:')
-    options = {
+    jvm_args = {
         'xms': 101,
         'xmx': 2049,
         'remote_debug_enabled': True,
@@ -52,71 +241,73 @@ def test_jar_operator_all_params(default_args, java_args):
 
     task = JarOperator(
         task_id='run_jar_file',
-        options=options,
+        jvm_args=jvm_args,
         java_args=java_args,
         dag=dag)
 
     task.execute(context={})
 
 
-# Test task with only mandatory options
-def test_jar_operator_mandatory_params(default_args, java_args):
-    logging.info('test jar operator with mandatory params:')
-    options = {
-        'jar_path': '/home/presidio/dev-projects/presidio-core/presidio-workflows/tests/resources/jars/test.jar',
-        'main_class': 'HelloWorld.Main',
-    }
+def test_main_class_missing(default_args, java_args):
+    """
 
-    dag = DAG(
-        'test_mandatory_params_dag', default_args=default_args, schedule_interval=timedelta(1))
-
-    task = JarOperator(
-        task_id='run_jar_file',
-        options=options,
-        java_args=java_args,
-        dag=dag)
-
-    task.execute(context={})
-
-
-# Test task without main_class parameter
-def test_jar_operator_partial_params(default_args, java_args):
+    Test task without main_class parameter
+    :param default_args: default_args to dag
+    :type default_args: dict
+    :param java_args: 
+    :type java_args: dict
+    :return:
+    """
     logging.info('test jar operator with partial params:')
-    options = {
+    jvm_args = {
         'jar_path': '//home/presidio/dev-projects/presidio-core/presidio-workflows/tests/resources/jars/test.jar',
     }
 
     dag = DAG(
-        'test_mandatory_params_dag', default_args=default_args, schedule_interval=timedelta(1))
+        'test_main_class_missing_dag', default_args=default_args, schedule_interval=timedelta(1))
 
     with pytest.raises(Exception, message="Expecting error of jar operator"):
         task = JarOperator(
             task_id='run_jar_file',
-            options=options,
+            jvm_args=jvm_args,
             java_args=java_args,
             dag=dag)
 
         task.execute(context={})
 
 
-# Test expecting error when no options passed
-def test_jar_operator_no_params(default_args):
+def test_no_params(default_args):
+    """
+
+    Test expecting error when no options of jvm_args passed
+    :param default_args: default_args to dag
+    :type default_args: dict
+    :return:
+    """
     logging.info('test jar operator without params:')
     dag = DAG('test_no_params_dag', default_args=default_args)
 
     with pytest.raises(Exception, message="Expecting error of jar operator"):
         task = JarOperator(
             task_id='run_jar_file',
-            options={},
+            jvm_args={},
             java_args={},
             dag=dag)
         task.execute(context={})
 
 
-# Test task with no jar file
-def test_jar_operator_no_jar(default_args, java_args):
+def test_no_jar(default_args, java_args):
+    """
+
+    Test task with no jar file
+    :param default_args: default_args to dag
+    :type default_args: dict
+    :param java_args: 
+    :type java_args: dict
+    :return:
+    """
     logging.info('test jar operator without jar file:')
-    options = {
+    jvm_args = {
         'jar_path': '/home/presidio/dev-projects/presidio-core/presidio-workflows/tests/resources/jars/no_jar.jar',
         'main_class': 'HelloWorld.Main',
     }
@@ -127,7 +318,7 @@ def test_jar_operator_no_jar(default_args, java_args):
     with pytest.raises(Exception, message="Expecting error of bash operator"):
         task = JarOperator(
             task_id='run_jar_file',
-            options=options,
+            jvm_args=jvm_args,
             java_args=java_args,
             dag=dag)
         task.execute(context={})
