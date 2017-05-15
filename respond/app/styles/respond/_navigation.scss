@@ -1,0 +1,13 @@
+.respond-engine {
+  > .rsa-nav-tab-group {
+    > .rsa-nav-tab {
+      margin: 0 rsa-whitespace();
+    }
+  }
+}
+// Hide the Respond nav bar on the incident details page for now
+.respond-engine.incident {
+  > .rsa-nav-tab-group {
+    display: none;
+  }
+}

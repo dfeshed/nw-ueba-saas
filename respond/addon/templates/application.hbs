@@ -1,3 +1,12 @@
-<page class="respond-engine">
+<page class="respond-engine {{routePath}}">
+  <div class="rsa-nav-tab-group">
+    {{#rsa-nav-tab  align='left' isActive=(eq routePath 'incidents') click=(action 'navigateTo' 'incidents')}}
+      <div class="label">{{t "respond.entities.incidents"}}</div>
+    {{/rsa-nav-tab}}
+
+    {{#rsa-nav-tab  align='left' isActive=(eq routePath 'remediation') click=(action 'navigateTo' 'remediation')}}
+      <div class="label">{{t "respond.entities.remediationTasks"}}</div>
+    {{/rsa-nav-tab}}
+  </div>
   {{outlet}}
 </page>

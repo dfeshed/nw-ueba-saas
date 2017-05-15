@@ -419,6 +419,9 @@ export default {
       ALL_TIME: 'ja_All Data'
     },
     entities: {
+      incidents: 'ja_Incidents',
+      remediationTasks: 'ja_Remediation',
+      alerts: 'ja_Alerts',
       actionMessages: {
         updateSuccess: 'ja_Your change was successful',
         updateFailure: 'ja_There was a problem updating the field for this record'
