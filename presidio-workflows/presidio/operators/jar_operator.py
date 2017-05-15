@@ -197,8 +197,3 @@ class JarOperator(BashOperator):
                 bash_command.append(logback_config % (self.merged_args.get('java_overriding_logback_conf_path')))
         if self.merged_args.get('java_logback_conf_path') is not None and overriding_logback_config is False:
             bash_command.append(logback_config % (self.merged_args.get('java_logback_conf_path')))
-
-
-class JarPlugin(AirflowPlugin):
-    name = 'jar_plugin'
-    operators = [JarOperator]
