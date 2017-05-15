@@ -5,80 +5,70 @@ export default {
   timeWindowRequired: true,
   footer: '',
   title: 'context.ADdata.title',
-  columns: [
-    {
-      class: 'col-xs-3',
-      cell: [{
-        field: 'employeeID',
-        title: 'context.ADdata.employeeID'
-      },
-      {
-        field: 'title',
-        title: 'context.ADdata.jobTitle'
-      },
-      {
-        field: 'department',
-        title: 'context.ADdata.department'
-      },
-      {
-        field: 'distinguishedName',
-        title: 'context.ADdata.distinguishedName'
-      }]
+  rows: [{
+    cell: [{
+      field: 'employeeID',
+      title: 'context.ADdata.employeeID'
     },
     {
-      class: 'col-xs-3',
-      displayField: true,
-      cell: [{
-        field: 'telephoneNumber',
-        title: 'context.ADdata.phone'
-      },
-      {
-        field: 'manager',
-        title: 'context.ADdata.manager'
-      },
-      {
-        field: 'location',
-        title: 'context.ADdata.location'
-      }]
+      field: 'telephoneNumber',
+      title: 'context.ADdata.phone'
     },
     {
-      class: 'col-xs-3',
-      cell: [{
-        field: 'mail',
-        title: 'context.ADdata.email'
-      },
-      {
-        field: 'memberOf',
-        title: 'context.ADdata.groups',
-        dataType: 'group',
-        count: 'groupCount'
-      },
-      {
-        field: 'lastLogon',
-        title: 'context.ADdata.lastLogon',
-        dataType: 'datetime'
-      }]
+      field: 'mail',
+      title: 'context.ADdata.email'
     },
     {
-      class: 'col-xs-3',
-      cell: [{
-        field: 'sAMAccountName',
-        title: 'context.ADdata.adUserID',
-        dataType: 'horizontal',
-        class: 'col-xs-3'
-      },
-      {
-        field: 'company',
-        title: 'context.ADdata.company'
-      },
-      {
-        field: 'lastLogonTimestamp',
-        title: 'context.ADdata.lastLogonTimeStamp',
-        dataType: 'datetime'
-      }]
-    }
-  ],
-
+      field: 'sAMAccountName',
+      title: 'context.ADdata.adUserID'
+    }]
+  },
+  {
+    cell: [{
+      field: 'title',
+      title: 'context.ADdata.jobTitle'
+    },
+    {
+      field: 'manager',
+      title: 'context.ADdata.manager'
+    },
+    {
+      field: 'memberOf',
+      title: 'context.ADdata.groups',
+      dataType: 'group',
+      count: 'groupCount'
+    },
+    {
+      field: 'company',
+      title: 'context.ADdata.company'
+    }]
+  },
+  {
+    cell: [{
+      field: 'department',
+      title: 'context.ADdata.department'
+    },
+    {
+      field: 'location',
+      title: 'context.ADdata.location'
+    },
+    {
+      field: 'lastLogon',
+      title: 'context.ADdata.lastLogon',
+      dataType: 'datetime'
+    },
+    {
+      field: 'lastLogonTimestamp',
+      title: 'context.ADdata.lastLogonTimeStamp',
+      dataType: 'datetime'
+    }]
+  },
+  {
+    cell: [{
+      field: 'distinguishedName',
+      title: 'context.ADdata.distinguishedName'
+    }]
+  }],
   firstRow: {
     class: 'rsa-context-panel__endpoint__host-details col-xs-2',
     field: 'displayName',

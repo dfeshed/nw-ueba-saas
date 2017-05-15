@@ -4,83 +4,58 @@ export default {
   header: 'context.incident.header',
   timeWindowRequired: true,
   footer: '',
-  width: '2',
   title: 'context.hostSummary.title',
-  columns: [
-    {
-      class: 'rsa-context-panel__endpoint__host-details__badge-score col-xs-1',
-      displayField: true,
-      cell: [{
-        field: 'IIOCScore',
-        title: 'context.hostSummary.riskScore',
-        dataType: 'riskScore'
-      }]
+  rows: [{
+    cell: [{
+      field: 'total_modules_count',
+      title: 'context.hostSummary.modulesCount'
     },
     {
-      class: 'col-xs-2',
-      displayField: true,
-      cell: [{
-        field: 'total_modules_count',
-        title: 'context.hostSummary.modulesCount'
-      },
-      {
-        field: 'IIOCLevel0',
-        title: 'context.hostSummary.iioc0'
-      },
-      {
-        field: 'IIOCLevel1',
-        title: 'context.hostSummary.iioc1'
-      }]
+      field: 'IIOCLevel0',
+      title: 'context.hostSummary.iioc0'
     },
     {
-      class: 'col-xs-3 ',
-      displayField: true,
-      cell: [{
-        field: 'LastScan',
-        title: 'context.hostSummary.lastUpdated'
-      },
-      {
-        field: 'AdminStatus',
-        title: 'context.hostSummary.adminStatus'
-      },
-      {
-        field: 'LastSeen',
-        title: 'context.hostSummary.lastLogin'
-      }]
+      field: 'IIOCLevel1',
+      title: 'context.hostSummary.iioc1'
     },
     {
-      class: 'col-xs-3',
-      displayField: true,
-      cell: [{
-        field: 'MAC',
-        title: 'context.hostSummary.macAddress'
-      },
-      {
-        field: 'OperatingSystem',
-        title: 'context.hostSummary.operatingSystem'
-      },
-      {
-        field: '',
-        displayField: true
-      }]
+      field: 'LastScan',
+      title: 'context.hostSummary.lastUpdated'
+    }]
+  },
+  {
+    cell: [{
+      field: 'AdminStatus',
+      title: 'context.hostSummary.adminStatus'
     },
     {
-      class: 'col-xs-3',
-      displayField: true,
-      cell: [{
-        field: 'MachineStatus',
-        title: 'context.hostSummary.machineStatus'
-      },
-      {
-        field: 'LocalIPAddress',
-        title: 'context.hostSummary.ipAddress',
-        nested: 'LocalIPAddress',
-        dataType: 'link'
-      },
-      {
-        field: '',
-        displayField: true
-      }]
-    }
-  ]
+      field: 'LastSeen',
+      title: 'context.hostSummary.lastLogin'
+    },
+    {
+      field: 'MAC',
+      title: 'context.hostSummary.macAddress'
+    },
+    {
+      field: 'OperatingSystem',
+      title: 'context.hostSummary.operatingSystem'
+    }]
+  },
+  {
+    cell: [{
+      field: 'MachineStatus',
+      title: 'context.hostSummary.machineStatus'
+    },
+    {
+      field: 'LocalIPAddress',
+      title: 'context.hostSummary.ipAddress',
+      nested: 'LocalIPAddress',
+      dataType: 'link'
+    }]
+  }],
+  riskScore: {
+    field: 'IIOCScore',
+    title: 'context.hostSummary.riskScore',
+    dataType: 'riskScore'
+  }
 };
