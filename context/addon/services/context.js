@@ -206,9 +206,9 @@ export default Service.extend({
 
     // For the cached entities, register their callbacks & manually fire them.
     if (callback) {
-      cached.forEach(({ type, id, callbacks, records }) => {
+      cached.forEach(({ type, id, status, callbacks, records }) => {
         callbacks.push(callback);
-        callback(type, id, records);
+        callback(type, id, status, records);
       });
     }
 
@@ -266,10 +266,13 @@ export default Service.extend({
         filter
       },
       onInit: (stop) => {
-        this.get('_summariesCache').add(entities, callback, stop);
+        this.get('_summariesCache').add(entities, callback, stop, 'streaming');
       },
       onResponse: (response) => {
-        this._onResponse(response);
+        this._onResponse(entities, response);
+      },
+      onError: () => {
+        this._onStatusChanges(entities, 'error');
       }
     });
 
@@ -327,12 +330,15 @@ export default Service.extend({
    * }
    * ```
    *
+   * @param {{type: String, id: String}[]} entities The list of requested entity type + id pairs.
    * @param {Object} response The server response payload.
    * @private
    */
-  _onResponse(response = {}) {
+  _onResponse(entities, response = {}) {
     const summaries = this.get('_summariesCache');
     const summaryData = response.data;
+    const { meta } = response;
+    const status = (meta && meta.complete) ? 'complete' : 'streaming';
 
     // For each entity in the response...
     Object.keys(summaryData).forEach((id) => {
@@ -346,13 +352,42 @@ export default Service.extend({
         lastUpdated: Number(lastUpdated)
       }));
 
-      // Update the entity's cache data.
-      const entry = summaries.update(type, id, records);
+      // Update the entity's cached data records, but leave status unchanged.
+      const entry = summaries.update(type, id, status, records);
 
       // Notify all the cached callbacks of this update.
       if (entry) {
         (entry.callbacks || []).forEach((callback) => {
-          callback(type, id, entry.records);
+          callback(type, id, entry.status, entry.records);
+        });
+      }
+    });
+
+    // If the stream is complete, mark all the entities in this stream request as complete.
+    if (status === 'complete') {
+      this._onStatusChange(entities, 'complete');
+    }
+  },
+
+  /**
+   * Handles a change in the status of a stream request (created by calling `summary`) for a given list of entities.
+   * Respond to status change by updating the cached `status` of all the given entities and invoking their callbacks.
+   * @param {{type: String, id: String}[]} entities The list of requested entity type + id pairs.
+   * @param {String} status The new status.
+   * @private
+   */
+  _onStatusChange(entities, status) {
+    const summaries = this.get('_summariesCache');
+
+    (entities || []).forEach(({ type, id }) => {
+
+      // Update the entity's cached status, but leave the response data unchanged.
+      const entry = summaries.update(type, id, status);
+
+      // Notify all the cached callbacks of this status update.
+      if (entry) {
+        (entry.callbacks || []).forEach((callback) => {
+          callback(type, id, status, entry.records);
         });
       }
     });

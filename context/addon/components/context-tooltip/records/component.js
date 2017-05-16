@@ -5,6 +5,7 @@ import computed from 'ember-computed-decorators';
 import safeCallback from 'component-lib/utils/safe-callback';
 import connect from 'ember-redux/components/connect';
 import { updateActiveTab } from 'context/actions/context-creators';
+import { next } from 'ember-runloop';
 
 const dispatchToActions = {
   // Sets the active tab of the context panel's state.
@@ -55,17 +56,58 @@ const ContextTooltipRecords = Component.extend({
    */
   @computed('model')
   modelSummary(model = {}) {
-    const result = [];
-    const { type, id } = model;
-    if (type && id) {
-      this.get('context').summary(
-        [ model ],
-        (type, id, data) => {
-          result.clear().pushObjects(data);
+    next(this, '_fetchSummary', model);
+    return [];
+  },
+
+  /**
+   * The status of the request for `modelSummary` data.
+   * @type {String} Either 'streaming', 'error' or 'complete';
+   * @public
+   */
+  modelStatus: null,
+
+  /**
+   * Kicks off stream request for summary data.
+   * The responses are then used to update this component's `modelStatus` and `modelSummary`.
+   * Before kicking off the request, `modelStatus` is reset to `null` (if model is empty) or `'streaming'`.
+   * @private
+   */
+  _fetchSummary(model) {
+    const { type, id } = model || {};
+    if (!type || !id) {
+
+      // Model is not well-defined, reset to inert state.
+      this.setProperties({
+        modelStatus: null,
+        modelSummary: []
+      });
+    } else {
+
+      // Model is well-defined, prepare to fetch data.
+      this.setProperties({
+        modelStatus: 'streaming',
+        modelSummary: []
+      });
+
+      // Define a callback that will update our `modelStatus` string and append to our `modelSummary` array.
+      const callback = (type, id, status, records) => {
+
+        // Since this callback is invoked async and the tooltip component is short-lived,
+        // check to make sure this component is still alive before manipulating it.
+        if (this.get('isDestroying') || this.get('isDestroyed')) {
+          return;
         }
-      );
+
+        this.set('modelStatus', status);
+        if (records) {
+          this.get('modelSummary').clear().pushObjects(records);
+        }
+      };
+
+      this.get('context').summary([ model ], callback);
     }
-    return result;
+
   },
 
   actions: {

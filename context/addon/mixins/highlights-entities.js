@@ -313,7 +313,7 @@ export default Mixin.create({
     this._requests.pushObjects(requests);
 
     // Define a callback that will update our DOM when entity records stream back from server.
-    const callback = (type, id, records) => {
+    const callback = (type, id, status, records) => {
 
       // If we waited too long and this component's DOM has been trashed, exit.
       if (!this.element || this.get('isDestroying') || this.get('isDestroyed')) {
@@ -329,7 +329,7 @@ export default Mixin.create({
           const $element = $(`#${elementId}`);
           $element.addClass(CSS_CLASS_HAS_CONTEXT_DATA);
           if (onEntityContextFound) {
-            onEntityContextFound(type, id, $element, records);
+            onEntityContextFound(type, id, $element, status, records);
           }
         });
     };

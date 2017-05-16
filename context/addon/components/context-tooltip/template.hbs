@@ -15,12 +15,12 @@ as |hideAction model|
           <box fit class="rsa-context-tooltip__content-header">
             {{t 'context.tooltip.contextHighlights'}}
           </box>
-          <hbox fill justify="center" class="rsa-context-tooltip__content-body">
+          <box fill justify="center" class="rsa-context-tooltip__content-body">
             {{context-tooltip/records
               model=model
               clickDataAction=(action "handleClick" hideAction clickDataAction model)
             }}
-          </hbox>
+          </box>
           <centered fit class="rsa-context-tooltip__content-footer">
             {{#rsa-form-button
               class="js-open-overview"

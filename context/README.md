@@ -336,9 +336,10 @@ The summary-level data is an Array of Objects; each Object has `name`, `count`,
 
 The data records can come from several asynchronous data sources in the backend, therefore they are streamed to the UI, meaning that they may arrive in multiple batches rather than all at once.
 
-Each time one or more record arrives, the given `callback` (if any) is invoked with 3 input parameters:
-- `type` (String): the entity type,
-- `id` (String): the entity id, and
+Each time one or more record arrives, the given `callback` (if any) is invoked with 4 input parameters:
+- `type` (String): the entity type;
+- `id` (String): the entity id;
+- `status` (String): the status of the request, either 'streaming', 'complete' or 'error'; and
 - `records` (Object[]): the Array of all the entity's summary data records that have arrived so far.
 
 Since the summary-level data may come from multiple sources, its retrieval is inherently stream-like. On the server tier, the Context Hub service may query these sources in parallel and stream records to the browser client as they are found.  The structure of these server responses may resemble batches like this example below:
@@ -392,7 +393,7 @@ The `summary` method returns a function which can be used to stop any further in
 
 ```js
 // Define a callback that will call stop once it receives the incidents count.
-const callback = (type, id, records = []) => {
+const callback = (type, id, status, records = []) => {
   if (records.findBy('name', 'incidents')) {
     this.stop();
   }

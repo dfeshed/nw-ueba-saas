@@ -69,7 +69,11 @@ export default {
           data: [ record ]
         };
         sendMessage({
-          data
+          data,
+          meta: {
+            // Send `complete: true` for last batch, otherwise `complete: false`.
+            complete: index === batches.length - 1
+          }
         });
       };
     };

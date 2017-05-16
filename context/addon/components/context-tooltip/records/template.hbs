@@ -1,21 +1,24 @@
-{{#if modelSummary}}
-  <div class="rsa-context-tooltip-records__records">
-    {{#each modelSummary as |record|}}
-      <div class="rsa-context-tooltip-records__record" {{action "clickRecord" record}}>
-        <h4 class="value">
-          {{record.count}}
-        </h4>
-        <p class="text">
-          {{record.name}}
-        </p>
-        <p class="subtext">
-          {{rsa-content-datetime timestamp=record.lastUpdated asTimeAgo=true}}
-        </p>
-      </div>
-    {{/each}}
-  </div>
-{{else}}
+<div class="rsa-context-tooltip-records__records">
+  {{#each modelSummary as |record|}}
+    <div class="rsa-context-tooltip-records__record" {{action "clickRecord" record}}>
+      <h4 class="value">
+        {{record.count}}
+      </h4>
+      <p class="text">
+        {{record.name}}
+      </p>
+      <p class="subtext">
+        {{rsa-content-datetime timestamp=record.lastUpdated asTimeAgo=true}}
+      </p>
+    </div>
+  {{/each}}
+</div>
+{{#if (eq modelStatus 'streaming')}}
   <centered class="rsa-context-tooltip-records__wait">
     {{rsa-loader}}
+  </centered>
+{{else if (eq modelStatus 'error')}}
+  <centered class="rsa-context-tooltip-records__error">
+    {{t 'context.tooltip.contextUnavailable'}}
   </centered>
 {{/if}}

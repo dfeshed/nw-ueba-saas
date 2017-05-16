@@ -25,6 +25,7 @@ export default EmberObject.extend({
    *  id: '10.20.30.40',  // entity id
    *  lastRequested: 1479998598247, // timestamp of last request for this entity
    *  callbacks: [ .. ],  // Array of Functions, possibly empty
+   *  status: 'streaming|error|complete', // status of the data stream request
    *  stop: .., // Function, possibly null
    *  responses: [  // Array of data records from server for this entity
    *    { key: .., value: .., lastUpdated: .. },
@@ -118,6 +119,7 @@ export default EmberObject.extend({
 
   /**
    * Adds a new entry in cache for a given list of entity type + id pair, if not found in cache already.
+   * If not found in cache already, the new cache entry's status is initially set to the given status.
    * Also adds the given callback & stop functions (if any) to the cache entry.  This method does not record any
    * data for the request, just the request itself.
    *
@@ -130,7 +132,7 @@ export default EmberObject.extend({
    * @param {Function} [stop] Optional function that will stop future callbacks when invoked.
    * @public
    */
-  add(entities, callback, stop) {
+  add(entities, callback, stop, status) {
     const { requests, requestsHash } = this.getProperties('requests', 'requestsHash');
     const now = Number(new Date());
     let addedNewEntry = false;
@@ -147,7 +149,7 @@ export default EmberObject.extend({
       } else {
 
         // Not found. Create a new entry & append to end of array.
-        entry = requestsHash[key] = { type, id, records: [], callbacks: [] };
+        entry = requestsHash[key] = { type, id, records: [], callbacks: [], status };
         addedNewEntry = true;
       }
 
@@ -193,23 +195,34 @@ export default EmberObject.extend({
   },
 
   /**
-   * Adds response data to the cached entry for a specified request.
+   * Updates the status and response data of a given cached request.
    *
-   * This method will append a given set of the records to the cached data for a given entity.
-   * If the entity is not found in the cache, does nothing.  This method does not modify the request's callbacks,
+   * This method can be invoked to update either the status of a request or its results set or both.
+   * If a status is given, the cached status for the request will be updated.  If data records are given, they will be
+   * appended to the cached data records for the request.
+   * If the request for the specified entity is not found in the cache, does nothing.  This method does not modify the request's callbacks,
    * nor does it invoke them. It simply adds to the response data that has been cached for the given entity.
    *
    * @param {String} type Entity type.
    * @param {String} id Entity identifier.
-   * @param {Object[]} records Array of objects (like `{key, value, lastUpdated}`).
-   * @returns {Object} The updated cache entry object.
+   * @param {String} [status] Either 'streaming', 'error' or 'complete'.
+   * @param {Object[]} [records] Array of objects (like `{key, value, lastUpdated}`).
+   * @returns {Object} The updated cache entry object, if any changes were successfully recorded; null otherwise.
    * @public
    */
-  update(type, id, records = []) {
+  update(type, id, status, records) {
     const entry = this.find(type, id);
+    let changed = false;
     if (entry) {
-      entry.records.pushObjects(records);
+      if (status && entry.status !== status) {
+        entry.status = status;
+        changed = true;
+      }
+      if (records) {
+        entry.records.pushObjects(records);
+        changed = true;
+      }
     }
-    return entry;
+    return changed ? entry : null;
   }
 });

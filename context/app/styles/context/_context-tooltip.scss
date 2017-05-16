@@ -62,8 +62,12 @@ $contextTooltipDatumPadding: 4px;
 }
 
 .rsa-context-tooltip-records {
-  @include rsa-row(center,top);
-  
+
+  &__records {
+    @include rsa-row(center,top);
+    @include rsa-vendor-prefix(flex-wrap, wrap);
+  }
+
   &__record {
     cursor: pointer;
     display: inline-block;
