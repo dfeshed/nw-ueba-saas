@@ -1,6 +1,5 @@
 import dateutil.parser
 from airflow import DAG
-from airflow.operators.dummy_operator import DummyOperator
 
 from presidio.factories.abstract_dag_factory import AbstractDagFactory
 from presidio.factories.dag_factories_exceptions import DagsConfigurationContainsOverlappingDates
