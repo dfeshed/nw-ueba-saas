@@ -37,10 +37,10 @@ setup(name='presidio-workflows',
       author_email='fsgit@fortscale.com',
       packages=find_packages(),
       install_requires=[
-          'airflow[devel]',
+          'airflow[devel]','psycopg2'
       ],
-      tests_require=['pytest'],
       cmdclass={'test': Tox},
+      tests_require=['pytest'],
       setup_requires=['pytest-runner'],
       include_package_data=True,
       zip_safe=False)
