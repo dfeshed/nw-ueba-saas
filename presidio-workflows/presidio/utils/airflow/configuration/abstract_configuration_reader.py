@@ -1,4 +1,5 @@
 import json
+import logging
 from abc import ABCMeta, abstractmethod
 
 from presidio.utils.airflow.configuration.configuration_exceptions import InvalidDefaultValue, \
@@ -23,6 +24,7 @@ class AbstractConfigurationReader:
                                       default_value_file_path=default_value_file_path)
         retrieved_value = self.read_from_store(conf_key)
         if retrieved_value is None:
+            logging.debug("retrieved value for conf_key=%s is None, retrieving default value instead",conf_key)
             if default_value is not None:
                 retrieved_value = default_value
             if default_value_file_path is not None:
@@ -39,7 +41,8 @@ class AbstractConfigurationReader:
         """
         pass
 
-    def read_default_value_from_file(self, default_value_file_path):
+    @staticmethod
+    def read_default_value_from_file(default_value_file_path):
         """
         reads default configuration configured in resourced json
         :return: json dictionary containing default configuration value
@@ -48,5 +51,5 @@ class AbstractConfigurationReader:
             with open(default_value_file_path) as conf_file:
                 default_file_value = json.load(conf_file)
         except Exception as e:
-            raise DefaultConfFileDoesNotExists(default_value_file_path=default_value_file_path,cause=e)
+            raise DefaultConfFileDoesNotExists(default_value_file_path=default_value_file_path, cause=e)
         return default_file_value

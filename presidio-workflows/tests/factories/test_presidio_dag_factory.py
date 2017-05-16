@@ -55,6 +55,6 @@ class TestPresidioDagFactory:
 
         variable_reader = VariableReader(default_value_file_path=default_conf_file_path,
                                          var_key='test_presidio_dag_factory')
-        dags = DagsFactory.createDags("PresidioDag", conf_reader=variable_reader, name_space=name_space,
-                                      dag_builder=self.dag_builder)
+        dags = DagsFactory.create_dags("PresidioDag", conf_reader=variable_reader, name_space=name_space,
+                                       dag_builder=self.dag_builder)
         return dags

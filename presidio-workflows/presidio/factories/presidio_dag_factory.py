@@ -1,11 +1,12 @@
 import dateutil.parser
+import logging
 from airflow import DAG
 
 from presidio.factories.abstract_dag_factory import AbstractDagFactory
 from presidio.factories.dag_factories_exceptions import DagsConfigurationContainsOverlappingDates
 
 
-class PresidioDag():
+class PresidioDag:
     class Factory(AbstractDagFactory):
 
         def create(self, **dag_params):
@@ -15,11 +16,13 @@ class PresidioDag():
             """
             configuration_reader = dag_params.get('conf_reader')
             dags_configs = configuration_reader.read(conf_key='dags_configs')
+            logging.info("creating dynamic dags")
             created_dags = self.create_dags(dags_configs=dags_configs)
             self.validate(created_dags)
             return created_dags
 
-        def create_dags(self, dags_configs):
+        @staticmethod
+        def create_dags(dags_configs):
             """
             iterates over dags configurations and initiates dags for them
             """
@@ -39,11 +42,13 @@ class PresidioDag():
                 new_dag = DAG(dag_id=new_dag_id, start_date=start_date, schedule_interval=interval, default_args=args,
                               end_date=end_date, full_filepath=full_filepath, description=description,
                               template_searchpath=template_searchpath, params=params, dagrun_timeout=dagrun_timeout)
+                logging.info("dag_id=%s successful initiated",new_dag_id)
                 dags.append(new_dag)
 
             return dags
 
-        def validate(self, created_dags):
+        @staticmethod
+        def validate(created_dags):
             """
             validates that all created dags have start and end time that does not overlap
             :param created_dags: array of airflow dags

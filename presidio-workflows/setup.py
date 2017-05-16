@@ -37,7 +37,7 @@ setup(name='presidio-workflows',
       author_email='fsgit@fortscale.com',
       packages=find_packages(),
       install_requires=[
-          'airflow[devel]','psycopg2'
+          'airflow[devel]','psycopg2', 'python-dateutil'
       ],
       cmdclass={'test': Tox},
       tests_require=['pytest'],
