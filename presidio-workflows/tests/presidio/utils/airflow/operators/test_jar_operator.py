@@ -4,6 +4,9 @@ import pytest
 import logging
 from airflow import DAG
 import os
+from airflow.settings import Session
+from airflow.utils.state import State
+from airflow.models import TaskInstance as TI
 
 DEFAULT_DATE = datetime(2014, 1, 1)
 
@@ -28,6 +31,36 @@ def java_args():
         'a': 'one',
         'b': 'two'
     }
+
+
+def assert_task_state(tis):
+    """
+
+    Assert task state
+    :param tis: task instances
+    :return:
+    """
+    for ti in tis:
+        if ti.task_id == 'run_jar_file':
+            assert ti.state == State.SUCCESS
+        else:
+            raise
+
+
+def get_task_instances(dag):
+    """
+    
+    Get_task_instances according to dag_id
+    :param dag:
+    :return: tis
+    """
+    session = Session()
+    tis = session.query(TI).filter(
+        TI.dag_id == dag.dag_id,
+        TI.execution_date == DEFAULT_DATE
+    )
+    session.close()
+    return tis
 
 
 def test_jvm_memory_allocation(default_args, java_args):
@@ -57,7 +90,10 @@ def test_jvm_memory_allocation(default_args, java_args):
         java_args=java_args,
         dag=dag)
 
-    task.execute(context={})
+    task.clear()
+    task.run(start_date=DEFAULT_DATE, end_date=DEFAULT_DATE)
+    tis = get_task_instances(dag)
+    assert_task_state(tis)
 
 
 def test_timezone(default_args, java_args):
@@ -66,13 +102,13 @@ def test_timezone(default_args, java_args):
     Test timezone
     :param default_args: default_args to dag
     :type default_args: dict
-    :param java_args: 
+    :param java_args:
     :type java_args: dict
-    :return: 
+    :return:
     """
     logging.info('Test timezone:')
     jvm_args = {
-        'timezone': '-Duser.timezone=Europe/Madrid',
+        'timezone': '-Duser.timezone=America/New_York',
         'jar_path': '/home/presidio/dev-projects/presidio-core/presidio-workflows/tests/resources/jars/test.jar',
         'main_class': 'HelloWorld.Main',
     }
@@ -86,7 +122,10 @@ def test_timezone(default_args, java_args):
         java_args=java_args,
         dag=dag)
 
-    task.execute(context={})
+    task.clear()
+    task.run(start_date=DEFAULT_DATE, end_date=DEFAULT_DATE)
+    tis = get_task_instances(dag)
+    assert_task_state(tis)
 
 
 def test_logback(default_args, java_args):
@@ -95,9 +134,9 @@ def test_logback(default_args, java_args):
     Test logback
     :param default_args: default_args to dag
     :type default_args: dict
-    :param java_args: 
+    :param java_args:
     :type java_args: dict
-    :return: 
+    :return:
     """
     logging.info('Test logback:')
     jvm_args = {
@@ -115,7 +154,10 @@ def test_logback(default_args, java_args):
         java_args=java_args,
         dag=dag)
 
-    task.execute(context={})
+    task.clear()
+    task.run(start_date=DEFAULT_DATE, end_date=DEFAULT_DATE)
+    tis = get_task_instances(dag)
+    assert_task_state(tis)
 
 
 def test_remote_debug(default_args, java_args):
@@ -124,9 +166,9 @@ def test_remote_debug(default_args, java_args):
     Test remote debug
     :param default_args: default_args to dag
     :type default_args: dict
-    :param java_args: 
+    :param java_args:
     :type java_args: dict
-    :return: 
+    :return:
     """
     logging.info('test remote debug:')
     jvm_args = {
@@ -146,13 +188,16 @@ def test_remote_debug(default_args, java_args):
         java_args=java_args,
         dag=dag)
 
-    task.execute(context={})
+    task.clear()
+    task.run(start_date=DEFAULT_DATE, end_date=DEFAULT_DATE)
+    tis = get_task_instances(dag)
+    assert_task_state(tis)
 
 
-@pytest.mark.skipif(os.geteuid() != 0,reason="The test should to be skipped if user is not root")
+@pytest.mark.skipif(os.geteuid() != 0, reason="The test should to be skipped if user is not root")
 def test_jmx(default_args, java_args):
     """
-    
+
     The test should to be skipped if user is not root, jmxremote.password file readable only for root.
 
     Test remote jmx
@@ -179,7 +224,10 @@ def test_jmx(default_args, java_args):
         java_args=java_args,
         dag=dag)
 
-    task.execute(context={})
+    task.clear()
+    task.run(start_date=DEFAULT_DATE, end_date=DEFAULT_DATE)
+    tis = get_task_instances(dag)
+    assert_task_state(tis)
 
 
 def test_jar_path(default_args, java_args):
@@ -188,9 +236,9 @@ def test_jar_path(default_args, java_args):
     Test jar path
     :param default_args: default_args to dag
     :type default_args: dict
-    :param java_args: 
+    :param java_args:
     :type java_args: dict
-    :return: 
+    :return:
     """
     logging.info('test jar path:')
     jvm_args = {
@@ -207,18 +255,21 @@ def test_jar_path(default_args, java_args):
         java_args=java_args,
         dag=dag)
 
-    task.execute(context={})
+    task.clear()
+    task.run(start_date=DEFAULT_DATE, end_date=DEFAULT_DATE)
+    tis = get_task_instances(dag)
+    assert_task_state(tis)
 
 
 def test_all_params(default_args, java_args):
     """
-    
+
     Test task with all options of jvm_args
     :param default_args: default_args to dag
     :type default_args: dict
-    :param java_args: 
+    :param java_args:
     :type java_args: dict
-    :return: 
+    :return:
     """
     logging.info('test jar operator with all params:')
     jvm_args = {
@@ -245,20 +296,23 @@ def test_all_params(default_args, java_args):
         java_args=java_args,
         dag=dag)
 
-    task.execute(context={})
+    task.clear()
+    task.run(start_date=DEFAULT_DATE, end_date=DEFAULT_DATE)
+    tis = get_task_instances(dag)
+    assert_task_state(tis)
 
 
-def test_main_class_missing(default_args, java_args):
+def test_no_main_class(default_args, java_args):
     """
 
     Test task without main_class parameter
     :param default_args: default_args to dag
     :type default_args: dict
-    :param java_args: 
+    :param java_args:
     :type java_args: dict
     :return:
     """
-    logging.info('test jar operator with partial params:')
+    logging.info('test jar operator without main class:')
     jvm_args = {
         'jar_path': '//home/presidio/dev-projects/presidio-core/presidio-workflows/tests/resources/jars/test.jar',
     }
@@ -273,7 +327,10 @@ def test_main_class_missing(default_args, java_args):
             java_args=java_args,
             dag=dag)
 
-        task.execute(context={})
+        task.clear()
+        task.run(start_date=DEFAULT_DATE, end_date=DEFAULT_DATE)
+        tis = get_task_instances(dag)
+        assert_task_state(tis)
 
 
 def test_no_params(default_args):
@@ -293,7 +350,11 @@ def test_no_params(default_args):
             jvm_args={},
             java_args={},
             dag=dag)
-        task.execute(context={})
+
+        task.clear()
+        task.run(start_date=DEFAULT_DATE, end_date=DEFAULT_DATE)
+        tis = get_task_instances(dag)
+        assert_task_state(tis)
 
 
 def test_no_jar(default_args, java_args):
@@ -302,7 +363,7 @@ def test_no_jar(default_args, java_args):
     Test task with no jar file
     :param default_args: default_args to dag
     :type default_args: dict
-    :param java_args: 
+    :param java_args:
     :type java_args: dict
     :return:
     """
@@ -321,4 +382,7 @@ def test_no_jar(default_args, java_args):
             jvm_args=jvm_args,
             java_args=java_args,
             dag=dag)
-        task.execute(context={})
+        task.clear()
+        task.run(start_date=DEFAULT_DATE, end_date=DEFAULT_DATE)
+        tis = get_task_instances(dag)
+        assert_task_state(tis)
