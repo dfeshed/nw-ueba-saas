@@ -1,5 +1,7 @@
 """
-initiate historical dags that are defined in variables
+initiate presidio DAGs that are defined in configuration
+should be used to create template-ed (same graph)DAGs for different execution dates, having different dag_id's
+i.e. if i want to create historical load for two different dates: i can 
 """
 from __future__ import generators
 

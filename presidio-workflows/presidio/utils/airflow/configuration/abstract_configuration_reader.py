@@ -1,7 +1,8 @@
 import json
 from abc import ABCMeta, abstractmethod
 
-from presidio.utils.airflow.configuration.configuration_exceptions import InvalidDefaultValue
+from presidio.utils.airflow.configuration.configuration_exceptions import InvalidDefaultValue, \
+    DefaultConfFileDoesNotExists
 
 
 class AbstractConfigurationReader:
@@ -43,7 +44,9 @@ class AbstractConfigurationReader:
         reads default configuration configured in resourced json
         :return: json dictionary containing default configuration value
         """
-
-        with open(default_value_file_path) as conf_file:
-            default_file_value = json.load(conf_file)
+        try:
+            with open(default_value_file_path) as conf_file:
+                default_file_value = json.load(conf_file)
+        except Exception as e:
+            raise DefaultConfFileDoesNotExists(default_value_file_path=default_value_file_path,cause=e)
         return default_file_value
