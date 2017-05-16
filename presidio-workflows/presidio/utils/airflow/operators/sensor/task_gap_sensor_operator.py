@@ -5,6 +5,7 @@ from airflow.utils.state import State
 from airflow import settings
 from airflow.models import TaskInstance
 
+
 class TaskGapSensorOperator(BaseSensorOperator):
     """
     Sensor all task instances with the specified task_id until all task instances with execution_date that has greater 
@@ -38,13 +39,19 @@ class TaskGapSensorOperator(BaseSensorOperator):
                 
         @return: the number of tasks to wait for.
         '''
-        dttm = context['execution_date'] - self.execution_delta
+        execution_date_lt = context['execution_date'] - self.execution_delta
 
         logging.info(
             'Poking for the following'
             '{self.external_dag_id}.'
             '{self.external_task_id} on '
-            '{dttm} ... '.format(**locals()))
+            '{execution_date_lt} ... '.format(**locals()))
+
+        num_of_task_instances_to_wait_for = self.get_num_of_task_instances_to_wait_for(execution_date_lt)
+
+        return num_of_task_instances_to_wait_for == 0
+
+    def get_num_of_task_instances_to_wait_for(self, execution_date_lt):
         TI = TaskInstance
 
         session = settings.Session()
@@ -52,10 +59,10 @@ class TaskGapSensorOperator(BaseSensorOperator):
             TI.dag_id == self.external_dag_id,
             TI.task_id == self.external_task_id,
             TI.end_date.is_(None),
-            TI.execution_date < dttm,
+            TI.execution_date < execution_date_lt,
         ).count()
 
         session.commit()
         session.close()
 
-        return num_of_task_instances_to_wait_for == 0
+        return num_of_task_instances_to_wait_for
