@@ -1,5 +1,6 @@
 import dateutil.parser
 from airflow import DAG
+from airflow.operators.dummy_operator import DummyOperator
 
 from presidio.factories.abstract_dag_factory import AbstractDagFactory
 
@@ -13,7 +14,7 @@ class PresidioDag(AbstractDynamicDag):
 
     class Factory(AbstractDagFactory):
         def generate_dag_tasks(self, dag):
-            pass
+            DummyOperator(task_id='dummy', dag=dag,start_date=dag.start_date)
 
         def create(self, **dag_params):
             configuration_reader = dag_params.get('conf_reader')
@@ -32,7 +33,7 @@ class PresidioDag(AbstractDynamicDag):
                 interval = dag_config.get("schedule_interval")
                 start_date = dateutil.parser.parse(dag_config.get("start_date"))
                 #     todo: add all relvant params
-                new_dag = DAG(new_dag_id)
+                new_dag = DAG(dag_id=new_dag_id,start_date=start_date,schedule_interval=interval,default_args=args)
                 presidio_main_dag_id = "{}.presidio_main".format(new_dag_id)
                 dags.append(new_dag)
 
