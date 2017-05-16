@@ -25,5 +25,11 @@ export default Component.extend({
   @computed('displayedPercent', 'renderedAll')
   showPercentMessage(displayedPercent, allContentIsRendered) {
     return !allContentIsRendered && displayedPercent !== 100;
+  },
+
+  @computed('displayedPercent')
+  percentText(displayedPercent) {
+    return (displayedPercent === 0) ? '< 1' : displayedPercent;
   }
+
 });

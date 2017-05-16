@@ -8,8 +8,8 @@ import layout from './template';
 
 const HIDE_CONTENT_CHARACTER_COUNT = 3000;
 const SHOW_TRUNCATED_AMOUNT = 2000;
-const CHUNK_SIZE = 10000;
-const TIME_BETWEEN_CHUNKS = 500;
+const CHUNK_SIZE = 5000;
+const TIME_BETWEEN_CHUNKS = 750;
 
 export default Component.extend(SelectionTooltip, {
   classNameBindings: ['packet.side', 'isSticky::rsa-text-entry'],
@@ -59,10 +59,15 @@ export default Component.extend(SelectionTooltip, {
   @computed('displayedPercent', 'renderingRemainingText')
   remainingTextMessage(displayedPercent, renderingRemainingText) {
     let msg = '';
+
+    const percentLabel = {
+      remainingPercent: (displayedPercent === 0) ? '99+' : 100 - displayedPercent
+    };
+
     if (renderingRemainingText) {
-      msg = this.get('i18n').t('recon.textView.renderRemaining', { remainingPercent: 100 - displayedPercent });
+      msg = this.get('i18n').t('recon.textView.renderRemaining', percentLabel);
     } else {
-      msg = this.get('i18n').t('recon.textView.showRemaining', { remainingPercent: 100 - displayedPercent });
+      msg = this.get('i18n').t('recon.textView.showRemaining', percentLabel);
     }
     return msg;
   },
