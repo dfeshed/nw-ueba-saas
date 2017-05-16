@@ -13,8 +13,6 @@ class PresidioDag(AbstractDynamicDag):
         super(PresidioDag, self).__init__()
 
     class Factory(AbstractDagFactory):
-        def generate_dag_tasks(self, dag):
-            DummyOperator(task_id='dummy', dag=dag,start_date=dag.start_date)
 
         def create(self, **dag_params):
             configuration_reader = dag_params.get('conf_reader')

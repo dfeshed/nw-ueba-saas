@@ -7,7 +7,7 @@ class AbstractDagFactory():
     def create_and_register_dags(self, **dag_params):
         dags = self.create(**dag_params)
         for dag in dags:
-            self.generate_dag_tasks(dag)
+            self.generate_dag_tasks(dag,dag_builder=dag_params.get('dag_builder'))
         self.register_dags(dags=dags, name_space=dag_params.get('name_space'))
         return dags
 
@@ -32,10 +32,9 @@ class AbstractDagFactory():
         """
         pass
 
-    @abstractmethod
-    def generate_dag_tasks(self, dag):
+    def generate_dag_tasks(self, dag,dag_builder):
         """
         add task to given dag
         :param dag: 
         """
-        pass
+        dag_builder.build(dag)
