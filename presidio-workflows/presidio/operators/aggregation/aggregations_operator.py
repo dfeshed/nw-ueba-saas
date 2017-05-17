@@ -36,24 +36,28 @@ class AggregationsOperator(BashOperator):
         :type task_id: string
         """
 
-        # Generate the task ID if it wasn't supplied
-        task_id = task_id or '{}_{}_{}'.format(
-            fixed_duration_strategy_to_string(fixed_duration_strategy),
-            data_source,
+        self.fixed_duration_strategy = fixed_duration_strategy
+        self.data_source = data_source
+        self.task_id = task_id or '{}_{}_{}'.format(
+            fixed_duration_strategy_to_string(self.fixed_duration_strategy),
+            self.data_source,
             self.get_task_name()
         )
 
         # Create a dictionary that will be used when resolving the bash command
         params = {
             'jar_file_path': self.get_jar_file_path(),
-            'fixed_duration_strategy': fixed_duration_strategy,
-            'data_source': data_source
+            'fixed_duration_strategy': self.fixed_duration_strategy,
+            'data_source': self.data_source
         }
 
+        # Merge the new params above with the old params and overwrite existing keys
+        kwargs['params'] = kwargs['params'] or {}
+        kwargs['params'].update(params)
+
         super(AggregationsOperator, self).__init__(
-            task_id=task_id,
+            task_id=self.task_id,
             bash_command=AggregationsOperator._BASH_COMMAND,
-            params=params,
             *args,
             **kwargs
         )

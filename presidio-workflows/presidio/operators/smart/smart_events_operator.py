@@ -40,12 +40,15 @@ class SmartEventsOperator(BashOperator):
             'smart_events_conf': smart_events_conf
         }
 
+        # Merge the new params above with the old params and overwrite existing keys
+        kwargs['params'] = kwargs['params'] or {}
+        kwargs['params'].update(params)
+
         super(SmartEventsOperator, self).__init__(
             # The smart_events_conf usually contains the fixed_duration_strategy and the
             # phrase "smart_events" in its name, so it can serve as the task_id as well
             task_id=task_id or smart_events_conf,
             bash_command=SmartEventsOperator._BASH_COMMAND,
-            params=params,
             *args,
             **kwargs
         )
