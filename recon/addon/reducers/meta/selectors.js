@@ -36,6 +36,11 @@ const DEFAULT_EVENT_TYPE = EVENT_TYPES_BY_NAME.NETWORK;
 const metaDirect = (meta) => meta;
 const meta = (state) => state.meta.meta || [];
 
+export const hasMeta = createSelector(
+  meta,
+  (meta) => meta.length > 0
+);
+
 const determineEventType = (meta) => {
   if (!meta || meta.length === 0) {
     // network event type is default

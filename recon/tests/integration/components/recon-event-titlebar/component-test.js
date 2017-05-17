@@ -25,6 +25,7 @@ moduleForComponent('recon-event-titlebar', 'Integration | Component | recon even
 });
 
 test('no index or total shows just label for recon type', function(assert) {
+  new DataHelper(this.get('redux')).initializeData(initializeData);
   this.render(hbs`{{recon-event-titlebar }}`);
   assert.equal(this.$('.ember-power-select-trigger').text().trim(), 'Text Analysis');
 });
@@ -51,11 +52,14 @@ test('clicking shrink, then grow, executes multiple actions', function(assert) {
 });
 
 test('calls action when reconstruction view is changed', function(assert) {
-  this.render(hbs`{{recon-event-titlebar}}`);
+  new DataHelper(this.get('redux')).initializeData(initializeData);
+  this.render(hbs`{{recon-event-titlebar }}`);
   clickTrigger();
+  assert.ok(dispatchSpy.callCount === 3);
   nativeMouseUp('.ember-power-select-option:contains("File Analysis")');
-  assert.ok(dispatchSpy.calledOnce);
-  assert.ok(typeof dispatchSpy.args[0][0] === 'function', 'Dispatch called with function (thunk)');
+  // many dispatches called, fourth one is dispatch for recon view change
+  assert.ok(dispatchSpy.callCount === 4);
+  assert.ok(typeof dispatchSpy.args[3][0] === 'function', 'Dispatch called with function (thunk)');
 });
 
 test('clicking header toggle executes action', function(assert) {

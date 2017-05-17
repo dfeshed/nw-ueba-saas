@@ -12,11 +12,12 @@ import {
   closeRecon
 } from 'recon/actions/visual-creators';
 import { toggleMetaData, setNewReconView } from 'recon/actions/data-creators';
-import { isLogEvent } from 'recon/reducers/meta/selectors';
+import { isLogEvent, hasMeta } from 'recon/reducers/meta/selectors';
 import { lacksPackets } from 'recon/reducers/visuals/selectors';
 
 const stateToComputed = ({ recon, recon: { visuals } }) => ({
   currentReconView: visuals.currentReconView,
+  hasMeta: hasMeta(recon),
   isHeaderOpen: visuals.isHeaderOpen,
   isRequestShown: visuals.isRequestShown,
   isResponseShown: visuals.isResponseShown,
