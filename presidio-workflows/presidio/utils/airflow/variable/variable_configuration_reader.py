@@ -15,7 +15,7 @@ class VariableReader(AbstractConfigurationReader):
 
     def read_from_store(self, conf_key):
         """
-        :return: Try to get the value of the variable "variable_scheduler_dag_params" 
+        :return: Try to get the value of the variable 
         from airflow's variables key-value store
         if not exist, default value is returned 
         """
