@@ -66,16 +66,7 @@
 			<version>${project.version}</version>
 		</dependency>
 
-		<!-- Spring dependencies -->
-		<dependency>
-			<groupId>org.springframework.data</groupId>
-			<artifactId>spring-data-mongodb</artifactId>
-		</dependency>
 
-		<dependency>
-			<groupId>org.springframework.data</groupId>
-			<artifactId>spring-data-commons</artifactId>
-		</dependency>
 
 		<!-- json parsing library -->
 		<dependency>
@@ -83,17 +74,14 @@
 			<artifactId>json-smart</artifactId>
 		</dependency>
 
-		<dependency>
-			<groupId>com.fasterxml.jackson.datatype</groupId>
-			<artifactId>jackson-datatype-joda</artifactId>
-		</dependency>
+
 
 		<!--                     -->
-		<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-all</artifactId>
-			<scope>test</scope>
-		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>org.mockito</groupId>-->
+			<!--<artifactId>mockito-all</artifactId>-->
+			<!--<scope>test</scope>-->
+		<!--</dependency>-->
 
 
 	</dependencies>

@@ -9,6 +9,13 @@
 
 	<name>fortscale</name>
 
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>1.5.3.RELEASE</version>
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
+
 	<repositories>
 		<repository>
 			<snapshots>
@@ -61,7 +68,17 @@
 		</pluginRepository>
 	</pluginRepositories>
 
+	<!--<properties>-->
+		<!---->
+		<!--&lt;!&ndash; For spring boot &ndash;&gt;-->
+		<!--<start-class>fortscale.FortscaleInputCoreApplication</start-class>-->
+		<!--<spring.version>4.0.3.RELEASE</spring.version>-->
+		<!--<spring.boot.version>1.5.3.RELEASE</spring.boot.version>-->
+	<!--</properties>-->
+
 	<properties>
+		<java.version>1.8</java.version>
+
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <!--RPM VERSION-->
@@ -72,25 +89,19 @@
 		<argparse4j.version>0.7.0</argparse4j.version>
 		<spring-shell.version>1.1.0.RELEASE</spring-shell.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<junit.version>4.11</junit.version>
+		<junit.version>4.12</junit.version>
 		<junitparams.version>1.0.2</junitparams.version>
 		<jsonassert.version>1.2.3</jsonassert.version>
-		<mockito.version>1.9.0</mockito.version>
-		<springokito.version>1.0.9</springokito.version>
-		<logback.version>1.1.11</logback.version>
-		<slf4j.version>1.7.25</slf4j.version>
-		<org.springframework-version>4.3.8.RELEASE</org.springframework-version>
-		<spring.security.core.version>4.1.0.RELEASE</spring.security.core.version>
-		<spring-data-mongodb.version>1.10.3.RELEASE</spring-data-mongodb.version>
-		<spring-data-commons.version>1.13.3.RELEASE</spring-data-commons.version>
+		<!--<mockito.version>1.9.0</mockito.version>-->
+		<!--<springokito.version>1.0.9</springokito.version>-->
+
 		<spring-data-hadoop.version>2.2.0.RELEASE</spring-data-hadoop.version>
 		<fongo.version>1.6.8</fongo.version>
 		<quartz.version>2.2.1</quartz.version>
 		<perf4j.version>0.9.16</perf4j.version>
-		<jackson.version>2.8.8</jackson.version>
-		<jackson.anotation.version>2.8.0</jackson.anotation.version>
+
 		<jackson.dataformat.version>2.2.3</jackson.dataformat.version>
-        <jackson.datatype.version>2.2.3</jackson.datatype.version>
+
 		<test.exclude>nothingToExlude</test.exclude>
 		<test.include>**/*Test.java</test.include>
 		<test.groups></test.groups>
@@ -130,7 +141,7 @@
 		<esper-version>5.2.0</esper-version>
         <org.codehaus.mojo.version>1.4.0</org.codehaus.mojo.version>
         <cxf.version>3.1.0</cxf.version>
-		<hibernate-validator.version>5.3.5</hibernate-validator.version>
+
 		<swager.version>2.2.2</swager.version>
 		<!-- eclipse plugins versions -->
 
@@ -156,11 +167,11 @@
 
 	<dependencyManagement>
 	<dependencies>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>${junit.version}</version>
-		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>junit</groupId>-->
+			<!--<artifactId>junit</artifactId>-->
+			<!--<version>${junit.version}</version>-->
+		<!--</dependency>-->
 
 		<dependency>
 			<groupId>pl.pragmatists</groupId>
@@ -193,35 +204,31 @@
 			<version>${asm-commons.version}</version>
 		</dependency>
 		<!-- mockito unit test mocking framework -->
-		<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-all</artifactId>
-			<version>${mockito.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.kubek2k</groupId>
-			<artifactId>springockito</artifactId>
-			<version>${springokito.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.kubek2k</groupId>
-			<artifactId>springockito-annotations</artifactId>
-			<version>${springokito.version}</version>
-			<scope>test</scope>
-		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>org.mockito</groupId>-->
+			<!--<artifactId>mockito-all</artifactId>-->
+			<!--<version>${mockito.version}</version>-->
+			<!--<scope>test</scope>-->
+		<!--</dependency>-->
+		<!--<dependency>-->
+			<!--<groupId>org.kubek2k</groupId>-->
+			<!--<artifactId>springockito</artifactId>-->
+			<!--<version>${springokito.version}</version>-->
+			<!--<scope>test</scope>-->
+		<!--</dependency>-->
+		<!--<dependency>-->
+			<!--<groupId>org.kubek2k</groupId>-->
+			<!--<artifactId>springockito-annotations</artifactId>-->
+			<!--<version>${springokito.version}</version>-->
+			<!--<scope>test</scope>-->
+		<!--</dependency>-->
 		<!-- mock framework for mongodb -->
 		<dependency>
 			<groupId>com.github.fakemongo</groupId>
 			<artifactId>fongo</artifactId>
 			<version>${fongo.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>org.springframework.data</groupId>
-			<artifactId>spring-data-commons</artifactId>
-			<version>${spring-data-commons.version}</version>
-		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.data</groupId>
 			<artifactId>spring-data-hadoop</artifactId>
@@ -236,128 +243,25 @@
 
 
 		<dependency>
-			<groupId>com.fasterxml.jackson.datatype</groupId>
-			<artifactId>jackson-datatype-json-org</artifactId>
-			<version>${jackson.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-core</artifactId>
-			<version>${jackson.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-annotations</artifactId>
-			<version>${jackson.anotation.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.fasterxml.jackson.jaxrs</groupId>
-			<artifactId>jackson-jaxrs-json-provider</artifactId>
-			<version>${jackson.version}</version>
-		</dependency>
-		<dependency>
 			<groupId>com.fasterxml.jackson.dataformat</groupId>
 			<artifactId>jackson-dataformat-csv</artifactId>
 			<version>${jackson.dataformat.version}</version>
 		</dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.datatype</groupId>
-            <artifactId>jackson-datatype-joda</artifactId>
-            <version>${jackson.datatype.version}</version>
-        </dependency>
-
-        <!-- Spring dependencies -->
-		<!--<dependency>-->
-			<!--<groupId>org.springframework</groupId>-->
-			<!--<artifactId>spring-orm</artifactId>-->
-			<!--<version>${org.springframework-version}</version>-->
-		<!--</dependency>-->
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-core</artifactId>
-			<version>${org.springframework-version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>commons-logging</groupId>
-					<artifactId>commons-logging</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-beans</artifactId>
-			<version>${org.springframework-version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context</artifactId>
-			<version>${org.springframework-version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-aop</artifactId>
-			<version>${org.springframework-version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-aspects</artifactId>
-			<version>${org.springframework-version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-web</artifactId>
-			<version>${org.springframework-version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-webmvc</artifactId>
-			<version>${org.springframework-version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-messaging</artifactId>
-			<version>${org.springframework-version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-websocket</artifactId>
-			<version>${org.springframework-version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-expression</artifactId>
-			<version>${org.springframework-version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context-support</artifactId>
-			<version>${org.springframework-version}</version>
-		</dependency>
-
-
-
-
-		<!-- Spring Data Mongo DB -->
-		<dependency>
-			<groupId>org.springframework.data</groupId>
-			<artifactId>spring-data-mongodb</artifactId>
-			<version>${spring-data-mongodb.version}</version>
-		</dependency>
 
 
 		<!-- Spring test -->
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-test</artifactId>
-			<version>${org.springframework-version}</version>
-			<scope>test</scope>
-			<exclusions>
-				<exclusion>
-					<groupId>commons-logging</groupId>
-					<artifactId>commons-logging</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>org.springframework</groupId>-->
+			<!--<artifactId>spring-test</artifactId>-->
+			<!--<version>${org.springframework-version}</version>-->
+			<!--<scope>test</scope>-->
+			<!--<exclusions>-->
+				<!--<exclusion>-->
+					<!--<groupId>commons-logging</groupId>-->
+					<!--<artifactId>commons-logging</artifactId>-->
+				<!--</exclusion>-->
+			<!--</exclusions>-->
+		<!--</dependency>-->
 
 		<!--quartz-->
 		<dependency>
@@ -558,10 +462,10 @@
 					<artifactId>cxf-rt-frontend-jaxrs</artifactId>
 					<groupId>org.apache.cxf</groupId>
 				</exclusion>
-				<exclusion>
-					<artifactId>jackson-databind</artifactId>
-					<groupId>com.fasterxml.jackson.core</groupId>
-				</exclusion>
+				<!--<exclusion>-->
+					<!--<artifactId>jackson-databind</artifactId>-->
+					<!--<groupId>com.fasterxml.jackson.core</groupId>-->
+				<!--</exclusion>-->
 				<exclusion>
 					<artifactId>javax.servlet-api</artifactId>
 					<groupId>javax.servlet</groupId>
@@ -594,6 +498,37 @@
 
 	</dependencyManagement>
 	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-mongodb</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-aop</artifactId>
+		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>org.springframework</groupId>-->
+			<!--<artifactId>spring-webmvc</artifactId>-->
+			<!--<version>${spring.version}</version>-->
+		<!--</dependency>-->
+		<!--<dependency>-->
+			<!--<groupId>org.springframework.boot</groupId>-->
+			<!--<artifactId>spring-boot-starter-web</artifactId>-->
+
+		<!--</dependency>-->
+
+
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>

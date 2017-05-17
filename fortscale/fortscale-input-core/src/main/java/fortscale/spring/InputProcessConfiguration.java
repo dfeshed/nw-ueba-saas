@@ -13,17 +13,21 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class InputProcessConfiguration {
 
+    @Bean
+    public InputProcessService inputProcessService(){
+        return new InputProcessService();
+    }
 
     @Bean
     public CommandLineRunner commandLineRunner2() {
-        InputProcessService processService = new InputProcessService();
-        return services -> processService.run(2,services);
+
+        return services -> inputProcessService().run(2,services);
     }
 
     @Bean
     public CommandLineRunner commandLineRunner() {
-        InputProcessService processService = new InputProcessService();
-        return services -> processService.run(1,services);
+
+        return services -> inputProcessService().run(1,services);
     }
 
 }
