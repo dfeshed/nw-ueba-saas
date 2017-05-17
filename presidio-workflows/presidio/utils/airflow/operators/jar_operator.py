@@ -3,7 +3,6 @@ import os
 from ConfigParser import SafeConfigParser
 
 from airflow.operators.bash_operator import BashOperator
-from airflow.plugins_manager import AirflowPlugin
 from airflow.utils.decorators import apply_defaults
 
 
