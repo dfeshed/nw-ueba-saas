@@ -1,6 +1,9 @@
 Presidio
 --------
 
-To run tests via intellij make sure you run in virtual env and execute:
+To run tests execute:
 
     >>> python setup.py test
+
+To import all needed resources execute:
+    >>> python setup.py install
