@@ -40,7 +40,6 @@ setup(name='presidio-workflows',
           'airflow[devel]','psycopg2', 'python-dateutil'
       ],
       cmdclass={'test': Tox},
-      tests_require=['pytest'],
       setup_requires=['pytest-runner'],
       include_package_data=True,
       zip_safe=False)
