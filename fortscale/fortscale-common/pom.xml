@@ -7,7 +7,7 @@
     <parent>
         <groupId>fortscale</groupId>
         <artifactId>fortscale</artifactId>
-        <version>1.1.0-SNAPSHOT</version>
+        <version>1.0.0-SNAPSHOT</version>
     </parent>
 
     <groupId>fortscale</groupId>
@@ -82,7 +82,7 @@
         <dependency>
             <groupId>fortscale</groupId>
             <artifactId>fortscale-utils</artifactId>
-            <version>1.1.0-SNAPSHOT</version>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>net.minidev</groupId>
