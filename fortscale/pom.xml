@@ -77,17 +77,18 @@
 		<jsonassert.version>1.2.3</jsonassert.version>
 		<mockito.version>1.9.0</mockito.version>
 		<springokito.version>1.0.9</springokito.version>
-		<logback.version>1.0.13</logback.version>
-		<slf4j.version>1.7.2</slf4j.version>
-		<org.springframework-version>4.2.8.RELEASE</org.springframework-version>
+		<logback.version>1.1.11</logback.version>
+		<slf4j.version>1.7.25</slf4j.version>
+		<org.springframework-version>4.3.8.RELEASE</org.springframework-version>
 		<spring.security.core.version>4.1.0.RELEASE</spring.security.core.version>
-		<spring-data-mongodb.version>1.9.3.RELEASE</spring-data-mongodb.version>
-		<spring-data-commons.version>1.12.3.RELEASE</spring-data-commons.version>
+		<spring-data-mongodb.version>1.10.3.RELEASE</spring-data-mongodb.version>
+		<spring-data-commons.version>1.13.3.RELEASE</spring-data-commons.version>
 		<spring-data-hadoop.version>2.2.0.RELEASE</spring-data-hadoop.version>
 		<fongo.version>1.6.8</fongo.version>
 		<quartz.version>2.2.1</quartz.version>
 		<perf4j.version>0.9.16</perf4j.version>
-		<jackson.version>2.2.3</jackson.version>
+		<jackson.version>2.8.8</jackson.version>
+		<jackson.anotation.version>2.8.0</jackson.anotation.version>
 		<jackson.dataformat.version>2.2.3</jackson.dataformat.version>
         <jackson.datatype.version>2.2.3</jackson.datatype.version>
 		<test.exclude>nothingToExlude</test.exclude>
@@ -129,7 +130,7 @@
 		<esper-version>5.2.0</esper-version>
         <org.codehaus.mojo.version>1.4.0</org.codehaus.mojo.version>
         <cxf.version>3.1.0</cxf.version>
-		<hibernate-validator.version>5.2.4.Final</hibernate-validator.version>
+		<hibernate-validator.version>5.3.5</hibernate-validator.version>
 		<swager.version>2.2.2</swager.version>
 		<!-- eclipse plugins versions -->
 
@@ -247,7 +248,7 @@
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-annotations</artifactId>
-			<version>${jackson.version}</version>
+			<version>${jackson.anotation.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.jaxrs</groupId>
@@ -413,12 +414,12 @@
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
-			<version>1.0.13</version>
+			<version>${logback.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-core</artifactId>
-			<version>1.0.13</version>
+			<version>${logback.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>net.minidev</groupId>
@@ -836,5 +837,7 @@
 		<module>fortscale-aggregation</module>
 		<module>fortscale-common</module>
 		<module>fortscale-monitoring-daemons</module>
+		<module>fortscale-input</module>
+		<module>fortscale-input-core</module>
 	</modules>
 </project>
