@@ -807,10 +807,10 @@ export default {
       signature: 'Signature'
     },
     iiocs: {
-      title: 'Machine IIOC Levels',
+      title: 'Machine IOC Levels',
       lastExecuted: 'LastExecuted',
       description: 'Description',
-      iOCLevel: 'IOCLevel',
+      iOCLevel: 'IOC Level',
       header: ''
     },
     incident: {
@@ -951,22 +951,22 @@ export default {
       skillLevelPrefix: 'Tier {{level}}'
     },
     error: {
-      error: 'Error processing stream call for context lookup.',
+      error: 'An unexpected error occurred when attempting to fetch the data.',
       noDataSource: 'No data source configured/enabled.',
-      dataSourcesFailed: 'Unable to fetch data source configured data sources.',
-      dataSource: 'Error processing stream call for data source.',
-      noData: 'No context data present for this DataSource.',
+      dataSourcesFailed: 'Unable to fetch data from the configured data sources.',
+      dataSource: 'An unexpected error occurred when attempting to fetch the data.',
+      noData: 'No context data is available for this DataSource.',
       listDuplicateName: 'List name already exists!',
       listValidName: 'Enter valid list name (Max length is 255 characters)',
-      createList: 'List is not created',
-      'datasource.query.not.supported': 'Context data is query not supported for given meta.',
-      'transport.http.read.failed': 'Context data is not available as the data source is down.',
+      createList: 'An unexpected error occurred while creating a new List.',
+      'datasource.query.not.supported': 'Context data lookup is not supported for this meta.',
+      'transport.http.read.failed': 'Context data is not available as the data source is not reachable.',
       'transport.ad.read.failed': 'Context data is not available as the data source is not reachable.',
-      'transport.init.failed': 'Context data is not available as the connection to the data source is timed out.',
-      'transport.not.found': 'Context data is not available as the data source is down.',
-      'transport.create.failed': 'Context data is not available as the Data Source is down.',
-      'transport.refresh.failed': 'Context data is not available as the Data Source is down.',
-      'transport.connect.failed': 'Context data is not available as the Data Source is down.'
+      'transport.init.failed': 'Data source connection timed out.',
+      'transport.not.found': 'Context data is not available as the data source is not reachable.',
+      'transport.create.failed': 'Context data is not available as the data source is not reachable.',
+      'transport.refresh.failed': 'Context data is not available as the data source is not reachable.',
+      'transport.connect.failed': 'Context data is not available as the data source is not reachable.'
     },
     footer: {
       viewAll: 'VIEW All'

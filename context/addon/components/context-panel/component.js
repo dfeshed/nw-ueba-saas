@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import { warn, log } from 'ember-debug';
 import Component from 'ember-component';
 import connect from 'ember-redux/components/connect';
@@ -79,7 +80,7 @@ const ContextComponent = Component.extend({
     }
   },
   _parseLCData(contextDatum) {
-    if (!contextDatum) {
+    if (!contextDatum || !contextDatum.resultList) {
       return;
     }
     const contextData = this.get('model.contextData')[contextDatum.dataSourceGroup];
@@ -185,7 +186,7 @@ const ContextComponent = Component.extend({
     }
   },
   _needToClosePanel(target) {
-    return !this.get('isDisplayed') && target.className !== 'rsa-protected__aside' && (!target.firstElementChild || target.firstElementChild.className.indexOf('rsa-context-panel-header') === -1);
+    return !this.get('isDisplayed') && !$(target).closest('.rsa-context-panel').length > 0;
   },
   _closeContextPanel(target) {
     next(() => {
@@ -214,7 +215,6 @@ const ContextComponent = Component.extend({
   actions: {
     closeAction() {
       this.sendAction('closePanel');
-      this.set('errorMessage', null);
     }
   }
 

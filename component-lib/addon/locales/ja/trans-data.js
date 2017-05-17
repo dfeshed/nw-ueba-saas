@@ -807,10 +807,10 @@ export default {
       signature: 'ja_Signature'
     },
     iiocs: {
-      title: 'ja_Machine IIOC Levels',
+      title: 'ja_Machine IOC Levels',
       lastExecuted: 'js_LastExecuted',
       description: 'ja_Description',
-      iOCLevel: 'ja_IOCLevel',
+      iOCLevel: 'ja_IOC Level',
       header: ''
     },
     incident: {
@@ -951,22 +951,22 @@ export default {
       skillLevelPrefix: 'ja_Tier {{level}}'
     },
     error: {
-      error: 'ja_Error processing stream call for context lookup.',
+      error: 'ja_An unexpected error occurred when attempting to fetch the data.',
       noDataSource: 'ja_No data source configured/enabled.',
-      dataSourcesFailed: 'ja_Unable to fetch data source configured data sources.',
-      dataSource: 'ja_Error processing stream call for data source.',
-      noData: 'ja_No context data present for this DataSource.',
+      dataSourcesFailed: 'ja_Unable to fetch data from the configured data sources.',
+      dataSource: 'ja_An unexpected error occurred when attempting to fetch the data.',
+      noData: 'ja_No context data is available for this DataSource.',
       listDuplicateName: 'ja_List name already exists!',
       listValidName: 'ja_Enter valid list name (Max length is 255 characters)',
-      createList: 'ja_List is not created',
-      'datasource.query.not.supported': 'ja_Context data is query not supported for given meta.',
-      'transport.http.read.failed': 'ja_Context data is not available as the data source is down.',
+      createList: 'ja_An unexpected error occurred while creating a new List.',
+      'datasource.query.not.supported': 'ja_Context data lookup is not supported for this meta.',
+      'transport.http.read.failed': 'ja_Context data is not available as the data source is not reachable.',
       'transport.ad.read.failed': 'ja_Context data is not available as the data source is not reachable.',
-      'transport.init.failed': 'ja_Context data is not available as the connection to the data source is timed out.',
-      'transport.not.found': 'ja_Context data is not available as the data source is down.',
-      'transport.create.failed': 'ja_Context data is not available as the Database is down.',
-      'transport.refresh.failed': 'ja_Context data is not available as the Database is down.',
-      'transport.connect.failed': 'ja_Context data is not available as the Data Source is down.'
+      'transport.init.failed': 'ja_Data source connection timed out.',
+      'transport.not.found': 'ja_Context data is not available as the data source is not reachable.',
+      'transport.create.failed': 'ja_Context data is not available as the data source is not reachable.',
+      'transport.refresh.failed': 'ja_Context data is not available as the data source is not reachable.',
+      'transport.connect.failed': 'ja_Context data is not available as the data source is not reachable.'
     },
     footer: {
       viewAll: 'ja_VIEW All'

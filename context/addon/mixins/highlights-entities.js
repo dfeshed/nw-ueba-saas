@@ -258,7 +258,8 @@ export default Mixin.create({
     this.get('_entityTypesAndMetasPromises').then(({ types, metas }) => {
 
       // If we waited too long and this component's DOM has been trashed, exit.
-      if (!this.element || this.get('isDestroying') || this.get('isDestroyed')) {
+      // If contexthub-server is throwing error still _entityTypesPromise promise is getting resolved but this time there will not be any types. Due to that java script error will come. In this scenario we suppose to display some error to analyst. Currently preventing java script error later will be displaying proper error message to analyst.
+      if (!this.element || this.get('isDestroying') || this.get('isDestroyed') || !types) {
         return;
       }
 
