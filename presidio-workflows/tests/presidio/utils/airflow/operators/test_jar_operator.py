@@ -33,18 +33,24 @@ def java_args():
     }
 
 
-def assert_task_state(tis):
+def build_and_run_task(jvm_args, dag, java_args):
     """
+    Create and run the task 
+    :param jvm_args: 
+    :param dag: 
+    :param java_args: 
+    :return: 
+    """
+    task = JarOperator(
+        task_id='run_jar_file',
+        jvm_args=jvm_args,
+        java_args=java_args,
+        dag=dag)
 
-    Assert task state
-    :param tis: task instances
-    :return:
-    """
-    for ti in tis:
-        if ti.task_id == 'run_jar_file':
-            assert ti.state == State.SUCCESS
-        else:
-            raise
+    task.clear()
+    task.run(start_date=DEFAULT_DATE, end_date=DEFAULT_DATE)
+    tis = get_task_instances(dag)
+    assert_task_state(tis)
 
 
 def get_task_instances(dag):
@@ -63,14 +69,26 @@ def get_task_instances(dag):
     return tis
 
 
+def assert_task_state(tis):
+    """
+
+    Assert task state
+    :param tis: task instances
+    :return:
+    """
+    for ti in tis:
+        if ti.task_id == 'run_jar_file':
+            assert ti.state == State.SUCCESS
+        else:
+            raise
+
+
 def test_jvm_memory_allocation(default_args, java_args):
     """
 
     Test xmx and xmx
     :param default_args: default_args to dag
     :type default_args: dict
-    :param java_args: 
-    :type java_args: dict
     :return: 
     """
     logging.info('Test xms and xmx options:')
@@ -82,18 +100,8 @@ def test_jvm_memory_allocation(default_args, java_args):
     }
 
     dag = DAG(
-        'test_jvm_memory_allocation_dag', default_args=default_args, schedule_interval=timedelta(1))
-
-    task = JarOperator(
-        task_id='run_jar_file',
-        jvm_args=jvm_args,
-        java_args=java_args,
-        dag=dag)
-
-    task.clear()
-    task.run(start_date=DEFAULT_DATE, end_date=DEFAULT_DATE)
-    tis = get_task_instances(dag)
-    assert_task_state(tis)
+        "test_jvm_memory_allocation_dag", default_args=default_args, schedule_interval=timedelta(1))
+    build_and_run_task(jvm_args, dag, java_args)
 
 
 def test_timezone(default_args, java_args):
@@ -102,8 +110,6 @@ def test_timezone(default_args, java_args):
     Test timezone
     :param default_args: default_args to dag
     :type default_args: dict
-    :param java_args:
-    :type java_args: dict
     :return:
     """
     logging.info('Test timezone:')
@@ -114,18 +120,8 @@ def test_timezone(default_args, java_args):
     }
 
     dag = DAG(
-        'test_timezone_dag', default_args=default_args, schedule_interval=timedelta(1))
-
-    task = JarOperator(
-        task_id='run_jar_file',
-        jvm_args=jvm_args,
-        java_args=java_args,
-        dag=dag)
-
-    task.clear()
-    task.run(start_date=DEFAULT_DATE, end_date=DEFAULT_DATE)
-    tis = get_task_instances(dag)
-    assert_task_state(tis)
+        "test_timezone", default_args=default_args, schedule_interval=timedelta(1))
+    build_and_run_task(jvm_args, dag, java_args)
 
 
 def test_logback(default_args, java_args):
@@ -134,8 +130,6 @@ def test_logback(default_args, java_args):
     Test logback
     :param default_args: default_args to dag
     :type default_args: dict
-    :param java_args:
-    :type java_args: dict
     :return:
     """
     logging.info('Test logback:')
@@ -146,18 +140,8 @@ def test_logback(default_args, java_args):
     }
 
     dag = DAG(
-        'test_logback_dag', default_args=default_args, schedule_interval=timedelta(1))
-
-    task = JarOperator(
-        task_id='run_jar_file',
-        jvm_args=jvm_args,
-        java_args=java_args,
-        dag=dag)
-
-    task.clear()
-    task.run(start_date=DEFAULT_DATE, end_date=DEFAULT_DATE)
-    tis = get_task_instances(dag)
-    assert_task_state(tis)
+        "test_logback", default_args=default_args, schedule_interval=timedelta(1))
+    build_and_run_task(jvm_args, dag, java_args)
 
 
 def test_remote_debug(default_args, java_args):
@@ -166,8 +150,6 @@ def test_remote_debug(default_args, java_args):
     Test remote debug
     :param default_args: default_args to dag
     :type default_args: dict
-    :param java_args:
-    :type java_args: dict
     :return:
     """
     logging.info('test remote debug:')
@@ -180,54 +162,8 @@ def test_remote_debug(default_args, java_args):
     }
 
     dag = DAG(
-        'test_remote_debug_dag', default_args=default_args, schedule_interval=timedelta(1))
-
-    task = JarOperator(
-        task_id='run_jar_file',
-        jvm_args=jvm_args,
-        java_args=java_args,
-        dag=dag)
-
-    task.clear()
-    task.run(start_date=DEFAULT_DATE, end_date=DEFAULT_DATE)
-    tis = get_task_instances(dag)
-    assert_task_state(tis)
-
-
-@pytest.mark.skipif(os.geteuid() != 0, reason="The test should to be skipped if user is not root")
-def test_jmx(default_args, java_args):
-    """
-
-    The test should to be skipped if user is not root, jmxremote.password file readable only for root.
-
-    Test remote jmx
-    :param default_args: default_args to dag
-    :type default_args: dict
-    :param java_args:
-    :type java_args: dict
-    :return:
-    """
-    logging.info('test jmx:')
-    jvm_args = {
-        'jmx_enabled': True,
-        'jmx_port': 9302,
-        'jar_path': '/home/presidio/dev-projects/presidio-core/presidio-workflows/tests/resources/jars/test.jar',
-        'main_class': 'HelloWorld.Main',
-    }
-
-    dag = DAG(
-        'test_jmx_dag', default_args=default_args, schedule_interval=timedelta(1))
-
-    task = JarOperator(
-        task_id='run_jar_file',
-        jvm_args=jvm_args,
-        java_args=java_args,
-        dag=dag)
-
-    task.clear()
-    task.run(start_date=DEFAULT_DATE, end_date=DEFAULT_DATE)
-    tis = get_task_instances(dag)
-    assert_task_state(tis)
+        "test_remote_debug", default_args=default_args, schedule_interval=timedelta(1))
+    build_and_run_task(jvm_args, dag, java_args)
 
 
 def test_jar_path(default_args, java_args):
@@ -236,8 +172,6 @@ def test_jar_path(default_args, java_args):
     Test jar path
     :param default_args: default_args to dag
     :type default_args: dict
-    :param java_args:
-    :type java_args: dict
     :return:
     """
     logging.info('test jar path:')
@@ -245,20 +179,9 @@ def test_jar_path(default_args, java_args):
         'jar_path': '/home/presidio/dev-projects/presidio-core/presidio-workflows/tests/resources/jars/test.jar',
         'main_class': 'HelloWorld.Main',
     }
-
     dag = DAG(
-        'test_jar_path_dag', default_args=default_args, schedule_interval=timedelta(1))
-
-    task = JarOperator(
-        task_id='run_jar_file',
-        jvm_args=jvm_args,
-        java_args=java_args,
-        dag=dag)
-
-    task.clear()
-    task.run(start_date=DEFAULT_DATE, end_date=DEFAULT_DATE)
-    tis = get_task_instances(dag)
-    assert_task_state(tis)
+        "test_jar_path", default_args=default_args, schedule_interval=timedelta(1))
+    build_and_run_task(jvm_args, dag, java_args)
 
 
 def test_all_params(default_args, java_args):
@@ -267,8 +190,6 @@ def test_all_params(default_args, java_args):
     Test task with all options of jvm_args
     :param default_args: default_args to dag
     :type default_args: dict
-    :param java_args:
-    :type java_args: dict
     :return:
     """
     logging.info('test jar operator with all params:')
@@ -286,20 +207,33 @@ def test_all_params(default_args, java_args):
         'jmx_enabled': False,
         'jmx_port': 9302,
     }
+    dag = DAG(
+        "test_all_params", default_args=default_args, schedule_interval=timedelta(1))
+    build_and_run_task(jvm_args, dag, java_args)
+
+
+@pytest.mark.skipif(os.geteuid() != 0, reason="The test should to be skipped if user is not root")
+def test_jmx(default_args, java_args):
+    """
+
+    The test should to be skipped if user is not root, jmxremote.password file readable only for root.
+
+    Test remote jmx
+    :param default_args: default_args to dag
+    :type default_args: dict
+    :return:
+    """
+    logging.info('test jmx:')
+    jvm_args = {
+        'jmx_enabled': True,
+        'jmx_port': 9302,
+        'jar_path': '/home/presidio/dev-projects/presidio-core/presidio-workflows/tests/resources/jars/test.jar',
+        'main_class': 'HelloWorld.Main',
+    }
 
     dag = DAG(
-        'test_all_params_dag', default_args=default_args, schedule_interval=timedelta(1))
-
-    task = JarOperator(
-        task_id='run_jar_file',
-        jvm_args=jvm_args,
-        java_args=java_args,
-        dag=dag)
-
-    task.clear()
-    task.run(start_date=DEFAULT_DATE, end_date=DEFAULT_DATE)
-    tis = get_task_instances(dag)
-    assert_task_state(tis)
+        'test_jmx_dag', default_args=default_args, schedule_interval=timedelta(1))
+    build_and_run_task(jvm_args, dag, java_args)
 
 
 def test_no_main_class(default_args, java_args):
@@ -308,8 +242,6 @@ def test_no_main_class(default_args, java_args):
     Test task without main_class parameter
     :param default_args: default_args to dag
     :type default_args: dict
-    :param java_args:
-    :type java_args: dict
     :return:
     """
     logging.info('test jar operator without main class:')
@@ -321,16 +253,7 @@ def test_no_main_class(default_args, java_args):
         'test_main_class_missing_dag', default_args=default_args, schedule_interval=timedelta(1))
 
     with pytest.raises(Exception, message="Expecting error of jar operator"):
-        task = JarOperator(
-            task_id='run_jar_file',
-            jvm_args=jvm_args,
-            java_args=java_args,
-            dag=dag)
-
-        task.clear()
-        task.run(start_date=DEFAULT_DATE, end_date=DEFAULT_DATE)
-        tis = get_task_instances(dag)
-        assert_task_state(tis)
+        build_and_run_task(jvm_args, dag, java_args)
 
 
 def test_no_params(default_args):
@@ -345,16 +268,7 @@ def test_no_params(default_args):
     dag = DAG('test_no_params_dag', default_args=default_args)
 
     with pytest.raises(Exception, message="Expecting error of jar operator"):
-        task = JarOperator(
-            task_id='run_jar_file',
-            jvm_args={},
-            java_args={},
-            dag=dag)
-
-        task.clear()
-        task.run(start_date=DEFAULT_DATE, end_date=DEFAULT_DATE)
-        tis = get_task_instances(dag)
-        assert_task_state(tis)
+        build_and_run_task({}, dag, {})
 
 
 def test_no_jar(default_args, java_args):
@@ -363,8 +277,6 @@ def test_no_jar(default_args, java_args):
     Test task with no jar file
     :param default_args: default_args to dag
     :type default_args: dict
-    :param java_args:
-    :type java_args: dict
     :return:
     """
     logging.info('test jar operator without jar file:')
@@ -377,12 +289,4 @@ def test_no_jar(default_args, java_args):
         'test_no_jar_dag', default_args=default_args, schedule_interval=timedelta(1))
 
     with pytest.raises(Exception, message="Expecting error of bash operator"):
-        task = JarOperator(
-            task_id='run_jar_file',
-            jvm_args=jvm_args,
-            java_args=java_args,
-            dag=dag)
-        task.clear()
-        task.run(start_date=DEFAULT_DATE, end_date=DEFAULT_DATE)
-        tis = get_task_instances(dag)
-        assert_task_state(tis)
+        build_and_run_task(jvm_args, dag, java_args)
