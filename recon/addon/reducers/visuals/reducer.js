@@ -18,7 +18,9 @@ const visuals = handleActions({
   [ACTION_TYPES.REHYDRATE]: (state, { payload }) => {
     let reducerState = {};
     if (payload && payload.recon && payload.recon.visuals) {
-      reducerState = payload.recon.visuals;
+      reducerState = {
+        ...payload.recon.visuals
+      };
       // Ignore currentReconView as that is handled elsewhere
       if (reducerState.currentReconView) {
         delete reducerState.currentReconView;

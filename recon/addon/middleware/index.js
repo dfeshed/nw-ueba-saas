@@ -26,7 +26,10 @@ if (config.environment !== 'test') {
   );
 
   setup = (store) => {
-    persistStore(store, { transforms: [reconFilter] });
+    persistStore(store, {
+      transforms: [reconFilter],
+      debounce: 1000
+    });
   };
 }
 
