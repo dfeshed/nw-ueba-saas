@@ -1,12 +1,12 @@
-from presidio.operators.jar_operator import JarOperator
+import logging
+import os
 from datetime import datetime, timedelta
 import pytest
-import logging
 from airflow import DAG
-import os
+from airflow.models import TaskInstance
 from airflow.settings import Session
 from airflow.utils.state import State
-from airflow.models import TaskInstance as TI
+from presidio.utils.airflow.operators.jar_operator import JarOperator
 
 DEFAULT_DATE = datetime(2014, 1, 1)
 
@@ -55,9 +55,9 @@ def get_task_instances(dag):
     :return: tis
     """
     session = Session()
-    tis = session.query(TI).filter(
-        TI.dag_id == dag.dag_id,
-        TI.execution_date == DEFAULT_DATE
+    tis = session.query(TaskInstance).filter(
+        TaskInstance.dag_id == dag.dag_id,
+        TaskInstance.execution_date == DEFAULT_DATE
     )
     session.close()
     return tis
