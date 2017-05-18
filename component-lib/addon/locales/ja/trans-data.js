@@ -401,6 +401,7 @@ export default {
       yes: 'ja_Yes',
       no: 'ja_No'
     },
+    filters: 'ja_Filters',
     timeframeOptions: {
       LAST_5_MINUTES: 'ja_Last 5 Minutes',
       LAST_10_MINUTES: 'ja_Last 10 Minutes',
@@ -420,7 +421,7 @@ export default {
     },
     entities: {
       incidents: 'ja_Incidents',
-      remediationTasks: 'ja_Remediation',
+      remediationTasks: 'ja_Remediation Tasks',
       alerts: 'ja_Alerts',
       actionMessages: {
         updateSuccess: 'ja_Your change was successful',
@@ -428,6 +429,15 @@ export default {
       }
     },
     explorer: {
+      confirmation: {
+        updateTitle: 'ja_Confirm Update',
+        deleteTitle: 'ja_Confirm Delete',
+        bulkUpdateConfrimation: 'ja_You are about to make the following changes to more than one item',
+        deleteConfirmation: 'ja_Are you sure you want to delete {{count}} record(s)? Once applied, this deletion cannot be reversed.',
+        field: 'ja_Field',
+        value: 'ja_Value',
+        recordCountAffected: 'ja_Number of items'
+      },
       filters: {
         timeRange: 'ja_Time Range',
         reset: 'ja_Reset Filters',
@@ -442,6 +452,12 @@ export default {
       footer: 'ja_Showing {{count}} out of {{total}} items'
     },
     remediationTasks: {
+      actions: {
+        actionMessages: {
+          deleteWarning: 'ja_Deleting a Remediation Task from NetWitness will not delete it from other systems. Please note that it will be your responsibility ' +
+          'to delete the task from any other applicable systems.'
+        }
+      },
       list: {
         priority: 'ja_Priority',
         select: 'ja_Select',
@@ -496,11 +512,9 @@ export default {
         changeStatus: 'ja_Change Status',
         addJournalEntry: 'ja_Add Journal Entry',
         actionMessages: {
-          updateSuccess: 'ja_You successfully changed the {{field}} of {{incidentId}} to {{name}}',
-          updateFailure: 'ja_There was a problem updating the {{field}} for incident {{incidentId}}',
-          bulkUpdateSuccess: 'ja_You successfully changed the {{field}} for ({{count}}) incidents to {{name}}',
-          bulkUpdateFailure: 'ja_There was a problem updating the {{field}} for the ({{count}}) selected incidents',
-          bulkUpdateConfirmation: 'ja_With this change you will set the {{field}} for ({{count}}) incidents to {{selectedValue}}. If this is correct, press Apply',
+          deleteWarning: 'ja_Warning: You are about to delete one or more incidents which may have remediation tasks and which may have been escalated. ' +
+          'Deleting an incident from NetWitness will not delete it from other systems. Please note that it will be your responsibility ' +
+          'to delete the incident and its remediation tasks from any other applicable systems.',
           addJournalEntrySuccess: 'ja_You added a journal entry to incident {{incidentId}}',
           addJournalEntryFailure: 'ja_There was a problem adding a journal entry to incident {{incidentId}}'
         },
@@ -547,7 +561,7 @@ export default {
         name: 'ja_Name',
         createdDate: 'ja_Created',
         status: 'ja_Status',
-        priority: 'ja_Priority (score)',
+        priority: 'ja_Priority',
         riskScore: 'ja_Risk Score',
         assignee: 'ja_Assignee',
         alertCount: 'ja_Alerts',

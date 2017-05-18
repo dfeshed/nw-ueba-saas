@@ -15,7 +15,7 @@ UsersAPI.reopenClass({
    * @returns {Promise}
    */
   getAllUsers() {
-    const query = FilterQuery.create().addFilter('status', 'enabled');
+    const query = FilterQuery.create().addSortBy('name', false).addFilter('status', 'enabled');
     return promiseRequest({
       method: 'findAll',
       modelName: 'users',

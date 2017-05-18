@@ -1,12 +1,11 @@
 import FilterQuery from 'respond/utils/filter-query';
-import { SORT_TYPES_BY_NAME } from 'respond/utils/sort-types';
 import { SINCE_WHEN_TYPES_BY_NAME } from 'respond/utils/since-when-types';
 import { module, test } from 'qunit';
 
 module('Unit | Utility | FilterQuery');
 
 const defaultSort = [{
-  field: SORT_TYPES_BY_NAME.SCORE_DESC.sortField,
+  field: 'riskScore',
   descending: true
 }];
 
@@ -21,24 +20,27 @@ test('An FilterQuery object can be created', function(assert) {
 });
 
 test('JSON structure is correct for FilterQuery object with default settings', function(assert) {
-  const queryJson = FilterQuery.create().toJSON();
+  const query = FilterQuery.create();
+  query.addSortBy('riskScore', true);
+
   const expectedJson = {
     filter: [],
     sort: defaultSort,
     stream: defaultStream
   };
-  assert.deepEqual(queryJson, expectedJson, 'FilterQuery.toJSON() should return expected json when no additional filters are added');
+  assert.deepEqual(query.toJSON(), expectedJson, 'FilterQuery.toJSON() should return expected json when no additional filters are added');
 });
 
 test('Calling sortBy() properly changes the sort information in the json', function(assert) {
   const query = FilterQuery.create();
-  const { sortField, isDescending } = SORT_TYPES_BY_NAME.STATUS_DESC;
+  const sortField = 'status';
+  const isDescending = false;
   query.addSortBy(sortField, isDescending);
   const expectedJson = {
     filter: [],
     sort: [{
-      field: SORT_TYPES_BY_NAME.STATUS_DESC.sortField,
-      descending: SORT_TYPES_BY_NAME.STATUS_DESC.isDescending
+      field: sortField,
+      descending: isDescending
     }],
     stream: defaultStream
   };
@@ -47,6 +49,7 @@ test('Calling sortBy() properly changes the sort information in the json', funct
 
 test('Calling addFilter() properly adds the filter to the filters array', function(assert) {
   const query = FilterQuery.create();
+  query.addSortBy('riskScore', true);
   const field = 'status';
   const value = 'ASSIGNED';
 
@@ -66,6 +69,7 @@ test('Calling addFilter() properly adds the filter to the filters array', functi
 
 test('Calling addFilter() twice with the same field adds merges the values', function(assert) {
   const query = FilterQuery.create();
+  query.addSortBy('riskScore', true);
   const field = 'status';
 
   query.addFilter('status', 'ASSIGNED');
@@ -85,6 +89,7 @@ test('Calling addFilter() twice with the same field adds merges the values', fun
 
 test('Calling addFilter() with either an empty (i.e., null or undefined) field or value adds no filter', function(assert) {
   const query = FilterQuery.create();
+  query.addSortBy('riskScore', true);
 
   query.addFilter(null, 'ASSIGNED')
       .addFilter('status')
@@ -101,6 +106,7 @@ test('Calling addFilter() with either an empty (i.e., null or undefined) field o
 
 test('Calling addSinceWhenFilter() creates the proper range query', function(assert) {
   const query = FilterQuery.create();
+  query.addSortBy('riskScore', true);
   const field = 'modifiedDate';
   const from = query.addSinceWhenFilter(field, SINCE_WHEN_TYPES_BY_NAME.LAST_TWENTY_FOUR_HOURS, true);
   const expectedJson = {
@@ -121,6 +127,7 @@ test('Calling addSinceWhenFilter() creates the proper range query', function(ass
 
 test('Calling addSinceWhenFilter() twice removes the first filter and adds the second', function(assert) {
   const query = FilterQuery.create();
+  query.addSortBy('riskScore', true);
   const field = 'modifiedDate';
   query.addSinceWhenFilter(field, SINCE_WHEN_TYPES_BY_NAME.LAST_TWENTY_FOUR_HOURS);
   const from = query.addSinceWhenFilter(field, SINCE_WHEN_TYPES_BY_NAME.LAST_FORTY_EIGHT_HOURS, true);
@@ -142,6 +149,7 @@ test('Calling addSinceWhenFilter() twice removes the first filter and adds the s
 
 test('Calling addRangeFilter() adds the proper range filter object', function(assert) {
   const query = FilterQuery.create();
+  query.addSortBy('riskScore', true);
   const field = 'riskScore';
   const from = 25;
   const to = 50;
@@ -165,6 +173,7 @@ test('Calling addRangeFilter() adds the proper range filter object', function(as
 
 test('Calling addHasAnyValueFilter() produces the expected query', function(assert) {
   const query = FilterQuery.create();
+  query.addSortBy('riskScore', true);
   const field = 'name';
 
   query.addHasAnyValueFilter(field);
@@ -183,6 +192,7 @@ test('Calling addHasAnyValueFilter() produces the expected query', function(asse
 
 test('Calling addHasNoValueFilter() produces the expected query', function(assert) {
   const query = FilterQuery.create();
+  query.addSortBy('riskScore', true);
   const field = 'name';
 
   query.addHasNoValueFilter(field);
@@ -204,7 +214,7 @@ test('Calling removeFilter() produces the expected query', function(assert) {
     .addFilter('firstName', 'Matt')
     .addFilter('lastName', 'Meiske')
     .removeFilter('firstName');
-
+  query.addSortBy('riskScore', true);
   const expectedJson = {
     filter: [
       {
@@ -221,7 +231,7 @@ test('Calling removeFilter() produces the expected query', function(assert) {
 test('Calling addFilters() produces the expected query', function(assert) {
   const query = FilterQuery.create()
       .addFilters(['firstName', 'Ignatius'], ['lastName', 'Reilly'], ['hometown', 'New Orleans']);
-
+  query.addSortBy('riskScore', true);
   const expectedJson = {
     filter: [
       {

@@ -7,25 +7,8 @@ import service from 'ember-service/inject';
 import { camelize } from 'ember-string';
 import { isPresent } from 'ember-utils';
 import { gt, alias, empty } from 'ember-computed-decorators';
-
-const FLASH_MESSAGE_TYPES = {
-  SUCCESS: {
-    name: 'success',
-    icon: 'check-circle-2'
-  },
-  INFO: {
-    name: 'info',
-    icon: 'information-circle'
-  },
-  WARNING: {
-    name: 'warning',
-    icon: 'report-problem-circle'
-  },
-  ERROR: {
-    name: 'error',
-    icon: 'delete-1'
-  }
-};
+import FLASH_MESSAGE_TYPES from 'respond/utils/flash-message-types';
+const NOOP = () => ({});
 
 /**
  * The Explorer component's redux state will always use the same base set of properties (e.g., items, itemsSelected,
@@ -81,9 +64,14 @@ const stateToComputed = function(state) {
  */
 const dispatchToActions = function(dispatch) {
   const namespace = this.get('namespace');
+
   return {
-    initializeItems: () => actionBroker(dispatch, namespace, 'getItems'),
+    getItems: () => actionBroker(dispatch, namespace, 'getItems'),
     updateItem: (entityId, fieldName, value) => actionBroker(dispatch, namespace, 'updateItem', entityId, fieldName, value, {
+      onSuccess: () => (this.send('showFlashMessage', FLASH_MESSAGE_TYPES.SUCCESS, 'respond.entities.actionMessages.updateSuccess')),
+      onFailure: () => (this.send('showFlashMessage', FLASH_MESSAGE_TYPES.ERROR, 'respond.entities.actionMessages.updateFailure'))
+    }),
+    deleteItem: (entityId) => actionBroker(dispatch, namespace, 'deleteItem', entityId, {
       onSuccess: () => (this.send('showFlashMessage', FLASH_MESSAGE_TYPES.SUCCESS, 'respond.entities.actionMessages.updateSuccess')),
       onFailure: () => (this.send('showFlashMessage', FLASH_MESSAGE_TYPES.ERROR, 'respond.entities.actionMessages.updateFailure'))
     }),
@@ -122,6 +110,15 @@ const Explorer = Component.extend({
   redux: service(),
   flashMessages: service(),
   eventBus: service(),
+
+  /**
+   * Each instance of an explorer can use a different namespace, which helps the component resolve the associated
+   * action creators via the action-creator-broker, as well as the place in app state that holds all of related
+   * properties
+   * @property namespace
+   * @type {string}
+   * @public
+   */
   namespace: '',
 
   onInit: function() {
@@ -130,7 +127,7 @@ const Explorer = Component.extend({
       'Explorer list', columns && isEmberArray(columns));
     assert('A namespace attribute must be provied', isPresent(this.get('namespace')));
     this.sendAction('bootstrap');
-    this.send('initializeItems');
+    this.send('getItems');
 
   }.on('init'),
 
@@ -177,6 +174,37 @@ const Explorer = Component.extend({
     showFlashMessage(type, i18nKey, context) {
       const { i18n, flashMessages } = this.getProperties('i18n', 'flashMessages');
       flashMessages[type.name](i18n.t(i18nKey, context), { iconName: type.icon });
+    },
+
+    /**
+     * Displays specified confirmation modal dialog
+     * @method showConfirmationDialog
+     * @public
+     */
+    showConfirmationDialog(confirmationDialogId, confirmationData = {}, confirmCallback = NOOP, cancelCallback = NOOP) {
+      this.setProperties({ showConfirmationDialog: true, confirmationDialogId, confirmationData, confirmCallback, cancelCallback });
+      this.get('eventBus').trigger(`rsa-application-modal-open-${confirmationDialogId}`);
+    },
+
+    /**
+     * Closes/Cancels a specified confirmation 'dialog'
+     * @method closeConfirmationDialog
+     * @public
+     */
+    closeConfirmationDialog(confirmationDialogId) {
+      this.setProperties({ showConfirmationDialog: false, confirmationDialogId: null, confirmationData: null, confirmCallback: NOOP, cancelCallback: NOOP });
+      this.get('eventBus').trigger(`rsa-application-modal-close-${confirmationDialogId}`);
+    },
+
+    confirm() {
+      const callback = this.get('confirmCallback');
+      callback();
+      this.send('closeConfirmationDialog', this.get('confirmationDialogId'));
+    },
+
+    cancel() {
+      this.get('cancelCallback')();
+      this.send('closeConfirmationDialog', this.get('confirmationDialogId'));
     }
   }
 });

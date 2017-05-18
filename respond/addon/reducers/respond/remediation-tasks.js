@@ -30,6 +30,7 @@ const remdiationTasks = reduxActions.handleActions({
   [ACTION_TYPES.FETCH_REMEDIATION_TASKS_TOTAL_COUNT]: explorerReducers.fetchItemCount,
   [ACTION_TYPES.FETCH_REMEDIATION_TASKS]: explorerReducers.fetchItems,
   [ACTION_TYPES.UPDATE_REMEDIATION_TASK]: explorerReducers.updateItem,
+  [ACTION_TYPES.DELETE_REMEDIATION_TASK]: explorerReducers.deleteItem,
   [ACTION_TYPES.UPDATE_REMEDIATION_TASK_FILTERS]: persistState(explorerReducers.updateFilter),
   [ACTION_TYPES.TOGGLE_FILTER_PANEL_REMEDIATION_TASKS]: persistState(explorerReducers.toggleFilterPanel),
   [ACTION_TYPES.TOGGLE_REMEDIATION_TASKS_CUSTOM_DATE_RESTRICTION]: persistState(explorerReducers.toggleCustomDateRestriction),

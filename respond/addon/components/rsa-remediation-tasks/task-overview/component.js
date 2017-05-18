@@ -46,7 +46,7 @@ const RemediationTaskOverview = Component.extend({
      * @param updatedValue {*} - The value to be set/updated on the record's field
      */
     update(entityId, field, updatedValue) {
-      this.sendAction('updateEntity', entityId, field, updatedValue);
+      this.get('updateItem')(entityId, field, updatedValue);
     }
   }
 });

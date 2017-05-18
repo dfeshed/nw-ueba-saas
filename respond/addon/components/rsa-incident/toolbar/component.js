@@ -1,7 +1,6 @@
 import Ember from 'ember';
 import connect from 'ember-redux/components/connect';
-import * as UIStateActions from 'respond/actions/ui-state-creators';
-import { priorityOptions, statusOptions } from 'respond/selectors/dictionaries';
+import { toggleJournalPanel } from 'respond/actions/creators/incidents-creators';
 
 const {
   Component
@@ -10,10 +9,8 @@ const {
 const stateToComputed = (state) => {
   const {
     respond: {
-      users,
       incident: {
         id,
-        info,
         isJournalPanelOpen
       }
     }
@@ -21,18 +18,12 @@ const stateToComputed = (state) => {
 
   return {
     isJournalPanelOpen,
-    priorityTypes: priorityOptions(state),
-    statusTypes: statusOptions(state),
-    users: users && users.users,
-    incidentId: id,
-    priority: info && info.priority,
-    status: info && info.status,
-    assignee: info && info.assignee
+    incidentId: id
   };
 };
 
 const dispatchToActions = (dispatch) => ({
-  clickJournalAction: () => dispatch(UIStateActions.toggleJournalPanel())
+  clickJournalAction: () => dispatch(toggleJournalPanel())
 });
 
 const IncidentToolbar = Component.extend({

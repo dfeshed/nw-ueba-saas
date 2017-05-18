@@ -13,6 +13,10 @@
     cursor: pointer;
   }
 
+  .more-filters-button {
+    margin-left: rsa-whitespace();
+  }
+
   &.more-filters-active {
     .more-filters-button {
       color: rsa-color(green);
@@ -31,6 +35,26 @@
     @include rsa-row(right, middle);
     @include rsa-vendor-prefix(flex-shrink, 0);
     @include rsa-vendor-prefix(flex-grow, 0);
+
+    .action-control {
+      display: inline-block;
+      > .rsa-form-button-wrapper {
+        overflow-x: hidden;
+      }
+      .ember-power-select-trigger {
+        display: inline-block;
+        width: auto;
+        padding: 0;
+        border-bottom: none;
+        &[aria-disabled="true"] {
+          background-color: transparent;
+        }
+        &:hover {
+          border-bottom: none;
+        }
+      }
+    }
+
   }
 
   &__views {
@@ -40,6 +64,7 @@
   &__selections-counter {
     @include rsa-vendor-prefix(flex-shrink, 0);
     @include rsa-vendor-prefix(flex-grow, 1);
+    margin-left: rsa-whitespace();
   }
 
   &__selections-actions,

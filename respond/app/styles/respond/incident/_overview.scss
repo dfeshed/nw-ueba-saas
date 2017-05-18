@@ -29,6 +29,22 @@ $incidentOverviewLineHeight: 1.35;
       min-height: 1em * $incidentOverviewLineHeight;
       color: rsa-color(white);
     }
+
+    > .edit-button {
+      display: inline-block;
+      width: auto;
+      min-height: 30px;
+
+      .ember-power-select-trigger {
+        width: auto;
+        padding: 0;
+        border: none;
+      }
+
+      .ember-power-select-trigger[aria-disabled="true"] {
+        background-color: transparent;
+      }
+    }
   }
   .source,
   .category {

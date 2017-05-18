@@ -1,6 +1,6 @@
 import Ember from 'ember';
 import connect from 'ember-redux/components/connect';
-import * as UIStateActions from 'respond/actions/ui-state-creators';
+import { toggleJournalPanel } from 'respond/actions/creators/incidents-creators';
 
 const { Component } = Ember;
 
@@ -9,7 +9,7 @@ const stateToComputed = ({ respond: { incident: { info } } }) => ({
 });
 
 const dispatchToActions = (dispatch) => ({
-  closeAction: () => dispatch(UIStateActions.toggleJournalPanel())
+  closeAction: () => dispatch(toggleJournalPanel())
 });
 
 const Journal = Component.extend({

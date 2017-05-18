@@ -2,6 +2,7 @@ $zoneBorderColor: rsa-color(gray, darker, $rsa-nearly-transparent);
 $filterPanelMinWidth: 400px;
 $inspectorPanelWidth: 400px;
 $toolbarHeight: 40px;
+$navbarHeight: 50px;
 
 
 page.respond-engine {
@@ -10,10 +11,10 @@ page.respond-engine {
 }
 .respond-engine {
   .rsa-respond-explorer {
+    height: 100vh;
     overflow: hidden;
 
     .main-zone {
-      height: calc(100vh - #{$toolbarHeight});
       overflow: hidden;
       flex-wrap: nowrap;
     }
@@ -22,6 +23,7 @@ page.respond-engine {
       min-height: $toolbarHeight;
       max-height: $toolbarHeight;
       border-bottom: 1px solid $zoneBorderColor;
+      border-top: 1px solid $zoneBorderColor;
     }
 
     .filter-zone, .inspector-zone {
@@ -39,9 +41,6 @@ page.respond-engine {
         border-right: 1px solid $zoneBorderColor;
         max-width: 25%;
         min-width: $filterPanelMinWidth;
-        padding: rsa-whitespace();
-        overflow: auto;
-        overflow-x: hidden;
         opacity: $rsa-opaque;
       }
     }

@@ -80,17 +80,17 @@ test('The yielded table component renders to the DOM with block content', functi
   assert.equal(this.$('.rsa-respond-explorer .rsa-explorer-table .rsa-data-table .rsa-data-table-header-cell').text().trim(), 'Name', 'Explorer table column renders');
 });
 
-test('The yielded table component renders to the DOM with block content', function(assert) {
+test('The yielded inspector component renders to the DOM with block content', function(assert) {
   this.set('columns', [{
     field: 'name',
     title: 'respond.remediationTasks.list.name'
   }]);
   this.render(hbs`
   {{#rsa-explorer columns=columns namespace='remediation-tasks' as |explorer|}}        
-    {{#explorer.inspector as |section| }}
-      {{#if (eq section 'inspector-body')}}
+    {{#explorer.inspector as |inspector| }}
+      {{#inspector.inspectorContent}}
         <div class="block-content"></div>
-      {{/if}}
+      {{/inspector.inspectorContent}}
     {{/explorer.inspector}}
   {{/rsa-explorer}}`);
 

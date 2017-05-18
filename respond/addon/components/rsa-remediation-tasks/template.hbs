@@ -4,12 +4,12 @@
   bootstrap=(action 'bootstrap')
   as |explorer|}}
 
-  {{#explorer.toolbar}}
-    {{! Add additional toolbar controls here }}
+  {{#explorer.toolbar toolbarControlsComponent='rsa-remediation-tasks/toolbar-controls' as |toolbar|}}
+    {{toolbar.toolbarControls}}
   {{/explorer.toolbar}}
 
-  {{#explorer.filters}}
-    {{! Add additional filter controls here }}
+  {{#explorer.filters filterControlsComponent='rsa-remediation-tasks/filter-controls' as |filters|}}
+    {{filters.filterControls}}
   {{/explorer.filters}}
 
   {{#explorer.table as |row|}}
@@ -44,14 +44,7 @@
     {{/row.cell}}
   {{/explorer.table}}
 
-  {{#explorer.inspector as |section viewMode|}}
-    {{#if (eq section 'inspector-body')}}
-
-      {{rsa-remediation-tasks/task-overview
-        info=explorer.instance.focusedItem
-        updateEntity=(action explorer.updateItem)}}
-
-    {{/if}}
-
+  {{#explorer.inspector inspectorContentComponent='rsa-remediation-tasks/task-overview' as |inspector|}}
+    {{inspector.inspectorContent}}
   {{/explorer.inspector}}
 {{/rsa-explorer}}

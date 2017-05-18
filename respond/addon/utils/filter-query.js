@@ -1,6 +1,5 @@
 import Ember from 'ember';
 import { SINCE_WHEN_TYPES_BY_NAME } from 'respond/utils/since-when-types';
-import { SORT_TYPES_BY_NAME } from 'respond/utils/sort-types';
 import moment from 'moment';
 import { assert } from 'ember-metal/utils';
 import computed, { readOnly } from 'ember-computed-decorators';
@@ -70,7 +69,6 @@ const FilterQuery = EmberObject.extend({
   init() {
     this._super(...arguments);
     this.set('_filters', A([]));
-    this.addSortBy(SORT_TYPES_BY_NAME.SCORE_DESC.sortField, SORT_TYPES_BY_NAME.SCORE_DESC.isDescending);
   },
 
   /**

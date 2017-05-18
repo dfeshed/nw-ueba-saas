@@ -1,14 +1,16 @@
 import connect from 'ember-redux/components/connect';
 import computed from 'ember-computed-decorators';
-import * as UIStateActions from 'respond/actions/ui-state-creators';
+import { updateItem, setViewMode, resizeIncidentInspector } from 'respond/actions/creators/incidents-creators';
 import { storyPointCount, storyEventCount } from 'respond/selectors/storyline';
 import DragBehavior from 'respond/utils/behaviors/drag';
 import { htmlSafe } from 'ember-string';
 import Component from 'ember-component';
+import FLASH_MESSAGE_TYPES from 'respond/utils/flash-message-types';
+import service from 'ember-service/inject';
 import $ from 'jquery';
 
 const stateToComputed = (state) => {
-  const { respond: { incident: { id, info, infoStatus, viewMode, inspectorWidth } } } = state;
+  const { respond: { dictionaries, users, incident: { id, info, infoStatus, viewMode, inspectorWidth } } } = state;
   return {
     incidentId: id,
     info,
@@ -16,16 +18,25 @@ const stateToComputed = (state) => {
     viewMode,
     width: inspectorWidth,
     storyPointCount: storyPointCount(state),
-    storyEventCount: storyEventCount(state)
+    storyEventCount: storyEventCount(state),
+    priorityTypes: dictionaries.priorityTypes,
+    statusTypes: dictionaries.statusTypes,
+    users: users.users
   };
 };
 
 const dispatchToActions = (dispatch) => ({
   setViewModeAction(viewMode) {
-    dispatch(UIStateActions.setViewMode(viewMode));
+    dispatch(setViewMode(viewMode));
   },
   resizeAction(width) {
-    dispatch(UIStateActions.resizeIncidentInspector(width));
+    dispatch(resizeIncidentInspector(width));
+  },
+  updateItem(entityId, fieldName, value) {
+    dispatch(updateItem(entityId, fieldName, value, {
+      onSuccess: () => (this.send('showFlashMessage', FLASH_MESSAGE_TYPES.SUCCESS, 'respond.entities.actionMessages.updateSuccess')),
+      onFailure: () => (this.send('showFlashMessage', FLASH_MESSAGE_TYPES.ERROR, 'respond.entities.actionMessages.updateFailure'))
+    }));
   }
 });
 
@@ -39,6 +50,7 @@ const IncidentInspector = Component.extend({
   tagName: 'article',
   classNames: ['rsa-incident-inspector'],
   classNameBindings: ['isResizing'],
+  flashMessages: service(),
   incidentId: null,
   info: null,
   infoStatus: null,
@@ -98,6 +110,21 @@ const IncidentInspector = Component.extend({
     const drag = this.get('dragBehavior');
     drag.teardown();
     this.set('dragBehavior', null);
+  },
+
+  actions: {
+    /**
+     * Convenience method for showing a flash success/error message to the user on update or failure
+     * @method showFlashMessage
+     * @public
+     * @param type
+     * @param i18nKey
+     * @param context
+     */
+    showFlashMessage(type, i18nKey, context) {
+      const { i18n, flashMessages } = this.getProperties('i18n', 'flashMessages');
+      flashMessages[type.name](i18n.t(i18nKey, context), { iconName: type.icon });
+    }
   }
 });
 

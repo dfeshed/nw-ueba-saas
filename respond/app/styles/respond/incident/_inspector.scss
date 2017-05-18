@@ -61,6 +61,7 @@ $incidentInspectorResizerBleed: ($incidentInspectorResizerWidth - 1px) / 2;
 
     .name {
       @include rsa-font(light);
+      padding: 0 rsa-whitespace() 0 rsa-whitespace(more);
     }
 
     .back {

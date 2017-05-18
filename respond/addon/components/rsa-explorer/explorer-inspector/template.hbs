@@ -13,5 +13,12 @@
   {{yield 'inspector-toolbar' (get this 'viewMode')}}
 </hbox>
 <box class="rsa-explorer-inspector__body">
-  {{yield 'inspector-body'}}
+  {{yield (hash
+    name='inspector-body'
+    viewMode=(get this 'viewMode')
+    inspectorContent=(component inspectorContentComponent
+      info=info
+      deleteItem=deleteItem
+      updateItem=updateItem)
+    )}}
 </box>

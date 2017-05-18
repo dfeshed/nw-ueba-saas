@@ -38,9 +38,33 @@ const _handleUpdates = (action) => {
   };
 };
 
+// Remove the items that were deleted from the items array in app state. Also remove focusedItem if it was one of the deleted
+const _handleDeletes = (action) => {
+  return (state) => {
+    const { items, focusedItem, itemsSelected, itemsTotal } = state;
+    const { payload: { data: removedItemIds } } = action;
+
+    // Filter out newly deleted items from the itemsSelected array
+    const updatedItemsSelected = itemsSelected.filter((itemId) => (!removedItemIds.includes(itemId)));
+
+    // Filter out newly deleted items from the main items array
+    const updatedItems = items.filter((item) => (!removedItemIds.includes(item.id)));
+
+    return {
+      ...state,
+      items: updatedItems,
+      itemsSelected: updatedItemsSelected,
+      // if we have a focused item and it's one that's being deleted, reset focusedItem to null
+      focusedItem: focusedItem && removedItemIds.includes(focusedItem.id) ? null : focusedItem,
+      // Update the itemsTotal count to account for the newly removed items
+      itemsTotal: itemsTotal - removedItemIds.length
+    };
+  };
+};
+
 const fetchItems = (state, action) => (
   handle(state, action, {
-    start: (s) => ({ ...s, itemsStatus: 'wait' }),
+    start: (s) => ({ ...s, itemsStatus: 'wait', focusedItem: null }),
     success: (s) => ({
       ...s,
       items: action.payload.data,
@@ -49,12 +73,40 @@ const fetchItems = (state, action) => (
   })
 );
 
+const fetchItemsStreamStarted = (state) => ({
+  ...state,
+  items: [],
+  itemsStatus: 'wait',
+  focusedItem: null
+});
+
+const fetchItemsStreamInitialized = (state, { payload }) => ({
+  ...state,
+  stopItemsStream: payload
+});
+
+const fetchItemsStreamBatchRetrieved = (state, { payload: { data, meta } }) => ({
+  ...state,
+  items: [...state.items, ...data],
+  itemsStatus: meta.complete ? 'complete' : 'streaming'
+});
+
+const fetchItemsStreamCompleted = (state) => ({
+  ...state,
+  stopItemsStream: null
+});
+
+const fetchItemsStreamError = (state) => ({
+  ...state,
+  stopItemsStream: null
+});
+
 const fetchItemCount = (state, action) => (
   handle(state, action, {
     start: (s) => ({ ...s, itemsTotal: '--' }),
     success: (s) => ({
       ...s,
-      itemsTotal: action.payload.data
+      itemsTotal: action.payload.meta ? action.payload.meta.total : action.payload.data
     })
   })
 );
@@ -63,6 +115,15 @@ const updateItem = (state, action) => (
   handle(state, action, {
     start: (s) => ({ ...s, isTransactionUnderway: true }),
     success: _handleUpdates(action),
+    failure: (s) => ({ ...s }),
+    finish: (s) => ({ ...s, isTransactionUnderway: false })
+  })
+);
+
+const deleteItem = (state, action) => (
+  handle(state, action, {
+    start: (s) => ({ ...s, isTransactionUnderway: true }),
+    success: _handleDeletes(action),
     failure: (s) => ({ ...s }),
     finish: (s) => ({ ...s, isTransactionUnderway: false })
   })
@@ -158,8 +219,14 @@ export default {
   defaultCustomDateRange,
   _handleUpdates,
   fetchItems,
+  fetchItemsStreamStarted,
+  fetchItemsStreamInitialized,
+  fetchItemsStreamBatchRetrieved,
+  fetchItemsStreamCompleted,
+  fetchItemsStreamError,
   fetchItemCount,
   updateItem,
+  deleteItem,
   updateFilter,
   toggleFilterPanel,
   toggleCustomDateRestriction,

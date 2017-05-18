@@ -16,10 +16,6 @@
         </div>
       {{else}}
         <div class="name">{{info.name}}</div>
-        <div class="risk-score">
-          <label>{{t 'respond.incident.riskScore'}}</label>
-          <span>{{info.riskScore}}</span>
-        </div>
       {{/if}}
     </h2>
   </box>
@@ -46,7 +42,13 @@
     {{else if (eq viewMode 'storyline')}}
       {{rsa-incident/storyline}}
     {{else}}
-      {{rsa-incident/overview}}
+      {{rsa-incident/overview
+        info=info
+        priorityTypes=priorityTypes
+        statusTypes=statusTypes
+        users=users
+        updateItem=(action 'updateItem')
+      }}
     {{/if}}
   </box>
 </vbox>

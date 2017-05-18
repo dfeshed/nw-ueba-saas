@@ -30,13 +30,14 @@
         {{#power-select
           options=timeframes
           selected=selectedTimeframe
+          searchEnabled=false
           onchange=(action "onChangeTimeframe") as |time|}}
           {{t (concat 'respond.timeframeOptions.' time.name) }}
         {{/power-select}}
       {{/if}}
     {{/liquid-bind}}
   </section>
-  {{yield}}
+  {{yield (hash filterControls=(component filterControlsComponent updateFilter=updateFilter))}}
 </section>
 <footer>
   {{#rsa-form-button

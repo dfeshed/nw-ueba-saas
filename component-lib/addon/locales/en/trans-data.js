@@ -401,6 +401,7 @@ export default {
       yes: 'Yes',
       no: 'No'
     },
+    filters: 'Filters',
     timeframeOptions: {
       LAST_5_MINUTES: 'Last 5 Minutes',
       LAST_10_MINUTES: 'Last 10 Minutes',
@@ -420,7 +421,7 @@ export default {
     },
     entities: {
       incidents: 'Incidents',
-      remediationTasks: 'Remediation',
+      remediationTasks: 'Remediation Tasks',
       alerts: 'Alerts',
       actionMessages: {
         updateSuccess: 'Your change was successful',
@@ -428,6 +429,15 @@ export default {
       }
     },
     explorer: {
+      confirmation: {
+        updateTitle: 'Confirm Update',
+        deleteTitle: 'Confirm Delete',
+        bulkUpdateConfrimation: 'You are about to make the following changes to more than one item',
+        deleteConfirmation: 'Are you sure you want to delete {{count}} record(s)? Once applied, this deletion cannot be reversed.',
+        field: 'Field',
+        value: 'Value',
+        recordCountAffected: 'Number of items'
+      },
       filters: {
         timeRange: 'Time Range',
         reset: 'Reset Filters',
@@ -442,6 +452,12 @@ export default {
       footer: 'Showing {{count}} out of {{total}} items'
     },
     remediationTasks: {
+      actions: {
+        actionMessages: {
+          deleteWarning: 'Deleting a Remediation Task from NetWitness will not delete it from other systems. Please note that it will be your responsibility ' +
+          'to delete the task from any other applicable systems.'
+        }
+      },
       list: {
         priority: 'Priority',
         select: 'Select',
@@ -496,11 +512,9 @@ export default {
         changeStatus: 'Change Status',
         addJournalEntry: 'Add Journal Entry',
         actionMessages: {
-          updateSuccess: 'You successfully changed the {{field}} of {{incidentId}} to {{name}}',
-          updateFailure: 'There was a problem updating the {{field}} for incident {{incidentId}}',
-          bulkUpdateSuccess: 'You successfully changed the {{field}} for ({{count}}) incidents to {{name}}',
-          bulkUpdateFailure: 'There was a problem updating the {{field}} for the ({{count}}) selected incidents',
-          bulkUpdateConfirmation: 'With this change you will set the {{field}} for ({{count}}) incidents to {{selectedValue}}. If this is correct, press Apply',
+          deleteWarning: 'Warning: You are about to delete one or more incidents which may have remediation tasks and which may have been escalated. ' +
+          'Deleting an incident from NetWitness will not delete it from other systems. Please note that it will be your responsibility ' +
+          'to delete the incident and its remediation tasks from any other applicable systems.',
           addJournalEntrySuccess: 'You added a journal entry to incident {{incidentId}}',
           addJournalEntryFailure: 'There was a problem adding a journal entry to incident {{incidentId}}'
         },
@@ -547,7 +561,7 @@ export default {
         name: 'Name',
         createdDate: 'Created',
         status: 'Status',
-        priority: 'Priority (score)',
+        priority: 'Priority',
         riskScore: 'Risk Score',
         assignee: 'Assignee',
         alertCount: 'Alerts',

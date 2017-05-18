@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import * as DataActions from 'respond/actions/data-creators';
+import { initializeIncident } from 'respond/actions/creators/incidents-creators';
 
 const {
   run,
@@ -21,7 +21,7 @@ export default Route.extend({
     // transitioning from another route (e.g., `incidents`); only works if you are coming directly to this route from
     // a url/bookmark. As a workaround, use `run.next` to let the route transition finish before firing redux actions.
     run.next(() => {
-      this.get('redux').dispatch(DataActions.initializeIncident(incident_id));
+      this.get('redux').dispatch(initializeIncident(incident_id));
     });
     return {
       incidentId: incident_id

@@ -1,5 +1,8 @@
+$navbarHeight: 50px;
+
 .respond-engine {
   > .rsa-nav-tab-group {
+    height: $navbarHeight;
     > .rsa-nav-tab {
       margin: 0 rsa-whitespace();
     }
@@ -10,4 +13,9 @@
   > .rsa-nav-tab-group {
     display: none;
   }
+}
+
+// Adjust the explorer height to account for the navigation
+.respond-engine .rsa-respond-explorer {
+  height: calc(100vh - #{$navbarHeight});
 }

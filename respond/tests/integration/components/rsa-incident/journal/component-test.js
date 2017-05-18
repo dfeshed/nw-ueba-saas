@@ -4,7 +4,7 @@ import engineResolverFor from '../../../../helpers/engine-resolver';
 import wait from 'ember-test-helpers/wait';
 import DataHelper from '../../../../helpers/data-helper';
 import sinon from 'sinon';
-import * as UIStateActions from 'respond/actions/ui-state-creators';
+import UIStateActions from 'respond/actions/creators/incidents-creators';
 
 let dispatchSpy;
 

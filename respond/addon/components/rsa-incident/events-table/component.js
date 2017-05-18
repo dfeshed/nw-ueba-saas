@@ -4,7 +4,7 @@ import service from 'ember-service/inject';
 import computed from 'ember-computed-decorators';
 import connect from 'ember-redux/components/connect';
 import { storyEvents, storyEventSelections } from 'respond/selectors/storyline';
-import * as UIStateActions from 'respond/actions/ui-state-creators';
+import { singleSelectEvent } from 'respond/actions/creators/incidents-creators';
 import indexOfBy from 'respond/utils/array/index-of-by';
 
 const {
@@ -18,7 +18,7 @@ const stateToComputed = (state) => ({
 });
 
 const dispatchToActions = (dispatch) => ({
-  onRowClick: (item) => dispatch(UIStateActions.singleSelectEvent(item && get(item, 'id')))
+  onRowClick: (item) => dispatch(singleSelectEvent(item && get(item, 'id')))
 });
 
 const StoryEvents = Component.extend({

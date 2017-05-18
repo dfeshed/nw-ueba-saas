@@ -1,22 +1,26 @@
 <box fit class="toolbar-zone">
-  {{yield (hash name='explorer-toolbar' toolbar=(component 'rsa-explorer/explorer-toolbar'
-    isFilterPanelOpen=isFilterPanelOpen
-    itemsSelected=itemsSelected
-    hasNoSelections=hasNoSelections
-    selectionCount=selectionCount
-    toggleFilterPanel=(action 'toggleFilterPanel')
-  ))}}
+  {{yield (hash name='explorer-toolbar' instance=this
+    toolbar=(component 'rsa-explorer/explorer-toolbar'
+      isFilterPanelOpen=isFilterPanelOpen
+      itemsSelected=itemsSelected
+      hasNoSelections=hasNoSelections
+      selectionCount=selectionCount
+      toggleFilterPanel=(action 'toggleFilterPanel')
+      deleteItem=(action 'deleteItem')
+      confirm=(action 'showConfirmationDialog')
+      updateItem=(action 'updateItem')
+    )
+  )}}
 </box>
 <hbox class="main-zone">
   <vbox class="filter-zone">
-    {{yield (hash name='explorer-filters' filters=(component 'rsa-explorer/explorer-filters'
+    {{yield (hash name='explorer-filters' instance=this filters=(component 'rsa-explorer/explorer-filters'
       timeframeFilter=timeframeFilter
       hasCustomDate=hasCustomDate
       updateFilter=(action 'updateFilter')
       resetFilters=(action 'resetFilters')
-      toggleCustomDate=(action 'toggleCustomDate')
-    ))}}
-
+      toggleCustomDate=(action 'toggleCustomDate'))
+    )}}
   </vbox>
   <vbox class="items-zone">
     <box class="items-main">
@@ -34,8 +38,7 @@
           toggleSelectAll=(action 'toggleSelectAll')
           focus=(action 'focus')
           sortField=sortField
-          isSortDescending=isSortDescending
-          select=(action 'select'))
+          isSortDescending=isSortDescending)
           select=(action 'select')
         )}}
       </box>
@@ -49,8 +52,11 @@
   <vbox class="inspector-zone">
     {{yield (hash name='explorer-inspector'
       instance=this
-      inspector=(component 'rsa-explorer/explorer-inspector' info=focusedItem)
-      updateItem=(action 'updateItem')
+      inspector=(component 'rsa-explorer/explorer-inspector'
+        info=focusedItem
+        updateItem=(action 'updateItem')
+        deleteItem=(action 'deleteItem')
+      )
     )}}
     {{#rsa-form-button class="close-inspector" isIconOnly=true defaultAction=(action "clearFocusItem")}}{{rsa-icon name='close'}}{{/rsa-form-button}}
   </vbox>
@@ -62,3 +68,50 @@
     </centered>
   </div>
 {{/if}}
+{{#rsa-application-modal eventId='bulk-update-entities' label=(t "respond.explorer.confirmation.updateTitle") style="standard respond-confirmation-dialog"}}
+  <div class='modal-content rsa-respond-bulk-update-confirm'>
+    <p>{{t 'respond.explorer.confirmation.bulkUpdateConfrimation'}}:</p>
+    <ul>
+      <li>
+        <span class="label">{{t 'respond.explorer.confirmation.field'}}:</span>
+        <span class="value"><em>{{confirmationData.fieldLabel}}</em></span>
+      </li>
+      <li>
+        <span class="label">{{t 'respond.explorer.confirmation.value'}}:</span>
+        <span class="value">{{confirmationData.valueLabel}}</span>
+      </li>
+      <li>
+        <span class="label">{{t 'respond.explorer.confirmation.recordCountAffected'}}:</span>
+        <span class="value">{{confirmationData.count}}</span>
+      </li>
+    </ul>
+  </div>
+  <footer>
+    <hbox class="modal-footer-buttons">
+      {{#rsa-form-button defaultAction='cancel'}}
+        {{t 'forms.cancel'}}
+      {{/rsa-form-button}}
+      {{#rsa-form-button style='danger' defaultAction='confirm'}}
+        {{t 'forms.apply'}}
+      {{/rsa-form-button}}
+    </hbox>
+  </footer>
+{{/rsa-application-modal}}
+{{#rsa-application-modal eventId='delete-entities' label=(t "respond.explorer.confirmation.deleteTitle") style="standard respond-confirmation-dialog"}}
+  <div class='modal-content rsa-respond-bulk-update-confirm'>
+    {{#if confirmationData.warning}}
+      <p>{{confirmationData.warning}}</p>
+    {{/if}}
+    <p>{{t 'respond.explorer.confirmation.deleteConfirmation' count=confirmationData.count}}</p>
+  </div>
+  <footer>
+    <hbox class="modal-footer-buttons">
+      {{#rsa-form-button defaultAction='cancel'}}
+        {{t 'forms.cancel'}}
+      {{/rsa-form-button}}
+      {{#rsa-form-button style='danger' defaultAction='confirm'}}
+        {{t 'forms.apply'}}
+      {{/rsa-form-button}}
+    </hbox>
+  </footer>
+{{/rsa-application-modal}}

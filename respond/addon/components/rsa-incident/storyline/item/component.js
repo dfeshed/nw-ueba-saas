@@ -4,16 +4,16 @@ import HighlightsEntities from 'context/mixins/highlights-entities';
 import layout from './template';
 import computed from 'ember-computed-decorators';
 import connect from 'ember-redux/components/connect';
-import * as UIStateActions from 'respond/actions/ui-state-creators';
+import { singleSelectStoryPoint, toggleSelectStoryPoint } from 'respond/actions/creators/incidents-creators';
 
 const { get } = Ember;
 
 const stateToComputed = () => ({ });
 
 const dispatchToActions = (dispatch) => ({
-  clickAction: (item) => dispatch(UIStateActions.singleSelectStoryPoint(item && get(item, 'id'))),
-  ctrlClickAction: (item) => dispatch(UIStateActions.toggleSelectStoryPoint(item && get(item, 'id'))),
-  shiftClickAction: (item) => dispatch(UIStateActions.toggleSelectStoryPoint(item && get(item, 'id')))
+  clickAction: (item) => dispatch(singleSelectStoryPoint(item && get(item, 'id'))),
+  ctrlClickAction: (item) => dispatch(toggleSelectStoryPoint(item && get(item, 'id'))),
+  shiftClickAction: (item) => dispatch(toggleSelectStoryPoint(item && get(item, 'id')))
 });
 
 

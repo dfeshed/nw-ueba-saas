@@ -8,5 +8,6 @@ import Component from 'ember-component';
 export default Component.extend({
   tagName: 'hbox',
   classNames: 'rsa-explorer-toolbar',
-  classNameBindings: [ 'isFilterPanelOpen:more-filters-active' ]
+  classNameBindings: [ 'isFilterPanelOpen:more-filters-active' ],
+  toolbarControlsComponent: 'respond-common/stub'
 });

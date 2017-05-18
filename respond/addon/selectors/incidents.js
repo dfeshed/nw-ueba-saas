@@ -17,7 +17,7 @@ const closedStatuses = ['CLOSED', 'CLOSED_FALSE_POSITIVE'];
 export const hasSelectedClosedIncidents = createSelector(
   incidentsState,
   (incidentsState) => {
-    const { incidentsSelected, incidents } = incidentsState;
-    return incidents.some((item) => incidentsSelected.includes(item.id) && closedStatuses.includes(item.status));
+    const { itemsSelected, items } = incidentsState;
+    return items.some((item) => itemsSelected.includes(item.id) && closedStatuses.includes(item.status));
   }
 );

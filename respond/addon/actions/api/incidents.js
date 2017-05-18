@@ -1,7 +1,6 @@
 import EmberObject from 'ember-object';
 import { assert } from 'ember-metal/utils';
 import { promiseRequest, streamRequest } from 'streaming-data/services/data-access/requests';
-import { SORT_TYPES_BY_NAME } from 'respond/utils/sort-types';
 import FilterQuery from 'respond/utils/filter-query';
 import moment from 'moment';
 import { isEmpty, isPresent, typeOf, isNone } from 'ember-utils';
@@ -13,12 +12,8 @@ const IncidentsAPI = EmberObject.extend({});
 const NOOP = () => {};
 
 // utility function for constructing a basic/standard incidents query
-const _buildIncidentsQuery = (filters, sort) => {
-  const {
-    sortField,
-    isDescending } = SORT_TYPES_BY_NAME[sort];
-
-  const query = FilterQuery.create().addSortBy(sortField, isDescending);
+const _buildQuery = (filters = { created: { name: 'ALL_TIME', unit: 'years', subtract: 50 } }, { sortField, isSortDescending = true }) => {
+  const query = FilterQuery.create().addSortBy(sortField, isSortDescending);
 
   Object.keys(filters).forEach((filterField) => {
     const value = filters[filterField];
@@ -26,7 +21,7 @@ const _buildIncidentsQuery = (filters, sort) => {
     if (filterField === 'created') {
       if ('start' in value) {  // Custom Range Filter
         query.addRangeFilter('created', value.start || 0, value.end || undefined);
-      } else { // Canned range filter
+      } else { // Common date/time range filter
         query.addRangeFilter('created', moment().subtract(value.subtract, value.unit).valueOf(), undefined);
       }
     } else {
@@ -51,7 +46,7 @@ IncidentsAPI.reopenClass({
    * @returns {Promise}
    */
   getIncidents(filters, sort, { onResponse = NOOP, onError = NOOP, onInit = NOOP, onCompleted = NOOP }) {
-    const query = _buildIncidentsQuery(filters, sort);
+    const query = _buildQuery(filters, sort);
 
     return streamRequest({
       method: 'stream',
@@ -74,7 +69,7 @@ IncidentsAPI.reopenClass({
    * @returns {Promise}
    */
   getIncidentsCount(filters, sort) {
-    const query = _buildIncidentsQuery(filters, sort);
+    const query = _buildQuery(filters, sort);
 
     return promiseRequest({
       method: 'queryRecord',
@@ -107,13 +102,13 @@ IncidentsAPI.reopenClass({
    * Executes websocket request to update an incident record
    * @method updateIncident
    * @public
-   * @param incidentId
+   * @param entityId
    * @param field
    * @param updatedValue
    * @returns {*}
    */
-  updateIncident(incidentId, field, updatedValue) {
-    const entityIds = isEmberArray(incidentId) ? incidentId : [incidentId];
+  updateIncident(entityId, field, updatedValue) {
+    const entityIds = isEmberArray(entityId) ? entityId : [entityId];
 
     return promiseRequest({
       method: 'updateRecord',
@@ -248,7 +243,7 @@ IncidentsAPI.reopenClass({
    * @param incidentId The id of the incident to delete
    * @returns {Promise}
    */
-  deleteIncident(incidentId) {
+  delete(incidentId) {
     const query = FilterQuery.create()
       .addFilter('_id', incidentId);
 
@@ -257,18 +252,6 @@ IncidentsAPI.reopenClass({
       modelName: 'incidents',
       query: query.toJSON()
     });
-  },
-
-  /**
-   * Executes a websocket delete multiple incidents. This merely delegates to the deleteIncident() method, which
-   * also supports an array of incident ids
-   * @method bulkDeleteIncidents
-   * @public
-   * @param incidentIds Array of incident Ids to delete
-   * @returns {Promise}
-   */
-  bulkDeleteIncidents(incidentIds) {
-    return IncidentsAPI.deleteIncident(incidentIds);
   }
 });
 

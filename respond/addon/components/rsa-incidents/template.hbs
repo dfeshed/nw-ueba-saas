@@ -1,0 +1,63 @@
+{{#rsa-explorer
+  columns=columns
+  namespace='incidents'
+  bootstrap=(action 'bootstrap') as |explorer|}}
+
+  {{#explorer.toolbar toolbarControlsComponent='rsa-incidents/toolbar-controls' as |toolbar|}}
+    {{toolbar.toolbarControls
+      priorityTypes=priorityTypes
+      statusTypes=statusTypes
+      users=users
+      hasSelectedClosedIncidents=hasSelectedClosedIncidents
+    }}
+  {{/explorer.toolbar}}
+
+  {{#explorer.filters filterControlsComponent='rsa-incidents/filter-controls' as |filters|}}
+    {{filters.filterControls}}
+  {{/explorer.filters}}
+
+  {{#explorer.table as |row|}}
+    {{#row.cell as |item index column|}}
+      {{#if (eq column.dataType 'date')}}
+        {{rsa-content-datetime timestamp=(get item column.field) displayTime=true displayMilliseconds=false}}
+
+      {{else if (eq column.dataType 'number')}}
+        <div class="number-type">{{get item column.field}}</div>
+
+      {{else if (eq column.dataType 'checkbox') }}
+        <label class="rsa-form-checkbox-label {{if (contains item.id explorer.instance.itemsSelected) 'checked'}}">
+          {{rsa-form-checkbox checked=(contains item.id explorer.instance.itemsSelected) change=(action explorer.select item)}}
+        </label>
+      {{else if (eq column.field "name")}}
+        <div class="incident-name">
+          {{#link-to "incident" item.id}}
+            {{get item column.field}}
+          {{/link-to}}
+        </div>
+      {{ else if (eq column.field 'priority')}}
+        {{rsa-content-label
+          size='small'
+          label=(get item 'priority')
+          isInverted=true
+          style=(priority-to-content-style (get item column.field))
+        }}
+      {{ else if (eq column.field 'id')}}
+        <span>{{#link-to 'incident' item.id}}{{item.id}}{{/link-to}}</span>
+      {{ else if (eq column.field 'status')}}
+        {{t (concat 'respond.status.' (get item column.field)) }}
+      {{else if (eq column.field "assignee")}}
+        {{get item "assignee.name"}}
+      {{else}}
+        {{get item column.field}}
+      {{/if}}
+    {{/row.cell}}
+  {{/explorer.table}}
+
+  {{#explorer.inspector inspectorContentComponent='rsa-incident/overview' as |inspector|}}
+    {{inspector.inspectorContent
+      priorityTypes=priorityTypes
+      statusTypes=statusTypes
+      users=users
+    }}
+  {{/explorer.inspector}}
+{{/rsa-explorer}}

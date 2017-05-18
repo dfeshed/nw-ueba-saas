@@ -109,6 +109,24 @@ const RemediationTasksAPI = {
         data: task
       }
     });
+  },
+
+  /**
+   * Deletes a remediation task
+   * @method deleteRemediationTask
+   * @param taskId {string} - The ID of the remediation task to delete
+   * @returns {*}
+   * @public
+   */
+  deleteRemediationTask(taskId) {
+    const query = FilterQuery.create()
+      .addFilter('_id', taskId);
+
+    return promiseRequest({
+      method: 'deleteRecord',
+      modelName: 'remediation-tasks',
+      query: query.toJSON()
+    });
   }
 };
 

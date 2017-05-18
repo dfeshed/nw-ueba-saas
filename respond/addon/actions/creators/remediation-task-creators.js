@@ -8,7 +8,7 @@ const {
 } = Ember;
 
 /**
- * Action creator that dispatches a set of actions for fetching incidents (with or without filters) and sorted by one field.
+ * Action creator that dispatches a set of actions for fetching remediation tasks (with or without filters) and sorted by one field.
  * @method getItems
  * @public
  * @returns {function(*, *)}
@@ -61,6 +61,30 @@ const updateItem = (entityId, field, updatedValue, callbacks) => {
       },
       onFailure: (response) => {
         ErrorHandlers.handleContentUpdateError(response, `${entityId} ${field} to ${updatedValue}`);
+        callbacks.onFailure(response);
+      }
+    }
+  };
+};
+
+/**
+ * An action creator that dispatches a delete action for one or more remediation tasks
+ * @public
+ * @param entityId
+ * @param callbacks
+ * @returns {{type, promise: *, meta: {onSuccess: (function(*=)), onFailure: (function(*=))}}}
+ */
+const deleteItem = (entityId, callbacks) => {
+  return {
+    type: ACTION_TYPES.DELETE_REMEDIATION_TASK,
+    promise: RemediationTasks.deleteRemediationTask(entityId),
+    meta: {
+      onSuccess: (response) => {
+        Logger.debug(ACTION_TYPES.DELETE_REMEDIATION_TASK, response);
+        callbacks.onSuccess(response);
+      },
+      onFailure: (response) => {
+        ErrorHandlers.handleContentDeletionError(response, 'remediation task');
         callbacks.onFailure(response);
       }
     }
@@ -133,7 +157,7 @@ const resetFilters = () => {
 };
 
 /**
- * An action creator for updating the sort-by information used in fetching incidents
+ * An action creator for updating the sort-by information used in fetching remediation tasks
  * @public
  * @method sortBy Object { id: [field name (string) to sort by], isDescending: [boolean] }
  * @param sortField
@@ -159,6 +183,7 @@ const toggleFilterPanel = () => ({ type: ACTION_TYPES.TOGGLE_FILTER_PANEL_REMEDI
 export {
   getItems,
   updateItem,
+  deleteItem,
   updateFilter,
   createRemediationTask,
   sortBy,

@@ -1,0 +1,60 @@
+<div class="action-control">
+  {{#power-select
+    options=priorityTypes
+    matchTriggerWidth=false
+    horizontalPosition='right'
+    disabled=(or hasNoSelections hasSelectedClosedIncidents)
+    searchEnabled=false
+    triggerComponent=(component "respond-common/button-trigger"
+      style='primary'
+      isDisabled=(or hasNoSelections hasSelectedClosedIncidents)
+      label=(t 'respond.incidents.actions.changePriority'))
+    onchange=(action 'updateIncidentPriority' itemsSelected) as |option|}}
+
+    {{t (concat 'respond.priority.' option)}}
+
+  {{/power-select}}
+
+</div>
+<div class="action-control">
+  {{#power-select
+    options=statusTypes
+    disabled=hasNoSelections
+    matchTriggerWidth=false
+    horizontalPosition='right'
+    searchEnabled=false
+    triggerComponent=(component "respond-common/button-trigger"
+      style='primary'
+      isDisabled=hasNoSelections
+      label=(t 'respond.incidents.actions.changeStatus'))
+    onchange=(action 'updateIncidentStatus' itemsSelected) as |option|}}
+
+    {{t (concat 'respond.status.' option)}}
+
+  {{/power-select}}
+</div>
+<div class="action-control">
+  {{#power-select
+    options=users
+    disabled=(or hasNoSelections hasSelectedClosedIncidents)
+    matchTriggerWidth=false
+    horizontalPosition='right'
+    searchEnabled=false
+    triggerComponent=(component "respond-common/button-trigger"
+      style='primary'
+      isDisabled=(or hasNoSelections hasSelectedClosedIncidents)
+      label=(t 'respond.incidents.actions.changeAssignee'))
+    onchange=(action 'updateIncidentAssignee' itemsSelected) as |option|}}
+
+    {{option.name}}
+
+  {{/power-select}}
+</div>
+<div class="action-control">
+  {{#rsa-form-button
+    style='danger'
+    isDisabled=hasNoSelections
+    defaultAction='deleteIncident'}}
+    {{t 'forms.delete'}}
+  {{/rsa-form-button}}
+</div>

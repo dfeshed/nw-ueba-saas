@@ -32,22 +32,64 @@
   <span>{{info.createdBy}}</span>
 </p>
 
+<p class="score">
+  <label>{{t 'respond.incident.riskScore'}}</label>
+  <span>{{info.riskScore}}</span>
+</p>
+
 {{! Priority}}
 <p class="priority">
   <label>{{t 'respond.incident.priority'}}:</label>
-  <span>{{t (concat 'respond.priority.' info.priority)}}</span>
+  <div class="edit-button">
+    {{#power-select
+      options=priorityTypes
+      selected=info.status
+      matchTriggerWidth=false
+      searchEnabled=false
+      disabled=(or (eq info.status 'CLOSED') (eq info.status 'CLOSED_FALSE_POSITIVE'))
+      triggerComponent=(component "respond-common/button-trigger"
+        isDisabled=(or (eq info.status 'CLOSED') (eq info.status 'CLOSED_FALSE_POSITIVE'))
+        label=(t (concat 'respond.priority.' info.priority)))
+      onchange=(action 'update' info.id 'priority') as |option|}}
+      {{t (concat 'respond.priority.' option)}}
+    {{/power-select}}
+  </div>
 </p>
 
 {{! Status}}
 <p class="status">
   <label>{{t 'respond.incident.status'}}:</label>
-  <span>{{t (concat 'respond.status.' info.status)}}</span>
+  <div class="edit-button">
+    {{#power-select
+      options=statusTypes
+      selected=info.status
+      matchTriggerWidth=false
+      searchEnabled=false
+      triggerComponent=(component "respond-common/button-trigger"
+        label=(t (concat 'respond.status.' info.status)))
+      onchange=(action 'update' info.id 'status') as |option|}}
+      {{t (concat 'respond.status.' option)}}
+    {{/power-select}}
+  </div>
 </p>
 
 {{! Assignee}}
 <p class="assignee">
   <label>{{t 'respond.incident.assignee'}}:</label>
-  <span>{{if info.assignee info.assignee.name (t 'respond.assignee.none')}}</span>
+  <div class="edit-button">
+    {{#power-select
+      options=users
+      matchTriggerWidth=false
+      horizontalPosition='right'
+      disabled=(or (eq info.status 'CLOSED') (eq info.status 'CLOSED_FALSE_POSITIVE'))
+      searchEnabled=false
+      triggerComponent=(component "respond-common/button-trigger"
+        isDisabled=(or (eq info.status 'CLOSED') (eq info.status 'CLOSED_FALSE_POSITIVE'))
+        label=(if info.assignee info.assignee.name (t 'respond.assignee.none')))
+      onchange=(action 'update' info.id 'assignee') as |option|}}
+      {{option.name}}
+    {{/power-select}}
+  </div>
 </p>
 
 {{! Sources ("Event Stream Analysis", "ECAT", etc)}}

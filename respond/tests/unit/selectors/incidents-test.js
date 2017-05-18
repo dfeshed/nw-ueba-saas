@@ -1,6 +1,8 @@
 import { module, test } from 'qunit';
 import { hasSelectedClosedIncidents } from 'respond/selectors/incidents';
-import { incidents } from '../../server/data';
+import data from '../../server/data';
+
+const { incidents: items } = data;
 
 module('Unit | Mixin | Incidents Selector');
 
@@ -9,8 +11,8 @@ test('hasSelectedClosedIncidents is false when none of the selected incidents ar
   const state = {
     respond: {
       incidents: {
-        incidents,
-        incidentsSelected: ['INC-96', 'INC-97', 'INC-101', 'INC-109']
+        items,
+        itemsSelected: ['INC-96', 'INC-97', 'INC-101', 'INC-109']
       }
     }
   };
@@ -24,8 +26,8 @@ test('hasSelectedClosedIncidents is true when at least one of the incidents has 
   const state = {
     respond: {
       incidents: {
-        incidents,
-        incidentsSelected: ['INC-96', 'INC-97', 'INC-101', 'INC-109', 'INC-95']
+        items,
+        itemsSelected: ['INC-96', 'INC-97', 'INC-101', 'INC-109', 'INC-95']
       }
     }
   };
@@ -39,8 +41,8 @@ test('hasSelectedClosedIncidents is true when at least one of the incidents has 
   const state = {
     respond: {
       incidents: {
-        incidents,
-        incidentsSelected: ['INC-96', 'INC-97', 'INC-101', 'INC-109', 'INC-93']
+        items,
+        itemsSelected: ['INC-96', 'INC-97', 'INC-101', 'INC-109', 'INC-93']
       }
     }
   };
