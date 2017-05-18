@@ -71,10 +71,10 @@ public class EventsReducerBuilder implements CommandBuilder {
             timeThreshold = getConfigs().getLong(config, "timeThreshold", 9999999L);
             cacheRecordTtl = -1L;
             try {
-                cacheRecordTtl = new Long(morphlineConfigService.getStringValue(getConfigs(), config, "cacheRecordTtlPropertyName"));
+                cacheRecordTtl = new Long(morphlineConfigService.getStringValue(getConfigs(), config, "cachedRecordTtlInSeconds"));
             }
             catch (Exception e){
-                logger.warn("Error getting \"cacheRecordTtlPropertyName\" property from configuration, setting value to -1");
+                logger.warn("Error getting \"cachedRecordTtlInSeconds\" property from configuration, setting value to -1");
             }
             dropFromCache = getConfigs().getBoolean(config, "dropFromCache");
             processRecord =  getConfigs().getBoolean(config, "processRecord",false);
@@ -102,7 +102,7 @@ public class EventsReducerBuilder implements CommandBuilder {
             // in the case no ttl is desire (save cached records forever) define cacheRecordTtl as -1
             if (cacheRecordTtl != -1  && minimalRecordThreshold > currentTime) {
                 minimalRecordThreshold = currentTime;
-                cache.setDeprecationTs(minimalRecordThreshold -cacheRecordTtl);
+                cache.setDeprecationTs(minimalRecordThreshold - cacheRecordTtl);
             }
 
             if (previousEvent==null) {

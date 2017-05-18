@@ -78,10 +78,10 @@ public class EventsJoinerBuilder implements CommandBuilder {
 			timeThreshold = getConfigs().getLong(config, "timeThreshold");
 			cacheRecordTtl = -1l;
 			try {
-				cacheRecordTtl = new Long(morphlineConfigService.getStringValue(getConfigs(), config, "cacheRecordTtlPropertyName"));
+				cacheRecordTtl = new Long(morphlineConfigService.getStringValue(getConfigs(), config, "cachedRecordTtlInSeconds"));
 			}
 			catch (Exception e){
-				logger.warn("Error getting \"cacheRecordTtlPropertyName\" property from configuration, setting value to -1");
+				logger.warn("Error getting \"cachedRecordTtlInSeconds\" property from configuration, setting value to -1");
 			}
 			mergeFields = getConfigs().getStringList(config, "mergeFields");
 			dropFromCache = getConfigs().getBoolean(config, "dropFromCache");
