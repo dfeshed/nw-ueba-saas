@@ -11,14 +11,14 @@
         <hbox class={{dSDetails.class}}>
           {{#if dSDetails.riskScore}}
             <vbox xs='2'>
-              {{rsa-content-badge-score
-                label=(t 'context.iiocScore')
-                class="rsa-context-risk-score"
-                score=(get data dSDetails.riskScore.field)
-                size='small'
-                style=badgeLevel
-                invertColor=true
-              }}
+              <div class="rsa-context-panel__grid__risk-badge__default">
+                {{rsa-content-badge-score
+                  label=(t 'context.iiocScore')
+                  score=(get data dSDetails.riskScore.field)
+                  style=badgeLevel
+                  invertColor=true
+                }}
+              </div>
             </vbox>
           {{/if}}
           <vbox>
@@ -27,32 +27,31 @@
                 {{#each rowsData.cell as |cellData|}}
                   {{#if (eq cellData.dataType 'link')}}
                     <vbox xs='3'>
-                      <div class="rsa-context-panel__grid__host-details__field-name">{{t cellData.title}}</div>
+                      {{rsa-content-definition label=(t cellData.title)}}
                       <div class="rsa-context-panel__grid__host-details__field-value rsa-context-panel__grid link">
                         <a href={{concat 'ecatui://' (get data cellData.field)  }} target="_blank">{{get data cellData.field}}</a>
                       </div>
                     </vbox>
                   {{else if (eq cellData.dataType 'datetime')}}
                     <vbox xs='3'>
-                      <div class="rsa-context-panel__grid__host-details__field-name">{{t cellData.title}}</div>
+                      {{rsa-content-definition label=(t cellData.title)}}
                       <div class="rsa-context-panel__grid__host-details__field-value">
                         {{#if (get data cellData.field)}}
                           <span>
                             {{rsa-content-datetime timestamp=(get data cellData.field) displayMilliseconds=false withTimeAgo=true}}
                           </span>
+                        {{else}}
+                            -
                         {{/if}}
                       </div>
                     </vbox>
                   {{else if (eq cellData.dataType 'group')}}
-                    <vbox xs='3'>
-                      {{context-panel/dynamic-grid/group data=(get data cellData.field) title=cellData.title index=index}}
+                    <vbox xs='3' class="rsa-context-panel__grid__host-details__group-data-header">
+                      {{context-panel/dynamic-grid/group groupData=(get data cellData.field) title=cellData.title index=index}}
                     </vbox>
                   {{else}}
                     <vbox xs='3'>
-                      <div class="rsa-context-panel__grid__host-details__field-name">{{t cellData.title}}</div>
-                      <div class="rsa-context-panel__grid__host-details__field-value">
-                        <span title= {{get data cellData.field}}>{{get data cellData.field}}</span>
-                      </div>
+                      {{rsa-content-definition label=(t cellData.title) value=(if (get data cellData.field) (get data cellData.field) '-')}}
                     </vbox>
                   {{/if}}
                 {{/each}}
@@ -60,7 +59,9 @@
             {{/each}}
           </vbox>    
         </hbox>
-        <div class="rsa-context-panel__grid__border"></div>
+        {{#if (gt getDataSourceData.length 1)}}
+          <div class="rsa-context-panel__grid__border"></div>
+        {{/if}}
       {{/each}}
     </div>
   {{/if}}

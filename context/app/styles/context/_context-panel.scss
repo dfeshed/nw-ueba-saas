@@ -1,10 +1,10 @@
 $font-highlight-color: rsa-color(gray, lighter);
 $font-fade-color: rsa-color(gray, light);
 $panelBackgroundImage:
-radial-gradient(circle at 0px 25%, rsa-color(blue, darker, .1) 0, rsa-color(blue, dark, 0) 65%),
-radial-gradient(circle at 70% 0px, rsa-color(blue, darker, .1) 0, rsa-color(blue, dark, 0) 65%),
-radial-gradient(circle at 35% 65%, rsa-color(blue, darker, .1) 0, rsa-color(blue, dark, 0) 65%),
-radial-gradient(circle at 85% 85%, rsa-color(blue, darker, .1) 0, rsa-color(blue, dark, 0) 65%);
+radial-gradient(circle at 0px 25%, rsa-color(gray, darker, .1) 0, rsa-color(gray, dark, 0) 65%),
+radial-gradient(circle at 70% 0px, rsa-color(gray, darker, .1) 0, rsa-color(gray, dark, 0) 65%),
+radial-gradient(circle at 35% 65%, rsa-color(gray, darker, .1) 0, rsa-color(gray, dark, 0) 65%),
+radial-gradient(circle at 85% 85%, rsa-color(gray, darker, .1) 0, rsa-color(gray, dark, 0) 65%);
 .panel-content.bottom-right {
   bottom: -1rem;
   left: calc(20% - 1rem - 7px);
@@ -102,7 +102,7 @@ radial-gradient(circle at 85% 85%, rsa-color(blue, darker, .1) 0, rsa-color(blue
     position: relative;
     height: calc(100% - 100px);
     background-image: $panelBackgroundImage;
-    background-color: rsa-color(gray, darker);
+    background-color: rsa-color(gray, darkest);
   }
   &__body_size{
     height: 100%
@@ -116,17 +116,17 @@ radial-gradient(circle at 85% 85%, rsa-color(blue, darker, .1) 0, rsa-color(blue
     width: 100%;
     height: 100%;
     background-image: $panelBackgroundImage;
-    background-color: rsa-color(gray, darker);
+    background-color: rsa-color(gray, darkest);
   }
 
   &__endpoint{
     height: 100%;
     &__machines{
-      height: 200px;
+      height: 250px;
       overflow: hidden;
     }
     &__data-table{
-      height: calc(100% - 200px);
+      height: calc(100% - 250px);
       display: flex;
       >div {
         border: 1px solid rsa-color(black, null, $rsa-nearly-transparent);
@@ -166,6 +166,9 @@ radial-gradient(circle at 85% 85%, rsa-color(blue, darker, .1) 0, rsa-color(blue
     &__Score_width{
       max-width: 12%;
     }
+    &__group-data-header{
+      padding-left: 0;
+    }
 
     &__risk-badge {
       max-width: 180px;
@@ -175,6 +178,9 @@ radial-gradient(circle at 85% 85%, rsa-color(blue, darker, .1) 0, rsa-color(blue
       }
       .details .score {
         color: rsa-color(orange);
+      }
+      &__default {
+        padding: 1.5rem;
       }
     }
 
@@ -207,8 +213,12 @@ radial-gradient(circle at 85% 85%, rsa-color(blue, darker, .1) 0, rsa-color(blue
       left:0px;
       right:-60%;
     }
-    .link{
+    .link a {
       color:rsa-color(blue,base);
+      text-decoration:none;
+    }
+    .link:hover {
+      display:block;
       text-decoration:underline;
     }
     &__heading-text {
@@ -251,8 +261,13 @@ radial-gradient(circle at 85% 85%, rsa-color(blue, darker, .1) 0, rsa-color(blue
       padding: rsa-whitespace();
     }
     &__host-details,&__archer-details,&__ad-details{
+      padding-top: rsa-whitespace();
+      .value {
+        word-wrap: break-word;
+      }
       vbox {
         padding-left: rsa-whitespace(less);
+        min-height: 50px;
       }
       &__tetheredPanel {
         width: rsa-whitespace(less);
@@ -293,11 +308,6 @@ radial-gradient(circle at 85% 85%, rsa-color(blue, darker, .1) 0, rsa-color(blue
         max-width: 25%;
         @include rsa-font(default, small);
       }
-    }
-    &__archer-details,&__ad-details {
-      vbox{
-        min-height: 50px;
-     }
     }
 
     &__module-details, &__iioc-details ,&__panel {

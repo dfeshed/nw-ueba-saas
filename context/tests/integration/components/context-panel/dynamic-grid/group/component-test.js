@@ -13,6 +13,6 @@ test('it renders', function(assert) {
   this.set('data', data);
   this.set('title', title);
   this.set('index', index);
-  this.render(hbs`{{context-panel/dynamic-grid/group data=data title=title index=index}}`);
+  this.render(hbs`{{context-panel/dynamic-grid/group groupData=data title=title index=index}}`);
   assert.ok(this.$().text().trim().indexOf('3') > -1);
 });
