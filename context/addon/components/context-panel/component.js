@@ -3,13 +3,13 @@ import { warn, log } from 'ember-debug';
 import Component from 'ember-component';
 import connect from 'ember-redux/components/connect';
 import computed from 'ember-computed-decorators';
-import { initializeContextPanel } from 'context/actions/context-creators';
+import { initializeContextPanel, restoreDefault } from 'context/actions/context-creators';
 import liveConnectObj from 'context/config/liveconnect-response-schema';
 import layout from './template';
 import service from 'ember-service/inject';
 import { isEmpty } from 'ember-utils';
 import { isEmberArray } from 'ember-array/utils';
-import { once, next, schedule } from 'ember-runloop';
+import { once, next, schedule, later } from 'ember-runloop';
 import EmberObject from 'ember-object';
 import { contextHelpIds } from 'context/config/help-ids';
 
@@ -21,7 +21,8 @@ const stateToComputed = ({ context }) => ({
 });
 
 const dispatchToActions = {
-  initializeContextPanel
+  initializeContextPanel,
+  restoreDefault
 };
 
 const ContextComponent = Component.extend({
@@ -33,7 +34,6 @@ const ContextComponent = Component.extend({
   contextualHelp: service(),
 
   contextData: null,
-  initializedOnce: false,
   isDisplayed: false,
   model: null,
   helpId: contextHelpIds.InvestigateHelpIds,
@@ -58,8 +58,11 @@ const ContextComponent = Component.extend({
     if (!entityId || !entityType) {
       return;
     }
-    once(this, this._initializeContextPanel);
+    later(() => {
+      once(this, this._initializeContextPanel);
+    }, 400);
   },
+
   _initializeContextPanel() {
     const { entityId, entityType } = this.getProperties('entityId', 'entityType');
     this.send('initializeContextPanel', { entityId, entityType });
@@ -195,6 +198,7 @@ const ContextComponent = Component.extend({
     next(() => {
       if (this._needToClosePanel(target)) {
         this.sendAction('closePanel');
+        this.send('restoreDefault');
       }
     });
   },
@@ -218,6 +222,7 @@ const ContextComponent = Component.extend({
   actions: {
     closeAction() {
       this.sendAction('closePanel');
+      this.send('restoreDefault');
     },
     goToHelp(moduleId, topicId) {
       this.get('contextualHelp').goToHelp(moduleId, topicId);

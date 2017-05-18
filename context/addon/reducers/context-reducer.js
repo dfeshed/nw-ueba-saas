@@ -16,6 +16,9 @@ const initialState = {
 };
 
 const context = handleActions({
+  [ACTION_TYPES.RESTORE_DEFAULT]: () => ({
+    ...initialState
+  }),
   [ACTION_TYPES.INITIALIZE_CONTEXT_PANEL]: (state, { payload }) => ({
     ...state,
     activeTabName: null,

@@ -3,6 +3,12 @@ import { fetchData } from './fetch';
 import dataSourceMetaMap from 'context/config/dynamic-tab';
 import dataSourceCoulmns from 'context/config/data-sources';
 
+const restoreDefault = () => {
+  return {
+    type: ACTION_TYPES.RESTORE_DEFAULT
+  };
+};
+
 const updateActiveTab = (activeTab) => {
   return {
     type: ACTION_TYPES.UPDATE_ACTIVE_TAB,
@@ -124,5 +130,6 @@ const initializeContextPanel = ({ entityId, entityType }) => {
 export {
   updateActiveTab,
   getDataSources,
-  initializeContextPanel
+  initializeContextPanel,
+  restoreDefault
 };

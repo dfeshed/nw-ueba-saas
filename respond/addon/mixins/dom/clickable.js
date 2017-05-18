@@ -104,7 +104,6 @@ export default Mixin.create({
 
     if (action && data) {
       action(data, e);
-      return false; // prevent bubbling
     }
 
     return true;
