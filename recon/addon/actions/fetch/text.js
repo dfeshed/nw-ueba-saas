@@ -1,6 +1,6 @@
 import { streamRequest } from 'streaming-data/services/data-access/requests';
 import { buildBaseQuery, addStreaming, addDecode } from '../util/query-util';
-import { timedBatchResponse } from '../util/execute-util';
+import { timedBatchResponse, BATCH_TYPES } from '../util/execute-util';
 
 const BATCH_CHARACTER_SIZE = 10000;
 const TIME_BETWEEN_BATCHES = 800;
@@ -17,6 +17,7 @@ const fetchTextData = (
   dispatchPage,
   dispatchError
 ) => {
+
   const basicQuery = buildBaseQuery(endpointId, eventId);
   const streamingQuery = addStreaming(basicQuery, packetsPageSize);
   const decodeQuery = addDecode(streamingQuery, decode);
@@ -25,6 +26,7 @@ const fetchTextData = (
     modelName: 'reconstruction-text-data',
     query: decodeQuery,
     onResponse: timedBatchResponse(
+      BATCH_TYPES.TEXT,
       dispatchPage,
       selector,
       BATCH_CHARACTER_SIZE,

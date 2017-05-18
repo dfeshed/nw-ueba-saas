@@ -3,6 +3,12 @@ import { later, next } from 'ember-runloop';
 const BATCH_CHARACTER_SIZE = 10;
 const WAIT = 100;
 
+const batchCancellations = {};
+
+export const BATCH_TYPES = {
+  TEXT: 'TEXT'
+};
+
 // Used to delay API responses using a run.later.
 // Allows rendering to keep up.
 //
@@ -25,18 +31,42 @@ export const delayedResponse = (cb, selector, time = WAIT) => {
  * that determine when to flush the queue
  */
 export const timedBatchResponse = (
+  batchType,
   batchCallback,
   selector,
   batchSize = BATCH_CHARACTER_SIZE,
   time = WAIT
 ) => {
   let done = false;
+  let abort = false;
   const responsesQueue = [];
 
+  // if a previous request exists for the same batchType
+  // call the cancel function for that request so that it
+  // stops batching
+  if (batchCancellations[batchType]) {
+    batchCancellations[batchType]();
+  }
+
+  // register cancellation callback for this batch request,
+  // if another request comes in for same type
+  // need to cancel previous request
+  batchCancellations[batchType] = () => {
+    abort = true;
+  };
+
   const timeoutCallback = () => {
-    // If no more left, and the response has finished
-    // then we are done, no more recursion
+    // If this batch should be aborted, exit out of recursion
+    if (abort) {
+      return;
+    }
+
+    // If no more left, and the response has finished, exit out of recursion
     if (responsesQueue.length === 0 && done) {
+      // ended gracefully, remove the cancellation callback
+      if (batchCancellations[batchType]) {
+        delete batchCancellations[batchType]();
+      }
       return;
     }
 
@@ -72,6 +102,13 @@ export const timedBatchResponse = (
   processBatch();
 
   return (response) => {
+
+    // If batching cancelled because another batch has started
+    // then disregard any responses coming in
+    if (abort) {
+      return;
+    }
+
     const data = selector(response);
     // TODO
     // rather than use the full length
