@@ -182,7 +182,7 @@ public class ProcessInfoServiceImpl implements ProcessInfoService {
                 return false;
             }
 
-            String command = Files.lines(processCommandFilePath).findFirst().get();
+            String command = Files.lines(processCommandFilePath).findFirst().orElse("Bad Command missing param");
             if(!command.contains(JAVA_PROCESS_COMMAND))
             {
                 logger.debug("process for pid={} is not a java process",pid);
