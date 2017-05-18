@@ -15,22 +15,24 @@
   }}
 {{/if}}
 
-{{#if textContent}}
-  <div class="scroll-box">
-    {{#each visibleText as |text|}}
-      {{recon-event-detail/single-text
-        isLog=isLogEvent
-        isSticky=false
-        metaToHighlight=metaToHighlight
-        packet=text
-        showMoreClicked=(action 'showMoreClicked')
-      }}
-    {{/each}}
-  </div>
-  {{recon-pager
-    eventIndex=eventIndex
-    eventTotal=eventTotal
-  }}
-{{else}}
-  {{rsa-panel-message message=(t 'recon.error.noTextContentData')}}
+{{#if contentRetrieved}}
+  {{#if textContent}}
+    <div class="scroll-box">
+      {{#each visibleText as |text|}}
+        {{recon-event-detail/single-text
+          isLog=isLogEvent
+          isSticky=false
+          metaToHighlight=metaToHighlight
+          packet=text
+          showMoreClicked=(action 'showMoreClicked')
+        }}
+      {{/each}}
+    </div>
+    {{recon-pager
+      eventIndex=eventIndex
+      eventTotal=eventTotal
+    }}
+  {{else}}
+    {{rsa-panel-message message=(t 'recon.error.noTextContentData')}}
+  {{/if}}
 {{/if}}
