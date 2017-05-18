@@ -51,13 +51,10 @@
     .rsa-form-input {
       margin: rsa-whitespace() rsa-whitespace(least) 0 rsa-whitespace(least);
     }
-    .rsa-form-switch {
+    .x-toggle-component {
       position: absolute;
       right: rsa-whitespace();
-
-      .x-toggle-component {
-        vertical-align: middle;
-      }
+      // vertical-align: middle;
     }
   }
 

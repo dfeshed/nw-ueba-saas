@@ -9,15 +9,18 @@
   }
 }
 
-.panel-content.standard {
-  border: 1px solid rsa-color(blue);
-
-  svg line {
-    stroke: rsa-color(blue);
-  }
-}
-
 .panel-content {
+  &.standard {
+    border: 1px solid rsa-color(grey);
+    background-color: rsa-color(grey);
+    svg {
+      line, polygon {
+        stroke: rsa-color(grey);
+        fill: rsa-color(grey);
+      }
+    }
+  }
+
   header {
     padding: rsa-whitespace(less) rsa-whitespace();
   }
@@ -32,6 +35,12 @@
     padding: 0 rsa-whitespace() rsa-whitespace(less);
     max-width: 12.5rem;
     word-wrap: break-word;
+  }
+
+  > p {
+    max-width: 180px;
+    min-width: auto;
+    padding: 3px 8px 4px;
   }
 }
 

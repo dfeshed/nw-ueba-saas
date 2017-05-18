@@ -2,10 +2,14 @@
   <section class="filter-option created-filter">
     <hbox class="time-range-label">
       <h2>{{ t 'respond.explorer.filters.timeRange'}}</h2>
-      <label class="rsa-form-switch" {{action 'toggleCustomDate' }}>
-        {{x-toggle value=hasCustomDate onToggle=(action 'toggleCustomDate')}}
-        {{t 'respond.explorer.filters.customDateRange'}}
-      </label>
+      {{#x-toggle
+        showLabels=true
+        onLabel=(t 'respond.explorer.filters.customDateRange')
+        value=(readonly hasCustomDate)
+        onToggle=(action 'toggleCustomDate') as |toggle|}}
+        {{toggle.switch}}
+        {{toggle.onLabel value=(readonly (not hasCustomDate))}}
+      {{/x-toggle}}
     </hbox>
     {{#liquid-bind hasCustomDate use=(if hasCustomDate "toUp" "toDown") as |currentIsCustomRange|}}
       {{#if currentIsCustomRange}}

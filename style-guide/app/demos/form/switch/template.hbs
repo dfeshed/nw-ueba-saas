@@ -6,40 +6,55 @@
   <fill block class="scroll-box">
   {{#spec-category title="States"}}
     {{#spec-member title="Default"}}
-      {{x-toggle value=toggledA onToggle=(action (mut toggledA))}}
-
+      {{x-toggle
+        value=toggledA
+        onToggle=(action (mut toggledA))
+      }}
       {{!-- BEGIN-SNIPPET switch1
-      {{x-toggle value=toggledA onToggle=(action (mut toggledA))}}
+      {{x-toggle
+        value=toggledA
+        onToggle=(action (mut toggledA))
+      }}
       END-SNIPPET --}}
       {{code-snippet name="switch1.hbs"}}
     {{/spec-member}}
 
     {{#spec-member title="Disabled"}}
-      <label class="rsa-form-switch">
-        {{x-toggle disabled=true value=toggledC onToggle=(action (mut toggledC))}}
-      </label>
-
+      {{x-toggle
+        disabled=true
+        value=toggledC
+        onToggle=(action (mut toggledC))
+      }}
       {{!-- BEGIN-SNIPPET switch3
-      <label class="rsa-form-switch">
-        {{x-toggle disabled=true value=toggledC onToggle=(action (mut toggledC))}}
-      </label>
+      {{x-toggle
+        disabled=true
+        value=toggledC
+        onToggle=(action (mut toggledC))
+      }}
       END-SNIPPET --}}
       {{code-snippet name="switch3.hbs"}}
     {{/spec-member}}
   {{/spec-category}}
 
   {{#spec-category title="Presentations"}}
-    {{#spec-member title="With Label"}}
-      <label class="rsa-form-switch">
-        {{x-toggle value=toggledB onToggle=(action (mut toggledB))}}
-        Switch Value label
-      </label>
-
+    {{#spec-member title="With One Clickable Label"}}
+      {{#x-toggle
+        showLabels=true
+        onLabel='Switch Value label'
+        value=(readonly toggledB)
+        onToggle=(action (mut toggledB)) as |toggle|}}
+        {{toggle.switch}}
+        {{toggle.onLabel value=(readonly (not toggledB))}}
+      {{/x-toggle}}
       {{!-- BEGIN-SNIPPET switch2
-      <label class="rsa-form-switch" {{action 'flipValue' 'toggledB'}}>
-        {{x-toggle value=toggledB onToggle=(action (mut toggledB))}}
-        Switch Value label
-      </label>
+      {{#x-toggle
+        showLabels=true
+        onLabel='Switch Value label'
+        value=(readonly toggledB)
+        onToggle=(action (mut toggledB)) as |toggle|}}
+        {{toggle.switch}}
+        {{toggle.onLabel value=(readonly (not toggledB))}}
+      {{/x-toggle}}
       END-SNIPPET --}}
       {{code-snippet name="switch2.hbs"}}
     {{/spec-member}}
