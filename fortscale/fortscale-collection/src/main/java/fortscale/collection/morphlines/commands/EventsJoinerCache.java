@@ -102,7 +102,7 @@ public class EventsJoinerCache implements Closeable {
 		this.instanceId = instanceId;
 		this.currentRecordDateField = currentRecordDateField;
 		this.isClosed = false;
-		this.records = new HashMap<String, Record>();
+		this.records = new HashMap<>();
 
 		load();
 	}
@@ -160,7 +160,7 @@ public class EventsJoinerCache implements Closeable {
 
 		if (repository != null) {
 			// store all cache records into mongo
-			List<CachedRecord> batchToInsert = new LinkedList<CachedRecord>();
+			List<CachedRecord> batchToInsert = new LinkedList<>();
 			for (String key : records.keySet()) {
 				CachedRecord cachedRecord = new CachedRecord();
 				cachedRecord.setCacheName(instanceId);
