@@ -1,7 +1,7 @@
 {{#rsa-content-tethered-panel-trigger panel='payloadPanel'}}
   {{#x-toggle
     onLabel=(t 'recon.packetView.payloadToggleLabel')
-    onToggle=(action '_togglePayloadOnly')
+    onToggle=(action 'togglePayloadOnly')
     showLabels=true
     value=(readonly isPayloadOnly) as |toggle|}}
     {{toggle.switch}}
