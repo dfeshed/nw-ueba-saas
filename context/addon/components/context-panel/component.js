@@ -11,6 +11,7 @@ import { isEmpty } from 'ember-utils';
 import { isEmberArray } from 'ember-array/utils';
 import { once, next, schedule } from 'ember-runloop';
 import EmberObject from 'ember-object';
+import { contextHelpIds } from 'context/config/help-ids';
 
 const stateToComputed = ({ context }) => ({
   dataSources: context.dataSources,
@@ -29,11 +30,13 @@ const ContextComponent = Component.extend({
 
   request: service(),
   eventBus: service(),
+  contextualHelp: service(),
 
   contextData: null,
   initializedOnce: false,
   isDisplayed: false,
   model: null,
+  helpId: contextHelpIds.InvestigateHelpIds,
 
   @computed('lookupData.[]', 'dataSources', 'errorMessage')
   isReady(lookupData, dataSources, errorMessage) {
@@ -215,6 +218,9 @@ const ContextComponent = Component.extend({
   actions: {
     closeAction() {
       this.sendAction('closePanel');
+    },
+    goToHelp(moduleId, topicId) {
+      this.get('contextualHelp').goToHelp(moduleId, topicId);
     }
   }
 

@@ -45,7 +45,16 @@
     float: right;
     transform: translate(-100%, 0);
     color: rsa-color(gray, light);
-    margin-top: rsa-whitespace(less);
+    margin-top: 0.8rem;
+  }
+
+  &__header-icons {
+    padding-left: rsa-whitespace(base);
+  }
+
+  &__help-icon {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
   }
 
   &__unsafe {
