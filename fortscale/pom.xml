@@ -151,6 +151,7 @@
 		<syslog-java-client.version>1.0.6</syslog-java-client.version>
 		<commons-validator.version>1.4.1</commons-validator.version>
 		<jacoco-maven-plugin.version>0.7.9</jacoco-maven-plugin.version>
+		<cron-utils.version>5.0.5</cron-utils.version>
 	</properties>
 
 	<dependencyManagement>
@@ -614,7 +615,12 @@
 			<artifactId>guava</artifactId>
 			<version>${guava.version}</version>
 		</dependency>
-	</dependencies>
+        <dependency>
+            <groupId>com.cronutils</groupId>
+            <artifactId>cron-utils</artifactId>
+            <version>${cron-utils.version}</version>
+        </dependency>
+    </dependencies>
 
 	</dependencyManagement>
 	<dependencies>
@@ -864,6 +870,8 @@
 		<module>fortscale-utils</module>
 		<module>fortscale-global-config</module>
 		<module>fortscale-domain</module>
+		<module>presidio-ade-domain</module>
+		<module>presidio-ade-sdk</module>
 		<module>fortscale-ml</module>
 		<module>fortscale-services</module>
 		<module>fortscale-aggregation</module>
