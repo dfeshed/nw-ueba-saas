@@ -9,6 +9,8 @@ from airflow.utils.state import State
 from presidio.utils.airflow.operators.jar_operator import JarOperator
 
 DEFAULT_DATE = datetime(2014, 1, 1)
+JAR_PATH = '/home/presidio/dev-projects/presidio-core/presidio-workflows/tests/resources/jars/test.jar'
+MAIN_CLASS = 'HelloWorld.Main'
 
 
 @pytest.fixture
@@ -95,8 +97,8 @@ def test_jvm_memory_allocation(default_args, java_args):
     jvm_args = {
         'xms': 500,
         'xmx': 2050,
-        'jar_path': '/home/presidio/dev-projects/presidio-core/presidio-workflows/tests/resources/jars/test.jar',
-        'main_class': 'HelloWorld.Main',
+        'jar_path': JAR_PATH,
+        'main_class': MAIN_CLASS,
     }
 
     dag = DAG(
@@ -115,8 +117,8 @@ def test_timezone(default_args, java_args):
     logging.info('Test timezone:')
     jvm_args = {
         'timezone': '-Duser.timezone=America/New_York',
-        'jar_path': '/home/presidio/dev-projects/presidio-core/presidio-workflows/tests/resources/jars/test.jar',
-        'main_class': 'HelloWorld.Main',
+        'jar_path': JAR_PATH,
+        'main_class': MAIN_CLASS,
     }
 
     dag = DAG(
@@ -135,8 +137,8 @@ def test_logback(default_args, java_args):
     logging.info('Test logback:')
     jvm_args = {
         'java_overriding_logback_conf_path': '/home/presidio/dev-projects/presidio-core/presidio-workflows/tests/resources/xmls/test.xml',
-        'jar_path': '/home/presidio/dev-projects/presidio-core/presidio-workflows/tests/resources/jars/test.jar',
-        'main_class': 'HelloWorld.Main',
+        'jar_path': JAR_PATH,
+        'main_class': MAIN_CLASS,
     }
 
     dag = DAG(
@@ -157,8 +159,8 @@ def test_remote_debug(default_args, java_args):
         'remote_debug_enabled': True,
         'remote_debug_port': 9200,
         'remote_debug_suspend': False,
-        'jar_path': '/home/presidio/dev-projects/presidio-core/presidio-workflows/tests/resources/jars/test.jar',
-        'main_class': 'HelloWorld.Main',
+        'jar_path': JAR_PATH,
+        'main_class': MAIN_CLASS,
     }
 
     dag = DAG(
@@ -176,8 +178,8 @@ def test_jar_path(default_args, java_args):
     """
     logging.info('test jar path:')
     jvm_args = {
-        'jar_path': '/home/presidio/dev-projects/presidio-core/presidio-workflows/tests/resources/jars/test.jar',
-        'main_class': 'HelloWorld.Main',
+        'jar_path': JAR_PATH,
+        'main_class': MAIN_CLASS,
     }
     dag = DAG(
         "test_jar_path", default_args=default_args, schedule_interval=timedelta(1))
@@ -198,8 +200,8 @@ def test_all_params(default_args, java_args):
         'xmx': 2049,
         'remote_debug_enabled': True,
         'remote_debug_port': 9200,
-        'jar_path': '/home/presidio/dev-projects/presidio-core/presidio-workflows/tests/resources/jars/test.jar',
-        'main_class': 'HelloWorld.Main',
+        'jar_path': JAR_PATH,
+        'main_class': MAIN_CLASS,
         'java_overriding_logback_conf_path': '/home/presidio/dev-projects/presidio-core/presidio-workflows/tests/resources/xmls/test.xml',
         'java_path': '/usr/bin/java',
         'timezone': '-Duser.timezone=UTC',
@@ -227,8 +229,8 @@ def test_jmx(default_args, java_args):
     jvm_args = {
         'jmx_enabled': True,
         'jmx_port': 9302,
-        'jar_path': '/home/presidio/dev-projects/presidio-core/presidio-workflows/tests/resources/jars/test.jar',
-        'main_class': 'HelloWorld.Main',
+        'jar_path': JAR_PATH,
+        'main_class': MAIN_CLASS,
     }
 
     dag = DAG(
@@ -246,7 +248,7 @@ def test_no_main_class(default_args, java_args):
     """
     logging.info('test jar operator without main class:')
     jvm_args = {
-        'jar_path': '//home/presidio/dev-projects/presidio-core/presidio-workflows/tests/resources/jars/test.jar',
+        'jar_path': JAR_PATH,
     }
 
     dag = DAG(
@@ -282,7 +284,7 @@ def test_no_jar(default_args, java_args):
     logging.info('test jar operator without jar file:')
     jvm_args = {
         'jar_path': '/home/presidio/dev-projects/presidio-core/presidio-workflows/tests/resources/jars/no_jar.jar',
-        'main_class': 'HelloWorld.Main',
+        'main_class': MAIN_CLASS,
     }
 
     dag = DAG(

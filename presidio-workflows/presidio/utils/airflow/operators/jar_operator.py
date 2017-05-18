@@ -1,7 +1,6 @@
 import logging
 import os
 from ConfigParser import SafeConfigParser
-
 from airflow.operators.bash_operator import BashOperator
 from airflow.utils.decorators import apply_defaults
 
@@ -48,7 +47,7 @@ class JarOperator(BashOperator):
         parser = SafeConfigParser()
         # todo: file should be imported from package?
         parser.read(
-            '/home/presidio/dev-projects/presidio-core/presidio-workflows/presidio/configurations/java/config.ini')
+            '/home/presidio/dev-projects/presidio-core/presidio-workflows/presidio/resources/java/config.ini')
         default_options_items = parser.items('default_values')
         args = dict(default_options_items + self.jvm_args.items())
         return args;
