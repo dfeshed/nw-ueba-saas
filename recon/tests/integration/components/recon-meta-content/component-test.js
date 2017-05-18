@@ -35,7 +35,9 @@ test('several meta items render correctly', function(assert) {
     ]
   ];
 
-  new DataHelper(this.get('redux')).initializeData({ meta });
+  new DataHelper(this.get('redux'))
+    .initializeData({ meta })
+    .setViewToText();
   this.render(hbs`{{recon-meta-content}}`);
   return wait().then(() => {
     assert.equal(this.$('.recon-meta-content-item').length, 5);
@@ -43,7 +45,9 @@ test('several meta items render correctly', function(assert) {
 });
 
 test('zero meta items render correctly', function(assert) {
-  new DataHelper(this.get('redux')).initializeData({ meta: [] });
+  new DataHelper(this.get('redux'))
+    .initializeData({ meta: [] })
+    .setViewToText();
   this.render(hbs`{{recon-meta-content}}`);
   return wait().then(() => {
     assert.equal(this.$('.recon-meta-content-item').length, 0);

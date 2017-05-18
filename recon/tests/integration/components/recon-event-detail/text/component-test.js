@@ -23,7 +23,9 @@ test('text view renders encoded text', function(assert) {
 });
 
 test('text view renders decoded text', function(assert) {
-  new DataHelper(this.get('redux')).populateTexts(true);
+  new DataHelper(this.get('redux'))
+    .setViewToText()
+    .populateTexts(true);
   this.render(hbs`{{recon-event-detail/text-content}}`);
   return wait().then(() => {
     const str = this.$().text().trim().replace(/\s/g, '').substring(0, 200);

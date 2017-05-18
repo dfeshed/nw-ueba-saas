@@ -13,7 +13,9 @@ moduleForComponent('recon-event-header', 'Integration | Component | recon event 
 });
 
 test('headerItems render correctly', function(assert) {
-  new DataHelper(this.get('redux')).initializeData();
+  new DataHelper(this.get('redux'))
+    .setViewToText()
+    .initializeData();
   this.render(hbs`{{recon-event-header}}`);
   return wait().then(() => {
     assert.equal(this.$('.header-item').length, 10);
@@ -24,6 +26,7 @@ test('headerItems render correctly', function(assert) {
 
 test('isHeaderOpen can toggle header visibility', function(assert) {
   const dataHelper = new DataHelper(this.get('redux'))
+    .setViewToText()
     .initializeData()
     .toggleHeader();
   this.render(hbs`{{recon-event-header}}`);

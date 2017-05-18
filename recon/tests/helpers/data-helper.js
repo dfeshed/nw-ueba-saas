@@ -64,6 +64,11 @@ class DataHelper {
     return this;
   }
 
+  setViewToPacket() {
+    _setViewTo(this.redux, RECON_VIEW_TYPES_BY_NAME.PACKET);
+    return this;
+  }
+
   toggleHeader() {
     this.redux.dispatch(VisualActions.toggleReconHeader());
     return this;

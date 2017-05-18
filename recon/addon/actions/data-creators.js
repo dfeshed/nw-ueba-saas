@@ -14,7 +14,7 @@ import { getStoredState } from 'redux-persist';
 
 import * as ACTION_TYPES from './types';
 import { eventTypeFromMetaArray } from 'recon/reducers/meta/selectors';
-import { RECON_VIEW_TYPES_BY_NAME } from '../utils/reconstruction-types';
+import { RECON_VIEW_TYPES_BY_NAME, doesStateHaveViewData } from 'recon/utils/reconstruction-types';
 import {
   fetchAliases,
   fetchLanguage,
@@ -116,7 +116,7 @@ const setNewReconView = (newView) => {
     // in state. Means this recon view, for this event, has already had
     // its data fetched. On INITIALIZE the recon view data is wiped out
     const reconState = getState().recon;
-    if (!newView.doesStateHaveViewData(reconState)) {
+    if (!doesStateHaveViewData(reconState, newView)) {
       dispatch({ type: ACTION_TYPES.CONTENT_RETRIEVE_STARTED });
 
       // if is file recon, time to kick of request
@@ -255,7 +255,7 @@ const _determineReconView = (meta) => {
       dispatch(setNewReconView(forcedView));
     } else {
       getStoredState({}, (err, storedState) => {
-        let newView = getState().recon.visuals.currentReconView;
+        let newView = getState().recon.visuals.defaultReconView;
         if (!err && storedState && storedState.recon && storedState.recon.visuals.currentReconView) {
           newView = RECON_VIEW_TYPES_BY_NAME[storedState.recon.visuals.currentReconView.name];
         }

@@ -1,42 +1,35 @@
-{{!--
-do not bother rendering anything if we don't have meta yet because
-it is meta that lets us make the right decision about what to render,
-waiting lets us avoid flickers of default state/content
---}}
 
 <hbox class='heading'>
-  {{#if hasMeta}}
-    {{#unless isLogEvent}}
-      <div class="event-title">{{t 'recon.titleBar.titles.network'}}</div>
-      <hr class="event-title seperator">
-      <div class="heading-select">
-        {{#power-select
-          triggerClass='recon-view-selector'
-          onchange=(action 'findNewReconstructionView')
-          options=reconViewsConfig
-          placeholder=(t (concat 'recon.titleBar.views.' currentReconView.id))
-          searchEnabled=false as |option|}}
-          {{t (concat 'recon.titleBar.views.' option.id)}}
-        {{/power-select}}
-      </div>
-      <div class="rsa-nav-tab-group heading-tabs">
-        {{#each reconViewsConfigFull as |viewConfig|}}
-          {{#rsa-nav-tab
-            align='left'
-            isActive=viewConfig.selected
-            click=(action 'findNewReconstructionView' viewConfig)
-          }}
-            <div class="label">{{t (concat 'recon.titleBar.views.' viewConfig.id)}}</div>
-          {{/rsa-nav-tab}}
-        {{/each}}
-      </div>
-    {{else}}
-      <div class="event-title">{{t 'recon.titleBar.titles.log'}}</div>
-      <hr class="event-title seperator">
-      <div class="tview-heading">
-        <div class="tview-label">{{t (concat 'recon.titleBar.views.' currentReconView.id)}}</div>
-      </div>
-    {{/unless}}
+  {{#if isLogEvent}}
+    <div class="event-title">{{t 'recon.titleBar.titles.log'}}</div>
+    <hr class="event-title seperator">
+    <div class="tview-heading">
+      <div class="tview-label">{{t (concat 'recon.titleBar.views.' currentReconView.id)}}</div>
+    </div>
+  {{else}}
+    <div class="event-title">{{t 'recon.titleBar.titles.network'}}</div>
+    <hr class="event-title seperator">
+    <div class="heading-select">
+      {{#power-select
+        triggerClass='recon-view-selector'
+        onchange=(action 'findNewReconstructionView')
+        options=reconViewsConfig
+        placeholder=(t (concat 'recon.titleBar.views.' currentReconView.id))
+        searchEnabled=false as |option|}}
+        {{t (concat 'recon.titleBar.views.' option.id)}}
+      {{/power-select}}
+    </div>
+    <div class="rsa-nav-tab-group heading-tabs">
+      {{#each reconViewsConfigFull as |viewConfig|}}
+        {{#rsa-nav-tab
+          align='left'
+          isActive=viewConfig.selected
+          click=(action 'findNewReconstructionView' viewConfig)
+        }}
+          <div class="label">{{t (concat 'recon.titleBar.views.' viewConfig.id)}}</div>
+        {{/rsa-nav-tab}}
+      {{/each}}
+    </div>
   {{/if}}
 </hbox>
 
@@ -48,44 +41,42 @@ waiting lets us avoid flickers of default state/content
   title=(t 'recon.toggles.header')
 }}
 
-{{#if hasMeta}}
-  {{#unless isLogEvent}}
-    {{rsa-icon
-      active=isRequestShown
-      class='toggle-request header-toggle'
-      click=(action 'toggleRequestData')
-      name='arrow-circle-right-2'
-      title=(t 'recon.toggles.request')}}
+{{#unless isLogEvent}}
+  {{rsa-icon
+    active=isRequestShown
+    class='toggle-request header-toggle'
+    click=(action 'toggleRequestData')
+    name='arrow-circle-right-2'
+    title=(t 'recon.toggles.request')}}
 
-    {{rsa-icon
-      active=isResponseShown
-      class='toggle-response header-toggle'
-      click=(action 'toggleResponseData')
-      name='arrow-circle-left-2'
-      title=(t 'recon.toggles.response')}}
+  {{rsa-icon
+    active=isResponseShown
+    class='toggle-response header-toggle'
+    click=(action 'toggleResponseData')
+    name='arrow-circle-left-2'
+    title=(t 'recon.toggles.response')}}
 
-    {{!--
+  {{!--
 
-    Removing these icons for 11.0 release, not bothering to feature-flag
-    since they don't really work anyway.
+  Removing these icons for 11.0 release, not bothering to feature-flag
+  since they don't really work anyway.
 
-    {{rsa-icon
-      active=true
-      class='header-toggle'
-      disabled=lacksPackets
-      name='view-agenda'
-      title=(t 'recon.toggles.topBottom')}}
+  {{rsa-icon
+    active=true
+    class='header-toggle'
+    disabled=lacksPackets
+    name='view-agenda'
+    title=(t 'recon.toggles.topBottom')}}
 
-    {{rsa-icon
-      class='header-toggle'
-      disabled=lacksPackets
-      name='layout-4'
-      title=(t 'recon.toggles.sideBySide')}}
+  {{rsa-icon
+    class='header-toggle'
+    disabled=lacksPackets
+    name='layout-4'
+    title=(t 'recon.toggles.sideBySide')}}
 
-    --}}
+  --}}
 
-  {{/unless}}
-{{/if}}
+{{/unless}}
 
 {{rsa-icon
   active=isMetaShown

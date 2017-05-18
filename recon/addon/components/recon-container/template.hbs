@@ -1,11 +1,17 @@
-{{recon-event-header}}
+{{#if isReady}}
+  {{recon-event-header}}
 
-<hbox xs="12" class="recon-event-wrapper">
-  {{recon-event-content}}
+  <hbox xs="12" class="recon-event-wrapper">
+    {{recon-event-content}}
 
-  {{#if isMetaShown}}
-    <vbox xs="4" class="event-content-box">
-      {{recon-meta-content}}
-    </vbox>
-  {{/if}}
-</hbox>
+    {{#if isMetaShown}}
+      <vbox xs="4" class="event-content-box">
+        {{recon-meta-content}}
+      </vbox>
+    {{/if}}
+  </hbox>
+{{else}}
+  <div class="recon-loader">
+    {{rsa-loader size='larger'}}
+  </div>
+{{/if}}

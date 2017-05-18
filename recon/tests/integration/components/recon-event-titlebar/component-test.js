@@ -25,60 +25,79 @@ moduleForComponent('recon-event-titlebar', 'Integration | Component | recon even
 });
 
 test('no index or total shows just label for recon type', function(assert) {
-  new DataHelper(this.get('redux')).initializeData(initializeData);
+  new DataHelper(this.get('redux'))
+    .initializeData(initializeData)
+    .setViewToText();
   this.render(hbs`{{recon-event-titlebar }}`);
   assert.equal(this.$('.ember-power-select-trigger').text().trim(), 'Text Analysis');
 });
 
 test('clicking close executes action', function(assert) {
+  new DataHelper(this.get('redux'))
+    .setViewToText();
   this.render(hbs`{{recon-event-titlebar}}`);
   this.$('.rsa-icon-close').click();
-  assert.equal(dispatchSpy.args[0][0].type, ACTION_TYPES.CLOSE_RECON);
+  assert.equal(dispatchSpy.args[1][0].type, ACTION_TYPES.CLOSE_RECON);
 });
 
 test('clicking shrink executes action', function(assert) {
+  new DataHelper(this.get('redux'))
+    .setViewToFile();
   this.render(hbs`{{recon-event-titlebar}}`);
   this.$('.rsa-icon-arrow-right-9').click();
-  assert.equal(dispatchSpy.args[0][0].type, ACTION_TYPES.TOGGLE_EXPANDED);
+  assert.equal(dispatchSpy.args[1][0].type, ACTION_TYPES.TOGGLE_EXPANDED);
 });
 
 test('clicking shrink, then grow, executes multiple actions', function(assert) {
+  new DataHelper(this.get('redux'))
+    .initializeData(initializeData)
+    .setViewToFile();
   this.render(hbs`{{recon-event-titlebar}}`);
   this.$('.rsa-icon-arrow-right-9').click();
   this.$('.rsa-icon-arrow-left-9').click();
 
-  assert.equal(dispatchSpy.args[0][0].type, ACTION_TYPES.TOGGLE_EXPANDED);
-  assert.equal(dispatchSpy.args[1][0].type, ACTION_TYPES.TOGGLE_EXPANDED);
+  assert.equal(dispatchSpy.args[4][0].type, ACTION_TYPES.TOGGLE_EXPANDED);
+  assert.equal(dispatchSpy.args[5][0].type, ACTION_TYPES.TOGGLE_EXPANDED);
 });
 
 test('calls action when reconstruction view is changed', function(assert) {
-  new DataHelper(this.get('redux')).initializeData(initializeData);
+  new DataHelper(this.get('redux'))
+    .initializeData(initializeData)
+    .setViewToText();
   this.render(hbs`{{recon-event-titlebar }}`);
   clickTrigger();
-  assert.ok(dispatchSpy.callCount === 3);
+  assert.ok(dispatchSpy.callCount === 4);
   nativeMouseUp('.ember-power-select-option:contains("File Analysis")');
   // many dispatches called, fourth one is dispatch for recon view change
-  assert.ok(dispatchSpy.callCount === 4);
-  assert.ok(typeof dispatchSpy.args[3][0] === 'function', 'Dispatch called with function (thunk)');
+  assert.ok(dispatchSpy.callCount === 5);
+  assert.ok(typeof dispatchSpy.args[4][0] === 'function', 'Dispatch called with function (thunk)');
 });
 
 test('clicking header toggle executes action', function(assert) {
+  new DataHelper(this.get('redux'))
+    .initializeData(initializeData)
+    .setViewToText();
   this.render(hbs`{{recon-event-titlebar}}`);
   this.$('.rsa-icon-layout-6').click();
-  assert.equal(dispatchSpy.args[0][0].type, ACTION_TYPES.TOGGLE_HEADER);
+  assert.equal(dispatchSpy.args[4][0].type, ACTION_TYPES.TOGGLE_HEADER);
 });
 
 test('clicking meta toggle executes actions', function(assert) {
+  new DataHelper(this.get('redux'))
+    .initializeData(initializeData)
+    .setViewToText();
   this.render(hbs`{{recon-event-titlebar}}`);
   this.$('.rsa-icon-layout-2').click();
-  assert.ok(dispatchSpy.calledOnce, 'Dispatch called once');
-  assert.ok(typeof dispatchSpy.args[0][0] === 'function', 'Dispatch called with function (thunk)');
+  assert.ok(dispatchSpy.callCount, 4);
+  assert.ok(typeof dispatchSpy.args[4][0] === 'function', 'Dispatch called with function (thunk)');
 });
 
 const initializeData = { total: 555, index: 25, meta: [['medium', 1]] };
 
 test('title renders', function(assert) {
-  new DataHelper(this.get('redux')).initializeData(initializeData);
+  new DataHelper(this.get('redux'))
+    .initializeData(initializeData)
+    .setViewToText();
   this.render(hbs`{{recon-event-titlebar}}`);
   return wait().then(() => {
     assert.equal(this.$('.ember-power-select-trigger').text().trim(), 'Text Analysis');
@@ -88,7 +107,9 @@ test('title renders', function(assert) {
 
 test('all views enabled for network sessions', function(assert) {
   assert.expect(3);
-  new DataHelper(this.get('redux')).initializeData({ meta: [['medium', 1]] });
+  new DataHelper(this.get('redux'))
+    .setViewToPacket()
+    .initializeData({ meta: [['medium', 1]] });
   this.render(hbs`{{recon-event-titlebar}}`);
   return wait().then(() => {
     clickTrigger();
@@ -100,7 +121,9 @@ test('all views enabled for network sessions', function(assert) {
 
 test('just text view exists for log events', function(assert) {
   assert.expect(1);
-  new DataHelper(this.get('redux')).initializeData({ meta: [['medium', 32]] }).setViewToText();
+  new DataHelper(this.get('redux'))
+    .initializeData({ meta: [['medium', 32]] })
+    .setViewToText();
   this.render(hbs`{{recon-event-titlebar}}`);
   return wait().then(() => {
     assert.equal(this.$('.event-title').text().trim(), 'Log Event Details');
@@ -109,6 +132,9 @@ test('just text view exists for log events', function(assert) {
 
 test('request/response toggles enabled for packets', function(assert) {
   assert.expect(2);
+  new DataHelper(this.get('redux'))
+    .setViewToPacket()
+    .initializeData({ meta: [['medium', 32]] });
   // set to packets by default
   this.render(hbs`{{recon-event-titlebar}}`);
   return wait().then(() => {
@@ -119,7 +145,9 @@ test('request/response toggles enabled for packets', function(assert) {
 
 test('request/response insure that request, response, Top/Bottom and Side by Side are not generated for logs', function(assert) {
   assert.expect(6);
-  new DataHelper(this.get('redux')).initializeData({ meta: [['medium', 32]] });
+  new DataHelper(this.get('redux'))
+    .setViewToText()
+    .initializeData({ meta: [['medium', 32]] });
   this.render(hbs`{{recon-event-titlebar}}`);
   return wait().then(() => {
     assert.equal(this.$('.rsa-icon-layout-6').length, true, 'Show/Hide Header button should exist for log');

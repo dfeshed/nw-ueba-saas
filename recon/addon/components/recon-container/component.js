@@ -4,16 +4,20 @@ import connect from 'ember-redux/components/connect';
 import observer from 'ember-metal/observer';
 import run from 'ember-runloop';
 
+import { hasReconView } from 'recon/reducers/visuals/selectors';
 import layout from './template';
 import {
   initializeRecon,
   initializeNotifications,
   setIndexAndTotal,
   teardownNotifications
-} from '../../actions/data-creators';
+} from 'recon/actions/data-creators';
 
-const stateToComputed = ({ recon: { visuals, notifications } }) => ({
+const stateToComputed = ({ recon, recon: { visuals, notifications } }) => ({
   isMetaShown: visuals.isMetaShown,
+  // Recon isn't ready until it has figured out which
+  // Recon view is supposed to be displayed
+  isReady: hasReconView(recon),
   isReconExpanded: visuals.isReconExpanded,
   isReconOpen: visuals.isReconOpen,
   stopNotifications: notifications.stopNotifications

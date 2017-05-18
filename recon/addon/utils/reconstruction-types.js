@@ -1,8 +1,9 @@
 import get from 'ember-metal/get';
 
-const doesStateHaveViewData = function(state) {
-  return !!get(state, this.dataKey);
-};
+
+export const doesStateHaveViewData =
+  (state, type) => !!get(state, type.dataKey);
+
 
 /*
  * code: id
@@ -18,22 +19,19 @@ const RECON_VIEW_TYPES = [{
   id: 'text',
   name: 'TEXT',
   component: 'recon-event-detail/text-content',
-  dataKey: 'text.textContent',
-  doesStateHaveViewData
+  dataKey: 'text.textContent'
 }, {
   code: 1,
   id: 'packet',
   name: 'PACKET',
   component: 'recon-event-detail/packets',
-  dataKey: 'packets.packets',
-  doesStateHaveViewData
+  dataKey: 'packets.packets'
 }, {
   code: 2,
   id: 'file',
   name: 'FILE',
   component: 'recon-event-detail/files',
-  dataKey: 'files.files',
-  doesStateHaveViewData
+  dataKey: 'files.files'
 }];
 
 const RECON_VIEW_TYPES_BY_NAME = {};
