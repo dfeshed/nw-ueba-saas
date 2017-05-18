@@ -173,6 +173,7 @@ public class EventsJoinerCache implements Closeable {
 					long recordTs = convertToSeconds(getLongValue(cachedRecord.getRecord(), currentRecordDateField, 0L));
 					//the current record is older than the deprecationTs, don't add the current record to mongo.
 					if (recordTs < deprecationTs) {
+						logger.debug("record with id {} is now deprecated and will not be persisted.", record.getFirstValue("id"));
 						continue;
 					}
 				}
