@@ -385,7 +385,7 @@ public class ProcessInfoServiceImpl implements ProcessInfoService {
         }
         long pid = getCurrentPid();
         logger.info("executing: create pid file {}", pidFilePath);
-        PrintWriter writer;
+        PrintWriter writer=null;
         try {
             File pidFile = new File(pidFilePath);
             File pidDirectory = pidFile.getParentFile();
@@ -405,12 +405,16 @@ public class ProcessInfoServiceImpl implements ProcessInfoService {
             }
             writer = new PrintWriter(pidFile);
             writer.println(pid);
-            writer.close();
+
             logger.info("pid file {} created successfully", pidFilePath);
 
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw new ErrorAccessingPidFile(pidFilePath);
+        }
+        finally {
+            if(writer!=null)
+                writer.close();
         }
     }
 
