@@ -1,7 +1,7 @@
 import Component from 'ember-component';
 import layout from './template';
 import set from 'ember-metal/set';
-import computed from 'ember-computed-decorators';
+import computed, { alias } from 'ember-computed-decorators';
 import { forceSimulation, forceLink, forceManyBody, forceCollide, forceCenter } from 'd3-force';
 import { select } from 'd3-selection';
 import { zoom } from 'd3-zoom';
@@ -12,6 +12,9 @@ import zoomed from './util/zoomed';
 import center from './util/center';
 import arrayToHashKeys from 'component-lib/utils/array/to-hash-keys';
 import run from 'ember-runloop';
+import $ from 'jquery';
+import { max } from 'd3-array';
+import { scaleLinear } from 'd3-scale';
 
 /* global addResizeListener */
 /* global removeResizeListener */
@@ -43,10 +46,10 @@ export default Component.extend({
   // For details, see d3 API docs: https://github.com/mbostock/d3/wiki/Force-Layout
   charge: -1000,
   chargeDistance: 250,
-  linkStrength: 0.5,
+  linkStrength: 0.1,  // weak link strength works better with variable node radii
   linkDistance: 150,
-  centerX: 700,
-  centerY: 450,
+  centerX: null,      // centering forces produce confusing physics for users; disable by default
+  centerY: null,
   alphaInitial: 0.5,
 
   /**
@@ -84,7 +87,20 @@ export default Component.extend({
   },
 
   /**
-   * Configurable radius of the node circles. Assumes all node circles have the same radius.
+   * Configurable maximum radius of the node circles.
+   *
+   * Used when:
+   * (1) computing the endpoints of the links that connect circles (the endpoints lie on the circumferences of the
+   * circles, not the centers of the circles); and
+   * (2) for avoiding node collisions (overlap).
+   *
+   * @type number
+   * @public
+   */
+  nodeMaxRadius: 100,
+
+  /**
+   * Configurable minimum radius of the node circles.
    *
    * Used when:
    * (1) applying a default radius to the nodes data (only for nodes which are missing a radius);
@@ -95,7 +111,42 @@ export default Component.extend({
    * @type number
    * @public
    */
-  nodeRadius: 25,
+  nodeMinRadius: 25,
+
+  /**
+   * Configurable accessor that takes a node data point and returns the corresponding value for the radial axis.
+   * By default this accessor returns the count of events associated with that node.  This is useful for entity graphs
+   * whose node sizes are weighted by event volume. But it's not true in general for all force-layout graphs, so
+   * we'll have to refactor this out if/when we move this component to component-lib for generic use.
+   * @type function
+   * @public
+   */
+  radialAccessor: ((d) => d.events ? d.events.length : 0),
+
+  /**
+   * A linear scale that maps the current domain of radial data to a range of radial sizes.
+   * @assumes Min domain value is 1. This is true for entity graphs where radial axis is the event count, and yields
+   * nicer graphs this way. But it's not true in general for all force-layout graphs, so we'll have to refactor this
+   * out if/when we move this component to component-lib for generic use.
+   * @type {d3.scaleLinear}
+   * @private
+   */
+  @computed('nodeMinRadius', 'nodeMaxRadius', 'data', 'radialAccessor')
+  radialScale(minRadius, maxRadius, data, radialAccessor) {
+    const { nodes } = data || {};
+    const minDomainValue = 1;
+    let maxDomainValue = max(nodes || [], radialAccessor);
+    maxDomainValue = Math.max(minDomainValue, maxDomainValue);
+    return scaleLinear()
+      .domain([
+        minDomainValue,
+        maxDomainValue
+      ])
+      .range([
+        minRadius,
+        maxRadius
+      ]);
+  },
 
   /**
    * Configurable maximum stroke width of the node circles.
@@ -108,6 +159,74 @@ export default Component.extend({
    * @public
    */
   nodeMaxStrokeWidth: 1,
+
+  /**
+   * Configurable minimum stroke width (in pixels) of the link lines.
+   * @type number
+   * @public
+   */
+  linkMinWidth: 2,
+
+  /**
+   * Configurable maximum stroke width (in pixels) of the link lines.
+   * @type number
+   * @public
+   */
+  linkMaxWidth: 10,
+
+  /**
+   * Configurable accessor that takes a link data point and returns the corresponding value for the link stroke width.
+   * By default this acc
+   * @type function
+   * @public
+   */
+  linkWidthAccessor: ((d) => d.events ? d.events.length : 0),
+
+  /**
+   * A linear scale that maps the current domain of link data to a range of link stroke widths.
+   * @assumes Min domain value is 1. This is true for entity graphs where link width is the event count, and yields
+   * nicer graphs this way. But it's not true in general for all force-layout graphs, so we'll have to refactor this
+   * out if/when we move this component to component-lib for generic use.
+   * @type {d3.scaleLinear}
+   * @private
+   */
+  @computed('linkMinWidth', 'linkMaxWidth', 'data', 'linkWidthAccessor')
+  linkWidthScale(linkMinWidth, linkMaxWidth, data, linkWidthAccessor) {
+    const { links } = data || {};
+    const minDomainValue = 1;
+    let maxDomainValue = max(links || [], linkWidthAccessor);
+    maxDomainValue = Math.max(minDomainValue, maxDomainValue);
+    return scaleLinear()
+      .domain([
+        minDomainValue,
+        maxDomainValue
+      ])
+      .range([
+        linkMinWidth,
+        linkMaxWidth
+      ]);
+  },
+
+  /**
+   * Configurable width of the arrow markers that are rendered at the ends of links.
+   * By default, is automatically assigned to be just a hair wider than the maximum link stroke width, but at least 10.
+   * @type number
+   * @public
+   */
+  @computed('linkMaxWidth')
+  arrowWidth(linkMaxWidth) {
+    const width = $.isNumeric(linkMaxWidth) ? linkMaxWidth : 0;
+    return Math.max(10, width + 2);
+  },
+
+  /**
+   * Configurable height of the arrow markers that are rendered at the ends of links.
+   * By default, is automatically assigned to match the arrow widths.
+   * @type number
+   * @public
+   */
+  @alias('arrowWidth')
+  arrowHeight: null,
 
   /**
    * Configurable lower limit on zoom scale.
@@ -213,7 +332,7 @@ export default Component.extend({
 
       // Ensure all the given nodes (if any) have a radius.
       // Doing this here, rather than later, saves us from having to check for this later during the simulation.
-      const radius = this.get('nodeRadius');
+      const radius = this.get('minNodeRadius');
       value.nodes.forEach(function(node) {
         if (!node.r) {
           node.r = radius;
@@ -420,7 +539,7 @@ export default Component.extend({
       chargeDistance,
       centerX,
       centerY,
-      nodeRadius,
+      nodeMaxRadius,
       nodeMaxStrokeWidth
     } = this.getProperties(
       'linkDistance',
@@ -429,7 +548,7 @@ export default Component.extend({
       'chargeDistance',
       'centerX',
       'centerY',
-      'nodeRadius',
+      'nodeMaxRadius',
       'nodeMaxStrokeWidth'
     );
 
@@ -451,14 +570,14 @@ export default Component.extend({
     }
 
     // Define a force the centers the nodes around a given coordinate.
-    if (!isNaN(centerX) && !isNaN(centerY)) {
+    if ($.isNumeric(centerX) && $.isNumeric(centerY)) {
       const centerForce = forceCenter(centerX, centerY);
       simulation.force('center', centerForce);
     }
 
     // Define a force that prevents node collisions (overlap).
     const collideForce = forceCollide()
-      .radius(nodeRadius * 3 + nodeMaxStrokeWidth * 2);
+      .radius(nodeMaxRadius + nodeMaxStrokeWidth * 2);
     simulation.force('collide', collideForce);
 
     // Wire up tick handler that applies simulation coordinates to DOM.

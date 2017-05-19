@@ -1,8 +1,7 @@
-import Ember from 'ember';
 import { drag } from 'd3-drag';
 import { event } from 'd3-selection';
-
-const { run } = Ember;
+import run from 'ember-runloop';
+import { dasherize } from 'ember-string';
 
 const MAX_TEXT_LENGTH = 30;
 
@@ -62,7 +61,7 @@ export default function() {
   // Build node DOM for entering data.
   const nodesEnter = nodesAll.enter();
   const nodesEnterGroup = nodesEnter.append('g')
-    .attr('class', (d) => `rsa-force-layout-node ${d.type}`);
+    .attr('class', (d) => `rsa-force-layout-node ${dasherize(d.type || '')}`);
   nodesEnterGroup.append('circle')
     .attr('class', 'circle')
     .attr('cx', 0)
@@ -83,6 +82,15 @@ export default function() {
       .on('end', run.bind(this, dragended))
   );
 
+  // Now update the radii of all the nodes.
+  const { radialAccessor, radialScale } = this.getProperties('radialAccessor', 'radialScale');
+  const nodesUpdate = nodesEnterGroup.merge(nodesAll);
+  nodesUpdate.selectAll('.circle')
+    .attr('r', (d) => {
+      d.r = radialScale(radialAccessor(d));
+      return d.r;
+    });
+
   const linksAll = this.linksLayer
     .selectAll('.rsa-force-layout-link')
     .data(data.links);
@@ -93,7 +101,7 @@ export default function() {
   // Build link DOM for entering data.
   const linksEnter = linksAll.enter();
   const linksEnterGroup = linksEnter.append('g')
-    .attr('class', (d) => `rsa-force-layout-link ${d.type}`);
+    .attr('class', (d) => `rsa-force-layout-link ${dasherize(d.type || '')}`);
   linksEnterGroup.append('line')
     .attr('class', 'line')
     .attr('x1', 0)
@@ -109,8 +117,16 @@ export default function() {
   linksEnterGroup.append('title')
     .text((d) => d.text);
 
+  // Now update the stroke widths of all the links.
+  const { linkWidthAccessor, linkWidthScale } = this.getProperties('linkWidthAccessor', 'linkWidthScale');
+  const linksUpdate = linksEnterGroup.merge(linksAll);
+  linksUpdate.selectAll('.line')
+    .style('stroke-width', (d) => {
+      return `${linkWidthScale(linkWidthAccessor(d))}px`;
+    });
+
   return {
-    nodes: nodesEnterGroup.merge(nodesAll),
-    links: linksEnterGroup.merge(linksAll)
+    nodes: nodesUpdate,
+    links: linksUpdate
   };
 }

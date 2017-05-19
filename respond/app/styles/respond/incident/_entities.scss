@@ -68,6 +68,7 @@ $entityFileColor: $base0;
       }
       .text {
         fill: rsa-color(gray,light);
+        text-shadow: 0 0 1pt #000;
       }
 
       &.is-hidden {
@@ -92,7 +93,7 @@ $entityFileColor: $base0;
 
 
   #force-layout__arrow {
-    fill: rsa-color(gray,light,$rsa-nearly-opaque);
+    fill: rsa-color(gray,light);
 
     &--disabled {
       fill: rsa-color(gray,base,$rsa-nearly-transparent);
