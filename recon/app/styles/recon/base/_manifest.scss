@@ -7,6 +7,10 @@
 .recon-container {
   flex: 1 1 auto;
   overflow: hidden;
+
+  &.loading {
+    background-color: $baseColorNoTransparency;
+  }
 }
 
 .recon-event-content {

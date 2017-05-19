@@ -34,6 +34,7 @@ const ReconContainer = Component.extend({
   layout,
   tagName: 'vbox',
   classNames: ['recon-container'],
+  classNameBindings: ['isReady::loading'],
 
   // BEGIN Component inputs
   endpointId: null,
