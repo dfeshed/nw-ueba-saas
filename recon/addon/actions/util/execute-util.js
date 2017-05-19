@@ -1,4 +1,4 @@
-import { later, next } from 'ember-runloop';
+import { next } from 'ember-runloop';
 
 const BATCH_CHARACTER_SIZE = 10;
 const WAIT = 100;
@@ -6,19 +6,8 @@ const WAIT = 100;
 const batchCancellations = {};
 
 export const BATCH_TYPES = {
-  TEXT: 'TEXT'
-};
-
-// Used to delay API responses using a run.later.
-// Allows rendering to keep up.
-//
-// Takes a cb to execute later and a selector that
-// returns the data to pass into the callback
-export const delayedResponse = (cb, selector, time = WAIT) => {
-  let count = 1;
-  return (response) => {
-    later(cb, selector(response), time * count++);
-  };
+  TEXT: 'TEXT',
+  PACKET: 'PACKET'
 };
 
 /*
@@ -109,15 +98,20 @@ export const timedBatchResponse = (
       return;
     }
 
-    const data = selector(response);
+    let data = selector(response);
     // TODO
     // rather than use the full length
     // incorporate any truncation length since
     // we know we can render faster once character
     // truncation is done
     if (data) {
-      const size = JSON.stringify(data).length;
-      responsesQueue.push([data, size]);
+      if (!Array.isArray(data)) {
+        data = [data];
+      }
+      data.forEach((d) => {
+        const size = JSON.stringify(d).length;
+        responsesQueue.push([d, size]);
+      });
     } else {
       // The server returned a response with no data, rather than do nothing
       // send an empty array in case there are side effects related to an
