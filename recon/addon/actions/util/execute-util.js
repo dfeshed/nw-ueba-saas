@@ -11,21 +11,29 @@ export const BATCH_TYPES = {
 };
 
 /*
- * Slows down any spammy APIs by batching processing of responses.
- * Takes the processing callback, a selector to retrieve necessary
- * data out of the response, a batchSize to indicate how big batches
- * should be and the time to wait in betweeen batches.
+ * Slows down processing of large amounts of data by batching their processing (usually
+ * into state) according to sizes and times provided. Via the api and memory handlers,
+ * this can handle large amounts of data coming in over time via an API. Can also handle
+ * a big array of data passed in all at once that needs to be broken down.
  *
- * BATCH_CHARACTER_SIZE is the number of __characters__ across the payload of responses
- * that determine when to flush the queue
+ * Configuration Object
+ * - dataHandler: either an apiDataHandler which knows how to handle responses from APIs
+ *   or a memoryDataHandler which handles data already in memory
+ * - batchType: one of `BATCH_TYPES`
+ * - batchCallback: function to call to process a batch
+ * - selector: OPTIONAL, used to find the data to be batched in an API response
+ * - batchSize: OPTIONAL, defaults to BATCH_CHARACTER_SIZE, the size of each batch by
+ *   character count of the items being batched after
+ * - batchGapTime: OPTIONAL, defaults to WAIT, the time between batchCallback executions
  */
-export const timedBatchResponse = (
+export const timedBatchResponse = ({
+  dataHandler,
   batchType,
   batchCallback,
   selector,
   batchSize = BATCH_CHARACTER_SIZE,
-  time = WAIT
-) => {
+  batchGapTime = WAIT
+}) => {
   let done = false;
   let abort = false;
   const responsesQueue = [];
@@ -54,7 +62,7 @@ export const timedBatchResponse = (
     if (responsesQueue.length === 0 && done) {
       // ended gracefully, remove the cancellation callback
       if (batchCancellations[batchType]) {
-        delete batchCancellations[batchType]();
+        delete batchCancellations[batchType];
       }
       return;
     }
@@ -80,7 +88,7 @@ export const timedBatchResponse = (
       next(batchCallback, nextBatch);
     }
 
-    processBatch(time);
+    processBatch(batchGapTime);
   };
 
   const processBatch = (time) => {
@@ -90,11 +98,33 @@ export const timedBatchResponse = (
 
   processBatch();
 
-  return (response) => {
+  return dataHandler(
+    responsesQueue,
+    selector,
+    batchCallback,
+    () => abort,
+    () => done = true);
+};
 
+const _memoryDataHandler = (responsesQueue) => {
+  return (data) => {
+    data.forEach((d) => {
+      const size = JSON.stringify(d).length;
+      responsesQueue.push([d, size]);
+    });
+  };
+};
+
+const _apiDataHandler = (
+  responsesQueue,
+  selector,
+  batchCallback,
+  shouldAbort,
+  done) => {
+  return (response) => {
     // If batching cancelled because another batch has started
     // then disregard any responses coming in
-    if (abort) {
+    if (shouldAbort()) {
       return;
     }
 
@@ -120,7 +150,12 @@ export const timedBatchResponse = (
     }
 
     if (response.meta && response.meta.complete === true) {
-      done = true;
+      done();
     }
   };
+};
+
+export const HANDLERS = {
+  API: _apiDataHandler,
+  MEMORY: _memoryDataHandler
 };

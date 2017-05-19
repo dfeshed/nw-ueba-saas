@@ -1,6 +1,6 @@
 import { streamRequest } from 'streaming-data/services/data-access/requests';
 import { buildBaseQuery, addStreaming, addDecode } from '../util/query-util';
-import { timedBatchResponse, BATCH_TYPES } from '../util/execute-util';
+import { timedBatchResponse, HANDLERS, BATCH_TYPES } from '../util/execute-util';
 
 const BATCH_CHARACTER_SIZE = 10000;
 const TIME_BETWEEN_BATCHES = 800;
@@ -25,13 +25,14 @@ const fetchTextData = (
     method: 'stream',
     modelName: 'reconstruction-text-data',
     query: decodeQuery,
-    onResponse: timedBatchResponse(
-      BATCH_TYPES.TEXT,
-      dispatchPage,
+    onResponse: timedBatchResponse({
+      dataHandler: HANDLERS.API,
+      batchType: BATCH_TYPES.TEXT,
+      batchCallback: dispatchPage,
       selector,
-      BATCH_CHARACTER_SIZE,
-      TIME_BETWEEN_BATCHES
-    ),
+      batchSize: BATCH_CHARACTER_SIZE,
+      batchGapTime: TIME_BETWEEN_BATCHES
+    }),
     onError: dispatchError
   });
 };
