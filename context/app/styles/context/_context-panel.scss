@@ -334,6 +334,13 @@ radial-gradient(circle at 85% 85%, rsa-color(gray, darker, .1) 0, rsa-color(gray
       .progress-bar{
         width: 30%;
       }
+      &__sort-icon {
+        display: table !important;
+        position: absolute;
+        padding: 0.25rem;
+        right: 0.25rem;
+        top: 0.5rem;
+      }
     }
 
     &__iioc-details {

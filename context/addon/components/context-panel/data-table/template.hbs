@@ -2,15 +2,13 @@
   {{context-panel/ds-header contextData=contextData dSDetails=dSDetails}}
   {{#if (gt  getDataSourceData.length 0)}}
     <div class="rsa-context-panel__context-data-table__panel">
-      {{#rsa-data-table lazy=true items=getDataSourceData columnsConfig=dSDetails.columns}}
+      {{#rsa-data-table lazy=true items=getSortedData columnsConfig=dSDetails.columns}}
         {{#rsa-data-table/header as |column|}}
           <span class="js-move-handle js-header-cell {{column.class}} title rsa-data-table-title" title={{t column.title}}>{{t column.title}}</span>
-          {{#unless column.disableSort}}
-            {{rsa-icon
-              click=(action 'sort' column)
-              name="arrow-down-8"
-              class="sort"}}
-          {{/unless}}
+          {{rsa-icon
+            click=(action 'sort' column dSDetails.sortDirection dSDetails.sortOrder)
+            name=column.icon
+            class=column.className}}
         {{/rsa-data-table/header}}
         {{#rsa-data-table/body as |item index column|}}
           {{context-panel/data-table/body-cell item=item index=index column=column}}

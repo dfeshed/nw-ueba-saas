@@ -1,5 +1,6 @@
 import TabList from 'context/config/dynamic-tab';
 import { isEmpty } from 'ember-utils';
+import get from 'ember-metal/get';
 
 const endPoint = ['Modules', 'IOC', 'Machines'];
 
@@ -29,11 +30,17 @@ const getData = (lookupData, { dataSourceGroup, sortColumn, sortOrder }) => {
     return;
   }
   if (sortColumn) {
-    if (sortOrder) {
-      lookupData[dataSourceGroup].resultList.sort((a, b) => (b[sortColumn] - a[sortColumn]));
-    } else {
-      lookupData[dataSourceGroup].resultList.sort((a, b) => (a[sortColumn] - b[sortColumn]));
-    }
+    lookupData[dataSourceGroup].resultList.sort((a, b) => {
+      const aProp = get(a, sortColumn);
+      const bProp = get(b, sortColumn);
+      if (aProp < bProp) {
+        return sortOrder === 'desc' ? 1 : -1;
+      } else if (aProp > bProp) {
+        return sortOrder === 'desc' ? -1 : 1;
+      } else {
+        return 0;
+      }
+    });
   }
   return lookupData[dataSourceGroup].resultList;
 };

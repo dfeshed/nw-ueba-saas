@@ -4,8 +4,8 @@ export default {
   footer: '',
   timeWindowRequired: true,
   title: 'context.alerts.title',
-  sortColumn: 'alert.timestamp.$date.created',
-  sortOrder: 'descending',
+  sortColumn: 'alert.timestamp.$date',
+  sortOrder: 'desc',
   columns: [
     {
       field: 'alert.risk_score',
@@ -13,12 +13,16 @@ export default {
       width: '10vh',
       dataType: 'riskscore',
       class: 'rsa-module-riskscore',
-      componentClass: 'rsa-content-badge-score'
+      componentClass: 'rsa-content-badge-score',
+      icon: 'arrow-down-8',
+      className: 'sort'
     },
     {
       field: 'alert.source',
       title: 'context.alerts.source',
-      width: '20vh'
+      width: '20vh',
+      icon: 'arrow-down-8',
+      className: 'sort'
     },
     {
       field: 'alert.name',
@@ -26,25 +30,33 @@ export default {
       width: '20vh',
       dataType: 'link',
       path: '/respond/alert/{0}',
-      linkField: '_id.$oid'
+      linkField: '_id.$oid',
+      icon: 'arrow-down-8',
+      className: 'sort'
     },
     {
       field: 'alert.numEvents',
       title: 'context.alerts.numEvents',
-      width: '10vh'
+      width: '10vh',
+      icon: 'arrow-down-8',
+      className: 'sort'
     },
     {
       field: 'incidentId',
       title: 'context.alerts.id',
       width: '15vh',
       dataType: 'link',
-      path: '/respond/incident/{0}'
+      path: '/respond/incident/{0}',
+      icon: 'arrow-down-8',
+      className: 'sort'
     },
     {
-      field: 'alert.timestamp.$date.created',
+      field: 'alert.timestamp.$date',
       title: 'context.alerts.created',
-      width: '40vh',
-      dataType: 'datetime'
+      width: '35vh',
+      dataType: 'datetime',
+      icon: 'arrow-down-8',
+      className: 'sort'
     }
   ]
 };

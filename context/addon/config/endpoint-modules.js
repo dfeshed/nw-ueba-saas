@@ -5,7 +5,7 @@ export default {
   timeWindowRequired: false,
   title: 'context.modules.title',
   sortColumn: 'IOCScore.Score',
-  sortOrder: 'descending',
+  sortOrder: 'desc',
   columns: [
     {
       field: 'IOCScore.Score',
@@ -13,31 +13,41 @@ export default {
       dataType: 'riskscore',
       width: '12vh',
       class: 'rsa-module-riskscore',
-      componentClass: 'rsa-content-badge-score'
+      componentClass: 'rsa-content-badge-score',
+      icon: 'arrow-down-8',
+      className: 'sort'
     },
     {
       field: 'Name',
       title: 'context.modules.moduleName',
       width: '20vh',
-      class: 'rsa-module-moduleName'
+      class: 'rsa-module-moduleName',
+      icon: 'arrow-down-8',
+      className: 'sort'
     },
     {
       field: 'AnalyticsScore',
       title: 'context.modules.analyticsScore',
-      width: '10vh',
-      class: 'rsa-module-riskScore'
+      width: '17vh',
+      class: 'rsa-module-riskScore',
+      icon: 'arrow-down-8',
+      className: 'sort'
     },
     {
       field: 'GlobalMachineCount',
       title: 'context.modules.machineCount',
-      width: '10vh',
-      class: 'rsa-module-machineCount'
+      width: '15vh',
+      class: 'rsa-module-machineCount',
+      icon: 'arrow-down-8',
+      className: 'sort'
     },
     {
       field: 'Signature',
       title: 'context.modules.signature',
       width: '38vh',
-      class: 'rsa-module-signature'
+      class: 'rsa-module-signature',
+      icon: 'arrow-down-8',
+      className: 'sort'
     }
   ]
 };
