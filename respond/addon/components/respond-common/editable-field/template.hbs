@@ -1,0 +1,23 @@
+{{#if isEditing}}
+  {{input
+    type="text"
+    value=value
+  }}
+  <span class="action confirm-changes">
+    {{#rsa-form-button isIconOnly=true title='Confirm edit' defaultAction='confirm'}}
+      {{rsa-icon name='check-2'}}
+    {{/rsa-form-button}}
+  </span>
+  <span class="action cancel-changes">
+    {{#rsa-form-button isIconOnly=true title='Cancel edit' defaultAction='cancel'}}
+      {{rsa-icon name='close'}}
+    {{/rsa-form-button}}
+  </span>
+{{else}}
+  <span class="editable-field__value" {{action 'edit'}}>{{value}}</span>
+  <span class="action edit-field">
+    {{#rsa-form-button isIconOnly=true title='Edit Field'}}
+      {{rsa-icon name='pencil-1'}}
+    {{/rsa-form-button}}
+  </span>
+{{/if}}
