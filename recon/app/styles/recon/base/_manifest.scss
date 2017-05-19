@@ -1,6 +1,5 @@
 @import "./event-header/manifest";
 @import "./event-detail/manifest";
-@import "./event-wrapper/manifest";
 @import "./meta-content/manifest";
 @import "./pager/manifest";
 @import "./button-menu/manifest";
@@ -11,11 +10,12 @@
 }
 
 .recon-event-content {
-  background-color: rsa-color(gray, darkest, $rsa-somewhat-opaque);
+  background-color: rgb(27,29,30);
 }
 
 .event-content-box {
-  background-color: rsa-color(gray, darkest, $rsa-nearly-opaque);
+  background-color: rgb(27,29,30);
+  z-index: 1001;
 }
 
 .recon-noscroll {
