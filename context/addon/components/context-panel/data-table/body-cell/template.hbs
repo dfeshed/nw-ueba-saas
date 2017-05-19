@@ -8,7 +8,7 @@
       {{get item column.field}}
     </span>
   {{else if (eq column.dataType 'datetime')}}
-    {{rsa-content-datetime timestamp=(get item column.field )  withTimeAgo=true}}
+    <span title={{getDateTime}}>{{getDateTime}}</span>
   {{else if (eq column.dataType 'link')}}
     <div class="rsa-context-panel__context-data-table link">
       <a href={{getLink}} target="_blank">

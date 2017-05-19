@@ -16,7 +16,9 @@ export default {
         'name': 'RERULE',
         'numEvents': 41,
         'timestamp': {
-          '$date': '2016-02-04T06:36:28.000Z'
+          '$date': {
+            created: 1495193819287
+          }
         }
       },
       'incidentId': 'INC-132'
@@ -28,7 +30,9 @@ export default {
       'alert': {
         'source': 'Reporting Engine',
         'timestamp': {
-          '$date': '2016-02-05T04:49:57.000Z'
+          '$date': {
+            created: 1495193819287
+          }
         },
         'risk_score': 90.0,
         'name': 'RERULE',
@@ -43,7 +47,9 @@ export default {
       'alert': {
         'source': 'Reporting Engine',
         'timestamp': {
-          '$date': '2016-02-05T05:25:55.000Z'
+          '$date': {
+            created: 1495193819287
+          }
         },
         'risk_score': 90.0,
         'name': 'RERULE',
@@ -58,7 +64,9 @@ export default {
       'alert': {
         'source': 'Reporting Engine',
         'timestamp': {
-          '$date': '2016-02-09T04:26:55.000Z'
+          '$date': {
+            created: 1495193819287
+          }
         },
         'risk_score': 90.0,
         'name': 'RERULE',
@@ -73,7 +81,9 @@ export default {
       'alert': {
         'source': 'Reporting Engine',
         'timestamp': {
-          '$date': '2016-02-09T04:43:55.000Z'
+          '$date': {
+            created: 1495193819287
+          }
         },
         'risk_score': 90.0,
         'name': 'RERULE',
@@ -91,7 +101,9 @@ export default {
         'name': 'RERULE',
         'numEvents': 41,
         'timestamp': {
-          '$date': '2016-02-04T06:36:28.000Z'
+          '$date': {
+            created: 1495193819287
+          }
         }
       },
       'incidentId': 'INC-132'
@@ -103,7 +115,9 @@ export default {
       'alert': {
         'source': 'Reporting Engine',
         'timestamp': {
-          '$date': '2016-02-05T04:49:57.000Z'
+          '$date': {
+            created: 1495193819287
+          }
         },
         'risk_score': 90.0,
         'name': 'RERULE',
@@ -118,7 +132,9 @@ export default {
       'alert': {
         'source': 'Reporting Engine',
         'timestamp': {
-          '$date': '2016-02-05T05:25:55.000Z'
+          '$date': {
+            created: 1495193819287
+          }
         },
         'risk_score': 90.0,
         'name': 'RERULE',
