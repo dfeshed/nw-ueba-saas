@@ -1,12 +1,16 @@
 import $ from 'jquery';
 import Component from 'ember-component';
-import computed, { empty, filterBy, gt } from 'ember-computed-decorators';
+import computed, { filterBy, gt } from 'ember-computed-decorators';
 import ReconPager from 'recon/mixins/recon-pager';
 import connect from 'ember-redux/components/connect';
 
 import layout from './template';
 import baseColumnsConfig from './columns-config';
-import { filesWithSelection } from 'recon/reducers/files/selectors';
+import {
+  filesWithSelection,
+  hasNoFiles,
+  filesRetrieved
+} from 'recon/reducers/files/selectors';
 import {
   fileSelected,
   selectAllFiles,
@@ -14,10 +18,12 @@ import {
 } from 'recon/actions/interaction-creators';
 
 const stateToComputed = ({ recon, recon: { data, files } }) => ({
-  files: filesWithSelection(recon),
-  linkToFileAction: files.linkToFileAction,
+  dataIndex: data.index,
   eventTotal: data.total,
-  dataIndex: data.index
+  hasNoFiles: hasNoFiles(recon),
+  files: filesWithSelection(recon),
+  filesRetrieved: filesRetrieved(recon),
+  linkToFileAction: files.linkToFileAction
 });
 
 const dispatchToActions = {
@@ -78,8 +84,6 @@ const FileReconComponent = Component.extend(ReconPager, {
 
     return calculatedConfig;
   },
-
-  @empty('files') noFiles: null,
 
   @filterBy('files', 'type', 'session') sessionFiles: null,
 
