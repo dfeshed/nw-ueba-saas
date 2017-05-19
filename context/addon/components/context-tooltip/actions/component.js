@@ -49,6 +49,45 @@ export default Component.extend({
     return !isEmpty(entityId) && !!(String(entityType).match(/IP|HOST|MAC\_ADDRESS/));
   },
 
+  /**
+   * Computes the URL for the Pivot To Investigate link. Only available for certain entity types.
+   * If clicked, this URL will navigate the user to the Classic Investigate UI with a query for the entity, but
+   * without any particular device (Concentrator/Broker) selected; the user will be prompted to select the device
+   * before the query is executed.
+   * @type {String}
+   * @private
+   */
+  @computed('entityType', 'entityId')
+  pivotToInvestigateUrl(entityType, entityId) {
+    if (isEmpty(entityId)) {
+      return '';
+    }
+    let query = '';
+    switch (entityType) {
+      case 'IP':
+        query = `ip.src=${entityId}|ip.dst=${entityId}`;
+        break;
+      case 'DOMAIN':
+        query = `hostname.alias=${entityId}`;
+        break;
+      case 'HOST':
+        query = `device.host=${entityId}`;
+        break;
+      case 'USER':
+        query = `username=${entityId}`;
+        break;
+      case 'FILE':
+        query = `filename=${entityId}`;
+        break;
+      case 'MAC_ADDRESS':
+        query = `eth.src=${entityId}|eth.dst=${entityId}`;
+        break;
+      default:
+        return '';
+    }
+    return `/investigation/choosedevice/navigate/query/${query}`;
+  },
+
   actions: {
     openAddToListModal() {
       safeCallback(this.get('hideAction'));

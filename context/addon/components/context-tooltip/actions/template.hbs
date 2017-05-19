@@ -1,3 +1,13 @@
+{{#if pivotToInvestigateUrl}}
+  <a href="{{pivotToInvestigateUrl}}">
+    <li class="action js-test-pivot-to-investigate-link">
+      {{rsa-icon name="search" size="small"}}
+      <span class="label">
+        {{t 'context.tooltip.investigate'}}
+      </span>
+    </li>
+  </a>
+{{/if}}
 {{#if showEndpointLink}}
   <a href="ecatui://{{entityId}}">
     <li class="action js-test-endpoint-link">
