@@ -212,7 +212,7 @@ public class ProcessInfoServiceImpl implements ProcessInfoService {
                 pid = Integer.parseInt(line);
             }
             else{
-                logger.warn("empty file {}");
+                logger.warn("empty file");
             }
         } catch (IOException e) {
             logger.warn("could not read pid from file {}",file.getAbsolutePath(), e);
