@@ -27,7 +27,6 @@ public class ProcessInfoServiceImpl implements ProcessInfoService {
     private static final Logger logger = Logger.getLogger(ProcessInfoServiceImpl.class);
     public static final int DEFAULT_MAX_PROCESS_INSTANCES = 15;
     public static final String JAVA_PROCESS_COMMAND = "java";
-    public static final String EMPTY = "Empty";
 
     // pidfiles base path (NOTE must match paths at LinuxCollectorsServicesImplProperties)
     private final String PID_BASE_FILE_PATH = "/var/run/fortscale";
@@ -208,7 +207,7 @@ public class ProcessInfoServiceImpl implements ProcessInfoService {
         int pid = -1;
         try {
             String line=Files.lines(file.toPath()).findFirst().orElse("Empty");
-            if(line!=EMPTY) {
+            if(line.equals("Empty")) {
                 pid = Integer.parseInt(line);
             }
             else{
@@ -216,9 +215,8 @@ public class ProcessInfoServiceImpl implements ProcessInfoService {
             }
         } catch (IOException e) {
             logger.warn("could not read pid from file {}",file.getAbsolutePath(), e);
-        } finally {
-                return pid;
         }
+        return pid;
     }
 
     /**
