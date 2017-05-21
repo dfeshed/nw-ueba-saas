@@ -1,6 +1,7 @@
 package presidio.ade.sdk.executions.common;
 import presidio.ade.domain.store.input.ADEInputRecord;
 import presidio.ade.domain.store.input.ADEInputRecordsMetaData;
+import presidio.ade.domain.store.input.ADEInputCleanupParams;
 
 import java.util.List;
 import java.util.Set;
@@ -60,7 +61,7 @@ public interface ADECommonSDK<ADERunParams> {
      *
      * @param params
      */
-    void cleanup(ADERunParams params);
+    void cleanup(ADEInputCleanupParams params);
 
     /**
      * pauses the execution. the ADE will pause gracefully as fast as possible and would not continue to the nearest sub step
