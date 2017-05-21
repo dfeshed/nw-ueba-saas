@@ -4,8 +4,6 @@ import org.kitesdk.morphline.api.Record;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Map;
-
 public abstract class RecordExtensions {
 
 	private static final Logger logger = LoggerFactory.getLogger(RecordExtensions.class);
@@ -30,24 +28,26 @@ public abstract class RecordExtensions {
 	
 	public static Long getLongValue(Record record, String field) throws IllegalArgumentException  {
 		Object value = record.getFirstValue(field);
-		return convertToLong(record, field, value);
+		if (value!=null && value instanceof Long) {
+			return (Long)value;
+		} else if (value!=null && value instanceof Integer) {
+			Integer intValue = (Integer)value;
+			return intValue.longValue();
+		} else if (value!=null && value instanceof String) {
+			// try to parse the string into number
+			String strValue = (String)value;
+			return Long.parseLong(strValue);
+		} else {
+			logger.debug(String.format("field %s is missing from morphline record %s", field, record.toString()));
+			throw new IllegalArgumentException("field " + field + " is missing from morphlines record");
+		}
 	}
-
+	
 	public static Long getLongValue(Record record, String field, Long defaultVal) throws IllegalArgumentException  {
 		try{
 			return getLongValue(record, field);
 		} catch(Exception e){
 			return defaultVal;
-		}
-	}
-
-	public static Long getLongValueFromMapField(Record record, String mapFieldName, String fieldName, Long defaultFieldVal) throws IllegalArgumentException  {
-		try{
-			final Map map = (Map) record.getFirstValue(mapFieldName);
-			final Object value = map.get(fieldName);
-			return convertToLong(record, fieldName, value);
-		} catch(Exception e){
-			return defaultFieldVal;
 		}
 	}
 	
@@ -106,22 +106,6 @@ public abstract class RecordExtensions {
 			// try to parse the string into number
 			String strValue = (String)value;
 			return Boolean.parseBoolean(strValue);
-		} else {
-			logger.debug(String.format("field %s is missing from morphline record %s", field, record.toString()));
-			throw new IllegalArgumentException("field " + field + " is missing from morphlines record");
-		}
-	}
-
-	private static Long convertToLong(Record record, String field, Object value) {
-		if (value!=null && value instanceof Long) {
-			return (Long)value;
-		} else if (value!=null && value instanceof Integer) {
-			Integer intValue = (Integer)value;
-			return intValue.longValue();
-		} else if (value!=null && value instanceof String) {
-			// try to parse the string into number
-			String strValue = (String)value;
-			return Long.parseLong(strValue);
 		} else {
 			logger.debug(String.format("field %s is missing from morphline record %s", field, record.toString()));
 			throw new IllegalArgumentException("field " + field + " is missing from morphlines record");
