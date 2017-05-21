@@ -85,7 +85,7 @@ public class EventsReducerBuilder implements CommandBuilder {
             dropFromCache = getConfigs().getBoolean(config, "dropFromCache");
             processRecord =  getConfigs().getBoolean(config, "processRecord",false);
             cacheName = getConfigs().getString(config, "cacheName");
-            cache = EventsJoinerCache.getInstance(cacheName, currentRecordDateField);
+            cache = EventsJoinerCache.getInstance(cacheName, cachedRecordDateField);
         }
 
         @Override

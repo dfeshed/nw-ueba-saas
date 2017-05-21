@@ -41,19 +41,19 @@ public class EventsJoinerCache implements Closeable {
 	// /////////////////////////////////////////////////////////////////////////////
 	
 	private static Logger logger = LoggerFactory.getLogger(EventsJoinerCache.class);
-	private static Map<String, EventsJoinerCache> instances = new ConcurrentHashMap<String, EventsJoinerCache>();
+	private static Map<String, EventsJoinerCache> instances = new ConcurrentHashMap<>();
 	
 	/**
 	 * Get an instance of the EventsJoinerCache that is separate for each 
 	 * morphline execution instance
 	 */
-	public static EventsJoinerCache getInstance(String name, String currentRecordDateField) {
+	public static EventsJoinerCache getInstance(String name, String cachedRecordDateField) {
 		checkNotNull(name);
 		
 		
 		// lookup the hash code in the instances map
 		if (!instances.containsKey(name)) {
-			EventsJoinerCache instance = new EventsJoinerCache(name, currentRecordDateField);
+			EventsJoinerCache instance = new EventsJoinerCache(name, cachedRecordDateField);
 			instances.put(name, instance);
 		}
 		return instances.get(name);
@@ -108,14 +108,14 @@ public class EventsJoinerCache implements Closeable {
 	private Map<String,Record> records;
 	//default value meaning don't use ttl mechanism
 	private long deprecationTs = -1;
-	private String currentRecordDateField;
+	private String cachedRecordDateField;
 
 	@Autowired
 	private CachedRecordRepository repository;
 	
-	protected EventsJoinerCache(String instanceId, String currentRecordDateField ) {
+	protected EventsJoinerCache(String instanceId, String cachedRecordDateField ) {
 		this.instanceId = instanceId;
-		this.currentRecordDateField = currentRecordDateField;
+		this.cachedRecordDateField = cachedRecordDateField;
 		this.isClosed = false;
 		this.records = new HashMap<>();
 
@@ -185,7 +185,7 @@ public class EventsJoinerCache implements Closeable {
 				cachedRecord.setRecord(record);
 				//only if need to use ttl mechanism
 				if (deprecationTs != -1) {
-					long recordTs = convertToSeconds(getLongValue(cachedRecord.getRecord(), currentRecordDateField, 0L));
+					long recordTs = convertToSeconds(getLongValue(cachedRecord.getRecord(), cachedRecordDateField, 0L));
 					//the current record is older than the deprecationTs, don't add the current record to mongo.
 					if (recordTs < deprecationTs) {
 						logger.debug("record with id {} is now deprecated and will not be persisted.", record.getFirstValue("id"));
