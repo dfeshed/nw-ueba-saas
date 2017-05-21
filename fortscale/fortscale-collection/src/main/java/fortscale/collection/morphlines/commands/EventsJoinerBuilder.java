@@ -87,7 +87,7 @@ public class EventsJoinerBuilder implements CommandBuilder {
 			dropFromCache = getConfigs().getBoolean(config, "dropFromCache");
             processRecord =  getConfigs().getBoolean(config, "processRecord",false);
 			String cacheName = getConfigs().getString(config, "cacheName");
-			cache = EventsJoinerCache.getInstance(cacheName, currentRecordDateField);
+			cache = EventsJoinerCache.getInstance(cacheName, cachedRecordDateField);
 		}
 
 		@Override

@@ -16,11 +16,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import static fortscale.collection.morphlines.RecordExtensions.getLongValue;
+import static fortscale.collection.morphlines.RecordExtensions.getStringValue;
 import static fortscale.utils.time.TimestampUtils.convertToSeconds;
 
 /**
@@ -50,6 +54,7 @@ public class EventsReducerBuilder implements CommandBuilder {
     public final class EventsReducer extends AbstractCommand {
         private List<String> keys;
         private String currentRecordDateField;
+        private String currentRecordDateFormat;
         private String cachedRecordDateField;
         private long timeThreshold;
         private boolean dropFromCache;
@@ -67,11 +72,12 @@ public class EventsReducerBuilder implements CommandBuilder {
             super(builder, config, parent, child, context);
             keys = getConfigs().getStringList(config, "keys");
             currentRecordDateField = getConfigs().getString(config, "currentRecordDateField", "1");
+            currentRecordDateFormat = getConfigs().getString(config, "currentRecordDateFormat", "yyyy-mm-dd hh:mm:ss");
             cachedRecordDateField = getConfigs().getString(config, "cachedRecordDateField", "2");
             timeThreshold = getConfigs().getLong(config, "timeThreshold", 9999999L);
             cacheRecordTtl = -1L;
             try {
-                cacheRecordTtl = new Long(morphlineConfigService.getStringValue(getConfigs(), config, "cachedRecordTtlInSeconds"));
+                cacheRecordTtl =  getConfigs().getLong(config, "cachedRecordTtlInSeconds");
             }
             catch (Exception e){
                 logger.warn("Error getting \"cachedRecordTtlInSeconds\" property from configuration, setting value to -1");
@@ -79,7 +85,7 @@ public class EventsReducerBuilder implements CommandBuilder {
             dropFromCache = getConfigs().getBoolean(config, "dropFromCache");
             processRecord =  getConfigs().getBoolean(config, "processRecord",false);
             cacheName = getConfigs().getString(config, "cacheName");
-            cache = EventsJoinerCache.getInstance(cacheName, currentRecordDateField);
+            cache = EventsJoinerCache.getInstance(cacheName, cachedRecordDateField);
         }
 
         @Override
@@ -92,16 +98,17 @@ public class EventsReducerBuilder implements CommandBuilder {
             String key = EventsJoinerCache.buildKey(inputRecord, keys);
             Record previousEvent = (dropFromCache)? cache.fetch(key) : cache.peek(key);
 
-            long currentTime = convertToSeconds(getLongValue(inputRecord, currentRecordDateField, 0L));
-            long cachedTime = convertToSeconds(getLongValue(previousEvent, cachedRecordDateField, 0L));
+
+            long currentRecordTime = getCurrentRecordTime(inputRecord);
+            long cachedRecordTime = convertToSeconds(getLongValue(previousEvent, cachedRecordDateField, 0L));
 
             // this ttl is different from the timeThreshold.
             // timeThreshold is used for define the longest join time period possible (in the case a join is possible).
             // cacheRecordTtl is relevant for cases when there was not record to join to an old saved record in the cache.
             // in this case only for the first processed record (in each ETL run) set the cache instance with the relevant time from which will deprecate old cache records.
             // in the case no ttl is desire (save cached records forever) define cacheRecordTtl as -1
-            if (cacheRecordTtl != -1  && minimalRecordThreshold > currentTime) {
-                minimalRecordThreshold = currentTime;
+            if (cacheRecordTtl != -1  && minimalRecordThreshold > currentRecordTime) {
+                minimalRecordThreshold = currentRecordTime;
                 cache.setDeprecationTs(minimalRecordThreshold - cacheRecordTtl);
             }
 
@@ -125,7 +132,7 @@ public class EventsReducerBuilder implements CommandBuilder {
                 }
             } else {
 
-                long delta = Math.abs(cachedTime - currentTime);
+                long delta = Math.abs(cachedRecordTime - currentRecordTime);
 
                 if (delta > timeThreshold)  {
                     // replace the cached record as we encountered a new one that should be saved
@@ -153,6 +160,17 @@ public class EventsReducerBuilder implements CommandBuilder {
                     return true;
                 }
             }
+        }
+
+        private long getCurrentRecordTime(Record inputRecord) {
+            long currentRecordTime = 0;
+            final String currentRecordDateFieldAsString = getStringValue(inputRecord, currentRecordDateField, String.valueOf(new Date(0L)));
+            try {
+                currentRecordTime = convertToSeconds(new SimpleDateFormat(currentRecordDateFormat).parse(currentRecordDateFieldAsString).getTime());
+            } catch (ParseException e) {
+                logger.warn("Couldn't parse currentRecordDate. At least 1 of the morphline date parameters in wrong. parameters: currentRecordDateField=[{}], currentRecordDateFormat=[{}]. Processing will work but the cache won't clean itself");
+            }
+            return currentRecordTime;
         }
 
         @Override
