@@ -46,7 +46,12 @@ public abstract class RecordExtensions {
 			final Map map = (Map) record.getFirstValue(mapFieldName);
 			final Object value = map.get(fieldName);
 			return convertToLong(record, fieldName, value);
-		} catch(Exception e){
+		}
+		catch(ClassCastException cce) {
+			logger.warn("Field {} is not a map!", mapFieldName);
+			return defaultFieldVal;
+		}
+		catch(Exception e) {
 			return defaultFieldVal;
 		}
 	}
