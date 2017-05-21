@@ -20,7 +20,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import static fortscale.collection.morphlines.RecordExtensions.getLongValueFromMapField;
+import static fortscale.collection.morphlines.RecordExtensions.getLongValue;
 import static fortscale.utils.time.TimestampUtils.convertToSeconds;
 
 /**
@@ -51,7 +51,6 @@ public class EventsReducerBuilder implements CommandBuilder {
         private List<String> keys;
         private String currentRecordDateField;
         private String cachedRecordDateField;
-        private String mapField;
         private long timeThreshold;
         private boolean dropFromCache;
         private EventsJoinerCache cache;
@@ -69,7 +68,6 @@ public class EventsReducerBuilder implements CommandBuilder {
             keys = getConfigs().getStringList(config, "keys");
             currentRecordDateField = getConfigs().getString(config, "currentRecordDateField", "1");
             cachedRecordDateField = getConfigs().getString(config, "cachedRecordDateField", "2");
-            mapField = getConfigs().getString(config, "mapField", "map");
             timeThreshold = getConfigs().getLong(config, "timeThreshold", 9999999L);
             cacheRecordTtl = -1L;
             try {
@@ -94,8 +92,8 @@ public class EventsReducerBuilder implements CommandBuilder {
             String key = EventsJoinerCache.buildKey(inputRecord, keys);
             Record previousEvent = (dropFromCache)? cache.fetch(key) : cache.peek(key);
 
-            long currentTime = convertToSeconds(getLongValueFromMapField(inputRecord, mapField, currentRecordDateField, 0L));
-            long cachedTime = convertToSeconds(getLongValueFromMapField(previousEvent, mapField, cachedRecordDateField, 0L));
+            long currentTime = convertToSeconds(getLongValue(inputRecord, currentRecordDateField, 0L));
+            long cachedTime = convertToSeconds(getLongValue(previousEvent, cachedRecordDateField, 0L));
 
             // this ttl is different from the timeThreshold.
             // timeThreshold is used for define the longest join time period possible (in the case a join is possible).
