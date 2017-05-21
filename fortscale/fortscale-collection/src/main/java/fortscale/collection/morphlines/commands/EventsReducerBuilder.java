@@ -71,7 +71,7 @@ public class EventsReducerBuilder implements CommandBuilder {
             timeThreshold = getConfigs().getLong(config, "timeThreshold", 9999999L);
             cacheRecordTtl = -1L;
             try {
-                cacheRecordTtl = new Long(morphlineConfigService.getStringValue(getConfigs(), config, "cachedRecordTtlInSeconds"));
+                cacheRecordTtl =  getConfigs().getLong(config, "cachedRecordTtlInSeconds");
             }
             catch (Exception e){
                 logger.warn("Error getting \"cachedRecordTtlInSeconds\" property from configuration, setting value to -1");
