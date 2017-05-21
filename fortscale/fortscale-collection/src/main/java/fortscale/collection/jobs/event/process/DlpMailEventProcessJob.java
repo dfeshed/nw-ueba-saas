@@ -37,7 +37,7 @@ public class DlpMailEventProcessJob extends EventProcessJob {
     @Autowired
     private DlpMailEventsCache dlpMailEventsCache;
 
-    private EventsJoinerCache eventsJoinerCache = EventsJoinerCache.getInstance(DLPMAIL_REDUCER_CACHE_NAME, "1");
+    private EventsJoinerCache eventsJoinerCache;
 
 
     /**
@@ -49,6 +49,13 @@ public class DlpMailEventProcessJob extends EventProcessJob {
      * @throws IOException
      */
     protected boolean processFile(File file) throws IOException {
+        try {
+            eventsJoinerCache = EventsJoinerCache.getInstance(DLPMAIL_REDUCER_CACHE_NAME);
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            taskMonitoringHelper.error("Process Files", e.toString());
+            return false;
+        }
 
 
         long totalLines=0;

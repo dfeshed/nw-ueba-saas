@@ -58,6 +58,21 @@ public class EventsJoinerCache implements Closeable {
 		}
 		return instances.get(name);
 	}
+
+	/**
+	 * Get an instance of the EventsJoinerCache that is separate for each
+	 * morphline execution instance
+	 */
+	public static EventsJoinerCache getInstance(String name) throws Exception {
+		checkNotNull(name);
+
+
+		// lookup the hash code in the instances map
+		if (!instances.containsKey(name)) {
+			throw new Exception("no instance of EventsJoinerCache with name " + name);
+		}
+		return instances.get(name);
+	}
 	
 	/**
 	 * Generates a cache key to be used in the EventsJoinerCache according
