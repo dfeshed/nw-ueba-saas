@@ -31,7 +31,7 @@ public class KafkaSender implements IKafkaSender{
 		try {
 			streamWriter.close();
 		} catch (Exception ex) {
-			logger.error("Error while closing the kafka writer. Error {}", ex.getMessage());
+			logger.error("Error while closing the kafka writer. Error {}", ex.getMessage(),ex);
 		}
 	}
 

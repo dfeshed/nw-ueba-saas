@@ -6,6 +6,7 @@ import kafka.api.FetchRequestBuilder;
 import kafka.javaapi.FetchResponse;
 import kafka.javaapi.consumer.SimpleConsumer;
 import kafka.message.MessageAndOffset;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -173,8 +174,9 @@ public class MetricsReader {
             if (messageJson.getJSONObject(HEADER).getString(JOB_NAME).equals(jobName)) {
                 metrics = messageJson.getJSONObject(METRICS_TOPIC).getJSONObject(metricsHeader);
             }
-        } catch (Exception e) {
+        } catch (JSONException e) {
             metrics = null;
+            logger.warn("could not find json object {}", e);
         }
         return metrics;
     }
