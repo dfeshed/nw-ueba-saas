@@ -15,3 +15,9 @@
 # tox test reports result
 /test-reports/
 /.tox/
+
+# code coverage reports
+/htmlcov
+.coverage
+.coveragerc
+coverage.xml
