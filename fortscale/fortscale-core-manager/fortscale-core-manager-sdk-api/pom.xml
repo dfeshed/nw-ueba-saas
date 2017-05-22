@@ -22,7 +22,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>fortscale</groupId>
-			<artifactId>fortscale-input-sdk-api</artifactId>
+			<artifactId>presidio-input-sdk-api</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 
