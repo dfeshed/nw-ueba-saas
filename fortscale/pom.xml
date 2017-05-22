@@ -795,15 +795,6 @@
 				</executions>
 			</plugin>
 			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>exec-maven-plugin</artifactId>
-                <version>${org.codehaus.mojo.version}</version>
-				<configuration>
-					<mainClass>fortscale.web.StartFortscaleWebApplication</mainClass>
-					<classpathScope>test</classpathScope>
-				</configuration>
-			</plugin>
-			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-failsafe-plugin</artifactId>
 				<version>${maven-surefire-plugin.version}</version>
