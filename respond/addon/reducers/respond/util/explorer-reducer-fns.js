@@ -181,7 +181,7 @@ const toggleSelectItem = (state, { payload: item }) => {
   if (!item) {
     return state;
   }
-  const { itemsSelected } = state;
+  const itemsSelected = [...state.itemsSelected];
   const index = itemsSelected.indexOf(item);
 
   if (index > -1) {
@@ -195,7 +195,7 @@ const toggleSelectItem = (state, { payload: item }) => {
     ...state,
     // if one item was deselected when in select all state, reset isSelectAll to false
     isSelectAll: state.isSelectAll && itemDeselected ? false : state.isSelectAll,
-    itemsSelected: [...itemsSelected]
+    itemsSelected
   };
 };
 

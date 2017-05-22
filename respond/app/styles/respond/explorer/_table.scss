@@ -24,12 +24,19 @@
   .rsa-data-table-header {
     border-bottom: 1px solid rsa-color(gray, dark);
     .rsa-data-table-header-cell {
+      // 20px padding on the right gives space for the column sort button
+      padding: 0 20px 0 rsa-whitespace(less);
+
       &:first-child {
-        padding: 0 0 0 0.5rem;
+        padding: 0 0 0 rsa-whitespace(less);
         min-width: 30px;
       }
       button {
         cursor: pointer;
+        &.column-sort {
+          position: absolute;
+          right: 7px;
+        }
       }
     }
   }
