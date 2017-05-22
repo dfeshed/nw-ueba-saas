@@ -54,7 +54,7 @@ public class KafkaService extends CleanupDeletionUtil {
                     numberOfTopicsDeleted++;
                 }
             }
-        //    zkClient.close();
+            zkClient.close();
             if (numberOfTopicsDeleted == topics.size()) {
                 logger.info("dropped all {} topics", topics.size());
                 return true;
@@ -71,12 +71,12 @@ public class KafkaService extends CleanupDeletionUtil {
                 } catch (AdminOperationException ex) {
                     logger.error("failed to drop all {} topics, {}", topics.size(), ex.getMessage());
                     logger.error(ex.toString());
-                   // zkClient.close();
+                    zkClient.close();
                     return false;
                 }
             }
             logger.info("dropped all {} topics", topics.size());
-       //     zkClient.close();
+            zkClient.close();
             return true;
         }
 
@@ -92,22 +92,21 @@ public class KafkaService extends CleanupDeletionUtil {
      */
     private boolean deleteTopic(String topic, ZkClient zkClient, boolean doValidate) {
         boolean success = false;
-//        String topicPath = ZkUtils.getTopicPath(topic);
-//        logger.debug("attempting to delete topic {}", topic);
-//        zkClient.deleteRecursive(topicPath);
-//        if (doValidate) {
-//            if (!zkClient.exists(topicPath)) {
-//                logger.info("deleted topic {}", topic);
-//                success = true;
-//            } else {
-//                logger.error("failed to delete topic " + topic);
-//            }
-//        } else {
-//            success = true;
-//        }
-//        boolean cleanFolderSuccess = cleanKafkaDataFolder(topic, doValidate);
-//        return success && cleanFolderSuccess;
-        return success;
+        String topicPath = ZkUtils.getTopicPath(topic);
+        logger.debug("attempting to delete topic {}", topic);
+        zkClient.deleteRecursive(topicPath);
+        if (doValidate) {
+            if (!zkClient.exists(topicPath)) {
+                logger.info("deleted topic {}", topic);
+                success = true;
+            } else {
+                logger.error("failed to delete topic " + topic);
+            }
+        } else {
+            success = true;
+        }
+        boolean cleanFolderSuccess = cleanKafkaDataFolder(topic, doValidate);
+        return success && cleanFolderSuccess;
     }
 
     /***
@@ -123,7 +122,7 @@ public class KafkaService extends CleanupDeletionUtil {
         Collection<String> topics = scala.collection.JavaConversions.seqAsJavaList(ZkUtils.getAllTopics(zkClient));
 		//ignore changelog topics (remove them from the collection to be deleted)
 		topics.removeIf(topic -> topic.endsWith(CHANGELOG_SUFFIX));
-        //zkClient.close();
+        zkClient.close();
         return topics;
     }
 
@@ -161,7 +160,7 @@ public class KafkaService extends CleanupDeletionUtil {
 				//delete zookeeper entries first
 				String topicPath = ZkUtils.getTopicPath(topic);
 				logger.debug("attempting to delete topic {}", topic);
-		//		zkClient.deleteRecursive(topicPath);
+				zkClient.deleteRecursive(topicPath);
 			}
 			success = cleanKafkaDataFolders(doValidate, includingChangelog);
 		} else {
