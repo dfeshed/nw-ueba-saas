@@ -8,8 +8,7 @@ class PresidioJarOperator(JarOperator):
     
     The PresidioJarOperator creates java_args and updates the JarOperator.
     java_args contain start_date, end_date and fixed_duration_strategy.
-    PresidioJarOperator validates that fixed duration strategy adjust to the interval and
-    that start_date rounded to the beginning of fixed_duration_strategy.
+    PresidioJarOperator validates fixed duration strategy and start_date.
     
     
      :param fixed_duration_strategy: duration (e.g. hourly or daily)
