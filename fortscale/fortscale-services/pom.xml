@@ -32,6 +32,11 @@
 			<name>remote-repos</name>
 			<url>http://mirror.fortscale.dom/artifactory/remote-repos</url>
 		</repository>
+		<!--<repository>-->
+			<!--<id>wso2</id>-->
+            <!--<name>WS02</name>-->
+			<!--<url>http://dist.wso2.org/maven2</url>-->
+		<!--</repository>-->
 	</repositories>
 
 	<pluginRepositories>
@@ -93,7 +98,43 @@
 			<groupId>commons-validator</groupId>
 			<artifactId>commons-validator</artifactId>
 		</dependency>
-    </dependencies>
+		<!--<dependency>-->
+			<!--<groupId>org.apache.zookeeper</groupId>-->
+			<!--<artifactId>zookeeper</artifactId>-->
+			<!--<version>3.4.5</version>-->
+		<!--</dependency>-->
+		<!--Need to verify licence issue -->
+		<!--<dependency>-->
+			<!--<groupId>com.thoughtworks.sun.jdmk</groupId>-->
+			<!--<artifactId>jmxtools</artifactId>-->
+			<!--<version>1.2.1</version>-->
+		<!--</dependency>-->
+		<!--<dependency>-->
+			<!--<groupId>com.sun.jdmk</groupId>-->
+			<!--<artifactId>jmxtools</artifactId>-->
+			<!--<version>1.2.1</version>-->
+		<!--</dependency>-->
+		<!--<dependency>-->
+			<!--<groupId>com.sun.jmx</groupId>-->
+			<!--<artifactId>jmxri</artifactId>-->
+			<!--<version>1.2.1</version>-->
+		<!--</dependency>-->
+		<!--&lt;!&ndash;<dependency>&ndash;&gt;-->
+			<!--&lt;!&ndash;<groupId>com.sun.jdmk</groupId>&ndash;&gt;-->
+			<!--&lt;!&ndash;<artifactId>jmxtools</artifactId>&ndash;&gt;-->
+			<!--&lt;!&ndash;<version>1.2.1</version>&ndash;&gt;-->
+		<!--&lt;!&ndash;</dependency>&ndash;&gt;-->
+		<!--<dependency>-->
+			<!--<groupId>com.thoughtworks.sun.jdmk</groupId>-->
+			<!--<artifactId>jmxtools</artifactId>-->
+			<!--<version>1.2.1</version>-->
+		<!--</dependency>-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
 
 
 

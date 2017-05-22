@@ -294,17 +294,17 @@
 			<version>${org.aspectj-version}</version>
 		</dependency>
 
-		<!--<dependency>-->
-			<!--<groupId>io.springfox</groupId>-->
-			<!--<artifactId>springfox-swagger2</artifactId>-->
-			<!--<version>${swager.version}</version>-->
-		<!--</dependency>-->
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger2</artifactId>
+			<version>${swager.version}</version>
+		</dependency>
 
-		<!--<dependency>-->
-			<!--<groupId>io.springfox</groupId>-->
-			<!--<artifactId>springfox-swagger-ui</artifactId>-->
-			<!--<version>${swager.version}</version>-->
-		<!--</dependency>-->
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger-ui</artifactId>
+			<version>${swager.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>javax.persistence</groupId>
 			<artifactId>persistence-api</artifactId>
@@ -494,39 +494,19 @@
 			<artifactId>guava</artifactId>
 			<version>${guava.version}</version>
 		</dependency>
+
 	</dependencies>
 
 	</dependencyManagement>
 	<dependencies>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-mongodb</artifactId>
-		</dependency>
 
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-devtools</artifactId>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-aop</artifactId>
-		</dependency>
-		<!--<dependency>-->
-			<!--<groupId>org.springframework</groupId>-->
-			<!--<artifactId>spring-webmvc</artifactId>-->
-			<!--<version>${spring.version}</version>-->
-		<!--</dependency>-->
+
 		<!--<dependency>-->
 			<!--<groupId>org.springframework.boot</groupId>-->
-			<!--<artifactId>spring-boot-starter-web</artifactId>-->
-
+			<!--<artifactId>spring-boot-devtools</artifactId>-->
+			<!--<scope>runtime</scope>-->
 		<!--</dependency>-->
+
 
 
 		<dependency>
@@ -789,7 +769,9 @@
 		<module>fortscale-aggregation</module>
 		<module>fortscale-common</module>
 		<module>fortscale-monitoring-daemons</module>
-		<module>fortscale-input</module>
-		<module>fortscale-input-core</module>
+		<module>presidio-input</module>
+		<module>fortscale-core-manager</module>
+		<module>fortscale-collector</module>
+		<module>fortscale-output</module>
 	</modules>
 </project>
