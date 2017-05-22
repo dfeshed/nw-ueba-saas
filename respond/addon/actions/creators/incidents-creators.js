@@ -191,10 +191,10 @@ const getIncident = (incidentId) => {
  * @public
  * @returns {Object}
  */
-const getStoryline = (incidentId) => {
+const getStorylineSafely = (incidentId) => {
   return {
     type: ACTION_TYPES.FETCH_INCIDENT_STORYLINE,
-    promise: Incidents.getStoryline(incidentId),
+    promise: Incidents.getStorylineSafely(incidentId),
     meta: {
       onSuccess: (response) => Logger.debug(ACTION_TYPES.FETCH_INCIDENT_STORYLINE, response),
       onFailure: (response) => ErrorHandlers.handleContentRetrievalError(response, `incident ${incidentId} storyline`)
@@ -223,7 +223,7 @@ const initializeIncident = (incidentId) => {
       });
       if (incidentId) {
         dispatch(getIncident(incidentId));
-        dispatch(getStoryline(incidentId));
+        dispatch(getStorylineSafely(incidentId));
       }
 
       // If we haven't already fetched users (say, from incidents route), fetch now
@@ -268,7 +268,7 @@ export {
   clearFocusItem,
   toggleSelectAll,
   getIncident,
-  getStoryline,
+  getStorylineSafely,
   initializeIncident,
   toggleJournalPanel,
   setViewMode,

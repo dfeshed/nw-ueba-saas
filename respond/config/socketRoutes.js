@@ -58,6 +58,10 @@ const respondConfigGen = function(environment) {
         defaultStreamLimit: 1000,
         subscriptionDestination: '/user/queue/alerts',
         requestDestination: '/ws/response/alerts'
+      },
+      query: {
+        subscriptionDestination: '/user/queue/alerts',
+        requestDestination: '/ws/response/alerts'
       }
     },
     'journal-entry': {

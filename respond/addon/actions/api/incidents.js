@@ -237,6 +237,71 @@ IncidentsAPI.reopenClass({
   },
 
   /**
+   * Executes a websocket alerts fetch call and returns a Promise. Promise should resolve to the alerts
+   * for the incident ID supplied to the method
+   *
+   * @method getAlertsForIncident
+   * @public
+   * @param incidentId The ID of the incident
+   * @returns {Promise}
+   */
+  getAlertsForIncident(incidentId) {
+    const query = FilterQuery.create()
+      .addFilter('incidentId', incidentId);
+
+    return promiseRequest({
+      method: 'query',
+      modelName: 'alerts',
+      query: query.toJSON()
+    });
+  },
+
+  /**
+   * Composites the `getStoryline` and `getAlertsForIncident` calls together in order to support storylines
+   * for incidents migrated from 10.x (which don't have storylines).
+   *
+   * First executes `getStoryline` and checks for empty results. If empty, then executes `getAlertsForIncident` and
+   * massages that response into a structure that mimicks the `getStoryline` responses.
+   *
+   * @method getAlertsForIncident
+   * @param incidentId The ID of the incident
+   * @returns {Promise}
+   * @public
+   */
+  getStorylineSafely(incidentId) {
+    return IncidentsAPI.getStoryline(incidentId)
+      .then(function(response) {
+
+        // Did we get an empty response (no indicators)?
+        const isStorylineEmpty = !response || !response.data ||
+          !response.data.relatedIndicators ||
+          !response.data.relatedIndicators.length;
+
+        if (!isStorylineEmpty) {
+          return response;  // Not empty, good to go!
+        }
+
+        // Response was empty. Maybe this is an incident migrated for 10.6, whose data doesn't support storyline.
+        // Try fetching the alerts for the incident using the standard `alerts` socket API instead.
+        return IncidentsAPI.getAlertsForIncident(incidentId)
+          .then(function({ data }) {
+
+            // We've got the alerts list. Wrap into a storyline-like JSON structure.
+            const storyline = {
+              relatedIndicators: []
+            };
+            if (isEmberArray(data)) {
+              storyline.relatedIndicators = data.map((alert) => ({
+                indicator: alert,
+                group: '0'
+              }));
+            }
+            return { code: 0, data: storyline };
+          });
+      });
+  },
+
+  /**
    * Executes a websocket delete incident call and returns a Promise
    * @method deleteIncident
    * @public
