@@ -300,6 +300,7 @@ public class ProcessInfoServiceImpl implements ProcessInfoService {
                         logger.warn("deleting pidFile={} of pid={} since process is not running", filePath.toString(), Files.lines(filePath).findFirst());
                     } catch (IOException e) {
                         logger.warn("could not read pid from pidFile={}", filePath.toString());
+                        logger.error("exception value={}", e);
                     }
                     deletePidFile(file.getAbsolutePath());
                 }
@@ -375,6 +376,7 @@ public class ProcessInfoServiceImpl implements ProcessInfoService {
         } catch (Exception e) {
             instanceNumber = 0; // if filename does not match the format
             logger.info("unable to parse process instance from pid file name={}", name);
+            logger.error("exception value={}", e);
             // then default to 0
         }
         return instanceNumber;
