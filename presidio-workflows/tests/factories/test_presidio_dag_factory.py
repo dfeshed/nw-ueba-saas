@@ -4,7 +4,7 @@ import pkg_resources
 import pytest
 from airflow.operators.dummy_operator import DummyOperator
 
-from presidio.builder.presidio_dag_builder import PresidioDagBuilder
+from presidio.builders.presidio_dag_builder import PresidioDagBuilder
 from presidio.factories.dag_factories_exceptions import DagsConfigurationContainsOverlappingDatesException
 from presidio.factories.presidio_dag_factory import PresidioDagFactory
 from presidio.utils.airflow.dag.dag_factory import DagFactories

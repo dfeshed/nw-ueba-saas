@@ -9,7 +9,7 @@ import pkg_resources
 from airflow.operators.dummy_operator import DummyOperator
 from presidio.factories.presidio_dag_factory import PresidioDagFactory
 
-from presidio.builder.presidio_dag_builder import PresidioDagBuilder
+from presidio.builders.presidio_dag_builder import PresidioDagBuilder
 from presidio.utils.airflow.dag.dag_factory import DagFactories
 from presidio.utils.airflow.variable.variable_configuration_reader import VariableReader
 
