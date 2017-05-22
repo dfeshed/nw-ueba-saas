@@ -65,10 +65,10 @@ export default Component.extend({
     let query = '';
     switch (entityType) {
       case 'IP':
-        query = `ip.src=${entityId}|ip.dst=${entityId}`;
+        query = `ip.src=${entityId}||ip.dst=${entityId}`;
         break;
       case 'DOMAIN':
-        query = `hostname.alias=${entityId}`;
+        query = `alias.host=${entityId}`;
         break;
       case 'HOST':
         query = `device.host=${entityId}`;
