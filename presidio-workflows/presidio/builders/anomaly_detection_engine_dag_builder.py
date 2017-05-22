@@ -7,7 +7,7 @@ from airflow.operators.subdag_operator import SubDagOperator
 from presidio.builders.aggregation.aggregations_dag_builder import AggregationsDagBuilder
 from presidio.operators.smart.smart_events_operator import SmartEventsOperator
 from presidio.utils.date_time import fixed_duration_strategy_to_string, is_last_hour_of_day
-from presidio.utils.presidio_dag_builder import PresidioDagBuilder
+from presidio.builders.presidio_dag_builder import PresidioDagBuilder
 
 
 class AnomalyDetectionEngineDagBuilder(PresidioDagBuilder):

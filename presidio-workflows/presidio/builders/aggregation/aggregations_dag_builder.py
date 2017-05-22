@@ -1,4 +1,4 @@
-from presidio.utils.presidio_dag_builder import PresidioDagBuilder
+from presidio.builders.presidio_dag_builder import PresidioDagBuilder
 from presidio.operators.aggregation.feature_aggregations_operator import FeatureAggregationsOperator
 from presidio.operators.aggregation.score_aggregations_operator import ScoreAggregationsOperator
 
