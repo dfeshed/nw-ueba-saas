@@ -20,7 +20,7 @@
 
 		<dependency>
 			<groupId>fortscale</groupId>
-			<artifactId>fortscale-input-sdk-impl</artifactId>
+			<artifactId>presidio-input-sdk-impl</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 
@@ -36,11 +36,7 @@
 			<artifactId>fortscale-core-manager-sdk-api</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>fortscale</groupId>
-			<artifactId>fortscale-input-sdk-impl</artifactId>
-			<version>${project.version}</version>
-		</dependency>
+
 
 		<!--<dependency>-->
 		<!--<groupId>org.springframework.boot</groupId>-->
