@@ -18,11 +18,16 @@
 
 	<dependencies>
 
-		<dependency>
-			<groupId>fortscale</groupId>
-			<artifactId>presidio-input-sdk-impl</artifactId>
-			<version>${project.version}</version>
-		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>fortscale</groupId>-->
+			<!--<artifactId>presidio-input-sdk-impl</artifactId>-->
+			<!--<version>${project.version}</version>-->
+		<!--</dependency>-->
+		<!--<dependency>-->
+			<!--<groupId>fortscale</groupId>-->
+			<!--<artifactId>presidio-input-sdk-api</artifactId>-->
+			<!--<version>${project.version}</version>-->
+		<!--</dependency>-->
 
 
 
@@ -47,6 +52,12 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>fortscale</groupId>
+			<artifactId>presidio-input-sdk-impl</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 

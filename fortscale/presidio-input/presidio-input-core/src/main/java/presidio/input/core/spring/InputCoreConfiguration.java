@@ -14,18 +14,34 @@ import presidio.input.core.services.impl.InputProcessServiceImpl;
  */
 @Configuration
 @Import(MongoConfig.class)
-public class InputProcessConfiguration {
+public class InputCoreConfiguration {
 
     @Bean
     public InputProcessService inputProcessService(){
         return new InputProcessServiceImpl();
     }
 
-
     @Bean
     public CommandLineRunner commandLineRunner() {
+        return new PresidioCommandLineRunner(inputProcessService());
+    }
 
-        return services -> inputProcessService().run(1,services);
+
+
+
+    private static class PresidioCommandLineRunner implements CommandLineRunner {
+
+        private InputProcessService inputProcessService;
+
+        public PresidioCommandLineRunner(InputProcessService inputProcessService){
+            this.inputProcessService = inputProcessService;
+        }
+
+        @Override
+        public void run(String... params) throws Exception {
+            this.inputProcessService.run(params);
+
+        }
     }
 
 }

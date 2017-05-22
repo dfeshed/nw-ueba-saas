@@ -8,11 +8,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import org.springframework.test.context.junit4.SpringRunner;
 import presidio.input.core.services.api.InputProcessService;
-import presidio.input.core.spring.InputProcessConfiguration;
+import presidio.input.core.spring.InputCoreConfiguration;
 
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = InputProcessConfiguration.class)
+@SpringBootTest(classes = InputCoreConfiguration.class)
 
 public class FortscaleInputCoreApplicationTest {
 
@@ -21,7 +21,7 @@ public class FortscaleInputCoreApplicationTest {
 
 	@Test
 	public void contextLoads() throws Exception {
-		processService.run(1,"SHAY");
+		processService.run("SHAY");
 
 	}
 

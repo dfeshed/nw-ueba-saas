@@ -2,21 +2,25 @@ package presidio.sdk.impl.services;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
-import presidio.sdk.api.domain.AbsEventRecord;
+import presidio.sdk.api.domain.AbstractRecordDocument;
 import presidio.sdk.api.services.CoreManagerService;
-import presidio.sdk.api.services.InputProcessService;
+import presidio.sdk.api.services.PresidioInputSdk;
 
-/**
- * Created by shays on 17/05/2017.
- */
+import java.util.List;
 
 public class CoreManagerServiceImpl implements CoreManagerService {
 
+
+    private PresidioInputSdk presidioInputSdk;
+
     @Autowired
-    private InputProcessService inputProcessService;
+    public CoreManagerServiceImpl(PresidioInputSdk presidioInputSdk) {
+        this.presidioInputSdk = presidioInputSdk;
+    }
 
     @Override
-    public boolean store(AbsEventRecord event) {
-        return inputProcessService.store(event);
+    public boolean store(List<AbstractRecordDocument> events) {
+        return presidioInputSdk.store(events);
     }
+
 }

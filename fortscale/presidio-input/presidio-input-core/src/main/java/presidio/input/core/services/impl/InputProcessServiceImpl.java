@@ -14,9 +14,9 @@ public class InputProcessServiceImpl implements InputProcessService {
 
     Logger log = LoggerFactory.getLogger(this.getClass());
 
-    public void run(int id, String... var1) throws Exception{
+    public void run(String... params) throws Exception{
 
-        String name = var1.length>0?var1[0]:"Shay";
-        log.info("{} is the king version {}",name ,id+"");
+        String name = params.length>0?params[0]:"Shay";
+        log.info("{} is the king version {}",name);
     }
 }

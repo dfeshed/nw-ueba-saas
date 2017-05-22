@@ -9,7 +9,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.task.configuration.EnableTask;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
-import presidio.input.core.spring.InputProcessConfiguration;
+import presidio.input.core.spring.InputCoreConfiguration;
 
 
 @SpringBootApplication
@@ -24,8 +24,8 @@ public class FortscaleInputCoreApplication{
 	private static  Logger log = LoggerFactory.getLogger(FortscaleInputCoreApplication.class);
 
 	public static void main(String[] args) {
-		log.info("shay");
-		SpringApplication.run(new Object[]{FortscaleInputCoreApplication.class, InputProcessConfiguration.class}, args);
+		log.info("Start Input Core Proccessing");
+		SpringApplication.run(new Object[]{FortscaleInputCoreApplication.class, InputCoreConfiguration.class}, args);
 	}
 
 

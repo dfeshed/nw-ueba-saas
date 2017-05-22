@@ -5,7 +5,6 @@ import presidio.sdk.api.domain.AbstractRecordDocument;
 
 import java.util.List;
 
-public interface CoreManagerService {
-    boolean store(List<AbstractRecordDocument> events);
-
+public interface PresidioInputSdk {
+    boolean store(List<AbstractRecordDocument> event);
 }
