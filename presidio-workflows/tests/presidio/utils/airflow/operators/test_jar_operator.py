@@ -317,8 +317,7 @@ def test_update_java_args(default_args, java_args):
         dag=dag)
 
     java_args = {
-        'd': 'three',
-        'f': 'five'
+        'c': 'three',
     }
 
     task.update_java_args(java_args)
@@ -353,8 +352,6 @@ def test_update_jvm_args(default_args, java_args):
 
     jvm_args = {
         'timezone': '-Duser.timezone=America/New_York',
-        'jar_path': JAR_PATH,
-        'main_class': MAIN_CLASS,
     }
 
     task.update_jvm_args(jvm_args)

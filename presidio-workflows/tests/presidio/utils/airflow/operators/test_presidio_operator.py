@@ -79,9 +79,15 @@ def test_presidio_jar_operator(default_args):
     dag = DAG(
         "test_presidio_operator_dags", default_args=default_args, schedule_interval=timedelta(weeks=1))
 
+    java_args = {
+        'a': 'one',
+        'b': 'two'
+    }
+
     task = PresidioJarOperator(
         task_id='presidio_jar_operator',
         jvm_args=jvm_args,
+        java_args=java_args,
         fixed_duration_strategy=FIX_DURATION_STRATEGY_HOURLY,
         dag=dag)
 

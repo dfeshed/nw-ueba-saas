@@ -46,7 +46,7 @@ class JarOperator(BashOperator):
         :type java_args: dict
         :return: 
         """
-        self.java_args = java_args
+        self.java_args.update(java_args)
         self.bash_command = self.get_bash_command()
 
     def update_jvm_args(self, jvm_args):
@@ -57,7 +57,7 @@ class JarOperator(BashOperator):
         :type jvm_args: dict
         :return: 
         """
-        self.jvm_args = jvm_args
+        self.jvm_args.update(jvm_args)
         self.merged_args = self.merge_args()
         self.bash_command = self.get_bash_command()
 

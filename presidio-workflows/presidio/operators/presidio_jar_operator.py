@@ -13,16 +13,14 @@ class PresidioJarOperator(JarOperator):
     
      :param fixed_duration_strategy: duration (e.g. hourly or daily)
      :type fixed_duration_strategy: datetime.timedelta
-     :param jvm_args: The jvm args 
-     :type jvm_args: dict
-    
     """
 
     @apply_defaults
-    def __init__(self, fixed_duration_strategy, jvm_args, *args, **kwargs):
-        super(PresidioJarOperator, self).__init__(jvm_args=jvm_args, java_args={}, *args, **kwargs)
+    def __init__(self, fixed_duration_strategy, java_args={}, *args, **kwargs):
         self.interval = kwargs.get('dag').schedule_interval
         self.fixed_duration_strategy = fixed_duration_strategy
+        java_args.update({'fixed_duration_strategy': fixed_duration_strategy})
+        super(PresidioJarOperator, self).__init__(java_args=java_args, *args, **kwargs)
 
     def pre_execute(self, context):
         """
@@ -40,8 +38,7 @@ class PresidioJarOperator(JarOperator):
         if fixed_duration_valid and start_date_valid:
             java_args = {
                 'start_date': start_date,
-                'end_date': end_date,
-                'fixed_duration_strategy': fixed_duration_strategy
+                'end_date': end_date
             }
             super(PresidioJarOperator, self).update_java_args(java_args)
 
