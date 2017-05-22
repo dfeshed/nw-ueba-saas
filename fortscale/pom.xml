@@ -772,6 +772,6 @@
 		<module>presidio-input</module>
 		<module>presidio-core-manager</module>
 		<module>presidio-collector</module>
-		<module>fortscale-output</module>
+		<module>presidio-output</module>
 	</modules>
 </project>
