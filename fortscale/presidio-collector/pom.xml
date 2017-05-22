@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 
-	<name>fortscale-collector</name>
+	<name>presidio-collector</name>
 	<description>Demo project for Spring Boot</description>
 
 	<parent>
@@ -12,7 +12,7 @@
         <groupId>fortscale</groupId>
         <version>1.0.0-SNAPSHOT</version>
 	</parent>
-	<artifactId>fortscale-collector</artifactId>	
+	<artifactId>presidio-collector</artifactId>
 	<packaging>jar</packaging>
 
 
@@ -20,7 +20,7 @@
 
 
 	<properties>
-		<start-class>fortscale.FortscaleCollectorApplication</start-class>
+		<start-class>fortscale.presidioCollectorApplication</start-class>
 	</properties>
 
 	<dependencies>
@@ -66,12 +66,12 @@
 		</dependency>
 		<dependency>
 			<groupId>fortscale</groupId>
-			<artifactId>fortscale-core-manager-sdk-api</artifactId>
+			<artifactId>presidio-core-manager-sdk-api</artifactId>
 			<version>1.0.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>fortscale</groupId>
-			<artifactId>fortscale-core-manager-sdk-impl</artifactId>
+			<artifactId>presidio-core-manager-sdk-impl</artifactId>
 			<version>1.0.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>

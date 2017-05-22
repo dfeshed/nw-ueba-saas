@@ -1,11 +1,13 @@
-package fortscale.spring;
+package presidio.collector.spring;
 
-import fortscale.services.impl.ReaderServiceImpl;
 import fortscale.utils.mongodb.config.MongoConfig;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import presidio.collector.services.api.ReaderService;
+import presidio.collector.services.impl.ReaderServiceImpl;
+import presidio.sdk.impl.spring.CoreManagerSdkImplConfig;
 
 /**
  * Created by shays on 17/05/2017.
@@ -15,7 +17,7 @@ import org.springframework.context.annotation.Import;
 public class CollectorConfig {
 
     @Bean
-    ReaderServiceImpl readerService(){
+    ReaderService  readerService(){
         return new ReaderServiceImpl();
     }
 

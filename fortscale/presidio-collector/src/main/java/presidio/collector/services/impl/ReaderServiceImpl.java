@@ -1,18 +1,20 @@
-package fortscale.services.impl;
+package presidio.collector.services.impl;
 
-import fortscale.domain.DlpFileRecord;
-import fortscale.services.api.CoreManagerService;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import presidio.collector.services.api.ReaderService;
+import presidio.sdk.api.domain.DlpFileRecord;
+import presidio.sdk.api.services.CoreManagerService;
 
 /**
  * Created by shays on 21/05/2017.
  */
-public class ReaderServiceImpl {
+public class ReaderServiceImpl extends ReaderService{
 
     @Autowired
-    CoreManagerService coreManagerService;
+    private CoreManagerService coreManagerService;
 
     Logger log = LoggerFactory.getLogger(this.getClass());
 

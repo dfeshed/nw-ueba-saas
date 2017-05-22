@@ -1,8 +1,4 @@
-package fortscale;
-
-
-import fortscale.spring.CollectorConfig;
-import fortscale.utils.mongodb.config.MongoConfig;
+package presidio.collector;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.task.configuration.EnableTask;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
+import presidio.collector.spring.CollectorConfig;
 
 
 @SpringBootApplication
@@ -25,6 +22,7 @@ public class FortscaleCollectorApplication {
 
 	public static void main(String[] args) {
 		log.info("shay");
+
 		SpringApplication.run(new Object[]{FortscaleCollectorApplication.class, CollectorConfig.class}, args);
 	}
 
