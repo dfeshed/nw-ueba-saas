@@ -770,7 +770,7 @@
 		<module>fortscale-common</module>
 		<module>fortscale-monitoring-daemons</module>
 		<module>presidio-input</module>
-		<module>fortscale-core-manager</module>
+		<module>presidio-core-manager</module>
 		<module>fortscale-collector</module>
 		<module>fortscale-output</module>
 	</modules>
