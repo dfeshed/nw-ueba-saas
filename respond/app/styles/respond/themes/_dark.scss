@@ -1,0 +1,15 @@
+$void: register-theme('dark', (
+  respond: (
+    /*
+    key-value pairs go here, nested pairs are okay, e.g:
+    ```
+    primary: blue,
+    secondary: gray,
+    images: (
+      logo: url('path/to/dark/logo.png'),
+      ..
+    )
+    ```
+    */
+  )
+));
