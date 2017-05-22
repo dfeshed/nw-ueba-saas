@@ -116,10 +116,10 @@ def test_valid_fixed_duration(default_args):
     assert valid is True
 
 
-def test_not_valid_fixed_duration(default_args):
+def test_invalid_fixed_duration(default_args):
     """
     
-    Test Expected error on not valid fixed_duration
+    Test Expected error on invalid fixed_duration
     :param default_args: 
     :return: 
     """
@@ -129,9 +129,9 @@ def test_not_valid_fixed_duration(default_args):
     }
 
     dag = DAG(
-        "test_not_valid_fixed_duration_dag", default_args=default_args, schedule_interval=timedelta(hours=1))
+        "test_invalid_fixed_duration_dag", default_args=default_args, schedule_interval=timedelta(hours=1))
     task = PresidioJarOperator(
-        task_id='not_valid_fixed_duration',
+        task_id='invalid_fixed_duration',
         jvm_args=jvm_args,
         fixed_duration_strategy=FIX_DURATION_STRATEGY_HOURLY,
         dag=dag)
@@ -165,10 +165,10 @@ def test_valid_start_date(default_args):
     assert valid is True
 
 
-def test_not_valid_start_date(default_args):
+def test_invalid_start_date(default_args):
     """
     
-    Test Expected error on not valid start_date
+    Test Expected error on invalid start_date
     :param default_args: 
     :return: 
     """
@@ -178,9 +178,9 @@ def test_not_valid_start_date(default_args):
     }
 
     dag = DAG(
-        "test_not_vvalid_start_date_dag", default_args=default_args, schedule_interval=timedelta(hours=1))
+        "test_invalid_start_date_dag", default_args=default_args, schedule_interval=timedelta(hours=1))
     task = PresidioJarOperator(
-        task_id='not_valid_start_date',
+        task_id='invalid_start_date',
         jvm_args=jvm_args,
         fixed_duration_strategy=FIX_DURATION_STRATEGY_HOURLY,
         dag=dag)
