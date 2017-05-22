@@ -1,6 +1,7 @@
-package fortscale.services.api;
+package presidio.sdk.api.services;
 
-import fortscale.domain.AbsEventRecord;
+
+import presidio.sdk.api.domain.AbsEventRecord;
 
 /**
  * Created by shays on 21/05/2017.

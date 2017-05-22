@@ -1,7 +1,6 @@
-package fortscale;
+package presidio.sdk.impl;
 
 
-import fortscale.services.impl.CoreManagerServiceImpl;
 import fortscale.utils.mongodb.config.MongoConfig;
 
 import org.slf4j.Logger;
@@ -11,6 +10,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
+import presidio.sdk.impl.services.CoreManagerServiceImpl;
+import presidio.sdk.impl.spring.CoreManagerSdkImplConfig;
 
 
 @SpringBootApplication
@@ -23,7 +24,7 @@ public class Application {
 
 	public static void main(String[] args) {
 		log.info("shay");
-		SpringApplication.run(new Object[]{Application.class, MongoConfig.class, CoreManagerServiceImpl.class	}, args);
+		SpringApplication.run(new Object[]{Application.class, MongoConfig.class, CoreManagerSdkImplConfig.class	}, args);
 	}
 
 

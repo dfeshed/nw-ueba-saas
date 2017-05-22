@@ -1,10 +1,10 @@
-package fortscale.services.impl;
+package presidio.sdk.impl.services;
 
-import fortscale.domain.AbsEventRecord;
-import fortscale.services.InputProcessService;
 
-import fortscale.services.api.CoreManagerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import presidio.sdk.api.domain.AbsEventRecord;
+import presidio.sdk.api.services.CoreManagerService;
+import presidio.sdk.api.services.InputProcessService;
 
 /**
  * Created by shays on 17/05/2017.

@@ -1,6 +1,4 @@
-package fortscale;
-
-import fortscale.services.impl.CoreManagerServiceImpl;
+package presidio.sdk.input;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -8,6 +6,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+import presidio.sdk.impl.services.CoreManagerServiceImpl;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -15,7 +14,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 public class FortscaleInputCoreApplicationTest {
 
 	@Autowired
-    CoreManagerServiceImpl service;
+	CoreManagerServiceImpl service;
 
 	@Test
 	public void contextLoads() throws Exception {
