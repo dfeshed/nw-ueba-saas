@@ -207,7 +207,7 @@ public class ProcessInfoServiceImpl implements ProcessInfoService {
         int pid = -1;
         try {
             String line=Files.lines(file.toPath()).findFirst().orElse("Empty");
-            if(line.equals("Empty")) {
+            if("Empty".equals(line)) {
                 pid = Integer.parseInt(line);
             }
             else{
