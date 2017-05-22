@@ -35,8 +35,31 @@ class JarOperator(BashOperator):
         self.jvm_args = jvm_args
         self.java_args = java_args
         self.merged_args = self.merge_args()
-        bash_command = self.get_bash_command()
-        super(JarOperator, self).__init__(bash_command=bash_command, *args, **kwargs)
+        command = self.get_bash_command()
+        super(JarOperator, self).__init__(bash_command=command, *args, **kwargs)
+
+    def update_java_args(self, java_args):
+        """
+        
+        Update java args
+        :param java_args: The java args 
+        :type java_args: dict
+        :return: 
+        """
+        self.java_args = java_args
+        self.bash_command = self.get_bash_command()
+
+    def update_jvm_args(self, jvm_args):
+        """
+        
+        Update jvm args
+        :param jvm_args: The jvm args 
+        :type jvm_args: dict
+        :return: 
+        """
+        self.jvm_args = jvm_args
+        self.merged_args = self.merge_args()
+        self.bash_command = self.get_bash_command()
 
     def merge_args(self):
         """
@@ -50,7 +73,7 @@ class JarOperator(BashOperator):
             '/home/presidio/dev-projects/presidio-core/presidio-workflows/presidio/resources/java/config.ini')
         default_options_items = parser.items('default_values')
         args = dict(default_options_items + self.jvm_args.items())
-        return args;
+        return args
 
     def get_bash_command(self):
         """
@@ -61,7 +84,7 @@ class JarOperator(BashOperator):
         """
         bash_command = []
 
-        bash_command.extend([self.merged_args.get('java_path')]);
+        bash_command.extend([self.merged_args.get('java_path')])
 
         self.jvm_memory_allocation(bash_command)
 
@@ -87,19 +110,20 @@ class JarOperator(BashOperator):
         Xmx specifies the maximum memory allocation pool for a Java Virtual Machine (JVM),
         Xms specifies the initial memory allocation pool.
         
-        :param bash_command: array of bash comments
-        :type bash_command: array
+        :param bash_command: list of bash comments
+        :type bash_command: []
         :return: 
         """
 
         xms = '-Xms%sm' % self.merged_args.get('xms')
         xmx = '-Xmx%sm' % self.merged_args.get('xmx')
-        bash_command.extend([xms, xmx]);
+        bash_command.extend([xms, xmx])
 
     def extra_args(self, bash_command):
         """
         
-        :param bash_command: array of bash comments
+        :param bash_command: list of bash comments
+        :type bash_command: []
         :return: 
         """
         if self.merged_args.get('extra_args') is not None:
@@ -111,8 +135,8 @@ class JarOperator(BashOperator):
         Validate that main_class, jar_path or class_path exist in merged_args, 
         otherwise throw an error
         
-        :param bash_command: array of bash comments
-        :type bash_command: array
+        :param bash_command: list of bash comments
+        :type bash_command: []
         :raise ValueError: main_class, class path or jar path were not defined
         :return: 
         """
@@ -128,16 +152,16 @@ class JarOperator(BashOperator):
         else:
             bash_command.extend(['-cp', class_path, self.merged_args.get('main_class')])
         if self.java_args is not None:
-            self.java_args = ' '.join('%s=%s' % (key, val) for (key, val) in self.java_args.iteritems())
-            bash_command.append(self.java_args)
+            java_args = ' '.join('%s=%s' % (key, val) for (key, val) in self.java_args.iteritems())
+            bash_command.append(java_args)
 
     def jmx(self, bash_command):
         """
         
         JMX is build-in instrumentation that enables to monitor and manage JVM
         
-        :param bash_command: array of bash comments
-        :type bash_command: array
+        :param bash_command: list of bash comments
+        :type bash_command: []
         :return: 
         """
         if self.merged_args.get('jmx_enabled') is True:
@@ -155,7 +179,8 @@ class JarOperator(BashOperator):
     def timezone(self, bash_command):
         """
         
-        :param bash_command: array of bash comments
+        :param bash_command: list of bash comments
+        :type bash_command list
         :return: 
         """
         if self.merged_args['timezone'] is not None:
@@ -166,7 +191,8 @@ class JarOperator(BashOperator):
         
         Handle debug options
         
-        :param bash_command: array of bash comments
+        :param bash_command: list of bash comments
+        :type bash_command list
         :return: 
         """
         if self.merged_args.get('remote_debug_enabled') is True:
@@ -184,7 +210,8 @@ class JarOperator(BashOperator):
         Handle logback options: use java_overriding_logback_conf_path if exist,
         otherwise get java_logback_conf_path
         
-        :param bash_command: 
+        :param bash_command: list of bash comments
+        :type bash_command list
         :return: 
         """
         logback_config = '-Dlogback.configurationFile=%s'

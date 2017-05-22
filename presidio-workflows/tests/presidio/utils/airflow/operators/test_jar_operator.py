@@ -292,3 +292,74 @@ def test_no_jar(default_args, java_args):
 
     with pytest.raises(Exception, message="Expecting error of bash operator"):
         build_and_run_task(jvm_args, dag, java_args)
+
+
+def test_update_java_args(default_args, java_args):
+    """
+
+    Test update of java args
+    :param default_args: default_args to dag
+    :type default_args: dict
+    :return:
+    """
+    logging.info('test update of java args:')
+    jvm_args = {
+        'jar_path': JAR_PATH,
+        'main_class': MAIN_CLASS,
+    }
+    dag = DAG(
+        "test_java_args_update", default_args=default_args, schedule_interval=timedelta(1))
+
+    task = JarOperator(
+        task_id='run_jar_file',
+        jvm_args=jvm_args,
+        java_args=java_args,
+        dag=dag)
+
+    java_args = {
+        'd': 'three',
+        'f': 'five'
+    }
+
+    task.update_java_args(java_args)
+
+    task.clear()
+    task.run(start_date=DEFAULT_DATE, end_date=DEFAULT_DATE)
+    tis = get_task_instances(dag)
+    assert_task_state(tis)
+
+
+def test_update_jvm_args(default_args, java_args):
+    """
+
+    Test update of jvm args
+    :param default_args: default_args to dag
+    :type default_args: dict
+    :return:
+    """
+    logging.info('test update of jvm args:')
+    jvm_args = {
+        'jar_path': JAR_PATH,
+        'main_class': MAIN_CLASS,
+    }
+    dag = DAG(
+        "test_jvm_args_update", default_args=default_args, schedule_interval=timedelta(1))
+
+    task = JarOperator(
+        task_id='run_jar_file',
+        jvm_args=jvm_args,
+        java_args=java_args,
+        dag=dag)
+
+    jvm_args = {
+        'timezone': '-Duser.timezone=America/New_York',
+        'jar_path': JAR_PATH,
+        'main_class': MAIN_CLASS,
+    }
+
+    task.update_jvm_args(jvm_args)
+
+    task.clear()
+    task.run(start_date=DEFAULT_DATE, end_date=DEFAULT_DATE)
+    tis = get_task_instances(dag)
+    assert_task_state(tis)
