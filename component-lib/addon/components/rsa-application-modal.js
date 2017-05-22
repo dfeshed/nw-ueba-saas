@@ -1,20 +1,15 @@
-import Ember from 'ember';
 import layout from '../templates/components/rsa-application-modal';
-
-const {
-  Component,
-  inject: {
-    service
-  },
-  run,
-  $
-} = Ember;
+import $ from 'jquery';
+import { next, schedule } from 'ember-runloop';
+import service from 'ember-service/inject';
+import Component from 'ember-component';
 
 export default Component.extend({
 
   layout,
 
   eventBus: service(),
+  contextualHelp: service(),
 
   classNames: ['rsa-application-modal'],
 
@@ -40,9 +35,9 @@ export default Component.extend({
   },
 
   didInsertElement() {
-    run.schedule('afterRender', () => {
+    schedule('afterRender', () => {
       this.$('.modal-close').on('click', () => {
-        run.next(() => this.closeModal());
+        next(() => this.closeModal());
       });
       if (this.get('autoOpen')) {
         this.openModal();
@@ -57,7 +52,7 @@ export default Component.extend({
   },
 
   updateModal(truth) {
-    run.next(() => {
+    next(() => {
       if (truth) {
         this.get('eventBus').trigger('rsa-application-modal-did-open');
         $('#modalDestination').addClass('active');
@@ -76,14 +71,14 @@ export default Component.extend({
 
   openModal() {
     const isOpen = true;
-    run.next(this, function() {
+    next(this, function() {
       this.updateModal(isOpen);
     });
   },
 
   closeModal() {
     const isOpen = false;
-    run.next(this, function() {
+    next(this, function() {
       this.updateModal(isOpen);
     });
     if (this.get('onClose')) {
@@ -110,6 +105,10 @@ export default Component.extend({
 
     closeModal() {
       this.closeModal();
+    },
+
+    goToHelp(module, topic) {
+      this.get('contextualHelp').goToHelp(module, topic);
     }
   }
 

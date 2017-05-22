@@ -5,7 +5,14 @@
     <div class="rsa-application-overlay" {{action 'closeModal'}}></div>
 
     <div class="rsa-application-modal-content {{style}}">
-      <div {{action 'closeModal'}} class="close-modal">
+      {{#if contextualHelpRequired}}
+        <div class="button-modal help-button">
+          {{#rsa-form-button isIconOnly=true defaultAction=(action 'goToHelp' module topic)}}
+            {{rsa-icon name="help-circle" size="small" style="lined"}}
+          {{/rsa-form-button}}
+        </div>
+      {{/if}}
+      <div {{action 'closeModal'}} class="button-modal close-button">
         {{rsa-icon name="close" size="small"}}
       </div>
       <h3>{{label}}</h3>

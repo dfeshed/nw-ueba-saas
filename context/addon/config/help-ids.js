@@ -8,5 +8,9 @@ export const contextHelpIds = {
   InvestigateHelpIds: {
     moduleId: 'investigate',
     topicId: 'invContextPnl'
+  },
+  AddToListHelpIds: {
+    moduleId: 'investigate',
+    topicId: 'invAddToList'
   }
 };

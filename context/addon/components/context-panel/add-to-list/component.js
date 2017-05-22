@@ -1,15 +1,10 @@
-import Ember from 'ember';
 import layout from './template';
 import computed from 'ember-computed-decorators';
-
-const {
-  Component,
-  Logger,
-  inject: {
-    service
-  },
-  Object: EmberObject
-} = Ember;
+import Component from 'ember-component';
+import service from 'ember-service/inject';
+import EmberObject from 'ember-object';
+import { warn } from 'ember-debug';
+import { contextHelpIds } from 'context/config/help-ids';
 
 export default Component.extend({
   layout,
@@ -20,6 +15,7 @@ export default Component.extend({
   isError: false,
   errorMessage: null,
   isDisabled: false,
+  helpId: contextHelpIds.AddToListHelpIds,
 
   /**
    * The type and id of the entity which is to be added to a list.
@@ -94,7 +90,7 @@ export default Component.extend({
         if (this.get('hasResponse') === true) {
           return;
         }
-        Logger.error('Error processing stream call for context lookup.', response);
+        warn('Error processing stream call for context lookup.', response);
       }
     });
   }

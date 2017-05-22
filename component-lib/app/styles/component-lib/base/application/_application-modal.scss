@@ -37,10 +37,8 @@
       padding-right: rsa-whitespace(most);
     }
 
-    .close-modal {
+    .button-modal {
       position: absolute;
-      top: 1.35rem;
-      right: rsa-whitespace();
       color: $applicationModalCloseLinkColor;
 
       i {
@@ -51,6 +49,16 @@
       &:hover {
         cursor: pointer;
       }
+    }
+
+    .help-button {
+      top: 0.7rem;
+      right: 1.5rem;
+    }
+
+    .close-button {
+      top: 1.35rem;
+      right: rsa-whitespace();
     }
 
     .modal-trigger {
