@@ -25,6 +25,32 @@ export default [{
   'contentVersion': 13,
   'contentLastModifiedTime': 1488906967222
 }, {
+  'id': '58be7d121969557cbbdbfc5sdf',
+  'name': 'Liveconnect-ds',
+  'enabled': true,
+  'description': 'Live connect datasource',
+  'type': 'LiveConnect-File',
+  'dataSourceGroup': 'LiveConnect-File',
+  'maxSize': -1,
+  'maxAgeOfEntriesInSeconds': -1,
+  'maxStorageSize': -1,
+  'maxCacheMemorySize': -1,
+  'contentVersion': 13,
+  'contentLastModifiedTime': 1488906967222
+}, {
+  'id': '58be7d121969557cbbdbfc5sdf',
+  'name': 'Liveconnect-ds',
+  'enabled': true,
+  'description': 'Live connect datasource',
+  'type': 'LiveConnect-Domain',
+  'dataSourceGroup': 'LiveConnect-Domain',
+  'maxSize': -1,
+  'maxAgeOfEntriesInSeconds': -1,
+  'maxStorageSize': -1,
+  'maxCacheMemorySize': -1,
+  'contentVersion': 13,
+  'contentLastModifiedTime': 1488906967222
+}, {
   'id': '58be7d121969557cbbdbfc57',
   'name': '58be7d121969557cbbdbfc55_Incidents_datasource',
   'enabled': true,

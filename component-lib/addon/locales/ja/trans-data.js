@@ -899,7 +899,7 @@ export default {
       prefix: 'ja_Prefix',
       countryCode: 'ja_Country Code',
       countryName: 'ja_Country Name',
-      registrant: 'ja_Organization',
+      organization: 'ja_Organization',
       fileDate: 'ja_Date',
       fileName: 'ja_FILE NAME',
       fileSize: 'ja_FILE SIZE',

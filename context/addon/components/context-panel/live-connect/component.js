@@ -1,15 +1,19 @@
 import Ember from 'ember';
 import layout from './template';
 import lcColumnList from 'context/config/liveconnect-columns';
-import { or } from 'ember-computed-decorators';
+import computed, { or } from 'ember-computed-decorators';
 
 const {
   Component
 } = Ember;
-
+const liveConnectTabs = ['LiveConnect-Ip', 'LiveConnect-Domain', 'LiveConnect-File'];
 export default Component.extend({
   layout,
   lcColumnList,
+  classNames: 'rsa-context-panel__liveconnect',
+
+  @computed('activeTabName')
+  showContextPanel: (activeTabName) => liveConnectTabs.includes(activeTabName),
 
   @or('model.contextData.LiveConnect-Ip_ERROR', 'model.contextData.LiveConnect-Domain_ERROR', 'model.contextData.LiveConnect-File_ERROR')
   liveConnectError: null

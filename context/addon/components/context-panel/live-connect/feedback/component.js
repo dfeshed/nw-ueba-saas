@@ -18,6 +18,8 @@ const stateToComputed = ({ context }) => ({
   activeTabName: context.activeTabName
 });
 
+const liveConnectTabs = ['LiveConnect-Ip', 'LiveConnect-Domain', 'LiveConnect-File'];
+
 const FeedbackComponent = Component.extend({
   layout,
   riskLevels,
@@ -43,7 +45,7 @@ const FeedbackComponent = Component.extend({
   },
 
   @computed('activeTabName', 'model.contextData.liveConnectData')
-  showFeedbackPanel: (activeTabName, lcData) => activeTabName === 'LiveConnect-Ip' && lcData,
+  showFeedbackPanel: (activeTabName, lcData) => liveConnectTabs.includes(activeTabName) && lcData,
 
   @computed('model.contextData.liveConnectData.allTags')
   riskTags: (tags) => {

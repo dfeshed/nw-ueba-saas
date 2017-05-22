@@ -74,7 +74,8 @@ const ContextComponent = Component.extend({
       lookupKey: entityId,
       meta: entityType,
       contextData: EmberObject.create({
-        liveConnectData: EmberObject.create()
+        liveConnectData: EmberObject.create(),
+        headerData: null
       })
     });
     this.set('model', contextModels);
@@ -95,7 +96,7 @@ const ContextComponent = Component.extend({
     }
     contextDatum.resultList.forEach((obj) => {
       if (obj && !isEmpty(obj.record)) {
-        this._parseLiveConnectData(contextDatum.dataSourceGroup, obj.record);
+        this._parseLiveConnectData(contextDatum.dataSourceGroup, obj.record, contextDatum.resultMeta);
         this._fetchRelatedEntities(liveConnectObj[contextDatum.dataSourceType].fetchRelatedEntities);
       } else {
         contextData.set('liveConnectData', null);
@@ -108,7 +109,7 @@ const ContextComponent = Component.extend({
     }
   },
 
-  _parseLiveConnectData(dataSourceType, record) {
+  _parseLiveConnectData(dataSourceType, record, resultMeta) {
     const lcData = this.get('model.contextData.liveConnectData');
     const entityType = liveConnectObj[dataSourceType];
     record.forEach((obj) => {
@@ -122,6 +123,7 @@ const ContextComponent = Component.extend({
         lcData.set(liveConnectObj.allTags, obj.LiveConnectApi.riskTagTypes);
         lcData.set(liveConnectObj.allReasons, obj.LiveConnectApi.riskReasonTypes);
       }
+      this.set('model.contextData.headerData', this._createHeaderData(resultMeta));
     });
     entityType.relatedEntities_count.forEach((obj) => {
       const reputationObj = record.find((rec) => {
@@ -132,7 +134,12 @@ const ContextComponent = Component.extend({
       }
     });
   },
-
+  _createHeaderData(resultMeta) {
+    return {
+      timeWindow: this.get('i18n').t('context.timeUnit.allData'),
+      lastUpdated: resultMeta.timeQuerySubmitted
+    };
+  },
   _checkNullForInfo(entityType, obj) {
     entityType.checkNullFields.forEach((field) => {
       if (isEmpty(obj[entityType.info][field])) {

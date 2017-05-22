@@ -63,10 +63,26 @@ const datasources = {
     tabRequired: true,
     class: 'network-connecting'
   },
-  liveConnect: {
+  'liveConnectIp': {
     field: 'LiveConnect-Ip',
     title: 'context.header.liveConnect',
     dataSourceType: 'LiveConnect-Ip',
+    displayType: 'liveConnect',
+    class: 'network-live',
+    tabRequired: true
+  },
+  liveConnectFile: {
+    field: 'LiveConnect-File',
+    title: 'context.header.liveConnect',
+    dataSourceType: 'LiveConnect-File',
+    displayType: 'liveConnect',
+    class: 'network-live',
+    tabRequired: true
+  },
+  liveConnectDomain: {
+    field: 'LiveConnect-Domain',
+    title: 'context.header.liveConnect',
+    dataSourceType: 'LiveConnect-Domain',
     displayType: 'liveConnect',
     class: 'network-live',
     tabRequired: true
@@ -100,7 +116,7 @@ export default [{
     datasources.alert,
     datasources.list,
     datasources.archer,
-    datasources.liveConnect
+    datasources.liveConnectIp
   ],
   toolbar: [
     toolbar.addToList
@@ -181,7 +197,7 @@ export default [{
     datasources.incident,
     datasources.alert,
     datasources.list,
-    datasources.liveConnect
+    datasources.liveConnectFile
   ],
   toolbar: [
     toolbar.addToList
@@ -197,7 +213,7 @@ export default [{
     datasources.incident,
     datasources.alert,
     datasources.list,
-    datasources.liveConnect
+    datasources.liveConnectDomain
   ],
   toolbar: [
     toolbar.addToList

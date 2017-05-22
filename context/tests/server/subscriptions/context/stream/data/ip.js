@@ -1148,6 +1148,9 @@ export default [
         ]
       }
     ],
+    'resultMeta': {
+      'timeQuerySubmitted': 1458242092315
+    },
     'dataSourceType': 'LiveConnect-Ip',
     'dataSourceGroup': 'LiveConnect-Ip',
     'datasourceId': '57c149bfe4b0e8a1f1769a40',
@@ -1452,6 +1455,9 @@ export default [
         ]
       }
     ],
+    'resultMeta': {
+      'timeQuerySubmitted': 1458242092315
+    },
     'dataSourceType': 'LiveConnect-File',
     'datasourceId': '57c149bfe4b0e8a1f1769a40',
     'currentPageId': 0,
@@ -1756,6 +1762,9 @@ export default [
         ]
       }
     ],
+    'resultMeta': {
+      'timeQuerySubmitted': 1458242092315
+    },
     'dataSourceType': 'LiveConnect-Domain',
     'dataSourceGroup': 'LiveConnect-Domain',
     'datasourceId': '57c149bfe4b0e8a1f1769a40',

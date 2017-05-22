@@ -1,45 +1,46 @@
 {{#if liveConnectError}}
   <div class="rsa-context-panel__liveconnect__field">{{t 'context.lc.errorMsg' error=liveConnectError}}</div>
-{{else if (is-equal tabdata 'LiveConnect-Ip')}}
+{{else if showContextPanel}}
   {{#if (eq contextData.liveConnectData null)}}
     <div class="rsa-context-panel__liveconnect__heading">{{t 'context.lc.noDataMsg'}}</div>
   {{else if contextData.liveConnectData.allTags}}
-    {{#if (is-equal model.meta 'IP')}}
-      {{context-panel/live-connect/lc-community-activity
-      liveConnectData=contextData.liveConnectData.IpReputation
-      model=model
-      allTags=contextData.liveConnectData.allTags
-      allReasons=contextData.liveConnectData.allReasons}}
-      {{#if (is-equal tabdata 'liveConnect')}}
+    <div class="rsa-context-panel__context-data-table__heading-text">
+      <span>
+        {{t 'context.timeWindow'}}{{contextData.headerData.timeWindow}} |
+        {{t 'context.lastUpdated'}}{{rsa-content-datetime timestamp=contextData.headerData.lastUpdated asTimeAgo=true}}
+      </span>
+    </div>
+    <div>
+      {{#if (is-equal model.meta 'IP')}}
+        {{context-panel/live-connect/lc-community-activity
+        liveConnectData=contextData.liveConnectData.IpReputation
+        model=model
+        allTags=contextData.liveConnectData.allTags
+        allReasons=contextData.liveConnectData.allReasons}}
         {{context-panel/live-connect/lc-identity liveConnectData=contextData.liveConnectData.IpInfo}}
-      {{/if}}
-    {{else if (is-equal model.meta 'FILE_HASH')}}
-      {{context-panel/live-connect/lc-community-activity
-      liveConnectData=contextData.liveConnectData.FileReputation
-      model=model
-      allTags=contextData.liveConnectData.allTags
-      allReasons=contextData.liveConnectData.allReasons}}
-      {{#if (is-equal tabdata 'liveConnect')}}
+      {{else if (is-equal model.meta 'FILE_HASH')}}
+        {{context-panel/live-connect/lc-community-activity
+        liveConnectData=contextData.liveConnectData.FileReputation
+        model=model
+        allTags=contextData.liveConnectData.allTags
+        allReasons=contextData.liveConnectData.allReasons}}
         {{context-panel/live-connect/lc-file-identity liveConnectData=contextData.liveConnectData.FileInfo}}
         {{context-panel/live-connect/lc-certificate-info liveConnectData=contextData.liveConnectData.FileInfo}}
-      {{/if}}
-    {{else if (is-equal model.meta 'DOMAIN')}}
-      {{context-panel/live-connect/lc-community-activity
-      liveConnectData=contextData.liveConnectData.DomainReputation
-      model=model
-      allTags=contextData.liveConnectData.allTags
-      allReasons=contextData.liveConnectData.allReasons}}
-      {{#if (is-equal tabdata 'LiveConnect-Ip')}}
+      {{else if (is-equal model.meta 'DOMAIN')}}
+        {{context-panel/live-connect/lc-community-activity
+        liveConnectData=contextData.liveConnectData.DomainReputation
+        model=model
+        allTags=contextData.liveConnectData.allTags
+        allReasons=contextData.liveConnectData.allReasons}}
         {{context-panel/live-connect/lc-domain-identity liveConnectData=contextData.liveConnectData.DomainInfo}}
         {{context-panel/live-connect/lc-domain-whois liveConnectData=contextData.liveConnectData.DomainInfo}}
       {{/if}}
-    {{/if}}
-  {{/if}}
-  {{#if (is-equal tabdata 'LiveConnect-Ip')}}
-    {{#each lcColumnList as |columns|}}
-      {{#if (get contextData  columns.dataStore)}}
-        {{context-panel/data-table contextData=(get contextData columns.dataStore) dSDetails=columns}}
-      {{/if}}
-    {{/each}}
+      {{#each lcColumnList as |columns|}}
+        {{#if (get contextData  columns.dataStore)}}
+          {{context-panel/data-table contextData=(get contextData columns.dataStore) dSDetails=columns}}
+        {{/if}}
+      {{/each}}
+      <br><br>
+    </div>
   {{/if}}
 {{/if}}

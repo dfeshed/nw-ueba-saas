@@ -8,7 +8,7 @@ export default [
       {
         field: 'risk',
         title: 'context.lc.risk',
-        width: '100',
+        width: '8vw',
         dataType: 'riskRating',
         class: {
           UNSAFE: 'rsa-context-panel__liveconnect__risk-rating-unsafe',
@@ -19,31 +19,31 @@ export default [
       {
         field: 'id',
         title: 'context.lc.ipAddress',
-        width: '100',
+        width: '10vw',
         dataType: 'id',
         className: 'rsa-context-panel__liveconnect__entity-value'
       },
       {
         field: 'domain',
         title: 'context.lc.domain',
-        width: '100',
+        width: '15vw',
         dataType: 'domain',
         className: 'rsa-context-panel__liveconnect__entity-value'
       },
       {
         field: 'asnNumber',
         title: 'context.lc.asnShort',
-        width: '100'
+        width: '10vw'
       },
       {
         field: 'asnOrganization',
         title: 'context.lc.organization',
-        width: '100'
+        width: '10vw'
       },
       {
         field: 'country',
         title: 'context.lc.country',
-        width: '100'
+        width: '10vw'
       }
     ]
   },
@@ -56,7 +56,7 @@ export default [
       {
         field: 'risk',
         title: 'context.lc.risk',
-        width: '100',
+        width: '8vw',
         dataType: 'riskRating',
         class: {
           UNSAFE: 'rsa-context-panel__liveconnect__risk-rating-unsafe',
@@ -67,25 +67,25 @@ export default [
       {
         field: 'fileName',
         title: 'context.lc.fileName',
-        width: '100',
+        width: '15vw',
         dataType: 'filename',
         className: 'rsa-context-panel__liveconnect__entity-value'
       },
       {
         field: 'id',
         title: 'context.lc.md5',
-        width: '100'
+        width: '15vw'
       },
       {
         field: 'compileTime',
         title: 'context.lc.compiledTime',
-        width: '100',
+        width: '10vw',
         dataType: 'datetime'
       },
       {
         field: 'impHash',
         title: 'context.lc.importHashFunction',
-        width: '400'
+        width: '45vw'
       }
 
     ]
@@ -99,7 +99,7 @@ export default [
       {
         field: 'risk',
         title: 'context.lc.risk',
-        width: '100',
+        width: '8vw',
         dataType: 'riskRating',
         class: {
           UNSAFE: 'rsa-context-panel__liveconnect__risk-rating-unsafe',
@@ -110,7 +110,7 @@ export default [
       {
         field: 'id',
         title: 'context.lc.domain',
-        width: '150',
+        width: '15vw',
         style: 'color:blue',
         dataType: 'domain',
         className: 'rsa-context-panel__liveconnect__entity-value'
@@ -118,24 +118,24 @@ export default [
       {
         field: 'whoisCountry',
         title: 'context.lc.country',
-        width: '150'
+        width: '10vw'
       },
       {
         field: 'whoisCreatedDate',
         title: 'context.lc.registeredDate',
         dataType: 'datetime',
-        width: '150'
+        width: '10vw'
       },
       {
         field: 'whoisExpiredDate',
         title: 'context.lc.expiredDate',
         dataType: 'datetime',
-        width: '100'
+        width: '10vw'
       },
       {
         field: 'whoisEmail',
         title: 'context.lc.email',
-        width: '200'
+        width: '20vw'
       }
     ]
   }
