@@ -90,7 +90,7 @@ test('it only shows the Pivot to Endpoint link for IPs, HOSTs & MAC addresses', 
     });
 });
 
-test('it only shows the Pivot to Investigate link for IPs, HOSTs, MACs, DOMAINs, USERs & FILEs', function(assert) {
+test('it only shows the Pivot to Investigate link for IPs, HOSTs, MACs, DOMAINs, USERs & FILE_NAMEs', function(assert) {
   this.setProperties({
     entityType: 'IP',
     entityId: '10.20.30.40'
@@ -134,13 +134,13 @@ test('it only shows the Pivot to Investigate link for IPs, HOSTs, MACs, DOMAINs,
     .then(() => {
       assert.ok(this.$('.js-test-pivot-to-investigate-link').length, 'Expected to find investigate link for USER');
       this.setProperties({
-        entityType: 'FILE',
+        entityType: 'FILE_NAME',
         entityId: 'foo.pdf'
       });
       return wait();
     })
     .then(() => {
-      assert.ok(this.$('.js-test-pivot-to-investigate-link').length, 'Expected to find investigate link for FILE');
+      assert.ok(this.$('.js-test-pivot-to-investigate-link').length, 'Expected to find investigate link for FILE_NAME');
       this.setProperties({
         entityType: 'IP',
         entityId: null

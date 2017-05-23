@@ -68,16 +68,16 @@ export default Component.extend({
         query = `ip.src=${entityId}||ip.dst=${entityId}`;
         break;
       case 'DOMAIN':
-        query = `alias.host=${entityId}`;
+        query = `alias.host='${entityId}'`;
         break;
       case 'HOST':
-        query = `device.host=${entityId}`;
+        query = `device.host='${entityId}'`;
         break;
       case 'USER':
-        query = `username=${entityId}`;
+        query = `username='${entityId}'`;
         break;
-      case 'FILE':
-        query = `filename=${entityId}`;
+      case 'FILE_NAME':
+        query = `filename='${entityId}'`;
         break;
       case 'MAC_ADDRESS':
         query = `eth.src=${entityId}|eth.dst=${entityId}`;
