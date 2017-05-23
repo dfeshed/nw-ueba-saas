@@ -328,7 +328,11 @@ export default Mixin.create({
         })
         .forEach(({ elementId }) => {
           const $element = $(`#${elementId}`);
-          $element.addClass(CSS_CLASS_HAS_CONTEXT_DATA);
+
+          // Don't decorate DOM if records are empty (e.g., if data sources are not configured).
+          if (records && records.length) {
+            $element.addClass(CSS_CLASS_HAS_CONTEXT_DATA);
+          }
           if (onEntityContextFound) {
             onEntityContextFound(type, id, $element, status, records);
           }

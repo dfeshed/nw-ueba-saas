@@ -5,6 +5,7 @@ import jQuery from 'jquery';
 import Evented from 'ember-evented';
 import rsvp from 'rsvp';
 import { next } from 'ember-runloop';
+import { isEmberArray } from 'ember-array/utils';
 
 module('Unit | Mixin | highlights entities');
 
@@ -39,8 +40,16 @@ const contextStub = EmberObject.extend({
   },
   summary(entities, callback) {
     next(() => {
-      (entities || []).forEach(({ type, id }) => {
-        callback(type, id, [{ name: 'incidents', count: 1 }]);
+      (entities || []).forEach(({ type, id }, index) => {
+        callback(
+          type,
+          id,
+          'complete',
+
+          // every other entity will receive an empty set of records, for testing
+          index % 2 ?
+            [{ name: 'incidents', count: 1 }] : []
+        );
       });
     });
   }
@@ -91,7 +100,7 @@ const innerHTML = values
   .join('');
 
 test('it applies CSS classes, wires up clicks, and fires callbacks correctly', function(assert) {
-  assert.expect(12);  // 11 = 8 + 2 asserts * every callback to onEntityContextFound = 6 + 2 * 2
+  assert.expect(14);  // 14 = 8 + 3 asserts * every callback to onEntityContextFound = 8 + 3 * 2
 
   const element = document.createElement('svg');
   element.id = 'highlights-entities-test-element-1';
@@ -101,9 +110,14 @@ test('it applies CSS classes, wires up clicks, and fires callbacks correctly', f
   const subject = FakeComponentClass.create({
     element,
     autoHighlightEntities: true,
-    onEntityContextFound: (type, id, $element, records) => {
-      assert.ok(records && records.length, 'Expected callback to receive context data');
+    onEntityContextFound: (type, id, $element, status, records) => {
+      assert.ok(isEmberArray(records), 'Expected callback to receive context data');
       assert.ok($element && $element.hasClass('is-context-enabled'), 'Expected callback only for enabled DOM nodes');
+      assert.equal(
+        !!(records && records.length),
+        !!$element && $element.hasClass('has-context-data'),
+        'Expected DOM nodes to be decorated only if they have records'
+      );
     }
   });
   assert.ok(subject);
@@ -147,7 +161,7 @@ test('it applies CSS classes, wires up clicks, and fires callbacks correctly', f
 
       // Use `next` to wait long enough for context data to come back.
       next(() => {
-        assert.equal(subject.$('.has-context-data').length, 2,
+        assert.equal(subject.$('.has-context-data').length, 1,
           'Expected DOM nodes with valid entity types, or with meta keys that map to valid entity types, to fetch context data');
 
         subject.willDestroyElement();
