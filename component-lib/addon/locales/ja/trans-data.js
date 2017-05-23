@@ -399,7 +399,9 @@ export default {
     title: 'ja_Respond',
     common: {
       yes: 'ja_Yes',
-      no: 'ja_No'
+      no: 'ja_No',
+      true: 'ja_Yes',
+      false: 'ja_No'
     },
     filters: 'ja_Filters',
     timeframeOptions: {
@@ -530,31 +532,6 @@ export default {
       },
       label: 'ja_Incidents',
       selectionCount: 'ja_{{selectionCount}} selected',
-      precannedFilters: {
-        all: 'ja_All Incidents',
-        assignedToMe: 'ja_Assigned to me',
-        inProgress: 'ja_In Progress',
-        unassigned: 'ja_Unassigned'
-      },
-      sort: {
-        label: 'ja_Sort by',
-        alertsCountDescending: 'ja_Alerts (Highest on Top)',
-        alertsCountAscending: 'ja_Alerts (Lowest on Top)',
-        assigneeDescending: 'ja_Assignee (Z to A)',
-        assigneeAscending: 'ja_Assignee (A to Z)',
-        scoreAscending: 'ja_Risk Score (Lowest on Top)',
-        scoreDescending: 'ja_Risk Score (Highest on Top)',
-        createdAscending: 'ja_Created (Oldest on Top)',
-        createdDescending: 'ja_Created (Newest on Top)',
-        statusAscending: 'ja_Status (Ascending)',
-        statusDescending: 'ja_Status (Descending)',
-        idAscending: 'ja_ID (Ascending)',
-        idDescending: 'ja_ID (Descending)',
-        nameAscending: 'ja_Name (A to Z)',
-        nameDescending: 'ja_Name (Z to A)',
-        priorityAscending: 'ja_Priority (Lowest on Top)',
-        priorityDescending: 'ja_Priority (Highest on Top)'
-      },
       list: {
         select: 'ja_Select',
         id: 'ja_ID',

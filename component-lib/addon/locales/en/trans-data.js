@@ -399,7 +399,9 @@ export default {
     title: 'Respond',
     common: {
       yes: 'Yes',
-      no: 'No'
+      no: 'No',
+      true: 'Yes',
+      false: 'No'
     },
     filters: 'Filters',
     timeframeOptions: {
@@ -530,31 +532,6 @@ export default {
       },
       selectionCount: '{{selectionCount}} selected',
       label: 'Incidents',
-      precannedFilters: {
-        all: 'All Incidents',
-        assignedToMe: 'Assigned to me',
-        inProgress: 'In Progress',
-        unassigned: 'Unassigned'
-      },
-      sort: {
-        label: 'Sort by',
-        alertsCountDescending: 'Alerts (Highest on Top)',
-        alertsCountAscending: 'Alerts (Lowest on Top)',
-        assigneeDescending: 'Assignee (Z to A)',
-        assigneeAscending: 'Assignee (A to Z)',
-        scoreAscending: 'Risk Score (Lowest on Top)',
-        scoreDescending: 'Risk Score (Highest on Top)',
-        createdAscending: 'Created (Oldest on Top)',
-        createdDescending: 'Created (Newest on Top)',
-        statusAscending: 'Status (Ascending)',
-        statusDescending: 'Status (Descending)',
-        idAscending: 'ID (Ascending)',
-        idDescending: 'ID (Descending)',
-        nameAscending: 'Name (A to Z)',
-        nameDescending: 'Name (Z to A)',
-        priorityAscending: 'Priority (Lowest on Top)',
-        priorityDescending: 'Priority (Highest on Top)'
-      },
       list: {
         select: 'Select',
         id: 'ID',

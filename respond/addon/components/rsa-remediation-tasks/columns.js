@@ -30,7 +30,8 @@ export default [
     title: 'respond.remediationTasks.list.id',
     width: '4%',
     dataType: 'text',
-    visible: true
+    visible: true,
+    disableSort: true
   },
   {
     field: 'name',
@@ -80,6 +81,7 @@ export default [
     title: 'respond.remediationTasks.list.incidentId',
     width: '10%',
     dataType: 'text',
-    visible: true
+    visible: true,
+    disableSort: true
   }
 ];

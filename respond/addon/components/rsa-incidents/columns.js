@@ -31,7 +31,8 @@ export default [
     field: 'id',
     title: 'respond.incidents.list.id',
     width: '8%',
-    dataType: 'text'
+    dataType: 'text',
+    disableSort: true
   },
   {
     field: 'name',

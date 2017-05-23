@@ -1,0 +1,33 @@
+<section class="filter-option priority-filter">
+  <h2>{{ t 'respond.remediationTasks.list.priority'}}</h2>
+  {{#each priorityTypes as |priorityType|}}
+    <label class="rsa-form-checkbox-label {{if (contains priorityType priorityFilters) 'checked'}}">
+      {{rsa-form-checkbox
+        checked=(contains priorityType priorityFilters )
+        change=(action 'togglePriorityFilter' priorityType)}}
+      <span>{{t (concat 'respond.priority.' priorityType)}}</span>
+    </label>
+  {{/each}}
+</section>
+<section class="filter-option status-filter">
+  <h2>{{ t 'respond.remediationTasks.list.status'}}</h2>
+  {{#each remediationStatusTypes as |statusType|}}
+    <label class="rsa-form-checkbox-label {{if (contains statusType statusFilters) 'checked'}}">
+      {{rsa-form-checkbox
+        checked=(contains statusType statusFilters )
+        change=(action 'toggleStatusFilter' statusType)}}
+      <span>{{t (concat 'respond.status.' statusType)}}</span>
+    </label>
+  {{/each}}
+</section>
+<section class="filter-option status-filter">
+  <h2>{{ t 'respond.remediationTasks.list.escalated'}}</h2>
+  {{#each escalationTypes as |escalationType|}}
+    <label class="rsa-form-checkbox-label {{if (contains escalationType escalatedFilters) 'checked'}}">
+      {{rsa-form-checkbox
+        checked=(contains escalationType escalatedFilters )
+        change=(action 'toggleIsEscalatedFilter' escalationType)}}
+      <span>{{t (concat 'respond.common.' escalationType)}}</span>
+    </label>
+  {{/each}}
+</section>
