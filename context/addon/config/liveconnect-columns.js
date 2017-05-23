@@ -67,7 +67,7 @@ export default [
       {
         field: 'fileName',
         title: 'context.lc.fileName',
-        width: '15vw',
+        width: '12vw',
         dataType: 'filename',
         className: 'rsa-context-panel__liveconnect__entity-value'
       },
@@ -85,7 +85,7 @@ export default [
       {
         field: 'impHash',
         title: 'context.lc.importHashFunction',
-        width: '45vw'
+        width: '18vw'
       }
 
     ]
@@ -110,7 +110,7 @@ export default [
       {
         field: 'id',
         title: 'context.lc.domain',
-        width: '15vw',
+        width: '12vw',
         style: 'color:blue',
         dataType: 'domain',
         className: 'rsa-context-panel__liveconnect__entity-value'
@@ -135,7 +135,7 @@ export default [
       {
         field: 'whoisEmail',
         title: 'context.lc.email',
-        width: '20vw'
+        width: '13vw'
       }
     ]
   }
