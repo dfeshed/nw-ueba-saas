@@ -17,6 +17,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -27,7 +29,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 import java.util.*;
@@ -36,8 +38,9 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
-@RunWith(SpringJUnit4ClassRunner.class)
+@RunWith(SpringRunner.class)
 @ContextConfiguration(loader = AnnotationConfigContextLoader.class)
+@SpringBootTest
 public class ModelServiceTest {
 	@Configuration
 	@ImportResource("classpath*:META-INF/spring/model-service-test-context.xml")
@@ -60,15 +63,15 @@ public class ModelServiceTest {
 		}
 	}
 
-	@Autowired
+	@MockBean
 	private BucketConfigurationService bucketConfigurationService;
-	@Autowired
+	@MockBean
 	private MongoDbUtilService mongoDbUtilService;
 	@Autowired
 	private ModelService modelService;
-	@Autowired
+	@MockBean
 	private FeatureBucketsReaderService featureBucketsReaderService;
-	@Autowired
+	@MockBean
 	private MongoTemplate mongoTemplate;
 
 	private FeatureBucketConf selectorFeatureBucketConf;
