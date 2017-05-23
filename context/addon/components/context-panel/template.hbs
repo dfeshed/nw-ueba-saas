@@ -6,26 +6,28 @@
 <div class='rsa-context-panel__layout'>
   <div>    
     <hbox>
-      <vbox xs='11'>
+      <vbox xs='8'>
         <div class="rsa-context-panel-header__header-text">
           <span> {{t 'context.title'}} {{t (concat 'context.' entityType) }} :</span>
           {{entityId}}
         </div>
       </vbox>
-      <div class="rsa-context-panel-header__header-icons">
-        <span class="rsa-context-panel-header__help-icon">
-          {{#rsa-form-button
-            isIconOnly=true
-            defaultAction=(action 'goToHelp' helpId.moduleId helpId.topicId)}}
-            {{rsa-icon name="help-circle" style="lined"}}
-          {{/rsa-form-button}}
-        </span>
-        <span>
-          <button class="rsa-context-panel-header__panel-close" {{action 'closeAction'}} title= {{t 'context.header.closeButton.title'}}>
-            {{rsa-icon style='filled' name='close'}}
-          </button>
-        </span>
-      </div>
+      <vbox xs='4' class="rsa-context-panel-header__header-icons">
+        <div>
+          <span>
+            {{#rsa-form-button
+              isIconOnly=true
+              defaultAction=(action 'goToHelp' helpId.moduleId helpId.topicId)}}
+              {{rsa-icon name="help-circle" style="lined"}}
+            {{/rsa-form-button}}
+          </span>
+          <span class="rsa-context-panel-header__close-icon">
+            <button class="rsa-context-panel-header__panel-close" {{action 'closeAction'}} title= {{t 'context.header.closeButton.title'}}>
+              {{rsa-icon style='filled' name='close'}}
+            </button>
+          </span>
+        </div>
+      </vbox>
     </hbox>
     <hbox class="rsa-context-panel-header__tab">
       {{#each toolbar as | buttons | }}

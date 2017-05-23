@@ -50,11 +50,11 @@
 
   &__header-icons {
     padding-left: rsa-whitespace(base);
+    align-items: flex-end;
   }
 
-  &__help-icon {
-    padding-left: 0.75rem;
-    padding-right: 0.75rem;
+  &__close-icon {
+    padding-right: rsa-whitespace();
   }
 
   &__unsafe {
