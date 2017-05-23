@@ -9,7 +9,8 @@ import presidio.webapp.spring.WebConf;
 
 @SpringBootApplication
 @ComponentScan(
-		excludeFilters = @ComponentScan.Filter( type = FilterType.REGEX, pattern = "fortscale.*"))
+		excludeFilters = {@ComponentScan.Filter( type = FilterType.REGEX, pattern = "fortscale.*"),
+				@ComponentScan.Filter( type = FilterType.REGEX, pattern = "presidio.*")})
 public class FortscaleOutputApplication {
 
 	public static void main(String[] args) {
