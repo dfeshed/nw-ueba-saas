@@ -20,7 +20,7 @@
 
 
 	<properties>
-		<start-class>fortscale.presidioCollectorApplication</start-class>
+		<start-class>presidio.collector.FortscaleCollectorApplication</start-class>
 	</properties>
 
 	<dependencies>
