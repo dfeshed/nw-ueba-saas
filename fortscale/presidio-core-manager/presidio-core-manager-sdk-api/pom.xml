@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 
-	<name>fortscale-core-manager-sdk-api</name>
+	<name>presidio-core-manager-sdk-api</name>
 	<description>Demo project for Spring Boot</description>
 
 	<parent>

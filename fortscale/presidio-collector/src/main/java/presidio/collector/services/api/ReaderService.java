@@ -8,13 +8,7 @@ import org.springframework.stereotype.Component;
  * Created by shays on 17/05/2017.
  */
 
-public class ReaderService {
+public interface ReaderService {
 
-    Logger log = LoggerFactory.getLogger(this.getClass());
-
-    public void run(String... var1) throws Exception{
-
-        String name = var1.length>0?var1[0]:"Shay";
-        log.info("{} is the king version {}",name );
-    }
+    void run(String... params) throws Exception;
 }

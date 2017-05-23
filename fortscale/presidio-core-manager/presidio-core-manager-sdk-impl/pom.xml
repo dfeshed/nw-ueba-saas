@@ -15,21 +15,12 @@
 	<artifactId>presidio-core-manager-sdk-impl</artifactId>	
 	<packaging>jar</packaging>
 
+	<!--<properties>-->
+		<!--<start-class>presidio.sdk.impl.Application</start-class>-->
+	<!--</properties>-->
+
 
 	<dependencies>
-
-		<!--<dependency>-->
-			<!--<groupId>fortscale</groupId>-->
-			<!--<artifactId>presidio-input-sdk-impl</artifactId>-->
-			<!--<version>${project.version}</version>-->
-		<!--</dependency>-->
-		<!--<dependency>-->
-			<!--<groupId>fortscale</groupId>-->
-			<!--<artifactId>presidio-input-sdk-api</artifactId>-->
-			<!--<version>${project.version}</version>-->
-		<!--</dependency>-->
-
-
 
 		<dependency>
 			<groupId>fortscale</groupId>
@@ -61,36 +52,7 @@
 		</dependency>
 	</dependencies>
 
-	<build>
-		<!--<plugins>-->
-			<!--<plugin>-->
-				<!--<groupId>org.apache.maven.plugins</groupId>-->
-				<!--<artifactId>maven-jar-plugin</artifactId>-->
-				<!--<configuration>-->
-					<!--<archive>-->
-						<!--<manifest>-->
-							<!--<mainClass>${start-class}</mainClass>-->
-						<!--</manifest>-->
-					<!--</archive>-->
-				<!--</configuration>-->
-			<!--</plugin>-->
 
-			<!--<plugin>-->
-				<!--<groupId>org.springframework.boot</groupId>-->
-				<!--<artifactId>spring-boot-maven-plugin</artifactId>-->
-				<!--<executions>-->
-					<!--<execution>-->
-						<!--<goals>-->
-							<!--<goal>repackage</goal>-->
-						<!--</goals>-->
-					<!--</execution>-->
-				<!--</executions>-->
-				<!--<configuration>-->
-					<!--<mainClass>${start-class}</mainClass>-->
-				<!--</configuration>-->
-			<!--</plugin>-->
-		<!--</plugins>-->
-	</build>
 
 
 </project>

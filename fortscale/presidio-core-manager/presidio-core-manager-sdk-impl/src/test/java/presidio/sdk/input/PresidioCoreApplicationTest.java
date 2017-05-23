@@ -6,6 +6,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+import presidio.sdk.api.services.PresidioInputSdk;
 import presidio.sdk.impl.services.CoreManagerServiceImpl;
 import presidio.sdk.impl.spring.CoreManagerSdkImplConfig;
 
@@ -14,12 +15,17 @@ import presidio.sdk.impl.spring.CoreManagerSdkImplConfig;
 
 public class PresidioCoreApplicationTest {
 
-//	@Autowired
-//	CoreManagerServiceImpl service;
+	@Autowired
+	private CoreManagerServiceImpl service;
+
+
+	@Autowired
+	private PresidioInputSdk presidioInput;;
 
 	@Test
 	public void contextLoads() throws Exception {
-		//Assert.assertNotNull(service);
+		Assert.assertNotNull(service);
+		Assert.assertNotNull(presidioInput);
 
 	}
 

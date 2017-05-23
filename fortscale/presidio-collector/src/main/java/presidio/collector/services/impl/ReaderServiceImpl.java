@@ -13,10 +13,14 @@ import java.util.Collections;
 /**
  * Created by shays on 21/05/2017.
  */
-public class ReaderServiceImpl extends ReaderService{
+public class ReaderServiceImpl implements ReaderService{
 
-    @Autowired
+
     private CoreManagerService coreManagerService;
+
+    public ReaderServiceImpl(CoreManagerService coreManagerService){
+        this.coreManagerService = coreManagerService;
+    }
 
     Logger log = LoggerFactory.getLogger(this.getClass());
 
