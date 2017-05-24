@@ -2,19 +2,11 @@
     "dags_configs":
     [
       {
-        "dag_id": "some_dag_id",
+        "dag_id": "full_flow",
         "args":{},
-        "schedule_interval": "* * * * *",
-        "start_date": "2017-05-08T01:00:00.000Z",
-        "end_date": "2017-05-08T02:00:00.000Z"
-      },
-      {
-        "dag_id": "some_dag_id2",
-        "args":{},
-        "schedule_interval": "*/2 * * * *",
-        "start_date": "2015-05-08T01:00:00.000Z",
-        "end_date": "2015-05-08T02:00:00.000Z"
-
+        "schedule_interval": "@hourly",
+        "start_date": "2015-06-01 00:00:00",
+        "end_date": "2016-06-01 00:00:00"
       }
     ]
 }
