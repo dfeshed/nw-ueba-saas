@@ -66,7 +66,7 @@ public class CsvFileFetcher implements Fetcher {
             }
             default: {
                 //should not happen
-                throw new Exception("create documents failed. this is weird - should not happen. datasource=" + datasource.name());
+                throw new Exception("create documents failed. this is weird - should not happen. datasource=" + datasource.name()); //todo: temp
             }
         }
 

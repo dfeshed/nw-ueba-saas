@@ -19,7 +19,7 @@ public class Application {
     private static Logger log = LoggerFactory.getLogger(Application.class);
 
     public static void main(String[] args) {
-        log.info("shay");
+        log.info("core manager is running...");
         SpringApplication.run(new Object[]{Application.class, MongoConfig.class, CoreManagerSdkConfig.class}, args);
     }
 
