@@ -4,7 +4,9 @@ import fortscale.utils.logging.Logger;
 import org.joda.time.DateTime;
 import presidio.collector.Datasource;
 import presidio.sdk.api.domain.AbstractRecordDocument;
+import presidio.sdk.api.domain.DlpFileRecordDocumentBuilder;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -27,7 +29,7 @@ public class FetchServiceImpl implements FetchService {
             throw new Exception("Unsupported datasource: " + datasource);
         }
 
-        final List<AbstractRecordDocument> fetchResults;
+        final List<String[]> fetchResults;
         try {
             fetchResults = fetcher.fetch(datasource, startTime, endTime);
         } catch (Exception e) {
@@ -35,6 +37,37 @@ public class FetchServiceImpl implements FetchService {
             //todo: how do we handle? maybe retry?
             throw e;
         }
-        return fetchResults;
+
+        return createDocuments(datasource, fetchResults);
     }
+
+
+    private List<AbstractRecordDocument> createDocuments(Datasource datasource, List<String[]> records) throws Exception {
+        List<AbstractRecordDocument> createdDocuments = new ArrayList<>();
+        switch (datasource) { //todo: we can use a document factory instead of switch case
+            case DLPFILE: {
+                DlpFileRecordDocumentBuilder dlpFileRecordDocumentBuilder = new DlpFileRecordDocumentBuilder();
+                for (String[] record : records) {
+                    createdDocuments.add(dlpFileRecordDocumentBuilder.createDlpFileRecordDocument(record));
+                }
+                break;
+            }
+            case DLPMAIL: {
+                throw new UnsupportedOperationException("DLPMAIL not supported yet");
+            }
+            case PRNLOG: {
+                throw new UnsupportedOperationException("PRNLOG not supported yet");
+            }
+            default: {
+                //should not happen
+                throw new Exception("create documents failed. this is weird - should not happen. datasource=" + datasource.name()); //todo: temp
+            }
+        }
+
+        return createdDocuments;
+
+    }
+
 }
+
+
