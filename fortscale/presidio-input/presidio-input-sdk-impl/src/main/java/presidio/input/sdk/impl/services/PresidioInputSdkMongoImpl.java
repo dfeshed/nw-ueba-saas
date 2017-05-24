@@ -11,15 +11,15 @@ public class PresidioInputSdkMongoImpl implements PresidioInputSdk {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
-    public boolean store(List<AbstractRecordDocument> event) {
+    public boolean store(List<AbstractRecordDocument> events) {
+        //TODO: change this when we have the new service and repo
         int i = 1;
-        for (AbstractRecordDocument abstractRecordDocument : event) {
-            System.out.println(abstractRecordDocument);
-            System.out.println(i);
-            System.out.println();
+        System.out.println();
+        for (AbstractRecordDocument abstractRecordDocument : events) {
+            System.out.println(i + ": - " + abstractRecordDocument);
             i++;
         }
-        logger.info("Record Stored");
+        logger.info(events.size() + " Records stored");
         return true;
     }
 }
