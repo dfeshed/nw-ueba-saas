@@ -16,6 +16,7 @@ export default Mixin.create({
   startDragPosition: null,
   spanClass: null,
   spanEl: null,
+  userInComponent: false,
 
   // Get the handle object of the selected text
   getSelected() {
@@ -23,6 +24,26 @@ export default Mixin.create({
       return window.getSelection();
     }
     return '';
+  },
+
+  /*
+   * mouseEnter/mouseLeave handle delayed rendering of the tether component.
+   * This delayed rendering and eventual un-rendering isn't perfect. It will,
+   * for instance, leave the tether panel in place if someone has the tooltip
+   * open and clicks outside the component to close it.
+   */
+
+  mouseEnter() {
+    this.set('userInComponent', true);
+  },
+
+  mouseLeave() {
+    // going to the tooltip component is considered a mouseLeave
+    // of THIS component, but we do not want to remove the thether,
+    // obviously, if the tooltip is open
+    if (!this.get('spanEl')) {
+      this.set('userInComponent', false);
+    }
   },
 
   mouseUp() {

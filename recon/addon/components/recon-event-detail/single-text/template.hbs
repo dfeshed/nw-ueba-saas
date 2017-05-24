@@ -11,28 +11,36 @@
     {{ initialTextToDisplay }}
   </div>
 
-  {{#rsa-content-tethered-panel
-    position='top'
-    panelId=(concat 'span' elementId)
-    hideOnLeave=false
-    displayCloseButton=hasCloseButton
-    style='highlighted'
-  }}
-    <div class="reconTooltip">
-      {{#if isActionClicked }}
-        <header>{{tooltipHeading}}</header>
-        <div class='selection-name'>Original Selection</div>
-        <div class='selection-value'>{{originalString}}</div>
-        <div class='selection-name'>Base64 Format</div>
-        <div class='selection-value'>{{encDecStrBase64}}</div>
-        <div class='selection-name'>URL Format</div>
-        <div class='selection-value'>{{encDecStrUrl}}</div>
-      {{else}}
-        <div class="list-item" {{action 'decodeText'}}>Decode Selected Text</div>
-        <div class="list-item" {{action 'encodeText'}}>Encode Selected Text</div>
-      {{/if}}
-    </div>
-  {{/rsa-content-tethered-panel}}
+  {{!--
+    Many many text components are rendered, do not want to render
+    a thether panel unless the user is actually visiting this text component
+  --}}
+
+  {{#if userInComponent}}
+
+    {{#rsa-content-tethered-panel
+      position='top'
+      panelId=(concat 'span' elementId)
+      hideOnLeave=false
+      displayCloseButton=hasCloseButton
+      style='highlighted'
+    }}
+      <div class="reconTooltip">
+        {{#if isActionClicked }}
+          <header>{{tooltipHeading}}</header>
+          <div class='selection-name'>Original Selection</div>
+          <div class='selection-value'>{{originalString}}</div>
+          <div class='selection-name'>Base64 Format</div>
+          <div class='selection-value'>{{encDecStrBase64}}</div>
+          <div class='selection-name'>URL Format</div>
+          <div class='selection-value'>{{encDecStrUrl}}</div>
+        {{else}}
+          <div class="list-item" {{action 'decodeText'}}>Decode Selected Text</div>
+          <div class="list-item" {{action 'encodeText'}}>Encode Selected Text</div>
+        {{/if}}
+      </div>
+    {{/rsa-content-tethered-panel}}
+  {{/if}}
 
   {{#if displayShowAllButton}}
     <div class="load-more-text-entries">
