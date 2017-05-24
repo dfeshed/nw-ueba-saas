@@ -9,7 +9,7 @@ import presidio.sdk.api.domain.DlpFileRecordDocumentBuilder;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
+import java.nio.charset.Charset;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,15 +19,19 @@ public class CsvFileFetcher implements Fetcher {
     private static final Logger logger = Logger.getLogger(CsvFileFetcher.class);
 
     private final String csvFilesFolderPath;
+    private final Charset charset;
+    private final char delimiter;
 
-    public CsvFileFetcher(String csvFilesFolderPath) {
+    public CsvFileFetcher(String csvFilesFolderPath, Charset charset, char delimiter) {
         this.csvFilesFolderPath = csvFilesFolderPath;
+        this.charset = charset;
+        this.delimiter = delimiter;
     }
 
     @Override
     public List<AbstractRecordDocument> fetch(Datasource datasource, long startTime, long endTime) throws Exception {
         final String csvFile = createFileName(datasource, startTime, endTime);
-        CSVReader reader = new CSVReader(new BufferedReader(new InputStreamReader(new FileInputStream(csvFile), StandardCharsets.UTF_8), ','));
+        CSVReader reader = new CSVReader(new BufferedReader(new InputStreamReader(new FileInputStream(csvFile), charset), delimiter));
         final List<String[]> records = reader.readAll();
 
         List<String[]> filteredRecords = filterFields(records);
@@ -36,12 +40,17 @@ public class CsvFileFetcher implements Fetcher {
     }
 
     private List<String[]> filterFields(List<String[]> records) {
-        return records; //todo: do nothing for now, change this when relevant
+        return records;
+        //todo: do nothing for now, change this when relevant.
+        //todo: i think a better way to do this is to have the "fetcher" and the "filter" uncoupled.
+        //todo: so the fetcher will get the filter in the ctor.
+        //todo: this way we can use the same CSVReader logic with different filters (i.e for dlpfile and dlpmail)
+        //todo: also... - the name 'filter' can be better :-)
     }
 
     private List<AbstractRecordDocument> createDocuments(Datasource datasource, List<String[]> records) throws Exception {
         List<AbstractRecordDocument> createdDocuments = new ArrayList<>();
-        switch (datasource) { //todo: we can use a factory instead of switch case
+        switch (datasource) { //todo: we can use a document factory instead of switch case
             case DLPFILE: {
                 DlpFileRecordDocumentBuilder dlpFileRecordDocumentBuilder = new DlpFileRecordDocumentBuilder();
                 for (String[] record : records) {

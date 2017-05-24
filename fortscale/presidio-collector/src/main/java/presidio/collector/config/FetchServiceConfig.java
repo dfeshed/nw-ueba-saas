@@ -10,6 +10,7 @@ import presidio.collector.services.api.FetchService;
 import presidio.collector.services.api.FetchServiceImpl;
 import presidio.collector.services.api.Fetcher;
 
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,7 +23,7 @@ public class FetchServiceConfig {
     @Bean
     FetchService fetchService() {
         Map<Datasource, Fetcher> fetchers = new HashMap<>();
-        fetchers.put(Datasource.DLPFILE, new CsvFileFetcher(csvFilesFolderPath));
+        fetchers.put(Datasource.DLPFILE, new CsvFileFetcher(csvFilesFolderPath, StandardCharsets.UTF_8, ','));
         return new FetchServiceImpl(fetchers);
     }
 }
