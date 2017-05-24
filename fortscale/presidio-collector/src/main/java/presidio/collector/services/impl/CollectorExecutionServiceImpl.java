@@ -30,7 +30,7 @@ public class CollectorExecutionServiceImpl implements CollectorExecutionService 
     }
 
     public void run(String... params) throws Exception {         //todo: we need to consider doing the fetch & store at the same iteration
-        logger.info("Start csv processing with params: " + params);
+        logger.info("Start csv processing with params: " + Arrays.toString(params));
 
         if (params.length < 3) {
             System.out.println();
