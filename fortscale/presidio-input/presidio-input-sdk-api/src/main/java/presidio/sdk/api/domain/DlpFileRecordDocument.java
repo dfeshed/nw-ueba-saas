@@ -5,8 +5,6 @@ import java.util.Date;
 
 public class DlpFileRecordDocument extends AbstractRecordDocument {
 
-    private Date dateTime;
-    private long dateTimeUnix;
     private String eventType;
     private String eventId;
     private String username;
@@ -35,8 +33,7 @@ public class DlpFileRecordDocument extends AbstractRecordDocument {
 
 
     protected DlpFileRecordDocument(Date dateTime, long dateTimeUnix, String eventType, String eventId, String username, String normalizedUsername, String fullName, String hostname, String normalizedSrcMachine, String sourceIp, String executingApplication, String sourcePath, String destinationPath, String sourceFileName, String destinationFileName, double fileSize, String sourceDriveType, String destinationDriveType, boolean wasClassified, boolean wasBlocked, String malwareScanResult, String policyName, String isRdp, String isAdminActivity, String isRegistryChanged, String updateTimestamp, String yearmonthday) {
-        this.dateTime = dateTime;
-        this.dateTimeUnix = dateTimeUnix;
+        super(dateTime, dateTimeUnix);
         this.eventType = eventType;
         this.eventId = eventId;
         this.username = username;
