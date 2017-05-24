@@ -1,49 +1,70 @@
-$borderRadius: 5%;
+$editButtonWidth: 33px;
 $actionButtonWidth: 25px;
+$actionButtonHeight: 25px;
 $inputHeight: 33px;
 
 .editable-field {
   display: inline-block;
-  white-space: nowrap;
   position: relative;
   font-size: 0; // fixes the gap adjacent inline-element
   &__value {
+    height: 100%;
+    width: 100%;
+    box-sizing: border-box;
+    display: inline-block;
     padding: rsa-whitespace(less);
     border: 1px solid transparent;
-    border-top-left-radius: $borderRadius;
-    border-bottom-left-radius: $borderRadius;
     @include rsa-font(body);
   }
 
-  span.edit-field .rsa-form-button-wrapper {
-    line-height: inherit;
-    padding: rsa-whitespace(less);
-    background-color: rsa-color(gray, dark, $rsa-somewhat-opaque);
-    border: 1px solid rsa-color(gray, base, $rsa-transparent);
-    visibility: hidden;
+  span.edit-field {
+    position: absolute;
+    .rsa-form-button-wrapper {
+      line-height: inherit;
+      padding: rsa-whitespace(less);
+      background-color: rsa-color(gray, dark, $rsa-somewhat-opaque);
+      border: 1px solid rsa-color(gray, base, $rsa-transparent);
+      visibility: hidden;
 
-    .rsa-form-button {
-      padding: 0;
-      i {
-        font-size: 1rem;
+      .rsa-form-button {
+        padding: 0;
+        i {
+          font-size: 1rem;
+        }
       }
+    }
+  }
+
+  &.textarea {
+    width: 100%;
+    min-height: 150px;
+    .editable-field__value {
+      padding-right: $editButtonWidth;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+    span.edit-field {
+      right: 0;
     }
   }
 
   &:hover {
     .editable-field__value {
-      display: inline-block;
       cursor: pointer;
       border-color: rsa-color(gray);
       border-right-color: transparent;
+    }
+
+    &.textarea:hover {
+      .editable-field__value {
+        border-right-color: rsa-color(gray);
+      }
     }
 
     span.edit-field .rsa-form-button-wrapper {
       cursor: pointer;
       border: 1px solid rsa-color(gray);
       visibility: visible;
-      border-top-right-radius: $borderRadius;
-      border-bottom-right-radius: $borderRadius;
     }
   }
 
@@ -52,14 +73,36 @@ $inputHeight: 33px;
     border: none;
     width: 100%;
 
+    &.input {
+      height: $inputHeight;
+    }
+    &.textarea {
+      height: 100%;
+    }
+
     input {
       width: 100%;
-      height: $inputHeight;
+      height: 100%;
       line-height: inherit;
       padding: 0 rsa-whitespace(less);
-      border: 1px solid rsa-color(gray);
+      border: 1px solid rsa-color(blue);
       box-sizing: border-box;
       @include rsa-font(body);
+    }
+
+    textarea {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      background-color: transparent;
+      color: inherit;
+      line-height: inherit;
+      padding: rsa-whitespace(less);
+      border: 1px solid rsa-color(blue);
+      box-sizing: border-box;
+      @include rsa-font(body);
+      outline: none;
+      resize: none;
     }
 
     .rsa-form-button-wrapper {
@@ -69,8 +112,9 @@ $inputHeight: 33px;
 
     span.action {
       position: absolute;
-      background-color: rsa-color(gray, dark, $rsa-nearly-opaque);
-      border: 1px solid rsa-color(gray);
+      @include rsa-layer(controls);
+      background-color: rsa-color(gray, darker, $rsa-nearly-opaque);
+      border: 1px solid rsa-color(blue);
 
       button {
         padding: 0;
@@ -84,20 +128,19 @@ $inputHeight: 33px;
     }
 
     span.confirm-changes {
+      right: $actionButtonWidth;
       border-right: none;
       border-top: none;
-      top: $inputHeight;
-      right: $actionButtonWidth;
-
+      bottom: $actionButtonHeight * -1 - 1;
       i {
         color: rsa-color(gray);
       }
     }
+
     span.cancel-changes {
-      top: $inputHeight;
       right: 0;
       border-top: none;
-
+      bottom: $actionButtonHeight * -1 - 1;
       i {
         font-size: 1rem;
         color: rsa-color(red);
@@ -106,9 +149,6 @@ $inputHeight: 33px;
   }
 
   &.has-changes {
-    input, span.action {
-      border-color: rsa-color(blue);
-    }
 
     span.confirm-changes .rsa-form-button-wrapper i {
       color: rsa-color(green);

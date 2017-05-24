@@ -1,9 +1,17 @@
 import Component from 'ember-component';
-import computed from 'ember-computed-decorators';
+import computed, { oneWay } from 'ember-computed-decorators';
 
 export default Component.extend({
   classNames: ['editable-field'],
-  classNameBindings: ['hasChanges', 'isEditing'],
+  classNameBindings: ['type', 'hasChanges', 'isEditing'],
+
+  /**
+   * The type of input to use. Acceptable values are "input" (default) and "textarea"
+   * @type {string}
+   * @property type
+   * @public
+   */
+  type: 'input',
 
   /**
    * The value of the field is the string representation displayed to the viewer, which in turn becomes the value
@@ -12,7 +20,7 @@ export default Component.extend({
    * @property
    * @public
    */
-  value: null,
+  @oneWay('value') text: null,
 
   /**
    * The value of the input is cached as originalValue as soon as the component enters editing mode. This property
@@ -43,20 +51,9 @@ export default Component.extend({
    * @returns {boolean}
    * @private
    */
-  @computed('value', 'originalValue')
-  hasChanges(value, originalValue) {
-    return originalValue !== null && value !== originalValue;
-  },
-
-  /**
-   * Handler (blur) for when the user exits/blurs from the input by tabbing or clicking out of the input.
-   * @private
-   */
-  focusOut() {
-    const hasChanges = this.get('hasChanges');
-    if (!hasChanges) {
-      this.set('isEditing', false);
-    }
+  @computed('text', 'originalValue')
+  hasChanges(text, originalValue) {
+    return originalValue !== null && text !== originalValue;
   },
 
   /**
@@ -66,35 +63,62 @@ export default Component.extend({
    */
   didRender() {
     this._super(...arguments);
-    this.$('input').focus();
+    this.$('input, textarea').focus();
+  },
+
+  reset() {
+    const value = this.get('value');
+    this.setProperties({ isEditing: false, originalValue: value, text: value });
+  },
+
+  /**
+   * Using the didReceiveAttrs hook to double-check that the value and the known original value are still the same. If
+   * not, it's likely that the source has changed, and we want to reset the component to non-editing mode, otherwise
+   * the component remains in the previous state, even though the user has not explicitly requested to edit that
+   * specific source.
+   * @private
+   */
+  didReceiveAttrs() {
+    this._super(...arguments);
+    const { value, originalValue } = this.getProperties('value', 'originalValue');
+    if (value !== originalValue) {
+      this.reset();
+    }
   },
 
   onFieldChange() {},
 
   actions: {
     edit() {
-      const isEditing = this.get('isEditing');
-      if (!isEditing) {
-        this.setProperties({ originalValue: this.get('value'), isEditing: true });
-      }
+      this.set('isEditing', true);
     },
     cancel() {
       const { hasChanges, originalValue } = this.getProperties('hasChanges', 'originalValue');
       if (hasChanges) {
-        this.set('value', originalValue);
+        this.set('text', originalValue);
       }
-      this.setProperties({ isEditing: false, originalValue: null });
+      this.reset();
     },
     confirm() {
-      const { hasChanges, value, originalValue } = this.getProperties('hasChanges', 'value', 'originalValue');
+      const { hasChanges, text, originalValue } = this.getProperties('hasChanges', 'text', 'originalValue');
       if (hasChanges) {
         // The confirm operation will send the action 'change', including as arguments the new value, the original value,
         // and a function that will revert the field back to the original value (e.g., if a server call fails)
-        this.get('onFieldChange')(value, originalValue, () => {
-          this.setProperties({ value: originalValue, originalValue: null }); // revert callback provided
+        this.get('onFieldChange')(text, originalValue, () => {
+          this.setProperties({ text: originalValue, isEditing: false }); // revert callback provided
         });
       }
       this.setProperties({ isEditing: false, originalValue: null });
+    },
+    /**
+     * Handler (blur) for when the user exits/blurs from the input by tabbing or clicking out of the input.
+     * @private
+     */
+    focusOut() {
+      const { isEditing, hasChanges } = this.getProperties('isEditing', 'hasChanges');
+      if (isEditing && !hasChanges) {
+        this.reset();
+      }
     }
   }
 });

@@ -20,6 +20,11 @@ test('Providing a value to the {{editable-field}} renders it as text to the DOM'
   assert.equal(this.$('.editable-field .editable-field__value').text().trim(), 'Julius Caesar', 'When not in editing mode, the value is output to the DOM');
 });
 
+test('Providing a placeholder to the {{editable-field}} renders that text to the DOM when no value is provided', function(assert) {
+  this.render(hbs`{{respond-common/editable-field placeholder="Dummy Text"}}`);
+  assert.equal(this.$('.editable-field .editable-field__value').text().trim(), 'Dummy Text', 'The placeholder is output to the DOM when there is no value');
+});
+
 test('Clicking on the {{editable-field}} places the component into edit mode and transforms the field into an input with the text value from the field', function(assert) {
   this.set('value', 'Julius Caesar');
   this.render(hbs`{{respond-common/editable-field value=value}}`);
@@ -27,6 +32,16 @@ test('Clicking on the {{editable-field}} places the component into edit mode and
   return wait().then(() => {
     assert.equal(this.$('.editable-field input').length, 1, 'The editable-field now contains an input');
     assert.equal(this.$('.editable-field input').val().trim(), 'Julius Caesar', 'The input contains the field value');
+  });
+});
+
+test('Clicking on the {{editable-field}} places the component into edit mode and transforms the field into a textarea with the text value from the field, if type="textarea" is defined', function(assert) {
+  this.set('value', 'Julius Caesar');
+  this.render(hbs`{{respond-common/editable-field type='textarea' value=value}}`);
+  this.$('.editable-field .editable-field__value').click();
+  return wait().then(() => {
+    assert.equal(this.$('.editable-field textarea').length, 1, 'The editable-field now contains a textarea');
+    assert.equal(this.$('.editable-field textarea').val().trim(), 'Julius Caesar', 'The textarea contains the field value');
   });
 });
 
@@ -132,3 +147,24 @@ test('Clicking the confirm button returns the component to base (non-editing) mo
   });
 });
 
+test('A change in the value while the component is in edit mode resets the component to non-edit mode with the new value', function(assert) {
+  assert.expect(4);
+  this.set('value', 'Julius Caesar');
+  const editableFieldInputSelector = '.editable-field input';
+  this.render(hbs`{{respond-common/editable-field value=value}}`);
+  this.$('.editable-field .editable-field__value').click();
+  return wait().then(() => {
+    assert.equal(this.$(editableFieldInputSelector).val().trim(), 'Julius Caesar', 'The editable field component shows an input with the original value');
+    this.$(editableFieldInputSelector).val('Hadrian').change();
+    return wait();
+  })
+    .then(() => {
+      this.set('value', 'Augustus');
+      return wait();
+    })
+    .then(() => {
+      assert.equal(this.$('.editable-field .editable-field__value').text().trim(), 'Augustus', 'The value of the edit field is the new value');
+      assert.equal(this.$('.editable-field').hasClass('has-changes'), false, 'The component no longer has the "has-changes" class name');
+      assert.equal(this.$('.editable-field').hasClass('is-editing'), false, 'The component no longer has the "is-editing" class name');
+    });
+});

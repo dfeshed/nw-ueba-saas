@@ -1,8 +1,13 @@
 {{#if isEditing}}
-  {{input
-    type="text"
-    value=value
-  }}
+  {{#if (eq type 'textarea')}}
+    {{textarea value=text focusOut=(action 'focusOut')}}
+  {{else}}
+    {{input
+      type="text"
+      value=text
+      focusOut=(action 'focusOut')
+    }}
+  {{/if}}
   <span class="action confirm-changes">
     {{#rsa-form-button isIconOnly=true title='Confirm edit' defaultAction='confirm'}}
       {{rsa-icon name='check-2'}}
@@ -14,9 +19,9 @@
     {{/rsa-form-button}}
   </span>
 {{else}}
-  <span class="editable-field__value" {{action 'edit'}}>{{value}}</span>
+  <span class="editable-field__value" {{action 'edit'}}>{{or text placeholder}}</span>
   <span class="action edit-field">
-    {{#rsa-form-button isIconOnly=true title='Edit Field'}}
+    {{#rsa-form-button isIconOnly=true title='Edit Field' defaultAction='edit'}}
       {{rsa-icon name='pencil-1'}}
     {{/rsa-form-button}}
   </span>
