@@ -27,6 +27,14 @@ public class FetchServiceImpl implements FetchService {
             throw new Exception("Unsupported datasource: " + datasource);
         }
 
-        return fetcher.fetch(datasource, startTime, endTime);
+        final List<AbstractRecordDocument> fetchResults;
+        try {
+            fetchResults = fetcher.fetch(datasource, startTime, endTime);
+        } catch (Exception e) {
+            logger.warn("fetch failed and we don't retry for now");
+            //todo: how do we handle? maybe retry?
+            throw e;
+        }
+        return fetchResults;
     }
 }

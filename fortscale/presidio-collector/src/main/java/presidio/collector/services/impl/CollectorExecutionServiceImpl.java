@@ -9,6 +9,7 @@ import presidio.collector.services.api.FetchService;
 import presidio.sdk.api.domain.AbstractRecordDocument;
 import presidio.sdk.api.services.CoreManagerSdk;
 
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -29,7 +30,7 @@ public class CollectorExecutionServiceImpl implements CollectorExecutionService 
     }
 
     public void run(String... params) throws Exception {         //todo: we need to consider doing the fetch & store at the same iteration
-        logger.info("Start csv processing");
+        logger.info("Start csv processing with params: " + params);
 
         if (params.length < 3) {
             System.out.println();
@@ -41,7 +42,14 @@ public class CollectorExecutionServiceImpl implements CollectorExecutionService 
         final Datasource dataSource = Datasource.createDataSource(params[DATASOURCE_INDEX]);
         final long startTime = Long.parseLong(params[START_TIME_INDEX]);
         final long endTime = Long.parseLong(params[END_TIME_INDEX]);
-        final List<AbstractRecordDocument> fetchedDocuments = fetch(dataSource, startTime, endTime);
+        final List<AbstractRecordDocument> fetchedDocuments;
+        try {
+            fetchedDocuments = fetch(dataSource, startTime, endTime);
+        } catch (Exception e) {
+            System.out.println(("HEY USER!!! FETCH FAILED! params: " + Arrays.toString(params)));
+            //todo: how do we handle? alert the user probably?
+            return;
+        }
 
         final boolean storeSuccessful = store(fetchedDocuments);
 
@@ -55,7 +63,7 @@ public class CollectorExecutionServiceImpl implements CollectorExecutionService 
 
     private List<AbstractRecordDocument> fetch(Datasource dataSource, long startTime, long endTime) throws Exception {
         logger.info("Start fetch");
-        final List<AbstractRecordDocument> fetchedDocuments = fetchService.fetch(dataSource, startTime, endTime);
+        final List<AbstractRecordDocument> fetchedDocuments = fetchService.fetch(dataSource, startTime, endTime); //todo: maybe the retry logic will be here?
         logger.info("finish fetch");
         return fetchedDocuments;
     }
