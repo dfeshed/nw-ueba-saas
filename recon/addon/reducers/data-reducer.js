@@ -34,8 +34,8 @@ const data = handleActions({
     contentError: payload,
     contentLoading: false
   }),
-  [ACTION_TYPES.TEXT_DECODE_PAGE]: dataReceivedDoneLoading,
-  [ACTION_TYPES.PACKETS_RETRIEVE_PAGE]: dataReceivedDoneLoading,
+  [ACTION_TYPES.TEXT_RENDER_NEXT]: dataReceivedDoneLoading,
+  [ACTION_TYPES.PACKETS_RENDER_NEXT]: dataReceivedDoneLoading,
   [ACTION_TYPES.FILES_RETRIEVE_SUCCESS]: dataReceivedDoneLoading,
   [ACTION_TYPES.SET_INDEX_AND_TOTAL]: (state, { payload: { index, total } }) => ({
     ...state,

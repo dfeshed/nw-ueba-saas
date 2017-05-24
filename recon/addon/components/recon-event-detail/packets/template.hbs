@@ -1,5 +1,5 @@
-{{!-- 
-  If no visible packets, just be blank, isn't cause for error, 
+{{!--
+  If no visible packets, just be blank, isn't cause for error,
   user may have just hidden request/response
 --}}
 {{#if visiblePackets}}
@@ -25,8 +25,8 @@
 
     {{recon-event-detail/single-packet/byte-tooltip }}
   {{else}}
-    {{!-- 
-      If visible packets, but no processed packets, means something else eliminated the packets 
+    {{!--
+      If visible packets, but no processed packets, means something else eliminated the packets
       other than just pure visibility, currently that something else is the fact that there is
       no hex data (packets with just headers)
     --}}
@@ -40,5 +40,9 @@
     packetTotal=packetTotal
     isPacket=true
   }}
+
+{{else}}
+  <div class="recon-loader">
+    {{rsa-loader size='larger'}}
+  </div>
 {{/if}}
-    

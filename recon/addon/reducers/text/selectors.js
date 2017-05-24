@@ -2,6 +2,7 @@ import reselect from 'reselect';
 
 const { createSelector } = reselect;
 const textContent = (recon) => recon.text.textContent;
+const renderIds = (recon) => recon.text.renderIds;
 const metaToHighlight = (recon) => recon.text.metaToHighlight;
 const isRequestShown = (recon) => recon.visuals.isRequestShown;
 const isResponseShown = (recon) => recon.visuals.isResponseShown;
@@ -20,21 +21,25 @@ export const contentRetrieved = createSelector(
  * @private
  */
 export const visibleText = createSelector(
-  [textContent, isRequestShown, isResponseShown],
-  (textContent, isRequestShown, isResponseShown) => {
+  [textContent, renderIds, isRequestShown, isResponseShown],
+  (textContent, renderIds, isRequestShown, isResponseShown) => {
 
-    // textContent can be null, eject
-    if (!textContent) {
+    // textContent can be null/empty, eject
+    // renderIds can be null/empty, eject
+    if (!textContent || textContent.length === 0 || !renderIds || renderIds.length === 0) {
       return [];
     }
 
+    // just want the packets with their id chosen to be rendered
+    const renderedText = textContent.filter((p) => renderIds.includes(p.firstPacketId));
+
     // if showing all textContent, just return them
     if (isRequestShown && isResponseShown) {
-      return textContent;
+      return renderedText;
     }
 
     // we're not showing req or res, so let's filter them out
-    return textContent.filter((t) => {
+    return renderedText.filter((t) => {
       return (t.side === 'request' && isRequestShown) ||
              (t.side === 'response' && isResponseShown);
     });
@@ -71,4 +76,3 @@ export const eventHasPayload = createSelector(
     return !!aTextEntryWithPayload;
   }
 );
-

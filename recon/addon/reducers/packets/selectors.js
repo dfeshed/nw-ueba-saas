@@ -4,34 +4,38 @@ import { getHeaderItem } from 'recon/utils/recon-event-header';
 
 const { createSelector } = reselect;
 const packets = (recon) => recon.packets.packets;
+const renderIds = (recon) => recon.packets.renderIds;
 const headerItems = (recon) => recon.header.headerItems;
 const isRequestShown = (recon) => recon.visuals.isRequestShown;
 const isResponseShown = (recon) => recon.visuals.isResponseShown;
 const isPayloadOnly = (recon) => recon.packets.isPayloadOnly;
-
 
 /**
  * A selector that returns a sorted Array of all visible packets.
  * @private
  */
 export const visiblePackets = createSelector(
-  [packets, isRequestShown, isResponseShown],
-  (packets, isRequestShown, isResponseShown) => {
+  [packets, renderIds, isRequestShown, isResponseShown],
+  (packets, renderIds, isRequestShown, isResponseShown) => {
 
-    // packets can be null, eject
-    if (!packets) {
+    // packets can be null, if so, get out
+    // can have no renderIds, if so, get out
+    if (!packets || packets.length === 0 || !renderIds || renderIds.length === 0) {
       return [];
     }
 
+    // just want the packets with their id chosen to be rendered
+    const renderedPackets = packets.filter((p) => renderIds.includes(p.id));
+
     // if showing all packets, just return them
     if (isRequestShown && isResponseShown) {
-      return packets;
+      return renderedPackets;
     }
 
     // we're not showing req or res, so let's filter them out
-    return packets.filter((p) => {
+    return renderedPackets.filter((p) => {
       return (p.side === 'request' && isRequestShown) ||
-             (p.side === 'response' && isResponseShown);
+        (p.side === 'response' && isResponseShown);
     });
   }
 );

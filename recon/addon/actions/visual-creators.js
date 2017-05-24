@@ -12,7 +12,7 @@
 
 import * as ACTION_TYPES from './types';
 
-const _createToggleActionCreator = (type) => {
+const createToggleActionCreator = (type) => {
   return (setTo) => {
     const returnVal = {
       type
@@ -35,13 +35,12 @@ const _createToggleActionCreator = (type) => {
  *   will force open/close or show/hide
  * @public
  */
-const toggleReconHeader = _createToggleActionCreator(ACTION_TYPES.TOGGLE_HEADER);
-const toggleRequestData = _createToggleActionCreator(ACTION_TYPES.TOGGLE_REQUEST);
-const toggleResponseData = _createToggleActionCreator(ACTION_TYPES.TOGGLE_RESPONSE);
-const toggleReconExpanded = _createToggleActionCreator(ACTION_TYPES.TOGGLE_EXPANDED);
-const togglePayloadOnly = _createToggleActionCreator(ACTION_TYPES.TOGGLE_PACKET_PAYLOAD_ONLY);
-const toggleByteStyling = _createToggleActionCreator(ACTION_TYPES.TOGGLE_BYTE_STYLING);
-const toggleKnownSignatures = _createToggleActionCreator(ACTION_TYPES.TOGGLE_KNOWN_SIGNATURES);
+const toggleReconHeader = createToggleActionCreator(ACTION_TYPES.TOGGLE_HEADER);
+const toggleRequestData = createToggleActionCreator(ACTION_TYPES.TOGGLE_REQUEST);
+const toggleResponseData = createToggleActionCreator(ACTION_TYPES.TOGGLE_RESPONSE);
+const toggleReconExpanded = createToggleActionCreator(ACTION_TYPES.TOGGLE_EXPANDED);
+const toggleByteStyling = createToggleActionCreator(ACTION_TYPES.TOGGLE_BYTE_STYLING);
+const toggleKnownSignatures = createToggleActionCreator(ACTION_TYPES.TOGGLE_KNOWN_SIGNATURES);
 
 /**
  * Builds action for closing recon
@@ -50,12 +49,12 @@ const toggleKnownSignatures = _createToggleActionCreator(ACTION_TYPES.TOGGLE_KNO
 const closeRecon = () => ({ type: ACTION_TYPES.CLOSE_RECON });
 
 export {
-  toggleReconHeader,
-  toggleRequestData,
-  toggleResponseData,
-  toggleReconExpanded,
-  togglePayloadOnly,
+  closeRecon,
+  createToggleActionCreator,
   toggleByteStyling,
   toggleKnownSignatures,
-  closeRecon
+  toggleReconExpanded,
+  toggleReconHeader,
+  toggleRequestData,
+  toggleResponseData
 };

@@ -7,7 +7,8 @@ const textInitialState = {
   decode: true,
   // The string to look for in the text
   metaToHighlight: null,
-  textContent: null
+  textContent: null,
+  renderIds: null
 };
 
 const textReducer = handleActions({
@@ -38,7 +39,7 @@ const textReducer = handleActions({
     metaToHighlight: null
   }),
 
-  [ACTION_TYPES.TEXT_DECODE_PAGE]: (state, { payload }) => {
+  [ACTION_TYPES.TEXT_RECEIVE_PAGE]: (state, { payload }) => {
     const newContent = augmentResult(payload);
     return {
       ...state,
@@ -46,10 +47,24 @@ const textReducer = handleActions({
     };
   },
 
+  [ACTION_TYPES.CHANGE_RECON_VIEW]: (state) => ({
+    ...state,
+    renderIds: []
+  }),
+
+  [ACTION_TYPES.TEXT_RENDER_NEXT]: (state, { payload }) => {
+    const ids = payload.map((text) => text.firstPacketId);
+    return {
+      ...state,
+      renderIds: state.renderIds ? [...state.renderIds, ...ids] : ids
+    };
+  },
+
   [ACTION_TYPES.TOGGLE_TEXT_DECODE]: (state, { payload = {} }) => ({
     ...state,
     decode: handleSetTo(payload, state.decode),
-    textContent: []
+    textContent: [],
+    renderIds: []
   })
 
 }, textInitialState);

@@ -36,7 +36,7 @@ const _dispatchInitializeData = (redux, inputs) => {
   run(() => {
     redux.dispatch({ type: ACTION_TYPES.INITIALIZE, payload: inputs });
     redux.dispatch({ type: ACTION_TYPES.SUMMARY_RETRIEVE, promise: summaryPromise });
-    redux.dispatch({ type: ACTION_TYPES.PACKETS_RETRIEVE_PAGE, payload: packetDataWithSide });
+    redux.dispatch({ type: ACTION_TYPES.PACKETS_RECEIVE_PAGE, payload: packetDataWithSide });
   });
 };
 
@@ -94,8 +94,19 @@ class DataHelper {
 
   populateTexts(decode = false) {
     this.redux.dispatch({
-      type: ACTION_TYPES.TEXT_DECODE_PAGE,
+      type: ACTION_TYPES.TEXT_RECEIVE_PAGE,
       payload: decode ? encodedTextData : decodedTextData
+    });
+    this.redux.dispatch({
+      type: ACTION_TYPES.TEXT_RENDER_NEXT,
+      payload: decode ? encodedTextData : decodedTextData
+    });
+    return this;
+  }
+
+  togglePayloadOnly() {
+    this.redux.dispatch({
+      type: ACTION_TYPES.TOGGLE_PACKET_PAYLOAD_ONLY
     });
     return this;
   }

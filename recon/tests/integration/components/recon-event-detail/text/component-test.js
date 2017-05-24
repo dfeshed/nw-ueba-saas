@@ -38,8 +38,8 @@ test('text view renders decoded text', function(assert) {
 test('text view renders log text', function(assert) {
   new DataHelper(this.get('redux'))
     .initializeData({ meta: [['medium', 32]] })
-    .populateTexts()
-    .setViewToText();
+    .setViewToText()
+    .populateTexts();
   this.render(hbs`{{recon-event-detail/text-content}}`);
   return wait().then(() => {
     const str = this.$().text().trim().replace(/\s/g, '').substring(0, 200);

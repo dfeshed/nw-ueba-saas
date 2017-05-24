@@ -1,6 +1,6 @@
 import Component from 'ember-component';
 import connect from 'ember-redux/components/connect';
-import { togglePayloadOnly } from 'recon/actions/visual-creators';
+import { togglePayloadOnly } from 'recon/actions/data-creators';
 import layout from './template';
 
 const dispatchToActions = {

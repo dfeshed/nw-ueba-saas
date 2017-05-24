@@ -15,19 +15,31 @@
   }}
 {{/if}}
 
+{{!-- Do not do anything if content isn't retrieved--}}
 {{#if contentRetrieved}}
+
+  {{!-- if content is retrieved, and there is no content, show error --}}
   {{#if textContent}}
     <div class="scroll-box">
-      {{#each visibleText as |text|}}
-        {{recon-event-detail/single-text
-          isLog=isLogEvent
-          isSticky=false
-          metaToHighlight=metaToHighlight
-          packet=text
-          showMoreClicked=(action 'showMoreClicked')
-        }}
-      {{/each}}
+
+      {{!-- if we have content, but no visible text, show spinner, working on chewing on data --}}
+      {{#if visibleText}}
+        {{#each visibleText as |text|}}
+          {{recon-event-detail/single-text
+            isLog=isLogEvent
+            isSticky=false
+            metaToHighlight=metaToHighlight
+            packet=text
+            showMoreClicked=(action 'showMoreClicked')
+          }}
+        {{/each}}
+      {{else}}
+        <div class="recon-loader">
+          {{rsa-loader size='larger'}}
+        </div>
+      {{/if}}
     </div>
+
     {{recon-pager
       eventIndex=eventIndex
       eventTotal=eventTotal

@@ -12,7 +12,8 @@ const packetsInitialState = {
   packetFields: null,
   packets: null,
   packetsPageSize: 100,
-  packetTooltipData: null
+  packetTooltipData: null,
+  renderIds: null
 };
 
 const packetReducer = handleActions({
@@ -57,7 +58,7 @@ const packetReducer = handleActions({
     });
   },
 
-  [ACTION_TYPES.PACKETS_RETRIEVE_PAGE]: (state, { payload }) => {
+  [ACTION_TYPES.PACKETS_RECEIVE_PAGE]: (state, { payload }) => {
     const lastPosition = state.packets && state.packets.length || 0;
     let newPackets = augmentResult(payload, lastPosition);
 
@@ -77,6 +78,19 @@ const packetReducer = handleActions({
     };
   },
 
+  [ACTION_TYPES.CHANGE_RECON_VIEW]: (state) => ({
+    ...state,
+    renderIds: [] // clear out render IDs, going to batch re-render again if the right view is displayed
+  }),
+
+  [ACTION_TYPES.PACKETS_RENDER_NEXT]: (state, { payload }) => {
+    const ids = payload.map((p) => p.id);
+    return {
+      ...state,
+      renderIds: state.renderIds ? [...state.renderIds, ...ids] : ids
+    };
+  },
+
   [ACTION_TYPES.TOGGLE_BYTE_STYLING]: (state, { payload = {} }) => ({
     ...state,
     hasStyledBytes: handleSetTo(payload, state.hasStyledBytes)
@@ -89,6 +103,7 @@ const packetReducer = handleActions({
 
   [ACTION_TYPES.TOGGLE_PACKET_PAYLOAD_ONLY]: (state, { payload = {} }) => ({
     ...state,
+    renderIds: [], // clear out render IDs, going to batch re-render again
     isPayloadOnly: handleSetTo(payload, state.isPayloadOnly)
   }),
 

@@ -4,7 +4,7 @@ import hbs from 'htmlbars-inline-precompile';
 
 import { enhancePackets } from 'recon/reducers/packets/util';
 import { payloadProcessedPackets } from 'recon/reducers/packets/selectors';
-import { togglePayloadOnly } from 'recon/actions/visual-creators';
+import DataHelper from '../../../../helpers/data-helper';
 
 const packetFields = [
   { length: 6, name: 'eth.dst', position: 0 },
@@ -53,7 +53,8 @@ test('single packet renders default', function(assert) {
     },
     packets: {
       packetFields,
-      packets: enhancePackets([packets[0]], packetFields)
+      packets: enhancePackets([packets[0]], packetFields),
+      renderIds: [packets[0].id]
     }
   });
 
@@ -88,12 +89,13 @@ test('single packet renders with hidden header/footer bytes', function(assert) {
     },
     packets: {
       packetFields,
-      packets: enhancePackets([packets[1]], packetFields)
+      packets: enhancePackets([packets[1]], packetFields),
+      renderIds: [packets[1].id]
     }
   });
 
   // Toggle the isPayloadOnly redux property
-  this.get('redux').dispatch(togglePayloadOnly());
+  new DataHelper(this.get('redux')).togglePayloadOnly();
 
   this.set('packetFields', packetFields);
   this.set('index', 4);
@@ -126,12 +128,13 @@ test('single (continuous) packet renders with hidden header/footer bytes', funct
     },
     packets: {
       packetFields,
-      packets: enhancePackets([packets[1]], packetFields)
+      packets: enhancePackets([packets[1]], packetFields),
+      renderIds: [packets[1].id]
     }
   });
 
   // Toggle the isPayloadOnly redux property
-  this.get('redux').dispatch(togglePayloadOnly());
+  new DataHelper(this.get('redux')).togglePayloadOnly();
 
   this.set('packetFields', packetFields);
   this.set('index', 4);

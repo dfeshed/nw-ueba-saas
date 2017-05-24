@@ -13,17 +13,21 @@ import Ember from 'ember';
 import { getStoredState } from 'redux-persist';
 
 import * as ACTION_TYPES from './types';
+import { createToggleActionCreator } from './visual-creators';
 import { eventTypeFromMetaArray } from 'recon/reducers/meta/selectors';
 import { RECON_VIEW_TYPES_BY_NAME, doesStateHaveViewData } from 'recon/utils/reconstruction-types';
+import { killAllBatching } from './util/batch-data-handler';
 import {
   fetchAliases,
   fetchLanguage,
   fetchMeta,
   fetchNotifications,
   fetchPacketData,
+  batchPacketData,
   fetchReconFiles,
   fetchReconSummary,
-  fetchTextData
+  fetchTextData,
+  batchTextData
 } from './fetch';
 
 const { Logger } = Ember;
@@ -31,6 +35,8 @@ const { Logger } = Ember;
 /**
  * Will fetch and dispatch event meta
  *
+ * @param {object} dataState
+ * @returns {function} redux-thunk
  * @private
  */
 const _retrieveMeta = (dataState) => {
@@ -52,19 +58,17 @@ const _retrieveMeta = (dataState) => {
   };
 };
 
-/**
- * Generic handler for errors fetching reconstruction-type data
- *
- * @private
- */
-const _handleContentError = (dispatch, response, type) => {
-  if (response.code !== 2) {
-    Logger.error(`Could not retrieve ${type} recon data`, response);
-  }
-  dispatch({
-    type: ACTION_TYPES.CONTENT_RETRIEVE_FAILURE,
-    payload: response.code
-  });
+// Generic handler for errors fetching recon view data
+const _handleContentError = (response, type) => {
+  return (dispatch) => {
+    if (response.code !== 2) {
+      Logger.error(`Could not retrieve ${type} recon data`, response);
+    }
+    dispatch({
+      type: ACTION_TYPES.CONTENT_RETRIEVE_FAILURE,
+      payload: response.code
+    });
+  };
 };
 
 const _getTextAndPacketInputs = ({ recon: { data, packets, text } }) => ({
@@ -75,27 +79,94 @@ const _getTextAndPacketInputs = ({ recon: { data, packets, text } }) => ({
 });
 
 /**
- * We need to set the index and total for the event footer, after we receive them from investigate
+ * We need to set the index and total for the event footer,
+ * after we receive them from investigate
+ *
  * @param index The event index in the list
  * @param total The total number of events
- * @returns {function(*)}
  * @public
  */
-const setIndexAndTotal = (index, total) => {
-  return (dispatch) => {
-    dispatch({
-      type: ACTION_TYPES.SET_INDEX_AND_TOTAL,
-      payload: { index, total }
-    });
+const setIndexAndTotal = (index, total) => ({
+  type: ACTION_TYPES.SET_INDEX_AND_TOTAL,
+  payload: { index, total }
+});
+
+const _handleFetchingNewData = (newViewCode) => {
+  return (dispatch, getState) => {
+    dispatch({ type: ACTION_TYPES.CONTENT_RETRIEVE_STARTED });
+
+    // Switches on the view type and manages retrieving data
+    // and ensuring the data is dispatched into state correctly
+    const state = getState();
+    switch (newViewCode) {
+      case RECON_VIEW_TYPES_BY_NAME.FILE.code:
+        // file view doesn't do any batching,
+        // so use external interface to kill any batching
+        // that may be occuring for other views
+        killAllBatching();
+        fetchReconFiles(state.recon.data)
+          .then(({ data }) => {
+            dispatch({
+              type: ACTION_TYPES.FILES_RETRIEVE_SUCCESS,
+              payload: data
+            });
+          })
+          .catch((response) => {
+            dispatch(_handleContentError(response, 'file'));
+          });
+        break;
+      case RECON_VIEW_TYPES_BY_NAME.PACKET.code:
+        fetchPacketData(
+          _getTextAndPacketInputs(state),
+          (payload) => dispatch({ type: ACTION_TYPES.PACKETS_RECEIVE_PAGE, payload }),
+          (payload) => dispatch({ type: ACTION_TYPES.PACKETS_RENDER_NEXT, payload }),
+          (response) => dispatch(_handleContentError(response, 'packet'))
+        );
+        break;
+      case RECON_VIEW_TYPES_BY_NAME.TEXT.code:
+        fetchTextData(
+          _getTextAndPacketInputs(state),
+          (payload) => dispatch({ type: ACTION_TYPES.TEXT_RECEIVE_PAGE, payload }),
+          (payload) => dispatch({ type: ACTION_TYPES.TEXT_RENDER_NEXT, payload }),
+          (response) => dispatch(_handleContentError(response, 'text'))
+        );
+        break;
+    }
+  };
+};
+
+const _handleRenderingStateData = (newViewCode) => {
+  return (dispatch, getState) => {
+    switch (newViewCode) {
+      case RECON_VIEW_TYPES_BY_NAME.FILE.code:
+        // just need to kill any batching
+        // that may be occuring for other views
+        // file view has no special handling for
+        // data being in state
+        killAllBatching();
+        break;
+      case RECON_VIEW_TYPES_BY_NAME.PACKET.code:
+        batchPacketData(
+          getState().recon.packets.packets,
+          (payload) => dispatch({ type: ACTION_TYPES.PACKETS_RENDER_NEXT, payload }),
+        );
+        break;
+      case RECON_VIEW_TYPES_BY_NAME.TEXT.code:
+        batchTextData(
+          getState().recon.text.textContent,
+          (payload) => dispatch({ type: ACTION_TYPES.TEXT_RENDER_NEXT, payload }),
+        );
+        break;
+    }
   };
 };
 
 /**
- * An Action Creator thunk creator for changing a recon view.
+ * An Action Creator for changing a recon view.
  *
- * Dispatches action to update visual indicators, then, if
- * data not already available, will fetch the data for the
- * recon view
+ * Dispatches action to update visual indicators, then will
+ * either fetch the data for the recon view or prepare the data
+ * already in state.
  *
  * @param {object} newView an object from the reconstruction-types.js list
  * @returns {function} redux-thunk
@@ -117,38 +188,9 @@ const setNewReconView = (newView) => {
     // its data fetched. On INITIALIZE the recon view data is wiped out
     const reconState = getState().recon;
     if (!doesStateHaveViewData(reconState, newView)) {
-      dispatch({ type: ACTION_TYPES.CONTENT_RETRIEVE_STARTED });
-
-      // if is file recon, time to kick of request
-      // for file recon data
-      switch (newView.code) {
-        case RECON_VIEW_TYPES_BY_NAME.FILE.code:
-          fetchReconFiles(reconState.data)
-            .then(({ data }) => {
-              dispatch({
-                type: ACTION_TYPES.FILES_RETRIEVE_SUCCESS,
-                payload: data
-              });
-            })
-            .catch((response) => {
-              _handleContentError(dispatch, response, 'file');
-            });
-          break;
-        case RECON_VIEW_TYPES_BY_NAME.PACKET.code:
-          fetchPacketData(
-            _getTextAndPacketInputs(getState()),
-            (payload) => dispatch({ type: ACTION_TYPES.PACKETS_RETRIEVE_PAGE, payload }),
-            (response) => _handleContentError(dispatch, response, 'packet')
-          );
-          break;
-        case RECON_VIEW_TYPES_BY_NAME.TEXT.code:
-          fetchTextData(
-            _getTextAndPacketInputs(getState()),
-            (payload) => dispatch({ type: ACTION_TYPES.TEXT_DECODE_PAGE, payload }),
-            (response) => _handleContentError(dispatch, response, 'text')
-          );
-          break;
-      }
+      dispatch(_handleFetchingNewData(newView.code));
+    } else {
+      dispatch(_handleRenderingStateData(newView.code));
     }
   };
 };
@@ -362,13 +404,26 @@ const decodeText = () => {
     dispatch({ type: ACTION_TYPES.TOGGLE_TEXT_DECODE });
     fetchTextData(
       _getTextAndPacketInputs(getState()),
-      (payload) => dispatch({ type: ACTION_TYPES.TEXT_DECODE_PAGE, payload }),
-      (response) => _handleContentError(dispatch, response, 'decode')
+      (payload) => dispatch({ type: ACTION_TYPES.TEXT_RECEIVE_PAGE, payload }),
+      (response) => dispatch(_handleContentError(response, 'decode'))
     );
   };
 };
 
 const teardownNotifications = () => ({ type: ACTION_TYPES.NOTIFICATION_TEARDOWN_SUCCESS });
+
+// When payload is toggled, data is flushed so the packets can be incrementally rendered again
+// So must batch the packet data into state like it is batched when first fetched
+const _toggleActionCreator = createToggleActionCreator(ACTION_TYPES.TOGGLE_PACKET_PAYLOAD_ONLY);
+const togglePayloadOnly = (setTo) => {
+  return (dispatch, getState) => {
+    dispatch(_toggleActionCreator(setTo));
+    batchPacketData(
+      getState().recon.packets.packets,
+      (payload) => dispatch({ type: ACTION_TYPES.PACKETS_RENDER_NEXT, payload })
+    );
+  };
+};
 
 export {
   decodeText,
@@ -377,5 +432,6 @@ export {
   setIndexAndTotal,
   setNewReconView,
   teardownNotifications,
-  toggleMetaData
+  toggleMetaData,
+  togglePayloadOnly
 };
