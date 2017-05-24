@@ -19,7 +19,7 @@ class PresidioJarOperator(JarOperator):
     def __init__(self, fixed_duration_strategy, java_args={}, *args, **kwargs):
         self.interval = kwargs.get('dag').schedule_interval
         self.fixed_duration_strategy = fixed_duration_strategy
-        java_args.update({'fixed_duration_strategy': fixed_duration_strategy})
+        java_args.update({'fixed_duration_strategy': fixed_duration_strategy.total_seconds()})
         super(PresidioJarOperator, self).__init__(java_args=java_args, *args, **kwargs)
 
     def pre_execute(self, context):
@@ -29,6 +29,7 @@ class PresidioJarOperator(JarOperator):
         java args include start_date, end_date and fixed_duration_strategy
         """
         start_date = TimeService.round_time(context['execution_date'], time_delta=self.fixed_duration_strategy)
+        start_date = TimeService.datetime_to_epoch(start_date)
         end_date = start_date + self.interval.total_seconds()
         fixed_duration_strategy = self.fixed_duration_strategy.total_seconds()
 
@@ -37,8 +38,8 @@ class PresidioJarOperator(JarOperator):
 
         if fixed_duration_valid and start_date_valid:
             java_args = {
-                'start_date': start_date,
-                'end_date': end_date
+                'start_date': TimeService.epoch_to_datetime(start_date).isoformat(),
+                'end_date': TimeService.epoch_to_datetime(end_date).isoformat()
             }
             super(PresidioJarOperator, self).update_java_args(java_args)
 

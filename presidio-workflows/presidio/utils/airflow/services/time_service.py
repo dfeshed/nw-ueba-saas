@@ -13,9 +13,10 @@ class TimeService(object):
         :type dt: datetime
         :param time_delta: e.g: timedelta(hours=1)
         :type time_delta: timedelta
-        :return: float
+        :return: datetime
         """
-        return TimeService.datetime_to_epoch(dt) // time_delta.total_seconds() * time_delta.total_seconds()
+        round_time = TimeService.datetime_to_epoch(dt) // time_delta.total_seconds() * time_delta.total_seconds()
+        return TimeService.epoch_to_datetime(round_time)
 
     @staticmethod
     def datetime_to_epoch(dt):

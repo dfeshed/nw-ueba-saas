@@ -11,8 +11,7 @@ def test_hourly_round_time():
     :return: 
     """
     logging.info('Test hourly round time method')
-    seconds = TimeService.round_time(DEFAULT_DATE, timedelta(hours=1))
-    assert TimeService.epoch_to_datetime(seconds) == datetime(2014, 11, 28, 10, 0, 0)
+    assert TimeService.round_time(DEFAULT_DATE, timedelta(hours=1)) == datetime(2014, 11, 28, 10, 0, 0)
 
 
 def test_daily_round_time():
@@ -21,8 +20,7 @@ def test_daily_round_time():
     :return: 
     """
     logging.info('Test daily round time method')
-    seconds = TimeService.round_time(DEFAULT_DATE, timedelta(days=1))
-    assert TimeService.epoch_to_datetime(seconds) == datetime(2014, 11, 28, 0, 0, 0)
+    assert TimeService.round_time(DEFAULT_DATE, timedelta(days=1)) == datetime(2014, 11, 28, 0, 0, 0)
 
 
 def test_weekly_round_time():
@@ -31,5 +29,4 @@ def test_weekly_round_time():
     :return: 
     """
     logging.info('Test weekly round time method')
-    seconds = TimeService.round_time(DEFAULT_DATE, timedelta(weeks=1))
-    assert TimeService.epoch_to_datetime(seconds) == datetime(2014, 11, 27, 0, 0, 0)
+    assert TimeService.round_time(DEFAULT_DATE, timedelta(weeks=1)) == datetime(2014, 11, 27, 0, 0, 0)
