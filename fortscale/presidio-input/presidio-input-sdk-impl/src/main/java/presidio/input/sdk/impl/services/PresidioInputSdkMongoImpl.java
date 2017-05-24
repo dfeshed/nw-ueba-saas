@@ -7,16 +7,19 @@ import presidio.sdk.api.services.PresidioInputSdk;
 
 import java.util.List;
 
-/**
- * Created by shays on 17/05/2017.
- */
-
 public class PresidioInputSdkMongoImpl implements PresidioInputSdk {
-    Logger logger = LoggerFactory.getLogger(this.getClass());
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
     public boolean store(List<AbstractRecordDocument> event) {
+        int i = 1;
+        for (AbstractRecordDocument abstractRecordDocument : event) {
+            System.out.println(abstractRecordDocument);
+            System.out.println(i);
+            System.out.println();
+            i++;
+        }
         logger.info("Record Stored");
-        return false;
+        return true;
     }
 }
