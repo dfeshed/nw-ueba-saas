@@ -6,11 +6,11 @@
 
 export const contextHelpIds = {
   InvestigateHelpIds: {
-    moduleId: 'investigate',
-    topicId: 'invContextPnl'
+    moduleId: 'Respond',
+    topicId: 'ContextPnl'
   },
   AddToListHelpIds: {
-    moduleId: 'investigate',
-    topicId: 'invAddToList'
+    moduleId: 'Respond',
+    topicId: 'AddToList'
   }
 };
