@@ -24,7 +24,7 @@ test('it populates the global help url', function(assert) {
   service.set('topic', 'foo');
   service.set('module', 'foo');
 
-  assert.equal(service.get('globalHelpUrl'), 'http://cms.netwitness.com/sadocs?locale=foo&version=11.0.0.0%252Bfh7638&module=foo&topic=foo');
+  assert.equal(service.get('globalHelpUrl'), 'https://cms.netwitness.com/sadocs?locale=foo&version=11.0.0.0&module=foo&topic=foo');
 });
 
 test('it returns the contextual help url', function(assert) {
@@ -33,5 +33,5 @@ test('it returns the contextual help url', function(assert) {
   const topic = 'foo';
   const module = 'foo';
 
-  assert.equal(service.generateUrl(module, topic), 'http://cms.netwitness.com/sadocs?locale=foo&version=11.0.0.0%252Bfh7638&module=foo&topic=foo');
+  assert.equal(service.generateUrl(module, topic), 'https://cms.netwitness.com/sadocs?locale=foo&version=11.0.0.0&module=foo&topic=foo');
 });

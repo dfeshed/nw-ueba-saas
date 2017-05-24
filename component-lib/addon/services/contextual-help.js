@@ -15,7 +15,7 @@ export default Service.extend({
   locale: computed.alias('i18n.locale'),
   version: computed.readOnly('appVersion.version'),
 
-  urlBase: 'http://cms.netwitness.com/sadocs',
+  urlBase: 'https://cms.netwitness.com/sadocs',
 
   respondModule: 'Respond',
   respondCardViewTopic: 'RespCardVw',
@@ -42,7 +42,7 @@ export default Service.extend({
   globalHelpUrl: computed('locale', 'version', 'module', 'topic', function() {
     return this.buildURL({
       locale: this.get('locale'),
-      version: this.get('version'),
+      version: this.get('version').split('+')[0],
       module: this.get('module'),
       topic: this.get('topic')
     });
@@ -51,7 +51,7 @@ export default Service.extend({
   generateUrl(module, topic) {
     return this.buildURL({
       locale: this.get('locale'),
-      version: this.get('version'),
+      version: this.get('version').split('+')[0],
       module,
       topic
     });
