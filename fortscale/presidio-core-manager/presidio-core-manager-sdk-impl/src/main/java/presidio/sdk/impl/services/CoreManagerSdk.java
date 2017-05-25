@@ -3,18 +3,16 @@ package presidio.sdk.impl.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import presidio.sdk.api.domain.AbstractRecordDocument;
-import presidio.sdk.api.services.CoreManagerService;
 import presidio.sdk.api.services.PresidioInputSdk;
 
 import java.util.List;
 
-public class CoreManagerServiceImpl implements CoreManagerService {
-
+public class CoreManagerSdk implements presidio.sdk.api.services.CoreManagerSdk {
 
     private PresidioInputSdk presidioInputSdk;
 
     @Autowired
-    public CoreManagerServiceImpl(PresidioInputSdk presidioInputSdk) {
+    public CoreManagerSdk(PresidioInputSdk presidioInputSdk) {
         this.presidioInputSdk = presidioInputSdk;
     }
 

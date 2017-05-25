@@ -1,7 +1,13 @@
 package presidio.sdk.api.domain;
 
-/**
- * Created by shays on 21/05/2017.
- */
+import java.util.Date;
+
 public class AbstractRecordDocument {
+    protected Date dateTime;
+    protected long dateTimeUnix;
+
+    public AbstractRecordDocument(Date dateTime, long dateTimeUnix) {
+        this.dateTime = dateTime;
+        this.dateTimeUnix = dateTimeUnix;
+    }
 }
