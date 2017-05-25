@@ -1,8 +1,9 @@
-package presidio.collector.services.api;
+package presidio.collector.services.impl;
 
 import com.opencsv.CSVReader;
 import fortscale.utils.logging.Logger;
 import presidio.collector.Datasource;
+import presidio.collector.services.api.Fetcher;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;

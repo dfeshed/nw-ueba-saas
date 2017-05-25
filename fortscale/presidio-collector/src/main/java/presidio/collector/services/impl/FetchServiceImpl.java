@@ -1,8 +1,10 @@
-package presidio.collector.services.api;
+package presidio.collector.services.impl;
 
 import fortscale.utils.logging.Logger;
 import org.joda.time.DateTime;
 import presidio.collector.Datasource;
+import presidio.collector.services.api.FetchService;
+import presidio.collector.services.api.Fetcher;
 
 import java.util.List;
 import java.util.Map;
