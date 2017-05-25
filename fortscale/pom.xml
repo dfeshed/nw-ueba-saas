@@ -96,7 +96,7 @@
 		<!--<springokito.version>1.0.9</springokito.version>-->
 
 		<spring-data-hadoop.version>2.2.0.RELEASE</spring-data-hadoop.version>
-		<fongo.version>1.6.8</fongo.version>
+		<fongo.version>2.1.0</fongo.version>
 		<quartz.version>2.2.1</quartz.version>
 		<perf4j.version>0.9.16</perf4j.version>
 
@@ -248,20 +248,6 @@
 			<version>${jackson.dataformat.version}</version>
 		</dependency>
 
-
-		<!-- Spring test -->
-		<!--<dependency>-->
-			<!--<groupId>org.springframework</groupId>-->
-			<!--<artifactId>spring-test</artifactId>-->
-			<!--<version>${org.springframework-version}</version>-->
-			<!--<scope>test</scope>-->
-			<!--<exclusions>-->
-				<!--<exclusion>-->
-					<!--<groupId>commons-logging</groupId>-->
-					<!--<artifactId>commons-logging</artifactId>-->
-				<!--</exclusion>-->
-			<!--</exclusions>-->
-		<!--</dependency>-->
 
 		<!--quartz-->
 		<dependency>
