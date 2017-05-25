@@ -249,20 +249,6 @@
 		</dependency>
 
 
-		<!-- Spring test -->
-		<!--<dependency>-->
-			<!--<groupId>org.springframework</groupId>-->
-			<!--<artifactId>spring-test</artifactId>-->
-			<!--<version>${org.springframework-version}</version>-->
-			<!--<scope>test</scope>-->
-			<!--<exclusions>-->
-				<!--<exclusion>-->
-					<!--<groupId>commons-logging</groupId>-->
-					<!--<artifactId>commons-logging</artifactId>-->
-				<!--</exclusion>-->
-			<!--</exclusions>-->
-		<!--</dependency>-->
-
 		<!--quartz-->
 		<dependency>
 			<groupId>org.quartz-scheduler</groupId>

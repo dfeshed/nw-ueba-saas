@@ -1,21 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:context="http://www.springframework.org/schema/context"
-       xmlns:mockito="http://www.mockito.org/spring/mockito"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
-                           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd
-                           http://www.mockito.org/spring/mockito http://www.mockito.org/spring/mockito.xsd">
+                           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd">
 
-    <mockito:mock id="entityEventConfService" class="fortscale.entity.event.EntityEventConfService"/>
-    <mockito:mock id="contextSelectorFactoryService" class="fortscale.utils.factory.FactoryService"/>
-    <mockito:mock id="entityEventMongoStore" class="fortscale.entity.event.EntityEventMongoStore"/>
-
-    <mockito:mock id="aggregatedFeatureEventsConfService" class="fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService"/>
-    <mockito:mock id="aggregatedFeatureEventsReaderService" class="fortscale.aggregation.feature.event.store.AggregatedFeatureEventsReaderService"/>
-
-
-    <mockito:mock id="store" class="fortscale.accumulator.entityEvent.store.AccumulatedEntityEventStore"/>
     <bean class="fortscale.utils.monitoring.stats.config.NullStatsServiceConfig"/>
 
     <context:spring-configured/>
