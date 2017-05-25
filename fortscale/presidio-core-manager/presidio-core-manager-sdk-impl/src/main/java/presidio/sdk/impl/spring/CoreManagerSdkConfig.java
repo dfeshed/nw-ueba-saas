@@ -6,8 +6,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import presidio.input.sdk.impl.spring.InputSdkConfig;
+import presidio.sdk.api.services.CoreManagerSdk;
 import presidio.sdk.api.services.PresidioInputSdk;
-import presidio.sdk.impl.services.CoreManagerSdk;
+import presidio.sdk.impl.services.CoreManagerSdkImpl;
 
 @Configuration
 @Import(InputSdkConfig.class)
@@ -18,7 +19,7 @@ public class CoreManagerSdkConfig {
 
     @Bean
     CoreManagerSdk CoreManagerSdkImpl() {
-        return new CoreManagerSdk(presidioInput);
+        return new CoreManagerSdkImpl(presidioInput);
 
     }
 

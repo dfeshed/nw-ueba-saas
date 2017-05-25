@@ -1,11 +1,11 @@
 package presidio.sdk.api.services;
 
 
-import presidio.sdk.api.domain.AbstractRecordDocument;
+import fortscale.domain.core.AbstractAuditableDocument;
 
 import java.util.List;
 
 public interface CoreManagerSdk {
-    boolean store(List<AbstractRecordDocument> events);
+    boolean store(List<AbstractAuditableDocument> events);
 
 }
