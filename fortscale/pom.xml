@@ -96,7 +96,7 @@
 		<!--<springokito.version>1.0.9</springokito.version>-->
 
 		<spring-data-hadoop.version>2.2.0.RELEASE</spring-data-hadoop.version>
-		<fongo.version>1.6.8</fongo.version>
+		<fongo.version>2.1.0</fongo.version>
 		<quartz.version>2.2.1</quartz.version>
 		<perf4j.version>0.9.16</perf4j.version>
 
