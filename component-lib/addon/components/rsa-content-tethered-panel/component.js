@@ -32,6 +32,18 @@ export default Component.extend({
   style: 'standard', // ['standard', 'error', 'primary']
   target: null,
 
+  displayEventName: computed('panelId', function() {
+    return `rsa-content-tethered-panel-display-${this.get('panelId')}`;
+  }),
+
+  hideEventName: computed('panelId', function() {
+    return `rsa-content-tethered-panel-hide-${this.get('panelId')}`;
+  }),
+
+  toggleEventName: computed('panelId', function() {
+    return `rsa-content-tethered-panel-toggle-${this.get('panelId')}`;
+  }),
+
   attachment: computed('position', function() {
     let position = null;
     switch (this.get('position')) {
@@ -169,82 +181,94 @@ export default Component.extend({
     }
   }),
 
+  willDestroyElement() {
+    this.get('eventBus').off(this.get('displayEventName'), this, this._didDisplay);
+    this.get('eventBus').off(this.get('hideEventName'), this, this._didHide);
+    this.get('eventBus').off(this.get('toggleEventName'), this, this._didToggle);
+    this.get('eventBus').off('rsa-application-click', this, this._didApplicationClick);
+  },
+
   didInsertElement() {
     run.schedule('afterRender', () => {
-      this.get('eventBus').on(`rsa-content-tethered-panel-display-${this.get('panelId')}`, (anchorHeight, anchorWidth, elId, model) => {
-        run.next(() => {
-          if (!this.get('isDestroyed') && !this.get('isDestroying')) {
-            if ($(this.get('targetClass')).length > 1) {
-              this.set('target', `#${elId}`);
-            } else {
-              this.set('target', this.get('targetClass'));
-            }
+      this.get('eventBus').on(this.get('displayEventName'), this, this._didDisplay);
+      this.get('eventBus').on(this.get('hideEventName'), this, this._didHide);
+      this.get('eventBus').on(this.get('toggleEventName'), this, this._didToggle);
+      this.get('eventBus').on('rsa-application-click', this, this._didApplicationClick);
+    });
+  },
 
-            this.setProperties({
-              anchorHeight,
-              anchorWidth,
-              model,
-              isDisplayed: true
-            });
+  _didDisplay(anchorHeight, anchorWidth, elId, model) {
+    run.next(() => {
+      if (!this.get('isDestroyed') && !this.get('isDestroying')) {
+        if ($(this.get('targetClass')).length > 1) {
+          this.set('target', `#${elId}`);
+        } else {
+          this.set('target', this.get('targetClass'));
+        }
 
-            run.schedule('afterRender', () => {
-              $(`.${this.get('elementId')}`).on('mouseenter', () => {
-                this.set('isHovering', true);
-              });
-
-              $(`.${this.get('elementId')}`).on('mouseleave', () => {
-                this.set('isHovering', false);
-                run.later(() => {
-                  if (!this.get('isHovering') && this.get('hideOnLeave')) {
-                    this.set('isDisplayed', false);
-                  }
-                }, this.get('hideDelay'));
-              });
-            });
-          }
+        this.setProperties({
+          anchorHeight,
+          anchorWidth,
+          model,
+          isDisplayed: true
         });
-      });
 
-      this.get('eventBus').on(`rsa-content-tethered-panel-hide-${this.get('panelId')}`, () => {
-        run.next(() => {
-          if (!this.get('isHovering')) {
-            this._hidepanel();
-          }
-        });
-      });
-
-      this.get('eventBus').on(`rsa-content-tethered-panel-toggle-${this.get('panelId')}`, (height, width, elId, model) => {
-        run.next(() => {
-          if (!this.get('isDestroyed') && !this.get('isDestroying')) {
-            if ($(this.get('targetClass')).length > 1) {
-              this.set('target', `#${elId}`);
-            } else {
-              this.set('target', this.get('targetClass'));
-            }
-
-            this.set('model', model);
-            this.toggleProperty('isDisplayed');
-
-            if (height) {
-              this.set('anchorHeight', height);
-            }
-            if (width) {
-              this.set('anchorWidth', width);
-            }
-          }
-        });
-      });
-
-      this.get('eventBus').on('rsa-application-click', (target) => {
-        if (!$(target).closest(this.get('targetClass')).length > 0) {
-          run.next(() => {
-            if (!this.get('isDestroyed') && !this.get('isDestroying')) {
-              this.set('isDisplayed', false);
-            }
+        run.schedule('afterRender', () => {
+          $(`.${this.get('elementId')}`).on('mouseenter', () => {
+            this.set('isHovering', true);
           });
+
+          $(`.${this.get('elementId')}`).on('mouseleave', () => {
+            this.set('isHovering', false);
+            run.later(() => {
+              if (!this.get('isHovering') && this.get('hideOnLeave')) {
+                this.set('isDisplayed', false);
+              }
+            }, this.get('hideDelay'));
+          });
+        });
+      }
+    });
+  },
+
+  _didHide() {
+    run.next(() => {
+      if (!this.get('isHovering')) {
+        this._hidepanel();
+      }
+    });
+  },
+
+  _didToggle(height, width, elId, model) {
+    run.next(() => {
+      if (!this.get('isDestroyed') && !this.get('isDestroying')) {
+        if ($(this.get('targetClass')).length > 1) {
+          this.set('target', `#${elId}`);
+        } else {
+          this.set('target', this.get('targetClass'));
+        }
+
+        this.set('model', model);
+        this.toggleProperty('isDisplayed');
+
+        if (height) {
+          this.set('anchorHeight', height);
+        }
+        if (width) {
+          this.set('anchorWidth', width);
+        }
+      }
+    });
+  },
+
+  _didApplicationClick(target) {
+    if (!$(target).closest(this.get('targetClass')).length > 0) {
+      run.next(() => {
+        if (!this.get('isDestroyed') && !this.get('isDestroying')) {
+          this.set('isDisplayed', false);
         }
       });
-    });
+    }
   },
 
   actions: {
