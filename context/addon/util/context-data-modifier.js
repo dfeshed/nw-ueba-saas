@@ -1,8 +1,5 @@
 import TabList from 'context/config/dynamic-tab';
-import { isEmpty } from 'ember-utils';
 import get from 'ember-metal/get';
-
-const endPoint = ['Modules', 'IOC', 'Machines'];
 
 const isNotEmpty = (contextData, dataSourceGroup, defaultEnable) => {
   if (!contextData) {
@@ -76,23 +73,6 @@ const getHeaderData = (dsData, i18n) => {
   return headerData;
 };
 
-const isDataSourcesConfigured = (dataSources, dataSourceGroup) => {
-  if (endPoint.includes(dataSourceGroup)) {
-    return dataSources.find((dataSource) => dataSource.dataSourceType === 'Endpoint').details[dataSourceGroup].isConfigured;
-  }
-  return dataSources.find((dataSource) => dataSource.dataSourceType === dataSourceGroup).isConfigured;
-};
-
-const needToDisplay = (contextData, lookupData, { dataSourceGroup }, dataSources) => {
-  if (contextData || !lookupData || !dataSources) {
-    return true;
-  }
-  if (!isDataSourcesConfigured(dataSources, dataSourceGroup)) {
-    return false;
-  }
-  return isDataSourceEnabled(lookupData, dataSourceGroup);
-};
-
 const getTabs = (meta, dataSources) => {
   const tabList = TabList.find((tab) => tab.tabType === meta);
   // Map over the columns and build the tab count text for each tab
@@ -106,39 +86,9 @@ const getTabs = (meta, dataSources) => {
   });
 };
 
-const getActiveTabName = (activeTabName, data) => {
-  if (activeTabName != null || !data) {
-    return activeTabName;
-  }
-  const dataSourceWithData = data.find((dataSource) => {
-    return dataSource && (!isEmpty(dataSource.resultList) || !isEmpty(dataSource.errorMessage));
-  });
-  if (!dataSourceWithData) {
-    return;
-  }
-
-  if (endPoint.includes(dataSourceWithData.dataSourceGroup)) {
-    return 'Endpoint';
-  }
-  return dataSourceWithData.dataSourceGroup ? dataSourceWithData.dataSourceGroup : activeTabName;
-};
-
-const noDataToDisplayMessage = (dataSourceList, [lookupData]) => {
-  if (!lookupData || !dataSourceList) {
-    return;
-  }
-  const dataSourcesConfigured = dataSourceList.filter((dataSource) => dataSource.isConfigured);
-  const dataSourcesWithNoData = dataSourcesConfigured.filter((dataSource) => !isDataSourceEnabled(lookupData, dataSource.dataSourceType, true));
-
-  return dataSourcesWithNoData && dataSourcesWithNoData.length === dataSourcesConfigured.length ? 'context.noData' : '';
-};
-
 export {
   isDataSourceEnabled,
   getData,
   getHeaderData,
-  needToDisplay,
-  getTabs,
-  getActiveTabName,
-  noDataToDisplayMessage
+  getTabs
 };

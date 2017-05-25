@@ -111,11 +111,11 @@ export default [{
   footer: ' ',
   title: 'context.modules.title',
   columns: [
+    datasources.list,
+    datasources.archer,
     datasources.endpoint,
     datasources.incident,
     datasources.alert,
-    datasources.list,
-    datasources.archer,
     datasources.liveConnectIp
   ],
   toolbar: [
@@ -129,10 +129,10 @@ export default [{
   footer: '',
   title: 'context.iiocs.title',
   columns: [
+    datasources.list,
     datasources.user,
     datasources.incident,
-    datasources.alert,
-    datasources.list
+    datasources.alert
   ],
   toolbar: [
     toolbar.addToList
@@ -145,10 +145,10 @@ export default [{
   footer: ' ',
   title: 'context.modules.title',
   columns: [
+    datasources.list,
     datasources.endpoint,
     datasources.incident,
     datasources.alert,
-    datasources.list,
     datasources.liveConnect
   ],
   toolbar: [
@@ -162,11 +162,11 @@ export default [{
   footer: ' ',
   title: 'context.modules.title',
   columns: [
+    datasources.list,
+    datasources.archer,
     datasources.endpoint,
     datasources.incident,
-    datasources.alert,
-    datasources.list,
-    datasources.archer
+    datasources.alert
   ],
   toolbar: [
     toolbar.addToList
@@ -179,9 +179,9 @@ export default [{
   footer: ' ',
   title: 'context.modules.title',
   columns: [
+    datasources.list,
     datasources.incident,
-    datasources.alert,
-    datasources.list
+    datasources.alert
   ],
   toolbar: [
     toolbar.addToList
@@ -194,9 +194,9 @@ export default [{
   footer: ' ',
   title: 'context.modules.title',
   columns: [
+    datasources.list,
     datasources.incident,
     datasources.alert,
-    datasources.list,
     datasources.liveConnectFile
   ],
   toolbar: [
@@ -210,9 +210,9 @@ export default [{
   footer: ' ',
   title: 'context.modules.title',
   columns: [
+    datasources.list,
     datasources.incident,
     datasources.alert,
-    datasources.list,
     datasources.liveConnectDomain
   ],
   toolbar: [

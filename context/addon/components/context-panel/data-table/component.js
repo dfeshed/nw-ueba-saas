@@ -2,7 +2,7 @@ import layout from './template';
 import connect from 'ember-redux/components/connect';
 import computed from 'ember-computed-decorators';
 import Component from 'ember-component';
-import { needToDisplay, getData } from 'context/util/context-data-modifier';
+import { getData } from 'context/util/context-data-modifier';
 import set from 'ember-metal/set';
 
 const stateToComputed = ({ context }) => ({
@@ -30,8 +30,6 @@ const DataTableComponent = Component.extend({
     }
   },
 
-  @computed('contextData', 'lookupData.[]', 'dSDetails', 'dataSources')
-  displayTable: (contextData, [lookupData], dSDetails, dataSources) => needToDisplay(contextData, lookupData, dSDetails, dataSources),
 
   actions: {
     sort(column, sortColumn, sortDirection) {

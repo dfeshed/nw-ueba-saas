@@ -1,73 +1,71 @@
-{{#if needToDisplay}}
-  {{#if dSDetails.headerRequired}}
-    {{context-panel/ds-header dSDetails=dSDetails}}
-  {{/if}}
-  {{#if (gt getDataSourceData.length 0)}}
-    <div class="rsa-context-panel__grid__box">
-      {{#each getDataSourceData as |data index|}}
-        <hbox>
-          <vbox class="rsa-context-panel__grid__host-details__header-data">
-            <span title= {{get data dSDetails.firstRow.field}}>{{get data dSDetails.firstRow.field}}</span>
+{{#if dSDetails.headerRequired}}
+  {{context-panel/ds-header dSDetails=dSDetails}}
+{{/if}}
+{{#if (gt getDataSourceData.length 0)}}
+  <div class="rsa-context-panel__grid__box">
+    {{#each getDataSourceData as |data index|}}
+      <hbox>
+        <vbox class="rsa-context-panel__grid__host-details__header-data">
+          <span title= {{get data dSDetails.firstRow.field}}>{{get data dSDetails.firstRow.field}}</span>
+        </vbox>
+      </hbox>
+      <hbox class={{dSDetails.class}}>
+        {{#if dSDetails.riskScore}}
+          <vbox xs='2'>
+            <div class="rsa-context-panel__grid__risk-badge__default">
+              {{rsa-content-badge-score
+                label=(t 'context.iiocScore')
+                score=(get data dSDetails.riskScore.field)
+                style=badgeLevel
+                invertColor=true
+              }}
+            </div>
           </vbox>
-        </hbox>
-        <hbox class={{dSDetails.class}}>
-          {{#if dSDetails.riskScore}}
-            <vbox xs='2'>
-              <div class="rsa-context-panel__grid__risk-badge__default">
-                {{rsa-content-badge-score
-                  label=(t 'context.iiocScore')
-                  score=(get data dSDetails.riskScore.field)
-                  style=badgeLevel
-                  invertColor=true
-                }}
-              </div>
-            </vbox>
-          {{/if}}
-          <vbox>
-            {{#each dSDetails.rows as |rowsData|}}
-              <hbox>
-                {{#each rowsData.cell as |cellData|}}
-                  {{#if (eq cellData.dataType 'link')}}
-                    <vbox xs='3'>
-                      {{rsa-content-definition label=(t cellData.title)}}
-                      <div class="rsa-context-panel__grid__host-details__field-value rsa-context-panel__grid link">
-                        <a href={{concat 'ecatui://' (get data cellData.field)  }} target="_blank">{{get data cellData.field}}</a>
-                      </div>
-                    </vbox>
-                  {{else if (eq cellData.dataType 'datetime')}}
-                    <vbox xs='3'>
-                      {{rsa-content-definition label=(t cellData.title)}}
-                      <div class="rsa-context-panel__grid__host-details__field-value">
-                        {{#if (get data cellData.field)}}
-                          <span>
-                            {{rsa-content-datetime timestamp=(get data cellData.field) displayMilliseconds=false withTimeAgo=true}}
-                          </span>
-                        {{else}}
-                            -
-                        {{/if}}
-                      </div>
-                    </vbox>
-                  {{else if (eq cellData.dataType 'group')}}
-                    <vbox xs='3' class="rsa-context-panel__grid__host-details__group-data-header">
-                      {{context-panel/dynamic-grid/group groupData=(get data cellData.field) title=cellData.title index=index}}
-                    </vbox>
-                  {{else}}
-                    <vbox xs='3'>
-                      {{rsa-content-definition label=(t cellData.title) value=(if (get data cellData.field) (get data cellData.field) '-')}}
-                    </vbox>
-                  {{/if}}
-                {{/each}}
-              </hbox>
-            {{/each}}
-          </vbox>    
-        </hbox>
-        {{#if (gt getDataSourceData.length 1)}}
-          <div class="rsa-context-panel__grid__border"></div>
         {{/if}}
-      {{/each}}
-    </div>
-  {{/if}}
-  {{#if dSDetails.footerRequired}}
-    {{context-panel/ds-footer dSDetails=dSDetails}}
-  {{/if}}
+        <vbox>
+          {{#each dSDetails.rows as |rowsData|}}
+            <hbox>
+              {{#each rowsData.cell as |cellData|}}
+                {{#if (eq cellData.dataType 'link')}}
+                  <vbox xs='3'>
+                    {{rsa-content-definition label=(t cellData.title)}}
+                    <div class="rsa-context-panel__grid__host-details__field-value rsa-context-panel__grid link">
+                      <a href={{concat 'ecatui://' (get data cellData.field)  }} target="_blank">{{get data cellData.field}}</a>
+                    </div>
+                  </vbox>
+                {{else if (eq cellData.dataType 'datetime')}}
+                  <vbox xs='3'>
+                    {{rsa-content-definition label=(t cellData.title)}}
+                    <div class="rsa-context-panel__grid__host-details__field-value">
+                      {{#if (get data cellData.field)}}
+                        <span>
+                          {{rsa-content-datetime timestamp=(get data cellData.field) displayMilliseconds=false withTimeAgo=true}}
+                        </span>
+                      {{else}}
+                        -
+                      {{/if}}
+                    </div>
+                  </vbox>
+                {{else if (eq cellData.dataType 'group')}}
+                  <vbox xs='3' class="rsa-context-panel__grid__host-details__group-data-header">
+                    {{context-panel/dynamic-grid/group groupData=(get data cellData.field) title=cellData.title index=index}}
+                  </vbox>
+                {{else}}
+                  <vbox xs='3'>
+                    {{rsa-content-definition label=(t cellData.title) value=(if (get data cellData.field) (get data cellData.field) '-')}}
+                  </vbox>
+                {{/if}}
+              {{/each}}
+            </hbox>
+          {{/each}}
+        </vbox>    
+      </hbox>
+      {{#if (gt getDataSourceData.length 1)}}
+        <div class="rsa-context-panel__grid__border"></div>
+      {{/if}}
+    {{/each}}
+  </div>
+{{/if}}
+{{#if dSDetails.footerRequired}}
+  {{context-panel/ds-footer dSDetails=dSDetails}}
 {{/if}}
