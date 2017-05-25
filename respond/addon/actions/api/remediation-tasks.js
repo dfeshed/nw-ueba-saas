@@ -1,28 +1,7 @@
 import { promiseRequest } from 'streaming-data/services/data-access/requests';
 import FilterQuery from 'respond/utils/filter-query';
-import moment from 'moment';
 import { isEmberArray } from 'ember-array/utils';
-
-// utility function for constructing a basic/standard incidents query
-const _buildQuery = (filters = { created: { name: 'ALL_TIME', unit: 'years', subtract: 50 } }, { sortField, isSortDescending = true }) => {
-  const query = FilterQuery.create().addSortBy(sortField, isSortDescending);
-
-  Object.keys(filters).forEach((filterField) => {
-    const value = filters[filterField];
-
-    if (filterField === 'created') {
-      if ('start' in value) {  // Custom Range Filter
-        query.addRangeFilter('created', value.start || 0, value.end || undefined);
-      } else { // Common date/time range filter
-        query.addRangeFilter('created', moment().subtract(value.subtract, value.unit).valueOf(), undefined);
-      }
-    } else {
-      query.addFilter(filterField, filters[filterField]);
-    }
-  });
-
-  return query;
-};
+import buildExplorerQuery from './util/explorer-build-query';
 
 const RemediationTasksAPI = {
   /**
@@ -36,7 +15,7 @@ const RemediationTasksAPI = {
    * @returns {Promise}
    */
   getRemediationTasks(filters, sort) {
-    const query = _buildQuery(filters, sort);
+    const query = buildExplorerQuery(filters, sort, 'created');
     return promiseRequest({
       method: 'query',
       modelName: 'remediation-tasks',
@@ -55,7 +34,7 @@ const RemediationTasksAPI = {
    * @returns {Promise}
    */
   getRemediationTaskCount(filters, sort) {
-    const query = _buildQuery(filters, sort);
+    const query = buildExplorerQuery(filters, sort, 'created');
 
     return promiseRequest({
       method: 'queryRecord',

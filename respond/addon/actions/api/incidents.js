@@ -2,35 +2,14 @@ import EmberObject from 'ember-object';
 import { assert } from 'ember-metal/utils';
 import { promiseRequest, streamRequest } from 'streaming-data/services/data-access/requests';
 import FilterQuery from 'respond/utils/filter-query';
-import moment from 'moment';
 import { isEmpty, isPresent, typeOf, isNone } from 'ember-utils';
 import { isEmberArray } from 'ember-array/utils';
+import buildExplorerQuery from './util/explorer-build-query';
 
 const IncidentsAPI = EmberObject.extend({});
 
 // NOOP function to replace Ember.K
 const NOOP = () => {};
-
-// utility function for constructing a basic/standard incidents query
-const _buildQuery = (filters = { created: { name: 'ALL_TIME', unit: 'years', subtract: 50 } }, { sortField, isSortDescending = true }) => {
-  const query = FilterQuery.create().addSortBy(sortField, isSortDescending);
-
-  Object.keys(filters).forEach((filterField) => {
-    const value = filters[filterField];
-
-    if (filterField === 'created') {
-      if ('start' in value) {  // Custom Range Filter
-        query.addRangeFilter('created', value.start || 0, value.end || undefined);
-      } else { // Common date/time range filter
-        query.addRangeFilter('created', moment().subtract(value.subtract, value.unit).valueOf(), undefined);
-      }
-    } else {
-      query.addFilter(filterField, filters[filterField]);
-    }
-  });
-
-  return query;
-};
 
 IncidentsAPI.reopenClass({
   /**
@@ -46,7 +25,7 @@ IncidentsAPI.reopenClass({
    * @returns {Promise}
    */
   getIncidents(filters, sort, { onResponse = NOOP, onError = NOOP, onInit = NOOP, onCompleted = NOOP }) {
-    const query = _buildQuery(filters, sort);
+    const query = buildExplorerQuery(filters, sort, 'created');
 
     return streamRequest({
       method: 'stream',
@@ -69,7 +48,7 @@ IncidentsAPI.reopenClass({
    * @returns {Promise}
    */
   getIncidentsCount(filters, sort) {
-    const query = _buildQuery(filters, sort);
+    const query = buildExplorerQuery(filters, sort, 'created');
 
     return promiseRequest({
       method: 'queryRecord',

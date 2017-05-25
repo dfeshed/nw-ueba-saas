@@ -1,7 +1,3 @@
-import explorerReducers from './explorer-reducer-fns';
-
-const defaultFilters = explorerReducers.itemsFilters();
-
 export default {
   // the known list of items
   items: [],
@@ -21,7 +17,7 @@ export default {
   itemsTotal: null,
 
   // map of filters applied to the list of items
-  itemsFilters: defaultFilters,
+  itemsFilters: null,
 
   // the item currently with focus (i.e., highlighted and/or shown in the inspector) in the item list
   focusedItem: null,
@@ -33,5 +29,7 @@ export default {
 
   sortField: 'created',
 
-  isSortDescending: true
+  isSortDescending: true,
+
+  defaultDateFilterField: 'created'
 };

@@ -55,11 +55,6 @@ const respondConfigGen = function(environment) {
     alerts: {
       socketUrl,
       stream: {
-        defaultStreamLimit: 1000,
-        subscriptionDestination: '/user/queue/alerts',
-        requestDestination: '/ws/response/alerts'
-      },
-      query: {
         subscriptionDestination: '/user/queue/alerts',
         requestDestination: '/ws/response/alerts'
       }

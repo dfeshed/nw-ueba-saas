@@ -547,6 +547,24 @@ export default {
       },
       footer: 'ja_Showing {{count}} out of {{total}} incidents'
     },
+    alerts: {
+      list: {
+        receivedTime: 'ja_Received',
+        severity: 'ja_Severity',
+        numEvents: 'ja_# Events',
+        id: 'ja_ID',
+        name: 'ja_Name',
+        status: 'ja_Status',
+        source: 'ja_Source',
+        incidentId: 'ja_Incident ID'
+      }
+    },
+    alert: {
+      status: {
+        GROUPED_IN_INCIDENT: 'ja_Grouped In Incident',
+        NORMALIZED: 'ja_Normalized'
+      }
+    },
     incident: {
       created: 'ja_Created',
       status: 'ja_Status',

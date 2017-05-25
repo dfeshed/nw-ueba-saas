@@ -15,8 +15,8 @@ function defaultDateRange() {
   };
 }
 
-const itemsFilters = () => ({
-  created: defaultDateRange()
+const itemsFilters = (dateFilterField) => ({
+  [dateFilterField]: defaultDateRange()
 });
 
 // Updates the state value with the value updated on the server
@@ -150,7 +150,7 @@ const toggleCustomDateRestriction = (state) => {
     hasCustomDateRestriction: !state.hasCustomDateRestriction,
     itemsFilters: {
       ...state.itemsFilters,
-      created: !state.hasCustomDateRestriction ? defaultCustomDateRange() : defaultDateRange()
+      [state.defaultDateFilterField]: !state.hasCustomDateRestriction ? defaultCustomDateRange() : defaultDateRange()
     }
   };
 };
@@ -158,7 +158,7 @@ const toggleCustomDateRestriction = (state) => {
 const resetFilters = (state) => (
   {
     ...state,
-    itemsFilters: itemsFilters(),
+    itemsFilters: itemsFilters(state.defaultDateFilterField),
     hasCustomDateRestriction: false
   }
 );

@@ -1,0 +1,43 @@
+{{#rsa-explorer
+  columns=columns
+  namespace='alerts'
+  bootstrap=(action 'bootstrap') as |explorer|}}
+
+  {{#explorer.toolbar toolbarControlsComponent='rsa-alerts/toolbar-controls' as |toolbar|}}
+    {{toolbar.toolbarControls}}
+  {{/explorer.toolbar}}
+
+  {{#explorer.filters filterControlsComponent='rsa-alerts/filter-controls' as |filters|}}
+    {{filters.filterControls}}
+  {{/explorer.filters}}
+
+  {{#explorer.table as |row|}}
+    {{#row.cell as |item index column|}}
+      {{#if (eq column.dataType 'date')}}
+        {{rsa-content-datetime timestamp=(get item column.field) displayTime=true displayMilliseconds=false}}
+
+      {{else if (eq column.dataType 'number')}}
+        <div class="number-type">{{get item column.field}}</div>
+
+      {{else if (eq column.dataType 'checkbox') }}
+        <label class="rsa-form-checkbox-label {{if (contains item.id explorer.instance.itemsSelected) 'checked'}}">
+          {{rsa-form-checkbox checked=(contains item.id explorer.instance.itemsSelected) change=(action explorer.select item)}}
+        </label>
+      {{else if (eq column.field "name")}}
+        <div class="alert-name">
+          {{#link-to "alert" item.id}}
+            {{get item column.field}}
+          {{/link-to}}
+        </div>
+      {{ else if (eq column.field "status")}}
+        {{t (concat 'respond.alert.status.' (get item column.field)) }}
+      {{else}}
+        {{get item column.field}}
+      {{/if}}
+    {{/row.cell}}
+  {{/explorer.table}}
+
+  {{#explorer.inspector inspectorContentComponent='rsa-alerts/alert-overview' as |inspector|}}
+    {{inspector.inspectorContent}}
+  {{/explorer.inspector}}
+{{/rsa-explorer}}

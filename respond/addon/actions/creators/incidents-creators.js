@@ -16,7 +16,7 @@ const {
  */
 const getItems = () => {
   return (dispatch, getState) => {
-    const { itemsFilters, sortField, isSortDescending, stopIncidentsStream } = getState().respond.incidents;
+    const { itemsFilters, sortField, isSortDescending, stopItemsStream } = getState().respond.incidents;
 
     // Fetch the total incident count for the current query
     dispatch({
@@ -31,8 +31,8 @@ const getItems = () => {
     dispatch({ type: ACTION_TYPES.FETCH_INCIDENTS_STARTED });
     // If we already have an incidents stream running, stop it. This prevents a previously started stream
     // from continuing to deliver results at the same time as the new stream.
-    if (stopIncidentsStream) {
-      stopIncidentsStream();
+    if (stopItemsStream) {
+      stopItemsStream();
     }
 
     Incidents.getIncidents(

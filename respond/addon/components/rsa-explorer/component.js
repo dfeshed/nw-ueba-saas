@@ -42,7 +42,7 @@ const stateToComputed = function(state) {
     focusedItem: stateSpace.focusedItem,
     isTransactionUnderway: stateSpace.isTransactionUnderway,
     hasCustomDate: stateSpace.hasCustomDateRestriction,
-    timeframeFilter: itemsFilters.created,
+    timeframeFilter: itemsFilters[stateSpace.defaultDateFilterField],
     isSelectAll: stateSpace.isSelectAll,
     sortField: stateSpace.sortField,
     isSortDescending: stateSpace.isSortDescending

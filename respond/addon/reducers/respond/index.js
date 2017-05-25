@@ -1,5 +1,6 @@
 import redux from 'redux';
 import incidents from './incidents';
+import alerts from './alerts';
 import incident from './incident';
 import users from './users';
 import dictionaries from './dictionaries';
@@ -11,6 +12,7 @@ export default {
     incident,
     users,
     dictionaries,
-    remediationTasks
+    remediationTasks,
+    alerts
   })
 };

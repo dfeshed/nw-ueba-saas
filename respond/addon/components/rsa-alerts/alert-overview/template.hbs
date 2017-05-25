@@ -1,0 +1,34 @@
+<div>
+  <div class="metadata">
+    <label>{{t 'respond.alerts.list.id'}}:</label>
+    <span>{{info.id}}</span>
+  </div>
+
+  <div class="metadata">
+    <label>{{t 'respond.alerts.list.incidentId'}}:</label>
+    <span>{{#link-to "incident" info.incidentId}}{{info.incidentId}}{{/link-to}}</span>
+  </div>
+
+  <div class="metadata">
+    <label>{{t 'respond.alerts.list.receivedTime'}}:</label>
+    <span>{{rsa-content-datetime timestamp=info.created displayTime=true displayMilliseconds=false}}</span>
+  </div>
+
+  <div class="metadata">
+    <label>{{t 'respond.alerts.list.severity'}}:</label>
+    <span>{{info.alert.severity}}</span>
+  </div>
+
+  <div class="metadata">
+    <label>{{t 'respond.alerts.list.source'}}:</label>
+    <span>{{info.alert.source}}</span>
+  </div>
+
+  <div class="metadata">
+    <label>{{t 'respond.alerts.list.numEvents'}}:</label>
+    <span>{{info.alert.numEvents}}</span>
+  </div>
+</div>
+<div class="raw-event">
+  {{info.originalRawAlert}}
+</div>

@@ -547,6 +547,24 @@ export default {
       },
       footer: 'Showing {{count}} out of {{total}} incidents'
     },
+    alerts: {
+      list: {
+        receivedTime: 'Received',
+        severity: 'Severity',
+        numEvents: '# Events',
+        id: 'ID',
+        name: 'Name',
+        status: 'Status',
+        source: 'Source',
+        incidentId: 'Incident ID'
+      }
+    },
+    alert: {
+      status: {
+        GROUPED_IN_INCIDENT: 'Grouped In Incident',
+        NORMALIZED: 'Normalized'
+      }
+    },
     incident: {
       created: 'Created',
       status: 'Status',

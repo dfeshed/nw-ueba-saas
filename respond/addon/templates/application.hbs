@@ -3,7 +3,9 @@
     {{#rsa-nav-tab  align='left' isActive=(eq routePath 'incidents') click=(action 'navigateTo' 'incidents')}}
       <div class="label">{{t "respond.entities.incidents"}}</div>
     {{/rsa-nav-tab}}
-
+    {{#rsa-nav-tab  align='left' isActive=(eq routePath 'alerts') click=(action 'navigateTo' 'alerts')}}
+      <div class="label">{{t "respond.entities.alerts"}}</div>
+    {{/rsa-nav-tab}}
     {{#rsa-nav-tab  align='left' isActive=(eq routePath 'remediation') click=(action 'navigateTo' 'remediation')}}
       <div class="label">{{t "respond.entities.remediationTasks"}}</div>
     {{/rsa-nav-tab}}
