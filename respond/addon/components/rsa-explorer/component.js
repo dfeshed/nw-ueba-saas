@@ -67,9 +67,12 @@ const dispatchToActions = function(dispatch) {
 
   return {
     getItems: () => actionBroker(dispatch, namespace, 'getItems'),
-    updateItem: (entityId, fieldName, value) => actionBroker(dispatch, namespace, 'updateItem', entityId, fieldName, value, {
+    updateItem: (entityId, fieldName, value, revert = () => {}) => actionBroker(dispatch, namespace, 'updateItem', entityId, fieldName, value, {
       onSuccess: () => (this.send('showFlashMessage', FLASH_MESSAGE_TYPES.SUCCESS, 'respond.entities.actionMessages.updateSuccess')),
-      onFailure: () => (this.send('showFlashMessage', FLASH_MESSAGE_TYPES.ERROR, 'respond.entities.actionMessages.updateFailure'))
+      onFailure: () => {
+        revert();
+        this.send('showFlashMessage', FLASH_MESSAGE_TYPES.ERROR, 'respond.entities.actionMessages.updateFailure');
+      }
     }),
     deleteItem: (entityId) => actionBroker(dispatch, namespace, 'deleteItem', entityId, {
       onSuccess: () => (this.send('showFlashMessage', FLASH_MESSAGE_TYPES.SUCCESS, 'respond.entities.actionMessages.updateSuccess')),

@@ -45,8 +45,16 @@ const RemediationTaskOverview = Component.extend({
      * @param field {string} - The name of the field on the record (e.g., 'priority' or 'status') to update
      * @param updatedValue {*} - The value to be set/updated on the record's field
      */
-    update(entityId, field, updatedValue) {
-      this.get('updateItem')(entityId, field, updatedValue);
+    update(entityId, field, updatedValue, revertCallback) {
+      this.get('updateItem')(entityId, field, updatedValue, revertCallback);
+    },
+
+    selectionChange(entityId, field, updatedValue) {
+      this.send('update', entityId, field, updatedValue);
+    },
+
+    editableFieldChange(entityId, field, updatedValue, originalValue, revertCallback) {
+      this.send('update', entityId, field, updatedValue, revertCallback);
     }
   }
 });

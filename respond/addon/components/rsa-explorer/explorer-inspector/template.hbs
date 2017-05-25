@@ -1,8 +1,11 @@
 <box fit class="rsa-explorer-inspector__header">
   <h2>
-    <div class="id">{{info.id}}</div>
-    <div class="name">{{info.name}}</div>
-    {{yield 'inspector-header'}}
+    {{yield (hash
+      inspectorHeader=(component inspectorHeaderComponent
+        info=(readonly info)
+        deleteItem=deleteItem
+        updateItem=updateItem)
+    )}}
   </h2>
 </box>
 <hbox fit justify="center" nowrap class="rsa-explorer-inspector__toolbar">
@@ -14,10 +17,9 @@
 </hbox>
 <box class="rsa-explorer-inspector__body">
   {{yield (hash
-    name='inspector-body'
     viewMode=(get this 'viewMode')
     inspectorContent=(component inspectorContentComponent
-      info=info
+      info=(readonly info)
       deleteItem=deleteItem
       updateItem=updateItem)
     )}}

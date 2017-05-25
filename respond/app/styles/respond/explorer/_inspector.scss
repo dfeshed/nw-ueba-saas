@@ -86,6 +86,7 @@ $metadataLineHeight: 1.35;
         display: inline-block;
         min-height: 1em * $metadataLineHeight;
         color: rsa-color(white);
+        width: 100%;
       }
 
       > .edit-button {
@@ -113,9 +114,6 @@ $metadataLineHeight: 1.35;
         display: block;
         padding-bottom: rsa-whitespace(less);
         color: rsa-color(gray, light);
-      }
-      i {
-        font-style: italic;
       }
     }
   }

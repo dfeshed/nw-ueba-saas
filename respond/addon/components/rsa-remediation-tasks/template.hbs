@@ -44,7 +44,10 @@
     {{/row.cell}}
   {{/explorer.table}}
 
-  {{#explorer.inspector inspectorContentComponent='rsa-remediation-tasks/task-overview' as |inspector|}}
+  {{#explorer.inspector
+    inspectorHeaderComponent='rsa-remediation-tasks/inspector-header'
+    inspectorContentComponent='rsa-remediation-tasks/task-overview' as |inspector|}}
+    {{inspector.inspectorHeader}}
     {{inspector.inspectorContent}}
   {{/explorer.inspector}}
 {{/rsa-explorer}}

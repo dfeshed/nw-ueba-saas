@@ -80,7 +80,6 @@
     {{#power-select
       options=users
       matchTriggerWidth=false
-      horizontalPosition='right'
       disabled=(or (eq info.status 'CLOSED') (eq info.status 'CLOSED_FALSE_POSITIVE'))
       searchEnabled=false
       triggerComponent=(component "respond-common/button-trigger"

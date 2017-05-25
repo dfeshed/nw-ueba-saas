@@ -26,7 +26,7 @@
         searchEnabled=false
         triggerComponent=(component "respond-common/button-trigger"
           label=(t (concat 'respond.priority.' info.priority)))
-        onchange=(action 'update' info.id 'priority') as |option|}}
+        onchange=(action 'selectionChange' info.id 'priority') as |option|}}
         {{t (concat 'respond.priority.' option)}}
       {{/power-select}}
     </div>
@@ -43,7 +43,7 @@
         searchEnabled=false
         triggerComponent=(component "respond-common/button-trigger"
           label=(t (concat 'respond.status.' info.status)))
-        onchange=(action 'update' info.id 'status') as |option|}}
+        onchange=(action 'selectionChange' info.id 'status') as |option|}}
         {{t (concat 'respond.status.' option)}}
       {{/power-select}}
     </div>
@@ -56,19 +56,26 @@
   </div>
 
   {{! Assignee}}
-  <div class="metadata">
+  <div class="metadata assignee">
     <label>{{t 'respond.remediationTasks.list.assignee'}}:</label>
-    <span>{{if info.assignee info.assignee (t 'respond.assignee.none')}}</span>
+    <span>
+      {{respond-common/editable-field
+        value=(readonly info.assignee)
+        placeholder=(unless info.assignee (t 'respond.assignee.none'))
+        onFieldChange=(action 'editableFieldChange' info.id 'assignee')
+      }}
+    </span>
   </div>
 
   {{! Description}}
-  <div class="text">
+  <div class="text description">
     <label>{{t 'respond.remediationTasks.list.description'}}</label>
-    {{#if info.description}}
-      {{info.description}}
-    {{else}}
-      <i>{{t 'respond.remediationTasks.noDescription'}}</i>
-    {{/if}}
+    {{respond-common/editable-field
+      type='textarea'
+      value=(readonly info.description)
+      placeholder=(t 'respond.remediationTasks.noDescription')
+      onFieldChange=(action 'editableFieldChange' info.id 'description')
+    }}
   </div>
 
 </div>

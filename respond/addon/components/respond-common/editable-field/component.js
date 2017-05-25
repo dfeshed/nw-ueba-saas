@@ -53,7 +53,7 @@ export default Component.extend({
    */
   @computed('text', 'originalValue')
   hasChanges(text, originalValue) {
-    return originalValue !== null && text !== originalValue;
+    return text !== originalValue;
   },
 
   /**
@@ -108,7 +108,7 @@ export default Component.extend({
           this.setProperties({ text: originalValue, isEditing: false }); // revert callback provided
         });
       }
-      this.setProperties({ isEditing: false, originalValue: null });
+      this.setProperties({ isEditing: false, originalValue: text });
     },
     /**
      * Handler (blur) for when the user exits/blurs from the input by tabbing or clicking out of the input.

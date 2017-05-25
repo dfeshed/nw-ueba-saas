@@ -96,6 +96,18 @@ test('The field does not revert to non-editing mode if a blur occurs but changes
   });
 });
 
+test('The field does not revert to non-editing mode if a blur occurs but changes have been made, and when the there is a placeholder but no original value', function(assert) {
+  this.set('value', null);
+  this.set('placeholder', 'Elect your emperor');
+  this.render(hbs`{{respond-common/editable-field value=value placeholder=placeholder}}`);
+  this.$('.editable-field .editable-field__value').click();
+  this.$('.editable-field input').val('Hadrian').change();
+  this.$('.editable-field input').blur();
+  return wait().then(() => {
+    assert.equal(this.$('.editable-field input').length, 1, 'The editable field component does have an input (b/c it is still in edit mode)');
+  });
+});
+
 test('Clicking the cancel button cancels the changes', function(assert) {
   this.set('value', 'Julius Caesar');
   const editableFieldInputSelector = '.editable-field input';

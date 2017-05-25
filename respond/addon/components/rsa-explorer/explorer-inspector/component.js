@@ -9,6 +9,7 @@ import Component from 'ember-component';
 export default Component.extend({
   tagName: 'vbox',
   classNames: ['rsa-explorer-inspector'],
+  inspectorHeaderComponent: 'rsa-explorer/explorer-inspector/header',
   inspectorContentComponent: 'respond-common/stub',
   info: null,
   infoStatus: null,
