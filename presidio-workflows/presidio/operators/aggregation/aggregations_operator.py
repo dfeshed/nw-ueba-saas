@@ -1,10 +1,10 @@
-from airflow.operators.bash_operator import BashOperator
 from abc import ABCMeta, abstractmethod
 from airflow.utils.decorators import apply_defaults
 from presidio.utils.date_time import fixed_duration_strategy_to_string
+from presidio.operators.fixed_duration_operator import FixedDurationOperator
 
 
-class AggregationsOperator(BashOperator):
+class AggregationsOperator(FixedDurationOperator):
     """
     Runs an aggregations task (a JAR file) using a bash command.
     The c'tor accepts the task arguments that are constant throughout the
@@ -16,13 +16,6 @@ class AggregationsOperator(BashOperator):
     """
 
     __metaclass__ = ABCMeta
-
-    _BASH_COMMAND = ' '.join([
-        'java -jar {{params.jar_file_path}}',
-        'start_date={{execution_date.isoformat()}}',
-        'end_date={{(execution_date + params.fixed_duration_strategy).isoformat()}}',
-        'data_source={{params.data_source}}'
-    ])
 
     @apply_defaults
     def __init__(self, fixed_duration_strategy, data_source, task_id=None, *args, **kwargs):
@@ -44,20 +37,20 @@ class AggregationsOperator(BashOperator):
             self.get_task_name()
         )
 
-        # Create a dictionary that will be used when resolving the bash command
-        params = {
-            'jar_file_path': self.get_jar_file_path(),
-            'fixed_duration_strategy': self.fixed_duration_strategy,
-            'data_source': self.data_source
+        java_args = {
+            'data_source': self.data_source,
         }
 
-        # Merge the new params above with the old params and overwrite existing keys
-        kwargs['params'] = kwargs['params'] or {}
-        kwargs['params'].update(params)
+        jvm_args = {
+            'jar_path': self.get_jar_file_path(),
+            'main_class': self.get_main_class()
+        }
 
         super(AggregationsOperator, self).__init__(
             task_id=self.task_id,
-            bash_command=AggregationsOperator._BASH_COMMAND,
+            fixed_duration_strategy=self.fixed_duration_strategy,
+            jvm_args=jvm_args,
+            java_args=java_args,
             *args,
             **kwargs
         )
@@ -73,5 +66,12 @@ class AggregationsOperator(BashOperator):
     def get_jar_file_path(self):
         """
         :return: The full path to the JAR file that will be executed
+        """
+        pass
+
+    @abstractmethod
+    def get_main_class(self):
+        """
+        :return: The main class to the JAR file that will be executed
         """
         pass
