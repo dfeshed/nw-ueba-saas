@@ -29,6 +29,11 @@ const filesReducer = handleActions({
     linkToFileAction: payload.linkToFileAction
   }),
 
+  [ACTION_TYPES.CHANGE_RECON_VIEW]: (state) => ({
+    ...state,
+    ...filesInitialState
+  }),
+
   [ACTION_TYPES.FILES_RETRIEVE_SUCCESS]: (state, { payload }) => ({
     ...state,
     files: payload
