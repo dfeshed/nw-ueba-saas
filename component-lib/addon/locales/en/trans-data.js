@@ -706,6 +706,7 @@ export default {
     DOMAIN: 'Domain',
     noValues: 'Context Sources with no values: ',
     dsNotConfigured: 'Context Sources not configured: ',
+    total: 'Total',
     timeUnit: {
       allData: 'ALL DATA',
       HOUR: 'HOUR',
@@ -722,6 +723,15 @@ export default {
       WEEKS: 'WEEKS'
     },
     header: {
+      title: {
+        archer: 'Archer',
+        users: 'Active Directory',
+        alerts: 'Related Alerts',
+        incidents: 'Related Incidents',
+        lIST: 'Lists',
+        endpoint: 'Endpoint Details',
+        liveConnectIp: 'Live Connect'
+      },
       archer: 'Archer',
       overview: 'overview',
       iioc: 'IIOC',
@@ -791,7 +801,8 @@ export default {
       lastLogon: 'last Logon',
       lastLogonTimeStamp: 'last Logon TimeStamp',
       adUserID: 'ad User ID',
-      distinguishedName: 'Distinguished Name'
+      distinguishedName: 'Distinguished Name',
+      displayName: 'Display Name'
     },
     archer: {
       title: 'Archer',

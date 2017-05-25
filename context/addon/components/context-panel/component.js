@@ -17,7 +17,8 @@ const stateToComputed = ({ context }) => ({
   dataSources: context.dataSources,
   lookupData: context.lookupData,
   toolbar: context.toolbar,
-  errorMessage: context.errorMessage
+  errorMessage: context.errorMessage,
+  activeTabName: context.activeTabName
 });
 
 const dispatchToActions = {
@@ -50,6 +51,13 @@ const ContextComponent = Component.extend({
     this._initLCData(lookupData);
     this._endOfResponse();
     return true;
+  },
+
+  @computed('activeTabName')
+  headerTitle(activeTabName) {
+    if (activeTabName) {
+      return this.get('i18n').t(`context.header.title.${activeTabName.camelize()}`);
+    }
   },
 
   didReceiveAttrs() {

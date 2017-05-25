@@ -1,5 +1,7 @@
 {{#if needToDisplay}}
-  {{context-panel/ds-header dSDetails=dSDetails}}
+  {{#if dSDetails.headerRequired}}
+    {{context-panel/ds-header dSDetails=dSDetails}}
+  {{/if}}
   {{#if (gt getDataSourceData.length 0)}}
     <div class="rsa-context-panel__grid__box">
       {{#each getDataSourceData as |data index|}}
@@ -64,5 +66,8 @@
         {{/if}}
       {{/each}}
     </div>
+  {{/if}}
+  {{#if dSDetails.footerRequired}}
+    {{context-panel/ds-footer dSDetails=dSDetails}}
   {{/if}}
 {{/if}}

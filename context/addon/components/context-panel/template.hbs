@@ -8,8 +8,10 @@
     <hbox>
       <vbox xs='8'>
         <div class="rsa-context-panel-header__header-text">
-          <span> {{t 'context.title'}} {{t (concat 'context.' entityType) }} :</span>
-          {{entityId}}
+          {{#if headerTitle}}
+            <span> {{headerTitle}} :</span>
+            {{entityId}}
+          {{/if}}
         </div>
       </vbox>
       <vbox xs='4' class="rsa-context-panel-header__header-icons">

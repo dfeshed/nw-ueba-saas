@@ -119,10 +119,21 @@ radial-gradient(circle at 85% 85%, rsa-color(gray, darker, .1) 0, rsa-color(gray
     background-color: rsa-color(gray, darkest);
   }
 
+  &__footer {
+    height: 30px;
+    border-top: 1px solid rsa-color(black, null, $rsa-nearly-transparent);
+    background-color: rsa-color(gray, darker);
+    background-image: $panelBackgroundImage;
+
+    &__text {
+      position: absolute;
+    }
+  }
+
   &__endpoint{
     height: 100%;
     &__machines{
-      height: 250px;
+      height: 220px;
       overflow: hidden;
     }
     &__data-table{
@@ -158,7 +169,7 @@ radial-gradient(circle at 85% 85%, rsa-color(gray, darker, .1) 0, rsa-color(gray
     width: calc(100%- 4px);
     &__box {
       overflow: auto;
-      height:calc(100% - 60px);
+      height:calc(100% - 30px);
     }
     &__groupdata{
       padding-left: rsa-whitespace();
@@ -312,7 +323,7 @@ radial-gradient(circle at 85% 85%, rsa-color(gray, darker, .1) 0, rsa-color(gray
 
     &__module-details, &__iioc-details ,&__panel {
       width: 100%;
-      height: calc(100% - 80px);
+      height: calc(100% - 30px);
       margin: 0 rsa-whitespace(least) 0 rsa-whitespace(least);
 
       .rsa-data-table {

@@ -1,5 +1,7 @@
 {{#if displayTable}}
-  {{context-panel/ds-header contextData=contextData dSDetails=dSDetails}}
+  {{#if dSDetails.headerRequired}}
+    {{context-panel/ds-header contextData=contextData dSDetails=dSDetails}}
+  {{/if}}
   {{#if (gt  getDataSourceData.length 0)}}
     <div class="rsa-context-panel__context-data-table__panel">
       {{#rsa-data-table lazy=true items=getSortedData columnsConfig=dSDetails.columns}}
@@ -15,5 +17,8 @@
         {{/rsa-data-table/body}}
       {{/rsa-data-table}}
     </div>
+  {{/if}}
+  {{#if dSDetails.footerRequired}}
+    {{context-panel/ds-footer contextData=contextData dSDetails=dSDetails length=getDataSourceData.length}}
   {{/if}}
 {{/if}}

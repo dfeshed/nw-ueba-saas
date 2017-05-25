@@ -706,6 +706,7 @@ export default {
     DOMAIN: 'ja_Domain',
     noValues: 'ja_Context Sources with no values: ',
     dsNotConfigured: 'ja_Context Sources not configured: ',
+    total: 'ja_Total',
     timeUnit: {
       allData: 'ja_ALL DATA',
       HOUR: 'ja_HOUR',
@@ -722,6 +723,15 @@ export default {
       WEEKS: 'ja_WEEKS'
     },
     header: {
+      title: {
+        archer: 'ja_Archer',
+        users: 'ja_Active Directory',
+        alerts: 'ja_Related Alerts',
+        incidents: 'ja_Related Incidents',
+        lIST: 'ja_Lists',
+        endpoint: 'ja_Endpoint Details',
+        liveConnectIp: 'ja_Live Connect'
+      },
       archer: 'ja_Archer',
       overview: 'ja_overview',
       iioc: 'ja_IIOC',
@@ -775,7 +785,8 @@ export default {
       lastLogon: 'ja_lastLogon',
       lastLogonTimeStamp: 'ja_lastLogonTimeStamp',
       adUserID: 'ja_adUserID',
-      distinguishedName: 'ja_Distinguished Name'
+      distinguishedName: 'ja_Distinguished Name',
+      displayName: 'ja_Display Name'
     },
     archer: {
       title: 'ja_Archer',

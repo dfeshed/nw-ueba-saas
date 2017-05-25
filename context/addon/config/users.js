@@ -2,7 +2,8 @@ export default {
   class: 'rsa-context-panel__grid__ad-details',
   dataSourceGroup: 'Users',
   header: '',
-  timeWindowRequired: true,
+  headerRequired: false,
+  footerRequired: true,
   footer: '',
   title: 'context.ADdata.title',
   rows: [{
@@ -67,11 +68,10 @@ export default {
     cell: [{
       field: 'distinguishedName',
       title: 'context.ADdata.distinguishedName'
+    },
+    {
+      field: 'displayName',
+      title: 'context.ADdata.displayName'
     }]
-  }],
-  firstRow: {
-    class: 'rsa-context-panel__endpoint__host-details col-xs-2',
-    field: 'displayName',
-    title: 'context.hostSummary.riskScore'
-  }
+  }]
 };
