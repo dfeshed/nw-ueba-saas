@@ -17,7 +17,7 @@ def is_last_interval_of_fixed_duration(date_time, fixed_duration_strategy, inter
 
     if interval < fixed_duration_strategy.total_seconds():
         date = TimeService.datetime_to_epoch(date_time)
-        date_round = TimeService.round_time(date_time,
+        date_round = TimeService.floor_time(date_time,
                                             time_delta=fixed_duration_strategy)
         time = TimeService.datetime_to_epoch(date_round) + fixed_duration_strategy.total_seconds() - interval
 

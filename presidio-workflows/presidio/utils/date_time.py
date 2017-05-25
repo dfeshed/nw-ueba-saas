@@ -1,6 +1,5 @@
 from datetime import timedelta
 from presidio.utils.exceptions import UnsupportedFixedDurationStrategyError
-from presidio.utils.airflow.services.time_service import TimeService
 
 
 def fixed_duration_strategy_to_string(fixed_duration_strategy):

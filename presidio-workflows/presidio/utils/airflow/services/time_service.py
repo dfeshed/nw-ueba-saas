@@ -6,7 +6,7 @@ class TimeService(object):
         pass
 
     @staticmethod
-    def round_time(dt, time_delta):
+    def floor_time(dt, time_delta):
         """
         Round time down based on date_delta
         :param dt: date_time
@@ -15,8 +15,8 @@ class TimeService(object):
         :type time_delta: timedelta
         :return: datetime
         """
-        round_time = TimeService.datetime_to_epoch(dt) // time_delta.total_seconds() * time_delta.total_seconds()
-        return TimeService.epoch_to_datetime(round_time)
+        floor_time = TimeService.datetime_to_epoch(dt) // time_delta.total_seconds() * time_delta.total_seconds()
+        return TimeService.epoch_to_datetime(floor_time)
 
     @staticmethod
     def datetime_to_epoch(dt):

@@ -41,33 +41,15 @@ class FixedDurationOperator(JarOperator):
                                                   self.interval):
             FixedDurationOperator.skip_task(context)
         else:
-            start_date = TimeService.round_time(context['execution_date'], time_delta=self.fixed_duration_strategy)
-            end_date = self.get_end_date_value(start_date)
+            start_date = TimeService.floor_time(context['execution_date'], time_delta=self.fixed_duration_strategy)
+            end_date = TimeService.floor_time(context['execution_date'] + self.interval,
+                                              time_delta=self.fixed_duration_strategy)
             java_args = {
                 'start_date': start_date.isoformat(),
                 'end_date': end_date.isoformat()
             }
             super(FixedDurationOperator, self).update_java_args(java_args)
             super(FixedDurationOperator, self).execute(context)
-
-    def get_end_date_value(self, start_date):
-        """
-        
-        Compute end_date value according to interval and fixed_duration_strategy
-        :param start_date: 
-        :type start_date: datetime.datetime
-        :return: datetime.datetime
-        """
-        start_date = TimeService.datetime_to_epoch(start_date)
-        interval = self.interval.total_seconds()
-        fixed_duration_strategy = self.fixed_duration_strategy.total_seconds()
-
-        if interval < fixed_duration_strategy:
-            end_date = start_date + fixed_duration_strategy
-        else:
-            end_date = start_date + self.interval.total_seconds()
-
-        return TimeService.epoch_to_datetime(end_date)
 
     @staticmethod
     def skip_task(context):
