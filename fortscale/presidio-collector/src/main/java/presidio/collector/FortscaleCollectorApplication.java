@@ -1,7 +1,6 @@
 package presidio.collector;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import fortscale.utils.logging.Logger;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.task.configuration.EnableTask;
@@ -9,19 +8,20 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import presidio.collector.spring.CollectorConfig;
 
+import java.util.Arrays;
+
 
 @SpringBootApplication
-@ComponentScan(
-        excludeFilters = @ComponentScan.Filter(type = FilterType.REGEX, pattern = "fortscale.*"))
-//todo: add collectorconfig when we remove the component scan
+@ComponentScan( //only scan for spring-boot beans
+        excludeFilters = {
+                @ComponentScan.Filter(type = FilterType.REGEX, pattern = "fortscale.*"),
+                @ComponentScan.Filter(type = FilterType.REGEX, pattern = "presidio.*")})
 @EnableTask
 public class FortscaleCollectorApplication {
-
-
-    private static Logger log = LoggerFactory.getLogger(FortscaleCollectorApplication.class);
+    private static final Logger logger = Logger.getLogger(FortscaleCollectorApplication.class);
 
     public static void main(String[] args) {
-        log.info("shay");
+        logger.info("starting Collector with params " + Arrays.toString(args));
 
         SpringApplication.run(new Object[]{FortscaleCollectorApplication.class, CollectorConfig.class}, args);
     }
