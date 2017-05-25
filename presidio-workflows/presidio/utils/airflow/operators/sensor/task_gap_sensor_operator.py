@@ -30,16 +30,16 @@ class TaskGapSensorOperator(BaseSensorOperator):
             *args, **kwargs):
         super(TaskGapSensorOperator, self).__init__(*args, **kwargs)
 
-        self.execution_delta = execution_delta
-        self.external_dag_id = external_dag_id
-        self.external_task_id = external_task_id
+        self._execution_delta = execution_delta
+        self._external_dag_id = external_dag_id
+        self._external_task_id = external_task_id
 
     def poke(self, context):
         '''
                 
         @return: the number of tasks to wait for.
         '''
-        execution_date_lt = context['execution_date'] - self.execution_delta
+        execution_date_lt = context['execution_date'] - self._execution_delta
 
         logging.info(
             'Poking for the following'
@@ -56,8 +56,8 @@ class TaskGapSensorOperator(BaseSensorOperator):
 
         session = settings.Session()
         num_of_task_instances_to_wait_for = session.query(TI).filter(
-            TI.dag_id == self.external_dag_id,
-            TI.task_id == self.external_task_id,
+            TI.dag_id == self._external_dag_id,
+            TI.task_id == self._external_task_id,
             TI.end_date.is_(None),
             TI.execution_date < execution_date_lt,
         ).count()
@@ -66,3 +66,12 @@ class TaskGapSensorOperator(BaseSensorOperator):
         session.close()
 
         return num_of_task_instances_to_wait_for
+
+    def get_external_dag_id(self):
+        return self._external_dag_id
+
+    def get_external_task_id(self):
+        return self._external_task_id
+
+    def get_execution_delta(self):
+        return self._execution_delta

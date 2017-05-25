@@ -1,10 +1,10 @@
 from datetime import datetime
 
 import pytest
-from mock import MagicMock, Mock, ANY
+from mock import MagicMock
 
 
-from datetime import timedelta
+from datetime import datetime, timedelta
 
 from airflow import DAG
 

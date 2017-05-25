@@ -39,7 +39,7 @@ class TaskSensorService(object):
         :return: 
         '''
         task_id = '%s_%s_%s' % (gapped_task.task_id, task.task_id, 'sensor')
-        sensor = TaskGapSensorOperator(dag=task.dag, task_id=task_id, external_dag_id=task.dag_id,
+        sensor = TaskGapSensorOperator(dag=task.dag, task_id=task_id, external_dag_id=gapped_task.dag_id,
                                        external_task_id=gapped_task.task_id, execution_delta=execution_delta,
                                        poke_interval=poke_interval)
         task.set_upstream(sensor)
