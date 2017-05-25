@@ -7,7 +7,7 @@ from airflow.utils.decorators import apply_defaults
 from airflow import settings
 from datetime import datetime
 from airflow.exceptions import AirflowSkipException
-from presidio.utils.date_time import is_last_interval_of_fixed_duration
+from presidio.utils.airflow.services.fixed_duration_strategy import is_last_interval_of_fixed_duration
 
 
 class FixedDurationOperator(JarOperator):
