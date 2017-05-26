@@ -6,7 +6,7 @@ import ReconPager from 'recon/mixins/recon-pager';
 import StickyHeader from 'recon/mixins/sticky-header-mixin';
 import layout from './template';
 import { isLogEvent } from 'recon/reducers/meta/selectors';
-import { visibleText, contentRetrieved } from 'recon/reducers/text/selectors';
+import { visibleText, contentRetrieved, hasTextContent } from 'recon/reducers/text/selectors';
 
 const stateToComputed = ({ recon }) => ({
   dataIndex: recon.data.index,
@@ -14,7 +14,7 @@ const stateToComputed = ({ recon }) => ({
   contentRetrieved: contentRetrieved(recon),
   isLogEvent: isLogEvent(recon),
   metaToHighlight: recon.text.metaToHighlight,
-  textContent: recon.text.textContent,
+  hasTextContent: hasTextContent(recon),
   visibleText: visibleText(recon)
 });
 

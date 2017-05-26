@@ -5,6 +5,7 @@ const WAIT = 100;
 
 const batchCancellations = {};
 const dataHandlingCancellations = {};
+const dataQueue = {};
 
 export const BATCH_TYPES = {
   TEXT: 'TEXT',
@@ -55,10 +56,6 @@ export const batchDataHandler = ({
   // when the user returns to text view, data will be truncated/missing
   let abortDataHandling = false;
 
-  // FIFO queue containing all the data that needs batching.
-  // How this queue gets filled depends on the dataHandler provided.
-  const dataQueue = [];
-
   // Only one batch type at a time.
   // if a previous request exists for the same batchType,
   // then abort the handling/batching of the data
@@ -75,6 +72,10 @@ export const batchDataHandler = ({
     abortDataHandling = true;
   };
 
+  // FIFO queue containing all the data that needs batching.
+  // How this queue gets filled depends on the dataHandler provided.
+  dataQueue[batchType] = [];
+
   // this function gets called on a timer, it inspects the queue
   // and decides if any data should be batched
   const timeoutCallback = () => {
@@ -86,7 +87,7 @@ export const batchDataHandler = ({
 
     // If no more left, and the queue no longer being filled,
     // exit out of recursion
-    if (dataQueue.length === 0 && queueDoneFilling) {
+    if (dataQueue[batchType].length === 0 && queueDoneFilling) {
       // ended gracefully/normally, remove the cancellation callback
       if (batchCancellations[batchType]) {
         delete batchCancellations[batchType];
@@ -94,47 +95,58 @@ export const batchDataHandler = ({
       return;
     }
 
-    // If we got this far, we are not done processing data,
-    // but data queue can be empty waiting for more stuff,
-    // if so, do not bother running a batch
-    const queueLength = dataQueue.length;
-    // if there is nothing in the queue, will not be batching
-    // so check back quickly
-    let nextCallbackTime = 50;
-    if (queueLength > 0) {
-      let accum = 0;
-      let index = 0;
-      for (; index < queueLength; index++) {
-        accum += dataQueue[index][1];
-        // have we accumulated enough data to reach the batch size?
-        if (accum >= batchSize) {
-          break;
-        }
-      }
+    const nextBatchTime = _sendBatch(batchType, batchSize, batchCallback, batchGapTime);
 
-      // remove items from the queue, those are the next batch, ship em out
-      // need to grab first element from queue item as it contains data
-      // console.log('SENDING BATCH: size:', accum, ', count:', index + 1);
-      const nextBatch = dataQueue.splice(0, index + 1).map((r) => r[0]);
-      join(this, batchCallback, nextBatch);
-
-      // There is something in the queue, so will be batching,
-      // so run next batch at batchGapTime
-      nextCallbackTime = batchGapTime;
-    }
-
-    later(timeoutCallback, nextCallbackTime);
+    later(timeoutCallback, nextBatchTime);
   };
 
   join(this, timeoutCallback);
 
   return dataHandler(
-    dataQueue,
+    batchType,
     () => abortBatching,
     () => abortDataHandling,
     () => queueDoneFilling = true);
 };
 
+const _sendBatch = function(batchType, batchSize, batchCallback, batchGapTime) {
+  // if there is nothing in the queue, will not be batching,
+  // so set default callback time to something short
+  let nextCallbackTime = 50;
+
+  // If running this fucntion, we are not done processing data,
+  // but data queue can be empty waiting for more stuff,
+  // if so, do not bother running a batch
+  const queueLength = dataQueue[batchType].length;
+  if (queueLength > 0) {
+    let accum = 0;
+    let index = 0;
+    for (; index < queueLength; index++) {
+      // 2nd element in dataQueue array is the size, add it up
+      accum += dataQueue[batchType][index][1];
+
+      // have we accumulated enough data to reach the batch size?
+      if (accum >= batchSize) {
+        break;
+      }
+    }
+
+    // remove items from the queue, those are the next batch, ship em out,
+    // need to grab first element from each item as it contains the data
+    // console.log('SENDING BATCH: size:', accum, ', count:', index + 1);
+    const nextBatch = dataQueue[batchType].splice(0, index + 1).map((r) => r[0]);
+    join(this, batchCallback, nextBatch);
+
+    // We sent a batch, so need to wait until batchGapTime
+    // before sending another
+    nextCallbackTime = batchGapTime;
+  }
+
+  // Return duration of timeout for next callback
+  return nextCallbackTime;
+};
+
+// An exported means to nuke any batching that is under way
 export const killAllBatching = () => {
   Object.keys(BATCH_TYPES).forEach(_abortBatchingIfRunning);
 };
@@ -173,18 +185,18 @@ const _abortHandlingIfRunning = (batchType) => {
 // incorporate any truncation length since
 // we know we can render faster once character
 // truncation is done
-const _pushDataToQueue = (data, dataQueue) => {
+const _pushDataToQueue = (data, batchType) => {
   data.forEach((d) => {
     const size = JSON.stringify(d).length;
-    dataQueue.push([d, size]);
+    dataQueue[batchType].push([d, size]);
   });
 };
 
 // Bulk data handler. Allows for just shoving all the data
 // into the batching queue all at once.
 const _bulkDataHandler = () => {
-  return (dataQueue) => {
-    return (data) => _pushDataToQueue(data, dataQueue);
+  return (batchType) => {
+    return (data) => _pushDataToQueue(data, batchType);
   };
 };
 
@@ -198,7 +210,7 @@ const _bulkDataHandler = () => {
 //   from the API and after it has been run through the selector
 // to find the data inside the API response
 const _apiDataHandler = (selector, dispatchData) => {
-  return (dataQueue, abortBatching, abortHandling, done) => {
+  return (batchType, abortBatching, abortHandling, done) => {
     return (response) => {
       // If data handling is cancelled, that means we have abandoned
       // the need to process this data, so just dump it.
@@ -214,7 +226,7 @@ const _apiDataHandler = (selector, dispatchData) => {
 
         // If no longer batching data, no need to push to queue
         if (!abortBatching()) {
-          _pushDataToQueue(data, dataQueue);
+          _pushDataToQueue(data, batchType);
         }
       }
 

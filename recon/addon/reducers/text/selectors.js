@@ -7,6 +7,11 @@ const metaToHighlight = (recon) => recon.text.metaToHighlight;
 const isRequestShown = (recon) => recon.visuals.isRequestShown;
 const isResponseShown = (recon) => recon.visuals.isResponseShown;
 
+export const hasTextContent = createSelector(
+  [textContent],
+  (textContent) => textContent && textContent.length > 0
+);
+
 // textContent can at different times be null, an empty array
 // or a populated array. An empty array means the event has
 // no text content. If textContent is null, then it is still
