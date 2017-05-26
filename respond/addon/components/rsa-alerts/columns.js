@@ -3,7 +3,7 @@ export default [
   {
     title: 'respond.alerts.list.select',
     class: 'rsa-form-row-checkbox',
-    width: '10%',
+    width: '30px',
     dataType: 'checkbox',
     componentClass: 'rsa-form-checkbox',
     disableSort: true
@@ -17,13 +17,13 @@ export default [
   {
     field: 'alert.severity',
     title: 'respond.alerts.list.severity',
-    width: '10%',
+    width: '90px',
     dataType: 'number'
   },
   {
     field: 'alert.name',
     title: 'respond.alerts.list.name',
-    width: '30%',
+    width: '40%',
     dataType: 'text'
   },
   {
@@ -35,14 +35,19 @@ export default [
   {
     field: 'alert.numEvents',
     title: 'respond.alerts.list.numEvents',
-    width: '10%',
+    width: '120px',
     dataType: 'number'
   },
   {
     field: 'incidentId',
     title: 'respond.alerts.list.incidentId',
-    width: '15%',
+    width: '120px',
     dataType: 'text',
     disableSort: true
+  },
+  {
+    field: '',
+    title: 'empty',
+    width: 'auto'
   }
 ];

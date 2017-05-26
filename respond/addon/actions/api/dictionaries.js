@@ -65,7 +65,7 @@ export default {
    * Currently returns a promise auto-resolved to a (hardcoded) object whose keys are the three different possible
    * targetQueues, and for each key the array of possible remediation types associated with that target queue.
    *
-   * It is expected this this method will eventually make a websocket server call
+   * It is expected that this method will eventually make a websocket server call
    * @method getAllRemediationTypes
    * @public
    * @return {Promise}
@@ -85,5 +85,31 @@ export default {
       GRC,
       CONTENT_IMPROVEMENT
     });
+  },
+
+  /**
+   * Currently returns an auto-resolved promise for a set of hardcoded alert type values.
+   *
+   * It is expected that this method will eventually make a websocket server call
+   * @method getAllAlertTypes
+   * @public
+   * @returns {Promise}
+   */
+  getAllAlertTypes() {
+    const alertTypes = ['Log', 'Instant IOC', 'Network'];
+    return RSVP.resolve(alertTypes);
+  },
+
+  /**
+   * Currently returns an auto-resolved promise for a set of hardcoded alert source values.
+   *
+   * It is expected that this method will eventually make a websocket server call
+   * @method getAllAlertSources
+   * @public
+   * @returns {Promise}
+   */
+  getAllAlertSources() {
+    const alertSources = ['ECAT', 'Event Stream Analysis', 'Malware Analysis', 'Reporting Engine'];
+    return RSVP.resolve(alertSources);
   }
 };

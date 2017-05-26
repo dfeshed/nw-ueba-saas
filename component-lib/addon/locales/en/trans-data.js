@@ -556,13 +556,27 @@ export default {
         name: 'Name',
         status: 'Status',
         source: 'Source',
-        incidentId: 'Incident ID'
-      }
+        incidentId: 'Incident ID',
+        partOfIncident: 'Part of Incident',
+        type: 'Type'
+      },
+      notAssociatedWithIncident: '(None)'
     },
     alert: {
       status: {
         GROUPED_IN_INCIDENT: 'Grouped In Incident',
         NORMALIZED: 'Normalized'
+      },
+      type: {
+        Log: 'Log',
+        Network: 'Network',
+        'Instant IOC': 'Instant IOC'
+      },
+      source: {
+        ECAT: 'Endpoint',
+        'Event Stream Analysis': 'Event Stream Analysis',
+        'Malware Analysis': 'Malware Analysis',
+        'Reporting Engine': 'Reporting Engine'
       }
     },
     incident: {

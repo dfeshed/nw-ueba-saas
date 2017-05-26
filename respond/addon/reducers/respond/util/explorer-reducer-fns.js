@@ -85,11 +85,14 @@ const fetchItemsStreamInitialized = (state, { payload }) => ({
   stopItemsStream: payload
 });
 
-const fetchItemsStreamBatchRetrieved = (state, { payload: { data, meta } }) => ({
-  ...state,
-  items: [...state.items, ...data],
-  itemsStatus: meta.complete ? 'complete' : 'streaming'
-});
+const fetchItemsStreamBatchRetrieved = (state, { payload: { data, meta } }) => {
+  data = data || [];
+  return {
+    ...state,
+    items: [...state.items, ...data],
+    itemsStatus: meta.complete ? 'complete' : 'streaming'
+  };
+};
 
 const fetchItemsStreamCompleted = (state) => ({
   ...state,

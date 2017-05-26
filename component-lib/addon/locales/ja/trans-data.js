@@ -556,13 +556,27 @@ export default {
         name: 'ja_Name',
         status: 'ja_Status',
         source: 'ja_Source',
-        incidentId: 'ja_Incident ID'
-      }
+        incidentId: 'ja_Incident ID',
+        partOfIncident: 'ja_Part of Incident',
+        type: 'ja_Type'
+      },
+      notAssociatedWithIncident: 'ja_(None)'
     },
     alert: {
       status: {
         GROUPED_IN_INCIDENT: 'ja_Grouped In Incident',
         NORMALIZED: 'ja_Normalized'
+      },
+      type: {
+        Log: 'ja_Log',
+        Network: 'ja_Network',
+        'Instant IOC': 'ja_Instant IOC'
+      },
+      source: {
+        ECAT: 'ja_Endpoint',
+        'Event Stream Analysis': 'ja_Event Stream Analysis',
+        'Malware Analysis': 'ja_Malware Analysis',
+        'Reporting Engine': 'ja_Reporting Engine'
       }
     },
     incident: {

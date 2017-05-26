@@ -20,7 +20,7 @@
     </label>
   {{/each}}
 </section>
-<section class="filter-option status-filter">
+<section class="filter-option escalated-filter">
   <h2>{{ t 'respond.remediationTasks.list.escalated'}}</h2>
   {{#each escalationTypes as |escalationType|}}
     <label class="rsa-form-checkbox-label {{if (contains escalationType escalatedFilters) 'checked'}}">

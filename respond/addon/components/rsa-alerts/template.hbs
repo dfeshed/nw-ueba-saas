@@ -24,13 +24,16 @@
           {{rsa-form-checkbox checked=(contains item.id explorer.instance.itemsSelected) change=(action explorer.select item)}}
         </label>
       {{else if (eq column.field "name")}}
+        {{! not used currently until alert route created - will be alert.name }}
         <div class="alert-name">
           {{#link-to "alert" item.id}}
             {{get item column.field}}
           {{/link-to}}
         </div>
-      {{ else if (eq column.field "status")}}
-        {{t (concat 'respond.alert.status.' (get item column.field)) }}
+      {{ else if (eq column.field 'incidentId')}}
+        <span>{{#link-to 'incident' item.incidentId}}{{item.incidentId}}{{/link-to}}</span>
+      {{ else if (eq column.field "alert.source")}}
+        {{t (concat 'respond.alert.source.' (get item column.field)) }}
       {{else}}
         {{get item column.field}}
       {{/if}}
@@ -38,6 +41,9 @@
   {{/explorer.table}}
 
   {{#explorer.inspector inspectorContentComponent='rsa-alerts/alert-overview' as |inspector|}}
+    {{#inspector.inspectorHeader as |info|}}
+      <div class="name">{{info.alert.name}}</div>
+    {{/inspector.inspectorHeader}}
     {{inspector.inspectorContent}}
   {{/explorer.inspector}}
 {{/rsa-explorer}}

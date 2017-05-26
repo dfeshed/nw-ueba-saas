@@ -1,0 +1,40 @@
+<section class="filter-option alert-type-filter">
+  <h2>{{ t 'respond.alerts.list.type'}}</h2>
+  {{#each alertTypes as |alertType|}}
+    <label class="rsa-form-checkbox-label {{if (contains alertType alertTypeFilters) 'checked'}}">
+      {{rsa-form-checkbox
+        checked=(contains alertType alertTypeFilters )
+        change=(action 'toggleTypeFilter' alertType)}}
+      <span>{{t (concat 'respond.alert.type.' alertType)}}</span>
+    </label>
+  {{/each}}
+</section>
+<section class="filter-option alert-source-filter">
+  <h2>{{ t 'respond.alerts.list.source'}}</h2>
+  {{#each alertSources as |alertSource|}}
+    <label class="rsa-form-checkbox-label {{if (contains alertSource alertSourceFilters) 'checked'}}">
+      {{rsa-form-checkbox
+        checked=(contains alertSource alertSourceFilters )
+        change=(action 'toggleSourceFilter' alertSource)}}
+      <span>{{t (concat 'respond.alert.source.' alertSource)}}</span>
+    </label>
+  {{/each}}
+</section>
+<section class="filter-option severity-filter">
+  <h2>{{ t 'respond.alerts.list.severity'}}</h2>
+  {{range-slider
+    start=severityFilter
+    step=1
+    on-change="severityRangeChanged"}}
+</section>
+<section class="filter-option part-of-incident-filter">
+  <h2>{{ t 'respond.alerts.list.partOfIncident'}}</h2>
+  {{#each partOfIncidentTypes as |partOfIncidentType|}}
+    <label class="rsa-form-checkbox-label {{if (contains partOfIncidentType partOfIncidentFilters) 'checked'}}">
+      {{rsa-form-checkbox
+        checked=(contains partOfIncidentType partOfIncidentFilters )
+        change=(action 'toggleIsPartOfIncidentFilter' partOfIncidentType)}}
+      <span>{{t (concat 'respond.common.' partOfIncidentType)}}</span>
+    </label>
+  {{/each}}
+</section>

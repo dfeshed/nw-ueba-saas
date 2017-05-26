@@ -125,6 +125,40 @@ const getAllRemediationTypes = () => {
   };
 };
 
+/**
+ * Action creator for fetching all known alert types
+ * @method getAllAlertTypes
+ * @public
+ * @returns {Promise}
+ */
+const getAllAlertTypes = () => {
+  return {
+    type: ACTION_TYPES.FETCH_ALERT_TYPES,
+    promise: dictionaries.getAllAlertTypes(),
+    meta: {
+      onSuccess: (response) => Logger.debug(ACTION_TYPES.FETCH_ALERT_TYPES, response),
+      onFailure: (response) => ErrorHandlers.handleContentRetrievalError(response, 'alert types')
+    }
+  };
+};
+
+/**
+ * Action creator for fetching all known alert sources
+ * @method getAllAlertSources
+ * @public
+ * @returns {Promise}
+ */
+const getAllAlertSources = () => {
+  return {
+    type: ACTION_TYPES.FETCH_ALERT_SOURCES,
+    promise: dictionaries.getAllAlertSources(),
+    meta: {
+      onSuccess: (response) => Logger.debug(ACTION_TYPES.FETCH_ALERT_SOURCES, response),
+      onFailure: (response) => ErrorHandlers.handleContentRetrievalError(response, 'alert sources')
+    }
+  };
+};
+
 export {
   getAllUsers,
   getAllEnabledUsers,
@@ -132,5 +166,7 @@ export {
   getAllStatusTypes,
   getAllCategories,
   getAllRemediationStatusTypes,
-  getAllRemediationTypes
+  getAllRemediationTypes,
+  getAllAlertTypes,
+  getAllAlertSources
 };

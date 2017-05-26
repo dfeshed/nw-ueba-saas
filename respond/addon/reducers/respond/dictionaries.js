@@ -7,7 +7,9 @@ const initialState = {
   statusTypes: [],
   categoryTags: [],
   remediationStatusTypes: [],
-  remediationTypes: null
+  remediationTypes: null,
+  alertTypes: [],
+  alertSources: []
 };
 
 export default reduxActions.handleActions({
@@ -47,6 +49,22 @@ export default reduxActions.handleActions({
       start: (s) => ({ ...s, remediationTypes: null }),
       failure: (s) => ({ ...s, remediationTypes: null }),
       success: (s) => ({ ...s, remediationTypes: action.payload }) }
+    )
+  ),
+
+  [ACTION_TYPES.FETCH_ALERT_TYPES]: (state, action) => (
+    handle(state, action, {
+      start: (s) => ({ ...s, alertTypes: [] }),
+      failure: (s) => ({ ...s, alertTypes: [] }),
+      success: (s) => ({ ...s, alertTypes: action.payload }) }
+    )
+  ),
+
+  [ACTION_TYPES.FETCH_ALERT_SOURCES]: (state, action) => (
+    handle(state, action, {
+      start: (s) => ({ ...s, alertSources: [] }),
+      failure: (s) => ({ ...s, alertSources: [] }),
+      success: (s) => ({ ...s, alertSources: action.payload }) }
     )
   )
 }, initialState);

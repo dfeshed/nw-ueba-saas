@@ -6,12 +6,18 @@
 
   <div class="metadata">
     <label>{{t 'respond.alerts.list.incidentId'}}:</label>
-    <span>{{#link-to "incident" info.incidentId}}{{info.incidentId}}{{/link-to}}</span>
+    <span>
+      {{#if info.incidentId}}
+        {{#link-to "incident" info.incidentId}}{{info.incidentId}}{{/link-to}}
+      {{else}}
+        {{t 'respond.alerts.notAssociatedWithIncident'}}
+      {{/if}}
+    </span>
   </div>
 
   <div class="metadata">
     <label>{{t 'respond.alerts.list.receivedTime'}}:</label>
-    <span>{{rsa-content-datetime timestamp=info.created displayTime=true displayMilliseconds=false}}</span>
+    <span>{{rsa-content-datetime timestamp=info.receivedTime displayTime=true displayMilliseconds=false}}</span>
   </div>
 
   <div class="metadata">

@@ -158,23 +158,26 @@ export default Component.extend({
       this.sendAction('toggleCustomDate');
     },
 
-    onChangeTimeframe(created) {
-      this.sendAction('updateFilter', { created });
+    onChangeTimeframe(timeframe) {
+      const dateFilterField = this.get('defaultDateFilterField') || 'created';
+      this.sendAction('updateFilter', { [dateFilterField]: timeframe });
     },
 
     customStartDateChanged(date) {
+      const dateFilterField = this.get('defaultDateFilterField') || 'created';
       const start = date ? this._toUTCTimestamp(date) : null;
       const end = this.get('timeframeFilter.end');
       this.sendAction('updateFilter', {
-        created: { start, end }
+        [dateFilterField]: { start, end }
       });
     },
 
     customEndDateChanged(date) {
+      const dateFilterField = this.get('defaultDateFilterField') || 'created';
       const end = date ? this._toUTCTimestamp(date) : null;
       const start = this.get('timeframeFilter.start');
       this.sendAction('updateFilter', {
-        created: { start, end }
+        [dateFilterField]: { start, end }
       });
     }
   }

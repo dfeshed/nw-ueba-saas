@@ -45,7 +45,8 @@ const stateToComputed = function(state) {
     timeframeFilter: itemsFilters[stateSpace.defaultDateFilterField],
     isSelectAll: stateSpace.isSelectAll,
     sortField: stateSpace.sortField,
-    isSortDescending: stateSpace.isSortDescending
+    isSortDescending: stateSpace.isSortDescending,
+    defaultDateFilterField: stateSpace.defaultDateFilterField
   };
 };
 
