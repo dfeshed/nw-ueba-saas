@@ -98,6 +98,9 @@ export const batchDataHandler = ({
     // but data queue can be empty waiting for more stuff,
     // if so, do not bother running a batch
     const queueLength = dataQueue.length;
+    // if there is nothing in the queue, will not be batching
+    // so check back quickly
+    let nextCallbackTime = 50;
     if (queueLength > 0) {
       let accum = 0;
       let index = 0;
@@ -114,9 +117,13 @@ export const batchDataHandler = ({
       // console.log('SENDING BATCH: size:', accum, ', count:', index + 1);
       const nextBatch = dataQueue.splice(0, index + 1).map((r) => r[0]);
       join(this, batchCallback, nextBatch);
+
+      // There is something in the queue, so will be batching,
+      // so run next batch at batchGapTime
+      nextCallbackTime = batchGapTime;
     }
 
-    later(timeoutCallback, batchGapTime);
+    later(timeoutCallback, nextCallbackTime);
   };
 
   join(this, timeoutCallback);
