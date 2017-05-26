@@ -23,8 +23,7 @@
         <label class="rsa-form-checkbox-label {{if (contains item.id explorer.instance.itemsSelected) 'checked'}}">
           {{rsa-form-checkbox checked=(contains item.id explorer.instance.itemsSelected) change=(action explorer.select item)}}
         </label>
-      {{else if (eq column.field "name")}}
-        {{! not used currently until alert route created - will be alert.name }}
+      {{else if (eq column.field "alert.name")}}
         <div class="alert-name">
           {{#link-to "alert" item.id}}
             {{get item column.field}}
