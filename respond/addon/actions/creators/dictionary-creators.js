@@ -8,8 +8,25 @@ const {
 } = Ember;
 
 /**
- * Action creator for fetching all known Users
- * @method getAllUsers
+ * Action creator for fetching all known "enabled" Users
+ * @method getAllEnabledUsers
+ * @public
+ * @returns {Object}
+ */
+const getAllEnabledUsers = () => {
+  return {
+    type: ACTION_TYPES.FETCH_ALL_ENABLED_USERS,
+    promise: users.getAllEnabledUsers(),
+    meta: {
+      onSuccess: (response) => Logger.debug(ACTION_TYPES.FETCH_ALL_ENABLED_USERS, response),
+      onFailure: (response) => ErrorHandlers.handleContentRetrievalError(response, 'users')
+    }
+  };
+};
+
+/**
+ * Action creator for fetching all known Users (including disabled users)
+ * @method getAllEnabledUsers
  * @public
  * @returns {Object}
  */
@@ -110,6 +127,7 @@ const getAllRemediationTypes = () => {
 
 export {
   getAllUsers,
+  getAllEnabledUsers,
   getAllPriorityTypes,
   getAllStatusTypes,
   getAllCategories,

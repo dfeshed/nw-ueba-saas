@@ -6,6 +6,7 @@ import columns from './columns';
 const dispatchToActions = (dispatch) => {
   return {
     bootstrap() {
+      dispatch(DictionaryActions.getAllUsers());
       dispatch(DictionaryActions.getAllPriorityTypes());
       dispatch(DictionaryActions.getAllRemediationStatusTypes());
       dispatch(DictionaryActions.getAllRemediationTypes());

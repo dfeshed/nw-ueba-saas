@@ -9,7 +9,7 @@ const stateToComputed = (state) => {
   return {
     priorityTypes: dictionaries.priorityTypes,
     statusTypes: dictionaries.statusTypes,
-    users: users.users,
+    users: users.enabledUsers,
     hasSelectedClosedIncidents: hasSelectedClosedIncidents(state)
   };
 };
@@ -19,7 +19,7 @@ const dispatchToActions = (dispatch) => {
     bootstrap() {
       dispatch(DictionaryActions.getAllPriorityTypes());
       dispatch(DictionaryActions.getAllStatusTypes());
-      dispatch(DictionaryActions.getAllUsers());
+      dispatch(DictionaryActions.getAllEnabledUsers());
       dispatch(DictionaryActions.getAllCategories());
     }
   };

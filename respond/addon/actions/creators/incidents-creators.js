@@ -228,7 +228,7 @@ const initializeIncident = (incidentId) => {
 
       // If we haven't already fetched users (say, from incidents route), fetch now
       if (!state.respond.users.usersStatus) {
-        dispatch(DictionaryCreators.getAllUsers());
+        dispatch(DictionaryCreators.getAllEnabledUsers());
       }
       if (!state.respond.dictionaries.priorityTypes.length) {
         dispatch(DictionaryCreators.getAllPriorityTypes());

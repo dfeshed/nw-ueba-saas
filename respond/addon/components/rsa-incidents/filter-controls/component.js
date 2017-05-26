@@ -19,7 +19,7 @@ const stateToComputed = (state) => {
     statusTypes,
     categoryFilters: itemsFilters['categories.parent'],
     categoryTags,
-    users: users.users
+    users: users.enabledUsers
   };
 };
 

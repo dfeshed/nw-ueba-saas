@@ -21,7 +21,7 @@ const stateToComputed = (state) => {
     storyEventCount: storyEventCount(state),
     priorityTypes: dictionaries.priorityTypes,
     statusTypes: dictionaries.statusTypes,
-    users: users.users
+    users: users.enabledUsers
   };
 };
 

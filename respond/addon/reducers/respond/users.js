@@ -3,20 +3,34 @@ import reduxActions from 'redux-actions';
 import { handle } from 'redux-pack';
 
 const initialState = {
-  // incident details
-  users: [],
+  // all enabled users
+  enabledUsers: [],
 
   // either 'wait', 'error' or 'completed'
-  usersStatus: null
+  enabledUsersStatus: null,
+
+  // all users (including enabled and disabled)
+  allUsers: [],
+
+  // either 'wait', 'error' or 'completed'
+  allUsersStatus: null
 };
 
 export default reduxActions.handleActions({
 
+  [ACTION_TYPES.FETCH_ALL_ENABLED_USERS]: (state, action) => {
+    return handle(state, action, {
+      start: (s) => ({ ...s, enabledUsers: [], enabledUsersStatus: 'wait' }),
+      failure: (s) => ({ ...s, enabledUsersStatus: 'error' }),
+      success: (s) => ({ ...s, enabledUsers: action.payload.data, enabledUsersStatus: 'completed' })
+    });
+  },
+
   [ACTION_TYPES.FETCH_ALL_USERS]: (state, action) => {
     return handle(state, action, {
-      start: (s) => ({ ...s, users: [], usersStatus: 'wait' }),
-      failure: (s) => ({ ...s, usersStatus: 'error' }),
-      success: (s) => ({ ...s, users: action.payload.data, usersStatus: 'completed' })
+      start: (s) => ({ ...s, allUsers: [], allUsersStatus: 'wait' }),
+      failure: (s) => ({ ...s, allUsersStatus: 'error' }),
+      success: (s) => ({ ...s, allUsers: action.payload.data, allUsersStatus: 'completed' })
     });
   }
 

@@ -31,3 +31,13 @@
     </label>
   {{/each}}
 </section>
+<section class="filter-option createdby-filter">
+  <h2>{{ t 'respond.remediationTasks.list.createdBy'}}</h2>
+  {{#power-select-multiple
+    options=(readonly users)
+    selected=selectedCreatedBys
+    searchField="name"
+    onchange=(action "createdByChanged") as |users|}}
+    {{users.name}}
+  {{/power-select-multiple}}
+</section>
