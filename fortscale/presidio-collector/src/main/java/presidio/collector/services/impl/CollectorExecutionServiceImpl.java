@@ -1,13 +1,13 @@
 package presidio.collector.services.impl;
 
 
+import fortscale.domain.core.AbstractAuditableDocument;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import presidio.collector.Datasource;
 import presidio.collector.services.api.CollectorExecutionService;
 import presidio.collector.services.api.FetchService;
-import presidio.sdk.api.domain.AbstractRecordDocument;
-import presidio.sdk.api.domain.DlpFileRecordDocumentBuilder;
+import presidio.sdk.api.domain.DlpFileDataDocument;
 import presidio.sdk.api.services.CoreManagerSdk;
 
 import java.util.ArrayList;
@@ -68,7 +68,7 @@ public class CollectorExecutionServiceImpl implements CollectorExecutionService 
             return;
         }
 
-        final List<AbstractRecordDocument> createdDocuments = createDocuments(dataSource, fetchedDocuments);
+        final List<AbstractAuditableDocument> createdDocuments = createDocuments(dataSource, fetchedDocuments);
 
         final boolean storeSuccessful = store(createdDocuments);
 
@@ -87,20 +87,19 @@ public class CollectorExecutionServiceImpl implements CollectorExecutionService 
         return fetchedRecords;
     }
 
-    private boolean store(List<AbstractRecordDocument> fetchedDocuments) {
+    private boolean store(List<AbstractAuditableDocument> fetchedDocuments) {
         logger.info("Start store");
         final boolean storeSuccessful = coreManagerSdk.store(fetchedDocuments);
         logger.info("finish store");
         return storeSuccessful;
     }
 
-    private List<AbstractRecordDocument> createDocuments(Datasource datasource, List<String[]> records) throws Exception {
-        List<AbstractRecordDocument> createdDocuments = new ArrayList<>();
+    private List<AbstractAuditableDocument> createDocuments(Datasource datasource, List<String[]> records) throws Exception {
+        List<AbstractAuditableDocument> createdDocuments = new ArrayList<>();
         switch (datasource) { //todo: we can use a document factory instead of switch case
             case DLPFILE: {
-                DlpFileRecordDocumentBuilder dlpFileRecordDocumentBuilder = new DlpFileRecordDocumentBuilder();
                 for (String[] record : records) {
-                    createdDocuments.add(dlpFileRecordDocumentBuilder.createDlpFileRecordDocument(record));
+                    createdDocuments.add(new DlpFileDataDocument(record));
                 }
                 break;
             }

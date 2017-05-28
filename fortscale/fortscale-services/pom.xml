@@ -65,10 +65,6 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>com.cloudera.api</groupId>
-			<artifactId>cloudera-manager-api</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>${project.parent.groupId}</groupId>
 			<artifactId>fortscale-global-config</artifactId>
 			<version>${project.parent.version}</version>
