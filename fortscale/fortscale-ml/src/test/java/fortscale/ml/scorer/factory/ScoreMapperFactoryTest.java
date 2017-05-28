@@ -1,7 +1,10 @@
 package fortscale.ml.scorer.factory;
 
 import fortscale.common.event.Event;
+import fortscale.common.feature.extraction.FeatureExtractService;
 import fortscale.domain.feature.score.FeatureScore;
+import fortscale.ml.model.ModelConfService;
+import fortscale.ml.model.cache.ModelsCacheService;
 import fortscale.ml.scorer.ScoreMapper;
 import fortscale.ml.scorer.ScoreMapping;
 import fortscale.ml.scorer.Scorer;
@@ -13,6 +16,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -21,6 +25,15 @@ import java.util.HashMap;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath*:META-INF/spring/scorer-factory-tests-context.xml"})
 public class ScoreMapperFactoryTest {
+
+    @MockBean
+    ModelConfService modelConfService;
+
+    @MockBean
+    ModelsCacheService modelCacheService;
+
+    @MockBean
+    FeatureExtractService featureExtractService;
 
     @Autowired
     private ScoreMapperFactory scoreMapperFactory;

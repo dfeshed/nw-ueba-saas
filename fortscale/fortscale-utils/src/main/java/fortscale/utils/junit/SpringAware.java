@@ -7,8 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.test.context.TestContextManager;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.lang.reflect.Method;
 import java.util.Objects;
 
@@ -47,7 +45,7 @@ public class SpringAware extends TestWatcher {
 
   private final TestContextManager testContextManager;
 
-  private SpringAware(@Nonnull final Class<?> testClass) {
+  private SpringAware( final Class<?> testClass) {
     testContextManager = new TestContextManager(testClass);
   }
 
@@ -55,12 +53,10 @@ public class SpringAware extends TestWatcher {
     return new SpringAware(testClass);
   }
 
-  @Nonnull
   private static Object getTestInstance() {
     return Objects.requireNonNull(TEST_INSTANCE.get(), "Test Initialization failure: Test Instance unknown.");
   }
 
-  @Nonnull
   private static Method getTestMethod() {
     return Objects.requireNonNull(TEST_METHOD.get(), "Test Method undetermined. Wrong execution order?");
   }
@@ -106,7 +102,7 @@ public class SpringAware extends TestWatcher {
     }
   }
 
-  private void afterTest(@Nullable final Throwable e, final Description description) {
+  private void afterTest( final Throwable e, final Description description) {
     if (description.isTest()) {
       try {
         testContextManager.afterTestMethod(getTestInstance(), getTestMethod(), e);
