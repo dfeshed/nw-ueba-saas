@@ -2,10 +2,17 @@ package fortscale.monitoring.external.stats.collector.impl.linux.blockDevice;
 
 import fortscale.monitoring.external.stats.collector.impl.ExternalStatsCollectorMetrics;
 import org.junit.Assert;
+import org.junit.Assume;
+import org.junit.Before;
 import org.junit.Test;
 
 
 public class LinuxDeviceCollectorTest {
+
+    @Before
+    public void beforeMethod() {
+        Assume.assumeFalse(System.getProperty("os.name").toLowerCase().startsWith("win"));
+    }
 
     @Test
     public void shouldCollectSDADeviceStats()

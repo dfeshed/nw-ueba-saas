@@ -3,11 +3,18 @@ package fortscale.monitoring.external.stats.collector.impl.linux.fileSystem;
 
 import fortscale.monitoring.external.stats.collector.impl.ExternalStatsCollectorMetrics;
 import org.junit.Assert;
+import org.junit.Assume;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Map;
 
 public class LinuxFileSystemCollectorTest {
+
+    @Before
+    public void beforeMethod() {
+        Assume.assumeFalse(System.getProperty("os.name").toLowerCase().startsWith("win"));
+    }
 
     @Test
     public void shouldCollectHomeDirDiskStats()
