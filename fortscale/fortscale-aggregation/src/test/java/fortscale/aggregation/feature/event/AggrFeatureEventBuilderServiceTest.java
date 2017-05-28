@@ -23,7 +23,6 @@ import java.util.Map;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-
 /**
  * Created by amira on 01/10/2015.
  */
