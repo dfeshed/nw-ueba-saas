@@ -8,11 +8,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import fortscale.aggregation.DataSourcesSyncTimer;
 import org.junit.Assert;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 import fortscale.aggregation.feature.bucket.FeatureBucketConf;
 import fortscale.aggregation.feature.bucket.FeatureBucketsService;
@@ -20,13 +20,19 @@ import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategy;
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
 import fortscale.aggregation.feature.bucket.strategy.FixedDurationFeatureBucketStrategyFactory;
 import fortscale.aggregation.feature.bucket.strategy.StrategyJson;
-import junitparams.JUnitParamsRunner;
 import net.minidev.json.JSONObject;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringRunner;
 
-@RunWith(JUnitParamsRunner.class)
+@RunWith(SpringRunner.class)
+@ContextConfiguration(locations = {"classpath*:META-INF/spring/aggr-feature-event-builder-context.xml"})
 public class AggrFeatureEventDataTest {
-	
-	
+
+    @MockBean
+    DataSourcesSyncTimer dataSourcesSyncTimer;
+
+    @MockBean
+    AggrEventTopologyService aggrEventTopologyService;
 
     long startTime1 = 1420070400L; //01 Jan 2015 00:00:00 GMT
     long endTime1 = 1420156799L; //01 Jan 2015 23:59:59 GMT
@@ -63,13 +69,6 @@ public class AggrFeatureEventDataTest {
 
     FeatureBucketStrategy strategy;
     
-	@SuppressWarnings("resource")
-	@BeforeClass
-	public static void setUpClass(){
-		new ClassPathXmlApplicationContext("classpath*:META-INF/spring/aggr-feature-event-builder-context.xml");
-	}
-
-
     @Test(expected = Exception.class)
     public void testNewEventData_nullBuilder() {
         Map<String, String> context = new HashMap<>();

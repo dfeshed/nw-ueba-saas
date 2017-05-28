@@ -28,3 +28,4 @@ def is_last_hour_of_day(date_time):
     """
 
     return True if date_time.hour == 23 else False
+

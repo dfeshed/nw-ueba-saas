@@ -1,0 +1,1 @@
+Fortscale input core is the project responsible for reading the row input from DB, enrich it, and store it to ADE

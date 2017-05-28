@@ -13,8 +13,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Collections;
 import java.util.Date;
@@ -22,10 +25,11 @@ import java.util.stream.Stream;
 
 import static org.mockito.Mockito.when;
 
-@RunWith(SpringJUnit4ClassRunner.class)
+@RunWith(SpringRunner.class)
 @ContextConfiguration(locations = {"classpath*:META-INF/spring/retriever-test-context.xml"})
+@SpringBootTest
 public class AbstractEntityEventValueRetrieverTest extends EntityEventValueRetrieverTestUtils {
-	@Autowired
+	@MockBean
 	private FactoryService<IContextSelector> contextSelectorFactoryService;
 
 	protected JokerEntityEventData createJokerEntityEventData( double entityEventValue) {
