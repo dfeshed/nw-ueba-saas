@@ -8,17 +8,8 @@ from presidio.builders.presidio_dag_builder import PresidioDagBuilder
 
 class FullFlowDagBuilder(PresidioDagBuilder):
     """
-    The "full flow rum" DAG consists of all the presidio flow including the collctor
+    The "full flow rum" DAG consists of all the presidio flow including the collector
     """
-
-    def __init__(self, data_sources):
-        """
-        C'tor.
-        :param data_sources: The data sources whose events should be handled
-        :type data_sources: list[str]
-        """
-
-        self.data_sources = data_sources
 
     def build(self, full_flow_dag):
         """
@@ -30,8 +21,11 @@ class FullFlowDagBuilder(PresidioDagBuilder):
         :rtype: airflow.models.DAG
         """
 
-        collector_sub_dag = self._get_collector_sub_dag_operator(self.data_sources, full_flow_dag)
-        presidio_core_sub_dag = self._get_presidio_core_sub_dag_operator(self.data_sources, full_flow_dag)
+        default_args = full_flow_dag.default_args
+        data_sources = default_args.get("data_sources")
+
+        collector_sub_dag = self._get_collector_sub_dag_operator(data_sources, full_flow_dag)
+        presidio_core_sub_dag = self._get_presidio_core_sub_dag_operator(data_sources, full_flow_dag)
 
         collector_sub_dag >> presidio_core_sub_dag
 
@@ -44,7 +38,8 @@ class FullFlowDagBuilder(PresidioDagBuilder):
         collector_dag = DAG(
             dag_id='{}.{}'.format(full_flow_dag.dag_id, collector_dag_id),
             schedule_interval=full_flow_dag.schedule_interval,
-            start_date=full_flow_dag.start_date
+            start_date=full_flow_dag.start_date,
+            default_args=full_flow_dag.default_args
         )
 
         return SubDagOperator(
@@ -60,13 +55,12 @@ class FullFlowDagBuilder(PresidioDagBuilder):
         presidio_core_dag = DAG(
             dag_id='{}.{}'.format(full_flow_dag.dag_id, presidio_core_dag_id),
             schedule_interval=full_flow_dag.schedule_interval,
-            start_date=full_flow_dag.start_date
+            start_date=full_flow_dag.start_date,
+            default_args=full_flow_dag.default_args
         )
 
         return SubDagOperator(
-            subdag=PresidioCoreDagBuilder(data_sources)
-                .build(presidio_core_dag),
+            subdag=PresidioCoreDagBuilder(data_sources).build(presidio_core_dag),
             task_id=presidio_core_dag_id,
             dag=full_flow_dag
         )
-

@@ -30,12 +30,13 @@ class PresidioCoreDagBuilder(PresidioDagBuilder):
         :return: The given presidio core DAG, after it has been populated
         :rtype: airflow.models.DAG
         """
+
         input_sub_dag_operator = self._get_input_sub_dag_operator(
             self.data_sources,
             presidio_core_dag
         )
 
-        ade_sub_dag_operator = self._get_ade_sub_dag_operator(self.data_sources, {}, {}, presidio_core_dag)
+        ade_sub_dag_operator = self._get_ade_sub_dag_operator(self.data_sources, presidio_core_dag)
 
         output_sub_dag_operator = self._get_output_sub_dag_operator(
             self.data_sources,
@@ -53,7 +54,8 @@ class PresidioCoreDagBuilder(PresidioDagBuilder):
         input_dag = DAG(
             dag_id='{}.{}'.format(presidio_core_dag.dag_id, input_dag_id),
             schedule_interval=presidio_core_dag.schedule_interval,
-            start_date=presidio_core_dag.start_date
+            start_date=presidio_core_dag.start_date,
+            default_args=presidio_core_dag.default_args
         )
 
         return SubDagOperator(
@@ -63,17 +65,23 @@ class PresidioCoreDagBuilder(PresidioDagBuilder):
         )
 
     @staticmethod
-    def _get_ade_sub_dag_operator(data_sources, hourly_smart_events_confs, daily_smart_events_confs, presidio_core_dag):
+    def _get_ade_sub_dag_operator(data_sources, presidio_core_dag):
+        default_args = presidio_core_dag.default_args
+        daily_smart_events_confs = default_args.get("daily_smart_events_confs")
+        hourly_smart_events_confs = default_args.get("hourly_smart_events_confs")
+
         ade_dag_id = 'ade_dag'
 
         ade_dag = DAG(
             dag_id='{}.{}'.format(presidio_core_dag.dag_id, ade_dag_id),
             schedule_interval=presidio_core_dag.schedule_interval,
-            start_date=presidio_core_dag.start_date
+            start_date=presidio_core_dag.start_date,
+            default_args=presidio_core_dag.default_args
         )
 
         return SubDagOperator(
-            subdag=AnomalyDetectionEngineDagBuilder(data_sources, hourly_smart_events_confs, daily_smart_events_confs).build(ade_dag),
+            subdag=AnomalyDetectionEngineDagBuilder(data_sources, hourly_smart_events_confs,
+                                                    daily_smart_events_confs).build(ade_dag),
             task_id=ade_dag_id,
             dag=presidio_core_dag
         )
@@ -85,7 +93,8 @@ class PresidioCoreDagBuilder(PresidioDagBuilder):
         output_dag = DAG(
             dag_id='{}.{}'.format(presidio_core_dag.dag_id, output_dag_id),
             schedule_interval=presidio_core_dag.schedule_interval,
-            start_date=presidio_core_dag.start_date
+            start_date=presidio_core_dag.start_date,
+            default_args=presidio_core_dag.default_args
         )
 
         return SubDagOperator(

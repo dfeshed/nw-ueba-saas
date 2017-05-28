@@ -1,7 +1,7 @@
 """
 initiate presidio DAGs that are defined in configuration
 should be used to create template-ed (same graph)DAGs for different execution dates, having different dag_id's
-i.e. if i want to create historical load for two different dates: i can 
+i.e. if i want to create historical load for two different dates: i can
 """
 from __future__ import generators
 
@@ -21,5 +21,4 @@ DEFAULT_DAG_VARIABLES_FILE_PATH = pkg_resources.resource_filename('presidio',
 variable_reader = VariableReader(default_value_file_path=DEFAULT_DAG_VARIABLES_FILE_PATH,
                                  var_key='presidio_dag_factory')
 dags = DagFactories.create_dags("PresidioDag", conf_reader=variable_reader, name_space=globals(),
-                                dag_builder=FullFlowDagBuilder(["dlpfile"]))
-
+                                dag_builder=FullFlowDagBuilder())
