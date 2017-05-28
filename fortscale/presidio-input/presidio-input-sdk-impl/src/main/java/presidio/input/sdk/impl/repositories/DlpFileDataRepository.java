@@ -4,5 +4,6 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import presidio.sdk.api.domain.DlpFileDataDocument;
 
 
-public interface DlpFileDataRepository<T> extends MongoRepository<DlpFileDataDocument, String> {
+public interface DlpFileDataRepository extends MongoRepository<DlpFileDataDocument, String>, DlpFileDataRepositoryCustom {
+    //todo: if we change our field names to be java like (i.e dateTimeUnix instead of date_time_unix we could have used findByDateTimeUnixBetween without the need for the custom interface)
 }

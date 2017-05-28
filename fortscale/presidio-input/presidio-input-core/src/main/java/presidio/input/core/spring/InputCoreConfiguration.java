@@ -1,24 +1,32 @@
 package presidio.input.core.spring;
 
 
+import fortscale.services.config.ParametersValidationServiceConfig;
+import fortscale.services.parameters.ParametersValidationService;
 import fortscale.utils.mongodb.config.MongoConfig;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import presidio.input.core.services.api.InputProcessService;
-import presidio.input.core.services.impl.InputProcessServiceImpl;
+import presidio.input.core.services.api.InputExecutionService;
+import presidio.input.core.services.impl.InputExecutionServiceImpl;
+import presidio.input.sdk.impl.spring.InputSdkConfig;
+import presidio.sdk.api.services.PresidioInputSdk;
 
-/**
- * Created by shays on 17/05/2017.
- */
 @Configuration
-@Import(MongoConfig.class)
+@Import({MongoConfig.class, ParametersValidationServiceConfig.class, InputSdkConfig.class})
 public class InputCoreConfiguration {
 
+    @Autowired
+    private PresidioInputSdk inputSdk;
+
+    @Autowired
+    private ParametersValidationService parametersValidationService;
+
     @Bean
-    public InputProcessService inputProcessService(){
-        return new InputProcessServiceImpl();
+    public InputExecutionService inputProcessService() {
+        return new InputExecutionServiceImpl(parametersValidationService, inputSdk);
     }
 
     @Bean
@@ -27,19 +35,17 @@ public class InputCoreConfiguration {
     }
 
 
-
-
     private static class PresidioCommandLineRunner implements CommandLineRunner {
 
-        private InputProcessService inputProcessService;
+        private InputExecutionService inputExecutionService;
 
-        public PresidioCommandLineRunner(InputProcessService inputProcessService){
-            this.inputProcessService = inputProcessService;
+        public PresidioCommandLineRunner(InputExecutionService inputExecutionService) {
+            this.inputExecutionService = inputExecutionService;
         }
 
         @Override
         public void run(String... params) throws Exception {
-            this.inputProcessService.run(params);
+            this.inputExecutionService.run(params);
 
         }
     }

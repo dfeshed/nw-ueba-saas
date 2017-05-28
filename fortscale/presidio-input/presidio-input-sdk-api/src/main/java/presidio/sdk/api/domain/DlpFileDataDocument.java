@@ -11,7 +11,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 
-@Document(collection=DlpFileDataDocument.COLLECTION_NAME)
+@Document(collection = DlpFileDataDocument.COLLECTION_NAME)
 public class DlpFileDataDocument extends AbstractAuditableDocument {
 
     private static final Logger logger = Logger.getLogger(DlpFileDataDocument.class);
@@ -19,26 +19,26 @@ public class DlpFileDataDocument extends AbstractAuditableDocument {
 
     public static final String COLLECTION_NAME = "dlpfile_stored_data";
 
-    public static final String DATE_TIME_UNIX_FIELD_NAME="dateTimeUnix";
-    public static final String DATE_TIME_FIELD_NAME="dateTime";
-    public static final String EXECUTING_APPLICATION_FIELD_NAME="executingApplication";
-    public static final String HOSTNAME_FIELD_NAME="hostname";
-    public static final String FIRST_NAME_FIELD_NAME="firstName";
-    public static final String LAST_NAME_FIELD_NAME="lastName";
-    public static final String USERNAME_FIELD_NAME="username";
-    public static final String MALWARE_SCAN_RESULT_FIELD_NAME="malwareScanResult";
-    public static final String EVENT_ID_FIELD_NAME="eventId";
-    public static final String SOURCE_IP_FIELD_NAME="sourceIp";
-    public static final String WAS_BLOCKED_FIELD_NAME="wasBlocked";
-    public static final String WAS_CLASSIFIED_FIELD_NAME="wasClassified";
-    public static final String DESTINATION_PATH_FIELD_NAME="destinationPath";
-    public static final String DESTINATION_FILE_NAME_FIELD_NAME="destinationFileName";
-    public static final String FILE_SIZE_FIELD_NAME="fileSize";
-    public static final String SOURCE_PATH_FIELD_NAME="sourcePath";
-    public static final String SOURCE_FILE_NAME_FIELD_NAME="sourceFileName";
-    public static final String SOURCE_DRIVE_TYPE_FIELD_NAME="sourceDriveType";
-    public static final String DESTINATION_DRIVE_TYPE_FIELD_NAME="destinationDriveType";
-    public static final String EVENT_TYPE_FIELD_NAME="eventType";
+    public static final String DATE_TIME_UNIX_FIELD_NAME = "dateTimeUnix";
+    public static final String DATE_TIME_FIELD_NAME = "dateTime";
+    public static final String EXECUTING_APPLICATION_FIELD_NAME = "executingApplication";
+    public static final String HOSTNAME_FIELD_NAME = "hostname";
+    public static final String FIRST_NAME_FIELD_NAME = "firstName";
+    public static final String LAST_NAME_FIELD_NAME = "lastName";
+    public static final String USERNAME_FIELD_NAME = "username";
+    public static final String MALWARE_SCAN_RESULT_FIELD_NAME = "malwareScanResult";
+    public static final String EVENT_ID_FIELD_NAME = "eventId";
+    public static final String SOURCE_IP_FIELD_NAME = "sourceIp";
+    public static final String WAS_BLOCKED_FIELD_NAME = "wasBlocked";
+    public static final String WAS_CLASSIFIED_FIELD_NAME = "wasClassified";
+    public static final String DESTINATION_PATH_FIELD_NAME = "destinationPath";
+    public static final String DESTINATION_FILE_NAME_FIELD_NAME = "destinationFileName";
+    public static final String FILE_SIZE_FIELD_NAME = "fileSize";
+    public static final String SOURCE_PATH_FIELD_NAME = "sourcePath";
+    public static final String SOURCE_FILE_NAME_FIELD_NAME = "sourceFileName";
+    public static final String SOURCE_DRIVE_TYPE_FIELD_NAME = "sourceDriveType";
+    public static final String DESTINATION_DRIVE_TYPE_FIELD_NAME = "destinationDriveType";
+    public static final String EVENT_TYPE_FIELD_NAME = "eventType";
 
 
     @Field(DATE_TIME_UNIX_FIELD_NAME)
@@ -126,6 +126,10 @@ public class DlpFileDataDocument extends AbstractAuditableDocument {
         sourceFileName = record[16];
         sourceDriveType = record[17];
         destinationDriveType = record[18];
+
+    }
+
+    protected DlpFileDataDocument() {
 
     }
 

@@ -1,5 +1,7 @@
 package presidio.collector.spring;
 
+import fortscale.services.config.ParametersValidationServiceConfig;
+import fortscale.services.parameters.ParametersValidationService;
 import fortscale.utils.mongodb.config.MongoConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -14,7 +16,7 @@ import presidio.sdk.api.services.CoreManagerSdk;
 import presidio.sdk.impl.spring.CoreManagerSdkConfig;
 
 @Configuration
-@Import({CoreManagerSdkConfig.class, MongoConfig.class, FetchServiceConfig.class})
+@Import({CoreManagerSdkConfig.class, MongoConfig.class, FetchServiceConfig.class, ParametersValidationServiceConfig.class})
 public class CollectorConfig {
 
     @Autowired
@@ -23,9 +25,12 @@ public class CollectorConfig {
     @Autowired
     private FetchService fetchService;
 
+    @Autowired
+    private ParametersValidationService parametersValidationService;
+
     @Bean
-    CollectorExecutionService collectorExecutionService() {
-        return new CollectorExecutionServiceImpl(coreManagerSdk, fetchService);
+    public CollectorExecutionService collectorExecutionService() {
+        return new CollectorExecutionServiceImpl(coreManagerSdk, fetchService, parametersValidationService);
     }
 
     @Bean

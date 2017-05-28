@@ -1,7 +1,7 @@
 package presidio.collector.services.api;
 
 
-import presidio.collector.Datasource;
+import fortscale.common.general.Datasource;
 
 import java.util.List;
 
