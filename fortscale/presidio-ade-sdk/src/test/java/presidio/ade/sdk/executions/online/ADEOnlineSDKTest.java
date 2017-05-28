@@ -10,7 +10,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import presidio.ade.domain.store.input.ADEInputRecord;
+import presidio.ade.domain.store.input.ADEInputRecordsMetaData;
 
+import java.time.Duration;
+import java.time.Instant;
+import java.util.List;
 import java.util.Properties;
 
 /**
@@ -38,6 +43,11 @@ public class ADEOnlineSDKTest {
     public void test()
     {
         adeOnlineSDK.getRunId();
+        Instant startInstant  = Instant.parse("2017-01-01T10:00:00.00Z");
+        Instant endInstant= Instant.parse("2017-01-01T11:00:00.00Z");
+        ADEInputRecordsMetaData metaData = new ADEInputRecordsMetaData("testDataSource", Duration.ofHours(1), startInstant, endInstant);
+        List<ADEMockedInputRecord> generate = ADEMockedInputRecordGenerator.generate(metaData);
+        adeOnlineSDK.store(metaData, generate);
         System.out.println();
     }
 }

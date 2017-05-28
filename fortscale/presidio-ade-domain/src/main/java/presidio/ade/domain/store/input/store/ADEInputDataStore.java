@@ -18,7 +18,7 @@ public interface ADEInputDataStore {
      * @param recordsMetaData describing the records (which data source, etc)
      * @param records         to be stored
      */
-    void store(ADEInputRecordsMetaData recordsMetaData, List<ADEInputRecord> records);
+    void store(ADEInputRecordsMetaData recordsMetaData, List<? extends ADEInputRecord> records);
 
     /**
      * cleanup store by filtering params

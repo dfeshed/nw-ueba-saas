@@ -11,9 +11,11 @@ import java.util.Collection;
  */
 public class ADEInputDataToCollectionNameTranslator implements DataCollectionTranslator<ADEInputRecordsMetaData> {
 
+    public static final String ADE_INPUT_COLLECTION_PREFIX = "ade_input";
+
     @Override
     public String toCollectionName(ADEInputRecordsMetaData arg) {
-        return null;
+        return String.format(ADE_INPUT_COLLECTION_PREFIX + "_%s",arg.getDataSource());
     }
 
     @Override

@@ -111,6 +111,6 @@ public interface ADECommonSDK<ADERunParams> {
      * @param metaData some metadata considering the data to be stored. i.e. what is the data source, what is the time range etc...
      * @param records  data to be stored
      */
-    void store(ADEInputRecordsMetaData metaData, List<ADEInputRecord> records);
+    void store(ADEInputRecordsMetaData metaData, List<? extends ADEInputRecord> records);
 
 }

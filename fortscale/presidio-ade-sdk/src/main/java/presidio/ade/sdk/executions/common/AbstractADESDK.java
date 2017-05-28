@@ -12,14 +12,14 @@ import java.util.List;
  * Created by barak_schuster on 5/18/17.
  */
 public abstract class AbstractADESDK<ADERunParams> implements ADECommonSDK<ADERunParams>{
-    ADEInputDataStore store;
+    protected ADEInputDataStore store;
 
     public AbstractADESDK(ADEInputDataStore store) {
         this.store = store;
     }
 
     @Override
-    public void store(ADEInputRecordsMetaData metaData, List<ADEInputRecord> records)
+    public void store(ADEInputRecordsMetaData metaData, List<? extends ADEInputRecord> records)
     {
         store.store(metaData, records);
     }

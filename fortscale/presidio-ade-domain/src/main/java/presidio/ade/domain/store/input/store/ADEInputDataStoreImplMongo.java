@@ -2,6 +2,7 @@ package presidio.ade.domain.store.input.store;
 
 import fortscale.utils.mongodb.index.MongoIndexedStore;
 import fortscale.utils.mongodb.index.MongoIndexCreator;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.query.Query;
@@ -11,6 +12,7 @@ import presidio.ade.domain.store.input.ADEInputRecordsMetaData;
 import presidio.ade.domain.store.translators.ADEInputDataToCollectionNameTranslator;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -29,7 +31,7 @@ public class ADEInputDataStoreImplMongo implements ADEInputDataStore ,MongoIndex
         this.mongoIndexCreator = mongoIndexCreator;
     }
 
-    public void store(ADEInputRecordsMetaData recordsMetaData, List<ADEInputRecord> records) {
+    public void store(ADEInputRecordsMetaData recordsMetaData, List<? extends ADEInputRecord> records) {
         logger.info("storing by recordsMetaData={}", recordsMetaData);
         String collectionName = translator.toCollectionName(recordsMetaData);
         mongoIndexCreator.ensureIndexes(collectionName,this);
@@ -57,6 +59,8 @@ public class ADEInputDataStoreImplMongo implements ADEInputDataStore ,MongoIndex
 
     @Override
     public Set<Index> getIndexes() {
-        return null;
+        Set<Index> indexSet = new HashSet<>();
+        indexSet.add(new Index().on(ADEInputRecord.EVENT_TIME_FIELD, Sort.Direction.ASC));
+        return indexSet;
     }
 }
