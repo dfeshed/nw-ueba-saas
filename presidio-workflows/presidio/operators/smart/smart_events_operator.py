@@ -1,8 +1,8 @@
-from airflow.operators.bash_operator import BashOperator
 from airflow.utils.decorators import apply_defaults
+from presidio.operators.fixed_duration_operator import FixedDurationOperator
 
 
-class SmartEventsOperator(BashOperator):
+class SmartEventsOperator(FixedDurationOperator):
     """
     Runs the "Smart Events" task (JAR). The task:
     1. Groups together in a smart event the configured aggregation events from the time interval, per context.
@@ -15,12 +15,7 @@ class SmartEventsOperator(BashOperator):
     ui_fgcolor = '#ffffff'
 
     _JAR_FILE_PATH = '/home/presidio/airflow/tasks/dummy.jar'
-    _BASH_COMMAND = ' '.join([
-        'java -jar {{params.jar_file_path}}',
-        'start_date={{execution_date.isoformat()}}',
-        'end_date={{(execution_date + params.fixed_duration_strategy).isoformat()}}',
-        'smart_events_conf={{params.smart_events_conf}}'
-    ])
+    _MAIN_CLASS = 'HelloWorld.Main'
 
     @apply_defaults
     def __init__(self, fixed_duration_strategy, smart_events_conf, task_id=None, *args, **kwargs):
@@ -34,21 +29,22 @@ class SmartEventsOperator(BashOperator):
         :type task_id: string
         """
 
-        params = {
-            'jar_file_path': SmartEventsOperator._JAR_FILE_PATH,
-            'fixed_duration_strategy': fixed_duration_strategy,
+        java_args = {
             'smart_events_conf': smart_events_conf
         }
 
-        # Merge the new params above with the old params and overwrite existing keys
-        kwargs['params'] = kwargs['params'] or {}
-        kwargs['params'].update(params)
+        jvm_args = {
+            'jar_path': SmartEventsOperator._JAR_FILE_PATH,
+            'main_class': SmartEventsOperator._MAIN_CLASS
+        }
 
         super(SmartEventsOperator, self).__init__(
             # The smart_events_conf usually contains the fixed_duration_strategy and the
             # phrase "smart_events" in its name, so it can serve as the task_id as well
             task_id=task_id or smart_events_conf,
-            bash_command=SmartEventsOperator._BASH_COMMAND,
+            fixed_duration_strategy=fixed_duration_strategy,
+            jvm_args=jvm_args,
+            java_args=java_args,
             *args,
             **kwargs
         )
