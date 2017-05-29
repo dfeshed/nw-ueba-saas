@@ -15,22 +15,24 @@ import fortscale.utils.monitoring.stats.config.NullStatsServiceConfig;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 import java.util.*;
 
 import static org.mockito.Mockito.*;
 
-@RunWith(SpringJUnit4ClassRunner.class)
+@RunWith(SpringRunner.class)
 @ContextConfiguration(loader = AnnotationConfigContextLoader.class)
+@SpringBootTest
 public class ModelBuilderManagerTest {
     @Configuration
     @ImportResource("classpath*:META-INF/spring/model-builder-manager-test-context.xml")
@@ -48,9 +50,10 @@ public class ModelBuilderManagerTest {
 
     private static final String DEFAULT_SESSION_ID = "testSessionId";
 
-    @Autowired
+    @MockBean
     private FactoryService factoryService;
-    @Autowired
+
+    @MockBean
     private ModelStore store;
 
     private ModelConf modelConf;
