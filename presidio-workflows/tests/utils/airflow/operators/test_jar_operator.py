@@ -7,7 +7,9 @@ from presidio.utils.airflow.operators.jar_operator import JarOperator
 from tests.utils.airflow.operators.base_test_operator import assert_task_success_state, get_task_instances
 
 DEFAULT_DATE = datetime(2014, 1, 1)
-JAR_PATH = '/home/presidio/dev-projects/presidio-core/presidio-workflows/tests/resources/jars/test.jar'
+# In order to run test locally change the path to:
+# '/home/presidio/dev-projects/presidio-core/presidio-workflows/tests/resources/jars/test.jar'
+JAR_PATH = 'home/presidio/jenkins/workspace/Presidio-Workflows/presidio-workflows/tests/resources/jars/test.jar'
 MAIN_CLASS = 'HelloWorld.Main'
 
 
@@ -311,11 +313,11 @@ def test_update_java_args(default_args, java_args):
         java_args=java_args,
         dag=dag)
 
-    java_args = {
+    args = {
         'c': 'three',
     }
 
-    task.update_java_args(java_args)
+    task.update_java_args(args)
 
     task.clear()
     task.run(start_date=DEFAULT_DATE, end_date=DEFAULT_DATE)
