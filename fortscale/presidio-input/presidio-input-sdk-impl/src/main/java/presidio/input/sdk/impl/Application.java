@@ -16,7 +16,9 @@ import presidio.input.sdk.impl.spring.InputSdkConfig;
 
 @SpringBootApplication
 @ComponentScan(
-		excludeFilters = @ComponentScan.Filter(type = FilterType.REGEX, pattern = "fortscale.*"))
+		excludeFilters = {
+				@ComponentScan.Filter(type = FilterType.REGEX, pattern = "fortscale.*"),
+				@ComponentScan.Filter(type = FilterType.REGEX, pattern = "presidio.*")})
 @EnableTask
 public class Application {
 

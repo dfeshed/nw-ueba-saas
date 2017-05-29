@@ -19,7 +19,13 @@
 
 
 
-	<dependencies></dependencies>
+	<dependencies>
+		<dependency>
+			<groupId>fortscale</groupId>
+			<artifactId>fortscale-domain</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+	</dependencies>
 
 
 	<build>
