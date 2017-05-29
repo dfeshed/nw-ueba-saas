@@ -47,7 +47,7 @@ class OutputDagBuilder(PresidioDagBuilder):
             # Create jar operator for each data source
             FixedDurationOperator(
                 task_id='output_{}'.format(data_source),
-                fixed_duration_strategy=timedelta(days=1),
+                fixed_duration_strategy=timedelta(hours=1),
                 jvm_args=jvm_args,
                 java_args=java_args,
                 dag=output_dag)
