@@ -53,7 +53,6 @@ def build_and_run_task(jvm_args, dag, java_args, expected_bash_comment):
     task_instances = get_task_instances(dag)
 
     assert_bash_comment(task, expected_bash_comment)
-
     assert_task_success_state(task_instances, task.task_id)
 
 
@@ -64,8 +63,6 @@ def assert_bash_comment(task, expected_bash_comment):
     :param expected_bash_comment: 
     :return: 
     """
-    logging.info(task.bash_command)
-    logging.info(expected_bash_comment)
     assert task.bash_command == expected_bash_comment
 
 
@@ -206,7 +203,6 @@ def test_all_params(default_args, java_args):
     dag = DAG(
         "test_all_params", default_args=default_args, schedule_interval=timedelta(1))
 
-
     expected_bash_comment = '/usr/bin/java -Xms101m -Xmx2049m -Duser.timezone=America/New_York -Dlogback.configurationFile=/home/presidio/dev-projects/presidio-core/presidio-workflows/tests/resources/xmls/test_logback.xml -agentlib:jdwp=transport=dt_socket,address=9200,server=y,suspend=n -cp /home/presidio/dev-projects/presidio-core/presidio-workflows/tests/resources/jars/test.jar HelloWorld.Main a=one b=two'
     build_and_run_task(jvm_args, dag, java_args, expected_bash_comment)
 
@@ -321,12 +317,11 @@ def test_update_java_args(default_args, java_args):
 
     task.update_java_args(java_args)
 
-    expected_bash_comment = '/usr/bin/java -Xms100m -Xmx2048m -Duser.timezone=UTC -cp /home/presidio/dev-projects/presidio-core/presidio-workflows/tests/resources/jars/test.jar HelloWorld.Main a=one c=three b=two'
-    assert_bash_comment(task, expected_bash_comment)
-
     task.clear()
     task.run(start_date=DEFAULT_DATE, end_date=DEFAULT_DATE)
     tis = get_task_instances(dag)
 
+    expected_bash_comment = '/usr/bin/java -Xms100m -Xmx2048m -Duser.timezone=UTC -cp /home/presidio/dev-projects/presidio-core/presidio-workflows/tests/resources/jars/test.jar HelloWorld.Main a=one b=two c=three'
+    assert_bash_comment(task, expected_bash_comment)
     assert_task_success_state(tis, 'run_jar_file')
 

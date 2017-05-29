@@ -166,7 +166,7 @@ class JarOperator(BashOperator):
             bash_command.extend(['-cp', class_path, self.merged_args.get('main_class')])
 
         if not JarOperator.is_blank(self.java_args):
-            java_args = ' '.join('%s=%s' % (key, val) for (key, val) in self.java_args.iteritems())
+            java_args = ' '.join('%s=%s' % (key, val) for (key, val) in sorted(self.java_args.iteritems()))
             bash_command.append(java_args)
 
     def jmx(self, bash_command):
