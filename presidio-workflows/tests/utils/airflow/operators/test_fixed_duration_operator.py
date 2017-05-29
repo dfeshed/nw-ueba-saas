@@ -2,10 +2,8 @@ import logging
 from datetime import datetime, timedelta
 import pytest
 from airflow import DAG
-from airflow.models import TaskInstance
-from airflow.settings import Session
-from airflow.utils.state import State
 from presidio.operators.fixed_duration_operator import FixedDurationOperator
+from tests.utils.airflow.operators.base_test_operator import assert_task_success_state, get_task_instances
 
 FIX_DURATION_STRATEGY_HOURLY = timedelta(hours=1)
 FIX_DURATION_STRATEGY_DAILY = timedelta(days=1)
@@ -14,50 +12,7 @@ JAR_PATH = '/home/presidio/dev-projects/presidio-core/presidio-workflows/tests/r
 MAIN_CLASS = 'HelloWorld.Main'
 
 
-def get_task_instances(dag):
-    """
-    
-    Get_task_instances according to dag_id
-    :param dag:
-    :return: tis
-    """
-    session = Session()
-    tis = session.query(TaskInstance).filter(
-        TaskInstance.dag_id == dag.dag_id,
-    )
-    session.close()
-    return tis
-
-
-def assert_task_success_state(tis):
-    """
-
-    Assert task state
-    :param tis: task instances
-    :return:
-    """
-    for ti in tis:
-        if ti.task_id == 'fixed_duration_operator':
-            assert ti.state == State.SUCCESS
-        else:
-            raise
-
-
-def assert_task_skipped_state(tis):
-    """
-
-    Assert task state
-    :param tis: task instances
-    :return:
-    """
-    for ti in tis:
-        if ti.task_id == 'fixed_duration_operator':
-            assert ti.state == State.SKIPPED
-        else:
-            raise
-
-
-def test_skipped_state():
+def test_invalid_execution_date():
     """
 
     Test skipped task of fixed duration operator 
@@ -99,12 +54,11 @@ def test_skipped_state():
         dag=dag)
 
     task.clear()
-    task.run(start_date=default, end_date=default)
-    tis = get_task_instances(dag)
-    assert_task_skipped_state(tis)
+    with pytest.raises(Exception):
+        task.run(start_date=default, end_date=default)
 
 
-def test_success_state():
+def test_valid_execution_date():
     """
 
     Test success state of fixed duration operator
@@ -149,4 +103,4 @@ def test_success_state():
     task.clear()
     task.run(start_date=default, end_date=default)
     tis = get_task_instances(dag)
-    assert_task_success_state(tis)
+    assert_task_success_state(tis, task.task_id)

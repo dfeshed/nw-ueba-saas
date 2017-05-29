@@ -1,7 +1,7 @@
 from abc import ABCMeta, abstractmethod
 from airflow.utils.decorators import apply_defaults
-from presidio.utils.date_time import fixed_duration_strategy_to_string
 from presidio.operators.fixed_duration_operator import FixedDurationOperator
+from presidio.utils.services.fixed_duration_strategy import fixed_duration_strategy_to_string
 
 
 class AggregationsOperator(FixedDurationOperator):
