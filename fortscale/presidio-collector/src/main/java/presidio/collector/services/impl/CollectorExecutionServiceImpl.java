@@ -8,7 +8,7 @@ import presidio.collector.Datasource;
 import presidio.collector.services.api.CollectorExecutionService;
 import presidio.collector.services.api.FetchService;
 import presidio.sdk.api.domain.DlpFileDataDocument;
-import presidio.sdk.api.services.CoreManagerSdk;
+import presidio.sdk.api.services.CoreManagerService;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,18 +16,16 @@ import java.util.List;
 
 public class CollectorExecutionServiceImpl implements CollectorExecutionService {
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
-
     private static final String DATASOURCE_FIELD_NAME = "datasource";
     private static final String START_TIME_FIELD_NAME = "start_time";
     private static final String END_TIME_FIELD_NAME = "end_time";
     private static final String PARAM_DELIMITER = "=";
-
-    private final CoreManagerSdk coreManagerSdk;
+    private final CoreManagerService coreManagerService;
     private final FetchService fetchService;
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public CollectorExecutionServiceImpl(CoreManagerSdk coreManagerSdk, FetchService fetchService) {
-        this.coreManagerSdk = coreManagerSdk;
+    public CollectorExecutionServiceImpl(CoreManagerService coreManagerService, FetchService fetchService) {
+        this.coreManagerService = coreManagerService;
         this.fetchService = fetchService;
     }
 
@@ -89,7 +87,7 @@ public class CollectorExecutionServiceImpl implements CollectorExecutionService 
 
     private boolean store(List<AbstractAuditableDocument> fetchedDocuments) {
         logger.info("Start store");
-        final boolean storeSuccessful = coreManagerSdk.store(fetchedDocuments);
+        final boolean storeSuccessful = coreManagerService.store(fetchedDocuments);
         logger.info("finish store");
         return storeSuccessful;
     }

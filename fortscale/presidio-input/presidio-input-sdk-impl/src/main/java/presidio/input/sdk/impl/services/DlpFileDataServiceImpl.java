@@ -19,7 +19,7 @@ public class DlpFileDataServiceImpl implements DlpFileDataService {
 
     @Override
     public boolean store(List<? extends AbstractAuditableDocument> documents) {
-        logger.debug("Storing {} documents.", documents.size());
+        logger.debug("Storing {} documents.", documents.isEmpty() ? 0 : documents.size());
         return documents.size() == dlpFileDataRepository.save(documents).size();
     }
 }
