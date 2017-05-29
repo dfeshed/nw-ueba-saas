@@ -5,9 +5,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import presidio.input.sdk.impl.repositories.DlpFileDataRepository;
 import presidio.input.sdk.impl.services.DlpFileDataServiceImpl;
-import presidio.input.sdk.impl.services.PresidioInputSdkMongoImpl;
+import presidio.input.sdk.impl.services.PresidioInputPersistencyServiceMongoImpl;
 import presidio.sdk.api.domain.DlpFileDataService;
-import presidio.sdk.api.services.PresidioInputSdk;
+import presidio.sdk.api.services.PresidioInputPersistencyService;
 
 
 @Configuration
@@ -17,11 +17,13 @@ public class InputSdkConfig {
     private DlpFileDataRepository dlpFileDataRepository;
 
     @Bean
-    private DlpFileDataService dlpFileDataService() {return new DlpFileDataServiceImpl(dlpFileDataRepository);}
+    public DlpFileDataService dlpFileDataService() {
+        return new DlpFileDataServiceImpl(dlpFileDataRepository);
+    }
 
     @Bean
-    public PresidioInputSdk presidioInputSdk(){
-        return  new PresidioInputSdkMongoImpl(dlpFileDataService());
+    public PresidioInputPersistencyService presidioInputSdk() {
+        return new PresidioInputPersistencyServiceMongoImpl(dlpFileDataService());
     }
 
 }

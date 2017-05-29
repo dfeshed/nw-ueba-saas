@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 import presidio.collector.services.api.CollectorExecutionService;
 import presidio.collector.services.api.FetchService;
 import presidio.sdk.api.domain.DlpFileDataDocument;
-import presidio.sdk.api.services.CoreManagerSdk;
+import presidio.sdk.api.services.CoreManagerService;
 
 import java.util.ArrayList;
 import java.util.Arrays;

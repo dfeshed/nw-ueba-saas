@@ -12,15 +12,15 @@ import presidio.collector.config.FetchServiceConfig;
 import presidio.collector.services.api.CollectorExecutionService;
 import presidio.collector.services.api.FetchService;
 import presidio.collector.services.impl.CollectorExecutionServiceImpl;
-import presidio.sdk.api.services.CoreManagerSdk;
-import presidio.sdk.impl.spring.CoreManagerSdkConfig;
+import presidio.sdk.api.services.CoreManagerService;
+import presidio.sdk.impl.spring.CoreManagerServiceConfig;
 
 @Configuration
 @Import({CoreManagerSdkConfig.class, MongoConfig.class, FetchServiceConfig.class, ParametersValidationServiceConfig.class})
 public class CollectorConfig {
 
     @Autowired
-    private CoreManagerSdk coreManagerSdk;
+    private CoreManagerService coreManagerService;
 
     @Autowired
     private FetchService fetchService;

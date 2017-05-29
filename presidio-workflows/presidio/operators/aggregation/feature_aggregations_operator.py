@@ -28,3 +28,10 @@ class FeatureAggregationsOperator(AggregationsOperator):
         """
 
         return '/home/presidio/airflow/tasks/dummy.jar'
+
+    def get_main_class(self):
+        """
+       :return: The main class name of JAR file
+       """
+
+        return 'HelloWorld.Main'

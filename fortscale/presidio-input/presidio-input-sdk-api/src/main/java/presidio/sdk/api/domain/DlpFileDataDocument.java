@@ -14,9 +14,6 @@ import java.util.Date;
 @Document(collection = DlpFileDataDocument.COLLECTION_NAME)
 public class DlpFileDataDocument extends AbstractAuditableDocument {
 
-    private static final Logger logger = Logger.getLogger(DlpFileDataDocument.class);
-
-
     public static final String COLLECTION_NAME = "dlpfile_stored_data";
 
     public static final String DATE_TIME_UNIX_FIELD_NAME = "dateTimeUnix";
@@ -101,6 +98,9 @@ public class DlpFileDataDocument extends AbstractAuditableDocument {
     @Field(EVENT_TYPE_FIELD_NAME)
     private String eventType;
 
+    public DlpFileDataDocument() {
+    }
+
     public DlpFileDataDocument(String[] record) {
         try {
             dateTime = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse(record[0]);
@@ -137,148 +137,136 @@ public class DlpFileDataDocument extends AbstractAuditableDocument {
         return dateTime;
     }
 
+    public void setDateTime(Date dateTime) {
+        this.dateTime = dateTime;
+    }
+
     public long getDateTimeUnix() {
         return dateTimeUnix;
-    }
-
-    public String getExecutingApplication() {
-        return executingApplication;
-    }
-
-    public String getHostname() {
-        return hostname;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public String getMalwareScanResult() {
-        return malwareScanResult;
-    }
-
-    public String getEventId() {
-        return eventId;
-    }
-
-    public String getSourceIp() {
-        return sourceIp;
-    }
-
-    public Boolean getWasBlocked() {
-        return wasBlocked;
-    }
-
-    public Boolean getWasClassified() {
-        return wasClassified;
-    }
-
-    public String getDestinationPath() {
-        return destinationPath;
-    }
-
-    public String getDestinationFileName() {
-        return destinationFileName;
-    }
-
-    public Double getFileSize() {
-        return fileSize;
-    }
-
-    public String getSourcePath() {
-        return sourcePath;
-    }
-
-    public String getSourceFileName() {
-        return sourceFileName;
     }
 
     public void setDateTimeUnix(long dateTimeUnix) {
         this.dateTimeUnix = dateTimeUnix;
     }
 
-    public void setDateTime(Date dateTime) {
-        this.dateTime = dateTime;
+    public String getExecutingApplication() {
+        return executingApplication;
     }
 
     public void setExecutingApplication(String executingApplication) {
         this.executingApplication = executingApplication;
     }
 
+    public String getHostname() {
+        return hostname;
+    }
+
     public void setHostname(String hostname) {
         this.hostname = hostname;
+    }
+
+    public String getFirstName() {
+        return firstName;
     }
 
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
 
+    public String getLastName() {
+        return lastName;
+    }
+
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public String getUsername() {
+        return username;
     }
 
     public void setUsername(String username) {
         this.username = username;
     }
 
+    public String getMalwareScanResult() {
+        return malwareScanResult;
+    }
+
     public void setMalwareScanResult(String malwareScanResult) {
         this.malwareScanResult = malwareScanResult;
+    }
+
+    public String getEventId() {
+        return eventId;
     }
 
     public void setEventId(String eventId) {
         this.eventId = eventId;
     }
 
+    public String getSourceIp() {
+        return sourceIp;
+    }
+
     public void setSourceIp(String sourceIp) {
         this.sourceIp = sourceIp;
+    }
+
+    public Boolean getWasBlocked() {
+        return wasBlocked;
     }
 
     public void setWasBlocked(Boolean wasBlocked) {
         this.wasBlocked = wasBlocked;
     }
 
+    public Boolean getWasClassified() {
+        return wasClassified;
+    }
+
     public void setWasClassified(Boolean wasClassified) {
         this.wasClassified = wasClassified;
+    }
+
+    public String getDestinationPath() {
+        return destinationPath;
     }
 
     public void setDestinationPath(String destinationPath) {
         this.destinationPath = destinationPath;
     }
 
+    public String getDestinationFileName() {
+        return destinationFileName;
+    }
+
     public void setDestinationFileName(String destinationFileName) {
         this.destinationFileName = destinationFileName;
+    }
+
+    public Double getFileSize() {
+        return fileSize;
     }
 
     public void setFileSize(Double fileSize) {
         this.fileSize = fileSize;
     }
 
+    public String getSourcePath() {
+        return sourcePath;
+    }
+
     public void setSourcePath(String sourcePath) {
         this.sourcePath = sourcePath;
     }
 
+    public String getSourceFileName() {
+        return sourceFileName;
+    }
+
     public void setSourceFileName(String sourceFileName) {
         this.sourceFileName = sourceFileName;
-    }
-
-    public void setSourceDriveType(String sourceDriveType) {
-        this.sourceDriveType = sourceDriveType;
-    }
-
-    public void setDestinationDriveType(String destinationDriveType) {
-        this.destinationDriveType = destinationDriveType;
-    }
-
-    public void setEventType(String eventType) {
-        this.eventType = eventType;
     }
 
     public String getSourceDriveType() {
@@ -286,12 +274,24 @@ public class DlpFileDataDocument extends AbstractAuditableDocument {
         return sourceDriveType;
     }
 
+    public void setSourceDriveType(String sourceDriveType) {
+        this.sourceDriveType = sourceDriveType;
+    }
+
     public String getDestinationDriveType() {
         return destinationDriveType;
     }
 
+    public void setDestinationDriveType(String destinationDriveType) {
+        this.destinationDriveType = destinationDriveType;
+    }
+
     public String getEventType() {
         return eventType;
+    }
+
+    public void setEventType(String eventType) {
+        this.eventType = eventType;
     }
 
 
