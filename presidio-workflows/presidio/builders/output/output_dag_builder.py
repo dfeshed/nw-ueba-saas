@@ -1,5 +1,7 @@
+from datetime import timedelta
+
 from presidio.builders.presidio_dag_builder import PresidioDagBuilder
-from presidio.utils.airflow.operators.jar_operator import JarOperator
+from presidio.operators.fixed_duration_operator import FixedDurationOperator
 
 JAR_PATH = '/home/presidio/dev-projects/presidio-core/presidio-workflows/tests/resources/jars/test.jar'
 MAIN_CLASS = 'HelloWorld.Main'
@@ -9,8 +11,6 @@ jvm_args = {
     'jar_path': JAR_PATH,
     'main_class': MAIN_CLASS
 }
-
-java_args = {}
 
 
 class OutputDagBuilder(PresidioDagBuilder):
@@ -32,17 +32,22 @@ class OutputDagBuilder(PresidioDagBuilder):
     def build(self, output_dag):
         """
         Builds jar operators for each data source and adds them to the given DAG.
-        :param input_dag: The DAG to which all relevant "output" operators should be added
-        :type input_dag: airflow.models.DAG
+        :param output_dag: The DAG to which all relevant "output" operators should be added
+        :type output_dag: airflow.models.DAG
         :return: The input DAG, after the "output" operators were added
         :rtype: airflow.models.DAG
         """
 
         # Iterate all configured data sources
         for data_source in self.data_sources:
+            java_args = {
+                'data_source': data_source,
+            }
+
             # Create jar operator for each data source
-            JarOperator(
+            FixedDurationOperator(
                 task_id='output_{}'.format(data_source),
+                fixed_duration_strategy=timedelta(days=1),
                 jvm_args=jvm_args,
                 java_args=java_args,
                 dag=output_dag)
