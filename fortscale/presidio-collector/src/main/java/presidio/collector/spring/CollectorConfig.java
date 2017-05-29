@@ -16,7 +16,7 @@ import presidio.sdk.api.services.CoreManagerService;
 import presidio.sdk.impl.spring.CoreManagerServiceConfig;
 
 @Configuration
-@Import({CoreManagerSdkConfig.class, MongoConfig.class, FetchServiceConfig.class, ParametersValidationServiceConfig.class})
+@Import({CoreManagerServiceConfig.class, MongoConfig.class, FetchServiceConfig.class, ParametersValidationServiceConfig.class})
 public class CollectorConfig {
 
     @Autowired
@@ -30,7 +30,7 @@ public class CollectorConfig {
 
     @Bean
     public CollectorExecutionService collectorExecutionService() {
-        return new CollectorExecutionServiceImpl(coreManagerSdk, fetchService, parametersValidationService);
+        return new CollectorExecutionServiceImpl(coreManagerService, fetchService, parametersValidationService);
     }
 
     @Bean

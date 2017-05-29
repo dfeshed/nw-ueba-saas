@@ -1,5 +1,6 @@
 package presidio.input.sdk.impl.services;
 
+import fortscale.domain.core.AbstractAuditableDocument;
 import fortscale.utils.logging.Logger;
 import presidio.input.sdk.impl.repositories.DlpFileDataRepository;
 import presidio.sdk.api.domain.DlpFileDataDocument;

@@ -8,7 +8,7 @@ import fortscale.utils.logging.Logger;
 import presidio.input.core.services.api.InputExecutionService;
 import presidio.sdk.api.domain.DlpFileDataDocument;
 import presidio.sdk.api.domain.DlpFileEnrichedDocument;
-import presidio.sdk.api.services.PresidioInputSdk;
+import presidio.sdk.api.services.PresidioInputPersistencyService;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,11 +23,11 @@ public class InputExecutionServiceImpl implements InputExecutionService {
     private static final Logger logger = Logger.getLogger(InputExecutionServiceImpl.class);
 
     private final ParametersValidationService parameterValidationService;
-    private final PresidioInputSdk inputSdk;
+    private final PresidioInputPersistencyService presidioInputPersistencyService;
 
-    public InputExecutionServiceImpl(ParametersValidationService parameterValidationService, PresidioInputSdk inputSdk) {
+    public InputExecutionServiceImpl(ParametersValidationService parameterValidationService, PresidioInputPersistencyService presidioInputPersistencyService) {
         this.parameterValidationService = parameterValidationService;
-        this.inputSdk = inputSdk;
+        this.presidioInputPersistencyService = presidioInputPersistencyService;
     }
 
     public void run(String... params) throws Exception {
@@ -61,7 +61,7 @@ public class InputExecutionServiceImpl implements InputExecutionService {
 
         final List<DlpFileEnrichedDocument> enrichedRecords = enrich(dataRecords);
 
-        if (storeForAde(enrichedRecords)) {
+        if (!storeForAde(enrichedRecords)) {
             logger.error("Failed to save!!!");
             //todo: how to handle?
         }
@@ -71,7 +71,7 @@ public class InputExecutionServiceImpl implements InputExecutionService {
 
     private List<? extends AbstractAuditableDocument> find(Datasource datasource, long startTime, long endTime) {
         logger.debug("Finding {} records for datasource:{}, startTime:{}, endTime:{}.", datasource, startTime, endTime);
-        return inputSdk.find(datasource, startTime, endTime);
+        return presidioInputPersistencyService.find(datasource, startTime, endTime);
     }
 
     private List<DlpFileEnrichedDocument> enrich(List<? extends AbstractAuditableDocument> dataRecords) { //THIS IS A TEMP IMPLEMENTATION!!!!!!!!!!

@@ -3,6 +3,7 @@ package presidio.sdk.api.domain;
 
 import fortscale.domain.core.AbstractAuditableDocument;
 import fortscale.utils.logging.Logger;
+import fortscale.utils.time.TimestampUtils;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -13,6 +14,8 @@ import java.util.Date;
 
 @Document(collection = DlpFileDataDocument.COLLECTION_NAME)
 public class DlpFileDataDocument extends AbstractAuditableDocument {
+
+    private static final Logger logger = Logger.getLogger(DlpFileDataDocument.class);
 
     public static final String COLLECTION_NAME = "dlpfile_stored_data";
 
@@ -39,67 +42,65 @@ public class DlpFileDataDocument extends AbstractAuditableDocument {
 
 
     @Field(DATE_TIME_UNIX_FIELD_NAME)
-    private long dateTimeUnix;
+    protected long dateTimeUnix;
 
     @Field(DATE_TIME_FIELD_NAME)
-    private Date dateTime;
+    protected Date dateTime;
 
     @Field(EXECUTING_APPLICATION_FIELD_NAME)
-    private String executingApplication;
+    protected String executingApplication;
 
     @Field(HOSTNAME_FIELD_NAME)
-    private String hostname;
+    protected String hostname;
 
     @Field(FIRST_NAME_FIELD_NAME)
-    private String firstName;
+    protected String firstName;
 
     @Field(LAST_NAME_FIELD_NAME)
-    private String lastName;
+    protected String lastName;
 
     @Field(USERNAME_FIELD_NAME)
-    private String username;
+    protected String username;
 
     @Field(MALWARE_SCAN_RESULT_FIELD_NAME)
-    private String malwareScanResult;
+    protected String malwareScanResult;
 
     @Field(EVENT_ID_FIELD_NAME)
-    private String eventId;
+    protected String eventId;
 
     @Field(SOURCE_IP_FIELD_NAME)
-    private String sourceIp;
+    protected String sourceIp;
 
     @Field(WAS_BLOCKED_FIELD_NAME)
-    private boolean wasBlocked;
+    protected boolean wasBlocked;
 
     @Field(WAS_CLASSIFIED_FIELD_NAME)
-    private boolean wasClassified;
+    protected boolean wasClassified;
 
     @Field(DESTINATION_PATH_FIELD_NAME)
-    private String destinationPath;
+    protected String destinationPath;
 
     @Field(DESTINATION_FILE_NAME_FIELD_NAME)
-    private String destinationFileName;
+    protected String destinationFileName;
 
     @Field(FILE_SIZE_FIELD_NAME)
-    private Double fileSize;
+    protected Double fileSize;
 
     @Field(SOURCE_PATH_FIELD_NAME)
-    private String sourcePath;
+    protected String sourcePath;
 
     @Field(SOURCE_FILE_NAME_FIELD_NAME)
-    private String sourceFileName;
+    protected String sourceFileName;
 
     @Field(SOURCE_DRIVE_TYPE_FIELD_NAME)
-    private String sourceDriveType;
+    protected String sourceDriveType;
 
     @Field(DESTINATION_DRIVE_TYPE_FIELD_NAME)
-    private String destinationDriveType;
+    protected String destinationDriveType;
 
     @Field(EVENT_TYPE_FIELD_NAME)
-    private String eventType;
+    protected String eventType;
 
-    public DlpFileDataDocument() {
-    }
 
     public DlpFileDataDocument(String[] record) {
         try {
@@ -107,7 +108,7 @@ public class DlpFileDataDocument extends AbstractAuditableDocument {
         } catch (ParseException e) {
             logger.error("Failed to create DlpFileDataDocument. Bad date: {}. Format should be yyyy-MM-dd hh:mm:ss", record[0], e); //todo remove this. create not in Ctor
         }
-        dateTimeUnix = dateTime.getTime();
+        dateTimeUnix = TimestampUtils.convertToSeconds(dateTime.getTime());
         eventType = record[1];
         executingApplication = record[2];
         hostname = record[3];
@@ -293,6 +294,5 @@ public class DlpFileDataDocument extends AbstractAuditableDocument {
     public void setEventType(String eventType) {
         this.eventType = eventType;
     }
-
 
 }

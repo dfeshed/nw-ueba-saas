@@ -1,11 +1,14 @@
 package presidio.input.sdk.impl.services;
 
+import fortscale.common.general.Datasource;
 import fortscale.domain.core.AbstractAuditableDocument;
 import fortscale.utils.logging.Logger;
+import presidio.sdk.api.domain.DlpFileDataDocument;
 import presidio.sdk.api.domain.DlpFileDataService;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class PresidioInputPersistencyServiceMongoImpl implements PresidioInputPersistencyService {
     private final Logger logger = Logger.getLogger(PresidioInputPersistencyServiceMongoImpl.class);
@@ -17,9 +20,20 @@ public class PresidioInputPersistencyServiceMongoImpl implements PresidioInputPe
     }
 
     @Override
-    public boolean store(List<AbstractAuditableDocument> events) {
-        //TODO: add metrics number of events stored
-        logger.info("Staring to insert data, number of events = {}", events.isEmpty() ? 0 : events.size());
-        return dlpFileDataService.store(events);
+    public boolean store(Datasource datasource, List<AbstractAuditableDocument> records) {
+        //TODO: change this when we have the new service and repo
+        logger.info("Storing {} records for datasource {}", records.size(), datasource);
+
+        List<DlpFileDataDocument> dlpFileDataDocuments = records // todo: this is very ad-hoc. we need to design a mechanism for resolving the right repo and casting
+                .stream()
+                .map(e -> (DlpFileDataDocument) e)
+                .collect(Collectors.toList());
+        return dlpFileDataService.store(dlpFileDataDocuments);
+    }
+
+    @Override
+    public List<? extends AbstractAuditableDocument> find(Datasource dataSource, long startTime, long endTime) {
+        logger.info("Finding records for datasource {}, startTime {}, endTime {}", dataSource, startTime, endTime);
+        return dlpFileDataService.find(startTime, endTime);
     }
 }

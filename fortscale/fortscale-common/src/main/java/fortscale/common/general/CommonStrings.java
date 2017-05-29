@@ -4,7 +4,7 @@ package fortscale.common.general;
 public class CommonStrings {
 
 
-    public static final String DATE_TIME_UNIX_FIELD_NAME = "date_time_unix";
+    public static final String DATE_TIME_UNIX_FIELD_NAME = "dateTimeUnix";
 
     public static final String COMMAND_LINE_DATASOURCE_FIELD_NAME = "datasource";
     public static final String COMMAND_LINE_START_TIME_FIELD_NAME = "start_time";

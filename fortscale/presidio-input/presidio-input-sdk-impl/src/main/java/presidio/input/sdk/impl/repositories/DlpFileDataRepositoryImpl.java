@@ -4,10 +4,12 @@ import fortscale.common.general.CommonStrings;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.stereotype.Repository;
 import presidio.sdk.api.domain.DlpFileDataDocument;
 
 import java.util.List;
 
+@Repository
 public class DlpFileDataRepositoryImpl implements DlpFileDataRepositoryCustom {
 
     private final MongoTemplate mongoTemplate;
@@ -18,9 +20,8 @@ public class DlpFileDataRepositoryImpl implements DlpFileDataRepositoryCustom {
 
     @Override
     public List<DlpFileDataDocument> find(long startTime, long endTime) {
-        Criteria startTimeCriteria = Criteria.where(CommonStrings.DATE_TIME_UNIX_FIELD_NAME).gte(startTime);
-        Criteria endTimeCriteria = Criteria.where(CommonStrings.DATE_TIME_UNIX_FIELD_NAME).lte(endTime);
-        final Query query = new Query(startTimeCriteria).addCriteria(endTimeCriteria);
+        Criteria timeCriteria = Criteria.where(CommonStrings.DATE_TIME_UNIX_FIELD_NAME).gte(startTime).lte(endTime);
+        final Query query = new Query(timeCriteria);
         return mongoTemplate.find(query, DlpFileDataDocument.class);
     }
 }

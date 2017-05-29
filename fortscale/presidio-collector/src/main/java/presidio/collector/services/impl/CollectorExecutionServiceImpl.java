@@ -23,12 +23,12 @@ public class CollectorExecutionServiceImpl implements CollectorExecutionService 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
-    private final CoreManagerSdk coreManagerSdk;
+    private final CoreManagerService coreManagerService;
     private final FetchService fetchService;
     private final ParametersValidationService parameterValidationService;
 
-    public CollectorExecutionServiceImpl(CoreManagerSdk coreManagerSdk, FetchService fetchService, ParametersValidationService parameterValidationService) {
-        this.coreManagerSdk = coreManagerSdk;
+    public CollectorExecutionServiceImpl(CoreManagerService coreManagerService, FetchService fetchService, ParametersValidationService parameterValidationService) {
+        this.coreManagerService = coreManagerService;
         this.fetchService = fetchService;
         this.parameterValidationService = parameterValidationService;
     }
@@ -94,7 +94,7 @@ public class CollectorExecutionServiceImpl implements CollectorExecutionService 
 
     private boolean store(Datasource dataSource, List<AbstractAuditableDocument> fetchedDocuments) {
         logger.info("Start store");
-        final boolean storeSuccessful = coreManagerSdk.store(dataSource, fetchedDocuments);
+        final boolean storeSuccessful = coreManagerService.store(dataSource, fetchedDocuments);
         logger.info("finish store");
         return storeSuccessful;
     }

@@ -11,22 +11,22 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import presidio.input.core.services.api.InputExecutionService;
 import presidio.input.core.services.impl.InputExecutionServiceImpl;
-import presidio.input.sdk.impl.spring.InputSdkConfig;
-import presidio.sdk.api.services.PresidioInputSdk;
+import presidio.input.sdk.impl.spring.PresidioInputPersistencyServiceConfig;
+import presidio.sdk.api.services.PresidioInputPersistencyService;
 
 @Configuration
-@Import({MongoConfig.class, ParametersValidationServiceConfig.class, InputSdkConfig.class})
+@Import({MongoConfig.class, ParametersValidationServiceConfig.class, PresidioInputPersistencyServiceConfig.class})
 public class InputCoreConfiguration {
 
     @Autowired
-    private PresidioInputSdk inputSdk;
+    private PresidioInputPersistencyService presidioInputPersistencyService;
 
     @Autowired
     private ParametersValidationService parametersValidationService;
 
     @Bean
     public InputExecutionService inputProcessService() {
-        return new InputExecutionServiceImpl(parametersValidationService, inputSdk);
+        return new InputExecutionServiceImpl(parametersValidationService, presidioInputPersistencyService);
     }
 
     @Bean
