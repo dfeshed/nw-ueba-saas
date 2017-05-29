@@ -58,8 +58,10 @@ class JarOperator(BashOperator):
         """
         parser = SafeConfigParser()
         # todo: file should be imported from package?
+        # todo: inorder to run dags that use jar_operator change the path to:
+        # todo: /home/presidio/dev-projects/presidio-core/presidio-workflows/presidio/resources/java/config.ini
         parser.read(
-            '/home/presidio/dev-projects/presidio-core/presidio-workflows/presidio/resources/java/config.ini')
+            '/home/presidio/jenkins/workspace/Presidio-Workflows/presidio-workflows/presidio/resources/java/config.ini')
         default_options_items = parser.items('default_values')
         args = dict(default_options_items + self.jvm_args.items())
         return args
@@ -93,7 +95,7 @@ class JarOperator(BashOperator):
         bash_command = ' '.join(bash_command)
         return bash_command
 
-    def java_path(self,bash_command):
+    def java_path(self, bash_command):
         """
         
         Java location e.g: /usr/bin/java

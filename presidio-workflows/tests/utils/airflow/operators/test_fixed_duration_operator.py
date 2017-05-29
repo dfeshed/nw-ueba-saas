@@ -15,11 +15,11 @@ MAIN_CLASS = 'HelloWorld.Main'
 def test_invalid_execution_date():
     """
 
-    Test skipped task of fixed duration operator 
+    Test invalid execution date
     :return:
     """
 
-    logging.info('Test skipped task state of fixed duration operator')
+    logging.info('Test invalid execution date')
     default = datetime(2014, 5, 13, 13, 00, 2)
 
     default_args = {
@@ -61,10 +61,10 @@ def test_invalid_execution_date():
 def test_valid_execution_date():
     """
 
-    Test success state of fixed duration operator
+    Test valid execution date
     :return:
     """
-    logging.info('Test fixed duration operator')
+    logging.info('Test valid execution date')
 
     default = datetime(2014, 5, 13, 13, 56, 2)
 
