@@ -5,6 +5,6 @@ import fortscale.domain.core.AbstractAuditableDocument;
 
 import java.util.List;
 
-public interface PresidioInputSdk {
-    boolean store(List<AbstractAuditableDocument> events);
+public interface PresidioInputPersistencyService {
+    boolean store(List<AbstractAuditableDocument> event);
 }
