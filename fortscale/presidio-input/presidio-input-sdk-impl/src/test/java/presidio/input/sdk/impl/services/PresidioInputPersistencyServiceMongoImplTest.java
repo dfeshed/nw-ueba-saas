@@ -41,7 +41,7 @@ public class PresidioInputPersistencyServiceMongoImplTest {
 
 
 	@Test
-	public void dummy() {
+	public void storeOneEventToMongoAndReadEventFromMongo() {
 		List<AbstractAuditableDocument> list = new ArrayList<>();
 		AbstractAuditableDocument doc = new DlpFileDataDocument(("2017-06-06 10:10:10,executing_application,hostname," +
 				"first_name,dddd,last_name,username,malware_scan_result,event_id,source_ip,false,false,destination_path," +
