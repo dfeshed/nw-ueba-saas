@@ -56,6 +56,11 @@
             <artifactId>opencsv</artifactId>
             <version>3.9</version>
         </dependency>
+        <dependency>
+            <groupId>fortscale</groupId>
+            <artifactId>fortscale-services</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
 

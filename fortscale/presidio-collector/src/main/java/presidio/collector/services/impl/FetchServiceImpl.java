@@ -1,8 +1,8 @@
 package presidio.collector.services.impl;
 
+import fortscale.common.general.Datasource;
 import fortscale.utils.logging.Logger;
 import org.joda.time.DateTime;
-import presidio.collector.Datasource;
 import presidio.collector.services.api.FetchService;
 import presidio.collector.services.api.Fetcher;
 
