@@ -1,7 +1,6 @@
 import dateutil.parser
 import logging
 from airflow import DAG
-
 from presidio.factories.abstract_dag_factory import AbstractDagFactory
 from presidio.factories.dag_factories_exceptions import DagsConfigurationContainsOverlappingDatesException
 
@@ -30,7 +29,12 @@ class PresidioDagFactory(AbstractDagFactory):
         for dag_config in dags_configs:
             args = dag_config.get("args")
             new_dag_id = dag_config.get("dag_id")
-            interval = dag_config.get("schedule_interval")
+            temp_interval = dag_config.get("schedule_interval")
+            if temp_interval.startswith("timedelta"):
+                from datetime import timedelta
+                interval = eval(temp_interval)
+            else:
+                interval = temp_interval
             start_date = dateutil.parser.parse(dag_config.get("start_date"))
             end_date = dateutil.parser.parse(dag_config.get("end_date"))
             full_filepath = dag_config.get("full_filepath")
