@@ -9,7 +9,7 @@ from tests.utils.airflow.operators.base_test_operator import assert_task_success
 DEFAULT_DATE = datetime(2014, 1, 1)
 # In order to run test locally change the path to:
 # '/home/presidio/dev-projects/presidio-core/presidio-workflows/tests/resources/jars/test.jar'
-JAR_PATH = 'home/presidio/jenkins/workspace/Presidio-Workflows/presidio-workflows/tests/resources/jars/test.jar'
+JAR_PATH = '/home/presidio/jenkins/workspace/Presidio-Workflows/presidio-workflows/tests/resources/jars/test.jar'
 MAIN_CLASS = 'HelloWorld.Main'
 
 

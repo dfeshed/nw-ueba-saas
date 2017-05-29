@@ -10,7 +10,7 @@ FIX_DURATION_STRATEGY_DAILY = timedelta(days=1)
 
 # In order to run test locally change the path to:
 # '/home/presidio/dev-projects/presidio-core/presidio-workflows/tests/resources/jars/test.jar'
-JAR_PATH = 'home/presidio/jenkins/workspace/Presidio-Workflows/presidio-workflows/tests/resources/jars/test.jar'
+JAR_PATH = '/home/presidio/jenkins/workspace/Presidio-Workflows/presidio-workflows/tests/resources/jars/test.jar'
 MAIN_CLASS = 'HelloWorld.Main'
 
 
