@@ -37,3 +37,16 @@ class ScoreAggregationsOperator(AggregationsOperator):
             return '/home/presidio/airflow/tasks/dummy.jar'
         else:
             raise UnsupportedFixedDurationStrategyError(self.fixed_duration_strategy)
+
+    def get_main_class(self):
+        """
+       Chooses the right main class of JAR file according to the fixed_duration_strategy.
+       :return: The main class name of JAR file
+       """
+
+        if self.fixed_duration_strategy == timedelta(hours=1):
+            return 'HelloWorld.Main'
+        elif self.fixed_duration_strategy == timedelta(days=1):
+            return 'HelloWorld.Main'
+        else:
+            raise UnsupportedFixedDurationStrategyError(self.fixed_duration_strategy)

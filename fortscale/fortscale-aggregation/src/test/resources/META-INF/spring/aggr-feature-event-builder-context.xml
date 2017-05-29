@@ -2,24 +2,13 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:mockito="http://www.mockito.org/spring/mockito"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
-        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd">
 
-        http://www.mockito.org/spring/mockito http://www.mockito.org/spring/mockito.xsd">
-
-	
-	
-	
-    <mockito:mock id="dataSourcesSyncTimer" class="fortscale.aggregation.DataSourcesSyncTimer"/>
-	<mockito:mock id="aggrFeatureFuncService" class="fortscale.aggregation.feature.functions.IAggrFeatureEventFunctionsService"/>
-	<mockito:mock id="featureBucketsService" class="fortscale.aggregation.feature.bucket.FeatureBucketsService"/>
-	<mockito:mock id="aggrEventTopologyService" class="fortscale.aggregation.feature.event.AggrEventTopologyService"/>
     <bean id="aggregatedFeatureEventsConfUtilServiceConfig" class="fortscale.aggregation.feature.event.config.AggregatedFeatureEventsConfUtilServiceConfig"/>
-
     <bean id="aggrFeatureFuncService" class="fortscale.aggregation.feature.functions.AggrFeatureFuncService"/>
     <bean id="aggrFeatureEventBuilderTestHelper" class="fortscale.aggregation.feature.event.AggrFeatureEventBuilderTestHelper"/>
-<bean id="aggrFeatureEventBuilderServiceConfig" class="fortscale.aggregation.feature.event.config.AggrFeatureEventBuilderServiceConfig"/>
+    <bean id="aggrFeatureEventBuilderServiceConfig" class="fortscale.aggregation.feature.event.config.AggrFeatureEventBuilderServiceConfig"/>
     <context:spring-configured />
     <context:annotation-config />
     <context:component-scan base-package="fortscale.global" />
