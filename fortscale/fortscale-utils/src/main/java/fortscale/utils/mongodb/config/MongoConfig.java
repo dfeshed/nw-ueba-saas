@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.mongodb.config.AbstractMongoConfiguration;
+import org.springframework.data.mongodb.config.EnableMongoAuditing;
 import org.springframework.data.mongodb.core.convert.CustomConversions;
 import org.springframework.data.mongodb.core.convert.DbRefResolver;
 import org.springframework.data.mongodb.core.convert.DefaultDbRefResolver;
@@ -22,20 +23,17 @@ import java.util.List;
  * Created by rans on 27/10/15.
  */
 @Configuration
+@EnableMongoAuditing
 public class MongoConfig extends AbstractMongoConfiguration {
-
-    @Autowired (required = false)
-    private List<Converter> converters;
-
-    @Value("${mongo.host.name}")
-    private String mongoHostName;
-
-    @Value("${mongo.host.port}")
-    private int mongoHostPort;
 
     @Value("${mongo.db.name}")
     protected String mongoDBName;
-
+    @Autowired (required = false)
+    private List<Converter> converters;
+    @Value("${mongo.host.name}")
+    private String mongoHostName;
+    @Value("${mongo.host.port}")
+    private int mongoHostPort;
     @Value("${mongo.db.user}")
     private String mongoUserName;
 

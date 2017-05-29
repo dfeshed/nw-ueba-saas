@@ -21,9 +21,9 @@ import fortscale.utils.logging.Logger;
 public class ADEInputDataStoreImplMongo implements ADEInputDataStore ,MongoIndexedStore {
     private static final Logger logger = Logger.getLogger(ADEInputDataStoreImplMongo.class);
 
-    private MongoTemplate mongoTemplate;
-    private ADEInputDataToCollectionNameTranslator translator;
-    private MongoIndexCreator mongoIndexCreator;
+    private final MongoTemplate mongoTemplate;
+    private final ADEInputDataToCollectionNameTranslator translator;
+    private final MongoIndexCreator mongoIndexCreator;
 
     public ADEInputDataStoreImplMongo(MongoTemplate mongoTemplate, MongoIndexCreator mongoIndexCreator, ADEInputDataToCollectionNameTranslator translator) {
         this.mongoTemplate = mongoTemplate;
@@ -57,7 +57,7 @@ public class ADEInputDataStoreImplMongo implements ADEInputDataStore ,MongoIndex
         return null;
     }
 
-    @Override
+
     public Set<Index> getIndexes() {
         Set<Index> indexSet = new HashSet<>();
         indexSet.add(new Index().on(ADEInputRecord.EVENT_TIME_FIELD, Sort.Direction.ASC));

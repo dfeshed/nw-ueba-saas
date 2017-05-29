@@ -23,8 +23,7 @@ public class MongoIndexCreatorImpl implements MongoIndexCreator {
     private MongoDbUtilService mongoDbUtilService;
 
     /**
-     *
-     * @param mongoTemplate you know...
+     * @param mongoTemplate      you know...
      * @param mongoDbUtilService handles collection creation and caching of existing collections
      */
     public MongoIndexCreatorImpl(MongoTemplate mongoTemplate, MongoDbUtilService mongoDbUtilService) {
@@ -35,43 +34,36 @@ public class MongoIndexCreatorImpl implements MongoIndexCreator {
 
     public void ensureIndexes(String collectionName, MongoIndexedStore store) {
 
-        if (!collectionToIndexCache.containsKey(collectionName))
-        {
+        if (!collectionToIndexCache.containsKey(collectionName)) {
             Set<Index> collectionIndexes = store.getIndexes();
-            collectionToIndexCache.put(collectionName,collectionIndexes);
-            addIndexesToDb(collectionName,collectionIndexes);
-        }
-        else
-        {
+            collectionToIndexCache.put(collectionName, collectionIndexes);
+            addIndexesToDb(collectionName, collectionIndexes);
+        } else {
             Set<Index> storeIndexes = store.getIndexes();
             Set<Index> cacheIndexes = collectionToIndexCache.get(collectionName);
-            if(!cacheIndexes.containsAll(storeIndexes))
-            {
+            if (!cacheIndexes.containsAll(storeIndexes)) {
                 cacheIndexes.addAll(storeIndexes);
-                addIndexesToDb(collectionName,cacheIndexes);
+                addIndexesToDb(collectionName, cacheIndexes);
                 return;
             }
-            logger.debug("not adding any new indexes for collectionName={}",collectionName);
+            logger.debug("not adding any new indexes for collectionName={}", collectionName);
         }
     }
 
     /**
-     *
      * @param collectionName collection to ensure indexes on
-     * @param indexes to be added
+     * @param indexes        to be added
      */
-    private void addIndexesToDb(String collectionName, Set<Index> indexes)
-    {
-        for (Index index: indexes) {
-            if(index == null)
-            {
+    private void addIndexesToDb(String collectionName, Set<Index> indexes) {
+        for (Index index : indexes) {
+            if (index == null) {
                 continue;
             }
-            if(!mongoDbUtilService.collectionExists(collectionName))
-            {
+            if (!mongoDbUtilService.collectionExists(collectionName)) {
+                logger.info("creating collection={}", collectionName);
                 mongoDbUtilService.createCollection(collectionName);
             }
-            logger.info("ensuring index={} for collectionName={}",index,collectionName);
+            logger.info("ensuring index={} for collectionName={}", index, collectionName);
             mongoTemplate.indexOps(collectionName).ensureIndex(index);
         }
     }

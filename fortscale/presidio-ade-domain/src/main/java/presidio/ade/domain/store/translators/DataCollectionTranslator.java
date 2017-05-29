@@ -20,7 +20,7 @@ public interface DataCollectionTranslator<T> {
 
     /**
      * @return all relevant mongodb collection names to be cleaned for given cleanup filters
-     * @param cleanupParams
+     * @param cleanupParams deletion filtering params
      */
     Collection<String> toCollectionNames(ADEInputCleanupParams cleanupParams);
 

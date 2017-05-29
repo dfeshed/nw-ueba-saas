@@ -10,10 +10,10 @@ import java.time.Instant;
  * Created by barak_schuster on 5/18/17.
  */
 public class ADEInputRecordsMetaData {
-    private String dataSource;
-    private Duration dataProcessingDuration;
-    private Instant startInstant;
-    private Instant endInstant;
+    private final String dataSource;
+    private final Duration dataProcessingDuration;
+    private final Instant startInstant;
+    private final Instant endInstant;
 
     public ADEInputRecordsMetaData(String dataSource, Duration dataProcessingDuration, Instant startInstant, Instant endInstant) {
         this.dataSource = dataSource;

@@ -313,7 +313,11 @@
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
 		</dependency>
-	</dependencies>
+        <dependency>
+            <groupId>uk.co.jemos.podam</groupId>
+            <artifactId>podam</artifactId>
+        </dependency>
+    </dependencies>
 
 	<build>
 		<plugins>

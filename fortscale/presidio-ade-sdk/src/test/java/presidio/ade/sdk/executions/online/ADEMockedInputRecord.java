@@ -5,7 +5,7 @@ import presidio.ade.domain.store.input.ADEInputRecord;
 import java.time.Instant;
 
 /**
- * test pojo used to mock ade input data
+ * shouldInsertDataAndCreateIndexes pojo used to mock ade input data
  * Created by barak_schuster on 5/28/17.
  */
 public class ADEMockedInputRecord extends ADEInputRecord {

@@ -7,9 +7,9 @@ import java.time.Instant;
  * Created by barak_schuster on 5/21/17.
  */
 public class ADEInputCleanupParams {
-    private Instant startDate;
-    private Instant endDate;
-    private String dataSource;
+    private final Instant startDate;
+    private final Instant endDate;
+    private final String dataSource;
 
     public ADEInputCleanupParams(Instant startDate, Instant endDate, String dataSource) {
         this.startDate = startDate;
