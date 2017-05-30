@@ -85,10 +85,10 @@
 			<version>${jsonpath.version}</version>
 		</dependency>
 
-		<!-- Fetch Jackson require by project-->
+		<!-- Fetch Jackson require by project. The version defined in sprint boot parent-->
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
 		</dependency>
 
 

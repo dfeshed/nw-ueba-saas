@@ -448,10 +448,6 @@
 					<artifactId>cxf-rt-frontend-jaxrs</artifactId>
 					<groupId>org.apache.cxf</groupId>
 				</exclusion>
-				<!--<exclusion>-->
-					<!--<artifactId>jackson-databind</artifactId>-->
-					<!--<groupId>com.fasterxml.jackson.core</groupId>-->
-				<!--</exclusion>-->
 				<exclusion>
 					<artifactId>javax.servlet-api</artifactId>
 					<groupId>javax.servlet</groupId>
