@@ -188,7 +188,7 @@ def test_all_params(default_args, java_args):
         'remote_debug_port': 9200,
         'jar_path': JAR_PATH,
         'main_class': MAIN_CLASS,
-        'java_overriding_logback_conf_path': '/home/presidio/dev-projects/presidio-core/presidio-workflows/tests/resources/xmls/test_logback.xml',
+        'java_overriding_logback_conf_path': PATH + '/tests/resources/xmls/test_logback.xml',
         'java_path': '/usr/bin/java',
         'timezone': '-Duser.timezone=America/New_York',
         'remote_debug_suspend': False,
