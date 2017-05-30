@@ -9,4 +9,7 @@ public interface DlpFileDataService {
 
     boolean store(List<? extends AbstractAuditableDocument> documents);
 
+    List<DlpFileDataDocument> find(long startTime, long endTime);
+
+
 }

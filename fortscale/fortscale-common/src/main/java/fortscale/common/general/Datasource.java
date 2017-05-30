@@ -1,4 +1,4 @@
-package presidio.collector;
+package fortscale.common.general;
 
 
 public enum Datasource {

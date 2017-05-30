@@ -1,10 +1,8 @@
 package presidio.input.core;
 
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import fortscale.utils.logging.Logger;
 import org.springframework.boot.SpringApplication;
-
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.task.configuration.EnableTask;
 import org.springframework.context.annotation.ComponentScan;
@@ -14,19 +12,19 @@ import presidio.input.core.spring.InputCoreConfiguration;
 
 @SpringBootApplication
 @ComponentScan(
-		excludeFilters = {@ComponentScan.Filter(type = FilterType.REGEX, pattern = "fortscale.*"),
-						  @ComponentScan.Filter(type = FilterType.REGEX, pattern = "presidio.*")
-						})
+        excludeFilters = { //only scan for spring-boot beans
+                @ComponentScan.Filter(type = FilterType.REGEX, pattern = "fortscale.*"),
+                @ComponentScan.Filter(type = FilterType.REGEX, pattern = "presidio.*")})
 @EnableTask
-public class FortscaleInputCoreApplication{
+public class FortscaleInputCoreApplication {
 
 
-	private static  Logger log = LoggerFactory.getLogger(FortscaleInputCoreApplication.class);
+    private static final Logger logger = Logger.getLogger(FortscaleInputCoreApplication.class);
 
-	public static void main(String[] args) {
-		log.info("Start Input Core Proccessing");
-		SpringApplication.run(new Object[]{FortscaleInputCoreApplication.class, InputCoreConfiguration.class}, args);
-	}
+    public static void main(String[] args) {
+        logger.info("Start Input Core Processing");
+        SpringApplication.run(new Object[]{FortscaleInputCoreApplication.class, InputCoreConfiguration.class}, args);
+    }
 
 
 }
