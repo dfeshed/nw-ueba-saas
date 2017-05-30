@@ -43,7 +43,7 @@ const RemediationTaskFilters = Component.extend({
    */
   @computed('users', 'createdByFilters')
   selectedCreatedBys(users, createdByFilters = []) {
-    return users.filter((user) => (createdByFilters.includes(user.name)));
+    return users.filter((user) => (createdByFilters.includes(user.id)));
   },
 
   actions: {
@@ -71,7 +71,7 @@ const RemediationTaskFilters = Component.extend({
     createdByChanged(selections) {
       this.get('updateFilter')({
         createdBy: selections.map((selection) => {
-          return selection.name;
+          return selection.id;
         })
       });
     }

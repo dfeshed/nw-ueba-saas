@@ -403,6 +403,7 @@ export default {
       true: 'Yes',
       false: 'No'
     },
+    empty: '(empty)',
     filters: 'Filters',
     timeframeOptions: {
       LAST_5_MINUTES: 'Last 5 Minutes',

@@ -10,6 +10,8 @@ $inputHeight: 33px;
   &__value {
     height: 100%;
     width: 100%;
+    min-height: 34px;
+    min-width: 100px;
     box-sizing: border-box;
     display: inline-block;
     padding: rsa-whitespace(less);
@@ -22,14 +24,14 @@ $inputHeight: 33px;
     .rsa-form-button-wrapper {
       line-height: inherit;
       padding: rsa-whitespace(less);
-      background-color: rsa-color(gray, dark, $rsa-somewhat-opaque);
       border: 1px solid rsa-color(gray, base, $rsa-transparent);
-      visibility: hidden;
+      visibility: visible;
 
       .rsa-form-button {
         padding: 0;
         i {
-          font-size: 1rem;
+          font-size: 0.75rem;
+          color: rsa-color(gray, base, $rsa-somewhat-opaque);
         }
       }
     }
@@ -65,6 +67,11 @@ $inputHeight: 33px;
       cursor: pointer;
       border: 1px solid rsa-color(gray);
       visibility: visible;
+      background-color: rsa-color(gray, dark, $rsa-somewhat-opaque);
+      .rsa-form-button i {
+        color: inherit;
+        font-size: 1rem;
+      }
     }
   }
 

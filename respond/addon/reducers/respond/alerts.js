@@ -8,11 +8,15 @@ const localStorageKey = 'rsa::nw::respond::alerts';
 // Load local storage values and incorporate into initial state
 const initialState = load(explorerInitialState, localStorageKey);
 
-initialState.itemsFilters = {
-  receivedTime: explorerReducers.defaultDateRange()
-};
 initialState.sortField = 'receivedTime';
 initialState.defaultDateFilterField = 'receivedTime';
+
+// If there are no filters, add the baseline date range filter
+if (!initialState.itemsFilters) {
+  initialState.itemsFilters = {
+    receivedTime: explorerReducers.defaultDateRange()
+  };
+}
 
 // Mechanism to persist some of the state to local storage
 // This function will curry a given reducer (function), enabling it to persist its resulting state to a given

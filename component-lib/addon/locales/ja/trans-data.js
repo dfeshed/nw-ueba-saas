@@ -403,6 +403,7 @@ export default {
       true: 'ja_Yes',
       false: 'ja_No'
     },
+    empty: 'ja_(empty)',
     filters: 'ja_Filters',
     timeframeOptions: {
       LAST_5_MINUTES: 'ja_Last 5 Minutes',

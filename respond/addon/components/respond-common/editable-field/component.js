@@ -43,6 +43,14 @@ export default Component.extend({
   isEditing: false,
 
   /**
+   * The maximum number of characters for the input type
+   * @type {number}
+   * @property max
+   * @public
+   */
+  inputMaxlength: 75,
+
+  /**
    * The hasChanges property represents whether or not the user has modified the original value while in editing mode.
    * @type {boolean}
    * @property hasChanges
