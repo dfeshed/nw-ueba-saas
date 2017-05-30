@@ -54,17 +54,12 @@ function gzipAssets() {
 rm -f $SA_RPM_ROOT/*.rpm
 timestamp="$(date +%y%m%d%H%M%S)"
 
-# Build EL6 RPM
+# Build RPM
 makeRPMDirs
 cp -rf $SA_ROOT/rpm/nginx $TMP_RPM_BUILD_ROOT/etc/nginx
 cp -rf $SA_ROOT/dist ${TMP_RPM_BUILD_ROOT}${APP_INSTALL_FOLDER}/html
 gzipAssets
-buildRPM $timestamp "el6"
 
-# Build EL7 RPM
-makeRPMDirs
-cp -rf $SA_ROOT/dist ${TMP_RPM_BUILD_ROOT}${APP_INSTALL_FOLDER}/html
-gzipAssets
 buildRPM $timestamp "el7"
 
 mv $SA_RPM_ROOT/*.rpm $SA_RPM_ROOT/RPMS/noarch
