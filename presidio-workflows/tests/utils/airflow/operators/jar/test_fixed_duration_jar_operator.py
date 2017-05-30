@@ -2,16 +2,12 @@ import logging
 from datetime import datetime, timedelta
 import pytest
 from airflow import DAG
-from presidio.operators.fixed_duration_operator import FixedDurationOperator
+from presidio.operators.fixed_duration_jar_operator import FixedDurationJarOperator
 from tests.utils.airflow.operators.base_test_operator import assert_task_success_state, get_task_instances
+from tests.utils.airflow.operators.jar.base_test_jar_operator import assert_bash_comment, JAR_PATH, MAIN_CLASS
 
 FIX_DURATION_STRATEGY_HOURLY = timedelta(hours=1)
 FIX_DURATION_STRATEGY_DAILY = timedelta(days=1)
-
-# In order to run test locally change the path to:
-# '/home/presidio/dev-projects/presidio-core/presidio-workflows/tests/resources/jars/test.jar'
-JAR_PATH = '/home/presidio/jenkins/workspace/Presidio-Workflows/presidio-workflows/tests/resources/jars/test.jar'
-MAIN_CLASS = 'HelloWorld.Main'
 
 
 def test_invalid_execution_date():
@@ -48,7 +44,7 @@ def test_invalid_execution_date():
         'b': 'two'
     }
 
-    task = FixedDurationOperator(
+    task = FixedDurationJarOperator(
         task_id='fixed_duration_operator',
         jvm_args=jvm_args,
         java_args=java_args,
@@ -95,7 +91,7 @@ def test_valid_execution_date():
         'b': 'two'
     }
 
-    task = FixedDurationOperator(
+    task = FixedDurationJarOperator(
         task_id='fixed_duration_operator',
         jvm_args=jvm_args,
         java_args=java_args,
@@ -112,22 +108,3 @@ def test_valid_execution_date():
                           'start_date': '2014-05-13T13:00:00', 'end_date': '2014-05-13T14:00:00'}
     assert_bash_comment(task, expected_bash_comment, expected_java_args)
 
-
-def assert_bash_comment(task, expected_bash_comment, expected_java_args={}):
-    """
-    Checks whether jar operator build expected_bash_comment 
-    :param task: 
-    :param expected_bash_comment: 
-    :param expected_java_args: 
-    :return: 
-    """
-    task_bash_command = task.bash_command
-    main_class_index = task_bash_command.rfind(MAIN_CLASS) + len(MAIN_CLASS)
-    bash_command = task.bash_command[:main_class_index]
-
-    assert bash_command == expected_bash_comment
-
-    args = task_bash_command[-(len(task_bash_command) - main_class_index):].strip()
-    java_args_dict = {k: v.strip('"') for k, v in [i.split("=", 1) for i in args.split(" ")]}
-
-    assert java_args_dict == expected_java_args

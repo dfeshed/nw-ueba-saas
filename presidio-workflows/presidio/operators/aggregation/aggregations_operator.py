@@ -1,10 +1,10 @@
 from abc import ABCMeta, abstractmethod
 from airflow.utils.decorators import apply_defaults
-from presidio.operators.fixed_duration_operator import FixedDurationOperator
+from presidio.operators.fixed_duration_jar_operator import FixedDurationJarOperator
 from presidio.utils.services.fixed_duration_strategy import fixed_duration_strategy_to_string
 
 
-class AggregationsOperator(FixedDurationOperator):
+class AggregationsOperator(FixedDurationJarOperator):
     """
     Runs an aggregations task (a JAR file) using a bash command.
     The c'tor accepts the task arguments that are constant throughout the

@@ -5,12 +5,9 @@ import pytest
 from airflow import DAG
 from presidio.utils.airflow.operators.jar_operator import JarOperator
 from tests.utils.airflow.operators.base_test_operator import assert_task_success_state, get_task_instances
+from tests.utils.airflow.operators.jar.base_test_jar_operator import assert_bash_comment, JAR_PATH, MAIN_CLASS, PATH
 
 DEFAULT_DATE = datetime(2014, 1, 1)
-# In order to run test locally change the path to:
-# '/home/presidio/dev-projects/presidio-core/presidio-workflows/tests/resources/jars/test.jar'
-JAR_PATH = '/home/presidio/jenkins/workspace/Presidio-Workflows/presidio-workflows/tests/resources/jars/test.jar'
-MAIN_CLASS = 'HelloWorld.Main'
 
 
 @pytest.fixture
@@ -42,6 +39,7 @@ def build_and_run_task(jvm_args, dag, java_args, expected_bash_comment, expected
     :param dag: 
     :param java_args: 
     :param expected_bash_comment: 
+    :param expected_java_args: 
     :return: 
     """
     task = JarOperator(
@@ -56,26 +54,6 @@ def build_and_run_task(jvm_args, dag, java_args, expected_bash_comment, expected
 
     assert_bash_comment(task, expected_bash_comment, expected_java_args)
     assert_task_success_state(task_instances, task.task_id)
-
-
-def assert_bash_comment(task, expected_bash_comment, expected_java_args={}):
-    """
-    Checks whether jar operator build expected_bash_comment 
-    :param task: 
-    :param expected_bash_comment: 
-    :param expected_java_args: 
-    :return: 
-    """
-    task_bash_command = task.bash_command
-    main_class_index = task_bash_command.rfind(MAIN_CLASS) + len(MAIN_CLASS)
-    bash_command = task.bash_command[:main_class_index]
-
-    assert bash_command == expected_bash_comment
-
-    args = task_bash_command[-(len(task_bash_command)-main_class_index):].strip()
-    java_args_dict = {k:v.strip('"') for k,v in [i.split("=",1) for i in args.split(" ")]}
-
-    assert java_args_dict == expected_java_args
 
 
 def test_jvm_memory_allocation(default_args, java_args):
@@ -135,7 +113,7 @@ def test_logback(default_args, java_args):
     """
     logging.info('Test logback:')
     jvm_args = {
-        'java_overriding_logback_conf_path': '/home/presidio/dev-projects/presidio-core/presidio-workflows/tests/resources/xmls/test_logback.xml',
+        'java_overriding_logback_conf_path': PATH + '/tests/resources/xmls/test_logback.xml',
         'jar_path': JAR_PATH,
         'main_class': MAIN_CLASS,
     }

@@ -6,13 +6,13 @@ from presidio.utils.services.fixed_duration_strategy import is_execution_date_va
 from presidio.utils.airflow.context_wrapper import ContextWrapper
 
 
-class FixedDurationOperator(JarOperator):
+class FixedDurationJarOperator(JarOperator):
     """
     
-    The FixedDurationOperator creates java_args and updates the JarOperator.
+    The FixedDurationJarOperator creates java_args and updates the JarOperator.
     java_args contain start_date, end_date and fixed_duration_strategy.
     
-    FixedDurationOperator executes the task only if interval greater then fixed_duration
+    FixedDurationJarOperator executes the task only if interval greater then fixed_duration
     or execution_date is the last interval of fixed_duration.
     
     
@@ -25,7 +25,7 @@ class FixedDurationOperator(JarOperator):
         self.interval = kwargs.get('dag').schedule_interval
         self.fixed_duration_strategy = fixed_duration_strategy
         java_args.update({'fixed_duration_strategy': fixed_duration_strategy.total_seconds()})
-        super(FixedDurationOperator, self).__init__(java_args=java_args, *args, **kwargs)
+        super(FixedDurationJarOperator, self).__init__(java_args=java_args, *args, **kwargs)
 
     def execute(self, context):
         """
@@ -54,8 +54,8 @@ class FixedDurationOperator(JarOperator):
             'start_date': start_date.isoformat(),
             'end_date': end_date.isoformat()
         }
-        super(FixedDurationOperator, self).update_java_args(java_args)
-        super(FixedDurationOperator, self).execute(context)
+        super(FixedDurationJarOperator, self).update_java_args(java_args)
+        super(FixedDurationJarOperator, self).execute(context)
 
 
 class InvalidExecutionDateError(ValueError):

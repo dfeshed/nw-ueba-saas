@@ -1,8 +1,8 @@
 from airflow.utils.decorators import apply_defaults
-from presidio.operators.fixed_duration_operator import FixedDurationOperator
+from presidio.operators.fixed_duration_jar_operator import FixedDurationJarOperator
 
 
-class SmartEventsOperator(FixedDurationOperator):
+class SmartEventsOperator(FixedDurationJarOperator):
     """
     Runs the "Smart Events" task (JAR). The task:
     1. Groups together in a smart event the configured aggregation events from the time interval, per context.
