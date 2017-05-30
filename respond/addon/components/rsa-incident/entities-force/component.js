@@ -13,7 +13,7 @@ export default FastForce.extend(HighlightsEntities, {
 
   // Configuration for wiring up entities to context lookups.
   // @see context/mixins/highlights-entities
-  entitySelector: '.rsa-force-layout-node',
+  entitySelector: '.rsa-force-layout-node .text',
   entityEndpointId: 'IM',
 
   /**
@@ -29,7 +29,7 @@ export default FastForce.extend(HighlightsEntities, {
     if (nodes) {
 
       // Set the HTML attributes required by HighlightsEntities mixin.
-      nodes.each(function({ type, value }) {
+      nodes.select('.text').each(function({ type, value }) {
         this.setAttribute('data-meta-key', type);
         this.setAttribute('data-entity-id', value);
       });

@@ -30,13 +30,15 @@ $entityFileColor: $base0;
         fill: $entityFileColor;
       }
       .text {
-        //fill: rsa-color(amber);
         fill: rsa-color(white);
-      }
-
-      &.has-context-data {
-        .text {
+        
+        &.has-context-data {
           @include rsa-has-context-data(true);
+          transition: font-size 0.3s;
+
+          &:hover {
+            font-size: 100%;
+          }
         }
       }
 
