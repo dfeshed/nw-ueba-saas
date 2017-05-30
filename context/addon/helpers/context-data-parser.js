@@ -43,7 +43,6 @@ const _enrichDataSourceData = (contextDataForDS, dataSourceData) => {
       if (dataSourceData.resultMeta.iocScore_gte) {
         dataSourceData.header = ` (IIOC Score > ${dataSourceData.resultMeta.iocScore_gte})`;
       }
-      contextDataForDS.resultList = (contextDataForDS.resultList || []).concat(dataSourceData.resultList);
       break;
     }
     case 'Users': {

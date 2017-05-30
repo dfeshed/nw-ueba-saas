@@ -13,7 +13,7 @@
               {{rsa-content-badge-score
                 label=(t 'context.iiocScore')
                 score=(get data dSDetails.riskScore.field)
-                style=badgeLevel
+                style=(get (risk-score-to-badge-level (get data dSDetails.riskScore.field) dSDetails.dataSourceGroup) 'badgeLevel')
                 invertColor=true
               }}
             </div>
