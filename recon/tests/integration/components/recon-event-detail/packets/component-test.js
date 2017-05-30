@@ -1,16 +1,66 @@
+import wait from 'ember-test-helpers/wait';
+
 import { moduleForComponent, test } from 'ember-qunit';
-// import hbs from 'htmlbars-inline-precompile';
+import hbs from 'htmlbars-inline-precompile';
+
+import VisualActions from 'recon/actions/visual-creators';
+import DataHelper from '../../../../helpers/data-helper';
 
 moduleForComponent('recon-event-detail-packets', 'Integration | Component | recon event detail packets', {
-  integration: true
+  integration: true,
+  beforeEach() {
+    this.inject.service('redux');
+  }
 });
 
-test('it renders', function(assert) {
-  assert.expect(0);
-  // Set any properties with this.set('myProperty', 'value');
-  // Handle any actions with this.on('myAction', function(val) { ... });
+test('renders packets if data present', function(assert) {
+  new DataHelper(this.get('redux'))
+    .setViewToPacket()
+    .initializeData()
+    .renderPackets();
+  this.render(hbs`{{recon-event-detail/packets}}`);
+  return wait().then(() => {
+    const str = this.$().text().trim().replace(/\s/g, '').substring(0, 200);
+    assert.equal(str, 'responsepacket1un11fin11ID4804965123248SEQ1878393573PAYLOAD0bytes000000000016000032000048000064a44c11ef6201f0f755ed59bf0800450000343c1140007e06846c8945834a36fbf8bbd7a900506ff602e50000000080022000c8140');
+  });
+});
 
-  // this.render(hbs`{{recon-event-detail-packets}}`);
-  //
-  // assert.equal(this.$().text().trim(), '');
+test('renders spinner when data present but in the process of being rendered', function(assert) {
+  new DataHelper(this.get('redux'))
+    .setViewToPacket()
+    .initializeData();
+  this.render(hbs`{{recon-event-detail/packets}}`);
+  return wait().then(() => {
+    const loader = this.$('.recon-loader').length;
+    assert.equal(loader, 1);
+  });
+});
+
+test('renders error when no data present', function(assert) {
+  new DataHelper(this.get('redux'))
+    .setViewToPacket()
+    .noPackets();
+  this.render(hbs`{{recon-event-detail/packets}}`);
+  return wait().then(() => {
+    const str = this.$('.rsa-panel-message').text().trim().replace(/\s/g, '');
+    assert.equal(str, 'NoHEXdatawasgeneratedduringcontentreconstruction.');
+  });
+});
+
+test('renders nothing when data present, but hidden by request/response', function(assert) {
+  new DataHelper(this.get('redux'))
+    .setViewToPacket()
+    .initializeData();
+
+  this.get('redux').dispatch(VisualActions.toggleRequestData());
+  this.get('redux').dispatch(VisualActions.toggleResponseData());
+
+  this.render(hbs`{{recon-event-detail/packets}}`);
+  return wait().then(() => {
+    // remove the pager so its text doesn't confuse test
+    this.$('.recon-pager').remove();
+
+    const str = this.$().text().trim().replace(/\s/g, '').substring(0, 200);
+    assert.equal(str, '');
+  });
 });

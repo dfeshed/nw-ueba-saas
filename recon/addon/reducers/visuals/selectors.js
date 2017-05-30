@@ -6,6 +6,13 @@ const { createSelector } = reselect;
 
 const typeCode = (recon) => recon.visuals.currentReconView.code;
 const currentReconView = (recon) => recon.visuals.currentReconView;
+export const isRequestShown = (recon) => recon.visuals.isRequestShown;
+export const isResponseShown = (recon) => recon.visuals.isResponseShown;
+
+export const allDataHidden = createSelector(
+  [isRequestShown, isResponseShown],
+  (isRequestShown, isResponseShown) => !isRequestShown && !isResponseShown
+);
 
 export const hasReconView = createSelector(
   currentReconView,

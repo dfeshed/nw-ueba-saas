@@ -2,19 +2,19 @@ import reselect from 'reselect';
 import { bytesAsRows } from './util';
 import { getHeaderItem } from 'recon/utils/recon-event-header';
 
+import { isRequestShown, isResponseShown } from 'recon/reducers/visuals/selectors';
+
 const { createSelector } = reselect;
 const packets = (recon) => recon.packets.packets;
 const renderIds = (recon) => recon.packets.renderIds;
 const headerItems = (recon) => recon.header.headerItems;
-const isRequestShown = (recon) => recon.visuals.isRequestShown;
-const isResponseShown = (recon) => recon.visuals.isResponseShown;
 const isPayloadOnly = (recon) => recon.packets.isPayloadOnly;
 
 /**
  * A selector that returns a sorted Array of all visible packets.
  * @private
  */
-export const visiblePackets = createSelector(
+const visiblePackets = createSelector(
   [packets, renderIds, isRequestShown, isResponseShown],
   (packets, renderIds, isRequestShown, isResponseShown) => {
 
@@ -38,6 +38,27 @@ export const visiblePackets = createSelector(
         (p.side === 'response' && isResponseShown);
     });
   }
+);
+
+// packets can at different times be null, an empty array
+// or a populated array. An empty array means the event has
+// no text content. If textContent is null, then it is still
+// being fetched.
+const packetsRetrieved = createSelector(
+  [packets],
+  (packets) => packets !== null
+);
+
+// Do we actually have packets?
+// if they have been retrieved and there are none, then nope
+export const hasPackets = createSelector(
+  [packetsRetrieved, packets],
+  (packetsRetrieved, packets) => packetsRetrieved && packets.length !== 0
+);
+
+export const numberOfPackets = createSelector(
+  [hasPackets, packets],
+  (hasPackets, packets) => (!hasPackets) ? 0 : packets.length
 );
 
 const isContinuation = (() => {

@@ -1,17 +1,25 @@
 import Component from 'ember-component';
 import connect from 'ember-redux/components/connect';
+
 import ReconPager from 'recon/mixins/recon-pager';
 import StickyHeader from 'recon/mixins/sticky-header-mixin';
-import { payloadProcessedPackets, visiblePackets } from 'recon/reducers/packets/selectors';
+import {
+  payloadProcessedPackets,
+  numberOfPackets,
+  hasPackets
+} from 'recon/reducers/packets/selectors';
+import { allDataHidden } from 'recon/reducers/visuals/selectors';
 import layout from './template';
 
 const stateToComputed = ({ recon, recon: { data, packets, meta } }) => ({
+  allDataHidden: allDataHidden(recon),
   dataIndex: data.index,
-  visiblePackets: visiblePackets(recon),
-  processedPackets: payloadProcessedPackets(recon),
   eventMeta: meta.meta,
   eventTotal: data.total,
+  hasPackets: hasPackets(recon),
+  numberOfItems: numberOfPackets(recon), // used in recon pager
   packetFields: packets.packetFields,
+  processedPackets: payloadProcessedPackets(recon),
   tooltipData: packets.packetTooltipData
 });
 

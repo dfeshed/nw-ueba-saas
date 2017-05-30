@@ -1,11 +1,11 @@
 import reselect from 'reselect';
 
+import { isRequestShown, isResponseShown } from 'recon/reducers/visuals/selectors';
+
 const { createSelector } = reselect;
 const textContent = (recon) => recon.text.textContent;
 const renderIds = (recon) => recon.text.renderIds;
 const metaToHighlight = (recon) => recon.text.metaToHighlight;
-const isRequestShown = (recon) => recon.visuals.isRequestShown;
-const isResponseShown = (recon) => recon.visuals.isResponseShown;
 
 export const hasTextContent = createSelector(
   [textContent],

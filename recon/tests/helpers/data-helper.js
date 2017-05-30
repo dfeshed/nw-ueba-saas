@@ -27,11 +27,11 @@ const makePackAction = (lifecycle, { type, payload, meta = {} }) => {
   };
 };
 
-const _dispatchInitializeData = (redux, inputs) => {
+const summaryPromise = new RSVP.Promise(function(resolve) {
+  resolve(summaryData);
+});
 
-  const summaryPromise = new RSVP.Promise(function(resolve) {
-    resolve(summaryData);
-  });
+const _dispatchInitializeData = (redux, inputs) => {
 
   run(() => {
     redux.dispatch({ type: ACTION_TYPES.INITIALIZE, payload: inputs });
@@ -92,16 +92,45 @@ class DataHelper {
     return this;
   }
 
-  populateTexts(decode = false) {
+  populatePackets(decode = false) {
+    this.redux.dispatch({
+      type: ACTION_TYPES.PACKETS_RECEIVE_PAGE,
+      payload: decode ? encodedTextData : decodedTextData
+    });
+  }
+
+  populateTexts(decode = false, includeRender = true) {
     this.redux.dispatch({
       type: ACTION_TYPES.TEXT_RECEIVE_PAGE,
       payload: decode ? encodedTextData : decodedTextData
     });
+    if (includeRender) {
+      this.redux.dispatch({
+        type: ACTION_TYPES.TEXT_RENDER_NEXT,
+        payload: decode ? encodedTextData : decodedTextData
+      });
+    }
+    return this;
+  }
+
+  noTexts() {
     this.redux.dispatch({
-      type: ACTION_TYPES.TEXT_RENDER_NEXT,
-      payload: decode ? encodedTextData : decodedTextData
+      type: ACTION_TYPES.TEXT_RECEIVE_PAGE,
+      payload: []
+    });
+  }
+
+  renderPackets() {
+    this.redux.dispatch({
+      type: ACTION_TYPES.PACKETS_RENDER_NEXT,
+      payload: packetDataWithSide
     });
     return this;
+  }
+
+  noPackets() {
+    this.redux.dispatch({ type: ACTION_TYPES.SUMMARY_RETRIEVE, promise: summaryPromise });
+    this.redux.dispatch({ type: ACTION_TYPES.PACKETS_RECEIVE_PAGE, payload: [] });
   }
 
   togglePayloadOnly() {

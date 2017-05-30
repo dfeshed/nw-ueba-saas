@@ -21,7 +21,7 @@ test('Event index computed properly', function(assert) {
 test('packet count computed properly', function(assert) {
   assert.expect(1);
   const visiblePackets = [ {}, {}, {} ];
-  subject.set('visiblePackets', visiblePackets);
+  subject.set('numberOfItems', visiblePackets.length);
   const packetCount = subject.get('packetCount');
   assert.equal(packetCount, visiblePackets.length, 'packetCount equals visiblePackets length');
 });

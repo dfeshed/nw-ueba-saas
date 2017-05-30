@@ -104,6 +104,7 @@ export const batchDataHandler = ({
 
   return dataHandler(
     batchType,
+    batchCallback,
     () => abortBatching,
     () => abortDataHandling,
     () => queueDoneFilling = true);
@@ -210,7 +211,8 @@ const _bulkDataHandler = () => {
 //   from the API and after it has been run through the selector
 // to find the data inside the API response
 const _apiDataHandler = (selector, dispatchData) => {
-  return (batchType, abortBatching, abortHandling, done) => {
+  return (batchType, batchCallback, abortBatching, abortHandling, done) => {
+    let dataReturned = false;
     return (response) => {
       // If data handling is cancelled, that means we have abandoned
       // the need to process this data, so just dump it.
@@ -220,6 +222,8 @@ const _apiDataHandler = (selector, dispatchData) => {
 
       let data = selector(response);
       if (data) {
+        dataReturned = true;
+
         if (!Array.isArray(data)) {
           data = [data];
         }
@@ -236,6 +240,13 @@ const _apiDataHandler = (selector, dispatchData) => {
       dispatchData(data || []);
 
       if (response.meta && response.meta.complete === true) {
+
+        // if no data was ever sent, and we are done
+        // then trigger empty batchCallback to trigger
+        // any possible side effects
+        if (!dataReturned) {
+          join(this, batchCallback, []);
+        }
         done();
       }
     };

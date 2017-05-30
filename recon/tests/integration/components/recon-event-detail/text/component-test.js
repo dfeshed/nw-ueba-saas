@@ -2,6 +2,7 @@ import wait from 'ember-test-helpers/wait';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 
+import VisualActions from 'recon/actions/visual-creators';
 import DataHelper from '../../../../helpers/data-helper';
 
 moduleForComponent('recon-event-detail/text-content', 'Integration | Component | recon event detail text', {
@@ -33,8 +34,6 @@ test('text view renders decoded text', function(assert) {
   });
 });
 
-// TODO - I don't know if this is a valid test anymore. What output would we see
-// in the Text view for log data?
 test('text view renders log text', function(assert) {
   new DataHelper(this.get('redux'))
     .initializeData({ meta: [['medium', 32]] })
@@ -44,5 +43,45 @@ test('text view renders log text', function(assert) {
   return wait().then(() => {
     const str = this.$().text().trim().replace(/\s/g, '').substring(0, 200);
     assert.equal(str, 'rawlogGET/stats.php?ev=site:player:music_quality:128kbps&songid=EsAKpbWJ&_t=1485792552819&ct=1982326421HTTP/1.1$Host:www.saavn.comrawlogHTTP/1.1200OKCache-control:no-store,no-cache,must-revalidate,pri');
+  });
+});
+
+test('renders spinner when data present but in the process of being rendered', function(assert) {
+  new DataHelper(this.get('redux'))
+    .setViewToText()
+    .populateTexts(false, false);
+  this.render(hbs`{{recon-event-detail/text-content}}`);
+  return wait().then(() => {
+    const loader = this.$('.recon-loader').length;
+    assert.equal(loader, 1);
+  });
+});
+
+test('renders error when no data present', function(assert) {
+  new DataHelper(this.get('redux'))
+    .setViewToText()
+    .noTexts();
+  this.render(hbs`{{recon-event-detail/text-content}}`);
+  return wait().then(() => {
+    const str = this.$('.rsa-panel-message').text().trim().replace(/\s/g, '');
+    assert.equal(str, 'Notextdatawasgeneratedduringcontentreconstruction.Thiscouldmeanthattheeventdatawascorruptorinvalid.Checktheotherreconstructionviews.');
+  });
+});
+
+test('renders nothing when data present, but hidden by request/response', function(assert) {
+  new DataHelper(this.get('redux'))
+    .setViewToText()
+    .populateTexts();
+
+  this.get('redux').dispatch(VisualActions.toggleRequestData());
+  this.get('redux').dispatch(VisualActions.toggleResponseData());
+
+  this.render(hbs`{{recon-event-detail/text-content}}`);
+  return wait().then(() => {
+    // remove the pager so its text doesn't confuse test
+    this.$('.recon-pager').remove();
+
+    const str = this.$().text().trim().replace(/\s/g, '').substring(0, 200);
+    assert.equal(str, '');
   });
 });

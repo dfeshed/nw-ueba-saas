@@ -1,50 +1,57 @@
-{{#if stickyContent}}
-  <div class="recon-packet-stuck-header">
-    {{recon-event-detail/single-text
-      isLog=isLogEvent
-      isSticky=true
-      packet=stickyContent
-      renderedAll=hideStickyShowMore
-    }}
-  </div>
-{{/if}}
-
-{{#if metaToHighlight}}
-  {{recon-event-detail/text-content/meta-highlight-scroller
-    metaToHighlight=metaToHighlight
-  }}
-{{/if}}
-
-{{!-- Do not do anything if content isn't retrieved--}}
-{{#if contentRetrieved}}
-
-  {{!-- if content is retrieved, and there is no content, show error --}}
-  {{#if hasTextContent}}
-    <div class="scroll-box">
-
-      {{!-- if we have content, but no visible text, show spinner, working on chewing on data --}}
-      {{#if visibleText}}
-        {{#each visibleText as |text|}}
-          {{recon-event-detail/single-text
-            isLog=isLogEvent
-            isSticky=false
-            metaToHighlight=metaToHighlight
-            packet=text
-            showMoreClicked=(action 'showMoreClicked')
-          }}
-        {{/each}}
-      {{else}}
-        <div class="recon-loader">
-          {{rsa-loader size='larger'}}
-        </div>
-      {{/if}}
+{{#if visibleText}}
+  {{#if stickyContent}}
+    <div class="recon-packet-stuck-header">
+      {{recon-event-detail/single-text
+        isLog=isLogEvent
+        isSticky=true
+        packet=stickyContent
+        renderedAll=hideStickyShowMore
+      }}
     </div>
+  {{/if}}
 
-    {{recon-pager
-      eventIndex=eventIndex
-      eventTotal=eventTotal
+  {{#if metaToHighlight}}
+    {{recon-event-detail/text-content/meta-highlight-scroller
+      metaToHighlight=metaToHighlight
     }}
+  {{/if}}
+
+  <div class="scroll-box">
+    {{!--
+      if we have content, but no visible text, show spinner,
+      working on chewing on data
+    --}}
+    {{#each visibleText as |text|}}
+      {{recon-event-detail/single-text
+        isLog=isLogEvent
+        isSticky=false
+        metaToHighlight=metaToHighlight
+        packet=text
+        showMoreClicked=(action 'showMoreClicked')
+      }}
+    {{/each}}
+  </div>
+{{else}}
+  {{!--
+    If no visibleText, but there is textContent, means either
+    they are hidden by the UI, or in the process of being rendered.
+    If no textContent, show error message
+  --}}
+  {{#if hasTextContent}}
+    {{!--
+      do not bother showing anything if all data hidden
+    --}}
+    {{#unless allDataHidden}}
+      <div class="recon-loader">
+        {{rsa-loader size='larger'}}
+      </div>
+    {{/unless}}
   {{else}}
     {{rsa-panel-message message=(t 'recon.error.noTextContentData')}}
   {{/if}}
 {{/if}}
+
+{{recon-pager
+  eventIndex=eventIndex
+  eventTotal=eventTotal
+}}
