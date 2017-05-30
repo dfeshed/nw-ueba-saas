@@ -1,7 +1,8 @@
 $contextTooltipDatumWidth: 75px;
-$contextTooltipDatumPadding: 4px;
+$contextTooltipDatumPadding: 0px;
 
 .rsa-context-tooltip {
+  background-color: rsa-color(black);
   padding: rsa-whitespace(less);
 
   &__header {
@@ -20,17 +21,17 @@ $contextTooltipDatumPadding: 4px;
       @include rsa-font(header, small);
       white-space: nowrap;
       line-height: 1.35;
-      color:rsa-color(gray);
+      color: rsa-color(gray);
       padding: rsa-whitespace(least) 0;
     }
   }
 
   &__content {
     border-right: 1px solid rsa-color(gray, dark);
-    padding-right: rsa-whitespace();
+    padding-right: rsa-whitespace(less);
 
     &-body {
-      margin: 0 rsa-whitespace();
+      margin: 0;
       max-width: 3 * ($contextTooltipDatumWidth + $contextTooltipDatumPadding);
     }
 
@@ -40,7 +41,7 @@ $contextTooltipDatumPadding: 4px;
   }
 
   &__aside {
-    padding-left: rsa-whitespace();
+    padding-left: rsa-whitespace(less);
   }
 }
 
