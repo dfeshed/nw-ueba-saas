@@ -106,3 +106,6 @@ def test_valid_execution_date():
     task.run(start_date=default, end_date=default)
     tis = get_task_instances(dag)
     assert_task_success_state(tis, task.task_id)
+
+    expected_bash_comment = '/usr/bin/java -Xms100m -Xmx2048m -Duser.timezone=UTC -cp ' + JAR_PATH + ' HelloWorld.Main a=one b=two'
+    assert task.bash_command == expected_bash_comment
