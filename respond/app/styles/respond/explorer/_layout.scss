@@ -38,10 +38,18 @@ page.respond-engine {
 
     &.show-filters {
       .filter-zone {
+        border-top: 1px solid $zoneBorderColor;
         border-right: 1px solid $zoneBorderColor;
         max-width: 25%;
         min-width: $filterPanelMinWidth;
         opacity: $rsa-opaque;
+
+        .close-filters.rsa-form-button-wrapper {
+          position: absolute;
+          right: rsa-whitespace(less);
+          top: rsa-whitespace(less);
+          font-size: 0.5rem;
+        }
       }
     }
 
@@ -77,6 +85,9 @@ page.respond-engine {
         background-color: rsa-color(gray, darker, $rsa-somewhat-opaque);
         color: rsa-color(gray, lightest);
         border-top: 1px solid $zoneBorderColor;
+        .selection-count {
+          padding-left: rsa-whitespace(less);
+        }
       }
     }
 
@@ -100,6 +111,13 @@ page.respond-engine {
       z-index: 2;
       background-color: rsa-color(black,base,$rsa-translucent);
     }
+  }
+  .vertical-separator {
+    border-right: 2px solid #757575;
+    width: 3px;
+    height: 16px;
+    display: inline-block;
+    padding: 0 3px;
   }
 }
 

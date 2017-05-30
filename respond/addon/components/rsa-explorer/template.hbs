@@ -1,17 +1,3 @@
-<box fit class="toolbar-zone">
-  {{yield (hash name='explorer-toolbar' instance=this
-    toolbar=(component 'rsa-explorer/explorer-toolbar'
-      isFilterPanelOpen=isFilterPanelOpen
-      itemsSelected=itemsSelected
-      hasNoSelections=hasNoSelections
-      selectionCount=selectionCount
-      toggleFilterPanel=(action 'toggleFilterPanel')
-      deleteItem=(action 'deleteItem')
-      confirm=(action 'showConfirmationDialog')
-      updateItem=(action 'updateItem')
-    )
-  )}}
-</box>
 <hbox class="main-zone">
   <vbox class="filter-zone">
     {{yield (hash name='explorer-filters' instance=this filters=(component 'rsa-explorer/explorer-filters'
@@ -22,8 +8,23 @@
       resetFilters=(action 'resetFilters')
       toggleCustomDate=(action 'toggleCustomDate'))
     )}}
+    {{#rsa-form-button class="close-filters" isIconOnly=true defaultAction=(action "toggleFilterPanel")}}{{rsa-icon name='close'}}{{/rsa-form-button}}
   </vbox>
   <vbox class="items-zone">
+    <box fit class="toolbar-zone">
+      {{yield (hash name='explorer-toolbar' instance=this
+        toolbar=(component 'rsa-explorer/explorer-toolbar'
+          isFilterPanelOpen=isFilterPanelOpen
+          itemsSelected=itemsSelected
+          hasNoSelections=hasNoSelections
+          selectionCount=selectionCount
+          toggleFilterPanel=(action 'toggleFilterPanel')
+          deleteItem=(action 'deleteItem')
+          confirm=(action 'showConfirmationDialog')
+          updateItem=(action 'updateItem')
+        )
+      )}}
+    </box>
     <box class="items-main">
       <box class="items-body">
         {{yield (hash name='explorer-table' instance=this table=(component 'rsa-explorer/explorer-table'
@@ -45,7 +46,11 @@
       </box>
       <box class="items-footer">
         {{#if (not-eq itemsStatus "wait") }}
-          <centered>{{t 'respond.explorer.footer' count=itemsCount total=itemsTotal}}</centered>
+          <centered>
+            <span>{{t 'respond.explorer.footer' count=itemsCount total=itemsTotal}}</span>
+            <span class="vertical-separator"></span>
+            <span class="selection-count">{{ t 'respond.incidents.selectionCount' selectionCount=selectionCount}}</span>
+          </centered>
         {{/if}}
       </box>
     </box>

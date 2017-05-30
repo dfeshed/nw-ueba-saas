@@ -1,5 +1,5 @@
 .respond-engine .rsa-explorer-toolbar {
-
+  padding: 0 rsa-whitespace();
   .selection-count {
     padding-right: rsa-whitespace();
   }
@@ -13,28 +13,19 @@
     cursor: pointer;
   }
 
-  .more-filters-button {
-    margin-left: rsa-whitespace();
-  }
-
   &.more-filters-active {
     .more-filters-button {
-      color: rsa-color(green);
-      border-bottom: 2px solid rsa-color(green);
+      display: none;
     }
   }
 
   &__filters {
     @include rsa-row(left, middle);
-    @include rsa-vendor-prefix(flex-shrink, 0);
-    @include rsa-vendor-prefix(flex-grow, 1);
   }
 
   &__views,
   &__btns {
     @include rsa-row(right, middle);
-    @include rsa-vendor-prefix(flex-shrink, 0);
-    @include rsa-vendor-prefix(flex-grow, 0);
 
     .action-control {
       display: inline-block;
@@ -54,7 +45,6 @@
         }
       }
     }
-
   }
 
   &__views {

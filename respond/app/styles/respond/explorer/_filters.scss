@@ -1,5 +1,6 @@
 $footer-height: 25px;
 $footer-bottom: 10px;
+$header-height: 40px;
 
 .explorer-filters {
   position: relative;
@@ -7,12 +8,21 @@ $footer-bottom: 10px;
   width: 100%;
   box-sizing: border-box;
 
+  .header {
+    @include rsa-font(header, large);
+    text-transform: inherit;
+    padding: rsa-whitespace();
+    .rsa-icon {
+      margin-right: rsa-whitespace(less);
+    }
+  }
+
   .body {
-    height: calc(100% - #{$footer-height} - #{$footer-bottom} - 1px);
+    height: calc(100% - #{$footer-height} - #{$footer-bottom} - #{$header-height} - 1px);
     width: 100%;
     position: absolute;
     bottom: 40px;
-    top: 0;
+    top: $header-height;
     box-sizing: border-box;
     overflow: auto;
     padding: rsa-whitespace();
