@@ -1,0 +1,4 @@
+.rsa-group-table {
+  /* Stacks the header & body children vertically into a row. */
+  @include rsa-col(justify,fill);
+}

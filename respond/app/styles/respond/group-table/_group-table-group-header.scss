@@ -1,0 +1,62 @@
+.rsa-group-table-group-header {
+  /* Positions group header at the top of the group by default. It remains there except when leaving viewport. */
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: auto;
+
+  /* Enables sticky headers to be sized independent of their padding. */
+  box-sizing: border-box;
+
+  /* Overlays the group header over its corresponding items-container, for sticky header effect. */
+  z-index: 2;
+
+  &.is-leaving {
+    /* For a group that is almost entirely above viewport, shows the header sliding up off-viewport along with it. */
+    top: auto;
+    bottom: 0;
+  }
+
+  &__container {
+    /* Stacks children horizontally. */
+    @include rsa-row(left,fill);
+    cursor: default;
+  }
+
+  &__toggle {
+    /* Shrinks to fit content horizontally. */
+    @include rsa-vendor-prefix(flex-shrink,0);
+    @include rsa-vendor-prefix(flex-grow,0);
+
+    padding-left: rsa-whitespace(less);
+    padding-right: rsa-whitespace(least);
+
+    .rsa-icon {
+      @include rsa-vendor-prefix(transition, transform linear 0.3s);
+    }
+  }
+
+  &__title {
+    /* Expands to fill remaining horiz space. */
+    @include rsa-vendor-prefix(flex-shrink,1);
+    @include rsa-vendor-prefix(flex-grow,1);
+
+    padding-left: rsa-whitespace(least);
+    padding-right: rsa-whitespace(less);
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &.is-open {
+    /* Rotates arrow icon downward when group is open. */
+    .rsa-group-table-group-header {
+      &__toggle .rsa-icon {
+        transform: rotate(90deg);
+        transform-origin: center center;
+      }
+    }
+  }
+}

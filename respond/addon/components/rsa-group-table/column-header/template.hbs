@@ -1,0 +1,8 @@
+{{#if hasBlock}}
+  {{yield (hash
+    column=column
+    index=index)
+  }}
+{{else}}
+  {{or column.title column.field}}
+{{/if}}

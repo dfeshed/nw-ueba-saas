@@ -1,0 +1,16 @@
+{{#if hasBlock}}
+  {{yield (hash
+    group=group
+    index=index
+    toggleAction=(action "toggleIsOpen")
+  )}}
+{{else}}
+  <div class="rsa-group-table-group-header__container" {{action "toggleIsOpen"}}>
+    <span class="rsa-group-table-group-header__toggle">
+      {{rsa-icon name="arrow-right-12" size="smaller"}}
+    </span>
+    <h3 class="rsa-group-table-group-header__title">
+      {{group.title}}
+    </h3>
+  </div>
+{{/if}}

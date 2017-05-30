@@ -1,0 +1,19 @@
+.rsa-group-table-group {
+  /* Enables absolute positioning for lazy rendering. */
+  position: absolute;
+  left: 0;
+  right: 0;
+
+  &__items-container {
+    /* Enables absolute positioning of its children for lazy rendering. */
+    position: relative;
+    z-index: 1;
+  }
+
+  &.is-sample {
+    visibility: hidden;
+    z-index: -1;
+    pointer-events: none;
+    transform: translateY(-100%);
+  }
+}

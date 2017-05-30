@@ -1,0 +1,19 @@
+<div class="rsa-group-table-column-headers__scroller" style="{{scrollerStyle}}">
+  <div class="rsa-group-table-column-headers__placeholder" style="{{placeholderStyle}}">
+    <table class="rsa-group-table-column-headers__table" style="{{tableStyle}}">
+      <tr class="rsa-group-table-column-headers__row">
+        {{#each table.visibleColumns as |column index|}}
+          <td class="rsa-group-table-column-headers__cell" style="{{column.styleText}}">
+            {{yield (hash
+              column=column
+              index=index
+              cell=(component columnHeaderComponentClass
+                column=column
+                index=index)
+            )}}
+          </td>
+        {{/each}}
+      </tr>
+    </table>
+  </div>
+</div>

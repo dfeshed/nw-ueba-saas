@@ -1,0 +1,19 @@
+<table class="rsa-group-table-group-item__table">
+  <tr class="rsa-group-table-group-item__row">
+    {{#each table.visibleColumns as |column columnIndex|}}
+      <td class="rsa-group-table-group-item__cell" style="{{column.styleText}}">
+        {{yield (hash
+          item=item
+          index=index
+          column=column
+          columnIndex=columnIndex
+          cell=(component (or column.componentClass cellComponentClass)
+            item=item
+            index=index
+            column=column
+            columnIndex=columnIndex)
+        )}}
+      </td>
+    {{/each}}
+  </tr>
+</table>

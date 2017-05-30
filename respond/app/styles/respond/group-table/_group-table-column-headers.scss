@@ -1,0 +1,20 @@
+.rsa-group-table-column-headers {
+  /* Shrinks to its contents without cutting them off. */
+  @include rsa-vendor-prefix(flex-shrink, 0);
+  @include rsa-vendor-prefix(flex-grow, 0);
+
+  /* Hides column headers for columns that extend beyond viewport. */
+  overflow: hidden;
+
+  &__table {
+    border-spacing: 0;
+    table-layout: fixed;
+    width: 100%;
+  }
+
+  &__cell {
+    box-sizing: border-box;
+    text-align: center;
+    vertical-align: middle;
+  }
+}

@@ -1,0 +1,33 @@
+<div class="rsa-group-table-body__scroller js-scroll-element">
+  <div class="rsa-group-table-body__scroller-child js-size-element">
+  </div>
+  <div class="rsa-group-table-body__placeholder js-placeholder" style="{{placeholderStyle}}">
+    {{yield (hash
+      group=(component groupComponentClass
+        isSample=true
+        group=sampleGroup
+        index=0
+        top=0
+        table=table)
+    )}}
+    {{#each table.groupRefsInViewport as |groupRef|}}
+      {{yield (hash
+        group=(component groupComponentClass
+          group=groupRef.group
+          index=groupRef.index
+          top=groupRef.extent.top
+          table=table)
+      )}}
+    {{/each}}
+  </div>
+</div>
+<div class="rsa-group-table-body__sticky-header js-sticky-header" style="{{stickyHeaderContainerStyle}}">
+  <div class="rsa-group-table-body__sticky-header-scroller js-sticky-header-scroller" style="{{stickyHeaderScrollerStyle}}">
+    {{yield (hash
+      stickyHeader=(component stickyHeaderComponentClass
+        group=table.groupAtTop.group
+        index=table.groupAtTop.index
+        table=table)
+    )}}
+  </div>
+</div>
