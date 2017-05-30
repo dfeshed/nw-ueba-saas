@@ -35,7 +35,7 @@ def java_args():
     }
 
 
-def build_and_run_task(jvm_args, dag, java_args, expected_bash_comment):
+def build_and_run_task(jvm_args, dag, java_args, expected_bash_comment, expected_java_args={}):
     """
     Create and run the task 
     :param jvm_args: 
@@ -54,18 +54,28 @@ def build_and_run_task(jvm_args, dag, java_args, expected_bash_comment):
     task.run(start_date=DEFAULT_DATE, end_date=DEFAULT_DATE)
     task_instances = get_task_instances(dag)
 
-    assert_bash_comment(task, expected_bash_comment)
+    assert_bash_comment(task, expected_bash_comment, expected_java_args)
     assert_task_success_state(task_instances, task.task_id)
 
 
-def assert_bash_comment(task, expected_bash_comment):
+def assert_bash_comment(task, expected_bash_comment, expected_java_args={}):
     """
     Checks whether jar operator build expected_bash_comment 
     :param task: 
     :param expected_bash_comment: 
+    :param expected_java_args: 
     :return: 
     """
-    assert task.bash_command == expected_bash_comment
+    task_bash_command = task.bash_command
+    main_class_index = task_bash_command.rfind(MAIN_CLASS) + len(MAIN_CLASS)
+    bash_command = task.bash_command[:main_class_index]
+
+    assert bash_command == expected_bash_comment
+
+    args = task_bash_command[-(len(task_bash_command)-main_class_index):].strip()
+    java_args_dict = {k:v.strip('"') for k,v in [i.split("=",1) for i in args.split(" ")]}
+
+    assert java_args_dict == expected_java_args
 
 
 def test_jvm_memory_allocation(default_args, java_args):
@@ -87,8 +97,9 @@ def test_jvm_memory_allocation(default_args, java_args):
     dag = DAG(
         "test_jvm_memory_allocation_dag", default_args=default_args, schedule_interval=timedelta(1))
 
-    expected_bash_comment = '/usr/bin/java -Xms500m -Xmx2050m -Duser.timezone=UTC -cp ' + JAR_PATH + ' HelloWorld.Main a=one b=two'
-    build_and_run_task(jvm_args, dag, java_args, expected_bash_comment)
+    expected_bash_comment = '/usr/bin/java -Xms500m -Xmx2050m -Duser.timezone=UTC -cp ' + JAR_PATH + ' HelloWorld.Main'
+    expected_java_args = {'a':'one', 'b':'two'}
+    build_and_run_task(jvm_args, dag, java_args, expected_bash_comment, expected_java_args)
 
 
 def test_timezone(default_args, java_args):
@@ -109,8 +120,9 @@ def test_timezone(default_args, java_args):
     dag = DAG(
         "test_timezone", default_args=default_args, schedule_interval=timedelta(1))
 
-    expected_bash_comment = '/usr/bin/java -Xms100m -Xmx2048m -Duser.timezone=America/New_York -cp ' + JAR_PATH + ' HelloWorld.Main a=one b=two'
-    build_and_run_task(jvm_args, dag, java_args, expected_bash_comment)
+    expected_bash_comment = '/usr/bin/java -Xms100m -Xmx2048m -Duser.timezone=America/New_York -cp ' + JAR_PATH + ' HelloWorld.Main'
+    expected_java_args = {'a': 'one', 'b': 'two'}
+    build_and_run_task(jvm_args, dag, java_args, expected_bash_comment, expected_java_args)
 
 
 def test_logback(default_args, java_args):
@@ -131,8 +143,9 @@ def test_logback(default_args, java_args):
     dag = DAG(
         "test_logback", default_args=default_args, schedule_interval=timedelta(1))
 
-    expected_bash_comment = '/usr/bin/java -Xms100m -Xmx2048m -Duser.timezone=UTC -Dlogback.configurationFile=/home/presidio/dev-projects/presidio-core/presidio-workflows/tests/resources/xmls/test_logback.xml -cp ' + JAR_PATH + ' HelloWorld.Main a=one b=two'
-    build_and_run_task(jvm_args, dag, java_args, expected_bash_comment)
+    expected_bash_comment = '/usr/bin/java -Xms100m -Xmx2048m -Duser.timezone=UTC -Dlogback.configurationFile=/home/presidio/dev-projects/presidio-core/presidio-workflows/tests/resources/xmls/test_logback.xml -cp ' + JAR_PATH + ' HelloWorld.Main'
+    expected_java_args = {'a': 'one', 'b': 'two'}
+    build_and_run_task(jvm_args, dag, java_args, expected_bash_comment, expected_java_args)
 
 
 def test_remote_debug(default_args, java_args):
@@ -155,8 +168,9 @@ def test_remote_debug(default_args, java_args):
     dag = DAG(
         "test_remote_debug", default_args=default_args, schedule_interval=timedelta(1))
 
-    expected_bash_comment = '/usr/bin/java -Xms100m -Xmx2048m -Duser.timezone=UTC -agentlib:jdwp=transport=dt_socket,address=9200,server=y,suspend=n -cp ' + JAR_PATH + ' HelloWorld.Main a=one b=two'
-    build_and_run_task(jvm_args, dag, java_args, expected_bash_comment)
+    expected_bash_comment = '/usr/bin/java -Xms100m -Xmx2048m -Duser.timezone=UTC -agentlib:jdwp=transport=dt_socket,address=9200,server=y,suspend=n -cp ' + JAR_PATH + ' HelloWorld.Main'
+    expected_java_args = {'a': 'one', 'b': 'two'}
+    build_and_run_task(jvm_args, dag, java_args, expected_bash_comment, expected_java_args)
 
 
 def test_jar_path(default_args, java_args):
@@ -175,8 +189,9 @@ def test_jar_path(default_args, java_args):
     dag = DAG(
         "test_jar_path", default_args=default_args, schedule_interval=timedelta(1))
 
-    expected_bash_comment = '/usr/bin/java -Xms100m -Xmx2048m -Duser.timezone=UTC -cp ' + JAR_PATH + ' HelloWorld.Main a=one b=two'
-    build_and_run_task(jvm_args, dag, java_args, expected_bash_comment)
+    expected_bash_comment = '/usr/bin/java -Xms100m -Xmx2048m -Duser.timezone=UTC -cp ' + JAR_PATH + ' HelloWorld.Main'
+    expected_java_args = {'a': 'one', 'b': 'two'}
+    build_and_run_task(jvm_args, dag, java_args, expected_bash_comment, expected_java_args)
 
 
 def test_all_params(default_args, java_args):
@@ -205,8 +220,9 @@ def test_all_params(default_args, java_args):
     dag = DAG(
         "test_all_params", default_args=default_args, schedule_interval=timedelta(1))
 
-    expected_bash_comment = '/usr/bin/java -Xms101m -Xmx2049m -Duser.timezone=America/New_York -Dlogback.configurationFile=/home/presidio/dev-projects/presidio-core/presidio-workflows/tests/resources/xmls/test_logback.xml -agentlib:jdwp=transport=dt_socket,address=9200,server=y,suspend=n -cp ' + JAR_PATH + ' HelloWorld.Main a=one b=two'
-    build_and_run_task(jvm_args, dag, java_args, expected_bash_comment)
+    expected_bash_comment = '/usr/bin/java -Xms101m -Xmx2049m -Duser.timezone=America/New_York -Dlogback.configurationFile=/home/presidio/dev-projects/presidio-core/presidio-workflows/tests/resources/xmls/test_logback.xml -agentlib:jdwp=transport=dt_socket,address=9200,server=y,suspend=n -cp ' + JAR_PATH + ' HelloWorld.Main'
+    expected_java_args = {'a': 'one', 'b': 'two'}
+    build_and_run_task(jvm_args, dag, java_args, expected_bash_comment, expected_java_args)
 
 
 @pytest.mark.skipif(os.geteuid() != 0, reason="The test should to be skipped if user is not root")
@@ -231,8 +247,9 @@ def test_jmx(default_args, java_args):
     dag = DAG(
         'test_jmx_dag', default_args=default_args, schedule_interval=timedelta(1))
 
-    expected_bash_comment = '/usr/bin/java -Xms100m -Xmx2048m -Duser.timezone=UTC -Djavax.management.builder.initial= -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=9302 -cp ' + JAR_PATH + ' HelloWorld.Main a=one b=two'
-    build_and_run_task(jvm_args, dag, java_args, expected_bash_comment)
+    expected_bash_comment = '/usr/bin/java -Xms100m -Xmx2048m -Duser.timezone=UTC -Djavax.management.builder.initial= -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=9302 -cp ' + JAR_PATH + ' HelloWorld.Main'
+    expected_java_args = {'a': 'one', 'b': 'two'}
+    build_and_run_task(jvm_args, dag, java_args, expected_bash_comment, expected_java_args)
 
 
 def test_no_main_class(default_args, java_args):
@@ -323,6 +340,7 @@ def test_update_java_args(default_args, java_args):
     task.run(start_date=DEFAULT_DATE, end_date=DEFAULT_DATE)
     tis = get_task_instances(dag)
 
-    expected_bash_comment = '/usr/bin/java -Xms100m -Xmx2048m -Duser.timezone=UTC -cp ' + JAR_PATH + ' HelloWorld.Main a=one c=three b=two'
-    assert_bash_comment(task, expected_bash_comment)
+    expected_bash_comment = '/usr/bin/java -Xms100m -Xmx2048m -Duser.timezone=UTC -cp ' + JAR_PATH + ' HelloWorld.Main'
+    expected_java_args = {'a': 'one', 'b': 'two', 'c': 'three'}
+    assert_bash_comment(task, expected_bash_comment, expected_java_args)
     assert_task_success_state(tis, 'run_jar_file')

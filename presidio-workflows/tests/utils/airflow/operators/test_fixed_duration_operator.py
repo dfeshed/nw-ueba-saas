@@ -103,9 +103,31 @@ def test_valid_execution_date():
         dag=dag)
 
     task.clear()
-    task.run(start_date=default, end_date=default)
+    task.execute(context={'execution_date':default})
     tis = get_task_instances(dag)
     assert_task_success_state(tis, task.task_id)
 
-    expected_bash_comment = '/usr/bin/java -Xms100m -Xmx2048m -Duser.timezone=UTC -cp ' + JAR_PATH + ' HelloWorld.Main a=one b=two'
-    assert task.bash_command == expected_bash_comment
+    expected_bash_comment = '/usr/bin/java -Xms100m -Xmx2048m -Duser.timezone=UTC -cp ' + JAR_PATH + ' HelloWorld.Main'
+    expected_java_args = {'a': 'one', 'b': 'two', 'fixed_duration_strategy': '3600.0',
+                          'start_date': '2014-05-13T13:00:00', 'end_date': '2014-05-13T14:00:00'}
+    assert_bash_comment(task, expected_bash_comment, expected_java_args)
+
+
+def assert_bash_comment(task, expected_bash_comment, expected_java_args={}):
+    """
+    Checks whether jar operator build expected_bash_comment 
+    :param task: 
+    :param expected_bash_comment: 
+    :param expected_java_args: 
+    :return: 
+    """
+    task_bash_command = task.bash_command
+    main_class_index = task_bash_command.rfind(MAIN_CLASS) + len(MAIN_CLASS)
+    bash_command = task.bash_command[:main_class_index]
+
+    assert bash_command == expected_bash_comment
+
+    args = task_bash_command[-(len(task_bash_command) - main_class_index):].strip()
+    java_args_dict = {k: v.strip('"') for k, v in [i.split("=", 1) for i in args.split(" ")]}
+
+    assert java_args_dict == expected_java_args
