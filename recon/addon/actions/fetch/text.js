@@ -5,21 +5,24 @@ import { batchDataHandler, HANDLERS, BATCH_TYPES } from 'recon/actions/util/batc
 const BATCH_CHARACTER_SIZE = 10000;
 const TIME_BETWEEN_BATCHES = 500;
 
+const TEXT_BATCH_SIZE = 50;
+const TEXT_ENTRY_LIMIT = 2000;
+
 const selector = (response) => {
   if (response.data && response.data.length > 0) {
-    return response.data[0];
+    return response.data;
   }
   return null;
 };
 
 export const fetchTextData = (
-  { endpointId, eventId, packetsPageSize, decode },
+  { endpointId, eventId, decode },
   dispatchData,
   dispatchBatch,
   dispatchError
 ) => {
   const basicQuery = buildBaseQuery(endpointId, eventId);
-  const streamingQuery = addStreaming(basicQuery, packetsPageSize);
+  const streamingQuery = addStreaming(basicQuery, TEXT_ENTRY_LIMIT, TEXT_BATCH_SIZE, TEXT_ENTRY_LIMIT);
   const decodeQuery = addDecode(streamingQuery, decode);
   streamRequest({
     method: 'stream',

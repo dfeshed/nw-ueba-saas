@@ -214,20 +214,16 @@ const _apiDataHandler = (selector, dispatchData) => {
   return (batchType, batchCallback, abortBatching, abortHandling, done) => {
     let dataReturned = false;
     return (response) => {
+
       // If data handling is cancelled, that means we have abandoned
       // the need to process this data, so just dump it.
       if (abortHandling()) {
         return;
       }
 
-      let data = selector(response);
+      const data = selector(response);
       if (data) {
         dataReturned = true;
-
-        if (!Array.isArray(data)) {
-          data = [data];
-        }
-
         // If no longer batching data, no need to push to queue
         if (!abortBatching()) {
           _pushDataToQueue(data, batchType);
