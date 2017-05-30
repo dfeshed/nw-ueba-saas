@@ -4,47 +4,7 @@
   {{/if}}    
 </div>
 <div class='rsa-context-panel__layout'>
-  <div>    
-    <hbox>
-      <vbox xs='8'>
-        <div class="rsa-context-panel-header__header-text">
-          {{#if headerTitle}}
-            <span> {{headerTitle}} :</span>
-            {{entityId}}
-          {{/if}}
-        </div>
-      </vbox>
-      <vbox xs='4' class="rsa-context-panel-header__header-icons">
-        <div>
-          <span>
-            {{#rsa-form-button
-              isIconOnly=true
-              defaultAction=(action 'goToHelp' helpId.moduleId helpId.topicId)}}
-              {{rsa-icon name="help-circle" style="lined"}}
-            {{/rsa-form-button}}
-          </span>
-          <span class="rsa-context-panel-header__close-icon">
-            <button class="rsa-context-panel-header__panel-close" {{action 'closeAction'}} title= {{t 'context.header.closeButton.title'}}>
-              {{rsa-icon style='filled' name='close'}}
-            </button>
-          </span>
-        </div>
-      </vbox>
-    </hbox>
-    <hbox class="rsa-context-panel-header__tab">
-      {{#each toolbar as | buttons | }}
-        {{#if (eq buttons.componentName 'add-to-list')}}
-          {{#rsa-form-button
-            defaultAction=(route-action "openContextAddToList" (hash type=entityType id=entityId))
-          }}
-            {{t 'context.addToList.title'}}
-          {{/rsa-form-button}}
-        {{else}}
-          {{#rsa-form-button}}{{t buttons.title}}{{/rsa-form-button}}
-        {{/if}}
-      {{/each}}
-    </hbox>  
-  </div>
+  {{context-panel/header}}
   <div class='rsa-context-panel__body_layout'>
     {{#if isReady}}
       {{#if errorMessage}}
@@ -69,7 +29,8 @@
         </div>
       </hbox>
     {{/if}}  
-  </div>      
+  </div>
+  {{context-panel/footer}}
 </div>
 
 

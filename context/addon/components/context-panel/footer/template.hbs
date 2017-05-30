@@ -1,0 +1,11 @@
+  {{#if headerData.count}}
+    <span>
+      {{t 'context.total'}}: {{headerData.count}}
+    </span>
+  {{/if}}
+  {{#if headerData.timeWindow.lastUpdated}}
+    <span title= {{t dSDetails.title}}>
+      {{t 'context.timeWindow'}}{{headerData.timeWindow.timeWindow}} |
+      {{t 'context.lastUpdated'}}{{rsa-content-datetime timestamp=headerData.timeWindow.lastUpdated asTimeAgo=true}}
+    </span>
+  {{/if}}

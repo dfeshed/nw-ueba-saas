@@ -11,12 +11,10 @@ import { isEmpty } from 'ember-utils';
 import { isEmberArray } from 'ember-array/utils';
 import { once, next, schedule, later } from 'ember-runloop';
 import EmberObject from 'ember-object';
-import { contextHelpIds } from 'context/config/help-ids';
 
 const stateToComputed = ({ context }) => ({
   dataSources: context.dataSources,
   lookupData: context.lookupData,
-  toolbar: context.toolbar,
   errorMessage: context.errorMessage,
   activeTabName: context.activeTabName
 });
@@ -32,12 +30,10 @@ const ContextComponent = Component.extend({
 
   request: service(),
   eventBus: service(),
-  contextualHelp: service(),
 
   contextData: null,
   isDisplayed: false,
   model: null,
-  helpId: contextHelpIds.InvestigateHelpIds,
 
   @computed('lookupData.[]', 'dataSources', 'errorMessage')
   isReady(lookupData, dataSources, errorMessage) {
@@ -53,12 +49,6 @@ const ContextComponent = Component.extend({
     return true;
   },
 
-  @computed('activeTabName')
-  headerTitle(activeTabName) {
-    if (activeTabName) {
-      return this.get('i18n').t(`context.header.title.${activeTabName.camelize()}`);
-    }
-  },
 
   didReceiveAttrs() {
     const { entityId, entityType } = this.getProperties('entityId', 'entityType');
@@ -233,15 +223,6 @@ const ContextComponent = Component.extend({
         this._closeContextPanel(target);
       });
     });
-  },
-  actions: {
-    closeAction() {
-      this.sendAction('closePanel');
-      this.send('restoreDefault');
-    },
-    goToHelp(moduleId, topicId) {
-      this.get('contextualHelp').goToHelp(moduleId, topicId);
-    }
   }
 
 });

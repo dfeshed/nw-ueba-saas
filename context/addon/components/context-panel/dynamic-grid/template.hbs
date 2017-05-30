@@ -1,12 +1,9 @@
-{{#if dSDetails.headerRequired}}
-  {{context-panel/ds-header dSDetails=dSDetails}}
-{{/if}}
 {{#if (gt getDataSourceData.length 0)}}
   <div class="rsa-context-panel__grid__box">
     {{#each getDataSourceData as |data index|}}
       <hbox>
         <vbox class="rsa-context-panel__grid__host-details__header-data">
-          <span title= {{get data dSDetails.firstRow.field}}>{{get data dSDetails.firstRow.field}}</span>
+          <span >{{get data dSDetails.firstRow.field}}</span>
         </vbox>
       </hbox>
       <hbox class={{dSDetails.class}}>
@@ -65,7 +62,4 @@
       {{/if}}
     {{/each}}
   </div>
-{{/if}}
-{{#if dSDetails.footerRequired}}
-  {{context-panel/ds-footer dSDetails=dSDetails}}
 {{/if}}
