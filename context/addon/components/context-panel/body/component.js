@@ -18,7 +18,7 @@ const BodyComponent = Component.extend({
   @computed('dataSources', 'activeTabName')
   dataSourceList(dataSources, activeTabName) {
     return dataSources.filter((dataSource) => {
-      return activeTabName === dataSource.dataSourceType && dataSource.isConfigured;
+      return activeTabName === dataSource.dataSourceType;
     });
   },
 

@@ -3,9 +3,15 @@
 </div>
 <div class='rsa-context-panel__endpoint__data-table'>
   <div class='col-xs-7'>
+    <div class="rsa-context-panel__grid__heading-text">
+      {{t dataSource.Modules.details.title}} {{moduleHeader}}
+    </div>
     {{context-panel/data-table dSDetails=dataSource.Modules.details}}
   </div>
   <div class='col-xs-5'>
+    <div class="rsa-context-panel__grid__heading-text">
+      {{t dataSource.IOC.details.title}}
+    </div>
     {{context-panel/data-table dSDetails=dataSource.IOC.details}}
   </div>
 </div>

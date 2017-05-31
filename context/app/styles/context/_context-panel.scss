@@ -34,7 +34,7 @@ radial-gradient(circle at 85% 85%, rsa-color(gray, darker, .1) 0, rsa-color(gray
   @include rsa-vendor-prefix(flex-shrink, 0);
   @include rsa-col(justify, fill);
   background-color: rsa-color(gray, darker);
-  height: 100%;
+  height: calc(100% - 40px);
   display: flex;
   flex-direction: row;
   .rsa-nav-tab-group {
@@ -51,7 +51,6 @@ radial-gradient(circle at 85% 85%, rsa-color(gray, darker, .1) 0, rsa-color(gray
     background-color: rsa-color(blue);
   }
   &__tabs {
-    height: inherit;
     background: rsa-color(black, darker);
     &__enabled {
       color: rsa-color(white, lightest);
@@ -77,7 +76,6 @@ radial-gradient(circle at 85% 85%, rsa-color(gray, darker, .1) 0, rsa-color(gray
     
   }
   &__layout {
-    height: inherit;
     width: calc(100% - 40px);
     display: inline-block;
   }
@@ -91,8 +89,10 @@ radial-gradient(circle at 85% 85%, rsa-color(gray, darker, .1) 0, rsa-color(gray
     @include rsa-font();
     color: rsa-color(amber, light);
     text-align: center;
+    align-items: center;
     padding: rsa-whitespace(least);
     font-style: italic;
+    display: flex;
     span {
       color: $font-fade-color;
     }
@@ -122,7 +122,7 @@ radial-gradient(circle at 85% 85%, rsa-color(gray, darker, .1) 0, rsa-color(gray
     background-color: rsa-color(gray, darkest);
   }
   &__footer {
-    height: 25px;
+    height: 15px;
     background-color: rsa-color(black, darker);
     padding: rsa-whitespace(less);
     color: rsa-color(gray, lighter);
@@ -143,7 +143,7 @@ radial-gradient(circle at 85% 85%, rsa-color(gray, darker, .1) 0, rsa-color(gray
       }
     }
     &__data-table {
-      height: calc(100% - 210px);
+      height: calc(100% - 220px);
       display: flex;
       >div {
         border: 1px solid rsa-color(black, null, $rsa-nearly-transparent);
@@ -164,14 +164,21 @@ radial-gradient(circle at 85% 85%, rsa-color(gray, darker, .1) 0, rsa-color(gray
       color: rsa-color(green);
     }
   }
+  &__data__header {
+    align-content: center;
+    display: flex;
+  }
   &__grid,
   &__context-data-table {
     color: $font-fade-color;
     height: 100%;
     width: calc(100% - 4px);
+    display: flex;
     &__box {
       overflow: auto;
-      height: calc(100% - 30px);
+      height: 100%;
+      width: 100%;
+      justify-content: center;
     }
     &__groupdata {
       padding-left: rsa-whitespace();
@@ -192,7 +199,7 @@ radial-gradient(circle at 85% 85%, rsa-color(gray, darker, .1) 0, rsa-color(gray
         color: rsa-color(orange);
       }
       &__default {
-        padding: 2rem;
+        padding: .5rem;
       }
     }
     .rsa-content-badge-score.is-danger .score {
@@ -224,6 +231,7 @@ radial-gradient(circle at 85% 85%, rsa-color(gray, darker, .1) 0, rsa-color(gray
     }
     .link a {
       color: rsa-color(blue, base);
+      display: block;
       text-decoration: none;
     }
     .link:hover {
@@ -315,8 +323,11 @@ radial-gradient(circle at 85% 85%, rsa-color(gray, darker, .1) 0, rsa-color(gray
     &__panel {
       width: 100%;
       height: 100%;
+      display: flex;
+      justify-content: center;
       >section {
         height: 100%;
+        width: 100%;
       }
       margin: 0 rsa-whitespace(least) 0 rsa-whitespace(least);
       .progress-bar {

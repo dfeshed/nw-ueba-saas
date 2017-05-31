@@ -722,6 +722,7 @@ export default {
     noValues: 'Context Sources with no values: ',
     dsNotConfigured: 'Context Sources not configured: ',
     total: 'Total',
+    marketingText: ' is not a configured data source in Context Hub. Contact your Administrator to enable this feature. Context Hub centralizes data sources from Endpoint, Alerts, Incidents, Lists and many more on-demand.',
     timeUnit: {
       allData: 'ALL DATA',
       HOUR: 'HOUR',

@@ -722,6 +722,7 @@ export default {
     noValues: 'ja_Context Sources with no values: ',
     dsNotConfigured: 'ja_Context Sources not configured: ',
     total: 'ja_Total',
+    marketingText: 'ja_ is not a configured data source in Context Hub. Contact your Administrator to enable this feature. Context Hub centralizes data sources from Endpoint, Alerts, Incidents, Lists and many more on-demand.',
     timeUnit: {
       allData: 'ja_ALL DATA',
       HOUR: 'ja_HOUR',

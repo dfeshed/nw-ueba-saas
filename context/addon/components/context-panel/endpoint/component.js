@@ -1,14 +1,17 @@
 import layout from './template';
 import Component from 'ember-component';
 import connect from 'ember-redux/components/connect';
+import computed from 'ember-computed-decorators';
 
 const stateToComputed = ({ context }) => ({
-  lookupData: context.lookupData,
-  dataSources: context.dataSources
+  lookupData: context.lookupData
 });
 
 const EndpointComponent = Component.extend({
   layout,
-  classNames: 'rsa-context-panel__endpoint'
+  classNames: 'rsa-context-panel__endpoint',
+
+  @computed('lookupData.[]')
+  moduleHeader: ([lookupData]) => lookupData.Modules ? lookupData.Modules.header : ''
 });
 export default connect(stateToComputed)(EndpointComponent);
