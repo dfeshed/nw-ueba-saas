@@ -5,6 +5,7 @@ import engineResolverFor from '../../../../helpers/engine-resolver';
 import wait from 'ember-test-helpers/wait';
 import ComputesRowViewport from 'respond/mixins/group-table/computes-row-viewport';
 import ComputesColumnExtents from 'respond/mixins/group-table/computes-column-extents';
+import HasSelections from 'respond/mixins/group-table/has-selections';
 import $ from 'jquery';
 
 moduleForComponent('rsa-group-table-group-item', 'Integration | Component | rsa group table group item', {
@@ -40,7 +41,7 @@ const relativeIndexOffset = 2;
 
 const index = relativeIndex + relativeIndexOffset;
 
-const MockTableClass = EmberObject.extend(ComputesRowViewport, ComputesColumnExtents);
+const MockTableClass = EmberObject.extend(ComputesRowViewport, ComputesColumnExtents, HasSelections);
 
 const groupItemSize = { outerHeight: 100 };
 
@@ -126,5 +127,77 @@ test('it yields the item, index, column & columnIndex when a block is given', fu
         assert.equal(block.find('.column-field').text(), visibleColumns[i].field, 'Expected to find column field in DOM');
         assert.equal(block.find('.column-index').text(), String(i), 'Expected to find column index in DOM');
       });
+    });
+});
+
+test('clicking on it fires the appropriate callback on the table parent', function(assert) {
+  let whichAction;
+  table.setProperties({
+    itemClickAction(payload) {
+      assert.equal(payload.item, item, 'Expected callback to receive the item data object as an input param');
+      whichAction = 'itemClickAction';
+    },
+    itemCtrlClickAction(payload) {
+      assert.equal(payload.item, item, 'Expected callback to receive the item data object as an input param');
+      whichAction = 'itemCtrlClickAction';
+    },
+    itemShiftClickAction(payload) {
+      assert.equal(payload.item, item, 'Expected callback to receive the item data object as an input param');
+      whichAction = 'itemShiftClickAction';
+    }
+  });
+  this.setProperties({ item, relativeIndex, relativeIndexOffset, table });
+
+  this.render(hbs`{{rsa-group-table/group-item
+    item=item
+    relativeIndex=relativeIndex
+    relativeIndexOffset=relativeIndexOffset
+    table=table
+  }}`);
+
+  return wait()
+    .then(() => {
+      const row = this.$('.rsa-group-table-group-item');
+      row.trigger('click');
+      assert.equal(whichAction, 'itemClickAction', 'Expected click handler to be invoked');
+
+      // eslint-disable-next-line new-cap
+      const shiftClick = $.Event('click');
+      shiftClick.shiftKey = true;
+      row.trigger(shiftClick);
+      assert.equal(whichAction, 'itemShiftClickAction', 'Expected SHIFT click handler to be invoked');
+
+      // eslint-disable-next-line new-cap
+      const ctrlClick = $.Event('click');
+      ctrlClick.ctrlKey = true;
+      row.trigger(ctrlClick);
+      assert.equal(whichAction, 'itemCtrlClickAction', 'Expected CTRL click handler to be invoked');
+    });
+});
+
+test('it applies the correct CSS class name when selected', function(assert) {
+
+  table.set('selections', { areGroups: false, ids: [] });
+  this.setProperties({ item, relativeIndex, relativeIndexOffset, table });
+
+  this.render(hbs`{{rsa-group-table/group-item
+    item=item
+    relativeIndex=relativeIndex
+    relativeIndexOffset=relativeIndexOffset
+    table=table
+  }}`);
+
+  return wait()
+    .then(() => {
+      const row = this.$('.rsa-group-table-group-item');
+      assert.ok(row.length);
+      assert.notOk(row.hasClass('is-selected'));
+
+      table.get('selections.ids').pushObject(item.id);
+      return wait();
+    }).then(() => {
+
+      const row = this.$('.rsa-group-table-group-item');
+      assert.ok(row.hasClass('is-selected'));
     });
 });

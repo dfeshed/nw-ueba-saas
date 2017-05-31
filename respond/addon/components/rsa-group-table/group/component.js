@@ -13,7 +13,7 @@ export default Component.extend({
   tagName: 'section',
   layout,
   classNames: ['rsa-group-table-group'],
-  classNameBindings: ['isSample'],
+  classNameBindings: ['isSample', 'isSelected'],
   attributeBindings: ['style'],
 
   // Reference to the group data object that corresponds to this component. Typically passed down from parent.
@@ -131,5 +131,11 @@ export default Component.extend({
     } else {                      // from first item index to end of items
       return (items || []).slice(first);
     }
+  },
+
+  // Determines if this group is selected by searching for the group's id in the parent table's selections hash.
+  @computed('group.id', 'table.selections.areGroups', 'table.selectionsHash')
+  isSelected(id, areGroups, hash) {
+    return !!areGroups && !!hash && (id in hash);
   }
 });

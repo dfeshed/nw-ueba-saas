@@ -2,6 +2,7 @@ import Component from 'ember-component';
 import layout from './template';
 import ComputesRowViewport from 'respond/mixins/group-table/computes-row-viewport';
 import ComputesColumnExtents from 'respond/mixins/group-table/computes-column-extents';
+import HasSelections from 'respond/mixins/group-table/has-selections';
 
 /**
  * @class Group Table Component
@@ -22,7 +23,7 @@ import ComputesColumnExtents from 'respond/mixins/group-table/computes-column-ex
  * ```
  * @public
  */
-export default Component.extend(ComputesRowViewport, ComputesColumnExtents, {
+export default Component.extend(ComputesRowViewport, ComputesColumnExtents, HasSelections, {
   tagName: 'article',
   layout,
   classNames: ['rsa-group-table'],
@@ -43,5 +44,59 @@ export default Component.extend(ComputesRowViewport, ComputesColumnExtents, {
    * @default 'rsa-group-table/body'
    * @public
    */
-  bodyComponentClass: 'rsa-group-table/body'
+  bodyComponentClass: 'rsa-group-table/body',
+
+  /**
+   * Configurable handler for clicks on a group header row.
+   * @param {Object} group The group data object that corresponds to the clicked row.
+   * @param {Number} groupIndex The index of `group` relative to the entire `groups` array.
+   * @public
+   */
+  groupClickAction() {},
+
+  /**
+   * Configurable handler for SHIFT+clicks on a group header row.
+   * @param {Object} group The group data object that corresponds to the clicked row.
+   * @param {Number} groupIndex The index of `group` relative to the entire `groups` array.
+   * @public
+   */
+  groupShiftClickAction() {},
+
+  /**
+   * Configurable handler for CTRL+clicks on a group header row.
+   * @param {Object} group The group data object that corresponds to the clicked row.
+   * @param {Number} groupIndex The index of `group` relative to the entire `groups` array.
+   * @public
+   */
+  groupCtrlClickAction() {},
+
+  /**
+   * Configurable handler for clicks on a group item row.
+   * @param {Object} group The group data object which contains the clicked row.
+   * @param {Number} groupIndex The index of `group` relative to the entire `groups` array.
+   * @param {Object} item The data object which corresponds to the clicked row.
+   * @param {Number} itemIndex The index of `item` relative to the `group.items` array.
+   * @public
+   */
+  itemClickAction() {},
+
+  /**
+   * Configurable handler for SHIFT+clicks on a group item row.
+   * @param {Object} group The group data object which contains the clicked row.
+   * @param {Number} groupIndex The index of `group` relative to the entire `groups` array.
+   * @param {Object} item The data object which corresponds to the clicked row.
+   * @param {Number} itemIndex The index of `item` relative to the `group.items` array.
+   * @public
+   */
+  itemShiftClickAction() {},
+
+  /**
+   * Configurable handler for CTRL+clicks on a group item row.
+   * @param {Object} group The group data object which contains the clicked row.
+   * @param {Number} groupIndex The index of `group` relative to the entire `groups` array.
+   * @param {Object} item The data object which corresponds to the clicked row.
+   * @param {Number} itemIndex The index of `item` relative to the `group.items` array.
+   * @public
+   */
+  itemCtrlClickAction() {}
 });

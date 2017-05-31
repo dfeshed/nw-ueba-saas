@@ -1,5 +1,6 @@
 import Component from 'ember-component';
 import HasSizeAttr from 'respond/mixins/dom/has-size-attr';
+import Clickable from 'respond/mixins/dom/clickable';
 import layout from './template';
 import computed, { alias } from 'ember-computed-decorators';
 import set from 'ember-metal/set';
@@ -9,7 +10,7 @@ import set from 'ember-metal/set';
  * Represents the header row for a single group.
  * @public
  */
-export default Component.extend(HasSizeAttr, {
+export default Component.extend(HasSizeAttr, Clickable, {
   tagName: 'header',
   layout,
   classNames: ['rsa-group-table-group-header'],
@@ -35,6 +36,28 @@ export default Component.extend(HasSizeAttr, {
   // Set target attr for size measurements.
   // @see respond/mixins/dom/has-size-attrs
   sizeAttr: 'table.groupHeaderSize',
+
+  // Configure the payload that will be sent to click handlers.
+  // @see respond/mixins/dom/clickable
+  @computed('group')
+  clickData(group) {
+    return { group };
+  },
+
+  // Delegate click handler to the table parent component.
+  // @see respond/mixins/dom/clickable
+  @alias('table.groupClickAction')
+  clickAction: null,
+
+  // Delegate shift+click handler to the table parent component.
+  // @see respond/mixins/dom/clickable
+  @alias('table.groupCtrlClickAction')
+  ctrlClickAction: null,
+
+  // Delegate ctrl+click handler to the table parent component.
+  // @see respond/mixins/dom/clickable
+  @alias('table.groupShiftClickAction')
+  shiftClickAction: null,
 
   // Indicates whether this group's bottom is near the top of the non-buffered viewport (i.e., within the height
   // of the header). Used for CSS bindings.

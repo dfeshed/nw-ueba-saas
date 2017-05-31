@@ -1,5 +1,6 @@
 import Component from 'ember-component';
 import HasSizeAttr from 'respond/mixins/dom/has-size-attr';
+import Clickable from 'respond/mixins/dom/clickable';
 import computed, { alias } from 'ember-computed-decorators';
 import layout from './template';
 import { htmlSafe } from 'ember-string';
@@ -10,9 +11,10 @@ import $ from 'jquery';
  * Represents a data row for a single item in a group.
  * @public
  */
-export default Component.extend(HasSizeAttr, {
+export default Component.extend(HasSizeAttr, Clickable, {
   layout,
   classNames: ['rsa-group-table-group-item'],
+  classNameBindings: ['isSelected'],
   attributeBindings: ['style'],
 
   /**
@@ -56,11 +58,39 @@ export default Component.extend(HasSizeAttr, {
     return relativeIndex + offset;
   },
 
+  // Configure the payload that will be sent to click handlers.
+  // @see respond/mixins/dom/clickable
+  @computed('item')
+  clickData(item) {
+    return { item };
+  },
+
+  // Delegate click handler to the table parent component.
+  // @see respond/mixins/dom/clickable
+  @alias('table.itemClickAction')
+  clickAction: null,
+
+  // Delegate shift+click handler to the table parent component.
+  // @see respond/mixins/dom/clickable
+  @alias('table.itemCtrlClickAction')
+  ctrlClickAction: null,
+
+  // Delegate ctrl+click handler to the table parent component.
+  // @see respond/mixins/dom/clickable
+  @alias('table.itemShiftClickAction')
+  shiftClickAction: null,
+
   // Computes the y-coordinate of the top of this group, in pixels. Typically passed down from parent.
   @computed('index', 'table.groupItemSize.outerHeight')
   style(index, itemHeight) {
     const top = index * itemHeight;
     const styleText = $.isNumeric(top) ? `transform: translateY(${top}px)` : '';
     return htmlSafe(`${styleText}`);
+  },
+
+  // Determines if this group is selected by searching for the group's id in the parent table's selections hash.
+  @computed('item.id', 'table.selections.areGroups', 'table.selectionsHash')
+  isSelected(id, areGroups, hash) {
+    return !areGroups && !!hash && (id in hash);
   }
 });

@@ -4,6 +4,7 @@ import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from '../../../../helpers/engine-resolver';
 import wait from 'ember-test-helpers/wait';
 import set from 'ember-metal/set';
+import $ from 'jquery';
 
 moduleForComponent('rsa-group-table-group-header', 'Integration | Component | rsa group table group header', {
   integration: true,
@@ -84,5 +85,50 @@ test('it yields the group & index when a block is given', function(assert) {
     .then(() => {
       const elIsOpen2 = this.$('.rsa-group-table-group-header .is-open');
       assert.equal(elIsOpen2.text().trim(), 'false');
+    });
+});
+
+test('clicking on it fires the appropriate callback on the table parent', function(assert) {
+  let whichAction;
+  table.setProperties({
+    groupClickAction(payload) {
+      assert.equal(payload.group, group, 'Expected callback to receive the group data object as an input param');
+      whichAction = 'groupClickAction';
+    },
+    groupCtrlClickAction(payload) {
+      assert.equal(payload.group, group, 'Expected callback to receive the group data object as an input param');
+      whichAction = 'groupCtrlClickAction';
+    },
+    groupShiftClickAction(payload) {
+      assert.equal(payload.group, group, 'Expected callback to receive the group data object as an input param');
+      whichAction = 'groupShiftClickAction';
+    }
+  });
+
+  this.setProperties({ group, index, table });
+
+  this.render(hbs`{{rsa-group-table/group-header
+    group=group
+    index=index
+    table=table
+  }}`);
+
+  return wait()
+    .then(() => {
+      const row = this.$('.rsa-group-table-group-header');
+      row.trigger('click');
+      assert.equal(whichAction, 'groupClickAction', 'Expected click handler to be invoked');
+
+      // eslint-disable-next-line new-cap
+      const shiftClick = $.Event('click');
+      shiftClick.shiftKey = true;
+      row.trigger(shiftClick);
+      assert.equal(whichAction, 'groupShiftClickAction', 'Expected SHIFT click handler to be invoked');
+
+      // eslint-disable-next-line new-cap
+      const ctrlClick = $.Event('click');
+      ctrlClick.ctrlKey = true;
+      row.trigger(ctrlClick);
+      assert.equal(whichAction, 'groupCtrlClickAction', 'Expected CTRL click handler to be invoked');
     });
 });

@@ -9,11 +9,13 @@
 </header>
 {{#if (or group.isOpen isSample)}}
   <section class="rsa-group-table-group__items-container" style="{{itemsContainerStyle}}">
-    {{#each itemsInViewport as |item index|}}
+    {{#each itemsInViewport as |item itemIndex|}}
       {{yield (hash
         item=(component itemComponentClass
+          group=group
+          groupIndex=index
           item=item
-          relativeIndex=index
+          relativeIndex=itemIndex
           relativeIndexOffset=firstItemIndex
           isSample=isSample
           table=table)
