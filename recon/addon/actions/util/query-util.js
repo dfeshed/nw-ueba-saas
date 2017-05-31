@@ -80,6 +80,10 @@ const addStreaming = (_query, pageSize = 10000, batchSize = 10, limit = 100000) 
   return query;
 };
 
+const addMaxPackets = (_query, maxPackets = 2500) => {
+  return _addFilter(_query, 'maxPackets', maxPackets);
+};
+
 const basicPromiseRequest = (endpointId, eventId, modelName) => {
   const query = buildBaseQuery(endpointId, eventId);
   return promiseRequest({
@@ -138,6 +142,7 @@ export {
   addFileTypeFilter,
   addFileSelectionsFilter,
   addFilenameFilter,
+  addMaxPackets,
   addSessionIdsFilter,
   endpointFilter,
   buildBaseQuery,

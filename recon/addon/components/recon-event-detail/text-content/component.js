@@ -7,8 +7,9 @@ import StickyHeader from 'recon/mixins/sticky-header-mixin';
 import layout from './template';
 import { isLogEvent } from 'recon/reducers/meta/selectors';
 import {
-  visibleText,
-  hasTextContent
+  renderedText,
+  hasTextContent,
+  numberOfRenderableTextEntries
 } from 'recon/reducers/text/selectors';
 import { allDataHidden } from 'recon/reducers/visuals/selectors';
 
@@ -19,7 +20,8 @@ const stateToComputed = ({ recon }) => ({
   hasTextContent: hasTextContent(recon),
   isLogEvent: isLogEvent(recon),
   metaToHighlight: recon.text.metaToHighlight,
-  visibleText: visibleText(recon)
+  numberOfItems: numberOfRenderableTextEntries(recon),
+  renderedText: renderedText(recon)
 });
 
 const TextReconComponent = Component.extend(ReconPager, StickyHeader, {
@@ -27,12 +29,15 @@ const TextReconComponent = Component.extend(ReconPager, StickyHeader, {
   layout,
 
   showMoreClickedTracker: [],
-  stickyContentKey: 'visibleText',
+  stickyContentKey: 'renderedText',
   stickySelector: '.scroll-box .rsa-text-entry',
   stickyHeaderSelector: '.is-sticky.recon-request-response-header',
 
   @computed('stickyContent.firstPacketId', 'showMoreClickedTracker.[]')
   hideStickyShowMore: (id, trackedIds) => trackedIds.includes(id),
+
+  @computed('renderedText.length', 'numberOfItems')
+  hasMoreToDisplay: (numberDisplayed, numberToDisplay) => numberDisplayed < numberToDisplay,
 
   actions: {
     showMoreClicked(id) {

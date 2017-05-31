@@ -1,12 +1,12 @@
 import { streamRequest } from 'streaming-data/services/data-access/requests';
-import { buildBaseQuery, addStreaming, addDecode } from '../util/query-util';
+import { buildBaseQuery, addStreaming, addDecode, addMaxPackets } from '../util/query-util';
 import { batchDataHandler, HANDLERS, BATCH_TYPES } from 'recon/actions/util/batch-data-handler';
 
 const BATCH_CHARACTER_SIZE = 10000;
 const TIME_BETWEEN_BATCHES = 500;
 
 const TEXT_BATCH_SIZE = 50;
-const TEXT_ENTRY_LIMIT = 2000;
+const MAX_PACKETS_FOR_TEXT_ENTRIES = 2500;
 
 const selector = (response) => {
   if (response.data && response.data.length > 0) {
@@ -22,8 +22,9 @@ export const fetchTextData = (
   dispatchError
 ) => {
   const basicQuery = buildBaseQuery(endpointId, eventId);
-  const streamingQuery = addStreaming(basicQuery, TEXT_ENTRY_LIMIT, TEXT_BATCH_SIZE, TEXT_ENTRY_LIMIT);
-  const decodeQuery = addDecode(streamingQuery, decode);
+  const streamingQuery = addStreaming(basicQuery, undefined, TEXT_BATCH_SIZE);
+  const maxPacketsQuery = addMaxPackets(streamingQuery, MAX_PACKETS_FOR_TEXT_ENTRIES);
+  const decodeQuery = addDecode(maxPacketsQuery, decode);
   streamRequest({
     method: 'stream',
     modelName: 'reconstruction-text-data',

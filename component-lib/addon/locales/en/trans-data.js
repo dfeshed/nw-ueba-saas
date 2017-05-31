@@ -139,7 +139,8 @@ export default {
       isDownloading: 'Downloading...',
       showRemaining: 'Show Remaining {{remainingPercent}}%',
       renderRemaining: 'Rendering Remaining {{remainingPercent}}%..',
-      headerShowing: 'Showing'
+      headerShowing: 'Showing',
+      renderingMore: 'Showing more...'
     },
     packetView: {
       noHexData: 'No HEX data was generated during content reconstruction.',

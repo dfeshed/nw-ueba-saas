@@ -22,37 +22,53 @@ export const contentRetrieved = createSelector(
 );
 
 /**
- * A selector that returns a sorted Array of all visible text.
- * @private
+ * A selector that returns an array of those items that are renderable
+ *
+ * @public
  */
-export const visibleText = createSelector(
-  [textContent, renderIds, isRequestShown, isResponseShown],
-  (textContent, renderIds, isRequestShown, isResponseShown) => {
+export const renderableText = createSelector(
+  [textContent, isRequestShown, isResponseShown],
+  (textContent, isRequestShown, isResponseShown) => {
 
     // textContent can be null/empty, eject
-    // renderIds can be null/empty, eject
-    if (!textContent || textContent.length === 0 || !renderIds || renderIds.length === 0) {
+    if (!textContent || textContent.length === 0) {
       return [];
     }
 
-    // just want the packets with their id chosen to be rendered
-    const renderedText = textContent.filter((p) => renderIds.includes(p.firstPacketId));
-
     // if showing all textContent, just return them
     if (isRequestShown && isResponseShown) {
-      return renderedText;
+      return textContent;
     }
 
     // we're not showing req or res, so let's filter them out
-    return renderedText.filter((t) => {
+    return textContent.filter((t) => {
       return (t.side === 'request' && isRequestShown) ||
              (t.side === 'response' && isResponseShown);
     });
   }
 );
+/**
+ * A selector that returns an array of those items that are to be rendered
+ *
+ * @public
+ */
+export const renderedText = createSelector(
+  [renderableText, renderIds],
+  (renderableText, renderIds) => {
+
+    // renderIds can be null/empty, eject
+    if (!renderIds || renderIds.length === 0) {
+      return [];
+    }
+
+    // just want the packets with their id chosen to be rendered
+    return renderableText.filter((t) => renderIds.includes(t.firstPacketId));
+  }
+);
+
 
 export const totalMetaToHighlight = createSelector(
-  [visibleText, metaToHighlight],
+  [renderedText, metaToHighlight],
   (textEntries, metaToHighlight) => {
     if (!metaToHighlight || textEntries.length === 0) {
       return 0;
@@ -70,7 +86,7 @@ export const totalMetaToHighlight = createSelector(
  * if there is any payload for this event
  */
 export const eventHasPayload = createSelector(
-  [visibleText],
+  [renderedText],
   (textEntries) => {
     if (!textEntries || textEntries.length === 0) {
       return false;
@@ -79,5 +95,17 @@ export const eventHasPayload = createSelector(
     const aTextEntryWithPayload = textEntries.find((t) => t.text && t.text.length > 0);
 
     return !!aTextEntryWithPayload;
+  }
+);
+
+// the number of text items that are destined to be rendered
+export const numberOfRenderableTextEntries = createSelector(
+  [hasTextContent, renderableText],
+  (hasTextContent, renderableText) => {
+    if (hasTextContent) {
+      return renderableText.length;
+    }
+
+    return 0;
   }
 );

@@ -1,4 +1,4 @@
-{{#if visibleText}}
+{{#if renderedText}}
   {{#if stickyContent}}
     <div class="recon-packet-stuck-header">
       {{recon-event-detail/single-text
@@ -21,7 +21,7 @@
       if we have content, but no visible text, show spinner,
       working on chewing on data
     --}}
-    {{#each visibleText as |text|}}
+    {{#each renderedText as |text|}}
       {{recon-event-detail/single-text
         isLog=isLogEvent
         isSticky=false
@@ -30,10 +30,17 @@
         showMoreClicked=(action 'showMoreClicked')
       }}
     {{/each}}
+
+    {{#if hasMoreToDisplay}}
+      <centered class='rendering-more'>
+        {{rsa-loader size='large' label=(t 'recon.textView.renderingMore')}}
+      </centered>
+    {{/if}}
+
   </div>
 {{else}}
   {{!--
-    If no visibleText, but there is textContent, means either
+    If no renderedText, but there is textContent, means either
     they are hidden by the UI, or in the process of being rendered.
     If no textContent, show error message
   --}}
@@ -55,3 +62,4 @@
   eventIndex=eventIndex
   eventTotal=eventTotal
 }}
+
