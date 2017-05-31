@@ -1,6 +1,6 @@
 # Central place to list/control versions for key tools
 ${NODE_VERSION:="7.5.0"}
-${YARN_VERSION:="0.23.3"}
+${YARN_VERSION:="0.24.5"}
 ${EMBER_CLI_VERSION:="2.12.1"}
 ${BOWER_VERSION:="1.7.9"}
 ${PHANTOMJS_PREBUILT_VERSION:="2.1.9"}
