@@ -6,6 +6,7 @@
  * @public
  */
 import Ember from 'ember';
+import config from 'ember-get-config';
 
 const { Mixin } = Ember;
 
@@ -23,9 +24,17 @@ export default Mixin.create({
       // Only load data for the panel(s) currently shown.
       const metaPanelSize = this.get('state.meta.panelSize');
 
-      // If the meta panel is minimized, its data is not needed.
-      if (metaPanelSize !== 'min') {
-        this.send('metaGet', queryNode, forceReload);
+      // No need to send these actions if not in 11.1,
+      // this will send the requests and spam the socket
+      // event if the results are not used in a component
+      if (config.featureFlags['11.1-enabled']) {
+        // If the meta panel is minimized, its data is not needed.
+        if (metaPanelSize !== 'min') {
+          this.send('metaGet', queryNode, forceReload);
+        }
+
+        // Get timeline data as it's always visible
+        this.send('eventTimelineGet', queryNode, forceReload);
       }
 
       // If the meta panel is maximized, the events are hidden, so data not needed.
@@ -34,8 +43,6 @@ export default Mixin.create({
         this.send('eventCountGet', queryNode, forceReload);
       }
 
-      // Get timeline data as it's always visible
-      this.send('eventTimelineGet', queryNode, forceReload);
     },
 
     /**
