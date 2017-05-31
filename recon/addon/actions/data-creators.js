@@ -11,6 +11,7 @@
 
 import Ember from 'ember';
 import { getStoredState } from 'redux-persist';
+import { later } from 'ember-runloop';
 
 import * as ACTION_TYPES from './types';
 import { createToggleActionCreator } from './visual-creators';
@@ -418,10 +419,17 @@ const _toggleActionCreator = createToggleActionCreator(ACTION_TYPES.TOGGLE_PACKE
 const togglePayloadOnly = (setTo) => {
   return (dispatch, getState) => {
     dispatch(_toggleActionCreator(setTo));
-    batchPacketData(
-      getState().recon.packets.packets,
-      (payload) => dispatch({ type: ACTION_TYPES.PACKETS_RENDER_NEXT, payload })
-    );
+
+    // delay batching the packet data,
+    // want any side effects of toggling
+    // the flag to take affect in the UI
+    // before processing the results
+    later(() => {
+      batchPacketData(
+        getState().recon.packets.packets,
+        (payload) => dispatch({ type: ACTION_TYPES.PACKETS_RENDER_NEXT, payload })
+      );
+    }, 250);
   };
 };
 
