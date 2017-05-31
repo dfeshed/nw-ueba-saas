@@ -2,7 +2,7 @@ import layout from './template';
 import connect from 'ember-redux/components/connect';
 import computed from 'ember-computed-decorators';
 import Component from 'ember-component';
-import { getData } from 'context/util/context-data-modifier';
+import { getData, getSortedData } from 'context/util/context-data-modifier';
 import set from 'ember-metal/set';
 
 const stateToComputed = ({ context }) => ({
@@ -17,43 +17,25 @@ const DataTableComponent = Component.extend({
   @computed('contextData', 'lookupData.[]', 'dSDetails')
   getDataSourceData: (contextData, [lookupData], dSDetails) => contextData ? contextData.data : getData(lookupData, dSDetails),
 
-  @computed('getDataSourceData', 'currentSort.field', 'currentSort.direction')
-  getSortedData: (getDataSourceData, field, direction) => {
-    if (field || direction) {
-      const sorted = getDataSourceData.sortBy(field);
-      if (direction === 'asc') {
-        sorted.reverse();
-      }
-      return sorted;
-    } else {
-      return getDataSourceData;
-    }
-  },
-
+  @computed('getDataSourceData', 'currentSort.icon', 'currentSort.field')
+  getDataSourceSortedData: (getDataSourceData, icon, field) => getSortedData(getDataSourceData, icon, field),
 
   actions: {
-    sort(column, sortColumn, sortDirection) {
-      if (sortColumn === column.get('field')) {
+    sort(column) {
+      if (!this.get('currentSort')) {
         this.set('currentSort', column);
-        this.set('currentSort.direction', sortDirection);
       }
-      if ((this.get('currentSort.field') === column.get('field')) && (this.get('currentSort.direction') === 'desc')) {
-        this.set('currentSort', column);
-        this.set('currentSort.direction', 'asc');
-        set(column, 'icon', 'arrow-down-8');
-      } else {
-        if (this.get('currentSort')) {
-          set(this.get('currentSort'), 'className', 'sort');
-          set(this.get('currentSort'), 'icon', 'arrow-down-8');
-        } else {
-          set(column, 'className', 'sort');
-          set(column, 'icon', 'arrow-down-8');
-        }
-        this.set('currentSort', column);
-        set(column ? this.get('currentSort') : column, 'className', 'rsa-context-panel__context-data-table__panel__sort-icon');
+      if (this.get('currentSort.field') !== column.get('field')) {
+        set(this.get('currentSort'), 'className', 'sort');
+      }
+      if (column.icon === 'arrow-down-8') {
         set(column, 'icon', 'arrow-up-8');
-        this.set('currentSort.direction', 'desc');
+        set(column, 'className', 'rsa-context-panel__context-data-table__panel__sort-icon');
+      } else {
+        set(column, 'icon', 'arrow-down-8');
+        set(column, 'className', 'rsa-context-panel__context-data-table__panel__sort-icon');
       }
+      this.set('currentSort', column);
     }
   }
 });

@@ -1,5 +1,6 @@
 import TabList from 'context/config/dynamic-tab';
 import get from 'ember-metal/get';
+import { isEmpty } from 'ember-utils';
 
 const isNotEmpty = (contextData, dataSourceGroup, defaultEnable) => {
   if (!contextData) {
@@ -86,9 +87,32 @@ const getTabs = (meta, dataSources) => {
   });
 };
 
+const getSortedData = (data, icon, field) => {
+  if (field === '_id' || field === 'incidentId') {
+    const sorted = data.sort((a, b) => {
+      if (isEmpty(a[field])) {
+        return -1;
+      }
+      if (isEmpty(b[field])) {
+        return 1;
+      }
+      return a[field].replace('INC-', '') - b[field].replace('INC-', '');
+    });
+    return (icon === 'arrow-down-8' ? sorted.reverse() : sorted).concat([]);
+  }
+
+  if (icon) {
+    const sorted = data.sortBy(field);
+    return icon === 'arrow-down-8' ? sorted.reverse() : sorted;
+  } else {
+    return data;
+  }
+};
+
 export {
   isDataSourceEnabled,
   getData,
   getHeaderData,
-  getTabs
+  getTabs,
+  getSortedData
 };

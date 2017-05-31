@@ -6,6 +6,7 @@ export default {
   footer: '',
   title: 'context.iiocs.title',
   sortColumn: 'IOCLevel',
+  sortOrder: 'asc',
   columns: [
     {
       field: 'IOCLevel',
