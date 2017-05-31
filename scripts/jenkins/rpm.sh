@@ -56,7 +56,6 @@ timestamp="$(date +%y%m%d%H%M%S)"
 
 # Build RPM
 makeRPMDirs
-cp -rf $SA_ROOT/rpm/nginx $TMP_RPM_BUILD_ROOT/etc/nginx
 cp -rf $SA_ROOT/dist ${TMP_RPM_BUILD_ROOT}${APP_INSTALL_FOLDER}/html
 gzipAssets
 
