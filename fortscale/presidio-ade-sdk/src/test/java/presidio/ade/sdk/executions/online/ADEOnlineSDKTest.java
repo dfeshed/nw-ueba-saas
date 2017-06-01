@@ -2,8 +2,8 @@ package presidio.ade.sdk.executions.online;
 
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
+import fortscale.utils.mongodb.index.DynamicIndexApplicationListenerConfig;
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
-import fortscale.utils.test.data.generator.InstantAttributeStrategyConfig;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
 import fortscale.utils.time.SystemDateService;
 import fortscale.utils.time.impl.config.SystemDateServiceImplForcedConfig;
@@ -68,7 +68,8 @@ public class ADEOnlineSDKTest {
             MongodbTestConfig.class,
             ADEOnlineSDKConfig.class,
             SystemDateServiceImplForcedConfig.class,
-            ADEMockedInputRecordGeneratorConfig.class
+            ADEMockedInputRecordGeneratorConfig.class,
+            DynamicIndexApplicationListenerConfig.class
     })
     public static class springConfig {
         @Bean

@@ -1,5 +1,6 @@
 package presidio.ade.sdk.executions.online;
 
+import org.springframework.data.mongodb.core.mapping.Document;
 import presidio.ade.domain.store.input.ADEInputRecord;
 
 import java.time.Instant;
@@ -8,6 +9,7 @@ import java.time.Instant;
  * shouldInsertDataAndCreateIndexes pojo used to mock ade input data
  * Created by barak_schuster on 5/28/17.
  */
+@Document
 public class ADEMockedInputRecord extends ADEInputRecord {
 
     private String contextField;

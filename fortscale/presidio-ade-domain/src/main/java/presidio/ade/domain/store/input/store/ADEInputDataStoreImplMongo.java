@@ -34,7 +34,7 @@ public class ADEInputDataStoreImplMongo implements ADEInputDataStore ,MongoIndex
     public void store(ADEInputRecordsMetaData recordsMetaData, List<? extends ADEInputRecord> records) {
         logger.info("storing by recordsMetaData={}", recordsMetaData);
         String collectionName = translator.toCollectionName(recordsMetaData);
-        mongoIndexCreator.ensureIndexes(collectionName,this);
+//        mongoIndexCreator.ensureIndexes(collectionName,this);
         mongoTemplate.insert(records, collectionName);
     }
 

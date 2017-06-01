@@ -1,5 +1,6 @@
 package presidio.ade.domain.store.input;
 
+import fortscale.utils.mongodb.index.DynamicallyIndexed;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -20,6 +21,7 @@ public class ADEInputRecord {
     @CreatedDate
     protected Instant creationTime;
     @Field(EVENT_TIME_FIELD)
+    @DynamicallyIndexed
     protected Instant eventTime;
 
     public ADEInputRecord(Instant eventTime) {
