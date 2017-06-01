@@ -1,4 +1,5 @@
 import Component from 'ember-component';
+import EmberObject from 'ember-object';
 import connect from 'ember-redux/components/connect';
 import computed from 'ember-computed-decorators';
 
@@ -28,20 +29,38 @@ const TextReconComponent = Component.extend(ReconPager, StickyHeader, {
   classNames: ['recon-event-detail-text'],
   layout,
 
-  showMoreClickedTracker: [],
+  precentRenderedTracker: [],
+  showMoreFinishedTracker: [],
   stickyContentKey: 'renderedText',
   stickySelector: '.scroll-box .rsa-text-entry',
   stickyHeaderSelector: '.is-sticky.recon-request-response-header',
 
-  @computed('stickyContent.firstPacketId', 'showMoreClickedTracker.[]')
+  @computed('stickyContent.firstPacketId', 'showMoreFinishedTracker.[]')
   hideStickyShowMore: (id, trackedIds) => trackedIds.includes(id),
+
+  @computed('stickyContent.firstPacketId', 'precentRenderedTracker.@each.percentRendered')
+  stickyRenderedPercent: (id, trackedIds) => {
+    const trackedEntry = trackedIds.findBy('id', id);
+    if (trackedEntry) {
+      return trackedEntry.percentRendered;
+    }
+  },
 
   @computed('renderedText.length', 'numberOfItems')
   hasMoreToDisplay: (numberDisplayed, numberToDisplay) => numberDisplayed < numberToDisplay,
 
   actions: {
-    showMoreClicked(id) {
-      this.get('showMoreClickedTracker').pushObject(id);
+    showMoreFinished(id) {
+      this.get('showMoreFinishedTracker').pushObject(id);
+    },
+
+    updatePercentRendered(entry) {
+      const trackedEntry = this.get('precentRenderedTracker').findBy('id', entry.id);
+      if (!trackedEntry) {
+        this.get('precentRenderedTracker').pushObject(EmberObject.create(entry));
+      } else {
+        trackedEntry.set('percentRendered', entry.percentRendered);
+      }
     }
   }
 });

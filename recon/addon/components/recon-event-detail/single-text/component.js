@@ -8,7 +8,7 @@ import layout from './template';
 
 const HIDE_CONTENT_CHARACTER_COUNT = 3000;
 const SHOW_TRUNCATED_AMOUNT = 2000;
-const CHUNK_SIZE = 5000;
+const CHUNK_SIZE = 10000;
 const TIME_BETWEEN_CHUNKS = 750;
 
 export default Component.extend(SelectionTooltip, {
@@ -21,8 +21,10 @@ export default Component.extend(SelectionTooltip, {
   isSticky: false,
   metaToHighlight: null,
   packet: null,
+  percentRendered: null, // updated as incremental rendering is taking place
   renderedAll: false,
   renderingRemainingText: false,
+  stickyRenderedPercent: null,
   tooltipHeading: null,
 
   // Tooltip has two views depending upon being in IF/ELSE conditional
@@ -43,8 +45,23 @@ export default Component.extend(SelectionTooltip, {
   @computed('shouldBeTruncated', 'renderedAll')
   displayShowAllButton: (shouldBeTruncated, renderedAll) => shouldBeTruncated && !renderedAll,
 
-  @computed('packet.text')
-  displayedPercent(text) {
+  @computed('packet.text', 'percentRendered', 'isSticky', 'stickyRenderedPercent')
+  displayedPercent(text, percentRendered, isSticky, stickyRenderedPercent) {
+    // if this component is being used in a sticky
+    // then just return stickyRenderedPercent which is passed up
+    // from the actual component rendering the text
+    if (isSticky && stickyRenderedPercent) {
+      return stickyRenderedPercent;
+    }
+
+    // if incremental rendering is going on, it
+    // updates percentRendered as it chunks in
+    // content so just use that
+    if (percentRendered) {
+      return percentRendered;
+    }
+
+    // Otherwise this is just initial render of component
     if (text.length < HIDE_CONTENT_CHARACTER_COUNT) {
       return 100;
     }
@@ -56,12 +73,16 @@ export default Component.extend(SelectionTooltip, {
    * Builds message indicating how much text is left to show
    * or are in the process of rendering
    */
-  @computed('displayedPercent', 'renderingRemainingText')
-  remainingTextMessage(displayedPercent, renderingRemainingText) {
+  @computed('displayedPercent', 'renderingRemainingText', 'percentRendered')
+  remainingTextMessage(displayedPercent, renderingRemainingText, percentRendered) {
     let msg = '';
 
+    // if rendering under way, use that percentage, otherwise use initial displayedPercent value
+    // which doesn't update after initial rendering
+    const percentToUse = percentRendered || displayedPercent;
+
     const percentLabel = {
-      remainingPercent: (displayedPercent === 0) ? '99+' : 100 - displayedPercent
+      remainingPercent: (percentToUse === 0) ? '99+' : 100 - percentToUse
     };
 
     if (renderingRemainingText) {
@@ -129,11 +150,15 @@ export default Component.extend(SelectionTooltip, {
   _renderRemainingText() {
     // Update rendering button to show status message
     this.set('renderingRemainingText', true);
-    this.sendAction('showMoreClicked', this.get('packet.firstPacketId'));
 
     // Build array of text chunks to render
-    let remainingText = this.get('packet.text').substr(SHOW_TRUNCATED_AMOUNT);
-    const mth = this.get('metaToHighlight.value');
+    const {
+      'packet.text': packetText,
+      'packet.firstPacketId': firstPacketId,
+      'metaToHighlight.value': mth
+    } = this.getProperties('packet.text', 'packet.firstPacketId', 'metaToHighlight.value');
+
+    let remainingText = packetText.substr(SHOW_TRUNCATED_AMOUNT);
     let i = 0;
     while (remainingText.length > 0) {
       // get next chunk
@@ -156,12 +181,19 @@ export default Component.extend(SelectionTooltip, {
         const $contents = this.$('.text-container').contents();
         this.$('.text-container').append(text.string);
         $contents.get($contents.length - 1).remove();
+        const percentRendered = Math.ceil((this.$('.text-container').text().length / packetText.length) * 100);
+
+        // save/send notifications about the amount of text that has
+        // been rendered so far
+        this.set('percentRendered', percentRendered);
+        this.sendAction('updatePercentRendered', { id: firstPacketId, percentRendered });
       }, i++ * TIME_BETWEEN_CHUNKS);
     }
 
-    // And now when all is done, set flag indicating all have been rendered.
+    // And now when all is done, send/set flag indicating all have been rendered.
     later(() => {
       this.set('renderedAll', true);
+      this.sendAction('showMoreFinished', firstPacketId);
     }, (i - 1) * TIME_BETWEEN_CHUNKS);
   },
 

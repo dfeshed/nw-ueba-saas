@@ -6,6 +6,7 @@
         isSticky=true
         packet=stickyContent
         renderedAll=hideStickyShowMore
+        stickyRenderedPercent=stickyRenderedPercent
       }}
     </div>
   {{/if}}
@@ -27,7 +28,8 @@
         isSticky=false
         metaToHighlight=metaToHighlight
         packet=text
-        showMoreClicked=(action 'showMoreClicked')
+        showMoreFinished=(action 'showMoreFinished')
+        updatePercentRendered=(action 'updatePercentRendered')
       }}
     {{/each}}
 
