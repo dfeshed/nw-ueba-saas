@@ -11,7 +11,7 @@ export default {
     {
       field: 'averageAlertRiskScore',
       title: 'context.incident.averageAlertRiskScore',
-      width: '10vh',
+      width: '5vw',
       class: 'rsa-module-riskscore',
       componentClass: 'rsa-content-badge-score',
       dataType: 'riskscore',
@@ -19,26 +19,32 @@ export default {
       className: 'sort'
     },
     {
+      field: 'priority',
+      title: 'context.incident.priority',
+      width: '5vw',
+      icon: 'arrow-down-8',
+      className: 'sort'
+    },
+    {
       field: '_id',
       title: 'context.incident._id',
-      width: '10vh',
+      width: '5vw',
       dataType: 'link',
       path: '/respond/incident/{0}',
       icon: 'arrow-down-8',
       className: 'sort'
-
     },
     {
       field: 'name',
       title: 'context.incident.name',
-      width: '20vh',
+      width: '15vw',
       icon: 'arrow-down-8',
       className: 'sort'
     },
     {
       field: 'created.$date',
       title: 'context.incident.created',
-      width: '35vh',
+      width: '15vw',
       dataType: 'datetime',
       icon: 'arrow-down-8',
       className: 'sort'
@@ -46,28 +52,21 @@ export default {
     {
       field: 'status',
       title: 'context.incident.status',
-      width: '10vh',
+      width: '5vw',
       icon: 'arrow-down-8',
       className: 'sort'
     },
     {
       field: 'assignee.name',
       title: 'context.incident.assignee',
-      width: '20vh',
-      icon: 'arrow-down-8',
-      className: 'sort'
-    },
-    {
-      field: 'priority',
-      title: 'context.incident.priority',
-      width: '10vh',
+      width: '8vw',
       icon: 'arrow-down-8',
       className: 'sort'
     },
     {
       field: 'alertCount',
       title: 'context.incident.alertCount',
-      width: '10vh',
+      width: '5vw',
       icon: 'arrow-down-8',
       className: 'sort'
     }

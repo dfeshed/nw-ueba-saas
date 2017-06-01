@@ -9,6 +9,7 @@ moduleForComponent('context-panel/footer', 'Integration | Component | context pa
   integration: true,
   beforeEach() {
     this.inject.service('redux');
+    this.registry.injection('component', 'i18n', 'service:i18n');
   }
 });
 
@@ -26,10 +27,6 @@ test('it renders', function(assert) {
   const contextData = EmberObject.create({});
   contextData.set('Alerts', alertData);
   this.set('contextData', contextData);
-  this.set('i18n', { t() {
-    return 'Return Value';
-  }
-  });
 
   this.get('redux').dispatch({
     type: ACTION_TYPES.INITIALIZE_CONTEXT_PANEL,
@@ -42,6 +39,6 @@ test('it renders', function(assert) {
     type: ACTION_TYPES.UPDATE_ACTIVE_TAB,
     payload: 'Alerts'
   });
-  this.render(hbs`{{context-panel/footer i18n=i18n}}`);
-  assert.equal(this.$('.rsa-context-panel__footer').text().trim(), 'Total: 8', 'Showing total count for alert data.');
+  this.render(hbs`{{context-panel/footer}}`);
+  assert.equal(this.$('.rsa-context-panel__footer').text().trim(), 'Showing 8 Alerts', 'Showing total count for alert data.');
 });

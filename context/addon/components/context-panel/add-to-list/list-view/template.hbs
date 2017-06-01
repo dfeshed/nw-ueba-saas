@@ -1,14 +1,14 @@
 <div class="rsa-context-tree-table__addtoListBox">
   {{rsa-form-input isReadOnly=true label=(t 'context.addToList.metaValue') placeholder=entityId}}
   {{#rsa-form-button  class="rsa-context-tree-table__createList-button" isIconOnly=true isFullWidth=true click=(action 'createList')}}
-    <div  align="left">
+    <div align="left">
       {{t 'context.addToList.newList'}}
       {{rsa-icon name="arrow-right-12" size='small'}}
     </div>
   {{/rsa-form-button}}
   <div>
     <hbox>
-      <vbox xs="8">
+      <vbox xs="7">
         <hbox>
           {{#rsa-nav-tab isActive=(eq active "all") click=(action 'activate' 'all')}}
             {{t 'context.addToList.tabAll'}}
@@ -21,7 +21,10 @@
           {{/rsa-nav-tab}}
         </hbox>
       </vbox>
-      <vbox xs="4">
+      <vbox xs="1" class="filter-icon">
+        {{rsa-icon name='filter-22' title=(t 'respond.filters')}}
+      </vbox>
+      <vbox xs="3">
         {{rsa-form-input  placeholder=(t 'context.addToList.filter') value=model.filterStr}}
       </vbox>
     </hbox>

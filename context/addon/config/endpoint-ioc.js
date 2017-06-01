@@ -11,7 +11,7 @@ export default {
     {
       field: 'IOCLevel',
       title: 'context.iiocs.iOCLevel',
-      width: '10vh',
+      width: '5vw',
       class: 'rsa-iioc-iiocLevel1',
       dataType: 'text',
       icon: 'arrow-up-8',
@@ -20,7 +20,7 @@ export default {
     {
       field: 'Description',
       title: 'context.iiocs.description',
-      width: '30vh',
+      width: '10vw',
       class: 'rsa-iioc-iiocLevel0',
       dataType: 'text',
       icon: 'arrow-down-8',
@@ -29,7 +29,7 @@ export default {
     {
       field: 'LastExecuted',
       title: 'context.iiocs.lastExecuted',
-      width: '20vh',
+      width: '10vw',
       class: 'rsa-iioc-iiocLevel2',
       dataType: 'text',
       icon: 'arrow-down-8',

@@ -11,28 +11,28 @@ export default {
     {
       field: 'dataSourceName',
       title: 'context.list.dataSourceName',
-      width: '20vh',
+      width: '10vw',
       icon: 'arrow-down-8',
       className: 'sort'
     },
     {
       field: 'dataSourceDescription',
       title: 'context.list.dataSourceDescription',
-      width: '20vh',
+      width: '15vw',
       icon: 'arrow-down-8',
       className: 'sort'
     },
     {
       field: 'resultMeta.dataSourceCreatedBy',
       title: 'context.list.createdByUser',
-      width: '20vh',
+      width: '10vw',
       icon: 'arrow-down-8',
       className: 'sort'
     },
     {
       field: 'dataSourceCreatedOn',
       title: 'context.list.createdTimeStamp',
-      width: '20vh',
+      width: '15vw',
       dataType: 'datetime',
       icon: 'arrow-down-8',
       className: 'sort'
@@ -40,7 +40,7 @@ export default {
     {
       field: 'dataSourceLastModifiedOn',
       title: 'context.list.lastModifiedTimeStamp',
-      width: '20vh',
+      width: '15vw',
       dataType: 'datetime',
       icon: 'arrow-down-8',
       className: 'sort'

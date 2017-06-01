@@ -582,10 +582,8 @@ radial-gradient(circle at 85% 85%, rsa-color(gray, darker, .1) 0, rsa-color(gray
 .tab-active-background {
   background-color: rsa-color(blue);
 }
-.gray-text-border-top {
-  border-top: 1px solid rsa-color(black, null, $rsa-nearly-transparent);
-  text-align: left;
-  padding: 1rem;
-  color: gray;
-  @include rsa-font(footer, small);
+.filter-icon {
+  padding-top: rsa-whitespace();
+  padding-left: rsa-whitespace(more);
+  color: rsa-color(gray, light)
 }

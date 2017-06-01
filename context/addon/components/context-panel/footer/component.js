@@ -28,6 +28,11 @@ const FooterComponent = Component.extend({
   @computed('dsData')
   headerData(dsData) {
     return { count: dsData ? dsData.resultList.length : 0, timeWindow: DataUtil.getHeaderData(dsData, this.get('i18n')) };
+  },
+
+  @computed('activeTabName')
+  footerDSTitle(activeTabName) {
+    return this.get('i18n').t(`context.footer.title.${activeTabName.camelize()}`);
   }
 });
 export default connect(stateToComputed)(FooterComponent);

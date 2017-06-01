@@ -722,7 +722,6 @@ export default {
     DOMAIN: 'ja_Domain',
     noValues: 'ja_Context Sources with no values: ',
     dsNotConfigured: 'ja_Context Sources not configured: ',
-    total: 'ja_Total',
     marketingText: 'ja_ is not a configured data source in Context Hub. Contact your Administrator to enable this feature. Context Hub centralizes data sources from Endpoint, Alerts, Incidents, Lists and many more on-demand.',
     timeUnit: {
       allData: 'ja_ALL DATA',
@@ -741,7 +740,7 @@ export default {
     },
     header: {
       title: {
-        archer: 'ja_Archer',
+        archer: 'ja_Archer Details',
         users: 'ja_Active Directory',
         alerts: 'ja_Related Alerts',
         incidents: 'ja_Related Incidents',
@@ -1006,7 +1005,16 @@ export default {
       'transport.connect.failed': 'ja_Context data is not available as the data source is not reachable.'
     },
     footer: {
-      viewAll: 'ja_VIEW All'
+      viewAll: 'ja_VIEW All',
+      total: 'ja_Showing {{count}}',
+      title: {
+        incidents: 'ja_Incidents',
+        alerts: 'ja_Alerts',
+        lIST: 'ja_Lists',
+        users: 'ja_Users',
+        endpoint: 'ja_Host',
+        archer: 'ja_Asset'
+      }
     },
     tooltip: {
       contextHighlights: 'ja_Context Highlights',
