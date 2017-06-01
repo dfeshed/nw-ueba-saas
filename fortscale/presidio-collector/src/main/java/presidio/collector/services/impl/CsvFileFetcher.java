@@ -31,7 +31,7 @@ public class CsvFileFetcher implements Fetcher {
 
     @Override
     public List<String[]> fetch(Datasource datasource, long startTime, long endTime) throws Exception {
-        final String csvFile = buildFileName(datasource, startTime, endTime);
+        final String csvFile = buildFileName(datasource);
         CSVReader reader = new CSVReader(new BufferedReader(new InputStreamReader(new FileInputStream(csvFile), charset), delimiter));
 
         final List<String[]> records = new ArrayList<>();
@@ -60,8 +60,8 @@ public class CsvFileFetcher implements Fetcher {
         //todo: also... - the name 'filter' can be better :-)
     }
 
-    private String buildFileName(Datasource datasource, long startTime, long endTime) {
-        final String fileName = datasource.name() + "_" + startTime + "_" + endTime + ".csv"; //todo: we should consider extracting to a service if someone else uses these files
+    private String buildFileName(Datasource datasource) {
+        final String fileName = datasource.name() + ".csv"; //todo: we should consider extracting to a service if someone else uses these files
         return Paths.get(csvFilesFolderPath, fileName).toString();
     }
 }
