@@ -17,16 +17,16 @@
 
       {{!Source}}
       <p class="source">
-        <span>{{indicator/source item.indicator}}</span>
+        <span>{{t (concat 'respond.alert.source.' item.alert.source)}}</span>
       </p>
     </box>
 
     {{!Indicator time + event count}}
     <vbox fit nowrap align="end" class="time-and-num-events">
-      <p class="time">{{rsa-content-datetime timestamp=item.time displayAsTimeAgo=false displayDate=true displayTime=true displayMilliseconds=false}}</p>
+      <p class="time">{{rsa-content-datetime timestamp=item.timestamp displayAsTimeAgo=false displayDate=true displayTime=true displayMilliseconds=false}}</p>
       <p class="num-events">
-        {{item.events.length}}
-        {{#if (eq item.events.length 1)}}
+        {{item.alert.events.length}}
+        {{#if (eq item.alert.events.length 1)}}
           {{t 'respond.storyline.event'}}
         {{else}}
           {{t 'respond.storyline.events'}}
@@ -38,49 +38,33 @@
 
 <section class="main">
   <div class="connector">
-    <div class="severity">{{item.indicator.alert.severity}}</div>
+    <div class="severity">{{item.alert.severity}}</div>
     <div class="line"></div>
   </div>
 
   <div class="content">
     {{!Display name}}
-    <h3>{{item.name}}</h3>
+    <h3>{{item.alert.name}}</h3>
 
     {{!Content only for indicators from outside incident}}
-    {{#unless item.isCatalyst}}
+    {{#unless isCatalyst}}
 
       {{!Related incident}}
-      {{#if item.indicator.partOfIncident}}
+      {{#if item.partOfIncident}}
         <p class="incident">
           <label>{{t 'respond.storyline.partOfIncident'}}:</label>
           <span>
-            {{#link-to 'incident' item.indicator.incidentId}}
-              {{item.indicator.incidentId}}
+            {{#link-to 'incident' item.incidentId}}
+              {{item.incidentId}}
             {{/link-to}}
           </span>
         </p>
       {{/if}}
 
-      {{!Related entities}}
-      {{#if resolvedMatched.length}}
-        <p class="related">
-          <label>{{t 'respond.storyline.relatedBy'}}:</label>
-          <span>
-            {{#each resolvedMatched as |match|}}
-              <span
-                class="entity {{match.metaKey}}"
-                data-meta-key="{{match.metaKey}}"
-                data-entity-id="{{match.id}}">
-                {{match.id}}
-              </span>
-            {{/each}}
-          </span>
-        </p>
-      {{/if}}
     {{/unless}}
 
     {{!Enrichments list}}
-    {{#with item.indicator.enrichments as |data|}}
+    {{#with item.alert.events.lastObject.enrichment as |data|}}
       <ul class="enrichment-list">
         {{#each enrichmentsToDisplay as |en|}}
           {{rsa-incident/enrichment dataKey=en.dataKey data=data threshold=en.threshold}}

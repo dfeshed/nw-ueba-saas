@@ -1,12 +1,10 @@
-import Ember from 'ember';
+import get from 'ember-metal/get';
 import ListItem from 'respond/components/rsa-list/item/component';
 import HighlightsEntities from 'context/mixins/highlights-entities';
 import layout from './template';
-import computed from 'ember-computed-decorators';
+import { equal } from 'ember-computed-decorators';
 import connect from 'ember-redux/components/connect';
 import { singleSelectStoryPoint, toggleSelectStoryPoint } from 'respond/actions/creators/incidents-creators';
-
-const { get } = Ember;
 
 const stateToComputed = () => ({ });
 
@@ -55,7 +53,7 @@ const enrichmentsToDisplay = [
 const StorylineItem = ListItem.extend(HighlightsEntities, {
   tagName: 'vbox',
   classNames: ['rsa-incident-storyline-item'],
-  classNameBindings: ['item.isCatalyst:is-catalyst', 'item.isHidden:is-hidden'],
+  classNameBindings: ['isCatalyst', 'item.isHidden:is-hidden'],
   layout,
   enrichmentsToDisplay,
 
@@ -65,13 +63,9 @@ const StorylineItem = ListItem.extend(HighlightsEntities, {
   autoHighlightEntities: true,
   entityEndpointId: 'IM',
 
-  @computed('item.matched')
-  resolvedMatched(matched = []) {
-    const metaKeys = [ 'user', 'host', 'domain', 'ip', 'ip', 'file' ];
-    return matched
-      .map((id, index) => ({ id, metaKey: metaKeys[index] }))
-      .rejectBy('id', '');
-  }
+  // Returns `true` if the `incidentId` & `storylineId` of `item` match.
+  @equal('item.incidentId', 'item.storylineId')
+  isCatalyst: null
 });
 
 export default connect(stateToComputed, dispatchToActions)(StorylineItem);

@@ -191,14 +191,32 @@ const getIncident = (incidentId) => {
  * @public
  * @returns {Object}
  */
-const getStorylineSafely = (incidentId) => {
-  return {
-    type: ACTION_TYPES.FETCH_INCIDENT_STORYLINE,
-    promise: Incidents.getStorylineSafely(incidentId),
-    meta: {
-      onSuccess: (response) => Logger.debug(ACTION_TYPES.FETCH_INCIDENT_STORYLINE, response),
-      onFailure: (response) => ErrorHandlers.handleContentRetrievalError(response, `incident ${incidentId} storyline`)
+const getStoryline = (incidentId) => {
+  return (dispatch, getState) => {
+
+    // If we already have a storyline stream running, stop it. This prevents a previously started stream
+    // from continuing to deliver results at the same time as the new stream.
+    const { stopStorylineStream } = getState().respond.incident;
+    if (stopStorylineStream) {
+      stopStorylineStream();
     }
+
+    dispatch({ type: ACTION_TYPES.FETCH_INCIDENT_STORYLINE_STARTED });
+
+    Incidents.getAlertsForIncident(
+      incidentId,
+      {
+        onInit: (stopStreamFn) => {
+          dispatch({ type: ACTION_TYPES.FETCH_INCIDENT_STORYLINE_STREAM_INITIALIZED, payload: stopStreamFn });
+        },
+        onCompleted: () => dispatch({ type: ACTION_TYPES.FETCH_INCIDENT_STORYLINE_COMPLETED }),
+        onResponse: (payload) => dispatch({ type: ACTION_TYPES.FETCH_INCIDENT_STORYLINE_RETRIEVE_BATCH, payload }),
+        onError: (response) => {
+          dispatch({ type: ACTION_TYPES.FETCH_INCIDENT_STORYLINE_ERROR });
+          ErrorHandlers.handleContentRetrievalError(response, `incident ${incidentId} storyline`);
+        }
+      }
+    );
   };
 };
 
@@ -223,7 +241,7 @@ const initializeIncident = (incidentId) => {
       });
       if (incidentId) {
         dispatch(getIncident(incidentId));
-        dispatch(getStorylineSafely(incidentId));
+        dispatch(getStoryline(incidentId));
       }
 
       // If we haven't already fetched users (say, from incidents route), fetch now
@@ -268,7 +286,7 @@ export {
   clearFocusItem,
   toggleSelectAll,
   getIncident,
-  getStorylineSafely,
+  getStoryline,
   initializeIncident,
   toggleJournalPanel,
   setViewMode,

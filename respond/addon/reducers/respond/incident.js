@@ -19,8 +19,11 @@ let initialState = {
   // incident storyline information
   storyline: null,
 
-  // either 'wait', 'error' or 'completed'
+  // either 'streaming', 'error' or 'completed'
   storylineStatus: null,
+
+  // function to stop the current `storyline` stream request, if any
+  stopStorylineStream: null,
 
   // either 'overview', 'storyline' or 'events'
   viewMode: 'overview',
@@ -90,13 +93,37 @@ const incident = reduxActions.handleActions({
     });
   },
 
-  [ACTION_TYPES.FETCH_INCIDENT_STORYLINE]: (state, action) => {
-    return handle(state, action, {
-      start: (s) => ({ ...s, storyline: null, storylineStatus: 'wait' }),
-      failure: (s) => ({ ...s, storylineStatus: 'error' }),
-      success: (s) => ({ ...s, storyline: action.payload.data, storylineStatus: 'completed' })
-    });
+  [ACTION_TYPES.FETCH_INCIDENT_STORYLINE_STARTED]: (state) => ({
+    ...state,
+    storyline: [],
+    storylineStatus: 'streaming'
+  }),
+
+  [ACTION_TYPES.FETCH_INCIDENT_STORYLINE_STREAM_INITIALIZED]: (state, { payload }) => ({
+    ...state,
+    stopStorylineStream: payload
+  }),
+
+  [ACTION_TYPES.FETCH_INCIDENT_STORYLINE_RETRIEVE_BATCH]: (state, { payload: { data, meta } }) => {
+    data = data || [];
+    state.storyline = state.storyline || [];
+    return {
+      ...state,
+      storyline: [ ...state.storyline, ...data ],
+      storylineStatus: meta.complete ? 'completed' : 'streaming'
+    };
   },
+
+  [ACTION_TYPES.FETCH_INCIDENT_STORYLINE_COMPLETED]: (state) => ({
+    ...state,
+    stopStorylineStream: null
+  }),
+
+  [ACTION_TYPES.FETCH_INCIDENT_STORYLINE_ERROR]: (state) => ({
+    ...state,
+    storylineStatus: 'error',
+    stopStorylineStream: null
+  }),
 
   [ACTION_TYPES.SET_VIEW_MODE]: persistIncidentState((state, { payload }) => ({
     ...state,

@@ -1,9 +1,7 @@
 import Ember from 'ember';
 import { module, test } from 'qunit';
-import { LIFECYCLE } from 'redux-pack';
 import incidentReducer from 'respond/reducers/respond/incident';
 import ACTION_TYPES from 'respond/actions/types';
-import makePackAction from '../../helpers/make-pack-action';
 
 const { copy } = Ember;
 
@@ -14,14 +12,16 @@ const initialState = {
 
 module('Unit | Utility | Incident Storyline Actions - Reducers');
 
-test('When FETCH_INCIDENT_STORYLINE starts, the storylineStatus changes to wait', function(assert) {
+test('When FETCH_INCIDENT_STORYLINE starts, the storylineStatus changes to streaming', function(assert) {
   const initState = copy(initialState);
-  const storylineStatus = 'wait';
+  const storylineStatus = 'streaming';
+  const storyline = [];
   const expectedEndState = {
     ...initState,
+    storyline,
     storylineStatus
   };
-  const action = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.FETCH_INCIDENT_STORYLINE });
+  const action = { type: ACTION_TYPES.FETCH_INCIDENT_STORYLINE_STARTED };
   const endState = incidentReducer(initState, action);
   assert.deepEqual(endState, expectedEndState);
 });
@@ -29,25 +29,27 @@ test('When FETCH_INCIDENT_STORYLINE starts, the storylineStatus changes to wait'
 test('When FETCH_INCIDENT_STORYLINE fails, the storylineStatus changes to error', function(assert) {
   const initState = copy(initialState);
   const storylineStatus = 'error';
+  const stopStorylineStream = null;
   const expectedEndState = {
     ...initState,
-    storylineStatus
+    storylineStatus,
+    stopStorylineStream
   };
-  const action = makePackAction(LIFECYCLE.FAILURE, { type: ACTION_TYPES.FETCH_INCIDENT_STORYLINE });
+  const action = { type: ACTION_TYPES.FETCH_INCIDENT_STORYLINE_ERROR };
   const endState = incidentReducer(initState, action);
   assert.deepEqual(endState, expectedEndState);
 });
 
-test('When FETCH_INCIDENT_STORYLINE succeeds, the info obj and storylineStatus update appropriately', function(assert) {
+test('When FETCH_INCIDENT_STORYLINE retrieves a batch, the storyline and storylineStatus update appropriately', function(assert) {
   const initState = copy(initialState);
-  const storyline = { testing: 123 };
+  const storyline = [ { testing: 123 } ];
   const storylineStatus = 'completed';
   const expectedEndState = {
     ...initState,
     storylineStatus,
     storyline
   };
-  const action = makePackAction(LIFECYCLE.SUCCESS, { type: ACTION_TYPES.FETCH_INCIDENT_STORYLINE, payload: { data: storyline } });
+  const action = { type: ACTION_TYPES.FETCH_INCIDENT_STORYLINE_RETRIEVE_BATCH, payload: { data: storyline, meta: { complete: true } } };
   const endState = incidentReducer(initState, action);
   assert.deepEqual(endState, expectedEndState);
 });

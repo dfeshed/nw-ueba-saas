@@ -1,75 +1,104 @@
 import reselect from 'reselect';
-import Indicator from 'respond/utils/indicator/indicator';
-import StoryPoint from 'respond/utils/storypoint/storypoint';
 import arrayFlattenBy from 'respond/utils/array/flatten-by';
 import arrayFindByList from 'respond/utils/array/find-by-list';
 import arrayFromHash from 'respond/utils/array/from-hash';
 import eventsToNodesAndLinks from 'respond/utils/entity/events-to-nodes-links';
 import { parseNodeId, countNodesByType } from 'respond/utils/entity/node';
+import { isEmpty } from 'ember-utils';
 
 const { createSelector } = reselect;
 
-const storyline = (state) => state.respond.incident.storyline || [];
+/**
+ * Returns the same object as the `respond.incident.storyline` state, but adds the following logic:
+ * returns an empty array if the `storyline` is empty, null or undefined;
+ * if storyline is not empty, ensures every alert has a 'storylineId' property,
+ * and that every alert event has `id` & `indicatorId` properties.
+ * These properties are useful in the UI when trying to correlated events & alerts back to their parent storyline.
+ * @returns {Object[]}
+ * @private
+ */
+const incidentIndicators = ({ respond: { incident: { id, storyline } } }) => {
+  if (storyline) {
+    storyline.forEach((indicator) => {
 
-// Flattens a raw storyline object into an array, wraps each of the array items' `indicator` attrs in a utility class.
-export const storylineNormalized = createSelector(
-  storyline,
-  (storyline) => {
-    const { relatedIndicators = [] } = storyline;
+      // If we've already processed this indicator, don't repeat.
+      if (!isEmpty(indicator.storylineId)) {
+        return;
+      }
 
-    // wrap the `indicator` attr of each array member
-    relatedIndicators.forEach((item) => {
-      item.indicator = Indicator.create(item.indicator);
+      // Mark this indicator as processed, so we don't do this twice.
+      indicator.storylineId = id;
+
+      const {
+        id: indicatorId,
+        alert: {
+          events = []
+        } = {}
+      } = indicator;
+
+      events.forEach((event, index) => {
+        event.indicatorId = indicatorId;
+        if (isEmpty(event.id)) {
+          event.id = `${indicatorId}:${index}`;
+        }
+      });
     });
-
-    // sort by the indicator timestamps (ascending)
-    return relatedIndicators.sortBy('indicator.timestamp');
   }
-);
+  return storyline || [];
+};
 
-// Wraps each normalized storyline member in a util class with a friendlier API.
+/**
+ * Returns the `incidentIndicators` list, sorted by indicator timestamp (ascending).
+ * This is the list to be used for displaying the incident on a storyline UI.
+ * @returns {Object[]}
+ * @public
+ */
 export const storyPoints = createSelector(
-  storylineNormalized,
-  (storyline) => {
-    return storyline.map((item) => StoryPoint.create(item));
+  incidentIndicators,
+  (incidentIndicators) => {
+    return incidentIndicators.sortBy('timestamp');
   }
 );
 
-// Counts all the storyPoints in the storyline.
+/**
+ * Counts all the `storyPoints` in the storyline.
+ * @returns {Number}
+ * @public
+ */
 export const storyPointCount = createSelector(
   storyPoints,
   (storyPoints) => storyPoints.length
 );
 
-export const storySelection = ({ respond: { incident: { selection } } }) => selection;
-
-// Returns array all the currently selected storyPoint ids, if any; otherwise empty array.
-export const storyPointSelections = createSelector(
-  [ storySelection ],
-  ({ type, ids }) => ((type === 'storyPoint') ? ids : [])
-);
-
-// Returns array all the currently selected storyEvent ids, if any; otherwise empty array.
-export const storyEventSelections = createSelector(
-  [ storySelection ],
-  ({ type, ids }) => ((type === 'event') ? ids : [])
-);
-
-// Collects all the normalized events of a normalized storyline into a single flat array.
+/**
+ * Collects all the normalized events from the incident indicators into a single flat array, sorted chronologically.
+ * This is the list to be used for displaying the incident's events in a flat table UI.
+ * @returns {Object[]}
+ * @public
+ */
 export const storyEvents = createSelector(
-  storylineNormalized,
-  (storyline) => {
-    return arrayFlattenBy(storyline, 'indicator.normalizedEvents');
+  incidentIndicators,
+  (incidentIndicators) => {
+    return arrayFlattenBy(incidentIndicators, 'alert.events')
+      .sortBy('timestamp');
   }
 );
 
-// Counts all the normalized events in the storyline.
+/**
+ * Counts all the normalized events in the storyline.
+ * @returns {Number}
+ * @public
+ */
 export const storyEventCount = createSelector(
   storyEvents,
   (storyEvents) => storyEvents.length
 );
 
-// Generates the nodes & links from a given array of normalized events.
+/**
+ * Generates the nodes & links from a given array of normalized events.
+ * @returns {{ nodes: Object[], links: Object[] }
+ * @public
+ */
 export const storyNodesAndLinks = createSelector(
   [ storyEvents ],
   (events) => {
@@ -77,9 +106,52 @@ export const storyNodesAndLinks = createSelector(
   }
 );
 
+/**
+ * Returns the count of all nodes in `storyNodesAndLinks`, grouped by node type.
+ * This is the count of all the nodes in the current storyline, irregardless of the current filter.
+ * @returns {Number}
+ * @public
+ */
+export const storyNodeCounts = createSelector(
+  [ storyNodesAndLinks ],
+  ({ nodes = [] }) => {
+    return arrayFromHash(
+      countNodesByType(nodes)
+    );
+  }
+);
+
+/**
+ * Returns the `respond.incident.selection` state.
+ * @private
+ */
+const incidentSelection = ({ respond: { incident: { selection } } }) => selection;
+
+/**
+ * If the current selections are storyPoints, returns selected storypoint ids; otherwise empty array.
+ * These are the selections for the storyPoints UI.
+ * @type {String[]}
+ * @public
+ */
+export const storyPointSelections = createSelector(
+  [ incidentSelection ],
+  ({ type, ids }) => ((type === 'storyPoint') ? ids : [])
+);
+
+/**
+ * If the current selections are events, returns selected event ids; otherwise empty array.
+ * These are the selections for the storyEvents UI.
+ * @type {String[]}
+ * @public
+ */
+export const storyEventSelections = createSelector(
+  [ incidentSelection ],
+  ({ type, ids }) => ((type === 'event') ? ids : [])
+);
+
 // Generates a filter for the storyline's nodes & links from the current storyline selection (if any).
 export const storyNodesAndLinksFilter = createSelector(
-  [ storyNodesAndLinks, storySelection ],
+  [ storyNodesAndLinks, incidentSelection ],
   ({ nodes = [], links = [] }, { type, ids }) => {
 
     const filterIdsByEvents = (arr, field, values) => {
@@ -103,17 +175,6 @@ export const storyNodesAndLinksFilter = createSelector(
       }
     }
     return null;
-  }
-);
-
-// Returns the count of all nodes in `storyNodesAndLinks`, grouped by node type.
-// This is the count of all the nodes in the current storyline, irregardless of the current filter.
-export const storyNodeCounts = createSelector(
-  [ storyNodesAndLinks ],
-  ({ nodes = [] }) => {
-    return arrayFromHash(
-      countNodesByType(nodes)
-    );
   }
 );
 

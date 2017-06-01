@@ -585,6 +585,9 @@ export default {
       source: {
         ECAT: 'ja_Endpoint',
         'Event Stream Analysis': 'ja_Event Stream Analysis',
+        'Event Streaming Analytics': 'ja_Event Stream Analysis',
+        'Security Analytics Investigator': 'ja_Security Analytics Investigator',
+        'Web Threat Detection': 'ja_Web Threat Detection',
         'Malware Analysis': 'ja_Malware Analysis',
         'Reporting Engine': 'ja_Reporting Engine'
       }

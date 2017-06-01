@@ -188,96 +188,28 @@ IncidentsAPI.reopenClass({
   },
 
   /**
-   * Executes a websocket storyline fetch call and returns a Promise. Promise should resolve to the storyline details/info
-   * for the incident ID supplied to the method
-   *
-   * The server returns a `data` object which has only a single property `relatedIndicators[]`, which is the actual
-   * storyline array we want. So we flatten/discard the top-level object here and re-assign `data` to the array directly.
-   *
-   * Also, each member of that `relatedIndicators[]` is an object with several properties, including `indicator`.
-   * Each `indicator` property points to an ugly JSON object that we wrap in a util class here in order to give it a
-   * friendly access API downstream.
-   *
-   * @method getStoryline
-   * @public
-   * @param incidentId The ID of the incident
-   * @returns {Promise}
-   */
-  getStoryline(incidentId) {
-    const query = FilterQuery.create()
-      .addSortBy('event.timestamp', false)  // TODO: ask backend if 'indicator.timestamp' is supported
-      .addFilter('_id', incidentId);
-
-    return promiseRequest({
-      method: 'queryRecord',
-      modelName: 'storyline',
-      query: query.toJSON()
-    });
-  },
-
-  /**
    * Executes a websocket alerts fetch call and returns a Promise. Promise should resolve to the alerts
    * for the incident ID supplied to the method
    *
    * @method getAlertsForIncident
    * @public
    * @param incidentId The ID of the incident
+   * @param {{ onResponse: Function, onError: Function, onInit: Function, onCompleted: Function }} callbacks
    * @returns {Promise}
    */
-  getAlertsForIncident(incidentId) {
+  getAlertsForIncident(incidentId, { onResponse = NOOP, onError = NOOP, onInit = NOOP, onCompleted = NOOP }) {
     const query = FilterQuery.create()
       .addFilter('incidentId', incidentId);
 
-    return promiseRequest({
-      method: 'query',
+    return streamRequest({
+      method: 'stream',
       modelName: 'alerts',
-      query: query.toJSON()
+      query: query.toJSON(),
+      onInit,
+      onResponse,
+      onError,
+      onCompleted
     });
-  },
-
-  /**
-   * Composites the `getStoryline` and `getAlertsForIncident` calls together in order to support storylines
-   * for incidents migrated from 10.x (which don't have storylines).
-   *
-   * First executes `getStoryline` and checks for empty results. If empty, then executes `getAlertsForIncident` and
-   * massages that response into a structure that mimicks the `getStoryline` responses.
-   *
-   * @method getAlertsForIncident
-   * @param incidentId The ID of the incident
-   * @returns {Promise}
-   * @public
-   */
-  getStorylineSafely(incidentId) {
-    return IncidentsAPI.getStoryline(incidentId)
-      .then(function(response) {
-
-        // Did we get an empty response (no indicators)?
-        const isStorylineEmpty = !response || !response.data ||
-          !response.data.relatedIndicators ||
-          !response.data.relatedIndicators.length;
-
-        if (!isStorylineEmpty) {
-          return response;  // Not empty, good to go!
-        }
-
-        // Response was empty. Maybe this is an incident migrated for 10.6, whose data doesn't support storyline.
-        // Try fetching the alerts for the incident using the standard `alerts` socket API instead.
-        return IncidentsAPI.getAlertsForIncident(incidentId)
-          .then(function({ data }) {
-
-            // We've got the alerts list. Wrap into a storyline-like JSON structure.
-            const storyline = {
-              relatedIndicators: []
-            };
-            if (isEmberArray(data)) {
-              storyline.relatedIndicators = data.map((alert) => ({
-                indicator: alert,
-                group: '0'
-              }));
-            }
-            return { code: 0, data: storyline };
-          });
-      });
   },
 
   /**

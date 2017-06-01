@@ -47,10 +47,24 @@ class DataHelper {
     );
   }
   fetchIncidentStoryline(data = storyline) {
-    _dispatchActionWithPromisePayload(
+    _dispatchAction(
       this.redux,
-      ACTION_TYPES.FETCH_INCIDENT_STORYLINE,
-      { code: 0, data }
+      { type: ACTION_TYPES.FETCH_INCIDENT_STORYLINE_STARTED }
+    );
+    _dispatchAction(
+      this.redux,
+      {
+        type: ACTION_TYPES.FETCH_INCIDENT_STORYLINE_RETRIEVE_BATCH,
+        payload: {
+          code: 0,
+          data,
+          meta: { complete: true }
+        }
+      }
+    );
+    _dispatchAction(
+      this.redux,
+      { type: ACTION_TYPES.FETCH_INCIDENT_STORYLINE_COMPLETED }
     );
   }
   toggleIncidentJournalPanel() {
