@@ -1,0 +1,14 @@
+{{#if (not isConfigured)}}
+  <div class='rsa-context-panel__error-text'>
+    {{dataSourceName}} {{t 'context.marketingText' }}
+  </div>
+{{else if (not dsData)}}
+  <hbox class='rsa-context-panel__loader'>
+    <div class="rsa-loader is-largest">
+      <div class="rsa-loader__wheel"></div>
+      <div class="rsa-loader__text"></div>
+    </div>
+  </hbox>
+{{else if errorMessage}}
+  <div class='rsa-context-panel__error-text'>{{rsa-icon style='lined' name='report-problem-triangle'}} {{errorMessage}}</div>
+{{/if}}

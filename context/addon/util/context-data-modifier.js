@@ -59,6 +59,10 @@ const getHeaderData = (dsData, i18n) => {
       timeWindow
     };
   }
+  return headerData;
+};
+
+const getErrorMessage = (dsData, i18n) => {
   if (dsData && dsData.errorMessage) {
     let errorMessage = i18n.t(`context.error.${dsData.errorMessage}`);
     if (errorMessage.string) {
@@ -68,10 +72,12 @@ const getHeaderData = (dsData, i18n) => {
           errorMessage = errorMessage.replace(`{${key}}`, value);
         }
       }
-      headerData.errorMessage = errorMessage;
+      return errorMessage;
     }
+  } else if (dsData && dsData.resultList && dsData.resultList.length === 0) {
+    return i18n.t('context.error.noData');
   }
-  return headerData;
+  return '';
 };
 
 const getTabs = (meta, dataSources) => {
@@ -113,6 +119,7 @@ export {
   isDataSourceEnabled,
   getData,
   getHeaderData,
+  getErrorMessage,
   getTabs,
   getSortedData
 };

@@ -1,4 +1,7 @@
-import { moduleForComponent, test } from 'ember-qunit';
+import {
+  moduleForComponent, test
+}
+from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import dSDetails from 'context/config/machines';
 import * as ACTION_TYPES from 'context/actions/types';
@@ -44,17 +47,49 @@ test('Testing grid rendered', function(assert) {
       'OrganizationUnit': '',
       'Country': 'USA',
       'Online': 'True'
-    } ] };
+    }]
+  };
+  const dataSources = {
+    'id': '58be7d121969557cbbdbfc57',
+    'name': '58be7d121969557cbbdbfc55_Incidents_datasource',
+    'isConfigured': true,
+    'description': null,
+    'type': 'Endpoint',
+    'dataSourceGroup': 'Endpoint',
+    details: {
+      Machines: {
+        'isConfigured': true,
+        'description': null,
+        'type': 'Machines',
+        'dataSourceGroup': 'Machines',
+        'maxSize': -1,
+        'maxAgeOfEntriesInSeconds': -1,
+        'maxStorageSize': -1,
+        'maxCacheMemorySize': -1,
+        'contentVersion': 13,
+        'contentLastModifiedTime': 1488906967222
+      }
+    }
+  };
 
   this.get('redux').dispatch({
     type: ACTION_TYPES.INITIALIZE_CONTEXT_PANEL,
-    payload: { lookupKey: '1.1.1.1', meta: 'IP' }
+    payload: {
+      lookupKey: '1.1.1.1',
+      meta: 'IP'
+    }
   });
-  this.get('redux').dispatch({ type: ACTION_TYPES.GET_ALL_DATA_SOURCES, payload: ['Machines'] });
-  this.get('redux').dispatch({ type: ACTION_TYPES.GET_LOOKUP_DATA, payload: [contextData] });
+  this.get('redux').dispatch({
+    type: ACTION_TYPES.GET_ALL_DATA_SOURCES,
+    payload: [dataSources]
+  });
+  this.get('redux').dispatch({
+    type: ACTION_TYPES.GET_LOOKUP_DATA,
+    payload: [contextData]
+  });
   this.set('contextData', contextData);
   this.set('dSDetails', dSDetails);
-  this.render(hbs`{{context-panel/dynamic-grid contextData=contextData dSDetails=dSDetails }}`);
+  this.render(hbs `{{context-panel/dynamic-grid contextData=contextData dSDetails=dSDetails }}`);
 
   assert.equal(this.$('.value').length, 10, 'Testing count of fields rendered');
   assert.equal(this.$('.rsa-context-panel__grid a').length, 1, 'Testing count of link fields rendered');

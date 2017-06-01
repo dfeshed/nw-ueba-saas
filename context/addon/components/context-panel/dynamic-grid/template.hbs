@@ -1,11 +1,7 @@
+{{context-panel/ds-header contextData=contextData dSDetails=dSDetails}}
 {{#if (gt getDataSourceData.length 0)}}
   <div class="rsa-context-panel__grid__box">
     {{#each getDataSourceData as |data index|}}
-      <hbox>
-        <vbox class="rsa-context-panel__grid__host-details__header-data">
-          <span >{{get data dSDetails.firstRow.field}}</span>
-        </vbox>
-      </hbox>
       <hbox class={{dSDetails.class}}>
         {{#if dSDetails.riskScore}}
           <vbox xs='2'>
