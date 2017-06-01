@@ -26,12 +26,12 @@
     If no packets, show error message
   --}}
   {{#if hasPackets}}
-    {{!-- If allDataHidden, just leave component markup blank --}}
-    {{#unless allDataHidden}}
+    {{!-- If all data has been hidden by the user, just leave component markup blank --}}
+
+    {{#unless hasDataBeenHiddenByUserSelection}}
       {{!--
-        If has packets and they are not hidden,
-        they will show up eventually via incremental render,
-        so show spinner
+        If the user has not hidden the data themselves, then the data
+        is due to arrive soon via incremental render, so show spinner
       --}}
       <div class="recon-loader">
         {{rsa-loader size='larger'}}

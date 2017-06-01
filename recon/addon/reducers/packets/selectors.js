@@ -137,6 +137,11 @@ export const payloadProcessedPackets = createSelector(
   }
 );
 
+export const hasNoPayloadEliminatedAllVisiblePackets = createSelector(
+  [visiblePackets, payloadProcessedPackets],
+  (visiblePackets, payloadProcessedPackets) => payloadProcessedPackets.length === 0 && visiblePackets.length > 0
+);
+
 export const hasPayload = createSelector(
   headerItems,
   (headerItems) => {
