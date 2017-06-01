@@ -6,13 +6,11 @@ from airflow.operators.subdag_operator import SubDagOperator
 
 from presidio.builders.aggregation.aggregations_dag_builder import AggregationsDagBuilder
 from presidio.operators.smart.smart_events_operator import SmartEventsOperator
-from presidio.utils.date_time import fixed_duration_strategy_to_string
-from presidio.utils.airflow.services.fixed_duration_strategy import is_last_interval_of_fixed_duration
+from presidio.utils.services.fixed_duration_strategy import fixed_duration_strategy_to_string,\
+    FIX_DURATION_STRATEGY_DAILY, FIX_DURATION_STRATEGY_HOURLY
 from presidio.operators.presidio_task_sensor_service import PresidioTaskSensorService
 from presidio.builders.presidio_dag_builder import PresidioDagBuilder
 
-FIX_DURATION_STRATEGY_HOURLY = timedelta(hours=1)
-FIX_DURATION_STRATEGY_DAILY = timedelta(days=1)
 
 
 class AnomalyDetectionEngineDagBuilder(PresidioDagBuilder):

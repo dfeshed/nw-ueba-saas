@@ -1,7 +1,7 @@
 from airflow.operators.python_operator import ShortCircuitOperator
 
 from presidio.utils.airflow.operators.sensor.task_sensor_service import TaskSensorService
-from presidio.utils.airflow.services.fixed_duration_strategy import is_last_interval_of_fixed_duration
+from presidio.utils.services.fixed_duration_strategy import is_execution_date_valid
 
 
 
@@ -12,7 +12,7 @@ class PresidioTaskSensorService(TaskSensorService):
         task_id = '%s_%s' % (task.task_id, 'short_circuit')
         short_circuit_operator = ShortCircuitOperator(
             task_id=task_id,
-            python_callable=lambda **kwargs: is_last_interval_of_fixed_duration(kwargs['execution_date'],
+            python_callable=lambda **kwargs: is_execution_date_valid(kwargs['execution_date'],
                                                                                 fixed_duration_strategy,
                                                                                 schedule_interval),
             provide_context=True
