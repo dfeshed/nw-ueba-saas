@@ -1,12 +1,18 @@
 from datetime import timedelta
+
 from airflow import DAG
 from airflow.operators.python_operator import ShortCircuitOperator
 from airflow.operators.subdag_operator import SubDagOperator
+
 from presidio.builders.aggregation.aggregations_dag_builder import AggregationsDagBuilder
 from presidio.operators.smart.smart_events_operator import SmartEventsOperator
-from presidio.utils.services.fixed_duration_strategy import is_execution_date_valid, fixed_duration_strategy_to_string,\
-    FIX_DURATION_STRATEGY_DAILY, FIX_DURATION_STRATEGY_HOURLY
+from presidio.utils.date_time import fixed_duration_strategy_to_string
+from presidio.utils.airflow.services.fixed_duration_strategy import is_last_interval_of_fixed_duration
+from presidio.operators.presidio_task_sensor_service import PresidioTaskSensorService
 from presidio.builders.presidio_dag_builder import PresidioDagBuilder
+
+FIX_DURATION_STRATEGY_HOURLY = timedelta(hours=1)
+FIX_DURATION_STRATEGY_DAILY = timedelta(days=1)
 
 
 class AnomalyDetectionEngineDagBuilder(PresidioDagBuilder):
@@ -40,37 +46,27 @@ class AnomalyDetectionEngineDagBuilder(PresidioDagBuilder):
         :rtype: airflow.models.DAG
         """
 
+        hourly_aggregations_max_gap_from_daily_aggregations_in_timedelta = timedelta(days=5)
+        hourly_aggregations_max_gap_from_hourly_smart_in_timedelta = timedelta(days=5)
+        daily_aggregations_max_gap_from_daily_smart_in_timedelta = timedelta(days=5)
+
         hourly_aggregations_sub_dag_operators = []
         daily_aggregations_sub_dag_operators = []
+        task_sensor_service = PresidioTaskSensorService()
 
         # Iterate all configured data sources
         for data_source in self.data_sources:
-
-            # Create the "hourly short circuit operator" that allows the flow according to interval and fixed_duration
-            hourly_short_circuit_operator = ShortCircuitOperator(
-                task_id='hourly_{}_short_circuit'.format(data_source),
-                python_callable=lambda **kwargs: is_execution_date_valid(kwargs['execution_date'],
-                                                                         FIX_DURATION_STRATEGY_HOURLY,
-                                                                         anomaly_detection_engine_dag.schedule_interval),
-                provide_context=True
-            )
-
             # Create the hourly aggregations subDAG operator for the data source
             hourly_aggregations_sub_dag_operator = self._get_aggregations_sub_dag_operator(
                 FIX_DURATION_STRATEGY_HOURLY,
                 data_source,
                 anomaly_detection_engine_dag
             )
+            task_sensor_service.add_task_short_circuit_fixed_duration_operator(hourly_aggregations_sub_dag_operator,
+                                                                               FIX_DURATION_STRATEGY_HOURLY,
+                                                                               anomaly_detection_engine_dag.schedule_interval)
+            task_sensor_service.add_task_sequential_sensor(hourly_aggregations_sub_dag_operator)
 
-            # Create the "daily short circuit operator" that allows the flow from the hourly
-            # aggregations subDAG to the daily aggregations subDAG only at the end of the day
-            daily_short_circuit_operator = ShortCircuitOperator(
-                task_id='daily_{}_short_circuit'.format(data_source),
-                python_callable=lambda **kwargs: is_execution_date_valid(kwargs['execution_date'],
-                                                                         FIX_DURATION_STRATEGY_DAILY,
-                                                                         anomaly_detection_engine_dag.schedule_interval),
-                provide_context=True
-            )
 
             # Create the daily aggregations subDAG operator for the data source
             daily_aggregations_sub_dag_operator = self._get_aggregations_sub_dag_operator(
@@ -78,11 +74,16 @@ class AnomalyDetectionEngineDagBuilder(PresidioDagBuilder):
                 data_source,
                 anomaly_detection_engine_dag
             )
+            task_sensor_service.add_task_short_circuit_fixed_duration_operator(daily_aggregations_sub_dag_operator,
+                                                                               FIX_DURATION_STRATEGY_DAILY,
+                                                                               anomaly_detection_engine_dag.schedule_interval)
+            task_sensor_service.add_task_sequential_sensor(daily_aggregations_sub_dag_operator)
+            task_sensor_service.add_task_gap_sensor(hourly_aggregations_sub_dag_operator,
+                                                    daily_aggregations_sub_dag_operator,
+                                                    hourly_aggregations_max_gap_from_daily_aggregations_in_timedelta)
 
             # Configure the dependencies between the operators
-            hourly_short_circuit_operator.set_downstream(hourly_aggregations_sub_dag_operator)
             hourly_aggregations_sub_dag_operator.set_downstream(daily_aggregations_sub_dag_operator)
-            daily_short_circuit_operator.set_downstream(daily_aggregations_sub_dag_operator)
 
             hourly_aggregations_sub_dag_operators.append(hourly_aggregations_sub_dag_operator)
             daily_aggregations_sub_dag_operators.append(daily_aggregations_sub_dag_operator)
@@ -91,27 +92,36 @@ class AnomalyDetectionEngineDagBuilder(PresidioDagBuilder):
         for hourly_smart_events_conf in self.hourly_smart_events_confs:
             # Create the smart events operator for the configuration
             hourly_smart_events_operator = SmartEventsOperator(
-                fixed_duration_strategy=timedelta(hours=1),
+                fixed_duration_strategy=FIX_DURATION_STRATEGY_HOURLY,
                 smart_events_conf=hourly_smart_events_conf,
                 dag=anomaly_detection_engine_dag
             )
+            task_sensor_service.add_task_sequential_sensor(hourly_smart_events_operator)
 
             # The hourly smart events operator should start after all hourly aggregations subDAG operators are finished
             for hourly_aggregations_sub_dag_operator in hourly_aggregations_sub_dag_operators:
                 hourly_aggregations_sub_dag_operator.set_downstream(hourly_smart_events_operator)
+                task_sensor_service.add_task_gap_sensor(hourly_aggregations_sub_dag_operator,
+                                                        hourly_smart_events_operator,
+                                                        hourly_aggregations_max_gap_from_hourly_smart_in_timedelta)
+
 
         # Iterate all daily smart events configurations
         for daily_smart_events_conf in self.daily_smart_events_confs:
             # Create the smart events operator for the configuration
             daily_smart_events_operator = SmartEventsOperator(
-                fixed_duration_strategy=timedelta(days=1),
+                fixed_duration_strategy=FIX_DURATION_STRATEGY_DAILY,
                 smart_events_conf=daily_smart_events_conf,
                 dag=anomaly_detection_engine_dag
             )
+            task_sensor_service.add_task_sequential_sensor(daily_smart_events_operator)
 
             # The daily smart events operator should start after all daily aggregations subDAG operators are finished
             for daily_aggregations_sub_dag_operator in daily_aggregations_sub_dag_operators:
                 daily_aggregations_sub_dag_operator.set_downstream(daily_smart_events_operator)
+                task_sensor_service.add_task_gap_sensor(daily_aggregations_sub_dag_operator,
+                                                        daily_smart_events_operator,
+                                                        daily_aggregations_max_gap_from_daily_smart_in_timedelta)
 
         return anomaly_detection_engine_dag
 
