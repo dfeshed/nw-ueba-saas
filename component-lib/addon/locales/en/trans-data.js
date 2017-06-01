@@ -188,7 +188,8 @@ export default {
       sideBySide: 'Side by Side View',
       meta: 'Show/Hide Meta',
       settings: 'Settings',
-      expand: 'Expand/Contract View',
+      expand: 'Expand View',
+      shrink: 'Contract View',
       close: 'Close Reconstruction'
     },
     eventHeader: {
@@ -288,6 +289,10 @@ export default {
   midnight: 'Midnight',
   noon: 'Noon',
   investigate: {
+    controls: {
+      settings: 'Configure',
+      toggle: 'Show/Hide Events Panel'
+    },
     title: 'Investigate',
     loading: 'Loading',
     loadMore: 'Load More',
@@ -321,7 +326,10 @@ export default {
     },
     events: {
       title: 'All Events',
-      error: 'An unexpected error occurred when executing this query.'
+      error: 'An unexpected error occurred when executing this query.',
+      shrink: 'Shrink Events Panel',
+      expand: 'Expand Events Panel',
+      close: 'Close Events Panel'
     },
     services: {
       loading: 'Loading list of available services',

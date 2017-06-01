@@ -44,7 +44,7 @@ test('clicking shrink executes action', function(assert) {
   new DataHelper(this.get('redux'))
     .setViewToFile();
   this.render(hbs`{{recon-event-titlebar}}`);
-  this.$('.rsa-icon-arrow-right-9').click();
+  this.$('.rsa-icon-shrink-diagonal-2').click();
   assert.equal(dispatchSpy.args[1][0].type, ACTION_TYPES.TOGGLE_EXPANDED);
 });
 
@@ -53,8 +53,8 @@ test('clicking shrink, then grow, executes multiple actions', function(assert) {
     .initializeData(initializeData)
     .setViewToFile();
   this.render(hbs`{{recon-event-titlebar}}`);
-  this.$('.rsa-icon-arrow-right-9').click();
-  this.$('.rsa-icon-arrow-left-9').click();
+  this.$('.rsa-icon-shrink-diagonal-2').click();
+  this.$('.rsa-icon-expand-diagonal-4').click();
 
   assert.equal(dispatchSpy.args[4][0].type, ACTION_TYPES.TOGGLE_EXPANDED);
   assert.equal(dispatchSpy.args[5][0].type, ACTION_TYPES.TOGGLE_EXPANDED);

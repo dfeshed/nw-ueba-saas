@@ -90,25 +90,33 @@
       }
     }
 
-    .header-toggle {
+    .header-toggle,
+    .header-button {
       color: rsa-color(gray);
       cursor: pointer;
       margin: 0 rsa-whitespace(least);
       padding: rsa-whitespace(less) rsa-whitespace(least);
+      &:hover {
+        color: rsa-color(grey, lightest);
+      }
       &.active:not(.disabled) {
         color: rsa-color(gray, lightest);
-        border-bottom: rsa-color(blue) 3px solid;
       }
       &.disabled {
         color: rsa-color(gray, dark);
         cursor: default;
       }
     }
+    .header-toggle {
+      &.active:not(.disabled) {
+        border-bottom: rsa-color(blue) 3px solid;
+      }
+    }
   }
 }
 
 .recon-event-titlebar {
-  @media (min-width: 1351px) {
+  @media (min-width: 1731px) {
     .heading-select {
       display: none;
     }
@@ -117,7 +125,7 @@
     }
   }
 
-  @media (max-width: 1350px) {
+  @media (max-width: 1730px) {
     .heading-select {
       display: block;
     }
@@ -127,6 +135,7 @@
   }
 }
 
+.recon-is-full,
 .recon-is-expanded {
   @media (min-width: 1161px) {
     .heading-select {

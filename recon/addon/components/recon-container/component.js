@@ -4,7 +4,7 @@ import connect from 'ember-redux/components/connect';
 import { and } from 'ember-computed-decorators';
 import observer from 'ember-metal/observer';
 import { later, next } from 'ember-runloop';
-
+import { toggleReconExpanded } from 'recon/actions/visual-creators';
 import { hasReconView } from 'recon/reducers/visuals/selectors';
 import layout from './template';
 import {
@@ -28,7 +28,8 @@ const dispatchToActions = {
   initializeRecon,
   initializeNotifications,
   setIndexAndTotal,
-  teardownNotifications
+  teardownNotifications,
+  toggleReconExpanded
 };
 
 const ReconContainer = Component.extend({
@@ -84,8 +85,9 @@ const ReconContainer = Component.extend({
       oldEventId,
       index,
       total,
-      isAnimationDone
-    } = this.getProperties('oldEventId', 'index', 'total', 'isAnimationDone');
+      isAnimationDone,
+      size
+    } = this.getProperties('oldEventId', 'index', 'total', 'isAnimationDone', 'size');
     const inputs = this.getProperties('endpointId', 'eventId', 'language', 'meta', 'aliases', 'linkToFileAction');
 
     assert('Cannot instantiate recon without endpointId and eventId.', inputs.endpointId && inputs.eventId);
@@ -94,6 +96,10 @@ const ReconContainer = Component.extend({
     // if same id, no need to do anything
     if (!oldEventId || (oldEventId && inputs.eventId !== oldEventId)) {
       this.send('initializeRecon', inputs);
+    }
+
+    if (size !== 'full') {
+      this.send('toggleReconExpanded', (size === 'max'));
     }
 
     this.set('oldEventId', inputs.eventId);

@@ -39,7 +39,6 @@ const dispatchToActions = {
 const TitlebarComponent = Component.extend({
   layout,
   tagName: 'hbox',
-  classNameBindings: ['isReconExpanded:recon-is-expanded'],
   classNames: ['recon-event-titlebar'],
 
   /**
@@ -63,7 +62,10 @@ const TitlebarComponent = Component.extend({
   },
 
   @computed('isReconExpanded')
-  arrowDirection: (isReconExpanded) => (isReconExpanded) ? 'right' : 'left',
+  toggleEventsClass: (isReconExpanded) => isReconExpanded ? 'shrink-diagonal-2' : 'expand-diagonal-4',
+
+  @computed('isReconExpanded')
+  toggleEventsTitle: (isReconExpanded) => isReconExpanded ? 'recon.toggles.shrink' : 'recon.toggles.expand',
 
   actions: {
     // translates code to the recon view and sends action to update view

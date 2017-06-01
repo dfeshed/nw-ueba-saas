@@ -66,18 +66,15 @@ export default Mixin.create({
      * @public
      */
     reconSizeReceived(reconSize) {
-      if (!reconSize) {
-        return;
-      }
-
-      const currentlyExpanded = this.get('state.recon.isExpanded');
-
-      if (reconSize === 'min' && currentlyExpanded) {
-        this.send('reconShrink');
-      }
-
-      if (reconSize === 'max' && !currentlyExpanded) {
-        this.send('reconExpand');
+      const currentSize = this.get('state.recon.size');
+      if (reconSize && reconSize !== currentSize) {
+        if (reconSize === 'min') {
+          this.send('reconShrink');
+        } else if (reconSize === 'max') {
+          this.send('reconExpand');
+        } else if (reconSize === 'full') {
+          this.send('reconFull');
+        }
       }
     },
 
@@ -86,7 +83,7 @@ export default Mixin.create({
      * @public
      */
     reconExpand() {
-      this.set('state.recon.isExpanded', true);
+      this.set('state.recon.size', 'max');
       this.transitionTo({ queryParams: { reconSize: 'max' } });
     },
 
@@ -95,8 +92,13 @@ export default Mixin.create({
      * @public
      */
     reconShrink() {
-      this.set('state.recon.isExpanded', false);
+      this.set('state.recon.size', 'min');
       this.transitionTo({ queryParams: { reconSize: 'min' } });
+    },
+
+    reconFull() {
+      this.set('state.recon.size', 'full');
+      this.transitionTo({ queryParams: { reconSize: 'full' } });
     },
 
     /**
@@ -127,6 +129,36 @@ export default Mixin.create({
           { eventId: -1 }
         );
         window.open(url, '_blank');
+      }
+    },
+
+    toggleReconSize() {
+      if (this.get('state.recon.isOpen')) {
+        const size = this.get('state.recon.size');
+        if (size === 'max') {
+          this.send('reconShrink');
+        } else if (size === 'min') {
+          this.send('reconExpand');
+        }
+      }
+    },
+
+    toggleSlaveFullScreen() {
+      if (this.get('state.recon.isOpen')) {
+        // Get the current size of Recon
+        const size = this.get('state.recon.size');
+        if (size === 'full') {
+          // Set to previous size
+          if (this.get('_size') === 'min') {
+            this.send('reconShrink');
+          } else {
+            this.send('reconExpand');
+          }
+        } else {
+          // save off previous size
+          this.set('_size', size);
+          this.send('reconFull');
+        }
       }
     }
   }

@@ -1,4 +1,5 @@
 import Component from 'ember-component';
+import computed from 'ember-computed-decorators';
 
 export default Component.extend({
   classNames: 'rsa-investigate-events-table',
@@ -22,5 +23,11 @@ export default Component.extend({
   totalCount: undefined,
   totalStatus: undefined,
   totalThreshold: undefined,
-  totalRetryAction: undefined
+  totalRetryAction: undefined,
+
+  @computed('reconSize')
+  toggleEventsClass: (size) => (size !== 'max') ? 'shrink-diagonal-2' : 'expand-diagonal-4',
+
+  @computed('reconSize')
+  toggleEventsTitle: (size) => (size !== 'max') ? 'investigate.events.shrink' : 'investigate.events.expand'
 });

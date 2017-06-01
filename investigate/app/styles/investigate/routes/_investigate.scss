@@ -1,5 +1,6 @@
 $investigateReconWidth: 50%;
 $investigateReconExpandedWidth: 75%;
+$investigateReconFullWidth: 100%;
 
 .rsa-investigate {
   position: absolute;
@@ -14,7 +15,7 @@ $investigateReconExpandedWidth: 75%;
     @include rsa-vendor-prefix(flex-shrink, 0);
     @include rsa-vendor-prefix(flex-grow, 0);
     background-color: rsa-color(gray, darker);
-    margin-top: 1px;
+    height: 40px;
     @include rsa-row(justify, middle);
     border-bottom: 1px solid rsa-color(blue);
 
@@ -34,7 +35,7 @@ $investigateReconExpandedWidth: 75%;
       a {
         @include rsa-font(navigation);
         display: inline-block;
-        padding: rsa-whitespace();
+        padding: 0 rsa-whitespace();
         text-decoration: none;
         white-space: nowrap;
         color: rsa-color(gray, light);
@@ -42,6 +43,31 @@ $investigateReconExpandedWidth: 75%;
         &.active,
         &:hover {
           color: rsa-color(gray, lightest);
+        }
+      }
+    }
+
+    .investigate-controls {
+      position: absolute;
+      top: 12px;
+      right: 4px;
+      .divider {
+        display: inline;
+        border-left: 1px solid rsa-color(grey);
+        margin: 0 5px;
+      }
+      .rsa-icon {
+        color: rsa-color(gray);
+        cursor: pointer;
+        margin: 0 rsa-whitespace(least);
+        padding: 0 rsa-whitespace(least) rsa-whitespace(less);
+        &.active:not(.disabled) {
+          color: rsa-color(gray, lightest);
+          border-bottom: rsa-color(blue) 3px solid;
+        }
+        &.disabled {
+          color: rsa-color(gray, dark);
+          cursor: default;
         }
       }
     }

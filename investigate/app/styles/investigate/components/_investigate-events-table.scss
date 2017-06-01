@@ -2,11 +2,11 @@
   @include rsa-col(justify,fill);
 
   &__header {
-    @include rsa-vendor-prefix(flex-shrink,0);
     @include rsa-vendor-prefix(flex-grow,0);
     background-color: rsa-color(gray, darker);
     border-bottom: 1px solid rsa-color(gray, dark);
-
+    align-items: baseline;
+    justify-content: space-between;
     h2 {
       @include rsa-font(header, large);
       padding: rsa-whitespace();
@@ -23,6 +23,26 @@
             content: ')';
             margin-left: -4px;
           }
+        }
+      }
+    }
+    .events-table-control {
+      display: inline-block;
+      margin-right: 12px;
+      color: rsa-color(grey);
+      .rsa-icon {
+        cursor: pointer;
+        margin: 0 rsa-whitespace(least);
+        padding: 0 rsa-whitespace(least);
+        &:hover {
+          color: rsa-color(grey, lightest);
+        }
+        &.active:not(.disabled) {
+          color: rsa-color(gray, lightest);
+        }
+        &.disabled {
+          color: rsa-color(gray, dark);
+          cursor: default;
         }
       }
     }

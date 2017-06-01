@@ -88,18 +88,19 @@
 <div class="divider"></div>
 
 {{rsa-icon
-  class='header-toggle'
+  disabled=true
+  class='header-button'
   name='cog'
   title=(t 'recon.toggles.settings')}}
 
 {{rsa-icon
-  class='header-toggle'
+  class='header-button'
   click=(action 'toggleReconExpanded')
-  name=(concat 'arrow-' arrowDirection '-9')
-  title=(t 'recon.toggles.expand')}}
+  name=toggleEventsClass
+  title=(t toggleEventsTitle)}}
 
 {{rsa-icon
-  class='header-toggle'
+  class='header-button'
   click=(action 'closeRecon')
   name='close'
   title=(t 'recon.toggles.close')}}

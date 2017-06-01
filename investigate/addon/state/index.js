@@ -42,5 +42,8 @@ export default EmberObject.extend({
   meta: Meta.create(),
 
   // State of the recon section of the investigate UI.
-  recon: Recon.create()
+  recon: Recon.create(),
+
+  // State used to show/hide `rsa-investigate-query__body-master`
+  isSlaveFullScreen: false
 }).create();

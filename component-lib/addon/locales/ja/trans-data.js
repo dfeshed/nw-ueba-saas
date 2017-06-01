@@ -188,7 +188,8 @@ export default {
       sideBySide: 'ja_Side by Side View',
       meta: 'ja_Show/Hide Meta',
       settings: 'ja_Settings',
-      expand: 'ja_Expand/Contract View',
+      expand: 'ja_Expand View',
+      shrink: 'ja_Contract View',
       close: 'ja_Close Reconstruction'
     },
     eventHeader: {
@@ -288,6 +289,10 @@ export default {
   midnight: 'ja_Midnight',
   noon: 'ja_Noon',
   investigate: {
+    controls: {
+      settings: 'ja_Configure',
+      toggle: 'ja_Show/Hide Events Panel'
+    },
     title: 'ja_Investigate',
     loading: 'ja_Loading',
     loadMore: 'ja_Load More',
@@ -321,7 +326,10 @@ export default {
     },
     events: {
       title: 'ja_All Events',
-      error: 'ja_An unexpected error occurred when executing this query.'
+      error: 'ja_An unexpected error occurred when executing this query.',
+      shrink: 'ja_Shrink Events Panel',
+      expand: 'ja_Expand Events Panel',
+      close: 'ja_Close Events Panel'
     },
     services: {
       loading: 'ja_Loading list of available services',

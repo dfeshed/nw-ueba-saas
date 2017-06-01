@@ -1,4 +1,4 @@
-<header class="rsa-investigate-events-table__header">
+<hbox class="rsa-investigate-events-table__header">
   <h2>
     {{t "investigate.events.title"}}
     {{#if totalCount}}
@@ -12,7 +12,19 @@
       </span>
     {{/if}}
   </h2>
-</header>
+  <div class="events-table-control">
+    {{rsa-icon
+      disabled=(not isOpen)
+      click=(route-action 'toggleReconSize')
+      name=toggleEventsClass
+      title=(t toggleEventsTitle)}}
+    {{rsa-icon
+      disabled=(not isOpen)
+      click=(route-action 'toggleSlaveFullScreen')
+      name='close'
+      title=(t 'investigate.events.close')}}
+  </div>
+</hbox>
 
 <section class="rsa-investigate-events-table__body">
   {{progress-bar

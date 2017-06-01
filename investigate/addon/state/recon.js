@@ -14,25 +14,27 @@ export default EmberObject.extend({
   isOpen: false,
 
   /**
-   * If true, indicates that the recon UI is visible.
-   * @type {boolean}
+   * Indicates the size of the Recon UI.
+   * @type {string}
    * @public
    */
-  isExpanded: true,
+  size: 'max',
 
   /**
    * Determines the display state of the recon panel
    * @type {boolean}
    * @public
    */
-  @computed('isExpanded', 'isOpen')
-  display(expanded, open) {
+  @computed('size', 'isOpen')
+  display(size, open) {
     if (!open) {
       return 'closed';
     }
 
-    if (expanded) {
+    if (size === 'max') {
       return 'expanded';
+    } else if (size === 'full') {
+      return 'full';
     }
 
     return 'open';

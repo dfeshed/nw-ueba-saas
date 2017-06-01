@@ -67,6 +67,8 @@
           totalThreshold=model.queryNode.value.results.eventCount.threshold
           totalStatus=model.queryNode.value.results.eventCount.status
           totalRetryAction=(route-action "eventCountGet" model.queryNode)
+          isOpen=model.recon.isOpen
+          reconSize=model.recon.size
         }}
       </section>
     </section>
@@ -78,7 +80,7 @@
           meta=model.recon.metas
           index=model.recon.index
           total=model.recon.total
-          isExpanded=model.recon.isExpanded
+          size=(readonly model.recon.size)
           closeAction=(route-action 'reconClose')
           expandAction=(route-action 'reconExpand')
           shrinkAction=(route-action 'reconShrink')
@@ -89,6 +91,5 @@
     </vbox>
   </section>
   <footer class="rsa-investigate-query__footer">
-    {{!rsa-investigate/flowchart coming soon!}}
   </footer>
 </article>

@@ -64,6 +64,13 @@
       @include recon-sizing($investigateReconExpandedWidth)
     }
 
+    &.recon-is-full {
+      @include recon-sizing($investigateReconFullWidth);
+      .rsa-investigate-query__body-master-aside {
+        min-width: 0;
+      }
+    }
+
     &-master-aside,
     &-master-main {
       transition: all 0.3s;
