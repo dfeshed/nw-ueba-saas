@@ -13,7 +13,7 @@
           "dlpfile"
         ]
       },
-      "schedule_interval": "@hourly",
+      "schedule_interval": "timedelta(hours=1)",
       "start_date": "2017-01-01 00:00:00",
       "end_date": "2017-01-01 05:00:00"
     }
