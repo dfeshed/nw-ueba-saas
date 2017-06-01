@@ -3,8 +3,9 @@ from datetime import timedelta
 from presidio.builders.presidio_dag_builder import PresidioDagBuilder
 from presidio.operators.fixed_duration_operator import FixedDurationOperator
 
-JAR_PATH = '/home/presidio/dev-projects/presidio-core/presidio-workflows/tests/resources/jars/test.jar'
-MAIN_CLASS = 'HelloWorld.Main'
+JAR_PATH = \
+    '/home/presidio/dev-projects/presidio-core/fortscale/target/dependencies/presidio-collector-1.0.0-SNAPSHOT.jar'
+MAIN_CLASS = 'presidio.collector.FortscaleCollectorApplication'
 
 jvm_args = {
 
@@ -41,7 +42,7 @@ class CollectorDagBuilder(PresidioDagBuilder):
         # Iterate all configured data sources
         for data_source in self.data_sources:
             java_args = {
-                'data_source': data_source,
+                'datasource': data_source,
             }
 
             # Create jar operator for each data source
