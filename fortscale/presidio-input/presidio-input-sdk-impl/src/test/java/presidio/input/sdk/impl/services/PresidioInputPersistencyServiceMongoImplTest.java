@@ -28,10 +28,10 @@ import java.util.List;
 public class PresidioInputPersistencyServiceMongoImplTest {
 
     @Autowired
-    MongoTemplate mongoTemplate;
+    private MongoTemplate mongoTemplate;
 
     @Autowired
-    PresidioInputPersistencyService presidioInputPersistencyService;
+    private PresidioInputPersistencyService presidioInputPersistencyService;
 
     @Test
     public void contextLoads() throws Exception {
