@@ -32,9 +32,9 @@ class ScoreAggregationsOperator(AggregationsOperator):
         """
 
         if self.fixed_duration_strategy == timedelta(hours=1):
-            return '/home/presidio/airflow/tasks/dummy.jar'
+            return '/home/presidio/dev-projects/presidio-core/presidio-workflows/tests/resources/jars/test-mock-project-0.0.1-SNAPSHOT.jar'
         elif self.fixed_duration_strategy == timedelta(days=1):
-            return '/home/presidio/airflow/tasks/dummy.jar'
+            return '/home/presidio/dev-projects/presidio-core/presidio-workflows/tests/resources/jars/test-mock-project-0.0.1-SNAPSHOT.jar'
         else:
             raise UnsupportedFixedDurationStrategyError(self.fixed_duration_strategy)
 
@@ -45,8 +45,8 @@ class ScoreAggregationsOperator(AggregationsOperator):
        """
 
         if self.fixed_duration_strategy == timedelta(hours=1):
-            return 'HelloWorld.Main'
+            return 'com.fortscale.test.TestMockProjectApplication'
         elif self.fixed_duration_strategy == timedelta(days=1):
-            return 'HelloWorld.Main'
+            return 'com.fortscale.test.TestMockProjectApplication'
         else:
             raise UnsupportedFixedDurationStrategyError(self.fixed_duration_strategy)

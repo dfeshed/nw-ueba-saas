@@ -1,8 +1,8 @@
 from airflow.utils.decorators import apply_defaults
-from presidio.operators.fixed_duration_operator import FixedDurationOperator
+from presidio.operators.fixed_duration_jar_operator import FixedDurationJarOperator
 
 
-class SmartEventsOperator(FixedDurationOperator):
+class SmartEventsOperator(FixedDurationJarOperator):
     """
     Runs the "Smart Events" task (JAR). The task:
     1. Groups together in a smart event the configured aggregation events from the time interval, per context.
@@ -14,8 +14,8 @@ class SmartEventsOperator(FixedDurationOperator):
     ui_color = '#8e44ad'
     ui_fgcolor = '#ffffff'
 
-    _JAR_FILE_PATH = '/home/presidio/airflow/tasks/dummy.jar'
-    _MAIN_CLASS = 'HelloWorld.Main'
+    _JAR_FILE_PATH = '/home/presidio/dev-projects/presidio-core/presidio-workflows/tests/resources/jars/test-mock-project-0.0.1-SNAPSHOT.jar'
+    _MAIN_CLASS = 'com.fortscale.test.TestMockProjectApplication'
 
     @apply_defaults
     def __init__(self, fixed_duration_strategy, smart_events_conf, task_id=None, *args, **kwargs):

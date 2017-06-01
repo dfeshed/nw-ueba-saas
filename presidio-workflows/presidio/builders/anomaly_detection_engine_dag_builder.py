@@ -1,17 +1,12 @@
 from datetime import timedelta
-
 from airflow import DAG
 from airflow.operators.python_operator import ShortCircuitOperator
 from airflow.operators.subdag_operator import SubDagOperator
-
 from presidio.builders.aggregation.aggregations_dag_builder import AggregationsDagBuilder
 from presidio.operators.smart.smart_events_operator import SmartEventsOperator
-from presidio.utils.date_time import fixed_duration_strategy_to_string
-from presidio.utils.airflow.services.fixed_duration_strategy import is_last_interval_of_fixed_duration
+from presidio.utils.services.fixed_duration_strategy import is_execution_date_valid, fixed_duration_strategy_to_string,\
+    FIX_DURATION_STRATEGY_DAILY, FIX_DURATION_STRATEGY_HOURLY
 from presidio.builders.presidio_dag_builder import PresidioDagBuilder
-
-FIX_DURATION_STRATEGY_HOURLY = timedelta(hours=1)
-FIX_DURATION_STRATEGY_DAILY = timedelta(days=1)
 
 
 class AnomalyDetectionEngineDagBuilder(PresidioDagBuilder):
@@ -54,13 +49,15 @@ class AnomalyDetectionEngineDagBuilder(PresidioDagBuilder):
             # Create the "hourly short circuit operator" that allows the flow according to interval and fixed_duration
             hourly_short_circuit_operator = ShortCircuitOperator(
                 task_id='hourly_{}_short_circuit'.format(data_source),
-                python_callable=lambda **kwargs: is_last_interval_of_fixed_duration(kwargs['execution_date'], FIX_DURATION_STRATEGY_HOURLY, anomaly_detection_engine_dag.schedule_interval),
+                python_callable=lambda **kwargs: is_execution_date_valid(kwargs['execution_date'],
+                                                                         FIX_DURATION_STRATEGY_HOURLY,
+                                                                         anomaly_detection_engine_dag.schedule_interval),
                 provide_context=True
             )
 
             # Create the hourly aggregations subDAG operator for the data source
             hourly_aggregations_sub_dag_operator = self._get_aggregations_sub_dag_operator(
-                timedelta(hours=1),
+                FIX_DURATION_STRATEGY_HOURLY,
                 data_source,
                 anomaly_detection_engine_dag
             )
@@ -69,13 +66,15 @@ class AnomalyDetectionEngineDagBuilder(PresidioDagBuilder):
             # aggregations subDAG to the daily aggregations subDAG only at the end of the day
             daily_short_circuit_operator = ShortCircuitOperator(
                 task_id='daily_{}_short_circuit'.format(data_source),
-                python_callable=lambda **kwargs: is_last_interval_of_fixed_duration(kwargs['execution_date'], FIX_DURATION_STRATEGY_DAILY, anomaly_detection_engine_dag.schedule_interval),
+                python_callable=lambda **kwargs: is_execution_date_valid(kwargs['execution_date'],
+                                                                         FIX_DURATION_STRATEGY_DAILY,
+                                                                         anomaly_detection_engine_dag.schedule_interval),
                 provide_context=True
             )
 
             # Create the daily aggregations subDAG operator for the data source
             daily_aggregations_sub_dag_operator = self._get_aggregations_sub_dag_operator(
-                timedelta(days=1),
+                FIX_DURATION_STRATEGY_DAILY,
                 data_source,
                 anomaly_detection_engine_dag
             )

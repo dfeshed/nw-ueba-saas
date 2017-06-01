@@ -27,11 +27,11 @@ class FeatureAggregationsOperator(AggregationsOperator):
         :return: The full path to the "Feature Aggregations" JAR file
         """
 
-        return '/home/presidio/airflow/tasks/dummy.jar'
+        return '/home/presidio/dev-projects/presidio-core/presidio-workflows/tests/resources/jars/test-mock-project-0.0.1-SNAPSHOT.jar'
 
     def get_main_class(self):
         """
        :return: The main class name of JAR file
        """
 
-        return 'HelloWorld.Main'
+        return 'com.fortscale.test.TestMockProjectApplication'
