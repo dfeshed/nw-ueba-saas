@@ -24,7 +24,7 @@ const isDataSourceEnabled = (contextData, dataSourceGroup, defaultEnable) => {
 };
 
 const getData = (lookupData, { dataSourceGroup, sortColumn, sortOrder }) => {
-  if (!lookupData || !lookupData[dataSourceGroup]) {
+  if (!lookupData || !lookupData[dataSourceGroup] || isEmpty(lookupData[dataSourceGroup].resultList)) {
     return;
   }
   if (sortColumn) {
@@ -43,8 +43,7 @@ const getData = (lookupData, { dataSourceGroup, sortColumn, sortOrder }) => {
   return lookupData[dataSourceGroup].resultList;
 };
 
-const getHeaderData = (dsData, i18n) => {
-  let headerData = {};
+const getTimeWindow = (dsData, i18n) => {
   if (dsData && dsData.resultMeta && dsData.resultMeta.timeQuerySubmitted) {
     let timeWindow = i18n.t('context.timeUnit.allData');
     const timeCount = dsData.resultMeta['timeFilter.timeUnitCount'];
@@ -54,27 +53,24 @@ const getHeaderData = (dsData, i18n) => {
       timeUnitString = i18n.t(`context.timeUnit.${timeUnit}`);
       timeWindow = `${timeCount} ${timeUnitString}`;
     }
-    headerData = {
+    return {
       lastUpdated: dsData.resultMeta.timeQuerySubmitted,
       timeWindow
     };
   }
-  return headerData;
 };
 
 const getErrorMessage = (dsData, i18n) => {
-  if (dsData && dsData.errorMessage) {
+  if (dsData && !isEmpty(dsData.errorMessage)) {
     let errorMessage = i18n.t(`context.error.${dsData.errorMessage}`);
-    if (errorMessage.string) {
-      if (dsData.errorParameters) {
-        errorMessage = errorMessage.string;
-        for (const [key, value] of Object.entries(dsData.errorParameters)) {
-          errorMessage = errorMessage.replace(`{${key}}`, value);
-        }
+    if (dsData.errorParameters) {
+      errorMessage = errorMessage.string;
+      for (const [key, value] of Object.entries(dsData.errorParameters)) {
+        errorMessage = errorMessage.replace(`{${key}}`, value);
       }
-      return errorMessage;
     }
-  } else if (dsData && dsData.resultList && dsData.resultList.length === 0) {
+    return errorMessage;
+  } else if (dsData && isEmpty(dsData.resultList)) {
     return i18n.t('context.error.noData');
   }
   return '';
@@ -118,7 +114,7 @@ const getSortedData = (data, icon, field) => {
 export {
   isDataSourceEnabled,
   getData,
-  getHeaderData,
+  getTimeWindow,
   getErrorMessage,
   getTabs,
   getSortedData

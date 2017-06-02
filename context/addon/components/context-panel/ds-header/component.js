@@ -30,22 +30,13 @@ const DSHeaderComponent = Component.extend({
   errorMessage(dsData) {
     return getErrorMessage(dsData, this.get('i18n'));
   },
-  @computed('dataSources', 'dSDetails')
-  isConfigured(dataSources, { dataSourceGroup }) {
+  @computed('dataSources', 'activeTabName', 'dSDetails')
+  isConfigured(dataSources, activeTabName, { dataSourceGroup }) {
     if (!dataSources) {
       return true;
     }
-    return dataSources.find((dataSource) => {
-      if (['Machines', 'Modules', 'IOC'].includes(dataSourceGroup)) {
-        return dataSource.details[dataSourceGroup];
-      } else if (dataSource.dataSourceType.indexOf(dataSourceGroup) === 0) {
-        return dataSource;
-      }
-    }).isConfigured;
-  },
-  @computed('activeTabName')
-  dataSourceName(activeTabName) {
-    return this.get('i18n').t(`context.header.title.${activeTabName.camelize()}`);
+    const dataSource = dataSources.find((dataSource) => dataSource.dataSourceType.indexOf(activeTabName) === 0);
+    return (dataSource.dataSourceType === 'Endpoint' ? dataSource.details[dataSourceGroup] : dataSource).isConfigured;
   }
 });
 export default connect(stateToComputed)(DSHeaderComponent);

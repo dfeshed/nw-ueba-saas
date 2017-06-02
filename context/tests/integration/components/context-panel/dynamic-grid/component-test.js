@@ -1,7 +1,4 @@
-import {
-  moduleForComponent, test
-}
-from 'ember-qunit';
+import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import dSDetails from 'context/config/machines';
 import * as ACTION_TYPES from 'context/actions/types';
@@ -55,7 +52,7 @@ test('Testing grid rendered', function(assert) {
     'isConfigured': true,
     'description': null,
     'type': 'Endpoint',
-    'dataSourceGroup': 'Endpoint',
+    'dataSourceType': 'Endpoint',
     details: {
       Machines: {
         'isConfigured': true,
@@ -87,6 +84,11 @@ test('Testing grid rendered', function(assert) {
     type: ACTION_TYPES.GET_LOOKUP_DATA,
     payload: [contextData]
   });
+  this.get('redux').dispatch({
+    type: ACTION_TYPES.UPDATE_ACTIVE_TAB,
+    payload: 'Endpoint'
+  });
+
   this.set('contextData', contextData);
   this.set('dSDetails', dSDetails);
   this.render(hbs `{{context-panel/dynamic-grid contextData=contextData dSDetails=dSDetails }}`);

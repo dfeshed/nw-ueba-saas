@@ -1,11 +1,9 @@
-  {{#if headerData.count}}
-    <span>
-      {{t 'context.footer.total' count=headerData.count}} {{footerDSTitle}}
-    </span>
-  {{/if}}
-  {{#if headerData.timeWindow.lastUpdated}}
-    <span title= {{t dSDetails.title}}>
-      {{t 'context.timeWindow'}}{{headerData.timeWindow.timeWindow}} |
-      {{t 'context.lastUpdated'}}{{rsa-content-datetime timestamp=headerData.timeWindow.lastUpdated asTimeAgo=true}}
-    </span>
-  {{/if}}
+<span>
+  {{t 'context.footer.total' count=headerData.count}} {{footerDSTitle}}
+</span>
+{{#if headerData.timeWindow.lastUpdated}}
+  <span title= {{t dSDetails.title}}>
+    {{t 'context.timeWindow'}}{{headerData.timeWindow.timeWindow}} |
+    {{t 'context.lastUpdated'}}{{rsa-content-datetime timestamp=headerData.timeWindow.lastUpdated asTimeAgo=true}}
+  </span>
+{{/if}}

@@ -66,12 +66,29 @@ test('Test to display endpoint', function(assert) {
   this.set('i18n', this.get('i18n'));
   this.get('redux').dispatch({
     type: ACTION_TYPES.INITIALIZE_CONTEXT_PANEL,
-    payload: { lookupKey: '1.1.1.1', meta: 'IP' }
+    payload: {
+      lookupKey: '1.1.1.1',
+      meta: 'IP'
+    }
+  });
+  this.get('redux').dispatch({
+    type: ACTION_TYPES.UPDATE_ACTIVE_TAB,
+    payload: 'Endpoint'
+  });
+  this.get('redux').dispatch({
+    type: ACTION_TYPES.UPDATE_ACTIVE_TAB,
+    payload: 'Endpoint'
   });
 
   this.set('dataSource', dataSource);
-  this.get('redux').dispatch({ type: ACTION_TYPES.GET_ALL_DATA_SOURCES, payload: [dataSource] });
-  this.get('redux').dispatch({ type: ACTION_TYPES.GET_LOOKUP_DATA, payload: [endpointData] });
-  this.render(hbs`{{context-panel/endpoint dataSource=dataSource.details contextData=contextData i18n=i18n}}`);
+  this.get('redux').dispatch({
+    type: ACTION_TYPES.GET_ALL_DATA_SOURCES,
+    payload: [dataSource]
+  });
+  this.get('redux').dispatch({
+    type: ACTION_TYPES.GET_LOOKUP_DATA,
+    payload: [endpointData]
+  });
+  this.render(hbs `{{context-panel/endpoint dataSource=dataSource.details contextData=contextData i18n=i18n}}`);
   assert.equal(this.$('.rsa-context-panel__endpoint').length, 1, 'Testing number of datasource displayed');
 });

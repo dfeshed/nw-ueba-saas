@@ -1,6 +1,6 @@
 {{#if (not isConfigured)}}
   <div class='rsa-context-panel__error-text'>
-    {{dataSourceName}} {{t 'context.marketingText' }}
+    {{dSDetails.dataSourceGroup}} {{t 'context.marketingText' }}
   </div>
 {{else if (not dsData)}}
   <hbox class='rsa-context-panel__loader'>

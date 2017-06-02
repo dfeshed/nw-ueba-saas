@@ -8,27 +8,34 @@ radial-gradient(circle at 85% 85%, rsa-color(gray, darker, .1) 0, rsa-color(gray
   bottom: -1rem;
   left: calc(20% - 1rem - 7px);
 }
+
 .panel-content.standard {
   border: none!important;
   background: rsa-color(black);
 }
+
 .panel-content.standard svg line {
   stroke: none!important;
 }
+
 .panel-content {
   background: rsa-color(black);
 }
+
 .panel-content.bottom-right svg {
   top: -13px;
 }
+
 .panel-content svg polygon {
   fill: rsa-color(black);
 }
-.panel-content > section {
+
+.panel-content>section {
   height: 5rem;
   min-width: 10rem;
   overflow: auto;
 }
+
 .rsa-context-panel {
   @include rsa-vendor-prefix(flex-grow, 0);
   @include rsa-vendor-prefix(flex-shrink, 0);
@@ -73,7 +80,6 @@ radial-gradient(circle at 85% 85%, rsa-color(gray, darker, .1) 0, rsa-color(gray
     >hbox {
       height: 30px;
     }
-    
   }
   &__layout {
     width: calc(100% - 40px);
@@ -138,7 +144,8 @@ radial-gradient(circle at 85% 85%, rsa-color(gray, darker, .1) 0, rsa-color(gray
     &__machines {
       height: 210px;
       overflow: hidden;
-      >div >div {
+      align-items: center;
+      >div>div {
         overflow: hidden;
       }
     }
@@ -174,6 +181,7 @@ radial-gradient(circle at 85% 85%, rsa-color(gray, darker, .1) 0, rsa-color(gray
     height: 100%;
     width: calc(100% - 4px);
     display: flex;
+    justify-content: center;
     &__box {
       overflow: auto;
       height: 100%;
@@ -272,9 +280,10 @@ radial-gradient(circle at 85% 85%, rsa-color(gray, darker, .1) 0, rsa-color(gray
       .value {
         word-wrap: break-word;
       }
-      vbox {
+      vbox + vbox {
         padding-left: rsa-whitespace(less);
         min-height: 50px;
+        width: 80%;
       }
       &__tetheredPanel {
         width: rsa-whitespace(less);
@@ -316,6 +325,14 @@ radial-gradient(circle at 85% 85%, rsa-color(gray, darker, .1) 0, rsa-color(gray
         padding: 0;
         max-width: 25%;
         @include rsa-font(default, small);
+      }
+    }
+    &__ad-details,
+    &__archer-details {
+      vbox {
+        padding-left: rsa-whitespace(less);
+        min-height: 50px;
+        width: 100%;
       }
     }
     &__module-details,
@@ -385,7 +402,7 @@ radial-gradient(circle at 85% 85%, rsa-color(gray, darker, .1) 0, rsa-color(gray
       padding: rsa-whitespace();
       border-top: 3px solid rsa-color(gray, darkest);
     }
-    &__heading > span {
+    &__heading>span {
       float: right;
       color: $font-fade-color;
       @include rsa-font(header, small);
@@ -576,12 +593,15 @@ radial-gradient(circle at 85% 85%, rsa-color(gray, darker, .1) 0, rsa-color(gray
     }
   }
 }
+
 .feedback-margin {
   margin-bottom: 175px;
 }
+
 .tab-active-background {
   background-color: rsa-color(blue);
 }
+
 .filter-icon {
   padding-top: rsa-whitespace();
   padding-left: rsa-whitespace(more);

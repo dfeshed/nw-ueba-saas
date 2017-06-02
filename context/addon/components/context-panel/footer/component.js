@@ -2,7 +2,7 @@ import layout from './template';
 import connect from 'ember-redux/components/connect';
 import computed from 'ember-computed-decorators';
 import Component from 'ember-component';
-import * as DataUtil from 'context/util/context-data-modifier';
+import { getTimeWindow } from 'context/util/context-data-modifier';
 
 
 const stateToComputed = ({ context }) => ({
@@ -27,7 +27,7 @@ const FooterComponent = Component.extend({
 
   @computed('dsData')
   headerData(dsData) {
-    return { count: dsData ? dsData.resultList.length : 0, timeWindow: DataUtil.getHeaderData(dsData, this.get('i18n')) };
+    return { count: dsData && dsData.resultList ? dsData.resultList.length : 0, timeWindow: getTimeWindow(dsData, this.get('i18n')) };
   },
 
   @computed('activeTabName')
