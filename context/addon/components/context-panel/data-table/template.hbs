@@ -10,7 +10,7 @@
           class=column.className}}
       {{/rsa-data-table/header}}
       {{#rsa-data-table/body as |item index column|}}
-        {{context-panel/data-table/body-cell item=item index=index column=column}}
+        {{context-panel/data-table/body-cell item=item index=index column=column dataSourceGroup=dSDetails.dataSourceGroup}}
       {{/rsa-data-table/body}}
     {{/rsa-data-table}}
   {{/if}}

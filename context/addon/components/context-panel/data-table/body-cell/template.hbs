@@ -1,6 +1,6 @@
 {{#rsa-data-table/body-cell item=item index=index column=column}}
   {{#if (eq column.dataType 'riskscore')}}
-    <span title={{get item column.field}} class={{get (risk-score-to-badge-level (get item column.field) dSDetails.dataSourceGroup) 'style'}}>
+    <span title={{get item column.field}} class={{get (risk-score-to-badge-level (get item column.field) dataSourceGroup) 'style'}}>
       {{get item column.field}}
     </span>
   {{else if (eq column.dataType 'riskRating')}}
