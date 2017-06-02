@@ -3,7 +3,7 @@ import { buildBaseQuery, addStreaming, addDecode, addMaxPackets } from '../util/
 import { batchDataHandler, HANDLERS, BATCH_TYPES } from 'recon/actions/util/batch-data-handler';
 
 const BATCH_CHARACTER_SIZE = 10000;
-const TIME_BETWEEN_BATCHES = 500;
+const TIME_BETWEEN_BATCHES = 750;
 
 const TEXT_BATCH_SIZE = 50;
 

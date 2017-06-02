@@ -140,7 +140,8 @@ export default {
       showRemaining: 'Show Remaining {{remainingPercent}}%',
       renderRemaining: 'Rendering Remaining {{remainingPercent}}%..',
       headerShowing: 'Showing',
-      renderingMore: 'Showing more...'
+      renderingMore: 'Showing more...',
+      maxPacketsReached: 'Maximum allowed packets of <span class="lighter">{{maxPacketCount}}</span> reached'
     },
     packetView: {
       noHexData: 'No HEX data was generated during content reconstruction.',

@@ -20,6 +20,8 @@ const stateToComputed = ({ recon }) => ({
   eventTotal: recon.data.total,
   hasTextContent: hasTextContent(recon),
   isLogEvent: isLogEvent(recon),
+  maxPacketsForText: recon.text.maxPacketsForText,
+  maxPacketsReached: recon.text.maxPacketsReached,
   metaToHighlight: recon.text.metaToHighlight,
   numberOfItems: numberOfRenderableTextEntries(recon),
   renderedText: renderedText(recon)
@@ -35,11 +37,18 @@ const TextReconComponent = Component.extend(ReconPager, StickyHeader, {
   stickySelector: '.scroll-box .rsa-text-entry',
   stickyHeaderSelector: '.is-sticky.recon-request-response-header',
 
+  @computed('maxPacketsReached', 'maxPacketsForText')
+  maxPacketMessage(maxPacketsReached, maxPacketsForText) {
+    if (maxPacketsReached) {
+      return this.get('i18n').t('recon.textView.maxPacketsReached', { maxPacketCount: maxPacketsForText });
+    }
+  },
+
   @computed('stickyContent.firstPacketId', 'showMoreFinishedTracker.[]')
   hideStickyShowMore: (id, trackedIds) => trackedIds.includes(id),
 
   @computed('stickyContent.firstPacketId', 'precentRenderedTracker.@each.percentRendered')
-  stickyRenderedPercent: (id, trackedIds) => {
+  stickyRenderedPercent(id, trackedIds) {
     const trackedEntry = trackedIds.findBy('id', id);
     if (trackedEntry) {
       return trackedEntry.percentRendered;

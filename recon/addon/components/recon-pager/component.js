@@ -24,12 +24,28 @@ export default Component.extend({
   eventTotal: 0,
 
   /**
-   * Medium type
+   * Whether or not this pager is for packets
    * @type Boolean
    * @default false
    * @public
    */
   isPacket: false,
+
+  /**
+   * Whether or not this pager is for text
+   * @type Boolean
+   * @default false
+   * @public
+   */
+  isText: false,
+
+  /**
+   * When isText, this is message indicating that max packets have been reached
+   * @type Boolean
+   * @default false
+   * @public
+   */
+  maxPacketMessage: null,
 
   /**
    * Number of rendered packets.

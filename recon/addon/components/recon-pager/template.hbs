@@ -12,3 +12,8 @@
     {{unless isHidden 'to improve performance'}}
   </div>
 {{/if}}
+{{#if (and isText maxPacketMessage)}}
+  <div class="packet-info">
+    {{maxPacketMessage}}
+  </div>
+{{/if}}
