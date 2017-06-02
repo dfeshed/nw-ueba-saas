@@ -47,6 +47,16 @@ export const renderableText = createSelector(
     });
   }
 );
+
+/*
+ * Do we have text content but no renderable content
+ * because the user has hidden it all?
+ */
+export const allDataHidden = createSelector(
+  [hasTextContent, renderableText],
+  (hasTextContent, renderableText) => hasTextContent && renderableText.length === 0
+);
+
 /**
  * A selector that returns an array of those items that are to be rendered
  *

@@ -10,9 +10,9 @@ import { isLogEvent } from 'recon/reducers/meta/selectors';
 import {
   renderedText,
   hasTextContent,
-  numberOfRenderableTextEntries
+  numberOfRenderableTextEntries,
+  allDataHidden
 } from 'recon/reducers/text/selectors';
-import { allDataHidden } from 'recon/reducers/visuals/selectors';
 
 const stateToComputed = ({ recon }) => ({
   allDataHidden: allDataHidden(recon),
