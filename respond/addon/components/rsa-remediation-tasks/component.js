@@ -15,6 +15,7 @@ const dispatchToActions = (dispatch) => {
 };
 
 const RemediationTasks = Component.extend({
+  classNames: ['rsa-remediation-tasks'],
   columns
 });
 

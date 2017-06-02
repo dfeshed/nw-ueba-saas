@@ -13,6 +13,7 @@ const dispatchToActions = (dispatch) => {
 };
 
 const Alerts = Component.extend({
+  classNames: 'rsa-alerts',
   columns
 });
 

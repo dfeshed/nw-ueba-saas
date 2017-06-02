@@ -1,4 +1,4 @@
-import { streamRequest } from 'streaming-data/services/data-access/requests';
+import { streamRequest, promiseRequest } from 'streaming-data/services/data-access/requests';
 import buildExplorerQuery from './util/explorer-build-query';
 
 const NOOP = () => {};
@@ -26,6 +26,25 @@ export default {
       onResponse,
       onError,
       onCompleted
+    });
+  },
+
+  /**
+   * Retrieves the total count of alerts for a query. This is separated from the getAlerts() call to improve
+   * performance, allowing the first chunk of streamed results to arrive without waiting further for this call
+   * @method getAlertsCount
+   * @public
+   * @param filters
+   * @param sort
+   * @returns {Promise}
+   */
+  getAlertsCount(filters, sort) {
+    const query = buildExplorerQuery(filters, sort, 'receivedTime');
+
+    return promiseRequest({
+      method: 'queryRecord',
+      modelName: 'alerts-count',
+      query: query.toJSON()
     });
   }
 };

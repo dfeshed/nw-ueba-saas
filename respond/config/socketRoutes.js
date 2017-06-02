@@ -59,6 +59,13 @@ const respondConfigGen = function(environment) {
         requestDestination: '/ws/response/alerts'
       }
     },
+    'alerts-count': {
+      socketUrl,
+      queryRecord: {
+        subscriptionDestination: '/user/queue/alerts/count',
+        requestDestination: '/ws/response/alerts/count'
+      }
+    },
     'journal-entry': {
       socketUrl,
       createRecord: {

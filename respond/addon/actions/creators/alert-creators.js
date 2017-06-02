@@ -1,6 +1,8 @@
 import { alerts } from '../api';
 import * as ACTION_TYPES from '../types';
 import * as errorHandlers from '../util/error-handlers';
+import Ember from 'ember';
+const { Logger } = Ember;
 
 /**
  * Action creator that dispatches a set of actions for fetching alerts (with or without filters) and sorted by one field.
@@ -10,6 +12,16 @@ import * as errorHandlers from '../util/error-handlers';
 const getItems = () => {
   return (dispatch, getState) => {
     const { itemsFilters, sortField, isSortDescending, stopItemsStream } = getState().respond.alerts;
+
+    // Fetch the total incident count for the current query
+    dispatch({
+      type: ACTION_TYPES.FETCH_ALERTS_TOTAL_COUNT,
+      promise: alerts.getAlertsCount(itemsFilters, { sortField, isSortDescending }),
+      meta: {
+        onSuccess: (response) => Logger.debug(ACTION_TYPES.FETCH_ALERTS_TOTAL_COUNT, response),
+        onFailure: (response) => errorHandlers.handleContentRetrievalError(response, 'incidents count')
+      }
+    });
 
     dispatch({ type: ACTION_TYPES.FETCH_ALERTS_STARTED });
     // If we already have an incidents stream running, stop it. This prevents a previously started stream

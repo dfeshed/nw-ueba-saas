@@ -26,6 +26,7 @@ const dispatchToActions = (dispatch) => {
 };
 
 const Incidents = Component.extend({
+  classNames: ['rsa-incidents'],
   columns
 });
 
