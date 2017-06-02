@@ -650,7 +650,9 @@ export default {
         host: 'ja_host(s)',
         ip: 'ja_IP(s)',
         domain: 'ja_domain(s)',
-        file: 'ja_file(s)',
+        mac_address: 'ja_MAC(s)',
+        file_name: 'ja_file(s)',
+        file_hash: 'ja_hash(es)',
         selection: {
           storyPoint: 'ja_in {{count}} selected indicator(s)',
           event: 'ja_in {{count}} selected event(s)'

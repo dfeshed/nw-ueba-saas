@@ -2,16 +2,21 @@ import { drag } from 'd3-drag';
 import { event } from 'd3-selection';
 import run from 'ember-runloop';
 import { dasherize } from 'ember-string';
+import NodeTypes from 'respond/utils/entity/node-types';
 
 const MAX_TEXT_LENGTH = 30;
 
-// Helper that truncates a text string if it is larger than a given limit and appends "..".
-function truncateText(text) {
+// Helper that truncates a text string if it is larger than a given limit.
+// If the given type is a file hash, the text is truncated as "abcdefgh ... tuvwvxyz";
+// otherwise, it is simply truncated after the first several characters and appended with "...".
+function truncateText(text, type) {
   const len = (text || '').length;
   if (len <= MAX_TEXT_LENGTH) {
     return text;
+  } else if (String(type) === NodeTypes.FILE_HASH) {
+    return `${text.substr(0, 8)} ... ${text.substr(-8)}`;
   } else {
-    return `${text.substr(0, MAX_TEXT_LENGTH)}..`;
+    return `${text.substr(0, MAX_TEXT_LENGTH)}...`;
   }
 }
 
@@ -72,7 +77,7 @@ export default function() {
     .attr('x', 0)
     .attr('y', 0)
     .attr('dy', '0.35em')
-    .text((d) => truncateText(d.text));
+    .text((d) => truncateText(d.text, d.type));
   nodesEnterGroup.append('title')
     .text((d) => d.text);
   nodesEnterGroup.call(

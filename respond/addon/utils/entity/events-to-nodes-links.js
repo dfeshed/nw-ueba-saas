@@ -1,27 +1,28 @@
-import Ember from 'ember';
 import NodeTypes from './node-types';
 import LinkTypes from './link-types';
 import { makeNodeId, makeNode } from './node';
 import { makeLinkId, makeLink } from './link';
 import arrayFromHashValues from 'respond/utils/array/from-hash-values';
+import { isEmpty } from 'ember-utils';
 
-const { get, isEmpty, set } = Ember;
+// Maps properties of a device POJO (from a normalized alert's source, destination or detector) to node types.
+const DEVICE_PROPS_TO_NODE_TYPES = {
+  dns_domain: NodeTypes.DOMAIN,
+  dns_hostname: NodeTypes.HOST,
+  ip_address: NodeTypes.IP,
+  mac_address: NodeTypes.MAC
+};
 
-const NodeTypeKeys = Object.keys(NodeTypes);
-const LinkTypeKeys = Object.keys(LinkTypes);
-
-// Looks for a value in a given event attr. If found, ensures it is included in the given hash of nodes as a node
-// of a given type.
-// Returns the resultant node object, if any; null otherwise.
-function parseEventAttrNode(evt, attrName, nodeType, nodeHash) {
-
-  // Does this event have a value for that attr name?
-  const nodeValue = get(evt, attrName);
+// Ensures a given node type & value is included in the given hash of nodes.
+// If the node is not found already in the hash, a new node is created and added to the hash.
+// Additionally, the given event POJO is added to the node's events array.
+// Returns the corresponding node (if any).
+function checkNode(nodeType, nodeValue, nodeHash, evt) {
   if (isEmpty(nodeValue)) {
     return null;
   }
 
-  // Do we already have a node for that attr value?
+  // Do we already have a node for these inputs?
   const nodeKey = makeNodeId(nodeType, nodeValue);
   let node = nodeHash[nodeKey];
   if (!node) {
@@ -31,82 +32,124 @@ function parseEventAttrNode(evt, attrName, nodeType, nodeHash) {
   }
 
   // Now that we have a node, add this event to that node's event list.
-  if (!node.events) {
-    set(node, 'events', []);
-  }
   node.events.pushObject(evt);
   return node;
 }
 
-// Find/create the nodes mentioned in the given event; add any newly created nodes to the given hash.
-// Returns a hash of all the nodes found/created, keyed by the event attr name that each node was found under.
-function parseEventNodes(evt, nodeHash) {
-  const nodesByAttrName = {};
+// Ensure a given link type + source + target is included in the given hash of links.
+// If the link is not found already in the hash, a new link is created and added to the hash.
+// Additionally, the given event POJO is added to the link's events array.
+// Returns the corresponding link (if any).
+function checkLink(linkType, sourceNode, targetNode, linkHash, evt) {
+  if (!sourceNode || !targetNode || (sourceNode === targetNode)) {
+    return null;
+  }
 
-  // For each known node type...
-  NodeTypeKeys.forEach((nodeType) => {
+  // Do we already have a link for these inputs?
+  const linkKey = makeLinkId(linkType, sourceNode, targetNode);
+  let link = linkHash[linkKey];
+  if (!link) {
 
-    // For each attr name that corresponds to that node type...
-    const attrNames = NodeTypes[nodeType];
-    attrNames.forEach((attrName) => {
+    // No link exists yet for this. Create a new link for it.
+    link = linkHash[linkKey] = makeLink(linkType, sourceNode, targetNode);
+  }
 
-      // Make a node from that attr value.
-      const node = parseEventAttrNode(evt, attrName, nodeType, nodeHash);
-      if (node) {
-        nodesByAttrName[attrName] = node;
-      }
-    });
-  });
-
-  return nodesByAttrName;
+  // Now that we have a link, add this event to that link's event list.
+  link.events.pushObject(evt);
 }
 
-// Find/create the links mentioned in the given event; add any newly created links to the given hash.
-function parseEventLinks(evt, nodesByAttrName, linkHash) {
-
-  // For each known link type...
-  LinkTypeKeys.forEach((linkType) => {
-
-    // For each set of attrs that can define that type of link...
-    const attrSets = LinkTypes[linkType];
-    attrSets.forEach(({ sourceAttrName, targetAttrName, requiredAttrName, prohibitedAttrName }) => {
-
-      // Skip this link if:
-      // (a) we are missing a source or target, or
-      // (b) the required attr is defined and its value is empty, or
-      // (c) if the prohibited attr is defined and its value is non-empty.
-      const source = nodesByAttrName[sourceAttrName];
-      const target = nodesByAttrName[targetAttrName];
-      const matchesProhibited = prohibitedAttrName ? !!nodesByAttrName[prohibitedAttrName] : false;
-      const matchesRequired = requiredAttrName ? !!nodesByAttrName[requiredAttrName] : true;
-      if (!source || !target || !matchesRequired || matchesProhibited) {
-        return;
-      }
-
-      // Do we already have a link for this?
-      const linkKey = makeLinkId(linkType, source, target);
-      let link = linkHash[linkKey];
-      if (!link) {
-
-        // No link exists yet for this. Create a new link for it.
-        link = linkHash[linkKey] = makeLink(linkType, source, target);
-      }
-
-      // Now that we have a link, add this event to that link's event list.
-      if (!link.events) {
-        set(link, 'events', []);
-      }
-      link.events.pushObject(evt);
+// Make nodes from the properties (possibly empty) of a given device POJO and event POJO, if they are
+// not already found in the given node hash.
+// Returns the collection of found/made nodes, keyed by node type.
+function checkDeviceNodes(device, nodeHash, evt) {
+  const nodes = {};
+  if (device) {
+    Object.keys(DEVICE_PROPS_TO_NODE_TYPES).forEach((prop) => {
+      const type = DEVICE_PROPS_TO_NODE_TYPES[prop];
+      nodes[type] = checkNode(type, device[prop], nodeHash, evt);
     });
-
-  });
+  }
+  return nodes;
 }
 
-// Infer the entities & links mentioned in the given event, and ensure that there are nodes & links
-// for them in the given hashes, generating new nodes & links as needed.
+// Makes links among a given set of nodes for a device & user, if they are not already found in the given link hash.
+// Additionally, the given event POJO is added to the events array of each found/created link.
+function checkDeviceAndUserLinks(deviceNodes, userNode, linkHash, evt) {
+  checkLink(LinkTypes.AS, deviceNodes[NodeTypes.HOST], deviceNodes[NodeTypes.IP], linkHash, evt);
+  checkLink(LinkTypes.BELONGS_TO, deviceNodes[NodeTypes.MAC], deviceNodes[NodeTypes.HOST] || deviceNodes[NodeTypes.IP] || deviceNodes[NodeTypes.DOMAIN], linkHash, evt);
+  checkLink(LinkTypes.BELONGS_TO, deviceNodes[NodeTypes.HOST] || deviceNodes[NodeTypes.IP], deviceNodes[NodeTypes.DOMAIN], linkHash, evt);
+  checkLink(LinkTypes.USES, userNode, deviceNodes[NodeTypes.HOST] || deviceNodes[NodeTypes.IP] || deviceNodes[NodeTypes.MAC] || deviceNodes[NodeTypes.DOMAIN], linkHash, evt);
+}
+
+// Searches the given node & link hashes for nodes & links that represent the entities mentioned in the given event.
+// If not found, creates the missing nodes & links and adds them to the given hashes.
+// Additionally, adds the given event to the `events` arrays of the found/created nodes & links.
 function parseEventNodesAndLinks(evt, nodeHash, linkHash) {
-  const nodesByAttrName = parseEventNodes(evt, nodeHash);
-  parseEventLinks(evt, nodesByAttrName, linkHash);
+  const {
+    source: {
+      device: sourceDevice,
+      user: {
+        username: sourceUsername
+      } = {}
+    } = {},
+    destination: {
+      device: destinationDevice,
+      user: {
+        username: destinationUsername
+      } = {}
+    } = {},
+    data = [],
+    detector
+  } = evt;
+
+  // Generate nodes for the source & dest devices, if any.
+  const sourceDeviceNodes = checkDeviceNodes(sourceDevice || detector, nodeHash, evt);
+  const destDeviceNodes = checkDeviceNodes(destinationDevice, nodeHash, evt);
+
+  // Generate nodes for the source & dest users, if any.
+  const sourceUserNode = checkNode(NodeTypes.USER, sourceUsername, nodeHash, evt);
+  const destUserNode = checkNode(NodeTypes.USER, destinationUsername, nodeHash, evt);
+
+  // Generate links among the nodes for source device & source user.
+  checkDeviceAndUserLinks(sourceDeviceNodes, sourceUserNode, linkHash, evt);
+
+  // Generate links among the nodes for destination device & destination user.
+  checkDeviceAndUserLinks(destDeviceNodes, destUserNode, linkHash, evt);
+
+  // Generate a link between the source & dest "anchor" nodes.
+  const sourceAnchorNode = sourceDeviceNodes[NodeTypes.IP] ||
+    sourceDeviceNodes[NodeTypes.MAC] ||
+    sourceDeviceNodes[NodeTypes.HOST] ||
+    sourceDeviceNodes[NodeTypes.DOMAIN] ||
+    sourceUserNode;
+  const destAnchorNode = destDeviceNodes[NodeTypes.IP] ||
+    destDeviceNodes[NodeTypes.MAC] ||
+    destDeviceNodes[NodeTypes.HOST] ||
+    destDeviceNodes[NodeTypes.DOMAIN] ||
+    destUserNode;
+  checkLink(LinkTypes.COMMUNICATES_WITH, sourceAnchorNode, destAnchorNode, linkHash, evt);
+
+  // Generate nodes & links for the filenames & hashes, if any.
+  const fileNameNodes = [];
+  const fileHashNodes = [];
+  data.forEach(({ filename, hash }) => {
+
+    // Generate nodes for filename & hash, if any.
+    const fileNameNode = checkNode(NodeTypes.FILE_NAME, filename, nodeHash, evt);
+    fileNameNodes.push(fileNameNode);
+
+    const fileHashNode = checkNode(NodeTypes.FILE_HASH, hash, nodeHash, evt);
+    fileHashNodes.push(fileHashNode);
+
+    // Link the 2 nodes for filename & corresponding hash, if found.
+    if (fileHashNode && fileNameNode) {
+      checkLink(LinkTypes.IS_NAMED, fileHashNode, fileNameNode, linkHash, evt);
+    }
+
+    // Link either filename or hash to source & dest "anchor" nodes, if any.
+    checkLink(LinkTypes.HAS_FILE, sourceAnchorNode, fileHashNode || fileNameNode, linkHash, evt);
+    checkLink(LinkTypes.HAS_FILE, destAnchorNode, fileHashNode || fileNameNode, linkHash, evt);
+  });
 }
 
 /**
@@ -114,21 +157,19 @@ function parseEventNodesAndLinks(evt, nodeHash, linkHash) {
  * The node & link objects are intended to be compatible with a d3 force-layout.
  *
  * Generally speaking, an event's properties can mention 1 or more entities, where an "entity" is defined as known
- * identifier, such as a user, host, domain, ip address, file name or file hash.  By inspecting known properties of
+ * identifier, such as a user, host, domain, ip address, mac address, file name or file hash.  By inspecting known properties of
  * a given event object, we can find the entities for that event, and generate a node object for each found entity.
  *
  * We can also infer a few basic "links" between entities that are found in the same event. For example:
- * (i) if a user & a host are found in the same event, we infer that the user "uses" the host -- that's a link of
+ * (i) if a user & a host are found in the same event's side, we infer that the user "uses" the host -- that's a link of
  * type = "uses" with source entity = the user and target entity = the host;
- * (ii) if a host & a source ip are found in the same event, we infer that the host "communicates as" that ip;
+ * (ii) if a host & a source ip are found in the same event's side, we infer that the host "communicates as" that ip;
  * (iii) if an event mentions a source ip and a destination ip, then we infer that the source ip  "communicates with"
  * the destination ip;
  * (iv) if a domain & a destination ip are found in the same event, we infer that the domain "communicates as" that ip.
  *
- * Each event object is expected to be normalized, meaning it is not a raw event from NetWitness, but rather
- * an easy-to-consume UI object, with attrs like `time`, `user`, `host`, `domain`, `sourceIp`, `destinationIp` & `file`.
- * For more details about this data structure, see the `normalizedEvents` attr of the Indicator class in
- * `respond/utils/indicator/indicator.js`.
+ * Each event object is expected to be a normalized alert event POJO.
+ * @see https://wiki.na.rsa.net/pages/viewpage.action?spaceKey=ITSRM&title=Normalized+Alert+format
  *
  * Each node generated by this function will be a POJO with the following attrs:
  * `type`: {string} either 'user', 'host', 'domain', 'ip' or 'file';
@@ -137,17 +178,16 @@ function parseEventNodesAndLinks(evt, nodeHash, linkHash) {
  * `events`: {object[]} the subset of the given events in which this node was found.
  *
  * Each link generated by this function will be a POJO with the following attrs:
- * `type`: {string} either 'uses', 'communicates as', 'communicates with', 'sends' or 'to';
  * `source`: {object} one of the generated nodes;
  * `target`: {object} one of the generated nodes;
- * `id`: {string} unique identifier for the link, e.g., `${type}||${source.id}||${pair.id}`;
+ * `type`: {string} either 'uses', 'communicates as', 'communicates with', 'sends' or 'to';
+ * `id`: {string} unique identifier for the link, e.g., `${type}||${source.id}||${destination.id}`;
  * `events`: {object[]} the subset of the given events in which this link was found.
  *
  * @param {object[]} events Array of normalized event objects, possibly empty.
- * @param {number} [defaultNodeRadius] Optional node radius to be applied to new (radius-less) nodes.
  * @public
  */
-export default function(events = [], defaultNodeRadius) {
+export default function eventsToNodesAndLinks(events) {
   const nodeHash = {};
   const linkHash = {};
 
@@ -155,20 +195,8 @@ export default function(events = [], defaultNodeRadius) {
     parseEventNodesAndLinks(evt, nodeHash, linkHash);
   });
 
-  const arrs = {
+  return {
     nodes: arrayFromHashValues(nodeHash),
     links: arrayFromHashValues(linkHash)
   };
-
-  if (defaultNodeRadius) {
-    // Ensure all the given nodes (if any) have a radius.
-    // Doing this here, rather than later, ensures our data doesn't get accessed/rendering initially without a radius.
-    arrs.nodes.forEach(function(node) {
-      if (!get(node, 'r')) {
-        set(node, 'r', defaultNodeRadius);
-      }
-    });
-  }
-
-  return arrs;
 }

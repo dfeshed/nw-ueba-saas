@@ -10,7 +10,7 @@
   </box>
   <vbox nowrap fill class="rsa-incident-container__main-body js-entities-rectangle">
     <box fill class="rsa-incident-container__main-status">
-      {{#if (eq storylineStatus 'wait')}}
+      {{#if (eq storylineStatus 'streaming')}}
         <fill justify="center" align="center">
           {{rsa-loader size="large" label=(t 'respond.storyline.loading')}}
         </fill>
@@ -20,7 +20,7 @@
           <h3>{{t 'respond.storyline.error'}}</h3>
         </fill>
       {{else}}
-        {{#unless storyline.relatedIndicators.length}}
+        {{#unless storyline.length}}
           <fill justify="center" align="center">
             <h3 class="rsa-incident-container__no-storyline">No Results</h3>
           </fill>

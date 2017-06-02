@@ -650,7 +650,9 @@ export default {
         host: 'host(s)',
         ip: 'IP(s)',
         domain: 'domain(s)',
-        file: 'file(s)',
+        mac_address: 'MAC(s)',
+        file_name: 'file(s)',
+        file_hash: 'hash(es)',
         selection: {
           storyPoint: 'in {{count}} selected indicator(s)',
           event: 'in {{count}} selected event(s)'

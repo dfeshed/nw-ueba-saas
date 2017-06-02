@@ -53,7 +53,8 @@ function makeLink(type, source, target) {
     type,
     text: type,
     source,
-    target
+    target,
+    events: []
   };
 }
 
