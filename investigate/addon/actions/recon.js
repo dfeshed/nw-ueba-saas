@@ -37,8 +37,8 @@ export default Mixin.create({
       this.send('metaPanelSize', 'min');
       this.send('contextPanelClose');
 
-      const isExpanded = this.get('state.recon.isExpanded');
-      this.transitionTo({ queryParams: { eventId, reconSize: isExpanded ? 'max' : 'min' } });
+      const reconSize = this.get('state.recon.size');
+      this.transitionTo({ queryParams: { eventId, reconSize } });
     },
 
     /**
@@ -58,7 +58,7 @@ export default Mixin.create({
       });
       // If restoreMetaPanelSize, use the old one, otherwise use 'default'
       const metaPanelSize = restoreMetaPanelSize ? this.get('state.recon.metaPanelSizeWas') : 'default';
-      this.transitionTo({ queryParams: { eventId: -1, metaPanelSize, reconSize: 'max' } });
+      this.transitionTo({ queryParams: { eventId: -1, metaPanelSize } });
     },
 
     /**

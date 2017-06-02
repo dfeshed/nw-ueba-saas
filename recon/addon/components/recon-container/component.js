@@ -58,6 +58,7 @@ const ReconContainer = Component.extend({
 
   oldEventId: null,
   isAnimationDone: false,
+  size: 'max',
 
   @and('isViewReady', 'isAnimationDone')
   isReady: false,
