@@ -15,7 +15,7 @@
     padding: rsa-whitespace(less) rsa-whitespace(less) rsa-whitespace();
     .header-item {
       padding: rsa-whitespace(less);
-      word-break: break-word;
+      @include rsa-word-wrap();
 
       .name {
         @include rsa-font(header, small);

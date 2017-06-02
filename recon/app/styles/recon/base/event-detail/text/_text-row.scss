@@ -6,7 +6,7 @@
     line-height: 1.75rem;
     overflow-x: hidden;
     padding: 0 rsa-whitespace() rsa-whitespace(less) rsa-whitespace(more);
-    word-break: break-word;
+    @include rsa-word-wrap();
     @include rsa-font-monospace();
   }
 

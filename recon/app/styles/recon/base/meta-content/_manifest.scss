@@ -8,9 +8,9 @@
 }
 
 .recon-meta-content-item {
+  @include rsa-word-wrap();
   line-height: 1.71rem;
   padding: 0 rsa-whitespace();
-  word-break: break-all;
   i {
     &:hover {
       cursor: pointer;

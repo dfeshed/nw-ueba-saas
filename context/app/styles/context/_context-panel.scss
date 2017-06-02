@@ -278,7 +278,7 @@ radial-gradient(circle at 85% 85%, rsa-color(gray, darker, .1) 0, rsa-color(gray
     &__ad-details {
       padding-top: rsa-whitespace();
       .value {
-        word-wrap: break-word;
+        @include rsa-word-wrap();
       }
       vbox + vbox {
         padding-left: rsa-whitespace(less);
@@ -297,9 +297,9 @@ radial-gradient(circle at 85% 85%, rsa-color(gray, darker, .1) 0, rsa-color(gray
       &__field-value,
       &__row-field-value,
       &__header-data {
+        @include rsa-word-wrap();
         color: $font-highlight-color;
         text-align: left;
-        word-break: break-all;
         text-overflow: ellipsis;
       }
       &__groupdata {

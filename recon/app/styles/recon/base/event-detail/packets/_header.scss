@@ -28,7 +28,7 @@
     .packet-details {
       padding-right: 2px;
       box {
-        word-wrap: break-word;
+        @include rsa-word-wrap();
       }
     }
   }

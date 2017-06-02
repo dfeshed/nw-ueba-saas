@@ -32,9 +32,9 @@
 
   .selection-value {
     @include rsa-font(body);
+    @include rsa-word-wrap();
     padding: 0 rsa-whitespace() rsa-whitespace(less);
     max-width: 12.5rem;
-    word-wrap: break-word;
   }
 
   > p {

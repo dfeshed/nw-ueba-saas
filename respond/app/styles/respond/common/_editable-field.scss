@@ -43,7 +43,7 @@ $inputHeight: 33px;
     .editable-field__value {
       padding-right: $editButtonWidth;
       white-space: pre-wrap;
-      word-wrap: break-word;
+      @include rsa-word-wrap();
     }
     span.edit-field {
       right: 0;
