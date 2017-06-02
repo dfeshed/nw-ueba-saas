@@ -5,10 +5,16 @@ import { augmentResult, handleSetTo } from 'recon/reducers/util';
 
 const textInitialState = {
   decode: true,
-  // The string to look for in the text
+
+  // the maximum number of packets represented in the textContent
+  maxPacketsForText: 2500,
+  // If the max packets reached for this event
+  maxPacketsReached: false,
+  // The string representing meta to search for in the text
   metaToHighlight: null,
-  textContent: null,
-  renderIds: null
+
+  renderIds: null,
+  textContent: null
 };
 
 const textReducer = handleActions({
@@ -40,7 +46,10 @@ const textReducer = handleActions({
   }),
 
   [ACTION_TYPES.TEXT_RECEIVE_PAGE]: (state, { payload }) => {
-    const newContent = augmentResult(payload);
+    const newContent = augmentResult(payload.data);
+    if (payload.meta && payload.meta.MAX_PACKETS_THRESHOLD) {
+      state.maxPacketsReached = true;
+    }
     return {
       ...state,
       textContent: state.textContent ? [...state.textContent, ...newContent] : newContent

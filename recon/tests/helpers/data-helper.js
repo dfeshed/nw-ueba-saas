@@ -102,7 +102,7 @@ class DataHelper {
   populateTexts(decode = false, includeRender = true) {
     this.redux.dispatch({
       type: ACTION_TYPES.TEXT_RECEIVE_PAGE,
-      payload: decode ? encodedTextData : decodedTextData
+      payload: { data: decode ? encodedTextData : decodedTextData }
     });
     if (includeRender) {
       this.redux.dispatch({
@@ -116,7 +116,7 @@ class DataHelper {
   noTexts() {
     this.redux.dispatch({
       type: ACTION_TYPES.TEXT_RECEIVE_PAGE,
-      payload: []
+      payload: { data: [] }
     });
   }
 

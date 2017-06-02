@@ -76,6 +76,7 @@ const _getTextAndPacketInputs = ({ recon: { data, packets, text } }) => ({
   endpointId: data.endpointId,
   eventId: data.eventId,
   packetsPageSize: packets.packetsPageSize,
+  maxPacketsForText: text.maxPacketsForText,
   decode: text.decode
 });
 
@@ -119,7 +120,7 @@ const _handleFetchingNewData = (newViewCode) => {
       case RECON_VIEW_TYPES_BY_NAME.PACKET.code:
         fetchPacketData(
           _getTextAndPacketInputs(state),
-          (payload) => dispatch({ type: ACTION_TYPES.PACKETS_RECEIVE_PAGE, payload }),
+          (payload) => dispatch({ type: ACTION_TYPES.PACKETS_RECEIVE_PAGE, payload: payload.data }),
           (payload) => dispatch({ type: ACTION_TYPES.PACKETS_RENDER_NEXT, payload }),
           (response) => dispatch(_handleContentError(response, 'packet'))
         );

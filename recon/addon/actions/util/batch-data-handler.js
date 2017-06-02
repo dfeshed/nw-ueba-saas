@@ -233,7 +233,10 @@ const _apiDataHandler = (selector, dispatchData) => {
       // If the server returned a response with no data, rather than do nothing
       // send an empty array in case there are side effects related to
       // no data vs has data
-      dispatchData(data || []);
+      dispatchData({
+        data: data || [],
+        meta: response.meta
+      });
 
       if (response.meta && response.meta.complete === true) {
 

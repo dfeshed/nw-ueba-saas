@@ -6,7 +6,6 @@ const BATCH_CHARACTER_SIZE = 10000;
 const TIME_BETWEEN_BATCHES = 500;
 
 const TEXT_BATCH_SIZE = 50;
-const MAX_PACKETS_FOR_TEXT_ENTRIES = 2500;
 
 const selector = (response) => {
   if (response.data && response.data.length > 0) {
@@ -16,14 +15,14 @@ const selector = (response) => {
 };
 
 export const fetchTextData = (
-  { endpointId, eventId, decode },
+  { endpointId, eventId, decode, maxPacketsForText },
   dispatchData,
   dispatchBatch,
   dispatchError
 ) => {
   const basicQuery = buildBaseQuery(endpointId, eventId);
   const streamingQuery = addStreaming(basicQuery, undefined, TEXT_BATCH_SIZE);
-  const maxPacketsQuery = addMaxPackets(streamingQuery, MAX_PACKETS_FOR_TEXT_ENTRIES);
+  const maxPacketsQuery = addMaxPackets(streamingQuery, maxPacketsForText);
   const decodeQuery = addDecode(maxPacketsQuery, decode);
   streamRequest({
     method: 'stream',
