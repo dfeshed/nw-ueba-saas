@@ -1,0 +1,63 @@
+<hbox nowrap class="rsa-incident-events-table-row__header">
+  <vbox fit class="timestamp">
+    {{rsa-content-datetime timestamp=item.timestamp}}
+  </vbox>
+  <vbox fill align="end" class="event-type">
+    <span>{{item.type}}</span>
+  </vbox>
+</hbox>
+<section class="rsa-incident-events-table-row__body">
+  {{#if (or fromDevice toDevice)}}
+    <div class="devices">
+      {{rsa-icon class="device" name="computer-imac-1"}}
+      {{#with fromDevice as |from|}}
+        <span class="from device entity" data-meta-key="{{from.field}}" data-entity-id="{{from.value}}">
+          {{from.value}}
+        </span>
+      {{/with}}
+      {{#with (and fromDevice toDevice)}}
+        {{rsa-icon class="arrow" name="arrow-right-5" size="smaller"}}
+      {{/with}}
+      {{#with toDevice as |to|}}
+        <span class="to device entity" data-meta-key="{{to.field}}" data-entity-id="{{to.value}}">
+          {{to.value}}
+        </span>
+      {{/with}}
+    </div>
+  {{/if}}
+  {{#if (or fromUser toUser)}}
+    <div class="users">
+      {{rsa-icon class="user" name="account-circle-1"}}
+      {{#with fromUser as |fromUser|}}
+        <span class="from user entity" data-meta-key="username" data-entity-id="{{fromUser}}">
+          {{fromUser}}
+        </span>
+      {{/with}}
+      {{#with (and fromDevice toDevice)}}
+        {{rsa-icon class="arrow" name="arrow-right-5" size="smaller"}}
+      {{/with}}
+      {{#with toUser as |toUser|}}
+        <span class="to user entity" data-meta-key="username" data-entity-id="{{toUser}}">
+          {{toUser}}
+        </span>
+      {{/with}}
+    </div>
+  {{/if}}
+  {{#if fileData}}
+    <div class="files">
+      {{rsa-icon class="user" name="file-new-1"}}
+      {{#with fileData as |fileData|}}
+        {{#if fileData.isMultiple}}
+          <span class="file">
+            {{fileData.value}} {{t 'respond.event.files'}}
+          </span>
+        {{else}}
+          <span class="file entity" data-meta-key="{{fileData.field}}" data-entity-id="{{fileData.value}}">
+            {{fileData.value}}
+          </span>
+        {{/if}}
+      {{/with}}
+    </div>
+  {{/if}}
+  <div class="event-details-link" {{action "showEventDetails" item}}>Details</div>
+</section>

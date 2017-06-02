@@ -1,4 +1,20 @@
 .rsa-incident-events-table {
+
+  &-row {
+    @include rsa-vendor-prefix(display, block !important);  /* overwrites display: flex */
+
+    &,
+    &:hover {
+      /* overwrites some default hover manipulation of margin & padding */
+      margin: 0 !important;
+      padding: rsa-whitespace(less) !important;
+    }
+
+    &__body {
+      min-height: 6rem; /* 6 = 4 lines of text * typical line-height 1.5 */
+    }
+  }
+
   .event-details-link {
     cursor: pointer;
     color: rsa-color(blue, light);
@@ -6,5 +22,31 @@
 
   .has-context-data {
     @include rsa-has-context-data();
+  }
+
+  .devices,
+  .users,
+  .files {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .rsa-icon {
+    color: rsa-color(gray);
+
+    &.file,
+    &.device,
+    &.user {
+      margin-right: rsa-whitespace(less);
+    }
+
+    &.arrow {
+      margin: 0 rsa-whitespace(less);
+    }
+  }
+
+  .entity {
+    color: rsa-color(white);
   }
 }

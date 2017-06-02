@@ -24,7 +24,7 @@ test('it renders', function(assert) {
     const $rows = $el.find('.rsa-data-table-body-row');
     assert.ok($rows.length, 'Expected to find at least one data table body row element in DOM.');
 
-    const $cells = $rows.first().find('.rsa-data-table-body-cell');
-    assert.ok($cells.length, 'Expected to find at least one data table body cell element in DOM.');
+    const $cells = $rows.first().find('.rsa-incident-events-table-row__body');
+    assert.ok($cells.length, 'Expected to find at least one data table row body element in DOM.');
   });
 });

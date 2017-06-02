@@ -49,45 +49,10 @@ const StoryEvents = Component.extend({
    * @type {object[]}
    * @public
    */
-  columnsConfig: [
-    {
-      field: 'time',
-      title: 'respond.eventsTable.time',
-      width: 100
-    }, {
-      field: 'sourceIp',
-      title: 'respond.eventsTable.source',
-      width: 100
-    }, {
-      field: 'destinationIp',
-      title: 'respond.eventsTable.destination',
-      width: 100
-    }, {
-      field: 'domain',
-      title: 'respond.eventsTable.domain',
-      width: 100
-    }, {
-      field: 'user',
-      title: 'respond.eventsTable.user',
-      width: 50
-    }, {
-      field: 'host',
-      title: 'respond.eventsTable.host',
-      width: 100
-    }, {
-      field: 'file',
-      title: 'respond.eventsTable.file',
-      width: 150
-    }, {
-      field: 'indicatorName',
-      title: 'respond.eventsTable.indicator',
-      width: 150
-    }, {
-      field: '',
-      title: 'respond.eventsTable.blank',
-      width: 'auto'
-    }
-  ],
+  columnsConfig: [{
+    field: 'custom',
+    width: '100%'
+  }],
 
   /**
    * The `panelId` for the Event Details modal dialog, to be launched by clicking on the individual
