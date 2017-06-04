@@ -1,4 +1,4 @@
-from presidio.utils.airflow.operators.spring_jar_operator import SpringJarOperator
+from presidio.utils.airflow.operators.spring_boot_jar_operator import SpringBootJarOperator
 from presidio.utils.services.time_service import floor_time
 import logging
 from airflow.utils.decorators import apply_defaults
@@ -6,7 +6,7 @@ from presidio.utils.services.fixed_duration_strategy import is_execution_date_va
 from presidio.utils.airflow.context_wrapper import ContextWrapper
 
 
-class FixedDurationJarOperator(SpringJarOperator):
+class FixedDurationJarOperator(SpringBootJarOperator):
     """
     
     The FixedDurationJarOperator creates java_args and updates the JarOperator.
@@ -36,7 +36,7 @@ class FixedDurationJarOperator(SpringJarOperator):
         :raise InvalidExecutionDateError - Raise error if the execution_date is not the last interval of fixed duration.
         """
         context_wrapper = ContextWrapper(context)
-        execution_date = context_wrapper.get_execute_date()
+        execution_date = context_wrapper.get_execution_date()
         if not is_execution_date_valid(execution_date, self.fixed_duration_strategy,
                                        self.interval):
             # Create short_circuit_operator in order to skip the task before it executes.
