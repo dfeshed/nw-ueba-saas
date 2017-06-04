@@ -3,11 +3,13 @@ from datetime import timedelta
 from presidio.builders.presidio_dag_builder import PresidioDagBuilder
 from presidio.operators.fixed_duration_operator import FixedDurationOperator
 
-JAR_PATH = '/home/presidio/dev-projects/presidio-core/presidio-workflows/tests/resources/jars/test.jar'
-MAIN_CLASS = 'HelloWorld.Main'
+JAR_PATH = \
+    '/home/presidio/dev-projects/presidio-core/fortscale/target/dependencies/presidio-input-core-1.0.0-SNAPSHOT.jar'
+MAIN_CLASS = 'presidio.input.core.FortscaleInputCoreApplication'
 
 jvm_args = {
-
+    'java_overriding_logback_conf_path':
+        '/home/presidio/dev-projects/presidio-core/fortscale/presidio-input/presidio-input-core/src/main/resources/logback-spring.xml',
     'jar_path': JAR_PATH,
     'main_class': MAIN_CLASS
 }

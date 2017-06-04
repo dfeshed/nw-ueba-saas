@@ -8,7 +8,8 @@ JAR_PATH = \
 MAIN_CLASS = 'presidio.collector.FortscaleCollectorApplication'
 
 jvm_args = {
-
+    'java_overriding_logback_conf_path':
+        '/home/presidio/dev-projects/presidio-core/fortscale/presidio-collector/src/main/resources/logback-spring.xml',
     'jar_path': JAR_PATH,
     'main_class': MAIN_CLASS
 }
