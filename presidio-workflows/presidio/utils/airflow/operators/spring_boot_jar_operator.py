@@ -3,7 +3,7 @@ import os
 from ConfigParser import SafeConfigParser
 from airflow.operators.bash_operator import BashOperator
 from airflow.utils.decorators import apply_defaults
-from presidio.utils.services.is_blank_service import is_blank
+from presidio.utils.services.string_service import is_blank
 
 
 class SpringBootJarOperator(BashOperator):

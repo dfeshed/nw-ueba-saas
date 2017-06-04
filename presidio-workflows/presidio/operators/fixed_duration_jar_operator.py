@@ -36,7 +36,7 @@ class FixedDurationJarOperator(SpringBootJarOperator):
         :raise InvalidExecutionDateError - Raise error if the execution_date is not the last interval of fixed duration.
         """
         context_wrapper = ContextWrapper(context)
-        execution_date = context_wrapper.get_execute_date()
+        execution_date = context_wrapper.get_execution_date()
         if not is_execution_date_valid(execution_date, self.fixed_duration_strategy,
                                        self.interval):
             # Create short_circuit_operator in order to skip the task before it executes.
