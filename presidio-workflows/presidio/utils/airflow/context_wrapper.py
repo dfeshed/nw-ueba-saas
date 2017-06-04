@@ -6,5 +6,5 @@ class ContextWrapper(object):
     def __init__(self,context):
         self._context = context
 
-    def get_execute_date(self):
+    def get_execution_date(self):
         return self._context['execution_date']

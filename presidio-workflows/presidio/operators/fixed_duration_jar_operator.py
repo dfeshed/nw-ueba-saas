@@ -1,4 +1,4 @@
-from presidio.utils.airflow.operators.spring_jar_operator import SpringJarOperator
+from presidio.utils.airflow.operators.spring_boot_jar_operator import SpringBootJarOperator
 from presidio.utils.services.time_service import floor_time
 import logging
 from airflow.utils.decorators import apply_defaults
@@ -6,7 +6,7 @@ from presidio.utils.services.fixed_duration_strategy import is_execution_date_va
 from presidio.utils.airflow.context_wrapper import ContextWrapper
 
 
-class FixedDurationJarOperator(SpringJarOperator):
+class FixedDurationJarOperator(SpringBootJarOperator):
     """
     
     The FixedDurationJarOperator creates java_args and updates the JarOperator.

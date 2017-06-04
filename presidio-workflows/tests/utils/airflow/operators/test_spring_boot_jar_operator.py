@@ -3,7 +3,7 @@ import os
 from datetime import datetime, timedelta
 import pytest
 from airflow import DAG
-from presidio.utils.airflow.operators.spring_jar_operator import SpringJarOperator
+from presidio.utils.airflow.operators.spring_boot_jar_operator import SpringBootJarOperator
 from tests.utils.airflow.operators.base_test_operator import assert_task_success_state, get_task_instances
 
 # @todo: change the path after configuration infra will be created
@@ -68,7 +68,7 @@ def build_and_run_task(jvm_args, dag, java_args, expected_bash_comment, expected
     :param expected_java_args: 
     :return: 
     """
-    task = SpringJarOperator(
+    task = SpringBootJarOperator(
         task_id='run_jar_file',
         jvm_args=jvm_args,
         java_args=java_args,
@@ -328,7 +328,7 @@ def test_update_java_args(default_args, java_args):
     dag = DAG(
         "test_java_args_update", default_args=default_args, schedule_interval=timedelta(1))
 
-    task = SpringJarOperator(
+    task = SpringBootJarOperator(
         task_id='run_jar_file',
         jvm_args=jvm_args,
         java_args=java_args,

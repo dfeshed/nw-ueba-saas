@@ -3,9 +3,10 @@ import os
 from ConfigParser import SafeConfigParser
 from airflow.operators.bash_operator import BashOperator
 from airflow.utils.decorators import apply_defaults
+from presidio.utils.services.is_blank_service import is_blank
 
 
-class SpringJarOperator(BashOperator):
+class SpringBootJarOperator(BashOperator):
     """
     Execute a Jar file.
 
@@ -37,7 +38,7 @@ class SpringJarOperator(BashOperator):
         self.validate_mandatory_fields()
         self.merged_args = self.merge_args()
         command = self.get_bash_command()
-        super(SpringJarOperator, self).__init__(bash_command=command, *args, **kwargs)
+        super(SpringBootJarOperator, self).__init__(bash_command=command, *args, **kwargs)
 
     def update_java_args(self, java_args):
         """
@@ -105,7 +106,7 @@ class SpringJarOperator(BashOperator):
         """
 
         java_path = self.merged_args.get('java_path')
-        if not SpringJarOperator.is_blank(java_path):
+        if not is_blank(java_path):
             bash_command.extend([java_path])
         else:
             logging.error('java_path is not defined')
@@ -123,12 +124,12 @@ class SpringJarOperator(BashOperator):
         """
 
         xms = self.merged_args.get('xms')
-        if not SpringJarOperator.is_blank(xms):
+        if not is_blank(xms):
             xms = '-Xms%sm' % xms
             bash_command.extend([xms])
 
         xmx = self.merged_args.get('xmx')
-        if not SpringJarOperator.is_blank(xmx):
+        if not is_blank(xmx):
             xmx = '-Xmx%sm' % xmx
             bash_command.extend([xmx])
 
@@ -140,7 +141,7 @@ class SpringJarOperator(BashOperator):
         :return: 
         """
         extra_args = self.merged_args.get('extra_args')
-        if not SpringJarOperator.is_blank(extra_args):
+        if not is_blank(extra_args):
             bash_command.extend(extra_args.split(' '))
 
     def jar_path(self, bash_command):
@@ -156,12 +157,12 @@ class SpringJarOperator(BashOperator):
         """
         class_path = self.merged_args.get('jar_path')
 
-        if not SpringJarOperator.is_blank(self.merged_args.get('class_path')):
+        if not is_blank(self.merged_args.get('class_path')):
             class_path = '%s;%s' % (self.merged_args.get('jar_path'), self.merged_args.get('class_path'))
-        if SpringJarOperator.is_blank(class_path):
+        if is_blank(class_path):
             logging.error('Could not run jar file without class path or jar path')
             raise ValueError('Please set class path or jar path')
-        if SpringJarOperator.is_blank(self.merged_args.get('main_class')):
+        if is_blank(self.merged_args.get('main_class')):
             logging.error('Could not run jar file without main class')
             raise ValueError('Please set the full name of main class')
         else:
@@ -169,7 +170,7 @@ class SpringJarOperator(BashOperator):
             bash_command.extend(['-Dloader.main=%s' % self.merged_args.get('main_class')])
             bash_command.extend(['org.springframework.boot.loader.PropertiesLauncher'])
 
-        if not SpringJarOperator.is_blank(self.java_args):
+        if not is_blank(self.java_args):
             java_args = ' '.join('%s=%s' % (key, val) for (key, val) in self.java_args.iteritems())
             bash_command.append(java_args)
 
@@ -184,13 +185,13 @@ class SpringJarOperator(BashOperator):
         """
 
         jmx_enabled = self.merged_args.get('jmx_enabled')
-        if not SpringJarOperator.is_blank(jmx_enabled) and jmx_enabled is True:
+        if not is_blank(jmx_enabled) and jmx_enabled is True:
             jmx_port = self.merged_args.get('jmx_port')
-            if not SpringJarOperator.is_blank('jmx_port'):
+            if not is_blank('jmx_port'):
                 jmx = '-Djavax.management.builder.initial= -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=%s' % (
                     jmx_port)
                 jmx_args = self.merged_args.get('jmx_args')
-                if not SpringJarOperator.is_blank(jmx_args):
+                if not is_blank(jmx_args):
                     jmx += ' %s' % jmx_args
             else:
                 logging.error('Could not find jmx_port')
@@ -206,7 +207,7 @@ class SpringJarOperator(BashOperator):
         :return: 
         """
         timezone = self.merged_args.get('timezone')
-        if not SpringJarOperator.is_blank(timezone):
+        if not is_blank(timezone):
             bash_command.append(timezone)
 
     def remote_debug_options(self, bash_command):
@@ -219,9 +220,9 @@ class SpringJarOperator(BashOperator):
         :return: 
         """
         remote_debug_enabled = self.merged_args.get('remote_debug_enabled')
-        if not SpringJarOperator.is_blank(remote_debug_enabled) and remote_debug_enabled is True:
+        if not is_blank(remote_debug_enabled) and remote_debug_enabled is True:
             remote_debug_suspend = self.merged_args.get('remote_debug_suspend')
-            if not SpringJarOperator.is_blank(remote_debug_suspend) and remote_debug_suspend is True:
+            if not is_blank(remote_debug_suspend) and remote_debug_suspend is True:
                 remote_debug_suspend = 'y'
             else:
                 remote_debug_suspend = 'n'
@@ -243,12 +244,12 @@ class SpringJarOperator(BashOperator):
         overriding_logback_config = False
 
         java_overriding_logback_conf_path = self.merged_args.get('java_overriding_logback_conf_path')
-        if not SpringJarOperator.is_blank(java_overriding_logback_conf_path):
+        if not is_blank(java_overriding_logback_conf_path):
             if os.path.isfile(java_overriding_logback_conf_path):
                 overriding_logback_config = True
                 bash_command.append(logback_config % (java_overriding_logback_conf_path))
         java_logback_conf_path = self.merged_args.get('java_logback_conf_path')
-        if not SpringJarOperator.is_blank(java_logback_conf_path) and overriding_logback_config is False:
+        if not is_blank(java_logback_conf_path) and overriding_logback_config is False:
             bash_command.append(logback_config % java_logback_conf_path)
 
     def validate_mandatory_fields(self):
@@ -262,24 +263,11 @@ class SpringJarOperator(BashOperator):
         jar_path = self.jvm_args.get('jar_path')
         class_path = self.jvm_args.get('class_path')
 
-        if SpringJarOperator.is_blank(jar_path) and SpringJarOperator.is_blank(class_path):
+        if is_blank(jar_path) and is_blank(class_path):
             logging.error('Could not run jar file without class path or jar path')
             raise ValueError('Please set class path or jar path')
 
         main_class = self.jvm_args.get('main_class')
-        if SpringJarOperator.is_blank(main_class):
+        if is_blank(main_class):
             logging.error('Could not run jar file without main class')
             raise ValueError('Please set the full name of main class')
-
-    @staticmethod
-    def is_blank(value):
-        """
-        Check if the value is empty
-        :param value:  
-        :type value: string
-        :return: boolean
-        """
-        if value is not None and value is not '':
-            return False
-        else:
-            return True

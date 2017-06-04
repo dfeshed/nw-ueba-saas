@@ -4,7 +4,7 @@ import pytest
 from airflow import DAG
 from presidio.operators.fixed_duration_jar_operator import FixedDurationJarOperator
 from tests.utils.airflow.operators.base_test_operator import assert_task_success_state, get_task_instances
-from tests.utils.airflow.operators.test_spring_jar_operator import assert_bash_comment, JAR_PATH, MAIN_CLASS, LAUNCHER
+from tests.utils.airflow.operators.test_spring_boot_jar_operator import assert_bash_comment, JAR_PATH, MAIN_CLASS, LAUNCHER
 
 FIX_DURATION_STRATEGY_HOURLY = timedelta(hours=1)
 FIX_DURATION_STRATEGY_DAILY = timedelta(days=1)
