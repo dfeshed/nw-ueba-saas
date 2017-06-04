@@ -1,7 +1,6 @@
 package presidio.ade.sdk.executions.historical;
 
-import com.cronutils.model.Cron;
-
+import java.time.Duration;
 import java.time.Instant;
 
 /**
@@ -12,7 +11,7 @@ import java.time.Instant;
 public class PrepareHistoricalRunTimeParams {
     private final Instant startInstant;
     private final Instant endInstant;
-    private final Cron timeDelta;
+    private final Duration timeDelta;
 
     /**
      * C'tor
@@ -20,16 +19,17 @@ public class PrepareHistoricalRunTimeParams {
      * for given params: startInstant=1970-01-01T00:00:00Z,endInstant=1970-01-02T00:00:00Z, timeDelta="days=1"
      *
      * means that the data of this day should be processed in once a day
-     *  @param startInstant               the batch data processing will be executed from that date
+     * @param startInstant               the batch data processing will be executed from that date
      * @param endInstant                 the batch data processing will be executed till that date
+     * @param timeDelta
      */
-    public PrepareHistoricalRunTimeParams(Instant startInstant, Instant endInstant, Cron timeDelta) {
+    public PrepareHistoricalRunTimeParams(Instant startInstant, Instant endInstant, Duration timeDelta) {
         this.startInstant = startInstant;
         this.endInstant = endInstant;
         this.timeDelta = timeDelta;
     }
 
-    public Cron getTimeDelta() {
+    public Duration getTimeDelta() {
         return timeDelta;
     }
 
