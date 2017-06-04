@@ -26,44 +26,51 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.mockito.internal.util.reflection.Whitebox;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.*;
 
 import static org.mockito.Mockito.when;
 
+@RunWith(SpringRunner.class)
+@ContextConfiguration(locations = "classpath*:META-INF/spring/scorer-factory-tests-context.xml")
 public class ModelBasedScoreMapperFactoryTest {
 
-	private static ClassPathXmlApplicationContext testContextManager;
+	@MockBean
+	ModelConfService modelConfService;
 
-	private ModelBasedScoreMapperFactory modelBasedScoreMapperFactory;
-	private FeatureExtractService featureExtractService;
+	@MockBean
+	FeatureExtractService featureExtractService;
+
+	@MockBean
+	ModelsCacheService modelCacheService;
+
+	@Autowired
+	ModelBasedScoreMapperFactory modelBasedScoreMapperFactory;
+
+	@Autowired
 	private FactoryService<Scorer> scorerFactoryService;
-	private ModelConfService modelConfService;
-	private ModelsCacheService modelsCacheService;
+
+	@Autowired
 	private FactoryService<AbstractDataRetriever> dataRetrieverFactoryService;
+
+	@Autowired
 	private FactoryService<IContextSelector> contextSelectorFactoryService;
+
 	private Scorer baseScorerMock = Mockito.mock(Scorer.class);
-    private IScorerConf baseScorerConf;
 
-
-	@BeforeClass
-	public static void setUpClass() {
-		testContextManager = new ClassPathXmlApplicationContext(
-				"classpath*:META-INF/spring/scorer-factory-tests-context.xml");
-	}
+	private IScorerConf baseScorerConf;
 
 	@Before
 	public void setUp() {
-		modelBasedScoreMapperFactory = testContextManager.getBean(ModelBasedScoreMapperFactory.class);
-		featureExtractService = testContextManager.getBean(FeatureExtractService.class);
-		scorerFactoryService = testContextManager.getBean(FactoryService.class);
-		modelConfService = testContextManager.getBean(ModelConfService.class);
-		modelsCacheService = testContextManager.getBean(ModelsCacheService.class);
-		dataRetrieverFactoryService = testContextManager.getBean(FactoryService.class);
-		contextSelectorFactoryService = testContextManager.getBean(FactoryService.class);
 
 		baseScorerConf = new IScorerConf() {
 			@Override public String getName() {
@@ -156,7 +163,7 @@ public class ModelBasedScoreMapperFactoryTest {
 
 		ScoreMappingModel model = new ScoreMappingModel();
 		model.init(mapping);
-		when(modelsCacheService.getModel(Mockito.any(Feature.class), Mockito.anyString(), Mockito.anyMap(), Mockito.anyLong()))
+		when(modelCacheService.getModel(Mockito.any(Feature.class), Mockito.anyString(), Mockito.anyMap(), Mockito.anyLong()))
 				.thenReturn(model);
 
         return modelBasedScoreMapperFactory.getProduct(conf);

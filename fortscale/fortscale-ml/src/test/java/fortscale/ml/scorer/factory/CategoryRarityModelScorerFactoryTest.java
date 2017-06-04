@@ -1,11 +1,13 @@
 package fortscale.ml.scorer.factory;
 
 import fortscale.common.feature.Feature;
+import fortscale.common.feature.extraction.FeatureExtractService;
 import fortscale.ml.model.ModelBuilderData;
 import fortscale.ml.model.ModelBuilderData.NoDataReason;
 import fortscale.ml.model.ModelConf;
 import fortscale.ml.model.ModelConfService;
 import fortscale.ml.model.builder.IModelBuilderConf;
+import fortscale.ml.model.cache.ModelsCacheService;
 import fortscale.ml.model.retriever.AbstractDataRetriever;
 import fortscale.ml.model.retriever.AbstractDataRetrieverConf;
 import fortscale.ml.model.selector.IContextSelectorConf;
@@ -15,27 +17,40 @@ import fortscale.ml.scorer.config.ModelInfo;
 import fortscale.utils.factory.FactoryService;
 import net.minidev.json.JSONObject;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.mockito.internal.util.reflection.Whitebox;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.*;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
-@RunWith(SpringJUnit4ClassRunner.class)
+@RunWith(SpringRunner.class)
 @ContextConfiguration(locations = {"classpath*:META-INF/spring/scorer-factory-tests-context.xml"})
 public class CategoryRarityModelScorerFactoryTest {
 
-    @Autowired
-    CategoryRarityModelScorerFactory categoryRarityModelScorerFactory;
+    @MockBean
+    FeatureExtractService featureExtractService;
+
+    @MockBean
+    ModelsCacheService modelsCacheService;
+
+    @MockBean
+    ModelConfService modelConfService;
 
     @Autowired
-    ModelConfService modelConfService;
+    CategoryRarityModelScorerFactory categoryRarityModelScorerFactory;
 
     @Autowired
     FactoryService<AbstractDataRetriever> dataRetrieverFactoryService;
@@ -49,7 +64,6 @@ public class CategoryRarityModelScorerFactoryTest {
     public void nullConfTest() {
         categoryRarityModelScorerFactory.getProduct(null);
     }
-
 
     @Test
     public void getProductTest() {

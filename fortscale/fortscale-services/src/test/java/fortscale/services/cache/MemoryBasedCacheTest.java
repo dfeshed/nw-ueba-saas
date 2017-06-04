@@ -6,6 +6,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+
 import java.io.IOException;
 
 import org.junit.Before;
@@ -21,6 +22,7 @@ public class MemoryBasedCacheTest {
 
 	@Before
 	public void setUp() {
+
 		subject = new MemoryBasedCache<String,String>(0,0,String.class);
 		cache = spy(subject.getCache());
 		subject.setCache(cache);

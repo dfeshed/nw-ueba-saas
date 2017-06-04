@@ -1,5 +1,8 @@
 package fortscale.aggregation.feature.event;
 
+import fortscale.aggregation.DataSourcesSyncTimer;
+import fortscale.aggregation.feature.bucket.FeatureBucketsService;
+import fortscale.aggregation.feature.functions.IAggrFeatureEventFunctionsService;
 import fortscale.common.feature.Feature;
 import fortscale.aggregation.feature.bucket.FeatureBucketConf;
 import fortscale.common.feature.AggrFeatureValue;
@@ -10,6 +13,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.util.ArrayList;
@@ -19,12 +23,24 @@ import java.util.Map;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-
 /**
  * Created by amira on 01/10/2015.
  */
 @RunWith(JUnitParamsRunner.class)
 public class AggrFeatureEventBuilderServiceTest {
+
+    @MockBean
+    DataSourcesSyncTimer dataSourcesSyncTimer;
+
+    @MockBean
+    IAggrFeatureEventFunctionsService aggrFeatureFuncService;
+
+    @MockBean
+    FeatureBucketsService featureBucketsService;
+
+    @MockBean
+    AggrEventTopologyService aggrEventTopologyService;
+
     private static ClassPathXmlApplicationContext testContextManager;
 
     private AggrFeatureEventBuilderService aggrFeatureEventBuilderService;
