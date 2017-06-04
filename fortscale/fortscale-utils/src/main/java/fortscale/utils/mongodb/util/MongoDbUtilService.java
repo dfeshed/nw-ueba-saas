@@ -11,9 +11,10 @@ import java.util.concurrent.atomic.AtomicLong;
 
 
 public class MongoDbUtilService {
+    private static final Logger logger = Logger.getLogger(MongoDbUtilService.class);
     public static final String COLLECTION_ALREADY_EXISTS_ERR_MSG = "collection already exists";
     public static final String TOO_LARGE_OBJECT_MONGO_ERR_MSG = "is larger than MaxDocumentSize";
-    private static final Logger logger = Logger.getLogger(MongoDbUtilService.class);
+
     private MongoTemplate mongoTemplate;
 
     private Set<String> collectionNames;
@@ -23,11 +24,6 @@ public class MongoDbUtilService {
         this.collectionNames = new HashSet<>(mongoTemplate.getCollectionNames());
     }
 
-    public void createCollectionIfNotExists(String collectionName) {
-        if (!collectionNames.contains(collectionName)) {
-            createCollection(collectionName);
-        }
-    }
     public boolean collectionExists(String collectionName) {
         return collectionNames.contains(collectionName);
     }

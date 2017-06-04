@@ -154,7 +154,7 @@
 		<commons-httpclient.version>3.0.1</commons-httpclient.version>
 		<commons-lang.version>2.6</commons-lang.version>
 		<org-json.version>20140107</org-json.version>
-		<commons-lang3.version>3.5</commons-lang3.version>
+		<commons-lang3.version>3.1</commons-lang3.version>
 		<commons-pool.version>1.4</commons-pool.version>
 		<commons-codec.version>1.9</commons-codec.version>
 		<h2.version>1.4.193</h2.version>
@@ -163,8 +163,6 @@
 		<syslog-java-client.version>1.0.6</syslog-java-client.version>
 		<commons-validator.version>1.4.1</commons-validator.version>
 		<jacoco-maven-plugin.version>0.7.9</jacoco-maven-plugin.version>
-		<cron-utils.version>5.0.5</cron-utils.version>
-		<podam.version>7.0.5.RELEASE</podam.version>
 	</properties>
 
 	<dependencyManagement>
@@ -478,20 +476,12 @@
 			<artifactId>guava</artifactId>
 			<version>${guava.version}</version>
 		</dependency>
-        <dependency>
-            <groupId>com.cronutils</groupId>
-            <artifactId>cron-utils</artifactId>
-            <version>${cron-utils.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>uk.co.jemos.podam</groupId>
-            <artifactId>podam</artifactId>
-            <version>${podam.version}</version>
-        </dependency>
-    </dependencies>
+
+	</dependencies>
 
 	</dependencyManagement>
 	<dependencies>
+
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
@@ -738,8 +728,6 @@
 		<module>fortscale-utils</module>
 		<module>fortscale-global-config</module>
 		<module>fortscale-domain</module>
-		<module>presidio-ade-domain</module>
-		<module>presidio-ade-sdk</module>
 		<module>fortscale-ml</module>
 		<module>fortscale-services</module>
 		<module>fortscale-aggregation</module>
