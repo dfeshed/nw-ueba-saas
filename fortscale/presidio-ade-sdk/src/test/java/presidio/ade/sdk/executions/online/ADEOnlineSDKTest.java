@@ -68,8 +68,7 @@ public class ADEOnlineSDKTest {
             MongodbTestConfig.class,
             ADEOnlineSDKConfig.class,
             SystemDateServiceImplForcedConfig.class,
-            ADEMockedInputRecordGeneratorConfig.class,
-            DynamicIndexApplicationListenerConfig.class
+            ADEMockedInputRecordGeneratorConfig.class
     })
     public static class springConfig {
         @Bean

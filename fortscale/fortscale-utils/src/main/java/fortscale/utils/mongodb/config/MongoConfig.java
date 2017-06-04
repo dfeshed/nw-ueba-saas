@@ -3,11 +3,13 @@ package fortscale.utils.mongodb.config;
 import com.mongodb.*;
 import fortscale.utils.EncryptionUtils;
 import fortscale.utils.mongodb.converter.FSMappingMongoConverter;
+import fortscale.utils.mongodb.index.DynamicIndexApplicationListenerConfig;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.mongodb.config.AbstractMongoConfiguration;
 import org.springframework.data.mongodb.config.EnableMongoAuditing;
@@ -24,6 +26,7 @@ import java.util.List;
  */
 @Configuration
 @EnableMongoAuditing
+@Import(DynamicIndexApplicationListenerConfig.class)
 public class MongoConfig extends AbstractMongoConfiguration {
 
     @Value("${mongo.db.name}")

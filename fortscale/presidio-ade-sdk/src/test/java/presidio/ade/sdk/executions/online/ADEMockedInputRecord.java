@@ -1,5 +1,6 @@
 package presidio.ade.sdk.executions.online;
 
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import presidio.ade.domain.store.input.ADEInputRecord;
 
@@ -11,8 +12,9 @@ import java.time.Instant;
  */
 @Document
 public class ADEMockedInputRecord extends ADEInputRecord {
-
+    @Indexed
     private String contextField;
+    @Indexed
     private String featureField;
 
     public ADEMockedInputRecord(Instant eventTime, String contextField, String featureField) {

@@ -1,7 +1,5 @@
 package presidio.ade.domain.store.input.store;
 
-import fortscale.utils.mongodb.index.MongoIndexCreator;
-import fortscale.utils.mongodb.index.MongoIndexCreatorConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,8 +11,7 @@ import presidio.ade.domain.store.translators.ADEInputDataToCollectionNameTransla
 @Configuration
 @Import(
         {
-                ADEInputDataToCollectionNameTranslatorConfig.class,
-                MongoIndexCreatorConfig.class
+                ADEInputDataToCollectionNameTranslatorConfig.class
         })
 public class ADEInputDataStoreConfig {
 
@@ -22,11 +19,9 @@ public class ADEInputDataStoreConfig {
     private MongoTemplate mongoTemplate;
     @Autowired
     private ADEInputDataToCollectionNameTranslator translator;
-    @Autowired
-    private MongoIndexCreator mongoIndexCreator;
 
     @Bean
     public ADEInputDataStore ADEInputDataStoreImpl() {
-        return new ADEInputDataStoreImplMongo(mongoTemplate, mongoIndexCreator, translator);
+        return new ADEInputDataStoreImplMongo(mongoTemplate, translator);
     }
 }

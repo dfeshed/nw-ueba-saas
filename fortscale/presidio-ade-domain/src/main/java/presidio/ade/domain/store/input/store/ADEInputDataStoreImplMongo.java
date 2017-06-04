@@ -1,7 +1,5 @@
 package presidio.ade.domain.store.input.store;
 
-import fortscale.utils.mongodb.index.MongoIndexedStore;
-import fortscale.utils.mongodb.index.MongoIndexCreator;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.index.Index;
@@ -18,17 +16,15 @@ import java.util.Set;
 
 import fortscale.utils.logging.Logger;
 
-public class ADEInputDataStoreImplMongo implements ADEInputDataStore ,MongoIndexedStore {
+public class ADEInputDataStoreImplMongo implements ADEInputDataStore {
     private static final Logger logger = Logger.getLogger(ADEInputDataStoreImplMongo.class);
 
     private final MongoTemplate mongoTemplate;
     private final ADEInputDataToCollectionNameTranslator translator;
-    private final MongoIndexCreator mongoIndexCreator;
 
-    public ADEInputDataStoreImplMongo(MongoTemplate mongoTemplate, MongoIndexCreator mongoIndexCreator, ADEInputDataToCollectionNameTranslator translator) {
+    public ADEInputDataStoreImplMongo(MongoTemplate mongoTemplate, ADEInputDataToCollectionNameTranslator translator) {
         this.mongoTemplate = mongoTemplate;
         this.translator = translator;
-        this.mongoIndexCreator = mongoIndexCreator;
     }
 
     public void store(ADEInputRecordsMetaData recordsMetaData, List<? extends ADEInputRecord> records) {
