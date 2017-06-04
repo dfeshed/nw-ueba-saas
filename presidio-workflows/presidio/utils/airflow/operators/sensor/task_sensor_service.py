@@ -19,7 +19,7 @@ class TaskSensorService(object):
         :param poke_interval: 
         :type poke_interval: int
         '''
-        task_id = '%s_%s' % (task.task_id, 'sensor')
+        task_id = '%s_%s' % (task.task_id, 'sequential_sensor')
         sensor = TaskGapSensorOperator(dag=task.dag, task_id=task_id, external_dag_id=task.dag_id,
                                        external_task_id=task.task_id, execution_delta=timedelta(seconds=1),
                                        poke_interval=poke_interval)
@@ -27,7 +27,7 @@ class TaskSensorService(object):
 
     def add_task_gap_sensor(self, task, gapped_task, execution_delta, poke_interval=60):
         '''
-        
+
         :param task: 
         :type task: BaseOperator
         :param gapped_task: 
@@ -38,7 +38,7 @@ class TaskSensorService(object):
         :type poke_interval: int
         :return: 
         '''
-        task_id = '%s_%s_%s' % (gapped_task.task_id, task.task_id, 'sensor')
+        task_id = '%s_%s_%s' % (gapped_task.task_id, task.task_id, 'gap_sensor')
         sensor = TaskGapSensorOperator(dag=task.dag, task_id=task_id, external_dag_id=gapped_task.dag_id,
                                        external_task_id=gapped_task.task_id, execution_delta=execution_delta,
                                        poke_interval=poke_interval)

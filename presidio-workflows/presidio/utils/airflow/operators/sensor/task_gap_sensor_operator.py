@@ -36,15 +36,16 @@ class TaskGapSensorOperator(BaseSensorOperator):
 
     def poke(self, context):
         '''
-                
+
         @return: the number of tasks to wait for.
         '''
+
         execution_date_lt = context['execution_date'] - self._execution_delta
 
         logging.info(
             'Poking for the following'
-            '{self.external_dag_id}.'
-            '{self.external_task_id} on '
+            '{self._external_dag_id}.'
+            '{self._external_task_id} on '
             '{execution_date_lt} ... '.format(**locals()))
 
         num_of_task_instances_to_wait_for = self.get_num_of_task_instances_to_wait_for(execution_date_lt)
