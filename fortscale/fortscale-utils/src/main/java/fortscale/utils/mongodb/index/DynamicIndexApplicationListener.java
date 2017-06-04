@@ -13,6 +13,7 @@ import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.IndexDefinition;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.index.MongoPersistentEntityIndexResolver;
+import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.MongoMappingContext;
 import org.springframework.data.mongodb.core.mapping.event.BeforeConvertEvent;
 import org.springframework.data.mongodb.util.MongoDbErrorCodes;
@@ -63,8 +64,12 @@ public class DynamicIndexApplicationListener implements ApplicationListener<Befo
     @Override
     public void onApplicationEvent(BeforeConvertEvent<Object> event) {
         String collectionName = event.getCollectionName();
-
         Class<?> sourceClass = event.getSource().getClass();
+
+        if (!sourceClass.isAnnotationPresent(Document.class)) {
+            return;
+        }
+
         Pair<String, ? extends Class<?>> cacheKey = Pair.of(collectionName, sourceClass);
         // if collection is not indexed by this class annotations
         if (!collectionToClassIndexCache.contains(cacheKey)) {

@@ -11,7 +11,7 @@ public interface ADEManagerSDK {
 //    moveRunTo(runId, startTime) . This may only happen when the run is in stop state. When moving to the past a cleanup will also occur.
 //    processNextHours(runId)
 //    store(timeRange, data). Directly to the DB and some meta info to the manager.
-//            getLastHour(runId) // the last hour that was requested to process.
+//            getLastProcessedEndTime(runId) // the last hour that was requested to process.
 //    getInProgressHours(runId)
 //    getRunState(runId)
 //    RunPrepResult cleanup(TimeRangeInUtcDays)

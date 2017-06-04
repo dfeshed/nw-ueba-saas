@@ -1,7 +1,10 @@
 package presidio.ade.sdk.executions.online;
 
 import presidio.ade.domain.store.input.store.ADEInputDataStore;
-import presidio.ade.sdk.executions.common.*;
+import presidio.ade.sdk.executions.common.ADECommonSDK;
+import presidio.ade.sdk.executions.common.AbstractADESDK;
+import presidio.ade.sdk.executions.common.RunId;
+import presidio.ade.sdk.executions.common.RunPrepResult;
 
 import java.util.Set;
 
@@ -25,53 +28,13 @@ public class ADEOnlineSDK extends AbstractADESDK<PrepareOnlineRunTimeParams>{
     }
 
     @Override
-    public void processNextHour(RunId runId) {
-
-    }
-
-    @Override
-    public PrepareOnlineRunTimeParams getLastHour(RunId runId) {
+    public PrepareOnlineRunTimeParams getLastProcessedEndTime(RunId runId) {
         return null;
     }
 
     @Override
     public Set<PrepareOnlineRunTimeParams> getInProgressHours(RunId runId) {
         return null;
-    }
-
-    @Override
-    public RunStatus getRunStatus(RunId runId) {
-        return null;
-    }
-
-    @Override
-    public void pause(RunId runId) {
-
-    }
-
-    @Override
-    public void unpause(RunId runId) {
-
-    }
-
-    @Override
-    public void stop(RunId runId) {
-
-    }
-
-    @Override
-    public void stopForcefully(RunId runId) {
-
-    }
-
-    @Override
-    public Set<DirtyDataMarker> getDirtyDataMarkers() {
-        return null;
-    }
-
-    @Override
-    public void setDirtyDataMarkers(Set<DirtyDataMarker> dirtyDataMarkers) {
-
     }
 
     /**
