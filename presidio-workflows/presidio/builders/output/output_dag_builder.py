@@ -2,6 +2,7 @@ from datetime import timedelta
 
 from presidio.builders.presidio_dag_builder import PresidioDagBuilder
 from presidio.operators.fixed_duration_operator import FixedDurationOperator
+import logging
 
 JAR_PATH = \
     '/home/presidio/dev-projects/presidio-core/presidio-workflows/tests/resources/jars/test-mock-project-0.0.1-SNAPSHOT.jar'
@@ -39,6 +40,8 @@ class OutputDagBuilder(PresidioDagBuilder):
         :return: The input DAG, after the "output" operators were added
         :rtype: airflow.models.DAG
         """
+
+        logging.info("populating the output dag, dag_id=%s ", output_dag.dag_id)
 
         # Iterate all configured data sources
         for data_source in self.data_sources:

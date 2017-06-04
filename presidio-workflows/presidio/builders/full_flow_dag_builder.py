@@ -4,6 +4,7 @@ from airflow.operators.subdag_operator import SubDagOperator
 from presidio.builders.collector.collector_dag_builder import CollectorDagBuilder
 from presidio.builders.presidio_core_dag_builder import PresidioCoreDagBuilder
 from presidio.builders.presidio_dag_builder import PresidioDagBuilder
+import logging
 
 
 class FullFlowDagBuilder(PresidioDagBuilder):
@@ -23,11 +24,13 @@ class FullFlowDagBuilder(PresidioDagBuilder):
 
         default_args = full_flow_dag.default_args
         data_sources = default_args.get("data_sources")
+        logging.info("populating the full flow dag, dag_id=%s for data sources:%s ", full_flow_dag.dag_id, data_sources)
 
         collector_sub_dag = self._get_collector_sub_dag_operator(data_sources, full_flow_dag)
         presidio_core_sub_dag = self._get_presidio_core_sub_dag_operator(data_sources, full_flow_dag)
 
         collector_sub_dag >> presidio_core_sub_dag
+        logging.info("Finished creating dag - %s", full_flow_dag.dag_id)
 
         return full_flow_dag
 

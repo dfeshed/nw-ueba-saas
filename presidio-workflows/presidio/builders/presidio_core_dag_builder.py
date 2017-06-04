@@ -5,7 +5,7 @@ from presidio.builders.anomaly_detection_engine_dag_builder import AnomalyDetect
 from presidio.builders.input.input_dag_builder import InputDagBuilder
 from presidio.builders.output.output_dag_builder import OutputDagBuilder
 from presidio.builders.presidio_dag_builder import PresidioDagBuilder
-
+import logging
 
 class PresidioCoreDagBuilder(PresidioDagBuilder):
     """
@@ -30,6 +30,8 @@ class PresidioCoreDagBuilder(PresidioDagBuilder):
         :return: The given presidio core DAG, after it has been populated
         :rtype: airflow.models.DAG
         """
+
+        logging.info("populating the presidio core dag, dag_id=%s ", presidio_core_dag.dag_id)
 
         input_sub_dag_operator = self._get_input_sub_dag_operator(
             self.data_sources,

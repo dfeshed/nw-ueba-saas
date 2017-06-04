@@ -2,6 +2,7 @@ from datetime import timedelta
 
 from presidio.builders.presidio_dag_builder import PresidioDagBuilder
 from presidio.operators.fixed_duration_operator import FixedDurationOperator
+import logging
 
 JAR_PATH = \
     '/home/presidio/dev-projects/presidio-core/fortscale/target/dependencies/presidio-input-core-1.0.0-SNAPSHOT.jar'
@@ -39,6 +40,8 @@ class InputDagBuilder(PresidioDagBuilder):
         :return: The input DAG, after the "input" operators were added
         :rtype: airflow.models.DAG
         """
+
+        logging.info("populating the input dag, dag_id=%s ", input_dag.dag_id)
 
         # Iterate all configured data sources
         for data_source in self.data_sources:
