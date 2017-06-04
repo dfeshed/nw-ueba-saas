@@ -187,7 +187,6 @@
 			<artifactId>commons-net</artifactId>
 			<version>3.3</version>
 		</dependency>
-
 		<!--fongo is a fake mongo, in memory test util-->
 		<dependency>
 			<groupId>com.github.fakemongo</groupId>
@@ -218,7 +217,11 @@
 			<artifactId>spring-test</artifactId>
 			<version>4.3.8.RELEASE</version>
 		</dependency>
-	</dependencies>
+        <dependency>
+            <groupId>uk.co.jemos.podam</groupId>
+            <artifactId>podam</artifactId>
+        </dependency>
+    </dependencies>
 
 	<build>
 		<plugins>
