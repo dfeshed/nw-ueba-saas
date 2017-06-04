@@ -17,6 +17,6 @@ default_args = {
     # 'priority_weight': 10,
     # 'end_date': datetime(2016, 1, 1),
 }
-dag = DAG('anomaly_detection_engine_dag_example', start_date=datetime(2015, 7, 2), default_args=default_args)
+dag = DAG('anomaly_detection_engine_dag_example', start_date=datetime(2015, 7, 2), schedule_interval=timedelta(minutes=60), default_args=default_args)
 dag_builder = AnomalyDetectionEngineDagBuilder(['dlpfile','dlpmail'],['hourly_smart','hourly_exfiltration'],['daily_smart'])
 dag_builder.build(dag)
