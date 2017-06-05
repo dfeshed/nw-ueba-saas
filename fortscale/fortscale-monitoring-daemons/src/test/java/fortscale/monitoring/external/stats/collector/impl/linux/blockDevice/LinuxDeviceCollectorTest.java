@@ -1,11 +1,26 @@
 package fortscale.monitoring.external.stats.collector.impl.linux.blockDevice;
 
 import fortscale.monitoring.external.stats.collector.impl.ExternalStatsCollectorMetrics;
+import fortscale.utils.system.operatingSystem.OperatingSystemUtils;
 import org.junit.Assert;
+import org.junit.Assume;
+import org.junit.Before;
 import org.junit.Test;
 
 
 public class LinuxDeviceCollectorTest {
+
+    private OperatingSystemUtils operatingSystemUtils;
+    private boolean isWinOperatingSystem;
+
+    public LinuxDeviceCollectorTest() {
+        isWinOperatingSystem = OperatingSystemUtils.isWinOperatingSystem();
+    }
+
+    @Before
+    public void beforeMethod() {
+        Assume.assumeFalse(isWinOperatingSystem);
+    }
 
     @Test
     public void shouldCollectSDADeviceStats()

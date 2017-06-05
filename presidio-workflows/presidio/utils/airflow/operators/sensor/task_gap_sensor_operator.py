@@ -21,6 +21,7 @@ class TaskGapSensorOperator(BaseSensorOperator):
     :type execution_delta: datetime.timedelta
     """
     ui_color = '#19647e'
+    ui_fgcolor = '#fff'
 
     def __init__(
             self,
