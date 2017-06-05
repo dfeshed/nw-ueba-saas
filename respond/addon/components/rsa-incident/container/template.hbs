@@ -1,14 +1,19 @@
 <header class="rsa-incident-container__header">
   {{rsa-incident/toolbar}}
 </header>
-<section class="rsa-incident-container__background">
-  {{rsa-incident/entities fitToSize=entitiesRectangle}}
-</section>
+{{#unless hideViz}}
+  <section class="rsa-incident-container__background">
+    {{rsa-incident/entities fitToSize=entitiesRectangle}}
+  </section>
+{{/unless}}
 <hbox nowrap class="rsa-incident-container__main">
   <box fit class="rsa-incident-container__main-aside">
     {{rsa-incident/inspector}}
   </box>
   <vbox nowrap fill class="rsa-incident-container__main-body js-entities-rectangle">
+    {{#if hideViz}}
+      {{rsa-incident/events-sheet}}
+    {{/if}}
     <box fill class="rsa-incident-container__main-status">
       {{#if (eq storylineStatus 'streaming')}}
         <fill justify="center" align="center">
@@ -27,11 +32,13 @@
         {{/unless}}
       {{/if}}
     </box>
-    <box fit class="rsa-incident-container__legend-wrap">
-      <centered>
-        {{rsa-incident/entities-legend}}
-      </centered>
-    </box>
+    {{#unless hideViz}}
+      <box fit class="rsa-incident-container__legend-wrap">
+        <centered>
+          {{rsa-incident/entities-legend}}
+        </centered>
+      </box>
+    {{/unless}}
   </vbox>
 </hbox>
 <footer class="rsa-incident-container__footer">

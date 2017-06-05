@@ -1,13 +1,40 @@
-.rsa-incident-event-details-modal {
+.rsa-items-sheet {
+  position: relative;
 
-  .modal-content {
+  .liquid-container,
+  .liquid-child {
+    @include rsa-fill-abs();
+  }
+
+  &__table-view,
+  &__details-view {
+    @include rsa-fill-abs();
+
+    &-header {
+      padding: rsa-whitespace();
+      background-color: rsa-color(black,base,$rsa-nearly-transparent);
+    }
+
     &-body {
-      max-width: 800px;
-      max-height: 500px;
+      position: relative;
+    }
+  }
+
+  &__scroller {
+    @include rsa-fill-abs();
+  }
+
+  &__details-view {
+    .rsa-incident-datasheet__scroller {
       overflow: auto;
     }
-    &-footer {
-      padding: rsa-whitespace() rsa-whitespace(more);
+  }
+
+  &__table {
+    @include rsa-fill-abs();
+
+    .rsa-data-table-body-cell {
+      cursor: default;
     }
   }
 
@@ -24,7 +51,7 @@
         padding-bottom: rsa-whitespace(least);
         padding-left: 0;
         padding-right: rsa-whitespace();
-        color: rsa-color(gray);
+        color: rsa-color(gray,light);
       }
 
       &-value {
@@ -36,7 +63,7 @@
       background-color: rsa-color(gray,dark,$rsa-nearly-transparent);
 
       &:not(:last-of-type) {
-        border-bottom: 10px solid rsa-color(black,base,$rsa-nearly-transparent);
+        border-bottom: 10px solid transparent;
       }
 
       > .key-name {

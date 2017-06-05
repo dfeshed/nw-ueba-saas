@@ -341,9 +341,12 @@ export default Component.extend({
 
       this._data = value;
 
+      // If this element has rendered, invoke handler which will update the d3 simulation.
       // Must use `run.next` to ensure that when the called function calls `this.get('data')`, this function will
       // have already returned and Ember will have updated the `data` property value.
-      run.next(this, '_dataDidChange');
+      if (this.element) {
+        run.next(this, '_dataDidChange');
+      }
 
       return this._data;
     }
@@ -456,14 +459,31 @@ export default Component.extend({
 
     this._filterDidChange();
 
-    // Feed the data to the simulation & restart.
+    // Feed the data to the simulation.
     const { nodes, links } = this.get('data');
+    const nodeCoordsAreMissing = (nodes || []).find((d) => {
+      return (d.x === undefined) || (d.y === undefined);
+    });
+
     simulation
       .nodes(nodes)
       .force('link').links(links);
 
     if (nodes.length) {
-      this.start();
+      if (nodeCoordsAreMissing) {
+
+        // Some nodes are missing coordinates. Re-start the simulation so it can computed coords.
+        this.start();
+      } else {
+
+        // Nodes already have coords. No simulation needed; just draw all the nodes & coords.
+        this.ticked({ drawAll: true, alpha: 0, dontCenter: true });
+
+        // Center without any transition.
+        if (this.get('autoCenter')) {
+          this.center('none', 0);
+        }
+      }
     }
   },
 

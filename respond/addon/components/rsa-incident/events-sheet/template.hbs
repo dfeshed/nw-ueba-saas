@@ -1,0 +1,56 @@
+{{#rsa-items-sheet columnsConfig=columnsConfig items=items as |sheet|}}
+  {{#sheet.tableHeader as |tableHeader|}}
+    <span class="event-count-and-label">
+      <span class="event-count">
+        {{tableHeader.items.length}}
+      </span>
+      <span class="event-label">
+        {{t 'respond.eventDetails.events'}}
+      </span>
+    </span>
+    {{#if (and selection.ids.length (eq selection.type 'storyPoint'))}}
+      <span class="indicator-label">
+        <span class="in">
+          {{t 'respond.eventDetails.in'}}
+        </span>
+        {{#if (eq selection.ids.length 1)}}
+          <span class="indicator">
+            {{selectedIndicatorName}}
+          </span>
+        {{else}}
+          <span class="indicator-count">
+            {{selection.ids.length}}
+          </span>
+          <span class="indicators">
+            {{t 'respond.eventDetails.indicators'}}
+          </span>
+        {{/if}}
+      </span>
+    {{/if}}
+  {{/sheet.tableHeader}}
+  {{#sheet.tableBody
+    columnsConfig=columnsConfig
+    fitToWidth=false
+    lazy=true
+  }}
+    {{rsa-data-table/header enableColumnSelector=true translateTitles=true}}
+    {{#rsa-data-table/body as |item index column|}}
+      {{#rsa-data-table/body-cell column=column index=index item=item}}
+        {{#if (eq column.field 'timestamp')}}
+          {{rsa-content-datetime timestamp=item.timestamp displayDate=true displayTime=true}}
+        {{else}}
+          {{get item column.field}}
+        {{/if}}
+      {{/rsa-data-table/body-cell}}
+    {{/rsa-data-table/body}}
+  {{/sheet.tableBody}}
+  {{#sheet.detailsHeader as |detailsHeader|}}
+    {{t (concat 'respond.eventDetails.type.' detailsHeader.item.type)}}:
+    {{rsa-content-datetime
+      timestamp=detailsHeader.item.timestamp
+      displaySeconds=true
+      displayMilliseconds=true
+    }}
+  {{/sheet.detailsHeader}}
+  {{sheet.detailsBody}}
+{{/rsa-items-sheet}}

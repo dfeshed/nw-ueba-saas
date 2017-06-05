@@ -261,6 +261,7 @@ const initializeIncident = (incidentId) => {
 // UI STATE CREATORS - INCIDENT
 
 const toggleJournalPanel = () => ({ type: ACTION_TYPES.TOGGLE_JOURNAL_PANEL });
+const setHideViz = (hideViz) => ({ type: ACTION_TYPES.SET_HIDE_VIZ, payload: hideViz });
 const setViewMode = (viewMode) => ({ type: ACTION_TYPES.SET_VIEW_MODE, payload: viewMode });
 const resizeIncidentInspector = (width) => ({ type: ACTION_TYPES.RESIZE_INCIDENT_INSPECTOR, payload: width });
 const singleSelectStoryPoint = (id) => ({ type: ACTION_TYPES.SET_INCIDENT_SELECTION, payload: { type: 'storyPoint', id } });
@@ -289,6 +290,7 @@ export {
   getStoryline,
   initializeIncident,
   toggleJournalPanel,
+  setHideViz,
   setViewMode,
   resizeIncidentInspector,
   singleSelectStoryPoint,

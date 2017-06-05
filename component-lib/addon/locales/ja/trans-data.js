@@ -609,7 +609,11 @@ export default {
       backToIncidents: 'ja_Back To Incidents',
       overview: 'ja_Overview',
       indicators: 'ja_Indicators',
-      events: 'ja_Events'
+      events: 'ja_Events',
+      view: {
+        graph: 'ja_View: Graph',
+        datasheet: 'ja_View: Datasheet'
+      }
     },
     storyline: {
       loading: 'ja_Loading incident storyline',
@@ -632,18 +636,36 @@ export default {
       milestone: 'ja_Milestone'
     },
     eventDetails: {
-      title: 'ja_Event Details'
+      title: 'ja_Event Details',
+      events: 'ja_events',
+      in: 'ja_in',
+      indicators: 'ja_indicators',
+      type: {
+        'Instant IOC': 'ja_Instant IOC',
+        'Log': 'ja_Log',
+        'Network': 'ja_Network',
+        'Correlation': 'ja_Correlation',
+        'Web Threat Detection': 'ja_Web',
+        'Unknown': 'ja_Event'
+      }
     },
     eventsTable: {
       time: 'ja_Time',
-      user: 'ja_User',
-      host: 'ja_Host',
-      domain: 'ja_Domain',
-      source: 'ja_Source',
-      destination: 'ja_Destination',
-      file: 'ja_File',
-      indicator: 'ja_Indicator',
-      blank: ''
+      type: 'ja_Type',
+      sourceDomain: 'ja_Source Domain',
+      destinationDomain: 'ja_Destination Domain',
+      sourceHost: 'ja_Source Host',
+      destinationHost: 'ja_Destination Host',
+      sourceIP: 'ja_Source IP',
+      destinationIP: 'ja_Destination IP',
+      detectorIP: 'ja_Detector IP',
+      sourceMAC: 'ja_Source MAC',
+      destinationMAC: 'ja_Destination MAC',
+      sourceUser: 'ja_Source User',
+      destinationUser: 'ja_Destination User',
+      fileName: 'ja_File Name',
+      fileHash: 'ja_File Hash',
+      indicator: 'ja_Indicator'
     },
     entity: {
       legend: {

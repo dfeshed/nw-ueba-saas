@@ -1,6 +1,26 @@
 {{#rsa-form-button
-  style="primary"
+  class="viz js-test-hide-viz-false"
+  title=(t 'respond.incident.view.graph')
+  isActive=(not hideViz)
+  isIconOnly=true
+  defaultAction=(action "setHideVizAction" false)
+}}
+  {{rsa-icon name="flow-chart-3" size="small"}}
+{{/rsa-form-button}}
+
+{{#rsa-form-button
+  class="datasheet js-test-hide-viz-true"
+  title=(t 'respond.incident.view.datasheet')
+  isActive=hideViz
+  isIconOnly=true
+  defaultAction=(action "setHideVizAction" true)
+}}
+  {{rsa-icon name="list-bullets-1" size="small"}}
+{{/rsa-form-button}}
+
+{{#rsa-form-button
   class="journal js-test-journal"
+  isActive=isJournalPanelOpen
   defaultAction=(action "clickJournalAction")
 }}
   {{t 'respond.journal.title'}}

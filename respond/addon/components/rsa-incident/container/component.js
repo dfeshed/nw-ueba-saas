@@ -17,14 +17,16 @@ const stateToComputed = ({
     incident: {
       isJournalPanelOpen,
       storylineStatus,
-      storyline
+      storyline,
+      hideViz
     }
   }
 }) => ({
   isJournalPanelOpen,
   storylineStatus,
   storyline,
-  isTransactionUnderway
+  isTransactionUnderway,
+  hideViz
 });
 
 const Incident = Component.extend({
@@ -35,6 +37,7 @@ const Incident = Component.extend({
   storylineStatus: null,
   storyline: null,
   isTransactionUnderway: false,
+  hideViz: false,
 
   /**
    * Rectangle object that specifies the current location & size of the "entities rectangle" DOM element.

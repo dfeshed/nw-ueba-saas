@@ -38,7 +38,10 @@ let initialState = {
   selection: {
     type: '', // either 'storyPoint', 'event', 'node' or 'link'; possibly empty
     ids: [] // array of ids; possibly empty
-  }
+  },
+
+  // toggles between a viz view & a data view
+  hideViz: false
 };
 
 // Load local storage values and incorporate into initial state
@@ -54,8 +57,8 @@ initialState = load(initialState, localStorageKey);
 const persistIncidentState = (callback) => {
   return (function() {
     const state = callback(...arguments);
-    const { viewMode, isJournalPanelOpen, inspectorWidth } = state;
-    persist({ viewMode, isJournalPanelOpen, inspectorWidth }, localStorageKey);
+    const { viewMode, isJournalPanelOpen, inspectorWidth, hideViz } = state;
+    persist({ viewMode, isJournalPanelOpen, inspectorWidth, hideViz }, localStorageKey);
     return state;
   });
 };
@@ -138,6 +141,11 @@ const incident = reduxActions.handleActions({
   [ACTION_TYPES.TOGGLE_JOURNAL_PANEL]: persistIncidentState((state) => ({
     ...state,
     isJournalPanelOpen: !state.isJournalPanelOpen
+  })),
+
+  [ACTION_TYPES.SET_HIDE_VIZ]: persistIncidentState((state, { payload }) => ({
+    ...state,
+    hideViz: payload
   })),
 
   [ACTION_TYPES.SET_INCIDENT_SELECTION]: (state, { payload: { type, id } }) => {

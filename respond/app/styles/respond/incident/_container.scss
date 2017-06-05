@@ -6,7 +6,7 @@
     z-index: 2;
     top: 0;
     right: 0;
-    margin: rsa-whitespace();
+    margin: rsa-whitespace(less) rsa-whitespace();
   }
 
   &__background {
@@ -36,6 +36,12 @@
     &-body {
       // all mouse events should punch thru to the background layer (the entities nodal diagram)
       pointer-events: none;
+      position: relative;
+
+      .rsa-items-sheet {
+        @include rsa-fill-abs();
+        pointer-events: all;
+      }
     }
   }
 

@@ -1,6 +1,7 @@
 import reselect from 'reselect';
 import arrayFlattenBy from 'respond/utils/array/flatten-by';
 import arrayFindByList from 'respond/utils/array/find-by-list';
+import arrayFilterByList from 'respond/utils/array/filter-by-list';
 import arrayFromHash from 'respond/utils/array/from-hash';
 import eventsToNodesAndLinks from 'respond/utils/entity/events-to-nodes-links';
 import { parseNodeId, countNodesByType } from 'respond/utils/entity/node';
@@ -193,6 +194,28 @@ export const storyNodeFilterCounts = createSelector(
       return arrayFromHash(
         countNodesByType(nodes)
       );
+    }
+  }
+);
+
+// Returns either the list of all events in the storyline, or the subset of those events that match the
+// currently selected storyPoints/events, if there is any selection.
+// This is the list of events to be displayed in the datasheet UI.
+export const storyDatasheet = createSelector(
+  [ storyEvents, incidentSelection ],
+  (storyEvents, { type, ids }) => {
+    if (!ids || !ids.length) {
+
+      // Nothing selected, so return all the events across all alerts we have, unfiltered.
+      return storyEvents;
+    } else if (type === 'storyPoint') {
+
+      // Indicator(s) are selected, so filter all events list by the selected indicators.
+      return arrayFilterByList(storyEvents, 'indicatorId', ids);
+    } else if (type === 'event') {
+
+      // Event(s) are selected, so filter all events list by the selected event ids.
+      return arrayFilterByList(storyEvents, 'id', ids);
     }
   }
 );

@@ -609,7 +609,11 @@ export default {
       backToIncidents: 'Back To Incidents',
       overview: 'Overview',
       indicators: 'Indicators',
-      events: 'Events'
+      events: 'Events',
+      view: {
+        graph: 'View: Graph',
+        datasheet: 'View: Datasheet'
+      }
     },
     storyline: {
       loading: 'Loading incident storyline',
@@ -632,18 +636,36 @@ export default {
       milestone: 'Milestone'
     },
     eventDetails: {
-      title: 'Event Details'
+      title: 'Event Details',
+      events: 'events',
+      in: 'in',
+      indicators: 'indicators',
+      type: {
+        'Instant IOC': 'Instant IOC',
+        'Log': 'Log',
+        'Network': 'Network',
+        'Correlation': 'Correlation',
+        'Web Threat Detection': 'Web',
+        'Unknown': 'Event'
+      }
     },
     eventsTable: {
       time: 'Time',
-      user: 'User',
-      host: 'Host',
-      domain: 'Domain',
-      source: 'Source',
-      destination: 'Destination',
-      file: 'File',
-      indicator: 'Indicator',
-      blank: ''
+      type: 'Type',
+      sourceDomain: 'Source Domain',
+      destinationDomain: 'Destination Domain',
+      sourceHost: 'Source Host',
+      destinationHost: 'Destination Host',
+      sourceIP: 'Source IP',
+      destinationIP: 'Destination IP',
+      detectorIP: 'Detector IP',
+      sourceMAC: 'Source MAC',
+      destinationMAC: 'Destination MAC',
+      sourceUser: 'Source User',
+      destinationUser: 'Destination User',
+      fileName: 'File Name',
+      fileHash: 'File Hash',
+      indicator: 'Indicator'
     },
     entity: {
       legend: {
