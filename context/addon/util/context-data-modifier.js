@@ -111,11 +111,42 @@ const getSortedData = (data, icon, field) => {
   }
 };
 
+const pivotToInvestigateUrl = (entityType, entityId) => {
+  let query = '';
+  switch (entityType) {
+    case 'IP':
+      query = `ip.src=${entityId}||ip.dst=${entityId}`;
+      break;
+    case 'DOMAIN':
+      query = `alias.host='${entityId}'`;
+      break;
+    case 'HOST':
+      query = `device.host='${entityId}'`;
+      break;
+    case 'USER':
+      query = `username='${entityId}'`;
+      break;
+    case 'FILE_NAME':
+      query = `filename='${entityId}'`;
+      break;
+    case 'FILE_HASH':
+      query = `checksum='${entityId}'`;
+      break;
+    case 'MAC_ADDRESS':
+      query = `eth.src=${entityId}||eth.dst=${entityId}`;
+      break;
+    default:
+      return '';
+  }
+  return `/investigation/choosedevice/navigate/query/${query}`;
+};
+
 export {
   isDataSourceEnabled,
   getData,
   getTimeWindow,
   getErrorMessage,
   getTabs,
-  getSortedData
+  getSortedData,
+  pivotToInvestigateUrl
 };

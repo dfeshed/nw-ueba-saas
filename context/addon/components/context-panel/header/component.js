@@ -5,9 +5,12 @@ import computed from 'ember-computed-decorators';
 import service from 'ember-service/inject';
 import { contextHelpIds } from 'context/config/help-ids';
 import { restoreDefault } from 'context/actions/context-creators';
+import { pivotToInvestigateUrl } from 'context/util/context-data-modifier';
+import { isEmpty } from 'ember-utils';
 
-
-const stateToComputed = ({ context }) => ({
+const stateToComputed = ({
+  context
+}) => ({
   activeTabName: context.activeTabName,
   lookupKey: context.lookupKey,
   toolbar: context.toolbar,
@@ -29,6 +32,15 @@ const HeaderComponent = Component.extend({
       return this.get('i18n').t(`context.header.title.${activeTabName.camelize()}`);
     }
   },
+
+  @computed('lookupKey', 'meta')
+  pivotToInvestigateUrl(lookupKey, meta) {
+    if (isEmpty(lookupKey)) {
+      return '';
+    }
+    return pivotToInvestigateUrl(meta, lookupKey);
+  },
+
   actions: {
     closeAction() {
       this.sendAction('closePanel');

@@ -12,6 +12,6 @@ const EndpointComponent = Component.extend({
   classNames: 'rsa-context-panel__endpoint',
 
   @computed('lookupData.[]')
-  moduleHeader: ([lookupData]) => lookupData.Modules ? lookupData.Modules.header : ''
+  moduleHeader: ([lookupData]) => lookupData && lookupData.Modules ? lookupData.Modules.header : ''
 });
 export default connect(stateToComputed)(EndpointComponent);

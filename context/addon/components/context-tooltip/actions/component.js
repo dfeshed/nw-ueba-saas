@@ -3,6 +3,7 @@ import layout from './template';
 import safeCallback from 'component-lib/utils/safe-callback';
 import computed from 'ember-computed-decorators';
 import { isEmpty } from 'ember-utils';
+import { pivotToInvestigateUrl } from 'context/util/context-data-modifier';
 
 export default Component.extend({
   tagName: 'ul',
@@ -62,30 +63,7 @@ export default Component.extend({
     if (isEmpty(entityId)) {
       return '';
     }
-    let query = '';
-    switch (entityType) {
-      case 'IP':
-        query = `ip.src=${entityId}||ip.dst=${entityId}`;
-        break;
-      case 'DOMAIN':
-        query = `alias.host='${entityId}'`;
-        break;
-      case 'HOST':
-        query = `device.host='${entityId}'`;
-        break;
-      case 'USER':
-        query = `username='${entityId}'`;
-        break;
-      case 'FILE_NAME':
-        query = `filename='${entityId}'`;
-        break;
-      case 'MAC_ADDRESS':
-        query = `eth.src=${entityId}|eth.dst=${entityId}`;
-        break;
-      default:
-        return '';
-    }
-    return `/investigation/choosedevice/navigate/query/${query}`;
+    return pivotToInvestigateUrl(entityType, entityId);
   },
 
   actions: {

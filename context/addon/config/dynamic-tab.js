@@ -102,6 +102,17 @@ const toolbar = {
     field: 'Add To List',
     title: 'context.toolbar.addToList',
     componentName: 'add-to-list'
+  },
+  endpoint: {
+    field: 'Endpoint',
+    title: 'context.tooltip.ecat',
+    componentName: 'endpoint'
+
+  },
+  investigate: {
+    field: 'Investigate',
+    title: 'context.tooltip.investigate',
+    componentName: 'investigate'
   }
 };
 
@@ -119,7 +130,9 @@ export default [{
     datasources.liveConnectIp
   ],
   toolbar: [
-    toolbar.addToList
+    toolbar.addToList,
+    toolbar.endpoint,
+    toolbar.investigate
   ]
 },
 
@@ -135,7 +148,8 @@ export default [{
     datasources.alert
   ],
   toolbar: [
-    toolbar.addToList
+    toolbar.addToList,
+    toolbar.investigate
   ]
 },
 
@@ -152,7 +166,9 @@ export default [{
     datasources.liveConnect
   ],
   toolbar: [
-    toolbar.addToList
+    toolbar.addToList,
+    toolbar.endpoint,
+    toolbar.investigate
   ]
 },
 
@@ -169,7 +185,9 @@ export default [{
     datasources.alert
   ],
   toolbar: [
-    toolbar.addToList
+    toolbar.addToList,
+    toolbar.endpoint,
+    toolbar.investigate
   ]
 },
 
@@ -184,7 +202,8 @@ export default [{
     datasources.alert
   ],
   toolbar: [
-    toolbar.addToList
+    toolbar.addToList,
+    toolbar.investigate
   ]
 },
 
@@ -200,7 +219,8 @@ export default [{
     datasources.liveConnectFile
   ],
   toolbar: [
-    toolbar.addToList
+    toolbar.addToList,
+    toolbar.investigate
   ]
 },
 
@@ -216,6 +236,7 @@ export default [{
     datasources.liveConnectDomain
   ],
   toolbar: [
-    toolbar.addToList
+    toolbar.addToList,
+    toolbar.investigate
   ]
 }];
