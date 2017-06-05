@@ -81,6 +81,7 @@ export const storyEvents = createSelector(
   incidentIndicators,
   (incidentIndicators) => {
     return arrayFlattenBy(incidentIndicators, 'alert.events')
+      .compact()
       .sortBy('timestamp');
   }
 );

@@ -25,7 +25,7 @@
     <vbox fit nowrap align="end" class="time-and-num-events">
       <p class="time">{{rsa-content-datetime timestamp=item.timestamp displayAsTimeAgo=false displayDate=true displayTime=true displayMilliseconds=false}}</p>
       <p class="num-events">
-        {{item.alert.events.length}}
+        {{or item.alert.events.length 0}}
         {{#if (eq item.alert.events.length 1)}}
           {{t 'respond.storyline.event'}}
         {{else}}
