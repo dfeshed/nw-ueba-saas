@@ -1,6 +1,7 @@
 import Component from 'ember-component';
 import connect from 'ember-redux/components/connect';
-import { or } from 'ember-computed-decorators';
+import { or, alias } from 'ember-computed-decorators';
+import ReconPanelHelp from 'recon/mixins/recon-panel-help';
 
 import ReconPagerMixin from 'recon/mixins/recon-pager';
 import StickyHeaderMixin from 'recon/mixins/sticky-header-mixin';
@@ -27,7 +28,7 @@ const stateToComputed = ({ recon, recon: { data, packets, meta } }) => ({
   tooltipData: packets.packetTooltipData
 });
 
-const PacketReconComponent = Component.extend(ReconPagerMixin, StickyHeaderMixin, DelayBatchingMixin, {
+const PacketReconComponent = Component.extend(ReconPagerMixin, StickyHeaderMixin, DelayBatchingMixin, ReconPanelHelp, {
   layout,
   classNames: ['recon-event-detail-packets'],
 
@@ -39,7 +40,10 @@ const PacketReconComponent = Component.extend(ReconPagerMixin, StickyHeaderMixin
   // via interaction with the UI. These should not result in an error, or
   // any indication that more data is to come.
   @or('hasNoPayloadEliminatedAllVisiblePackets', 'allDataHidden')
-  hasDataBeenHiddenByUserSelection: false
+  hasDataBeenHiddenByUserSelection: false,
+
+  @alias('contextualHelp.invPacketAnalysis') topic: null
+
 });
 
 export default connect(stateToComputed)(PacketReconComponent);

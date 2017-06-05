@@ -2,8 +2,12 @@ import { isEmpty } from 'ember-utils';
 import Route from 'ember-route';
 import run from 'ember-runloop';
 import { parseEventQueryUri } from 'investigate/actions/helpers/query-utils';
+import service from 'ember-service/inject';
 
 export default Route.extend({
+
+  contextualHelp: service(),
+
   queryParams: {
     eventId: {
       refreshModel: false
@@ -18,6 +22,16 @@ export default Route.extend({
       replace: true,
       scope: 'controller'
     }
+  },
+
+  activate() {
+    this.set('contextualHelp.module', this.get('contextualHelp.investigateModule'));
+    this.set('contextualHelp.topic', this.get('contextualHelp.invEventAnalysis'));
+  },
+
+  deactivate() {
+    this.set('contextualHelp.module', null);
+    this.set('contextualHelp.topic', null);
   },
 
   /**

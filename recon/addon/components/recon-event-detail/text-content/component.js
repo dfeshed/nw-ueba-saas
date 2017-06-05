@@ -1,7 +1,8 @@
 import Component from 'ember-component';
 import EmberObject from 'ember-object';
 import connect from 'ember-redux/components/connect';
-import computed from 'ember-computed-decorators';
+import computed, { alias } from 'ember-computed-decorators';
+import ReconPanelHelp from 'recon/mixins/recon-panel-help';
 
 import ReconPagerMixin from 'recon/mixins/recon-pager';
 import StickyHeaderMixin from 'recon/mixins/sticky-header-mixin';
@@ -28,7 +29,7 @@ const stateToComputed = ({ recon }) => ({
   renderedText: renderedText(recon)
 });
 
-const TextReconComponent = Component.extend(ReconPagerMixin, StickyHeaderMixin, DelayBatchingMixin, {
+const TextReconComponent = Component.extend(ReconPagerMixin, StickyHeaderMixin, DelayBatchingMixin, ReconPanelHelp, {
   classNames: ['recon-event-detail-text'],
   layout,
 
@@ -58,6 +59,8 @@ const TextReconComponent = Component.extend(ReconPagerMixin, StickyHeaderMixin, 
 
   @computed('renderedText.length', 'numberOfItems')
   hasMoreToDisplay: (numberDisplayed, numberToDisplay) => numberDisplayed < numberToDisplay,
+
+  @alias('contextualHelp.invTextAnalysis') topic: null,
 
   actions: {
     showMoreFinished(id) {

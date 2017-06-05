@@ -13,6 +13,9 @@ const Eng = Engine.extend({
       // https://github.com/yapplabs/ember-wormhole/issues/84
       '-document',
 
+      // Used to update the app header's help link based on state changes
+      'contextual-help',
+
       // the following services are shared because they contain state
       // persisted by the parent app. If they are not shared, that state
       // is missing as the engine gets fresh copies of the service w/o state

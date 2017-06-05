@@ -1,8 +1,9 @@
 import $ from 'jquery';
 import Component from 'ember-component';
-import computed, { filterBy, gt } from 'ember-computed-decorators';
-import ReconPager from 'recon/mixins/recon-pager';
+import computed, { filterBy, gt, alias } from 'ember-computed-decorators';
 import connect from 'ember-redux/components/connect';
+import ReconPager from 'recon/mixins/recon-pager';
+import ReconPanelHelp from 'recon/mixins/recon-panel-help';
 
 import layout from './template';
 import baseColumnsConfig from './columns-config';
@@ -40,7 +41,7 @@ const calculateColumnWidth = (text) => {
   return width;
 };
 
-const FileReconComponent = Component.extend(ReconPager, {
+const FileReconComponent = Component.extend(ReconPager, ReconPanelHelp, {
   layout,
   classNames: ['recon-event-detail-files'],
 
@@ -88,6 +89,8 @@ const FileReconComponent = Component.extend(ReconPager, {
   @filterBy('files', 'type', 'session') sessionFiles: null,
 
   @gt('sessionFiles.length', 1) hasMultipleSessionFiles: null,
+
+  @alias('contextualHelp.invFileAnalysis') topic: null,
 
   actions: {
     toggleAll() {

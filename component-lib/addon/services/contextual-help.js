@@ -1,52 +1,42 @@
-import Ember from 'ember';
-
-const {
-  Service,
-  inject: {
-    service
-  },
-  computed,
-  $
-} = Ember;
+import Service from 'ember-service';
+import service from 'ember-service/inject';
+import $ from 'jquery';
+import computed, { alias, readOnly } from 'ember-computed-decorators';
 
 export default Service.extend({
   appVersion: service(),
 
-  locale: computed.alias('i18n.locale'),
-  version: computed.readOnly('appVersion.version'),
+  @alias('i18n.locale') locale: null,
+  @readOnly @alias('appVersion.version') version: null,
 
-  urlBase: 'https://cms.netwitness.com/sadocs',
-
-  respondModule: 'Respond',
-  respondCardViewTopic: 'RespCardVw',
-  respondListViewTopic: 'RespListView',
-  respondDetailsViewTopic: 'RespDetView',
-  respondPreferencesViewTopic: 'RespPrefView',
-
-  investigateModule: 'Investigate',
-  investigateQueryTopic: 'InvSubQry',
-  investigateMetaPanelTopic: 'InvMetPnl',
-  investigateEventsPanelTopic: 'InvEvtPnl',
-  investigateEventReconTopic: 'InvEvtRec',
-  investigateContextPanelTopic: 'InvCtxPnl',
+  investigateModule: 'investigate',
+  invEventAnalysis: 'invEventAnalysis',
+  invFileAnalysis: 'invFileAnalysis',
+  invPacketAnalysis: 'invPacketAnalysis',
+  invTextAnalysis: 'invTextAnalysis',
+  respondModule: 'respond',
 
   module: null,
-
   topic: null,
+
+  urlBase: 'https://cms.netwitness.com/sadocs',
 
   buildURL(params) {
     const queryStr = $.param(params);
     return encodeURI(`${this.get('urlBase')}?${queryStr}`);
   },
 
-  globalHelpUrl: computed('locale', 'version', 'module', 'topic', function() {
+  /* eslint-disable object-shorthand */
+  @computed('locale', 'version', 'module', 'topic')
+  globalHelpUrl: function(locale, version, module, topic) {
     return this.buildURL({
-      locale: this.get('locale'),
-      version: this.get('version').split('+')[0],
-      module: this.get('module'),
-      topic: this.get('topic')
+      locale,
+      version: version.split('+')[0],
+      module,
+      topic
     });
-  }),
+  },
+  /* eslint-enable object-shorthand */
 
   generateUrl(module, topic) {
     return this.buildURL({

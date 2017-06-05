@@ -34,9 +34,6 @@
 
   .is-sticky {
     border-top: none;
-
-    // avoid overlapping scrollbar
-    margin-right: 17px;
     z-index: 1000;
   }
 

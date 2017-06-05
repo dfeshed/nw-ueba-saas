@@ -26,7 +26,6 @@
 
   &.is-sticky {
     .packet-details {
-      padding-right: 2px;
       box {
         @include rsa-word-wrap();
       }
