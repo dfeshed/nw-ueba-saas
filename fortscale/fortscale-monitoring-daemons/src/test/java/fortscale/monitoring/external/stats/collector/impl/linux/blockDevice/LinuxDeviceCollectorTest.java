@@ -13,8 +13,7 @@ public class LinuxDeviceCollectorTest {
     private boolean isWinOperatingSystem;
 
     public LinuxDeviceCollectorTest() {
-        operatingSystemUtils = new OperatingSystemUtils();
-        isWinOperatingSystem = operatingSystemUtils.isWinOperatingSystem();
+        isWinOperatingSystem = OperatingSystemUtils.isWinOperatingSystem();
     }
 
     @Before

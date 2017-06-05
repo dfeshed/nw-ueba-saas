@@ -16,8 +16,7 @@ public class LinuxFileSystemCollectorTest {
     private boolean isWinOperatingSystem;
 
     public LinuxFileSystemCollectorTest() {
-        operatingSystemUtils = new OperatingSystemUtils();
-        isWinOperatingSystem = operatingSystemUtils.isWinOperatingSystem();
+        isWinOperatingSystem = OperatingSystemUtils.isWinOperatingSystem();
     }
 
     @Before

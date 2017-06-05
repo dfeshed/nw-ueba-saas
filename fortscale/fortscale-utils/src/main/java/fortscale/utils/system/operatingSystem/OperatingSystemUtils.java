@@ -5,11 +5,11 @@ package fortscale.utils.system.operatingSystem;
  */
 public class OperatingSystemUtils {
 
-    public String getOperatingSystem() {
+    public static String getOperatingSystem() {
         return System.getProperty("os.name");
     }
 
-    public boolean isWinOperatingSystem() {
+    public static boolean isWinOperatingSystem() {
         return getOperatingSystem().toLowerCase().startsWith("win");
     }
 }
