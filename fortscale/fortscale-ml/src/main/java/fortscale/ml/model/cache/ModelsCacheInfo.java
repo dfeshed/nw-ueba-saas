@@ -89,7 +89,7 @@ public class ModelsCacheInfo {
 		this.lastUsageEpochtime = lastUsageEpochtime;
 	}
 
-	private static final class DescModelDaoEndTimeComp implements Comparator<ModelDAO> {
+	public static final class DescModelDaoEndTimeComp implements Comparator<ModelDAO> {
 		@Override
 		public int compare(ModelDAO modelDao1, ModelDAO modelDao2) {
 			return modelDao1.getEndTime().before(modelDao2.getEndTime()) ? 1 : -1;
