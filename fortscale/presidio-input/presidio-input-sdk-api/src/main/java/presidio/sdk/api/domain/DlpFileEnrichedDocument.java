@@ -31,4 +31,32 @@ public class DlpFileEnrichedDocument extends DlpFileDataDocument {
         this.normalizedUsername = normalizedUsername;
         this.normalizedMachineName = normalizedMachineName;
     }
+
+    @Override
+    public String toString() {
+        return "DlpFileEnrichedDocument{" +
+                "normalizedUsername='" + normalizedUsername + '\'' +
+                ", normalizedMachineName='" + normalizedMachineName + '\'' +
+                ", dateTimeUnix=" + dateTimeUnix +
+                ", dateTime=" + dateTime +
+                ", executingApplication='" + executingApplication + '\'' +
+                ", hostname='" + hostname + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", username='" + username + '\'' +
+                ", malwareScanResult='" + malwareScanResult + '\'' +
+                ", eventId='" + eventId + '\'' +
+                ", sourceIp='" + sourceIp + '\'' +
+                ", wasBlocked=" + wasBlocked +
+                ", wasClassified=" + wasClassified +
+                ", destinationPath='" + destinationPath + '\'' +
+                ", destinationFileName='" + destinationFileName + '\'' +
+                ", fileSize=" + fileSize +
+                ", sourcePath='" + sourcePath + '\'' +
+                ", sourceFileName='" + sourceFileName + '\'' +
+                ", sourceDriveType='" + sourceDriveType + '\'' +
+                ", destinationDriveType='" + destinationDriveType + '\'' +
+                ", eventType='" + eventType + '\'' +
+                '}';
+    }
 }
