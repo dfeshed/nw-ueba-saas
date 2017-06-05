@@ -79,13 +79,13 @@ class TaskSensorService(object):
         :return: 
         '''
         self._add_short_circuit_to_task_list(task, short_circuit_operator)
+        logging.info(
+            '{short_circuit_operator.task_id} set downstream the task '
+            '{task.task_id}'.format(**locals()))
+        short_circuit_operator.set_downstream(task)
+
         task_sensor_list = self._get_task_sensor_list(task)
-        if task_sensor_list is None:
-            logging.info(
-                '{short_circuit_operator.task_id} set downstream the task '
-                '{task.task_id}'.format(**locals()))
-            short_circuit_operator.set_downstream(task)
-        else:
+        if task_sensor_list is not None:
             logging.info(
                 '{short_circuit_operator.task_id} set downstream the sensors: '
                 '{task_sensor_list}'.format(**locals()))
