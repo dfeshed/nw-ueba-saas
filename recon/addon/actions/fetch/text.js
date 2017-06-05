@@ -2,8 +2,8 @@ import { streamRequest } from 'streaming-data/services/data-access/requests';
 import { buildBaseQuery, addStreaming, addDecode, addMaxPackets } from '../util/query-util';
 import { batchDataHandler, HANDLERS, BATCH_TYPES } from 'recon/actions/util/batch-data-handler';
 
-const BATCH_CHARACTER_SIZE = 10000;
-const TIME_BETWEEN_BATCHES = 750;
+const BATCH_CHARACTER_SIZE = 5000;
+const TIME_BETWEEN_BATCHES = 400;
 
 const TEXT_BATCH_SIZE = 50;
 

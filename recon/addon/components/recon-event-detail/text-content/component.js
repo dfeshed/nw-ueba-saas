@@ -3,8 +3,9 @@ import EmberObject from 'ember-object';
 import connect from 'ember-redux/components/connect';
 import computed from 'ember-computed-decorators';
 
-import ReconPager from 'recon/mixins/recon-pager';
-import StickyHeader from 'recon/mixins/sticky-header-mixin';
+import ReconPagerMixin from 'recon/mixins/recon-pager';
+import StickyHeaderMixin from 'recon/mixins/sticky-header-mixin';
+import DelayBatchingMixin from 'recon/mixins/delay-batching-mixin';
 import layout from './template';
 import { isLogEvent } from 'recon/reducers/meta/selectors';
 import {
@@ -27,7 +28,7 @@ const stateToComputed = ({ recon }) => ({
   renderedText: renderedText(recon)
 });
 
-const TextReconComponent = Component.extend(ReconPager, StickyHeader, {
+const TextReconComponent = Component.extend(ReconPagerMixin, StickyHeaderMixin, DelayBatchingMixin, {
   classNames: ['recon-event-detail-text'],
   layout,
 

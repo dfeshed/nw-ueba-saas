@@ -12,6 +12,27 @@ export const BATCH_TYPES = {
   PACKET: 'PACKET'
 };
 
+// list of functions to call once batching resumes
+const resumptionHandlers = [];
+
+// Whether or not batching should be paused, done when, for instance
+// UI intensive activity is under way that batching would slow down
+let batchingPaused = false;
+
+// means for external processes to pauseBatching
+export const pauseBatching = () => {
+  batchingPaused = true;
+};
+
+// means for external processes to resume batching
+// which means executing any of the resumption handlers
+export const resumeBatching = () => {
+  batchingPaused = false;
+  resumptionHandlers.forEach((handler) => handler());
+  resumptionHandlers.length = 0;
+};
+
+
 /*
  * Slows down processing of large amounts of data by batching their processing (usually
  * into state) according to sizes and times provided. Via the api and memory handlers,
@@ -79,6 +100,14 @@ export const batchDataHandler = ({
   // this function gets called on a timer, it inspects the queue
   // and decides if any data should be batched
   const timeoutCallback = () => {
+
+    // if batching is paused, try again later
+    if (batchingPaused) {
+      resumptionHandlers.push(() => {
+        join(timeoutCallback);
+      });
+      return;
+    }
 
     // If this batch should be aborted, exit out of recursion
     if (abortBatching) {

@@ -2,8 +2,9 @@ import Component from 'ember-component';
 import connect from 'ember-redux/components/connect';
 import { or } from 'ember-computed-decorators';
 
-import ReconPager from 'recon/mixins/recon-pager';
-import StickyHeader from 'recon/mixins/sticky-header-mixin';
+import ReconPagerMixin from 'recon/mixins/recon-pager';
+import StickyHeaderMixin from 'recon/mixins/sticky-header-mixin';
+import DelayBatchingMixin from 'recon/mixins/delay-batching-mixin';
 import {
   payloadProcessedPackets,
   numberOfPackets,
@@ -26,7 +27,7 @@ const stateToComputed = ({ recon, recon: { data, packets, meta } }) => ({
   tooltipData: packets.packetTooltipData
 });
 
-const PacketReconComponent = Component.extend(ReconPager, StickyHeader, {
+const PacketReconComponent = Component.extend(ReconPagerMixin, StickyHeaderMixin, DelayBatchingMixin, {
   layout,
   classNames: ['recon-event-detail-packets'],
 
