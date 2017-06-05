@@ -2,12 +2,27 @@ package fortscale.monitoring.external.stats.collector.impl.linux.fileSystem;
 
 
 import fortscale.monitoring.external.stats.collector.impl.ExternalStatsCollectorMetrics;
+import fortscale.utils.system.operatingSystem.OperatingSystemUtils;
 import org.junit.Assert;
+import org.junit.Assume;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Map;
 
 public class LinuxFileSystemCollectorTest {
+
+    private OperatingSystemUtils operatingSystemUtils;
+    private boolean isWinOperatingSystem;
+
+    public LinuxFileSystemCollectorTest() {
+        isWinOperatingSystem = OperatingSystemUtils.isWinOperatingSystem();
+    }
+
+    @Before
+    public void beforeMethod() {
+        Assume.assumeFalse(isWinOperatingSystem);
+    }
 
     @Test
     public void shouldCollectHomeDirDiskStats()
