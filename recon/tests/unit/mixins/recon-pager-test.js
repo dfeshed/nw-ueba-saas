@@ -29,14 +29,9 @@ test('packet count computed properly', function(assert) {
 test('packet total computed properly', function(assert) {
   assert.expect(2);
   const count = 10;
-  const eventMeta = [
-    ['id', 123],
-    ['packets', count],
-    ['foo', 'bar']
-  ];
   let packetTotal = subject.get('packetTotal');
-  assert.equal(packetTotal, 'unknown', 'packetTotal is unknown');
-  subject.set('eventMeta', eventMeta);
+  assert.equal(packetTotal, null, 'packetTotal is null');
+  subject.set('packetTotal', count);
   packetTotal = subject.get('packetTotal');
   assert.equal(packetTotal, count, 'packetTotal was reported');
 });

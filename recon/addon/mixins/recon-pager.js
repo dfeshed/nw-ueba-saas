@@ -10,14 +10,5 @@ export default Mixin.create({
   },
 
   @alias('numberOfItems')
-  packetCount: 0,
-
-  @computed('eventMeta')
-  packetTotal(meta) {
-    let packets;
-    if (meta) {
-      packets = meta.find((m) => m[0] === 'packets');
-    }
-    return packets && packets[1] || 'unknown';
-  }
+  packetCount: 0
 });

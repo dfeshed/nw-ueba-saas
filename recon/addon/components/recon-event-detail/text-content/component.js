@@ -9,6 +9,7 @@ import StickyHeaderMixin from 'recon/mixins/sticky-header-mixin';
 import DelayBatchingMixin from 'recon/mixins/delay-batching-mixin';
 import layout from './template';
 import { isLogEvent } from 'recon/reducers/meta/selectors';
+import { packetTotal } from 'recon/reducers/header/selectors';
 import {
   renderedText,
   hasTextContent,
@@ -25,6 +26,7 @@ const stateToComputed = ({ recon }) => ({
   maxPacketsForText: recon.text.maxPacketsForText,
   maxPacketsReached: recon.text.maxPacketsReached,
   metaToHighlight: recon.text.metaToHighlight,
+  packetTotal: packetTotal(recon),
   numberOfItems: numberOfRenderableTextEntries(recon),
   renderedText: renderedText(recon)
 });
@@ -39,10 +41,13 @@ const TextReconComponent = Component.extend(ReconPagerMixin, StickyHeaderMixin, 
   stickySelector: '.scroll-box .rsa-text-entry',
   stickyHeaderSelector: '.is-sticky.recon-request-response-header',
 
-  @computed('maxPacketsReached', 'maxPacketsForText')
-  maxPacketMessage(maxPacketsReached, maxPacketsForText) {
+  @computed('maxPacketsReached', 'maxPacketsForText', 'packetTotal')
+  maxPacketMessage(maxPacketsReached, maxPacketCount, packetTotal) {
     if (maxPacketsReached) {
-      return this.get('i18n').t('recon.textView.maxPacketsReached', { maxPacketCount: maxPacketsForText });
+      return this.get('i18n').t('recon.textView.maxPacketsReached', {
+        maxPacketCount,
+        packetTotal: packetTotal || '...'
+      });
     }
   },
 

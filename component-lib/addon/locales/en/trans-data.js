@@ -141,7 +141,7 @@ export default {
       renderRemaining: 'Rendering Remaining {{remainingPercent}}%..',
       headerShowing: 'Showing',
       renderingMore: 'Showing more...',
-      maxPacketsReached: 'Maximum allowed packets of <span class="lighter">{{maxPacketCount}}</span> reached'
+      maxPacketsReached: 'Rendered <span class="lighter">{{maxPacketCount}}</span> of <span class="lighter">{{packetTotal}}</span> packets to improve performance'
     },
     packetView: {
       noHexData: 'No HEX data was generated during content reconstruction.',

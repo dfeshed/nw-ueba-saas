@@ -13,17 +13,19 @@ import {
   hasNoPayloadEliminatedAllVisiblePackets
 } from 'recon/reducers/packets/selectors';
 import { allDataHidden } from 'recon/reducers/visuals/selectors';
+import { packetTotal } from 'recon/reducers/header/selectors';
+
 import layout from './template';
 
-const stateToComputed = ({ recon, recon: { data, packets, meta } }) => ({
+const stateToComputed = ({ recon, recon: { data, packets } }) => ({
   allDataHidden: allDataHidden(recon),
   dataIndex: data.index,
-  eventMeta: meta.meta,
   eventTotal: data.total,
   hasPackets: hasPackets(recon),
   hasNoPayloadEliminatedAllVisiblePackets: hasNoPayloadEliminatedAllVisiblePackets(recon),
   numberOfItems: numberOfPackets(recon), // used in recon pager
   packetFields: packets.packetFields,
+  packetTotal: packetTotal(recon),
   processedPackets: payloadProcessedPackets(recon),
   tooltipData: packets.packetTooltipData
 });
