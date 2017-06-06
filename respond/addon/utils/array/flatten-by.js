@@ -18,6 +18,6 @@
  * @public
  */
 export default function arrayFlattenBy(arr, attrName) {
-  const arrays = (arr || []).mapBy(attrName);
+  const arrays = (arr || []).mapBy(attrName).compact();
   return [].concat(...arrays);
 }

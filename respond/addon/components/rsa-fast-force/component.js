@@ -333,9 +333,19 @@ export default Component.extend({
       // Ensure all the given nodes (if any) have a radius.
       // Doing this here, rather than later, saves us from having to check for this later during the simulation.
       const radius = this.get('minNodeRadius');
+      const oldNodes = (was && was.nodes) || [];
       value.nodes.forEach(function(node) {
         if (!node.r) {
           node.r = radius;
+        }
+        const oldNode = oldNodes.findBy('id', node.id) || {};
+        if (oldNode) {
+          if (node.x === undefined) {
+            node.x = oldNode.x;
+          }
+          if (node.y === undefined) {
+            node.y = oldNode.y;
+          }
         }
       });
 
@@ -442,7 +452,6 @@ export default Component.extend({
   // Triggers a restart of the layout algorithm when new data arrives.
   // Stops current simulation (if any), updates DOM then (re-)starts simulation.
   _dataDidChange() {
-    this.stop();
 
     // Reset flag that tells us if user has manually dragged this dataset around.
     this.set('dataHasBeenDragged', false);
@@ -453,6 +462,21 @@ export default Component.extend({
       return;
     }
 
+    this.stop();
+
+    // Compute the node radii and store in the data for future reference (e.g., DOM rendering & to avoid collisions).
+    const { nodes = [], links = [] } = this.get('data') || {};
+    const { radialAccessor, radialScale } = this.getProperties('radialAccessor', 'radialScale');
+    nodes.forEach(function(d) {
+      d.r = radialScale(radialAccessor(d));
+    });
+
+    // Compute the link stroke widths and store in the data for future reference (e.g., DOM rendering).
+    const { linkWidthAccessor, linkWidthScale } = this.getProperties('linkWidthAccessor', 'linkWidthScale');
+    links.forEach(function(d) {
+      d.stroke = linkWidthScale(linkWidthAccessor(d));
+    });
+
     // Join the data to the DOM using configurable function.
     // Optimization: Cache the result (if any) so that tick handler can use it subsequently.
     this.joined = this.get('dataJoin').apply(this, []);
@@ -460,30 +484,12 @@ export default Component.extend({
     this._filterDidChange();
 
     // Feed the data to the simulation.
-    const { nodes, links } = this.get('data');
-    const nodeCoordsAreMissing = (nodes || []).find((d) => {
-      return (d.x === undefined) || (d.y === undefined);
-    });
-
     simulation
       .nodes(nodes)
       .force('link').links(links);
 
     if (nodes.length) {
-      if (nodeCoordsAreMissing) {
-
-        // Some nodes are missing coordinates. Re-start the simulation so it can computed coords.
-        this.start();
-      } else {
-
-        // Nodes already have coords. No simulation needed; just draw all the nodes & coords.
-        this.ticked({ drawAll: true, alpha: 0, dontCenter: true });
-
-        // Center without any transition.
-        if (this.get('autoCenter')) {
-          this.center('none', 0);
-        }
-      }
+      simulation.restart();
     }
   },
 

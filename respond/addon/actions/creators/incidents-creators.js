@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import { Incidents } from '../api';
+import { Incidents, alerts } from '../api';
 import * as ACTION_TYPES from '../types';
 import * as ErrorHandlers from '../util/error-handlers';
 import * as DictionaryCreators from './dictionary-creators';
@@ -202,6 +202,7 @@ const getStoryline = (incidentId) => {
     }
 
     dispatch({ type: ACTION_TYPES.FETCH_INCIDENT_STORYLINE_STARTED });
+    let responseCount = 0;
 
     Incidents.getAlertsForIncident(
       incidentId,
@@ -210,7 +211,17 @@ const getStoryline = (incidentId) => {
           dispatch({ type: ACTION_TYPES.FETCH_INCIDENT_STORYLINE_STREAM_INITIALIZED, payload: stopStreamFn });
         },
         onCompleted: () => dispatch({ type: ACTION_TYPES.FETCH_INCIDENT_STORYLINE_COMPLETED }),
-        onResponse: (payload) => dispatch({ type: ACTION_TYPES.FETCH_INCIDENT_STORYLINE_RETRIEVE_BATCH, payload }),
+        onResponse: (payload) => {
+          dispatch({ type: ACTION_TYPES.FETCH_INCIDENT_STORYLINE_RETRIEVE_BATCH, payload });
+
+          // Typically, the alerts JSON won't include the alert events (in order to prevent bloat).
+          // The events need to be fetched via a separate API.
+          responseCount++;
+          if (responseCount === 1) {
+            dispatch({ type: ACTION_TYPES.FETCH_INCIDENT_STORYLINE_EVENTS_STREAM_INITIALIZED });
+          }
+          dispatch(getStorylineEvents(incidentId));
+        },
         onError: (response) => {
           dispatch({ type: ACTION_TYPES.FETCH_INCIDENT_STORYLINE_ERROR });
           ErrorHandlers.handleContentRetrievalError(response, `incident ${incidentId} storyline`);
@@ -220,6 +231,73 @@ const getStoryline = (incidentId) => {
   };
 };
 
+/**
+ * Action creator for fetching the (normalized) events for the alerts currently in the given incident's storyline.
+ * The server API only fetches events for one alert at a time; therefore this action creator works recursively.
+ *
+ * This method first checks state to see if a fetch is already pending; if so, exits.
+ * Then it scans the current storyline for any alerts who are missing their `events` property; if none found,
+ * exits. Otherwise, kicks off the fetching of events for the first such alert.
+ * When fetch returns, calls itself to repeat the process, one alert at a time.
+ *
+ * This method dispatches actions that simulate a stream-like lifecycle, but in fact it is just iteratively using
+ * a Promise-based API call.
+ *
+ * @method getStorylineEvents
+ * @public
+ */
+const getStorylineEvents = (incidentId) => {
+  return (dispatch, getState) => {
+    const { id, storyline, storylineEvents, storylineEventsStatus } = getState().respond.incident;
+
+    // Check that we are not getting called back from an outdated incident.
+    if (id !== incidentId) {
+      return;
+    }
+
+    // If we're in mid-fetch, exit so fetching can continue when server response returns.
+    if (storylineEventsStatus === 'streaming') {
+      return;
+    }
+
+    // Search the storyline for an indicator in `storyline` array that is not included in
+    // the `storylineEvents` array. If none, we're done.
+    const indicator = storyline.find(({ id: indicatorId }) => {
+      return !storylineEvents.findBy('indicatorId', indicatorId);
+    });
+    if (!indicator) {
+      dispatch({ type: ACTION_TYPES.FETCH_INCIDENT_STORYLINE_EVENTS_COMPLETED });
+      return;
+    }
+
+    dispatch({ type: ACTION_TYPES.FETCH_INCIDENT_STORYLINE_EVENTS_REQUEST_BATCH });
+
+    alerts.getAlertEvents(indicator.id)
+      .then(({ data }) => {
+
+        // Did the current incident changed while we waited for events? If so, discard events.
+        const { id: currentIncidentId } = getState().respond.incident;
+        if (currentIncidentId !== incidentId) {
+          return;
+        }
+
+        // Data is valid. Notify the reducers to update state.
+        dispatch({
+          type: ACTION_TYPES.FETCH_INCIDENT_STORYLINE_EVENTS_RETRIEVE_BATCH,
+          payload: {
+            indicatorId: indicator.id,
+            events: data
+          }
+        });
+
+        // Recursively repeat the process for the next storyline indicator.
+        dispatch(getStorylineEvents(incidentId));
+      })
+      .catch(() => {
+        dispatch({ type: ACTION_TYPES.FETCH_INCIDENT_STORYLINE_EVENTS_ERROR });
+      });
+  };
+};
 
 /**
  * Action creator for resetting the `respond.incident` state to a given incident id.
@@ -288,6 +366,7 @@ export {
   toggleSelectAll,
   getIncident,
   getStoryline,
+  getStorylineEvents,
   initializeIncident,
   toggleJournalPanel,
   setHideViz,

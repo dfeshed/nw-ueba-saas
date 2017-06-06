@@ -58,7 +58,9 @@ export default function() {
 
   const nodesAll = this.nodesLayer
     .selectAll('.rsa-force-layout-node')
-    .data(data.nodes);
+    .data(data.nodes, function(d) {
+      return d.id;
+    });
 
   // Remove node DOM for exiting data.
   nodesAll.exit().remove();
@@ -71,7 +73,7 @@ export default function() {
     .attr('class', 'circle')
     .attr('cx', 0)
     .attr('cy', 0)
-    .attr('r', (d) => d.r);
+    .attr('r', this.get('nodeMinRadius'));
   nodesEnterGroup.append('text')
     .attr('class', 'text')
     .attr('x', 0)
@@ -88,17 +90,13 @@ export default function() {
   );
 
   // Now update the radii of all the nodes.
-  const { radialAccessor, radialScale } = this.getProperties('radialAccessor', 'radialScale');
   const nodesUpdate = nodesEnterGroup.merge(nodesAll);
-  nodesUpdate.selectAll('.circle')
-    .attr('r', (d) => {
-      d.r = radialScale(radialAccessor(d));
-      return d.r;
-    });
 
   const linksAll = this.linksLayer
     .selectAll('.rsa-force-layout-link')
-    .data(data.links);
+    .data(data.links, function(d) {
+      return d.id;
+    });
 
   // Remove link DOM for exiting data.
   linksAll.exit().remove();
@@ -123,11 +121,10 @@ export default function() {
     .text((d) => d.text);
 
   // Now update the stroke widths of all the links.
-  const { linkWidthAccessor, linkWidthScale } = this.getProperties('linkWidthAccessor', 'linkWidthScale');
   const linksUpdate = linksEnterGroup.merge(linksAll);
   linksUpdate.selectAll('.line')
     .style('stroke-width', (d) => {
-      return `${linkWidthScale(linkWidthAccessor(d))}px`;
+      return `${d.stroke}px`;
     });
 
   return {

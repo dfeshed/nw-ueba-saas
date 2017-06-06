@@ -66,6 +66,10 @@ export default function(easing = easeCubicInOut, duration = 300) {
     y: diff.y / scale
   };
 
+  if (isNaN(translation.x) || isNaN(translation.y)) {
+    return;
+  }
+
   // Create a transform object with the computed scale & translation.
   const transform = zoomIdentity
     .scale(scale)

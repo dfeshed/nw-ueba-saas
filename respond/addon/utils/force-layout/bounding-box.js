@@ -1,3 +1,23 @@
+function safeMin(a, b) {
+  if (isNaN(a)) {
+    return b;
+  } else if (isNaN(b)) {
+    return a;
+  } else {
+    return Math.min(a, b);
+  }
+}
+
+function safeMax(a, b) {
+  if (isNaN(a)) {
+    return b;
+  } else if (isNaN(b)) {
+    return a;
+  } else {
+    return Math.max(a, b);
+  }
+}
+
 /**
  * Computes the bounding box of a given set of nodes with a given maximum stroke width.
  *
@@ -31,10 +51,10 @@ export default function forceLayoutBoundingBox(nodes, maxStrokeWidth = 0, defaul
     box.bottom = first.y + first.r + maxStrokeWidth;
 
     visible.forEach((node) => {
-      box.left = Math.min(box.left, node.x - node.r - maxStrokeWidth);
-      box.right = Math.max(box.right, node.x + node.r + maxStrokeWidth);
-      box.top = Math.min(box.top, node.y - node.r - maxStrokeWidth);
-      box.bottom = Math.max(box.bottom, node.y + node.r + maxStrokeWidth);
+      box.left = safeMin(box.left, node.x - node.r - maxStrokeWidth);
+      box.right = safeMax(box.right, node.x + node.r + maxStrokeWidth);
+      box.top = safeMin(box.top, node.y - node.r - maxStrokeWidth);
+      box.bottom = safeMax(box.bottom, node.y + node.r + maxStrokeWidth);
     });
   }
 

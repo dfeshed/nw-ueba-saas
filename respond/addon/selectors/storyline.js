@@ -5,84 +5,89 @@ import arrayFilterByList from 'respond/utils/array/filter-by-list';
 import arrayFromHash from 'respond/utils/array/from-hash';
 import eventsToNodesAndLinks from 'respond/utils/entity/events-to-nodes-links';
 import { parseNodeId, countNodesByType } from 'respond/utils/entity/node';
-import { isEmpty } from 'ember-utils';
-
+import StoryPoint from 'respond/utils/storypoint/storypoint';
 const { createSelector } = reselect;
 
 /**
- * Returns the same object as the `respond.incident.storyline` state, but adds the following logic:
- * returns an empty array if the `storyline` is empty, null or undefined;
- * if storyline is not empty, ensures every alert has a 'storylineId' property,
- * and that every alert event has `id` & `indicatorId` properties.
- * These properties are useful in the UI when trying to correlated events & alerts back to their parent storyline.
+ * Retrieves the storyline array (if any) from state, or an empty array.
  * @returns {Object[]}
  * @private
  */
-const incidentIndicators = ({ respond: { incident: { id, storyline } } }) => {
-  if (storyline) {
-    storyline.forEach((indicator) => {
-
-      // If we've already processed this indicator, don't repeat.
-      if (!isEmpty(indicator.storylineId)) {
-        return;
-      }
-
-      // Mark this indicator as processed, so we don't do this twice.
-      indicator.storylineId = id;
-
-      const {
-        id: indicatorId,
-        alert: {
-          events = []
-        } = {}
-      } = indicator;
-
-      events.forEach((event, index) => {
-        event.indicatorId = indicatorId;
-        if (isEmpty(event.id)) {
-          event.id = `${indicatorId}:${index}`;
-        }
-      });
-    });
-  }
-  return storyline || [];
-};
+const incidentIndicators = ({ respond: { incident: { storyline } } }) => storyline || [];
 
 /**
- * Returns the `incidentIndicators` list, sorted by indicator timestamp (ascending).
- * This is the list to be used for displaying the incident on a storyline UI.
- * @returns {Object[]}
- * @public
+ * Retrieves the storylineEvents array (if any) from state, or an empty array.
+ * @type {{ indicatorId: String, events: Object[] }[]}
+ * @private
  */
-export const storyPoints = createSelector(
-  incidentIndicators,
-  (incidentIndicators) => {
-    return incidentIndicators.sortBy('timestamp');
-  }
-);
+const storylineEvents = ({ respond: { incident: { storylineEvents } } }) => storylineEvents || [];
 
 /**
- * Counts all the `storyPoints` in the storyline.
+ * Counts all the indicators in the storyline.
  * @returns {Number}
  * @public
  */
 export const storyPointCount = createSelector(
-  storyPoints,
-  (storyPoints) => storyPoints.length
+  incidentIndicators,
+  (indicators) => indicators.length
 );
 
 /**
- * Collects all the normalized events from the incident indicators into a single flat array, sorted chronologically.
+ * Wraps the POJOs of the `incidentIndicators` list in StoryPoint Ember classes.
+ * @returns {Object[]}
+ * @private
+ */
+export const storyPoints = createSelector(
+  incidentIndicators,
+  (incidentIndicators) => {
+    return incidentIndicators.map((indicator) => StoryPoint.create({ indicator }));
+  }
+);
+
+/**
+ * The same array as `storyPoints`, but populates each member's `events` property
+ * with the data currently in the `storylineEvents` state.
+ * @type {Object[]}
+ * @private
+ */
+export const storyPointsWithEvents = createSelector(
+  [ storyPoints, storylineEvents ],
+  (storyPoints, storylineEvents) => {
+    (storyPoints || []).forEach((storyPoint) => {
+      if (!storyPoint.get('events')) {
+        const payload = (storylineEvents || []).findBy('indicatorId', storyPoint.get('indicator.id'));
+        if (payload) {
+          storyPoint.set('events', payload.events);
+        }
+      }
+    });
+    return storyPoints;
+  }
+);
+
+/**
+ * Sorts the `storyPointsWithEvents` list in ascending chronological order.
+ * This is the list to be used for displaying the incident on a storyline UI.
+ * @returns {Object[]}
+ * @public
+ */
+export const storyPointsWithEventsSorted = createSelector(
+  storyPointsWithEvents,
+  (storyPointsWithEvents) => {
+    return storyPointsWithEvents.sortBy('indicator.timestamp');
+  }
+);
+
+/**
+ * Collects all the normalized events from the incident indicators into a single flat array.
  * This is the list to be used for displaying the incident's events in a flat table UI.
  * @returns {Object[]}
  * @public
  */
 export const storyEvents = createSelector(
-  incidentIndicators,
-  (incidentIndicators) => {
-    return arrayFlattenBy(incidentIndicators, 'alert.events')
-      .compact()
-      .sortBy('timestamp');
+  storylineEvents,
+  (storylineEvents) => {
+    return arrayFlattenBy(storylineEvents, 'events');
   }
 );
 

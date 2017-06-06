@@ -64,7 +64,7 @@ const StorylineItem = ListItem.extend(HighlightsEntities, {
   entityEndpointId: 'IM',
 
   // Returns `true` if the `incidentId` & `storylineId` of `item` match.
-  @equal('item.incidentId', 'item.storylineId')
+  @equal('item.indicator.incidentId', 'item.indicator.storylineId')
   isCatalyst: null
 });
 

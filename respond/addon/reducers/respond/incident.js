@@ -25,6 +25,12 @@ let initialState = {
   // function to stop the current `storyline` stream request, if any
   stopStorylineStream: null,
 
+  // events for the alerts currently in `storyline`
+  storylineEvents: null,
+
+  // status of the current request for storyline events, if any; either 'streaming', 'paused', 'complete' or 'error'
+  storylineEventsStatus: null,
+
   // either 'overview', 'storyline' or 'events'
   viewMode: 'overview',
 
@@ -108,7 +114,14 @@ const incident = reduxActions.handleActions({
   }),
 
   [ACTION_TYPES.FETCH_INCIDENT_STORYLINE_RETRIEVE_BATCH]: (state, { payload: { data, meta } }) => {
+    // Tag each retrieved indicator with its parent incident id.
+    // This is useful downstream for mapping indicators back to their parent.
+    const storylineId = state.id;
     data = data || [];
+    data.forEach((indicator) => {
+      indicator.storylineId = storylineId;
+    });
+
     state.storyline = state.storyline || [];
     return {
       ...state,
@@ -126,6 +139,45 @@ const incident = reduxActions.handleActions({
     ...state,
     storylineStatus: 'error',
     stopStorylineStream: null
+  }),
+
+  [ACTION_TYPES.FETCH_INCIDENT_STORYLINE_EVENTS_STREAM_INITIALIZED]: (state) => ({
+    ...state,
+    storylineEvents: []
+  }),
+
+  [ACTION_TYPES.FETCH_INCIDENT_STORYLINE_EVENTS_REQUEST_BATCH]: (state) => ({
+    ...state,
+    storylineEventsStatus: 'streaming'
+  }),
+
+  [ACTION_TYPES.FETCH_INCIDENT_STORYLINE_EVENTS_RETRIEVE_BATCH]: (state, { payload: { indicatorId, events } }) => {
+    // Tag each retrieved event with its parent indicator id.  Also ensure each event has an id.
+    // This is useful downstream for mapping events back to their parent.
+    events = events || [];
+    events.forEach((evt, index) => {
+      evt.indicatorId = indicatorId;
+      if (!evt.id) {
+        evt.id = `${indicatorId}:${index}`;
+      }
+    });
+
+    state.storylineEvents = state.storylineEvents || [];
+    return {
+      ...state,
+      storylineEvents: [ ...state.storylineEvents, { indicatorId, events } ],
+      storylineEventsStatus: 'paused'
+    };
+  },
+
+  [ACTION_TYPES.FETCH_INCIDENT_STORYLINE_EVENTS_COMPLETED]: (state) => ({
+    ...state,
+    storylineEventsStatus: 'complete'
+  }),
+
+  [ACTION_TYPES.FETCH_INCIDENT_STORYLINE_EVENTS_ERROR]: (state) => ({
+    ...state,
+    storylineEventsStatus: 'error'
   }),
 
   [ACTION_TYPES.SET_VIEW_MODE]: persistIncidentState((state, { payload }) => ({

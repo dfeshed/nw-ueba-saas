@@ -1,6 +1,6 @@
 import Ember from 'ember';
 import * as ACTION_TYPES from 'respond/actions/types';
-import { incidentDetails, storyline } from '../server/data';
+import { incidentDetails, storyline, events } from '../server/data';
 
 const { run, RSVP } = Ember;
 
@@ -61,6 +61,29 @@ class DataHelper {
           meta: { complete: true }
         }
       }
+    );
+    _dispatchAction(
+      this.redux,
+      { type: ACTION_TYPES.FETCH_INCIDENT_STORYLINE_EVENTS_STREAM_INITIALIZED }
+    );
+    _dispatchAction(
+      this.redux,
+      { type: ACTION_TYPES.FETCH_INCIDENT_STORYLINE_EVENTS_REQUEST_BATCH }
+    );
+    const [ firstIndicator ] = data;
+    _dispatchAction(
+      this.redux,
+      {
+        type: ACTION_TYPES.FETCH_INCIDENT_STORYLINE_EVENTS_RETRIEVE_BATCH,
+        payload: {
+          indicatorId: firstIndicator.id,
+          events
+        }
+      }
+    );
+    _dispatchAction(
+      this.redux,
+      { type: ACTION_TYPES.FETCH_INCIDENT_STORYLINE_EVENTS_COMPLETED }
     );
     _dispatchAction(
       this.redux,

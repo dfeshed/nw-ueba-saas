@@ -1,5 +1,6 @@
 import { streamRequest, promiseRequest } from 'streaming-data/services/data-access/requests';
 import buildExplorerQuery from './util/explorer-build-query';
+import filterQuery from 'respond/utils/filter-query';
 
 const NOOP = () => {};
 
@@ -44,6 +45,25 @@ export default {
     return promiseRequest({
       method: 'queryRecord',
       modelName: 'alerts-count',
+      query: query.toJSON()
+    });
+  },
+
+  /**
+   * Retrieves the events for a given alert id.
+   * @method getAlertEvents
+   * @public
+   * @param alertId
+   * @returns {Promise}
+   */
+  getAlertEvents(alertId) {
+    const query = filterQuery.create()
+      .addSortBy('timestamp', false)
+      .addFilter('alertId', alertId);
+
+    return promiseRequest({
+      method: 'query',
+      modelName: 'alerts-events',
       query: query.toJSON()
     });
   }
