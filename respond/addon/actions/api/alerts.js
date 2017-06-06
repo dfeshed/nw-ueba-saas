@@ -59,7 +59,7 @@ export default {
   getAlertEvents(alertId) {
     const query = filterQuery.create()
       .addSortBy('timestamp', false)
-      .addFilter('alertId', alertId);
+      .addFilter('_id', alertId);
 
     return promiseRequest({
       method: 'query',
