@@ -560,7 +560,7 @@ export default {
     },
     alerts: {
       list: {
-        receivedTime: 'Received',
+        receivedTime: 'Created',
         severity: 'Severity',
         numEvents: '# Events',
         id: 'ID',
@@ -569,7 +569,9 @@ export default {
         source: 'Source',
         incidentId: 'Incident ID',
         partOfIncident: 'Part of Incident',
-        type: 'Type'
+        type: 'Type',
+        hostSummary: 'Host Summary',
+        userSummary: 'User Summary'
       },
       notAssociatedWithIncident: '(None)'
     },
@@ -579,9 +581,16 @@ export default {
         NORMALIZED: 'Normalized'
       },
       type: {
+        Correlation: 'Correlation',
         Log: 'Log',
         Network: 'Network',
-        'Instant IOC': 'Instant IOC'
+        'Instant IOC': 'Instant IOC',
+        'Web Threat Detection Incident': 'Web Threat Detection Incident',
+        'File Share': 'File Share',
+        'Manual Upload': 'Manual Upload',
+        'On Demand': 'On Demand',
+        Resubmit: 'Resubmit',
+        Unknown: 'Unknown'
       },
       source: {
         ECAT: 'Endpoint',

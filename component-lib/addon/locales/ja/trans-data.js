@@ -560,7 +560,7 @@ export default {
     },
     alerts: {
       list: {
-        receivedTime: 'ja_Received',
+        receivedTime: 'ja_Created',
         severity: 'ja_Severity',
         numEvents: 'ja_# Events',
         id: 'ja_ID',
@@ -569,7 +569,9 @@ export default {
         source: 'ja_Source',
         incidentId: 'ja_Incident ID',
         partOfIncident: 'ja_Part of Incident',
-        type: 'ja_Type'
+        type: 'ja_Type',
+        hostSummary: 'ja_Host Summary',
+        userSummary: 'ja_User Summary'
       },
       notAssociatedWithIncident: 'ja_(None)'
     },
@@ -579,9 +581,16 @@ export default {
         NORMALIZED: 'ja_Normalized'
       },
       type: {
+        Correlation: 'ja_Correlation',
         Log: 'ja_Log',
         Network: 'ja_Network',
-        'Instant IOC': 'ja_Instant IOC'
+        'Instant IOC': 'ja_Instant IOC',
+        'Web Threat Detection Incident': 'ja_Web Threat Detection Incident',
+        'File Share': 'ja_File Share',
+        'Manual Upload': 'ja_Manual Upload',
+        'On Demand': 'ja_On Demand',
+        Resubmit: 'ja_Resubmit',
+        Unknown: 'ja_Unknown'
       },
       source: {
         ECAT: 'ja_Endpoint',

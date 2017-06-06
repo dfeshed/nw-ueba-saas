@@ -23,13 +23,13 @@ export default [
   {
     field: 'alert.name',
     title: 'respond.alerts.list.name',
-    width: '40%',
+    width: '20%',
     dataType: 'text'
   },
   {
     field: 'alert.source',
     title: 'respond.alerts.list.source',
-    width: '15%',
+    width: '150px',
     dataType: 'text'
   },
   {
@@ -37,6 +37,13 @@ export default [
     title: 'respond.alerts.list.numEvents',
     width: '120px',
     dataType: 'number'
+  },
+  {
+    field: 'alert.host_summary',
+    title: 'respond.alerts.list.hostSummary',
+    width: '15%',
+    dataType: 'text',
+    disableSort: true
   },
   {
     field: 'incidentId',

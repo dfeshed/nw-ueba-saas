@@ -44,7 +44,7 @@ test('All of the alert type filters appear as checkboxes, and clicking one dispa
     this.render(hbs`{{rsa-alerts/filter-controls updateFilter=(action 'updateFilter')}}`);
 
     const selector = '.filter-option.alert-type-filter .rsa-form-checkbox-label';
-    assert.equal(this.$(selector).length, 3, 'There should be 3 alert type filter options');
+    assert.equal(this.$(selector).length, 10, 'There should be 10 alert type filter options');
     this.$('.filter-option.alert-type-filter .rsa-form-checkbox-label input.rsa-form-checkbox:first').click();
   });
 });
@@ -58,7 +58,7 @@ test('All of the alert source filters appear as checkboxes, and clicking one dis
     this.render(hbs`{{rsa-alerts/filter-controls updateFilter=(action 'updateFilter')}}`);
 
     const selector = '.filter-option.alert-source-filter .rsa-form-checkbox-label';
-    assert.equal(this.$(selector).length, 4, 'There should be 4 alert source filter options');
+    assert.equal(this.$(selector).length, 5, 'There should be 5 alert source filter options');
     this.$('.filter-option.alert-source-filter .rsa-form-checkbox-label input.rsa-form-checkbox:first').click();
   });
 });

@@ -20,13 +20,6 @@
     </label>
   {{/each}}
 </section>
-<section class="filter-option severity-filter">
-  <h2>{{ t 'respond.alerts.list.severity'}}</h2>
-  {{range-slider
-    start=severityFilter
-    step=1
-    on-change="severityRangeChanged"}}
-</section>
 <section class="filter-option part-of-incident-filter">
   <h2>{{ t 'respond.alerts.list.partOfIncident'}}</h2>
   {{#each partOfIncidentTypes as |partOfIncidentType|}}

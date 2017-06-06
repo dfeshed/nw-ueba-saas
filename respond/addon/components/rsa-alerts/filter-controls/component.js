@@ -12,7 +12,7 @@ const stateToComputed = (state) => {
   } = state;
 
   return {
-    alertTypeFilters: itemsFilters['alert.groupby_type'] || [],
+    alertTypeFilters: itemsFilters['alert.type'] || [],
     alertSourceFilters: itemsFilters['alert.source'] || [],
     severityFilter: itemsFilters['alert.severity'] || defaultSeverityRange,
     partOfIncidentFilters: itemsFilters.partOfIncident || [],
@@ -34,7 +34,7 @@ const AlertFilters = Component.extend({
     toggleTypeFilter(type) {
       const alertTypeFilters = this.get('alertTypeFilters');
       this.get('updateFilter')({
-        'alert.groupby_type': alertTypeFilters.includes(type) ? alertTypeFilters.without(type) : [...alertTypeFilters, type]
+        'alert.type': alertTypeFilters.includes(type) ? alertTypeFilters.without(type) : [...alertTypeFilters, type]
       });
     },
     toggleSourceFilter(source) {

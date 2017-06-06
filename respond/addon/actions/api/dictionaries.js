@@ -96,7 +96,7 @@ export default {
    * @returns {Promise}
    */
   getAllAlertTypes() {
-    const alertTypes = ['Log', 'Instant IOC', 'Network'];
+    const alertTypes = ['Correlation', 'File Share', 'Instant IOC', 'Log', 'Manual Upload', 'Network', 'On Demand', 'Resubmit', 'Unknown', 'Web Threat Detection Incident'];
     return RSVP.resolve(alertTypes);
   },
 
@@ -109,7 +109,7 @@ export default {
    * @returns {Promise}
    */
   getAllAlertSources() {
-    const alertSources = ['ECAT', 'Event Stream Analysis', 'Malware Analysis', 'Reporting Engine'];
+    const alertSources = ['ECAT', 'Event Stream Analysis', 'Malware Analysis', 'Reporting Engine', 'Web Threat Detection'];
     return RSVP.resolve(alertSources);
   }
 };
