@@ -10,5 +10,8 @@
     </div>
   </hbox>
 {{else if errorMessage}}
-  <div class='rsa-context-panel__error-text'>{{rsa-icon style='lined' name='report-problem-triangle'}} {{errorMessage}}</div>
+  <div class='rsa-context-panel__error-text'>
+    {{rsa-icon style='lined' name='report-problem-triangle'}}
+    <span> {{errorMessage}} </span>
+  </div>
 {{/if}}

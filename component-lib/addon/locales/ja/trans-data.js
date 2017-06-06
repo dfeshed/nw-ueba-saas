@@ -1044,10 +1044,10 @@ export default {
       viewAll: 'ja_VIEW All',
       total: 'ja_Showing {{count}}',
       title: {
-        incidents: 'ja_Incidents',
-        alerts: 'ja_Alerts',
-        lIST: 'ja_Lists',
-        users: 'ja_Users',
+        incidents: 'ja_Incident(s)',
+        alerts: 'ja_Alert(s)',
+        lIST: 'ja_List(s)',
+        users: 'ja_User(s)',
         endpoint: 'ja_Host',
         archer: 'ja_Asset'
       }

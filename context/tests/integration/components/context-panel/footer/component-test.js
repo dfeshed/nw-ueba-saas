@@ -40,5 +40,5 @@ test('it renders', function(assert) {
     payload: 'Alerts'
   });
   this.render(hbs`{{context-panel/footer}}`);
-  assert.equal(this.$('.rsa-context-panel__footer').text().trim(), 'Showing 8 Alerts', 'Showing total count for alert data.');
+  assert.equal(this.$('.rsa-context-panel__footer').text().trim(), 'Showing 8 Alert(s)', 'Showing total count for alert data.');
 });

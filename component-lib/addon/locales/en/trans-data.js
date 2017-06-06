@@ -1044,10 +1044,10 @@ export default {
       viewAll: 'VIEW All',
       total: 'Showing {{count}}',
       title: {
-        incidents: 'Incidents',
-        alerts: 'Alerts',
-        lIST: 'Lists',
-        users: 'Users',
+        incidents: 'Incident(s)',
+        alerts: 'Alert(s)',
+        lIST: 'List(s)',
+        users: 'User(s)',
         endpoint: 'Host',
         archer: 'Asset'
       }
