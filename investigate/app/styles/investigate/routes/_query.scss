@@ -20,6 +20,13 @@
     border-bottom: 1px solid rsa-color(black);
     @include rsa-vendor-prefix(flex-shrink, 1);
     padding: rsa-whitespace(least) rsa-whitespace();
+    .rsa-investigate-breadcrumb {
+      .rsa-investigate-query-input {
+        @include rsa-vendor-prefix(flex-grow, 1);
+        height: 2rem;
+        margin-right: rsa-whitespace(least);
+      }
+    }
   }
 
   &__body {
