@@ -11,13 +11,9 @@
     }
 
     &__body {
-      min-height: 6rem; /* 6 = 4 lines of text * typical line-height 1.5 */
+      height: 3rem; /* 3 = 2 lines of text * typical line-height 1.5 */
+      overflow: hidden;
     }
-  }
-
-  .event-details-link {
-    cursor: pointer;
-    color: rsa-color(blue, light);
   }
 
   .has-context-data {
