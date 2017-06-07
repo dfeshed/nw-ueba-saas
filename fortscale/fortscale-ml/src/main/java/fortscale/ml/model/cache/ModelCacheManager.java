@@ -1,12 +1,12 @@
 package fortscale.ml.model.cache;
 
-import fortscale.common.feature.Feature;
 import fortscale.ml.model.Model;
 
+import java.time.Instant;
 import java.util.Map;
 
 public interface ModelCacheManager {
-	Model getModel(Feature feature, Map<String, String> context, long eventEpochtime);
+	Model getModel(Map<String, String> context, Instant eventTime);
 
 	/**
 	 * deletes model from rocksdb cache by params

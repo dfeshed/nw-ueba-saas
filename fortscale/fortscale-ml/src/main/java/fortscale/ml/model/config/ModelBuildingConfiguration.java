@@ -9,6 +9,7 @@ import fortscale.ml.model.retriever.factories.RetrieverFactoriesConfig;
 import fortscale.ml.model.selector.IContextSelector;
 import fortscale.ml.model.selector.factories.SelectorFactoriesConfig;
 import fortscale.ml.model.store.ModelStore;
+import fortscale.ml.model.store.ModelStoreConfig;
 import fortscale.utils.factory.FactoryService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,14 +20,10 @@ import org.springframework.context.annotation.Import;
 		ModelServiceConfig.class,
 		RetrieverFactoriesConfig.class,
 		SelectorFactoriesConfig.class,
-		BuilderFactoriesConfig.class
+		BuilderFactoriesConfig.class,
+		ModelStoreConfig.class
 })
 public class ModelBuildingConfiguration {
-
-	@Bean
-	public ModelStore modelStore() {
-		return new ModelStore();
-	}
 
 	@Bean
 	public FactoryService<IContextSelector> contextSelectorFactoryService() {

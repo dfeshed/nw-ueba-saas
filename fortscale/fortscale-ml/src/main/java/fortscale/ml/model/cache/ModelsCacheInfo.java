@@ -26,12 +26,12 @@ public class ModelsCacheInfo {
 
 	public ModelDAO getModelDaoWithLatestEndTimeLte(long eventEpochtime, long futureDiffBetweenModelAndEvent) {
 		Collections.sort(modelDaos, new DescModelDaoEndTimeComp());
-
-		for (ModelDAO modelDao : modelDaos) {
-			if (TimestampUtils.convertToSeconds(modelDao.getEndTime()) <= (eventEpochtime+futureDiffBetweenModelAndEvent)) {
-				return modelDao;
-			}
-		}
+//
+//		for (ModelDAO modelDao : modelDaos) {
+//			if (TimestampUtils.convertToSeconds(modelDao.getEndTime()) <= (eventEpochtime+futureDiffBetweenModelAndEvent)) {
+//				return modelDao;
+//			}
+//		}
 
 		return null;
 	}
@@ -92,7 +92,7 @@ public class ModelsCacheInfo {
 	public static final class DescModelDaoEndTimeComp implements Comparator<ModelDAO> {
 		@Override
 		public int compare(ModelDAO modelDao1, ModelDAO modelDao2) {
-			return modelDao1.getEndTime().before(modelDao2.getEndTime()) ? 1 : -1;
+			return modelDao1.getEndTime().isBefore(modelDao2.getEndTime()) ? 1 : -1;
 		}
 	}
 }

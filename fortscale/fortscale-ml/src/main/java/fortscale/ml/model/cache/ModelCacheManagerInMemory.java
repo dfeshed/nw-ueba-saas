@@ -1,18 +1,18 @@
 package fortscale.ml.model.cache;
 
-import fortscale.common.feature.Feature;
 import fortscale.ml.model.Model;
 import fortscale.ml.model.ModelConf;
 import fortscale.ml.model.retriever.AbstractDataRetriever;
 import fortscale.ml.model.store.ModelDAO;
 import fortscale.ml.model.store.ModelStore;
+import fortscale.utils.logging.Logger;
 import org.apache.commons.collections.map.LRUMap;
 import org.springframework.util.Assert;
 
+import java.time.Duration;
 import java.time.Instant;
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * models cache that is in memory.
@@ -20,60 +20,77 @@ import java.util.Map;
  * Created by barak_schuster on 2/1/17.
  */
 public class ModelCacheManagerInMemory implements ModelCacheManager {
+    private static final Logger logger = Logger.getLogger(ModelCacheManagerInMemory.class);
 
     private ModelStore modelStore;
     private ModelConf modelConf;
     private AbstractDataRetriever retriever;
-    private long futureDiffBetweenModelAndEvent;
+    private Duration futureDiffBetweenCachedModelAndEvent;
     private LRUMap lruModelsMap;
 
-    public ModelCacheManagerInMemory(ModelStore modelStore, ModelConf modelConf, AbstractDataRetriever retriever, long futureDiffBetweenModelAndEvent, int lruModelCacheSize) {
+    /**
+     * @param modelStore                           persistent db containing all models
+     * @param modelConf                            identify the model configuration the cache stands for
+     * @param retriever                            help to calculates the context id
+     * @param futureDiffBetweenCachedModelAndEvent cached model can be older then eventTime by this diff. if bigger, cached model is deleted and the latest model is retrieved from db
+     * @param lruModelCacheSize                    the cache size
+     */
+    public ModelCacheManagerInMemory(ModelStore modelStore, ModelConf modelConf, AbstractDataRetriever retriever, Duration futureDiffBetweenCachedModelAndEvent, int lruModelCacheSize) {
         this.modelStore = modelStore;
         this.modelConf = modelConf;
         this.retriever = retriever;
-        this.futureDiffBetweenModelAndEvent = futureDiffBetweenModelAndEvent;
-        this.lruModelsMap = new LRUMap (lruModelCacheSize);
+        this.futureDiffBetweenCachedModelAndEvent = futureDiffBetweenCachedModelAndEvent;
+        this.lruModelsMap = new LRUMap(lruModelCacheSize);
     }
 
     @Override
-    public Model getModel(Feature feature, Map<String, String> context, long eventEpochtime) {
+    public Model getModel(Map<String, String> context, Instant eventTime) {
         String contextId = getContextId(context);
 
-        ModelDAO modelDAO = null;
-        Object cachedModel = lruModelsMap.get(contextId);
-        // there is a model in cache
-        if(cachedModel!=null)
-        {
-            modelDAO = (ModelDAO) cachedModel;
-            // check if model time is valid
-            if (modelDAO.getEndTime().getTime()<=eventEpochtime+futureDiffBetweenModelAndEvent)
-            {
-                return modelDAO.getModel();
-            }
-            // if the model in the cache is too old -> throw it away
-            else
-            {
-                deleteFromCache(modelConf.getName(),contextId);
-            }
-        }
-        // get models from db
-        List<ModelDAO> modelDaos = modelStore.getModelDaos(modelConf, contextId);
-        if(modelDaos!=null && !modelDaos.isEmpty()) {
-            Collections.sort(modelDaos, new ModelsCacheInfo.DescModelDaoEndTimeComp());
+        ModelDAO cachedModelDao = null;
+        logger.debug("getting model for params: contextId={},eventTime={},modelConf={}", contextId,  eventTime,modelConf);
+        Instant latestModelTime = eventTime.plus(futureDiffBetweenCachedModelAndEvent);
 
-            // take the latest model
-            modelDAO = modelDaos.stream().findFirst().get();
-            if (modelDAO != null) {
-
-                if (Instant.ofEpochMilli(modelDAO.getEndTime().getTime()).isBefore(Instant.ofEpochSecond(eventEpochtime + futureDiffBetweenModelAndEvent))) {
-                    // insert the model into cache
-                    lruModelsMap.put(contextId, modelDAO);
-                    return modelDAO.getModel();
+        if (lruModelsMap.containsKey(contextId)) {
+            Object cachedObject = lruModelsMap.get(contextId);
+            // there is a model in cache
+            if (cachedObject != null) {
+                cachedModelDao = (ModelDAO) cachedObject;
+                // check if model time is valid
+                if (isModelTimeValid(cachedModelDao, latestModelTime)) {
+                    logger.debug("found cached model={}", cachedModelDao);
+                    return cachedModelDao.getModel();
                 }
+                // if the model in the cache is too old -> throw it away
+                else {
+                    logger.debug("too old model={} found , deleting it from cache", cachedModelDao);
+                    deleteFromCache(modelConf.getName(), contextId);
+                }
+            } else {
+                logger.debug("found empty model in cache");
+                return null;
             }
         }
-        return null;
+        logger.debug("no matching model found in cache. retrieving model from db");
+        ModelDAO retrievedModelDAO = modelStore.getLatestBeforeEventTimeModelDao(modelConf, contextId, eventTime);
+        if (retrievedModelDAO!=null) {
+            if (isModelTimeValid(retrievedModelDAO, latestModelTime)) {
+                logger.debug("found matching modelDAO={} in db, updating cache", retrievedModelDAO);
+                // insert the model into cache
+                lruModelsMap.put(contextId, retrievedModelDAO);
+                return retrievedModelDAO.getModel();
+            } else {
+                logger.debug("retrieved model is too old");
+            }
+        }
+        logger.debug("did not find matching model in db. caching empty model");
+        lruModelsMap.put(contextId, null);
 
+        return null;
+    }
+
+    public boolean isModelTimeValid(ModelDAO modelDAO, Instant latestModelEventTime) {
+        return modelDAO.getEndTime().compareTo(latestModelEventTime) <= 0;
     }
 
     @Override
@@ -82,10 +99,14 @@ public class ModelCacheManagerInMemory implements ModelCacheManager {
     }
 
     private String getContextId(Map<String, String> contextFieldsToValueMap) {
-        Assert.notNull(contextFieldsToValueMap,"context fields should not be null");
+        Assert.notNull(contextFieldsToValueMap, "context fields should not be null");
         if (contextFieldsToValueMap.isEmpty()) {
             return null;
         }
         return retriever.getContextId(contextFieldsToValueMap);
+    }
+
+    public LRUMap getLruModelsMap() {
+        return lruModelsMap;
     }
 }
