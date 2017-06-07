@@ -2,7 +2,7 @@ import get from 'ember-metal/get';
 import ListItem from 'respond/components/rsa-list/item/component';
 import HighlightsEntities from 'context/mixins/highlights-entities';
 import layout from './template';
-import { equal } from 'ember-computed-decorators';
+import computed from 'ember-computed-decorators';
 import connect from 'ember-redux/components/connect';
 import { singleSelectStoryPoint, toggleSelectStoryPoint } from 'respond/actions/creators/incidents-creators';
 
@@ -64,8 +64,10 @@ const StorylineItem = ListItem.extend(HighlightsEntities, {
   entityEndpointId: 'IM',
 
   // Returns `true` if the `incidentId` & `storylineId` of `item` match.
-  @equal('item.indicator.incidentId', 'item.indicator.storylineId')
-  isCatalyst: null
+  @computed('item.indicator.incidentId', 'item.indicator.storylineId')
+  isCatalyst(incidentId, storylineId) {
+    return incidentId === storylineId;
+  }
 });
 
 export default connect(stateToComputed, dispatchToActions)(StorylineItem);

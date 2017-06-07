@@ -214,8 +214,14 @@ $storylineConnectorOuterWidth: $storylineConnectorPaddingX * 2 + $storylineConne
         &.ip {
           color: $entityIPColor;
         }
-        &.file {
-          color: $entityFileColor;
+        &.mac-address {
+          color: $entityMACColor;
+        }
+        &.file-name {
+          color: $entityFileNameColor;
+        }
+        &.file-hash {
+          color: $entityFileHashColor;
         }
       }
     }

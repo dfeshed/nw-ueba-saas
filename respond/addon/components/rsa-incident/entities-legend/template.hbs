@@ -1,8 +1,8 @@
 <div class="totals">
-  {{#each data as |datum|}}
-    <span class="datum {{datum.key}}">
+  {{#each resolvedData as |datum|}}
+    <span class="datum {{datum.cssClass}}">
       <span>{{datum.value}}</span>
-      <label>{{t (concat 'respond.entity.legend.' datum.key)}}</label>
+      <label>{{t datum.i18nKey}}</label>
     </span>
   {{/each}}
 </div>

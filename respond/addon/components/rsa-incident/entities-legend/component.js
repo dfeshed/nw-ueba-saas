@@ -2,7 +2,7 @@ import Ember from 'ember';
 import computed, { notEmpty } from 'ember-computed-decorators';
 import connect from 'ember-redux/components/connect';
 import { storyNodeFilterCounts } from 'respond/selectors/storyline';
-
+import { dasherize } from 'ember-string';
 const { Component } = Ember;
 
 const stateToComputed = (state) => ({
@@ -28,6 +28,18 @@ const EntitiesLegend = Component.extend({
     } else {
       return selection;
     }
+  },
+
+  // Same key-value pairs as in `data`, but with strings added for UI display.
+  // @private
+  @computed('data')
+  resolvedData(data) {
+    return (data || []).map(({ key, value }) => ({
+      key,
+      cssClass: dasherize(String(key)),
+      i18nKey: `respond.entity.legend.${key}`,
+      value
+    }));
   }
 });
 

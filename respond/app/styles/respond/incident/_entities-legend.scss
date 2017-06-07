@@ -39,9 +39,19 @@
         color: $entityIPColor;
       }
     }
-    &.file {
+    &.mac-address {
       label {
-        color: $entityFileColor;
+        color: $entityMACColor;
+      }
+    }
+    &.file-name {
+      label {
+        color: $entityFileNameColor;
+      }
+    }
+    &.file-hash {
+      label {
+        color: $entityFileHashColor;
       }
     }
   }

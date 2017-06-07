@@ -1,8 +1,10 @@
-$entityUserColor: $cyan;
+$entityUserColor: $magenta;
 $entityHostColor: $violet;
 $entityIPColor: $green;
 $entityDomainColor: $yellow;
-$entityFileColor: $base0;
+$entityMACColor: $cyan;
+$entityFileNameColor: $base0;
+$entityFileHashColor: $base0;
 
 .rsa-incident-entities {
 
@@ -26,8 +28,14 @@ $entityFileColor: $base0;
       &.domain .circle {
         fill: $entityDomainColor;
       }
-      &.file .circle {
-        fill: $entityFileColor;
+      &.mac-address .circle {
+        fill: $entityMACColor;
+      }
+      &.file-name .circle {
+        fill: $entityFileNameColor;
+      }
+      &.file-hash .circle {
+        fill: $entityFileHashColor;
       }
       .text {
         fill: rsa-color(white);

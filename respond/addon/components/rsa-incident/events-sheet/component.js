@@ -71,12 +71,12 @@ const IncidentDatasheet = Component.extend({
     title: 'respond.eventsTable.destinationUser',
     visible: true
   }, {
-    field: 'data.[0].filename',
+    field: 'data.0.filename',
     fieldSuffix: 'filename',
     title: 'respond.eventsTable.fileName',
     visible: true
   }, {
-    field: 'data.[0].hash',
+    field: 'data.0.hash',
     fieldSuffix: 'hash',
     title: 'respond.eventsTable.fileHash',
     width: 150,

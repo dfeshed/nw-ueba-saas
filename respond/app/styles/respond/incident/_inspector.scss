@@ -62,6 +62,9 @@ $incidentInspectorResizerBleed: ($incidentInspectorResizerWidth - 1px) / 2;
     .name {
       @include rsa-font(light);
       padding: 0 rsa-whitespace() 0 rsa-whitespace(more);
+      max-height: 2.7rem; /* 2.7rem = 2 lines of text x line-height = 2rem * 1.35 */
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .back {
