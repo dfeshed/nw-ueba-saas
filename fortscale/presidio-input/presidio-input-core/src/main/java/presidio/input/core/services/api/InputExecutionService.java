@@ -1,5 +1,7 @@
 package presidio.input.core.services.api;
 
 public interface InputExecutionService {
-    void run(String... params) throws Exception;
+    void run() throws Exception;
+
+    boolean init(String... params) throws Exception;
 }

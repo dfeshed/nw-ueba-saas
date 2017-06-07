@@ -2,7 +2,7 @@ package fortscale.services.parameters;
 
 
 import fortscale.common.general.CommonStrings;
-import fortscale.common.general.Datasource;
+import fortscale.common.general.DataSource;
 import fortscale.utils.logging.Logger;
 
 import static fortscale.common.general.CommonStrings.COMMAND_LINE_PARAM_DELIMITER;
@@ -36,7 +36,7 @@ public class ParametersServiceImpl implements ParametersValidationService {
 
     @Override
     public void validateDatasourceParam(String datasource) throws Exception {
-        Datasource.createDataSource(datasource); //
+        DataSource.createDataSource(datasource); //
     }
 
     @Override

@@ -2,8 +2,6 @@ package presidio.input.sdk.impl;
 
 
 import fortscale.utils.mongodb.config.MongoConfig;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.task.configuration.EnableTask;
@@ -21,10 +19,10 @@ import presidio.input.sdk.impl.spring.PresidioInputPersistencyServiceConfig;
 public class Application {
 
 
-    private static Logger log = LoggerFactory.getLogger(Application.class);
+    private static final fortscale.utils.logging.Logger logger = fortscale.utils.logging.Logger.getLogger(Application.class);
 
     public static void main(String[] args) {
-        log.info("shay");
+        logger.info("Starting input servcie");
         SpringApplication.run(new Object[]{Application.class, PresidioInputPersistencyServiceConfig.class, MongoConfig.class}, args);
     }
 

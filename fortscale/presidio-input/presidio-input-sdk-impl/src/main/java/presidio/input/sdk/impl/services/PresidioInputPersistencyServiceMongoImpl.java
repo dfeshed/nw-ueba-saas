@@ -1,8 +1,10 @@
 package presidio.input.sdk.impl.services;
 
-import fortscale.common.general.Datasource;
+import fortscale.common.general.CommonStrings;
+import fortscale.common.general.DataSource;
 import fortscale.domain.core.AbstractAuditableDocument;
 import fortscale.utils.logging.Logger;
+import presidio.sdk.api.domain.DataService;
 import presidio.sdk.api.domain.DlpFileDataDocument;
 import presidio.sdk.api.domain.DlpFileDataService;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
@@ -20,9 +22,10 @@ public class PresidioInputPersistencyServiceMongoImpl implements PresidioInputPe
     }
 
     @Override
-    public boolean store(Datasource datasource, List<AbstractAuditableDocument> records) {
+    public boolean store(DataSource dataSource, List<AbstractAuditableDocument> records) {
         //TODO: change this when we have the new service and repo
-        logger.info("Storing {} records for datasource {}", records.size(), datasource);
+        logger.info("Storing {} records for data source {}",
+                records.size(), dataSource);
 
         List<DlpFileDataDocument> dlpFileDataDocuments = records // todo: this is very ad-hoc. we need to design a mechanism for resolving the right repo and casting
                 .stream()
@@ -32,20 +35,32 @@ public class PresidioInputPersistencyServiceMongoImpl implements PresidioInputPe
     }
 
     @Override
-    public List<? extends AbstractAuditableDocument> find(Datasource dataSource, long startTime, long endTime) {
-        logger.info("Finding records for datasource {}, startTime {}, endTime {}", dataSource, startTime, endTime);
-        switch (dataSource) {
-            default:
-                return dlpFileDataService.find(startTime, endTime);
-        }
+    public List<? extends AbstractAuditableDocument> find(DataSource dataSource, long startDate, long endDate) {
+        logger.info("Finding records for data source:{}, from :{}, until :{}."
+                , dataSource,
+                CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate,
+                CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
+        return dataServiceForDataSource(dataSource).find(startDate, endDate);
     }
 
     @Override
-    public int clean(Datasource dataSource, long startTime, long endTime) {
-        logger.info("Deleting records for datasource {}, startTime {}, endTime {}", dataSource, startTime, endTime);
+    public int clean(DataSource dataSource, long startDate, long endDate) {
+        logger.info("Deleting records for data source:{}, from {}:{}, until {}:{}."
+                , dataSource,
+                CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate,
+                CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
+        return dataServiceForDataSource(dataSource).clean(startDate, endDate);
+    }
+
+
+    private DataService dataServiceForDataSource(DataSource dataSource) {
         switch (dataSource) {
-             default:
-                 return dlpFileDataService.clean(startTime, endTime);
+            case DLPFILE:
+                return dlpFileDataService;
+            default:
+                logger.error("");
+                return null;
         }
     }
+
 }

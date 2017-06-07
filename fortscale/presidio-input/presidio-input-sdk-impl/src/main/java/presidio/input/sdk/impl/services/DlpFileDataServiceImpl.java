@@ -1,5 +1,6 @@
 package presidio.input.sdk.impl.services;
 
+import fortscale.common.general.CommonStrings;
 import fortscale.domain.core.AbstractAuditableDocument;
 import fortscale.utils.logging.Logger;
 import presidio.input.sdk.impl.repositories.DlpFileDataRepository;
@@ -25,16 +26,20 @@ public class DlpFileDataServiceImpl implements DlpFileDataService {
     }
 
     @Override
-    public List<DlpFileDataDocument> find(long startTime, long endTime) {
-        logger.debug("finding dlpfile records {} between startTime:{} and endTime:{}.", startTime, endTime);
-        return dlpFileDataRepository.find(startTime, endTime);
+    public List<DlpFileDataDocument> find(long startDate, long endDate) {
+        logger.debug("Finding dlpfile records between {}:{} and {}:{}.",
+                CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate,
+                CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
+        return dlpFileDataRepository.find(startDate, endDate);
     }
 
     @Override
-    public int clean(long startTime, long endTime) {
+    public int clean(long startDate, long endDate) {
         long startTimeBegingOfTime = 0;
         long endTimeCorentSystemTime = System.currentTimeMillis() / 1000;  //todo: at the moment we just want to delete all the documents in the collection, in the future we will use values that we recive from user or airflow
-        logger.debug("deleting dlpfile records {} between startTime:{} and endTime:{}.", startTimeBegingOfTime, endTimeCorentSystemTime);
+        logger.debug("Deleting dlpfile records between {}:{} and {}:{}.",
+                CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate,
+                CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
         return dlpFileDataRepository.clean(startTimeBegingOfTime, endTimeCorentSystemTime);
     }
 }

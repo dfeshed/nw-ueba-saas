@@ -1,16 +1,7 @@
 package presidio.sdk.api.domain;
 
-import fortscale.domain.core.AbstractAuditableDocument;
 
-import java.util.List;
+public interface DlpFileDataService extends DataService {
 
-
-public interface DlpFileDataService {
-
-    boolean store(List<? extends AbstractAuditableDocument> documents);
-
-    List<DlpFileDataDocument> find(long startTime, long endTime);
-
-    int clean(long startTime, long endTime);
 
 }
