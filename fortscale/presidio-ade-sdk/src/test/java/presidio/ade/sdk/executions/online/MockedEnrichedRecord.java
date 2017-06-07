@@ -2,23 +2,23 @@ package presidio.ade.sdk.executions.online;
 
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
-import presidio.ade.domain.store.input.ADEInputRecord;
+import presidio.ade.domain.record.enriched.EnrichedRecord;
 
 import java.time.Instant;
 
 /**
- * shouldInsertDataAndCreateIndexes pojo used to mock ade input data
+ * shouldInsertDataAndCreateIndexes pojo used to mock ade enriched data
  * Created by barak_schuster on 5/28/17.
  */
 @Document
-public class ADEMockedInputRecord extends ADEInputRecord {
+public class MockedEnrichedRecord extends EnrichedRecord {
     @Indexed
     private String contextField;
     @Indexed
     private String featureField;
 
-    public ADEMockedInputRecord(Instant eventTime, String contextField, String featureField) {
-        super(eventTime);
+    public MockedEnrichedRecord(Instant dateTime, String contextField, String featureField) {
+        super(dateTime);
         this.contextField = contextField;
         this.featureField = featureField;
     }

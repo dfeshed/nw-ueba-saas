@@ -1,8 +1,8 @@
 package presidio.ade.sdk.executions.common;
 
-import presidio.ade.domain.store.input.ADEInputCleanupParams;
-import presidio.ade.domain.store.input.ADEInputRecord;
-import presidio.ade.domain.store.input.ADEInputRecordsMetaData;
+import presidio.ade.domain.record.enriched.EnrichedRecord;
+import presidio.ade.domain.store.enriched.EnrichedDataStoreCleanupParams;
+import presidio.ade.domain.store.enriched.EnrichedRecordsMetadata;
 
 import java.util.List;
 import java.util.Set;
@@ -62,7 +62,7 @@ public interface ADECommonSDK<ADERunParams> {
      *
      * @param params
      */
-    void cleanup(ADEInputCleanupParams params);
+    void cleanup(EnrichedDataStoreCleanupParams params);
 
     /**
      * pauses the execution. the ADE will pause gracefully as fast as possible and would not continue to the nearest sub step
@@ -112,6 +112,5 @@ public interface ADECommonSDK<ADERunParams> {
      * @param metaData some metadata considering the data to be stored. i.e. what is the data source, what is the time range etc...
      * @param records  data to be stored
      */
-    void store(ADEInputRecordsMetaData metaData, List<? extends ADEInputRecord> records);
-
+    void store(EnrichedRecordsMetadata metaData, List<? extends EnrichedRecord> records);
 }
