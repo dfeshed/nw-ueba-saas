@@ -3,11 +3,14 @@ package fortscale.ml.model.store;
 import com.mongodb.DBObject;
 import fortscale.ml.model.Model;
 import fortscale.ml.model.ModelConf;
+import fortscale.ml.model.ModelService;
+import fortscale.utils.logging.Logger;
 import fortscale.utils.mongodb.FIndex;
 import fortscale.utils.mongodb.util.MongoDbUtilService;
 import fortscale.utils.monitoring.stats.StatsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
@@ -16,7 +19,9 @@ import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.util.StreamUtils;
+import org.springframework.util.CollectionUtils;
 
+import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -26,9 +31,7 @@ import static org.springframework.data.mongodb.core.aggregation.Aggregation.newA
 public class ModelStore {
 	private static final String COLLECTION_NAME_PREFIX = "model_";
 	private static final String ID_FIELD = "_id";
-
-	@Value("${fortscale.model.build.retention.time.in.days}")
-	private long retentionTimeInDays;
+    private static final Logger logger = Logger.getLogger(ModelStore.class);
 
 	@Autowired
 	private MongoTemplate mongoTemplate;
@@ -42,15 +45,8 @@ public class ModelStore {
 	public void save(ModelConf modelConf, String sessionId, String contextId, Model model, Date startTime, Date endTime) {
 		getMetrics().saveModel++;
 		String collectionName = getCollectionName(modelConf);
-		ensureCollectionExists(collectionName);
-		Query query = new Query();
-		query.addCriteria(Criteria.where(ModelDAO.SESSION_ID_FIELD).is(sessionId));
-		query.addCriteria(Criteria.where(ModelDAO.CONTEXT_ID_FIELD).is(contextId));
-		query.fields().include(ID_FIELD);
-		ModelDAO oldModelDao = mongoTemplate.findOne(query, ModelDAO.class, collectionName);
-		ModelDAO newModelDao = new ModelDAO(sessionId, contextId, model, startTime, endTime);
+		ModelDAO newModelDao = new ModelDAO(sessionId, contextId, model, startTime.toInstant(), endTime.toInstant());
 		mongoTemplate.insert(newModelDao, collectionName);
-		if (oldModelDao != null) mongoTemplate.remove(oldModelDao, collectionName);
 	}
 
 	public List<ModelDAO> getModelDaos(ModelConf modelConf, String contextId) {
@@ -93,29 +89,12 @@ public class ModelStore {
 		});
 	}
 
-	private String getCollectionName(ModelConf modelConf) {
+	public String getCollectionName(ModelConf modelConf) {
 		getMetrics().getCollectionName++;
 		return String.format("%s%s", COLLECTION_NAME_PREFIX, modelConf.getName());
 	}
 
-	private void ensureCollectionExists(String collectionName) {
-		getMetrics().ensureCollectionExists++;
 
-		if (!mongoDbUtilService.collectionExists(collectionName)) {
-			mongoDbUtilService.createCollection(collectionName);
-
-			mongoTemplate.indexOps(collectionName).ensureIndex(new Index()
-					.on(ModelDAO.SESSION_ID_FIELD, Direction.ASC));
-
-			mongoTemplate.indexOps(collectionName).ensureIndex(new Index()
-					.on(ModelDAO.CONTEXT_ID_FIELD, Direction.ASC));
-
-			mongoTemplate.indexOps(collectionName).ensureIndex(new FIndex()
-					.expire(retentionTimeInDays, TimeUnit.DAYS)
-					.named(ModelDAO.CREATION_TIME_FIELD)
-					.on(ModelDAO.CREATION_TIME_FIELD, Direction.ASC));
-		}
-	}
 	public ModelStoreMetrics getMetrics()
 	{
 		if (metrics==null)
@@ -124,4 +103,23 @@ public class ModelStore {
 		}
 		return metrics;
 	}
+
+    public ModelDAO getLatestBeforeEventTimeModelDao(ModelConf modelConf, String contextId, Instant eventTime) {
+        String collectionName = getCollectionName(modelConf);
+        Query query = new Query();
+        query.addCriteria(Criteria.where(ModelDAO.CONTEXT_ID_FIELD).is(contextId))
+                .addCriteria(Criteria.where(ModelDAO.END_TIME_FIELD).lte(eventTime))
+                .with(new Sort(Direction.DESC)).limit(1);
+
+        logger.debug("fetching latest model dao for contextId={} eventTime={} collection={}",contextId,eventTime,collectionName);
+		List<ModelDAO> queryResult = mongoTemplate.find(query, ModelDAO.class, collectionName);
+		if(CollectionUtils.isEmpty(queryResult))
+		{
+			return null;
+		}
+		else
+		{
+			return queryResult.stream().findFirst().get();
+		}
+    }
 }
