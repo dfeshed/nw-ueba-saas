@@ -66,7 +66,12 @@ public class RecordReaderImpl<T> implements RecordReader<T> {
 	// Use Spring's reflection utils to find the field in the class, or in any of its superclasses up to Object.
 	private static Field findField(Class<?> clazz, String name) throws NoSuchFieldException {
 		Field field = ReflectionUtils.findField(clazz, name);
-		if (field == null) throw new NoSuchFieldException();
+
+		if (field == null) {
+			String s = String.format("Class %s does not have a field %s.", clazz.getName(), name);
+			throw new NoSuchFieldException(s);
+		}
+
 		return field;
 	}
 }
