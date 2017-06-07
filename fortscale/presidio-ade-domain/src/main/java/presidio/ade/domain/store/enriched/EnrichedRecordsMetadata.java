@@ -2,7 +2,6 @@ package presidio.ade.domain.store.enriched;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 
-import java.time.Duration;
 import java.time.Instant;
 
 /**
@@ -12,13 +11,11 @@ import java.time.Instant;
  */
 public class EnrichedRecordsMetadata {
 	private final String dataSource;
-	private final Duration dataProcessingDuration;
 	private final Instant startInstant;
 	private final Instant endInstant;
 
-	public EnrichedRecordsMetadata(String dataSource, Duration dataProcessingDuration, Instant startInstant, Instant endInstant) {
+	public EnrichedRecordsMetadata(String dataSource, Instant startInstant, Instant endInstant) {
 		this.dataSource = dataSource;
-		this.dataProcessingDuration = dataProcessingDuration;
 		this.startInstant = startInstant;
 		this.endInstant = endInstant;
 	}
@@ -33,10 +30,6 @@ public class EnrichedRecordsMetadata {
 
 	public String getDataSource() {
 		return dataSource;
-	}
-
-	public Duration getDataProcessingDuration() {
-		return dataProcessingDuration;
 	}
 
 	public Instant getStartInstant() {

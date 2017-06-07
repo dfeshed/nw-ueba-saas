@@ -21,7 +21,6 @@ import presidio.ade.domain.store.enriched.EnrichedRecordsMetadata;
 import presidio.ade.sdk.executions.data.generator.MockedEnrichedRecordGenerator;
 import presidio.ade.sdk.executions.data.generator.MockedEnrichedRecordGeneratorConfig;
 
-import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -49,7 +48,7 @@ public class ADEOnlineSDKTest {
         adeOnlineSDK.getRunId();
         Instant startInstant = systemDateService.getInstant();
         Instant endInstant = systemDateService.getInstant().plus(1, ChronoUnit.HOURS);
-        EnrichedRecordsMetadata metaData = new EnrichedRecordsMetadata("testDataSource", Duration.ofHours(1), startInstant, endInstant);
+        EnrichedRecordsMetadata metaData = new EnrichedRecordsMetadata("testDataSource", startInstant, endInstant);
         List<MockedEnrichedRecord> generate = dataGenerator.generate(metaData);
         adeOnlineSDK.store(metaData, generate);
         String collectionName = translator.toCollectionName(metaData);
