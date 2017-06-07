@@ -2,7 +2,6 @@ package presidio.ade.sdk.executions.online;
 
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
-import fortscale.utils.mongodb.index.DynamicIndexApplicationListenerConfig;
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
 import fortscale.utils.time.SystemDateService;
@@ -22,7 +21,6 @@ import presidio.ade.domain.store.translators.ADEInputDataToCollectionNameTransla
 import presidio.ade.sdk.executions.data.generator.ADEMockedInputRecordGenerator;
 import presidio.ade.sdk.executions.data.generator.ADEMockedInputRecordGeneratorConfig;
 
-import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -50,7 +48,7 @@ public class ADEOnlineSDKTest {
         adeOnlineSDK.getRunId();
         Instant startInstant = systemDateService.getInstant();
         Instant endInstant = systemDateService.getInstant().plus(1, ChronoUnit.HOURS);
-        ADEInputRecordsMetaData metaData = new ADEInputRecordsMetaData("testDataSource", Duration.ofHours(1), startInstant, endInstant);
+        ADEInputRecordsMetaData metaData = new ADEInputRecordsMetaData("testDataSource", startInstant, endInstant);
         List<ADEMockedInputRecord> generate = dataGenerator.generate(metaData);
         adeOnlineSDK.store(metaData, generate);
         String collectionName = translator.toCollectionName(metaData);

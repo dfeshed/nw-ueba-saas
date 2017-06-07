@@ -11,13 +11,11 @@ import java.time.Instant;
  */
 public class ADEInputRecordsMetaData {
     private final String dataSource;
-    private final Duration dataProcessingDuration;
     private final Instant startInstant;
     private final Instant endInstant;
 
-    public ADEInputRecordsMetaData(String dataSource, Duration dataProcessingDuration, Instant startInstant, Instant endInstant) {
+    public ADEInputRecordsMetaData(String dataSource, Instant startInstant, Instant endInstant) {
         this.dataSource = dataSource;
-        this.dataProcessingDuration = dataProcessingDuration;
         this.startInstant = startInstant;
         this.endInstant = endInstant;
     }
@@ -33,10 +31,6 @@ public class ADEInputRecordsMetaData {
 
     public String getDataSource() {
         return dataSource;
-    }
-
-    public Duration getDataProcessingDuration() {
-        return dataProcessingDuration;
     }
 
     public Instant getStartInstant() {

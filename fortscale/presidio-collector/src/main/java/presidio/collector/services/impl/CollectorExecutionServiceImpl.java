@@ -3,6 +3,7 @@ package presidio.collector.services.impl;
 import fortscale.common.general.Datasource;
 import fortscale.domain.core.AbstractAuditableDocument;
 import fortscale.services.parameters.ParametersValidationService;
+import fortscale.utils.time.TimestampUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import presidio.collector.services.api.CollectorExecutionService;
@@ -10,13 +11,15 @@ import presidio.collector.services.api.FetchService;
 import presidio.sdk.api.domain.DlpFileDataDocument;
 import presidio.sdk.api.services.CoreManagerService;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static fortscale.common.general.CommonStrings.COMMAND_LINE_DATASOURCE_FIELD_NAME;
-import static fortscale.common.general.CommonStrings.COMMAND_LINE_END_TIME_FIELD_NAME;
-import static fortscale.common.general.CommonStrings.COMMAND_LINE_START_TIME_FIELD_NAME;
+import static fortscale.common.general.CommonStrings.COMMAND_LINE_DATA_SOURCE_FIELD_NAME;
+import static fortscale.common.general.CommonStrings.COMMAND_LINE_DATE_FORMAT;
+import static fortscale.common.general.CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME;
+import static fortscale.common.general.CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME;
 
 public class CollectorExecutionServiceImpl implements CollectorExecutionService {
 
@@ -37,7 +40,7 @@ public class CollectorExecutionServiceImpl implements CollectorExecutionService 
         logger.info("Start collector processing with params: " + Arrays.toString(params));
 
         if (params.length < 3) {
-            logger.error("Invalid input[{}]. Need at least {}, {} and {}. Example input: {}=some_{} {}=some_{}_as_long {}=some_{}_as_long", params, COMMAND_LINE_DATASOURCE_FIELD_NAME, COMMAND_LINE_START_TIME_FIELD_NAME, COMMAND_LINE_END_TIME_FIELD_NAME, COMMAND_LINE_DATASOURCE_FIELD_NAME, COMMAND_LINE_DATASOURCE_FIELD_NAME, COMMAND_LINE_START_TIME_FIELD_NAME, COMMAND_LINE_START_TIME_FIELD_NAME, COMMAND_LINE_END_TIME_FIELD_NAME, COMMAND_LINE_END_TIME_FIELD_NAME);
+            logger.error("Invalid input[{}]. Need at least {}, {} and {}. Example input: {}=some_{} {}=some_{}_as_long {}=some_{}_as_long", params, COMMAND_LINE_DATA_SOURCE_FIELD_NAME, COMMAND_LINE_START_DATE_FIELD_NAME, COMMAND_LINE_END_DATE_FIELD_NAME, COMMAND_LINE_DATA_SOURCE_FIELD_NAME, COMMAND_LINE_DATA_SOURCE_FIELD_NAME, COMMAND_LINE_START_DATE_FIELD_NAME, COMMAND_LINE_START_DATE_FIELD_NAME, COMMAND_LINE_END_DATE_FIELD_NAME, COMMAND_LINE_END_DATE_FIELD_NAME);
             return;
         }
 
@@ -46,11 +49,12 @@ public class CollectorExecutionServiceImpl implements CollectorExecutionService 
         final String endTimeParam;
 
         try {
-            dataSourceParam = parameterValidationService.getMandatoryParamAsString(COMMAND_LINE_DATASOURCE_FIELD_NAME, params);
-            startTimeParam = parameterValidationService.getMandatoryParamAsString(COMMAND_LINE_START_TIME_FIELD_NAME, params);
-            endTimeParam = parameterValidationService.getMandatoryParamAsString(COMMAND_LINE_END_TIME_FIELD_NAME, params);
+            dataSourceParam = parameterValidationService.getMandatoryParamAsString(COMMAND_LINE_DATA_SOURCE_FIELD_NAME, params);
+            startTimeParam = parameterValidationService.getMandatoryParamAsString(COMMAND_LINE_START_DATE_FIELD_NAME, params);
+            endTimeParam = parameterValidationService.getMandatoryParamAsString(COMMAND_LINE_END_DATE_FIELD_NAME, params);
             parameterValidationService.validateDatasourceParam(dataSourceParam);
-            parameterValidationService.validateTimeParams(startTimeParam, endTimeParam);
+            // TODO: set date format convention
+//            parameterValidationService.validateTimeParams(startTimeParam, endTimeParam);
         } catch (Exception e) {
             logger.error("Invalid input[{}].", params, e);
             return;
@@ -60,8 +64,8 @@ public class CollectorExecutionServiceImpl implements CollectorExecutionService 
         final long startTime;
         final long endTime;
         dataSource = Datasource.createDataSource(dataSourceParam);
-        startTime = Long.parseLong(startTimeParam);
-        endTime = Long.parseLong(endTimeParam);
+        startTime = TimestampUtils.convertToSeconds(new SimpleDateFormat(COMMAND_LINE_DATE_FORMAT).parse(startTimeParam));
+        endTime = TimestampUtils.convertToSeconds(new SimpleDateFormat(COMMAND_LINE_DATE_FORMAT).parse(endTimeParam));
 
 
         final List<String[]> fetchedDocuments;
