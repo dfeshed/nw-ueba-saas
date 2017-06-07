@@ -6,6 +6,7 @@ from airflow.operators.subdag_operator import SubDagOperator
 
 from presidio.builders.ade.aggregation.aggregations_dag_builder import AggregationsDagBuilder
 from presidio.builders.ade.model.raw_model_dag_builder import RawModelDagBuilder
+from presidio.builders.ade.model.aggr_model_dag_builder import AggrModelDagBuilder
 from presidio.builders.presidio_dag_builder import PresidioDagBuilder
 from presidio.operators.smart.smart_events_operator import SmartEventsOperator
 from presidio.utils.airflow.operators.sensor.task_sensor_service import TaskSensorService
@@ -50,6 +51,8 @@ class AnomalyDetectionEngineDagBuilder(PresidioDagBuilder):
         hourly_aggregations_max_gap_from_hourly_smart_in_timedelta = timedelta(hours=24)
         daily_aggregations_max_gap_from_daily_smart_in_timedelta = timedelta(hours=24)
         daily_aggregations_max_gap_from_raw_model_in_timedelta = timedelta(days=2)
+        daily_aggregations_max_gap_from_hourly_aggr_model_in_timedelta = timedelta(days=2)
+        daily_aggregations_max_gap_from_daily_aggr_model_in_timedelta = timedelta(days=2)
 
         hourly_aggregations_sub_dag_operator_list = []
         daily_aggregations_sub_dag_operator_list = []
@@ -105,12 +108,32 @@ class AnomalyDetectionEngineDagBuilder(PresidioDagBuilder):
                                                     raw_model_sub_dag_operator,
                                                     daily_aggregations_max_gap_from_raw_model_in_timedelta)
 
+            # Create the hourly aggr model subDag operator for the data source
+            hourly_aggr_model_sub_dag_operator = self._get_aggr_model_sub_dag_operator(data_source, FIX_DURATION_STRATEGY_HOURLY, anomaly_detection_engine_dag)
+            task_sensor_service.add_task_sequential_sensor(hourly_aggr_model_sub_dag_operator)
+            task_sensor_service.add_task_short_circuit(hourly_aggr_model_sub_dag_operator, daily_short_circuit_operator)
+            task_sensor_service.add_task_gap_sensor(daily_aggregations_sub_dag_operator,
+                                                    hourly_aggr_model_sub_dag_operator,
+                                                    daily_aggregations_max_gap_from_hourly_aggr_model_in_timedelta)
+
+            # Create the daily aggr model subDag operator for the data source
+            daily_aggr_model_sub_dag_operator = self._get_aggr_model_sub_dag_operator(data_source,
+                                                                                       FIX_DURATION_STRATEGY_DAILY,
+                                                                                       anomaly_detection_engine_dag)
+            task_sensor_service.add_task_sequential_sensor(daily_aggr_model_sub_dag_operator)
+            task_sensor_service.add_task_short_circuit(daily_aggr_model_sub_dag_operator, daily_short_circuit_operator)
+            task_sensor_service.add_task_gap_sensor(daily_aggregations_sub_dag_operator,
+                                                    daily_aggr_model_sub_dag_operator,
+                                                    daily_aggregations_max_gap_from_daily_aggr_model_in_timedelta)
+
             #defining the flow itself on each data source
 
             # The hourly aggregation sub dag is wired as upstream of the daily aggregation sub dag.
             hourly_aggregations_sub_dag_operator.set_downstream(daily_aggregations_sub_dag_operator)
-            # The daily aggregation sub dag is wired as upstream of the raw model sub dag
+            # The daily aggregation sub dag is wired as upstream of the raw and aggr model sub dags
             daily_aggregations_sub_dag_operator.set_downstream(raw_model_sub_dag_operator)
+            daily_aggregations_sub_dag_operator.set_downstream(hourly_aggr_model_sub_dag_operator)
+            daily_aggregations_sub_dag_operator.set_downstream(daily_aggr_model_sub_dag_operator)
 
 
             hourly_aggregations_sub_dag_operator_list.append(hourly_aggregations_sub_dag_operator)
@@ -172,6 +195,17 @@ class AnomalyDetectionEngineDagBuilder(PresidioDagBuilder):
         raw_model_dag_id = '{}_raw_model'.format(data_source)
 
         return AnomalyDetectionEngineDagBuilder.create_sub_dag_operator(RawModelDagBuilder(data_source), raw_model_dag_id, anomaly_detection_engine_dag)
+
+    @staticmethod
+    def _get_aggr_model_sub_dag_operator(data_source, fixed_duration_strategy, anomaly_detection_engine_dag):
+        aggr_model_dag_id = '{}_{}_aggr_model'.format(
+            data_source,
+            fixed_duration_strategy_to_string(fixed_duration_strategy)
+        )
+
+        return AnomalyDetectionEngineDagBuilder.create_sub_dag_operator(
+            AggrModelDagBuilder(data_source,fixed_duration_strategy), aggr_model_dag_id,
+            anomaly_detection_engine_dag)
 
     @staticmethod
     def create_sub_dag_operator(sub_dag_builder, sub_dag_id, anomaly_detection_engine_dag):
