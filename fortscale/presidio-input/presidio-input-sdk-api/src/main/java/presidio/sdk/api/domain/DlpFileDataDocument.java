@@ -295,4 +295,29 @@ public class DlpFileDataDocument extends AbstractAuditableDocument {
         this.eventType = eventType;
     }
 
+    @Override
+    public String toString() {
+        return "DlpFileDataDocument{" +
+                "dateTimeUnix=" + dateTimeUnix +
+                ", dateTime=" + dateTime +
+                ", executingApplication='" + executingApplication + '\'' +
+                ", hostname='" + hostname + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", username='" + username + '\'' +
+                ", malwareScanResult='" + malwareScanResult + '\'' +
+                ", eventId='" + eventId + '\'' +
+                ", sourceIp='" + sourceIp + '\'' +
+                ", wasBlocked=" + wasBlocked +
+                ", wasClassified=" + wasClassified +
+                ", destinationPath='" + destinationPath + '\'' +
+                ", destinationFileName='" + destinationFileName + '\'' +
+                ", fileSize=" + fileSize +
+                ", sourcePath='" + sourcePath + '\'' +
+                ", sourceFileName='" + sourceFileName + '\'' +
+                ", sourceDriveType='" + sourceDriveType + '\'' +
+                ", destinationDriveType='" + destinationDriveType + '\'' +
+                ", eventType='" + eventType + '\'' +
+                '}';
+    }
 }

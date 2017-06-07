@@ -44,14 +44,14 @@ public class ParametersServiceImpl implements ParametersValidationService {
         final long startTime = Long.parseLong(startTimeAsString);
         final long endTime = Long.parseLong(endTimeAsString);
         if (!(startTime >= 0)) {
-            throw new Exception(String.format("%s can't be negative! %s:%s", CommonStrings.COMMAND_LINE_START_TIME_FIELD_NAME, CommonStrings.COMMAND_LINE_START_TIME_FIELD_NAME, startTime));
+            throw new Exception(String.format("%s can't be negative! %s:%s", CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startTime));
         }
         if (!(startTime < endTime)) { //todo: maybe we can check that it's exactly 1 hour?
-            throw new Exception(String.format("%s must be less than %s! %s:%s, %s:%s", CommonStrings.COMMAND_LINE_START_TIME_FIELD_NAME, CommonStrings.COMMAND_LINE_END_TIME_FIELD_NAME, CommonStrings.COMMAND_LINE_START_TIME_FIELD_NAME, startTime, CommonStrings.COMMAND_LINE_END_TIME_FIELD_NAME, endTime));
+            throw new Exception(String.format("%s must be less than %s! %s:%s, %s:%s", CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startTime, CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endTime));
         }
         final long now = System.currentTimeMillis();
         if (!(endTime <= now)) {
-            throw new Exception(String.format("%s can't be in the future! %s:%s, %s:%s", CommonStrings.COMMAND_LINE_END_TIME_FIELD_NAME, CommonStrings.COMMAND_LINE_END_TIME_FIELD_NAME, endTime, "now", now));
+            throw new Exception(String.format("%s can't be in the future! %s:%s, %s:%s", CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endTime, "now", now));
         }
     }
 

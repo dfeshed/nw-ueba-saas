@@ -5,18 +5,21 @@ import fortscale.common.general.Datasource;
 import fortscale.domain.core.AbstractAuditableDocument;
 import fortscale.services.parameters.ParametersValidationService;
 import fortscale.utils.logging.Logger;
+import fortscale.utils.time.TimestampUtils;
+import org.springframework.util.CollectionUtils;
 import presidio.input.core.services.api.InputExecutionService;
 import presidio.sdk.api.domain.DlpFileDataDocument;
 import presidio.sdk.api.domain.DlpFileEnrichedDocument;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static fortscale.common.general.CommonStrings.COMMAND_LINE_DATASOURCE_FIELD_NAME;
-import static fortscale.common.general.CommonStrings.COMMAND_LINE_END_TIME_FIELD_NAME;
-import static fortscale.common.general.CommonStrings.COMMAND_LINE_START_TIME_FIELD_NAME;
+import static fortscale.common.general.CommonStrings.COMMAND_LINE_DATA_SOURCE_FIELD_NAME;
+import static fortscale.common.general.CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME;
+import static fortscale.common.general.CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME;
 
 public class InputExecutionServiceImpl implements InputExecutionService {
 
@@ -34,16 +37,16 @@ public class InputExecutionServiceImpl implements InputExecutionService {
         logger.info("Started collector processing with params: ." + Arrays.toString(params));
 
         if (params.length < 3) {
-            logger.error("Invalid input[{}]. Need at least {}, {} and {}. Example input: {}=some_{} {}=some_{}_as_long {}=some_{}_as_long.", params, COMMAND_LINE_DATASOURCE_FIELD_NAME, COMMAND_LINE_START_TIME_FIELD_NAME, COMMAND_LINE_END_TIME_FIELD_NAME, COMMAND_LINE_DATASOURCE_FIELD_NAME, COMMAND_LINE_DATASOURCE_FIELD_NAME, COMMAND_LINE_START_TIME_FIELD_NAME, COMMAND_LINE_START_TIME_FIELD_NAME, COMMAND_LINE_END_TIME_FIELD_NAME, COMMAND_LINE_END_TIME_FIELD_NAME);
+            logger.error("Invalid input[{}]. Need at least {}, {} and {}. Example input: {}=some_{} {}=some_{}_as_long {}=some_{}_as_long.", params, COMMAND_LINE_DATA_SOURCE_FIELD_NAME, COMMAND_LINE_START_DATE_FIELD_NAME, COMMAND_LINE_END_DATE_FIELD_NAME, COMMAND_LINE_DATA_SOURCE_FIELD_NAME, COMMAND_LINE_DATA_SOURCE_FIELD_NAME, COMMAND_LINE_START_DATE_FIELD_NAME, COMMAND_LINE_START_DATE_FIELD_NAME, COMMAND_LINE_END_DATE_FIELD_NAME, COMMAND_LINE_END_DATE_FIELD_NAME);
             return;
         }
 
-        final String dataSourceParam = parameterValidationService.getMandatoryParamAsString(COMMAND_LINE_DATASOURCE_FIELD_NAME, params);
-        final String startTimeParam = parameterValidationService.getMandatoryParamAsString(COMMAND_LINE_START_TIME_FIELD_NAME, params);
-        final String endTimeParam = parameterValidationService.getMandatoryParamAsString(COMMAND_LINE_END_TIME_FIELD_NAME, params);
+        final String dataSourceParam = parameterValidationService.getMandatoryParamAsString(COMMAND_LINE_DATA_SOURCE_FIELD_NAME, params);
+        final String startTimeParam = parameterValidationService.getMandatoryParamAsString(COMMAND_LINE_START_DATE_FIELD_NAME, params);
+        final String endTimeParam = parameterValidationService.getMandatoryParamAsString(COMMAND_LINE_END_DATE_FIELD_NAME, params);
         try {
             parameterValidationService.validateDatasourceParam(dataSourceParam);
-            parameterValidationService.validateTimeParams(startTimeParam, endTimeParam);
+//            parameterValidationService.validateTimeParams(startTimeParam, endTimeParam);
         } catch (Exception e) {
             logger.error("Invalid input[{}].", params, e);
             return;
@@ -53,8 +56,8 @@ public class InputExecutionServiceImpl implements InputExecutionService {
         final long startTime;
         final long endTime;
         datasource = Datasource.createDataSource(dataSourceParam);
-        startTime = Long.parseLong(startTimeParam);
-        endTime = Long.parseLong(endTimeParam);
+        startTime = TimestampUtils.convertToSeconds(new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss").parse(startTimeParam));
+        endTime = TimestampUtils.convertToSeconds(new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss").parse(endTimeParam));
 
         final List<? extends AbstractAuditableDocument> dataRecords = find(datasource, startTime, endTime);
         logger.info("Found {} dataRecords for datasource:{}, startTime:{}, endTime:{}.", datasource, startTime, endTime);
@@ -86,12 +89,15 @@ public class InputExecutionServiceImpl implements InputExecutionService {
         return enrichedRecords;
     }
 
-    private boolean storeForAde(List<? extends AbstractAuditableDocument> fetchedDocuments) {
-        logger.debug("Storing {} records.", fetchedDocuments.size());
+    private boolean storeForAde(List<? extends AbstractAuditableDocument> enrichedDocuments) {
+        logger.debug("Storing {} records.", enrichedDocuments.size());
 
-        //final boolean storeSuccessful = adeSdk.store(fetchedDocuments); //todo should be uncommented and replace temp implementation when adeSdk is ready
+        //final boolean storeSuccessful = adeSdk.store(enrichedDocuments); //todo should be uncommented and replace temp implementation when adeSdk is ready
         /*temp*/
-        System.out.println(fetchedDocuments);
+        System.out.println(enrichedDocuments);
+        logger.info("*************input logic comes here***********");
+        logger.info("enriched documents: \n{}", enrichedDocuments);
+        logger.info("**********************************************");
         final boolean storeSuccessful = true;
         /*temp*/
 
