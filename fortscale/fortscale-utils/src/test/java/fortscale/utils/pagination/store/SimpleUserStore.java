@@ -25,6 +25,7 @@ public class SimpleUserStore {
      * f - 10 events
      * g - 20 events
      * h - 40 events
+     *
      * @param map - contextId, SimpleUserEvent list
      */
     public static void addDefaultValues(Map<String, List<SimpleUserEvent>> map) {
@@ -50,6 +51,7 @@ public class SimpleUserStore {
 
     /**
      * Add event to map multiple times.
+     *
      * @param event
      * @param amount
      * @param map
@@ -68,8 +70,9 @@ public class SimpleUserStore {
 
     /**
      * Filter the contextIdToSimpleUserEventsMap and return list of SimpleUserEvent, who contain contextIds.
-     * @param contextIds Set<String>
-     * @return List<SimpleUserEvent>
+     *
+     * @param contextIds
+     * @return
      */
     public List<SimpleUserEvent> getListOfSimpleUserEvents(Set<String> contextIds) {
         Map<String, List<SimpleUserEvent>> contextIdToSimpleUserEventsMap = this.simpleUserEventsMap.entrySet().stream().filter(map -> contextIds.contains(map.getKey())).collect(Collectors.toMap(p -> p.getKey(), p -> p.getValue()));

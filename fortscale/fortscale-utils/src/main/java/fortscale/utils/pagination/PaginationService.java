@@ -62,9 +62,8 @@ public abstract class PaginationService<T> {
      *      while num of events less than pageSize and contextIds set amount less than maxGroupSize.
      *          Add first contextIds to set.
      *
-     *
-     * @param contextIdToNumOfItemsMap
-     * @return
+     * @param contextIdToNumOfItemsMap map of context id to num of events
+     * @return list num of events in group and set of contextId of pairs
      */
     private List<Pair<Integer,Set<String>>> getGroups(Map<String, Integer> contextIdToNumOfItemsMap){
         contextIdToNumOfItemsMap = contextIdToNumOfItemsMap.entrySet()
