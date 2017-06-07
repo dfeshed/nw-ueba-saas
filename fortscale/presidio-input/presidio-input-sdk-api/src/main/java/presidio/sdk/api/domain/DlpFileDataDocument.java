@@ -15,10 +15,7 @@ import java.util.Date;
 @Document(collection = DlpFileDataDocument.COLLECTION_NAME)
 public class DlpFileDataDocument extends AbstractAuditableDocument {
 
-    private static final Logger logger = Logger.getLogger(DlpFileDataDocument.class);
-
     public static final String COLLECTION_NAME = "dlpfile_stored_data";
-
     public static final String DATE_TIME_UNIX_FIELD_NAME = "dateTimeUnix";
     public static final String DATE_TIME_FIELD_NAME = "dateTime";
     public static final String EXECUTING_APPLICATION_FIELD_NAME = "executingApplication";
@@ -39,8 +36,7 @@ public class DlpFileDataDocument extends AbstractAuditableDocument {
     public static final String SOURCE_DRIVE_TYPE_FIELD_NAME = "sourceDriveType";
     public static final String DESTINATION_DRIVE_TYPE_FIELD_NAME = "destinationDriveType";
     public static final String EVENT_TYPE_FIELD_NAME = "eventType";
-
-
+    private static final Logger logger = Logger.getLogger(DlpFileDataDocument.class);
     @Field(DATE_TIME_UNIX_FIELD_NAME)
     protected long dateTimeUnix;
 
@@ -118,8 +114,8 @@ public class DlpFileDataDocument extends AbstractAuditableDocument {
         malwareScanResult = record[7];
         eventId = record[8];
         sourceIp = record[9];
-        wasBlocked = Boolean.getBoolean(record[10]);
-        wasClassified = Boolean.getBoolean(record[11]);
+        wasBlocked = Boolean.valueOf(record[10]);
+        wasClassified = Boolean.valueOf(record[11]);
         destinationPath = record[12];
         destinationFileName = record[13];
         fileSize = Double.parseDouble(record[14]);
