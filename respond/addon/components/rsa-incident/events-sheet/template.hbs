@@ -35,13 +35,15 @@
   }}
     {{rsa-data-table/header enableColumnSelector=true translateTitles=true}}
     {{#rsa-data-table/body as |item index column|}}
-      {{#rsa-data-table/body-cell column=column index=index item=item}}
+      {{#rsa-incident/events-sheet-cell column=column index=index item=item}}
         {{#if (eq column.field 'timestamp')}}
           {{rsa-content-datetime timestamp=item.timestamp displayDate=true displayTime=true}}
         {{else}}
-          {{get item column.field}}
+          <span class="entity" data-meta-key="{{column.fieldSuffix}}" data-entity-id="{{get item column.field}}">
+            {{get item column.field}}
+          </span>
         {{/if}}
-      {{/rsa-data-table/body-cell}}
+      {{/rsa-incident/events-sheet-cell}}
     {{/rsa-data-table/body}}
   {{/sheet.tableBody}}
   {{#sheet.detailsHeader as |detailsHeader|}}

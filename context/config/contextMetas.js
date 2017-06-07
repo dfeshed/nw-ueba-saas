@@ -76,7 +76,8 @@ module.exports = {
       name: 'FILE_HASH',
       enabled: true,
       metaKeys: [
-        'checksum'
+        'checksum',
+        'hash'
       ]
     },
     {

@@ -1,0 +1,7 @@
+.rsa-items-sheet {
+  .rsa-data-table-body-cell {
+    .has-context-data {
+      @include rsa-has-context-data();
+    }
+  }
+}
