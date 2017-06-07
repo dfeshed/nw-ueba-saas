@@ -1,16 +1,15 @@
+import logging
+
 from datetime import timedelta
 
 from presidio.builders.presidio_dag_builder import PresidioDagBuilder
-from presidio.operators.fixed_duration_operator import FixedDurationOperator
-import logging
+from presidio.operators.fixed_duration_jar_operator import FixedDurationJarOperator
 
 JAR_PATH = \
     '/home/presidio/dev-projects/presidio-core/fortscale/target/dependencies/presidio-input-core-1.0.0-SNAPSHOT.jar'
 MAIN_CLASS = 'presidio.input.core.FortscaleInputCoreApplication'
 
 jvm_args = {
-    'java_overriding_logback_conf_path':
-        '/home/presidio/dev-projects/presidio-core/fortscale/presidio-input/presidio-input-core/src/main/resources/logback-spring.xml',
     'jar_path': JAR_PATH,
     'main_class': MAIN_CLASS
 }
@@ -50,7 +49,7 @@ class InputDagBuilder(PresidioDagBuilder):
             }
 
             # Create jar operator for each data source
-            FixedDurationOperator(
+            FixedDurationJarOperator(
                 task_id='input_{}'.format(data_source),
                 fixed_duration_strategy=timedelta(hours=1),
                 jvm_args=jvm_args,

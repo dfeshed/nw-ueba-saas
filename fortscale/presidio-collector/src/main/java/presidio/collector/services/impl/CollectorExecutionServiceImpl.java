@@ -14,10 +14,10 @@ import presidio.sdk.api.services.CoreManagerService;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 import static fortscale.common.general.CommonStrings.COMMAND_LINE_DATA_SOURCE_FIELD_NAME;
+import static fortscale.common.general.CommonStrings.COMMAND_LINE_DATE_FORMAT;
 import static fortscale.common.general.CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME;
 import static fortscale.common.general.CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME;
 
@@ -64,8 +64,8 @@ public class CollectorExecutionServiceImpl implements CollectorExecutionService 
         final long startTime;
         final long endTime;
         dataSource = Datasource.createDataSource(dataSourceParam);
-        startTime = TimestampUtils.convertToSeconds(new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss").parse(startTimeParam));
-        endTime = TimestampUtils.convertToSeconds(new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss").parse(endTimeParam));
+        startTime = TimestampUtils.convertToSeconds(new SimpleDateFormat(COMMAND_LINE_DATE_FORMAT).parse(startTimeParam));
+        endTime = TimestampUtils.convertToSeconds(new SimpleDateFormat(COMMAND_LINE_DATE_FORMAT).parse(endTimeParam));
 
 
         final List<String[]> fetchedDocuments;
