@@ -58,7 +58,7 @@ public class PresidioInputPersistencyServiceMongoImplTest {
     public void deleteAllEventsFromMongoCollectionDlpFile() {
         List<AbstractAuditableDocument> list = new ArrayList<>();
         AbstractAuditableDocument doc = new DlpFileDataDocument(("2017-06-06 10:10:10,executing_application,hostname," +
-                "first_name,dddd,last_name,username,malware_scan_result,event_id,source_ip,false,false,destination_path," +
+                "first_name,dddd,last_name,username,malware_scan_result,event_id,source_ip,true,true,destination_path," +
                 "destination_file_name,2.23,source_path,source_file_name,source_drive_type,destination_drive_type," +
                 "event_type").split(","));
         list.add(doc);
