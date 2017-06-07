@@ -654,8 +654,13 @@ export default {
         'Log': 'Log',
         'Network': 'Network',
         'Correlation': 'Correlation',
-        'Web Threat Detection': 'Web',
-        'Unknown': 'Event'
+        'Web Threat Detection': 'Web Threat Detection',
+        'Web Threat Detection Incident': 'Web Threat Detection Incident',
+        'Unknown': 'Event',
+        'File Share': 'File Share',
+        'Manual Upload': 'Manual Upload',
+        'On Demand': 'On Demand',
+        Resubmit: 'Resubmit'
       }
     },
     eventsTable: {
