@@ -1,6 +1,6 @@
 package presidio.collector.services.impl;
 
-import fortscale.common.general.Datasource;
+import fortscale.common.general.DataSource;
 import fortscale.domain.core.AbstractAuditableDocument;
 import fortscale.services.parameters.ParametersValidationService;
 import fortscale.utils.time.TimestampUtils;
@@ -60,10 +60,10 @@ public class CollectorExecutionServiceImpl implements CollectorExecutionService 
             return;
         }
 
-        final Datasource dataSource;
+        final DataSource dataSource;
         final long startTime;
         final long endTime;
-        dataSource = Datasource.createDataSource(dataSourceParam);
+        dataSource = DataSource.createDataSource(dataSourceParam);
         startTime = TimestampUtils.convertToSeconds(new SimpleDateFormat(COMMAND_LINE_DATE_FORMAT).parse(startTimeParam));
         endTime = TimestampUtils.convertToSeconds(new SimpleDateFormat(COMMAND_LINE_DATE_FORMAT).parse(endTimeParam));
 
@@ -89,23 +89,23 @@ public class CollectorExecutionServiceImpl implements CollectorExecutionService 
         logger.info("Finish csv processing");
     }
 
-    private List<String[]> fetch(Datasource dataSource, long startTime, long endTime) throws Exception {
+    private List<String[]> fetch(DataSource dataSource, long startTime, long endTime) throws Exception {
         logger.info("Start fetch");
         final List<String[]> fetchedRecords = fetchService.fetch(dataSource, startTime, endTime);//todo: maybe the retry logic will be here?
         logger.info("finish fetch");
         return fetchedRecords;
     }
 
-    private boolean store(Datasource dataSource, List<AbstractAuditableDocument> fetchedDocuments) {
+    private boolean store(DataSource dataSource, List<AbstractAuditableDocument> fetchedDocuments) {
         logger.info("Start store");
         final boolean storeSuccessful = coreManagerService.store(dataSource, fetchedDocuments);
         logger.info("finish store");
         return storeSuccessful;
     }
 
-    private List<AbstractAuditableDocument> createDocuments(Datasource datasource, List<String[]> records) throws Exception {
+    private List<AbstractAuditableDocument> createDocuments(DataSource dataSource, List<String[]> records) throws Exception {
         List<AbstractAuditableDocument> createdDocuments = new ArrayList<>();
-        switch (datasource) { //todo: we can use a document factory instead of switch case
+        switch (dataSource) { //todo: we can use a document factory instead of switch case
             case DLPFILE: {
                 for (String[] record : records) {
                     createdDocuments.add(new DlpFileDataDocument(record));
@@ -120,7 +120,7 @@ public class CollectorExecutionServiceImpl implements CollectorExecutionService 
             }
             default: {
                 //should not happen
-                throw new Exception("create documents failed. this is weird - should not happen. datasource=" + datasource.name()); //todo: temp
+                throw new Exception("create documents failed. this is weird - should not happen. dataSource=" + dataSource.name()); //todo: temp
             }
         }
 

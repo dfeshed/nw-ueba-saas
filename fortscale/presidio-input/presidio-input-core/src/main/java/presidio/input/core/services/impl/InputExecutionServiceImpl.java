@@ -1,12 +1,11 @@
 package presidio.input.core.services.impl;
 
 
-import fortscale.common.general.Datasource;
+import fortscale.common.general.DataSource;
 import fortscale.domain.core.AbstractAuditableDocument;
 import fortscale.services.parameters.ParametersValidationService;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimestampUtils;
-import org.springframework.util.CollectionUtils;
 import presidio.input.core.services.api.InputExecutionService;
 import presidio.sdk.api.domain.DlpFileDataDocument;
 import presidio.sdk.api.domain.DlpFileEnrichedDocument;
@@ -17,9 +16,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static fortscale.common.general.CommonStrings.COMMAND_LINE_DATA_SOURCE_FIELD_NAME;
-import static fortscale.common.general.CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME;
-import static fortscale.common.general.CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME;
+import static fortscale.common.general.CommonStrings.*;
 
 public class InputExecutionServiceImpl implements InputExecutionService {
 
@@ -52,15 +49,15 @@ public class InputExecutionServiceImpl implements InputExecutionService {
             return;
         }
 
-        final Datasource datasource;
+        final DataSource dataSource;
         final long startTime;
         final long endTime;
-        datasource = Datasource.createDataSource(dataSourceParam);
+        dataSource = DataSource.createDataSource(dataSourceParam);
         startTime = TimestampUtils.convertToSeconds(new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss").parse(startTimeParam));
         endTime = TimestampUtils.convertToSeconds(new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss").parse(endTimeParam));
 
-        final List<? extends AbstractAuditableDocument> dataRecords = find(datasource, startTime, endTime);
-        logger.info("Found {} dataRecords for datasource:{}, startTime:{}, endTime:{}.", datasource, startTime, endTime);
+        final List<? extends AbstractAuditableDocument> dataRecords = find(dataSource, startTime, endTime);
+        logger.info("Found {} dataRecords for dataSource:{}, startTime:{}, endTime:{}.", dataSource, startTime, endTime);
 
         final List<DlpFileEnrichedDocument> enrichedRecords = enrich(dataRecords);
 
@@ -72,9 +69,9 @@ public class InputExecutionServiceImpl implements InputExecutionService {
         logger.info("Finished collector processing with params: ." + Arrays.toString(params));
     }
 
-    private List<? extends AbstractAuditableDocument> find(Datasource datasource, long startTime, long endTime) {
-        logger.debug("Finding {} records for datasource:{}, startTime:{}, endTime:{}.", datasource, startTime, endTime);
-        return presidioInputPersistencyService.find(datasource, startTime, endTime);
+    private List<? extends AbstractAuditableDocument> find(DataSource dataSource, long startTime, long endTime) {
+        logger.debug("Finding {} records for dataSource:{}, startTime:{}, endTime:{}.", dataSource, startTime, endTime);
+        return presidioInputPersistencyService.find(dataSource, startTime, endTime);
     }
 
     private List<DlpFileEnrichedDocument> enrich(List<? extends AbstractAuditableDocument> dataRecords) { //THIS IS A TEMP IMPLEMENTATION!!!!!!!!!!
