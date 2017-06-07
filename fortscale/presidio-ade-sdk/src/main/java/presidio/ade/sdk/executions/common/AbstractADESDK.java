@@ -1,33 +1,31 @@
 package presidio.ade.sdk.executions.common;
 
-import presidio.ade.domain.store.input.ADEInputCleanupParams;
-import presidio.ade.domain.store.input.ADEInputRecord;
-import presidio.ade.domain.store.input.ADEInputRecordsMetaData;
-import presidio.ade.domain.store.input.store.ADEInputDataStore;
+import presidio.ade.domain.record.enriched.EnrichedRecord;
+import presidio.ade.domain.store.enriched.EnrichedDataStore;
+import presidio.ade.domain.store.enriched.EnrichedDataStoreCleanupParams;
+import presidio.ade.domain.store.enriched.EnrichedRecordsMetadata;
 
 import java.util.List;
 import java.util.Set;
 
 /**
- * abstract class the implements common ADE SDK functionality regardless to the execution type
+ * abstract class that implements common ADE SDK functionality regardless to the execution type
  * Created by barak_schuster on 5/18/17.
  */
-public abstract class AbstractADESDK<ADERunParams> implements ADECommonSDK<ADERunParams>{
-    protected ADEInputDataStore store;
+public abstract class AbstractADESDK<ADERunParams> implements ADECommonSDK<ADERunParams> {
+    protected EnrichedDataStore store;
 
-    public AbstractADESDK(ADEInputDataStore store) {
+    public AbstractADESDK(EnrichedDataStore store) {
         this.store = store;
     }
 
     @Override
-    public void store(ADEInputRecordsMetaData metaData, List<? extends ADEInputRecord> records)
-    {
+    public void store(EnrichedRecordsMetadata metaData, List<? extends EnrichedRecord> records) {
         store.store(metaData, records);
     }
 
     @Override
-    public void cleanup(ADEInputCleanupParams params)
-    {
+    public void cleanup(EnrichedDataStoreCleanupParams params) {
         store.cleanup(params);
     }
 
@@ -35,7 +33,6 @@ public abstract class AbstractADESDK<ADERunParams> implements ADECommonSDK<ADERu
     public void processNextTimeRange(RunId runId) {
 
     }
-
 
     @Override
     public RunStatus getRunStatus(RunId runId) {
@@ -71,5 +68,4 @@ public abstract class AbstractADESDK<ADERunParams> implements ADECommonSDK<ADERu
     public void setDirtyDataMarkers(Set<DirtyDataMarker> dirtyDataMarkers) {
 
     }
-
 }
