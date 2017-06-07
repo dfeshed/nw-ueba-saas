@@ -8,4 +8,8 @@ import java.util.List;
 public interface DlpFileDataRepositoryCustom {
 
     List<DlpFileDataDocument> find(long startTime, long endTime);
+
+    int clean(long startTime, long endTime);
+
+
 }

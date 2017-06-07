@@ -29,5 +29,13 @@ public class DlpFileDataServiceImpl implements DlpFileDataService {
         logger.debug("finding dlpfile records {} between startTime:{} and endTime:{}.", startTime, endTime);
         return dlpFileDataRepository.find(startTime, endTime);
     }
+
+    @Override
+    public int clean(long startTime, long endTime) {
+        long startTimeBegingOfTime = 0;
+        long endTimeCorentSystemTime = System.currentTimeMillis() / 1000;  //todo: at the moment we just want to delete all the documents in the collection, in the future we will use values that we recive from user or airflow
+        logger.debug("deleting dlpfile records {} between startTime:{} and endTime:{}.", startTimeBegingOfTime, endTimeCorentSystemTime);
+        return dlpFileDataRepository.clean(startTimeBegingOfTime, endTimeCorentSystemTime);
+    }
 }
 

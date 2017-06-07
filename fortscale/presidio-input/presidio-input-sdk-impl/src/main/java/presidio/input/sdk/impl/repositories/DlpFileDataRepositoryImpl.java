@@ -24,4 +24,11 @@ public class DlpFileDataRepositoryImpl implements DlpFileDataRepositoryCustom {
         final Query query = new Query(timeCriteria);
         return mongoTemplate.find(query, DlpFileDataDocument.class);
     }
+
+    @Override
+    public int clean(long startTime, long endTime) {
+        Criteria timeCriteria = Criteria.where(CommonStrings.DATE_TIME_UNIX_FIELD_NAME).gte(startTime).lte(endTime);
+        final Query query = new Query(timeCriteria);
+        return mongoTemplate.findAllAndRemove(query, DlpFileDataDocument.class, CommonStrings.COLLECTION_NAME).size();
+    }
 }

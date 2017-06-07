@@ -34,6 +34,18 @@ public class PresidioInputPersistencyServiceMongoImpl implements PresidioInputPe
     @Override
     public List<? extends AbstractAuditableDocument> find(Datasource dataSource, long startTime, long endTime) {
         logger.info("Finding records for datasource {}, startTime {}, endTime {}", dataSource, startTime, endTime);
-        return dlpFileDataService.find(startTime, endTime);
+        switch (dataSource) {
+            default:
+                return dlpFileDataService.find(startTime, endTime);
+        }
+    }
+
+    @Override
+    public int clean(Datasource dataSource, long startTime, long endTime) {
+        logger.info("Deleting records for datasource {}, startTime {}, endTime {}", dataSource, startTime, endTime);
+        switch (dataSource) {
+             default:
+                 return dlpFileDataService.clean(startTime, endTime);
+        }
     }
 }
