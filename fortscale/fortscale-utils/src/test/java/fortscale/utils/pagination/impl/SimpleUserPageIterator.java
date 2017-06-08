@@ -1,6 +1,7 @@
 package fortscale.utils.pagination.impl;
 
 import fortscale.utils.pagination.PageIterator;
+
 import java.util.List;
 
 /**
@@ -16,7 +17,7 @@ public class SimpleUserPageIterator<SimpleUserEvent> implements PageIterator<Sim
     private int totalAmountOfPages;
     private List<List<SimpleUserEvent>> simpleUserEventList; //change to arraylist and comment
 
-    public SimpleUserPageIterator(List<List<SimpleUserEvent>> list){
+    public SimpleUserPageIterator(List<List<SimpleUserEvent>> list) {
         this.currentPage = 0;
         this.simpleUserEventList = list;
         this.totalAmountOfPages = list.size();
@@ -24,7 +25,7 @@ public class SimpleUserPageIterator<SimpleUserEvent> implements PageIterator<Sim
 
     @Override
     public boolean hasNext() {
-        return this.currentPage <  this.totalAmountOfPages;
+        return this.currentPage < this.totalAmountOfPages;
     }
 
     @Override
