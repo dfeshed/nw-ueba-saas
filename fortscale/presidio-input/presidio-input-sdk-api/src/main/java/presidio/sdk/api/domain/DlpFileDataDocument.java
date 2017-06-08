@@ -12,7 +12,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 
-@Document(collection = CommonStrings.COLLECTION_NAME)
+@Document(collection = CommonStrings.DLP_FILE_INPUT_COLLECTION_NAME)
 public class DlpFileDataDocument extends AbstractAuditableDocument {
 
 
