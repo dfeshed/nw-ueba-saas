@@ -21,7 +21,6 @@ const context = handleActions({
   }),
   [ACTION_TYPES.INITIALIZE_CONTEXT_PANEL]: (state, { payload }) => ({
     ...state,
-    activeTabName: 'LIST',
     dataSources: null,
     errorMessage: null,
     lookupData: [],
