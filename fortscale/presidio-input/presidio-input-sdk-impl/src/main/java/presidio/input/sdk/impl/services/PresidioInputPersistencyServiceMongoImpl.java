@@ -6,7 +6,6 @@ import fortscale.domain.core.AbstractAuditableDocument;
 import fortscale.utils.logging.Logger;
 import presidio.sdk.api.domain.DataService;
 import presidio.sdk.api.domain.DlpFileDataDocument;
-import presidio.sdk.api.domain.DlpFileDataService;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
 
 import java.util.List;
@@ -15,10 +14,10 @@ import java.util.stream.Collectors;
 public class PresidioInputPersistencyServiceMongoImpl implements PresidioInputPersistencyService {
     private final Logger logger = Logger.getLogger(PresidioInputPersistencyServiceMongoImpl.class);
 
-    private final DlpFileDataService dlpFileDataService;
+    private final DataService DataService;
 
-    public PresidioInputPersistencyServiceMongoImpl(DlpFileDataService dlpFileDataService) {
-        this.dlpFileDataService = dlpFileDataService;
+    public PresidioInputPersistencyServiceMongoImpl(DataService DataService) {
+        this.DataService = DataService;
     }
 
     @Override
@@ -31,7 +30,7 @@ public class PresidioInputPersistencyServiceMongoImpl implements PresidioInputPe
                 .stream()
                 .map(e -> (DlpFileDataDocument) e)
                 .collect(Collectors.toList());
-        return dlpFileDataService.store(dlpFileDataDocuments);
+        return DataService.store(dlpFileDataDocuments);
     }
 
     @Override
@@ -56,7 +55,7 @@ public class PresidioInputPersistencyServiceMongoImpl implements PresidioInputPe
     private DataService dataServiceForDataSource(DataSource dataSource) {
         switch (dataSource) {
             case DLPFILE:
-                return dlpFileDataService;
+                return DataService;
             default:
                 logger.error("");
                 return null;

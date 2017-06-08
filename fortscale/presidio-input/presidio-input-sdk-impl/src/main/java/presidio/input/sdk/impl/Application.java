@@ -1,6 +1,7 @@
 package presidio.input.sdk.impl;
 
 
+import fortscale.utils.logging.Logger;
 import fortscale.utils.mongodb.config.MongoConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -19,7 +20,7 @@ import presidio.input.sdk.impl.spring.PresidioInputPersistencyServiceConfig;
 public class Application {
 
 
-    private static final fortscale.utils.logging.Logger logger = fortscale.utils.logging.Logger.getLogger(Application.class);
+    private static final Logger logger = Logger.getLogger(Application.class);
 
     public static void main(String[] args) {
         logger.info("Starting input servcie");

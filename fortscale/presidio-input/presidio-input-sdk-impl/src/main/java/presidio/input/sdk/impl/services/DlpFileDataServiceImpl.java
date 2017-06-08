@@ -4,12 +4,12 @@ import fortscale.common.general.CommonStrings;
 import fortscale.domain.core.AbstractAuditableDocument;
 import fortscale.utils.logging.Logger;
 import presidio.input.sdk.impl.repositories.DlpFileDataRepository;
+import presidio.sdk.api.domain.DataService;
 import presidio.sdk.api.domain.DlpFileDataDocument;
-import presidio.sdk.api.domain.DlpFileDataService;
 
 import java.util.List;
 
-public class DlpFileDataServiceImpl implements DlpFileDataService {
+public class DlpFileDataServiceImpl implements DataService {
 
     private static final Logger logger = Logger.getLogger(DlpFileDataServiceImpl.class);
 

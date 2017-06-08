@@ -39,8 +39,7 @@ public class PresidioInputPersistencyServiceMongoImplTest {
         Assert.assertNotNull(presidioInputPersistencyService);
 
     }
-
-
+    
     @Test
     public void storeOneEventToMongoAndReadEventFromMongo() {
         List<AbstractAuditableDocument> list = new ArrayList<>();
@@ -56,9 +55,10 @@ public class PresidioInputPersistencyServiceMongoImplTest {
 
     @Test
     public void deleteAllEventsFromMongoCollectionDlpFile() {
+        mongoTemplate.dropCollection(DlpFileDataDocument.class);
         List<AbstractAuditableDocument> list = new ArrayList<>();
         AbstractAuditableDocument doc = new DlpFileDataDocument(("2017-06-06 10:10:10,executing_application,hostname," +
-                "first_name,dddd,last_name,username,malware_scan_result,event_id,source_ip,true,true,destination_path," +
+                "first_name,ccc,last_name,username,malware_scan_result,event_id,source_ip,true,true,destination_path," +
                 "destination_file_name,2.23,source_path,source_file_name,source_drive_type,destination_drive_type," +
                 "event_type").split(","));
         list.add(doc);
@@ -68,4 +68,5 @@ public class PresidioInputPersistencyServiceMongoImplTest {
         Assert.assertEquals(1, numberOfEventsDeleted);
         Assert.assertEquals(0, all.size());
     }
+
 }

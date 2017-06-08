@@ -1,7 +1,6 @@
 package presidio.sdk.api.domain;
 
 
-import fortscale.common.general.CommonStrings;
 import fortscale.domain.core.AbstractAuditableDocument;
 import fortscale.utils.time.TimestampUtils;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -11,69 +10,93 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import static presidio.sdk.api.domain.DlpFileDataDocument.DLP_FILE_INPUT_COLLECTION_NAME;
 
-@Document(collection = CommonStrings.DLP_FILE_INPUT_COLLECTION_NAME)
+
+@Document(collection = DLP_FILE_INPUT_COLLECTION_NAME)
 public class DlpFileDataDocument extends AbstractAuditableDocument {
 
+    public static final String DLP_FILE_INPUT_COLLECTION_NAME = "dlpfile_stored_data";
+    public static final String DATE_TIME_UNIX_FIELD_NAME = "dateTimeUnix";
+    public static final String DATE_TIME_FIELD_NAME = "dateTime";
+    public static final String EXECUTING_APPLICATION_FIELD_NAME = "executingApplication";
+    public static final String HOSTNAME_FIELD_NAME = "hostname";
+    public static final String FIRST_NAME_FIELD_NAME = "firstName";
+    public static final String LAST_NAME_FIELD_NAME = "lastName";
+    public static final String USERNAME_FIELD_NAME = "username";
+    public static final String MALWARE_SCAN_RESULT_FIELD_NAME = "malwareScanResult";
+    public static final String EVENT_ID_FIELD_NAME = "eventId";
+    public static final String SOURCE_IP_FIELD_NAME = "sourceIp";
+    public static final String WAS_BLOCKED_FIELD_NAME = "wasBlocked";
+    public static final String WAS_CLASSIFIED_FIELD_NAME = "wasClassified";
+    public static final String DESTINATION_PATH_FIELD_NAME = "destinationPath";
+    public static final String DESTINATION_FILE_NAME_FIELD_NAME = "destinationFileName";
+    public static final String FILE_SIZE_FIELD_NAME = "fileSize";
+    public static final String SOURCE_PATH_FIELD_NAME = "sourcePath";
+    public static final String SOURCE_FILE_NAME_FIELD_NAME = "sourceFileName";
+    public static final String SOURCE_DRIVE_TYPE_FIELD_NAME = "sourceDriveType";
+    public static final String DESTINATION_DRIVE_TYPE_FIELD_NAME = "destinationDriveType";
+    public static final String EVENT_TYPE_FIELD_NAME = "eventType";
 
-    @Field(CommonStrings.DATE_TIME_UNIX_FIELD_NAME)
+
+    @Field(DATE_TIME_UNIX_FIELD_NAME)
     protected long dateTimeUnix;
 
-    @Field(CommonStrings.DATE_TIME_FIELD_NAME)
+    @Field(DATE_TIME_FIELD_NAME)
     protected Date dateTime;
 
-    @Field(CommonStrings.EXECUTING_APPLICATION_FIELD_NAME)
+    @Field(EXECUTING_APPLICATION_FIELD_NAME)
     protected String executingApplication;
 
-    @Field(CommonStrings.HOSTNAME_FIELD_NAME)
+    @Field(HOSTNAME_FIELD_NAME)
     protected String hostname;
 
-    @Field(CommonStrings.FIRST_NAME_FIELD_NAME)
+    @Field(FIRST_NAME_FIELD_NAME)
     protected String firstName;
 
-    @Field(CommonStrings.LAST_NAME_FIELD_NAME)
+    @Field(LAST_NAME_FIELD_NAME)
     protected String lastName;
 
-    @Field(CommonStrings.USERNAME_FIELD_NAME)
+    @Field(USERNAME_FIELD_NAME)
     protected String username;
 
-    @Field(CommonStrings.MALWARE_SCAN_RESULT_FIELD_NAME)
+    @Field(MALWARE_SCAN_RESULT_FIELD_NAME)
     protected String malwareScanResult;
 
-    @Field(CommonStrings.EVENT_ID_FIELD_NAME)
+    @Field(EVENT_ID_FIELD_NAME)
     protected String eventId;
 
-    @Field(CommonStrings.SOURCE_IP_FIELD_NAME)
+    @Field(SOURCE_IP_FIELD_NAME)
     protected String sourceIp;
 
-    @Field(CommonStrings.WAS_BLOCKED_FIELD_NAME)
+    @Field(WAS_BLOCKED_FIELD_NAME)
     protected boolean wasBlocked;
 
-    @Field(CommonStrings.WAS_CLASSIFIED_FIELD_NAME)
+    @Field(WAS_CLASSIFIED_FIELD_NAME)
     protected boolean wasClassified;
 
-    @Field(CommonStrings.DESTINATION_PATH_FIELD_NAME)
+    @Field(DESTINATION_PATH_FIELD_NAME)
     protected String destinationPath;
 
-    @Field(CommonStrings.DESTINATION_FILE_NAME_FIELD_NAME)
+    @Field(DESTINATION_FILE_NAME_FIELD_NAME)
     protected String destinationFileName;
 
-    @Field(CommonStrings.FILE_SIZE_FIELD_NAME)
+    @Field(FILE_SIZE_FIELD_NAME)
     protected Double fileSize;
 
-    @Field(CommonStrings.SOURCE_PATH_FIELD_NAME)
+    @Field(SOURCE_PATH_FIELD_NAME)
     protected String sourcePath;
 
-    @Field(CommonStrings.SOURCE_FILE_NAME_FIELD_NAME)
+    @Field(SOURCE_FILE_NAME_FIELD_NAME)
     protected String sourceFileName;
 
-    @Field(CommonStrings.SOURCE_DRIVE_TYPE_FIELD_NAME)
+    @Field(SOURCE_DRIVE_TYPE_FIELD_NAME)
     protected String sourceDriveType;
 
-    @Field(CommonStrings.DESTINATION_DRIVE_TYPE_FIELD_NAME)
+    @Field(DESTINATION_DRIVE_TYPE_FIELD_NAME)
     protected String destinationDriveType;
 
-    @Field(CommonStrings.EVENT_TYPE_FIELD_NAME)
+    @Field(EVENT_TYPE_FIELD_NAME)
     protected String eventType;
 
 

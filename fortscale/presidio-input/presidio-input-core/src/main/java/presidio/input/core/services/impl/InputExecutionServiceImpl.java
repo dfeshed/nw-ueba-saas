@@ -1,6 +1,7 @@
 package presidio.input.core.services.impl;
 
 
+import fortscale.common.general.Command;
 import fortscale.common.general.CommonStrings;
 import fortscale.common.general.DataSource;
 import fortscale.domain.core.AbstractAuditableDocument;
@@ -29,7 +30,7 @@ public class InputExecutionServiceImpl implements InputExecutionService {
     private DataSource dataSource;
     private long startDate;
     private long endDate;
-    private String command;
+    private Command command;
 
     public InputExecutionServiceImpl(ParametersValidationService parameterValidationService, PresidioInputPersistencyService presidioInputPersistencyService) {
         this.parameterValidationService = parameterValidationService;
@@ -39,40 +40,38 @@ public class InputExecutionServiceImpl implements InputExecutionService {
     @Override
     public boolean init(String... params) throws Exception {
         logger.info("Setting and validating params:[{}] .", Arrays.toString(params));
-        boolean validationAnswer = false;
         if (params.length < 3) {
             logger.error("Invalid input[{}]. Need at least {}, {} and {}. Example input: {}=some_{} {}=some_{}_as_long {}=some_{}_as_long.", params, COMMAND_LINE_DATA_SOURCE_FIELD_NAME, COMMAND_LINE_START_DATE_FIELD_NAME, COMMAND_LINE_END_DATE_FIELD_NAME, COMMAND_LINE_DATA_SOURCE_FIELD_NAME, COMMAND_LINE_DATA_SOURCE_FIELD_NAME, COMMAND_LINE_START_DATE_FIELD_NAME, COMMAND_LINE_START_DATE_FIELD_NAME, COMMAND_LINE_END_DATE_FIELD_NAME, COMMAND_LINE_END_DATE_FIELD_NAME);
-            return validationAnswer;
+            return false;
         }
 
         final String dataSourceParam = parameterValidationService.getMandatoryParamAsString(COMMAND_LINE_DATA_SOURCE_FIELD_NAME, params);
         final String startTimeParam = parameterValidationService.getMandatoryParamAsString(COMMAND_LINE_START_DATE_FIELD_NAME, params);
         final String endTimeParam = parameterValidationService.getMandatoryParamAsString(COMMAND_LINE_END_DATE_FIELD_NAME, params);
-        command = parameterValidationService.getMandatoryParamAsString(COMMAND_LINE_COMMMAND_FIELD_NAME, params);
+        final String commandParam = parameterValidationService.getMandatoryParamAsString(COMMAND_LINE_COMMMAND_FIELD_NAME, params);
         try {
-            parameterValidationService.validateDatasourceParam(dataSourceParam);
-            validationAnswer = true;
+            parameterValidationService.validateDatasourceParam(dataSourceParam);//todo:there should be only validation . there is parsing process in development.
         } catch (Exception e) {
             logger.error("Invalid input[{}].", params, e);
-            return validationAnswer;
+            return false;
         }
-
+        command = Command.createCommand(commandParam);
         dataSource = DataSource.createDataSource(dataSourceParam);
         startDate = TimestampUtils.convertToSeconds(new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss").parse(startTimeParam));
         endDate = TimestampUtils.convertToSeconds(new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss").parse(endTimeParam));
 
-        return validationAnswer;
+        return true;
     }
 
     public void run() throws Exception {
         switch (command) {
-            case "enrich":
+            case ENRICH:
                 enrich();
-            case "clean":
+            case CLEAN:
                 clean();
             default:
                 logger.error("Bad command name {}", command);
-
+                throw new Exception("Bad command name " + command);
         }
     }
 

@@ -25,6 +25,7 @@ public class CollectorExecutionServiceImpl implements CollectorExecutionService 
     private final ParametersValidationService parameterValidationService;
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
+
     public CollectorExecutionServiceImpl(CoreManagerService coreManagerService, FetchService fetchService, ParametersValidationService parameterValidationService) {
         this.coreManagerService = coreManagerService;
         this.fetchService = fetchService;
