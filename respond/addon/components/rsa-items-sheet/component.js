@@ -106,7 +106,7 @@ export default Component.extend({
   shouldShow(itemDetails, items, selectedItem, selectedIndex, isNavEnabled) {
     const show = { itemDetails, items, selectedItem, selectedIndex, isNavEnabled };
     const lastShow = this._lastShow || {};
-    let transition = 'crossFade';
+    let transition = 'default';
     if (show.items === lastShow.items) {
       if (!lastShow.selectedItem || !show.selectedItem) {
         if (!lastShow.selectedItem && show.selectedItem) {
