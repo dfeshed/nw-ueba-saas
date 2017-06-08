@@ -18,10 +18,10 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.IOException;
+import java.time.Instant;
 import java.util.*;
 
 import static org.mockito.Matchers.any;
@@ -362,7 +362,7 @@ public class CategoryRarityModelScorerTest {
     }
 
     private void prepareMocks(AbstractModelScorer scorer, Model model, String feature, EventMessage eventMessage) {
-        when(modelsCacheService.getModel(any(), any(), any(), any(Long.class) )).thenReturn(model);
+        when(modelsCacheService.getModel(any(), any(), any(Instant.class) )).thenReturn(model);
         when(featureExtractService.extract(eq(scorer.getFeatureName()), eq(eventMessage))).thenReturn(new Feature("myFeature", feature));
 
     }
@@ -378,7 +378,7 @@ public class CategoryRarityModelScorerTest {
         context.put("dummy", new Feature("dummy", "dummy"));
         EventMessage eventMessage = buildEventMessage("dummy", "dummy"); // Anyhow the extracted value are mocked
 
-        when(modelsCacheService.getModel(any(), any(), any(), any(Long.class) )).thenReturn(null);
+        when(modelsCacheService.getModel(any(), any(), any(Instant.class) )).thenReturn(null);
         when(featureExtractService.extract(any(Set.class), eq(eventMessage))).thenReturn(context);
         when(featureExtractService.extract(scorer.getFeatureName(), eventMessage)).thenReturn(featureWithZeroCount);
         FeatureScore featureScore = scorer.calculateScore(eventMessage, 0L);
@@ -405,7 +405,7 @@ public class CategoryRarityModelScorerTest {
         context.put("dummy", new Feature("dummy", "dummy"));
         EventMessage eventMessage = buildEventMessage("dummy", "dummy"); // Anyhow the extracted value are mocked
 
-        when(modelsCacheService.getModel(any(), any(), any(), any(Long.class) )).thenReturn(model);
+        when(modelsCacheService.getModel(any(), any(), any(Instant.class) )).thenReturn(model);
         when(featureExtractService.extract(any(Set.class), eq(eventMessage))).thenReturn(context);
         when(featureExtractService.extract(scorer.getFeatureName(),eventMessage)).thenReturn(null);
         FeatureScore featureScore = scorer.calculateScore(eventMessage, 0L);

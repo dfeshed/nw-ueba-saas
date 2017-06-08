@@ -46,7 +46,7 @@
 //		when(context.resolve(Scorer.class, localModelScorerName)).thenReturn(continuousDataLocalModelScorer);
 //		when(context.resolve(ModelService.class, "modelService")).thenReturn(modelService);
 //		when(modelService.modelExists(GlobalModelStreamTaskService.GLOBAL_CONTEXT_CONSTANT, GlobalModelStreamTaskService.GLOBAL_MODEL_NAME)).thenReturn(true);
-//		when(modelService.getModel(GlobalModelStreamTaskService.GLOBAL_CONTEXT_CONSTANT, GlobalModelStreamTaskService.GLOBAL_MODEL_NAME)).thenReturn(prevalanceModel);
+//		when(modelService.shouldReturnNullModelIfNonExistInStore(GlobalModelStreamTaskService.GLOBAL_CONTEXT_CONSTANT, GlobalModelStreamTaskService.GLOBAL_MODEL_NAME)).thenReturn(prevalanceModel);
 //		when(prevalanceModel.getFieldModel(popQuantilesFieldModelName)).thenReturn(popQuantilesFieldModel);
 //		when(prevalanceModel.getFieldModel(medQuantilesFieldModelName)).thenReturn(medQuantilesFieldModel);
 //

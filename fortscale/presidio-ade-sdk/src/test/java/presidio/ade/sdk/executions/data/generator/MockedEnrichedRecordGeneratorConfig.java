@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import uk.co.jemos.podam.api.PodamFactory;
 import uk.co.jemos.podam.api.PodamFactoryImpl;
-import uk.co.jemos.podam.common.AttributeStrategy;
 import uk.co.jemos.podam.typeManufacturers.AbstractTypeManufacturer;
 
 import java.time.Instant;
@@ -18,17 +17,16 @@ import java.time.Instant;
  */
 @Configuration
 @Import(InstantAttributeStrategyConfig.class)
-public class ADEMockedInputRecordGeneratorConfig {
-
+public class MockedEnrichedRecordGeneratorConfig {
     @Autowired
     private AbstractTypeManufacturer attributeStrategy;
     @Autowired
     private SystemDateService systemDateService;
 
     @Bean
-    public ADEMockedInputRecordGenerator adeMockedInputRecordGenerator() {
+    public MockedEnrichedRecordGenerator mockedEnrichedRecordGenerator() {
         PodamFactory dataFactory = new PodamFactoryImpl();
         dataFactory.getStrategy().addOrReplaceTypeManufacturer(Instant.class, attributeStrategy);
-        return new ADEMockedInputRecordGenerator(dataFactory, systemDateService);
+        return new MockedEnrichedRecordGenerator(dataFactory, systemDateService);
     }
 }

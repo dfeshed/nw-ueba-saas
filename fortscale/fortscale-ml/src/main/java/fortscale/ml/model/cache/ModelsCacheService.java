@@ -1,15 +1,13 @@
 package fortscale.ml.model.cache;
 
-import fortscale.common.feature.Feature;
 import fortscale.ml.model.Model;
 
+import java.time.Instant;
 import java.util.Map;
 
 public interface ModelsCacheService {
-	Model getModel(Feature feature, String modelConfName, Map<String, String> context, long eventEpochtime);
-	void window();
-	void close();
 
+	Model getModel(String modelConfName, Map<String, String> context, Instant eventTime);
 	/**
 	 * refresh model (lazy cache) by deleting the model from the relevant cache manager
 	 *

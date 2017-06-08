@@ -1,6 +1,5 @@
 package fortscale.ml.scorer.config;
 
-import fortscale.common.feature.Feature;
 import fortscale.common.feature.extraction.FeatureExtractService;
 import fortscale.ml.model.Model;
 import fortscale.ml.model.ModelConfService;
@@ -24,6 +23,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
+import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -137,13 +137,7 @@ public class ProductionScorerConfFilesTest {
 		public ModelsCacheService modelsCacheService() {
 			return new ModelsCacheService() {
 				@Override
-				public Model getModel(Feature f, String s, Map<String, String> m, long l) {return null;}
-
-				@Override
-				public void window() {}
-
-				@Override
-				public void close() {}
+				public Model getModel(String s, Map<String, String> m, Instant l) {return null;}
 
 				@Override
 				public void deleteFromCache(String modelConfName, String contextId) {
