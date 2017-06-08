@@ -91,7 +91,13 @@ const incident = reduxActions.handleActions({
     // because we don't want to reuse info, we want to reload it in case it may have changed on server
     ...initialState,
     id: payload,
-    inspectorWidth: state.inspectorWidth || initialState.inspectorWidth
+
+    // there are some visual properties (not server data) properties which should be preserved
+    // they should not be reset to initialState for every incident
+    inspectorWidth: state.inspectorWidth || initialState.inspectorWidth,
+    viewMode: state.viewMode || initialState.viewMode,
+    isJournalPanelOpen: state.isJournalPanelOpen || initialState.isJournalPanelOpen,
+    hideViz: state.hideViz || initialState.hideViz
   }),
 
   [ACTION_TYPES.FETCH_INCIDENT_DETAILS]: (state, action) => {
