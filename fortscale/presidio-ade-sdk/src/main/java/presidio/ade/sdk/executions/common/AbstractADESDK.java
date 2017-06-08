@@ -2,7 +2,7 @@ package presidio.ade.sdk.executions.common;
 
 import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
-import presidio.ade.domain.store.enriched.EnrichedDataStoreCleanupParams;
+import presidio.ade.domain.store.AdeDataStoreCleanupParams;
 import presidio.ade.domain.store.enriched.EnrichedRecordsMetadata;
 
 import java.util.List;
@@ -25,7 +25,7 @@ public abstract class AbstractADESDK<ADERunParams> implements ADECommonSDK<ADERu
     }
 
     @Override
-    public void cleanup(EnrichedDataStoreCleanupParams params) {
+    public void cleanup(AdeDataStoreCleanupParams params) {
         store.cleanup(params);
     }
 

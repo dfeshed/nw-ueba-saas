@@ -1,7 +1,7 @@
 package presidio.ade.sdk.executions.common;
 
 import presidio.ade.domain.record.enriched.EnrichedRecord;
-import presidio.ade.domain.store.enriched.EnrichedDataStoreCleanupParams;
+import presidio.ade.domain.store.AdeDataStoreCleanupParams;
 import presidio.ade.domain.store.enriched.EnrichedRecordsMetadata;
 
 import java.util.List;
@@ -62,7 +62,7 @@ public interface ADECommonSDK<ADERunParams> {
      *
      * @param params
      */
-    void cleanup(EnrichedDataStoreCleanupParams params);
+    void cleanup(AdeDataStoreCleanupParams params);
 
     /**
      * pauses the execution. the ADE will pause gracefully as fast as possible and would not continue to the nearest sub step

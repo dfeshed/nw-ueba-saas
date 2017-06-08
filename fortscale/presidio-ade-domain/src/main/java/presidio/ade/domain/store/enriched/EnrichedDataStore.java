@@ -1,6 +1,7 @@
 package presidio.ade.domain.store.enriched;
 
 import presidio.ade.domain.record.enriched.EnrichedRecord;
+import presidio.ade.domain.store.AdeDataStoreCleanupParams;
 
 import java.util.List;
 
@@ -23,5 +24,5 @@ public interface EnrichedDataStore {
 	 *
 	 * @param cleanupParams to build the remove query
 	 */
-	void cleanup(EnrichedDataStoreCleanupParams cleanupParams);
+	void cleanup(AdeDataStoreCleanupParams cleanupParams);
 }
