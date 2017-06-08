@@ -1,6 +1,6 @@
 package presidio.ade.sdk.executions.online;
 
-import presidio.ade.domain.store.input.store.ADEInputDataStore;
+import presidio.ade.domain.store.enriched.EnrichedDataStore;
 import presidio.ade.sdk.executions.common.ADECommonSDK;
 import presidio.ade.sdk.executions.common.AbstractADESDK;
 import presidio.ade.sdk.executions.common.RunId;
@@ -13,7 +13,7 @@ import java.util.Set;
  * Created by barak_schuster on 5/18/17.
  */
 public class ADEOnlineSDK extends AbstractADESDK<PrepareOnlineRunTimeParams>{
-    public ADEOnlineSDK(ADEInputDataStore store) {
+    public ADEOnlineSDK(EnrichedDataStore store) {
         super(store);
     }
 

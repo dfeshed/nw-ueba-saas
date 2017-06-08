@@ -24,18 +24,16 @@ import fortscale.ml.scorer.config.ModelInfo;
 import fortscale.utils.factory.FactoryService;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 import org.mockito.internal.util.reflection.Whitebox;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.time.Instant;
 import java.util.*;
 
 import static org.mockito.Mockito.when;
@@ -163,7 +161,7 @@ public class ModelBasedScoreMapperFactoryTest {
 
 		ScoreMappingModel model = new ScoreMappingModel();
 		model.init(mapping);
-		when(modelCacheService.getModel(Mockito.any(Feature.class), Mockito.anyString(), Mockito.anyMap(), Mockito.anyLong()))
+		when(modelCacheService.getModel(Mockito.anyString(), Mockito.anyMap(), Mockito.any(Instant.class)))
 				.thenReturn(model);
 
         return modelBasedScoreMapperFactory.getProduct(conf);
