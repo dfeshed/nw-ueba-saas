@@ -1,7 +1,6 @@
 package fortscale.ml.scorer;
 
 import fortscale.common.event.Event;
-import fortscale.common.feature.Feature;
 import fortscale.common.feature.extraction.FeatureExtractService;
 import fortscale.domain.feature.score.FeatureScore;
 import fortscale.ml.model.Model;
@@ -23,6 +22,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
+import java.time.Instant;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -155,10 +155,9 @@ public class ModelBasedScoreMapperTest {
         when(eventMessage.getContextFields(Mockito.anyList())).thenReturn(Collections.singletonMap(contextFieldName,
                 "feature name"));
         when(modelsCacheService.getModel(
-                Mockito.any(Feature.class),
                 Mockito.anyString(),
                 Mockito.anyMapOf(String.class, String.class),
-                Mockito.anyLong())
+                Mockito.any(Instant.class))
         ).thenReturn(model);
 
         return new ModelBasedScoreMapper(

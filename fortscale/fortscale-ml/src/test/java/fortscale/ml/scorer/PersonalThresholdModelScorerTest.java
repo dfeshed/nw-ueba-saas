@@ -1,7 +1,6 @@
 package fortscale.ml.scorer;
 
 import fortscale.common.event.Event;
-import fortscale.common.feature.Feature;
 import fortscale.common.feature.extraction.FeatureExtractService;
 import fortscale.domain.feature.score.FeatureScore;
 import fortscale.ml.model.Model;
@@ -23,6 +22,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
+import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
 
@@ -166,10 +166,9 @@ public class PersonalThresholdModelScorerTest {
         List<String> contextFieldNames = Collections.singletonList(contextFieldName);
 
         when(modelsCacheService.getModel(
-                (Feature) Mockito.isNull(),
                 Mockito.anyString(),
                 Mockito.anyMapOf(String.class, String.class),
-                Mockito.anyLong())
+                Mockito.any(Instant.class))
         ).thenReturn(personalThresholdModel);
 
         when(eventMessage.getContextFields(contextFieldNames))
