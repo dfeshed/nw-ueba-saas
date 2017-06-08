@@ -164,8 +164,6 @@ public class ModelServiceTest {
 		expectedId2Query.fields().include("_id");
 
 		String expectedCollectionName = String.format("model_%s", modelConfName);
-		verify(mongoTemplate, times(1)).findOne(eq(expectedId1Query), eq(ModelDAO.class), eq(expectedCollectionName));
-		verify(mongoTemplate, times(1)).findOne(eq(expectedId2Query), eq(ModelDAO.class), eq(expectedCollectionName));
 		ArgumentCaptor<ModelDAO> modelDaoArgCaptor = ArgumentCaptor.forClass(ModelDAO.class);
 		verify(mongoTemplate, times(2)).insert(modelDaoArgCaptor.capture(), eq(expectedCollectionName));
 		verifyNoMoreInteractions(mongoTemplate);
@@ -176,12 +174,12 @@ public class ModelServiceTest {
 		ModelDAO actualModelDao = modelDaoArgCaptor.getAllValues().stream().filter(modelDAO -> modelDAO.getContextId().equals("id1")).findFirst().get();
 		Assert.assertEquals(sessionId, actualModelDao.getSessionId());
 		Assert.assertEquals(expectedId1Model, actualModelDao.getModel());
-		Assert.assertEquals(currentEndTime, actualModelDao.getEndTime());
+		Assert.assertEquals(currentEndTime.toInstant(), actualModelDao.getEndTime());
 
 		actualModelDao = modelDaoArgCaptor.getAllValues().stream().filter(modelDAO -> modelDAO.getContextId().equals("id2")).findFirst().get();
 		Assert.assertEquals(sessionId, actualModelDao.getSessionId());
 		Assert.assertEquals(expectedId2Model, actualModelDao.getModel());
-		Assert.assertEquals(currentEndTime, actualModelDao.getEndTime());
+		Assert.assertEquals(currentEndTime.toInstant(), actualModelDao.getEndTime());
 	}
 
 	private static FeatureBucket createFeatureBucketWithGenericHistogram(String featureName, GenericHistogram genericHistogram) {

@@ -4,20 +4,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import presidio.ade.domain.store.input.store.ADEInputDataStore;
-import presidio.ade.domain.store.input.store.ADEInputDataStoreConfig;
+import presidio.ade.domain.store.enriched.EnrichedDataStore;
+import presidio.ade.domain.store.enriched.EnrichedDataStoreConfig;
 
 /**
  * Created by barak_schuster on 5/22/17.
  */
 @Configuration
-@Import(ADEInputDataStoreConfig.class)
+@Import(EnrichedDataStoreConfig.class)
 public class ADEOnlineSDKConfig {
     @Autowired
-    private ADEInputDataStore adeInputDataStore;
+    private EnrichedDataStore enrichedDataStore;
 
     @Bean
     public ADEOnlineSDK adeOnlineSDK() {
-        return new ADEOnlineSDK(adeInputDataStore);
+        return new ADEOnlineSDK(enrichedDataStore);
     }
 }

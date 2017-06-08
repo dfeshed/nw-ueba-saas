@@ -6,6 +6,7 @@ import fortscale.ml.model.Model;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 
@@ -22,7 +23,7 @@ public class EventModelsCacheService {
 		if (isNullOrMissingValues(contextFieldNamesToValuesMap, contextFieldNames)) {
 			return null;
 		}
-		return modelsCacheService.getModel(feature, modelName, contextFieldNamesToValuesMap, eventEpochTimeInSec);
+		return modelsCacheService.getModel(modelName, contextFieldNamesToValuesMap, Instant.ofEpochSecond(eventEpochTimeInSec));
 	}
 
 	private Map<String, String> resolveContext(Event eventMessage, List<String> contextFieldNames){
