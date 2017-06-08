@@ -24,6 +24,9 @@ public class ADEInputRecord {
     @Indexed
     private Instant eventTime;
 
+    public ADEInputRecord() {
+    }
+
     public ADEInputRecord(Instant eventTime) {
         this.eventTime = eventTime;
     }

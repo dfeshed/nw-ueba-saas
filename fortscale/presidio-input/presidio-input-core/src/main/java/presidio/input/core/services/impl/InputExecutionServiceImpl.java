@@ -6,12 +6,18 @@ import fortscale.domain.core.AbstractAuditableDocument;
 import fortscale.services.parameters.ParametersValidationService;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimestampUtils;
+import org.apache.commons.beanutils.PropertyUtils;
+import presidio.ade.domain.store.input.ADEInputRecord;
+import presidio.ade.domain.store.input.ADEInputRecordsMetaData;
+import presidio.ade.domain.store.input.store.ADEInputDataStore;
 import presidio.input.core.services.api.InputExecutionService;
 import presidio.sdk.api.domain.DlpFileDataDocument;
 import presidio.sdk.api.domain.DlpFileEnrichedDocument;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
 
+import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -24,10 +30,18 @@ public class InputExecutionServiceImpl implements InputExecutionService {
 
     private final ParametersValidationService parameterValidationService;
     private final PresidioInputPersistencyService presidioInputPersistencyService;
+    private final ADEInputDataStore adeInputDataStore;
 
-    public InputExecutionServiceImpl(ParametersValidationService parameterValidationService, PresidioInputPersistencyService presidioInputPersistencyService) {
+    private DataSource dataSource;
+    private Instant startDate;
+    private Instant endDate;
+
+    public InputExecutionServiceImpl(ParametersValidationService parameterValidationService,
+                                     PresidioInputPersistencyService presidioInputPersistencyService,
+                                     ADEInputDataStore adeInputDataStore) {
         this.parameterValidationService = parameterValidationService;
         this.presidioInputPersistencyService = presidioInputPersistencyService;
+        this.adeInputDataStore = adeInputDataStore;
     }
 
     public void run(String... params) throws Exception {
@@ -49,15 +63,14 @@ public class InputExecutionServiceImpl implements InputExecutionService {
             return;
         }
 
-        final DataSource dataSource;
-        final long startTime;
-        final long endTime;
-        dataSource = DataSource.createDataSource(dataSourceParam);
-        startTime = TimestampUtils.convertToSeconds(new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss").parse(startTimeParam));
-        endTime = TimestampUtils.convertToSeconds(new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss").parse(endTimeParam));
+        dataSource = DataSource.valueOf(dataSourceParam);
+        final long startTimeSeconds = TimestampUtils.convertToSeconds(new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss").parse(startTimeParam));
+        final long endTimeSeconds = TimestampUtils.convertToSeconds(new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss").parse(endTimeParam));
+        startDate = Instant.ofEpochSecond(startTimeSeconds);
+        endDate = Instant.ofEpochSecond(startTimeSeconds);
 
-        final List<? extends AbstractAuditableDocument> dataRecords = find(dataSource, startTime, endTime);
-        logger.info("Found {} dataRecords for dataSource:{}, startTime:{}, endTime:{}.", dataSource, startTime, endTime);
+        final List<? extends AbstractAuditableDocument> dataRecords = find(dataSource, startTimeSeconds, endTimeSeconds);
+        logger.info("Found {} dataRecords for dataSource:{}, startTimeSeconds:{}, endTimeSeconds:{}.", dataSource, startTimeSeconds, endTimeSeconds);
 
         final List<DlpFileEnrichedDocument> enrichedRecords = enrich(dataRecords);
 
@@ -82,25 +95,41 @@ public class InputExecutionServiceImpl implements InputExecutionService {
             enrichedRecords.add(new DlpFileEnrichedDocument(dlpfileDataRecord, dlpfileDataRecord.getUsername(), dlpfileDataRecord.getHostname()));
         }
 
-
         return enrichedRecords;
     }
 
     private boolean storeForAde(List<? extends AbstractAuditableDocument> enrichedDocuments) {
         logger.debug("Storing {} records.", enrichedDocuments.size());
 
-        //final boolean storeSuccessful = adeSdk.store(enrichedDocuments); //todo should be uncommented and replace temp implementation when adeSdk is ready
-        /*temp*/
-        System.out.println(enrichedDocuments);
+
+        List<ADEInputRecord> records = new ArrayList<>();
+        ADEInputRecordsMetaData recordsMetaData = new ADEInputRecordsMetaData(dataSource.toString(), startDate, endDate);
+
+        convert(enrichedDocuments, records);
+
+        adeInputDataStore.store(recordsMetaData, records);
+
         logger.info("*************input logic comes here***********");
         logger.info("enriched documents: \n{}", enrichedDocuments);
         logger.info("**********************************************");
         final boolean storeSuccessful = true;
         /*temp*/
-
-
         return storeSuccessful;
     }
 
-
+    protected void convert(List<? extends AbstractAuditableDocument> enrichedDocuments, List<ADEInputRecord> records) {
+        for (AbstractAuditableDocument doc : enrichedDocuments) {
+            try {
+                ADEInputRecord adeInputRecord = new ADEInputRecord();
+                PropertyUtils.copyProperties(adeInputRecord, doc);
+                records.add(adeInputRecord);
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
+            } catch (NoSuchMethodException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }
