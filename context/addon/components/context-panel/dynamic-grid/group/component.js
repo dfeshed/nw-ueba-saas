@@ -6,7 +6,10 @@ export default Component.extend({
   layout,
 
   @computed('groupData')
-  groupSize: (groupData) => (groupData) ? groupData.length : '',
+  groupDataArray: (groupData) => (groupData) ? [].concat(groupData) : [],
+
+  @computed('groupDataArray')
+  groupSize: (groupDataArray) => groupDataArray.length,
 
   @computed('title', 'index')
   tetherPanelId: (title, index) => title.camelize().concat(index)

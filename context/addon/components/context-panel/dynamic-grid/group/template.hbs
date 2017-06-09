@@ -1,21 +1,23 @@
- {{rsa-content-definition label=(t title)}}
- <div>
-   {{#rsa-content-tethered-panel-trigger class="rsa-context-panel__grid__host-details__tetheredPanel" panel=tetherPanelId}}
-     <div class="rsa-context-panel__grid__host-details__groupdata">{{groupSize}}</div>
-   {{/rsa-content-tethered-panel-trigger}}
-   {{#rsa-content-tethered-panel panelId=tetherPanelId displayCloseButton=false position='top-left'}}
-     <section>
-       {{#if (gt groupSize 1)}}
-         {{#each groupData as |cellData |}}
-           <div class="rsa-context-panel__grid__host-details__field-value">
-             <span title= {{cellData}}>{{cellData}}</span>
-           </div>
-         {{/each}}
-       {{else}}
-         <div class="rsa-context-panel__grid__host-details__field-value">
-           <span title= {{groupData}}>{{groupData}}</span>
-         </div>
-       {{/if}}
-     </section>
-   {{/rsa-content-tethered-panel}}
- </div>
+{{rsa-content-definition label=(t title)}}
+<div>
+  {{#if displayType 'inline'}}
+    {{#each groupDataArray as |cellData |}}
+      <div class="rsa-context-panel__grid__host-details__field-value">
+        {{cellData}}
+      </div>
+    {{/each}}
+  {{else}}
+    {{#rsa-content-tethered-panel-trigger class="rsa-context-panel__grid__host-details__tetheredPanel" panel=tetherPanelId}}
+      <div class="rsa-context-panel__grid__host-details__groupdata">{{groupSize}}</div>
+    {{/rsa-content-tethered-panel-trigger}}
+    {{#rsa-content-tethered-panel panelId=tetherPanelId displayCloseButton=false position='top-left'}}
+      <section>
+        {{#each groupDataArray as |cellData |}}
+          <div class="rsa-context-panel__grid__host-details__field-value" title= {{cellData}}>
+            {{cellData}}
+          </div>
+        {{/each}}
+      </section>
+    {{/rsa-content-tethered-panel}}
+  {{/if}}
+</div>

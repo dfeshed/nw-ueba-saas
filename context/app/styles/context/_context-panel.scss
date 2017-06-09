@@ -312,8 +312,8 @@ radial-gradient(circle at 85% 85%, rsa-color(gray, darker, .1) 0, rsa-color(gray
       &__groupdata {
         color: rsa-color(blue, base);
       }
-      &__row-field-value {
-        padding-bottom: rsa-whitespace();
+      &__field-value {
+        padding-bottom: rsa-whitespace(least);
       }
       &__single-column {
         padding-left: rsa-whitespace();
