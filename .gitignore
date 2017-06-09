@@ -34,3 +34,4 @@ testem.log
 *coverage.json
 lcov.dat
 typings/
+junit/

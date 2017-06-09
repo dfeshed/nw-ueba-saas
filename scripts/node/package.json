@@ -7,6 +7,7 @@
     "babel-plugin-transform-es2015-modules-commonjs": "6.18.0"
   },
   "devDependencies": {
-    "babel-eslint": "^7.1.1"
+    "babel-eslint": "^7.1.1",
+    "testem-multi-reporter": "1.0.1"
   }
 }
