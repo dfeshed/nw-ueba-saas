@@ -34,7 +34,7 @@
     lazy=true
   }}
     {{rsa-data-table/header enableColumnSelector=true translateTitles=true}}
-    {{#rsa-data-table/body as |item index column|}}
+    {{#rsa-data-table/body showNoResultMessage=false as |item index column|}}
       {{#rsa-incident/events-sheet-cell column=column index=index item=item}}
         {{#if (eq column.field 'timestamp')}}
           {{rsa-content-datetime timestamp=item.timestamp displayDate=true displayTime=true}}
