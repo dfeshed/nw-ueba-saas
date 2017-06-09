@@ -8,6 +8,13 @@ $entityFileHashColor: $base0;
 
 .rsa-incident-entities {
 
+  &-legend {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    margin: rsa-whitespace();
+  }
+
   .rsa-force-layout {
     &-node {
       opacity: 0;

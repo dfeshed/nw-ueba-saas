@@ -2,7 +2,7 @@
   padding: rsa-whitespace(least) rsa-whitespace();
   @include rsa-font(body,small);
   line-height: 1.35;
-  text-align: center;
+  text-align: right;
   background-color: rsa-color(gray,darker, $rsa-nearly-opaque);
 
   &.has-no-data {
@@ -12,7 +12,7 @@
   .datum {
     display: inline-block;
     white-space: nowrap;
-    padding: 0 rsa-whitespace(less);
+    padding: 0 0 0 rsa-whitespace(less);
     color: rsa-color(white);
 
     label {

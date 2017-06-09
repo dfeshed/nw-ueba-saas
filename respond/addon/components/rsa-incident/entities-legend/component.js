@@ -1,14 +1,6 @@
-import Ember from 'ember';
+import Component from 'ember-component';
 import computed, { notEmpty } from 'ember-computed-decorators';
-import connect from 'ember-redux/components/connect';
-import { storyNodeFilterCounts } from 'respond/selectors/storyline';
 import { dasherize } from 'ember-string';
-const { Component } = Ember;
-
-const stateToComputed = (state) => ({
-  data: storyNodeFilterCounts(state),
-  selection: state.respond.incident.selection
-});
 
 const EntitiesLegend = Component.extend({
   classNames: ['rsa-incident-entities-legend'],
@@ -43,4 +35,4 @@ const EntitiesLegend = Component.extend({
   }
 });
 
-export default connect(stateToComputed)(EntitiesLegend);
+export default EntitiesLegend;

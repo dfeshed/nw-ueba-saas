@@ -1,10 +1,6 @@
 import reselect from 'reselect';
 import arrayFlattenBy from 'respond/utils/array/flatten-by';
-import arrayFindByList from 'respond/utils/array/find-by-list';
 import arrayFilterByList from 'respond/utils/array/filter-by-list';
-import arrayFromHash from 'respond/utils/array/from-hash';
-import eventsToNodesAndLinks from 'respond/utils/entity/events-to-nodes-links';
-import { parseNodeId, countNodesByType } from 'respond/utils/entity/node';
 import StoryPoint from 'respond/utils/storypoint/storypoint';
 const { createSelector } = reselect;
 
@@ -102,33 +98,6 @@ export const storyEventCount = createSelector(
 );
 
 /**
- * Generates the nodes & links from a given array of normalized events.
- * @returns {{ nodes: Object[], links: Object[] }
- * @public
- */
-export const storyNodesAndLinks = createSelector(
-  [ storyEvents ],
-  (events) => {
-    return eventsToNodesAndLinks(events);
-  }
-);
-
-/**
- * Returns the count of all nodes in `storyNodesAndLinks`, grouped by node type.
- * This is the count of all the nodes in the current storyline, irregardless of the current filter.
- * @returns {Number}
- * @public
- */
-export const storyNodeCounts = createSelector(
-  [ storyNodesAndLinks ],
-  ({ nodes = [] }) => {
-    return arrayFromHash(
-      countNodesByType(nodes)
-    );
-  }
-);
-
-/**
  * Returns the `respond.incident.selection` state.
  * @private
  */
@@ -154,54 +123,6 @@ export const storyPointSelections = createSelector(
 export const storyEventSelections = createSelector(
   [ incidentSelection ],
   ({ type, ids }) => ((type === 'event') ? ids : [])
-);
-
-// Generates a filter for the storyline's nodes & links from the current storyline selection (if any).
-export const storyNodesAndLinksFilter = createSelector(
-  [ storyNodesAndLinks, incidentSelection ],
-  ({ nodes = [], links = [] }, { type, ids }) => {
-
-    const filterIdsByEvents = (arr, field, values) => {
-      return arr
-        .filter((item) => !!arrayFindByList(item.events, field, values))
-        .map((item) => item.id);
-    };
-
-    if (ids && ids.length) {
-      switch (type) {
-        case 'storyPoint':
-          return {
-            nodeIds: filterIdsByEvents(nodes, 'indicatorId', ids),
-            linkIds: filterIdsByEvents(links, 'indicatorId', ids)
-          };
-        case 'event':
-          return {
-            nodeIds: filterIdsByEvents(nodes, 'id', ids),
-            linkIds: filterIdsByEvents(links, 'id', ids)
-          };
-      }
-    }
-    return null;
-  }
-);
-
-// Returns either the count of all the nodes in `storyNodesAndLinksFilter`, or
-// if storyNodesAndLinksFilter is null returns the count of all nodes in `storyNodesAndLinks`.
-// This is the count of all the nodes in the storyline that pass the current filter, if any;
-// otherwise if there is no current filter, then it is the count of all the nodes in the storyline at all.
-export const storyNodeFilterCounts = createSelector(
-  [ storyNodeCounts, storyNodesAndLinksFilter ],
-  (storyNodeCounts, filter) => {
-    if (!filter) {
-      return storyNodeCounts;
-    } else {
-      const { nodeIds = [] } = filter;
-      const nodes = nodeIds.map(parseNodeId);
-      return arrayFromHash(
-        countNodesByType(nodes)
-      );
-    }
-  }
 );
 
 // Returns either the list of all events in the storyline, or the subset of those events that match the

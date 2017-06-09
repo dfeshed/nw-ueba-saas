@@ -2,20 +2,26 @@ import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from '../../../../helpers/engine-resolver';
 import wait from 'ember-test-helpers/wait';
-import DataHelper from '../../../../helpers/data-helper';
 
 moduleForComponent('rsa-incident-entities-legend', 'Integration | Component | Incident Entities Legend', {
   integration: true,
-  resolver: engineResolverFor('respond'),
-  setup() {
-    this.inject.service('redux');
-  }
+  resolver: engineResolverFor('respond')
 });
 
+const data = [
+  { key: 'ip', value: 2 },
+  { key: 'host', value: 3 },
+  { key: 'domain', value: 4 }
+];
+
+const selection = { type: '', ids: [] };
+
 test('it renders counts and sometimes renders selection info when appropriate', function(assert) {
-  const dataHelper = new DataHelper(this.get('redux'));
-  dataHelper.fetchIncidentStoryline();
-  this.render(hbs`{{rsa-incident/entities-legend}}`);
+  this.setProperties({
+    data,
+    selection
+  });
+  this.render(hbs`{{rsa-incident/entities-legend data=data selection=selection}}`);
 
   return wait()
     .then(() => {
@@ -28,21 +34,21 @@ test('it renders counts and sometimes renders selection info when appropriate', 
       const $noSelection = $el.find('.selection');
       assert.notOk($noSelection.length, 'Expected not to find any selection DOM when no selection has been applied.');
 
-      dataHelper.initializeIncidentSelection({ type: 'indicator', id: 'indicatorId1' });
+      this.set('selection', { type: 'indicator', ids: ['indicatorId1'] });
       return wait();
     })
     .then(() => {
       const $selection = this.$('.rsa-incident-entities-legend .selection');
       assert.ok($selection.length, 'Expected to find selection DOM when an indicator has been selected.');
 
-      dataHelper.initializeIncidentSelection({ type: 'event', id: 'eventId1' });
+      this.set('selection', { type: 'event', ids: ['eventId1'] });
       return wait();
     })
     .then(() => {
       const $selection2 = this.$('.rsa-incident-entities-legend .selection');
       assert.ok($selection2.length, 'Expected to find selection DOM when an event has been selected.');
 
-      dataHelper.initializeIncidentSelection({ type: 'node', id: 'nodeId1' });
+      this.set('selection', { type: 'node', ids: ['nodeId1'] });
       return wait();
     })
     .then(() => {
