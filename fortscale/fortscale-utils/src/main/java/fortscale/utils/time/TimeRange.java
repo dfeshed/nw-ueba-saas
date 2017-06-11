@@ -1,6 +1,5 @@
 package fortscale.utils.time;
 
-import javax.validation.constraints.Null;
 import java.time.Instant;
 
 /**
@@ -9,8 +8,8 @@ import java.time.Instant;
  * @author Lior Govrin
  */
 public class TimeRange implements Comparable<TimeRange> {
-    private Instant start;
-    private Instant end;
+    private final Instant start;
+    private final Instant end;
 
     /**
      * {@link Instant} based c'tor.
@@ -51,7 +50,7 @@ public class TimeRange implements Comparable<TimeRange> {
 
     @Override
     public int compareTo(TimeRange other) {
-        if(other == null) throw new NullPointerException("The time range cannot be null.");;
+        if(other == null) throw new NullPointerException("The time range cannot be null.");
         int startComparisonResult = start.compareTo(other.start);
         if (startComparisonResult != 0) return startComparisonResult;
         return end.compareTo(other.end);
