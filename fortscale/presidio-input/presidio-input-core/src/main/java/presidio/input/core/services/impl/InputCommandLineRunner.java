@@ -16,7 +16,6 @@ public class InputCommandLineRunner implements CommandLineRunner {
 
     @Override
     public void run(String... params) throws Exception {
-        inputExecutionService.init(params);
-        inputExecutionService.run();
+        inputExecutionService.run(params);
     }
 }

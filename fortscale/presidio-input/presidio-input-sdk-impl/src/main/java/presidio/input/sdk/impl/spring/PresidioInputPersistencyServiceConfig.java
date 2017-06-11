@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import presidio.input.sdk.impl.repositories.DlpFileDataRepository;
-import presidio.input.sdk.impl.services.DlpFileDataServiceImpl;
+import presidio.input.sdk.impl.services.DlpFileDataService;
 import presidio.input.sdk.impl.services.PresidioInputPersistencyServiceMongoImpl;
 import presidio.sdk.api.domain.DataService;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
@@ -20,7 +20,7 @@ public class PresidioInputPersistencyServiceConfig {
 
     @Bean
     public DataService dlpFileDataService() {
-        return new DlpFileDataServiceImpl(dlpFileDataRepository);
+        return new DlpFileDataService(dlpFileDataRepository);
     }
 
     @Bean

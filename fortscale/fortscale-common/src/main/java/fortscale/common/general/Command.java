@@ -8,6 +8,4 @@ public enum Command {
     public static Command createCommand(String commandName) throws Exception {
         return Command.valueOf(commandName.toUpperCase());
     }
-
-
 }

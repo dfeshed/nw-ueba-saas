@@ -9,13 +9,13 @@ import presidio.sdk.api.domain.DlpFileDataDocument;
 
 import java.util.List;
 
-public class DlpFileDataServiceImpl implements DataService {
+public class DlpFileDataService implements DataService {
 
-    private static final Logger logger = Logger.getLogger(DlpFileDataServiceImpl.class);
+    private static final Logger logger = Logger.getLogger(DlpFileDataService.class);
 
     private final DlpFileDataRepository dlpFileDataRepository;
 
-    public DlpFileDataServiceImpl(DlpFileDataRepository dlpFileDataRepository) {
+    public DlpFileDataService(DlpFileDataRepository dlpFileDataRepository) {
         this.dlpFileDataRepository = dlpFileDataRepository;
     }
 

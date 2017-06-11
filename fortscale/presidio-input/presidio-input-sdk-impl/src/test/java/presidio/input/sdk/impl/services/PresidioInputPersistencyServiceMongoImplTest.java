@@ -37,6 +37,7 @@ public class PresidioInputPersistencyServiceMongoImplTest {
     public void contextLoads() throws Exception {
 
         Assert.assertNotNull(presidioInputPersistencyService);
+        Assert.assertNotNull(mongoTemplate);
 
     }
     
