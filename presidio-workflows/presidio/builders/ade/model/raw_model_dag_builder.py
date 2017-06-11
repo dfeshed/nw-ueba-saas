@@ -1,6 +1,7 @@
 from presidio.builders.presidio_dag_builder import PresidioDagBuilder
-
-
+from presidio.operators.model.raw_model_feature_aggregation_buckets_operator import RawModelFeatureAggregationBucketsOperator
+from presidio.operators.model.raw_model_operator import RawModelOperator
+from presidio.utils.services.fixed_duration_strategy import FIX_DURATION_STRATEGY_DAILY
 
 
 class RawModelDagBuilder(PresidioDagBuilder):
@@ -28,6 +29,14 @@ class RawModelDagBuilder(PresidioDagBuilder):
         :return: The input DAG, after the operator flow was added
         :rtype: airflow.models.DAG
         """
+
+        raw_model_feature_aggregation_buckets_operator = RawModelFeatureAggregationBucketsOperator(fixed_duration_strategy = FIX_DURATION_STRATEGY_DAILY,
+                                                                                                   data_source=self.data_source,
+                                                                                                   dag=raw_model_dag)
+        raw_model_operator = RawModelOperator(data_source=self.data_source,
+                                              dag=raw_model_dag)
+
+        raw_model_feature_aggregation_buckets_operator.set_downstream(raw_model_operator)
 
 
         return raw_model_dag
