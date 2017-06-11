@@ -18,6 +18,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import presidio.ade.domain.store.enriched.EnrichedDataToCollectionNameTranslator;
 import presidio.ade.domain.store.enriched.EnrichedRecordsMetadata;
+import presidio.ade.sdk.executions.common.ADEManagerSDK;
 import presidio.ade.sdk.executions.data.generator.MockedEnrichedRecordGenerator;
 import presidio.ade.sdk.executions.data.generator.MockedEnrichedRecordGeneratorConfig;
 
@@ -33,7 +34,7 @@ import java.util.Properties;
 @RunWith(SpringJUnit4ClassRunner.class)
 public class ADEOnlineSDKTest {
     @Autowired
-    private ADEOnlineSDK adeOnlineSDK;
+    private ADEManagerSDK adesdk;
     @Autowired
     private SystemDateService systemDateService;
     @Autowired
@@ -45,12 +46,11 @@ public class ADEOnlineSDKTest {
 
     @Test
     public void shouldInsertDataAndCreateIndexes() {
-        adeOnlineSDK.getRunId();
         Instant startInstant = systemDateService.getInstant();
         Instant endInstant = systemDateService.getInstant().plus(1, ChronoUnit.HOURS);
         EnrichedRecordsMetadata metaData = new EnrichedRecordsMetadata("testDataSource", startInstant, endInstant);
         List<MockedEnrichedRecord> generate = dataGenerator.generate(metaData);
-        adeOnlineSDK.store(metaData, generate);
+        adesdk.store(metaData, generate);
         String collectionName = translator.toCollectionName(metaData);
         List<MockedEnrichedRecord> insertedRecords = mongoTemplate.findAll(MockedEnrichedRecord.class, collectionName);
         Assert.assertTrue("ade input records exists", insertedRecords.size() > 0);
@@ -63,7 +63,7 @@ public class ADEOnlineSDKTest {
     @Configuration
     @Import({
             MongodbTestConfig.class,
-            ADEOnlineSDKConfig.class,
+            ADEManagerSDKConfig.class,
             SystemDateServiceImplForcedConfig.class,
             MockedEnrichedRecordGeneratorConfig.class
     })
