@@ -11,5 +11,6 @@ public interface DlpFileDataService {
 
     List<DlpFileDataDocument> find(long startTime, long endTime);
 
+    int clean(long startTime, long endTime);
 
 }
