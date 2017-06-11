@@ -24,10 +24,7 @@ public class InputCoreConfiguration {
     @Autowired
     private ParametersValidationService parametersValidationService;
 
-    //    @Autowired
-//    private ApplicationArguments applicationArguments;
-//
-//    @Bean
+
     public InputExecutionService inputProcessService() {
         return new InputExecutionServiceImpl(parametersValidationService, presidioInputPersistencyService);
     }
