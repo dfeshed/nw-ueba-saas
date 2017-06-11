@@ -1,5 +1,6 @@
 package presidio.input.sdk.impl.repositories;
 
+import com.mongodb.WriteResult;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -28,6 +29,7 @@ public class DlpFileDataRepositoryImpl implements DlpFileDataRepositoryCustom {
     public int clean(long startTime, long endTime) {
         Criteria timeCriteria = Criteria.where(DlpFileDataDocument.DATE_TIME_UNIX_FIELD_NAME).gte(startTime).lte(endTime);
         final Query query = new Query(timeCriteria);//todo:same as the the todo above
-        return mongoTemplate.findAllAndRemove(query, DlpFileDataDocument.class, DlpFileDataDocument.DLP_FILE_INPUT_COLLECTION_NAME).size();
+        WriteResult removeResult = mongoTemplate.remove(query, DlpFileDataDocument.class, DlpFileDataDocument.COLLECTION_NAME);
+        return removeResult.getN();
     }
 }

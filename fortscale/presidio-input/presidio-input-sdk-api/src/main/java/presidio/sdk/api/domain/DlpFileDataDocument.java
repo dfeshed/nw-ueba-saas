@@ -10,13 +10,13 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import static presidio.sdk.api.domain.DlpFileDataDocument.DLP_FILE_INPUT_COLLECTION_NAME;
+import static presidio.sdk.api.domain.DlpFileDataDocument.COLLECTION_NAME;
 
 
-@Document(collection = DLP_FILE_INPUT_COLLECTION_NAME)
+@Document(collection = COLLECTION_NAME)
 public class DlpFileDataDocument extends AbstractAuditableDocument {
 
-    public static final String DLP_FILE_INPUT_COLLECTION_NAME = "dlpfile_stored_data";
+    public static final String COLLECTION_NAME = "dlpfile_stored_data";
     public static final String DATE_TIME_UNIX_FIELD_NAME = "dateTimeUnix";
     public static final String DATE_TIME_FIELD_NAME = "dateTime";
     public static final String EXECUTING_APPLICATION_FIELD_NAME = "executingApplication";
