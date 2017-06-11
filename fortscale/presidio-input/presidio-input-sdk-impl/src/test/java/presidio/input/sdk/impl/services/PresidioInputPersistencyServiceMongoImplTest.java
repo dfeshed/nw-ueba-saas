@@ -35,10 +35,8 @@ public class PresidioInputPersistencyServiceMongoImplTest {
 
     @Test
     public void contextLoads() throws Exception {
-
         Assert.assertNotNull(presidioInputPersistencyService);
         Assert.assertNotNull(mongoTemplate);
-
     }
     
     @Test
@@ -64,7 +62,12 @@ public class PresidioInputPersistencyServiceMongoImplTest {
                 "event_type").split(","));
         list.add(doc);
         presidioInputPersistencyService.store(DataSource.DLPFILE, list);
-        int numberOfEventsDeleted = presidioInputPersistencyService.clean(DataSource.DLPFILE, 0, 0);
+        int numberOfEventsDeleted = 0;
+        try {
+            numberOfEventsDeleted = presidioInputPersistencyService.clean(DataSource.DLPFILE, 0, 0);
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        }
         List<DlpFileDataDocument> all = mongoTemplate.findAll(DlpFileDataDocument.class);
         Assert.assertEquals(1, numberOfEventsDeleted);
         Assert.assertEquals(0, all.size());

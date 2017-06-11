@@ -14,10 +14,10 @@ import java.util.stream.Collectors;
 public class PresidioInputPersistencyServiceMongoImpl implements PresidioInputPersistencyService {
     private final Logger logger = Logger.getLogger(PresidioInputPersistencyServiceMongoImpl.class);
 
-    private final DataService DataService;
+    private final DataService dataService;
 
-    public PresidioInputPersistencyServiceMongoImpl(DataService DataService) {
-        this.DataService = DataService;
+    public PresidioInputPersistencyServiceMongoImpl(DataService dataService) {
+        this.dataService = dataService;
     }
 
     @Override
@@ -30,11 +30,11 @@ public class PresidioInputPersistencyServiceMongoImpl implements PresidioInputPe
                 .stream()
                 .map(e -> (DlpFileDataDocument) e)
                 .collect(Collectors.toList());
-        return DataService.store(dlpFileDataDocuments);
+        return dataService.store(dlpFileDataDocuments);
     }
 
     @Override
-    public List<? extends AbstractAuditableDocument> find(DataSource dataSource, long startDate, long endDate) {
+    public List<? extends AbstractAuditableDocument> find(DataSource dataSource, long startDate, long endDate) throws Exception {
         logger.info("Finding records for data source:{}, from :{}, until :{}."
                 , dataSource,
                 CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate,
@@ -43,7 +43,7 @@ public class PresidioInputPersistencyServiceMongoImpl implements PresidioInputPe
     }
 
     @Override
-    public int clean(DataSource dataSource, long startDate, long endDate) {
+    public int clean(DataSource dataSource, long startDate, long endDate) throws Exception {
         logger.info("Deleting records for data source:{}, from {}:{}, until {}:{}."
                 , dataSource,
                 CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate,
@@ -51,14 +51,20 @@ public class PresidioInputPersistencyServiceMongoImpl implements PresidioInputPe
         return dataServiceForDataSource(dataSource).clean(startDate, endDate);
     }
 
+    @Override
+    public void cleanAll(DataSource dataSource) throws Exception {
+        dataServiceForDataSource(dataSource).cleanAll();
+    }
 
-    private DataService dataServiceForDataSource(DataSource dataSource) {
+
+    private DataService dataServiceForDataSource(DataSource dataSource) throws Exception {
         switch (dataSource) {
             case DLPFILE:
-                return DataService;
+                return dataService;
             default:
-                logger.error("");
-                return null;
+                String errorMessage = String.format("Can't find data service for data source %s.", dataSource);
+                logger.error(errorMessage);
+                throw new Exception(errorMessage);
         }
     }
 
