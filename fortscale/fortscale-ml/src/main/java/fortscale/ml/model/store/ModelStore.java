@@ -3,19 +3,15 @@ package fortscale.ml.model.store;
 import com.mongodb.DBObject;
 import fortscale.ml.model.Model;
 import fortscale.ml.model.ModelConf;
-import fortscale.ml.model.ModelService;
 import fortscale.utils.logging.Logger;
-import fortscale.utils.mongodb.FIndex;
 import fortscale.utils.mongodb.util.MongoDbUtilService;
 import fortscale.utils.monitoring.stats.StatsService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
-import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.util.StreamUtils;
@@ -23,7 +19,6 @@ import org.springframework.util.CollectionUtils;
 
 import java.time.Instant;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.newAggregation;
@@ -104,11 +99,11 @@ public class ModelStore {
 		return metrics;
 	}
 
-    public ModelDAO getLatestBeforeEventTimeModelDao(ModelConf modelConf, String contextId, Instant eventTime) {
+    public ModelDAO getLatestBeforeEventTimeAfterOldestAllowedModelDao(ModelConf modelConf, String contextId, Instant eventTime, Instant oldestAllowedModelTime) {
         String collectionName = getCollectionName(modelConf);
         Query query = new Query();
         query.addCriteria(Criteria.where(ModelDAO.CONTEXT_ID_FIELD).is(contextId))
-                .addCriteria(Criteria.where(ModelDAO.END_TIME_FIELD).lte(eventTime))
+                .addCriteria(Criteria.where(ModelDAO.END_TIME_FIELD).lte(eventTime).gte(oldestAllowedModelTime))
                 .with(new Sort(Direction.DESC)).limit(1);
 
         logger.debug("fetching latest model dao for contextId={} eventTime={} collection={}",contextId,eventTime,collectionName);

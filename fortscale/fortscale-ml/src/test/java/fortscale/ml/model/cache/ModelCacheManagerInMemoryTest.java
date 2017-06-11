@@ -44,12 +44,13 @@ public class ModelCacheManagerInMemoryTest {
         context.put("contextField","non_existing_contextId");
         String contextId = "non_existing_contextId";
         Mockito.when(dataRetriever.getContextId(context)).thenReturn(contextId);
-        Mockito.when(modelStore.getLatestBeforeEventTimeModelDao(modelConf,contextId,eventTime)).thenReturn(null);
+        Instant oldestAllowedModelTime = eventTime.minus(futureDiffBetweenCachedModelAndEvent);
+        Mockito.when(modelStore.getLatestBeforeEventTimeAfterOldestAllowedModelDao(modelConf,contextId,eventTime, oldestAllowedModelTime)).thenReturn(null);
 
         Model model = modelCacheManagerInMemory.getModel(context, eventTime);
 
         // takes models from store
-        Mockito.verify(modelStore,times(1)).getLatestBeforeEventTimeModelDao(modelConf,contextId,eventTime);
+        Mockito.verify(modelStore,times(1)).getLatestBeforeEventTimeAfterOldestAllowedModelDao(modelConf,contextId,eventTime, oldestAllowedModelTime);
         Assert.assertEquals(null,model);
 
         // verify that null model is cached and no call is preformed to store if we already know that there is now model
@@ -65,6 +66,7 @@ public class ModelCacheManagerInMemoryTest {
                 new ModelCacheManagerInMemory(modelStore, modelConf, dataRetriever, futureDiffBetweenCachedModelAndEvent, cacheSize);
 
         Instant eventTime = Instant.now();
+        Instant oldestAllowedModelTime = eventTime.minus(futureDiffBetweenCachedModelAndEvent);
 
         HashMap<String, String> context = new HashMap<>();
         context.put("contextField","existing_contextId");
@@ -73,12 +75,12 @@ public class ModelCacheManagerInMemoryTest {
         Model returnedModel = () -> 0;
         ModelDAO returnedModelDao =
                 new ModelDAO("sessionId", contextId, returnedModel, eventTime.minus(1, ChronoUnit.HOURS), eventTime);
-        Mockito.when(modelStore.getLatestBeforeEventTimeModelDao(modelConf,contextId,eventTime)).thenReturn(returnedModelDao );
+        Mockito.when(modelStore.getLatestBeforeEventTimeAfterOldestAllowedModelDao(modelConf,contextId,eventTime, oldestAllowedModelTime)).thenReturn(returnedModelDao );
 
         Model model = modelCacheManagerInMemory.getModel(context, eventTime);
 
         // takes models from store
-        Mockito.verify(modelStore,times(1)).getLatestBeforeEventTimeModelDao(modelConf,contextId,eventTime);
+        Mockito.verify(modelStore,times(1)).getLatestBeforeEventTimeAfterOldestAllowedModelDao(modelConf,contextId,eventTime, oldestAllowedModelTime);
         Assert.assertEquals(returnedModel,model);
 
         // verify that null model is cached and no call is preformed to store if we already know that there is now model
@@ -95,6 +97,7 @@ public class ModelCacheManagerInMemoryTest {
                 new ModelCacheManagerInMemory(modelStore, modelConf, dataRetriever, futureDiffBetweenCachedModelAndEvent, lruModelCacheSize);
 
         Instant eventTime = Instant.now();
+        Instant oldestAllowedModelTime = eventTime.minus(futureDiffBetweenCachedModelAndEvent);
 
         HashMap<String, String> context1 = new HashMap<>();
         context1.put("contextField","existing_contextId1");
@@ -110,11 +113,11 @@ public class ModelCacheManagerInMemoryTest {
         Mockito.when(dataRetriever.getContextId(context3)).thenReturn(contextId3);
 
         modelCacheManagerInMemory.getModel(context1, eventTime);
-        Mockito.verify(modelStore,times(1)).getLatestBeforeEventTimeModelDao(modelConf,contextId1,eventTime);
+        Mockito.verify(modelStore,times(1)).getLatestBeforeEventTimeAfterOldestAllowedModelDao(modelConf,contextId1,eventTime, oldestAllowedModelTime);
         modelCacheManagerInMemory.getModel(context2, eventTime);
-        Mockito.verify(modelStore,times(1)).getLatestBeforeEventTimeModelDao(modelConf,contextId2,eventTime);
+        Mockito.verify(modelStore,times(1)).getLatestBeforeEventTimeAfterOldestAllowedModelDao(modelConf,contextId2,eventTime,oldestAllowedModelTime );
         modelCacheManagerInMemory.getModel(context3, eventTime);
-        Mockito.verify(modelStore,times(1)).getLatestBeforeEventTimeModelDao(modelConf,contextId3,eventTime);
+        Mockito.verify(modelStore,times(1)).getLatestBeforeEventTimeAfterOldestAllowedModelDao(modelConf,contextId3,eventTime, oldestAllowedModelTime);
         modelCacheManagerInMemory.getModel(context3, eventTime);
         Mockito.verifyNoMoreInteractions(modelStore);
         modelCacheManagerInMemory.getModel(context3, eventTime);

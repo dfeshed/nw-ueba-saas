@@ -1,11 +1,13 @@
+import logging
+
 from airflow import DAG
 from airflow.operators.subdag_operator import SubDagOperator
 
-from presidio.builders.anomaly_detection_engine_dag_builder import AnomalyDetectionEngineDagBuilder
+from presidio.builders.ade.anomaly_detection_engine_dag_builder import AnomalyDetectionEngineDagBuilder
 from presidio.builders.input.input_dag_builder import InputDagBuilder
 from presidio.builders.output.output_dag_builder import OutputDagBuilder
 from presidio.builders.presidio_dag_builder import PresidioDagBuilder
-import logging
+
 
 class PresidioCoreDagBuilder(PresidioDagBuilder):
     """
