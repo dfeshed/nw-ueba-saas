@@ -42,5 +42,11 @@ public class DlpFileDataService implements DataService {
                 CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
         return dlpFileDataRepository.clean(startTimeBegingOfTime, endTimeCorentSystemTime);
     }
+
+    @Override
+    public void cleanAll() {
+        logger.info("Cleaning entire collection {}", DlpFileDataDocument.COLLECTION_NAME);
+        dlpFileDataRepository.deleteAll();
+    }
 }
 

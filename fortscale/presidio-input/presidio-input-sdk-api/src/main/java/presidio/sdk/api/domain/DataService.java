@@ -14,4 +14,6 @@ public interface DataService {
     List<? extends AbstractAuditableDocument> find(long startDate, long endDate);
 
     int clean(long startDate, long endDate);
+
+    void cleanAll();
 }
