@@ -27,8 +27,7 @@ import static fortscale.common.general.CommonStrings.COMMAND_LINE_START_DATE_FIE
 public class InputExecutionServiceImpl implements InputExecutionService {
 
     private static final Logger logger = Logger.getLogger(InputExecutionServiceImpl.class);
-    private static final int NUM_OF_MANDATORY_PARAMS = 4;
-    private static final String[] mandatoryParams = {
+    private static final String[] MANDATORY_PARAMS = {
             COMMAND_LINE_DATA_SOURCE_FIELD_NAME,
             COMMAND_LINE_START_DATE_FIELD_NAME,
             COMMAND_LINE_END_DATE_FIELD_NAME,
@@ -50,8 +49,8 @@ public class InputExecutionServiceImpl implements InputExecutionService {
 
     private void init(String... params) throws Exception {
         logger.info("Setting and validating params:[{}] .", Arrays.toString(params));
-        if (params.length < NUM_OF_MANDATORY_PARAMS) {
-            String errorMessage = String.format("Invalid input[%s]. Not enough parameters, Need at least %s.", Arrays.toString(params), Arrays.toString(mandatoryParams));
+        if (params.length < MANDATORY_PARAMS.length) {
+            String errorMessage = String.format("Invalid input[%s]. Not enough parameters, Need at least %s.", Arrays.toString(params), Arrays.toString(MANDATORY_PARAMS));
             logger.error(errorMessage);
             throw new RuntimeException(errorMessage);
         }
