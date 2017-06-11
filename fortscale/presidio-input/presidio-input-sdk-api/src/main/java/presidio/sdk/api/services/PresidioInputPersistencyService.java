@@ -11,5 +11,5 @@ public interface PresidioInputPersistencyService {
 
     List<? extends AbstractAuditableDocument> find(DataSource dataSource, long startTime, long endTime); //todo: we can discuss the name. for now using spring's terminology
 
-    int clean(Datasource dataSource, long startTime, long endTime);
+    int clean(DataSource dataSource, long startTime, long endTime);
 }

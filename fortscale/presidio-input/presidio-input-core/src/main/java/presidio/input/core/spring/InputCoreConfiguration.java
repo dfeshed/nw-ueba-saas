@@ -10,14 +10,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
-import presidio.ade.sdk.executions.online.ADEOnlineSDKConfig;
 import presidio.input.core.services.api.InputExecutionService;
 import presidio.input.core.services.impl.InputExecutionServiceImpl;
 import presidio.input.sdk.impl.spring.PresidioInputPersistencyServiceConfig;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
 
 @Configuration
-@Import({MongoConfig.class, ParametersValidationServiceConfig.class, PresidioInputPersistencyServiceConfig.class, ADEOnlineSDKConfig.class})
+@Import({MongoConfig.class, ParametersValidationServiceConfig.class, PresidioInputPersistencyServiceConfig.class, EnrichedDataStore.class})
 public class InputCoreConfiguration {
 
     @Autowired

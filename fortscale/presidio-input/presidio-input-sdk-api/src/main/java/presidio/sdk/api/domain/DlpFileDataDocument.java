@@ -2,6 +2,7 @@ package presidio.sdk.api.domain;
 
 
 import fortscale.domain.core.AbstractAuditableDocument;
+import fortscale.utils.logging.Logger;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 

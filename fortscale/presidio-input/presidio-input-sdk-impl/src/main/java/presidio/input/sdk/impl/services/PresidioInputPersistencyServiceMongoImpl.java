@@ -2,7 +2,6 @@ package presidio.input.sdk.impl.services;
 
 import fortscale.common.general.DataSource;
 import fortscale.common.general.CommonStrings;
-import fortscale.common.general.Datasource;
 import fortscale.domain.core.AbstractAuditableDocument;
 import fortscale.utils.logging.Logger;
 import presidio.sdk.api.domain.DlpFileDataDocument;
@@ -25,7 +24,7 @@ public class PresidioInputPersistencyServiceMongoImpl implements PresidioInputPe
     public boolean store(DataSource dataSource, List<AbstractAuditableDocument> records) {
         //TODO: change this when we have the new service and repo
         logger.info("Storing {} records for " + CommonStrings.COMMAND_LINE_DATA_SOURCE_FIELD_NAME + " {}",
-                records.size(), datasource);
+                records.size(), dataSource);
 
         List<DlpFileDataDocument> dlpFileDataDocuments = records // todo: this is very ad-hoc. we need to design a mechanism for resolving the right repo and casting
                 .stream()
@@ -44,7 +43,7 @@ public class PresidioInputPersistencyServiceMongoImpl implements PresidioInputPe
     }
 
     @Override
-    public int clean(Datasource dataSource, long startTime, long endTime) {
+    public int clean(DataSource dataSource, long startTime, long endTime) {
         logger.info("Deleting records for" + CommonStrings.COMMAND_LINE_DATA_SOURCE_FIELD_NAME + " {}, " +
                         CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME + " {}, " + CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME + " {}",
                 dataSource, startTime, endTime);

@@ -64,8 +64,8 @@ public class PresidioInputPersistencyServiceMongoImplTest {
                 "destination_file_name,2.23,source_path,source_file_name,source_drive_type,destination_drive_type," +
                 "event_type").split(","));
         list.add(doc);
-        presidioInputPersistencyService.store(Datasource.DLPFILE, list);
-        int numberOfEventsDeleted = presidioInputPersistencyService.clean(Datasource.DLPFILE, 0, 0);
+        presidioInputPersistencyService.store(DataSource.DLPFILE, list);
+        int numberOfEventsDeleted = presidioInputPersistencyService.clean(DataSource.DLPFILE, 0, 0);
         List<DlpFileDataDocument> all = mongoTemplate.findAll(DlpFileDataDocument.class);
         Assert.assertEquals(1, numberOfEventsDeleted);
         Assert.assertEquals(0, all.size());
