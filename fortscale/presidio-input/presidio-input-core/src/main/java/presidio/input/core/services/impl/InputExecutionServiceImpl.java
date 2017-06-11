@@ -6,16 +6,15 @@ import fortscale.domain.core.AbstractAuditableDocument;
 import fortscale.services.parameters.ParametersValidationService;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimestampUtils;
-import org.apache.commons.beanutils.PropertyUtils;
-import presidio.ade.domain.store.input.ADEInputRecord;
-import presidio.ade.domain.store.input.ADEInputRecordsMetaData;
-import presidio.ade.domain.store.input.store.ADEInputDataStore;
+import presidio.ade.domain.record.enriched.EnrichedRecord;
+import presidio.ade.domain.store.enriched.EnrichedDataStore;
+import presidio.ade.domain.store.enriched.EnrichedRecordsMetadata;
 import presidio.input.core.services.api.InputExecutionService;
+import presidio.input.core.services.converters.DlpFileConverter;
 import presidio.sdk.api.domain.DlpFileDataDocument;
 import presidio.sdk.api.domain.DlpFileEnrichedDocument;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
 
-import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -30,7 +29,7 @@ public class InputExecutionServiceImpl implements InputExecutionService {
 
     private final ParametersValidationService parameterValidationService;
     private final PresidioInputPersistencyService presidioInputPersistencyService;
-    private final ADEInputDataStore adeInputDataStore;
+    private final EnrichedDataStore enrichedDataStore;
 
     private DataSource dataSource;
     private Instant startDate;
@@ -38,10 +37,10 @@ public class InputExecutionServiceImpl implements InputExecutionService {
 
     public InputExecutionServiceImpl(ParametersValidationService parameterValidationService,
                                      PresidioInputPersistencyService presidioInputPersistencyService,
-                                     ADEInputDataStore adeInputDataStore) {
+                                     EnrichedDataStore enrichedDataStore) {
         this.parameterValidationService = parameterValidationService;
         this.presidioInputPersistencyService = presidioInputPersistencyService;
-        this.adeInputDataStore = adeInputDataStore;
+        this.enrichedDataStore = enrichedDataStore;
     }
 
     public void run(String... params) throws Exception {
@@ -102,12 +101,10 @@ public class InputExecutionServiceImpl implements InputExecutionService {
         logger.debug("Storing {} records.", enrichedDocuments.size());
 
 
-        List<ADEInputRecord> records = new ArrayList<>();
-        ADEInputRecordsMetaData recordsMetaData = new ADEInputRecordsMetaData(dataSource.toString(), startDate, endDate);
+        EnrichedRecordsMetadata recordsMetaData = new EnrichedRecordsMetadata(dataSource.toString(), startDate, endDate);
+        List<? extends EnrichedRecord> records = convert((List<AbstractAuditableDocument>) enrichedDocuments, new DlpFileConverter());
 
-        convert(enrichedDocuments, records);
-
-        adeInputDataStore.store(recordsMetaData, records);
+        enrichedDataStore.store(recordsMetaData, records);
 
         logger.info("*************input logic comes here***********");
         logger.info("enriched documents: \n{}", enrichedDocuments);
@@ -117,19 +114,10 @@ public class InputExecutionServiceImpl implements InputExecutionService {
         return storeSuccessful;
     }
 
-    protected void convert(List<? extends AbstractAuditableDocument> enrichedDocuments, List<ADEInputRecord> records) {
-        for (AbstractAuditableDocument doc : enrichedDocuments) {
-            try {
-                ADEInputRecord adeInputRecord = new ADEInputRecord();
-                PropertyUtils.copyProperties(adeInputRecord, doc);
-                records.add(adeInputRecord);
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            } catch (InvocationTargetException e) {
-                e.printStackTrace();
-            } catch (NoSuchMethodException e) {
-                e.printStackTrace();
-            }
-        }
+    protected List<EnrichedRecord> convert(List<AbstractAuditableDocument> enrichedDocuments,
+                                           DlpFileConverter converter) {
+        List<EnrichedRecord> records = new ArrayList<>();
+        enrichedDocuments.forEach(doc -> records.add(converter.convert(doc)));
+        return records;
     }
 }

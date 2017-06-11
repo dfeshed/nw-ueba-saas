@@ -9,7 +9,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import presidio.ade.domain.store.input.store.ADEInputDataStore;
+import presidio.ade.domain.store.enriched.EnrichedDataStore;
 import presidio.ade.sdk.executions.online.ADEOnlineSDKConfig;
 import presidio.input.core.services.api.InputExecutionService;
 import presidio.input.core.services.impl.InputExecutionServiceImpl;
@@ -27,11 +27,10 @@ public class InputCoreConfiguration {
     private ParametersValidationService parametersValidationService;
 
     @Autowired
-    private ADEInputDataStore adeInputDataStore;
-
+    private EnrichedDataStore enrichedDataStore;
     @Bean
     public InputExecutionService inputProcessService() {
-        return new InputExecutionServiceImpl(parametersValidationService, presidioInputPersistencyService, adeInputDataStore);
+        return new InputExecutionServiceImpl(parametersValidationService, presidioInputPersistencyService, enrichedDataStore);
     }
 
     @Bean
