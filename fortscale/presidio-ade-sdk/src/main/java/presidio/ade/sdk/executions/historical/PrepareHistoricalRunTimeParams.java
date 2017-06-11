@@ -8,10 +8,8 @@ import java.time.Instant;
  * the time fields are event-time (logical time) and not wall-clock time (system-time)
  * Created by barak_schuster on 5/17/17.
  */
-public class PrepareHistoricalRunTimeParams {
-    private final Instant startInstant;
+public class PrepareHistoricalRunTimeParams extends ADERunParams {
     private final Instant endInstant;
-    private final Duration timeDelta;
 
     /**
      * C'tor
@@ -24,18 +22,8 @@ public class PrepareHistoricalRunTimeParams {
      * @param timeDelta
      */
     public PrepareHistoricalRunTimeParams(Instant startInstant, Instant endInstant, Duration timeDelta) {
-        this.startInstant = startInstant;
+        super(startInstant, timeDelta);
         this.endInstant = endInstant;
-        this.timeDelta = timeDelta;
-    }
-
-    public Duration getTimeDelta() {
-        return timeDelta;
-    }
-
-
-    public Instant getStartInstant() {
-        return startInstant;
     }
 
     public Instant getEndInstant() {

@@ -12,7 +12,6 @@ import org.springframework.util.Assert;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Map;
-import java.util.Optional;
 
 /**
  * models cache that is in memory.
@@ -25,21 +24,21 @@ public class ModelCacheManagerInMemory implements ModelCacheManager {
     private ModelStore modelStore;
     private ModelConf modelConf;
     private AbstractDataRetriever retriever;
-    private Duration futureDiffBetweenCachedModelAndEvent;
+    private Duration maxDiffBetweenCachedModelAndEvent;
     private LRUMap lruModelsMap;
 
     /**
      * @param modelStore                           persistent db containing all models
      * @param modelConf                            identify the model configuration the cache stands for
      * @param retriever                            help to calculates the context id
-     * @param futureDiffBetweenCachedModelAndEvent cached model can be older then eventTime by this diff. if bigger, cached model is deleted and the latest model is retrieved from db
+     * @param maxDiffBetweenCachedModelAndEvent cached model can be older then eventTime by this diff. if bigger, cached model is deleted and the latest model is retrieved from db
      * @param lruModelCacheSize                    the cache size
      */
-    public ModelCacheManagerInMemory(ModelStore modelStore, ModelConf modelConf, AbstractDataRetriever retriever, Duration futureDiffBetweenCachedModelAndEvent, int lruModelCacheSize) {
+    public ModelCacheManagerInMemory(ModelStore modelStore, ModelConf modelConf, AbstractDataRetriever retriever, Duration maxDiffBetweenCachedModelAndEvent, int lruModelCacheSize) {
         this.modelStore = modelStore;
         this.modelConf = modelConf;
         this.retriever = retriever;
-        this.futureDiffBetweenCachedModelAndEvent = futureDiffBetweenCachedModelAndEvent;
+        this.maxDiffBetweenCachedModelAndEvent = maxDiffBetweenCachedModelAndEvent;
         this.lruModelsMap = new LRUMap(lruModelCacheSize);
     }
 
@@ -49,7 +48,7 @@ public class ModelCacheManagerInMemory implements ModelCacheManager {
 
         ModelDAO cachedModelDao = null;
         logger.debug("getting model for params: contextId={},eventTime={},modelConf={}", contextId,  eventTime,modelConf);
-        Instant latestModelTime = eventTime.plus(futureDiffBetweenCachedModelAndEvent);
+        Instant oldestAllowedModelTime = eventTime.minus(maxDiffBetweenCachedModelAndEvent);
 
         if (lruModelsMap.containsKey(contextId)) {
             Object cachedObject = lruModelsMap.get(contextId);
@@ -57,7 +56,7 @@ public class ModelCacheManagerInMemory implements ModelCacheManager {
             if (cachedObject != null) {
                 cachedModelDao = (ModelDAO) cachedObject;
                 // check if model time is valid
-                if (isModelTimeValid(cachedModelDao, latestModelTime)) {
+                if (isModelTimeValid(cachedModelDao, oldestAllowedModelTime)) {
                     logger.debug("found cached model={}", cachedModelDao);
                     return cachedModelDao.getModel();
                 }
@@ -72,9 +71,10 @@ public class ModelCacheManagerInMemory implements ModelCacheManager {
             }
         }
         logger.debug("no matching model found in cache. retrieving model from db");
-        ModelDAO retrievedModelDAO = modelStore.getLatestBeforeEventTimeModelDao(modelConf, contextId, eventTime);
+        ModelDAO retrievedModelDAO =
+                modelStore.getLatestBeforeEventTimeAfterOldestAllowedModelDao(modelConf, contextId, eventTime, oldestAllowedModelTime);
         if (retrievedModelDAO!=null) {
-            if (isModelTimeValid(retrievedModelDAO, latestModelTime)) {
+            if (isModelTimeValid(retrievedModelDAO, oldestAllowedModelTime)) {
                 logger.debug("found matching modelDAO={} in db, updating cache", retrievedModelDAO);
                 // insert the model into cache
                 lruModelsMap.put(contextId, retrievedModelDAO);
@@ -90,7 +90,7 @@ public class ModelCacheManagerInMemory implements ModelCacheManager {
     }
 
     public boolean isModelTimeValid(ModelDAO modelDAO, Instant latestModelEventTime) {
-        return modelDAO.getEndTime().compareTo(latestModelEventTime) <= 0;
+        return modelDAO.getEndTime().compareTo(latestModelEventTime) >= 0;
     }
 
     @Override

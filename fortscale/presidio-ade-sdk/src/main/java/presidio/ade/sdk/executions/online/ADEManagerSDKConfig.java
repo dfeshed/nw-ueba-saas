@@ -6,18 +6,20 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
 import presidio.ade.domain.store.enriched.EnrichedDataStoreConfig;
+import presidio.ade.sdk.executions.common.ADEManagerSDK;
+import presidio.ade.sdk.executions.common.ADEManagerSDKImpl;
 
 /**
  * Created by barak_schuster on 5/22/17.
  */
 @Configuration
 @Import(EnrichedDataStoreConfig.class)
-public class ADEOnlineSDKConfig {
+public class ADEManagerSDKConfig {
     @Autowired
     private EnrichedDataStore enrichedDataStore;
 
     @Bean
-    public ADEOnlineSDK adeOnlineSDK() {
-        return new ADEOnlineSDK(enrichedDataStore);
+    public ADEManagerSDK adeOnlineSDK() {
+        return new ADEManagerSDKImpl(enrichedDataStore);
     }
 }
