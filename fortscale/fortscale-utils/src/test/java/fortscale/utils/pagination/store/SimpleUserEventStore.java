@@ -6,11 +6,11 @@ import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class SimpleUserStore {
+public class SimpleUserEventStore<T extends SimpleUserEvent> {
 
-    private Map<String, List<SimpleUserEvent>> simpleUserEventsMap;
+    private Map<String, List<T>> simpleUserEventsMap;
 
-    public SimpleUserStore(Map<String, List<SimpleUserEvent>> simpleUserEventsMap) {
+    public SimpleUserEventStore(Map<String, List<T>> simpleUserEventsMap) {
         this.simpleUserEventsMap = simpleUserEventsMap;
     }
 
@@ -64,19 +64,20 @@ public class SimpleUserStore {
         map.put(event.getName(), set);
     }
 
-    public Map<String, List<SimpleUserEvent>> getSimpleUserEventsMap() {
+    public Map<String, List<T>> getSimpleUserEventsMap() {
         return this.simpleUserEventsMap;
     }
 
     /**
      * Filter the contextIdToSimpleUserEventsMap and return list of SimpleUserEvent, who contain contextIds.
      *
-     * @param contextIds
-     * @return
+     * @param contextIds set of context ids
+     * @return list of events
      */
-    public List<SimpleUserEvent> getListOfSimpleUserEvents(Set<String> contextIds) {
-        Map<String, List<SimpleUserEvent>> contextIdToSimpleUserEventsMap = this.simpleUserEventsMap.entrySet().stream().filter(map -> contextIds.contains(map.getKey())).collect(Collectors.toMap(p -> p.getKey(), p -> p.getValue()));
-        List<SimpleUserEvent> list = contextIdToSimpleUserEventsMap.values().stream().collect(ArrayList::new, List::addAll, List::addAll);
+    public List<T> getListOfSimpleUserEvents(Set<String> contextIds) {
+        Map<String, List<T>> contextIdToSimpleUserEventsMap = this.simpleUserEventsMap.entrySet().stream().filter(map -> contextIds.contains(map.getKey())).collect(Collectors.toMap(p -> p.getKey(), p -> p.getValue()));
+        List<T> list = contextIdToSimpleUserEventsMap.values().stream().flatMap(List::stream).collect(Collectors.toList());
+
         return list;
     }
 
