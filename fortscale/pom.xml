@@ -755,6 +755,7 @@
 		<module>presidio-output</module>
 	</modules>
 	<distributionManagement>
+		<!-- push changes to artifactory -->
 		<snapshotRepository>
 			<id>mirror.fortscale.dom</id>
 			<name>mirror.fortscale.dom-snapshots</name>
