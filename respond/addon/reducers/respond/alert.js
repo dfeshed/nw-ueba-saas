@@ -1,0 +1,105 @@
+import * as ACTION_TYPES from 'respond/actions/types';
+import reduxActions from 'redux-actions';
+import { handle } from 'redux-pack';
+import { load, persist } from './util/local-storage';
+
+const localStorageKey = 'rsa::nw::respond::alert';
+
+let initialState = {
+  // id of the alert that owns `info` & `events`
+  id: null,
+
+  // alert details
+  info: null,
+
+  // either 'streaming', 'complete' or 'error'
+  infoStatus: null,
+
+  // function to abort the info stream
+  stopInfoStream: null,
+
+  // alert events
+  events: null,
+
+  // either 'wait', 'error' or 'success'
+  eventsStatus: null,
+
+  // width of the alert inspector UI, in pixels
+  inspectorWidth: 400
+};
+
+// Load local storage values and incorporate into initial state
+initialState = load(initialState, localStorageKey);
+
+// Mechanism to persist some of the state to local storage
+// This function will curry a given reducer (function), enabling it to persist its resulting state to a given
+// local storage key.
+// Note: this implementation may be replaced either with (a) user preference service calls, or (b) with a more
+// sophisticated solution with local storage
+// @param {function} callback A reducer that will update a given state before persisting it to local storage.
+// @returns {Function} The curried reducer.
+const persistAlertState = (callback) => {
+  return (function() {
+    const state = callback(...arguments);
+    const { inspectorWidth } = state;
+    persist({ inspectorWidth }, localStorageKey);
+    return state;
+  });
+};
+
+const alertReducers = reduxActions.handleActions({
+
+  [ACTION_TYPES.INITIALIZE_ALERT]: (state, { payload }) => ({
+    // reset state for a new alert id, even if it matches the old alert id,
+    // because we don't want to reuse info, we want to reload it in case it may have changed on server
+    ...initialState,
+    id: payload,
+
+    // there are some visual properties (not server data) properties which should be preserved
+    // they should not be reset to initialState for every incident
+    inspectorWidth: state.inspectorWidth || initialState.inspectorWidth
+  }),
+
+  [ACTION_TYPES.RESIZE_ALERT_INSPECTOR]: persistAlertState((state, { payload }) => ({
+    ...state,
+    inspectorWidth: payload
+  })),
+
+  [ACTION_TYPES.FETCH_ALERT_DETAILS_STARTED]: (state) => ({
+    ...state,
+    info: null,
+    infoStatus: 'streaming'
+  }),
+
+  [ACTION_TYPES.FETCH_ALERT_DETAILS_STREAM_INITIALIZED]: (state, { payload }) => ({
+    ...state,
+    stopInfoStream: payload
+  }),
+
+  [ACTION_TYPES.FETCH_ALERT_DETAILS_STREAM_RETRIEVE_BATCH]: (state, { payload: { data } }) => ({
+    ...state,
+    info: data && data[0]
+  }),
+
+  [ACTION_TYPES.FETCH_ALERT_DETAILS_STREAM_COMPLETED]: (state) => ({
+    ...state,
+    infoStatus: 'complete',
+    stopInfoStream: null
+  }),
+
+  [ACTION_TYPES.FETCH_ALERT_DETAILS_STREAM_ERROR]: (state) => ({
+    ...state,
+    infoStatus: 'error',
+    stopInfoStream: null
+  }),
+
+  [ACTION_TYPES.FETCH_ALERT_EVENTS]: (state, action) => {
+    return handle(state, action, {
+      start: (s) => ({ ...s, events: null, eventsStatus: 'wait' }),
+      failure: (s) => ({ ...s, eventsStatus: 'error' }),
+      success: (s) => ({ ...s, events: action.payload.data, eventsStatus: 'success' })
+    });
+  }
+}, initialState);
+
+export default alertReducers;

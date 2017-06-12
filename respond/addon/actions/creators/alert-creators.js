@@ -1,6 +1,7 @@
 import { alerts } from '../api';
 import * as ACTION_TYPES from '../types';
 import * as errorHandlers from '../util/error-handlers';
+import { next } from 'ember-runloop';
 import Ember from 'ember';
 const { Logger } = Ember;
 
@@ -117,6 +118,75 @@ const toggleFocusItem = (item) => ({ type: ACTION_TYPES.TOGGLE_FOCUS_ALERT, payl
 const clearFocusItem = () => ({ type: ACTION_TYPES.CLEAR_FOCUS_ALERT });
 const toggleSelectAll = () => ({ type: ACTION_TYPES.TOGGLE_SELECT_ALL_ALERTS });
 
+/**
+ * Action creator for resetting the `respond.alert` state to a given alert id.
+ * Kicks off the fetching of the alert details info and the alert events.
+ * @param {string} alertId
+ * @public
+ */
+const initializeAlert = (alertId) => {
+  return (dispatch) => {
+    dispatch({
+      type: ACTION_TYPES.INITIALIZE_INCIDENT,
+      payload: alertId
+    });
+    if (alertId) {
+      next(() => {
+        dispatch(getAlert(alertId));
+        dispatch(getAlertEvents(alertId));
+      });
+    }
+  };
+};
+
+/**
+ * Action creator for fetching an alert profile.
+ * @param {string} alertId
+ * @public
+ */
+const getAlert = (alertId) => {
+  return (dispatch, getState) => {
+    const { stopInfoStream } = getState().respond.alerts;
+
+    // If we already have an alert info stream running, stop it. This prevents a previously started stream
+    // from continuing to deliver results at the same time as the new stream.
+    if (stopInfoStream) {
+      stopInfoStream();
+    }
+
+    dispatch({ type: ACTION_TYPES.FETCH_ALERT_DETAILS_STARTED });
+    alerts.getAlerts(
+      [ { _id: alertId } ],
+      { sortField: '_id', isSortDescending: false },
+      {
+        onInit: (stopStreamFn) => {
+          dispatch({ type: ACTION_TYPES.FETCH_ALERT_DETIALS_STREAM_INITIALIZED, payload: stopStreamFn });
+        },
+        onCompleted: () => dispatch({ type: ACTION_TYPES.FETCH_ALERT_DETAILS_COMPLETED }),
+        onResponse: (payload) => dispatch({ type: ACTION_TYPES.FETCH_ALERT_DETAILS_RETRIEVE_BATCH, payload }),
+        onError: (response) => {
+          dispatch({ type: ACTION_TYPES.FETCH_ALERT_DETAILS_ERROR });
+          errorHandlers.handleContentRetrievalError(response, `alert ${alertId} profile`);
+        }
+      }
+    );
+  };
+};
+
+/**
+ * Action creator for fetching an alert's events list.
+ * @param {string} alertId
+ * @public
+ */
+const getAlertEvents = (alertId) => ({
+  type: ACTION_TYPES.FETCH_ALERT_EVENTS,
+  promise: alerts.getAlertEvents(alertId),
+  meta: {
+    onSuccess: (response) => Logger.debug(ACTION_TYPES.FETCH_ALERT_EVENTS, response),
+    onFailure: (response) => errorHandlers.handleContentRetrievalError(response, `alert ${alertId} events`)
+  }
+});
+
 export {
   getItems,
   resetFilters,
@@ -127,5 +197,8 @@ export {
   toggleItemSelected,
   toggleFocusItem,
   clearFocusItem,
-  toggleSelectAll
+  toggleSelectAll,
+  initializeAlert,
+  getAlert,
+  getAlertEvents
 };
