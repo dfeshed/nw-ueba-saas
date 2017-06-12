@@ -1,3 +1,4 @@
+import pytz
 from datetime import datetime, timedelta
 
 
@@ -42,4 +43,7 @@ def convert_to_utc(dt):
     :type dt: datetime
     :return: float
     """
-    return dt.strftime('%Y-%m-%dT%H:%M:%SZ')
+    if (dt.tzname() is None) | (dt.tzinfo == pytz.utc):
+        return dt.strftime('%Y-%m-%dT%H:%M:%SZ')
+    else:
+        raise Exception('We support only UTC time zone')
