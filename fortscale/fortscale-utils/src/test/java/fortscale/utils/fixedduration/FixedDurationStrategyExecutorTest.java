@@ -19,7 +19,7 @@ public class FixedDurationStrategyExecutorTest {
         }
 
         @Override
-        public void executeSingleTimeRange(TimeRange timeRange) {
+        public void executeSingleTimeRange(TimeRange timeRange, String dataSource) {
             amountOfCalls++;
         }
     }
@@ -31,7 +31,7 @@ public class FixedDurationStrategyExecutorTest {
         Instant endTime = startTime.plus(Duration.ofDays(2));
 
         TimeRange executionTimeRange = new TimeRange(startTime, endTime);
-        fixedDurationStrategyExecutor.execute(executionTimeRange);
+        fixedDurationStrategyExecutor.execute(executionTimeRange,"" );
         Assert.assertEquals(48,fixedDurationStrategyExecutor.amountOfCalls );
     }
 

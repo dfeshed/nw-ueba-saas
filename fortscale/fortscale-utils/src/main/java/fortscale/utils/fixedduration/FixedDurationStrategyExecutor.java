@@ -22,20 +22,21 @@ public abstract class FixedDurationStrategyExecutor {
     /**
      * brakes given time range to smaller partitions by {@link this#strategy} and execute upon them
      * @param timeRange start and end time of data to be executed upon
+     * @param dataSource
      */
-    public void execute(TimeRange timeRange) {
+    public void execute(TimeRange timeRange, String dataSource) {
         logger.debug("got execution time range={}",timeRange);
         List<TimeRange> partitionedTimeRanges = FixedDurationStrategyUtils.splitTimeRangeByStrategy(timeRange, strategy);
         for (TimeRange timePartition: partitionedTimeRanges) {
             logger.debug("executing on time partition={}",timePartition);
-            executeSingleTimeRange(timeRange);
+            executeSingleTimeRange(timeRange,dataSource);
         }
     }
 
     /**
      * runs calculation for single hour/day/other fixed duration
      */
-    public abstract void executeSingleTimeRange(TimeRange timeRange);
+    public abstract void executeSingleTimeRange(TimeRange timeRange, String dataSource);
 
 
 
