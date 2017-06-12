@@ -76,18 +76,18 @@ const alertReducers = reduxActions.handleActions({
     stopInfoStream: payload
   }),
 
-  [ACTION_TYPES.FETCH_ALERT_DETAILS_STREAM_RETRIEVE_BATCH]: (state, { payload: { data } }) => ({
+  [ACTION_TYPES.FETCH_ALERT_DETAILS_RETRIEVE_BATCH]: (state, { payload: { data } }) => ({
     ...state,
     info: data && data[0]
   }),
 
-  [ACTION_TYPES.FETCH_ALERT_DETAILS_STREAM_COMPLETED]: (state) => ({
+  [ACTION_TYPES.FETCH_ALERT_DETAILS_COMPLETED]: (state) => ({
     ...state,
     infoStatus: 'complete',
     stopInfoStream: null
   }),
 
-  [ACTION_TYPES.FETCH_ALERT_DETAILS_STREAM_ERROR]: (state) => ({
+  [ACTION_TYPES.FETCH_ALERT_DETAILS_ERROR]: (state) => ({
     ...state,
     infoStatus: 'error',
     stopInfoStream: null
