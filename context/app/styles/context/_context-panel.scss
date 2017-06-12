@@ -187,7 +187,10 @@ radial-gradient(circle at 85% 85%, rsa-color(gray, darker, .1) 0, rsa-color(gray
     height: 100%;
     width: calc(100% - 4px);
     display: flex;
-    justify-content: center;
+    justify-content: center ;
+    .link {
+      justify-content: left;
+    }
     &__box {
       overflow: auto;
       height: 100%;
@@ -251,6 +254,7 @@ radial-gradient(circle at 85% 85%, rsa-color(gray, darker, .1) 0, rsa-color(gray
     .link:hover {
       display: block;
       text-decoration: underline;
+      color: rsa-color(blue, base);
     }
     &__heading-text {
       @include rsa-font(header, large);
@@ -290,6 +294,7 @@ radial-gradient(circle at 85% 85%, rsa-color(gray, darker, .1) 0, rsa-color(gray
         padding-left: rsa-whitespace(less);
         min-height: 50px;
         width: 80%;
+        padding-bottom: rsa-whitespace();
       }
       &__tetheredPanel {
         width: rsa-whitespace(less);
@@ -308,6 +313,9 @@ radial-gradient(circle at 85% 85%, rsa-color(gray, darker, .1) 0, rsa-color(gray
         text-align: left;
         text-overflow: ellipsis;
         justify-content: flex-start;
+        .rsa-content-datetime {
+          @include rsa-font(default, small);
+        }
       }
       &__groupdata {
         color: rsa-color(blue, base);

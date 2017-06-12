@@ -835,7 +835,8 @@ export default {
       macAddress: 'ja_Mac Address',
       operatingSystem: 'ja_Operating System',
       machineStatus: 'ja_Machine Status',
-      ipAddress: 'ja_IPAddress'
+      ipAddress: 'ja_IPAddress',
+      endpoint: 'ja_To view details in Endpoint, you must install NW Endpoint UI'
     },
     ADdata: {
       title: 'ja_User Information',

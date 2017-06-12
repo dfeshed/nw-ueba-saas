@@ -835,7 +835,8 @@ export default {
       macAddress: 'Mac Address',
       operatingSystem: 'Operating System',
       machineStatus: 'Machine Status',
-      ipAddress: 'IPAddress'
+      ipAddress: 'IPAddress',
+      endpoint: 'To view details in Endpoint, you must install NW Endpoint UI'
     },
     addToList: {
       title: 'Add to List',
