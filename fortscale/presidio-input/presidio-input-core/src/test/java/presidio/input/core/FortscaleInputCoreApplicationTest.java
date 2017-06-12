@@ -20,7 +20,7 @@ public class FortscaleInputCoreApplicationTest {
 
     @Test
     public void contextLoads() throws Exception {
-        processService.run("SHAY");
+        processService.run();
 
     }
 

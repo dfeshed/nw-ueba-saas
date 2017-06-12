@@ -2,7 +2,6 @@ package presidio.sdk.api.domain;
 
 
 import fortscale.domain.core.AbstractAuditableDocument;
-import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimestampUtils;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -11,8 +10,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import static presidio.sdk.api.domain.DlpFileDataDocument.COLLECTION_NAME;
 
-@Document(collection = DlpFileDataDocument.COLLECTION_NAME)
+
+@Document(collection = COLLECTION_NAME)
 public class DlpFileDataDocument extends AbstractAuditableDocument {
 
     public static final String COLLECTION_NAME = "dlpfile_stored_data";
@@ -36,7 +37,8 @@ public class DlpFileDataDocument extends AbstractAuditableDocument {
     public static final String SOURCE_DRIVE_TYPE_FIELD_NAME = "sourceDriveType";
     public static final String DESTINATION_DRIVE_TYPE_FIELD_NAME = "destinationDriveType";
     public static final String EVENT_TYPE_FIELD_NAME = "eventType";
-    private static final Logger logger = Logger.getLogger(DlpFileDataDocument.class);
+
+
     @Field(DATE_TIME_UNIX_FIELD_NAME)
     protected long dateTimeUnix;
 
@@ -102,7 +104,7 @@ public class DlpFileDataDocument extends AbstractAuditableDocument {
         try {
             dateTime = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse(record[0]);
         } catch (ParseException e) {
-            logger.error("Failed to create DlpFileDataDocument. Bad date: {}. Format should be yyyy-MM-dd hh:mm:ss", record[0], e); //todo remove this. create not in Ctor
+            //todo  create not in Ctor
         }
         dateTimeUnix = TimestampUtils.convertToSeconds(dateTime.getTime());
         eventType = record[1];

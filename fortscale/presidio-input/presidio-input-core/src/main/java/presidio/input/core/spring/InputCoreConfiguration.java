@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import presidio.input.core.services.api.InputExecutionService;
+import presidio.input.core.services.impl.InputCommandLineRunner;
 import presidio.input.core.services.impl.InputExecutionServiceImpl;
 import presidio.input.sdk.impl.spring.PresidioInputPersistencyServiceConfig;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
@@ -31,23 +32,7 @@ public class InputCoreConfiguration {
 
     @Bean
     public CommandLineRunner commandLineRunner() {
-        return new PresidioCommandLineRunner(inputProcessService());
-    }
-
-
-    private static class PresidioCommandLineRunner implements CommandLineRunner {
-
-        private InputExecutionService inputExecutionService;
-
-        public PresidioCommandLineRunner(InputExecutionService inputExecutionService) {
-            this.inputExecutionService = inputExecutionService;
-        }
-
-        @Override
-        public void run(String... params) throws Exception {
-            this.inputExecutionService.run(params);
-
-        }
+        return new InputCommandLineRunner(inputProcessService());
     }
 
 }

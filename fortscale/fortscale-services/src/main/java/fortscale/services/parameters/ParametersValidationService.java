@@ -24,12 +24,12 @@ public interface ParametersValidationService {
     String getOptionalParamAsString(String paramName, String... params);
 
     /**
-     * validates that the given {@param datasource} is a valid datasource name
+     * validates that the given {@param dataSource} is a valid dataSource name
      *
-     * @param datasource
-     * @throws Exception that the given {@param datasource} isn't a valid datasource name
+     * @param dataSource
+     * @throws Exception that the given {@param dataSource} isn't a valid dataSource name
      */
-    void validateDatasourceParam(String datasource) throws Exception;
+    void validateDataSourceParam(String dataSource) throws Exception;
 
     /**
      * validates that the given {@param startTime} and {@param endTime} are valid.
@@ -41,4 +41,11 @@ public interface ParametersValidationService {
      */
     void validateTimeParams(String startTime, String endTime) throws Exception;
 
+    /**
+     * validates that the given {@param command} is a valid command name
+     *
+     * @param command
+     * @throws Exception that the given {@param command} isn't a valid command name
+     */
+    void validateCommand(String command) throws Exception;
 }
