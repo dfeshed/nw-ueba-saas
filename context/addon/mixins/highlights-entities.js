@@ -249,6 +249,11 @@ export default Mixin.create({
    * @public
    */
   highlightEntities() {
+    // If we waited too long and this component has been trashed, exit.
+    if (this.get('isDestroying') || this.get('isDestroyed')) {
+      return;
+    }
+
     const entitySelector = this.get('entitySelector');
     if (!entitySelector) {
       return;
