@@ -39,11 +39,13 @@ const IncidentEntities = Component.extend({
     } else {
       this.syncEventsThrottled();
     }
-  }),
+  }).on('didInsertElement'),
 
   // Updates `eventsThrottled` to match the latest `events`.
   syncEventsThrottled() {
-    this.set('eventsThrottled', this.get('events'));
+    if (!this.get('isDestroying') && !this.get('isDestroyed')) {
+      this.set('eventsThrottled', this.get('events'));
+    }
   },
 
   // Generates a set of nodes & links from a list of events.
