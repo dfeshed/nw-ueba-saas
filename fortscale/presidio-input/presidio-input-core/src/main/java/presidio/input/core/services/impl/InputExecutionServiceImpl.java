@@ -62,7 +62,7 @@ public class InputExecutionServiceImpl implements InputExecutionService {
             return;
         }
 
-        dataSource = DataSource.valueOf(dataSourceParam);
+        dataSource = DataSource.createDataSource(dataSourceParam);
         final long startTimeSeconds = TimestampUtils.convertToSeconds(new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss").parse(startTimeParam));
         final long endTimeSeconds = TimestampUtils.convertToSeconds(new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss").parse(endTimeParam));
         startDate = Instant.ofEpochSecond(startTimeSeconds);
