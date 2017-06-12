@@ -27,6 +27,16 @@ export default Component.extend({
   items: [],
 
   /**
+   * Optional status of `items` fetch; e.g., 'error', 'success', 'complete', 'wait', 'streaming', 'paused', or 'error'.
+   * This is only used in order to determine whether to auto-select the first item if there is only one item in `items`.
+   * We auto-select only if `itemStatus` says we are done fetching ('success' or 'complete') or is undefined. We
+   * don't auto-select otherwise because we don't yet have the full `items` list.
+   * @type {String}
+   * @public
+   */
+  itemsStatus: null,
+
+  /**
    * The object from `items` which is to be displayed in the Item Details view.
    * @type {Object}
    * @public
@@ -63,10 +73,20 @@ export default Component.extend({
   },
 
   // Computes which item should be currently shown in the Item Details view
-  @computed('items.[]', 'selectedItem')
-  resolvedSelectedItem(items, selectedItem) {
-    return selectedItem ||
-      ((items && items.length === 1) ? items[0] : null);
+  @computed('items.[]', 'selectedItem', 'itemsStatus')
+  resolvedSelectedItem(items, selectedItem, itemsStatus) {
+    if (selectedItem) {
+      return selectedItem;
+    } else {
+      const canAutoSelect = !itemsStatus || !!String(itemsStatus).match(/success|complete/);
+      if (canAutoSelect) {
+        const onlyOneItem = !!items && (items.length === 1);
+        if (onlyOneItem) {
+          return items[0];
+        }
+      }
+      return null;
+    }
   },
 
   // Computes the index of `resolvedSelectedItem` relative to the entire `items` array.

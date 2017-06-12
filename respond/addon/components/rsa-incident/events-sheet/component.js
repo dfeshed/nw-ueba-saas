@@ -8,7 +8,8 @@ import CanThrottleAttr from 'respond/mixins/can-throttle-attr';
 const stateToComputed = (state) => ({
   items: storyDatasheet(state),
   storyline: state.respond.incident.storyline,
-  selection: state.respond.incident.selection
+  selection: state.respond.incident.selection,
+  itemsStatus: state.respond.incident.storylineEventsStatus
 });
 
 const IncidentDatasheet = Component.extend(CanThrottleAttr, {
@@ -16,6 +17,7 @@ const IncidentDatasheet = Component.extend(CanThrottleAttr, {
   layout,
   items: null,
   selection: null,
+  itemsStatus: null,
 
   // Configuration settings for throttling property values from "items" to "itemsThrottled".
   // @see respond/mixins/can-throttle-attrs

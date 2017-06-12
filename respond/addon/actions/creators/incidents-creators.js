@@ -292,7 +292,10 @@ const getStorylineEvents = (incidentId) => {
         });
 
         // Recursively repeat the process for the next storyline indicator.
-        dispatch(getStorylineEvents(incidentId));
+        // Use next() so UI has time to update DOM with the latest state.
+        next(() => {
+          dispatch(getStorylineEvents(incidentId));
+        });
       })
       .catch(() => {
         dispatch({ type: ACTION_TYPES.FETCH_INCIDENT_STORYLINE_EVENTS_ERROR });
