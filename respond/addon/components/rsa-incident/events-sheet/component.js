@@ -3,6 +3,7 @@ import layout from './template';
 import connect from 'ember-redux/components/connect';
 import { storyDatasheet } from 'respond/selectors/storyline';
 import computed from 'ember-computed-decorators';
+import CanThrottleAttr from 'respond/mixins/can-throttle-attr';
 
 const stateToComputed = (state) => ({
   items: storyDatasheet(state),
@@ -10,11 +11,17 @@ const stateToComputed = (state) => ({
   selection: state.respond.incident.selection
 });
 
-const IncidentDatasheet = Component.extend({
+const IncidentDatasheet = Component.extend(CanThrottleAttr, {
   tagName: '',
   layout,
   items: null,
   selection: null,
+
+  // Configuration settings for throttling property values from "items" to "itemsThrottled".
+  // @see respond/mixins/can-throttle-attrs
+  throttleFromAttr: 'items',
+  throttleToAttr: 'itemsThrottled',
+  throttleInterval: 1000,
 
   columnsConfig: [{
     field: 'timestamp',

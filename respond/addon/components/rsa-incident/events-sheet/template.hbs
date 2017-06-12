@@ -1,8 +1,8 @@
-{{#rsa-items-sheet columnsConfig=columnsConfig items=items as |sheet|}}
+{{#rsa-items-sheet columnsConfig=columnsConfig items=itemsThrottled as |sheet|}}
   {{#sheet.tableHeader as |tableHeader|}}
     <span class="event-count-and-label">
       <span class="event-count">
-        {{tableHeader.items.length}}
+        {{items.length}}
       </span>
       <span class="event-label">
         {{t 'respond.eventDetails.events'}}
@@ -29,6 +29,7 @@
     {{/if}}
   {{/sheet.tableHeader}}
   {{#sheet.tableBody
+    items=itemsThrottled
     columnsConfig=columnsConfig
     fitToWidth=false
     lazy=true
