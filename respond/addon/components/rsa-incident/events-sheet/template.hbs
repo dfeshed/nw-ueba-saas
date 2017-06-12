@@ -1,4 +1,4 @@
-{{#rsa-items-sheet columnsConfig=columnsConfig items=itemsThrottled itemsStatus=itemsStatus as |sheet|}}
+{{#rsa-events-sheet items=items itemsStatus=itemsStatus as |sheet|}}
   {{#sheet.tableHeader as |tableHeader|}}
     <span class="event-count-and-label">
       <span class="event-count">
@@ -28,32 +28,4 @@
       </span>
     {{/if}}
   {{/sheet.tableHeader}}
-  {{#sheet.tableBody
-    items=itemsThrottled
-    columnsConfig=columnsConfig
-    fitToWidth=false
-    lazy=true
-  }}
-    {{rsa-data-table/header enableColumnSelector=true translateTitles=true}}
-    {{#rsa-data-table/body showNoResultMessage=false as |item index column|}}
-      {{#rsa-incident/events-sheet-cell column=column index=index item=item}}
-        {{#if (eq column.field 'timestamp')}}
-          {{rsa-content-datetime timestamp=item.timestamp displayDate=true displayTime=true}}
-        {{else}}
-          <span class="entity" data-meta-key="{{column.fieldSuffix}}" data-entity-id="{{get item column.field}}">
-            {{get item column.field}}
-          </span>
-        {{/if}}
-      {{/rsa-incident/events-sheet-cell}}
-    {{/rsa-data-table/body}}
-  {{/sheet.tableBody}}
-  {{#sheet.detailsHeader as |detailsHeader|}}
-    {{t (concat 'respond.eventDetails.type.' detailsHeader.item.type)}}:
-    {{rsa-content-datetime
-      timestamp=detailsHeader.item.timestamp
-      displaySeconds=true
-      displayMilliseconds=true
-    }}
-  {{/sheet.detailsHeader}}
-  {{sheet.detailsBody}}
-{{/rsa-items-sheet}}
+{{/rsa-events-sheet}}

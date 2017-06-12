@@ -1,0 +1,11 @@
+{{#rsa-explorer/explorer-inspector
+  info=info
+  infoStatus=infoStatus
+  inspectorContentComponent='rsa-alerts/alert-overview'
+  as |inspector|
+}}
+  {{#inspector.inspectorHeader as |info|}}
+    <div class="name">{{info.alert.name}}</div>
+  {{/inspector.inspectorHeader}}
+  {{inspector.inspectorContent}}
+{{/rsa-explorer/explorer-inspector}}

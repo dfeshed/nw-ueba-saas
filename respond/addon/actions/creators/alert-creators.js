@@ -160,7 +160,7 @@ const getAlert = (alertId) => {
       { sortField: '_id', isSortDescending: false },
       {
         onInit: (stopStreamFn) => {
-          dispatch({ type: ACTION_TYPES.FETCH_ALERT_DETIALS_STREAM_INITIALIZED, payload: stopStreamFn });
+          dispatch({ type: ACTION_TYPES.FETCH_ALERT_DETAILS_STREAM_INITIALIZED, payload: stopStreamFn });
         },
         onCompleted: () => dispatch({ type: ACTION_TYPES.FETCH_ALERT_DETAILS_COMPLETED }),
         onResponse: (payload) => dispatch({ type: ACTION_TYPES.FETCH_ALERT_DETAILS_RETRIEVE_BATCH, payload }),
