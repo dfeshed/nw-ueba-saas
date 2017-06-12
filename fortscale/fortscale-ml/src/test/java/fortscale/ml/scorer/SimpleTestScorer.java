@@ -1,7 +1,7 @@
 package fortscale.ml.scorer;
 
-import fortscale.common.event.Event;
 import fortscale.domain.feature.score.FeatureScore;
+import presidio.ade.domain.record.AdeRecord;
 
 public class SimpleTestScorer implements Scorer {
 
@@ -24,7 +24,7 @@ public class SimpleTestScorer implements Scorer {
 
 
     @Override
-    public FeatureScore calculateScore(Event eventMessage, long eventEpochTimeInSec) throws Exception {
+    public FeatureScore calculateScore(AdeRecord record) {
         return score == null ? null : new FeatureScore("SimpleTestScorer", score);
     }
 }

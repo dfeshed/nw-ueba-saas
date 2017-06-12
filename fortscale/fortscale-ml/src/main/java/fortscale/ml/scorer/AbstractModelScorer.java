@@ -1,15 +1,16 @@
 package fortscale.ml.scorer;
 
-import fortscale.common.event.Event;
 import fortscale.common.feature.Feature;
-import fortscale.common.feature.extraction.FeatureExtractService;
 import fortscale.domain.feature.score.FeatureScore;
 import fortscale.domain.feature.score.ModelFeatureScore;
 import fortscale.ml.model.Model;
 import fortscale.ml.model.cache.EventModelsCacheService;
 import fortscale.ml.scorer.config.ModelScorerConf;
+import fortscale.utils.factory.FactoryService;
+import fortscale.utils.recordreader.RecordReader;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.util.Assert;
+import presidio.ade.domain.record.AdeRecord;
 
 import java.util.Collections;
 import java.util.List;
@@ -28,7 +29,7 @@ public abstract class AbstractModelScorer extends AbstractScorer{
 
 
 	protected final EventModelsCacheService eventModelsCacheService;
-	protected final FeatureExtractService featureExtractService;
+	protected final FactoryService<RecordReader<AdeRecord>> recordReaderFactoryService;
 
     static public void assertMinNumOfSamplesToInfluenceValue(int minNumOfSamplesToInfluence) {
         Assert.isTrue(minNumOfSamplesToInfluence >= 1, String.format("minNumOfSamplesToInfluence (%d) must be >= 1", minNumOfSamplesToInfluence));
@@ -61,7 +62,8 @@ public abstract class AbstractModelScorer extends AbstractScorer{
 							   String featureName,
 							   int minNumOfSamplesToInfluence,
 							   int enoughNumOfSamplesToInfluence,
-							   boolean isUseCertaintyToCalculateScore, FeatureExtractService featureExtractService,
+							   boolean isUseCertaintyToCalculateScore,
+							   FactoryService<RecordReader<AdeRecord>> recordReaderFactoryService,
 							   EventModelsCacheService eventModelsCacheService){
 		super(scorerName);
 		this.eventModelsCacheService = eventModelsCacheService;
@@ -81,7 +83,7 @@ public abstract class AbstractModelScorer extends AbstractScorer{
 		if (additionalContextFieldNames == null) {
 			additionalContextFieldNames = Collections.emptyList();
 		}
-		Assert.notEmpty(contextFieldNames);
+		Assert.notEmpty(contextFieldNames, "List of context field names cannot be empty.");
 		Assert.isTrue(StringUtils.isNotBlank(modelName), "model name must be provided and cannot be empty or blank.");
 		Assert.isTrue(additionalModelNames.size() == additionalContextFieldNames.size(), "additionalModelNames and additionalContextFieldNames must have the same size");
 		for (String additionalModelName : additionalModelNames) {
@@ -100,33 +102,27 @@ public abstract class AbstractModelScorer extends AbstractScorer{
 		this.additionalModelNames = additionalModelNames;
 		this.contextFieldNames = contextFieldNames;
 		this.additionalContextFieldNames = additionalContextFieldNames;
-		this.featureExtractService = featureExtractService;
+		this.recordReaderFactoryService = recordReaderFactoryService;
 	}
 
 	@Override
-	public FeatureScore calculateScore(Event eventMessage, long eventEpochTimeInSec) throws Exception {
-		Feature feature = featureExtractService.extract(featureName, eventMessage);
+	public FeatureScore calculateScore(AdeRecord record) {
+		RecordReader<AdeRecord> recordReader = recordReaderFactoryService.getDefaultProduct(record.getAdeRecordType());
+		Feature feature = Feature.toFeature(featureName, recordReader.get(record, featureName));
 		List<Model> additionalModels = IntStream.range(0, additionalModelNames.size())
 				.mapToObj(i -> eventModelsCacheService.getModel(
-						eventMessage,
-						feature,
-						eventEpochTimeInSec,
+						record,
 						additionalModelNames.get(i),
 						additionalContextFieldNames.get(i))
 				).collect(Collectors.toList());
 		return calculateScoreWithCertainty(
-				getModel(eventMessage, eventEpochTimeInSec, feature),
+				getModel(record),
 				additionalModels,
 				feature);
 	}
 
-	Model getModel(Event eventMessage, long eventEpochTimeInSec) {
-		Feature feature = featureExtractService.extract(featureName, eventMessage);
-		return getModel(eventMessage, eventEpochTimeInSec, feature);
-	}
-
-	private Model getModel(Event eventMessage, long eventEpochTimeInSec, Feature feature) {
-		return eventModelsCacheService.getModel(eventMessage, feature, eventEpochTimeInSec, modelName, contextFieldNames);
+	Model getModel(AdeRecord record) {
+		return eventModelsCacheService.getModel(record, modelName, contextFieldNames);
 	}
 
 	public FeatureScore calculateScoreWithCertainty(Model model, List<Model> additionalModels, Feature feature) {

@@ -1,13 +1,12 @@
 package fortscale.ml.scorer;
 
-import fortscale.common.event.Event;
-import fortscale.common.feature.extraction.FeatureExtractService;
 import fortscale.domain.feature.score.FeatureScore;
 import fortscale.ml.model.Model;
 import fortscale.ml.model.PersonalThresholdModel;
 import fortscale.ml.model.cache.EventModelsCacheService;
 import fortscale.ml.model.cache.ModelsCacheService;
 import fortscale.ml.scorer.config.IScorerConf;
+import fortscale.ml.scorer.record.JsonAdeRecord;
 import fortscale.utils.factory.FactoryService;
 import org.junit.Assert;
 import org.junit.Before;
@@ -17,10 +16,12 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
+import presidio.ade.domain.record.AdeRecord;
 
 import java.time.Instant;
 import java.util.Collections;
@@ -35,6 +36,7 @@ public class PersonalThresholdModelScorerTest {
 
     @Configuration
     @EnableSpringConfigured
+    @Import(ScorerTestsContext.class)
     static class ContextConfiguration {
         @Bean
         public FactoryService<Scorer> scorerFactoryService() {
@@ -47,11 +49,6 @@ public class PersonalThresholdModelScorerTest {
         }
 
         @Bean
-        public FeatureExtractService featureExtractService() {
-            return Mockito.mock(FeatureExtractService.class);
-        }
-
-        @Bean
         public ModelsCacheService modelsCacheService() {
             return Mockito.mock(ModelsCacheService.class);
         }
@@ -59,9 +56,6 @@ public class PersonalThresholdModelScorerTest {
 
     @Autowired
     private FactoryService<Scorer> scorerFactoryService;
-
-    @Autowired
-    private FeatureExtractService featureExtractService;
 
     @Autowired
     private ModelsCacheService modelsCacheService;
@@ -156,14 +150,11 @@ public class PersonalThresholdModelScorerTest {
                                         PersonalThresholdModel personalThresholdModel,
                                         Model baseScorerModel,
                                         double maxRatioFromUniformThreshold) throws Exception {
-        Event eventMessage = Mockito.mock(Event.class);
-        long evenEpochTime = 1234;
-
+        AdeRecord eventMessage = JsonAdeRecord.getJsonAdeRecord("context field name", "context field value");
         scorerFactoryService.register(baseScorerConf.getFactoryName(), factoryConfig -> baseScorer);
-        Mockito.when(baseScorer.calculateScore(eventMessage, evenEpochTime)).thenReturn(baseScore);
-        Mockito.when(baseScorer.getModel(eventMessage, evenEpochTime)).thenReturn(baseScorerModel);
-        String contextFieldName = "context field name";
-        List<String> contextFieldNames = Collections.singletonList(contextFieldName);
+        Mockito.when(baseScorer.calculateScore(eventMessage)).thenReturn(baseScore);
+        Mockito.when(baseScorer.getModel(eventMessage)).thenReturn(baseScorerModel);
+        List<String> contextFieldNames = Collections.singletonList("context field name");
 
         when(modelsCacheService.getModel(
                 Mockito.anyString(),
@@ -171,16 +162,13 @@ public class PersonalThresholdModelScorerTest {
                 Mockito.any(Instant.class))
         ).thenReturn(personalThresholdModel);
 
-        when(eventMessage.getContextFields(contextFieldNames))
-                .thenReturn(Collections.singletonMap(contextFieldName, "context field value"));
-
         return new PersonalThresholdModelScorer(
                 featureScoreName,
                 "model name",
                 contextFieldNames,
                 baseScorerConf,
                 maxRatioFromUniformThreshold
-        ).calculateScore(eventMessage, evenEpochTime);
+        ).calculateScore(eventMessage);
     }
 
     @Test

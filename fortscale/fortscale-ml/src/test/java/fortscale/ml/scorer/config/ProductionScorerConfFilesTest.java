@@ -1,6 +1,5 @@
 package fortscale.ml.scorer.config;
 
-import fortscale.common.feature.extraction.FeatureExtractService;
 import fortscale.ml.model.Model;
 import fortscale.ml.model.ModelConfService;
 import fortscale.ml.model.cache.EventModelsCacheService;
@@ -9,6 +8,7 @@ import fortscale.ml.model.retriever.AbstractDataRetriever;
 import fortscale.ml.model.retriever.AbstractDataRetrieverConf;
 import fortscale.ml.model.selector.IContextSelector;
 import fortscale.ml.scorer.Scorer;
+import fortscale.ml.scorer.ScorerTestsContext;
 import fortscale.utils.factory.FactoryService;
 import org.junit.Assert;
 import org.junit.Test;
@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.test.context.ContextConfiguration;
@@ -25,7 +26,6 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 import java.time.Instant;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -53,25 +53,9 @@ public class ProductionScorerConfFilesTest {
 		}
 	}
 
-	private void getDataSourceScorerConfs(String dataSource, List<Integer> sizes) {
-		DataSourceScorerConfs dataSourceScorerConfs = scorerConfService.getDataSourceScorerConfs(dataSource);
-
-		if (dataSourceScorerConfs == null) {
-			Assert.fail(String.format("Received null %s for data source %s.",
-					DataSourceScorerConfs.class.getSimpleName(), dataSource));
-		}
-
-		Assert.assertEquals(dataSource, dataSourceScorerConfs.getDataSource());
-		Assert.assertEquals(sizes.size(), dataSourceScorerConfs.getScorerConfs().size());
-
-		for (int i = 0; i < sizes.size(); i++) {
-			ScorerContainerConf conf = (ScorerContainerConf)dataSourceScorerConfs.getScorerConfs().get(i);
-			Assert.assertEquals(sizes.get(i), conf.getScorerConfList().size(), 0d);
-		}
-	}
-
 	@Configuration
 	@EnableSpringConfigured
+	@Import(ScorerTestsContext.class)
 	@ComponentScan(basePackages = "fortscale.ml.scorer.factory")
 	static class ContextConfiguration {
 		@Bean
@@ -126,11 +110,6 @@ public class ProductionScorerConfFilesTest {
 		@Bean
 		public EventModelsCacheService eventModelsCacheService() {
 			return new EventModelsCacheService();
-		}
-
-		@Bean
-		public FeatureExtractService featureExtractService() {
-			return new FeatureExtractService();
 		}
 
 		@Bean
