@@ -3,6 +3,7 @@ import { Incidents, alerts } from '../api';
 import * as ACTION_TYPES from '../types';
 import * as ErrorHandlers from '../util/error-handlers';
 import * as DictionaryCreators from './dictionary-creators';
+import { next } from 'ember-runloop';
 
 const {
   Logger
@@ -318,8 +319,10 @@ const initializeIncident = (incidentId) => {
         payload: incidentId
       });
       if (incidentId) {
-        dispatch(getIncident(incidentId));
-        dispatch(getStoryline(incidentId));
+        next(() => {
+          dispatch(getIncident(incidentId));
+          dispatch(getStoryline(incidentId));
+        });
       }
 
       // If we haven't already fetched users (say, from incidents route), fetch now
