@@ -1,0 +1,63 @@
+import eventsToNodesLinks from 'respond/utils/entity/events-to-nodes-links';
+import { module, test } from 'qunit';
+
+module('Unit | Utility | entity/events to nodes and links');
+
+const event1 = {
+  source: {
+    device: {
+      ip_address: 'ip1',
+      dns_domain: 'domain1',
+      dns_hostname: 'host1'
+    },
+    user: {
+      username: 'user1'
+    }
+  },
+  destination: {
+    device: {
+      ip_address: 'ip2',
+      dns_domain: 'domain2',
+      dns_hostname: 'host2'
+    },
+    user: {
+      username: 'user2'
+    }
+  }
+};
+
+const event2 = {
+  detector: {
+    ip_address: 'ip3',
+    dns_domain: 'domain3',
+    dns_hostname: 'host3'
+  }
+};
+
+test('it parses normalized alert events as expected', function(assert) {
+  const result = eventsToNodesLinks([ event1 ]);
+  assert.equal(result.nodes.length, 8, 'Expected nodes for source & destination values');
+  assert.equal(result.links.length, 7, 'Expected links for source & destination values');
+});
+
+test('it responds to empty input with empty arrays', function(assert) {
+  const result = eventsToNodesLinks();
+  assert.equal(result.nodes.length, 0, 'Expected an empty array of nodes');
+  assert.equal(result.links.length, 0, 'Expected an empty array of links');
+});
+
+test('it utilizes caching to avoid re-constructing nodes & links when possible', function(assert) {
+  const { nodes, links } = eventsToNodesLinks([ event1 ]);
+  const [ firstNode ] = nodes;
+  const [ firstLink ] = links;
+
+  const { nodes: nodes2, links: links2 } = eventsToNodesLinks([ event1, event2 ]);
+
+  assert.equal(firstNode, nodes2[0], 'Expected node from previous call to be re-used in second call');
+  assert.equal(firstLink, links2[0], 'Expected link from previous call to be re-used in second call');
+  assert.equal(nodes2.length, 11, 'Expected second call to yield additional results');
+
+  const { nodes: nodes3 } = eventsToNodesLinks([ event1, event2 ], true);
+  assert.notEqual(firstNode, nodes3[0], 'Expected node from previous call to NOT be re-used when ignoreCache is set to true');
+});
+

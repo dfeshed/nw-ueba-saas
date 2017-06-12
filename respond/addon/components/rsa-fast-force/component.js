@@ -330,25 +330,6 @@ export default Component.extend({
         set(value, 'links', []);
       }
 
-      // Ensure all the given nodes (if any) have a radius.
-      // Doing this here, rather than later, saves us from having to check for this later during the simulation.
-      const radius = this.get('minNodeRadius');
-      const oldNodes = (was && was.nodes) || [];
-      value.nodes.forEach(function(node) {
-        if (!node.r) {
-          node.r = radius;
-        }
-        const oldNode = oldNodes.findBy('id', node.id) || {};
-        if (oldNode) {
-          if (node.x === undefined) {
-            node.x = oldNode.x;
-          }
-          if (node.y === undefined) {
-            node.y = oldNode.y;
-          }
-        }
-      });
-
       this._data = value;
 
       // If this element has rendered, invoke handler which will update the d3 simulation.

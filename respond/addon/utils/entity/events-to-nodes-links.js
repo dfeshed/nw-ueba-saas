@@ -4,6 +4,7 @@ import { makeNodeId, makeNode } from './node';
 import { makeLinkId, makeLink } from './link';
 import arrayFromHashValues from 'respond/utils/array/from-hash-values';
 import { isEmpty } from 'ember-utils';
+import { isEmberArray } from 'ember-array/utils';
 
 // Maps properties of a device POJO (from a normalized alert's source, destination or detector) to node types.
 const DEVICE_PROPS_TO_NODE_TYPES = {
@@ -12,6 +13,30 @@ const DEVICE_PROPS_TO_NODE_TYPES = {
   ip_address: NodeTypes.IP,
   mac_address: NodeTypes.MAC
 };
+
+// Private cache of the last results.
+// Optimization: Use caching to avoid unnecessary re-parsing of events when eventsToNodesAndLinks is called
+// repeatedly with a stream of growing events.  By caching the results, we can avoid re-parsing the events that
+// were already present in the past invocation, and instead only parse the newly-arrived events.
+let cache = {
+  events: null,
+  output: null,
+  nodeHash: null,
+  linkHash: null
+};
+
+// Returns true if a given array matches the starting contents of another given array.
+function isStartOfArray(arr1, arr2) {
+  if (isEmberArray(arr1) && isEmberArray(arr2)) {
+    if (arr1.length <= arr2.length) {
+      const didNotMatch = arr1.find(function(item, index) {
+        return item !== arr2[index];
+      });
+      return !didNotMatch;
+    }
+  }
+  return false;
+}
 
 // Ensures a given node type & value is included in the given hash of nodes.
 // If the node is not found already in the hash, a new node is created and added to the hash.
@@ -185,18 +210,53 @@ function parseEventNodesAndLinks(evt, nodeHash, linkHash) {
  * `events`: {object[]} the subset of the given events in which this link was found.
  *
  * @param {object[]} events Array of normalized event objects, possibly empty.
+ * @param {Boolean} [ignoreCache=false] If true, will not read/write cache. Forces the parsing of all given events.
+ * Otherwise, this function will compare the given events to a cache from the previous invocation (if any). If the
+ * cached events array is a subset of the given events array, then this function will re-use the cached results and
+ * only parse the new events that are not already cached.
  * @public
  */
-export default function eventsToNodesAndLinks(events) {
-  const nodeHash = {};
-  const linkHash = {};
+export default function eventsToNodesAndLinks(events, ignoreCache = false) {
+  let nodeHash = {};
+  let linkHash = {};
+  let newEvents = events;
 
-  events.forEach((evt) => {
+  // Don't utilize the cache for the trivial empty use-case.
+  ignoreCache = ignoreCache || !events || !events.length;
+
+  if (!ignoreCache) {
+
+    // Check if the given events array is just the same cached events plus some more events appended
+    // at the end (e.g., we could be getting called repeatedly with an accumulating stream of events).
+    if (isStartOfArray(cache.events, events)) {
+
+      // Reuse cached results.
+      nodeHash = cache.nodeHash;
+      linkHash = cache.linkHash;
+
+      // Only parse the events which were not already in the cache.
+      newEvents = events.slice(cache.events.length);
+    }
+  }
+
+  (newEvents || []).forEach((evt) => {
     parseEventNodesAndLinks(evt, nodeHash, linkHash);
   });
 
-  return {
+  const output = {
     nodes: arrayFromHashValues(nodeHash),
     links: arrayFromHashValues(linkHash)
   };
+
+  // Save results to cache for next time.
+  if (!ignoreCache) {
+    cache = {
+      events,
+      output,
+      nodeHash,
+      linkHash
+    };
+  }
+
+  return output;
 }
