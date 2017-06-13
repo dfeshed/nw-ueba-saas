@@ -1,8 +1,10 @@
 package presidio.ade.sdk.executions.common;
 
 import presidio.ade.domain.record.enriched.EnrichedRecord;
-import presidio.ade.domain.store.enriched.EnrichedDataStoreCleanupParams;
+import presidio.ade.domain.store.AdeDataStoreCleanupParams;
 import presidio.ade.domain.store.enriched.EnrichedRecordsMetadata;
+import presidio.ade.sdk.executions.historical.PrepareHistoricalRunTimeParams;
+import presidio.ade.sdk.executions.online.PrepareOnlineRunTimeParams;
 
 import java.util.List;
 import java.util.Set;
@@ -11,7 +13,7 @@ import java.util.Set;
  * SDK signature that is common to all kinds of executions
  * Created by barak_schuster on 5/18/17.
  */
-public interface ADECommonSDK<ADERunParams> {
+public interface ADEManagerSDK {
 
     /**
      * Executes the needed preparation steps before starting to process data
@@ -21,7 +23,14 @@ public interface ADECommonSDK<ADERunParams> {
      *               i.e. the data is between "some start date" to "some end date" and should be processed in chunks of 1 Hour
      * @return the preparation result, i.e.: running, failed etc...
      */
-    RunPrepResult prepareRun(RunId runId, ADERunParams params);
+    RunPrepResult prepareHistoricalRun(RunId runId, PrepareHistoricalRunTimeParams params);
+
+    RunPrepResult prepareOnlineRun(PrepareOnlineRunTimeParams params);
+
+    /**
+     * @return the online execution run id
+     */
+    RunId getOnlineRunId();
 
     /**
      * change the execution params of a run id
@@ -30,60 +39,90 @@ public interface ADECommonSDK<ADERunParams> {
      * @param runId  execution identifier
      * @param params
      */
-    void changeRunTimeParams(RunId runId, ADERunParams params);
+    void changeHistoricalRunTimeParams(RunId runId, PrepareHistoricalRunTimeParams params);
+
+    void changeOnlineRunTimeParams(PrepareOnlineRunTimeParams params);
 
     /**
      * notify the component that the required data needed for processing the next hour is ready for use
      *
      * @param runId execution identifier
      */
-    void processNextTimeRange(RunId runId);
+    void processNextHistoricalTimeRange(RunId runId);
+
+    default void processNextOnlineTimeRange() {
+        processNextHistoricalTimeRange(getOnlineRunId());
+    }
 
     /**
      * @param runId
      * @return the last hour that was requested to process.
      */
-    ADERunParams getLastProcessedEndTime(RunId runId);
+    PrepareHistoricalRunTimeParams getLastHistoricalProcessedEndTime(RunId runId);
+
+    PrepareOnlineRunTimeParams getLastOnlineProcessedEndTime();
 
     /**
      * @param runId
      * @return currently running execution hours
      */
-    Set<ADERunParams> getInProgressHours(RunId runId);
+    Set<PrepareHistoricalRunTimeParams> getInProgressHistoricalHours(RunId runId);
+
+    Set<PrepareOnlineRunTimeParams> getInProgressOnlineHours();
+
 
     /**
      * @param runId
      * @return the execution status
      */
-    RunStatus getRunStatus(RunId runId);
+    RunStatus getHistoricalRunStatus(RunId runId);
+    default RunStatus getOnlineRunStatus()
+    {
+        return getHistoricalRunStatus(getOnlineRunId());
+    }
 
     /**
      * cleans the data between by given params
      *
      * @param params
      */
-    void cleanup(EnrichedDataStoreCleanupParams params);
+    void cleanup(AdeDataStoreCleanupParams params);
 
     /**
-     * pauses the execution. the ADE will pause gracefully as fast as possible and would not continue to the nearest sub step
+     * pauses the execution. the ADE will pauseHistorical gracefully as fast as possible and would not continue to the nearest sub step
      *
      * @param runId the execution to be paused
      */
-    void pause(RunId runId);
+    void pauseHistorical(RunId runId);
+
+    default void pauseOnline()
+    {
+        unpauseHistorical(getOnlineRunId());
+    }
 
     /**
      * the execution will continue from where you left it
      *
      * @param runId the execution to be un-paused
      */
-    void unpause(RunId runId);
+    void unpauseHistorical(RunId runId);
+    default void unpauseOnline()
+    {
+        unpauseHistorical(getOnlineRunId());
+    }
+
 
     /**
      * the execution will stop at the end of the processed day
      *
      * @param runId
      */
-    void stop(RunId runId);
+    void stopHistorical(RunId runId);
+
+    default void stopOnline(RunId runId)
+    {
+        stopHistorical(getOnlineRunId());
+    }
 
     /**
      * Execution should stop, no matter what is currently running (AKA SIGKILL).
@@ -92,7 +131,11 @@ public interface ADECommonSDK<ADERunParams> {
      *
      * @param runId the execution to be stopped
      */
-    void stopForcefully(RunId runId);
+    void stopHistoricalForcefully(RunId runId);
+    default void stopOnlineForcefully()
+    {
+        stopHistoricalForcefully(getOnlineRunId());
+    }
 
     /**
      * @return the data characteristics that marks records as dirty
@@ -107,7 +150,7 @@ public interface ADECommonSDK<ADERunParams> {
 
     /**
      * persist given records into db
-     * those records will be processed whenever the relevant {@link #processNextTimeRange(RunId)} call will occur
+     * those records will be processed whenever the relevant {@link #processNextHistoricalTimeRange(RunId)} call will occur
      *
      * @param metaData some metadata considering the data to be stored. i.e. what is the data source, what is the time range etc...
      * @param records  data to be stored

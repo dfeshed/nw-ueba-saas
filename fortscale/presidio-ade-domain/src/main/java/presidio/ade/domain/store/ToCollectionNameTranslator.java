@@ -1,7 +1,5 @@
 package presidio.ade.domain.store;
 
-import presidio.ade.domain.store.enriched.EnrichedDataStoreCleanupParams;
-
 import java.util.Collection;
 
 /**
@@ -22,5 +20,5 @@ public interface ToCollectionNameTranslator<T> {
 	 * @param cleanupParams deletion filtering params
 	 * @return all relevant mongodb collection names to be cleaned for given cleanup filters
 	 */
-	Collection<String> toCollectionNames(EnrichedDataStoreCleanupParams cleanupParams);
+	Collection<String> toCollectionNames(AdeDataStoreCleanupParams cleanupParams);
 }

@@ -1,10 +1,15 @@
 package fortscale.services.parameters;
 
 
+import fortscale.common.general.Command;
 import fortscale.common.general.CommonStrings;
-import fortscale.common.general.Datasource;
+import fortscale.common.general.DataSource;
 import fortscale.utils.logging.Logger;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import static fortscale.common.general.CommonStrings.COMMAND_LINE_DATE_FORMAT;
 import static fortscale.common.general.CommonStrings.COMMAND_LINE_PARAM_DELIMITER;
 
 public class ParametersServiceImpl implements ParametersValidationService {
@@ -35,24 +40,27 @@ public class ParametersServiceImpl implements ParametersValidationService {
     }
 
     @Override
-    public void validateDatasourceParam(String datasource) throws Exception {
-        Datasource.createDataSource(datasource); //
+    public void validateDataSourceParam(String dataSource) throws Exception {
+        DataSource.createDataSource(dataSource);
     }
 
     @Override
-    public void validateTimeParams(String startTimeAsString, String endTimeAsString) throws Exception {
-        final long startTime = Long.parseLong(startTimeAsString);
-        final long endTime = Long.parseLong(endTimeAsString);
-        if (!(startTime >= 0)) {
-            throw new Exception(String.format("%s can't be negative! %s:%s", CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startTime));
+    public void validateTimeParams(String startDateAsString, String endDateAsString) throws Exception {
+        Date startDate = new SimpleDateFormat(COMMAND_LINE_DATE_FORMAT).parse(startDateAsString);
+        Date endDate = new SimpleDateFormat(COMMAND_LINE_DATE_FORMAT).parse(endDateAsString);
+
+        if (!(startDate.before(endDate))) { //todo: maybe we can check that it's exactly 1 hour?
+            throw new Exception(String.format("%s must be before than %s! %s:%s, %s:%s", CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate, CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate));
         }
-        if (!(startTime < endTime)) { //todo: maybe we can check that it's exactly 1 hour?
-            throw new Exception(String.format("%s must be less than %s! %s:%s, %s:%s", CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startTime, CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endTime));
+        Date now = new Date(System.currentTimeMillis());
+        if (endDate.after(now)) {
+            throw new Exception(String.format("%s can't be in the future! %s:%s, %s:%s", CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate, "now", now));
         }
-        final long now = System.currentTimeMillis();
-        if (!(endTime <= now)) {
-            throw new Exception(String.format("%s can't be in the future! %s:%s, %s:%s", CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endTime, "now", now));
-        }
+    }
+
+    @Override
+    public void validateCommand(String command) throws Exception {
+        Command.createCommand(command);
     }
 
     private String getParamByName(String paramName, String[] params) {

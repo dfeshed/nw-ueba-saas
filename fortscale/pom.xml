@@ -643,6 +643,18 @@
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>${maven-surefire-plugin.version}</version>
 				<dependencies>
@@ -757,4 +769,12 @@
 		<module>presidio-output</module>
 		<module>presidio-configuration-server</module>
 	</modules>
+	<distributionManagement>
+		<!-- push changes to artifactory, distribute use of sdk -->
+		<snapshotRepository>
+			<id>mirror.fortscale.dom</id>
+			<name>mirror.fortscale.dom-snapshots</name>
+			<url>http://mirror.fortscale.dom/artifactory/presidio-snapshot-local</url>
+		</snapshotRepository>
+	</distributionManagement>
 </project>

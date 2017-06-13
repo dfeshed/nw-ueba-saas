@@ -4,6 +4,7 @@ import fortscale.utils.logging.Logger;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
+import presidio.ade.domain.store.AdeDataStoreCleanupParams;
 
 import java.util.Collection;
 import java.util.List;
@@ -27,7 +28,7 @@ public class EnrichedDataStoreImplMongo implements EnrichedDataStore {
 	}
 
 	@Override
-	public void cleanup(EnrichedDataStoreCleanupParams cleanupParams) {
+	public void cleanup(AdeDataStoreCleanupParams cleanupParams) {
 		logger.info("cleanup by cleanupParams={}", cleanupParams);
 		Collection<String> collectionNames = translator.toCollectionNames(cleanupParams);
 		Query cleanupQuery = toCleanupQuery(cleanupParams);
@@ -41,7 +42,7 @@ public class EnrichedDataStoreImplMongo implements EnrichedDataStore {
 	 * @param cleanupParams to build the remove query
 	 * @return cleanup query by cleanup params
 	 */
-	private Query toCleanupQuery(EnrichedDataStoreCleanupParams cleanupParams) {
+	private Query toCleanupQuery(AdeDataStoreCleanupParams cleanupParams) {
 		return null;
 	}
 }

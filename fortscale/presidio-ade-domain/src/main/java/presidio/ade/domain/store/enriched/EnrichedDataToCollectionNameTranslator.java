@@ -1,5 +1,6 @@
 package presidio.ade.domain.store.enriched;
 
+import presidio.ade.domain.store.AdeDataStoreCleanupParams;
 import presidio.ade.domain.store.ToCollectionNameTranslator;
 
 import java.util.Collection;
@@ -18,7 +19,7 @@ public class EnrichedDataToCollectionNameTranslator implements ToCollectionNameT
 	}
 
 	@Override
-	public Collection<String> toCollectionNames(EnrichedDataStoreCleanupParams cleanupParams) {
+	public Collection<String> toCollectionNames(AdeDataStoreCleanupParams cleanupParams) {
 		return null;
 	}
 }

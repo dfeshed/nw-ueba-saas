@@ -4,7 +4,6 @@ import fortscale.utils.mongodb.config.MongoConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import presidio.webapp.controllers.AlertsController;
-import presidio.webapp.controllers.RefreshController;
 
 /**
  * Created by shays on 21/05/2017.
@@ -17,8 +16,4 @@ public class WebConf {
         return new AlertsController();
     }
 
-    @Bean
-    RefreshController getRefreshController() {
-        return new RefreshController();
-    }
 }

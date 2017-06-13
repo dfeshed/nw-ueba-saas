@@ -7,18 +7,15 @@ import fortscale.utils.time.TimestampUtils;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.Instant;
+
+import static presidio.sdk.api.domain.DlpFileDataDocument.COLLECTION_NAME;
 
 
-@Document(collection = DlpFileDataDocument.COLLECTION_NAME)
+@Document(collection = COLLECTION_NAME)
 public class DlpFileDataDocument extends AbstractAuditableDocument {
 
-    private static final Logger logger = Logger.getLogger(DlpFileDataDocument.class);
-
     public static final String COLLECTION_NAME = "dlpfile_stored_data";
-
     public static final String DATE_TIME_UNIX_FIELD_NAME = "dateTimeUnix";
     public static final String DATE_TIME_FIELD_NAME = "dateTime";
     public static final String EXECUTING_APPLICATION_FIELD_NAME = "executingApplication";
@@ -39,13 +36,12 @@ public class DlpFileDataDocument extends AbstractAuditableDocument {
     public static final String SOURCE_DRIVE_TYPE_FIELD_NAME = "sourceDriveType";
     public static final String DESTINATION_DRIVE_TYPE_FIELD_NAME = "destinationDriveType";
     public static final String EVENT_TYPE_FIELD_NAME = "eventType";
-
-
+    private static final Logger logger = Logger.getLogger(DlpFileDataDocument.class);
     @Field(DATE_TIME_UNIX_FIELD_NAME)
     protected long dateTimeUnix;
 
     @Field(DATE_TIME_FIELD_NAME)
-    protected Date dateTime;
+    protected Instant dateTime;
 
     @Field(EXECUTING_APPLICATION_FIELD_NAME)
     protected String executingApplication;
@@ -103,12 +99,8 @@ public class DlpFileDataDocument extends AbstractAuditableDocument {
 
 
     public DlpFileDataDocument(String[] record) {
-        try {
-            dateTime = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse(record[0]);
-        } catch (ParseException e) {
-            logger.error("Failed to create DlpFileDataDocument. Bad date: {}. Format should be yyyy-MM-dd hh:mm:ss", record[0], e); //todo remove this. create not in Ctor
-        }
-        dateTimeUnix = TimestampUtils.convertToSeconds(dateTime.getTime());
+        dateTime = Instant.parse(record[0]);
+        dateTimeUnix = dateTime.getEpochSecond();
         eventType = record[1];
         executingApplication = record[2];
         hostname = record[3];
@@ -118,8 +110,8 @@ public class DlpFileDataDocument extends AbstractAuditableDocument {
         malwareScanResult = record[7];
         eventId = record[8];
         sourceIp = record[9];
-        wasBlocked = Boolean.getBoolean(record[10]);
-        wasClassified = Boolean.getBoolean(record[11]);
+        wasBlocked = Boolean.valueOf(record[10]);
+        wasClassified = Boolean.valueOf(record[11]);
         destinationPath = record[12];
         destinationFileName = record[13];
         fileSize = Double.parseDouble(record[14]);
@@ -134,11 +126,11 @@ public class DlpFileDataDocument extends AbstractAuditableDocument {
 
     }
 
-    public Date getDateTime() {
+    public Instant getDateTime() {
         return dateTime;
     }
 
-    public void setDateTime(Date dateTime) {
+    public void setDateTime(Instant dateTime) {
         this.dateTime = dateTime;
     }
 
