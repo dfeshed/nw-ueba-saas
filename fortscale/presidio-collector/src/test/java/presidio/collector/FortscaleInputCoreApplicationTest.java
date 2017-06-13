@@ -1,5 +1,6 @@
 package presidio.collector;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +11,7 @@ import presidio.collector.spring.CollectorConfig;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = CollectorConfig.class)
-
+@Ignore
 public class FortscaleInputCoreApplicationTest {
 
 	@Autowired

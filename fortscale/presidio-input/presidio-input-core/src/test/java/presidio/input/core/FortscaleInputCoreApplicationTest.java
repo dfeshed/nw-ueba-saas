@@ -13,12 +13,12 @@ import presidio.input.core.spring.InputCoreConfiguration;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = InputCoreConfiguration.class)
+@Ignore
 
 public class FortscaleInputCoreApplicationTest {
 
     @Autowired
     InputExecutionService processService;
-    @Ignore
     @Test
     public void contextLoads() throws Exception {
         processService.run();
