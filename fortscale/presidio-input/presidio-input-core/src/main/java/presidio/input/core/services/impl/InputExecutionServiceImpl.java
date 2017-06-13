@@ -78,7 +78,7 @@ public class InputExecutionServiceImpl implements InputExecutionService {
     public void run(String... params) throws Exception {
         init(params);
         switch (command) {
-            case ENRICH:
+            case RUN:
                 enrich();
                 break;
             case CLEAN:

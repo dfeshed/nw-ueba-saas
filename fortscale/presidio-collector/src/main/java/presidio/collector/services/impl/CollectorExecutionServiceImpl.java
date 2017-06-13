@@ -28,7 +28,7 @@ public class CollectorExecutionServiceImpl implements CollectorExecutionService 
     private final CoreManagerService coreManagerService;
     private final FetchService fetchService;
     private final ParametersValidationService parameterValidationService;
-    private final String CLEAN_COMMAND = "clean";
+    private final Command CLEAN_COMMAND = Command.CLEAN;
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public CollectorExecutionServiceImpl(CoreManagerService coreManagerService, FetchService fetchService, ParametersValidationService parameterValidationService) {
@@ -71,7 +71,7 @@ public class CollectorExecutionServiceImpl implements CollectorExecutionService 
         final long endDate = TimestampUtils.convertToSeconds(new SimpleDateFormat(COMMAND_LINE_DATE_FORMAT).parse(endDateParam));
 
 
-        if (command.name().equals(CLEAN_COMMAND)) {
+        if (command.equals(CLEAN_COMMAND)) {
             logger.info("Cleaning.");
             System.out.print("Cleaning.");
             return;
