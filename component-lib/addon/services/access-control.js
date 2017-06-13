@@ -16,21 +16,38 @@ export default Service.extend({
   adminRoles: ['*', 'accessAdminModule', 'viewAppliances', 'viewServices', 'viewEventSources', 'accessHealthWellness', 'manageSystemSettings', 'manageSASecurity'],
   configRoles: ['*', 'searchLiveResources', 'accessManageAlertHandlingRules', 'accessViewRules', 'manageLiveResources', 'manageLiveFeeds'],
   investigationRoles: ['*', 'accessInvestigationModule', 'investigate-server.*'],
-  respondRoles: ['*', 'accessIncidentModule', 'response-server.*'],
 
   // computed intersections between roles and role groups
 
   @intersect('adminRoles', 'roles') adminAccessIntersections: null,
   @intersect('configRoles', 'roles') configAccessIntersections: null,
   @intersect('investigationRoles', 'roles') investigateAccessIntersections: null,
-  @intersect('respondRoles', 'roles') respondAccessIntersections: null,
 
   // permissions derived from roles returned by admin server
 
   @gt('adminAccessIntersections.length', 0) hasAdminAccess: null,
   @gt('configAccessIntersections.length', 0) hasConfigAccess: null,
   @gt('investigateAccessIntersections.length', 0) hasInvestigateAccess: null,
-  @gt('respondAccessIntersections.length', 0) hasRespondAccess: null,
+
+  @computed('roles')
+  hasRespondAccess(roles) {
+    return this._hasPermission(roles, 'response-server');
+  },
+
+  @computed('roles')
+  hasRespondAlertsAccess(roles) {
+    return this._hasPermission(roles, 'response-server.alert');
+  },
+
+  @computed('roles')
+  hasRespondIncidentsAccess(roles) {
+    return this._hasPermission(roles, 'response-server.incident');
+  },
+
+  @computed('roles')
+  hasRespondRemediationAccess(roles) {
+    return this._hasPermission(roles, 'response-server.remediation');
+  },
 
   @computed('adminAccessIntersections.[]')
   adminUrl: (intersections) => {
@@ -70,6 +87,40 @@ export default Service.extend({
     }
 
     return url;
-  }
+  },
 
+  /**
+   * Check if permissions match a given string
+   * @param roles The permissions to check against
+   * @param {string} stringToMatch The string to match
+   * @param {boolean} initialRun This is true on the first runthrough, and false afterward
+   * @returns {boolean}
+   * @private
+   */
+  _hasPermission(roles, stringToMatch) {
+    // If you have the global '*' permission, you should have all permissions, so return true
+    if (roles.includes('*')) {
+      return true;
+    }
+
+    const hasPermission = roles.find(
+      (role) => {
+        return role.includes(stringToMatch);
+      });
+
+    // Check for exact permission matches
+    if (hasPermission) {
+      return true;
+    } else {
+      stringToMatch = stringToMatch.replace('.*', '');
+    }
+
+    // Check for match to parent '.*'
+    if (stringToMatch.includes('.')) {
+      stringToMatch = `${stringToMatch.substr(0, stringToMatch.lastIndexOf('.'))}.*`;
+      return this._hasPermission(roles, stringToMatch);
+    }
+
+    return false;
+  }
 });
