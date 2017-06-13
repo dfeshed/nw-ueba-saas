@@ -1,3 +1,4 @@
+import pytz
 from datetime import datetime, timedelta
 
 
@@ -33,3 +34,16 @@ def epoch_to_datetime(epoch):
     :return: datetime
     """
     return datetime.utcfromtimestamp(epoch)
+
+
+def convert_to_utc(dt):
+    """
+    Convert datetime to utc format 2017-06-06T10:10:10.00Z
+    :param dt: date_time
+    :type dt: datetime
+    :return: float
+    """
+    if (dt.tzname() is None) | (dt.tzinfo == pytz.utc):
+        return dt.strftime('%Y-%m-%dT%H:%M:%SZ')
+    else:
+        raise Exception('We support only UTC time zone')

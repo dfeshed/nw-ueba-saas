@@ -25,11 +25,13 @@ import static fortscale.common.general.CommonStrings.COMMAND_LINE_START_DATE_FIE
 
 public class CollectorExecutionServiceImpl implements CollectorExecutionService {
 
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
+
+
     private final CoreManagerService coreManagerService;
     private final FetchService fetchService;
     private final ParametersValidationService parameterValidationService;
     private final Command CLEAN_COMMAND = Command.CLEAN;
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public CollectorExecutionServiceImpl(CoreManagerService coreManagerService, FetchService fetchService, ParametersValidationService parameterValidationService) {
         this.coreManagerService = coreManagerService;
@@ -129,7 +131,7 @@ public class CollectorExecutionServiceImpl implements CollectorExecutionService 
             }
             default: {
                 //should not happen
-                throw new Exception("create documents failed. this is weird - should not happen. datasource=" + dataSource.name()); //todo: temp
+                throw new Exception("create documents failed. this is weird - should not happen. dataSource=" + dataSource.name()); //todo: temp
             }
         }
 

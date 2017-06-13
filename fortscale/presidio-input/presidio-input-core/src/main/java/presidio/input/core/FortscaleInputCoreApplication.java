@@ -17,14 +17,10 @@ import presidio.input.core.spring.InputCoreConfiguration;
                 @ComponentScan.Filter(type = FilterType.REGEX, pattern = "presidio.*")})
 @EnableTask
 public class FortscaleInputCoreApplication {
-
-
     private static final Logger logger = Logger.getLogger(FortscaleInputCoreApplication.class);
 
     public static void main(String[] args) {
         logger.info("Start Input Core Processing");
         SpringApplication.run(new Object[]{FortscaleInputCoreApplication.class, InputCoreConfiguration.class}, args);
     }
-
-
 }
