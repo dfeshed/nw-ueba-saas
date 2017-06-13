@@ -11,14 +11,13 @@ import presidio.collector.spring.CollectorConfig;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = CollectorConfig.class)
-
+@Ignore //todo
 public class FortscaleInputCoreApplicationTest {
 
     @Autowired
     private CollectorExecutionService processService;
 
     @Test
-    @Ignore //todo:
     public void contextLoads() throws Exception {
         processService.run("SHAY");
     }
