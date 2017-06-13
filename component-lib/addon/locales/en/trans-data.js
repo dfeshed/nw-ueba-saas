@@ -601,7 +601,8 @@ export default {
         'Web Threat Detection': 'Web Threat Detection',
         'Malware Analysis': 'Malware Analysis',
         'Reporting Engine': 'Reporting Engine'
-      }
+      },
+      backToAlerts: 'Back To Alerts'
     },
     incident: {
       created: 'Created',

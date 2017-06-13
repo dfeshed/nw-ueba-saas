@@ -1,4 +1,11 @@
 <box fit class="rsa-explorer-inspector__header">
+  {{#if backToRouteName}}
+    <vbox justify="center" class="back">
+      {{#link-to backToRouteName}}
+        {{rsa-icon name="arrow-left-12" title=backToRouteText}}
+      {{/link-to}}
+    </vbox>
+  {{/if}}
   <h2>
     {{yield (hash
       inspectorHeader=(component inspectorHeaderComponent

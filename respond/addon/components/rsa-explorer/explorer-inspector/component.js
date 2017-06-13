@@ -15,6 +15,24 @@ export default Component.extend({
   infoStatus: null,
   viewMode: 'overview',
 
+  /**
+   * Configurable name of the Ember route which will be navigated to when the user clicks this component's Back btn.
+   * If not specified, no Back btn is shown.
+   * @example 'incidents'
+   * @type {String}
+   * @public
+   */
+  backToRouteName: '',
+
+  /**
+   * Configurable text to be shown in the tooltip of the Back btn.
+   * If not specified, no tooltip text is shown.
+   * @example 'Back To Incidents'
+   * @type {String}
+   * @public
+   */
+  backToRouteText: '',
+
   actions: {
     changeViewMode(viewMode) {
       this.set('viewMode', viewMode);
