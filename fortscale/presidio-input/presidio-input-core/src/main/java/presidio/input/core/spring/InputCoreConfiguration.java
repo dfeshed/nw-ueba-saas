@@ -25,6 +25,7 @@ public class InputCoreConfiguration {
     private ParametersValidationService parametersValidationService;
 
 
+    @Bean
     public InputExecutionService inputProcessService() {
         return new InputExecutionServiceImpl(parametersValidationService, presidioInputPersistencyService);
     }
