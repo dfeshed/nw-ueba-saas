@@ -10,6 +10,9 @@ const {
 const windowsTimestampToMilliseconds = (windowsTimestamp) => windowsTimestamp ? windowsTimestamp / 10000 - 11644473600000 : null;
 
 const _enrichADFields = (resultList) => {
+  if (!resultList) {
+    return;
+  }
   return resultList.map((list) => {
     const address = [list.physicalDeliveryOfficeName, list.city, list.state, list.country, list.postalCode];
     const location = address.join(' ');
@@ -27,7 +30,11 @@ const _enrichListData = (contextDataForDS, dataSourceData, firstDSEntry) => {
   if (firstDSEntry) {
     contextDataForDS.resultList = [];
   }
-  if (!isEmpty(results)) {
+  if (dataSourceData.errorMessage && isEmpty(contextDataForDS.resultList)) {
+    contextDataForDS.resultList = [];
+    contextDataForDS.errorMessage = dataSourceData.errorMessage;
+  }
+  if (!isEmpty(results) && isEmpty(contextDataForDS.errorMessage)) {
     set(contextDataForDS, 'dataSourceLastModifiedOn', contextDataForDS.dataSourceLastModifiedOn > contextDataForDS.contentLastModifiedOn ? contextDataForDS.dataSourceLastModifiedOn : contextDataForDS.contentLastModifiedOn);
     contextDataForDS.resultList = contextDataForDS.resultList.concat([dataSourceData]);
   }
@@ -40,7 +47,7 @@ const _enrichDataSourceData = (contextDataForDS, dataSourceData) => {
   contextDataForDS = contextDataForDS || dataSourceData;
   switch (dataSourceData.dataSourceGroup) {
     case 'Modules': {
-      if (dataSourceData.resultMeta.iocScore_gte) {
+      if (dataSourceData.resultMeta && dataSourceData.resultMeta.iocScore_gte) {
         dataSourceData.header = ` (IIOC Score > ${dataSourceData.resultMeta.iocScore_gte})`;
       }
       break;
@@ -56,17 +63,10 @@ const _enrichDataSourceData = (contextDataForDS, dataSourceData) => {
   }
   return contextDataForDS;
 };
-const _enrichDataSourceDataForSameGroup = (contextDataForDS, dataSourceData) => {
-  contextDataForDS = _enrichDataSourceData(contextDataForDS, dataSourceData);
-  return contextDataForDS;
-};
+
 const _populateContextData = (dataSourceData, lookupData) => {
   const contextDataForDS = lookupData[dataSourceData.dataSourceGroup];
-  if (contextDataForDS) {
-    lookupData[dataSourceData.dataSourceGroup] = _enrichDataSourceDataForSameGroup(contextDataForDS, dataSourceData);
-  } else {
-    lookupData[dataSourceData.dataSourceGroup] = _enrichDataSourceData(null, dataSourceData);
-  }
+  lookupData[dataSourceData.dataSourceGroup] = _enrichDataSourceData(contextDataForDS ? contextDataForDS : null, dataSourceData);
 };
 
 const _updateHostCountForMachine = (contextDataForDS, dataSourceData) => {
