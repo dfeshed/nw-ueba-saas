@@ -1,7 +1,9 @@
 import logging
-from datetime import datetime, timedelta
+
 import pytest
 from airflow import DAG
+from datetime import datetime, timedelta
+
 from presidio.operators.fixed_duration_jar_operator import FixedDurationJarOperator
 from tests.utils.airflow.operators.base_test_operator import assert_task_success_state, get_task_instances
 from tests.utils.airflow.operators.test_spring_boot_jar_operator import assert_bash_comment, JAR_PATH, MAIN_CLASS, LAUNCHER
@@ -99,12 +101,11 @@ def test_valid_execution_date():
         dag=dag)
 
     task.clear()
-    task.execute(context={'execution_date':default})
+    task.execute(context={'execution_date': default})
     tis = get_task_instances(dag)
     assert_task_success_state(tis, task.task_id)
 
     expected_bash_comment = '/usr/bin/java -Xms100m -Xmx2048m -Duser.timezone=UTC -cp ' + JAR_PATH + ' -Dloader.main=' + MAIN_CLASS + ' ' + LAUNCHER
     expected_java_args = {'a': 'one', 'b': 'two', 'fixed_duration_strategy': '3600.0',
-                          'start_date': '2014-05-13T13:00:00', 'end_date': '2014-05-13T14:00:00'}
+                          'start_date': '2014-05-13T13:00:00Z', 'end_date': '2014-05-13T14:00:00Z'}
     assert_bash_comment(task, expected_bash_comment, expected_java_args)
-

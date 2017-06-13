@@ -1,5 +1,6 @@
 package presidio.collector.services.impl;
 
+import fortscale.common.general.Command;
 import fortscale.common.general.DataSource;
 import fortscale.domain.core.AbstractAuditableDocument;
 import fortscale.services.parameters.ParametersValidationService;
@@ -16,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static fortscale.common.general.CommonStrings.COMMAND_LINE_COMMAND_FIELD_NAME;
 import static fortscale.common.general.CommonStrings.COMMAND_LINE_DATA_SOURCE_FIELD_NAME;
 import static fortscale.common.general.CommonStrings.COMMAND_LINE_DATE_FORMAT;
 import static fortscale.common.general.CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME;
@@ -23,11 +25,13 @@ import static fortscale.common.general.CommonStrings.COMMAND_LINE_START_DATE_FIE
 
 public class CollectorExecutionServiceImpl implements CollectorExecutionService {
 
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
+
+
     private final CoreManagerService coreManagerService;
     private final FetchService fetchService;
     private final ParametersValidationService parameterValidationService;
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
-
+    private final Command CLEAN_COMMAND = Command.CLEAN;
 
     public CollectorExecutionServiceImpl(CoreManagerService coreManagerService, FetchService fetchService, ParametersValidationService parameterValidationService) {
         this.coreManagerService = coreManagerService;
@@ -38,38 +42,46 @@ public class CollectorExecutionServiceImpl implements CollectorExecutionService 
     public void run(String... params) throws Exception {         //todo: we need to consider doing the fetch & store at the same iteration
         logger.info("Start collector processing with params: " + Arrays.toString(params));
 
-        if (params.length < 3) {
-            logger.error("Invalid input[{}]. Need at least {}, {} and {}. Example input: {}=some_{} {}=some_{}_as_long {}=some_{}_as_long", params, COMMAND_LINE_DATA_SOURCE_FIELD_NAME, COMMAND_LINE_START_DATE_FIELD_NAME, COMMAND_LINE_END_DATE_FIELD_NAME, COMMAND_LINE_DATA_SOURCE_FIELD_NAME, COMMAND_LINE_DATA_SOURCE_FIELD_NAME, COMMAND_LINE_START_DATE_FIELD_NAME, COMMAND_LINE_START_DATE_FIELD_NAME, COMMAND_LINE_END_DATE_FIELD_NAME, COMMAND_LINE_END_DATE_FIELD_NAME);
-            return;
+        if (params.length < 4) {
+            String errorMessage = String.format("Invalid input[%s]. Not enough parameters.", Arrays.toString(params));
+            logger.error(errorMessage);
+            throw new RuntimeException(errorMessage);
         }
 
         final String dataSourceParam;
-        final String startTimeParam;
-        final String endTimeParam;
+        final String startDateParam;
+        final String endDateParam;
+        final String commandParam;
 
         try {
             dataSourceParam = parameterValidationService.getMandatoryParamAsString(COMMAND_LINE_DATA_SOURCE_FIELD_NAME, params);
-            startTimeParam = parameterValidationService.getMandatoryParamAsString(COMMAND_LINE_START_DATE_FIELD_NAME, params);
-            endTimeParam = parameterValidationService.getMandatoryParamAsString(COMMAND_LINE_END_DATE_FIELD_NAME, params);
+            startDateParam = parameterValidationService.getMandatoryParamAsString(COMMAND_LINE_START_DATE_FIELD_NAME, params);
+            endDateParam = parameterValidationService.getMandatoryParamAsString(COMMAND_LINE_END_DATE_FIELD_NAME, params);
+            commandParam = parameterValidationService.getMandatoryParamAsString(COMMAND_LINE_COMMAND_FIELD_NAME, params);
             parameterValidationService.validateDataSourceParam(dataSourceParam);
+            parameterValidationService.validateCommand(commandParam);
             // TODO: set date format convention
-//            parameterValidationService.validateTimeParams(startTimeParam, endTimeParam);
+            parameterValidationService.validateTimeParams(startDateParam, endDateParam);
         } catch (Exception e) {
             logger.error("Invalid input[{}].", params, e);
             return;
         }
 
-        final DataSource dataSource;
-        final long startTime;
-        final long endTime;
-        dataSource = DataSource.createDataSource(dataSourceParam);
-        startTime = TimestampUtils.convertToSeconds(new SimpleDateFormat(COMMAND_LINE_DATE_FORMAT).parse(startTimeParam));
-        endTime = TimestampUtils.convertToSeconds(new SimpleDateFormat(COMMAND_LINE_DATE_FORMAT).parse(endTimeParam));
+        final Command command = Command.createCommand(commandParam);
+        final DataSource dataSource = DataSource.createDataSource(dataSourceParam);
+        final long startDate = TimestampUtils.convertToSeconds(new SimpleDateFormat(COMMAND_LINE_DATE_FORMAT).parse(startDateParam));
+        final long endDate = TimestampUtils.convertToSeconds(new SimpleDateFormat(COMMAND_LINE_DATE_FORMAT).parse(endDateParam));
 
+
+        if (command.equals(CLEAN_COMMAND)) {
+            logger.info("Cleaning.");
+            System.out.print("Cleaning.");
+            return;
+        }
 
         final List<String[]> fetchedDocuments;
         try {
-            fetchedDocuments = fetch(dataSource, startTime, endTime);
+            fetchedDocuments = fetch(dataSource, startDate, endDate);
         } catch (Exception e) {
             logger.error("HEY USER!!! FETCH FAILED! params: " + Arrays.toString(params), e);
             //todo: how do we handle? alert the user probably?
@@ -119,7 +131,7 @@ public class CollectorExecutionServiceImpl implements CollectorExecutionService 
             }
             default: {
                 //should not happen
-                throw new Exception("create documents failed. this is weird - should not happen. datasource=" + dataSource.name()); //todo: temp
+                throw new Exception("create documents failed. this is weird - should not happen. dataSource=" + dataSource.name()); //todo: temp
             }
         }
 

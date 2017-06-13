@@ -7,22 +7,21 @@ import fortscale.common.general.DataSource;
 import fortscale.domain.core.AbstractAuditableDocument;
 import fortscale.services.parameters.ParametersValidationService;
 import fortscale.utils.logging.Logger;
-import fortscale.utils.time.TimestampUtils;
+import presidio.ade.domain.record.enriched.EnrichedRecord;
+import presidio.ade.domain.store.enriched.EnrichedDataStore;
+import presidio.ade.domain.store.enriched.EnrichedRecordsMetadata;
 import presidio.input.core.services.api.InputExecutionService;
+import presidio.input.core.services.converters.DlpFileConverter;
 import presidio.sdk.api.domain.DlpFileDataDocument;
 import presidio.sdk.api.domain.DlpFileEnrichedDocument;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
 
-import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static fortscale.common.general.CommonStrings.COMMAND_LINE_COMMAND_FIELD_NAME;
-import static fortscale.common.general.CommonStrings.COMMAND_LINE_DATA_SOURCE_FIELD_NAME;
-import static fortscale.common.general.CommonStrings.COMMAND_LINE_DATE_FORMAT;
-import static fortscale.common.general.CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME;
-import static fortscale.common.general.CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME;
+import static fortscale.common.general.CommonStrings.*;
 
 public class InputExecutionServiceImpl implements InputExecutionService {
 
@@ -36,15 +35,19 @@ public class InputExecutionServiceImpl implements InputExecutionService {
 
     private final ParametersValidationService parameterValidationService;
     private final PresidioInputPersistencyService presidioInputPersistencyService;
+    private final EnrichedDataStore enrichedDataStore;
 
     private DataSource dataSource; //todo maor
-    private long startDate;
-    private long endDate;
+    private Instant startDate;
+    private Instant endDate;
     private Command command;
 
-    public InputExecutionServiceImpl(ParametersValidationService parameterValidationService, PresidioInputPersistencyService presidioInputPersistencyService) {
+    public InputExecutionServiceImpl(ParametersValidationService parameterValidationService,
+                                     PresidioInputPersistencyService presidioInputPersistencyService,
+                                     EnrichedDataStore enrichedDataStore) {
         this.parameterValidationService = parameterValidationService;
         this.presidioInputPersistencyService = presidioInputPersistencyService;
+        this.enrichedDataStore = enrichedDataStore;
     }
 
     private void init(String... params) throws Exception {
@@ -71,14 +74,14 @@ public class InputExecutionServiceImpl implements InputExecutionService {
         }
         command = Command.createCommand(commandParam);
         dataSource = DataSource.createDataSource(dataSourceParam);
-        startDate = TimestampUtils.convertToSeconds(new SimpleDateFormat(COMMAND_LINE_DATE_FORMAT).parse(startDateParam));
-        endDate = TimestampUtils.convertToSeconds(new SimpleDateFormat(COMMAND_LINE_DATE_FORMAT).parse(endDateParam));
+        startDate = Instant.parse(startDateParam);
+        endDate = Instant.parse(endDateParam);
     }
 
     public void run(String... params) throws Exception {
         init(params);
         switch (command) {
-            case ENRICH:
+            case RUN:
                 enrich();
                 break;
             case CLEAN:
@@ -100,7 +103,7 @@ public class InputExecutionServiceImpl implements InputExecutionService {
                 , dataSource,
                 CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate,
                 CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
-        presidioInputPersistencyService.clean(dataSource, startDate, endDate);
+        presidioInputPersistencyService.clean(dataSource, startDate.getEpochSecond(), endDate.getEpochSecond());
         logger.info("Finished enrich processing .");
     }
 
@@ -110,7 +113,7 @@ public class InputExecutionServiceImpl implements InputExecutionService {
                 CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate,
                 CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
 
-        final List<? extends AbstractAuditableDocument> dataRecords = find(dataSource, startDate, endDate);
+        final List<? extends AbstractAuditableDocument> dataRecords = find(dataSource, startDate.getEpochSecond(), endDate.getEpochSecond());
         logger.info("Found {} dataRecords for dataSource:{}, startDate:{}, endDate:{}.", dataRecords, dataSource, startDate, endDate);
 
         final List<DlpFileEnrichedDocument> enrichedRecords = enrich(dataRecords);
@@ -146,18 +149,24 @@ public class InputExecutionServiceImpl implements InputExecutionService {
     private boolean storeForAde(List<? extends AbstractAuditableDocument> enrichedDocuments) {
         logger.debug("Storing {} records.", enrichedDocuments.size());
 
-        //final boolean storeSuccessful = adeSdk.store(enrichedDocuments); //todo should be uncommented and replace temp implementation when adeSdk is ready
-        /*temp*/
-        System.out.println(enrichedDocuments);
+
+        EnrichedRecordsMetadata recordsMetaData = new EnrichedRecordsMetadata(dataSource.toString(), startDate, endDate);
+        List<? extends EnrichedRecord> records = convert(enrichedDocuments, new DlpFileConverter());
+
+        enrichedDataStore.store(recordsMetaData, records);
+
         logger.info("*************input logic comes here***********");
         logger.info("enriched documents: \n{}", enrichedDocuments);
         logger.info("**********************************************");
         final boolean storeSuccessful = true;
         /*temp*/
-
-
         return storeSuccessful;
     }
 
-
+    protected List<EnrichedRecord> convert(List<? extends AbstractAuditableDocument> enrichedDocuments,
+                                           DlpFileConverter converter) {
+        List<EnrichedRecord> records = new ArrayList<>();
+        enrichedDocuments.forEach(doc -> records.add(converter.convert((DlpFileEnrichedDocument) doc)));
+        return records;
+    }
 }
