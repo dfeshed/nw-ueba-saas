@@ -17,9 +17,10 @@ import presidio.input.core.spring.InputCoreConfiguration;
 public class FortscaleInputCoreApplicationTest {
 
     @Autowired
-    InputExecutionService processService;
+    private InputExecutionService processService;
+
     @Ignore
-    @Test
+    @Test //todo:
     public void contextLoads() throws Exception {
         processService.run();
 
