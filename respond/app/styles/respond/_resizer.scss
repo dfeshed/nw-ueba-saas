@@ -1,0 +1,36 @@
+.rsa-resizer {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 3px;
+  cursor: ew-resize;
+  z-index: 2;
+
+  &:hover {
+    background-color: rsa-color(blue,base,$rsa-nearly-opaque);
+  }
+
+  &__cover {
+    display: none;
+  }
+
+  /* Styles for only while user is resizing the component (via drag). */
+  &.is-resizing {
+    background-color: rsa-color(blue,base,$rsa-nearly-opaque);
+
+    .rsa-sizer__cover {
+      /* Covers the entire screen with a transparent overlay whose cursor is a left-right resize arrow. */
+      display: block;
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      cursor: ew-resize;
+      z-index: 1000;
+    }
+  }
+}
+
+

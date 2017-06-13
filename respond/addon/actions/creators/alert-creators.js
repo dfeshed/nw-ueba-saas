@@ -187,6 +187,8 @@ const getAlertEvents = (alertId) => ({
   }
 });
 
+const resizeAlertInspector = (width) => ({ type: ACTION_TYPES.RESIZE_ALERT_INSPECTOR, payload: width });
+
 export {
   getItems,
   resetFilters,
@@ -200,5 +202,6 @@ export {
   toggleSelectAll,
   initializeAlert,
   getAlert,
-  getAlertEvents
+  getAlertEvents,
+  resizeAlertInspector
 };

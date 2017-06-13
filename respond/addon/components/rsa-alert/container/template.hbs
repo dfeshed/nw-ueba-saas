@@ -1,5 +1,8 @@
-<box fit class="rsa-alert-container__aside">
+<box fit class="rsa-alert-container__aside" style="{{inspectorContainerStyle}}">
   {{rsa-alert/inspector}}
+</box>
+<box fit class="rsa-alert-container__resizer">
+  {{rsa-resizer x=inspectorWidth resizeAction=(action "resizeAction")}}
 </box>
 <vbox nowrap fill class="rsa-alert-container__main">
   {{rsa-alert/events-sheet}}
