@@ -143,6 +143,6 @@ test('log text', function(assert) {
   }}`);
 
   return wait().then(() => {
-    assert.equal(this.$().text().trim().replace(/\s/g, ''), 'rawlogTestinglogtext');
+    assert.equal(this.$().text().trim().replace(/\s/g, ''), 'RawLogTestinglogtext');
   });
 });

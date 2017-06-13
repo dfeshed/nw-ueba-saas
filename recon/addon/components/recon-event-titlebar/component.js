@@ -1,7 +1,6 @@
 import Component from 'ember-component';
 import computed from 'ember-computed-decorators';
 import connect from 'ember-redux/components/connect';
-
 import layout from './template';
 import { RECON_VIEW_TYPES } from 'recon/utils/reconstruction-types';
 import {
@@ -12,7 +11,7 @@ import {
   closeRecon
 } from 'recon/actions/visual-creators';
 import { toggleMetaData, setNewReconView } from 'recon/actions/data-creators';
-import { isLogEvent } from 'recon/reducers/meta/selectors';
+import { isLogEvent, isEndpointEvent } from 'recon/reducers/meta/selectors';
 import { lacksPackets } from 'recon/reducers/visuals/selectors';
 
 const stateToComputed = ({ recon, recon: { visuals } }) => ({
@@ -23,6 +22,7 @@ const stateToComputed = ({ recon, recon: { visuals } }) => ({
   isMetaShown: visuals.isMetaShown,
   isReconExpanded: visuals.isReconExpanded,
   isLogEvent: isLogEvent(recon),
+  isEndpointEvent: isEndpointEvent(recon),
   lacksPackets: lacksPackets(recon)
 });
 
@@ -42,14 +42,16 @@ const TitlebarComponent = Component.extend({
   classNames: ['recon-event-titlebar'],
 
   /**
-  * Processes RECON_VIEWS and setings selected flag for
-  * the one currently chosen
-  *
-  * @return {array}  array of objects
-  * @public
-  */
+   * Processes RECON_VIEWS and setings selected flag for
+   * the one currently chosen
+   * @return {array}  array of objects
+   * @public
+   */
   @computed('reconViewsConfigFull')
   reconViewsConfig: (viewsConf) => viewsConf.filter((vc) => !vc.selected),
+
+  @computed('isLogEvent', 'isEndpointEvent')
+  isLogBased: (isLog, isEndpoint) => isLog || isEndpoint,
 
   @computed('currentReconView')
   reconViewsConfigFull({ code }) {

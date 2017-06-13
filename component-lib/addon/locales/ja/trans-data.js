@@ -120,6 +120,7 @@ export default {
   recon: {
     titleBar: {
       titles: {
+        endpoint: 'Endpoint Event Details',
         network: 'ja_Network Event Details',
         log: 'ja_Log Event Details'
       },
@@ -138,17 +139,19 @@ export default {
     textView: {
       compressToggleLabel: 'ja_Display Compressed Payloads',
       compressToggleTitle: 'ja_Display HTTP payloads as compressed or not',
-      downloadLog: 'ja_Download Log',
       downloadCsv: 'ja_Download CSV',
-      downloadXml: 'ja_Download XML',
       downloadJson: 'ja_Download JSON',
-      isDownloading: 'ja_Downloading...',
-      showRemaining: 'ja_Show Remaining {{remainingPercent}}%',
-      renderRemaining: 'ja_Rendering Remaining {{remainingPercent}}%..',
+      downloadLog: 'ja_Download Log',
+      downloadXml: 'ja_Download XML',
       headerShowing: 'ja_Showing',
-      renderingMore: 'ja_Showing more...',
+      isDownloading: 'ja_Downloading...',
       maxPacketsReached: 'ja_Rendered <span class="darker">{{maxPacketCount}} (Max)</span> of <span class="darker">{{packetTotal}}</span> packets',
-      maxPacketsReachedTooltip: 'ja_The limit of {{maxPacketCount}} packets to render a single event has been reached; no additional packets will be rendered for this event. The packet threshold ensures the best rendering experience.'
+      maxPacketsReachedTooltip: 'ja_The limit of {{maxPacketCount}} packets to render a single event has been reached; no additional packets will be rendered for this event. The packet threshold ensures the best rendering experience.',
+      rawEndpointHeader: 'ja_Raw Endpoint',
+      rawLogHeader: 'ja_Raw Log',
+      renderingMore: 'ja_Showing more...',
+      renderRemaining: 'ja_Rendering Remaining {{remainingPercent}}%..',
+      showRemaining: 'ja_Show Remaining {{remainingPercent}}%'
     },
     packetView: {
       noHexData: 'ja_No HEX data was generated during content reconstruction.',
@@ -316,6 +319,7 @@ export default {
       TB: 'ja_TB'
     },
     medium: {
+      endpoint: 'ja_Endpoint',
       network: 'ja_Network',
       log: 'ja_Log',
       correlation: 'ja_Correlation'

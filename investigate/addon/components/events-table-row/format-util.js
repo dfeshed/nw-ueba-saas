@@ -67,10 +67,13 @@ function text(field, value, opts) {
  */
 function _alias(field, value, opts = {}) {
   let hash, valueLookup;
-
   if (field === 'medium') {
     hash = opts.i18n && opts.i18n[field];
-    valueLookup = _hashLookup(hash, value);
+    if (opts.isEndpoint) {
+      valueLookup = hash.endpoint;
+    } else {
+      valueLookup = _hashLookup(hash, value);
+    }
   }
 
   if (valueLookup === undefined) {

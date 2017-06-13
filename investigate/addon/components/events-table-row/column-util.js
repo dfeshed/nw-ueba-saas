@@ -1,9 +1,12 @@
-import Ember from 'ember';
+import get from 'ember-metal/get';
+import isEmberArray from 'ember-array/utils';
 import formatUtil from './format-util';
-import { isLogEvent, getEventLogData, getEventLogDataStatus } from 'component-lib/utils/log-utils';
+import {
+  isLogEvent,
+  getEventLogData,
+  getEventLogDataStatus
+} from 'component-lib/utils/log-utils';
 import { select } from 'd3-selection';
-
-const { get, isArray } = Ember;
 
 const RESERVED_KEYS = [ 'eth.src', 'eth.dst', 'ip.src', 'ipv6.src', 'ip.dst', 'ipv6.dst', 'tcp.srcport', 'tcp.dstport', 'udp.srcport', 'udp.dstport', 'session.split'];
 const RESERVED_KEY_HASH = {};
@@ -169,7 +172,7 @@ function buildMetaSrcDstPair(srcMetaKey, dstMetaKey, item, opts) {
   const pair = document.createElement('div');
   const $pair = select(pair)
     .classed('meta-src-dst-pair', true)
-    .attr('data-field', (isArray(srcMetaKey) ? srcMetaKey[0] : srcMetaKey) || '');
+    .attr('data-field', (isEmberArray(srcMetaKey) ? srcMetaKey[0] : srcMetaKey) || '');
   if (srcValue.raw !== undefined) {
     $pair.append('span')
       .classed('src', true)
@@ -219,7 +222,7 @@ function buildMetaKeyAndValue(metaKey, item, opts) {
   const pair = document.createElement('div');
   const $pair = select(pair)
     .classed('meta-key-and-value', true)
-    .attr('data-field', (isArray(metaKey) ? metaKey[0] : metaKey) || '');
+    .attr('data-field', (isEmberArray(metaKey) ? metaKey[0] : metaKey) || '');
   $pair.append('span')
     .classed('key', true)
     .text(metaKey);

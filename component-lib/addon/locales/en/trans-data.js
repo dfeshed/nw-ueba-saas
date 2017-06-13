@@ -120,6 +120,7 @@ export default {
   recon: {
     titleBar: {
       titles: {
+        endpoint: 'Endpoint Event Details',
         network: 'Network Event Details',
         log: 'Log Event Details'
       },
@@ -138,17 +139,19 @@ export default {
     textView: {
       compressToggleLabel: 'Display Compressed Payloads',
       compressToggleTitle: 'Display HTTP payloads as compressed or not',
-      downloadLog: 'Download Log',
       downloadCsv: 'Download CSV',
-      downloadXml: 'Download XML',
       downloadJson: 'Download JSON',
-      isDownloading: 'Downloading...',
-      showRemaining: 'Show Remaining {{remainingPercent}}%',
-      renderRemaining: 'Rendering Remaining {{remainingPercent}}%..',
+      downloadLog: 'Download Log',
+      downloadXml: 'Download XML',
       headerShowing: 'Showing',
-      renderingMore: 'Showing more...',
+      isDownloading: 'Downloading...',
       maxPacketsReached: 'Rendered <span class="darker">{{maxPacketCount}} (Max)</span> of <span class="darker">{{packetTotal}}</span> packets',
-      maxPacketsReachedTooltip: 'The limit of {{maxPacketCount}} packets to render a single event has been reached; no additional packets will be rendered for this event. The packet threshold ensures the best rendering experience.'
+      maxPacketsReachedTooltip: 'The limit of {{maxPacketCount}} packets to render a single event has been reached; no additional packets will be rendered for this event. The packet threshold ensures the best rendering experience.',
+      rawEndpointHeader: 'Raw Endpoint',
+      rawLogHeader: 'Raw Log',
+      renderingMore: 'Showing more...',
+      renderRemaining: 'Rendering Remaining {{remainingPercent}}%..',
+      showRemaining: 'Show Remaining {{remainingPercent}}%'
     },
     packetView: {
       noHexData: 'No HEX data was generated during content reconstruction.',
@@ -316,6 +319,7 @@ export default {
       TB: 'TB'
     },
     medium: {
+      endpoint: 'Endpoint',
       network: 'Network',
       log: 'Log',
       correlation: 'Correlation'

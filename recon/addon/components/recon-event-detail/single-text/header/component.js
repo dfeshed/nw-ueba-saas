@@ -7,7 +7,8 @@ export default Component.extend({
   classNames: ['recon-request-response-header'],
   layout,
 
-  isLog: null,
+  isLog: false,
+  isEndpoint: false,
   isSticky: false,
   side: null,
 

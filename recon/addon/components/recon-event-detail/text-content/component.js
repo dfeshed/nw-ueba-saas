@@ -8,7 +8,7 @@ import ReconPagerMixin from 'recon/mixins/recon-pager';
 import StickyHeaderMixin from 'recon/mixins/sticky-header-mixin';
 import DelayBatchingMixin from 'recon/mixins/delay-batching-mixin';
 import layout from './template';
-import { isLogEvent } from 'recon/reducers/meta/selectors';
+import { isEndpointEvent, isLogEvent } from 'recon/reducers/meta/selectors';
 import { packetTotal } from 'recon/reducers/header/selectors';
 import {
   renderedText,
@@ -23,6 +23,7 @@ const stateToComputed = ({ recon }) => ({
   eventTotal: recon.data.total,
   hasTextContent: hasTextContent(recon),
   isLogEvent: isLogEvent(recon),
+  isEndpointEvent: isEndpointEvent(recon),
   maxPacketsForText: recon.text.maxPacketsForText,
   maxPacketsReached: recon.text.maxPacketsReached,
   metaToHighlight: recon.text.metaToHighlight,

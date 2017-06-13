@@ -75,9 +75,15 @@ export const eventTypeFromMetaArray = createSelector(
   determineEventType
 );
 
+export const isEndpointEvent = createSelector(
+  meta,
+  (meta) => meta.some((d) => d[0] === 'nwe.callback_id')
+);
+
 export const isLogEvent = createSelector(
   eventType,
-  (eventType) => eventType.name === EVENT_TYPES_BY_NAME.LOG.name
+  isEndpointEvent,
+  (eventType, isEndpointEvent) => eventType.name === EVENT_TYPES_BY_NAME.LOG.name && !isEndpointEvent
 );
 
 export const isNetworkEvent = createSelector(

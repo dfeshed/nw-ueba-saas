@@ -42,7 +42,7 @@ test('text view renders log text', function(assert) {
   this.render(hbs`{{recon-event-detail/text-content}}`);
   return wait().then(() => {
     const str = this.$().text().trim().replace(/\s/g, '').substring(0, 200);
-    assert.equal(str, 'rawlogGET/stats.php?ev=site:player:music_quality:128kbps&songid=EsAKpbWJ&_t=1485792552819&ct=1982326421HTTP/1.1$Host:www.saavn.comrawlogHTTP/1.1200OKCache-control:no-store,no-cache,must-revalidate,pri');
+    assert.equal(str, 'RawLogGET/stats.php?ev=site:player:music_quality:128kbps&songid=EsAKpbWJ&_t=1485792552819&ct=1982326421HTTP/1.1$Host:www.saavn.comRawLogHTTP/1.1200OKCache-control:no-store,no-cache,must-revalidate,pri');
   });
 });
 

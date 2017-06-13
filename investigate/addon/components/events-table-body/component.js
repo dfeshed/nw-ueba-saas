@@ -1,14 +1,14 @@
-import Ember from 'ember';
+import run from 'ember-runloop';
+import observer from 'ember-metal/observer';
+import $ from 'jquery';
 import DataTableBody from 'component-lib/components/rsa-data-table/body/component';
-import { isLogEvent, eventHasLogData, eventLogDataIsPending } from 'component-lib/utils/log-utils';
-const {
-  observer,
-  run,
-  $
-} = Ember;
+import {
+  isLogEvent,
+  eventHasLogData,
+  eventLogDataIsPending
+} from 'component-lib/utils/log-utils';
 
 export default DataTableBody.extend({
-
   // Responds to a change in the viewport by fetching log data for any visible log records that need it.
   // Debounces fetch call, because scrolling may fire this handler at rapid rates.
   _visibleItemsDidChange: observer('_visibleItems', function() {

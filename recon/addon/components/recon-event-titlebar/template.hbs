@@ -6,6 +6,8 @@
     <div class="tview-heading">
       <div class="tview-label">{{t (concat 'recon.titleBar.views.' currentReconView.id)}}</div>
     </div>
+  {{else if isEndpointEvent}}
+    <div class="event-title">{{t 'recon.titleBar.titles.endpoint'}}</div>
   {{else}}
     <div class="event-title">{{t 'recon.titleBar.titles.network'}}</div>
     <hr class="event-title seperator">
@@ -41,7 +43,7 @@
   title=(t 'recon.toggles.header')
 }}
 
-{{#unless isLogEvent}}
+{{#unless isLogBased}}
   {{rsa-icon
     active=isRequestShown
     class='toggle-request header-toggle'

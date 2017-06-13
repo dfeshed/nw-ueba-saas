@@ -1,20 +1,13 @@
-import Ember from 'ember';
+import Component from 'ember-component';
+import get from 'ember-metal/get';
+import run from 'ember-runloop';
+import service from 'ember-service/inject';
+import observer from 'ember-metal/observer';
 import RowMixin from 'component-lib/components/rsa-data-table/mixins/is-row';
+import computed from 'ember-computed-decorators';
 import columnUtil from './column-util';
 import { UI_KEY_LOG_DATA_STATUS } from 'component-lib/utils/log-utils';
 import { select } from 'd3-selection';
-
-
-const {
-  computed,
-  get,
-  inject: {
-    service
-  },
-  run,
-  observer,
-  Component
-} = Ember;
 
 // Default column width if none given.
 const DEFAULT_WIDTH = 100;
@@ -45,14 +38,12 @@ export default Component.extend(RowMixin, {
   },
 
   // Formatting configuration options. Passed to utils that generate cell DOM.
-  _opts: computed('i18n', 'table.aliases.data', 'timezone.selected.zoneId', 'dateFormat.selected.format', 'timeFormat.selected.format', function() {
-    const i18n = this.get('i18n');
+  @computed('table.aliases.data', 'dateFormat.selected.format', 'timeFormat.selected.format', 'i18n', 'timezone.selected.zoneId')
+  _opts(aliases, dateFormat, timeFormat, i18n, timeZone) {
     return {
+      aliases,
       defaultWidth: DEFAULT_WIDTH,
-      aliases: this.get('table.aliases.data'),
-      dateTimeFormat: `${this.get('dateFormat.selected.format')} ${this.get('timeFormat.selected.format')}`,
-      locale: this.get('i18n.locale'),
-      timeZone: this.get('timezone.selected.zoneId'),
+      dateTimeFormat: `${dateFormat} ${timeFormat}`,
       i18n: {
         size: {
           bytes: i18n.t('investigate.size.bytes'),
@@ -64,11 +55,14 @@ export default Component.extend(RowMixin, {
         medium: {
           '1': i18n.t('investigate.medium.network'),
           '32': i18n.t('investigate.medium.log'),
-          '33': i18n.t('investigate.medium.correlation')
+          '33': i18n.t('investigate.medium.correlation'),
+          'endpoint': i18n.t('investigate.medium.endpoint')
         }
-      }
+      },
+      locale: this.get('i18n.locale'),
+      timeZone
     };
-  }),
+  },
 
   // Builds the DOM for the table cells.
   // Typically in Ember this is handled declaratively by defining DOM in a template.hbs file. But that approach
@@ -97,7 +91,9 @@ export default Component.extend(RowMixin, {
   // Responsible for building the root cell element, then invoking utils for setting the element's width & inner DOM.
   _renderCell($row, column, item) {
     const field = get(column, 'field');
-    const opts = this.get('_opts');
+    const _opts = this.get('_opts');
+    const isEndpoint = item.metas && item.metas.some((d) => d[0] === 'nwe.callback_id');
+    const opts = Object.assign(_opts, { isEndpoint });
 
     const $cell = $row.append('div')
       .classed('rsa-data-table-body-cell', true)

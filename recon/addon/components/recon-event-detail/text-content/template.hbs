@@ -2,6 +2,7 @@
   {{#if stickyContent}}
     <div class="recon-packet-stuck-header">
       {{recon-event-detail/single-text
+        isEndpoint=isEndpointEvent
         isLog=isLogEvent
         isSticky=true
         packet=stickyContent
@@ -18,6 +19,7 @@
     --}}
     {{#each renderedText as |text|}}
       {{recon-event-detail/single-text
+        isEndpoint=isEndpointEvent
         isLog=isLogEvent
         isSticky=false
         metaToHighlight=metaToHighlight

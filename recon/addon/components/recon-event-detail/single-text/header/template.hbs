@@ -10,7 +10,9 @@
   </span>
   <span class="text">
     {{#if isLog}}
-      raw log
+      {{t 'recon.textView.rawLogHeader'}}
+    {{else if isEndpoint}}
+      {{t 'recon.textView.rawEndpointHeader'}}
     {{else}}
       {{side}}
     {{/if}}
