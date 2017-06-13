@@ -4,10 +4,10 @@ package presidio.sdk.api.domain;
 public class DlpFileEnrichedDocument extends DlpFileDataDocument {
 
     private final String normalizedUsername;
-    private final String normalizedMachineName;
+    private final String normalizedSrcMachine;
 
 
-    public DlpFileEnrichedDocument(DlpFileDataDocument record, String normalizedUsername, String normalizedMachineName) {
+    public DlpFileEnrichedDocument(DlpFileDataDocument record, String normalizedUsername, String normalizedSrcMachine) {
         dateTime = record.getDateTime();
         dateTimeUnix = record.getDateTimeUnix();
         eventType = record.getEventType();
@@ -29,14 +29,22 @@ public class DlpFileEnrichedDocument extends DlpFileDataDocument {
         sourceDriveType = record.getSourceDriveType();
         destinationDriveType = record.getDestinationDriveType();
         this.normalizedUsername = normalizedUsername;
-        this.normalizedMachineName = normalizedMachineName;
+        this.normalizedSrcMachine = normalizedSrcMachine;
+    }
+
+    public String getNormalizedUsername() {
+        return normalizedUsername;
+    }
+
+    public String getNormalizedSrcMachine() {
+        return normalizedSrcMachine;
     }
 
     @Override
     public String toString() {
         return "DlpFileEnrichedDocument{" +
                 "normalizedUsername='" + normalizedUsername + '\'' +
-                ", normalizedMachineName='" + normalizedMachineName + '\'' +
+                ", normalizedSrcMachine='" + normalizedSrcMachine + '\'' +
                 ", dateTimeUnix=" + dateTimeUnix +
                 ", dateTime=" + dateTime +
                 ", executingApplication='" + executingApplication + '\'' +

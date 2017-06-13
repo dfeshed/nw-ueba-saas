@@ -35,10 +35,11 @@ public class PresidioInputPersistencyServiceMongoImplTest {
 
     @Test
     public void contextLoads() throws Exception {
+
         Assert.assertNotNull(presidioInputPersistencyService);
         Assert.assertNotNull(mongoTemplate);
     }
-    
+
     @Test
     public void storeOneEventToMongoAndReadEventFromMongo() {
         List<AbstractAuditableDocument> list = new ArrayList<>();
