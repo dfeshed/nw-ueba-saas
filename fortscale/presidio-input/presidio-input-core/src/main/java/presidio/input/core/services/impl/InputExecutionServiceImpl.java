@@ -151,7 +151,7 @@ public class InputExecutionServiceImpl implements InputExecutionService {
 
 
         EnrichedRecordsMetadata recordsMetaData = new EnrichedRecordsMetadata(dataSource.toString(), startDate, endDate);
-        List<? extends EnrichedRecord> records = convert((List<AbstractAuditableDocument>) enrichedDocuments, new DlpFileConverter());
+        List<? extends EnrichedRecord> records = convert(enrichedDocuments, new DlpFileConverter());
 
         enrichedDataStore.store(recordsMetaData, records);
 
@@ -163,10 +163,10 @@ public class InputExecutionServiceImpl implements InputExecutionService {
         return storeSuccessful;
     }
 
-    protected List<EnrichedRecord> convert(List<AbstractAuditableDocument> enrichedDocuments,
+    protected List<EnrichedRecord> convert(List<? extends AbstractAuditableDocument> enrichedDocuments,
                                            DlpFileConverter converter) {
         List<EnrichedRecord> records = new ArrayList<>();
-        enrichedDocuments.forEach(doc -> records.add(converter.convert(doc)));
+        enrichedDocuments.forEach(doc -> records.add(converter.convert((DlpFileEnrichedDocument) doc)));
         return records;
     }
 }
