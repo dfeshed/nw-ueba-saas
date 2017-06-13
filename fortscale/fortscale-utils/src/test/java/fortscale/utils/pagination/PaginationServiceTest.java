@@ -63,7 +63,7 @@ public class PaginationServiceTest {
      * The test assert contextId list, amount of events and amount of pages in each iterator.
      */
     @Test
-    public void test_getListOfLeaf() {
+    public void test_pagination_service() {
         int pageSize = 30;
         int maxGroupSize = 4;
 

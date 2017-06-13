@@ -45,8 +45,10 @@ public abstract class PaginationService<T> {
      */
     public <U extends T> List<PageIterator<U>> getPageIterators(String dataSource, TimeRange timeRange) {
 
-        Map<String, Integer> contextIdToNumOfItemsMap = getContextIdToNumOfItemsMap(dataSource, timeRange);
+        //Validate if indexes exist, otherwise add them.
+        validateIndexes(dataSource);
 
+        Map<String, Integer> contextIdToNumOfItemsMap = getContextIdToNumOfItemsMap(dataSource, timeRange);
         //groups is a list, where each group contains pair of total num of events and set of contextId.
         List<Pair<Integer, Set<String>>> groups = getGroups(contextIdToNumOfItemsMap);
         List<PageIterator<U>> pageIteratorList = new ArrayList<>(groups.size());
@@ -86,7 +88,7 @@ public abstract class PaginationService<T> {
      * Validate the store indexes.
      * The implementations should validate that the fields they query should be indexed in their store.
      */
-    protected abstract void validateIndexes();
+    protected abstract void validateIndexes(String dataSource);
 
 
     /**
@@ -115,7 +117,7 @@ public abstract class PaginationService<T> {
         int start = 0;
         int end = contextIdToNumOfItemsList.size() - 1;
 
-        while (((contextIdToNumOfItemsList.size() % 2 == 0 && (end > start)) || (contextIdToNumOfItemsList.size() % 2 != 0 && (end >= start)))) {
+        while (end > start) {
             Set<String> contextIds = new HashSet<>();
             Pair<String, Integer> first = contextIdToNumOfItemsList.get(start);
             Pair<String, Integer> last = contextIdToNumOfItemsList.get(end);
@@ -123,7 +125,7 @@ public abstract class PaginationService<T> {
             totalNumOfItems = last.getValue();
 
             while (totalNumOfItems + first.getValue() <= pageSize && contextIds.size() + 1 <= maxGroupSize &&
-                    ((contextIdToNumOfItemsList.size() % 2 == 0 && (end > start)) || (contextIdToNumOfItemsList.size() % 2 != 0 && (end >= start)))) {
+                    end > start) {
                 totalNumOfItems += first.getValue();
                 contextIds.add(first.getKey());
                 start++;

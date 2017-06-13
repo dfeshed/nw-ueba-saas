@@ -5,14 +5,16 @@ import fortscale.utils.time.TimeRange;
 import javafx.util.Pair;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.data.mongodb.core.DefaultIndexOperations;
+import org.springframework.data.mongodb.core.IndexOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import presidio.ade.domain.pagination.enriched.EnrichedRecordPaginationService;
-import presidio.ade.domain.record.ContextIdToNumOfEvents;
 import presidio.ade.domain.record.AdeRecordTypeToClass;
+import presidio.ade.domain.record.ContextIdToNumOfEvents;
 import presidio.ade.domain.record.enriched.EnrichedDlpFileRecord;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
 
@@ -64,9 +66,11 @@ public class EnrichedRecordPaginationServiceTest {
         list.add(contextIdsPair2);
     }
 
-
+    /**
+     * Test the enriched record pagination service.
+     */
     @Test
-    public void test_getListOfLeaf() {
+    public void test_enriched_record_pagination_service() {
         int pageSize = 3;
         int maxGroupSize = 2;
         Instant now = Instant.now();
@@ -79,11 +83,16 @@ public class EnrichedRecordPaginationServiceTest {
         AdeRecordTypeToClass adeRecordTypeToClass = new AdeRecordTypeToClass();
         MongoTemplate mongoTemplate = mock(MongoTemplate.class);
 
+        //mock for aggregation
         AggregationResults<ContextIdToNumOfEvents> aggregationResults = mock(AggregationResults.class);
         when(mongoTemplate.aggregate(any(Aggregation.class), eq("enriched_dlp_file"), eq(ContextIdToNumOfEvents.class))).thenReturn(aggregationResults);
         when(aggregationResults.getMappedResults()).thenReturn(ContextIdToNumOfEventsList);
 
-        //create queries along the whole test
+        //mock for index operations
+        IndexOperations indexOperations = mock(DefaultIndexOperations.class);
+        when(mongoTemplate.indexOps(any(Class.class))).thenReturn(indexOperations);
+
+        //mock for queries
         createQueryForFirstCall(mongoTemplate, now);
         createQueryForSecondCall(mongoTemplate, now);
         createQueryForThirdCall(mongoTemplate, now);
@@ -128,6 +137,7 @@ public class EnrichedRecordPaginationServiceTest {
 
     /**
      * Assert amount of pages in group, amount of events in group and context ids.     *
+     *
      * @param contextIdSet
      * @param simpleUserEventsList
      * @param amountOfPages

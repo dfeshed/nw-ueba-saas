@@ -1,13 +1,16 @@
 package presidio.ade.domain.store.enriched;
 
 import fortscale.utils.logging.Logger;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import presidio.ade.domain.record.ContextIdToNumOfEvents;
 import presidio.ade.domain.record.AdeRecordTypeToClass;
+import presidio.ade.domain.record.enriched.EnrichedDlpFileRecord;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.ade.domain.store.AdeDataStoreCleanupParams;
 
@@ -113,6 +116,22 @@ public class EnrichedDataStoreImplMongo implements EnrichedDataStore {
         }
 
         return contextIdToNumOfEvents;
+    }
+
+    /**
+     * Validates that the context type field indexed in the store, otherwise create the index
+     * @param dataSource data source name
+     * @param contextType type of context, field that the aggregateContextToNumOfEvents and readRecords methods use to query.
+     */
+    @Override
+    public void validateIndexes(String dataSource, String contextType){
+        //Get pojoClass by dataSource
+        Class pojoClass = AdeRecordTypeToClass.getPojoClass(dataSource);
+        //Get type of context
+        Field field = ReflectionUtils.findField(pojoClass, contextType);
+        String type = (String) ReflectionUtils.getField(field, null);
+
+        mongoTemplate.indexOps(pojoClass).ensureIndex(new Index().on(type, Sort.Direction.ASC));
     }
 
 

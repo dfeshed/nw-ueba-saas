@@ -1,7 +1,6 @@
 package presidio.ade.domain.store.enriched;
 
 import presidio.ade.domain.record.enriched.EnrichedRecord;
-import presidio.ade.domain.store.AdeDataStoreCleanupParams;
 
 import java.util.List;
 import java.util.Map;
@@ -34,5 +33,10 @@ public interface EnrichedDataReader {
      * @return list of EnrichedRecord
      */
     <U extends EnrichedRecord> List<U> readRecords(EnrichedRecordsMetadata recordsMetadata, Set<String> contextIds, String contextType, int numOfItemsToSkip, int numOfItemsToRead);
+
+    /**
+     * Validate that the query fields indexed in the store.
+     */
+    void validateIndexes(String dataSource, String contextType);
 
 }

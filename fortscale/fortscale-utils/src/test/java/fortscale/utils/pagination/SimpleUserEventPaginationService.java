@@ -53,7 +53,7 @@ public class SimpleUserEventPaginationService extends PaginationService<SimpleUs
 
 
     @Override
-    protected void validateIndexes() {
+    protected void validateIndexes(String dataSource) {
     }
 
 }
