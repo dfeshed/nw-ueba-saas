@@ -4,18 +4,18 @@ import fortscale.common.general.CommonStrings;
 import fortscale.domain.core.AbstractAuditableDocument;
 import fortscale.utils.logging.Logger;
 import presidio.input.sdk.impl.repositories.DlpFileDataRepository;
+import presidio.sdk.api.domain.DataService;
 import presidio.sdk.api.domain.DlpFileDataDocument;
-import presidio.sdk.api.domain.DlpFileDataService;
 
 import java.util.List;
 
-public class DlpFileDataServiceImpl implements DlpFileDataService {
+public class DlpFileDataService implements DataService {
 
-    private static final Logger logger = Logger.getLogger(DlpFileDataServiceImpl.class);
+    private static final Logger logger = Logger.getLogger(DlpFileDataService.class);
 
     private final DlpFileDataRepository dlpFileDataRepository;
 
-    public DlpFileDataServiceImpl(DlpFileDataRepository dlpFileDataRepository) {
+    public DlpFileDataService(DlpFileDataRepository dlpFileDataRepository) {
         this.dlpFileDataRepository = dlpFileDataRepository;
     }
 
@@ -26,19 +26,27 @@ public class DlpFileDataServiceImpl implements DlpFileDataService {
     }
 
     @Override
-    public List<DlpFileDataDocument> find(long startTime, long endTime) {
-        logger.debug("Finding dlpfile records between "+ CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME+":{} and "+
-                CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME+":{}.", startTime, endTime);
-        return dlpFileDataRepository.find(startTime, endTime);
+    public List<DlpFileDataDocument> find(long startDate, long endDate) {
+        logger.debug("Finding dlpfile records between {}:{} and {}:{}.",
+                CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate,
+                CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
+        return dlpFileDataRepository.find(startDate, endDate);
     }
 
     @Override
-    public int clean(long startTime, long endTime) {
+    public int clean(long startDate, long endDate) {
         long startTimeBegingOfTime = 0;
         long endTimeCorentSystemTime = System.currentTimeMillis() / 1000;  //todo: at the moment we just want to delete all the documents in the collection, in the future we will use values that we recive from user or airflow
-        logger.debug("Deleting dlpfile records between "+ CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME+":{} and "+
-                CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME+":{}.", startTime, endTime);
+        logger.debug("Deleting dlpfile records between {}:{} and {}:{}.",
+                CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate,
+                CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
         return dlpFileDataRepository.clean(startTimeBegingOfTime, endTimeCorentSystemTime);
+    }
+
+    @Override
+    public void cleanAll() {
+        logger.info("Cleaning entire collection {}", DlpFileDataDocument.COLLECTION_NAME);
+        dlpFileDataRepository.deleteAll();
     }
 }
 

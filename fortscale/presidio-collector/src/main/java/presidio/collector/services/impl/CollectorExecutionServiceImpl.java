@@ -52,7 +52,7 @@ public class CollectorExecutionServiceImpl implements CollectorExecutionService 
             dataSourceParam = parameterValidationService.getMandatoryParamAsString(COMMAND_LINE_DATA_SOURCE_FIELD_NAME, params);
             startTimeParam = parameterValidationService.getMandatoryParamAsString(COMMAND_LINE_START_DATE_FIELD_NAME, params);
             endTimeParam = parameterValidationService.getMandatoryParamAsString(COMMAND_LINE_END_DATE_FIELD_NAME, params);
-            parameterValidationService.validateDatasourceParam(dataSourceParam);
+            parameterValidationService.validateDataSourceParam(dataSourceParam);
             // TODO: set date format convention
 //            parameterValidationService.validateTimeParams(startTimeParam, endTimeParam);
         } catch (Exception e) {

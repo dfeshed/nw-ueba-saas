@@ -3,13 +3,16 @@ package presidio.sdk.api.domain;
 
 import fortscale.domain.core.AbstractAuditableDocument;
 import fortscale.utils.logging.Logger;
+import fortscale.utils.time.TimestampUtils;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.Instant;
 
+import static presidio.sdk.api.domain.DlpFileDataDocument.COLLECTION_NAME;
 
-@Document(collection = DlpFileDataDocument.COLLECTION_NAME)
+
+@Document(collection = COLLECTION_NAME)
 public class DlpFileDataDocument extends AbstractAuditableDocument {
 
     public static final String COLLECTION_NAME = "dlpfile_stored_data";

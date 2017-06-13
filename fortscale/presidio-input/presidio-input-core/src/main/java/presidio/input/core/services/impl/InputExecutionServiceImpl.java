@@ -21,19 +21,30 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static fortscale.common.general.CommonStrings.*;
+import static fortscale.common.general.CommonStrings.COMMAND_LINE_COMMAND_FIELD_NAME;
+import static fortscale.common.general.CommonStrings.COMMAND_LINE_DATA_SOURCE_FIELD_NAME;
+import static fortscale.common.general.CommonStrings.COMMAND_LINE_DATE_FORMAT;
+import static fortscale.common.general.CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME;
+import static fortscale.common.general.CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME;
 
 public class InputExecutionServiceImpl implements InputExecutionService {
 
     private static final Logger logger = Logger.getLogger(InputExecutionServiceImpl.class);
+    private static final String[] MANDATORY_PARAMS = {
+            COMMAND_LINE_DATA_SOURCE_FIELD_NAME,
+            COMMAND_LINE_START_DATE_FIELD_NAME,
+            COMMAND_LINE_END_DATE_FIELD_NAME,
+            COMMAND_LINE_COMMAND_FIELD_NAME
+    };
 
     private final ParametersValidationService parameterValidationService;
     private final PresidioInputPersistencyService presidioInputPersistencyService;
     private final EnrichedDataStore enrichedDataStore;
 
-    private DataSource dataSource;
+    private DataSource dataSource; //todo maor
     private Instant startDate;
     private Instant endDate;
+    private Command command;
 
     public InputExecutionServiceImpl(ParametersValidationService parameterValidationService,
                                      PresidioInputPersistencyService presidioInputPersistencyService,
@@ -43,33 +54,71 @@ public class InputExecutionServiceImpl implements InputExecutionService {
         this.enrichedDataStore = enrichedDataStore;
     }
 
-    public void run(String... params) throws Exception {
-        logger.info("Started collector processing with params: ." + Arrays.toString(params));
-
-        if (params.length < 3) {
-            logger.error("Invalid input[{}]. Need at least {}, {} and {}. Example input: {}=some_{} {}=some_{}_as_long {}=some_{}_as_long.", params, COMMAND_LINE_DATA_SOURCE_FIELD_NAME, COMMAND_LINE_START_DATE_FIELD_NAME, COMMAND_LINE_END_DATE_FIELD_NAME, COMMAND_LINE_DATA_SOURCE_FIELD_NAME, COMMAND_LINE_DATA_SOURCE_FIELD_NAME, COMMAND_LINE_START_DATE_FIELD_NAME, COMMAND_LINE_START_DATE_FIELD_NAME, COMMAND_LINE_END_DATE_FIELD_NAME, COMMAND_LINE_END_DATE_FIELD_NAME);
-            return;
+    private void init(String... params) throws Exception {
+        logger.info("Setting and validating params:[{}] .", Arrays.toString(params));
+        if (params.length < MANDATORY_PARAMS.length) {
+            String errorMessage = String.format("Invalid input[%s]. Not enough parameters, Need at least %s.", Arrays.toString(params), Arrays.toString(MANDATORY_PARAMS));
+            logger.error(errorMessage);
+            throw new RuntimeException(errorMessage);
         }
 
         final String dataSourceParam = parameterValidationService.getMandatoryParamAsString(COMMAND_LINE_DATA_SOURCE_FIELD_NAME, params);
-        final String startTimeParam = parameterValidationService.getMandatoryParamAsString(COMMAND_LINE_START_DATE_FIELD_NAME, params);
-        final String endTimeParam = parameterValidationService.getMandatoryParamAsString(COMMAND_LINE_END_DATE_FIELD_NAME, params);
+        final String startDateParam = parameterValidationService.getMandatoryParamAsString(COMMAND_LINE_START_DATE_FIELD_NAME, params);
+        final String endDateParam = parameterValidationService.getMandatoryParamAsString(COMMAND_LINE_END_DATE_FIELD_NAME, params);
+        final String commandParam = parameterValidationService.getMandatoryParamAsString(COMMAND_LINE_COMMAND_FIELD_NAME, params);
         try {
-            parameterValidationService.validateDatasourceParam(dataSourceParam);
-//            parameterValidationService.validateTimeParams(startTimeParam, endTimeParam);
+            parameterValidationService.validateDataSourceParam(dataSourceParam);//todo:there should be only validation . there is parsing process in development.
+            parameterValidationService.validateTimeParams(startDateParam, endDateParam);
+            parameterValidationService.validateCommand(commandParam);
         } catch (Exception e) {
-            logger.error("Invalid input[{}].", params, e);
-            return;
+            String errorMessage = String.format("Invalid input[%s}].", Arrays.toString(params));
+            logger.error(errorMessage, e);
+            String userMessage = errorMessage + " " + e.getMessage();
+            throw new Exception(userMessage, e);
         }
-
+        command = Command.createCommand(commandParam);
         dataSource = DataSource.createDataSource(dataSourceParam);
-        final long startTimeSeconds = TimestampUtils.convertToSeconds(new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss").parse(startTimeParam));
-        final long endTimeSeconds = TimestampUtils.convertToSeconds(new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss").parse(endTimeParam));
-        startDate = Instant.ofEpochSecond(startTimeSeconds);
-        endDate = Instant.ofEpochSecond(startTimeSeconds);
+        startDate = TimestampUtils.convertToSeconds(new SimpleDateFormat(COMMAND_LINE_DATE_FORMAT).parse(startDateParam));
+        endDate = TimestampUtils.convertToSeconds(new SimpleDateFormat(COMMAND_LINE_DATE_FORMAT).parse(endDateParam));
+    }
 
-        final List<? extends AbstractAuditableDocument> dataRecords = find(dataSource, startTimeSeconds, endTimeSeconds);
-        logger.info("Found {} dataRecords for dataSource:{}, startTimeSeconds:{}, endTimeSeconds:{}.", dataSource, startTimeSeconds, endTimeSeconds);
+    public void run(String... params) throws Exception {
+        init(params);
+        switch (command) {
+            case ENRICH:
+                enrich();
+                break;
+            case CLEAN:
+                clean();
+                break;
+            //todo: add support for cleanAll
+            default:
+                throw new UnsupportedOperationException("Unsupported command " + command);
+        }
+    }
+
+    private void cleanAll() throws Exception {
+        logger.info("Started clean processing for data source:{}.", dataSource);
+        presidioInputPersistencyService.cleanAll(dataSource);
+    }
+
+    private void clean() throws Exception {
+        logger.info("Started clean processing for data source:{}, from {}:{}, until {}:{}."
+                , dataSource,
+                CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate,
+                CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
+        presidioInputPersistencyService.clean(dataSource, startDate, endDate);
+        logger.info("Finished enrich processing .");
+    }
+
+    private void enrich() throws Exception {
+        logger.info("Started enrich processing with data source:{}, from {}:{}, until {}:{}."
+                , dataSource,
+                CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate,
+                CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
+
+        final List<? extends AbstractAuditableDocument> dataRecords = find(dataSource, startDate, endDate);
+        logger.info("Found {} dataRecords for dataSource:{}, startDate:{}, endDate:{}.", dataRecords, dataSource, startDate, endDate);
 
         final List<DlpFileEnrichedDocument> enrichedRecords = enrich(dataRecords);
 
@@ -78,11 +127,14 @@ public class InputExecutionServiceImpl implements InputExecutionService {
             //todo: how to handle?
         }
 
-        logger.info("Finished collector processing with params: ." + Arrays.toString(params));
+        logger.info("Finished enrich processing .");
     }
 
-    private List<? extends AbstractAuditableDocument> find(DataSource dataSource, long startTime, long endTime) {
-        logger.debug("Finding {} records for dataSource:{}, startTime:{}, endTime:{}.", dataSource, startTime, endTime);
+    private List<? extends AbstractAuditableDocument> find(DataSource dataSource, long startTime, long endTime) throws Exception {
+        logger.debug("Finding records for data source:{}, from {}:{}, until {}:{}."
+                , dataSource,
+                CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate,
+                CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
         return presidioInputPersistencyService.find(dataSource, startTime, endTime);
     }
 
@@ -93,6 +145,7 @@ public class InputExecutionServiceImpl implements InputExecutionService {
             final DlpFileDataDocument dlpfileDataRecord = (DlpFileDataDocument) dataRecord;
             enrichedRecords.add(new DlpFileEnrichedDocument(dlpfileDataRecord, dlpfileDataRecord.getUsername(), dlpfileDataRecord.getHostname()));
         }
+
 
         return enrichedRecords;
     }
