@@ -67,5 +67,4 @@ public class PresidioInputPersistencyServiceMongoImpl implements PresidioInputPe
                 throw new Exception(errorMessage);
         }
     }
-
 }

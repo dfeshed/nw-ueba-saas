@@ -21,11 +21,11 @@ public class FetchServiceImpl implements FetchService {
 
     @Override
     public List<String[]> fetch(DataSource dataSource, long startTime, long endTime) throws Exception {
-        logger.info("fetching datasource {} from start time {}[{}] to end time {}[{}].", dataSource, new DateTime(startTime), startTime, new DateTime(endTime), endTime); //todo: can we have timezone issues?
+        logger.info("fetching dataSource {} from start time {}[{}] to end time {}[{}].", dataSource, new DateTime(startTime), startTime, new DateTime(endTime), endTime); //todo: can we have timezone issues?
         final Fetcher fetcher = fetchers.get(dataSource);
         if (fetcher == null) {
-            logger.error("There's no fetcher for datasource {}. Supported datasources are {}", fetchers.keySet());
-            throw new Exception("Unsupported datasource: " + dataSource);
+            logger.error("There's no fetcher for dataSource {}. Supported datasources are {}", fetchers.keySet());
+            throw new Exception("Unsupported dataSource: " + dataSource);
         }
 
         try {
