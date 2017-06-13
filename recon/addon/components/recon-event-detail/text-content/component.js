@@ -42,12 +42,21 @@ const TextReconComponent = Component.extend(ReconPagerMixin, StickyHeaderMixin, 
   stickyHeaderSelector: '.is-sticky.recon-request-response-header',
 
   @computed('maxPacketsReached', 'maxPacketsForText', 'packetTotal')
-  maxPacketMessage(maxPacketsReached, maxPacketCount, packetTotal) {
+  maxPacketMessaging(maxPacketsReached, maxPacketCount, packetTotal) {
     if (maxPacketsReached) {
-      return this.get('i18n').t('recon.textView.maxPacketsReached', {
+      const message = this.get('i18n').t('recon.textView.maxPacketsReached', {
         maxPacketCount,
         packetTotal: packetTotal || '...'
       });
+
+      const disclaimer = this.get('i18n').t('recon.textView.maxPacketsReachedTooltip', {
+        maxPacketCount
+      });
+
+      return {
+        message,
+        disclaimer
+      };
     }
   },
 

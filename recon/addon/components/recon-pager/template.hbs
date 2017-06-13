@@ -12,8 +12,18 @@
     {{unless isHidden 'to improve performance'}}
   </div>
 {{/if}}
-{{#if (and isText maxPacketMessage)}}
+{{#if (and isText maxPacketMessaging)}}
   <div class="packet-info">
-    {{maxPacketMessage}}
+    {{#rsa-content-tethered-panel-trigger panel='packetDisclaimerInfo'}}
+      <div class="disclaimer">
+        {{rsa-icon name='report-problem-triangle'}} {{maxPacketMessaging.message}}
+      </div>
+    {{/rsa-content-tethered-panel-trigger}}
+    {{#rsa-content-tethered-panel
+      displayCloseButton=false
+      panelId='packetDisclaimerInfo'
+      position='top'}}
+      <p>{{maxPacketMessaging.disclaimer}}</p>
+    {{/rsa-content-tethered-panel}}
   </div>
 {{/if}}

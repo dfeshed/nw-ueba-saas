@@ -141,7 +141,8 @@ export default {
       renderRemaining: 'ja_Rendering Remaining {{remainingPercent}}%..',
       headerShowing: 'ja_Showing',
       renderingMore: 'ja_Showing more...',
-      maxPacketsReached: 'ja_Rendered <span class="lighter">{{maxPacketCount}}</span> of <span class="lighter">{{packetTotal}}</span> packets to improve performance'
+      maxPacketsReached: 'ja_Rendered <span class="darker">{{maxPacketCount}} (Max)</span> of <span class="darker">{{packetTotal}}</span> packets',
+      maxPacketsReachedTooltip: 'ja_The limit of {{maxPacketCount}} packets to render a single event has been reached; no additional packets will be rendered for this event. The packet threshold ensures the best rendering experience.'
     },
     packetView: {
       noHexData: 'ja_No HEX data was generated during content reconstruction.',

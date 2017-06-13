@@ -7,16 +7,27 @@
   bottom: 0;
   width: 100%;
   height: rsa-whitespace(more);
+
   .event-info {
     position: absolute;
     top: rsa-whitespace(less);
     left: rsa-whitespace();
   }
+
   .packet-info {
     position: absolute;
     top: rsa-whitespace(less);
     right: rsa-whitespace();
+
+    .disclaimer {
+      color:rsa-color(orange);
+
+      .darker {
+        font-weight: bold;
+      }
+    }
   }
+
   .lighter {
     color: rsa-color(grey, lighter);
   }

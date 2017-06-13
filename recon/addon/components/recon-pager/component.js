@@ -40,12 +40,12 @@ export default Component.extend({
   isText: false,
 
   /**
-   * When isText, this is message indicating that max packets have been reached
+   * When isText, this is messaging indicating that max packets have been reached
    * @type Boolean
    * @default false
    * @public
    */
-  maxPacketMessage: null,
+  maxPacketMessaging: null,
 
   /**
    * Number of rendered packets.
