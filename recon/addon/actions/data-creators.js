@@ -59,6 +59,15 @@ const _retrieveMeta = (dataState) => {
   };
 };
 
+const _fetchTextData = function(dispatch, state) {
+  fetchTextData(
+    _getTextAndPacketInputs(state),
+    (payload) => dispatch({ type: ACTION_TYPES.TEXT_RECEIVE_PAGE, payload }),
+    (payload) => dispatch({ type: ACTION_TYPES.TEXT_RENDER_NEXT, payload }),
+    (response) => dispatch(_handleContentError(response, 'decode'))
+  );
+};
+
 // Generic handler for errors fetching recon view data
 const _handleContentError = (response, type) => {
   return (dispatch) => {
@@ -126,12 +135,7 @@ const _handleFetchingNewData = (newViewCode) => {
         );
         break;
       case RECON_VIEW_TYPES_BY_NAME.TEXT.code:
-        fetchTextData(
-          _getTextAndPacketInputs(state),
-          (payload) => dispatch({ type: ACTION_TYPES.TEXT_RECEIVE_PAGE, payload }),
-          (payload) => dispatch({ type: ACTION_TYPES.TEXT_RENDER_NEXT, payload }),
-          (response) => dispatch(_handleContentError(response, 'text'))
-        );
+        _fetchTextData(dispatch, state);
         break;
     }
   };
@@ -404,11 +408,7 @@ const decodeText = () => {
   return (dispatch, getState) => {
     dispatch({ type: ACTION_TYPES.CONTENT_RETRIEVE_STARTED });
     dispatch({ type: ACTION_TYPES.TOGGLE_TEXT_DECODE });
-    fetchTextData(
-      _getTextAndPacketInputs(getState()),
-      (payload) => dispatch({ type: ACTION_TYPES.TEXT_RECEIVE_PAGE, payload }),
-      (response) => dispatch(_handleContentError(response, 'decode'))
-    );
+    _fetchTextData(dispatch, getState());
   };
 };
 
