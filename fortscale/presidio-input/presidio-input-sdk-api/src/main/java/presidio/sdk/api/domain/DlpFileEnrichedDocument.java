@@ -1,6 +1,6 @@
 package presidio.sdk.api.domain;
 
-
+//todo: consider composition over inheritance
 public class DlpFileEnrichedDocument extends DlpFileDataDocument {
 
     private final String normalizedUsername;
