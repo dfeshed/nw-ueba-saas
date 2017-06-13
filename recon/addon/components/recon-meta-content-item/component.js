@@ -56,6 +56,11 @@ const MetaContentItem = Component.extend({
     return (isHovering || isSelected) && isTextView && eventHasPayload && metaToLimit.includes(this.get('name'));
   },
 
+  @computed('isSelected', 'isTextView', 'eventHasPayload')
+  shouldShowHighlightScroller(isSelected, isTextView, eventHasPayload) {
+    return isSelected && isTextView && eventHasPayload && metaToLimit.includes(this.get('name'));
+  },
+
   mouseEnter() {
     this.set('isHovering', true);
   },

@@ -129,6 +129,12 @@ export default {
         file: 'File Analysis'
       }
     },
+    meta: {
+      scroller: {
+        of: 'of',
+        results: 'results'
+      }
+    },
     textView: {
       compressToggleLabel: 'Display Compressed Payloads',
       compressToggleTitle: 'Display HTTP payloads as compressed or not',

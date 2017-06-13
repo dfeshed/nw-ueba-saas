@@ -1,8 +1,7 @@
 import Component from 'ember-component';
 import { scheduleOnce, debounce } from 'ember-runloop';
-import computed, { gt, and } from 'ember-computed-decorators';
+import computed, { gt } from 'ember-computed-decorators';
 import connect from 'ember-redux/components/connect';
-
 import layout from './template';
 import { totalMetaToHighlight } from 'recon/reducers/text/selectors';
 
@@ -10,9 +9,12 @@ const stateToComputed = ({ recon }) => ({
   numberOfHighlightedMetas: totalMetaToHighlight(recon)
 });
 
-const MetaHighlightScrollerComponent = Component.extend({
-  classNames: ['meta-highlight-scroller'],
+const MetaHighlightStatus = Component.extend({
   layout,
+
+  tagName: 'div',
+
+  classNames: ['meta-highlight-scroller'],
 
   index: 0,
 
@@ -21,9 +23,6 @@ const MetaHighlightScrollerComponent = Component.extend({
 
   @computed('index', 'numberOfHighlightedMetas')
   showNext: (index, numMetas) => index < numMetas - 1,
-
-  @and('showPrevious', 'showNext')
-  showSeperator: false,
 
   @gt('numberOfHighlightedMetas', 0)
   hasMatches: false,
@@ -51,7 +50,7 @@ const MetaHighlightScrollerComponent = Component.extend({
 
   _scrollToMeta() {
     const index = this.get('index');
-    const $parent = this.$().parent();
+    const $parent = this.$().parents().eq(3);
     const $scrollBox = $parent.find('.scroll-box');
     const $meta = $parent.find('.highlighted-meta').eq(index);
 
@@ -89,6 +88,7 @@ const MetaHighlightScrollerComponent = Component.extend({
       this._moveIndex('decrementProperty');
     }
   }
+
 });
 
-export default connect(stateToComputed)(MetaHighlightScrollerComponent);
+export default connect(stateToComputed)(MetaHighlightStatus);

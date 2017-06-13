@@ -10,7 +10,7 @@
 .recon-meta-content-item {
   @include rsa-word-wrap();
   line-height: 1.71rem;
-  padding: 0 rsa-whitespace();
+  padding: 0 0 0 rsa-whitespace();
   i {
     &:hover {
       cursor: pointer;
