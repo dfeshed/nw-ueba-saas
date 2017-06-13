@@ -156,7 +156,7 @@ const getAlert = (alertId) => {
 
     dispatch({ type: ACTION_TYPES.FETCH_ALERT_DETAILS_STARTED });
     alerts.getAlerts(
-      [ { _id: alertId } ],
+      { _id: alertId },
       { sortField: '_id', isSortDescending: false },
       {
         onInit: (stopStreamFn) => {
