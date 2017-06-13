@@ -69,7 +69,8 @@ module.exports = {
       metaKeys: [
         'file',
         'filename',
-        'sourcefile'
+        'sourcefile',
+        'file_name'
       ]
     },
     {
@@ -77,7 +78,8 @@ module.exports = {
       enabled: true,
       metaKeys: [
         'checksum',
-        'hash'
+        'hash',
+        'file_hash'
       ]
     },
     {
