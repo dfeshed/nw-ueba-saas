@@ -1,10 +1,10 @@
 package presidio.ade.domain.store;
 
+import presidio.ade.domain.store.enriched.EnrichedDataStoreImplMongo;
+
 /**
- * ContextIdToNumOfEvents contains contextId and totalNumOfEvents.
- * Example of class usage:
- * Output class of mongoTemplate.aggregate.
- * It creates list of ContextIdToNumOfEvents.
+ * ContextIdToNumOfEvents contains contextId and totalNumOfEvents fields.
+ * Example of usage: see {@link EnrichedDataStoreImplMongo}
  */
 public class ContextIdToNumOfEvents {
 

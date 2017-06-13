@@ -28,8 +28,10 @@ public class AdeRecordTypeToClass {
     /**
      * Add AdeRecordMetadata class to the map
      *
+     * SuppressWarnings: Class.forName return Class<?>, while the map expect to get Class<? extends AdeRecord>
      * @param beanDef bean definition of AdeRecordMetadata class
      */
+    @SuppressWarnings("unchecked")
     private void addItemsToMap(BeanDefinition beanDef) {
         try {
             Class<?> pojoClass = Class.forName(beanDef.getBeanClassName());

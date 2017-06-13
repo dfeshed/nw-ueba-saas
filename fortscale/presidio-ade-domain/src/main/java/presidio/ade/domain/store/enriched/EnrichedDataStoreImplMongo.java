@@ -60,6 +60,9 @@ public class EnrichedDataStoreImplMongo implements EnrichedDataStore {
         Criteria contextCriteria = Criteria.where(type).in(contextIds);
         Query query = new Query(dateTimeCriteria).addCriteria(contextCriteria).skip(numOfItemsToSkip).limit(numOfItemsToRead);
         String collectionName = translator.toCollectionName(recordsMetadata);
+
+        // the pojoClass is Class<? extends AdeRecord>, while finf method should get
+        @SuppressWarnings("unchecked")
         List<U> enrichedRecordList = mongoTemplate.find(query, (Class<U>)pojoClass, collectionName);
 
         return enrichedRecordList;
@@ -109,6 +112,7 @@ public class EnrichedDataStoreImplMongo implements EnrichedDataStore {
         );
 
         AggregationResults<ContextIdToNumOfEvents> result = mongoTemplate.aggregate(agg, collectionName, ContextIdToNumOfEvents.class);
+        //Create list of ContextIdToNumOfEvents, which contain contextId and totalNumOfEvents
         List<ContextIdToNumOfEvents> enrichedRecordList = result.getMappedResults();
 
         //Create map of context id to total amount of events

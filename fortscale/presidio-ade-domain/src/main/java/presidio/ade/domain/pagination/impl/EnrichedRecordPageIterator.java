@@ -4,7 +4,6 @@ import fortscale.utils.pagination.PageIterator;
 import fortscale.utils.time.TimeRange;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
-import presidio.ade.domain.store.enriched.EnrichedDataStoreImplMongo;
 import presidio.ade.domain.store.enriched.EnrichedRecordsMetadata;
 
 import java.util.List;
@@ -12,10 +11,12 @@ import java.util.Set;
 
 /**
  * Implements PageIterator.
+ * EnrichedRecordPageIterator use store to get list of enriched records.
+ * By using num of items to skip and num of items to read, store get the events for current iteration.
  *
- * @param <T> (e.g: EnrichedDlpFileRecord)
+ * @param <U> (e.g: EnrichedDlpFileRecord)
  */
-public class EnrichedRecordPageIterator<T extends EnrichedRecord> implements PageIterator<T> {
+public class EnrichedRecordPageIterator<U extends EnrichedRecord> implements PageIterator<U> {
 
     private TimeRange timeRange;
     private String dataSource;
@@ -25,18 +26,16 @@ public class EnrichedRecordPageIterator<T extends EnrichedRecord> implements Pag
     private EnrichedDataStore store;
     private int pageSize;
     private int totalNumOfItems;
-
-
     private Set<String> contextIdsList;
 
     /**
      * @param timeRange
      * @param contextType context type (e.g:NORMALIZED_USERNAME_FIELD, NORMALIZED_SRC_MACHINE_FIELD)
-     * @param dataSource
+     * @param dataSource data source name
      * @param contextIdsList  list of context ids
      * @param store
-     * @param pageSize
-     * @param totalNumOfItems
+     * @param pageSize num of events in each page
+     * @param totalNumOfItems total num of events in the all pages
      */
     public EnrichedRecordPageIterator(TimeRange timeRange, String contextType, String dataSource, Set<String> contextIdsList, EnrichedDataStore store, int pageSize, int totalNumOfItems) {
         this.currentPage = 0;
@@ -58,10 +57,10 @@ public class EnrichedRecordPageIterator<T extends EnrichedRecord> implements Pag
     /**
      * Call to the store with meta date(data source etc...), list of context ids, num of items to skip and num of items to read.
      *
-     * @return list of <T>
+     * @return list of <U>
      */
     @Override
-    public List<T> next() {
+    public List<U> next() {
         EnrichedRecordsMetadata enrichedRecordsMetadata = new EnrichedRecordsMetadata(this.dataSource, this.timeRange.getStart(), this.timeRange.getEnd());
         int numOfItemsToRead = getNumOfItemsToRead();
         int numOfItemsToSkip = this.currentPage * this.pageSize;

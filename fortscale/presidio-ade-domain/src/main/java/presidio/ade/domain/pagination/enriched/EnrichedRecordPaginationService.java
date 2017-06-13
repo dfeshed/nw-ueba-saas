@@ -6,14 +6,13 @@ import fortscale.utils.time.TimeRange;
 import presidio.ade.domain.pagination.impl.EnrichedRecordPageIterator;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
-import presidio.ade.domain.store.enriched.EnrichedDataStoreImplMongo;
 import presidio.ade.domain.store.enriched.EnrichedRecordsMetadata;
 
 import java.util.Map;
 import java.util.Set;
 
 /**
- * Implementation of PaginationService.
+ * Implementation of PaginationService for enriched Records.
  */
 public class EnrichedRecordPaginationService extends PaginationService<EnrichedRecord> {
 
