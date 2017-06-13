@@ -57,6 +57,14 @@ export default Ember$.extend({}, BaseSelectors, {
       'rsaActiveElmCheck': 'is-active',
       'rsaIconClose': '.rsa-icon-close',
       'rsaTableCell': '.rsa-data-table-body-cell',
+      'contextHover': {
+        'context_link': 'text[class^="text is-context-enabled entity-has-been-validated context-tooltip-1"]',
+        'hover_field_value': 'div[class="rsa-context-tooltip-records__record"] h4[class="value"]',
+        'hover_field_name': 'div[class="rsa-context-tooltip-records__record"] p[class="text"]',
+        'pivot_add_to_list': 'li[class="action"]',
+        'add_to_list_panel': 'div[class="rsa-context-tree-table__addtoListBox"]',
+        'view_context': 'centered button[class="rsa-form-button"]'
+      },
       'card': {
         'rsaContentCard': '.rsa-content-card',
         'allIncElm': 'header[class^=rsa-respond-index__toolbar] a[class=ember-view]',
