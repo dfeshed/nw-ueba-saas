@@ -12,7 +12,6 @@ import org.springframework.context.annotation.Import;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
 import presidio.ade.domain.store.enriched.EnrichedDataStoreConfig;
 import presidio.input.core.services.api.InputExecutionService;
-import presidio.input.core.services.impl.InputCommandLineRunner;
 import presidio.input.core.services.impl.InputExecutionServiceImpl;
 import presidio.input.sdk.impl.spring.PresidioInputPersistencyServiceConfig;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
@@ -55,7 +54,6 @@ public class InputCoreConfiguration {
             this.inputExecutionService.run(params);
 
         }
-        return new InputCommandLineRunner(inputProcessService());
     }
 
 }

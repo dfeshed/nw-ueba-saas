@@ -1,11 +1,12 @@
 package presidio.input.core.services.impl;
 
 
+import fortscale.common.general.Command;
+import fortscale.common.general.CommonStrings;
 import fortscale.common.general.DataSource;
 import fortscale.domain.core.AbstractAuditableDocument;
 import fortscale.services.parameters.ParametersValidationService;
 import fortscale.utils.logging.Logger;
-import fortscale.utils.time.TimestampUtils;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
 import presidio.ade.domain.store.enriched.EnrichedRecordsMetadata;
@@ -15,17 +16,12 @@ import presidio.sdk.api.domain.DlpFileDataDocument;
 import presidio.sdk.api.domain.DlpFileEnrichedDocument;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
 
-import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static fortscale.common.general.CommonStrings.COMMAND_LINE_COMMAND_FIELD_NAME;
-import static fortscale.common.general.CommonStrings.COMMAND_LINE_DATA_SOURCE_FIELD_NAME;
-import static fortscale.common.general.CommonStrings.COMMAND_LINE_DATE_FORMAT;
-import static fortscale.common.general.CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME;
-import static fortscale.common.general.CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME;
+import static fortscale.common.general.CommonStrings.*;
 
 public class InputExecutionServiceImpl implements InputExecutionService {
 
@@ -78,8 +74,8 @@ public class InputExecutionServiceImpl implements InputExecutionService {
         }
         command = Command.createCommand(commandParam);
         dataSource = DataSource.createDataSource(dataSourceParam);
-        startDate = TimestampUtils.convertToSeconds(new SimpleDateFormat(COMMAND_LINE_DATE_FORMAT).parse(startDateParam));
-        endDate = TimestampUtils.convertToSeconds(new SimpleDateFormat(COMMAND_LINE_DATE_FORMAT).parse(endDateParam));
+        startDate = Instant.parse(startDateParam);
+        endDate = Instant.parse(endDateParam);
     }
 
     public void run(String... params) throws Exception {
@@ -107,7 +103,7 @@ public class InputExecutionServiceImpl implements InputExecutionService {
                 , dataSource,
                 CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate,
                 CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
-        presidioInputPersistencyService.clean(dataSource, startDate, endDate);
+        presidioInputPersistencyService.clean(dataSource, startDate.getEpochSecond(), endDate.getEpochSecond());
         logger.info("Finished enrich processing .");
     }
 
@@ -117,7 +113,7 @@ public class InputExecutionServiceImpl implements InputExecutionService {
                 CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate,
                 CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
 
-        final List<? extends AbstractAuditableDocument> dataRecords = find(dataSource, startDate, endDate);
+        final List<? extends AbstractAuditableDocument> dataRecords = find(dataSource, startDate.getEpochSecond(), endDate.getEpochSecond());
         logger.info("Found {} dataRecords for dataSource:{}, startDate:{}, endDate:{}.", dataRecords, dataSource, startDate, endDate);
 
         final List<DlpFileEnrichedDocument> enrichedRecords = enrich(dataRecords);

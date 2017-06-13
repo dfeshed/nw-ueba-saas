@@ -1,12 +1,11 @@
 package presidio.input.sdk.impl.services;
 
-import fortscale.common.general.DataSource;
 import fortscale.common.general.CommonStrings;
+import fortscale.common.general.DataSource;
 import fortscale.domain.core.AbstractAuditableDocument;
 import fortscale.utils.logging.Logger;
 import presidio.sdk.api.domain.DataService;
 import presidio.sdk.api.domain.DlpFileDataDocument;
-import presidio.sdk.api.domain.DlpFileDataService;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
 
 import java.util.List;
