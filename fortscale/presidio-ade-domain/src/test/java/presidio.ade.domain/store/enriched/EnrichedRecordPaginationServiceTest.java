@@ -1,10 +1,15 @@
 package presidio.ade.domain.store.enriched;
 
+import fortscale.utils.monitoring.stats.config.NullStatsServiceConfig;
 import fortscale.utils.pagination.PageIterator;
+import fortscale.utils.test.mongodb.MongodbTestConfig;
 import fortscale.utils.time.TimeRange;
 import javafx.util.Pair;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.mongodb.core.DefaultIndexOperations;
 import org.springframework.data.mongodb.core.IndexOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -12,9 +17,12 @@ import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import presidio.ade.domain.pagination.enriched.EnrichedRecordPaginationService;
-import presidio.ade.domain.record.AdeRecordTypeToClass;
-import presidio.ade.domain.record.ContextIdToNumOfEvents;
+import presidio.ade.domain.record.scanning.AdeRecordTypeToClass;
+import presidio.ade.domain.record.scanning.AdeRecordTypeToClassConfig;
+import presidio.ade.domain.store.ContextIdToNumOfEvents;
 import presidio.ade.domain.record.enriched.EnrichedDlpFileRecord;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
 
@@ -28,6 +36,8 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = AdeRecordTypeToClassConfig.class)
 public class EnrichedRecordPaginationServiceTest {
 
 
@@ -36,6 +46,9 @@ public class EnrichedRecordPaginationServiceTest {
 
     //list of pair, where pair is of context ids set and pair of amountOfPages, amountOfEvents.
     private List<Pair<Set<String>, Pair<Integer, Integer>>> list;
+
+    @Autowired
+    private AdeRecordTypeToClass adeRecordTypeToClass;
 
     @Before
     /**
@@ -80,7 +93,6 @@ public class EnrichedRecordPaginationServiceTest {
         ContextIdToNumOfEventsList.add(new ContextIdToNumOfEvents("b", 2));
         ContextIdToNumOfEventsList.add(new ContextIdToNumOfEvents("c", 1));
 
-        AdeRecordTypeToClass adeRecordTypeToClass = new AdeRecordTypeToClass();
         MongoTemplate mongoTemplate = mock(MongoTemplate.class);
 
         //mock for aggregation
@@ -98,7 +110,7 @@ public class EnrichedRecordPaginationServiceTest {
         createQueryForThirdCall(mongoTemplate, now);
 
         EnrichedDataToCollectionNameTranslator translator = new EnrichedDataToCollectionNameTranslator();
-        enrichedDataStoreImplMongo = new EnrichedDataStoreImplMongo(mongoTemplate, translator);
+        enrichedDataStoreImplMongo = new EnrichedDataStoreImplMongo(mongoTemplate, translator, this.adeRecordTypeToClass);
 
         EnrichedRecordPaginationService paginationService =
                 new EnrichedRecordPaginationService(enrichedDataStoreImplMongo, pageSize, maxGroupSize, "NORMALIZED_USERNAME_FIELD");

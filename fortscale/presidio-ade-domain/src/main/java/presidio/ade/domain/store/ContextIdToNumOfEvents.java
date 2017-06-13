@@ -1,4 +1,4 @@
-package presidio.ade.domain.record;
+package presidio.ade.domain.store;
 
 /**
  * ContextIdToNumOfEvents contains contextId and totalNumOfEvents.
