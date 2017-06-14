@@ -1,11 +1,9 @@
-import Ember from 'ember';
-
-const {
-  Component
-} = Ember;
+import Component from 'ember-component';
+import service from 'ember-service/inject';
 
 export default Component.extend({
-  classNames: [ 'rsa-incident-overview' ],
+  accessControl: service(),
+  classNames: ['rsa-incident-overview'],
 
   /**
    * Incident summary data fetched from server.

@@ -29,25 +29,34 @@ export default Service.extend({
   @gt('configAccessIntersections.length', 0) hasConfigAccess: null,
   @gt('investigateAccessIntersections.length', 0) hasInvestigateAccess: null,
 
-  @computed('roles')
+  // Begin respond access permissions
+
+  @computed('roles.[]')
+  respondCanManageIncidents(roles) {
+    return this._hasPermission(roles, 'response-server.incident.manage');
+  },
+
+  @computed('roles.[]')
   hasRespondAccess(roles) {
     return this._hasPermission(roles, 'response-server');
   },
 
-  @computed('roles')
+  @computed('roles.[]')
   hasRespondAlertsAccess(roles) {
     return this._hasPermission(roles, 'response-server.alert');
   },
 
-  @computed('roles')
+  @computed('roles.[]')
   hasRespondIncidentsAccess(roles) {
     return this._hasPermission(roles, 'response-server.incident');
   },
 
-  @computed('roles')
+  @computed('roles.[]')
   hasRespondRemediationAccess(roles) {
     return this._hasPermission(roles, 'response-server.remediation');
   },
+
+  // End respond access permissions
 
   @computed('adminAccessIntersections.[]')
   adminUrl: (intersections) => {

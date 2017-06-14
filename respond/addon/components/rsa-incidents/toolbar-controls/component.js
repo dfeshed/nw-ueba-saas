@@ -9,7 +9,7 @@ import service from 'ember-service/inject';
  * @public
  */
 export default Component.extend({
-
+  accessControl: service(),
   i18n: service(),
 
   @empty('itemsSelected') hasNoSelections: true,
@@ -53,7 +53,8 @@ export default Component.extend({
 
       confirm(deleteConfirmationDialogId, {
         count: itemsSelected.length,
-        warning: i18n.t('respond.incidents.actions.actionMessages.deleteWarning') }, deleteItems);
+        warning: i18n.t('respond.incidents.actions.actionMessages.deleteWarning')
+      }, deleteItems);
     },
 
     updateIncidentStatus(entityIds, updatedValue) {

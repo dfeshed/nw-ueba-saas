@@ -2,23 +2,25 @@
 <p class="created">
   <label>{{t 'respond.incident.created'}}:</label>
   <span>
-    {{rsa-content-datetime timestamp=info.created asTimeAgo=false displayTime=true displayDate=true displayMilliseconds=false}}
+    {{rsa-content-datetime timestamp=info.created asTimeAgo=false displayTime=true displayDate=true
+                           displayMilliseconds=false}}
   </span>
 </p>
 
 {{#if info.timeWindowExpiration}}
 
-  {{! We have an expiration date, so display that alongside the Sealed status (boolean)}}
+{{! We have an expiration date, so display that alongside the Sealed status (boolean)}}
   <p class="sealed has-expiration">
     <label>{{t (if info.sealed 'respond.incident.sealed' 'respond.incident.sealsAt')}}:</label>
     <span>
-      {{rsa-content-datetime timestamp=info.timeWindowExpiration asTimeAgo=false displayTime=true displayDate=true displayMilliseconds=false}}
+      {{rsa-content-datetime timestamp=info.timeWindowExpiration asTimeAgo=false displayTime=true displayDate=true
+                             displayMilliseconds=false}}
     </span>
   </p>
 
 {{else}}
 
-  {{! We don't have an expiration date, so just display the Sealed status (boolean)}}
+{{! We don't have an expiration date, so just display the Sealed status (boolean)}}
   <p class="sealed has-no-expiration">
     <label>{{t 'respond.incident.sealed'}}:</label>
     <span>{{if info.sealed 'Yes' 'No'}}</span>
@@ -40,55 +42,67 @@
 {{! Priority}}
 <p class="priority">
   <label>{{t 'respond.incident.priority'}}:</label>
-  <div class="edit-button">
-    {{#power-select
-      options=priorityTypes
-      selected=info.status
-      matchTriggerWidth=false
-      searchEnabled=false
-      disabled=(or (eq info.status 'CLOSED') (eq info.status 'CLOSED_FALSE_POSITIVE'))
-      triggerComponent=(component "respond-common/button-trigger"
-        isDisabled=(or (eq info.status 'CLOSED') (eq info.status 'CLOSED_FALSE_POSITIVE'))
-        label=(t (concat 'respond.priority.' info.priority)))
-      onchange=(action 'update' info.id 'priority') as |option|}}
-      {{t (concat 'respond.priority.' option)}}
-    {{/power-select}}
-  </div>
+  {{#if accessControl.respondCanManageIncidents}}
+    <div class="edit-button">
+      {{#power-select
+        options=priorityTypes
+        selected=info.priority
+        matchTriggerWidth=false
+        searchEnabled=false
+        disabled=(or (eq info.status 'CLOSED') (eq info.status 'CLOSED_FALSE_POSITIVE'))
+        triggerComponent=(component "respond-common/button-trigger"
+          isDisabled=(or (eq info.status 'CLOSED') (eq info.status 'CLOSED_FALSE_POSITIVE'))
+          label=(t (concat 'respond.priority.' info.priority)))
+        onchange=(action 'update' info.id 'priority') as |option|}}
+        {{t (concat 'respond.priority.' option)}}
+      {{/power-select}}
+    </div>
+  {{else}}
+    <span>{{t (concat 'respond.priority.' info.priority)}}</span>
+  {{/if}}
 </p>
 
 {{! Status}}
 <p class="status">
   <label>{{t 'respond.incident.status'}}:</label>
-  <div class="edit-button">
-    {{#power-select
-      options=statusTypes
-      selected=info.status
-      matchTriggerWidth=false
-      searchEnabled=false
-      triggerComponent=(component "respond-common/button-trigger"
-        label=(t (concat 'respond.status.' info.status)))
-      onchange=(action 'update' info.id 'status') as |option|}}
-      {{t (concat 'respond.status.' option)}}
-    {{/power-select}}
-  </div>
+  {{#if accessControl.respondCanManageIncidents}}
+    <div class="edit-button">
+      {{#power-select
+        options=statusTypes
+        selected=info.status
+        matchTriggerWidth=false
+        searchEnabled=false
+        triggerComponent=(component "respond-common/button-trigger"
+          label=(t (concat 'respond.status.' info.status)))
+        onchange=(action 'update' info.id 'status') as |option|}}
+        {{t (concat 'respond.status.' option)}}
+      {{/power-select}}
+    </div>
+  {{else}}
+    <span>{{t (concat 'respond.status.' info.status)}}</span>
+  {{/if}}
 </p>
 
 {{! Assignee}}
 <p class="assignee">
   <label>{{t 'respond.incident.assignee'}}:</label>
-  <div class="edit-button">
-    {{#power-select
-      options=users
-      matchTriggerWidth=false
-      disabled=(or (eq info.status 'CLOSED') (eq info.status 'CLOSED_FALSE_POSITIVE'))
-      searchEnabled=false
-      triggerComponent=(component "respond-common/button-trigger"
-        isDisabled=(or (eq info.status 'CLOSED') (eq info.status 'CLOSED_FALSE_POSITIVE'))
-        label=(if info.assignee info.assignee.name (t 'respond.assignee.none')))
-      onchange=(action 'update' info.id 'assignee') as |option|}}
-      {{option.name}}
-    {{/power-select}}
-  </div>
+  {{#if accessControl.respondCanManageIncidents}}
+    <div class="edit-button">
+      {{#power-select
+        options=users
+        matchTriggerWidth=false
+        disabled=(or (eq info.status 'CLOSED') (eq info.status 'CLOSED_FALSE_POSITIVE'))
+        searchEnabled=false
+        triggerComponent=(component "respond-common/button-trigger"
+          isDisabled=(or (eq info.status 'CLOSED') (eq info.status 'CLOSED_FALSE_POSITIVE'))
+          label=(if info.assignee info.assignee.name (t 'respond.assignee.none')))
+        onchange=(action 'update' info.id 'assignee') as |option|}}
+        {{option.name}}
+      {{/power-select}}
+    </div>
+  {{else}}
+    <span>{{if info.assignee info.assignee.name (t 'respond.assignee.none')}}</span>
+  {{/if}}
 </p>
 
 {{! Sources ("Event Stream Analysis", "ECAT", etc)}}
