@@ -1,6 +1,6 @@
 import Component from 'ember-component';
 import computed, { alias } from 'ember-computed-decorators';
-import { later, scheduleOnce } from 'ember-runloop';
+import { later, scheduleOnce, join } from 'ember-runloop';
 
 import SelectionTooltip from './selection-tooltip-mixin';
 import { retrieveTranslatedData, prepareTextForDisplay } from './util';
@@ -8,8 +8,8 @@ import layout from './template';
 
 const HIDE_CONTENT_CHARACTER_COUNT = 3000;
 const SHOW_TRUNCATED_AMOUNT = 2000;
-const CHUNK_SIZE = 10000;
-const TIME_BETWEEN_CHUNKS = 750;
+const CHUNK_SIZE = 6000;
+const TIME_BETWEEN_CHUNKS = 1000;
 
 export default Component.extend(SelectionTooltip, {
   classNameBindings: ['packet.side', 'isSticky::rsa-text-entry'],
@@ -155,9 +155,8 @@ export default Component.extend(SelectionTooltip, {
     // Build array of text chunks to render
     const {
       'packet.text': packetText,
-      'packet.firstPacketId': firstPacketId,
-      'metaToHighlight.value': mth
-    } = this.getProperties('packet.text', 'packet.firstPacketId', 'metaToHighlight.value');
+      'packet.firstPacketId': firstPacketId
+    } = this.getProperties('packet.text', 'packet.firstPacketId');
 
     let remainingText = packetText.substr(SHOW_TRUNCATED_AMOUNT);
     let i = 0;
@@ -167,35 +166,59 @@ export default Component.extend(SelectionTooltip, {
       // remove that chunk from the string
       remainingText = remainingText.replace(chunk, '');
       // Schedule those chunks for rendering
-      later(() => {
-        // NOTE: this needs to be done with $ as opposed to any
-        // sort of Ember-y thing. Any use of sub-components would
-        // render additional unwanted DOM (and be needless code).
-        // Any manipulation of text to display attached to a computed
-        // will re-render the text each time. So have to brute
-        // force this in.
-        const text = prepareTextForDisplay(chunk, mth);
-
-        // append the next batch of text and remove the
-        // text node that creates an extra space between
-        // this batch and the previous
-        const $contents = this.$('.text-container').contents();
-        this.$('.text-container').append(text.string);
-        $contents.get($contents.length - 1).remove();
-        const percentRendered = Math.ceil((this.$('.text-container').text().length / packetText.length) * 100);
-
-        // save/send notifications about the amount of text that has
-        // been rendered so far
-        this.set('percentRendered', percentRendered);
-        this.sendAction('updatePercentRendered', { id: firstPacketId, percentRendered });
-      }, i++ * TIME_BETWEEN_CHUNKS);
+      later(this, this._renderChunk, chunk, i * TIME_BETWEEN_CHUNKS);
+      i++;
     }
 
     // And now when all is done, send/set flag indicating all have been rendered.
     later(() => {
+      // Object.keys(this._map).forEach((k) => console.log(String.fromCharCode(k), this._map[k]));
       this.set('renderedAll', true);
       this.sendAction('showMoreFinished', firstPacketId);
-    }, (i - 1) * TIME_BETWEEN_CHUNKS);
+    }, i * TIME_BETWEEN_CHUNKS);
+  },
+
+  // _map: {},
+
+  _renderChunk(chunk) {
+    const {
+      'packet.text': packetText,
+      'packet.firstPacketId': firstPacketId,
+      'metaToHighlight.value': mth
+    } = this.getProperties('packet.text', 'packet.firstPacketId', 'metaToHighlight.value');
+
+    // NOTE: this needs to be done with $ as opposed to any
+    // sort of Ember-y thing. Any use of sub-components would
+    // render additional unwanted DOM (and be needless code).
+    // Any manipulation of text to display attached to a computed
+    // will re-render the text each time. So have to brute
+    // force this in.
+    const text = prepareTextForDisplay(chunk, mth);
+
+    // append the next batch of text and remove the
+    // text node that creates an extra space between
+    // this batch and the previous
+    const $contents = this.$('.text-container').contents();
+
+    // text.string.split('').forEach((c) => {
+    //   const charCode = c.charCodeAt(0);
+    //   if (!this._map[charCode]) {
+    //     this._map[charCode] = 1;
+    //   } else {
+    //     this._map[charCode]++;
+    //   }
+    // });
+
+    this.$('.text-container').append(text.string);
+    $contents.get($contents.length - 1).remove();
+    const percentRendered = Math.ceil((this.$('.text-container').text().length / packetText.length) * 100);
+
+    // save/send notifications about the amount of text that has
+    // been rendered so far
+    join(() => {
+      this.set('percentRendered', percentRendered);
+      this.sendAction('updatePercentRendered', { id: firstPacketId, percentRendered });
+    });
   },
 
   actions: {

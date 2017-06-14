@@ -74,5 +74,9 @@ const _generateHTMLSafeText = (text) => {
     .replace(/(?:\r\n|\r|\n)/g, '<br>')
     .replace(/\t/g, '&nbsp;&nbsp;')
     .replace(/ /g, '&nbsp;')
-    .replace(/[\x00-\x1F]/g, '.');
+    .replace(/[\x00-\x1F]/g, '.')
+    // https://bedfordjira.na.rsa.net/browse/ASOC-35522
+    // Replacing this specific character, because if we do not
+    // Chrome (and just Chrome) will crash, ¯\_(ツ)_/¯
+    .replace(new RegExp(String.fromCharCode(1836), 'g'), '.');
 };
