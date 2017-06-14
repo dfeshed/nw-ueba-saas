@@ -119,6 +119,11 @@
 			<artifactId>fortscale-aggregation</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>fortscale</groupId>
+			<artifactId>presidio-ade-domain</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 		
 
 
