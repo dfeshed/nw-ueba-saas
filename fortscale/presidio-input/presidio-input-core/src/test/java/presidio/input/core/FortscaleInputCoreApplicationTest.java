@@ -19,6 +19,7 @@ public class FortscaleInputCoreApplicationTest {
     @Autowired
     private InputExecutionService processService;
 
+    @Ignore
     @Test
     public void contextLoads() throws Exception {
         processService.run();

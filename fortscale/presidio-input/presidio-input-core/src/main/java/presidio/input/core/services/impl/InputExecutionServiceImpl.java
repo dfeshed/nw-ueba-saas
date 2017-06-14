@@ -113,7 +113,7 @@ public class InputExecutionServiceImpl implements InputExecutionService {
                 CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate,
                 CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
 
-        final List<? extends AbstractAuditableDocument> dataRecords = find(dataSource, startDate.getEpochSecond(), endDate.getEpochSecond());
+        final List<? extends AbstractAuditableDocument> dataRecords = find(dataSource, startDate, endDate);
         logger.info("Found {} dataRecords for dataSource:{}, startDate:{}, endDate:{}.", dataRecords, dataSource, startDate, endDate);
 
         final List<DlpFileEnrichedDocument> enrichedRecords = enrich(dataRecords);
@@ -126,7 +126,7 @@ public class InputExecutionServiceImpl implements InputExecutionService {
         logger.info("Finished enrich processing .");
     }
 
-    private List<? extends AbstractAuditableDocument> find(DataSource dataSource, long startTime, long endTime) throws Exception {
+    private List<? extends AbstractAuditableDocument> find(DataSource dataSource, Instant startTime, Instant endTime) throws Exception {
         logger.debug("Finding records for data source:{}, from {}:{}, until {}:{}."
                 , dataSource,
                 CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate,

@@ -122,6 +122,7 @@ public class EnrichedRecordPaginationServiceTest {
      * Get pages of pageIterator, get amount of pages in iterator.
      * Get context ids and events from each page.
      * Call assertExpectedResult method in order to assert expected results.
+     *
      * @param pageIterators list of PageIterators
      */
     private void checkPageIterators(List<PageIterator<EnrichedDlpFileRecord>> pageIterators) {

@@ -1,15 +1,12 @@
 package fortscale.common.feature;
 
-import java.io.Serializable;
-
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 
-/**
- * Created by amira on 15/06/2015.
- */
-@JsonAutoDetect(fieldVisibility=Visibility.ANY, getterVisibility=Visibility.NONE, setterVisibility=Visibility.NONE)
-public class Feature implements Serializable{
+import java.io.Serializable;
+
+@JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
+public class Feature implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private String name;
@@ -48,5 +45,19 @@ public class Feature implements Serializable{
         this.value = value;
     }
 
-    public void setName(String name) { this.name = name; }
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public static Feature toFeature(String name, Object object) {
+        FeatureValue featureValue = null;
+
+        if (object instanceof String) {
+            featureValue = new FeatureStringValue((String)object);
+        } else if (object instanceof Number) {
+            featureValue = new FeatureNumericValue((Number)object);
+        }
+
+        return new Feature(name, featureValue);
+    }
 }

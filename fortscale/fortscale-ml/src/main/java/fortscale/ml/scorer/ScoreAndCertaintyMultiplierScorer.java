@@ -1,8 +1,8 @@
 package fortscale.ml.scorer;
 
-import fortscale.common.event.Event;
 import fortscale.domain.feature.score.FeatureScore;
 import org.springframework.util.Assert;
+import presidio.ade.domain.record.AdeRecord;
 
 import java.util.Collections;
 
@@ -16,8 +16,8 @@ public class ScoreAndCertaintyMultiplierScorer extends AbstractScorer {
 	}
 
 	@Override
-	public FeatureScore calculateScore(Event eventMessage, long eventEpochTimeInSec) throws Exception {
-		FeatureScore featureScore = baseScorer.calculateScore(eventMessage, eventEpochTimeInSec);
+	public FeatureScore calculateScore(AdeRecord record) {
+		FeatureScore featureScore = baseScorer.calculateScore(record);
 		return new FeatureScore(getName(),
 				featureScore.getScore() * featureScore.getCertainty(),
 				Collections.singletonList(featureScore));

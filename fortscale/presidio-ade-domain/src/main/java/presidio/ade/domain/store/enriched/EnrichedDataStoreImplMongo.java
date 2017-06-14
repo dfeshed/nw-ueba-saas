@@ -53,7 +53,7 @@ public class EnrichedDataStoreImplMongo implements EnrichedDataStore {
         Class<? extends AdeRecord> pojoClass = adeRecordTypeToClass.getClass(dataSource);
 
         //Get type of context
-        String fieldName = getFieldName(contextType, pojoClass);
+        String fieldName = getFieldName(pojoClass, contextType);
 
         Criteria dateTimeCriteria = Criteria.where(EnrichedRecord.DATE_TIME_FIELD).gte(startDate).lt(endDate);
         Criteria contextCriteria = Criteria.where(fieldName).in(contextIds);
@@ -97,7 +97,7 @@ public class EnrichedDataStoreImplMongo implements EnrichedDataStore {
         //Get pojoClass by dataSource
         Class pojoClass = adeRecordTypeToClass.getClass(dataSource);
         //Get type of context
-        String fieldName = getFieldName(contextType, pojoClass);
+        String fieldName = getFieldName(pojoClass, contextType);
 
         String collectionName = translator.toCollectionName(recordsMetadata);
 
@@ -125,25 +125,26 @@ public class EnrichedDataStoreImplMongo implements EnrichedDataStore {
         //Get pojoClass by dataSource
         Class pojoClass = adeRecordTypeToClass.getClass(dataSource);
         //Get type of context
-        String fieldName = getFieldName(contextType, pojoClass);
+        String fieldName = getFieldName(pojoClass, contextType);
 
         mongoTemplate.indexOps(pojoClass).ensureIndex(new Index().on(fieldName, Sort.Direction.ASC));
     }
 
+
     /**
-     * Get field name.
-     * if annotation exist get the annotation value, otherwise get the field name
+     * Get field name
+     * If annotation exist return field name of annotation
      *
-     * @param name
-     * @param pojoClass
+     * @param pojoClass class that contain the field
+     * @param name      - field name
+     * @return field name
      */
-    private String getFieldName(String name, Class pojoClass) {
+    private String getFieldName(Class pojoClass, String name) {
         Field field = ReflectionUtils.findField(pojoClass, name);
         String fieldName = field.getName();
         if (field.isAnnotationPresent(org.springframework.data.mongodb.core.mapping.Field.class)) {
             fieldName = field.getAnnotation(org.springframework.data.mongodb.core.mapping.Field.class).value();
         }
-
         return fieldName;
     }
 

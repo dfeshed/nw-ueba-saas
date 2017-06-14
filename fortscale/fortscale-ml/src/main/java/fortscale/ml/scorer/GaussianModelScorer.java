@@ -2,12 +2,14 @@ package fortscale.ml.scorer;
 
 import fortscale.common.feature.Feature;
 import fortscale.common.feature.FeatureNumericValue;
-import fortscale.common.feature.extraction.FeatureExtractService;
 import fortscale.ml.model.ContinuousDataModel;
 import fortscale.ml.model.GaussianPriorModel;
 import fortscale.ml.model.Model;
 import fortscale.ml.model.cache.EventModelsCacheService;
 import fortscale.ml.scorer.algorithms.GaussianModelScorerAlgorithm;
+import fortscale.utils.factory.FactoryService;
+import fortscale.utils.recordreader.RecordReader;
+import presidio.ade.domain.record.AdeRecord;
 
 import java.util.List;
 
@@ -24,11 +26,13 @@ public class GaussianModelScorer extends AbstractModelScorer {
                                int minNumOfSamplesToInfluence,
                                int enoughNumOfSamplesToInfluence,
                                boolean isUseCertaintyToCalculateScore,
-                               int globalInfluence, FeatureExtractService featureExtractService, EventModelsCacheService eventModelsCacheService) {
+                               int globalInfluence,
+                               FactoryService<RecordReader<AdeRecord>> recordReaderFactoryService,
+                               EventModelsCacheService eventModelsCacheService) {
 
         super(scorerName, modelName, additionalModelNames, contextFieldNames, additionalContextFieldNames,
                 featureName, minNumOfSamplesToInfluence, enoughNumOfSamplesToInfluence, isUseCertaintyToCalculateScore,
-                featureExtractService, eventModelsCacheService);
+                recordReaderFactoryService, eventModelsCacheService);
 
         if (additionalModelNames.size() != 1) {
             throw new IllegalArgumentException(this.getClass().getSimpleName() + " expects to get one additional model name");

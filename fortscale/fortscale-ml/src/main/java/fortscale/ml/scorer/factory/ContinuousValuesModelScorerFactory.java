@@ -44,7 +44,7 @@ public class ContinuousValuesModelScorerFactory extends AbstractModelScorerFacto
 				conf.getName(), modelName, additionalModelNames, dataRetriever.getContextFieldNames(),
 				additionalContextFieldNames, featureName, conf.getMinNumOfSamplesToInfluence(),
 				conf.getEnoughNumOfSamplesToInfluence(), conf.isUseCertaintyToCalculateScore(),
-				conf.getQuadPolyCalibrationConf(), featureExtractService, eventModelsCacheService);
+				conf.getQuadPolyCalibrationConf(), recordReaderFactoryService, eventModelsCacheService);
 	}
 
 	private AbstractDataRetriever getDataRetriever(String modelName) {

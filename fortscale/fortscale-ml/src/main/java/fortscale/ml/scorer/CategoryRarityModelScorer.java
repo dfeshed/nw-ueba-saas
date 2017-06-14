@@ -2,13 +2,15 @@ package fortscale.ml.scorer;
 
 import fortscale.common.feature.Feature;
 import fortscale.common.feature.FeatureStringValue;
-import fortscale.common.feature.extraction.FeatureExtractService;
 import fortscale.ml.model.CategoryRarityModel;
 import fortscale.ml.model.Model;
 import fortscale.ml.model.cache.EventModelsCacheService;
 import fortscale.ml.scorer.algorithms.CategoryRarityModelScorerAlgorithm;
+import fortscale.utils.factory.FactoryService;
+import fortscale.utils.recordreader.RecordReader;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
+import presidio.ade.domain.record.AdeRecord;
 
 import java.util.List;
 
@@ -63,10 +65,12 @@ public class CategoryRarityModelScorer extends AbstractModelScorer {
                                      int enoughNumOfDistinctValuesToInfluence,
                                      int maxRareCount,
                                      int maxNumOfRareFeatures,
-                                     FeatureExtractService featureExtractService, EventModelsCacheService eventModelsCacheService) {
+                                     FactoryService<RecordReader<AdeRecord>> recordReaderFactoryService,
+                                     EventModelsCacheService eventModelsCacheService) {
 
         super(scorerName, modelName, additionalModelNames, contextFieldNames, additionalContextFieldNames,
-                featureName, minNumOfSamplesToInfluence, enoughNumOfSamplesToInfluence, isUseCertaintyToCalculateScore, featureExtractService, eventModelsCacheService);
+                featureName, minNumOfSamplesToInfluence, enoughNumOfSamplesToInfluence, isUseCertaintyToCalculateScore,
+                recordReaderFactoryService, eventModelsCacheService);
         setMinNumOfDistinctValuesToInfluence(minNumOfDistinctValuesToInfluence);
         setEnoughNumOfDistinctValuesToInfluence(enoughNumOfDistinctValuesToInfluence);
         algorithm = new CategoryRarityModelScorerAlgorithm(maxRareCount, maxNumOfRareFeatures);
