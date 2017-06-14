@@ -18,11 +18,15 @@ public class SimpleUserEventPaginationService extends PaginationService<SimpleUs
     }
 
     @Override
-    protected Map<String, Integer> getContextIdToNumOfItemsMap(String dataSource, TimeRange timeRange) {
+    protected List<ContextIdToNumOfEvents> getContextIdToNumOfItemsList(String dataSource, TimeRange timeRange) {
 
         Map<String, List<SimpleUserEvent>> map = this.store.getSimpleUserEventsMap();
+
         Map<String, Integer> contextIdToNumOfItemsMap = map.entrySet().stream().collect(Collectors.toMap(entry -> entry.getKey(), entry -> entry.getValue().size()));
-        return contextIdToNumOfItemsMap;
+
+        List<ContextIdToNumOfEvents> contextIdToNumOfItemsList = contextIdToNumOfItemsMap.entrySet().stream().map(x-> new ContextIdToNumOfEvents(x.getKey(),x.getValue())).collect(Collectors.toList());
+
+        return contextIdToNumOfItemsList;
     }
 
     /**
@@ -35,7 +39,7 @@ public class SimpleUserEventPaginationService extends PaginationService<SimpleUs
      * @return
      */
     @Override
-    protected <U extends SimpleUserEvent> PageIterator<U> getPageIterator(String dataSource, TimeRange timeRange, Set<String> contextIds, int totalNumOfItems) {
+    protected <U extends SimpleUserEvent> PageIterator<U> createPageIterator(String dataSource, TimeRange timeRange, Set<String> contextIds, int totalNumOfItems) {
         //  List<U> list of events
         List<List<U>> pageToSimpleUserEventsList = new ArrayList<>();
 
