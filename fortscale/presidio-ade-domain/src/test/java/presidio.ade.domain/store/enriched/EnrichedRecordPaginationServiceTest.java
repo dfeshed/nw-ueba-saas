@@ -35,6 +35,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static presidio.ade.domain.record.enriched.EnrichedDlpFileRecord.NORMALIZED_USERNAME_FIELD;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = AdeRecordTypeToClassConfig.class)
@@ -113,7 +114,7 @@ public class EnrichedRecordPaginationServiceTest {
         enrichedDataStoreImplMongo = new EnrichedDataStoreImplMongo(mongoTemplate, translator, this.adeRecordTypeToClass);
 
         EnrichedRecordPaginationService paginationService =
-                new EnrichedRecordPaginationService(enrichedDataStoreImplMongo, pageSize, maxGroupSize, "NORMALIZED_USERNAME_FIELD");
+                new EnrichedRecordPaginationService(enrichedDataStoreImplMongo, pageSize, maxGroupSize, NORMALIZED_USERNAME_FIELD);
 
         TimeRange timeRange = new TimeRange(now, now);
 
