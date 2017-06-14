@@ -1,6 +1,5 @@
 package fortscale.ml.scorer;
 
-import fortscale.common.event.Event;
 import fortscale.domain.feature.score.FeatureScore;
 import fortscale.ml.model.Model;
 import fortscale.ml.model.PersonalThresholdModel;
@@ -12,6 +11,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.util.Assert;
+import presidio.ade.domain.record.AdeRecord;
 
 import java.util.Collections;
 import java.util.List;
@@ -36,10 +36,10 @@ public class PersonalThresholdModelScorer extends AbstractScorer {
 										IScorerConf baseScorerConf,
 										double maxRatioFromUniformThreshold) {
 
-        super(scorerName);
+		super(scorerName);
 		Assert.isTrue(StringUtils.isNotBlank(modelName), "model name must be provided and cannot be empty or blank");
-		Assert.notNull(contextFieldNames);
-		Assert.notNull(baseScorerConf);
+		Assert.notNull(contextFieldNames, "Context field names cannot be null");
+		Assert.notNull(baseScorerConf, "Base scorer conf cannot be null");
 		Assert.isTrue(maxRatioFromUniformThreshold > 0, "maxRatioFromUniformThreshold must be positive");
 		this.modelName = modelName;
 		this.contextFieldNames = contextFieldNames;
@@ -47,17 +47,17 @@ public class PersonalThresholdModelScorer extends AbstractScorer {
 		this.maxRatioFromUniformThreshold = maxRatioFromUniformThreshold;
 	}
 
-    @Override
-	public FeatureScore calculateScore(Event eventMessage, long eventEpochTimeInSec) throws Exception {
-		FeatureScore baseScore = baseScorer.calculateScore(eventMessage, eventEpochTimeInSec);
-		Model baseScorerModel = baseScorer.getModel(eventMessage, eventEpochTimeInSec);
-		double calibratedScore = calibrateScore(eventMessage, eventEpochTimeInSec, baseScore, baseScorerModel.getNumOfSamples());
+	@Override
+	public FeatureScore calculateScore(AdeRecord record) {
+		FeatureScore baseScore = baseScorer.calculateScore(record);
+		Model baseScorerModel = baseScorer.getModel(record);
+		double calibratedScore = calibrateScore(record, baseScore, baseScorerModel.getNumOfSamples());
 		return new FeatureScore(getName(), calibratedScore, Collections.singletonList(baseScore));
-    }
+	}
 
-	private double calibrateScore(Event eventMessage, long eventEpochTimeInSec, FeatureScore baseScore, long numOfSamples) {
+	private double calibrateScore(AdeRecord record, FeatureScore baseScore, long numOfSamples) {
 		PersonalThresholdModel model = (PersonalThresholdModel) eventModelsCacheService.getModel(
-				eventMessage, null, eventEpochTimeInSec, modelName, contextFieldNames);
+				record, modelName, contextFieldNames);
 		if (model == null) {
 			return 0;
 		}

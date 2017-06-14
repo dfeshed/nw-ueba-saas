@@ -17,4 +17,15 @@ public interface RecordReader<T> {
 	 * @return The extracted value
 	 */
 	<U> U get(T record, String fieldPath, Class<U> fieldClass);
+
+	/**
+	 * Get the value of "fieldPath" from "record", without knowing its type.
+	 *
+	 * @param record    The record from which the value is extracted
+	 * @param fieldPath The key of the value (or a concatenation of the keys leading to the value)
+	 * @return The extracted value
+	 */
+	default Object get(T record, String fieldPath) {
+		return get(record, fieldPath, Object.class);
+	}
 }
