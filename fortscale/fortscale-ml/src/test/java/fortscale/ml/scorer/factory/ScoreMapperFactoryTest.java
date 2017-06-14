@@ -1,6 +1,5 @@
 package fortscale.ml.scorer.factory;
 
-import fortscale.common.event.Event;
 import fortscale.common.feature.extraction.FeatureExtractService;
 import fortscale.domain.feature.score.FeatureScore;
 import fortscale.ml.model.ModelConfService;
@@ -19,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import presidio.ade.domain.record.AdeRecord;
 
 import java.util.HashMap;
 
@@ -95,29 +95,21 @@ public class ScoreMapperFactoryTest {
 
     @Test
     public void shouldDelegateToBaseScorerStatedByConfiguration() throws Exception {
-        Event eventMessage = Mockito.mock(Event.class);
-        long evenEpochTime = 1234;
-
+        AdeRecord record = Mockito.mock(AdeRecord.class);
         double score = 56;
-        Mockito.when(baseScorerMock.calculateScore(eventMessage, evenEpochTime))
-                .thenReturn(new FeatureScore("name", score));
-
-        Assert.assertEquals(score, createScorer().calculateScore(eventMessage, evenEpochTime).getScore(), 0.0001);
+        Mockito.when(baseScorerMock.calculateScore(record)).thenReturn(new FeatureScore("name", score));
+        Assert.assertEquals(score, createScorer().calculateScore(record).getScore(), 0.0001);
     }
 
     @Test
     public void shouldUseScoreMappingConfStatedByConfiguration() throws Exception {
-        Event eventMessage = Mockito.mock(Event.class);
-        long evenEpochTime = 1234;
-
+        AdeRecord record = Mockito.mock(AdeRecord.class);
         double score = 56;
-        Mockito.when(baseScorerMock.calculateScore(eventMessage, evenEpochTime))
-                .thenReturn(new FeatureScore("name", score));
+        Mockito.when(baseScorerMock.calculateScore(record)).thenReturn(new FeatureScore("name", score));
         HashMap<Double, Double> mapping = new HashMap<>();
         double mappedScore = 50;
         mapping.put(score, mappedScore);
         ScoreMapping.ScoreMappingConf scoreMappingConf = new ScoreMapping.ScoreMappingConf().setMapping(mapping);
-
-        Assert.assertEquals(mappedScore, createScorer(scoreMappingConf).calculateScore(eventMessage, evenEpochTime).getScore(), 0.0001);
+        Assert.assertEquals(mappedScore, createScorer(scoreMappingConf).calculateScore(record).getScore(), 0.0001);
     }
 }

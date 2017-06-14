@@ -1,6 +1,5 @@
 package fortscale.ml.scorer.factory;
 
-import fortscale.common.feature.extraction.FeatureExtractService;
 import fortscale.ml.model.ModelConf;
 import fortscale.ml.model.cache.EventModelsCacheService;
 import fortscale.ml.model.retriever.AbstractDataRetriever;
@@ -28,8 +27,6 @@ public class ModelBasedScoreMapperFactory extends AbstractModelScorerFactory {
 	private EventModelsCacheService eventModelsCacheService;
 	@Autowired
 	private FactoryService<Scorer> factoryService;
-	@Autowired
-	private FeatureExtractService featureExtractService;
 
 	@Override
 	public String getFactoryName() {
@@ -56,6 +53,6 @@ public class ModelBasedScoreMapperFactory extends AbstractModelScorerFactory {
 				contextFieldNames,
 				featureName,
 				scorerConf.getBaseScorerConf(),
-				factoryService, eventModelsCacheService, featureExtractService);
+				factoryService, eventModelsCacheService);
 	}
 }

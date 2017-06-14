@@ -9,8 +9,8 @@ public class FactoryService<T> {
 	private Map<String, Factory<T>> factoryMap = new HashMap<>();
 
 	public void register(String factoryName, Factory<T> factory) {
-		Assert.hasText(factoryName);
-		Assert.notNull(factory);
+		Assert.hasText(factoryName, "Factory name cannot be blank.");
+		Assert.notNull(factory, "Factory cannot be null.");
 		factoryMap.put(factoryName, factory);
 	}
 
@@ -19,8 +19,13 @@ public class FactoryService<T> {
 	}
 
 	public T getProduct(FactoryConfig factoryConfig) {
-		Assert.notNull(factoryConfig);
+		Assert.notNull(factoryConfig, "Factory config cannot be null.");
 		Factory<T> factory = getFactory(factoryConfig.getFactoryName());
 		return factory == null ? null : factory.getProduct(factoryConfig);
+	}
+
+	public T getDefaultProduct(String factoryName) {
+		Factory<T> factory = getFactory(factoryName);
+		return factory == null ? null : factory.getDefaultProduct();
 	}
 }

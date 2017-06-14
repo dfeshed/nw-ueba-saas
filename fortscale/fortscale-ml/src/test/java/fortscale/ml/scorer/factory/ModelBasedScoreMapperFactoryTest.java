@@ -1,9 +1,7 @@
 package fortscale.ml.scorer.factory;
 
 import com.google.common.collect.Sets;
-import fortscale.common.event.Event;
 import fortscale.common.feature.Feature;
-import fortscale.common.feature.extraction.FeatureExtractService;
 import fortscale.domain.feature.score.FeatureScore;
 import fortscale.ml.model.ModelBuilderData;
 import fortscale.ml.model.ModelBuilderData.NoDataReason;
@@ -21,7 +19,10 @@ import fortscale.ml.scorer.Scorer;
 import fortscale.ml.scorer.config.IScorerConf;
 import fortscale.ml.scorer.config.ModelBasedScoreMapperConf;
 import fortscale.ml.scorer.config.ModelInfo;
+import fortscale.ml.scorer.record.JsonAdeRecord;
+import fortscale.ml.scorer.record.JsonAdeRecordReader;
 import fortscale.utils.factory.FactoryService;
+import fortscale.utils.recordreader.RecordReader;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,10 +33,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
+import presidio.ade.domain.record.AdeRecord;
 
 import java.time.Instant;
 import java.util.*;
 
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
@@ -46,7 +50,7 @@ public class ModelBasedScoreMapperFactoryTest {
 	ModelConfService modelConfService;
 
 	@MockBean
-	FeatureExtractService featureExtractService;
+	FactoryService<RecordReader<AdeRecord>> recordReaderFactoryService;
 
 	@MockBean
 	ModelsCacheService modelCacheService;
@@ -92,15 +96,15 @@ public class ModelBasedScoreMapperFactoryTest {
         modelBasedScoreMapperFactory.getProduct(() -> "factory-name");
     }
 
-    public ModelBasedScoreMapper createScorer(String scorerName, Map<Double, Double> mapping, boolean isGlobal) {
-        scorerFactoryService.register(baseScorerConf.getFactoryName(), factoryConfig -> baseScorerMock);
+	public ModelBasedScoreMapper createScorer(String scorerName, Map<Double, Double> mapping, boolean isGlobal) {
+		scorerFactoryService.register(baseScorerConf.getFactoryName(), factoryConfig -> baseScorerMock);
 
 		String modelName = "model-name";
 		ModelBasedScoreMapperConf conf = new ModelBasedScoreMapperConf(
-                scorerName,
-                new ModelInfo(modelName),
-                baseScorerConf
-        );
+				scorerName,
+				new ModelInfo(modelName),
+				baseScorerConf
+		);
 
 		AbstractDataRetrieverConf dataRetrieverConf = new AbstractDataRetrieverConf(10, Collections.emptyList()) {
 			@Override
@@ -146,26 +150,19 @@ public class ModelBasedScoreMapperFactoryTest {
 					}
 				});
 		if (!isGlobal) {
-			contextSelectorFactoryService.register(modelConf.getContextSelectorConf().getFactoryName(), factoryConfig ->
-					new IContextSelector() {
-						@Override
-						public Set<String> getContexts(Date startTime, Date endTime) {
-							return Sets.newHashSet("some_user_context");
-						}
-
-					});
+			contextSelectorFactoryService.register(modelConf.getContextSelectorConf().getFactoryName(),
+					factoryConfig -> (startTime, endTime) -> Sets.newHashSet("some_user_context"));
 		}
 
-		when(featureExtractService.extract(Mockito.anySetOf(String.class), Mockito.any(Event.class)))
-				.thenReturn(Collections.singletonMap(contextFieldName, new Feature("feature name", "value")));
+		when(recordReaderFactoryService.getDefaultProduct(anyString())).thenReturn(new JsonAdeRecordReader());
 
 		ScoreMappingModel model = new ScoreMappingModel();
 		model.init(mapping);
-		when(modelCacheService.getModel(Mockito.anyString(), Mockito.anyMap(), Mockito.any(Instant.class)))
+		when(modelCacheService.getModel(Mockito.anyString(), Mockito.anyMapOf(String.class, String.class), Mockito.any(Instant.class)))
 				.thenReturn(model);
 
-        return modelBasedScoreMapperFactory.getProduct(conf);
-    }
+		return modelBasedScoreMapperFactory.getProduct(conf);
+	}
 
 	public ModelBasedScoreMapper createScorer(String scorerName, boolean isGlobal) {
 		return createScorer(scorerName, new HashMap<>(), isGlobal);
@@ -185,40 +182,29 @@ public class ModelBasedScoreMapperFactoryTest {
         Assert.assertEquals(scorerName, createScorer(scorerName, false).getName());
     }
 
-    @Test
-    public void shouldDelegateToBaseScorerStatedByConfiguration() throws Exception {
-        Event eventMessage = Mockito.mock(Event.class);
-		when(eventMessage.getContextFields(Mockito.anyList())).thenReturn(Collections.singletonMap("context field name", "context value"));
+	@Test
+	public void shouldDelegateToBaseScorerStatedByConfiguration() throws Exception {
+		AdeRecord eventMessage = JsonAdeRecord.getJsonAdeRecord("context field name", "context value");
+		double score = 56;
+		Mockito.when(baseScorerMock.calculateScore(eq(eventMessage))).thenReturn(new FeatureScore("name", score));
+		Assert.assertEquals(score, createScorer().calculateScore(eventMessage).getScore(), 0.0001);
+	}
 
-		long evenEpochTime = 1234;
-
-        double score = 56;
-        Mockito.when(baseScorerMock.calculateScore(eventMessage, evenEpochTime))
-                .thenReturn(new FeatureScore("name", score));
-
-        Assert.assertEquals(score, createScorer().calculateScore(eventMessage, evenEpochTime).getScore(), 0.0001);
-    }
-
-    @Test
-    public void shouldUseScoreMappingModelStatedByConfiguration() throws Exception {
-        Event eventMessage = Mockito.mock(Event.class);
-		when(eventMessage.getContextFields(Mockito.anyList())).thenReturn(Collections.singletonMap("context field name", "context value"));
-        long evenEpochTime = 1234;
-
-        double score = 56;
-        Mockito.when(baseScorerMock.calculateScore(eventMessage, evenEpochTime))
-                .thenReturn(new FeatureScore("name", score));
-        HashMap<Double, Double> mapping = new HashMap<>();
-        double mappedScore = 50;
-        mapping.put(score, mappedScore);
-
-        Assert.assertEquals(mappedScore, createScorer(mapping, false).calculateScore(eventMessage, evenEpochTime).getScore(), 0.0001);
-    }
+	@Test
+	public void shouldUseScoreMappingModelStatedByConfiguration() throws Exception {
+		AdeRecord eventMessage = JsonAdeRecord.getJsonAdeRecord("context field name", "context value");
+		double score = 56;
+		Mockito.when(baseScorerMock.calculateScore(eq(eventMessage))).thenReturn(new FeatureScore("name", score));
+		HashMap<Double, Double> mapping = new HashMap<>();
+		double mappedScore = 50;
+		mapping.put(score, mappedScore);
+		Assert.assertEquals(mappedScore, createScorer(mapping, false).calculateScore(eventMessage).getScore(), 0.0001);
+	}
 
 	@Test
 	public void shouldCreateGlobalScorerWithNoContextFieldNames() throws Exception {
-		List<String> contextFieldNames = (List<String>) Whitebox.getInternalState(createScorer("scorerName", true),
-				"contextFieldNames");
+		@SuppressWarnings("unchecked")
+		List<String> contextFieldNames = (List<String>)Whitebox.getInternalState(createScorer("scorerName", true), "contextFieldNames");
 		Assert.assertEquals(Collections.emptyList(), contextFieldNames);
 	}
 }
