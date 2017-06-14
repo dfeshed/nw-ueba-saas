@@ -119,6 +119,39 @@ public class EnrichedRecordPaginationServiceTest {
     }
 
     /**
+     * Test the enriched record pagination service,
+     * where page iterators are empty.
+     */
+    @Test
+    public void test_enriched_record_pagination_service_with_no_iterators() {
+
+        //mock of mongoTemplate
+        MongoTemplate mongoTemplate = mock(MongoTemplate.class);
+
+        AggregationResults<ContextIdToNumOfEvents> aggregationResults = mock(AggregationResults.class);
+        when(mongoTemplate.aggregate(any(Aggregation.class), eq("enriched_dlp_file"), eq(ContextIdToNumOfEvents.class))).thenReturn(aggregationResults);
+        when(aggregationResults.getMappedResults()).thenReturn(new ArrayList<>());
+
+        //mock of index operations
+        createMockForIndexOperation(mongoTemplate);
+
+        //create store
+        EnrichedDataToCollectionNameTranslator translator = new EnrichedDataToCollectionNameTranslator();
+        enrichedDataStoreImplMongo = new EnrichedDataStoreImplMongo(mongoTemplate, translator, this.adeRecordTypeToClass);
+
+        //create pagination service
+        EnrichedRecordPaginationService paginationService =
+                new EnrichedRecordPaginationService(enrichedDataStoreImplMongo, PAGE_SIZE, MAX_GROUP_SIZE, NORMALIZED_USERNAME_FIELD);
+
+        TimeRange timeRange = new TimeRange(NOW, NOW);
+
+        List<PageIterator<EnrichedDlpFileRecord>> pageIterators = paginationService.getPageIterators("dlp_file", timeRange);
+
+        //assert number of iterators
+        assertTrue(pageIterators.size() == 0);
+    }
+
+    /**
      * Get pages of pageIterator, get amount of pages in iterator.
      * Get context ids and events from each page.
      * Call assertExpectedResult method in order to assert expected results.
