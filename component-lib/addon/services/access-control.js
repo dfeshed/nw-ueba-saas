@@ -3,12 +3,7 @@ import config from 'ember-get-config';
 import Service from 'ember-service';
 
 export default Service.extend({
-
-  // all roles returned by admin server
-  roles: config.roles || [],
-
   // static permissions
-
   hasMonitorAccess: true,
 
   // role permission lists
@@ -96,6 +91,12 @@ export default Service.extend({
     }
 
     return url;
+  },
+
+  init() {
+    this._super(...arguments);
+
+    this.set('roles', config.roles || []);
   },
 
   /**
