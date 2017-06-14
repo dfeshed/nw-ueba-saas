@@ -38,9 +38,6 @@ import static presidio.ade.domain.record.enriched.EnrichedDlpFileRecord.NORMALIZ
 @ContextConfiguration(classes = AdeRecordTypeToClassConfig.class)
 public class EnrichedRecordPaginationServiceTest {
 
-
-    private static final String COLLECTION_NAME_PREFIX = "enriched";
-
     private static final int PAGE_SIZE = 3;
     private static final int MAX_GROUP_SIZE = 2;
     private static final Instant NOW = Instant.now();
@@ -53,10 +50,10 @@ public class EnrichedRecordPaginationServiceTest {
     @Autowired
     private AdeRecordTypeToClass adeRecordTypeToClass;
 
-    @Before
     /**
      * Create list of test result.
      */
+    @Before
     public void initialize() {
         list = new ArrayList<>();
 
@@ -164,8 +161,7 @@ public class EnrichedRecordPaginationServiceTest {
         //foreach pageIterator get pages.
         // get amount of pages in iterator.
         //foreach page get contextId list and list of events.
-        while (simpleUserEventPageIterator.hasNext()) {
-            PageIterator<EnrichedDlpFileRecord> pageIterator = simpleUserEventPageIterator.next();
+        for (PageIterator<EnrichedDlpFileRecord> pageIterator : pageIterators) {
             List<EnrichedDlpFileRecord> enrichedDlpFileRecordList = new ArrayList<>();
             Set<String> contextIdList = new HashSet<>();
             int amountOfPages = 0;
@@ -190,10 +186,10 @@ public class EnrichedRecordPaginationServiceTest {
      * Assert amount of pages in group, amount of events in group and context ids.     *
      *
      * @param contextIdSet
-     * @param simpleUserEventsList
+     * @param enrichedDlpFileRecords
      * @param amountOfPages
      */
-    private void assertExpectedResult(Set<String> contextIdSet, List<EnrichedDlpFileRecord> simpleUserEventsList, int amountOfPages) {
+    private void assertExpectedResult(Set<String> contextIdSet, List<EnrichedDlpFileRecord> enrichedDlpFileRecords, int amountOfPages) {
 
         Pair<Set<String>, Pair<Integer, Integer>> itemToRemove = null;
         for (Pair<Set<String>, Pair<Integer, Integer>> pair : list) {
@@ -202,7 +198,7 @@ public class EnrichedRecordPaginationServiceTest {
                 Pair<Integer, Integer> numOfPagesToNumOfEvents = pair.getValue();
                 int amountOfPagesInGroup = numOfPagesToNumOfEvents.getKey();
                 int amountOfEventsInGroup = numOfPagesToNumOfEvents.getValue();
-                int testEventsNum = simpleUserEventsList.size();
+                int testEventsNum = enrichedDlpFileRecords.size();
                 assertTrue(amountOfPagesInGroup == amountOfPages);
                 assertTrue(amountOfEventsInGroup == testEventsNum);
                 itemToRemove = pair;
@@ -239,7 +235,7 @@ public class EnrichedRecordPaginationServiceTest {
      * Create appropriate query and result for mongoTemplate.find() method
      *
      * @param mongoTemplate
-     * @param now
+     * @param now           datetime
      */
     private void createQueryForFirstCall(MongoTemplate mongoTemplate, Instant now) {
         Set<String> contextIds = new HashSet<>();
@@ -268,7 +264,7 @@ public class EnrichedRecordPaginationServiceTest {
      * Create appropriate query and result for mongoTemplate.find() method
      *
      * @param mongoTemplate
-     * @param now
+     * @param now           datetime
      */
     private void createQueryForSecondCall(MongoTemplate mongoTemplate, Instant now) {
 
@@ -295,7 +291,7 @@ public class EnrichedRecordPaginationServiceTest {
      * Create appropriate query and result for mongoTemplate.find() method
      *
      * @param mongoTemplate
-     * @param now
+     * @param now           datetime
      */
     private void createQueryForThirdCall(MongoTemplate mongoTemplate, Instant now) {
         Set<String> contextIds = new HashSet<>();
