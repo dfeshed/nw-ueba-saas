@@ -9,13 +9,16 @@ import presidio.webapp.dto.Alert;
  * Created by shays on 21/05/2017.
  */
 
+
 @RestController
 public class AlertsController {
+
+
 
     @RequestMapping(value = "/alert",method = RequestMethod.GET)
     Alert alert(){
         Alert a= new Alert();
-        a.setDescription("Alert Description");
+        a.setDescription("ALERT NAME");
         a.setId("00000001");
         return  a;
         
