@@ -67,7 +67,6 @@ public class CollectorExecutionServiceImpl implements CollectorExecutionService 
         final Instant endDate = Instant.parse(endDateParam);
         final Command command = Command.createCommand(commandParam);
 
-
         if (command.equals(CLEAN_COMMAND)) {
             logger.info("Cleaning.");
             System.out.print("Cleaning.");
