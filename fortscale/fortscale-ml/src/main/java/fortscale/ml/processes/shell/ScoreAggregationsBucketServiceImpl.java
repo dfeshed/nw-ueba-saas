@@ -1,6 +1,6 @@
 package fortscale.ml.processes.shell;
 
-import presidio.ade.domain.record.scored.AdeScoredRecord;
+import presidio.ade.domain.record.scored.enriched_scored.AdeScoredEnrichedRecord;
 
 import java.util.List;
 
@@ -9,7 +9,7 @@ import java.util.List;
  */
 public class ScoreAggregationsBucketServiceImpl implements ScoreAggregationsBucketService{
     @Override
-    public void updateBuckets(List<AdeScoredRecord> adeScoredRecords) {
+    public void updateBuckets(List<AdeScoredEnrichedRecord> adeScoredRecords) {
 
     }
 

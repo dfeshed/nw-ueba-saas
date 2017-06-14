@@ -7,7 +7,7 @@ import fortscale.utils.pagination.PageIterator;
 import fortscale.utils.time.TimeRange;
 import presidio.ade.domain.pagination.enriched.EnrichedRecordPaginationService;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
-import presidio.ade.domain.record.scored.AdeScoredRecord;
+import presidio.ade.domain.record.scored.enriched_scored.AdeScoredEnrichedRecord;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
 
 import java.util.Collections;
@@ -32,13 +32,14 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
     private EnrichedEventsScoringService enrichedEventsScoringService;
     /**
      * C'tor
-     *
-     * @param strategy
+     *  @param strategy
      * @param enrichedDataStore
+     * @param enrichedEventsScoringService
      */
-    public ScoreAggregationsService(FixedDurationStrategy strategy, EnrichedDataStore enrichedDataStore) {
+    public ScoreAggregationsService(FixedDurationStrategy strategy, EnrichedDataStore enrichedDataStore, EnrichedEventsScoringService enrichedEventsScoringService) {
         super(strategy);
         this.enrichedDataStore = enrichedDataStore;
+        this.enrichedEventsScoringService = enrichedEventsScoringService;
         fillContextTypeToPaginationServiceMap();
     }
 
@@ -63,7 +64,7 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
             for (PageIterator<EnrichedRecord> pageIterator : pageIterators) {
                 while (pageIterator.hasNext()) {
                     List<EnrichedRecord> pageRecords = pageIterator.next();
-                    List<AdeScoredRecord> adeScoredRecords = enrichedEventsScoringService.scoreAndStoreEvents(pageRecords);
+                    List<AdeScoredEnrichedRecord> adeScoredRecords = enrichedEventsScoringService.scoreAndStoreEvents(pageRecords);
                     scoreAggregationsBucketService.updateBuckets(adeScoredRecords);
                 }
                 List<Object> closedBuckets = scoreAggregationsBucketService.closeBuckets();
