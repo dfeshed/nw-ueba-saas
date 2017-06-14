@@ -1,9 +1,12 @@
-from presidio.utils.airflow.operators.spring_boot_jar_operator import SpringBootJarOperator
-from presidio.utils.services.time_service import floor_time
 import logging
+
 from airflow.utils.decorators import apply_defaults
-from presidio.utils.services.fixed_duration_strategy import is_execution_date_valid
+
 from presidio.utils.airflow.context_wrapper import ContextWrapper
+from presidio.utils.airflow.operators.spring_boot_jar_operator import SpringBootJarOperator
+from presidio.utils.services.fixed_duration_strategy import is_execution_date_valid
+from presidio.utils.services.time_service import convert_to_utc
+from presidio.utils.services.time_service import floor_time
 
 
 class FixedDurationJarOperator(SpringBootJarOperator):
@@ -51,9 +54,10 @@ class FixedDurationJarOperator(SpringBootJarOperator):
         end_date = floor_time(execution_date + self.interval,
                               time_delta=self.fixed_duration_strategy)
         java_args = {
-            'start_date': start_date.isoformat(),
-            'end_date': end_date.isoformat()
+            'start_date': convert_to_utc(start_date),
+            'end_date': convert_to_utc(end_date)
         }
+
         super(FixedDurationJarOperator, self).update_java_args(java_args)
         super(FixedDurationJarOperator, self).execute(context)
 

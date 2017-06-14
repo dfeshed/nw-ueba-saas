@@ -1,7 +1,7 @@
 package presidio.input.sdk.impl.services;
 
 
-import fortscale.common.general.Datasource;
+import fortscale.common.general.DataSource;
 import fortscale.domain.core.AbstractAuditableDocument;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
 import org.junit.Assert;
@@ -37,19 +37,18 @@ public class PresidioInputPersistencyServiceMongoImplTest {
     public void contextLoads() throws Exception {
 
         Assert.assertNotNull(presidioInputPersistencyService);
-
+        Assert.assertNotNull(mongoTemplate);
     }
-
 
     @Test
     public void storeOneEventToMongoAndReadEventFromMongo() {
         List<AbstractAuditableDocument> list = new ArrayList<>();
-        AbstractAuditableDocument doc = new DlpFileDataDocument(("2017-06-06 10:10:10,executing_application,hostname," +
+        AbstractAuditableDocument doc = new DlpFileDataDocument(("2017-06-06T10:10:10Z,executing_application,hostname," +
                 "first_name,dddd,last_name,username,malware_scan_result,event_id,source_ip,false,false,destination_path," +
                 "destination_file_name,2.23,source_path,source_file_name,source_drive_type,destination_drive_type," +
                 "event_type").split(","));
         list.add(doc);
-        presidioInputPersistencyService.store(Datasource.DLPFILE, list);
+        presidioInputPersistencyService.store(DataSource.DLPFILE, list);
         List<DlpFileDataDocument> all = mongoTemplate.findAll(DlpFileDataDocument.class);
         Assert.assertEquals(doc, all.get(0));
     }
@@ -57,17 +56,22 @@ public class PresidioInputPersistencyServiceMongoImplTest {
     @Test
     public void deleteAllEventsFromMongoCollectionDlpFile() {
         mongoTemplate.dropCollection(DlpFileDataDocument.class);
-
         List<AbstractAuditableDocument> list = new ArrayList<>();
-        AbstractAuditableDocument doc = new DlpFileDataDocument(("2017-06-06 10:10:10,executing_application,hostname," +
-                "first_name,dddd,last_name,username,malware_scan_result,event_id,source_ip,true,true,destination_path," +
+        AbstractAuditableDocument doc = new DlpFileDataDocument(("2017-06-06T10:10:10Z,executing_application,hostname," +
+                "first_name,ccc,last_name,username,malware_scan_result,event_id,source_ip,true,true,destination_path," +
                 "destination_file_name,2.23,source_path,source_file_name,source_drive_type,destination_drive_type," +
                 "event_type").split(","));
         list.add(doc);
-        presidioInputPersistencyService.store(Datasource.DLPFILE, list);
-        int numberOfEventsDeleted = presidioInputPersistencyService.clean(Datasource.DLPFILE, 0, 0);
+        presidioInputPersistencyService.store(DataSource.DLPFILE, list);
+        int numberOfEventsDeleted = 0;
+        try {
+            numberOfEventsDeleted = presidioInputPersistencyService.clean(DataSource.DLPFILE, 0, 0);
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        }
         List<DlpFileDataDocument> all = mongoTemplate.findAll(DlpFileDataDocument.class);
         Assert.assertEquals(1, numberOfEventsDeleted);
         Assert.assertEquals(0, all.size());
     }
+
 }

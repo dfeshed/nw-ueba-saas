@@ -1,7 +1,7 @@
 package presidio.sdk.impl.services;
 
 
-import fortscale.common.general.Datasource;
+import fortscale.common.general.DataSource;
 import fortscale.domain.core.AbstractAuditableDocument;
 import org.springframework.beans.factory.annotation.Autowired;
 import presidio.sdk.api.services.CoreManagerService;
@@ -20,7 +20,7 @@ public class CoreManagerServiceImpl implements CoreManagerService {
     }
 
     @Override
-    public boolean store(Datasource dataSource, List<AbstractAuditableDocument> records) {
+    public boolean store(DataSource dataSource, List<AbstractAuditableDocument> records) {
         return presidioInputPersistencyService.store(dataSource, records);
     }
 

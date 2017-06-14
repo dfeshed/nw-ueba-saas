@@ -7,12 +7,12 @@ import fortscale.utils.time.TimestampUtils;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.Instant;
+
+import static presidio.sdk.api.domain.DlpFileDataDocument.COLLECTION_NAME;
 
 
-@Document(collection = DlpFileDataDocument.COLLECTION_NAME)
+@Document(collection = COLLECTION_NAME)
 public class DlpFileDataDocument extends AbstractAuditableDocument {
 
     public static final String COLLECTION_NAME = "dlpfile_stored_data";
@@ -41,7 +41,7 @@ public class DlpFileDataDocument extends AbstractAuditableDocument {
     protected long dateTimeUnix;
 
     @Field(DATE_TIME_FIELD_NAME)
-    protected Date dateTime;
+    protected Instant dateTime;
 
     @Field(EXECUTING_APPLICATION_FIELD_NAME)
     protected String executingApplication;
@@ -99,12 +99,8 @@ public class DlpFileDataDocument extends AbstractAuditableDocument {
 
 
     public DlpFileDataDocument(String[] record) {
-        try {
-            dateTime = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse(record[0]);
-        } catch (ParseException e) {
-            logger.error("Failed to create DlpFileDataDocument. Bad date: {}. Format should be yyyy-MM-dd hh:mm:ss", record[0], e); //todo remove this. create not in Ctor
-        }
-        dateTimeUnix = TimestampUtils.convertToSeconds(dateTime.getTime());
+        dateTime = Instant.parse(record[0]);
+        dateTimeUnix = dateTime.getEpochSecond();
         eventType = record[1];
         executingApplication = record[2];
         hostname = record[3];
@@ -130,11 +126,11 @@ public class DlpFileDataDocument extends AbstractAuditableDocument {
 
     }
 
-    public Date getDateTime() {
+    public Instant getDateTime() {
         return dateTime;
     }
 
-    public void setDateTime(Date dateTime) {
+    public void setDateTime(Instant dateTime) {
         this.dateTime = dateTime;
     }
 

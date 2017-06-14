@@ -1,11 +1,11 @@
 package presidio.collector.services.api;
 
 
-import fortscale.common.general.Datasource;
+import fortscale.common.general.DataSource;
 
 import java.util.List;
 
 public interface FetchService {
 
-    List<String[]> fetch(Datasource datasource, long startime, long endtime) throws Exception;
+    List<String[]> fetch(DataSource dataSource, long startime, long endtime) throws Exception;
 }
