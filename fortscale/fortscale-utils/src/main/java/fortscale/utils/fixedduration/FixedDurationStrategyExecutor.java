@@ -34,7 +34,7 @@ public abstract class FixedDurationStrategyExecutor {
     }
 
     /**
-     * runs calculation for single hour/day/other fixed duration
+     * runs calculation for single hour/day/other fixed duration per datasource for all relvant contexts
      */
     public abstract void executeSingleTimeRange(TimeRange timeRange, String dataSource);
 

@@ -28,7 +28,7 @@ public class ScoreAggregationServiceConfiguration {
     @Autowired
     private EnrichedDataStore enrichedDataStore;
     @Autowired
-    ParametersValidationService parametersValidationService;
+    private ParametersValidationService parametersValidationService;
 
     @Bean
     public CommandLineRunner commandLineRunner() {

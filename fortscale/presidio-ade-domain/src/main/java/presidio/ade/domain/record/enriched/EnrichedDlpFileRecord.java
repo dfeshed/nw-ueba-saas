@@ -13,7 +13,7 @@ import java.time.Instant;
  * Created by Lior Govrin on 05/06/2017.
  */
 @Document
-@AdeRecordMetadata(type ="dlp_file")
+@AdeRecordMetadata(type ="dlpfile")
 public class EnrichedDlpFileRecord extends EnrichedRecord {
 	public static final String NORMALIZED_USERNAME_FIELD = "normalized_username";
 	public static final String NORMALIZED_SRC_MACHINE_FIELD = "normalized_src_machine";

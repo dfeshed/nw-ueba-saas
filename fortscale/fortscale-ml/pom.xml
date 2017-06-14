@@ -178,8 +178,7 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-task-core</artifactId>
-            <version>RELEASE</version>
-        </dependency>
+		</dependency>
 
 
     </dependencies>

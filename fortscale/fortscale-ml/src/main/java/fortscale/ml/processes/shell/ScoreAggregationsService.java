@@ -1,11 +1,13 @@
 package fortscale.ml.processes.shell;
 
+import fortscale.ml.scorer.enriched_events.EnrichedEventsScoringService;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.fixedduration.FixedDurationStrategyExecutor;
 import fortscale.utils.pagination.PageIterator;
 import fortscale.utils.time.TimeRange;
 import presidio.ade.domain.pagination.enriched.EnrichedRecordPaginationService;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
+import presidio.ade.domain.record.scored.AdeScoredRecord;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
 
 import java.util.Collections;
@@ -14,17 +16,20 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * 1. Iterates over enriched records and scores them
+ * 2. Insert the scored events into buckets
+ * 3. create scored aggregations
+ *
  * Created by barak_schuster on 6/11/17.
  */
 public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
 
     private Map<String/*contextType*/, EnrichedRecordPaginationService> contextTypeToEnrichedRecordPaginationServiceMap;
     private List<String/*contextType*/> contextTypes;
-    private RawEventsScoringService rawEventsScoringService;
     private ScoreAggregationsBucketService scoreAggregationsBucketService;
     private ScoreAggregationsCreator scoreAggregationsCreator;
     private EnrichedDataStore enrichedDataStore;
-
+    private EnrichedEventsScoringService enrichedEventsScoringService;
     /**
      * C'tor
      *
@@ -53,18 +58,18 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
     public void executeSingleTimeRange(TimeRange timeRange, String dataSource) {
 
         for (String contextType : contextTypes) {
-            EnrichedRecordPaginationService enrichedRecordPaginationService = contextTypeToEnrichedRecordPaginationServiceMap.get(contextType);
+            EnrichedRecordPaginationService enrichedRecordPaginationService =
+                    contextTypeToEnrichedRecordPaginationServiceMap.get(contextType);
             List<PageIterator<EnrichedRecord>> pageIterators = enrichedRecordPaginationService.getPageIterators(dataSource, timeRange);
             for (PageIterator<EnrichedRecord> pageIterator : pageIterators) {
                 while (pageIterator.hasNext()) {
                     List<EnrichedRecord> pageRecords = pageIterator.next();
-                    rawEventsScoringService.scoreAndStore();
-                    scoreAggregationsBucketService.updateBuckets();
+                    List<AdeScoredRecord> adeScoredRecords = enrichedEventsScoringService.scoreAndStoreEvents(pageRecords);
+                    scoreAggregationsBucketService.updateBuckets(adeScoredRecords);
                 }
                 scoreAggregationsBucketService.closeBuckets();
                 scoreAggregationsCreator.createScoreAggregations();
             }
-
         }
     }
 }
