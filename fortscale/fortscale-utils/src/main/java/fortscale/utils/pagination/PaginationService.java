@@ -14,7 +14,7 @@ import fortscale.utils.logging.Logger;
  * Create PageIterator for each group, while each PageIterator should be consist of pages.
  * Use getPageIterators() method to get list of PageIterators.
  * <p>
- * See reference for test: EnrichedRecordPaginationServiceTest, EnrichedRecordPaginationServiceTest
+ * See reference for test: EnrichedRecordPaginationServiceTest, PaginationServiceTest
  *
  * @param <T>
  */
