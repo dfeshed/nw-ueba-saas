@@ -28,6 +28,13 @@ public class AdeRecord {
 		this.date_time = date_time;
 	}
 
+	/**
+	 * @return a string representation of this record's type
+	 */
+	public String getAdeRecordType() {
+		return getClass().getSimpleName();
+	}
+
 	public String getId() {
 		return id;
 	}

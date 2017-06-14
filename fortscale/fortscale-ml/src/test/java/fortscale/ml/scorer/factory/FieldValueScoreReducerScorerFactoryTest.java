@@ -1,7 +1,5 @@
 package fortscale.ml.scorer.factory;
 
-import fortscale.common.event.Event;
-import fortscale.common.feature.extraction.FeatureExtractService;
 import fortscale.domain.feature.score.FeatureScore;
 import fortscale.ml.model.ModelConfService;
 import fortscale.ml.model.cache.ModelsCacheService;
@@ -10,17 +8,16 @@ import fortscale.ml.scorer.Scorer;
 import fortscale.ml.scorer.config.FieldValueScoreReducerScorerConf;
 import fortscale.ml.scorer.config.IScorerConf;
 import fortscale.ml.scorer.params.FieldValueScoreReducerScorerConfParams;
-import fortscale.utils.factory.FactoryConfig;
 import fortscale.utils.factory.FactoryService;
+import fortscale.utils.recordreader.RecordReader;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.junit4.SpringRunner;
+import presidio.ade.domain.record.AdeRecord;
 
 
 @RunWith(SpringRunner.class)
@@ -34,7 +31,7 @@ public class FieldValueScoreReducerScorerFactoryTest {
     ModelsCacheService modelCacheService;
 
     @MockBean
-    FeatureExtractService featureExtractService;
+    FactoryService<RecordReader<AdeRecord>> recordReaderFactoryService;
 
     @Autowired
     FieldValueScoreReducerScorerFactory fieldValueScoreReducerScorerFactory;
@@ -45,12 +42,7 @@ public class FieldValueScoreReducerScorerFactoryTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void confNotOfExpectedType() {
-        fieldValueScoreReducerScorerFactory.getProduct(new FactoryConfig() {
-            @Override
-            public String getFactoryName() {
-                return null;
-            }
-        });
+        fieldValueScoreReducerScorerFactory.getProduct(() -> null);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -69,7 +61,7 @@ public class FieldValueScoreReducerScorerFactoryTest {
 
         scorerFactoryService.register(dummyConf1.getFactoryName(), factoryConfig -> new Scorer() {
             @Override
-            public FeatureScore calculateScore(Event eventMessage, long eventEpochTimeInSec) throws Exception {
+            public FeatureScore calculateScore(AdeRecord record) {
                 return null;
             }
 
@@ -86,5 +78,4 @@ public class FieldValueScoreReducerScorerFactoryTest {
         Assert.assertEquals(params.getLimiters(), scorer.getLimiters());
         Assert.assertEquals(dummyConf1.getName(), scorer.getBaseScorer().getName());
     }
-
 }

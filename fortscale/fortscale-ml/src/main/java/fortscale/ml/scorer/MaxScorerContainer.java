@@ -1,7 +1,7 @@
 package fortscale.ml.scorer;
 
-import fortscale.common.event.Event;
 import fortscale.domain.feature.score.FeatureScore;
+import presidio.ade.domain.record.AdeRecord;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,17 +13,17 @@ public class MaxScorerContainer extends ScorerContainer {
 	}
 
 	@Override
-	public FeatureScore calculateScore(Event eventMessage, long eventEpochTimeInSec) throws Exception {
+	public FeatureScore calculateScore(AdeRecord record) {
 		double maxScore = 0;
 		List<FeatureScore> featureScores = new ArrayList<>();
 		for(Scorer scorer: scorers) {
-			FeatureScore featureScore = scorer.calculateScore(eventMessage, eventEpochTimeInSec);
+			FeatureScore featureScore = scorer.calculateScore(record);
 			if(featureScore != null){
 				featureScores.add(featureScore);
 				maxScore = Math.max(maxScore, featureScore.getScore());
 			}
 		}
-		
+
 		return new FeatureScore(getName(), maxScore, featureScores);
 	}
 
