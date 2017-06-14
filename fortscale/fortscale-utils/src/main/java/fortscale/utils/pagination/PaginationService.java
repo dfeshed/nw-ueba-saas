@@ -14,13 +14,13 @@ import fortscale.utils.logging.Logger;
  * Create PageIterator for each group, while each PageIterator should be consist of pages.
  * Use getPageIterators() method to get list of PageIterators.
  * <p>
- * See reference for test: EnrichedRecordPaginationServiceTest
+ * See reference for test: EnrichedRecordPaginationServiceTest, SimpleUserEventPaginationService
  *
  * @param <T>
  */
 public abstract class PaginationService<T> {
 
-    // num of events ids in page
+    // num of events in page
     private int pageSize;
     // num of context ids in group
     private int maxGroupSize;
