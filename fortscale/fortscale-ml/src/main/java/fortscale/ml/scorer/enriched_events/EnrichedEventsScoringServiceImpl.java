@@ -6,8 +6,8 @@ import fortscale.utils.logging.Logger;
 
 import fortscale.ml.scorer.ScoringService;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
-import presidio.ade.domain.record.scored.AdeScoredRecord;
-import presidio.ade.domain.store.scored.ScoredDataStore;
+import presidio.ade.domain.record.scored.enriched_scored.AdeScoredEnrichedRecord;
+import presidio.ade.domain.store.scored.ScoredEnrichedDataStore;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,25 +20,25 @@ public class EnrichedEventsScoringServiceImpl implements EnrichedEventsScoringSe
     private static final Logger logger = Logger.getLogger(EnrichedEventsScoringServiceImpl.class);
 
     private ScoringService<EnrichedRecord> scorersService;
-    private ScoredDataStore scoredDataStore;
+    private ScoredEnrichedDataStore scoredEnrichedDataStore;
 
-    public EnrichedEventsScoringServiceImpl(ScoringService<EnrichedRecord> scorersService, ScoredDataStore scoredDataStore) {
+    public EnrichedEventsScoringServiceImpl(ScoringService<EnrichedRecord> scorersService, ScoredEnrichedDataStore scoredEnrichedDataStore) {
         this.scorersService = scorersService;
-        this.scoredDataStore = scoredDataStore;
+        this.scoredEnrichedDataStore = scoredEnrichedDataStore;
     }
 
-    public List<AdeScoredRecord> scoreAndStoreEvents(List<EnrichedRecord> enrichedRecordList) {
-        List<AdeScoredRecord> scoredRecords = new ArrayList<>();
+    public List<AdeScoredEnrichedRecord> scoreAndStoreEvents(List<EnrichedRecord> enrichedRecordList) {
+        List<AdeScoredEnrichedRecord> scoredRecords = new ArrayList<>();
         for (EnrichedRecord enrichedRecord : enrichedRecordList) {
             List<FeatureScore> featureScoreList = scorersService.score(enrichedRecord);
-            fillAdeScoredRecordList(scoredRecords, enrichedRecord, featureScoreList);
+            fillAdeEnrichedScoredRecordList(scoredRecords, enrichedRecord, featureScoreList);
         }
 
-        scoredDataStore.store(scoredRecords);
+        scoredEnrichedDataStore.store(scoredRecords);
         return scoredRecords;
     }
 
-    public void fillAdeScoredRecordList(List<AdeScoredRecord> scoredRecordList, EnrichedRecord enrichedRecord, List<FeatureScore> featureScoreList){
+    public void fillAdeEnrichedScoredRecordList(List<AdeScoredEnrichedRecord> scoredRecordList, EnrichedRecord enrichedRecord, List<FeatureScore> featureScoreList){
         //expect to get as a root the feature score and inside it all the relevant features.
         if(featureScoreList.size() == 0){
             logger.warn("after calculating an enriched record we got an empty feature score list!!! the enrich record: {}", enrichedRecord);
@@ -47,12 +47,12 @@ public class EnrichedEventsScoringServiceImpl implements EnrichedEventsScoringSe
 
         FeatureScore eventScore = featureScoreList.get(0);
         for (FeatureScore featureScore : eventScore.getFeatureScores()) {
-            AdeScoredRecord scoredRecord = buildAdeScoredRecord(enrichedRecord, featureScore);
+            AdeScoredEnrichedRecord scoredRecord = buildAdeEnrichedScoredRecord(enrichedRecord, featureScore);
             scoredRecordList.add(scoredRecord);
         }
     }
 
-    public AdeScoredRecord buildAdeScoredRecord(EnrichedRecord enrichedRecord, FeatureScore featureScore) {
+    public AdeScoredEnrichedRecord buildAdeEnrichedScoredRecord(EnrichedRecord enrichedRecord, FeatureScore featureScore) {
         //TODO:
         return null;
     }

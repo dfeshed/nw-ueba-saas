@@ -1,5 +1,6 @@
 package presidio.ade.domain.record.scored;
 
+import fortscale.domain.feature.score.FeatureScore;
 import org.springframework.data.mongodb.core.index.Indexed;
 import presidio.ade.domain.record.AdeRecord;
 
@@ -17,8 +18,8 @@ public abstract class AdeScoredRecord extends AdeRecord{
     @Indexed
     private String featureName;
     private String adeEventType;
-//    FeatureScore featureScore;
-    private List<String> dataSources;
+    FeatureScore featureScore;
+
 
 
     public AdeScoredRecord(Instant date_time) {
@@ -41,5 +42,13 @@ public abstract class AdeScoredRecord extends AdeRecord{
 
     public void setAdeEventType(String adeEventType) {
         this.adeEventType = adeEventType;
+    }
+
+    public FeatureScore getFeatureScore() {
+        return featureScore;
+    }
+
+    public void setFeatureScore(FeatureScore featureScore) {
+        this.featureScore = featureScore;
     }
 }

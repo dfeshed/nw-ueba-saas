@@ -4,7 +4,7 @@ import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
-import presidio.ade.domain.record.scanning.AdeRecordMetadata;
+import presidio.ade.domain.record.util.AdeRecordMetadata;
 
 import java.time.Instant;
 
@@ -14,8 +14,8 @@ import java.time.Instant;
  * Created by Lior Govrin on 05/06/2017.
  */
 @Document
-@AdeRecordMetadata(type ="dlp_file")
-public class EnrichedDlpFileRecord extends EnrichedRecord {
+@AdeRecordMetadata(type =DlpFileRecord.DLP_FILE_STR)
+public class EnrichedDlpFileRecord extends EnrichedRecord{
 	public static final String NORMALIZED_USERNAME_FIELD = "normalized_username";
 	public static final String NORMALIZED_SRC_MACHINE_FIELD = "normalized_src_machine";
 	public static final String SOURCE_PATH_FIELD = "source_path";
@@ -72,7 +72,7 @@ public class EnrichedDlpFileRecord extends EnrichedRecord {
 	@Override
 	@Transient
 	public String getDataSource() {
-		return "dlpfile";
+		return DlpFileRecord.DLP_FILE_STR;
 	}
 
 	public String getNormalized_username() {
