@@ -36,7 +36,7 @@ test('clicking Journal button triggers action', function(assert) {
   new DataHelper(this.get('redux')).fetchIncidentDetails();
   this.render(hbs`{{rsa-incident/toolbar}}`);
   return wait().then(() => {
-    const actionSpy = sinon.spy(UIStateActions, 'toggleJournalPanel');
+    const actionSpy = sinon.spy(UIStateActions, 'toggleTasksAndJournalPanel');
     this.$('.js-test-journal button').click();
     assert.ok(dispatchSpy.callCount);
     assert.ok(actionSpy.calledOnce);

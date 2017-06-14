@@ -37,9 +37,6 @@ let initialState = {
   // width of the incident details inspector UI, in pixels
   inspectorWidth: 400,
 
-  // true when user toggles "Journal" btn to reveal journal
-  isJournalPanelOpen: false,
-
   // currently selected data in the storyline
   selection: {
     type: '', // either 'storyPoint', 'event', 'node' or 'link'; possibly empty
@@ -47,7 +44,15 @@ let initialState = {
   },
 
   // toggles between a viz view & a data view
-  hideViz: false
+  hideViz: false,
+
+  tasks: [],
+
+  tasksStatus: null,
+
+  isShowingTasksAndJournal: false,
+
+  tasksJournalMode: 'journal'
 };
 
 // Load local storage values and incorporate into initial state
@@ -63,8 +68,8 @@ initialState = load(initialState, localStorageKey);
 const persistIncidentState = (callback) => {
   return (function() {
     const state = callback(...arguments);
-    const { viewMode, isJournalPanelOpen, inspectorWidth, hideViz } = state;
-    persist({ viewMode, isJournalPanelOpen, inspectorWidth, hideViz }, localStorageKey);
+    const { viewMode, inspectorWidth, hideViz, tasksJournalMode, isShowingTasksAndJournal } = state;
+    persist({ viewMode, inspectorWidth, hideViz, tasksJournalMode, isShowingTasksAndJournal }, localStorageKey);
     return state;
   });
 };
@@ -96,7 +101,8 @@ const incident = reduxActions.handleActions({
     // they should not be reset to initialState for every incident
     inspectorWidth: state.inspectorWidth || initialState.inspectorWidth,
     viewMode: state.viewMode || initialState.viewMode,
-    isJournalPanelOpen: state.isJournalPanelOpen || initialState.isJournalPanelOpen,
+    isShowingTasksAndJournal: state.isShowingTasksAndJournal || initialState.isShowingTasksAndJournal,
+    tasksJournalMode: state.tasksJournalMode || initialState.tasksJournalMode,
     hideViz: state.hideViz || initialState.hideViz
   }),
 
@@ -196,11 +202,6 @@ const incident = reduxActions.handleActions({
     inspectorWidth: payload
   })),
 
-  [ACTION_TYPES.TOGGLE_JOURNAL_PANEL]: persistIncidentState((state) => ({
-    ...state,
-    isJournalPanelOpen: !state.isJournalPanelOpen
-  })),
-
   [ACTION_TYPES.SET_HIDE_VIZ]: persistIncidentState((state, { payload }) => ({
     ...state,
     hideViz: payload
@@ -244,7 +245,67 @@ const incident = reduxActions.handleActions({
     return handle(state, action, {
       success: _handleUpdates(action)
     });
-  }
+  },
+
+  [ACTION_TYPES.FETCH_REMEDIATION_TASKS_FOR_INCIDENT]: (state, action) => {
+    return handle(state, action, {
+      start: (s) => ({ ...s, tasks: [], tasksStatus: 'wait' }),
+      failure: (s) => ({ ...s, tasksStatus: 'error' }),
+      success: (s) => ({ ...s, tasks: action.payload.data, tasksStatus: 'completed' })
+    });
+  },
+
+  [ACTION_TYPES.CREATE_REMEDIATION_TASK]: (state, action) => {
+    return handle(state, action, {
+      start: (s) => ({ ...s }),
+      failure: (s) => ({ ...s }),
+      success: (s) => ({ ...s, tasks: [action.payload.data, ...s.tasks] })
+    });
+  },
+
+  [ACTION_TYPES.DELETE_REMEDIATION_TASK]: (state, action) => {
+    return handle(state, action, {
+      start: (s) => ({ ...s }),
+      failure: (s) => ({ ...s }),
+      success: (s) => {
+        const removedItemIds = action.payload.data;
+        // Filter out newly deleted items from the main items array
+        const updatedItems = state.tasks.filter((item) => (!removedItemIds.includes(item.id)));
+        return {
+          ...s,
+          tasks: updatedItems
+        };
+      }
+    });
+  },
+
+  [ACTION_TYPES.UPDATE_REMEDIATION_TASK]: (state, action) => {
+    return handle(state, action, {
+      start: (s) => ({ ...s }),
+      failure: (s) => ({ ...s }),
+      success: (s) => {
+        const { payload: { request: { updates, entityIds } } } = action;
+        const updatedEntities = state.tasks.map((entity) => {
+          return entityIds.includes(entity.id) ? { ...entity, ...updates } : entity;
+        });
+        return {
+          ...s,
+          tasks: updatedEntities
+        };
+      }
+    });
+  },
+
+  [ACTION_TYPES.SET_TASKS_JOURNAL_MODE]: persistIncidentState((state, { payload }) => ({
+    ...state,
+    tasksJournalMode: payload || 'journal'
+  })),
+
+  [ACTION_TYPES.TOGGLE_TASKS_JOURNAL]: persistIncidentState((state) => ({
+    ...state,
+    isShowingTasksAndJournal: !state.isShowingTasksAndJournal
+  }))
+
 }, initialState);
 
 export default incident;

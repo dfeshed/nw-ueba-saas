@@ -15,25 +15,26 @@ const stateToComputed = ({
       isTransactionUnderway
     },
     incident: {
-      isJournalPanelOpen,
+      id,
+      isShowingTasksAndJournal,
       storylineStatus,
       storyline,
       hideViz
     }
   }
 }) => ({
-  isJournalPanelOpen,
+  isShowingTasksAndJournal,
   storylineStatus,
   storyline,
   isTransactionUnderway,
-  hideViz
+  hideViz,
+  incidentId: id
 });
 
 const Incident = Component.extend({
   tagName: 'article',
   classNames: ['rsa-incident-container'],
-  classNameBindings: ['isTransactionUnderway:transaction-in-progress'],
-  isJournalPanelOpen: false,
+  classNameBindings: ['isTransactionUnderway:transaction-in-progress', 'isShowingTasksAndJournal'],
   storylineStatus: null,
   storyline: null,
   isTransactionUnderway: false,

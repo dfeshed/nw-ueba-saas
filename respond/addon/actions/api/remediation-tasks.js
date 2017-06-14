@@ -23,6 +23,14 @@ const RemediationTasksAPI = {
     });
   },
 
+  getRemediationTasksForIncident(incidentId) {
+    const query = buildExplorerQuery({ incidentId }, { sortField: 'created', isSortDescending: true });
+    return promiseRequest({
+      method: 'query',
+      modelName: 'remediation-tasks',
+      query: query.toJSON()
+    });
+  },
 
   /**
    * Retrieves the total count of remediation tasks for a query. This is separated from the getRemediationTasks() call to improve

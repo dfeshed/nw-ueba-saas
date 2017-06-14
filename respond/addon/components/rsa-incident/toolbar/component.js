@@ -1,6 +1,6 @@
 import Ember from 'ember';
 import connect from 'ember-redux/components/connect';
-import { toggleJournalPanel, setHideViz } from 'respond/actions/creators/incidents-creators';
+import { toggleTasksAndJournalPanel, setHideViz } from 'respond/actions/creators/incidents-creators';
 
 const {
   Component
@@ -11,30 +11,28 @@ const stateToComputed = (state) => {
     respond: {
       incident: {
         id,
-        isJournalPanelOpen,
+        isShowingTasksAndJournal,
         hideViz
       }
     }
   } = state;
 
   return {
-    isJournalPanelOpen,
+    isShowingTasksAndJournal,
     hideViz,
     incidentId: id
   };
 };
 
 const dispatchToActions = (dispatch) => ({
-  clickJournalAction: () => dispatch(toggleJournalPanel()),
+  toggleTasksAndJournalPanel: () => dispatch(toggleTasksAndJournalPanel()),
   setHideVizAction: (hideViz) => dispatch(setHideViz(hideViz))
 });
 
 const IncidentToolbar = Component.extend({
   tagName: 'hbox',
   classNames: [ 'rsa-incident-toolbar' ],
-  isJournalPanelOpen: null,
   hideViz: null,
-  clickJournalAction: null,
   setHideVizAction: null
 });
 

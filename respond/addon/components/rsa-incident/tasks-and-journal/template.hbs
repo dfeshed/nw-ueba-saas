@@ -1,0 +1,43 @@
+<hbox fit justify="center" nowrap class="rsa-journal-and-tasks__toolbar">
+  <span class="rsa-tab text-only {{if (eq tasksJournalMode 'journal') 'is-active' ''}}"
+    {{action (action "showTab" "journal")}}>
+    {{t 'respond.journal.title'}}
+  </span>
+  <span class="rsa-tab text-only {{if (eq tasksJournalMode 'remediation') 'is-active' ''}}"
+    {{action (action "showTab" "remediation")}}>
+    {{t 'respond.entities.remediationTasks'}}
+  </span>
+</hbox>
+{{#if (eq tasksJournalMode 'journal')}}
+  {{! Journal component will be rendered here }}
+{{else}}
+  {{#liquid-bind isAddingNewTask use=(if isAddingNewTask "toLeft" "toRight") as |currentIsAddingNewTask|}}
+    {{#if currentIsAddingNewTask}}
+      {{rsa-remediation-tasks/new-task
+        incidentId=incidentId
+        onCancel=(action 'cancelNewTask')
+        onCreated=(action 'onTaskCreated')
+      }}
+    {{else}}
+      {{#rsa-form-button title=(t 'respond.remediationTasks.addNewTask') isFullWidth=true defaultAction='addNewTask'}}{{t 'respond.remediationTasks.addNewTask'}}{{/rsa-form-button}}
+      {{#if (eq tasksStatus 'wait')}}
+        <centered>
+          {{rsa-loader size="large" label=(t 'respond.remediationTasks.loading')}}
+        </centered>
+      {{else}}
+        <div class="task-list">
+          {{#if tasks.length}}
+            {{#each tasks as |task|}}
+              {{rsa-remediation-tasks/task info=task }}
+            {{/each}}
+          {{else}}
+            <centered>{{t 'respond.remediationTasks.noTasks' incidentId=incidentId}}</centered>
+          {{/if}}
+        </div>
+      {{/if}}
+    {{/if}}
+  {{/liquid-bind}}
+{{/if}}
+<div class="close-panel">
+  {{#rsa-form-button isIconOnly=true title=(t 'respond.close') defaultAction='toggleTasksAndJournalPanel'}}{{rsa-icon name='close'}}{{/rsa-form-button}}
+</div>

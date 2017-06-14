@@ -1,0 +1,68 @@
+<header>
+  <div>
+    <span>{{t 'respond.remediationTasks.newTaskFor'}}</span><span class="incident-id">{{incidentId}}</span>
+  </div>
+</header>
+<section class="remediation-task-fields">
+  {{! Name}}
+  <div class="metadata">
+    <label>{{t 'respond.remediationTasks.list.name'}}<span class="required-field"/></label>
+    <span>{{input type="text" value=name}}</span>
+  </div>
+
+  {{! Description}}
+  <div class="metadata">
+    <label>{{t 'respond.remediationTasks.list.description'}}</label>
+    <span>{{textarea value=description}}</span>
+  </div>
+
+  {{! Assignee}}
+  <div class="metadata assignee">
+    <label>{{t 'respond.remediationTasks.list.assignee'}}:</label>
+    <span>
+      {{input type="text" value=assignee}}
+    </span>
+  </div>
+
+  {{! Priority}}
+  <div class="metadata">
+    <label>{{t 'respond.remediationTasks.list.priority'}}<span class="required-field"/></label>
+    <div class="edit-button">
+      {{#power-select
+        options=priorityTypes
+        selected=priority
+        matchTriggerWidth=false
+        searchEnabled=false
+        triggerComponent=(component "respond-common/button-trigger"
+          iconName='arrow-down-12'
+          iconPosition='after'
+          label=(if priority (t (concat 'respond.priority.' priority)) 'Select'))
+        onchange=(action 'handlePriorityChange') as |option|}}
+        {{t (concat 'respond.priority.' option)}}
+      {{/power-select}}
+    </div>
+  </div>
+
+  {{! Status}}
+  <div class="metadata">
+    <label>{{t 'respond.remediationTasks.list.status'}}</label>
+    <div class="edit-button">
+      {{#power-select
+        options=remediationStatusTypes
+        selected=status
+        matchTriggerWidth=false
+        searchEnabled=false
+        triggerComponent=(component "respond-common/button-trigger"
+          iconName='arrow-down-12'
+          iconPosition='after'
+          label=(if status (t (concat 'respond.status.' status)) 'Select'))
+        onchange=(action 'handleStatusChange') as |option|}}
+        {{t (concat 'respond.status.' option)}}
+      {{/power-select}}
+    </div>
+  </div>
+</section>
+<section class="controls">
+  {{#rsa-form-button defaultAction='handleCancel'}}{{t 'forms.cancel'}}{{/rsa-form-button}}
+  {{#rsa-form-button defaultAction='handleSubmit' isDisabled=(not isValid)}}{{t 'forms.save'}}{{/rsa-form-button}}
+</section>

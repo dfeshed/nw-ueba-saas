@@ -7,6 +7,8 @@ const {
   Logger
 } = Ember;
 
+const callbacksDefault = { onSuccess() {}, onFailure() {} };
+
 /**
  * Action creator that dispatches a set of actions for fetching remediation tasks (with or without filters) and sorted by one field.
  * @method getItems
@@ -50,7 +52,7 @@ const getItems = () => {
  * @param callbacks.onFailure {function} - The callback to be executed when the operation fails
  * @returns {Promise}
  */
-const updateItem = (entityId, field, updatedValue, callbacks) => {
+const updateItem = (entityId, field, updatedValue, callbacks = callbacksDefault) => {
   return {
     type: ACTION_TYPES.UPDATE_REMEDIATION_TASK,
     promise: RemediationTasks.updateRemediationTask(entityId, field, updatedValue),
@@ -74,7 +76,7 @@ const updateItem = (entityId, field, updatedValue, callbacks) => {
  * @param callbacks
  * @returns {{type, promise: *, meta: {onSuccess: (function(*=)), onFailure: (function(*=))}}}
  */
-const deleteItem = (entityId, callbacks) => {
+const deleteItem = (entityId, callbacks = callbacksDefault) => {
   return {
     type: ACTION_TYPES.DELETE_REMEDIATION_TASK,
     promise: RemediationTasks.deleteRemediationTask(entityId),
@@ -114,16 +116,34 @@ const updateFilter = (filters) => {
  * An action creator that creates a remediation task for an incident
  * @method createRemediationTask
  * @param task
+ * @param callbacks
  * @public
  * @returns {{type, promise: *, meta: {onSuccess: (function(*=): *), onFailure: (function(*=))}}}
  */
-const createRemediationTask = (task) => {
+const createItem = (task, callbacks = callbacksDefault) => {
   return {
     type: ACTION_TYPES.CREATE_REMEDIATION_TASK,
     promise: RemediationTasks.createRemediationTask(task),
     meta: {
-      onSuccess: (response) => Logger.debug(ACTION_TYPES.CREATE_REMEDIATION_TASK, response),
-      onFailure: (response) => ErrorHandlers.handleContentCreationError(response, 'create remediation task')
+      onSuccess: (response) => {
+        Logger.debug(ACTION_TYPES.CREATE_REMEDIATION_TASK, response);
+        callbacks.onSuccess(response);
+      },
+      onFailure: (response) => {
+        ErrorHandlers.handleContentCreationError(response, 'create remediation task');
+        callbacks.onFailure(response);
+      }
+    }
+  };
+};
+
+const getRemediationTasksForIncident = (incidentId) => {
+  return {
+    type: ACTION_TYPES.FETCH_REMEDIATION_TASKS_FOR_INCIDENT,
+    promise: RemediationTasks.getRemediationTasksForIncident(incidentId),
+    meta: {
+      onSuccess: (response) => (Logger.debug(ACTION_TYPES.FETCH_REMEDIATION_TASKS_FOR_INCIDENT, response)),
+      onFailure: (response) => (ErrorHandlers.handleContentRetrievalError(response, 'remediation task for incident'))
     }
   };
 };
@@ -185,8 +205,9 @@ export {
   updateItem,
   deleteItem,
   updateFilter,
-  createRemediationTask,
+  createItem,
   sortBy,
+  getRemediationTasksForIncident,
   toggleCustomDateRestriction,
   resetFilters,
   toggleFilterPanel,

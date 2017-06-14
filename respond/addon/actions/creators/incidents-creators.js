@@ -4,6 +4,7 @@ import * as ACTION_TYPES from '../types';
 import * as ErrorHandlers from '../util/error-handlers';
 import * as DictionaryCreators from './dictionary-creators';
 import { next } from 'ember-runloop';
+import { getRemediationTasksForIncident } from 'respond/actions/creators/remediation-task-creators';
 
 const {
   Logger
@@ -325,6 +326,7 @@ const initializeIncident = (incidentId) => {
         next(() => {
           dispatch(getIncident(incidentId));
           dispatch(getStoryline(incidentId));
+          dispatch(getRemediationTasksForIncident(incidentId));
         });
       }
 
@@ -338,13 +340,19 @@ const initializeIncident = (incidentId) => {
       if (!state.respond.dictionaries.statusTypes.length) {
         dispatch(DictionaryCreators.getAllStatusTypes());
       }
+      if (!state.respond.dictionaries.remediationStatusTypes.length) {
+        dispatch(DictionaryCreators.getAllRemediationStatusTypes());
+      }
     }
   };
 };
 
+const setTasksJournalMode = (viewMode) => ({ type: ACTION_TYPES.SET_TASKS_JOURNAL_MODE, payload: viewMode });
+const toggleTasksAndJournalPanel = () => ({ type: ACTION_TYPES.TOGGLE_TASKS_JOURNAL });
+
+
 // UI STATE CREATORS - INCIDENT
 
-const toggleJournalPanel = () => ({ type: ACTION_TYPES.TOGGLE_JOURNAL_PANEL });
 const setHideViz = (hideViz) => ({ type: ACTION_TYPES.SET_HIDE_VIZ, payload: hideViz });
 const setViewMode = (viewMode) => ({ type: ACTION_TYPES.SET_VIEW_MODE, payload: viewMode });
 const resizeIncidentInspector = (width) => ({ type: ACTION_TYPES.RESIZE_INCIDENT_INSPECTOR, payload: width });
@@ -374,9 +382,9 @@ export {
   getStoryline,
   getStorylineEvents,
   initializeIncident,
-  toggleJournalPanel,
   setHideViz,
   setViewMode,
+  setTasksJournalMode,
   resizeIncidentInspector,
   singleSelectStoryPoint,
   toggleSelectStoryPoint,
@@ -385,5 +393,6 @@ export {
   singleSelectLink,
   toggleSelectLink,
   singleSelectNode,
-  toggleSelectNode
+  toggleSelectNode,
+  toggleTasksAndJournalPanel
 };

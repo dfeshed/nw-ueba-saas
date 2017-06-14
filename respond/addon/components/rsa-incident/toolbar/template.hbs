@@ -19,9 +19,11 @@
 {{/rsa-form-button}}
 
 {{#rsa-form-button
-  class="journal js-test-journal"
-  isActive=isJournalPanelOpen
-  defaultAction=(action "clickJournalAction")
+  title=(t 'respond.journal.title')
+  class="journal-and-tasks js-test-journal"
+  isActive=isShowingTasksAndJournal
+  isIconOnly=true
+  defaultAction=(action "toggleTasksAndJournalPanel")
 }}
-  {{t 'respond.journal.title'}}
+  {{rsa-icon name='layout-2' size='small'}}
 {{/rsa-form-button}}

@@ -6,7 +6,7 @@ import DragBehavior from 'respond/utils/behaviors/drag';
 import { htmlSafe } from 'ember-string';
 import Component from 'ember-component';
 import FLASH_MESSAGE_TYPES from 'respond/utils/flash-message-types';
-import service from 'ember-service/inject';
+import Notifications from 'respond/mixins/notifications';
 import $ from 'jquery';
 
 const stateToComputed = (state) => {
@@ -45,12 +45,11 @@ const MINIMUM_WIDTH = 350;
 // Validates a given width and enforces a minimum value.
 const resolveWidth = (width) => Math.max((isNaN(width) ? 0 : width), MINIMUM_WIDTH);
 
-const IncidentInspector = Component.extend({
+const IncidentInspector = Component.extend(Notifications, {
   attributeBindings: ['style'],
   tagName: 'article',
   classNames: ['rsa-incident-inspector'],
   classNameBindings: ['isResizing'],
-  flashMessages: service(),
   incidentId: null,
   info: null,
   infoStatus: null,
@@ -110,21 +109,6 @@ const IncidentInspector = Component.extend({
     const drag = this.get('dragBehavior');
     drag.teardown();
     this.set('dragBehavior', null);
-  },
-
-  actions: {
-    /**
-     * Convenience method for showing a flash success/error message to the user on update or failure
-     * @method showFlashMessage
-     * @public
-     * @param type
-     * @param i18nKey
-     * @param context
-     */
-    showFlashMessage(type, i18nKey, context) {
-      const { i18n, flashMessages } = this.getProperties('i18n', 'flashMessages');
-      flashMessages[type.name](i18n.t(i18nKey, context), { iconName: type.icon });
-    }
   }
 });
 

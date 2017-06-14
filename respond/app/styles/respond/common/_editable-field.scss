@@ -17,6 +17,10 @@ $inputHeight: 33px;
     padding: rsa-whitespace(less);
     border: 1px solid transparent;
     @include rsa-font(body);
+
+    &.placeholder {
+      font-style: italic;
+    }
   }
 
   span.edit-field {

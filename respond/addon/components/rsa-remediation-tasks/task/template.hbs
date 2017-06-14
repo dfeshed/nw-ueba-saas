@@ -1,0 +1,122 @@
+<header>
+  <div>
+    <span class="task-id">{{info.id}}</span><span class="separator"/><span class="incident-id">{{info.incidentId}}</span>
+  </div>
+  <div>
+    <div class="metadata created">
+      <label>{{t 'respond.remediationTasks.list.createdDate'}}:</label>
+      <span class="value">
+        {{rsa-content-datetime timestamp=info.created displaySeconds=false}}
+      </span>
+    </div>
+    <div class="metadata last-updated">
+      <label>{{t 'respond.remediationTasks.list.lastUpdated'}}:</label>
+      <span class="value">
+        {{rsa-content-datetime timestamp=info.lastUpdated displaySeconds=false}}
+      </span>
+    </div>
+    {{#if isOpen}}
+      <div class="metadata days-open">
+        <label>{{t 'respond.remediationTasks.openFor'}}</label>
+        <span class="value">{{timeSinceCreation}}</span>
+      </div>
+    {{/if}}
+  </div>
+  <div class="delete">
+    {{#rsa-form-button isIconOnly=true title='Delete task' defaultAction=(action 'delete' info.id)}}{{rsa-icon name='bin-1'}}{{/rsa-form-button}}
+  </div>
+</header>
+<section class="remediation-task-fields">
+  {{! Name}}
+  <div class="metadata">
+    <label>{{t 'respond.remediationTasks.list.name'}}</label>
+    <span>
+      {{respond-common/editable-field
+        value=info.name
+        placeholder=(t 'respond.empty')
+        onFieldChange=(action 'editableFieldChange' info.id 'name')
+      }}
+    </span>
+  </div>
+
+  {{! Assignee}}
+  <div class="metadata assignee">
+    <label>{{t 'respond.remediationTasks.list.assignee'}}:</label>
+    <span>
+      {{respond-common/editable-field
+        value=(readonly info.assignee)
+        placeholder=(unless info.assignee (t 'respond.assignee.none'))
+        onFieldChange=(action 'editableFieldChange' info.id 'assignee')
+      }}
+    </span>
+  </div>
+
+  {{! Priority}}
+  <div class="metadata">
+    <label>{{t 'respond.remediationTasks.list.priority'}}:</label>
+    <div class="edit-button">
+      {{#power-select
+        options=priorityTypes
+        selected=info.priority
+        matchTriggerWidth=false
+        searchEnabled=false
+        triggerComponent=(component "respond-common/button-trigger"
+          iconName='arrow-down-12'
+          iconPosition='after'
+          label=(t (concat 'respond.priority.' info.priority)))
+        onchange=(action 'selectionChange' info.id 'priority') as |option|}}
+        {{t (concat 'respond.priority.' option)}}
+      {{/power-select}}
+    </div>
+  </div>
+
+  {{! Status}}
+  <div class="metadata">
+    <label>{{t 'respond.remediationTasks.list.status'}}:</label>
+    <div class="edit-button">
+      {{#power-select
+        options=remediationStatusTypes
+        selected=info.status
+        matchTriggerWidth=false
+        searchEnabled=false
+        triggerComponent=(component "respond-common/button-trigger"
+          iconName='arrow-down-12'
+          iconPosition='after'
+          label=(t (concat 'respond.status.' info.status)))
+        onchange=(action 'selectionChange' info.id 'status') as |option|}}
+        {{t (concat 'respond.status.' option)}}
+      {{/power-select}}
+    </div>
+  </div>
+
+  {{! Description}}
+  <div class="text">
+    <label>{{t 'respond.remediationTasks.list.description'}}</label>
+    {{respond-common/editable-field
+      type='textarea'
+      value=(readonly info.description)
+      placeholder=(t 'respond.remediationTasks.noDescription')
+      onFieldChange=(action 'editableFieldChange' info.id 'description')
+    }}
+  </div>
+</section>
+{{#if showConfirmationDialog}}
+  {{#rsa-application-modal eventId='delete-task' label=(t "respond.explorer.confirmation.deleteTitle") style="standard respond-confirmation-dialog"}}
+    <div class='modal-content'>
+      {{#if confirmationData.warning}}
+        <p>{{confirmationData.warning}}</p>
+      {{/if}}
+      <p>{{t 'respond.explorer.confirmation.deleteConfirmation' count=confirmationData.count}}</p>
+    </div>
+    <footer>
+      <hbox class="modal-footer-buttons">
+        {{#rsa-form-button defaultAction='cancel'}}
+          {{t 'forms.cancel'}}
+        {{/rsa-form-button}}
+        {{#rsa-form-button style='danger' defaultAction='confirm'}}
+          {{t 'forms.apply'}}
+        {{/rsa-form-button}}
+      </hbox>
+    </footer>
+  {{/rsa-application-modal}}
+{{/if}}

@@ -33,11 +33,14 @@
       {{/if}}
     </box>
   </vbox>
+  {{#if isShowingTasksAndJournal}}
+    <vbox nowrap class="rsa-incident-container__main-journal_and_tasks">
+      {{rsa-incident/tasks-and-journal }}
+    </vbox>
+  {{/if}}
 </hbox>
 <footer class="rsa-incident-container__footer">
-  {{#if isJournalPanelOpen}}
-    {{rsa-incident/journal}}
-  {{/if}}
+
 </footer>
 {{#if isTransactionUnderway}}
   <centered class="rsa-incident-container__transaction-overlay">

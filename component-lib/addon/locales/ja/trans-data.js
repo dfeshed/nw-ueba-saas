@@ -424,6 +424,7 @@ export default {
       true: 'ja_Yes',
       false: 'ja_No'
     },
+    close: 'ja_Close',
     empty: 'ja_(empty)',
     filters: 'ja_Filters',
     timeframeOptions: {
@@ -449,7 +450,9 @@ export default {
       alerts: 'ja_Alerts',
       actionMessages: {
         updateSuccess: 'ja_Your change was successful',
-        updateFailure: 'ja_There was a problem updating the field for this record'
+        updateFailure: 'ja_There was a problem updating the field for this record',
+        createSuccess: 'ja_You successfully added a new record',
+        createFailure: 'ja_There was a problem creating this record'
       }
     },
     explorer: {
@@ -476,6 +479,11 @@ export default {
       footer: 'ja_Showing {{count}} out of {{total}} items'
     },
     remediationTasks: {
+      loading: 'ja_Loading Tasks',
+      addNewTask: 'ja_Add New Task',
+      noTasks: 'ja_There are no tasks for {{incidentId}}',
+      openFor: 'ja_Open for',
+      newTaskFor: 'ja_New Remediation Task for',
       actions: {
         actionMessages: {
           deleteWarning: 'ja_Deleting a Remediation Task from NetWitness will not delete it from other systems. Please note that it will be your responsibility ' +

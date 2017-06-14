@@ -8,7 +8,8 @@ import { camelize } from 'ember-string';
 import { isPresent } from 'ember-utils';
 import { gt, alias, empty } from 'ember-computed-decorators';
 import FLASH_MESSAGE_TYPES from 'respond/utils/flash-message-types';
-const NOOP = () => ({});
+import Confirmable from 'respond/mixins/confirmable';
+import Notifications from 'respond/mixins/notifications';
 
 /**
  * The Explorer component's redux state will always use the same base set of properties (e.g., items, itemsSelected,
@@ -107,13 +108,11 @@ const dispatchToActions = function(dispatch) {
  * @class Explorer
  * @public
  */
-const Explorer = Component.extend({
+const Explorer = Component.extend(Notifications, Confirmable, {
   tagName: 'vbox',
   classNames: ['rsa-respond-explorer', 'flexi-fit'],
   classNameBindings: ['isFilterPanelOpen:show-filters', 'focusedItem:show-inspector', 'isTransactionUnderway:transaction-in-progress'],
   redux: service(),
-  flashMessages: service(),
-  eventBus: service(),
 
   /**
    * Each instance of an explorer can use a different namespace, which helps the component resolve the associated
@@ -164,53 +163,7 @@ const Explorer = Component.extend({
    * @property selectionCount
    */
   @alias('itemsSelected.length')
-  selectionCount: null,
-
-  actions: {
-    /**
-     * Convenience method for showing a flash success/error message to the user on update or failure
-     * @method showFlashMessage
-     * @public
-     * @param type
-     * @param i18nKey
-     * @param context
-     */
-    showFlashMessage(type, i18nKey, context) {
-      const { i18n, flashMessages } = this.getProperties('i18n', 'flashMessages');
-      flashMessages[type.name](i18n.t(i18nKey, context), { iconName: type.icon });
-    },
-
-    /**
-     * Displays specified confirmation modal dialog
-     * @method showConfirmationDialog
-     * @public
-     */
-    showConfirmationDialog(confirmationDialogId, confirmationData = {}, confirmCallback = NOOP, cancelCallback = NOOP) {
-      this.setProperties({ showConfirmationDialog: true, confirmationDialogId, confirmationData, confirmCallback, cancelCallback });
-      this.get('eventBus').trigger(`rsa-application-modal-open-${confirmationDialogId}`);
-    },
-
-    /**
-     * Closes/Cancels a specified confirmation 'dialog'
-     * @method closeConfirmationDialog
-     * @public
-     */
-    closeConfirmationDialog(confirmationDialogId) {
-      this.setProperties({ showConfirmationDialog: false, confirmationDialogId: null, confirmationData: null, confirmCallback: NOOP, cancelCallback: NOOP });
-      this.get('eventBus').trigger(`rsa-application-modal-close-${confirmationDialogId}`);
-    },
-
-    confirm() {
-      const callback = this.get('confirmCallback');
-      callback();
-      this.send('closeConfirmationDialog', this.get('confirmationDialogId'));
-    },
-
-    cancel() {
-      this.get('cancelCallback')();
-      this.send('closeConfirmationDialog', this.get('confirmationDialogId'));
-    }
-  }
+  selectionCount: null
 });
 
 export default connect(stateToComputed, dispatchToActions)(Explorer);

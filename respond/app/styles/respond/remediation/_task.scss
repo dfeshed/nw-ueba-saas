@@ -1,0 +1,186 @@
+.remediation-task, .new-remediation-task {
+  padding: rsa-whitespace() rsa-whitespace() 0 rsa-whitespace();
+  position: relative;
+  border-top: 1px solid rsa-color(gray);
+
+  span.required-field::after {
+    content: '*';
+    color: rsa-color(red, dark);
+    padding-left: rsa-whitespace(less);
+  }
+
+  header {
+    @include rsa-font(header);
+    line-height: 1rem;
+
+    .task-id {
+      padding-right: rsa-whitespace(less);
+    }
+    .separator {
+      &::after {
+        content: '/';
+      }
+    }
+    .incident-id {
+      padding-left: rsa-whitespace(less);
+    }
+    .metadata {
+      @include rsa-font(header, small);
+    }
+    .delete {
+      position: absolute;
+      right: 0;
+      top: 0;
+      .rsa-form-button i {
+        font-size: 11px;
+      }
+    }
+  }
+
+  .remediation-task-fields {
+    @include rsa-font(body, small);
+    overflow: hidden;
+    position: relative;
+    height: 100%;
+
+    .editable-field.textarea {
+      width: auto;
+      min-height: 35px;
+
+      &.is-editing {
+        width: 100%;
+        height: 100%;
+        min-height: 200px;
+      }
+
+      span.edit-field {
+        top: 0;
+      }
+    }
+
+    .rsa-form-textarea {
+      @include rsa-font(body, small);
+    }
+
+    .metadata {
+      @include rsa-font(body, small);
+      line-height: $metadataLineHeight;
+      display: table-row;
+
+      > label {
+        @include rsa-font(header, small);
+        color: rsa-color(gray, light);
+        display: table-cell;
+        vertical-align: middle;
+        max-width: $metadataLabelWidth - rsa-whitespace(less) * 2;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        padding-right: rsa-whitespace();
+
+        + div {
+          @include rsa-font(body, small);
+        }
+      }
+
+      > span {
+        @include rsa-font(body, small);
+        display: table-cell;
+        min-height: 1em * $metadataLineHeight;
+        color: rsa-color(white);
+        width: 100%;
+      }
+
+      > .edit-button {
+        display: inline-block;
+        width: auto;
+        min-height: 30px;
+        padding-left: rsa-whitespace(less);
+
+        .ember-power-select-trigger {
+          width: auto;
+          padding: 0;
+          border: none;
+
+          .rsa-form-button-wrapper {
+
+            .rsa-form-button {
+              font-size: 11px;
+              padding: 3px;
+              min-width: 120px;
+              position: relative;
+              text-align: left;
+
+              i {
+                position: absolute;
+                top: rsa-whitespace(least);
+                right: rsa-whitespace(less);
+                font-size: 80%;
+              }
+            }
+          }
+        }
+
+        .ember-power-select-trigger[aria-disabled="true"] {
+          background-color: transparent;
+        }
+      }
+    }
+
+    .text {
+      @include rsa-font(body, small);
+      padding: rsa-whitespace(less) 0;
+      line-height: 1.2rem;
+      margin-bottom: 20px;
+
+      > label {
+        @include rsa-font(header, small);
+        display: block;
+        padding-bottom: rsa-whitespace(less);
+        color: rsa-color(gray, light);
+      }
+    }
+  }
+}
+
+.new-remediation-task {
+  box-sizing: border-box;
+  .remediation-task-fields {
+    input[type="text"] {
+      padding: rsa-whitespace(less);
+      width: 100%;
+      border: 1px solid rsa-color(gray, base);
+      box-sizing: border-box;
+    }
+    textarea {
+      box-sizing: border-box;
+      height: 100px;
+      width: 100%;
+      resize: none;
+      background-color: transparent;
+      color: rsa-color(white)
+    }
+    .metadata {
+      display: block;
+      padding: rsa-whitespace() 0;
+
+      > label {
+        display: block;
+
+        + span {
+          display: block;
+        }
+      }
+    }
+ }
+  .controls {
+    border-top: 1px solid rsa-color(gray);
+    text-align: right;
+    padding: rsa-whitespace() 0;
+
+    .rsa-form-button-wrapper {
+      display: inline-block;
+      text-align: left;
+    }
+  }
+}

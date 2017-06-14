@@ -1,3 +1,5 @@
+$tasksAndJournalPanelWidth: 400px;
+
 .rsa-incident-container {
   @include rsa-fill-abs();
 
@@ -7,6 +9,10 @@
     top: 0;
     right: 0;
     margin: rsa-whitespace(less) rsa-whitespace();
+  }
+
+  &.is-showing-tasks-and-journal &__header {
+    right: $tasksAndJournalPanelWidth;
   }
 
   &__background {
@@ -33,6 +39,29 @@
       }
     }
 
+    &-journal_and_tasks {
+      height: 100%;
+      z-index: 2;
+      pointer-events: auto;
+      max-width: $tasksAndJournalPanelWidth;
+      background-color: rsa-color(gray, darker, $rsa-somewhat-opaque);
+
+      .close-panel {
+        cursor: pointer;
+        position: absolute;
+        right: 0;
+        top: 0;
+
+        .rsa-form-button-wrapper .rsa-form-button {
+          font-size: 0.5rem;
+        }
+      }
+
+      .rsa-journal-and-tasks {
+        height: 100%;
+      }
+    }
+
     &-body {
       // all mouse events should punch thru to the background layer (the entities nodal diagram)
       pointer-events: none;
@@ -50,14 +79,6 @@
     height: 0;
     z-index: 2;
 
-    .rsa-incident-journal {
-      width: 400px;
-      position: absolute;
-      bottom: 4rem;
-      right: 0;
-      height: 200px;
-      margin: rsa-whitespace();
-    }
   }
 
   &__transaction-overlay,
@@ -78,5 +99,9 @@
   &__no-storyline {
     color: rsa-color(gray);
     font-style: italic;
+  }
+
+  &.is-showing-tasks-and-journal .rsa-incident-entities-legend {
+    right: $tasksAndJournalPanelWidth;
   }
 }

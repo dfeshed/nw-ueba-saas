@@ -20,7 +20,7 @@
     {{/rsa-form-button}}
   </span>
 {{else}}
-  <span class="editable-field__value" {{action 'edit'}}>{{or text placeholder}}</span>
+  <span class="editable-field__value {{unless text 'placeholder'}}" {{action 'edit'}}>{{or text placeholder}}</span>
   <span class="action edit-field">
     {{#rsa-form-button isIconOnly=true title='Edit Field' defaultAction='edit'}}
       {{rsa-icon name='pencil-1'}}

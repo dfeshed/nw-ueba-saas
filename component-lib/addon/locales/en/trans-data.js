@@ -424,6 +424,7 @@ export default {
       true: 'Yes',
       false: 'No'
     },
+    close: 'Close',
     empty: '(empty)',
     filters: 'Filters',
     timeframeOptions: {
@@ -449,7 +450,9 @@ export default {
       alerts: 'Alerts',
       actionMessages: {
         updateSuccess: 'Your change was successful',
-        updateFailure: 'There was a problem updating the field for this record'
+        updateFailure: 'There was a problem updating the field for this record',
+        createSuccess: 'You successfully added a new record',
+        createFailure: 'There was a problem creating this record'
       }
     },
     explorer: {
@@ -476,6 +479,11 @@ export default {
       footer: 'Showing {{count}} out of {{total}} items'
     },
     remediationTasks: {
+      loading: 'Loading Tasks',
+      addNewTask: 'Add New Task',
+      noTasks: 'There are no tasks for {{incidentId}}',
+      openFor: 'Open for',
+      newTaskFor: 'New Remediation Task for',
       actions: {
         actionMessages: {
           deleteWarning: 'Deleting a Remediation Task from NetWitness will not delete it from other systems. Please note that it will be your responsibility ' +
