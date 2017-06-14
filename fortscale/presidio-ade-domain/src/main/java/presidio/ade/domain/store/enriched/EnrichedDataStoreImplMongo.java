@@ -104,7 +104,7 @@ public class EnrichedDataStoreImplMongo implements EnrichedDataStore {
 
         //Create Aggregation on context ids
         Aggregation agg = newAggregation(
-                match(where(EnrichedRecord.DATE_TIME_FIELD).gte(startDate).lt(endDate)),
+                match(where(EnrichedRecord.DATE_TIME_FIELD).gte(Date.from(startDate)).lt(Date.from(endDate))),
                 Aggregation.group(fieldName).count().as("totalNumOfEvents")
         );
 
