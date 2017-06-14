@@ -19,4 +19,21 @@ public enum FixedDurationStrategy {
             return Duration.ofHours(1);
         }
     }
+
+    public static FixedDurationStrategy fromDuration(Duration duration)
+    {
+        if(duration.equals(Duration.ofDays(1)))
+        {
+            return DAILY;
+        }
+        else
+        {
+            return HOURLY;
+        }
+    }
+
+    public static FixedDurationStrategy fromSeconds(long durationInSeconds)
+    {
+        return fromDuration(Duration.ofSeconds(durationInSeconds));
+    }
 }
