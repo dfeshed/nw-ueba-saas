@@ -1,4 +1,4 @@
-package presidio.ade.domain.record.scored.raw_scored;
+package presidio.ade.domain.record.scored.enriched_scored;
 
 import presidio.ade.domain.record.enriched.EnrichedDlpFileRecord;
 

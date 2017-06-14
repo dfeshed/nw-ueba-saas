@@ -1,4 +1,4 @@
-package presidio.ade.domain.record.scanning;
+package presidio.ade.domain.record.util;
 
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
@@ -13,15 +13,15 @@ import java.util.Map;
  * Add ade record type and pojo class to the map.
  * For example: dlp_file, EnrichedDlpFileRecord.class
  */
-public class AdeRecordTypeToClass {
+public class DataSourceToAdeRecordClassResolver<T> {
 
-    private Map<String, Class<? extends AdeRecord>> adeRecordTypeToClass;
+    private Map<String, Class<? extends T>> dataSourceToAdeRecordClassMap;
 
     /**
      * @param scanPackage class path to scan
      */
-    public AdeRecordTypeToClass(String scanPackage) {
-        adeRecordTypeToClass = new HashMap<>();
+    public DataSourceToAdeRecordClassResolver(String scanPackage) {
+        dataSourceToAdeRecordClassMap = new HashMap<>();
         findAnnotatedClasses(scanPackage);
     }
 
@@ -37,15 +37,15 @@ public class AdeRecordTypeToClass {
             Class<?> pojoClass = Class.forName(beanDef.getBeanClassName());
             if (AdeRecord.class.isAssignableFrom(pojoClass)) {
                 AdeRecordMetadata adeRecord = pojoClass.getAnnotation(AdeRecordMetadata.class);
-                adeRecordTypeToClass.put(adeRecord.type(), (Class<? extends AdeRecord>) pojoClass);
+                dataSourceToAdeRecordClassMap.put(adeRecord.type(), (Class<? extends T>) pojoClass);
             }
         } catch (Exception e) {
             System.err.println("Got exception: " + e.getMessage());
         }
     }
 
-    public Class<? extends AdeRecord> getClass(String dataSource) {
-        return adeRecordTypeToClass.get(dataSource);
+    public Class<? extends T> getClass(String dataSource) {
+        return dataSourceToAdeRecordClassMap.get(dataSource);
     }
 
     /**

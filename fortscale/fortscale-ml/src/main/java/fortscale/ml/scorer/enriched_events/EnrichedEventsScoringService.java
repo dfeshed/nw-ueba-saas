@@ -1,7 +1,7 @@
 package fortscale.ml.scorer.enriched_events;
 
 import presidio.ade.domain.record.enriched.EnrichedRecord;
-import presidio.ade.domain.record.scored.AdeScoredRecord;
+import presidio.ade.domain.record.scored.enriched_scored.AdeScoredEnrichedRecord;
 
 import java.util.List;
 
@@ -10,5 +10,5 @@ import java.util.List;
  */
 public interface EnrichedEventsScoringService {
 
-    List<AdeScoredRecord> scoreAndStoreEvents(List<EnrichedRecord> enrichedRecordList);
+    List<AdeScoredEnrichedRecord> scoreAndStoreEvents(List<EnrichedRecord> enrichedRecordList);
 }
