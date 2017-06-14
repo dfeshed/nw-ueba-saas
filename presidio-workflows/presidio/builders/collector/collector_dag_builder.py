@@ -46,7 +46,6 @@ class CollectorDagBuilder(PresidioDagBuilder):
         for data_source in self.data_sources:
             java_args = {
                 'data_source': data_source,
-                'command': collector_dag.default_args['command'],
             }
 
             # Create jar operator for each data source

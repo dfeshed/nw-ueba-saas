@@ -63,8 +63,9 @@ public class CollectorExecutionServiceImpl implements CollectorExecutionService 
         }
 
         final DataSource dataSource = DataSource.createDataSource(dataSourceParam);
-        final Instant startTime = Instant.parse(startTimeParam);
-        final Instant endTime = Instant.parse(endTimeParam);
+        final Instant startDate = Instant.parse(startDateParam);
+        final Instant endDate = Instant.parse(endDateParam);
+        final Command command = Command.createCommand(commandParam);
 
 
         if (command.equals(CLEAN_COMMAND)) {
