@@ -1,27 +1,27 @@
 package presidio.input.core.services.impl;
 
 import fortscale.domain.core.AbstractAuditableDocument;
-import fortscale.services.parameters.ParametersValidationService;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
-import presidio.ade.domain.store.enriched.EnrichedDataStore;
 import presidio.input.core.services.converters.DlpFileConverter;
+import presidio.input.core.spring.InputCoreConfiguration;
 import presidio.sdk.api.domain.DlpFileDataDocument;
 import presidio.sdk.api.domain.DlpFileEnrichedDocument;
-import presidio.sdk.api.services.PresidioInputPersistencyService;
 
 import java.util.ArrayList;
 import java.util.List;
 
-
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = InputCoreConfiguration.class)
 public class InputExecutionServiceTest {
 
-
-    ParametersValidationService parameterValidationService = null;
-    PresidioInputPersistencyService presidioInputPersistencyService = null;
-    EnrichedDataStore enrichedDataStore = null;
-    InputExecutionServiceImpl processService = new InputExecutionServiceImpl(parameterValidationService, presidioInputPersistencyService, enrichedDataStore);
+    @Autowired
+    InputExecutionServiceImpl processService;
 
     @Test
     public void testConverter() {
