@@ -15,4 +15,5 @@ public class WebConf {
     AlertsController getAlertsController(){
         return new AlertsController();
     }
+
 }

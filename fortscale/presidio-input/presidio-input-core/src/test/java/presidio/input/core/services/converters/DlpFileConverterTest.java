@@ -3,16 +3,15 @@ package presidio.input.core.services.converters;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.junit.runners.JUnit4;
 import presidio.ade.domain.record.enriched.EnrichedDlpFileRecord;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
-import presidio.input.core.spring.InputCoreConfiguration;
 import presidio.sdk.api.domain.DlpFileDataDocument;
 import presidio.sdk.api.domain.DlpFileEnrichedDocument;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes = InputCoreConfiguration.class)
+//@RunWith(SpringRunner.class)
+//@SpringBootTest(classes = InputCoreConfiguration.class)
+@RunWith(JUnit4.class)
 public class DlpFileConverterTest {
 
     @Test
