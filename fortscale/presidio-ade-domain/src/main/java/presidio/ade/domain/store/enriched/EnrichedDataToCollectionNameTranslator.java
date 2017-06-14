@@ -15,8 +15,14 @@ public class EnrichedDataToCollectionNameTranslator implements ToCollectionNameT
 
 	@Override
 	public String toCollectionName(EnrichedRecordsMetadata arg) {
-		return String.format(ENRICHED_COLLECTION_PREFIX + "_%s", arg.getDataSource());
+		return toCollectionName(arg.getDataSource());
 	}
+
+
+	public String toCollectionName(String dataSource) {
+		return String.format(ENRICHED_COLLECTION_PREFIX + "_%s", dataSource);
+	}
+
 
 	@Override
 	public Collection<String> toCollectionNames(AdeDataStoreCleanupParams cleanupParams) {

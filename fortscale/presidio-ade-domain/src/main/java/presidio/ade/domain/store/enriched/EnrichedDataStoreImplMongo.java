@@ -8,21 +8,20 @@ import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import presidio.ade.domain.record.AdeRecord;
-import presidio.ade.domain.store.ContextIdToNumOfEvents;
-import presidio.ade.domain.record.scanning.AdeRecordTypeToClass;
-import presidio.ade.domain.record.enriched.EnrichedRecord;
-import presidio.ade.domain.store.AdeDataStoreCleanupParams;
-
-import static org.springframework.data.mongodb.core.aggregation.Aggregation.newAggregation;
-import static org.springframework.data.mongodb.core.aggregation.Aggregation.match;
-import static org.springframework.data.mongodb.core.query.Criteria.where;
-
 import org.springframework.util.ReflectionUtils;
+import presidio.ade.domain.record.AdeRecord;
+import presidio.ade.domain.record.enriched.EnrichedRecord;
+import presidio.ade.domain.record.scanning.AdeRecordTypeToClass;
+import presidio.ade.domain.store.AdeDataStoreCleanupParams;
+import presidio.ade.domain.store.ContextIdToNumOfEvents;
 
 import java.lang.reflect.Field;
 import java.time.Instant;
 import java.util.*;
+
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.match;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.newAggregation;
+import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 public class EnrichedDataStoreImplMongo implements EnrichedDataStore {
     private static final Logger logger = Logger.getLogger(EnrichedDataStoreImplMongo.class);
@@ -134,7 +133,8 @@ public class EnrichedDataStoreImplMongo implements EnrichedDataStore {
         //Get type of context
         String fieldName = getFieldName(pojoClass,contextType);
 
-        mongoTemplate.indexOps(pojoClass).ensureIndex(new Index().on(fieldName, Sort.Direction.ASC));
+        String collectionName = translator.toCollectionName(dataSource);
+        mongoTemplate.indexOps(collectionName).ensureIndex(new Index().on(fieldName, Sort.Direction.ASC));
     }
 
     /**
