@@ -1,5 +1,6 @@
 package presidio.ade.domain.record.enriched;
 
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -66,6 +67,12 @@ public class EnrichedDlpFileRecord extends EnrichedRecord {
 	 */
 	public EnrichedDlpFileRecord(Instant date_time) {
 		super(date_time);
+	}
+
+	@Override
+	@Transient
+	public String getDataSource() {
+		return "dlpfile";
 	}
 
 	public String getNormalized_username() {

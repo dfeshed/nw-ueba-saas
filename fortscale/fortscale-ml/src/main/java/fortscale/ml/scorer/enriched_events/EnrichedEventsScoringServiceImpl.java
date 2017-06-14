@@ -2,6 +2,7 @@ package fortscale.ml.scorer.enriched_events;
 
 import fortscale.domain.feature.score.FeatureScore;
 import fortscale.ml.scorer.ScorersService;
+import fortscale.utils.logging.Logger;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.ade.domain.record.scored.AdeScoredRecord;
 import presidio.ade.domain.store.scored.ScoredDataStore;
@@ -13,6 +14,7 @@ import java.util.List;
  * Created by YaronDL on 6/14/2017.
  */
 public class EnrichedEventsScoringServiceImpl implements EnrichedEventsScoringService{
+    private static final Logger logger = Logger.getLogger(EnrichedEventsScoringServiceImpl.class);
 
     private ScorersService scorersService;
     private ScoredDataStore scoredDataStore;
@@ -44,8 +46,9 @@ public class EnrichedEventsScoringServiceImpl implements EnrichedEventsScoringSe
     }
 
     public void fillAdeScoredRecordList(List<AdeScoredRecord> scoredRecordList, EnrichedRecord enrichedRecord, List<FeatureScore> featureScoreList){
+        //expect to get as a root the feature score and inside it all the relevant features.
         if(featureScoreList.size() == 0){
-            //TODO: ADD warning
+            logger.warn("after calculating an enriched record we got an empty feature score list!!! the enrich record: {}", enrichedRecord);
             return;
         }
         FeatureScore eventScore = featureScoreList.get(0);
