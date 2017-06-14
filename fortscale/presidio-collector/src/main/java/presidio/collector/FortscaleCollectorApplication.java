@@ -25,6 +25,4 @@ public class FortscaleCollectorApplication {
 
         SpringApplication.run(new Object[]{FortscaleCollectorApplication.class, CollectorConfig.class}, args);
     }
-
-
 }

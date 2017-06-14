@@ -10,7 +10,7 @@ import java.util.List;
  *
  * Created by barak_schuster on 5/21/17.
  */
-public interface EnrichedDataStore {
+public interface EnrichedDataStore extends EnrichedDataReader {
 	/**
 	 * stores the given records
 	 *

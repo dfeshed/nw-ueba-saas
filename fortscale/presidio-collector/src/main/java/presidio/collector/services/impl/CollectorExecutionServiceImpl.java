@@ -4,7 +4,6 @@ import fortscale.common.general.Command;
 import fortscale.common.general.DataSource;
 import fortscale.domain.core.AbstractAuditableDocument;
 import fortscale.services.parameters.ParametersValidationService;
-import fortscale.utils.time.TimestampUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import presidio.collector.services.api.CollectorExecutionService;
@@ -12,16 +11,12 @@ import presidio.collector.services.api.FetchService;
 import presidio.sdk.api.domain.DlpFileDataDocument;
 import presidio.sdk.api.services.CoreManagerService;
 
-import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static fortscale.common.general.CommonStrings.COMMAND_LINE_COMMAND_FIELD_NAME;
-import static fortscale.common.general.CommonStrings.COMMAND_LINE_DATA_SOURCE_FIELD_NAME;
-import static fortscale.common.general.CommonStrings.COMMAND_LINE_DATE_FORMAT;
-import static fortscale.common.general.CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME;
-import static fortscale.common.general.CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME;
+import static fortscale.common.general.CommonStrings.*;
 
 public class CollectorExecutionServiceImpl implements CollectorExecutionService {
 
@@ -67,10 +62,9 @@ public class CollectorExecutionServiceImpl implements CollectorExecutionService 
             return;
         }
 
-        final Command command = Command.createCommand(commandParam);
         final DataSource dataSource = DataSource.createDataSource(dataSourceParam);
-        final long startDate = TimestampUtils.convertToSeconds(new SimpleDateFormat(COMMAND_LINE_DATE_FORMAT).parse(startDateParam));
-        final long endDate = TimestampUtils.convertToSeconds(new SimpleDateFormat(COMMAND_LINE_DATE_FORMAT).parse(endDateParam));
+        final Instant startTime = Instant.parse(startTimeParam);
+        final Instant endTime = Instant.parse(endTimeParam);
 
 
         if (command.equals(CLEAN_COMMAND)) {
@@ -100,7 +94,7 @@ public class CollectorExecutionServiceImpl implements CollectorExecutionService 
         logger.info("Finish csv processing");
     }
 
-    private List<String[]> fetch(DataSource dataSource, long startTime, long endTime) throws Exception {
+    private List<String[]> fetch(DataSource dataSource, Instant startTime, Instant endTime) throws Exception {
         logger.info("Start fetch");
         final List<String[]> fetchedRecords = fetchService.fetch(dataSource, startTime, endTime);//todo: maybe the retry logic will be here?
         logger.info("finish fetch");
@@ -138,7 +132,5 @@ public class CollectorExecutionServiceImpl implements CollectorExecutionService 
         return createdDocuments;
 
     }
-
-
 }
 
