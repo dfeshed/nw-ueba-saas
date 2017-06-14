@@ -18,6 +18,7 @@ import presidio.input.sdk.impl.spring.PresidioInputPersistencyServiceConfig;
 import presidio.sdk.api.domain.DlpFileDataDocument;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -65,7 +66,8 @@ public class PresidioInputPersistencyServiceMongoImplTest {
         presidioInputPersistencyService.store(DataSource.DLPFILE, list);
         int numberOfEventsDeleted = 0;
         try {
-            numberOfEventsDeleted = presidioInputPersistencyService.clean(DataSource.DLPFILE, 0, 0);
+            Instant startDateOfEpoce = Instant.ofEpochSecond(0);
+            numberOfEventsDeleted = presidioInputPersistencyService.clean(DataSource.DLPFILE, startDateOfEpoce, startDateOfEpoce);
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         }
