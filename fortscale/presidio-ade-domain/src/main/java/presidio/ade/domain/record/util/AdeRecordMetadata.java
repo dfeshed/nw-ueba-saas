@@ -1,4 +1,4 @@
-package presidio.ade.domain.record.scanning;
+package presidio.ade.domain.record.util;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

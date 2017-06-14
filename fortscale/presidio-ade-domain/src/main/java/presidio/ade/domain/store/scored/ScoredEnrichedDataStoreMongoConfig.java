@@ -14,12 +14,12 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 @Import({
         ScoredDataToCollectionNameTranslatorConfig.class
 })
-public class ScoredDataStoreMongoConfig {
+public class ScoredEnrichedDataStoreMongoConfig {
     @Autowired
     private MongoTemplate mongoTemplate;
     @Autowired
     private ScoredDataToCollectionNameTranslator translator;
 
     @Bean
-    public ScoredDataStore scoredDataStore() { return new ScoredDataStoreMongoImpl(mongoTemplate, translator);}
+    public ScoredEnrichedDataStore scoredDataStore() { return new ScoredEnrichedDataStoreMongoImpl(mongoTemplate, translator);}
 }

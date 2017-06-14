@@ -2,7 +2,7 @@ package presidio.ade.domain.store.scored;
 
 import fortscale.utils.logging.Logger;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import presidio.ade.domain.record.scored.AdeScoredRecord;
+import presidio.ade.domain.record.scored.enriched_scored.AdeScoredEnrichedRecord;
 import presidio.ade.domain.store.AdeDataStoreCleanupParams;
 
 import java.util.ArrayList;
@@ -13,24 +13,24 @@ import java.util.Map;
 /**
  * Created by YaronDL on 6/13/2017.
  */
-public class ScoredDataStoreMongoImpl implements ScoredDataStore{
+public class ScoredEnrichedDataStoreMongoImpl implements ScoredEnrichedDataStore {
 
-    private static final Logger logger = Logger.getLogger(ScoredDataStoreMongoImpl.class);
+    private static final Logger logger = Logger.getLogger(ScoredEnrichedDataStoreMongoImpl.class);
 
     private final MongoTemplate mongoTemplate;
     private final ScoredDataToCollectionNameTranslator translator;
 
-    public ScoredDataStoreMongoImpl(MongoTemplate mongoTemplate, ScoredDataToCollectionNameTranslator translator) {
+    public ScoredEnrichedDataStoreMongoImpl(MongoTemplate mongoTemplate, ScoredDataToCollectionNameTranslator translator) {
         this.mongoTemplate = mongoTemplate;
         this.translator = translator;
     }
 
     @Override
-    public void store(List<? extends AdeScoredRecord> recordList) {
-        Map<String, List<AdeScoredRecord>> collectionNameToRecordList = new HashMap<>();
-        for(AdeScoredRecord record: recordList){
+    public void store(List<? extends AdeScoredEnrichedRecord> recordList) {
+        Map<String, List<AdeScoredEnrichedRecord>> collectionNameToRecordList = new HashMap<>();
+        for(AdeScoredEnrichedRecord record: recordList){
             String collectionName = translator.toCollectionName(record);
-            List<AdeScoredRecord> collectionRecordList = collectionNameToRecordList.get(collectionName);
+            List<AdeScoredEnrichedRecord> collectionRecordList = collectionNameToRecordList.get(collectionName);
             if(collectionRecordList == null){
                 collectionRecordList = new ArrayList<>();
                 collectionNameToRecordList.put(collectionName, collectionRecordList);
@@ -38,7 +38,7 @@ public class ScoredDataStoreMongoImpl implements ScoredDataStore{
             collectionRecordList.add(record);
         }
 
-        for(Map.Entry<String, List<AdeScoredRecord>> entry: collectionNameToRecordList.entrySet()){
+        for(Map.Entry<String, List<AdeScoredEnrichedRecord>> entry: collectionNameToRecordList.entrySet()){
             mongoTemplate.insert(entry.getValue(),entry.getKey());
         }
     }
