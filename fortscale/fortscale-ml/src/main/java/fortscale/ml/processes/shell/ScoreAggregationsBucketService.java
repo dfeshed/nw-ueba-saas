@@ -10,5 +10,6 @@ import java.util.List;
 public interface ScoreAggregationsBucketService {
     public void updateBuckets(List<AdeScoredRecord> adeScoredRecords);
 
-    void closeBuckets();
+    // todo : change to bucket entity
+    List<Object> closeBuckets();
 }
