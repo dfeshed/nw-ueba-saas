@@ -2,11 +2,13 @@ package fortscale.ml.scorer;
 
 import fortscale.common.feature.Feature;
 import fortscale.common.feature.FeatureNumericValue;
-import fortscale.common.feature.extraction.FeatureExtractService;
 import fortscale.ml.model.Model;
 import fortscale.ml.model.TimeModel;
 import fortscale.ml.model.cache.EventModelsCacheService;
 import fortscale.ml.scorer.algorithms.TimeModelScorerAlgorithm;
+import fortscale.utils.factory.FactoryService;
+import fortscale.utils.recordreader.RecordReader;
+import presidio.ade.domain.record.AdeRecord;
 
 import java.util.List;
 
@@ -23,9 +25,14 @@ public class TimeModelScorer extends AbstractModelScorer {
                            int enoughNumOfSamplesToInfluence,
                            boolean isUseCertaintyToCalculateScore,
                            int maxRareTimestampCount,
-                           int maxNumOfRareTimestamps, FeatureExtractService featureExtractService, EventModelsCacheService eventModelsCacheService) {
+                           int maxNumOfRareTimestamps,
+                           FactoryService<RecordReader<AdeRecord>> recordReaderFactoryService,
+                           EventModelsCacheService eventModelsCacheService) {
 
-        super(scorerName, modelName, additionalModelNames, contextFieldNames, additionalContextFieldNames, featureName, minNumOfSamplesToInfluence, enoughNumOfSamplesToInfluence, isUseCertaintyToCalculateScore, featureExtractService, eventModelsCacheService);        algorithm = new TimeModelScorerAlgorithm(maxRareTimestampCount, maxNumOfRareTimestamps);
+        super(scorerName, modelName, additionalModelNames, contextFieldNames, additionalContextFieldNames, featureName,
+                minNumOfSamplesToInfluence, enoughNumOfSamplesToInfluence, isUseCertaintyToCalculateScore,
+                recordReaderFactoryService, eventModelsCacheService);
+        algorithm = new TimeModelScorerAlgorithm(maxRareTimestampCount, maxNumOfRareTimestamps);
     }
 
     @Override

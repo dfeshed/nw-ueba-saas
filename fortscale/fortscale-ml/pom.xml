@@ -119,6 +119,11 @@
 			<artifactId>fortscale-aggregation</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>fortscale</groupId>
+			<artifactId>presidio-ade-domain</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 		
 
 
@@ -170,8 +175,11 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-
-
+		<dependency>
+			<groupId>fortscale</groupId>
+			<artifactId>presidio-ade-domain</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 
 	<build>

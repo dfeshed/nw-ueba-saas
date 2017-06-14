@@ -1,18 +1,17 @@
 package fortscale.ml.scorer;
 
-import fortscale.common.event.Event;
 import fortscale.domain.feature.score.FeatureScore;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.util.Assert;
+import presidio.ade.domain.record.AdeRecord;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Configurable(preConstruction = true)
 public class ReductionScorer extends AbstractScorer {
-	
 	public static final double REDUCTION_ZERO_SCORE_WEIGHT_DEFAULT = 0.95;
-	
+
 	private Scorer mainScorer;
 	private Scorer reductionScorer;
 	private double reductionWeight;
@@ -20,7 +19,7 @@ public class ReductionScorer extends AbstractScorer {
 
 	public ReductionScorer(String scorerName, Scorer mainScorer, Scorer reductionScorer, Double reductingWeight, Double reductingZeroScoreWeight) {
 		this(scorerName, mainScorer, reductionScorer, reductingWeight);
-        Assert.notNull(reductingZeroScoreWeight);
+		Assert.notNull(reductingZeroScoreWeight, "Reducting zero score weight cannot be null");
 		Assert.isTrue(reductingZeroScoreWeight>0 && reductingZeroScoreWeight < 1.0, String.format("reductionZeroScoreWeight (%f) must be > 0 and < 1.0", reductingZeroScoreWeight));
 		this.reductionZeroScoreWeight = reductingZeroScoreWeight;
 	}
@@ -29,7 +28,7 @@ public class ReductionScorer extends AbstractScorer {
 		super(scorerName);
 		Assert.notNull(mainScorer, "Main scorer must not be null");
 		Assert.notNull(reductionScorer, "Reduction scorer must not be null");
-        Assert.notNull(reductionWeight);
+		Assert.notNull(reductionWeight, "Reduction weight cannot be null");
 		Assert.isTrue(reductionWeight>0 && reductionWeight < 1.0,String.format("reductionWeight (%f) must be > 0 and < 1.0", reductionWeight));
 		this.mainScorer = mainScorer;
 		this.reductionScorer = reductionScorer;
@@ -37,15 +36,15 @@ public class ReductionScorer extends AbstractScorer {
 	}
 
 	@Override
-	public FeatureScore calculateScore(Event eventMessage, long eventEpochTimeInSec) throws Exception {
+	public FeatureScore calculateScore(AdeRecord record) {
 		FeatureScore featureScore = null;
-		FeatureScore mainScore = mainScorer.calculateScore(eventMessage, eventEpochTimeInSec);
+		FeatureScore mainScore = mainScorer.calculateScore(record);
 		if(mainScore != null){
 			if(mainScore.getScore() == 0){
 				// get the score from the main scorer, but replace the output field name
 				featureScore = new FeatureScore(getName(), mainScore.getScore());
 			} else{
-				FeatureScore reducingScore = reductionScorer.calculateScore(eventMessage, eventEpochTimeInSec);
+				FeatureScore reducingScore = reductionScorer.calculateScore(record);
 				if(reducingScore == null){
 					// get the score from the main scorer, but replace the output field name
 					featureScore = new FeatureScore(getName(), mainScore.getScore());
@@ -68,7 +67,7 @@ public class ReductionScorer extends AbstractScorer {
 				}
 			}
 		}
-		
+
 		return featureScore;
 	}
 

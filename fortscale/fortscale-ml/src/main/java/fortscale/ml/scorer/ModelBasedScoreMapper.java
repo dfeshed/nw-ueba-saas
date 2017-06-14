@@ -1,8 +1,5 @@
 package fortscale.ml.scorer;
 
-import fortscale.common.event.Event;
-import fortscale.common.feature.Feature;
-import fortscale.common.feature.extraction.FeatureExtractService;
 import fortscale.domain.feature.score.FeatureScore;
 import fortscale.ml.model.ScoreMappingModel;
 import fortscale.ml.model.cache.EventModelsCacheService;
@@ -10,6 +7,7 @@ import fortscale.ml.scorer.config.IScorerConf;
 import fortscale.utils.factory.FactoryService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.util.Assert;
+import presidio.ade.domain.record.AdeRecord;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -25,44 +23,35 @@ public class ModelBasedScoreMapper extends AbstractScorer {
 	private Scorer baseScorer;
 	private String modelName;
 	private List<String> contextFieldNames;
-	private String featureName;
-
 	private EventModelsCacheService eventModelsCacheService;
-
 	private FactoryService<Scorer> factoryService;
-
-	private FeatureExtractService featureExtractService;
 
 	public ModelBasedScoreMapper(String scorerName,
 								 String modelName,
 								 List<String> contextFieldNames,
 								 String featureName,
-								 IScorerConf baseScorerConf, FactoryService<Scorer> factoryService, EventModelsCacheService eventModelsCacheService, FeatureExtractService featureExtractService) {
+								 IScorerConf baseScorerConf, FactoryService<Scorer> factoryService, EventModelsCacheService eventModelsCacheService) {
 		super(scorerName);
 		Assert.isTrue(StringUtils.isNotBlank(featureName), "feature name cannot be null empty or blank");
 		Assert.isTrue(StringUtils.isNotBlank(modelName), "model name must be provided and cannot be empty or blank.");
-		Assert.notNull(contextFieldNames);
-		Assert.notNull(baseScorerConf);
+		Assert.notNull(contextFieldNames, "Context field names cannot be null");
+		Assert.notNull(baseScorerConf, "Base scorer conf cannot be null");
 		this.modelName = modelName;
 		this.contextFieldNames = contextFieldNames;
-		this.featureName = featureName;
 		this.factoryService = factoryService;
 		this.eventModelsCacheService= eventModelsCacheService;
-		this.featureExtractService=featureExtractService;
 		baseScorer = this.factoryService.getProduct(baseScorerConf);
 	}
 
 	@Override
-	public FeatureScore calculateScore(Event eventMessage, long eventEpochTimeInSec) throws Exception {
-		FeatureScore baseScore = baseScorer.calculateScore(eventMessage, eventEpochTimeInSec);
-		double mappedScore = mapScore(eventMessage, eventEpochTimeInSec, baseScore);
+	public FeatureScore calculateScore(AdeRecord record) {
+		FeatureScore baseScore = baseScorer.calculateScore(record);
+		double mappedScore = mapScore(record, baseScore);
 		return new FeatureScore(getName(), mappedScore, Collections.singletonList(baseScore));
 	}
 
-	private double mapScore(Event eventMessage, long eventEpochTimeInSec, FeatureScore baseScore) {
-		Feature feature = featureExtractService.extract(featureName, eventMessage);
-		ScoreMappingModel model = (ScoreMappingModel) eventModelsCacheService.getModel(
-				eventMessage, feature, eventEpochTimeInSec, modelName, contextFieldNames);
+	private double mapScore(AdeRecord record, FeatureScore baseScore) {
+		ScoreMappingModel model = (ScoreMappingModel)eventModelsCacheService.getModel(record, modelName, contextFieldNames);
 		return ScoreMapping.mapScore(baseScore.getScore(), createScoreMappingConf(model));
 	}
 
