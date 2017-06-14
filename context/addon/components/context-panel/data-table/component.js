@@ -15,7 +15,7 @@ const DataTableComponent = Component.extend({
   classNames: 'rsa-context-panel__context-data-table',
 
   @computed('contextData', 'lookupData.[]', 'dSDetails')
-  getDataSourceData: (contextData, [lookupData], dSDetails) => contextData ? contextData.data : getData(lookupData, dSDetails),
+  getDataSourceData: (contextData, [lookupData], dSDetails) => contextData ? contextData.resultList : getData(lookupData, dSDetails),
 
   @computed('getDataSourceData', 'currentSort.icon', 'currentSort.field')
   getDataSourceSortedData: (getDataSourceData, icon, field) => getSortedData(getDataSourceData, icon, field),

@@ -2,7 +2,7 @@ import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import dSDetails from 'context/config/im-incidents';
 
-const contextData = { data: [
+const contextData = { resultList: [
   {
     '_id': 'INC-230',
     'alertCount': 5,
