@@ -7,6 +7,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 import presidio.sdk.api.domain.DlpFileDataDocument;
 
+import java.time.Instant;
 import java.util.List;
 
 @Repository
@@ -19,8 +20,8 @@ public class DlpFileDataRepositoryImpl implements DlpFileDataRepositoryCustom {
     }
 
     @Override
-    public List<DlpFileDataDocument> find(long startTime, long endTime) {
-        Criteria timeCriteria = Criteria.where(DlpFileDataDocument.DATE_TIME_UNIX_FIELD_NAME).gte(startTime).lte(endTime);
+    public List<DlpFileDataDocument> find(Instant startTime, Instant endTime) {
+        Criteria timeCriteria = Criteria.where(DlpFileDataDocument.DATE_TIME_FIELD_NAME).gte(startTime).lte(endTime);
         final Query query = new Query(timeCriteria);//todo: need to do this 2 lines else where , will be done when new data sources will be add and this class will be refactored
         return mongoTemplate.find(query, DlpFileDataDocument.class);
     }

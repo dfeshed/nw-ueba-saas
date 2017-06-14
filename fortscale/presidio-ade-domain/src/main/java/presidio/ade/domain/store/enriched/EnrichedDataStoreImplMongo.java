@@ -53,11 +53,10 @@ public class EnrichedDataStoreImplMongo implements EnrichedDataStore {
         Class<? extends AdeRecord> pojoClass = adeRecordTypeToClass.getClass(dataSource);
 
         //Get type of context
-        Field field = ReflectionUtils.findField(pojoClass, contextType);
-        String type = (String) ReflectionUtils.getField(field, null);
+        String fieldName = getFieldName(pojoClass,contextType);
 
         Criteria dateTimeCriteria = Criteria.where(EnrichedRecord.DATE_TIME_FIELD).gte(startDate).lt(endDate);
-        Criteria contextCriteria = Criteria.where(type).in(contextIds);
+        Criteria contextCriteria = Criteria.where(fieldName).in(contextIds);
         Query query = new Query(dateTimeCriteria).addCriteria(contextCriteria).skip(numOfItemsToSkip).limit(numOfItemsToRead);
         String collectionName = translator.toCollectionName(recordsMetadata);
 
@@ -99,16 +98,14 @@ public class EnrichedDataStoreImplMongo implements EnrichedDataStore {
         Class pojoClass = adeRecordTypeToClass.getClass(dataSource);
 
         //Get type of context
-        Field field = ReflectionUtils.findField(pojoClass, contextType);
-        String type = (String) ReflectionUtils.getField(field, null);
-
+        String fieldName = getFieldName(pojoClass,contextType);
 
         String collectionName = translator.toCollectionName(recordsMetadata);
 
         //Create Aggregation on context ids
         Aggregation agg = newAggregation(
                 match(where(EnrichedRecord.DATE_TIME_FIELD).gte(startDate).lt(endDate)),
-                Aggregation.group(type).count().as("totalNumOfEvents")
+                Aggregation.group(fieldName).count().as("totalNumOfEvents")
         );
 
         AggregationResults<ContextIdToNumOfEvents> result = mongoTemplate.aggregate(agg, collectionName, ContextIdToNumOfEvents.class);
@@ -133,11 +130,28 @@ public class EnrichedDataStoreImplMongo implements EnrichedDataStore {
     public void validateIndexes(String dataSource, String contextType){
         //Get pojoClass by dataSource
         Class pojoClass = adeRecordTypeToClass.getClass(dataSource);
-        //Get type of context
-        Field field = ReflectionUtils.findField(pojoClass, contextType);
-        String type = (String) ReflectionUtils.getField(field, null);
 
-        mongoTemplate.indexOps(pojoClass).ensureIndex(new Index().on(type, Sort.Direction.ASC));
+        //Get type of context
+        String fieldName = getFieldName(pojoClass,contextType);
+
+        mongoTemplate.indexOps(pojoClass).ensureIndex(new Index().on(fieldName, Sort.Direction.ASC));
+    }
+
+    /**
+     * Get field name
+     * If annotation exist return field name of annotation
+     * @param pojoClass class that contain the field
+     * @param name - field name
+     * @return
+     */
+    private String getFieldName(Class pojoClass,String name) {
+        Field field = ReflectionUtils.findField(pojoClass, name);
+        String fieldName = field.getName();
+        if(field.isAnnotationPresent(org.springframework.data.mongodb.core.mapping.Field.class))
+        {
+            fieldName=field.getAnnotation(org.springframework.data.mongodb.core.mapping.Field.class).value();
+        }
+        return fieldName;
     }
 
 

@@ -6,10 +6,8 @@ import fortscale.common.general.CommonStrings;
 import fortscale.common.general.DataSource;
 import fortscale.utils.logging.Logger;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.Instant;
 
-import static fortscale.common.general.CommonStrings.COMMAND_LINE_DATE_FORMAT;
 import static fortscale.common.general.CommonStrings.COMMAND_LINE_PARAM_DELIMITER;
 
 public class ParametersServiceImpl implements ParametersValidationService {
@@ -46,14 +44,14 @@ public class ParametersServiceImpl implements ParametersValidationService {
 
     @Override
     public void validateTimeParams(String startDateAsString, String endDateAsString) throws Exception {
-        Date startDate = new SimpleDateFormat(COMMAND_LINE_DATE_FORMAT).parse(startDateAsString);
-        Date endDate = new SimpleDateFormat(COMMAND_LINE_DATE_FORMAT).parse(endDateAsString);
+        Instant startDate = Instant.parse(startDateAsString);
+        Instant endDate = Instant.parse(endDateAsString);
 
-        if (!(startDate.before(endDate))) { //todo: maybe we can check that it's exactly 1 hour?
+        if (!(startDate.isBefore(endDate))) { //todo: maybe we can check that it's exactly 1 hour?
             throw new Exception(String.format("%s must be before than %s! %s:%s, %s:%s", CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate, CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate));
         }
-        Date now = new Date(System.currentTimeMillis());
-        if (endDate.after(now)) {
+        Instant now = Instant.now();
+        if (endDate.isAfter(now)) {
             throw new Exception(String.format("%s can't be in the future! %s:%s, %s:%s", CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate, "now", now));
         }
     }
@@ -72,7 +70,5 @@ public class ParametersServiceImpl implements ParametersValidationService {
         }
         return null;
     }
-
-
 }
 
