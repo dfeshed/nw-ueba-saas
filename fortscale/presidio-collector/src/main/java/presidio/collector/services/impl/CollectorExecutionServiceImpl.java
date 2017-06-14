@@ -16,17 +16,18 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static fortscale.common.general.CommonStrings.*;
+import static fortscale.common.general.CommonStrings.COMMAND_LINE_COMMAND_FIELD_NAME;
+import static fortscale.common.general.CommonStrings.COMMAND_LINE_DATA_SOURCE_FIELD_NAME;
+import static fortscale.common.general.CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME;
+import static fortscale.common.general.CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME;
 
 public class CollectorExecutionServiceImpl implements CollectorExecutionService {
-
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
-
 
     private final CoreManagerService coreManagerService;
     private final FetchService fetchService;
     private final ParametersValidationService parameterValidationService;
     private final Command CLEAN_COMMAND = Command.CLEAN;
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public CollectorExecutionServiceImpl(CoreManagerService coreManagerService, FetchService fetchService, ParametersValidationService parameterValidationService) {
         this.coreManagerService = coreManagerService;
@@ -63,9 +64,9 @@ public class CollectorExecutionServiceImpl implements CollectorExecutionService 
         }
 
         final DataSource dataSource = DataSource.createDataSource(dataSourceParam);
-        final Instant startTime = Instant.parse(startTimeParam);
-        final Instant endTime = Instant.parse(endTimeParam);
-
+        final Instant startDate = Instant.parse(startDateParam);
+        final Instant endDate = Instant.parse(endDateParam);
+        final Command command = Command.createCommand(commandParam);
 
         if (command.equals(CLEAN_COMMAND)) {
             logger.info("Cleaning.");
