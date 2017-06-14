@@ -5,7 +5,11 @@ import fortscale.domain.feature.score.FeatureScore;
 import fortscale.utils.logging.Logger;
 
 import fortscale.ml.scorer.ScoringService;
+import presidio.ade.domain.record.enriched.DlpFileRecord;
+import presidio.ade.domain.record.enriched.EnrichedDlpFileRecord;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
+import presidio.ade.domain.record.scored.enriched_scored.AdeScoredDlpFileContext;
+import presidio.ade.domain.record.scored.enriched_scored.AdeScoredDlpFileRecord;
 import presidio.ade.domain.record.scored.enriched_scored.AdeScoredEnrichedRecord;
 import presidio.ade.domain.store.scored.ScoredEnrichedDataStore;
 
@@ -53,7 +57,14 @@ public class EnrichedEventsScoringServiceImpl implements EnrichedEventsScoringSe
     }
 
     public AdeScoredEnrichedRecord buildAdeEnrichedScoredRecord(EnrichedRecord enrichedRecord, FeatureScore featureScore) {
-        //TODO:
-        return null;
+        //TODO: fix the implementation.
+        AdeScoredDlpFileRecord ret = null;
+        if(enrichedRecord.getDataSource().equals(DlpFileRecord.DLP_FILE_STR)){
+            AdeScoredDlpFileContext context = new AdeScoredDlpFileContext((EnrichedDlpFileRecord) enrichedRecord);
+            String featureName = featureScore.getName();
+            ret = new AdeScoredDlpFileRecord(enrichedRecord.getDate_time(), featureName, featureScore.getScore(), featureScore.getFeatureScores(), context);
+        }
+
+        return ret;
     }
 }

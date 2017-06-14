@@ -17,13 +17,16 @@ public abstract class AdeScoredRecord extends AdeRecord{
 
     @Indexed
     private String featureName;
-    private String adeEventType;
-    FeatureScore featureScore;
+    private Double score;
+    List<FeatureScore> featureScoreList;
 
 
 
-    public AdeScoredRecord(Instant date_time) {
+    public AdeScoredRecord(Instant date_time, String featureName, Double score, List<FeatureScore> featureScoreList) {
         super(date_time);
+        this.featureName = featureName;
+        this.score = score;
+        this.featureScoreList = featureScoreList;
     }
 
     public abstract <U> U getContext();
@@ -36,19 +39,19 @@ public abstract class AdeScoredRecord extends AdeRecord{
         this.featureName = featureName;
     }
 
-    public String getAdeEventType() {
-        return adeEventType;
+    public Double getScore() {
+        return score;
     }
 
-    public void setAdeEventType(String adeEventType) {
-        this.adeEventType = adeEventType;
+    public void setScore(Double score) {
+        this.score = score;
     }
 
-    public FeatureScore getFeatureScore() {
-        return featureScore;
+    public List<FeatureScore> getFeatureScoreList() {
+        return featureScoreList;
     }
 
-    public void setFeatureScore(FeatureScore featureScore) {
-        this.featureScore = featureScore;
+    public void setFeatureScoreList(List<FeatureScore> featureScoreList) {
+        this.featureScoreList = featureScoreList;
     }
 }
