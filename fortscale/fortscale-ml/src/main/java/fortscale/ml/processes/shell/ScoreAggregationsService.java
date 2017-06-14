@@ -39,19 +39,18 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
     public ScoreAggregationsService(FixedDurationStrategy strategy, EnrichedDataStore enrichedDataStore) {
         super(strategy);
         this.enrichedDataStore = enrichedDataStore;
-        this.contextTypeToEnrichedRecordPaginationServiceMap = fillContextTypeToPaginationServiceMap();
+        fillContextTypeToPaginationServiceMap();
     }
 
-    private Map<String, EnrichedRecordPaginationService> fillContextTypeToPaginationServiceMap() {
+    private void fillContextTypeToPaginationServiceMap() {
         contextTypes = Collections.singletonList("normalized_username");
-        Map<String/*contextType*/, EnrichedRecordPaginationService> result = new HashMap<>();
+        contextTypeToEnrichedRecordPaginationServiceMap = new HashMap<>();
         for (String contextType : contextTypes) {
             int numberOfEventIds = 1000;
             int numberOfContextIds = 100;
-            result.put(contextType, new EnrichedRecordPaginationService(enrichedDataStore, numberOfEventIds, numberOfContextIds, contextType));
-
+            EnrichedRecordPaginationService enrichedRecordPaginationService = new EnrichedRecordPaginationService(enrichedDataStore, numberOfEventIds, numberOfContextIds, contextType);
+            contextTypeToEnrichedRecordPaginationServiceMap.put(contextType, enrichedRecordPaginationService);
         }
-        return result;
     }
 
     @Override

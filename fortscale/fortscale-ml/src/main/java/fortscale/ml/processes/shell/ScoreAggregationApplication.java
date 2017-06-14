@@ -22,7 +22,8 @@ public class ScoreAggregationApplication {
 
     public static void main(String[] args) {
         logger.info("Start application: {}",ScoreAggregationApplication.class);
-        ConfigurableApplicationContext ctx = SpringApplication.run(new Object[]{ScoreAggregationApplication.class,ScoreAggregationServiceConfiguration.class}, args);
+        ConfigurableApplicationContext ctx = SpringApplication.run(new Object[]{ScoreAggregationApplication.class,
+                ScoreAggregationServiceConfiguration.class}, args);
     }
 }
 
