@@ -103,6 +103,15 @@ public abstract class PaginationService<T> {
      *
      * @param contextIdToNumOfEventsList list of ContextIdToNumOfEvents objects,each object contains context id and num of events
      * @return list num of events in group and set of contextId of pairs
+     *
+     *Examples:
+     * pageSize=3, maxGroupSize=2
+     * case 1:
+     *  contextIdToNumOfEventsList: a->5 events, b-> 2 events, c-> 2 events
+     *  the groups should be {a},{b},{c}
+     * case 2:
+     *  contextIdToNumOfEventsList: a->5 events, b-> 2 events, c-> 1 events
+     *  the groups should be {a},{b,c}
      */
     private List<Pair<Integer, Set<String>>> getGroups(List<ContextIdToNumOfEvents> contextIdToNumOfEventsList) {
         contextIdToNumOfEventsList.sort(Comparator.comparing(c -> c.getTotalNumOfEvents()));
@@ -114,13 +123,20 @@ public abstract class PaginationService<T> {
         int totalNumOfItems = 0;
         int start = 0;
         int end = contextIdToNumOfEventsList.size() - 1;
+        int numOfHandledContextIds = 0;
 
-        while (end > start) {
+        // Next condition handle 2 cases: (end == start && numOfHandledContextIds == contextIdToNumOfEventsList.size()-1)
+        // # first case: contextIdToNumOfEventsList contains only one item.
+        // # second case: all context ids were handled and inserted to groups except the last context id:
+        // It may happened, where start = end -1 and the last context id can not join to current group due to pageSize or maxGroupSize.
+        // additional group should be created for last context id. (See case 2 in examples above).
+        while (end > start || (end == start && numOfHandledContextIds == contextIdToNumOfEventsList.size()-1)) {
             Set<String> contextIds = new HashSet<>();
             ContextIdToNumOfEvents first = contextIdToNumOfEventsList.get(start);
             ContextIdToNumOfEvents last = contextIdToNumOfEventsList.get(end);
             contextIds.add(last.getContextId());
             totalNumOfItems = last.getTotalNumOfEvents();
+            numOfHandledContextIds++;
 
             while (totalNumOfItems + first.getTotalNumOfEvents() <= pageSize && contextIds.size() + 1 <= maxGroupSize &&
                     end > start) {
@@ -128,6 +144,7 @@ public abstract class PaginationService<T> {
                 contextIds.add(first.getContextId());
                 start++;
                 first = contextIdToNumOfEventsList.get(start);
+                numOfHandledContextIds++;
             }
 
             Pair<Integer, Set<String>> totalNumOfItemsToContextIdsPair = new Pair<>(totalNumOfItems, contextIds);

@@ -16,6 +16,8 @@ import static junit.framework.Assert.assertTrue;
 public class PaginationServiceTest {
 
     private List<Pair<Set<String>, Pair<Integer, Integer>>> list;
+    private static final int PAGE_SIZE = 30;
+    private static final int MAX_GROUP_SIZE = 4;
 
     @Before
     public void initialize() {
@@ -64,8 +66,6 @@ public class PaginationServiceTest {
      */
     @Test
     public void test_pagination_service() {
-        int pageSize = 30;
-        int maxGroupSize = 4;
 
         //String - contextId
         // List<SimpleUserEvent> - list of SimpleUserEvent
@@ -73,7 +73,7 @@ public class PaginationServiceTest {
         SimpleUserEventStore.addDefaultValues(simpleUserEventsMap);
         SimpleUserEventStore<SimpleUserEvent> store = new SimpleUserEventStore<>(simpleUserEventsMap);
 
-        PaginationService<SimpleUserEvent> paginationService = new SimpleUserEventPaginationService(store, pageSize, maxGroupSize);
+        PaginationService<SimpleUserEvent> paginationService = new SimpleUserEventPaginationService(store, PAGE_SIZE, MAX_GROUP_SIZE);
 
         TimeRange timeRange = new TimeRange(Instant.now(), Instant.now());
 
@@ -81,13 +81,10 @@ public class PaginationServiceTest {
 
         assertTrue(pageIterators.size() == 3);
 
-        Iterator<PageIterator<SimpleUserEvent>> simpleUserEventPageIterator = pageIterators.iterator();
-
         //foreach pageIterator get pages.
         // get amount of pages in iterator.
         //foreach page get contextId list and simpleUserEvents list.
-        while (simpleUserEventPageIterator.hasNext()) {
-            PageIterator<SimpleUserEvent> pageIterator = simpleUserEventPageIterator.next();
+        for (PageIterator<SimpleUserEvent> pageIterator : pageIterators) {
             List<SimpleUserEvent> simpleUserEventsList = new ArrayList<>();
             Set<String> contextIdSet = new HashSet<>();
             int amountOfPages = 0;
