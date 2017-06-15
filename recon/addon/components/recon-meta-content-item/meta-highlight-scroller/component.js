@@ -18,11 +18,8 @@ const MetaHighlightStatus = Component.extend({
 
   index: 0,
 
-  @gt('index', 0)
-  showPrevious: false,
-
-  @computed('index', 'numberOfHighlightedMetas')
-  showNext: (index, numMetas) => index < numMetas - 1,
+  @gt('numberOfHighlightedMetas', 1)
+  showControls: false,
 
   @gt('numberOfHighlightedMetas', 0)
   hasMatches: false,
@@ -71,8 +68,20 @@ const MetaHighlightStatus = Component.extend({
     $parent.find('.scroll-box').animate({ scrollTop }, 1000);
   },
 
-  _moveIndex(mover) {
-    this[mover]('index');
+  _moveIndex(newIndex) {
+    const numberOfHighlightedMetas = this.get('numberOfHighlightedMetas');
+    if (newIndex === numberOfHighlightedMetas) {
+      // If incremented past number, then set index back to 0
+      // they have wrapped around the result set
+      this.set('index', 0);
+    } else if (newIndex < 0) {
+      // if decremented before the beginning, then set index
+      // to end, the have wrapped around the result set
+      this.set('index', numberOfHighlightedMetas - 1);
+    } else {
+      this.set('index', newIndex);
+    }
+
     // users can get spammy, debouce this to
     // fast scroll the list if they click a bunch
     // otherwise 20 clicks = 20 seconds as it animates each one
@@ -81,11 +90,11 @@ const MetaHighlightStatus = Component.extend({
 
   actions: {
     next() {
-      this._moveIndex('incrementProperty');
+      this._moveIndex(this.get('index') + 1);
     },
 
     prev() {
-      this._moveIndex('decrementProperty');
+      this._moveIndex(this.get('index') - 1);
     }
   }
 

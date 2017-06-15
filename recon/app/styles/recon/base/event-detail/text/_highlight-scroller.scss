@@ -4,9 +4,9 @@
   @include rsa-font(body, small);
   background-color: rsa-color(blue);
   z-index: 1000;
-  padding: 4px 18px; 
+  padding: 4px 18px;
   text-align: center;
-  top: 23px;
+  bottom: -23px;
   color: rsa-color(gray, lightest);
   line-height: 1.28rem;
 

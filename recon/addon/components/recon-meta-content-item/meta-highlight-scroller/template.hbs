@@ -1,14 +1,11 @@
 <span class='results'>{{shownIndex}} {{t 'recon.meta.scroller.of'}} {{numberOfHighlightedMetas}} {{t 'recon.meta.scroller.results'}}</span>
 
 {{#if hasMatches}}
-  {{#if showPrevious}}
+  {{#if showControls}}
     <a {{action "prev"}}>{{rsa-icon name="arrow-up-12"}}</a>
-  {{else}}
-    <a class="disabled">{{rsa-icon name="arrow-up-12"}}</a>
-  {{/if}}
-  {{#if showNext}}
     <a {{action "next"}}>{{rsa-icon name="arrow-down-12"}}</a>
   {{else}}
+    <a class="disabled">{{rsa-icon name="arrow-up-12"}}</a>
     <a class="disabled">{{rsa-icon name="arrow-down-12"}}</a>
   {{/if}}
 {{/if}}

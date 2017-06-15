@@ -195,11 +195,6 @@ export default Component.extend(SelectionTooltip, {
     // force this in.
     const text = prepareTextForDisplay(chunk, mth);
 
-    // append the next batch of text and remove the
-    // text node that creates an extra space between
-    // this batch and the previous
-    const $contents = this.$('.text-container').contents();
-
     // text.string.split('').forEach((c) => {
     //   const charCode = c.charCodeAt(0);
     //   if (!this._map[charCode]) {
@@ -210,7 +205,6 @@ export default Component.extend(SelectionTooltip, {
     // });
 
     this.$('.text-container').append(text.string);
-    $contents.get($contents.length - 1).remove();
     const percentRendered = Math.ceil((this.$('.text-container').text().length / packetText.length) * 100);
 
     // save/send notifications about the amount of text that has
