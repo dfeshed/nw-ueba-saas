@@ -1,7 +1,7 @@
 package fortscale.entity.event.config;
 
-import fortscale.aggregation.util.MongoDbUtilServiceConfig;
 import fortscale.entity.event.EntityEventMongoStore;
+import fortscale.utils.mongodb.util.MongoDbUtilServiceConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;

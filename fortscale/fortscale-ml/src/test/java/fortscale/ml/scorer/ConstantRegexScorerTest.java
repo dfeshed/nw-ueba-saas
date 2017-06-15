@@ -1,32 +1,34 @@
 package fortscale.ml.scorer;
 
-
-import fortscale.common.event.Event;
-import fortscale.common.event.EventMessage;
-import fortscale.common.feature.Feature;
-import fortscale.common.feature.extraction.FeatureExtractService;
-import fortscale.domain.core.FeatureScore;
+import fortscale.domain.feature.score.FeatureScore;
 import fortscale.ml.scorer.params.ConstantRegexScorerParams;
-import net.minidev.json.JSONObject;
+import fortscale.ml.scorer.record.JsonAdeRecord;
+import fortscale.ml.scorer.record.JsonAdeRecordReader;
+import fortscale.utils.factory.FactoryService;
+import fortscale.utils.recordreader.RecordReader;
+import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit4.SpringRunner;
+import presidio.ade.domain.record.AdeRecord;
 
-import static org.mockito.Matchers.any;
+import java.time.Instant;
+
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 
-@RunWith(SpringJUnit4ClassRunner.class)
+@RunWith(SpringRunner.class)
 @ContextConfiguration(locations = {"classpath*:META-INF/spring/scorer-tests-context.xml"})
 public class ConstantRegexScorerTest {
 
-    @Autowired
-    FeatureExtractService featureExtractService;
+    @MockBean
+    FactoryService<RecordReader<AdeRecord>> recordReaderFactoryService;
 
     ConstantRegexScorer createConstantRegexScorer(ConstantRegexScorerParams params) {
-        return new ConstantRegexScorer(params.getName(), params.getRegexFieldName(), params.getRegexPattern(), params.getConstantScore());
+        return new ConstantRegexScorer(params.getName(), params.getRegexFieldName(), params.getRegexPattern(), params.getConstantScore(), recordReaderFactoryService);
     }
 
     private void assertScorerParams(ConstantRegexScorer scorer, ConstantRegexScorerParams params) {
@@ -36,11 +38,10 @@ public class ConstantRegexScorerTest {
         Assert.assertEquals(params.getRegexFieldName(), scorer.getRegexFieldName());
     }
 
-    private EventMessage buildEventMessage(String fieldName, Object fieldValue){
-        JSONObject jsonObject = null;
-        jsonObject = new JSONObject();
+    private AdeRecord buildAdeRecord(String fieldName, Object fieldValue) {
+        JSONObject jsonObject = new JSONObject();
         jsonObject.put(fieldName, fieldValue);
-        return new EventMessage(jsonObject);
+        return new JsonAdeRecord(Instant.now(), jsonObject);
     }
 
     //================================================================
@@ -57,19 +58,19 @@ public class ConstantRegexScorerTest {
     @Test(expected = IllegalArgumentException.class)
     public void constructor_null_name_test() {
         ConstantRegexScorerParams params = new ConstantRegexScorerParams().setName(null);
-        ConstantRegexScorer scorer = createConstantRegexScorer(params);
+        createConstantRegexScorer(params);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void constructor_empty_name_test() {
         ConstantRegexScorerParams params = new ConstantRegexScorerParams().setName("");
-        ConstantRegexScorer scorer = createConstantRegexScorer(params);
+        createConstantRegexScorer(params);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void constructor_blank_name_test() {
         ConstantRegexScorerParams params = new ConstantRegexScorerParams().setName(" ");
-        ConstantRegexScorer scorer = createConstantRegexScorer(params);
+        createConstantRegexScorer(params);
     }
 
     //================================================================
@@ -78,19 +79,19 @@ public class ConstantRegexScorerTest {
     @Test(expected = IllegalArgumentException.class)
     public void constructor_null_featureFieldName_test() {
         ConstantRegexScorerParams params = new ConstantRegexScorerParams().setRegexFieldName(null);
-        ConstantRegexScorer scorer = createConstantRegexScorer(params);
+        createConstantRegexScorer(params);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void constructor_empty_featureFieldName_test() {
         ConstantRegexScorerParams params = new ConstantRegexScorerParams().setRegexFieldName("");
-        ConstantRegexScorer scorer = createConstantRegexScorer(params);
+        createConstantRegexScorer(params);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void constructor_blank_featureFieldName_test() {
         ConstantRegexScorerParams params = new ConstantRegexScorerParams().setRegexFieldName("   ");
-        ConstantRegexScorer scorer = createConstantRegexScorer(params);
+        createConstantRegexScorer(params);
     }
 
     //================================================================
@@ -99,25 +100,25 @@ public class ConstantRegexScorerTest {
     @Test(expected = IllegalArgumentException.class)
     public void constructor_null_regexPattern_test() {
         ConstantRegexScorerParams params = new ConstantRegexScorerParams().setRegexPatternString(null);
-        ConstantRegexScorer scorer = createConstantRegexScorer(params);
+        createConstantRegexScorer(params);
     }
 
     @Test
     public void constructor_empty_regexPattern_test() {
         ConstantRegexScorerParams params = new ConstantRegexScorerParams().setRegexPatternString("");
-        ConstantRegexScorer scorer = createConstantRegexScorer(params);
+        createConstantRegexScorer(params);
     }
 
     @Test
     public void constructor_blank_regexPattern_test() {
         ConstantRegexScorerParams params = new ConstantRegexScorerParams().setRegexPatternString("    ");
-        ConstantRegexScorer scorer = createConstantRegexScorer(params);
+        createConstantRegexScorer(params);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void constructor_invalid_regexPattern_test() {
         ConstantRegexScorerParams params = new ConstantRegexScorerParams().setRegexPatternString("[[]]");
-        ConstantRegexScorer scorer = createConstantRegexScorer(params);
+        createConstantRegexScorer(params);
     }
 
     //================================================================
@@ -126,13 +127,13 @@ public class ConstantRegexScorerTest {
     @Test(expected = IllegalArgumentException.class)
     public void constructor_negative_constantScore_test() {
         ConstantRegexScorerParams params = new ConstantRegexScorerParams().setConstantScore(-1);
-        ConstantRegexScorer scorer = createConstantRegexScorer(params);
+        createConstantRegexScorer(params);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void constructor_larger_then_100_constantScore_test() {
         ConstantRegexScorerParams params = new ConstantRegexScorerParams().setConstantScore(101);
-        ConstantRegexScorer scorer = createConstantRegexScorer(params);
+        createConstantRegexScorer(params);
     }
 
     //================================================================
@@ -142,40 +143,29 @@ public class ConstantRegexScorerTest {
     public void calculateScore_matching_pattern_test() throws Exception {
         ConstantRegexScorerParams params = new ConstantRegexScorerParams().setRegexPatternString("[mynaeisgotyuklfthrpd]+");
         ConstantRegexScorer scorer = createConstantRegexScorer(params);
-        String fieldName = "username";
-        String fieldValue = "mynameisinigomontoyayoukillmyfatherpreparetodie";
-        EventMessage eventMessage = buildEventMessage(fieldName, fieldValue);
-        Feature feature = new Feature(fieldName, fieldValue);
-        when(featureExtractService.extract(any(String.class), any(Event.class))).thenReturn(feature);
-        FeatureScore featureScore = scorer.calculateScore(eventMessage, 0l);
+
+        AdeRecord record = buildAdeRecord(params.getRegexFieldName(), "mynameisinigomontoyayoukillmyfatherpreparetodie");
+        when(recordReaderFactoryService.getDefaultProduct(eq(record.getAdeRecordType()))).thenReturn(new JsonAdeRecordReader());
+        FeatureScore featureScore = scorer.calculateScore(record);
         Assert.assertEquals((double)params.getConstantScore(), featureScore.getScore(), 0.0);
 
-        fieldValue = "mynameisinigomontoyayoukillmyfatherpreparetodie2";
-        eventMessage = buildEventMessage(fieldName, fieldValue);
-        feature = new Feature(fieldName, fieldValue);
-        when(featureExtractService.extract(any(String.class), any(Event.class))).thenReturn(feature);
-        featureScore = scorer.calculateScore(eventMessage, 0l);
+        record = buildAdeRecord(params.getRegexFieldName(), "mynameisinigomontoyayoukillmyfatherpreparetodie2");
+        featureScore = scorer.calculateScore(record);
         Assert.assertNull(featureScore);
-
     }
 
     @Test
-    public void calculateScore_matching_pattern2_test() throws Exception{
+    public void calculateScore_matching_pattern2_test() throws Exception {
         ConstantRegexScorerParams params = new ConstantRegexScorerParams().setRegexPatternString("[a-u]{1,3}");
         ConstantRegexScorer scorer = createConstantRegexScorer(params);
-        String fieldName = "username";
-        String fieldValue = "ave";
-        EventMessage eventMessage = buildEventMessage(fieldName, fieldValue);
-        Feature feature = new Feature(fieldName, fieldValue);
-        when(featureExtractService.extract(any(String.class), any(Event.class))).thenReturn(feature);
-        FeatureScore featureScore = scorer.calculateScore(eventMessage, 0l);
+
+        AdeRecord record = buildAdeRecord(params.getRegexFieldName(), "ave");
+        when(recordReaderFactoryService.getDefaultProduct(eq(record.getAdeRecordType()))).thenReturn(new JsonAdeRecordReader());
+        FeatureScore featureScore = scorer.calculateScore(record);
         Assert.assertNull(featureScore);
 
-        fieldValue = "avee";
-        eventMessage = buildEventMessage(fieldName, fieldValue);
-        feature = new Feature(fieldName, fieldValue);
-        when(featureExtractService.extract(any(String.class), any(Event.class))).thenReturn(feature);
-        featureScore = scorer.calculateScore(eventMessage, 0l);
+        record = buildAdeRecord(params.getRegexFieldName(), "avee");
+        featureScore = scorer.calculateScore(record);
         Assert.assertNull(featureScore);
     }
 

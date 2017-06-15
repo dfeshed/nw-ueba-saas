@@ -1,27 +1,15 @@
 package fortscale.ml.scorer;
 
-
-import fortscale.common.event.EventMessage;
-import fortscale.domain.core.FeatureScore;
+import fortscale.domain.feature.score.FeatureScore;
 import fortscale.ml.scorer.params.PriorityScorerParams;
-import net.minidev.json.JSONObject;
+import fortscale.ml.scorer.record.JsonAdeRecord;
 import org.junit.Assert;
 import org.junit.Test;
+import presidio.ade.domain.record.AdeRecord;
 
 public class PriorityScorerContainerTest {
-
-    static private double delta = 0.000000001;
-
-
     private PriorityScorerContainer createPriorityScorerContainer(PriorityScorerParams params) {
         return new PriorityScorerContainer(params.getName(), params.getScorerList());
-    }
-
-    protected EventMessage buildEventMessage(String fieldName, Object fieldValue){
-        JSONObject jsonObject = null;
-        jsonObject = new JSONObject();
-        jsonObject.put(fieldName, fieldValue);
-        return new EventMessage(jsonObject);
     }
 
     public static void assertScorerParams(PriorityScorerParams params, PriorityScorerContainer scorer) {
@@ -30,11 +18,11 @@ public class PriorityScorerContainerTest {
     }
 
 
-    private void testScore(PriorityScorerContainer scorer, EventMessage eventMessage, PriorityScorerParams params, Double expectedScore) throws Exception{
+    private void testScore(PriorityScorerContainer scorer, AdeRecord eventMessage, PriorityScorerParams params, Double expectedScore) throws Exception {
         assertScorerParams(params, scorer);
-        FeatureScore score = scorer.calculateScore(eventMessage, 0);
+        FeatureScore score = scorer.calculateScore(eventMessage);
         Assert.assertNotNull(score);
-        Assert.assertEquals(expectedScore, score.getScore(), delta);
+        Assert.assertEquals(expectedScore, score.getScore(), 0.000000001);
     }
 
     //==================================================================================================================
@@ -51,31 +39,31 @@ public class PriorityScorerContainerTest {
     @Test(expected = IllegalArgumentException.class)
     public void constructor_null_name_test() {
         PriorityScorerParams params = new PriorityScorerParams().addScorer(new SimpleTestScorer(50.0, "first scorer")).setName(null);
-        PriorityScorerContainer scorer = createPriorityScorerContainer(params);
+        createPriorityScorerContainer(params);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void constructor_empty_name_test() {
         PriorityScorerParams params = new PriorityScorerParams().addScorer(new SimpleTestScorer(50.0, "first scorer")).setName("");
-        PriorityScorerContainer scorer = createPriorityScorerContainer(params);
+        createPriorityScorerContainer(params);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void constructor_blank_name_test() {
         PriorityScorerParams params = new PriorityScorerParams().addScorer(new SimpleTestScorer(50.0, "first scorer")).setName(" ");
-        PriorityScorerContainer scorer = createPriorityScorerContainer(params);
+        createPriorityScorerContainer(params);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void constructor_null_scorerList_test() {
         PriorityScorerParams params = new PriorityScorerParams().setScorerParamsList(null);
-        PriorityScorerContainer scorer = createPriorityScorerContainer(params);
+        createPriorityScorerContainer(params);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void constructor_empty_scorerList_test() {
         PriorityScorerParams params = new PriorityScorerParams();
-        PriorityScorerContainer scorer = createPriorityScorerContainer(params);
+        createPriorityScorerContainer(params);
     }
 
     //==================================================================================================================
@@ -90,7 +78,7 @@ public class PriorityScorerContainerTest {
                 .addScorer(new SimpleTestScorer(90.0, "second scorer"));
 
         PriorityScorerContainer scorer = createPriorityScorerContainer(params);
-        testScore(scorer, buildEventMessage("field1", "value1"), params, 100.0);
+        testScore(scorer, JsonAdeRecord.getJsonAdeRecord("field1", "value1"), params, 100.0);
     }
 
     @Test
@@ -99,7 +87,7 @@ public class PriorityScorerContainerTest {
                 .addScorer(new SimpleTestScorer(90.0, "first scorer"));
 
         PriorityScorerContainer scorer = createPriorityScorerContainer(params);
-        testScore(scorer, buildEventMessage("field1", "value1"), params, 90.0);
+        testScore(scorer, JsonAdeRecord.getJsonAdeRecord("field1", "value1"), params, 90.0);
     }
 
 
@@ -110,7 +98,7 @@ public class PriorityScorerContainerTest {
                 .addScorer(new SimpleTestScorer(100.0, "second scorer"));
 
         PriorityScorerContainer scorer = createPriorityScorerContainer(params);
-        testScore(scorer, buildEventMessage("field1", "value1"), params, 90.0);
+        testScore(scorer, JsonAdeRecord.getJsonAdeRecord("field1", "value1"), params, 90.0);
     }
 
     @Test
@@ -121,7 +109,7 @@ public class PriorityScorerContainerTest {
                 .addScorer(new SimpleTestScorer(50.0, "third scorer"));
 
         PriorityScorerContainer scorer = createPriorityScorerContainer(params);
-        testScore(scorer, buildEventMessage("field1", "value1"), params, 100.0);
+        testScore(scorer, JsonAdeRecord.getJsonAdeRecord("field1", "value1"), params, 100.0);
     }
 
     @Test
@@ -132,5 +120,6 @@ public class PriorityScorerContainerTest {
                 .addScorer(new SimpleTestScorer(100.0, "third scorer"));
 
         PriorityScorerContainer scorer = createPriorityScorerContainer(params);
-        testScore(scorer, buildEventMessage("field1", "value1"), params, 50.0);
-    }}
+        testScore(scorer, JsonAdeRecord.getJsonAdeRecord("field1", "value1"), params, 50.0);
+    }
+}

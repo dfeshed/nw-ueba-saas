@@ -3,7 +3,7 @@ package fortscale.ml.model.retriever;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.common.feature.Feature;
 import fortscale.common.util.GenericHistogram;
-import fortscale.domain.core.EntityEvent;
+import fortscale.domain.SMART.EntityEvent;
 import fortscale.entity.event.*;
 import fortscale.ml.model.ModelBuilderData;
 import fortscale.ml.model.ModelBuilderData.NoDataReason;

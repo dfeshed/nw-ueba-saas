@@ -11,8 +11,7 @@ import org.apache.commons.lang.StringUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
@@ -162,7 +161,7 @@ public class CategoryRarityModelScorerAlgorithmTest extends AbstractScorerTest {
         FEATURE_COUNT
     }
 
-    private void assertMonotonicity(List<List<Double>> scoresSeries, @Nullable Boolean shouldIncrease) {
+    private void assertMonotonicity(List<List<Double>> scoresSeries, Boolean shouldIncrease) {
         boolean hasStrongMonotonicity = false;
         for (List<Double> scores : scoresSeries) {
             if (scores.isEmpty()) {
@@ -184,7 +183,7 @@ public class CategoryRarityModelScorerAlgorithmTest extends AbstractScorerTest {
         }
     }
 
-    private void assertMonotonicity(@Nonnull double[][][] scores, PARAMETER overParameter, @Nullable Boolean shouldIncrease) {
+    private void assertMonotonicity(double[][][] scores, PARAMETER overParameter, Boolean shouldIncrease) {
         List<List<Double>> scoresSeries = new ArrayList<>();
         if (overParameter == PARAMETER.MAX_RARE_COUNT) {
             for (int maxNumOfRareFeaturesInd = 0; maxNumOfRareFeaturesInd < scores[0].length; maxNumOfRareFeaturesInd++) {

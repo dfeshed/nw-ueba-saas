@@ -24,47 +24,35 @@ import java.util.regex.Pattern;
  */
 
 public class ProcessInfoServiceImpl implements ProcessInfoService {
-    private static final Logger logger = Logger.getLogger(ProcessInfoServiceImpl.class);
     public static final int DEFAULT_MAX_PROCESS_INSTANCES = 15;
     public static final String JAVA_PROCESS_COMMAND = "java";
-
+    private static final Logger logger = Logger.getLogger(ProcessInfoServiceImpl.class);
+    // process exit code. 0 = exit normally
+    private static int exitCode = 0;
     // pidfiles base path (NOTE must match paths at LinuxCollectorsServicesImplProperties)
     private final String PID_BASE_FILE_PATH = "/var/run/fortscale";
     private final String CONFIG_PATH = "/home/cloudera/fortscale/config";
     private final String SEQUENCED_PID_FILE_NAME_FORMAT = "%s_%s.pid";
-
-    // Process name
-    private String processName;
-
-    // Process group name
-    private String processGroupName;
-
-    // Process type
-    private ProcessType processType;
-
-    // Process PID
-    private long pid;
-
-    // Pid file path
-    private String pidFilePath;
-
-    // Pid file directory
-    private String pidDir;
-
-    // multiple process can run together. in this case we will create a sequenced instance pid files
-    private boolean isMultiProcess;
-
-    // the sequence number in case of multiProcess, default is 0;
-    private String processInstanceNumber;
-
-    // maximum process instances running at the same moment;
-    private long maxProcessInstances;
-
     // std spring properties
     Properties springProperties = new Properties();
-
-    // process exit code. 0 = exit normally
-    private static int exitCode = 0;
+    // Process name
+    private String processName;
+    // Process group name
+    private String processGroupName;
+    // Process type
+    private ProcessType processType;
+    // Process PID
+    private long pid;
+    // Pid file path
+    private String pidFilePath;
+    // Pid file directory
+    private String pidDir;
+    // multiple process can run together. in this case we will create a sequenced instance pid files
+    private boolean isMultiProcess;
+    // the sequence number in case of multiProcess, default is 0;
+    private String processInstanceNumber;
+    // maximum process instances running at the same moment;
+    private long maxProcessInstances;
 
     /**
      * c'tor
@@ -107,6 +95,36 @@ public class ProcessInfoServiceImpl implements ProcessInfoService {
      */
     public ProcessInfoServiceImpl(String processName, String processGroupName, ProcessType processType) {
         this(processName, processGroupName, processType, false);
+    }
+
+    /**
+     * @param name - pid file name, should be from patter processName_InstanceNumber.pid
+     * @return instance number of pid file
+     */
+    public static int extractProcessInstanceNumber(String name) {
+        int instanceNumber;
+        try {
+            String regex = ".*_([\\d]{3})\\.pid";
+            Pattern pattern = Pattern.compile(regex);
+            Matcher matcher = pattern.matcher(name);
+            if (!matcher.find()) {
+                return 0;
+            }
+            instanceNumber = Integer.parseInt(matcher.group(1));
+        } catch (Exception e) {
+            instanceNumber = 0; // if filename does not match the format
+            logger.info("unable to parse process instance from pid file name={}", name);
+            logger.error("exception value={}", e);
+            // then default to 0
+        }
+        return instanceNumber;
+    }
+
+    public static void exit(int exitCode) {
+        ProcessInfoServiceImpl.exitCode = exitCode;
+        Thread.currentThread().interrupt();
+
+        System.exit(ProcessInfoServiceImpl.exitCode);
     }
 
     /**
@@ -182,7 +200,7 @@ public class ProcessInfoServiceImpl implements ProcessInfoService {
                 return false;
             }
 
-            String command = Files.lines(processCommandFilePath).findFirst().get();
+            String command = Files.lines(processCommandFilePath).findFirst().orElseThrow(() -> new RuntimeException());
             if(!command.contains(JAVA_PROCESS_COMMAND))
             {
                 logger.debug("process for pid={} is not a java process",pid);
@@ -206,10 +224,9 @@ public class ProcessInfoServiceImpl implements ProcessInfoService {
     public int readPidFile(File file) {
         int pid = -1;
         try {
-            pid = Integer.parseInt(Files.lines(file.toPath()).findFirst().get());
+            pid = Integer.parseInt(Files.lines(file.toPath()).findFirst().orElseThrow(() -> new RuntimeException()));
         } catch (IOException e) {
             logger.warn("could not read pid from file {}",file.getAbsolutePath(), e);
-            return pid;
         }
         return pid;
     }
@@ -294,7 +311,7 @@ public class ProcessInfoServiceImpl implements ProcessInfoService {
                     try {
                         logger.warn("deleting pidFile={} of pid={} since process is not running", filePath.toString(), Files.lines(filePath).findFirst());
                     } catch (IOException e) {
-                        logger.warn("could not read pid from pidFile={}", filePath.toString());
+                        logger.warn("could not read pid from pidFile={}", filePath, e);
                     }
                     deletePidFile(file.getAbsolutePath());
                 }
@@ -353,30 +370,6 @@ public class ProcessInfoServiceImpl implements ProcessInfoService {
     }
 
     /**
-     *
-     * @param name - pid file name, should be from patter processName_InstanceNumber.pid
-     * @return instance number of pid file
-     */
-    public static int extractProcessInstanceNumber(String name) {
-        int instanceNumber;
-        try {
-            String regex = ".*_([\\d]{3})\\.pid";
-            Pattern pattern = Pattern.compile(regex);
-            Matcher matcher = pattern.matcher(name);
-            if (!matcher.find()) {
-                return 0;
-            }
-            instanceNumber = Integer.parseInt(matcher.group(1));
-        } catch (Exception e) {
-            instanceNumber = 0; // if filename does not match the format
-            logger.info("unable to parse process instance from pid file name={}", name);
-            // then default to 0
-        }
-        return instanceNumber;
-    }
-
-
-    /**
      * creates pid file
      */
     protected void createPidFile() {
@@ -385,7 +378,7 @@ public class ProcessInfoServiceImpl implements ProcessInfoService {
         }
         long pid = getCurrentPid();
         logger.info("executing: create pid file {}", pidFilePath);
-        PrintWriter writer;
+        PrintWriter writer=null;
         try {
             File pidFile = new File(pidFilePath);
             File pidDirectory = pidFile.getParentFile();
@@ -405,12 +398,16 @@ public class ProcessInfoServiceImpl implements ProcessInfoService {
             }
             writer = new PrintWriter(pidFile);
             writer.println(pid);
-            writer.close();
+
             logger.info("pid file {} created successfully", pidFilePath);
 
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw new ErrorAccessingPidFile(pidFilePath);
+        }
+        finally {
+            if(writer!=null)
+                writer.close();
         }
     }
 
@@ -427,14 +424,6 @@ public class ProcessInfoServiceImpl implements ProcessInfoService {
     @Override
     public String getCurrentProcessInstanceNumber() {
         return processInstanceNumber;
-    }
-
-
-    public static void exit(int exitCode) {
-        ProcessInfoServiceImpl.exitCode =exitCode;
-        Thread.currentThread().interrupt();
-
-        System.exit(ProcessInfoServiceImpl.exitCode );
     }
 
     /**

@@ -1,13 +1,16 @@
 package fortscale.ml.scorer.factory;
 
 import fortscale.ml.model.ModelConfService;
+import fortscale.ml.model.cache.EventModelsCacheService;
 import fortscale.ml.model.retriever.AbstractDataRetriever;
 import fortscale.ml.scorer.Scorer;
 import fortscale.ml.scorer.config.ModelInfo;
 import fortscale.ml.scorer.config.ModelScorerConf;
 import fortscale.utils.factory.AbstractServiceAutowiringFactory;
 import fortscale.utils.factory.FactoryService;
+import fortscale.utils.recordreader.RecordReader;
 import org.springframework.beans.factory.annotation.Autowired;
+import presidio.ade.domain.record.AdeRecord;
 
 public abstract class AbstractModelScorerFactory extends AbstractServiceAutowiringFactory<Scorer> {
     @Autowired
@@ -15,6 +18,12 @@ public abstract class AbstractModelScorerFactory extends AbstractServiceAutowiri
 
     @Autowired
     protected ModelConfService modelConfService;
+
+    @Autowired
+    protected FactoryService<RecordReader<AdeRecord>> recordReaderFactoryService;
+
+    @Autowired
+    protected EventModelsCacheService eventModelsCacheService;
 
     protected void validateModelScorerConf(ModelScorerConf modelScorerConf) {
         ModelInfo modelInfo = modelScorerConf.getModelInfo();

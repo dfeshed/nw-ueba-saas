@@ -1,2 +1,0 @@
-﻿savedQuery: select StartTime,%s from events where TEXT SEARCH 'dhcpd' order by StartTime asc START \'%s\' STOP\'%s\'
-returnKeys: utf8(payload)

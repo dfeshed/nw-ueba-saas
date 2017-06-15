@@ -1,25 +1,37 @@
 package fortscale.ml.scorer.factory;
 
-import fortscale.common.event.Event;
-import fortscale.domain.core.FeatureScore;
+import fortscale.common.feature.extraction.FeatureExtractService;
+import fortscale.domain.feature.score.FeatureScore;
+import fortscale.ml.model.ModelConfService;
+import fortscale.ml.model.cache.ModelsCacheService;
 import fortscale.ml.scorer.ReductionScorer;
 import fortscale.ml.scorer.Scorer;
 import fortscale.ml.scorer.config.IScorerConf;
 import fortscale.ml.scorer.config.ReductionScorerConf;
 import fortscale.ml.scorer.config.ReductionScorerConfParams;
-import fortscale.utils.factory.FactoryConfig;
 import fortscale.utils.factory.FactoryService;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit4.SpringRunner;
+import presidio.ade.domain.record.AdeRecord;
 
 
-@RunWith(SpringJUnit4ClassRunner.class)
+@RunWith(SpringRunner.class)
 @ContextConfiguration(locations = {"classpath*:META-INF/spring/scorer-factory-tests-context.xml"})
 public class ReductionScorerFactoryTest {
+
+    @MockBean
+    ModelConfService modelConfService;
+
+    @MockBean
+    ModelsCacheService modelCacheService;
+
+    @MockBean
+    FeatureExtractService featureExtractService;
 
     @Autowired
     ReductionScorerFactory reductionScorerFactory;
@@ -30,12 +42,7 @@ public class ReductionScorerFactoryTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void confNotOfExpectedType() {
-        reductionScorerFactory.getProduct(new FactoryConfig() {
-            @Override
-            public String getFactoryName() {
-                return null;
-            }
-        });
+        reductionScorerFactory.getProduct(() -> null);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -64,7 +71,7 @@ public class ReductionScorerFactoryTest {
 
         scorerFactoryService.register(dummyConf1.getFactoryName(), factoryConfig -> new Scorer() {
             @Override
-            public FeatureScore calculateScore(Event eventMessage, long eventEpochTimeInSec) throws Exception {
+            public FeatureScore calculateScore(AdeRecord record) {
                 return null;
             }
 
@@ -76,7 +83,7 @@ public class ReductionScorerFactoryTest {
 
         scorerFactoryService.register(dummyConf2.getFactoryName(), factoryConfig -> new Scorer() {
             @Override
-            public FeatureScore calculateScore(Event eventMessage, long eventEpochTimeInSec) throws Exception {
+            public FeatureScore calculateScore(AdeRecord record) {
                 return null;
             }
 

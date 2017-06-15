@@ -1,8 +1,10 @@
 package fortscale.ml.scorer;
 
-import fortscale.common.event.Event;
-import fortscale.domain.core.FeatureScore;
+import fortscale.domain.feature.score.FeatureScore;
+import fortscale.utils.factory.FactoryService;
+import fortscale.utils.recordreader.RecordReader;
 import org.springframework.util.Assert;
+import presidio.ade.domain.record.AdeRecord;
 
 import java.util.regex.Pattern;
 
@@ -15,19 +17,21 @@ public class ConstantRegexScorer extends RegexScorer{
 		Assert.isTrue(constantScore>=0 && constantScore <= 100, String.format(INVALID_CONSTANT_SCORE_ERROR_MSG, constantScore));
 	}
 
-	public ConstantRegexScorer(String scorerName, String featureFieldName, Pattern regexPattern, int constantScore) {
-		super(scorerName, featureFieldName, regexPattern);
+	public ConstantRegexScorer(String scorerName, String featureFieldName, Pattern regexPattern, int constantScore,
+							   FactoryService<RecordReader<AdeRecord>> recordReaderFactoryService) {
+
+		super(scorerName, featureFieldName, regexPattern, recordReaderFactoryService);
 		assertConstantScoreValue(constantScore);
 		this.constantScore = constantScore;
 	}
 
 	@Override
-	public FeatureScore calculateScore(Event event, long eventEpochTimeInSec) throws Exception {
+	public FeatureScore calculateScore(AdeRecord record) {
 		FeatureScore ret = null;
-		if(matches(event)){
+		if (matches(record)) {
 			ret = new FeatureScore(getName(), (double) constantScore);
 		}
-		
+
 		return ret;
 	}
 

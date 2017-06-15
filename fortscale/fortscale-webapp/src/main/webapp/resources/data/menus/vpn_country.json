@@ -1,0 +1,33 @@
+{
+    "id": "vpn_country",
+    "items": [
+        {
+            "text": "Investigate all VPN logins from {{countryname}}",
+            "onSelect": [
+                {
+                    "action": "innerUrl",
+                    "actionOptions": {
+						"url": "/d/explore/vpn?filters=vpn.country_code%3D{{countrycode}}"
+                    }
+                },
+                {
+                    "action": "closeAllPopups"
+                }
+            ]
+        },
+        {
+            "text": "Investigate all {{displayname}}'s VPN logins from {{countryname}}",
+            "onSelect": [
+                {
+                    "action": "innerUrl",
+                    "actionOptions": {
+						"url": "/d/explore/vpn?filters=vpn.country_code%3D{{countrycode}},vpn.username%3D{{username}}"
+                    }
+                },
+                {
+                    "action": "closeAllPopups"
+                }
+            ]
+        }
+    ]
+}

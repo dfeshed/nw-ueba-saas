@@ -1,10 +1,9 @@
 package fortscale.ml.scorer.params;
 
-
-import fortscale.common.event.Event;
-import fortscale.domain.core.FeatureScore;
+import fortscale.domain.feature.score.FeatureScore;
 import fortscale.ml.scorer.Scorer;
 import fortscale.ml.scorer.config.IScorerConf;
+import presidio.ade.domain.record.AdeRecord;
 
 public interface ScorerParams {
     String getScorerConfJsonString();
@@ -12,7 +11,7 @@ public interface ScorerParams {
     default Scorer getScorer() {
         return new Scorer() {
             @Override
-            public FeatureScore calculateScore(Event eventMessage, long eventEpochTimeInSec) throws Exception {
+            public FeatureScore calculateScore(AdeRecord record) {
                 return null;
             }
 
@@ -23,7 +22,7 @@ public interface ScorerParams {
         };
     }
 
-    default public IScorerConf getScorerConf() {
+    default IScorerConf getScorerConf() {
         return new IScorerConf() {
             @Override
             public String getName() {

@@ -1,0 +1,176 @@
+{
+    "id": "top_user_events",
+    "reportId": "user.top_user_events",
+    "title": "Top Access Events",
+	"description": "Top access events for the selected time span and minimum event score",
+    "loadingDataMessage": "Loading events",
+	"show": {
+		"conditions": [
+			{
+				"operator": "entityExists",
+				"value": "scored_access_event"
+			}
+		]
+	},
+    "views": [
+        {
+            "type": "scatterPlot",
+
+            "settings": {
+				"height": 200,
+                "timeField": "event_time",
+                "yField": "event_score",
+                "colorField": "event_score",
+                "colorScale": "score",
+                "legend": {
+                    "position": "right"
+                },
+                "shapes": {
+                    "field": "type"
+                },
+                "axes": {
+                    "x": {
+                        "type": "time",
+                        "timeFormat": "days",
+                        "label": "Event Time"
+                    },
+                    "y": {
+                        "label": "Score"
+                    }
+                },
+                "scales": {
+                    "x": {
+                        "type": "time"
+                    },
+                    "y": {
+                        "domain": [0, 100]
+                    }
+                },
+                "onSelect": {
+                    "action": "showTooltip",
+                    "actionOptions": {
+                        "table": {
+                            "rows": [
+                                {
+                                    "label": "Event Type",
+                                    "value": "{{type}}"
+                                },
+                                {
+                                    "label": "User",
+                                    "value": "{{username}}"
+                                },
+                                {
+                                    "label": "Source",
+                                    "value": "{{source_machine || source_ip}}"
+                                },
+                                {
+                                    "label": "Destination",
+                                    "value": "{{destination_machine}}"
+                                },
+                                {
+                                    "label": "Time",
+                                    "value": "{{event_time:date:MM/DD/YYYY HH\\:mm\\:ss}}"
+                                },
+                                {
+                                    "label": "Score",
+                                    "value": "{{event_score}}"
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "type": "table",
+            "settings": {
+                "fields": [
+                    {
+                        "name": "Type",
+                        "value": "{{type}}"
+                    },
+                    {
+                        "name": "Source",
+                        "value": "{{source_machine || source_ip}}",
+                        "icon": {
+                            "preset": "scoreBox",
+                            "presetParams": {
+                                "value": "normalized_src_machine_score"
+                            },
+                            "style": "score",
+                            "styleParams": {
+                                "value": "normalized_src_machine_score"
+                            }
+                        }
+                    },
+                    {
+                        "name": "Destination",
+                        "value": "{{destination_machine}}",
+                        "valueTooltip": "Destination hostname score: {{destination_machine_score:toFixed:2}}",
+                        "tags": "machine",
+						"noValueDisplay": "N/A",
+                        "icon": {
+                            "preset": "scoreBox",
+                            "presetParams": {
+                                "value": "destination_machine_score"
+                            },
+                            "style": "score",
+                            "styleParams": {
+                                "value": "destination_machine_score"
+                            }
+                        }
+                    },
+                    {
+                        "name": "Country",
+                        "value": "{{country:capitalize}}",
+                        "link": "#/d/explore/vpn?filters=vpn.country%3D{{country}}",
+                        "valueTooltip": "Country score: {{country_score:toFixed:2}}",
+                        "noValueDisplay": "N/A",
+                        "icon": {
+                            "preset": "scoreBox",
+                            "presetParams": {
+                                "value": "country_score"
+                            },
+                            "style": "score",
+                            "styleParams": {
+                                "value": "country_score"
+                            }
+                        }
+                    },
+                    {
+                        "name": "Time",
+                        "value": "{{event_time:date:MM/DD/YYYY HH\\:mm\\:ss}}",
+                        "valueTooltip": "Login time score: {{event_time_score:toFixed:2}}",
+                        "icon": {
+                            "preset": "scoreBox",
+                            "presetParams": {
+                                "value": "event_time_score"
+                            },
+                            "style": "score",
+                            "styleParams": {
+                                "value": "event_time_score"
+                            }
+                        }
+                    },
+                    {
+                        "name": "Score",
+                        "value": "{{event_score}}",
+                        "transform": {
+                            "method": "round"
+                        },
+                        "icon": {
+                            "preset": "scoreBox",
+                            "presetParams": {
+                                "value": "event_score"
+                            },
+                            "style": "score",
+                            "styleParams": {
+                                "value": "event_score"
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}

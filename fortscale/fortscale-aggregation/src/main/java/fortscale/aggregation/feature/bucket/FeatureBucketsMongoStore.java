@@ -1,10 +1,10 @@
 package fortscale.aggregation.feature.bucket;
 
 import com.mongodb.WriteResult;
-import fortscale.aggregation.util.MongoDbUtilService;
 import fortscale.utils.ConversionUtils;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.mongodb.FIndex;
+import fortscale.utils.mongodb.util.MongoDbUtilService;
 import fortscale.utils.monitoring.stats.StatsService;
 import fortscale.utils.time.TimestampUtils;
 import org.springframework.beans.factory.annotation.Autowired;

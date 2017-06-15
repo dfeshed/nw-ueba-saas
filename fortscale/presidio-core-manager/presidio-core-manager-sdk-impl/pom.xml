@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+
+    <name>presidio-core-manager-sdk-impl</name>
+    <description>Demo project for Spring Boot</description>
+
+    <parent>
+        <artifactId>presidio-core-manager</artifactId>
+        <groupId>fortscale</groupId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+    <artifactId>presidio-core-manager-sdk-impl</artifactId>
+    <packaging>jar</packaging>
+
+    <!--<properties>-->
+    <!--<start-class>presidio.sdk.impl.Application</start-class>-->
+    <!--</properties>-->
+
+
+    <dependencies>
+
+        <dependency>
+            <groupId>fortscale</groupId>
+            <artifactId>fortscale-utils</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>fortscale</groupId>
+            <artifactId>presidio-core-manager-sdk-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>fortscale</groupId>
+            <artifactId>presidio-input-sdk-impl</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+
+        <!--<dependency>-->
+        <!--<groupId>org.springframework.boot</groupId>-->
+        <!--<artifactId>spring-boot-starter-tomcat</artifactId>-->
+        <!--<scope>provided</scope>-->
+        <!--</dependency>-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+
+
+</project>

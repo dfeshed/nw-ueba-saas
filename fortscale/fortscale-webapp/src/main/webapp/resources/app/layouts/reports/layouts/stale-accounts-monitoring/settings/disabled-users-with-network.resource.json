@@ -1,0 +1,10 @@
+{
+    "entity": "user",
+    "params": {
+        "fromPage": "{{disabled_user_table.value.page}}",
+        "size": "{{disabled_user_table.value.pageSize}}",
+        "sort_field": "{{disabled_user_table.value.sortBy}}",
+        "sort_direction": "{{disabled_user_table.value.sortDirection}}",
+        "is_disabled_with_activity": true
+    }
+}

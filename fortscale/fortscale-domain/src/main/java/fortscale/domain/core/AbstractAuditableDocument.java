@@ -25,7 +25,7 @@ public class AbstractAuditableDocument extends AbstractDocument {
 	
     @CreatedDate
     @Field(CREATED_AT_FIELD_NAME)
-    private DateTime createdAt;
+    private DateTime creationTime;
     
 	@LastModifiedDate
 	@Field(LAST_MODIFIED_FIELD_NAME)
@@ -35,7 +35,7 @@ public class AbstractAuditableDocument extends AbstractDocument {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append(super.toString()).append(", ");
-		sb.append("CreatedAt: ").append(getCreatedAt()).append(", ");
+		sb.append("CreatedAt: ").append(getCreationTime()).append(", ");
 		sb.append("Version: ").append(getVersion()).append(", ");
 		sb.append("LastModified: ").append(getLastModified());
 		return sb.toString();
@@ -46,8 +46,8 @@ public class AbstractAuditableDocument extends AbstractDocument {
 		return version;
 	}
 
-	public DateTime getCreatedAt() {
-		return createdAt;
+	public DateTime getCreationTime() {
+		return creationTime;
 	}
 
 	public DateTime getLastModified() {

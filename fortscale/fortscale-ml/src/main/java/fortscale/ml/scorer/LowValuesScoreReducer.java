@@ -1,50 +1,57 @@
 package fortscale.ml.scorer;
 
-import fortscale.common.event.Event;
 import fortscale.common.feature.Feature;
 import fortscale.common.feature.FeatureNumericValue;
 import fortscale.common.feature.FeatureStringValue;
-import fortscale.domain.core.FeatureScore;
+import fortscale.domain.feature.score.FeatureScore;
 import fortscale.ml.scorer.config.ReductionConfiguration;
+import fortscale.utils.factory.FactoryService;
 import fortscale.utils.logging.Logger;
-import org.springframework.beans.factory.annotation.Configurable;
+import fortscale.utils.recordreader.RecordReader;
 import org.springframework.util.Assert;
+import presidio.ade.domain.record.AdeRecord;
 
 import java.util.Collections;
 import java.util.List;
 
-@Configurable(preConstruction = true)
 public class LowValuesScoreReducer extends AbstractScorer {
 	private static final Logger logger = Logger.getLogger(LowValuesScoreReducer.class);
 
 	private Scorer baseScorer;
 	private List<ReductionConfiguration> reductionConfigs;
+	private final FactoryService<RecordReader<AdeRecord>> recordReaderFactoryService;
 
-	public LowValuesScoreReducer(String name, Scorer baseScorer, List<ReductionConfiguration> reductionConfigs) {
+	public LowValuesScoreReducer(String name, Scorer baseScorer, List<ReductionConfiguration> reductionConfigs,
+								 FactoryService<RecordReader<AdeRecord>> recordReaderFactoryService) {
+
 		super(name);
-		Assert.notNull(baseScorer);
-		Assert.notNull(reductionConfigs);
+		Assert.notNull(baseScorer, "Base scorer cannot be null.");
+		Assert.notNull(reductionConfigs, "Reduction configs cannot be null.");
 		this.baseScorer = baseScorer;
+		this.recordReaderFactoryService = recordReaderFactoryService;
 		this.reductionConfigs = reductionConfigs;
 	}
 
 	@Override
-	public FeatureScore calculateScore(Event eventMessage, long eventEpochtime) throws Exception {
-		FeatureScore baseFeatureScore = baseScorer.calculateScore(eventMessage, eventEpochtime);
-		double reducedScore = reduceScore(eventMessage, baseFeatureScore.getScore());
+	public FeatureScore calculateScore(AdeRecord record) {
+		FeatureScore baseFeatureScore = baseScorer.calculateScore(record);
+		double reducedScore = reduceScore(record, baseFeatureScore.getScore());
 		return new FeatureScore(getName(), reducedScore, Collections.singletonList(baseFeatureScore));
 	}
 
-	private double reduceScore(Event eventMessage, double score) {
+	private double reduceScore(AdeRecord record, double score) {
 		for (ReductionConfiguration reductionConfig : reductionConfigs) {
-			score = reduceScore(eventMessage, score, reductionConfig);
+			score = reduceScore(record, score, reductionConfig);
 		}
 
 		return score;
 	}
 
-	private double reduceScore(Event eventMessage, double score, ReductionConfiguration reductionConfig) {
-		Feature feature = featureExtractService.extract(reductionConfig.getReducingFeatureName(), eventMessage);
+	private double reduceScore(AdeRecord record, double score, ReductionConfiguration reductionConfig) {
+		Object object = recordReaderFactoryService
+				.getDefaultProduct(record.getAdeRecordType())
+				.get(record, reductionConfig.getReducingFeatureName());
+		Feature feature = Feature.toFeature(reductionConfig.getReducingFeatureName(), object);
 
 		if (feature == null || feature.getValue() == null) {
 			return score;

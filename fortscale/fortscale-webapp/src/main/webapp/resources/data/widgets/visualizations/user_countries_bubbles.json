@@ -1,0 +1,27 @@
+{
+    "message":{
+        "type": "maxResults",
+        "params": {
+            "maxResults": 80
+        }
+    },
+    "views": [
+        {
+            "type": "bubbles",
+            "settings": {
+                "label": "{{displayname || username}}",
+                "childIdField": "country",
+                "tooltipText": "{{name}}: {{value}} {{value:pluralOrSingular:country:countries}} ({{_percent:toFixed:2}}% of all countries)",
+                "onSelect": {
+                    "action": "openPopup",
+                    "actionOptions": {
+                        "widgetId": "visualizations.user_countries_bubbles_popup",
+                        "title": "Countries {{name}} Logged In By VPN From",
+                        "width": 500,
+                        "height": 360
+                    }
+                }
+            }
+        }
+    ]
+}

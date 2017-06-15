@@ -3,12 +3,14 @@ package fortscale.aggregation.feature.bucket.state;
 import fortscale.aggregation.feature.bucket.repository.state.FeatureBucketStateRepository;
 import fortscale.aggregation.feature.bucket.state.config.FeatureBucketStateServiceConfig;
 import fortscale.utils.monitoring.stats.config.NullStatsServiceConfig;
+import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
@@ -22,6 +24,7 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.Properties;
 
 /**
  * Created by alexp on 12/12/16.
@@ -40,6 +43,12 @@ public class FeatureBucketStateServiceTest {
     @Profile("test")
     @EnableMongoRepositories(basePackageClasses = FeatureBucketStateRepository.class)
     public static class springConfig {
+        @Bean
+        public static TestPropertiesPlaceholderConfigurer mainProcessPropertiesConfigurer() {
+            Properties properties = new Properties();
+
+            return new TestPropertiesPlaceholderConfigurer(properties);
+        }
     }
 
     @Autowired

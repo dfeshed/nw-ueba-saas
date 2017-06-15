@@ -3,7 +3,6 @@ package fortscale.entity.event;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.aggregation.configuration.AslConfigurationService;
 import fortscale.utils.logging.Logger;
-import groovy.json.JsonException;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -58,7 +57,7 @@ public class EntityEventConfService extends AslConfigurationService {
 		} catch (Exception e) {
 			String errorMsg = String.format("Failed to deserialize JSON %s", definitionAsString);
 			logger.error(errorMsg, e);
-			throw new JsonException(errorMsg, e);
+			throw new RuntimeException(errorMsg, e);
 		}
 	}
 

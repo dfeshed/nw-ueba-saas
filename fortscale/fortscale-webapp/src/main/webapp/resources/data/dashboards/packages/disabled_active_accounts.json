@@ -1,0 +1,34 @@
+{
+    "id": "disabled_active_accounts",
+    "title": "Disabled Users with Network Activity",
+    "description": "This package enables you to receive relevant and up to date information regarding users whose Active Directory accounts are disabled but still show activity",
+    "noDataMessage": "No users found.",
+    "columns": [
+        {
+            "widgets": [
+                {
+                    "id": "disabled_active_accounts",
+                    "flags": {
+                        "contentsOnly": true
+                    },
+                    "className": "widget-noPadding",
+                    "title": "Accounts",
+                    "params": {
+                        "entityId": "users",
+                        "tableview_sort": "display_name",
+                        "filters": "users.account_disabled_date=<=[users.last_activity_date]",
+                        "tableview_fields": "normalized_username,display_name,department,account_disabled_date,last_activity_date,total_score"
+                    },
+                    "views": [
+                        {
+                            "type": "explore",
+                            "settings": {
+                                "viewOnly": true
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

@@ -1,12 +1,11 @@
 package fortscale.ml.scorer;
 
 
-import fortscale.common.event.Event;
-import fortscale.common.event.EventMessage;
-import fortscale.domain.core.FeatureScore;
-import net.minidev.json.JSONObject;
+import fortscale.domain.feature.score.FeatureScore;
+import fortscale.ml.scorer.record.JsonAdeRecord;
 import org.junit.Assert;
 import org.junit.Test;
+import presidio.ade.domain.record.AdeRecord;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +33,7 @@ public class ParetoScorerTest {
 
 
         @Override
-        public FeatureScore calculateScore(Event eventMessage, long eventEpochTimeInSec) throws Exception {
+        public FeatureScore calculateScore(AdeRecord record) {
             return new FeatureScore("SimpleTestScorer", score);
         }
     }
@@ -84,13 +83,6 @@ public class ParetoScorerTest {
         return new ParetoScorer(params.getName(), params.getScorerList(), params.getHighestScoreWeight());
     }
 
-    protected EventMessage buildEventMessage(String fieldName, Object fieldValue){
-        JSONObject jsonObject = null;
-        jsonObject = new JSONObject();
-        jsonObject.put(fieldName, fieldValue);
-        return new EventMessage(jsonObject);
-    }
-
     public static void assertScorerParams(ParetoScorerParams params, ParetoScorer scorer) {
         Assert.assertEquals(params.getName(), scorer.getName());
         Assert.assertEquals(params.getScorerList(), scorer.getScorers());
@@ -98,9 +90,9 @@ public class ParetoScorerTest {
     }
 
 
-    private void testScore(ParetoScorer scorer, EventMessage eventMessage, ParetoScorerParams params, Double expectedScore) throws Exception{
+    private void testScore(ParetoScorer scorer, AdeRecord eventMessage, ParetoScorerParams params, Double expectedScore) throws Exception {
         assertScorerParams(params, scorer);
-        FeatureScore score = scorer.calculateScore(eventMessage, 0);
+        FeatureScore score = scorer.calculateScore(eventMessage);
         Assert.assertNotNull(score);
         Assert.assertEquals(expectedScore, score.getScore(), delta);
     }
@@ -119,55 +111,55 @@ public class ParetoScorerTest {
     @Test(expected = java.lang.IllegalArgumentException.class)
     public void constructor_null_name_test() {
         ParetoScorerParams params = new ParetoScorerParams().addScorer(new SimpleScorer(50.0, "first scorer")).setName(null);
-        ParetoScorer scorer = createParetoScorer(params);
+        createParetoScorer(params);
     }
 
     @Test(expected = java.lang.IllegalArgumentException.class)
     public void constructor_empty_name_test() {
         ParetoScorerParams params = new ParetoScorerParams().addScorer(new SimpleScorer(50.0, "first scorer")).setName("");
-        ParetoScorer scorer = createParetoScorer(params);
+        createParetoScorer(params);
     }
 
     @Test(expected = java.lang.IllegalArgumentException.class)
     public void constructor_blank_name_test() {
         ParetoScorerParams params = new ParetoScorerParams().addScorer(new SimpleScorer(50.0, "first scorer")).setName(" ");
-        ParetoScorer scorer = createParetoScorer(params);
+        createParetoScorer(params);
     }
 
     @Test(expected = java.lang.IllegalArgumentException.class)
     public void constructor_null_scorerList_test() {
         ParetoScorerParams params = new ParetoScorerParams().setScorerList(null);
-        ParetoScorer scorer = createParetoScorer(params);
+        createParetoScorer(params);
     }
 
     @Test(expected = java.lang.IllegalArgumentException.class)
     public void constructor_empty_scorerList_test() {
         ParetoScorerParams params = new ParetoScorerParams();
-        ParetoScorer scorer = createParetoScorer(params);
+        createParetoScorer(params);
     }
 
     @Test(expected = java.lang.IllegalArgumentException.class)
-    public void constructor_zero_hieghestScoreWeight_test() {
+    public void constructor_zero_highestScoreWeight_test() {
         ParetoScorerParams params = new ParetoScorerParams().setHighestScoreWeight(0.0);
-        ParetoScorer scorer = createParetoScorer(params);
+        createParetoScorer(params);
     }
 
     @Test(expected = java.lang.IllegalArgumentException.class)
-    public void constructor_negative_hieghestScoreWeight_zero() {
+    public void constructor_negative_highestScoreWeight_zero() {
         ParetoScorerParams params = new ParetoScorerParams().setHighestScoreWeight(-0.60);
-        ParetoScorer scorer = createParetoScorer(params);
+        createParetoScorer(params);
     }
 
     @Test(expected = java.lang.IllegalArgumentException.class)
-    public void constructor_1_hieghestScoreWeight_zero() {
+    public void constructor_1_highestScoreWeight_zero() {
         ParetoScorerParams params = new ParetoScorerParams().setHighestScoreWeight(1.0);
-        ParetoScorer scorer = createParetoScorer(params);
+        createParetoScorer(params);
     }
 
     @Test(expected = java.lang.IllegalArgumentException.class)
-    public void constructor_larger_then_1_hieghestScoreWeight_zero() {
+    public void constructor_larger_then_1_highestScoreWeight_zero() {
         ParetoScorerParams params = new ParetoScorerParams().setHighestScoreWeight(1.6);
-        ParetoScorer scorer = createParetoScorer(params);
+        createParetoScorer(params);
     }
 
     //==================================================================================================================
@@ -183,7 +175,7 @@ public class ParetoScorerTest {
                 .setHighestScoreWeight(0.8);
 
         ParetoScorer scorer = createParetoScorer(params);
-        testScore(scorer, buildEventMessage("field1", "value1"), params, 98.0);
+        testScore(scorer, JsonAdeRecord.getJsonAdeRecord("field1", "value1"), params, 98.0);
     }
 
     @Test
@@ -193,7 +185,7 @@ public class ParetoScorerTest {
                 .setHighestScoreWeight(0.7);
 
         ParetoScorer scorer = createParetoScorer(params);
-        testScore(scorer, buildEventMessage("field1", "value1"), params, 63.0);
+        testScore(scorer, JsonAdeRecord.getJsonAdeRecord("field1", "value1"), params, 63.0);
     }
 
 
@@ -205,7 +197,7 @@ public class ParetoScorerTest {
                 .setHighestScoreWeight(0.7);
 
         ParetoScorer scorer = createParetoScorer(params);
-        testScore(scorer, buildEventMessage("field1", "value1"), params, 97.0);
+        testScore(scorer, JsonAdeRecord.getJsonAdeRecord("field1", "value1"), params, 97.0);
     }
 
 }

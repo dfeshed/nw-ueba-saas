@@ -1,0 +1,38 @@
+{
+    "severityFilter": {
+        "data": [
+            {
+                "id": "critical",
+                "value": "Critical"
+            },
+            {
+                "id": "high",
+                "value": "High"
+            },
+            {
+                "id": "medium",
+                "value": "Medium"
+            },
+            {
+                "id": "low",
+                "value": "Low"
+            }
+        ]
+    },
+    "feedbackFilter": {
+        "data": [
+            {
+                "id": "none",
+                "value": "No feedback"
+            },
+            {
+                "id": "approved",
+                "value": "Actual risk"
+            },
+            {
+                "id": "rejected",
+                "value": "Not a risk"
+            }
+        ]
+    }
+}

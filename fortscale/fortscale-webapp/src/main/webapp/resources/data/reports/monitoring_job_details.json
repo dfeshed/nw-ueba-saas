@@ -1,0 +1,11 @@
+{
+    "endpoint": {
+        "entity": "monitor",
+        "id": "report"
+    },
+    "requiredParams": ["method"],
+    "params": [{
+        "field": "method",
+        "dashboardParam": "run_id"
+    }]
+}

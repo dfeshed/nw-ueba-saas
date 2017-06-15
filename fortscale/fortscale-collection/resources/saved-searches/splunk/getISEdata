@@ -1,1 +1,0 @@
-index=ise earliest=$args.earliest$ latest=$args.latest$ (3000 OR 3001 OR 3002) "host-name" "Framed-IP-Address" | rex "^(?<ise_time>[^ ]+) .+ (?<ise_eventcode>(3000|3001|3002)) NOTICE .+host-name=(?<ise_hostname>[^ ,]+), .+" | sort 0 _time | table _time ise_time ise_eventcode ise_hostname Framed_IP_Address Called_Station_ID

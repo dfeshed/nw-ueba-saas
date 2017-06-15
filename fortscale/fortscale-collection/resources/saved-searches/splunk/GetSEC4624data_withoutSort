@@ -1,1 +1,0 @@
-index="ad" source="wineventlog:security" (EventCode=4624 AND Account_Name=*$*) earliest=$args.earliest$ latest=$args.latest$ | table _time Account_Name Source_Network_Address

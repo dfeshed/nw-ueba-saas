@@ -1,0 +1,56 @@
+{
+    "scrollable": false,
+    "groupable": false,
+    "sortable": {
+        "mode": "single"
+    },
+    "dataSource" : {
+        "sort": {
+            "field": "data_bucket_score",
+            "dir": "desc"
+        }
+    },
+    "alwaysPageable": true,
+    "columns": [
+        {
+            "title": "Username",
+            "field": "username",
+            "template": "<a ng-href=\"{{'\\#/username/' + dataItem.normalized_username}}\">{{ dataItem.username }}</a>"
+        },
+        {
+            "title": "Source IP",
+            "field": "source_ip",
+            "template": "{{ dataItem.source_ip | orNA}}"
+        },
+        {
+            "title": "End Time",
+            "field": "end_time",
+            "template": "{{ dataItem.end_time | date:\"MM/dd/yyyy HH\\:mm\":\"UTC\"}}"
+        },
+        {
+            "title": "Country",
+            "field": "country",
+            "template": "<fs-score-icon score='::dataItem.country_score'></fs-score-icon>{{ dataItem.country | orNA}}"
+        },
+        {
+            "title": "Downloaded Bytes",
+            "field": "read_bytes",
+            "template": "{{ dataItem.read_bytes | prettyBytes }}"
+        },
+        {
+            "title": "Duration (hh:mm:ss)",
+            "field": "duration",
+            "template": "{{dataItem.duration | date:\"HH\\:mm\\:ss\"}}"
+        },
+        {
+            "title": "Data Usage",
+            "field": "data_bucket",
+            "template": "{{ dataItem.data_bucket | prettyBytes }}/sec"
+        },
+        {
+            "title": "Data Usage Score",
+            "field": "data_bucket_score",
+            "template": "<fs-score-icon score='::dataItem.data_bucket_score'></fs-score-icon>{{ dataItem.data_bucket_score | orNA}}"
+        }
+    ]
+}

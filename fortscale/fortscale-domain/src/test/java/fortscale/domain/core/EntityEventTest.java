@@ -1,5 +1,6 @@
 package fortscale.domain.core;
 
+import fortscale.domain.SMART.EntityEvent;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
 import org.junit.Assert;

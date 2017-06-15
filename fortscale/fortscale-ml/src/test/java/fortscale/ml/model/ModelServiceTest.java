@@ -1,12 +1,13 @@
 package fortscale.ml.model;
 
+import com.google.common.collect.Sets;
 import fortscale.aggregation.feature.bucket.*;
-import fortscale.aggregation.util.MongoDbUtilService;
 import fortscale.common.feature.Feature;
 import fortscale.common.util.GenericHistogram;
 import fortscale.ml.model.listener.IModelBuildingListener;
 import fortscale.ml.model.listener.ModelBuildingStatus;
 import fortscale.ml.model.store.ModelDAO;
+import fortscale.utils.mongodb.util.MongoDbUtilService;
 import fortscale.utils.monitoring.stats.config.NullStatsServiceConfig;
 import fortscale.utils.time.TimestampUtils;
 import net.minidev.json.JSONObject;
@@ -15,8 +16,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
-import org.python.google.common.collect.Sets;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -27,7 +29,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 import java.util.*;
@@ -36,8 +38,9 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
-@RunWith(SpringJUnit4ClassRunner.class)
+@RunWith(SpringRunner.class)
 @ContextConfiguration(loader = AnnotationConfigContextLoader.class)
+@SpringBootTest
 public class ModelServiceTest {
 	@Configuration
 	@ImportResource("classpath*:META-INF/spring/model-service-test-context.xml")
@@ -60,15 +63,15 @@ public class ModelServiceTest {
 		}
 	}
 
-	@Autowired
+	@MockBean
 	private BucketConfigurationService bucketConfigurationService;
-	@Autowired
+	@MockBean
 	private MongoDbUtilService mongoDbUtilService;
 	@Autowired
 	private ModelService modelService;
-	@Autowired
+	@MockBean
 	private FeatureBucketsReaderService featureBucketsReaderService;
-	@Autowired
+	@MockBean
 	private MongoTemplate mongoTemplate;
 
 	private FeatureBucketConf selectorFeatureBucketConf;
@@ -140,7 +143,7 @@ public class ModelServiceTest {
 		// Consistent with the name in the configuration
 		String modelConfName = "first_test_model_conf";
 		Date currentEndTime = new Date(currentEndTimeInMillis);
-		modelService.process(listener, sessionId, modelConfName, null, currentEndTime, false, Collections.emptySet());
+		modelService.process(listener, sessionId, modelConfName, null, currentEndTime, Collections.emptySet());
 
 		// Assert listener
 		JSONObject expectedStatusForId1 = buildStatus(modelConfName, "id1", currentEndTime, true);
@@ -161,8 +164,6 @@ public class ModelServiceTest {
 		expectedId2Query.fields().include("_id");
 
 		String expectedCollectionName = String.format("model_%s", modelConfName);
-		verify(mongoTemplate, times(1)).findOne(eq(expectedId1Query), eq(ModelDAO.class), eq(expectedCollectionName));
-		verify(mongoTemplate, times(1)).findOne(eq(expectedId2Query), eq(ModelDAO.class), eq(expectedCollectionName));
 		ArgumentCaptor<ModelDAO> modelDaoArgCaptor = ArgumentCaptor.forClass(ModelDAO.class);
 		verify(mongoTemplate, times(2)).insert(modelDaoArgCaptor.capture(), eq(expectedCollectionName));
 		verifyNoMoreInteractions(mongoTemplate);
@@ -173,12 +174,12 @@ public class ModelServiceTest {
 		ModelDAO actualModelDao = modelDaoArgCaptor.getAllValues().stream().filter(modelDAO -> modelDAO.getContextId().equals("id1")).findFirst().get();
 		Assert.assertEquals(sessionId, actualModelDao.getSessionId());
 		Assert.assertEquals(expectedId1Model, actualModelDao.getModel());
-		Assert.assertEquals(currentEndTime, actualModelDao.getEndTime());
+		Assert.assertEquals(currentEndTime.toInstant(), actualModelDao.getEndTime());
 
 		actualModelDao = modelDaoArgCaptor.getAllValues().stream().filter(modelDAO -> modelDAO.getContextId().equals("id2")).findFirst().get();
 		Assert.assertEquals(sessionId, actualModelDao.getSessionId());
 		Assert.assertEquals(expectedId2Model, actualModelDao.getModel());
-		Assert.assertEquals(currentEndTime, actualModelDao.getEndTime());
+		Assert.assertEquals(currentEndTime.toInstant(), actualModelDao.getEndTime());
 	}
 
 	private static FeatureBucket createFeatureBucketWithGenericHistogram(String featureName, GenericHistogram genericHistogram) {

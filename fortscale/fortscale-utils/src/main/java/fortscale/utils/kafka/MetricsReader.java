@@ -6,6 +6,7 @@ import kafka.api.FetchRequestBuilder;
 import kafka.javaapi.FetchResponse;
 import kafka.javaapi.consumer.SimpleConsumer;
 import kafka.message.MessageAndOffset;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,13 +16,12 @@ import java.util.List;
 
 public class MetricsReader {
 
-    private static Logger logger = LoggerFactory.getLogger(MetricsReader.class);
-
     private static final String HEADER = "header";
     private static final String JOB_NAME = "job-name";
     private static final String METRICS_TOPIC = "metrics";
     private static final int TIMEOUT = 10000;
     private static final int BUFFER_SIZE = 1024000;
+    private static Logger logger = LoggerFactory.getLogger(MetricsReader.class);
 
     /**
      * @param zookeeper                    zookeeper server
@@ -168,13 +168,15 @@ public class MetricsReader {
      */
     private static JSONObject getMetrics(String message, String jobName, String metricsHeader) {
         JSONObject metrics = null;
+        JSONObject messageJson=null ;
         try {
-            JSONObject messageJson = new JSONObject(message);
+            messageJson = new JSONObject(message);
             if (messageJson.getJSONObject(HEADER).getString(JOB_NAME).equals(jobName)) {
                 metrics = messageJson.getJSONObject(METRICS_TOPIC).getJSONObject(metricsHeader);
             }
-        } catch (Exception e) {
+        } catch (JSONException e) {
             metrics = null;
+            logger.debug("could not find json object {}",messageJson, e);
         }
         return metrics;
     }

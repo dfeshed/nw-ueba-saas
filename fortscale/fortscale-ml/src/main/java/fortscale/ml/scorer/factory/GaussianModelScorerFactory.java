@@ -26,7 +26,7 @@ public class GaussianModelScorerFactory extends AbstractModelScorerFactory {
     @Override
     public Scorer getProduct(FactoryConfig factoryConfig) {
         //TODO: all this code (which is duplicated in CategoryRarityModelScorerFactory and ContinuousValuesModelScorerFactory should be refactored
-		GaussianModelScorerConf scorerConf = (GaussianModelScorerConf) factoryConfig;
+        GaussianModelScorerConf scorerConf = (GaussianModelScorerConf) factoryConfig;
         super.validateModelScorerConf(scorerConf);
         String modelName = scorerConf.getModelInfo().getModelName();
         List<String> additionalModelNames = scorerConf.getAdditionalModelInfos().stream()
@@ -35,12 +35,12 @@ public class GaussianModelScorerFactory extends AbstractModelScorerFactory {
         AbstractDataRetriever dataRetriever = getDataRetriever(modelName);
         List<String> contextFieldNames = dataRetriever.getContextFieldNames();
         List<List<String>> additionalContextFieldNames = additionalModelNames.stream()
-				.map(additionalModelName -> modelConfService
-						.getModelConf(additionalModelName)
-						.getContextSelectorConf() != null ?
-						getDataRetriever(additionalModelName).getContextFieldNames() : new ArrayList<String>())
-				.collect(Collectors.toList());
-		Set<String> featureNames = dataRetriever.getEventFeatureNames();
+                .map(additionalModelName -> modelConfService
+                        .getModelConf(additionalModelName)
+                        .getContextSelectorConf() != null ?
+                        getDataRetriever(additionalModelName).getContextFieldNames() : new ArrayList<String>())
+                .collect(Collectors.toList());
+        Set<String> featureNames = dataRetriever.getEventFeatureNames();
 
         // Currently in this implementation we use only single feature per model.
         String featureName = featureNames.iterator().next();
@@ -55,8 +55,8 @@ public class GaussianModelScorerFactory extends AbstractModelScorerFactory {
                 scorerConf.getMinNumOfSamplesToInfluence(),
                 scorerConf.getEnoughNumOfSamplesToInfluence(),
                 scorerConf.isUseCertaintyToCalculateScore(),
-                scorerConf.getGlobalInfluence()
-        );
+                scorerConf.getGlobalInfluence(),
+                recordReaderFactoryService, eventModelsCacheService);
     }
 
     private AbstractDataRetriever getDataRetriever(String modelName) {

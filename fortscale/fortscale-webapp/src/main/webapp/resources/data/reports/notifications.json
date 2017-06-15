@@ -1,0 +1,41 @@
+{
+    "endpoint": {
+        "entity": "evidences",
+        "method": "findEventsForGeoHopping"
+    },
+    "params": [
+        {
+            "field": "after",
+            "value": "{{notifications_events_dates.split(',')[0]}}",
+            "dashboardParam": "notifications_events_dates"
+        },
+        {
+            "field": "before",
+            "value": "{{notifications_events_dates.split(',')[1]}}",
+            "dashboardParam": "notifications_events_dates"
+
+        },
+        {
+            "field": "normalized_username",
+            "dashboardParam": "userId"
+
+        },
+        {
+            "field": "size",
+            "dashboardParam": "size",
+            "default": 10
+        },
+        {
+            "field": "paging",
+            "value":
+            {
+                "page": "{{page}}",
+                "pageSize": 10
+            },
+            "autoUpdate": true,
+            "dashboardParam": "page",
+            "default": 1
+        }
+    ],
+    "mock_data": "notifications.notifications_geo_hopping"
+}

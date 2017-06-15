@@ -1,0 +1,82 @@
+{
+    "endpoint": {
+        "api": "dataQuery",
+        "dataQuery": {
+            "entity": "auth_event",
+            "entitiesJoin": {
+                "joinType": "left",
+                "entity": "users",
+                "joinFields": {
+                    "left": "auth_event.normalized_username",
+                    "right": "users.normalized_username"
+                }
+            },
+            "limit": 50,
+            "groupBy": "source_machine",
+            "fields": [ "source_machine",
+                {
+                    "id": "normalized_username",
+                    "entity": "users",
+                    "alias": "user_count",
+                    "func": {
+                        "name": "count",
+                        "params": {
+                            "distinct": true
+                        }
+                    }
+                },
+                {
+                    "alias": "login_count",
+                    "func": {
+                        "name": "count",
+                        "params": {
+                            "all": true
+                        }
+                    }
+                }
+            ],
+            "conditions": {
+                "operator": "AND",
+                "terms": [
+					{
+						"type": "field",
+						"id": "event_time_utc",
+						"operator": "dateRange",
+						"valueParam": "dateRange"
+					},
+                    {
+                        "type": "field",
+                        "id": "{{@columnNameToQuery}}",
+                        "entity": "users",
+                        "value": true,
+                        "operator": "equals"
+                    },
+                    {
+                        "type": "field",
+                        "id": "is_sensitive_machine",
+                        "operator": "equals",
+                        "value": true
+                    }
+                ]
+            }
+        }
+    },
+    "params": [
+		{
+			"field": "dateRange",
+			"dashboardParam": "high_privileged_accounts_event_dates",
+			"isRequired": true
+		},
+        {
+            "field": "minscore",
+            "dashboardParam": "minscore",
+            "default": 50
+        },
+        {
+            "field": "columnNameToQuery",
+            "dashboardParam": "columnNameToQuery",
+            "isRequired": true
+        }
+    ],
+    "mock_data": "dashboards.high_privileged_accounts.high_privileged_sensitive_source_machines"
+}

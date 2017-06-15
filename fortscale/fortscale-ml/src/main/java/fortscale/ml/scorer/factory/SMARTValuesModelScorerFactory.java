@@ -35,12 +35,12 @@ public class SMARTValuesModelScorerFactory extends AbstractModelScorerFactory {
         AbstractDataRetriever dataRetriever = getDataRetriever(modelName);
         List<String> contextFieldNames = dataRetriever.getContextFieldNames();
         List<List<String>> additionalContextFieldNames = additionalModelNames.stream()
-				.map(additionalModelName -> modelConfService
-						.getModelConf(additionalModelName)
-						.getContextSelectorConf() != null ?
-						getDataRetriever(additionalModelName).getContextFieldNames() : new ArrayList<String>())
-				.collect(Collectors.toList());
-		Set<String> featureNames = dataRetriever.getEventFeatureNames();
+                .map(additionalModelName -> modelConfService
+                        .getModelConf(additionalModelName)
+                        .getContextSelectorConf() != null ?
+                        getDataRetriever(additionalModelName).getContextFieldNames() : new ArrayList<String>())
+                .collect(Collectors.toList());
+        Set<String> featureNames = dataRetriever.getEventFeatureNames();
 
         // Currently in this implementation we use only single feature per model.
         String featureName = featureNames.iterator().next();
@@ -55,8 +55,8 @@ public class SMARTValuesModelScorerFactory extends AbstractModelScorerFactory {
                 scorerConf.getMinNumOfSamplesToInfluence(),
                 scorerConf.getEnoughNumOfSamplesToInfluence(),
                 scorerConf.isUseCertaintyToCalculateScore(),
-                scorerConf.getGlobalInfluence()
-        );
+                scorerConf.getGlobalInfluence(),
+                recordReaderFactoryService, eventModelsCacheService);
     }
 
     private AbstractDataRetriever getDataRetriever(String modelName) {

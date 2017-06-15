@@ -4,7 +4,7 @@ package fortscale.services.impl;
  * Created by shays on 29/03/2016.
  */
 
-import fortscale.domain.core.ApplicationConfiguration;
+import fortscale.domain.application.configuration.ApplicationConfiguration;
 import fortscale.services.ApplicationConfigurationService;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.collections.MapUtils;
@@ -17,7 +17,8 @@ import java.beans.PropertyEditor;
 import java.beans.PropertyEditorManager;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.Collection;
+import java.util.Map;
 
 /**
  * Helper tools which are not Integral part of the Application Configuration

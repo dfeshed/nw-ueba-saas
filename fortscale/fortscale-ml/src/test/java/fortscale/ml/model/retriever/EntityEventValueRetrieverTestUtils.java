@@ -5,6 +5,7 @@ import fortscale.entity.event.EntityEventConfService;
 import net.minidev.json.JSONObject;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -13,7 +14,8 @@ import java.util.Map;
 import static org.mockito.Mockito.when;
 
 public class EntityEventValueRetrieverTestUtils {
-	@Autowired
+
+	@MockBean
 	private EntityEventConfService entityEventConfService;
 
 	private static final String FULL_AGGREGATED_FEATURE_EVENT_NAME = "featureBucket.featureName";

@@ -1,31 +1,33 @@
 package fortscale.ml.scorer;
 
-import fortscale.common.event.Event;
-import fortscale.common.event.EventMessage;
-import fortscale.domain.core.FeatureScore;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import fortscale.domain.feature.score.FeatureScore;
+import fortscale.utils.factory.FactoryService;
+import fortscale.utils.recordreader.RecordReader;
 import org.springframework.util.Assert;
+import presidio.ade.domain.record.AdeRecord;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class FieldValueScoreReducerScorer extends AbstractScorer {
 	private static final double ABSOLUTE_MAX_SCORE = 100;
-	private static final Logger logger = LoggerFactory.getLogger(FieldValueScoreReducerScorer.class);
 	private static final String NULL_SCORER_ERROR_MSG = "baseScorer cannot be null.";
 	private static final String NULL_LIMITERS_ERROR_MSG = "limiters cannot be null";
 
 	private Scorer baseScorer;
 	private List<FieldValueScoreLimiter> limiters;
+	private FactoryService<RecordReader<AdeRecord>> recordReaderFactoryService;
 
-	public FieldValueScoreReducerScorer(String name, Scorer baseScorer, List<FieldValueScoreLimiter> limiters) {
+	public FieldValueScoreReducerScorer(String name, Scorer baseScorer, List<FieldValueScoreLimiter> limiters,
+										FactoryService<RecordReader<AdeRecord>> recordReaderFactoryService) {
+
 		super(name);
 		Assert.notNull(baseScorer, NULL_SCORER_ERROR_MSG);
 		Assert.notNull(limiters, NULL_LIMITERS_ERROR_MSG);
 
 		this.baseScorer = baseScorer;
 		this.limiters = limiters;
+		this.recordReaderFactoryService = recordReaderFactoryService;
 	}
 
 	public Scorer getBaseScorer() {
@@ -45,13 +47,10 @@ public class FieldValueScoreReducerScorer extends AbstractScorer {
 	}
 
 	@Override
-	public FeatureScore calculateScore(Event event, long eventEpochTimeInSec) throws Exception {
-		FeatureScore featureScore = baseScorer.calculateScore(event, eventEpochTimeInSec);
-
+	public FeatureScore calculateScore(AdeRecord record) {
+		FeatureScore featureScore = baseScorer.calculateScore(record);
 		Double reducedScore = featureScore.getScore();
-		EventMessage eventMessage = new EventMessage(event.getJSONObject());
-
-		Integer maxScore = getMaxScore(eventMessage);
+		Integer maxScore = getMaxScore(record);
 		if (maxScore != null)
 			reducedScore *= maxScore / ABSOLUTE_MAX_SCORE;
 
@@ -61,10 +60,10 @@ public class FieldValueScoreReducerScorer extends AbstractScorer {
 		return new FeatureScore(getName(), reducedScore, featureScores);
 	}
 
-	private Integer getMaxScore(EventMessage eventMessage) {
+	private Integer getMaxScore(AdeRecord record) {
 		if (limiters != null) {
 			for (FieldValueScoreLimiter limiter : limiters) {
-				Integer maxScore = getMaxScore(eventMessage, limiter);
+				Integer maxScore = getMaxScore(record, limiter);
 				if (maxScore != null)
 					return maxScore;
 			}
@@ -73,8 +72,11 @@ public class FieldValueScoreReducerScorer extends AbstractScorer {
 		return null;
 	}
 
-	private Integer getMaxScore(EventMessage eventMessage, FieldValueScoreLimiter limiter) {
-		String value = eventMessage.getEventStringValue(limiter.getFieldName());
+	private Integer getMaxScore(AdeRecord record, FieldValueScoreLimiter limiter) {
+		String value = recordReaderFactoryService
+				.getDefaultProduct(record.getAdeRecordType())
+				.get(record, limiter.getFieldName())
+				.toString();
 		return (value != null ? limiter.getValueToMaxScoreMap().get(value) : null);
 	}
 

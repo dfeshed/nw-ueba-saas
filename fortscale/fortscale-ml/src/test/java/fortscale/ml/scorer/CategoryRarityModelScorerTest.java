@@ -1,41 +1,50 @@
 package fortscale.ml.scorer;
 
-import fortscale.common.event.EventMessage;
 import fortscale.common.feature.Feature;
-import fortscale.common.feature.extraction.FeatureExtractService;
 import fortscale.common.util.GenericHistogram;
-import fortscale.domain.core.FeatureScore;
+import fortscale.domain.feature.score.FeatureScore;
 import fortscale.ml.model.CategoryRarityModel;
 import fortscale.ml.model.Model;
 import fortscale.ml.model.builder.CategoryRarityModelBuilder;
 import fortscale.ml.model.builder.CategoryRarityModelBuilderConf;
+import fortscale.ml.model.cache.EventModelsCacheService;
 import fortscale.ml.model.cache.ModelsCacheService;
-import net.minidev.json.JSONObject;
+import fortscale.ml.scorer.record.JsonAdeRecord;
+import fortscale.ml.scorer.record.JsonAdeRecordReader;
+import fortscale.utils.factory.FactoryService;
+import fortscale.utils.recordreader.RecordReader;
+import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit4.SpringRunner;
+import presidio.ade.domain.record.AdeRecord;
 
 import java.io.IOException;
+import java.time.Instant;
 import java.util.*;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 
-@RunWith(SpringJUnit4ClassRunner.class)
+@RunWith(SpringRunner.class)
 @ContextConfiguration(locations = {"classpath*:META-INF/spring/model-scorer-tests-context.xml"})
 public class CategoryRarityModelScorerTest {
 
-    @Autowired
+    @MockBean
     ModelsCacheService modelsCacheService;
 
-    @Autowired
-    FeatureExtractService featureExtractService;
+    @MockBean
+    FactoryService<RecordReader<AdeRecord>> recordReaderFactoryService;
 
-    static void assertScorer(CategoryRarityModelScorer scorer, CategoryRarityModelScorerParams params) {
+    @Autowired
+    EventModelsCacheService eventModelsCacheService;
+
+    private void assertScorer(CategoryRarityModelScorer scorer, CategoryRarityModelScorerParams params) {
 
         Assert.assertEquals(params.getName(), scorer.getName());
         Assert.assertEquals(params.getModelName(), scorer.getModelName());
@@ -51,7 +60,7 @@ public class CategoryRarityModelScorerTest {
 
     }
 
-    static CategoryRarityModelScorer createCategoryRarityModelScorer(CategoryRarityModelScorerParams params) {
+    private CategoryRarityModelScorer createCategoryRarityModelScorer(CategoryRarityModelScorerParams params) {
         return new CategoryRarityModelScorer(params.getName(),
                 params.getModelName(),
                 Collections.emptyList(),
@@ -64,15 +73,15 @@ public class CategoryRarityModelScorerTest {
                 params.getMinimumNumberOfDistinctValuesToInfluence(),
                 params.getEnoughNumberOfDistinctValuesToInfluence(),
                 params.getMaxRareCount(),
-                params.getMaxNumOfRareFeatures());
+                params.getMaxNumOfRareFeatures(), recordReaderFactoryService, eventModelsCacheService);
     }
 
 
-    protected EventMessage buildEventMessage(String fieldName, Object fieldValue){
+    protected AdeRecord buildAdeRecord(String fieldName, Object fieldValue) {
         JSONObject jsonObject = new JSONObject();
+        jsonObject.put("username", "someone");
         jsonObject.put(fieldName, fieldValue);
-        jsonObject.put("username", "someone"); // The context
-        return new EventMessage(jsonObject);
+        return new JsonAdeRecord(Instant.now(), jsonObject);
     }
 
     //==================================================================================================================
@@ -299,15 +308,16 @@ public class CategoryRarityModelScorerTest {
         String featureWithCount100 = "feature-count-100";
         String featureWithZeroCount = "feature-zero-count"; // The scorer should handle it as if count=1
         model.setFeatureCount(featureWithCount100, count);
-        EventMessage eventMessage = buildEventMessage("dummy", "dummy"); // Anyhow the extracted value are mocked
 
-        prepareMocks(scorer, model, featureWithCount100, eventMessage);
-        FeatureScore featureScore = scorer.calculateScore(eventMessage, 0L);
+        AdeRecord record = buildAdeRecord(scorer.getFeatureName(), featureWithCount100); // Anyhow the extracted value are mocked
+        prepareMocks(model, record);
+        FeatureScore featureScore = scorer.calculateScore(record);
         Assert.assertEquals(0.0, featureScore.getScore(), 0.0);
         Assert.assertEquals(params.getName(), featureScore.getName());
 
-        prepareMocks(scorer, model, featureWithZeroCount, eventMessage);
-        featureScore = scorer.calculateScore(eventMessage, 0L);
+        record = buildAdeRecord(scorer.getFeatureName(), featureWithZeroCount);
+        prepareMocks(model, record);
+        featureScore = scorer.calculateScore(record);
         Assert.assertEquals(100.0, featureScore.getScore(), 0.0);
         Assert.assertEquals(params.getName(), featureScore.getName());
     }
@@ -329,15 +339,16 @@ public class CategoryRarityModelScorerTest {
         String featureWithCount100 = "feature-count-100";
         String featureWithZeroCount = "feature-zero-count"; // The scorer should handle it as if count=1
         model.setFeatureCount(featureWithCount100, count);
-        EventMessage eventMessage = buildEventMessage("dummy", "dummy"); // Anyhow the extracted value are mocked
 
-        prepareMocks(scorer, model, featureWithCount100, eventMessage);
-        FeatureScore featureScore = scorer.calculateScore(eventMessage, 0L);
+        AdeRecord record = buildAdeRecord(scorer.getFeatureName(), featureWithCount100); // Anyhow the extracted value are mocked
+        prepareMocks(model, record);
+        FeatureScore featureScore = scorer.calculateScore(record);
         Assert.assertEquals(0.0, featureScore.getScore(), 0.0);
         Assert.assertEquals(params.getName(), featureScore.getName());
 
-        prepareMocks(scorer, model, featureWithZeroCount, eventMessage);
-        featureScore = scorer.calculateScore(eventMessage, 0L);
+        record = buildAdeRecord(scorer.getFeatureName(), featureWithZeroCount);
+        prepareMocks(model, record);
+        featureScore = scorer.calculateScore(record);
         Assert.assertEquals(100.0, featureScore.getScore(), 0.0);
         Assert.assertEquals(params.getName(), featureScore.getName());
     }
@@ -347,18 +358,16 @@ public class CategoryRarityModelScorerTest {
         CategoryRarityModelScorerParams params = new CategoryRarityModelScorerParams().setMaxRareCount(15).setMaxNumOfRareFeatures(5);
         CategoryRarityModelScorer scorer = createCategoryRarityModelScorer(params);
 
-        String featureWithCount100 = "feature-count-100";
-        EventMessage eventMessage = buildEventMessage("dummy", "dummy"); // Anyhow the extracted value are mocked
-
-        prepareMocks(scorer, null, featureWithCount100, eventMessage);
-        FeatureScore featureScore = scorer.calculateScore(eventMessage, 0L);
+        AdeRecord record = buildAdeRecord(scorer.getFeatureName(), "feature-count-100"); // Anyhow the extracted value are mocked
+        prepareMocks(null, record);
+        FeatureScore featureScore = scorer.calculateScore(record);
         Assert.assertEquals(params.getName(), featureScore.getName());
     }
 
-    private void prepareMocks(AbstractModelScorer scorer, Model model, String feature, EventMessage eventMessage) {
-        when(modelsCacheService.getModel(any(), any(), any(), any(Long.class) )).thenReturn(model);
-        when(featureExtractService.extract(eq(scorer.getFeatureName()), eq(eventMessage))).thenReturn(new Feature("myFeature", feature));
-
+    private void prepareMocks(Model model, AdeRecord record) {
+        when(modelsCacheService.getModel(any(), any(), any(Instant.class))).thenReturn(model);
+        RecordReader<AdeRecord> recordReader = new JsonAdeRecordReader();
+        when(recordReaderFactoryService.getDefaultProduct(eq(record.getAdeRecordType()))).thenReturn(recordReader);
     }
 
     @Test
@@ -366,21 +375,14 @@ public class CategoryRarityModelScorerTest {
         CategoryRarityModelScorerParams params = new CategoryRarityModelScorerParams().setMaxRareCount(15).setMaxNumOfRareFeatures(5);
         CategoryRarityModelScorer scorer = createCategoryRarityModelScorer(params);
 
-        Feature featureWithZeroCount = new Feature("feature-with-zero-count", "feature-zero-count"); // The scorer should handle it as if count=1
-
-        HashMap<String, Feature> context = new HashMap<>();
-        context.put("dummy", new Feature("dummy", "dummy"));
-        EventMessage eventMessage = buildEventMessage("dummy", "dummy"); // Anyhow the extracted value are mocked
-
-        when(modelsCacheService.getModel(any(), any(), any(), any(Long.class) )).thenReturn(null);
-        when(featureExtractService.extract(any(Set.class), eq(eventMessage))).thenReturn(context);
-        when(featureExtractService.extract(scorer.getFeatureName(), eventMessage)).thenReturn(featureWithZeroCount);
-        FeatureScore featureScore = scorer.calculateScore(eventMessage, 0L);
+        AdeRecord record = buildAdeRecord(scorer.getFeatureName(), "feature-zero-count");
+        prepareMocks(null, record);
+        FeatureScore featureScore = scorer.calculateScore(record);
         Assert.assertEquals(0.0, featureScore.getScore(), 0.0);
     }
 
     @Test
-    public void calculateScore_no_feature_in_event_test() throws Exception{
+    public void calculateScore_no_feature_in_record_test() throws Exception{
         CategoryRarityModelScorerParams params = new CategoryRarityModelScorerParams().setMaxRareCount(15).setMaxNumOfRareFeatures(5);
         CategoryRarityModelScorer scorer = createCategoryRarityModelScorer(params);
 
@@ -395,14 +397,9 @@ public class CategoryRarityModelScorerTest {
         String featureWithCount100 = "feature-count-100";
         model.setFeatureCount(featureWithCount100, count);
 
-        HashMap<String, Feature> context = new HashMap<>();
-        context.put("dummy", new Feature("dummy", "dummy"));
-        EventMessage eventMessage = buildEventMessage("dummy", "dummy"); // Anyhow the extracted value are mocked
-
-        when(modelsCacheService.getModel(any(), any(), any(), any(Long.class) )).thenReturn(model);
-        when(featureExtractService.extract(any(Set.class), eq(eventMessage))).thenReturn(context);
-        when(featureExtractService.extract(scorer.getFeatureName(),eventMessage)).thenReturn(null);
-        FeatureScore featureScore = scorer.calculateScore(eventMessage, 0L);
+        AdeRecord record = buildAdeRecord(scorer.getFeatureName(), JSONObject.NULL);
+        prepareMocks(model, record);
+        FeatureScore featureScore = scorer.calculateScore(record);
         Assert.assertEquals(0.0, featureScore.getScore(), 0.0);
     }
 
@@ -416,10 +413,12 @@ public class CategoryRarityModelScorerTest {
         String featureWithZeroCount = "feature-zero-count"; // The scorer should handle it as if count=1
         CategoryRarityModel model = createModel(100, count, featureWithCount100);
 
-        EventMessage eventMessage = buildEventMessage("dummy", "dummy"); // Anyhow the extracted value are mocked
-
-        prepareMocks(scorer, model, featureWithZeroCount, null);
-        FeatureScore featureScore = scorer.calculateScore(eventMessage, 0L);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("username", JSONObject.NULL);
+        jsonObject.put(scorer.getFeatureName(), featureWithZeroCount);
+        AdeRecord record = new JsonAdeRecord(Instant.now(), jsonObject);
+        prepareMocks(model, record);
+        FeatureScore featureScore = scorer.calculateScore(record);
         Assert.assertEquals(0.0, featureScore.getScore(), 0.0); // With the right context it should return 100
     }
 
@@ -453,12 +452,9 @@ public class CategoryRarityModelScorerTest {
         String featureWithZeroCount = "feature-zero-count"; // The scorer should handle it as if count=1
         CategoryRarityModel model = createModel(19, count, featureWithCount0);
 
-        EventMessage eventMessage = buildEventMessage("dummy", "dummy"); // Anyhow the extracted value are mocked
-
-        prepareMocks(scorer, model, featureWithZeroCount, eventMessage);
-
-        FeatureScore score = scorer.calculateScore(eventMessage, 0);
-
+        AdeRecord record = buildAdeRecord(scorer.getFeatureName(), featureWithZeroCount); // Anyhow the extracted value are mocked
+        prepareMocks(model, record);
+        FeatureScore score = scorer.calculateScore(record);
         Assert.assertNotNull(score);
         Assert.assertEquals(100d, score.getScore(), 0.0);
         Assert.assertEquals(0d, score.getCertainty(), 0.0);
@@ -477,16 +473,12 @@ public class CategoryRarityModelScorerTest {
         String featureWithZeroCount = "feature-zero-count"; // The scorer should handle it as if count=1
         CategoryRarityModel model = createModel(19, count, featureWithCount0);
 
-        EventMessage eventMessage = buildEventMessage("dummy", "dummy"); // Anyhow the extracted value are mocked
-
-        prepareMocks(scorer, model, featureWithZeroCount, eventMessage);
-
-        FeatureScore score = scorer.calculateScore(eventMessage, 0);
-
+        AdeRecord record = buildAdeRecord(scorer.getFeatureName(), featureWithZeroCount); // Anyhow the extracted value are mocked
+        prepareMocks(model, record);
+        FeatureScore score = scorer.calculateScore(record);
         Assert.assertNotNull(score);
         Assert.assertEquals(100d, score.getScore(), 0.0);
         Assert.assertEquals(0d, score.getCertainty(), 0.0);
-
     }
 
     @Test
@@ -502,16 +494,12 @@ public class CategoryRarityModelScorerTest {
         String featureWithZeroCount = "feature-zero-count"; // The scorer should handle it as if count=1
         CategoryRarityModel model = createModel(100, count, featureWithCount0);
 
-        EventMessage eventMessage = buildEventMessage("dummy", "dummy"); // Anyhow the extracted value are mocked
-
-        prepareMocks(scorer, model, featureWithZeroCount, eventMessage);
-
-        FeatureScore score = scorer.calculateScore(eventMessage, 0);
-
+        AdeRecord record = buildAdeRecord(scorer.getFeatureName(), featureWithZeroCount); // Anyhow the extracted value are mocked
+        prepareMocks(model, record);
+        FeatureScore score = scorer.calculateScore(record);
         Assert.assertNotNull(score);
         Assert.assertEquals(100d, score.getScore(), 0.0);
         Assert.assertEquals(1d, score.getCertainty(), 0.0);
-
     }
 
     @Test
@@ -527,16 +515,12 @@ public class CategoryRarityModelScorerTest {
         String featureWithZeroCount = "feature-zero-count"; // The scorer should handle it as if count=1
         CategoryRarityModel model = createModel(100, count, featureWithCount0);
 
-        EventMessage eventMessage = buildEventMessage("dummy", "dummy"); // Anyhow the extracted value are mocked
-
-        prepareMocks(scorer, model, featureWithZeroCount, eventMessage);
-
-        FeatureScore score = scorer.calculateScore(eventMessage, 0);
-
+        AdeRecord record = buildAdeRecord(scorer.getFeatureName(), featureWithZeroCount); // Anyhow the extracted value are mocked
+        prepareMocks(model, record);
+        FeatureScore score = scorer.calculateScore(record);
         Assert.assertNotNull(score);
         Assert.assertEquals(100d, score.getScore(), 0.0);
         Assert.assertEquals(0d, score.getCertainty(), 0.0);
-
     }
 
     @Test
@@ -554,15 +538,12 @@ public class CategoryRarityModelScorerTest {
         String featureWithZeroCount = "feature-zero-count"; // The scorer should handle it as if count=1
         CategoryRarityModel model = createModel(min, count, featureWithCount0);
 
-        EventMessage eventMessage = buildEventMessage("dummy", "dummy"); // Anyhow the extracted value are mocked
-
-        prepareMocks(scorer, model, featureWithZeroCount, eventMessage);
-
-        FeatureScore score = scorer.calculateScore(eventMessage, 0);
-        double expectedCertainty = 1d / (enough - min + 1);
+        AdeRecord record = buildAdeRecord(scorer.getFeatureName(), featureWithZeroCount); // Anyhow the extracted value are mocked
+        prepareMocks(model, record);
+        FeatureScore score = scorer.calculateScore(record);
         Assert.assertNotNull(score);
         Assert.assertEquals(100d, score.getScore(), 0.0);
-        Assert.assertEquals(expectedCertainty, score.getCertainty(), 0.0);
+        Assert.assertEquals(1d / (enough - min + 1), score.getCertainty(), 0.0);
     }
 
     @Test
@@ -580,16 +561,12 @@ public class CategoryRarityModelScorerTest {
         String featureWithZeroCount = "feature-zero-count"; // The scorer should handle it as if count=1
         CategoryRarityModel model = createModel(min, count, featureWithCount0);
 
-        EventMessage eventMessage = buildEventMessage("dummy", "dummy"); // Anyhow the extracted value are mocked
-
-        prepareMocks(scorer, model, featureWithZeroCount, eventMessage);
-
-        FeatureScore score = scorer.calculateScore(eventMessage, 0);
-        double expectedCertainty = 1d;
+        AdeRecord record = buildAdeRecord(scorer.getFeatureName(), featureWithZeroCount);
+        prepareMocks(model, record);
+        FeatureScore score = scorer.calculateScore(record);
         Assert.assertNotNull(score);
         Assert.assertEquals(100d, score.getScore(), 0.0);
-        Assert.assertEquals(expectedCertainty, score.getCertainty(), 0.0);
-
+        Assert.assertEquals(1d, score.getCertainty(), 0.0);
     }
 
 

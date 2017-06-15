@@ -1,9 +1,19 @@
 package fortscale.ml.scorer;
 
-import fortscale.common.event.Event;
-import fortscale.domain.core.FeatureScore;
+import fortscale.domain.feature.score.FeatureScore;
+import presidio.ade.domain.record.AdeRecord;
 
 public interface Scorer {
-    FeatureScore calculateScore(Event eventMessage, long eventEpochTimeInSec) throws Exception;
-    String getName();
+	/**
+	 * @return this scorer's name
+	 */
+	String getName();
+
+	/**
+	 * Calculate the score of a specific feature in the given record.
+	 *
+	 * @param record contains the feature that needs to be scored
+	 * @return the final score and a list of all underlying scores
+	 */
+	FeatureScore calculateScore(AdeRecord record);
 }

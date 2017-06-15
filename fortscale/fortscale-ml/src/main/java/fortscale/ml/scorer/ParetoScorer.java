@@ -1,7 +1,7 @@
 package fortscale.ml.scorer;
 
-import fortscale.common.event.Event;
-import fortscale.domain.core.FeatureScore;
+import fortscale.domain.feature.score.FeatureScore;
+import presidio.ade.domain.record.AdeRecord;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,12 +18,12 @@ public class ParetoScorer extends ScorerContainer {
     }
 
     @Override
-    public FeatureScore calculateScore(Event eventMessage, long eventEpochTimeInSec) throws Exception {
+    public FeatureScore calculateScore(AdeRecord record) {
         List<FeatureScore> featureScores = new ArrayList<>();
         List<Double> sortedScores = new ArrayList<>();
 
         for (Scorer scorer : scorers) {
-            FeatureScore featureScore = scorer.calculateScore(eventMessage, eventEpochTimeInSec);
+            FeatureScore featureScore = scorer.calculateScore(record);
             if (featureScore != null) {
                 featureScores.add(featureScore);
                 sortedScores.add(featureScore.getScore());

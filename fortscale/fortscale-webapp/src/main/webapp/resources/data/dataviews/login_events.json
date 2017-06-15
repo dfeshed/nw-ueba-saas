@@ -1,0 +1,348 @@
+{
+    "id": "login_events",
+    "name": "Login Events",
+    "description": "4769 Active Directory events, with scores",
+    "entities": [ "ad_logins", "persons" ],
+    "entitiesJoin": [
+        {
+            "persons": "username",
+            "ad_logins": "normalized_username"
+        }
+    ],
+    "paramControls": [
+        {
+            "controlId": "minscore",
+            "param": "ad_logins.eventscore",
+            "formatParam": ">={{value}}",
+            "hide": true,
+            "isRequired": true
+        },
+        {
+            "label": "Get data since",
+            "type": "date",
+            "param": "ad_logins.date_time",
+            "value": "-7d",
+            "isRequired": true,
+            "hide": true,
+            "formatParam": ">={{value:date:valueOf}}",
+            "defaultValueOnly": true,
+            "settings": {
+                "maxDate": "0",
+                "startOfDay": true
+            }
+        }
+    ],
+    "visualizations": [
+        {
+            "id": "login_events_time",
+            "title": "Events Time Scatter",
+            "widgetId": "visualizations.time_scatterplot",
+            "settings": {
+                "timeField": "date_time",
+                "colorField": "eventscore",
+                "colorScale": "score",
+                "onSelect": {
+                    "action": "showTooltip",
+                    "actionOptions": {
+                        "table": {
+                            "rows": [
+                                {
+                                    "label": "User",
+                                    "value": "{{displayname || account_name}}"
+                                },
+                                {
+                                    "label": "Source",
+                                    "value": "{{machine_name}}"
+                                },
+                                {
+                                    "label": "Destination",
+                                    "value": "{{service_name}}"
+                                },
+                                {
+                                    "label": "Time",
+                                    "value": "{{date_time:date}}"
+                                },
+                                {
+                                    "label": "Score",
+                                    "value": "{{eventscore}}"
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "height": "250",
+            "data": {
+                "mainEntity": "ad_logins",
+                "fields": [
+                    {
+                        "field": "displayname",
+                        "entity": "persons"
+                    },
+                    {
+                        "field": "account_name",
+                        "entity": "ad_logins"
+                    },
+                    {
+                        "field": "machine_name",
+                        "entity": "ad_logins"
+                    },
+                    {
+                        "field": "service_name",
+                        "entity": "ad_logins"
+                    },
+                    {
+                        "field": "date_time",
+                        "entity": "ad_logins"
+                    },
+                    {
+                        "field": "eventscore",
+                        "entity": "ad_logins"
+                    }
+                ],
+                "sort": {
+                    "field": "date_time",
+                    "direction": -1
+                },
+                "limit": 201
+            }
+        },
+        {
+            "id": "user_machines",
+            "title": "Events Per Source Machine Count",
+            "widgetId": "visualizations.user_machines_bars",
+            "height": 300,
+            "data": {
+                "mainEntity": "ad_logins",
+                "fields": [
+                    {
+                        "field": "machine_name",
+                        "alias": "label",
+                        "entity": "ad_logins",
+                        "func": "machine_name"
+                    },
+                    {
+                        "field": "date_time",
+                        "alias": "login_count",
+                        "func": "count(*)",
+                        "entity": "ad_logins"
+                    }
+                ],
+                "groupBy": "machine_name",
+                "limit": 50
+            }
+        },
+        {
+            "id": "user_target_machines",
+            "title": "Events Per Target Machine Count",
+            "widgetId": "visualizations.user_machines_bars",
+            "height": 300,
+            "data": {
+                "mainEntity": "ad_logins",
+                "fields": [
+                    {
+                        "field": "service_name",
+                        "alias": "label",
+                        "entity": "ad_logins",
+                        "func": "lcase(service_name)"
+                    },
+                    {
+                        "field": "date_time",
+                        "alias": "login_count",
+                        "func": "count(*)",
+                        "entity": "ad_logins"
+                    }
+                ],
+                "groupBy": "lcase(service_name)",
+                "limit": 50
+            }
+        },
+        {
+            "id": "machine_users",
+            "title": "Events Per User Count",
+            "widgetId": "visualizations.user_machines_bars",
+            "height": 300,
+            "settings": {
+                "onSelect": {
+                    "action": "innerUrl",
+                    "actionOptions": {
+                        "url": "/d/explore/kerberos_logins?filters=kerberos_logins.username%3D{{username}}"
+                    }
+                }
+            },
+            "data": {
+                "mainEntity": "ad_logins",
+                "fields": [
+                    {
+                        "field": "account_name",
+                        "alias": "username",
+                        "entity": "ad_logins"
+                    },
+                    {
+                        "field": "displayname",
+                        "alias": "label",
+                        "entity": "persons"
+                    },
+                    {
+                        "field": "date_time",
+                        "alias": "login_count",
+                        "func": "count(*)"
+                    }
+                ],
+                "groupBy": "account_name, displayname",
+                "limit": 50
+            }
+        },
+        {
+            "id": "source_machine_destinations",
+            "title": "Event Count by Destination Machines",
+            "widgetId": "visualizations.machine_to_machines_bars",
+            "height": 300,
+            "data": {
+                "mainEntity": "ad_logins",
+                "fields": [
+                    {
+                        "field": "service_name",
+                        "alias": "label",
+                        "entity": "ad_logins"
+                    },
+                    {
+                        "field": "service_name",
+                        "alias": "login_count",
+                        "func": "count(service_name)"
+                    }
+                ],
+                "groupBy": "service_name",
+                "limit": 50
+            }
+        },
+        {
+            "id": "destination_machine_sources",
+            "title": "Event Count by Source Machines",
+            "widgetId": "visualizations.machine_to_machines_bars",
+            "height": 300,
+            "data": {
+                "mainEntity": "ad_logins",
+                "fields": [
+                    {
+                        "field": "machine_name",
+                        "alias": "label",
+                        "entity": "ad_logins"
+                    },
+                    {
+                        "field": "machine_name",
+                        "alias": "login_count",
+                        "func": "count(machine_name)"
+                    }
+                ],
+                "groupBy": "machine_name",
+                "limit": 50
+            }
+        },
+        {
+            "id": "machine_users_bubbles",
+            "title": "Target Machines To Users Comparison (Bubbles)",
+            "widgetId": "visualizations.machine_users_bubbles",
+            "height": 680,
+            "data": {
+                "mainEntity": "ad_logins",
+                "fields": [
+                    {
+                        "field": "id",
+                        "entity": "persons"
+                    },
+                    {
+                        "field": "displayname",
+                        "entity": "persons"
+                    },
+                    {
+                        "field": "secscore",
+                        "entity": "persons"
+                    },
+                    {
+                        "field": "service_name",
+                        "entity": "ad_logins"
+                    }
+                ],
+                "groupBy": "id, displayname, service_name, secscore",
+                "limit": 50,
+                "sort": {
+                    "field": "secscore",
+                    "direction": -1
+                }
+            }
+        },
+        {
+            "id": "user_machines_bubbles",
+            "title": "Users To Target Machines Comparison (Bubbles)",
+            "widgetId": "visualizations.user_machines_bubbles",
+            "height": 680,
+            "data": {
+                "mainEntity": "ad_logins",
+                "fields": [
+                    {
+                        "field": "id",
+                        "entity": "persons"
+                    },
+                    {
+                        "field": "displayname",
+                        "entity": "persons"
+                    },
+                    {
+                        "field": "secscore",
+                        "entity": "persons"
+                    },
+                    {
+                        "field": "service_name",
+                        "entity": "ad_logins"
+                    }
+                ],
+                "groupBy": "id, displayname, service_name, secscore",
+                "limit": 50,
+                "sort": {
+                    "field": "secscore",
+                    "direction": -1
+                }
+            }
+        },
+        {
+            "id": "user_machines_heat_map",
+            "title": "Users To Target Machines Comparison",
+            "widgetId": "visualizations.user_machines_heatmap",
+            "mock_data":"visualizations.user_machines_heat_map",
+            "data": {
+                "mainEntity": "ad_logins",
+                "fields": [
+                    {
+                        "field": "id",
+                        "entity": "persons"
+                    },
+                    {
+                        "field": "displayname",
+                        "entity": "persons"
+                    },
+                    {
+                        "field": "secscore",
+                        "entity": "persons"
+                    },
+                    {
+                        "field": "service_name",
+                        "entity": "ad_logins"
+                    },
+                    {
+                        "field": "service_name",
+                        "entity": "ad_logins",
+                        "alias":"target_count",
+                        "func": "count(service_name)"
+                    }
+                ],
+                "groupBy": "id, displayname, service_name, secscore",
+                "limit": 80,
+                "sort": {
+                    "field": "secscore",
+                    "direction": -1
+                }
+            }
+        }
+    ]
+}

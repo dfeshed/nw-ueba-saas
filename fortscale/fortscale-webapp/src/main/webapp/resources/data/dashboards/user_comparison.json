@@ -1,0 +1,13 @@
+{
+    "dashboardId": "user_comparison",
+    "title": "User Comparison",
+    "columns": [
+        {
+            "widgets": [
+                {
+                    "widgetId": "users_comparison"
+                }
+            ]
+        }
+    ]
+}

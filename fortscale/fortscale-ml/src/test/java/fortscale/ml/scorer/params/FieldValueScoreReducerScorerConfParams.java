@@ -1,12 +1,15 @@
 package fortscale.ml.scorer.params;
 
-import fortscale.common.event.Event;
-import fortscale.domain.core.FeatureScore;
+import fortscale.domain.feature.score.FeatureScore;
 import fortscale.ml.scorer.FieldValueScoreLimiter;
 import fortscale.ml.scorer.FieldValueScoreReducerScorer;
 import fortscale.ml.scorer.Scorer;
 import fortscale.ml.scorer.config.FieldValueScoreReducerScorerConf;
 import fortscale.ml.scorer.config.IScorerConf;
+import fortscale.utils.factory.FactoryService;
+import fortscale.utils.recordreader.RecordReader;
+import org.mockito.Mockito;
+import presidio.ade.domain.record.AdeRecord;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,7 +42,7 @@ public class FieldValueScoreReducerScorerConfParams implements ScorerParams {
 
 
         @Override
-        public FeatureScore calculateScore(Event eventMessage, long eventEpochTimeInSec) throws Exception {
+        public FeatureScore calculateScore(AdeRecord record) {
             return new FeatureScore("SimpleTestScorer", score);
         }
     }
@@ -48,6 +51,8 @@ public class FieldValueScoreReducerScorerConfParams implements ScorerParams {
     ScorerParams baseScorerParams = new ConstantRegexScorerParams();
     List<FieldValueScoreLimiter> limiters = new ArrayList<>();
     Scorer baseScorer = new SimpleScorer();
+    @SuppressWarnings("unchecked")
+    FactoryService<RecordReader<AdeRecord>> recordReaderFactoryService = Mockito.mock(FactoryService.class);
 
     public FieldValueScoreReducerScorerConfParams() {
 
@@ -160,6 +165,10 @@ public class FieldValueScoreReducerScorerConfParams implements ScorerParams {
     }
 
     public FieldValueScoreReducerScorer getScorer() {
-        return new FieldValueScoreReducerScorer(name, baseScorer, limiters);
+        return new FieldValueScoreReducerScorer(name, baseScorer, limiters, recordReaderFactoryService);
+    }
+
+    public FactoryService<RecordReader<AdeRecord>> getRecordReaderFactoryServiceMock() {
+        return recordReaderFactoryService;
     }
 }

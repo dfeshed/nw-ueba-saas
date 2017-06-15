@@ -1,14 +1,12 @@
 package fortscale.ml.scorer;
 
-import fortscale.common.event.Event;
-import fortscale.common.feature.Feature;
-import fortscale.common.feature.extraction.FeatureExtractService;
-import fortscale.domain.core.FeatureScore;
+import fortscale.domain.feature.score.FeatureScore;
 import fortscale.ml.model.Model;
 import fortscale.ml.model.ScoreMappingModel;
 import fortscale.ml.model.cache.EventModelsCacheService;
 import fortscale.ml.model.cache.ModelsCacheService;
 import fortscale.ml.scorer.config.IScorerConf;
+import fortscale.ml.scorer.record.JsonAdeRecord;
 import fortscale.utils.factory.FactoryService;
 import org.junit.Assert;
 import org.junit.Before;
@@ -18,16 +16,19 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
-import org.springframework.data.hadoop.config.common.annotation.EnableAnnotationConfiguration;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
+import presidio.ade.domain.record.AdeRecord;
 
+import java.time.Instant;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.when;
 
 
@@ -37,7 +38,7 @@ public class ModelBasedScoreMapperTest {
 
     @Configuration
     @EnableSpringConfigured
-    @EnableAnnotationConfiguration
+    @Import(ScorerTestsContext.class)
     static class ContextConfiguration {
         @Bean
         public FactoryService<Scorer> scorerFactoryService() {
@@ -50,11 +51,6 @@ public class ModelBasedScoreMapperTest {
         }
 
         @Bean
-        public FeatureExtractService featureExtractService() {
-            return Mockito.mock(FeatureExtractService.class);
-        }
-
-        @Bean
         public ModelsCacheService modelsCacheService() {
             return Mockito.mock(ModelsCacheService.class);
         }
@@ -62,10 +58,8 @@ public class ModelBasedScoreMapperTest {
 
     @Autowired
     private FactoryService<Scorer> scorerFactoryService;
-
     @Autowired
-    private FeatureExtractService featureExtractService;
-
+    private EventModelsCacheService eventModelsCacheService;
     @Autowired
     private ModelsCacheService modelsCacheService;
 
@@ -95,8 +89,8 @@ public class ModelBasedScoreMapperTest {
                 "model name",
                 Collections.singletonList("context field name"),
                 "feature name",
-                baseScorerConf
-        );
+                baseScorerConf,
+                scorerFactoryService, eventModelsCacheService);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -106,8 +100,8 @@ public class ModelBasedScoreMapperTest {
                 "model name",
                 Collections.singletonList("context field name"),
                 "",
-                baseScorerConf
-        );
+                baseScorerConf,
+                scorerFactoryService, eventModelsCacheService);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -117,8 +111,8 @@ public class ModelBasedScoreMapperTest {
                 "",
                 Collections.singletonList("context field name"),
                 "feature name",
-                baseScorerConf
-        );
+                baseScorerConf,
+                scorerFactoryService, eventModelsCacheService);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -128,8 +122,8 @@ public class ModelBasedScoreMapperTest {
                 "model name",
                 null,
                 "feature name",
-                baseScorerConf
-        );
+                baseScorerConf,
+                scorerFactoryService, eventModelsCacheService);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -139,36 +133,25 @@ public class ModelBasedScoreMapperTest {
                 "model name",
                 Collections.singletonList("context field name"),
                 "feature name",
-                null
-        );
+                null,
+                scorerFactoryService, eventModelsCacheService);
     }
 
     private FeatureScore calculateScore(String featureScoreName,
                                         FeatureScore baseScore,
                                         Model model) throws Exception {
-        Event eventMessage = Mockito.mock(Event.class);
-        long evenEpochTime = 1234;
-
+        AdeRecord adeRecord = JsonAdeRecord.getJsonAdeRecord("context field name", "feature name");
         scorerFactoryService.register(baseScorerConf.getFactoryName(), factoryConfig -> baseScorer);
-        Mockito.when(baseScorer.calculateScore(eventMessage, evenEpochTime)).thenReturn(baseScore);
-        String contextFieldName = "context field name";
-
-        when(eventMessage.getContextFields(Mockito.anyList())).thenReturn(Collections.singletonMap(contextFieldName,
-                "feature name"));
-        when(modelsCacheService.getModel(
-                Mockito.any(Feature.class),
-                Mockito.anyString(),
-                Mockito.anyMapOf(String.class, String.class),
-                Mockito.anyLong())
-        ).thenReturn(model);
+        when(baseScorer.calculateScore(eq(adeRecord))).thenReturn(baseScore);
+        when(modelsCacheService.getModel(anyString(), anyMapOf(String.class, String.class), any(Instant.class))).thenReturn(model);
 
         return new ModelBasedScoreMapper(
                 featureScoreName,
                 "model name",
-                Collections.singletonList(contextFieldName),
+                Collections.singletonList("context field name"),
                 "feature name",
-                baseScorerConf
-        ).calculateScore(eventMessage, evenEpochTime);
+                baseScorerConf,
+                scorerFactoryService, eventModelsCacheService).calculateScore(adeRecord);
     }
 
     @Test

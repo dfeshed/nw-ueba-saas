@@ -1,0 +1,44 @@
+{
+	"endpoint": {
+		"api":"dataQuery",
+		"dataQuery":{
+			"fields": [
+				{
+					"id": "normalized_username"
+				},
+				{
+					"entity" : "users",
+					"id": "id",
+					"alias": "user_id"
+				},
+				{
+					"id": "total_score"
+				}
+			],
+			"conditions": {
+				"operator": "AND",
+				"terms": [
+					{
+						"type": "field",
+						"id": "severity",
+						"operator": "equals",
+						"valueParam": "severity"
+					}
+				]
+			},
+			"sort": {
+						"field": { "alias": "total_score" },
+						"direction": "DESC"
+					}
+		}
+	},
+	"params": [
+		{
+			"dashboardParam": "name",
+			"field": "severity",
+			"value": "{{name}}"
+		}
+	]
+}
+
+

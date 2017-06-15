@@ -1,0 +1,45 @@
+{
+    "className": "no-border no-margins",
+    "style": { "margin-bottom": "none" },
+    "reportId": "users_severity_distribution",
+    "refreshOn": "currentScore",
+    "views": [
+        {
+            "type": "percentChart",
+            "settings": {
+                "options": {
+                    "height": "145px",
+                    "width": "100%",
+                    "labelsFont": {
+                        "size": "20px"
+                    },
+                    "selectable": false,
+                    "showSelectionBar": false,
+                    "barsHandleEvents": false,
+                    "labels": {
+                        "height": 32,
+                        "margin": 12,
+                        "handleEvents": false
+                    },
+                    "refreshOnResize": true
+                },
+                "setPercent": true,
+                "series": [{
+                    "field": "count",
+                    "label": "{{count}} ({{_percent}}%)",
+                    "legend": "{{name}}",
+                    "style": "severity",
+                    "styleParams": {
+                        "value": "name"
+                    },
+                    "tooltip": "{{name}} severity: {{count}} users"
+                }],
+                "labels": {
+                    "field": "count",
+                    "value": "{{count}} ({{_percent}}%)",
+                    "styleField": "count"
+                }
+            }
+        }
+    ]
+}

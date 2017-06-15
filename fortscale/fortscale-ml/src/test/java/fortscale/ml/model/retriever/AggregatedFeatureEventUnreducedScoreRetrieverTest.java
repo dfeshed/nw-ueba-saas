@@ -4,12 +4,12 @@ import fortscale.aggregation.feature.event.AggrEvent;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.aggregation.feature.event.store.AggregatedFeatureEventsReaderService;
-import fortscale.domain.core.FeatureScore;
+import fortscale.domain.feature.score.FeatureScore;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -20,10 +20,10 @@ import static org.mockito.Mockito.when;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath*:META-INF/spring/retriever-test-context.xml"})
 public class AggregatedFeatureEventUnreducedScoreRetrieverTest {
-	@Autowired
+	@MockBean
 	private AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
 
-	@Autowired
+	@MockBean
 	private AggregatedFeatureEventsReaderService aggregatedFeatureEventsReaderService;
 
 	@Test

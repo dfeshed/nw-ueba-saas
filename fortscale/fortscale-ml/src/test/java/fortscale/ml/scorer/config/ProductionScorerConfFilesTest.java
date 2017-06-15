@@ -1,7 +1,5 @@
 package fortscale.ml.scorer.config;
 
-import fortscale.common.feature.Feature;
-import fortscale.common.feature.extraction.FeatureExtractService;
 import fortscale.ml.model.Model;
 import fortscale.ml.model.ModelConfService;
 import fortscale.ml.model.cache.EventModelsCacheService;
@@ -10,6 +8,7 @@ import fortscale.ml.model.retriever.AbstractDataRetriever;
 import fortscale.ml.model.retriever.AbstractDataRetrieverConf;
 import fortscale.ml.model.selector.IContextSelector;
 import fortscale.ml.scorer.Scorer;
+import fortscale.ml.scorer.ScorerTestsContext;
 import fortscale.utils.factory.FactoryService;
 import org.junit.Assert;
 import org.junit.Test;
@@ -18,15 +17,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
-import org.springframework.data.hadoop.config.common.annotation.EnableAnnotationConfiguration;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
+import java.time.Instant;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -54,46 +53,9 @@ public class ProductionScorerConfFilesTest {
 		}
 	}
 
-	@Test
-	public void get_kerberos_logins_data_source_scorer_confs() {
-		getDataSourceScorerConfs("kerberos_logins", Collections.singletonList(4));
-	}
-
-	@Test
-	public void get_ssh_data_source_scorer_confs() {
-		getDataSourceScorerConfs("ssh", Collections.singletonList(4));
-	}
-
-	@Test
-	public void get_vpn_data_source_scorer_confs() {
-		getDataSourceScorerConfs("vpn", Collections.singletonList(3));
-	}
-
-	@Test
-	public void get_vpn_session_data_source_scorer_confs() {
-		getDataSourceScorerConfs("vpn_session", Collections.singletonList(3));
-	}
-
-	private void getDataSourceScorerConfs(String dataSource, List<Integer> sizes) {
-		DataSourceScorerConfs dataSourceScorerConfs = scorerConfService.getDataSourceScorerConfs(dataSource);
-
-		if (dataSourceScorerConfs == null) {
-			Assert.fail(String.format("Received null %s for data source %s.",
-					DataSourceScorerConfs.class.getSimpleName(), dataSource));
-		}
-
-		Assert.assertEquals(dataSource, dataSourceScorerConfs.getDataSource());
-		Assert.assertEquals(sizes.size(), dataSourceScorerConfs.getScorerConfs().size());
-
-		for (int i = 0; i < sizes.size(); i++) {
-			ScorerContainerConf conf = (ScorerContainerConf)dataSourceScorerConfs.getScorerConfs().get(i);
-			Assert.assertEquals(sizes.get(i), conf.getScorerConfList().size(), 0d);
-		}
-	}
-
 	@Configuration
 	@EnableSpringConfigured
-	@EnableAnnotationConfiguration
+	@Import(ScorerTestsContext.class)
 	@ComponentScan(basePackages = "fortscale.ml.scorer.factory")
 	static class ContextConfiguration {
 		@Bean
@@ -151,21 +113,10 @@ public class ProductionScorerConfFilesTest {
 		}
 
 		@Bean
-		public FeatureExtractService featureExtractService() {
-			return new FeatureExtractService();
-		}
-
-		@Bean
 		public ModelsCacheService modelsCacheService() {
 			return new ModelsCacheService() {
 				@Override
-				public Model getModel(Feature f, String s, Map<String, String> m, long l) {return null;}
-
-				@Override
-				public void window() {}
-
-				@Override
-				public void close() {}
+				public Model getModel(String s, Map<String, String> m, Instant l) {return null;}
 
 				@Override
 				public void deleteFromCache(String modelConfName, String contextId) {

@@ -9,17 +9,17 @@ import fortscale.aggregation.feature.bucket.strategy.*;
 import fortscale.common.feature.Feature;
 import fortscale.common.util.GenericHistogram;
 import fortscale.utils.ConversionUtils;
-import junitparams.JUnitParamsRunner;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -29,13 +29,17 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-@RunWith(JUnitParamsRunner.class)
+@RunWith(SpringRunner.class)
+@ContextConfiguration(locations = {"classpath*:META-INF/spring/aggr-feature-event-builder-context.xml"})
 public class AggrFeatureEventBuilderTest {
-    private static ClassPathXmlApplicationContext testContextManager;
 
+    @MockBean
     private DataSourcesSyncTimer dataSourcesSyncTimer;
+    @MockBean
     private FeatureBucketsService featureBucketsService;
+    @MockBean
     private AggrEventTopologyService aggrEventTopologyService;
+    @Autowired
     private AggrFeatureEventBuilderTestHelper aggrFeatureEventBuilderTestHelper;
 
     private DataSourcesSyncTimerListener dataSourcesSyncTimerListener;
@@ -45,19 +49,6 @@ public class AggrFeatureEventBuilderTest {
     private Long day = 86400L;
     private Long registrationID = 1000L;
     FeatureBucketStrategy strategy;
-
-    @BeforeClass
-    public static void setUpClass() {
-        testContextManager = new ClassPathXmlApplicationContext("classpath*:META-INF/spring/aggr-feature-event-builder-context.xml");
-    }
-
-    @Before
-    public void setUp() throws Exception {
-        dataSourcesSyncTimer = testContextManager.getBean(DataSourcesSyncTimer.class);
-        featureBucketsService = testContextManager.getBean(FeatureBucketsService.class);
-        aggrEventTopologyService = testContextManager.getBean(AggrEventTopologyService.class);
-        aggrFeatureEventBuilderTestHelper = testContextManager.getBean(AggrFeatureEventBuilderTestHelper.class);
-    }
 
     private AggrFeatureEventBuilder createBuilder(int numberOfBuckets, int bucketLeap) throws Exception{
         // Creating AggregatedFeatureEventConf

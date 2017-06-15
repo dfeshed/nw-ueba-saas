@@ -1,26 +1,34 @@
 package fortscale.ml.scorer.factory;
 
-import fortscale.common.event.Event;
-import fortscale.domain.core.FeatureScore;
+import fortscale.domain.feature.score.FeatureScore;
+import fortscale.ml.model.ModelConfService;
+import fortscale.ml.model.cache.ModelsCacheService;
 import fortscale.ml.scorer.MaxScorerContainer;
 import fortscale.ml.scorer.Scorer;
 import fortscale.ml.scorer.config.IScorerConf;
 import fortscale.ml.scorer.config.MaxScorerContainerConf;
-import fortscale.utils.factory.FactoryConfig;
 import fortscale.utils.factory.FactoryService;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit4.SpringRunner;
+import presidio.ade.domain.record.AdeRecord;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@RunWith(SpringJUnit4ClassRunner.class)
+@RunWith(SpringRunner.class)
 @ContextConfiguration(locations = {"classpath*:META-INF/spring/scorer-factory-tests-context.xml"})
 public class MaxScorerContainerFactoryTest {
+
+    @MockBean
+    ModelConfService modelConfService;
+
+    @MockBean
+    ModelsCacheService modelCacheService;
 
     @Autowired
     MaxScorerContainerFactory MaxScorerContainerFactory;
@@ -30,12 +38,7 @@ public class MaxScorerContainerFactoryTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void confNotOfExpectedType() {
-        MaxScorerContainerFactory.getProduct(new FactoryConfig() {
-            @Override
-            public String getFactoryName() {
-                return null;
-            }
-        });
+        MaxScorerContainerFactory.getProduct(() -> null);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -60,7 +63,7 @@ public class MaxScorerContainerFactoryTest {
 
         scorerFactoryService.register(dummyConf.getFactoryName(), factoryConfig -> new Scorer() {
             @Override
-            public FeatureScore calculateScore(Event eventMessage, long eventEpochTimeInSec) throws Exception {
+            public FeatureScore calculateScore(AdeRecord record) {
                 return null;
             }
 

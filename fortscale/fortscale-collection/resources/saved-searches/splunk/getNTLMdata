@@ -1,1 +1,0 @@
-index="win_evt" source="wineventlog:security" EventCode=4776 earliest=$args.earliest$ latest=$args.latest$ | sort 0 _time | table _time Logon_Account Error_Code Source_Workstation ComputerName

@@ -11,7 +11,7 @@ import java.util.Date;
 import java.util.Set;
 
 @Configurable(preConstruction = true)
-public class EntityEventContextSelector extends AlertTriggeringHighScoreContextSelector {
+public class EntityEventContextSelector implements IContextSelector {
 	@Autowired
 	private EntityEventConfService entityEventConfService;
 	@Autowired

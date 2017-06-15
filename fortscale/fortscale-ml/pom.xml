@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>fortscale</groupId>
 		<artifactId>fortscale</artifactId>
-		<version>1.1.0-SNAPSHOT</version>
+		<version>1.0.0-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>fortscale-ml</artifactId>
@@ -65,53 +65,40 @@
 		<dependency>
 			<groupId>net.minidev</groupId>
 			<artifactId>json-smart</artifactId>
-			<version>${json-smart.version}</version>
 		</dependency>
-
-		
-		
-		
-		
 
 		<!-- test -->
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-all</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>pl.pragmatists</groupId>
-			<artifactId>JUnitParams</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.kubek2k</groupId>
-			<artifactId>springockito</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.kubek2k</groupId>
-			<artifactId>springockito-annotations</artifactId>
-			<scope>test</scope>
-		</dependency>
+
+		<!--<dependency>-->
+			<!--<groupId>org.mockito</groupId>-->
+			<!--<artifactId>mockito-all</artifactId>-->
+			<!--<scope>test</scope>-->
+		<!--</dependency>-->
+
+		<!--<dependency>-->
+			<!--<groupId>org.kubek2k</groupId>-->
+			<!--<artifactId>springockito</artifactId>-->
+			<!--<scope>test</scope>-->
+		<!--</dependency>-->
+		<!--<dependency>-->
+			<!--<groupId>org.kubek2k</groupId>-->
+			<!--<artifactId>springockito-annotations</artifactId>-->
+			<!--<scope>test</scope>-->
+		<!--</dependency>-->
 
 		<!-- Spring dependencies -->
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-beans</artifactId>
-		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>org.springframework</groupId>-->
+			<!--<artifactId>spring-beans</artifactId>-->
+		<!--</dependency>-->
 
-		<dependency>
-			<groupId>org.springframework.data</groupId>
-			<artifactId>spring-data-mongodb</artifactId>
-		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>org.springframework.data</groupId>-->
+			<!--<artifactId>spring-data-mongodb</artifactId>-->
+		<!--</dependency>-->
 
 		<!-- fortscale dependencies -->
+
 		<dependency>
 			<groupId>fortscale</groupId>
 			<artifactId>fortscale-global-config</artifactId>
@@ -132,6 +119,11 @@
 			<artifactId>fortscale-aggregation</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>fortscale</groupId>
+			<artifactId>presidio-ade-domain</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 		
 
 
@@ -140,7 +132,6 @@
 		<dependency>
 			<groupId>javax.persistence</groupId>
 			<artifactId>persistence-api</artifactId>
-			<version>1.0</version>
 			<scope>provided</scope>
 		</dependency>
 
@@ -149,25 +140,19 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<version>${slf4j.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
-			<version>${logback.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-core</artifactId>
-			<version>${logback.version}</version>
 		</dependency>
-		
-		
-		<!-- samza dependencies -->
 		<dependency>
-			<groupId>org.apache.samza</groupId>
-			<artifactId>samza-api</artifactId>
-			<version>${samza.version}</version>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-math3</artifactId>
+			<version>3.1.1</version>
 		</dependency>
 
 		<dependency>
@@ -180,6 +165,21 @@
 			<scope>test</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>com.fasterxml.jackson.dataformat</groupId>
+			<artifactId>jackson-dataformat-csv</artifactId>
+			<version>${jackson.dataformat.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>fortscale</groupId>
+			<artifactId>presidio-ade-domain</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 
 	<build>

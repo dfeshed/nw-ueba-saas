@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>fortscale</groupId>
 		<artifactId>fortscale</artifactId>
-		<version>1.1.0-SNAPSHOT</version>
+		<version>1.0.0-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>fortscale-aggregation</artifactId>
@@ -70,7 +70,6 @@
 		<dependency>
 			<groupId>net.minidev</groupId>
 			<artifactId>json-smart</artifactId>
-			<version>${json-smart.version}</version>
 		</dependency>
 
 		<dependency>
@@ -86,20 +85,20 @@
 			<version>${jsonpath.version}</version>
 		</dependency>
 
-		
-		
+		<!-- Fetch Jackson require by project. The version defined in sprint boot parent-->
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+		</dependency>
+
 
 		<!-- test -->
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-all</artifactId>
-			<scope>test</scope>
-		</dependency>
+
+		<!--<dependency>-->
+			<!--<groupId>org.mockito</groupId>-->
+			<!--<artifactId>mockito-all</artifactId>-->
+			<!--<scope>test</scope>-->
+		<!--</dependency>-->
 		<dependency>
 			<groupId>pl.pragmatists</groupId>
 			<artifactId>JUnitParams</artifactId>
@@ -121,17 +120,21 @@
 			<groupId>org.springframework.data</groupId>
 			<artifactId>spring-data-mongodb</artifactId>
 		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>com.cloudera.api</groupId>-->
+			<!--<artifactId>cloudera-manager-api</artifactId>-->
+		<!--</dependency>-->
 
-		<dependency>
-			<groupId>org.kubek2k</groupId>
-			<artifactId>springockito</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.kubek2k</groupId>
-			<artifactId>springockito-annotations</artifactId>
-			<scope>test</scope>
-		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>org.kubek2k</groupId>-->
+			<!--<artifactId>springockito</artifactId>-->
+			<!--<scope>test</scope>-->
+		<!--</dependency>-->
+		<!--<dependency>-->
+			<!--<groupId>org.kubek2k</groupId>-->
+			<!--<artifactId>springockito-annotations</artifactId>-->
+			<!--<scope>test</scope>-->
+		<!--</dependency>-->
 
 		<!-- fortscale dependencies -->
 		<dependency>
@@ -157,16 +160,14 @@
 		<dependency>
 			<groupId>fortscale</groupId>
 			<artifactId>fortscale-common</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>${project.version}</version>
 		</dependency>
 
 
-		<!-- javax persistence needed by aspectj compile time depenceny injection 
-			with spring [SPR-6819] -->
+		<!-- javax persistence needed by aspectj compile time depenceny injection with spring [SPR-6819] -->
 		<dependency>
 			<groupId>javax.persistence</groupId>
 			<artifactId>persistence-api</artifactId>
-			<version>1.0</version>
 			<scope>provided</scope>
 		</dependency>
 
@@ -175,7 +176,6 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<version>${slf4j.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
@@ -185,18 +185,21 @@
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-core</artifactId>
-			<version>${logback.version}</version>
 		</dependency>
 
 
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
-			<version>${guava.version}</version>
-		</dependency>
+        </dependency>
 		<dependency>
 			<groupId>com.github.fakemongo</groupId>
 			<artifactId>fongo</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
 
@@ -211,6 +214,7 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>${maven-compiler-plugin.version}</version>
 				<configuration>
+					<encoding>${project.build.sourceEncoding}</encoding>
 					<source>${java-lang-config.version}</source>
 					<target>${java-lang-config.version}</target>
 				</configuration>
