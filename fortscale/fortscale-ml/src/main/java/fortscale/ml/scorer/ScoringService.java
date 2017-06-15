@@ -40,7 +40,7 @@ public class ScoringService<T extends AdeRecord> {
 
 	public List<FeatureScore> score(T record) {
 		long dateTimeEpochSecond = record.getDate_time().getEpochSecond();
-		String dataSource = record.getAdeRecordType();
+		String dataSource = record.getDataSource();
 		List<Scorer> dataSourceScorers = dataSourceToScorersMap.get(dataSource);
 		ScoringServiceMetrics dataSourceMetrics = getDataSourceMetrics(dataSource);
 		dataSourceMetrics.calculateScoreTime = dateTimeEpochSecond;

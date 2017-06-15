@@ -2,7 +2,6 @@ package fortscale.aggregation.feature.bucket;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.aggregation.configuration.AslConfigurationService;
-
 import fortscale.common.event.Event;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
@@ -22,13 +21,13 @@ public class BucketConfigurationService extends AslConfigurationService {
 	private Map<String, FeatureBucketConf> bucketConfs = new HashMap<>();
 	private Map<String, List<FeatureBucketConf>> dataSourceToListOfBucketConfs = new HashMap<>();
 
-	@Value("${impala.table.fields.data.source}")
+	@Value("${impala.table.fields.data.source:data_source}")
 	private String dataSourceFieldName;
-	@Value("${fortscale.aggregation.bucket.conf.json.file.name}")
+	@Value("${fortscale.aggregation.bucket.conf.json.file.name:}")
 	private String bucketConfJsonFilePath;
-	@Value("${fortscale.aggregation.bucket.conf.json.overriding.files.path}")
+	@Value("${fortscale.aggregation.bucket.conf.json.overriding.files.path:}")
 	private String bucketConfJsonOverridingFilesPath;
-	@Value("${fortscale.aggregation.bucket.conf.json.additional.files.path}")
+	@Value("${fortscale.aggregation.bucket.conf.json.additional.files.path:}")
 	private String bucketConfJsonAdditionalFilesPath;
 
 	@Override

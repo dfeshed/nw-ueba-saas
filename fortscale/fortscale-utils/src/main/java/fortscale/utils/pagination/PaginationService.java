@@ -112,17 +112,19 @@ public abstract class PaginationService<T> {
         // Integer - total num of events in group
         // Set<String> - contextIds
         List<Pair<Integer, Set<String>>> groups = new ArrayList<>();
+        int numOfHandledContextIds = 0;
 
         int totalNumOfItems = 0;
         int start = 0;
         int end = contextIdToNumOfItemsList.size() - 1;
 
-        while (end > start) {
+        while (end > start || (end == start && numOfHandledContextIds == contextIdToNumOfItemsMap.size()-1)) {
             Set<String> contextIds = new HashSet<>();
             Pair<String, Integer> first = contextIdToNumOfItemsList.get(start);
             Pair<String, Integer> last = contextIdToNumOfItemsList.get(end);
             contextIds.add(last.getKey());
             totalNumOfItems = last.getValue();
+            numOfHandledContextIds++;
 
             while (totalNumOfItems + first.getValue() <= pageSize && contextIds.size() + 1 <= maxGroupSize &&
                     end > start) {
@@ -130,6 +132,7 @@ public abstract class PaginationService<T> {
                 contextIds.add(first.getKey());
                 start++;
                 first = contextIdToNumOfItemsList.get(start);
+                numOfHandledContextIds++;
             }
 
             Pair<Integer, Set<String>> totalNumOfItemsToContextIdsPair = new Pair<>(totalNumOfItems, contextIds);

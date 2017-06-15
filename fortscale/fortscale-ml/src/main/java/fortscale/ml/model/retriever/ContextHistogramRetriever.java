@@ -19,9 +19,7 @@ import java.util.*;
 
 @Configurable(preConstruction = true)
 public class ContextHistogramRetriever extends AbstractDataRetriever {
-	@Autowired
 	private BucketConfigurationService bucketConfigurationService;
-	@Autowired
 	private FeatureBucketsReaderService featureBucketsReaderService;
 	@Autowired
 	private StatsService statsService;
@@ -30,10 +28,12 @@ public class ContextHistogramRetriever extends AbstractDataRetriever {
 	private String featureName;
 	private ContextHistogramRetrieverMetrics metrics;
 
-    public ContextHistogramRetriever(ContextHistogramRetrieverConf config) {
+    public ContextHistogramRetriever(ContextHistogramRetrieverConf config, BucketConfigurationService bucketConfigurationService, FeatureBucketsReaderService featureBucketsReaderService) {
         super(config);
         String featureBucketConfName = config.getFeatureBucketConfName();
-        featureBucketConf = bucketConfigurationService.getBucketConf(featureBucketConfName);
+        this.bucketConfigurationService=bucketConfigurationService;
+        this.featureBucketsReaderService=featureBucketsReaderService;
+        featureBucketConf = this.bucketConfigurationService.getBucketConf(featureBucketConfName);
         featureName = config.getFeatureName();
         metrics = new ContextHistogramRetrieverMetrics(statsService, featureBucketConfName, featureName);
         validate(config);

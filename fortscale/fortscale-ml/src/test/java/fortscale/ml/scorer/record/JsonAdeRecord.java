@@ -34,4 +34,9 @@ public class JsonAdeRecord extends AdeRecord {
 		jsonObject.put(key, value);
 		return new JsonAdeRecord(Instant.now(), jsonObject);
 	}
+
+	@Override
+	public String getDataSource() {
+		return null;
+	}
 }
