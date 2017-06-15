@@ -1,12 +1,20 @@
 import Component from 'ember-component';
-import layout from './template';
 import computed from 'ember-computed-decorators';
+import service from 'ember-service/inject';
+
+import layout from './template';
 
 const DATE_DATATYPE = 2;
 
 export default Component.extend({
   layout,
   tagName: '',
+  i18n: service(),
+
+  @computed('name')
+  tooltipText(name) {
+    return this.get('i18n').t(`recon.eventHeader.${name}Tooltip`);
+  },
 
   @computed('type')
   isDate: (type) => type === DATE_DATATYPE,

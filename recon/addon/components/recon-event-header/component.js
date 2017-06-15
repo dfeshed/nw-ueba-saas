@@ -1,8 +1,9 @@
 import Component from 'ember-component';
+import set from 'ember-metal/set';
 import { A, isEmberArray } from 'ember-array/utils';
 import connect from 'ember-redux/components/connect';
 import computed from 'ember-computed-decorators';
-import { RECON_DISPLAYED_HEADER } from 'recon/utils/recon-event-header';
+import { RECON_DISPLAYED_HEADER, HAS_TOOLTIP } from 'recon/utils/recon-event-header';
 import layout from './template';
 
 const stateToComputed = ({ recon: { visuals, header } }) => ({
@@ -26,7 +27,7 @@ const EventHeaderComponent = Component.extend({
         if (item && item.name && so >= 0) {
           // Add sort order to object
           item.so = so;
-
+          set(item, 'hasTooltip', HAS_TOOLTIP.contains(item.name));
           // Add the properties we want to override into a new object and add to displayedItems
           displayedItems.pushObject(item);
         }

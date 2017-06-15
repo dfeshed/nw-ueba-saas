@@ -22,6 +22,8 @@ const RECON_DISPLAYED_HEADER = {
   eventTime: 80
 };
 
+const HAS_TOOLTIP = ['packetSize', 'payloadSize', 'packetCount'];
+
 /**
  * @public
  * @description Get header item from a header item object.
@@ -32,5 +34,6 @@ const getHeaderItem = (headerItems, item) => headerItems ? headerItems.find((d) 
 
 export {
   RECON_DISPLAYED_HEADER,
+  HAS_TOOLTIP,
   getHeaderItem
 };

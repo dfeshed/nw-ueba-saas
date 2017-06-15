@@ -11,10 +11,21 @@
           <grid responsive>
             {{#each displayedHeaderItems as |item|}}
               {{#if item.value}}
-                {{recon-event-header-item name=item.name value=item.value type=item.type}}
+                {{recon-event-header-item
+                  name=item.name
+                  value=item.value
+                  type=item.type
+                  hasTooltip=item.hasTooltip
+                }}
               {{/if}}
             {{/each}}
           </grid>
+          {{#rsa-content-tethered-panel
+            displayCloseButton=false
+            panelId='eventHeaderTooltip'
+            position='top' as |hide model|}}
+            <p>{{model}}</p>
+          {{/rsa-content-tethered-panel}}
         {{/if}}
       </div>
     {{/if}}

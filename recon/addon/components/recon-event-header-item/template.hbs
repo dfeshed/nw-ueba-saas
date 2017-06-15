@@ -1,7 +1,17 @@
 <box xs="4" md="2" class="header-item">
-  <div class="name">
-    {{t (concat 'recon.eventHeader.' name)}}
-  </div>
+  {{#if hasTooltip}}
+    {{#rsa-content-tethered-panel-trigger
+      panel='eventHeaderTooltip'
+      model=tooltipText}}
+      <div class="name">
+        {{t (concat 'recon.eventHeader.' name)}}
+      </div>
+    {{/rsa-content-tethered-panel-trigger}}
+  {{else}}
+    <div class="name">
+      {{t (concat 'recon.eventHeader.' name)}}
+    </div>
+  {{/if}}
   <div class="value">
     {{#if isDate}}
       {{rsa-content-datetime timestamp=asInteger}}
@@ -12,3 +22,4 @@
     {{/if}}
   </div>
 </box>
+

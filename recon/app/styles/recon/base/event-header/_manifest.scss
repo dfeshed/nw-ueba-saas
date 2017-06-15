@@ -28,6 +28,10 @@
         color: rsa-color(gray, lightest);
       }
     }
+
+    .rsa-content-tethered-panel {
+      z-index: 2000
+    }
   }
 
   .recon-event-titlebar {
