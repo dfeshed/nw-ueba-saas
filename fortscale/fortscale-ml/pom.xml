@@ -193,16 +193,35 @@
     </dependencies>
 
 	<build>
-		<resources>
-			<resource>
-				<directory>resources</directory>
-				<targetPath>${project.build.outputDirectory}</targetPath>
-				<includes>
-					<include>application.properties</include>
-				</includes>
-			</resource>
-		</resources>
+
+
 		<plugins>
+			<plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>3.0.2</version>
+				<executions>
+					<execution>
+						<id>copy-resources</id>
+						<!-- here the phase you need -->
+						<phase>validate</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.outputDirectory}</outputDirectory>
+							<resources>
+								<resource>
+									<directory>src/resources</directory>
+									<targetPath>${project.build.outputDirectory}</targetPath>
+									<includes>
+										<include>application.properties</include>
+									</includes>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
