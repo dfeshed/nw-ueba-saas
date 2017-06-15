@@ -26,7 +26,6 @@ public class CollectorExecutionServiceImpl implements CollectorExecutionService 
     private final CoreManagerService coreManagerService;
     private final FetchService fetchService;
     private final ParametersValidationService parameterValidationService;
-    private final Command CLEAN_COMMAND = Command.CLEAN;
 
     public CollectorExecutionServiceImpl(CoreManagerService coreManagerService, FetchService fetchService, ParametersValidationService parameterValidationService) {
         this.coreManagerService = coreManagerService;
@@ -67,7 +66,7 @@ public class CollectorExecutionServiceImpl implements CollectorExecutionService 
         final Instant endDate = Instant.parse(endDateParam);
         final Command command = Command.createCommand(commandParam);
 
-        if (command.equals(CLEAN_COMMAND)) {
+        if (command.equals(Command.CLEAN)) {
             logger.info("Cleaning.");
             System.out.print("Cleaning.");
             return;
