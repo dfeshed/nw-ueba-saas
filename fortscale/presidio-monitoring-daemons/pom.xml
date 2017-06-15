@@ -7,8 +7,8 @@
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>fortscale-monitoring-daemons</artifactId>
-    <name>fortscale-monitoring-daemons</name>
+    <artifactId>presidio-monitoring-daemons</artifactId>
+    <name>presidio-monitoring-daemons</name>
     <description>Fortscale Monitoring</description>
     <packaging>jar</packaging>
 
@@ -165,14 +165,14 @@
 
         <!-- test -->
         <!--<dependency>-->
-            <!--<groupId>junit</groupId>-->
-            <!--<artifactId>junit</artifactId>-->
-            <!--<scope>test</scope>-->
+        <!--<groupId>junit</groupId>-->
+        <!--<artifactId>junit</artifactId>-->
+        <!--<scope>test</scope>-->
         <!--</dependency>-->
         <!--<dependency>-->
-            <!--<groupId>org.mockito</groupId>-->
-            <!--<artifactId>mockito-all</artifactId>-->
-            <!--<scope>test</scope>-->
+        <!--<groupId>org.mockito</groupId>-->
+        <!--<artifactId>mockito-all</artifactId>-->
+        <!--<scope>test</scope>-->
         <!--</dependency>-->
         <dependency>
             <groupId>pl.pragmatists</groupId>
@@ -180,17 +180,15 @@
             <scope>test</scope>
         </dependency>
         <!--<dependency>-->
-            <!--<groupId>org.kubek2k</groupId>-->
-            <!--<artifactId>springockito</artifactId>-->
-            <!--<scope>test</scope>-->
+        <!--<groupId>org.kubek2k</groupId>-->
+        <!--<artifactId>springockito</artifactId>-->
+        <!--<scope>test</scope>-->
         <!--</dependency>-->
         <!--<dependency>-->
-            <!--<groupId>org.kubek2k</groupId>-->
-            <!--<artifactId>springockito-annotations</artifactId>-->
-            <!--<scope>test</scope>-->
+        <!--<groupId>org.kubek2k</groupId>-->
+        <!--<artifactId>springockito-annotations</artifactId>-->
+        <!--<scope>test</scope>-->
         <!--</dependency>-->
-
-
 
 
         <!-- apache command line -->
@@ -231,7 +229,7 @@
         <!--  fortscale dependencies -->
         <dependency>
             <groupId>fortscale</groupId>
-            <artifactId>fortscale-utils</artifactId>
+            <artifactId>presidio-utils</artifactId>
             <version>${project.version}</version>
         </dependency>
 
@@ -243,7 +241,7 @@
 
         <dependency>
             <groupId>fortscale</groupId>
-            <artifactId>fortscale-services</artifactId>
+            <artifactId>presidio-services</artifactId>
             <version>${project.version}</version>
         </dependency>
 
@@ -322,7 +320,9 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>fortscale.monitoring.external.stats.linux.collector.MonitoringExternalStatsCollector</mainClass>
+                            <mainClass>
+                                fortscale.monitoring.external.stats.linux.collector.MonitoringExternalStatsCollector
+                            </mainClass>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
                             <classpathLayoutType>simple</classpathLayoutType>
