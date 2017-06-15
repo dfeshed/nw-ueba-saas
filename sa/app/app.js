@@ -16,6 +16,7 @@ const App = Application.extend({
       dependencies: {
         services: [
           '-document',
+          'access-control',
           'contextual-help',
           'dateFormat',
           'timeFormat',
@@ -28,6 +29,7 @@ const App = Application.extend({
       dependencies: {
         services: [
           '-document',
+          'access-control',
           'contextual-help',
           'dateFormat',
           'timeFormat',

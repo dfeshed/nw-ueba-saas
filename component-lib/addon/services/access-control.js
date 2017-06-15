@@ -3,6 +3,7 @@ import config from 'ember-get-config';
 import Service from 'ember-service';
 
 export default Service.extend({
+  roles: config.roles || [],
   // static permissions
   hasMonitorAccess: true,
 
@@ -91,12 +92,6 @@ export default Service.extend({
     }
 
     return url;
-  },
-
-  init() {
-    this._super(...arguments);
-
-    this.set('roles', config.roles || []);
   },
 
   /**

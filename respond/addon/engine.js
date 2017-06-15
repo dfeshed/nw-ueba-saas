@@ -16,6 +16,7 @@ const Eng = Engine.extend({
       // the following services are shared because they contain state
       // persisted by the parent app. If they are not shared, that state
       // is missing as the engine gets fresh copies of the service w/o state
+      'access-control',
       'contextual-help',
       'dateFormat',
       'timeFormat',
