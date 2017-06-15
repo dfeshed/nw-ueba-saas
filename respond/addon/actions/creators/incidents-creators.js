@@ -343,6 +343,9 @@ const initializeIncident = (incidentId) => {
       if (!state.respond.dictionaries.remediationStatusTypes.length) {
         dispatch(DictionaryCreators.getAllRemediationStatusTypes());
       }
+      if (!state.respond.dictionaries.milestoneTypes.length) {
+        dispatch(DictionaryCreators.getAllMilestoneTypes());
+      }
     }
   };
 };

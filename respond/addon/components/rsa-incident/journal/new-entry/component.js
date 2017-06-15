@@ -1,6 +1,5 @@
 import Ember from 'ember';
 import connect from 'ember-redux/components/connect';
-import { getAllMilestoneTypes } from 'respond/actions/creators/dictionary-creators';
 import { createJournalEntry } from 'respond/actions/creators/journal-creators';
 import { empty } from 'ember-computed-decorators';
 import Notifications from 'respond/mixins/notifications';
@@ -14,9 +13,6 @@ const stateToComputed = ({ respond: { dictionaries: { milestoneTypes } } }) => (
 
 const dispatchToActions = (dispatch) => {
   return {
-    getMilestones() {
-      dispatch(getAllMilestoneTypes());
-    },
     createEntry(entry) {
       dispatch(createJournalEntry(entry, {
         onSuccess: () => {
@@ -37,10 +33,6 @@ const Journal = Component.extend(Notifications, {
   milestone: null,
 
   @empty('notes') isInvalid: true,
-
-  onInit: function() {
-    this.send('getMilestones');
-  }.on('init'),
 
   actions: {
     handleSubmit() {
