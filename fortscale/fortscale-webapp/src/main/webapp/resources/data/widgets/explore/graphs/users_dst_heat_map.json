@@ -1,0 +1,55 @@
+{
+    "message":{
+        "type": "maxResults",
+        "params": {
+            "maxResults": 80
+        }
+    },
+    "views": [
+        {
+            "type": "heatMap",
+            "settings": {
+                "column": "{{machine}}",
+                "row": "{{username}}",
+				"value": "{{user_count}}",
+                "legend": {
+                    "items": [
+						{
+							"color": "#80BFF0",
+							"value": "Minimal times of VPN connection"
+						},
+						{
+							"color": "#065DA0",
+							"value": "Maximal times of VPN connection"
+						}
+                    ]
+                },
+                "behavior":{
+                    "rows":{
+                        "isSortingEnabled":true,
+                        "tooltip":"{{name}}"
+                    },
+                    "columns":{
+                        "isSortingEnabled":true,
+                        "tooltip":"{{name}} : has {{valueSum}} members",
+                        "percentCalculationMethod":"count",
+                        "showPercentage":true
+                    },
+                    "cell":{
+                        "tooltip":"{{rowName}} logged {{name}} {{value}} {{value:pluralOrSingular:time:times}}"
+                    },
+					"colorGradientType":"scale"
+                },
+                "onSelect": {
+                    "action": "openPopup",
+                    "actionOptions": {
+                        "widgetId": "visualizations.group_users_bubbles_popup",
+                        "title": "Members of {{name}}",
+                        "width": 500,
+                        "height": 360
+                    }
+                }
+            }
+        }
+    ]
+}

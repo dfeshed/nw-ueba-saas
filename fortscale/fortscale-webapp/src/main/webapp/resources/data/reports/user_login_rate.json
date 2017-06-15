@@ -1,0 +1,20 @@
+{
+    "requiredParams": ["username"],
+    "endpoint": {
+        "entity": "classifier",
+        "id": "login",
+        "method": "eventsLoginCount",
+        "username": "{{@username}}"
+    },
+    "mock_data": "user.logins_count",
+    "process": {
+        "processId": "combine",
+        "params": {
+            "groupBy": "day",
+            "defaultValue": { "SUCCESS": 0, "FAIL": 0 },
+            "fields": {
+                "status": "count"
+            }
+        }
+    }
+}

@@ -1,0 +1,10 @@
+{
+    "entity": "user",
+    "params": {
+        "fromPage": 1,
+        "size": 5,
+        "sort_field": "displayName",
+        "sort_direction": "ASC",
+        "search_field_contains": "{{search}}"
+    }
+}

@@ -1,0 +1,76 @@
+{
+	"endpoint": {
+		"api": "dataQuery",
+		"dataQuery": {
+			"entity": "kerberos_logins",
+			"fields": [
+				{
+					"id": "destination_machine",
+					"alias": "machine"
+				},
+				{
+					"alias": "login_count",
+					"func": {
+						"name": "count",
+						"params": {
+							"all": true
+						}
+					}
+				}
+			],
+			"conditions": {
+				"operator": "AND",
+				"terms": [
+					{
+						"type": "field",
+						"id": "normalized_username",
+						"operator": "equals",
+						"valueParam": "username"
+					},
+					{
+						"type": "field",
+						"id": "event_time_utc",
+						"operator": "greaterThanOrEquals",
+						"value": "{{@date:date:unixtimestamp:0d:start}}"
+					},
+					{
+						"type": "field",
+						"id": "event_time_utc",
+						"operator": "lesserThanOrEquals",
+						"value": "{{@date:date:unixtimestamp:0d:end}}"
+					},
+					{
+						"type": "field",
+						"id": "event_score",
+						"operator": "greaterThanOrEquals",
+						"valueParam": "minscore"
+					}
+				]
+			},
+			"groupBy": {
+				"id": "destination_machine"
+			},
+			"sort": {
+				"alias": "login_count",
+				"direction": "desc"
+			},
+			"limit": 200
+		}
+	},
+    "params": [
+        {
+            "dashboardParam": "normalizedUsername",
+            "field": "username"
+        },
+        {
+            "dashboardParam": "date",
+            "field": "date"
+        },
+        {
+            "field": "minscore",
+            "dashboardParam": "minscore",
+            "default": 0
+        }
+    ],
+    "mock_data": "user.user_datasource_machines_AD"
+}

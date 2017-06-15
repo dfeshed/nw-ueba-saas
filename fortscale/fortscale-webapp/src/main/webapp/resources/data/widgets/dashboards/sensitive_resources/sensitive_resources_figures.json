@@ -1,0 +1,23 @@
+{
+    "id": "sensitive_resources_figures",
+    "title": "Summary",
+    "reportId": "dashboards.sensitive_resources.sensitive_resources_figures",
+	"show" : {
+		"conditions": [
+			{
+				"operator": "entityExists",
+				"value": "auth_event"
+			}
+		]
+	},
+    "views": [
+        {
+            "type": "figures",
+            "settings": {
+                "label": "label",
+                "value": "{{value:round}}",
+                "noValue": "-"
+            }
+        }
+    ]
+}

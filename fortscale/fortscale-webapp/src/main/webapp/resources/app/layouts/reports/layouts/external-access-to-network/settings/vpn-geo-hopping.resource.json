@@ -1,0 +1,12 @@
+{
+    "entity": "evidences/findEventsForGeoHopping",
+    "params": {
+        "after": "{{events_time.value.split(',')[0]}}",
+        "before": "{{events_time.value.split(',')[1]}}",
+        "normalized_username": "{{user.value}}",
+        "limit":9999,
+        "offset":-9999,
+        "page":0,
+        "size":9999
+    }
+}

@@ -1,0 +1,66 @@
+{
+    "name": "Bars Chart",
+    "icon": "icon-bar-chart",
+    "settings": [
+        {
+            "id": "selectedIndex",
+            "name": "Selected Index",
+            "type": "select",
+            "values": ["first", "last"],
+            "default": "last"
+        },
+        {
+            "id": "series",
+            "name": "Series",
+            "type": "objectArray",
+            "addText": "Add field",
+            "memberSettings": [
+                {
+                    "id": "field",
+                    "name": "Value",
+                    "type": "dataField",
+                    "dataFieldType": "number"
+                },
+                {
+                    "id": "label",
+                    "name": "Label",
+                    "type": "dataField"
+                }
+            ]
+        },
+        {
+            "id": "labels",
+            "name": "Labels",
+            "type": "object",
+            "properties": [
+                {
+                    "id": "field",
+                    "name": "Field",
+                    "type": "dataField"
+                },
+                {
+                    "id": "value",
+                    "name": "Value",
+                    "type": "dataField"
+                },
+                {
+                    "id": "styleField",
+                    "name": "Style Field",
+                    "type": "dataField"
+                }
+            ]
+        },
+        {
+            "id": "selectionBar",
+            "name": "Selection Bar",
+            "type": "object",
+            "properties": [
+                {
+                    "id": "styleField",
+                    "name": "Style Field",
+                    "type": "dataField"
+                }
+            ]
+        }
+    ]
+}

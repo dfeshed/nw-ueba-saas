@@ -1,0 +1,53 @@
+{
+    "id": "top_users_kerberos_logins",
+    "title": "Top Suspicious Users (Kerberos)",
+    "description": "The users with the highest Kerberos scores",
+	"show" : {
+		"conditions": [
+			{
+				"operator": "entityExists",
+				"value": "kerberos_logins"
+			}
+		]
+	},
+    "controls": [
+        {
+            "label": "Min Score",
+            "type": "number",
+            "param": "users.kerberos_logins_score",
+            "paramGroup": "filters",
+            "formatParam": ">={{value}}",
+            "value": 80,
+            "defaultValue": 80,
+            "settings": {
+                "min": 0,
+                "max": 100
+            }
+        }
+    ],
+    "noDataMessage": "No users found.",
+    "widgets": [
+        {
+            "id": "accounts_with_high_kerberos_logins_score",
+            "flags": {
+                "contentsOnly": true
+            },
+            "className": "widget-noPadding",
+            "title": "Accounts With High Kerberos Logins Score",
+            "params": {
+                "entityId": "users",
+                "tableview_sort": "kerberos_logins_score",
+                "tableview_sort_dir": "-1",
+                "tableview_fields": "normalized_username,display_name,department,last_activity_date,kerberos_logins_score,total_score"
+            },
+            "views": [
+                {
+                    "type": "explore",
+                    "settings": {
+                        "viewOnly": true
+                    }
+                }
+            ]
+        }
+    ]
+}

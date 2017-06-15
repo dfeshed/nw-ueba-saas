@@ -1,0 +1,13 @@
+{
+    "orientation": "horizontal",
+    "panes": [
+        {
+            "collapsible": true,
+            "resizable": false,
+            "size": "360px",
+            "collapsedSize": "40px",
+            "overflow": "visible"
+        },
+        {}
+    ]
+}

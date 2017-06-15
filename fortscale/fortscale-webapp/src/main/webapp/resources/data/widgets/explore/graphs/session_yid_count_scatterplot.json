@@ -1,0 +1,98 @@
+{
+	"message":{
+		"type": "maxResults",
+		"params": {
+			"maxResults": 200
+		}
+	},
+	"views": [
+		{
+			"type": "scatterPlot",
+			"height": 500,
+			"settings": {
+				"timeField": "start_time",
+				"yField": "distinct_yid_count",
+				"colorField": "distinct_yid_count_score",
+				"colorScale": "score",
+				"legend": {
+					"position": "right"
+				},
+				"shapes": {
+					"field": "type"
+				},
+				"axes": {
+					"x": {
+						"type": "time",
+						"timeFormat": "days",
+						"label": "Session time"
+					},
+					"y": {
+						"label": "Yahoo Account ID (count)"
+					}
+				},
+				"scales": {
+					"x": {
+						"type": "time"
+					},
+					"y": {
+						"minValue" : 0
+					}
+				},
+				"onSelect": {
+					"action": "showTooltip",
+					"actionOptions": {
+						"table": {
+							"rows": [
+								{
+									"label": "Username",
+									"value": "{{username}}"
+								},
+								{
+									"label": "Start time",
+									"value": "{{start_time:date:MM/DD/YYYY HH\\:mm\\:ss}}"
+								},
+								{
+									"label": "End time",
+									"value": "{{end_time:date:MM/DD/YYYY HH\\:mm\\:ss}}"
+								},
+								{
+									"label": "Duration (hh:mm:ss)",
+									"value": "{{duration:diffToPrettyTime:seconds}}"
+								},
+								{
+									"label": "YID Count",
+									"value": "{{distinct_yid_count}}"
+								},
+								{
+									"label": "YID Count Score",
+									"value": "{{distinct_yid_count_score}}"
+								},
+								{
+									"label": "Avg. Yid Counts",
+									"value": "{{avg_yid_counts}}"
+								},
+								{
+									"label": "Sensitive Actions Count",
+									"value": "{{sensitive_action_count}}"
+								},
+								{
+									"label": "Sensitive Actions Count Score",
+									"value": "{{sensitive_action_count_score}}"
+								},
+								{
+									"label": "Avg. YID Duration (hh:mm:ss)",
+									"value": "{{avg_time_in_yid:diffToPrettyTime:minutes}}"
+								},
+								{
+									"label": "Avg. YID Duration Score",
+									"value": "{{avg_time_in_yid_score}}"
+								}
+							]
+						}
+					}
+				}
+			}
+		}
+
+	]
+}

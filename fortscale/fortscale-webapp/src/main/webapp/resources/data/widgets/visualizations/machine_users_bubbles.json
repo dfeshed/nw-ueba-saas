@@ -1,0 +1,27 @@
+{
+    "message":{
+        "type": "maxResults",
+        "params": {
+            "maxResults": 50
+        }
+    },
+    "views": [
+        {
+            "type": "bubbles",
+            "settings": {
+                "label": "{{service_name}}",
+                "childIdField": "displayname",
+                "tooltipText": "{{name}}: {{value}} {{value:pluralOrSingular:User:Users}} ({{_percent:toFixed:2}}% of all users)",
+                "onSelect": {
+                    "action": "openPopup",
+                    "actionOptions": {
+                        "widgetId": "visualizations.machine_users_bubbles_popup",
+                        "title": "Users Who Accessed {{name}}",
+                        "width": 500,
+                        "height": 360
+                    }
+                }
+            }
+        }
+    ]
+}

@@ -1,0 +1,22 @@
+{
+    "endpoint": {
+        "entity": "classifier",
+        "method": "suspiciousUser"
+    },
+    "cache": "5m",
+    "params": [
+        {
+            "field": "id",
+            "name": "id",
+            "dashboardParam": "currentScore"
+        },
+        {
+            "field": "followedOnly",
+            "dashboardParam": "onlyFollowedUsers"
+        },
+        {
+            "field": "minScore",
+            "default": 80
+        }
+    ]
+}

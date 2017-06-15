@@ -1,0 +1,136 @@
+{
+    "endpoint": {
+        "api": "dataQuery",
+        "dataQuery": {
+			"entity": "scored_access_event",
+			"limit": 100,
+			"fields": [
+				{
+					"id": "source_ip",
+					"alias": "source_ip"
+				},
+				{
+					"id": "source_machine",
+					"alias": "source_machine"
+				},
+				{
+					"id": "event_time",
+					"alias": "event_time",
+					"func": {
+						"name": "to_date"
+					}
+				},
+				{
+					"alias": "event_count",
+					"func": {
+						"name": "count",
+						"params": {
+							"all": true
+						}
+					}
+				},
+				{
+					"id": "normalized_username",
+					"alias": "users_count",
+					"func": {
+						"name": "count",
+						"params": {
+							"distinct": true
+						}
+					}
+				},
+				{
+					"id": "suspicious_event_score",
+					"alias": "suspicious_event_score",
+					"func": {
+						"name": "sum"
+					}
+				}
+			],
+			"conditions": {
+				"operator": "AND",
+				"terms": [
+					{
+						"type": "field",
+						"id": "source_machine",
+						"operator": "notEquals",
+						"value": ""
+					},
+					{
+						"type": "field",
+						"id": "event_time_utc",
+						"operator": "dateRange",
+						"valueParam": "dateRange"
+					},
+					{
+						"type": "field",
+						"id": "source_ip",
+						"operator": "equals",
+						"valueParam": "source_ip"
+					}
+				]
+			},
+			"groupBy": [
+				{
+					"id": "event_time",
+					"func": {
+						"name": "to_date"
+					}
+				},
+				"source_ip", "source_machine"
+			],
+            "sort": [
+                { "field": { "alias": "event_time" }, "direction": "desc" }
+            ]
+        }
+    },
+	"process": {
+		"processId": "groupBy",
+		"params": {
+			"groupBy": [
+				"source_machine",
+				"event_time"
+			],
+			"fields": [
+				{
+					"fieldFunc": "sum",
+					"fieldName": "event_count",
+					"fieldNewName": "total_count"
+				},
+				{
+					"fieldFunc": "case",
+					"referenceFieldName": "type",
+					"referenceValue": "Kerberos",
+					"fieldName": "suspicious_event_score",
+					"fieldNewName": "kerberos_count"
+				},
+				{
+					"fieldFunc": "case",
+					"referenceFieldName": "type",
+					"referenceValue": "SSH",
+					"fieldName": "suspicious_event_score",
+					"fieldNewName": "ssh_count"
+				},
+                {
+                    "fieldFunc": "case",
+                    "referenceFieldName": "type",
+                    "referenceValue": "VPN",
+                    "fieldName": "suspicious_event_score",
+                    "fieldNewName": "vpn_count"
+                }
+			]
+		}
+	},
+	"params": [
+		{
+			"field": "dateRange",
+			"dashboardParam": "ip_investigation_events_dates",
+			"isRequired": true
+		},
+		{
+			"field": "source_ip",
+			"dashboardParam": "ip_investigation_events_ip_address",
+			"isRequired": true
+		}
+	]
+}

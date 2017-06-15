@@ -1,0 +1,22 @@
+{
+    "id": "user_machines_per_datasource",
+    "loadingDataMessage": "Loading machines",
+    "views": [
+        {
+            "type": "table",
+            "settings": {
+                "fields": [
+                    {
+                        "name": "Machine",
+                        "value": "{{machine}}",
+                        "tags": "machine"
+                    },
+                    {
+                        "name": "Login Count",
+                        "value": "{{login_count}}"
+                    }
+                ]
+            }
+        }
+    ]
+}

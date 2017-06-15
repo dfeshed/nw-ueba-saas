@@ -1,0 +1,72 @@
+{
+    "message":{
+        "type": "maxResults",
+        "params": {
+            "maxResults": 80
+        }
+    },
+	"show": {
+		"conditions": [
+			{
+				"operator": "entityExists",
+				"value": "ssh"
+			}
+		]
+	},
+    "views": [
+        {
+            "type": "heatMap",
+            "settings": {
+                "row": "{{displayname || username:capitalize}}",
+                "column": "{{target_machine:capitalize}}",
+                "value": "{{sshscore}}",
+                "legend": {
+                    "items": [
+                        {
+                            "color": "low",
+                            "value": "Low score (0-50)"
+                        },
+                        {
+                            "color": "medium",
+                            "value": "Medium score (51-79)"
+                        },
+                        {
+                            "color": "high",
+                            "value": "High score (80-94)"
+                        },
+                        {
+                            "color": "critical",
+                            "value": "Very High score (95-100)"
+                        }
+                    ]
+
+                },
+                "behavior":{
+                    "rows":{
+                        "isSortingEnabled":true,
+                        "tooltip":"{{name}}"
+
+                    },
+                    "columns":{
+                        "isSortingEnabled":true,
+                        "tooltip":"{{name}}",
+                        "percentCalculationMethod":"count"
+                    },
+                    "cell":{
+                        "tooltip":"{{rowName}} : score is {{value}} for machine: {{name}}"
+                    },
+                    "color":"severity"
+                },
+                "onSelect": {
+                    "action": "openPopup",
+                    "actionOptions": {
+                        "widgetId": "visualizations.user_ssh_machines_bubbles_popup",
+                        "title": "Machines Accessed By {{name}} Using SSH",
+                        "width": 500,
+                        "height": 360
+                    }
+                }
+            }
+        }
+    ]
+}

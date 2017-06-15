@@ -1,0 +1,15 @@
+{
+    "endpoint": {
+        "entity": "user",
+        "method": "scores"
+    },
+    "cache": "5m",
+    "params": [
+        {
+            "field": "id",
+            "name": "userId",
+            "dashboardParam": "entityId"
+        }
+    ],
+    "mock_data": "video.user.scores"
+}

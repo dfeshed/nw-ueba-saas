@@ -1,0 +1,7 @@
+{
+    "endpoint": {
+        "entity": "monitor",
+        "method": "summary"
+    },
+    "mock_data": "monitor"
+}

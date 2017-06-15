@@ -1,0 +1,74 @@
+{
+	"message":{
+		"type": "maxResults",
+		"params": {
+			"maxResults": 200
+		}
+	},
+	"views": [
+		{
+			"type": "scatterPlot",
+			"height": 500,
+			"settings": {
+				"timeField": "end_time",
+				"yField": "duration_in_hours",
+				"colorField": "session_score",
+				"colorScale": "score",
+				"legend": {
+					"position": "right"
+				},
+				"shapes": {
+					"field": "type"
+				},
+				"axes": {
+					"x": {
+						"type": "time",
+						"timeFormat": "days",
+						"label": "Session time"
+					},
+					"y": {
+						"label": "Duration (hours)"
+					}
+				},
+				"scales": {
+					"x": {
+						"type": "time"
+					},
+					"y": {
+						"minValue" : 0,
+						"ticks" : {
+							"interval" : 0.2
+						}
+					}
+				},
+				"onSelect": {
+					"action": "showTooltip",
+					"actionOptions": {
+						"table": {
+							"rows": [
+								{
+									"label": "Username",
+									"value": "{{username}}"
+								},
+								{
+									"label": "Start time",
+									"value": "{{start_time:date:MM/DD/YYYY HH\\:mm\\:ss}}"
+								},
+								{
+									"label": "End time",
+									"value": "{{end_time:date:MM/DD/YYYY HH\\:mm\\:ss}}"
+								},
+								{
+									"label": "Duration (hh:mm:ss)",
+									"value": "{{duration:diffToPrettyTime:seconds}}"
+								}
+
+							]
+						}
+					}
+				}
+			}
+		}
+
+	]
+}

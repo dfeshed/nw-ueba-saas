@@ -1,0 +1,29 @@
+{
+    "requiredParams": ["date"],
+    "endpoint": {
+        "entity": "user",
+        "subEntityName": "classifier",
+        "subEntityId": "total",
+        "method": "explanation"
+    },
+    "process": {
+        "processId": "sort",
+        "params": {
+            "direction": "desc",
+            "field": "score"
+        }
+    },
+    "mock_data": "user.total_score_breakdown",
+    "params": [
+        {
+            "field": "id",
+            "name": "id",
+            "dashboardParam": "entityId"
+        },
+        {
+            "field": "date",
+            "name": "date",
+            "dashboardParam": "date"
+        }
+    ]
+}

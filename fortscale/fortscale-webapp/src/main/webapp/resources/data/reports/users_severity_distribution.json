@@ -1,0 +1,32 @@
+{
+    "dataSource": "api",
+    "searchId": "users_severity_distribution",
+    "endpoint": {
+        "entity": "classifier",
+        "method": "dist",
+        "id": "{{@id}}"
+    },
+    "cache": "5m",
+    "fields": [
+        {
+            "name": "name",
+            "type": "string"
+        },
+        {
+            "name": "percentage",
+            "type": "number"
+        },
+        {
+            "name": "count",
+            "type": "number"
+        }
+    ],
+    "params": [
+        {
+            "field": "id",
+            "name": "id",
+            "dashboardParam": "currentScore"
+        }
+    ],
+    "mock_data": "dist"
+}

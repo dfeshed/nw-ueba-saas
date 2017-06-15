@@ -1,0 +1,43 @@
+{
+    "scrollable": false,
+    "groupable": false,
+    "sortable": {
+        "mode": "single"
+    },
+    "dataSource" : {
+        "sort": {
+            "field": "score",
+            "dir": "ASC"
+        }
+    },
+    "columns": [
+        {
+            "title": "Display Name",
+            "field": "displayName",
+            "template": "<a class='with-line' ui-sref='user.baseline({userId: dataItem.id})' style=\"color: inherit;\">{{dataItem.displayName}}</a>"
+        },
+        {
+            "title": "User Name",
+            "field": "username"
+        },
+        {
+            "title": "Role",
+            "field": "adInfo.position",
+            "template": "{{dataItem.adInfo.position | orNA}}"
+
+        },
+
+        {
+            "title": "Department",
+            "field": "adInfo.department",
+            "template": "{{dataItem.adInfo.department | orNA}}"
+        },
+        {
+            "title": "Score",
+            "field": "score",
+            "template": "<span class={{'severity-'+dataItem.scoreSeverity}}>{{dataItem.score}}</span>"
+
+        }
+
+    ]
+}

@@ -1,0 +1,66 @@
+{
+    "message":{
+        "type": "maxResults",
+        "params": {
+            "maxResults": 200
+        }
+    },
+    "views": [
+        {
+            "type": "scatterPlot",
+            "height": "250",
+            "settings": {
+                "axes": {
+                    "x": {
+                        "type": "time",
+                        "timeFormat": "days",
+                        "label": "Event Time"
+                    },
+                    "y": {
+                        "label": "Score"
+                    }
+                },
+                "scales": {
+                    "x": {
+                        "type": "time"
+                    },
+                    "y": {
+                        "domain": [0, 100]
+                    }
+                },
+                "timeField": "event_time",
+                "colorField": "event_score",
+                "colorScale": "score",
+                "onSelect": {
+                    "action": "showTooltip",
+                    "actionOptions": {
+                        "table": {
+                            "rows": [
+                                {
+                                    "label": "User",
+                                    "value": "{{display_name || username}}"
+                                },
+                                {
+                                    "label": "Source",
+                                    "value": "{{source_machine}}"
+                                },
+                                {
+                                    "label": "Destination",
+                                    "value": "{{destination_machine}}"
+                                },
+                                {
+                                    "label": "Time",
+                                    "value": "{{event_time:date}}"
+                                },
+                                {
+                                    "label": "Score",
+                                    "value": "{{event_score}}"
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}
