@@ -31,7 +31,7 @@ const filesReducer = handleActions({
 
   [ACTION_TYPES.CHANGE_RECON_VIEW]: (state) => ({
     ...state,
-    ...filesInitialState
+    ...fileExtractInitialState
   }),
 
   [ACTION_TYPES.FILES_RETRIEVE_SUCCESS]: (state, { payload }) => ({
