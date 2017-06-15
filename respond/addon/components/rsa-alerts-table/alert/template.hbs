@@ -1,0 +1,53 @@
+<header class="header">
+
+  <div class="connector">
+    <div class="line"></div>
+  </div>
+
+  <hbox class="content">
+    <box fill class="p source">
+      <span>{{t (concat 'respond.alert.source.' group.indicator.alert.source)}}</span>
+    </box>
+    <box fit nowrap align="end" class="p time">
+      {{rsa-content-datetime
+        timestamp=group.indicator.timestamp
+        displayAsTimeAgo=false
+        displayDate=true
+        displayTime=true
+        displayMilliseconds=false
+      }}
+    </box>
+  </hbox>
+
+</header>
+<section class="main">
+
+  <div class="connector">
+    <div class="severity">{{group.indicator.alert.severity}}</div>
+    <div class="line"></div>
+  </div>
+
+  <div class="content">
+    <h3 title="{{group.indicator.alert.name}}">{{group.indicator.alert.name}}</h3>
+    <nav>
+      {{#if group.events}}
+        <span
+          class="rsa-alerts-table-alert__events tab {{if isEventsTabActive 'active'}}"
+          {{action "toggleEvents" bubbles=false}}>
+          {{rsa-icon name="arrow-right-10" size="smaller"}}
+          {{group.events.length}} {{t 'respond.storyline.events'}}
+        </span>
+        {{#if group.enrichments.length}}
+          <span
+            class="rsa-alerts-table-alert__enrichments tab {{if isEnrichmentsTabActive 'active'}}"
+            {{action "toggleEnrichments" bubbles=false}}>
+            {{rsa-icon name="arrow-right-10" size="smaller"}}
+            {{group.enrichments.length}} enrichments
+          </span>
+        {{/if}}
+      {{else}}
+        Loading events...
+      {{/if}}
+    </nav>
+  </div>
+</section>

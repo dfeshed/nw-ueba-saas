@@ -204,7 +204,9 @@ export default Mixin.create(ComputesRowExtents, {
    */
   @computed('groups.[]')
   groupRefs(groups) {
-    return (groups || []).map((group, index) => ({ group, index }));
+    groups = groups || [];
+    const len = groups.length;
+    return (groups || []).map((group, index) => ({ group, index, isLast: index === len - 1 }));
   },
 
   /**

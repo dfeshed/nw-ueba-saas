@@ -1,0 +1,247 @@
+$alertsTableDarkBgColor: rsa-color(gray, light, $rsa-nearly-transparent);
+$alertsTableLightBgColor: rsa-color(white);
+$alertsTableSeverityRadius: 1rem;
+$alertsTableLineHeight: 1.5;
+$alertsTableHeadingSize: 1rem;
+$alertsTableSeverityOffset: -1 * $alertsTableSeverityRadius + $alertsTableHeadingSize * $alertsTableLineHeight / 2;
+$alertsTableConnectorWidth: $alertsTableSeverityRadius * 2;
+$alertsTableConnectorPaddingX: rsa-whitespace(less);
+$alertsTableConnectorOuterWidth: $alertsTableConnectorPaddingX * 2 + $alertsTableConnectorWidth;
+
+/* Lays out a "connector" element that contains a vertical line that "connects" sibling alerts. */
+@mixin rsa-alerts-table-connector-and-line() {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  padding: 0 $alertsTableConnectorPaddingX;
+  width: $alertsTableConnectorWidth;
+
+  .line {
+    /* Renders a vertical line, horizontally aligned with center of score. */
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    width: 1px;
+  }
+}
+
+.rsa-alerts-table {
+}
+
+.rsa-alerts-table-alert {
+  cursor: default;
+  line-height: $alertsTableLineHeight;
+
+  h3 {
+    @include rsa-font(light);
+    font-size: $alertsTableHeadingSize;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .p {
+    @include rsa-font(body, small);
+  }
+
+  .content {
+    margin-left: $alertsTableConnectorOuterWidth;
+  }
+
+  .connector {
+    @include rsa-alerts-table-connector-and-line();
+
+    .severity {
+      /* Overlays severity on top of vertical line element. */
+      position: absolute;
+      z-index: 2;
+      top: $alertsTableSeverityOffset;
+      left: 0;
+      right: 0;
+      margin: 0 auto;
+
+      $alertsTableSeverityRadius: 1rem;
+
+      /* Renders a circle with centered text inside. */
+      width: $alertsTableSeverityRadius * 2;
+      height: $alertsTableSeverityRadius * 2;
+      border-radius: $alertsTableSeverityRadius * 2;
+      @include rsa-font(body,small);
+      line-height: $alertsTableSeverityRadius * 2;
+      text-align: center;
+      white-space: nowrap;
+    }
+  }
+
+  .header,
+  .main {
+    position: relative;
+  }
+
+  .header {
+    .line {
+      bottom: -1 * $alertsTableSeverityOffset;
+    }
+    .content {
+      padding: rsa-whitespace(less) rsa-whitespace() 0 0;
+    }
+  }
+
+  .main {
+    .line {
+      top: $alertsTableSeverityRadius * 2 + $alertsTableSeverityOffset;
+    }
+    .content {
+      padding: 0 rsa-whitespace() rsa-whitespace(less) 0;
+
+      nav {
+        @include rsa-font(body, small);
+      }
+    }
+  }
+
+  .tab {
+    cursor: pointer;
+    margin-right: rsa-whitespace();
+
+    .rsa-icon {
+      margin-right: rsa-whitespace(least);
+      @include rsa-vendor-prefix(transition, transform linear 0.3s);
+    }
+
+    &.active {
+      .rsa-icon {
+        transform: rotate(90deg);
+        transform-origin: center center;
+      }
+    }
+  }
+}
+
+.rsa-alerts-table-event {
+  @include rsa-font(body, small);
+  text-align: left;
+
+  .connector {
+    @include rsa-alerts-table-connector-and-line();
+  }
+
+  .enrichment,
+  .event {
+    line-height: 1.5;
+    padding: rsa-whitespace(least) rsa-whitespace() rsa-whitespace(least) $alertsTableConnectorOuterWidth;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    &::before {
+      content: '\2022'; /* filled bullet */
+      position: absolute;
+      height: 1px;
+      overflow: visible;
+      margin: auto 0;
+      /* horizontally centered over the vertical connector line */
+      left: 0;
+      width: $alertsTableConnectorOuterWidth;
+      text-align: center;
+    }
+  }
+
+  .event {
+
+    .devices,
+    .users,
+    .files {
+      margin-right: rsa-whitespace(less);
+    }
+
+    .rsa-icon {
+
+      &.file,
+      &.device,
+      &.user {
+        margin-right: rsa-whitespace(less);
+      }
+
+      &.arrow {
+        margin: 0 rsa-whitespace(least);
+      }
+    }
+  }
+
+  .has-context-data {
+    @include rsa-has-context-data();
+  }
+}
+
+.rsa-group-table-group {
+
+  &.is-first {
+    .rsa-alerts-table-alert {
+      .header .line {
+        display: none;
+      }
+    }
+  }
+
+  &.is-last {
+    .rsa-alerts-table-alert {
+      .main .line {
+        display: none;
+      }
+    }
+    .rsa-alerts-table-event {
+      .connector {
+        display: none;
+      }
+    }
+  }
+}
+
+
+/* colors */
+
+.rsa-alerts-table-alert,
+.rsa-alerts-table-event {
+
+  .line {
+    background-color: $alertsTableDarkBgColor;
+  }
+}
+
+.rsa-alerts-table-alert {
+
+  .p,
+  .tab {
+    color: rsa-color(gray, light);
+  }
+
+  .tab {
+    &.active,
+    &:hover {
+      color: rsa-color(blue,light);
+    }
+  }
+
+  .severity {
+    background-color: $alertsTableDarkBgColor;
+  }
+
+}
+
+.rsa-group-table-group {
+  &.is-selected {
+    .rsa-alerts-table-alert {
+      background: rsa-color(blue, base, $rsa-somewhat-opaque);
+    }
+  }
+}
+
+.rsa-alerts-table-event {
+  color: rsa-color(white);
+}
