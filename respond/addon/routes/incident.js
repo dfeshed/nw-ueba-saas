@@ -1,19 +1,21 @@
-import Ember from 'ember';
+import Route from 'ember-route';
+import run from 'ember-runloop';
+import service from 'ember-service/inject';
 import { initializeIncident } from 'respond/actions/creators/incidents-creators';
 
-const {
-  run,
-  Route,
-  inject: {
-    service
-  }
-} = Ember;
-
 export default Route.extend({
+  accessControl: service(),
   redux: service(),
 
   title() {
     return this.get('i18n').t('pageTitle', { section: this.get('i18n').t('respond.title') });
+  },
+
+  beforeModel() {
+    // TODO: we should use more complex redirects here, but we're just going to send back to / for now
+    if (!this.get('accessControl.hasRespondIncidentsAccess')) {
+      this.transitionTo('protected');
+    }
   },
 
   model({ incident_id }) {

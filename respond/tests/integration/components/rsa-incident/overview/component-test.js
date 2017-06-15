@@ -22,7 +22,7 @@ test('it renders', function(assert) {
     });
 
     ['.assignee', '.priority', '.status'].forEach((selector) => {
-      const $field = $el.find(`${selector} span`);
+      const $field = $el.find(`${selector} div.edit-button .rsa-form-button`);
       assert.ok($field.text().trim(), `Expected to find non-empty button text in DOM for : ${selector}`);
     });
   });
