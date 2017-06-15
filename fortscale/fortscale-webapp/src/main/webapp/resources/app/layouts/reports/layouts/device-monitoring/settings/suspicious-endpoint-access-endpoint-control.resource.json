@@ -1,9 +1,0 @@
-{
-    "entity": "computer",
-    "params": {
-        "limit": 10,
-        "name_contains": "{{search}}",
-        "usage_types": "Server",
-        "fields": "name"
-    }
-}
