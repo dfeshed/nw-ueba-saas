@@ -1,0 +1,23 @@
+{
+    "controlId": "minscore",
+    "label": "Min Score",
+    "type": "number",
+    "param": "minscore",
+    "value": 50,
+    "defaultValue": 50,
+    "settings": {
+        "min": 0,
+        "max": 100,
+        "maxLength": 3
+    },
+    "warning": {
+        "text": "Querying events with score lower than 50 is significantly slower!",
+        "conditions": [
+            {
+                "field": "value",
+                "operator": "lesserThan",
+                "value": 50
+            }
+        ]
+    }
+}

@@ -1,0 +1,130 @@
+{
+    "id": "top_ssh_events",
+    "reportId": "top_ssh_events",
+    "title": "Top Suspicious SSH Logins",
+    "controls": [
+        {
+            "type": "paging",
+            "autoUpdate": true,
+            "param": "tableview_page"
+        }
+    ],
+    "loadingDataMessage": "Loading SSH events",
+	"show": {
+		"conditions": [
+			{
+				"operator": "entityExists",
+				"value": "ssh"
+			}
+		]
+	},
+    "views": [
+        {
+            "type": "table",
+            "settings": {
+                "fields": [
+                    {
+                        "name": "Username",
+                        "value": "{{normalized_username}}",
+                        "menu": {
+                            "id": "user_ssh",
+                            "params": {
+                                "displayname": "{{normalized_username}}",
+                                "username": "{{normalized_username}}",
+                                "userid": "{{id}}"
+                            }
+                        },
+                        "tags": "user"
+                    },
+                    {
+                        "name": "Source IP / Machine Name",
+                        "value": "{{source_machine || source_ip}}",
+                        "link": "#/d/explore/ssh?filters=ssh.{{source_machine:switch:source_machine:source_ip}}={{source_machine || source_ip}}",
+                        "valueTooltip": "Source score: {{normalized_src_machine_score:toFixed:2}}",
+                        "icon": {
+                            "preset": "scoreBox",
+                            "presetParams": {
+                                "value": "normalized_src_machine_score"
+                            },
+                            "style": "score",
+                            "styleParams": {
+                                "value": "normalized_src_machine_score"
+                            }
+                        },
+                        "tags": "machine"
+                    },
+                    {
+                        "name": "Target IP / Machine name",
+                        "value": "{{destination_machine}}",
+                        "link": "#/d/explore/ssh?filters=ssh.destination_machine={{destination_machine}}",
+                        "valueTooltip": "Internal IP score: {{destination_machine_score:toFixed:2}}",
+                        "icon": {
+                            "preset": "scoreBox",
+                            "presetParams": {
+                                "value": "destination_machine_score"
+                            },
+                            "style": "score",
+                            "styleParams": {
+                                "value": "destination_machine_score"
+                            }
+                        },
+                        "tags": "machine"
+                    },
+                    {
+                        "name": "Time",
+                        "value": "{{event_time:date}}",
+                        "valueTooltip": "Login time score: {{event_time_score:toFixed:2}}",
+                        "sortDirection": -1,
+                        "sortBy": "event_time",
+                        "icon": {
+                            "preset": "scoreBox",
+                            "presetParams": {
+                                "value": "event_time_score"
+                            },
+                            "style": "score",
+                            "styleParams": {
+                                "value": "event_time_score"
+                            }
+                        }
+                    },
+                    {
+                        "name": "Status",
+                        "value": "{{status}}",
+                        "link": "#/d/explore/ssh?filters=ssh.status={{status}},ssh.username={{username}}"
+                    },
+                    {
+                        "name": "Auth Method",
+                        "value": "{{auth_method}}",
+                        "valueTooltip": "Status score: {{auth_method_score:toFixed:2}}",
+                        "link": "#/d/explore/ssh?filters=ssh.auth_method={{auth_method}},ssh.username={{username}}",
+                        "icon": {
+                            "preset": "scoreBox",
+                            "presetParams": {
+                                "value": "auth_method_score"
+                            },
+                            "style": "score",
+                            "styleParams": {
+                                "value": "auth_method_score"
+                            }
+                        }
+                    },
+                    {
+                        "name": "Score",
+                        "value": "{{event_score:round}}",
+                        "sortDirection": -1,
+                        "icon": {
+                            "preset": "scoreBox",
+                            "presetParams": {
+                                "value": "event_score"
+                            },
+                            "style": "score",
+                            "styleParams": {
+                                "value": "event_score"
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}

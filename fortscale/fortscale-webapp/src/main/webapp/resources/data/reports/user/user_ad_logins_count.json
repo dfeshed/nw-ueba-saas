@@ -1,0 +1,85 @@
+{
+    "endpoint": {
+		"api":"dataQuery",
+		"dataQuery":{
+			"entity": "kerberos_logins",
+			"fields": [
+				{
+					"id": "event_time",
+					"alias": "day",
+                    "func": {
+                        "name": "to_date"
+                    }
+				},
+				{
+					"id":"status"
+				},
+				{
+					"alias": "login_count",
+					"func": {
+						"name": "count",
+						"params": {
+							"all": true
+						}
+					}
+				}
+			],
+			"conditions": {
+				"operator": "AND",
+				"terms": [
+					{
+						"type": "field",
+						"id": "event_score",
+						"operator": "greaterThanOrEquals",
+						"valueParam": "minscore"
+					},
+					{
+						"type": "field",
+						"id": "normalized_username",
+						"operator": "equals",
+						"valueParam": "username"
+					},
+					{
+						"type": "field",
+						"id": "event_time_utc",
+						"operator": "greaterThanOrEquals",
+						"valueParam": "startDate"
+					},
+					{
+						"type": "field",
+						"id": "event_time_utc",
+						"operator": "lesserThanOrEquals",
+						"valueParam": "endDate"
+					}
+				]
+			},
+			"groupBy": [{ "alias": "day" }, "status"],
+			"sort": { "field": { "alias": "day" } },
+			"limit": 100
+		}
+    },
+    "params": [
+        {
+            "field": "minscore",
+            "dashboardParam": "minscore",
+            "default": 50
+        },
+        {
+            "field": "startDate",
+            "dashboardParam": "start",
+            "default": "{{:sinceNow:unixtimestamp:-7d:start}}",
+            "value": "{{start:date:unixtimestamp:-7d:start}}"
+        },
+        {
+            "field": "endDate",
+            "dashboardParam": "end",
+            "default": "{{:sinceNow:unixtimestamp:0d:end}}",
+            "value": "{{end:date:unixtimestamp:0d:end}}"
+        },
+        {
+            "field": "username",
+            "dashboardParam": "normalizedUsername"
+        }
+    ],
+    "_mock_data": "user.user_logins_count"
+}

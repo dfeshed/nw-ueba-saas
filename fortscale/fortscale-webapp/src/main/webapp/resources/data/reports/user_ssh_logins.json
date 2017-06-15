@@ -1,0 +1,28 @@
+{
+    "endpoint": {
+        "entity": "classifier",
+        "id": "ssh",
+        "method": "events",
+        "uid": "{{@username}}",
+        "minScore": 50
+    },
+    "cache": "5m",
+    "requiredParams": ["latestDate"],
+    "params": [
+        {
+            "field": "latestDate",
+            "dashboardParam": "date",
+            "value":"{{date:date:valueOf:0d:end}}"
+        },
+        {
+            "field": "earliestDate",
+            "dashboardParam": "date",
+            "value":"{{date:date:valueOf:-14d:start}}"
+        },
+        {
+            "field": "username",
+            "name": "id",
+            "dashboardParam": "entityId"
+        }
+    ]
+}

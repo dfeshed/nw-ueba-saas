@@ -1,0 +1,147 @@
+{
+	"id": "top_user_vpn_sessions",
+	"reportId": "user.top_user_vpn_sessions",
+	"title": "Top VPN Sessions",
+	"description":"Top VPN sessions for the selected time span and minimum session score",
+	"loadingDataMessage": "Loading sessions",
+	"show": {
+		"conditions": [
+			{
+				"operator": "entityExists",
+				"value": "vpn_session"
+			}
+		]
+	},
+	"views": [
+		{
+			"type": "scatterPlot",
+			"height": 200,
+			"settings": {
+				"timeField": "end_time",
+				"yField": "session_score",
+				"colorField": "session_score",
+				"colorScale": "score",
+				"legend": {
+					"position": "right"
+				},
+				"shapes": {
+					"field": "type"
+				},
+				"axes": {
+					"x": {
+						"type": "time",
+						"timeFormat": "days",
+						"label": "Event Time"
+					},
+					"y": {
+						"label": "Score"
+					}
+				},
+				"scales": {
+					"x": {
+						"type": "time"
+					},
+					"y": {
+						"domain": [0, 100]
+					}
+				},
+				"onSelect": {
+					"action": "showTooltip",
+					"actionOptions": {
+						"table": {
+							"rows": [
+								{
+									"label": "Username",
+									"value": "{{username}}"
+								},
+								{
+									"label": "Start time",
+									"value": "{{start_time:date:MM/DD/YYYY HH\\:mm\\:ss}}"
+								},
+								{
+									"label": "End time",
+									"value": "{{end_time:date:MM/DD/YYYY HH\\:mm\\:ss}}"
+								},
+								{
+									"label":"Country",
+									"value": "{{country}}"
+								},
+								{
+									"label": "Duration",
+									"value": "{{duration:diffToPrettyTime:seconds}}"
+								},
+								{
+									"label":"Uploaded Bytes",
+									"value": "{{write_bytes:bytesCount}}"
+								},
+								{
+									"label":"Downloaded Bytes",
+									"value": "{{read_bytes:bytesCount}}"
+								}
+							]
+						}
+					}
+				}
+			}
+		},
+		{
+			"type": "table",
+			"settings": {
+				"fields": [
+					{
+						"name": "Start Time",
+						"value": "{{start_time:date:MM/DD/YYYY HH\\:mm\\:ss}}"
+					},
+					{
+						"name": "End Time",
+						"value": "{{end_time:date:MM/DD/YYYY HH\\:mm\\:ss}}"
+					},
+					{
+						"name": "Country",
+						"value": "{{country:capitalize}}",
+						"link": "#/d/explore/vpn?filters=vpn.country%3D{{country}}",
+						"valueTooltip": "Country score: {{country_score:toFixed:2}}",
+						"noValueDisplay": "N/A",
+						"icon": {
+							"preset": "scoreBox",
+							"presetParams": {
+								"value": "country_score"
+							},
+							"style": "score",
+							"styleParams": {
+								"value": "country_score"
+							}
+						}
+					},
+					{
+						"name": "Duration",
+						"value": "{{duration:diffToPrettyTime:seconds}}"
+					},
+					{
+						"name": "Uploaded Bytes",
+						"value": "{{write_bytes:bytesCount}}"
+					},
+					{
+						"name": "Downloaded Bytes",
+						"value": "{{read_bytes:bytesCount}}"
+					},
+					{
+						"name": "Score",
+						"value": "{{session_score:round}}",
+						"className": "nowrap",
+						"icon": {
+							"preset": "scoreBox",
+							"presetParams": {
+								"value": "session_score"
+							},
+							"style": "score",
+							"styleParams": {
+								"value": "session_score"
+							}
+						}
+					}
+				]
+			}
+		}
+	]
+}

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="29" height="29" viewBox="0 0 29 29">
+  <defs>
+    <style>
+      .cls-1 {
+        font-size: 24px;
+        fill: #eaeaea;
+        font-family: Arial;
+      }
+    </style>
+  </defs>
+  <g id="Artboard_1" data-name="Artboard 1">
+    <circle cx="14.5" cy="14.5" r="14.5"/>
+    <text id="c" class="cls-1" x="8.41" y="21.437">c</text>
+  </g>
+</svg>

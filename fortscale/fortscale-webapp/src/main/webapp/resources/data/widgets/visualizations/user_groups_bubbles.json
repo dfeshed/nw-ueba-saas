@@ -1,0 +1,27 @@
+{
+    "message":{
+        "type": "maxResults",
+        "params": {
+            "maxResults": 80
+        }
+    },
+    "views": [
+        {
+            "type": "bubbles",
+            "settings": {
+                "label": "{{displayname}}",
+                "childIdField": "group_dn",
+                "tooltipText": "{{name}}: {{value}} {{value:pluralOrSingular:Group:Groups}} ({{_percent:toFixed:2}}% of all groups)",
+                "onSelect": {
+                    "action": "openPopup",
+                    "actionOptions": {
+                        "widgetId": "visualizations.user_groups_bubbles_popup",
+                        "title": "Security Groups {{name}} Is a Member Of",
+                        "width": 500,
+                        "height": 360
+                    }
+                }
+            }
+        }
+    ]
+}

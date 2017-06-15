@@ -1,0 +1,30 @@
+{
+    "endpoint": {
+        "entity": "user",
+        "subEntityName": "classifier",
+        "subEntityId": "{{@attribute}}",
+        "method": "scorehistory",
+        "id": "{{@username}}"
+    },
+    "query": {
+        "entity": "logins",
+        "conditions": [
+            {
+                "field": "username",
+                "operator": "equals",
+                "value": "{{username}}"
+            },
+            {
+                "field": "score",
+                "operator": "greaterThan",
+                "value": 30
+            }
+        ]
+    },
+    "params": [
+        {
+            "field": "id",
+            "dashboardParam": "entityId"
+        }
+    ]
+}

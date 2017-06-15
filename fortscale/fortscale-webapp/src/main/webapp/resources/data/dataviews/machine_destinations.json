@@ -1,0 +1,36 @@
+{
+    "id": "machine_destinations",
+    "name": "Machine Destinations",
+    "entities": [ "ad_logins", "persons" ],
+    "entitiesJoin": [
+        {
+            "persons": "username",
+            "ad_logins": "normalized_username"
+        }
+    ],
+    "visualizations": [
+        {
+            "id": "machine_to_machines",
+            "title": "Login Destination Machines",
+            "widgetId": "visualizations.machine_to_machines_bars",
+            "height": 300,
+            "data": {
+                "mainEntity": "ad_logins",
+                "fields": [
+                    {
+                        "field": "service_name",
+                        "alias": "label",
+                        "entity": "ad_logins"
+                    },
+                    {
+                        "field": "service_name",
+                        "alias": "login_count",
+                        "func": "count(service_name)"
+                    }
+                ],
+                "groupBy": "service_name",
+                "limit": 50
+            }
+        }
+    ]
+}

@@ -1,0 +1,33 @@
+{
+    "id": "user_vpn",
+    "items": [
+        {
+            "text": "Go to {{displayname}}'s profile",
+            "onSelect": [
+                {
+                    "action": "innerUrl",
+                    "actionOptions": {
+                        "url": "/user/{{userid}}/user_overview"
+                    }
+                },
+                {
+                    "action": "closeAllPopups"
+                }
+            ]
+        },
+        {
+            "text": "Investigate {{displayname}}'s VPN logins",
+            "onSelect": [
+                {
+                    "action": "innerUrl",
+                    "actionOptions": {
+						"url": "/d/explore/vp?filters=vpn.username%3D{{username}}"
+                    }
+                },
+                {
+                    "action": "closeAllPopups"
+                }
+            ]
+        }
+    ]
+}
