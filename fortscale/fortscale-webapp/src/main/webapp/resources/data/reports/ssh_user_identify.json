@@ -1,1 +1,0 @@
-select account_name, client_address, count(*) as event_count from wmievents4769 join sshdata where sshdata.source_ip = wmievents4769.client_address and sshdata.username="root" and account_name != "" group by account_name, client_address order by client_address, account_name limit 100;
