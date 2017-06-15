@@ -11,7 +11,6 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.util.ReflectionUtils;
 import presidio.ade.domain.record.AdeRecord;
 import presidio.ade.domain.record.enriched.DataSourceToAdeEnrichedRecordClassResolver;
-import presidio.ade.domain.store.ContextIdToNumOfEvents;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.ade.domain.store.AdeDataStoreCleanupParams;
 import presidio.ade.domain.store.ContextIdToNumOfEvents;
@@ -105,7 +104,8 @@ public class EnrichedDataStoreImplMongo implements EnrichedDataStore {
         //Create Aggregation on context ids
         Aggregation agg = newAggregation(
                 match(where(EnrichedRecord.DATE_TIME_FIELD).gte(Date.from(startDate)).lt(Date.from(endDate))),
-                Aggregation.group(fieldName).count().as("totalNumOfEvents")
+                Aggregation.group(fieldName).count().as(ContextIdToNumOfEvents.TOTAL_NUM_OF_EVENTS_FIELD),
+                Aggregation.project(ContextIdToNumOfEvents.TOTAL_NUM_OF_EVENTS_FIELD).and("_id").as(ContextIdToNumOfEvents.CONTEXT_ID_FIELD).andExclude("_id")
         );
 
         AggregationResults<ContextIdToNumOfEvents> result = mongoTemplate.aggregate(agg, collectionName, ContextIdToNumOfEvents.class);
