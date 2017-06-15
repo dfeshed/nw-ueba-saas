@@ -10,12 +10,11 @@ const initialState = load(explorerInitialState, localStorageKey);
 
 initialState.sortField = 'receivedTime';
 initialState.defaultDateFilterField = 'receivedTime';
+initialState.defaultDateRangeTypeName = 'LAST_HOUR';
 
 // If there are no filters, add the baseline date range filter
 if (!initialState.itemsFilters) {
-  initialState.itemsFilters = {
-    receivedTime: explorerReducers.defaultDateRange()
-  };
+  initialState.itemsFilters = explorerReducers.itemsFilters(initialState);
 }
 
 // Mechanism to persist some of the state to local storage

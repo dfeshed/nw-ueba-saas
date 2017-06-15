@@ -9,11 +9,10 @@ const localStorageKey = 'rsa::nw::respond::remediation-tasks';
 // Load local storage values and incorporate into initial state
 const initialState = load(explorerInitialState, localStorageKey);
 
+
 // If there are no filters, add the baseline date range filter
 if (!initialState.itemsFilters) {
-  initialState.itemsFilters = {
-    created: explorerReducers.defaultDateRange()
-  };
+  initialState.itemsFilters = explorerReducers.itemsFilters(initialState);
 }
 
 // Mechanism to persist some of the state to local storage

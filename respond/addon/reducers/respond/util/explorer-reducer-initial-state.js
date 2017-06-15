@@ -31,5 +31,7 @@ export default {
 
   isSortDescending: true,
 
-  defaultDateFilterField: 'created'
+  defaultDateFilterField: 'created',
+
+  defaultDateRangeTypeName: 'ALL_TIME'
 };

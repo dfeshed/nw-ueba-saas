@@ -432,7 +432,7 @@ export default {
       LAST_10_MINUTES: 'ja_Last 10 Minutes',
       LAST_15_MINUTES: 'ja_Last 15 Minutes',
       LAST_30_MINUTES: 'ja_Last 30 Minutes',
-      LAST_HOUR: 'ja_Last 1 Hour',
+      LAST_HOUR: 'ja_Last Hour',
       LAST_3_HOURS: 'ja_Last 3 Hours',
       LAST_6_HOURS: 'ja_Last 6 Hours',
       LAST_TWELVE_HOURS: 'ja_Last 12 Hours',

@@ -1,4 +1,5 @@
 import { handle } from 'redux-pack';
+import { SINCE_WHEN_TYPES_BY_NAME } from 'respond/utils/since-when-types';
 
 function defaultCustomDateRange() {
   return {
@@ -7,16 +8,12 @@ function defaultCustomDateRange() {
   };
 }
 
-function defaultDateRange() {
-  return {
-    'name': 'ALL_TIME',
-    'unit': 'years',
-    'subtract': 50
-  };
+function defaultDateRange(state) {
+  return { ...SINCE_WHEN_TYPES_BY_NAME[state.defaultDateRangeTypeName] };
 }
 
-const itemsFilters = (dateFilterField) => ({
-  [dateFilterField]: defaultDateRange()
+const itemsFilters = (state) => ({
+  [state.defaultDateFilterField]: defaultDateRange(state)
 });
 
 // Updates the state value with the value updated on the server
@@ -153,7 +150,7 @@ const toggleCustomDateRestriction = (state) => {
     hasCustomDateRestriction: !state.hasCustomDateRestriction,
     itemsFilters: {
       ...state.itemsFilters,
-      [state.defaultDateFilterField]: !state.hasCustomDateRestriction ? defaultCustomDateRange() : defaultDateRange()
+      [state.defaultDateFilterField]: !state.hasCustomDateRestriction ? defaultCustomDateRange() : defaultDateRange(state)
     }
   };
 };
@@ -161,7 +158,7 @@ const toggleCustomDateRestriction = (state) => {
 const resetFilters = (state) => (
   {
     ...state,
-    itemsFilters: itemsFilters(state.defaultDateFilterField),
+    itemsFilters: itemsFilters(state),
     hasCustomDateRestriction: false
   }
 );
