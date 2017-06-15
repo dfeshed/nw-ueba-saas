@@ -1,15 +1,15 @@
-package presidio.ade.domain.store;
-
-import presidio.ade.domain.store.enriched.EnrichedDataStoreImplMongo;
+package fortscale.utils.pagination;
 
 /**
  * ContextIdToNumOfEvents contains contextId and totalNumOfEvents fields.
- * Example of usage: see {@link EnrichedDataStoreImplMongo}
+ * Example of usage: see EnrichedDataStoreImplMongo
  */
 public class ContextIdToNumOfEvents {
 
     private String contextId;
     private int totalNumOfEvents;
+
+    public static final String Total_Num_Of_Events = "totalNumOfEvents";
 
     public ContextIdToNumOfEvents(String contextId, int totalNumOfEvents) {
         this.contextId = contextId;

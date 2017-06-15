@@ -2,131 +2,302 @@ package presidio.ade.domain.store.enriched;
 
 import fortscale.utils.pagination.PageIterator;
 import fortscale.utils.time.TimeRange;
-import javafx.util.Pair;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.DefaultIndexOperations;
-import org.springframework.data.mongodb.core.IndexOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.aggregation.Aggregation;
-import org.springframework.data.mongodb.core.aggregation.AggregationResults;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import presidio.ade.domain.pagination.enriched.EnrichedRecordPaginationService;
+import fortscale.utils.pagination.ContextIdToNumOfEvents;
 import presidio.ade.domain.record.enriched.DataSourceToAdeEnrichedRecordClassResolver;
 import presidio.ade.domain.record.enriched.DataSourceToAdeEnrichedRecordClassResolverConfig;
-import presidio.ade.domain.store.ContextIdToNumOfEvents;
 import presidio.ade.domain.record.enriched.EnrichedDlpFileRecord;
-import presidio.ade.domain.record.enriched.EnrichedRecord;
+import presidio.ade.domain.store.enriched.mocks.GenerateMocks;
+import presidio.ade.domain.store.enriched.groups.EnrichedRecordPaginationServiceGroup;
 
 import java.time.Instant;
 import java.util.*;
 
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 import static presidio.ade.domain.record.enriched.EnrichedDlpFileRecord.NORMALIZED_USERNAME_FIELD;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = DataSourceToAdeEnrichedRecordClassResolverConfig.class)
 public class EnrichedRecordPaginationServiceTest {
 
-
-    private static final String COLLECTION_NAME_PREFIX = "enriched";
+    private static final int PAGE_SIZE = 3;
+    private static final int MAX_GROUP_SIZE = 2;
+    private static final Instant NOW = Instant.now();
     private EnrichedDataStoreImplMongo enrichedDataStoreImplMongo;
-
-    //list of pair, where pair is of context ids set and pair of amountOfPages, amountOfEvents.
-    private List<Pair<Set<String>, Pair<Integer, Integer>>> list;
-
+    private  MongoTemplate mongoTemplate;
+    
     @Autowired
     private DataSourceToAdeEnrichedRecordClassResolver dataSourceToAdeEnrichedRecordClassResolver;
 
     @Before
+    public void inilize(){
+        //mock of mongoTemplate
+        mongoTemplate = mock(MongoTemplate.class);
+    }
+
+    /**
+     * input:
+     * a - 5 events
+     * b - 2 events
+     * c - 1 events
+     * result:
+     * {a} -> 2 pages
+     * {b, c} -> 1 page
+     */
+    @Test
+    public void test_1() {
+
+        List<ContextIdToNumOfEvents> contextIdToNumOfEventsList = new ArrayList<>();
+        contextIdToNumOfEventsList.add(new ContextIdToNumOfEvents("a", 5));
+        contextIdToNumOfEventsList.add(new ContextIdToNumOfEvents("b", 2));
+        contextIdToNumOfEventsList.add(new ContextIdToNumOfEvents("c", 1));
+
+        // result for first query
+        ArrayList<String> enrichedDlpFileRecordsQuery1 = new ArrayList<String>();
+        enrichedDlpFileRecordsQuery1.add("a");
+        enrichedDlpFileRecordsQuery1.add("a");
+        enrichedDlpFileRecordsQuery1.add("a");
+
+        Set<String> contextIdsQuery1 = new HashSet<>();
+        contextIdsQuery1.add("a");
+        GenerateMocks.createMockForQuery(mongoTemplate, enrichedDlpFileRecordsQuery1, contextIdsQuery1, 0, 3, NOW);
+
+        // result for second query
+        ArrayList<String> enrichedDlpFileRecordsQuery2 = new ArrayList<String>();
+        enrichedDlpFileRecordsQuery2.add("a");
+        enrichedDlpFileRecordsQuery2.add("a");
+        Set<String> contextIdsQuery2 = new HashSet<>();
+        contextIdsQuery2.add("a");
+        GenerateMocks.createMockForQuery(mongoTemplate, enrichedDlpFileRecordsQuery2, contextIdsQuery2, 3, 2, NOW);
+
+        // result for third query
+        ArrayList<String> enrichedDlpFileRecordsQuery3 = new ArrayList<String>();
+        enrichedDlpFileRecordsQuery3.add("c");
+        enrichedDlpFileRecordsQuery3.add("b");
+        enrichedDlpFileRecordsQuery3.add("b");
+        Set<String> contextIdsQuery3 = new HashSet<>();
+        contextIdsQuery3.add("c");
+        contextIdsQuery3.add("b");
+        GenerateMocks.createMockForQuery(mongoTemplate, enrichedDlpFileRecordsQuery3, contextIdsQuery3, 0, 3, NOW);
+
+        List<EnrichedRecordPaginationServiceGroup> results = generateResultTest1();
+
+        CreatePageIterators(mongoTemplate, contextIdToNumOfEventsList, results);
+    }
+
+    /**
+     * input:
+     * a - 5 events
+     * b - 2 events
+     * c - 2 events
+     * result:
+     * {a} -> 2 pages
+     * {b} -> 1 page
+     * {c} -> 1 page
+     */
+    @Test
+    public void test_2() {
+
+        List<ContextIdToNumOfEvents> contextIdToNumOfEventsList = new ArrayList<>();
+        contextIdToNumOfEventsList.add(new ContextIdToNumOfEvents("a", 5));
+        contextIdToNumOfEventsList.add(new ContextIdToNumOfEvents("b", 2));
+        contextIdToNumOfEventsList.add(new ContextIdToNumOfEvents("c", 2));
+
+        // result for first query
+        ArrayList<String> enrichedDlpFileRecordsQuery1 = new ArrayList<String>();
+        enrichedDlpFileRecordsQuery1.add("a");
+        enrichedDlpFileRecordsQuery1.add("a");
+        enrichedDlpFileRecordsQuery1.add("a");
+
+        Set<String> contextIdsQuery1 = new HashSet<>();
+        contextIdsQuery1.add("a");
+        GenerateMocks.createMockForQuery(mongoTemplate, enrichedDlpFileRecordsQuery1, contextIdsQuery1, 0, 3, NOW);
+
+        // result for second query
+        ArrayList<String> enrichedDlpFileRecordsQuery2 = new ArrayList<String>();
+        enrichedDlpFileRecordsQuery2.add("a");
+        enrichedDlpFileRecordsQuery2.add("a");
+        Set<String> contextIdsQuery2 = new HashSet<>();
+        contextIdsQuery2.add("a");
+        GenerateMocks.createMockForQuery(mongoTemplate, enrichedDlpFileRecordsQuery2, contextIdsQuery2, 3, 2, NOW);
+
+        // result for third query
+        ArrayList<String> enrichedDlpFileRecordsQuery3 = new ArrayList<String>();
+        enrichedDlpFileRecordsQuery3.add("b");
+        enrichedDlpFileRecordsQuery3.add("b");
+        Set<String> contextIdsQuery3 = new HashSet<>();
+        contextIdsQuery3.add("b");
+        GenerateMocks.createMockForQuery(mongoTemplate, enrichedDlpFileRecordsQuery3, contextIdsQuery3, 0, 2, NOW);
+
+        // result for fourth query
+        ArrayList<String> enrichedDlpFileRecordsQuery4 = new ArrayList<String>();
+        enrichedDlpFileRecordsQuery4.add("c");
+        enrichedDlpFileRecordsQuery4.add("c");
+        Set<String> contextIdsQuery4 = new HashSet<>();
+        contextIdsQuery4.add("c");
+        GenerateMocks.createMockForQuery(mongoTemplate, enrichedDlpFileRecordsQuery4, contextIdsQuery4, 0, 2, NOW);
+
+        List<EnrichedRecordPaginationServiceGroup> results = generateResultTest2();
+
+        CreatePageIterators(mongoTemplate, contextIdToNumOfEventsList, results);
+    }
+
+    /**
+     * input:
+     * a - 1 events
+     * result:
+     * {a} -> 1 pages
+     */
+    @Test
+    public void test_3() {
+
+        List<ContextIdToNumOfEvents> contextIdToNumOfEventsList = new ArrayList<>();
+        contextIdToNumOfEventsList.add(new ContextIdToNumOfEvents("a", 1));
+
+        // result for first query
+        ArrayList<String> enrichedDlpFileRecordsQuery1 = new ArrayList<String>();
+        enrichedDlpFileRecordsQuery1.add("a");
+        Set<String> contextIdsQuery1 = new HashSet<>();
+        contextIdsQuery1.add("a");
+        GenerateMocks.createMockForQuery(mongoTemplate, enrichedDlpFileRecordsQuery1, contextIdsQuery1, 0, 1, NOW);
+
+        List<EnrichedRecordPaginationServiceGroup> results = generateResultTest3();
+
+        CreatePageIterators(mongoTemplate, contextIdToNumOfEventsList, results);
+    }
+
+    /**
+     * input: {}
+     * result: {}
+     */
+    @Test
+    public void test_4() {
+
+        List<EnrichedRecordPaginationServiceGroup> results = generateResultTest4();
+
+        CreatePageIterators(mongoTemplate, new ArrayList<>(), results);
+    }
+
     /**
      * Create list of test result.
+     * {a} -> 2 pages, 5 events
+     * {b, c} -> 1 page, 3 events
      */
-    public void initialize() {
-        list = new ArrayList<>();
-
-        Pair<Integer, Integer> numOfPagesToNumOfEvents;
-        Pair<Set<String>, Pair<Integer, Integer>> contextIdsPair1, contextIdsPair2, contextIdsPair3;
+    public List<EnrichedRecordPaginationServiceGroup> generateResultTest1() {
+        List<EnrichedRecordPaginationServiceGroup> groups = new ArrayList<>();
 
         Set<String> group1 = new HashSet<>();
         group1.add("a");
-        int amountOfPagesINGroup1 = 2;
-        int amountOfEventsINGroup1 = 5;
-        numOfPagesToNumOfEvents = new Pair<>(amountOfPagesINGroup1, amountOfEventsINGroup1);
-        contextIdsPair1 = new Pair<>(group1, numOfPagesToNumOfEvents);
+        groups.add(new EnrichedRecordPaginationServiceGroup(5, 2, group1));
 
         Set<String> group2 = new HashSet<>();
         group2.add("b");
         group2.add("c");
-        int amountOfPagesINGroup2 = 1;
-        int amountOfEventsINGroup2 = 3;
-        numOfPagesToNumOfEvents = new Pair<>(amountOfPagesINGroup2, amountOfEventsINGroup2);
-        contextIdsPair2 = new Pair<>(group2, numOfPagesToNumOfEvents);
+        groups.add(new EnrichedRecordPaginationServiceGroup(3, 1, group2));
 
-        list.add(contextIdsPair1);
-        list.add(contextIdsPair2);
+        return groups;
+    }
+
+    /**
+     * Create list of test result.
+     * {a} -> 2 pages, 5 events
+     * {b} -> 1 page, 2 events
+     * {c} -> 1 page, 2 events
+     */
+    public List<EnrichedRecordPaginationServiceGroup> generateResultTest2() {
+        List<EnrichedRecordPaginationServiceGroup> groups = new ArrayList<>();
+
+        Set<String> group1 = new HashSet<>();
+        group1.add("a");
+        groups.add(new EnrichedRecordPaginationServiceGroup(5, 2, group1));
+
+
+        Set<String> group2 = new HashSet<>();
+        group2.add("b");
+        groups.add(new EnrichedRecordPaginationServiceGroup(2, 1, group2));
+
+
+        Set<String> group3 = new HashSet<>();
+        group3.add("c");
+        groups.add(new EnrichedRecordPaginationServiceGroup(2, 1, group3));
+
+        return groups;
+    }
+
+    /**
+     * Create list of test result.
+     * {a} -> 1 pages, 1 events
+     */
+    public List<EnrichedRecordPaginationServiceGroup> generateResultTest3() {
+        List<EnrichedRecordPaginationServiceGroup> groups = new ArrayList<>();
+
+        Set<String> group1 = new HashSet<>();
+        group1.add("a");
+        groups.add(new EnrichedRecordPaginationServiceGroup(1, 1, group1));
+
+        return groups;
+    }
+
+    /**
+     * Create list of test result.
+     * result: {} -> 0 pages, 0 events
+     */
+    public List<EnrichedRecordPaginationServiceGroup> generateResultTest4() {
+        return  new ArrayList<>();
     }
 
     /**
      * Test the enriched record pagination service.
      */
-    @Test
-    public void test_enriched_record_pagination_service() {
-        int pageSize = 3;
-        int maxGroupSize = 2;
-        Instant now = Instant.now();
+    public void CreatePageIterators(MongoTemplate mongoTemplate, List<ContextIdToNumOfEvents> contextIdToNumOfEventsList, List<EnrichedRecordPaginationServiceGroup> results) {
 
-        List<ContextIdToNumOfEvents> ContextIdToNumOfEventsList = new ArrayList<>();
-        ContextIdToNumOfEventsList.add(new ContextIdToNumOfEvents("a", 5));
-        ContextIdToNumOfEventsList.add(new ContextIdToNumOfEvents("b", 2));
-        ContextIdToNumOfEventsList.add(new ContextIdToNumOfEvents("c", 1));
+        //mock of aggregation
+        GenerateMocks.createMockForAggregation(mongoTemplate, contextIdToNumOfEventsList);
+        //mock of index operations
+        GenerateMocks.createMockForIndexOperation(mongoTemplate);
 
-        MongoTemplate mongoTemplate = mock(MongoTemplate.class);
-
-        //mock for aggregation
-        AggregationResults<ContextIdToNumOfEvents> aggregationResults = mock(AggregationResults.class);
-        when(mongoTemplate.aggregate(any(Aggregation.class), eq("enriched_dlpfile"), eq(ContextIdToNumOfEvents.class))).thenReturn(aggregationResults);
-        when(aggregationResults.getMappedResults()).thenReturn(ContextIdToNumOfEventsList);
-
-        //mock for index operations
-        IndexOperations indexOperations = mock(DefaultIndexOperations.class);
-        when(mongoTemplate.indexOps(any(Class.class))).thenReturn(indexOperations);
-
-        //mock for queries
-        createQueryForFirstCall(mongoTemplate, now);
-        createQueryForSecondCall(mongoTemplate, now);
-        createQueryForThirdCall(mongoTemplate, now);
-
+        //create store
         EnrichedDataToCollectionNameTranslator translator = new EnrichedDataToCollectionNameTranslator();
         enrichedDataStoreImplMongo = new EnrichedDataStoreImplMongo(mongoTemplate, translator, this.dataSourceToAdeEnrichedRecordClassResolver);
 
+        //create pagination service
         EnrichedRecordPaginationService paginationService =
-                new EnrichedRecordPaginationService(enrichedDataStoreImplMongo, pageSize, maxGroupSize, NORMALIZED_USERNAME_FIELD);
+                new EnrichedRecordPaginationService(enrichedDataStoreImplMongo, PAGE_SIZE, MAX_GROUP_SIZE, NORMALIZED_USERNAME_FIELD);
 
-        TimeRange timeRange = new TimeRange(now, now);
+        TimeRange timeRange = new TimeRange(NOW, NOW);
 
         List<PageIterator<EnrichedDlpFileRecord>> pageIterators = paginationService.getPageIterators("dlpfile", timeRange);
 
+        //assert number of iterators
+        assertTrue(pageIterators.size() == results.size());
 
-        assertTrue(pageIterators.size() == 2);
+        //Go over page iterators and check the results.
+        checkPageIterators(pageIterators, results);
+    }
 
+    /**
+     * Get pages of pageIterator, get amount of pages in iterator.
+     * Get context ids and events from each page.
+     * Call assertExpectedResult method in order to assert expected results.
+     *
+     * @param pageIterators list of PageIterators
+     */
+    private void checkPageIterators(List<PageIterator<EnrichedDlpFileRecord>> pageIterators, List<EnrichedRecordPaginationServiceGroup> results) {
         Iterator<PageIterator<EnrichedDlpFileRecord>> simpleUserEventPageIterator = pageIterators.iterator();
 
         //foreach pageIterator get pages.
         // get amount of pages in iterator.
         //foreach page get contextId list and list of events.
-        while (simpleUserEventPageIterator.hasNext()) {
-            PageIterator<EnrichedDlpFileRecord> pageIterator = simpleUserEventPageIterator.next();
+        for (PageIterator<EnrichedDlpFileRecord> pageIterator : pageIterators) {
             List<EnrichedDlpFileRecord> enrichedDlpFileRecordList = new ArrayList<>();
             Set<String> contextIdList = new HashSet<>();
             int amountOfPages = 0;
@@ -140,129 +311,39 @@ public class EnrichedRecordPaginationServiceTest {
                     contextIdList.add(name);
                 }
             }
-            assertExpectedResult(contextIdList, enrichedDlpFileRecordList, amountOfPages);
+            assertExpectedResult(contextIdList, enrichedDlpFileRecordList, amountOfPages, results);
         }
-        assertTrue(list.size() == 0);
+        //assert that the list is empty
+        //if the list is not empty, it means that not all pages was created.
+        assertTrue(results.size() == 0);
     }
 
     /**
      * Assert amount of pages in group, amount of events in group and context ids.     *
      *
      * @param contextIdSet
-     * @param simpleUserEventsList
+     * @param enrichedDlpFileRecords
      * @param amountOfPages
      */
-    public void assertExpectedResult(Set<String> contextIdSet, List<EnrichedDlpFileRecord> simpleUserEventsList, int amountOfPages) {
+    private void assertExpectedResult(Set<String> contextIdSet, List<EnrichedDlpFileRecord> enrichedDlpFileRecords, int amountOfPages, List<EnrichedRecordPaginationServiceGroup> results) {
 
-        Pair<Set<String>, Pair<Integer, Integer>> itemToRemove = null;
-        for (Pair<Set<String>, Pair<Integer, Integer>> pair : list) {
-            Set<String> group = pair.getKey();
-            if (group.containsAll(contextIdSet)) {
-                Pair<Integer, Integer> numOfPagesToNumOfEvents = pair.getValue();
-                int amountOfPagesInGroup = numOfPagesToNumOfEvents.getKey();
-                int amountOfEventsInGroup = numOfPagesToNumOfEvents.getValue();
-                int testEventsNum = simpleUserEventsList.size();
-                assertTrue(amountOfPagesInGroup == amountOfPages);
-                assertTrue(amountOfEventsInGroup == testEventsNum);
-                itemToRemove = pair;
+        EnrichedRecordPaginationServiceGroup itemToRemove = null;
+        for (EnrichedRecordPaginationServiceGroup group : results) {
+            if (group.getContextIds().containsAll(contextIdSet)) {
+                int testEventsNum = enrichedDlpFileRecords.size();
+                assertTrue(group.getNumOfPages() == amountOfPages);
+                assertTrue(group.getNumOfEvents() == testEventsNum);
+                itemToRemove = group;
                 break;
             }
         }
 
         //assertFalse if no group was found
         if (itemToRemove != null) {
-            list.remove(itemToRemove);
+            results.remove(itemToRemove);
         } else {
             assertFalse(true);
         }
     }
-
-    /**
-     * Create appropriate query and result for mongoTemplate.find() method
-     *
-     * @param mongoTemplate
-     * @param now
-     */
-    private void createQueryForFirstCall(MongoTemplate mongoTemplate, Instant now) {
-        Set<String> contextIds = new HashSet<>();
-        contextIds.add("a");
-
-        Criteria dateTimeCriteria = Criteria.where(EnrichedRecord.DATE_TIME_FIELD).gte(now).lt(now);
-        Criteria contextCriteria = Criteria.where("normalized_username").in(contextIds);
-        Query query1 = new Query(dateTimeCriteria).addCriteria(contextCriteria).skip(0).limit(3);
-
-        List<EnrichedDlpFileRecord> enrichedDlpFileRecordList = new ArrayList<>();
-
-        EnrichedDlpFileRecord enrichedDlpFileRecord = new EnrichedDlpFileRecord(now);
-        enrichedDlpFileRecord.setNormalized_username("a");
-        enrichedDlpFileRecordList.add(enrichedDlpFileRecord);
-        enrichedDlpFileRecord = new EnrichedDlpFileRecord(now);
-        enrichedDlpFileRecord.setNormalized_username("a");
-        enrichedDlpFileRecordList.add(enrichedDlpFileRecord);
-        enrichedDlpFileRecord = new EnrichedDlpFileRecord(now);
-        enrichedDlpFileRecord.setNormalized_username("a");
-        enrichedDlpFileRecordList.add(enrichedDlpFileRecord);
-
-        when(mongoTemplate.find(eq(query1), eq(EnrichedDlpFileRecord.class), eq("enriched_dlpfile"))).thenReturn(enrichedDlpFileRecordList);
-    }
-
-    /**
-     * Create appropriate query and result for mongoTemplate.find() method
-     *
-     * @param mongoTemplate
-     * @param now
-     */
-    private void createQueryForSecondCall(MongoTemplate mongoTemplate, Instant now) {
-
-        Set<String> contextIds = new HashSet<>();
-        contextIds.add("a");
-
-        Criteria dateTimeCriteria = Criteria.where(EnrichedRecord.DATE_TIME_FIELD).gte(now).lt(now);
-        Criteria contextCriteria = Criteria.where("normalized_username").in(contextIds);
-        Query query2 = new Query(dateTimeCriteria).addCriteria(contextCriteria).skip(3).limit(2);
-
-        List<EnrichedDlpFileRecord> enrichedDlpFileRecordList = new ArrayList<>();
-        enrichedDlpFileRecordList = new ArrayList<>();
-        EnrichedDlpFileRecord enrichedDlpFileRecord = new EnrichedDlpFileRecord(now);
-        enrichedDlpFileRecord.setNormalized_username("a");
-        enrichedDlpFileRecordList.add(enrichedDlpFileRecord);
-        enrichedDlpFileRecord = new EnrichedDlpFileRecord(now);
-        enrichedDlpFileRecord.setNormalized_username("a");
-        enrichedDlpFileRecordList.add(enrichedDlpFileRecord);
-
-        when(mongoTemplate.find(eq(query2), eq(EnrichedDlpFileRecord.class), eq("enriched_dlpfile"))).thenReturn(enrichedDlpFileRecordList);
-    }
-
-    /**
-     * Create appropriate query and result for mongoTemplate.find() method
-     *
-     * @param mongoTemplate
-     * @param now
-     */
-    private void createQueryForThirdCall(MongoTemplate mongoTemplate, Instant now) {
-        Set<String> contextIds = new HashSet<>();
-        contextIds.add("c");
-        contextIds.add("b");
-
-        Criteria dateTimeCriteria = Criteria.where(EnrichedRecord.DATE_TIME_FIELD).gte(now).lt(now);
-        Criteria contextCriteria = Criteria.where("normalized_username").in(contextIds);
-        Query query3 = new Query(dateTimeCriteria).addCriteria(contextCriteria).skip(0).limit(3);
-
-        List<EnrichedDlpFileRecord> enrichedDlpFileRecordList = new ArrayList<>();
-
-        enrichedDlpFileRecordList = new ArrayList<>();
-        EnrichedDlpFileRecord enrichedDlpFileRecord = new EnrichedDlpFileRecord(now);
-        enrichedDlpFileRecord.setNormalized_username("c");
-        enrichedDlpFileRecordList.add(enrichedDlpFileRecord);
-        enrichedDlpFileRecord = new EnrichedDlpFileRecord(now);
-        enrichedDlpFileRecord.setNormalized_username("b");
-        enrichedDlpFileRecordList.add(enrichedDlpFileRecord);
-        enrichedDlpFileRecord = new EnrichedDlpFileRecord(now);
-        enrichedDlpFileRecord.setNormalized_username("b");
-        enrichedDlpFileRecordList.add(enrichedDlpFileRecord);
-
-        when(mongoTemplate.find(eq(query3), eq(EnrichedDlpFileRecord.class), eq("enriched_dlpfile"))).thenReturn(enrichedDlpFileRecordList);
-    }
-
 
 }

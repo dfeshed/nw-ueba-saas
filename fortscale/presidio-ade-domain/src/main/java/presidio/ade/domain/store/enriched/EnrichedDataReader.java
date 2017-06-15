@@ -1,14 +1,13 @@
 package presidio.ade.domain.store.enriched;
 
 import presidio.ade.domain.record.enriched.EnrichedRecord;
+import fortscale.utils.pagination.ContextIdToNumOfEvents;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**
  * Enriched data reader
- * .
  */
 public interface EnrichedDataReader {
 
@@ -17,9 +16,9 @@ public interface EnrichedDataReader {
      *
      * @param recordsMetadata describing the records (which data source, etc.)
      * @param contextType     type of context (e.g: NORMALIZED_USERNAME_FIELD, NORMALIZED_SRC_MACHINE_FIELD etc.)
-     * @return map of context ids and num of events.
+     * @return list of ContextIdToNumOfEvents object, ContextIdToNumOfEvents contains context ids and num of events.
      */
-    Map<String, Integer> aggregateContextToNumOfEvents(EnrichedRecordsMetadata recordsMetadata, String contextType);
+    List<ContextIdToNumOfEvents> aggregateContextToNumOfEvents(EnrichedRecordsMetadata recordsMetadata, String contextType);
 
     /**
      * Read data.
