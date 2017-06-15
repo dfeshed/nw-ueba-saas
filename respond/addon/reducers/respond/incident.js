@@ -304,7 +304,25 @@ const incident = reduxActions.handleActions({
   [ACTION_TYPES.TOGGLE_TASKS_JOURNAL]: persistIncidentState((state) => ({
     ...state,
     isShowingTasksAndJournal: !state.isShowingTasksAndJournal
-  }))
+  })),
+
+  [ACTION_TYPES.CREATE_JOURNAL_ENTRY]: (state, action) => {
+    const notes = state.info.notes || [];
+    return handle(state, action, {
+      start: (s) => ({ ...s }),
+      failure: (s) => ({ ...s }),
+      success: (s) => {
+        const { payload: { request: { journalMap } } } = action;
+        return {
+          ...s,
+          info: {
+            ...s.info,
+            notes: [...notes, { ...journalMap }]
+          }
+        };
+      }
+    });
+  }
 
 }, initialState);
 

@@ -1,15 +1,11 @@
 import Ember from 'ember';
 import connect from 'ember-redux/components/connect';
-import { toggleJournalPanel } from 'respond/actions/creators/incidents-creators';
 
 const { Component } = Ember;
 
-const stateToComputed = ({ respond: { incident: { info } } }) => ({
+const stateToComputed = ({ respond: { incident: { info, infoStatus } } }) => ({
+  infoStatus,
   entries: info && info.notes
-});
-
-const dispatchToActions = (dispatch) => ({
-  closeAction: () => dispatch(toggleJournalPanel())
 });
 
 const Journal = Component.extend({
@@ -21,15 +17,7 @@ const Journal = Component.extend({
    * @type Object[]
    * @public
    */
-  entries: null,
-
-  /**
-   * Configurable action to be invoked when user clicks on Close button.
-   *
-   * @type {function}
-   * @public
-   */
-  closeAction: null
+  entries: null
 });
 
-export default connect(stateToComputed, dispatchToActions)(Journal);
+export default connect(stateToComputed)(Journal);

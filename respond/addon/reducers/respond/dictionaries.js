@@ -9,7 +9,8 @@ const initialState = {
   remediationStatusTypes: [],
   remediationTypes: null,
   alertTypes: [],
-  alertSources: []
+  alertSources: [],
+  milestoneTypes: []
 };
 
 export default reduxActions.handleActions({
@@ -65,6 +66,14 @@ export default reduxActions.handleActions({
       start: (s) => ({ ...s, alertSources: [] }),
       failure: (s) => ({ ...s, alertSources: [] }),
       success: (s) => ({ ...s, alertSources: action.payload }) }
+    )
+  ),
+
+  [ACTION_TYPES.FETCH_MILESTONE_TYPES]: (state, action) => (
+    handle(state, action, {
+      start: (s) => ({ ...s, milestoneTypes: [] }),
+      failure: (s) => ({ ...s, milestoneTypes: [] }),
+      success: (s) => ({ ...s, milestoneTypes: action.payload.data }) }
     )
   )
 }, initialState);

@@ -1,6 +1,8 @@
+$headerHeight: 30px;
+
 .rsa-incident-journal {
-  //background-color: rsa-color(black,base,$rsa-translucent);
-  background-color: rsa-color(gray,darker, $rsa-nearly-opaque);
+  height: calc(100% - #{$headerHeight});
+  background-color: rsa-color(gray,darker, $rsa-nearly-transparent);
   border: 1px solid rsa-color(white,base,$rsa-translucent);
 
   &__header {
@@ -23,12 +25,35 @@
   }
 
   &__body {
-    position: relative;
+    centered {
+      height: 100%;
+      font-style: italic;
+    }
 
     .list {
       @include rsa-fill-abs();
       overflow: auto;
       overflow-x: hidden;
+    }
+  }
+
+  &__create-entry {
+    @include rsa-font(body);
+    border-top: 1px solid rsa-color(gray);
+    max-height: 225px;
+    padding: rsa-whitespace();
+
+    header {
+      padding-bottom: rsa-whitespace(less);
+    }
+
+    textarea {
+      height: 100px;
+      width: 100%;
+      margin-bottom: rsa-whitespace(less);
+      background-color: transparent;
+      color: rsa-color(white);
+      resize: none;
     }
   }
 
@@ -54,6 +79,11 @@
     &__note {
       @include rsa-font(paragraph);
       color: rsa-color(white);
+      white-space: pre-line;
+    }
+
+    &__milestone {
+      line-height: 1.5rem;
     }
 
     &-editor {

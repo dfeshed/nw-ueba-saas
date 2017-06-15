@@ -1,11 +1,8 @@
-import Ember from 'ember';
+import { isPresent } from 'ember-utils';
+import { assert } from 'ember-metal/utils';
 import { promiseRequest } from 'streaming-data/services/data-access/requests';
 
-const { assert, isPresent, Object: EmberObject } = Ember;
-
-const JournalAPI = EmberObject.extend({});
-
-JournalAPI.reopenClass({
+export default {
   /**
    * Executes a websocket call to create a journal entry for a particular incident (id)
    *
@@ -15,17 +12,18 @@ JournalAPI.reopenClass({
    * @returns {Promise}
    */
   createEntry({ incidentId, ...journalMap }) {
-    const { author, notes } = journalMap;
+    const { notes, milestone } = journalMap;
 
     assert('IncidentId, author and notes properties are required parameters for createEntry()',
-        (isPresent(incidentId) && isPresent(author) && isPresent(notes)));
+      (isPresent(incidentId) && isPresent(notes)));
 
     return promiseRequest({
       method: 'createRecord',
       modelName: 'journal-entry',
       query: {
         incidentId,
-        journalMap
+        journalMap,
+        milestone
       }
     });
   },
@@ -48,7 +46,4 @@ JournalAPI.reopenClass({
       }
     });
   }
-});
-
-
-export default JournalAPI;
+};

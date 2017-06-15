@@ -118,6 +118,13 @@ const respondConfigGen = function(environment) {
         requestDestination: '/ws/response/options/status'
       }
     },
+    'milestone-types': {
+      socketUrl,
+      findAll: {
+        subscriptionDestination: '/user/queue/options/investigation/milestone',
+        requestDestination: '/ws/response/options/investigation/milestone'
+      }
+    },
     'remediation-tasks': {
       socketUrl,
       stream: {

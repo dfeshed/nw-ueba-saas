@@ -1,5 +1,4 @@
 $metadataLabelWidth: 8rem;
-$metadataLineHeight: 1.35;
 
 .rsa-explorer-inspector {
   position: relative;
@@ -65,43 +64,34 @@ $metadataLineHeight: 1.35;
     }
 
     .metadata {
-      @include rsa-font(body, small);
+      display: block;
       padding: rsa-whitespace() rsa-whitespace(less) rsa-whitespace(less) (rsa-whitespace(less) + $metadataLabelWidth);
       color: rsa-color(gray, light);
-      line-height: $metadataLineHeight;
       position: relative;
 
       > label {
+        @include rsa-font(body, small);
+        text-transform: inherit;
+        letter-spacing: inherit;
+        display: inline-block;
         position: absolute;
         left: 0;
         top: 0;
         margin: rsa-whitespace() rsa-whitespace(less);
-        max-width: $metadataLabelWidth - rsa-whitespace(less) * 2;
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
       }
 
       > span {
         display: inline-block;
-        min-height: 1em * $metadataLineHeight;
-        color: rsa-color(white);
-        width: 100%;
       }
 
       > .edit-button {
-        display: inline-block;
-        width: auto;
-        min-height: 30px;
 
         .ember-power-select-trigger {
-          width: auto;
-          padding: 0;
-          border: none;
-        }
-
-        .ember-power-select-trigger[aria-disabled="true"] {
-          background-color: transparent;
+          .rsa-form-button {
+            padding: 0.5rem 1rem;
+            font-size: inherit;
+            min-width: inherit;
+          }
         }
       }
     }

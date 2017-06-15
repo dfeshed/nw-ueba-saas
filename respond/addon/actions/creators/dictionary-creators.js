@@ -159,6 +159,23 @@ const getAllAlertSources = () => {
   };
 };
 
+/**
+ * Action creator for fetching all known milestones
+ * @method getAllMilestoneTypes
+ * @public
+ * @returns {Promise}
+ */
+const getAllMilestoneTypes = () => {
+  return {
+    type: ACTION_TYPES.FETCH_MILESTONE_TYPES,
+    promise: dictionaries.getAllMilestoneTypes(),
+    meta: {
+      onSuccess: (response) => Logger.debug(ACTION_TYPES.FETCH_MILESTONE_TYPES, response),
+      onFailure: (response) => ErrorHandlers.handleContentRetrievalError(response, 'milestones')
+    }
+  };
+};
+
 export {
   getAllUsers,
   getAllEnabledUsers,
@@ -168,5 +185,6 @@ export {
   getAllRemediationStatusTypes,
   getAllRemediationTypes,
   getAllAlertTypes,
-  getAllAlertSources
+  getAllAlertSources,
+  getAllMilestoneTypes
 };

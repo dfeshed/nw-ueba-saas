@@ -1,0 +1,20 @@
+<header>{{t 'respond.journal.newEntry'}}</header>
+{{textarea value=notes}}
+<div class="metadata">
+  <label>{{t 'respond.journal.milestone'}}<span class="required-field"/></label>
+  <div class="edit-button">
+    {{#power-select
+      options=milestoneTypes
+      selected=milestone
+      matchTriggerWidth=false
+      searchEnabled=false
+      triggerComponent=(component "respond-common/button-trigger"
+        iconName='arrow-down-12'
+        iconPosition='after'
+        label=(if milestone (t (concat 'respond.milestones.' milestone)) (t 'respond.none')))
+      onchange=(action 'handleMilestoneChange') as |option|}}
+      {{t (concat 'respond.milestones.' option)}}
+    {{/power-select}}
+  </div>
+</div>
+{{#rsa-form-button isFullWidth=true isDisabled=isInvalid defaultAction='handleSubmit'}}{{t 'forms.submit'}}{{/rsa-form-button}}

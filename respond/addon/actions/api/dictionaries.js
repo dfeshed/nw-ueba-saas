@@ -111,5 +111,19 @@ export default {
   getAllAlertSources() {
     const alertSources = ['ECAT', 'Event Stream Analysis', 'Malware Analysis', 'Reporting Engine', 'Web Threat Detection'];
     return RSVP.resolve(alertSources);
+  },
+
+  /**
+   * Returns a list of all known investigative milestone values
+   * @method getAllMilestoneTypes
+   * @returns {*}
+   * @public
+   */
+  getAllMilestoneTypes() {
+    return promiseRequest({
+      method: 'findAll',
+      modelName: 'milestone-types',
+      query: {}
+    });
   }
 };

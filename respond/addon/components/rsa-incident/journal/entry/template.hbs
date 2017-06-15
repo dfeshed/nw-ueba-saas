@@ -5,12 +5,13 @@
   <span class="rsa-incident-journal-entry__created">
     {{rsa-content-datetime timestamp=entry.created asTimeAgo=false displayTime=true displayDate=true displayMilliseconds=false}}
   </span>
+  {{#if entry.milestone}}
+    <div class="rsa-incident-journal-entry__milestone">
+      {{t 'respond.journal.milestone'}}: {{t (concat 'respond.milestones.' entry.milestone)}}
+    </div>
+  {{/if}}
 </header>
 <section class="rsa-incident-journal-entry__note">
   {{entry.notes}}
 </section>
-{{#if entry.milestone}}
-  <footer class="rsa-incident-journal-entry__milestone">
-    {{t 'respond.journal.milestone'}}: {{entry.milestone}}
-  </footer>
-{{/if}}
+

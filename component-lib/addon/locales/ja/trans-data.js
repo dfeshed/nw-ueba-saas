@@ -424,6 +424,8 @@ export default {
       true: 'ja_Yes',
       false: 'ja_No'
     },
+    none: 'ja_None',
+    select: 'ja_Select',
     close: 'ja_Close',
     empty: 'ja_(empty)',
     filters: 'ja_Filters',
@@ -660,9 +662,24 @@ export default {
       error: 'ja_Unable to load incident details'
     },
     journal: {
+      newEntry: 'ja_New Journal Entry',
       title: 'ja_Journal',
       close: 'ja_Close',
-      milestone: 'ja_Milestone'
+      milestone: 'ja_Milestone',
+      loading: 'ja_Loading journal entries',
+      noEntries: 'ja_There are no journal entries for {{incidentId}}'
+    },
+    milestones: {
+      title: 'ja_Milestones',
+      RECONNAISSANCE: 'ja_Reconnaissance',
+      DELIVERY: 'ja_Delivery',
+      EXPLOITATION: 'ja_Exploitation',
+      INSTALLATION: 'ja_Installation',
+      COMMAND_AND_CONTROL: 'ja_Command and Control',
+      ACTION_ON_OBJECTIVE: 'ja_Action on Objective',
+      CONTAINMENT: 'ja_Containment',
+      ERADICATION: 'ja_Eradiation',
+      CLOSURE: 'ja_Closure'
     },
     eventDetails: {
       title: 'ja_Event Details',

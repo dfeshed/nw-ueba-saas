@@ -424,6 +424,8 @@ export default {
       true: 'Yes',
       false: 'No'
     },
+    none: 'None',
+    select: 'Select',
     close: 'Close',
     empty: '(empty)',
     filters: 'Filters',
@@ -660,9 +662,24 @@ export default {
       error: 'Unable to load incident details'
     },
     journal: {
+      newEntry: 'New Journal Entry',
       title: 'Journal',
       close: 'Close',
-      milestone: 'Milestone'
+      milestone: 'Milestone',
+      loading: 'Loading journal entries',
+      noEntries: 'There are no journal entries for {{incidentId}}'
+    },
+    milestones: {
+      title: 'Milestones',
+      RECONNAISSANCE: 'Reconnaissance',
+      DELIVERY: 'Delivery',
+      EXPLOITATION: 'Exploitation',
+      INSTALLATION: 'Installation',
+      COMMAND_AND_CONTROL: 'Command and Control',
+      ACTION_ON_OBJECTIVE: 'Action on Objective',
+      CONTAINMENT: 'Containment',
+      ERADICATION: 'Eradiation',
+      CLOSURE: 'Closure'
     },
     eventDetails: {
       title: 'Event Details',

@@ -9,7 +9,7 @@
   </span>
 </hbox>
 {{#if (eq tasksJournalMode 'journal')}}
-  {{! Journal component will be rendered here }}
+  {{rsa-incident/journal info=info}}
 {{else}}
   {{#liquid-bind isAddingNewTask use=(if isAddingNewTask "toLeft" "toRight") as |currentIsAddingNewTask|}}
     {{#if currentIsAddingNewTask}}

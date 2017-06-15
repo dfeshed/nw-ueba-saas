@@ -3,9 +3,10 @@ import { toggleTasksAndJournalPanel, setTasksJournalMode } from 'respond/actions
 import Component from 'ember-component';
 
 const stateToComputed = (state) => {
-  const { respond: { incident: { id, isShowingTasksAndJournal, tasks, tasksStatus, tasksJournalMode } } } = state;
+  const { respond: { incident: { id, info, isShowingTasksAndJournal, tasks, tasksStatus, tasksJournalMode } } } = state;
   return {
     incidentId: id,
+    info,
     tasks,
     tasksStatus,
     isShowingTasksAndJournal,
