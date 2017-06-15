@@ -13,7 +13,8 @@ const callbacksDefault = { onSuccess() {}, onFailure() {} };
  * Action creator for creating a journal entry on an incident
  * @method createJournalEntry
  * @public
- * @param journalEntry An {Object} containing the incidentId, author, notes and other properties for creating an entry
+ * @param journalEntry An {Object} containing the incidentId, notes, milestone
+ * @param callbacks { onSuccess, onFailure }
  * @returns {Object}
  */
 const createJournalEntry = (journalEntry, callbacks = callbacksDefault) => {
@@ -39,15 +40,22 @@ const createJournalEntry = (journalEntry, callbacks = callbacksDefault) => {
  * @public
  * @param incidentId
  * @param journalId
+ * @param callbacks { onSuccess, onFailure }
  * @returns {Object}
  */
-const deleteJournalEntry = (incidentId, journalId) => {
+const deleteJournalEntry = (incidentId, journalId, callbacks = callbacksDefault) => {
   return {
     type: ACTION_TYPES.DELETE_JOURNAL_ENTRY,
     promise: journal.deleteEntry(incidentId, journalId),
     meta: {
-      onSuccess: (response) => Logger.debug(ACTION_TYPES.DELETE_JOURNAL_ENTRY, response),
-      onFailure: (response) => ErrorHandlers._handleContentRetrievalError(response, 'journal')
+      onSuccess: (response) => {
+        Logger.debug(ACTION_TYPES.DELETE_JOURNAL_ENTRY, response);
+        callbacks.onSuccess(response);
+      },
+      onFailure: (response) => {
+        ErrorHandlers.handleContentDeletionError(response, 'journal entry');
+        callbacks.onFailure(response);
+      }
     }
   };
 };

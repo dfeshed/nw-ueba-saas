@@ -455,7 +455,8 @@ export default {
         updateSuccess: 'ja_Your change was successful',
         updateFailure: 'ja_There was a problem updating the field for this record',
         createSuccess: 'ja_You successfully added a new record',
-        createFailure: 'ja_There was a problem creating this record'
+        createFailure: 'ja_There was a problem creating this record',
+        deleteFailure: 'ja_There was a problem deleting this record'
       }
     },
     explorer: {
@@ -487,6 +488,7 @@ export default {
       noTasks: 'ja_There are no tasks for {{incidentId}}',
       openFor: 'ja_Open for',
       newTaskFor: 'ja_New Remediation Task for',
+      delete: 'ja_Delete Task',
       actions: {
         actionMessages: {
           deleteWarning: 'ja_Deleting a Remediation Task from NetWitness will not delete it from other systems. Please note that it will be your responsibility ' +
@@ -668,7 +670,9 @@ export default {
       close: 'ja_Close',
       milestone: 'ja_Milestone',
       loading: 'ja_Loading journal entries',
-      noEntries: 'ja_There are no journal entries for {{incidentId}}'
+      noEntries: 'ja_There are no journal entries for {{incidentId}}',
+      delete: 'ja_Delete Entry',
+      deleteConfirmation: 'ja_Are you sure you want to delete this journal entry? This action cannot be reversed.'
     },
     milestones: {
       title: 'ja_Milestones',
@@ -679,7 +683,7 @@ export default {
       COMMAND_AND_CONTROL: 'ja_Command and Control',
       ACTION_ON_OBJECTIVE: 'ja_Action on Objective',
       CONTAINMENT: 'ja_Containment',
-      ERADICATION: 'ja_Eradiation',
+      ERADICATION: 'ja_Eradication',
       CLOSURE: 'ja_Closure'
     },
     eventDetails: {

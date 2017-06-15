@@ -1,9 +1,24 @@
-import Ember from 'ember';
+import Component from 'ember-component';
+import connect from 'ember-redux/components/connect';
+import Notifications from 'respond/mixins/notifications';
+import Confirmable from 'respond/mixins/confirmable';
+import { deleteJournalEntry } from 'respond/actions/creators/journal-creators';
 import layout from './template';
 
-const { Component } = Ember;
+const dispatchToActions = (dispatch) => {
+  return {
+    deleteEntry(incidentId, entryId) {
+      this.send('showConfirmationDialog', 'delete-journal-entry', {}, () => {
+        dispatch(deleteJournalEntry(incidentId, entryId, {
+          onSuccess: () => (this.send('success', 'respond.entities.actionMessages.updateSuccess')),
+          onFailure: () => (this.send('failure', 'respond.entities.actionMessages.deleteFailure'))
+        }));
+      });
+    }
+  };
+};
 
-export default Component.extend({
+const JournalEntry = Component.extend(Notifications, Confirmable, {
   layout,
   classNames: ['rsa-incident-journal-entry'],
 
@@ -12,5 +27,14 @@ export default Component.extend({
    * @type { author: String, created: String, notes: String, milestone: String }
    * @public
    */
-  entry: null
+  entry: null,
+
+  actions: {
+    handleDelete() {
+      const { incidentId, entry } = this.getProperties('incidentId', 'entry');
+      this.send('deleteEntry', incidentId, entry.id);
+    }
+  }
 });
+
+export default connect(undefined, dispatchToActions)(JournalEntry);

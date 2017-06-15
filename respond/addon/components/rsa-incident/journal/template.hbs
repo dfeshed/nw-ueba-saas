@@ -7,7 +7,7 @@
     {{else}}
       {{#if entries.length}}
         {{#each entries as |entry|}}
-          {{rsa-incident/journal/entry entry=entry}}
+          {{rsa-incident/journal/entry incidentId=info.id entry=entry}}
         {{/each}}
       {{else}}
         <centered><p>{{t 'respond.journal.noEntries' incidentId=info.id}}</p></centered>

@@ -322,6 +322,24 @@ const incident = reduxActions.handleActions({
         };
       }
     });
+  },
+
+  [ACTION_TYPES.DELETE_JOURNAL_ENTRY]: (state, action) => {
+    const notes = state.info.notes || [];
+    return handle(state, action, {
+      start: (s) => ({ ...s }),
+      failure: (s) => ({ ...s }),
+      success: (s) => {
+        const { payload: { request: { journalId } } } = action;
+        return {
+          ...s,
+          info: {
+            ...s.info,
+            notes: notes.filter((note) => (note.id !== journalId))
+          }
+        };
+      }
+    });
   }
 
 }, initialState);

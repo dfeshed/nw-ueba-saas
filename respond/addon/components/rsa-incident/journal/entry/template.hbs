@@ -10,8 +10,28 @@
       {{t 'respond.journal.milestone'}}: {{t (concat 'respond.milestones.' entry.milestone)}}
     </div>
   {{/if}}
+  <div class="delete">
+    {{#rsa-form-button isIconOnly=true title=(t 'respond.journal.delete') defaultAction=(action 'handleDelete')}}{{rsa-icon style='lined' name='bin-1'}}{{/rsa-form-button}}
+  </div>
 </header>
 <section class="rsa-incident-journal-entry__note">
   {{entry.notes}}
 </section>
 
+{{#if showConfirmationDialog}}
+  {{#rsa-application-modal eventId='delete-journal-entry' label=(t "respond.explorer.confirmation.deleteTitle") style="standard respond-confirmation-dialog"}}
+    <div class='modal-content'>
+      <p>{{t 'respond.journal.deleteConfirmation'}}</p>
+    </div>
+    <footer>
+      <hbox class="modal-footer-buttons">
+        {{#rsa-form-button defaultAction='cancel'}}
+          {{t 'forms.cancel'}}
+        {{/rsa-form-button}}
+        {{#rsa-form-button style='danger' defaultAction='confirm'}}
+          {{t 'forms.apply'}}
+        {{/rsa-form-button}}
+      </hbox>
+    </footer>
+  {{/rsa-application-modal}}
+{{/if}}

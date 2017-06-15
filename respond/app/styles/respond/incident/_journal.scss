@@ -58,6 +58,7 @@ $headerHeight: 30px;
   }
 
   &-entry {
+    position: relative;
     padding: rsa-whitespace(less);
     border-bottom: 1px dashed rsa-color(gray);
 
@@ -69,6 +70,15 @@ $headerHeight: 30px;
       white-space: nowrap;
       @include rsa-font(navigation,small);
       color: rsa-color(gray, light);
+
+      .delete {
+        position: absolute;
+        right: 0;
+        top: 0;
+        .rsa-form-button i {
+          font-size: 11px;
+        }
+      }
     }
 
     &__author {
