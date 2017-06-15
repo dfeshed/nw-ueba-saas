@@ -10,7 +10,7 @@ public interface DlpFileDataRepositoryCustom {
 
     List<DlpFileDataDocument> find(Instant startTime, Instant endTime);
 
-    int clean(long startTime, long endTime);
+    int clean(Instant startTime, Instant endTime);
 
 
 }

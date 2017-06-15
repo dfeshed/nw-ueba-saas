@@ -12,7 +12,7 @@ public interface PresidioInputPersistencyService {
 
     List<? extends AbstractAuditableDocument> find(DataSource dataSource, Instant startTime, Instant endTime) throws Exception; //todo: we can discuss the name. for now using spring's terminology
 
-    int clean(DataSource dataSource, long startTime, long endTime) throws Exception;
+    int clean(DataSource dataSource, Instant startTime, Instant endTime) throws Exception;
 
     void cleanAll(DataSource dataSource) throws Exception;
 }

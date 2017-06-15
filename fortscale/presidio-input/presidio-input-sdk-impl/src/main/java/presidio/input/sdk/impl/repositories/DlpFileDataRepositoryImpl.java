@@ -27,8 +27,8 @@ public class DlpFileDataRepositoryImpl implements DlpFileDataRepositoryCustom {
     }
 
     @Override
-    public int clean(long startTime, long endTime) {
-        Criteria timeCriteria = Criteria.where(DlpFileDataDocument.DATE_TIME_UNIX_FIELD_NAME).gte(startTime).lte(endTime);
+    public int clean(Instant startTime, Instant endTime) {
+        Criteria timeCriteria = Criteria.where(DlpFileDataDocument.DATE_TIME_FIELD_NAME).gte(startTime).lte(endTime);
         final Query query = new Query(timeCriteria);//todo:same as the the todo above
         WriteResult removeResult = mongoTemplate.remove(query, DlpFileDataDocument.class, DlpFileDataDocument.COLLECTION_NAME);
         return removeResult.getN();
