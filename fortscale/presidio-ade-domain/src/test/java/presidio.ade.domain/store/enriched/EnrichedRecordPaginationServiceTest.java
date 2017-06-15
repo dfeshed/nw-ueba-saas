@@ -17,9 +17,9 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import presidio.ade.domain.pagination.enriched.EnrichedRecordPaginationService;
-import presidio.ade.domain.record.scanning.AdeRecordTypeToClass;
-import presidio.ade.domain.record.scanning.AdeRecordTypeToClassConfig;
 import fortscale.utils.pagination.ContextIdToNumOfEvents;
+import presidio.ade.domain.record.enriched.DataSourceToAdeEnrichedRecordClassResolver;
+import presidio.ade.domain.record.enriched.DataSourceToAdeEnrichedRecordClassResolverConfig;
 import presidio.ade.domain.record.enriched.EnrichedDlpFileRecord;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
 
@@ -35,7 +35,7 @@ import static org.mockito.Mockito.when;
 import static presidio.ade.domain.record.enriched.EnrichedDlpFileRecord.NORMALIZED_USERNAME_FIELD;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = AdeRecordTypeToClassConfig.class)
+@ContextConfiguration(classes = DataSourceToAdeEnrichedRecordClassResolverConfig.class)
 public class EnrichedRecordPaginationServiceTest {
 
     private static final int PAGE_SIZE = 3;
@@ -48,7 +48,7 @@ public class EnrichedRecordPaginationServiceTest {
     private List<Pair<Set<String>, Pair<Integer, Integer>>> list;
 
     @Autowired
-    private AdeRecordTypeToClass adeRecordTypeToClass;
+    private DataSourceToAdeEnrichedRecordClassResolver dataSourceToAdeEnrichedRecordClassResolver;
 
     /**
      * Create list of test result.
@@ -98,7 +98,7 @@ public class EnrichedRecordPaginationServiceTest {
 
         //create store
         EnrichedDataToCollectionNameTranslator translator = new EnrichedDataToCollectionNameTranslator();
-        enrichedDataStoreImplMongo = new EnrichedDataStoreImplMongo(mongoTemplate, translator, this.adeRecordTypeToClass);
+        enrichedDataStoreImplMongo = new EnrichedDataStoreImplMongo(mongoTemplate, translator, this.dataSourceToAdeEnrichedRecordClassResolver);
 
         //create pagination service
         EnrichedRecordPaginationService paginationService =
@@ -106,7 +106,7 @@ public class EnrichedRecordPaginationServiceTest {
 
         TimeRange timeRange = new TimeRange(NOW, NOW);
 
-        List<PageIterator<EnrichedDlpFileRecord>> pageIterators = paginationService.getPageIterators("dlp_file", timeRange);
+        List<PageIterator<EnrichedDlpFileRecord>> pageIterators = paginationService.getPageIterators("dlpfile", timeRange);
 
         //assert number of iterators
         assertTrue(pageIterators.size() == 2);
@@ -126,7 +126,8 @@ public class EnrichedRecordPaginationServiceTest {
         MongoTemplate mongoTemplate = mock(MongoTemplate.class);
 
         AggregationResults<ContextIdToNumOfEvents> aggregationResults = mock(AggregationResults.class);
-        when(mongoTemplate.aggregate(any(Aggregation.class), eq("enriched_dlp_file"), eq(ContextIdToNumOfEvents.class))).thenReturn(aggregationResults);
+
+        when(mongoTemplate.aggregate(any(Aggregation.class), eq("enriched_dlpfile"), eq(ContextIdToNumOfEvents.class))).thenReturn(aggregationResults);
         when(aggregationResults.getMappedResults()).thenReturn(new ArrayList<>());
 
         //mock of index operations
@@ -134,7 +135,7 @@ public class EnrichedRecordPaginationServiceTest {
 
         //create store
         EnrichedDataToCollectionNameTranslator translator = new EnrichedDataToCollectionNameTranslator();
-        enrichedDataStoreImplMongo = new EnrichedDataStoreImplMongo(mongoTemplate, translator, this.adeRecordTypeToClass);
+        enrichedDataStoreImplMongo = new EnrichedDataStoreImplMongo(mongoTemplate, translator, this.dataSourceToAdeEnrichedRecordClassResolver);
 
         //create pagination service
         EnrichedRecordPaginationService paginationService =
@@ -142,7 +143,7 @@ public class EnrichedRecordPaginationServiceTest {
 
         TimeRange timeRange = new TimeRange(NOW, NOW);
 
-        List<PageIterator<EnrichedDlpFileRecord>> pageIterators = paginationService.getPageIterators("dlp_file", timeRange);
+        List<PageIterator<EnrichedDlpFileRecord>> pageIterators = paginationService.getPageIterators("dlpfile", timeRange);
 
         //assert number of iterators
         assertTrue(pageIterators.size() == 0);
@@ -227,7 +228,7 @@ public class EnrichedRecordPaginationServiceTest {
         contextIdToNumOfEventsList.add(new ContextIdToNumOfEvents("c", 1));
 
         AggregationResults<ContextIdToNumOfEvents> aggregationResults = mock(AggregationResults.class);
-        when(mongoTemplate.aggregate(any(Aggregation.class), eq("enriched_dlp_file"), eq(ContextIdToNumOfEvents.class))).thenReturn(aggregationResults);
+        when(mongoTemplate.aggregate(any(Aggregation.class), eq("enriched_dlpfile"), eq(ContextIdToNumOfEvents.class))).thenReturn(aggregationResults);
         when(aggregationResults.getMappedResults()).thenReturn(contextIdToNumOfEventsList);
     }
 
@@ -257,7 +258,7 @@ public class EnrichedRecordPaginationServiceTest {
         enrichedDlpFileRecord.setNormalized_username("a");
         enrichedDlpFileRecordList.add(enrichedDlpFileRecord);
 
-        when(mongoTemplate.find(eq(query1), eq(EnrichedDlpFileRecord.class), eq("enriched_dlp_file"))).thenReturn(enrichedDlpFileRecordList);
+        when(mongoTemplate.find(eq(query1), eq(EnrichedDlpFileRecord.class), eq("enriched_dlpfile"))).thenReturn(enrichedDlpFileRecordList);
     }
 
     /**
@@ -284,7 +285,7 @@ public class EnrichedRecordPaginationServiceTest {
         enrichedDlpFileRecord.setNormalized_username("a");
         enrichedDlpFileRecordList.add(enrichedDlpFileRecord);
 
-        when(mongoTemplate.find(eq(query2), eq(EnrichedDlpFileRecord.class), eq("enriched_dlp_file"))).thenReturn(enrichedDlpFileRecordList);
+        when(mongoTemplate.find(eq(query2), eq(EnrichedDlpFileRecord.class), eq("enriched_dlpfile"))).thenReturn(enrichedDlpFileRecordList);
     }
 
     /**
@@ -315,7 +316,7 @@ public class EnrichedRecordPaginationServiceTest {
         enrichedDlpFileRecord.setNormalized_username("b");
         enrichedDlpFileRecordList.add(enrichedDlpFileRecord);
 
-        when(mongoTemplate.find(eq(query3), eq(EnrichedDlpFileRecord.class), eq("enriched_dlp_file"))).thenReturn(enrichedDlpFileRecordList);
+        when(mongoTemplate.find(eq(query3), eq(EnrichedDlpFileRecord.class), eq("enriched_dlpfile"))).thenReturn(enrichedDlpFileRecordList);
     }
 
 

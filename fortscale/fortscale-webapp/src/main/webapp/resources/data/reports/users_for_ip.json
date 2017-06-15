@@ -1,0 +1,139 @@
+{
+    "endpoint": {
+        "api": "dataQuery",
+        "dataQuery": {
+            "entity": "scored_access_event",
+            "entitiesJoin": {
+                "joinType": "left",
+                "entity": "users",
+                "joinFields": {
+                    "left": "scored_access_event.normalized_username",
+                    "right": "users.normalized_username"
+                }
+            },
+			"limit": 100,
+			"fields": [
+				{
+					"id": "normalized_username",
+					"alias": "normalized_username"
+				},
+				{
+					"id": "display_name",
+					"entity": "users",
+					"alias": "display_name"
+				},
+				{
+					"id": "event_time",
+					"alias": "event_time",
+					"func": {
+						"name": "to_date"
+					}
+				},
+				{
+					"alias": "event_count",
+					"func": {
+						"name": "count",
+						"params": {
+							"all": true
+						}
+					}
+				},
+				{
+					"id": "source_machine",
+					"alias": "devices_count",
+					"func": {
+						"name": "count",
+						"params": {
+							"distinct": true
+						}
+					}
+				},
+				{
+					"id": "suspicious_event_score",
+					"alias": "suspicious_event_score",
+					"func": {
+						"name": "sum"
+					}
+				}
+			],
+			"conditions": {
+				"operator": "AND",
+				"terms": [
+					{
+						"type": "field",
+						"id": "event_time_utc",
+						"operator": "dateRange",
+						"valueParam": "dateRange"
+					},
+					{
+						"type": "field",
+						"id": "source_ip",
+						"operator": "equals",
+						"valueParam": "source_ip"
+					}
+				]
+			},
+			"groupBy": [
+				{
+					"id": "event_time",
+					"func": {
+						"name": "to_date"
+					}
+				},
+				"source_ip", "normalized_username", "users.display_name"
+			],
+			"sort": [
+				{ "field": { "alias": "event_time" }, "direction": "desc" }
+			]
+		}
+	},
+	"process": {
+		"processId": "groupBy",
+		"params": {
+			"groupBy": [
+				"normalized_username",
+				"event_time"
+			],
+			"fields": [
+				{
+					"fieldFunc": "sum",
+					"fieldName": "event_count",
+					"fieldNewName": "total_count"
+				},
+				{
+					"fieldFunc": "case",
+					"referenceFieldName": "type",
+					"referenceValue": "Kerberos",
+					"fieldName": "suspicious_event_score",
+					"fieldNewName": "kerberos_count"
+				},
+				{
+					"fieldFunc": "case",
+					"referenceFieldName": "type",
+					"referenceValue": "SSH",
+					"fieldName": "suspicious_event_score",
+					"fieldNewName": "ssh_count"
+				},
+                {
+                    "fieldFunc": "case",
+                    "referenceFieldName": "type",
+                    "referenceValue": "VPN",
+                    "fieldName": "suspicious_event_score",
+                    "fieldNewName": "vpn_count"
+                }
+			]
+		}
+	},
+	"params": [
+		{
+			"field": "dateRange",
+			"dashboardParam": "ip_investigation_events_dates",
+			"isRequired": true
+		},
+		{
+			"field": "source_ip",
+			"dashboardParam": "ip_investigation_events_ip_address",
+			"isRequired": true
+		}
+	]
+}

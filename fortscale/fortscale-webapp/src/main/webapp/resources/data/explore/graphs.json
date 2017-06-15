@@ -1,0 +1,957 @@
+{
+    "auth_event_scatterplot": {
+        "id": "auth_event_scatterplot",
+        "name": "Events Per Time",
+        "type": "scatterPlot",
+        "entities": ["auth_event","wame","gwame","ntlm","kerberos_tgt"],
+        "dataQuery": {
+            "sort": { "field": "event_time", "direction": "DESC" },
+            "limit": 200
+        },
+        "widget": {
+            "widgetId": "explore.graphs.time_scatterplot",
+            "specificId" : "access_event",
+			"height": 250
+        }
+    },
+
+    "vpn_event_scatterplot": {
+        "id": "vpn_event_scatterplot",
+        "name": "Events Per Time",
+        "type": "scatterPlot",
+        "entities": ["vpn"],
+        "dataQuery": {
+        "sort": { "field": "event_time", "direction": "DESC" },
+        "limit": 200
+        },
+        "widget": {
+        "widgetId": "explore.graphs.time_scatterplot",
+        "specificId" : "vpn",
+        "height": 500,
+        "views": [
+                {
+                    "type": "scatterPlot",
+                    "height": "250",
+                    "settings": {
+                        "axes": {
+                            "x": {
+                                "type": "time",
+                                "timeFormat": "days",
+                                "label": "Event Time"
+                            },
+                            "y": {
+                                "label": "Hours"
+                            }
+                        },
+                        "scales": {
+                            "x": {
+                                "type": "time"
+                            },
+                            "y": {
+                                "domain": [0, 24]
+                            }
+                        },
+                        "timeField": "event_time",
+                        "colorField": "event_score",
+                        "colorScale": "score",
+                        "onSelect": {
+                            "action": "showTooltip",
+                            "actionOptions": {
+                                "table": {
+                                    "rows": [
+                                        {
+                                            "label": "User",
+                                            "value": "{{display_name || username}}"
+                                        },
+                                        {
+                                            "label": "Source",
+                                            "value": "{{source_ip}}"
+                                        },
+                                        {
+                                            "label": "Country",
+                                            "value": "{{country}}"
+                                        },
+                                        {
+                                            "label": "Time",
+                                            "value": "{{event_time:date}}"
+                                        },
+                                        {
+                                            "label": "Score",
+                                            "value": "{{event_score}}"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            ]
+
+    }
+    },
+
+    "user_events_count": {
+        "id": "user_events_count",
+        "name": "Event Count Per User",
+        "type": "horizontalBars",
+        "entities": ["scored_access_event"],
+        "widget": {
+            "widgetId": "explore.graphs.event_count_per_user",
+            "specificId" : "user_events_count",
+            "height": 300
+        },
+        "dataQuery": {
+            "fields": [
+                {
+                    "id": "normalized_username",
+                    "alias": "label"
+                },
+				{
+					"id": "severity",
+					"alias": "severity"
+				},
+                {
+                    "alias": "event_count",
+                    "func": {
+                        "name": "count",
+                        "params": {
+                            "all": true
+                        }
+                    }
+                }
+            ],
+            "sort": [{ "field": { "alias": "event_count" }, "direction": "DESC"}],
+            "groupBy": ["normalized_username","severity"],
+            "limit": 50
+        }
+    },
+
+    "user_session_count": {
+        "id": "user_session_count",
+        "name": "Session Count Per User",
+        "type": "horizontalBars",
+        "entities": ["session"],
+        "widget": {
+            "widgetId": "explore.graphs.session_count_per_user",
+            "specificId" : "user_session_count",
+            "height": 300
+        },
+        "dataQuery": {
+            "fields": [
+                {
+                    "id": "normalized_username",
+                    "alias": "label"
+                },
+				{
+					"id": "severity",
+					"alias": "severity"
+				},
+                {
+                    "alias": "event_count",
+                    "func": {
+                        "name": "count",
+                        "params": {
+                            "all": true
+                        }
+                    }
+                }
+            ],
+            "sort": [{ "field": { "alias": "event_count" }, "direction": "DESC"}],
+            "groupBy": ["normalized_username","severity"],
+            "limit": 50
+        }
+    },
+
+    "vpn_session_duration": {
+        "id": "session_duration",
+        "name": "Session Duration Per date",
+        "type": "scatterPlot",
+        "entities": ["vpn_session"],
+        "widget": {
+            "widgetId": "explore.graphs.session_duration_scatterplot",
+            "specificId" : "vpn_session",
+            "height": 300
+        },
+        "dataQuery": {
+            "sort": { "field": "end_time", "direction": "DESC" },
+            "limit": 200
+        }
+    },
+
+	"vpn_session_time": {
+		"id": "session_time",
+		"name": "Session Per time",
+		"type": "scatterPlot",
+		"entities": ["vpn_session"],
+		"widget": {
+			"widgetId": "explore.graphs.session_time_scatterplot",
+            "specificId" : "vpn_session",
+			"height": 300
+		},
+		"dataQuery": {
+			"sort": { "field": "end_time", "direction": "DESC" },
+			"limit": 200
+		}
+	},
+
+	"session_exfiltration_time": {
+		"id": "session_exfiltration_time",
+		"name": "Session Per time",
+		"type": "scatterPlot",
+		"entities": ["vpn_session"],
+		"hide": true,
+		"widget": {
+			"widgetId": "explore.graphs.session_time_scatterplot",
+			"height": 300,
+			"specificId" : "exfiltration",
+			"views": [
+				{
+					"type": "scatterPlot",
+					"height": 500,
+					"settings": {
+						"timeField": "end_time",
+						"colorField": "data_bucket_score",
+						"colorScale": "score",
+						"legend": {
+							"position": "right"
+						},
+						"shapes": {
+							"field": "type"
+						},
+						"axes": {
+							"x": {
+								"type": "time",
+								"timeFormat": "days",
+								"label": "Session time"
+							},
+							"y": {
+								"label": "Hours"
+							}
+						},
+						"scales": {
+							"x": {
+								"type": "time"
+							},
+							"y": {
+								"domain" : [0,24]
+							}
+						},
+						"onSelect": {
+							"action": "showTooltip",
+							"actionOptions": {
+								"table": {
+									"rows": [
+										{
+											"label": "Username",
+											"value": "{{username}}"
+										},
+										{
+											"label": "Start time",
+											"value": "{{start_time:date:MM/DD/YYYY HH\\:mm\\:ss}}"
+										},
+										{
+											"label": "End time",
+											"value": "{{end_time:date:MM/DD/YYYY HH\\:mm\\:ss}}"
+										},
+										{
+											"label": "Duration (hh:mm:ss)",
+											"value": "{{duration:diffToPrettyTime:seconds}}"
+										},
+										{
+											"label": "Data Usage",
+											"value": "{{data_bucket:bytesPerSecCount}}"
+										},
+										{
+											"label": "Data Usage Score",
+											"value": "{{data_bucket_score}}"
+										}
+									]
+								}
+							}
+						}
+					}
+				}
+			]
+		},
+		"dataQuery": {
+			"sort": { "field": "end_time", "direction": "DESC" },
+			"limit": 200
+		}
+	},
+
+    "vpn_session_source_machine_events_count": {
+        "id": "vpn_session_source_machine_events_count",
+        "name": "Session Count Per Source Machine",
+        "type": "horizontalBars",
+        "entities": ["vpn_session"],
+        "widget": {
+            "widgetId": "explore.graphs.session_count_per_user",
+            "specificId" : "vpn_session_source_machine_events_count",
+            "height": 300
+        },
+        "dataQuery": {
+            "fields": [
+                {
+                    "id": "source_machine",
+                    "alias": "label"
+                },
+				{
+					"id": "severity",
+					"alias": "severity"
+				},
+                {
+                    "alias": "event_count",
+                    "func": {
+                        "name": "count",
+                        "params": {
+                            "all": true
+                        }
+                    }
+                }
+            ],
+            "sort": [{ "field": { "alias": "event_count" }, "direction": "DESC"}],
+            "groupBy": ["source_machine","severity"],
+            "limit": 50
+        }
+    },
+
+    "auth_event_source_count": {
+        "id": "auth_event_source_count",
+        "name": "Events Per Source Computer Count",
+        "type": "horizontalBars",
+        "entities": ["kerberos_logins","oracle","ssh","kerberos_tgt","ntlm","prnlog"],
+        "widget": {
+            "widgetId": "explore.graphs.user_src_machines_bars",
+            "height": 300
+        },
+        "dataQuery": {
+            "fields": [
+                {
+                    "id": "source_machine",
+                    "alias": "label"
+                },
+				{
+					"id": "severity",
+					"alias": "severity"
+				},
+                {
+                    "alias": "event_count",
+                    "func": {
+                        "name": "count",
+                        "params": {
+                            "all": true
+                        }
+                    }
+                }
+            ],
+            "groupBy": ["source_machine","severity"],
+            "limit": 50,
+            "sort": [{ "field": { "alias": "event_count" }, "direction": "DESC"}]
+        }
+    },
+
+    "auth_event_destination_count": {
+        "id": "auth_event_destination_count",
+			"name": "Events Per Destination Computer Count",
+        "type": "horizontalBars",
+        "entities": ["kerberos_logins","ssh","oracle"],
+        "widget": {
+            "widgetId": "explore.graphs.user_dest_machines_bars",
+            "height": 300
+        },
+        "dataQuery": {
+            "fields": [
+                {
+                    "id": "destination_machine",
+                    "alias": "label"
+                },
+				{
+					"id": "severity",
+					"alias": "severity"
+				},
+                {
+                    "alias": "event_count",
+                    "func": {
+                        "name": "count",
+                        "params": {
+                            "all": true
+                        }
+                    }
+                }
+            ],
+            "sort": [{ "field": { "alias": "event_count" }, "direction": "DESC"}],
+            "groupBy": ["destination_machine","severity"],
+            "limit": 50
+        }
+    },
+
+    "destination_machine_user_count": {
+        "id": "destination_machine_user_count",
+        "name": "Destination Computers User Count",
+        "type": "bubbles",
+        "entities": ["ssh","kerberos_logins","oracle"],
+        "widget": {
+            "widgetId": "explore.graphs.machine_users_bubbles",
+            "height": 580
+        },
+        "dataQuery": {
+            "fields": [
+                {
+                    "id": "destination_machine",
+                    "alias": "label"
+                },
+                {
+					"id": "normalized_username",
+                    "alias": "user_count",
+                    "func": {
+                        "name": "count",
+                        "params": {
+							"distinct": true
+                        }
+                    }
+                }
+            ],
+            "groupBy": ["destination_machine"],
+            "sort": [{ "field": { "alias": "user_count" }, "direction": "DESC"}],
+            "limit": 50
+        }
+    },
+
+    "source_machine_user_count": {
+        "id": "source_machine_user_count",
+        "name": "Source Computers User Count",
+        "type": "bubbles",
+        "entities": ["kerberos_logins","oracle","ssh","kerberos_tgt","ntlm","prnlog"],
+        "widget": {
+            "widgetId": "explore.graphs.source_machine_users_bubbles",
+            "height": 580
+        },
+        "dataQuery": {
+
+            "fields": [
+                {
+                    "id": "source_machine",
+                    "alias": "label"
+                },
+                {
+                    "id": "normalized_username",
+                    "alias": "user_count",
+                    "func": {
+                        "name": "count",
+                        "params": {
+                            "distinct": true
+                        }
+                    }
+                }
+            ],
+            "groupBy": ["source_machine"],
+            "sort": [{ "field": { "alias": "user_count" }, "direction": "DESC"}],
+            "limit": 50
+        }
+    },
+
+	"score_user_count": {
+		"id": "score_user_count",
+		"name": "Score User Count",
+		"type": "bubbles",
+		"entities": ["users"],
+		"widget": {
+			"widgetId": "explore.graphs.score_users_bubbles",
+			"height": 580
+		},
+		"dataQuery": {
+			"fields": [
+				{
+					"id": "severity",
+					"alias": "severity"
+				},
+				{
+					"id": "normalized_username",
+					"alias": "user_count",
+					"func": {
+						"name": "count",
+						"params": {
+							"distinct": true
+						}
+					}
+				}
+			],
+			"groupBy": ["severity"],
+			"sort": [{ "field": { "alias": "user_count" }, "direction": "DESC"}],
+			"limit": 50
+		}
+	},
+
+    "user_destination_machine_count": {
+        "id": "user_destination_machine_count",
+        "name": "User to Destination Computers Count",
+        "type": "bubbles",
+        "entities": ["kerberos_logins","ssh","oracle"],
+        "widget": {
+            "widgetId": "explore.graphs.users_machine_bubbles",
+            "height": 580
+        },
+        "dataQuery": {
+            "fields": [
+                {
+                    "id": "normalized_username",
+                    "alias": "label"
+                },
+                {
+					"id": "destination_machine",
+                    "alias": "user_count",
+                    "func": {
+                        "name": "count",
+                        "params": {
+							"distinct": true
+                        }
+                    }
+                },
+				{
+					"entity": "users",
+					"id":"id",
+					"alias":"user_id"
+				}
+
+            ],
+			"entitiesJoin": {
+				"joinType": "right",
+				"entity": "users",
+				"joinFields": {
+					"left": "auth_event.normalized_username",
+					"right": "users.normalized_username"
+				}
+			},
+            "groupBy": ["normalized_username","users.id"],
+            "sort": [{ "field": { "alias": "user_count" }, "direction": "DESC"}],
+            "limit": 50
+        }
+    },
+
+    "user_destination_machine_count_heatmap": {
+        "id": "user_destination_machine_count_heatmap",
+        "name": "User to Destination Computers Count",
+        "type": "heatmap",
+        "entities": ["kerberos_logins","ssh","oracle"],
+        "widget": {
+            "widgetId": "explore.graphs.users_dst_heat_map",
+            "height": 600
+        },
+        "dataQuery": {
+            "fields": [
+                {
+                    "id": "normalized_username",
+                    "alias": "username"
+                },
+				{
+					"id":"destination_machine",
+					"alias": "machine"
+				},
+                {
+                    "alias": "user_count",
+                    "func": {
+                        "name": "count",
+                        "params": {
+                            "all": true
+                        }
+                    }
+                }
+            ],
+            "groupBy": ["normalized_username", "destination_machine"],
+            "sort": [{ "field": { "alias": "user_count" }, "direction": "DESC"}],
+            "limit": 50
+        }
+    },
+
+    "user_source_machine_count_heatmap": {
+        "id": "user_source_machine_count_heatmap",
+        "name": "User to Source Computers Count ",
+        "type": "heatmap",
+        "entities": ["kerberos_logins","oracle","ssh","kerberos_tgt","ntlm","prnlog"],
+        "widget": {
+            "widgetId": "explore.graphs.users_src_heat_map",
+            "height": 600
+        },
+        "dataQuery": {
+            "fields": [
+                {
+                    "id": "normalized_username",
+                    "alias": "username"
+                },
+                {
+                    "id":"source_machine",
+                    "alias": "machine"
+                },
+                {
+                    "alias": "user_count",
+                    "func": {
+                        "name": "count",
+                        "params": {
+                            "all": true
+                        }
+                    }
+                }
+            ],
+            "groupBy": ["normalized_username", "source_machine"],
+            "sort": [{ "field": { "alias": "user_count" }, "direction": "DESC"}],
+            "limit": 50
+        }
+    },
+
+    "geo_count": {
+        "id": "geo_count",
+        "name": "Events Per Country",
+        "type": "geo",
+        "entities": ["vpn", "vpn_session","crmsf"],
+        "widget": {
+            "widgetId": "explore.graphs.geo_count",
+            "height": 580
+        },
+        "dataQuery": {
+            "fields": ["country",
+                {
+                    "id": "country_code",
+                    "alias": "code"
+                },
+                {
+                    "alias": "event_count",
+                    "func": {
+                        "name": "count",
+                        "params": {
+                            "all": true
+                        }
+                    }
+                }
+            ],
+            "groupBy": ["country", "country_code"],
+            "limit": 133
+        }
+    },
+
+    "vpn_user_to_country": {
+        "id": "vpn_user_to_country",
+        "name": "Vpn Users per Countries ",
+        "type": "heatmap",
+        "entities": ["vpn"],
+        "widget": {
+            "widgetId": "explore.graphs.vpn_users_heatmap",
+            "height": 580
+        },
+        "dataQuery": {
+            "fields": ["country",
+                {
+                    "id": "country_code",
+                    "alias": "code"
+                },
+				{
+					"id": "normalized_username",
+					"alias": "label"
+				},
+                {
+                    "alias": "event_count",
+                    "func": {
+                        "name": "count",
+                        "params": {
+                            "all": true
+                        }
+                    }
+                }
+            ],
+            "groupBy": ["country", "country_code", "normalized_username"],
+            "limit": 80
+        }
+    },
+
+    "vpn_session_user_to_country": {
+        "id": "vpn_session_user_to_country",
+        "name": "Vpn Session Users per Countries",
+        "type": "heatmap",
+        "entities": ["vpn_session"],
+        "widget": {
+            "widgetId": "explore.graphs.vpn_users_heatmap",
+            "height": 580
+        },
+        "dataQuery": {
+            "fields": ["country",
+                {
+                    "id": "country_code",
+                    "alias": "code"
+                },
+                {
+                    "id": "normalized_username",
+                    "alias": "label"
+                },
+                {
+                    "alias": "event_count",
+                    "func": {
+                        "name": "count",
+                        "params": {
+                            "all": true
+                        }
+                    }
+                }
+            ],
+            "groupBy": ["country", "country_code", "normalized_username"],
+            "limit": 80
+        }
+    },
+
+    "vpn_users_hours_heatmap": {
+        "id": "vpn_users_hours_heatmap",
+        "name": "Vpn Users per Hours ",
+        "type": "heatmap",
+        "entities": ["vpn"],
+        "widget": {
+            "widgetId": "explore.graphs.vpn_users_hours_heatmap",
+            "height": 580
+        },
+        "dataQuery": {
+            "fields": [
+                {
+					"id": "event_time",
+					"alias": "hour",
+					"func" : {
+						"name":"hour"
+					}
+
+                },
+				{
+					"id": "normalized_username",
+					"alias": "label"
+				},
+                {
+                    "alias": "event_count",
+                    "func": {
+                        "name": "count",
+                        "params": {
+                            "all": true
+                        }
+                    }
+                }
+            ],
+            "groupBy": [{"id": "event_time", "func" : {"name":"hour"}, "alias": "hour"}, "normalized_username"],
+			"sort": [{ "field": {"id": "event_time", "func" : {"name":"hour"}, "alias": "hour"}, "direction": "ASC"}],
+            "limit": 80
+        }
+    },
+
+    "vpn_session_users_hours_heatmap": {
+        "id": "vpn_session_users_hours_heatmap",
+        "name": "Vpn Session Users per Hours ",
+        "type": "heatmap",
+        "entities": ["vpn_session"],
+        "widget": {
+            "widgetId": "explore.graphs.vpn_users_hours_heatmap",
+            "height": 580
+        },
+        "dataQuery": {
+            "fields": [
+                {
+                    "id": "end_time",
+                    "alias": "hour",
+                    "func" : {
+                        "name":"hour"
+                    }
+
+                },
+                {
+                    "id": "normalized_username",
+                    "alias": "label"
+                },
+                {
+                    "alias": "event_count",
+                    "func": {
+                        "name": "count",
+                        "params": {
+                            "all": true
+                        }
+                    }
+                }
+            ],
+            "groupBy": [{"id": "end_time", "func" : {"name":"hour"}, "alias": "hour"}, "normalized_username"],
+            "sort": [{ "field": {"id": "end_time", "func" : {"name":"hour"}, "alias": "hour"}, "direction": "ASC"}],
+            "limit": 80
+        }
+    },
+
+    "generic_user_to_country": {
+        "id": "generic_user_to_country",
+        "name": "Users per Countries ",
+        "type": "heatmap",
+        "entities": ["crmsf"],
+        "widget": {
+            "widgetId": "explore.graphs.vpn_users_heatmap",
+            "height": 580
+        },
+        "dataQuery": {
+            "fields": ["country",
+                {
+                    "id": "country_code",
+                    "alias": "code"
+                },
+                {
+                    "id": "normalized_username",
+                    "alias": "label"
+                },
+                {
+                    "alias": "event_count",
+                    "func": {
+                        "name": "count",
+                        "params": {
+                            "all": true
+                        }
+                    }
+                }
+            ],
+            "groupBy": ["country", "country_code", "normalized_username"],
+            "limit": 80
+        }
+    },
+    "prnlog_destination_count": {
+        "id": "prnlog_destination_count",
+        "name": "Events Per Printer Count",
+        "type": "horizontalBars",
+        "entities": ["prnlog"],
+        "widget": {
+            "widgetId": "explore.graphs.user_dest_machines_bars",
+            "height": 300
+        },
+        "dataQuery": {
+            "fields": [
+                {
+                    "id": "destination_machine",
+                    "alias": "label"
+                },
+                {
+                    "id": "severity",
+                    "alias": "severity"
+                },
+                {
+                    "alias": "event_count",
+                    "func": {
+                        "name": "count",
+                        "params": {
+                            "all": true
+                        }
+                    }
+                }
+            ],
+            "sort": [{ "field": { "alias": "event_count" }, "direction": "DESC"}],
+            "groupBy": ["destination_machine","severity"],
+            "limit": 50
+        }
+    },
+    "printer_user_count": {
+        "id": "printer_user_count",
+        "name": "Printer User Count",
+        "type": "bubbles",
+        "entities": ["prnlog"],
+        "widget": {
+            "widgetId": "explore.graphs.machine_users_bubbles",
+            "height": 580
+        },
+        "dataQuery": {
+            "fields": [
+                {
+                    "id": "destination_machine",
+                    "alias": "label"
+                },
+                {
+                    "id": "normalized_username",
+                    "alias": "user_count",
+                    "func": {
+                        "name": "count",
+                        "params": {
+                            "distinct": true
+                        }
+                    }
+                }
+            ],
+            "groupBy": ["destination_machine"],
+            "sort": [{ "field": { "alias": "user_count" }, "direction": "DESC"}],
+            "limit": 50
+        }
+    },
+    "user_print_count": {
+        "id": "user_destination_machine_count",
+        "name": "User to Printer Count",
+        "type": "bubbles",
+        "entities": ["prnlog"],
+        "widget": {
+            "widgetId": "explore.graphs.users_machine_bubbles",
+            "height": 580
+        },
+        "dataQuery": {
+            "fields": [
+                {
+                    "id": "normalized_username",
+                    "alias": "label"
+                },
+                {
+                    "id": "destination_machine",
+                    "alias": "user_count",
+                    "func": {
+                        "name": "count",
+                        "params": {
+                            "distinct": true
+                        }
+                    }
+                },
+                {
+                    "entity": "users",
+                    "id":"id",
+                    "alias":"user_id"
+                }
+
+            ],
+            "entitiesJoin": {
+                "joinType": "right",
+                "entity": "users",
+                "joinFields": {
+                    "left": "auth_event.normalized_username",
+                    "right": "users.normalized_username"
+                }
+            },
+            "groupBy": ["normalized_username","users.id"],
+            "sort": [{ "field": { "alias": "user_count" }, "direction": "DESC"}],
+            "limit": 50
+        }
+    },
+    "user_printer_count_heatmap": {
+        "id": "user_printer_count_heatmap",
+        "name": "User Printer Count",
+        "entities": ["prnlog"],
+        "type": "heatmap",
+        "widget": {
+            "widgetId": "explore.graphs.users_dst_heat_map",
+            "height": 600
+        },
+        "dataQuery": {
+            "fields": [
+                {
+                    "id": "normalized_username",
+                    "alias": "username"
+                },
+                {
+                    "id":"destination_machine",
+                    "alias": "machine"
+                },
+                {
+                    "alias": "user_count",
+                    "func": {
+                        "name": "count",
+                        "params": {
+                            "all": true
+                        }
+                    }
+                }
+            ],
+            "groupBy": ["normalized_username", "destination_machine"],
+            "sort": [{ "field": { "alias": "user_count" }, "direction": "DESC"}],
+            "limit": 50
+        }
+    }
+
+
+
+}

@@ -1,0 +1,83 @@
+{
+    "entity": "dataQuery",
+    "params": {
+        "dataQuery": {
+            "fields": [
+                {
+                    "id": "destination_machine"
+                },
+                {
+                    "alias": "user_count",
+                    "id": "normalized_username",
+                    "func": {
+                        "name": "count",
+                        "params": {
+                            "distinct": "true"
+                        }
+                    }
+                },
+                {
+                    "alias": "events_max_score",
+                    "id": "event_score",
+                    "func": {
+                        "name": "max"
+                    }
+                },
+                {
+                    "alias": "event_count",
+                    "id": "event_time",
+                    "func": {
+                        "name": "count"
+                    }
+                }
+            ],
+            "entities": [
+                "auth_event"
+            ],
+            "sort": [
+                {
+                    "field": {
+                        "id": "destination_machine"
+                    }
+                }
+            ],
+            "conditions": {
+                "type": "term",
+                "logicalOperator": "AND",
+                "terms": [
+                    {
+                        "field": {
+                            "id": "event_time_utc"
+                        },
+                        "queryOperator": "between",
+                        "type": "field",
+                        "value": "{{events_time.value}}"
+                    },
+                    {
+                        "field": {
+                            "id": "event_score"
+                        },
+                        "queryOperator": "greaterThanOrEquals",
+                        "type": "field",
+                        "value": "{{min_score.value}}"
+                    },
+                    {
+                        "field": {
+                            "id": "is_sensitive_machine"
+                        },
+                        "queryOperator": "equals",
+                        "type": "field",
+                        "value": true
+                    }
+                ]
+            },
+            "limit": 50,
+            "offset": 0,
+            "groupBy": [
+                {
+                    "id": "destination_machine"
+                }
+            ]
+        }
+    }
+}

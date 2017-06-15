@@ -1,0 +1,34 @@
+{
+    "reportId": "overview_score",
+    "title": "Overview",
+    "views": [
+        {
+            "type": "numeric",
+            "settings": {
+                "title": "{{title}}",
+                "tooltip": "A summary of all suspicious activity in the system, compared to yesterday.",
+                "value": {
+                    "display": "{{value}}",
+                    "style": "score",
+                    "styleParams": {
+                        "value": "value"
+                    }
+                },
+                "secondaryValue": {
+                    "display": "{{trend}}%",
+                    "tagLine": "compared to yesterday",
+                    "style": "plusMinus",
+                    "styleParams": {
+                        "value": "trend"
+                    },
+                    "icon": {
+                        "preset": "plusMinus",
+                        "presetParams": {
+                            "value": "trend"
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}

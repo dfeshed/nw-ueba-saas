@@ -1,0 +1,15 @@
+{
+    "endpoint": {
+        "entity": "user",
+        "method": "details"
+    },
+    "params": [
+        {
+            "field": "id",
+            "name": "id",
+            "dashboardParam": "entityId",
+            "isRequired": true
+        }
+    ],
+    "mock_data": "user.user_details"
+}

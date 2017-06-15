@@ -1,0 +1,18 @@
+{
+    "views": [
+        {
+            "type": "map",
+            "settings": {
+                "onSelect": {
+                    "action": "setParams",
+                    "actionOptions": {
+                        "updateUrl": true,
+                        "params": {
+                            "vpn.countrycode": "[]{{code}}"
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}

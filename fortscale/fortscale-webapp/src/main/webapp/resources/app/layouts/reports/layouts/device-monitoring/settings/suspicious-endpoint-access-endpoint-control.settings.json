@@ -1,0 +1,6 @@
+{
+    "dataValueField": "name",
+    "dataTextField": "name",
+    "placeholder": "All Devices",
+    "updateOnNull": true
+}

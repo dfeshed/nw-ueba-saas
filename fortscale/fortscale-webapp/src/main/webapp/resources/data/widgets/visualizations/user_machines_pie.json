@@ -1,0 +1,14 @@
+{
+    "views": [
+        {
+            "type": "pie",
+            "settings": {
+                "label": "label",
+                "value": "login_count",
+                "options": {
+                    "radius": 160
+                }
+            }
+        }
+    ]
+}

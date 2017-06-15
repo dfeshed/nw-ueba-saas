@@ -10,7 +10,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import presidio.ade.domain.record.AdeRecord;
 import fortscale.utils.pagination.ContextIdToNumOfEvents;
-import presidio.ade.domain.record.scanning.AdeRecordTypeToClass;
+import presidio.ade.domain.record.enriched.DataSourceToAdeEnrichedRecordClassResolver;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.ade.domain.store.AdeDataStoreCleanupParams;
 
@@ -29,12 +29,12 @@ public class EnrichedDataStoreImplMongo implements EnrichedDataStore {
 
     private final MongoTemplate mongoTemplate;
     private final EnrichedDataToCollectionNameTranslator translator;
-    private final AdeRecordTypeToClass adeRecordTypeToClass;
+    private final DataSourceToAdeEnrichedRecordClassResolver dataSourceToAdeEnrichedRecordClassResolver;
 
-    public EnrichedDataStoreImplMongo(MongoTemplate mongoTemplate, EnrichedDataToCollectionNameTranslator translator, AdeRecordTypeToClass adeRecordTypeToClass) {
+    public EnrichedDataStoreImplMongo(MongoTemplate mongoTemplate, EnrichedDataToCollectionNameTranslator translator, DataSourceToAdeEnrichedRecordClassResolver dataSourceToAdeEnrichedRecordClassResolver) {
         this.mongoTemplate = mongoTemplate;
         this.translator = translator;
-        this.adeRecordTypeToClass = adeRecordTypeToClass;
+        this.dataSourceToAdeEnrichedRecordClassResolver = dataSourceToAdeEnrichedRecordClassResolver;
     }
 
     @Override
@@ -50,7 +50,7 @@ public class EnrichedDataStoreImplMongo implements EnrichedDataStore {
         Instant startDate = recordsMetadata.getStartInstant();
         Instant endDate = recordsMetadata.getEndInstant();
         String dataSource = recordsMetadata.getDataSource();
-        Class<? extends AdeRecord> pojoClass = adeRecordTypeToClass.getClass(dataSource);
+        Class<? extends AdeRecord> pojoClass = dataSourceToAdeEnrichedRecordClassResolver.getClass(dataSource);
 
         //Get type of context
         String fieldName = getFieldName(pojoClass, contextType);
@@ -95,7 +95,7 @@ public class EnrichedDataStoreImplMongo implements EnrichedDataStore {
         String dataSource = recordsMetadata.getDataSource();
 
         //Get pojoClass by dataSource
-        Class pojoClass = adeRecordTypeToClass.getClass(dataSource);
+        Class pojoClass = dataSourceToAdeEnrichedRecordClassResolver.getClass(dataSource);
         //Get type of context
         String fieldName = getFieldName(pojoClass, contextType);
 
@@ -123,7 +123,8 @@ public class EnrichedDataStoreImplMongo implements EnrichedDataStore {
     @Override
     public void validateIndexes(String dataSource, String contextType) {
         //Get pojoClass by dataSource
-        Class pojoClass = adeRecordTypeToClass.getClass(dataSource);
+        Class pojoClass = dataSourceToAdeEnrichedRecordClassResolver.getClass(dataSource);
+
         //Get type of context
         String fieldName = getFieldName(pojoClass, contextType);
 

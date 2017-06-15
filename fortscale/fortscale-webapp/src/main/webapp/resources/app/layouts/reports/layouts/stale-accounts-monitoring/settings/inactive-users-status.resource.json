@@ -1,0 +1,11 @@
+{
+    "entity": "user",
+    "params": {
+        "fromPage": "{{inactive_user_table.value.page}}",
+        "size": "{{inactive_user_table.value.pageSize}}",
+        "sort_field": "{{inactive_user_table.value.sortBy}}",
+        "sort_direction": "{{inactive_user_table.value.sortDirection}}",
+        "inactive_since": "{{inactive_since.value}}",
+        "is_disabled": false
+    }
+}

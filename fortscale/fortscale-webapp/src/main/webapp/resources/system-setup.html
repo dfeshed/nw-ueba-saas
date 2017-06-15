@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>System Setup</title>
+    <link rel="icon" type="image/png" href="images/fortscale_icon.png">
+
+    <!-- inject:css -->
+    <link rel="stylesheet" href="assets/css/system-setup-vendors.3.0.0.css">
+    <link rel="stylesheet" href="assets/css/system-setup-main.3.0.0.css">
+    <!-- endinject -->
+</head>
+<body>
+
+<!-- Page loader animation -->
+<div id="app-loader" ng-class="{ 'loader-hidden': hideLoader }">
+    <img class="login-background-image">
+    <div class="app-loader-container">
+        <div class="logo-container">
+            <img src="assets/images/white-fortscale-logo.png" alt="" class="logo-image">
+        </div>
+        <div class="app-loader-loader-icon">
+            <img src="assets/images/Loader-chess-infinite.gif">
+        </div>
+        <div class="app-loader-footer">
+                <span class="company-name">
+                    <i class="fa fa-copyright" aria-hidden="true"></i> <span id="current-year"></span> FORTSCALE LTD All Rights Reserved
+                </span>
+        </div>
+    </div>
+</div>
+
+<div class="main" ng-class="{ 'show': showMainView }">
+    <div ui-view class="main-ui-view"></div>
+</div>
+
+<div ng-app="Fortscale.SystemSetupAppLoader"></div>
+
+<!-- inject:js -->
+<script src="assets/js/jquery-2.2.1.js"></script>
+<script src="assets/js/angular.js"></script>
+<script src="assets/js/angular-ui-router.js"></script>
+<script src="assets/js/angular-animate.js"></script>
+<script src="assets/js/lodash.js"></script>
+<script src="assets/js/toastr.js"></script>
+<script src="assets/js/sockjs-0.3.4.js"></script>
+<script src="assets/js/stomp.js"></script>
+<script src="assets/js/moment.js"></script>
+<script src="assets/js/system-setup-main.3.0.0.js"></script>
+<!-- endinject -->
+
+<!-- include templates -->
+<script src="assets/js/fs-templates.min.js"></script>
+<ng-include src="'assets/svgs-spritesheet/symbols.svg'"></ng-include>
+
+</body>
+</html>

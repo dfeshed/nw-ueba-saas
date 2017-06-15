@@ -1,0 +1,22 @@
+{
+    "renderHeader": false,
+    "className": "dashboard-noPadding",
+    "columns": [
+        {
+            "className": "no-border",
+            "widgets": [
+                {
+                    "flags": { "fullHeight": true, "noBorder": true },
+                    "views": [
+                        {
+                            "type": "dashboardWidget",
+                            "settings": {
+                                "dashboardId": "{{@dashboardId}}.{{@subDashboardId}}"
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

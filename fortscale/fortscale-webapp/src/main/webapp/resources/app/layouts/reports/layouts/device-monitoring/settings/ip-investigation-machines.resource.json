@@ -1,0 +1,107 @@
+{
+    "entity": "dataQuery",
+    "params": {
+        "dataQuery": {
+            "fields": [
+                {
+                    "alias": "source_ip",
+                    "id": "source_ip"
+                },
+                {
+                    "alias": "source_machine",
+                    "id": "source_machine"
+                },
+                {
+                    "alias": "event_time",
+                    "id": "event_time",
+                    "func": {
+                        "name": "to_date"
+                    }
+                },
+                {
+                    "alias": "event_count",
+                    "func": {
+                        "name": "count",
+                        "params": {
+                            "all": "true"
+                        }
+                    }
+                },
+                {
+                    "alias": "users_count",
+                    "id": "normalized_username",
+                    "func": {
+                        "name": "count",
+                        "params": {
+                            "distinct": "true"
+                        }
+                    }
+                },
+                {
+                    "alias": "suspicious_event_score",
+                    "id": "suspicious_event_score",
+                    "func": {
+                        "name": "sum"
+                    }
+                }
+            ],
+            "entities": [
+                "scored_access_event"
+            ],
+            "sort": [
+                {
+                    "field": {
+                        "alias": "event_time"
+                    },
+                    "direction": "DESC"
+                }
+            ],
+            "conditions": {
+                "type": "term",
+                "logicalOperator": "AND",
+                "terms": [
+                    {
+                        "field": {
+                            "id": "source_machine"
+                        },
+                        "queryOperator": "notEquals",
+                        "type": "field",
+                        "value": ""
+                    },
+                    {
+                        "field": {
+                            "id": "event_time_utc"
+                        },
+                        "queryOperator": "between",
+                        "type": "field",
+                        "value": "{{events_time.value}}"
+                    },
+                    {
+                        "field": {
+                            "id": "source_ip"
+                        },
+                        "queryOperator": "equals",
+                        "type": "field",
+                        "value": "{{ip_address.value}}"
+                    }
+                ]
+            },
+            "limit": 100,
+            "offset": 0,
+            "groupBy": [
+                {
+                    "id": "event_time",
+                    "func": {
+                        "name": "to_date"
+                    }
+                },
+                {
+                    "id": "source_ip"
+                },
+                {
+                    "id": "source_machine"
+                }
+            ]
+        }
+    }
+}

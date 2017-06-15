@@ -1,0 +1,49 @@
+{
+    "widgetId": "overview_tabs",
+    "renderControls": false,
+    "renderHeader": false,
+    "className": "no-margins widget-noPadding widget-advance-one",
+    "views": [
+        {
+            "type": "tabs",
+            "settings": {
+                "tabs": [
+                    {
+                        "display": "Total Score",
+                        "id": "total"
+                    },
+                    {
+                        "display": "Group Membership",
+                        "id": "active_directory_group_membership"
+                    },
+                    {
+                        "display": "Logins",
+                        "id": "auth"
+                    },
+                    {
+                        "display": "VPN",
+                        "id": "vpn"
+                    },
+                    {
+                        "display": "SSH",
+                        "id": "ssh"
+                    }
+                ],
+                "selectedTabId": "@currentScore",
+                "events": [
+                    {
+                        "eventName": "select",
+                        "action": "setParams",
+                        "actionOptions": {
+                            "updateUrl": true,
+                            "params": {
+                                "currentScore": "{{id}}"
+                            }
+                        }
+                    }
+                ],
+                "refreshOn": ["currentScore"]
+            }
+        }
+    ]
+}

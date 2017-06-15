@@ -49,7 +49,6 @@ public class MongoConfig extends AbstractMongoConfiguration {
     @Value("${mongo.map.dollar.replacement}")
     private String mapKeyDollarReplacemant;
 
-
     @Bean
     @Override
     public MappingMongoConverter mappingMongoConverter() throws Exception {

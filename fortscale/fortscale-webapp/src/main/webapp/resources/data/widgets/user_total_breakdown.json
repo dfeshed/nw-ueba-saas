@@ -1,0 +1,35 @@
+{
+    "reportId": "user_total_breakdown",
+    "noDataMessage": "No score breakdown available for this date.",
+    "views": [
+        {
+            "type": "table",
+            "settings": {
+                "fields": [
+                    {
+                        "name": "Score Type",
+                        "value": "{{name}}"
+                    },
+                    {
+                        "name": "Avg. Score",
+                        "value": "{{avgScore}}"
+                    },
+                    {
+                        "name": "Score",
+                        "value": "{{score}}",
+                        "icon": {
+                            "preset": "scoreBox",
+                            "presetParams": {
+                                "value": "score"
+                            },
+                            "style": "score",
+                            "styleParams": {
+                                "value": "score"
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}

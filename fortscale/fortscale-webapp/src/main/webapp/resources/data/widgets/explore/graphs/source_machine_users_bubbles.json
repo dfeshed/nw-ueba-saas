@@ -1,0 +1,31 @@
+{
+    "message":{
+        "type": "maxResults",
+        "params": {
+            "maxResults": 50
+        }
+    },
+    "views": [
+        {
+            "type": "bubbles",
+            "settings": {
+                "label": "{{label}}",
+                "childIdField": "username",
+                "value": "user_count",
+                "tooltipText": "{{name}}: {{value}} {{value:pluralOrSingular:User:Users}}",
+                "onSelect": {
+                    "action": "openPopup",
+                    "actionOptions": {
+                        "widgetId": "visualizations.source_machine_users_bubbles_popup",
+                        "title": "Top 10 Users Who Accessed {{name}}",
+                        "width": 500,
+						"height": 360,
+						"params":{
+							"name":"{{name}}"
+						}
+                    }
+                }
+            }
+        }
+    ]
+}

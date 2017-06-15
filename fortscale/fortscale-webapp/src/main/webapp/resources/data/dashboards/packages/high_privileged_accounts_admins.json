@@ -1,0 +1,11 @@
+{
+    "dashboardId": "high_privileged_accounts_admins",
+    "title": "Admin Accounts",
+    "description": "Information about Admins",
+    "extends": "high_privileged_accounts",
+    "params": {
+        "columnNameToQuery":"is_user_administrator",
+        "columnNameToQuery_legacy":"isuseradministrator",
+        "accountType": "administrator"
+    }
+}

@@ -1,0 +1,44 @@
+{
+	"_mock_data": "user.user_auth_history",
+    "endpoint": {
+        "entity": "user",
+        "subEntityName": "classifier",
+        "subEntityId": "{{@classifier}}",
+        "method": "scorehistory",
+		"tzShift": "0",
+		"limit": "{{@start:dayDiff:@end}}"
+    },
+    "params": [
+        {
+            "field": "id",
+            "dashboardParam": "entityId",
+            "isRequired": true
+        },
+        {
+            "field": "classifier",
+            "dashboardParam": "classifier"
+        },
+        {
+            "field": "start",
+            "dashboardParam": "start",
+            "default": "-7d"
+        },
+        {
+            "field": "end",
+            "dashboardParam": "end",
+            "default": "now"
+        },
+		{
+			"field": "dateRange",
+			"dashboardParam": "event_dates"
+		},
+		{
+			"field": "minscore",
+			"dashboardParam": "minscore"
+		},
+		{
+			"field": "username",
+			"dashboardParam": "normalizedUsername"
+		}
+    ]
+}

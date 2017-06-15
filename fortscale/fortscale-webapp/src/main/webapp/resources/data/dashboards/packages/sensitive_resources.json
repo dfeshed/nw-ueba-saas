@@ -1,0 +1,86 @@
+{
+    "dashboardId": "sensitive_resources",
+    "title": "Sensitive Resources Monitoring",
+    "description": "Summary of information about machines which were tagged as sensitive by the customer",
+    "controls": [
+		{
+			"label": "Events Time",
+			"type": "dateRange",
+			"param": "sensitive_resources_events_dates",
+			"value": {
+				"timeStart": "-7d",
+				"timeEnd": "0d"
+			}
+		},
+        {
+            "controlId": "minscore"
+        },
+        {
+            "controlId": "user_types",
+            "param": "sensitive_resources_users"
+        }
+    ],
+    "columns": [
+        {
+            "weight": 4,
+            "widgets": [
+                {
+                    "widgetId": "dashboards.sensitive_resources.sensitive_resources_figures"
+                },
+                {
+                    "widgetId": "dashboards.sensitive_resources.sensitive_logins_dist",
+					"noCache" : true,
+                    "reportId": "dashboards.sensitive_resources.sensitive_logins_dist",
+                    "title": "Kerberos Logins Severity Distribution",
+                    "description": "Distribution of Kerberos login events into score severities",
+                    "priority": 2,
+					"show" : {
+						"conditions": [
+							{
+								"operator": "entityExists",
+								"value": "kerberos_logins"
+							}
+						]
+					}
+                },
+                {
+                    "widgetId": "dashboards.sensitive_resources.sensitive_logins_dist",
+					"noCache" : true,
+                    "reportId": "dashboards.sensitive_resources.sensitive_ssh_dist",
+                    "title": "SSH Logins Severity Distribution",
+                    "description": "Distribution of SSH events into score severities",
+                    "priority": 4,
+					"show" : {
+						"conditions": [
+							{
+								"operator": "entityExists",
+								"value": "ssh"
+							}
+						]
+					}
+                },
+                {
+                    "widgetId": "dashboards.sensitive_resources.users_dist",
+                    "priority": 6
+                }
+            ]
+        },
+        {
+            "weight": 11,
+            "widgets": [
+                {
+                    "widgetId": "dashboards.sensitive_resources.sensitive_machines",
+                    "priority": 1
+                },
+                {
+                    "widgetId": "dashboards.sensitive_resources.sensitive_resources_users",
+                    "priority": 3
+                },
+                {
+                    "widgetId": "dashboards.sensitive_resources.sensitive_events",
+                    "priority": 5
+                }
+            ]
+        }
+    ]
+}
