@@ -10,7 +10,7 @@ const data = {
 moduleForComponent('recon-event-actionbar/export-logs', 'Integration | Component | recon event actionbar/export logs', {
   integration: true,
   beforeEach() {
-    this.registry.injection('component:recon-event-actionbar/export-logs', 'i18n', 'service:i18n');
+    this.registry.injection('component:recon-event-actionbar/export-logs', 'i18n', 'service:i18n', 'service:flashMessages');
     this.inject.service('redux');
   }
 });

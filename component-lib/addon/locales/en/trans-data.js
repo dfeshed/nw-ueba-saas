@@ -118,6 +118,7 @@ export default {
     'other': 'updates'
   },
   recon: {
+    extractWarning: '<span>You have navigated away before the downloaded files could be attached to the browser tray. Your download will be available <a href="{{url}}" target="_blank">here</a>.</span>',
     titleBar: {
       titles: {
         endpoint: 'Endpoint Event Details',

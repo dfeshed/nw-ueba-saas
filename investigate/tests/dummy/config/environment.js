@@ -9,6 +9,14 @@ module.exports = function(environment) {
     environment,
     rootURL: '/',
     locationType: 'auto',
+    flashMessageDefaults: {
+      timeout: 5000,
+      extendedTimeout: 0,
+      iconSize: 'larger',
+      iconStyle: 'lined',
+      type: 'info',
+      types: ['info', 'success', 'warning', 'error']
+    },
     EmberENV: {
       FEATURES: {
         // Here you can enable experimental features on an ember canary build

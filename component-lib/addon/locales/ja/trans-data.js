@@ -118,9 +118,10 @@ export default {
     'other': 'ja_updates'
   },
   recon: {
+    extractWarning: '<span>ja_You have navigated away before the downloaded files could be attached to the browser tray. Your download will be available <a href="{{url}}" target="_blank">here</a>.</span>',
     titleBar: {
       titles: {
-        endpoint: 'Endpoint Event Details',
+        endpoint: 'ja_Endpoint Event Details',
         network: 'ja_Network Event Details',
         log: 'ja_Log Event Details'
       },
@@ -885,7 +886,7 @@ export default {
       company: 'ja_company',
       email: 'ja_Email',
       phone: 'ja_phone',
-      jobTitle: 'jobTitle',
+      jobTitle: 'ja_jobTitle',
       lastLogon: 'ja_lastLogon',
       lastLogonTimeStamp: 'ja_lastLogonTimeStamp',
       adUserID: 'ja_adUserID',
@@ -932,7 +933,7 @@ export default {
     },
     iiocs: {
       title: 'ja_Machine IOC Levels',
-      lastExecuted: 'js_LastExecuted',
+      lastExecuted: 'ja_LastExecuted',
       description: 'ja_Description',
       iOCLevel: 'ja_IOC Level',
       header: ''

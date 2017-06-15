@@ -23,7 +23,8 @@ const Eng = Engine.extend({
       'dateFormat',
       'timeFormat',
       'timezone',
-      'i18n'
+      'i18n',
+      'flashMessages'
     ]
   }
 });
