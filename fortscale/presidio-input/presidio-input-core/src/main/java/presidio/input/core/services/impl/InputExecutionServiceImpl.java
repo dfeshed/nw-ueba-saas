@@ -5,23 +5,17 @@ import fortscale.common.general.Datasource;
 import fortscale.domain.core.AbstractAuditableDocument;
 import fortscale.services.parameters.ParametersValidationService;
 import fortscale.utils.logging.Logger;
+import fortscale.utils.shell.service.PresidioExecutionService;
 import fortscale.utils.time.TimestampUtils;
-import org.springframework.util.CollectionUtils;
-import presidio.input.core.services.api.InputExecutionService;
 import presidio.sdk.api.domain.DlpFileDataDocument;
 import presidio.sdk.api.domain.DlpFileEnrichedDocument;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import static fortscale.common.general.CommonStrings.COMMAND_LINE_DATA_SOURCE_FIELD_NAME;
-import static fortscale.common.general.CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME;
-import static fortscale.common.general.CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME;
-
-public class InputExecutionServiceImpl implements InputExecutionService {
+public class InputExecutionServiceImpl implements PresidioExecutionService {
 
     private static final Logger logger = Logger.getLogger(InputExecutionServiceImpl.class);
 
@@ -33,34 +27,38 @@ public class InputExecutionServiceImpl implements InputExecutionService {
         this.presidioInputPersistencyService = presidioInputPersistencyService;
     }
 
-    public void run(String... params) throws Exception {
-        logger.info("Started collector processing with params: ." + Arrays.toString(params));
+    @Override
+    public void process(String dataSource, String startTime, String endTime) throws Exception {
 
-        if (params.length < 3) {
-            logger.error("Invalid input[{}]. Need at least {}, {} and {}. Example input: {}=some_{} {}=some_{}_as_long {}=some_{}_as_long.", params, COMMAND_LINE_DATA_SOURCE_FIELD_NAME, COMMAND_LINE_START_DATE_FIELD_NAME, COMMAND_LINE_END_DATE_FIELD_NAME, COMMAND_LINE_DATA_SOURCE_FIELD_NAME, COMMAND_LINE_DATA_SOURCE_FIELD_NAME, COMMAND_LINE_START_DATE_FIELD_NAME, COMMAND_LINE_START_DATE_FIELD_NAME, COMMAND_LINE_END_DATE_FIELD_NAME, COMMAND_LINE_END_DATE_FIELD_NAME);
-            return;
-        }
+        logger.info("Started input processing for data source {} between start date {} to end date {}" + dataSource, startTime, endTime);
 
-        final String dataSourceParam = parameterValidationService.getMandatoryParamAsString(COMMAND_LINE_DATA_SOURCE_FIELD_NAME, params);
-        final String startTimeParam = parameterValidationService.getMandatoryParamAsString(COMMAND_LINE_START_DATE_FIELD_NAME, params);
-        final String endTimeParam = parameterValidationService.getMandatoryParamAsString(COMMAND_LINE_END_DATE_FIELD_NAME, params);
+//        if (params.length < 3) {
+//            logger.error("Invalid input[{}]. Need at least {}, {} and {}. Example input: {}=some_{} {}=some_{}_as_long {}=some_{}_as_long.", params, COMMAND_LINE_DATA_SOURCE_FIELD_NAME, COMMAND_LINE_START_DATE_FIELD_NAME, COMMAND_LINE_END_DATE_FIELD_NAME, COMMAND_LINE_DATA_SOURCE_FIELD_NAME, COMMAND_LINE_DATA_SOURCE_FIELD_NAME, COMMAND_LINE_START_DATE_FIELD_NAME, COMMAND_LINE_START_DATE_FIELD_NAME, COMMAND_LINE_END_DATE_FIELD_NAME, COMMAND_LINE_END_DATE_FIELD_NAME);
+//            return;
+//        }
+
+        //TODO remove validator un-used methods from the validator class
+//        final String dataSourceParam = parameterValidationService.getMandatoryParamAsString(COMMAND_LINE_DATA_SOURCE_FIELD_NAME, params);
+//        final String startTimeParam = parameterValidationService.getMandatoryParamAsString(COMMAND_LINE_START_DATE_FIELD_NAME, params);
+//        final String endTimeParam = parameterValidationService.getMandatoryParamAsString(COMMAND_LINE_END_DATE_FIELD_NAME, params);
+        //TODO can we validate data source enum with spring cli?
         try {
-            parameterValidationService.validateDatasourceParam(dataSourceParam);
+            parameterValidationService.validateDatasourceParam(dataSource);
 //            parameterValidationService.validateTimeParams(startTimeParam, endTimeParam);
         } catch (Exception e) {
-            logger.error("Invalid input[{}].", params, e);
+            //TODO this will be part of the parsing- can be removed from here
+//            logger.error("Invalid input[{}].", params, e);
             return;
         }
 
-        final Datasource datasource;
-        final long startTime;
-        final long endTime;
-        datasource = Datasource.createDataSource(dataSourceParam);
-        startTime = TimestampUtils.convertToSeconds(new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss").parse(startTimeParam));
-        endTime = TimestampUtils.convertToSeconds(new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss").parse(endTimeParam));
+        //TODO change parameter type to Enum
+        final Datasource datasource = Datasource.createDataSource(dataSource);
+        //TODO- this can be done as part of the command parser
+        final long startTimeLong = TimestampUtils.convertToSeconds(new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss").parse(startTime));
+        final long endTimeLong = TimestampUtils.convertToSeconds(new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss").parse(endTime));
 
-        final List<? extends AbstractAuditableDocument> dataRecords = find(datasource, startTime, endTime);
-        logger.info("Found {} dataRecords for datasource:{}, startTime:{}, endTime:{}.", datasource, startTime, endTime);
+        final List<? extends AbstractAuditableDocument> dataRecords = find(datasource, startTimeLong, endTimeLong);
+        logger.info("Found {} dataRecords for datasource:{}, startTime:{}, endTime:{}.", datasource, startTimeLong, endTimeLong);
 
         final List<DlpFileEnrichedDocument> enrichedRecords = enrich(dataRecords);
 
@@ -69,7 +67,7 @@ public class InputExecutionServiceImpl implements InputExecutionService {
             //todo: how to handle?
         }
 
-        logger.info("Finished collector processing with params: ." + Arrays.toString(params));
+        logger.info("Finished input processing for data source {} between start date {} to end date {}" + dataSource, startTime, endTime);
     }
 
     private List<? extends AbstractAuditableDocument> find(Datasource datasource, long startTime, long endTime) {
@@ -105,5 +103,8 @@ public class InputExecutionServiceImpl implements InputExecutionService {
         return storeSuccessful;
     }
 
+    @Override
+    public void clean(String dataSource, String startTime, String endTime) {
 
+    }
 }
