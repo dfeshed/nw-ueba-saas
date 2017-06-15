@@ -11,10 +11,13 @@ const stateToComputed = (state) => {
     }
   } = state;
 
+  const severityFilter = itemsFilters['alert.severity'];
+  const severityRange = severityFilter ? [severityFilter.start, severityFilter.end] : defaultSeverityRange;
+
   return {
     alertTypeFilters: itemsFilters['alert.type'] || [],
     alertSourceFilters: itemsFilters['alert.source'] || [],
-    severityFilter: itemsFilters['alert.severity'] || defaultSeverityRange,
+    severityFilter: severityRange,
     partOfIncidentFilters: itemsFilters.partOfIncident || [],
     alertTypes,
     alertSources
@@ -52,7 +55,8 @@ const AlertFilters = Component.extend({
     severityRangeChanged(range) {
       this.get('updateFilter')({
         'alert.severity': {
-          type: 'range',
+          isRange: true,
+          type: 'numeric',
           start: range[0],
           end: range[1]
         }

@@ -5,6 +5,7 @@ import {
   getAllAlertTypes,
   getAllAlertSources } from 'respond/actions/creators/dictionary-creators';
 import RSVP from 'rsvp';
+import $ from 'jquery';
 
 let initialize;
 
@@ -74,5 +75,16 @@ test('All of the part-of-incident filter options appear as checkboxes, and click
     const selector = '.filter-option.part-of-incident-filter .rsa-form-checkbox-label';
     assert.equal(this.$(selector).length, 2, 'There should be 2 escalated filter options');
     this.$('.filter-option.part-of-incident-filter .rsa-form-checkbox-label input.rsa-form-checkbox:first').click();
+  });
+});
+
+test('The severity slider filter appears in the DOM', function(assert) {
+  return initialize.then(() => {
+    this.render(hbs`{{rsa-alerts/filter-controls}}`);
+
+    const selector = '.filter-option.severity-filter .noUi-tooltip';
+    assert.equal(this.$(selector).length, 2, 'The are two tooltips');
+    assert.equal($(this.$(selector)[0]).text().trim(), '0', 'The left end slider value should be 0');
+    assert.equal($(this.$(selector)[1]).text().trim(), '100', 'The right end slider value should be 100');
   });
 });

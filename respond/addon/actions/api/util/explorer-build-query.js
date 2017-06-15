@@ -7,8 +7,8 @@ export default (filters = { created: { name: 'ALL_TIME', unit: 'years', subtract
   Object.keys(filters).forEach((filterField) => {
     const value = filters[filterField];
 
-    if (value && value.type === 'range') {
-      query.addRangeFilter(filterField, value.start || 0, value.end || undefined);
+    if (value && value.isRange === true) {
+      query.addRangeFilter(filterField, value.start || 0, value.end || undefined, value.type || 'date');
     } else if (filterField === defaultDateFilterField) {
       if ('start' in value) {  // Custom Range Filter
         query.addRangeFilter(defaultDateFilterField, value.start || 0, value.end || undefined);

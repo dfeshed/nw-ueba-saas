@@ -166,8 +166,9 @@ const FilterQuery = EmberObject.extend({
    * @param field
    * @param from
    * @param to
+   * @param type {string} Either 'date' or 'numeric'
    */
-  addRangeFilter(field, from, to) {
+  addRangeFilter(field, from, to, type = 'date') {
     if (isEmpty(field) || isEmpty(from)) {
       return this;
     }
@@ -178,7 +179,8 @@ const FilterQuery = EmberObject.extend({
       field,
       range: {
         from,
-        to
+        to,
+        type
       }
     }]);
 

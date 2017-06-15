@@ -115,7 +115,8 @@ test('Calling addSinceWhenFilter() creates the proper range query', function(ass
         field,
         range: {
           from,
-          to: undefined
+          to: undefined,
+          type: 'date'
         }
       }
     ],
@@ -137,7 +138,8 @@ test('Calling addSinceWhenFilter() twice removes the first filter and adds the s
         field,
         range: {
           from,
-          to: undefined
+          to: undefined,
+          type: 'date'
         }
       }
     ],
@@ -154,14 +156,15 @@ test('Calling addRangeFilter() adds the proper range filter object', function(as
   const from = 25;
   const to = 50;
 
-  query.addRangeFilter(field, from, to);
+  query.addRangeFilter(field, from, to, 'numeric');
   const expectedJson = {
     filter: [
       {
         field,
         range: {
           from,
-          to
+          to,
+          type: 'numeric'
         }
       }
     ],
