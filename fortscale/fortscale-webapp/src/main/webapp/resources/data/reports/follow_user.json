@@ -1,7 +1,0 @@
-{
-    "endpoint": {
-        "entity": "analyst",
-        "method": "followUser",
-        "follow": "true"
-    }
-}
