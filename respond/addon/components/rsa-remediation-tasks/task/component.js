@@ -1,7 +1,6 @@
 import Component from 'ember-component';
 import connect from 'ember-redux/components/connect';
 import computed from 'ember-computed-decorators';
-import moment from 'moment';
 import { updateItem, deleteItem } from 'respond/actions/creators/remediation-task-creators';
 import Confirmable from 'respond/mixins/confirmable';
 import Notifications from 'respond/mixins/notifications';
@@ -51,15 +50,16 @@ const dispatchToActions = (dispatch) => {
 
 const RemediationTask = Component.extend(Notifications, Confirmable, {
   classNames: ['remediation-task'],
-
+  /**
+   * Returns true if the status is one of the open types, or false if one of the closed types (Remediated, Risk
+   * Accepted, or Not Applicable)
+   * @param status
+   * @returns {boolean}
+   * @public
+   */
   @computed('info.status')
   isOpen(status) {
     return !closedStatuses.includes(status);
-  },
-
-  @computed('info.created')
-  timeSinceCreation(created) {
-    return moment(created).toNow(true);
   },
 
   actions: {

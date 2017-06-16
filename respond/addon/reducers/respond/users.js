@@ -16,13 +16,33 @@ const initialState = {
   allUsersStatus: null
 };
 
+/**
+ * The user object returned from the service has a property named 'disabled', which can cause issues with UI
+ * components (e.g., ember power select), which interprets that property in unanticipated ways. The ember power select
+ * component, for example, disables the user entry in the dropdown list because of the presence of this property, even
+ * when that behavior is not desired.
+ *
+ * This function remaps the 'disabled' property onto a new property 'isInactive', and deletes the original property to
+ * avoid this name collision.
+ * @private
+ * @param users
+ */
+const remapDisabledProperty = (users) => {
+  return users.map((user) => {
+    const isDisabled = !!user.disabled;
+    const newUser = { ...user, isInactive: isDisabled };
+    delete newUser.disabled;
+    return newUser;
+  });
+};
+
 export default reduxActions.handleActions({
 
   [ACTION_TYPES.FETCH_ALL_ENABLED_USERS]: (state, action) => {
     return handle(state, action, {
       start: (s) => ({ ...s, enabledUsers: [], enabledUsersStatus: 'wait' }),
       failure: (s) => ({ ...s, enabledUsersStatus: 'error' }),
-      success: (s) => ({ ...s, enabledUsers: action.payload.data, enabledUsersStatus: 'completed' })
+      success: (s) => ({ ...s, enabledUsers: remapDisabledProperty(action.payload.data), enabledUsersStatus: 'completed' })
     });
   },
 
@@ -30,7 +50,7 @@ export default reduxActions.handleActions({
     return handle(state, action, {
       start: (s) => ({ ...s, allUsers: [], allUsersStatus: 'wait' }),
       failure: (s) => ({ ...s, allUsersStatus: 'error' }),
-      success: (s) => ({ ...s, allUsers: action.payload.data, allUsersStatus: 'completed' })
+      success: (s) => ({ ...s, allUsers: remapDisabledProperty(action.payload.data), allUsersStatus: 'completed' })
     });
   }
 

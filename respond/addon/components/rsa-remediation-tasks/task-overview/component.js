@@ -2,6 +2,8 @@ import Component from 'ember-component';
 import computed from 'ember-computed-decorators';
 import connect from 'ember-redux/components/connect';
 
+const closedStatuses = ['REMEDIATED', 'RISK_ACCEPTED', 'NOT_APPLICABLE'];
+
 const stateToComputed = ({ respond: { dictionaries } }) => {
   return {
     priorityTypes: dictionaries.priorityTypes,
@@ -18,6 +20,18 @@ const stateToComputed = ({ respond: { dictionaries } }) => {
 const RemediationTaskOverview = Component.extend({
   tagName: 'vbox',
   classNames: ['rsa-remediation-task-overview'],
+
+  /**
+   * Returns true if the status is one of the open types, or false if one of the closed types (Remediated, Risk
+   * Accepted, or Not Applicable)
+   * @param status
+   * @returns {boolean}
+   * @public
+   */
+  @computed('info.status')
+  isOpen(status) {
+    return !closedStatuses.includes(status);
+  },
 
   /**
    * Using the target queue as the lookup, retrieves the array of remediation type options available for the

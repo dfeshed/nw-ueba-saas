@@ -42,25 +42,6 @@
       {{/power-select}}
     </div>
   </div>
-
-  {{! Status}}
-  <div class="metadata">
-    <label>{{t 'respond.remediationTasks.list.status'}}</label>
-    <div class="edit-button">
-      {{#power-select
-        options=remediationStatusTypes
-        selected=status
-        matchTriggerWidth=false
-        searchEnabled=false
-        triggerComponent=(component "respond-common/button-trigger"
-          iconName='arrow-down-12'
-          iconPosition='after'
-          label=(if status (t (concat 'respond.status.' status)) 'Select'))
-        onchange=(action 'handleStatusChange') as |option|}}
-        {{t (concat 'respond.status.' option)}}
-      {{/power-select}}
-    </div>
-  </div>
 </section>
 <section class="controls">
   {{#rsa-form-button defaultAction='handleCancel'}}{{t 'forms.cancel'}}{{/rsa-form-button}}

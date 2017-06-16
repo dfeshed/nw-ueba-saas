@@ -47,7 +47,7 @@ module.exports = function(environment) {
       // when it is created
     },
     moment: {
-      includeLocales: ['en'],
+      includeLocales: ['en', 'ja'],
       includeTimezone: '2010-2020'
     },
     featureFlags: common.addFeatureFlags(environment)

@@ -24,6 +24,7 @@
         selected=info.priority
         matchTriggerWidth=false
         searchEnabled=false
+        disabled=(not isOpen)
         triggerComponent=(component "respond-common/button-trigger"
           label=(t (concat 'respond.priority.' info.priority)))
         onchange=(action 'selectionChange' info.id 'priority') as |option|}}
@@ -61,6 +62,7 @@
     <span>
       {{respond-common/editable-field
         value=(readonly info.assignee)
+        isDisabled=(not isOpen)
         placeholder=(unless info.assignee (t 'respond.assignee.none'))
         onFieldChange=(action 'editableFieldChange' info.id 'assignee')
       }}

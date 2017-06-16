@@ -1,4 +1,4 @@
-{{#if isEditing}}
+{{#if (and isEditing (not isDisabled))}}
   {{#if (eq type 'textarea')}}
     {{textarea value=text focusOut=(action 'focusOut')}}
   {{else}}
@@ -22,8 +22,10 @@
 {{else}}
   <span class="editable-field__value {{unless text 'placeholder'}}" {{action 'edit'}}>{{or text placeholder}}</span>
   <span class="action edit-field">
-    {{#rsa-form-button isIconOnly=true title='Edit Field' defaultAction='edit'}}
-      {{rsa-icon name='pencil-1'}}
-    {{/rsa-form-button}}
+    {{#unless isDisabled}}
+      {{#rsa-form-button isIconOnly=true isDisabled=isDisabled title='Edit Field' defaultAction='edit'}}
+        {{rsa-icon name='pencil-1'}}
+      {{/rsa-form-button}}
+    {{/unless}}
   </span>
 {{/if}}

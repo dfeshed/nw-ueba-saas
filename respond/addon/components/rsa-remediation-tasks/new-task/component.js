@@ -13,8 +13,7 @@ const stateToComputed = (state) => {
   } = state;
 
   return {
-    priorityTypes: dictionaries.priorityTypes,
-    remediationStatusTypes: dictionaries.remediationStatusTypes
+    priorityTypes: dictionaries.priorityTypes
   };
 };
 
@@ -40,7 +39,6 @@ const NewRemediationTask = Component.extend(Notifications, {
   description: null,
   assignee: null,
   priority: null,
-  status: 'NEW',
   cancelNewTask() {},
   submitNewTask() {},
 
@@ -52,14 +50,11 @@ const NewRemediationTask = Component.extend(Notifications, {
     handlePriorityChange(priority) {
       this.set('priority', priority);
     },
-    handleStatusChange(status) {
-      this.set('status', status);
-    },
     handleCancel() {
       this.get('onCancel')();
     },
     handleSubmit() {
-      this.send('createTask', this.getProperties('incidentId', 'name', 'description', 'assignee', 'priority', 'status'));
+      this.send('createTask', this.getProperties('incidentId', 'name', 'description', 'assignee', 'priority'));
     }
   }
 });

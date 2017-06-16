@@ -62,6 +62,11 @@ $metadataLineHeight: 1.35;
 
     .ember-power-select-trigger[aria-disabled="true"] {
       background-color: transparent;
+      // set the disabled button trigger to a gray to indicate disabled state
+      .rsa-form-button {
+        color: rsa-color(gray, base, $rsa-nearly-opaque);
+        border-color: rsa-color(gray, base, $rsa-nearly-opaque);
+      }
     }
   }
 }

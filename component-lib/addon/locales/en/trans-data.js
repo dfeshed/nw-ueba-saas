@@ -490,7 +490,7 @@ export default {
       loading: 'Loading Tasks',
       addNewTask: 'Add New Task',
       noTasks: 'There are no tasks for {{incidentId}}',
-      openFor: 'Open for',
+      openFor: 'Opened',
       newTaskFor: 'New Remediation Task for',
       delete: 'Delete Task',
       actions: {

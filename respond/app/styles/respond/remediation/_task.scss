@@ -26,6 +26,9 @@
     }
     .metadata {
       @include rsa-font(header, small);
+      > span {
+        font-size: 0.7rem;
+      }
     }
     .delete {
       position: absolute;

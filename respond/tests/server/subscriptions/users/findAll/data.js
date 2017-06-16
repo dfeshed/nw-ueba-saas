@@ -15,7 +15,7 @@ export default [
     'description': 'person1@test.com',
     'type': null,
     'accountId': null,
-    'disabled': false
+    'disabled': true
   },
   {
     'id': '3',
@@ -42,7 +42,7 @@ export default [
     'description': 'person4@test.com',
     'type': null,
     'accountId': null,
-    'disabled': false
+    'disabled': true
   },
   {
     'id': '6',

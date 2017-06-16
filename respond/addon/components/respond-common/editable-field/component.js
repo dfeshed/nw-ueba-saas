@@ -3,7 +3,7 @@ import computed, { oneWay } from 'ember-computed-decorators';
 
 export default Component.extend({
   classNames: ['editable-field'],
-  classNameBindings: ['type', 'hasChanges', 'isEditing'],
+  classNameBindings: ['type', 'hasChanges', 'isEditing', 'isDisabled'],
 
   /**
    * The type of input to use. Acceptable values are "input" (default) and "textarea"
@@ -49,6 +49,14 @@ export default Component.extend({
    * @public
    */
   inputMaxlength: 75,
+
+  /**
+   * Whether the input is disabled (which means in this case to show as plain text rather than as an editable field)
+   * @type {boolean}
+   * @property isDisabled
+   * @public
+   */
+  isDisabled: false,
 
   /**
    * The hasChanges property represents whether or not the user has modified the original value while in editing mode.
@@ -98,7 +106,9 @@ export default Component.extend({
 
   actions: {
     edit() {
-      this.set('isEditing', true);
+      if (!this.get('isDisabled')) {
+        this.set('isEditing', true);
+      }
     },
     cancel() {
       const { hasChanges, originalValue } = this.getProperties('hasChanges', 'originalValue');

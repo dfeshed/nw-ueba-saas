@@ -18,7 +18,7 @@
     {{#if isOpen}}
       <div class="metadata days-open">
         <label>{{t 'respond.remediationTasks.openFor'}}</label>
-        <span class="value">{{timeSinceCreation}}</span>
+        <span class="value">{{rsa-content-datetime timestamp=info.created asTimeAgo=true}}</span>
       </div>
     {{/if}}
   </div>
@@ -45,6 +45,7 @@
     <span>
       {{respond-common/editable-field
         value=(readonly info.assignee)
+        isDisabled=(not isOpen)
         placeholder=(unless info.assignee (t 'respond.assignee.none'))
         onFieldChange=(action 'editableFieldChange' info.id 'assignee')
       }}
@@ -60,6 +61,7 @@
         selected=info.priority
         matchTriggerWidth=false
         searchEnabled=false
+        disabled=(not isOpen)
         triggerComponent=(component "respond-common/button-trigger"
           iconName='arrow-down-12'
           iconPosition='after'

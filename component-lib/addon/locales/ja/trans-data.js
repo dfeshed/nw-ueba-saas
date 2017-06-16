@@ -490,7 +490,7 @@ export default {
       loading: 'ja_Loading Tasks',
       addNewTask: 'ja_Add New Task',
       noTasks: 'ja_There are no tasks for {{incidentId}}',
-      openFor: 'ja_Open for',
+      openFor: 'ja_Opened',
       newTaskFor: 'ja_New Remediation Task for',
       delete: 'ja_Delete Task',
       actions: {
