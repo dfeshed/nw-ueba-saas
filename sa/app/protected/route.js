@@ -56,6 +56,37 @@ export default Route.extend(AuthenticatedRouteMixin, {
     }
   },
 
+  beforeModel(transition) {
+    this._super(...arguments);
+
+    const toPassToTransition = [];
+    const redirectName = localStorage.getItem('rsa-post-auth-redirect-name');
+    const ids = localStorage.getItem('rsa-post-auth-redirect-ids');
+    const params = localStorage.getItem('rsa-post-auth-redirect-params');
+    const key = this.get('landingPage.selected.key');
+
+    if (ids) {
+      const array = JSON.parse(ids);
+      array.forEach((id) => {
+        toPassToTransition.push(id);
+      });
+    }
+
+    if (this.get('session.isAuthenticated') && redirectName && redirectName !== transition.targetName) {
+      localStorage.removeItem('rsa-post-auth-redirect-name');
+      localStorage.removeItem('rsa-post-auth-redirect-ids');
+      localStorage.removeItem('rsa-post-auth-redirect-params');
+
+      if (toPassToTransition.length >= 1) {
+        this.transitionTo(redirectName, ...toPassToTransition, { queryParams: JSON.parse(params) });
+      } else {
+        this.transitionTo(redirectName);
+      }
+    } else if (transition.targetName === 'protected.index') {
+      this._checkAccessAndTransition(key);
+    }
+  },
+
   model() {
     localStorage.setItem('rsa-i18n-default-locale', config.i18n.defaultLocale);
     this.set('i18n.locale', config.i18n.defaultLocale);
@@ -126,19 +157,6 @@ export default Route.extend(AuthenticatedRouteMixin, {
         Logger.error('There was an issue loading your profile. Please try again.');
       });
     }
-  },
-
-  afterModel(model, transition) {
-    const redirect = localStorage.getItem('rsa-post-auth-redirect');
-    const key = this.get('landingPage.selected.key');
-
-    if (redirect && redirect != transition.targetName) {
-      this.transitionTo(redirect);
-    } else if (transition.targetName === 'protected.index') {
-      this._checkAccessAndTransition(key);
-    }
-
-    localStorage.removeItem('rsa-post-auth-redirect');
   },
 
   actions: {

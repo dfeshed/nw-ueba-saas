@@ -95,7 +95,7 @@ export default OAuth2PasswordGrant.extend(csrfToken, oauthToken, {
     $.ajax({
       type: 'POST',
       url: '/oauth/logout',
-      timeout: 2000,
+      timeout: 15000,
       headers: {
         'X-CSRF-TOKEN': localStorage.getItem(csrfKey)
       },
