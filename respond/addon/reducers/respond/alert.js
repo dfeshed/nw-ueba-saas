@@ -2,6 +2,7 @@ import * as ACTION_TYPES from 'respond/actions/types';
 import reduxActions from 'redux-actions';
 import { handle } from 'redux-pack';
 import { load, persist } from './util/local-storage';
+import fixNormalizedEvents from './util/events';
 
 const localStorageKey = 'rsa::nw::respond::alert';
 
@@ -97,7 +98,7 @@ const alertReducers = reduxActions.handleActions({
     return handle(state, action, {
       start: (s) => ({ ...s, events: null, eventsStatus: 'wait' }),
       failure: (s) => ({ ...s, eventsStatus: 'error' }),
-      success: (s) => ({ ...s, events: action.payload.data, eventsStatus: 'success' })
+      success: (s) => ({ ...s, events: fixNormalizedEvents(action.payload.data), eventsStatus: 'success' })
     });
   }
 }, initialState);

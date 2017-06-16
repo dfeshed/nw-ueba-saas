@@ -2,6 +2,7 @@ import * as ACTION_TYPES from 'respond/actions/types';
 import reduxActions from 'redux-actions';
 import { handle } from 'redux-pack';
 import { load, persist } from './util/local-storage';
+import fixNormalizedEvents from './util/events';
 import { toggle } from 'respond/utils/immut/array';
 
 const localStorageKey = 'rsa::nw::respond::incident';
@@ -164,15 +165,21 @@ const incident = reduxActions.handleActions({
   }),
 
   [ACTION_TYPES.FETCH_INCIDENT_STORYLINE_EVENTS_RETRIEVE_BATCH]: (state, { payload: { indicatorId, events } }) => {
-    // Tag each retrieved event with its parent indicator id.  Also ensure each event has an id.
-    // This is useful downstream for mapping events back to their parent.
     events = events || [];
     events.forEach((evt, index) => {
+      // Tag each retrieved event with its parent indicator id.
+      // This is useful downstream for mapping events back to their parent.
       evt.indicatorId = indicatorId;
+
+      // Ensure each event has an id.
+      // This is useful for selecting individual events in the UI.
       if (!evt.id) {
         evt.id = `${indicatorId}:${index}`;
       }
     });
+
+    // Check for data capture & normalization errors and correct them.
+    fixNormalizedEvents(events);
 
     state.storylineEvents = state.storylineEvents || [];
     return {
