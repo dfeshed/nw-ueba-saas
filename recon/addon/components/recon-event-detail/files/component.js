@@ -8,23 +8,25 @@ import ReconPanelHelp from 'recon/mixins/recon-panel-help';
 import layout from './template';
 import baseColumnsConfig from './columns-config';
 import {
+  filesRetrieved,
   filesWithSelection,
   hasNoFiles,
-  filesRetrieved
+  hasSelectedFiles
 } from 'recon/reducers/files/selectors';
 import {
+  deselectAllFiles,
   fileSelected,
-  selectAllFiles,
-  deselectAllFiles
+  selectAllFiles
 } from 'recon/actions/interaction-creators';
 
 const stateToComputed = ({ recon, recon: { data, files } }) => ({
   dataIndex: data.index,
   eventTotal: data.total,
-  hasNoFiles: hasNoFiles(recon),
   files: filesWithSelection(recon),
   filesRetrieved: filesRetrieved(recon),
-  linkToFileAction: files.linkToFileAction
+  hasNoFiles: hasNoFiles(recon),
+  linkToFileAction: files.linkToFileAction,
+  hasSelectedFiles: hasSelectedFiles(recon)
 });
 
 const dispatchToActions = {
@@ -44,6 +46,7 @@ const calculateColumnWidth = (text) => {
 const FileReconComponent = Component.extend(ReconPager, ReconPanelHelp, {
   layout,
   classNames: ['recon-event-detail-files'],
+  classNameBindings: ['hasSelectedFiles:warning'],
 
   allSelected: false,
   calculatedConfig: null,

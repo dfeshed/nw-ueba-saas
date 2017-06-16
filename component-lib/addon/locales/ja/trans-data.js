@@ -176,7 +176,8 @@ export default {
     fileView: {
       downloadFile: 'ja_Download File',
       downloadFiles: 'ja_Download Files ({{fileCount}})',
-      isDownloading: 'ja_Downloading...'
+      isDownloading: 'ja_Downloading...',
+      downloadWarning: 'ja_Warning: Files contain the original raw unsecured content. Use caution when opening or downloading files; they may contain malicious data.'
     },
     files: {
       fileName: 'ja_File Name',

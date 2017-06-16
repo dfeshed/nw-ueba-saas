@@ -176,7 +176,8 @@ export default {
     fileView: {
       downloadFile: 'Download File',
       downloadFiles: 'Download Files ({{fileCount}})',
-      isDownloading: 'Downloading...'
+      isDownloading: 'Downloading...',
+      downloadWarning: 'Warning: Files contain the original raw unsecured content. Use caution when opening or downloading files; they may contain malicious data.'
     },
     error: {
       generic: 'An unexpected error has occurred attempting to retrieve this data.',

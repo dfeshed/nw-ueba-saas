@@ -7,7 +7,6 @@
       items=files
       fitToWidth=false
       columnsConfig=columnsConfig}}
-
       {{#rsa-data-table/header as |column index|}}
         {{#if column.isCheckboxColumn}}
           {{#if hasMultipleSessionFiles}}
@@ -19,7 +18,6 @@
           {{t column.title}}
         {{/if}}
       {{/rsa-data-table/header}}
-
       {{#rsa-data-table/body as |item index column|}}
 
         {{#rsa-data-table/body-cell columnWidth=column.width}}
@@ -63,6 +61,11 @@
 
       {{/rsa-data-table/body}}
     {{/rsa-data-table}}
+
+    {{#if hasSelectedFiles}}
+      <section class="download-warning">{{t 'recon.fileView.downloadWarning'}}</section>
+    {{/if}}
+
     {{recon-pager
       eventIndex=eventIndex
       eventTotal=eventTotal

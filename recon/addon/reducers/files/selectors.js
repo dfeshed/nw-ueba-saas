@@ -45,10 +45,19 @@ export const filesRetrieved = createSelector(
 );
 
 /**
- * A selector that returns a sorted Array of all visible text.
- * @private
+ * Returns an Array of all selected files.
+ * @public
  */
 export const selectedFiles = createSelector(
   [filesWithSelection],
   (filesWithSelection) => (filesWithSelection || []).filterBy('selected', true)
+);
+
+/**
+ * Returns a Boolean representation of selectedFiles
+ * @public
+ */
+export const hasSelectedFiles = createSelector(
+  [selectedFiles],
+  (selectedFiles) => !!selectedFiles.length
 );
