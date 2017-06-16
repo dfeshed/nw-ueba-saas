@@ -312,12 +312,12 @@ const incident = reduxActions.handleActions({
       start: (s) => ({ ...s }),
       failure: (s) => ({ ...s }),
       success: (s) => {
-        const { payload: { request: { journalMap } } } = action;
+        const { payload: { data } } = action;
         return {
           ...s,
           info: {
             ...s.info,
-            notes: [...notes, { ...journalMap }]
+            notes: [...notes, data]
           }
         };
       }
