@@ -1,22 +1,12 @@
-import Ember from 'ember';
+import Component from 'ember-component';
+import { equal, gt } from 'ember-computed';
+import { htmlSafe } from 'ember-string';
+import { isPresent } from 'ember-utils';
+import run from 'ember-runloop';
 import layout from '../templates/components/rsa-content-ip-connections';
 import computed from 'ember-computed-decorators';
 
-const {
-  String: {
-    htmlSafe
-  },
-  Component,
-  computed: {
-    gt,
-    equal
-  },
-  isPresent,
-  run
-} = Ember;
-
 export default Component.extend({
-
   layout,
 
   classNames: ['rsa-content-ip-connections'],

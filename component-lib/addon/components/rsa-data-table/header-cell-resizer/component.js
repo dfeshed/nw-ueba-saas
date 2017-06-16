@@ -1,12 +1,8 @@
-import Ember from 'ember';
+import $ from 'jquery';
+import Component from 'ember-component';
+import run from 'ember-runloop';
 import HasTableParent from '../mixins/has-table-parent';
 import layout from './template';
-
-const {
-  $,
-  run,
-  Component
-} = Ember;
 
 export default Component.extend(HasTableParent, {
   layout,

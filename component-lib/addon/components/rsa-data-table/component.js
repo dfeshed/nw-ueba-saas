@@ -1,18 +1,14 @@
-import Ember from 'ember';
+import $ from 'jquery';
+import EmberObject from 'ember-object';
+import computed from 'ember-computed';
+import Component from 'ember-component';
+import get from 'ember-metal/get';
+import { isEmpty } from 'ember-utils';
+import on from 'ember-evented/on';
+import run from 'ember-runloop';
+import set from 'ember-metal/set';
 import DomWatcher from 'component-lib/mixins/dom/watcher';
 import { EKMixin, keyUp } from 'ember-keyboard';
-
-const {
-  computed,
-  isEmpty,
-  get,
-  set,
-  Component,
-  $,
-  Object: EmberObject,
-  run,
-  on
-} = Ember;
 
 const DEFAULT_COLUMN_WIDTH = 100;
 const DEFAULT_COLUMN_VISIBILITY = true;
@@ -188,7 +184,7 @@ export default Component.extend(DomWatcher, EKMixin, {
       let lastAddedColumnIndex = 0;
       const columns = columnsConfig.map((cfg) => {
         if (typeof cfg === 'string') {
-          const [ field, title ] = cfg.split(':');
+          const [field, title] = cfg.split(':');
           cfg = { field, title };
         }
         if (typeof cfg === 'object') {

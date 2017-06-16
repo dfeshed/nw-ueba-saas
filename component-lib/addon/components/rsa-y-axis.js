@@ -1,9 +1,7 @@
-import Ember from 'ember';
+import Component from 'ember-component';
 import { axisLeft } from 'd3-axis';
 import { select } from 'd3-selection';
 import { siFormat } from '../utils/chart-utils';
-
-const { Component } = Ember;
 
 /**
  * The y axis component.

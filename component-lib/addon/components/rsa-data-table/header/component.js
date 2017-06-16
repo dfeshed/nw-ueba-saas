@@ -1,12 +1,8 @@
-import Ember from 'ember';
+import $ from 'jquery';
+import Component from 'ember-component';
+import observer from 'ember-metal/observer';
 import HasTableParent from 'component-lib/components/rsa-data-table/mixins/has-table-parent';
 import layout from './template';
-
-const {
-  observer,
-  Component,
-  $
-} = Ember;
 
 export default Component.extend(HasTableParent, {
   layout,

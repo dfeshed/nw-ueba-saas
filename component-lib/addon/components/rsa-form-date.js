@@ -1,25 +1,21 @@
-import Ember from 'ember';
+import Component from 'ember-component';
+import { isEmpty } from 'ember-utils';
 import PikadayMixin from '../mixins/pikaday';
-
-const {
-  Component,
-  isEmpty
-} = Ember;
 
 export default Component.extend(PikadayMixin, {
   tagName: 'input',
 
   attributeBindings: [
-    'readonly',
-    'tabindex',
     'disabled',
-    'placeholder',
-    'type',
+    'hidden',
     'name',
-    'size',
+    'placeholder',
+    'readonly',
     'required',
+    'size',
+    'tabindex',
     'title',
-    'hidden'
+    'type'
   ],
 
   type: 'text',

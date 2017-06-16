@@ -1,15 +1,8 @@
-import Ember from 'ember';
+import Component from 'ember-component';
+import { or } from 'ember-computed';
 import layout from '../templates/components/rsa-form-textarea';
 
-const {
-  Component,
-  computed: {
-    or
-  }
-} = Ember;
-
 export default Component.extend({
-
   layout,
 
   tagName: 'label',
@@ -17,25 +10,18 @@ export default Component.extend({
   classNames: ['rsa-form-textarea'],
 
   classNameBindings: [
-    'isReadOnly',
     'isDisabled',
     'isError',
+    'isReadOnly',
     'isSuccess'],
 
+  isDisabled: false,
+  isError: false,
+  isReadOnly: false,
+  isSuccess: false,
+  label: null,
+  placeholder: null,
   value: null,
 
-  label: null,
-
-  placeholder: null,
-
-  isReadOnly: false,
-
-  isDisabled: false,
-
-  isError: false,
-
-  isSuccess: false,
-
   resolvedDisabled: or('isDisabled', 'isReadOnly')
-
 });

@@ -13,16 +13,13 @@
  *
  * @public
  */
-import Ember from 'ember';
 /* global addResizeListener */
 /* global removeResizeListener */
 
-const {
-  computed,
-  run,
-  Mixin,
-  $
-  } = Ember;
+import $ from 'jquery';
+import computed from 'ember-computed';
+import Mixin from 'ember-metal/mixin';
+import run from 'ember-runloop';
 
 export default Mixin.create({
 

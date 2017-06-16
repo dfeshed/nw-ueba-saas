@@ -1,8 +1,6 @@
-import Ember from 'ember';
+import Component from 'ember-component';
 import CellMixin from '../mixins/is-cell';
 import layout from './template';
-
-const { Component } = Ember;
 
 export default Component.extend(CellMixin, {
   layout,

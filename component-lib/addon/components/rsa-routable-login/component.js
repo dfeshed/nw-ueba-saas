@@ -4,22 +4,19 @@
  * @public
  */
 
+import $ from 'jquery';
+import Component from 'ember-component';
 import Ember from 'ember';
+import getOwner from 'ember-owner/get';
+import { isEmpty, typeOf } from 'ember-utils';
+import run from 'ember-runloop';
+import service from 'ember-service/inject';
 import layout from './template';
 import computed, { readOnly, alias, notEmpty, equal } from 'ember-computed-decorators';
 import config from 'ember-get-config';
 
 const {
-  getOwner,
-  Component,
-  run,
-  typeOf,
-  inject: {
-    service
-  },
-  Logger,
-  isEmpty,
-  $
+  Logger
 } = Ember;
 
 /**
@@ -118,7 +115,7 @@ export default Component.extend({
   },
 
   @readOnly
-  @alias('appVersion.version')
+    @alias('appVersion.version')
   version: null,
 
   authenticate() {

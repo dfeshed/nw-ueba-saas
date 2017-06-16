@@ -4,15 +4,15 @@
  * It is useful for rendering a "Load More" button beneath the last body row.
  * @public
  */
+import Component from 'ember-component';
 import Ember from 'ember';
+import run from 'ember-runloop';
 import HasTableParent from '../mixins/has-table-parent';
 import safeCallback from 'component-lib/utils/safe-callback';
 
 import layout from './template';
 
 const {
-  run,
-  Component,
   Logger
 } = Ember;
 

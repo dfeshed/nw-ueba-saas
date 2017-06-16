@@ -1,18 +1,9 @@
-import Ember from 'ember';
+import Component from 'ember-component';
+import { equal } from 'ember-computed';
+import service from 'ember-service/inject';
 import layout from '../templates/components/rsa-form-button';
 
-const {
-  Component,
-  inject: {
-    service
-  },
-  computed: {
-    equal
-  }
-} = Ember;
-
 export default Component.extend({
-
   layout,
 
   eventBus: service(),
@@ -24,39 +15,30 @@ export default Component.extend({
   attributeBindings: ['title'],
 
   classNameBindings: [
+    'isActive',
     'isDanger',
     'isDisabled',
     'isFullWidth',
+    'isIconOnly',
     'isPrimary',
     'isStandard',
-    'isIconOnly',
-    'withDropdown',
-    'isActive'
+    'withDropdown'
   ],
 
   style: 'standard', // ['standard', 'primary', 'danger']
 
+  allowToggleActive: false,
+  defaultAction: null,
+  isActive: false,
   isFullWidth: false,
-
   isIconOnly: false,
-
   isDisabled: false,
-
   withDropdown: false,
 
-  defaultAction: null,
-
-  isActive: false,
-
-  allowToggleActive: false,
-
-  isSubmit: equal('type', 'submit'),
-
-  isStandard: equal('style', 'standard'),
-
-  isPrimary: equal('style', 'primary'),
-
   isDanger: equal('style', 'danger'),
+  isPrimary: equal('style', 'primary'),
+  isStandard: equal('style', 'standard'),
+  isSubmit: equal('type', 'submit'),
 
   click() {
     if (this.get('allowToggleActive') && !this.get('isDisabled')) {
@@ -65,12 +47,10 @@ export default Component.extend({
   },
 
   actions: {
-
     defaultAction() {
       if (!this.get('isDisabled')) {
         this.sendAction('defaultAction');
       }
     }
-
   }
 });

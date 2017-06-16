@@ -1,11 +1,8 @@
-import Ember from 'ember';
+import Component from 'ember-component';
 import IsChartSeries from '../mixins/is-chart-series';
 import computed from 'ember-computed-decorators';
 import { line } from 'd3-shape';
 
-const {
-  Component
-} = Ember;
 const createLine = (xAccessorFn, yAccessorFn, curve) => {
   return line().x(xAccessorFn).y(yAccessorFn).curve(curve);
 };

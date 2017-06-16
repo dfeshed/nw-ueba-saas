@@ -3,13 +3,9 @@
  * Equips a component with a `domIsReady` attribute, which indicates when its DOM is ready for manipulation.
  * @public
  */
-import Ember from 'ember';
-
-const {
-  run,
-  Mixin,
-  $
-} = Ember;
+import $ from 'jquery';
+import Mixin from 'ember-metal/mixin';
+import run from 'ember-runloop';
 
 export default Mixin.create({
 

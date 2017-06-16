@@ -1,10 +1,8 @@
-import Ember from 'ember';
+import Component from 'ember-component';
 import computed from 'ember-computed-decorators';
 import { axisBottom } from 'd3-axis';
 import { dateFormatter } from '../utils/chart-utils';
 import { select } from 'd3-selection';
-
-const { Component } = Ember;
 
 /**
  * The x axis component. The default formatter is a 24-hour, UTC date format.

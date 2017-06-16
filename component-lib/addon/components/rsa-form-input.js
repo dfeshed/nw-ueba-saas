@@ -1,12 +1,6 @@
-import Ember from 'ember';
+import Component from 'ember-component';
+import { or } from 'ember-computed';
 import layout from '../templates/components/rsa-form-input';
-
-const {
-  Component,
-  computed: {
-    or
-  }
-} = Ember;
 
 export default Component.extend({
   layout,
@@ -16,32 +10,23 @@ export default Component.extend({
   classNames: ['rsa-form-input'],
 
   classNameBindings: [
-    'isReadOnly',
     'isDisabled',
     'isError',
-    'isSuccess',
-    'isInline'],
-
-  value: null,
-
-  label: null,
-
-  placeholder: null,
-
-  type: 'text',
-
-  isInline: false,
-
-  isReadOnly: false,
-
-  isDisabled: false,
-
-  isError: false,
+    'isInline',
+    'isReadOnly',
+    'isSuccess'
+  ],
 
   errorMessage: null,
-
+  isDisabled: false,
+  isError: false,
+  isInline: false,
+  isReadOnly: false,
   isSuccess: false,
+  label: null,
+  placeholder: null,
+  type: 'text',
+  value: null,
 
   resolvedDisabled: or('isDisabled', 'isReadOnly')
-
 });

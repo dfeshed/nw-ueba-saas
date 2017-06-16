@@ -1,11 +1,8 @@
-import Ember from 'ember';
+import Component from 'ember-component';
 import layout from '../templates/components/rsa-nav-tab';
 import computed from 'ember-computed-decorators';
 
-const { Component } = Ember;
-
 export default Component.extend({
-
   layout,
 
   classNames: ['rsa-nav-tab'],
@@ -22,5 +19,4 @@ export default Component.extend({
   tabsAlignment(align, compact) {
     return `is-${align}-aligned-${compact ? 'secondary' : 'primary'}`;
   }
-
 });

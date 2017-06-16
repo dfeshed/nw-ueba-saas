@@ -1,5 +1,7 @@
 import Ember from 'ember';
 import Component from 'ember-component';
+import { isEmpty } from 'ember-utils';
+import getOwner from 'ember-owner/get';
 import layout from './template';
 import run from 'ember-runloop';
 import service from 'ember-service/inject';
@@ -8,9 +10,7 @@ import csrfToken from '../../mixins/csrf-token';
 import config from 'ember-get-config';
 
 const {
-  getOwner,
-  Logger,
-  isEmpty
+  Logger
 } = Ember;
 
 export default Component.extend(csrfToken, {

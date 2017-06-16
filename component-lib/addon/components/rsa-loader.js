@@ -1,13 +1,6 @@
-import Ember from 'ember';
+import Component from 'ember-component';
+import computed, { equal } from 'ember-computed';
 import layout from '../templates/components/rsa-loader';
-
-const {
-  Component,
-  computed,
-  computed: {
-    equal
-  }
-} = Ember;
 
 export default Component.extend({
   layout,

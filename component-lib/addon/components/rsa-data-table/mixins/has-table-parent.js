@@ -4,12 +4,8 @@
  * and cache reference to it in the `table` attribute.
  * @public
  */
-import Ember from 'ember';
-
-const {
-  computed,
-  Mixin
-} = Ember;
+import computed from 'ember-computed';
+import Mixin from 'ember-metal/mixin';
 
 export default Mixin.create({
 
