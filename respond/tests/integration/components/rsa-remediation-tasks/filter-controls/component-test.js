@@ -92,17 +92,3 @@ test('All of the createdBy users appear in the dropdown, and selecting one calls
     selectFirstOption();
   });
 });
-
-test('All of the escalated filter options appear as checkboxes, and clicking one dispatches an action', function(assert) {
-  assert.expect(2);
-  return initialize.then(() => {
-    this.on('updateFilter', function() {
-      assert.ok(true);
-    });
-    this.render(hbs`{{rsa-remediation-tasks/filter-controls updateFilter=(action 'updateFilter')}}`);
-
-    const selector = '.filter-option.escalated-filter .rsa-form-checkbox-label';
-    assert.equal(this.$(selector).length, 2, 'There should be 2 escalated filter options');
-    this.$('.filter-option.escalated-filter .rsa-form-checkbox-label input.rsa-form-checkbox:first').click();
-  });
-});

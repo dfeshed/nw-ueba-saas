@@ -28,7 +28,7 @@ export default [
   {
     field: 'id',
     title: 'respond.remediationTasks.list.id',
-    width: '4%',
+    width: '5%',
     dataType: 'text',
     visible: true,
     disableSort: true
@@ -43,7 +43,7 @@ export default [
   {
     field: 'assignee',
     title: 'respond.remediationTasks.list.assignee',
-    width: '10%',
+    width: '13%',
     dataType: 'text',
     visible: true
   },
@@ -58,20 +58,13 @@ export default [
   {
     field: 'lastUpdated',
     title: 'respond.remediationTasks.list.lastUpdated',
-    width: '8%',
+    width: '11%',
     dataType: 'date',
     visible: true
   },
   {
     field: 'createdBy',
     title: 'respond.remediationTasks.list.createdBy',
-    width: '7%',
-    dataType: 'text',
-    visible: true
-  },
-  {
-    field: 'escalated',
-    title: 'respond.remediationTasks.list.escalated',
     width: '7%',
     dataType: 'text',
     visible: true

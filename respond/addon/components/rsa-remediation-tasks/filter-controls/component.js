@@ -15,7 +15,6 @@ const stateToComputed = (state) => {
     priorityFilters: itemsFilters.priority || [],
     statusFilters: itemsFilters.status || [],
     createdByFilters: itemsFilters.createdBy || [],
-    escalatedFilters: itemsFilters.escalated || [],
     users: users.allUsers,
     priorityTypes,
     remediationStatusTypes
@@ -30,8 +29,6 @@ const stateToComputed = (state) => {
  */
 const RemediationTaskFilters = Component.extend({
   tagName: '',
-
-  escalationTypes: [true, false],
 
   /**
    * The user objects that have been selected via the assignee picker
@@ -58,13 +55,6 @@ const RemediationTaskFilters = Component.extend({
       const priorityFilters = this.get('priorityFilters');
       this.get('updateFilter')({
         priority: priorityFilters.includes(priority) ? priorityFilters.without(priority) : [...priorityFilters, priority]
-      });
-    },
-
-    toggleIsEscalatedFilter(escalated) {
-      const escalatedFilters = this.get('escalatedFilters');
-      this.get('updateFilter')({
-        escalated: escalatedFilters.includes(escalated) ? escalatedFilters.without(escalated) : [...escalatedFilters, escalated]
       });
     },
 

@@ -32,8 +32,6 @@
           isInverted=true
           style=(priority-to-content-style (get item column.field))
         }}
-      {{ else if (eq column.field 'escalated')}}
-        {{if item.escalated (t 'respond.common.yes') (t 'respond.common.no')}}
       {{ else if (eq column.field 'status')}}
         {{t (concat 'respond.status.' (get item column.field)) }}
       {{ else if (eq column.field 'incidentId')}}

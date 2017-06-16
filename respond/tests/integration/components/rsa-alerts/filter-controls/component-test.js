@@ -73,7 +73,7 @@ test('All of the part-of-incident filter options appear as checkboxes, and click
     this.render(hbs`{{rsa-alerts/filter-controls updateFilter=(action 'updateFilter')}}`);
 
     const selector = '.filter-option.part-of-incident-filter .rsa-form-checkbox-label';
-    assert.equal(this.$(selector).length, 2, 'There should be 2 escalated filter options');
+    assert.equal(this.$(selector).length, 2, 'There should be 2 part-of-incident filter options');
     this.$('.filter-option.part-of-incident-filter .rsa-form-checkbox-label input.rsa-form-checkbox:first').click();
   });
 });
