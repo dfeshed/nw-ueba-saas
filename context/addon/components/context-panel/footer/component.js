@@ -9,7 +9,7 @@ const stateToComputed = ({ context }) => ({
   lookupData: context.lookupData,
   activeTabName: context.activeTabName
 });
-
+const footerExcludedTabs = ['LiveConnect-Ip', 'LiveConnect-Domain', 'LiveConnect-File'];
 const FooterComponent = Component.extend({
   layout,
   classNames: 'rsa-context-panel__footer',
@@ -32,7 +32,7 @@ const FooterComponent = Component.extend({
 
   @computed('activeTabName')
   footerDSTitle(activeTabName) {
-    return this.get('i18n').t(`context.footer.title.${activeTabName.camelize()}`);
+    return footerExcludedTabs.includes(activeTabName) ? 'none' : this.get('i18n').t(`context.footer.title.${activeTabName.camelize()}`);
   }
 });
 export default connect(stateToComputed)(FooterComponent);

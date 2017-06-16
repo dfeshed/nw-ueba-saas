@@ -4,12 +4,6 @@
   {{#if (eq contextData.liveConnectData null)}}
     <div class="rsa-context-panel__liveconnect__heading">{{t 'context.lc.noDataMsg'}}</div>
   {{else if contextData.liveConnectData.allTags}}
-    <div class="rsa-context-panel__context-data-table__heading-text">
-      <span>
-        {{t 'context.timeWindow'}}{{contextData.headerData.timeWindow}} |
-        {{t 'context.lastUpdated'}}{{rsa-content-datetime timestamp=contextData.headerData.lastUpdated asTimeAgo=true}}
-      </span>
-    </div>
     <div>
       {{#if (is-equal model.meta 'IP')}}
         {{context-panel/live-connect/lc-community-activity
@@ -37,6 +31,7 @@
       {{/if}}
       {{#each lcColumnList as |columns|}}
         {{#if (get contextData  columns.dataStore)}}
+          <div class="rsa-application-layout-panel rsa-context-panel__liveconnect__heading">{{t columns.title}}&#40;{{get contextData columns.header}}&#41;</div>
           {{context-panel/data-table contextData=(get contextData columns.dataStore) dSDetails=columns}}
         {{/if}}
       {{/each}}

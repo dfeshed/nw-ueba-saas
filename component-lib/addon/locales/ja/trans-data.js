@@ -841,7 +841,9 @@ export default {
         incidents: 'ja_Related Incidents',
         lIST: 'ja_Lists',
         endpoint: 'ja_Endpoint Details',
-        liveConnectIp: 'ja_Live Connect'
+        liveConnectIp: 'ja_Live Connect',
+        liveConnectFile: 'ja_Live Connect',
+        liveConnectDomain: 'ja_Live Connect'
       },
       archer: 'ja_Archer',
       overview: 'ja_overview',

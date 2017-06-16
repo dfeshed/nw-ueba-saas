@@ -841,7 +841,9 @@ export default {
         incidents: 'Related Incidents',
         lIST: 'Lists',
         endpoint: 'Endpoint Details',
-        liveConnectIp: 'Live Connect'
+        liveConnectIp: 'Live Connect',
+        liveConnectFile: 'Live Connect',
+        liveConnectDomain: 'Live Connect'
       },
       archer: 'Archer',
       overview: 'overview',

@@ -522,6 +522,7 @@ radial-gradient(circle at 85% 85%, rsa-color(gray, darker, .1) 0, rsa-color(gray
     }
     &__risk-badge {
       max-width: 180px;
+      margin-left: 100px;
       &__unsafe {
         svg circle {
           stroke: rsa-color(orange);
@@ -562,6 +563,9 @@ radial-gradient(circle at 85% 85%, rsa-color(gray, darker, .1) 0, rsa-color(gray
           color: rsa-color(gray, lightest);
         }
       }
+    }
+    &__risk-reason-padding{
+      margin-left: 50px;
     }
     &__risk-description {
       @include rsa-font(header, large);

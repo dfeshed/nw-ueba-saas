@@ -19,7 +19,7 @@
 {{#if liveConnectData.risk}}
   <hbox>
     <div class="rsa-context-panel__liveconnect__risk-badge">{{rsa-content-badge-score class=riskBadgeStyle score=liveConnectData.risk size='small'}}</div>
-    <vbox>
+    <vbox class="rsa-context-panel__liveconnect__risk-reason-padding">
       <div class="rsa-context-panel__liveconnect__risk-description">{{t riskDescription}}</div>
       <div class="rsa-context-panel__liveconnect__field">{{rsa-content-definition label=(t 'context.lc.riskReason')}}</div>
       {{#each riskReasonList as |reason|}}

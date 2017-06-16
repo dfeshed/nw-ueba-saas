@@ -1,5 +1,7 @@
 <span>
-  {{t 'context.footer.total' count=headerData.count}} {{footerDSTitle}}
+  {{#unless (eq footerDSTitle 'none')}}
+    {{t 'context.footer.total' count=headerData.count}} {{footerDSTitle}}
+  {{/unless}}
 </span>
 {{#if headerData.timeWindow.lastUpdated}}
   <span title= {{t dSDetails.title}}>

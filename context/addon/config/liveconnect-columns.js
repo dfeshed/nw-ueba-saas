@@ -24,13 +24,6 @@ export default [
         className: 'rsa-context-panel__liveconnect__entity-value'
       },
       {
-        field: 'domain',
-        title: 'context.lc.domain',
-        width: '15vw',
-        dataType: 'domain',
-        className: 'rsa-context-panel__liveconnect__entity-value'
-      },
-      {
         field: 'asnNumber',
         title: 'context.lc.asnShort',
         width: '10vw'
