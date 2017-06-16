@@ -124,7 +124,7 @@ const pivotToInvestigateUrl = (entityType, entityId) => {
       query = `device.host='${entityId}'`;
       break;
     case 'USER':
-      query = `username='${entityId}'`;
+      query = `username='${entityId}'||user.src='${entityId}'||user.dst='${entityId}'||ad.username.src='${entityId}'||ad.username.dst='${entityId}'`;
       break;
     case 'FILE_NAME':
       query = `filename='${entityId}'`;
@@ -133,6 +133,8 @@ const pivotToInvestigateUrl = (entityType, entityId) => {
       query = `checksum='${entityId}'`;
       break;
     case 'MAC_ADDRESS':
+      // ECAT can provide hyphenated format, but Core requires colon format instead
+      entityId = String(entityId).replace(/\-/g, ':');
       query = `eth.src=${entityId}||eth.dst=${entityId}`;
       break;
     default:
