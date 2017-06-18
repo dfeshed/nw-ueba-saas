@@ -16,17 +16,18 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static fortscale.common.general.CommonStrings.*;
+import static fortscale.common.general.CommonStrings.COMMAND_LINE_COMMAND_FIELD_NAME;
+import static fortscale.common.general.CommonStrings.COMMAND_LINE_DATA_SOURCE_FIELD_NAME;
+import static fortscale.common.general.CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME;
+import static fortscale.common.general.CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME;
 
 public class CollectorExecutionServiceImpl implements CollectorExecutionService {
-
     private Logger logger = LoggerFactory.getLogger(this.getClass());
-
 
     private final CoreManagerService coreManagerService;
     private final FetchService fetchService;
     private final ParametersValidationService parameterValidationService;
-
+    
     public CollectorExecutionServiceImpl(CoreManagerService coreManagerService, FetchService fetchService, ParametersValidationService parameterValidationService) {
         this.coreManagerService = coreManagerService;
         this.fetchService = fetchService;
@@ -66,12 +67,11 @@ public class CollectorExecutionServiceImpl implements CollectorExecutionService 
         final Instant endDate = Instant.parse(endDateParam);
         final Command command = Command.createCommand(commandParam);
 
-        if (command.equals(Command.CLEAN)) {
-            logger.info("Cleaning.");
-            System.out.print("Cleaning.");
+
+        if (!command.equals(Command.RUN)) {
+            logger.error("Expected command %S but was given %s", Command.RUN, command);
             return;
         }
-
         final List<String[]> fetchedDocuments;
         try {
             fetchedDocuments = fetch(dataSource, startDate, endDate);
