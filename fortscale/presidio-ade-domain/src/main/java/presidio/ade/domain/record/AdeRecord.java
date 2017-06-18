@@ -2,7 +2,6 @@ package presidio.ade.domain.record;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -15,7 +14,7 @@ import java.time.Instant;
  * Created by Lior Govrin on 06/06/2017.
  */
 @Document
-public abstract class AdeRecord {
+public class AdeRecord {
 	public static final String DATE_TIME_FIELD = "date_time";
 
 	@Id
@@ -35,9 +34,6 @@ public abstract class AdeRecord {
 	public String getAdeRecordType() {
 		return getClass().getSimpleName();
 	}
-
-	@Transient
-	public abstract String getDataSource();
 
 	public String getId() {
 		return id;

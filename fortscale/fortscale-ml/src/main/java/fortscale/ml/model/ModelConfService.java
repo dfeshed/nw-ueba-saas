@@ -18,9 +18,9 @@ public class ModelConfService extends AslConfigurationService {
 
 	@Value("${fortscale.model.configurations.location.path}")
 	private String modelConfigurationsLocationPath;
-	@Value("${fortscale.model.configurations.overriding.location.path:}")
+	@Value("${fortscale.model.configurations.overriding.location.path}")
 	private String modelConfigurationsOverridingLocationPath;
-	@Value("${fortscale.model.configurations.additional.location.path:}")
+	@Value("${fortscale.model.configurations.additional.location.path}")
 	private String modelConfigurationsAdditionalLocationPath;
 
 	private List<ModelConf> modelConfs = new ArrayList<>();
@@ -33,12 +33,12 @@ public class ModelConfService extends AslConfigurationService {
 
 	@Override
 	protected String getBaseOverridingConfJsonFolderPath() {
-		return modelConfigurationsOverridingLocationPath.isEmpty()?null:modelConfigurationsOverridingLocationPath;
+		return modelConfigurationsOverridingLocationPath;
 	}
 
 	@Override
 	protected String getAdditionalConfJsonFolderPath() {
-		return modelConfigurationsAdditionalLocationPath.isEmpty()?null:modelConfigurationsAdditionalLocationPath;
+		return modelConfigurationsAdditionalLocationPath;
 	}
 
 	@Override

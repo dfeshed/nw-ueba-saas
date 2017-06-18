@@ -1,5 +1,6 @@
 package presidio.ade.domain.record.enriched;
 
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 import presidio.ade.domain.record.AdeRecord;
 
@@ -16,5 +17,6 @@ public abstract class EnrichedRecord extends AdeRecord {
 		super(date_time);
 	}
 
-
+	@Transient
+	public abstract String getDataSource();
 }

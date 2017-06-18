@@ -1,7 +1,5 @@
 package fortscale.ml.processes.shell;
 
-import fortscale.global.configuration.GlobalConfiguration;
-import fortscale.ml.model.config.ModelBuildingDependencies;
 import fortscale.ml.scorer.enriched_events.EnrichedEventsScoringService;
 import fortscale.ml.scorer.enriched_events.EnrichedEventsScoringServiceConfig;
 import fortscale.services.config.ParametersValidationServiceConfig;
@@ -30,9 +28,7 @@ import static fortscale.common.general.CommonStrings.*;
         ParametersValidationServiceConfig.class,
         MongoConfig.class,
         EnrichedEventsScoringServiceConfig.class,
-        NullStatsServiceConfig.class,
-        GlobalConfiguration.class,
-        ModelBuildingDependencies.class
+        NullStatsServiceConfig.class
 })
 public class ScoreAggregationServiceConfiguration {
 
