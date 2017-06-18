@@ -22,12 +22,12 @@ import static fortscale.common.general.CommonStrings.COMMAND_LINE_END_DATE_FIELD
 import static fortscale.common.general.CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME;
 
 public class CollectorExecutionServiceImpl implements CollectorExecutionService {
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
-
+    private static Logger logger = LoggerFactory.getLogger(CollectorExecutionServiceImpl.class);
+    
     private final CoreManagerService coreManagerService;
     private final FetchService fetchService;
     private final ParametersValidationService parameterValidationService;
-    
+
     public CollectorExecutionServiceImpl(CoreManagerService coreManagerService, FetchService fetchService, ParametersValidationService parameterValidationService) {
         this.coreManagerService = coreManagerService;
         this.fetchService = fetchService;
