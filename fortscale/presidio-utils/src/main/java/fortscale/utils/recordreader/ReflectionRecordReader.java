@@ -7,47 +7,48 @@ import javax.validation.constraints.NotNull;
 import java.lang.reflect.Field;
 
 /**
- * A record reader that extracts the value of a certain field from a given record using reflection.
+ * A record reader that extracts the value of a certain field from its record using reflection.
  *
  * Created by Lior Govrin on 05/06/2017.
  */
-public class RecordReaderImpl<T> implements RecordReader<T> {
-	private static final Logger logger = Logger.getLogger(RecordReaderImpl.class);
+public class ReflectionRecordReader implements RecordReader {
+	private static final Logger logger = Logger.getLogger(ReflectionRecordReader.class);
 	private static final String DEFAULT_FIELD_PATH_DELIMITER = "\\.";
 
+	private Object record;
 	private String fieldPathDelimiter;
 
 	/**
-	 * Default c'tor.
-	 * This record reader will use the default field path delimiter.
-	 */
-	public RecordReaderImpl() {
-		this.fieldPathDelimiter = DEFAULT_FIELD_PATH_DELIMITER;
-	}
-
-	/**
 	 * C'tor.
-	 * @param fieldPathDelimiter The field path delimiter that this record reader will use
-	 *                           (evaluated as a regular expression and cannot be null)
+	 *
+	 * @param record             the record from which values are extracted
+	 * @param fieldPathDelimiter this record reader's field path delimiter (evaluated as a regular expression)
 	 */
-	public RecordReaderImpl(@NotNull String fieldPathDelimiter) {
+	public ReflectionRecordReader(@NotNull Object record, @NotNull String fieldPathDelimiter) {
+		this.record = record;
 		this.fieldPathDelimiter = fieldPathDelimiter;
 	}
 
 	/**
-	 * @see RecordReader#get(Object, String, Class).
+	 * Default c'tor (default field path delimiter is used).
+	 *
+	 * @param record the record from which values are extracted
+	 */
+	public ReflectionRecordReader(@NotNull Object record) {
+		this(record, DEFAULT_FIELD_PATH_DELIMITER);
+	}
+
+	/**
+	 * @see RecordReader#get(String, Class)
 	 */
 	@Override
-	public <U> U get(T record, String fieldPath, Class<U> fieldClass) {
+	public <T> T get(String fieldPath, Class<T> fieldClass) {
 		Object value = record;
 
 		for (String key : fieldPath.split(fieldPathDelimiter)) {
 			try {
 				Field field = findField(value.getClass(), key);
-				boolean accessible = field.isAccessible();
-				field.setAccessible(true);
-				value = field.get(value);
-				field.setAccessible(accessible);
+				value = getValue(field, value);
 			} catch (NoSuchFieldException | IllegalAccessException e) {
 				String format = "Cannot extract the value of {} from {}. Record = {}, field path = {}.";
 				logger.error(format, key, value, record, fieldPath, e);
@@ -73,5 +74,14 @@ public class RecordReaderImpl<T> implements RecordReader<T> {
 		}
 
 		return field;
+	}
+
+	// Return the value of "field" from "object". Make sure "field" is accessible when extracting the value.
+	private static Object getValue(Field field, Object object) throws IllegalAccessException {
+		boolean accessible = field.isAccessible();
+		field.setAccessible(true);
+		Object value = field.get(object);
+		field.setAccessible(accessible);
+		return value;
 	}
 }
