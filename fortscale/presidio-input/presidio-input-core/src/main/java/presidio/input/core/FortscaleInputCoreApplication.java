@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.task.configuration.EnableTask;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
-import presidio.input.core.spring.InputCoreConfiguration;
+import presidio.input.core.spring.InputCommandLineRunnerConfiguration;
 
 
 @SpringBootApplication
@@ -21,6 +21,7 @@ public class FortscaleInputCoreApplication {
 
     public static void main(String[] args) {
         logger.info("Start Input Core Processing");
-        SpringApplication.run(new Object[]{FortscaleInputCoreApplication.class, InputCoreConfiguration.class}, args);
+        SpringApplication.run(new Object[]{FortscaleInputCoreApplication.class, InputCommandLineRunnerConfiguration.class},
+                args);
     }
 }
