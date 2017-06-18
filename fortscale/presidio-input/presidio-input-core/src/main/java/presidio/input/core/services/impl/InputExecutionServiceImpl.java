@@ -153,7 +153,7 @@ public class InputExecutionServiceImpl implements InputExecutionService {
         logger.debug("Storing {} records.", enrichedDocuments.size());
 
 
-        EnrichedRecordsMetadata recordsMetaData = new EnrichedRecordsMetadata(dataSource.toString(), startDate, endDate);
+        EnrichedRecordsMetadata recordsMetaData = new EnrichedRecordsMetadata(dataSource.getName(), startDate, endDate);
         List<? extends EnrichedRecord> records = convert(enrichedDocuments, new DlpFileConverter());
 
         enrichedDataStore.store(recordsMetaData, records);
