@@ -20,9 +20,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class BootShim {
-    //    private static BootShim bootstrap;
-    private static StopWatch sw = new StopWatch("Spring Shell");
-    private static CommandLine commandLine;
+
+    public static final String SHELL_BEAN_NAME = "shell";
+
+    private CommandLine commandLine;
     private ConfigurableApplicationContext ctx;
 
 
@@ -31,8 +32,8 @@ public class BootShim {
 
         try {
             commandLine = SimpleShellCommandLineOptions.parseCommandLine(args);
-        } catch (IOException var5) {
-            throw new ShellException(var5.getMessage(), var5);
+        } catch (IOException e) {
+            throw new ShellException(e.getMessage(), e);
         }
 
         this.configureApplicationContext(this.ctx);
@@ -45,23 +46,15 @@ public class BootShim {
 
     }
 
-    public ApplicationContext getApplicationContext() {
-        return this.ctx;
+    private void configureApplicationContext(ConfigurableApplicationContext appctx) {
+        this.createAndRegisterBeanDefinition(appctx, JLineShellComponent.class, SHELL_BEAN_NAME);
+        appctx.getBeanFactory().registerSingleton("commandLine", commandLine);
     }
 
-    private void configureApplicationContext(ConfigurableApplicationContext annctx) {
-        this.createAndRegisterBeanDefinition(annctx, JLineShellComponent.class, "shell");
-        annctx.getBeanFactory().registerSingleton("commandLine", commandLine);
-    }
-
-    protected void createAndRegisterBeanDefinition(GenericApplicationContext annctx, Class<?> clazz) {
-        this.createAndRegisterBeanDefinition(annctx, clazz, (String) null);
-    }
-
-    protected void createAndRegisterBeanDefinition(ConfigurableApplicationContext annctx, Class<?> clazz, String name) {
+    protected void createAndRegisterBeanDefinition(ConfigurableApplicationContext appctx, Class<?> clazz, String name) {
         RootBeanDefinition rbd = new RootBeanDefinition();
         rbd.setBeanClass(clazz);
-        DefaultListableBeanFactory bf = (DefaultListableBeanFactory) annctx.getBeanFactory();
+        DefaultListableBeanFactory bf = (DefaultListableBeanFactory) appctx.getBeanFactory();
         if (name != null) {
             bf.registerBeanDefinition(name, rbd);
         } else {
@@ -70,19 +63,9 @@ public class BootShim {
 
     }
 
-    private void setupLogging() {
-        Logger rootLogger = Logger.getLogger("");
-        HandlerUtils.wrapWithDeferredLogHandler(rootLogger, Level.SEVERE);
-        Logger sfwLogger = Logger.getLogger("org.springframework");
-        sfwLogger.setLevel(Level.WARNING);
-        Logger rooLogger = Logger.getLogger("org.springframework.shell");
-        rooLogger.setLevel(Level.FINE);
-    }
-
     public ExitShellRequest run() {
-        sw.start();
         String[] commandsToExecuteAndThenQuit = commandLine.getShellCommandsToExecute();
-        JLineShellComponent shell = (JLineShellComponent) this.ctx.getBean("shell", JLineShellComponent.class);
+        JLineShellComponent shell = this.ctx.getBean(SHELL_BEAN_NAME, JLineShellComponent.class);
         ExitShellRequest exitShellRequest;
         if (null != commandsToExecuteAndThenQuit) {
             boolean successful = false;
@@ -112,15 +95,7 @@ public class BootShim {
             shell.waitForComplete();
         }
 
-        sw.stop();
-        if (shell.isDevelopmentMode()) {
-            System.out.println("Total execution time: " + sw.getLastTaskTimeMillis() + " ms");
-        }
-
         return exitShellRequest;
     }
 
-    public JLineShellComponent getJLineShellComponent() {
-        return (JLineShellComponent) this.ctx.getBean("shell", JLineShellComponent.class);
-    }
 }

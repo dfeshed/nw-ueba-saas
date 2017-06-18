@@ -9,21 +9,18 @@ import org.springframework.shell.core.annotation.CliOption;
 import org.springframework.stereotype.Component;
 
 /**
- * Created by efratn on 12/06/2017.
  * Defines all the supported Presidio commands
+ *
+ * Created by efratn on 12/06/2017.
+ *
  */
 @Component
 public class PresidioCommands implements CommandMarker {
 
-    //TODO change this to some generic intercae to match output\ADE\input ...
     @Autowired
     private PresidioExecutionService executionService;
 
     //todo fixed_duration??
-
-    public PresidioCommands() {
-        System.out.println("TEST");
-    }
 
     @CliAvailabilityIndicator({"process"})
     public boolean isCommandAvailable() {
@@ -37,12 +34,8 @@ public class PresidioCommands implements CommandMarker {
             @CliOption(key = {"start_date"}, mandatory = true, help = "events with (logical) time greater than specified start time will be processed") final String startTime,
 
             @CliOption(key = {"end_date"}, mandatory = false, help = "events with (logical) time smaller than specified end time will be processed") final String endTime
-    ) {
-        try {
-            System.out.println("starting the process");//todo remove this line
+
+    ) throws Exception {
             executionService.process(dataSource, startTime, endTime);
-        } catch (Exception e) {
-            //todo???
-        }
     }
 }

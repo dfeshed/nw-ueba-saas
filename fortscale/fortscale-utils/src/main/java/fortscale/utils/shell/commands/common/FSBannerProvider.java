@@ -13,10 +13,10 @@ import org.springframework.stereotype.Component;
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class FSBannerProvider extends DefaultBannerProvider {
-    //    @Value("${fortscale.process.name}")
-    @Value("process name dummy") //todo change this
+    @Value("application.name")
             String processName;
 
+    @Override
     public String getBanner() {
         StringBuffer buf = new StringBuffer();
         buf.append("===============================================================" + OsUtils.LINE_SEPARATOR);
@@ -33,6 +33,7 @@ public class FSBannerProvider extends DefaultBannerProvider {
         return buf.toString();
     }
 
+    @Override
     public String getWelcomeMessage() {
         return String.format("Welcome to %s CLI", processName);
     }
