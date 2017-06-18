@@ -23,7 +23,7 @@ import static fortscale.common.general.CommonStrings.COMMAND_LINE_START_DATE_FIE
 
 public class CollectorExecutionServiceImpl implements CollectorExecutionService {
     private static Logger logger = LoggerFactory.getLogger(CollectorExecutionServiceImpl.class);
-    
+
     private final CoreManagerService coreManagerService;
     private final FetchService fetchService;
     private final ParametersValidationService parameterValidationService;
@@ -55,7 +55,6 @@ public class CollectorExecutionServiceImpl implements CollectorExecutionService 
             commandParam = parameterValidationService.getMandatoryParamAsString(COMMAND_LINE_COMMAND_FIELD_NAME, params);
             parameterValidationService.validateDataSourceParam(dataSourceParam);
             parameterValidationService.validateCommand(commandParam);
-            // TODO: set date format convention
             parameterValidationService.validateTimeParams(startDateParam, endDateParam);
         } catch (Exception e) {
             logger.error("Invalid input[{}].", params, e);
