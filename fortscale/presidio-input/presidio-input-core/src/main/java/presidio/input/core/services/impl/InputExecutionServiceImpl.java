@@ -8,10 +8,9 @@ import fortscale.domain.core.AbstractAuditableDocument;
 import fortscale.services.parameters.ParametersValidationService;
 import fortscale.utils.logging.Logger;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
-import presidio.ade.domain.store.enriched.EnrichedDataStore;
-import presidio.ade.domain.store.enriched.EnrichedRecordsMetadata;
 import presidio.input.core.services.api.InputExecutionService;
 import presidio.input.core.services.converters.DlpFileConverter;
+import presidio.input.core.services.data.AdeDataService;
 import presidio.sdk.api.domain.DlpFileDataDocument;
 import presidio.sdk.api.domain.DlpFileEnrichedDocument;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
@@ -38,7 +37,7 @@ public class InputExecutionServiceImpl implements InputExecutionService {
 
     private final ParametersValidationService parameterValidationService;
     private final PresidioInputPersistencyService presidioInputPersistencyService;
-    private final EnrichedDataStore enrichedDataStore;
+    private final AdeDataService adeDataService;
 
     private DataSource dataSource;
     private Instant startDate;
@@ -47,10 +46,10 @@ public class InputExecutionServiceImpl implements InputExecutionService {
 
     public InputExecutionServiceImpl(ParametersValidationService parameterValidationService,
                                      PresidioInputPersistencyService presidioInputPersistencyService,
-                                     EnrichedDataStore enrichedDataStore) {
+                                     AdeDataService adeDataService) {
         this.parameterValidationService = parameterValidationService;
         this.presidioInputPersistencyService = presidioInputPersistencyService;
-        this.enrichedDataStore = enrichedDataStore;
+        this.adeDataService = adeDataService;
     }
 
     private void init(String... params) throws Exception {
@@ -153,10 +152,9 @@ public class InputExecutionServiceImpl implements InputExecutionService {
         logger.debug("Storing {} records.", enrichedDocuments.size());
 
 
-        EnrichedRecordsMetadata recordsMetaData = new EnrichedRecordsMetadata(dataSource.getName(), startDate, endDate);
         List<? extends EnrichedRecord> records = convert(enrichedDocuments, new DlpFileConverter());
 
-        enrichedDataStore.store(recordsMetaData, records);
+        adeDataService.store(dataSource, startDate, endDate, records);
 
         logger.info("*************input logic comes here***********");
         logger.info("enriched documents: \n{}", enrichedDocuments);
