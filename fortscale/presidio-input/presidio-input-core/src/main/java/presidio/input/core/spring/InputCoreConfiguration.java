@@ -33,27 +33,4 @@ public class InputCoreConfiguration {
     public InputExecutionService inputProcessService() {
         return new InputExecutionServiceImpl(parametersValidationService, presidioInputPersistencyService, enrichedDataStore);
     }
-
-    @Bean
-    public CommandLineRunner commandLineRunner() {
-        return new PresidioCommandLineRunner(inputProcessService());
-    }
-
-
-    // // TODO: 07-Jun-17 create generic command line runner and generic execution service for all our components
-    private static class PresidioCommandLineRunner implements CommandLineRunner {
-
-        private InputExecutionService inputExecutionService;
-
-        public PresidioCommandLineRunner(InputExecutionService inputExecutionService) {
-            this.inputExecutionService = inputExecutionService;
-        }
-
-        @Override
-        public void run(String... params) throws Exception {
-            this.inputExecutionService.run(params);
-
-        }
-    }
-
 }
