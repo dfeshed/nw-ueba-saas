@@ -38,4 +38,9 @@ public class MockedEnrichedRecord extends EnrichedRecord {
     public void setFeatureField(String featureField) {
         this.featureField = featureField;
     }
+
+    @Override
+    public String getDataSource() {
+        return "mockedDataSource";
+    }
 }

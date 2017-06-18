@@ -1,9 +1,8 @@
 package presidio.collector.services.impl;
 
 import com.opencsv.CSVReader;
-import fortscale.common.general.Datasource;
+import fortscale.common.general.DataSource;
 import fortscale.utils.logging.Logger;
-import fortscale.utils.time.TimestampUtils;
 import presidio.collector.services.api.Fetcher;
 
 import java.io.BufferedReader;
@@ -11,7 +10,7 @@ import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,17 +29,17 @@ public class CsvFileFetcher implements Fetcher {
     }
 
     @Override
-    public List<String[]> fetch(Datasource datasource, long startTime, long endTime) throws Exception {
-        final String csvFile = buildFileName(datasource);
+    public List<String[]> fetch(DataSource dataSource, Instant startTime, Instant endTime) throws Exception {
+        final String csvFile = buildFileName(dataSource);
         CSVReader reader = new CSVReader(new BufferedReader(new InputStreamReader(new FileInputStream(csvFile), charset), delimiter));
 
         final List<String[]> records = new ArrayList<>();
         String[] line;
         boolean isDone = false;
         while (!isDone && (line = reader.readNext()) != null) {
-            final long currentLineDateTimeUnix = TimestampUtils.convertToSeconds(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse(line[0]).getTime()); //todo: ad-hoc. maybe we should pass the fetchers a map with parameters they need (like in this example, the date time unix fields index in each line). also format can come from config
-            if (startTime <= currentLineDateTimeUnix) {
-                if (currentLineDateTimeUnix <= endTime) {
+            final Instant eventTime = Instant.parse(line[0]); //todo: ad-hoc. maybe we should pass the fetchers a map with parameters they need (like in this example, the date time unix fields index in each line). also format can come from config
+            if (startTime.isBefore(eventTime)) {
+                if (endTime.isAfter(eventTime)) {
                     records.add(line); //assumes file is sorted by date time unix
                 } else {
                     isDone = true;
@@ -60,8 +59,8 @@ public class CsvFileFetcher implements Fetcher {
         //todo: also... - the name 'filter' can be better :-)
     }
 
-    private String buildFileName(Datasource datasource) {
-        final String fileName = datasource.name() + ".csv"; //todo: we should consider extracting to a service if someone else uses these files
+    private String buildFileName(DataSource dataSource) {
+        final String fileName = dataSource.name() + ".csv"; //todo: we should consider extracting to a service if someone else uses these files
         return Paths.get(csvFilesFolderPath, fileName).toString();
     }
 }

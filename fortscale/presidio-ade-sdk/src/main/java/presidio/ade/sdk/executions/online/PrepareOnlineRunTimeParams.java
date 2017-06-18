@@ -1,14 +1,14 @@
 package presidio.ade.sdk.executions.online;
 
+import presidio.ade.sdk.executions.historical.ADERunParams;
+
 import java.time.Duration;
 import java.time.Instant;
 
 /**
  * Created by barak_schuster on 5/18/17.
  */
-public class PrepareOnlineRunTimeParams {
-    private final Instant startInstant;
-    private final Duration timeDelta;
+public class PrepareOnlineRunTimeParams extends ADERunParams {
 
     /**
      * example:
@@ -19,17 +19,7 @@ public class PrepareOnlineRunTimeParams {
      * @param timeDelta           a duration expression signifying the schedule interval (once in when to run) of the mission
      */
     public PrepareOnlineRunTimeParams(Instant startInstant, Duration timeDelta) {
-        this.startInstant = startInstant;
-        this.timeDelta = timeDelta;
+        super(startInstant,timeDelta);
     }
-
-    public Instant getStartInstant() {
-        return startInstant;
-    }
-
-    public Duration getTimeDelta() {
-        return timeDelta;
-    }
-
 
 }

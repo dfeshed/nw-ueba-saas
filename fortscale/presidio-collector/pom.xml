@@ -28,7 +28,7 @@
         </dependency>
         <dependency>
             <groupId>fortscale</groupId>
-            <artifactId>fortscale-utils</artifactId>
+            <artifactId>presidio-utils</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -53,7 +53,7 @@
         </dependency>
         <dependency>
             <groupId>fortscale</groupId>
-            <artifactId>fortscale-services</artifactId>
+            <artifactId>presidio-services</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>

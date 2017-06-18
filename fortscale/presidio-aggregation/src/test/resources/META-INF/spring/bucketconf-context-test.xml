@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+						http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <import resource="classpath*:META-INF/spring/fortscale-global-config-context.xml"/>
+    <import resource="classpath*:META-INF/spring/presidio-domain-light-context.xml"/>
+    <import resource="classpath*:META-INF/spring/fortscale-aggr-context-test.xml"/>
+    <bean id="aggrEventTopologyService" class="fortscale.aggregation.feature.event.AggrEventTopologyServiceForTest"/>
+    <bean id="nullStatsServiceConfig" class="fortscale.utils.monitoring.stats.config.NullStatsServiceConfig"/>
+    <bean id="aggregatedFeatureEventsConfUtilServiceConfig"
+          class="fortscale.aggregation.feature.event.config.AggregatedFeatureEventsConfUtilServiceConfig"/>
+
+    <context:spring-configured/>
+    <context:annotation-config/>
+    <context:component-scan base-package="fortscale.global"/>
+    <bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
+        <property name="location" value="classpath:BucketConfigurationServiceTest.properties"/>
+        <property name="order" value="#{T(org.springframework.core.Ordered).HIGHEST_PRECEDENCE}"/>
+        <property name="ignoreUnresolvablePlaceholders" value="true"/>
+        <property name="localOverride" value="true"/>
+    </bean>
+</beans>
