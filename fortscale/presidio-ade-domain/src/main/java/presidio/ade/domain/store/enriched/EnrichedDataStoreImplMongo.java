@@ -146,7 +146,6 @@ public class EnrichedDataStoreImplMongo implements EnrichedDataStore {
         CompoundIndexDefinition indexDefinition = new CompoundIndexDefinition(indexOptions);
 
         mongoTemplate.indexOps(collectionName).ensureIndex(indexDefinition);
-        int test =0;
     }
 
 
