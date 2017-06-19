@@ -1,4 +1,5 @@
 import Component from 'ember-component';
+import { debounce } from 'ember-runloop';
 import connect from 'ember-redux/components/connect';
 import { or, alias } from 'ember-computed-decorators';
 import ReconPanelHelp from 'recon/mixins/recon-panel-help';
@@ -14,6 +15,7 @@ import {
 } from 'recon/reducers/packets/selectors';
 import { allDataHidden } from 'recon/reducers/visuals/selectors';
 import { packetTotal } from 'recon/reducers/header/selectors';
+import { hidePacketTooltip } from 'recon/actions/interaction-creators';
 
 import layout from './template';
 
@@ -30,6 +32,8 @@ const stateToComputed = ({ recon, recon: { data, packets } }) => ({
   tooltipData: packets.packetTooltipData
 });
 
+const dispatchToActions = { hidePacketTooltip };
+
 const PacketReconComponent = Component.extend(ReconPagerMixin, StickyHeaderMixin, DelayBatchingMixin, ReconPanelHelp, {
   layout,
   classNames: ['recon-event-detail-packets'],
@@ -44,8 +48,24 @@ const PacketReconComponent = Component.extend(ReconPagerMixin, StickyHeaderMixin
   @or('hasNoPayloadEliminatedAllVisiblePackets', 'allDataHidden')
   hasDataBeenHiddenByUserSelection: false,
 
-  @alias('contextualHelp.invPacketAnalysis') topic: null
+  @alias('contextualHelp.invPacketAnalysis') topic: null,
 
+  didInsertElement() {
+    this._super(...arguments);
+    // We have to clear tooltip data on scroll
+    this.$().find('.scroll-box').on('scroll', () => {
+      debounce(this, this.hideTooltip, 100, true);
+    });
+  },
+
+  willDestroyElement() {
+    this._super(...arguments);
+    this.$().find('.scroll-box').off('scroll');
+  },
+
+  hideTooltip() {
+    this.send('hidePacketTooltip');
+  }
 });
 
-export default connect(stateToComputed)(PacketReconComponent);
+export default connect(stateToComputed, dispatchToActions)(PacketReconComponent);

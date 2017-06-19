@@ -71,10 +71,6 @@ const ByteTableComponent = Component.extend({
 
   didInsertElement() {
     this._scheduleAfterRenderTasks();
-    // We have to clear tooltip data on scroll
-    $('.recon-event-detail-packets').scroll(() => {
-      $('.rsa-byte-table-tooltip').removeClass('visible');
-    });
   },
 
   willDestroyElement() {
