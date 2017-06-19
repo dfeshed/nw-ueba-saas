@@ -124,7 +124,7 @@ public abstract class PaginationService<T> {
 
         int totalNumOfItems = 0;
         int start = 0;
-        int end = contextIdToNumOfEventsList.size() - 1;
+        int end = sortedList.size() - 1;
         int numOfHandledContextIds = 0;
 
         // Next condition handle 2 cases: (end == start && numOfHandledContextIds == contextIdToNumOfEventsList.size()-1)
@@ -132,10 +132,10 @@ public abstract class PaginationService<T> {
         // # second case: all context ids were handled and inserted to groups except the last context id:
         // It may happened, where start = end -1 and the last context id can not join to current group due to pageSize or maxGroupSize.
         // additional group should be created for last context id. (See case 2 in examples above).
-        while (end > start || (end == start && numOfHandledContextIds == contextIdToNumOfEventsList.size()-1)) {
+        while (end > start || (end == start && numOfHandledContextIds == sortedList.size()-1)) {
             Set<String> contextIds = new HashSet<>();
-            ContextIdToNumOfEvents first = contextIdToNumOfEventsList.get(start);
-            ContextIdToNumOfEvents last = contextIdToNumOfEventsList.get(end);
+            ContextIdToNumOfEvents first = sortedList.get(start);
+            ContextIdToNumOfEvents last = sortedList.get(end);
             contextIds.add(last.getContextId());
             totalNumOfItems = last.getTotalNumOfEvents();
             numOfHandledContextIds++;
