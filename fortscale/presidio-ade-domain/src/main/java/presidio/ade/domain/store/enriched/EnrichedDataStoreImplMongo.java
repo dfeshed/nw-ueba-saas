@@ -32,9 +32,6 @@ import java.util.*;
 public class EnrichedDataStoreImplMongo implements EnrichedDataStore {
     private static final Logger logger = Logger.getLogger(EnrichedDataStoreImplMongo.class);
 
-    private static final Instant START = Instant.ofEpochSecond(1388534400);
-    private static final Instant END = Instant.ofEpochSecond(1483228800);
-
     private final MongoTemplate mongoTemplate;
     private final EnrichedDataToCollectionNameTranslator translator;
     private final DataSourceToAdeEnrichedRecordClassResolver dataSourceToAdeEnrichedRecordClassResolver;
