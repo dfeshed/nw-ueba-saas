@@ -1,7 +1,7 @@
 package fortscale.common.general;
 
 import fortscale.utils.logging.Logger;
-import fortscale.common.shell.BootShim;
+import fortscale.utils.shell.BootShim;
 import org.springframework.context.ConfigurableApplicationContext;
 
 import java.util.Arrays;

@@ -1,4 +1,4 @@
-package fortscale.common;
+package fortscale.common.shell;
 
 import fortscale.common.general.DataSource;
 

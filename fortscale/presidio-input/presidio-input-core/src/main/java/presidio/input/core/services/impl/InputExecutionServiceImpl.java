@@ -1,7 +1,7 @@
 package presidio.input.core.services.impl;
 
 
-import fortscale.common.PresidioExecutionService;
+import fortscale.common.shell.PresidioExecutionService;
 import fortscale.common.general.CommonStrings;
 import fortscale.common.general.DataSource;
 import fortscale.domain.core.AbstractAuditableDocument;

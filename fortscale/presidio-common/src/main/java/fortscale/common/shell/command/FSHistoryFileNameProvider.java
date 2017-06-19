@@ -1,4 +1,4 @@
-package fortscale.common.shell.commands.common;
+package fortscale.common.shell.command;
 
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;

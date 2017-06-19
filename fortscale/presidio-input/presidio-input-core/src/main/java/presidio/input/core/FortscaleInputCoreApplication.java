@@ -4,7 +4,7 @@ package presidio.input.core;
 
 import fortscale.common.general.PresidioShellableApplication;
 import fortscale.utils.logging.Logger;
-import fortscale.common.shell.commands.config.ShellCommonCommandsConfig;
+import fortscale.common.shell.config.ShellCommonCommandsConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;

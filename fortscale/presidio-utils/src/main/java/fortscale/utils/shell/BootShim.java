@@ -1,4 +1,4 @@
-package fortscale.common.shell;
+package fortscale.utils.shell;
 
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;

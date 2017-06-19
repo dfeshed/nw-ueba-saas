@@ -1,6 +1,6 @@
-package fortscale.common.shell.commands.common;
+package fortscale.common.shell.command;
 
-import fortscale.common.PresidioExecutionService;
+import fortscale.common.shell.PresidioExecutionService;
 import fortscale.common.general.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.shell.core.CommandMarker;
@@ -30,6 +30,10 @@ public class PresidioCommands implements CommandMarker {
         return true;
     }
 
+    public PresidioCommands() {
+        System.out.println();
+    }
+
     @CliCommand(value = "process", help = "process events with specified time range and data source")
     public void process(
             @CliOption(key = {"data_source"}, mandatory = true, help = "data source") final DataSource dataSource,
@@ -39,6 +43,27 @@ public class PresidioCommands implements CommandMarker {
             @CliOption(key = {"end_date"}, mandatory = false, help = "events with (logical) time smaller than specified end time will be processed") final Instant endTime
 
     ) throws Exception {
-            executionService.process(dataSource, startTime, endTime);
+            executionService.process(fortscale.common.general.DataSource.DLPFILE, startTime, endTime);
+    }
+
+    public enum DataSource {
+
+        DLPFILE("dlpfile"), DLPMAIL("dlpmail"), PRNLOG("prnlog");
+
+        private String name;
+
+        DataSource(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public static fortscale.common.general.DataSource createDataSource(String dataSourceName) throws Exception {
+            return fortscale.common.general.DataSource.valueOf(dataSourceName.toUpperCase());
+        }
+
+
     }
 }
