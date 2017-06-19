@@ -38,8 +38,9 @@ public class CsvFileFetcher implements Fetcher {
         boolean isDone = false;
         while (!isDone && (line = reader.readNext()) != null) {
             final Instant eventTime = Instant.parse(line[0]); //todo: ad-hoc. maybe we should pass the fetchers a map with parameters they need (like in this example, the date time unix fields index in each line). also format can come from config
-            if (startTime.isBefore(eventTime)) {
-                if (endTime.isAfter(eventTime)) {
+            if (!eventTime.isBefore(startTime)){
+                if (eventTime.isBefore(endTime)) {
+                    // The event is in the required time range startTime <= eventTime < endTime
                     records.add(line); //assumes file is sorted by date time unix
                 } else {
                     isDone = true;
