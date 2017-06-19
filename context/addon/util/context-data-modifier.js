@@ -133,6 +133,11 @@ const pivotToInvestigateUrl = (entityType, entityId) => {
       query = `checksum='${entityId}'`;
       break;
     case 'MAC_ADDRESS':
+      // ECAT may provide long MACs with 8-pairs of hex values (e.g., 11-11-11-11-11-11-11-11)
+      // but Core only supports 6-pairs of hex values (e.g., 11-11-11-11-11-11)
+      if (String(entityId).length > 17) {
+        return '';
+      }
       // ECAT can provide hyphenated format, but Core requires colon format instead
       entityId = String(entityId).replace(/\-/g, ':');
       query = `eth.src=${entityId}||eth.dst=${entityId}`;

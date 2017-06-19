@@ -111,12 +111,20 @@ test('it only shows the Pivot to Investigate link for IPs, HOSTs, MACs, DOMAINs,
       assert.ok(this.$('.js-test-pivot-to-investigate-link').length, 'Expected to find investigate link for HOST');
       this.setProperties({
         entityType: 'MAC_ADDRESS',
-        entityId: 'aa:bb:cc:dd'
+        entityId: 'aa:bb:cc:dd:ee:ff'
       });
       return wait();
     })
     .then(() => {
-      assert.ok(this.$('.js-test-pivot-to-investigate-link').length, 'Expected to find investigate link for MAC');
+      assert.ok(this.$('.js-test-pivot-to-investigate-link').length, 'Expected to find investigate link for MAC with 6-pairs');
+      this.setProperties({
+        entityType: 'MAC_ADDRESS',
+        entityId: 'aa:bb:cc:dd:ee:ff:11:22'
+      });
+      return wait();
+    })
+    .then(() => {
+      assert.notOk(this.$('.js-test-pivot-to-investigate-link').length, 'Expected to NOT find investigate link for MAC with 8-pairs');
       this.setProperties({
         entityType: 'DOMAIN',
         entityId: 'www.g00gle.com'
