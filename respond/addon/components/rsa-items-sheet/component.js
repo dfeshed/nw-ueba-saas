@@ -1,6 +1,6 @@
 import Component from 'ember-component';
 import layout from './template';
-import computed, { bool, gt } from 'ember-computed-decorators';
+import computed, { gt } from 'ember-computed-decorators';
 
 /**
  * @class Items Sheet component
@@ -27,14 +27,18 @@ export default Component.extend({
   items: [],
 
   /**
-   * Optional status of `items` fetch; e.g., 'error', 'success', 'complete', 'wait', 'streaming', 'paused', or 'error'.
-   * This is only used in order to determine whether to auto-select the first item if there is only one item in `items`.
-   * We auto-select only if `itemStatus` says we are done fetching ('success' or 'complete') or is undefined. We
-   * don't auto-select otherwise because we don't yet have the full `items` list.
-   * @type {String}
+   * Total number of expected `items`.
+   * The total count of items is used to determine the default view (Item Details should be the default only when
+   * total count is exactly one; otherwise the Table view is the default).
+   * The total count is surfaced as a separate input param (rather than simply measuring `items.length`) because in
+   * the Respond UI scenario, `items` may be streamed in and therefore `items.length` is variable and unreliable.
+   * Also in Respond UI, incidents and alerts already have cached their total event count, so we don't need to wait
+   * for the events to finish streaming in order to determine their total count. Rather, we can prepare the UI
+   * right away, even before the events have started arriving.
+   * @type {Number}
    * @public
    */
-  itemsStatus: null,
+  totalCount: 0,
 
   /**
    * The object from `items` which is to be displayed in the Item Details view.
@@ -73,17 +77,14 @@ export default Component.extend({
   },
 
   // Computes which item should be currently shown in the Item Details view
-  @computed('items.[]', 'selectedItem', 'itemsStatus')
-  resolvedSelectedItem(items, selectedItem, itemsStatus) {
+  @computed('items.[]', 'selectedItem', 'totalCount')
+  resolvedSelectedItem(items, selectedItem, totalCount) {
     if (selectedItem) {
       return selectedItem;
     } else {
-      const canAutoSelect = !itemsStatus || !!String(itemsStatus).match(/success|complete/);
+      const canAutoSelect = (totalCount === 1);
       if (canAutoSelect) {
-        const onlyOneItem = !!items && (items.length === 1);
-        if (onlyOneItem) {
-          return items[0];
-        }
+        return items && items[0];
       }
       return null;
     }
@@ -117,28 +118,9 @@ export default Component.extend({
   },
 
   // True if the Item Details view should be displayed; otherwise, Table view should be displayed.
-  @bool('resolvedSelectedItem')
-  shouldShowItemDetails: true,
-
-  // Computes an object that is a composition of the other computes properties which describe this component's UI
-  // state, plus the name of the liquid-fire transition that should be to render that new state.
-  @computed('shouldShowItemDetails', 'items', 'resolvedSelectedItem', 'selectedIndex', 'isNavEnabled')
-  shouldShow(itemDetails, items, selectedItem, selectedIndex, isNavEnabled) {
-    const show = { itemDetails, items, selectedItem, selectedIndex, isNavEnabled };
-    const lastShow = this._lastShow || {};
-    let transition = 'default';
-    if (show.items === lastShow.items) {
-      if (!lastShow.selectedItem || !show.selectedItem) {
-        if (!lastShow.selectedItem && show.selectedItem) {
-          transition = 'toLeft';
-        } else if (lastShow.selectedItem && !show.selectedItem) {
-          transition = 'toRight';
-        }
-      }
-    }
-    show.transition = transition;
-    this._lastShow = show;
-    return show;
+  @computed('resolvedSelectedItem', 'totalCount')
+  shouldShowDetails(selectedItem, totalCount) {
+    return !!selectedItem || (totalCount === 1);
   },
 
   // True if the Previous & Next navigation controls should be displayed; i.e., if there are multiple objects in `items`.

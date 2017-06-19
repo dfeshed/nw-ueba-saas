@@ -8,7 +8,6 @@ moduleForComponent('rsa-items-sheet', 'Integration | Component | Items Sheet', {
   resolver: engineResolverFor('respond')
 });
 
-
 const item1 = {
   id: 'id1',
   foo: 'foo1',
@@ -22,8 +21,11 @@ const item2 = {
 };
 
 test('it renders the table view initially when given a list of more than 1 item', function(assert) {
-  this.set('items', [ item1, item2 ]);
-  this.render(hbs`{{rsa-items-sheet items=items}}`);
+  this.setProperties({
+    items: [ item1, item2 ],
+    totalCount: 2
+  });
+  this.render(hbs`{{rsa-items-sheet items=items totalCount=totalCount}}`);
   return wait()
     .then(() => {
       const $el = this.$('.rsa-items-sheet');
@@ -38,8 +40,11 @@ test('it renders the table view initially when given a list of more than 1 item'
 });
 
 test('it renders the details view initially when given a list of only 1 item', function(assert) {
-  this.set('items', [ item1 ]);
-  this.render(hbs`{{rsa-items-sheet items=items}}`);
+  this.setProperties({
+    items: [ item1 ],
+    totalCount: 1
+  });
+  this.render(hbs`{{rsa-items-sheet items=items totalCount=totalCount}}`);
   return wait()
     .then(() => {
       const $el = this.$('.rsa-items-sheet');
@@ -53,29 +58,18 @@ test('it renders the details view initially when given a list of only 1 item', f
     });
 });
 
-test('it renders the table view initially if itemStatus is still awaiting data', function(assert) {
+test('it renders the table view initially when told there will be multiple items', function(assert) {
   this.setProperties({
     items: [ item1 ],
-    itemsStatus: 'streaming'
+    totalCount: 2
   });
-  this.render(hbs`{{rsa-items-sheet items=items itemsStatus=itemsStatus}}`);
+  this.render(hbs`{{rsa-items-sheet items=items totalCount=totalCount}}`);
   return wait()
     .then(() => {
       const $table = this.$('.rsa-items-sheet__table-view');
-      assert.equal($table.length, 1, 'Expected to find data table DOM node while awaiting data');
+      assert.equal($table.length, 1, 'Expected to find data table DOM node');
 
       const $details = this.$('.rsa-items-sheet__details-view');
-      assert.notOk($details.length, 'Expected to NOT find detais view DOM node while awaiting data');
-
-      // Simulate the end of the data stream.
-      this.set('itemsStatus', 'complete');
-      return wait();
-    })
-    .then(() => {
-      const $table = this.$('.rsa-items-sheet__table-view');
-      assert.notOk($table.length, 'Expected to NOT find data table DOM node after data is done arriving');
-
-      const $details = this.$('.rsa-items-sheet__details-view');
-      assert.equal($details.length, 1, 'Expected to find detais view DOM node after data is done arriving');
+      assert.notOk($details.length, 'Expected to NOT find detais view DOM node');
     });
 });

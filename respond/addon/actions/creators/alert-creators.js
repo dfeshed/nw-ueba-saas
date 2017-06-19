@@ -127,7 +127,7 @@ const toggleSelectAll = () => ({ type: ACTION_TYPES.TOGGLE_SELECT_ALL_ALERTS });
 const initializeAlert = (alertId) => {
   return (dispatch) => {
     dispatch({
-      type: ACTION_TYPES.INITIALIZE_INCIDENT,
+      type: ACTION_TYPES.INITIALIZE_ALERT,
       payload: alertId
     });
     if (alertId) {

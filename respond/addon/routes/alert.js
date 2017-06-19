@@ -25,5 +25,9 @@ export default Route.extend({
     return {
       alertId: alert_id
     };
+  },
+
+  deactivate() {
+    this.get('redux').dispatch(initializeAlert(null));
   }
 });

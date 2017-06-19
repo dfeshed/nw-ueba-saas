@@ -2,16 +2,16 @@ import EventsSheet from 'respond/components/rsa-events-sheet/component';
 import layout from './template';
 import connect from 'ember-redux/components/connect';
 
-const stateToComputed = ({ respond: { alert: { events, eventsStatus } } }) => ({
+const stateToComputed = ({ respond: { alert: { info, events } } }) => ({
   items: events,
-  itemsStatus: eventsStatus
+  totalCount: info ? parseInt(info.alert.numEvents, 10) : null
 });
 
 const AlertDatasheet = EventsSheet.extend({
   tagName: '',
   layout,
   items: null,
-  itemsStatus: null
+  totalCount: null
 });
 
 export default connect(stateToComputed)(AlertDatasheet);

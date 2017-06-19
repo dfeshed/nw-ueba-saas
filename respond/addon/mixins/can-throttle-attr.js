@@ -62,6 +62,9 @@ export default Mixin.create({
    * @private
    */
   copyThrottledAttr() {
+    if (this.get('isDestroying') || this.get('isDestroyed')) {
+      return;
+    }
     const throttleFromAttr = this.get('throttleFromAttr');
     const throttleToAttr = this.get('throttleToAttr') || `${throttleFromAttr}Throttled`;
     this.set(throttleToAttr, this.get(throttleFromAttr));

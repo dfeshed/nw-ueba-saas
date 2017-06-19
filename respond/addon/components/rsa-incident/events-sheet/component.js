@@ -8,7 +8,8 @@ const stateToComputed = (state) => ({
   items: storyDatasheet(state),
   storyline: state.respond.incident.storyline,
   selection: state.respond.incident.selection,
-  itemsStatus: state.respond.incident.storylineEventsStatus
+  totalCount: state.respond.incident.info ? parseInt(state.respond.incident.info.alertCount, 10) : null,
+  throttleInterval: (state.respond.incident.info && state.respond.incident.info.alertCount === 1) ? 0 : 1000
 });
 
 const IncidentDatasheet = EventsSheet.extend({
@@ -17,7 +18,8 @@ const IncidentDatasheet = EventsSheet.extend({
   items: null,
   storyline: null,
   selection: null,
-  itemsStatus: null,
+  totalCount: null,
+  throttleInterval: null,
 
   @computed('selection.{type,ids}', 'storyline.[]')
   selectedIndicatorName(type, ids, storyline) {

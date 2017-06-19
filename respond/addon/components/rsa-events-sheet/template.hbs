@@ -1,4 +1,4 @@
-{{#rsa-items-sheet columnsConfig=columnsConfig items=itemsThrottled itemsStatus=itemsStatus as |sheet|}}
+{{#rsa-items-sheet columnsConfig=columnsConfig items=itemsThrottled totalCount=totalCount as |sheet|}}
   {{yield sheet}}
   {{#sheet.tableBody
     items=itemsThrottled

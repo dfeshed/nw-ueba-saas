@@ -28,5 +28,9 @@ export default Route.extend({
     return {
       incidentId: incident_id
     };
+  },
+
+  deactivate() {
+    this.get('redux').dispatch(initializeIncident(null));
   }
 });

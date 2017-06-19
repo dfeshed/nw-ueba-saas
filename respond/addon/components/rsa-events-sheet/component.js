@@ -10,6 +10,8 @@ export default Component.extend(CanThrottleAttr, {
   throttleToAttr: 'itemsThrottled',
   throttleInterval: 1000,
 
+  totalCount: 0,
+
   columnsConfig: [{
     field: 'timestamp',
     title: 'respond.eventsTable.time',
