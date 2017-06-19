@@ -31,6 +31,7 @@ export default {
   /**
    * Executes a websocket call to delete a journal entry (by journal entry id)
    * @public
+   * @param incidentId
    * @param journalEntryId
    * @returns {Promise}
    */
@@ -43,6 +44,27 @@ export default {
       query: {
         incidentId,
         journalId
+      }
+    });
+  },
+
+  /** Executes a websocket call to update a journal entry
+   * @param incidentId
+   * @param journalId
+   * @param journalMap
+   * @returns {*}
+   * @public
+   */
+  updateEntry(incidentId, journalId, journalMap = {}) {
+    assert('An incidentId and journalId must be provided', (isPresent(incidentId) && isPresent(journalId)));
+
+    return promiseRequest({
+      method: 'updateRecord',
+      modelName: 'journal-entry',
+      query: {
+        incidentId,
+        journalId,
+        journalMap
       }
     });
   }

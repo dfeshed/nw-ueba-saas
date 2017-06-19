@@ -67,6 +67,7 @@ $headerHeight: 30px;
     }
 
     &__header {
+      min-height: 15px;
       white-space: nowrap;
       @include rsa-font(navigation,small);
       color: rsa-color(gray, light);
@@ -89,7 +90,16 @@ $headerHeight: 30px;
     &__note {
       @include rsa-font(paragraph);
       color: rsa-color(white);
-      white-space: pre-line;
+
+      .editable-field.textarea {
+        width: auto;
+        min-height: 35px;
+
+        &.is-editing {
+          width: 100%;
+          min-height: 150px;
+        }
+      }
     }
 
     &__milestone {

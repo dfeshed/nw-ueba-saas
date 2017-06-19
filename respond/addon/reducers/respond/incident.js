@@ -347,6 +347,32 @@ const incident = reduxActions.handleActions({
         };
       }
     });
+  },
+
+  [ACTION_TYPES.UPDATE_JOURNAL_ENTRY]: (state, action) => {
+    const notes = state.info.notes || [];
+    return handle(state, action, {
+      start: (s) => ({ ...s }),
+      failure: (s) => ({ ...s }),
+      success: (s) => {
+        const { payload: { request: { journalId, journalMap } } } = action;
+        return {
+          ...s,
+          info: {
+            ...s.info,
+            notes: notes.map((note) => {
+              if (note.id !== journalId) {
+                return note;
+              }
+              return {
+                ...note,
+                ...journalMap
+              };
+            })
+          }
+        };
+      }
+    });
   }
 
 }, initialState);

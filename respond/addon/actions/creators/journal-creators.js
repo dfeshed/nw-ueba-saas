@@ -60,7 +60,36 @@ const deleteJournalEntry = (incidentId, journalId, callbacks = callbacksDefault)
   };
 };
 
+
+/**
+ * Action creator for deleting a journal entry attached to an incident
+ * @method updateJournalEntry
+ * @public
+ * @param incidentId
+ * @param journalId
+ * @param journalMap {object}
+ * @param callbacks { onSuccess, onFailure }
+ * @returns {Object}
+ */
+const updateJournalEntry = (incidentId, journalId, journalMap, callbacks = callbacksDefault) => {
+  return {
+    type: ACTION_TYPES.UPDATE_JOURNAL_ENTRY,
+    promise: journal.updateEntry(incidentId, journalId, journalMap),
+    meta: {
+      onSuccess: (response) => {
+        Logger.debug(ACTION_TYPES.UPDATE_JOURNAL_ENTRY, response);
+        callbacks.onSuccess(response);
+      },
+      onFailure: (response) => {
+        ErrorHandlers.handleContentUpdateError(response, 'journal entry');
+        callbacks.onFailure(response);
+      }
+    }
+  };
+};
+
 export {
   createJournalEntry,
-  deleteJournalEntry
+  deleteJournalEntry,
+  updateJournalEntry
 };

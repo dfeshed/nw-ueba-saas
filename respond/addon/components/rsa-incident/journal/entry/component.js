@@ -2,7 +2,7 @@ import Component from 'ember-component';
 import connect from 'ember-redux/components/connect';
 import Notifications from 'respond/mixins/notifications';
 import Confirmable from 'respond/mixins/confirmable';
-import { deleteJournalEntry } from 'respond/actions/creators/journal-creators';
+import { deleteJournalEntry, updateJournalEntry } from 'respond/actions/creators/journal-creators';
 import layout from './template';
 
 const dispatchToActions = (dispatch) => {
@@ -14,6 +14,12 @@ const dispatchToActions = (dispatch) => {
           onFailure: () => (this.send('failure', 'respond.entities.actionMessages.deleteFailure'))
         }));
       });
+    },
+    updateEntry(incidentId, entryId, journalMap) {
+      dispatch(updateJournalEntry(incidentId, entryId, journalMap, {
+        onSuccess: () => (this.send('success', 'respond.entities.actionMessages.updateSuccess')),
+        onFailure: () => (this.send('failure', 'respond.entities.actionMessages.deleteFailure'))
+      }));
     }
   };
 };
@@ -33,6 +39,12 @@ const JournalEntry = Component.extend(Notifications, Confirmable, {
     handleDelete() {
       const { incidentId, entry } = this.getProperties('incidentId', 'entry');
       this.send('deleteEntry', incidentId, entry.id);
+    },
+    handleNoteChange(updatedNote) {
+      const { incidentId, entry } = this.getProperties('incidentId', 'entry');
+      this.send('updateEntry', incidentId, entry.id, {
+        notes: updatedNote
+      });
     }
   }
 });

@@ -7,7 +7,7 @@
   {{! Name}}
   <div class="metadata">
     <label>{{t 'respond.remediationTasks.list.name'}}<span class="required-field"/></label>
-    <span>{{input type="text" value=name}}</span>
+    <span>{{input type="text" maxlength=75 value=name}}</span>
   </div>
 
   {{! Description}}
@@ -20,7 +20,7 @@
   <div class="metadata assignee">
     <label>{{t 'respond.remediationTasks.list.assignee'}}:</label>
     <span>
-      {{input type="text" value=assignee}}
+      {{input type="text" maxlength=75 value=assignee}}
     </span>
   </div>
 
