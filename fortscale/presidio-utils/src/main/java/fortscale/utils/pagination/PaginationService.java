@@ -97,7 +97,7 @@ public abstract class PaginationService<T> {
 
     /**
      * Creates groups, which contain pair of total num of events in group and set of contextId:
-     * Sort and covert contextIdToNumOfItems map to  List<Pair<String, Integer>> of context ids to total num of events
+     * Sort List<ContextIdToNumOfEvents>.
      * Add the last contextId to set.
      * while num of events less than pageSize and contextIds set amount less than maxGroupSize => Add first contextIds to set.
      *
@@ -114,7 +114,9 @@ public abstract class PaginationService<T> {
      *  the groups should be {a},{b,c}
      */
     private List<Pair<Integer, Set<String>>> getGroups(List<ContextIdToNumOfEvents> contextIdToNumOfEventsList) {
-        contextIdToNumOfEventsList.sort(Comparator.comparing(c -> c.getTotalNumOfEvents()));
+
+        List<ContextIdToNumOfEvents> sortedList = new ArrayList<>(contextIdToNumOfEventsList);
+        sortedList.sort(Comparator.comparing(c -> c.getTotalNumOfEvents()));
 
         // Integer - total num of events in group
         // Set<String> - contextIds
