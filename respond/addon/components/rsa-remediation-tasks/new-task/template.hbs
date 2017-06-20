@@ -7,27 +7,27 @@
   {{! Name}}
   <div class="metadata">
     <label>{{t 'respond.remediationTasks.list.name'}}<span class="required-field"/></label>
-    <span>{{input type="text" maxlength=75 value=name}}</span>
+    <span>{{input type="text" class="field-name" maxlength=75 value=name}}</span>
   </div>
 
   {{! Description}}
   <div class="metadata">
     <label>{{t 'respond.remediationTasks.list.description'}}</label>
-    <span>{{textarea value=description}}</span>
+    <span>{{textarea class="field-description" value=description}}</span>
   </div>
 
   {{! Assignee}}
   <div class="metadata assignee">
     <label>{{t 'respond.remediationTasks.list.assignee'}}:</label>
     <span>
-      {{input type="text" maxlength=75 value=assignee}}
+      {{input type="text" class="field-assignee" maxlength=75 value=assignee}}
     </span>
   </div>
 
   {{! Priority}}
   <div class="metadata">
     <label>{{t 'respond.remediationTasks.list.priority'}}<span class="required-field"/></label>
-    <div class="edit-button">
+    <div class="edit-button priority">
       {{#power-select
         options=priorityTypes
         selected=priority
@@ -44,6 +44,6 @@
   </div>
 </section>
 <section class="controls">
-  {{#rsa-form-button defaultAction='handleCancel'}}{{t 'forms.cancel'}}{{/rsa-form-button}}
-  {{#rsa-form-button defaultAction='handleSubmit' isDisabled=(not isValid)}}{{t 'forms.save'}}{{/rsa-form-button}}
+  {{#rsa-form-button class='cancel-task' defaultAction='handleCancel'}}{{t 'forms.cancel'}}{{/rsa-form-button}}
+  {{#rsa-form-button class='save-task' defaultAction='handleSubmit' isDisabled=(not isValid)}}{{t 'forms.save'}}{{/rsa-form-button}}
 </section>

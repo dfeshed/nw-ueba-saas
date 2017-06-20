@@ -2,7 +2,7 @@
 {{textarea value=notes}}
 <div class="metadata">
   <label>{{t 'respond.journal.milestone'}}<span class="required-field"/></label>
-  <div class="edit-button">
+  <div class="edit-button journal-milestone">
     {{#power-select
       options=milestoneTypes
       selected=milestone
@@ -17,4 +17,4 @@
     {{/power-select}}
   </div>
 </div>
-{{#rsa-form-button isFullWidth=true isDisabled=isInvalid defaultAction='handleSubmit'}}{{t 'forms.submit'}}{{/rsa-form-button}}
+{{#rsa-form-button class='save-journal' isFullWidth=true isDisabled=isInvalid defaultAction='handleSubmit'}}{{t 'forms.submit'}}{{/rsa-form-button}}

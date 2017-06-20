@@ -28,7 +28,7 @@
 </header>
 <section class="remediation-task-fields">
   {{! Name}}
-  <div class="metadata">
+  <div class="metadata task-name">
     <label>{{t 'respond.remediationTasks.list.name'}}</label>
     <span>
       {{respond-common/editable-field
@@ -40,7 +40,7 @@
   </div>
 
   {{! Assignee}}
-  <div class="metadata assignee">
+  <div class="metadata task-assignee">
     <label>{{t 'respond.remediationTasks.list.assignee'}}:</label>
     <span>
       {{respond-common/editable-field
@@ -53,7 +53,7 @@
   </div>
 
   {{! Priority}}
-  <div class="metadata">
+  <div class="metadata task-priority">
     <label>{{t 'respond.remediationTasks.list.priority'}}:</label>
     <div class="edit-button">
       {{#power-select
@@ -73,7 +73,7 @@
   </div>
 
   {{! Status}}
-  <div class="metadata">
+  <div class="metadata task-status">
     <label>{{t 'respond.remediationTasks.list.status'}}:</label>
     <div class="edit-button">
       {{#power-select
@@ -92,7 +92,7 @@
   </div>
 
   {{! Description}}
-  <div class="text">
+  <div class="text task-description">
     <label>{{t 'respond.remediationTasks.list.description'}}</label>
     {{respond-common/editable-field
       type='textarea'

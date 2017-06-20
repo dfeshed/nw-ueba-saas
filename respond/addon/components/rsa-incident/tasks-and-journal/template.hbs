@@ -1,9 +1,9 @@
 <hbox fit justify="center" nowrap class="rsa-journal-and-tasks__toolbar">
-  <span class="rsa-tab text-only {{if (eq tasksJournalMode 'journal') 'is-active' ''}}"
+  <span class="rsa-tab text-only journal-tab {{if (eq tasksJournalMode 'journal') 'is-active' ''}}"
     {{action (action "showTab" "journal")}}>
     {{t 'respond.journal.title'}} ({{journalEntryCount}})
   </span>
-  <span class="rsa-tab text-only {{if (eq tasksJournalMode 'remediation') 'is-active' ''}}"
+  <span class="rsa-tab text-only remediation-tab {{if (eq tasksJournalMode 'remediation') 'is-active' ''}}"
     {{action (action "showTab" "remediation")}}>
     {{t 'respond.entities.remediationTasks'}} ({{taskCount}})
   </span>
