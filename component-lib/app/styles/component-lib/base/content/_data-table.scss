@@ -128,13 +128,17 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
     }
 
     &:hover {
-      background-color: rsa-color(gray, darkest, $rsa-nearly-transparent);
+      .rsa-data-table-body-cell {
+        background-color: rsa-color(gray, darkest, $rsa-nearly-transparent);
+      }
     }
 
     &.is-selected,
     &.is-selected:hover {
-      color: rsa-color(gray, lighter)!important;
-      background-color: rsa-color(blue, base, 0.6);
+      .rsa-data-table-body-cell {
+        color: rsa-color(gray, lighter)!important;
+        background-color: rsa-color(blue, base, 0.6);
+      }
     }
 
     &:first-child {
