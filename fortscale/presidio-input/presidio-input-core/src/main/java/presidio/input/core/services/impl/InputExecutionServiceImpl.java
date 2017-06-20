@@ -37,7 +37,6 @@ public class InputExecutionServiceImpl implements PresidioExecutionService {
     public void process(DataSource dataSource, Instant startDate, Instant endDate) throws Exception {
         logger.info("Started input processing with params: data source:{}, from {}:{}, until {}:{}.",dataSource, CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate, CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
 
-//        endTime = TimestampUtils.convertToSeconds(new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss").parse(endTimeParam));
         final List<? extends AbstractAuditableDocument> dataRecords = find(dataSource, startDate, endDate);
         logger.info("Found {} dataRecords for datasource:{}, startTime:{}, endTime:{}.", dataSource, startDate, endDate);
 

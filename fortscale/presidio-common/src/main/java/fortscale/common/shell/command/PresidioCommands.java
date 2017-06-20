@@ -1,5 +1,6 @@
 package fortscale.common.shell.command;
 
+import fortscale.common.general.CommonStrings;
 import fortscale.common.shell.PresidioExecutionService;
 import fortscale.common.general.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,40 +31,19 @@ public class PresidioCommands implements CommandMarker {
         return true;
     }
 
-    public PresidioCommands() {
-        System.out.println();
-    }
-
     @CliCommand(value = "process", help = "process events with specified time range and data source")
+
     public void process(
-            @CliOption(key = {"data_source"}, mandatory = true, help = "data source") final DataSource dataSource,
+            @CliOption(key = {CommonStrings.COMMAND_LINE_DATA_SOURCE_FIELD_NAME}, mandatory = true, help = "data source")
+            final DataSource dataSource,
 
-            @CliOption(key = {"start_date"}, mandatory = true, help = "events with (logical) time greater than specified start time will be processed") final Instant startTime,
+            @CliOption(key = {CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME}, mandatory = true, help = "events with (logical) time greater than specified start time will be processed")
+            final Instant startTime,
 
-            @CliOption(key = {"end_date"}, mandatory = false, help = "events with (logical) time smaller than specified end time will be processed") final Instant endTime
+            @CliOption(key = {CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME}, mandatory = false, help = "events with (logical) time smaller than specified end time will be processed")
+            final Instant endTime
 
     ) throws Exception {
-            executionService.process(fortscale.common.general.DataSource.DLPFILE, startTime, endTime);
-    }
-
-    public enum DataSource {
-
-        DLPFILE("dlpfile"), DLPMAIL("dlpmail"), PRNLOG("prnlog");
-
-        private String name;
-
-        DataSource(String name) {
-            this.name = name;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public static fortscale.common.general.DataSource createDataSource(String dataSourceName) throws Exception {
-            return fortscale.common.general.DataSource.valueOf(dataSourceName.toUpperCase());
-        }
-
-
+            executionService.process(dataSource, startTime, endTime);
     }
 }
