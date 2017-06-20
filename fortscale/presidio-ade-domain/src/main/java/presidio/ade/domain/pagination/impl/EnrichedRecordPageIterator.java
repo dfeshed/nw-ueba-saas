@@ -26,27 +26,27 @@ public class EnrichedRecordPageIterator<U extends EnrichedRecord> implements Pag
     private EnrichedDataStore store;
     private int pageSize;
     private int totalNumOfItems;
-    private Set<String> contextIdsList;
+    private Set<String> contextIds;
 
     /**
      * @param timeRange
-     * @param contextType context type (e.g:NORMALIZED_USERNAME_FIELD, NORMALIZED_SRC_MACHINE_FIELD)
-     * @param dataSource data source name
-     * @param contextIdsList  list of context ids
+     * @param contextType     context type (e.g:NORMALIZED_USERNAME_FIELD, NORMALIZED_SRC_MACHINE_FIELD)
+     * @param dataSource      data source name
+     * @param contextIds      set of context ids
      * @param store
-     * @param pageSize num of events in each page
+     * @param pageSize        num of events in each page
      * @param totalNumOfItems total num of events in the all pages
      */
-    public EnrichedRecordPageIterator(TimeRange timeRange, String contextType, String dataSource, Set<String> contextIdsList, EnrichedDataStore store, int pageSize, int totalNumOfItems) {
+    public EnrichedRecordPageIterator(TimeRange timeRange, String contextType, String dataSource, Set<String> contextIds, EnrichedDataStore store, int pageSize, int totalNumOfItems, int totalAmountOfPages) {
         this.currentPage = 0;
         this.timeRange = timeRange;
         this.contextType = contextType;
         this.dataSource = dataSource;
-        this.contextIdsList = contextIdsList;
+        this.contextIds = contextIds;
         this.store = store;
         this.pageSize = pageSize;
         this.totalNumOfItems = totalNumOfItems;
-        this.totalAmountOfPages = (int) Math.ceil((double) totalNumOfItems / pageSize);
+        this.totalAmountOfPages = totalAmountOfPages;
     }
 
     @Override
@@ -65,13 +65,19 @@ public class EnrichedRecordPageIterator<U extends EnrichedRecord> implements Pag
         int numOfItemsToRead = getNumOfItemsToRead();
         int numOfItemsToSkip = this.currentPage * this.pageSize;
         this.currentPage++;
-        return this.store.readRecords(enrichedRecordsMetadata, this.contextIdsList, contextType, numOfItemsToSkip, numOfItemsToRead);
+        return this.store.readRecords(enrichedRecordsMetadata, this.contextIds, contextType, numOfItemsToSkip, numOfItemsToRead);
 
     }
 
     /**
      * Calculate num of items to read
+     *
      * @return num of items to read
+     * <p>
+     * Example: if num of items in the page are less than the page size, it should return numOfItems, otherwise pageSize
+     * pageSize = 30
+     * numOfItems = 15
+     * it should return 15
      */
     private int getNumOfItemsToRead() {
         int numOfItemsToRead = this.pageSize;

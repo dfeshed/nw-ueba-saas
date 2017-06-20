@@ -21,7 +21,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static fortscale.common.general.CommonStrings.*;
+import static fortscale.common.general.CommonStrings.COMMAND_LINE_COMMAND_FIELD_NAME;
+import static fortscale.common.general.CommonStrings.COMMAND_LINE_DATA_SOURCE_FIELD_NAME;
+import static fortscale.common.general.CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME;
+import static fortscale.common.general.CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME;
 
 public class InputExecutionServiceImpl implements InputExecutionService {
 
@@ -37,7 +40,7 @@ public class InputExecutionServiceImpl implements InputExecutionService {
     private final PresidioInputPersistencyService presidioInputPersistencyService;
     private final EnrichedDataStore enrichedDataStore;
 
-    private DataSource dataSource; //todo maor
+    private DataSource dataSource;
     private Instant startDate;
     private Instant endDate;
     private Command command;
@@ -81,7 +84,7 @@ public class InputExecutionServiceImpl implements InputExecutionService {
     public void run(String... params) throws Exception {
         init(params);
         switch (command) {
-            case ENRICH:
+            case RUN:
                 enrich();
                 break;
             case CLEAN:
@@ -103,7 +106,7 @@ public class InputExecutionServiceImpl implements InputExecutionService {
                 , dataSource,
                 CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate,
                 CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
-        presidioInputPersistencyService.clean(dataSource, startDate.getEpochSecond(), endDate.getEpochSecond());
+        presidioInputPersistencyService.clean(dataSource, startDate, endDate);
         logger.info("Finished enrich processing .");
     }
 
@@ -150,7 +153,7 @@ public class InputExecutionServiceImpl implements InputExecutionService {
         logger.debug("Storing {} records.", enrichedDocuments.size());
 
 
-        EnrichedRecordsMetadata recordsMetaData = new EnrichedRecordsMetadata(dataSource.toString(), startDate, endDate);
+        EnrichedRecordsMetadata recordsMetaData = new EnrichedRecordsMetadata(dataSource.getName(), startDate, endDate);
         List<? extends EnrichedRecord> records = convert(enrichedDocuments, new DlpFileConverter());
 
         enrichedDataStore.store(recordsMetaData, records);

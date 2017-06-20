@@ -44,7 +44,7 @@ public class PresidioInputPersistencyServiceMongoImpl implements PresidioInputPe
     }
 
     @Override
-    public int clean(DataSource dataSource, long startDate, long endDate) throws Exception {
+    public int clean(DataSource dataSource, Instant startDate, Instant endDate) throws Exception {
         logger.info("Deleting records for data source:{}, from {}:{}, until {}:{}."
                 , dataSource,
                 CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate,
