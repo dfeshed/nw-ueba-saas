@@ -21,13 +21,16 @@ const DSHeaderComponent = Component.extend({
       return;
     }
     if (contextData) {
-      return contextData;
+      return (contextData.liveConnectData || contextData.resultList) ? contextData : null;
     }
     return lookupData[dSDetails.dataSourceGroup];
   },
 
   @computed('dsData')
   errorMessage(dsData) {
+    if (dsData && dsData.liveConnectData) {
+      return '';
+    }
     return getErrorMessage(dsData, this.get('i18n'));
   },
   @computed('dataSources', 'activeTabName', 'dSDetails')

@@ -72,8 +72,7 @@ const ContextComponent = Component.extend({
       lookupKey: entityId,
       meta: entityType,
       contextData: EmberObject.create({
-        liveConnectData: EmberObject.create(),
-        headerData: null
+        liveConnectData: EmberObject.create()
       })
     });
     this.set('model', contextModels);
@@ -94,7 +93,7 @@ const ContextComponent = Component.extend({
     }
     contextDatum.resultList.forEach((obj) => {
       if (obj && !isEmpty(obj.record)) {
-        this._parseLiveConnectData(contextDatum.dataSourceGroup, obj.record, contextDatum.resultMeta);
+        this._parseLiveConnectData(contextDatum.dataSourceGroup, obj.record);
         this._fetchRelatedEntities(liveConnectObj[contextDatum.dataSourceType].fetchRelatedEntities);
       } else {
         contextData.set('liveConnectData', null);
@@ -107,7 +106,7 @@ const ContextComponent = Component.extend({
     }
   },
 
-  _parseLiveConnectData(dataSourceType, record, resultMeta) {
+  _parseLiveConnectData(dataSourceType, record) {
     const lcData = this.get('model.contextData.liveConnectData');
     const entityType = liveConnectObj[dataSourceType];
     record.forEach((obj) => {
@@ -121,7 +120,6 @@ const ContextComponent = Component.extend({
         lcData.set(liveConnectObj.allTags, obj.LiveConnectApi.riskTagTypes);
         lcData.set(liveConnectObj.allReasons, obj.LiveConnectApi.riskReasonTypes);
       }
-      this.set('model.contextData.headerData', this._createHeaderData(resultMeta));
     });
     entityType.relatedEntities_count.forEach((obj) => {
       const reputationObj = record.find((rec) => {
@@ -131,12 +129,6 @@ const ContextComponent = Component.extend({
         this.get('model').contextData[obj] = reputationObj[entityType.Reputation][obj];
       }
     });
-  },
-  _createHeaderData(resultMeta) {
-    return {
-      timeWindow: this.get('i18n').t('context.timeUnit.allData'),
-      lastUpdated: resultMeta.timeQuerySubmitted
-    };
   },
   _checkNullForInfo(entityType, obj) {
     entityType.checkNullFields.forEach((field) => {

@@ -16,6 +16,11 @@ export default Component.extend({
   showContextPanel: (activeTabName) => liveConnectTabs.includes(activeTabName),
 
   @or('model.contextData.LiveConnect-Ip_ERROR', 'model.contextData.LiveConnect-Domain_ERROR', 'model.contextData.LiveConnect-File_ERROR')
-  liveConnectError: null
+  liveConnectError: null,
+
+  @computed('activeTabName')
+  liveConnectDsDetails: (activeTabName) => {
+    return { dataSourceGroup: activeTabName };
+  }
 
 });
