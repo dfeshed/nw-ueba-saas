@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
 @Component
+@SuppressWarnings("unused")
 public class ScoreAndCertaintyMultiplierScorerFactory extends AbstractServiceAutowiringFactory<Scorer> {
     private static final String FACTORY_CONFIG_TYPE_ERROR_MSG = String.format(
             "factoryConfig must be an instance of %s.", ScoreAndCertaintyMultiplierScorerConf.class.getSimpleName());

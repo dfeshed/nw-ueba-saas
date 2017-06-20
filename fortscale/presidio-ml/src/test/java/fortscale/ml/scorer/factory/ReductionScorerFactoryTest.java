@@ -17,13 +17,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
-import presidio.ade.domain.record.AdeRecord;
-
+import presidio.ade.domain.record.AdeRecordReader;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(locations = {"classpath*:META-INF/spring/scorer-factory-tests-context.xml"})
 public class ReductionScorerFactoryTest {
-
     @MockBean
     ModelConfService modelConfService;
 
@@ -39,7 +37,6 @@ public class ReductionScorerFactoryTest {
     @Autowired
     FactoryService<Scorer> scorerFactoryService;
 
-
     @Test(expected = IllegalArgumentException.class)
     public void confNotOfExpectedType() {
         reductionScorerFactory.getProduct(() -> null);
@@ -50,20 +47,36 @@ public class ReductionScorerFactoryTest {
         reductionScorerFactory.getProduct(null);
     }
 
-
     @Test
     public void getProductTest() {
         ReductionScorerConfParams params = new ReductionScorerConfParams();
+
         IScorerConf dummyConf1 = new IScorerConf() {
-            @Override public String getName() { return "scorer1"; }
-            @Override public String getFactoryName() {return "scorer1Factory"; }
-        };
-        IScorerConf dummyConf2 = new IScorerConf() {
-            @Override public String getName() { return "scorer2"; }
-            @Override public String getFactoryName() {return "scorer2Factory"; }
+            @Override
+            public String getName() {
+                return "scorer1";
+            }
+
+            @Override
+            public String getFactoryName() {
+                return "scorer1Factory";
+            }
         };
 
-        ReductionScorerConf conf = new ReductionScorerConf(params.getName(),
+        IScorerConf dummyConf2 = new IScorerConf() {
+            @Override
+            public String getName() {
+                return "scorer2";
+            }
+
+            @Override
+            public String getFactoryName() {
+                return "scorer2Factory";
+            }
+        };
+
+        ReductionScorerConf conf = new ReductionScorerConf(
+                params.getName(),
                 dummyConf1,
                 dummyConf2,
                 params.getReductionWeight()
@@ -71,7 +84,7 @@ public class ReductionScorerFactoryTest {
 
         scorerFactoryService.register(dummyConf1.getFactoryName(), factoryConfig -> new Scorer() {
             @Override
-            public FeatureScore calculateScore(AdeRecord record) {
+            public FeatureScore calculateScore(AdeRecordReader adeRecordReader) {
                 return null;
             }
 
@@ -83,7 +96,7 @@ public class ReductionScorerFactoryTest {
 
         scorerFactoryService.register(dummyConf2.getFactoryName(), factoryConfig -> new Scorer() {
             @Override
-            public FeatureScore calculateScore(AdeRecord record) {
+            public FeatureScore calculateScore(AdeRecordReader adeRecordReader) {
                 return null;
             }
 
@@ -94,12 +107,10 @@ public class ReductionScorerFactoryTest {
         });
 
         ReductionScorer scorer = reductionScorerFactory.getProduct(conf);
-
         Assert.assertEquals(params.getName(), scorer.getName());
         Assert.assertEquals(params.getReductionWeight(), scorer.getReductionWeight(), 0.0);
         Assert.assertEquals(params.getReductionZeroScoreWeight(), scorer.getReductionZeroScoreWeight(), 0.0);
         Assert.assertEquals(dummyConf1.getName(), scorer.getMainScorer().getName());
         Assert.assertEquals(dummyConf2.getName(), scorer.getReductionScorer().getName());
     }
-
 }

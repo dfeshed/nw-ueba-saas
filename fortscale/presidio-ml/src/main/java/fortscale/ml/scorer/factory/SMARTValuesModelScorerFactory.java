@@ -56,7 +56,7 @@ public class SMARTValuesModelScorerFactory extends AbstractModelScorerFactory {
                 scorerConf.getEnoughNumOfSamplesToInfluence(),
                 scorerConf.isUseCertaintyToCalculateScore(),
                 scorerConf.getGlobalInfluence(),
-                recordReaderFactoryService, eventModelsCacheService);
+                eventModelsCacheService);
     }
 
     private AbstractDataRetriever getDataRetriever(String modelName) {

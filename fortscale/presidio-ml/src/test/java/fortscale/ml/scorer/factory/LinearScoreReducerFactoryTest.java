@@ -15,7 +15,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.IOException;
@@ -23,7 +22,6 @@ import java.io.IOException;
 @RunWith(SpringRunner.class)
 @ContextConfiguration(locations = "classpath*:META-INF/spring/scorer-factory-tests-context.xml")
 public class LinearScoreReducerFactoryTest {
-
 	@MockBean
 	ModelConfService modelConfService;
 

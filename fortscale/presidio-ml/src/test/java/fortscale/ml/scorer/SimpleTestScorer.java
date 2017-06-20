@@ -1,10 +1,9 @@
 package fortscale.ml.scorer;
 
 import fortscale.domain.feature.score.FeatureScore;
-import presidio.ade.domain.record.AdeRecord;
+import presidio.ade.domain.record.AdeRecordReader;
 
 public class SimpleTestScorer implements Scorer {
-
     private Double score;
     private String name;
 
@@ -14,7 +13,6 @@ public class SimpleTestScorer implements Scorer {
     }
 
     public String getName() {
-
         return name;
     }
 
@@ -22,9 +20,8 @@ public class SimpleTestScorer implements Scorer {
         return score;
     }
 
-
     @Override
-    public FeatureScore calculateScore(AdeRecord record) {
+    public FeatureScore calculateScore(AdeRecordReader adeRecordReader) {
         return score == null ? null : new FeatureScore("SimpleTestScorer", score);
     }
 }

@@ -15,7 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
-import presidio.ade.domain.record.AdeRecord;
+import presidio.ade.domain.record.AdeRecordReader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +23,6 @@ import java.util.List;
 @RunWith(SpringRunner.class)
 @ContextConfiguration(locations = {"classpath*:META-INF/spring/scorer-factory-tests-context.xml"})
 public class MaxScorerContainerFactoryTest {
-
     @MockBean
     ModelConfService modelConfService;
 
@@ -46,24 +45,28 @@ public class MaxScorerContainerFactoryTest {
         MaxScorerContainerFactory.getProduct(null);
     }
 
-
     @Test
     public void getProductTest() {
         IScorerConf dummyConf = new IScorerConf() {
-            @Override public String getName() { return null; }
-            @Override public String getFactoryName() {return "dummy factory"; }
+            @Override
+            public String getName() {
+                return null;
+            }
+
+            @Override
+            public String getFactoryName() {
+                return "dummy factory";
+            }
         };
 
         String scorerName = "scorer name";
-
         List<IScorerConf> scorerConfs = new ArrayList<>();
         scorerConfs.add(dummyConf);
-
         MaxScorerContainerConf conf = new MaxScorerContainerConf(scorerName, scorerConfs);
 
         scorerFactoryService.register(dummyConf.getFactoryName(), factoryConfig -> new Scorer() {
             @Override
-            public FeatureScore calculateScore(AdeRecord record) {
+            public FeatureScore calculateScore(AdeRecordReader adeRecordReader) {
                 return null;
             }
 
@@ -74,10 +77,8 @@ public class MaxScorerContainerFactoryTest {
         });
 
         MaxScorerContainer scorer = MaxScorerContainerFactory.getProduct(conf);
-
         Assert.assertEquals(scorerName, scorer.getName());
         Assert.assertEquals(1, scorer.getScorers().size());
         Assert.assertEquals("scorer1", scorer.getScorers().get(0).getName());
     }
-
 }

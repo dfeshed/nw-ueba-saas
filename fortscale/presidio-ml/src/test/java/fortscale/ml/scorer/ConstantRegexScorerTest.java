@@ -4,31 +4,21 @@ import fortscale.domain.feature.score.FeatureScore;
 import fortscale.ml.scorer.params.ConstantRegexScorerParams;
 import fortscale.ml.scorer.record.JsonAdeRecord;
 import fortscale.ml.scorer.record.JsonAdeRecordReader;
-import fortscale.utils.factory.FactoryService;
-import fortscale.utils.recordreader.RecordReader;
 import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
-import presidio.ade.domain.record.AdeRecord;
+import presidio.ade.domain.record.AdeRecordReader;
 
 import java.time.Instant;
-
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(locations = {"classpath*:META-INF/spring/scorer-tests-context.xml"})
 public class ConstantRegexScorerTest {
-
-    @MockBean
-    FactoryService<RecordReader<AdeRecord>> recordReaderFactoryService;
-
     ConstantRegexScorer createConstantRegexScorer(ConstantRegexScorerParams params) {
-        return new ConstantRegexScorer(params.getName(), params.getRegexFieldName(), params.getRegexPattern(), params.getConstantScore(), recordReaderFactoryService);
+        return new ConstantRegexScorer(params.getName(), params.getRegexFieldName(), params.getRegexPattern(), params.getConstantScore());
     }
 
     private void assertScorerParams(ConstantRegexScorer scorer, ConstantRegexScorerParams params) {
@@ -38,10 +28,10 @@ public class ConstantRegexScorerTest {
         Assert.assertEquals(params.getRegexFieldName(), scorer.getRegexFieldName());
     }
 
-    private AdeRecord buildAdeRecord(String fieldName, Object fieldValue) {
+    private AdeRecordReader buildAdeRecordReader(String fieldName, Object fieldValue) {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put(fieldName, fieldValue);
-        return new JsonAdeRecord(Instant.now(), jsonObject);
+        return new JsonAdeRecordReader(new JsonAdeRecord(Instant.now(), jsonObject));
     }
 
     //================================================================
@@ -144,13 +134,12 @@ public class ConstantRegexScorerTest {
         ConstantRegexScorerParams params = new ConstantRegexScorerParams().setRegexPatternString("[mynaeisgotyuklfthrpd]+");
         ConstantRegexScorer scorer = createConstantRegexScorer(params);
 
-        AdeRecord record = buildAdeRecord(params.getRegexFieldName(), "mynameisinigomontoyayoukillmyfatherpreparetodie");
-        when(recordReaderFactoryService.getDefaultProduct(eq(record.getAdeRecordType()))).thenReturn(new JsonAdeRecordReader());
-        FeatureScore featureScore = scorer.calculateScore(record);
+        AdeRecordReader adeRecordReader = buildAdeRecordReader(params.getRegexFieldName(), "mynameisinigomontoyayoukillmyfatherpreparetodie");
+        FeatureScore featureScore = scorer.calculateScore(adeRecordReader);
         Assert.assertEquals((double)params.getConstantScore(), featureScore.getScore(), 0.0);
 
-        record = buildAdeRecord(params.getRegexFieldName(), "mynameisinigomontoyayoukillmyfatherpreparetodie2");
-        featureScore = scorer.calculateScore(record);
+        adeRecordReader = buildAdeRecordReader(params.getRegexFieldName(), "mynameisinigomontoyayoukillmyfatherpreparetodie2");
+        featureScore = scorer.calculateScore(adeRecordReader);
         Assert.assertNull(featureScore);
     }
 
@@ -159,14 +148,12 @@ public class ConstantRegexScorerTest {
         ConstantRegexScorerParams params = new ConstantRegexScorerParams().setRegexPatternString("[a-u]{1,3}");
         ConstantRegexScorer scorer = createConstantRegexScorer(params);
 
-        AdeRecord record = buildAdeRecord(params.getRegexFieldName(), "ave");
-        when(recordReaderFactoryService.getDefaultProduct(eq(record.getAdeRecordType()))).thenReturn(new JsonAdeRecordReader());
-        FeatureScore featureScore = scorer.calculateScore(record);
+        AdeRecordReader adeRecordReader = buildAdeRecordReader(params.getRegexFieldName(), "ave");
+        FeatureScore featureScore = scorer.calculateScore(adeRecordReader);
         Assert.assertNull(featureScore);
 
-        record = buildAdeRecord(params.getRegexFieldName(), "avee");
-        featureScore = scorer.calculateScore(record);
+        adeRecordReader = buildAdeRecordReader(params.getRegexFieldName(), "avee");
+        featureScore = scorer.calculateScore(adeRecordReader);
         Assert.assertNull(featureScore);
     }
-
 }

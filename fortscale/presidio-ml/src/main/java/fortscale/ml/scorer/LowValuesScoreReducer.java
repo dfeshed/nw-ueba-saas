@@ -5,11 +5,9 @@ import fortscale.common.feature.FeatureNumericValue;
 import fortscale.common.feature.FeatureStringValue;
 import fortscale.domain.feature.score.FeatureScore;
 import fortscale.ml.scorer.config.ReductionConfiguration;
-import fortscale.utils.factory.FactoryService;
 import fortscale.utils.logging.Logger;
-import fortscale.utils.recordreader.RecordReader;
 import org.springframework.util.Assert;
-import presidio.ade.domain.record.AdeRecord;
+import presidio.ade.domain.record.AdeRecordReader;
 
 import java.util.Collections;
 import java.util.List;
@@ -19,39 +17,33 @@ public class LowValuesScoreReducer extends AbstractScorer {
 
 	private Scorer baseScorer;
 	private List<ReductionConfiguration> reductionConfigs;
-	private final FactoryService<RecordReader<AdeRecord>> recordReaderFactoryService;
 
-	public LowValuesScoreReducer(String name, Scorer baseScorer, List<ReductionConfiguration> reductionConfigs,
-								 FactoryService<RecordReader<AdeRecord>> recordReaderFactoryService) {
-
+	public LowValuesScoreReducer(String name, Scorer baseScorer, List<ReductionConfiguration> reductionConfigs) {
 		super(name);
 		Assert.notNull(baseScorer, "Base scorer cannot be null.");
 		Assert.notNull(reductionConfigs, "Reduction configs cannot be null.");
 		this.baseScorer = baseScorer;
-		this.recordReaderFactoryService = recordReaderFactoryService;
 		this.reductionConfigs = reductionConfigs;
 	}
 
 	@Override
-	public FeatureScore calculateScore(AdeRecord record) {
-		FeatureScore baseFeatureScore = baseScorer.calculateScore(record);
-		double reducedScore = reduceScore(record, baseFeatureScore.getScore());
+	public FeatureScore calculateScore(AdeRecordReader adeRecordReader) {
+		FeatureScore baseFeatureScore = baseScorer.calculateScore(adeRecordReader);
+		double reducedScore = reduceScore(adeRecordReader, baseFeatureScore.getScore());
 		return new FeatureScore(getName(), reducedScore, Collections.singletonList(baseFeatureScore));
 	}
 
-	private double reduceScore(AdeRecord record, double score) {
+	private double reduceScore(AdeRecordReader adeRecordReader, double score) {
 		for (ReductionConfiguration reductionConfig : reductionConfigs) {
-			score = reduceScore(record, score, reductionConfig);
+			score = reduceScore(adeRecordReader, score, reductionConfig);
 		}
 
 		return score;
 	}
 
-	private double reduceScore(AdeRecord record, double score, ReductionConfiguration reductionConfig) {
-		Object object = recordReaderFactoryService
-				.getDefaultProduct(record.getAdeRecordType())
-				.get(record, reductionConfig.getReducingFeatureName());
-		Feature feature = Feature.toFeature(reductionConfig.getReducingFeatureName(), object);
+	private double reduceScore(AdeRecordReader adeRecordReader, double score, ReductionConfiguration reductionConfig) {
+		String reducingFeatureName = reductionConfig.getReducingFeatureName();
+		Feature feature = Feature.toFeature(reducingFeatureName, adeRecordReader.get(reducingFeatureName));
 
 		if (feature == null || feature.getValue() == null) {
 			return score;

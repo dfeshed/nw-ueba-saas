@@ -11,11 +11,10 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.util.Assert;
-import presidio.ade.domain.record.AdeRecord;
+import presidio.ade.domain.record.AdeRecordReader;
 
 import java.util.Collections;
 import java.util.List;
-
 
 @Configurable(preConstruction = true)
 public class PersonalThresholdModelScorer extends AbstractScorer {
@@ -43,21 +42,22 @@ public class PersonalThresholdModelScorer extends AbstractScorer {
 		Assert.isTrue(maxRatioFromUniformThreshold > 0, "maxRatioFromUniformThreshold must be positive");
 		this.modelName = modelName;
 		this.contextFieldNames = contextFieldNames;
-		baseScorer = (AbstractModelScorer) factoryService.getProduct(baseScorerConf);
+		baseScorer = (AbstractModelScorer)factoryService.getProduct(baseScorerConf);
 		this.maxRatioFromUniformThreshold = maxRatioFromUniformThreshold;
 	}
 
 	@Override
-	public FeatureScore calculateScore(AdeRecord record) {
-		FeatureScore baseScore = baseScorer.calculateScore(record);
-		Model baseScorerModel = baseScorer.getModel(record);
-		double calibratedScore = calibrateScore(record, baseScore, baseScorerModel.getNumOfSamples());
+	public FeatureScore calculateScore(AdeRecordReader adeRecordReader) {
+		FeatureScore baseScore = baseScorer.calculateScore(adeRecordReader);
+		Model baseScorerModel = baseScorer.getModel(adeRecordReader);
+		double calibratedScore = calibrateScore(adeRecordReader, baseScore, baseScorerModel.getNumOfSamples());
 		return new FeatureScore(getName(), calibratedScore, Collections.singletonList(baseScore));
 	}
 
-	private double calibrateScore(AdeRecord record, FeatureScore baseScore, long numOfSamples) {
-		PersonalThresholdModel model = (PersonalThresholdModel) eventModelsCacheService.getModel(
-				record, modelName, contextFieldNames);
+	private double calibrateScore(AdeRecordReader adeRecordReader, FeatureScore baseScore, long numOfSamples) {
+		PersonalThresholdModel model = (PersonalThresholdModel)eventModelsCacheService.getModel(
+				adeRecordReader, modelName, contextFieldNames);
+
 		if (model == null) {
 			return 0;
 		}

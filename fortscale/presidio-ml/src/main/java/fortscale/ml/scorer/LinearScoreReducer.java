@@ -4,7 +4,7 @@ import fortscale.domain.feature.score.FeatureScore;
 import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.util.Assert;
-import presidio.ade.domain.record.AdeRecord;
+import presidio.ade.domain.record.AdeRecordReader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,8 +24,8 @@ public class LinearScoreReducer extends AbstractScorer {
 	}
 
 	@Override
-	public FeatureScore calculateScore(AdeRecord record) {
-		FeatureScore featureScore = reducedScorer.calculateScore(record);
+	public FeatureScore calculateScore(AdeRecordReader adeRecordReader) {
+		FeatureScore featureScore = reducedScorer.calculateScore(adeRecordReader);
 
 		if (featureScore != null) {
 			List<FeatureScore> featureScores = new ArrayList<>();
