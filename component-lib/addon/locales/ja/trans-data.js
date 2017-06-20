@@ -836,12 +836,12 @@ export default {
     },
     header: {
       title: {
-        archer: 'ja_Archer Details',
+        archer: 'ja_Archer',
         users: 'ja_Active Directory',
-        alerts: 'ja_Related Alerts',
-        incidents: 'ja_Related Incidents',
+        alerts: 'ja_Alerts',
+        incidents: 'ja_Incidents',
         lIST: 'ja_Lists',
-        endpoint: 'ja_Endpoint Details',
+        endpoint: 'ja_NetWitness Endpoint',
         liveConnectIp: 'ja_Live Connect',
         liveConnectFile: 'ja_Live Connect',
         liveConnectDomain: 'ja_Live Connect'

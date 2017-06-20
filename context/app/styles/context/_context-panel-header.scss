@@ -20,6 +20,11 @@
     padding-right: rsa-whitespace();
   }
 
+  &__title {
+    @include rsa-font(header, large);
+    text-transform: uppercase;
+  }
+
   &__unsafe {
     font-size: 2rem;
     text-align: center;

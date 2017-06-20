@@ -89,6 +89,10 @@ const getTabs = (meta, dataSources) => {
   });
 };
 
+/*
+ Need to be removed when incidentId field and _id field will have only numbers from backend
+ */
+
 const getSortedData = (data, icon, field) => {
   if (field === '_id' || field === 'incidentId') {
     const sorted = data.sort((a, b) => {

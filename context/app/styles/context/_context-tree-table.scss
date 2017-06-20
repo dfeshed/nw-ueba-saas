@@ -107,7 +107,7 @@
     }
     .list-name{
       @include rsa-font(header, small);
-      color:rsa-color(gray, light);
+      color:rsa-color(white);
     }
 
     .list-desc{
@@ -138,6 +138,9 @@
       display: inline-block;
       white-space: nowrap;
       @include rsa-font(header);
+    }
+    .rsa-form-label {
+      color: rsa-color(white, dark);
     }
   }
 
