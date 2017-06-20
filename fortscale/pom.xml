@@ -82,7 +82,12 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <!--RPM VERSION-->
-        <rpm.version>3.1.0</rpm.version>
+
+        <rpm.version.major>1</rpm.version.major>
+        <rpm.version.minor>0.0</rpm.version.minor>
+        <rpm.version.build>${env.BUILD_NUMBER}</rpm.version.build>
+        <rpm.version>${rpm.version.major}.${rpm.version.minor}</rpm.version>
+
         <!-- NOTE: ALL dependencies' versions should be here -->
         <cglib.version>3.2.1</cglib.version>
         <influxdb.version>2.1</influxdb.version>
@@ -165,6 +170,7 @@
         <jacoco-maven-plugin.version>0.7.9</jacoco-maven-plugin.version>
         <cron-utils.version>5.0.5</cron-utils.version>
         <podam.version>7.0.5.RELEASE</podam.version>
+        <rpm-maven-plugin.version>2.1.5</rpm-maven-plugin.version>
     </properties>
 
     <dependencyManagement>
@@ -765,6 +771,8 @@
         <module>presidio-core-manager</module>
         <module>presidio-collector</module>
         <module>presidio-output</module>
+        <module>presidio-rpm</module>
+
     </modules>
     <distributionManagement>
         <!-- push changes to artifactory, distribute use of sdk -->

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    
+	<modelVersion>4.0.0</modelVersion>
+    <properties>
+        <rpm-maven-plugin.directory>/home/presidio/presidio-core/installation</rpm-maven-plugin.directory>
+        <rpm-maven-plugin.script>
+            ${rpm-maven-plugin.directory}/installation-scripts/infrastructure/deploy/manager/deploy_manager.py
+        </rpm-maven-plugin.script>
+    </properties>
+    <parent>
+        <artifactId>fortscale</artifactId>
+        <groupId>fortscale</groupId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+    
+
+    <artifactId>presidio-core-rpm</artifactId>
+<build>
+    <plugins>
+        <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>rpm-maven-plugin</artifactId>
+            <version>${rpm-maven-plugin.version}</version>
+            <extensions>true</extensions>
+            <executions>
+                <execution>
+                    <id>generate-rpm</id>
+                    <goals>
+                        <goal>rpm</goal>
+                    </goals>
+                </execution>
+            </executions>
+            <configuration>
+                <group>Application/Collectors</group>
+                <release>${rpm.version.build}</release>
+                <needarch>true</needarch>
+                <mappings>
+                    <mapping>
+                        <directoryIncluded>false</directoryIncluded>
+                        <directory>/home/presidio/presidio-core/bin</directory>
+                        <username>presidio</username>
+                        <groupname>presidio</groupname>
+                        <sources>
+                            <source>
+                                <location>${project.parent.build.directory}/dependencies/</location>
+                            </source>
+                        </sources>
+                    </mapping>
+                    <mapping>
+                        <directoryIncluded>false</directoryIncluded>
+                        <directory>${rpm-maven-plugin.directory}</directory>
+                        <username>presidio</username>
+                        <groupname>presidio</groupname>
+                        <sources>
+                            <source>
+                                <location>src/main/python</location>
+                            </source>
+                        </sources>
+                    </mapping>
+                    <mapping>
+                        <directory>${rpm-maven-plugin.directory}</directory>
+
+                        <username>presidio</username>
+                        <groupname>presidio</groupname>
+                        <sources>
+                            <source>
+                                <location>src/main/python</location>
+                            </source>
+                        </sources>
+                    </mapping>
+                </mappings>
+                <preinstallScriptlet>
+                    <script>echo "pre installation BARAKKKKKKKKKKKKKKKKKKK"</script>
+                </preinstallScriptlet>
+                <postinstallScriptlet>
+                    <!--<scriptFile>src/main/scripts/postinstall</scriptFile>-->
+                    <!--<fileEncoding>utf-8</fileEncoding>-->
+                    <script>
+                        python ${rpm-maven-plugin.script} --rpm_name ${artifactId} --major ${rpm.version.major} --minor ${rpm.version.minor} --build 543
+
+                    </script>
+                </postinstallScriptlet>
+            </configuration>
+        </plugin>
+    </plugins>
+</build>
+</project>
