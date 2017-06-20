@@ -17,7 +17,7 @@
     </parent>
     
 
-    <artifactId>presidio-core-rpm</artifactId>
+    <artifactId>presidio-core</artifactId>
 <build>
     <plugins>
         <plugin>
