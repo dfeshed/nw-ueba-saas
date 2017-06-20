@@ -45,7 +45,7 @@ class InputDagBuilder(PresidioDagBuilder):
         # Iterate all configured data sources
         for data_source in self.data_sources:
             java_args = {
-                'data_source': data_source,
+                '--data_source': data_source,
                 'command': input_dag.default_args['command'],
             }
 
