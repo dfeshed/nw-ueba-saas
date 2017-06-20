@@ -79,8 +79,9 @@
                     <!--<scriptFile>src/main/scripts/postinstall</scriptFile>-->
                     <!--<fileEncoding>utf-8</fileEncoding>-->
                     <script>
+                        whoami
+                        which python
                         python ${rpm-maven-plugin.script} --rpm_name ${artifactId} --major ${rpm.version.major} --minor ${rpm.version.minor} --build 543
-
                     </script>
                 </postinstallScriptlet>
             </configuration>
