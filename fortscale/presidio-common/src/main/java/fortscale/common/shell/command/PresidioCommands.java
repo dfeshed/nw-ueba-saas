@@ -5,7 +5,6 @@ import fortscale.common.shell.PresidioExecutionService;
 import fortscale.common.general.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.shell.core.CommandMarker;
-import org.springframework.shell.core.annotation.CliAvailabilityIndicator;
 import org.springframework.shell.core.annotation.CliCommand;
 import org.springframework.shell.core.annotation.CliOption;
 import org.springframework.stereotype.Component;
@@ -24,16 +23,8 @@ public class PresidioCommands implements CommandMarker {
     @Autowired
     private PresidioExecutionService executionService;
 
-    //todo fixed_duration??
-
-    @CliAvailabilityIndicator({"process"})
-    public boolean isCommandAvailable() {
-        return true;
-    }
-
-    @CliCommand(value = "process", help = "process events with specified time range and data source")
-
-    public void process(
+    @CliCommand(value = "run", help = "run events with specified time range and data source")
+    public void run(
             @CliOption(key = {CommonStrings.COMMAND_LINE_DATA_SOURCE_FIELD_NAME}, mandatory = true, help = "data source")
             final DataSource dataSource,
 
@@ -41,9 +32,12 @@ public class PresidioCommands implements CommandMarker {
             final Instant startTime,
 
             @CliOption(key = {CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME}, mandatory = false, help = "events with (logical) time smaller than specified end time will be processed")
-            final Instant endTime
+            final Instant endTime,
+
+            @CliOption(key = {CommonStrings.COMMAND_LINE_FIXED_DURATION_FIELD_NAME}, mandatory = false, help = "the internal time intervals that the processing will be done by")
+            final long fixedDuration
 
     ) throws Exception {
-            executionService.process(dataSource, startTime, endTime);
+            executionService.run(dataSource, startTime, endTime, fixedDuration);
     }
 }

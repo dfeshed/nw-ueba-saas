@@ -34,7 +34,7 @@ public class InputExecutionServiceImpl implements PresidioExecutionService {
     }
 
     @Override
-    public void process(DataSource dataSource, Instant startDate, Instant endDate) throws Exception {
+    public void run(DataSource dataSource, Instant startDate, Instant endDate, long fixedDuration) throws Exception {
         logger.info("Started input processing with params: data source:{}, from {}:{}, until {}:{}.",dataSource, CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate, CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
 
         final List<? extends AbstractAuditableDocument> dataRecords = find(dataSource, startDate, endDate);
@@ -47,7 +47,7 @@ public class InputExecutionServiceImpl implements PresidioExecutionService {
             //todo: how to handle?
         }
 
-        logger.info("Finished input process with params : data source:{}, from {}:{}, until {}:{}.",dataSource, CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate, CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
+        logger.info("Finished input run with params : data source:{}, from {}:{}, until {}:{}.",dataSource, CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate, CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
     }
 
     private boolean storeForAde(List<? extends AbstractAuditableDocument> enrichedDocuments, Instant startDate, Instant endDate, DataSource dataSource) {
