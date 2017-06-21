@@ -12,22 +12,18 @@
   as |table|
 }}
   {{#table.body
-    stickyHeaderComponentClass="rsa-alerts-table/alert"
+    groupComponentClass="rsa-alerts-table/alert"
+    stickyHeaderComponentClass="rsa-alerts-table/alert-header"
     as |body|
   }}
     {{body.stickyHeader}}
     {{#body.group
-      headerComponentClass="rsa-alerts-table/alert"
+      headerComponentClass="rsa-alerts-table/alert-header"
+      itemComponentClass="rsa-alerts-table/alert-item"
       as |group|
     }}
       {{group.header}}
-      {{#group.item
-        class="rsa-alerts-table-alert-item"
-        cellComponentClass="rsa-alerts-table/event"
-        as |item|
-      }}
-        {{item.cell}}
-      {{/group.item}}
+      {{group.item}}
     {{/body.group}}
   {{/table.body}}
 {{/rsa-group-table}}

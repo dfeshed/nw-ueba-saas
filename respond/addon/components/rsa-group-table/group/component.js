@@ -1,5 +1,5 @@
 import Component from 'ember-component';
-import computed, { equal } from 'ember-computed-decorators';
+import computed from 'ember-computed-decorators';
 import layout from './template';
 import { htmlSafe } from 'ember-string';
 import $ from 'jquery';
@@ -13,7 +13,7 @@ export default Component.extend({
   tagName: 'section',
   layout,
   classNames: ['rsa-group-table-group'],
-  classNameBindings: ['isSample', 'isSelected', 'isFirst', 'isLast'],
+  classNameBindings: ['isSample', 'isSelected'],
   attributeBindings: ['style'],
 
   // Reference to the group data object that corresponds to this component. Typically passed down from parent.
@@ -53,14 +53,6 @@ export default Component.extend({
    * @public
    */
   isSample: false,
-
-  // True if this group is the first group in the entire table's `groups` array.
-  @equal('index', 0)
-  isFirst: false,
-
-  // True if this group is the last group in the entire table's `groups` array.
-  // Typically set by parent.
-  isLast: false,
 
   // Encodes a CSS string to position the top of this Component's DOM. Enables absolute positioning, which is
   // is required for lazy rendering of rows.

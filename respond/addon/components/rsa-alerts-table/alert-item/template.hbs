@@ -1,0 +1,91 @@
+<table class="rsa-group-table-group-item__table">
+  <tr class="rsa-group-table-group-item__row">
+    <td class="rsa-alerts-table-alert-item-cell">
+      <div class="connector">
+        <div class="line"></div>
+        <div class="dot"></div>
+      </div>
+      {{#if item.isEnrichment}}
+
+      {{!Render a row of enrichment text}}
+        <div class="enrichment">
+          <span class="body" title="{{t item.i18nKey}}">{{t item.i18nKey}}</span>
+          {{#if (eq item.key 'whois.age_score')}}
+            <span class="suffix">{{t 'respond.enrichment.daysAgo' days=item.allEnrichments.whois.estimated_domain_age_days}}</span>
+          {{else if (eq item.key 'whois.validity_score')}}
+            <span class="suffix">{{t 'respond.enrichment.days' days=item.allEnrichments.whois.estimated_domain_validity_days}}</span>
+          {{/if}}
+        </div>
+
+      {{else}}
+
+      {{!Render a row of meta values from the event}}
+        <div class="event">
+          <hbox nowrap class="event-header">
+            <vbox fit class="timestamp">
+              <span>{{item.type}}</span>
+            </vbox>
+            <vbox fill align="end" class="event-type">
+              {{rsa-content-datetime timestamp=item.timestamp displayMilliseconds=false}}
+            </vbox>
+          </hbox>
+          <div class="event-content">
+
+            <span class="source-values">
+
+              {{!Source device info}}
+              {{#each fromDeviceValues as |device|}}
+                <span class="from device entity" data-meta-key="{{device.field}}" data-entity-id="{{device.value}}">
+                  {{device.value}}
+                </span>
+                <span class="sep">&middot;</span>
+              {{/each}}
+
+              {{!Source user info}}
+              {{#each fromUserValues as |user|}}
+                <span class="from user entity" data-meta-key="{{user.field}}" data-entity-id="{{user.value}}">
+                  {{user.value}}
+                </span>
+                <span class="sep">&middot;</span>
+              {{/each}}
+
+            </span>
+
+            {{!Arrow that points from source values to destination values}}
+            {{#with (and fromDeviceValues.length toDeviceValues.length)}}
+              {{rsa-icon class="arrow" name="arrow-right-5" size="smaller"}}
+            {{/with}}
+
+            <span class="destination-values">
+
+              {{!Dest device info}}
+              {{#each toDeviceValues as |device|}}
+                <span class="to device entity" data-meta-key="{{device.field}}" data-entity-id="{{device.value}}">
+                  {{device.value}}
+                </span>
+                <span class="sep">&middot;</span>
+              {{/each}}
+
+              {{!Dest user info}}
+              {{#each toUserValues as |user|}}
+                <span class="to user entity" data-meta-key="{{user.field}}" data-entity-id="{{user.value}}">
+                  {{user.value}}
+                </span>
+                <span class="sep">&middot;</span>
+              {{/each}}
+
+              {{!File info}}
+              {{#each fileValues as |file|}}
+                <span class="to user entity" data-meta-key="{{file.field}}" data-entity-id="{{file.value}}">
+                  {{file.value}}
+                </span>
+                <span class="sep">&middot;</span>
+              {{/each}}
+
+            </span>
+          </div>
+        </div>
+      {{/if}}
+    </td>
+  </tr>
+</table>

@@ -15,6 +15,11 @@
     /* width will be set = __scroller.clientWidth at run-time */
     overflow: hidden;
 
+    .rsa-group-table-group-header {
+      /* overwrites default (absolute) because sticky header doesn't move */
+      position: relative;
+    }
+
     .is-leaving {
       /* hides the sticky header when a group is almost entirely above viewport */
       display: none;

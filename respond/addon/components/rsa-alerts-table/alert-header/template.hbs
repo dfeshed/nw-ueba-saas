@@ -32,17 +32,17 @@
     <nav>
       {{#if group.events}}
         <span
-          class="rsa-alerts-table-alert__events tab {{if isEventsTabActive 'active'}}"
+          class="rsa-alerts-table-alert-header__events tab {{if isEventsTabActive 'active'}}"
           {{action "toggleEvents" bubbles=false}}>
-          {{rsa-icon name="arrow-right-10" size="smaller"}}
           {{group.events.length}} {{t 'respond.storyline.events'}}
+          {{rsa-icon name="arrow-down-8" size="smaller"}}
         </span>
         {{#if group.enrichments.length}}
           <span
-            class="rsa-alerts-table-alert__enrichments tab {{if isEnrichmentsTabActive 'active'}}"
+            class="rsa-alerts-table-alert-header__enrichments tab {{if isEnrichmentsTabActive 'active'}}"
             {{action "toggleEnrichments" bubbles=false}}>
-            {{rsa-icon name="arrow-right-10" size="smaller"}}
             {{group.enrichments.length}} enrichments
+            {{rsa-icon name="arrow-down-8" size="smaller"}}
           </span>
         {{/if}}
       {{else}}

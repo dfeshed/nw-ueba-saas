@@ -4,7 +4,7 @@ import engineResolverFor from '../../../../helpers/engine-resolver';
 import wait from 'ember-test-helpers/wait';
 import StoryPoint from 'respond/utils/storypoint/storypoint';
 
-moduleForComponent('rsa-alerts-table/alert', 'Integration | Component | rsa alerts table alert', {
+moduleForComponent('rsa-alerts-table/alert-header', 'Integration | Component | rsa alerts table alert header', {
   integration: true,
   resolver: engineResolverFor('respond')
 });
@@ -45,11 +45,11 @@ test('it renders tabs, and highlights the appropriate tabs when they are clicked
     group,
     index
   });
-  this.render(hbs`{{rsa-alerts-table/alert group=group index=index}}`);
+  this.render(hbs`{{rsa-alerts-table/alert-header group=group index=index}}`);
 
   return wait()
     .then(() => {
-      assert.equal(this.$('.rsa-alerts-table-alert').length, 1, 'Expected to find root DOM node.');
+      assert.equal(this.$('.rsa-alerts-table-alert-header').length, 1, 'Expected to find root DOM node.');
 
       const $tabs = this.$('.tab');
       assert.equal($tabs.length, 2, 'Expected to find 2 tabs');
@@ -91,14 +91,14 @@ test('it omits the enrichments tab if there are no enrichments', function(assert
     group,
     index
   });
-  this.render(hbs`{{rsa-alerts-table/alert group=group index=index}}`);
+  this.render(hbs`{{rsa-alerts-table/alert-header group=group index=index}}`);
 
   return wait()
     .then(() => {
       const $tabs = this.$('.tab');
       assert.equal($tabs.length, 1, 'Expected to find only 1 tab');
-      assert.ok($tabs.hasClass('rsa-alerts-table-alert__events'), 'Expected to find the events tab');
-      assert.notOk($tabs.hasClass('rsa-alerts-table-alert__enrichments'), 'Expected to not find the enrichments tab');
+      assert.ok($tabs.hasClass('rsa-alerts-table-alert-header__events'), 'Expected to find the events tab');
+      assert.notOk($tabs.hasClass('rsa-alerts-table-alert-header__enrichments'), 'Expected to not find the enrichments tab');
     });
 });
 
@@ -112,7 +112,7 @@ test('it omits the events tab if there are no events', function(assert) {
     group,
     index
   });
-  this.render(hbs`{{rsa-alerts-table/alert group=group index=index}}`);
+  this.render(hbs`{{rsa-alerts-table/alert-header group=group index=index}}`);
 
   return wait()
     .then(() => {

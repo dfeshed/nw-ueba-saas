@@ -1,4 +1,6 @@
-$alertsTableDarkBgColor: rsa-color(gray, light, $rsa-nearly-transparent);
+$alertsTableDarkBgColor: rsa-color(gray, light, $rsa-translucent);
+$alertsTableDarkerBgColor: rsa-color(gray, light, $rsa-nearly-transparent);
+$alertsTableDarkPlusBgColor: rsa-color(gray, base, $rsa-translucent);
 $alertsTableLightBgColor: rsa-color(white);
 $alertsTableSeverityRadius: 1rem;
 $alertsTableLineHeight: 1.5;
@@ -7,6 +9,7 @@ $alertsTableSeverityOffset: -1 * $alertsTableSeverityRadius + $alertsTableHeadin
 $alertsTableConnectorWidth: $alertsTableSeverityRadius * 2;
 $alertsTableConnectorPaddingX: rsa-whitespace(less);
 $alertsTableConnectorOuterWidth: $alertsTableConnectorPaddingX * 2 + $alertsTableConnectorWidth;
+$alertsTableDotSize: 5px;
 
 /* Lays out a "connector" element that contains a vertical line that "connects" sibling alerts. */
 @mixin rsa-alerts-table-connector-and-line() {
@@ -33,7 +36,7 @@ $alertsTableConnectorOuterWidth: $alertsTableConnectorPaddingX * 2 + $alertsTabl
 .rsa-alerts-table {
 }
 
-.rsa-alerts-table-alert {
+.rsa-alerts-table-alert-header {
   cursor: default;
   line-height: $alertsTableLineHeight;
 
@@ -112,64 +115,77 @@ $alertsTableConnectorOuterWidth: $alertsTableConnectorPaddingX * 2 + $alertsTabl
     .rsa-icon {
       margin-right: rsa-whitespace(least);
       @include rsa-vendor-prefix(transition, transform linear 0.3s);
+      visibility: hidden;
     }
 
+    &:hover,
     &.active {
       .rsa-icon {
-        transform: rotate(90deg);
-        transform-origin: center center;
+        visibility: visible;
       }
     }
   }
 }
 
-.rsa-alerts-table-event {
+.rsa-alerts-table-alert-item-cell {
+  cursor: default;
   @include rsa-font(body, small);
   text-align: left;
+  line-height: 1.5;
+  height: 2 * (.85rem * 1.5 + (rsa-whitespace(least) + rsa-whitespace(less))); /* = 2 lines of text x font-size x line-height + vertical padding*/
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: middle;
 
   .connector {
     @include rsa-alerts-table-connector-and-line();
+
+    .dot {
+      position: absolute;
+      height: $alertsTableDotSize;
+      width: $alertsTableDotSize;
+      border-radius: $alertsTableDotSize;
+      overflow: hidden;
+      margin: auto;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 2;
+    }
   }
 
   .enrichment,
   .event {
-    line-height: 1.5;
-    padding: rsa-whitespace(least) rsa-whitespace() rsa-whitespace(least) $alertsTableConnectorOuterWidth;
-    white-space: nowrap;
+    padding: rsa-whitespace(least) rsa-whitespace() rsa-whitespace(less) $alertsTableConnectorOuterWidth;
+    white-space: normal;
     overflow: hidden;
     text-overflow: ellipsis;
-
-    &::before {
-      content: '\2022'; /* filled bullet */
-      position: absolute;
-      height: 1px;
-      overflow: visible;
-      margin: auto 0;
-      /* horizontally centered over the vertical connector line */
-      left: 0;
-      width: $alertsTableConnectorOuterWidth;
-      text-align: center;
-    }
   }
 
   .event {
 
-    .devices,
-    .users,
-    .files {
-      margin-right: rsa-whitespace(less);
+    /* Renders an "indented" bottom border for event. */
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: $alertsTableConnectorOuterWidth;
+      right: 0;
+      height: 1px;
     }
 
-    .rsa-icon {
+    &-content {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
 
-      &.file,
-      &.device,
-      &.user {
-        margin-right: rsa-whitespace(less);
-      }
+    .sep {
+      margin: 0 rsa-whitespace(less);
 
-      &.arrow {
-        margin: 0 rsa-whitespace(least);
+      &:last-of-type {
+        display: none;
       }
     }
   }
@@ -179,42 +195,61 @@ $alertsTableConnectorOuterWidth: $alertsTableConnectorPaddingX * 2 + $alertsTabl
   }
 }
 
-.rsa-group-table-group {
-
-  &.is-first {
-    .rsa-alerts-table-alert {
-      .header .line {
-        display: none;
-      }
-    }
-  }
-
-  &.is-last {
-    .rsa-alerts-table-alert {
-      .main .line {
-        display: none;
-      }
-    }
-    .rsa-alerts-table-event {
-      .connector {
-        display: none;
+.rsa-alerts-table-alert-item {
+  &:last-of-type {
+    .rsa-alerts-table-alert-item-cell {
+      .event {
+        &::after {
+          display: none;
+        }
       }
     }
   }
 }
 
+.rsa-alerts-table-alert-header.is-first {
+  .header .line {
+    display: none;
+  }
+}
+
+.rsa-alerts-table-alert-header.is-last.is-not-open {
+  .main .line {
+    display: none;
+  }
+}
+
+.rsa-alerts-table-alert.is-last {
+  .rsa-alerts-table-alert-item:last-of-type {
+    .connector .line {
+      bottom: 50%;
+    }
+  }
+}
 
 /* colors */
 
-.rsa-alerts-table-alert,
-.rsa-alerts-table-event {
+.rsa-alerts-table-alert-header,
+.rsa-alerts-table-alert-item {
 
   .line {
     background-color: $alertsTableDarkBgColor;
   }
 }
 
-.rsa-alerts-table-alert {
+.rsa-alerts-table {
+  .rsa-group-table-group {
+    border-bottom: 1px solid $alertsTableDarkPlusBgColor;
+    transition: top linear 0.1s;
+  }
+}
+
+.rsa-alerts-table-alert-header {
+  background-color: rsa-color(gray,dark);
+
+  &.is-selected {
+    background: rsa-color(blue, dark);
+  }
 
   .p,
   .tab {
@@ -231,17 +266,37 @@ $alertsTableConnectorOuterWidth: $alertsTableConnectorPaddingX * 2 + $alertsTabl
   .severity {
     background-color: $alertsTableDarkBgColor;
   }
-
 }
 
-.rsa-group-table-group {
+.rsa-alerts-table-alert-item {
+  color: rsa-color(white);
+
+  .sep {
+    color: rsa-color(gray, light);
+  }
+
   &.is-selected {
-    .rsa-alerts-table-alert {
-      background: rsa-color(blue, base, $rsa-somewhat-opaque);
+    background: rsa-color(blue, dark);
+
+    .event {
+      &::after {
+        background-color: transparent;
+      }
+    }
+  }
+
+  .dot {
+    background-color: rsa-color(gray);
+  }
+
+  .event {
+    &-header {
+      color: rsa-color(gray, light);
+    }
+
+    &::after {
+      background-color: $alertsTableDarkerBgColor;
     }
   }
 }
 
-.rsa-alerts-table-event {
-  color: rsa-color(white);
-}
