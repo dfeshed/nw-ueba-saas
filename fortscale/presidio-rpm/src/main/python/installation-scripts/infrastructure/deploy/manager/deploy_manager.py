@@ -1,8 +1,8 @@
 from version_descriptor import VersionDescriptor
 from version_reader import VersionReader
-from pathlib2 import Path
 from reach_version import ReachVersion
 import argparse
+from pathlib2 import Path
 import os
 import json
 

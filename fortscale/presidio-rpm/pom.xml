@@ -79,9 +79,12 @@
                     <!--<scriptFile>src/main/scripts/postinstall</scriptFile>-->
                     <!--<fileEncoding>utf-8</fileEncoding>-->
                     <script>
+                        echo "*********************************************"
                         whoami
+                        pwd
                         which python
-                        python ${rpm-maven-plugin.script} --rpm_name ${artifactId} --major ${rpm.version.major} --minor ${rpm.version.minor} --build 543
+                        echo "*********************************************"
+                        /usr/local/bin/python ${rpm-maven-plugin.script} --rpm_name ${artifactId} --major ${rpm.version.major} --minor ${rpm.version.minor} --build 543
                     </script>
                 </postinstallScriptlet>
             </configuration>
