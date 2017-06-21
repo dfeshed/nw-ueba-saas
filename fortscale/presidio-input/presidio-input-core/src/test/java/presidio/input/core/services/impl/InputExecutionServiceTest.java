@@ -4,9 +4,12 @@ import fortscale.domain.core.AbstractAuditableDocument;
 import fortscale.services.parameters.ParametersValidationService;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.junit4.SpringRunner;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
-import presidio.ade.domain.store.enriched.EnrichedDataStore;
 import presidio.input.core.services.converters.DlpFileConverter;
+import presidio.input.core.services.data.AdeDataService;
 import presidio.sdk.api.domain.DlpFileDataDocument;
 import presidio.sdk.api.domain.DlpFileEnrichedDocument;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
@@ -14,14 +17,19 @@ import presidio.sdk.api.services.PresidioInputPersistencyService;
 import java.util.ArrayList;
 import java.util.List;
 
-
+@RunWith(SpringRunner.class)
 public class InputExecutionServiceTest {
 
+    @MockBean
+    private ParametersValidationService parameterValidationService;
 
-    ParametersValidationService parameterValidationService = null;
-    PresidioInputPersistencyService presidioInputPersistencyService = null;
-    EnrichedDataStore enrichedDataStore = null;
-    InputExecutionServiceImpl processService = new InputExecutionServiceImpl(parameterValidationService, presidioInputPersistencyService, enrichedDataStore);
+    @MockBean
+    private PresidioInputPersistencyService presidioInputPersistencyService;
+
+    @MockBean
+    private AdeDataService adeDataServic;
+
+    private InputExecutionServiceImpl processService = new InputExecutionServiceImpl(parameterValidationService, presidioInputPersistencyService, adeDataServic);
 
     @Test
     public void testConverter() {

@@ -1,9 +1,9 @@
 package presidio.collector.services.impl;
 
+import fortscale.common.general.Command;
 import fortscale.common.general.DataSource;
 import fortscale.domain.core.AbstractAuditableDocument;
 import fortscale.services.parameters.ParametersValidationService;
-import fortscale.utils.time.TimestampUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import presidio.collector.services.api.CollectorExecutionService;
@@ -11,20 +11,18 @@ import presidio.collector.services.api.FetchService;
 import presidio.sdk.api.domain.DlpFileDataDocument;
 import presidio.sdk.api.services.CoreManagerService;
 
-import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static fortscale.common.general.CommonStrings.COMMAND_LINE_COMMAND_FIELD_NAME;
 import static fortscale.common.general.CommonStrings.COMMAND_LINE_DATA_SOURCE_FIELD_NAME;
-import static fortscale.common.general.CommonStrings.COMMAND_LINE_DATE_FORMAT;
 import static fortscale.common.general.CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME;
 import static fortscale.common.general.CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME;
 
 public class CollectorExecutionServiceImpl implements CollectorExecutionService {
-
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
-
+    private static Logger logger = LoggerFactory.getLogger(CollectorExecutionServiceImpl.class);
 
     private final CoreManagerService coreManagerService;
     private final FetchService fetchService;
@@ -39,38 +37,43 @@ public class CollectorExecutionServiceImpl implements CollectorExecutionService 
     public void run(String... params) throws Exception {         //todo: we need to consider doing the fetch & store at the same iteration
         logger.info("Start collector processing with params: " + Arrays.toString(params));
 
-        if (params.length < 3) {
-            logger.error("Invalid input[{}]. Need at least {}, {} and {}. Example input: {}=some_{} {}=some_{}_as_long {}=some_{}_as_long", params, COMMAND_LINE_DATA_SOURCE_FIELD_NAME, COMMAND_LINE_START_DATE_FIELD_NAME, COMMAND_LINE_END_DATE_FIELD_NAME, COMMAND_LINE_DATA_SOURCE_FIELD_NAME, COMMAND_LINE_DATA_SOURCE_FIELD_NAME, COMMAND_LINE_START_DATE_FIELD_NAME, COMMAND_LINE_START_DATE_FIELD_NAME, COMMAND_LINE_END_DATE_FIELD_NAME, COMMAND_LINE_END_DATE_FIELD_NAME);
-            return;
+        if (params.length < 4) {
+            String errorMessage = String.format("Invalid input[%s]. Not enough parameters.", Arrays.toString(params));
+            logger.error(errorMessage);
+            throw new RuntimeException(errorMessage);
         }
 
         final String dataSourceParam;
-        final String startTimeParam;
-        final String endTimeParam;
+        final String startDateParam;
+        final String endDateParam;
+        final String commandParam;
 
         try {
             dataSourceParam = parameterValidationService.getMandatoryParamAsString(COMMAND_LINE_DATA_SOURCE_FIELD_NAME, params);
-            startTimeParam = parameterValidationService.getMandatoryParamAsString(COMMAND_LINE_START_DATE_FIELD_NAME, params);
-            endTimeParam = parameterValidationService.getMandatoryParamAsString(COMMAND_LINE_END_DATE_FIELD_NAME, params);
+            startDateParam = parameterValidationService.getMandatoryParamAsString(COMMAND_LINE_START_DATE_FIELD_NAME, params);
+            endDateParam = parameterValidationService.getMandatoryParamAsString(COMMAND_LINE_END_DATE_FIELD_NAME, params);
+            commandParam = parameterValidationService.getMandatoryParamAsString(COMMAND_LINE_COMMAND_FIELD_NAME, params);
             parameterValidationService.validateDataSourceParam(dataSourceParam);
-            // TODO: set date format convention
-//            parameterValidationService.validateTimeParams(startTimeParam, endTimeParam);
+            parameterValidationService.validateCommand(commandParam);
+            parameterValidationService.validateTimeParams(startDateParam, endDateParam);
         } catch (Exception e) {
             logger.error("Invalid input[{}].", params, e);
             return;
         }
 
-        final DataSource dataSource;
-        final long startTime;
-        final long endTime;
-        dataSource = DataSource.createDataSource(dataSourceParam);
-        startTime = TimestampUtils.convertToSeconds(new SimpleDateFormat(COMMAND_LINE_DATE_FORMAT).parse(startTimeParam));
-        endTime = TimestampUtils.convertToSeconds(new SimpleDateFormat(COMMAND_LINE_DATE_FORMAT).parse(endTimeParam));
+        final DataSource dataSource = DataSource.createDataSource(dataSourceParam);
+        final Instant startDate = Instant.parse(startDateParam);
+        final Instant endDate = Instant.parse(endDateParam);
+        final Command command = Command.createCommand(commandParam);
 
 
+        if (!command.equals(Command.RUN)) {
+            logger.error("Expected command %S but was given %s", Command.RUN, command);
+            return;
+        }
         final List<String[]> fetchedDocuments;
         try {
-            fetchedDocuments = fetch(dataSource, startTime, endTime);
+            fetchedDocuments = fetch(dataSource, startDate, endDate);
         } catch (Exception e) {
             logger.error("HEY USER!!! FETCH FAILED! params: " + Arrays.toString(params), e);
             //todo: how do we handle? alert the user probably?
@@ -89,7 +92,7 @@ public class CollectorExecutionServiceImpl implements CollectorExecutionService 
         logger.info("Finish csv processing");
     }
 
-    private List<String[]> fetch(DataSource dataSource, long startTime, long endTime) throws Exception {
+    private List<String[]> fetch(DataSource dataSource, Instant startTime, Instant endTime) throws Exception {
         logger.info("Start fetch");
         final List<String[]> fetchedRecords = fetchService.fetch(dataSource, startTime, endTime);//todo: maybe the retry logic will be here?
         logger.info("finish fetch");
@@ -127,7 +130,5 @@ public class CollectorExecutionServiceImpl implements CollectorExecutionService 
         return createdDocuments;
 
     }
-
-
 }
 

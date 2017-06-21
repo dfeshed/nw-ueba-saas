@@ -2,10 +2,10 @@ package presidio.collector.services.impl;
 
 import fortscale.common.general.DataSource;
 import fortscale.utils.logging.Logger;
-import org.joda.time.DateTime;
 import presidio.collector.services.api.FetchService;
 import presidio.collector.services.api.Fetcher;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 
@@ -20,8 +20,8 @@ public class FetchServiceImpl implements FetchService {
     }
 
     @Override
-    public List<String[]> fetch(DataSource dataSource, long startTime, long endTime) throws Exception {
-        logger.info("fetching dataSource {} from start time {}[{}] to end time {}[{}].", dataSource, new DateTime(startTime), startTime, new DateTime(endTime), endTime); //todo: can we have timezone issues?
+    public List<String[]> fetch(DataSource dataSource, Instant startTime, Instant endTime) throws Exception {
+        logger.info("fetching dataSource {} from start time {} to end time {}.", dataSource, startTime, endTime); //todo: can we have timezone issues?
         final Fetcher fetcher = fetchers.get(dataSource);
         if (fetcher == null) {
             logger.error("There's no fetcher for dataSource {}. Supported datasources are {}", fetchers.keySet());
@@ -37,8 +37,6 @@ public class FetchServiceImpl implements FetchService {
         }
 
     }
-
-
 }
 
 

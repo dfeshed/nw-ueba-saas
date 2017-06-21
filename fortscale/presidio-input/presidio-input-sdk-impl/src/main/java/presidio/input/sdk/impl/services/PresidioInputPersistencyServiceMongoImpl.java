@@ -8,6 +8,7 @@ import presidio.sdk.api.domain.DataService;
 import presidio.sdk.api.domain.DlpFileDataDocument;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,7 +35,7 @@ public class PresidioInputPersistencyServiceMongoImpl implements PresidioInputPe
     }
 
     @Override
-    public List<? extends AbstractAuditableDocument> find(DataSource dataSource, long startDate, long endDate) throws Exception {
+    public List<? extends AbstractAuditableDocument> find(DataSource dataSource, Instant startDate, Instant endDate) throws Exception {
         logger.info("Finding records for data source:{}, from :{}, until :{}."
                 , dataSource,
                 CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate,
@@ -43,7 +44,7 @@ public class PresidioInputPersistencyServiceMongoImpl implements PresidioInputPe
     }
 
     @Override
-    public int clean(DataSource dataSource, long startDate, long endDate) throws Exception {
+    public int clean(DataSource dataSource, Instant startDate, Instant endDate) throws Exception {
         logger.info("Deleting records for data source:{}, from {}:{}, until {}:{}."
                 , dataSource,
                 CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate,

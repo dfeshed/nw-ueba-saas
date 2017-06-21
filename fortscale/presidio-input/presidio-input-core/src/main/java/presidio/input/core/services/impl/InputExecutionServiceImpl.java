@@ -8,10 +8,9 @@ import fortscale.domain.core.AbstractAuditableDocument;
 import fortscale.services.parameters.ParametersValidationService;
 import fortscale.utils.logging.Logger;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
-import presidio.ade.domain.store.enriched.EnrichedDataStore;
-import presidio.ade.domain.store.enriched.EnrichedRecordsMetadata;
 import presidio.input.core.services.api.InputExecutionService;
 import presidio.input.core.services.converters.DlpFileConverter;
+import presidio.input.core.services.data.AdeDataService;
 import presidio.sdk.api.domain.DlpFileDataDocument;
 import presidio.sdk.api.domain.DlpFileEnrichedDocument;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
@@ -21,7 +20,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static fortscale.common.general.CommonStrings.*;
+import static fortscale.common.general.CommonStrings.COMMAND_LINE_COMMAND_FIELD_NAME;
+import static fortscale.common.general.CommonStrings.COMMAND_LINE_DATA_SOURCE_FIELD_NAME;
+import static fortscale.common.general.CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME;
+import static fortscale.common.general.CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME;
 
 public class InputExecutionServiceImpl implements InputExecutionService {
 
@@ -35,19 +37,19 @@ public class InputExecutionServiceImpl implements InputExecutionService {
 
     private final ParametersValidationService parameterValidationService;
     private final PresidioInputPersistencyService presidioInputPersistencyService;
-    private final EnrichedDataStore enrichedDataStore;
+    private final AdeDataService adeDataService;
 
-    private DataSource dataSource; //todo maor
+    private DataSource dataSource;
     private Instant startDate;
     private Instant endDate;
     private Command command;
 
     public InputExecutionServiceImpl(ParametersValidationService parameterValidationService,
                                      PresidioInputPersistencyService presidioInputPersistencyService,
-                                     EnrichedDataStore enrichedDataStore) {
+                                     AdeDataService adeDataService) {
         this.parameterValidationService = parameterValidationService;
         this.presidioInputPersistencyService = presidioInputPersistencyService;
-        this.enrichedDataStore = enrichedDataStore;
+        this.adeDataService = adeDataService;
     }
 
     private void init(String... params) throws Exception {
@@ -81,7 +83,7 @@ public class InputExecutionServiceImpl implements InputExecutionService {
     public void run(String... params) throws Exception {
         init(params);
         switch (command) {
-            case ENRICH:
+            case RUN:
                 enrich();
                 break;
             case CLEAN:
@@ -103,7 +105,7 @@ public class InputExecutionServiceImpl implements InputExecutionService {
                 , dataSource,
                 CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate,
                 CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
-        presidioInputPersistencyService.clean(dataSource, startDate.getEpochSecond(), endDate.getEpochSecond());
+        presidioInputPersistencyService.clean(dataSource, startDate, endDate);
         logger.info("Finished enrich processing .");
     }
 
@@ -113,7 +115,7 @@ public class InputExecutionServiceImpl implements InputExecutionService {
                 CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate,
                 CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
 
-        final List<? extends AbstractAuditableDocument> dataRecords = find(dataSource, startDate.getEpochSecond(), endDate.getEpochSecond());
+        final List<? extends AbstractAuditableDocument> dataRecords = find(dataSource, startDate, endDate);
         logger.info("Found {} dataRecords for dataSource:{}, startDate:{}, endDate:{}.", dataRecords, dataSource, startDate, endDate);
 
         final List<DlpFileEnrichedDocument> enrichedRecords = enrich(dataRecords);
@@ -126,7 +128,7 @@ public class InputExecutionServiceImpl implements InputExecutionService {
         logger.info("Finished enrich processing .");
     }
 
-    private List<? extends AbstractAuditableDocument> find(DataSource dataSource, long startTime, long endTime) throws Exception {
+    private List<? extends AbstractAuditableDocument> find(DataSource dataSource, Instant startTime, Instant endTime) throws Exception {
         logger.debug("Finding records for data source:{}, from {}:{}, until {}:{}."
                 , dataSource,
                 CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate,
@@ -150,10 +152,9 @@ public class InputExecutionServiceImpl implements InputExecutionService {
         logger.debug("Storing {} records.", enrichedDocuments.size());
 
 
-        EnrichedRecordsMetadata recordsMetaData = new EnrichedRecordsMetadata(dataSource.toString(), startDate, endDate);
         List<? extends EnrichedRecord> records = convert(enrichedDocuments, new DlpFileConverter());
 
-        enrichedDataStore.store(recordsMetaData, records);
+        adeDataService.store(dataSource, startDate, endDate, records);
 
         logger.info("*************input logic comes here***********");
         logger.info("enriched documents: \n{}", enrichedDocuments);
