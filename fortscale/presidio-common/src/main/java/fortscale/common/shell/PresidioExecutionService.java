@@ -9,7 +9,7 @@ import java.time.Instant;
  */
 public interface PresidioExecutionService {
 
-    public void run(DataSource dataSource, Instant startDate, Instant endDate, long fixedDuration) throws Exception;
+    public void run(DataSource dataSource, Instant startDate, Instant endDate, Long fixedDuration) throws Exception;
 
     public void clean(DataSource dataSource, Instant startDate, Instant endDate) throws Exception;
 
