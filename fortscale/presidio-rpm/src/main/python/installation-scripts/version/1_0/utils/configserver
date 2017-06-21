@@ -1,0 +1,37 @@
+#!/bin/bash
+# chkconfig: 345 99 01
+# description: service to run local git configuration server
+
+git_server_path=/home/presidio/presidio-core/bin/
+process_id_folder=/var/run
+
+case "$1" in
+start)
+   if [ -e $process_id_folder/config_server.pid ]; then
+        echo configuration server is already running, pid='cat $process_id_folder/config_server.pid'
+        exit 0
+   fi
+   java -jar -Dspring.profiles.active=dev,native $git_server_path/presidio-configuration-server-*.jar &
+   echo $!>$process_id_folder/config_server.pid
+   ;;
+stop)
+   kill `cat /home/presidio/dev-projects/service/config_server.pid`
+   rm $process_id_folder/config_server.pid
+   ;;
+restart)
+   $0 stop
+   $0 start
+   ;;
+status)
+   if [ -e $process_id_folder/config_server.pid ]; then
+      echo configuration server is running, pid=`cat $process_id_folder/config_server.pid`
+   else
+      echo configuration server is not running
+      exit 1
+   fi
+   ;;
+*)
+   echo "Usage: $0 {start|stop|status|restart}"
+esac
+
+exit 0

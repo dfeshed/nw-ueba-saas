@@ -4,6 +4,11 @@
       "filePath": "mongo_set_config.py",
       "executor": "defualt",
       "time_to_execute": "pre"
+    },
+    {
+      "filePath": "config_server.sh",
+      "executor": "defualt",
+      "time_to_execute": "post"
     }
   ]
 }

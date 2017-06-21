@@ -74,7 +74,7 @@
                     </mapping>
                 </mappings>
                 <preinstallScriptlet>
-                    <script>echo "pre installation BARAKKKKKKKKKKKKKKKKKKK"</script>
+                    <script>echo "pre installation TOMERRRRRRRRRRRRR"</script>
                 </preinstallScriptlet>
                 <postinstallScriptlet>
                     <!--<scriptFile>src/main/scripts/postinstall</scriptFile>-->
