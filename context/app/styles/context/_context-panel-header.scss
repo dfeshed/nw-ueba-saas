@@ -9,6 +9,7 @@
     transform: translate(-100%, 0);
     color: rsa-color(gray, light);
     margin-top: 0.8rem;
+    cursor: pointer;
   }
 
   &__header-icons {
@@ -22,7 +23,6 @@
 
   &__title {
     @include rsa-font(header, large);
-    text-transform: uppercase;
   }
 
   &__unsafe {
