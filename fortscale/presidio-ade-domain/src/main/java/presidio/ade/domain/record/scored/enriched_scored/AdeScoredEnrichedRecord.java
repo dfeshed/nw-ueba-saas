@@ -2,6 +2,7 @@ package presidio.ade.domain.record.scored.enriched_scored;
 
 import fortscale.domain.feature.score.FeatureScore;
 import org.springframework.data.annotation.Transient;
+import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.ade.domain.record.scored.AdeScoredRecord;
 
 import java.time.Instant;
@@ -19,4 +20,6 @@ public abstract class AdeScoredEnrichedRecord extends AdeScoredRecord {
 
     @Transient
     public abstract String getDataSource();
+
+    public abstract void fillContext(EnrichedRecord enrichedRecord);
 }

@@ -37,7 +37,7 @@ public class DataSourceToAdeRecordClassResolver<T> {
             Class<?> pojoClass = Class.forName(beanDef.getBeanClassName());
             if (AdeRecord.class.isAssignableFrom(pojoClass)) {
                 AdeRecordMetadata adeRecord = pojoClass.getAnnotation(AdeRecordMetadata.class);
-                dataSourceToAdeRecordClassMap.put(adeRecord.type(), (Class<? extends T>) pojoClass);
+                dataSourceToAdeRecordClassMap.put(adeRecord.dataSource(), (Class<? extends T>) pojoClass);
             }
         } catch (Exception e) {
             System.err.println("Got exception: " + e.getMessage());

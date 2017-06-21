@@ -170,6 +170,7 @@
         <jacoco-maven-plugin.version>0.7.9</jacoco-maven-plugin.version>
         <cron-utils.version>5.0.5</cron-utils.version>
         <podam.version>7.0.5.RELEASE</podam.version>
+		<spring-cloud.version>Dalston.SR1</spring-cloud.version>
         <rpm-maven-plugin.version>2.1.5</rpm-maven-plugin.version>
     </properties>
 
@@ -181,6 +182,13 @@
             <!--<version>${junit.version}</version>-->
             <!--</dependency>-->
 
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
             <dependency>
                 <groupId>pl.pragmatists</groupId>
                 <artifactId>JUnitParams</artifactId>
@@ -771,8 +779,8 @@
         <module>presidio-core-manager</module>
         <module>presidio-collector</module>
         <module>presidio-output</module>
+        <module>presidio-configuration-server</module>
         <module>presidio-rpm</module>
-
     </modules>
     <distributionManagement>
         <!-- push changes to artifactory, distribute use of sdk -->
