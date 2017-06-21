@@ -20,8 +20,9 @@ const DSHeaderComponent = Component.extend({
     if (!lookupData) {
       return;
     }
-    if (contextData) {
-      return (contextData.liveConnectData || contextData.resultList) ? contextData : null;
+    const data = contextData && (contextData.liveConnectData || contextData.resultList);
+    if (data) {
+      return contextData;
     }
     return lookupData[dSDetails.dataSourceGroup];
   },
