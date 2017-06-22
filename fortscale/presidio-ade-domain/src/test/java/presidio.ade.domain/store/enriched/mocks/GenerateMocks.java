@@ -33,7 +33,7 @@ public class GenerateMocks {
      */
     public static void createMockForIndexOperation(MongoTemplate mongoTemplate) {
         IndexOperations indexOperations = mock(DefaultIndexOperations.class);
-        when(mongoTemplate.indexOps(any(Class.class))).thenReturn(indexOperations);
+        when(mongoTemplate.indexOps(eq("enriched_dlpfile"))).thenReturn(indexOperations);
     }
 
     /**

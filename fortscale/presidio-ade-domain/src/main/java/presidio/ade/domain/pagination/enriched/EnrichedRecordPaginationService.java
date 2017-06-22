@@ -42,8 +42,8 @@ public class EnrichedRecordPaginationService extends PaginationService<EnrichedR
     }
 
     @Override
-    protected void validateIndexes(String dataSource) {
-        this.store.validateIndexes(dataSource, this.contextType);
+    protected void ensureContextAndDateTimeIndex(String dataSource) {
+        this.store.ensureContextAndDateTimeIndex(dataSource, this.contextType);
     }
 
 }
