@@ -63,6 +63,7 @@ class Deploy_Manager:
                     self.current_version = version
 
     def exec_file(self, file_to_exec):
+        os.system(chmod +x file_to_exec)
         os.system(file_to_exec)
 
     def exec_mongo_file(self, file_to_exec):
