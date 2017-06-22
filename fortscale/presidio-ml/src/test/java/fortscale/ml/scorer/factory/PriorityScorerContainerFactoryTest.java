@@ -1,6 +1,5 @@
 package fortscale.ml.scorer.factory;
 
-import fortscale.common.feature.extraction.FeatureExtractService;
 import fortscale.domain.feature.score.FeatureScore;
 import fortscale.ml.model.ModelConfService;
 import fortscale.ml.model.cache.ModelsCacheService;
@@ -29,9 +28,6 @@ public class PriorityScorerContainerFactoryTest {
 
     @MockBean
     ModelsCacheService modelCacheService;
-
-    @MockBean
-    FeatureExtractService featureExtractService;
 
     @Autowired
     PriorityScorerContainerFactory priorityScorerContainerFactory;

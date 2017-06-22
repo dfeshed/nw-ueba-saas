@@ -1,6 +1,5 @@
 package fortscale.ml.scorer.factory;
 
-import fortscale.common.feature.extraction.FeatureExtractService;
 import fortscale.ml.model.ModelConfService;
 import fortscale.ml.model.cache.ModelsCacheService;
 import fortscale.ml.scorer.ConstantRegexScorer;
@@ -24,9 +23,6 @@ public class ConstantRegexScorerFactoryTest {
 
     @MockBean
     ModelsCacheService modelCacheService;
-
-    @MockBean
-    FeatureExtractService featureExtractService;
 
     @Autowired
     ConstantRegexScorerFactory constantRegexScorerFactory;

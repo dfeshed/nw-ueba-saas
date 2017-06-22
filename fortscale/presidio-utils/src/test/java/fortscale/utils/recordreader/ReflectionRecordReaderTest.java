@@ -4,58 +4,59 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * Unit tests for {@link RecordReaderImpl}.
+ * Unit tests for {@link ReflectionRecordReader}.
+ *
  * Created by Lior Govrin on 06/06/2017.
  */
-public class RecordReaderImplTest {
+public class ReflectionRecordReaderTest {
 	@Test
-	public void test_record_reader_impl_with_default_field_path_delimiter() {
+	public void test_reader_with_default_field_path_delimiter() {
 		// First level of hierarchical record
 		Record1 record1 = new Record1(1, "myFirstString", new Record2(2, new Record3("mySecondString")));
-		RecordReader<Record1> record1Reader = new RecordReaderImpl<>();
-		Integer a = record1Reader.get(record1, "a", Integer.class);
+		RecordReader record1Reader = new ReflectionRecordReader(record1);
+		Integer a = record1Reader.get("a", Integer.class);
 		Assert.assertEquals(new Integer(1), a);
-		String b = record1Reader.get(record1, "b", String.class);
+		String b = record1Reader.get("b", String.class);
 		Assert.assertEquals("myFirstString", b);
 
 		// Second level of hierarchical record
-		Integer d = record1Reader.get(record1, "c.d", Integer.class);
+		Integer d = record1Reader.get("c.d", Integer.class);
 		Assert.assertEquals(new Integer(2), d);
 
 		// Third level of hierarchical record
-		String f = record1Reader.get(record1, "c.e.f", String.class);
+		String f = record1Reader.get("c.e.f", String.class);
 		Assert.assertEquals("mySecondString", f);
 
 		// Flat record
-		Record3 e = record1Reader.get(record1, "c.e", Record3.class);
-		RecordReader<Record3> record3Reader = new RecordReaderImpl<>();
-		f = record3Reader.get(e, "f", String.class);
+		Record3 e = record1Reader.get("c.e", Record3.class);
+		RecordReader record3Reader = new ReflectionRecordReader(e);
+		f = record3Reader.get("f", String.class);
 		Assert.assertEquals("mySecondString", f);
 	}
 
 	@Test
-	public void test_record_reader_impl_with_custom_field_path_delimiter() {
+	public void test_reader_with_custom_field_path_delimiter() {
 		Record1 record = new Record1(100, "numberOne", new Record2(200, new Record3("numberTwo")));
-		RecordReader<Record1> recordReader = new RecordReaderImpl<>("\\[DELIMITER\\]");
-		String f = recordReader.get(record, "c[DELIMITER]e[DELIMITER]f", String.class);
+		RecordReader recordReader = new ReflectionRecordReader(record, "\\[DELIMITER\\]");
+		String f = recordReader.get("c[DELIMITER]e[DELIMITER]f", String.class);
 		Assert.assertEquals("numberTwo", f);
 	}
 
 	@Test
-	public void should_return_null_if_field_does_not_exist() {
+	public void reader_should_return_null_if_field_does_not_exist() {
 		Record2 record = new Record2(1, new Record3("myString"));
-		RecordReader<Record2> recordReader = new RecordReaderImpl<>();
-		Integer x = recordReader.get(record, "x", Integer.class);
+		RecordReader recordReader = new ReflectionRecordReader(record);
+		Integer x = recordReader.get("x", Integer.class);
 		Assert.assertNull(x);
-		String y = recordReader.get(record, "e.y", String.class);
+		String y = recordReader.get("e.y", String.class);
 		Assert.assertNull(y);
 	}
 
 	@Test
-	public void should_return_null_if_value_is_of_unexpected_type() {
+	public void reader_should_return_null_if_value_is_of_unexpected_type() {
 		Record3 record = new Record3("myString");
-		RecordReader<Record3> recordReader = new RecordReaderImpl<>();
-		Integer f = recordReader.get(record, "f", Integer.class);
+		RecordReader recordReader = new ReflectionRecordReader(record);
+		Integer f = recordReader.get("f", Integer.class);
 		Assert.assertNull(f);
 	}
 

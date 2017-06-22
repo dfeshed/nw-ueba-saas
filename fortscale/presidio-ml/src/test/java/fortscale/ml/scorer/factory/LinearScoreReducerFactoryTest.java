@@ -1,6 +1,5 @@
 package fortscale.ml.scorer.factory;
 
-import fortscale.common.feature.extraction.FeatureExtractService;
 import fortscale.ml.model.ModelConfService;
 import fortscale.ml.model.cache.ModelsCacheService;
 import fortscale.ml.scorer.LinearScoreReducer;
@@ -27,9 +26,6 @@ public class LinearScoreReducerFactoryTest {
 
 	@MockBean
 	ModelsCacheService modelCacheService;
-
-	@MockBean
-	FeatureExtractService featureExtractService;
 
 	@Autowired
 	private FactoryService<Scorer> scorerFactoryService;

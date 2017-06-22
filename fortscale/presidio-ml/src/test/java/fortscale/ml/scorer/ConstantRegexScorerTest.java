@@ -8,14 +8,12 @@ import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import presidio.ade.domain.record.AdeRecordReader;
 
 import java.time.Instant;
 
 @RunWith(SpringRunner.class)
-@ContextConfiguration(locations = {"classpath*:META-INF/spring/scorer-tests-context.xml"})
 public class ConstantRegexScorerTest {
     ConstantRegexScorer createConstantRegexScorer(ConstantRegexScorerParams params) {
         return new ConstantRegexScorer(params.getName(), params.getRegexFieldName(), params.getRegexPattern(), params.getConstantScore());

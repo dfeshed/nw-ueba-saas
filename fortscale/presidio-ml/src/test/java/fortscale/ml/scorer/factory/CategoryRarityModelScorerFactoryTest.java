@@ -1,7 +1,6 @@
 package fortscale.ml.scorer.factory;
 
 import fortscale.common.feature.Feature;
-import fortscale.common.feature.extraction.FeatureExtractService;
 import fortscale.ml.model.ModelBuilderData;
 import fortscale.ml.model.ModelBuilderData.NoDataReason;
 import fortscale.ml.model.ModelConf;
@@ -33,9 +32,6 @@ import static org.mockito.Mockito.when;
 @RunWith(SpringRunner.class)
 @ContextConfiguration(locations = {"classpath*:META-INF/spring/scorer-factory-tests-context.xml"})
 public class CategoryRarityModelScorerFactoryTest {
-    @MockBean
-    FeatureExtractService featureExtractService;
-
     @MockBean
     ModelsCacheService modelsCacheService;
 

@@ -2,6 +2,7 @@ package fortscale.ml.scorer.record;
 
 import fortscale.utils.recordreader.RecordReader;
 import org.json.JSONObject;
+import presidio.ade.domain.record.AdeRecordReader;
 
 import javax.validation.constraints.NotNull;
 
@@ -10,7 +11,7 @@ import javax.validation.constraints.NotNull;
  *
  * Created by Lior Govrin on 13/06/2017.
  */
-public class JsonAdeRecordReader implements RecordReader {
+public class JsonAdeRecordReader extends AdeRecordReader {
 	private static final String DEFAULT_FIELD_PATH_DELIMITER = "\\.";
 
 	private JsonAdeRecord record;
@@ -23,6 +24,7 @@ public class JsonAdeRecordReader implements RecordReader {
 	 * @param fieldPathDelimiter this JSON ADE record reader's field path delimiter (evaluated as a regular expression)
 	 */
 	public JsonAdeRecordReader(@NotNull JsonAdeRecord record, @NotNull String fieldPathDelimiter) {
+		super(record, fieldPathDelimiter);
 		this.record = record;
 		this.fieldPathDelimiter = fieldPathDelimiter;
 	}
