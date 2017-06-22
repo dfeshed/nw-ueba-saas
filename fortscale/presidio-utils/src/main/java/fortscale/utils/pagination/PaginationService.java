@@ -49,7 +49,7 @@ public abstract class PaginationService<T> {
     public <U extends T> List<PageIterator<U>> getPageIterators(String dataSource, TimeRange timeRange) {
 
         //Validate if indexes exist, otherwise add them.
-        validateIndexes(dataSource);
+        ensureContextAndDateTimeIndex(dataSource);
 
         List<ContextIdToNumOfEvents> contextIdToNumOfEventsList = getContextIdToNumOfItemsList(dataSource, timeRange);
         //groups is a list, where each group contains pair of total num of events and set of contextId.
@@ -92,14 +92,17 @@ public abstract class PaginationService<T> {
      * Validate the store indexes.
      * The implementations should validate that the fields they query should be indexed in their store.
      */
-    protected abstract void validateIndexes(String dataSource);
+    protected abstract void ensureContextAndDateTimeIndex(String dataSource);
 
 
     /**
-     * Creates groups, which contain pair of total num of events in group and set of contextId:
-     * Sort List<ContextIdToNumOfEvents>.
-     * Add the last contextId to set.
-     * while num of events less than pageSize and contextIds set amount less than maxGroupSize => Add first contextIds to set.
+     *
+     * Creates groups, which contain pair of total num of events in group and set of contextId.
+     *
+     * In order to optimize the group algorithm:
+     * sort the contextIdToNumOfEventsList.
+     * add the last contextId to group.
+     * while num of events less than pageSize and contextIds add amount less than maxGroupSize => Add first contextIds to the group.
      *
      * @param contextIdToNumOfEventsList list of ContextIdToNumOfEvents objects,each object contains context id and num of events
      * @return list num of events in group and set of contextId of pairs

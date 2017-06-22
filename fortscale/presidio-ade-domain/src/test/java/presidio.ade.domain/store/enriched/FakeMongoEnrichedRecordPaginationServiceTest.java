@@ -2,9 +2,11 @@ package presidio.ade.domain.store.enriched;
 
 import fortscale.utils.mongodb.config.MongoConfig;
 import fortscale.utils.pagination.PageIterator;
+import fortscale.utils.test.category.IntegrationTestCategory;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
 import fortscale.utils.time.TimeRange;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -32,6 +34,7 @@ import static presidio.ade.domain.record.enriched.EnrichedDlpFileRecord.NORMALIZ
  */
 @ContextConfiguration(classes = {MongodbTestConfig.class, DataSourceToAdeEnrichedRecordClassResolverConfig.class})
 @RunWith(SpringJUnit4ClassRunner.class)
+@Category(IntegrationTestCategory.class)
 public class FakeMongoEnrichedRecordPaginationServiceTest {
 
     @Autowired

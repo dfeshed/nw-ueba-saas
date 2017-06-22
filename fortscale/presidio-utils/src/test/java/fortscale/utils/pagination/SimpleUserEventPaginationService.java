@@ -57,7 +57,7 @@ public class SimpleUserEventPaginationService extends PaginationService<SimpleUs
 
 
     @Override
-    protected void validateIndexes(String dataSource) {
+    protected void ensureContextAndDateTimeIndex(String dataSource) {
     }
 
 }

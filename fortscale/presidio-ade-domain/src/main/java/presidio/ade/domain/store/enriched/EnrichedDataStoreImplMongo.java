@@ -127,7 +127,7 @@ public class EnrichedDataStoreImplMongo implements EnrichedDataStore {
      * @param contextType type of context, field that the aggregateContextToNumOfEvents and readRecords methods use to query.
      */
     @Override
-    public void validateIndexes(String dataSource, String contextType) {
+    public void ensureContextAndDateTimeIndex(String dataSource, String contextType) {
         //Get pojoClass by dataSource
         Class pojoClass = dataSourceToAdeEnrichedRecordClassResolver.getClass(dataSource);
 
