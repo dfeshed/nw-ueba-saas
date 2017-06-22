@@ -16,6 +16,8 @@ export default Route.extend(ApplicationRouteMixin, csrfToken, {
   userActivity: service(),
   userIdle: service(),
 
+  persistStateOnLogout: true,
+
   title() {
     return this.get('i18n').t('application.title');
   },
@@ -45,6 +47,7 @@ export default Route.extend(ApplicationRouteMixin, csrfToken, {
       this.transitionTo('not-found');
     },
     logout() {
+      this.set('persistStateOnLogout', false);
       this._logout();
     }
   },
@@ -97,7 +100,10 @@ export default Route.extend(ApplicationRouteMixin, csrfToken, {
   },
 
   sessionInvalidated() {
-    localStorage.setItem('rsa-post-auth-redirect', window.location.href);
+    if (this.get('persistStateOnLogout')) {
+      localStorage.setItem('rsa-post-auth-redirect', window.location.href);
+    }
+
     window.location.replace('/login');
   },
 
