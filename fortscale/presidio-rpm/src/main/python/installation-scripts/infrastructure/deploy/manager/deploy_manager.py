@@ -43,7 +43,7 @@ class Deploy_Manager:
                 execute vresion migration scripts
                 """
                 mig_step_json, mig_steps_folder = self.read_mig_step(version)
-                print len(mig_step_json[0])
+                print len(mig_step_json)
                 print str(mig_step_json[0])
                 print type(mig_step_json[0])
                 with open(str(mig_step_json[0])) as json_steps_file:
