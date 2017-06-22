@@ -57,6 +57,10 @@ const respondConfigGen = function(environment) {
       stream: {
         subscriptionDestination: '/user/queue/alerts',
         requestDestination: '/ws/response/alerts'
+      },
+      deleteRecord: {
+        subscriptionDestination: '/user/queue/alerts/delete',
+        requestDestination: '/ws/response/alerts/delete'
       }
     },
     'alerts-count': {

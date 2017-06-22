@@ -66,5 +66,23 @@ export default {
       modelName: 'alerts-events',
       query: query.toJSON()
     });
+  },
+
+  /**
+   * Executes a websocket delete incident call and returns a Promise
+   * @method deleteIncident
+   * @public
+   * @param incidentId The id of the incident to delete
+   * @returns {Promise}
+   */
+  delete(incidentId) {
+    const query = filterQuery.create()
+      .addFilter('_id', incidentId);
+
+    return promiseRequest({
+      method: 'deleteRecord',
+      modelName: 'alerts',
+      query: query.toJSON()
+    });
   }
 };

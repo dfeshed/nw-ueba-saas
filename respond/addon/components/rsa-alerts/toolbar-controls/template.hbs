@@ -1,0 +1,10 @@
+{{#if accessControl.respondCanManageIncidents}}
+  <div class="action-control">
+    {{#rsa-form-button
+      style='danger'
+      isDisabled=hasNoSelections
+      defaultAction='deleteAlerts'}}
+      {{t 'forms.delete'}}
+    {{/rsa-form-button}}
+  </div>
+{{/if}}

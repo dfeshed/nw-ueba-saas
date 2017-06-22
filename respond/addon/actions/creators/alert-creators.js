@@ -3,7 +3,9 @@ import * as ACTION_TYPES from '../types';
 import * as errorHandlers from '../util/error-handlers';
 import { next } from 'ember-runloop';
 import Ember from 'ember';
+
 const { Logger } = Ember;
+const callbacksDefault = { onSuccess() {}, onFailure() {} };
 
 /**
  * Action creator that dispatches a set of actions for fetching alerts (with or without filters) and sorted by one field.
@@ -48,6 +50,31 @@ const getItems = () => {
     );
   };
 };
+
+/**
+ * Action creator for deleting one or more alerts
+ * @public
+ * @param entityId
+ * @param callbacks
+ * @returns {{type, promise, meta: {onSuccess: (function(*=)), onFailure: (function(*=))}}}
+ */
+const deleteItem = (entityId, callbacks = callbacksDefault) => {
+  return {
+    type: ACTION_TYPES.DELETE_ALERT,
+    promise: alerts.delete(entityId),
+    meta: {
+      onSuccess: (response) => {
+        Logger.debug(ACTION_TYPES.DELETE_ALERT, response);
+        callbacks.onSuccess(response);
+      },
+      onFailure: (response) => {
+        errorHandlers.handleContentDeletionError(response, 'alert');
+        callbacks.onFailure(response);
+      }
+    }
+  };
+};
+
 
 const resetFilters = () => {
   return (dispatch) => {
@@ -191,6 +218,7 @@ const resizeAlertInspector = (width) => ({ type: ACTION_TYPES.RESIZE_ALERT_INSPE
 
 export {
   getItems,
+  deleteItem,
   resetFilters,
   updateFilter,
   sortBy,

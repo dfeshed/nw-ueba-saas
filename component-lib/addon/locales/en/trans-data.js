@@ -587,6 +587,12 @@ export default {
       footer: 'Showing {{count}} out of {{total}} incidents'
     },
     alerts: {
+      actions: {
+        actionMessages: {
+          deleteWarning: 'Warning: You are about to delete one or more alerts that may be associated with incidents. ' +
+          'Be aware that any associated incidents will be updated or deleted accordingly.'
+        }
+      },
       list: {
         receivedTime: 'Created',
         severity: 'Severity',
