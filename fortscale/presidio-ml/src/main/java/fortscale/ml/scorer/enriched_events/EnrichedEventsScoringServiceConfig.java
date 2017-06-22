@@ -14,15 +14,17 @@ import presidio.ade.domain.store.scored.ScoredEnrichedDataStoreMongoConfig;
  */
 
 @Configuration
-@Import({ScoringSpringConfiguration.class, ScoredEnrichedDataStoreMongoConfig.class})
+@Import({ScoringSpringConfiguration.class, ScoredEnrichedDataStoreMongoConfig.class, AdeEnrichedScoredRecordBuilderConfig.class})
 public class EnrichedEventsScoringServiceConfig {
     @Autowired
     private ScoringService scoringService;
     @Autowired
     private ScoredEnrichedDataStore scoredEnrichedDataStore;
+    @Autowired
+    private AdeEnrichedScoredRecordBuilder adeEnrichedScoredRecordBuilder;
 
     @Bean
     public EnrichedEventsScoringService enrichedEventsScoringService(){
-        return new EnrichedEventsScoringServiceImpl(scoringService, scoredEnrichedDataStore);
+        return new EnrichedEventsScoringServiceImpl(scoringService, scoredEnrichedDataStore, adeEnrichedScoredRecordBuilder);
     }
 }
