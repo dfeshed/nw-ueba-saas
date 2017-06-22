@@ -44,9 +44,9 @@ class Deploy_Manager:
                 """
                 mig_step_json, mig_steps_folder = self.read_mig_step(version)
                 print len(mig_step_json)
-                print str(mig_step_json[0])
-                print type(mig_step_json[0])
-                with open(str(mig_step_json[0])) as json_steps_file:
+                mig_steps_str = str(mig_step_json[0])
+                print mig_steps_str
+                with open(mig_steps_str) as json_steps_file:
                     steps = json.load(json_steps_file)
 
                 for step in steps['migration_steps']:
