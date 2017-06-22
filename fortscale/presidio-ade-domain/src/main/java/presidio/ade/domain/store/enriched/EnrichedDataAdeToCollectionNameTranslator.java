@@ -1,7 +1,7 @@
 package presidio.ade.domain.store.enriched;
 
 import presidio.ade.domain.store.AdeDataStoreCleanupParams;
-import presidio.ade.domain.store.ToCollectionNameTranslator;
+import presidio.ade.domain.store.AdeToCollectionNameTranslator;
 
 import java.util.Collection;
 
@@ -10,7 +10,7 @@ import java.util.Collection;
  *
  * Created by barak_schuster on 5/18/17.
  */
-public class EnrichedDataToCollectionNameTranslator implements ToCollectionNameTranslator<EnrichedRecordsMetadata> {
+public class EnrichedDataAdeToCollectionNameTranslator implements AdeToCollectionNameTranslator<EnrichedRecordsMetadata> {
 	public static final String ENRICHED_COLLECTION_PREFIX = "enriched";
 
 	@Override

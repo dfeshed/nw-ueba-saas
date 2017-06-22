@@ -266,7 +266,7 @@ public class EnrichedRecordPaginationServiceTest {
         GenerateMocks.createMockForIndexOperation(mongoTemplate);
 
         //create store
-        EnrichedDataToCollectionNameTranslator translator = new EnrichedDataToCollectionNameTranslator();
+        EnrichedDataAdeToCollectionNameTranslator translator = new EnrichedDataAdeToCollectionNameTranslator();
         enrichedDataStoreImplMongo = new EnrichedDataStoreImplMongo(mongoTemplate, translator, this.dataSourceToAdeEnrichedRecordClassResolver);
 
         //create pagination service

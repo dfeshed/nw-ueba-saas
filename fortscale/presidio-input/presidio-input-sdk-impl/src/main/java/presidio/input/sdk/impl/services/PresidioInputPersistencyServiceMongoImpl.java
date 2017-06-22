@@ -22,7 +22,7 @@ public class PresidioInputPersistencyServiceMongoImpl implements PresidioInputPe
     }
 
     @Override
-    public boolean store(DataSource dataSource, List<AbstractAuditableDocument> records) {
+    public boolean store(DataSource dataSource, List<? extends AbstractAuditableDocument> records) {
         //TODO: change this when we have the new service and repo
         logger.info("Storing {} records for data source {}",
                 records.size(), dataSource);
@@ -31,7 +31,7 @@ public class PresidioInputPersistencyServiceMongoImpl implements PresidioInputPe
                 .stream()
                 .map(e -> (DlpFileDataDocument) e)
                 .collect(Collectors.toList());
-        return dataService.store(dlpFileDataDocuments);
+        return dataService.store(dlpFileDataDocuments, dataSource);
     }
 
     @Override
@@ -40,7 +40,7 @@ public class PresidioInputPersistencyServiceMongoImpl implements PresidioInputPe
                 , dataSource,
                 CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate,
                 CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
-        return dataServiceForDataSource(dataSource).find(startDate, endDate);
+        return dataServiceForDataSource(dataSource).find(startDate, endDate, dataSource);
     }
 
     @Override
@@ -49,12 +49,12 @@ public class PresidioInputPersistencyServiceMongoImpl implements PresidioInputPe
                 , dataSource,
                 CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate,
                 CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
-        return dataServiceForDataSource(dataSource).clean(startDate, endDate);
+        return dataServiceForDataSource(dataSource).clean(startDate, endDate, dataSource);
     }
 
     @Override
     public void cleanAll(DataSource dataSource) throws Exception {
-        dataServiceForDataSource(dataSource).cleanAll();
+        dataServiceForDataSource(dataSource).cleanAll(dataSource);
     }
 
 
