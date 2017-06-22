@@ -32,7 +32,7 @@ const matchesFilter = (item, filters) => {
 
 export default {
   subscriptionDestination: '/user/queue/remediation/tasks',
-  requestDestination: '/ws/response/remediation/tasks',
+  requestDestination: '/ws/respond/remediation/tasks',
 
   message(frame) {
     let data = [];

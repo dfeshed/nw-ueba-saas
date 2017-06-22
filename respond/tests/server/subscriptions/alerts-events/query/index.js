@@ -6,7 +6,7 @@ let counter = 0;
 
 export default {
   subscriptionDestination: '/user/queue/alerts/events',
-  requestDestination: '/ws/response/alerts/events',
+  requestDestination: '/ws/respond/alerts/events',
   message(/* frame */) {
     // const end = Math.max(1, Math.round(Math.random() * len));
     const end = counter % len;

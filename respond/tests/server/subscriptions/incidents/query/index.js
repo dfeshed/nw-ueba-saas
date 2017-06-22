@@ -38,7 +38,7 @@ const matchesFilter = (item, filters) => {
 
 export default {
   subscriptionDestination: '/user/queue/incidents',
-  requestDestination: '/ws/response/incidents',
+  requestDestination: '/ws/respond/incidents',
 
   message(frame) {
     let data = [];

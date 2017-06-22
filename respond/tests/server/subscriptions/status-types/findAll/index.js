@@ -10,7 +10,7 @@ const data = [
 
 export default {
   subscriptionDestination: '/user/queue/options/status',
-  requestDestination: '/ws/response/options/status',
+  requestDestination: '/ws/respond/options/status',
   message(/* frame */) {
     return {
       data,

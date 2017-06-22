@@ -7,7 +7,7 @@ const data = [
 
 export default {
   subscriptionDestination: '/user/queue/options/priority',
-  requestDestination: '/ws/response/options/priority',
+  requestDestination: '/ws/respond/options/priority',
   message(/* frame */) {
     return {
       data,

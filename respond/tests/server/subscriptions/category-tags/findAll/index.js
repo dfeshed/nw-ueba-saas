@@ -2,7 +2,7 @@ import data from './data';
 
 export default {
   subscriptionDestination: '/user/queue/categories',
-  requestDestination: '/ws/response/categories',
+  requestDestination: '/ws/respond/categories',
   message(/* frame */) {
     return {
       data,

@@ -1,6 +1,6 @@
 export default {
   subscriptionDestination: '/user/queue/journal/create',
-  requestDestination: '/ws/response/journal/create',
+  requestDestination: '/ws/respond/journal/create',
   message(/* frame */) {
     return {
       data: {

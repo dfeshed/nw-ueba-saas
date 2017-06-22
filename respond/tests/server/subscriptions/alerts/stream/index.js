@@ -26,7 +26,7 @@ function makeFilterFunction(filterArray) {
 
 export default {
   subscriptionDestination: '/user/queue/alerts',
-  requestDestination: '/ws/response/alerts',
+  requestDestination: '/ws/respond/alerts',
 
   page(frame, sendMessage) {
     const { body } = frame;

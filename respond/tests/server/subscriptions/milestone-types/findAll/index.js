@@ -2,7 +2,7 @@ const data = ['RECONNAISSANCE', 'DELIVERY', 'EXPLOITATION', 'INSTALLATION', 'COM
 
 export default {
   subscriptionDestination: '/user/queue/options/investigation/milestone',
-  requestDestination: '/ws/response/options/investigation/milestone',
+  requestDestination: '/ws/respond/options/investigation/milestone',
   message(/* frame */) {
     return {
       data,
