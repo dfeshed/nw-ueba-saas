@@ -23,15 +23,30 @@ const filesInitialState = {
   linkToFileAction: null
 };
 
+/**
+ * Compute the status of file extraction (download). If we're in the middle of a
+ * download and something happens to change the state of Recon (view change,
+ * recon panel closed or opened to a new event), we want to change the
+ * extraction status to 'queued'. This will notify the UI that the download will
+ * continue in the job queue.
+ * @param {Object} state The current state of Recon
+ * @private
+ */
+const _fileExtractState = (state) => ({
+  ...filesInitialState,
+  fileExtractStatus: (state.fileExtractStatus === 'wait' ||
+                      state.fileExtractStatus === 'queued') ? 'queued' : null
+});
+
 const filesReducer = handleActions({
   [ACTION_TYPES.INITIALIZE]: (state, { payload }) => ({
-    ...filesInitialState,
+    ..._fileExtractState(state),
     linkToFileAction: payload.linkToFileAction
   }),
 
   [ACTION_TYPES.CHANGE_RECON_VIEW]: (state) => ({
     ...state,
-    ...fileExtractInitialState
+    ..._fileExtractState(state)
   }),
 
   [ACTION_TYPES.FILES_RETRIEVE_SUCCESS]: (state, { payload }) => ({
@@ -52,10 +67,12 @@ const filesReducer = handleActions({
       selectedFileIds
     };
   },
+
   [ACTION_TYPES.FILES_DESELECT_ALL]: (state) => ({
     ...state,
     selectedFileIds: []
   }),
+
   [ACTION_TYPES.FILES_SELECT_ALL]: (state) => ({
     ...state,
     selectedFileIds: (state.files || []).map(({ id }) => id)
@@ -68,21 +85,22 @@ const filesReducer = handleActions({
       success: (s) => ({ ...s, fileExtractStatus: 'wait', fileExtractJobId: action.payload.data.jobId })
     });
   },
+
   [ACTION_TYPES.FILE_EXTRACT_JOB_SUCCESS]: (state, { payload }) => ({
     ...state,
     fileExtractStatus: 'success',
     fileExtractLink: payload.link
   }),
+
   [ACTION_TYPES.FILE_EXTRACT_JOB_DOWNLOADED]: (state) => ({
     ...state,
     ...fileExtractInitialState
   }),
 
-  // Files-based notifcation handling,
-  // clear any pending/completed file extraction state
+  // Files-based notifcation handling
   [ACTION_TYPES.NOTIFICATION_TEARDOWN_SUCCESS]: (state) => ({
     ...state,
-    ...fileExtractInitialState
+    ..._fileExtractState(state)
   })
 }, filesInitialState);
 

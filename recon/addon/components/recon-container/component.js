@@ -4,6 +4,7 @@ import connect from 'ember-redux/components/connect';
 import { and } from 'ember-computed-decorators';
 import observer from 'ember-metal/observer';
 import { later, next } from 'ember-runloop';
+import service from 'ember-service/inject';
 import { toggleReconExpanded } from 'recon/actions/visual-creators';
 import { hasReconView } from 'recon/reducers/visuals/selectors';
 import layout from './template';
@@ -14,14 +15,15 @@ import {
   teardownNotifications
 } from 'recon/actions/data-creators';
 
-const stateToComputed = ({ recon, recon: { visuals, notifications } }) => ({
+const stateToComputed = ({ recon, recon: { files, visuals, notifications } }) => ({
   isMetaShown: visuals.isMetaShown,
   // Recon isn't ready until it has figured out which
   // Recon view is supposed to be displayed
   isViewReady: hasReconView(recon),
   isReconExpanded: visuals.isReconExpanded,
   isReconOpen: visuals.isReconOpen,
-  stopNotifications: notifications.stopNotifications
+  stopNotifications: notifications.stopNotifications,
+  status: files.fileExtractStatus
 });
 
 const dispatchToActions = {
@@ -37,6 +39,8 @@ const ReconContainer = Component.extend({
   tagName: 'vbox',
   classNames: ['recon-container'],
   classNameBindings: ['isReady::loading'],
+
+  flashMessages: service(),
 
   // BEGIN Component inputs
   endpointId: null,
@@ -74,6 +78,18 @@ const ReconContainer = Component.extend({
       this.sendAction('shrinkAction');
     }
   }),
+
+  fileExtractStatusWatcher: observer('status', function() {
+    const stat = this.get('status');
+    if (stat === 'queued') {
+      const { flashMessages, i18n } = this.getProperties('flashMessages', 'i18n');
+      if (flashMessages && flashMessages.info) {
+        const url = `${window.location.origin}/profile#jobs`;
+        flashMessages.info(i18n.t('recon.extractWarning', { url }), { sticky: true });
+      }
+    }
+  }),
+
   closeRecon: observer('isReconOpen', function() {
     if (!this.get('isReconOpen')) {
       this.sendAction('closeAction');
