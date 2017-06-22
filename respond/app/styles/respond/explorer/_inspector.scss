@@ -23,6 +23,7 @@ $metadataLabelWidth: 8rem;
 
     .name {
       @include rsa-font(light);
+      padding: 0 rsa-whitespace(more);
     }
 
     .back {

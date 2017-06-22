@@ -69,15 +69,22 @@ $inputHeight: 33px;
       }
     }
 
-    span.edit-field .rsa-form-button-wrapper {
-      cursor: pointer;
-      border: 1px solid rsa-color(gray);
-      visibility: visible;
-      background-color: rsa-color(gray, dark, $rsa-somewhat-opaque);
-      .rsa-form-button i {
-        color: inherit;
-        font-size: 1rem;
+    span.edit-field {
+      height: 100%;
+
+      .rsa-form-button-wrapper {
+        cursor: pointer;
+        border: 1px solid rsa-color(gray);
+        visibility: visible;
+        height: 100%;
+        background-color: rsa-color(gray, dark, $rsa-somewhat-opaque);
+
+        .rsa-form-button i {
+          color: inherit;
+          font-size: 1rem;
+        }
       }
+
     }
 
     &.is-disabled {

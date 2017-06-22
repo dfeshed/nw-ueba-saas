@@ -15,7 +15,14 @@
           <div>{{t 'respond.details.error'}}</div>
         </div>
       {{else}}
-        <div class="name">{{info.name}}</div>
+        <div class="name">
+          {{respond-common/editable-field
+            value=info.name
+            inputMaxlength=150
+            placeholder=(t 'respond.empty')
+            onFieldChange=(action 'updateItem' info.id 'name')
+          }}
+        </div>
       {{/if}}
     </h2>
   </box>

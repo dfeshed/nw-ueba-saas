@@ -1,0 +1,8 @@
+<div class="id">{{info.id}}</div>
+<div class="name">
+  {{respond-common/editable-field
+    value=info.name
+    placeholder=(t 'respond.empty')
+    onFieldChange=(action 'updateName' info.id 'name')
+  }}
+</div>

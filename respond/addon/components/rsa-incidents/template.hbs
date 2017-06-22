@@ -53,11 +53,10 @@
     {{/row.cell}}
   {{/explorer.table}}
 
-  {{#explorer.inspector inspectorContentComponent='rsa-incident/overview' as |inspector|}}
-    {{#inspector.inspectorHeader as |info|}}
-      <div class="id">{{info.id}}</div>
-      <div class="name">{{info.name}}</div>
-    {{/inspector.inspectorHeader}}
+  {{#explorer.inspector
+    inspectorHeaderComponent='rsa-incidents/inspector-header'
+    inspectorContentComponent='rsa-incident/overview' as |inspector|}}
+    {{inspector.inspectorHeader}}
     {{inspector.inspectorContent
       priorityTypes=priorityTypes
       statusTypes=statusTypes
