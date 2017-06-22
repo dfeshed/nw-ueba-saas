@@ -34,6 +34,18 @@ public class AdeRecordReader extends ReflectionRecordReader {
 		this.adeRecord = adeRecord;
 	}
 
+	public String getAdeRecordType() {
+		return adeRecord.getAdeRecordType();
+	}
+
+	public String getId() {
+		return adeRecord.getId();
+	}
+
+	public Instant getCreated_date() {
+		return adeRecord.getCreated_date();
+	}
+
 	public Instant getDate_time() {
 		return adeRecord.getDate_time();
 	}

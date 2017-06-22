@@ -1,10 +1,12 @@
 package fortscale.ml.scorer.enriched_events;
 
 import fortscale.domain.feature.score.FeatureScore;
-
-import fortscale.utils.logging.Logger;
-
 import fortscale.ml.scorer.ScoringService;
+import fortscale.utils.logging.Logger;
+import fortscale.utils.recordreader.RecordReaderFactoryService;
+import presidio.ade.domain.record.AdeRecordReader;
+import presidio.ade.domain.record.enriched.DlpFileRecord;
+import presidio.ade.domain.record.enriched.EnrichedDlpFileRecord;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.ade.domain.record.scored.enriched_scored.AdeScoredEnrichedRecord;
 import presidio.ade.domain.record.scored.enriched_scored.DataSourceToAdeScoredEnrichedRecordClassResolver;
@@ -24,14 +26,18 @@ import java.util.List;
 public class EnrichedEventsScoringServiceImpl implements EnrichedEventsScoringService{
     private static final Logger logger = Logger.getLogger(EnrichedEventsScoringServiceImpl.class);
 
-    private ScoringService<EnrichedRecord> scoringService;
+    private RecordReaderFactoryService recordReaderFactoryService;
+    private ScoringService scoringService;
     private ScoredEnrichedDataStore scoredEnrichedDataStore;
     private AdeEnrichedScoredRecordBuilder adeEnrichedScoredRecordBuilder;
 
+    public EnrichedEventsScoringServiceImpl(
+            RecordReaderFactoryService recordReaderFactoryService,
+            ScoringService scoringService,
+            ScoredEnrichedDataStore scoredEnrichedDataStore,
+            AdeEnrichedScoredRecordBuilder adeEnrichedScoredRecordBuilder) {
 
-    public EnrichedEventsScoringServiceImpl(ScoringService<EnrichedRecord> scoringService,
-                                            ScoredEnrichedDataStore scoredEnrichedDataStore,
-                                            AdeEnrichedScoredRecordBuilder adeEnrichedScoredRecordBuilder) {
+        this.recordReaderFactoryService = recordReaderFactoryService;
         this.scoringService = scoringService;
         this.scoredEnrichedDataStore = scoredEnrichedDataStore;
         this.adeEnrichedScoredRecordBuilder = adeEnrichedScoredRecordBuilder;
@@ -44,8 +50,10 @@ public class EnrichedEventsScoringServiceImpl implements EnrichedEventsScoringSe
         }
 
         List<AdeScoredEnrichedRecord> scoredRecords = new ArrayList<>();
+
         for (EnrichedRecord enrichedRecord : enrichedRecordList) {
-            List<FeatureScore> featureScoreList = scoringService.score(enrichedRecord);
+            AdeRecordReader adeRecordReader = (AdeRecordReader)recordReaderFactoryService.getRecordReader(enrichedRecord);
+            List<FeatureScore> featureScoreList = scoringService.score(adeRecordReader);
             adeEnrichedScoredRecordBuilder.fill(scoredRecords, enrichedRecord, featureScoreList);
         }
 
