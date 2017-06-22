@@ -13,9 +13,8 @@ import org.springframework.stereotype.Component;
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class FSPromptProvider extends DefaultPromptProvider {
 
-    //    @Value("${fortscale.process.name}")
-    @Value("dummy process name") //todo change this
-            String processName;
+    @Value("${spring.application.name}")
+    String processName;
 
     @Override
     public String getPrompt() {

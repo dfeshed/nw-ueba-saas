@@ -13,8 +13,8 @@ import org.springframework.stereotype.Component;
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class FSBannerProvider extends DefaultBannerProvider {
-    @Value("application.name")
-            String processName;
+    @Value("${spring.application.name}")
+    String processName;
 
     @Override
     public String getBanner() {
