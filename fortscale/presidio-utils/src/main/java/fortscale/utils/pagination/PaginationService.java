@@ -97,12 +97,11 @@ public abstract class PaginationService<T> {
 
     /**
      *
-     * Creates groups, which contain pair of total num of events in group and set of contextId.
+     * Creates groups, which contain pair of total num of events and set of contextId.
+     * total num of events should be less than page size.
      *
-     * In order to optimize the group algorithm:
-     * sort the contextIdToNumOfEventsList.
-     * add the last contextId to group.
-     * while num of events less than pageSize and contextIds add amount less than maxGroupSize => Add first contextIds to the group.
+     * In order to minimize the number of context ids in each group and to minimize the number of groups:
+     * pop out context id with the largest amount of events and pop out context ids with smallest amount of events.
      *
      * @param contextIdToNumOfEventsList list of ContextIdToNumOfEvents objects,each object contains context id and num of events
      * @return list num of events in group and set of contextId of pairs
