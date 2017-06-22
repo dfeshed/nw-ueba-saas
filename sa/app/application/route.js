@@ -21,12 +21,16 @@ export default Route.extend(ApplicationRouteMixin, csrfToken, {
   },
 
   beforeModel(transition) {
-    this._super(...arguments);
-
-    this._saveTransition(transition);
-    if (this.get('session.isAuthenticated')) {
-      this._setupUserTimeout();
+    if (
+      !this.get('session.isAuthenticated') &&
+      transition.targetName !== 'login' &&
+      transition.targetName !== 'protected' &&
+      transition.targetName !== 'protected.index'
+    ) {
+      localStorage.setItem('rsa-post-auth-redirect', window.location.href);
     }
+    this._setupUserTimeout();
+    this._super(...arguments);
   },
 
   actions: {
@@ -42,9 +46,6 @@ export default Route.extend(ApplicationRouteMixin, csrfToken, {
     },
     logout() {
       this._logout();
-    },
-    willTransition(transition) {
-      this._logLastTransition(transition);
     }
   },
 
@@ -67,45 +68,12 @@ export default Route.extend(ApplicationRouteMixin, csrfToken, {
           access_token: this.get('session').get('data.authenticated.access_token')
         }
       })
-        .always(() => {
-          localStorage.removeItem(csrfKey);
-          this._saveTransition(this.get('lastLoggableTransition'));
-          this.get('session').invalidate();
-          resolve();
-        });
+      .always(() => {
+        localStorage.removeItem(csrfKey);
+        this.get('session').invalidate();
+        resolve();
+      });
     });
-  },
-
-  _logLastTransition(transition) {
-    const path = this.controllerFor('application').get('currentPath');
-    if ((path !== 'login') && (path !== 'protected.index') && (path !== 'protected')) {
-      this.set('lastLoggableTransition', transition);
-    }
-  },
-
-  _saveTransition(transition) {
-    if (transition) {
-      const ids = [];
-      const path = transition.targetName;
-
-      if ((path !== 'login') && (path !== 'protected.index') && (path !== 'protected')) {
-        Object.keys(transition.params).forEach((paramKey) => {
-          Object.keys(transition.params[paramKey]).forEach((interiorKey) => {
-            ids.push(transition.params[paramKey][interiorKey]);
-          });
-        });
-
-        localStorage.setItem('rsa-post-auth-redirect-name', transition.targetName);
-
-        if (ids.length >= 1) {
-          localStorage.setItem('rsa-post-auth-redirect-ids', JSON.stringify(ids));
-        }
-
-        if (Object.keys(transition.queryParams).length >= 1) {
-          localStorage.setItem('rsa-post-auth-redirect-params', JSON.stringify(transition.queryParams));
-        }
-      }
-    }
   },
 
   /**
@@ -121,21 +89,20 @@ export default Route.extend(ApplicationRouteMixin, csrfToken, {
 
       // After configured idle timeout period, logout
       this.get('userIdle').on('idleChanged', (isIdle) => {
-        if (isIdle) {
+        if (isIdle && this.get('session.isAuthenticated')) {
           this._logout();
         }
       });
     }
   },
 
-  sessionAuthenticated() {
-    this._setupUserTimeout();
-    this._super(...arguments);
+  sessionInvalidated() {
+    localStorage.setItem('rsa-post-auth-redirect', window.location.href);
+    window.location.replace('/login');
   },
 
-  sessionInvalidated() {
-    if (!testing) {
-      window.location.replace('/login');
-    }
+  sessionAuthenticated() {
+    this.transitionTo('protected');
   }
+
 });

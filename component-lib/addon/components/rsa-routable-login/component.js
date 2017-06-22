@@ -136,10 +136,9 @@ export default Component.extend({
         // Auth succeeded
         () => {
           this.updateLoginProperties(_STATUS.SUCCESS);
-          const query = window.location.search;
 
-          if (!isEmpty(query)) {
-            window.location = window.location.search.substring(6);
+          if (!isEmpty(window.location.search)) {
+            localStorage.setItem('rsa-post-auth-redirect', window.location.search.substring(6));
           }
         },
 

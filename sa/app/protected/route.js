@@ -56,33 +56,16 @@ export default Route.extend(AuthenticatedRouteMixin, {
     }
   },
 
-  beforeModel(transition) {
+  afterModel(models, transition) {
     this._super(...arguments);
 
-    const toPassToTransition = [];
-    const redirectName = localStorage.getItem('rsa-post-auth-redirect-name');
-    const ids = localStorage.getItem('rsa-post-auth-redirect-ids');
-    const params = localStorage.getItem('rsa-post-auth-redirect-params');
     const key = this.get('landingPage.selected.key');
+    const classicRedirect = localStorage.getItem('rsa-post-auth-redirect');
 
-    if (ids) {
-      const array = JSON.parse(ids);
-      array.forEach((id) => {
-        toPassToTransition.push(id);
-      });
-    }
-
-    if (this.get('session.isAuthenticated') && redirectName && redirectName !== transition.targetName) {
-      localStorage.removeItem('rsa-post-auth-redirect-name');
-      localStorage.removeItem('rsa-post-auth-redirect-ids');
-      localStorage.removeItem('rsa-post-auth-redirect-params');
-
-      if (toPassToTransition.length >= 1) {
-        this.transitionTo(redirectName, ...toPassToTransition, { queryParams: JSON.parse(params) });
-      } else {
-        this.transitionTo(redirectName);
-      }
-    } else if (transition.targetName === 'protected.index') {
+    if (classicRedirect) {
+      window.location = classicRedirect;
+      return localStorage.removeItem('rsa-post-auth-redirect');
+    } else if (transition.targetName === 'protected' || transition.targetName === 'protected.index') {
       this._checkAccessAndTransition(key);
     }
   },
@@ -192,14 +175,14 @@ export default Route.extend(AuthenticatedRouteMixin, {
   _checkAccessAndTransition(key) {
     if ((key === '/investigate' && this.get('accessControl.hasInvestigateAccess')) ||
       (key === '/respond' && this.get('accessControl.hasRespondAccess'))) {
-      this.transitionTo(key);
+      return this.transitionTo(key);
     } else if ((key === this.get('accessControl.adminUrl') && this.get('accessControl.hasAdminAccess')) ||
       (key === this.get('accessControl.configUrl') && this.get('accessControl.hasConfigAccess')) ||
       (key === '/investigation' && this.get('accessControl.hasInvestigateAccess')) ||
       (key === '/unified' && this.get('accessControl.hasMonitorAccess'))) {
-      window.location.href = key;
+      return window.location.href = key;
     } else {
-      window.location.href = '/unified';
+      return window.location.href = '/unified';
     }
   }
 });
