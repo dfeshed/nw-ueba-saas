@@ -141,6 +141,7 @@ export default {
       compressToggleLabel: 'Display Compressed Payloads',
       compressToggleTitle: 'Display HTTP payloads as compressed or not',
       downloadCsv: 'Download CSV',
+      downloadEndpointEvent: 'Download Endpoint Event',
       downloadJson: 'Download JSON',
       downloadLog: 'Download Log',
       downloadXml: 'Download XML',

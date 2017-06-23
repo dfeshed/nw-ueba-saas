@@ -14,7 +14,7 @@
     {{/if}}
 
     {{#if isTextView}}
-      {{#if isLogEvent}}
+      {{#if (or isLogEvent isEndpointEvent)}}
         {{recon-event-actionbar/export-logs}}
       {{else}}
         {{recon-event-actionbar/export-packet}}

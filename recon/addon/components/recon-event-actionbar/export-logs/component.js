@@ -1,30 +1,36 @@
-import Ember from 'ember';
 import Component from 'ember-component';
+import { htmlSafe } from 'ember-string';
 import connect from 'ember-redux/components/connect';
 import computed from 'ember-computed-decorators';
 
-import { eventType } from 'recon/reducers/meta/selectors';
-import { didDownloadFiles, extractFiles } from 'recon/actions/interaction-creators';
+import {
+  eventType,
+  isEndpointEvent
+} from 'recon/reducers/meta/selectors';
+import {
+  didDownloadFiles,
+  extractFiles
+} from 'recon/actions/interaction-creators';
+
 import ReconExport from 'recon/mixins/recon-export';
 import layout from './template';
 
-const { String } = Ember;
-
 const stateToComputed = ({ recon, recon: { files } }) => ({
-  status: files.fileExtractStatus,
+  eventType: eventType(recon),
   extractLink: files.fileExtractLink,
-  eventType: eventType(recon)
+  isEndpointEvent: isEndpointEvent(recon),
+  status: files.fileExtractStatus
 });
 
 const dispatchToActions = {
-  extractFiles,
-  didDownloadFiles
+  didDownloadFiles,
+  extractFiles
 };
 
 const menuOffsetsStyle = (el) => {
   if (el) {
     const elRect = el.getBoundingClientRect();
-    return String.htmlSafe(`top: ${elRect.height - 1}px`);
+    return htmlSafe(`top: ${elRect.height - 1}px`);
   } else {
     return null;
   }
@@ -32,17 +38,18 @@ const menuOffsetsStyle = (el) => {
 
 const DownloadLogsComponent = Component.extend(ReconExport, {
   layout,
-
   classNameBindings: ['isExpanded:expanded:collapsed'],
-
   isExpanded: false,
-
   offsetsStyle: null,
 
-  @computed('isDownloading', 'i18n')
-  caption(isDownloading, i18n) {
-    return isDownloading ? i18n.t('recon.textView.isDownloading') :
-      i18n.t('recon.textView.downloadLog');
+  @computed('i18n', 'isDownloading')
+  caption(i18n, isDownloading) {
+    return isDownloading ? i18n.t('recon.textView.isDownloading') : this.get('defaultOption');
+  },
+
+  @computed('i18n', 'isEndpointEvent')
+  defaultOption(i18n, isEndpointEvent) {
+    return isEndpointEvent ? i18n.t('recon.textView.downloadEndpointEvent') : i18n.t('recon.textView.downloadLog');
   },
 
   actions: {

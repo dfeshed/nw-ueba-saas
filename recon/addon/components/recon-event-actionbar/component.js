@@ -1,16 +1,25 @@
 import Component from 'ember-component';
 import connect from 'ember-redux/components/connect';
-import { isTextView, isFileView, isPacketView } from 'recon/reducers/visuals/selectors';
-import { isHttpData, isLogEvent } from 'recon/reducers/meta/selectors';
+import {
+  isFileView,
+  isPacketView,
+  isTextView
+} from 'recon/reducers/visuals/selectors';
+import {
+  isEndpointEvent,
+  isHttpData,
+  isLogEvent
+} from 'recon/reducers/meta/selectors';
 import layout from './template';
 
 const stateToComputed = ({ recon, recon: { packets } }) => ({
-  isTextView: isTextView(recon),
+  isEndpointEvent: isEndpointEvent(recon),
   isFileView: isFileView(recon),
-  isPacketView: isPacketView(recon),
-  isLogEvent: isLogEvent(recon),
   isHttpEvent: isHttpData(recon),
-  isPayloadOnly: packets.isPayloadOnly
+  isLogEvent: isLogEvent(recon),
+  isPacketView: isPacketView(recon),
+  isPayloadOnly: packets.isPayloadOnly,
+  isTextView: isTextView(recon)
 });
 
 const reconEventActionbar = Component.extend({
