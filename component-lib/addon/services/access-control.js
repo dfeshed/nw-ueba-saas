@@ -29,27 +29,27 @@ export default Service.extend({
 
   @computed('roles.[]')
   respondCanManageIncidents(roles) {
-    return this._hasPermission(roles, 'response-server.incident.manage');
+    return this._hasPermission(roles, 'respond-server.incident.manage');
   },
 
   @computed('roles.[]')
   hasRespondAccess(roles) {
-    return this._hasPermission(roles, 'response-server');
+    return this._hasPermission(roles, 'respond-server');
   },
 
   @computed('roles.[]')
   hasRespondAlertsAccess(roles) {
-    return this._hasPermission(roles, 'response-server.alert');
+    return this._hasPermission(roles, 'respond-server.alert');
   },
 
   @computed('roles.[]')
   hasRespondIncidentsAccess(roles) {
-    return this._hasPermission(roles, 'response-server.incident');
+    return this._hasPermission(roles, 'respond-server.incident');
   },
 
   @computed('roles.[]')
   hasRespondRemediationAccess(roles) {
-    return this._hasPermission(roles, 'response-server.remediation');
+    return this._hasPermission(roles, 'respond-server.remediation');
   },
 
   // End respond access permissions

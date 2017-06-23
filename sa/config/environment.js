@@ -101,7 +101,7 @@ module.exports = function(environment) {
       'viewAppliances',
       'searchLiveResources',
       'accessInvestigationModule',
-      'response-server.*'
+      'respond-server.*'
     ];
 
     // ENV.APP.LOG_RESOLVER = true;
@@ -121,7 +121,7 @@ module.exports = function(environment) {
       'viewAppliances',
       'searchLiveResources',
       'accessInvestigationModule',
-      'response-server.*'
+      'respond-server.*'
     ];
 
     // Testem prefers this...

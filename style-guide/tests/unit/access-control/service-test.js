@@ -18,28 +18,28 @@ test('hasInvestigateAccess is set when required roles are included', function(as
 test('hasRespondAccess is set when required roles are included', function(assert) {
   const service = this.subject();
   assert.equal(service.get('hasRespondAccess'), false);
-  service.set('roles', ['response-server.*']);
+  service.set('roles', ['respond-server.*']);
   assert.equal(service.get('hasRespondAccess'), true);
 });
 
 test('hasRespondAlertsAccess is set when required roles are included', function(assert) {
   const service = this.subject();
   assert.equal(service.get('hasRespondAlertsAccess'), false);
-  service.set('roles', ['response-server.alert.read', 'response-server.alert.manage']);
+  service.set('roles', ['respond-server.alert.read', 'respond-server.alert.manage']);
   assert.equal(service.get('hasRespondAlertsAccess'), true);
 });
 
 test('hasRespondIncidentsAccess is set when required roles are included', function(assert) {
   const service = this.subject();
   assert.equal(service.get('hasRespondIncidentsAccess'), false);
-  service.set('roles', ['response-server.incident.read', 'response-server.incident.manage']);
+  service.set('roles', ['respond-server.incident.read', 'respond-server.incident.manage']);
   assert.equal(service.get('hasRespondIncidentsAccess'), true);
 });
 
 test('hasRespondRemediationAccess is set when required roles are included', function(assert) {
   const service = this.subject();
   assert.equal(service.get('hasRespondRemediationAccess'), false);
-  service.set('roles', ['response-server.remediation.read', 'response-server.remediation.manage']);
+  service.set('roles', ['respond-server.remediation.read', 'respond-server.remediation.manage']);
   assert.equal(service.get('hasRespondRemediationAccess'), true);
 });
 

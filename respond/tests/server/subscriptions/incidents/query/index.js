@@ -11,7 +11,7 @@ const ASSIGNEE = 'assignee.id';
  * @public
  * @returns {boolean}
  */
-const matchesFilter = (item, filters) => {
+const matchesFilter = (item, filters = []) => {
   let hasMatchedAllFilters = true;
   let matchedFilters = 0;
   const { assignee } = item;
