@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.Collection;
+import java.util.Collections;
 
 @Configuration
 public class ScorerTestsContext {
@@ -16,7 +17,7 @@ public class ScorerTestsContext {
 
 	@Bean
 	public RecordReaderFactoryService recordReaderFactoryService() {
-		return new RecordReaderFactoryService(recordReaderFactories);
+		return new RecordReaderFactoryService(recordReaderFactories, Collections.emptySet());
 	}
 
 	@Bean

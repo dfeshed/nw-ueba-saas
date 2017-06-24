@@ -1,7 +1,12 @@
 package fortscale.utils.recordreader;
 
+import fortscale.utils.recordreader.transformation.EpochtimeTransformation;
+import fortscale.utils.recordreader.transformation.Transformation;
 import org.junit.Assert;
 import org.junit.Test;
+
+import java.time.Instant;
+import java.util.Collections;
 
 /**
  * Unit tests for {@link ReflectionRecordReader}.
@@ -60,6 +65,15 @@ public class ReflectionRecordReaderTest {
 		Assert.assertNull(f);
 	}
 
+	@Test
+	public void test_reader_with_epochtime_transformation() {
+		Record3 record = new Record3("myString", Instant.ofEpochSecond(1483276275)); // 2017-01-01T13:11:15.000Z
+		Transformation<Long> epochtimeTransformation = new EpochtimeTransformation("myEpochtime", "g", 120);
+		RecordReader recordReader = new ReflectionRecordReader(record, Collections.singleton(epochtimeTransformation));
+		Long myEpochtime = recordReader.get("myEpochtime", Long.class);
+		Assert.assertEquals(new Long(1483276200), myEpochtime); // 2017-01-01T13:10:00.000Z
+	}
+
 	/**
 	 * Example records.
 	 */
@@ -87,9 +101,15 @@ public class ReflectionRecordReaderTest {
 
 	private static final class Record3 {
 		@SuppressWarnings("unused") private String f;
+		@SuppressWarnings("unused") private Instant g;
+
+		public Record3(String f, Instant g) {
+			this.f = f;
+			this.g = g;
+		}
 
 		public Record3(String f) {
-			this.f = f;
+			this(f, null);
 		}
 	}
 }

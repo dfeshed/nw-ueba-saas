@@ -5,16 +5,10 @@ import fortscale.ml.scorer.ScoringService;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.recordreader.RecordReaderFactoryService;
 import presidio.ade.domain.record.AdeRecordReader;
-import presidio.ade.domain.record.enriched.DlpFileRecord;
-import presidio.ade.domain.record.enriched.EnrichedDlpFileRecord;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.ade.domain.record.scored.enriched_scored.AdeScoredEnrichedRecord;
-import presidio.ade.domain.record.scored.enriched_scored.DataSourceToAdeScoredEnrichedRecordClassResolver;
 import presidio.ade.domain.store.scored.ScoredEnrichedDataStore;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -23,7 +17,7 @@ import java.util.List;
  * TODO
  * Created by YaronDL on 6/14/2017.
  */
-public class EnrichedEventsScoringServiceImpl implements EnrichedEventsScoringService{
+public class EnrichedEventsScoringServiceImpl implements EnrichedEventsScoringService {
     private static final Logger logger = Logger.getLogger(EnrichedEventsScoringServiceImpl.class);
 
     private RecordReaderFactoryService recordReaderFactoryService;
@@ -44,7 +38,7 @@ public class EnrichedEventsScoringServiceImpl implements EnrichedEventsScoringSe
     }
 
     public List<AdeScoredEnrichedRecord> scoreAndStoreEvents(List<EnrichedRecord> enrichedRecordList) {
-        if(enrichedRecordList.size() == 0){
+        if (enrichedRecordList.size() == 0) {
             logger.warn("got an empty enriched record list");
             return Collections.emptyList();
         }
@@ -60,6 +54,4 @@ public class EnrichedEventsScoringServiceImpl implements EnrichedEventsScoringSe
         scoredEnrichedDataStore.store(scoredRecords);
         return scoredRecords;
     }
-
-
 }
