@@ -1,12 +1,16 @@
 package presidio.input.core;
 
 
+
+import fortscale.common.general.PresidioShellableApplication;
+import fortscale.common.shell.config.ShellCommonCommandsConfig;
 import fortscale.utils.logging.Logger;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.task.configuration.EnableTask;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
+import presidio.input.core.spring.InputCoreConfiguration;
 
 
 @SpringBootApplication
@@ -14,13 +18,18 @@ import org.springframework.context.annotation.FilterType;
         excludeFilters = { //only scan for spring-boot beans
                 @ComponentScan.Filter(type = FilterType.REGEX, pattern = "fortscale.*"),
                 @ComponentScan.Filter(type = FilterType.REGEX, pattern = "presidio.*")})
-@EnableTask
-public class FortscaleInputCoreApplication {
+public class FortscaleInputCoreApplication extends PresidioShellableApplication {
+
+
     private static final Logger logger = Logger.getLogger(FortscaleInputCoreApplication.class);
 
     public static void main(String[] args) {
-        logger.info("Start Input Core Processing");
-        SpringApplication.run(new Object[]{FortscaleInputCoreApplication.class, InputCommandLineRunnerConfiguration.class},
-                args);
+        logger.info("Start Input Core Main");
+
+        ConfigurableApplicationContext ctx = SpringApplication.run(new Object[]{FortscaleInputCoreApplication.class, InputCoreConfiguration.class, ShellCommonCommandsConfig.class}, args);
+        run(args, ctx);
     }
+
 }
+
+

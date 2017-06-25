@@ -17,7 +17,6 @@ import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import presidio.input.core.services.impl.InputExecutionServiceImpl;
-import presidio.input.core.spring.InputCommandLineRunnerConfiguration;
 
 
 @RunWith(SpringRunner.class)
@@ -34,7 +33,6 @@ public class FortscaleInputCoreApplicationTest {
     }
 
     @Configuration
-    @Import({InputCommandLineRunnerConfiguration.class})
     @EnableSpringConfigured
     public static class springConfig {
         private static final String FORTSCALE_TEST_DB = "fortscaleTestDb";

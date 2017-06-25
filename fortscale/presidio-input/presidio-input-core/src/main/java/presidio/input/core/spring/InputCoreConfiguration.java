@@ -9,23 +9,24 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
 import presidio.ade.domain.store.enriched.EnrichedDataStoreConfig;
+import presidio.input.core.services.data.AdeDataService;
 import presidio.input.core.services.impl.InputExecutionServiceImpl;
 import presidio.input.sdk.impl.spring.PresidioInputPersistencyServiceConfig;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
 
 @Configuration
-@Import({MongoConfig.class, PresidioInputPersistencyServiceConfig.class, EnrichedDataStoreConfig.class})
+@Import({MongoConfig.class, PresidioInputPersistencyServiceConfig.class, AdeDataServiceConfig.class})
 public class InputCoreConfiguration {
 
     @Autowired
     private PresidioInputPersistencyService presidioInputPersistencyService;
 
     @Autowired
-    private EnrichedDataStore enrichedDataStore;
+    private AdeDataService adeDataService;
 
     @Bean
     public PresidioExecutionService inputExecutionService() {
-        return new InputExecutionServiceImpl(presidioInputPersistencyService, enrichedDataStore);
+        return new InputExecutionServiceImpl(presidioInputPersistencyService, adeDataService);
     }
 
 }
