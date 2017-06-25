@@ -49,7 +49,7 @@ public abstract class PaginationService<T> {
     public <U extends T> List<PageIterator<U>> getPageIterators(String dataSource, TimeRange timeRange) {
 
         //Validate if indexes exist, otherwise add them.
-        validateIndexes(dataSource);
+        ensureContextAndDateTimeIndex(dataSource);
 
         List<ContextIdToNumOfEvents> contextIdToNumOfEventsList = getContextIdToNumOfItemsList(dataSource, timeRange);
         //groups is a list, where each group contains pair of total num of events and set of contextId.
@@ -92,14 +92,16 @@ public abstract class PaginationService<T> {
      * Validate the store indexes.
      * The implementations should validate that the fields they query should be indexed in their store.
      */
-    protected abstract void validateIndexes(String dataSource);
+    protected abstract void ensureContextAndDateTimeIndex(String dataSource);
 
 
     /**
-     * Creates groups, which contain pair of total num of events in group and set of contextId:
-     * Sort and covert contextIdToNumOfItems map to  List<Pair<String, Integer>> of context ids to total num of events
-     * Add the last contextId to set.
-     * while num of events less than pageSize and contextIds set amount less than maxGroupSize => Add first contextIds to set.
+     *
+     * Creates groups, which contain pair of total num of events and set of contextId.
+     * total num of events should be less than page size.
+     *
+     * In order to minimize the number of context ids in each group and to minimize the number of groups:
+     * pop out context id with the largest amount of events and pop out context ids with smallest amount of events.
      *
      * @param contextIdToNumOfEventsList list of ContextIdToNumOfEvents objects,each object contains context id and num of events
      * @return list num of events in group and set of contextId of pairs
@@ -114,7 +116,9 @@ public abstract class PaginationService<T> {
      *  the groups should be {a},{b,c}
      */
     private List<Pair<Integer, Set<String>>> getGroups(List<ContextIdToNumOfEvents> contextIdToNumOfEventsList) {
-        contextIdToNumOfEventsList.sort(Comparator.comparing(c -> c.getTotalNumOfEvents()));
+
+        List<ContextIdToNumOfEvents> sortedList = new ArrayList<>(contextIdToNumOfEventsList);
+        sortedList.sort(Comparator.comparing(c -> c.getTotalNumOfEvents()));
 
         // Integer - total num of events in group
         // Set<String> - contextIds
@@ -122,7 +126,7 @@ public abstract class PaginationService<T> {
 
         int totalNumOfItems = 0;
         int start = 0;
-        int end = contextIdToNumOfEventsList.size() - 1;
+        int end = sortedList.size() - 1;
         int numOfHandledContextIds = 0;
 
         // Next condition handle 2 cases: (end == start && numOfHandledContextIds == contextIdToNumOfEventsList.size()-1)
@@ -130,10 +134,10 @@ public abstract class PaginationService<T> {
         // # second case: all context ids were handled and inserted to groups except the last context id:
         // It may happened, where start = end -1 and the last context id can not join to current group due to pageSize or maxGroupSize.
         // additional group should be created for last context id. (See case 2 in examples above).
-        while (end > start || (end == start && numOfHandledContextIds == contextIdToNumOfEventsList.size()-1)) {
+        while (end > start || (end == start && numOfHandledContextIds == sortedList.size()-1)) {
             Set<String> contextIds = new HashSet<>();
-            ContextIdToNumOfEvents first = contextIdToNumOfEventsList.get(start);
-            ContextIdToNumOfEvents last = contextIdToNumOfEventsList.get(end);
+            ContextIdToNumOfEvents first = sortedList.get(start);
+            ContextIdToNumOfEvents last = sortedList.get(end);
             contextIds.add(last.getContextId());
             totalNumOfItems = last.getTotalNumOfEvents();
             numOfHandledContextIds++;

@@ -1,17 +1,20 @@
 package presidio.collector.services.impl;
 
-import fortscale.common.general.CommonStrings;
+import fortscale.common.general.Command;
 import fortscale.common.general.DataSource;
 import fortscale.common.shell.PresidioExecutionService;
 import fortscale.domain.core.AbstractAuditableDocument;
+import fortscale.services.parameters.ParametersValidationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import presidio.collector.services.api.CollectorExecutionService;
 import presidio.collector.services.api.FetchService;
 import presidio.sdk.api.domain.DlpFileDataDocument;
 import presidio.sdk.api.services.CoreManagerService;
 
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class CollectorExecutionServiceImpl implements PresidioExecutionService {

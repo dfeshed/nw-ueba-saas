@@ -7,9 +7,11 @@ import fortscale.common.general.DataSource;
 import fortscale.domain.core.AbstractAuditableDocument;
 import fortscale.utils.logging.Logger;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
+import presidio.input.core.services.api.InputExecutionService;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
 import presidio.ade.domain.store.enriched.EnrichedRecordsMetadata;
 import presidio.input.core.services.converters.DlpFileConverter;
+import presidio.input.core.services.data.AdeDataService;
 import presidio.sdk.api.domain.DlpFileDataDocument;
 import presidio.sdk.api.domain.DlpFileEnrichedDocument;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
@@ -23,11 +25,11 @@ public class InputExecutionServiceImpl implements PresidioExecutionService {
     private static final Logger logger = Logger.getLogger(InputExecutionServiceImpl.class);
 
     private final PresidioInputPersistencyService presidioInputPersistencyService;
-    private final EnrichedDataStore enrichedDataStore;
+    private final AdeDataService adeDataService;
 
     public InputExecutionServiceImpl(PresidioInputPersistencyService presidioInputPersistencyService, EnrichedDataStore enrichedDataStore) {
         this.presidioInputPersistencyService = presidioInputPersistencyService;
-        this.enrichedDataStore = enrichedDataStore;
+        this.adeDataService = adeDataService;
     }
 
     @Override
@@ -51,10 +53,9 @@ public class InputExecutionServiceImpl implements PresidioExecutionService {
         logger.debug("Storing {} records.", enrichedDocuments.size());
 
 
-        EnrichedRecordsMetadata recordsMetaData = new EnrichedRecordsMetadata(dataSource.getName(), startDate, endDate);
         List<? extends EnrichedRecord> records = convert(enrichedDocuments, new DlpFileConverter());
 
-        enrichedDataStore.store(recordsMetaData, records);
+        adeDataService.store(dataSource, startDate, endDate, records);
 
         logger.info("*************input logic comes here***********");
         logger.info("enriched documents: \n{}", enrichedDocuments);
@@ -69,41 +70,5 @@ public class InputExecutionServiceImpl implements PresidioExecutionService {
         List<EnrichedRecord> records = new ArrayList<>();
         enrichedDocuments.forEach(doc -> records.add(converter.convert((DlpFileEnrichedDocument) doc)));
         return records;
-    }
-
-    private List<? extends AbstractAuditableDocument> find(DataSource dataSource, Instant startDate, Instant endDate) throws Exception {
-        logger.debug("Finding records for data source:{}, from {}:{}, until {}:{}."
-                , dataSource,
-                CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate,
-                CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
-        return presidioInputPersistencyService.find(dataSource, startDate, endDate);
-    }
-
-    private List<DlpFileEnrichedDocument> enrich(List<? extends AbstractAuditableDocument> dataRecords) { //THIS IS A TEMP IMPLEMENTATION!!!!!!!!!!
-        //todo: again, very ad-hoc. maybe we should create an enrichment service
-        List<DlpFileEnrichedDocument> enrichedRecords = new ArrayList<>();
-        for (AbstractAuditableDocument dataRecord : dataRecords) {
-            final DlpFileDataDocument dlpfileDataRecord = (DlpFileDataDocument) dataRecord;
-            enrichedRecords.add(new DlpFileEnrichedDocument(dlpfileDataRecord, dlpfileDataRecord.getUsername(), dlpfileDataRecord.getHostname()));
-        }
-
-
-        return enrichedRecords;
-    }
-
-    @Override
-    public void cleanAll(DataSource dataSource) throws Exception {
-        logger.info("Started clean processing for data source:{}.", dataSource);
-        presidioInputPersistencyService.cleanAll(dataSource);
-    }
-
-    @Override
-    public void clean(DataSource dataSource, Instant startDate, Instant endDate) throws Exception {
-        logger.info("Started clean processing for data source:{}, from {}:{}, until {}:{}."
-                , dataSource,
-                CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate,
-                CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
-        presidioInputPersistencyService.clean(dataSource, startDate, endDate);
-        logger.info("Finished enrich processing .");
     }
 }
