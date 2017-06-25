@@ -6,6 +6,8 @@ package fortscale.utils.pagination;
  */
 public class ContextIdToNumOfEvents {
 
+    public static String CONTEXT_ID_FIELD = "contextId";
+    public static String TOTAL_NUM_OF_EVENTS_FIELD = "totalNumOfEvents";
     private String contextId;
     private int totalNumOfEvents;
 

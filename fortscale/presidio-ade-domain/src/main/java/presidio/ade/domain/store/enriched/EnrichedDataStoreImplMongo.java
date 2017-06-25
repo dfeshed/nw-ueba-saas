@@ -1,16 +1,22 @@
 package presidio.ade.domain.store.enriched;
 
+
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBObject;
 import fortscale.utils.logging.Logger;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.index.CompoundIndexDefinition;
 import org.springframework.data.mongodb.core.index.Index;
+import org.springframework.data.mongodb.core.index.IndexDirection;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import presidio.ade.domain.record.AdeRecord;
 import fortscale.utils.pagination.ContextIdToNumOfEvents;
 import presidio.ade.domain.record.enriched.DataSourceToAdeEnrichedRecordClassResolver;
+import presidio.ade.domain.record.enriched.EnrichedDlpFileRecord;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.ade.domain.store.AdeDataStoreCleanupParams;
 
@@ -103,8 +109,9 @@ public class EnrichedDataStoreImplMongo implements EnrichedDataStore {
 
         //Create Aggregation on context ids
         Aggregation agg = newAggregation(
-                match(where(EnrichedRecord.DATE_TIME_FIELD).gte(startDate).lt(endDate)),
-                Aggregation.group(fieldName).count().as(ContextIdToNumOfEvents.Total_Num_Of_Events)
+                match(where(EnrichedRecord.DATE_TIME_FIELD).gte(Date.from(startDate)).lt(Date.from(endDate))),
+                Aggregation.group(fieldName).count().as(ContextIdToNumOfEvents.TOTAL_NUM_OF_EVENTS_FIELD),
+                Aggregation.project(ContextIdToNumOfEvents.TOTAL_NUM_OF_EVENTS_FIELD).and("_id").as(ContextIdToNumOfEvents.CONTEXT_ID_FIELD).andExclude("_id")
         );
 
         AggregationResults<ContextIdToNumOfEvents> result = mongoTemplate.aggregate(agg, collectionName, ContextIdToNumOfEvents.class);
@@ -121,14 +128,25 @@ public class EnrichedDataStoreImplMongo implements EnrichedDataStore {
      * @param contextType type of context, field that the aggregateContextToNumOfEvents and readRecords methods use to query.
      */
     @Override
-    public void validateIndexes(String dataSource, String contextType) {
+    public void ensureContextAndDateTimeIndex(String dataSource, String contextType) {
         //Get pojoClass by dataSource
         Class pojoClass = dataSourceToAdeEnrichedRecordClassResolver.getClass(dataSource);
 
         //Get type of context
         String fieldName = getFieldName(pojoClass, contextType);
 
-        mongoTemplate.indexOps(pojoClass).ensureIndex(new Index().on(fieldName, Sort.Direction.ASC));
+        String collectionName = translator.toCollectionName(dataSource);
+
+        //used for readRecords
+        DBObject indexOptions = new BasicDBObject();
+
+        //  IndexDirection.ASCENDING = 1
+        //  IndexDirection.DESCENDING = -1
+        indexOptions.put(fieldName, 1);
+        indexOptions.put(EnrichedRecord.DATE_TIME_FIELD, 1);
+        CompoundIndexDefinition indexDefinition = new CompoundIndexDefinition(indexOptions);
+
+        mongoTemplate.indexOps(collectionName).ensureIndex(indexDefinition);
     }
 
 

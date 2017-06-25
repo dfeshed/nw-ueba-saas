@@ -36,6 +36,6 @@ public interface EnrichedDataReader {
     /**
      * Validate that the query fields indexed in the store.
      */
-    void validateIndexes(String dataSource, String contextType);
+    void ensureContextAndDateTimeIndex(String dataSource, String contextType);
 
 }
