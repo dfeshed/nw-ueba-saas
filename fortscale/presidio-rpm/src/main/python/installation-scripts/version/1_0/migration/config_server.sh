@@ -1,11 +1,12 @@
 #!/bin/bash
 echo "Copying configserver service file"
-sudo cp /home/presidio/presidio-core/installation/installation-scripts/infrastructure/deploy/manager/../../../version/1_0/utils/configserver /etc/init.d/configserver.service
+cp /home/presidio/presidio-core/installation/installation-scripts/infrastructure/deploy/manager/../../../version/1_0/utils/configserver /etc/init.d/configserver
+chmod 755 /etc/init.d/configserver
 echo "Stopping config server anyway"
-sudo systemctl stop configserver
+service configserver stop
 echo "Adding configserver to chkconfig"
-sudo chkconfig --add configserver
+chkconfig --add configserver
 echo "Starting config server"
-sudo service configserver start
+service configserver start
 
 

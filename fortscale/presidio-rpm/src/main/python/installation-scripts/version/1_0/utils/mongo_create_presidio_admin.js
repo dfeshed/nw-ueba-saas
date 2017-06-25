@@ -1,7 +1,7 @@
 db.createUser(  
     {
-      user: "admin",
-      pwd: "admin",
+      user: "presidio",
+      pwd: "P@ssw0rd",
       roles:[ "userAdmin" , "readWrite" ]
     }
 )    
