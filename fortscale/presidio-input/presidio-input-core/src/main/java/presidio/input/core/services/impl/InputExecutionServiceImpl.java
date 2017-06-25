@@ -5,7 +5,6 @@ import fortscale.common.shell.PresidioExecutionService;
 import fortscale.common.general.CommonStrings;
 import fortscale.common.general.DataSource;
 import fortscale.domain.core.AbstractAuditableDocument;
-import fortscale.services.parameters.ParametersValidationService;
 import fortscale.utils.logging.Logger;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
@@ -23,12 +22,10 @@ public class InputExecutionServiceImpl implements PresidioExecutionService {
 
     private static final Logger logger = Logger.getLogger(InputExecutionServiceImpl.class);
 
-    private final ParametersValidationService parameterValidationService;
     private final PresidioInputPersistencyService presidioInputPersistencyService;
     private final EnrichedDataStore enrichedDataStore;
 
-    public InputExecutionServiceImpl(ParametersValidationService parameterValidationService, PresidioInputPersistencyService presidioInputPersistencyService, EnrichedDataStore enrichedDataStore) {
-        this.parameterValidationService = parameterValidationService;
+    public InputExecutionServiceImpl(PresidioInputPersistencyService presidioInputPersistencyService, EnrichedDataStore enrichedDataStore) {
         this.presidioInputPersistencyService = presidioInputPersistencyService;
         this.enrichedDataStore = enrichedDataStore;
     }

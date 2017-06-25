@@ -1,82 +1,40 @@
 package presidio.collector.services.impl;
 
-import fortscale.common.general.Command;
+import fortscale.common.general.CommonStrings;
 import fortscale.common.general.DataSource;
+import fortscale.common.shell.PresidioExecutionService;
 import fortscale.domain.core.AbstractAuditableDocument;
-import fortscale.services.parameters.ParametersValidationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import presidio.collector.services.api.CollectorExecutionService;
 import presidio.collector.services.api.FetchService;
 import presidio.sdk.api.domain.DlpFileDataDocument;
 import presidio.sdk.api.services.CoreManagerService;
 
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import static fortscale.common.general.CommonStrings.COMMAND_LINE_COMMAND_FIELD_NAME;
-import static fortscale.common.general.CommonStrings.COMMAND_LINE_DATA_SOURCE_FIELD_NAME;
-import static fortscale.common.general.CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME;
-import static fortscale.common.general.CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME;
-
-public class CollectorExecutionServiceImpl implements CollectorExecutionService {
+public class CollectorExecutionServiceImpl implements PresidioExecutionService {
     private static Logger logger = LoggerFactory.getLogger(CollectorExecutionServiceImpl.class);
     
     private final CoreManagerService coreManagerService;
     private final FetchService fetchService;
-    private final ParametersValidationService parameterValidationService;
 
-    public CollectorExecutionServiceImpl(CoreManagerService coreManagerService, FetchService fetchService, ParametersValidationService parameterValidationService) {
+    public CollectorExecutionServiceImpl(CoreManagerService coreManagerService, FetchService fetchService) {
         this.coreManagerService = coreManagerService;
         this.fetchService = fetchService;
-        this.parameterValidationService = parameterValidationService;
     }
 
-    public void run(String... params) throws Exception {         //todo: we need to consider doing the fetch & store at the same iteration
-        logger.info("Start collector processing with params: " + Arrays.toString(params));
+    @Override
+    public void run(DataSource dataSource, Instant startDate, Instant endDate, Long fixedDuration) throws Exception {
+        //todo: we need to consider doing the fetch & store at the same iteration
+        logger.info("Start collector processing with params: data source:{}, from {}:{}, until {}:{}.",dataSource, CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate, CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
 
-        if (params.length < 4) {
-            String errorMessage = String.format("Invalid input[%s]. Not enough parameters.", Arrays.toString(params));
-            logger.error(errorMessage);
-            throw new RuntimeException(errorMessage);
-        }
-
-        final String dataSourceParam;
-        final String startDateParam;
-        final String endDateParam;
-        final String commandParam;
-
-        try {
-            dataSourceParam = parameterValidationService.getMandatoryParamAsString(COMMAND_LINE_DATA_SOURCE_FIELD_NAME, params);
-            startDateParam = parameterValidationService.getMandatoryParamAsString(COMMAND_LINE_START_DATE_FIELD_NAME, params);
-            endDateParam = parameterValidationService.getMandatoryParamAsString(COMMAND_LINE_END_DATE_FIELD_NAME, params);
-            commandParam = parameterValidationService.getMandatoryParamAsString(COMMAND_LINE_COMMAND_FIELD_NAME, params);
-            parameterValidationService.validateDataSourceParam(dataSourceParam);
-            parameterValidationService.validateCommand(commandParam);
-            // TODO: set date format convention
-            parameterValidationService.validateTimeParams(startDateParam, endDateParam);
-        } catch (Exception e) {
-            logger.error("Invalid input[{}].", params, e);
-            return;
-        }
-
-        final DataSource dataSource = DataSource.createDataSource(dataSourceParam);
-        final Instant startDate = Instant.parse(startDateParam);
-        final Instant endDate = Instant.parse(endDateParam);
-        final Command command = Command.createCommand(commandParam);
-
-
-        if (!command.equals(Command.RUN)) {
-            logger.error("Expected command %S but was given %s", Command.RUN, command);
-            return;
-        }
         final List<String[]> fetchedDocuments;
         try {
             fetchedDocuments = fetch(dataSource, startDate, endDate);
         } catch (Exception e) {
-            logger.error("HEY USER!!! FETCH FAILED! params: " + Arrays.toString(params), e);
+            logger.error("HEY USER!!! FETCH FAILED! params: data source:{}, from {}:{}, until {}:{}.",dataSource, CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate, CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
             //todo: how do we handle? alert the user probably?
             return;
         }
@@ -129,6 +87,16 @@ public class CollectorExecutionServiceImpl implements CollectorExecutionService 
         }
 
         return createdDocuments;
+
+    }
+
+    @Override
+    public void clean(DataSource dataSource, Instant startDate, Instant endDate) throws Exception {
+
+    }
+
+    @Override
+    public void cleanAll(DataSource dataSource) throws Exception {
 
     }
 }

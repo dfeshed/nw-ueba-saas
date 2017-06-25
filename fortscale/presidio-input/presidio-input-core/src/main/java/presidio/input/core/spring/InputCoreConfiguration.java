@@ -2,8 +2,6 @@ package presidio.input.core.spring;
 
 
 import fortscale.common.shell.PresidioExecutionService;
-import fortscale.services.config.ParametersValidationServiceConfig;
-import fortscale.services.parameters.ParametersValidationService;
 import fortscale.utils.mongodb.config.MongoConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -16,21 +14,18 @@ import presidio.input.sdk.impl.spring.PresidioInputPersistencyServiceConfig;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
 
 @Configuration
-@Import({MongoConfig.class, ParametersValidationServiceConfig.class, PresidioInputPersistencyServiceConfig.class, EnrichedDataStoreConfig.class})
+@Import({MongoConfig.class, PresidioInputPersistencyServiceConfig.class, EnrichedDataStoreConfig.class})
 public class InputCoreConfiguration {
 
     @Autowired
     private PresidioInputPersistencyService presidioInputPersistencyService;
 
     @Autowired
-    private ParametersValidationService parametersValidationService;
-
-    @Autowired
     private EnrichedDataStore enrichedDataStore;
 
     @Bean
     public PresidioExecutionService inputExecutionService() {
-        return new InputExecutionServiceImpl(parametersValidationService, presidioInputPersistencyService, enrichedDataStore);
+        return new InputExecutionServiceImpl(presidioInputPersistencyService, enrichedDataStore);
     }
 
 }

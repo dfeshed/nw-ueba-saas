@@ -3,8 +3,8 @@ package presidio.input.core;
 
 
 import fortscale.common.general.PresidioShellableApplication;
-import fortscale.utils.logging.Logger;
 import fortscale.common.shell.config.ShellCommonCommandsConfig;
+import fortscale.utils.logging.Logger;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
