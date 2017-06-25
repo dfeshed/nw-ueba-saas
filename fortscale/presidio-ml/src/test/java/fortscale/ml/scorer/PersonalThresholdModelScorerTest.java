@@ -7,6 +7,7 @@ import fortscale.ml.model.cache.EventModelsCacheService;
 import fortscale.ml.model.cache.ModelsCacheService;
 import fortscale.ml.scorer.config.IScorerConf;
 import fortscale.ml.scorer.record.JsonAdeRecord;
+import fortscale.ml.scorer.record.JsonAdeRecordReader;
 import fortscale.utils.factory.FactoryService;
 import org.junit.Assert;
 import org.junit.Before;
@@ -21,7 +22,6 @@ import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
-import presidio.ade.domain.record.AdeRecord;
 
 import java.time.Instant;
 import java.util.Collections;
@@ -134,26 +134,27 @@ public class PersonalThresholdModelScorerTest {
         );
     }
 
-	private FeatureScore calculateScore(String featureScoreName,
-										FeatureScore baseScore,
-										PersonalThresholdModel personalThresholdModel,
-										Model baseScorerModel) throws Exception {
-		return calculateScore(featureScoreName,
-				baseScore,
-				personalThresholdModel,
-				baseScorerModel,
-				99999);
-	}
+    private FeatureScore calculateScore(String featureScoreName,
+                                        FeatureScore baseScore,
+                                        PersonalThresholdModel personalThresholdModel,
+                                        Model baseScorerModel) throws Exception {
+        return calculateScore(featureScoreName,
+                baseScore,
+                personalThresholdModel,
+                baseScorerModel,
+                99999);
+    }
 
     private FeatureScore calculateScore(String featureScoreName,
                                         FeatureScore baseScore,
                                         PersonalThresholdModel personalThresholdModel,
                                         Model baseScorerModel,
                                         double maxRatioFromUniformThreshold) throws Exception {
-        AdeRecord eventMessage = JsonAdeRecord.getJsonAdeRecord("context field name", "context field value");
+        JsonAdeRecordReader jsonAdeRecordReader = new JsonAdeRecordReader(
+                JsonAdeRecord.getJsonAdeRecord("context field name", "context field value"));
         scorerFactoryService.register(baseScorerConf.getFactoryName(), factoryConfig -> baseScorer);
-        Mockito.when(baseScorer.calculateScore(eventMessage)).thenReturn(baseScore);
-        Mockito.when(baseScorer.getModel(eventMessage)).thenReturn(baseScorerModel);
+        Mockito.when(baseScorer.calculateScore(jsonAdeRecordReader)).thenReturn(baseScore);
+        Mockito.when(baseScorer.getModel(jsonAdeRecordReader)).thenReturn(baseScorerModel);
         List<String> contextFieldNames = Collections.singletonList("context field name");
 
         when(modelsCacheService.getModel(
@@ -168,7 +169,7 @@ public class PersonalThresholdModelScorerTest {
                 contextFieldNames,
                 baseScorerConf,
                 maxRatioFromUniformThreshold
-        ).calculateScore(eventMessage);
+        ).calculateScore(jsonAdeRecordReader);
     }
 
     @Test

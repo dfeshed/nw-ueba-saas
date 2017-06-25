@@ -9,7 +9,6 @@ import fortscale.ml.scorer.config.FieldValueScoreReducerScorerConf;
 import fortscale.ml.scorer.config.IScorerConf;
 import fortscale.ml.scorer.params.FieldValueScoreReducerScorerConfParams;
 import fortscale.utils.factory.FactoryService;
-import fortscale.utils.recordreader.RecordReader;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,28 +16,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
-import presidio.ade.domain.record.AdeRecord;
-
+import presidio.ade.domain.record.AdeRecordReader;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(locations = {"classpath*:META-INF/spring/scorer-factory-tests-context.xml"})
 public class FieldValueScoreReducerScorerFactoryTest {
-
     @MockBean
     ModelConfService modelConfService;
 
     @MockBean
     ModelsCacheService modelCacheService;
 
-    @MockBean
-    FactoryService<RecordReader<AdeRecord>> recordReaderFactoryService;
-
     @Autowired
     FieldValueScoreReducerScorerFactory fieldValueScoreReducerScorerFactory;
 
     @Autowired
     FactoryService<Scorer> scorerFactoryService;
-
 
     @Test(expected = IllegalArgumentException.class)
     public void confNotOfExpectedType() {
@@ -50,18 +43,25 @@ public class FieldValueScoreReducerScorerFactoryTest {
         fieldValueScoreReducerScorerFactory.getProduct(null);
     }
 
-
     @Test
     public void getProductTest() {
         FieldValueScoreReducerScorerConfParams params = new FieldValueScoreReducerScorerConfParams();
+
         IScorerConf dummyConf1 = new IScorerConf() {
-            @Override public String getName() { return "scorer1"; }
-            @Override public String getFactoryName() {return "scorer1Factory"; }
+            @Override
+            public String getName() {
+                return "scorer1";
+            }
+
+            @Override
+            public String getFactoryName() {
+                return "scorer1Factory";
+            }
         };
 
         scorerFactoryService.register(dummyConf1.getFactoryName(), factoryConfig -> new Scorer() {
             @Override
-            public FeatureScore calculateScore(AdeRecord record) {
+            public FeatureScore calculateScore(AdeRecordReader adeRecordReader) {
                 return null;
             }
 
@@ -73,7 +73,6 @@ public class FieldValueScoreReducerScorerFactoryTest {
 
         FieldValueScoreReducerScorerConf conf = new FieldValueScoreReducerScorerConf(params.getName(), dummyConf1, params.getLimiters());
         FieldValueScoreReducerScorer scorer = fieldValueScoreReducerScorerFactory.getProduct(conf);
-
         Assert.assertEquals(params.getName(), scorer.getName());
         Assert.assertEquals(params.getLimiters(), scorer.getLimiters());
         Assert.assertEquals(dummyConf1.getName(), scorer.getBaseScorer().getName());

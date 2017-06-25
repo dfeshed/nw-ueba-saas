@@ -15,7 +15,6 @@ import java.util.stream.Collectors;
 
 @RunWith(JUnit4.class)
 public class GaussianModelScorerTest {
-
     private GaussianModelScorer createScorer(List<String> additionalModelNames, int globalInfluence) {
         return new GaussianModelScorer(
                 "scorerName",
@@ -29,7 +28,9 @@ public class GaussianModelScorerTest {
                 1,
                 1,
                 false,
-                globalInfluence, null, null);
+                globalInfluence,
+                null
+        );
     }
 
     @Test(expected = IllegalArgumentException.class)

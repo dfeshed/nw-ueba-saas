@@ -4,15 +4,12 @@ import fortscale.common.feature.Feature;
 import fortscale.common.util.GenericHistogram;
 import fortscale.domain.feature.score.FeatureScore;
 import fortscale.ml.model.CategoryRarityModel;
-import fortscale.ml.model.Model;
 import fortscale.ml.model.builder.CategoryRarityModelBuilder;
 import fortscale.ml.model.builder.CategoryRarityModelBuilderConf;
 import fortscale.ml.model.cache.EventModelsCacheService;
 import fortscale.ml.model.cache.ModelsCacheService;
 import fortscale.ml.scorer.record.JsonAdeRecord;
 import fortscale.ml.scorer.record.JsonAdeRecordReader;
-import fortscale.utils.factory.FactoryService;
-import fortscale.utils.recordreader.RecordReader;
 import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
@@ -21,14 +18,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
-import presidio.ade.domain.record.AdeRecord;
+import presidio.ade.domain.record.AdeRecordReader;
 
 import java.io.IOException;
 import java.time.Instant;
 import java.util.*;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
@@ -37,9 +33,6 @@ public class CategoryRarityModelScorerTest {
 
     @MockBean
     ModelsCacheService modelsCacheService;
-
-    @MockBean
-    FactoryService<RecordReader<AdeRecord>> recordReaderFactoryService;
 
     @Autowired
     EventModelsCacheService eventModelsCacheService;
@@ -53,9 +46,9 @@ public class CategoryRarityModelScorerTest {
         Assert.assertEquals((long)params.getMaxRareCount(), scorer.getAlgorithm().getMaxRareCount());
         Assert.assertEquals((long)params.getMaxNumOfRareFeatures(), scorer.getAlgorithm().getMaxNumOfRareFeatures());
         Assert.assertEquals(params.getMinimumNumberOfDistinctValuesToInfluence(), scorer.getMinNumOfDistinctValuesToInfluence(), scorer.getMinNumOfDistinctValuesToInfluence());
-        Assert.assertEquals((long) params.getEnoughNumberOfDistinctValuesToInfluence(), scorer.getEnoughNumOfDistinctValuesToInfluence());
-        Assert.assertEquals((long) params.getNumberOfSamplesToInfluenceEnough(), scorer.getEnoughNumOfSamplesToInfluence());
-        Assert.assertEquals((long) params.getMinNumOfSamplesToInfluence(), scorer.getMinNumOfSamplesToInfluence());
+        Assert.assertEquals((long)params.getEnoughNumberOfDistinctValuesToInfluence(), scorer.getEnoughNumOfDistinctValuesToInfluence());
+        Assert.assertEquals((long)params.getNumberOfSamplesToInfluenceEnough(), scorer.getEnoughNumOfSamplesToInfluence());
+        Assert.assertEquals((long)params.getMinNumOfSamplesToInfluence(), scorer.getMinNumOfSamplesToInfluence());
         Assert.assertEquals(params.getUseCertaintyToCalculateScore(), scorer.isUseCertaintyToCalculateScore());
 
     }
@@ -73,15 +66,15 @@ public class CategoryRarityModelScorerTest {
                 params.getMinimumNumberOfDistinctValuesToInfluence(),
                 params.getEnoughNumberOfDistinctValuesToInfluence(),
                 params.getMaxRareCount(),
-                params.getMaxNumOfRareFeatures(), recordReaderFactoryService, eventModelsCacheService);
+                params.getMaxNumOfRareFeatures(), eventModelsCacheService);
     }
 
 
-    protected AdeRecord buildAdeRecord(String fieldName, Object fieldValue) {
+    protected AdeRecordReader buildAdeRecordReader(String fieldName, Object fieldValue) {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("username", "someone");
         jsonObject.put(fieldName, fieldValue);
-        return new JsonAdeRecord(Instant.now(), jsonObject);
+        return new JsonAdeRecordReader(new JsonAdeRecord(Instant.now(), jsonObject));
     }
 
     //==================================================================================================================
@@ -200,7 +193,7 @@ public class CategoryRarityModelScorerTest {
     }
 
     //==================================================================================================================
-    // CALCUlATE SCORE ILLEGAL VALUES TESTS
+    // CALCULATE SCORE ILLEGAL VALUES TESTS
     //==================================================================================================================
     @Test(expected = IllegalArgumentException.class)
     public void calculateScore_null_model_test() {
@@ -268,7 +261,7 @@ public class CategoryRarityModelScorerTest {
     }
 
     //==================================================================================================================
-    // CALCUlATE SCORE SIMPLE TESTS (more advanced tests are at the CategoryRarityModelScorerAlgorithmTest)
+    // CALCULATE SCORE SIMPLE TESTS (more advanced tests are at the CategoryRarityModelScorerAlgorithmTest)
     //==================================================================================================================
     @Test
     public void calculateScore_elementaryCheck_test() {
@@ -309,15 +302,15 @@ public class CategoryRarityModelScorerTest {
         String featureWithZeroCount = "feature-zero-count"; // The scorer should handle it as if count=1
         model.setFeatureCount(featureWithCount100, count);
 
-        AdeRecord record = buildAdeRecord(scorer.getFeatureName(), featureWithCount100); // Anyhow the extracted value are mocked
-        prepareMocks(model, record);
-        FeatureScore featureScore = scorer.calculateScore(record);
+        AdeRecordReader adeRecordReader = buildAdeRecordReader(scorer.getFeatureName(), featureWithCount100);
+        when(modelsCacheService.getModel(any(), any(), any(Instant.class))).thenReturn(model);
+        FeatureScore featureScore = scorer.calculateScore(adeRecordReader);
         Assert.assertEquals(0.0, featureScore.getScore(), 0.0);
         Assert.assertEquals(params.getName(), featureScore.getName());
 
-        record = buildAdeRecord(scorer.getFeatureName(), featureWithZeroCount);
-        prepareMocks(model, record);
-        featureScore = scorer.calculateScore(record);
+        adeRecordReader = buildAdeRecordReader(scorer.getFeatureName(), featureWithZeroCount);
+        when(modelsCacheService.getModel(any(), any(), any(Instant.class))).thenReturn(model);
+        featureScore = scorer.calculateScore(adeRecordReader);
         Assert.assertEquals(100.0, featureScore.getScore(), 0.0);
         Assert.assertEquals(params.getName(), featureScore.getName());
     }
@@ -340,15 +333,15 @@ public class CategoryRarityModelScorerTest {
         String featureWithZeroCount = "feature-zero-count"; // The scorer should handle it as if count=1
         model.setFeatureCount(featureWithCount100, count);
 
-        AdeRecord record = buildAdeRecord(scorer.getFeatureName(), featureWithCount100); // Anyhow the extracted value are mocked
-        prepareMocks(model, record);
-        FeatureScore featureScore = scorer.calculateScore(record);
+        AdeRecordReader adeRecordReader = buildAdeRecordReader(scorer.getFeatureName(), featureWithCount100);
+        when(modelsCacheService.getModel(any(), any(), any(Instant.class))).thenReturn(model);
+        FeatureScore featureScore = scorer.calculateScore(adeRecordReader);
         Assert.assertEquals(0.0, featureScore.getScore(), 0.0);
         Assert.assertEquals(params.getName(), featureScore.getName());
 
-        record = buildAdeRecord(scorer.getFeatureName(), featureWithZeroCount);
-        prepareMocks(model, record);
-        featureScore = scorer.calculateScore(record);
+        adeRecordReader = buildAdeRecordReader(scorer.getFeatureName(), featureWithZeroCount);
+        when(modelsCacheService.getModel(any(), any(), any(Instant.class))).thenReturn(model);
+        featureScore = scorer.calculateScore(adeRecordReader);
         Assert.assertEquals(100.0, featureScore.getScore(), 0.0);
         Assert.assertEquals(params.getName(), featureScore.getName());
     }
@@ -358,16 +351,10 @@ public class CategoryRarityModelScorerTest {
         CategoryRarityModelScorerParams params = new CategoryRarityModelScorerParams().setMaxRareCount(15).setMaxNumOfRareFeatures(5);
         CategoryRarityModelScorer scorer = createCategoryRarityModelScorer(params);
 
-        AdeRecord record = buildAdeRecord(scorer.getFeatureName(), "feature-count-100"); // Anyhow the extracted value are mocked
-        prepareMocks(null, record);
-        FeatureScore featureScore = scorer.calculateScore(record);
+        AdeRecordReader adeRecordReader = buildAdeRecordReader(scorer.getFeatureName(), "feature-count-100");
+        when(modelsCacheService.getModel(any(), any(), any(Instant.class))).thenReturn(null);
+        FeatureScore featureScore = scorer.calculateScore(adeRecordReader);
         Assert.assertEquals(params.getName(), featureScore.getName());
-    }
-
-    private void prepareMocks(Model model, AdeRecord record) {
-        when(modelsCacheService.getModel(any(), any(), any(Instant.class))).thenReturn(model);
-        RecordReader<AdeRecord> recordReader = new JsonAdeRecordReader();
-        when(recordReaderFactoryService.getDefaultProduct(eq(record.getAdeRecordType()))).thenReturn(recordReader);
     }
 
     @Test
@@ -375,9 +362,9 @@ public class CategoryRarityModelScorerTest {
         CategoryRarityModelScorerParams params = new CategoryRarityModelScorerParams().setMaxRareCount(15).setMaxNumOfRareFeatures(5);
         CategoryRarityModelScorer scorer = createCategoryRarityModelScorer(params);
 
-        AdeRecord record = buildAdeRecord(scorer.getFeatureName(), "feature-zero-count");
-        prepareMocks(null, record);
-        FeatureScore featureScore = scorer.calculateScore(record);
+        AdeRecordReader adeRecordReader = buildAdeRecordReader(scorer.getFeatureName(), "feature-zero-count");
+        when(modelsCacheService.getModel(any(), any(), any(Instant.class))).thenReturn(null);
+        FeatureScore featureScore = scorer.calculateScore(adeRecordReader);
         Assert.assertEquals(0.0, featureScore.getScore(), 0.0);
     }
 
@@ -397,9 +384,9 @@ public class CategoryRarityModelScorerTest {
         String featureWithCount100 = "feature-count-100";
         model.setFeatureCount(featureWithCount100, count);
 
-        AdeRecord record = buildAdeRecord(scorer.getFeatureName(), JSONObject.NULL);
-        prepareMocks(model, record);
-        FeatureScore featureScore = scorer.calculateScore(record);
+        AdeRecordReader adeRecordReader = buildAdeRecordReader(scorer.getFeatureName(), JSONObject.NULL);
+        when(modelsCacheService.getModel(any(), any(), any(Instant.class))).thenReturn(model);
+        FeatureScore featureScore = scorer.calculateScore(adeRecordReader);
         Assert.assertEquals(0.0, featureScore.getScore(), 0.0);
     }
 
@@ -416,10 +403,10 @@ public class CategoryRarityModelScorerTest {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("username", JSONObject.NULL);
         jsonObject.put(scorer.getFeatureName(), featureWithZeroCount);
-        AdeRecord record = new JsonAdeRecord(Instant.now(), jsonObject);
-        prepareMocks(model, record);
-        FeatureScore featureScore = scorer.calculateScore(record);
-        Assert.assertEquals(0.0, featureScore.getScore(), 0.0); // With the right context it should return 100
+        AdeRecordReader adeRecordReader = new JsonAdeRecordReader(new JsonAdeRecord(Instant.now(), jsonObject));
+        when(modelsCacheService.getModel(any(), any(), any(Instant.class))).thenReturn(model);
+        FeatureScore featureScore = scorer.calculateScore(adeRecordReader);
+        Assert.assertEquals(0.0, featureScore.getScore(), 0.0);
     }
 
     private CategoryRarityModel createModel(int numOfDistinctValues, long count, String feature) {
@@ -452,9 +439,9 @@ public class CategoryRarityModelScorerTest {
         String featureWithZeroCount = "feature-zero-count"; // The scorer should handle it as if count=1
         CategoryRarityModel model = createModel(19, count, featureWithCount0);
 
-        AdeRecord record = buildAdeRecord(scorer.getFeatureName(), featureWithZeroCount); // Anyhow the extracted value are mocked
-        prepareMocks(model, record);
-        FeatureScore score = scorer.calculateScore(record);
+        AdeRecordReader adeRecordReader = buildAdeRecordReader(scorer.getFeatureName(), featureWithZeroCount);
+        when(modelsCacheService.getModel(any(), any(), any(Instant.class))).thenReturn(model);
+        FeatureScore score = scorer.calculateScore(adeRecordReader);
         Assert.assertNotNull(score);
         Assert.assertEquals(100d, score.getScore(), 0.0);
         Assert.assertEquals(0d, score.getCertainty(), 0.0);
@@ -473,9 +460,9 @@ public class CategoryRarityModelScorerTest {
         String featureWithZeroCount = "feature-zero-count"; // The scorer should handle it as if count=1
         CategoryRarityModel model = createModel(19, count, featureWithCount0);
 
-        AdeRecord record = buildAdeRecord(scorer.getFeatureName(), featureWithZeroCount); // Anyhow the extracted value are mocked
-        prepareMocks(model, record);
-        FeatureScore score = scorer.calculateScore(record);
+        AdeRecordReader adeRecordReader = buildAdeRecordReader(scorer.getFeatureName(), featureWithZeroCount);
+        when(modelsCacheService.getModel(any(), any(), any(Instant.class))).thenReturn(model);
+        FeatureScore score = scorer.calculateScore(adeRecordReader);
         Assert.assertNotNull(score);
         Assert.assertEquals(100d, score.getScore(), 0.0);
         Assert.assertEquals(0d, score.getCertainty(), 0.0);
@@ -494,9 +481,9 @@ public class CategoryRarityModelScorerTest {
         String featureWithZeroCount = "feature-zero-count"; // The scorer should handle it as if count=1
         CategoryRarityModel model = createModel(100, count, featureWithCount0);
 
-        AdeRecord record = buildAdeRecord(scorer.getFeatureName(), featureWithZeroCount); // Anyhow the extracted value are mocked
-        prepareMocks(model, record);
-        FeatureScore score = scorer.calculateScore(record);
+        AdeRecordReader adeRecordReader = buildAdeRecordReader(scorer.getFeatureName(), featureWithZeroCount);
+        when(modelsCacheService.getModel(any(), any(), any(Instant.class))).thenReturn(model);
+        FeatureScore score = scorer.calculateScore(adeRecordReader);
         Assert.assertNotNull(score);
         Assert.assertEquals(100d, score.getScore(), 0.0);
         Assert.assertEquals(1d, score.getCertainty(), 0.0);
@@ -515,9 +502,9 @@ public class CategoryRarityModelScorerTest {
         String featureWithZeroCount = "feature-zero-count"; // The scorer should handle it as if count=1
         CategoryRarityModel model = createModel(100, count, featureWithCount0);
 
-        AdeRecord record = buildAdeRecord(scorer.getFeatureName(), featureWithZeroCount); // Anyhow the extracted value are mocked
-        prepareMocks(model, record);
-        FeatureScore score = scorer.calculateScore(record);
+        AdeRecordReader adeRecordReader = buildAdeRecordReader(scorer.getFeatureName(), featureWithZeroCount);
+        when(modelsCacheService.getModel(any(), any(), any(Instant.class))).thenReturn(model);
+        FeatureScore score = scorer.calculateScore(adeRecordReader);
         Assert.assertNotNull(score);
         Assert.assertEquals(100d, score.getScore(), 0.0);
         Assert.assertEquals(0d, score.getCertainty(), 0.0);
@@ -538,9 +525,9 @@ public class CategoryRarityModelScorerTest {
         String featureWithZeroCount = "feature-zero-count"; // The scorer should handle it as if count=1
         CategoryRarityModel model = createModel(min, count, featureWithCount0);
 
-        AdeRecord record = buildAdeRecord(scorer.getFeatureName(), featureWithZeroCount); // Anyhow the extracted value are mocked
-        prepareMocks(model, record);
-        FeatureScore score = scorer.calculateScore(record);
+        AdeRecordReader adeRecordReader = buildAdeRecordReader(scorer.getFeatureName(), featureWithZeroCount);
+        when(modelsCacheService.getModel(any(), any(), any(Instant.class))).thenReturn(model);
+        FeatureScore score = scorer.calculateScore(adeRecordReader);
         Assert.assertNotNull(score);
         Assert.assertEquals(100d, score.getScore(), 0.0);
         Assert.assertEquals(1d / (enough - min + 1), score.getCertainty(), 0.0);
@@ -561,9 +548,9 @@ public class CategoryRarityModelScorerTest {
         String featureWithZeroCount = "feature-zero-count"; // The scorer should handle it as if count=1
         CategoryRarityModel model = createModel(min, count, featureWithCount0);
 
-        AdeRecord record = buildAdeRecord(scorer.getFeatureName(), featureWithZeroCount);
-        prepareMocks(model, record);
-        FeatureScore score = scorer.calculateScore(record);
+        AdeRecordReader adeRecordReader = buildAdeRecordReader(scorer.getFeatureName(), featureWithZeroCount);
+        when(modelsCacheService.getModel(any(), any(), any(Instant.class))).thenReturn(model);
+        FeatureScore score = scorer.calculateScore(adeRecordReader);
         Assert.assertNotNull(score);
         Assert.assertEquals(100d, score.getScore(), 0.0);
         Assert.assertEquals(1d, score.getCertainty(), 0.0);

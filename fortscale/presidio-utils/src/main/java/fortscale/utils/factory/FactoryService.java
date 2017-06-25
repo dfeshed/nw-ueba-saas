@@ -23,9 +23,4 @@ public class FactoryService<T> {
 		Factory<T> factory = getFactory(factoryConfig.getFactoryName());
 		return factory == null ? null : factory.getProduct(factoryConfig);
 	}
-
-	public T getDefaultProduct(String factoryName) {
-		Factory<T> factory = getFactory(factoryName);
-		return factory == null ? null : factory.getDefaultProduct();
-	}
 }
