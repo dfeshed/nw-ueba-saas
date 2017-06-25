@@ -12,7 +12,6 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import presidio.ade.domain.pagination.enriched.EnrichedRecordPaginationService;
-import presidio.ade.domain.record.AdeRecord;
 import presidio.ade.domain.record.enriched.DataSourceToAdeEnrichedRecordClassResolver;
 import presidio.ade.domain.record.enriched.DataSourceToAdeEnrichedRecordClassResolverConfig;
 import presidio.ade.domain.record.enriched.EnrichedDlpFileRecord;
@@ -66,7 +65,7 @@ public class FakeMongoEnrichedRecordPaginationServiceTest {
         mongoTemplate.insert(records, "enriched_dlpfile");
 
         //create store
-        EnrichedDataToCollectionNameTranslator translator = new EnrichedDataToCollectionNameTranslator();
+        EnrichedDataAdeToCollectionNameTranslator translator = new EnrichedDataAdeToCollectionNameTranslator();
         enrichedDataStoreImplMongo = new EnrichedDataStoreImplMongo(mongoTemplate, translator, this.dataSourceToAdeEnrichedRecordClassResolver);
 
         //create pagination service
