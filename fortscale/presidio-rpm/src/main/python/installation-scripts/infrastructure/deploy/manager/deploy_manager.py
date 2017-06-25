@@ -44,8 +44,8 @@ class Deploy_Manager:
                 """
                 mig_step_json, mig_steps_folder = self.read_mig_step(version)
                 print "mig_step_json type:" + str(type(mig_step_json))
-                print "migstepjson: " + len(mig_step_json)
-                print "migstepfolder: " + len(mig_steps_folder)
+                print "migstepjson: " + str(len(mig_step_json))
+                print "migstepfolder: " + str(len(mig_steps_folder))
                 mig_steps_str = str(mig_step_json[0])
                 print mig_steps_str
                 with open(mig_steps_str) as json_steps_file:
