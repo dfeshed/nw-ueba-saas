@@ -23,7 +23,6 @@ public class EnrichedDataAdeToCollectionNameTranslator implements AdeToCollectio
         return String.format(ENRICHED_COLLECTION_PREFIX + "_%s", dataSource);
     }
 
-
 	@Override
 	public Collection<String> toCollectionNames(AdeDataStoreCleanupParams cleanupParams) {
 		return null;
