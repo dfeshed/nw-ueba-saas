@@ -1,7 +1,7 @@
 {
   "migration_steps": [
     {
-      "filePath": "mongo_set_config.py",
+      "filePath": "mongo_set_config.sh",
       "executor": "defualt",
       "time_to_execute": "pre"
     },
