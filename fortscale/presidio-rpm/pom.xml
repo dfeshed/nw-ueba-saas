@@ -46,7 +46,7 @@
                         <groupname>presidio</groupname>
                         <sources>
                             <source>
-                                <location>${project.parent.build.directory}/extra-resources/</location>
+                                <location>${project.parent.build.directory}/dependencies/</location>
                             </source>
                         </sources>
                     </mapping>
@@ -57,7 +57,7 @@
                         <groupname>presidio</groupname>
                         <sources>
                             <source>
-                                <location>${project.parent.build.directory}/dependencies/</location>
+                                <location>${project.parent.build.directory}/extra-resources/</location>
                             </source>
                         </sources>
                     </mapping>
