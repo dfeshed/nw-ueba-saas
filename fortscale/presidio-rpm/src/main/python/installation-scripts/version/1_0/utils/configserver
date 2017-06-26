@@ -11,7 +11,7 @@ start)
         echo configuration server is already running, pid='cat $process_id_folder/config_server.pid'
         exit 0
    fi
-   java -jar -Dspring.profiles.active=dev,native $git_server_path/presidio-configuration-server-*.jar &
+   java -jar $git_server_path/presidio-configuration-server-*.jar &
    echo $!>$process_id_folder/config_server.pid
    ;;
 stop)
