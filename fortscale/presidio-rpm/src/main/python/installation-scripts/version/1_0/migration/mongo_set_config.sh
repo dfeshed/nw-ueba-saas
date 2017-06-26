@@ -1,5 +1,10 @@
 #!/bin/bash
-
+echo "Mongo: stopping service"
+service mongod stop
+echo "Mongo: Stopping authentication flag"
+cp /home/presidio/presidio-core/installation/installation-scripts/infrastructure/deploy/manager/../../../version/1_0/utils/mongod.conf.no_auth /etc/mongod.conf
+echo "Mongo: restarting service"
+service mongod start
 echo "Mongo: creating superadmin user"
 mongo localhost:27017/admin /home/presidio/presidio-core/installation/installation-scripts/infrastructure/deploy/manager/../../../version/1_0/utils/mongo_create_root.js
 echo "Mongo: creating admin user"

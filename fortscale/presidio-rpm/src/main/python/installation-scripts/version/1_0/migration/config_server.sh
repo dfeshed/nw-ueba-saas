@@ -8,5 +8,6 @@ echo "Adding configserver to chkconfig"
 chkconfig --add configserver
 echo "Starting config server"
 service configserver start
+systemctl start configserver
 
 
