@@ -1,0 +1,21 @@
+$incidentAlertsSearchHeaderHeight: 30px;
+
+.rsa-incident-alerts-search {
+  height: calc(100% - #{$incidentAlertsSearchHeaderHeight});
+
+  .rsa-alerts-search-results {
+    &__body {
+      .rsa-data-table {
+        @include rsa-fill-abs();
+      }
+
+      .alert-name {
+        @include rsa-font(heading);
+        color: rsa-color(white);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+  }
+}

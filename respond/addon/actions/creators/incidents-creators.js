@@ -3,7 +3,7 @@ import { Incidents, alerts } from '../api';
 import * as ACTION_TYPES from '../types';
 import * as ErrorHandlers from '../util/error-handlers';
 import * as DictionaryCreators from './dictionary-creators';
-import { next } from 'ember-runloop';
+import { later, next } from 'ember-runloop';
 import { getRemediationTasksForIncident } from 'respond/actions/creators/remediation-task-creators';
 
 const {
@@ -352,7 +352,79 @@ const initializeIncident = (incidentId) => {
 
 const setTasksJournalMode = (viewMode) => ({ type: ACTION_TYPES.SET_TASKS_JOURNAL_MODE, payload: viewMode });
 const toggleTasksAndJournalPanel = () => ({ type: ACTION_TYPES.TOGGLE_TASKS_JOURNAL });
+const setDefaultSearchTimeFrameName = (name) => ({ type: ACTION_TYPES.SET_DEFAULT_SEARCH_TIME_FRAME_NAME, payload: name });
+const setDefaultSearchEntityType = (type) => ({ type: ACTION_TYPES.SET_DEFAULT_SEARCH_ENTITY_TYPE, payload: type });
 
+// Kicks off a search for related indicators with the given filter criteria.
+const startSearchRelatedIndicators = (entityType, entityId, timeFrameName, devices) => {
+  return (dispatch) => {
+    dispatch({
+      type: ACTION_TYPES.SEARCH_RELATED_INDICATORS_STARTED,
+      payload: { entityType, entityId, timeFrameName, devices }
+    });
+
+    later(() => {
+      Incidents.getRelatedAlerts(
+        entityType,
+        entityId,
+        timeFrameName,
+        devices,
+        {
+          onInit: (stopStreamFn) => {
+            dispatch({ type: ACTION_TYPES.SEARCH_RELATED_INDICATORS_STREAM_INITIALIZED, payload: stopStreamFn });
+          },
+          onCompleted: () => dispatch({ type: ACTION_TYPES.SEARCH_RELATED_INDICATORS_COMPLETED }),
+          onResponse: (payload) => {
+            dispatch({ type: ACTION_TYPES.SEARCH_RELATED_INDICATORS_RETRIEVE_BATCH, payload });
+          },
+          onError: (response) => {
+            dispatch({ type: ACTION_TYPES.SEARCH_RELATED_INDICATORS_ERROR });
+            ErrorHandlers.handleContentRetrievalError(response, `related indicators for ${entityId}`);
+          }
+        }
+      );
+
+    }, 3000);
+  };
+};
+
+// Stops the current search for related indicators, if any.
+const stopSearchRelatedIndicators = () => {
+  return (dispatch, getState) => {
+    const state = getState();
+    const { respond: { incident: { stopSearchStream } } } = state;
+    if (stopSearchStream) {
+      stopSearchStream();
+    }
+    dispatch({
+      type: ACTION_TYPES.SEARCH_RELATED_INDICATORS_STOPPED
+    });
+  };
+};
+
+/**
+ * Adds a given list of indicators (alerts) to an incident with a given ID.
+ * @param {Object[]} indicators Array of indicators to be added to an incident.
+ * @param {String} incidentId ID of incident to which indicators will be added.
+ * @param callbacks Hash of functions to invoke after promise has succeeded or failed
+ * @param callbacks.onSuccess {function} - The callback to be executed when the operation is successful (e.g., showing a flash notification)
+ * @param callbacks.onFailure {function} - The callback to be executed when the operation fails
+ * @public
+ */
+const addRelatedIndicatorsToIncident = (indicators, incidentId, callbacks) => ({
+  type: ACTION_TYPES.ADD_RELATED_INDICATORS,
+  promise: Incidents.addAlertsToIncident(indicators, incidentId),
+  meta: {
+    onSuccess: (response) => {
+      Logger.debug(ACTION_TYPES.ADD_RELATED_INDICATORS, response);
+      callbacks.onSuccess(response);
+    },
+    onFailure: (response) => {
+      ErrorHandlers.handleContentUpdateError(response, `related indicators for incident ${incidentId}`);
+      callbacks.onFailure(response);
+    }
+  }
+});
 
 // UI STATE CREATORS - INCIDENT
 
@@ -397,5 +469,10 @@ export {
   toggleSelectLink,
   singleSelectNode,
   toggleSelectNode,
-  toggleTasksAndJournalPanel
+  toggleTasksAndJournalPanel,
+  setDefaultSearchTimeFrameName,
+  setDefaultSearchEntityType,
+  startSearchRelatedIndicators,
+  stopSearchRelatedIndicators,
+  addRelatedIndicatorsToIncident
 };

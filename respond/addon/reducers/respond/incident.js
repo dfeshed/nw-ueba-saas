@@ -53,7 +53,34 @@ let initialState = {
 
   isShowingTasksAndJournal: false,
 
-  tasksJournalMode: 'journal'
+  // 'journal', 'remediation' or 'search'
+  tasksJournalMode: 'journal',
+
+  // the { type, id } of the entity for the `searchResults` filter
+  searchEntity: null,
+
+  // identifier name of the time frame for the `searchResults` filter
+  searchTimeFrameName: null,
+
+  // array of device identifiers for the `searchResults` filter;
+  // each device identifier is one of: 'source.device', 'destination.device' or 'detector'
+  searchDevices: null,
+
+  // status of the fetch for `searchResults`; either 'streaming', 'complete' or 'error'
+  searchStatus: null,
+
+  // the list of found indicators (alerts) that mention `searchEntity` within `searchTimeFrameName`
+  searchResults: null,
+
+  // identifier name of the default time range for the search UI
+  defaultSearchTimeFrameName: 'LAST_TWENTY_FOUR_HOURS',
+
+  // identifier of the default entity type for the search UI
+  defaultSearchEntityType: 'IP',
+
+  // status of the call to add a given set of related indicators to the current event
+  // either 'wait', 'success' or 'error'
+  addRelatedIndicatorsStatus: null
 };
 
 // Load local storage values and incorporate into initial state
@@ -69,8 +96,8 @@ initialState = load(initialState, localStorageKey);
 const persistIncidentState = (callback) => {
   return (function() {
     const state = callback(...arguments);
-    const { viewMode, inspectorWidth, hideViz, tasksJournalMode, isShowingTasksAndJournal } = state;
-    persist({ viewMode, inspectorWidth, hideViz, tasksJournalMode, isShowingTasksAndJournal }, localStorageKey);
+    const { viewMode, inspectorWidth, hideViz, tasksJournalMode, isShowingTasksAndJournal, defaultSearchTimeFrameName, defaultSearchEntityType } = state;
+    persist({ viewMode, inspectorWidth, hideViz, tasksJournalMode, isShowingTasksAndJournal, defaultSearchTimeFrameName, defaultSearchEntityType }, localStorageKey);
     return state;
   });
 };
@@ -104,6 +131,8 @@ const incident = reduxActions.handleActions({
     viewMode: state.viewMode || initialState.viewMode,
     isShowingTasksAndJournal: state.isShowingTasksAndJournal || initialState.isShowingTasksAndJournal,
     tasksJournalMode: state.tasksJournalMode || initialState.tasksJournalMode,
+    defaultSearchTimeFrameName: state.defaultSearchTimeFrameName || initialState.defaultSearchTimeFrameName,
+    defaultSearchEntityType: state.defaultSearchEntityType || initialState.defaultSearchEntityType,
     hideViz: state.hideViz || initialState.hideViz
   }),
 
@@ -156,7 +185,10 @@ const incident = reduxActions.handleActions({
 
   [ACTION_TYPES.FETCH_INCIDENT_STORYLINE_EVENTS_STREAM_INITIALIZED]: (state) => ({
     ...state,
-    storylineEvents: []
+    // Don't reset the array here; that is handled in the INITIALIZE_INCIDENT reducer.
+    // This action may be called when adding indicators to the storyline, in which case
+    // we don't want to lose all the events we already have in the storyline.
+    storylineEvents: state.storylineEvents || []
   }),
 
   [ACTION_TYPES.FETCH_INCIDENT_STORYLINE_EVENTS_REQUEST_BATCH]: (state) => ({
@@ -191,7 +223,7 @@ const incident = reduxActions.handleActions({
 
   [ACTION_TYPES.FETCH_INCIDENT_STORYLINE_EVENTS_COMPLETED]: (state) => ({
     ...state,
-    storylineEventsStatus: 'complete'
+    storylineEventsStatus: 'completed'
   }),
 
   [ACTION_TYPES.FETCH_INCIDENT_STORYLINE_EVENTS_ERROR]: (state) => ({
@@ -373,8 +405,95 @@ const incident = reduxActions.handleActions({
         };
       }
     });
-  }
+  },
 
+  [ACTION_TYPES.SET_DEFAULT_SEARCH_TIME_FRAME_NAME]: persistIncidentState((state, { payload }) => ({
+    ...state,
+    defaultSearchTimeFrameName: payload
+  })),
+
+  [ACTION_TYPES.SET_DEFAULT_SEARCH_ENTITY_TYPE]: persistIncidentState((state, { payload }) => ({
+    ...state,
+    defaultSearchEntityType: payload
+  })),
+
+  [ACTION_TYPES.SEARCH_RELATED_INDICATORS_STARTED]: (state, { payload: { entityId, entityType, timeFrameName, devices } }) => ({
+    ...state,
+    searchEntity: { id: entityId, type: entityType },
+    searchTimeFrameName: timeFrameName,
+    searchDevices: devices,
+    searchResults: [],
+    searchStatus: 'streaming'
+  }),
+
+  [ACTION_TYPES.SEARCH_RELATED_INDICATORS_STREAM_INITIALIZED]: (state, { payload }) => ({
+    ...state,
+    stopSearchStream: payload
+  }),
+
+  [ACTION_TYPES.SEARCH_RELATED_INDICATORS_RETRIEVE_BATCH]: (state, { payload: { data, meta } }) => {
+    state.searchResults = state.searchResults || [];
+    return {
+      ...state,
+      searchResults: [ ...state.searchResults, ...data ],
+      searchStatus: meta.complete ? 'complete' : 'streaming'
+    };
+  },
+
+  [ACTION_TYPES.SEARCH_RELATED_INDICATORS_COMPLETED]: (state) => ({
+    ...state,
+    stopSearchStream: null
+  }),
+
+  [ACTION_TYPES.SEARCH_RELATED_INDICATORS_STOPPED]: (state) => ({
+    ...state,
+    stopSearchStream: null,
+    searchStatus: 'stopped'
+  }),
+
+  [ACTION_TYPES.SEARCH_RELATED_INDICATORS_ERROR]: (state) => ({
+    ...state,
+    searchStatus: 'error',
+    stopSearchStream: null
+  }),
+
+  [ACTION_TYPES.ADD_RELATED_INDICATORS]: (state, action) => (
+    handle(state, action, {
+      start: (s) => ({
+        ...s,
+        addRelatedIndicatorsStatus: 'wait'
+      }),
+      success: (s) => {
+
+        // Append indicators from payload into storyline
+        const { payload: { data: updatedIndicators } } = action;
+        s.storyline = s.storyline || [];
+        const storylineUpdated = updatedIndicators ?
+          [ ...s.storyline, ...updatedIndicators ] :
+          s.storyline;
+
+        // Update any indicators in searchResults that match the indicators in payload
+        const { searchResults } = s;
+        const searchResultsUpdated = (searchResults && updatedIndicators) ?
+          searchResults.map((indicator) => {
+            const found = updatedIndicators.findBy('id', indicator.id);
+            return found || indicator;
+          }) :
+          searchResults;
+
+        return {
+          ...s,
+          storyline: storylineUpdated,
+          searchResults: searchResultsUpdated,
+          addRelatedIndicatorsStatus: 'success'
+        };
+      },
+      failure: (s) => ({
+        ...s,
+        addRelatedIndicatorsStatus: 'error'
+      })
+    })
+  )
 }, initialState);
 
 export default incident;

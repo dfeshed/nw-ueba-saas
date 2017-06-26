@@ -1,0 +1,88 @@
+$alertsSearchLabelWidth: 6rem;
+$alertsSearchLineHeight: 2rem;
+
+.rsa-alerts-search {
+
+  .title {
+    @include rsa-font(heading, light);
+    padding: rsa-whitespace(less);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &-form {
+    border-bottom: 1px solid rsa-color(gray,light,$rsa-nearly-transparent);
+
+    .param {
+      @include rsa-font(body, small);
+      padding: rsa-whitespace(less) rsa-whitespace(less) rsa-whitespace(less) (rsa-whitespace(less) + $alertsSearchLabelWidth);
+      position: relative;
+
+      &-label {
+        color: rsa-color(gray, light);
+        position: absolute;
+        left: 0;
+        top: 0;
+        margin: rsa-whitespace(less);
+        max-width: $alertsSearchLabelWidth - rsa-whitespace(less) * 2;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        line-height: $alertsSearchLineHeight;
+      }
+
+      &-value {
+        display: inline-block;
+        color: rsa-color(white);
+
+        &.list {
+          line-height: 1.5;
+        }
+
+        input[type=text] {
+          /* for consistency with ember-power-select's styling */
+          line-height: $alertsSearchLineHeight;
+          border-bottom: 1px solid rsa-color(gray, light);
+        }
+
+        .ember-power-select-trigger[aria-disabled=true] {
+          /* overwrites defaults from component-lib, which would otherwise make the bg color light gray */
+          background-color: transparent;
+        }
+      }
+    }
+
+    &__footer {
+
+      .rsa-form-button-wrapper {
+        display: block;
+        padding: rsa-whitespace(less);
+
+        button {
+          width: 100%;
+        }
+      }
+    }
+  }
+
+  &-results {
+    &__header {
+      border-bottom: 1px solid rsa-color(gray,light,$rsa-nearly-transparent);
+
+      &-text,
+      &-wait {
+        padding: rsa-whitespace(less);
+      }
+
+      &-text {
+        @include rsa-font(body, small);
+        color: rsa-color(gray, light);
+      }
+
+      .rsa-loader__text {
+        display: none;
+      }
+    }
+  }
+}

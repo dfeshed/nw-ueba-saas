@@ -661,6 +661,50 @@ export default {
       view: {
         graph: 'View: Graph',
         datasheet: 'View: Datasheet'
+      },
+      search: {
+        title: 'Search',
+        partOfThisIncident: 'Part Of This Incident',
+        searching: 'Searching',
+        types: {
+          IP: 'IP',
+          MAC_ADDRESS: 'MAC',
+          HOST: 'Host',
+          DOMAIN: 'Domain',
+          FILE_NAME: 'Filename',
+          FILE_HASH: 'Hash',
+          USER: 'User',
+          label: 'Search for'
+        },
+        text: {
+          label: 'Value',
+          placeholders: {
+            IP: 'Enter an IP address',
+            MAC_ADDRESS: 'Enter a MAC address',
+            HOST: 'Enter a host name',
+            DOMAIN: 'Enter a domain name',
+            FILE_NAME: 'Enter a file name',
+            FILE_HASH: 'Enter a file hash',
+            USER: 'Enter a user name'
+          }
+        },
+        timeframe: {
+          label: 'When'
+        },
+        devices: {
+          source: 'Source',
+          destination: 'Destination',
+          detector: 'Detector',
+          label: 'Look in'
+        },
+        results: {
+          title: 'Results for'
+        },
+        actions: {
+          search: 'Search',
+          cancel: 'Cancel',
+          addToIncident: 'Add To Incident'
+        }
       }
     },
     storyline: {

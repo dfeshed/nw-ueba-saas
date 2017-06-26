@@ -1,0 +1,86 @@
+{{#rsa-alerts-search
+  class="rsa-incident-alerts-search"
+  as |search|
+}}
+  {{search.form
+    selectedTimeFrameName=defaultSearchTimeFrameName
+    selectedEntityTypeName=defaultSearchEntityType
+    isSearchUnderway=(eq searchStatus 'streaming')
+    onChangeTimeFrame=(action "onChangeTimeFrame")
+    onChangeEntityType=(action "onChangeEntityType")
+    onSubmit=(action "onSubmit")
+    onCancel=(action "onCancel")
+  }}
+  {{#search.results
+    entity=searchEntity
+    timeFrameName=searchTimeFrameName
+    devices=searchDevices
+    itemsStatus=searchStatus
+    items=searchResults
+    as |item index column|
+  }}
+
+    {{!Alert source + timestamp}}
+    <hbox nowrap>
+      <box fill class="p source">
+        <span>{{t (concat 'respond.alert.source.' item.alert.source)}}</span>
+      </box>
+      <box fit nowrap align="end" class="p time">
+        {{rsa-content-datetime
+          timestamp=item.timestamp
+          displayAsTimeAgo=false
+          displayDate=true
+          displayTime=true
+          displayMilliseconds=false
+        }}
+      </box>
+    </hbox>
+
+    {{!Alert severity and events count}}
+    <hbox nowrap>
+      <box fill class="p">
+        {{t 'respond.alerts.list.severity'}}: {{item.alert.severity}}
+      </box>
+      <box fit align="end">
+        {{item.alert.numEvents}}
+        {{t (if (eq 1 item.alert.numEvents) 'respond.storyline.event' 'respond.storyline.events')}}
+      </box>
+    </hbox>
+
+    {{!Alert name}}
+    <h3 class="alert-name">{{item.alert.name}}</h3>
+
+    {{!Add To Incident Button}}
+    {{#if (eq item.incidentId incidentId)}}
+
+      {{!Alert is already part of this incident}}
+      <div class="part-of-this-incident">
+        {{#rsa-form-button isDisabled=true}}
+          {{t 'respond.incident.search.partOfThisIncident'}}
+        {{/rsa-form-button}}
+      </div>
+
+    {{else if item.incidentId}}
+
+      {{!Alert is part of another incident}}
+      <p class="part-of-other-incident">
+        <label>{{t 'respond.storyline.partOfIncident'}}:</label>
+        <span>
+          {{#link-to 'incident' item.incidentId}}
+            {{item.incidentId}}
+          {{/link-to}}
+        </span>
+      </p>
+
+    {{else}}
+
+      {{!Alert is not part of any incident}}
+      <div class="not-part-of-incident">
+        {{#rsa-form-button defaultAction=(action "addToIncident" item)}}
+          {{t 'respond.incident.search.actions.addToIncident'}}
+        {{/rsa-form-button}}
+      </div>
+
+    {{/if}}
+  {{/search.results}}
+{{/rsa-alerts-search}}

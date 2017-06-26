@@ -1,0 +1,38 @@
+{{#if entity}}
+  <h2 class="rsa-alerts-search-results__title title">
+    {{t 'respond.incident.search.results.title'}}:
+    {{t (concat 'respond.incident.search.types.' entity.type)}}: {{entity.id}}
+  </h2>
+
+  {{!Header to display the filter that was used for these search results}}
+  <hbox fit class="rsa-alerts-search-results__header">
+    <div class="rsa-alerts-search-results__header-text flexi-fill">
+      <span class="rsa-alerts-search-results__time-frame">
+        {{t (concat 'respond.timeframeOptions.' timeFrameName) }}
+      </span>
+      <span class="rsa-alerts-search-results__devices">
+        {{#each devices as |device|}}
+          <span class="rsa-alerts-search-results__device">
+            &middot;&nbsp;{{t (concat 'respond.incident.search.devices.' device)}}
+          </span>
+        {{/each}}
+      </span>
+    </div>
+    <vbox fit align="center" class="rsa-alerts-search-results__header-wait">
+      {{#if (eq itemsStatus 'streaming')}}
+        {{rsa-loader size="small"}}
+      {{/if}}
+    </vbox>
+  </hbox>
+
+  {{!Data table to display the found alerts}}
+  <hbox fill class="rsa-alerts-search-results__body">
+    {{#rsa-data-table items=items columnsConfig=columnsConfig}}
+      {{#rsa-data-table/body as |item index column|}}
+        {{#rsa-data-table/body-cell item=item index=index column=column}}
+          {{yield item index column}}
+        {{/rsa-data-table/body-cell}}
+      {{/rsa-data-table/body}}
+    {{/rsa-data-table}}
+  </hbox>
+{{/if}}

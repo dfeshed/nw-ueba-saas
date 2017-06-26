@@ -1,0 +1,110 @@
+<h2 class="rsa-alerts-search-form__title title">
+  Search Alerts
+</h2>
+
+<div class="param">
+  <label class="param-label">{{t 'respond.incident.search.types.label'}}:</label>
+  <div class="param-value">
+    {{#power-select
+      options=entityTypeOptions
+      selected=selectedEntityTypeOption
+      disabled=isSearchUnderway
+      searchEnabled=false
+      matchTriggerWidth=false
+      onchange=onChangeEntityType as |entityType|}}
+      {{t (concat 'respond.incident.search.types.' entityType.name) }}
+    {{/power-select}}
+  </div>
+</div>
+
+<div class="param">
+  <label class="param-label">{{t 'respond.incident.search.text.label'}}:</label>
+  <div class="param-value">
+    {{input
+      class="rsa-alerts-search-form__text"
+      value=inputText
+      disabled=isSearchUnderway
+      size="24"
+      maxlength="255"
+      placeholder=(t (concat 'respond.incident.search.text.placeholders.' selectedEntityTypeOption.name))
+    }}
+  </div>
+</div>
+
+<div class="param">
+  <label class="param-label">{{t 'respond.incident.search.timeframe.label'}}:</label>
+  <div class="param-value">
+    {{#power-select
+      options=timeFrameOptions
+      selected=selectedTimeFrameOption
+      disabled=isSearchUnderway
+      searchEnabled=false
+      matchTriggerWidth=false
+      onchange=onChangeTimeFrame as |time|}}
+      {{t (concat 'respond.timeframeOptions.' time.name) }}
+    {{/power-select}}
+  </div>
+</div>
+
+{{#liquid-spacer growHeight=true growWidth=false growDuration=250 class="devices"}}
+  {{#if showDeviceOptions}}
+    <div class="param">
+      <label class="param-label">{{t 'respond.incident.search.devices.label'}}:</label>
+      <div class="param-value list">
+        <div class="list-item radio-with-label">
+          <input
+            type="radio"
+            name="device"
+            value="source"
+            class="rsa-alerts-search-form__device"
+            id="rsa-alerts-search-form__source__{{elementId}}"
+            checked="true"
+            disabled={{isSearchUnderway}}
+          >
+          <label for="rsa-alerts-search-form__source__{{elementId}}">{{t 'respond.incident.search.devices.source'}}</label>
+        </div>
+        <div class="list-item radio-with-label">
+          <input
+            type="radio"
+            name="device"
+            value="destination"
+            class="rsa-alerts-search-form__device"
+            disabled={{isSearchUnderway}}
+            id="rsa-alerts-search-form__destination__{{elementId}}"
+          >
+          <label for="rsa-alerts-search-form__destination__{{elementId}}">{{t 'respond.incident.search.devices.destination'}}</label>
+        </div>
+        <div class="list-item radio-with-label">
+          <input
+            type="radio"
+            name="device"
+            value="detector"
+            class="rsa-alerts-search-form__device"
+            disabled={{isSearchUnderway}}
+            id="rsa-alerts-search-form__detector__{{elementId}}"
+          >
+          <label for="rsa-alerts-search-form__detector__{{elementId}}">{{t 'respond.incident.search.devices.detector'}}</label>
+        </div>
+      </div>
+    </div>
+  {{/if}}
+{{/liquid-spacer}}
+
+<footer class="rsa-alerts-search-form__footer">
+  {{#if isSearchUnderway}}
+    {{#rsa-form-button
+      class="rsa-alerts-search-form__cancel"
+      defaultAction=onCancel
+    }}
+      {{t 'respond.incident.search.actions.cancel'}}
+    {{/rsa-form-button}}
+  {{else}}
+    {{#rsa-form-button
+      class="rsa-alerts-search-form__submit"
+      isDisabled=isSubmitDisabled
+      defaultAction=(action "search")
+    }}
+      {{t 'respond.incident.search.actions.search'}}
+    {{/rsa-form-button}}
+  {{/if}}
+</footer>

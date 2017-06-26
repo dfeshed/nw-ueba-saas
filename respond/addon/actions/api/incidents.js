@@ -5,6 +5,7 @@ import FilterQuery from 'respond/utils/filter-query';
 import { isEmpty, isPresent, typeOf, isNone } from 'ember-utils';
 import { isEmberArray } from 'ember-array/utils';
 import buildExplorerQuery from './util/explorer-build-query';
+import RSVP from 'rsvp';
 
 const IncidentsAPI = EmberObject.extend({});
 
@@ -210,6 +211,94 @@ IncidentsAPI.reopenClass({
       onResponse,
       onError,
       onCompleted
+    });
+  },
+
+  /**
+   * Executes a websocket alerts stream call to find alerts that mention a given entity in a given time frame.
+   * @param {String} entityType Either 'IP', 'MAC_ADDRESS', 'HOST', 'DOMAIN', 'FILE_NAME' or 'FILE_HASH'
+   * @param {String} entityId ID of an entity; e.g. '10.20.30.40', 'HOST1', 'g00gle.com', 'john_smith', 'setup.exe'
+   * @param {String} sinceWhen Name of a canned time range object.
+   * @param {String[]} devices List of device fields to be included in filter.
+   * Each device field is either: 'source.device', 'destination.device' or 'detector'.
+   * For now, only the first device will be used. When backend supports querying multiple device fields, all the given
+   * devices will be used.
+   * @param {{ onResponse: Function, onError: Function, onInit: Function, onCompleted: Function }} callbacks
+   * @public
+   */
+  getRelatedAlerts(entityType, entityId, sinceWhen, devices, { onResponse = NOOP, onError = NOOP, onInit = NOOP, onCompleted = NOOP }) {
+
+    // Map the given list of devices to fields in the IM Mongo database.
+    // For now, only map the first one; ignore the others until backend supports querying multiple fields with an OR.
+    let [ deviceField ] = devices || [];
+    if (String(deviceField).match(/source|destination/)) {
+      deviceField += '.device';
+    }
+    let eventField;
+    switch (entityType) {
+      case 'FILE_NAME':
+        eventField = 'data.filename';
+        break;
+      case 'FILE_HASH':
+        eventField = 'data.hash';
+        break;
+      case 'IP':
+        eventField = `${deviceField}.ip_address`;
+        break;
+      case 'MAC_ADDRESS':
+        eventField = `${deviceField}.mac_address`;
+        break;
+      case 'DOMAIN':
+        eventField = `${deviceField}.dns_domain`;
+        break;
+      case 'HOST':
+        eventField = `${deviceField}.dns_hostname`;
+        break;
+      case 'USER':
+        eventField = `${deviceField}.user.username`;
+        break;
+    }
+
+    const query = FilterQuery.create()
+      .addSortBy('alert.timestamp', false)
+      .addSinceWhenFilter('alert.timestamp', sinceWhen)
+      .addFilter(`alert.events.${eventField}`, entityId);
+
+    return streamRequest({
+      method: 'stream',
+      modelName: 'alerts',
+      query: query.toJSON(),
+      onInit,
+      onResponse,
+      onError,
+      onCompleted
+    });
+  },
+
+
+  /**
+   * Executes a websocket promise request to add a given list of alerts to a given incident ID.
+   * Or at least, it pretends to. In reality, we don't have the socket endpoint implemented yet, so this method
+   * simulates it by returning the same given alerts, but with their properties updated.
+   * Once the socket endpoint is implemented, we should replace this method's body with a true promiseRequest.
+   * @param {object[]} alerts The alert POJOs to be added to the incident.
+   * @param {string} incidentId The ID of the incident to be added to.
+   * @returns {Promise}
+   * @public
+   */
+  addAlertsToIncident(alerts, incidentId) {
+
+    // Return the same inputted alerts,
+    // but with their `partOfIncident` & `incidentId` props updated.
+    const data = alerts.map((alert) => ({
+      ...alert,
+      partOfIncident: true,
+      incidentId
+    }));
+
+    return RSVP.resolve({
+      code: 0,
+      data
     });
   },
 

@@ -7,9 +7,15 @@
     {{action (action "showTab" "remediation")}}>
     {{t 'respond.entities.remediationTasks'}} ({{taskCount}})
   </span>
+  <span class="rsa-tab text-only search-tab {{if (eq tasksJournalMode 'search') 'is-active' ''}}"
+    {{action (action "showTab" "search")}}>
+    {{t 'respond.incident.search.title'}}
+  </span>
 </hbox>
 {{#if (eq tasksJournalMode 'journal')}}
   {{rsa-incident/journal info=info}}
+{{else if (eq tasksJournalMode 'search')}}
+  {{rsa-incident/alerts-search}}
 {{else}}
   {{#liquid-bind isAddingNewTask use=(if isAddingNewTask "toLeft" "toRight") as |currentIsAddingNewTask|}}
     {{#if currentIsAddingNewTask}}

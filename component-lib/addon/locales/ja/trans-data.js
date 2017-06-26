@@ -661,6 +661,50 @@ export default {
       view: {
         graph: 'ja_View: Graph',
         datasheet: 'ja_View: Datasheet'
+      },
+      search: {
+        title: 'ja_Search',
+        partOfThisIncident: 'ja_Part Of This Incident',
+        searching: 'ja_Searching',
+        types: {
+          IP: 'ja_IP',
+          MAC_ADDRESS: 'ja_MAC',
+          HOST: 'ja_Host',
+          DOMAIN: 'ja_Domain',
+          FILE_NAME: 'ja_Filename',
+          FILE_HASH: 'ja_Hash',
+          USER: 'ja_User',
+          label: 'ja_Search for'
+        },
+        text: {
+          label: 'ja_Value',
+          placeholders: {
+            IP: 'ja_Enter an IP address',
+            MAC_ADDRESS: 'ja_Enter a MAC address',
+            HOST: 'ja_Enter a host name',
+            DOMAIN: 'ja_Enter a domain name',
+            FILE_NAME: 'ja_Enter a file name',
+            FILE_HASH: 'ja_Enter a file hash',
+            USER: 'ja_Enter a user name'
+          }
+        },
+        timeframe: {
+          label: 'ja_When'
+        },
+        devices: {
+          source: 'ja_Source',
+          destination: 'ja_Destination',
+          detector: 'ja_Detector',
+          label: 'ja_In'
+        },
+        results: {
+          title: 'ja_Results for'
+        },
+        actions: {
+          search: 'ja_Search',
+          cancel: 'ja_Cancel',
+          addToIncident: 'ja_Add To Incident'
+        }
       }
     },
     storyline: {

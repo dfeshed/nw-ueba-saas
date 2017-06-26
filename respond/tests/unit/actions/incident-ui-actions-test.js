@@ -10,7 +10,9 @@ const initialState = {
   selection: {
     type: '',
     ids: []
-  }
+  },
+  defaultSearchTimeFrameName: null,
+  defaultSearchEntityType: null
 };
 
 module('Unit | Utility | Incident UI Actions - Reducers');
@@ -109,4 +111,36 @@ test('The TOGGLE_INCIDENT_SELECTION action property modifies the app state', fun
     payload: { type, id: id2 }
   });
   assert.deepEqual(endState2, expectedEndState2);
+});
+
+test('The SET_DEFAULT_SEARCH_TIME_FRAME_NAME action properly modifies the app state', function(assert) {
+  const initState = copy(initialState);
+  const defaultSearchTimeFrameName = 'LAST_24_HOURS';
+  const expectedEndState = {
+    ...initState,
+    defaultSearchTimeFrameName
+  };
+
+  const endState = incidentReducer(initState, {
+    type: ACTION_TYPES.SET_DEFAULT_SEARCH_TIME_FRAME_NAME,
+    payload: defaultSearchTimeFrameName
+  });
+
+  assert.deepEqual(endState, expectedEndState);
+});
+
+test('The SET_DEFAULT_SEARCH_ENTITY_TYPE action properly modifies the app state', function(assert) {
+  const initState = copy(initialState);
+  const defaultSearchEntityType = 'MAC_ADDRESS';
+  const expectedEndState = {
+    ...initState,
+    defaultSearchEntityType
+  };
+
+  const endState = incidentReducer(initState, {
+    type: ACTION_TYPES.SET_DEFAULT_SEARCH_ENTITY_TYPE,
+    payload: defaultSearchEntityType
+  });
+
+  assert.deepEqual(endState, expectedEndState);
 });
