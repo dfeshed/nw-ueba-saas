@@ -57,13 +57,13 @@ class Deploy_Manager:
                     """
                     if step.get('time_to_execute') == time_to_execute:
                         if step.get('filePath') == 'mongo':
-                        self.exec_mongo_file(mig_steps_folder + step.get('filePath'))
+                            self.exec_mongo_file(mig_steps_folder + step.get('filePath'))
 
                         else:
-                        self.exec_file(mig_steps_folder + step.get('filePath'))
-                        #mig_step_folder_path = os.path.join(mig_steps_folder, step.get('filePath'))
-                        #mig_step_folder_path = Path(mig_steps_folder)
-                        self.current_version = version
+                            self.exec_file(mig_steps_folder + step.get('filePath'))
+                            #mig_step_folder_path = os.path.join(mig_steps_folder, step.get('filePath'))
+                            #mig_step_folder_path = Path(mig_steps_folder)
+                            self.current_version = version
 
     def exec_file(self, file_to_exec):
         os.system('chmod +x ' + file_to_exec)
