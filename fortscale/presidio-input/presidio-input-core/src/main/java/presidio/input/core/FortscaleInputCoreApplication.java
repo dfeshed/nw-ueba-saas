@@ -11,6 +11,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import presidio.input.core.spring.InputCoreConfiguration;
+import presidio.input.core.spring.InputProductionConfiguration;
 
 
 @SpringBootApplication
@@ -26,7 +27,7 @@ public class FortscaleInputCoreApplication extends PresidioShellableApplication 
     public static void main(String[] args) {
         logger.info("Start Input Core Main");
 
-        ConfigurableApplicationContext ctx = SpringApplication.run(new Object[]{FortscaleInputCoreApplication.class, InputCoreConfiguration.class, ShellCommonCommandsConfig.class}, args);
+        ConfigurableApplicationContext ctx = SpringApplication.run(new Object[]{FortscaleInputCoreApplication.class, InputProductionConfiguration.class, ShellCommonCommandsConfig.class}, args);
         run(args, ctx);
     }
 

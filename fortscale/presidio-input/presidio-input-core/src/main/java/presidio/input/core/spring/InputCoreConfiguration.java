@@ -15,7 +15,7 @@ import presidio.input.sdk.impl.spring.PresidioInputPersistencyServiceConfig;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
 
 @Configuration
-@Import({MongoConfig.class, PresidioInputPersistencyServiceConfig.class, AdeDataServiceConfig.class})
+@Import({ PresidioInputPersistencyServiceConfig.class, AdeDataServiceConfig.class})
 public class InputCoreConfiguration {
 
     @Autowired
