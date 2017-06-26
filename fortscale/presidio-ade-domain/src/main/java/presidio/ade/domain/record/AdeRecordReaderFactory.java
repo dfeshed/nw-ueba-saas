@@ -2,6 +2,9 @@ package presidio.ade.domain.record;
 
 import fortscale.utils.recordreader.RecordReader;
 import fortscale.utils.recordreader.RecordReaderFactory;
+import fortscale.utils.recordreader.transformation.Transformation;
+
+import java.util.Map;
 
 /**
  * A factory that creates {@link AdeRecordReader}s.
@@ -18,10 +21,10 @@ public class AdeRecordReaderFactory implements RecordReaderFactory {
 	}
 
 	/**
-	 * @see RecordReaderFactory#getRecordReader(Object)
+	 * @see RecordReaderFactory#getRecordReader(Object, Map)
 	 */
 	@Override
-	public RecordReader getRecordReader(Object record) {
-		return new AdeRecordReader((AdeRecord)record);
+	public RecordReader getRecordReader(Object record, Map<String, Transformation<?>> transformations) {
+		return new AdeRecordReader((AdeRecord)record, transformations);
 	}
 }

@@ -8,12 +8,9 @@ import org.springframework.util.ReflectionUtils;
 
 import javax.validation.constraints.NotNull;
 import java.lang.reflect.Field;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * A record reader that extracts the value of a certain field from its record using reflection.
@@ -26,24 +23,23 @@ public class ReflectionRecordReader implements RecordReader {
 	private static final String DEFAULT_FIELD_PATH_DELIMITER = "\\.";
 
 	private Object record;
-	private Map<String, Transformation<?>> featureNameToTransformationMap;
+	private Map<String, Transformation<?>> transformations;
 	private String fieldPathDelimiter;
 
 	/**
 	 * C'tor.
 	 *
 	 * @param record             the record from which values are extracted
-	 * @param transformations    the transformations that are used when fields are missing
-	 * @param fieldPathDelimiter this record reader's field path delimiter (evaluated as a regular expression)
+	 * @param transformations    a map containing the transformations that are used when fields are missing
+	 * @param fieldPathDelimiter this reader's field path delimiter (evaluated as a regular expression)
 	 */
 	public ReflectionRecordReader(
 			@NotNull Object record,
-			@NotNull Collection<Transformation<?>> transformations,
+			@NotNull Map<String, Transformation<?>> transformations,
 			@NotNull String fieldPathDelimiter) {
 
 		this.record = record;
-		this.featureNameToTransformationMap = transformations.stream()
-				.collect(Collectors.toMap(Transformation::getFeatureName, Function.identity()));
+		this.transformations = transformations;
 		this.fieldPathDelimiter = fieldPathDelimiter;
 	}
 
@@ -55,7 +51,7 @@ public class ReflectionRecordReader implements RecordReader {
 	 * @param record the record from which values are extracted
 	 */
 	public ReflectionRecordReader(@NotNull Object record) {
-		this(record, Collections.emptySet(), DEFAULT_FIELD_PATH_DELIMITER);
+		this(record, Collections.emptyMap(), DEFAULT_FIELD_PATH_DELIMITER);
 	}
 
 	/**
@@ -63,9 +59,9 @@ public class ReflectionRecordReader implements RecordReader {
 	 * The default field path delimiter is used.
 	 *
 	 * @param record          the record from which values are extracted
-	 * @param transformations the transformations that are used when fields are missing
+	 * @param transformations a map containing the transformations that are used when fields are missing
 	 */
-	public ReflectionRecordReader(@NotNull Object record, @NotNull Collection<Transformation<?>> transformations) {
+	public ReflectionRecordReader(@NotNull Object record, @NotNull Map<String, Transformation<?>> transformations) {
 		this(record, transformations, DEFAULT_FIELD_PATH_DELIMITER);
 	}
 
@@ -74,10 +70,10 @@ public class ReflectionRecordReader implements RecordReader {
 	 * There are no transformations configured.
 	 *
 	 * @param record             the record from which values are extracted
-	 * @param fieldPathDelimiter this record reader's field path delimiter (evaluated as a regular expression)
+	 * @param fieldPathDelimiter this reader's field path delimiter (evaluated as a regular expression)
 	 */
 	public ReflectionRecordReader(@NotNull Object record, @NotNull String fieldPathDelimiter) {
-		this(record, Collections.emptySet(), fieldPathDelimiter);
+		this(record, Collections.emptyMap(), fieldPathDelimiter);
 	}
 
 	/**
@@ -121,8 +117,8 @@ public class ReflectionRecordReader implements RecordReader {
 	private Object getFromTransformation(String featureName, Object object)
 			throws RequiredFieldNotFoundException, IllegalAccessException, NoSuchFeatureException {
 
-		if (featureNameToTransformationMap.containsKey(featureName)) {
-			Transformation<?> transformation = featureNameToTransformationMap.get(featureName);
+		if (transformations.containsKey(featureName)) {
+			Transformation<?> transformation = transformations.get(featureName);
 			Map<String, Object> requiredFieldNameToValueMap = new HashMap<>();
 
 			for (String requiredFieldName : transformation.getRequiredFieldNames()) {

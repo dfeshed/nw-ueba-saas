@@ -17,7 +17,7 @@ public class ScorerTestsContext {
 
 	@Bean
 	public RecordReaderFactoryService recordReaderFactoryService() {
-		return new RecordReaderFactoryService(recordReaderFactories, Collections.emptySet());
+		return new RecordReaderFactoryService(recordReaderFactories, Collections.emptyMap());
 	}
 
 	@Bean

@@ -69,7 +69,8 @@ public class ReflectionRecordReaderTest {
 	public void test_reader_with_epochtime_transformation() {
 		Record3 record = new Record3("myString", Instant.ofEpochSecond(1483276275)); // 2017-01-01T13:11:15.000Z
 		Transformation<Long> epochtimeTransformation = new EpochtimeTransformation("myEpochtime", "g", 120);
-		RecordReader recordReader = new ReflectionRecordReader(record, Collections.singleton(epochtimeTransformation));
+		RecordReader recordReader = new ReflectionRecordReader(record, Collections.singletonMap(
+				epochtimeTransformation.getFeatureName(), epochtimeTransformation));
 		Long myEpochtime = recordReader.get("myEpochtime", Long.class);
 		Assert.assertEquals(new Long(1483276200), myEpochtime); // 2017-01-01T13:10:00.000Z
 	}
