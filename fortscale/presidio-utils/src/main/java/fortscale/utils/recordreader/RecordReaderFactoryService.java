@@ -15,17 +15,17 @@ import java.util.*;
  */
 public class RecordReaderFactoryService {
 	private Map<String, RecordReaderFactory> recordClassNameToReaderFactoryMap;
-	private Collection<Transformation<?>> transformations;
+	private Map<String, Transformation<?>> transformations;
 
 	/**
 	 * C'tor.
 	 *
 	 * @param recordReaderFactories a collection of all known record reader factories
-	 * @param transformations       a collection of all known transformations
+	 * @param transformations       a map containing all known transformations
 	 */
 	public RecordReaderFactoryService(
 			@NotNull Collection<RecordReaderFactory> recordReaderFactories,
-			@NotNull Collection<Transformation<?>> transformations) {
+			@NotNull Map<String, Transformation<?>> transformations) {
 
 		this.recordClassNameToReaderFactoryMap = new HashMap<>(recordReaderFactories.size());
 		this.transformations = transformations;
@@ -52,7 +52,7 @@ public class RecordReaderFactoryService {
 			String nextClassName = nextClass.getName();
 
 			if (recordClassNameToReaderFactoryMap.containsKey(nextClassName)) {
-				return recordClassNameToReaderFactoryMap.get(nextClassName).getRecordReader(record);
+				return recordClassNameToReaderFactoryMap.get(nextClassName).getRecordReader(record, transformations);
 			} else {
 				// Add the superclass first
 				Class<?> superClass = nextClass.getSuperclass();

@@ -2,6 +2,9 @@ package fortscale.ml.scorer.record;
 
 import fortscale.utils.recordreader.RecordReader;
 import fortscale.utils.recordreader.RecordReaderFactory;
+import fortscale.utils.recordreader.transformation.Transformation;
+
+import java.util.Map;
 
 /**
  * A factory that creates {@link JsonAdeRecordReader}s.
@@ -18,10 +21,10 @@ public class JsonAdeRecordReaderFactory implements RecordReaderFactory {
 	}
 
 	/**
-	 * @see RecordReaderFactory#getRecordReader(Object)
+	 * @see RecordReaderFactory#getRecordReader(Object, Map)
 	 */
 	@Override
-	public RecordReader getRecordReader(Object record) {
+	public RecordReader getRecordReader(Object record, Map<String, Transformation<?>> transformations) {
 		return new JsonAdeRecordReader((JsonAdeRecord)record);
 	}
 }
