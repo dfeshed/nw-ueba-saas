@@ -76,7 +76,7 @@
                 <preinstallScriptlet>
                     <script>
                         echo "pre installation"
-                        /usr/local/bin/python ${rpm-maven-plugin.script} --rpm_name ${rpm_name} --major ${rpm.version.major} --minor ${rpm.version.minor} --build ${rpm.version.build} --time pre
+
 
                         echo "********end of pre installation"
 
@@ -91,7 +91,7 @@
                         pwd
                         which python
                         echo "*********************************************"
-                        /usr/local/bin/python ${rpm-maven-plugin.script} --rpm_name ${rpm_name} --major ${rpm.version.major} --minor ${rpm.version.minor} --build ${rpm.version.build} --time post
+                        /usr/local/bin/python ${rpm-maven-plugin.script} --rpm_name ${rpm_name} --major ${rpm.version.major} --minor ${rpm.version.minor} --build ${rpm.version.build}
                         echo "*******end of post installation"
                     </script>
                 </postinstallScriptlet>
