@@ -12,6 +12,7 @@ import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.common.event.Event;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
+import presidio.ade.domain.record.AdeRecordReader;
 
 /**
  * Created by amira on 17/06/2015.
@@ -35,7 +36,7 @@ public class AggrFeatureFuncService implements IAggrFeatureFunctionsService, IAg
      * of the {@link AggregatedFeatureConf} in aggrFeatureConfs.
      */
     @Override
-    public Map<String, Feature> updateAggrFeatures(Event event, 
+    public Map<String, Feature> updateAggrFeatures(JSONObject jSONObject,
                                                    List<AggregatedFeatureConf> aggrFeatureConfs,
                                                    Map<String, Feature> aggrFeatures,
                                                    Map<String, Feature> features) {
@@ -47,7 +48,7 @@ public class AggrFeatureFuncService implements IAggrFeatureFunctionsService, IAg
             logger.warn("updateAggrFeatures(): No AggregatedFeatureConf was provided");
         } else {
             for (AggregatedFeatureConf aggregatedFeatureConf: aggrFeatureConfs) {
-                if (!aggregatedFeatureConf.passedFilter(event)) {
+                if (!aggregatedFeatureConf.passedFilter(jSONObject)) {
                     continue;
                 }
                 String aggrFeatureName = aggregatedFeatureConf.getName();

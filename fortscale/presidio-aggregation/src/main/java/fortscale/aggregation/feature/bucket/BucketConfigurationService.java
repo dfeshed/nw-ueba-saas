@@ -5,10 +5,13 @@ import fortscale.aggregation.configuration.AslConfigurationService;
 
 import fortscale.common.event.Event;
 import fortscale.utils.logging.Logger;
+import fortscale.utils.recordreader.RecordReader;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
+import presidio.ade.domain.record.AdeRecordReader;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Loads BucketConfs from JSON file.
@@ -77,6 +80,7 @@ public class BucketConfigurationService extends AslConfigurationService {
 		return bucketConfs.values();
 	}
 
+	//todo: Remove it and change the tests
 	public List<FeatureBucketConf> getRelatedBucketConfs(Event event) {
 		if (event == null) return null;
 		Object dataSourceObj = event.get(dataSourceFieldName);
@@ -85,6 +89,25 @@ public class BucketConfigurationService extends AslConfigurationService {
 		if (dataSource.isEmpty()) return null;
 		return dataSourceToListOfBucketConfs.get(dataSource);
 	}
+
+	/**
+	 * Get list of FeatureBucketConf by data source, strategyName and contextFieldNames
+	 * @param adeRecordReader
+	 * @param strategyName
+	 * @param contextFieldNames
+	 * @return list of featureBucketConfs
+	 */
+	public List<FeatureBucketConf> getRelatedBucketConfs(AdeRecordReader adeRecordReader, String strategyName, List<String> contextFieldNames) {
+		if (adeRecordReader == null) return null;
+		//todo: change after record reader will be ready
+		String dataSource = adeRecordReader.getDataSource();
+		if (dataSource.isEmpty()) return null;
+		List<FeatureBucketConf> featureBucketConfs = dataSourceToListOfBucketConfs.get(dataSource);
+		featureBucketConfs = featureBucketConfs.stream().filter(featureBucketConf -> featureBucketConf.getStrategyName().equals(strategyName) && featureBucketConf.getContextFieldNames().equals(contextFieldNames)).collect(Collectors.toList());
+
+		return featureBucketConfs;
+	}
+
 
 	public FeatureBucketConf getBucketConf(String bucketConfName) {
 		return bucketConfs.get(bucketConfName);

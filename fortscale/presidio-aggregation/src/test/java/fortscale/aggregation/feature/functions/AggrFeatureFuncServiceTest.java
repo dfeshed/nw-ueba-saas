@@ -233,7 +233,7 @@ public class AggrFeatureFuncServiceTest {
         //AggrFeatureFuncService funcService = new AggrFeatureFuncService();
         JSONObject jsonObject = new JSONObject();
         jsonObject.put(testFieldName, testFieldValue-1);
-        Map<String, Feature> updatedAggrFeatures = funcService.updateAggrFeatures(new EventMessage(jsonObject), aggrFeatureConfs, aggrFeatures, featureMap);
+        Map<String, Feature> updatedAggrFeatures = funcService.updateAggrFeatures(jsonObject, aggrFeatureConfs, aggrFeatures, featureMap);
 
         Assert.assertEquals(2, updatedAggrFeatures.size());
 
@@ -338,7 +338,7 @@ public class AggrFeatureFuncServiceTest {
         //AggrFeatureFuncService funcService = new AggrFeatureFuncService();
         JSONObject jsonObject = new JSONObject();
         jsonObject.put(testFieldName, testFieldValue-1);
-        Map<String, Feature> updatedAggrFeatures = funcService.updateAggrFeatures(new EventMessage(jsonObject), aggrFeatureConfs, aggrFeatures, featureMap);
+        Map<String, Feature> updatedAggrFeatures = funcService.updateAggrFeatures(jsonObject, aggrFeatureConfs, aggrFeatures, featureMap);
 
         Assert.assertEquals(2, updatedAggrFeatures.size());
 
