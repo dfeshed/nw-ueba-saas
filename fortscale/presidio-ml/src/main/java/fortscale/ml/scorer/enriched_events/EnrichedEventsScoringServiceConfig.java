@@ -16,6 +16,9 @@ import presidio.ade.domain.store.scored.ScoredEnrichedDataStore;
 import presidio.ade.domain.store.scored.ScoredEnrichedDataStoreMongoConfig;
 
 import java.util.Collection;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Configuration
 @Import({
@@ -29,6 +32,8 @@ public class EnrichedEventsScoringServiceConfig {
     @Autowired
     private Collection<Transformation<?>> transformations;
     @Autowired
+    private Map<String, Transformation<?>> featureNameToTransformationMap;
+    @Autowired
     private RecordReaderFactoryService recordReaderFactoryService;
     @Autowired
     private ScoringService scoringService;
@@ -38,8 +43,13 @@ public class EnrichedEventsScoringServiceConfig {
     private AdeEnrichedScoredRecordBuilder adeEnrichedScoredRecordBuilder;
 
     @Bean
+    public Map<String, Transformation<?>> featureNameToTransformationMap() {
+        return transformations.stream().collect(Collectors.toMap(Transformation::getFeatureName, Function.identity()));
+    }
+
+    @Bean
     public RecordReaderFactoryService recordReaderFactoryService() {
-        return new RecordReaderFactoryService(recordReaderFactories, transformations);
+        return new RecordReaderFactoryService(recordReaderFactories, featureNameToTransformationMap);
     }
 
     @Bean

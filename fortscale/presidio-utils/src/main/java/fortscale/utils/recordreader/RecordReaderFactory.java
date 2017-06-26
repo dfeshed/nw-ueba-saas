@@ -1,5 +1,9 @@
 package fortscale.utils.recordreader;
 
+import fortscale.utils.recordreader.transformation.Transformation;
+
+import java.util.Map;
+
 /**
  * Each {@link RecordReader} should have its own {@link RecordReaderFactory}. Given a record, the factory returns the
  * corresponding reader (that contains the record). Since the reader probably handles a specific type of records, it's
@@ -15,8 +19,9 @@ public interface RecordReaderFactory {
 	Class<?> getRecordClass();
 
 	/**
-	 * @param record the given record
+	 * @param record          the given record
+	 * @param transformations a map containing the transformations that are used when fields are missing
 	 * @return a reader containing the given record
 	 */
-	RecordReader getRecordReader(Object record);
+	RecordReader getRecordReader(Object record, Map<String, Transformation<?>> transformations);
 }
