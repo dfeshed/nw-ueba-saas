@@ -52,6 +52,20 @@ const getItems = () => {
 };
 
 /**
+ * Action creator for fetching the original (raw) alert details for the given alert/entity ID
+ * @public
+ * @param entityId
+ */
+const getOriginalAlert = (entityId) => ({
+  type: ACTION_TYPES.FETCH_ORIGINAL_ALERT,
+  promise: alerts.getOriginalAlert(entityId),
+  meta: {
+    onSuccess: (response) => (Logger.debug(ACTION_TYPES.FETCH_ORIGINAL_ALERT, response)),
+    onFailure: (response) => (errorHandlers.handleContentRetrievalError(response, 'original alert'))
+  }
+});
+
+/**
  * Action creator for deleting one or more alerts
  * @public
  * @param entityId
@@ -141,7 +155,10 @@ const toggleCustomDateRestriction = () => {
 
 const toggleFilterPanel = () => ({ type: ACTION_TYPES.TOGGLE_FILTER_PANEL_ALERTS });
 const toggleItemSelected = (item) => ({ type: ACTION_TYPES.TOGGLE_ALERT_SELECTED, payload: item });
-const toggleFocusItem = (item) => ({ type: ACTION_TYPES.TOGGLE_FOCUS_ALERT, payload: item });
+const toggleFocusItem = (item) => ((dispatch) => {
+  dispatch({ type: ACTION_TYPES.TOGGLE_FOCUS_ALERT, payload: item });
+  dispatch(getOriginalAlert(item.id));
+});
 const clearFocusItem = () => ({ type: ACTION_TYPES.CLEAR_FOCUS_ALERT });
 const toggleSelectAll = () => ({ type: ACTION_TYPES.TOGGLE_SELECT_ALL_ALERTS });
 
@@ -161,6 +178,7 @@ const initializeAlert = (alertId) => {
       next(() => {
         dispatch(getAlert(alertId));
         dispatch(getAlertEvents(alertId));
+        dispatch(getOriginalAlert(alertId));
       });
     }
   };
@@ -218,6 +236,7 @@ const resizeAlertInspector = (width) => ({ type: ACTION_TYPES.RESIZE_ALERT_INSPE
 
 export {
   getItems,
+  getOriginalAlert,
   deleteItem,
   resetFilters,
   updateFilter,

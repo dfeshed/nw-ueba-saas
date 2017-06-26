@@ -26,7 +26,13 @@ let initialState = {
   eventsStatus: null,
 
   // width of the alert inspector UI, in pixels
-  inspectorWidth: 400
+  inspectorWidth: 400,
+
+  // either 'wait', 'error', or 'complete'
+  originalAlertStatus: null,
+
+  // the original (raw) alert details
+  originalAlert: null
 };
 
 // Load local storage values and incorporate into initial state
@@ -100,7 +106,19 @@ const alertReducers = reduxActions.handleActions({
       failure: (s) => ({ ...s, eventsStatus: 'error' }),
       success: (s) => ({ ...s, events: fixNormalizedEvents(action.payload.data), eventsStatus: 'success' })
     });
-  }
+  },
+
+  [ACTION_TYPES.FETCH_ORIGINAL_ALERT]: (state, action) => (
+    handle(state, action, {
+      start: (s) => ({ ...s, originalAlertStatus: 'wait', originalAlert: null }),
+      success: (s) => ({
+        ...s,
+        originalAlert: action.payload.data,
+        originalAlertStatus: 'complete'
+      }),
+      failure: (s) => ({ ...s, originalAlertStatus: 'error' })
+    })
+  )
 }, initialState);
 
 export default alertReducers;

@@ -40,6 +40,18 @@
     <span>{{info.alert.host_summary}}</span>
   </div>
 </div>
-<div class="raw-event">
-  {{info.originalRawAlert}}
-</div>
+<span class="metadata-separator"></span>
+{{#if (eq originalAlertStatus 'wait')}}
+  {{rsa-loader size="large" label=(t 'respond.alerts.originalAlertLoading')}}
+{{else if (eq originalAlertStatus 'error')}}
+  <div class="error">
+    {{rsa-icon name="signal-warning" size="large"}}
+    <div>{{t 'respond.alerts.originalAlertError'}}</div>
+  </div>
+{{else}}
+  <div class="text original-alert-details">
+    <label>{{t 'respond.alerts.originalAlert'}}:</label>
+    <pre>{{formattedRawAlert}}</pre>
+  </div>
+{{/if}}
+

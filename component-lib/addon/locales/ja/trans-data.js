@@ -608,7 +608,10 @@ export default {
         hostSummary: 'ja_Host Summary',
         userSummary: 'ja_User Summary'
       },
-      notAssociatedWithIncident: 'ja_(None)'
+      notAssociatedWithIncident: 'ja_(None)',
+      originalAlert: 'ja_Raw Alert',
+      originalAlertLoading: 'ja_Loading raw alert',
+      originalAlertError: 'ja_There was a problem loading the raw alert'
     },
     alert: {
       status: {

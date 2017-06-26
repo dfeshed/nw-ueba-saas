@@ -9,7 +9,9 @@ const initialState = {
   info: null,
   infoStatus: null,
   events: null,
-  eventsStatus: null
+  eventsStatus: null,
+  originalAlertStatus: null,
+  originalAlert: null
 };
 
 module('Unit | Utility | Alert Profile Actions - Reducers');
@@ -110,6 +112,44 @@ test('When FETCH_ALERT_DETAILS_ERROR, the infoState is set to error', function(a
     stopInfoStream: null
   };
   const action = { type: ACTION_TYPES.FETCH_ALERT_DETAILS_ERROR };
+  const endState = alertReducer(initState, action);
+  assert.deepEqual(endState, expectedEndState);
+});
+
+test('When FETCH_ORIGINAL_ALERT starts, the originalAlertStatus changes to wait', function(assert) {
+  const initState = copy(initialState);
+  const originalAlertStatus = 'wait';
+  const expectedEndState = {
+    ...initState,
+    originalAlertStatus
+  };
+  const action = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.FETCH_ORIGINAL_ALERT });
+  const endState = alertReducer(initState, action);
+  assert.deepEqual(endState, expectedEndState);
+});
+
+test('When FETCH_ORIGINAL_ALERT fails, the originalAlertStatus changes to error', function(assert) {
+  const initState = copy(initialState);
+  const originalAlertStatus = 'error';
+  const expectedEndState = {
+    ...initState,
+    originalAlertStatus
+  };
+  const action = makePackAction(LIFECYCLE.FAILURE, { type: ACTION_TYPES.FETCH_ORIGINAL_ALERT });
+  const endState = alertReducer(initState, action);
+  assert.deepEqual(endState, expectedEndState);
+});
+
+test('When FETCH_ORIGINAL_ALERT succeeds, the originalAlert and originalAlertStatus update appropriately', function(assert) {
+  const initState = copy(initialState);
+  const originalAlert = { testing: 123 };
+  const originalAlertStatus = 'complete';
+  const expectedEndState = {
+    ...initState,
+    originalAlert,
+    originalAlertStatus
+  };
+  const action = makePackAction(LIFECYCLE.SUCCESS, { type: ACTION_TYPES.FETCH_ORIGINAL_ALERT, payload: { data: originalAlert } });
   const endState = alertReducer(initState, action);
   assert.deepEqual(endState, expectedEndState);
 });

@@ -49,7 +49,7 @@ $metadataLabelWidth: 8rem;
   &__body {
     overflow: auto;
     position: relative;
-    padding-left: rsa-whitespace();
+    padding: 0 rsa-whitespace();
     height: 100%;
     .rsa-data-table,
     .rsa-explorer-inspector-overview {
@@ -95,6 +95,12 @@ $metadataLabelWidth: 8rem;
           }
         }
       }
+    }
+
+    .metadata-separator {
+      width: 100%;
+      border-top: 1px solid rsa-color(gray, base, $rsa-somewhat-opaque);
+      margin: rsa-whitespace() 0;
     }
 
     .text {

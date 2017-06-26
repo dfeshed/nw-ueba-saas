@@ -75,13 +75,30 @@ export default {
    * @param incidentId The id of the incident to delete
    * @returns {Promise}
    */
-  delete(incidentId) {
+  delete(alertId) {
     const query = filterQuery.create()
-      .addFilter('_id', incidentId);
+      .addFilter('_id', alertId);
 
     return promiseRequest({
       method: 'deleteRecord',
       modelName: 'alerts',
+      query: query.toJSON()
+    });
+  },
+
+  /**
+   * Executes a websocket fetch call to retrieve the details of one alert and returns a Promise.
+   * @public
+   * @param alertId
+   * @returns {*}
+   */
+  getOriginalAlert(alertId) {
+    const query = filterQuery.create();
+    query.addFilter('_id', alertId);
+
+    return promiseRequest({
+      method: 'queryRecord',
+      modelName: 'original-alert',
       query: query.toJSON()
     });
   }
