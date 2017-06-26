@@ -3,13 +3,11 @@
     {
       "filePath": "mongo_set_config.sh",
       "executor": "defualt",
-      "time_to_execute": "pre",
       "description": "Setting mongo aythenication and users"
     },
     {
       "filePath": "config_server.sh",
       "executor": "defualt",
-      "time_to_execute": "post",
       "description": "Installing configuration server and service"
     }
   ]
