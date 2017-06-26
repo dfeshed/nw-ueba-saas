@@ -11,8 +11,10 @@ echo "Mongo: restarting service"
 systemctl start mongod
 wait ${!}
 systemctl status mongod
+sleep 30
 echo "Mongo: creating superadmin user"
 mongo localhost:27017/admin /home/presidio/presidio-core/installation/installation-scripts/infrastructure/deploy/manager/../../../version/1_0/utils/mongo_create_root.js
+sleep 30
 echo "Mongo: creating presidio user"
 mongo localhost:27017/presidio /home/presidio/presidio-core/installation/installation-scripts/infrastructure/deploy/manager/../../../version/1_0/utils/mongo_create_presidio_admin.js
 echo "Mongo: stopping service"
