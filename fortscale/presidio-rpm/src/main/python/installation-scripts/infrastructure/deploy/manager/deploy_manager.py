@@ -28,7 +28,7 @@ class Deploy_Manager:
         os.system('yum remove '+str(rpm_name)+'*')
 
 
-    def run(self, rpm_name):
+    def run(self, rpm_name, time_to_execute):
         #current_version = ReachVersion(full_version_path="", version_description=VersionReader().read_current(rpm_name=rpm_name))
         versions_list = self.get_versions_list()
 
@@ -55,14 +55,15 @@ class Deploy_Manager:
                     """
                     Execute the step 
                     """
-                    if step.get('filePath') == 'mongo':
+                    if step.get('time_to_execute') == time_to_execute:
+                        if step.get('filePath') == 'mongo':
                         self.exec_mongo_file(mig_steps_folder + step.get('filePath'))
 
-                    else:
+                        else:
                         self.exec_file(mig_steps_folder + step.get('filePath'))
-                    #mig_step_folder_path = os.path.join(mig_steps_folder, step.get('filePath'))
-                    #mig_step_folder_path = Path(mig_steps_folder)
-                    self.current_version = version
+                        #mig_step_folder_path = os.path.join(mig_steps_folder, step.get('filePath'))
+                        #mig_step_folder_path = Path(mig_steps_folder)
+                        self.current_version = version
 
     def exec_file(self, file_to_exec):
         os.system('chmod +x ' + file_to_exec)
@@ -120,6 +121,7 @@ def parse_args():
     global args
     parser = argparse.ArgumentParser(description='parses args from spec file')
     parser.add_argument('--rpm_name', help='the name of rpm going to be installed')
+    parser.add_argument('--time', help='pre or post jar deployment')
     parser.add_argument('--major', type=int, help='major version to install')
     parser.add_argument('--minor', type=int, help='minor version to install')
     parser.add_argument('--build', type=int, help='build number')
@@ -140,4 +142,4 @@ if __name__ == "__main__":
     if args.uninstall:
         mng.uninstall(args.rpm_name)
     else:
-        mng.run(args.rpm_name)
+        mng.run(args.rpm_name, args.time)

@@ -74,7 +74,13 @@
                     </mapping>
                 </mappings>
                 <preinstallScriptlet>
-                    <script>echo "pre installation TOMERRRRRRRRRRRRR"</script>
+                    <script>
+                        echo "pre installation"
+                        /usr/local/bin/python ${rpm-maven-plugin.script} --rpm_name ${rpm_name} --major ${rpm.version.major} --minor ${rpm.version.minor} --build ${rpm.version.build} --time pre
+
+                        echo "********end of pre installation"
+
+                    </script>
                 </preinstallScriptlet>
                 <postinstallScriptlet>
                     <!--<scriptFile>src/main/scripts/postinstall</scriptFile>-->
@@ -85,7 +91,8 @@
                         pwd
                         which python
                         echo "*********************************************"
-                        /usr/local/bin/python ${rpm-maven-plugin.script} --rpm_name ${rpm_name} --major ${rpm.version.major} --minor ${rpm.version.minor} --build ${rpm.version.build}
+                        /usr/local/bin/python ${rpm-maven-plugin.script} --rpm_name ${rpm_name} --major ${rpm.version.major} --minor ${rpm.version.minor} --build ${rpm.version.build} --time post
+                        echo "*******end of post installation"
                     </script>
                 </postinstallScriptlet>
             </configuration>
