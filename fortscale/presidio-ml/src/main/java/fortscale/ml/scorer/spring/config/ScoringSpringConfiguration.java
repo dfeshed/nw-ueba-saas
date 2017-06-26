@@ -5,14 +5,13 @@ import fortscale.ml.scorer.ScoringService;
 import fortscale.ml.scorer.config.ScorerConfService;
 import fortscale.utils.factory.FactoryService;
 import fortscale.utils.monitoring.stats.StatsService;
-import fortscale.utils.recordreader.RecordReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import presidio.ade.domain.record.AdeRecord;
-import presidio.ade.domain.record.AdeRecordReaderFactoryService;
 
 @Configuration
+@ComponentScan("fortscale.ml.scorer.factory")
 public class ScoringSpringConfiguration {
 	@Autowired
 	private ScorerConfService scorerConfService;
@@ -36,11 +35,6 @@ public class ScoringSpringConfiguration {
 	public StatsService statsService() {
 		// TODO: Return a real StatsService
 		return null;
-	}
-
-	@Bean
-	public FactoryService<RecordReader<AdeRecord>> recordReaderFactoryService() {
-		return new AdeRecordReaderFactoryService();
 	}
 
 	@Bean

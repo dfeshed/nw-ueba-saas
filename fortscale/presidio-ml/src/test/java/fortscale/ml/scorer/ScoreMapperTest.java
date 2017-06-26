@@ -7,7 +7,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.Mockito;
-import presidio.ade.domain.record.AdeRecord;
+import presidio.ade.domain.record.AdeRecordReader;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,13 +17,13 @@ import java.util.Map;
 public class ScoreMapperTest {
     private Scorer baseScorer;
     private ScoreMapping.ScoreMappingConf scoreMappingConf;
-    private AdeRecord eventMessage;
+    private AdeRecordReader adeRecordReader;
 
     @Before
     public void setup() {
         baseScorer = Mockito.mock(Scorer.class);
         scoreMappingConf = new ScoreMapping.ScoreMappingConf();
-        eventMessage = Mockito.mock(AdeRecord.class);
+        adeRecordReader = Mockito.mock(AdeRecordReader.class);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -45,11 +45,11 @@ public class ScoreMapperTest {
     public void shouldWrapBaseScoreWithTheSameScoreWhenMappingIsEmpty() throws Exception {
         double score = 56;
         FeatureScore baseScore = new FeatureScore("base score", score);
-        Mockito.when(baseScorer.calculateScore(eventMessage)).thenReturn(baseScore);
+        Mockito.when(baseScorer.calculateScore(adeRecordReader)).thenReturn(baseScore);
         String featureScoreName = "mapped score";
         ScoreMapper scorer = new ScoreMapper(featureScoreName, baseScorer, scoreMappingConf);
 
-        FeatureScore featureScore = scorer.calculateScore(eventMessage);
+        FeatureScore featureScore = scorer.calculateScore(adeRecordReader);
         Assert.assertEquals(featureScoreName, featureScore.getName());
         Assert.assertEquals(score, featureScore.getScore(), 0.0001);
         Assert.assertEquals(1, featureScore.getFeatureScores().size());
@@ -72,12 +72,11 @@ public class ScoreMapperTest {
 
         public FeatureScore getFeatureScore(double score) throws Exception {
             FeatureScore baseScore = new FeatureScore("base score", score);
-            Mockito.when(baseScorer.calculateScore(eventMessage)).thenReturn(baseScore);
+            Mockito.when(baseScorer.calculateScore(adeRecordReader)).thenReturn(baseScore);
             String featureScoreName = "mapped score";
             scoreMappingConf.setMapping(mapping);
             ScoreMapper scorer = new ScoreMapper(featureScoreName, baseScorer, scoreMappingConf);
-
-            return scorer.calculateScore(eventMessage);
+            return scorer.calculateScore(adeRecordReader);
         }
     }
 

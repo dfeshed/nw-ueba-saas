@@ -2,10 +2,10 @@ package fortscale.ml.scorer;
 
 import fortscale.domain.feature.score.FeatureScore;
 import fortscale.ml.scorer.record.JsonAdeRecord;
+import fortscale.ml.scorer.record.JsonAdeRecordReader;
 import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
-import presidio.ade.domain.record.AdeRecord;
 
 import java.time.Instant;
 
@@ -37,11 +37,11 @@ public class LinearScoreReducerTest {
 
 	private static Scorer getReducedScorerMock(double reducedScore) throws Exception {
 		Scorer reducedScorer = mock(Scorer.class);
-		when(reducedScorer.calculateScore(any(JsonAdeRecord.class))).thenReturn(new FeatureScore("myReducedScorer", reducedScore));
+		when(reducedScorer.calculateScore(any(JsonAdeRecordReader.class))).thenReturn(new FeatureScore("myReducedScorer", reducedScore));
 		return reducedScorer;
 	}
 
-	private static AdeRecord getDummyEvent() {
-		return new JsonAdeRecord(Instant.now(), new JSONObject());
+	private static JsonAdeRecordReader getDummyEvent() {
+		return new JsonAdeRecordReader(new JsonAdeRecord(Instant.now(), new JSONObject()));
 	}
 }

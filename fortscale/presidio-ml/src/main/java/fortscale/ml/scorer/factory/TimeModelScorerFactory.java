@@ -44,7 +44,7 @@ public class TimeModelScorerFactory extends AbstractModelScorerFactory {
 				conf.getName(), modelName, additionalModelNames, dataRetriever.getContextFieldNames(),
 				additionalContextFieldNames, featureName, conf.getMinNumOfSamplesToInfluence(),
 				conf.getEnoughNumOfSamplesToInfluence(), conf.isUseCertaintyToCalculateScore(),
-				conf.getMaxRareTimestampCount(), conf.getMaxNumOfRareTimestamps(), recordReaderFactoryService, eventModelsCacheService);
+				conf.getMaxRareTimestampCount(), conf.getMaxNumOfRareTimestamps(), eventModelsCacheService);
 	}
 
 	private AbstractDataRetriever getDataRetriever(String modelName) {

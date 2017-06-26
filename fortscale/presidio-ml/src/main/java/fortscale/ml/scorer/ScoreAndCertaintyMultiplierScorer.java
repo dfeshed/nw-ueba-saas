@@ -2,7 +2,7 @@ package fortscale.ml.scorer;
 
 import fortscale.domain.feature.score.FeatureScore;
 import org.springframework.util.Assert;
-import presidio.ade.domain.record.AdeRecord;
+import presidio.ade.domain.record.AdeRecordReader;
 
 import java.util.Collections;
 
@@ -16,8 +16,8 @@ public class ScoreAndCertaintyMultiplierScorer extends AbstractScorer {
 	}
 
 	@Override
-	public FeatureScore calculateScore(AdeRecord record) {
-		FeatureScore featureScore = baseScorer.calculateScore(record);
+	public FeatureScore calculateScore(AdeRecordReader adeRecordReader) {
+		FeatureScore featureScore = baseScorer.calculateScore(adeRecordReader);
 		return new FeatureScore(getName(),
 				featureScore.getScore() * featureScore.getCertainty(),
 				Collections.singletonList(featureScore));

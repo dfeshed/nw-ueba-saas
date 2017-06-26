@@ -7,10 +7,7 @@ import fortscale.ml.model.Model;
 import fortscale.ml.model.cache.EventModelsCacheService;
 import fortscale.ml.scorer.algorithms.ContinuousValuesModelScorerAlgorithm;
 import fortscale.ml.scorer.config.QuadPolyCalibrationConf;
-import fortscale.utils.factory.FactoryService;
-import fortscale.utils.recordreader.RecordReader;
 import org.springframework.util.Assert;
-import presidio.ade.domain.record.AdeRecord;
 
 import java.util.List;
 
@@ -29,12 +26,12 @@ public class ContinuousValuesModelScorer extends AbstractModelScorer {
 			int minNumOfSamplesToInfluence, int enoughNumOfSamplesToInfluence,
 			boolean isUseCertaintyToCalculateScore,
 			QuadPolyCalibrationConf quadPolyCalibrationConf,
-			FactoryService<RecordReader<AdeRecord>> recordReaderFactoryService,
 			EventModelsCacheService eventModelsCacheService) {
 
-		super(scorerName, modelName, additionalModelNames, contextFieldNames, additionalContextFieldNames, featureName,
+		super(scorerName, modelName, additionalModelNames,
+				contextFieldNames, additionalContextFieldNames, featureName,
 				minNumOfSamplesToInfluence, enoughNumOfSamplesToInfluence,
-				isUseCertaintyToCalculateScore, recordReaderFactoryService, eventModelsCacheService);
+				isUseCertaintyToCalculateScore, eventModelsCacheService);
 
 		Assert.notNull(quadPolyCalibrationConf, "Quad poly calibration conf cannot be null.");
 		quadPolyCalibration = new QuadPolyCalibration(quadPolyCalibrationConf);

@@ -26,13 +26,14 @@ public class ConstantRegexScorerParams implements ScorerParams {
         return regexPatternString;
     }
 
-    public Pattern getRegexPattern() { return regexPatternString==null?null:Pattern.compile(regexPatternString);}
+    public Pattern getRegexPattern() {
+        return regexPatternString == null ? null : Pattern.compile(regexPatternString);
+    }
 
     public ConstantRegexScorerParams setRegexPatternString(String regexPatternString) {
         this.regexPatternString = regexPatternString;
         return this;
     }
-
 
     public String getRegexFieldName() {
         return regexFieldName;
@@ -54,7 +55,7 @@ public class ConstantRegexScorerParams implements ScorerParams {
 
     @Override
     public Scorer getScorer() {
-        return new ConstantRegexScorer(name, regexFieldName, Pattern.compile(regexPatternString), constantScore, null);
+        return new ConstantRegexScorer(name, regexFieldName, Pattern.compile(regexPatternString), constantScore);
     }
 
     public String getScorerConfJsonString() {

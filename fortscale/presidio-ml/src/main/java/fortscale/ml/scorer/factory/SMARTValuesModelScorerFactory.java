@@ -25,7 +25,7 @@ public class SMARTValuesModelScorerFactory extends AbstractModelScorerFactory {
 
     @Override
     public Scorer getProduct(FactoryConfig factoryConfig) {
-        //TODO: all this code (which is duplicated in CategoryRarityModelScorerFactory and ContinuousValuesModelScorerFactory should be refactored
+        // TODO: All this code (which is duplicated in CategoryRarityModelScorerFactory and ContinuousValuesModelScorerFactory) should be refactored.
         SMARTValuesModelScorerConf scorerConf = (SMARTValuesModelScorerConf) factoryConfig;
         super.validateModelScorerConf(scorerConf);
         String modelName = scorerConf.getModelInfo().getModelName();
@@ -56,7 +56,7 @@ public class SMARTValuesModelScorerFactory extends AbstractModelScorerFactory {
                 scorerConf.getEnoughNumOfSamplesToInfluence(),
                 scorerConf.isUseCertaintyToCalculateScore(),
                 scorerConf.getGlobalInfluence(),
-                recordReaderFactoryService, eventModelsCacheService);
+                eventModelsCacheService);
     }
 
     private AbstractDataRetriever getDataRetriever(String modelName) {
