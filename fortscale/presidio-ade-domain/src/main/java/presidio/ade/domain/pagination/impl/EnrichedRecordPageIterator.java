@@ -62,30 +62,10 @@ public class EnrichedRecordPageIterator<U extends EnrichedRecord> implements Pag
     @Override
     public List<U> next() {
         EnrichedRecordsMetadata enrichedRecordsMetadata = new EnrichedRecordsMetadata(this.dataSource, this.timeRange.getStart(), this.timeRange.getEnd());
-        int numOfItemsToRead = getNumOfItemsToRead();
         int numOfItemsToSkip = this.currentPage * this.pageSize;
         this.currentPage++;
-        return this.store.readRecords(enrichedRecordsMetadata, this.contextIds, contextType, numOfItemsToSkip, numOfItemsToRead);
+        return this.store.readRecords(enrichedRecordsMetadata, this.contextIds, contextType, numOfItemsToSkip, this.pageSize);
 
     }
-
-    /**
-     * Calculate num of items to read
-     *
-     * @return num of items to read
-     * <p>
-     * Example: if num of items in the page are less than the page size, it should return numOfItems, otherwise pageSize
-     * pageSize = 30
-     * numOfItems = 15
-     * it should return 15
-     */
-    private int getNumOfItemsToRead() {
-        int numOfItemsToRead = this.pageSize;
-        if (this.currentPage == this.totalAmountOfPages - 1) {
-            numOfItemsToRead = this.totalNumOfItems - this.pageSize * (this.totalAmountOfPages - 1);
-        }
-        return numOfItemsToRead;
-    }
-
 
 }

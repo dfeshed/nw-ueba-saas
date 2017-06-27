@@ -11,7 +11,7 @@ import java.util.Collection;
  * Created by barak_schuster on 5/18/17.
  */
 public class EnrichedDataToCollectionNameTranslator implements ToCollectionNameTranslator<EnrichedRecordsMetadata> {
-    public static final String ENRICHED_COLLECTION_PREFIX = "enriched";
+    private static final String ENRICHED_COLLECTION_PREFIX = "enriched_";
 
     @Override
     public String toCollectionName(EnrichedRecordsMetadata arg) {
@@ -20,7 +20,7 @@ public class EnrichedDataToCollectionNameTranslator implements ToCollectionNameT
 
 
     public String toCollectionName(String dataSource) {
-        return String.format(ENRICHED_COLLECTION_PREFIX + "_%s", dataSource);
+        return String.format(ENRICHED_COLLECTION_PREFIX + "%s", dataSource);
     }
 
 

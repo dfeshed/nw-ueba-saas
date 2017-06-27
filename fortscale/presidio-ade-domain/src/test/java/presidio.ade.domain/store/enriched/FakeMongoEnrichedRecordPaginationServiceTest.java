@@ -39,7 +39,7 @@ public class FakeMongoEnrichedRecordPaginationServiceTest {
     private DataSourceToAdeEnrichedRecordClassResolver dataSourceToAdeEnrichedRecordClassResolver;
 
 
-    private static final int PAGE_SIZE = 3;
+    private static final int PAGE_SIZE = 4;
     private static final int MAX_GROUP_SIZE = 2;
     private static final Instant EVENT_DATE = Instant.ofEpochSecond(1451606400);
     private static final Instant START = Instant.ofEpochSecond(1388534400);
