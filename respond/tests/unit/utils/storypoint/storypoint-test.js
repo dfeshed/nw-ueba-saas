@@ -38,10 +38,9 @@ const subject = Storypoint.create({
   events
 });
 
-test('it uses its events as its items by default', function(assert) {
+test('it uses its enrichments as its items by default', function(assert) {
   assert.ok(subject);
-  assert.notOk(subject.get('showEnrichmentsAsItems'), 'Expected the default to not use enrichments');
-  assert.equal(subject.get('items'), subject.get('events'), 'Expected items and events to match');
+  assert.ok(subject.get('showEnrichmentsAsItems'), 'Expected the default to not use enrichments');
 });
 
 test('it computes an array of enrichments from it last events', function(assert) {
@@ -77,4 +76,9 @@ test('it computes an array of enrichments from it last events', function(assert)
 test('it uses its enrichments as its items when instructed to', function(assert) {
   subject.set('showEnrichmentsAsItems', true);
   assert.equal(subject.get('items'), subject.get('enrichments'), 'Expected items and enrichments to match');
+});
+
+test('it uses its events as its items when instructed to', function(assert) {
+  subject.set('showEnrichmentsAsItems', false);
+  assert.equal(subject.get('items'), subject.get('events'), 'Expected items and events to match');
 });

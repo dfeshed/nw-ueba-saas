@@ -38,17 +38,12 @@
       {{action (action "setViewModeAction" "storyline")}}>
       {{t 'respond.incident.indicators'}} {{#with storyPointCount as |count|}}({{count}}){{/with}}
     </span>
-    <span
-      class="rsa-tab text-only {{if (eq viewMode 'events') 'is-active' ''}}"
-      {{action (action "setViewModeAction" "events")}}>
-      {{t 'respond.incident.events'}} {{#with storyEventCount as |count|}}({{count}}){{/with}}
-    </span>
   </hbox>
   <box fill class="rsa-incident-inspector__body">
     {{#if (eq viewMode 'events')}}
       {{rsa-incident/events-table}}
     {{else if (eq viewMode 'storyline')}}
-      {{rsa-incident/storyline}}
+      {{rsa-incident/alerts-table}}
     {{else}}
       {{rsa-incident/overview
         info=info

@@ -46,11 +46,13 @@ export default EmberObject.extend({
 
   /**
    * Indicates whether the group's items should be read from the alert events (false) or event enrichments (true).
+   * We set this to true by default because for the initial rendering, seeing the enrichments is typically friendlier
+   * and less overwhelming than seeing the actual events.
    * @type {Boolean}
-   * @default false
+   * @default true
    * @public
    */
-  showEnrichmentsAsItems: false,
+  showEnrichmentsAsItems: true,
 
   /**
    * The contents of the property path currently specified by `itemsAttr`.
@@ -103,7 +105,11 @@ export default EmberObject.extend({
    */
   @computed('events.lastObject')
   enrichments(evt) {
-    const { id: eventId, enrichment: enrichmentHash = {} } = evt || {};
+    const { id: eventId, enrichment: enrichmentHash } = evt || {};
+    // Some normalization scripts may set enrichment hash to "", null or a POJO
+    if (isEmpty(enrichmentHash)) {
+      return [];
+    }
 
     // Build an array of enrichment keys & values that are intended for UI display.
     return EnrichmentsToDisplay
