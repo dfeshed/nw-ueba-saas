@@ -1,6 +1,7 @@
 package fortscale.ml.scorer.record;
 
 import org.json.JSONObject;
+import org.springframework.data.annotation.Transient;
 import presidio.ade.domain.record.AdeRecord;
 
 import java.time.Instant;
@@ -33,5 +34,10 @@ public class JsonAdeRecord extends AdeRecord {
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.put(key, value);
 		return new JsonAdeRecord(Instant.now(), jsonObject);
+	}
+
+	@Transient
+	public String getDataSource(){
+		return null;
 	}
 }

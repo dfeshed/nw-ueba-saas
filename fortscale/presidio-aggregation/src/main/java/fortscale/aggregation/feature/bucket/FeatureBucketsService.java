@@ -5,8 +5,10 @@ import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
 import fortscale.aggregation.feature.functions.IAggrFeatureFunctionsService;
 import fortscale.common.feature.Feature;
 import fortscale.utils.logging.Logger;
+import fortscale.utils.monitoring.stats.StatsService;
 import fortscale.utils.recordreader.RecordReaderFactoryService;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import presidio.ade.domain.record.AdeRecord;
 import presidio.ade.domain.record.AdeRecordReader;
 import net.minidev.json.JSONObject;
@@ -21,6 +23,17 @@ public class FeatureBucketsService {
     private IAggrFeatureFunctionsService aggrFeatureFunctionsService;
     private RecordReaderFactoryService recordReaderFactoryService;
     private FeatureBucketsStore featureBucketsStore;
+    private Map<String, FeatureBucketsServiceMetrics> dataSourceToMetrics = new HashMap<>();
+
+    @Autowired
+    private StatsService statsService;
+
+    private FeatureBucketsServiceMetrics getMetrics(String dataSource) {
+        if (!dataSourceToMetrics.containsKey(dataSource)) {
+            dataSourceToMetrics.put(dataSource, new FeatureBucketsServiceMetrics(statsService, dataSource));
+        }
+        return dataSourceToMetrics.get(dataSource);
+    }
 
 
     public FeatureBucketsService(FeatureBucketsStore featureBucketsStore, BucketConfigurationService bucketConfigurationService, IAggrFeatureFunctionsService aggrFeatureFunctionsService, RecordReaderFactoryService recordReaderFactoryService) {
@@ -40,26 +53,33 @@ public class FeatureBucketsService {
     public void updateFeatureBucketsWithAdeRecords(List<AdeRecord> adeRecords, List<String> contextFieldNames, FeatureBucketStrategyData strategyData) {
 
         for (AdeRecord adeRecord : adeRecords) {
+
+            FeatureBucketsServiceMetrics metrics = getMetrics(adeRecord.getDataSource());
+
             AdeRecordReader adeRecordReader = (AdeRecordReader) recordReaderFactoryService.getRecordReader(adeRecord);
             List<FeatureBucketConf> featureBucketConfs = bucketConfigurationService.getRelatedBucketConfs(adeRecordReader, strategyData.getStrategyName(), contextFieldNames);
 
             for (FeatureBucketConf featureBucketConf : featureBucketConfs) {
                 try {
                     String bucketId = getBucketId(adeRecordReader, featureBucketConf, strategyData.getStrategyId());
+                    if (bucketId == null) {
+                        metrics.nullBucketIds++;
+                        continue;
+                    }
+
                     FeatureBucket featureBucket = this.featureBucketsStore.getFeatureBucket(featureBucketConf, bucketId);
 
                     if (featureBucket == null) {
                         featureBucket = createNewFeatureBucket(adeRecordReader, featureBucketConf, strategyData, bucketId);
-                        if (featureBucket == null) {
-                            continue;
-                        }
                     }
 
+                    metrics.featureBucketUpdates++;
                     updateFeatureBucket(adeRecordReader, featureBucket, featureBucketConf);
                     storeFeatureBucket(featureBucketConf, featureBucket);
 
                 } catch (Exception e) {
                     logger.error("Got an exception while updating buckets with new event", e);
+                    metrics.exceptionsUpdatingWithNewEvents++;
                 }
             }
 
@@ -92,8 +112,8 @@ public class FeatureBucketsService {
 
         for (String contextFieldName : sorted) {
             builder.append(BUCKET_ID_BUILDER_SEPARATOR);
+            String contextValue = adeRecordReader.get(contextFieldName, String.class);
 
-            String contextValue = adeRecordReader.getStringValue(contextFieldName);
             // Return null as the bucket ID if one of the contexts is missing
             if (StringUtils.isBlank(contextValue)) {
                 logger.debug("The {} value is missing.", contextFieldName);
@@ -132,19 +152,26 @@ public class FeatureBucketsService {
         return new JSONObject(adeRecordMap);
     }
 
+    /**
+     * Store featureBucket
+     * @param featureBucketConf
+     * @param featureBucket
+     * @throws Exception
+     */
     private void storeFeatureBucket(FeatureBucketConf featureBucketConf, FeatureBucket featureBucket) throws Exception {
-        if (featureBucket.getContextId() == null) {
-            String contextId = FeatureBucketUtils.buildContextId(featureBucket.getContextFieldNameToValueMap());
-            featureBucket.setContextId(contextId);
-        }
         this.featureBucketsStore.storeFeatureBucket(featureBucketConf, featureBucket);
     }
 
+    /**
+     * Create feature bucket
+     * @param adeRecordReader
+     * @param featureBucketConf
+     * @param strategyData
+     * @param bucketId
+     * @return FeatureBucket
+     */
     private FeatureBucket createNewFeatureBucket(AdeRecordReader adeRecordReader, FeatureBucketConf featureBucketConf, FeatureBucketStrategyData strategyData, String bucketId) {
-
-        if (bucketId == null) {
-            return null;
-        }
+        FeatureBucketsServiceMetrics metrics = getMetrics(adeRecordReader.getDataSource());
 
         FeatureBucket ret = new FeatureBucket();
         ret.setFeatureBucketConfName(featureBucketConf.getName());
@@ -157,10 +184,14 @@ public class FeatureBucketsService {
         ret.setCreatedAt(new Date());
 
         for (String contextFieldName : featureBucketConf.getContextFieldNames()) {
-            //todo: change after reader will be ready
-            String contextValue = adeRecordReader.getStringValue(contextFieldName);
+            String contextValue = adeRecordReader.get(contextFieldName, String.class);
             ret.addToContextFieldNameToValueMap(contextFieldName, contextValue);
         }
+
+        String contextId = FeatureBucketUtils.buildContextId(ret.getContextFieldNameToValueMap());
+        ret.setContextId(contextId);
+
+        metrics.buckets++;
 
         return ret;
     }

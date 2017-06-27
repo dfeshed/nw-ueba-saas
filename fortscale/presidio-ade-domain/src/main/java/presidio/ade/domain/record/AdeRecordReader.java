@@ -97,10 +97,6 @@ public class AdeRecordReader extends ReflectionRecordReader {
 		return adeRecord.getDataSource();
 	}
 
-	public String getStringValue(String fieldPath){
-		return get(fieldPath, String.class);
-	}
-
 	/**
 	 * Create map of feature name and feature
 	 * @param featureNames set of feature names
@@ -110,24 +106,11 @@ public class AdeRecordReader extends ReflectionRecordReader {
 		Map<String, Feature> featureMap = new HashMap<>();
 
 		for (String featureName : featureNames) {
-			Double featureValue = get(featureName, Double.class);
-			Feature feature = toFeature(featureName, featureValue);
+			Object featureValue = get(featureName, Object.class);
+			Feature feature = Feature.toFeature(featureName, featureValue);
 			featureMap.put(featureName, feature);
 		}
 		return featureMap;
 	}
-
-	/**
-	 * Create feature of feature name and feature value.
-	 *
-	 * @param name  feature name
-	 * @param value feature value
-	 * @return Feature
-	 */
-	private static Feature toFeature(String name, Double value) {
-		FeatureValue featureValue = new FeatureNumericValue((value));
-		return new Feature(name, featureValue);
-	}
-
 
 }

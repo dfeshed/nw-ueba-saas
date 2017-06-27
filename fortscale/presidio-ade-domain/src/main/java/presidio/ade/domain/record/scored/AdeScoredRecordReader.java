@@ -1,16 +1,10 @@
 package presidio.ade.domain.record.scored;
 
 import fortscale.common.feature.Feature;
-import fortscale.common.feature.FeatureNumericValue;
-import fortscale.common.feature.FeatureStringValue;
-import fortscale.common.feature.FeatureValue;
-import fortscale.utils.recordreader.ReflectionRecordReader;
 import presidio.ade.domain.record.AdeRecord;
 import presidio.ade.domain.record.AdeRecordReader;
-import presidio.ade.domain.record.scored.enriched_scored.AdeScoredEnrichedRecord;
 
 import javax.validation.constraints.NotNull;
-import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -41,27 +35,14 @@ public class AdeScoredRecordReader extends AdeRecordReader {
     public Map<String, Feature> getAllFeatures(Set<String> featureNames) {
         Map<String, Feature> featureMap = new HashMap<>();
 
-        for (String featureName : featureNames) {
-            if (featureName.equals(adeScoredRecord.getFeatureName())) {
-                Double score = adeScoredRecord.getScore();
-                Feature feature = toFeature(featureName, score);
-                featureMap.put(featureName, feature);
-            }
+        String featureName = adeScoredRecord.getFeatureName();
+        if (featureNames.contains(featureName)) {
+            Double score = adeScoredRecord.getScore();
+            Feature feature = Feature.toFeature(featureName, score);
+            featureMap.put(featureName, feature);
         }
 
         return featureMap;
-    }
-
-    /**
-     * Create feature of feature name and score.
-     *
-     * @param name  feature name
-     * @param score score
-     * @return Feature
-     */
-    private static Feature toFeature(String name, Double score) {
-        FeatureValue featureValue = new FeatureNumericValue((score));
-        return new Feature(name, featureValue);
     }
 
     /**

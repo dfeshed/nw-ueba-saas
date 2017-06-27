@@ -80,16 +80,6 @@ public class BucketConfigurationService extends AslConfigurationService {
 		return bucketConfs.values();
 	}
 
-	//todo: Remove it and change the tests
-	public List<FeatureBucketConf> getRelatedBucketConfs(Event event) {
-		if (event == null) return null;
-		Object dataSourceObj = event.get(dataSourceFieldName);
-		if (dataSourceObj == null) return null;
-		String dataSource = dataSourceObj.toString();
-		if (dataSource.isEmpty()) return null;
-		return dataSourceToListOfBucketConfs.get(dataSource);
-	}
-
 	/**
 	 * Get list of FeatureBucketConf by data source, strategyName and contextFieldNames
 	 * @param adeRecordReader
@@ -99,7 +89,6 @@ public class BucketConfigurationService extends AslConfigurationService {
 	 */
 	public List<FeatureBucketConf> getRelatedBucketConfs(AdeRecordReader adeRecordReader, String strategyName, List<String> contextFieldNames) {
 		if (adeRecordReader == null) return null;
-		//todo: change after record reader will be ready
 		String dataSource = adeRecordReader.getDataSource();
 		if (dataSource.isEmpty()) return null;
 		List<FeatureBucketConf> featureBucketConfs = dataSourceToListOfBucketConfs.get(dataSource);
