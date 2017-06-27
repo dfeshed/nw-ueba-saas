@@ -45,7 +45,7 @@ class OutputDagBuilder(PresidioDagBuilder):
         # Iterate all configured data sources
         for data_source in self.data_sources:
             java_args = {
-                'data_source': data_source,
+                '--data_source': data_source,
             }
 
             # Create jar operator for each data source

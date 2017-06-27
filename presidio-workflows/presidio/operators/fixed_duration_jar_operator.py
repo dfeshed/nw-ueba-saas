@@ -24,11 +24,11 @@ class FixedDurationJarOperator(SpringBootJarOperator):
     """
 
     @apply_defaults
-    def __init__(self, fixed_duration_strategy, java_args={}, *args, **kwargs):
+    def __init__(self, fixed_duration_strategy, command, java_args={}, *args, **kwargs):
         self.interval = kwargs.get('dag').schedule_interval
         self.fixed_duration_strategy = fixed_duration_strategy
-        java_args.update({'fixed_duration_strategy': fixed_duration_strategy.total_seconds()})
-        super(FixedDurationJarOperator, self).__init__(java_args=java_args, *args, **kwargs)
+        java_args.update({'--fixed_duration_strategy': fixed_duration_strategy.total_seconds()})
+        super(FixedDurationJarOperator, self).__init__(command, java_args=java_args, *args, **kwargs)
 
     def execute(self, context):
         """

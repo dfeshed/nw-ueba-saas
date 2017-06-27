@@ -45,14 +45,14 @@ class CollectorDagBuilder(PresidioDagBuilder):
         # Iterate all configured data sources
         for data_source in self.data_sources:
             java_args = {
-                'data_source': data_source,
-                'command': collector_dag.default_args['command'],
+                '--data_source': data_source,
             }
 
             # Create jar operator for each data source
             FixedDurationJarOperator(
                 task_id='collector_{}'.format(data_source),
                 fixed_duration_strategy=timedelta(hours=1),
+                command=collector_dag.default_args['command'],
                 jvm_args=jvm_args,
                 java_args=java_args,
                 dag=collector_dag)

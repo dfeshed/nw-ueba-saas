@@ -38,7 +38,7 @@ class AggregationsOperator(FixedDurationJarOperator):
         )
 
         java_args = {
-            'data_source': self.data_source,
+            '--data_source': self.data_source,
         }
 
         jvm_args = {
