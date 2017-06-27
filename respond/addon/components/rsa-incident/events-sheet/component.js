@@ -1,14 +1,14 @@
 import EventsSheet from 'respond/components/rsa-events-sheet/component';
 import layout from './template';
 import connect from 'ember-redux/components/connect';
-import { storyDatasheet } from 'respond/selectors/storyline';
+import { storyDatasheet, storyEventCountExpected } from 'respond/selectors/storyline';
 import computed from 'ember-computed-decorators';
 
 const stateToComputed = (state) => ({
   items: storyDatasheet(state),
   storyline: state.respond.incident.storyline,
   selection: state.respond.incident.selection,
-  totalCount: state.respond.incident.info ? parseInt(state.respond.incident.info.alertCount, 10) : null,
+  totalCount: storyEventCountExpected(state),
   throttleInterval: (state.respond.incident.info && state.respond.incident.info.alertCount === 1) ? 0 : 1000
 });
 
