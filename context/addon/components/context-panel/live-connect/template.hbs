@@ -1,11 +1,11 @@
-{{context-panel/ds-header contextData=contextData dSDetails=liveConnectDsDetails}}
+<div class="rsa-context-panel__liveconnect__error">
+  {{context-panel/ds-header contextData=contextData dSDetails=liveConnectDsDetails}}
+</div>
 
 {{#if liveConnectError}}
   <div class="rsa-context-panel__liveconnect__field">{{t 'context.lc.errorMsg' error=liveConnectError}}</div>
 {{else if showContextPanel}}
-  {{#if (eq contextData.liveConnectData null)}}
-    <div class="rsa-context-panel__liveconnect__heading">{{t 'context.lc.noDataMsg'}}</div>
-  {{else if contextData.liveConnectData.allTags}}
+  {{#if contextData.liveConnectData.allTags}}
     <div>
       {{#if (is-equal model.meta 'IP')}}
         {{context-panel/live-connect/lc-community-activity

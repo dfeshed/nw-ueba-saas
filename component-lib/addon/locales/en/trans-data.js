@@ -1155,7 +1155,8 @@ export default {
       'transport.not.found': 'Context data is not available as the data source is not reachable.',
       'transport.create.failed': 'Context data is not available as the data source is not reachable.',
       'transport.refresh.failed': 'Context data is not available as the data source is not reachable.',
-      'transport.connect.failed': 'Context data is not available as the data source is not reachable.'
+      'transport.connect.failed': 'Context data is not available as the data source is not reachable.',
+      'live.connect.private.ip.unsupported': 'Only public IP addresses are supported by Live Connect.'
     },
     footer: {
       viewAll: 'VIEW All',

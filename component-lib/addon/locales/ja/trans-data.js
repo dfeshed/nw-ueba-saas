@@ -1155,7 +1155,8 @@ export default {
       'transport.not.found': 'ja_Context data is not available as the data source is not reachable.',
       'transport.create.failed': 'ja_Context data is not available as the data source is not reachable.',
       'transport.refresh.failed': 'ja_Context data is not available as the data source is not reachable.',
-      'transport.connect.failed': 'ja_Context data is not available as the data source is not reachable.'
+      'transport.connect.failed': 'ja_Context data is not available as the data source is not reachable.',
+      'live.connect.private.ip.unsupported': 'ja_Only public IP addresses are supported by Live Connect.'
     },
     footer: {
       viewAll: 'ja_VIEW All',
