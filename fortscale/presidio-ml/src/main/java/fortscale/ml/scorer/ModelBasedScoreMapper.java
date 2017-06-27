@@ -7,7 +7,7 @@ import fortscale.ml.scorer.config.IScorerConf;
 import fortscale.utils.factory.FactoryService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.util.Assert;
-import presidio.ade.domain.record.AdeRecord;
+import presidio.ade.domain.record.AdeRecordReader;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -30,7 +30,10 @@ public class ModelBasedScoreMapper extends AbstractScorer {
 								 String modelName,
 								 List<String> contextFieldNames,
 								 String featureName,
-								 IScorerConf baseScorerConf, FactoryService<Scorer> factoryService, EventModelsCacheService eventModelsCacheService) {
+								 IScorerConf baseScorerConf,
+								 FactoryService<Scorer> factoryService,
+								 EventModelsCacheService eventModelsCacheService) {
+
 		super(scorerName);
 		Assert.isTrue(StringUtils.isNotBlank(featureName), "feature name cannot be null empty or blank");
 		Assert.isTrue(StringUtils.isNotBlank(modelName), "model name must be provided and cannot be empty or blank.");
@@ -39,19 +42,20 @@ public class ModelBasedScoreMapper extends AbstractScorer {
 		this.modelName = modelName;
 		this.contextFieldNames = contextFieldNames;
 		this.factoryService = factoryService;
-		this.eventModelsCacheService= eventModelsCacheService;
+		this.eventModelsCacheService = eventModelsCacheService;
 		baseScorer = this.factoryService.getProduct(baseScorerConf);
 	}
 
 	@Override
-	public FeatureScore calculateScore(AdeRecord record) {
-		FeatureScore baseScore = baseScorer.calculateScore(record);
-		double mappedScore = mapScore(record, baseScore);
+	public FeatureScore calculateScore(AdeRecordReader adeRecordReader) {
+		FeatureScore baseScore = baseScorer.calculateScore(adeRecordReader);
+		double mappedScore = mapScore(adeRecordReader, baseScore);
 		return new FeatureScore(getName(), mappedScore, Collections.singletonList(baseScore));
 	}
 
-	private double mapScore(AdeRecord record, FeatureScore baseScore) {
-		ScoreMappingModel model = (ScoreMappingModel)eventModelsCacheService.getModel(record, modelName, contextFieldNames);
+	private double mapScore(AdeRecordReader adeRecordReader, FeatureScore baseScore) {
+		ScoreMappingModel model = (ScoreMappingModel)eventModelsCacheService.getModel(
+				adeRecordReader, modelName, contextFieldNames);
 		return ScoreMapping.mapScore(baseScore.getScore(), createScoreMappingConf(model));
 	}
 

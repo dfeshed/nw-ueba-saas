@@ -1,70 +1,57 @@
 package fortscale.ml.scorer.enriched_events;
 
 import fortscale.domain.feature.score.FeatureScore;
-
-import fortscale.utils.logging.Logger;
-
 import fortscale.ml.scorer.ScoringService;
-import presidio.ade.domain.record.enriched.DlpFileRecord;
-import presidio.ade.domain.record.enriched.EnrichedDlpFileRecord;
+import fortscale.utils.logging.Logger;
+import fortscale.utils.recordreader.RecordReaderFactoryService;
+import presidio.ade.domain.record.AdeRecordReader;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
-import presidio.ade.domain.record.scored.enriched_scored.AdeScoredDlpFileContext;
-import presidio.ade.domain.record.scored.enriched_scored.AdeScoredDlpFileRecord;
 import presidio.ade.domain.record.scored.enriched_scored.AdeScoredEnrichedRecord;
 import presidio.ade.domain.store.scored.ScoredEnrichedDataStore;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
  * TODO
  * Created by YaronDL on 6/14/2017.
  */
-public class EnrichedEventsScoringServiceImpl implements EnrichedEventsScoringService{
+public class EnrichedEventsScoringServiceImpl implements EnrichedEventsScoringService {
     private static final Logger logger = Logger.getLogger(EnrichedEventsScoringServiceImpl.class);
 
-    private ScoringService<EnrichedRecord> scorersService;
+    private RecordReaderFactoryService recordReaderFactoryService;
+    private ScoringService scoringService;
     private ScoredEnrichedDataStore scoredEnrichedDataStore;
+    private AdeEnrichedScoredRecordBuilder adeEnrichedScoredRecordBuilder;
 
-    public EnrichedEventsScoringServiceImpl(ScoringService<EnrichedRecord> scorersService, ScoredEnrichedDataStore scoredEnrichedDataStore) {
-        this.scorersService = scorersService;
+    public EnrichedEventsScoringServiceImpl(
+            RecordReaderFactoryService recordReaderFactoryService,
+            ScoringService scoringService,
+            ScoredEnrichedDataStore scoredEnrichedDataStore,
+            AdeEnrichedScoredRecordBuilder adeEnrichedScoredRecordBuilder) {
+
+        this.recordReaderFactoryService = recordReaderFactoryService;
+        this.scoringService = scoringService;
         this.scoredEnrichedDataStore = scoredEnrichedDataStore;
+        this.adeEnrichedScoredRecordBuilder = adeEnrichedScoredRecordBuilder;
     }
 
     public List<AdeScoredEnrichedRecord> scoreAndStoreEvents(List<EnrichedRecord> enrichedRecordList) {
+        if (enrichedRecordList.size() == 0) {
+            logger.warn("got an empty enriched record list");
+            return Collections.emptyList();
+        }
+
         List<AdeScoredEnrichedRecord> scoredRecords = new ArrayList<>();
+
         for (EnrichedRecord enrichedRecord : enrichedRecordList) {
-            List<FeatureScore> featureScoreList = scorersService.score(enrichedRecord);
-            fillAdeEnrichedScoredRecordList(scoredRecords, enrichedRecord, featureScoreList);
+            AdeRecordReader adeRecordReader = (AdeRecordReader)recordReaderFactoryService.getRecordReader(enrichedRecord);
+            List<FeatureScore> featureScoreList = scoringService.score(adeRecordReader);
+            adeEnrichedScoredRecordBuilder.fill(scoredRecords, enrichedRecord, featureScoreList);
         }
 
         scoredEnrichedDataStore.store(scoredRecords);
         return scoredRecords;
-    }
-
-    public void fillAdeEnrichedScoredRecordList(List<AdeScoredEnrichedRecord> scoredRecordList, EnrichedRecord enrichedRecord, List<FeatureScore> featureScoreList){
-        //expect to get as a root the feature score and inside it all the relevant features.
-        if(featureScoreList.size() == 0){
-            logger.warn("after calculating an enriched record we got an empty feature score list!!! the enrich record: {}", enrichedRecord);
-            return;
-        }
-
-        FeatureScore eventScore = featureScoreList.get(0);
-        for (FeatureScore featureScore : eventScore.getFeatureScores()) {
-            AdeScoredEnrichedRecord scoredRecord = buildAdeEnrichedScoredRecord(enrichedRecord, featureScore);
-            scoredRecordList.add(scoredRecord);
-        }
-    }
-
-    public AdeScoredEnrichedRecord buildAdeEnrichedScoredRecord(EnrichedRecord enrichedRecord, FeatureScore featureScore) {
-        //TODO: fix the implementation.
-        AdeScoredDlpFileRecord ret = null;
-        if(enrichedRecord.getDataSource().equals(DlpFileRecord.DLP_FILE_STR)){
-            AdeScoredDlpFileContext context = new AdeScoredDlpFileContext((EnrichedDlpFileRecord) enrichedRecord);
-            String featureName = featureScore.getName();
-            ret = new AdeScoredDlpFileRecord(enrichedRecord.getDate_time(), featureName, featureScore.getScore(), featureScore.getFeatureScores(), context);
-        }
-
-        return ret;
     }
 }

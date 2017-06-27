@@ -6,11 +6,8 @@ import fortscale.ml.model.CategoryRarityModel;
 import fortscale.ml.model.Model;
 import fortscale.ml.model.cache.EventModelsCacheService;
 import fortscale.ml.scorer.algorithms.CategoryRarityModelScorerAlgorithm;
-import fortscale.utils.factory.FactoryService;
-import fortscale.utils.recordreader.RecordReader;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
-import presidio.ade.domain.record.AdeRecord;
 
 import java.util.List;
 
@@ -26,29 +23,33 @@ public class CategoryRarityModelScorer extends AbstractModelScorer {
 
     private int minNumOfDistinctValuesToInfluence;
     private int enoughNumOfDistinctValuesToInfluence;
-
     private CategoryRarityModelScorerAlgorithm algorithm;
 
     public static void assertMinNumOfDistinctValuesToInfluenceValue(int minNumOfDistinctValuesToInfluence) {
-        Assert.isTrue(minNumOfDistinctValuesToInfluence >= 0, String.format("minNumOfDistinctValuesToInfluence must be >= 0: %d", minNumOfDistinctValuesToInfluence));
+        Assert.isTrue(minNumOfDistinctValuesToInfluence >= 0, String.format(
+                "minNumOfDistinctValuesToInfluence must be >= 0: %d", minNumOfDistinctValuesToInfluence));
     }
 
     public static void assertEnoughNumOfDistinctValuesToInfluenceValue(int enoughNumOfDistinctValuesToInfluence) {
-        Assert.isTrue(enoughNumOfDistinctValuesToInfluence >= 0, String.format("enoughNumOfDistinctValuesToInfluence must be >= 0: %d", enoughNumOfDistinctValuesToInfluence));
+        Assert.isTrue(enoughNumOfDistinctValuesToInfluence >= 0, String.format(
+                "enoughNumOfDistinctValuesToInfluence must be >= 0: %d", enoughNumOfDistinctValuesToInfluence));
     }
 
     public CategoryRarityModelScorer setMinNumOfDistinctValuesToInfluence(int minNumOfDistinctValuesToInfluence) {
         assertMinNumOfDistinctValuesToInfluenceValue(minNumOfDistinctValuesToInfluence);
         this.minNumOfDistinctValuesToInfluence = minNumOfDistinctValuesToInfluence;
-        if(minNumOfDistinctValuesToInfluence > enoughNumOfDistinctValuesToInfluence) {
+
+        if (minNumOfDistinctValuesToInfluence > enoughNumOfDistinctValuesToInfluence) {
             enoughNumOfDistinctValuesToInfluence = minNumOfDistinctValuesToInfluence;
         }
+
         return this;
     }
 
     public CategoryRarityModelScorer setEnoughNumOfDistinctValuesToInfluence(int enoughNumOfDistinctValuesToInfluence) {
         assertEnoughNumOfDistinctValuesToInfluenceValue(enoughNumOfDistinctValuesToInfluence);
-        this.enoughNumOfDistinctValuesToInfluence = Math.max(enoughNumOfDistinctValuesToInfluence, minNumOfDistinctValuesToInfluence);
+        this.enoughNumOfDistinctValuesToInfluence = Math.max(
+                enoughNumOfDistinctValuesToInfluence, minNumOfDistinctValuesToInfluence);
         return this;
     }
 
@@ -65,12 +66,11 @@ public class CategoryRarityModelScorer extends AbstractModelScorer {
                                      int enoughNumOfDistinctValuesToInfluence,
                                      int maxRareCount,
                                      int maxNumOfRareFeatures,
-                                     FactoryService<RecordReader<AdeRecord>> recordReaderFactoryService,
                                      EventModelsCacheService eventModelsCacheService) {
 
         super(scorerName, modelName, additionalModelNames, contextFieldNames, additionalContextFieldNames,
-                featureName, minNumOfSamplesToInfluence, enoughNumOfSamplesToInfluence, isUseCertaintyToCalculateScore,
-                recordReaderFactoryService, eventModelsCacheService);
+                featureName, minNumOfSamplesToInfluence, enoughNumOfSamplesToInfluence,
+                isUseCertaintyToCalculateScore, eventModelsCacheService);
         setMinNumOfDistinctValuesToInfluence(minNumOfDistinctValuesToInfluence);
         setEnoughNumOfDistinctValuesToInfluence(enoughNumOfDistinctValuesToInfluence);
         algorithm = new CategoryRarityModelScorerAlgorithm(maxRareCount, maxNumOfRareFeatures);
@@ -79,41 +79,44 @@ public class CategoryRarityModelScorer extends AbstractModelScorer {
     @Override
     protected double calculateCertainty(Model model) {
         double certainty = super.calculateCertainty(model);
-        if(enoughNumOfDistinctValuesToInfluence < 2){
+
+        if (enoughNumOfDistinctValuesToInfluence < 2) {
             return certainty;
         }
 
-        if(!(model instanceof CategoryRarityModel)){
+        if (!(model instanceof CategoryRarityModel)) {
             return certainty;
         }
 
-
-        CategoryRarityModel categoryRarityModel = (CategoryRarityModel) model;
+        CategoryRarityModel categoryRarityModel = (CategoryRarityModel)model;
         long numOfDistinctFeatures = categoryRarityModel.getNumOfDistinctFeatures();
         double distinctCertainty = 0;
-        if(numOfDistinctFeatures >= enoughNumOfDistinctValuesToInfluence){
+
+        if (numOfDistinctFeatures >= enoughNumOfDistinctValuesToInfluence) {
             distinctCertainty = 1;
-        } else if(numOfDistinctFeatures >= minNumOfDistinctValuesToInfluence){
-            distinctCertainty = ((double)(numOfDistinctFeatures - minNumOfDistinctValuesToInfluence + 1)) / (enoughNumOfDistinctValuesToInfluence - minNumOfDistinctValuesToInfluence + 1);
+        } else if (numOfDistinctFeatures >= minNumOfDistinctValuesToInfluence) {
+            distinctCertainty = ((double)(numOfDistinctFeatures - minNumOfDistinctValuesToInfluence + 1)) /
+                    (enoughNumOfDistinctValuesToInfluence - minNumOfDistinctValuesToInfluence + 1);
         }
 
-
-        return certainty*distinctCertainty;
+        return certainty * distinctCertainty;
     }
 
     @Override
     public double calculateScore(Model model, List<Model> additionalModels, Feature feature) {
         Assert.isInstanceOf(CategoryRarityModel.class, model, WRONG_MODEL_TYPE_ERROR_MSG);
+
         if (additionalModels.size() > 0) {
             throw new IllegalArgumentException(this.getClass().getSimpleName() + " doesn't expect to get additional models");
         }
+
         Assert.notNull(feature, "Feature cannot be null");
         Assert.hasText(feature.getName(), String.format("Feature name cannot be null, empty or blank. scorer: %s", this.toString()));
         Assert.isInstanceOf(FeatureStringValue.class, feature.getValue(), WRONG_FEATURE_VALUE_TYPE_ERROR_MSG);
         Assert.notNull(feature.getValue().toString(), String.format("Feature value cannot be null. feature name: %s, scorer: %s", feature.getName(), this.toString()));
 
         // Ignoring empty string values
-        if(!StringUtils.hasText(feature.getValue().toString())) {
+        if (!StringUtils.hasText(feature.getValue().toString())) {
             return 0.0;
         }
 

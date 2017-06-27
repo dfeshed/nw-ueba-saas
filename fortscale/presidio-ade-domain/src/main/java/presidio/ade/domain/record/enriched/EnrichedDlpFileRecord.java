@@ -14,7 +14,7 @@ import java.time.Instant;
  * Created by Lior Govrin on 05/06/2017.
  */
 @Document
-@AdeRecordMetadata(type =DlpFileRecord.DLP_FILE_STR)
+@AdeRecordMetadata(dataSource =DlpFileRecord.DLP_FILE_STR)
 public class EnrichedDlpFileRecord extends EnrichedRecord{
 	public static final String NORMALIZED_USERNAME_FIELD = "normalized_username";
 	public static final String NORMALIZED_SRC_MACHINE_FIELD = "normalized_src_machine";
@@ -185,5 +185,10 @@ public class EnrichedDlpFileRecord extends EnrichedRecord{
 
 	public void setExecuting_application(String executing_application) {
 		this.executing_application = executing_application;
+	}
+
+	@Transient
+	public AdeEnrichedDlpFileContext getContext(){
+		return new AdeEnrichedDlpFileContext(this);
 	}
 }

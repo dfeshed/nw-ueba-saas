@@ -10,13 +10,18 @@ import fortscale.utils.recordreader.RecordReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import presidio.ade.domain.record.AdeRecord;
 import presidio.ade.domain.record.AdeRecordReaderFactoryService;
 
 @Configuration
+@ComponentScan("fortscale.ml.scorer.factory")
 public class ScoringSpringConfiguration {
-
+	@Autowired
+	private ScorerConfService scorerConfService;
+	@Autowired
+	private FactoryService<Scorer> scorerFactoryService;
 	@Autowired
 	private StatsService statsService;
 
@@ -30,7 +35,7 @@ public class ScoringSpringConfiguration {
 	@Bean
 	public ScorerConfService scorerConfService() {
 		// TODO: Return a real ScorerConfService
-		return new ScorerConfServiceImpl(scorerConfigurationsLocationPath,scorerConfigurationsOverridingPath.isEmpty()?null:scorerConfigurationsOverridingPath,scorerConfigurationsAdditionalPath.isEmpty()?null:scorerConfigurationsAdditionalPath);
+		return null;
 	}
 
 	@Bean
@@ -45,6 +50,6 @@ public class ScoringSpringConfiguration {
 
 	@Bean
 	public ScoringService scoringService() {
-		return new ScoringService(scorerConfService(), scorerFactoryService(), statsService);
+		return new ScoringService(scorerConfService, scorerFactoryService, statsService);
 	}
 }

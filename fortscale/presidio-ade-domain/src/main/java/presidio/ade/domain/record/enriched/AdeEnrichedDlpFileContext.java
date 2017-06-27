@@ -1,11 +1,11 @@
-package presidio.ade.domain.record.scored.enriched_scored;
+package presidio.ade.domain.record.enriched;
 
 import presidio.ade.domain.record.enriched.EnrichedDlpFileRecord;
 
 /**
  * Created by YaronDL on 6/14/2017.
  */
-public class AdeScoredDlpFileContext {
+public class AdeEnrichedDlpFileContext {
     private String normalizedUsername;
     private String normalizedSrcMachine;
     private String sourcePath;
@@ -21,7 +21,7 @@ public class AdeScoredDlpFileContext {
     private String malwareScanResult;
     private String executingApplication;
 
-    public AdeScoredDlpFileContext(EnrichedDlpFileRecord enrichedDlpFileRecord){
+    public AdeEnrichedDlpFileContext(EnrichedDlpFileRecord enrichedDlpFileRecord){
         this.normalizedUsername = enrichedDlpFileRecord.getNormalized_username();
         this.normalizedSrcMachine = enrichedDlpFileRecord.getNormalized_src_machine();
         this.sourcePath = enrichedDlpFileRecord.getSource_path();

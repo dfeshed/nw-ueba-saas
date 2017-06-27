@@ -15,7 +15,7 @@ public enum DataSource {
         return name;
     }
 
-    public static DataSource createDataSource(String dataSourceName) throws Exception {
+    public static DataSource createDataSource(String dataSourceName) throws IllegalArgumentException {
         return DataSource.valueOf(dataSourceName.toUpperCase());
     }
 }

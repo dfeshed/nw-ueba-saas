@@ -3,9 +3,9 @@ package fortscale.ml.scorer;
 import fortscale.domain.feature.score.FeatureScore;
 import fortscale.ml.scorer.params.PriorityScorerParams;
 import fortscale.ml.scorer.record.JsonAdeRecord;
+import fortscale.ml.scorer.record.JsonAdeRecordReader;
 import org.junit.Assert;
 import org.junit.Test;
-import presidio.ade.domain.record.AdeRecord;
 
 public class PriorityScorerContainerTest {
     private PriorityScorerContainer createPriorityScorerContainer(PriorityScorerParams params) {
@@ -18,9 +18,12 @@ public class PriorityScorerContainerTest {
     }
 
 
-    private void testScore(PriorityScorerContainer scorer, AdeRecord eventMessage, PriorityScorerParams params, Double expectedScore) throws Exception {
+    private void testScore(
+            PriorityScorerContainer scorer, JsonAdeRecordReader jsonAdeRecordReader,
+            PriorityScorerParams params, Double expectedScore) throws Exception {
+
         assertScorerParams(params, scorer);
-        FeatureScore score = scorer.calculateScore(eventMessage);
+        FeatureScore score = scorer.calculateScore(jsonAdeRecordReader);
         Assert.assertNotNull(score);
         Assert.assertEquals(expectedScore, score.getScore(), 0.000000001);
     }
@@ -78,7 +81,7 @@ public class PriorityScorerContainerTest {
                 .addScorer(new SimpleTestScorer(90.0, "second scorer"));
 
         PriorityScorerContainer scorer = createPriorityScorerContainer(params);
-        testScore(scorer, JsonAdeRecord.getJsonAdeRecord("field1", "value1"), params, 100.0);
+        testScore(scorer, new JsonAdeRecordReader(JsonAdeRecord.getJsonAdeRecord("field1", "value1")), params, 100.0);
     }
 
     @Test
@@ -87,7 +90,7 @@ public class PriorityScorerContainerTest {
                 .addScorer(new SimpleTestScorer(90.0, "first scorer"));
 
         PriorityScorerContainer scorer = createPriorityScorerContainer(params);
-        testScore(scorer, JsonAdeRecord.getJsonAdeRecord("field1", "value1"), params, 90.0);
+        testScore(scorer, new JsonAdeRecordReader(JsonAdeRecord.getJsonAdeRecord("field1", "value1")), params, 90.0);
     }
 
 
@@ -98,7 +101,7 @@ public class PriorityScorerContainerTest {
                 .addScorer(new SimpleTestScorer(100.0, "second scorer"));
 
         PriorityScorerContainer scorer = createPriorityScorerContainer(params);
-        testScore(scorer, JsonAdeRecord.getJsonAdeRecord("field1", "value1"), params, 90.0);
+        testScore(scorer, new JsonAdeRecordReader(JsonAdeRecord.getJsonAdeRecord("field1", "value1")), params, 90.0);
     }
 
     @Test
@@ -109,7 +112,7 @@ public class PriorityScorerContainerTest {
                 .addScorer(new SimpleTestScorer(50.0, "third scorer"));
 
         PriorityScorerContainer scorer = createPriorityScorerContainer(params);
-        testScore(scorer, JsonAdeRecord.getJsonAdeRecord("field1", "value1"), params, 100.0);
+        testScore(scorer, new JsonAdeRecordReader(JsonAdeRecord.getJsonAdeRecord("field1", "value1")), params, 100.0);
     }
 
     @Test
@@ -120,6 +123,6 @@ public class PriorityScorerContainerTest {
                 .addScorer(new SimpleTestScorer(100.0, "third scorer"));
 
         PriorityScorerContainer scorer = createPriorityScorerContainer(params);
-        testScore(scorer, JsonAdeRecord.getJsonAdeRecord("field1", "value1"), params, 50.0);
+        testScore(scorer, new JsonAdeRecordReader(JsonAdeRecord.getJsonAdeRecord("field1", "value1")), params, 50.0);
     }
 }

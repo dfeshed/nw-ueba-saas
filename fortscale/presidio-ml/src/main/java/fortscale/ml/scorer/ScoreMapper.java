@@ -2,10 +2,9 @@ package fortscale.ml.scorer;
 
 import fortscale.domain.feature.score.FeatureScore;
 import org.springframework.util.Assert;
-import presidio.ade.domain.record.AdeRecord;
+import presidio.ade.domain.record.AdeRecordReader;
 
 import java.util.Collections;
-
 
 public class ScoreMapper extends AbstractScorer {
 	private Scorer baseScorer;
@@ -20,8 +19,8 @@ public class ScoreMapper extends AbstractScorer {
 	}
 
 	@Override
-	public FeatureScore calculateScore(AdeRecord record) {
-		FeatureScore baseScore = baseScorer.calculateScore(record);
+	public FeatureScore calculateScore(AdeRecordReader adeRecordReader) {
+		FeatureScore baseScore = baseScorer.calculateScore(adeRecordReader);
 		double mappedScore = ScoreMapping.mapScore(baseScore.getScore(), scoreMappingConf);
 		return new FeatureScore(getName(), mappedScore, Collections.singletonList(baseScore));
 	}
