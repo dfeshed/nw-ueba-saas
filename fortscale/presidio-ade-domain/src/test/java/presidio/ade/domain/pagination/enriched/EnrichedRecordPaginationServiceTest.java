@@ -1,4 +1,4 @@
-package presidio.ade.domain.store.enriched;
+package presidio.ade.domain.pagination.enriched;
 
 import fortscale.utils.pagination.PageIterator;
 import fortscale.utils.time.TimeRange;
@@ -14,8 +14,10 @@ import fortscale.utils.pagination.ContextIdToNumOfEvents;
 import presidio.ade.domain.record.enriched.DataSourceToAdeEnrichedRecordClassResolver;
 import presidio.ade.domain.record.enriched.DataSourceToAdeEnrichedRecordClassResolverConfig;
 import presidio.ade.domain.record.enriched.EnrichedDlpFileRecord;
-import presidio.ade.domain.store.enriched.mocks.GenerateMocks;
-import presidio.ade.domain.store.enriched.groups.EnrichedRecordPaginationServiceGroup;
+import presidio.ade.domain.pagination.enriched.mocks.GenerateMocks;
+import presidio.ade.domain.pagination.enriched.groups.EnrichedRecordPaginationServiceGroup;
+import presidio.ade.domain.store.enriched.EnrichedDataStoreImplMongo;
+import presidio.ade.domain.store.enriched.EnrichedDataToCollectionNameTranslator;
 
 import java.time.Instant;
 import java.util.*;
@@ -69,7 +71,7 @@ public class EnrichedRecordPaginationServiceTest {
 
         Set<String> contextIdsQuery1 = new HashSet<>();
         contextIdsQuery1.add("a");
-        GenerateMocks.createMockForQuery(mongoTemplate, enrichedDlpFileRecordsQuery1, contextIdsQuery1, 0, 3, NOW);
+        GenerateMocks.createMockForQuery(mongoTemplate, enrichedDlpFileRecordsQuery1, contextIdsQuery1, 0, PAGE_SIZE, NOW);
 
         // result for second query
         ArrayList<String> enrichedDlpFileRecordsQuery2 = new ArrayList<String>();
@@ -77,7 +79,7 @@ public class EnrichedRecordPaginationServiceTest {
         enrichedDlpFileRecordsQuery2.add("a");
         Set<String> contextIdsQuery2 = new HashSet<>();
         contextIdsQuery2.add("a");
-        GenerateMocks.createMockForQuery(mongoTemplate, enrichedDlpFileRecordsQuery2, contextIdsQuery2, 3, 2, NOW);
+        GenerateMocks.createMockForQuery(mongoTemplate, enrichedDlpFileRecordsQuery2, contextIdsQuery2, 3, PAGE_SIZE, NOW);
 
         // result for third query
         ArrayList<String> enrichedDlpFileRecordsQuery3 = new ArrayList<String>();
@@ -87,7 +89,7 @@ public class EnrichedRecordPaginationServiceTest {
         Set<String> contextIdsQuery3 = new HashSet<>();
         contextIdsQuery3.add("c");
         contextIdsQuery3.add("b");
-        GenerateMocks.createMockForQuery(mongoTemplate, enrichedDlpFileRecordsQuery3, contextIdsQuery3, 0, 3, NOW);
+        GenerateMocks.createMockForQuery(mongoTemplate, enrichedDlpFileRecordsQuery3, contextIdsQuery3, 0, PAGE_SIZE, NOW);
 
         List<EnrichedRecordPaginationServiceGroup> results = generateResultTest1();
 
@@ -120,7 +122,7 @@ public class EnrichedRecordPaginationServiceTest {
 
         Set<String> contextIdsQuery1 = new HashSet<>();
         contextIdsQuery1.add("a");
-        GenerateMocks.createMockForQuery(mongoTemplate, enrichedDlpFileRecordsQuery1, contextIdsQuery1, 0, 3, NOW);
+        GenerateMocks.createMockForQuery(mongoTemplate, enrichedDlpFileRecordsQuery1, contextIdsQuery1, 0, PAGE_SIZE, NOW);
 
         // result for second query
         ArrayList<String> enrichedDlpFileRecordsQuery2 = new ArrayList<String>();
@@ -128,7 +130,7 @@ public class EnrichedRecordPaginationServiceTest {
         enrichedDlpFileRecordsQuery2.add("a");
         Set<String> contextIdsQuery2 = new HashSet<>();
         contextIdsQuery2.add("a");
-        GenerateMocks.createMockForQuery(mongoTemplate, enrichedDlpFileRecordsQuery2, contextIdsQuery2, 3, 2, NOW);
+        GenerateMocks.createMockForQuery(mongoTemplate, enrichedDlpFileRecordsQuery2, contextIdsQuery2, 3, PAGE_SIZE, NOW);
 
         // result for third query
         ArrayList<String> enrichedDlpFileRecordsQuery3 = new ArrayList<String>();
@@ -136,7 +138,7 @@ public class EnrichedRecordPaginationServiceTest {
         enrichedDlpFileRecordsQuery3.add("b");
         Set<String> contextIdsQuery3 = new HashSet<>();
         contextIdsQuery3.add("b");
-        GenerateMocks.createMockForQuery(mongoTemplate, enrichedDlpFileRecordsQuery3, contextIdsQuery3, 0, 2, NOW);
+        GenerateMocks.createMockForQuery(mongoTemplate, enrichedDlpFileRecordsQuery3, contextIdsQuery3, 0, PAGE_SIZE, NOW);
 
         // result for fourth query
         ArrayList<String> enrichedDlpFileRecordsQuery4 = new ArrayList<String>();
@@ -144,7 +146,7 @@ public class EnrichedRecordPaginationServiceTest {
         enrichedDlpFileRecordsQuery4.add("c");
         Set<String> contextIdsQuery4 = new HashSet<>();
         contextIdsQuery4.add("c");
-        GenerateMocks.createMockForQuery(mongoTemplate, enrichedDlpFileRecordsQuery4, contextIdsQuery4, 0, 2, NOW);
+        GenerateMocks.createMockForQuery(mongoTemplate, enrichedDlpFileRecordsQuery4, contextIdsQuery4, 0, PAGE_SIZE, NOW);
 
         List<EnrichedRecordPaginationServiceGroup> results = generateResultTest2();
 
@@ -168,7 +170,7 @@ public class EnrichedRecordPaginationServiceTest {
         enrichedDlpFileRecordsQuery1.add("a");
         Set<String> contextIdsQuery1 = new HashSet<>();
         contextIdsQuery1.add("a");
-        GenerateMocks.createMockForQuery(mongoTemplate, enrichedDlpFileRecordsQuery1, contextIdsQuery1, 0, 1, NOW);
+        GenerateMocks.createMockForQuery(mongoTemplate, enrichedDlpFileRecordsQuery1, contextIdsQuery1, 0, PAGE_SIZE, NOW);
 
         List<EnrichedRecordPaginationServiceGroup> results = generateResultTest3();
 

@@ -97,8 +97,7 @@ public abstract class PaginationService<T> {
 
     /**
      *
-     * Creates groups, which contain pair of total num of events and set of contextId.
-     * total num of events should be less than page size.
+     * Creates groups, which contain pair of total num of events and set of contextIds.
      *
      * In order to minimize the number of context ids in each group and to minimize the number of groups:
      * pop out context id with the largest amount of events and pop out context ids with smallest amount of events.
