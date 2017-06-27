@@ -21,11 +21,11 @@ class Deploy_Manager:
 
     def uninstall(self, rpm_name):
         """
-        Uninstall rpm
+        will execute while uninstalling rpm
         :param rpm_name:
         :return:
         """
-        os.system('yum remove '+str(rpm_name)+'*')
+        print "uninstalling"
 
 
     def run(self, rpm_name):
@@ -43,27 +43,29 @@ class Deploy_Manager:
                 execute vresion migration scripts
                 """
                 mig_step_json, mig_steps_folder = self.read_mig_step(version)
-                print "mig_step_json type:" + str(type(mig_step_json))
-                print "migstepjson: " + str(len(mig_step_json))
-                print "migstepfolder: " + str(len(mig_steps_folder))
-                mig_steps_str = str(mig_step_json[0])
-                print mig_steps_str
-                with open(mig_steps_str) as json_steps_file:
-                    steps = json.load(json_steps_file)
+                if len(mig_step_json) > 0:
+                    mig_steps_str = str(mig_step_json[0])
+                    print mig_steps_str
 
-                for step in steps['migration_steps']:
-                    """
-                    Execute the step 
-                    """
-                    print step.get('description')
-                    if step.get('filePath') == 'mongo':
-                        self.exec_mongo_file(mig_steps_folder + step.get('filePath'))
+                    with open(mig_steps_str) as json_steps_file:
+                        steps = json.load(json_steps_file)
 
-                    else:
-                        self.exec_file(mig_steps_folder + step.get('filePath'))
-                        #mig_step_folder_path = os.path.join(mig_steps_folder, step.get('filePath'))
-                        #mig_step_folder_path = Path(mig_steps_folder)
-                        self.current_version = version
+                    for step in steps['migration_steps']:
+                        """
+                        Execute the step 
+                        """
+                        print step.get('description')
+                        if step.get('filePath') == 'mongo':
+                            self.exec_mongo_file(mig_steps_folder + step.get('filePath'))
+
+                        else:
+                            self.exec_file(mig_steps_folder + step.get('filePath'))
+                            #mig_step_folder_path = os.path.join(mig_steps_folder, step.get('filePath'))
+                            #mig_step_folder_path = Path(mig_steps_folder)
+                            self.current_version = version
+                else:
+                    print "No migration steps for version:"
+                    self.current_version = version
 
     def exec_file(self, file_to_exec):
         os.system('chmod +x ' + file_to_exec)
