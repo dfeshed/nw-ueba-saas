@@ -45,7 +45,6 @@ class Deploy_Manager:
                 mig_step_json, mig_steps_folder = self.read_mig_step(version)
                 if len(mig_step_json) > 0:
                     mig_steps_str = str(mig_step_json[0])
-                    print mig_steps_str
 
                     with open(mig_steps_str) as json_steps_file:
                         steps = json.load(json_steps_file)
@@ -54,15 +53,17 @@ class Deploy_Manager:
                         """
                         Execute the step 
                         """
-                        print step.get('description')
+
                         if step.get('filePath') == 'mongo':
+                            print step.get('description')
                             self.exec_mongo_file(mig_steps_folder + step.get('filePath'))
 
                         else:
+                            print step.get('description')
                             self.exec_file(mig_steps_folder + step.get('filePath'))
                             #mig_step_folder_path = os.path.join(mig_steps_folder, step.get('filePath'))
                             #mig_step_folder_path = Path(mig_steps_folder)
-                            self.current_version = version
+                    self.current_version = version
                 else:
                     print "No migration steps for version:"
                     self.current_version = version
