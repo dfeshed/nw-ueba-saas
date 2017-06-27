@@ -5,11 +5,13 @@
     
 	<modelVersion>4.0.0</modelVersion>
     <properties>
-        <rpm-maven-plugin.directory>/home/presidio/presidio-core/installation</rpm-maven-plugin.directory>
+        <rpm-maven-plugin.directory>${rpm-maven-plugin.deployment_target_directory}/installation</rpm-maven-plugin.directory>
         <rpm-maven-plugin.script>
             ${rpm-maven-plugin.directory}/installation-scripts/infrastructure/deploy/manager/deploy_manager.py
         </rpm-maven-plugin.script>
         <rpm_name>presidio-core</rpm_name>
+        <rpm-maven-plugin.deployment_target_directory>/home/presidio/presidio-core
+        </rpm-maven-plugin.deployment_target_directory>
     </properties>
     <parent>
         <artifactId>fortscale</artifactId>
@@ -41,7 +43,7 @@
                 <mappings>
                     <mapping>
                         <directoryIncluded>false</directoryIncluded>
-                        <directory>/home/presidio/presidio-core/bin</directory>
+                        <directory>${rpm-maven-plugin.deployment_target_directory}/bin</directory>
                         <username>presidio</username>
                         <groupname>presidio</groupname>
                         <sources>
@@ -52,7 +54,7 @@
                     </mapping>
                     <mapping>
                         <directoryIncluded>false</directoryIncluded>
-                        <directory>/home/presidio/presidio-core/configurations</directory>
+                        <directory>${rpm-maven-plugin.deployment_target_directory}/configurations</directory>
                         <username>presidio</username>
                         <groupname>presidio</groupname>
                         <sources>
@@ -86,10 +88,10 @@
                 </mappings>
                 <preinstallScriptlet>
                     <script>
-                        echo "pre installation"
+                        <!-- pre installation commands: -->
 
 
-                        echo "********end of pre installation"
+                        <!-- end of post installation -->
 
                     </script>
                 </preinstallScriptlet>
@@ -97,13 +99,15 @@
                     <!--<scriptFile>src/main/scripts/postinstall</scriptFile>-->
                     <!--<fileEncoding>utf-8</fileEncoding>-->
                     <script>
-                        echo "*********************************************"
-                        whoami
-                        pwd
-                        which python
-                        echo "*********************************************"
+
+                        <!-- post installation commands: -->
                         /usr/local/bin/python ${rpm-maven-plugin.script} --rpm_name ${rpm_name} --major ${rpm.version.major} --minor ${rpm.version.minor} --build ${rpm.version.build}
-                        echo "*******end of post installation"
+
+                        <!--changing ownership of /home/presidio/presidio-core/ to presidio:presidio -->
+                        echo "Changing ownership of /home/presidio/presidio-core/ to presidio:presidio"
+                        chown -R presidio:presidio ${rpm-maven-plugin.deployment_target_directory}
+
+                        <!--end of post installation -->"
                     </script>
                 </postinstallScriptlet>
             </configuration>
