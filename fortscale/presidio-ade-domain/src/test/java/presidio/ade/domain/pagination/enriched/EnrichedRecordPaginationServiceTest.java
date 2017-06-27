@@ -1,4 +1,4 @@
-package presidio.ade.domain.store.enriched;
+package presidio.ade.domain.pagination.enriched;
 
 import fortscale.utils.pagination.PageIterator;
 import fortscale.utils.time.TimeRange;
@@ -14,8 +14,10 @@ import fortscale.utils.pagination.ContextIdToNumOfEvents;
 import presidio.ade.domain.record.enriched.DataSourceToAdeEnrichedRecordClassResolver;
 import presidio.ade.domain.record.enriched.DataSourceToAdeEnrichedRecordClassResolverConfig;
 import presidio.ade.domain.record.enriched.EnrichedDlpFileRecord;
-import presidio.ade.domain.store.enriched.mocks.GenerateMocks;
-import presidio.ade.domain.store.enriched.groups.EnrichedRecordPaginationServiceGroup;
+import presidio.ade.domain.pagination.enriched.mocks.GenerateMocks;
+import presidio.ade.domain.pagination.enriched.groups.EnrichedRecordPaginationServiceGroup;
+import presidio.ade.domain.store.enriched.EnrichedDataStoreImplMongo;
+import presidio.ade.domain.store.enriched.EnrichedDataToCollectionNameTranslator;
 
 import java.time.Instant;
 import java.util.*;

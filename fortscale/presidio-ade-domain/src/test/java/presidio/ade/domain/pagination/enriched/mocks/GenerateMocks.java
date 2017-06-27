@@ -1,4 +1,4 @@
-package presidio.ade.domain.store.enriched.mocks;
+package presidio.ade.domain.pagination.enriched.mocks;
 
 import fortscale.utils.pagination.ContextIdToNumOfEvents;
 import org.springframework.data.mongodb.core.DefaultIndexOperations;
