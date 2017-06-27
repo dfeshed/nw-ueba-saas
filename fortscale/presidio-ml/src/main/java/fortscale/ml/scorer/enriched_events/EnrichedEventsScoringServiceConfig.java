@@ -1,5 +1,6 @@
 package fortscale.ml.scorer.enriched_events;
 
+import fortscale.ml.model.config.ModelBuildingConfiguration;
 import fortscale.ml.scorer.ScoringService;
 import fortscale.ml.scorer.spring.config.ScoringSpringConfiguration;
 import fortscale.utils.recordreader.RecordReaderFactory;
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
 
 @Configuration
 @Import({
+        ModelBuildingConfiguration.class,
         ScoringSpringConfiguration.class,
         ScoredEnrichedDataStoreMongoConfig.class,
         AdeEnrichedScoredRecordBuilderConfig.class
