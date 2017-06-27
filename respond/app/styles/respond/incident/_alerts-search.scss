@@ -1,4 +1,6 @@
 $incidentAlertsSearchHeaderHeight: 30px;
+$incidentAlertsSearchSeverityRadius: 1rem;
+$incidentAlertsSearchSeverityBgColor: rsa-color(gray, light, $rsa-nearly-transparent);
 
 .rsa-incident-alerts-search {
   height: calc(100% - #{$incidentAlertsSearchHeaderHeight});
@@ -7,6 +9,38 @@ $incidentAlertsSearchHeaderHeight: 30px;
     &__body {
       .rsa-data-table {
         @include rsa-fill-abs();
+
+        /* Overwrites default margin, padding & spacing from component-lib */
+        &-body-row {
+          left: 0;
+          right: 0;
+          margin: 0;
+          padding: 0;
+          border-color: rsa-color(black);
+
+          &:hover,
+          &.is-selected,
+          &.is-selected:hover {
+            margin: 0;
+            padding: 0;
+            border-color: rsa-color(black);
+          }
+
+          &:hover {
+            .rsa-data-table-body-cell {
+              background-color: transparent;
+            }
+          }
+        }
+
+        &-body-cell {
+          padding: 0;
+        }
+      }
+
+      .alert {
+        padding: rsa-whitespace(less);
+        cursor: default;
       }
 
       .alert-name {
@@ -16,6 +50,37 @@ $incidentAlertsSearchHeaderHeight: 30px;
         overflow: hidden;
         text-overflow: ellipsis;
       }
+
+      a[href] {
+        color: rsa-color(blue, light);
+      }
+
+      .severity {
+        /* Renders a circle with centered text inside. */
+        width: $incidentAlertsSearchSeverityRadius * 2;
+        height: $incidentAlertsSearchSeverityRadius * 2;
+        border-radius: $incidentAlertsSearchSeverityRadius * 2;
+        overflow: hidden;
+
+        @include rsa-font(body, small);
+        line-height: $incidentAlertsSearchSeverityRadius * 2;
+        text-align: center;
+        white-space: nowrap;
+        background-color: $incidentAlertsSearchSeverityBgColor;
+        color: rsa-color(white);
+      }
+
+      .content {
+        padding-left: rsa-whitespace(less);
+        /* Overwrites flexi-fill which doesn't permit cutoff, which is required for long alert names */
+        @include rsa-vendor-prefix(flex-shrink,1);
+      }
+
+      .incident-action {
+        /* Ensures a consistent height regardless of content, which is required for lazy rendering. */
+        min-height: 2.5rem;
+      }
+
     }
   }
 }

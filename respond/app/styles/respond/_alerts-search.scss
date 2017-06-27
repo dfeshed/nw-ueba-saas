@@ -14,6 +14,13 @@ $alertsSearchLineHeight: 2rem;
   &-form {
     border-bottom: 1px solid rsa-color(gray,light,$rsa-nearly-transparent);
 
+    &__subtext {
+      @include rsa-font(paragraph, small);
+      padding: rsa-whitespace(less);
+      padding-top: 0;
+      color: rsa-color(gray, light);
+    }
+
     .param {
       @include rsa-font(body, small);
       padding: rsa-whitespace(less) rsa-whitespace(less) rsa-whitespace(less) (rsa-whitespace(less) + $alertsSearchLabelWidth);

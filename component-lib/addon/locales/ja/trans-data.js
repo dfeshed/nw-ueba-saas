@@ -663,9 +663,10 @@ export default {
         datasheet: 'ja_View: Datasheet'
       },
       search: {
-        title: 'ja_Search',
+        tab: 'ja_Related',
+        title: 'ja_Related Indicators',
+        subtext: 'ja_Enter a value below and click the Find button to look for other indicators related to that value.',
         partOfThisIncident: 'ja_Part Of This Incident',
-        searching: 'ja_Searching',
         types: {
           IP: 'ja_IP',
           MAC_ADDRESS: 'ja_MAC',
@@ -674,7 +675,7 @@ export default {
           FILE_NAME: 'ja_Filename',
           FILE_HASH: 'ja_Hash',
           USER: 'ja_User',
-          label: 'ja_Search for'
+          label: 'ja_Find'
         },
         text: {
           label: 'ja_Value',
@@ -695,13 +696,14 @@ export default {
           source: 'ja_Source',
           destination: 'ja_Destination',
           detector: 'ja_Detector',
-          label: 'ja_In'
+          label: 'ja_Look in'
         },
         results: {
-          title: 'ja_Results for'
+          title: 'ja_Indicators for',
+          openInNewWindow: 'ja_Open in new window'
         },
         actions: {
-          search: 'ja_Search',
+          search: 'ja_Find',
           cancel: 'ja_Cancel',
           addToIncident: 'ja_Add To Incident'
         }

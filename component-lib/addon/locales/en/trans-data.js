@@ -663,9 +663,10 @@ export default {
         datasheet: 'View: Datasheet'
       },
       search: {
-        title: 'Search',
+        tab: 'Related',
+        title: 'Related Indicators',
+        subtext: 'Enter a value below and click the Find button to look for other indicators related to that value.',
         partOfThisIncident: 'Part Of This Incident',
-        searching: 'Searching',
         types: {
           IP: 'IP',
           MAC_ADDRESS: 'MAC',
@@ -674,7 +675,7 @@ export default {
           FILE_NAME: 'Filename',
           FILE_HASH: 'Hash',
           USER: 'User',
-          label: 'Search for'
+          label: 'Find'
         },
         text: {
           label: 'Value',
@@ -698,10 +699,11 @@ export default {
           label: 'Look in'
         },
         results: {
-          title: 'Results for'
+          title: 'Indicators for',
+          openInNewWindow: 'Open in new window'
         },
         actions: {
-          search: 'Search',
+          search: 'Find',
           cancel: 'Cancel',
           addToIncident: 'Add To Incident'
         }
