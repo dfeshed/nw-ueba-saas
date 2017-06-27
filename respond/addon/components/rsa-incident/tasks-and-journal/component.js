@@ -2,6 +2,7 @@ import connect from 'ember-redux/components/connect';
 import { toggleTasksAndJournalPanel, setTasksJournalMode } from 'respond/actions/creators/incidents-creators';
 import Component from 'ember-component';
 import computed, { alias } from 'ember-computed-decorators';
+import service from 'ember-service/inject';
 
 const closedStatuses = ['CLOSED', 'CLOSED_FALSE_POSITIVE'];
 
@@ -30,6 +31,8 @@ const IncidentTasksJournalPanel = Component.extend({
   attributeBindings: ['style'],
   tagName: 'article',
   classNames: ['rsa-journal-and-tasks'],
+  accessControl: service(),
+
   isAddingNewTask: false,
 
   @computed('info.status')

@@ -1,8 +1,10 @@
-<div class="action-control">
-  {{#rsa-form-button
-    style='danger'
-    isDisabled=hasNoSelections
-    defaultAction='deleteTask'}}
-    {{t 'forms.delete'}}
-  {{/rsa-form-button}}
-</div>
+{{#if accessControl.respondCanManageRemediation}}
+  <div class="action-control">
+    {{#rsa-form-button
+      style='danger'
+      isDisabled=hasNoSelections
+      defaultAction='deleteTask'}}
+      {{t 'forms.delete'}}
+    {{/rsa-form-button}}
+  </div>
+{{/if}}

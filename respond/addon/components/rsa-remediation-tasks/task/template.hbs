@@ -22,9 +22,11 @@
       </div>
     {{/if}}
   </div>
-  <div class="delete">
-    {{#rsa-form-button isIconOnly=true title=(t 'respond.remediationTasks.delete') defaultAction=(action 'delete' info.id)}}{{rsa-icon style='lined' name='bin-1'}}{{/rsa-form-button}}
-  </div>
+  {{#if accessControl.respondCanManageRemediation}}
+    <div class="delete">
+      {{#rsa-form-button isIconOnly=true title=(t 'respond.remediationTasks.delete') defaultAction=(action 'delete' info.id)}}{{rsa-icon style='lined' name='bin-1'}}{{/rsa-form-button}}
+    </div>
+  {{/if}}
 </header>
 <section class="remediation-task-fields">
   {{! Name}}
@@ -34,6 +36,7 @@
       {{respond-common/editable-field
         value=info.name
         placeholder=(t 'respond.empty')
+        isDisabled=(not accessControl.respondCanManageRemediation)
         onFieldChange=(action 'editableFieldChange' info.id 'name')
       }}
     </span>
@@ -45,7 +48,7 @@
     <span>
       {{respond-common/editable-field
         value=(readonly info.assignee)
-        isDisabled=(not isOpen)
+        isDisabled=(or (not isOpen) (not accessControl.respondCanManageRemediation))
         placeholder=(unless info.assignee (t 'respond.assignee.none'))
         onFieldChange=(action 'editableFieldChange' info.id 'assignee')
       }}
@@ -61,10 +64,11 @@
         selected=info.priority
         matchTriggerWidth=false
         searchEnabled=false
-        disabled=(not isOpen)
+        disabled=(or (not isOpen) (not accessControl.respondCanManageRemediation))
         triggerComponent=(component "respond-common/button-trigger"
           iconName='arrow-down-12'
           iconPosition='after'
+          isDisabled=(or (not isOpen) (not accessControl.respondCanManageRemediation))
           label=(t (concat 'respond.priority.' info.priority)))
         onchange=(action 'selectionChange' info.id 'priority') as |option|}}
         {{t (concat 'respond.priority.' option)}}
@@ -81,9 +85,11 @@
         selected=info.status
         matchTriggerWidth=false
         searchEnabled=false
+        disabled=(not accessControl.respondCanManageRemediation)
         triggerComponent=(component "respond-common/button-trigger"
           iconName='arrow-down-12'
           iconPosition='after'
+          isDisabled=(not accessControl.respondCanManageRemediation)
           label=(t (concat 'respond.status.' info.status)))
         onchange=(action 'selectionChange' info.id 'status') as |option|}}
         {{t (concat 'respond.status.' option)}}
@@ -97,6 +103,7 @@
     {{respond-common/editable-field
       type='textarea'
       value=(readonly info.description)
+      isDisabled=(not accessControl.respondCanManageRemediation)
       placeholder=(t 'respond.remediationTasks.noDescription')
       onFieldChange=(action 'editableFieldChange' info.id 'description')
     }}

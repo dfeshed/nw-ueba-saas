@@ -38,7 +38,10 @@ const App = Application.extend({
           'i18n',
           'flashMessages',
           'eventBus'
-        ]
+        ],
+        externalRoutes: {
+          protected: 'protected'
+        }
       }
     }
   }

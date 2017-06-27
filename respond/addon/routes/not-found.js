@@ -1,10 +1,8 @@
-import Ember from 'ember';
-
-const { Route } = Ember;
+import Route from 'ember-route';
 
 export default Route.extend({
-  // Always transition to incidents page directly if the route is unknown
+  // Always transition to index route if the route is unknown
   beforeModel() {
-    this.transitionTo('incidents');
+    this.transitionTo('index');
   }
 });

@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import connect from 'ember-redux/components/connect';
+import service from 'ember-service/inject';
 
 const { Component } = Ember;
 
@@ -11,6 +12,7 @@ const stateToComputed = ({ respond: { incident: { info, infoStatus } } }) => ({
 const Journal = Component.extend({
   tagName: 'vbox',
   classNames: ['rsa-incident-journal'],
+  accessControl: service(),
 
   /**
    * Array of journal entries.

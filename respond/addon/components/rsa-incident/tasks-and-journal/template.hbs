@@ -7,15 +7,23 @@
     {{action (action "showTab" "remediation")}}>
     {{t 'respond.entities.remediationTasks'}} ({{taskCount}})
   </span>
-  <span class="rsa-tab text-only search-tab {{if (eq tasksJournalMode 'search') 'is-active' ''}}"
-    {{action (action "showTab" "search")}}>
-    {{t 'respond.incident.search.tab'}}
-  </span>
+  {{#if accessControl.hasRespondAlertsAccess}}
+    <span class="rsa-tab text-only search-tab {{if (eq tasksJournalMode 'search') 'is-active' ''}}"
+      {{action (action "showTab" "search")}}>
+      {{t 'respond.incident.search.tab'}}
+    </span>
+  {{/if}}
 </hbox>
 {{#if (eq tasksJournalMode 'journal')}}
-  {{rsa-incident/journal info=info}}
+  {{#if accessControl.hasRespondJournalAccess}}
+    {{rsa-incident/journal info=info}}
+  {{else}}
+    <centered>{{t 'respond.journal.noAccess'}}</centered>
+  {{/if}}
 {{else if (eq tasksJournalMode 'search')}}
-  {{rsa-incident/alerts-search}}
+  {{#if accessControl.hasRespondAlertsAccess}}
+    {{rsa-incident/alerts-search}}
+  {{/if}}
 {{else}}
   {{#liquid-bind isAddingNewTask use=(if isAddingNewTask "toLeft" "toRight") as |currentIsAddingNewTask|}}
     {{#if currentIsAddingNewTask}}
@@ -27,35 +35,41 @@
         onCreated=(action 'onTaskCreated')
       }}
     {{else}}
-
-      {{! Add New Task Button }}
-      {{#rsa-form-button
-        title=(t 'respond.remediationTasks.addNewTask')
-        isFullWidth=true
-        defaultAction='addNewTask'
-        isDisabled=isIncidentClosed
-      }}
-        {{t 'respond.remediationTasks.addNewTask'}}
-      {{/rsa-form-button}}
-
-      {{! Loading spinner }}
-      {{#if (eq tasksStatus 'wait')}}
-        <centered>
-          {{rsa-loader size="large" label=(t 'respond.remediationTasks.loading')}}
-        </centered>
-      {{else}}
-
-        {{! Task List}}
-        <div class="task-list">
-          {{#if tasks.length}}
-            {{#each tasks as |task|}}
-              {{rsa-remediation-tasks/task info=task }}
-            {{/each}}
-          {{else}}
-            <centered>{{t 'respond.remediationTasks.noTasks' incidentId=incidentId}}</centered>
-          {{/if}}
-        </div>
+      {{#if accessControl.respondCanManageRemediation}}
+        {{! Add New Task Button }}
+        {{#rsa-form-button
+          title=(t 'respond.remediationTasks.addNewTask')
+          isFullWidth=true
+          defaultAction='addNewTask'
+          isDisabled=isIncidentClosed
+        }}
+          {{t 'respond.remediationTasks.addNewTask'}}
+        {{/rsa-form-button}}
       {{/if}}
+
+      {{! If the user has remedation permission }}
+      {{#if accessControl.hasRespondRemediationAccess}}
+        {{! Loading spinner }}
+        {{#if (eq tasksStatus 'wait')}}
+          <centered>
+            {{rsa-loader size="large" label=(t 'respond.remediationTasks.loading')}}
+          </centered>
+        {{else}}
+          {{! Task List}}
+          <div class="task-list {{unless accessControl.respondCanManageRemediation 'read-only'}}">
+            {{#if tasks.length}}
+              {{#each tasks as |task|}}
+                {{rsa-remediation-tasks/task info=task }}
+              {{/each}}
+            {{else}}
+              <centered>{{t 'respond.remediationTasks.noTasks' incidentId=incidentId}}</centered>
+            {{/if}}
+          </div>
+        {{/if}}
+      {{else}}
+        <centered>{{t 'respond.remediationTasks.noAccess'}}</centered>
+      {{/if}}
+
     {{/if}}
   {{/liquid-bind}}
 {{/if}}

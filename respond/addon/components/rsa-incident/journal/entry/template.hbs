@@ -10,14 +10,17 @@
       {{t 'respond.journal.milestone'}}: {{t (concat 'respond.milestones.' entry.milestone)}}
     </div>
   {{/if}}
-  <div class="delete">
-    {{#rsa-form-button isIconOnly=true title=(t 'respond.journal.delete') defaultAction=(action 'handleDelete')}}{{rsa-icon style='lined' name='bin-1'}}{{/rsa-form-button}}
-  </div>
+  {{#if accessControl.respondCanManageJournal}}
+    <div class="delete">
+      {{#rsa-form-button isIconOnly=true title=(t 'respond.journal.delete') defaultAction=(action 'handleDelete')}}{{rsa-icon style='lined' name='bin-1'}}{{/rsa-form-button}}
+    </div>
+  {{/if}}
 </header>
 <section class="rsa-incident-journal-entry__note">
   {{respond-common/editable-field
     type='textarea'
     value=entry.notes
+    isDisabled=(not accessControl.respondCanManageJournal)
     onFieldChange=(action 'handleNoteChange')}}
 </section>
 

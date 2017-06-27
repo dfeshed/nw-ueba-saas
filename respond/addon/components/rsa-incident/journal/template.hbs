@@ -15,6 +15,8 @@
     {{/if}}
   </div>
 </box>
-<box class="rsa-incident-journal__create-entry">
-  {{rsa-incident/journal/new-entry incidentId=info.id}}
-</box>
+{{#if accessControl.respondCanManageJournal}}
+  <box class="rsa-incident-journal__create-entry">
+    {{rsa-incident/journal/new-entry incidentId=info.id}}
+  </box>
+{{/if}}

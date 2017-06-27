@@ -9,7 +9,7 @@ export default Route.extend({
   beforeModel() {
     // TODO: we should use more complex redirects here, but we're just going to send back to / for now
     if (!this.get('accessControl.hasRespondRemediationAccess')) {
-      this.transitionTo('protected');
+      this.transitionTo('index');
     }
   }
 });

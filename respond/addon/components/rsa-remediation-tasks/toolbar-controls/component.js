@@ -9,7 +9,7 @@ import service from 'ember-service/inject';
  * @public
  */
 export default Component.extend({
-
+  accessControl: service(),
   i18n: service(),
 
   @empty('itemsSelected') hasNoSelections: true,

@@ -2,8 +2,12 @@
 <p class="created">
   <label>{{t 'respond.incident.created'}}:</label>
   <span>
-    {{rsa-content-datetime timestamp=info.created asTimeAgo=false displayTime=true displayDate=true
-                           displayMilliseconds=false}}
+    {{rsa-content-datetime
+      timestamp=info.created
+      asTimeAgo=false
+      displayTime=true
+      displayDate=true
+      displayMilliseconds=false}}
   </span>
 </p>
 
@@ -13,8 +17,12 @@
   <p class="sealed has-expiration">
     <label>{{t (if info.sealed 'respond.incident.sealed' 'respond.incident.sealsAt')}}:</label>
     <span>
-      {{rsa-content-datetime timestamp=info.timeWindowExpiration asTimeAgo=false displayTime=true displayDate=true
-                             displayMilliseconds=false}}
+      {{rsa-content-datetime
+        timestamp=info.timeWindowExpiration
+        asTimeAgo=false
+        displayTime=true
+        displayDate=true
+        displayMilliseconds=false}}
     </span>
   </p>
 
@@ -25,7 +33,6 @@
     <label>{{t 'respond.incident.sealed'}}:</label>
     <span>{{if info.sealed 'Yes' 'No'}}</span>
   </p>
-
 {{/if}}
 
 {{! Created by (rule name or user name)}}

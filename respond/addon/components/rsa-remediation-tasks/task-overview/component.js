@@ -1,6 +1,7 @@
 import Component from 'ember-component';
 import computed from 'ember-computed-decorators';
 import connect from 'ember-redux/components/connect';
+import service from 'ember-service/inject';
 
 const closedStatuses = ['REMEDIATED', 'RISK_ACCEPTED', 'NOT_APPLICABLE'];
 
@@ -20,6 +21,7 @@ const stateToComputed = ({ respond: { dictionaries } }) => {
 const RemediationTaskOverview = Component.extend({
   tagName: 'vbox',
   classNames: ['rsa-remediation-task-overview'],
+  accessControl: service(),
 
   /**
    * Returns true if the status is one of the open types, or false if one of the closed types (Remediated, Risk

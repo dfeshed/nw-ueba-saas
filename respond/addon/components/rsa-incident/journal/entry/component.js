@@ -4,6 +4,7 @@ import Notifications from 'respond/mixins/notifications';
 import Confirmable from 'respond/mixins/confirmable';
 import { deleteJournalEntry, updateJournalEntry } from 'respond/actions/creators/journal-creators';
 import layout from './template';
+import service from 'ember-service/inject';
 
 const dispatchToActions = (dispatch) => {
   return {
@@ -27,7 +28,7 @@ const dispatchToActions = (dispatch) => {
 const JournalEntry = Component.extend(Notifications, Confirmable, {
   layout,
   classNames: ['rsa-incident-journal-entry'],
-
+  accessControl: service(),
   /**
    * The journal entry data.
    * @type { author: String, created: String, notes: String, milestone: String }

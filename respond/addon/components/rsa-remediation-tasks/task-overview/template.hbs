@@ -18,36 +18,44 @@
   {{! Priority}}
   <div class="metadata">
     <label>{{t 'respond.remediationTasks.list.priority'}}:</label>
-    <div class="edit-button">
-      {{#power-select
-        options=priorityTypes
-        selected=info.priority
-        matchTriggerWidth=false
-        searchEnabled=false
-        disabled=(not isOpen)
-        triggerComponent=(component "respond-common/button-trigger"
-          label=(t (concat 'respond.priority.' info.priority)))
-        onchange=(action 'selectionChange' info.id 'priority') as |option|}}
-        {{t (concat 'respond.priority.' option)}}
-      {{/power-select}}
-    </div>
+    {{#if accessControl.respondCanManageRemediation}}
+      <div class="edit-button">
+        {{#power-select
+          options=priorityTypes
+          selected=info.priority
+          matchTriggerWidth=false
+          searchEnabled=false
+          disabled=(not isOpen)
+          triggerComponent=(component "respond-common/button-trigger"
+            label=(t (concat 'respond.priority.' info.priority)))
+          onchange=(action 'selectionChange' info.id 'priority') as |option|}}
+          {{t (concat 'respond.priority.' option)}}
+        {{/power-select}}
+      </div>
+    {{else}}
+      <span>{{t (concat 'respond.priority.' info.priority)}}</span>
+    {{/if}}
   </div>
 
   {{! Status}}
   <div class="metadata">
     <label>{{t 'respond.remediationTasks.list.status'}}:</label>
-    <div class="edit-button">
-      {{#power-select
-        options=remediationStatusTypes
-        selected=info.status
-        matchTriggerWidth=false
-        searchEnabled=false
-        triggerComponent=(component "respond-common/button-trigger"
-          label=(t (concat 'respond.status.' info.status)))
-        onchange=(action 'selectionChange' info.id 'status') as |option|}}
-        {{t (concat 'respond.status.' option)}}
-      {{/power-select}}
-    </div>
+    {{#if accessControl.respondCanManageRemediation}}
+      <div class="edit-button">
+        {{#power-select
+          options=remediationStatusTypes
+          selected=info.status
+          matchTriggerWidth=false
+          searchEnabled=false
+          triggerComponent=(component "respond-common/button-trigger"
+            label=(t (concat 'respond.status.' info.status)))
+          onchange=(action 'selectionChange' info.id 'status') as |option|}}
+          {{t (concat 'respond.status.' option)}}
+        {{/power-select}}
+      </div>
+    {{else}}
+      <span>{{t (concat 'respond.status.' info.status)}}</span>
+    {{/if}}
   </div>
 
   {{! Assignee}}
@@ -56,7 +64,7 @@
     <span>
       {{respond-common/editable-field
         value=(readonly info.assignee)
-        isDisabled=(not isOpen)
+        isDisabled=(or (not isOpen) (not accessControl.respondCanManageRemediation))
         placeholder=(unless info.assignee (t 'respond.assignee.none'))
         onFieldChange=(action 'editableFieldChange' info.id 'assignee')
       }}
@@ -68,6 +76,7 @@
     <label>{{t 'respond.remediationTasks.list.description'}}</label>
     {{respond-common/editable-field
       type='textarea'
+      isDisabled=(not accessControl.respondCanManageRemediation)
       value=(readonly info.description)
       placeholder=(t 'respond.remediationTasks.noDescription')
       onFieldChange=(action 'editableFieldChange' info.id 'description')

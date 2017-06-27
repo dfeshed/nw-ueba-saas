@@ -4,6 +4,11 @@ $addNewTaskControlHeight: 58px;
 .rsa-journal-and-tasks {
   height: 100%;
 
+  centered {
+    height: 100%;
+    font-style: italic;
+  }
+
   &__toolbar {
     border-bottom: 1px solid rsa-color(gray,light,$rsa-nearly-transparent);
 
@@ -18,11 +23,6 @@ $addNewTaskControlHeight: 58px;
   .liquid-child {
     height: 100%;
 
-    centered {
-      height: 100%;
-      font-style: italic;
-    }
-
     > .rsa-form-button-wrapper {
       margin: rsa-whitespace();
     }
@@ -31,6 +31,10 @@ $addNewTaskControlHeight: 58px;
       height: calc(100% - #{$headerHeight} - #{$addNewTaskControlHeight});
       overflow: hidden;
       overflow-y: auto;
+
+      &.read-only {
+        height: calc(100% - #{$headerHeight});
+      }
     }
   }
 }

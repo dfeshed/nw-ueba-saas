@@ -494,6 +494,7 @@ export default {
       openFor: 'ja_Opened',
       newTaskFor: 'ja_New Remediation Task for',
       delete: 'ja_Delete Task',
+      noAccess: 'ja_You do not have permissions to view remediation tasks',
       actions: {
         actionMessages: {
           deleteWarning: 'ja_Deleting a Remediation Task from NetWitness will not delete it from other systems. Please note that it will be your responsibility ' +
@@ -732,7 +733,8 @@ export default {
       loading: 'ja_Loading journal entries',
       noEntries: 'ja_There are no journal entries for {{incidentId}}',
       delete: 'ja_Delete Entry',
-      deleteConfirmation: 'ja_Are you sure you want to delete this journal entry? This action cannot be reversed.'
+      deleteConfirmation: 'ja_Are you sure you want to delete this journal entry? This action cannot be reversed.',
+      noAccess: 'ja_You do not have permissions to view journal entries'
     },
     milestones: {
       title: 'ja_Milestones',

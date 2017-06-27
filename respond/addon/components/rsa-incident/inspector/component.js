@@ -8,6 +8,7 @@ import Component from 'ember-component';
 import FLASH_MESSAGE_TYPES from 'respond/utils/flash-message-types';
 import Notifications from 'respond/mixins/notifications';
 import $ from 'jquery';
+import service from 'ember-service/inject';
 
 const stateToComputed = (state) => {
   const { respond: { dictionaries, users, incident: { id, info, infoStatus, viewMode, inspectorWidth } } } = state;
@@ -50,6 +51,7 @@ const IncidentInspector = Component.extend(Notifications, {
   tagName: 'article',
   classNames: ['rsa-incident-inspector'],
   classNameBindings: ['isResizing'],
+  accessControl: service(),
   incidentId: null,
   info: null,
   infoStatus: null,

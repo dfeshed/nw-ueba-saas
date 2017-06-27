@@ -3,6 +3,7 @@
   {{respond-common/editable-field
     value=info.name
     placeholder=(t 'respond.empty')
+    isDisabled=(not accessControl.respondCanManageRemediation)
     onFieldChange=(action 'updateTaskName' info.id 'name')
   }}
 </div>

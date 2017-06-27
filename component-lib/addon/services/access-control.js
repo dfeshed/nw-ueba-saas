@@ -28,11 +28,6 @@ export default Service.extend({
   // Begin respond access permissions
 
   @computed('roles.[]')
-  respondCanManageIncidents(roles) {
-    return this._hasPermission(roles, 'respond-server.incident.manage');
-  },
-
-  @computed('roles.[]')
   hasRespondAccess(roles) {
     return this._hasPermission(roles, 'respond-server');
   },
@@ -50,6 +45,41 @@ export default Service.extend({
   @computed('roles.[]')
   hasRespondRemediationAccess(roles) {
     return this._hasPermission(roles, 'respond-server.remediation');
+  },
+
+  @computed('roles.[]')
+  respondCanManageIncidents(roles) {
+    return this._hasPermission(roles, 'respond-server.incident.manage');
+  },
+
+  @computed('roles.[]')
+  respondCanDeleteIncidents(roles) {
+    return this._hasPermission(roles, 'respond-server.incident.delete');
+  },
+
+  @computed('roles.[]')
+  respondCanManageAlerts(roles) {
+    return this._hasPermission(roles, 'respond-server.alert.manage');
+  },
+
+  @computed('roles.[]')
+  respondCanDeleteAlerts(roles) {
+    return this._hasPermission(roles, 'respond-server.alert.delete');
+  },
+
+  @computed('roles.[]')
+  respondCanManageRemediation(roles) {
+    return this._hasPermission(roles, 'respond-server.remediation.manage');
+  },
+
+  @computed('roles.[]')
+  hasRespondJournalAccess(roles) {
+    return this._hasPermission(roles, 'respond-server.journal');
+  },
+
+  @computed('roles.[]')
+  respondCanManageJournal(roles) {
+    return this._hasPermission(roles, 'respond-server.journal.manage');
   },
 
   // End respond access permissions

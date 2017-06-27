@@ -87,7 +87,11 @@ $inputHeight: 33px;
 
     }
 
-    &.is-disabled {
+    &.textarea span.edit-field {
+      height: inherit;
+    }
+
+    &.is-disabled, &.is-disabled.textarea:hover {
       .editable-field__value {
         cursor: default;
         border-color: transparent;

@@ -5,6 +5,7 @@ import { updateItem, deleteItem } from 'respond/actions/creators/remediation-tas
 import Confirmable from 'respond/mixins/confirmable';
 import Notifications from 'respond/mixins/notifications';
 import FLASH_MESSAGE_TYPES from 'respond/utils/flash-message-types';
+import service from 'ember-service/inject';
 
 const closedStatuses = ['REMEDIATED', 'RISK_ACCEPTED', 'NOT_APPLICABLE'];
 
@@ -50,6 +51,7 @@ const dispatchToActions = (dispatch) => {
 
 const RemediationTask = Component.extend(Notifications, Confirmable, {
   classNames: ['remediation-task'],
+  accessControl: service(),
   /**
    * Returns true if the status is one of the open types, or false if one of the closed types (Remediated, Risk
    * Accepted, or Not Applicable)
