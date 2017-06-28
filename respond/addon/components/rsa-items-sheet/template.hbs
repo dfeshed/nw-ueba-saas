@@ -1,6 +1,5 @@
 {{#if totalCount}}
 
-  {{log 'shouldShowDetails' shouldShowDetails}}
   {{#liquid-bind shouldShowDetails
     use=(if shouldShowDetails 'toLeft' 'toRight')
     as |currentShouldShowDetails|

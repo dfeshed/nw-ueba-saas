@@ -20,4 +20,8 @@ export default function() {
 
   // Also update the component's `zoom` attr, so we can use it in classNameBindings to enable zoom-specific CSS rules.
   this.set('zoom', event.transform.k.toFixed(1));
+
+  if (!this.get('isCentering')) {
+    this.set('userHasZoomed', true);
+  }
 }

@@ -1,7 +1,6 @@
 import Mixin from 'ember-metal/mixin';
 import run, { next, debounce } from 'ember-runloop';
 import { isEmpty } from 'ember-utils';
-import computed from 'ember-computed-decorators';
 
 /* global addResizeListener */
 /* global removeResizeListener */
@@ -59,28 +58,28 @@ export default Mixin.create({
   sizeAttr: 'size',
 
   /**
-   * The DOM element whose resize events to listen for.
-   * @type {Object}
+   * Returns the DOM element whose resize events to listen for.
+   * @returns {Object}
    * @private
    */
-  @computed('element', 'sizeSelector')
-  sizeElement(element, sizeSelector) {
+  getSizeElement() {
+    const { element, sizeSelector } = this.getProperties('element', 'sizeSelector');
     return isEmpty(sizeSelector) ? element : (element && this.$(sizeSelector)[0]);
   },
 
   /**
-   * A callback function that reads the size properties from `sizeElement` and writes them to the attrs
+   * Returns a callback function that reads the size properties from `sizeElement` and writes them to the attrs
    * of this Component.
-   * @type {Function}
+   * @returns {Function}
    * @private
    */
-  @computed('sizeElement', 'sizeDebounce')
-  sizeCallback(sizeElement, sizeDebounce) {
+  getSizeCallback() {
+    const { sizeDebounce, sizeAttr } = this.getProperties('sizeDebounce', 'sizeAttr');
+    const sizeElement = this.getSizeElement();
     if (!sizeElement) {
       return null;
     }
     const update = function() {
-      const sizeAttr = this.get('sizeAttr');
       this.set(sizeAttr, {
         innerWidth: sizeElement.clientWidth,
         innerHeight: sizeElement.clientHeight,
@@ -101,8 +100,9 @@ export default Mixin.create({
 
   // Attach a resize listener, and call it manually the 1st time.
   initSizeAttr() {
-    const { sizeCallback, sizeElement } = this.getProperties('sizeCallback', 'sizeElement');
-    if (!sizeCallback) {
+    const sizeCallback = this.getSizeCallback();
+    const sizeElement = this.getSizeElement();
+    if (!sizeCallback || !sizeElement) {
       return;
     }
 
@@ -111,11 +111,22 @@ export default Mixin.create({
 
     // Fire it once manually to initialize the size attrs.
     sizeCallback();
+
+    this.set('sizeAttrInitialized', {
+      sizeElement,
+      sizeCallback
+    });
   },
 
   // Detach the last resize listener.
   teardownSizeAttr() {
-    const { sizeCallback, sizeElement } = this.getProperties('sizeCallback', 'sizeElement');
+    // If a resize listener wasn't already attached, nothing to do here.
+    // For example, if `autoEnableSizeAttr` was `false`, but then set to `true` long after didInsertElement.
+    if (!this.get('sizeAttrInitialized')) {
+      return;
+    }
+
+    const { sizeCallback, sizeElement } = this.get('sizeAttrInitialized');
     if (sizeElement && sizeCallback) {
       removeResizeListener(sizeElement, sizeCallback);
     }

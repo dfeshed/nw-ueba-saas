@@ -45,8 +45,10 @@ export default Component.extend(HasSizeAttr, Clickable, {
 
   // Enable size attrs only if this component will be measured.
   // @see respond/mixins/dom/has-size-attrs
-  @alias('isSample')
-  autoEnableSizeAttr: false,
+  @computed('isSample', 'index')
+  autoEnableSizeAttr(isSample, index) {
+    return !!isSample && (index === 0);
+  },
 
   // Set target attr for size measurements.
   // @see respond/mixins/dom/has-size-attrs

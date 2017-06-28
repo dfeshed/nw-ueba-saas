@@ -69,8 +69,12 @@ export default Component.extend({
   didReceiveAttrs() {
     const items = this.get('items');
     if (items !== this._lastItems) {
-      if (this.get('selectedItem')) {
-        this.set('selectedItem', null);
+      const selectedItem = this.get('selectedItem');
+      if (selectedItem) {
+        const found = items && items.includes(selectedItem);
+        if (!found) {
+          this.set('selectedItem', null);
+        }
       }
       this._lastItems = items;
     }

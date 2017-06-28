@@ -15,9 +15,7 @@ import run from 'ember-runloop';
 import $ from 'jquery';
 import { max } from 'd3-array';
 import { scaleLinear } from 'd3-scale';
-
-/* global addResizeListener */
-/* global removeResizeListener */
+import { isEmpty } from 'ember-utils';
 
 /**
  * @class d3 Fast Force Layout component
@@ -260,6 +258,34 @@ export default Component.extend({
   zoom: 1,
 
   /**
+   * Indicates whether or not the end-user has manually panned/zoomed this UI.
+   *
+   * When we run the simulation, we typically auto-center it once it has cooled down sufficiently. However, we don't
+   * want to auto-center it if the user has already manually panned/zoomed it; we want to preserve their view.
+   * Therefore we use this boolean to record that the user has manually panned/zoomed.
+   *
+   * @type {boolean}
+   * @default false
+   * @readonly
+   * @private
+   */
+  userHasZoomed: false,
+
+  /**
+   * Indicates whether or not this component is automatically centering its viewport.
+   *
+   * If `autoCenter` is truthy, this component will automatically pan & zoom to center its nodes during the force-layout
+   * simulation. During those times, `isCentering` is set to true, so that our pan/zoom handlers can detect that
+   * the center operation was initiated by the component itself, not by the end-user.
+   *
+   * @type {boolean}
+   * @default false
+   * @readonly
+   * @private
+   */
+  isCentering: false,
+
+  /**
    * Indicates whether or not the user is currently panning and/or zooming the visualization.
    *
    * @type {number}
@@ -288,11 +314,15 @@ export default Component.extend({
       return this._filter;
     },
     set(value) {
+      const was = this._filter;
       this._filter = value;
 
-      // Must use `run.next` to ensure that when the called function calls `this.get('data')`, this function will
-      // have already returned and Ember will have updated the `data` property value.
-      run.next(this, '_filterDidChange');
+      const changed = (was !== value) && !(isEmpty(was) && isEmpty(value));
+      if (changed) {
+        // Must use `run.next` to ensure that when the called function calls `this.get('data')`, this function will
+        // have already returned and Ember will have updated the `data` property value.
+        run.next(this, '_filterDidChange');
+      }
       return this._filter;
     }
   },
@@ -462,7 +492,7 @@ export default Component.extend({
     // Optimization: Cache the result (if any) so that tick handler can use it subsequently.
     this.joined = this.get('dataJoin').apply(this, []);
 
-    this._filterDidChange();
+    this._filterDidChange(true);
 
     // Feed the data to the simulation.
     simulation
@@ -477,9 +507,13 @@ export default Component.extend({
   /**
    * Applies filter to current `data` by updating `isHidden` property of all `data.nodes` & `data.links`.
    * Typically called after either `filter` changes or `data` changes.
+   * @param {boolean} [skipCentering=false] If true, indicates that centering is not needed. Typically centering is
+   * done here when `filter` did change but not when `data` did change, because a `filter` change is usually triggered
+   * by a user action (e.g., click) whereas a `data` change can happen each time new data points stream in from server,
+   * in which case the force-layout simulation will run & take care of the layout & centering.
    * @private
    */
-  _filterDidChange() {
+  _filterDidChange(skipCentering) {
     const data = this.get('data');
     if (!data) {
       return;
@@ -508,7 +542,7 @@ export default Component.extend({
 
     // Update the DOM to sync with the updated data.
     this.get('filterJoin').apply(this, []);
-    if (this.get('autoCenter')) {
+    if (this.get('autoCenter') && !skipCentering) {
       this.center();
     }
   },
@@ -643,33 +677,13 @@ export default Component.extend({
     this.simulation = this.nodesLayer = this.linksLayer = this.centeringElement = this.svg = this.joined = this.zoomBehavior = null;
   },
 
-  // Attaches resize event listener if auto-centering is enabled.
-  _initResizer() {
-    if (this.get('autoCenter')) {
-      this._resizeCallback = () => {
-        run.throttle(this, 'center', 250, false);
-      };
-      addResizeListener(this.element, this._resizeCallback);
-    }
-  },
-
-  // Detaches resize event listener.
-  _teardownResizer() {
-    if (this._resizeCallback) {
-      removeResizeListener(this.element, this._resizeCallback);
-      this._resizeCallback = null;
-    }
-  },
-
   didInsertElement() {
     this._super(...arguments);
     run.schedule('afterRender', this, '_initSimulation');
-    run.schedule('afterRender', this, '_initResizer');
   },
 
   willDestroyElement() {
     this._teardownSimulation();
-    this._teardownResizer();
     this._super(...arguments);
   }
 });

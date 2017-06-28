@@ -77,16 +77,26 @@ export default function(easing = easeCubicInOut, duration = 300) {
 
   // Apply the transform to the selection that the zoom behavior is wired to, possibly with a transition.
   let selection = this.svg;
-  if (transition && ((easing === 'none') || !duration)) {
+  const useTransition = !!transition && (easing !== 'none') && !!duration;
+  if (!useTransition) {
 
     // Stop any previous transition that may still be on-going.
     selection.interrupt();
+
   } else {
 
     // Overwrites any previous transition that may still be on-going.
     selection = selection.transition()
       .ease(easing)
-      .duration(duration);
+      .duration(duration)
+      .on('end interrupt', () => {
+        this.set('isCentering', false);
+      });
   }
+
+  this.set('isCentering', true);
   this.zoomBehavior.transform(selection, transform);
+  if (!useTransition) {
+    this.set('isCentering', false);
+  }
 }

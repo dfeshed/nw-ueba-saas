@@ -73,3 +73,31 @@ test('it renders the table view initially when told there will be multiple items
       assert.notOk($details.length, 'Expected to NOT find detais view DOM node');
     });
 });
+
+test('it preserves the selected item when the items list is reset to items that does include the selected item', function(assert) {
+  const item3 = { id: 3 };
+
+  this.setProperties({
+    items: [ item1, item2 ],
+    totalCount: 2,
+    selectedItem: item2
+  });
+  this.render(hbs`{{rsa-items-sheet items=items totalCount=totalCount selectedItem=selectedItem}}`);
+  return wait()
+    .then(() => {
+      const $table = this.$('.rsa-items-sheet__table-view');
+      assert.notOk($table.length, 'Expected to not find data table DOM node');
+
+      const $details = this.$('.rsa-items-sheet__details-view');
+      assert.ok($details.length, 'Expected to find detais view DOM node');
+
+      this.setProperties({
+        items: [ item2, item3 ],
+        totalCount: 2
+      });
+      return wait();
+    })
+    .then(() => {
+      assert.equal(this.get('selectedItem'), item2, 'Expected selectedItem to be preserved');
+    });
+});

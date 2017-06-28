@@ -62,7 +62,7 @@ export default function() {
   // (a) the user is dragging a node; or
   // (b) the user has previously dragged a node.
   // If dragging is occuring or has occured, autoCenter could disrupt the user's workflow.
-  if (this.get('autoCenter') && alphaLevelChanged && !isDragging && !this.get('dataHasBeenDragged')) {
+  if (this.get('autoCenter') && alphaLevelChanged && !isDragging && !this.get('dataHasBeenDragged') && !this.get('userHasZoomed')) {
     run(this, 'center');
   }
 }
