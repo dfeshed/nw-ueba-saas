@@ -2,12 +2,12 @@
   "migration_steps": [
     {
       "filePath": "mongo_set_config.sh",
-      "executor": "defualt",
-      "description": "Setting mongo aythenication and users"
+      "executor": "default",
+      "description": "Setting mongo authenication and users"
     },
     {
       "filePath": "config_server.sh",
-      "executor": "defualt",
+      "executor": "default",
       "description": "Installing configuration server and service"
     }
   ]
