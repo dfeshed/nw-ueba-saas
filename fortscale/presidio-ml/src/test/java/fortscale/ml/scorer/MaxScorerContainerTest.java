@@ -3,10 +3,10 @@ package fortscale.ml.scorer;
 import fortscale.domain.feature.score.FeatureScore;
 import fortscale.ml.scorer.params.MaxScorerContainerParams;
 import fortscale.ml.scorer.record.JsonAdeRecord;
+import fortscale.ml.scorer.record.JsonAdeRecordReader;
 import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
-import presidio.ade.domain.record.AdeRecord;
 
 import java.time.Instant;
 
@@ -15,10 +15,10 @@ public class MaxScorerContainerTest {
         return new MaxScorerContainer(params.getName(), params.getScorerList());
     }
 
-    protected AdeRecord buildEventMessage(String fieldName, Object fieldValue) {
+    protected JsonAdeRecordReader buildJsonAdeRecordReader(String fieldName, Object fieldValue) {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put(fieldName, fieldValue);
-        return new JsonAdeRecord(Instant.now(), jsonObject);
+        return new JsonAdeRecordReader(new JsonAdeRecord(Instant.now(), jsonObject));
     }
 
     public static void assertScorerParams(MaxScorerContainerParams params, MaxScorerContainer scorer) {
@@ -26,10 +26,12 @@ public class MaxScorerContainerTest {
         Assert.assertEquals(params.getScorerList(), scorer.getScorers());
     }
 
+    private void testScore(
+            MaxScorerContainer scorer, JsonAdeRecordReader jsonAdeRecordReader,
+            MaxScorerContainerParams params, Double expectedScore) throws Exception {
 
-    private void testScore(MaxScorerContainer scorer, AdeRecord eventMessage, MaxScorerContainerParams params, Double expectedScore) throws Exception {
         assertScorerParams(params, scorer);
-        FeatureScore score = scorer.calculateScore(eventMessage);
+        FeatureScore score = scorer.calculateScore(jsonAdeRecordReader);
         Assert.assertNotNull(score);
         Assert.assertEquals(expectedScore, score.getScore(), 0.000000001);
     }
@@ -79,7 +81,6 @@ public class MaxScorerContainerTest {
     // TESTING calculateScore
     //==================================================================================================================
 
-
     @Test
     public void test_build_scorer_with_two_scores() throws Exception {
         MaxScorerContainerParams params = new MaxScorerContainerParams()
@@ -87,7 +88,7 @@ public class MaxScorerContainerTest {
                 .addScorer(new SimpleTestScorer(90.0, "second scorer"));
 
         MaxScorerContainer scorer = createMaxScorerContainer(params);
-        testScore(scorer, buildEventMessage("field1", "value1"), params, 100.0);
+        testScore(scorer, buildJsonAdeRecordReader("field1", "value1"), params, 100.0);
     }
 
     @Test
@@ -96,9 +97,8 @@ public class MaxScorerContainerTest {
                 .addScorer(new SimpleTestScorer(90.0, "first scorer"));
 
         MaxScorerContainer scorer = createMaxScorerContainer(params);
-        testScore(scorer, buildEventMessage("field1", "value1"), params, 90.0);
+        testScore(scorer, buildJsonAdeRecordReader("field1", "value1"), params, 90.0);
     }
-
 
     @Test
     public void test_build_scorer_with_two_scores_reversed() throws Exception {
@@ -107,7 +107,7 @@ public class MaxScorerContainerTest {
                 .addScorer(new SimpleTestScorer(100.0, "second scorer"));
 
         MaxScorerContainer scorer = createMaxScorerContainer(params);
-        testScore(scorer, buildEventMessage("field1", "value1"), params, 100.0);
+        testScore(scorer, buildJsonAdeRecordReader("field1", "value1"), params, 100.0);
     }
 
     @Test
@@ -118,7 +118,7 @@ public class MaxScorerContainerTest {
                 .addScorer(new SimpleTestScorer(50.0, "third scorer"));
 
         MaxScorerContainer scorer = createMaxScorerContainer(params);
-        testScore(scorer, buildEventMessage("field1", "value1"), params, 100.0);
+        testScore(scorer, buildJsonAdeRecordReader("field1", "value1"), params, 100.0);
     }
 
     @Test
@@ -129,6 +129,6 @@ public class MaxScorerContainerTest {
                 .addScorer(new SimpleTestScorer(100.0, "third scorer"));
 
         MaxScorerContainer scorer = createMaxScorerContainer(params);
-        testScore(scorer, buildEventMessage("field1", "value1"), params, 100.0);
+        testScore(scorer, buildJsonAdeRecordReader("field1", "value1"), params, 100.0);
     }
 }

@@ -7,12 +7,8 @@ import fortscale.ml.model.GaussianPriorModel;
 import fortscale.ml.model.Model;
 import fortscale.ml.model.cache.EventModelsCacheService;
 import fortscale.ml.scorer.algorithms.GaussianModelScorerAlgorithm;
-import fortscale.utils.factory.FactoryService;
-import fortscale.utils.recordreader.RecordReader;
-import presidio.ade.domain.record.AdeRecord;
 
 import java.util.List;
-
 
 public class GaussianModelScorer extends AbstractModelScorer {
     private GaussianModelScorerAlgorithm algorithm;
@@ -27,16 +23,15 @@ public class GaussianModelScorer extends AbstractModelScorer {
                                int enoughNumOfSamplesToInfluence,
                                boolean isUseCertaintyToCalculateScore,
                                int globalInfluence,
-                               FactoryService<RecordReader<AdeRecord>> recordReaderFactoryService,
                                EventModelsCacheService eventModelsCacheService) {
 
-        super(scorerName, modelName, additionalModelNames, contextFieldNames, additionalContextFieldNames,
-                featureName, minNumOfSamplesToInfluence, enoughNumOfSamplesToInfluence, isUseCertaintyToCalculateScore,
-                recordReaderFactoryService, eventModelsCacheService);
+        super(scorerName, modelName, additionalModelNames, contextFieldNames, additionalContextFieldNames, featureName,
+                minNumOfSamplesToInfluence, enoughNumOfSamplesToInfluence, isUseCertaintyToCalculateScore, eventModelsCacheService);
 
         if (additionalModelNames.size() != 1) {
             throw new IllegalArgumentException(this.getClass().getSimpleName() + " expects to get one additional model name");
         }
+
         algorithm = new GaussianModelScorerAlgorithm(globalInfluence);
     }
 
@@ -57,8 +52,7 @@ public class GaussianModelScorer extends AbstractModelScorer {
                     ".calculateScore expects to get a feature of type " + FeatureNumericValue.class.getSimpleName());
         }
 
-        double value = (double) ((FeatureNumericValue) feature.getValue()).getValue();
-
-        return algorithm.calculateScore(value, (ContinuousDataModel) model, (GaussianPriorModel) additionalModels.get(0));
+        double value = (double)((FeatureNumericValue)feature.getValue()).getValue();
+        return algorithm.calculateScore(value, (ContinuousDataModel)model, (GaussianPriorModel)additionalModels.get(0));
     }
 }

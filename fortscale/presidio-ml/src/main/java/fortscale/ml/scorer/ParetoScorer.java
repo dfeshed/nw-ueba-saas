@@ -1,7 +1,7 @@
 package fortscale.ml.scorer;
 
 import fortscale.domain.feature.score.FeatureScore;
-import presidio.ade.domain.record.AdeRecord;
+import presidio.ade.domain.record.AdeRecordReader;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -12,18 +12,18 @@ public class ParetoScorer extends ScorerContainer {
 
     private double highestScoreWeight;
 
-    public ParetoScorer(String name, List<Scorer> scorers,  double highestScoreWeight) {
+    public ParetoScorer(String name, List<Scorer> scorers, double highestScoreWeight) {
         super(name, scorers);
         this.highestScoreWeight = highestScoreWeight;
     }
 
     @Override
-    public FeatureScore calculateScore(AdeRecord record) {
+    public FeatureScore calculateScore(AdeRecordReader adeRecordReader) {
         List<FeatureScore> featureScores = new ArrayList<>();
         List<Double> sortedScores = new ArrayList<>();
 
         for (Scorer scorer : scorers) {
-            FeatureScore featureScore = scorer.calculateScore(record);
+            FeatureScore featureScore = scorer.calculateScore(adeRecordReader);
             if (featureScore != null) {
                 featureScores.add(featureScore);
                 sortedScores.add(featureScore.getScore());
@@ -45,4 +45,3 @@ public class ParetoScorer extends ScorerContainer {
         return highestScoreWeight;
     }
 }
-

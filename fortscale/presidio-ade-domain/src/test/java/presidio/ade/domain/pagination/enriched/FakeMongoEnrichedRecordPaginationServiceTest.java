@@ -1,4 +1,4 @@
-package presidio.ade.domain.store.enriched;
+package presidio.ade.domain.pagination.enriched;
 
 import fortscale.utils.pagination.PageIterator;
 import fortscale.utils.test.category.ModuleTestCategory;
@@ -15,7 +15,9 @@ import presidio.ade.domain.pagination.enriched.EnrichedRecordPaginationService;
 import presidio.ade.domain.record.enriched.DataSourceToAdeEnrichedRecordClassResolver;
 import presidio.ade.domain.record.enriched.DataSourceToAdeEnrichedRecordClassResolverConfig;
 import presidio.ade.domain.record.enriched.EnrichedDlpFileRecord;
-import presidio.ade.domain.store.enriched.groups.EnrichedRecordPaginationServiceGroup;
+import presidio.ade.domain.pagination.enriched.groups.EnrichedRecordPaginationServiceGroup;
+import presidio.ade.domain.store.enriched.EnrichedDataStoreImplMongo;
+import presidio.ade.domain.store.enriched.EnrichedDataToCollectionNameTranslator;
 
 import java.time.Instant;
 import java.util.*;
@@ -38,7 +40,7 @@ public class FakeMongoEnrichedRecordPaginationServiceTest {
     private DataSourceToAdeEnrichedRecordClassResolver dataSourceToAdeEnrichedRecordClassResolver;
 
 
-    private static final int PAGE_SIZE = 3;
+    private static final int PAGE_SIZE = 4;
     private static final int MAX_GROUP_SIZE = 2;
     private static final Instant EVENT_DATE = Instant.ofEpochSecond(1451606400);
     private static final Instant START = Instant.ofEpochSecond(1388534400);

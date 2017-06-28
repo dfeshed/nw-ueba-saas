@@ -22,7 +22,6 @@ import fortscale.ml.scorer.config.ModelInfo;
 import fortscale.ml.scorer.record.JsonAdeRecord;
 import fortscale.ml.scorer.record.JsonAdeRecordReader;
 import fortscale.utils.factory.FactoryService;
-import fortscale.utils.recordreader.RecordReader;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,24 +32,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
-import presidio.ade.domain.record.AdeRecord;
+import presidio.ade.domain.record.AdeRecordReader;
 
 import java.time.Instant;
 import java.util.*;
 
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(locations = "classpath*:META-INF/spring/scorer-factory-tests-context.xml")
 public class ModelBasedScoreMapperFactoryTest {
-
 	@MockBean
 	ModelConfService modelConfService;
-
-	@MockBean
-	FactoryService<RecordReader<AdeRecord>> recordReaderFactoryService;
 
 	@MockBean
 	ModelsCacheService modelCacheService;
@@ -68,43 +62,37 @@ public class ModelBasedScoreMapperFactoryTest {
 	private FactoryService<IContextSelector> contextSelectorFactoryService;
 
 	private Scorer baseScorerMock = Mockito.mock(Scorer.class);
-
 	private IScorerConf baseScorerConf;
 
 	@Before
 	public void setUp() {
-
 		baseScorerConf = new IScorerConf() {
-			@Override public String getName() {
+			@Override
+			public String getName() {
 				return "base-scorer";
 			}
-			@Override public String getFactoryName() {
+
+			@Override
+			public String getFactoryName() {
 				return "baseScorerFactoryName";
 			}
 		};
 	}
 
+	@Test(expected = IllegalArgumentException.class)
+	public void shouldFailGivenNull() {
+		modelBasedScoreMapperFactory.getProduct(null);
+	}
 
-
-    @Test(expected = IllegalArgumentException.class)
-    public void shouldFailGivenNull() {
-        modelBasedScoreMapperFactory.getProduct(null);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void shouldFailGivenIllegalConfType() {
-        modelBasedScoreMapperFactory.getProduct(() -> "factory-name");
-    }
+	@Test(expected = IllegalArgumentException.class)
+	public void shouldFailGivenIllegalConfType() {
+		modelBasedScoreMapperFactory.getProduct(() -> "factory-name");
+	}
 
 	public ModelBasedScoreMapper createScorer(String scorerName, Map<Double, Double> mapping, boolean isGlobal) {
 		scorerFactoryService.register(baseScorerConf.getFactoryName(), factoryConfig -> baseScorerMock);
-
 		String modelName = "model-name";
-		ModelBasedScoreMapperConf conf = new ModelBasedScoreMapperConf(
-				scorerName,
-				new ModelInfo(modelName),
-				baseScorerConf
-		);
+		ModelBasedScoreMapperConf conf = new ModelBasedScoreMapperConf(scorerName, new ModelInfo(modelName), baseScorerConf);
 
 		AbstractDataRetrieverConf dataRetrieverConf = new AbstractDataRetrieverConf(10, Collections.emptyList()) {
 			@Override
@@ -112,6 +100,7 @@ public class ModelBasedScoreMapperFactoryTest {
 				return "dummy-data-retriever-factory-name";
 			}
 		};
+
 		IContextSelectorConf contextSelectorConf = () -> "dummy-context-selector-factory-name";
 		IModelBuilderConf modelBuilderConf = () -> "dummy-model-factory-name";
 		ModelConf modelConf = new ModelConf(
@@ -122,6 +111,7 @@ public class ModelBasedScoreMapperFactoryTest {
 		);
 		when(modelConfService.getModelConf(modelName)).thenReturn(modelConf);
 		String contextFieldName = "context field name";
+
 		dataRetrieverFactoryService.register(modelConf.getDataRetrieverConf().getFactoryName(),
 				factoryConfig -> new AbstractDataRetriever(dataRetrieverConf) {
 					@Override
@@ -149,18 +139,15 @@ public class ModelBasedScoreMapperFactoryTest {
 						return null;
 					}
 				});
+
 		if (!isGlobal) {
 			contextSelectorFactoryService.register(modelConf.getContextSelectorConf().getFactoryName(),
 					factoryConfig -> (startTime, endTime) -> Sets.newHashSet("some_user_context"));
 		}
 
-		when(recordReaderFactoryService.getDefaultProduct(anyString())).thenReturn(new JsonAdeRecordReader());
-
 		ScoreMappingModel model = new ScoreMappingModel();
 		model.init(mapping);
-		when(modelCacheService.getModel(Mockito.anyString(), Mockito.anyMapOf(String.class, String.class), Mockito.any(Instant.class)))
-				.thenReturn(model);
-
+		when(modelCacheService.getModel(Mockito.anyString(), Mockito.anyMapOf(String.class, String.class), Mockito.any(Instant.class))).thenReturn(model);
 		return modelBasedScoreMapperFactory.getProduct(conf);
 	}
 
@@ -176,29 +163,29 @@ public class ModelBasedScoreMapperFactoryTest {
 		return createScorer("scorerName", false);
 	}
 
-    @Test
-    public void shouldCreateScorerWithTheRightName() throws Exception {
-        String scorerName = "scorerName";
-        Assert.assertEquals(scorerName, createScorer(scorerName, false).getName());
-    }
+	@Test
+	public void shouldCreateScorerWithTheRightName() throws Exception {
+		String scorerName = "scorerName";
+		Assert.assertEquals(scorerName, createScorer(scorerName, false).getName());
+	}
 
 	@Test
 	public void shouldDelegateToBaseScorerStatedByConfiguration() throws Exception {
-		AdeRecord eventMessage = JsonAdeRecord.getJsonAdeRecord("context field name", "context value");
+		AdeRecordReader adeRecordReader = new JsonAdeRecordReader(JsonAdeRecord.getJsonAdeRecord("context field name", "context value"));
 		double score = 56;
-		Mockito.when(baseScorerMock.calculateScore(eq(eventMessage))).thenReturn(new FeatureScore("name", score));
-		Assert.assertEquals(score, createScorer().calculateScore(eventMessage).getScore(), 0.0001);
+		Mockito.when(baseScorerMock.calculateScore(eq(adeRecordReader))).thenReturn(new FeatureScore("name", score));
+		Assert.assertEquals(score, createScorer().calculateScore(adeRecordReader).getScore(), 0.0001);
 	}
 
 	@Test
 	public void shouldUseScoreMappingModelStatedByConfiguration() throws Exception {
-		AdeRecord eventMessage = JsonAdeRecord.getJsonAdeRecord("context field name", "context value");
+		AdeRecordReader adeRecordReader = new JsonAdeRecordReader(JsonAdeRecord.getJsonAdeRecord("context field name", "context value"));
 		double score = 56;
-		Mockito.when(baseScorerMock.calculateScore(eq(eventMessage))).thenReturn(new FeatureScore("name", score));
+		Mockito.when(baseScorerMock.calculateScore(eq(adeRecordReader))).thenReturn(new FeatureScore("name", score));
 		HashMap<Double, Double> mapping = new HashMap<>();
 		double mappedScore = 50;
 		mapping.put(score, mappedScore);
-		Assert.assertEquals(mappedScore, createScorer(mapping, false).calculateScore(eventMessage).getScore(), 0.0001);
+		Assert.assertEquals(mappedScore, createScorer(mapping, false).calculateScore(adeRecordReader).getScore(), 0.0001);
 	}
 
 	@Test
