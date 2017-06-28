@@ -91,7 +91,10 @@ function checkDeviceNodes(device, nodeHash, evt) {
   if (device) {
     Object.keys(DEVICE_PROPS_TO_NODE_TYPES).forEach((prop) => {
       const type = DEVICE_PROPS_TO_NODE_TYPES[prop];
-      nodes[type] = checkNode(type, device[prop], nodeHash, evt);
+      const node = checkNode(type, device[prop], nodeHash, evt);
+      if (node) {
+        nodes[type] = node;
+      }
     });
   }
   return nodes;
@@ -128,7 +131,12 @@ function parseEventNodesAndLinks(evt, nodeHash, linkHash) {
   } = evt;
 
   // Generate nodes for the source & dest devices, if any.
-  const sourceDeviceNodes = checkDeviceNodes(sourceDevice || detector, nodeHash, evt);
+  // For the source device, first try parsing nodes from 'source.device'.
+  let sourceDeviceNodes = checkDeviceNodes(sourceDevice, nodeHash, evt);
+  if (!Object.keys(sourceDeviceNodes).length) {
+    // No nodes parsed from 'source.device', so try parsing from 'detector'.
+    sourceDeviceNodes = checkDeviceNodes(detector, nodeHash, evt);
+  }
   const destDeviceNodes = checkDeviceNodes(destinationDevice, nodeHash, evt);
 
   // Generate nodes for the source & dest users, if any.

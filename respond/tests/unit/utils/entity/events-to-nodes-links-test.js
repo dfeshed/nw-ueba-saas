@@ -61,3 +61,35 @@ test('it utilizes caching to avoid re-constructing nodes & links when possible',
   assert.notEqual(firstNode, nodes3[0], 'Expected node from previous call to NOT be re-used when ignoreCache is set to true');
 });
 
+test('it does not parse the detector into nodes if a non-empty source.device is given', function(assert) {
+  const event = {
+    source: {
+      device: {
+        ip_address: 'IP_SOURCE'
+      }
+    },
+    detector: {
+      ip_address: 'IP_DETECTOR'
+    }
+  };
+  const result = eventsToNodesLinks([ event ]);
+  assert.equal(result.nodes.length, 1, 'Expected node for source device but not detector');
+  assert.equal(result.nodes[0].value, 'IP_SOURCE');
+});
+
+test('it parses the detector into nodes if a non-null empty source.device is given', function(assert) {
+  const event = {
+    source: {
+      device: {
+        ip_address: ''
+      }
+    },
+    detector: {
+      ip_address: 'IP_DETECTOR'
+    }
+  };
+
+  const result = eventsToNodesLinks([ event ]);
+  assert.equal(result.nodes.length, 1, 'Expected nodes for detector but not for source device');
+  assert.equal(result.nodes[0].value, 'IP_DETECTOR');
+});
