@@ -2,9 +2,12 @@ import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from '../../../../../helpers/engine-resolver';
 import DataHelper from '../../../../../helpers/data-helper';
+import editableFieldHelper from '../../../../../helpers/editable-field';
 import { getAllMilestoneTypes } from 'respond/actions/creators/dictionary-creators';
 import * as JournalCreators from 'respond/actions/creators/journal-creators';
 import wait from 'ember-test-helpers/wait';
+import { clickTrigger } from '../../../../../helpers/ember-power-select';
+import triggerNativeEvent from '../../../../../helpers/trigger-native-event';
 import sinon from 'sinon';
 import RSVP from 'rsvp';
 import $ from 'jquery';
@@ -18,6 +21,14 @@ const journalEntry = {
   created: 1483990366970,
   milestone: 'CONTAINMENT'
 };
+
+function selectOption(index) {
+  const [ option ] = $('.ember-power-select-option').eq(index || 0);
+  triggerNativeEvent(option, 'mouseover');
+  triggerNativeEvent(option, 'mousedown');
+  triggerNativeEvent(option, 'mouseup');
+  triggerNativeEvent(option, 'click');
+}
 
 moduleForComponent('rsa-incident/journal/entry', 'Integration | Component | Remediation Journal Entry', {
   integration: true,
@@ -49,7 +60,7 @@ test('The journal entry data is rendered as expected', function(assert) {
   return initialize.then(() => {
     this.set('journalEntry', journalEntry);
     this.render(hbs`{{rsa-incident/journal/entry entry=journalEntry}}`);
-    assert.equal(this.$('.rsa-incident-journal-entry__milestone').text().trim(), 'Milestone: Containment', 'The milestone is displayed as expected');
+    assert.equal(this.$('.rsa-incident-journal-entry__milestone button').text().trim(), 'Containment', 'The milestone is displayed as expected');
     assert.equal(this.$('.rsa-incident-journal-entry__note .editable-field__value').text().trim(), 'Assigned to you. Please take a look.', 'The description is displayed as expected');
   });
 });
@@ -68,6 +79,37 @@ test('The delete button dispatches a deleteItem action', function(assert) {
       return wait();
     }).then(() => {
       assert.ok(actionSpy.calledOnce, 'The deleteJournalEntry action was called once');
+      actionSpy.reset();
+      actionSpy.restore();
+    });
+  });
+});
+
+test('Updates to the description dispatches an updateJournalEntry action', function(assert) {
+  const actionSpy = sinon.spy(JournalCreators, 'updateJournalEntry');
+  new DataHelper(this.get('redux')).fetchIncidentDetails();
+  return initialize.then(() => {
+    this.set('journalEntry', journalEntry);
+    this.render(hbs`{{rsa-incident/journal/entry incidentId='INC-1234' entry=journalEntry}}`);
+    return editableFieldHelper.updateEditableField('.rsa-incident-journal-entry__note', 'Assigned to me. Taking a look').then(() => {
+      assert.ok(actionSpy.calledOnce, 'The updateJournalEntry action was called once');
+      actionSpy.reset();
+      actionSpy.restore();
+    });
+  });
+});
+
+test('Changes to the milestone dispatches an updateJournalEntry action', function(assert) {
+  const actionSpy = sinon.spy(JournalCreators, 'updateJournalEntry');
+  new DataHelper(this.get('redux')).fetchIncidentDetails();
+  return initialize.then(() => {
+    this.set('journalEntry', journalEntry);
+    this.render(hbs`{{rsa-incident/journal/entry incidentId='INC-1234' entry=journalEntry}}`);
+    clickTrigger('.rsa-incident-journal-entry__milestone');
+    assert.equal($('.ember-power-select-options li.ember-power-select-option').length, 9, 'There are 9 milestone options available');
+    selectOption();
+    return wait().then(() => {
+      assert.ok(actionSpy.calledOnce, 'The updateJournalEntry action creators was called once');
       actionSpy.reset();
       actionSpy.restore();
     });

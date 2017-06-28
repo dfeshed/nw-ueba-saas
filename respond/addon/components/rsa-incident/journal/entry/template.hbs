@@ -5,11 +5,29 @@
   <span class="rsa-incident-journal-entry__created">
     {{rsa-content-datetime timestamp=entry.created asTimeAgo=false displayTime=true displayDate=true displayMilliseconds=false}}
   </span>
-  {{#if entry.milestone}}
-    <div class="rsa-incident-journal-entry__milestone">
-      {{t 'respond.journal.milestone'}}: {{t (concat 'respond.milestones.' entry.milestone)}}
-    </div>
-  {{/if}}
+
+  <div class="rsa-incident-journal-entry__milestone metadata ">
+    {{#if accessControl.respondCanManageJournal}}
+      <label>{{t 'respond.journal.milestone'}}<span class="required-field"/></label>
+      <div class="edit-button journal-milestone">
+        {{#power-select
+          options=milestoneTypes
+          selected=milestone
+          matchTriggerWidth=false
+          searchEnabled=false
+          triggerComponent=(component "respond-common/button-trigger"
+            iconName='arrow-down-12'
+            iconPosition='after'
+            label=(if entry.milestone (t (concat 'respond.milestones.' entry.milestone)) (t 'respond.none')))
+          onchange=(action 'handleMilestoneChange') as |option|}}
+          {{t (concat 'respond.milestones.' option)}}
+        {{/power-select}}
+      </div>
+    {{else}}
+        {{t 'respond.journal.milestone'}}: {{if entry.milestone (t (concat 'respond.milestones.' entry.milestone)) (t 'respond.none') }}
+    {{/if}}
+  </div>
+
   {{#if accessControl.respondCanManageJournal}}
     <div class="delete">
       {{#rsa-form-button isIconOnly=true title=(t 'respond.journal.delete') defaultAction=(action 'handleDelete')}}{{rsa-icon style='lined' name='bin-1'}}{{/rsa-form-button}}

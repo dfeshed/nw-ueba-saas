@@ -6,6 +6,10 @@ import { deleteJournalEntry, updateJournalEntry } from 'respond/actions/creators
 import layout from './template';
 import service from 'ember-service/inject';
 
+const stateToComputed = ({ respond: { dictionaries: { milestoneTypes } } }) => ({
+  milestoneTypes
+});
+
 const dispatchToActions = (dispatch) => {
   return {
     deleteEntry(incidentId, entryId) {
@@ -46,8 +50,14 @@ const JournalEntry = Component.extend(Notifications, Confirmable, {
       this.send('updateEntry', incidentId, entry.id, {
         notes: updatedNote
       });
+    },
+    handleMilestoneChange(milestone) {
+      const { incidentId, entry } = this.getProperties('incidentId', 'entry');
+      this.send('updateEntry', incidentId, entry.id, {
+        milestone
+      });
     }
   }
 });
 
-export default connect(undefined, dispatchToActions)(JournalEntry);
+export default connect(stateToComputed, dispatchToActions)(JournalEntry);
