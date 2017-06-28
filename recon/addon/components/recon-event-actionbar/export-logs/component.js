@@ -42,9 +42,9 @@ const DownloadLogsComponent = Component.extend(ReconExport, {
   isExpanded: false,
   offsetsStyle: null,
 
-  @computed('i18n', 'isDownloading')
-  caption(i18n, isDownloading) {
-    return isDownloading ? i18n.t('recon.textView.isDownloading') : this.get('defaultOption');
+  @computed('i18n', 'isDownloading', 'defaultOption')
+  caption(i18n, isDownloading, defaultOption) {
+    return isDownloading ? i18n.t('recon.textView.isDownloading') : defaultOption;
   },
 
   @computed('i18n', 'isEndpointEvent')

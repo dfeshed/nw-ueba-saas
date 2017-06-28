@@ -8,6 +8,10 @@
     </div>
   {{else if isEndpointEvent}}
     <div class="event-title">{{t 'recon.titleBar.titles.endpoint'}}</div>
+    <hr class="event-title seperator">
+    <div class="tview-heading">
+      <div class="tview-label">{{t (concat 'recon.titleBar.views.' currentReconView.id)}}</div>
+    </div>
   {{else}}
     <div class="event-title">{{t 'recon.titleBar.titles.network'}}</div>
     <hr class="event-title seperator">
