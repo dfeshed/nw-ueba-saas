@@ -2,7 +2,7 @@ import { moduleFor, test } from 'ember-qunit';
 import engineResolverFor from '../../../helpers/engine-resolver';
 
 moduleFor('route:incidents', 'Unit | Route | incidents', {
-  needs: ['service:accessControl'],
+  needs: ['service:accessControl', 'service:contextualHelp'],
   resolver: engineResolverFor('respond')
 });
 

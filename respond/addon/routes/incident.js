@@ -6,6 +6,7 @@ import { initializeIncident } from 'respond/actions/creators/incidents-creators'
 export default Route.extend({
   accessControl: service(),
   redux: service(),
+  contextualHelp: service(),
 
   title() {
     return this.get('i18n').t('pageTitle', { section: this.get('i18n').t('respond.title') });
@@ -30,7 +31,12 @@ export default Route.extend({
     };
   },
 
+  activate() {
+    this.set('contextualHelp.topic', this.get('contextualHelp.respIncDetailVw'));
+  },
+
   deactivate() {
     this.get('redux').dispatch(initializeIncident(null));
+    this.set('contextualHelp.topic', null);
   }
 });

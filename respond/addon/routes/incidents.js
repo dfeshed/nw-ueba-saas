@@ -3,6 +3,8 @@ import service from 'ember-service/inject';
 
 export default Route.extend({
   accessControl: service(),
+  contextualHelp: service(),
+
   title() {
     return this.get('i18n').t('pageTitle', { section: this.get('i18n').t('respond.title') });
   },
@@ -11,5 +13,13 @@ export default Route.extend({
     if (!this.get('accessControl.hasRespondIncidentsAccess')) {
       this.transitionTo('index');
     }
+  },
+
+  activate() {
+    this.set('contextualHelp.topic', this.get('contextualHelp.respIncListVw'));
+  },
+
+  deactivate() {
+    this.set('contextualHelp.topic', null);
   }
 });

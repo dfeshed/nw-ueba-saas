@@ -14,7 +14,13 @@ export default Service.extend({
   invFileAnalysis: 'invFileAnalysis',
   invPacketAnalysis: 'invPacketAnalysis',
   invTextAnalysis: 'invTextAnalysis',
+
   respondModule: 'respond',
+  respAlrtListVw: 'respAlrtListVw',
+  respAlrtDetailVw: 'respAlrtDetailVw',
+  respIncListVw: 'respIncListVw',
+  respIncDetailVw: 'respIncDetailVw',
+  respRemTasksVw: 'respRemTasksVw',
 
   module: null,
   topic: null,
