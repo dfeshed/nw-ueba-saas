@@ -1,7 +1,7 @@
 package fortscale.ml.scorer;
 
 import fortscale.domain.feature.score.FeatureScore;
-import presidio.ade.domain.record.AdeRecord;
+import presidio.ade.domain.record.AdeRecordReader;
 
 public interface Scorer {
 	/**
@@ -10,10 +10,10 @@ public interface Scorer {
 	String getName();
 
 	/**
-	 * Calculate the score of a specific feature in the given record.
+	 * Calculate the score of a specific feature provided by the given {@link AdeRecordReader}.
 	 *
-	 * @param record contains the feature that needs to be scored
+	 * @param adeRecordReader provides the feature that needs to be scored
 	 * @return the final score and a list of all underlying scores
 	 */
-	FeatureScore calculateScore(AdeRecord record);
+	FeatureScore calculateScore(AdeRecordReader adeRecordReader);
 }

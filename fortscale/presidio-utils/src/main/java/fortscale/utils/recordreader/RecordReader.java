@@ -1,31 +1,29 @@
 package fortscale.utils.recordreader;
 
 /**
- * A record reader extracts the value of a certain field from a given record. If the record is flat, the field path is
+ * A record reader extracts the value of a certain field from its record. If the record is flat, the field path is
  * simply the key of the required value. If the record is hierarchical, the field path is a concatenation of all keys
  * leading to the required value. The field class is the expected type of the required value.
  *
  * Created by Lior Govrin on 04/06/2017.
  */
-public interface RecordReader<T> {
+public interface RecordReader {
 	/**
-	 * Get the value of "fieldPath" from "record".
+	 * Get the value of "fieldPath" from this reader's record.
 	 *
-	 * @param record     The record from which the value is extracted
 	 * @param fieldPath  The key of the value (or a concatenation of the keys leading to the value)
 	 * @param fieldClass The expected type of the value
 	 * @return The extracted value
 	 */
-	<U> U get(T record, String fieldPath, Class<U> fieldClass);
+	<T> T get(String fieldPath, Class<T> fieldClass);
 
 	/**
-	 * Get the value of "fieldPath" from "record", without knowing its type.
+	 * Get the value of "fieldPath" from this reader's record, without knowing the type.
 	 *
-	 * @param record    The record from which the value is extracted
 	 * @param fieldPath The key of the value (or a concatenation of the keys leading to the value)
 	 * @return The extracted value
 	 */
-	default Object get(T record, String fieldPath) {
-		return get(record, fieldPath, Object.class);
+	default Object get(String fieldPath) {
+		return get(fieldPath, Object.class);
 	}
 }

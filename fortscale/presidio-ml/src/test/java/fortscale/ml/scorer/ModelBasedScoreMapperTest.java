@@ -7,6 +7,7 @@ import fortscale.ml.model.cache.EventModelsCacheService;
 import fortscale.ml.model.cache.ModelsCacheService;
 import fortscale.ml.scorer.config.IScorerConf;
 import fortscale.ml.scorer.record.JsonAdeRecord;
+import fortscale.ml.scorer.record.JsonAdeRecordReader;
 import fortscale.utils.factory.FactoryService;
 import org.junit.Assert;
 import org.junit.Before;
@@ -21,7 +22,6 @@ import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
-import presidio.ade.domain.record.AdeRecord;
 
 import java.time.Instant;
 import java.util.Collections;
@@ -140,9 +140,9 @@ public class ModelBasedScoreMapperTest {
     private FeatureScore calculateScore(String featureScoreName,
                                         FeatureScore baseScore,
                                         Model model) throws Exception {
-        AdeRecord adeRecord = JsonAdeRecord.getJsonAdeRecord("context field name", "feature name");
+        JsonAdeRecordReader jsonAdeRecordReader = new JsonAdeRecordReader(JsonAdeRecord.getJsonAdeRecord("context field name", "feature name"));
         scorerFactoryService.register(baseScorerConf.getFactoryName(), factoryConfig -> baseScorer);
-        when(baseScorer.calculateScore(eq(adeRecord))).thenReturn(baseScore);
+        when(baseScorer.calculateScore(eq(jsonAdeRecordReader))).thenReturn(baseScore);
         when(modelsCacheService.getModel(anyString(), anyMapOf(String.class, String.class), any(Instant.class))).thenReturn(model);
 
         return new ModelBasedScoreMapper(
@@ -151,7 +151,7 @@ public class ModelBasedScoreMapperTest {
                 Collections.singletonList("context field name"),
                 "feature name",
                 baseScorerConf,
-                scorerFactoryService, eventModelsCacheService).calculateScore(adeRecord);
+                scorerFactoryService, eventModelsCacheService).calculateScore(jsonAdeRecordReader);
     }
 
     @Test

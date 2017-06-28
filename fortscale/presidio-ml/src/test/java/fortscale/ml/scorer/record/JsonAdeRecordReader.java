@@ -2,32 +2,53 @@ package fortscale.ml.scorer.record;
 
 import fortscale.utils.recordreader.RecordReader;
 import org.json.JSONObject;
-import presidio.ade.domain.record.AdeRecord;
+import presidio.ade.domain.record.AdeRecordReader;
+
+import javax.validation.constraints.NotNull;
 
 /**
  * A record reader for {@link JsonAdeRecord}s.
  *
  * Created by Lior Govrin on 13/06/2017.
  */
-public class JsonAdeRecordReader implements RecordReader<AdeRecord> {
+public class JsonAdeRecordReader extends AdeRecordReader {
+	private static final String DEFAULT_FIELD_PATH_DELIMITER = "\\.";
+
+	private JsonAdeRecord record;
 	private String fieldPathDelimiter;
 
 	/**
-	 * Default c'tor.
-	 * Sets the default field path delimiter.
+	 * C'tor.
+	 *
+	 * @param record             the JSON ADE record from which values are extracted
+	 * @param fieldPathDelimiter this JSON ADE record reader's field path delimiter (evaluated as a regular expression)
 	 */
-	public JsonAdeRecordReader() {
-		this.fieldPathDelimiter = "\\.";
+	public JsonAdeRecordReader(@NotNull JsonAdeRecord record, @NotNull String fieldPathDelimiter) {
+		super(record, fieldPathDelimiter);
+		this.record = record;
+		this.fieldPathDelimiter = fieldPathDelimiter;
 	}
 
-	@Override
-	public <U> U get(AdeRecord record, String fieldPath, Class<U> fieldClass) {
-		// Split the field path keys
-		String[] keys = fieldPath.split(fieldPathDelimiter);
-		// Get the underlying JSON object
-		JSONObject jsonObject = ((JsonAdeRecord)record).getJsonObject();
+	/**
+	 * Default c'tor (default field path delimiter is used).
+	 *
+	 * @param record the JSON ADE record from which values are extracted
+	 */
+	public JsonAdeRecordReader(@NotNull JsonAdeRecord record) {
+		this(record, DEFAULT_FIELD_PATH_DELIMITER);
+	}
 
-		// Iterate the inner JSON objects until the final key is reached
+	/**
+	 * @see RecordReader#get(String, Class)
+	 */
+	@Override
+	public <T> T get(String fieldPath, Class<T> fieldClass) {
+		// Split the field path keys according to the delimiter
+		String[] keys = fieldPath.split(fieldPathDelimiter);
+		// Get the underlying JSON object from the ADE record
+		JSONObject jsonObject = record.getJsonObject();
+
+		// Traverse the inner JSON objects until the final key is reached
 		for (int i = 0; i < keys.length - 1; i++) {
 			// Return null if one of the inner keys does not exist
 			if (!jsonObject.has(keys[i])) return null;

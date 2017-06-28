@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.task.configuration.EnableTask;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
-import presidio.collector.spring.CollectorConfig;
+import presidio.collector.spring.CollectorConfigProduction;
 
 import java.util.Arrays;
 
@@ -23,6 +23,6 @@ public class FortscaleCollectorApplication {
     public static void main(String[] args) {
         logger.info("starting Collector with params " + Arrays.toString(args));
 
-        SpringApplication.run(new Object[]{FortscaleCollectorApplication.class, CollectorConfig.class}, args);
+        SpringApplication.run(new Object[]{FortscaleCollectorApplication.class, CollectorConfigProduction.class}, args);
     }
 }

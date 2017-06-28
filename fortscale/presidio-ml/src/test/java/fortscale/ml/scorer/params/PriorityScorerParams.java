@@ -17,11 +17,13 @@ public class PriorityScorerParams implements ScorerParams {
 
     public PriorityScorerParams setScorerParamsList(List<ScorerParams> scorerParamsList) {
         this.scorerParamsList = scorerParamsList;
-        if(scorerParamsList!=null) {
+
+        if (scorerParamsList != null) {
             for (ScorerParams scorerParams : scorerParamsList) {
                 scorerList.add(scorerParams.getScorer());
             }
         }
+
         return this;
     }
 
@@ -50,22 +52,27 @@ public class PriorityScorerParams implements ScorerParams {
     }
 
     public String getScorerConfJsonString() {
-        String res = "{\"type\":\""+ PriorityScorerContainerConf.SCORER_TYPE+"\"";
-        res+= (name==null ? "" : ",\"name\":\""+name+"\"");
-        if(scorerParamsList!=null) {
-            res+=",\"scorers\":[";
+        String res = "{\"type\":\"" + PriorityScorerContainerConf.SCORER_TYPE + "\"";
+        res += (name == null ? "" : ",\"name\":\"" + name + "\"");
+
+        if (scorerParamsList != null) {
+            res += ",\"scorers\":[";
             boolean firstScorer = true;
+
             for (ScorerParams scorerParams : scorerParamsList) {
-                if(firstScorer) {
-                    firstScorer=false;
+                if (firstScorer) {
+                    firstScorer = false;
                 } else {
-                    res+=",";
+                    res += ",";
                 }
-                res +=  scorerParams.getScorerConfJsonString();
+
+                res += scorerParams.getScorerConfJsonString();
             }
-            res+="]";
+
+            res += "]";
         }
-        res+="}";
+
+        res += "}";
         return res;
     }
 }

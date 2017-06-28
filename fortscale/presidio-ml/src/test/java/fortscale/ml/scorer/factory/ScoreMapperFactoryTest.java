@@ -1,6 +1,5 @@
 package fortscale.ml.scorer.factory;
 
-import fortscale.common.feature.extraction.FeatureExtractService;
 import fortscale.domain.feature.score.FeatureScore;
 import fortscale.ml.model.ModelConfService;
 import fortscale.ml.model.cache.ModelsCacheService;
@@ -18,22 +17,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import presidio.ade.domain.record.AdeRecord;
+import presidio.ade.domain.record.AdeRecordReader;
 
 import java.util.HashMap;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath*:META-INF/spring/scorer-factory-tests-context.xml"})
 public class ScoreMapperFactoryTest {
-
     @MockBean
     ModelConfService modelConfService;
 
     @MockBean
     ModelsCacheService modelCacheService;
-
-    @MockBean
-    FeatureExtractService featureExtractService;
 
     @Autowired
     private ScoreMapperFactory scoreMapperFactory;
@@ -42,7 +37,6 @@ public class ScoreMapperFactoryTest {
     private FactoryService<Scorer> scorerFactoryService;
 
     private Scorer baseScorerMock = Mockito.mock(Scorer.class);
-
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldFailGivenNull() {
@@ -56,22 +50,19 @@ public class ScoreMapperFactoryTest {
 
     public ScoreMapper createScorer(ScoreMapping.ScoreMappingConf scoreMappingConf, String scorerName) {
         IScorerConf baseScorerConf = new IScorerConf() {
-            @Override public String getName() {
+            @Override
+            public String getName() {
                 return "base-scorer";
             }
-            @Override public String getFactoryName() {
+
+            @Override
+            public String getFactoryName() {
                 return "baseScorerFactoryName";
             }
         };
 
         scorerFactoryService.register(baseScorerConf.getFactoryName(), factoryConfig -> baseScorerMock);
-
-        ScoreMapperConf conf = new ScoreMapperConf(
-                scorerName,
-                baseScorerConf,
-                scoreMappingConf
-        );
-
+        ScoreMapperConf conf = new ScoreMapperConf(scorerName, baseScorerConf, scoreMappingConf);
         return scoreMapperFactory.getProduct(conf);
     }
 
@@ -95,21 +86,21 @@ public class ScoreMapperFactoryTest {
 
     @Test
     public void shouldDelegateToBaseScorerStatedByConfiguration() throws Exception {
-        AdeRecord record = Mockito.mock(AdeRecord.class);
+        AdeRecordReader adeRecordReader = Mockito.mock(AdeRecordReader.class);
         double score = 56;
-        Mockito.when(baseScorerMock.calculateScore(record)).thenReturn(new FeatureScore("name", score));
-        Assert.assertEquals(score, createScorer().calculateScore(record).getScore(), 0.0001);
+        Mockito.when(baseScorerMock.calculateScore(adeRecordReader)).thenReturn(new FeatureScore("name", score));
+        Assert.assertEquals(score, createScorer().calculateScore(adeRecordReader).getScore(), 0.0001);
     }
 
     @Test
     public void shouldUseScoreMappingConfStatedByConfiguration() throws Exception {
-        AdeRecord record = Mockito.mock(AdeRecord.class);
+        AdeRecordReader adeRecordReader = Mockito.mock(AdeRecordReader.class);
         double score = 56;
-        Mockito.when(baseScorerMock.calculateScore(record)).thenReturn(new FeatureScore("name", score));
+        Mockito.when(baseScorerMock.calculateScore(adeRecordReader)).thenReturn(new FeatureScore("name", score));
         HashMap<Double, Double> mapping = new HashMap<>();
         double mappedScore = 50;
         mapping.put(score, mappedScore);
         ScoreMapping.ScoreMappingConf scoreMappingConf = new ScoreMapping.ScoreMappingConf().setMapping(mapping);
-        Assert.assertEquals(mappedScore, createScorer(scoreMappingConf).calculateScore(record).getScore(), 0.0001);
+        Assert.assertEquals(mappedScore, createScorer(scoreMappingConf).calculateScore(adeRecordReader).getScore(), 0.0001);
     }
 }
