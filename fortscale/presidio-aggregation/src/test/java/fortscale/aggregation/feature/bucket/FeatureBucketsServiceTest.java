@@ -1,0 +1,235 @@
+package fortscale.aggregation.feature.bucket;
+
+
+import com.sun.corba.se.pept.transport.InboundConnectionCache;
+import fortscale.aggregation.feature.bucket.config.BucketConfigurationServiceConfig;
+import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
+import fortscale.aggregation.feature.functions.AggrFeatureFuncService;
+import fortscale.aggregation.feature.functions.IAggrFeatureFunctionsService;
+import fortscale.common.feature.AggrFeatureValue;
+import fortscale.common.feature.Feature;
+import fortscale.utils.recordreader.RecordReaderFactory;
+import fortscale.utils.recordreader.RecordReaderFactoryService;
+import fortscale.utils.recordreader.transformation.Transformation;
+import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
+import fortscale.utils.test.category.ModuleTestCategory;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import presidio.ade.domain.record.AdeRecord;
+import presidio.ade.domain.record.AdeRecordReader;
+import presidio.ade.domain.record.AdeRecordReaderFactory;
+import presidio.ade.domain.record.enriched.AdeEnrichedDlpFileContext;
+import presidio.ade.domain.record.enriched.EnrichedDlpFileRecord;
+import presidio.ade.domain.record.scored.AdeScoredRecordReaderFactory;
+import presidio.ade.domain.record.scored.enriched_scored.AdeScoredDlpFileRecord;
+
+import java.time.Instant;
+import java.util.*;
+
+import static junit.framework.Assert.assertTrue;
+
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration
+@Category(ModuleTestCategory.class)
+public class FeatureBucketsServiceTest {
+
+    @Autowired
+    private BucketConfigurationService bucketConfigurationService;
+
+    private FeatureBucketsService featureBucketsService;
+    private FeatureBucketStrategyData strategyData;
+    private List<String> contextFieldNames;
+    private List<AdeRecord> adeScoredDlpFileRecords;
+
+    private static final long DEFAULT_END_TIME_DELTA_IN_SECONDS = 300; // 5 minutes
+    private static final String STRATEGY_EVENT_CONTEXT_ID = "fixed_duration_hourly";
+    private static final String STRATEGY_NAME = "fixed_duration_hourly";
+
+    private static final String BUCKET_ID1 = "fixed_duration_hourly_1435737600###context.normalizedUsername###normalized_username_test1";
+    private static final String BUCKET_ID2 = "fixed_duration_hourly_1435737600###context.normalizedUsername###normalized_username_test2";
+
+    @Before
+    public void initialize() {
+        featureBucketsServiceInitialize();
+        strategyDataInitialize();
+        contextFieldNamesInitialize();
+        adeRecordsInitialize();
+    }
+
+    @Test
+    public void testFeatureBucketsService() {
+        featureBucketsService.updateFeatureBucketsWithAdeRecords(adeScoredDlpFileRecords, contextFieldNames, strategyData);
+        List<FeatureBucket> featureBuckets = featureBucketsService.popAllFeatureBuckets();
+        Map<String, FeatureBucket> featureBucketsExpectedResults = buildExpectedResult();
+        checkExpectedResults(featureBucketsExpectedResults, featureBuckets);
+    }
+
+    /**
+     * Create featureBucketsService
+     */
+    public void featureBucketsServiceInitialize() {
+        FeatureBucketsStore featureBucketsStore = new FeatureBucketsInMemory();
+
+        IAggrFeatureFunctionsService aggrFeatureFunctionsService = new AggrFeatureFuncService();
+        Map<String, Transformation<?>> transformations = new HashMap<>();
+        Collection<RecordReaderFactory> recordReaderFactories = new ArrayList<>();
+        AdeScoredRecordReaderFactory adeScoredRecordReaderFactory = new AdeScoredRecordReaderFactory();
+        recordReaderFactories.add(adeScoredRecordReaderFactory);
+        RecordReaderFactoryService recordReaderFactoryService = new RecordReaderFactoryService(recordReaderFactories, transformations);
+        featureBucketsService = new FeatureBucketsService(featureBucketsStore, bucketConfigurationService, aggrFeatureFunctionsService, recordReaderFactoryService);
+    }
+
+    /**
+     * Create strategyData
+     */
+    public void strategyDataInitialize() {
+        long epochtime = 1435737600;
+        strategyData = new FeatureBucketStrategyData(STRATEGY_EVENT_CONTEXT_ID, STRATEGY_NAME, epochtime, epochtime + DEFAULT_END_TIME_DELTA_IN_SECONDS, new HashMap<>());
+    }
+
+    /**
+     * Create contextFieldNames
+     */
+    public void contextFieldNamesInitialize() {
+        contextFieldNames = new ArrayList<>();
+        contextFieldNames.add("context.normalizedUsername");
+    }
+
+    /**
+     * Create adeRecords
+     */
+    public void adeRecordsInitialize() {
+        adeScoredDlpFileRecords = new ArrayList<>();
+        AdeScoredDlpFileRecord adeRecord1 = new AdeScoredDlpFileRecord(Instant.now(), "date_time", 80.0, new ArrayList<>());
+
+        EnrichedDlpFileRecord enrichedDlpFileRecord = new EnrichedDlpFileRecord(Instant.now());
+        enrichedDlpFileRecord.setNormalized_username("normalized_username_test1");
+        AdeEnrichedDlpFileContext adeEnrichedDlpFileContext = new AdeEnrichedDlpFileContext(enrichedDlpFileRecord);
+        adeRecord1.setContext(adeEnrichedDlpFileContext);
+
+        AdeScoredDlpFileRecord adeRecord2 = new AdeScoredDlpFileRecord(Instant.now(), "date_time", 10.0, new ArrayList<>());
+        enrichedDlpFileRecord.setNormalized_username("normalized_username_test2");
+        adeEnrichedDlpFileContext = new AdeEnrichedDlpFileContext(enrichedDlpFileRecord);
+        adeRecord2.setContext(adeEnrichedDlpFileContext);
+
+        AdeScoredDlpFileRecord adeRecord3 = new AdeScoredDlpFileRecord(Instant.now(), "date_time", 70.0, new ArrayList<>());
+        adeRecord3.setContext(adeEnrichedDlpFileContext);
+
+        AdeScoredDlpFileRecord adeRecord4 = new AdeScoredDlpFileRecord(Instant.now(), "date_time", 60.0, new ArrayList<>());
+        adeRecord4.setContext(adeEnrichedDlpFileContext);
+
+        adeScoredDlpFileRecords.add(adeRecord1);
+        adeScoredDlpFileRecords.add(adeRecord2);
+        adeScoredDlpFileRecords.add(adeRecord3);
+        adeScoredDlpFileRecords.add(adeRecord4);
+    }
+
+    /**
+     * Compare test results to expected result
+     *
+     * @param featureBucketsExpectedResults
+     * @param featureBuckets
+     */
+    public void checkExpectedResults(Map<String, FeatureBucket> featureBucketsExpectedResults, List<FeatureBucket> featureBuckets) {
+        for (FeatureBucket featureBucket : featureBuckets) {
+            String bucketId = featureBucket.getBucketId();
+            if (!featureBucketsExpectedResults.containsKey(bucketId)) {
+                assertTrue(false);
+            } else {
+                FeatureBucket expectedFeatureBucket = featureBucketsExpectedResults.get(bucketId);
+                Map<String, Feature> expectedAggregatedFeatures = expectedFeatureBucket.getAggregatedFeatures();
+                Map<String, Feature> aggregatedFeatures = featureBucket.getAggregatedFeatures();
+                for (Map.Entry<String, Feature> aggregatedFeature : aggregatedFeatures.entrySet()) {
+                    if (!expectedAggregatedFeatures.containsKey(aggregatedFeature.getKey())) {
+                        assertTrue(false);
+                    } else {
+                        Feature expectedFeature = expectedAggregatedFeatures.get(aggregatedFeature.getKey());
+                        Feature feature = aggregatedFeature.getValue();
+
+
+                        if (!expectedFeature.getName().equals(feature.getName())) {
+                            assertTrue(false);
+                        } else {
+                            AggrFeatureValue aggrFeatureValue = (AggrFeatureValue) feature.getValue();
+                            AggrFeatureValue expectedAggrFeatureValue = (AggrFeatureValue) expectedFeature.getValue();
+                            if (!aggrFeatureValue.equals(expectedAggrFeatureValue)) {
+                                assertTrue(false);
+                            }
+                        }
+                        expectedAggregatedFeatures.remove(aggregatedFeature.getKey());
+                    }
+                }
+                featureBucketsExpectedResults.remove(bucketId);
+            }
+        }
+        if (featureBucketsExpectedResults.size() != 0) {
+            assertTrue(false);
+        }
+    }
+
+    /**
+     * Build expected results
+     *
+     * @return
+     */
+    public Map<String, FeatureBucket> buildExpectedResult() {
+        Map<String, FeatureBucket> featureBuckets = new HashMap<>();
+
+        FeatureBucket featureBucket1 = new FeatureBucket();
+        featureBucket1.setBucketId(BUCKET_ID1);
+        Map<String, Feature> aggregatedFeatures = new HashMap<>();
+        long total = 1;
+        Map<String, Integer> aggrResult = new HashMap<>();
+        aggrResult.put("", 80);
+        AggrFeatureValue aggrFeatureValue = new AggrFeatureValue(aggrResult, total);
+        Feature feature = new Feature("highest_date_time_score", aggrFeatureValue);
+        aggregatedFeatures.put("highest_date_time_score", feature);
+        featureBucket1.setAggregatedFeatures(aggregatedFeatures);
+
+
+        FeatureBucket featureBucket2 = new FeatureBucket();
+        featureBucket2.setBucketId(BUCKET_ID2);
+        aggregatedFeatures = new HashMap<>();
+        total = 2;
+        aggrResult = new HashMap<>();
+        aggrResult.put("", 70);
+        aggrFeatureValue = new AggrFeatureValue(aggrResult, total);
+        feature = new Feature("highest_date_time_score", aggrFeatureValue);
+        aggregatedFeatures.put("highest_date_time_score", feature);
+        featureBucket2.setAggregatedFeatures(aggregatedFeatures);
+
+
+        featureBuckets.put(BUCKET_ID1, featureBucket1);
+        featureBuckets.put(BUCKET_ID2, featureBucket2);
+        return featureBuckets;
+    }
+
+
+    @Configuration
+    @Import({
+            BucketConfigurationServiceConfig.class
+    })
+    public static class springConfig {
+
+        @Bean
+        public static TestPropertiesPlaceholderConfigurer abc() {
+            Properties properties = new Properties();
+            properties.put("impala.table.fields.data.source", "dlpfile");
+            properties.put("fortscale.aggregation.bucket.conf.json.file.name", "classpath:fortscale/config/asl/buckets/BucketConfigurationServiceTest.json");
+            properties.put("fortscale.aggregation.bucket.conf.json.overriding.files.path", "file:home/cloudera/fortscale/config/asl/buckets/overriding/*.json");
+            properties.put("fortscale.aggregation.bucket.conf.json.additional.files.path", "file:home/cloudera/fortscale/config/asl/buckets/overriding/*.json");
+
+            return new TestPropertiesPlaceholderConfigurer(properties);
+        }
+    }
+
+}
