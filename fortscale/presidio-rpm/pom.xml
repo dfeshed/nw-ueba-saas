@@ -12,6 +12,7 @@
         <rpm_name>presidio-core</rpm_name>
         <rpm-maven-plugin.deployment_target_directory>/home/presidio/presidio-core
         </rpm-maven-plugin.deployment_target_directory>
+        <rpm-maven-plugin.script.system_user>presidio</rpm-maven-plugin.script.system_user>
     </properties>
     <parent>
         <artifactId>fortscale</artifactId>
@@ -105,7 +106,7 @@
 
                         <!--changing ownership of /home/presidio/presidio-core/ to presidio:presidio -->
                         echo "Changing ownership of /home/presidio/presidio-core/ to presidio:presidio"
-                        chown -R presidio:presidio ${rpm-maven-plugin.deployment_target_directory}
+                        chown -R ${rpm-maven-plugin.script.system_user}:${rpm-maven-plugin.script.system_user} ${rpm-maven-plugin.deployment_target_directory}
 
                         <!--end of post installation -->"
                     </script>
