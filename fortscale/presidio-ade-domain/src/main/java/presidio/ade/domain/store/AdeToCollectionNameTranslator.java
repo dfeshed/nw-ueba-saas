@@ -1,5 +1,7 @@
 package presidio.ade.domain.store;
 
+import fortscale.utils.mongodb.util.ToCollectionNameTranslator;
+
 import java.util.Collection;
 
 /**
@@ -7,14 +9,7 @@ import java.util.Collection;
  *
  * Created by barak_schuster on 5/18/17.
  */
-public interface ToCollectionNameTranslator<T> {
-	/**
-	 * translates arg to relevant mongodb collection name
-	 *
-	 * @param arg i.e. conf name
-	 * @return mongodb collection name
-	 */
-	String toCollectionName(T arg);
+public interface AdeToCollectionNameTranslator<T> extends ToCollectionNameTranslator<T>{
 
 	/**
 	 * @param cleanupParams deletion filtering params

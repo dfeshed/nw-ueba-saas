@@ -3,6 +3,7 @@ package presidio.input.sdk.impl.services;
 
 import fortscale.common.general.DataSource;
 import fortscale.domain.core.AbstractAuditableDocument;
+import fortscale.utils.mongodb.util.ToCollectionNameTranslator;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
 import org.junit.Assert;
 import org.junit.Before;
@@ -14,7 +15,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.test.context.junit4.SpringRunner;
-import presidio.input.sdk.impl.repositories.DlpFileDataRepository;
+import presidio.input.sdk.impl.repositories.DataSourceRepository;
 import presidio.input.sdk.impl.spring.PresidioInputPersistencyServiceConfig;
 import presidio.sdk.api.domain.DlpFileDataDocument;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
@@ -25,9 +26,12 @@ import java.util.List;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = PresidioInputPersistencyServiceConfig.class)
-@EnableMongoRepositories(basePackageClasses = DlpFileDataRepository.class)
+@EnableMongoRepositories(basePackageClasses = DataSourceRepository.class)
 @Import(MongodbTestConfig.class)
 public class PresidioInputPersistencyServiceMongoImplTest {
+
+    @Autowired
+    public ToCollectionNameTranslator toCollectionNameTranslator;
 
     @Autowired
     private MongoTemplate mongoTemplate;
@@ -36,10 +40,9 @@ public class PresidioInputPersistencyServiceMongoImplTest {
     private PresidioInputPersistencyService presidioInputPersistencyService;
 
     @Before
-    public void before() {
-        mongoTemplate.dropCollection(DlpFileDataDocument.COLLECTION_NAME);
+    public void before(){
+        mongoTemplate.dropCollection(toCollectionNameTranslator.toCollectionName(DataSource.DLPFILE));
     }
-
 
     @Test
     public void contextLoads() throws Exception {
@@ -89,7 +92,7 @@ public class PresidioInputPersistencyServiceMongoImplTest {
                 "event_type").split(","));
         list.add(doc);
         presidioInputPersistencyService.store(DataSource.DLPFILE, list);
-        List<DlpFileDataDocument> all = mongoTemplate.findAll(DlpFileDataDocument.class);
+        List<DlpFileDataDocument> all = mongoTemplate.findAll(DlpFileDataDocument.class, toCollectionNameTranslator.toCollectionName(DataSource.DLPFILE));
         Assert.assertEquals(doc, all.get(0));
     }
 

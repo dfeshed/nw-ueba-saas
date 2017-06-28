@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class EnrichedDataToCollectionNameTranslatorConfig {
 	@Bean
-	public EnrichedDataToCollectionNameTranslator enrichedDataToCollectionNameTranslator() {
-		return new EnrichedDataToCollectionNameTranslator();
+	public EnrichedDataAdeToCollectionNameTranslator enrichedDataToCollectionNameTranslator() {
+		return new EnrichedDataAdeToCollectionNameTranslator();
 	}
 }

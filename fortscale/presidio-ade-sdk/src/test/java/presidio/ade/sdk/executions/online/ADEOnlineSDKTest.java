@@ -16,7 +16,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import presidio.ade.domain.store.enriched.EnrichedDataToCollectionNameTranslator;
+import presidio.ade.domain.store.enriched.EnrichedDataAdeToCollectionNameTranslator;
 import presidio.ade.domain.store.enriched.EnrichedRecordsMetadata;
 import presidio.ade.sdk.executions.common.ADEManagerSDK;
 import presidio.ade.sdk.executions.data.generator.MockedEnrichedRecordGenerator;
@@ -42,7 +42,7 @@ public class ADEOnlineSDKTest {
     @Autowired
     private MongoTemplate mongoTemplate;
     @Autowired
-    private EnrichedDataToCollectionNameTranslator translator;
+    private EnrichedDataAdeToCollectionNameTranslator translator;
 
     @Test
     public void shouldInsertDataAndCreateIndexes() {
