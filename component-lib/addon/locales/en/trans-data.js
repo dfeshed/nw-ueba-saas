@@ -220,7 +220,7 @@ export default {
       payloadSize: 'Calculated Payload Size',
       packetCount: 'Calculated Packet Count',
       packetSizeTooltip: 'The calculated packet size in the summary header may be different than the packet size in the meta details panel because the meta data is sometimes written before event parsing completes and may include packet duplicates.',
-      payloadSizeTooltip: 'The payload size in the summary header may be greater than the payload size in the meta details panel because the meta data is sometimes written before event parsing completes and may include packet duplicates.',
+      payloadSizeTooltip: 'The payload size in the summary header may be different than the payload size in the meta details panel because the meta data is sometimes written before event parsing completes and may include packet duplicates.',
       packetCountTooltip: 'The calculated packet count in the summary header may be different than the packet count in the meta details panel because the meta data is sometimes written before event parsing completes and may include packet duplicates.',
       deviceIp: 'Device IP',
       deviceType: 'Device Type',
