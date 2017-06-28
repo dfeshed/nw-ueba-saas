@@ -149,7 +149,7 @@ const pivotToInvestigateUrl = (entityType, entityId) => {
     default:
       return '';
   }
-  return `/investigation/choosedevice/navigate/query/${query}`;
+  return `/investigation/choosedevice/navigate/query/${encodeURIComponent(query)}`;
 };
 
 export {
