@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 public class ConstantRegexScorerParams implements ScorerParams {
     private String name = "scorer-name";
     private String regexPatternString = ".*";
-    private String regexFieldName = "feature-field-name";
+    private String regexFieldName = "featureFieldName";
     private Integer constantScore = 50;
 
     public String getName() {

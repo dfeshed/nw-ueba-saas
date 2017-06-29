@@ -20,8 +20,7 @@ import fortscale.ml.scorer.Scorer;
 import fortscale.ml.scorer.config.IScorerConf;
 import fortscale.ml.scorer.config.ModelBasedScoreMapperConf;
 import fortscale.ml.scorer.config.ModelInfo;
-import fortscale.ml.scorer.record.JsonAdeRecord;
-import fortscale.ml.scorer.record.JsonAdeRecordReader;
+import fortscale.ml.scorer.record.TestAdeRecord;
 import fortscale.utils.factory.FactoryService;
 import org.junit.Assert;
 import org.junit.Before;
@@ -110,7 +109,7 @@ public class ModelBasedScoreMapperFactoryTest {
 				modelBuilderConf
 		);
 		when(modelConfService.getModelConf(modelName)).thenReturn(modelConf);
-		String contextFieldName = "context field name";
+		String contextFieldName = "context";
 
 		dataRetrieverFactoryService.register(modelConf.getDataRetrieverConf().getFactoryName(),
 				factoryConfig -> new AbstractDataRetriever(dataRetrieverConf) {
@@ -171,7 +170,7 @@ public class ModelBasedScoreMapperFactoryTest {
 
 	@Test
 	public void shouldDelegateToBaseScorerStatedByConfiguration() throws Exception {
-		AdeRecordReader adeRecordReader = new JsonAdeRecordReader(JsonAdeRecord.getJsonAdeRecord("context field name", "context value"));
+		AdeRecordReader adeRecordReader = new TestAdeRecord().setContext("context value").getAdeRecordReader();
 		double score = 56;
 		Mockito.when(baseScorerMock.calculateScore(eq(adeRecordReader))).thenReturn(new FeatureScore("name", score));
 		Assert.assertEquals(score, createScorer().calculateScore(adeRecordReader).getScore(), 0.0001);
@@ -179,7 +178,7 @@ public class ModelBasedScoreMapperFactoryTest {
 
 	@Test
 	public void shouldUseScoreMappingModelStatedByConfiguration() throws Exception {
-		AdeRecordReader adeRecordReader = new JsonAdeRecordReader(JsonAdeRecord.getJsonAdeRecord("context field name", "context value"));
+		AdeRecordReader adeRecordReader = new TestAdeRecord().setContext("context value").getAdeRecordReader();
 		double score = 56;
 		Mockito.when(baseScorerMock.calculateScore(eq(adeRecordReader))).thenReturn(new FeatureScore("name", score));
 		HashMap<Double, Double> mapping = new HashMap<>();
