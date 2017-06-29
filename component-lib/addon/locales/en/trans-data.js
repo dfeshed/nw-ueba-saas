@@ -971,7 +971,7 @@ export default {
       operatingSystem: 'Operating System',
       machineStatus: 'Machine Status',
       ipAddress: 'IPAddress',
-      endpoint: 'To view details in Endpoint, you must install NW Endpoint UI'
+      endpoint: 'To Pivot to Endpoint, please install the NetWitness Endpoint client for Windows.'
     },
     addToList: {
       title: 'Add to List',

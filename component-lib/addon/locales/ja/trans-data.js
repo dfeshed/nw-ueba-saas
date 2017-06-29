@@ -971,7 +971,7 @@ export default {
       operatingSystem: 'ja_Operating System',
       machineStatus: 'ja_Machine Status',
       ipAddress: 'ja_IPAddress',
-      endpoint: 'ja_To view details in Endpoint, you must install NW Endpoint UI'
+      endpoint: 'ja_To Pivot to Endpoint, please install the NetWitness Endpoint client for Windows.'
     },
     ADdata: {
       title: 'ja_User Information',
