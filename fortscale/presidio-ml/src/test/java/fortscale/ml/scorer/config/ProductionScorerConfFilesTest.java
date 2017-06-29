@@ -8,7 +8,6 @@ import fortscale.ml.model.retriever.AbstractDataRetriever;
 import fortscale.ml.model.retriever.AbstractDataRetrieverConf;
 import fortscale.ml.model.selector.IContextSelector;
 import fortscale.ml.scorer.Scorer;
-import fortscale.ml.scorer.ScorerTestsContext;
 import fortscale.ml.scorer.factory.config.ScorersFactoryConfig;
 import fortscale.utils.factory.AbstractServiceAutowiringFactory;
 import fortscale.utils.factory.FactoryService;
@@ -59,7 +58,7 @@ public class ProductionScorerConfFilesTest {
 
 	@Configuration
 	@EnableSpringConfigured
-	@Import({ScorerTestsContext.class, ScorersFactoryConfig.class})
+	@Import({ ScorersFactoryConfig.class})
 	public static class spConf{
 		@Bean
 		public ModelConfService modelConfService() {
