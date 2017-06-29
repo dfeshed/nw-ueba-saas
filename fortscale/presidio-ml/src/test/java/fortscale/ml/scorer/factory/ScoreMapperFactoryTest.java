@@ -2,7 +2,6 @@ package fortscale.ml.scorer.factory;
 
 import fortscale.domain.feature.score.FeatureScore;
 import fortscale.ml.model.ModelConfService;
-import fortscale.ml.model.cache.ModelsCacheService;
 import fortscale.ml.scorer.ScoreMapper;
 import fortscale.ml.scorer.ScoreMapping;
 import fortscale.ml.scorer.Scorer;
@@ -22,14 +21,10 @@ import presidio.ade.domain.record.AdeRecordReader;
 import java.util.HashMap;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath*:META-INF/spring/scorer-factory-tests-context.xml"})
+@ContextConfiguration(classes = { ScorerFactoriesTestConfig.class})
 public class ScoreMapperFactoryTest {
     @MockBean
-    ModelConfService modelConfService;
-
-    @MockBean
-    ModelsCacheService modelCacheService;
-
+    private ModelConfService modelConfService;
     @Autowired
     private ScoreMapperFactory scoreMapperFactory;
 

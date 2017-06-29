@@ -8,22 +8,25 @@ import fortscale.ml.model.retriever.AbstractDataRetriever;
 import fortscale.ml.model.retriever.AbstractDataRetrieverConf;
 import fortscale.ml.model.selector.IContextSelector;
 import fortscale.ml.scorer.Scorer;
+import fortscale.ml.scorer.factory.config.ScorersFactoryConfig;
+import fortscale.utils.factory.AbstractServiceAutowiringFactory;
 import fortscale.utils.factory.FactoryService;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 import java.time.Instant;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -31,11 +34,13 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-@RunWith(SpringJUnit4ClassRunner.class)
+@RunWith(SpringRunner.class)
 @ContextConfiguration(loader = AnnotationConfigContextLoader.class)
 public class ProductionScorerConfFilesTest {
 	private static final String NULL_SCORER_ERROR_MSG_FORMAT = "Received a null scorer for scorer conf %s.";
 
+	@Autowired
+	private ModelConfService modelConfService;
 	@Autowired
 	private ScorerConfService scorerConfService;
 	@Autowired
@@ -53,8 +58,8 @@ public class ProductionScorerConfFilesTest {
 
 	@Configuration
 	@EnableSpringConfigured
-	@ComponentScan(basePackages = "fortscale.ml.scorer.factory")
-	static class ContextConfiguration {
+	@Import({ ScorersFactoryConfig.class})
+	public static class spConf{
 		@Bean
 		public ModelConfService modelConfService() {
 			return new ModelConfService();
@@ -65,10 +70,16 @@ public class ProductionScorerConfFilesTest {
 			return new TestScorerConfService("classpath:config/asl/scorers/*/*.json");
 		}
 
+		@Autowired
+		private List<AbstractServiceAutowiringFactory<Scorer>> scorersFactories;
 		@Bean
 		public FactoryService<Scorer> scorerFactoryService() {
-			return new FactoryService<>();
+
+			FactoryService<Scorer> scorerFactoryService = new FactoryService<>();
+			scorersFactories.forEach(x-> x.registerFactoryService(scorerFactoryService));
+			return scorerFactoryService;
 		}
+
 
 		@Bean
 		public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {

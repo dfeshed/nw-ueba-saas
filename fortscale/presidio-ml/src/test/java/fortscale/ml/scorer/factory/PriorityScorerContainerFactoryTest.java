@@ -2,7 +2,6 @@ package fortscale.ml.scorer.factory;
 
 import fortscale.domain.feature.score.FeatureScore;
 import fortscale.ml.model.ModelConfService;
-import fortscale.ml.model.cache.ModelsCacheService;
 import fortscale.ml.scorer.PriorityScorerContainer;
 import fortscale.ml.scorer.Scorer;
 import fortscale.ml.scorer.config.IScorerConf;
@@ -21,19 +20,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RunWith(SpringRunner.class)
-@ContextConfiguration(locations = {"classpath*:META-INF/spring/scorer-factory-tests-context.xml"})
+@ContextConfiguration(classes = { ScorerFactoriesTestConfig.class})
 public class PriorityScorerContainerFactoryTest {
     @MockBean
-    ModelConfService modelConfService;
-
-    @MockBean
-    ModelsCacheService modelCacheService;
+    private ModelConfService modelConfService;
 
     @Autowired
-    PriorityScorerContainerFactory priorityScorerContainerFactory;
+    private PriorityScorerContainerFactory priorityScorerContainerFactory;
 
     @Autowired
-    FactoryService<Scorer> scorerFactoryService;
+    private FactoryService<Scorer> scorerFactoryService;
 
     @Test(expected = IllegalArgumentException.class)
     public void confNotOfExpectedType() {

@@ -9,7 +9,8 @@ import fortscale.ml.model.ModelConf;
 import fortscale.ml.model.ModelConfService;
 import fortscale.ml.model.ScoreMappingModel;
 import fortscale.ml.model.builder.IModelBuilderConf;
-import fortscale.ml.model.cache.ModelsCacheService;
+import fortscale.ml.model.cache.EventModelsCacheService;
+import fortscale.ml.model.config.ContextSelectorFactoryConfig;
 import fortscale.ml.model.retriever.AbstractDataRetriever;
 import fortscale.ml.model.retriever.AbstractDataRetrieverConf;
 import fortscale.ml.model.selector.IContextSelector;
@@ -33,23 +34,22 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import presidio.ade.domain.record.AdeRecordReader;
 
-import java.time.Instant;
 import java.util.*;
 
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
-@ContextConfiguration(locations = "classpath*:META-INF/spring/scorer-factory-tests-context.xml")
+@ContextConfiguration(classes = {ContextSelectorFactoryConfig.class,ScorerFactoriesTestConfig.class})
 public class ModelBasedScoreMapperFactoryTest {
 	@MockBean
-	ModelConfService modelConfService;
-
-	@MockBean
-	ModelsCacheService modelCacheService;
+	private ModelConfService modelConfService;
 
 	@Autowired
-	ModelBasedScoreMapperFactory modelBasedScoreMapperFactory;
+	private EventModelsCacheService modelCacheService;
+
+	@Autowired
+	private ModelBasedScoreMapperFactory modelBasedScoreMapperFactory;
 
 	@Autowired
 	private FactoryService<Scorer> scorerFactoryService;
@@ -146,7 +146,7 @@ public class ModelBasedScoreMapperFactoryTest {
 
 		ScoreMappingModel model = new ScoreMappingModel();
 		model.init(mapping);
-		when(modelCacheService.getModel(Mockito.anyString(), Mockito.anyMapOf(String.class, String.class), Mockito.any(Instant.class))).thenReturn(model);
+		when(modelCacheService.getModel(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(model);
 		return modelBasedScoreMapperFactory.getProduct(conf);
 	}
 
