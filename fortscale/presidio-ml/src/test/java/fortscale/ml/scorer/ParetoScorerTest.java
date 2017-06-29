@@ -2,8 +2,7 @@ package fortscale.ml.scorer;
 
 
 import fortscale.domain.feature.score.FeatureScore;
-import fortscale.ml.scorer.record.JsonAdeRecord;
-import fortscale.ml.scorer.record.JsonAdeRecordReader;
+import fortscale.ml.scorer.record.TestAdeRecord;
 import org.junit.Assert;
 import org.junit.Test;
 import presidio.ade.domain.record.AdeRecordReader;
@@ -92,11 +91,11 @@ public class ParetoScorerTest {
 
 
     private void testScore(
-            ParetoScorer scorer, JsonAdeRecordReader jsonAdeRecordReader,
+            ParetoScorer scorer, AdeRecordReader adeRecordReader,
             ParetoScorerParams params, Double expectedScore) throws Exception {
 
         assertScorerParams(params, scorer);
-        FeatureScore score = scorer.calculateScore(jsonAdeRecordReader);
+        FeatureScore score = scorer.calculateScore(adeRecordReader);
         Assert.assertNotNull(score);
         Assert.assertEquals(expectedScore, score.getScore(), delta);
     }
@@ -179,7 +178,7 @@ public class ParetoScorerTest {
                 .setHighestScoreWeight(0.8);
 
         ParetoScorer scorer = createParetoScorer(params);
-        testScore(scorer, new JsonAdeRecordReader(JsonAdeRecord.getJsonAdeRecord("field1", "value1")), params, 98.0);
+        testScore(scorer, new TestAdeRecord().setField1("value1").getAdeRecordReader(), params, 98.0);
     }
 
     @Test
@@ -189,7 +188,7 @@ public class ParetoScorerTest {
                 .setHighestScoreWeight(0.7);
 
         ParetoScorer scorer = createParetoScorer(params);
-        testScore(scorer, new JsonAdeRecordReader(JsonAdeRecord.getJsonAdeRecord("field1", "value1")), params, 63.0);
+        testScore(scorer, new TestAdeRecord().setField1("value1").getAdeRecordReader(), params, 63.0);
     }
 
 
@@ -201,6 +200,6 @@ public class ParetoScorerTest {
                 .setHighestScoreWeight(0.7);
 
         ParetoScorer scorer = createParetoScorer(params);
-        testScore(scorer, new JsonAdeRecordReader(JsonAdeRecord.getJsonAdeRecord("field1", "value1")), params, 97.0);
+        testScore(scorer, new TestAdeRecord().setField1("value1").getAdeRecordReader(), params, 97.0);
     }
 }

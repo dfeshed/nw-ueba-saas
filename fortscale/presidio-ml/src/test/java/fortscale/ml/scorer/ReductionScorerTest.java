@@ -2,21 +2,15 @@ package fortscale.ml.scorer;
 
 import fortscale.domain.feature.score.FeatureScore;
 import fortscale.ml.scorer.params.ReductionScorerParams;
-import fortscale.ml.scorer.record.JsonAdeRecord;
-import fortscale.ml.scorer.record.JsonAdeRecordReader;
+import fortscale.ml.scorer.record.TestAdeRecord;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import presidio.ade.domain.record.AdeRecordReader;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = ScorerTestsContext.class)
 public class ReductionScorerTest {
-    protected static final String CONST_FIELD_NAME1 = "testFieldName1";
-    protected static final String CONST_FIELD_NAME2 = "testFieldName2";
     private static final String MAIN_SCORER_NAME = "MAIN-SCORER";
     private static final String REDUCTION_SCORER_NAME = "REDUCTION-SCORER";
 
@@ -273,9 +267,7 @@ public class ReductionScorerTest {
         ReductionScorerParams params = new ReductionScorerParams().setMainScorerScore(100.0).setReductionScorerScore(20.0)
                 .setReductionWeight(0.2).setReductionZeroScoreWeight(ReductionScorer.REDUCTION_ZERO_SCORE_WEIGHT_DEFAULT);
         ReductionScorer scorer = createReductionScorer(params, false);
-        JsonAdeRecord jsonAdeRecord = JsonAdeRecord.getJsonAdeRecord(CONST_FIELD_NAME1, "testA1B");
-        jsonAdeRecord.getJsonObject().put(CONST_FIELD_NAME2, "unit908o");
-        AdeRecordReader adeRecordReader = new JsonAdeRecordReader(jsonAdeRecord);
+        AdeRecordReader adeRecordReader = new TestAdeRecord().setTestFieldName1("testA1B").setTestFieldName2("unit908o").getAdeRecordReader();
         testScore(scorer, adeRecordReader, params);
     }
 
@@ -284,9 +276,7 @@ public class ReductionScorerTest {
         ReductionScorerParams params = new ReductionScorerParams().setMainScorerScore(100.0).setReductionScorerScore(0.0)
                 .setReductionWeight(0.2).setReductionZeroScoreWeight(ReductionScorer.REDUCTION_ZERO_SCORE_WEIGHT_DEFAULT);
         ReductionScorer scorer = createReductionScorer(params, false);
-        JsonAdeRecord jsonAdeRecord = JsonAdeRecord.getJsonAdeRecord(CONST_FIELD_NAME1, "testA1B");
-        jsonAdeRecord.getJsonObject().put(CONST_FIELD_NAME2, "unit908o");
-        AdeRecordReader adeRecordReader = new JsonAdeRecordReader(jsonAdeRecord);
+        AdeRecordReader adeRecordReader = new TestAdeRecord().setTestFieldName1("testA1B").setTestFieldName2("unit908o").getAdeRecordReader();
         testScore(scorer, adeRecordReader, params);
     }
 
@@ -296,9 +286,7 @@ public class ReductionScorerTest {
         ReductionScorerParams params = new ReductionScorerParams().setMainScorerScore(0.0).setReductionScorerScore(0.0)
                 .setReductionWeight(0.2).setReductionZeroScoreWeight(ReductionScorer.REDUCTION_ZERO_SCORE_WEIGHT_DEFAULT);
         ReductionScorer scorer = createReductionScorer(params, false);
-        JsonAdeRecord jsonAdeRecord = JsonAdeRecord.getJsonAdeRecord(CONST_FIELD_NAME1, "testA1B");
-        jsonAdeRecord.getJsonObject().put(CONST_FIELD_NAME2, "unit908o");
-        AdeRecordReader adeRecordReader = new JsonAdeRecordReader(jsonAdeRecord);
+        AdeRecordReader adeRecordReader = new TestAdeRecord().setTestFieldName1("testA1B").setTestFieldName2("unit908o").getAdeRecordReader();
         testScore(scorer, adeRecordReader, params);
     }
 
@@ -308,9 +296,7 @@ public class ReductionScorerTest {
         ReductionScorerParams params = new ReductionScorerParams().setMainScorerScore(10.0).setReductionScorerScore(20.0)
                 .setReductionWeight(0.2).setReductionZeroScoreWeight(ReductionScorer.REDUCTION_ZERO_SCORE_WEIGHT_DEFAULT);
         ReductionScorer scorer = createReductionScorer(params, false);
-        JsonAdeRecord jsonAdeRecord = JsonAdeRecord.getJsonAdeRecord(CONST_FIELD_NAME1, "testA1B");
-        jsonAdeRecord.getJsonObject().put(CONST_FIELD_NAME2, "unit908o");
-        AdeRecordReader adeRecordReader = new JsonAdeRecordReader(jsonAdeRecord);
+        AdeRecordReader adeRecordReader = new TestAdeRecord().setTestFieldName1("testA1B").setTestFieldName2("unit908o").getAdeRecordReader();
         testScore(scorer, adeRecordReader, params);
     }
 }
