@@ -13,7 +13,7 @@ module.exports = function(/* environment, appConfig */) {
       types: ['info', 'success', 'warning', 'error']
     },
     moment: {
-      includeTimezone: '2010-2020'
+      includeTimezone: 'subset'
     },
     contextMetas
   };

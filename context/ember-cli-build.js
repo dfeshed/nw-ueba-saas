@@ -6,10 +6,8 @@ shim(EmberAddon);
 
 module.exports = function(defaults) {
   const app = new EmberAddon(defaults, {
-    babel: {
-      stage: 0
-    },
     'ember-cli-babel': {
+      stage: 0,
       includePolyfill: true
     }
   });

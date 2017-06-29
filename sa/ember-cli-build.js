@@ -13,7 +13,7 @@ module.exports = function(defaults) {
       browsers: ['last 2 versions', 'IE > 10'],
       enabled: appEnv !== 'test'
     },
-    babel: {
+    'ember-cli-babel': {
       stage: 0,
       optional: ['es6.spec.symbols'],
       includePolyfill: true
