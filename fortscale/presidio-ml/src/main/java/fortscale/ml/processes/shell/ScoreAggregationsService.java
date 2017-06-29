@@ -65,10 +65,11 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
                 while (pageIterator.hasNext()) {
                     List<EnrichedRecord> pageRecords = pageIterator.next();
                     List<AdeScoredEnrichedRecord> adeScoredRecords = enrichedEventsScoringService.scoreAndStoreEvents(pageRecords);
-                    scoreAggregationsBucketService.updateBuckets(adeScoredRecords);
+                    // todo: mariaaaaaa
+                    //                    scoreAggregationsBucketService.updateBuckets(adeScoredRecords);
                 }
-                List<Object> closedBuckets = scoreAggregationsBucketService.closeBuckets();
-                scoreAggregationsCreator.createScoreAggregations(closedBuckets);
+//                List<Object> closedBuckets = scoreAggregationsBucketService.closeBuckets();
+//                scoreAggregationsCreator.createScoreAggregations(closedBuckets);
             }
         }
     }

@@ -14,6 +14,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
 import presidio.ade.domain.store.enriched.EnrichedDataStoreConfig;
 
@@ -26,12 +27,13 @@ import static fortscale.common.general.CommonStrings.*;
  */
 @Configuration
 @Import({EnrichedDataStoreConfig.class,
-        ParametersValidationServiceConfig.class,
+        ParametersValidationServiceConfig.class,// todo: remove this
         MongoConfig.class,
         EnrichedEventsScoringServiceConfig.class,
-        NullStatsServiceConfig.class,
-        EventModelsCacheServiceConfig.class
+        NullStatsServiceConfig.class,// todo: remove this
+        EventModelsCacheServiceConfig.class,
 })
+@EnableSpringConfigured
 public class ScoreAggregationServiceConfiguration {
 
     @Autowired
