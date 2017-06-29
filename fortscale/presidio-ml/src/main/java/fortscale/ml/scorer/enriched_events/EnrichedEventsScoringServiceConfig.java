@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import presidio.ade.domain.record.AdeRecordReaderFactory;
+import presidio.ade.domain.record.scored.AdeScoredRecordReaderFactory;
 import presidio.ade.domain.store.scored.ScoredEnrichedDataStore;
 import presidio.ade.domain.store.scored.ScoredEnrichedDataStoreMongoConfig;
 
@@ -67,6 +68,11 @@ public class EnrichedEventsScoringServiceConfig {
     @Bean
     public AdeRecordReaderFactory adeRecordReaderFactory() {
         return new AdeRecordReaderFactory();
+    }
+
+    @Bean
+    public AdeScoredRecordReaderFactory adeScoredRecordReaderFactory() {
+        return new AdeScoredRecordReaderFactory();
     }
 
     // TODO: Configure here all relevant transformations

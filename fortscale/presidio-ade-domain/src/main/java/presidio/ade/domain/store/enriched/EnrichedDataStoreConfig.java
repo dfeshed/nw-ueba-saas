@@ -17,7 +17,7 @@ public class EnrichedDataStoreConfig {
 	@Autowired
 	private MongoTemplate mongoTemplate;
 	@Autowired
-	private EnrichedDataToCollectionNameTranslator translator;
+	private EnrichedDataAdeToCollectionNameTranslator translator;
 	@Autowired
 	private DataSourceToAdeEnrichedRecordClassResolver dataSourceToAdeEnrichedRecordClassResolver;
 

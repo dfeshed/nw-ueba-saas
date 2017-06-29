@@ -1,4 +1,4 @@
-package presidio.ade.domain.store.enriched.groups;
+package presidio.ade.domain.pagination.enriched.groups;
 
 import java.util.Set;
 

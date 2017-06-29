@@ -18,6 +18,7 @@ public abstract class AdeScoredEnrichedRecord extends AdeScoredRecord {
         super(date_time, featureName, score, featureScoreList);
     }
 
+    @Override
     @Transient
     public abstract String getDataSource();
 

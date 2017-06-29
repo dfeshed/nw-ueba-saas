@@ -34,10 +34,10 @@ public class EnrichedDataStoreImplMongo implements EnrichedDataStore {
     private static final Logger logger = Logger.getLogger(EnrichedDataStoreImplMongo.class);
 
     private final MongoTemplate mongoTemplate;
-    private final EnrichedDataToCollectionNameTranslator translator;
+    private final EnrichedDataAdeToCollectionNameTranslator translator;
     private final DataSourceToAdeEnrichedRecordClassResolver dataSourceToAdeEnrichedRecordClassResolver;
 
-    public EnrichedDataStoreImplMongo(MongoTemplate mongoTemplate, EnrichedDataToCollectionNameTranslator translator, DataSourceToAdeEnrichedRecordClassResolver dataSourceToAdeEnrichedRecordClassResolver) {
+    public EnrichedDataStoreImplMongo(MongoTemplate mongoTemplate, EnrichedDataAdeToCollectionNameTranslator translator, DataSourceToAdeEnrichedRecordClassResolver dataSourceToAdeEnrichedRecordClassResolver) {
         this.mongoTemplate = mongoTemplate;
         this.translator = translator;
         this.dataSourceToAdeEnrichedRecordClassResolver = dataSourceToAdeEnrichedRecordClassResolver;
@@ -116,9 +116,9 @@ public class EnrichedDataStoreImplMongo implements EnrichedDataStore {
 
         AggregationResults<ContextIdToNumOfEvents> result = mongoTemplate.aggregate(agg, collectionName, ContextIdToNumOfEvents.class);
         //Create list of ContextIdToNumOfEvents, which contain contextId and totalNumOfEvents
-        List<ContextIdToNumOfEvents> enrichedRecordList = result.getMappedResults();
+        List<ContextIdToNumOfEvents> contextIdToNumOfEvents = result.getMappedResults();
 
-        return enrichedRecordList;
+        return contextIdToNumOfEvents;
     }
 
     /**
@@ -152,7 +152,7 @@ public class EnrichedDataStoreImplMongo implements EnrichedDataStore {
 
     /**
      * Get field name
-     * If annotation exist return field name of annotation
+     * If annotation exist return field name of annotation, otherwise return original field name.
      *
      * @param pojoClass class that contain the field
      * @param name      - field name

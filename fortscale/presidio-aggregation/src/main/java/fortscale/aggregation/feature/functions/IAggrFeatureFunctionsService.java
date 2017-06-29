@@ -6,7 +6,7 @@ import java.util.Map;
 
 import fortscale.common.feature.Feature;
 import fortscale.aggregation.feature.bucket.AggregatedFeatureConf;
-import fortscale.common.event.Event;
+import net.minidev.json.JSONObject;
 
 /**
  * Created by amira on 16/06/2015.
@@ -24,7 +24,7 @@ public interface IAggrFeatureFunctionsService {
      * If aggrFeatures is null, a new {@link HashMap <String, Feature>} will be created with new Feature object for each
      * of the {@link AggregatedFeatureConf} in aggrFeatureConfs.
      */
-    Map<String, Feature> updateAggrFeatures(Event event, List<AggregatedFeatureConf> aggrFeatureConfs, Map<String, Feature>aggrFeatures, Map<String, Feature>features);
+    Map<String, Feature> updateAggrFeatures(JSONObject jSONObject, List<AggregatedFeatureConf> aggrFeatureConfs, Map<String, Feature>aggrFeatures, Map<String, Feature>features);
 
     /**
      * Returns the number of functions created and stored by this service.

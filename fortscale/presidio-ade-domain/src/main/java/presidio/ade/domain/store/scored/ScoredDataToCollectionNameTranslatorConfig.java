@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 public class ScoredDataToCollectionNameTranslatorConfig {
 
     @Bean
-    public ScoredDataToCollectionNameTranslator scoredDataToCollectionNameTranslator() {
-        return new ScoredDataToCollectionNameTranslator();
+    public ScoredDataAdeToCollectionNameTranslator scoredDataToCollectionNameTranslator() {
+        return new ScoredDataAdeToCollectionNameTranslator();
     }
 }
