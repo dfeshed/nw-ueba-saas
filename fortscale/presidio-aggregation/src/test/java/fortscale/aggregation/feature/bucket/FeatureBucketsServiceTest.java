@@ -38,7 +38,6 @@ import static junit.framework.Assert.assertTrue;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration
 @Category(ModuleTestCategory.class)
 public class FeatureBucketsServiceTest {
 
