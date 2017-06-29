@@ -8,7 +8,6 @@ import fortscale.ml.model.retriever.AbstractDataRetriever;
 import fortscale.ml.model.retriever.AbstractDataRetrieverConf;
 import fortscale.ml.model.selector.IContextSelector;
 import fortscale.ml.scorer.Scorer;
-import fortscale.ml.scorer.ScorerTestsContext;
 import fortscale.utils.factory.FactoryService;
 import org.junit.Assert;
 import org.junit.Test;
@@ -17,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.test.context.ContextConfiguration;
@@ -55,7 +53,6 @@ public class ProductionScorerConfFilesTest {
 
 	@Configuration
 	@EnableSpringConfigured
-	@Import(ScorerTestsContext.class)
 	@ComponentScan(basePackages = "fortscale.ml.scorer.factory")
 	static class ContextConfiguration {
 		@Bean
