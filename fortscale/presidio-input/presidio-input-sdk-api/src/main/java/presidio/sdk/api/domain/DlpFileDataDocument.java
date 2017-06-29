@@ -3,13 +3,21 @@ package presidio.sdk.api.domain;
 
 import fortscale.domain.core.AbstractAuditableDocument;
 import fortscale.utils.logging.Logger;
+import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
+import presidio.sdk.api.validation.AcceptableValues;
+import presidio.sdk.api.validation.NotEmptyIfAnotherFieldHasValue;
 
+import javax.validation.constraints.NotNull;
 import java.time.Instant;
 
 
 @Document
+@NotEmptyIfAnotherFieldHasValue(fieldName = DlpFileDataDocument.EVENT_TYPE_FIELD_NAME, fieldValues = {"copy", "move", "recycle"}, dependFieldName = DlpFileDataDocument.DESTINATION_PATH_FIELD_NAME)
+@NotEmptyIfAnotherFieldHasValue(fieldName = DlpFileDataDocument.EVENT_TYPE_FIELD_NAME, fieldValues = {"copy", "move", "recycle"}, dependFieldName = DlpFileDataDocument.DESTINATION_FILE_NAME_FIELD_NAME)
+@NotEmptyIfAnotherFieldHasValue(fieldName = DlpFileDataDocument.EVENT_TYPE_FIELD_NAME, fieldValues = {"copy", "move", "recycle", "delete"}, dependFieldName = DlpFileDataDocument.SOURCE_PATH_FIELD_NAME)
+@NotEmptyIfAnotherFieldHasValue(fieldName = DlpFileDataDocument.EVENT_TYPE_FIELD_NAME, fieldValues = {"copy", "move", "recycle", "delete"}, dependFieldName = DlpFileDataDocument.SOURCE_FILE_NAME_FIELD_NAME)
 public class DlpFileDataDocument extends AbstractAuditableDocument {
 
     public static final String DATE_TIME_UNIX_FIELD_NAME = "dateTimeUnix";
@@ -39,6 +47,7 @@ public class DlpFileDataDocument extends AbstractAuditableDocument {
     protected String executingApplication;
 
     @Field(HOSTNAME_FIELD_NAME)
+    @NotNull
     protected String hostname;
 
     @Field(FIRST_NAME_FIELD_NAME)
@@ -48,12 +57,14 @@ public class DlpFileDataDocument extends AbstractAuditableDocument {
     protected String lastName;
 
     @Field(USERNAME_FIELD_NAME)
+    @NotEmpty
     protected String username;
 
     @Field(MALWARE_SCAN_RESULT_FIELD_NAME)
     protected String malwareScanResult;
 
     @Field(EVENT_ID_FIELD_NAME)
+    @NotEmpty
     protected String eventId;
 
     @Field(SOURCE_IP_FIELD_NAME)
@@ -87,6 +98,8 @@ public class DlpFileDataDocument extends AbstractAuditableDocument {
     protected String destinationDriveType;
 
     @Field(EVENT_TYPE_FIELD_NAME)
+    @NotEmpty
+    @AcceptableValues(fieldValues = {"copy", "move", "recycle", "delete"})
     protected String eventType;
 
 

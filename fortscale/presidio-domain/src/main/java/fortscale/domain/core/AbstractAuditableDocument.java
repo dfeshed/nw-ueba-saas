@@ -6,6 +6,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.annotation.Version;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import javax.validation.constraints.NotNull;
 import java.time.Instant;
 
 
@@ -31,6 +32,7 @@ public abstract class AbstractAuditableDocument extends AbstractDocument {
     private DateTime lastModified;
 
 	@Field(DATE_TIME_FIELD_NAME)
+	@NotNull
 	protected Instant dateTime;
 
 	@Override
