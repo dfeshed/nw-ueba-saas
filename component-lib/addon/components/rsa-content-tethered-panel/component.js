@@ -31,6 +31,7 @@ export default Component.extend({
   position: 'right',
   style: 'standard', // ['standard', 'error', 'primary']
   target: null,
+  panelClass: null,
 
   displayEventName: computed('panelId', function() {
     return `rsa-content-tethered-panel-display-${this.get('panelId')}`;

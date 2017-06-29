@@ -192,6 +192,30 @@
       END-SNIPPET --}}
       {{code-snippet name="panel6.hbs"}}
     {{/spec-member}}
+
+    {{#spec-member title="Custom Panel Classes"}}
+      {{#rsa-content-tethered-panel-trigger panel='panel6xx'}}
+        {{#rsa-form-button}}
+          Hover to Trigger
+        {{/rsa-form-button}}
+      {{/rsa-content-tethered-panel-trigger}}
+      {{#rsa-content-tethered-panel panelClass="custom-class" position='top' panelId='panel6xx'}}
+        <header>panel Header</header>
+        <section>Here is the info!</section>
+      {{/rsa-content-tethered-panel}}
+      {{!-- BEGIN-SNIPPET panel6xx
+      {{#rsa-content-tethered-panel-trigger panel='panel6xx'}}
+        {{#rsa-form-button}}
+          Hover to Trigger
+        {{/rsa-form-button}}
+      {{/rsa-content-tethered-panel-trigger}}
+      {{#rsa-content-tethered-panel panelClass="custom-class" position='top' panelId='panel6xx'}}
+        <header>panel Header</header>
+        <section>Here is the info!</section>
+      {{/rsa-content-tethered-panel}}
+      END-SNIPPET --}}
+      {{code-snippet name="panel6xx.hbs"}}
+    {{/spec-member}}
   {{/spec-category}}
 
   {{#spec-category id="misc-config" title="Misc Configuration"}}
