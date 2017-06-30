@@ -10,6 +10,7 @@ const initialState = {
   remediationTypes: null,
   alertTypes: [],
   alertSources: [],
+  alertNames: [],
   milestoneTypes: []
 };
 
@@ -66,6 +67,14 @@ export default reduxActions.handleActions({
       start: (s) => ({ ...s, alertSources: [] }),
       failure: (s) => ({ ...s, alertSources: [] }),
       success: (s) => ({ ...s, alertSources: action.payload }) }
+    )
+  ),
+
+  [ACTION_TYPES.FETCH_ALERT_NAMES]: (state, action) => (
+    handle(state, action, {
+      start: (s) => ({ ...s, alertNames: [] }),
+      failure: (s) => ({ ...s, alertNames: [] }),
+      success: (s) => ({ ...s, alertNames: action.payload.data }) }
     )
   ),
 

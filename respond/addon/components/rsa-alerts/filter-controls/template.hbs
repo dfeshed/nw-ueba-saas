@@ -38,3 +38,14 @@
     </label>
   {{/each}}
 </section>
+<section class="filter-option alert-name-filter">
+  <h2>{{ t 'respond.alerts.alertNames'}}</h2>
+  {{#each alertNames as |alertName|}}
+    <label class="rsa-form-checkbox-label {{if (contains alertName alertNameFilters) 'checked'}}">
+      {{rsa-form-checkbox
+        checked=(contains alertName alertNameFilters )
+        change=(action 'toggleAlertNameFilter' alertName)}}
+      <span>{{alertName}}</span>
+    </label>
+  {{/each}}
+</section>

@@ -114,6 +114,20 @@ export default {
   },
 
   /**
+   * Retrieves the unique/distinct set of alert rule names
+   * @method getAllAlertRuleNames
+   * @public
+   * @returns {Promise}
+   */
+  getAllAlertNames() {
+    return promiseRequest({
+      method: 'findAll',
+      modelName: 'alert-names',
+      query: {}
+    });
+  },
+
+  /**
    * Returns a list of all known investigative milestone values
    * @method getAllMilestoneTypes
    * @returns {*}

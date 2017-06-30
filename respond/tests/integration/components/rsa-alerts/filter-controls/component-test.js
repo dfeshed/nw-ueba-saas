@@ -3,7 +3,8 @@ import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from '../../../../helpers/engine-resolver';
 import {
   getAllAlertTypes,
-  getAllAlertSources } from 'respond/actions/creators/dictionary-creators';
+  getAllAlertSources,
+  getAllAlertNames } from 'respond/actions/creators/dictionary-creators';
 import RSVP from 'rsvp';
 import $ from 'jquery';
 
@@ -22,7 +23,8 @@ moduleForComponent('rsa-alerts/filter-controls', 'Integration | Component | Resp
     // initialize all of the required data into redux app state
     initialize = RSVP.allSettled([
       redux.dispatch(getAllAlertTypes()),
-      redux.dispatch(getAllAlertSources())
+      redux.dispatch(getAllAlertSources()),
+      redux.dispatch(getAllAlertNames())
     ]);
   }
 });
@@ -86,5 +88,19 @@ test('The severity slider filter appears in the DOM', function(assert) {
     assert.equal(this.$(selector).length, 2, 'The are two tooltips');
     assert.equal($(this.$(selector)[0]).text().trim(), '0', 'The left end slider value should be 0');
     assert.equal($(this.$(selector)[1]).text().trim(), '100', 'The right end slider value should be 100');
+  });
+});
+
+test('All of the alert name filters appear as checkboxes, and clicking one dispatches an action', function(assert) {
+  assert.expect(2);
+  return initialize.then(() => {
+    this.on('updateFilter', function() {
+      assert.ok(true);
+    });
+    this.render(hbs`{{rsa-alerts/filter-controls updateFilter=(action 'updateFilter')}}`);
+
+    const selector = '.filter-option.alert-name-filter .rsa-form-checkbox-label';
+    assert.equal(this.$(selector).length, 30, 'There should be 30 alert name filter options');
+    this.$('.filter-option.alert-name-filter .rsa-form-checkbox-label input.rsa-form-checkbox:first').click();
   });
 });

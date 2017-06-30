@@ -6,7 +6,7 @@ const defaultSeverityRange = [0, 100];
 const stateToComputed = (state) => {
   const {
     respond: {
-      dictionaries: { alertTypes, alertSources },
+      dictionaries: { alertTypes, alertSources, alertNames },
       alerts: { itemsFilters }
     }
   } = state;
@@ -17,10 +17,12 @@ const stateToComputed = (state) => {
   return {
     alertTypeFilters: itemsFilters['alert.type'] || [],
     alertSourceFilters: itemsFilters['alert.source'] || [],
+    alertNameFilters: itemsFilters['alert.name'] || [],
     severityFilter: severityRange,
     partOfIncidentFilters: itemsFilters.partOfIncident || [],
     alertTypes,
-    alertSources
+    alertSources,
+    alertNames
   };
 };
 
@@ -44,6 +46,12 @@ const AlertFilters = Component.extend({
       const alertSourceFilters = this.get('alertSourceFilters');
       this.get('updateFilter')({
         'alert.source': alertSourceFilters.includes(source) ? alertSourceFilters.without(source) : [...alertSourceFilters, source]
+      });
+    },
+    toggleAlertNameFilter(alertName) {
+      const alertNameFilters = this.get('alertNameFilters');
+      this.get('updateFilter')({
+        'alert.name': alertNameFilters.includes(alertName) ? alertNameFilters.without(alertName) : [...alertNameFilters, alertName]
       });
     },
     toggleIsPartOfIncidentFilter(partOfIncident) {

@@ -8,6 +8,7 @@ const dispatchToActions = (dispatch) => {
     bootstrap() {
       dispatch(DictionaryActions.getAllAlertTypes());
       dispatch(DictionaryActions.getAllAlertSources());
+      dispatch(DictionaryActions.getAllAlertNames());
     }
   };
 };

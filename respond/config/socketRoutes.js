@@ -165,6 +165,13 @@ const respondConfigGen = function(environment) {
         subscriptionDestination: '/user/queue/remediation/tasks/count',
         requestDestination: '/ws/respond/remediation/tasks/count'
       }
+    },
+    'alert-names': {
+      socketUrl,
+      findAll: {
+        subscriptionDestination: '/user/queue/alerts/distinct/names',
+        requestDestination: '/ws/respond/alerts/distinct/names'
+      }
     }
   };
 };

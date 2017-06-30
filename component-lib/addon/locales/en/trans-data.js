@@ -643,7 +643,8 @@ export default {
       notAssociatedWithIncident: '(None)',
       originalAlert: 'Raw Alert',
       originalAlertLoading: 'Loading raw alert',
-      originalAlertError: 'There was a problem loading the raw alert'
+      originalAlertError: 'There was a problem loading the raw alert',
+      alertNames: 'Alert Names'
     },
     alert: {
       status: {

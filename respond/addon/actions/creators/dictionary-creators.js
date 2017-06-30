@@ -160,6 +160,21 @@ const getAllAlertSources = () => {
 };
 
 /**
+ * Action creator for fetching all unique alert rule names
+ * @public
+ * @method getAlertRuleNames
+ * @returns {Promise}
+ */
+const getAllAlertNames = () => ({
+  type: ACTION_TYPES.FETCH_ALERT_NAMES,
+  promise: dictionaries.getAllAlertNames(),
+  meta: {
+    onSuccess: (response) => Logger.debug(ACTION_TYPES.FETCH_ALERT_NAMES, response),
+    onFailure: (response) => ErrorHandlers.handleContentRetrievalError(response, 'alert rule names')
+  }
+});
+
+/**
  * Action creator for fetching all known milestones
  * @method getAllMilestoneTypes
  * @public
@@ -186,5 +201,6 @@ export {
   getAllRemediationTypes,
   getAllAlertTypes,
   getAllAlertSources,
+  getAllAlertNames,
   getAllMilestoneTypes
 };
