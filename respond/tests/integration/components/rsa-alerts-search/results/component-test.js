@@ -53,7 +53,7 @@ test('it renders the header DOM and results DOM as expected', function(assert) {
 
       assert.ok(this.$('.rsa-data-table').length, 'Expected to find data table DOM');
       const $alerts = this.$('.rsa-data-table .alert');
-      assert.equal($alerts.length, items.length, 'Expected to find DOM for each alert in results');
+      assert.ok($alerts.length, 'Expected to find DOM for an alert in results, but possibly not all alerts, because of lazy rendering');
       $alerts.each(function(index) {
         const $el = $(this);
         assert.equal($el.text().trim(), items[index].alert.name, 'Expected to find custom alert content in DOM');

@@ -27,7 +27,7 @@
 
   {{!Data table to display the found alerts}}
   <hbox fill class="rsa-alerts-search-results__body">
-    {{#rsa-data-table items=items columnsConfig=columnsConfig}}
+    {{#rsa-data-table items=items lazy=true columnsConfig=columnsConfig}}
       {{#rsa-data-table/body as |item index column|}}
         {{#rsa-data-table/body-cell item=item index=index column=column}}
           {{yield item index column}}
