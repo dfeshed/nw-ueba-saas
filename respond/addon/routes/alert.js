@@ -2,14 +2,27 @@ import Route from 'ember-route';
 import { initializeAlert } from 'respond/actions/creators/alert-creators';
 import service from 'ember-service/inject';
 import { next } from 'ember-runloop';
+import { isEmpty } from 'ember-utils';
+
+// Converts a long alert ID string into the format 'abcd...wxyz'.
+function abbrevAlertId(alertId) {
+  if (alertId.length > 16) {
+    return `${alertId.substr(0, 8)}...${alertId.substr(-8)}`;
+  } else {
+    return alertId;
+  }
+}
 
 export default Route.extend({
   accessControl: service(),
   redux: service(),
   contextualHelp: service(),
+  i18n: service(),
 
-  title() {
-    return this.get('i18n').t('pageTitle', { section: this.get('i18n').t('respond.title') });
+  titleToken(model) {
+    const label = this.get('i18n').t('respond.entities.alert');
+    const { alertId } = model || {};
+    return isEmpty(alertId) ? label : `${label} ${abbrevAlertId(alertId)}`;
   },
 
   beforeModel() {

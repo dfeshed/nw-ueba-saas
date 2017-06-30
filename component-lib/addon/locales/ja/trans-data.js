@@ -1,4 +1,5 @@
 export default {
+  appTitle: 'ja_NetWitness Suite',
   pageTitle: 'ja_{{section}} - NetWitness Suite',
   empty: '',
   languages: {
@@ -491,7 +492,8 @@ export default {
         createSuccess: 'ja_You successfully added a new record',
         createFailure: 'ja_There was a problem creating this record',
         deleteFailure: 'ja_There was a problem deleting this record'
-      }
+      },
+      alert: 'ja_Alert'
     },
     explorer: {
       confirmation: {

@@ -8,8 +8,8 @@ export default Route.extend({
   redux: service(),
   contextualHelp: service(),
 
-  title() {
-    return this.get('i18n').t('pageTitle', { section: this.get('i18n').t('respond.title') });
+  titleToken(model) {
+    return model && model.incidentId;
   },
 
   beforeModel() {
