@@ -32,7 +32,7 @@ public class AdapterExecutionServiceImpl implements AdapterExecutionService {
     }
 
     public void run(String... params) throws Exception {         //todo: we need to consider doing the fetch & store at the same iteration
-        logger.info("Start adapter processing with params: " + Arrays.toString(params));
+        logger.info("Start Adapter processing with params: " + Arrays.toString(params));
 
         if (params.length < 4) {
             String errorMessage = String.format("Invalid input[%s]. Not enough parameters.", Arrays.toString(params));
