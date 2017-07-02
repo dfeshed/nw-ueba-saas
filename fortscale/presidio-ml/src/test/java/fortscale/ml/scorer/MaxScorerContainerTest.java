@@ -2,23 +2,14 @@ package fortscale.ml.scorer;
 
 import fortscale.domain.feature.score.FeatureScore;
 import fortscale.ml.scorer.params.MaxScorerContainerParams;
-import fortscale.ml.scorer.record.JsonAdeRecord;
-import fortscale.ml.scorer.record.JsonAdeRecordReader;
-import org.json.JSONObject;
+import fortscale.ml.scorer.record.TestAdeRecord;
 import org.junit.Assert;
 import org.junit.Test;
-
-import java.time.Instant;
+import presidio.ade.domain.record.AdeRecordReader;
 
 public class MaxScorerContainerTest {
     private MaxScorerContainer createMaxScorerContainer(MaxScorerContainerParams params) {
         return new MaxScorerContainer(params.getName(), params.getScorerList());
-    }
-
-    protected JsonAdeRecordReader buildJsonAdeRecordReader(String fieldName, Object fieldValue) {
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put(fieldName, fieldValue);
-        return new JsonAdeRecordReader(new JsonAdeRecord(Instant.now(), jsonObject));
     }
 
     public static void assertScorerParams(MaxScorerContainerParams params, MaxScorerContainer scorer) {
@@ -27,11 +18,11 @@ public class MaxScorerContainerTest {
     }
 
     private void testScore(
-            MaxScorerContainer scorer, JsonAdeRecordReader jsonAdeRecordReader,
+            MaxScorerContainer scorer, AdeRecordReader adeRecordReader,
             MaxScorerContainerParams params, Double expectedScore) throws Exception {
 
         assertScorerParams(params, scorer);
-        FeatureScore score = scorer.calculateScore(jsonAdeRecordReader);
+        FeatureScore score = scorer.calculateScore(adeRecordReader);
         Assert.assertNotNull(score);
         Assert.assertEquals(expectedScore, score.getScore(), 0.000000001);
     }
@@ -88,7 +79,8 @@ public class MaxScorerContainerTest {
                 .addScorer(new SimpleTestScorer(90.0, "second scorer"));
 
         MaxScorerContainer scorer = createMaxScorerContainer(params);
-        testScore(scorer, buildJsonAdeRecordReader("field1", "value1"), params, 100.0);
+        AdeRecordReader adeRecordReader = new TestAdeRecord().setField1("value1").getAdeRecordReader();
+        testScore(scorer, adeRecordReader, params, 100.0);
     }
 
     @Test
@@ -97,7 +89,8 @@ public class MaxScorerContainerTest {
                 .addScorer(new SimpleTestScorer(90.0, "first scorer"));
 
         MaxScorerContainer scorer = createMaxScorerContainer(params);
-        testScore(scorer, buildJsonAdeRecordReader("field1", "value1"), params, 90.0);
+        AdeRecordReader adeRecordReader = new TestAdeRecord().setField1("value1").getAdeRecordReader();
+        testScore(scorer, adeRecordReader, params, 90.0);
     }
 
     @Test
@@ -107,7 +100,8 @@ public class MaxScorerContainerTest {
                 .addScorer(new SimpleTestScorer(100.0, "second scorer"));
 
         MaxScorerContainer scorer = createMaxScorerContainer(params);
-        testScore(scorer, buildJsonAdeRecordReader("field1", "value1"), params, 100.0);
+        AdeRecordReader adeRecordReader = new TestAdeRecord().setField1("value1").getAdeRecordReader();
+        testScore(scorer, adeRecordReader, params, 100.0);
     }
 
     @Test
@@ -118,7 +112,8 @@ public class MaxScorerContainerTest {
                 .addScorer(new SimpleTestScorer(50.0, "third scorer"));
 
         MaxScorerContainer scorer = createMaxScorerContainer(params);
-        testScore(scorer, buildJsonAdeRecordReader("field1", "value1"), params, 100.0);
+        AdeRecordReader adeRecordReader = new TestAdeRecord().setField1("value1").getAdeRecordReader();
+        testScore(scorer, adeRecordReader, params, 100.0);
     }
 
     @Test
@@ -129,6 +124,7 @@ public class MaxScorerContainerTest {
                 .addScorer(new SimpleTestScorer(100.0, "third scorer"));
 
         MaxScorerContainer scorer = createMaxScorerContainer(params);
-        testScore(scorer, buildJsonAdeRecordReader("field1", "value1"), params, 100.0);
+        AdeRecordReader adeRecordReader = new TestAdeRecord().setField1("value1").getAdeRecordReader();
+        testScore(scorer, adeRecordReader, params, 100.0);
     }
 }

@@ -77,8 +77,8 @@ public class AggregatedFeatureConf implements Serializable {
 		this.filter = filter;
 	}
 
-	public boolean passedFilter(Event event){
-    	return filter == null ? true : filter.passedFilter(event.getJSONObject());
+	public boolean passedFilter(JSONObject jSONObject){
+    	return filter == null ? true : filter.passedFilter(jSONObject);
     }
 	
 	public boolean equals(Object obj) {

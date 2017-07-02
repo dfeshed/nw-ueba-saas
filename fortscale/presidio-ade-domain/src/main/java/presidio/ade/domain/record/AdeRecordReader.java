@@ -1,10 +1,16 @@
 package presidio.ade.domain.record;
 
+import fortscale.common.feature.Feature;
+import fortscale.common.feature.FeatureNumericValue;
+import fortscale.common.feature.FeatureValue;
 import fortscale.utils.recordreader.ReflectionRecordReader;
 import fortscale.utils.recordreader.transformation.Transformation;
 
 import javax.validation.constraints.NotNull;
 import java.time.Instant;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 import java.util.Map;
 
 /**
@@ -82,4 +88,29 @@ public class AdeRecordReader extends ReflectionRecordReader {
 	public Instant getDate_time() {
 		return adeRecord.getDate_time();
 	}
+
+	public AdeRecord getAdeRecord(){
+		return this.adeRecord;
+	}
+
+	public String getDataSource(){
+		return adeRecord.getDataSource();
+	}
+
+	/**
+	 * Create map of feature name and feature
+	 * @param featureNames set of feature names
+	 * @return feature name to feature map
+	 */
+	public Map<String, Feature> getAllFeatures(Set<String> featureNames) {
+		Map<String, Feature> featureMap = new HashMap<>();
+
+		for (String featureName : featureNames) {
+			Object featureValue = get(featureName, Object.class);
+			Feature feature = Feature.toFeature(featureName, featureValue);
+			featureMap.put(featureName, feature);
+		}
+		return featureMap;
+	}
+
 }

@@ -2,13 +2,13 @@ package fortscale.aggregation.feature.bucket;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.aggregation.configuration.AslConfigurationService;
-
-import fortscale.common.event.Event;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
+import presidio.ade.domain.record.AdeRecordReader;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Loads BucketConfs from JSON file.
@@ -26,9 +26,9 @@ public class BucketConfigurationService extends AslConfigurationService {
 	private String dataSourceFieldName;
 	@Value("${fortscale.aggregation.bucket.conf.json.file.name}")
 	private String bucketConfJsonFilePath;
-	@Value("${fortscale.aggregation.bucket.conf.json.overriding.files.path}")
+	@Value("${fortscale.aggregation.bucket.conf.json.overriding.files.path:#{null}}")
 	private String bucketConfJsonOverridingFilesPath;
-	@Value("${fortscale.aggregation.bucket.conf.json.additional.files.path}")
+	@Value("${fortscale.aggregation.bucket.conf.json.additional.files.path:#{null}}")
 	private String bucketConfJsonAdditionalFilesPath;
 
 	@Override
@@ -77,14 +77,23 @@ public class BucketConfigurationService extends AslConfigurationService {
 		return bucketConfs.values();
 	}
 
-	public List<FeatureBucketConf> getRelatedBucketConfs(Event event) {
-		if (event == null) return null;
-		Object dataSourceObj = event.get(dataSourceFieldName);
-		if (dataSourceObj == null) return null;
-		String dataSource = dataSourceObj.toString();
+	/**
+	 * Get list of FeatureBucketConf by data source, strategyName and contextFieldNames
+	 * @param adeRecordReader
+	 * @param strategyName
+	 * @param contextFieldNames
+	 * @return list of featureBucketConfs
+	 */
+	public List<FeatureBucketConf> getRelatedBucketConfs(AdeRecordReader adeRecordReader, String strategyName, List<String> contextFieldNames) {
+		if (adeRecordReader == null) return null;
+		String dataSource = adeRecordReader.getDataSource();
 		if (dataSource.isEmpty()) return null;
-		return dataSourceToListOfBucketConfs.get(dataSource);
+		List<FeatureBucketConf> featureBucketConfs = dataSourceToListOfBucketConfs.get(dataSource);
+		featureBucketConfs = featureBucketConfs.stream().filter(featureBucketConf -> featureBucketConf.getStrategyName().equals(strategyName) && featureBucketConf.getContextFieldNames().equals(contextFieldNames)).collect(Collectors.toList());
+
+		return featureBucketConfs;
 	}
+
 
 	public FeatureBucketConf getBucketConf(String bucketConfName) {
 		return bucketConfs.get(bucketConfName);

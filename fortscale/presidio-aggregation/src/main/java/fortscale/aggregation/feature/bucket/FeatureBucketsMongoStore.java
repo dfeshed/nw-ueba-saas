@@ -58,32 +58,6 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 	}
 
 	@Override
-	public List<FeatureBucket> updateFeatureBucketsEndTime(FeatureBucketConf featureBucketConf, String strategyId, long newCloseTime) {
-		String collectionName = getCollectionName(featureBucketConf);
-		FeatureBucketsStoreMetrics metrics = getMetrics(featureBucketConf);
-
-		if (mongoDbUtilService.collectionExists(collectionName)) {
-			Update update = new Update();
-			update.set(FeatureBucket.END_TIME_FIELD, newCloseTime);
-			Query query = new Query(Criteria.where(FeatureBucket.STRATEGY_ID_FIELD).is(strategyId));
-			
-			WriteResult writeResult = mongoTemplate.updateMulti(query, update, FeatureBucket.class, collectionName);
-			metrics.updateFeatureBucketsCalls++;
-
-			if(writeResult.getN()>0){
-				metrics.updatedFeatureBuckets += writeResult.getN();
-				return mongoTemplate.find(query, FeatureBucket.class, collectionName);
-			} else{
-				return Collections.emptyList();
-			}
-		} else {
-			metrics.updateFeatureBucketsFailures++;
-		}
-
-		return Collections.emptyList();
-	}
-
-	@Override
 	public List<FeatureBucket> getFeatureBucketsByContextAndTimeRange(FeatureBucketConf featureBucketConf, String contextType, String ContextName, Long bucketStartTime, Long bucketEndTime) {
 		List<FeatureBucket> result = new ArrayList<>();
 
@@ -355,5 +329,15 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 
 
 		return result;
+	}
+
+	@Override
+	public List<FeatureBucket> getAllFeatureBuckets() {
+		return null;
+	}
+
+	@Override
+	public void clearAll() {
+
 	}
 }

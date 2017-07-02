@@ -6,7 +6,6 @@ import fortscale.ml.model.ModelBuilderData.NoDataReason;
 import fortscale.ml.model.ModelConf;
 import fortscale.ml.model.ModelConfService;
 import fortscale.ml.model.builder.IModelBuilderConf;
-import fortscale.ml.model.cache.ModelsCacheService;
 import fortscale.ml.model.retriever.AbstractDataRetriever;
 import fortscale.ml.model.retriever.AbstractDataRetrieverConf;
 import fortscale.ml.model.selector.IContextSelectorConf;
@@ -30,19 +29,16 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
-@ContextConfiguration(locations = {"classpath*:META-INF/spring/scorer-factory-tests-context.xml"})
+@ContextConfiguration(classes = { ScorerFactoriesTestConfig.class})
 public class CategoryRarityModelScorerFactoryTest {
     @MockBean
-    ModelsCacheService modelsCacheService;
-
-    @MockBean
-    ModelConfService modelConfService;
+    private ModelConfService modelConfService;
 
     @Autowired
-    CategoryRarityModelScorerFactory categoryRarityModelScorerFactory;
+    private CategoryRarityModelScorerFactory categoryRarityModelScorerFactory;
 
     @Autowired
-    FactoryService<AbstractDataRetriever> dataRetrieverFactoryService;
+    private FactoryService<AbstractDataRetriever> dataRetrieverFactoryService;
 
     @Test(expected = IllegalArgumentException.class)
     public void confNotOfExpectedType() {
