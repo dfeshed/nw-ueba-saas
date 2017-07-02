@@ -5,7 +5,7 @@ import fortscale.aggregation.domain.feature.event.FeatureBucketAggrMetadataRepos
 import fortscale.aggregation.domain.feature.event.FeatureBucketAggrSendingQueue;
 import fortscale.aggregation.domain.feature.event.FeatureBucketAggrSendingQueueRepository;
 import fortscale.aggregation.feature.bucket.FeatureBucket;
-import fortscale.aggregation.feature.bucket.FeatureBucketsService;
+import fortscale.aggregation.feature.bucket.FeatureBucketsStore;
 import fortscale.aggregation.feature.event.metrics.AggrFeatureEventBucketConfMetrics;
 import fortscale.aggregation.feature.event.metrics.AggrFeatureEventMetrics;
 import fortscale.aggregation.feature.functions.IAggrFeatureEventFunctionsService;
@@ -58,18 +58,19 @@ public class AggrFeatureEventImprovedService implements IAggrFeatureEventService
 	@Autowired
 	private StatsService statsService;
 
-    private FeatureBucketsService featureBucketsService;
+	private FeatureBucketsStore featureBucketsStore;
 
     private Map<String, List<AggregatedFeatureEventConf>> bucketConfName2FeatureEventConfMap = new HashMap<>();
 
 	private AggrFeatureEventMetrics metrics;
 	private Map<String, AggrFeatureEventBucketConfMetrics> bucketConfNameToMetrics = new HashMap<>();
 
-    public AggrFeatureEventImprovedService(AggregatedFeatureEventsConfService aggrFeatureEventsConfService, FeatureBucketsService featureBucketsService) {
+    public AggrFeatureEventImprovedService(AggregatedFeatureEventsConfService aggrFeatureEventsConfService, FeatureBucketsStore featureBucketsStore) {
+		Assert.notNull(aggrFeatureEventsConfService);
+		Assert.notNull(featureBucketsStore);
 		metrics = new AggrFeatureEventMetrics(statsService);
-        this.featureBucketsService = featureBucketsService;
-        Assert.notNull(aggrFeatureEventsConfService);
-        Assert.notNull(featureBucketsService);
+        this.featureBucketsStore = featureBucketsStore;
+
         List<AggregatedFeatureEventConf> aggrFeatureEventConfs = aggrFeatureEventsConfService.getAggregatedFeatureEventConfList();
         if(aggrFeatureEventConfs==null || aggrFeatureEventConfs.isEmpty()) {
             logger.info(INFO_MSG_NO_EVENT_CONFS);
@@ -165,7 +166,7 @@ public class AggrFeatureEventImprovedService implements IAggrFeatureEventService
 	    		for(AggregatedFeatureEventConf conf: featureEventConfList){
 					AggrFeatureEventBucketConfMetrics aggrFeatureEventMetrics = bucketConfNameToMetrics.get(featureBucketConfName);
 	    			if(bucket == null){
-	    				bucket = featureBucketsService.getFeatureBucket(conf.getBucketConf(), featureBucketAggrSendingQueue.getBucketId());
+	    				bucket = featureBucketsStore.getFeatureBucket(conf.getBucketConf(), featureBucketAggrSendingQueue.getBucketId());
 	    				if(bucket == null){
 	    					String message = String.format("Couldn't send the aggregation event since the bucket was not found. conf name: %s bucketId: %s", featureBucketConfName, featureBucketAggrSendingQueue.getBucketId());
 	    					logger.error(message);

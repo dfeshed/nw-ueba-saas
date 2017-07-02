@@ -52,7 +52,6 @@ public class BucketConfigurationServiceTest {
     }
 
     public void featureBucketsServiceInitialize() {
-        FeatureBucketsStore featureBucketsStore = new FeatureBucketsInMemory();
         IAggrFeatureFunctionsService aggrFeatureFunctionsService = new AggrFeatureFuncService();
         Map<String, Transformation<?>> transformations = new HashMap<>();
         Collection<RecordReaderFactory> recordReaderFactories = new ArrayList<>();
