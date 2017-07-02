@@ -85,7 +85,7 @@
 
         <rpm.version.major>1</rpm.version.major>
         <rpm.version.minor>0</rpm.version.minor>
-        <rpm.version.build>${env.BUILD_NUMBER}</rpm.version.build>
+        <rpm.version.build>0</rpm.version.build>
         <rpm.version>${rpm.version.major}.${rpm.version.minor}</rpm.version>
 
         <!-- NOTE: ALL dependencies' versions should be here -->

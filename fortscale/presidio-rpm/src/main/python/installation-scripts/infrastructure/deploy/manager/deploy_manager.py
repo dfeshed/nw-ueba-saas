@@ -6,35 +6,123 @@ from pathlib2 import Path
 import os
 import json
 import posixpath
+import sys
+import logging
+import time
+#####################################################################
+# Logging commands:                                                 #
+# self.add_log(log_string='blablabla warning', log_level='warning') #
+# self.add_log(log_string='blablabla error', log_level='error')     #
+# self.add_log(log_string='blablabla info', log_level='info')       #
+#####################################################################
 
 
 class Deploy_Manager:
     project_root = os.path.abspath(os.path.dirname(__file__))
     version_directory = os.path.join(project_root, '../../../', 'version')
     mongo_prefix_command = 'mongo localhost:27017/presidio '
+    log_file_path = '/var/log/presidio/presidio_core_rpm-' + time.strftime("%m_%d_%Y") + '.log'
+    logger = logging.getLogger('Presidio-Core-RPM-log')
+    stdout_logger = logging.getLogger('Presiodio-Core-RPM-stdout')
+
 
     def __init__(self, dest_version_descriptor, is_uninstall, rpm_name):
         self.dest_version = dest_version_descriptor
         self.is_uninstall = is_uninstall
         self.rpm_name = rpm_name
         self.current_version = ReachVersion(full_version_path="", version_description=VersionReader().read_current(rpm_name=rpm_name))
+        self.create_logger()
+
+    def print_banner(self):
+
+        sec_to_sleep = 0.3
+        print " ___   __   ___   ____  ___   __   __   __    ___ "
+        print "(  _) /  \ (  ,) (_  _)/ __) / _) (  ) (  )  (  _)"
+        print " ) _)( () ) )  \   )(  \__ \( (_  /__\  )(__  ) _)"
+        print "(_)   \__/ (_)\_) (__) (___/ \__)(_)(_)(____)(___)"
+        time.sleep(sec_to_sleep)
+        time.sleep(sec_to_sleep)
+        print "8 888888888o   8 888888888o.   8 8888888888      d888888o.    8 8888 8 888888888o.       8 8888     ,o888888o.     "
+        time.sleep(sec_to_sleep)
+        print "8 8888    `88. 8 8888    `88.  8 8888          .`8888:' `88.  8 8888 8 8888    `^888.    8 8888  . 8888     `88.  "
+        time.sleep(sec_to_sleep)
+        print "8 8888     `88 8 8888     `88  8 8888          8.`8888.   Y8  8 8888 8 8888        `88.  8 8888 ,8 8888       `8b  "
+        time.sleep(sec_to_sleep)
+        print "8 8888     ,88 8 8888     ,88  8 8888          `8.`8888.      8 8888 8 8888         `88  8 8888 88 8888        `8b"
+        time.sleep(sec_to_sleep)
+        print "8 8888.   ,88' 8 8888.   ,88'  8 888888888888   `8.`8888.     8 8888 8 8888          88  8 8888 88 8888         88"
+        time.sleep(sec_to_sleep)
+        print "8 888888888P'  8 888888888P'   8 8888            `8.`8888.    8 8888 8 8888          88  8 8888 88 8888         88 "
+        time.sleep(sec_to_sleep)
+        print "8 8888         8 8888`8b       8 8888             `8.`8888.   8 8888 8 8888         ,88  8 8888 88 8888        ,8P "
+        time.sleep(sec_to_sleep)
+        print "8 8888         8 8888 `8b.     8 8888         8b   `8.`8888.  8 8888 8 8888        ,88'  8 8888 `8 8888       ,8P  "
+        time.sleep(sec_to_sleep)
+        print "8 8888         8 8888   `8b.   8 8888         `8b.  ;8.`8888  8 8888 8 8888    ,o88P'    8 8888  ` 8888     ,88'   "
+        time.sleep(sec_to_sleep)
+        print "8 8888         8 8888     `88. 8 888888888888  `Y8888P ,88P'  8 8888 8 888888888P'       8 8888     `8888888P'"
+        time.sleep(3)
+
+
+
+    def create_logger(self):
+        #log file logger
+        logger_handler = logging.FileHandler(self.log_file_path)
+        logger_formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
+        logger_handler.setFormatter(logger_formatter)
+        self.logger.addHandler(logger_handler)
+        self.logger.setLevel(logging.INFO)
+        # #################### logging samples ###############################
+        # logger.error('We have a problem')
+        # logger.info('While this is just chatty')
+        # logger.debug('...')
+        # logger.warning('...')
+        # ####################################################################
+
+        #stdout logger
+        stdout_habdler = logging.StreamHandler(sys.stdout)
+        stdout_habdler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s %(message)s'))
+        stdout_habdler.setLevel(logging.INFO)
+        self.stdout_logger.addHandler(stdout_habdler)
+        self.stdout_logger.setLevel(logging.INFO)
+        # #################### logging samples ###############################
+        # stdout_logger.error('We have a problem')
+        # stdout_logger.info('While this is just chatty')
+        # stdout_logger.debug('...')
+        # stdout_logger.warning('...')
+        # ####################################################################
+
+    def add_log(self, log_string, log_level):
+        if log_level == 'info':
+            self.stdout_logger.info(log_string)
+            self.logger.info(log_string)
+
+        elif log_level == 'warning':
+            self.stdout_logger.warning(log_string)
+            self.logger.warning(log_string)
+
+        elif log_level == 'error':
+            self.stdout_logger.error(log_string)
+            self.logger.error(log_string)
 
     def uninstall(self, rpm_name):
         """
         will execute while uninstalling rpm
         :param rpm_name:
         :return:
+        :TODO: execute uninstall step
         """
-        print "uninstalling"
+        self.add_log(log_string='Uninstalling mig steps files', log_level='info')
 
 
     def run(self, rpm_name):
-        #current_version = ReachVersion(full_version_path="", version_description=VersionReader().read_current(rpm_name=rpm_name))
+        self.print_banner()
         versions_list = self.get_versions_list()
 
         for version in versions_list:
+            self.add_log(log_string='Checking installed version before executing migration steps', log_level='info')
             if version.version_description.major <= self.current_version.version_description.major and version.version_description.minor <= self.current_version.version_description.minor:
-                print 'avihu'
+                self.add_log(log_string='RPM version is lower or equal to current install version, Nothing To Do', log_level='warning')
                 """
                 alredy installed- nothing to do
                 """
@@ -55,24 +143,30 @@ class Deploy_Manager:
                         """
 
                         if step.get('filePath') == 'mongo':
-                            print step.get('description')
+                            self.add_log(log_string=step.get('description'), log_level='info')
                             self.exec_mongo_file(mig_steps_folder + step.get('filePath'))
 
                         else:
-                            print step.get('description')
+                            self.add_log(log_string=step.get('description'), log_level='info')
+
                             self.exec_file(mig_steps_folder + step.get('filePath'))
                             #mig_step_folder_path = os.path.join(mig_steps_folder, step.get('filePath'))
                             #mig_step_folder_path = Path(mig_steps_folder)
                     self.current_version = version
                 else:
-                    print "No migration steps for version:"
+                    self.add_log(log_string="No migration steps for version: " + str(version.version_description.major) + '.' + str(version.version_description.minor), log_level='warning')
                     self.current_version = version
 
     def exec_file(self, file_to_exec):
+        self.add_log(log_string='Preparing Presidio python project ', log_level='info')
+        self.add_log(log_string='[0/1] ', log_level='info')
         os.system('chmod +x ' + file_to_exec)
+        self.add_log(log_string='[1/1] ', log_level='info')
+        self.add_log(log_string='Executing project ', log_level='info')
         os.system(file_to_exec)
 
     def exec_mongo_file(self, file_to_exec):
+        self.add_log(log_string='Mongo step recognized.. Executing step ', log_level='info')
         os.system(self.mongo_prefix_command + file_to_exec)
 
     def read_mig_step(self, version):
@@ -111,14 +205,6 @@ class Deploy_Manager:
         splited_folder_name = folder.split('_')
         return VersionDescriptor(major=splited_folder_name[0], minor=splited_folder_name[1], build=0)
 
-    def text2bool(self, text):
-        """
-
-        :type text: str
-        """
-        return text.lower() in ("yes", "true", "t", "1")
-        # return versions_list
-
 
 def parse_args():
     global args
@@ -137,8 +223,6 @@ def parse_args():
 
 if __name__ == "__main__":
     # todo: get args from cmdline
-    # print "aaaa"
-    # print "aaaa"
     parse_args()
     dest_version = VersionDescriptor(major=args.major, minor=args.minor, build=args.build)
     mng = Deploy_Manager(dest_version_descriptor=dest_version, is_uninstall=args.uninstall, rpm_name=args.rpm_name)
