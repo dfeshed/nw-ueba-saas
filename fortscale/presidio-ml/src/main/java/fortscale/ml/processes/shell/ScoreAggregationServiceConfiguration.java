@@ -30,8 +30,9 @@ import static fortscale.common.general.CommonStrings.*;
         ParametersValidationServiceConfig.class,// todo: remove this
         MongoConfig.class,
         EnrichedEventsScoringServiceConfig.class,
-        NullStatsServiceConfig.class,// todo: remove this
+        ScoreAggregationsBucketServiceConfiguration.class,
         EventModelsCacheServiceConfig.class,
+        NullStatsServiceConfig.class,// todo: remove this
 })
 @EnableSpringConfigured
 public class ScoreAggregationServiceConfiguration {
@@ -42,6 +43,8 @@ public class ScoreAggregationServiceConfiguration {
     private EnrichedDataStore enrichedDataStore;
     @Autowired
     private ParametersValidationService parametersValidationService;
+    @Autowired
+    private ScoreAggregationsBucketService scoreAggregationsBucketService;
 
     @Bean
     public CommandLineRunner commandLineRunner() {
@@ -54,7 +57,7 @@ public class ScoreAggregationServiceConfiguration {
                 Instant startTimeParam = Instant.parse(parametersValidationService.getMandatoryParamAsString(COMMAND_LINE_START_DATE_FIELD_NAME, strings));
                 Instant endTimeParam = Instant.parse(parametersValidationService.getMandatoryParamAsString(COMMAND_LINE_END_DATE_FIELD_NAME, strings));
                 FixedDurationStrategy fixedDurationStrategy = FixedDurationStrategy.fromSeconds((long)Float.parseFloat((parametersValidationService.getMandatoryParamAsString(COMMAND_LINE_FIXED_DURATION_FIELD_NAME, strings))));
-                ScoreAggregationsService scoreAggregationsService = new ScoreAggregationsService(fixedDurationStrategy, enrichedDataStore,enrichedEventsScoringService);
+                ScoreAggregationsService scoreAggregationsService = new ScoreAggregationsService(fixedDurationStrategy, enrichedDataStore,enrichedEventsScoringService, scoreAggregationsBucketService);
                 TimeRange timeRange = new TimeRange(startTimeParam, endTimeParam);
                 scoreAggregationsService.execute(timeRange,dataSourceParam);
             }

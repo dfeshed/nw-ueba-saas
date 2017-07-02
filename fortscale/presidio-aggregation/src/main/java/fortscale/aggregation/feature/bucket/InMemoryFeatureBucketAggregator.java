@@ -16,12 +16,10 @@ public class InMemoryFeatureBucketAggregator {
 
 
     private BucketConfigurationService bucketConfigurationService;
-    private IAggrFeatureFunctionsService aggrFeatureFunctionsService;
     private RecordReaderFactoryService recordReaderFactoryService;
 
-    public InMemoryFeatureBucketAggregator(BucketConfigurationService bucketConfigurationService, IAggrFeatureFunctionsService aggrFeatureFunctionsService, RecordReaderFactoryService recordReaderFactoryService) {
+    public InMemoryFeatureBucketAggregator(BucketConfigurationService bucketConfigurationService, RecordReaderFactoryService recordReaderFactoryService) {
         this.bucketConfigurationService = bucketConfigurationService;
-        this.aggrFeatureFunctionsService = aggrFeatureFunctionsService;
         this.recordReaderFactoryService = recordReaderFactoryService;
     }
 
@@ -29,7 +27,7 @@ public class InMemoryFeatureBucketAggregator {
     public List<FeatureBucket> aggregate(PageIterator<AdeRecord> pageIterator, List<String> contextFieldNames, FeatureBucketStrategyData strategyData){
         FeatureBucketsAggregatorInMemory featureBucketsInMemory = new FeatureBucketsAggregatorInMemory();
 
-        FeatureBucketAggregator featureBucketAggregator = new FeatureBucketAggregator(featureBucketsInMemory,bucketConfigurationService,aggrFeatureFunctionsService,recordReaderFactoryService);
+        FeatureBucketAggregator featureBucketAggregator = new FeatureBucketAggregator(featureBucketsInMemory,bucketConfigurationService,recordReaderFactoryService);
         while(pageIterator.hasNext()){
             List<AdeRecord> adeRecordList = pageIterator.next();
             featureBucketAggregator.aggregate(adeRecordList, contextFieldNames, strategyData);

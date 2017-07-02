@@ -2,6 +2,7 @@ package fortscale.aggregation.feature.bucket;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
+import fortscale.aggregation.feature.functions.AggrFeatureFuncService;
 import fortscale.aggregation.feature.functions.IAggrFeatureFunctionsService;
 import fortscale.common.feature.Feature;
 import fortscale.utils.logging.Logger;
@@ -22,11 +23,11 @@ public class FeatureBucketAggregator {
 
 
 
-    public FeatureBucketAggregator(FeatureBucketsAggregatorStore featureBucketsAggregatorStore, BucketConfigurationService bucketConfigurationService, IAggrFeatureFunctionsService aggrFeatureFunctionsService, RecordReaderFactoryService recordReaderFactoryService) {
+    public FeatureBucketAggregator(FeatureBucketsAggregatorStore featureBucketsAggregatorStore, BucketConfigurationService bucketConfigurationService, RecordReaderFactoryService recordReaderFactoryService) {
         this.featureBucketsAggregatorStore = featureBucketsAggregatorStore;
         this.bucketConfigurationService = bucketConfigurationService;
-        this.aggrFeatureFunctionsService = aggrFeatureFunctionsService;
         this.recordReaderFactoryService = recordReaderFactoryService;
+        this.aggrFeatureFunctionsService = new AggrFeatureFuncService();
     }
 
     /**
@@ -36,37 +37,46 @@ public class FeatureBucketAggregator {
      * @param contextFieldNames names of context field(e.g: normalized_user_name)
      * @param strategyData      strategy data of ade records
      */
-    public void aggregate(List<AdeRecord> adeRecords, List<String> contextFieldNames, FeatureBucketStrategyData strategyData) {
+    public void aggregate(List<? extends AdeRecord> adeRecords, List<String> contextFieldNames, FeatureBucketStrategyData strategyData) {
 
         for (AdeRecord adeRecord : adeRecords) {
+            aggregate(adeRecord,contextFieldNames,strategyData);
+        }
+    }
 
-            AdeRecordReader adeRecordReader = (AdeRecordReader) recordReaderFactoryService.getRecordReader(adeRecord);
-            List<FeatureBucketConf> featureBucketConfs = bucketConfigurationService.getRelatedBucketConfs(adeRecordReader, strategyData.getStrategyName(), contextFieldNames);
+    /**
+     * Update feature buckets with adeRecords
+     *
+     * @param adeRecord        ADE Record
+     * @param contextFieldNames names of context field(e.g: normalized_user_name)
+     * @param strategyData      strategy data of ade records
+     */
+    public void aggregate(AdeRecord adeRecord, List<String> contextFieldNames, FeatureBucketStrategyData strategyData) {
+        AdeRecordReader adeRecordReader = (AdeRecordReader) recordReaderFactoryService.getRecordReader(adeRecord);
+        List<FeatureBucketConf> featureBucketConfs = bucketConfigurationService.getRelatedBucketConfs(adeRecordReader, strategyData.getStrategyName(), contextFieldNames);
 
-            for (FeatureBucketConf featureBucketConf : featureBucketConfs) {
-                try {
-                    String bucketId = FeatureBucketUtils.buildBucketId(adeRecordReader, featureBucketConf, strategyData.getStrategyId());
-                    if (bucketId == null) {
-                        //todo: metrics.nullBucketIds++;
-                        continue;
-                    }
-
-                    FeatureBucket featureBucket = this.featureBucketsAggregatorStore.getFeatureBucket(bucketId);
-
-                    if (featureBucket == null) {
-                        featureBucket = createNewFeatureBucket(adeRecordReader, featureBucketConf, strategyData, bucketId);
-                    }
-
-                    //todo: metrics.featureBucketUpdates++;
-                    updateFeatureBucket(adeRecordReader, featureBucket, featureBucketConf);
-                    this.featureBucketsAggregatorStore.storeFeatureBucket(featureBucket);
-
-                } catch (Exception e) {
-                    logger.error("Got an exception while updating buckets with new event", e);
-                    //todo: metrics.exceptionsUpdatingWithNewEvents++;
+        for (FeatureBucketConf featureBucketConf : featureBucketConfs) {
+            try {
+                String bucketId = FeatureBucketUtils.buildBucketId(adeRecordReader, featureBucketConf, strategyData.getStrategyId());
+                if (bucketId == null) {
+                    //todo: metrics.nullBucketIds++;
+                    continue;
                 }
-            }
 
+                FeatureBucket featureBucket = this.featureBucketsAggregatorStore.getFeatureBucket(bucketId);
+
+                if (featureBucket == null) {
+                    featureBucket = createNewFeatureBucket(adeRecordReader, featureBucketConf, strategyData, bucketId);
+                }
+
+                //todo: metrics.featureBucketUpdates++;
+                updateFeatureBucket(adeRecordReader, featureBucket, featureBucketConf);
+                this.featureBucketsAggregatorStore.storeFeatureBucket(featureBucket);
+
+            } catch (Exception e) {
+                logger.error("Got an exception while updating buckets with new event", e);
+                //todo: metrics.exceptionsUpdatingWithNewEvents++;
+            }
         }
     }
 

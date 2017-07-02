@@ -40,7 +40,7 @@ public class FeatureBucketsServiceTest {
     @Autowired
     private BucketConfigurationService bucketConfigurationService;
 
-    private FeatureBucketsAggregatorStore featureBucketsAggregatorStore;
+    private FeatureBucketsAggregatorInMemory featureBucketsAggregatorStore;
     private FeatureBucketAggregator featureBucketAggregator;
     private FeatureBucketStrategyData strategyData;
     private List<String> contextFieldNames;
@@ -74,13 +74,12 @@ public class FeatureBucketsServiceTest {
      * Create featureBucketAggregator
      */
     public void featureBucketAggregatorInitialize(FeatureBucketsAggregatorStore featureBucketsAggregatorStore) {
-        IAggrFeatureFunctionsService aggrFeatureFunctionsService = new AggrFeatureFuncService();
         Map<String, Transformation<?>> transformations = new HashMap<>();
         Collection<RecordReaderFactory> recordReaderFactories = new ArrayList<>();
         AdeScoredRecordReaderFactory adeScoredRecordReaderFactory = new AdeScoredRecordReaderFactory();
         recordReaderFactories.add(adeScoredRecordReaderFactory);
         RecordReaderFactoryService recordReaderFactoryService = new RecordReaderFactoryService(recordReaderFactories, transformations);
-        featureBucketAggregator = new FeatureBucketAggregator(featureBucketsAggregatorStore, bucketConfigurationService, aggrFeatureFunctionsService, recordReaderFactoryService);
+        featureBucketAggregator = new FeatureBucketAggregator(featureBucketsAggregatorStore, bucketConfigurationService, recordReaderFactoryService);
     }
 
     /**
