@@ -1,6 +1,9 @@
 package fortscale.ml.processes.shell;
 
 import fortscale.ml.model.cache.EventModelsCacheServiceConfig;
+import fortscale.ml.processes.shell.scoring.aggregation.ScoreAggregationsBucketService;
+import fortscale.ml.processes.shell.scoring.aggregation.ScoreAggregationsBucketServiceConfiguration;
+import fortscale.ml.processes.shell.scoring.aggregation.ScoreAggregationsService;
 import fortscale.ml.scorer.enriched_events.EnrichedEventsScoringService;
 import fortscale.ml.scorer.enriched_events.EnrichedEventsScoringServiceConfig;
 import fortscale.services.config.ParametersValidationServiceConfig;

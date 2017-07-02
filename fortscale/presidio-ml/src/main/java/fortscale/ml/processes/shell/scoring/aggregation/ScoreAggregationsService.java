@@ -1,7 +1,9 @@
-package fortscale.ml.processes.shell;
+package fortscale.ml.processes.shell.scoring.aggregation;
 
 import fortscale.aggregation.feature.bucket.FeatureBucket;
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
+import fortscale.ml.processes.shell.scoring.aggregation.ScoreAggregationsBucketService;
+import fortscale.ml.processes.shell.scoring.aggregation.ScoreAggregationsCreator;
 import fortscale.ml.scorer.enriched_events.EnrichedEventsScoringService;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.fixedduration.FixedDurationStrategyExecutor;
