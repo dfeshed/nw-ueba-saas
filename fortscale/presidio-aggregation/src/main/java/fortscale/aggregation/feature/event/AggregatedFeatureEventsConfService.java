@@ -42,6 +42,19 @@ public class AggregatedFeatureEventsConfService extends AslConfigurationService 
 	private List<AggregatedFeatureEventConf> aggregatedFeatureEventConfList = new ArrayList<>();
 	private Map<String, List<AggregatedFeatureEventConf>> bucketConfName2FeatureEventConfMap = new HashMap<>();
 
+	public AggregatedFeatureEventsConfService(){}
+
+	public AggregatedFeatureEventsConfService(BucketConfigurationService bucketConfigurationService, AggregatedFeatureEventsConfUtilService aggregatedFeatureEventsConfUtilService,
+											  RetentionStrategiesConfService retentionStrategiesConfService, String aggregatedFeatureEventConfJsonFilePath,
+											  String aggregatedFeatureEventConfJsonOverridingFilesPath, String aggregatedFeatureEventConfJsonAdditionalFilesPath){
+		this.bucketConfigurationService = bucketConfigurationService;
+		this.aggregatedFeatureEventsConfUtilService = aggregatedFeatureEventsConfUtilService;
+		this.retentionStrategiesConfService = retentionStrategiesConfService;
+		this.aggregatedFeatureEventConfJsonFilePath = aggregatedFeatureEventConfJsonFilePath;
+		this.aggregatedFeatureEventConfJsonOverridingFilesPath = aggregatedFeatureEventConfJsonOverridingFilesPath;
+		this.aggregatedFeatureEventConfJsonAdditionalFilesPath = aggregatedFeatureEventConfJsonAdditionalFilesPath;
+	}
+
 	@Override
 	protected String getBaseConfJsonFilesPath() {
 		return aggregatedFeatureEventConfJsonFilePath;

@@ -1,6 +1,7 @@
-package fortscale.ml.processes.shell.scoring.aggregation;
+package fortscale.ml.processes.shell.model.aggregation;
 
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
+import fortscale.aggregation.feature.bucket.InMemoryFeatureBucketAggregator;
 import fortscale.ml.scorer.records.AdeRecordReaderFactoriesConfig;
 import fortscale.ml.scorer.records.RecordReaderFactoryServiceConfig;
 import fortscale.ml.scorer.records.TransformationConfig;
@@ -14,21 +15,20 @@ import org.springframework.context.annotation.Import;
  * Created by YaronDL on 7/2/2017.
  */
 @Configuration
-@Import({ScoreAggregationBucketConfigurationServiceConfig.class,
+@Import({ModelAggregationBucketConfigurationServiceConfig.class,
         TransformationConfig.class,
         RecordReaderFactoryServiceConfig.class,
         AdeRecordReaderFactoriesConfig.class,
 })
-public class ScoreAggregationsBucketServiceConfiguration {
+public class InMemoryFeatureBucketAggregatorConfig {
 
     @Autowired
     private BucketConfigurationService bucketConfigurationService;
     @Autowired
     private RecordReaderFactoryService recordReaderFactoryService;
 
-
     @Bean
-    public ScoreAggregationsBucketService getScoreAggregationsBucketService(){
-        return new ScoreAggregationsBucketServiceImpl(bucketConfigurationService,recordReaderFactoryService);
+    public InMemoryFeatureBucketAggregator getInMemoryFeatureBucketAggregator(){
+        return new InMemoryFeatureBucketAggregator(bucketConfigurationService, recordReaderFactoryService);
     }
 }
