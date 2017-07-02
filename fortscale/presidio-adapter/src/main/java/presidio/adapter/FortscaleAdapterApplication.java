@@ -21,7 +21,7 @@ public class FortscaleAdapterApplication {
     private static final Logger logger = Logger.getLogger(FortscaleAdapterApplication.class);
 
     public static void main(String[] args) {
-        logger.info("starting adapter with params " + Arrays.toString(args));
+        logger.info("starting Adapter with params " + Arrays.toString(args));
 
         SpringApplication.run(new Object[]{FortscaleAdapterApplication.class, AdapterConfigProduction.class}, args);
     }
