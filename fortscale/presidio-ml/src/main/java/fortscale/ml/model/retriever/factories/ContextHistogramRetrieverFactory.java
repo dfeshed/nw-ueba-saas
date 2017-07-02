@@ -1,7 +1,7 @@
 package fortscale.ml.model.retriever.factories;
 
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
-import fortscale.aggregation.feature.bucket.FeatureBucketsReaderService;
+import fortscale.aggregation.feature.bucket.FeatureBucketReader;
 import fortscale.ml.model.retriever.AbstractDataRetriever;
 import fortscale.ml.model.retriever.ContextHistogramRetriever;
 import fortscale.ml.model.retriever.ContextHistogramRetrieverConf;
@@ -16,7 +16,8 @@ public class ContextHistogramRetrieverFactory extends AbstractServiceAutowiringF
 	@Autowired
 	private BucketConfigurationService bucketConfigurationService;
 	@Autowired
-	private FeatureBucketsReaderService featureBucketsReaderService;
+	private FeatureBucketReader featureBucketReader;
+
 	@Override
 	public String getFactoryName() {
 		return ContextHistogramRetrieverConf.CONTEXT_HISTOGRAM_RETRIEVER;
@@ -25,6 +26,6 @@ public class ContextHistogramRetrieverFactory extends AbstractServiceAutowiringF
 	@Override
 	public AbstractDataRetriever getProduct(FactoryConfig factoryConfig) {
 		ContextHistogramRetrieverConf config = (ContextHistogramRetrieverConf)factoryConfig;
-		return new ContextHistogramRetriever(config,bucketConfigurationService,featureBucketsReaderService);
+		return new ContextHistogramRetriever(config, bucketConfigurationService, featureBucketReader);
 	}
 }

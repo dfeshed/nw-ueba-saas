@@ -1,7 +1,7 @@
 package fortscale.ml.scorer.factory;
 
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
-import fortscale.aggregation.feature.bucket.FeatureBucketsReaderService;
+import fortscale.aggregation.feature.bucket.FeatureBucketReader;
 import fortscale.global.configuration.GlobalConfiguration;
 import fortscale.ml.model.cache.EventModelsCacheService;
 import fortscale.ml.model.cache.ModelsCacheService;
@@ -13,23 +13,19 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
-/**
- * Created by barak_schuster on 6/29/17.
- */
 @Configuration
 @Import({ScorersFactoryConfig.class, GlobalConfiguration.class, NullStatsServiceConfig.class})
 public class ScorerFactoriesTestConfig {
     @MockBean
     private BucketConfigurationService bucketConfigurationService;
     @MockBean
-    private FeatureBucketsReaderService featureBucketsReaderService;
+    private FeatureBucketReader featureBucketReader;
     @MockBean
     private EventModelsCacheService eventModelsCacheService;
     @MockBean
     private MongoTemplate mongoTemplate;
     @MockBean
     private MongoDbUtilService mongoDbUtilService;
-
     @MockBean
     private ModelsCacheService modelCacheService;
 }

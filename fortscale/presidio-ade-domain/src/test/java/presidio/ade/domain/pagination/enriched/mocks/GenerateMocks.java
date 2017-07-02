@@ -1,6 +1,6 @@
 package presidio.ade.domain.pagination.enriched.mocks;
 
-import fortscale.utils.pagination.ContextIdToNumOfEvents;
+import fortscale.utils.pagination.ContextIdToNumOfItems;
 import org.springframework.data.mongodb.core.DefaultIndexOperations;
 import org.springframework.data.mongodb.core.IndexOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import static org.h2.expression.Function.NOW;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
@@ -40,12 +39,12 @@ public class GenerateMocks {
      * Create aggregation mock
      *
      * @param mongoTemplate
-     * @param contextIdToNumOfEventsList list of contextIdToNumOfEvents
+     * @param contextIdToNumOfItemsList list of ContextIdToNumOfItems
      */
-    public static void createMockForAggregation(MongoTemplate mongoTemplate, List<ContextIdToNumOfEvents> contextIdToNumOfEventsList) {
-        AggregationResults<ContextIdToNumOfEvents> aggregationResults = mock(AggregationResults.class);
-        when(mongoTemplate.aggregate(any(Aggregation.class), eq("enriched_dlpfile"), eq(ContextIdToNumOfEvents.class))).thenReturn(aggregationResults);
-        when(aggregationResults.getMappedResults()).thenReturn(contextIdToNumOfEventsList);
+    public static void createMockForAggregation(MongoTemplate mongoTemplate, List<ContextIdToNumOfItems> contextIdToNumOfItemsList) {
+        AggregationResults<ContextIdToNumOfItems> aggregationResults = mock(AggregationResults.class);
+        when(mongoTemplate.aggregate(any(Aggregation.class), eq("enriched_dlpfile"), eq(ContextIdToNumOfItems.class))).thenReturn(aggregationResults);
+        when(aggregationResults.getMappedResults()).thenReturn(contextIdToNumOfItemsList);
     }
 
     /**

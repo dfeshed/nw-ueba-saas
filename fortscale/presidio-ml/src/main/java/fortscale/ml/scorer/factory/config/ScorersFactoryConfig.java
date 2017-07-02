@@ -1,6 +1,6 @@
 package fortscale.ml.scorer.factory.config;
 
-import fortscale.ml.model.config.DataReterieverFactoryConfig;
+import fortscale.ml.model.config.DataRetrieverFactoryConfig;
 import fortscale.ml.model.retriever.AbstractDataRetriever;
 import fortscale.ml.scorer.Scorer;
 import fortscale.utils.factory.AbstractServiceAutowiringFactory;
@@ -19,18 +19,17 @@ import java.util.List;
 @Configuration
 //@ComponentScan(basePackageClasses = AbstractModelScorerFactory.class)
 @ComponentScan(value={"fortscale.ml.scorer.factory"})
-@Import(DataReterieverFactoryConfig.class)
+@Import(DataRetrieverFactoryConfig.class)
 public class ScorersFactoryConfig {
     @Autowired
     private FactoryService<AbstractDataRetriever> dataRetrieverFactoryService;
     @Autowired
     private List<AbstractServiceAutowiringFactory<Scorer>> scorersFactories;
+
     @Bean
     public FactoryService<Scorer> scorerFactoryService() {
-
         FactoryService<Scorer> scorerFactoryService = new FactoryService<>();
-        scorersFactories.forEach(x-> x.registerFactoryService(scorerFactoryService));
+        scorersFactories.forEach(x -> x.registerFactoryService(scorerFactoryService));
         return scorerFactoryService;
     }
-
 }
