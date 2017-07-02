@@ -3,8 +3,7 @@ package fortscale.ml.model.config;
 import fortscale.accumulator.aggregation.store.config.AccumulatedAggregatedFeatureEventStoreConfig;
 import fortscale.accumulator.entityEvent.store.config.AccumulatedEntityEventStoreConfig;
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
-import fortscale.aggregation.feature.bucket.FeatureBucketsMongoStore;
-import fortscale.aggregation.feature.bucket.FeatureBucketsReaderService;
+import fortscale.aggregation.feature.bucket.FeatureBucketsReaderServiceConfig;
 import fortscale.aggregation.feature.event.RetentionStrategiesConfService;
 import fortscale.aggregation.feature.event.config.AggregatedFeatureEventsConfServiceConfig;
 import fortscale.aggregation.feature.event.store.AggregatedFeatureEventsMongoStore;
@@ -23,7 +22,8 @@ import org.springframework.context.annotation.Import;
 		AccumulatedAggregatedFeatureEventStoreConfig.class,
 		AccumulatedEntityEventStoreConfig.class,
 		MongoDbUtilServiceConfig.class,
-		AggregatedFeatureEventsConfServiceConfig.class
+		AggregatedFeatureEventsConfServiceConfig.class,
+		FeatureBucketsReaderServiceConfig.class
 })
 public class ModelBuildingDependencies {
 
@@ -32,15 +32,6 @@ public class ModelBuildingDependencies {
 		return new BucketConfigurationService();
 	}
 
-	@Bean
-	public FeatureBucketsReaderService featureBucketsReaderService() {
-		return new FeatureBucketsReaderService();
-	}
-
-	@Bean
-	public FeatureBucketsMongoStore featureBucketsMongoStore() {
-		return new FeatureBucketsMongoStore();
-	}
 
 	@Bean
 	public RetentionStrategiesConfService retentionStrategiesConfService() {

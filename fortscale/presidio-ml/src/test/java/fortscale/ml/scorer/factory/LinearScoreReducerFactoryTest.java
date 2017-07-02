@@ -1,7 +1,6 @@
 package fortscale.ml.scorer.factory;
 
 import fortscale.ml.model.ModelConfService;
-import fortscale.ml.model.cache.ModelsCacheService;
 import fortscale.ml.scorer.LinearScoreReducer;
 import fortscale.ml.scorer.Scorer;
 import fortscale.ml.scorer.config.LinearScoreReducerConf;
@@ -19,13 +18,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.io.IOException;
 
 @RunWith(SpringRunner.class)
-@ContextConfiguration(locations = "classpath*:META-INF/spring/scorer-factory-tests-context.xml")
+@ContextConfiguration(classes = { ScorerFactoriesTestConfig.class})
 public class LinearScoreReducerFactoryTest {
 	@MockBean
-	ModelConfService modelConfService;
-
-	@MockBean
-	ModelsCacheService modelCacheService;
+	private ModelConfService modelConfService;
 
 	@Autowired
 	private FactoryService<Scorer> scorerFactoryService;

@@ -8,9 +8,7 @@ import fortscale.ml.model.builder.CategoryRarityModelBuilder;
 import fortscale.ml.model.builder.CategoryRarityModelBuilderConf;
 import fortscale.ml.model.cache.EventModelsCacheService;
 import fortscale.ml.model.cache.ModelsCacheService;
-import fortscale.ml.scorer.record.JsonAdeRecord;
-import fortscale.ml.scorer.record.JsonAdeRecordReader;
-import org.json.JSONObject;
+import fortscale.ml.scorer.record.TestAdeRecord;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -67,14 +65,6 @@ public class CategoryRarityModelScorerTest {
                 params.getEnoughNumberOfDistinctValuesToInfluence(),
                 params.getMaxRareCount(),
                 params.getMaxNumOfRareFeatures(), eventModelsCacheService);
-    }
-
-
-    protected AdeRecordReader buildAdeRecordReader(String fieldName, Object fieldValue) {
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("username", "someone");
-        jsonObject.put(fieldName, fieldValue);
-        return new JsonAdeRecordReader(new JsonAdeRecord(Instant.now(), jsonObject));
     }
 
     //==================================================================================================================
@@ -302,13 +292,13 @@ public class CategoryRarityModelScorerTest {
         String featureWithZeroCount = "feature-zero-count"; // The scorer should handle it as if count=1
         model.setFeatureCount(featureWithCount100, count);
 
-        AdeRecordReader adeRecordReader = buildAdeRecordReader(scorer.getFeatureName(), featureWithCount100);
+        AdeRecordReader adeRecordReader = new TestAdeRecord().setUsername("someone").setSourceMachine(featureWithCount100).getAdeRecordReader();
         when(modelsCacheService.getModel(any(), any(), any(Instant.class))).thenReturn(model);
         FeatureScore featureScore = scorer.calculateScore(adeRecordReader);
         Assert.assertEquals(0.0, featureScore.getScore(), 0.0);
         Assert.assertEquals(params.getName(), featureScore.getName());
 
-        adeRecordReader = buildAdeRecordReader(scorer.getFeatureName(), featureWithZeroCount);
+        adeRecordReader = new TestAdeRecord().setUsername("someone").setSourceMachine(featureWithZeroCount).getAdeRecordReader();
         when(modelsCacheService.getModel(any(), any(), any(Instant.class))).thenReturn(model);
         featureScore = scorer.calculateScore(adeRecordReader);
         Assert.assertEquals(100.0, featureScore.getScore(), 0.0);
@@ -333,13 +323,13 @@ public class CategoryRarityModelScorerTest {
         String featureWithZeroCount = "feature-zero-count"; // The scorer should handle it as if count=1
         model.setFeatureCount(featureWithCount100, count);
 
-        AdeRecordReader adeRecordReader = buildAdeRecordReader(scorer.getFeatureName(), featureWithCount100);
+        AdeRecordReader adeRecordReader = new TestAdeRecord().setUsername("someone").setSourceMachine(featureWithCount100).getAdeRecordReader();
         when(modelsCacheService.getModel(any(), any(), any(Instant.class))).thenReturn(model);
         FeatureScore featureScore = scorer.calculateScore(adeRecordReader);
         Assert.assertEquals(0.0, featureScore.getScore(), 0.0);
         Assert.assertEquals(params.getName(), featureScore.getName());
 
-        adeRecordReader = buildAdeRecordReader(scorer.getFeatureName(), featureWithZeroCount);
+        adeRecordReader = new TestAdeRecord().setUsername("someone").setSourceMachine(featureWithZeroCount).getAdeRecordReader();
         when(modelsCacheService.getModel(any(), any(), any(Instant.class))).thenReturn(model);
         featureScore = scorer.calculateScore(adeRecordReader);
         Assert.assertEquals(100.0, featureScore.getScore(), 0.0);
@@ -351,7 +341,7 @@ public class CategoryRarityModelScorerTest {
         CategoryRarityModelScorerParams params = new CategoryRarityModelScorerParams().setMaxRareCount(15).setMaxNumOfRareFeatures(5);
         CategoryRarityModelScorer scorer = createCategoryRarityModelScorer(params);
 
-        AdeRecordReader adeRecordReader = buildAdeRecordReader(scorer.getFeatureName(), "feature-count-100");
+        AdeRecordReader adeRecordReader = new TestAdeRecord().setUsername("someone").setSourceMachine("feature-count-100").getAdeRecordReader();
         when(modelsCacheService.getModel(any(), any(), any(Instant.class))).thenReturn(null);
         FeatureScore featureScore = scorer.calculateScore(adeRecordReader);
         Assert.assertEquals(params.getName(), featureScore.getName());
@@ -362,7 +352,7 @@ public class CategoryRarityModelScorerTest {
         CategoryRarityModelScorerParams params = new CategoryRarityModelScorerParams().setMaxRareCount(15).setMaxNumOfRareFeatures(5);
         CategoryRarityModelScorer scorer = createCategoryRarityModelScorer(params);
 
-        AdeRecordReader adeRecordReader = buildAdeRecordReader(scorer.getFeatureName(), "feature-zero-count");
+        AdeRecordReader adeRecordReader = new TestAdeRecord().setUsername("someone").setSourceMachine("feature-zero-count").getAdeRecordReader();
         when(modelsCacheService.getModel(any(), any(), any(Instant.class))).thenReturn(null);
         FeatureScore featureScore = scorer.calculateScore(adeRecordReader);
         Assert.assertEquals(0.0, featureScore.getScore(), 0.0);
@@ -378,13 +368,14 @@ public class CategoryRarityModelScorerTest {
         for (int i = 0; i < 100; i++) {
             featureValueToCountMap.put(String.format("test%d", i), count);
         }
+
         GenericHistogram histogram = new GenericHistogram();
         featureValueToCountMap.entrySet().forEach(entry -> histogram.add(entry.getKey(), entry.getValue().doubleValue()));
         CategoryRarityModel model = (CategoryRarityModel)new CategoryRarityModelBuilder(new CategoryRarityModelBuilderConf(100)).build(histogram);
         String featureWithCount100 = "feature-count-100";
         model.setFeatureCount(featureWithCount100, count);
 
-        AdeRecordReader adeRecordReader = buildAdeRecordReader(scorer.getFeatureName(), JSONObject.NULL);
+        AdeRecordReader adeRecordReader = new TestAdeRecord().setUsername("someone").setSourceMachine(null).getAdeRecordReader();
         when(modelsCacheService.getModel(any(), any(), any(Instant.class))).thenReturn(model);
         FeatureScore featureScore = scorer.calculateScore(adeRecordReader);
         Assert.assertEquals(0.0, featureScore.getScore(), 0.0);
@@ -400,10 +391,7 @@ public class CategoryRarityModelScorerTest {
         String featureWithZeroCount = "feature-zero-count"; // The scorer should handle it as if count=1
         CategoryRarityModel model = createModel(100, count, featureWithCount100);
 
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("username", JSONObject.NULL);
-        jsonObject.put(scorer.getFeatureName(), featureWithZeroCount);
-        AdeRecordReader adeRecordReader = new JsonAdeRecordReader(new JsonAdeRecord(Instant.now(), jsonObject));
+        AdeRecordReader adeRecordReader = new TestAdeRecord().setUsername(null).setSourceMachine(featureWithZeroCount).getAdeRecordReader();
         when(modelsCacheService.getModel(any(), any(), any(Instant.class))).thenReturn(model);
         FeatureScore featureScore = scorer.calculateScore(adeRecordReader);
         Assert.assertEquals(0.0, featureScore.getScore(), 0.0);
@@ -439,7 +427,7 @@ public class CategoryRarityModelScorerTest {
         String featureWithZeroCount = "feature-zero-count"; // The scorer should handle it as if count=1
         CategoryRarityModel model = createModel(19, count, featureWithCount0);
 
-        AdeRecordReader adeRecordReader = buildAdeRecordReader(scorer.getFeatureName(), featureWithZeroCount);
+        AdeRecordReader adeRecordReader = new TestAdeRecord().setUsername("someone").setSourceMachine(featureWithZeroCount).getAdeRecordReader();
         when(modelsCacheService.getModel(any(), any(), any(Instant.class))).thenReturn(model);
         FeatureScore score = scorer.calculateScore(adeRecordReader);
         Assert.assertNotNull(score);
@@ -460,7 +448,7 @@ public class CategoryRarityModelScorerTest {
         String featureWithZeroCount = "feature-zero-count"; // The scorer should handle it as if count=1
         CategoryRarityModel model = createModel(19, count, featureWithCount0);
 
-        AdeRecordReader adeRecordReader = buildAdeRecordReader(scorer.getFeatureName(), featureWithZeroCount);
+        AdeRecordReader adeRecordReader = new TestAdeRecord().setUsername("someone").setSourceMachine(featureWithZeroCount).getAdeRecordReader();
         when(modelsCacheService.getModel(any(), any(), any(Instant.class))).thenReturn(model);
         FeatureScore score = scorer.calculateScore(adeRecordReader);
         Assert.assertNotNull(score);
@@ -481,7 +469,7 @@ public class CategoryRarityModelScorerTest {
         String featureWithZeroCount = "feature-zero-count"; // The scorer should handle it as if count=1
         CategoryRarityModel model = createModel(100, count, featureWithCount0);
 
-        AdeRecordReader adeRecordReader = buildAdeRecordReader(scorer.getFeatureName(), featureWithZeroCount);
+        AdeRecordReader adeRecordReader = new TestAdeRecord().setUsername("someone").setSourceMachine(featureWithZeroCount).getAdeRecordReader();
         when(modelsCacheService.getModel(any(), any(), any(Instant.class))).thenReturn(model);
         FeatureScore score = scorer.calculateScore(adeRecordReader);
         Assert.assertNotNull(score);
@@ -502,7 +490,7 @@ public class CategoryRarityModelScorerTest {
         String featureWithZeroCount = "feature-zero-count"; // The scorer should handle it as if count=1
         CategoryRarityModel model = createModel(100, count, featureWithCount0);
 
-        AdeRecordReader adeRecordReader = buildAdeRecordReader(scorer.getFeatureName(), featureWithZeroCount);
+        AdeRecordReader adeRecordReader = new TestAdeRecord().setUsername("someone").setSourceMachine(featureWithZeroCount).getAdeRecordReader();
         when(modelsCacheService.getModel(any(), any(), any(Instant.class))).thenReturn(model);
         FeatureScore score = scorer.calculateScore(adeRecordReader);
         Assert.assertNotNull(score);
@@ -525,7 +513,7 @@ public class CategoryRarityModelScorerTest {
         String featureWithZeroCount = "feature-zero-count"; // The scorer should handle it as if count=1
         CategoryRarityModel model = createModel(min, count, featureWithCount0);
 
-        AdeRecordReader adeRecordReader = buildAdeRecordReader(scorer.getFeatureName(), featureWithZeroCount);
+        AdeRecordReader adeRecordReader = new TestAdeRecord().setUsername("someone").setSourceMachine(featureWithZeroCount).getAdeRecordReader();
         when(modelsCacheService.getModel(any(), any(), any(Instant.class))).thenReturn(model);
         FeatureScore score = scorer.calculateScore(adeRecordReader);
         Assert.assertNotNull(score);
@@ -548,7 +536,7 @@ public class CategoryRarityModelScorerTest {
         String featureWithZeroCount = "feature-zero-count"; // The scorer should handle it as if count=1
         CategoryRarityModel model = createModel(min, count, featureWithCount0);
 
-        AdeRecordReader adeRecordReader = buildAdeRecordReader(scorer.getFeatureName(), featureWithZeroCount);
+        AdeRecordReader adeRecordReader = new TestAdeRecord().setUsername("someone").setSourceMachine(featureWithZeroCount).getAdeRecordReader();
         when(modelsCacheService.getModel(any(), any(), any(Instant.class))).thenReturn(model);
         FeatureScore score = scorer.calculateScore(adeRecordReader);
         Assert.assertNotNull(score);
@@ -564,7 +552,7 @@ public class CategoryRarityModelScorerTest {
      */
     static class CategoryRarityModelScorerParams {
         String name = "Scorer1";
-        String featureName = "source-machine";
+        String featureName = "sourceMachine";
         Integer maxRareCount = 10;
         Integer maxNumOfRareFeatures = 6;
         Integer minimumNumberOfDistinctValuesToInfluence = 3;

@@ -2,13 +2,10 @@ package fortscale.ml.scorer;
 
 import fortscale.domain.feature.score.FeatureScore;
 import fortscale.ml.scorer.params.FieldValueScoreReducerScorerConfParams;
-import fortscale.ml.scorer.record.JsonAdeRecord;
-import fortscale.ml.scorer.record.JsonAdeRecordReader;
-import org.json.JSONObject;
+import fortscale.ml.scorer.record.TestAdeRecord;
 import org.junit.Test;
 import presidio.ade.domain.record.AdeRecordReader;
 
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -74,10 +71,7 @@ public class FieldValueScoreReducerScorerTest {
 		FieldValueScoreReducerScorer reducer = params.getScorer();
 
 		// Create event message
-		JSONObject eventJson = new JSONObject();
-		eventJson.put("city", "London");
-		eventJson.put("source_ip", "3.3.3.3");
-		AdeRecordReader adeRecordReader = new JsonAdeRecordReader(new JsonAdeRecord(Instant.now(), eventJson));
+		AdeRecordReader adeRecordReader = new TestAdeRecord().setCity("London").setSourceIp("3.3.3.3").getAdeRecordReader();
 
 		// Act
 		FeatureScore featureScore = reducer.calculateScore(adeRecordReader);
@@ -95,7 +89,7 @@ public class FieldValueScoreReducerScorerTest {
 		limiter.setValueToMaxScoreMap(valueToMaxScoreMap);
 
 		FieldValueScoreLimiter limiter2 = new FieldValueScoreLimiter();
-		limiter2.setFieldName("source_ip");
+		limiter2.setFieldName("sourceIp");
 		valueToMaxScoreMap.put("3.3.3.3", 33);
 		limiter.setValueToMaxScoreMap(valueToMaxScoreMap);
 
@@ -108,10 +102,7 @@ public class FieldValueScoreReducerScorerTest {
 		FieldValueScoreReducerScorer reducer = params.getScorer();
 
 		// Create event message
-		JSONObject eventJson = new JSONObject();
-		eventJson.put("city", "London");
-		eventJson.put("source_ip", "3.3.3.3");
-		AdeRecordReader adeRecordReader = new JsonAdeRecordReader(new JsonAdeRecord(Instant.now(), eventJson));
+		AdeRecordReader adeRecordReader = new TestAdeRecord().setCity("London").setSourceIp("3.3.3.3").getAdeRecordReader();
 
 		// Act
 		FeatureScore featureScore = reducer.calculateScore(adeRecordReader);

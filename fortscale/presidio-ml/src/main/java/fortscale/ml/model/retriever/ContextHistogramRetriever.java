@@ -11,17 +11,16 @@ import fortscale.ml.model.retriever.function.IDataRetrieverFunction;
 import fortscale.ml.model.retriever.metrics.ContextHistogramRetrieverMetrics;
 import fortscale.utils.monitoring.stats.StatsService;
 import fortscale.utils.time.TimestampUtils;
+import org.springframework.beans.factory.annotation.Autowire;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.util.Assert;
 
 import java.util.*;
 
-@Configurable(preConstruction = true)
+@Configurable(preConstruction = true, autowire = Autowire.BY_TYPE)
 public class ContextHistogramRetriever extends AbstractDataRetriever {
-	@Autowired
 	private BucketConfigurationService bucketConfigurationService;
-	@Autowired
 	private FeatureBucketsReaderService featureBucketsReaderService;
 	@Autowired
 	private StatsService statsService;
@@ -30,10 +29,12 @@ public class ContextHistogramRetriever extends AbstractDataRetriever {
 	private String featureName;
 	private ContextHistogramRetrieverMetrics metrics;
 
-    public ContextHistogramRetriever(ContextHistogramRetrieverConf config) {
+    public ContextHistogramRetriever(ContextHistogramRetrieverConf config, BucketConfigurationService bucketConfigurationService, FeatureBucketsReaderService featureBucketsReaderService) {
         super(config);
+        this.bucketConfigurationService=bucketConfigurationService;
+        this.featureBucketsReaderService=featureBucketsReaderService;
         String featureBucketConfName = config.getFeatureBucketConfName();
-        featureBucketConf = bucketConfigurationService.getBucketConf(featureBucketConfName);
+        featureBucketConf = this.bucketConfigurationService.getBucketConf(featureBucketConfName);
         featureName = config.getFeatureName();
         metrics = new ContextHistogramRetrieverMetrics(statsService, featureBucketConfName, featureName);
         validate(config);
