@@ -1,4 +1,4 @@
-package presidio.collector.services.impl;
+package presidio.adapter.services.impl;
 
 import fortscale.common.general.Command;
 import fortscale.common.general.DataSource;
@@ -6,8 +6,8 @@ import fortscale.domain.core.AbstractAuditableDocument;
 import fortscale.services.parameters.ParametersValidationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import presidio.collector.services.api.CollectorExecutionService;
-import presidio.collector.services.api.FetchService;
+import presidio.adapter.services.api.AdapterExecutionService;
+import presidio.adapter.services.api.FetchService;
 import presidio.sdk.api.domain.DlpFileDataDocument;
 import presidio.sdk.api.services.CoreManagerService;
 
@@ -16,26 +16,23 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static fortscale.common.general.CommonStrings.COMMAND_LINE_COMMAND_FIELD_NAME;
-import static fortscale.common.general.CommonStrings.COMMAND_LINE_DATA_SOURCE_FIELD_NAME;
-import static fortscale.common.general.CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME;
-import static fortscale.common.general.CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME;
+import static fortscale.common.general.CommonStrings.*;
 
-public class CollectorExecutionServiceImpl implements CollectorExecutionService {
-    private static Logger logger = LoggerFactory.getLogger(CollectorExecutionServiceImpl.class);
+public class AdapterExecutionServiceImpl implements AdapterExecutionService {
+    private static Logger logger = LoggerFactory.getLogger(AdapterExecutionServiceImpl.class);
 
     private final CoreManagerService coreManagerService;
     private final FetchService fetchService;
     private final ParametersValidationService parameterValidationService;
 
-    public CollectorExecutionServiceImpl(CoreManagerService coreManagerService, FetchService fetchService, ParametersValidationService parameterValidationService) {
+    public AdapterExecutionServiceImpl(CoreManagerService coreManagerService, FetchService fetchService, ParametersValidationService parameterValidationService) {
         this.coreManagerService = coreManagerService;
         this.fetchService = fetchService;
         this.parameterValidationService = parameterValidationService;
     }
 
     public void run(String... params) throws Exception {         //todo: we need to consider doing the fetch & store at the same iteration
-        logger.info("Start collector processing with params: " + Arrays.toString(params));
+        logger.info("Start Adapter processing with params: " + Arrays.toString(params));
 
         if (params.length < 4) {
             String errorMessage = String.format("Invalid input[%s]. Not enough parameters.", Arrays.toString(params));

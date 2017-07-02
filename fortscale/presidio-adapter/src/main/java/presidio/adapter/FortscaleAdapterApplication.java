@@ -1,4 +1,4 @@
-package presidio.collector;
+package presidio.adapter;
 
 import fortscale.utils.logging.Logger;
 import org.springframework.boot.SpringApplication;
@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.task.configuration.EnableTask;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
-import presidio.collector.spring.CollectorConfigProduction;
+import presidio.adapter.spring.AdapterConfigProduction;
 
 import java.util.Arrays;
 
@@ -17,12 +17,12 @@ import java.util.Arrays;
                 @ComponentScan.Filter(type = FilterType.REGEX, pattern = "fortscale.*"),
                 @ComponentScan.Filter(type = FilterType.REGEX, pattern = "presidio.*")})
 @EnableTask
-public class FortscaleCollectorApplication {
-    private static final Logger logger = Logger.getLogger(FortscaleCollectorApplication.class);
+public class FortscaleAdapterApplication {
+    private static final Logger logger = Logger.getLogger(FortscaleAdapterApplication.class);
 
     public static void main(String[] args) {
-        logger.info("starting Collector with params " + Arrays.toString(args));
+        logger.info("starting Adapter with params " + Arrays.toString(args));
 
-        SpringApplication.run(new Object[]{FortscaleCollectorApplication.class, CollectorConfigProduction.class}, args);
+        SpringApplication.run(new Object[]{FortscaleAdapterApplication.class, AdapterConfigProduction.class}, args);
     }
 }

@@ -1,4 +1,4 @@
-package presidio.collector;
+package presidio.adapter;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -6,16 +6,16 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-import presidio.collector.config.FetchServiceConfig;
-import presidio.collector.configuration.CollectorTestConfiguration;
-import presidio.collector.services.api.CollectorExecutionService;
+import presidio.adapter.config.FetchServiceConfig;
+import presidio.adapter.configuration.AdapterTestConfiguration;
+import presidio.adapter.services.api.AdapterExecutionService;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = CollectorTestConfiguration.class)
-public class FortscaleCollectorContextTest {
+@SpringBootTest(classes = AdapterTestConfiguration.class)
+public class FortscaleAdapterContextTest {
 
     @Autowired
-    private CollectorExecutionService processService;
+    private AdapterExecutionService processService;
 
     @Autowired
     private FetchServiceConfig fetchServiceConfig;
