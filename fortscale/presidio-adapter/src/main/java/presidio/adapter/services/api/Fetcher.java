@@ -1,4 +1,4 @@
-package presidio.collector.services.api;
+package presidio.adapter.services.api;
 
 
 import fortscale.common.general.DataSource;

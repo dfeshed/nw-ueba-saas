@@ -1,4 +1,4 @@
-package presidio.collector.configuration;
+package presidio.adapter.configuration;
 
 import com.github.fakemongo.Fongo;
 import org.springframework.context.annotation.Bean;
@@ -8,7 +8,7 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.data.mongodb.MongoDbFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
-import presidio.collector.spring.CollectorConfig;
+import presidio.adapter.spring.AdapterConfig;
 
 import java.util.Properties;
 
@@ -16,8 +16,8 @@ import java.util.Properties;
  * Created by shays on 26/06/2017.
  */
 @Configuration
-@Import(CollectorConfig.class)
-public class CollectorTestConfiguration {
+@Import(AdapterConfig.class)
+public class AdapterTestConfiguration {
 
 
     private static final String FORTSCALE_TEST_DB = "fortscaleTestDb";

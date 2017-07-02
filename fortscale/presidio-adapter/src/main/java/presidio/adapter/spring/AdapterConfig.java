@@ -1,4 +1,4 @@
-package presidio.collector.spring;
+package presidio.adapter.spring;
 
 import fortscale.services.config.ParametersValidationServiceConfig;
 import fortscale.services.parameters.ParametersValidationService;
@@ -6,16 +6,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import presidio.collector.config.FetchServiceConfig;
-import presidio.collector.services.api.CollectorExecutionService;
-import presidio.collector.services.api.FetchService;
-import presidio.collector.services.impl.CollectorExecutionServiceImpl;
+import presidio.adapter.config.FetchServiceConfig;
+import presidio.adapter.services.api.AdapterExecutionService;
+import presidio.adapter.services.api.FetchService;
+import presidio.adapter.services.impl.AdapterExecutionServiceImpl;
 import presidio.sdk.api.services.CoreManagerService;
 import presidio.sdk.impl.spring.CoreManagerServiceConfig;
 
 @Configuration
 @Import({CoreManagerServiceConfig.class, FetchServiceConfig.class, ParametersValidationServiceConfig.class})
-public class CollectorConfig {
+public class AdapterConfig {
 
     @Autowired
     private CoreManagerService coreManagerService;
@@ -27,8 +27,8 @@ public class CollectorConfig {
     private ParametersValidationService parametersValidationService;
 
     @Bean
-    public CollectorExecutionService collectorExecutionService() {
-        return new CollectorExecutionServiceImpl(coreManagerService, fetchService, parametersValidationService);
+    public AdapterExecutionService collectorExecutionService() {
+        return new AdapterExecutionServiceImpl(coreManagerService, fetchService, parametersValidationService);
     }
 
 

@@ -1,14 +1,14 @@
-package presidio.collector.config;
+package presidio.adapter.config;
 
 
 import fortscale.common.general.DataSource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import presidio.collector.services.api.FetchService;
-import presidio.collector.services.api.Fetcher;
-import presidio.collector.services.impl.CsvFileFetcher;
-import presidio.collector.services.impl.FetchServiceImpl;
+import presidio.adapter.services.api.FetchService;
+import presidio.adapter.services.api.Fetcher;
+import presidio.adapter.services.impl.CsvFileFetcher;
+import presidio.adapter.services.impl.FetchServiceImpl;
 
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
@@ -18,7 +18,7 @@ import java.util.Map;
 @Configuration
 public class FetchServiceConfig {
 
-    @Value("${fortscale.collector.csvfetcher.csvfilesfolderpath}")
+    @Value("${fortscale.adapter.csvfetcher.csvfilesfolderpath}")
     private String csvFilesFolderPath;
 
     @Bean
