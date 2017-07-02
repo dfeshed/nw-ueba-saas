@@ -13,7 +13,7 @@ import java.util.List;
 public abstract class FixedDurationStrategyExecutor {
     private static final Logger logger = Logger.getLogger(FixedDurationStrategyExecutor.class);
 
-    private final FixedDurationStrategy strategy;
+    protected final FixedDurationStrategy strategy;
 
     public FixedDurationStrategyExecutor(FixedDurationStrategy strategy) {
         this.strategy = strategy;

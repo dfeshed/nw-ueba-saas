@@ -1,4 +1,4 @@
-package fortscale.ml.scorer.enriched_events;
+package fortscale.ml.scorer.records;
 
 import fortscale.utils.recordreader.RecordReaderFactory;
 import fortscale.utils.recordreader.RecordReaderFactoryService;

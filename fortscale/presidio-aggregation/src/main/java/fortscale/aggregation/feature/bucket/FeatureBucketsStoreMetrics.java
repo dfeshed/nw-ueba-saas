@@ -14,7 +14,7 @@ public class FeatureBucketsStoreMetrics extends StatsMetricsGroup {
     public FeatureBucketsStoreMetrics(StatsService statsService,
                                       String storeType,
                                       FeatureBucketConf featureBucketConf) {
-        super(statsService, FeatureBucketsService.class, new StatsMetricsGroupAttributes() {{
+        super(statsService, FeatureBucketsStore.class, new StatsMetricsGroupAttributes() {{
             addTag("storeType", storeType);
             addTag("bucketName", featureBucketConf.getName());
         }});

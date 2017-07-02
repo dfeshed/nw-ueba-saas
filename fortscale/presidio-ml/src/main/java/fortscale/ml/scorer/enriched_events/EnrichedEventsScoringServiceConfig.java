@@ -2,6 +2,9 @@ package fortscale.ml.scorer.enriched_events;
 
 import fortscale.ml.model.config.ModelBuildingConfiguration;
 import fortscale.ml.scorer.ScoringService;
+import fortscale.ml.scorer.records.AdeRecordReaderFactoriesConfig;
+import fortscale.ml.scorer.records.RecordReaderFactoryServiceConfig;
+import fortscale.ml.scorer.records.TransformationConfig;
 import fortscale.ml.scorer.spring.config.ScoringSpringConfiguration;
 import fortscale.utils.recordreader.RecordReaderFactoryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +22,7 @@ import presidio.ade.domain.store.scored.ScoredEnrichedDataStoreMongoConfig;
         AdeEnrichedScoredRecordBuilderConfig.class,
         TransformationConfig.class,
         RecordReaderFactoryServiceConfig.class,
-        EnrichedEventRecordReaderFactoriesConfig.class
+        AdeRecordReaderFactoriesConfig.class
 })
 public class EnrichedEventsScoringServiceConfig {
 

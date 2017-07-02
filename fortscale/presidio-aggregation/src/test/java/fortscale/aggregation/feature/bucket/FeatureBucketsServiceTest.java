@@ -1,7 +1,6 @@
 package fortscale.aggregation.feature.bucket;
 
 
-import com.sun.corba.se.pept.transport.InboundConnectionCache;
 import fortscale.aggregation.feature.bucket.config.BucketConfigurationServiceConfig;
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
 import fortscale.aggregation.feature.functions.AggrFeatureFuncService;
@@ -21,11 +20,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import presidio.ade.domain.record.AdeRecord;
-import presidio.ade.domain.record.AdeRecordReader;
-import presidio.ade.domain.record.AdeRecordReaderFactory;
 import presidio.ade.domain.record.enriched.AdeEnrichedDlpFileContext;
 import presidio.ade.domain.record.enriched.EnrichedDlpFileRecord;
 import presidio.ade.domain.record.scored.AdeScoredRecordReaderFactory;
@@ -44,7 +40,8 @@ public class FeatureBucketsServiceTest {
     @Autowired
     private BucketConfigurationService bucketConfigurationService;
 
-    private FeatureBucketsService featureBucketsService;
+    private FeatureBucketsAggregatorInMemory featureBucketsAggregatorStore;
+    private FeatureBucketAggregator featureBucketAggregator;
     private FeatureBucketStrategyData strategyData;
     private List<String> contextFieldNames;
     private List<AdeRecord> adeScoredDlpFileRecords;
@@ -58,33 +55,31 @@ public class FeatureBucketsServiceTest {
 
     @Before
     public void initialize() {
-        featureBucketsServiceInitialize();
+        featureBucketsAggregatorStore = new FeatureBucketsAggregatorInMemory();
+        featureBucketAggregatorInitialize(featureBucketsAggregatorStore);
         strategyDataInitialize();
         contextFieldNamesInitialize();
         adeRecordsInitialize();
     }
 
     @Test
-    public void testFeatureBucketsService() {
-        featureBucketsService.updateFeatureBucketsWithAdeRecords(adeScoredDlpFileRecords, contextFieldNames, strategyData);
-        List<FeatureBucket> featureBuckets = featureBucketsService.popAllFeatureBuckets();
+    public void testFeatureBucketAggregator() {
+        featureBucketAggregator.aggregate(adeScoredDlpFileRecords, contextFieldNames, strategyData);
+        List<FeatureBucket> featureBuckets = featureBucketsAggregatorStore.getAllFeatureBuckets();
         Map<String, FeatureBucket> featureBucketsExpectedResults = buildExpectedResult();
         checkExpectedResults(featureBucketsExpectedResults, featureBuckets);
     }
 
     /**
-     * Create featureBucketsService
+     * Create featureBucketAggregator
      */
-    public void featureBucketsServiceInitialize() {
-        FeatureBucketsStore featureBucketsStore = new FeatureBucketsInMemory();
-
-        IAggrFeatureFunctionsService aggrFeatureFunctionsService = new AggrFeatureFuncService();
+    public void featureBucketAggregatorInitialize(FeatureBucketsAggregatorStore featureBucketsAggregatorStore) {
         Map<String, Transformation<?>> transformations = new HashMap<>();
         Collection<RecordReaderFactory> recordReaderFactories = new ArrayList<>();
         AdeScoredRecordReaderFactory adeScoredRecordReaderFactory = new AdeScoredRecordReaderFactory();
         recordReaderFactories.add(adeScoredRecordReaderFactory);
         RecordReaderFactoryService recordReaderFactoryService = new RecordReaderFactoryService(recordReaderFactories, transformations);
-        featureBucketsService = new FeatureBucketsService(featureBucketsStore, bucketConfigurationService, aggrFeatureFunctionsService, recordReaderFactoryService);
+        featureBucketAggregator = new FeatureBucketAggregator(featureBucketsAggregatorStore, bucketConfigurationService, recordReaderFactoryService);
     }
 
     /**

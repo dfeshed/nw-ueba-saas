@@ -330,14 +330,4 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 
 		return result;
 	}
-
-	@Override
-	public List<FeatureBucket> getAllFeatureBuckets() {
-		return null;
-	}
-
-	@Override
-	public void clearAll() {
-
-	}
 }
