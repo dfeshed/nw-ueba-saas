@@ -1,8 +1,8 @@
 package fortscale.ml.model.config;
 
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
-import fortscale.aggregation.feature.bucket.FeatureBucketsReaderService;
-import fortscale.aggregation.feature.bucket.FeatureBucketsReaderServiceConfig;
+import fortscale.aggregation.feature.bucket.FeatureBucketReader;
+import fortscale.aggregation.feature.bucket.FeatureBucketReaderConfig;
 import fortscale.aggregation.feature.bucket.config.BucketConfigurationServiceConfig;
 import fortscale.ml.model.retriever.AbstractDataRetriever;
 import fortscale.ml.model.retriever.ContextHistogramRetriever;
@@ -17,17 +17,14 @@ import org.springframework.context.annotation.Import;
 
 import java.util.List;
 
-/**
- * Created by barak_schuster on 6/29/17.
- */
 @Configuration
-@Import({RetrieverFactoriesConfig.class, BucketConfigurationServiceConfig.class, FeatureBucketsReaderServiceConfig.class})
+@Import({RetrieverFactoriesConfig.class, BucketConfigurationServiceConfig.class, FeatureBucketReaderConfig.class})
 @ComponentScan(basePackageClasses = ContextHistogramRetriever.class)
-public class DataReterieverFactoryConfig {
+public class DataRetrieverFactoryConfig {
     @Autowired
     private BucketConfigurationService bucketConfigurationService;
     @Autowired
-    private FeatureBucketsReaderService featureBucketsReaderService;
+    private FeatureBucketReader featureBucketReader;
     @Autowired
     private List<AbstractServiceAutowiringFactory<AbstractDataRetriever>> retrieversFactories;
 
@@ -37,5 +34,4 @@ public class DataReterieverFactoryConfig {
         retrieversFactories.forEach(x -> x.registerFactoryService(factoryService));
         return factoryService;
     }
-
 }

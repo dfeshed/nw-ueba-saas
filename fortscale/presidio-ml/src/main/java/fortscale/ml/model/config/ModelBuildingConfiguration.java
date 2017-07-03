@@ -12,8 +12,6 @@ import org.springframework.context.annotation.Import;
 		ContextSelectorFactoryConfig.class,
 		ModelBuilderFactoryServiceConfig.class,
 		ModelStoreConfig.class,
-		DataReterieverFactoryConfig.class
+		DataRetrieverFactoryConfig.class
 })
-public class ModelBuildingConfiguration {
-
-}
+public class ModelBuildingConfiguration {}
