@@ -34,8 +34,9 @@ class Deploy_Manager:
         self.create_logger()
 
     def print_banner(self):
-
-        sec_to_sleep = 0.3
+        sec_to_sleep = 0.5
+        long_sleep = 3
+        time.sleep(long_sleep)
         print " ___   __   ___   ____  ___   __   __   __    ___ "
         print "(  _) /  \ (  ,) (_  _)/ __) / _) (  ) (  )  (  _)"
         print " ) _)( () ) )  \   )(  \__ \( (_  /__\  )(__  ) _)"
@@ -61,7 +62,10 @@ class Deploy_Manager:
         print "8 8888         8 8888   `8b.   8 8888         `8b.  ;8.`8888  8 8888 8 8888    ,o88P'    8 8888  ` 8888     ,88'   "
         time.sleep(sec_to_sleep)
         print "8 8888         8 8888     `88. 8 888888888888  `Y8888P ,88P'  8 8888 8 888888888P'       8 8888     `8888888P'"
-        time.sleep(3)
+        print ""
+        print ""
+        time.sleep(long_sleep)
+
 
 
 
