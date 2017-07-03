@@ -3,7 +3,7 @@ package fortscale.ml.model;
 import fortscale.accumulator.aggregation.store.AccumulatedAggregatedFeatureEventStore;
 import fortscale.accumulator.entityEvent.store.AccumulatedEntityEventStore;
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
-import fortscale.aggregation.feature.bucket.FeatureBucketsReaderService;
+import fortscale.aggregation.feature.bucket.FeatureBucketReader;
 import fortscale.aggregation.feature.event.RetentionStrategiesConfService;
 import fortscale.aggregation.feature.event.config.AggregatedFeatureEventsConfServiceConfig;
 import fortscale.aggregation.feature.event.store.AggregatedFeatureEventsReaderService;
@@ -42,7 +42,7 @@ public class ModelConfProductionConfFilesTest {
 	@ComponentScan(basePackages = "fortscale.ml.model.selector,fortscale.ml.model.retriever,fortscale.ml.model.builder")
 	@Import({NullStatsServiceConfig.class, AggregatedFeatureEventsConfServiceConfig.class})
 	static class ContextConfiguration {
-		@Mock private FeatureBucketsReaderService featureBucketsReaderService;
+		@Mock private FeatureBucketReader featureBucketReader;
 		@Mock private AggregatedFeatureEventsReaderService aggregatedFeatureEventsReaderService;
 		@Mock private AccumulatedAggregatedFeatureEventStore accumulatedAggregatedFeatureEventStore;
 		@Mock private EntityEventDataReaderService entityEventDataReaderService;
@@ -50,7 +50,7 @@ public class ModelConfProductionConfFilesTest {
 		@Mock private EntityEventMongoStore entityEventMongoStore;
 		@Mock private ModelStore modelStore;
 
-		@Bean public FeatureBucketsReaderService getFeatureBucketsReaderService() {return featureBucketsReaderService;}
+		@Bean public FeatureBucketReader getFeatureBucketReader() {return featureBucketReader;}
 		@Bean public AggregatedFeatureEventsReaderService getAggregatedFeatureEventsReaderService() {return aggregatedFeatureEventsReaderService;}
 		@Bean public AccumulatedAggregatedFeatureEventStore getAccumulatedAggregatedFeatureEventStore() {return accumulatedAggregatedFeatureEventStore;}
 		@Bean public EntityEventDataReaderService getEntityEventDataReaderService() {return entityEventDataReaderService;}

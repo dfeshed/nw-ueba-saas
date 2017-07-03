@@ -1,5 +1,6 @@
 package presidio.ade.domain.pagination.enriched;
 
+import fortscale.utils.pagination.ContextIdToNumOfItems;
 import fortscale.utils.pagination.PageIterator;
 import fortscale.utils.time.TimeRange;
 import org.junit.Before;
@@ -9,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import fortscale.utils.pagination.ContextIdToNumOfEvents;
 import presidio.ade.domain.record.enriched.DataSourceToAdeEnrichedRecordClassResolver;
 import presidio.ade.domain.record.enriched.DataSourceToAdeEnrichedRecordClassResolverConfig;
 import presidio.ade.domain.record.enriched.EnrichedDlpFileRecord;
@@ -57,10 +57,10 @@ public class EnrichedRecordPaginationServiceTest {
     @Test
     public void test_1() {
 
-        List<ContextIdToNumOfEvents> contextIdToNumOfEventsList = new ArrayList<>();
-        contextIdToNumOfEventsList.add(new ContextIdToNumOfEvents("a", 5));
-        contextIdToNumOfEventsList.add(new ContextIdToNumOfEvents("b", 2));
-        contextIdToNumOfEventsList.add(new ContextIdToNumOfEvents("c", 1));
+        List<ContextIdToNumOfItems> contextIdToNumOfItemsList = new ArrayList<>();
+        contextIdToNumOfItemsList.add(new ContextIdToNumOfItems("a", 5));
+        contextIdToNumOfItemsList.add(new ContextIdToNumOfItems("b", 2));
+        contextIdToNumOfItemsList.add(new ContextIdToNumOfItems("c", 1));
 
         // result for first query
         ArrayList<String> enrichedDlpFileRecordsQuery1 = new ArrayList<String>();
@@ -92,7 +92,7 @@ public class EnrichedRecordPaginationServiceTest {
 
         List<EnrichedRecordPaginationServiceGroup> results = generateResultTest1();
 
-        CreatePageIterators(mongoTemplate, contextIdToNumOfEventsList, results);
+        CreatePageIterators(mongoTemplate, contextIdToNumOfItemsList, results);
     }
 
     /**
@@ -108,10 +108,10 @@ public class EnrichedRecordPaginationServiceTest {
     @Test
     public void test_2() {
 
-        List<ContextIdToNumOfEvents> contextIdToNumOfEventsList = new ArrayList<>();
-        contextIdToNumOfEventsList.add(new ContextIdToNumOfEvents("a", 5));
-        contextIdToNumOfEventsList.add(new ContextIdToNumOfEvents("b", 2));
-        contextIdToNumOfEventsList.add(new ContextIdToNumOfEvents("c", 2));
+        List<ContextIdToNumOfItems> contextIdToNumOfItemsList = new ArrayList<>();
+        contextIdToNumOfItemsList.add(new ContextIdToNumOfItems("a", 5));
+        contextIdToNumOfItemsList.add(new ContextIdToNumOfItems("b", 2));
+        contextIdToNumOfItemsList.add(new ContextIdToNumOfItems("c", 2));
 
         // result for first query
         ArrayList<String> enrichedDlpFileRecordsQuery1 = new ArrayList<String>();
@@ -149,7 +149,7 @@ public class EnrichedRecordPaginationServiceTest {
 
         List<EnrichedRecordPaginationServiceGroup> results = generateResultTest2();
 
-        CreatePageIterators(mongoTemplate, contextIdToNumOfEventsList, results);
+        CreatePageIterators(mongoTemplate, contextIdToNumOfItemsList, results);
     }
 
     /**
@@ -161,8 +161,8 @@ public class EnrichedRecordPaginationServiceTest {
     @Test
     public void test_3() {
 
-        List<ContextIdToNumOfEvents> contextIdToNumOfEventsList = new ArrayList<>();
-        contextIdToNumOfEventsList.add(new ContextIdToNumOfEvents("a", 1));
+        List<ContextIdToNumOfItems> contextIdToNumOfItemsList = new ArrayList<>();
+        contextIdToNumOfItemsList.add(new ContextIdToNumOfItems("a", 1));
 
         // result for first query
         ArrayList<String> enrichedDlpFileRecordsQuery1 = new ArrayList<String>();
@@ -173,7 +173,7 @@ public class EnrichedRecordPaginationServiceTest {
 
         List<EnrichedRecordPaginationServiceGroup> results = generateResultTest3();
 
-        CreatePageIterators(mongoTemplate, contextIdToNumOfEventsList, results);
+        CreatePageIterators(mongoTemplate, contextIdToNumOfItemsList, results);
     }
 
     /**
@@ -259,10 +259,10 @@ public class EnrichedRecordPaginationServiceTest {
     /**
      * Test the enriched record pagination service.
      */
-    public void CreatePageIterators(MongoTemplate mongoTemplate, List<ContextIdToNumOfEvents> contextIdToNumOfEventsList, List<EnrichedRecordPaginationServiceGroup> results) {
+    public void CreatePageIterators(MongoTemplate mongoTemplate, List<ContextIdToNumOfItems> contextIdToNumOfItemsList, List<EnrichedRecordPaginationServiceGroup> results) {
 
         //mock of aggregation
-        GenerateMocks.createMockForAggregation(mongoTemplate, contextIdToNumOfEventsList);
+        GenerateMocks.createMockForAggregation(mongoTemplate, contextIdToNumOfItemsList);
         //mock of index operations
         GenerateMocks.createMockForIndexOperation(mongoTemplate);
 

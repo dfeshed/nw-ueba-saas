@@ -1,12 +1,12 @@
 package presidio.ade.domain.pagination.enriched;
 
 import fortscale.utils.logging.Logger;
+import fortscale.utils.pagination.ContextIdToNumOfItems;
 import fortscale.utils.pagination.PageIterator;
 import fortscale.utils.pagination.PaginationService;
 import fortscale.utils.time.TimeRange;
 import presidio.ade.domain.pagination.impl.EnrichedRecordPageIterator;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
-import fortscale.utils.pagination.ContextIdToNumOfEvents;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
 import presidio.ade.domain.store.enriched.EnrichedRecordsMetadata;
 
@@ -29,7 +29,7 @@ public class EnrichedRecordPaginationService extends PaginationService<EnrichedR
     }
 
     @Override
-    protected List<ContextIdToNumOfEvents> getContextIdToNumOfItemsList(String dataSource, TimeRange timeRange) {
+    protected List<ContextIdToNumOfItems> getContextIdToNumOfItemsList(String dataSource, TimeRange timeRange) {
         EnrichedRecordsMetadata enrichedRecordsMetadata = new EnrichedRecordsMetadata(dataSource, timeRange.getStart(), timeRange.getEnd());
         return this.store.aggregateContextToNumOfEvents(enrichedRecordsMetadata, this.contextType);
     }
