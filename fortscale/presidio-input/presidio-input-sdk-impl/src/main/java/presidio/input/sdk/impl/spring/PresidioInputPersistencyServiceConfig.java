@@ -6,10 +6,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import presidio.input.sdk.impl.repositories.DataSourceRepository;
 import presidio.input.sdk.impl.repositories.DataSourceRepositoryImpl;
 import presidio.input.sdk.impl.services.DataServiceImpl;
 import presidio.input.sdk.impl.services.PresidioInputPersistencyServiceMongoImpl;
+import presidio.input.sdk.impl.validators.ValidationManager;
 import presidio.sdk.api.domain.DataService;
 import presidio.sdk.api.domain.InputToCollectionNameTranslator;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
@@ -33,13 +35,23 @@ public class PresidioInputPersistencyServiceConfig {
     }
 
     @Bean
-    public DataService dlpFileDataService() {
-        return new DataServiceImpl(dataSourceRepository(), toCollectionNameTranslator());
+    public LocalValidatorFactoryBean localValidatorFactoryBean(){
+        return new LocalValidatorFactoryBean();
     }
 
     @Bean
     public PresidioInputPersistencyService presidioInputPersistencyService() {
         return new PresidioInputPersistencyServiceMongoImpl(dlpFileDataService());
+    }
+
+    @Bean
+    public ValidationManager validationManager(){
+        return new ValidationManager(localValidatorFactoryBean().getValidator());
+    }
+
+    @Bean
+    public DataService dlpFileDataService() {
+        return new DataServiceImpl(dataSourceRepository(), toCollectionNameTranslator(), validationManager());
     }
 
 }

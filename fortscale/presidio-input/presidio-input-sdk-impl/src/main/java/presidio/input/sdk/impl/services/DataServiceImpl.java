@@ -19,17 +19,18 @@ public class DataServiceImpl implements DataService {
 
     private final DataSourceRepository dataSourceRepository;
     private final ToCollectionNameTranslator toCollectionNameTranslator;
+    private final ValidationManager validationManager;
 
-    public DataServiceImpl(DataSourceRepository dataSourceRepository, ToCollectionNameTranslator toCollectionNameTranslator) {
+    public DataServiceImpl(DataSourceRepository dataSourceRepository, ToCollectionNameTranslator toCollectionNameTranslator, ValidationManager validationManager) {
         this.dataSourceRepository = dataSourceRepository;
         this.toCollectionNameTranslator = toCollectionNameTranslator;
+        this.validationManager = validationManager;
     }
 
     @Override
     public boolean store(List<? extends AbstractAuditableDocument> documents, DataSource dataSource) {
         logger.debug("Storing {} documents.", documents.isEmpty() ? 0 : documents.size());
-        ValidationManager m = new ValidationManager();
-        List <? extends  AbstractAuditableDocument> validDocuments  = m.validate(documents);
+        List<? extends AbstractAuditableDocument> validDocuments = validationManager.validate(documents);
         dataSourceRepository.insertDataSource(toCollectionNameTranslator.toCollectionName(dataSource), validDocuments);
         return true;
     }

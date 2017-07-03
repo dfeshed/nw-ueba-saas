@@ -19,7 +19,7 @@ public class AcceptableValuesValidator implements ConstraintValidator<Acceptable
     @Override
     public boolean isValid(Object value, ConstraintValidatorContext constraintValidatorContext) {
         if (value == null) {
-            return true;
+            return false;
         }
 
         if (!ArrayUtils.contains(fieldValues, value)) {
