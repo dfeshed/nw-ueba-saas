@@ -52,11 +52,11 @@ skip('toggle request on/off', (assert) => {
 
   waitForReduxStateChange('recon.packets.packets');
   andThen(() => {
-    click('.rsa-icon-arrow-circle-right-2');
+    click('.rsa-icon-arrow-circle-right-2-filled');
   });
   andThen(() => {
     assert.ok(find('.rsa-packet.request').first().height() < 5, 'Requests are hidden');
-    click('.rsa-icon-arrow-circle-right-2');
+    click('.rsa-icon-arrow-circle-right-2-filled');
   });
   andThen(() => {
     assert.ok(find('.rsa-packet.request').first().height() > 0, 'Requests are shown');
@@ -66,11 +66,11 @@ skip('toggle request on/off', (assert) => {
 skip('toggle response on/off', (assert) => {
   visit('/');
   waitForReduxStateChange('recon.packets.packets');
-  click('.rsa-icon-arrow-circle-left-2');
+  click('.rsa-icon-arrow-circle-left-2-filled');
   andThen(() => {
     // Height should be 0, as the response ones are hidden, but their containers are still there
     assert.ok(find('.rsa-packet.response').first().height() < 5, 'Responses are hidden');
-    click('.rsa-icon-arrow-circle-left-2');
+    click('.rsa-icon-arrow-circle-left-2-filled');
     andThen(() => {
       // Height should be > 0, as the responses are now shown
       assert.ok(find('.rsa-packet.response').first().height() > 0, 'Responses are shown');

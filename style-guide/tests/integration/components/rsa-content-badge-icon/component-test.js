@@ -20,7 +20,7 @@ test('it sets the label', function(assert) {
 test('it includes the icon', function(assert) {
   this.render(hbs `{{rsa-content-badge-icon icon='account-circle-1' label='Foo'}}`);
   const icon = this.$().find('i');
-  assert.ok(icon.hasClass('rsa-icon-account-circle-1'));
+  assert.ok(icon.hasClass('rsa-icon-account-circle-1-filled'));
 });
 
 test('it includes the proper classes when isDanger is true', function(assert) {
