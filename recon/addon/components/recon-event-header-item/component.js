@@ -4,7 +4,8 @@ import service from 'ember-service/inject';
 
 import layout from './template';
 
-const DATE_DATATYPE = 2;
+const DATE_DATATYPE = 'TimeT';
+const NUMBER_DATATYPE = 'UInt64';
 
 export default Component.extend({
   layout,
@@ -20,7 +21,9 @@ export default Component.extend({
   isDate: (type) => type === DATE_DATATYPE,
 
   @computed('name', 'type')
-  isByteSize: (name, type) => type === 3 && name === 'payloadSize' || name === 'packetSize',
+  isByteSize: (name, type) => {
+    return type === NUMBER_DATATYPE && (name === 'payloadSize' || name === 'packetSize');
+  },
 
   @computed('value')
   asInteger: (dateString) => parseInt(dateString, 10),
