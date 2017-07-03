@@ -4,8 +4,15 @@
 const EmberApp = require('ember-cli/lib/broccoli/ember-app');
 const { isDevelopingAddon } = require('../common');
 const projectName = 'component-lib';
-const replace = require('broccoli-replace');
 const WebpackWriter = require('broccoli-webpack');
+
+// https://stackoverflow.com/questions/30030031/passing-environment-dependent-variables-in-webpack
+// Have to use redux's own minified stuff in production to avoid console errors as
+// it has been properly processed and had dev chunks removed
+let reduxLib = 'dist/redux.min.js';
+if (EmberApp.env() === 'development') {
+  reduxLib = 'dist/redux.js';
+}
 
 module.exports = {
   name: projectName,
@@ -22,24 +29,7 @@ module.exports = {
         import: ['pikaday.js', 'css/pikaday.css']
       },
       redux: {
-        vendor: {
-          include: ['dist/redux.js'],
-          processTree(tree) {
-            return replace(tree, {
-              files: '**/*.js',
-              patterns: [
-                {
-                  match: /process\.env\.NODE_ENV/g,
-                  replacement: `"${EmberApp.env()}"`
-                },
-                {
-                  match: /import isPlainObject from 'lodash\/isPlainObject'/g,
-                  replacement: "import lodash from 'lodash'\nconst isPlainObject = lodash.isPlainObject"
-                }
-              ]
-            });
-          }
-        }
+        vendor: [reduxLib]
       },
       'redux-actions': {
         vendor: ['dist/redux-actions.js']

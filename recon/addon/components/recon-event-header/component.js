@@ -27,7 +27,7 @@ const EventHeaderComponent = Component.extend({
         if (item && item.name && so >= 0) {
           // Add sort order to object
           item.so = so;
-          set(item, 'hasTooltip', HAS_TOOLTIP.contains(item.name));
+          set(item, 'hasTooltip', HAS_TOOLTIP.includes(item.name));
           // Add the properties we want to override into a new object and add to displayedItems
           displayedItems.pushObject(item);
         }
