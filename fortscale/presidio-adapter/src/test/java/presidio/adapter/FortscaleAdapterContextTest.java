@@ -22,7 +22,6 @@ public class FortscaleAdapterContextTest {
 
     @Test
     public void contextLoads() throws Exception {
-        //processService.run("SHAY");
         Assert.assertNotNull(this.fetchServiceConfig);
     }
 

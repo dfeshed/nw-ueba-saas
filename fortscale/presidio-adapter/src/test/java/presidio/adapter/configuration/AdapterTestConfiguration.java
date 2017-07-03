@@ -40,7 +40,7 @@ public class AdapterTestConfiguration {
         final PropertySourcesPlaceholderConfigurer pspc = new PropertySourcesPlaceholderConfigurer();
 
         Properties properties = new Properties();
-        properties.setProperty("fortscale.collector.csvfetcher.csvfilesfolderpath", "file_path");
+        properties.setProperty("fortscale.adapter.csvfetcher.csvfilesfolderpath", "file_path");
         pspc.setProperties(properties);
         return pspc;
     }
