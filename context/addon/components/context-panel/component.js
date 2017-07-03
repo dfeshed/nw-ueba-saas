@@ -159,7 +159,6 @@ const ContextComponent = Component.extend({
           { field: 'relatedEntities', value: relatedEntities }
         ]
       },
-      streamOptions: { requireRequestId: false },
       onResponse: ({ data }) => {
         log('pushing data to relatedEntity model');
         if (isEmberArray(data)) {

@@ -1153,7 +1153,6 @@ export default {
       unknownRiskDesc: 'ja_Inconclusive results from any available information, research, and analysis',
       suspiciousRiskDesc: 'ja_Research and analysis indicates potentially threatening activity',
       riskFeedback: 'ja_Risk Assessment Feedback',
-      noDataMsg: 'ja_No data from Live Connect',
       relatedFiles: 'ja_Related Files ',
       risk: 'ja_LC RISK RATING',
       importHashFunction: 'ja_API FUNCTION IMPORT HASH',
