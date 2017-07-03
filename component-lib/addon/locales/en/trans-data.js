@@ -977,7 +977,7 @@ export default {
       endpoint: 'To Pivot to Endpoint, please install the NetWitness Endpoint client for Windows.'
     },
     addToList: {
-      title: 'Add to List',
+      title: 'Add/Remove from List',
       create: 'Create New List',
       metaValue: 'Meta Value',
       newList: 'Create New List',
@@ -1211,7 +1211,7 @@ export default {
       viewOverview: 'View Context',
       actions: 'Actions',
       investigate: 'Pivot to Investigate',
-      addToList: 'Add to list',
+      addToList: 'Add/Remove from List',
       virusTotal: 'Virus Total Lookup',
       googleLookup: 'Google Lookup',
       ecat: 'Pivot to Endpoint',

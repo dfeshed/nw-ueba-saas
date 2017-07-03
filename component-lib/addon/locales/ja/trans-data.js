@@ -1008,7 +1008,7 @@ export default {
       ipAddress: 'ja_Internal IP Address'
     },
     addToList: {
-      title: 'ja_Add to List',
+      title: 'ja_Add/Remove from List',
       create: 'ja_Create New List',
       metaValue: 'ja_Meta Value',
       newList: 'ja_Create New List',
@@ -1211,7 +1211,7 @@ export default {
       viewOverview: 'ja_View Context',
       actions: 'ja_Actions',
       investigate: 'ja_Pivot to Investigate',
-      addToList: 'ja_Add to list',
+      addToList: 'ja_Add/Remove from List',
       virusTotal: 'ja_Virus Total Lookup',
       googleLookup: 'ja_Google Lookup',
       ecat: 'ja_Pivot to Endpoint',

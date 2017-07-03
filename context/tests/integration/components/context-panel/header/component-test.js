@@ -43,5 +43,5 @@ test('it renders', function(assert) {
     payload: 'Alerts'
   });
   this.render(hbs`{{context-panel/header i18n=i18n}}`);
-  assert.ok(this.$('.rsa-context-panel__header').text().indexOf('Add to List') > 0, 'Showing total count for alert data.');
+  assert.ok(this.$('.rsa-context-panel__header').text().indexOf('Add/Remove from List') > 0, 'Showing total count for alert data.');
 });

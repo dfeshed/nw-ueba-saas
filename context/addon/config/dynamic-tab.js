@@ -99,7 +99,7 @@ const datasources = {
 
 const toolbar = {
   addToList: {
-    field: 'Add To List',
+    field: 'Add/Remove from List',
     title: 'context.toolbar.addToList',
     componentName: 'add-to-list'
   },
