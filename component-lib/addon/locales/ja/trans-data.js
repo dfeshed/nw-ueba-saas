@@ -202,7 +202,6 @@ export default {
       topBottom: 'ja_Top/Bottom View',
       sideBySide: 'ja_Side by Side View',
       meta: 'ja_Show/Hide Meta',
-      settings: 'ja_Settings',
       expand: 'ja_Expand View',
       shrink: 'ja_Contract View',
       close: 'ja_Close Reconstruction'
@@ -337,7 +336,6 @@ export default {
   noon: 'ja_Noon',
   investigate: {
     controls: {
-      settings: 'ja_Configure',
       toggle: 'ja_Show/Hide Events Panel'
     },
     title: 'ja_Investigate',

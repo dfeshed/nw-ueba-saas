@@ -202,7 +202,6 @@ export default {
       topBottom: 'Top/Bottom View',
       sideBySide: 'Side by Side View',
       meta: 'Show/Hide Meta',
-      settings: 'Settings',
       expand: 'Expand View',
       shrink: 'Contract View',
       close: 'Close Reconstruction'
@@ -337,7 +336,6 @@ export default {
   noon: 'Noon',
   investigate: {
     controls: {
-      settings: 'Configure',
       toggle: 'Show/Hide Events Panel'
     },
     title: 'Investigate',
