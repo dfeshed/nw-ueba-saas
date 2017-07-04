@@ -1213,7 +1213,17 @@ export default {
       googleLookup: 'ja_Google Lookup',
       ecat: 'ja_Pivot to Endpoint',
       events: 'ja_Pivot to Events',
-      contextUnavailable: 'ja_No context data available at this time'
+      contextUnavailable: 'ja_No context data available at this time.',
+      dataSourceNames: {
+        Incidents: 'ja_Incidents',
+        Alerts: 'ja_Alerts',
+        LIST: 'ja_Lists',
+        Users: 'ja_Users',
+        IOC: 'ja_IOCs',
+        Machines: 'ja_Machines',
+        Modules: 'ja_Modules',
+        LiveConnect: 'ja_LiveConnect'
+      }
     }
   }
 };

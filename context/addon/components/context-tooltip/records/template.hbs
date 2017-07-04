@@ -1,24 +1,26 @@
-<div class="rsa-context-tooltip-records__records">
-  {{#each modelSummary as |record|}}
-    <div class="rsa-context-tooltip-records__record" {{action "clickRecord" record}}>
-      <h4 class="value">
-        {{if record.severity record.severity record.count}}
-      </h4>
-      <p class="text">
-        {{record.name}}
-      </p>
-      <p class="subtext">
-        {{rsa-content-datetime timestamp=record.lastUpdated asTimeAgo=true}}
-      </p>
-    </div>
-  {{/each}}
-</div>
-{{#if (eq modelStatus 'streaming')}}
-  <centered class="rsa-context-tooltip-records__wait">
-    {{rsa-loader}}
-  </centered>
-{{else if (eq modelStatus 'error')}}
+{{#if isContextUnavailable}}
   <centered class="rsa-context-tooltip-records__error">
     {{t 'context.tooltip.contextUnavailable'}}
   </centered>
+{{else}}
+  <div class="rsa-context-tooltip-records__records">
+    {{#each resolvedModelSummary as |record|}}
+      <div class="rsa-context-tooltip-records__record" {{action "clickRecord" record}}>
+        <h4 class="value">
+          {{if record.severity record.severity record.count}}
+        </h4>
+        <p class="text">
+          {{t (concat 'context.tooltip.dataSourceNames.' record.name)}}
+        </p>
+        <p class="subtext">
+          {{rsa-content-datetime timestamp=record.lastUpdated asTimeAgo=true}}
+        </p>
+      </div>
+    {{/each}}
+  </div>
+  {{#if (eq modelStatus 'streaming')}}
+    <centered class="rsa-context-tooltip-records__wait">
+      {{rsa-loader}}
+    </centered>
+  {{/if}}
 {{/if}}

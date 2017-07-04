@@ -111,4 +111,11 @@ $contextTooltipDatumPadding: 0px;
     }
 
   }
+
+  &__error {
+    text-align: center;
+    padding: rsa-whitespace() 0;
+    color: rsa-color(gray, light);
+    font-style: italic;
+  }
 }

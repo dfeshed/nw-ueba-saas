@@ -20,6 +20,22 @@ const recordNameToTabMap = {
   Modules: 'Endpoint'
 };
 
+// Maps the dataSource name to the data type.
+// Used to determine whether to show a zero or hyphen when data is missing.
+const recordNameToDataTypeMap = {
+  DEFAULT: 'number',
+  Machines: 'string',
+  LiveConnect: 'string'
+};
+
+// Maps an entity type to the list of dataSource names that we expect to receive data from.
+// Used to layout the UI as we await data values to stream in from server.
+const entityTypeToRecordNamesMap = {
+  DEFAULT: ['Incidents', 'Alerts', 'LIST'],
+  IP: ['Incidents', 'Alerts', 'LIST', 'Machines', 'LiveConnect'],
+  HOST: ['Incidents', 'Alerts', 'LIST', 'Machines', 'LiveConnect']
+};
+
 const ContextTooltipRecords = Component.extend({
   tagName: 'section',
   classNames: ['rsa-context-tooltip-records'],
@@ -51,13 +67,70 @@ const ContextTooltipRecords = Component.extend({
    * given entity from the `context` service.  That data array will be streamed to this component's `modelSummary`
    * property, and can then be rendered in the UI.
    *
-   * @type {{key: String, value: *, lastUpdated: Number}[]}
+   * @type {{name: String, count: *, severity: *, lastUpdated: Number}[]}
    * @public
    */
   @computed('model')
   modelSummary(model = {}) {
     next(this, '_fetchSummary', model);
     return [];
+  },
+
+  /**
+   * Returns true if either the data fetch hit an error, or it completed with no data.
+   * @type {Boolean}
+   * @private
+   */
+  @computed('modelSummary.length', 'modelStatus')
+  isContextUnavailable(length, status) {
+    return (status === 'error') || ((status === 'complete') && !length);
+  },
+
+  /**
+   * Same data as `modelArray` but arranged in a particular order, and with zeroes or hyphens possibly inserted
+   * into the data if any expected values are missing.
+   *
+   * The array of values in `modelSummary` streams in from server; they don't necessarily arrive all at once.  In theory,
+   * we don't know exactly how many to expect because the number of data sources is configurable, but in practice for
+   * 11.0 our backend team knows how which data sources to expect per entity type. So the expected behavior is that
+   * once the fetch is complete, we should show all the expected data sources, including the ones that didn't return any
+   * data; and for those without data, we should show a zero (or hyphen for text values).
+   *
+   * @type {{name: String, count: *, severity: *, lastUpdated: Number}[]}
+   * @public
+   */
+  @computed('modelSummary.[]', 'modelStatus', 'model.type')
+  resolvedModelSummary(summary, status, type) {
+    summary = summary || [];
+
+    // Loop thru the expected data sources for this entity type.
+    const recordNames = entityTypeToRecordNamesMap[type] || entityTypeToRecordNamesMap.DEFAULT;
+    return recordNames
+      .map((name) => {
+
+        // Do we have data from this data source?
+        const found = summary.findBy('name', name);
+        if (found) {
+
+          // Yes we have the data. Include it in UI.
+          return found;
+        } else if (status !== 'streaming') {
+
+          // We don't have the data, and we are not awaiting anymore data.
+          // Show the data source in the UI anyway, along with a zero or hyphen (depending on data type).
+          const dataType = recordNameToDataTypeMap[name] || recordNameToDataTypeMap.DEFAULT;
+          return {
+            name,
+            count: (dataType === 'string') ? '-' : 0
+          };
+        } else {
+
+          // We don't have the data, but we are still streaming data.
+          // Don't show anything yet for this data source.
+          return null;
+        }
+      })
+      .compact();
   },
 
   /**
