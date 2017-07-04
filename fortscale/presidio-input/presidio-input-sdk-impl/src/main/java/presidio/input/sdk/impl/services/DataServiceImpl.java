@@ -8,6 +8,7 @@ import fortscale.utils.mongodb.util.ToCollectionNameTranslator;
 import presidio.input.sdk.impl.repositories.DataSourceRepository;
 import presidio.sdk.api.domain.DataService;
 import presidio.sdk.api.domain.DlpFileDataDocument;
+import presidio.input.sdk.impl.validators.ValidationManager;
 
 import java.time.Instant;
 import java.util.List;
@@ -18,16 +19,19 @@ public class DataServiceImpl implements DataService {
 
     private final DataSourceRepository dataSourceRepository;
     private final ToCollectionNameTranslator toCollectionNameTranslator;
+    private final ValidationManager validationManager;
 
-    public DataServiceImpl(DataSourceRepository dataSourceRepository, ToCollectionNameTranslator toCollectionNameTranslator) {
+    public DataServiceImpl(DataSourceRepository dataSourceRepository, ToCollectionNameTranslator toCollectionNameTranslator, ValidationManager validationManager) {
         this.dataSourceRepository = dataSourceRepository;
         this.toCollectionNameTranslator = toCollectionNameTranslator;
+        this.validationManager = validationManager;
     }
 
     @Override
     public boolean store(List<? extends AbstractAuditableDocument> documents, DataSource dataSource) {
         logger.debug("Storing {} documents.", documents.isEmpty() ? 0 : documents.size());
-        dataSourceRepository.insertDataSource(toCollectionNameTranslator.toCollectionName(dataSource), documents);
+        List<? extends AbstractAuditableDocument> validDocuments = validationManager.validate(documents);
+        dataSourceRepository.insertDataSource(toCollectionNameTranslator.toCollectionName(dataSource), validDocuments);
         return true;
     }
 
