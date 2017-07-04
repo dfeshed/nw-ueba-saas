@@ -9,6 +9,7 @@ import fortscale.ml.model.listener.ModelBuildingStatus;
 import fortscale.ml.model.store.ModelDAO;
 import fortscale.utils.mongodb.util.MongoDbUtilService;
 import fortscale.utils.monitoring.stats.config.NullStatsServiceConfig;
+import fortscale.utils.time.TimeRange;
 import fortscale.utils.time.TimestampUtils;
 import net.minidev.json.JSONObject;
 import org.junit.Assert;
@@ -70,7 +71,7 @@ public class ModelServiceTest {
 	@Autowired
 	private ModelService modelService;
 	@MockBean
-	private FeatureBucketsReaderService featureBucketsReaderService;
+	private FeatureBucketReader featureBucketReader;
 	@MockBean
 	private MongoTemplate mongoTemplate;
 
@@ -94,13 +95,11 @@ public class ModelServiceTest {
 	@Test
 	public void should_process_correctly_a_build_continuous_data_model_event() throws Exception {
 		long previousEndTimeInSeconds = 1420070400;
-		long previousEndTimeInMillis = TimestampUtils.convertToMilliSeconds(previousEndTimeInSeconds);
 		long currentEndTimeInSeconds = 1420070410;
-		long currentEndTimeInMillis = TimestampUtils.convertToMilliSeconds(currentEndTimeInSeconds);
+		TimeRange timeRange = new TimeRange(previousEndTimeInSeconds, currentEndTimeInSeconds);
 
 		Set<String> contextIds = Sets.newHashSet("id1", "id2");
-		when(featureBucketsReaderService.findDistinctContextByTimeRange(
-				selectorFeatureBucketConf, previousEndTimeInMillis, currentEndTimeInMillis)).thenReturn(contextIds);
+		when(featureBucketReader.getDistinctContextIds(selectorFeatureBucketConf, timeRange)).thenReturn(contextIds);
 
 		// ID #1, first bucket
 		GenericHistogram genericHistogram_1_1 = new GenericHistogram();
@@ -130,19 +129,21 @@ public class ModelServiceTest {
 		List<FeatureBucket> featureBuckets_1 = new ArrayList<>();
 		featureBuckets_1.add(createFeatureBucketWithGenericHistogram(featureName, genericHistogram_1_1));
 		featureBuckets_1.add(createFeatureBucketWithGenericHistogram(featureName, genericHistogram_1_2));
-		when(featureBucketsReaderService.getFeatureBucketsByContextIdAndTimeRange(
-				eq(retrieverFeatureBucketConf), eq("id1"), eq(previousEndTimeInSeconds), eq(currentEndTimeInSeconds), any(String.class), any(boolean.class), any())).thenReturn(featureBuckets_1);
+		when(featureBucketReader.getFeatureBuckets(
+				eq(retrieverFeatureBucketConf.getName()), eq(Collections.singleton("id1")), eq(timeRange), anyInt(), anyInt()))
+				.thenReturn(featureBuckets_1);
 
 		List<FeatureBucket> featureBuckets_2 = new ArrayList<>();
 		featureBuckets_2.add(createFeatureBucketWithGenericHistogram(featureName, genericHistogram_2_1));
 		featureBuckets_2.add(createFeatureBucketWithGenericHistogram(featureName, genericHistogram_2_2));
-		when(featureBucketsReaderService.getFeatureBucketsByContextIdAndTimeRange(
-				eq(retrieverFeatureBucketConf), eq("id2"), eq(previousEndTimeInSeconds), eq(currentEndTimeInSeconds), any(String.class),any(boolean.class), any())).thenReturn(featureBuckets_2);
+		when(featureBucketReader.getFeatureBuckets(
+				eq(retrieverFeatureBucketConf.getName()), eq(Collections.singleton("id2")), eq(timeRange), anyInt(), anyInt()))
+				.thenReturn(featureBuckets_2);
 
 		String sessionId = "test_session_id";
 		// Consistent with the name in the configuration
 		String modelConfName = "first_test_model_conf";
-		Date currentEndTime = new Date(currentEndTimeInMillis);
+		Date currentEndTime = new Date(TimestampUtils.convertToMilliSeconds(currentEndTimeInSeconds));
 		modelService.process(listener, sessionId, modelConfName, null, currentEndTime, Collections.emptySet());
 
 		// Assert listener

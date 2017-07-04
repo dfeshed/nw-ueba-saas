@@ -1,54 +1,101 @@
 package fortscale.aggregation.feature.bucket;
 
 
-import fortscale.common.event.EventMessage;
-import net.minidev.json.JSONObject;
+import fortscale.aggregation.feature.bucket.config.BucketConfigurationServiceConfig;
+import fortscale.aggregation.feature.functions.AggrFeatureFuncService;
+import fortscale.aggregation.feature.functions.IAggrFeatureFunctionsService;
+import fortscale.utils.recordreader.RecordReaderFactory;
+import fortscale.utils.recordreader.RecordReaderFactoryService;
+import fortscale.utils.recordreader.transformation.Transformation;
+import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import presidio.ade.domain.record.AdeRecordReader;
+import presidio.ade.domain.record.enriched.AdeEnrichedDlpFileContext;
+import presidio.ade.domain.record.enriched.EnrichedDlpFileRecord;
+import presidio.ade.domain.record.scored.AdeScoredRecordReaderFactory;
+import presidio.ade.domain.record.scored.enriched_scored.AdeScoredDlpFileRecord;
 
-import java.util.List;
+import java.time.Instant;
+import java.util.*;
 
 /**
  * Created by amira on 22/06/2015.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "classpath*:META-INF/spring/bucketconf-context-test.xml" })
-public class BucketConfigurationServiceTest  {
+@ContextConfiguration
+public class BucketConfigurationServiceTest {
 
     @Autowired
     BucketConfigurationService bch;
-    
+
     @Value("${impala.table.fields.data.source}")
     private String dataSourceFieldName;
 
+    private RecordReaderFactoryService recordReaderFactoryService;
+    private AdeScoredDlpFileRecord adeRecord;
+
+    @Before
+    public void initialize() {
+        featureBucketsServiceInitialize();
+        adeRecordInitialize();
+    }
+
+    public void featureBucketsServiceInitialize() {
+        IAggrFeatureFunctionsService aggrFeatureFunctionsService = new AggrFeatureFuncService();
+        Map<String, Transformation<?>> transformations = new HashMap<>();
+        Collection<RecordReaderFactory> recordReaderFactories = new ArrayList<>();
+        AdeScoredRecordReaderFactory adeScoredRecordReaderFactory = new AdeScoredRecordReaderFactory();
+        recordReaderFactories.add(adeScoredRecordReaderFactory);
+        recordReaderFactoryService = new RecordReaderFactoryService(recordReaderFactories, transformations);
+    }
+
+    public void adeRecordInitialize() {
+        adeRecord = new AdeScoredDlpFileRecord(Instant.now(), "date_time", 80.0, new ArrayList<>());
+        EnrichedDlpFileRecord enrichedDlpFileRecord = new EnrichedDlpFileRecord(Instant.now());
+        enrichedDlpFileRecord.setNormalized_username("normalized_username_test1");
+        AdeEnrichedDlpFileContext adeEnrichedDlpFileContext = new AdeEnrichedDlpFileContext(enrichedDlpFileRecord);
+        adeRecord.setContext(adeEnrichedDlpFileContext);
+    }
+
     @Test
     public void testGetRelatedBucketConfs() {
-        JSONObject event = new JSONObject();
+        AdeRecordReader reader = (AdeRecordReader) recordReaderFactoryService.getRecordReader(adeRecord);
+        List<String> contextFieldNames = new ArrayList<>();
+        contextFieldNames.add("context.normalizedUsername");
+        List<FeatureBucketConf> bc = bch.getRelatedBucketConfs(reader, "fixed_duration_hourly", contextFieldNames);
+        Assert.assertEquals(1, bc.size());
+        FeatureBucketConf fbc = bc.get(0);
+        Assert.assertEquals("normalized_username_dlpfile_hourly", fbc.getName());
+    }
 
-        event.put(dataSourceFieldName, "ssh");
-        List<FeatureBucketConf> bcl = bch.getRelatedBucketConfs(new EventMessage(event));
-        Assert.assertEquals(2, bcl.size());
-        FeatureBucketConf fbc = bcl.get(0);
-        Assert.assertEquals("bc1", fbc.getName());
-        fbc = bcl.get(1);
-        Assert.assertEquals("bc3", fbc.getName());
 
-        event.put(dataSourceFieldName, "vpn");
-        bcl = bch.getRelatedBucketConfs(new EventMessage(event));
-        Assert.assertEquals(2, bcl.size());
-        fbc = bcl.get(0);
-        Assert.assertEquals("bc2", fbc.getName());
-        fbc = bcl.get(1);
-        Assert.assertEquals("bc3", fbc.getName());
+    @Configuration
+    @Import({
+            BucketConfigurationServiceConfig.class
+    })
+    public static class springConfig {
 
-        event.put(dataSourceFieldName, "notexists");
-        bcl = bch.getRelatedBucketConfs(new EventMessage(event));
-        Assert.assertNull(bcl);
+        @Bean
+        public static TestPropertiesPlaceholderConfigurer abc() {
+            Properties properties = new Properties();
+            properties.put("impala.table.fields.data.source", "dlpfile");
+            properties.put("fortscale.aggregation.bucket.conf.json.file.name", "classpath:fortscale/config/asl/buckets/BucketConfigurationServiceTest.json");
+            properties.put("fortscale.aggregation.bucket.conf.json.overriding.files.path", "file:home/cloudera/fortscale/config/asl/buckets/overriding/*.json");
+            properties.put("fortscale.aggregation.bucket.conf.json.additional.files.path", "file:home/cloudera/fortscale/config/asl/buckets/overriding/*.json");
+
+            return new TestPropertiesPlaceholderConfigurer(properties);
+        }
+
     }
 }

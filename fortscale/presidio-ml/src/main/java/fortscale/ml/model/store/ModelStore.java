@@ -104,7 +104,7 @@ public class ModelStore {
         Query query = new Query();
         query.addCriteria(Criteria.where(ModelDAO.CONTEXT_ID_FIELD).is(contextId))
                 .addCriteria(Criteria.where(ModelDAO.END_TIME_FIELD).lte(eventTime).gte(oldestAllowedModelTime))
-                .with(new Sort(Direction.DESC)).limit(1);
+                .with(new Sort(Direction.DESC,ModelDAO.END_TIME_FIELD)).limit(1);
 
         logger.debug("fetching latest model dao for contextId={} eventTime={} collection={}",contextId,eventTime,collectionName);
 		List<ModelDAO> queryResult = mongoTemplate.find(query, ModelDAO.class, collectionName);

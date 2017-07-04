@@ -1,6 +1,7 @@
 package presidio.ade.domain.record.scored;
 
 import fortscale.domain.feature.score.FeatureScore;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.Indexed;
 import presidio.ade.domain.record.AdeRecord;
 
@@ -54,4 +55,8 @@ public abstract class AdeScoredRecord extends AdeRecord{
     public void setFeatureScoreList(List<FeatureScore> featureScoreList) {
         this.featureScoreList = featureScoreList;
     }
+
+    @Override
+    @Transient
+    public abstract String getDataSource();
 }

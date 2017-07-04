@@ -18,13 +18,13 @@ public class SimpleUserEventPaginationService extends PaginationService<SimpleUs
     }
 
     @Override
-    protected List<ContextIdToNumOfEvents> getContextIdToNumOfItemsList(String dataSource, TimeRange timeRange) {
+    protected List<ContextIdToNumOfItems> getContextIdToNumOfItemsList(String dataSource, TimeRange timeRange) {
 
         Map<String, List<SimpleUserEvent>> map = this.store.getSimpleUserEventsMap();
 
         Map<String, Integer> contextIdToNumOfItemsMap = map.entrySet().stream().collect(Collectors.toMap(entry -> entry.getKey(), entry -> entry.getValue().size()));
 
-        List<ContextIdToNumOfEvents> contextIdToNumOfItemsList = contextIdToNumOfItemsMap.entrySet().stream().map(x-> new ContextIdToNumOfEvents(x.getKey(),x.getValue())).collect(Collectors.toList());
+        List<ContextIdToNumOfItems> contextIdToNumOfItemsList = contextIdToNumOfItemsMap.entrySet().stream().map(x-> new ContextIdToNumOfItems(x.getKey(),x.getValue())).collect(Collectors.toList());
 
         return contextIdToNumOfItemsList;
     }
@@ -57,7 +57,7 @@ public class SimpleUserEventPaginationService extends PaginationService<SimpleUs
 
 
     @Override
-    protected void validateIndexes(String dataSource) {
+    protected void ensureContextAndDateTimeIndex(String dataSource) {
     }
 
 }

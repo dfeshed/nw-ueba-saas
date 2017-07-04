@@ -3,7 +3,7 @@ package fortscale.ml.scorer.params;
 import fortscale.domain.feature.score.FeatureScore;
 import fortscale.ml.scorer.Scorer;
 import fortscale.ml.scorer.config.IScorerConf;
-import presidio.ade.domain.record.AdeRecord;
+import presidio.ade.domain.record.AdeRecordReader;
 
 public interface ScorerParams {
     String getScorerConfJsonString();
@@ -11,7 +11,7 @@ public interface ScorerParams {
     default Scorer getScorer() {
         return new Scorer() {
             @Override
-            public FeatureScore calculateScore(AdeRecord record) {
+            public FeatureScore calculateScore(AdeRecordReader adeRecordReader) {
                 return null;
             }
 

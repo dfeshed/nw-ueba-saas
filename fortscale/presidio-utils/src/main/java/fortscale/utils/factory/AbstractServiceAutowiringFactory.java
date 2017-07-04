@@ -1,15 +1,20 @@
 package fortscale.utils.factory;
 
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
 
 public abstract class AbstractServiceAutowiringFactory<T> implements InitializingBean, Factory<T> {
-	@Autowired
 	protected FactoryService<T> factoryService;
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		factoryService.register(getFactoryName(), this);
+		//todo: change it to be non-spring
+//		factoryService.register(getFactoryName(), this);
+	}
+
+	public void registerFactoryService(FactoryService<T> factoryService) {
+		// todo: this is temporal and should be refactored
+		this.factoryService = factoryService;
+		this.factoryService.register(this.getFactoryName(),this);
 	}
 
 	public abstract String getFactoryName();

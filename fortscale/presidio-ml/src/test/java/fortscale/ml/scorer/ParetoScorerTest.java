@@ -2,10 +2,10 @@ package fortscale.ml.scorer;
 
 
 import fortscale.domain.feature.score.FeatureScore;
-import fortscale.ml.scorer.record.JsonAdeRecord;
+import fortscale.ml.scorer.record.TestAdeRecord;
 import org.junit.Assert;
 import org.junit.Test;
-import presidio.ade.domain.record.AdeRecord;
+import presidio.ade.domain.record.AdeRecordReader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +33,7 @@ public class ParetoScorerTest {
 
 
         @Override
-        public FeatureScore calculateScore(AdeRecord record) {
+        public FeatureScore calculateScore(AdeRecordReader adeRecordReader) {
             return new FeatureScore("SimpleTestScorer", score);
         }
     }
@@ -90,9 +90,12 @@ public class ParetoScorerTest {
     }
 
 
-    private void testScore(ParetoScorer scorer, AdeRecord eventMessage, ParetoScorerParams params, Double expectedScore) throws Exception {
+    private void testScore(
+            ParetoScorer scorer, AdeRecordReader adeRecordReader,
+            ParetoScorerParams params, Double expectedScore) throws Exception {
+
         assertScorerParams(params, scorer);
-        FeatureScore score = scorer.calculateScore(eventMessage);
+        FeatureScore score = scorer.calculateScore(adeRecordReader);
         Assert.assertNotNull(score);
         Assert.assertEquals(expectedScore, score.getScore(), delta);
     }
@@ -175,7 +178,7 @@ public class ParetoScorerTest {
                 .setHighestScoreWeight(0.8);
 
         ParetoScorer scorer = createParetoScorer(params);
-        testScore(scorer, JsonAdeRecord.getJsonAdeRecord("field1", "value1"), params, 98.0);
+        testScore(scorer, new TestAdeRecord().setField1("value1").getAdeRecordReader(), params, 98.0);
     }
 
     @Test
@@ -185,7 +188,7 @@ public class ParetoScorerTest {
                 .setHighestScoreWeight(0.7);
 
         ParetoScorer scorer = createParetoScorer(params);
-        testScore(scorer, JsonAdeRecord.getJsonAdeRecord("field1", "value1"), params, 63.0);
+        testScore(scorer, new TestAdeRecord().setField1("value1").getAdeRecordReader(), params, 63.0);
     }
 
 
@@ -197,7 +200,6 @@ public class ParetoScorerTest {
                 .setHighestScoreWeight(0.7);
 
         ParetoScorer scorer = createParetoScorer(params);
-        testScore(scorer, JsonAdeRecord.getJsonAdeRecord("field1", "value1"), params, 97.0);
+        testScore(scorer, new TestAdeRecord().setField1("value1").getAdeRecordReader(), params, 97.0);
     }
-
 }

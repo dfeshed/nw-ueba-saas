@@ -1,5 +1,6 @@
 package presidio.sdk.api.domain;
 
+import fortscale.common.general.DataSource;
 import fortscale.domain.core.AbstractAuditableDocument;
 
 import java.time.Instant;
@@ -10,11 +11,12 @@ import java.util.List;
  */
 public interface DataService {
 
-    boolean store(List<? extends AbstractAuditableDocument> documents);
+    boolean store(List<? extends AbstractAuditableDocument> documents, DataSource dataSource);
 
-    List<? extends AbstractAuditableDocument> find(Instant startDate, Instant endDate);
+    List<? extends AbstractAuditableDocument> find(Instant startDate, Instant endDate, DataSource dataSource);
 
-    int clean(Instant startDate, Instant endDate);
+    int clean(Instant startDate, Instant endDate, DataSource dataSource);
 
-    void cleanAll();
+    void cleanAll(DataSource dataSource);
+
 }

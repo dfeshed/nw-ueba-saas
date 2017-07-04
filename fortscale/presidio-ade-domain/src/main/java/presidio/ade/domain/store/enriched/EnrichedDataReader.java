@@ -1,7 +1,7 @@
 package presidio.ade.domain.store.enriched;
 
+import fortscale.utils.pagination.ContextIdToNumOfItems;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
-import fortscale.utils.pagination.ContextIdToNumOfEvents;
 
 import java.util.List;
 import java.util.Set;
@@ -16,9 +16,9 @@ public interface EnrichedDataReader {
      *
      * @param recordsMetadata describing the records (which data source, etc.)
      * @param contextType     type of context (e.g: NORMALIZED_USERNAME_FIELD, NORMALIZED_SRC_MACHINE_FIELD etc.)
-     * @return list of ContextIdToNumOfEvents object, ContextIdToNumOfEvents contains context ids and num of events.
+     * @return list of ContextIdToNumOfItems
      */
-    List<ContextIdToNumOfEvents> aggregateContextToNumOfEvents(EnrichedRecordsMetadata recordsMetadata, String contextType);
+    List<ContextIdToNumOfItems> aggregateContextToNumOfEvents(EnrichedRecordsMetadata recordsMetadata, String contextType);
 
     /**
      * Read data.
@@ -36,6 +36,5 @@ public interface EnrichedDataReader {
     /**
      * Validate that the query fields indexed in the store.
      */
-    void validateIndexes(String dataSource, String contextType);
-
+    void ensureContextAndDateTimeIndex(String dataSource, String contextType);
 }

@@ -8,7 +8,7 @@ import fortscale.ml.scorer.metrics.ScoringServiceMetrics;
 import fortscale.utils.factory.FactoryService;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.monitoring.stats.StatsService;
-import presidio.ade.domain.record.AdeRecord;
+import presidio.ade.domain.record.AdeRecordReader;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class ScoringService<T extends AdeRecord> {
+public class ScoringService {
 	private static final Logger logger = Logger.getLogger(ScoringService.class);
 
 	private ScorerConfService scorerConfService;
@@ -38,21 +38,20 @@ public class ScoringService<T extends AdeRecord> {
 		loadScorers();
 	}
 
-	public List<FeatureScore> score(T record) {
-		long dateTimeEpochSecond = record.getDate_time().getEpochSecond();
-		String dataSource = record.getAdeRecordType();
-		List<Scorer> dataSourceScorers = dataSourceToScorersMap.get(dataSource);
+	public List<FeatureScore> score(AdeRecordReader adeRecordReader) {
+		String dataSource = adeRecordReader.getDataSource();
 		ScoringServiceMetrics dataSourceMetrics = getDataSourceMetrics(dataSource);
-		dataSourceMetrics.calculateScoreTime = dateTimeEpochSecond;
+		dataSourceMetrics.calculateScoreTime = adeRecordReader.getDate_time().getEpochSecond();
+		List<Scorer> dataSourceScorers = dataSourceToScorersMap.get(dataSource);
 
 		if (dataSourceScorers == null || dataSourceScorers.isEmpty()) {
 			dataSourceMetrics.dataSourceScorerNotFound++;
-			logger.error("No defined scorers for data source {}. Record: {}.", dataSource, record);
+			logger.error("No defined scorers for data source {}. ADE record reader: {}.", dataSource, adeRecordReader);
 			return null;
 		}
 
 		return dataSourceScorers.stream()
-				.map(dataSourceScorer -> dataSourceScorer.calculateScore(record))
+				.map(dataSourceScorer -> dataSourceScorer.calculateScore(adeRecordReader))
 				.collect(Collectors.toList());
 	}
 

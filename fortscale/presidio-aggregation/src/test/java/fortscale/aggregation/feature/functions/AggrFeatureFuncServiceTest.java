@@ -11,6 +11,7 @@ import fortscale.common.util.GenericHistogram;
 import net.minidev.json.JSONObject;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,12 +23,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "classpath*:META-INF/spring/aggr-feature-service-context-test.xml" })
 public class AggrFeatureFuncServiceTest {
 
-    @Autowired
     AggrFeatureFuncService funcService;
+
+    @Before
+    public void initTest(){
+        funcService = new AggrFeatureFuncService();
+    }
 
     
     
@@ -233,7 +236,7 @@ public class AggrFeatureFuncServiceTest {
         //AggrFeatureFuncService funcService = new AggrFeatureFuncService();
         JSONObject jsonObject = new JSONObject();
         jsonObject.put(testFieldName, testFieldValue-1);
-        Map<String, Feature> updatedAggrFeatures = funcService.updateAggrFeatures(new EventMessage(jsonObject), aggrFeatureConfs, aggrFeatures, featureMap);
+        Map<String, Feature> updatedAggrFeatures = funcService.updateAggrFeatures(jsonObject, aggrFeatureConfs, aggrFeatures, featureMap);
 
         Assert.assertEquals(2, updatedAggrFeatures.size());
 
@@ -338,7 +341,7 @@ public class AggrFeatureFuncServiceTest {
         //AggrFeatureFuncService funcService = new AggrFeatureFuncService();
         JSONObject jsonObject = new JSONObject();
         jsonObject.put(testFieldName, testFieldValue-1);
-        Map<String, Feature> updatedAggrFeatures = funcService.updateAggrFeatures(new EventMessage(jsonObject), aggrFeatureConfs, aggrFeatures, featureMap);
+        Map<String, Feature> updatedAggrFeatures = funcService.updateAggrFeatures(jsonObject, aggrFeatureConfs, aggrFeatures, featureMap);
 
         Assert.assertEquals(2, updatedAggrFeatures.size());
 

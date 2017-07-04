@@ -6,7 +6,7 @@ import fortscale.ml.model.PersonalThresholdModel;
 import fortscale.ml.model.cache.EventModelsCacheService;
 import fortscale.ml.model.cache.ModelsCacheService;
 import fortscale.ml.scorer.config.IScorerConf;
-import fortscale.ml.scorer.record.JsonAdeRecord;
+import fortscale.ml.scorer.record.TestAdeRecord;
 import fortscale.utils.factory.FactoryService;
 import org.junit.Assert;
 import org.junit.Before;
@@ -16,12 +16,11 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
-import presidio.ade.domain.record.AdeRecord;
+import presidio.ade.domain.record.AdeRecordReader;
 
 import java.time.Instant;
 import java.util.Collections;
@@ -36,7 +35,6 @@ public class PersonalThresholdModelScorerTest {
 
     @Configuration
     @EnableSpringConfigured
-    @Import(ScorerTestsContext.class)
     static class ContextConfiguration {
         @Bean
         public FactoryService<Scorer> scorerFactoryService() {
@@ -84,7 +82,7 @@ public class PersonalThresholdModelScorerTest {
         new PersonalThresholdModelScorer(
                 null,
                 "model name",
-                Collections.singletonList("context field name"),
+                Collections.singletonList("context"),
                 baseScorerConf,
                 99999
         );
@@ -95,7 +93,7 @@ public class PersonalThresholdModelScorerTest {
         new PersonalThresholdModelScorer(
                 "scorer name",
                 "",
-                Collections.singletonList("context field name"),
+                Collections.singletonList("context"),
                 baseScorerConf,
                 99999
         );
@@ -117,7 +115,7 @@ public class PersonalThresholdModelScorerTest {
         new PersonalThresholdModelScorer(
                 "scorer name",
                 "model name",
-                Collections.singletonList("context field name"),
+                Collections.singletonList("context"),
                 null,
                 99999
         );
@@ -128,33 +126,33 @@ public class PersonalThresholdModelScorerTest {
         new PersonalThresholdModelScorer(
                 "scorer name",
                 "model name",
-                Collections.singletonList("context field name"),
+                Collections.singletonList("context"),
                 baseScorerConf,
                 0
         );
     }
 
-	private FeatureScore calculateScore(String featureScoreName,
-										FeatureScore baseScore,
-										PersonalThresholdModel personalThresholdModel,
-										Model baseScorerModel) throws Exception {
-		return calculateScore(featureScoreName,
-				baseScore,
-				personalThresholdModel,
-				baseScorerModel,
-				99999);
-	}
+    private FeatureScore calculateScore(String featureScoreName,
+                                        FeatureScore baseScore,
+                                        PersonalThresholdModel personalThresholdModel,
+                                        Model baseScorerModel) throws Exception {
+        return calculateScore(featureScoreName,
+                baseScore,
+                personalThresholdModel,
+                baseScorerModel,
+                99999);
+    }
 
     private FeatureScore calculateScore(String featureScoreName,
                                         FeatureScore baseScore,
                                         PersonalThresholdModel personalThresholdModel,
                                         Model baseScorerModel,
                                         double maxRatioFromUniformThreshold) throws Exception {
-        AdeRecord eventMessage = JsonAdeRecord.getJsonAdeRecord("context field name", "context field value");
+        AdeRecordReader adeRecordReader = new TestAdeRecord().setContext("context value").getAdeRecordReader();
         scorerFactoryService.register(baseScorerConf.getFactoryName(), factoryConfig -> baseScorer);
-        Mockito.when(baseScorer.calculateScore(eventMessage)).thenReturn(baseScore);
-        Mockito.when(baseScorer.getModel(eventMessage)).thenReturn(baseScorerModel);
-        List<String> contextFieldNames = Collections.singletonList("context field name");
+        Mockito.when(baseScorer.calculateScore(adeRecordReader)).thenReturn(baseScore);
+        Mockito.when(baseScorer.getModel(adeRecordReader)).thenReturn(baseScorerModel);
+        List<String> contextFieldNames = Collections.singletonList("context");
 
         when(modelsCacheService.getModel(
                 Mockito.anyString(),
@@ -168,7 +166,7 @@ public class PersonalThresholdModelScorerTest {
                 contextFieldNames,
                 baseScorerConf,
                 maxRatioFromUniformThreshold
-        ).calculateScore(eventMessage);
+        ).calculateScore(adeRecordReader);
     }
 
     @Test

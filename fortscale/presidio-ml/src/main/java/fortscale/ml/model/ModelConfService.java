@@ -18,9 +18,9 @@ public class ModelConfService extends AslConfigurationService {
 
 	@Value("${fortscale.model.configurations.location.path}")
 	private String modelConfigurationsLocationPath;
-	@Value("${fortscale.model.configurations.overriding.location.path}")
+	@Value("${fortscale.model.configurations.overriding.location.path:#{null}}")
 	private String modelConfigurationsOverridingLocationPath;
-	@Value("${fortscale.model.configurations.additional.location.path}")
+	@Value("${fortscale.model.configurations.additional.location.path:#{null}}")
 	private String modelConfigurationsAdditionalLocationPath;
 
 	private List<ModelConf> modelConfs = new ArrayList<>();
