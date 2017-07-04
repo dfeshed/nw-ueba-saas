@@ -152,7 +152,7 @@ class Deploy_Manager:
 
         for version in versions_list:
             self.add_log(log_string='Checking installed version before executing migration steps', log_level='info')
-            if (self.current_version.version_description.major < version.version_description.major) or (self.current_version.version_description.major == ersion.version_description.major and self.current_version.version_description.minor < version.version_description.minor) or (self.current_version.version_description.major == ersion.version_description.major and self.current_version.version_description.minor == version.version_description.minor and self.current_version.version_description.build < args.build) or (self.current_version.version_description.major == ersion.version_description.major and self.current_version.version_description.minor == version.version_description.minor and args.build == 0):
+            if (self.current_version.version_description.major < version.version_description.major) or (self.current_version.version_description.major == version.version_description.major and self.current_version.version_description.minor < version.version_description.minor) or (self.current_version.version_description.major == version.version_description.major and self.current_version.version_description.minor == version.version_description.minor and self.current_version.version_description.build < args.build) or (self.current_version.version_description.major == version.version_description.major and self.current_version.version_description.minor == version.version_description.minor and args.build == 0):
                 """ 
                 execute vresion migration scripts
                 """
