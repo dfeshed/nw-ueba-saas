@@ -6,17 +6,17 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.annotation.Version;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import javax.validation.constraints.NotNull;
+import java.time.Instant;
 
 
-
-
-
-public class AbstractAuditableDocument extends AbstractDocument {
+public abstract class AbstractAuditableDocument extends AbstractDocument {
 	private static final long serialVersionUID = -4585812347688862037L;
 
 	public static final String VERSION_FIELD_NAME = "version";
 	public static final String LAST_MODIFIED_FIELD_NAME = "lastModified";
 	public static final String CREATED_AT_FIELD_NAME = "createdAt";
+	public static final String DATE_TIME_FIELD_NAME = "dateTime";
 	
 
 	@Version
@@ -30,6 +30,10 @@ public class AbstractAuditableDocument extends AbstractDocument {
 	@LastModifiedDate
 	@Field(LAST_MODIFIED_FIELD_NAME)
     private DateTime lastModified;
+
+	@Field(DATE_TIME_FIELD_NAME)
+	@NotNull
+	protected Instant dateTime;
 
 	@Override
 	public String toString() {
@@ -53,5 +57,9 @@ public class AbstractAuditableDocument extends AbstractDocument {
 	public DateTime getLastModified() {
 		return lastModified;
 	}
-     
+
+	public Instant getDateTime() {
+		return dateTime;
+	}
+
 }

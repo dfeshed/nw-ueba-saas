@@ -3,21 +3,23 @@ package presidio.sdk.api.domain;
 
 import fortscale.domain.core.AbstractAuditableDocument;
 import fortscale.utils.logging.Logger;
-import fortscale.utils.time.TimestampUtils;
+import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
+import presidio.sdk.api.validation.AcceptableValues;
+import presidio.sdk.api.validation.NotEmptyIfAnotherFieldHasValue;
 
 import java.time.Instant;
 
-import static presidio.sdk.api.domain.DlpFileDataDocument.COLLECTION_NAME;
 
-
-@Document(collection = COLLECTION_NAME)
+@Document
+@NotEmptyIfAnotherFieldHasValue(fieldName = DlpFileDataDocument.EVENT_TYPE_FIELD_NAME, fieldValues = {DlpFileDataDocument.COPY_EVENT_TYPE, DlpFileDataDocument.MOVE_EVENT_TYPE, DlpFileDataDocument.RECYCLE_EVENT_TYPE}, dependFieldName = DlpFileDataDocument.DESTINATION_PATH_FIELD_NAME)
+@NotEmptyIfAnotherFieldHasValue(fieldName = DlpFileDataDocument.EVENT_TYPE_FIELD_NAME, fieldValues = {DlpFileDataDocument.COPY_EVENT_TYPE, DlpFileDataDocument.MOVE_EVENT_TYPE, DlpFileDataDocument.RECYCLE_EVENT_TYPE}, dependFieldName = DlpFileDataDocument.DESTINATION_FILE_NAME_FIELD_NAME)
+@NotEmptyIfAnotherFieldHasValue(fieldName = DlpFileDataDocument.EVENT_TYPE_FIELD_NAME, fieldValues = {DlpFileDataDocument.COPY_EVENT_TYPE, DlpFileDataDocument.MOVE_EVENT_TYPE, DlpFileDataDocument.RECYCLE_EVENT_TYPE, DlpFileDataDocument.DELET_EVENT_TYPE}, dependFieldName = DlpFileDataDocument.SOURCE_PATH_FIELD_NAME)
+@NotEmptyIfAnotherFieldHasValue(fieldName = DlpFileDataDocument.EVENT_TYPE_FIELD_NAME, fieldValues = {DlpFileDataDocument.COPY_EVENT_TYPE, DlpFileDataDocument.MOVE_EVENT_TYPE, DlpFileDataDocument.RECYCLE_EVENT_TYPE, DlpFileDataDocument.DELET_EVENT_TYPE}, dependFieldName = DlpFileDataDocument.SOURCE_FILE_NAME_FIELD_NAME)
 public class DlpFileDataDocument extends AbstractAuditableDocument {
 
-    public static final String COLLECTION_NAME = "dlpfile_stored_data";
     public static final String DATE_TIME_UNIX_FIELD_NAME = "dateTimeUnix";
-    public static final String DATE_TIME_FIELD_NAME = "dateTime";
     public static final String EXECUTING_APPLICATION_FIELD_NAME = "executingApplication";
     public static final String HOSTNAME_FIELD_NAME = "hostname";
     public static final String FIRST_NAME_FIELD_NAME = "firstName";
@@ -36,17 +38,21 @@ public class DlpFileDataDocument extends AbstractAuditableDocument {
     public static final String SOURCE_DRIVE_TYPE_FIELD_NAME = "sourceDriveType";
     public static final String DESTINATION_DRIVE_TYPE_FIELD_NAME = "destinationDriveType";
     public static final String EVENT_TYPE_FIELD_NAME = "eventType";
+
+    public static final String COPY_EVENT_TYPE = "copy";
+    public static final String MOVE_EVENT_TYPE = "move";
+    public static final String RECYCLE_EVENT_TYPE = "recycle";
+    public static final String DELET_EVENT_TYPE = "delete";
+
     private static final Logger logger = Logger.getLogger(DlpFileDataDocument.class);
     @Field(DATE_TIME_UNIX_FIELD_NAME)
     protected long dateTimeUnix;
-
-    @Field(DATE_TIME_FIELD_NAME)
-    protected Instant dateTime;
 
     @Field(EXECUTING_APPLICATION_FIELD_NAME)
     protected String executingApplication;
 
     @Field(HOSTNAME_FIELD_NAME)
+    @NotEmpty
     protected String hostname;
 
     @Field(FIRST_NAME_FIELD_NAME)
@@ -56,12 +62,14 @@ public class DlpFileDataDocument extends AbstractAuditableDocument {
     protected String lastName;
 
     @Field(USERNAME_FIELD_NAME)
+    @NotEmpty
     protected String username;
 
     @Field(MALWARE_SCAN_RESULT_FIELD_NAME)
     protected String malwareScanResult;
 
     @Field(EVENT_ID_FIELD_NAME)
+    @NotEmpty
     protected String eventId;
 
     @Field(SOURCE_IP_FIELD_NAME)
@@ -95,6 +103,8 @@ public class DlpFileDataDocument extends AbstractAuditableDocument {
     protected String destinationDriveType;
 
     @Field(EVENT_TYPE_FIELD_NAME)
+    @NotEmpty
+    @AcceptableValues(fieldValues = {DlpFileDataDocument.COPY_EVENT_TYPE, DlpFileDataDocument.MOVE_EVENT_TYPE, DlpFileDataDocument.RECYCLE_EVENT_TYPE, DlpFileDataDocument.DELET_EVENT_TYPE})
     protected String eventType;
 
 
@@ -124,14 +134,6 @@ public class DlpFileDataDocument extends AbstractAuditableDocument {
 
     protected DlpFileDataDocument() {
 
-    }
-
-    public Instant getDateTime() {
-        return dateTime;
-    }
-
-    public void setDateTime(Instant dateTime) {
-        this.dateTime = dateTime;
     }
 
     public long getDateTimeUnix() {

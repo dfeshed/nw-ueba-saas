@@ -6,8 +6,7 @@ import fortscale.ml.model.ScoreMappingModel;
 import fortscale.ml.model.cache.EventModelsCacheService;
 import fortscale.ml.model.cache.ModelsCacheService;
 import fortscale.ml.scorer.config.IScorerConf;
-import fortscale.ml.scorer.record.JsonAdeRecord;
-import fortscale.ml.scorer.record.JsonAdeRecordReader;
+import fortscale.ml.scorer.record.TestAdeRecord;
 import fortscale.utils.factory.FactoryService;
 import org.junit.Assert;
 import org.junit.Before;
@@ -17,11 +16,11 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
+import presidio.ade.domain.record.AdeRecordReader;
 
 import java.time.Instant;
 import java.util.Collections;
@@ -38,7 +37,6 @@ public class ModelBasedScoreMapperTest {
 
     @Configuration
     @EnableSpringConfigured
-    @Import(ScorerTestsContext.class)
     static class ContextConfiguration {
         @Bean
         public FactoryService<Scorer> scorerFactoryService() {
@@ -87,7 +85,7 @@ public class ModelBasedScoreMapperTest {
         new ModelBasedScoreMapper(
                 null,
                 "model name",
-                Collections.singletonList("context field name"),
+                Collections.singletonList("context"),
                 "feature name",
                 baseScorerConf,
                 scorerFactoryService, eventModelsCacheService);
@@ -98,7 +96,7 @@ public class ModelBasedScoreMapperTest {
         new ModelBasedScoreMapper(
                 "scorer name",
                 "model name",
-                Collections.singletonList("context field name"),
+                Collections.singletonList("context"),
                 "",
                 baseScorerConf,
                 scorerFactoryService, eventModelsCacheService);
@@ -109,7 +107,7 @@ public class ModelBasedScoreMapperTest {
         new ModelBasedScoreMapper(
                 "scorer name",
                 "",
-                Collections.singletonList("context field name"),
+                Collections.singletonList("context"),
                 "feature name",
                 baseScorerConf,
                 scorerFactoryService, eventModelsCacheService);
@@ -131,7 +129,7 @@ public class ModelBasedScoreMapperTest {
         new ModelBasedScoreMapper(
                 "scorer name",
                 "model name",
-                Collections.singletonList("context field name"),
+                Collections.singletonList("context"),
                 "feature name",
                 null,
                 scorerFactoryService, eventModelsCacheService);
@@ -140,18 +138,18 @@ public class ModelBasedScoreMapperTest {
     private FeatureScore calculateScore(String featureScoreName,
                                         FeatureScore baseScore,
                                         Model model) throws Exception {
-        JsonAdeRecordReader jsonAdeRecordReader = new JsonAdeRecordReader(JsonAdeRecord.getJsonAdeRecord("context field name", "feature name"));
+        AdeRecordReader adeRecordReader = new TestAdeRecord().setContext("context value").getAdeRecordReader();
         scorerFactoryService.register(baseScorerConf.getFactoryName(), factoryConfig -> baseScorer);
-        when(baseScorer.calculateScore(eq(jsonAdeRecordReader))).thenReturn(baseScore);
+        when(baseScorer.calculateScore(eq(adeRecordReader))).thenReturn(baseScore);
         when(modelsCacheService.getModel(anyString(), anyMapOf(String.class, String.class), any(Instant.class))).thenReturn(model);
 
         return new ModelBasedScoreMapper(
                 featureScoreName,
                 "model name",
-                Collections.singletonList("context field name"),
+                Collections.singletonList("context"),
                 "feature name",
                 baseScorerConf,
-                scorerFactoryService, eventModelsCacheService).calculateScore(jsonAdeRecordReader);
+                scorerFactoryService, eventModelsCacheService).calculateScore(adeRecordReader);
     }
 
     @Test

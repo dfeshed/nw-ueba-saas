@@ -39,7 +39,7 @@ public class ScoringService {
 	}
 
 	public List<FeatureScore> score(AdeRecordReader adeRecordReader) {
-		String dataSource = adeRecordReader.getAdeRecordType();
+		String dataSource = adeRecordReader.getDataSource();
 		ScoringServiceMetrics dataSourceMetrics = getDataSourceMetrics(dataSource);
 		dataSourceMetrics.calculateScoreTime = adeRecordReader.getDate_time().getEpochSecond();
 		List<Scorer> dataSourceScorers = dataSourceToScorersMap.get(dataSource);

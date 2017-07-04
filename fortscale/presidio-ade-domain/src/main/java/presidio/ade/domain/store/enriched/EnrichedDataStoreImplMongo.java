@@ -4,40 +4,38 @@ package presidio.ade.domain.store.enriched;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import fortscale.utils.logging.Logger;
-import org.springframework.data.domain.Sort;
+import fortscale.utils.pagination.ContextIdToNumOfItems;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.index.CompoundIndexDefinition;
-import org.springframework.data.mongodb.core.index.Index;
-import org.springframework.data.mongodb.core.index.IndexDirection;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.util.ReflectionUtils;
 import presidio.ade.domain.record.AdeRecord;
-import fortscale.utils.pagination.ContextIdToNumOfEvents;
 import presidio.ade.domain.record.enriched.DataSourceToAdeEnrichedRecordClassResolver;
-import presidio.ade.domain.record.enriched.EnrichedDlpFileRecord;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.ade.domain.store.AdeDataStoreCleanupParams;
 
-import static org.springframework.data.mongodb.core.aggregation.Aggregation.newAggregation;
-import static org.springframework.data.mongodb.core.aggregation.Aggregation.match;
-import static org.springframework.data.mongodb.core.query.Criteria.where;
-
-import org.springframework.util.ReflectionUtils;
-
 import java.lang.reflect.Field;
 import java.time.Instant;
-import java.util.*;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
+
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.match;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.newAggregation;
+import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 public class EnrichedDataStoreImplMongo implements EnrichedDataStore {
     private static final Logger logger = Logger.getLogger(EnrichedDataStoreImplMongo.class);
 
     private final MongoTemplate mongoTemplate;
-    private final EnrichedDataToCollectionNameTranslator translator;
+    private final EnrichedDataAdeToCollectionNameTranslator translator;
     private final DataSourceToAdeEnrichedRecordClassResolver dataSourceToAdeEnrichedRecordClassResolver;
 
-    public EnrichedDataStoreImplMongo(MongoTemplate mongoTemplate, EnrichedDataToCollectionNameTranslator translator, DataSourceToAdeEnrichedRecordClassResolver dataSourceToAdeEnrichedRecordClassResolver) {
+    public EnrichedDataStoreImplMongo(MongoTemplate mongoTemplate, EnrichedDataAdeToCollectionNameTranslator translator, DataSourceToAdeEnrichedRecordClassResolver dataSourceToAdeEnrichedRecordClassResolver) {
         this.mongoTemplate = mongoTemplate;
         this.translator = translator;
         this.dataSourceToAdeEnrichedRecordClassResolver = dataSourceToAdeEnrichedRecordClassResolver;
@@ -94,7 +92,7 @@ public class EnrichedDataStoreImplMongo implements EnrichedDataStore {
 
 
     @Override
-    public List<ContextIdToNumOfEvents> aggregateContextToNumOfEvents(EnrichedRecordsMetadata recordsMetadata, String contextType) {
+    public List<ContextIdToNumOfItems> aggregateContextToNumOfEvents(EnrichedRecordsMetadata recordsMetadata, String contextType) {
 
         Instant startDate = recordsMetadata.getStartInstant();
         Instant endDate = recordsMetadata.getEndInstant();
@@ -110,15 +108,13 @@ public class EnrichedDataStoreImplMongo implements EnrichedDataStore {
         //Create Aggregation on context ids
         Aggregation agg = newAggregation(
                 match(where(EnrichedRecord.DATE_TIME_FIELD).gte(Date.from(startDate)).lt(Date.from(endDate))),
-                Aggregation.group(fieldName).count().as(ContextIdToNumOfEvents.TOTAL_NUM_OF_EVENTS_FIELD),
-                Aggregation.project(ContextIdToNumOfEvents.TOTAL_NUM_OF_EVENTS_FIELD).and("_id").as(ContextIdToNumOfEvents.CONTEXT_ID_FIELD).andExclude("_id")
+                Aggregation.group(fieldName).count().as(ContextIdToNumOfItems.TOTAL_NUM_OF_ITEMS_FIELD),
+                Aggregation.project(ContextIdToNumOfItems.TOTAL_NUM_OF_ITEMS_FIELD).and("_id").as(ContextIdToNumOfItems.CONTEXT_ID_FIELD).andExclude("_id")
         );
 
-        AggregationResults<ContextIdToNumOfEvents> result = mongoTemplate.aggregate(agg, collectionName, ContextIdToNumOfEvents.class);
-        //Create list of ContextIdToNumOfEvents, which contain contextId and totalNumOfEvents
-        List<ContextIdToNumOfEvents> enrichedRecordList = result.getMappedResults();
-
-        return enrichedRecordList;
+        AggregationResults<ContextIdToNumOfItems> result = mongoTemplate.aggregate(agg, collectionName, ContextIdToNumOfItems.class);
+        //Create list of ContextIdToNumOfItems, which contain contextId and totalNumOfEvents
+        return result.getMappedResults();
     }
 
     /**
@@ -152,7 +148,7 @@ public class EnrichedDataStoreImplMongo implements EnrichedDataStore {
 
     /**
      * Get field name
-     * If annotation exist return field name of annotation
+     * If annotation exist return field name of annotation, otherwise return original field name.
      *
      * @param pojoClass class that contain the field
      * @param name      - field name

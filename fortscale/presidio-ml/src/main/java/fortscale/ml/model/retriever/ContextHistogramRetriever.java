@@ -10,19 +10,20 @@ import fortscale.ml.model.exceptions.InvalidFeatureNameException;
 import fortscale.ml.model.retriever.function.IDataRetrieverFunction;
 import fortscale.ml.model.retriever.metrics.ContextHistogramRetrieverMetrics;
 import fortscale.utils.monitoring.stats.StatsService;
+import fortscale.utils.time.TimeRange;
 import fortscale.utils.time.TimestampUtils;
+import org.springframework.beans.factory.annotation.Autowire;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.util.Assert;
 
 import java.util.*;
 
-@Configurable(preConstruction = true)
+@Configurable(preConstruction = true, autowire = Autowire.BY_TYPE)
 public class ContextHistogramRetriever extends AbstractDataRetriever {
-	@Autowired
 	private BucketConfigurationService bucketConfigurationService;
-	@Autowired
-	private FeatureBucketsReaderService featureBucketsReaderService;
+	private FeatureBucketReader featureBucketReader;
+
 	@Autowired
 	private StatsService statsService;
 
@@ -30,14 +31,20 @@ public class ContextHistogramRetriever extends AbstractDataRetriever {
 	private String featureName;
 	private ContextHistogramRetrieverMetrics metrics;
 
-    public ContextHistogramRetriever(ContextHistogramRetrieverConf config) {
-        super(config);
-        String featureBucketConfName = config.getFeatureBucketConfName();
-        featureBucketConf = bucketConfigurationService.getBucketConf(featureBucketConfName);
-        featureName = config.getFeatureName();
-        metrics = new ContextHistogramRetrieverMetrics(statsService, featureBucketConfName, featureName);
-        validate(config);
-    }
+	public ContextHistogramRetriever(
+			ContextHistogramRetrieverConf config,
+			BucketConfigurationService bucketConfigurationService,
+			FeatureBucketReader featureBucketReader) {
+
+		super(config);
+		this.bucketConfigurationService = bucketConfigurationService;
+		this.featureBucketReader = featureBucketReader;
+		String featureBucketConfName = config.getFeatureBucketConfName();
+		featureBucketConf = this.bucketConfigurationService.getBucketConf(featureBucketConfName);
+		featureName = config.getFeatureName();
+		metrics = new ContextHistogramRetrieverMetrics(statsService, featureBucketConfName, featureName);
+		validate(config);
+	}
 
 	@Override
 	public ModelBuilderData retrieve(String contextId, Date endTime) {
@@ -66,7 +73,7 @@ public class ContextHistogramRetriever extends AbstractDataRetriever {
 	@Override
 	public String getContextId(Map<String, String> context) {
 		metrics.getContextId++;
-		Assert.notEmpty(context);
+		Assert.notEmpty(context, "context cannot be empty.");
 		return FeatureBucketUtils.buildContextId(context);
 	}
 
@@ -74,21 +81,10 @@ public class ContextHistogramRetriever extends AbstractDataRetriever {
 		long endTimeInSeconds = TimestampUtils.convertToSeconds(endTime.getTime());
 		long startTimeInSeconds = endTimeInSeconds - timeRangeInSeconds;
 
-		String fieldPath = FeatureBucket.AGGREGATED_FEATURES_FIELD_NAME + "." + featureName;
-		if (featureValue != null) fieldPath += ".value.histogram." + featureValue;
-
-		List<String> additionalFieldsToInclude = new ArrayList<>();
-		boolean fieldMustExist = false;
-
-		if (featureValue != null) {
-			additionalFieldsToInclude.add(fieldPath + ".value._class");
-			fieldPath += ".value.histogram." + featureValue;
-			fieldMustExist = true;
-		}
-
-		List<FeatureBucket> featureBuckets = featureBucketsReaderService.getFeatureBucketsByContextIdAndTimeRange(
-				featureBucketConf, contextId, startTimeInSeconds, endTimeInSeconds,
-				fieldPath, fieldMustExist, additionalFieldsToInclude);
+		// TODO
+		List<FeatureBucket> featureBuckets = featureBucketReader.getFeatureBuckets(
+				featureBucketConf.getName(), Collections.singleton(contextId),
+				new TimeRange(startTimeInSeconds, endTimeInSeconds), 0, 1000);
 
 		metrics.featureBuckets += featureBuckets.size();
 		GenericHistogram reductionHistogram = new GenericHistogram();

@@ -2,7 +2,6 @@ package fortscale.ml.scorer.factory;
 
 import fortscale.domain.feature.score.FeatureScore;
 import fortscale.ml.model.ModelConfService;
-import fortscale.ml.model.cache.ModelsCacheService;
 import fortscale.ml.scorer.FieldValueScoreReducerScorer;
 import fortscale.ml.scorer.Scorer;
 import fortscale.ml.scorer.config.FieldValueScoreReducerScorerConf;
@@ -19,19 +18,15 @@ import org.springframework.test.context.junit4.SpringRunner;
 import presidio.ade.domain.record.AdeRecordReader;
 
 @RunWith(SpringRunner.class)
-@ContextConfiguration(locations = {"classpath*:META-INF/spring/scorer-factory-tests-context.xml"})
+@ContextConfiguration(classes = { ScorerFactoriesTestConfig.class})
 public class FieldValueScoreReducerScorerFactoryTest {
     @MockBean
-    ModelConfService modelConfService;
-
-    @MockBean
-    ModelsCacheService modelCacheService;
+    private ModelConfService modelConfService;
+    @Autowired
+    private FieldValueScoreReducerScorerFactory fieldValueScoreReducerScorerFactory;
 
     @Autowired
-    FieldValueScoreReducerScorerFactory fieldValueScoreReducerScorerFactory;
-
-    @Autowired
-    FactoryService<Scorer> scorerFactoryService;
+    private FactoryService<Scorer> scorerFactoryService;
 
     @Test(expected = IllegalArgumentException.class)
     public void confNotOfExpectedType() {

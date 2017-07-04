@@ -1,7 +1,6 @@
 package fortscale.ml.scorer.factory;
 
 import fortscale.ml.model.ModelConfService;
-import fortscale.ml.model.cache.ModelsCacheService;
 import fortscale.ml.scorer.ConstantRegexScorer;
 import fortscale.ml.scorer.Scorer;
 import fortscale.ml.scorer.config.ConstantRegexScorerConf;
@@ -16,14 +15,10 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
-@ContextConfiguration(locations = {"classpath*:META-INF/spring/scorer-factory-tests-context.xml"})
+@ContextConfiguration(classes = { ScorerFactoriesTestConfig.class})
 public class ConstantRegexScorerFactoryTest {
     @MockBean
-    ModelConfService modelConfService;
-
-    @MockBean
-    ModelsCacheService modelCacheService;
-
+    private ModelConfService modelConfService;
     @Autowired
     ConstantRegexScorerFactory constantRegexScorerFactory;
 

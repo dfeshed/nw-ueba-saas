@@ -9,7 +9,8 @@ import fortscale.ml.model.ModelConf;
 import fortscale.ml.model.ModelConfService;
 import fortscale.ml.model.ScoreMappingModel;
 import fortscale.ml.model.builder.IModelBuilderConf;
-import fortscale.ml.model.cache.ModelsCacheService;
+import fortscale.ml.model.cache.EventModelsCacheService;
+import fortscale.ml.model.config.ContextSelectorFactoryConfig;
 import fortscale.ml.model.retriever.AbstractDataRetriever;
 import fortscale.ml.model.retriever.AbstractDataRetrieverConf;
 import fortscale.ml.model.selector.IContextSelector;
@@ -19,8 +20,7 @@ import fortscale.ml.scorer.Scorer;
 import fortscale.ml.scorer.config.IScorerConf;
 import fortscale.ml.scorer.config.ModelBasedScoreMapperConf;
 import fortscale.ml.scorer.config.ModelInfo;
-import fortscale.ml.scorer.record.JsonAdeRecord;
-import fortscale.ml.scorer.record.JsonAdeRecordReader;
+import fortscale.ml.scorer.record.TestAdeRecord;
 import fortscale.utils.factory.FactoryService;
 import org.junit.Assert;
 import org.junit.Before;
@@ -34,23 +34,22 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import presidio.ade.domain.record.AdeRecordReader;
 
-import java.time.Instant;
 import java.util.*;
 
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
-@ContextConfiguration(locations = "classpath*:META-INF/spring/scorer-factory-tests-context.xml")
+@ContextConfiguration(classes = {ContextSelectorFactoryConfig.class,ScorerFactoriesTestConfig.class})
 public class ModelBasedScoreMapperFactoryTest {
 	@MockBean
-	ModelConfService modelConfService;
-
-	@MockBean
-	ModelsCacheService modelCacheService;
+	private ModelConfService modelConfService;
 
 	@Autowired
-	ModelBasedScoreMapperFactory modelBasedScoreMapperFactory;
+	private EventModelsCacheService modelCacheService;
+
+	@Autowired
+	private ModelBasedScoreMapperFactory modelBasedScoreMapperFactory;
 
 	@Autowired
 	private FactoryService<Scorer> scorerFactoryService;
@@ -110,7 +109,7 @@ public class ModelBasedScoreMapperFactoryTest {
 				modelBuilderConf
 		);
 		when(modelConfService.getModelConf(modelName)).thenReturn(modelConf);
-		String contextFieldName = "context field name";
+		String contextFieldName = "context";
 
 		dataRetrieverFactoryService.register(modelConf.getDataRetrieverConf().getFactoryName(),
 				factoryConfig -> new AbstractDataRetriever(dataRetrieverConf) {
@@ -147,7 +146,7 @@ public class ModelBasedScoreMapperFactoryTest {
 
 		ScoreMappingModel model = new ScoreMappingModel();
 		model.init(mapping);
-		when(modelCacheService.getModel(Mockito.anyString(), Mockito.anyMapOf(String.class, String.class), Mockito.any(Instant.class))).thenReturn(model);
+		when(modelCacheService.getModel(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(model);
 		return modelBasedScoreMapperFactory.getProduct(conf);
 	}
 
@@ -171,7 +170,7 @@ public class ModelBasedScoreMapperFactoryTest {
 
 	@Test
 	public void shouldDelegateToBaseScorerStatedByConfiguration() throws Exception {
-		AdeRecordReader adeRecordReader = new JsonAdeRecordReader(JsonAdeRecord.getJsonAdeRecord("context field name", "context value"));
+		AdeRecordReader adeRecordReader = new TestAdeRecord().setContext("context value").getAdeRecordReader();
 		double score = 56;
 		Mockito.when(baseScorerMock.calculateScore(eq(adeRecordReader))).thenReturn(new FeatureScore("name", score));
 		Assert.assertEquals(score, createScorer().calculateScore(adeRecordReader).getScore(), 0.0001);
@@ -179,7 +178,7 @@ public class ModelBasedScoreMapperFactoryTest {
 
 	@Test
 	public void shouldUseScoreMappingModelStatedByConfiguration() throws Exception {
-		AdeRecordReader adeRecordReader = new JsonAdeRecordReader(JsonAdeRecord.getJsonAdeRecord("context field name", "context value"));
+		AdeRecordReader adeRecordReader = new TestAdeRecord().setContext("context value").getAdeRecordReader();
 		double score = 56;
 		Mockito.when(baseScorerMock.calculateScore(eq(adeRecordReader))).thenReturn(new FeatureScore("name", score));
 		HashMap<Double, Double> mapping = new HashMap<>();

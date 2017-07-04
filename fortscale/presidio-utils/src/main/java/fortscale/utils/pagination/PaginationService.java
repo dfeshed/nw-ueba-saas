@@ -1,6 +1,5 @@
 package fortscale.utils.pagination;
 
-import fortscale.utils.process.metrics.jvm.impl.JVMMetricsServiceImpl;
 import fortscale.utils.time.TimeRange;
 import javafx.util.Pair;
 
@@ -43,7 +42,7 @@ public abstract class PaginationService<T> {
      * Create pageIterator for each group.
      *
      * @param dataSource data source name
-     * @param timeRange
+     * @param timeRange  the time range
      * @return list of PageIterators
      */
     public <U extends T> List<PageIterator<U>> getPageIterators(String dataSource, TimeRange timeRange) {
@@ -51,9 +50,9 @@ public abstract class PaginationService<T> {
         //Validate if indexes exist, otherwise add them.
         ensureContextAndDateTimeIndex(dataSource);
 
-        List<ContextIdToNumOfEvents> contextIdToNumOfEventsList = getContextIdToNumOfItemsList(dataSource, timeRange);
+        List<ContextIdToNumOfItems> contextIdToNumOfItemsList = getContextIdToNumOfItemsList(dataSource, timeRange);
         //groups is a list, where each group contains pair of total num of events and set of contextId.
-        List<Pair<Integer, Set<String>>> groups = getGroups(contextIdToNumOfEventsList);
+        List<Pair<Integer, Set<String>>> groups = getGroups(contextIdToNumOfItemsList);
         List<PageIterator<U>> pageIteratorList = new ArrayList<>(groups.size());
 
         //create pageIterator of each group
@@ -72,16 +71,16 @@ public abstract class PaginationService<T> {
      * Create map of context ids and num of events based on timeRange and dataSource.
      *
      * @param dataSource data source name
-     * @param timeRange
+     * @param timeRange  the time range
      * @return map of context id and total num of events
      */
-    protected abstract List<ContextIdToNumOfEvents> getContextIdToNumOfItemsList(String dataSource, TimeRange timeRange);
+    protected abstract List<ContextIdToNumOfItems> getContextIdToNumOfItemsList(String dataSource, TimeRange timeRange);
 
     /**
      * Create pageIterator
      *
      * @param dataSource data source name
-     * @param timeRange
+     * @param timeRange the time range
      * @param contextIds set of context ids
      * @param totalNumOfItems num of events in PageIterator
      * @return PageIterator
@@ -97,28 +96,27 @@ public abstract class PaginationService<T> {
 
     /**
      *
-     * Creates groups, which contain pair of total num of events and set of contextId.
-     * total num of events should be less than page size.
+     * Creates groups, which contain pair of total num of events and set of contextIds.
      *
      * In order to minimize the number of context ids in each group and to minimize the number of groups:
      * pop out context id with the largest amount of events and pop out context ids with smallest amount of events.
      *
-     * @param contextIdToNumOfEventsList list of ContextIdToNumOfEvents objects,each object contains context id and num of events
+     * @param contextIdToNumOfItemsList list of ContextIdToNumOfItems objects,each object contains context id and num of events
      * @return list num of events in group and set of contextId of pairs
      *
      *Examples:
      * pageSize=3, maxGroupSize=2
      * case 1:
-     *  contextIdToNumOfEventsList: a->5 events, b-> 2 events, c-> 2 events
+     *  contextIdToNumOfItemsList: a->5 events, b-> 2 events, c-> 2 events
      *  the groups should be {a},{b},{c}
      * case 2:
-     *  contextIdToNumOfEventsList: a->5 events, b-> 2 events, c-> 1 events
+     *  contextIdToNumOfItemsList: a->5 events, b-> 2 events, c-> 1 events
      *  the groups should be {a},{b,c}
      */
-    private List<Pair<Integer, Set<String>>> getGroups(List<ContextIdToNumOfEvents> contextIdToNumOfEventsList) {
+    private List<Pair<Integer, Set<String>>> getGroups(List<ContextIdToNumOfItems> contextIdToNumOfItemsList) {
 
-        List<ContextIdToNumOfEvents> sortedList = new ArrayList<>(contextIdToNumOfEventsList);
-        sortedList.sort(Comparator.comparing(c -> c.getTotalNumOfEvents()));
+        List<ContextIdToNumOfItems> sortedList = new ArrayList<>(contextIdToNumOfItemsList);
+        sortedList.sort(Comparator.comparing(c -> c.getTotalNumOfItems()));
 
         // Integer - total num of events in group
         // Set<String> - contextIds
@@ -129,25 +127,25 @@ public abstract class PaginationService<T> {
         int end = sortedList.size() - 1;
         int numOfHandledContextIds = 0;
 
-        // Next condition handle 2 cases: (end == start && numOfHandledContextIds == contextIdToNumOfEventsList.size()-1)
-        // # first case: contextIdToNumOfEventsList contains only one item.
+        // Next condition handle 2 cases: (end == start && numOfHandledContextIds == contextIdToNumOfItemsList.size()-1)
+        // # first case: contextIdToNumOfItemsList contains only one item.
         // # second case: all context ids were handled and inserted to groups except the last context id:
         // It may happened, where start = end -1 and the last context id can not join to current group due to pageSize or maxGroupSize.
         // additional group should be created for last context id. (See case 2 in examples above).
         while (end > start || (end == start && numOfHandledContextIds == sortedList.size()-1)) {
             Set<String> contextIds = new HashSet<>();
-            ContextIdToNumOfEvents first = sortedList.get(start);
-            ContextIdToNumOfEvents last = sortedList.get(end);
+            ContextIdToNumOfItems first = sortedList.get(start);
+            ContextIdToNumOfItems last = sortedList.get(end);
             contextIds.add(last.getContextId());
-            totalNumOfItems = last.getTotalNumOfEvents();
+            totalNumOfItems = last.getTotalNumOfItems();
             numOfHandledContextIds++;
 
-            while (totalNumOfItems + first.getTotalNumOfEvents() <= pageSize && contextIds.size() + 1 <= maxGroupSize &&
+            while (totalNumOfItems + first.getTotalNumOfItems() <= pageSize && contextIds.size() + 1 <= maxGroupSize &&
                     end > start) {
-                totalNumOfItems += first.getTotalNumOfEvents();
+                totalNumOfItems += first.getTotalNumOfItems();
                 contextIds.add(first.getContextId());
                 start++;
-                first = contextIdToNumOfEventsList.get(start);
+                first = contextIdToNumOfItemsList.get(start);
                 numOfHandledContextIds++;
             }
 

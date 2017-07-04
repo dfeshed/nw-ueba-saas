@@ -82,7 +82,12 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <!--RPM VERSION-->
-        <rpm.version>3.1.0</rpm.version>
+
+        <rpm.version.major>1</rpm.version.major>
+        <rpm.version.minor>0</rpm.version.minor>
+        <rpm.version.build>0</rpm.version.build>
+        <rpm.version>${rpm.version.major}.${rpm.version.minor}</rpm.version>
+
         <!-- NOTE: ALL dependencies' versions should be here -->
         <cglib.version>3.2.1</cglib.version>
         <influxdb.version>2.1</influxdb.version>
@@ -115,7 +120,7 @@
         <cloudera-manager-api.version>5.4.7</cloudera-manager-api.version>
         <!-- maven plugins versions -->
         <maven-download-plugin.version>1.1.0</maven-download-plugin.version>
-        <maven-resources-plugin.version>2.6</maven-resources-plugin.version>
+        <maven-resources-plugin.version>3.0.2</maven-resources-plugin.version>
         <maven-dependency-plugin.version>2.8</maven-dependency-plugin.version>
         <aspectj-maven-plugin.version>1.8</aspectj-maven-plugin.version>
         <maven-compiler-plugin.version>2.5.1</maven-compiler-plugin.version>
@@ -166,6 +171,7 @@
         <cron-utils.version>5.0.5</cron-utils.version>
         <podam.version>7.0.5.RELEASE</podam.version>
 		<spring-cloud.version>Dalston.SR1</spring-cloud.version>
+        <rpm-maven-plugin.version>2.1.5</rpm-maven-plugin.version>
     </properties>
 
     <dependencyManagement>
@@ -771,9 +777,10 @@
         <module>presidio-monitoring-daemons</module>
         <module>presidio-input</module>
         <module>presidio-core-manager</module>
-        <module>presidio-collector</module>
+        <module>presidio-adapter</module>
         <module>presidio-output</module>
         <module>presidio-configuration-server</module>
+        <module>presidio-rpm</module>
     </modules>
     <distributionManagement>
         <!-- push changes to artifactory, distribute use of sdk -->
