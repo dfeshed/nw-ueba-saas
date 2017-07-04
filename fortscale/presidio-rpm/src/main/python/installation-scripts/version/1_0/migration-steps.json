@@ -3,12 +3,16 @@
     {
       "filePath": "mongo_set_config.sh",
       "executor": "default",
-      "description": "Setting mongo authenication and users"
+      "description": "Setting mongo authenication and users",
+      "has_uninstall":"false"
     },
     {
       "filePath": "config_server.sh",
       "executor": "default",
-      "description": "Installing configuration server and service"
+      "description": "Installing configuration server and service",
+      "has_uninstall":"true",
+      "uninstall_param":"--uninstall",
+      "uninstall_description":"Uninstalling configuration server"
     }
   ]
 }

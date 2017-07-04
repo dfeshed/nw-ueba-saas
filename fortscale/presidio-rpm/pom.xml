@@ -111,6 +111,20 @@
                         <!--end of post installation -->"
                     </script>
                 </postinstallScriptlet>
+                <preremoveScriptlet>
+                    <script>
+                        <!-- pre remove commands -->
+                        /usr/local/bin/python ${rpm-maven-plugin.script} --rpm_name ${rpm_name} --major ${rpm.version.major} --minor ${rpm.version.minor} --build ${rpm.version.build} --uninstall
+
+                    </script>
+                </preremoveScriptlet>
+                <postremoveScriptlet>
+                    <script>
+                        <!-- post remove commands -->
+                        <!-- remove presidio-core main folder -->
+
+                    </script>
+                </postremoveScriptlet>
             </configuration>
         </plugin>
     </plugins>
