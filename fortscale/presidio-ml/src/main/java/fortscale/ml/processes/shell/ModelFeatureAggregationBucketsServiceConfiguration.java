@@ -1,6 +1,8 @@
 package fortscale.ml.processes.shell;
 
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
+import fortscale.aggregation.feature.bucket.FeatureBucketStore;
+import fortscale.aggregation.feature.bucket.FeatureBucketStoreMongoConfig;
 import fortscale.aggregation.feature.bucket.InMemoryFeatureBucketAggregator;
 import fortscale.ml.processes.shell.model.aggregation.InMemoryFeatureBucketAggregatorConfig;
 import fortscale.ml.processes.shell.model.aggregation.ModelAggregationBucketConfigurationServiceConfig;
@@ -33,6 +35,7 @@ import static fortscale.common.general.CommonStrings.COMMAND_LINE_START_DATE_FIE
         ModelAggregationBucketConfigurationServiceConfig.class,
         EnrichedDataStoreConfig.class,
         InMemoryFeatureBucketAggregatorConfig.class,
+        FeatureBucketStoreMongoConfig.class,
         ParametersValidationServiceConfig.class,// todo: remove this
 })
 public class ModelFeatureAggregationBucketsServiceConfiguration {
@@ -44,7 +47,9 @@ public class ModelFeatureAggregationBucketsServiceConfiguration {
     @Autowired
     private InMemoryFeatureBucketAggregator featureBucketAggregator;
     @Autowired
-    private ParametersValidationService parametersValidationService;
+    FeatureBucketStore featureBucketStore;
+    @Autowired
+    private ParametersValidationService parametersValidationService;// todo: remove this
 
     @Bean
     public CommandLineRunner commandLineRunner() {
@@ -56,7 +61,7 @@ public class ModelFeatureAggregationBucketsServiceConfiguration {
                 String dataSourceParam = parametersValidationService.getMandatoryParamAsString(COMMAND_LINE_DATA_SOURCE_FIELD_NAME, strings);
                 Instant startTimeParam = Instant.parse(parametersValidationService.getMandatoryParamAsString(COMMAND_LINE_START_DATE_FIELD_NAME, strings));
                 Instant endTimeParam = Instant.parse(parametersValidationService.getMandatoryParamAsString(COMMAND_LINE_END_DATE_FIELD_NAME, strings));
-                ModelFeatureAggregationBucketsService modelFeatureAggregationBucketsService = new ModelFeatureAggregationBucketsService(bucketConfigurationService, enrichedDataStore, featureBucketAggregator);
+                ModelFeatureAggregationBucketsService modelFeatureAggregationBucketsService = new ModelFeatureAggregationBucketsService(bucketConfigurationService, enrichedDataStore, featureBucketAggregator,featureBucketStore);
                 TimeRange timeRange = new TimeRange(startTimeParam, endTimeParam);
                 modelFeatureAggregationBucketsService.execute(timeRange, dataSourceParam);
             }

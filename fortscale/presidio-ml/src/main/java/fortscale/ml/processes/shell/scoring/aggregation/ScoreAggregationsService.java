@@ -70,9 +70,7 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
     }
 
     public List<String> getDistinctContextTypes(String dataSource){
-        String contextType = "normalized_username";
-        List<String> contextTypeList = new ArrayList<>();
-        contextTypeList.add(contextType);
-        return contextTypeList;
+        //todo: figure it out from the configuration.
+        return Collections.singletonList("normalized_username");
     }
 }

@@ -28,13 +28,10 @@ public class FeatureBucketStoreMongoImpl implements FeatureBucketStore {
 
 	private MongoTemplate mongoTemplate;
 	private MongoDbUtilService mongoDbUtilService;
-	private StatsService statsService;
-	private Map<String, FeatureBucketStoreMetrics> featureBucketConfNameToStoreMetricsMap = new HashMap<>();
 
-	public FeatureBucketStoreMongoImpl(MongoTemplate mongoTemplate, MongoDbUtilService mongoDbUtilService, StatsService statsService) {
+	public FeatureBucketStoreMongoImpl(MongoTemplate mongoTemplate, MongoDbUtilService mongoDbUtilService) {
 		this.mongoTemplate = mongoTemplate;
 		this.mongoDbUtilService = mongoDbUtilService;
-		this.statsService = statsService;
 	}
 
 	@Override
@@ -82,19 +79,6 @@ public class FeatureBucketStoreMongoImpl implements FeatureBucketStore {
 		} catch (Exception e) {
 			logger.error("Could not store Feature Bucket {} in Mongo DB collection {}.", featureBucket, collectionName, e);
 		}
-	}
-
-	private FeatureBucketStoreMetrics getFeatureBucketStoreMetrics(FeatureBucketConf featureBucketConf) {
-		String featureBucketConfName = featureBucketConf.getName();
-
-		if (!featureBucketConfNameToStoreMetricsMap.containsKey(featureBucketConfName)) {
-			featureBucketConfNameToStoreMetricsMap.put(
-					featureBucketConfName,
-					new FeatureBucketStoreMetrics(statsService, "Mongo", featureBucketConfName)
-			);
-		}
-
-		return featureBucketConfNameToStoreMetricsMap.get(featureBucketConfName);
 	}
 
 	private String ensureCollectionExists(FeatureBucketConf featureBucketConf) {

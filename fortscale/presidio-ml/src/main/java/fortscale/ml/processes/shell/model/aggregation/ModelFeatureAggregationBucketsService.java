@@ -1,8 +1,6 @@
 package fortscale.ml.processes.shell.model.aggregation;
 
-import fortscale.aggregation.feature.bucket.BucketConfigurationService;
-import fortscale.aggregation.feature.bucket.FeatureBucket;
-import fortscale.aggregation.feature.bucket.InMemoryFeatureBucketAggregator;
+import fortscale.aggregation.feature.bucket.*;
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.fixedduration.FixedDurationStrategyExecutor;
@@ -13,10 +11,7 @@ import presidio.ade.domain.pagination.enriched.EnrichedRecordPaginationService;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by YaronDL on 7/2/2017.
@@ -26,26 +21,48 @@ public class ModelFeatureAggregationBucketsService extends FixedDurationStrategy
     private BucketConfigurationService bucketConfigurationService;
     private EnrichedDataStore enrichedDataStore;
     private InMemoryFeatureBucketAggregator featureBucketAggregator;
+    FeatureBucketStore featureBucketStore;
 
     public ModelFeatureAggregationBucketsService(BucketConfigurationService bucketConfigurationService,
-                                                 EnrichedDataStore enrichedDataStore, InMemoryFeatureBucketAggregator featureBucketAggregator) {
+                                                 EnrichedDataStore enrichedDataStore, InMemoryFeatureBucketAggregator featureBucketAggregator,
+                                                 FeatureBucketStore featureBucketStore) {
         super(FixedDurationStrategy.DAILY);
         this.bucketConfigurationService = bucketConfigurationService;
         this.enrichedDataStore = enrichedDataStore;
         this.featureBucketAggregator = featureBucketAggregator;
+        this.featureBucketStore = featureBucketStore;
     }
 
     @Override
     public void executeSingleTimeRange(TimeRange timeRange, String dataSource, String contextType) {
         //For now we don't have multiple contexts so we pass just list of size 1.
-        List<String> contextTypes = new ArrayList<>();
-        contextTypes.add(contextType);
+        List<String> contextTypes = Collections.singletonList(contextType);
 
         EnrichedRecordPaginationService enrichedRecordPaginationService = new EnrichedRecordPaginationService(enrichedDataStore, 1000, 100, contextType);
         List<PageIterator<EnrichedRecord>> pageIterators = enrichedRecordPaginationService.getPageIterators(dataSource, timeRange);
         for (PageIterator<EnrichedRecord> pageIterator : pageIterators) {
             List<FeatureBucket> featureBucketsToInsert = featureBucketAggregator.aggregate(pageIterator,contextTypes, createFeatureBucketStrategyData(timeRange));
-            //todo: save feature buckets to mongo.
+            storeFeatureBuckets(featureBucketsToInsert);
+        }
+    }
+
+    private void storeFeatureBuckets(List<FeatureBucket> featureBucketList){
+        Map<String,List<FeatureBucket>> confnameToFeatureBucketsMap = new HashMap<>();
+        for(FeatureBucket featureBucket: featureBucketList){
+            List<FeatureBucket> confFeatureBucketList = confnameToFeatureBucketsMap.get(featureBucket.getFeatureBucketConfName());
+            if(confFeatureBucketList == null){
+                confFeatureBucketList = new ArrayList<>();
+                confnameToFeatureBucketsMap.put(featureBucket.getFeatureBucketConfName(), confFeatureBucketList);
+            }
+            confFeatureBucketList.add(featureBucket);
+        }
+
+        for(Map.Entry<String,List<FeatureBucket>> entry: confnameToFeatureBucketsMap.entrySet()){
+            FeatureBucketConf featureBucketConf = bucketConfigurationService.getBucketConf(entry.getKey());
+            //todo add batch implementation to the feature bucket store
+            for(FeatureBucket featureBucket: entry.getValue()){
+                featureBucketStore.storeFeatureBucket(featureBucketConf, featureBucket);
+            }
         }
     }
 
