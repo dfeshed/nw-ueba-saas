@@ -31,7 +31,6 @@ def test_valid_build():
         'hourly_smart_events_confs': '',
         'daily_smart_events_confs': '',
         'data_sources': ['dlpfile'],
-        'command': 'run',
     }
 
     dag = DAG(

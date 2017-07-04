@@ -18,7 +18,7 @@ class AggregationsOperator(FixedDurationJarOperator):
     __metaclass__ = ABCMeta
 
     @apply_defaults
-    def __init__(self, fixed_duration_strategy, data_source, task_id=None, *args, **kwargs):
+    def __init__(self, fixed_duration_strategy, command, data_source, task_id=None, *args, **kwargs):
         """
         C'tor.
         :param fixed_duration_strategy: The duration covered by the aggregations (e.g. hourly or daily)
@@ -29,6 +29,8 @@ class AggregationsOperator(FixedDurationJarOperator):
         :type task_id: string
         """
 
+        print('agg operator init kwargs=', kwargs)
+
         self.fixed_duration_strategy = fixed_duration_strategy
         self.data_source = data_source
         self.task_id = task_id or '{}_{}_{}'.format(
@@ -38,7 +40,7 @@ class AggregationsOperator(FixedDurationJarOperator):
         )
 
         java_args = {
-            '--data_source': self.data_source,
+            'data_source': self.data_source,
         }
 
         jvm_args = {
@@ -46,9 +48,12 @@ class AggregationsOperator(FixedDurationJarOperator):
             'main_class': self.get_main_class()
         }
 
+        print('agg operator. commad=', command)
+        print('agg operator. kwargs=', kwargs)
         super(AggregationsOperator, self).__init__(
             task_id=self.task_id,
             fixed_duration_strategy=self.fixed_duration_strategy,
+            command=command,
             jvm_args=jvm_args,
             java_args=java_args,
             *args,
