@@ -117,6 +117,33 @@ class Deploy_Manager:
         :TODO: execute uninstall step
         """
         self.add_log(log_string='Uninstalling mig steps files', log_level='info')
+        versions_list = self.get_versions_list()
+        for version in versions_list:
+            mig_step_json, mig_steps_folder = self.read_mig_step(version)
+
+            if len(mig_step_json) > 0:
+                mig_steps_str = str(mig_step_json[0])
+
+                with open(mig_steps_str) as json_steps_file:
+                    steps = json.load(json_steps_file)
+
+                for step in steps['migration_steps']:
+                    """
+                    Execute the step 
+
+                    """
+
+                    if step.get('has_uninstall') == 'true' or step.get('has_uninstall') == 'True':
+                        self.add_log(log_string=step.get('uninstall_description'), log_level='info')
+                        self.exec_file(mig_steps_folder + step.get('filePath') + " " + step.get('uninstall_param'))
+
+                self.current_version = version
+            else:
+                self.add_log(
+                    log_string="No migration steps for version to uninstall: " + str(version.version_description.major) + '.' + str(
+                        version.version_description.minor), log_level='warning')
+                self.current_version = version
+
 
 
     def run(self, rpm_name):
@@ -125,12 +152,7 @@ class Deploy_Manager:
 
         for version in versions_list:
             self.add_log(log_string='Checking installed version before executing migration steps', log_level='info')
-            if version.version_description.major <= self.current_version.version_description.major and version.version_description.minor <= self.current_version.version_description.minor:
-                self.add_log(log_string='RPM version is lower or equal to current install version, Nothing To Do', log_level='warning')
-                """
-                alredy installed- nothing to do
-                """
-            else:
+            if (self.current_version.version_description.major < version.version_description.major) or (self.current_version.version_description.major == ersion.version_description.major and self.current_version.version_description.minor < version.version_description.minor) or (self.current_version.version_description.major == ersion.version_description.major and self.current_version.version_description.minor == version.version_description.minor and self.current_version.version_description.build < args.build) or (self.current_version.version_description.major == ersion.version_description.major and self.current_version.version_description.minor == version.version_description.minor and args.build == 0):
                 """ 
                 execute vresion migration scripts
                 """
@@ -146,7 +168,7 @@ class Deploy_Manager:
                         Execute the step 
                         """
 
-                        if step.get('filePath') == 'mongo':
+                        if step.get('executor') == 'mongo':
                             self.add_log(log_string=step.get('description'), log_level='info')
                             self.exec_mongo_file(mig_steps_folder + step.get('filePath'))
 
@@ -160,6 +182,12 @@ class Deploy_Manager:
                 else:
                     self.add_log(log_string="No migration steps for version: " + str(version.version_description.major) + '.' + str(version.version_description.minor), log_level='warning')
                     self.current_version = version
+            else:
+                self.add_log(log_string='RPM version is lower or equal to current install version, Nothing To Do',
+                             log_level='warning')
+                """
+                  alredy installed- nothing to do
+                """
 
     def exec_file(self, file_to_exec):
         self.add_log(log_string='Preparing Presidio python project ', log_level='info')
