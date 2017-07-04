@@ -4,36 +4,37 @@ import fortscale.aggregation.exceptions.InvalidAggregatedFeatureEventConfNameExc
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.aggregation.feature.event.store.AggregatedFeatureEventsReaderService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
+import fortscale.utils.time.TimeRange;
 
 import java.util.Date;
 import java.util.Set;
 
-@Configurable(preConstruction = true)
-public class AggregatedEventContextSelector implements IContextSelector{
-    @Autowired
-    private AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
-    @Autowired
-    private AggregatedFeatureEventsReaderService aggregatedFeatureEventsReaderService;
+public class AggregatedEventContextSelector implements IContextSelector {
+	private AggregatedFeatureEventConf aggregatedFeatureEventConf;
+	private AggregatedFeatureEventsReaderService aggregatedFeatureEventsReaderService;
 
-    private AggregatedFeatureEventConf aggregatedFeatureEventConf;
+	public AggregatedEventContextSelector(
+			AggregatedEventContextSelectorConf conf,
+			AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService,
+			AggregatedFeatureEventsReaderService aggregatedFeatureEventsReaderService) {
 
-    public AggregatedEventContextSelector(AggregatedEventContextSelectorConf config) {
-        String aggregatedFeatureEventConfName = config.getAggregatedFeatureEventConfName();
-        aggregatedFeatureEventConf = aggregatedFeatureEventsConfService
-                .getAggregatedFeatureEventConf(aggregatedFeatureEventConfName);
-        validate(config);
-    }
+		this.aggregatedFeatureEventConf = aggregatedFeatureEventsConfService
+				.getAggregatedFeatureEventConf(conf.getAggregatedFeatureEventConfName());
+		this.aggregatedFeatureEventsReaderService = aggregatedFeatureEventsReaderService;
+		validate(conf);
+	}
 
-    private void validate(AggregatedEventContextSelectorConf config) {
-        if(aggregatedFeatureEventConf==null)
-            throw new InvalidAggregatedFeatureEventConfNameException(config.getAggregatedFeatureEventConfName());
-    }
+	@Override
+	public Set<String> getContexts(TimeRange timeRange) {
+		return aggregatedFeatureEventsReaderService.findDistinctAcmContextsByTimeRange(
+				aggregatedFeatureEventConf,
+				Date.from(timeRange.getStart()),
+				Date.from(timeRange.getEnd()));
+	}
 
-    @Override
-    public Set<String> getContexts(Date startTime, Date endTime) {
-        return aggregatedFeatureEventsReaderService.findDistinctAcmContextsByTimeRange(
-                aggregatedFeatureEventConf, startTime, endTime);
-    }
+	private void validate(AggregatedEventContextSelectorConf conf) {
+		if (aggregatedFeatureEventConf == null) {
+			throw new InvalidAggregatedFeatureEventConfNameException(conf.getAggregatedFeatureEventConfName());
+		}
+	}
 }
