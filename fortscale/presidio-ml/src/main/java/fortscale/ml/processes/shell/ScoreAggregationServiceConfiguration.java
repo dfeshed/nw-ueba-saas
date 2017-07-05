@@ -1,10 +1,9 @@
 package fortscale.ml.processes.shell;
 
+import fortscale.common.general.DataSource;
 import fortscale.ml.model.cache.EventModelsCacheServiceConfig;
 import fortscale.ml.scorer.enriched_events.EnrichedEventsScoringService;
 import fortscale.ml.scorer.enriched_events.EnrichedEventsScoringServiceConfig;
-import fortscale.services.config.ParametersValidationServiceConfig;
-import fortscale.services.parameters.ParametersValidationService;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.mongodb.config.MongoConfig;
 import fortscale.utils.monitoring.stats.config.NullStatsServiceConfig;
@@ -20,14 +19,11 @@ import presidio.ade.domain.store.enriched.EnrichedDataStoreConfig;
 
 import java.time.Instant;
 
-import static fortscale.common.general.CommonStrings.*;
-
 /**
  * Created by barak_schuster on 6/14/17.
  */
 @Configuration
 @Import({EnrichedDataStoreConfig.class,
-        ParametersValidationServiceConfig.class,// todo: remove this
         MongoConfig.class,
         EnrichedEventsScoringServiceConfig.class,
         ScoreAggregationsBucketServiceConfiguration.class,
@@ -42,8 +38,6 @@ public class ScoreAggregationServiceConfiguration {
     @Autowired
     private EnrichedDataStore enrichedDataStore;
     @Autowired
-    private ParametersValidationService parametersValidationService;
-    @Autowired
     private ScoreAggregationsBucketService scoreAggregationsBucketService;
 
     @Bean
@@ -53,10 +47,10 @@ public class ScoreAggregationServiceConfiguration {
             @Override
             public void run(String... strings) throws Exception {
                 // todo: all of this will be change when using spring shell
-                String dataSourceParam = parametersValidationService.getMandatoryParamAsString(COMMAND_LINE_DATA_SOURCE_FIELD_NAME, strings);
-                Instant startTimeParam = Instant.parse(parametersValidationService.getMandatoryParamAsString(COMMAND_LINE_START_DATE_FIELD_NAME, strings));
-                Instant endTimeParam = Instant.parse(parametersValidationService.getMandatoryParamAsString(COMMAND_LINE_END_DATE_FIELD_NAME, strings));
-                FixedDurationStrategy fixedDurationStrategy = FixedDurationStrategy.fromSeconds((long)Float.parseFloat((parametersValidationService.getMandatoryParamAsString(COMMAND_LINE_FIXED_DURATION_FIELD_NAME, strings))));
+                String dataSourceParam = DataSource.DLPFILE.getName();
+                Instant startTimeParam = Instant.parse("temp");
+                Instant endTimeParam = Instant.parse("temp");
+                FixedDurationStrategy fixedDurationStrategy = FixedDurationStrategy.fromSeconds((long)Float.parseFloat("36000"));
                 ScoreAggregationsService scoreAggregationsService = new ScoreAggregationsService(fixedDurationStrategy, enrichedDataStore,enrichedEventsScoringService, scoreAggregationsBucketService);
                 TimeRange timeRange = new TimeRange(startTimeParam, endTimeParam);
                 scoreAggregationsService.execute(timeRange,dataSourceParam);

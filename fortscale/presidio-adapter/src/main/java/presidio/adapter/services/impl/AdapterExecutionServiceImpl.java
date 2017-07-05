@@ -1,4 +1,4 @@
-package presidio.collector.services.impl;
+package presidio.adapter.services.impl;
 
 import fortscale.common.general.CommonStrings;
 import fortscale.common.general.DataSource;
@@ -6,8 +6,6 @@ import fortscale.common.shell.PresidioExecutionService;
 import fortscale.domain.core.AbstractAuditableDocument;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import presidio.collector.services.api.FetchService;
-import presidio.adapter.services.api.AdapterExecutionService;
 import presidio.adapter.services.api.FetchService;
 import presidio.sdk.api.domain.DlpFileDataDocument;
 import presidio.sdk.api.services.CoreManagerService;
@@ -16,8 +14,8 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AdapterExecutionServiceImpl implements AdapterExecutionService {
-    private static Logger logger = LoggerFactory.getLogger(CollectorExecutionServiceImpl.class);
+public class AdapterExecutionServiceImpl implements PresidioExecutionService {
+    private static Logger logger = LoggerFactory.getLogger(AdapterExecutionServiceImpl.class);
 
     private final CoreManagerService coreManagerService;
     private final FetchService fetchService;

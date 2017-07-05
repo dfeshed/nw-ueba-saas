@@ -1,9 +1,12 @@
-package presidio.collector;
+package presidio.adapter;
 
+import fortscale.common.general.PresidioShellableApplication;
+import fortscale.common.shell.config.ShellCommonCommandsConfig;
 import fortscale.utils.logging.Logger;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.task.configuration.EnableTask;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import presidio.adapter.spring.AdapterConfigProduction;
@@ -23,7 +26,7 @@ public class FortscaleAdapterApplication extends PresidioShellableApplication {
     public static void main(String[] args) {
         logger.info("starting Adapter with params " + Arrays.toString(args));
 
-        SpringApplication.run(new Object[]{FortscaleAdapterApplication.class, AdapterConfigProduction.class, ShellCommonCommandsConfig.class}, args);
+        ConfigurableApplicationContext ctx = SpringApplication.run(new Object[]{FortscaleAdapterApplication.class, AdapterConfigProduction.class, ShellCommonCommandsConfig.class}, args);
         run(args, ctx);
     }
 }
