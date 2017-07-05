@@ -1,16 +1,15 @@
 package fortscale.ml.processes.shell;
 
-import fortscale.ml.model.cache.EventModelsCacheServiceConfig;
-import fortscale.ml.processes.shell.scoring.aggregation.ScoreAggregationsBucketService;
-import fortscale.ml.processes.shell.scoring.aggregation.ScoreAggregationsBucketServiceConfiguration;
-import fortscale.ml.processes.shell.scoring.aggregation.ScoreAggregationsService;
-import fortscale.ml.scorer.enriched_events.EnrichedEventsScoringService;
-import fortscale.ml.scorer.enriched_events.EnrichedEventsScoringServiceConfig;
+import fortscale.aggregation.feature.bucket.BucketConfigurationService;
+import fortscale.aggregation.feature.bucket.FeatureBucketStore;
+import fortscale.aggregation.feature.bucket.FeatureBucketStoreMongoConfig;
+import fortscale.aggregation.feature.bucket.InMemoryFeatureBucketAggregator;
+import fortscale.ml.processes.shell.model.aggregation.InMemoryFeatureBucketAggregatorConfig;
+import fortscale.ml.processes.shell.model.aggregation.ModelAggregationBucketConfigurationServiceConfig;
+import fortscale.ml.processes.shell.model.aggregation.ModelFeatureAggregationBucketsService;
 import fortscale.services.config.ParametersValidationServiceConfig;
 import fortscale.services.parameters.ParametersValidationService;
-import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.mongodb.config.MongoConfig;
-import fortscale.utils.monitoring.stats.config.NullStatsServiceConfig;
 import fortscale.utils.time.TimeRange;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -23,31 +22,34 @@ import presidio.ade.domain.store.enriched.EnrichedDataStoreConfig;
 
 import java.time.Instant;
 
-import static fortscale.common.general.CommonStrings.*;
+import static fortscale.common.general.CommonStrings.COMMAND_LINE_DATA_SOURCE_FIELD_NAME;
+import static fortscale.common.general.CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME;
+import static fortscale.common.general.CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME;
 
 /**
- * Created by barak_schuster on 6/14/17.
+ * Created by YaronDL on 7/2/2017.
  */
 @Configuration
-@Import({EnrichedDataStoreConfig.class,
-        ParametersValidationServiceConfig.class,// todo: remove this
-        MongoConfig.class,
-        EnrichedEventsScoringServiceConfig.class,
-        ScoreAggregationsBucketServiceConfiguration.class,
-        EventModelsCacheServiceConfig.class,
-        NullStatsServiceConfig.class,// todo: remove this
-})
 @EnableSpringConfigured
-public class ScoreAggregationServiceConfiguration {
+@Import({MongoConfig.class,
+        ModelAggregationBucketConfigurationServiceConfig.class,
+        EnrichedDataStoreConfig.class,
+        InMemoryFeatureBucketAggregatorConfig.class,
+        FeatureBucketStoreMongoConfig.class,
+        ParametersValidationServiceConfig.class,// todo: remove this
+})
+public class ModelFeatureAggregationBucketsServiceConfiguration {
 
     @Autowired
-    private EnrichedEventsScoringService enrichedEventsScoringService;
+    private BucketConfigurationService bucketConfigurationService;
     @Autowired
     private EnrichedDataStore enrichedDataStore;
     @Autowired
-    private ParametersValidationService parametersValidationService;
+    private InMemoryFeatureBucketAggregator featureBucketAggregator;
     @Autowired
-    private ScoreAggregationsBucketService scoreAggregationsBucketService;
+    FeatureBucketStore featureBucketStore;
+    @Autowired
+    private ParametersValidationService parametersValidationService;// todo: remove this
 
     @Bean
     public CommandLineRunner commandLineRunner() {
@@ -59,13 +61,10 @@ public class ScoreAggregationServiceConfiguration {
                 String dataSourceParam = parametersValidationService.getMandatoryParamAsString(COMMAND_LINE_DATA_SOURCE_FIELD_NAME, strings);
                 Instant startTimeParam = Instant.parse(parametersValidationService.getMandatoryParamAsString(COMMAND_LINE_START_DATE_FIELD_NAME, strings));
                 Instant endTimeParam = Instant.parse(parametersValidationService.getMandatoryParamAsString(COMMAND_LINE_END_DATE_FIELD_NAME, strings));
-                FixedDurationStrategy fixedDurationStrategy = FixedDurationStrategy.fromSeconds((long)Float.parseFloat((parametersValidationService.getMandatoryParamAsString(COMMAND_LINE_FIXED_DURATION_FIELD_NAME, strings))));
-                ScoreAggregationsService scoreAggregationsService = new ScoreAggregationsService(fixedDurationStrategy, enrichedDataStore,enrichedEventsScoringService, scoreAggregationsBucketService);
+                ModelFeatureAggregationBucketsService modelFeatureAggregationBucketsService = new ModelFeatureAggregationBucketsService(bucketConfigurationService, enrichedDataStore, featureBucketAggregator,featureBucketStore);
                 TimeRange timeRange = new TimeRange(startTimeParam, endTimeParam);
-                scoreAggregationsService.execute(timeRange,dataSourceParam);
+                modelFeatureAggregationBucketsService.execute(timeRange, dataSourceParam);
             }
         };
     }
-
-
 }

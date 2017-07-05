@@ -24,12 +24,12 @@ public class InMemoryFeatureBucketAggregator {
     }
 
 
-    public List<FeatureBucket> aggregate(PageIterator<AdeRecord> pageIterator, List<String> contextFieldNames, FeatureBucketStrategyData strategyData){
+    public List<FeatureBucket> aggregate(PageIterator<? extends AdeRecord> pageIterator, List<String> contextFieldNames, FeatureBucketStrategyData strategyData){
         FeatureBucketsAggregatorInMemory featureBucketsInMemory = new FeatureBucketsAggregatorInMemory();
 
         FeatureBucketAggregator featureBucketAggregator = new FeatureBucketAggregator(featureBucketsInMemory,bucketConfigurationService,recordReaderFactoryService);
         while(pageIterator.hasNext()){
-            List<AdeRecord> adeRecordList = pageIterator.next();
+            List<? extends AdeRecord> adeRecordList = pageIterator.next();
             featureBucketAggregator.aggregate(adeRecordList, contextFieldNames, strategyData);
         }
 

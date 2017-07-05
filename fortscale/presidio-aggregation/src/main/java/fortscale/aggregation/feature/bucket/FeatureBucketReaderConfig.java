@@ -8,6 +8,6 @@ public class FeatureBucketReaderConfig {
 	@Bean
 	public FeatureBucketReader featureBucketReader() {
 		// TODO
-		return new FeatureBucketStoreMongoImpl(null, null, null);
+		return new FeatureBucketStoreMongoImpl(null, null);
 	}
 }
