@@ -41,7 +41,6 @@ public class ModelBuildingDependencies {
 		return new BucketConfigurationService(dataSourceFieldName, bucketConfJsonFilePath, bucketConfJsonOverridingFilesPath,bucketConfJsonAdditionalFilesPath);
 	}
 
-
 	@Bean
 	public RetentionStrategiesConfService retentionStrategiesConfService() {
 		return new RetentionStrategiesConfService();
@@ -81,6 +80,4 @@ public class ModelBuildingDependencies {
 	public EntityEventDataMongoStore entityEventDataMongoStore() {
 		return new EntityEventDataMongoStore();
 	}
-
-
 }
