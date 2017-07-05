@@ -1,14 +1,13 @@
 package fortscale.ml.processes.shell.model.aggregation;
 
 import fortscale.aggregation.feature.bucket.*;
-import fortscale.aggregation.feature.bucket.config.BucketConfigurationServiceConfig;
 import fortscale.common.feature.AggrFeatureValue;
 import fortscale.common.feature.Feature;
 import fortscale.common.util.GenericHistogram;
 import fortscale.utils.pagination.ContextIdToNumOfItems;
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
 import fortscale.utils.test.category.ModuleTestCategory;
-import fortscale.utils.test.mongodb.MongodbTestConfig;
+import fortscale.utils.test.mongodb.FongoTestConfig;
 import fortscale.utils.time.TimeRange;
 import org.junit.Assert;
 import org.junit.Test;
@@ -21,9 +20,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import presidio.ade.domain.record.enriched.AdeEnrichedDlpFileContext;
 import presidio.ade.domain.record.enriched.EnrichedDlpFileRecord;
-import presidio.ade.domain.record.scored.enriched_scored.AdeScoredDlpFileRecord;
 import presidio.ade.domain.store.AdeDataStoreCleanupParams;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
 import presidio.ade.domain.store.enriched.EnrichedDataStoreConfig;
@@ -38,7 +35,6 @@ import java.util.*;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @Category(ModuleTestCategory.class)
-@ContextConfiguration(classes = {ModelFeatureAggregationBucketsServiceTest.ModelFeatureAggregationBucketsServiceTestConfiguration.class})
 public class ModelFeatureAggregationBucketsServiceTest {
     private static final String DATA_SOURCE = "dlpfile";
 
@@ -48,8 +44,6 @@ public class ModelFeatureAggregationBucketsServiceTest {
     private EnrichedDataStore enrichedDataStore;
     @Autowired
     FeatureBucketStore featureBucketStore;
-    @Autowired
-    MongoTemplate mongoTemplate;
 
 
     @Test
@@ -93,11 +87,8 @@ public class ModelFeatureAggregationBucketsServiceTest {
      * Create adeRecords
      */
     public void generateAndPersistAdeEnrichedRecords(TimeRange timeRange,String username) {
-//        Set<String> dbs = mongoTemplate.getCollectionNames();
         AdeDataStoreCleanupParams cleanupParams = new AdeDataStoreCleanupParams(timeRange.getStart(),timeRange.getEnd(),DATA_SOURCE);
         enrichedDataStore.cleanup(cleanupParams);
-        List<EnrichedDlpFileRecord> enrichedDlpFileRecords= mongoTemplate.findAll(EnrichedDlpFileRecord.class, "enriched_dlpfile");
-        Assert.assertEquals(0,enrichedDlpFileRecords.size());
         Instant startTime = timeRange.getStart();
         EnrichedDlpFileRecord enrichedDlpFileRecord = new EnrichedDlpFileRecord(startTime);
         enrichedDlpFileRecord.setNormalized_username(username);
@@ -116,7 +107,7 @@ public class ModelFeatureAggregationBucketsServiceTest {
     }
 
     @Configuration
-    @Import({MongodbTestConfig.class,
+    @Import({FongoTestConfig.class,
             ModelAggregationBucketConfigurationServiceConfig.class,
             EnrichedDataStoreConfig.class,
             InMemoryFeatureBucketAggregatorConfig.class,
@@ -142,6 +133,7 @@ public class ModelFeatureAggregationBucketsServiceTest {
             Properties properties = new Properties();
             properties.put("impala.table.fields.data.source", "dlpfile");
             properties.put("fortscale.model.aggregation.bucket.conf.json.file.name", "classpath:fortscale/config/asl/model/buckets/model_buckets_test.json");
+            properties.put("mongo.db.name","model_feature_aggregation");
 
             return new TestPropertiesPlaceholderConfigurer(properties);
         }
