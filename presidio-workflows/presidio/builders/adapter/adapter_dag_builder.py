@@ -6,8 +6,8 @@ from presidio.builders.presidio_dag_builder import PresidioDagBuilder
 from presidio.operators.fixed_duration_jar_operator import FixedDurationJarOperator
 
 JAR_PATH = \
-    '/home/presidio/dev-projects/presidio-core/fortscale/target/dependencies/presidio-collector-1.0.0-SNAPSHOT.jar'
-MAIN_CLASS = 'presidio.collector.FortscaleCollectorApplication'
+    '/home/presidio/dev-projects/presidio-core/fortscale/target/dependencies/presidio-adapter-1.0.0-SNAPSHOT.jar'
+MAIN_CLASS = 'presidio.adapter.FortscaleAdapterApplication'
 
 jvm_args = {
     'jar_path': JAR_PATH,
@@ -15,9 +15,9 @@ jvm_args = {
 }
 
 
-class CollectorDagBuilder(PresidioDagBuilder):
+class AdapterDagBuilder(PresidioDagBuilder):
     """
-    A "Collector DAG" builder - The "Collector DAG" consists of multiple tasks / operators one per data source.
+    A "Adapter DAG" builder - The "Adapter DAG" consists of multiple tasks / operators one per data source.
     The builder accepts the DAG's attributes through the c'tor, and the "build" method builds and
     returns the DAG according to the given attributes.
     """
@@ -31,16 +31,16 @@ class CollectorDagBuilder(PresidioDagBuilder):
 
         self.data_sources = data_sources
 
-    def build(self, collector_dag):
+    def build(self, adapter_dag):
         """
         Builds jar operators for each data source and adds them to the given DAG.
-        :param collector_dag: The DAG to which all relevant "input" operators should be added
-        :type collector_dag: airflow.models.DAG
+        :param adapter_dag: The DAG to which all relevant "input" operators should be added
+        :type adapter_dag: airflow.models.DAG
         :return: The input DAG, after the "input" operators were added
         :rtype: airflow.models.DAG
         """
 
-        logging.info("populating the collector dag, dag_id=%s ", collector_dag.dag_id)
+        logging.info("populating the adapter dag, dag_id=%s ", adapter_dag.dag_id)
 
         # Iterate all configured data sources
         for data_source in self.data_sources:
@@ -50,11 +50,11 @@ class CollectorDagBuilder(PresidioDagBuilder):
 
             # Create jar operator for each data source
             FixedDurationJarOperator(
-                task_id='collector_{}'.format(data_source),
+                task_id='adapter_{}'.format(data_source),
                 fixed_duration_strategy=timedelta(hours=1),
                 command=PresidioDagBuilder.presidio_command,
                 jvm_args=jvm_args,
                 java_args=java_args,
-                dag=collector_dag)
+                dag=adapter_dag)
 
-        return collector_dag
+        return adapter_dag
