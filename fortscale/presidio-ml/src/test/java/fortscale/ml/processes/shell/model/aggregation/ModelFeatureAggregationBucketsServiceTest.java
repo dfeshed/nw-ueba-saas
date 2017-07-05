@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import presidio.ade.domain.record.enriched.AdeEnrichedDlpFileContext;
@@ -30,17 +31,14 @@ import presidio.ade.domain.store.enriched.EnrichedRecordsMetadata;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
 /**
  * Created by YaronDL on 7/5/2017.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @Category(ModuleTestCategory.class)
-@ContextConfiguration(classes = ModelFeatureAggregationBucketsServiceTest.springConfig.class)
+@ContextConfiguration(classes = {ModelFeatureAggregationBucketsServiceTest.ModelFeatureAggregationBucketsServiceTestConfiguration.class})
 public class ModelFeatureAggregationBucketsServiceTest {
     private static final String DATA_SOURCE = "dlpfile";
 
@@ -50,6 +48,8 @@ public class ModelFeatureAggregationBucketsServiceTest {
     private EnrichedDataStore enrichedDataStore;
     @Autowired
     FeatureBucketStore featureBucketStore;
+    @Autowired
+    MongoTemplate mongoTemplate;
 
 
     @Test
@@ -93,8 +93,11 @@ public class ModelFeatureAggregationBucketsServiceTest {
      * Create adeRecords
      */
     public void generateAndPersistAdeEnrichedRecords(TimeRange timeRange,String username) {
+//        Set<String> dbs = mongoTemplate.getCollectionNames();
         AdeDataStoreCleanupParams cleanupParams = new AdeDataStoreCleanupParams(timeRange.getStart(),timeRange.getEnd(),DATA_SOURCE);
         enrichedDataStore.cleanup(cleanupParams);
+        List<EnrichedDlpFileRecord> enrichedDlpFileRecords= mongoTemplate.findAll(EnrichedDlpFileRecord.class, "enriched_dlpfile");
+        Assert.assertEquals(0,enrichedDlpFileRecords.size());
         Instant startTime = timeRange.getStart();
         EnrichedDlpFileRecord enrichedDlpFileRecord = new EnrichedDlpFileRecord(startTime);
         enrichedDlpFileRecord.setNormalized_username(username);
@@ -119,7 +122,7 @@ public class ModelFeatureAggregationBucketsServiceTest {
             InMemoryFeatureBucketAggregatorConfig.class,
             FeatureBucketStoreMongoConfig.class,
     })
-    public static class springConfig {
+    public static class ModelFeatureAggregationBucketsServiceTestConfiguration {
         @Autowired
         private BucketConfigurationService bucketConfigurationService;
         @Autowired
