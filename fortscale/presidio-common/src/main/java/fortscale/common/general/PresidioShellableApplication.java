@@ -20,7 +20,7 @@ public abstract class PresidioShellableApplication {
             BootShim bs = new BootShim(args, ctx);
             bs.run();
         } catch (RuntimeException e) {
-            String errorMessage = String.format("Failed to run application with specified args: [%s] due to %s", Arrays.toString(args), e.getMessage());
+            String errorMessage = String.format("Failed to run application with specified args: [%s]", Arrays.toString(args));
             logger.error(errorMessage, e);
         }
     }
