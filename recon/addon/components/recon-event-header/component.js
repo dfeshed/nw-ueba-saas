@@ -24,7 +24,7 @@ const EventHeaderComponent = Component.extend({
       headerItems.forEach((item) => {
         // Get the (so)sort order from recon displayed header object.
         const so = RECON_DISPLAYED_HEADER[item.id];
-        if (item && item.name && so >= 0) {
+        if (item && item.value !== undefined && item.name && so >= 0) {
           // Add sort order to object
           item.so = so;
           set(item, 'hasTooltip', HAS_TOOLTIP.includes(item.name));

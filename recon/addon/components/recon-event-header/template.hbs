@@ -10,14 +10,12 @@
         {{#if displayedHeaderItems}}
           <grid responsive>
             {{#each displayedHeaderItems as |item|}}
-              {{#if item.value}}
-                {{recon-event-header-item
-                  name=item.name
-                  value=item.value
-                  type=item.type
-                  hasTooltip=item.hasTooltip
-                }}
-              {{/if}}
+              {{recon-event-header-item
+                name=item.name
+                value=item.value
+                type=item.type
+                hasTooltip=item.hasTooltip
+              }}
             {{/each}}
           </grid>
           {{#rsa-content-tethered-panel
