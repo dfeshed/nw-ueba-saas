@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import presidio.ade.domain.record.enriched.AdeEnrichedDlpFileContext;
 import presidio.ade.domain.record.enriched.EnrichedDlpFileRecord;
@@ -39,6 +40,7 @@ import java.util.Properties;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @Category(ModuleTestCategory.class)
+@ContextConfiguration(classes = ModelFeatureAggregationBucketsServiceTest.springConfig.class)
 public class ModelFeatureAggregationBucketsServiceTest {
     private static final String DATA_SOURCE = "dlpfile";
 
