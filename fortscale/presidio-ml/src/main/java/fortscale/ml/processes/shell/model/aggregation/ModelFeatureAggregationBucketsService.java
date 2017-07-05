@@ -21,7 +21,7 @@ public class ModelFeatureAggregationBucketsService extends FixedDurationStrategy
     private BucketConfigurationService bucketConfigurationService;
     private EnrichedDataStore enrichedDataStore;
     private InMemoryFeatureBucketAggregator featureBucketAggregator;
-    FeatureBucketStore featureBucketStore;
+    private FeatureBucketStore featureBucketStore;
 
     public ModelFeatureAggregationBucketsService(BucketConfigurationService bucketConfigurationService,
                                                  EnrichedDataStore enrichedDataStore, InMemoryFeatureBucketAggregator featureBucketAggregator,
@@ -34,7 +34,7 @@ public class ModelFeatureAggregationBucketsService extends FixedDurationStrategy
     }
 
     @Override
-    public void executeSingleTimeRange(TimeRange timeRange, String dataSource, String contextType) {
+    protected void executeSingleTimeRange(TimeRange timeRange, String dataSource, String contextType) {
         //For now we don't have multiple contexts so we pass just list of size 1.
         List<String> contextTypes = Collections.singletonList(contextType);
 
@@ -67,12 +67,12 @@ public class ModelFeatureAggregationBucketsService extends FixedDurationStrategy
     }
 
     protected FeatureBucketStrategyData createFeatureBucketStrategyData(TimeRange timeRange){
-        String strategyName = StringUtils.lowerCase(this.strategy.name());
+        String strategyName = "fixed_duration_" + StringUtils.lowerCase(this.strategy.name());
         return new FeatureBucketStrategyData(strategyName,strategyName,timeRange.getStart().getEpochSecond(), timeRange.getEnd().getEpochSecond());
     }
 
     @Override
-    public List<String> getDistinctContextTypes(String dataSource) {
+    protected List<String> getDistinctContextTypes(String dataSource) {
         Set<List<String>> distinctMultipleContextsTypeSet = bucketConfigurationService.getRelatedDistinctContexts(dataSource);
         Set<String> distinctSingleContextTypeSet = new HashSet<>();
         for(List<String> distinctMultipleContexts: distinctMultipleContextsTypeSet){

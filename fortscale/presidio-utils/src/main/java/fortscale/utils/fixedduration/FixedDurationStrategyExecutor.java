@@ -39,9 +39,9 @@ public abstract class FixedDurationStrategyExecutor {
     /**
      * runs calculation for single hour/day/other fixed duration per datasource for all relvant contexts
      */
-    public abstract void executeSingleTimeRange(TimeRange timeRange, String dataSource, String contextType);
+    protected abstract void executeSingleTimeRange(TimeRange timeRange, String dataSource, String contextType);
 
-    public abstract List<String> getDistinctContextTypes(String dataSource);
+    protected abstract List<String> getDistinctContextTypes(String dataSource);
 
 
 }
