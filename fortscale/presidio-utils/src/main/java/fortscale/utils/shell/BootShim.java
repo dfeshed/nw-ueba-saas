@@ -1,25 +1,22 @@
 package fortscale.utils.shell;
 
+import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.beans.factory.support.RootBeanDefinition;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ClassPathBeanDefinitionScanner;
-import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.shell.CommandLine;
 import org.springframework.shell.ShellException;
 import org.springframework.shell.SimpleShellCommandLineOptions;
 import org.springframework.shell.core.ExitShellRequest;
 import org.springframework.shell.core.JLineShellComponent;
-import org.springframework.shell.support.logging.HandlerUtils;
-import org.springframework.util.StopWatch;
 
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class BootShim {
+
+    private static final Logger logger = Logger.getLogger(BootShim.class);
 
     public static final String SHELL_BEAN_NAME = "shell";
 
@@ -33,7 +30,8 @@ public class BootShim {
         try {
             commandLine = SimpleShellCommandLineOptions.parseCommandLine(args);
         } catch (IOException e) {
-            throw new ShellException(e.getMessage(), e);
+            logger.error("Failed to parse application arguments {}", args.toString());
+            throw new ShellException(e);
         }
 
         this.configureApplicationContext(this.ctx);
