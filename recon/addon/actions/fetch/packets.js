@@ -2,8 +2,8 @@ import { streamRequest } from 'streaming-data/services/data-access/requests';
 import { buildBaseQuery, addStreaming } from 'recon/actions/util/query-util';
 import { batchDataHandler, HANDLERS, BATCH_TYPES } from 'recon/actions/util/batch-data-handler';
 
-const BATCH_CHARACTER_SIZE = 7500;
-const TIME_BETWEEN_BATCHES = 500;
+const BATCH_CHARACTER_SIZE = 5000;
+const TIME_BETWEEN_BATCHES = 1500;
 
 // The data, once in memory, is much larger because it has already been processed
 // and enriched, so the BULK character size, to match the BATCH_CHARACTER_SIZE

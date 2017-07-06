@@ -173,7 +173,8 @@ export default {
       headerMeta: 'Header Meta',
       headerAttribute: 'Header Attribute',
       headerSignature: 'Interesting Bytes',
-      headerDisplayLabel: '{{label}} = {{displayValue}}'
+      headerDisplayLabel: '{{label}} = {{displayValue}}',
+      renderingMore: 'Showing more...'
     },
     fileView: {
       downloadFile: 'Download File',

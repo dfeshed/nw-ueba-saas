@@ -1,7 +1,7 @@
 import Component from 'ember-component';
 import { debounce } from 'ember-runloop';
 import connect from 'ember-redux/components/connect';
-import { or, alias } from 'ember-computed-decorators';
+import computed, { or, alias } from 'ember-computed-decorators';
 import ReconPanelHelp from 'recon/mixins/recon-panel-help';
 
 import ReconPagerMixin from 'recon/mixins/recon-pager';
@@ -49,6 +49,9 @@ const PacketReconComponent = Component.extend(ReconPagerMixin, StickyHeaderMixin
   hasDataBeenHiddenByUserSelection: false,
 
   @alias('contextualHelp.invPacketAnalysis') topic: null,
+
+  @computed('processedPackets.length', 'numberOfItems')
+  hasMoreToDisplay: (numberDisplayed, numberToDisplay) => numberDisplayed < numberToDisplay,
 
   didInsertElement() {
     this._super(...arguments);

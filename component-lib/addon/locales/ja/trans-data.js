@@ -173,7 +173,8 @@ export default {
       headerMeta: 'ja_Header Meta',
       headerAttribute: 'ja_Header Attribute',
       headerSignature: 'ja_Interesting Bytes',
-      headerDisplayLabel: 'ja_{{label}} = {{displayValue}}'
+      headerDisplayLabel: 'ja_{{label}} = {{displayValue}}',
+      renderingMore: 'ja_Showing more...'
     },
     fileView: {
       downloadFile: 'ja_Download File',

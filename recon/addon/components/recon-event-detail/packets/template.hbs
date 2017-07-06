@@ -16,9 +16,15 @@
         tooltipData=tooltipData
       }}
     {{/each}}
+
+    {{#if hasMoreToDisplay}}
+      <centered class='rendering-more'>
+        {{rsa-loader size='large' label=(t 'recon.packetView.renderingMore')}}
+      </centered>
+    {{/if}}
   </div>
 
-  {{recon-event-detail/single-packet/byte-tooltip }}
+  {{recon-event-detail/single-packet/byte-tooltip}}
 {{else}}
   {{!--
     If no processedPackets, but there are packets, means either
