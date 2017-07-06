@@ -12,7 +12,7 @@ test('can take a stream into the cache and remove it when a route changes', func
   const stream = Stream.create();
   sinon.stub(stream, 'stop');
 
-  StreamCache.registerStream(stream, '/foo/bar', {});
+  StreamCache.registerStream(stream, 'testMethod', 'testModel', '/foo/bar', {});
   StreamCache.cleanUpRouteStreams('/baz/foo');
 
   setTimeout(function() {
@@ -28,7 +28,7 @@ test('can take a stream into the cache and remove it (by default) when the route
   const stream = Stream.create();
   sinon.stub(stream, 'stop');
 
-  StreamCache.registerStream(stream, '/foo/bar', {});
+  StreamCache.registerStream(stream, 'testMethod', 'testModel', '/foo/bar', {});
   StreamCache.cleanUpRouteStreams('/foo/bar/baz');
 
   setTimeout(function() {
@@ -44,7 +44,7 @@ test('can take a stream into the cache and not remove it when the route just get
   const stream = Stream.create();
   sinon.stub(stream, 'stop');
 
-  StreamCache.registerStream(stream, '/foo/bar', { keepAliveOnTransitionToChildRoute: true });
+  StreamCache.registerStream(stream, 'testMethod', 'testModel', '/foo/bar', { keepAliveOnTransitionToChildRoute: true });
   StreamCache.cleanUpRouteStreams('/foo/bar/baz');
 
   setTimeout(function() {
@@ -61,7 +61,7 @@ test('will not manage stream if told that the stream should stay alive on route 
   const stream = Stream.create();
   sinon.stub(stream, 'stop');
 
-  StreamCache.registerStream(stream, '/foo/bar', { keepAliveOnRouteChange: true });
+  StreamCache.registerStream(stream, 'testMethod', 'testModel', '/foo/bar', { keepAliveOnRouteChange: true });
   StreamCache.cleanUpRouteStreams('/baz/foo');
 
   setTimeout(function() {
@@ -77,7 +77,7 @@ test('can take an Anon stream into the cache and remove it when a route changes'
   const stream = Stream.create();
   sinon.stub(stream, 'stop');
 
-  StreamCache.registerStream(stream, undefined, {});
+  StreamCache.registerStream(stream, 'testMethod', 'testModel', undefined, {});
   StreamCache.cleanUpRouteStreams('/baz/foo');
 
   setTimeout(function() {

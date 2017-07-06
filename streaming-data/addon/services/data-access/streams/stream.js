@@ -14,6 +14,8 @@ const {
 
 export default EmberObject.extend(FromSocket, FromArray, ToArray, {
 
+  hasBeenStopped: false,
+
   /**
    * Registers an observer to this stream.
    * The observer will have its callbacks notified whenever this stream emits a value.
@@ -82,8 +84,12 @@ export default EmberObject.extend(FromSocket, FromArray, ToArray, {
    * @public
    */
   stop() {
-    this._notifyAll('onStopped', arguments);
-    this._super();
+    // Do not notify if we have already notified
+    if (!this.get('hasBeenStopped')) {
+      this._notifyAll('onStopped', arguments);
+      this.set('hasBeenStopped', true);
+      this._super();
+    }
     return this;
   },
 

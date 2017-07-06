@@ -75,7 +75,7 @@ const streamRequest = ({
   streamOptions.isTimeoutEnabled = !isNone(onTimeout);
 
   const stream = Socket.createStream(method, modelName, query, streamOptions);
-  StreamCache.registerStream(stream, routeName, streamOptions);
+  StreamCache.registerStream(stream, method, modelName, routeName, streamOptions);
 
   stream.autoStart()
     .subscribe({
@@ -141,7 +141,7 @@ const promiseRequest = ({
     return null;
   }
 
-  StreamCache.registerStream(stream, routeName, streamOptions);
+  StreamCache.registerStream(stream, method, modelName, routeName, streamOptions);
 
   return new RSVP.Promise((resolve, reject) => {
     let hangup;

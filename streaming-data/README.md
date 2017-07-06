@@ -165,6 +165,11 @@ Each API request takes a `streamOptions` object.
   * When set to `true` a parent route will be kept alive when transitioning to a new child. So, if going to `/foo` to `/foo/bar`, all streams associated with `/foo` will be left alone.
 * `timeoutWait`, `number`, optional
   * Defaults to `1000`
+* `cancelPreviouslyExecuting`, `Boolean`, optional
+  * Defaults to `false`
+  * When `true`, if an API call using the same `method`/`modelName` is executed while the previous has not finished or is still open, the previous will be effectively cancelled.
+    * For stream requests, no callback will be called.
+    * For promise requests, the promise will neither be `resolve`d nor `reject`ed.
 
 # Development
 

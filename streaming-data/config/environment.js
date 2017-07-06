@@ -37,6 +37,22 @@ module.exports = function(/* environment, appConfig */) {
           subscriptionDestination: '/test/subscription/promise/_6',
           requestDestination: '/test/request/promise/_6'
         },
+        'promise/_7': {
+          subscriptionDestination: '/test/subscription/promise/_7',
+          requestDestination: '/test/request/promise/_7'
+        },
+        'promise/_8': {
+          subscriptionDestination: '/test/subscription/promise/_8',
+          requestDestination: '/test/request/promise/_8'
+        },
+        'promise/_9': {
+          subscriptionDestination: '/test/subscription/promise/_9',
+          requestDestination: '/test/request/promise/_9'
+        },
+        'promise/_10': {
+          subscriptionDestination: '/test/subscription/promise/_10',
+          requestDestination: '/test/request/promise/_10'
+        },
         'stream/_1': {
           subscriptionDestination: '/test/subscription/stream/_1',
           requestDestination: '/test/request/stream/_1'
@@ -60,6 +76,22 @@ module.exports = function(/* environment, appConfig */) {
         'stream/_6': {
           subscriptionDestination: '/test/subscription/stream/_6',
           requestDestination: '/test/request/stream/_6'
+        },
+        'stream/_7': {
+          subscriptionDestination: '/test/subscription/stream/_7',
+          requestDestination: '/test/request/stream/_7'
+        },
+        'stream/_8': {
+          subscriptionDestination: '/test/subscription/stream/_8',
+          requestDestination: '/test/request/stream/_8'
+        },
+        'stream/_9': {
+          subscriptionDestination: '/test/subscription/stream/_9',
+          requestDestination: '/test/request/stream/_9'
+        },
+        'stream/_10': {
+          subscriptionDestination: '/test/subscription/stream/_10',
+          requestDestination: '/test/request/stream/_10'
         }
       }
     }
