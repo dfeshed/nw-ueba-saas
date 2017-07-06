@@ -2,73 +2,34 @@ package fortscale.ml.model.store;
 
 import fortscale.ml.model.Model;
 import fortscale.ml.model.ModelConf;
-import fortscale.utils.mongodb.util.MongoDbUtilService;
-import fortscale.utils.mongodb.util.MongoDbUtilServiceConfig;
-import fortscale.utils.monitoring.stats.config.NullStatsServiceConfig;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
+import fortscale.utils.time.TimeRange;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.mongodb.core.IndexOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.index.IndexDefinition;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.Date;
-import java.util.Set;
-
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = {
-        MongodbTestConfig.class,
-        MongoDbUtilServiceConfig.class,
-        ModelStoreConfig.class,
-        NullStatsServiceConfig.class
-})
+@ContextConfiguration(classes = {MongodbTestConfig.class, ModelStoreConfig.class})
 public class ModelStoreTest {
-    private static final String COLLECTION_NAME_PREFIX = "model_";
-    private static final String DEFAULT_MODEL_CONF_NAME = "testModelConf";
-    private static final String DEFAULT_SESSION_ID = "testSessionId";
+	@Autowired
+	private MongoTemplate mongoTemplate;
+	@Autowired
+	private ModelStore modelStore;
 
-    @MockBean
-    private ModelConf modelConf;
-    @Mock
-    private Model model;
-    @Autowired
-    private MongoTemplate mongoTemplate;
-    @Autowired
-    private ModelStore modelStore;
-
-    @Before
-    public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
-        when(modelConf.getName()).thenReturn(DEFAULT_MODEL_CONF_NAME);
-    }
-
-
-    @Test
-    public void shouldCreateCollectionIfDoesNotExist() {
-        Set<String> collectionNames = mongoTemplate.getCollectionNames();
-        String collectionName = modelStore.getCollectionName(modelConf);
-        Assert.assertTrue(!collectionNames.contains(collectionName));
-        modelStore.save(modelConf, DEFAULT_SESSION_ID, "contextId", model, new Date(), new Date());
-        collectionNames = mongoTemplate.getCollectionNames();
-        Assert.assertTrue(collectionNames.contains(collectionName));
-
-    }
-
+	@Test
+	public void should_create_collection_if_it_does_not_exist() {
+		ModelConf modelConf = mock(ModelConf.class);
+		when(modelConf.getName()).thenReturn("modelConfName");
+		String collectionName = ModelStore.getCollectionName(modelConf);
+		Assert.assertFalse(mongoTemplate.getCollectionNames().contains(collectionName));
+		modelStore.save(modelConf, "sessionId", "contextId", mock(Model.class), new TimeRange(0, 0));
+		Assert.assertTrue(mongoTemplate.getCollectionNames().contains(collectionName));
+	}
 }
