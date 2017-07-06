@@ -1221,7 +1221,7 @@ export default {
         LIST: 'ja_Lists',
         Users: 'ja_Users',
         IOC: 'ja_IOCs',
-        Machines: 'ja_Machines',
+        Machines: 'ja_Endpoint',
         Modules: 'ja_Modules',
         LiveConnect: 'ja_LiveConnect'
       }

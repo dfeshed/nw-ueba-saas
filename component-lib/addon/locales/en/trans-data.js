@@ -1221,7 +1221,7 @@ export default {
         LIST: 'Lists',
         Users: 'Users',
         IOC: 'IOCs',
-        Machines: 'Machines',
+        Machines: 'Endpoint',
         Modules: 'Modules',
         LiveConnect: 'LiveConnect'
       }
