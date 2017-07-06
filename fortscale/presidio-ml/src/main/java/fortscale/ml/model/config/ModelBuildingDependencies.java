@@ -12,6 +12,7 @@ import fortscale.aggregation.feature.event.store.translator.AggregatedFeatureNam
 import fortscale.entity.event.*;
 import fortscale.entity.event.translator.EntityEventTranslationServiceConfig;
 import fortscale.utils.mongodb.util.MongoDbUtilServiceConfig;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -26,10 +27,18 @@ import org.springframework.context.annotation.Import;
 		FeatureBucketReaderConfig.class
 })
 public class ModelBuildingDependencies {
+	@Value("${impala.table.fields.data.source}")
+	private String dataSourceFieldName;
+	@Value("${fortscale.aggregation.bucket.conf.json.file.name}")
+	private String bucketConfJsonFilePath;
+	@Value("${fortscale.aggregation.bucket.conf.json.overriding.files.path:#{null}}")
+	private String bucketConfJsonOverridingFilesPath;
+	@Value("${fortscale.aggregation.bucket.conf.json.additional.files.path:#{null}}")
+	private String bucketConfJsonAdditionalFilesPath;
 
 	@Bean
 	public BucketConfigurationService bucketConfigurationService() {
-		return new BucketConfigurationService();
+		return new BucketConfigurationService(dataSourceFieldName, bucketConfJsonFilePath, bucketConfJsonOverridingFilesPath,bucketConfJsonAdditionalFilesPath);
 	}
 
 

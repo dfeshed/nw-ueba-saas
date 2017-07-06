@@ -1,13 +1,11 @@
-package fortscale.ml.processes.shell;
+package fortscale.ml.processes.shell.scoring.aggregation;
 
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.aggregation.feature.bucket.FeatureBucket;
 import fortscale.aggregation.feature.bucket.FeatureBucketAggregator;
 import fortscale.aggregation.feature.bucket.FeatureBucketsAggregatorInMemory;
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
-import fortscale.aggregation.feature.functions.IAggrFeatureFunctionsService;
 import fortscale.utils.recordreader.RecordReaderFactoryService;
-import presidio.ade.domain.record.AdeRecord;
 import presidio.ade.domain.record.scored.enriched_scored.AdeScoredEnrichedRecord;
 
 import java.util.List;

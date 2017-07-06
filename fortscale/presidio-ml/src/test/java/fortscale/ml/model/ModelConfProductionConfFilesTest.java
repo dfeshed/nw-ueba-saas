@@ -22,6 +22,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -58,9 +59,18 @@ public class ModelConfProductionConfFilesTest {
 		@Bean public EntityEventMongoStore getEntityEventMongoStore() {return entityEventMongoStore;}
 		@Bean public ModelStore getModelStore() {return modelStore;}
 
+		@Value("${impala.table.fields.data.source}")
+		private String dataSourceFieldName;
+		@Value("${fortscale.aggregation.bucket.conf.json.file.name}")
+		private String bucketConfJsonFilePath;
+		@Value("${fortscale.aggregation.bucket.conf.json.overriding.files.path:#{null}}")
+		private String bucketConfJsonOverridingFilesPath;
+		@Value("${fortscale.aggregation.bucket.conf.json.additional.files.path:#{null}}")
+		private String bucketConfJsonAdditionalFilesPath;
+
 		@Bean
 		public BucketConfigurationService bucketConfigurationService() {
-			return new BucketConfigurationService();
+			return new BucketConfigurationService(dataSourceFieldName, bucketConfJsonFilePath, bucketConfJsonOverridingFilesPath,bucketConfJsonAdditionalFilesPath);
 		}
 
 		@Bean

@@ -54,10 +54,9 @@ public class PresidioInputPersistencyServiceMongoImplTest {
     @Test
     public void testReadBoundariesStartTime() throws Exception {
         List<AbstractAuditableDocument> list = new ArrayList<>();
-        AbstractAuditableDocument doc = new DlpFileDataDocument(("2017-06-06T10:00:00Z,executing_application,hostname," +
+        AbstractAuditableDocument doc = new DlpFileDataDocument(("2017-06-06T10:00:00Z,copy,executing_application,hostname," +
                 "first_name,dddd,last_name,username,malware_scan_result,event_id,source_ip,false,false,destination_path," +
-                "destination_file_name,2.23,source_path,source_file_name,source_drive_type,destination_drive_type," +
-                "event_type").split(","));
+                "2.23,destination_file_name,source_path,source_file_name,source_drive_type,destination_drive_type,").split(","));
         list.add(doc);
         Instant startTime = Instant.parse("2017-06-06T10:00:00Z");
         Instant endTime = Instant.parse("2017-06-06T11:00:00Z");
@@ -69,10 +68,9 @@ public class PresidioInputPersistencyServiceMongoImplTest {
     @Test
     public void testReadBoundariesEndTime() throws Exception {
         List<AbstractAuditableDocument> list = new ArrayList<>();
-        AbstractAuditableDocument doc = new DlpFileDataDocument(("2017-06-06T11:00:00Z,executing_application,hostname," +
+        AbstractAuditableDocument doc = new DlpFileDataDocument(("2017-06-06T11:00:00Z,copy,executing_application,hostname," +
                 "first_name,dddd,last_name,username,malware_scan_result,event_id,source_ip,false,false,destination_path," +
-                "destination_file_name,2.23,source_path,source_file_name,source_drive_type,destination_drive_type," +
-                "event_type").split(","));
+                "2.23,destination_file_name,source_path,source_file_name,source_drive_type,destination_drive_type").split(","));
         list.add(doc);
         Instant startTime = Instant.parse("2017-06-06T10:00:00Z");
         Instant endTime = Instant.parse("2017-06-06T11:00:00Z");
@@ -82,14 +80,12 @@ public class PresidioInputPersistencyServiceMongoImplTest {
 
     }
 
-
     @Test
     public void storeOneEventToMongoAndReadEventFromMongo() {
         List<AbstractAuditableDocument> list = new ArrayList<>();
-        AbstractAuditableDocument doc = new DlpFileDataDocument(("2017-06-06T10:10:10Z,executing_application,hostname," +
+        AbstractAuditableDocument doc = new DlpFileDataDocument(("2017-06-06T10:10:10Z,copy,executing_application,hostname," +
                 "first_name,dddd,last_name,username,malware_scan_result,event_id,source_ip,false,false,destination_path," +
-                "destination_file_name,2.23,source_path,source_file_name,source_drive_type,destination_drive_type," +
-                "event_type").split(","));
+                "2.23,destination_file_name,source_path,source_file_name,source_drive_type,destination_drive_type").split(","));
         list.add(doc);
         presidioInputPersistencyService.store(DataSource.DLPFILE, list);
         List<DlpFileDataDocument> all = mongoTemplate.findAll(DlpFileDataDocument.class, toCollectionNameTranslator.toCollectionName(DataSource.DLPFILE));
@@ -100,10 +96,9 @@ public class PresidioInputPersistencyServiceMongoImplTest {
     public void deleteAllEventsFromMongoCollectionDlpFile() {
         mongoTemplate.dropCollection(DlpFileDataDocument.class);
         List<AbstractAuditableDocument> list = new ArrayList<>();
-        AbstractAuditableDocument doc = new DlpFileDataDocument(("2017-06-06T10:10:10Z,executing_application,hostname," +
+        AbstractAuditableDocument doc = new DlpFileDataDocument(("2017-06-06T10:10:10Z,copy,executing_application,hostname," +
                 "first_name,ccc,last_name,username,malware_scan_result,event_id,source_ip,true,true,destination_path," +
-                "destination_file_name,2.23,source_path,source_file_name,source_drive_type,destination_drive_type," +
-                "event_type").split(","));
+                "2.23,destination_file_name,source_path,source_file_name,source_drive_type,destination_drive_type,").split(","));
         list.add(doc);
         presidioInputPersistencyService.store(DataSource.DLPFILE, list);
         int numberOfEventsDeleted = 0;
@@ -117,5 +112,4 @@ public class PresidioInputPersistencyServiceMongoImplTest {
         Assert.assertEquals(1, numberOfEventsDeleted);
         Assert.assertEquals(0, all.size());
     }
-
 }

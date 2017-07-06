@@ -1,24 +1,34 @@
 package fortscale.aggregation.feature.event;
 
+import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.aggregation.feature.bucket.FeatureBucketConf;
+import fortscale.aggregation.feature.bucket.config.BucketConfigurationServiceConfig;
+import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
 import net.minidev.json.JSONObject;
 import org.json.JSONException;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.skyscreamer.jsonassert.JSONAssert;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 
 /**
  * Created by amira on 20/10/2015.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "classpath*:META-INF/spring/bucketconf-context-test.xml" })
 public class AggregatedFeatureEventsConfServiceTest {
 
     static final String BUCKET_CONF_AS_STRING1 = "{\"name\":\"bc1\",\"dataSources\":[\"ssh\"],\"contextFieldNames\":[\"field1\",\"field2\"],\"strategyName\":\"strategy1\",\"aggrFeatureConfs\":[{\"name\":\"aggr-feature-1\",\"featureNamesMap\":{\"param1\":[\"feature1\",\"feature2\"]},\"aggrFeatureFuncJson\":{\"type\":\"func1\"},\"allFeatureNames\":[\"feature2\",\"feature1\"],\"filter\":null}],\"expireAfterSeconds\":null,\"allFeatureNames\":[\"feature2\",\"feature1\"]}";
@@ -30,6 +40,81 @@ public class AggregatedFeatureEventsConfServiceTest {
     static final String AGGR_FEATURE_EVENT_FUNCTION_AS_STRING2 = "{\"params\":{\"param1\":\"valueOfParam1\",\"param2\":\"valueOfParam2\",\"param3\":\"valueOfParam3\"},\"type\":\"type2\"}";
     static final String FEATURE_NAME_MAP_AS_STRING2 = "{functionArgument=[aggregatedFeatureName1, aggregatedFeatureName2, aggregatedFeatureName3]}";
     static final String FEATURE_NAMES_AS_STRING2 = "[aggregatedFeatureName1, aggregatedFeatureName3, aggregatedFeatureName2]";
+
+
+    @Configuration
+    @EnableSpringConfigured
+    @ComponentScan(basePackages = "fortscale.global")
+    @Import({BucketConfigurationServiceConfig.class,})
+    static class ContextConfiguration {
+
+        @Value("${streaming.event.field.type.aggr_event}")
+        private String eventTypeFieldValue;
+
+        @Value("${streaming.aggr_event.field.context}")
+        private String contextFieldName;
+
+        @Bean
+        public AggregatedFeatureEventsConfUtilService getAggregatedFeatureEventsConfUtilService(){
+            return new AggregatedFeatureEventsConfUtilService(eventTypeFieldValue, contextFieldName);
+        }
+
+        @Value("${fortscale.aggregation.retention.strategy.conf.json.file.name}")
+        private String retentionStrategyConfJsonFilePath;
+        @Value("${fortscale.aggregation.retention.strategy.conf.json.overriding.files.path}")
+        private String retentionStrategyConfJsonOverridingFilesPath;
+        @Value("${fortscale.aggregation.retention.strategy.conf.json.additional.files.path}")
+        private String retentionStrategyConfJsonAdditionalFilesPath;
+
+        @Bean
+        public RetentionStrategiesConfService getRetentionStrategiesConfService(){
+            return new RetentionStrategiesConfService(retentionStrategyConfJsonFilePath, retentionStrategyConfJsonOverridingFilesPath,retentionStrategyConfJsonAdditionalFilesPath);
+        }
+
+        @Value("${fortscale.aggregation.feature.event.conf.json.file.name}")
+        private String aggregatedFeatureEventConfJsonFilePath;
+        @Value("${fortscale.aggregation.feature.event.conf.json.overriding.files.path}")
+        private String aggregatedFeatureEventConfJsonOverridingFilesPath;
+        @Value("${fortscale.aggregation.feature.event.conf.json.additional.files.path}")
+        private String aggregatedFeatureEventConfJsonAdditionalFilesPath;
+
+        @Autowired
+        private BucketConfigurationService bucketConfigurationService;
+
+        @Autowired
+        private AggregatedFeatureEventsConfUtilService aggregatedFeatureEventsConfUtilService;
+
+        @Autowired
+        private RetentionStrategiesConfService retentionStrategiesConfService;
+
+        @Bean
+        public AggregatedFeatureEventsConfService getAggregatedFeatureEventsConfService(){
+            return new AggregatedFeatureEventsConfService(bucketConfigurationService,aggregatedFeatureEventsConfUtilService,null,aggregatedFeatureEventConfJsonFilePath,
+                    aggregatedFeatureEventConfJsonOverridingFilesPath, aggregatedFeatureEventConfJsonAdditionalFilesPath);
+        }
+
+        @Bean
+        public static TestPropertiesPlaceholderConfigurer abc() {
+            Properties properties = new Properties();
+            properties.put("impala.table.fields.data.source", "data_source");
+            properties.put("streaming.event.field.type.aggr_event", "aggr_event");
+            properties.put("streaming.aggr_event.field.context", "context");
+
+            properties.put("fortscale.aggregation.bucket.conf.json.file.name", "classpath:config/asl/buckets.json");
+            properties.put("fortscale.aggregation.bucket.conf.json.overriding.files.path", "classpath:fortscale/config/asl/buckets/overriding/*.json");
+            properties.put("fortscale.aggregation.bucket.conf.json.additional.files.path", "classpath:fortscale/config/asl/buckets/additional/*.json");
+
+            properties.put("fortscale.aggregation.feature.event.conf.json.file.name", "classpath:config/asl/aggregated_feature_events.json");
+            properties.put("fortscale.aggregation.feature.event.conf.json.overriding.files.path", "classpath:fortscale/config/asl/aggregation_events/overriding/*.json");
+
+            properties.put("fortscale.aggregation.retention.strategy.conf.json.file.name", "classpath:config/asl/retention_strategies.json");
+            properties.put("fortscale.aggregation.retention.strategy.conf.json.overriding.files.path", "classpath:fortscale/config/asl/retention_strategy/overriding/*.json");
+
+            return new TestPropertiesPlaceholderConfigurer(properties);
+        }
+    }
+
+
 
     @Autowired
     AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;

@@ -4,6 +4,7 @@ import presidio.ade.domain.store.AdeDataStoreCleanupParams;
 import presidio.ade.domain.store.AdeToCollectionNameTranslator;
 
 import java.util.Collection;
+import java.util.Collections;
 
 /**
  * Translator from enriched data to collection name.
@@ -26,6 +27,6 @@ public class EnrichedDataAdeToCollectionNameTranslator implements AdeToCollectio
 
     @Override
     public Collection<String> toCollectionNames(AdeDataStoreCleanupParams cleanupParams) {
-        return null;
+        return Collections.singletonList(toCollectionName(cleanupParams.getDataSource()));
     }
 }

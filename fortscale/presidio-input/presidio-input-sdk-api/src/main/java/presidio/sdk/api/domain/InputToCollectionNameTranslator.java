@@ -8,6 +8,6 @@ public class InputToCollectionNameTranslator implements ToCollectionNameTranslat
 
     @Override
     public String toCollectionName(DataSource dataSource) {
-        return String.format("%s_stored_data", dataSource.getName());
+        return String.format("input_%s_raw_events", dataSource.getName());
     }
 }
