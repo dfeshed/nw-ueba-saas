@@ -74,7 +74,9 @@ const fetchItemsStreamStarted = (state) => ({
   ...state,
   items: [],
   itemsStatus: 'wait',
-  focusedItem: null
+  focusedItem: null,
+  itemsSelected: [],
+  isSelectAll: false
 });
 
 const fetchItemsStreamInitialized = (state, { payload }) => ({

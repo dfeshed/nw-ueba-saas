@@ -76,6 +76,9 @@ $header-height: 40px;
     .x-toggle-component {
       position: absolute;
       right: rsa-whitespace();
+      label {
+        overflow: visible;
+      }
     }
   }
 
