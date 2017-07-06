@@ -20,6 +20,14 @@ public class RetentionStrategiesConfService extends AslConfigurationService {
 	@Value("${fortscale.aggregation.retention.strategy.conf.json.additional.files.path}")
 	private String retentionStrategyConfJsonAdditionalFilesPath;
 
+	public RetentionStrategiesConfService(){}
+
+	public RetentionStrategiesConfService(String retentionStrategyConfJsonFilePath,String retentionStrategyConfJsonOverridingFilesPath,String retentionStrategyConfJsonAdditionalFilesPath){
+		this.retentionStrategyConfJsonFilePath = retentionStrategyConfJsonFilePath;
+		this.retentionStrategyConfJsonOverridingFilesPath = retentionStrategyConfJsonOverridingFilesPath;
+		this.retentionStrategyConfJsonAdditionalFilesPath = retentionStrategyConfJsonAdditionalFilesPath;
+	}
+
 	private Map<String, AggrFeatureRetentionStrategy> aggrFeatureRetentionStrategies = new HashMap<>();
 
 	@Override

@@ -1,4 +1,4 @@
-package fortscale.ml.processes.shell;
+package fortscale.ml.processes.shell.scoring.aggregation;
 
 import fortscale.aggregation.feature.bucket.FeatureBucket;
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;

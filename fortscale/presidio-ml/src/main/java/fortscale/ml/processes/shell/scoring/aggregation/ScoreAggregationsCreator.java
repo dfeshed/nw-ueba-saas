@@ -1,4 +1,4 @@
-package fortscale.ml.processes.shell;
+package fortscale.ml.processes.shell.scoring.aggregation;
 
 import java.util.List;
 

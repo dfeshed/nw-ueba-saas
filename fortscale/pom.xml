@@ -172,6 +172,7 @@
         <podam.version>7.0.5.RELEASE</podam.version>
 		<spring-cloud.version>Dalston.SR1</spring-cloud.version>
         <rpm-maven-plugin.version>2.1.5</rpm-maven-plugin.version>
+        <presidio-rpm.module></presidio-rpm.module>
     </properties>
 
     <dependencyManagement>
@@ -780,7 +781,7 @@
         <module>presidio-adapter</module>
         <module>presidio-output</module>
         <module>presidio-configuration-server</module>
-        <module>presidio-rpm</module>
+        <module>${presidio-rpm.module}</module>
     </modules>
     <distributionManagement>
         <!-- push changes to artifactory, distribute use of sdk -->

@@ -3,8 +3,6 @@ package fortscale.aggregation.feature.bucket;
 
 import fortscale.aggregation.feature.bucket.config.BucketConfigurationServiceConfig;
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
-import fortscale.aggregation.feature.functions.AggrFeatureFuncService;
-import fortscale.aggregation.feature.functions.IAggrFeatureFunctionsService;
 import fortscale.common.feature.AggrFeatureValue;
 import fortscale.common.feature.Feature;
 import fortscale.utils.recordreader.RecordReaderFactory;

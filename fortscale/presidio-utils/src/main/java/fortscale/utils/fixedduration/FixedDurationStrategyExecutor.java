@@ -27,18 +27,21 @@ public abstract class FixedDurationStrategyExecutor {
     public void execute(TimeRange timeRange, String dataSource) {
         logger.debug("got execution time range={}",timeRange);
         List<TimeRange> partitionedTimeRanges = FixedDurationStrategyUtils.splitTimeRangeByStrategy(timeRange, strategy);
-        for (TimeRange timePartition: partitionedTimeRanges) {
-            logger.debug("executing on time partition={}",timePartition);
-            executeSingleTimeRange(timeRange,dataSource);
+
+        for(String contextType: getDistinctContextTypes(dataSource)) {
+            for (TimeRange timePartition : partitionedTimeRanges) {
+                logger.debug("executing on time partition={}", timePartition);
+                executeSingleTimeRange(timeRange, dataSource,contextType);
+            }
         }
     }
 
     /**
      * runs calculation for single hour/day/other fixed duration per datasource for all relvant contexts
      */
-    public abstract void executeSingleTimeRange(TimeRange timeRange, String dataSource);
+    protected abstract void executeSingleTimeRange(TimeRange timeRange, String dataSource, String contextType);
 
-
+    protected abstract List<String> getDistinctContextTypes(String dataSource);
 
 
 }

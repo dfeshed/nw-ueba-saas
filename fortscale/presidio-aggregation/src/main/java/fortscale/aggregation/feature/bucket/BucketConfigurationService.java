@@ -22,14 +22,19 @@ public class BucketConfigurationService extends AslConfigurationService {
 	private Map<String, FeatureBucketConf> bucketConfs = new HashMap<>();
 	private Map<String, List<FeatureBucketConf>> dataSourceToListOfBucketConfs = new HashMap<>();
 
-	@Value("${impala.table.fields.data.source}")
 	private String dataSourceFieldName;
-	@Value("${fortscale.aggregation.bucket.conf.json.file.name}")
 	private String bucketConfJsonFilePath;
-	@Value("${fortscale.aggregation.bucket.conf.json.overriding.files.path:#{null}}")
 	private String bucketConfJsonOverridingFilesPath;
-	@Value("${fortscale.aggregation.bucket.conf.json.additional.files.path:#{null}}")
 	private String bucketConfJsonAdditionalFilesPath;
+
+
+	public BucketConfigurationService(String dataSourceFieldName,String bucketConfJsonFilePath,
+									  String bucketConfJsonOverridingFilesPath,String bucketConfJsonAdditionalFilesPath){
+		this.dataSourceFieldName = dataSourceFieldName;
+		this.bucketConfJsonFilePath =bucketConfJsonFilePath;
+		this.bucketConfJsonOverridingFilesPath = bucketConfJsonOverridingFilesPath;
+		this.bucketConfJsonAdditionalFilesPath = bucketConfJsonAdditionalFilesPath;
+	}
 
 	@Override
 	protected String getBaseConfJsonFilesPath() {
@@ -128,5 +133,15 @@ public class BucketConfigurationService extends AslConfigurationService {
 	public void addNewAggregatedFeatureConfToBucketConf(String bucketConfName, AggregatedFeatureConf aggregatedFeatureConf) {
 		FeatureBucketConf featureBucketConf = getBucketConf(bucketConfName);
 		featureBucketConf.addAggregatedFeatureConf(aggregatedFeatureConf);
+	}
+
+	public Set<List<String>> getRelatedDistinctContexts(String dataSource){
+		List<FeatureBucketConf> featureBucketConfs = dataSourceToListOfBucketConfs.get(dataSource);
+		Set<List<String>> distinctContextsSet = new HashSet<>();
+		for(FeatureBucketConf featureBucketConf: featureBucketConfs){
+			distinctContextsSet.add(featureBucketConf.getContextFieldNames());
+		}
+
+		return distinctContextsSet;
 	}
 }
