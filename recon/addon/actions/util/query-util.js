@@ -84,12 +84,13 @@ const addMaxPackets = (_query, maxPackets = 2500) => {
   return _addFilter(_query, 'maxPackets', maxPackets);
 };
 
-const basicPromiseRequest = (endpointId, eventId, modelName) => {
+const basicPromiseRequest = (endpointId, eventId, modelName, streamOptions = {}) => {
   const query = buildBaseQuery(endpointId, eventId);
   return promiseRequest({
     method: 'query',
     modelName,
-    query
+    query,
+    streamOptions
   });
 };
 

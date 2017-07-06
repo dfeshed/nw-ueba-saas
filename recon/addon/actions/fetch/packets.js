@@ -22,6 +22,9 @@ export const fetchPacketData = (
     method: 'stream',
     modelName: 'reconstruction-packet-data',
     query: streamingQuery,
+    streamOptions: {
+      cancelPreviouslyExecuting: true // can only have one event in recon at a time
+    },
     onResponse: batchDataHandler({
       dataHandler: HANDLERS.socketResponse((response) => response.data, dispatchData),
       batchType: BATCH_TYPES.PACKET,

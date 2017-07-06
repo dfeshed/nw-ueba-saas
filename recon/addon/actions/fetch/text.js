@@ -28,6 +28,9 @@ export const fetchTextData = (
     method: 'stream',
     modelName: 'reconstruction-text-data',
     query: decodeQuery,
+    streamOptions: {
+      cancelPreviouslyExecuting: true // can only have one event's text at a time
+    },
     onResponse: batchDataHandler({
       dataHandler: HANDLERS.socketResponse(selector, dispatchData),
       batchType: BATCH_TYPES.TEXT,

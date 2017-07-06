@@ -21,6 +21,9 @@ const fetchMeta = ({ endpointId, eventId }) => {
       method: 'stream',
       modelName: 'core-event',
       query,
+      streamOptions: {
+        cancelPreviouslyExecuting: true // can only have one set of meta in recon
+      },
       onError: reject,
       onResponse({ data, meta }) {
         if (meta.complete) {
