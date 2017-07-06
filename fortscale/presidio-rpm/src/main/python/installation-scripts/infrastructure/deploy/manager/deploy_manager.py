@@ -21,9 +21,9 @@ class Deploy_Manager:
     project_root = os.path.abspath(os.path.dirname(__file__))
     version_directory = os.path.join(project_root, '../../../', 'version')
     mongo_prefix_command = 'mongo localhost:27017/presidio '
-    log_file_path = '/var/log/presidio/presidio_core_rpm-' + time.strftime("%m_%d_%Y") + '.log'
-    logger = logging.getLogger('Presidio-Core-RPM-log')
-    stdout_logger = logging.getLogger('Presiodio-Core-RPM-stdout')
+    log_file_path = '/var/log/presidio/presidio_rpm-' + time.strftime("%m_%d_%Y") + '.log'
+    logger = logging.getLogger('Presidio-RPM-log')
+    stdout_logger = logging.getLogger('Presiodio-RPM-stdout')
 
 
     def __init__(self, dest_version_descriptor, is_uninstall, rpm_name):
