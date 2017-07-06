@@ -43,4 +43,13 @@ public class MonitoringAspects {
 
     }
 
+    @Around("@annotation(fortscale.utils.monitoring.aspect.annotations.IncrementMetricAround)")
+    public void totalRunTimeMetric(ProceedingJoinPoint joinPoint) throws Throwable {
+        String metricName = joinPoint.getSignature().toShortString();
+        long startTime=System.currentTimeMillis();
+        joinPoint.proceed();
+        long endTime=System.currentTimeMillis();
+        counterService.submit(metricName ,endTime-startTime);
+    }
+
 }
