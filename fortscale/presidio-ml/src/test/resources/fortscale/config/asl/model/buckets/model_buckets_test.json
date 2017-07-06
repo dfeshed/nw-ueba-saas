@@ -1,0 +1,197 @@
+{
+  "BucketConfs": [
+    {
+      "name": "normalized_username_dlpfile_daily",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "normalized_username"
+      ],
+      "dataSources": [
+        "dlpfile"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "aggrFeatureConfs": [
+        {
+          "name": "date_time_unix_histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "two_minute_resolution_epochtime"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        },
+        {
+          "name": "number_of_events_per_hour_histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "hour"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        },
+        {
+          "name": "src_network_folder_paths_histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "source_path"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.source_drive_type == 'remote')]"
+          }
+        },
+        {
+          "name": "sum_of_moved_files_to_removable_device_size",
+          "featureNamesMap": {
+            "sum": [
+              "file_size"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.event_type == 'move' && @.destination_drive_type == 'removable')]"
+          }
+        },
+        {
+          "name": "moved_files_to_removable_device_counter",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.event_type == 'move' && @.destination_drive_type == 'removable')]"
+          }
+        },
+        {
+          "name": "sum_of_copied_files_to_removable_device_size",
+          "featureNamesMap": {
+            "sum": [
+              "file_size"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.event_type == 'copy' && @.destination_drive_type == 'removable')]"
+          }
+        },
+        {
+          "name": "copied_files_to_removable_device_counter",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.event_type == 'copy' && @.destination_drive_type == 'removable')]"
+          }
+        },
+        {
+          "name": "sum_of_moved_files_from_remote_device_size",
+          "featureNamesMap": {
+            "sum": [
+              "file_size"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.event_type == 'move' && @.source_drive_type == 'remote')]"
+          }
+        },
+        {
+          "name": "moved_files_from_remote_device_counter",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.event_type == 'move' && @.source_drive_type == 'remote')]"
+          }
+        },
+        {
+          "name": "sum_of_copied_files_from_remote_device_size",
+          "featureNamesMap": {
+            "sum": [
+              "file_size"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.event_type == 'copy' && @.source_drive_type == 'remote')]"
+          }
+        },
+        {
+          "name": "copied_files_from_remote_device_counter",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.event_type == 'copy' && @.source_drive_type == 'remote')]"
+          }
+        },
+        {
+          "name": "recycled_or_deleted_files_counter",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.event_type == 'recycle' || @.event_type == 'delete')]"
+          }
+        },
+        {
+          "name": "opened_files_counter",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.event_type == 'open')]"
+          }
+        },
+        {
+          "name": "normalized_src_machine_histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "normalized_src_machine"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        },
+        {
+          "name": "events_counter",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          }
+        },
+        {
+          "name": "classified_files_counter",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.was_classified == 'true')]"
+          }
+        }
+      ]
+    }
+      ]
+}

@@ -1,7 +1,9 @@
-package fortscale.ml.processes.shell;
+package fortscale.ml.processes.shell.scoring.aggregation;
 
 import fortscale.aggregation.feature.bucket.FeatureBucket;
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
+import fortscale.ml.processes.shell.scoring.aggregation.ScoreAggregationsBucketService;
+import fortscale.ml.processes.shell.scoring.aggregation.ScoreAggregationsCreator;
 import fortscale.ml.scorer.enriched_events.EnrichedEventsScoringService;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.fixedduration.FixedDurationStrategyExecutor;
@@ -24,8 +26,6 @@ import java.util.*;
  */
 public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
 
-    private EnrichedRecordPaginationService enrichedRecordPaginationService;
-    private String contextType;
     private ScoreAggregationsBucketService scoreAggregationsBucketService;
     private ScoreAggregationsCreator scoreAggregationsCreator;
     private EnrichedDataStore enrichedDataStore;
@@ -42,16 +42,16 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
         this.enrichedDataStore = enrichedDataStore;
         this.enrichedEventsScoringService = enrichedEventsScoringService;
         this.scoreAggregationsBucketService = scoreAggregationsBucketService;
-        this.contextType = "normalized_username";
-        enrichedRecordPaginationService = new EnrichedRecordPaginationService(enrichedDataStore, 1000, 100, contextType);
+
     }
 
 
     @Override
-    public void executeSingleTimeRange(TimeRange timeRange, String dataSource) {
+    public void executeSingleTimeRange(TimeRange timeRange, String dataSource, String contextType) {
         //For now we don't have multiple contexts so we pass just list of size 1.
         List<String> contextTypes = new ArrayList<>();
         contextTypes.add(contextType);
+        EnrichedRecordPaginationService enrichedRecordPaginationService = new EnrichedRecordPaginationService(enrichedDataStore, 1000, 100, contextType);
         List<PageIterator<EnrichedRecord>> pageIterators = enrichedRecordPaginationService.getPageIterators(dataSource, timeRange);
         for (PageIterator<EnrichedRecord> pageIterator : pageIterators) {
             while (pageIterator.hasNext()) {
@@ -67,5 +67,10 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
     protected FeatureBucketStrategyData createFeatureBucketStrategyData(TimeRange timeRange){
         String strategyName = StringUtils.lowerCase(this.strategy.name());
         return new FeatureBucketStrategyData(strategyName,strategyName,timeRange.getStart().getEpochSecond(), timeRange.getEnd().getEpochSecond());
+    }
+
+    public List<String> getDistinctContextTypes(String dataSource){
+        //todo: figure it out from the configuration.
+        return Collections.singletonList("normalized_username");
     }
 }

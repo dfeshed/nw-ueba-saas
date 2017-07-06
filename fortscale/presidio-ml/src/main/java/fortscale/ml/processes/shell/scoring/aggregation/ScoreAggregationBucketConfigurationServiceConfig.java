@@ -1,4 +1,4 @@
-package fortscale.aggregation.feature.bucket.config;
+package fortscale.ml.processes.shell.scoring.aggregation;
 
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import org.springframework.beans.factory.annotation.Value;
@@ -6,18 +6,18 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * Created by barak_schuster on 10/8/16.
+ * Created by YaronDL on 7/2/2017.
  */
 @Configuration
-public class BucketConfigurationServiceConfig {
+public class ScoreAggregationBucketConfigurationServiceConfig {
 
     @Value("${impala.table.fields.data.source}")
     private String dataSourceFieldName;
-    @Value("${fortscale.aggregation.bucket.conf.json.file.name}")
+    @Value("${fortscale.score.aggregation.bucket.conf.json.file.name}")
     private String bucketConfJsonFilePath;
-    @Value("${fortscale.aggregation.bucket.conf.json.overriding.files.path:#{null}}")
+    @Value("${fortscale.score.aggregation.bucket.conf.json.overriding.files.path:#{null}}")
     private String bucketConfJsonOverridingFilesPath;
-    @Value("${fortscale.aggregation.bucket.conf.json.additional.files.path:#{null}}")
+    @Value("${fortscale.score.aggregation.bucket.conf.json.additional.files.path:#{null}}")
     private String bucketConfJsonAdditionalFilesPath;
 
     @Bean

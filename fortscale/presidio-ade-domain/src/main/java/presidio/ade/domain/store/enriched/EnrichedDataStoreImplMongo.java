@@ -87,7 +87,8 @@ public class EnrichedDataStoreImplMongo implements EnrichedDataStore {
      * @return cleanup query by cleanup params
      */
     private Query toCleanupQuery(AdeDataStoreCleanupParams cleanupParams) {
-        return null;
+        Criteria dateTimeCriteria = Criteria.where(EnrichedRecord.DATE_TIME_FIELD).gte(cleanupParams.getStartDate()).lt(cleanupParams.getEndDate());
+        return new Query(dateTimeCriteria);
     }
 
 
