@@ -70,6 +70,7 @@ def build_and_run_task(jvm_args, dag, java_args, expected_bash_comment, expected
     """
     task = SpringBootJarOperator(
         task_id='run_jar_file',
+        command='run',
         jvm_args=jvm_args,
         java_args=java_args,
         dag=dag)
@@ -330,6 +331,7 @@ def test_update_java_args(default_args, java_args):
 
     task = SpringBootJarOperator(
         task_id='run_jar_file',
+        command='run',
         jvm_args=jvm_args,
         java_args=java_args,
         dag=dag)

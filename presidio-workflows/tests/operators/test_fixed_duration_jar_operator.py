@@ -10,6 +10,7 @@ from tests.utils.airflow.operators.test_spring_boot_jar_operator import assert_b
 
 FIX_DURATION_STRATEGY_HOURLY = timedelta(hours=1)
 FIX_DURATION_STRATEGY_DAILY = timedelta(days=1)
+COMMAND = 'run'
 
 
 def test_invalid_execution_date():
@@ -50,6 +51,7 @@ def test_invalid_execution_date():
         task_id='fixed_duration_operator',
         jvm_args=jvm_args,
         java_args=java_args,
+        command=COMMAND,
         fixed_duration_strategy=FIX_DURATION_STRATEGY_HOURLY,
         dag=dag)
 
@@ -97,6 +99,7 @@ def test_valid_execution_date():
         task_id='fixed_duration_operator',
         jvm_args=jvm_args,
         java_args=java_args,
+        command=COMMAND,
         fixed_duration_strategy=FIX_DURATION_STRATEGY_HOURLY,
         dag=dag)
 

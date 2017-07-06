@@ -10,7 +10,7 @@
           "normalized_username_daily"
         ],
         "data_sources": [
-          "dlpfile"
+          "DLPFILE"
         ],
         "command":"run"
       },

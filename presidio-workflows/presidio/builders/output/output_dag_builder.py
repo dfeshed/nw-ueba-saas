@@ -52,6 +52,7 @@ class OutputDagBuilder(PresidioDagBuilder):
             FixedDurationJarOperator(
                 task_id='output_{}'.format(data_source),
                 fixed_duration_strategy=timedelta(hours=1),
+                command=PresidioDagBuilder.presidio_command,
                 jvm_args=jvm_args,
                 java_args=java_args,
                 dag=output_dag)

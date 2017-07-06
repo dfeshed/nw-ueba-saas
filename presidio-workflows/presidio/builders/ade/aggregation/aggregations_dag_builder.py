@@ -11,7 +11,7 @@ class AggregationsDagBuilder(PresidioDagBuilder):
     returns the DAG according to the given attributes.
     """
 
-    def __init__(self, fixed_duration_strategy, data_source):
+    def __init__(self, fixed_duration_strategy, data_source, **kwargs):
         """
         C'tor.
         :param fixed_duration_strategy: The duration covered by the aggregations (e.g. hourly or daily)
@@ -19,7 +19,6 @@ class AggregationsDagBuilder(PresidioDagBuilder):
         :param data_source: The data source whose events should be aggregated
         :type data_source: str
         """
-
         self.fixed_duration_strategy = fixed_duration_strategy
         self.data_source = data_source
 
@@ -34,12 +33,14 @@ class AggregationsDagBuilder(PresidioDagBuilder):
 
         FeatureAggregationsOperator(
             fixed_duration_strategy=self.fixed_duration_strategy,
+            command=PresidioDagBuilder.presidio_command,
             data_source=self.data_source,
             dag=aggregations_dag
         )
 
         ScoreAggregationsOperator(
             fixed_duration_strategy=self.fixed_duration_strategy,
+            command=PresidioDagBuilder.presidio_command,
             data_source=self.data_source,
             dag=aggregations_dag
         )
