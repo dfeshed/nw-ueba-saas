@@ -22,7 +22,7 @@ public class AdapterConfig {
     private FetchService fetchService;
 
     @Bean
-    public PresidioExecutionService collectorExecutionService() {
+    public PresidioExecutionService adapterExecutionService() {
         return new AdapterExecutionServiceImpl(coreManagerService, fetchService);
     }
 
