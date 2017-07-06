@@ -26,7 +26,7 @@ public class AdapterExecutionServiceImpl implements PresidioExecutionService {
     }
 
     @Override
-    public void run(DataSource dataSource, Instant startDate, Instant endDate, Long fixedDuration) throws Exception {
+    public void run(DataSource dataSource, Instant startDate, Instant endDate, Double fixedDuration) throws Exception {
         //todo: we need to consider doing the fetch & store at the same iteration
         logger.info("Start collector processing with params: data source:{}, from {}:{}, until {}:{}.",dataSource, CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate, CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
 

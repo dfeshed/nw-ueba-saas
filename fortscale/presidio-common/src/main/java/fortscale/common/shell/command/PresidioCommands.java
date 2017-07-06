@@ -35,7 +35,7 @@ public class PresidioCommands implements CommandMarker {
             final Instant endTime,
 
             @CliOption(key = {CommonStrings.COMMAND_LINE_FIXED_DURATION_FIELD_NAME}, help = "the internal time intervals that the processing will be done by")
-            final Long fixedDuration
+            final Double fixedDuration
 
     ) throws Exception {
            executionService.run(dataSource, startTime, endTime, fixedDuration);
