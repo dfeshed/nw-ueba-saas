@@ -80,6 +80,16 @@ export const isEndpointEvent = createSelector(
   (meta) => meta.some((d) => d[0] === 'nwe.callback_id')
 );
 
+export const nweCallbackId = createSelector(
+  isEndpointEvent,
+  meta,
+  (isEndpointEvent, meta) => {
+    if (isEndpointEvent) {
+      return meta.filter((d) => d[0] === 'nwe.callback_id')[0][1];
+    }
+  }
+);
+
 export const isLogEvent = createSelector(
   eventType,
   isEndpointEvent,

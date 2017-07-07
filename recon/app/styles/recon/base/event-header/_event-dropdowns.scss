@@ -17,6 +17,10 @@
     }
   }
 
+  .pivot-to-endpoint {
+    margin: 8px 0 0 rsa-whitespace()
+  }
+
   .export-packet-button,
   .export-logs-button,
   .export-files-button {

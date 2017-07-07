@@ -143,6 +143,8 @@ export default {
       compressToggleTitle: 'ja_Display HTTP payloads as compressed or not',
       downloadCsv: 'ja_Download CSV',
       downloadEndpointEvent: 'ja_Download Endpoint Event',
+      pivotToEndpoint: 'ja_Pivot to Endpoint',
+      pivotToEndpointTitle: 'ja_To Pivot to Endpoint, please install the NetWitness Endpoint client for Windows.',
       downloadJson: 'ja_Download JSON',
       downloadLog: 'ja_Download Log',
       downloadXml: 'ja_Download XML',

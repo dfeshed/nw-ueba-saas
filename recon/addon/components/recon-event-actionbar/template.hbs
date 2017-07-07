@@ -15,7 +15,12 @@
 
     {{#if isTextView}}
       {{#if (or isLogEvent isEndpointEvent)}}
-        {{recon-event-actionbar/export-logs}}
+        <hbox justify="start">
+          {{recon-event-actionbar/export-logs}}
+          {{#if isEndpointEvent}}
+            {{recon-event-actionbar/pivot-endpoint}}
+          {{/if}}
+        </hbox>
       {{else}}
         {{recon-event-actionbar/export-packet}}
         {{#if isHttpEvent}}
