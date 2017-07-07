@@ -19,7 +19,7 @@
   @include rsa-form-label-color($contentLabelColor);
   vertical-align: middle;
 
-  i.rsa-icon-close-filled {
+  i.rsa-icon-close {
     position: relative;
     top: -2px;
     font-size: .7em;
@@ -31,7 +31,7 @@
   }
 
   &.is-disabled {
-    i.rsa-icon-close-filled:hover {
+    i.rsa-icon-close:hover {
       cursor: default;
     }
   }

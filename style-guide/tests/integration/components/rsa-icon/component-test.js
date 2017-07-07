@@ -7,7 +7,7 @@ moduleForComponent('/rsa-icon', 'Integration | Component | rsa-icon', {
 
 test('it renders', function(assert) {
   this.render(hbs `{{rsa-icon name='account-circle-1'}}`);
-  const iconCount = this.$().find('.rsa-icon.is-filled.rsa-icon-account-circle-1-filled').length;
+  const iconCount = this.$().find('.rsa-icon.is-filled.rsa-icon-account-circle-1').length;
   assert.equal(iconCount, 1);
 });
 

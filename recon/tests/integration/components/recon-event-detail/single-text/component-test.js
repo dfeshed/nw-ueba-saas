@@ -75,7 +75,7 @@ test('packet text', function(assert) {
   }}`);
 
   return wait().then(() => {
-    assert.ok(this.$('.rsa-icon-arrow-circle-left-2-filled').length === 1, 'Response arrow shown');
+    assert.ok(this.$('.rsa-icon-arrow-circle-left-2').length === 1, 'Response arrow shown');
     assert.equal(this.$().text().trim().replace(/\s/g, ''), 'responseTestingtext');
   });
 });

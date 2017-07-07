@@ -12,12 +12,6 @@
     margin-right: rsa-whitespace();
   }
 
-  &__crumb {
-    .rsa-icon-arrow-down-12-filled {
-      margin-left: rsa-whitespace(less);
-    }
-  }
-
   &__crumb,
   &__more {
     list-style: none;

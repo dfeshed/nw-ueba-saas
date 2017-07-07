@@ -15,7 +15,7 @@
   }
 
   &::before {
-    font-family: 'nw-icon-library-all-v4';
+    font-family: 'Streamline-2-Filled';
     content: '';
     visibility: visible;
     display: block;
@@ -34,7 +34,7 @@
 
   &.checked {
     &::before {
-      content: "\e9af";
+      content: "\e62f";
       color:rsa-color(blue);
     }
   }

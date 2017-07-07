@@ -58,8 +58,8 @@ test('The {{editable-field}} shows a confirm and cancel button when in edit mode
   this.render(hbs`{{respond-common/editable-field value=value}}`);
   this.$('.editable-field .editable-field__value').click();
   return wait().then(() => {
-    assert.equal(this.$('.editable-field button.rsa-form-button i.rsa-icon-check-2-filled').length, 1, 'The editable-field now contains a confirm button');
-    assert.equal(this.$('.editable-field button.rsa-form-button i.rsa-icon-close-filled').length, 1, 'The editable-field now contains a cancel button');
+    assert.equal(this.$('.editable-field button.rsa-form-button i.rsa-icon-check-2').length, 1, 'The editable-field now contains a confirm button');
+    assert.equal(this.$('.editable-field button.rsa-form-button i.rsa-icon-close').length, 1, 'The editable-field now contains a cancel button');
   });
 });
 

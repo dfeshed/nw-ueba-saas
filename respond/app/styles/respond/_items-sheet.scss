@@ -13,27 +13,6 @@
     &-header {
       padding: rsa-whitespace();
       background-color: rsa-color(black,base,$rsa-nearly-transparent);
-
-      nav {
-        display: flex;
-        align-items: center;
-        padding: rsa-whitespace(less) 0;
-
-        .rsa-form-button-wrapper .rsa-form-button {
-          padding: 0 rsa-whitespace(least);
-          position: relative;
-          top: -1px;
-        }
-
-        span {
-          &:first-of-type {
-            margin-right: rsa-whitespace();
-          }
-          &:last-of-type {
-            margin-left: rsa-whitespace();
-          }
-        }
-      }
     }
 
     &-body {

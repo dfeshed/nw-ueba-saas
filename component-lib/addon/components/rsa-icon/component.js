@@ -32,8 +32,8 @@ export default Component.extend({
   @equal('size', 'larger') isLarger: null,
   @equal('size', 'largest') isLargest: null,
 
-  @computed('name', 'style')
-  iconClass(name, style) {
-    return `rsa-icon-${name}-${style}`;
+  @computed('name')
+  iconClass(name) {
+    return `rsa-icon-${name}`;
   }
 });

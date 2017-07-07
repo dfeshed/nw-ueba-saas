@@ -36,7 +36,7 @@ test('clicking close executes action', function(assert) {
   new DataHelper(this.get('redux'))
     .setViewToText();
   this.render(hbs`{{recon-event-titlebar}}`);
-  this.$('.rsa-icon-close-filled').click();
+  this.$('.rsa-icon-close').click();
   assert.equal(dispatchSpy.args[1][0].type, ACTION_TYPES.CLOSE_RECON);
 });
 
@@ -44,7 +44,7 @@ test('clicking shrink executes action', function(assert) {
   new DataHelper(this.get('redux'))
     .setViewToFile();
   this.render(hbs`{{recon-event-titlebar}}`);
-  this.$('.rsa-icon-shrink-diagonal-2-filled').click();
+  this.$('.rsa-icon-shrink-diagonal-2').click();
   assert.equal(dispatchSpy.args[1][0].type, ACTION_TYPES.TOGGLE_EXPANDED);
 });
 
@@ -53,8 +53,8 @@ test('clicking shrink, then grow, executes multiple actions', function(assert) {
     .initializeData(initializeData)
     .setViewToFile();
   this.render(hbs`{{recon-event-titlebar}}`);
-  this.$('.rsa-icon-shrink-diagonal-2-filled').click();
-  this.$('.rsa-icon-expand-diagonal-4-filled').click();
+  this.$('.rsa-icon-shrink-diagonal-2').click();
+  this.$('.rsa-icon-expand-diagonal-4').click();
 
   assert.equal(dispatchSpy.args[4][0].type, ACTION_TYPES.TOGGLE_EXPANDED);
   assert.equal(dispatchSpy.args[5][0].type, ACTION_TYPES.TOGGLE_EXPANDED);
@@ -78,7 +78,7 @@ test('clicking header toggle executes action', function(assert) {
     .initializeData(initializeData)
     .setViewToText();
   this.render(hbs`{{recon-event-titlebar}}`);
-  this.$('.rsa-icon-layout-6-filled').click();
+  this.$('.rsa-icon-layout-6').click();
   assert.equal(dispatchSpy.args[4][0].type, ACTION_TYPES.TOGGLE_HEADER);
 });
 
@@ -87,7 +87,7 @@ test('clicking meta toggle executes actions', function(assert) {
     .initializeData(initializeData)
     .setViewToText();
   this.render(hbs`{{recon-event-titlebar}}`);
-  this.$('.rsa-icon-layout-2-filled').click();
+  this.$('.rsa-icon-layout-2').click();
   assert.ok(dispatchSpy.callCount, 4);
   assert.ok(typeof dispatchSpy.args[4][0] === 'function', 'Dispatch called with function (thunk)');
 });
@@ -150,11 +150,13 @@ test('request/response insure that request, response, Top/Bottom and Side by Sid
     .initializeData({ meta: [['medium', 32]] });
   this.render(hbs`{{recon-event-titlebar}}`);
   return wait().then(() => {
-    assert.equal(this.$('.rsa-icon-layout-6-filled').length, true, 'Show/Hide Header button should exist for log');
+    assert.equal(this.$('.rsa-icon-layout-6').length, true, 'Show/Hide Header button should exist for log');
     assert.equal(this.$('.toggle-request').length, false, 'Request button does not exist for log');
     assert.equal(this.$('.toggle-response').length, false, 'Response button does not exist for log');
-    assert.equal(this.$('.rsa-icon-view-agenda-filled').length, false, 'Top/Bottom View button does not exist for log');
-    assert.equal(this.$('.rsa-icon-layout-4-filled').length, false, 'Side by Side View button does not exist for log');
+    assert.equal(this.$('.rsa-icon-view-agenda').length, false, 'Top/Bottom View button does not exist for log');
+    assert.equal(this.$('.rsa-icon-layout-4').length, false, 'Side by Side View button does not exist for log');
     assert.equal(this.$('.toggle-meta').length, true, 'Show/Hide Meta button should exist for log');
   });
 });
+
+
