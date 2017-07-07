@@ -1039,7 +1039,7 @@ export default {
     },
     incident: {
       title: 'ja_Incidents',
-      averageAlertRiskScore: 'ja_Severity',
+      averageAlertRiskScore: 'ja_Risk Score',
       _id: 'ja_Id',
       name: 'ja_Name',
       created: 'ja_Created',
@@ -1054,7 +1054,7 @@ export default {
       risk_score: 'ja_Severity',
       source: 'ja_Source',
       name: 'ja_Name',
-      numEvents: 'ja_Events',
+      numEvents: 'ja_# Events',
       severity: 'ja_Severity',
       created: 'ja_Created',
       id: 'ja_Incident ID',

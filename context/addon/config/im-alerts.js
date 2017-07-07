@@ -12,16 +12,8 @@ export default {
       field: 'alert.risk_score',
       title: 'context.alerts.risk_score',
       width: '5vw',
-      dataType: 'riskscore',
       class: 'rsa-module-riskscore',
       componentClass: 'rsa-content-badge-score',
-      icon: 'arrow-down-8',
-      className: 'sort'
-    },
-    {
-      field: 'alert.source',
-      title: 'context.alerts.source',
-      width: '15vw',
       icon: 'arrow-down-8',
       className: 'sort'
     },
@@ -32,6 +24,13 @@ export default {
       dataType: 'link',
       path: '/respond/alert/{0}',
       linkField: '_id.$oid',
+      icon: 'arrow-down-8',
+      className: 'sort'
+    },
+    {
+      field: 'alert.source',
+      title: 'context.alerts.source',
+      width: '15vw',
       icon: 'arrow-down-8',
       className: 'sort'
     },

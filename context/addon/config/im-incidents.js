@@ -9,12 +9,10 @@ export default {
   sortOrder: 'desc',
   columns: [
     {
-      field: 'averageAlertRiskScore',
-      title: 'context.incident.averageAlertRiskScore',
-      width: '5vw',
-      class: 'rsa-module-riskscore',
-      componentClass: 'rsa-content-badge-score',
-      dataType: 'riskscore',
+      field: 'created.$date',
+      title: 'context.incident.created',
+      width: '15vw',
+      dataType: 'datetime',
       icon: 'arrow-down-8',
       className: 'sort'
     },
@@ -22,6 +20,15 @@ export default {
       field: 'priority',
       title: 'context.incident.priority',
       width: '5vw',
+      icon: 'arrow-down-8',
+      className: 'sort'
+    },
+    {
+      field: 'averageAlertRiskScore',
+      title: 'context.incident.averageAlertRiskScore',
+      width: '5vw',
+      class: 'rsa-module-riskscore',
+      componentClass: 'rsa-content-badge-score',
       icon: 'arrow-down-8',
       className: 'sort'
     },
@@ -38,14 +45,6 @@ export default {
       field: 'name',
       title: 'context.incident.name',
       width: '15vw',
-      icon: 'arrow-down-8',
-      className: 'sort'
-    },
-    {
-      field: 'created.$date',
-      title: 'context.incident.created',
-      width: '15vw',
-      dataType: 'datetime',
       icon: 'arrow-down-8',
       className: 'sort'
     },
