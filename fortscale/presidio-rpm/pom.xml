@@ -16,6 +16,7 @@
         <rpm-maven-plugin.script.get_current_build_version_string>"$(rpm -qa | grep ${rpm_name} | cut -d"-" -f3 | cut
             -d"." -f1)"
         </rpm-maven-plugin.script.get_current_build_version_string>
+        <rpm-maven-plugin.script.version_temp_file>/root/version.txt</rpm-maven-plugin.script.version_temp_file>
     </properties>
     <parent>
         <artifactId>fortscale</artifactId>
@@ -93,10 +94,14 @@
                 <preinstallScriptlet>
                     <script>
                         <!-- pre installation commands: -->
-                        rpm_major="$(rpm -qa | grep presidio | cut -d"-" -f2 | cut -d"." -f1)"
-                        rpm_minor="$(rpm -qa | grep presidio | cut -d"-" -f2 | cut -d"." -f2)"
-                        rpm_build="$(rpm -qa | grep presidio | cut -d"-" -f3 | cut -d"." -f1)"
+                        <!-- rpm_major="$(rpm -qa | grep presidio | cut -d"-" -f2 | cut -d"." -f1)" > version.txt -->
+                        rpm -qa | grep presidio | cut -d"-" -f2 | cut -d"." -f1 > ${rpm-maven-plugin.script.version_temp_file}
+                        <!-- rpm_minor="$(rpm -qa | grep presidio | cut -d"-" -f2 | cut -d"." -f2)" -->
+                        rpm -qa | grep presidio | cut -d"-" -f2 | cut -d"." -f2 >> ${rpm-maven-plugin.script.version_temp_file}
+                        <!-- rpm_build="$(rpm -qa | grep presidio | cut -d"-" -f3 | cut -d"." -f1)" -->
+                        rpm -qa | grep presidio | cut -d"-" -f3 | cut -d"." -f1 >> ${rpm-maven-plugin.script.version_temp_file}
                         <!-- end of post installation -->
+
 
                     </script>
                 </preinstallScriptlet>
@@ -112,6 +117,7 @@
                         <!--changing ownership of /home/presidio/presidio-core/ to presidio:presidio -->
                         echo "Changing ownership of /home/presidio/presidio-core/ to presidio:presidio"
                         chown -R ${rpm-maven-plugin.script.system_user}:${rpm-maven-plugin.script.system_user} ${rpm-maven-plugin.deployment_target_directory}
+                        rm -rf ${rpm-maven-plugin.script.version_temp_file}
 
                         <!--end of post installation -->"
                     </script>

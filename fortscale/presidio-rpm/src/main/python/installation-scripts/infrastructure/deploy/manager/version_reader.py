@@ -6,15 +6,23 @@ from version_descriptor import VersionDescriptor
 
 class VersionReader():
     def read_current(self, rpm_name):
-        major_env_var = "rpm_major"
-        minor_env_var = 'rpm_minor'
-        build_env_var = 'rpm_build'
-        major = os.environ.get(major_env_var, 0)
-        print 'Current major version ' + str(major)
-        minor = os.environ.get(minor_env_var, 0)
-        print 'Current minor version ' + str(minor)
-        build = os.environ.get(build_env_var, 0)
-        print 'Current build version ' + str(build)
+
+        version_file = open('/root/version.txt', 'r')
+        version_list = []
+        for line in version_file:
+            version_list.append(line)
+        version_file.close()
+        if version_list:
+            major = version_list[0].replace("\n", "")
+            print 'Current major version ' + str(major)
+            minor = version_list[1].replace("\n", "")
+            print 'Current minor version ' + str(minor)
+            build = version_list[2].replace("\n", "")
+            print 'Current build version ' + str(build)
+        else:
+            major = 0
+            minor = 0
+            build = 0
         version = VersionDescriptor(major=major, minor=minor, build=build)
         return version
 
