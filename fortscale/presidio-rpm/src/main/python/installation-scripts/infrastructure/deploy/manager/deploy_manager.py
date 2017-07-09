@@ -152,7 +152,7 @@ class Deploy_Manager:
 
         for version in versions_list:
             self.add_log(log_string='Checking installed version before executing migration steps', log_level='info')
-            if (self.current_version.version_description.major < version.version_description.major) or (self.current_version.version_description.major == version.version_description.major and self.current_version.version_description.minor < version.version_description.minor) or (self.current_version.version_description.major == version.version_description.major and self.current_version.version_description.minor == version.version_description.minor and self.current_version.version_description.build < args.build) or (self.current_version.version_description.major == version.version_description.major and self.current_version.version_description.minor == version.version_description.minor and args.build == 0):
+            if (str(self.current_version.version_description.major) < version.version_description.major) or (str(self.current_version.version_description.major) == version.version_description.major and str(self.current_version.version_description.minor) < version.version_description.minor) or (str(self.current_version.version_description.major) == version.version_description.major and str(self.current_version.version_description.minor) == version.version_description.minor and str(self.current_version.version_description.build) < str(args.build)) or (str(self.current_version.version_description.major) == version.version_description.major and str(self.current_version.version_description.minor) == version.version_description.minor and args.build == 0):
                 """ 
                 execute vresion migration scripts
                 """
@@ -182,12 +182,12 @@ class Deploy_Manager:
                 else:
                     self.add_log(log_string="No migration steps for version: " + str(version.version_description.major) + '.' + str(version.version_description.minor), log_level='warning')
                     self.current_version = version
-            else:
-                self.add_log(log_string='RPM version is lower or equal to current install version, Nothing To Do',
-                             log_level='warning')
-                """
-                  alredy installed- nothing to do
-                """
+            #else:
+             #   self.add_log(log_string='RPM version is lower or equal to current install version, Nothing To Do',
+              #               log_level='warning')
+               # """
+                #  alredy installed- nothing to do
+                #"""
 
     def exec_file(self, file_to_exec):
         self.add_log(log_string='Preparing Presidio python project ', log_level='info')
