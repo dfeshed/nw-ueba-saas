@@ -95,11 +95,11 @@
                     <script>
                         <!-- pre installation commands: -->
                         <!-- rpm_major="$(rpm -qa | grep presidio | cut -d"-" -f2 | cut -d"." -f1)" > version.txt -->
-                        rpm -qa | grep presidio | cut -d"-" -f2 | cut -d"." -f1 > ${rpm-maven-plugin.script.version_temp_file}
+                        rpm -qa | grep presidio | cut -d"-" -f2 | cut -d"." -f1 > /root/version.txt
                         <!-- rpm_minor="$(rpm -qa | grep presidio | cut -d"-" -f2 | cut -d"." -f2)" -->
-                        rpm -qa | grep presidio | cut -d"-" -f2 | cut -d"." -f2 >> ${rpm-maven-plugin.script.version_temp_file}
+                        rpm -qa | grep presidio | cut -d"-" -f2 | cut -d"." -f2 >> /root/version.txt
                         <!-- rpm_build="$(rpm -qa | grep presidio | cut -d"-" -f3 | cut -d"." -f1)" -->
-                        rpm -qa | grep presidio | cut -d"-" -f3 | cut -d"." -f1 >> ${rpm-maven-plugin.script.version_temp_file}
+                        rpm -qa | grep presidio | cut -d"-" -f3 | cut -d"." -f1 >> /root/version.txt
                         <!-- end of post installation -->
 
 

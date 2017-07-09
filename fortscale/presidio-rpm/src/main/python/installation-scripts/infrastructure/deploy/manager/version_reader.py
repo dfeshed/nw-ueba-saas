@@ -10,7 +10,7 @@ class VersionReader():
         if not os.path.isfile('/root/version.txt'):
             return VersionDescriptor(major=0, minor=0, build=0)
 
-        version_file =  open('/root/version.txt', 'r')
+        version_file = open('/root/version.txt', 'r')
         version_list = []
         for line in version_file:
             version_list.append(line)
