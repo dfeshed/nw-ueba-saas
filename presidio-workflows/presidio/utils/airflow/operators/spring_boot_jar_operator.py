@@ -68,11 +68,11 @@ class SpringBootJarOperator(BashOperator):
         parser.set('default_values', 'remote_debug_suspend', 'False')
         parser.set('default_values', 'jmx_enabled', 'False')
 
+        config_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'config.ini')
         # todo: file should be imported from package?
         # In order to run dags that use jar_operator change the path to:
         # /home/presidio/dev-projects/presidio-core/presidio-workflows/presidio/resources/java/config.ini
-        parser.read(
-            '/home/presidio/jenkins/workspace/Presidio-Workflows/presidio-workflows/presidio/resources/java/config.ini')
+        parser.read(config_path)
         default_options_items = parser.items('default_values')
         args = dict(default_options_items + self.jvm_args.items())
         return args
