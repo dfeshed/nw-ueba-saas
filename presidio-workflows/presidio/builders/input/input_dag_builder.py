@@ -46,13 +46,13 @@ class InputDagBuilder(PresidioDagBuilder):
         for data_source in self.data_sources:
             java_args = {
                 'data_source': data_source,
-                'command': input_dag.default_args['command'],
             }
 
             # Create jar operator for each data source
             FixedDurationJarOperator(
                 task_id='input_{}'.format(data_source),
                 fixed_duration_strategy=timedelta(hours=1),
+                command=PresidioDagBuilder.presidio_command,
                 jvm_args=jvm_args,
                 java_args=java_args,
                 dag=input_dag)

@@ -1,14 +1,12 @@
 package presidio.input.core.services.impl;
 
 
-import fortscale.common.general.Command;
+import fortscale.common.shell.PresidioExecutionService;
 import fortscale.common.general.CommonStrings;
 import fortscale.common.general.DataSource;
 import fortscale.domain.core.AbstractAuditableDocument;
-import fortscale.services.parameters.ParametersValidationService;
 import fortscale.utils.logging.Logger;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
-import presidio.input.core.services.api.InputExecutionService;
 import presidio.input.core.services.converters.DlpFileConverter;
 import presidio.input.core.services.data.AdeDataService;
 import presidio.sdk.api.domain.DlpFileDataDocument;
@@ -17,138 +15,38 @@ import presidio.sdk.api.services.PresidioInputPersistencyService;
 
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import static fortscale.common.general.CommonStrings.COMMAND_LINE_COMMAND_FIELD_NAME;
-import static fortscale.common.general.CommonStrings.COMMAND_LINE_DATA_SOURCE_FIELD_NAME;
-import static fortscale.common.general.CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME;
-import static fortscale.common.general.CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME;
-
-public class InputExecutionServiceImpl implements InputExecutionService {
+public class InputExecutionServiceImpl implements PresidioExecutionService {
 
     private static final Logger logger = Logger.getLogger(InputExecutionServiceImpl.class);
-    private static final String[] MANDATORY_PARAMS = {
-            COMMAND_LINE_DATA_SOURCE_FIELD_NAME,
-            COMMAND_LINE_START_DATE_FIELD_NAME,
-            COMMAND_LINE_END_DATE_FIELD_NAME,
-            COMMAND_LINE_COMMAND_FIELD_NAME
-    };
 
-    private final ParametersValidationService parameterValidationService;
     private final PresidioInputPersistencyService presidioInputPersistencyService;
     private final AdeDataService adeDataService;
 
-    private DataSource dataSource;
-    private Instant startDate;
-    private Instant endDate;
-    private Command command;
-
-    public InputExecutionServiceImpl(ParametersValidationService parameterValidationService,
-                                     PresidioInputPersistencyService presidioInputPersistencyService,
-                                     AdeDataService adeDataService) {
-        this.parameterValidationService = parameterValidationService;
+    public InputExecutionServiceImpl(PresidioInputPersistencyService presidioInputPersistencyService, AdeDataService adeDataService) {
         this.presidioInputPersistencyService = presidioInputPersistencyService;
         this.adeDataService = adeDataService;
     }
 
-    private void init(String... params) throws Exception {
-        logger.info("Setting and validating params:[{}] .", Arrays.toString(params));
-        if (params.length < MANDATORY_PARAMS.length) {
-            String errorMessage = String.format("Invalid input[%s]. Not enough parameters, Need at least %s.", Arrays.toString(params), Arrays.toString(MANDATORY_PARAMS));
-            logger.error(errorMessage);
-            throw new RuntimeException(errorMessage);
-        }
-
-        final String dataSourceParam = parameterValidationService.getMandatoryParamAsString(COMMAND_LINE_DATA_SOURCE_FIELD_NAME, params);
-        final String startDateParam = parameterValidationService.getMandatoryParamAsString(COMMAND_LINE_START_DATE_FIELD_NAME, params);
-        final String endDateParam = parameterValidationService.getMandatoryParamAsString(COMMAND_LINE_END_DATE_FIELD_NAME, params);
-        final String commandParam = parameterValidationService.getMandatoryParamAsString(COMMAND_LINE_COMMAND_FIELD_NAME, params);
-        try {
-            parameterValidationService.validateDataSourceParam(dataSourceParam);//todo:there should be only validation . there is parsing process in development.
-            parameterValidationService.validateTimeParams(startDateParam, endDateParam);
-            parameterValidationService.validateCommand(commandParam);
-        } catch (Exception e) {
-            String errorMessage = String.format("Invalid input[%s}].", Arrays.toString(params));
-            logger.error(errorMessage, e);
-            String userMessage = errorMessage + " " + e.getMessage();
-            throw new Exception(userMessage, e);
-        }
-        command = Command.createCommand(commandParam);
-        dataSource = DataSource.createDataSource(dataSourceParam);
-        startDate = Instant.parse(startDateParam);
-        endDate = Instant.parse(endDateParam);
-    }
-
-    public void run(String... params) throws Exception {
-        init(params);
-        switch (command) {
-            case RUN:
-                enrich();
-                break;
-            case CLEAN:
-                clean();
-                break;
-            //todo: add support for cleanAll
-            default:
-                throw new UnsupportedOperationException("Unsupported command " + command);
-        }
-    }
-
-    private void cleanAll() throws Exception {
-        logger.info("Started clean processing for data source:{}.", dataSource);
-        presidioInputPersistencyService.cleanAll(dataSource);
-    }
-
-    private void clean() throws Exception {
-        logger.info("Started clean processing for data source:{}, from {}:{}, until {}:{}."
-                , dataSource,
-                CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate,
-                CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
-        presidioInputPersistencyService.clean(dataSource, startDate, endDate);
-        logger.info("Finished enrich processing .");
-    }
-
-    private void enrich() throws Exception {
-        logger.info("Started enrich processing with data source:{}, from {}:{}, until {}:{}."
-                , dataSource,
-                CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate,
-                CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
+    @Override
+    public void run(DataSource dataSource, Instant startDate, Instant endDate, Double fixedDuration) throws Exception {
+        logger.info("Started input processing with params: data source:{}, from {}:{}, until {}:{}.",dataSource, CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate, CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
 
         final List<? extends AbstractAuditableDocument> dataRecords = find(dataSource, startDate, endDate);
-        logger.info("Found {} dataRecords for dataSource:{}, startDate:{}, endDate:{}.", dataRecords, dataSource, startDate, endDate);
+        logger.info("Found {} dataRecords for datasource:{}, startTime:{}, endTime:{}.", dataSource, startDate, endDate);
 
         final List<DlpFileEnrichedDocument> enrichedRecords = enrich(dataRecords);
 
-        if (!storeForAde(enrichedRecords)) {
-            logger.error("Failed to save!!!");
+        if (!storeForAde(enrichedRecords, startDate, endDate, dataSource)) {
+            logger.error("Failed to save input enriched records into ADE!!!");
             //todo: how to handle?
         }
 
-        logger.info("Finished enrich processing .");
+        logger.info("Finished input run with params : data source:{}, from {}:{}, until {}:{}.",dataSource, CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate, CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
     }
 
-    private List<? extends AbstractAuditableDocument> find(DataSource dataSource, Instant startTime, Instant endTime) throws Exception {
-        logger.debug("Finding records for data source:{}, from {}:{}, until {}:{}."
-                , dataSource,
-                CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate,
-                CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
-        return presidioInputPersistencyService.find(dataSource, startTime, endTime);
-    }
-
-    private List<DlpFileEnrichedDocument> enrich(List<? extends AbstractAuditableDocument> dataRecords) { //THIS IS A TEMP IMPLEMENTATION!!!!!!!!!!
-        //todo: again, very ad-hoc. maybe we should create an enrichment service
-        List<DlpFileEnrichedDocument> enrichedRecords = new ArrayList<>();
-        for (AbstractAuditableDocument dataRecord : dataRecords) {
-            final DlpFileDataDocument dlpfileDataRecord = (DlpFileDataDocument) dataRecord;
-            enrichedRecords.add(new DlpFileEnrichedDocument(dlpfileDataRecord, dlpfileDataRecord.getUsername(), dlpfileDataRecord.getHostname()));
-        }
-
-
-        return enrichedRecords;
-    }
-
-    private boolean storeForAde(List<? extends AbstractAuditableDocument> enrichedDocuments) {
+    private boolean storeForAde(List<? extends AbstractAuditableDocument> enrichedDocuments, Instant startDate, Instant endDate, DataSource dataSource) {
         logger.debug("Storing {} records.", enrichedDocuments.size());
 
 
@@ -169,5 +67,41 @@ public class InputExecutionServiceImpl implements InputExecutionService {
         List<EnrichedRecord> records = new ArrayList<>();
         enrichedDocuments.forEach(doc -> records.add(converter.convert((DlpFileEnrichedDocument) doc)));
         return records;
+    }
+
+    private List<? extends AbstractAuditableDocument> find(DataSource dataSource, Instant startDate, Instant endDate) throws Exception {
+        logger.debug("Finding records for data source:{}, from {}:{}, until {}:{}."
+                , dataSource,
+                CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate,
+                CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
+        return presidioInputPersistencyService.find(dataSource, startDate, endDate);
+    }
+
+    private List<DlpFileEnrichedDocument> enrich(List<? extends AbstractAuditableDocument> dataRecords) { //THIS IS A TEMP IMPLEMENTATION!!!!!!!!!!
+        //todo: again, very ad-hoc. maybe we should create an enrichment service
+        List<DlpFileEnrichedDocument> enrichedRecords = new ArrayList<>();
+        for (AbstractAuditableDocument dataRecord : dataRecords) {
+            final DlpFileDataDocument dlpfileDataRecord = (DlpFileDataDocument) dataRecord;
+            enrichedRecords.add(new DlpFileEnrichedDocument(dlpfileDataRecord, dlpfileDataRecord.getUsername(), dlpfileDataRecord.getHostname()));
+        }
+
+
+        return enrichedRecords;
+    }
+
+    @Override
+    public void cleanAll(DataSource dataSource) throws Exception {
+        logger.info("Started clean processing for data source:{}.", dataSource);
+        presidioInputPersistencyService.cleanAll(dataSource);
+    }
+
+    @Override
+    public void clean(DataSource dataSource, Instant startDate, Instant endDate) throws Exception {
+        logger.info("Started clean processing for data source:{}, from {}:{}, until {}:{}."
+                , dataSource,
+                CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate,
+                CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
+        presidioInputPersistencyService.clean(dataSource, startDate, endDate);
+        logger.info("Finished enrich processing .");
     }
 }

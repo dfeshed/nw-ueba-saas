@@ -1,7 +1,9 @@
 package presidio.input.core;
 
 
+import fortscale.common.shell.PresidioExecutionService;
 import com.github.fakemongo.Fongo;
+import fortscale.utils.test.mongodb.MongodbTestConfig;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,9 +17,8 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
-import presidio.input.core.services.api.InputExecutionService;
 import presidio.input.core.services.impl.InputExecutionServiceImpl;
-import presidio.input.core.spring.InputCommandLineRunnerConfiguration;
+import presidio.input.core.spring.InputCoreConfiguration;
 
 
 @RunWith(SpringRunner.class)
@@ -26,7 +27,7 @@ public class FortscaleInputCoreApplicationTest {
 
 
     @Autowired
-    private InputExecutionService processService;
+    private PresidioExecutionService processService;
 
     @Test
     public void contextLoads() throws Exception {
@@ -34,23 +35,10 @@ public class FortscaleInputCoreApplicationTest {
     }
 
     @Configuration
-    @Import({InputCommandLineRunnerConfiguration.class})
+    @Import({InputCoreConfiguration.class, MongodbTestConfig.class})
     @EnableSpringConfigured
     public static class springConfig {
-        private static final String FORTSCALE_TEST_DB = "fortscaleTestDb";
-
-
-        private MongoDbFactory mongoDbFactory() {
-            Fongo fongo = new Fongo(FORTSCALE_TEST_DB);
-
-            return new SimpleMongoDbFactory(fongo.getMongo(), FORTSCALE_TEST_DB);
         }
 
 
-        @Bean
-        public MongoTemplate mongoTemplate() {
-            return new MongoTemplate(mongoDbFactory());
-        }
-
-    }
 }
