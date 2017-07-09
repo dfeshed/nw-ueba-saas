@@ -13,7 +13,7 @@ import presidio.input.sdk.impl.services.DataServiceImpl;
 import presidio.input.sdk.impl.services.PresidioInputPersistencyServiceMongoImpl;
 import presidio.input.sdk.impl.validators.ValidationManager;
 import presidio.sdk.api.domain.DataService;
-import presidio.sdk.api.domain.InputToCollectionNameTranslator;
+import presidio.sdk.api.utils.InputToCollectionNameTranslator;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
 
 
