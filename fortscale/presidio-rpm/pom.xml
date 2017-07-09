@@ -13,6 +13,9 @@
         <rpm-maven-plugin.deployment_target_directory>/home/presidio/presidio-core
         </rpm-maven-plugin.deployment_target_directory>
         <rpm-maven-plugin.script.system_user>presidio</rpm-maven-plugin.script.system_user>
+        <rpm-maven-plugin.script.get_current_build_version_string>"$(rpm -qa | grep ${rpm_name} | cut -d"-" -f3 | cut
+            -d"." -f1)"
+        </rpm-maven-plugin.script.get_current_build_version_string>
     </properties>
     <parent>
         <artifactId>fortscale</artifactId>
@@ -90,8 +93,9 @@
                 <preinstallScriptlet>
                     <script>
                         <!-- pre installation commands: -->
-
-
+                        rpm_major="$(rpm -qa | grep presidio | cut -d"-" -f2 | cut -d"." -f1)"
+                        rpm_minor="$(rpm -qa | grep presidio | cut -d"-" -f2 | cut -d"." -f2)"
+                        rpm_build="$(rpm -qa | grep presidio | cut -d"-" -f3 | cut -d"." -f1)"
                         <!-- end of post installation -->
 
                     </script>
@@ -100,10 +104,11 @@
                     <!--<scriptFile>src/main/scripts/postinstall</scriptFile>-->
                     <!--<fileEncoding>utf-8</fileEncoding>-->
                     <script>
-
+                        echo "running post install script"
                         <!-- post installation commands: -->
-                        /usr/local/bin/python ${rpm-maven-plugin.script} --rpm_name ${rpm_name} --major ${rpm.version.major} --minor ${rpm.version.minor} --build ${rpm.version.build}
-
+                        cmd = /usr/local/bin/python ${rpm-maven-plugin.script} --rpm_name ${rpm_name} --major ${rpm.version.major} --minor ${rpm.version.minor} --build ${rpm.version.build}
+                        print cmd
+                        execute cmd
                         <!--changing ownership of /home/presidio/presidio-core/ to presidio:presidio -->
                         echo "Changing ownership of /home/presidio/presidio-core/ to presidio:presidio"
                         chown -R ${rpm-maven-plugin.script.system_user}:${rpm-maven-plugin.script.system_user} ${rpm-maven-plugin.deployment_target_directory}
