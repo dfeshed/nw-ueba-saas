@@ -172,7 +172,6 @@
         <podam.version>7.0.5.RELEASE</podam.version>
         <spring-cloud.version>Dalston.SR1</spring-cloud.version>
         <rpm-maven-plugin.version>2.1.5</rpm-maven-plugin.version>
-        <presidio-rpm.module></presidio-rpm.module>
     </properties>
 
     <dependencyManagement>
@@ -788,7 +787,7 @@
         <profile>
             <id>rpm</id>
             <modules>
-                <module>${presidio-rpm.module}</module>
+                <module>presidio-rpm</module>
             </modules>
         </profile>
     </profiles>
