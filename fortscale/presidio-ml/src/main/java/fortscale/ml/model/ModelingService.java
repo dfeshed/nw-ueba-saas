@@ -13,10 +13,10 @@ import java.util.stream.Collectors;
 /**
  * Given a group name, this service creates the corresponding {@link ModelConfService}, that contains all the
  * {@link ModelConf}s in the group. Then it creates a {@link ModelingEngine} for each {@link ModelConf} and runs
- * the engine with the run ID and the end instant as the input.
+ * the engine with the session ID and the end instant as the input.
  * <p>
- * According to the run ID and the end instant, each {@link ModelingEngine} selects the context IDs, retrieves their
- * data, builds and stores their models.
+ * According to the session ID and the end instant, each {@link ModelingEngine} selects the context IDs,
+ * retrieves their data, builds and stores their models.
  * <p>
  * This service requires a {@link ModelingEngineFactory} in order to create the {@link ModelingEngine}s.
  *
@@ -45,10 +45,10 @@ public class ModelingService {
 
 	/**
 	 * @param groupName  the name of the logical group of modelConfs
-	 * @param runId      the run ID of the models that are built
+	 * @param sessionId  the session ID of the models that are built
 	 * @param endInstant the end time of the models that are built
 	 */
-	public void process(String groupName, String runId, Instant endInstant) throws Exception {
+	public void process(String groupName, String sessionId, Instant endInstant) throws Exception {
 		if (!groupNameToModelConfigurationPathsMap.containsKey(groupName)) {
 			logger.error("Group {} is not configured. Ending modeling service process.", groupName);
 			return;
@@ -58,10 +58,10 @@ public class ModelingService {
 		modelConfService.afterPropertiesSet(); // Load all the modelConfs in the group
 		List<ModelConf> modelConfs = modelConfService.getModelConfs();
 		logger.info("Created a modelConfService for group {} with {} modelConfs.", groupName, modelConfs.size());
-		logger.info("Going to run modeling engines with runId {} and endInstant {} as input.", runId, endInstant);
+		logger.info("Running modeling engines with sessionId {} and endInstant {} as input.", sessionId, endInstant);
 
 		for (ModelConf modelConf : modelConfs) {
-			modelingEngineFactory.getModelingEngine(modelConf).process(runId, endInstant);
+			modelingEngineFactory.getModelingEngine(modelConf).process(sessionId, endInstant);
 			logger.info("Finished modeling engine process of modelConf {}.", modelConf.getName());
 		}
 	}

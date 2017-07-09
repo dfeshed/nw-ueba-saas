@@ -34,10 +34,13 @@ public class ModelStore {
 
 	/**
 	 * @param modelConf the {@link ModelConf}
-	 * @return the latest end time across all models created from the given model conf
+	 * @param sessionId the session ID
+	 * @return the latest end time across all models created from the given model conf with the given session ID
 	 */
-	public Instant getLatestEndTime(ModelConf modelConf) {
-		Query query = new Query().with(new Sort(Direction.DESC, ModelDAO.END_TIME_FIELD));
+	public Instant getLatestEndTime(ModelConf modelConf, String sessionId) {
+		Query query = new Query()
+				.addCriteria(Criteria.where(ModelDAO.SESSION_ID_FIELD).is(sessionId))
+				.with(new Sort(Direction.DESC, ModelDAO.END_TIME_FIELD));
 		ModelDAO modelDao = mongoTemplate.findOne(query, ModelDAO.class, getCollectionName(modelConf));
 		return modelDao == null ? null : modelDao.getEndTime();
 	}

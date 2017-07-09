@@ -2,6 +2,7 @@ package fortscale.utils.time;
 
 import javax.validation.constraints.NotNull;
 import java.time.Instant;
+import java.util.Date;
 
 /**
  * An object that represents a specific range between a start point and an end point on the time line.
@@ -33,6 +34,16 @@ public class TimeRange implements Comparable<TimeRange> {
      */
     public TimeRange(long startInSeconds, long endInSeconds) {
         this(Instant.ofEpochSecond(startInSeconds), Instant.ofEpochSecond(endInSeconds));
+    }
+
+    /**
+     * {@link Date} based c'tor.
+     *
+     * @param start the start point of this range on the time line
+     * @param end   the end point of this range on the time line
+     */
+    public TimeRange(Date start, Date end) {
+        this(Instant.ofEpochMilli(start.getTime()), Instant.ofEpochMilli(end.getTime()));
     }
 
     /**
