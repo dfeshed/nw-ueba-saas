@@ -2,6 +2,9 @@ from abc import ABCMeta, abstractmethod
 
 
 class PresidioDagBuilder(object):
+
+    presidio_command = 'run'
+
     """
     The Presidio DAG Builder has 1 method that receives a DAG. The "build" method creates the DAG's operators, links
     them to the DAG and configures the dependencies between them. The inheritors are builders of different types of DAGs

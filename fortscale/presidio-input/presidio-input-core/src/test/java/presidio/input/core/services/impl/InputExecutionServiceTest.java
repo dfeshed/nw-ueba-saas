@@ -1,7 +1,6 @@
 package presidio.input.core.services.impl;
 
 import fortscale.domain.core.AbstractAuditableDocument;
-import fortscale.services.parameters.ParametersValidationService;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,15 +20,12 @@ import java.util.List;
 public class InputExecutionServiceTest {
 
     @MockBean
-    private ParametersValidationService parameterValidationService;
-
-    @MockBean
     private PresidioInputPersistencyService presidioInputPersistencyService;
 
     @MockBean
     private AdeDataService adeDataServic;
 
-    private InputExecutionServiceImpl processService = new InputExecutionServiceImpl(parameterValidationService, presidioInputPersistencyService, adeDataServic);
+    private InputExecutionServiceImpl processService = new InputExecutionServiceImpl(presidioInputPersistencyService, adeDataServic);
 
     @Test
     public void testConverter() {

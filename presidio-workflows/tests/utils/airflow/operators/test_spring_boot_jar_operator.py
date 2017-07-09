@@ -9,7 +9,7 @@ from tests.utils.airflow.operators.base_test_operator import assert_task_success
 # @todo: change the path after configuration infra will be created
 # In order to run test locally change the path to:
 # '/home/presidio/dev-projects/presidio-core/presidio-workflows'
-PATH = '/home/presidio/jenkins/workspace/Presidio-Workflows/presidio-workflows'
+PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../../../')
 JAR_PATH = PATH + '/tests/resources/jars/test-mock-project-0.0.1-SNAPSHOT.jar'
 MAIN_CLASS = 'com.fortscale.test.TestMockProjectApplication'
 LAUNCHER = 'org.springframework.boot.loader.PropertiesLauncher'
@@ -70,6 +70,7 @@ def build_and_run_task(jvm_args, dag, java_args, expected_bash_comment, expected
     """
     task = SpringBootJarOperator(
         task_id='run_jar_file',
+        command='run',
         jvm_args=jvm_args,
         java_args=java_args,
         dag=dag)
@@ -330,6 +331,7 @@ def test_update_java_args(default_args, java_args):
 
     task = SpringBootJarOperator(
         task_id='run_jar_file',
+        command='run',
         jvm_args=jvm_args,
         java_args=java_args,
         dag=dag)

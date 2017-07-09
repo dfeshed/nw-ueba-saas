@@ -85,7 +85,7 @@ public class FeatureBucketStateServiceImpl implements FeatureBucketStateService 
      * Getting the lastClosedDailyBucketDate from mongo
      */
     private void recovery(){
-        logger.info("Starting the recovery process of FeatureBucketStateService");
+        logger.info("Starting the recovery run of FeatureBucketStateService");
         FeatureBucketState featureBucketState = getFeatureBucketState();
         if (featureBucketState != null){
             // Getting the value of the last closed daily bucket

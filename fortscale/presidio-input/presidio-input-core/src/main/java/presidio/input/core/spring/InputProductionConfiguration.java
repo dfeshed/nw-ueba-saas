@@ -9,6 +9,6 @@ import org.springframework.context.annotation.Import;
  */
 
 @Configuration
-@Import({MongoConfig.class, InputCommandLineRunnerConfiguration.class})
+@Import({MongoConfig.class, InputCoreConfiguration.class})
 public class InputProductionConfiguration {
 }

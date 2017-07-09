@@ -170,9 +170,8 @@
         <jacoco-maven-plugin.version>0.7.9</jacoco-maven-plugin.version>
         <cron-utils.version>5.0.5</cron-utils.version>
         <podam.version>7.0.5.RELEASE</podam.version>
-		<spring-cloud.version>Dalston.SR1</spring-cloud.version>
+        <spring-cloud.version>Dalston.SR1</spring-cloud.version>
         <rpm-maven-plugin.version>2.1.5</rpm-maven-plugin.version>
-        <presidio-rpm.module></presidio-rpm.module>
     </properties>
 
     <dependencyManagement>
@@ -781,8 +780,18 @@
         <module>presidio-adapter</module>
         <module>presidio-output</module>
         <module>presidio-configuration-server</module>
-        <module>${presidio-rpm.module}</module>
+
     </modules>
+
+    <profiles>
+        <profile>
+            <id>rpm</id>
+            <modules>
+                <module>presidio-rpm</module>
+            </modules>
+        </profile>
+    </profiles>
+
     <distributionManagement>
         <!-- push changes to artifactory, distribute use of sdk -->
         <snapshotRepository>

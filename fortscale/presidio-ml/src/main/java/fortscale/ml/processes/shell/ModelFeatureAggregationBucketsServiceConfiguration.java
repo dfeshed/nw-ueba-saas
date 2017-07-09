@@ -4,11 +4,10 @@ import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.aggregation.feature.bucket.FeatureBucketStore;
 import fortscale.aggregation.feature.bucket.FeatureBucketStoreMongoConfig;
 import fortscale.aggregation.feature.bucket.InMemoryFeatureBucketAggregator;
+import fortscale.common.general.DataSource;
 import fortscale.ml.processes.shell.model.aggregation.InMemoryFeatureBucketAggregatorConfig;
 import fortscale.ml.processes.shell.model.aggregation.ModelAggregationBucketConfigurationServiceConfig;
 import fortscale.ml.processes.shell.model.aggregation.ModelFeatureAggregationBucketsService;
-import fortscale.services.config.ParametersValidationServiceConfig;
-import fortscale.services.parameters.ParametersValidationService;
 import fortscale.utils.mongodb.config.MongoConfig;
 import fortscale.utils.time.TimeRange;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,10 +21,6 @@ import presidio.ade.domain.store.enriched.EnrichedDataStoreConfig;
 
 import java.time.Instant;
 
-import static fortscale.common.general.CommonStrings.COMMAND_LINE_DATA_SOURCE_FIELD_NAME;
-import static fortscale.common.general.CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME;
-import static fortscale.common.general.CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME;
-
 /**
  * Created by YaronDL on 7/2/2017.
  */
@@ -36,7 +31,6 @@ import static fortscale.common.general.CommonStrings.COMMAND_LINE_START_DATE_FIE
         EnrichedDataStoreConfig.class,
         InMemoryFeatureBucketAggregatorConfig.class,
         FeatureBucketStoreMongoConfig.class,
-        ParametersValidationServiceConfig.class,// todo: remove this
 })
 public class ModelFeatureAggregationBucketsServiceConfiguration {
 
@@ -48,8 +42,6 @@ public class ModelFeatureAggregationBucketsServiceConfiguration {
     private InMemoryFeatureBucketAggregator featureBucketAggregator;
     @Autowired
     FeatureBucketStore featureBucketStore;
-    @Autowired
-    private ParametersValidationService parametersValidationService;// todo: remove this
 
     @Bean
     public CommandLineRunner commandLineRunner() {
@@ -57,10 +49,11 @@ public class ModelFeatureAggregationBucketsServiceConfiguration {
         return new CommandLineRunner() {
             @Override
             public void run(String... strings) throws Exception {
+                // todo- hardcoded values till we will adopt presidio shell
                 // todo: all of this will be change when using spring shell
-                String dataSourceParam = parametersValidationService.getMandatoryParamAsString(COMMAND_LINE_DATA_SOURCE_FIELD_NAME, strings);
-                Instant startTimeParam = Instant.parse(parametersValidationService.getMandatoryParamAsString(COMMAND_LINE_START_DATE_FIELD_NAME, strings));
-                Instant endTimeParam = Instant.parse(parametersValidationService.getMandatoryParamAsString(COMMAND_LINE_END_DATE_FIELD_NAME, strings));
+                String dataSourceParam = DataSource.DLPFILE.name();
+                Instant startTimeParam = Instant.parse(strings[1]);
+                Instant endTimeParam = Instant.parse(strings[2]);
                 ModelFeatureAggregationBucketsService modelFeatureAggregationBucketsService = new ModelFeatureAggregationBucketsService(bucketConfigurationService, enrichedDataStore, featureBucketAggregator,featureBucketStore);
                 TimeRange timeRange = new TimeRange(startTimeParam, endTimeParam);
                 modelFeatureAggregationBucketsService.execute(timeRange, dataSourceParam);

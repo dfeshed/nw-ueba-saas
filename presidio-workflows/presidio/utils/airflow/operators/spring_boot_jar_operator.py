@@ -32,13 +32,14 @@ class SpringBootJarOperator(BashOperator):
     ui_color = '#9EB9D4'
 
     @apply_defaults
-    def __init__(self, jvm_args, java_args={}, *args, **kwargs):
+    def __init__(self, jvm_args, command, java_args={}, *args, **kwargs):
         self.jvm_args = jvm_args
         self.java_args = java_args
         self.validate_mandatory_fields()
         self.merged_args = self.merge_args()
-        command = self.get_bash_command()
-        super(SpringBootJarOperator, self).__init__(bash_command=command, *args, **kwargs)
+        self.command = command
+        bash_command = self.get_bash_command()
+        super(SpringBootJarOperator, self).__init__(bash_command=bash_command, *args, **kwargs)
 
     def update_java_args(self, java_args):
         """
@@ -58,11 +59,11 @@ class SpringBootJarOperator(BashOperator):
         :return: 
         """
         parser = SafeConfigParser()
+        config_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../../resources/java/config.ini')
         # todo: file should be imported from package?
         # In order to run dags that use jar_operator change the path to:
         # /home/presidio/dev-projects/presidio-core/presidio-workflows/presidio/resources/java/config.ini
-        parser.read(
-            '/home/presidio/jenkins/workspace/Presidio-Workflows/presidio-workflows/presidio/resources/java/config.ini')
+        parser.read(config_path)
         default_options_items = parser.items('default_values')
         args = dict(default_options_items + self.jvm_args.items())
         return args
@@ -171,7 +172,8 @@ class SpringBootJarOperator(BashOperator):
             bash_command.extend(['org.springframework.boot.loader.PropertiesLauncher'])
 
         if not is_blank(self.java_args):
-            java_args = ' '.join('%s=%s' % (key, val) for (key, val) in self.java_args.iteritems())
+            java_args = ' '.join('--%s %s' % (key, val) for (key, val) in self.java_args.iteritems())
+            bash_command.append(self.command)
             bash_command.append(java_args)
 
     def jmx(self, bash_command):
