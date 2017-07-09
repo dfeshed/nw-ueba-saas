@@ -111,9 +111,6 @@
                     <script>
                         echo "running post install script"
                         <!-- post installation commands: -->
-                        cmd = /usr/local/bin/python ${rpm-maven-plugin.script} --rpm_name ${rpm_name} --major ${rpm.version.major} --minor ${rpm.version.minor} --build ${rpm.version.build}
-                        print cmd
-                        execute cmd
                         <!--changing ownership of /home/presidio/presidio-core/ to presidio:presidio -->
                         echo "Changing ownership of /home/presidio/presidio-core/ to presidio:presidio"
                         chown -R ${rpm-maven-plugin.script.system_user}:${rpm-maven-plugin.script.system_user} ${rpm-maven-plugin.deployment_target_directory}
