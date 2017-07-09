@@ -93,7 +93,7 @@
                 </mappings>
                 <preinstallScriptlet>
                     <script>
-                        echo "preinstalationscript!!"
+                        echo "Creating temp version file"
                         <!-- pre installation commands: -->
                         rpm -qa | grep presidio | cut -d"-" -f2 | cut -d"." -f1 > /root/version.txt
                         rpm -qa | grep presidio | cut -d"-" -f2 | cut -d"." -f2 >> /root/version.txt
@@ -107,6 +107,7 @@
                     <script>
                         echo "running post install script"
                         <!-- post installation commands: -->
+                         /usr/local/bin/python ${rpm-maven-plugin.script} --rpm_name ${rpm_name} --major ${rpm.version.major} --minor ${rpm.version.minor} --build ${rpm.version.build}
                         <!--changing ownership of /home/presidio/presidio-core/ to presidio:presidio -->
                         echo "Changing ownership of /home/presidio/presidio-core/ to presidio:presidio"
                         chown -R ${rpm-maven-plugin.script.system_user}:${rpm-maven-plugin.script.system_user} ${rpm-maven-plugin.deployment_target_directory}
