@@ -17,8 +17,8 @@ import java.time.Instant;
 import java.util.List;
 
 import static fortscale.utils.monitoring.aspect.MetricsNames.CALLING_METHOD_METRIC;
-import static fortscale.utils.monitoring.aspect.MetricsNames.FINISHED_SUCCESSFULLY_METHOD_METRIC;
 import static fortscale.utils.monitoring.aspect.MetricsNames.EXCEPTION_THROWED_METRIC;
+import static fortscale.utils.monitoring.aspect.MetricsNames.FINISHED_SUCCESSFULLY_METHOD_METRIC;
 import static fortscale.utils.monitoring.aspect.MetricsNames.NUMBER_OF_FAILED_VALIDATION_METRIC;
 import static fortscale.utils.monitoring.aspect.MetricsNames.RUN_TIME_METRIC;
 
