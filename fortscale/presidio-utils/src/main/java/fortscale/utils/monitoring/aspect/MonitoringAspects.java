@@ -16,12 +16,11 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 
-import static fortscale.utils.common.general.CommonStrings.INCREMENT_METRIC_AFTER;
-import static fortscale.utils.common.general.CommonStrings.INCREMENT_METRIC_AFTER_THROWING;
-import static fortscale.utils.common.general.CommonStrings.INCREMENT_METRIC_BEFORE;
-import static fortscale.utils.common.general.CommonStrings.RUN_TIME_METRIC;
-import static fortscale.utils.common.general.CommonStrings.VALIDATOR_METRIC_AROUND_AFTER_VALIDATION;
-import static fortscale.utils.common.general.CommonStrings.VALIDATOR_METRIC_AROUND_BEFORE_VALIDATION;
+import static fortscale.utils.monitoring.aspect.MetricsNames.CALLING_METHOD_METRIC;
+import static fortscale.utils.monitoring.aspect.MetricsNames.FINISHED_SUCCESSFULLY_METHOD_METRIC;
+import static fortscale.utils.monitoring.aspect.MetricsNames.EXCEPTION_THROWED_METRIC;
+import static fortscale.utils.monitoring.aspect.MetricsNames.NUMBER_OF_FAILED_VALIDATION_METRIC;
+import static fortscale.utils.monitoring.aspect.MetricsNames.RUN_TIME_METRIC;
 
 @Aspect
 @Component
@@ -31,19 +30,19 @@ public class MonitoringAspects {
     @Autowired
     private DropwizardMetricServices counterService;
 
-    @Before("@annotation(fortscale.utils.monitoring.aspect.annotations.IncrementMetricBefore)")
-    public void incrementMetricBefore(JoinPoint joinPoint) {
-        counterService.increment(joinPoint.getSignature().toShortString() + INCREMENT_METRIC_BEFORE);
+    @Before("@annotation(fortscale.utils.monitoring.aspect.annotations.CallingMethodMetric)")
+    public void callingMethodMetric(JoinPoint joinPoint) {
+        counterService.increment(new StringBuffer(joinPoint.getSignature().toShortString()).append(CALLING_METHOD_METRIC).toString());
     }
 
-    @After("@annotation(fortscale.utils.monitoring.aspect.annotations.IncrementMetricAfter)")
-    public void incrementMetricAfter(JoinPoint joinPoint) {
-        counterService.increment(joinPoint.getSignature().toShortString() + INCREMENT_METRIC_AFTER);
+    @After("@annotation(fortscale.utils.monitoring.aspect.annotations.FinishedSuccessfullyMethodMetric)")
+    public void finishedSuccessfullyMethodMetric(JoinPoint joinPoint) {
+        counterService.increment(new StringBuffer(joinPoint.getSignature().toShortString()).append(FINISHED_SUCCESSFULLY_METHOD_METRIC).toString());
     }
 
-    @AfterThrowing("@annotation(fortscale.utils.monitoring.aspect.annotations.IncrementMetricAfterThrowing)")
-    public void incrementMetricAfterThrowing(JoinPoint joinPoint) {
-        counterService.increment(joinPoint.getSignature().toShortString() + INCREMENT_METRIC_AFTER_THROWING);
+    @AfterThrowing("@annotation(fortscale.utils.monitoring.aspect.annotations.ExceptionThrowedMetric)")
+    public void exceptionThrowedMetric(JoinPoint joinPoint) {
+        counterService.increment(new StringBuffer(joinPoint.getSignature().toShortString()).append(EXCEPTION_THROWED_METRIC).toString());
     }
 
     /**
@@ -67,18 +66,17 @@ public class MonitoringAspects {
     /**
      * This method provides us the total number of documents sent to validate and the amount that pass the validation.
      * The annotation Around lets us perform custom behavior before and after a method invocation.
-     * This behavior occurs when a method is annotated with the annotation @ValidatorMetricAround ,has single arg with the name documents
-     * of type List<? extends AbstractAuditableDocument> and returns type List<? extends AbstractAuditableDocument> not null.
-     * @param documents - list of rows from repository that going to be validated.
+     * This behavior occurs when a method is annotated with the annotation @ValidatorMetricAround
+     * and returns type List<? extends AbstractAuditableDocument> not null.
+     *
      * @param joinPoint - a point that represent a methods execution, holds data on the method that is going to be executed.
      * @throws Throwable - any exceptin that can be thrown from the execution of the method.
      */
-    @Around("@annotation(fortscale.utils.monitoring.aspect.annotations.ValidatorMetricAround)&& args(documents)")
-    public void validatorMetricAround(ProceedingJoinPoint joinPoint, List<? extends Serializable> documents) throws Throwable {
-        String metricName = joinPoint.getSignature().toShortString();
-        counterService.submit(metricName + VALIDATOR_METRIC_AROUND_BEFORE_VALIDATION, documents.size());
-        List<? extends Serializable> retVal =(List<? extends Serializable>) joinPoint.proceed();
-        counterService.submit(metricName + VALIDATOR_METRIC_AROUND_AFTER_VALIDATION,retVal.size());
+    @Around("@annotation(fortscale.utils.monitoring.aspect.annotations.NumberOfFailedValidationMetric)")
+    public void numberOfFailedValidationMetric(ProceedingJoinPoint joinPoint) throws Throwable {
+        StringBuffer metricName = new StringBuffer(joinPoint.getSignature().toShortString());
+        List<? extends Serializable> retVal = (List<? extends Serializable>) joinPoint.proceed();
+        counterService.submit(metricName.append(NUMBER_OF_FAILED_VALIDATION_METRIC).toString(), retVal.size());
     }
 
 }
