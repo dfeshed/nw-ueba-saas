@@ -14,11 +14,11 @@ import org.springframework.stereotype.Component;
 import java.io.Serializable;
 import java.util.List;
 
-import static fortscale.utils.monitoring.aspect.MetricsNames.CALLING_METHOD_METRIC;
-import static fortscale.utils.monitoring.aspect.MetricsNames.EXCEPTION_THROWN_METRIC;
-import static fortscale.utils.monitoring.aspect.MetricsNames.FINISHED_SUCCESSFULLY_METHOD_METRIC;
-import static fortscale.utils.monitoring.aspect.MetricsNames.NUMBER_OF_FAILED_VALIDATION_METRIC;
-import static fortscale.utils.monitoring.aspect.MetricsNames.RUN_TIME_METRIC;
+import static fortscale.utils.monitoring.aspect.MetricsNames.END;
+import static fortscale.utils.monitoring.aspect.MetricsNames.EXCEPTION_THROWN;
+import static fortscale.utils.monitoring.aspect.MetricsNames.NUMBER_OF_FAILED_VALIDATION;
+import static fortscale.utils.monitoring.aspect.MetricsNames.RUN_TIME;
+import static fortscale.utils.monitoring.aspect.MetricsNames.START;
 
 @Aspect
 @Component
@@ -28,53 +28,81 @@ public class MonitoringAspects {
     @Autowired
     private DropwizardMetricServices counterService;
 
-    @Before("@annotation(fortscale.utils.monitoring.aspect.annotations.CallingMethodMetric)")
-    public void callingMethodMetric(JoinPoint joinPoint) {
-        counterService.increment(new StringBuilder(joinPoint.getSignature().toShortString()).append(CALLING_METHOD_METRIC).toString());
+
+    /**
+     * This method provides us counting of a method invocation.
+     * The annotation Before lets us perform custom behavior before a method invocation.
+     * This behavior occurs when a method is annotated with the annotation @start.
+     *
+     * @param joinPoint - a point that represent a methods execution, holds data on the method that is going to be executed.
+     * @throws Throwable - any exceptin that can be thrown from the execution of the method.
+     */
+
+    @Before("@annotation(fortscale.utils.monitoring.aspect.annotations.Start)")
+    public void start(JoinPoint joinPoint) {
+        counterService.increment(new StringBuilder(joinPoint.getSignature().toShortString()).append(START).toString());
     }
 
-    @After("@annotation(fortscale.utils.monitoring.aspect.annotations.FinishedSuccessfullyMethodMetric)")
-    public void finishedSuccessfullyMethodMetric(JoinPoint joinPoint) {
-        counterService.increment(new StringBuilder(joinPoint.getSignature().toShortString()).append(FINISHED_SUCCESSFULLY_METHOD_METRIC).toString());
+    /**
+     * This method provides us counting of a method invocation.
+     * The annotation After lets us perform custom behavior after a method invocation.
+     * This behavior occurs when a method is annotated with the annotation @End.
+     *
+     * @param joinPoint - a point that represent a methods execution, holds data on the method that is going to be executed.
+     * @throws Throwable - any exceptin that can be thrown from the execution of the method.
+     */
+
+    @After("@annotation(fortscale.utils.monitoring.aspect.annotations.End)")
+    public void ebd(JoinPoint joinPoint) {
+        counterService.increment(new StringBuilder(joinPoint.getSignature().toShortString()).append(END).toString());
     }
 
-    @AfterThrowing("@annotation(fortscale.utils.monitoring.aspect.annotations.ExceptionThrownMetric)")
-    public void exceptionThrownMetric(JoinPoint joinPoint) {
-        counterService.increment(new StringBuilder(joinPoint.getSignature().toShortString()).append(EXCEPTION_THROWN_METRIC).toString());
+    /**
+     * This method provides us counting of a method throwing exception.
+     * The annotation AfterThrowing lets us perform custom behavior after a method invocation.
+     * This behavior occurs when a method is annotated with the annotation @ExceptionThrown.
+     *
+     * @param joinPoint - a point that represent a methods execution, holds data on the method that is going to be executed.
+     * @throws Throwable - any exceptin that can be thrown from the execution of the method.
+     */
+
+    @AfterThrowing("@annotation(fortscale.utils.monitoring.aspect.annotations.ExceptionThrown)")
+    public void exceptionThrown(JoinPoint joinPoint) {
+        counterService.increment(new StringBuilder(joinPoint.getSignature().toShortString()).append(EXCEPTION_THROWN).toString());
     }
 
     /**
      * This method provides us the duration of a method invocation.
      * The annotation Around lets us perform custom behavior before and after a method invocation.
-     * This behavior occurs when a method is annotated with the annotation @IncrementMetricAround.
+     * This behavior occurs when a method is annotated with the annotation @runTime.
      *
      * @param joinPoint - a point that represent a methods execution, holds data on the method that is going to be executed.
      * @throws Throwable - any exceptin that can be thrown from the execution of the method.
      */
 
-    @Around("@annotation(fortscale.utils.monitoring.aspect.annotations.RunTimeMetric)")
-    public void runTimeMetric(ProceedingJoinPoint joinPoint) throws Throwable {
-        StringBuilder metricName = new StringBuilder(joinPoint.getSignature().toShortString()).append(RUN_TIME_METRIC);
+    @Around("@annotation(fortscale.utils.monitoring.aspect.annotations.RunTime)")
+    public void runTime(ProceedingJoinPoint joinPoint) throws Throwable {
+        String metricName = new StringBuilder(joinPoint.getSignature().toShortString()).append(RUN_TIME).toString();
         long startTime = System.nanoTime();
         joinPoint.proceed();
         long endTime = System.nanoTime();
-        counterService.submit(metricName.toString(), endTime - startTime);
+        counterService.submit(metricName, endTime - startTime);
     }
 
     /**
      * This method provides us the total number of documents sent to validate and the amount that pass the validation.
      * The annotation Around lets us perform custom behavior before and after a method invocation.
-     * This behavior occurs when a method is annotated with the annotation @ValidatorMetricAround
+     * This behavior occurs when a method is annotated with the annotation @numberOfFailedValidation
      * and returns type List<? extends AbstractAuditableDocument> not null.
      *
      * @param joinPoint - a point that represent a methods execution, holds data on the method that is going to be executed.
      * @throws Throwable - any exceptin that can be thrown from the execution of the method.
      */
-    @Around("@annotation(fortscale.utils.monitoring.aspect.annotations.NumberOfFailedValidationMetric)")
-    public void numberOfFailedValidationMetric(ProceedingJoinPoint joinPoint) throws Throwable {
-        StringBuilder metricName = new StringBuilder(joinPoint.getSignature().toShortString()).append(NUMBER_OF_FAILED_VALIDATION_METRIC);
+    @Around("@annotation(fortscale.utils.monitoring.aspect.annotations.NumberOfFailedValidation)")
+    public void numberOfFailedValidation(ProceedingJoinPoint joinPoint) throws Throwable {
+        String metricName = new StringBuilder(joinPoint.getSignature().toShortString()).append(NUMBER_OF_FAILED_VALIDATION).toString();
         int numberOfFailedValidationDocuments = ((List<? extends Serializable>) joinPoint.proceed()).size();
-        counterService.submit(metricName.toString(), numberOfFailedValidationDocuments);
+        counterService.submit(metricName, numberOfFailedValidationDocuments);
     }
 
 }
