@@ -2,74 +2,76 @@ package fortscale.aggregation.feature.bucket;
 
 import fortscale.utils.logging.Logger;
 import fortscale.utils.mongodb.util.MongoDbUtilService;
-import fortscale.utils.monitoring.stats.StatsService;
-import fortscale.utils.pagination.ContextIdToNumOfItems;
 import fortscale.utils.time.TimeRange;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.index.Index;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
-import static org.springframework.data.mongodb.core.query.Criteria.where;
-
+/**
+ * A Mongo based {@link FeatureBucketStore}.
+ */
 public class FeatureBucketStoreMongoImpl implements FeatureBucketStore {
 	private static final Logger logger = Logger.getLogger(FeatureBucketStoreMongoImpl.class);
 	private static final String COLLECTION_NAME_PREFIX = "aggr_";
-	private static final int EXPIRE_AFTER_SECONDS_DEFAULT = 90 * 24 * 3600;
 
 	private MongoTemplate mongoTemplate;
 	private MongoDbUtilService mongoDbUtilService;
+	private long defaultExpireAfterSeconds;
 
-	public FeatureBucketStoreMongoImpl(MongoTemplate mongoTemplate, MongoDbUtilService mongoDbUtilService) {
+	/**
+	 * C'tor.
+	 *
+	 * @param mongoTemplate             the {@link MongoTemplate}
+	 * @param mongoDbUtilService        the {@link MongoDbUtilService}
+	 * @param defaultExpireAfterSeconds the default TTL of the {@link FeatureBucket} documents
+	 */
+	public FeatureBucketStoreMongoImpl(
+			MongoTemplate mongoTemplate, MongoDbUtilService mongoDbUtilService, long defaultExpireAfterSeconds) {
+
 		this.mongoTemplate = mongoTemplate;
 		this.mongoDbUtilService = mongoDbUtilService;
+		this.defaultExpireAfterSeconds = defaultExpireAfterSeconds;
 	}
 
+	/**
+	 * @see FeatureBucketReader#getDistinctContextIds(FeatureBucketConf, TimeRange)
+	 */
 	@Override
 	public Set<String> getDistinctContextIds(FeatureBucketConf featureBucketConf, TimeRange timeRange) {
-		Query query = new Query(where(FeatureBucket.START_TIME_FIELD)
-				.gte(timeRange.getStart().getEpochSecond())
-				.lt(timeRange.getEnd().getEpochSecond()));
-
+		long startInSeconds = timeRange.getStart().getEpochSecond();
+		long endInSeconds = timeRange.getEnd().getEpochSecond();
+		Query query = new Query(Criteria.where(FeatureBucket.START_TIME_FIELD).gte(startInSeconds).lt(endInSeconds));
 		List<?> distinctContextIds = mongoTemplate
 				.getCollection(getCollectionName(featureBucketConf))
 				.distinct(FeatureBucket.CONTEXT_ID_FIELD, query.getQueryObject());
-
 		return distinctContextIds.stream().map(Object::toString).collect(Collectors.toSet());
 	}
 
+	/**
+	 * @see FeatureBucketReader#getFeatureBuckets(String, Set, TimeRange)
+	 */
 	@Override
-	public List<ContextIdToNumOfItems> getContextIdToNumOfItemsList(String featureBucketConfName, TimeRange timeRange) {
-		Aggregation aggregation = Aggregation.newAggregation(
-				match(where(FeatureBucket.START_TIME_FIELD).gte(timeRange.getStart().getEpochSecond()).lt(timeRange.getEnd().getEpochSecond())),
-				group(FeatureBucket.CONTEXT_ID_FIELD).count().as(ContextIdToNumOfItems.TOTAL_NUM_OF_ITEMS_FIELD),
-				project(ContextIdToNumOfItems.TOTAL_NUM_OF_ITEMS_FIELD).and("_id").as(ContextIdToNumOfItems.CONTEXT_ID_FIELD).andExclude("_id")
-		);
+	public List<FeatureBucket> getFeatureBuckets(
+			String featureBucketConfName, Set<String> contextIds, TimeRange timeRange) {
 
-		return mongoTemplate.aggregate(aggregation, getCollectionName(featureBucketConfName), ContextIdToNumOfItems.class).getMappedResults();
-	}
-
-	@Override
-	public List<FeatureBucket> getFeatureBuckets(String featureBucketConfName, Set<String> contextIds, TimeRange timeRange, int skip, int limit) {
-		Query query = new Query(where(FeatureBucket.CONTEXT_ID_FIELD).in(contextIds))
-				.addCriteria(where(FeatureBucket.START_TIME_FIELD)
-						.gte(timeRange.getStart().getEpochSecond())
-						.lt(timeRange.getEnd().getEpochSecond()))
-				.skip(skip)
-				.limit(limit);
-
+		long startInSeconds = timeRange.getStart().getEpochSecond();
+		long endInSeconds = timeRange.getEnd().getEpochSecond();
+		Query query = new Query()
+				.addCriteria(Criteria.where(FeatureBucket.CONTEXT_ID_FIELD).in(contextIds))
+				.addCriteria(Criteria.where(FeatureBucket.START_TIME_FIELD).gte(startInSeconds).lt(endInSeconds));
 		return mongoTemplate.find(query, FeatureBucket.class, getCollectionName(featureBucketConfName));
 	}
 
+	/**
+	 * @see FeatureBucketStore#storeFeatureBucket(FeatureBucketConf, FeatureBucket)
+	 */
 	@Override
 	public void storeFeatureBucket(FeatureBucketConf featureBucketConf, FeatureBucket featureBucket) {
 		String collectionName = ensureCollectionExists(featureBucketConf);
@@ -77,7 +79,7 @@ public class FeatureBucketStoreMongoImpl implements FeatureBucketStore {
 		try {
 			mongoTemplate.save(featureBucket, collectionName);
 		} catch (Exception e) {
-			logger.error("Could not store Feature Bucket {} in Mongo DB collection {}.", featureBucket, collectionName, e);
+			logger.error("Failed storing Feature Bucket {} in Mongo collection {}.", featureBucket, collectionName, e);
 		}
 	}
 
@@ -87,26 +89,27 @@ public class FeatureBucketStoreMongoImpl implements FeatureBucketStore {
 		if (!mongoDbUtilService.collectionExists(collectionName)) {
 			mongoDbUtilService.createCollection(collectionName);
 
-			// Start time
+			// Start time index
 			mongoTemplate.indexOps(collectionName).ensureIndex(new Index()
 					.on(FeatureBucket.START_TIME_FIELD, Direction.ASC));
 
-			// Context ID + start time
+			// Context ID + start time index
 			mongoTemplate.indexOps(collectionName).ensureIndex(new Index()
 					.on(FeatureBucket.CONTEXT_ID_FIELD, Direction.ASC)
 					.on(FeatureBucket.START_TIME_FIELD, Direction.ASC));
 
-			// Bucket ID
+			// Bucket ID (unique)
 			mongoTemplate.indexOps(collectionName).ensureIndex(new Index()
 					.on(FeatureBucket.BUCKET_ID_FIELD, Direction.ASC)
 					.unique());
 
-			int expireAfterSeconds = featureBucketConf.getExpireAfterSeconds() != null ?
+			long expireAfterSeconds = featureBucketConf.getExpireAfterSeconds() != null ?
 					featureBucketConf.getExpireAfterSeconds() :
-					EXPIRE_AFTER_SECONDS_DEFAULT;
+					defaultExpireAfterSeconds;
 
+			// Created at (TTL)
 			mongoTemplate.indexOps(collectionName).ensureIndex(new Index()
-					.on(FeatureBucket.CREATED_AT_FIELD_NAME, Direction.ASC)
+					.on(FeatureBucket.CREATED_AT_FIELD, Direction.ASC)
 					.expire(expireAfterSeconds, TimeUnit.SECONDS));
 		}
 

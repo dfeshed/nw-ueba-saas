@@ -17,8 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import presidio.ade.domain.record.enriched.EnrichedDlpFileRecord;
 import presidio.ade.domain.store.AdeDataStoreCleanupParams;
@@ -28,7 +26,9 @@ import presidio.ade.domain.store.enriched.EnrichedRecordsMetadata;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Properties;
 
 /**
  * Created by YaronDL on 7/5/2017.
@@ -55,7 +55,8 @@ public class ModelFeatureAggregationBucketsServiceTest {
         generateAndPersistAdeEnrichedRecords(timeRange,username);
         modelFeatureAggregationBucketsService.execute(timeRange,DATA_SOURCE);
         String contextId = FeatureBucketUtils.buildContextId(Collections.singletonMap("normalized_username", username));
-        List<FeatureBucket> featureBucketList =featureBucketStore.getFeatureBuckets("normalized_username_dlpfile_daily",Collections.singleton(contextId),timeRange,0,10);
+        List<FeatureBucket> featureBucketList = featureBucketStore.getFeatureBuckets(
+                "normalized_username_dlpfile_daily", Collections.singleton(contextId), timeRange);
         Assert.assertEquals(1,featureBucketList.size());
         FeatureBucket featureBucket = featureBucketList.get(0);
 

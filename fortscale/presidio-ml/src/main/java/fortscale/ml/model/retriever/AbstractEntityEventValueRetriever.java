@@ -14,6 +14,7 @@ import fortscale.ml.model.selector.IContextSelector;
 import fortscale.utils.factory.FactoryService;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.monitoring.stats.StatsService;
+import fortscale.utils.time.TimeRange;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.util.Assert;
@@ -43,7 +44,7 @@ public abstract class AbstractEntityEventValueRetriever extends AbstractDataRetr
 		init(entityEventConfName, isAccumulation);
 	}
 
-	private void init(String entityEventConfName, boolean isAccumulation){
+	private void init(String entityEventConfName, boolean isAccumulation) {
 		if (entityEventConf == null) {
 			throw new InvalidEntityEventConfNameException(entityEventConfName);
 		}
@@ -100,7 +101,7 @@ public abstract class AbstractEntityEventValueRetriever extends AbstractDataRetr
 		Date startTime = getStartTime(endTime);
 		EntityEventContextSelectorConf conf = new EntityEventContextSelectorConf(entityEventConf.getName());
 		IContextSelector contextSelector = contextSelectorFactoryService.getProduct(conf);
-		Set<String> contextIds = contextSelector.getContexts(startTime, endTime);
+		Set<String> contextIds = contextSelector.getContexts(new TimeRange(startTime, endTime));
 		metrics.contextIds++;
 		logger.info("Number of contextIds: " + contextIds.size());
 		GenericHistogram reductionHistogram = new GenericHistogram();
@@ -139,7 +140,7 @@ public abstract class AbstractEntityEventValueRetriever extends AbstractDataRetr
 	@Override
 	public String getContextId(Map<String, String> context) {
 		metrics.getContextId++;
-		Assert.notNull(context);
+		Assert.notNull(context, "context cannot be null.");
 		return EntityEventBuilder.getContextId(context);
 	}
 

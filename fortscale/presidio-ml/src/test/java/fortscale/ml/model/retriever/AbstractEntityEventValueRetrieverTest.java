@@ -8,15 +8,14 @@ import fortscale.ml.model.selector.EntityEventContextSelector;
 import fortscale.ml.model.selector.EntityEventContextSelectorConf;
 import fortscale.ml.model.selector.IContextSelector;
 import fortscale.utils.factory.FactoryService;
+import fortscale.utils.time.TimeRange;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Collections;
@@ -32,7 +31,7 @@ public class AbstractEntityEventValueRetrieverTest extends EntityEventValueRetri
 	@MockBean
 	private FactoryService<IContextSelector> contextSelectorFactoryService;
 
-	protected JokerEntityEventData createJokerEntityEventData( double entityEventValue) {
+	protected JokerEntityEventData createJokerEntityEventData(double entityEventValue) {
 		return new JokerEntityEventData(
 				0,
 				Collections.singletonMap(getFullAggregatedFeatureEventNameWithWeightOfOne(), entityEventValue)
@@ -81,10 +80,8 @@ public class AbstractEntityEventValueRetrieverTest extends EntityEventValueRetri
 
 
 		IContextSelector contextSelector = Mockito.mock(EntityEventContextSelector.class);
-		when(contextSelector.getContexts(Mockito.any(Date.class),Mockito.any(Date.class))).thenReturn(Sets.newHashSet(contextId1, contextId2, contextId3));
+		when(contextSelector.getContexts(Mockito.any(TimeRange.class))).thenReturn(Sets.newHashSet(contextId1, contextId2, contextId3));
 		when(contextSelectorFactoryService.getProduct(Mockito.any(EntityEventContextSelectorConf.class))).thenReturn(contextSelector);
-
-
 
 		AbstractEntityEventValueRetriever retriever = new AbstractEntityEventValueRetriever(config, false) {
 			@Override

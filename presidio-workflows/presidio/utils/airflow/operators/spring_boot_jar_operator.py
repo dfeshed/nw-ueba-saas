@@ -30,6 +30,7 @@ class SpringBootJarOperator(BashOperator):
     :type java_args: dict
     """
     ui_color = '#9EB9D4'
+    java_args_prefix = '--'
 
     @apply_defaults
     def __init__(self, jvm_args, command, java_args={}, *args, **kwargs):
@@ -59,11 +60,11 @@ class SpringBootJarOperator(BashOperator):
         :return: 
         """
         parser = SafeConfigParser()
+        config_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../../resources/java/config.ini')
         # todo: file should be imported from package?
         # In order to run dags that use jar_operator change the path to:
         # /home/presidio/dev-projects/presidio-core/presidio-workflows/presidio/resources/java/config.ini
-        parser.read(
-            '/home/presidio/jenkins/workspace/Presidio-Workflows/presidio-workflows/presidio/resources/java/config.ini')
+        parser.read(config_path)
         default_options_items = parser.items('default_values')
         args = dict(default_options_items + self.jvm_args.items())
         return args
@@ -172,7 +173,7 @@ class SpringBootJarOperator(BashOperator):
             bash_command.extend(['org.springframework.boot.loader.PropertiesLauncher'])
 
         if not is_blank(self.java_args):
-            java_args = ' '.join('--%s %s' % (key, val) for (key, val) in self.java_args.iteritems())
+            java_args = ' '.join(SpringBootJarOperator.java_args_prefix + '%s %s' % (key, val) for (key, val) in self.java_args.iteritems())
             bash_command.append(self.command)
             bash_command.append(java_args)
 
