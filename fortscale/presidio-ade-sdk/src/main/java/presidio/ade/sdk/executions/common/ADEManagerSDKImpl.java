@@ -125,26 +125,26 @@ public class ADEManagerSDKImpl implements ADEManagerSDK {
 
     @Override
     public PageIterator<EntityEvent> findSmartsByTime(TimeRange timeRange, int pageSize) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public List<FeatureBucket> findFeatureBucketsByContextAndTime(String featureName, String contextIds, TimeRange timeRange) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public List<AggrEvent> findAggrEventByContextAndTime(String aggregatedFeatureName, String contextIds, TimeRange timeRange) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public List<AccumulatedAggregatedFeatureEvent> findAccumulatedAggrEventByContextIdAndTime(String aggregatedFeatureName, String contextIds, TimeRange timeRange) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public List<AdeScoredRecord> findScoredEventsByContextAndTimeAndFeature(String featureName, String dataSource, String contextId, TimeRange timeRange) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 }
