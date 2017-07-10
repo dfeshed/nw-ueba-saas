@@ -53,7 +53,7 @@ public class MonitoringAspects {
      */
 
     @After("@annotation(fortscale.utils.monitoring.aspect.annotations.End)")
-    public void ebd(JoinPoint joinPoint) {
+    public void end(JoinPoint joinPoint) {
         counterService.increment(new StringBuilder(joinPoint.getSignature().toShortString()).append(END).toString());
     }
 
