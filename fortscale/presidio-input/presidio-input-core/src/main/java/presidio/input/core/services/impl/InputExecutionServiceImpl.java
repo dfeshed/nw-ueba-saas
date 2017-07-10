@@ -1,13 +1,15 @@
 package presidio.input.core.services.impl;
 
 
-import fortscale.common.shell.PresidioExecutionService;
 import fortscale.common.general.CommonStrings;
 import fortscale.common.general.DataSource;
+import fortscale.common.shell.PresidioExecutionService;
 import fortscale.domain.core.AbstractAuditableDocument;
 import fortscale.utils.logging.Logger;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.input.core.services.converters.DlpFileConverter;
+import presidio.input.core.services.converters.FileConverter;
+import presidio.input.core.services.converters.InputAdeConverter;
 import presidio.input.core.services.data.AdeDataService;
 import presidio.sdk.api.domain.DlpFileDataDocument;
 import presidio.sdk.api.domain.DlpFileEnrichedDocument;
@@ -31,26 +33,33 @@ public class InputExecutionServiceImpl implements PresidioExecutionService {
 
     @Override
     public void run(DataSource dataSource, Instant startDate, Instant endDate, Double fixedDuration) throws Exception {
-        logger.info("Started input processing with params: data source:{}, from {}:{}, until {}:{}.",dataSource, CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate, CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
+        logger.info("Started input processing with params: data source:{}, from {}:{}, until {}:{}.", dataSource, CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate, CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
 
         final List<? extends AbstractAuditableDocument> dataRecords = find(dataSource, startDate, endDate);
         logger.info("Found {} dataRecords for datasource:{}, startTime:{}, endTime:{}.", dataSource, startDate, endDate);
+        List<? extends AbstractAuditableDocument> enrichedRecords;
+        if (dataSource.equals(DataSource.DLPFILE)) {
+            enrichedRecords = enrich(dataRecords);
+        } else {
+            enrichedRecords = dataRecords;
+        }
 
-        final List<DlpFileEnrichedDocument> enrichedRecords = enrich(dataRecords);
+        InputAdeConverter converter = getConverter(dataSource);
 
-        if (!storeForAde(enrichedRecords, startDate, endDate, dataSource)) {
+
+        if (!storeForAde(enrichedRecords, startDate, endDate, dataSource, converter)) {
             logger.error("Failed to save input enriched records into ADE!!!");
             //todo: how to handle?
         }
 
-        logger.info("Finished input run with params : data source:{}, from {}:{}, until {}:{}.",dataSource, CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate, CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
+        logger.info("Finished input run with params : data source:{}, from {}:{}, until {}:{}.", dataSource, CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate, CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
     }
 
-    private boolean storeForAde(List<? extends AbstractAuditableDocument> enrichedDocuments, Instant startDate, Instant endDate, DataSource dataSource) {
+    private boolean storeForAde(List<? extends AbstractAuditableDocument> enrichedDocuments, Instant startDate, Instant endDate, DataSource dataSource, InputAdeConverter converter) {
         logger.debug("Storing {} records.", enrichedDocuments.size());
 
 
-        List<? extends EnrichedRecord> records = convert(enrichedDocuments, new DlpFileConverter());
+        List<? extends EnrichedRecord> records = convert(enrichedDocuments, converter);
 
         adeDataService.store(dataSource, startDate, endDate, records);
 
@@ -63,7 +72,7 @@ public class InputExecutionServiceImpl implements PresidioExecutionService {
     }
 
     protected List<EnrichedRecord> convert(List<? extends AbstractAuditableDocument> enrichedDocuments,
-                                           DlpFileConverter converter) {
+                                           InputAdeConverter converter) {
         List<EnrichedRecord> records = new ArrayList<>();
         enrichedDocuments.forEach(doc -> records.add(converter.convert((DlpFileEnrichedDocument) doc)));
         return records;
@@ -87,6 +96,20 @@ public class InputExecutionServiceImpl implements PresidioExecutionService {
 
 
         return enrichedRecords;
+    }
+
+    private InputAdeConverter getConverter(DataSource dataSource) {
+        switch (dataSource) {
+            case DLPFILE:
+                return new DlpFileConverter();
+            case DLPMAIL:
+                break;
+            case PRNLOG:
+                break;
+            case FILE:
+                return new FileConverter();
+        }
+        return null;
     }
 
     @Override

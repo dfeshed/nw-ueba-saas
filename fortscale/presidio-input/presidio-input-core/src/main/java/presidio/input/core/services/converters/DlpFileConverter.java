@@ -1,14 +1,16 @@
 package presidio.input.core.services.converters;
 
+import fortscale.domain.core.AbstractAuditableDocument;
 import presidio.ade.domain.record.enriched.EnrichedDlpFileRecord;
+import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.sdk.api.domain.DlpFileEnrichedDocument;
 
-/**
- * Created by alexp on 08-Jun-17.
- */
-public class DlpFileConverter {
-    public EnrichedDlpFileRecord convert(DlpFileEnrichedDocument dlpFileEnrichedDocument) {
-        EnrichedDlpFileRecord adeRecord = new EnrichedDlpFileRecord(dlpFileEnrichedDocument.getDateTime());
+public class DlpFileConverter implements InputAdeConverter {
+
+    @Override
+    public EnrichedRecord convert(AbstractAuditableDocument document) {
+        EnrichedDlpFileRecord adeRecord = new EnrichedDlpFileRecord(document.getDateTime());
+        DlpFileEnrichedDocument dlpFileEnrichedDocument = (DlpFileEnrichedDocument) document;
         adeRecord.setNormalized_username(dlpFileEnrichedDocument.getNormalizedUsername());
         adeRecord.setNormalized_src_machine(dlpFileEnrichedDocument.getNormalizedSrcMachine());
         adeRecord.setSource_path(dlpFileEnrichedDocument.getSourcePath());
