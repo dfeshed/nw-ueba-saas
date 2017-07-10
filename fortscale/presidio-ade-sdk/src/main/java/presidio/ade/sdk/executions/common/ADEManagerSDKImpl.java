@@ -145,6 +145,6 @@ public class ADEManagerSDKImpl implements ADEManagerSDK {
 
     @Override
     public List<AdeScoredRecord> findScoredEventsByContextAndTimeAndFeature(String featureName, String contextId, TimeRange timeRange) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 }
