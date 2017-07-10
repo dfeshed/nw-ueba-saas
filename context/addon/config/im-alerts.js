@@ -9,6 +9,14 @@ export default {
   sortOrder: 'desc',
   columns: [
     {
+      field: 'alert.timestamp.$date',
+      title: 'context.alerts.created',
+      width: '15vw',
+      dataType: 'datetime',
+      icon: 'arrow-down-8',
+      className: 'sort'
+    },
+    {
       field: 'alert.risk_score',
       title: 'context.alerts.risk_score',
       width: '5vw',
@@ -47,14 +55,6 @@ export default {
       width: '5vw',
       dataType: 'link',
       path: '/respond/incident/{0}',
-      icon: 'arrow-down-8',
-      className: 'sort'
-    },
-    {
-      field: 'alert.timestamp.$date',
-      title: 'context.alerts.created',
-      width: '15vw',
-      dataType: 'datetime',
       icon: 'arrow-down-8',
       className: 'sort'
     }
