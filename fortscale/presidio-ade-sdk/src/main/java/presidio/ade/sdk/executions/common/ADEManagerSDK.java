@@ -165,39 +165,41 @@ public interface ADEManagerSDK {
     void store(EnrichedRecordsMetadata metaData, List<? extends EnrichedRecord> records);
 
     /**
-     * returns an iterator over SMART events at a given time range
+     * returns an iterator over SMART events at a given time range and with score higher than the scoreThreshold
      * @param timeRange start and end time of the smarts
      * @param pageSize num of events in each page
+     * @param scoreThreshold  scoreThreshold
      * @return an iterator over SMART events
      */
-    PageIterator<EntityEvent> findSmartsByTime(TimeRange timeRange, int pageSize);
+    PageIterator<EntityEvent> findSmarts(TimeRange timeRange, int pageSize, int scoreThreshold);
 
     /**
-     * returns list of FeatureBuckets for a given context and time range
+     * returns list of FeatureBuckets for a given feature, context and time range
+     * @param featureBucketName
      * @param featureName
      * @param contextId i.e. username
      * @param timeRange start and end time
      * @return list of FeatureBuckets
      */
-    List<FeatureBucket> findFeatureBucketsByContextAndTime(String featureName, String contextId, TimeRange timeRange);
+    List<FeatureBucket> findFeatureBuckets(String featureBucketName, String featureName, String contextId, TimeRange timeRange);
 
     /**
-     * returns list of Aggregated events for a given context and time range
-     * @param aggregatedFeatureName
+     * returns list of Aggregated events for a given feature type, context and time range
+     * @param featureType
      * @param contextId i.e. username
      * @param timeRange start and end time of the events
      * @return list of Aggregated events
      */
-    List<AggrEvent> findAggrEventsByContextAndTime (String aggregatedFeatureName, String contextId, TimeRange timeRange);
+    List<AggrEvent> findAggrEvents (String featureType, String contextId, TimeRange timeRange);
 
     /**
-     * returns list of Accumulated aggregated events for a given context and time range
-     * @param aggregatedFeatureName
+     * returns list of Accumulated aggregated events for a given feature type, context and time range
+     * @param featureType
      * @param contextId i.e. username
      * @param timeRange start and end time of the events
      * @return list of Accumulated aggregated events
      */
-    List<AccumulatedAggregatedFeatureEvent> findAccumulatedAggrEventsByContextIdAndTime (String aggregatedFeatureName, String contextId, TimeRange timeRange);
+    List<AccumulatedAggregatedFeatureEvent> findAccumulatedAggrEvents (String featureType, String contextId, TimeRange timeRange);
 
     /**
      * returns list of all the scored events for a context (e.g: user) and feature type at a given time range
@@ -206,6 +208,6 @@ public interface ADEManagerSDK {
      * @param timeRange start and end time of the events
      * @return list of scored events
      */
-    List<AdeScoredRecord> findScoredEventsByContextAndTimeAndFeature(String featureName, String contextId, TimeRange timeRange);
+    List<AdeScoredRecord> findScoredEvents (String featureName, String contextId, TimeRange timeRange);
 
 }
