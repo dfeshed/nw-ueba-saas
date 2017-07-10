@@ -2,6 +2,7 @@ package fortscale.ml.model;
 
 import fortscale.accumulator.aggregation.store.AccumulatedAggregatedFeatureEventStore;
 import fortscale.accumulator.entityEvent.store.AccumulatedEntityEventStore;
+import fortscale.aggregation.configuration.AslConfigurationPaths;
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.aggregation.feature.bucket.FeatureBucketReader;
 import fortscale.aggregation.feature.event.RetentionStrategiesConfService;
@@ -90,7 +91,12 @@ public class ModelConfProductionConfFilesTest {
 
 		@Bean
 		public ModelConfService modelConfService() {
-			return new ModelConfService();
+			AslConfigurationPaths modelConfigurationPaths = new AslConfigurationPaths(
+					"allProductionModelConfs",
+					"classpath:config/asl/models/*.json",
+					"file:home/cloudera/fortscale/config/asl/models/overriding/*.json",
+					"file:home/cloudera/fortscale/config/asl/models/additional/*.json");
+			return new ModelConfService(modelConfigurationPaths);
 		}
 
 		@Bean
@@ -129,10 +135,6 @@ public class ModelConfProductionConfFilesTest {
 			properties.put("fortscale.entity.event.definitions.conf.json.overriding.files.path", "file:home/cloudera/fortscale/config/asl/entity_events/overriding/entity_events*.json");
 			properties.put("fortscale.entity.event.global.params.json.file.path", "classpath:config/asl/entity_events_global_params.json");
 			properties.put("fortscale.entity.event.global.params.conf.json.overriding.files.path", "file:home/cloudera/config/asl/entity_events/overriding/global_params*.json");
-
-			properties.put("fortscale.model.configurations.location.path", "classpath:config/asl/models/*.json");
-			properties.put("fortscale.model.configurations.overriding.location.path", "file:home/cloudera/fortscale/config/asl/models/overriding/*.json");
-			properties.put("fortscale.model.configurations.additional.location.path", "file:home/cloudera/fortscale/config/asl/models/additional/*.json");
 
 			PropertyPlaceholderConfigurer propertyPlaceholderConfigurer = new PropertyPlaceholderConfigurer();
 			propertyPlaceholderConfigurer.setProperties(properties);

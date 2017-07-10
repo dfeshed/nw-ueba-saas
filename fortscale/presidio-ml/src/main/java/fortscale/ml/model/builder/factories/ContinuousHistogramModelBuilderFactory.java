@@ -1,6 +1,8 @@
-package fortscale.ml.model.builder.gaussian;
+package fortscale.ml.model.builder.factories;
 
 import fortscale.ml.model.builder.IModelBuilder;
+import fortscale.ml.model.builder.gaussian.ContinuousHistogramModelBuilder;
+import fortscale.ml.model.builder.gaussian.ContinuousHistogramModelBuilderConf;
 import fortscale.utils.factory.AbstractServiceAutowiringFactory;
 import fortscale.utils.factory.FactoryConfig;
 import org.springframework.stereotype.Component;
