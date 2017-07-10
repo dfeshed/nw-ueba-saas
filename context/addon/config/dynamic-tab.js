@@ -27,7 +27,7 @@ const datasources = {
         tabRequired: false
       }
     },
-    class: 'computer-pc-3',
+    class: 'network-computers-2',
     tabRequired: true
   },
   incident: {
@@ -61,7 +61,7 @@ const datasources = {
     dataSourceType: 'Archer',
     displayType: 'grid',
     tabRequired: true,
-    class: 'bow-arrow'
+    class: 'network-connecting'
   },
   'liveConnectIp': {
     field: 'LiveConnect-Ip',
