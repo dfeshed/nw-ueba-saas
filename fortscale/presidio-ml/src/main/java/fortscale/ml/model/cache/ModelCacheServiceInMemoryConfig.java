@@ -1,5 +1,6 @@
 package fortscale.ml.model.cache;
 
+import fortscale.aggregation.configuration.AslConfigurationPaths;
 import fortscale.ml.model.ModelConfService;
 import fortscale.ml.model.ModelConfServiceConfig;
 import fortscale.ml.model.retriever.AbstractDataRetriever;
@@ -37,5 +38,14 @@ public class ModelCacheServiceInMemoryConfig {
     @Bean
     public ModelsCacheService modelCacheServiceInMemory() {
         return new ModelCacheServiceInMemory(modelConfService, modelStore, dataRetrieverFactoryService, futureDiffBetweenCachedModelAndEvent, cacheSize);
+    }
+
+    @Bean("modelConfigurationPaths")
+    public AslConfigurationPaths modelConfigurationPaths() {
+        return new AslConfigurationPaths(
+                "allModelConfs",
+                "classpath:config/asl/models/*.json",
+                "file:home/cloudera/fortscale/config/asl/models/overriding/*.json",
+                "file:home/cloudera/fortscale/config/asl/models/additional/*.json");
     }
 }
