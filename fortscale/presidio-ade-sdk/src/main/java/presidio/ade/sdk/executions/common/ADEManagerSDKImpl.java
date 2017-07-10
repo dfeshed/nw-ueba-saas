@@ -1,6 +1,13 @@
 package presidio.ade.sdk.executions.common;
 
+import fortscale.accumulator.aggregation.event.AccumulatedAggregatedFeatureEvent;
+import fortscale.aggregation.feature.bucket.FeatureBucket;
+import fortscale.aggregation.feature.event.AggrEvent;
+import fortscale.common.event.EntityEvent;
+import fortscale.utils.pagination.PageIterator;
+import fortscale.utils.time.TimeRange;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
+import presidio.ade.domain.record.scored.AdeScoredRecord;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
 import presidio.ade.domain.store.AdeDataStoreCleanupParams;
 import presidio.ade.domain.store.enriched.EnrichedRecordsMetadata;
@@ -116,5 +123,28 @@ public class ADEManagerSDKImpl implements ADEManagerSDK {
         store.store(metaData, records);
     }
 
+    @Override
+    public PageIterator<EntityEvent> findSmartsByTime(TimeRange timeRange, int pageSize) {
+        return null;
+    }
 
+    @Override
+    public List<FeatureBucket> findFeatureBucketsByContextAndTime(String featureName, String contextIds, TimeRange timeRange) {
+        return null;
+    }
+
+    @Override
+    public List<AggrEvent> findAggrEventByContextAndTime(String aggregatedFeatureName, String contextIds, TimeRange timeRange) {
+        return null;
+    }
+
+    @Override
+    public List<AccumulatedAggregatedFeatureEvent> findAccumulatedAggrEventByContextIdAndTime(String aggregatedFeatureName, String contextIds, TimeRange timeRange) {
+        return null;
+    }
+
+    @Override
+    public List<AdeScoredRecord> findScoredEventsByContextAndTimeAndFeature(String featureName, String dataSource, String contextId, TimeRange timeRange) {
+        return null;
+    }
 }

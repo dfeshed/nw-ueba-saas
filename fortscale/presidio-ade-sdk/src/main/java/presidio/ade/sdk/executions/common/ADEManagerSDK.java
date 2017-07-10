@@ -1,6 +1,13 @@
 package presidio.ade.sdk.executions.common;
 
+import fortscale.accumulator.aggregation.event.AccumulatedAggregatedFeatureEvent;
+import fortscale.aggregation.feature.bucket.FeatureBucket;
+import fortscale.aggregation.feature.event.AggrEvent;
+import fortscale.common.event.EntityEvent;
+import fortscale.utils.pagination.PageIterator;
+import fortscale.utils.time.TimeRange;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
+import presidio.ade.domain.record.scored.AdeScoredRecord;
 import presidio.ade.domain.store.AdeDataStoreCleanupParams;
 import presidio.ade.domain.store.enriched.EnrichedRecordsMetadata;
 import presidio.ade.sdk.executions.historical.PrepareHistoricalRunTimeParams;
@@ -156,4 +163,50 @@ public interface ADEManagerSDK {
      * @param records  data to be stored
      */
     void store(EnrichedRecordsMetadata metaData, List<? extends EnrichedRecord> records);
+
+    /**
+     * returns an iterator over SMART events at a given time range
+     * @param timeRange start and end time of the smarts
+     * @param pageSize num of events in each page
+     * @return an iterator over SMART events
+     */
+    PageIterator<EntityEvent> findSmartsByTime(TimeRange timeRange, int pageSize);
+
+    /**
+     * returns list of FeatureBuckets for a given context and time range
+     * @param featureName
+     * @param contextId i.e. username
+     * @param timeRange start and end time
+     * @return
+     */
+    List<FeatureBucket> findFeatureBucketsByContextAndTime(String featureName, String contextId, TimeRange timeRange);
+
+    /**
+     * returns list of Aggregated events for a given context and time range
+     * @param aggregatedFeatureName
+     * @param contextId i.e. username
+     * @param timeRange start and end time of the events
+     * @return
+     */
+    List<AggrEvent> findAggrEventByContextAndTime (String aggregatedFeatureName, String contextId, TimeRange timeRange);
+
+    /**
+     * returns list of Accumulated aggregated events for a given context and time range
+     * @param aggregatedFeatureName
+     * @param contextId i.e. username
+     * @param timeRange start and end time of the events
+     * @return
+     */
+    List<AccumulatedAggregatedFeatureEvent> findAccumulatedAggrEventByContextIdAndTime (String aggregatedFeatureName, String contextId, TimeRange timeRange);
+
+    /**
+     * returns list of all the scored events for a context (e.g: user) and feature type at a given time range
+     * @param contextId i.e. username
+     * @param timeRange start and end time of the events
+     * @param dataSource
+     * @param featureName
+     * @return
+     */
+    List<AdeScoredRecord> findScoredEventsByContextAndTimeAndFeature(String featureName, String dataSource, String contextId, TimeRange timeRange);
+
 }
