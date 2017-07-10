@@ -20,8 +20,8 @@ public abstract class EnrichedRecord extends AdeRecord {
     @Field(EVENT_ID_FIELD)
     private String eventId;
 
-    public EnrichedRecord(Instant dateTime) {
-        super(dateTime);
+    public EnrichedRecord(Instant startInstant) {
+        super(startInstant);
     }
 
     public String getEventId() {

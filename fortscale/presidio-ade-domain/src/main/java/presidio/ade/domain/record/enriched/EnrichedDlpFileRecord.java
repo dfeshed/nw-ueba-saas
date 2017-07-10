@@ -64,10 +64,10 @@ public class EnrichedDlpFileRecord extends EnrichedRecord {
     /**
      * C'tor.
      *
-     * @param date_time The record's logical time
+     * @param startInstant The record's logical time
      */
-    public EnrichedDlpFileRecord(Instant date_time) {
-        super(date_time);
+    public EnrichedDlpFileRecord(Instant startInstant) {
+        super(startInstant);
     }
 
     @Override

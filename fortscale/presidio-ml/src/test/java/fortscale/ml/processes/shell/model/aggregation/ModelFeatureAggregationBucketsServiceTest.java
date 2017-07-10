@@ -54,7 +54,7 @@ public class ModelFeatureAggregationBucketsServiceTest {
         String username = "sanityTestUser";
         generateAndPersistAdeEnrichedRecords(timeRange, username);
         modelFeatureAggregationBucketsService.execute(timeRange, DATA_SOURCE);
-        String contextId = FeatureBucketUtils.buildContextId(Collections.singletonMap("normalized_username", username));
+        String contextId = FeatureBucketUtils.buildContextId(Collections.singletonMap("normalizedUsername", username));
         List<FeatureBucket> featureBucketList = featureBucketStore.getFeatureBuckets("normalized_username_dlpfile_daily", Collections.singleton(contextId), timeRange, 0, 10);
         Assert.assertEquals(1, featureBucketList.size());
         FeatureBucket featureBucket = featureBucketList.get(0);
@@ -102,7 +102,7 @@ public class ModelFeatureAggregationBucketsServiceTest {
         List<EnrichedDlpFileRecord> enrichedDlpFileRecordList = Collections.singletonList(enrichedDlpFileRecord);
         EnrichedRecordsMetadata enrichedRecordsMetadata = new EnrichedRecordsMetadata(DATA_SOURCE, startTime, startTime.plus(1, ChronoUnit.SECONDS));
         enrichedDataStore.store(enrichedRecordsMetadata, enrichedDlpFileRecordList);
-        List<ContextIdToNumOfItems> contextIdToNumOfItemsList = enrichedDataStore.aggregateContextToNumOfEvents(enrichedRecordsMetadata, "normalized_username");
+        List<ContextIdToNumOfItems> contextIdToNumOfItemsList = enrichedDataStore.aggregateContextToNumOfEvents(enrichedRecordsMetadata, "normalizedUsername");
         Assert.assertEquals(1, contextIdToNumOfItemsList.size());
     }
 
