@@ -12,12 +12,10 @@ import org.springframework.boot.actuate.metrics.dropwizard.DropwizardMetricServi
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
-import java.time.Duration;
-import java.time.Instant;
 import java.util.List;
 
 import static fortscale.utils.monitoring.aspect.MetricsNames.CALLING_METHOD_METRIC;
-import static fortscale.utils.monitoring.aspect.MetricsNames.EXCEPTION_THROWED_METRIC;
+import static fortscale.utils.monitoring.aspect.MetricsNames.EXCEPTION_THROWN_METRIC;
 import static fortscale.utils.monitoring.aspect.MetricsNames.FINISHED_SUCCESSFULLY_METHOD_METRIC;
 import static fortscale.utils.monitoring.aspect.MetricsNames.NUMBER_OF_FAILED_VALIDATION_METRIC;
 import static fortscale.utils.monitoring.aspect.MetricsNames.RUN_TIME_METRIC;
@@ -32,17 +30,17 @@ public class MonitoringAspects {
 
     @Before("@annotation(fortscale.utils.monitoring.aspect.annotations.CallingMethodMetric)")
     public void callingMethodMetric(JoinPoint joinPoint) {
-        counterService.increment(new StringBuffer(joinPoint.getSignature().toShortString()).append(CALLING_METHOD_METRIC).toString());
+        counterService.increment(new StringBuilder(joinPoint.getSignature().toShortString()).append(CALLING_METHOD_METRIC).toString());
     }
 
     @After("@annotation(fortscale.utils.monitoring.aspect.annotations.FinishedSuccessfullyMethodMetric)")
     public void finishedSuccessfullyMethodMetric(JoinPoint joinPoint) {
-        counterService.increment(new StringBuffer(joinPoint.getSignature().toShortString()).append(FINISHED_SUCCESSFULLY_METHOD_METRIC).toString());
+        counterService.increment(new StringBuilder(joinPoint.getSignature().toShortString()).append(FINISHED_SUCCESSFULLY_METHOD_METRIC).toString());
     }
 
-    @AfterThrowing("@annotation(fortscale.utils.monitoring.aspect.annotations.ExceptionThrowedMetric)")
-    public void exceptionThrowedMetric(JoinPoint joinPoint) {
-        counterService.increment(new StringBuffer(joinPoint.getSignature().toShortString()).append(EXCEPTION_THROWED_METRIC).toString());
+    @AfterThrowing("@annotation(fortscale.utils.monitoring.aspect.annotations.ExceptionThrownMetric)")
+    public void exceptionThrownMetric(JoinPoint joinPoint) {
+        counterService.increment(new StringBuilder(joinPoint.getSignature().toShortString()).append(EXCEPTION_THROWN_METRIC).toString());
     }
 
     /**
@@ -56,11 +54,11 @@ public class MonitoringAspects {
 
     @Around("@annotation(fortscale.utils.monitoring.aspect.annotations.RunTimeMetric)")
     public void runTimeMetric(ProceedingJoinPoint joinPoint) throws Throwable {
-        String metricName = joinPoint.getSignature().toShortString() + RUN_TIME_METRIC;
-        Instant startTime = Instant.now();
+        StringBuilder metricName = new StringBuilder(joinPoint.getSignature().toShortString()).append(RUN_TIME_METRIC);
+        long startTime = System.nanoTime();
         joinPoint.proceed();
-        Instant endTime = Instant.now();
-        counterService.submit(metricName, Duration.between(startTime, endTime).getSeconds());
+        long endTime = System.nanoTime();
+        counterService.submit(metricName.toString(), endTime - startTime);
     }
 
     /**
@@ -74,9 +72,9 @@ public class MonitoringAspects {
      */
     @Around("@annotation(fortscale.utils.monitoring.aspect.annotations.NumberOfFailedValidationMetric)")
     public void numberOfFailedValidationMetric(ProceedingJoinPoint joinPoint) throws Throwable {
-        StringBuffer metricName = new StringBuffer(joinPoint.getSignature().toShortString());
-        List<? extends Serializable> retVal = (List<? extends Serializable>) joinPoint.proceed();
-        counterService.submit(metricName.append(NUMBER_OF_FAILED_VALIDATION_METRIC).toString(), retVal.size());
+        StringBuilder metricName = new StringBuilder(joinPoint.getSignature().toShortString()).append(NUMBER_OF_FAILED_VALIDATION_METRIC);
+        int numberOfFailedValidationDocuments = ((List<? extends Serializable>) joinPoint.proceed()).size();
+        counterService.submit(metricName.toString(), numberOfFailedValidationDocuments);
     }
 
 }

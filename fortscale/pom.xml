@@ -173,6 +173,8 @@
         <spring-cloud.version>Dalston.SR1</spring-cloud.version>
         <rpm-maven-plugin.version>2.1.5</rpm-maven-plugin.version>
         <spring-actuator-aop.version>1.5.4.RELEASE</spring-actuator-aop.version>
+        <aspectj.version>1.8.7</aspectj.version>
+        <metrics-core.version>3.0.2</metrics-core.version>
     </properties>
 
     <dependencyManagement>
