@@ -269,12 +269,13 @@ export default EmberObject.extend({
 
     const csrfToken = localStorage.getItem('rsa-x-csrf-token');
 
-    let csrfUrl = url;
     if (!isEmpty(csrfToken)) {
-      csrfUrl = `${url}?_csrf=${csrfToken}`;
+      this.headers = {
+        'X-CSRF-TOKEN': csrfToken
+      };
     }
     const stompClient = Stomp.over(
-      new SockJS(csrfUrl, {}, { transports: ['websocket'] })
+      new SockJS(url, {}, { transports: ['websocket'] })
     );
     stompClient.debug = config.socketDebug ? Logger.debug.bind(Logger) : null;
     this.set('stompClient', stompClient);
