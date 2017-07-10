@@ -25,20 +25,20 @@ public class DlpFileConverterTest {
     }
 
     private void assertRecords(DlpFileEnrichedDocument inputEnrichedRecord, EnrichedDlpFileRecord adeRecord) {
-        Assert.assertEquals(inputEnrichedRecord.getDateTime(), adeRecord.getDate_time());
-        Assert.assertEquals(inputEnrichedRecord.getNormalizedUsername(), adeRecord.getNormalized_username());
-        Assert.assertEquals(inputEnrichedRecord.getNormalizedSrcMachine(), adeRecord.getNormalized_src_machine());
-        Assert.assertEquals(inputEnrichedRecord.getSourcePath(), adeRecord.getSource_path());
-        Assert.assertEquals(inputEnrichedRecord.getSourceFileName(), adeRecord.getSource_file_name());
-        Assert.assertEquals(inputEnrichedRecord.getSourceDriveType(), adeRecord.getSource_drive_type());
-        Assert.assertEquals(inputEnrichedRecord.getDestinationPath(), adeRecord.getDestination_path());
-        Assert.assertEquals(inputEnrichedRecord.getDestinationFileName(), adeRecord.getDestination_file_name());
-        Assert.assertEquals(inputEnrichedRecord.getDestinationDriveType(), adeRecord.getDestination_drive_type());
-        Assert.assertEquals(inputEnrichedRecord.getFileSize().doubleValue(), adeRecord.getFile_size(), 0d);
-        Assert.assertEquals(inputEnrichedRecord.getEventType(), adeRecord.getEvent_type());
-        Assert.assertEquals(inputEnrichedRecord.getWasBlocked(), adeRecord.isWas_blocked());
-        Assert.assertEquals(inputEnrichedRecord.getWasClassified(), adeRecord.isWas_classified());
-        Assert.assertEquals(inputEnrichedRecord.getMalwareScanResult(), adeRecord.getMalware_scan_result());
-        Assert.assertEquals(inputEnrichedRecord.getExecutingApplication(), adeRecord.getExecuting_application());
+        Assert.assertEquals(inputEnrichedRecord.getDateTime(), adeRecord.getStartInstant());
+        Assert.assertEquals(inputEnrichedRecord.getNormalizedUsername(), adeRecord.getNormalizedUsername());
+        Assert.assertEquals(inputEnrichedRecord.getNormalizedSrcMachine(), adeRecord.getNormalizedSrcMachine());
+        Assert.assertEquals(inputEnrichedRecord.getSourcePath(), adeRecord.getSourcePath());
+        Assert.assertEquals(inputEnrichedRecord.getSourceFileName(), adeRecord.getSourceFileName());
+        Assert.assertEquals(inputEnrichedRecord.getSourceDriveType(), adeRecord.getSourceDriveType());
+        Assert.assertEquals(inputEnrichedRecord.getDestinationPath(), adeRecord.getDestinationPath());
+        Assert.assertEquals(inputEnrichedRecord.getDestinationFileName(), adeRecord.getDestinationFileName());
+        Assert.assertEquals(inputEnrichedRecord.getDestinationDriveType(), adeRecord.getDestinationDriveType());
+        Assert.assertEquals(inputEnrichedRecord.getFileSize().doubleValue(), adeRecord.getFileSize(), 0d);
+        Assert.assertEquals(inputEnrichedRecord.getEventType(), adeRecord.getEventType());
+        Assert.assertEquals(inputEnrichedRecord.getWasBlocked(), adeRecord.isWasBlocked());
+        Assert.assertEquals(inputEnrichedRecord.getWasClassified(), adeRecord.isWasClassified());
+        Assert.assertEquals(inputEnrichedRecord.getMalwareScanResult(), adeRecord.getMalwareScanResult());
+        Assert.assertEquals(inputEnrichedRecord.getExecutingApplication(), adeRecord.getExecutingApplication());
     }
 }

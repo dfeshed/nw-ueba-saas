@@ -10,185 +10,186 @@ import java.time.Instant;
 
 /**
  * The enriched DLP file event POJO.
- *
+ * <p>
  * Created by Lior Govrin on 05/06/2017.
  */
 @Document
-@AdeRecordMetadata(dataSource =DlpFileRecord.DLP_FILE_STR)
-public class EnrichedDlpFileRecord extends EnrichedRecord{
-	public static final String NORMALIZED_USERNAME_FIELD = "normalized_username";
-	public static final String NORMALIZED_SRC_MACHINE_FIELD = "normalized_src_machine";
-	public static final String SOURCE_PATH_FIELD = "source_path";
-	public static final String SOURCE_FILE_NAME_FIELD = "source_file_name";
-	public static final String SOURCE_DRIVE_TYPE_FIELD = "source_drive_type";
-	public static final String DESTINATION_PATH_FIELD = "destination_path";
-	public static final String DESTINATION_FILE_NAME_FIELD = "destination_file_name";
-	public static final String DESTINATION_DRIVE_TYPE_FIELD = "destination_drive_type";
-	public static final String FILE_SIZE_FIELD = "file_size";
-	public static final String EVENT_TYPE_FIELD = "event_type";
-	public static final String WAS_BLOCKED_FIELD = "was_blocked";
-	public static final String WAS_CLASSIFIED_FIELD = "was_classified";
-	public static final String MALWARE_SCAN_RESULT_FIELD = "malware_scan_result";
-	public static final String EXECUTING_APPLICATION_FIELD = "executing_application";
+@AdeRecordMetadata(dataSource = DlpFileRecord.DLP_FILE_STR)
+public class EnrichedDlpFileRecord extends EnrichedRecord {
+    public static final String NORMALIZED_USERNAME_FIELD = "normalizedUsername";
+    public static final String NORMALIZED_SRC_MACHINE_FIELD = "normalizedSrcMachine";
+    public static final String SOURCE_PATH_FIELD = "sourcePath";
+    public static final String SOURCE_FILE_NAME_FIELD = "sourceFileName";
+    public static final String SOURCE_DRIVE_TYPE_FIELD = "sourceDriveType";
+    public static final String DESTINATION_PATH_FIELD = "destinationPath";
+    public static final String DESTINATION_FILE_NAME_FIELD = "destinationFileName";
+    public static final String DESTINATION_DRIVE_TYPE_FIELD = "destinationDriveType";
+    public static final String FILE_SIZE_FIELD = "fileSize";
+    public static final String EVENT_TYPE_FIELD = "eventType";
+    public static final String WAS_BLOCKED_FIELD = "wasBlocked";
+    public static final String WAS_CLASSIFIED_FIELD = "wasClassified";
+    public static final String MALWARE_SCAN_RESULT_FIELD = "malwareScanResult";
+    public static final String EXECUTING_APPLICATION_FIELD = "executingApplication";
 
-	@Indexed @Field(NORMALIZED_USERNAME_FIELD)
-	private String normalized_username;
-	@Field(NORMALIZED_SRC_MACHINE_FIELD)
-	private String normalized_src_machine;
-	@Field(SOURCE_PATH_FIELD)
-	private String source_path;
-	@Field(SOURCE_FILE_NAME_FIELD)
-	private String source_file_name;
-	@Field(SOURCE_DRIVE_TYPE_FIELD)
-	private String source_drive_type;
-	@Field(DESTINATION_PATH_FIELD)
-	private String destination_path;
-	@Field(DESTINATION_FILE_NAME_FIELD)
-	private String destination_file_name;
-	@Field(DESTINATION_DRIVE_TYPE_FIELD)
-	private String destination_drive_type;
-	@Field(FILE_SIZE_FIELD)
-	private double file_size;
-	@Field(EVENT_TYPE_FIELD)
-	private String event_type;
-	@Field(WAS_BLOCKED_FIELD)
-	private boolean was_blocked;
-	@Field(WAS_CLASSIFIED_FIELD)
-	private boolean was_classified;
-	@Field(MALWARE_SCAN_RESULT_FIELD)
-	private String malware_scan_result;
-	@Field(EXECUTING_APPLICATION_FIELD)
-	private String executing_application;
+    @Indexed
+    @Field(NORMALIZED_USERNAME_FIELD)
+    private String normalizedUsername;
+    @Field(NORMALIZED_SRC_MACHINE_FIELD)
+    private String normalizedSrcMachine;
+    @Field(SOURCE_PATH_FIELD)
+    private String sourcePath;
+    @Field(SOURCE_FILE_NAME_FIELD)
+    private String sourceFileName;
+    @Field(SOURCE_DRIVE_TYPE_FIELD)
+    private String sourceDriveType;
+    @Field(DESTINATION_PATH_FIELD)
+    private String destinationPath;
+    @Field(DESTINATION_FILE_NAME_FIELD)
+    private String destinationFileName;
+    @Field(DESTINATION_DRIVE_TYPE_FIELD)
+    private String destinationDriveType;
+    @Field(FILE_SIZE_FIELD)
+    private double fileSize;
+    @Field(EVENT_TYPE_FIELD)
+    private String eventType;
+    @Field(WAS_BLOCKED_FIELD)
+    private boolean wasBlocked;
+    @Field(WAS_CLASSIFIED_FIELD)
+    private boolean wasClassified;
+    @Field(MALWARE_SCAN_RESULT_FIELD)
+    private String malwareScanResult;
+    @Field(EXECUTING_APPLICATION_FIELD)
+    private String executingApplication;
 
-	/**
-	 * C'tor.
-	 *
-	 * @param date_time The record's logical time
-	 */
-	public EnrichedDlpFileRecord(Instant date_time) {
-		super(date_time);
-	}
+    /**
+     * C'tor.
+     *
+     * @param date_time The record's logical time
+     */
+    public EnrichedDlpFileRecord(Instant date_time) {
+        super(date_time);
+    }
 
-	@Override
-	@Transient
-	public String getDataSource() {
-		return DlpFileRecord.DLP_FILE_STR;
-	}
+    @Override
+    @Transient
+    public String getDataSource() {
+        return DlpFileRecord.DLP_FILE_STR;
+    }
 
-	public String getNormalized_username() {
-		return normalized_username;
-	}
+    public String getNormalizedUsername() {
+        return normalizedUsername;
+    }
 
-	public void setNormalized_username(String normalized_username) {
-		this.normalized_username = normalized_username;
-	}
+    public void setNormalizedUsername(String normalizedUsername) {
+        this.normalizedUsername = normalizedUsername;
+    }
 
-	public String getNormalized_src_machine() {
-		return normalized_src_machine;
-	}
+    public String getNormalizedSrcMachine() {
+        return normalizedSrcMachine;
+    }
 
-	public void setNormalized_src_machine(String normalized_src_machine) {
-		this.normalized_src_machine = normalized_src_machine;
-	}
+    public void setNormalizedSrcMachine(String normalizedSrcMachine) {
+        this.normalizedSrcMachine = normalizedSrcMachine;
+    }
 
-	public String getSource_path() {
-		return source_path;
-	}
+    public String getSourcePath() {
+        return sourcePath;
+    }
 
-	public void setSource_path(String source_path) {
-		this.source_path = source_path;
-	}
+    public void setSourcePath(String sourcePath) {
+        this.sourcePath = sourcePath;
+    }
 
-	public String getSource_file_name() {
-		return source_file_name;
-	}
+    public String getSourceFileName() {
+        return sourceFileName;
+    }
 
-	public void setSource_file_name(String source_file_name) {
-		this.source_file_name = source_file_name;
-	}
+    public void setSourceFileName(String sourceFileName) {
+        this.sourceFileName = sourceFileName;
+    }
 
-	public String getSource_drive_type() {
-		return source_drive_type;
-	}
+    public String getSourceDriveType() {
+        return sourceDriveType;
+    }
 
-	public void setSource_drive_type(String source_drive_type) {
-		this.source_drive_type = source_drive_type;
-	}
+    public void setSourceDriveType(String sourceDriveType) {
+        this.sourceDriveType = sourceDriveType;
+    }
 
-	public String getDestination_path() {
-		return destination_path;
-	}
+    public String getDestinationPath() {
+        return destinationPath;
+    }
 
-	public void setDestination_path(String destination_path) {
-		this.destination_path = destination_path;
-	}
+    public void setDestinationPath(String destinationPath) {
+        this.destinationPath = destinationPath;
+    }
 
-	public String getDestination_file_name() {
-		return destination_file_name;
-	}
+    public String getDestinationFileName() {
+        return destinationFileName;
+    }
 
-	public void setDestination_file_name(String destination_file_name) {
-		this.destination_file_name = destination_file_name;
-	}
+    public void setDestinationFileName(String destinationFileName) {
+        this.destinationFileName = destinationFileName;
+    }
 
-	public String getDestination_drive_type() {
-		return destination_drive_type;
-	}
+    public String getDestinationDriveType() {
+        return destinationDriveType;
+    }
 
-	public void setDestination_drive_type(String destination_drive_type) {
-		this.destination_drive_type = destination_drive_type;
-	}
+    public void setDestinationDriveType(String destinationDriveType) {
+        this.destinationDriveType = destinationDriveType;
+    }
 
-	public double getFile_size() {
-		return file_size;
-	}
+    public double getFileSize() {
+        return fileSize;
+    }
 
-	public void setFile_size(double file_size) {
-		this.file_size = file_size;
-	}
+    public void setFileSize(double fileSize) {
+        this.fileSize = fileSize;
+    }
 
-	public String getEvent_type() {
-		return event_type;
-	}
+    public String getEventType() {
+        return eventType;
+    }
 
-	public void setEvent_type(String event_type) {
-		this.event_type = event_type;
-	}
+    public void setEventType(String eventType) {
+        this.eventType = eventType;
+    }
 
-	public boolean isWas_blocked() {
-		return was_blocked;
-	}
+    public boolean isWasBlocked() {
+        return wasBlocked;
+    }
 
-	public void setWas_blocked(boolean was_blocked) {
-		this.was_blocked = was_blocked;
-	}
+    public void setWasBlocked(boolean wasBlocked) {
+        this.wasBlocked = wasBlocked;
+    }
 
-	public boolean isWas_classified() {
-		return was_classified;
-	}
+    public boolean isWasClassified() {
+        return wasClassified;
+    }
 
-	public void setWas_classified(boolean was_classified) {
-		this.was_classified = was_classified;
-	}
+    public void setWasClassified(boolean wasClassified) {
+        this.wasClassified = wasClassified;
+    }
 
-	public String getMalware_scan_result() {
-		return malware_scan_result;
-	}
+    public String getMalwareScanResult() {
+        return malwareScanResult;
+    }
 
-	public void setMalware_scan_result(String malware_scan_result) {
-		this.malware_scan_result = malware_scan_result;
-	}
+    public void setMalwareScanResult(String malwareScanResult) {
+        this.malwareScanResult = malwareScanResult;
+    }
 
-	public String getExecuting_application() {
-		return executing_application;
-	}
+    public String getExecutingApplication() {
+        return executingApplication;
+    }
 
-	public void setExecuting_application(String executing_application) {
-		this.executing_application = executing_application;
-	}
+    public void setExecutingApplication(String executingApplication) {
+        this.executingApplication = executingApplication;
+    }
 
-	@Transient
-	public AdeEnrichedDlpFileContext getContext(){
-		return new AdeEnrichedDlpFileContext(this);
-	}
+    @Transient
+    public AdeEnrichedDlpFileContext getContext() {
+        return new AdeEnrichedDlpFileContext(this);
+    }
 }

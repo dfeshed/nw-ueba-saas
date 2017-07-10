@@ -54,9 +54,9 @@ public class FakeMongoEnrichedRecordPaginationServiceTest {
         mongoTemplate.createCollection("enriched_dlpfile");
         mongoTemplate.getCollectionNames();
         EnrichedDlpFileRecord e = new EnrichedDlpFileRecord(EVENT_DATE);
-        e.setNormalized_username("a");
+        e.setNormalizedUsername("a");
         EnrichedDlpFileRecord e1 = new EnrichedDlpFileRecord(EVENT_DATE);
-        e1.setNormalized_username("b");
+        e1.setNormalizedUsername("b");
 
         List<EnrichedDlpFileRecord> records = new ArrayList<>();
         records.add(e);
@@ -99,7 +99,7 @@ public class FakeMongoEnrichedRecordPaginationServiceTest {
                 amountOfPages++;
                 for (EnrichedDlpFileRecord enrichedDlpFileRecord : list) {
                     enrichedDlpFileRecordList.add(enrichedDlpFileRecord);
-                    String name = enrichedDlpFileRecord.getNormalized_username();
+                    String name = enrichedDlpFileRecord.getNormalizedUsername();
                     contextIdList.add(name);
                 }
             }
