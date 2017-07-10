@@ -5,37 +5,31 @@ import fortscale.aggregation.feature.bucket.FeatureBucketConf;
 import fortscale.aggregation.feature.bucket.FeatureBucketReader;
 import fortscale.ml.model.exceptions.InvalidFeatureBucketConfNameException;
 import fortscale.utils.time.TimeRange;
-import fortscale.utils.time.TimestampUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
 
-import java.util.Date;
 import java.util.Set;
 
-@Configurable(preConstruction = true)
 public class FeatureBucketContextSelector implements IContextSelector {
-	@Autowired
-	private BucketConfigurationService bucketConfigurationService;
-	@Autowired
+	private FeatureBucketConf featureBucketConf;
 	private FeatureBucketReader featureBucketReader;
 
-	private FeatureBucketConf featureBucketConf;
+	public FeatureBucketContextSelector(
+			FeatureBucketContextSelectorConf conf,
+			BucketConfigurationService bucketConfigurationService,
+			FeatureBucketReader featureBucketReader) {
 
-	public FeatureBucketContextSelector(FeatureBucketContextSelectorConf config) {
-		String featureBucketConfName = config.getFeatureBucketConfName();
-		featureBucketConf = bucketConfigurationService.getBucketConf(featureBucketConfName);
-		validate(config);
+		this.featureBucketConf = bucketConfigurationService.getBucketConf(conf.getFeatureBucketConfName());
+		this.featureBucketReader = featureBucketReader;
+		validate(conf);
 	}
 
 	@Override
-	public Set<String> getContexts(Date startTime, Date endTime) {
-		long startInSeconds = TimestampUtils.convertToSeconds(startTime);
-		long endInSeconds = TimestampUtils.convertToSeconds(endTime);
-		return featureBucketReader.getDistinctContextIds(featureBucketConf, new TimeRange(startInSeconds, endInSeconds));
+	public Set<String> getContexts(TimeRange timeRange) {
+		return featureBucketReader.getDistinctContextIds(featureBucketConf, timeRange);
 	}
 
-	private void validate(FeatureBucketContextSelectorConf config) {
-		if (featureBucketConf == null)
-			throw new InvalidFeatureBucketConfNameException(config.getFeatureBucketConfName());
+	private void validate(FeatureBucketContextSelectorConf conf) {
+		if (featureBucketConf == null) {
+			throw new InvalidFeatureBucketConfNameException(conf.getFeatureBucketConfName());
+		}
 	}
 }
