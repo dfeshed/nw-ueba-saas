@@ -9,7 +9,7 @@ from tests.utils.airflow.operators.base_test_operator import assert_task_success
 # @todo: change the path after configuration infra will be created
 # In order to run test locally change the path to:
 # '/home/presidio/dev-projects/presidio-core/presidio-workflows'
-PATH = '/home/presidio/jenkins/workspace/Presidio-Workflows/presidio-workflows'
+PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../../../')
 JAR_PATH = PATH + '/tests/resources/jars/test-mock-project-0.0.1-SNAPSHOT.jar'
 MAIN_CLASS = 'com.fortscale.test.TestMockProjectApplication'
 LAUNCHER = 'org.springframework.boot.loader.PropertiesLauncher'
