@@ -909,7 +909,7 @@ export default {
     DOMAIN: 'Domain',
     noValues: 'Context Sources with no values: ',
     dsNotConfigured: 'Context Sources not configured: ',
-    marketingText: ' is not a configured data source in Context Hub. Contact your Administrator to enable this feature. Context Hub centralizes data sources from Endpoint, Alerts, Incidents, Lists and many more on-demand.',
+    marketingText: ' is not a currently configured data source in Context Hub. Contact your Administrator to enable this feature. Context Hub centralizes data sources from Endpoint, Alerts, Incidents, Lists and many more sources on-demand. For more information , click ',
     timeUnit: {
       allData: 'ALL DATA',
       HOUR: 'HOUR',
