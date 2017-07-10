@@ -134,17 +134,17 @@ public class ADEManagerSDKImpl implements ADEManagerSDK {
     }
 
     @Override
-    public List<AggrEvent> findAggrEventByContextAndTime(String aggregatedFeatureName, String contextIds, TimeRange timeRange) {
+    public List<AggrEvent> findAggrEventsByContextAndTime(String aggregatedFeatureName, String contextIds, TimeRange timeRange) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public List<AccumulatedAggregatedFeatureEvent> findAccumulatedAggrEventByContextIdAndTime(String aggregatedFeatureName, String contextIds, TimeRange timeRange) {
+    public List<AccumulatedAggregatedFeatureEvent> findAccumulatedAggrEventsByContextIdAndTime(String aggregatedFeatureName, String contextIds, TimeRange timeRange) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public List<AdeScoredRecord> findScoredEventsByContextAndTimeAndFeature(String featureName, String dataSource, String contextId, TimeRange timeRange) {
-        throw new UnsupportedOperationException();
+    public List<AdeScoredRecord> findScoredEventsByContextAndTimeAndFeature(String featureName, String contextId, TimeRange timeRange) {
+        return null;
     }
 }

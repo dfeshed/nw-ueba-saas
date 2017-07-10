@@ -188,7 +188,7 @@ public interface ADEManagerSDK {
      * @param timeRange start and end time of the events
      * @return list of Aggregated events
      */
-    List<AggrEvent> findAggrEventByContextAndTime (String aggregatedFeatureName, String contextId, TimeRange timeRange);
+    List<AggrEvent> findAggrEventsByContextAndTime (String aggregatedFeatureName, String contextId, TimeRange timeRange);
 
     /**
      * returns list of Accumulated aggregated events for a given context and time range
@@ -197,7 +197,7 @@ public interface ADEManagerSDK {
      * @param timeRange start and end time of the events
      * @return list of Accumulated aggregated events
      */
-    List<AccumulatedAggregatedFeatureEvent> findAccumulatedAggrEventByContextIdAndTime (String aggregatedFeatureName, String contextId, TimeRange timeRange);
+    List<AccumulatedAggregatedFeatureEvent> findAccumulatedAggrEventsByContextIdAndTime (String aggregatedFeatureName, String contextId, TimeRange timeRange);
 
     /**
      * returns list of all the scored events for a context (e.g: user) and feature type at a given time range
