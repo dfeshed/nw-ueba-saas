@@ -105,13 +105,14 @@
                     <!--<scriptFile>src/main/scripts/postinstall</scriptFile>-->
                     <!--<fileEncoding>utf-8</fileEncoding>-->
                     <script>
-                        echo "running post install script"
+                        echo "Running Python project"
                         <!-- post installation commands: -->
                          /usr/local/bin/python ${rpm-maven-plugin.script} --rpm_name ${rpm_name} --major ${rpm.version.major} --minor ${rpm.version.minor} --build ${rpm.version.build}
                         <!--changing ownership of /home/presidio/presidio-core/ to presidio:presidio -->
                         echo "Changing ownership of /home/presidio/presidio-core/ to presidio:presidio"
                         chown -R ${rpm-maven-plugin.script.system_user}:${rpm-maven-plugin.script.system_user} ${rpm-maven-plugin.deployment_target_directory}
-
+                        echo "Removing temporary files"
+                        rm -rf /root/version.txt
                         <!--end of post installation -->"
                     </script>
                 </postinstallScriptlet>
