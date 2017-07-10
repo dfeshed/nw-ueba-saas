@@ -177,7 +177,7 @@ public interface ADEManagerSDK {
      * @param featureName
      * @param contextId i.e. username
      * @param timeRange start and end time
-     * @return
+     * @return list of FeatureBuckets
      */
     List<FeatureBucket> findFeatureBucketsByContextAndTime(String featureName, String contextId, TimeRange timeRange);
 
@@ -186,7 +186,7 @@ public interface ADEManagerSDK {
      * @param aggregatedFeatureName
      * @param contextId i.e. username
      * @param timeRange start and end time of the events
-     * @return
+     * @return list of Aggregated events
      */
     List<AggrEvent> findAggrEventByContextAndTime (String aggregatedFeatureName, String contextId, TimeRange timeRange);
 
@@ -195,18 +195,17 @@ public interface ADEManagerSDK {
      * @param aggregatedFeatureName
      * @param contextId i.e. username
      * @param timeRange start and end time of the events
-     * @return
+     * @return list of Accumulated aggregated events
      */
     List<AccumulatedAggregatedFeatureEvent> findAccumulatedAggrEventByContextIdAndTime (String aggregatedFeatureName, String contextId, TimeRange timeRange);
 
     /**
      * returns list of all the scored events for a context (e.g: user) and feature type at a given time range
+     * @param featureName
      * @param contextId i.e. username
      * @param timeRange start and end time of the events
-     * @param dataSource
-     * @param featureName
-     * @return
+     * @return list of scored events
      */
-    List<AdeScoredRecord> findScoredEventsByContextAndTimeAndFeature(String featureName, String dataSource, String contextId, TimeRange timeRange);
+    List<AdeScoredRecord> findScoredEventsByContextAndTimeAndFeature(String featureName, String contextId, TimeRange timeRange);
 
 }
