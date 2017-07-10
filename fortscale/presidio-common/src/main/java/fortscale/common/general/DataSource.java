@@ -3,7 +3,7 @@ package fortscale.common.general;
 
 public enum DataSource {
 
-    DLPFILE("dlpfile"), DLPMAIL("dlpmail"), PRNLOG("prnlog");
+    DLPFILE("dlpfile"), DLPMAIL("dlpmail"), PRNLOG("prnlog"), FILE("file");
 
     private String name;
 

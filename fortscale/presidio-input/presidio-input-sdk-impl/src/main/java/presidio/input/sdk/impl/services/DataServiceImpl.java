@@ -7,7 +7,6 @@ import fortscale.utils.logging.Logger;
 import fortscale.utils.mongodb.util.ToCollectionNameTranslator;
 import presidio.input.sdk.impl.repositories.DataSourceRepository;
 import presidio.sdk.api.domain.DataService;
-import presidio.sdk.api.domain.DlpFileDataDocument;
 import presidio.input.sdk.impl.validators.ValidationManager;
 
 import java.time.Instant;
@@ -36,11 +35,11 @@ public class DataServiceImpl implements DataService {
     }
 
     @Override
-    public List<DlpFileDataDocument> find(Instant startDate, Instant endDate, DataSource dataSource) {
+    public List<AbstractAuditableDocument> find(Instant startDate, Instant endDate, DataSource dataSource) {
         logger.debug("Finding dlpfile records between {}:{} and {}:{}.",
                 CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate,
                 CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
-        return (List<DlpFileDataDocument>) dataSourceRepository.getDataSourceDataBetweenDates(toCollectionNameTranslator.toCollectionName(dataSource), startDate, endDate);
+        return (List<AbstractAuditableDocument>) dataSourceRepository.getDataSourceDataBetweenDates(toCollectionNameTranslator.toCollectionName(dataSource), startDate, endDate);
     }
 
     @Override

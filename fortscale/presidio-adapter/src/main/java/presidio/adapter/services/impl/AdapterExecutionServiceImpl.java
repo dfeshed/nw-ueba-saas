@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import presidio.adapter.services.api.FetchService;
 import presidio.sdk.api.domain.DlpFileDataDocument;
+import presidio.sdk.api.domain.FileRawEvent;
 import presidio.sdk.api.services.CoreManagerService;
 
 import java.time.Instant;
@@ -79,6 +80,11 @@ public class AdapterExecutionServiceImpl implements PresidioExecutionService {
             }
             case PRNLOG: {
                 throw new UnsupportedOperationException("PRNLOG not supported yet");
+            }
+            case FILE:{
+                for (String[] record : records) {
+                    createdDocuments.add(new FileRawEvent(record));
+                }
             }
             default: {
                 //should not happen
