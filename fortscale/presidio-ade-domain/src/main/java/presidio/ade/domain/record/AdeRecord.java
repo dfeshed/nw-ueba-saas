@@ -16,17 +16,17 @@ import java.time.Instant;
  */
 @Document
 public abstract class AdeRecord {
-	public static final String DATE_TIME_FIELD = "date_time";
+	public static final String START_INSTANT_FIELD = "startInstant";
 
 	@Id
 	private String id;
 	@CreatedDate
-	private Instant created_date;
-	@Indexed @Field(DATE_TIME_FIELD)
-	private Instant date_time;
+	private Instant createdDate;
+	@Indexed @Field(START_INSTANT_FIELD)
+	private Instant startInstant;
 
-	public AdeRecord(Instant date_time) {
-		this.date_time = date_time;
+	public AdeRecord(Instant startInstant) {
+		this.startInstant = startInstant;
 	}
 
 	/**
@@ -40,16 +40,16 @@ public abstract class AdeRecord {
 		return id;
 	}
 
-	public Instant getCreated_date() {
-		return created_date;
+	public Instant getCreatedDate() {
+		return createdDate;
 	}
 
-	public Instant getDate_time() {
-		return date_time;
+	public Instant getStartInstant() {
+		return startInstant;
 	}
 
-	public void setDate_time(Instant date_time) {
-		this.date_time = date_time;
+	public void setStartInstant(Instant startInstant) {
+		this.startInstant = startInstant;
 	}
 
 	@Transient

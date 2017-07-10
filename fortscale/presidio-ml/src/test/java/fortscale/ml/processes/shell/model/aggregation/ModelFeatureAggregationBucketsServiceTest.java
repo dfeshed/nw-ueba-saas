@@ -54,7 +54,7 @@ public class ModelFeatureAggregationBucketsServiceTest {
         String username = "sanityTestUser";
         generateAndPersistAdeEnrichedRecords(timeRange,username);
         modelFeatureAggregationBucketsService.execute(timeRange,DATA_SOURCE);
-        String contextId = FeatureBucketUtils.buildContextId(Collections.singletonMap("normalized_username", username));
+        String contextId = FeatureBucketUtils.buildContextId(Collections.singletonMap("normalizedUsername", username));
         List<FeatureBucket> featureBucketList = featureBucketStore.getFeatureBuckets(
                 "normalized_username_dlpfile_daily", Collections.singleton(contextId), timeRange);
         Assert.assertEquals(1,featureBucketList.size());
@@ -92,19 +92,19 @@ public class ModelFeatureAggregationBucketsServiceTest {
         enrichedDataStore.cleanup(cleanupParams);
         Instant startTime = timeRange.getStart();
         EnrichedDlpFileRecord enrichedDlpFileRecord = new EnrichedDlpFileRecord(startTime);
-        enrichedDlpFileRecord.setNormalized_username(username);
-        enrichedDlpFileRecord.setWas_classified(false);
-        enrichedDlpFileRecord.setNormalized_src_machine(String.format("%s_pc",username));
-        enrichedDlpFileRecord.setEvent_type("copy");
-        enrichedDlpFileRecord.setSource_drive_type("remote");
-        enrichedDlpFileRecord.setFile_size(1000);
-        enrichedDlpFileRecord.setSource_path("/home/test_source_path");
+        enrichedDlpFileRecord.setNormalizedUsername(username);
+        enrichedDlpFileRecord.setWasClassified(false);
+        enrichedDlpFileRecord.setNormalizedSrcMachine(String.format("%s_pc", username));
+        enrichedDlpFileRecord.setEventType("copy");
+        enrichedDlpFileRecord.setSourceDriveType("remote");
+        enrichedDlpFileRecord.setFileSize(1000);
+        enrichedDlpFileRecord.setSourcePath("/home/test_source_path");
 
         List<EnrichedDlpFileRecord> enrichedDlpFileRecordList = Collections.singletonList(enrichedDlpFileRecord);
-        EnrichedRecordsMetadata enrichedRecordsMetadata = new EnrichedRecordsMetadata(DATA_SOURCE,startTime,startTime.plus(1,ChronoUnit.SECONDS));
-        enrichedDataStore.store(enrichedRecordsMetadata,enrichedDlpFileRecordList);
-        List<ContextIdToNumOfItems> contextIdToNumOfItemsList = enrichedDataStore.aggregateContextToNumOfEvents(enrichedRecordsMetadata,"normalized_username");
-        Assert.assertEquals(1,contextIdToNumOfItemsList.size());
+        EnrichedRecordsMetadata enrichedRecordsMetadata = new EnrichedRecordsMetadata(DATA_SOURCE, startTime, startTime.plus(1, ChronoUnit.SECONDS));
+        enrichedDataStore.store(enrichedRecordsMetadata, enrichedDlpFileRecordList);
+        List<ContextIdToNumOfItems> contextIdToNumOfItemsList = enrichedDataStore.aggregateContextToNumOfEvents(enrichedRecordsMetadata, "normalizedUsername");
+        Assert.assertEquals(1, contextIdToNumOfItemsList.size());
     }
 
     @Configuration

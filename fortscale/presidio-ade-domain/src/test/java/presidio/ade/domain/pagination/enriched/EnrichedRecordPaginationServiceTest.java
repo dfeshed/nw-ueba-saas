@@ -308,7 +308,7 @@ public class EnrichedRecordPaginationServiceTest {
                 amountOfPages++;
                 for (EnrichedDlpFileRecord enrichedDlpFileRecord : list) {
                     enrichedDlpFileRecordList.add(enrichedDlpFileRecord);
-                    String name = enrichedDlpFileRecord.getNormalized_username();
+                    String name = enrichedDlpFileRecord.getNormalizedUsername();
                     contextIdList.add(name);
                 }
             }

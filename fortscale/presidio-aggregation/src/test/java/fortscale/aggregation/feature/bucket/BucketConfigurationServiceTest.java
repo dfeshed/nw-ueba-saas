@@ -63,7 +63,7 @@ public class BucketConfigurationServiceTest {
     public void adeRecordInitialize() {
         adeRecord = new AdeScoredDlpFileRecord(Instant.now(), "date_time", 80.0, new ArrayList<>());
         EnrichedDlpFileRecord enrichedDlpFileRecord = new EnrichedDlpFileRecord(Instant.now());
-        enrichedDlpFileRecord.setNormalized_username("normalized_username_test1");
+        enrichedDlpFileRecord.setNormalizedUsername("normalized_username_test1");
         AdeEnrichedDlpFileContext adeEnrichedDlpFileContext = new AdeEnrichedDlpFileContext(enrichedDlpFileRecord);
         adeRecord.setContext(adeEnrichedDlpFileContext);
     }

@@ -17,8 +17,8 @@ public class MockedEnrichedRecord extends EnrichedRecord {
     @Indexed
     private String featureField;
 
-    public MockedEnrichedRecord(Instant date_time, String contextField, String featureField) {
-        super(date_time);
+    public MockedEnrichedRecord(Instant startInstant, String contextField, String featureField) {
+        super(startInstant);
         this.contextField = contextField;
         this.featureField = featureField;
     }

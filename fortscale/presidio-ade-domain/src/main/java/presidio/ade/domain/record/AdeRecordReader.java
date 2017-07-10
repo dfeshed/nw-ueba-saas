@@ -82,11 +82,11 @@ public class AdeRecordReader extends ReflectionRecordReader {
 	}
 
 	public Instant getCreated_date() {
-		return adeRecord.getCreated_date();
+		return adeRecord.getCreatedDate();
 	}
 
 	public Instant getDate_time() {
-		return adeRecord.getDate_time();
+		return adeRecord.getStartInstant();
 	}
 
 	public AdeRecord getAdeRecord(){
