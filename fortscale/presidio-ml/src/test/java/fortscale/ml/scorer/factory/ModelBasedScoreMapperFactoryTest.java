@@ -10,7 +10,6 @@ import fortscale.ml.model.ModelConfService;
 import fortscale.ml.model.ScoreMappingModel;
 import fortscale.ml.model.builder.IModelBuilderConf;
 import fortscale.ml.model.cache.EventModelsCacheService;
-import fortscale.ml.model.config.ContextSelectorFactoryConfig;
 import fortscale.ml.model.retriever.AbstractDataRetriever;
 import fortscale.ml.model.retriever.AbstractDataRetrieverConf;
 import fortscale.ml.model.selector.IContextSelector;
@@ -40,7 +39,7 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = {ContextSelectorFactoryConfig.class,ScorerFactoriesTestConfig.class})
+@ContextConfiguration(classes = ScorerFactoriesTestConfig.class)
 public class ModelBasedScoreMapperFactoryTest {
 	@MockBean
 	private ModelConfService modelConfService;
@@ -57,9 +56,7 @@ public class ModelBasedScoreMapperFactoryTest {
 	@Autowired
 	private FactoryService<AbstractDataRetriever> dataRetrieverFactoryService;
 
-	@Autowired
-	private FactoryService<IContextSelector> contextSelectorFactoryService;
-
+	private FactoryService<IContextSelector> contextSelectorFactoryService = new FactoryService<>();
 	private Scorer baseScorerMock = Mockito.mock(Scorer.class);
 	private IScorerConf baseScorerConf;
 
@@ -141,7 +138,7 @@ public class ModelBasedScoreMapperFactoryTest {
 
 		if (!isGlobal) {
 			contextSelectorFactoryService.register(modelConf.getContextSelectorConf().getFactoryName(),
-					factoryConfig -> (startTime, endTime) -> Sets.newHashSet("some_user_context"));
+					factoryConfig -> timeRange -> Sets.newHashSet("some_user_context"));
 		}
 
 		ScoreMappingModel model = new ScoreMappingModel();

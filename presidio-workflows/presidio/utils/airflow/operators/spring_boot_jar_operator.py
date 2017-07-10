@@ -30,6 +30,7 @@ class SpringBootJarOperator(BashOperator):
     :type java_args: dict
     """
     ui_color = '#9EB9D4'
+    java_args_prefix = '--'
 
     @apply_defaults
     def __init__(self, jvm_args, command, java_args={}, *args, **kwargs):
@@ -172,7 +173,7 @@ class SpringBootJarOperator(BashOperator):
             bash_command.extend(['org.springframework.boot.loader.PropertiesLauncher'])
 
         if not is_blank(self.java_args):
-            java_args = ' '.join('--%s %s' % (key, val) for (key, val) in self.java_args.iteritems())
+            java_args = ' '.join(SpringBootJarOperator.java_args_prefix + '%s %s' % (key, val) for (key, val) in self.java_args.iteritems())
             bash_command.append(self.command)
             bash_command.append(java_args)
 

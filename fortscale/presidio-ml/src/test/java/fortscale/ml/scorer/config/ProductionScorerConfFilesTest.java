@@ -1,5 +1,6 @@
 package fortscale.ml.scorer.config;
 
+import fortscale.aggregation.configuration.AslConfigurationPaths;
 import fortscale.ml.model.Model;
 import fortscale.ml.model.ModelConfService;
 import fortscale.ml.model.cache.EventModelsCacheService;
@@ -19,7 +20,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
-import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
@@ -28,7 +28,6 @@ import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
@@ -39,8 +38,6 @@ import static org.mockito.Mockito.when;
 public class ProductionScorerConfFilesTest {
 	private static final String NULL_SCORER_ERROR_MSG_FORMAT = "Received a null scorer for scorer conf %s.";
 
-	@Autowired
-	private ModelConfService modelConfService;
 	@Autowired
 	private ScorerConfService scorerConfService;
 	@Autowired
@@ -58,11 +55,16 @@ public class ProductionScorerConfFilesTest {
 
 	@Configuration
 	@EnableSpringConfigured
-	@Import({ ScorersFactoryConfig.class})
-	public static class spConf{
+	@Import({ScorersFactoryConfig.class})
+	public static class spConf {
 		@Bean
 		public ModelConfService modelConfService() {
-			return new ModelConfService();
+			AslConfigurationPaths modelConfigurationPaths = new AslConfigurationPaths(
+					"allProductionModelConfs",
+					"classpath:config/asl/models/*.json",
+					"file:home/cloudera/fortscale/config/asl/models/overriding/*.json",
+					"file:home/cloudera/fortscale/config/asl/models/additional/*.json");
+			return new ModelConfService(modelConfigurationPaths);
 		}
 
 		@Bean
@@ -72,24 +74,12 @@ public class ProductionScorerConfFilesTest {
 
 		@Autowired
 		private List<AbstractServiceAutowiringFactory<Scorer>> scorersFactories;
+
 		@Bean
 		public FactoryService<Scorer> scorerFactoryService() {
-
 			FactoryService<Scorer> scorerFactoryService = new FactoryService<>();
-			scorersFactories.forEach(x-> x.registerFactoryService(scorerFactoryService));
+			scorersFactories.forEach(x -> x.registerFactoryService(scorerFactoryService));
 			return scorerFactoryService;
-		}
-
-
-		@Bean
-		public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
-			Properties properties = new Properties();
-			properties.put("fortscale.model.configurations.location.path", "classpath:config/asl/models/*.json");
-			properties.put("fortscale.model.configurations.overriding.location.path", "file:home/cloudera/fortscale/config/asl/models/overriding/*.json");
-			properties.put("fortscale.model.configurations.additional.location.path", "file:home/cloudera/fortscale/config/asl/models/additional/*.json");
-			PropertySourcesPlaceholderConfigurer configurer = new PropertySourcesPlaceholderConfigurer();
-			configurer.setProperties(properties);
-			return configurer;
 		}
 
 		@SuppressWarnings("unchecked")
@@ -127,9 +117,7 @@ public class ProductionScorerConfFilesTest {
 				public Model getModel(String s, Map<String, String> m, Instant l) {return null;}
 
 				@Override
-				public void deleteFromCache(String modelConfName, String contextId) {
-
-				}
+				public void deleteFromCache(String modelConfName, String contextId) {}
 			};
 		}
 	}

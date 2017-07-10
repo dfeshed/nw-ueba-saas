@@ -1,47 +1,30 @@
 package fortscale.ml.model;
 
-import fortscale.utils.monitoring.stats.config.NullStatsServiceConfig;
+import fortscale.aggregation.configuration.AslConfigurationPaths;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
-import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
-import org.springframework.core.Ordered;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 import java.util.List;
-import java.util.Properties;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(loader = AnnotationConfigContextLoader.class)
+@ContextConfiguration
 public class ModelConfServiceTest {
 	@Configuration
-	@EnableSpringConfigured
-	@Import(NullStatsServiceConfig.class)
-	static class ContextConfiguration {
+	public static class ContextConfiguration {
 		@Bean
 		public ModelConfService modelConfService() {
-			return new ModelConfService();
-		}
-
-		@Bean
-		public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
-			Properties properties = new Properties();
-			properties.put("fortscale.model.configurations.location.path", "classpath:model-conf-service-test/*.json");
-			properties.put("fortscale.model.configurations.overriding.location.path", "file:home/cloudera/fortscale/config/asl/models/overriding/*.json");
-			properties.put("fortscale.model.configurations.additional.location.path", "file:home/cloudera/fortscale/config/asl/models/additional/*.json");
-			PropertySourcesPlaceholderConfigurer configurer = new PropertySourcesPlaceholderConfigurer();
-			configurer.setProperties(properties);
-			configurer.setOrder(Ordered.HIGHEST_PRECEDENCE);
-			configurer.setIgnoreUnresolvablePlaceholders(true);
-			configurer.setLocalOverride(true);
-			return configurer;
+			AslConfigurationPaths modelConfigurationPaths = new AslConfigurationPaths(
+					"testModelConfs",
+					"classpath:model-conf-service-test/*.json",
+					"file:home/cloudera/fortscale/config/asl/models/overriding/*.json",
+					"file:home/cloudera/fortscale/config/asl/models/additional/*.json");
+			return new ModelConfService(modelConfigurationPaths);
 		}
 	}
 

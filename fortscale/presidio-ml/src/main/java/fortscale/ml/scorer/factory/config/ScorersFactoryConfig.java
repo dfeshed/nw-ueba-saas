@@ -1,6 +1,6 @@
 package fortscale.ml.scorer.factory.config;
 
-import fortscale.ml.model.config.DataRetrieverFactoryConfig;
+import fortscale.ml.model.config.DataRetrieverFactoryServiceConfig;
 import fortscale.ml.model.retriever.AbstractDataRetriever;
 import fortscale.ml.scorer.Scorer;
 import fortscale.utils.factory.AbstractServiceAutowiringFactory;
@@ -13,13 +13,9 @@ import org.springframework.context.annotation.Import;
 
 import java.util.List;
 
-/**
- * Created by barak_schuster on 6/29/17.
- */
 @Configuration
-//@ComponentScan(basePackageClasses = AbstractModelScorerFactory.class)
-@ComponentScan(value={"fortscale.ml.scorer.factory"})
-@Import(DataRetrieverFactoryConfig.class)
+@ComponentScan(value = {"fortscale.ml.scorer.factory"})
+@Import(DataRetrieverFactoryServiceConfig.class)
 public class ScorersFactoryConfig {
     @Autowired
     private FactoryService<AbstractDataRetriever> dataRetrieverFactoryService;

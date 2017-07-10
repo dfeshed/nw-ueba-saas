@@ -4,33 +4,36 @@ import fortscale.entity.event.EntityEventConf;
 import fortscale.entity.event.EntityEventConfService;
 import fortscale.entity.event.EntityEventDataReaderService;
 import fortscale.ml.model.exceptions.InvalidEntityEventConfNameException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
+import fortscale.utils.time.TimeRange;
 
 import java.util.Date;
 import java.util.Set;
 
-@Configurable(preConstruction = true)
 public class EntityEventContextSelector implements IContextSelector {
-	@Autowired
-	private EntityEventConfService entityEventConfService;
-	@Autowired
+	private EntityEventConf entityEventConf;
 	private EntityEventDataReaderService entityEventDataReaderService;
 
-	private EntityEventConf entityEventConf;
-	public EntityEventContextSelector(EntityEventContextSelectorConf config) {
-		String entityEventConfName = config.getEntityEventConfName();
-		entityEventConf = entityEventConfService.getEntityEventConf(entityEventConfName);
-		validate(config);
+	public EntityEventContextSelector(
+			EntityEventContextSelectorConf conf,
+			EntityEventConfService entityEventConfService,
+			EntityEventDataReaderService entityEventDataReaderService) {
+
+		this.entityEventConf = entityEventConfService.getEntityEventConf(conf.getEntityEventConfName());
+		this.entityEventDataReaderService = entityEventDataReaderService;
+		validate(conf);
 	}
-	private void validate(EntityEventContextSelectorConf config)
-	{
-		if(entityEventConf == null)
-			throw new InvalidEntityEventConfNameException( config.getEntityEventConfName());
-	}
+
 	@Override
-	public Set<String> getContexts(Date startTime, Date endTime) {
+	public Set<String> getContexts(TimeRange timeRange) {
 		return entityEventDataReaderService.findDistinctAcmContextsByTimeRange(
-				entityEventConf, startTime, endTime);
+				entityEventConf,
+				Date.from(timeRange.getStart()),
+				Date.from(timeRange.getEnd()));
+	}
+
+	private void validate(EntityEventContextSelectorConf conf) {
+		if (entityEventConf == null) {
+			throw new InvalidEntityEventConfNameException(conf.getEntityEventConfName());
+		}
 	}
 }
