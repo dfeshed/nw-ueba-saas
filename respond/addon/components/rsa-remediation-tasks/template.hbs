@@ -26,12 +26,8 @@
         </label>
 
       {{ else if (eq column.field 'priority')}}
-        {{rsa-content-label
-          size='small'
-          label=(get item 'priority')
-          isInverted=true
-          style=(priority-to-content-style (get item column.field))
-        }}
+        <span class="entity-priority-indicator {{concat 'priority-' (priority-to-content-style (get item column.field))}}"></span>
+        <span class="entity-priority">{{t (concat 'respond.priority.' (get item column.field))}}</span>
       {{ else if (eq column.field 'status')}}
         {{t (concat 'respond.status.' (get item column.field)) }}
       {{ else if (eq column.field 'incidentId')}}

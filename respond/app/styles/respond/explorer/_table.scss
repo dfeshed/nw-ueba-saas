@@ -59,13 +59,42 @@
 
   .rsa-data-table-body-cell {
     min-width: 30px;
-    .rsa-content-label {
-      padding: 0 rsa-whitespace(least);
-      width: 96%;
-      text-align: center;
-    }
+    position: relative;
+
     .number-type {
       text-align: right;
+    }
+
+    .entity-priority-indicator {
+      display: inline-block;
+      width: 6px;
+      height: 60%;
+      background-color: rsa-color(white);
+      position: absolute;
+      top: rsa-whitespace(less);
+      bottom: 0;
+      left: rsa-whitespace(less);
+      border-radius: 4px;
+
+      &.priority-danger {
+        background-color: rsa-color(red);
+      }
+
+      &.priority-high {
+        background-color: rsa-color(orange);
+      }
+
+      &.priority-medium {
+        background-color: rsa-color(amber);
+      }
+
+      &.priority-low {
+        background-color: rsa-color(green);
+      }
+    }
+    .entity-priority {
+      padding-left: rsa-whitespace();
+      text-transform: uppercase;
     }
   }
 

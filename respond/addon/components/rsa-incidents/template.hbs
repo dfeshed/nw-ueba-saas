@@ -35,12 +35,8 @@
           {{/link-to}}
         </div>
       {{ else if (eq column.field 'priority')}}
-        {{rsa-content-label
-          size='small'
-          label=(get item 'priority')
-          isInverted=true
-          style=(priority-to-content-style (get item column.field))
-        }}
+        <span class="entity-priority-indicator {{concat 'priority-' (priority-to-content-style (get item column.field))}}"></span>
+        <span class="entity-priority">{{t (concat 'respond.priority.' (get item column.field))}}</span>
       {{ else if (eq column.field 'id')}}
         <span>{{#link-to 'incident' item.id}}{{item.id}}{{/link-to}}</span>
       {{ else if (eq column.field 'status')}}
