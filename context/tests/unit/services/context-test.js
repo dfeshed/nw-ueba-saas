@@ -1,5 +1,6 @@
 import { moduleFor, test } from 'ember-qunit';
 import { typeOf } from 'ember-utils';
+import { next } from 'ember-runloop';
 
 moduleFor('service:context', 'Unit | Service | context', {
   // Specify the other units that are required for this test.
@@ -130,3 +131,26 @@ test('it retrieves the meta key map for Incident Management from this addon\'s c
   });
 });
 
+test('it fires callback with an error status when the request for summary data returns an error code', function(assert) {
+
+  // Hijack request service to simulate an error response for any summary data request.
+  const service = this.subject();
+  const request = service.get('request');
+  request.streamRequest = ({ onInit, onError }) => {
+    onInit();
+    next(onError);
+  };
+
+  // Submit a request for summary data, and wait for the callback.
+  // Warning: the service uses caching, so don't test below with an entity that was already tested earlier.
+  assert.expect(3);
+  const done = assert.async();
+  const entity = { type: 'type1', id: 'id1' };
+  const callback = (type, id, status) => {
+    assert.equal(type, entity.type, 'Expected error callback to receive entity type');
+    assert.equal(id, entity.id, 'Expected error callback to receive entity id');
+    assert.equal(status, 'error', 'Expected error callback to receive an error status');
+    done();
+  };
+  service.summary([ entity ], callback);
+});

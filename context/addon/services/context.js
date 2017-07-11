@@ -272,7 +272,7 @@ export default Service.extend({
         this._onResponse(entities, response);
       },
       onError: () => {
-        this._onStatusChanges(entities, 'error');
+        this._onStatusChange(entities, 'error');
       }
     });
 
