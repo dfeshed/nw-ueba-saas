@@ -7,54 +7,54 @@
 /* Animation for the red brick's entrance. Outlines then fills it. */
 @keyframes rsa-logo-fillredbrick {
   0% {
-    fill: rgba(234,39,45,0);
+    fill: rgba(190, 58, 52,0);
     stroke: rgba(255,0,0,1);
     stroke-width: 1px;
     stroke-dashoffset: 909;
   }
   50% {
-    fill: rgba(234,39,45,0);
+    fill: rgba(190, 58, 52,0);
     stroke: rgba(255,0,0,1);
     stroke-dashoffset: 606;
   }
   100% {
-    fill: rgba(234,39,45,1);
+    fill: rgba(190, 58, 52,1);
     stroke: rgba(255,0,0,0);
     stroke-dashoffset: 303;
   }
 }
 @-webkit-keyframes rsa-logo-fillredbrick {
   0% {
-    fill: rgba(233,35,47,0);
+    fill: rgba(129, 49, 47,0);
     stroke: rgba(255,0,0,1);
     stroke-width: 1px;
     stroke-dashoffset: 303;
   }
   50% {
-    fill: rgba(233,35,47,0);
+    fill: rgba(129, 49, 47,0);
     stroke: rgba(255,0,0,1);
     stroke-dashoffset: 606;
   }
   100% {
-    fill: rgba(233,35,47,1);
+    fill: rgba(129, 49, 47,1);
     stroke: rgba(255,0,0,0);
     stroke-dashoffset: 909;
   }
 }
 @-ms-keyframes rsa-logo-fillredbrick {
   0% {
-    fill: rgba(233,35,47,0);
+    fill: rgba(129, 49, 47,0);
     stroke: rgba(255,0,0,1);
     stroke-width: 1px;
     stroke-dashoffset: 303;
   }
   50% {
-    fill: rgba(233,35,47,0);
+    fill: rgba(129, 49, 47,0);
     stroke: rgba(255,0,0,1);
     stroke-dashoffset: 606;
   }
   100% {
-    fill: rgba(233,35,47,1);
+    fill: rgba(129, 49, 47,1);
     stroke: rgba(255,0,0,0);
     stroke-dashoffset: 909;
   }
@@ -63,52 +63,52 @@
 /* Animation for the "RSA" letters' entrance. Outlines then fills them. */
 @keyframes rsa-logo-fillredletter {
   0% {
-    fill: rsa-color(red, base, $rsa-transparent);
-    stroke: rsa-color(red, base, $rsa-opaque);
+    fill: rgba(190, 58, 52,0);
+    stroke: rgba(190, 58, 52,1);
     stroke-dashoffset: 150;
   }
   50% {
-    fill: rsa-color(red, base, $rsa-transparent);
-    stroke: rsa-color(red, base, $rsa-opaque);
+    fill: rgba(190, 58, 52,0);
+    stroke: rgba(190, 58, 52,1);
     stroke-dashoffset: 300;
   }
   100% {
-    fill: rsa-color(red, base, $rsa-opaque);
-    stroke: rsa-color(red, base, $rsa-transparent);
+    fill: rgba(190, 58, 52,1);
+    stroke: rgba(190, 58, 52,0);
     stroke-dashoffset: 300;
   }
 }
 @-webkit-keyframes rsa-logo-fillredletter {
   0% {
-    fill: rsa-color(red, base, $rsa-transparent);
-    stroke: rsa-color(red, base, $rsa-opaque);
+    fill: rgba(190, 58, 52,0);
+    stroke: rgba(190, 58, 52,1);
     stroke-dashoffset: 150;
   }
   50% {
-    fill: rsa-color(red, base, $rsa-transparent);
-    stroke: rsa-color(red, base, $rsa-opaque);
+    fill: rgba(190, 58, 52,0);
+    stroke: rgba(190, 58, 52,1);
     stroke-dashoffset: 300;
   }
   100% {
-    fill: rsa-color(red, base, $rsa-opaque);
-    stroke: rsa-color(red, base, $rsa-transparent);
+    fill: rgba(190, 58, 52,1);
+    stroke: rgba(190, 58, 52,0);
     stroke-dashoffset: 300;
   }
 }
 @-ms-keyframes rsa-logo-fillredletter {
   0% {
-    fill: rsa-color(red, base, $rsa-transparent);
-    stroke: rsa-color(red, base, $rsa-opaque);
+    fill: rgba(190, 58, 52,0);
+    stroke: rgba(190, 58, 52,1);
     stroke-dashoffset: 150;
   }
   50% {
-    fill: rsa-color(red, base, $rsa-transparent);
-    stroke: rsa-color(red, base, $rsa-opaque);
+    fill: rgba(190, 58, 52,0);
+    stroke: rgba(190, 58, 52,1);
     stroke-dashoffset: 300;
   }
   100% {
-    fill: rsa-color(red, base, $rsa-opaque);
-    stroke: rsa-color(red, base, $rsa-transparent);
+    fill: rgba(190, 58, 52,1);
+    stroke: rgba(190, 58, 52,0);
     stroke-dashoffset: 300;
   }
 }
@@ -156,32 +156,32 @@
 /* Animation for the Registered Trademark. Appears to fade in by animating color from transparent to opaque. */
 @keyframes rsa-logo-fillres {
   0% {
-    fill: rsa-color(red, base, $rsa-transparent);
+    fill: rgba(190, 58, 52,0);
   }
   100% {
-    fill: rsa-color(red, base, $rsa-opaque);
+    fill: rgba(190, 58, 52,1);
   }
 }
 @-webkit-keyframes rsa-logo-fillres {
   0% {
-    fill: rsa-color(red, base, $rsa-transparent);
+    fill: rgba(190, 58, 52,0);
   }
   100% {
-    fill: rsa-color(red, base, $rsa-opaque);
+    fill: rgba(190, 58, 52,1);
   }
 }
 @-ms-keyframes rsa-logo-fillres {
   0% {
-    fill: rsa-color(red, base, $rsa-transparent);
+    fill: rgba(190, 58, 52,0);
   }
   100% {
-    fill: rsa-color(red, base, $rsa-opaque);
+    fill: rgba(190, 58, 52,1);
   }
 }
 
 .rsa- {
   &logo {
-    max-width: 20rem; 
+    max-width: 20rem;
 
     /* fudge factor, to compensate because logo is not horizontally symmetrical */
     /* margin-left: 7px; */
@@ -204,7 +204,7 @@
 
     /* Any of the "R", "S" & "A" letters inside the red brick. */
     &__letter {
-      fill: rsa-color(red, base, $rsa-opaque);
+      fill: rgba(190, 58, 52,1);
       stroke-dasharray: 150,150;
     }
 

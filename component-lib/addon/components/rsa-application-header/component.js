@@ -2,6 +2,8 @@ import Component from 'ember-component';
 import service from 'ember-service/inject';
 import layout from './template';
 import ContextualHelp from '../../mixins/contextual-help';
+import getOwner from 'ember-owner/get';
+import { jwt_decode as jwtDecode } from 'ember-cli-jwt-decode';
 
 export default Component.extend(ContextualHelp, {
 
@@ -11,16 +13,29 @@ export default Component.extend(ContextualHelp, {
 
   layoutService: service('layout'),
 
-  timezone: service(),
-
   layout,
 
   classNames: ['rsa-application-header'],
 
   displayPreferences: true,
 
+  username: null,
+
   click(event) {
     this.get('eventBus').trigger('rsa-application-header-click', event.target);
+  },
+
+  didInsertElement() {
+    this._super(...arguments);
+
+    const config = getOwner(this).resolveRegistration('config:environment');
+    const tokenKey = config['ember-simple-auth'].accessTokenKey;
+    const token = localStorage.getItem(tokenKey);
+
+    if (token) {
+      const decodedToken = jwtDecode(token);
+      this.set('username', decodedToken.user_name);
+    }
   },
 
   actions: {

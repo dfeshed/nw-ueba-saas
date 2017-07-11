@@ -55,9 +55,7 @@
         position: relative;
 
         .rsa-icon {
-          border-right: 1px solid rsa-color(gray, lighter);
-          padding: rsa-whitespace(least) rsa-whitespace(less) rsa-whitespace(least) 0;
-          margin-right: rsa-whitespace(less);
+          padding: rsa-whitespace(least) 0;
           vertical-align: text-bottom;
         }
       }
@@ -105,7 +103,7 @@
       height: $applicationHeaderHeight;
       padding: 0 rsa-whitespace(least);
       margin: 0 auto;
-      background-image: linear-gradient(180deg, rsa-color(red), rsa-color(red, dark));
+      background-image: linear-gradient(180deg, #BE3A34, #81312F);
 
       .rsa-logo__letter {
         fill: rsa-color(white);

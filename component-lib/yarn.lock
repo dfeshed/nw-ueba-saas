@@ -2448,6 +2448,12 @@ ember-cli-is-package-missing@^1.0.0:
   version "1.0.0"
   resolved "https://registry.npmjs.org/ember-cli-is-package-missing/-/ember-cli-is-package-missing-1.0.0.tgz#6e6184cafb92635dd93ca6c946b104292d4e3390"
 
+ember-cli-jwt-decode@^0.0.3:
+  version "0.0.3"
+  resolved "https://registry.npmjs.org/ember-cli-jwt-decode/-/ember-cli-jwt-decode-0.0.3.tgz#8257165665b9d2061fed7a4151b8e623930fddc0"
+  dependencies:
+    ember-cli-babel "^5.1.5"
+
 ember-cli-legacy-blueprints@^0.1.2:
   version "0.1.4"
   resolved "https://registry.npmjs.org/ember-cli-legacy-blueprints/-/ember-cli-legacy-blueprints-0.1.4.tgz#83d6c005ac0e39750ff9dd45cd1b78cf697150c6"
