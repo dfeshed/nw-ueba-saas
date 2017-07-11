@@ -35,6 +35,11 @@ const stateToComputed = (state) => {
 const AlertFilters = Component.extend({
   tagName: '',
   partOfIncidentTypes: [true, false],
+  alertNamesTableColumns: [{
+    field: 'name',
+    width: '100%'
+  }],
+
   actions: {
     toggleTypeFilter(type) {
       const alertTypeFilters = this.get('alertTypeFilters');

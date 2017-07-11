@@ -1,8 +1,47 @@
 @import 'container';
 
+$alertNamesRowHeight: 25px;
+$minimumRowsBeforeScrollbar: 50;
+$maxHeightAlertNamesTable: $alertNamesRowHeight * $minimumRowsBeforeScrollbar;
+
 .original-alert-details {
   pre {
     font-family: monospace;
     font-size: smaller;
+  }
+}
+
+// Alert Name Filter controls - Alerts Listing page
+.filter-option.alert-name-filter {
+  .rsa-data-table {
+    width: 100%;
+  }
+  .rsa-data-table-body {
+    max-height: $maxHeightAlertNamesTable;
+    overflow: auto;
+    border: 1px solid rsa-color(gray);
+    overflow-x: hidden;
+  }
+  .rsa-data-table-body-row {
+    border-top: none;
+    height: $alertNamesRowHeight;
+    label {
+      @include rsa-font(body);
+      color: rsa-color(white);
+      &::before {
+        top: 5px;
+      }
+    }
+  }
+
+  &:hover {
+    .rsa-data-table-body-cell {
+      background-color: inherit;
+    }
+  }
+
+  .rsa-data-table-body-cell {
+    padding: 0;
+
   }
 }

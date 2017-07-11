@@ -98,9 +98,9 @@ test('All of the alert name filters appear as checkboxes, and clicking one dispa
       assert.ok(true);
     });
     this.render(hbs`{{rsa-alerts/filter-controls updateFilter=(action 'updateFilter')}}`);
-
     const selector = '.filter-option.alert-name-filter .rsa-form-checkbox-label';
-    assert.equal(this.$(selector).length, 30, 'There should be 30 alert name filter options');
+    // lazy rendering of the list means we cannot assert that the full set of alert names are present
+    assert.ok(this.$(selector).length >= 1, 'There should be at least one alert name filter options');
     this.$('.filter-option.alert-name-filter .rsa-form-checkbox-label input.rsa-form-checkbox:first').click();
   });
 });

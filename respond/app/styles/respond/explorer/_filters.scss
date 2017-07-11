@@ -18,7 +18,7 @@ $header-height: 40px;
   }
 
   .body {
-    height: calc(100% - #{$footer-height} - #{$footer-bottom} - #{$header-height} - 1px);
+    height: calc(100% - #{$footer-height} - #{$footer-bottom} - #{$header-height} - #{rsa-whitespace(less)});
     width: 100%;
     position: absolute;
     bottom: 40px;
@@ -26,6 +26,8 @@ $header-height: 40px;
     box-sizing: border-box;
     overflow: auto;
     padding: rsa-whitespace();
+    border: 1px solid $zoneBorderColor;
+    border-right: none;
   }
 
   footer {
