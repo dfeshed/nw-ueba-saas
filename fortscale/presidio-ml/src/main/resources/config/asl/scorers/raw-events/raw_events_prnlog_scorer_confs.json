@@ -1,7 +1,7 @@
 {
-  "data-source-scorers": [
+  "ade-event-type-scorers": [
     {
-      "data-source": "prnlog",
+      "ade-event-type": "prnlog",
       "scorers": [
         {
           "type": "pareto-scorer",

@@ -21,15 +21,13 @@ public class BucketConfigurationService extends AslConfigurationService {
 	private Map<String, FeatureBucketConf> bucketConfs = new HashMap<>();
 	private Map<String, List<FeatureBucketConf>> adeEventTypeToListOfBucketConfs = new HashMap<>();
 
-	private String dataSourceFieldName;
 	private String bucketConfJsonFilePath;
 	private String bucketConfJsonOverridingFilesPath;
 	private String bucketConfJsonAdditionalFilesPath;
 
 
-	public BucketConfigurationService(String dataSourceFieldName,String bucketConfJsonFilePath,
+	public BucketConfigurationService(String bucketConfJsonFilePath,
 									  String bucketConfJsonOverridingFilesPath,String bucketConfJsonAdditionalFilesPath){
-		this.dataSourceFieldName = dataSourceFieldName;
 		this.bucketConfJsonFilePath =bucketConfJsonFilePath;
 		this.bucketConfJsonOverridingFilesPath = bucketConfJsonOverridingFilesPath;
 		this.bucketConfJsonAdditionalFilesPath = bucketConfJsonAdditionalFilesPath;
@@ -82,7 +80,7 @@ public class BucketConfigurationService extends AslConfigurationService {
 	}
 
 	/**
-	 * Get list of FeatureBucketConf by data source, strategyName and contextFieldNames
+	 * Get list of FeatureBucketConf by ade event type, strategyName and contextFieldNames
 	 * @param adeRecordReader
 	 * @param strategyName
 	 * @param contextFieldNames
@@ -115,7 +113,7 @@ public class BucketConfigurationService extends AslConfigurationService {
 		}
 
 		bucketConfs.put(bucketConf.getName(), bucketConf);
-		List<String> adeEventTypeList = bucketConf.getDataSources();
+		List<String> adeEventTypeList = bucketConf.getAdeEventTypes();
 
 		for (String adeEventType : adeEventTypeList) {
 			List<FeatureBucketConf> listOfBucketConfs = adeEventTypeToListOfBucketConfs.get(adeEventType);

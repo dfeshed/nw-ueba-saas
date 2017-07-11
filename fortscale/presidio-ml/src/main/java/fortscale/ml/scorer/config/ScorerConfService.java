@@ -10,48 +10,48 @@ import java.util.Map;
 
 public abstract class ScorerConfService extends AslConfigurationService {
     private static final Logger logger = Logger.getLogger(ScorerConfService.class);
-    private static final String DATA_SOURCE_SCORERS_NODE_NAME = "data-source-scorers";
+    private static final String ADE_EVENT_TYPE_SCORERS_NODE_NAME = "ade-event-type-scorers";
 
-    private Map<String, DataSourceScorerConfs> dataSourceToDataSourceScorerConfs = new HashMap<>();
+    private Map<String, AdeEventTypeScorerConfs> adeEventTypeToAdeEventTypeScorerConfsMap = new HashMap<>();
 
     @Override
     protected String getConfNodeName() {
-        return DATA_SOURCE_SCORERS_NODE_NAME;
+        return ADE_EVENT_TYPE_SCORERS_NODE_NAME;
     }
 
     @Override
     protected void loadConfJson(JSONObject confJsonObject) {
-        loadDataSourceScorerConfs(confJsonObject);
+        loadAdeEventTypeScorerConfs(confJsonObject);
     }
 
-    public DataSourceScorerConfs getDataSourceScorerConfs(String dataSource) {
-        return dataSourceToDataSourceScorerConfs.get(dataSource);
+    public AdeEventTypeScorerConfs getAdeEventTypeScorerConfs(String adeEventType) {
+        return adeEventTypeToAdeEventTypeScorerConfsMap.get(adeEventType);
     }
 
-    public Map<String, DataSourceScorerConfs> getAllDataSourceScorerConfs() {
-        return dataSourceToDataSourceScorerConfs;
+    public Map<String, AdeEventTypeScorerConfs> getAllAdeEventTypeScorerConfs() {
+        return adeEventTypeToAdeEventTypeScorerConfsMap;
     }
 
-    private void loadDataSourceScorerConfs(JSONObject dataSourceScorerConfsJSON) {
+    private void loadAdeEventTypeScorerConfs(JSONObject adeEventTypeScorerConfsJSON) {
         String errorMsg;
         ObjectMapper objectMapper = new ObjectMapper();
-        String jsonString = dataSourceScorerConfsJSON.toJSONString();
+        String jsonString = adeEventTypeScorerConfsJSON.toJSONString();
 
         try {
-            DataSourceScorerConfs dataSourceScorerConfs = objectMapper.readValue(jsonString, DataSourceScorerConfs.class);
-            String dataSource = dataSourceScorerConfs.getDataSource();
+            AdeEventTypeScorerConfs adeEventTypeScorerConfs = objectMapper.readValue(jsonString, AdeEventTypeScorerConfs.class);
+            String adeEventType = adeEventTypeScorerConfs.getAdeEventType();
 
-            if (dataSourceToDataSourceScorerConfs.containsKey(dataSource)) {
+            if (adeEventTypeToAdeEventTypeScorerConfsMap.containsKey(adeEventType)) {
                 errorMsg = String.format(
-                        "All scorers configuration for specific data-source must be in the same file. %s scorer configurations appear multiple times.",
-                        dataSource);
+                        "All scorers configuration for specific ade-event-type must be in the same file. %s scorer configurations appear multiple times.",
+                        adeEventType);
                 logger.error(errorMsg);
                 throw new IllegalArgumentException(errorMsg);
             }
 
-            dataSourceToDataSourceScorerConfs.put(dataSource, dataSourceScorerConfs);
+            adeEventTypeToAdeEventTypeScorerConfsMap.put(adeEventType, adeEventTypeScorerConfs);
         } catch (Exception e) {
-            errorMsg = String.format("Failed to deserialize data-source scorer confs JSON %s.", jsonString);
+            errorMsg = String.format("Failed to deserialize ade-event-type scorer confs JSON %s.", jsonString);
             logger.error(errorMsg, e);
             throw new IllegalArgumentException(errorMsg, e);
         }

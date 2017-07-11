@@ -6,7 +6,7 @@
       "contextFieldNames": [
         "normalizedUsername"
       ],
-      "dataSources": [
+      "adeEventTypes": [
         "dlpfile"
       ],
       "strategyName": "fixed_duration_daily",
@@ -58,7 +58,7 @@
             "type": "aggr_feature_sum_func"
           },
           "filter": {
-            "jsonPath": "[?(@.eventType == 'move' && @.destinationDriveType == 'removable')]"
+            "jsonPath": "[?(@.operationType == 'move' && @.destinationDriveType == 'removable')]"
           }
         },
         {
@@ -68,7 +68,7 @@
             "type": "aggr_feature_sum_func"
           },
           "filter": {
-            "jsonPath": "[?(@.eventType == 'move' && @.destinationDriveType == 'removable')]"
+            "jsonPath": "[?(@.operationType == 'move' && @.destinationDriveType == 'removable')]"
           }
         },
         {
@@ -82,7 +82,7 @@
             "type": "aggr_feature_sum_func"
           },
           "filter": {
-            "jsonPath": "[?(@.eventType == 'copy' && @.destinationDriveType == 'removable')]"
+            "jsonPath": "[?(@.operationType == 'copy' && @.destinationDriveType == 'removable')]"
           }
         },
         {
@@ -92,7 +92,7 @@
             "type": "aggr_feature_sum_func"
           },
           "filter": {
-            "jsonPath": "[?(@.eventType == 'copy' && @.destinationDriveType == 'removable')]"
+            "jsonPath": "[?(@.operationType == 'copy' && @.destinationDriveType == 'removable')]"
           }
         },
         {
@@ -106,7 +106,7 @@
             "type": "aggr_feature_sum_func"
           },
           "filter": {
-            "jsonPath": "[?(@.eventType == 'move' && @.sourceDriveType == 'remote')]"
+            "jsonPath": "[?(@.operationType == 'move' && @.sourceDriveType == 'remote')]"
           }
         },
         {
@@ -116,7 +116,7 @@
             "type": "aggr_feature_sum_func"
           },
           "filter": {
-            "jsonPath": "[?(@.eventType == 'move' && @.sourceDriveType == 'remote')]"
+            "jsonPath": "[?(@.operationType == 'move' && @.sourceDriveType == 'remote')]"
           }
         },
         {
@@ -130,7 +130,7 @@
             "type": "aggr_feature_sum_func"
           },
           "filter": {
-            "jsonPath": "[?(@.eventType == 'copy' && @.sourceDriveType == 'remote')]"
+            "jsonPath": "[?(@.operationType == 'copy' && @.sourceDriveType == 'remote')]"
           }
         },
         {
@@ -140,7 +140,7 @@
             "type": "aggr_feature_sum_func"
           },
           "filter": {
-            "jsonPath": "[?(@.eventType == 'copy' && @.sourceDriveType == 'remote')]"
+            "jsonPath": "[?(@.operationType == 'copy' && @.sourceDriveType == 'remote')]"
           }
         },
         {
@@ -150,7 +150,7 @@
             "type": "aggr_feature_sum_func"
           },
           "filter": {
-            "jsonPath": "[?(@.eventType == 'recycle' || @.eventType == 'delete')]"
+            "jsonPath": "[?(@.operationType == 'recycle' || @.operationType == 'delete')]"
           }
         },
         {
@@ -160,7 +160,7 @@
             "type": "aggr_feature_sum_func"
           },
           "filter": {
-            "jsonPath": "[?(@.eventType == 'open')]"
+            "jsonPath": "[?(@.operationType == 'open')]"
           }
         },
         {

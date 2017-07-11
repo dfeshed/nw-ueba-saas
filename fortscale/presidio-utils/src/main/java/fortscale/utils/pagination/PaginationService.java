@@ -41,16 +41,16 @@ public abstract class PaginationService<T> {
      * Get groups by the map, the group list contains pairs of events amount and contextIds.
      * Create pageIterator for each group.
      *
-     * @param dataSource data source name
+     * @param adeEventType data source name
      * @param timeRange  the time range
      * @return list of PageIterators
      */
-    public <U extends T> List<PageIterator<U>> getPageIterators(String dataSource, TimeRange timeRange) {
+    public <U extends T> List<PageIterator<U>> getPageIterators(String adeEventType, TimeRange timeRange) {
 
         //Validate if indexes exist, otherwise add them.
-        ensureContextAndDateTimeIndex(dataSource);
+        ensureContextAndDateTimeIndex(adeEventType);
 
-        List<ContextIdToNumOfItems> contextIdToNumOfItemsList = getContextIdToNumOfItemsList(dataSource, timeRange);
+        List<ContextIdToNumOfItems> contextIdToNumOfItemsList = getContextIdToNumOfItemsList(adeEventType, timeRange);
         //groups is a list, where each group contains pair of total num of events and set of contextId.
         List<Pair<Integer, Set<String>>> groups = getGroups(contextIdToNumOfItemsList);
         List<PageIterator<U>> pageIteratorList = new ArrayList<>(groups.size());
@@ -59,7 +59,7 @@ public abstract class PaginationService<T> {
         for (Pair<Integer, Set<String>> group : groups) {
             Set<String> contextIds = group.getValue();
             int totalNumOfItems = group.getKey();
-            PageIterator<U> pageIterator = createPageIterator(dataSource, timeRange, contextIds, totalNumOfItems);
+            PageIterator<U> pageIterator = createPageIterator(adeEventType, timeRange, contextIds, totalNumOfItems);
             pageIteratorList.add(pageIterator);
         }
 
@@ -68,30 +68,30 @@ public abstract class PaginationService<T> {
     }
 
     /**
-     * Create map of context ids and num of events based on timeRange and dataSource.
+     * Create map of context ids and num of events based on timeRange and adeEventType.
      *
-     * @param dataSource data source name
+     * @param adeEventType data source name
      * @param timeRange  the time range
      * @return map of context id and total num of events
      */
-    protected abstract List<ContextIdToNumOfItems> getContextIdToNumOfItemsList(String dataSource, TimeRange timeRange);
+    protected abstract List<ContextIdToNumOfItems> getContextIdToNumOfItemsList(String adeEventType, TimeRange timeRange);
 
     /**
      * Create pageIterator
      *
-     * @param dataSource data source name
+     * @param adeEventType data source name
      * @param timeRange the time range
      * @param contextIds set of context ids
      * @param totalNumOfItems num of events in PageIterator
      * @return PageIterator
      */
-    protected abstract <U extends T> PageIterator<U> createPageIterator(String dataSource, TimeRange timeRange, Set<String> contextIds, int totalNumOfItems);
+    protected abstract <U extends T> PageIterator<U> createPageIterator(String adeEventType, TimeRange timeRange, Set<String> contextIds, int totalNumOfItems);
 
     /**
      * Validate the store indexes.
      * The implementations should validate that the fields they query should be indexed in their store.
      */
-    protected abstract void ensureContextAndDateTimeIndex(String dataSource);
+    protected abstract void ensureContextAndDateTimeIndex(String adeEventType);
 
 
     /**

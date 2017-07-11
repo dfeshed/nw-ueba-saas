@@ -16,17 +16,17 @@ public class EnrichedDataAdeToCollectionNameTranslator implements AdeToCollectio
 
     @Override
     public String toCollectionName(EnrichedRecordsMetadata arg) {
-        return toCollectionName(arg.getDataSource());
+        return toCollectionName(arg.getAdeEventType());
     }
 
 
-    public String toCollectionName(String dataSource) {
-        return String.format(ENRICHED_COLLECTION_PREFIX + "%s", dataSource);
+    public String toCollectionName(String adeEventType) {
+        return String.format(ENRICHED_COLLECTION_PREFIX + "%s", adeEventType);
     }
 
 
     @Override
     public Collection<String> toCollectionNames(AdeDataStoreCleanupParams cleanupParams) {
-        return Collections.singletonList(toCollectionName(cleanupParams.getDataSource()));
+        return Collections.singletonList(toCollectionName(cleanupParams.getAdeEventType()));
     }
 }

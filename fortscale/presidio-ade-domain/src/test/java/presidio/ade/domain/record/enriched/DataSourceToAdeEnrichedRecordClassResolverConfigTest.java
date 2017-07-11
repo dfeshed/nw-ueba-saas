@@ -14,11 +14,11 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import fortscale.common.general.DataSource;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = DataSourceToAdeEnrichedRecordClassResolverConfig.class)
+@ContextConfiguration(classes = AdeEventTypeToAdeEnrichedRecordClassResolverConfig.class)
 public class DataSourceToAdeEnrichedRecordClassResolverConfigTest {
 
     @Autowired
-    private  DataSourceToAdeEnrichedRecordClassResolver dataSourceToAdeEnrichedRecordClassResolver;
+    private AdeEventTypeToAdeEnrichedRecordClassResolver dataSourceToAdeEnrichedRecordClassResolver;
 
     @Test
     public void testDlpfileIsResolved(){

@@ -17,7 +17,7 @@ import java.util.List;
  * Created by YaronDL on 6/13/2017.
  */
 @Document
-@AdeRecordMetadata(dataSource =DlpFileRecord.DLP_FILE_STR)
+@AdeRecordMetadata(adeEventType =DlpFileRecord.DLP_FILE_STR)
 public class AdeScoredDlpFileRecord extends AdeScoredEnrichedRecord {
 
     AdeEnrichedDlpFileContext context;

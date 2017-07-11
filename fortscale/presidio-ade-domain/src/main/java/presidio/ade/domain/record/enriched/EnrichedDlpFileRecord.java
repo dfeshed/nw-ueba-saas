@@ -14,7 +14,7 @@ import java.time.Instant;
  * Created by Lior Govrin on 05/06/2017.
  */
 @Document
-@AdeRecordMetadata(dataSource = DlpFileRecord.DLP_FILE_STR)
+@AdeRecordMetadata(adeEventType = DlpFileRecord.DLP_FILE_STR)
 public class EnrichedDlpFileRecord extends EnrichedRecord {
     public static final String NORMALIZED_USERNAME_FIELD = "normalizedUsername";
     public static final String NORMALIZED_SRC_MACHINE_FIELD = "normalizedSrcMachine";

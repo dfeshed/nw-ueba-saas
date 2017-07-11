@@ -6,7 +6,7 @@
       "contextFieldNames": [
         "normalized_username"
       ],
-      "dataSources": [
+      "adeEventTypes": [
         "dlpfile"
       ],
       "strategyName": "fixed_duration_daily",
@@ -235,7 +235,7 @@
       "contextFieldNames": [
         "normalized_username"
       ],
-      "dataSources": [
+      "adeEventTypes": [
         "dlpfile"
       ],
       "strategyName": "fixed_duration_hourly",
@@ -414,7 +414,7 @@
       "contextFieldNames": [
         "normalized_src_machine"
       ],
-      "dataSources": [
+      "adeEventTypes": [
         "dlpfile"
       ],
       "strategyName": "fixed_duration_daily",
@@ -438,7 +438,7 @@
       "contextFieldNames": [
         "normalized_username"
       ],
-      "dataSources": [
+      "adeEventTypes": [
         "dlpmail"
       ],
       "strategyName": "fixed_duration_daily",
@@ -716,7 +716,7 @@
       "contextFieldNames": [
         "normalized_username"
       ],
-      "dataSources": [
+      "adeEventTypes": [
         "dlpmail"
       ],
       "strategyName": "fixed_duration_hourly",
@@ -893,7 +893,7 @@
       "contextFieldNames": [
         "normalized_src_machine"
       ],
-      "dataSources": [
+      "adeEventTypes": [
         "dlpmail"
       ],
       "strategyName": "fixed_duration_daily",
@@ -920,7 +920,7 @@
       "contextFieldNames": [
         "email_recipient_domain"
       ],
-      "dataSources": [
+      "adeEventTypes": [
         "dlpmail"
       ],
       "strategyName": "fixed_duration_daily",
@@ -944,7 +944,7 @@
       "contextFieldNames": [
         "normalized_username"
       ],
-      "dataSources": [
+      "adeEventTypes": [
         "prnlog"
       ],
       "strategyName": "fixed_duration_daily",
@@ -1069,7 +1069,7 @@
       "contextFieldNames": [
         "normalized_username"
       ],
-      "dataSources": [
+      "adeEventTypes": [
         "prnlog"
       ],
       "strategyName": "fixed_duration_hourly",
@@ -1161,7 +1161,7 @@
       "contextFieldNames": [
         "normalized_src_machine"
       ],
-      "dataSources": [
+      "adeEventTypes": [
         "prnlog"
       ],
       "strategyName": "fixed_duration_daily",
@@ -1185,7 +1185,7 @@
       "contextFieldNames": [
         "normalized_dst_machine"
       ],
-      "dataSources": [
+      "adeEventTypes": [
         "prnlog"
       ],
       "strategyName": "fixed_duration_daily",

@@ -1,7 +1,7 @@
 {
-  "data-source-scorers": [
+  "ade-event-type-scorers": [
     {
-      "data-source": "dlpfile",
+      "ade-event-type": "dlpfile",
       "scorers": [
         {
           "type" : "pareto-scorer",

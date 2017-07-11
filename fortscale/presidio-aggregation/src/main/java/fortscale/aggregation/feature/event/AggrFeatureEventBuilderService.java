@@ -124,7 +124,7 @@ public class AggrFeatureEventBuilderService {
                 context,
                 startTimeSec,
                 endTimeSec,
-                conf.getBucketConf().getDataSources()
+                null
         );
     }
     

@@ -8,17 +8,13 @@ import fortscale.utils.time.TimestampUtils;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @JsonAutoDetect(fieldVisibility=Visibility.ANY, getterVisibility=Visibility.NONE,isGetterVisibility = Visibility.NONE, setterVisibility=Visibility.NONE)
 public class FeatureBucket {
 	public static final String START_TIME_FIELD = "startTime";
 	public static final String END_TIME_FIELD = "endTime";
 	public static final String FEATURE_BUCKET_CONF_NAME_FIELD = "featureBucketConfName";
-	public static final String DATA_SOURCES_FIELD = "dataSources";
 	public static final String CONTEXT_FIELD_NAMES_FIELD = "contextFieldNames";
 	public static final String CONTEXT_ID_FIELD = "contextId";
 	public static final String STRATEGY_ID_FIELD = "strategyId";
@@ -35,8 +31,6 @@ public class FeatureBucket {
 	private long endTime;
 	@Field(FEATURE_BUCKET_CONF_NAME_FIELD)
 	private String featureBucketConfName;
-	@Field(DATA_SOURCES_FIELD)
-	private List<String> dataSources;
 	@Field(CONTEXT_FIELD_NAMES_FIELD)
 	private List<String> contextFieldNames;
 	@Field(STRATEGY_ID_FIELD)
@@ -74,14 +68,6 @@ public class FeatureBucket {
 
 	public void setFeatureBucketConfName(String featureBucketConfName) {
 		this.featureBucketConfName = featureBucketConfName;
-	}
-
-	public List<String> getDataSources() {
-		return dataSources;
-	}
-
-	public void setDataSources(List<String> dataSources) {
-		this.dataSources = dataSources;
 	}
 
 	public List<String> getContextFieldNames() {

@@ -20,7 +20,7 @@ public abstract class AdeScoredEnrichedRecord extends AdeScoredRecord {
 
     @Override
     public String getAdeEventType(){
-        return EVENT_TYPE_PREFIX + "." + getDataSources().get(0) + "." + getFeatureName();
+        return EVENT_TYPE_PREFIX + "." + getFeatureName();
     }
 
     public abstract void fillContext(EnrichedRecord enrichedRecord);

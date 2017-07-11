@@ -7,6 +7,7 @@ import fortscale.utils.recordreader.transformation.Transformation;
 import javax.validation.constraints.NotNull;
 import java.time.Instant;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -72,6 +73,10 @@ public class AdeRecordReader extends ReflectionRecordReader {
 
 	public String getAdeEventType() {
 		return adeRecord.getAdeEventType();
+	}
+
+	public List<String> getDataSources(){
+		return adeRecord.getDataSources();
 	}
 
 	public String getId() {

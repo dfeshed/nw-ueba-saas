@@ -19,6 +19,7 @@ import static org.mockito.Mockito.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath*:META-INF/spring/entity-event-builder-context-test.xml"})
+@Ignore
 public class EntityEventBuilderTest extends EntityEventTestBase{
 	private static final String DEFAULT_ENTITY_EVENT_NAME = "testEntityEvent";
 	private static final String USERNAME_CONTEXT_FIELD = "normalized_username";
@@ -36,7 +37,7 @@ public class EntityEventBuilderTest extends EntityEventTestBase{
     public void setUp() {
 		((EntityEventDataTestStore)entityEventDataStore).emptyEntityEventDataStore();
 	}
-	
+
 	
 	private EntityEventConf createDefaultEntityEventConf(List<String> contextFields) {
 		List<String> aggregatedFeatureEventNames = new ArrayList<>();

@@ -10,9 +10,6 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 public class ScoreAggregationBucketConfigurationServiceConfig {
-
-    @Value("${impala.table.fields.data.source}")
-    private String dataSourceFieldName;
     @Value("${fortscale.score.aggregation.bucket.conf.json.file.name}")
     private String bucketConfJsonFilePath;
     @Value("${fortscale.score.aggregation.bucket.conf.json.overriding.files.path:#{null}}")
@@ -23,6 +20,6 @@ public class ScoreAggregationBucketConfigurationServiceConfig {
     @Bean
     public BucketConfigurationService bucketConfigurationService()
     {
-        return new BucketConfigurationService(dataSourceFieldName, bucketConfJsonFilePath, bucketConfJsonOverridingFilesPath,bucketConfJsonAdditionalFilesPath);
+        return new BucketConfigurationService(bucketConfJsonFilePath, bucketConfJsonOverridingFilesPath,bucketConfJsonAdditionalFilesPath);
     }
 }

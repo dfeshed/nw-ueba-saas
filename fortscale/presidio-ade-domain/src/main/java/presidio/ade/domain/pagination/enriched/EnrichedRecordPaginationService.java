@@ -29,21 +29,21 @@ public class EnrichedRecordPaginationService extends PaginationService<EnrichedR
     }
 
     @Override
-    protected List<ContextIdToNumOfItems> getContextIdToNumOfItemsList(String dataSource, TimeRange timeRange) {
-        EnrichedRecordsMetadata enrichedRecordsMetadata = new EnrichedRecordsMetadata(dataSource, timeRange.getStart(), timeRange.getEnd());
+    protected List<ContextIdToNumOfItems> getContextIdToNumOfItemsList(String adeEventType, TimeRange timeRange) {
+        EnrichedRecordsMetadata enrichedRecordsMetadata = new EnrichedRecordsMetadata(adeEventType, timeRange.getStart(), timeRange.getEnd());
         return this.store.aggregateContextToNumOfEvents(enrichedRecordsMetadata, this.contextType);
     }
 
     @Override
-    protected <U extends EnrichedRecord> PageIterator<U> createPageIterator(String dataSource, TimeRange timeRange, Set<String> contextIds, int totalNumOfItems) {
+    protected <U extends EnrichedRecord> PageIterator<U> createPageIterator(String adeEventType, TimeRange timeRange, Set<String> contextIds, int totalNumOfItems) {
         int totalAmountOfPages = (int) Math.ceil((double) totalNumOfItems / this.getPageSize());
         logger.debug("Num of pages is: {}",totalAmountOfPages);
-        return new EnrichedRecordPageIterator<>(timeRange, this.contextType, dataSource, contextIds, this.store, this.getPageSize(), totalNumOfItems, totalAmountOfPages);
+        return new EnrichedRecordPageIterator<>(timeRange, this.contextType, adeEventType, contextIds, this.store, this.getPageSize(), totalNumOfItems, totalAmountOfPages);
     }
 
     @Override
-    protected void ensureContextAndDateTimeIndex(String dataSource) {
-        this.store.ensureContextAndDateTimeIndex(dataSource, this.contextType);
+    protected void ensureContextAndDateTimeIndex(String adeEventType) {
+        this.store.ensureContextAndDateTimeIndex(adeEventType, this.contextType);
     }
 
 }

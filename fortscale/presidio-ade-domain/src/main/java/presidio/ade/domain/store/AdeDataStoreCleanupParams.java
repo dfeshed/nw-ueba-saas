@@ -12,12 +12,12 @@ import java.time.Instant;
 public class AdeDataStoreCleanupParams {
     private final Instant startDate;
     private final Instant endDate;
-    private final String dataSource;
+    private final String adeEventType;
 
-    public AdeDataStoreCleanupParams(Instant startDate, Instant endDate, String dataSource) {
+    public AdeDataStoreCleanupParams(Instant startDate, Instant endDate, String adeEventType) {
         this.startDate = startDate;
         this.endDate = endDate;
-        this.dataSource = dataSource;
+        this.adeEventType = adeEventType;
     }
 
     public Instant getStartDate() {
@@ -28,8 +28,8 @@ public class AdeDataStoreCleanupParams {
         return endDate;
     }
 
-    public String getDataSource() {
-        return dataSource;
+    public String getAdeEventType() {
+        return adeEventType;
     }
 
     /**

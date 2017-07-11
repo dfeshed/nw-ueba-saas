@@ -1,7 +1,7 @@
 package fortscale.ml.scorer;
 
 import fortscale.domain.feature.score.FeatureScore;
-import fortscale.ml.scorer.config.DataSourceScorerConfs;
+import fortscale.ml.scorer.config.AdeEventTypeScorerConfs;
 import fortscale.ml.scorer.config.IScorerConf;
 import fortscale.ml.scorer.config.ScorerConfService;
 import fortscale.utils.factory.FactoryService;
@@ -45,21 +45,21 @@ public class ScoringService {
 		}
 
 		return adeEventTypeScorers.stream()
-				.map(dataSourceScorer -> dataSourceScorer.calculateScore(adeRecordReader))
+				.map(adeEventTypeScorer -> adeEventTypeScorer.calculateScore(adeRecordReader))
 				.collect(Collectors.toList());
 	}
 
 	private void loadScorers() {
-		scorerConfService.getAllDataSourceScorerConfs().values().forEach(dataSourceScorerConfs -> {
-			String dataSource = dataSourceScorerConfs.getDataSource();
-			List<Scorer> dataSourceScorers = loadDataSourceScorers(dataSourceScorerConfs);
-			adeEventTypeToScorersMap.put(dataSource, dataSourceScorers);
+		scorerConfService.getAllAdeEventTypeScorerConfs().values().forEach(adeEventTypeScorerConfs -> {
+			String adeEventType = adeEventTypeScorerConfs.getAdeEventType();
+			List<Scorer> adeEventTypeScorers = loadAdeEventTypeScorers(adeEventTypeScorerConfs);
+			adeEventTypeToScorersMap.put(adeEventType, adeEventTypeScorers);
 			//todo: dataSourceMetrics.dataSourceScorers = dataSourceScorers.size();
 		});
 	}
 
-	private List<Scorer> loadDataSourceScorers(DataSourceScorerConfs dataSourceScorerConfs) {
-		List<IScorerConf> scorerConfs = dataSourceScorerConfs.getScorerConfs();
+	private List<Scorer> loadAdeEventTypeScorers(AdeEventTypeScorerConfs adeEventTypeScorerConfs) {
+		List<IScorerConf> scorerConfs = adeEventTypeScorerConfs.getScorerConfs();
 		List<Scorer> scorers = new ArrayList<>(scorerConfs.size());
 		scorerConfs.forEach(scorerConf -> scorers.add(scorerFactoryService.getProduct(scorerConf)));
 		return scorers;

@@ -19,7 +19,7 @@ import java.util.Set;
 public class EnrichedRecordPageIterator<U extends EnrichedRecord> implements PageIterator<U> {
 
     private TimeRange timeRange;
-    private String dataSource;
+    private String adeEventType;
     private String contextType;
     private int currentPage;
     private int totalAmountOfPages;
@@ -31,17 +31,17 @@ public class EnrichedRecordPageIterator<U extends EnrichedRecord> implements Pag
     /**
      * @param timeRange
      * @param contextType     context type (e.g:NORMALIZED_USERNAME_FIELD, NORMALIZED_SRC_MACHINE_FIELD)
-     * @param dataSource      data source name
+     * @param adeEventType      data source name
      * @param contextIds      set of context ids
      * @param store
      * @param pageSize        num of events in each page
      * @param totalNumOfItems total num of events in the all pages
      */
-    public EnrichedRecordPageIterator(TimeRange timeRange, String contextType, String dataSource, Set<String> contextIds, EnrichedDataStore store, int pageSize, int totalNumOfItems, int totalAmountOfPages) {
+    public EnrichedRecordPageIterator(TimeRange timeRange, String contextType, String adeEventType, Set<String> contextIds, EnrichedDataStore store, int pageSize, int totalNumOfItems, int totalAmountOfPages) {
         this.currentPage = 0;
         this.timeRange = timeRange;
         this.contextType = contextType;
-        this.dataSource = dataSource;
+        this.adeEventType = adeEventType;
         this.contextIds = contextIds;
         this.store = store;
         this.pageSize = pageSize;
@@ -61,7 +61,7 @@ public class EnrichedRecordPageIterator<U extends EnrichedRecord> implements Pag
      */
     @Override
     public List<U> next() {
-        EnrichedRecordsMetadata enrichedRecordsMetadata = new EnrichedRecordsMetadata(this.dataSource, this.timeRange.getStart(), this.timeRange.getEnd());
+        EnrichedRecordsMetadata enrichedRecordsMetadata = new EnrichedRecordsMetadata(this.adeEventType, this.timeRange.getStart(), this.timeRange.getEnd());
         int numOfItemsToSkip = this.currentPage * this.pageSize;
         this.currentPage++;
         return this.store.readRecords(enrichedRecordsMetadata, this.contextIds, contextType, numOfItemsToSkip, this.pageSize);
