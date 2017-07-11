@@ -2,7 +2,6 @@ package fortscale.aggregation.feature.bucket;
 
 import fortscale.utils.logging.Logger;
 import fortscale.utils.mongodb.util.MongoDbUtilService;
-import fortscale.utils.monitoring.stats.StatsService;
 import fortscale.utils.pagination.ContextIdToNumOfItems;
 import fortscale.utils.time.TimeRange;
 import org.springframework.data.domain.Sort.Direction;
@@ -11,9 +10,8 @@ import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.query.Query;
 
-import java.util.HashMap;
+import java.sql.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -37,8 +35,8 @@ public class FeatureBucketStoreMongoImpl implements FeatureBucketStore {
 	@Override
 	public Set<String> getDistinctContextIds(FeatureBucketConf featureBucketConf, TimeRange timeRange) {
 		Query query = new Query(where(FeatureBucket.START_TIME_FIELD)
-				.gte(timeRange.getStart().getEpochSecond())
-				.lt(timeRange.getEnd().getEpochSecond()));
+				.gte(timeRange.getStart())
+				.lt(timeRange.getEnd()));
 
 		List<?> distinctContextIds = mongoTemplate
 				.getCollection(getCollectionName(featureBucketConf))
@@ -50,7 +48,7 @@ public class FeatureBucketStoreMongoImpl implements FeatureBucketStore {
 	@Override
 	public List<ContextIdToNumOfItems> getContextIdToNumOfItemsList(String featureBucketConfName, TimeRange timeRange) {
 		Aggregation aggregation = Aggregation.newAggregation(
-				match(where(FeatureBucket.START_TIME_FIELD).gte(timeRange.getStart().getEpochSecond()).lt(timeRange.getEnd().getEpochSecond())),
+				match(where(FeatureBucket.START_TIME_FIELD).gte(Date.from(timeRange.getStart())).lt(Date.from(timeRange.getEnd()))),
 				group(FeatureBucket.CONTEXT_ID_FIELD).count().as(ContextIdToNumOfItems.TOTAL_NUM_OF_ITEMS_FIELD),
 				project(ContextIdToNumOfItems.TOTAL_NUM_OF_ITEMS_FIELD).and("_id").as(ContextIdToNumOfItems.CONTEXT_ID_FIELD).andExclude("_id")
 		);
@@ -62,8 +60,8 @@ public class FeatureBucketStoreMongoImpl implements FeatureBucketStore {
 	public List<FeatureBucket> getFeatureBuckets(String featureBucketConfName, Set<String> contextIds, TimeRange timeRange, int skip, int limit) {
 		Query query = new Query(where(FeatureBucket.CONTEXT_ID_FIELD).in(contextIds))
 				.addCriteria(where(FeatureBucket.START_TIME_FIELD)
-						.gte(timeRange.getStart().getEpochSecond())
-						.lt(timeRange.getEnd().getEpochSecond()))
+						.gte(timeRange.getStart())
+						.lt(timeRange.getEnd()))
 				.skip(skip)
 				.limit(limit);
 

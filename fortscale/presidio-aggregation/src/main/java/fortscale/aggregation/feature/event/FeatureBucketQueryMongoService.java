@@ -2,7 +2,6 @@ package fortscale.aggregation.feature.event;
 
 import fortscale.aggregation.feature.bucket.FeatureBucket;
 import fortscale.utils.ConversionUtils;
-import fortscale.utils.time.TimestampUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -58,8 +57,8 @@ public class FeatureBucketQueryMongoService implements FeatureBucketQueryService
 	private List<FeatureBucket> readFromMongo (String collectionName,String contextType, String ContextName, Long startTime, Long endTime)
 	{
 		try{
-			Criteria startTimeCriteria = Criteria.where(FeatureBucket.START_TIME_FIELD).gte(TimestampUtils.convertToSeconds(startTime));
-			Criteria endTimeCriteria = Criteria.where(FeatureBucket.END_TIME_FIELD).lte(TimestampUtils.convertToSeconds(endTime));
+			Criteria startTimeCriteria = Criteria.where(FeatureBucket.START_TIME_FIELD).gte(startTime);
+			Criteria endTimeCriteria = Criteria.where(FeatureBucket.END_TIME_FIELD).lte(endTime);
 			Criteria contextCriteria = createContextCriteria(contextType, ContextName);
 			Query query = new Query(startTimeCriteria.andOperator(endTimeCriteria,contextCriteria));
 			return mongoTemplate.find(query, FeatureBucket.class, collectionName);
