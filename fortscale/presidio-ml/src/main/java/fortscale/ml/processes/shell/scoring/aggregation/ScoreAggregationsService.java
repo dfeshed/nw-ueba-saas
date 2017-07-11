@@ -71,6 +71,6 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
 
     public List<String> getDistinctContextTypes(String dataSource){
         //todo: figure it out from the configuration.
-        return Collections.singletonList("normalized_username");
+        return Collections.singletonList("normalizedUsername");
     }
 }

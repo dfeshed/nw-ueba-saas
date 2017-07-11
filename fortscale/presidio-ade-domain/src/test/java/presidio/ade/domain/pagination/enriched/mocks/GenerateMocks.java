@@ -54,14 +54,14 @@ public class GenerateMocks {
      */
     public static void createMockForQuery(MongoTemplate mongoTemplate, List<String> enrichedDlpFileRecords, Set<String> contextIdsResult, int skip, int limit, Instant now) {
 
-        Criteria dateTimeCriteria = Criteria.where(EnrichedRecord.DATE_TIME_FIELD).gte(now).lt(now);
-        Criteria contextCriteria = Criteria.where("normalized_username").in(contextIdsResult);
+        Criteria dateTimeCriteria = Criteria.where(EnrichedRecord.START_INSTANT_FIELD).gte(now).lt(now);
+        Criteria contextCriteria = Criteria.where("normalizedUsername").in(contextIdsResult);
         Query query = new Query(dateTimeCriteria).addCriteria(contextCriteria).skip(skip).limit(limit);
 
         List<EnrichedDlpFileRecord> enrichedDlpFileRecordsResult = new ArrayList<>();
         for (String item : enrichedDlpFileRecords) {
             EnrichedDlpFileRecord enrichedDlpFileRecord = new EnrichedDlpFileRecord(now);
-            enrichedDlpFileRecord.setNormalized_username(item);
+            enrichedDlpFileRecord.setNormalizedUsername(item);
             enrichedDlpFileRecordsResult.add(enrichedDlpFileRecord);
         }
 

@@ -1,30 +1,28 @@
 package presidio.input.core.services.converters;
 
-import fortscale.domain.core.AbstractAuditableDocument;
 import presidio.ade.domain.record.enriched.EnrichedDlpFileRecord;
-import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.sdk.api.domain.DlpFileEnrichedDocument;
 
-public class DlpFileConverter implements InputAdeConverter {
-
-    @Override
-    public EnrichedRecord convert(AbstractAuditableDocument document) {
-        EnrichedDlpFileRecord adeRecord = new EnrichedDlpFileRecord(document.getDateTime());
-        DlpFileEnrichedDocument dlpFileEnrichedDocument = (DlpFileEnrichedDocument) document;
-        adeRecord.setNormalized_username(dlpFileEnrichedDocument.getNormalizedUsername());
-        adeRecord.setNormalized_src_machine(dlpFileEnrichedDocument.getNormalizedSrcMachine());
-        adeRecord.setSource_path(dlpFileEnrichedDocument.getSourcePath());
-        adeRecord.setSource_file_name(dlpFileEnrichedDocument.getSourceFileName());
-        adeRecord.setSource_drive_type(dlpFileEnrichedDocument.getSourceDriveType());
-        adeRecord.setDestination_path(dlpFileEnrichedDocument.getDestinationPath());
-        adeRecord.setDestination_file_name(dlpFileEnrichedDocument.getDestinationFileName());
-        adeRecord.setDestination_drive_type(dlpFileEnrichedDocument.getDestinationDriveType());
-        adeRecord.setFile_size(dlpFileEnrichedDocument.getFileSize());
-        adeRecord.setEvent_type(dlpFileEnrichedDocument.getEventType());
-        adeRecord.setWas_blocked(dlpFileEnrichedDocument.getWasBlocked());
-        adeRecord.setWas_classified(dlpFileEnrichedDocument.getWasClassified());
-        adeRecord.setMalware_scan_result(dlpFileEnrichedDocument.getMalwareScanResult());
-        adeRecord.setExecuting_application(dlpFileEnrichedDocument.getExecutingApplication());
+/**
+ * Created by alexp on 08-Jun-17.
+ */
+public class DlpFileConverter {
+    public EnrichedDlpFileRecord convert(DlpFileEnrichedDocument dlpFileEnrichedDocument) {
+        EnrichedDlpFileRecord adeRecord = new EnrichedDlpFileRecord(dlpFileEnrichedDocument.getDateTime());
+        adeRecord.setNormalizedUsername(dlpFileEnrichedDocument.getNormalizedUsername());
+        adeRecord.setNormalizedSrcMachine(dlpFileEnrichedDocument.getNormalizedSrcMachine());
+        adeRecord.setSourcePath(dlpFileEnrichedDocument.getSourcePath());
+        adeRecord.setSourceFileName(dlpFileEnrichedDocument.getSourceFileName());
+        adeRecord.setSourceDriveType(dlpFileEnrichedDocument.getSourceDriveType());
+        adeRecord.setDestinationPath(dlpFileEnrichedDocument.getDestinationPath());
+        adeRecord.setDestinationFileName(dlpFileEnrichedDocument.getDestinationFileName());
+        adeRecord.setDestinationDriveType(dlpFileEnrichedDocument.getDestinationDriveType());
+        adeRecord.setFileSize(dlpFileEnrichedDocument.getFileSize());
+        adeRecord.setEventType(dlpFileEnrichedDocument.getEventType());
+        adeRecord.setWasBlocked(dlpFileEnrichedDocument.getWasBlocked());
+        adeRecord.setWasClassified(dlpFileEnrichedDocument.getWasClassified());
+        adeRecord.setMalwareScanResult(dlpFileEnrichedDocument.getMalwareScanResult());
+        adeRecord.setExecutingApplication(dlpFileEnrichedDocument.getExecutingApplication());
         return adeRecord;
     }
 }

@@ -59,7 +59,7 @@ public class EnrichedDataStoreImplMongo implements EnrichedDataStore {
         //Get type of context
         String fieldName = getFieldName(pojoClass, contextType);
 
-        Criteria dateTimeCriteria = Criteria.where(EnrichedRecord.DATE_TIME_FIELD).gte(startDate).lt(endDate);
+        Criteria dateTimeCriteria = Criteria.where(EnrichedRecord.START_INSTANT_FIELD).gte(startDate).lt(endDate);
         Criteria contextCriteria = Criteria.where(fieldName).in(contextIds);
         Query query = new Query(dateTimeCriteria).addCriteria(contextCriteria).skip(numOfItemsToSkip).limit(numOfItemsToRead);
         String collectionName = translator.toCollectionName(recordsMetadata);
@@ -87,7 +87,7 @@ public class EnrichedDataStoreImplMongo implements EnrichedDataStore {
      * @return cleanup query by cleanup params
      */
     private Query toCleanupQuery(AdeDataStoreCleanupParams cleanupParams) {
-        Criteria dateTimeCriteria = Criteria.where(EnrichedRecord.DATE_TIME_FIELD).gte(cleanupParams.getStartDate()).lt(cleanupParams.getEndDate());
+        Criteria dateTimeCriteria = Criteria.where(EnrichedRecord.START_INSTANT_FIELD).gte(cleanupParams.getStartDate()).lt(cleanupParams.getEndDate());
         return new Query(dateTimeCriteria);
     }
 
@@ -108,7 +108,7 @@ public class EnrichedDataStoreImplMongo implements EnrichedDataStore {
 
         //Create Aggregation on context ids
         Aggregation agg = newAggregation(
-                match(where(EnrichedRecord.DATE_TIME_FIELD).gte(Date.from(startDate)).lt(Date.from(endDate))),
+                match(where(EnrichedRecord.START_INSTANT_FIELD).gte(Date.from(startDate)).lt(Date.from(endDate))),
                 Aggregation.group(fieldName).count().as(ContextIdToNumOfItems.TOTAL_NUM_OF_ITEMS_FIELD),
                 Aggregation.project(ContextIdToNumOfItems.TOTAL_NUM_OF_ITEMS_FIELD).and("_id").as(ContextIdToNumOfItems.CONTEXT_ID_FIELD).andExclude("_id")
         );
@@ -140,7 +140,7 @@ public class EnrichedDataStoreImplMongo implements EnrichedDataStore {
         //  IndexDirection.ASCENDING = 1
         //  IndexDirection.DESCENDING = -1
         indexOptions.put(fieldName, 1);
-        indexOptions.put(EnrichedRecord.DATE_TIME_FIELD, 1);
+        indexOptions.put(EnrichedRecord.START_INSTANT_FIELD, 1);
         CompoundIndexDefinition indexDefinition = new CompoundIndexDefinition(indexOptions);
 
         mongoTemplate.indexOps(collectionName).ensureIndex(indexDefinition);

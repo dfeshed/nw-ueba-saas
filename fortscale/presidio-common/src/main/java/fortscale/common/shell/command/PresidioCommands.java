@@ -40,4 +40,28 @@ public class PresidioCommands implements CommandMarker {
     ) throws Exception {
            executionService.run(dataSource, startTime, endTime, fixedDuration);
     }
+
+    @CliCommand(value = "clean", help = "clean application data for specified time range and data source")
+    public void clean(
+            @CliOption(key = {CommonStrings.COMMAND_LINE_DATA_SOURCE_FIELD_NAME}, mandatory = true, help = "data source")
+            final DataSource dataSource,
+
+            @CliOption(key = {CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME}, mandatory = true, help = "events with (logical) time greater than specified start time will be processed")
+            final Instant startTime,
+
+            @CliOption(key = {CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME}, mandatory = true, help = "events with (logical) time smaller than specified end time will be processed")
+            final Instant endTime
+
+    ) throws Exception {
+        executionService.clean(dataSource, startTime, endTime);
+    }
+
+    @CliCommand(value = "cleanAll", help = "clean application data for specified data source")
+    public void cleanAll(
+            @CliOption(key = {CommonStrings.COMMAND_LINE_DATA_SOURCE_FIELD_NAME}, mandatory = true, help = "data source")
+            final DataSource dataSource
+
+    ) throws Exception {
+        executionService.cleanAll(dataSource);
+    }
 }
