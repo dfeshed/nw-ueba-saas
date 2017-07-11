@@ -16,7 +16,7 @@
         <rpm-maven-plugin.script.get_current_build_version_string>"$(rpm -qa | grep ${rpm_name} | cut -d"-" -f3 | cut
             -d"." -f1)"
         </rpm-maven-plugin.script.get_current_build_version_string>
-        <rpm-maven-plugin.script.version_temp_file>/root/version.txt</rpm-maven-plugin.script.version_temp_file>
+        <rpm-maven-plugin.script.version_temp_file>/tmp/version.txt</rpm-maven-plugin.script.version_temp_file>
     </properties>
     <parent>
         <artifactId>fortscale</artifactId>
@@ -95,9 +95,9 @@
                     <script>
                         echo "Creating temp version file"
                         <!-- pre installation commands: -->
-                        rpm -qa | grep presidio | cut -d"-" -f2 | cut -d"." -f1 > /root/version.txt
-                        rpm -qa | grep presidio | cut -d"-" -f2 | cut -d"." -f2 >> /root/version.txt
-                        rpm -qa | grep presidio | cut -d"-" -f3 | cut -d"." -f1 >> /root/version.txt
+                        rpm -qa | grep ${rpm_name} | cut -d"-" -f2 | cut -d"." -f1 > ${rpm-maven-plugin.script.version_temp_file}
+                        rpm -qa | grep ${rpm_name} | cut -d"-" -f2 | cut -d"." -f2 >> ${rpm-maven-plugin.script.version_temp_file}
+                        rpm -qa | grep ${rpm_name} | cut -d"-" -f3 | cut -d"." -f1 >> ${rpm-maven-plugin.script.version_temp_file}
                         <!-- end of post installation -->
                     </script>
                 </preinstallScriptlet>
@@ -108,11 +108,11 @@
                         echo "Running Python project"
                         <!-- post installation commands: -->
                          /usr/local/bin/python ${rpm-maven-plugin.script} --rpm_name ${rpm_name} --major ${rpm.version.major} --minor ${rpm.version.minor} --build ${rpm.version.build}
-                        <!--changing ownership of /home/presidio/presidio-core/ to presidio:presidio -->
-                        echo "Changing ownership of /home/presidio/presidio-core/ to presidio:presidio"
+                        <!--changing ownership of project main folder -->
+                        echo "Changing ownership of /project main repository"
                         chown -R ${rpm-maven-plugin.script.system_user}:${rpm-maven-plugin.script.system_user} ${rpm-maven-plugin.deployment_target_directory}
                         echo "Removing temporary files"
-                        rm -rf /root/version.txt
+                        rm -rf ${rpm-maven-plugin.script.version_temp_file}
                         <!--end of post installation -->"
                     </script>
                 </postinstallScriptlet>
