@@ -7,9 +7,7 @@ import fortscale.common.shell.PresidioExecutionService;
 import fortscale.domain.core.AbstractAuditableDocument;
 import fortscale.utils.logging.Logger;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
-import presidio.input.core.services.converters.DlpFileConverter;
-import presidio.input.core.services.converters.FileConverter;
-import presidio.input.core.services.converters.InputAdeConverter;
+import presidio.input.core.services.converters.*;
 import presidio.input.core.services.data.AdeDataService;
 import presidio.sdk.api.domain.DlpFileDataDocument;
 import presidio.sdk.api.domain.DlpFileEnrichedDocument;
@@ -108,6 +106,10 @@ public class InputExecutionServiceImpl implements PresidioExecutionService {
                 break;
             case FILE:
                 return new FileConverter();
+            case ACTIVE_DIRECTORY:
+                return new ActiveDirectoryConverter();
+            case AUTHENTICATION:
+                return new AuthenticationConverter();
         }
         return null;
     }
