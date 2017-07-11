@@ -184,11 +184,6 @@ export default {
       isDownloading: 'Downloading...',
       downloadWarning: 'Warning: Files contain the original raw unsecured content. Use caution when opening or downloading files; they may contain malicious data.'
     },
-    error: {
-      generic: 'An unexpected error has occurred attempting to retrieve this data.',
-      missingRecon: 'This event (id = {{id}}) was not saved or has been rolled out of storage. No content to display.',
-      noTextContentData: 'No text data was generated during content reconstruction. This could mean that the event data was corrupt or invalid. Check the other reconstruction views.'
-    },
     files: {
       fileName: 'File Name',
       extension: 'Extension',
@@ -197,6 +192,12 @@ export default {
       hashes: 'Hashes',
       noFiles: 'There are no files available for this event.',
       linkFile: 'This file is in another session.<br>Click the file link to view the related session in a new tab.'
+    },
+    error: {
+      generic: 'An unexpected error has occurred attempting to retrieve this data.',
+      missingRecon: 'This event (id = {{id}}) was not saved or has been rolled out of storage. No content to display.',
+      noTextContentData: 'No text data was generated during content reconstruction. This could mean that the event data was corrupt or invalid. Check the other reconstruction views.',
+      permissionError: 'Insufficient permissions for the requested data. If you believe you should have access, ask your administrator to provide the necessary permissions.'
     },
     toggles: {
       header: 'Show/Hide Header',

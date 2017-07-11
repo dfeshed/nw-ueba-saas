@@ -102,9 +102,8 @@ const ReconContainer = Component.extend({
       oldEventId,
       index,
       total,
-      isAnimationDone,
       size
-    } = this.getProperties('oldEventId', 'index', 'total', 'isAnimationDone', 'size');
+    } = this.getProperties('oldEventId', 'index', 'total', 'size');
     const inputs = this.getProperties('endpointId', 'eventId', 'language', 'meta', 'aliases', 'linkToFileAction');
 
     assert('Cannot instantiate recon without endpointId and eventId.', inputs.endpointId && inputs.eventId);
@@ -122,27 +121,28 @@ const ReconContainer = Component.extend({
     this.set('oldEventId', inputs.eventId);
 
     this.send('setIndexAndTotal', index, total);
-
-    // This ties into the amount of time it takes the recon panel to slide open.
-    // We intentionally delay switching from the spinner to the Recon content so
-    // that the panel smoothly opens. Once it's open, render all the things.
-    // This does not delay any API calls/data fetching.
-    if (!isAnimationDone) {
-      later(this, () => {
-        this.set('isAnimationDone', true);
-      }, 1000);
-    }
   },
 
   didInsertElement() {
     this._super(...arguments);
 
     // start listening for notifications for the lifetime of this component
-    // Use run.next because this action will trigger an update to the `stopNotifications` attr,
-    // and without run.next Ember would then throw a warning that we modified an attr during didInsertElement.
+    // Use run.next because this action will trigger an update to the
+    // `stopNotifications` attr, and without run.next Ember would then throw a
+    // warning that we modified an attr during didInsertElement.
     next(() => {
       this.send('initializeNotifications');
     });
+
+    // This ties into the amount of time it takes the recon panel to slide open.
+    // We intentionally delay switching from the spinner to the Recon content so
+    // that the panel smoothly opens. Once it's open, render all the things.
+    // This does not delay any API calls/data fetching.
+    later(this, () => {
+      if (!this.isDestroyed) {
+        this.set('isAnimationDone', true);
+      }
+    }, 2000);
   },
 
   willDestroyElement() {

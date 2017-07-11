@@ -21,16 +21,17 @@ const EventContentComponent = Component.extend({
 
   /**
    * contentError is a code
-   * if the code is 2, then it is an expected error condition for which
+   * if the code is 2 or 13, then it is an expected error condition for which
    * we message specifically.
-   * if the code is not a 2, it is an unexpected error
-   *
+   * if the code is something else, it is an unexpected error
    * @public
    */
   @computed('contentError')
   errorMessage(errorCode) {
     if (errorCode === 2) {
       return this.get('i18n').t('recon.error.missingRecon', { id: this.get('eventId') });
+    } else if (errorCode === 13) {
+      return this.get('i18n').t('recon.error.permissionError');
     } else {
       return this.get('i18n').t('recon.error.generic');
     }
