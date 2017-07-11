@@ -1,28 +1,19 @@
 package fortscale.ml.processes.shell;
 
+import fortscale.common.general.PresidioShellableApplication;
 import fortscale.utils.logging.Logger;
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.task.configuration.EnableTask;
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
-import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.ComponentScan.Filter;
+import org.springframework.context.annotation.FilterType;
 
-/**
- * Created by YaronDL on 7/2/2017.
- */
 @SpringBootApplication
-@EnableTask
-@EnableSpringConfigured
-@EnableAspectJAutoProxy
+@ComponentScan(excludeFilters = @Filter(type = FilterType.REGEX, pattern = {"fortscale.*", "presidio.*"}))
 public class ModelFeatureAggregationBucketsApplication {
-    private static final Logger logger = Logger.getLogger(ModelFeatureAggregationBucketsApplication.class);
+	private static final Logger logger = Logger.getLogger(ModelFeatureAggregationBucketsApplication.class);
 
-
-    public static void main(String[] args) {
-        logger.info("Start application: {}", ModelFeatureAggregationBucketsApplication.class);
-
-        ConfigurableApplicationContext ctx = SpringApplication.run(new Object[]{ModelFeatureAggregationBucketsApplication.class,
-                ModelFeatureAggregationBucketsServiceConfiguration.class}, args);
-    }
+	public static void main(String[] args) {
+		logger.info("Starting {}.", ModelFeatureAggregationBucketsApplication.class.getSimpleName());
+		PresidioShellableApplication.run(ModelFeatureAggregationBucketsConfiguration.class, args);
+	}
 }
