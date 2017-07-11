@@ -33,6 +33,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
+import java.time.Instant;
 import java.util.*;
 
 import static org.mockito.Matchers.any;
@@ -187,6 +188,8 @@ public class ModelServiceTest {
 		FeatureBucket featureBucket = new FeatureBucket();
 		Map<String, Feature> aggregatedFeatures = featureBucket.getAggregatedFeatures();
 		aggregatedFeatures.put(featureName, new Feature(featureName, genericHistogram));
+		featureBucket.setStartTime(Instant.EPOCH);
+		featureBucket.setEndTime(Instant.EPOCH);
 		return featureBucket;
 	}
 
