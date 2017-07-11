@@ -42,7 +42,7 @@
       &.is-largest { font-size: 5em; }
     }
 
-    .rsa-icon-arrow-down-12 {
+    .rsa-icon-arrow-down-12-filled {
       font-size: .9rem;
       margin: 0 calc(#{rsa-whitespace(least)} * -1) 0 rsa-whitespace(least);
     }
@@ -60,7 +60,7 @@
 
   &:not(.is-icon-only) {
     .rsa-form-button {
-      i:not(.rsa-icon-arrow-down-12) {
+      i:not(.rsa-icon-arrow-down-12-filled) {
         margin-left: calc(#{rsa-whitespace(least)} * -1);
       }
     }
@@ -148,7 +148,7 @@
         margin-left: 0;
       }
 
-      .rsa-icon-arrow-down-12 {
+      .rsa-icon-arrow-down-12-filled {
         font-size: .75rem;
         top: 2px;
       }
@@ -245,7 +245,7 @@
   .rsa-form-button {
     padding: rsa-whitespace(less) 0;
 
-    .rsa-icon-arrow-down-12 {
+    .rsa-icon-arrow-down-12-filled {
       width: 2rem;
       margin: 0 auto;
       position: relative;
