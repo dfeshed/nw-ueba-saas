@@ -5,6 +5,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
 
 import java.time.Instant;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * shouldInsertDataAndCreateIndexes pojo used to mock ade enriched data
@@ -40,7 +42,12 @@ public class MockedEnrichedRecord extends EnrichedRecord {
     }
 
     @Override
-    public String getDataSource() {
+    public String getAdeEventType() {
         return "mockedDataSource";
+    }
+
+    @Override
+    public List<String> getDataSources() {
+        return Collections.singletonList(getAdeEventType());
     }
 }

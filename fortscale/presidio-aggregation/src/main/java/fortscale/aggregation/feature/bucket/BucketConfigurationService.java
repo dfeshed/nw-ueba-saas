@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.aggregation.configuration.AslConfigurationService;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
-import org.springframework.beans.factory.annotation.Value;
 import presidio.ade.domain.record.AdeRecordReader;
 
 import java.util.*;
@@ -20,7 +19,7 @@ public class BucketConfigurationService extends AslConfigurationService {
 	public static final String JSON_CONF_BUCKET_CONFS_NODE_NAME = "BucketConfs";
 
 	private Map<String, FeatureBucketConf> bucketConfs = new HashMap<>();
-	private Map<String, List<FeatureBucketConf>> dataSourceToListOfBucketConfs = new HashMap<>();
+	private Map<String, List<FeatureBucketConf>> adeEventTypeToListOfBucketConfs = new HashMap<>();
 
 	private String dataSourceFieldName;
 	private String bucketConfJsonFilePath;
@@ -91,9 +90,9 @@ public class BucketConfigurationService extends AslConfigurationService {
 	 */
 	public List<FeatureBucketConf> getRelatedBucketConfs(AdeRecordReader adeRecordReader, String strategyName, List<String> contextFieldNames) {
 		if (adeRecordReader == null) return null;
-		String dataSource = adeRecordReader.getDataSource();
-		if (dataSource.isEmpty()) return null;
-		List<FeatureBucketConf> featureBucketConfs = dataSourceToListOfBucketConfs.get(dataSource);
+		String adeEventType = adeRecordReader.getAdeEventType();
+		if (adeEventType.isEmpty()) return null;
+		List<FeatureBucketConf> featureBucketConfs = adeEventTypeToListOfBucketConfs.get(adeEventType);
 		featureBucketConfs = featureBucketConfs.stream().filter(featureBucketConf -> featureBucketConf.getStrategyName().equals(strategyName) && featureBucketConf.getContextFieldNames().equals(contextFieldNames)).collect(Collectors.toList());
 
 		return featureBucketConfs;
@@ -116,14 +115,14 @@ public class BucketConfigurationService extends AslConfigurationService {
 		}
 
 		bucketConfs.put(bucketConf.getName(), bucketConf);
-		List<String> dataSources = bucketConf.getDataSources();
+		List<String> adeEventTypeList = bucketConf.getDataSources();
 
-		for (String s : dataSources) {
-			List<FeatureBucketConf> listOfBucketConfs = dataSourceToListOfBucketConfs.get(s);
+		for (String adeEventType : adeEventTypeList) {
+			List<FeatureBucketConf> listOfBucketConfs = adeEventTypeToListOfBucketConfs.get(adeEventType);
 
 			if (listOfBucketConfs == null) {
 				listOfBucketConfs = new ArrayList<>();
-				dataSourceToListOfBucketConfs.put(s, listOfBucketConfs);
+				adeEventTypeToListOfBucketConfs.put(adeEventType, listOfBucketConfs);
 			}
 
 			listOfBucketConfs.add(bucketConf);
@@ -135,8 +134,8 @@ public class BucketConfigurationService extends AslConfigurationService {
 		featureBucketConf.addAggregatedFeatureConf(aggregatedFeatureConf);
 	}
 
-	public Set<List<String>> getRelatedDistinctContexts(String dataSource){
-		List<FeatureBucketConf> featureBucketConfs = dataSourceToListOfBucketConfs.get(dataSource);
+	public Set<List<String>> getRelatedDistinctContexts(String adeEventType){
+		List<FeatureBucketConf> featureBucketConfs = adeEventTypeToListOfBucketConfs.get(adeEventType);
 		Set<List<String>> distinctContextsSet = new HashSet<>();
 		for(FeatureBucketConf featureBucketConf: featureBucketConfs){
 			distinctContextsSet.add(featureBucketConf.getContextFieldNames());

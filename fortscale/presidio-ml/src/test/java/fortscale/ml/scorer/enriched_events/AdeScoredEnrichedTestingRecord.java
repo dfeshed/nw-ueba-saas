@@ -5,6 +5,7 @@ import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.ade.domain.record.scored.enriched_scored.AdeScoredEnrichedRecord;
 
 import java.time.Instant;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -18,11 +19,6 @@ public class AdeScoredEnrichedTestingRecord extends AdeScoredEnrichedRecord {
     }
 
     @Override
-    public String getDataSource() {
-        return "testds";
-    }
-
-    @Override
     public void fillContext(EnrichedRecord enrichedRecord) {
         this.enrichedRecord = enrichedRecord;
     }
@@ -30,5 +26,10 @@ public class AdeScoredEnrichedTestingRecord extends AdeScoredEnrichedRecord {
     @Override
     public EnrichedRecord getContext() {
         return enrichedRecord;
+    }
+
+    @Override
+    public List<String> getDataSources() {
+        return Collections.singletonList("testds");
     }
 }

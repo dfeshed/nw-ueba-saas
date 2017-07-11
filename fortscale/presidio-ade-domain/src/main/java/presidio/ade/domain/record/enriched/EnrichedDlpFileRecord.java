@@ -25,7 +25,7 @@ public class EnrichedDlpFileRecord extends EnrichedRecord {
     public static final String DESTINATION_FILE_NAME_FIELD = "destinationFileName";
     public static final String DESTINATION_DRIVE_TYPE_FIELD = "destinationDriveType";
     public static final String FILE_SIZE_FIELD = "fileSize";
-    public static final String EVENT_TYPE_FIELD = "eventType";
+    public static final String OPERATION_TYPE_FIELD = "operationType";
     public static final String WAS_BLOCKED_FIELD = "wasBlocked";
     public static final String WAS_CLASSIFIED_FIELD = "wasClassified";
     public static final String MALWARE_SCAN_RESULT_FIELD = "malwareScanResult";
@@ -50,8 +50,8 @@ public class EnrichedDlpFileRecord extends EnrichedRecord {
     private String destinationDriveType;
     @Field(FILE_SIZE_FIELD)
     private double fileSize;
-    @Field(EVENT_TYPE_FIELD)
-    private String eventType;
+    @Field(OPERATION_TYPE_FIELD)
+    private String operationType;
     @Field(WAS_BLOCKED_FIELD)
     private boolean wasBlocked;
     @Field(WAS_CLASSIFIED_FIELD)
@@ -72,8 +72,14 @@ public class EnrichedDlpFileRecord extends EnrichedRecord {
 
     @Override
     @Transient
-    public String getDataSource() {
+    public String getAdeEventType() {
         return DlpFileRecord.DLP_FILE_STR;
+    }
+
+    @Override
+    @Transient
+    public String getDataSource() {
+        return getAdeEventType();
     }
 
     public String getNormalizedUsername() {
@@ -148,12 +154,12 @@ public class EnrichedDlpFileRecord extends EnrichedRecord {
         this.fileSize = fileSize;
     }
 
-    public String getEventType() {
-        return eventType;
+    public String getOperationType() {
+        return operationType;
     }
 
-    public void setEventType(String eventType) {
-        this.eventType = eventType;
+    public void setOperationType(String operationType) {
+        this.operationType = operationType;
     }
 
     public boolean isWasBlocked() {

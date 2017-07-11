@@ -95,7 +95,7 @@ public class ModelFeatureAggregationBucketsServiceTest {
         enrichedDlpFileRecord.setNormalizedUsername(username);
         enrichedDlpFileRecord.setWasClassified(false);
         enrichedDlpFileRecord.setNormalizedSrcMachine(String.format("%s_pc", username));
-        enrichedDlpFileRecord.setEventType("copy");
+        enrichedDlpFileRecord.setOperationType("copy");
         enrichedDlpFileRecord.setSourceDriveType("remote");
         enrichedDlpFileRecord.setFileSize(1000);
         enrichedDlpFileRecord.setSourcePath("/home/test_source_path");

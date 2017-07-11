@@ -4,6 +4,8 @@ import presidio.ade.domain.record.AdeRecord;
 import presidio.ade.domain.record.AdeRecordReader;
 
 import java.time.Instant;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * An ADE record for scorer unit tests.
@@ -33,8 +35,13 @@ public class TestAdeRecord extends AdeRecord {
 	}
 
 	@Override
-	public String getDataSource() {
+	public String getAdeEventType() {
 		return "test";
+	}
+
+	@Override
+	public List<String> getDataSources() {
+		return Collections.singletonList(getAdeEventType());
 	}
 
 	public AdeRecordReader getAdeRecordReader() {

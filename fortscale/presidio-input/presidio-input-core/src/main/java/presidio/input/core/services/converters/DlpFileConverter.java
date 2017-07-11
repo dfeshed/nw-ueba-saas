@@ -18,7 +18,7 @@ public class DlpFileConverter {
         adeRecord.setDestinationFileName(dlpFileEnrichedDocument.getDestinationFileName());
         adeRecord.setDestinationDriveType(dlpFileEnrichedDocument.getDestinationDriveType());
         adeRecord.setFileSize(dlpFileEnrichedDocument.getFileSize());
-        adeRecord.setEventType(dlpFileEnrichedDocument.getEventType());
+        adeRecord.setOperationType(dlpFileEnrichedDocument.getEventType());
         adeRecord.setWasBlocked(dlpFileEnrichedDocument.getWasBlocked());
         adeRecord.setWasClassified(dlpFileEnrichedDocument.getWasClassified());
         adeRecord.setMalwareScanResult(dlpFileEnrichedDocument.getMalwareScanResult());

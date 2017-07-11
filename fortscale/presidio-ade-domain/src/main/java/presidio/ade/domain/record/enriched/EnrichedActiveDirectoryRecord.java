@@ -95,7 +95,7 @@ public class EnrichedActiveDirectoryRecord extends EnrichedRecord {
 
     @Override
     @Transient
-    public String getDataSource() {
+    public String getAdeEventType() {
         return ActiveDirectoryRecord.ACTIVE_DIRECTORY_STR;
     }
 

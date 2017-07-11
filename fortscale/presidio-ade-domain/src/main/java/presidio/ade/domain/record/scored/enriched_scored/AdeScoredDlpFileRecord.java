@@ -10,6 +10,7 @@ import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.ade.domain.record.util.AdeRecordMetadata;
 
 import java.time.Instant;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -40,9 +41,8 @@ public class AdeScoredDlpFileRecord extends AdeScoredEnrichedRecord {
     }
 
     @Override
-    @Transient
-    public String getDataSource() {
-        return DlpFileRecord.DLP_FILE_STR;
+    public List<String> getDataSources() {
+        return Collections.singletonList(DlpFileRecord.DLP_FILE_STR);
     }
 
     @Override

@@ -1,7 +1,5 @@
 package presidio.ade.domain.record.enriched;
 
-import presidio.ade.domain.record.enriched.EnrichedDlpFileRecord;
-
 /**
  * Created by YaronDL on 6/14/2017.
  */
@@ -15,7 +13,7 @@ public class AdeEnrichedDlpFileContext {
     private String destinationFileName;
     private String destinationDriveType;
     private double fileSize;
-    private String eventType;
+    private String operationType;
     private boolean wasBlocked;
     private boolean wasClassified;
     private String malwareScanResult;
@@ -31,7 +29,7 @@ public class AdeEnrichedDlpFileContext {
         this.destinationFileName = enrichedDlpFileRecord.getDestinationFileName();
         this.destinationDriveType = enrichedDlpFileRecord.getDestinationDriveType();
         this.fileSize = enrichedDlpFileRecord.getFileSize();
-        this.eventType = enrichedDlpFileRecord.getEventType();
+        this.operationType = enrichedDlpFileRecord.getOperationType();
         this.wasBlocked = enrichedDlpFileRecord.isWasBlocked();
         this.wasClassified = enrichedDlpFileRecord.isWasClassified();
         this.malwareScanResult = enrichedDlpFileRecord.getMalwareScanResult();
@@ -110,12 +108,12 @@ public class AdeEnrichedDlpFileContext {
         this.fileSize = fileSize;
     }
 
-    public String getEventType() {
-        return eventType;
+    public String getOperationType() {
+        return operationType;
     }
 
-    public void setEventType(String eventType) {
-        this.eventType = eventType;
+    public void setOperationType(String operationType) {
+        this.operationType = operationType;
     }
 
     public boolean isWasBlocked() {

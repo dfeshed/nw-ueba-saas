@@ -55,8 +55,4 @@ public abstract class AdeScoredRecord extends EnrichedRecord {
     public void setFeatureScoreList(List<FeatureScore> featureScoreList) {
         this.featureScoreList = featureScoreList;
     }
-
-    @Override
-    @Transient
-    public abstract String getDataSource();
 }
