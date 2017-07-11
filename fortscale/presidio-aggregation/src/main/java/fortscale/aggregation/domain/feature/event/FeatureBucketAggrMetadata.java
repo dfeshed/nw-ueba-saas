@@ -1,13 +1,12 @@
 package fortscale.aggregation.domain.feature.event;
 
+import fortscale.aggregation.feature.bucket.FeatureBucket;
+import fortscale.utils.time.TimeUtils;
+import fortscale.utils.time.TimestampUtils;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
-
-import fortscale.aggregation.feature.bucket.FeatureBucket;
-import fortscale.utils.time.TimeUtils;
-import fortscale.utils.time.TimestampUtils;
 
 
 
@@ -36,7 +35,7 @@ public class FeatureBucketAggrMetadata {
 	public FeatureBucketAggrMetadata(){}
 	
 	public FeatureBucketAggrMetadata(FeatureBucket featureBucket) {
-		this.endTime = featureBucket.getEndTime();
+		this.endTime = featureBucket.getEndTime().toEpochMilli();
 		this.bucketId = featureBucket.getBucketId();
 		this.featureBucketConfName = featureBucket.getFeatureBucketConfName();
 	}

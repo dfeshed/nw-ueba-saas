@@ -15,9 +15,9 @@ public class RetentionStrategiesConfService extends AslConfigurationService {
 
 	@Value("${fortscale.aggregation.retention.strategy.conf.json.file.name}")
 	private String retentionStrategyConfJsonFilePath;
-	@Value("${fortscale.aggregation.retention.strategy.conf.json.overriding.files.path}")
+	@Value("${fortscale.aggregation.retention.strategy.conf.json.overriding.files.path:#{null}}")
 	private String retentionStrategyConfJsonOverridingFilesPath;
-	@Value("${fortscale.aggregation.retention.strategy.conf.json.additional.files.path}")
+	@Value("${fortscale.aggregation.retention.strategy.conf.json.additional.files.path:#{null}}")
 	private String retentionStrategyConfJsonAdditionalFilesPath;
 
 	public RetentionStrategiesConfService(){}

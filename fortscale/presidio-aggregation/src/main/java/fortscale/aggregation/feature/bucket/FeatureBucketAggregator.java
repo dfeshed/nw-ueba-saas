@@ -7,11 +7,14 @@ import fortscale.aggregation.feature.functions.IAggrFeatureFunctionsService;
 import fortscale.common.feature.Feature;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.recordreader.RecordReaderFactoryService;
+import net.minidev.json.JSONObject;
 import presidio.ade.domain.record.AdeRecord;
 import presidio.ade.domain.record.AdeRecordReader;
-import net.minidev.json.JSONObject;
 
-import java.util.*;
+import java.time.Instant;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 public class FeatureBucketAggregator {
     private static final Logger logger = Logger.getLogger(FeatureBucketAggregator.class);
@@ -123,8 +126,8 @@ public class FeatureBucketAggregator {
         ret.setStrategyId(strategyData.getStrategyId());
         ret.setContextFieldNames(featureBucketConf.getContextFieldNames());
         ret.setDataSources(featureBucketConf.getDataSources());
-        ret.setStartTime(strategyData.getStartTime());
-        ret.setEndTime(strategyData.getEndTime());
+        ret.setStartTime(Instant.ofEpochMilli(strategyData.getStartTime()));
+        ret.setEndTime(Instant.ofEpochMilli(strategyData.getEndTime()));
         ret.setCreatedAt(new Date());
 
         for (String contextFieldName : featureBucketConf.getContextFieldNames()) {

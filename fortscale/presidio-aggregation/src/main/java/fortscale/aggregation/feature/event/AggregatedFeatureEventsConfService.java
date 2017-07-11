@@ -24,9 +24,9 @@ public class AggregatedFeatureEventsConfService extends AslConfigurationService 
 
 	@Value("${fortscale.aggregation.feature.event.conf.json.file.name}")
 	private String aggregatedFeatureEventConfJsonFilePath;
-	@Value("${fortscale.aggregation.feature.event.conf.json.overriding.files.path}")
+	@Value("${fortscale.aggregation.feature.event.conf.json.overriding.files.path:#{null}}")
 	private String aggregatedFeatureEventConfJsonOverridingFilesPath;
-	@Value("${fortscale.aggregation.feature.event.conf.json.additional.files.path}")
+	@Value("${fortscale.aggregation.feature.event.conf.json.additional.files.path:#{null}}")
 	private String aggregatedFeatureEventConfJsonAdditionalFilesPath;
 
 	@Autowired

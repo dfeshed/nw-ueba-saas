@@ -91,7 +91,7 @@ public class ContextHistogramRetriever extends AbstractDataRetriever {
 		if (featureBuckets.isEmpty()) return new ModelBuilderData(NoDataReason.NO_DATA_IN_DATABASE);
 
 		for (FeatureBucket featureBucket : featureBuckets) {
-			Date dataTime = new Date(TimestampUtils.convertToMilliSeconds(featureBucket.getStartTime()));
+			Date dataTime = Date.from(featureBucket.getStartTime());
 			Map<String, Feature> aggregatedFeatures = featureBucket.getAggregatedFeatures();
 
 			if (aggregatedFeatures.containsKey(featureName)) {

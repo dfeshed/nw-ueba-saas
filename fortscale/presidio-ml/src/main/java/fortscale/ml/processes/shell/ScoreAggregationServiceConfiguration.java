@@ -1,5 +1,7 @@
 package fortscale.ml.processes.shell;
 
+import fortscale.aggregation.creator.AggregationsCreator;
+import fortscale.aggregation.creator.AggregationsCreatorConfig;
 import fortscale.common.general.DataSource;
 import fortscale.ml.model.cache.EventModelsCacheServiceConfig;
 import fortscale.ml.processes.shell.scoring.aggregation.ScoreAggregationsBucketService;
@@ -17,6 +19,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
+import presidio.ade.domain.store.aggr.AggrDataStore;
+import presidio.ade.domain.store.aggr.AggrDataStoreConfig;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
 import presidio.ade.domain.store.enriched.EnrichedDataStoreConfig;
 
@@ -31,6 +35,8 @@ import java.time.Instant;
         EnrichedEventsScoringServiceConfig.class,
         ScoreAggregationsBucketServiceConfiguration.class,
         EventModelsCacheServiceConfig.class,
+        AggregationsCreatorConfig.class,
+        AggrDataStoreConfig.class,
         NullStatsServiceConfig.class,// todo: remove this
 })
 @EnableSpringConfigured
@@ -42,6 +48,10 @@ public class ScoreAggregationServiceConfiguration {
     private EnrichedDataStore enrichedDataStore;
     @Autowired
     private ScoreAggregationsBucketService scoreAggregationsBucketService;
+    @Autowired
+    private AggregationsCreator aggregationsCreator;
+    @Autowired
+    private AggrDataStore aggrDataStore;
 
     @Bean
     public CommandLineRunner commandLineRunner() {
@@ -54,7 +64,7 @@ public class ScoreAggregationServiceConfiguration {
                 Instant startTimeParam = Instant.parse("temp");
                 Instant endTimeParam = Instant.parse("temp");
                 FixedDurationStrategy fixedDurationStrategy = FixedDurationStrategy.fromSeconds((long)Float.parseFloat("36000"));
-                ScoreAggregationsService scoreAggregationsService = new ScoreAggregationsService(fixedDurationStrategy, enrichedDataStore,enrichedEventsScoringService, scoreAggregationsBucketService);
+                ScoreAggregationsService scoreAggregationsService = new ScoreAggregationsService(fixedDurationStrategy, enrichedDataStore,enrichedEventsScoringService, scoreAggregationsBucketService, aggregationsCreator,aggrDataStore);
                 TimeRange timeRange = new TimeRange(startTimeParam, endTimeParam);
                 scoreAggregationsService.execute(timeRange,dataSourceParam);
             }
