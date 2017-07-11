@@ -10,7 +10,7 @@ const stateToComputed = ({ context }) => ({
   activeTabName: context.activeTabName,
   lookupData: context.lookupData
 });
-
+const liveConnectDsGroups = ['LiveConnect-Ip', 'LiveConnect-Domain', 'LiveConnect-File'];
 const DSHeaderComponent = Component.extend({
   layout,
   classNames: 'rsa-context-panel__data__header',
@@ -41,6 +41,9 @@ const DSHeaderComponent = Component.extend({
     }
     const dataSource = dataSources.find((dataSource) => dataSource.dataSourceType.indexOf(activeTabName) === 0);
     return (dataSource.dataSourceType === 'Endpoint' ? dataSource.details[dataSourceGroup] : dataSource).isConfigured;
-  }
+  },
+
+  @computed('activeTabName')
+  showLcMarketingText: (activeTabName) => liveConnectDsGroups.includes(activeTabName)
 });
 export default connect(stateToComputed)(DSHeaderComponent);

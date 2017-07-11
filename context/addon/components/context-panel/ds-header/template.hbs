@@ -1,7 +1,11 @@
 {{#if (not isConfigured)}}
   <div class='rsa-context-panel__error-text'>
     <div>
-      {{dSDetails.dataSourceGroup}} {{t 'context.marketingText' }} &nbsp;{{rsa-icon name="help-circle" style="lined"}}
+      {{#if showLcMarketingText}}
+        {{t 'context.lcMarketingText' }}
+      {{else}}
+        {{dSDetails.dataSourceGroup}} {{t 'context.marketingText' }}
+      {{/if}}&nbsp;{{rsa-icon name="help-circle" style="lined"}}
     </div>
   </div>
 {{else if (not dsData)}}

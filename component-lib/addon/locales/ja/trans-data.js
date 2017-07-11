@@ -910,6 +910,7 @@ export default {
     noValues: 'ja_Context Sources with no values: ',
     dsNotConfigured: 'ja_Context Sources not configured: ',
     marketingText: 'ja_ is not a currently configured data source in Context Hub. Contact your Administrator to enable this feature. Context Hub centralizes data sources from Endpoint, Alerts, Incidents, Lists and many more sources on-demand. For more information , click ',
+    lcMarketingText: 'ja_Live Connect collects, analyzes, and assesses Threat Intelligence data such as IP Addresses, Domains, and File Hashes collected from various sources. Live connect is not a default data source in Context Hub, you need to manually enable it. For more information , click ',
     timeUnit: {
       allData: 'ja_ALL DATA',
       HOUR: 'ja_HOUR',
@@ -1192,7 +1193,8 @@ export default {
       'transport.create.failed': 'ja_Context data is not available as the data source is not reachable.',
       'transport.refresh.failed': 'ja_Context data is not available as the data source is not reachable.',
       'transport.connect.failed': 'ja_Context data is not available as the data source is not reachable.',
-      'live.connect.private.ip.unsupported': 'ja_Only public IP addresses are supported by Live Connect.'
+      'live.connect.private.ip.unsupported': 'ja_Only public IP addresses are supported by Live Connect.',
+      'transport.http.error': 'ja_Context lookup failed for this datasource since it returned an error.'
     },
     footer: {
       viewAll: 'ja_VIEW All',

@@ -363,7 +363,7 @@ radial-gradient(circle at 85% 85%, rsa-color(gray, darker, .1) 0, rsa-color(gray
     width: calc(100% - 4px);
     overflow: auto;
     overflow-x: hidden;
-    &__error{
+    .rsa-context-panel__loader , .rsa-context-panel__error-text{
       display: flex;
       position: absolute;
       justify-content: center;

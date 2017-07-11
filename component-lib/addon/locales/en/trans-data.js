@@ -910,6 +910,7 @@ export default {
     noValues: 'Context Sources with no values: ',
     dsNotConfigured: 'Context Sources not configured: ',
     marketingText: ' is not a currently configured data source in Context Hub. Contact your Administrator to enable this feature. Context Hub centralizes data sources from Endpoint, Alerts, Incidents, Lists and many more sources on-demand. For more information , click ',
+    lcMarketingText: 'Live Connect collects, analyzes, and assesses Threat Intelligence data such as IP Addresses, Domains, and File Hashes collected from various sources. Live connect is not a default data source in Context Hub, you need to manually enable it. For more information , click ',
     timeUnit: {
       allData: 'ALL DATA',
       HOUR: 'HOUR',
@@ -1192,7 +1193,8 @@ export default {
       'transport.create.failed': 'Context data is not available as the data source is not reachable.',
       'transport.refresh.failed': 'Context data is not available as the data source is not reachable.',
       'transport.connect.failed': 'Context data is not available as the data source is not reachable.',
-      'live.connect.private.ip.unsupported': 'Only public IP addresses are supported by Live Connect.'
+      'live.connect.private.ip.unsupported': 'Only public IP addresses are supported by Live Connect.',
+      'transport.http.error': 'Context lookup failed for this datasource since it returned an error.'
     },
     footer: {
       viewAll: 'VIEW All',
