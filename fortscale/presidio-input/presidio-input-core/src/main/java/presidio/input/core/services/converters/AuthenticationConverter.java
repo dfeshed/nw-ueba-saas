@@ -10,7 +10,6 @@ public class AuthenticationConverter implements InputAdeConverter {
     public EnrichedRecord convert(AbstractAuditableDocument document) {
         AuthenticationRawEvent authenticationRawEvent = (AuthenticationRawEvent) document;
         EnrichedAuthenticationRecord adeRecord = new EnrichedAuthenticationRecord(authenticationRawEvent.getDateTime());
-        // adeRecord.setStartInstant(); ???
         adeRecord.setNormalizedUsername(adeRecord.getNormalizedUsername());
         adeRecord.setResult(authenticationRawEvent.getResult().toString());
         adeRecord.setAuthenticationType(authenticationRawEvent.getAuthenticationType().toString());
@@ -18,7 +17,6 @@ public class AuthenticationConverter implements InputAdeConverter {
         adeRecord.setDstMachineRemote(authenticationRawEvent.isDstMachineRemote());
         adeRecord.setNormalizedDstMachine(authenticationRawEvent.getNormalizedDstMachine());
         adeRecord.setNormalizedSrcMachine(authenticationRawEvent.getNormalizedSrcMachine());
-        //adeRecord.setRecordId(); ????
         adeRecord.setResultCode(authenticationRawEvent.getResultCode().toString());
         return adeRecord;
     }

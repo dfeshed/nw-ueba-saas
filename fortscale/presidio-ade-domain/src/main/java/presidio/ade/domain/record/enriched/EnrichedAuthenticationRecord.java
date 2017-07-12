@@ -18,7 +18,6 @@ import java.time.Instant;
 public class EnrichedAuthenticationRecord extends EnrichedRecord {
 
     public static final String AUTHENTICATION_TYPE_FIELD = "authenticationType";
-    public static final String RECORD_ID_FIELD = "recordId";
     public static final String IS_DST_MACHINE_REMOTE_FIELD = "isDstMachineRemote";
     public static final String NORMALIZED_USERNAME_FIELD = "normalizedUsername";
     public static final String NORMALIZED_SRC_MACHINE_FIELD = "normalizedSrcMachine";
@@ -32,8 +31,6 @@ public class EnrichedAuthenticationRecord extends EnrichedRecord {
     private String normalizedUsername;
     @Field(AUTHENTICATION_TYPE_FIELD)
     private String authenticationType;
-    @Field(RECORD_ID_FIELD)
-    private String recordId;
     @Field(IS_DST_MACHINE_REMOTE_FIELD)
     private Boolean isDstMachineRemote;
     @Field(NORMALIZED_SRC_MACHINE_FIELD)
@@ -68,14 +65,6 @@ public class EnrichedAuthenticationRecord extends EnrichedRecord {
 
     public void setAuthenticationType(String authenticationType) {
         this.authenticationType = authenticationType;
-    }
-
-    public String getRecordId() {
-        return recordId;
-    }
-
-    public void setRecordId(String recordId) {
-        this.recordId = recordId;
     }
 
     public Boolean getDstMachineRemote() {
