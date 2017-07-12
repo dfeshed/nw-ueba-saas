@@ -122,7 +122,7 @@ const pivotToInvestigateUrl = (entityType, entityId) => {
       query = `ip.src=${entityId}||ip.dst=${entityId}`;
       break;
     case 'DOMAIN':
-      query = `alias.host='${entityId}'`;
+      query = `alias.host='${entityId}'||domain.src='${entityId}'||domain.dst='${entityId}'||ad.domain.src='${entityId}'||ad.domain.dst='${entityId}'`;
       break;
     case 'HOST':
       query = `device.host='${entityId}'`;
