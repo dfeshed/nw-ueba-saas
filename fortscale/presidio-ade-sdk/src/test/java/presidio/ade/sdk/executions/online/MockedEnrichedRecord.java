@@ -43,7 +43,7 @@ public class MockedEnrichedRecord extends EnrichedRecord {
 
     @Override
     public String getAdeEventType() {
-        return "mockedDataSource";
+        return "mockedAdeEventType";
     }
 
     @Override

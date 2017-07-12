@@ -41,7 +41,7 @@ public abstract class PaginationService<T> {
      * Get groups by the map, the group list contains pairs of events amount and contextIds.
      * Create pageIterator for each group.
      *
-     * @param adeEventType data source name
+     * @param adeEventType ade event type
      * @param timeRange  the time range
      * @return list of PageIterators
      */
@@ -70,7 +70,7 @@ public abstract class PaginationService<T> {
     /**
      * Create map of context ids and num of events based on timeRange and adeEventType.
      *
-     * @param adeEventType data source name
+     * @param adeEventType ade event type
      * @param timeRange  the time range
      * @return map of context id and total num of events
      */
@@ -79,7 +79,7 @@ public abstract class PaginationService<T> {
     /**
      * Create pageIterator
      *
-     * @param adeEventType data source name
+     * @param adeEventType ade event type
      * @param timeRange the time range
      * @param contextIds set of context ids
      * @param totalNumOfItems num of events in PageIterator

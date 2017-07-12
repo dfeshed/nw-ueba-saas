@@ -5,11 +5,11 @@ import presidio.ade.domain.record.util.AdeEventTypeToAdeRecordClassResolver;
 /**
  * Created by YaronDL on 6/15/2017.
  */
-public class DataSourceToAdeScoredEnrichedRecordClassResolver extends AdeEventTypeToAdeRecordClassResolver<AdeScoredEnrichedRecord> {
+public class AdeEventTypeToAdeScoredEnrichedRecordClassResolver extends AdeEventTypeToAdeRecordClassResolver<AdeScoredEnrichedRecord> {
     /**
      * @param scanPackage class path to scan
      */
-    public DataSourceToAdeScoredEnrichedRecordClassResolver(String scanPackage) {
+    public AdeEventTypeToAdeScoredEnrichedRecordClassResolver(String scanPackage) {
         super(scanPackage);
     }
 }

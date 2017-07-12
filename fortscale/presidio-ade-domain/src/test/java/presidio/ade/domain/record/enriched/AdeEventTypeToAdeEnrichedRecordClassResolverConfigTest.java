@@ -11,30 +11,28 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import fortscale.common.general.DataSource;
-
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = AdeEventTypeToAdeEnrichedRecordClassResolverConfig.class)
-public class DataSourceToAdeEnrichedRecordClassResolverConfigTest {
+public class AdeEventTypeToAdeEnrichedRecordClassResolverConfigTest {
 
     @Autowired
-    private AdeEventTypeToAdeEnrichedRecordClassResolver dataSourceToAdeEnrichedRecordClassResolver;
+    private AdeEventTypeToAdeEnrichedRecordClassResolver adeEventTypeToAdeEnrichedRecordClassResolver;
 
     @Test
     public void testDlpfileIsResolved(){
-        Class<? extends EnrichedRecord> enrichedRecord = dataSourceToAdeEnrichedRecordClassResolver.getClass(DataSource.DLPFILE.toString().toLowerCase());
+        Class<? extends EnrichedRecord> enrichedRecord = adeEventTypeToAdeEnrichedRecordClassResolver.getClass(DlpFileRecord.DLP_FILE_STR.toLowerCase());
         Assert.assertTrue(enrichedRecord.equals(EnrichedDlpFileRecord.class));
     }
 
     @Test
     public void testDlpmailIsNotResolved(){
-        Class<? extends EnrichedRecord> enrichedRecord = dataSourceToAdeEnrichedRecordClassResolver.getClass(DataSource.DLPMAIL.toString().toLowerCase());
+        Class<? extends EnrichedRecord> enrichedRecord = adeEventTypeToAdeEnrichedRecordClassResolver.getClass(DlpFileRecord.DLP_FILE_STR.toLowerCase());
         Assert.assertTrue(enrichedRecord == null);
     }
 
     @Test
-    public void testNonExistingDataSourceCase(){
-        Class<? extends EnrichedRecord> enrichedRecord = dataSourceToAdeEnrichedRecordClassResolver.getClass("NonExistingDataSource");
+    public void testNonExistingAdeEventTypeCase(){
+        Class<? extends EnrichedRecord> enrichedRecord = adeEventTypeToAdeEnrichedRecordClassResolver.getClass("NonExistingAdeEventType");
         Assert.assertTrue(enrichedRecord == null);
     }
 }

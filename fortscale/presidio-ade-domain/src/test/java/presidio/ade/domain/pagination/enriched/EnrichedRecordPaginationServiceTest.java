@@ -37,7 +37,7 @@ public class EnrichedRecordPaginationServiceTest {
     private  MongoTemplate mongoTemplate;
     
     @Autowired
-    private AdeEventTypeToAdeEnrichedRecordClassResolver dataSourceToAdeEnrichedRecordClassResolver;
+    private AdeEventTypeToAdeEnrichedRecordClassResolver adeEventTypeToAdeEnrichedRecordClassResolver;
 
     @Before
     public void inilize(){
@@ -268,7 +268,7 @@ public class EnrichedRecordPaginationServiceTest {
 
         //create store
         EnrichedDataAdeToCollectionNameTranslator translator = new EnrichedDataAdeToCollectionNameTranslator();
-        enrichedDataStoreImplMongo = new EnrichedDataStoreImplMongo(mongoTemplate, translator, this.dataSourceToAdeEnrichedRecordClassResolver);
+        enrichedDataStoreImplMongo = new EnrichedDataStoreImplMongo(mongoTemplate, translator, this.adeEventTypeToAdeEnrichedRecordClassResolver);
 
         //create pagination service
         EnrichedRecordPaginationService paginationService =

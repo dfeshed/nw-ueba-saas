@@ -19,10 +19,10 @@ public class EnrichedDataStoreConfig {
 	@Autowired
 	private EnrichedDataAdeToCollectionNameTranslator translator;
 	@Autowired
-	private AdeEventTypeToAdeEnrichedRecordClassResolver dataSourceToAdeEnrichedRecordClassResolver;
+	private AdeEventTypeToAdeEnrichedRecordClassResolver adeEventTypeToAdeEnrichedRecordClassResolver;
 
 	@Bean
 	public EnrichedDataStore enrichedDataStore() {
-		return new EnrichedDataStoreImplMongo(mongoTemplate, translator, dataSourceToAdeEnrichedRecordClassResolver);
+		return new EnrichedDataStoreImplMongo(mongoTemplate, translator, adeEventTypeToAdeEnrichedRecordClassResolver);
 	}
 }

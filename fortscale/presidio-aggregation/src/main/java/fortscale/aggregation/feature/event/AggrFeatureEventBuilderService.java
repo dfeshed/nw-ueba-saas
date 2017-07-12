@@ -15,10 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class AggrFeatureEventBuilderService {
@@ -124,7 +121,7 @@ public class AggrFeatureEventBuilderService {
                 context,
                 startTimeSec,
                 endTimeSec,
-                null
+                Collections.emptyList()
         );
     }
     

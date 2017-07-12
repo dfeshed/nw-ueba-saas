@@ -31,7 +31,7 @@ public class EnrichedRecordPageIterator<U extends EnrichedRecord> implements Pag
     /**
      * @param timeRange
      * @param contextType     context type (e.g:NORMALIZED_USERNAME_FIELD, NORMALIZED_SRC_MACHINE_FIELD)
-     * @param adeEventType      data source name
+     * @param adeEventType      ade evnet type
      * @param contextIds      set of context ids
      * @param store
      * @param pageSize        num of events in each page
@@ -55,7 +55,7 @@ public class EnrichedRecordPageIterator<U extends EnrichedRecord> implements Pag
     }
 
     /**
-     * Call to the store with meta date(data source etc...), list of context ids, num of items to skip and num of items to read.
+     * Call to the store with meta date(ade event type etc...), list of context ids, num of items to skip and num of items to read.
      *
      * @return list of <U>
      */

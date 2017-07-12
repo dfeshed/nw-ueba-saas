@@ -36,7 +36,7 @@ public class FakeMongoEnrichedRecordPaginationServiceTest {
     @Autowired
     MongoTemplate mongoTemplate;
     @Autowired
-    private AdeEventTypeToAdeEnrichedRecordClassResolver dataSourceToAdeEnrichedRecordClassResolver;
+    private AdeEventTypeToAdeEnrichedRecordClassResolver adeEventTypeToAdeEnrichedRecordClassResolver;
 
 
     private static final int PAGE_SIZE = 4;
@@ -67,7 +67,7 @@ public class FakeMongoEnrichedRecordPaginationServiceTest {
 
         //create store
         EnrichedDataAdeToCollectionNameTranslator translator = new EnrichedDataAdeToCollectionNameTranslator();
-        enrichedDataStoreImplMongo = new EnrichedDataStoreImplMongo(mongoTemplate, translator, this.dataSourceToAdeEnrichedRecordClassResolver);
+        enrichedDataStoreImplMongo = new EnrichedDataStoreImplMongo(mongoTemplate, translator, this.adeEventTypeToAdeEnrichedRecordClassResolver);
 
         //create pagination service
         EnrichedRecordPaginationService paginationService =
