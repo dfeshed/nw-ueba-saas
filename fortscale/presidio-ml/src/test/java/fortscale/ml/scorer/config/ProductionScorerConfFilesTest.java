@@ -1,8 +1,7 @@
 package fortscale.ml.scorer.config;
 
-import fortscale.aggregation.configuration.AslConfigurationPaths;
 import fortscale.ml.model.Model;
-import fortscale.ml.model.ModelConfService;
+import fortscale.ml.model.ModelConfServiceConfig;
 import fortscale.ml.model.cache.EventModelsCacheService;
 import fortscale.ml.model.cache.ModelsCacheService;
 import fortscale.ml.model.retriever.AbstractDataRetriever;
@@ -55,25 +54,15 @@ public class ProductionScorerConfFilesTest {
 
 	@Configuration
 	@EnableSpringConfigured
-	@Import({ScorersFactoryConfig.class})
+	@Import({ScorersFactoryConfig.class, ModelConfServiceConfig.class})
 	public static class spConf {
-		@Bean
-		public ModelConfService modelConfService() {
-			AslConfigurationPaths modelConfigurationPaths = new AslConfigurationPaths(
-					"allProductionModelConfs",
-					"classpath:config/asl/models/*.json",
-					"file:home/cloudera/fortscale/config/asl/models/overriding/*.json",
-					"file:home/cloudera/fortscale/config/asl/models/additional/*.json");
-			return new ModelConfService(modelConfigurationPaths);
-		}
+		@Autowired
+		private List<AbstractServiceAutowiringFactory<Scorer>> scorersFactories;
 
 		@Bean
 		public ScorerConfService scorerConfService() {
 			return new TestScorerConfService("classpath:config/asl/scorers/*/*.json");
 		}
-
-		@Autowired
-		private List<AbstractServiceAutowiringFactory<Scorer>> scorersFactories;
 
 		@Bean
 		public FactoryService<Scorer> scorerFactoryService() {

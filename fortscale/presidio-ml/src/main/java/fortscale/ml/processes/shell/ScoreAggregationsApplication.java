@@ -9,11 +9,11 @@ import org.springframework.context.annotation.FilterType;
 
 @SpringBootApplication
 @ComponentScan(excludeFilters = @Filter(type = FilterType.REGEX, pattern = {"fortscale.*", "presidio.*"}))
-public class ModelFeatureAggregationBucketsApplication {
-	private static final Logger logger = Logger.getLogger(ModelFeatureAggregationBucketsApplication.class);
+public class ScoreAggregationsApplication {
+	private static final Logger logger = Logger.getLogger(ScoreAggregationsApplication.class);
 
 	public static void main(String[] args) {
-		logger.info("Starting {}.", ModelFeatureAggregationBucketsApplication.class.getSimpleName());
-		PresidioShellableApplication.run(ModelFeatureAggregationBucketsConfiguration.class, args);
+		logger.info("Starting {}.", ScoreAggregationsApplication.class.getSimpleName());
+		PresidioShellableApplication.run(ScoreAggregationsConfiguration.class, args);
 	}
 }

@@ -22,7 +22,7 @@ public abstract class FixedDurationStrategyExecutor {
     /**
      * brakes given time range to smaller partitions by {@link this#strategy} and execute upon them
      * @param timeRange start and end time of data to be executed upon
-     * @param adeEventType
+     * @param adeEventType ade event type
      */
     public void execute(TimeRange timeRange, String adeEventType) {
         logger.debug("got execution time range={}",timeRange);
@@ -31,7 +31,7 @@ public abstract class FixedDurationStrategyExecutor {
         for(String contextType: getDistinctContextTypes(adeEventType)) {
             for (TimeRange timePartition : partitionedTimeRanges) {
                 logger.debug("executing on time partition={}", timePartition);
-                executeSingleTimeRange(timeRange, adeEventType,contextType);
+                executeSingleTimeRange(timePartition, adeEventType,contextType);
             }
         }
     }
@@ -42,6 +42,4 @@ public abstract class FixedDurationStrategyExecutor {
     protected abstract void executeSingleTimeRange(TimeRange timeRange, String adeEventType, String contextType);
 
     protected abstract List<String> getDistinctContextTypes(String adeEventType);
-
-
 }

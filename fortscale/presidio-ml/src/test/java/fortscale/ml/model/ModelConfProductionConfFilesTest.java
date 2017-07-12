@@ -2,7 +2,6 @@ package fortscale.ml.model;
 
 import fortscale.accumulator.aggregation.store.AccumulatedAggregatedFeatureEventStore;
 import fortscale.accumulator.entityEvent.store.AccumulatedEntityEventStore;
-import fortscale.aggregation.configuration.AslConfigurationPaths;
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.aggregation.feature.bucket.FeatureBucketReader;
 import fortscale.aggregation.feature.event.RetentionStrategiesConfService;
@@ -42,7 +41,7 @@ public class ModelConfProductionConfFilesTest {
 	@Configuration
 	@EnableSpringConfigured
 	@ComponentScan(basePackages = "fortscale.ml.model.selector,fortscale.ml.model.retriever,fortscale.ml.model.builder")
-	@Import({NullStatsServiceConfig.class, AggregatedFeatureEventsConfServiceConfig.class})
+	@Import({NullStatsServiceConfig.class, AggregatedFeatureEventsConfServiceConfig.class, ModelConfServiceConfig.class})
 	static class ContextConfiguration {
 		@Mock private FeatureBucketReader featureBucketReader;
 		@Mock private AggregatedFeatureEventsReaderService aggregatedFeatureEventsReaderService;
@@ -85,16 +84,6 @@ public class ModelConfProductionConfFilesTest {
 		@Bean
 		public EntityEventGlobalParamsConfService entityEventGlobalParamsConfService() {
 			return new EntityEventGlobalParamsConfService();
-		}
-
-		@Bean
-		public ModelConfService modelConfService() {
-			AslConfigurationPaths modelConfigurationPaths = new AslConfigurationPaths(
-					"allProductionModelConfs",
-					"classpath:config/asl/models/*.json",
-					"file:home/cloudera/fortscale/config/asl/models/overriding/*.json",
-					"file:home/cloudera/fortscale/config/asl/models/additional/*.json");
-			return new ModelConfService(modelConfigurationPaths);
 		}
 
 		@Bean
