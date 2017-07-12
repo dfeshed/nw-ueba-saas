@@ -5,6 +5,26 @@ $incidentAlertsSearchSeverityBgColor: rsa-color(gray, light, $rsa-nearly-transpa
 .rsa-incident-alerts-search {
   height: calc(100% - #{$incidentAlertsSearchHeaderHeight});
 
+  &__wait,
+  &__error {
+    @include rsa-fill-abs();
+    z-index: 2;
+    background-color: rsa-color(gray,darker,$rsa-nearly-opaque);
+  }
+
+  &__error {
+    p {
+      @include rsa-font(paragraph);
+    }
+    .rsa-form-button {
+      margin: rsa-whitespace(less);
+    }
+  }
+
+  .rsa-alerts-search {
+    z-index: 1;
+  }
+
   .rsa-alerts-search-results {
     &__body {
       .rsa-data-table {

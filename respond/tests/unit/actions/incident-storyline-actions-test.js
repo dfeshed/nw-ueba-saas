@@ -198,3 +198,15 @@ test('When ADD_RELATED_INDICATORS succeeds, the added alerts are updated in sear
   const endState = incidentReducer(initState, action);
   assert.deepEqual(endState, expectedEndState);
 });
+
+test('When CLEAR_ADD_RELATED_INDICATORS_STATUS, the add status is reset to null', function(assert) {
+  const initState = copy(initialState);
+  initState.addRelatedIndicatorsStatus = 'wait';
+  const expectedEndState = {
+    ...initState,
+    addRelatedIndicatorsStatus: null
+  };
+  const action = { type: ACTION_TYPES.CLEAR_ADD_RELATED_INDICATORS_STATUS };
+  const endState = incidentReducer(initState, action);
+  assert.deepEqual(endState, expectedEndState);
+});

@@ -1,3 +1,18 @@
+{{#if (eq addRelatedIndicatorsStatus 'wait')}}
+  <centered class="rsa-incident-alerts-search__wait">
+    {{rsa-loader size="larger" label=(t 'respond.incident.search.actions.addingAlert')}}
+  </centered>
+{{else if (eq addRelatedIndicatorsStatus 'error')}}
+  <centered class="rsa-incident-alerts-search__error">
+    <vbox align="center">
+      <p>{{t 'respond.incident.search.actions.unableToAddAlert'}}</p>
+      <p>{{t 'respond.incident.search.actions.pleaseTryAgain'}}</p>
+      {{#rsa-form-button style="danger" defaultAction=(action "clearAddToIncidentStatus")}}
+        {{t 'forms.ok'}}
+      {{/rsa-form-button}}
+    </vbox>
+  </centered>
+{{/if}}
 {{#rsa-alerts-search
   class="rsa-incident-alerts-search"
   as |search|

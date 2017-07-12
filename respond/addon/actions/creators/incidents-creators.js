@@ -3,7 +3,7 @@ import { Incidents, alerts } from '../api';
 import * as ACTION_TYPES from '../types';
 import * as ErrorHandlers from '../util/error-handlers';
 import * as DictionaryCreators from './dictionary-creators';
-import { later, next } from 'ember-runloop';
+import { next } from 'ember-runloop';
 import { getRemediationTasksForIncident } from 'respond/actions/creators/remediation-task-creators';
 
 const {
@@ -363,28 +363,25 @@ const startSearchRelatedIndicators = (entityType, entityId, timeFrameName, devic
       payload: { entityType, entityId, timeFrameName, devices }
     });
 
-    later(() => {
-      Incidents.getRelatedAlerts(
-        entityType,
-        entityId,
-        timeFrameName,
-        devices,
-        {
-          onInit: (stopStreamFn) => {
-            dispatch({ type: ACTION_TYPES.SEARCH_RELATED_INDICATORS_STREAM_INITIALIZED, payload: stopStreamFn });
-          },
-          onCompleted: () => dispatch({ type: ACTION_TYPES.SEARCH_RELATED_INDICATORS_COMPLETED }),
-          onResponse: (payload) => {
-            dispatch({ type: ACTION_TYPES.SEARCH_RELATED_INDICATORS_RETRIEVE_BATCH, payload });
-          },
-          onError: (response) => {
-            dispatch({ type: ACTION_TYPES.SEARCH_RELATED_INDICATORS_ERROR });
-            ErrorHandlers.handleContentRetrievalError(response, `related indicators for ${entityId}`);
-          }
+    Incidents.getRelatedAlerts(
+      entityType,
+      entityId,
+      timeFrameName,
+      devices,
+      {
+        onInit: (stopStreamFn) => {
+          dispatch({ type: ACTION_TYPES.SEARCH_RELATED_INDICATORS_STREAM_INITIALIZED, payload: stopStreamFn });
+        },
+        onCompleted: () => dispatch({ type: ACTION_TYPES.SEARCH_RELATED_INDICATORS_COMPLETED }),
+        onResponse: (payload) => {
+          dispatch({ type: ACTION_TYPES.SEARCH_RELATED_INDICATORS_RETRIEVE_BATCH, payload });
+        },
+        onError: (response) => {
+          dispatch({ type: ACTION_TYPES.SEARCH_RELATED_INDICATORS_ERROR });
+          ErrorHandlers.handleContentRetrievalError(response, `related indicators for ${entityId}`);
         }
-      );
-
-    }, 3000);
+      }
+    );
   };
 };
 
@@ -406,14 +403,15 @@ const stopSearchRelatedIndicators = () => {
  * Adds a given list of indicators (alerts) to an incident with a given ID.
  * @param {Object[]} indicators Array of indicators to be added to an incident.
  * @param {String} incidentId ID of incident to which indicators will be added.
+ * @param {Number} incidentCreated The incident's created timestamp.
  * @param callbacks Hash of functions to invoke after promise has succeeded or failed
  * @param callbacks.onSuccess {function} - The callback to be executed when the operation is successful (e.g., showing a flash notification)
  * @param callbacks.onFailure {function} - The callback to be executed when the operation fails
  * @public
  */
-const addRelatedIndicatorsToIncident = (indicators, incidentId, callbacks) => ({
+const addRelatedIndicatorsToIncident = (indicators, incidentId, incidentCreated, callbacks) => ({
   type: ACTION_TYPES.ADD_RELATED_INDICATORS,
-  promise: Incidents.addAlertsToIncident(indicators, incidentId),
+  promise: Incidents.addAlertsToIncident(indicators, incidentId, incidentCreated),
   meta: {
     onSuccess: (response) => {
       Logger.debug(ACTION_TYPES.ADD_RELATED_INDICATORS, response);
@@ -425,6 +423,8 @@ const addRelatedIndicatorsToIncident = (indicators, incidentId, callbacks) => ({
     }
   }
 });
+
+const clearAddRelatedIndicatorsStatus = () => ({ type: ACTION_TYPES.CLEAR_ADD_RELATED_INDICATORS_STATUS });
 
 // UI STATE CREATORS - INCIDENT
 
@@ -474,5 +474,6 @@ export {
   setDefaultSearchEntityType,
   startSearchRelatedIndicators,
   stopSearchRelatedIndicators,
-  addRelatedIndicatorsToIncident
+  addRelatedIndicatorsToIncident,
+  clearAddRelatedIndicatorsStatus
 };

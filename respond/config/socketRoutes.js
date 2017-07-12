@@ -77,6 +77,13 @@ const respondConfigGen = function(environment) {
         requestDestination: '/ws/respond/alerts/events'
       }
     },
+    'alerts-associated': {
+      socketUrl,
+      updateRecord: {
+        subscriptionDestination: '/user/queue/alerts/associate',
+        requestDestination: '/ws/respond/alerts/associate'
+      }
+    },
     'original-alert': {
       socketUrl,
       queryRecord: {

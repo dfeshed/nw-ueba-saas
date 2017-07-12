@@ -493,7 +493,12 @@ const incident = reduxActions.handleActions({
         addRelatedIndicatorsStatus: 'error'
       })
     })
-  )
+  ),
+
+  [ACTION_TYPES.CLEAR_ADD_RELATED_INDICATORS_STATUS]: (state) => ({
+    ...state,
+    addRelatedIndicatorsStatus: null
+  })
 }, initialState);
 
 export default incident;

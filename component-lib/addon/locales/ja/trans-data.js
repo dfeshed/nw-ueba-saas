@@ -740,7 +740,10 @@ export default {
         actions: {
           search: 'ja_Find',
           cancel: 'ja_Cancel',
-          addToIncident: 'ja_Add To Incident'
+          addToIncident: 'ja_Add To Incident',
+          addingAlert: 'ja_Adding Alert to Incident',
+          unableToAddAlert: 'ja_Unable to add Alert to Incident.',
+          pleaseTryAgain: 'ja_Please try again.'
         }
       }
     },

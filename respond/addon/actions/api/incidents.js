@@ -5,7 +5,6 @@ import FilterQuery from 'respond/utils/filter-query';
 import { isEmpty, isPresent, typeOf, isNone } from 'ember-utils';
 import { isEmberArray } from 'ember-array/utils';
 import buildExplorerQuery from './util/explorer-build-query';
-import RSVP from 'rsvp';
 
 const IncidentsAPI = EmberObject.extend({});
 
@@ -278,27 +277,42 @@ IncidentsAPI.reopenClass({
 
   /**
    * Executes a websocket promise request to add a given list of alerts to a given incident ID.
-   * Or at least, it pretends to. In reality, we don't have the socket endpoint implemented yet, so this method
-   * simulates it by returning the same given alerts, but with their properties updated.
-   * Once the socket endpoint is implemented, we should replace this method's body with a true promiseRequest.
    * @param {object[]} alerts The alert POJOs to be added to the incident.
    * @param {string} incidentId The ID of the incident to be added to.
+   * @param {number} incidentCreated The incident's created timestamp. Required by server API for some odd reason.
    * @returns {Promise}
    * @public
    */
-  addAlertsToIncident(alerts, incidentId) {
+  addAlertsToIncident(alerts, incidentId, incidentCreated) {
 
-    // Return the same inputted alerts,
-    // but with their `partOfIncident` & `incidentId` props updated.
-    const data = alerts.map((alert) => ({
-      ...alert,
-      partOfIncident: true,
-      incidentId
-    }));
+    return promiseRequest({
+      method: 'updateRecord',
+      modelName: 'alerts-associated',
+      query: {
+        data: {
+          // entity = POJO with incident ID & created date
+          entity: {
+            id: incidentId,
+            created: incidentCreated
+          },
+          // associated = array of POJOs with alert IDs
+          associated: alerts.map((alert) => ({
+            id: alert.id
+          }))
+        }
+      }
+    }).then((response) => {
 
-    return RSVP.resolve({
-      code: 0,
-      data
+      // response does not include the updated alert POJOs,
+      // so set response.data = the same inputted alert POJOs,
+      // but with their `partOfIncident` & `incidentId` props updated.
+      response.data = alerts.map((alert) => ({
+        ...alert,
+        partOfIncident: true,
+        incidentId
+      }));
+
+      return response;
     });
   },
 
