@@ -10,7 +10,7 @@
           <box fit class="rsa-items-sheet__details-view-header">
             <h2>
               {{yield (hash
-                detailsHeader=(component detailsHeaderComponentClass item=item)
+                detailsHeader=(component detailsHeaderComponentClass model=item)
               )}}
             </h2>
             {{#if isNavEnabled}}
@@ -37,11 +37,8 @@
           <box fill class="rsa-items-sheet__details-view-body">
             <div class="rsa-items-sheet__scroller">
               {{yield (hash
-                detailsBody=(component detailsBodyComponentClass
-                  class="rsa-items-sheet__tree"
-                  model=item
-                  autoHighlightEntities=true
-              ))}}
+                detailsBody=(component detailsBodyComponentClass model=item)
+              )}}
             </div>
           </box>
         {{/with}}

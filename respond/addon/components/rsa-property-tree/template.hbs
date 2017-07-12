@@ -5,9 +5,23 @@
       <tr class="key">
         <td class="key-value">
           {{#if member.isNestedValue}}
-            {{component nestedValueComponentClass model=member.value modelPath=modelPath}}
+            {{yield (hash
+              nested=(component nestedValueComponentClass
+                model=member.value
+                modelPath=modelPath
+                scalarValueComponentClass=scalarValueComponentClass
+                nestedValueComponentClass=nestedValueComponentClass
+                propertyNameFormatter=propertyNameFormatter
+              )
+            )}}
           {{else}}
-            <span class="scalar-value" data-meta-key="{{modelPath}}" data-entity-id="{{member.value}}">{{member.value}}</span>
+            {{yield (hash
+              scalar=(component scalarValueComponentClass
+                key=modelPath
+                fullPath=key.fullPath
+                value=member.value
+              )
+            )}}
           {{/if}}
         </td>
       </tr>
@@ -17,13 +31,27 @@
     {{#each keys as |key|}}
       <tr class="key">
         <td class="key-name">
-          {{key.name}}
+          {{key.nameFormatted}}
         </td>
         <td class="key-value">
           {{#if key.isNestedValue}}
-            {{component nestedValueComponentClass model=key.value modelPath="{{key.name}}"}}
+            {{yield (hash
+              nested=(component nestedValueComponentClass
+                model=key.value
+                modelPath=key.fullPath
+                scalarValueComponentClass=scalarValueComponentClass
+                nestedValueComponentClass=nestedValueComponentClass
+                propertyNameFormatter=propertyNameFormatter
+              )
+            )}}
           {{else}}
-            <span class="scalar-value" data-meta-key="{{key.name}}" data-entity-id="{{key.value}}">{{key.value}}</span>
+            {{yield (hash
+              scalar=(component scalarValueComponentClass
+                key=key.name
+                fullPath=key.fullPath
+                value=key.value
+              )
+            )}}
           {{/if}}
         </td>
       </tr>

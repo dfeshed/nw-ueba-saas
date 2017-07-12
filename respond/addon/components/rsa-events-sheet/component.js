@@ -12,6 +12,9 @@ export default Component.extend(CanThrottleAttr, {
 
   totalCount: 0,
 
+  detailsHeaderComponentClass: 'rsa-event-details/header',
+  detailsBodyComponentClass: 'rsa-event-details/body',
+
   columnsConfig: [{
     field: 'timestamp',
     title: 'respond.eventsTable.time',

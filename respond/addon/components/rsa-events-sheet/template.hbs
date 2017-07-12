@@ -1,4 +1,11 @@
-{{#rsa-items-sheet columnsConfig=columnsConfig items=itemsThrottled totalCount=totalCount as |sheet|}}
+{{#rsa-items-sheet
+  columnsConfig=columnsConfig
+  items=itemsThrottled
+  totalCount=totalCount
+  detailsHeaderComponentClass=detailsHeaderComponentClass
+  detailsBodyComponentClass=detailsBodyComponentClass
+  as |sheet|
+}}
   {{yield sheet}}
   {{#sheet.tableBody
     items=itemsThrottled
@@ -19,13 +26,6 @@
       {{/rsa-events-sheet-cell}}
     {{/rsa-data-table/body}}
   {{/sheet.tableBody}}
-  {{#sheet.detailsHeader as |detailsHeader|}}
-    {{t (concat 'respond.eventDetails.type.' detailsHeader.item.type)}}:
-    {{rsa-content-datetime
-      timestamp=detailsHeader.item.timestamp
-      displaySeconds=true
-      displayMilliseconds=true
-    }}
-  {{/sheet.detailsHeader}}
+  {{sheet.detailsHeader}}
   {{sheet.detailsBody}}
 {{/rsa-items-sheet}}

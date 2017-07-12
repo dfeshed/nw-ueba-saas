@@ -1,0 +1,7 @@
+{{#if (eq key 'timestamp')}}
+  {{rsa-content-datetime timestamp=value withTimeAgo=true}}
+{{else if (eq fullPath 'type')}}
+  {{t (concat 'respond.eventDetails.type.' value)}}
+{{else}}
+  {{value}}
+{{/if}}

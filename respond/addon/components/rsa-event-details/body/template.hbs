@@ -1,0 +1,20 @@
+{{#rsa-property-tree
+  model=model
+  skipUnknowns=false
+  order="timestamp, type, description, source, destination, domain, detector, size, data, related_links"
+  hidden="enrichment, from, to, detected_by, file, indicatorId, id"
+  scalarValueComponentClass="rsa-event-details/body-value"
+  propertyNameFormatter=propertyNameFormatter
+  as |property|
+}}
+  {{property.scalar}}
+  {{#property.nested as |nested|}}
+    {{nested.scalar}}
+    {{#nested.nested as |doubleNested|}}
+      {{doubleNested.scalar}}
+      {{#doubleNested.nested as |tripleNested|}}
+        {{tripleNested.scalar}}
+      {{/doubleNested.nested}}
+    {{/nested.nested}}
+  {{/property.nested}}
+{{/rsa-property-tree}}
