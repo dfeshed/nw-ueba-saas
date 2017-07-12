@@ -1,6 +1,13 @@
 package presidio.ade.sdk.executions.common;
 
+import fortscale.accumulator.aggregation.event.AccumulatedAggregatedFeatureEvent;
+import fortscale.aggregation.feature.bucket.FeatureBucket;
+import fortscale.aggregation.feature.event.AggrEvent;
+import fortscale.common.event.EntityEvent;
+import fortscale.utils.pagination.PageIterator;
+import fortscale.utils.time.TimeRange;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
+import presidio.ade.domain.record.scored.AdeScoredRecord;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
 import presidio.ade.domain.store.AdeDataStoreCleanupParams;
 import presidio.ade.domain.store.enriched.EnrichedRecordsMetadata;
@@ -116,5 +123,28 @@ public class ADEManagerSDKImpl implements ADEManagerSDK {
         store.store(metaData, records);
     }
 
+    @Override
+    public PageIterator<EntityEvent> findSmarts(TimeRange timeRange, int pageSize, int scoreThreshold) {
+        throw new UnsupportedOperationException();
+    }
 
+    @Override
+    public List<FeatureBucket> findFeatureBuckets(String featureBucketName, String featureName, String contextId, TimeRange timeRange) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public List<AggrEvent> findAggrEvents(String featureType, String contextId, TimeRange timeRange) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public List<AccumulatedAggregatedFeatureEvent> findAccumulatedAggrEvents(String featureType, String contextId, TimeRange timeRange) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public List<AdeScoredRecord> findScoredEvents(String featureName, String contextId, TimeRange timeRange) {
+        throw new UnsupportedOperationException();
+    }
 }
