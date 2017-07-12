@@ -1,7 +1,3 @@
-<table>
-  {{#each byteRows as |byteRow index|}}
-    <tr>
-      <td><span>{{unbound (pad-left (mult index bytesPerRow) size=digits)}}</span></td>
-    </tr>
-  {{/each}}
-</table>
+{{#each byteRows as |byteRow index|}}
+  <p>{{offset-number index}}</p>
+{{/each}}

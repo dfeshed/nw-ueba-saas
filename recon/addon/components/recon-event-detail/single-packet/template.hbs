@@ -6,11 +6,9 @@
 
 {{#if isPacketExpanded}}
   <section class="rsa-packet__body">
-    <section class="rsa-packet__offsets hex">
-      {{recon-event-detail/single-packet/offset-table
-        byteRows=packet.byteRows
-      }}
-    </section>
+    {{recon-event-detail/single-packet/offset-table
+      byteRows=packet.byteRows
+    }}
     <section class="rsa-packet__hex">
       {{#if viewportEntered}}
         {{recon-event-detail/single-packet/byte-table

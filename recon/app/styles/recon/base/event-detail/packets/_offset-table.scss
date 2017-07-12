@@ -1,18 +1,10 @@
-.rsa-offset-table {
+.rsa-offset-column {
   cursor: default;
+  width: $packet-offsets-width;
 
-  table {
-    width: 100%;
-  }
-  td {
+  p {
     @include rsa-font-monospace();
-    border: 0;
-
-    span {
-      display: block;
-      border: $packet-byte-border-width solid transparent;
-      padding: $packet-byte-padding-x;
-      margin: $packet-byte-margin-x;
-    }
+    display: block;
+    padding: 3px 1rem 3px 2.75rem;
   }
 }
