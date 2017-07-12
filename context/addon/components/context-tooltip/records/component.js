@@ -1,7 +1,7 @@
 import Component from 'ember-component';
 import layout from './template';
 import service from 'ember-service/inject';
-import computed from 'ember-computed-decorators';
+import computed, { equal } from 'ember-computed-decorators';
 import safeCallback from 'component-lib/utils/safe-callback';
 import connect from 'ember-redux/components/connect';
 import { updateActiveTab } from 'context/actions/context-creators';
@@ -33,7 +33,10 @@ const recordNameToDataTypeMap = {
 const entityTypeToRecordNamesMap = {
   DEFAULT: ['Incidents', 'Alerts', 'LIST'],
   IP: ['Incidents', 'Alerts', 'LIST', 'Machines', 'LiveConnect'],
-  HOST: ['Incidents', 'Alerts', 'LIST', 'Machines', 'LiveConnect']
+  HOST: ['Incidents', 'Alerts', 'LIST', 'Machines'],
+  MAC_ADDRESS: ['Incidents', 'Alerts', 'LIST', 'Machines'],
+  FILE_HASH: ['Incidents', 'Alerts', 'LIST', 'LiveConnect'],
+  DOMAIN: ['Incidents', 'Alerts', 'LIST', 'LiveConnect']
 };
 
 const ContextTooltipRecords = Component.extend({
@@ -77,14 +80,14 @@ const ContextTooltipRecords = Component.extend({
   },
 
   /**
-   * Returns true if either the data fetch hit an error, or it completed with no data.
+   * Indicates whether to show the "context unavailable" message in the UI.
+   * Only returns true if the data fetch hit an error. If fetch completes successfully but returns no data, we should
+   * still NOT show the "context unavailable" message because there may be additional non-summary data available in Context Panel.
    * @type {Boolean}
    * @private
    */
-  @computed('modelSummary.length', 'modelStatus')
-  isContextUnavailable(length, status) {
-    return (status === 'error') || ((status === 'complete') && !length);
-  },
+  @equal('modelStatus', 'error')
+  isContextUnavailable: null,
 
   /**
    * Same data as `modelArray` but arranged in a particular order, and with zeroes or hyphens possibly inserted
