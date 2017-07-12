@@ -3,7 +3,6 @@ package fortscale.ml.scorer.records;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import presidio.ade.domain.record.AdeRecordReaderFactory;
-import presidio.ade.domain.record.scored.AdeScoredRecordReaderFactory;
 
 /**
  * Created by barak_schuster on 6/29/17.
