@@ -8,12 +8,14 @@ import fortscale.ml.model.retriever.ContextHistogramRetrieverConf;
 import fortscale.utils.factory.AbstractServiceAutowiringFactory;
 import fortscale.utils.factory.FactoryConfig;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 @SuppressWarnings("unused")
 @Component
 public class ContextHistogramRetrieverFactory extends AbstractServiceAutowiringFactory<AbstractDataRetriever> {
 	@Autowired
+	@Qualifier("modelBucketConfigService")
 	private BucketConfigurationService bucketConfigurationService;
 	@Autowired
 	private FeatureBucketReader featureBucketReader;

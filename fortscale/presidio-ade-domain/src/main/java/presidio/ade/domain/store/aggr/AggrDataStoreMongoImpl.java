@@ -32,11 +32,15 @@ public class AggrDataStoreMongoImpl implements AggrDataStore {
                 feature ->
                 {
                     AggrRecordsMetadata metadata = new AggrRecordsMetadata(feature);
-                    String collectionName = translator.toCollectionName(metadata);
+                    String collectionName = getCollectionName(metadata);
                     List<? extends AdeAggrRecord> aggrRecords = featureToAggrList.get(feature);
                     mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED,collectionName).insert(aggrRecords).execute();
                 }
         );
+    }
+
+    protected String getCollectionName(AggrRecordsMetadata metadata) {
+        return translator.toCollectionName(metadata);
     }
 
     @Override

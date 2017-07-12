@@ -12,6 +12,7 @@ import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
 import net.minidev.json.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.util.*;
@@ -30,6 +31,7 @@ public class AggregatedFeatureEventsConfService extends AslConfigurationService 
 	private String aggregatedFeatureEventConfJsonAdditionalFilesPath;
 
 	@Autowired
+	@Qualifier("bucketConfigurationService")
 	private BucketConfigurationService bucketConfigurationService;
 
 	@Autowired

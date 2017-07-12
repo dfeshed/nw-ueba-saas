@@ -13,6 +13,6 @@ public class TransformationConfig {
 
     @Bean
     public EpochtimeTransformation epochtimeTransformation() {
-        return new EpochtimeTransformation("two_minute_resolution_epochtime", "date_time", 120);
+        return new EpochtimeTransformation("two_minute_resolution_epochtime", "startInstant", 120);
     }
 }

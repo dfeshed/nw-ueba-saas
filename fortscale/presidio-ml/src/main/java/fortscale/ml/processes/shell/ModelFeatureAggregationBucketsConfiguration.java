@@ -9,6 +9,7 @@ import fortscale.ml.processes.shell.model.aggregation.InMemoryFeatureBucketAggre
 import fortscale.ml.processes.shell.model.aggregation.ModelAggregationBucketConfigurationServiceConfig;
 import fortscale.utils.mongodb.config.MongoConfig;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -27,6 +28,7 @@ import presidio.ade.domain.store.enriched.EnrichedDataStoreConfig;
 })
 public class ModelFeatureAggregationBucketsConfiguration {
     @Autowired
+    @Qualifier("modelBucketConfigService")
     private BucketConfigurationService bucketConfigurationService;
     @Autowired
     private EnrichedDataStore enrichedDataStore;

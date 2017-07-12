@@ -8,7 +8,6 @@ import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.fixedduration.FixedDurationStrategyExecutor;
 import fortscale.utils.pagination.PageIterator;
 import fortscale.utils.time.TimeRange;
-import org.apache.commons.lang3.StringUtils;
 import presidio.ade.domain.pagination.enriched.EnrichedRecordPaginationService;
 import presidio.ade.domain.record.aggregated.AdeAggrRecord;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
@@ -44,7 +43,9 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
      * @param aggrDataStore
      */
     public ScoreAggregationsService(FixedDurationStrategy strategy, EnrichedDataStore enrichedDataStore,
-                                    EnrichedEventsScoringService enrichedEventsScoringService, ScoreAggregationsBucketService scoreAggregationsBucketService, AggregationsCreator aggregationsCreator, AggrDataStore aggrDataStore) {
+                                    EnrichedEventsScoringService enrichedEventsScoringService,
+                                    ScoreAggregationsBucketService scoreAggregationsBucketService,
+                                    AggregationsCreator aggregationsCreator, AggrDataStore aggrDataStore) {
         super(strategy);
         this.enrichedDataStore = enrichedDataStore;
         this.enrichedEventsScoringService = enrichedEventsScoringService;
@@ -59,13 +60,16 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
         //For now we don't have multiple contexts so we pass just list of size 1.
         List<String> contextTypes = new ArrayList<>();
         contextTypes.add(contextType);
+        List<String> aggregationContext = getAggregationContext();
+
         EnrichedRecordPaginationService enrichedRecordPaginationService = new EnrichedRecordPaginationService(enrichedDataStore, 1000, 100, contextType);
         List<PageIterator<EnrichedRecord>> pageIterators = enrichedRecordPaginationService.getPageIterators(dataSource, timeRange);
         for (PageIterator<EnrichedRecord> pageIterator : pageIterators) {
             while (pageIterator.hasNext()) {
                 List<EnrichedRecord> pageRecords = pageIterator.next();
                 List<AdeScoredEnrichedRecord> adeScoredRecords = enrichedEventsScoringService.scoreAndStoreEvents(pageRecords);
-                scoreAggregationsBucketService.updateBuckets(adeScoredRecords,contextTypes,createFeatureBucketStrategyData(timeRange));
+                FeatureBucketStrategyData featureBucketStrategyData = createFeatureBucketStrategyData(timeRange);
+                scoreAggregationsBucketService.updateBuckets(adeScoredRecords, aggregationContext, featureBucketStrategyData);
             }
             List<FeatureBucket> closedBuckets = scoreAggregationsBucketService.closeBuckets();
             List<AdeAggrRecord> aggrRecords = aggregationsCreator.createAggregations(closedBuckets);
@@ -73,8 +77,23 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
         }
     }
 
+    private List<String> getAggregationContext() {
+        // todo: figure out from conf
+        return Collections.singletonList("context.normalizedUsername");
+    }
+
     protected FeatureBucketStrategyData createFeatureBucketStrategyData(TimeRange timeRange){
-        String strategyName = StringUtils.lowerCase(this.strategy.name());
+        String strategyName;
+
+        if(strategy.equals(FixedDurationStrategy.HOURLY))
+        {
+            // todo refactor buckets json stratgy and then delete this condition
+            strategyName="fixed_duration_hourly";
+        }
+        else
+        {
+            strategyName="fixed_duration_daily";
+        }
         return new FeatureBucketStrategyData(strategyName,strategyName,timeRange.getStart().getEpochSecond(), timeRange.getEnd().getEpochSecond());
     }
 

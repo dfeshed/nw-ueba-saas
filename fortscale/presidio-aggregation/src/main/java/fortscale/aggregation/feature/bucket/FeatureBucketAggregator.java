@@ -60,7 +60,8 @@ public class FeatureBucketAggregator {
 
         for (FeatureBucketConf featureBucketConf : featureBucketConfs) {
             try {
-                String bucketId = FeatureBucketUtils.buildBucketId(adeRecordReader, featureBucketConf, strategyData.getStrategyId());
+                String strategyId = strategyData.getStrategyId();
+                String bucketId = FeatureBucketUtils.buildBucketId(adeRecordReader, featureBucketConf, strategyId);
                 if (bucketId == null) {
                     //todo: metrics.nullBucketIds++;
                     continue;
