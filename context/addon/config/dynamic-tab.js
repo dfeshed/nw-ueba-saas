@@ -162,8 +162,7 @@ export default [{
     datasources.list,
     datasources.endpoint,
     datasources.incident,
-    datasources.alert,
-    datasources.liveConnect
+    datasources.alert
   ],
   toolbar: [
     toolbar.addToList,
