@@ -21,7 +21,13 @@ if (config.environment !== 'test') {
       'packets.hasStyledBytes',
       'packets.hasSignaturesHighlighted',
       'text.decode',
-      'visuals' // entire visuals reducer
+      'visuals.defaultReconView',
+      'visuals.currentReconView',
+      'visuals.isHeaderOpen',
+      'visuals.isMetaShown',
+      'visuals.isReconExpanded',
+      'visuals.isRequestShown',
+      'visuals.isResponseShown'
     ]
   );
 
