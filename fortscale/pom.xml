@@ -47,6 +47,12 @@
             <name>remote-repos</name>
             <url>http://mirror.fortscale.dom/artifactory/remote-repos</url>
         </repository>
+
+        <repository>
+            <id>spring-libs-snapshot</id>
+            <name>Spring Snapshot Repository</name>
+            <url>http://repo.spring.io/libs-snapshot</url>
+        </repository>
     </repositories>
 
     <pluginRepositories>
@@ -173,7 +179,7 @@
         <spring-cloud.version>Dalston.SR1</spring-cloud.version>
         <rpm-maven-plugin.version>2.1.5</rpm-maven-plugin.version>
         <spring-actuator-aop.version>1.5.4.RELEASE</spring-actuator-aop.version>
-        <spring-elastic-repository.version>2.1.4.RELEASE</spring-elastic-repository.version>
+        <spring-elastic.version>3.0.0.BUILD-SNAPSHOT</spring-elastic.version>
         <aspectj.version>1.8.7</aspectj.version>
         <metrics-core.version>3.0.2</metrics-core.version>
     </properties>
@@ -185,6 +191,11 @@
             <!--<artifactId>junit</artifactId>-->
             <!--<version>${junit.version}</version>-->
             <!--</dependency>-->
+            <dependency>
+                <groupId>org.springframework.data</groupId>
+                <artifactId>spring-data-elasticsearch</artifactId>
+                <version>3.0.0.M2</version>
+            </dependency>
 
             <dependency>
                 <groupId>org.springframework.boot</groupId>
@@ -195,11 +206,6 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-aop</artifactId>
                 <version>${spring-actuator-aop.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.data</groupId>
-                <artifactId>spring-data-elasticsearch</artifactId>
-                <version>${spring-elastic-repository.version}</version>
             </dependency>
 
             <dependency>
@@ -225,7 +231,7 @@
             <dependency>
                 <groupId>jdk.tools</groupId>
                 <artifactId>jdk.tools</artifactId>
-                <version>${java-lang-config.version}</version>
+                <version>${jav-lang-config.version}</version>
                 <scope>system</scope>
                 <systemPath>${java.home}/../lib/tools.jar</systemPath>
             </dependency>

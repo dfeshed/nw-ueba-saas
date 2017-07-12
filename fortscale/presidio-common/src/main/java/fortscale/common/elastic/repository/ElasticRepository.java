@@ -1,10 +1,10 @@
-package fortscale.utils.monitoring.repository;
+package fortscale.common.elastic.repository;
 
 
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.data.elasticsearch.core.query.IndexQuery;
 
-public class ElasticRepository implements MonitoringRepository {
+public class ElasticRepository implements Repository {
 
     private final ElasticsearchTemplate elasticsearchTemplate;
 
