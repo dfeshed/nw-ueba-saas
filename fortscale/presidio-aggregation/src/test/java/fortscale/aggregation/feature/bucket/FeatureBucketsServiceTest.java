@@ -101,22 +101,22 @@ public class FeatureBucketsServiceTest {
      */
     public void adeRecordsInitialize() {
         adeScoredDlpFileRecords = new ArrayList<>();
-        AdeScoredDlpFileRecord adeRecord1 = new AdeScoredDlpFileRecord(Instant.now(), "date_time", 80.0, new ArrayList<>());
+        AdeScoredDlpFileRecord adeRecord1 = new AdeScoredDlpFileRecord(Instant.now(), "date_time","dlpfile", 80.0, new ArrayList<>());
 
         EnrichedDlpFileRecord enrichedDlpFileRecord = new EnrichedDlpFileRecord(Instant.now());
         enrichedDlpFileRecord.setNormalizedUsername("normalized_username_test1");
         AdeEnrichedDlpFileContext adeEnrichedDlpFileContext = new AdeEnrichedDlpFileContext(enrichedDlpFileRecord);
         adeRecord1.setContext(adeEnrichedDlpFileContext);
 
-        AdeScoredDlpFileRecord adeRecord2 = new AdeScoredDlpFileRecord(Instant.now(), "date_time", 10.0, new ArrayList<>());
+        AdeScoredDlpFileRecord adeRecord2 = new AdeScoredDlpFileRecord(Instant.now(), "date_time","dlpfile", 10.0, new ArrayList<>());
         enrichedDlpFileRecord.setNormalizedUsername("normalized_username_test2");
         adeEnrichedDlpFileContext = new AdeEnrichedDlpFileContext(enrichedDlpFileRecord);
         adeRecord2.setContext(adeEnrichedDlpFileContext);
 
-        AdeScoredDlpFileRecord adeRecord3 = new AdeScoredDlpFileRecord(Instant.now(), "date_time", 70.0, new ArrayList<>());
+        AdeScoredDlpFileRecord adeRecord3 = new AdeScoredDlpFileRecord(Instant.now(), "date_time","dlpfile", 70.0, new ArrayList<>());
         adeRecord3.setContext(adeEnrichedDlpFileContext);
 
-        AdeScoredDlpFileRecord adeRecord4 = new AdeScoredDlpFileRecord(Instant.now(), "date_time", 60.0, new ArrayList<>());
+        AdeScoredDlpFileRecord adeRecord4 = new AdeScoredDlpFileRecord(Instant.now(), "date_time","dlpfile", 60.0, new ArrayList<>());
         adeRecord4.setContext(adeEnrichedDlpFileContext);
 
         adeScoredDlpFileRecords.add(adeRecord1);

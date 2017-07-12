@@ -14,8 +14,8 @@ import java.util.List;
 public class AdeScoredEnrichedTestingRecord extends AdeScoredEnrichedRecord {
     private EnrichedRecord enrichedRecord;
 
-    public AdeScoredEnrichedTestingRecord(Instant date_time, String featureName, Double score, List<FeatureScore> featureScoreList) {
-        super(date_time, featureName, score, featureScoreList);
+    public AdeScoredEnrichedTestingRecord(Instant date_time, String featureName, String featureEventType, Double score, List<FeatureScore> featureScoreList) {
+        super(date_time, featureName, featureEventType, score, featureScoreList);
     }
 
     @Override

@@ -22,12 +22,12 @@ public class AdeScoredDlpFileRecord extends AdeScoredEnrichedRecord {
 
     AdeEnrichedDlpFileContext context;
 
-    public AdeScoredDlpFileRecord(Instant date_time, String featureName, Double score, List<FeatureScore> featureScoreList){
-        super(date_time,featureName,score,featureScoreList);
+    public AdeScoredDlpFileRecord(Instant date_time, String featureName, String featureEventType, Double score, List<FeatureScore> featureScoreList){
+        super(date_time,featureName, featureEventType,score,featureScoreList);
     }
 
-    public AdeScoredDlpFileRecord(Instant date_time, String featureName, Double score, List<FeatureScore> featureScoreList, EnrichedDlpFileRecord enrichedDlpFileRecord) {
-        super(date_time, featureName, score, featureScoreList);
+    public AdeScoredDlpFileRecord(Instant date_time, String featureName, String featureEventType, Double score, List<FeatureScore> featureScoreList, EnrichedDlpFileRecord enrichedDlpFileRecord) {
+        super(date_time, featureName, featureEventType, score, featureScoreList);
         this.context = enrichedDlpFileRecord.getContext();
     }
 

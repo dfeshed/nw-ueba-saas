@@ -18,14 +18,16 @@ public abstract class AdeScoredRecord extends EnrichedRecord {
 
     @Indexed
     private String featureName;
+    private String featureEventType;
     private Double score;
     List<FeatureScore> featureScoreList;
 
 
 
-    public AdeScoredRecord(Instant date_time, String featureName, Double score, List<FeatureScore> featureScoreList) {
+    public AdeScoredRecord(Instant date_time, String featureName ,String featureEventType, Double score, List<FeatureScore> featureScoreList) {
         super(date_time);
         this.featureName = featureName;
+        this.featureEventType = featureEventType;
         this.score = score;
         this.featureScoreList = featureScoreList;
     }
@@ -38,6 +40,14 @@ public abstract class AdeScoredRecord extends EnrichedRecord {
 
     public void setFeatureName(String featureName) {
         this.featureName = featureName;
+    }
+
+    public String getFeatureEventType() {
+        return featureEventType;
+    }
+
+    public void setFeatureEventType(String featureEventType) {
+        this.featureEventType = featureEventType;
     }
 
     public Double getScore() {

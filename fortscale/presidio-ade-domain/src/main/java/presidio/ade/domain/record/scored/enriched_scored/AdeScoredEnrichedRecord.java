@@ -14,13 +14,13 @@ import java.util.List;
 public abstract class AdeScoredEnrichedRecord extends AdeScoredRecord {
     private static final String EVENT_TYPE_PREFIX = "scored_enriched";
 
-    public AdeScoredEnrichedRecord(Instant date_time, String featureName, Double score, List<FeatureScore> featureScoreList) {
-        super(date_time, featureName, score, featureScoreList);
+    public AdeScoredEnrichedRecord(Instant date_time, String featureName, String featureEventType, Double score, List<FeatureScore> featureScoreList) {
+        super(date_time, featureName, featureEventType, score, featureScoreList);
     }
 
     @Override
     public String getAdeEventType(){
-        return EVENT_TYPE_PREFIX + "." + getFeatureName();
+        return EVENT_TYPE_PREFIX + "." + getFeatureEventType() + "." + getFeatureName();
     }
 
     public abstract void fillContext(EnrichedRecord enrichedRecord);

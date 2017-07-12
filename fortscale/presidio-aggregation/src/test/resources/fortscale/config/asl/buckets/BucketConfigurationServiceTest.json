@@ -7,7 +7,7 @@
         "context.normalizedUsername"
       ],
       "adeEventTypes": [
-        "scored_enriched.date_time"
+        "scored_enriched.dlpfile.date_time"
       ],
       "strategyName": "fixed_duration_hourly",
       "aggrFeatureConfs": [
