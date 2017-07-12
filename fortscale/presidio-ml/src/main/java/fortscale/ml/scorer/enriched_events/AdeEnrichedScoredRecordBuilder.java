@@ -61,7 +61,7 @@ public class AdeEnrichedScoredRecordBuilder {
         try {
             Constructor<? extends AdeScoredEnrichedRecord> constructor = pojoClass.getConstructor(Instant.class, String.class, Double.class, List.class);
             String featureName = featureScore.getName();
-            ret = constructor.newInstance(enrichedRecord.getDate_time(), featureName, featureScore.getScore(), featureScore.getFeatureScores());
+            ret = constructor.newInstance(enrichedRecord.getStartInstant(), featureName, featureScore.getScore(), featureScore.getFeatureScores());
             ret.fillContext(enrichedRecord);
         } catch (NoSuchMethodException e) {
             //TODO: ADD metrics

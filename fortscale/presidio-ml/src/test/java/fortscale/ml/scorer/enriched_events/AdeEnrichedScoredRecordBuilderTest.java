@@ -51,7 +51,7 @@ public class AdeEnrichedScoredRecordBuilderTest {
         List<AdeScoredEnrichedRecord> scoredRecordList = new ArrayList<>();
         EnrichedRecord enrichedRecord = mock(EnrichedRecord.class);
         Instant enrichedRecordTime = Instant.now();
-        when(enrichedRecord.getDate_time()).thenReturn(enrichedRecordTime);
+        when(enrichedRecord.getStartInstant()).thenReturn(enrichedRecordTime);
         List<FeatureScore> rootFeatureScoreList = new ArrayList<>();
         FeatureScore eventfeatureScore = mock(FeatureScore.class);
         rootFeatureScoreList.add(eventfeatureScore);
@@ -78,7 +78,7 @@ public class AdeEnrichedScoredRecordBuilderTest {
         AdeScoredEnrichedRecord adeScoredEnrichedRecord = scoredRecordList.get(0);
         Assert.assertTrue(adeScoredEnrichedRecord instanceof AdeScoredEnrichedTestingRecord);
         AdeScoredEnrichedTestingRecord adeScoredEnrichedTestingRecord = (AdeScoredEnrichedTestingRecord) adeScoredEnrichedRecord;
-        Assert.assertEquals(enrichedRecordTime, adeScoredEnrichedTestingRecord.getDate_time());
+        Assert.assertEquals(enrichedRecordTime, adeScoredEnrichedTestingRecord.getStartInstant());
         Assert.assertEquals(testFeatureName, adeScoredEnrichedTestingRecord.getFeatureName());
         Assert.assertEquals(testFeatureScore, adeScoredEnrichedRecord.getScore());
         Assert.assertEquals(testFeatureFeatureScoreList, adeScoredEnrichedRecord.getFeatureScoreList());
