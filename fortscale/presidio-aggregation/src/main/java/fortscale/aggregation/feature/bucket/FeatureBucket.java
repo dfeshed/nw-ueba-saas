@@ -23,8 +23,7 @@ public class FeatureBucket {
 	public static final String STRATEGY_ID_FIELD = "strategyId";
 	public static final String CONTEXT_FIELD_NAME_TO_VALUE_MAP_FIELD = "contextFieldNameToValueMap";
 	public static final String BUCKET_ID_FIELD = "bucketId";
-	public static final String CREATED_AT_FIELD_NAME = "createdAt";
-	public static final String AGGREGATED_FEATURES_FIELD_NAME = "aggregatedFeatures";
+	public static final String CREATED_AT_FIELD = "createdAt";
 
 	@Id
 	private String id;
@@ -47,7 +46,7 @@ public class FeatureBucket {
 	private String contextId;
 	@Field(BUCKET_ID_FIELD)
 	private String bucketId;
-	
+	@Field(CREATED_AT_FIELD)
 	private Date createdAt;
 
 	private Map<String, Feature> aggregatedFeatures = new HashMap<>();

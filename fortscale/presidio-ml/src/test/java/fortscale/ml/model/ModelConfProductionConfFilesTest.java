@@ -41,7 +41,7 @@ public class ModelConfProductionConfFilesTest {
 	@Configuration
 	@EnableSpringConfigured
 	@ComponentScan(basePackages = "fortscale.ml.model.selector,fortscale.ml.model.retriever,fortscale.ml.model.builder")
-	@Import({NullStatsServiceConfig.class, AggregatedFeatureEventsConfServiceConfig.class})
+	@Import({NullStatsServiceConfig.class, AggregatedFeatureEventsConfServiceConfig.class, ModelConfServiceConfig.class})
 	static class ContextConfiguration {
 		@Mock private FeatureBucketReader featureBucketReader;
 		@Mock private AggregatedFeatureEventsReaderService aggregatedFeatureEventsReaderService;
@@ -89,11 +89,6 @@ public class ModelConfProductionConfFilesTest {
 		}
 
 		@Bean
-		public ModelConfService modelConfService() {
-			return new ModelConfService();
-		}
-
-		@Bean
 		public FactoryService<IContextSelector> contextSelectorFactoryService() {
 			return new FactoryService<>();
 		}
@@ -129,10 +124,6 @@ public class ModelConfProductionConfFilesTest {
 			properties.put("fortscale.entity.event.definitions.conf.json.overriding.files.path", "file:home/cloudera/fortscale/config/asl/entity_events/overriding/entity_events*.json");
 			properties.put("fortscale.entity.event.global.params.json.file.path", "classpath:config/asl/entity_events_global_params.json");
 			properties.put("fortscale.entity.event.global.params.conf.json.overriding.files.path", "file:home/cloudera/config/asl/entity_events/overriding/global_params*.json");
-
-			properties.put("fortscale.model.configurations.location.path", "classpath:config/asl/models/*.json");
-			properties.put("fortscale.model.configurations.overriding.location.path", "file:home/cloudera/fortscale/config/asl/models/overriding/*.json");
-			properties.put("fortscale.model.configurations.additional.location.path", "file:home/cloudera/fortscale/config/asl/models/additional/*.json");
 
 			PropertyPlaceholderConfigurer propertyPlaceholderConfigurer = new PropertyPlaceholderConfigurer();
 			propertyPlaceholderConfigurer.setProperties(properties);

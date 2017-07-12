@@ -17,8 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import presidio.ade.domain.record.enriched.EnrichedDlpFileRecord;
 import presidio.ade.domain.store.AdeDataStoreCleanupParams;
@@ -28,7 +26,9 @@ import presidio.ade.domain.store.enriched.EnrichedRecordsMetadata;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Properties;
 
 /**
  * Created by YaronDL on 7/5/2017.
@@ -54,8 +54,9 @@ public class ModelFeatureAggregationBucketsServiceTest {
         String username = "sanityTestUser";
         generateAndPersistAdeEnrichedRecords(timeRange,username);
         modelFeatureAggregationBucketsService.execute(timeRange,DATA_SOURCE);
-        String contextId = FeatureBucketUtils.buildContextId(Collections.singletonMap("normalized_username", username));
-        List<FeatureBucket> featureBucketList =featureBucketStore.getFeatureBuckets("normalized_username_dlpfile_daily",Collections.singleton(contextId),timeRange,0,10);
+        String contextId = FeatureBucketUtils.buildContextId(Collections.singletonMap("normalizedUsername", username));
+        List<FeatureBucket> featureBucketList = featureBucketStore.getFeatureBuckets(
+                "normalized_username_dlpfile_daily", Collections.singleton(contextId), timeRange);
         Assert.assertEquals(1,featureBucketList.size());
         FeatureBucket featureBucket = featureBucketList.get(0);
 
@@ -91,19 +92,19 @@ public class ModelFeatureAggregationBucketsServiceTest {
         enrichedDataStore.cleanup(cleanupParams);
         Instant startTime = timeRange.getStart();
         EnrichedDlpFileRecord enrichedDlpFileRecord = new EnrichedDlpFileRecord(startTime);
-        enrichedDlpFileRecord.setNormalized_username(username);
-        enrichedDlpFileRecord.setWas_classified(false);
-        enrichedDlpFileRecord.setNormalized_src_machine(String.format("%s_pc",username));
-        enrichedDlpFileRecord.setEvent_type("copy");
-        enrichedDlpFileRecord.setSource_drive_type("remote");
-        enrichedDlpFileRecord.setFile_size(1000);
-        enrichedDlpFileRecord.setSource_path("/home/test_source_path");
+        enrichedDlpFileRecord.setNormalizedUsername(username);
+        enrichedDlpFileRecord.setWasClassified(false);
+        enrichedDlpFileRecord.setNormalizedSrcMachine(String.format("%s_pc", username));
+        enrichedDlpFileRecord.setEventType("copy");
+        enrichedDlpFileRecord.setSourceDriveType("remote");
+        enrichedDlpFileRecord.setFileSize(1000);
+        enrichedDlpFileRecord.setSourcePath("/home/test_source_path");
 
         List<EnrichedDlpFileRecord> enrichedDlpFileRecordList = Collections.singletonList(enrichedDlpFileRecord);
-        EnrichedRecordsMetadata enrichedRecordsMetadata = new EnrichedRecordsMetadata(DATA_SOURCE,startTime,startTime.plus(1,ChronoUnit.SECONDS));
-        enrichedDataStore.store(enrichedRecordsMetadata,enrichedDlpFileRecordList);
-        List<ContextIdToNumOfItems> contextIdToNumOfItemsList = enrichedDataStore.aggregateContextToNumOfEvents(enrichedRecordsMetadata,"normalized_username");
-        Assert.assertEquals(1,contextIdToNumOfItemsList.size());
+        EnrichedRecordsMetadata enrichedRecordsMetadata = new EnrichedRecordsMetadata(DATA_SOURCE, startTime, startTime.plus(1, ChronoUnit.SECONDS));
+        enrichedDataStore.store(enrichedRecordsMetadata, enrichedDlpFileRecordList);
+        List<ContextIdToNumOfItems> contextIdToNumOfItemsList = enrichedDataStore.aggregateContextToNumOfEvents(enrichedRecordsMetadata, "normalizedUsername");
+        Assert.assertEquals(1, contextIdToNumOfItemsList.size());
     }
 
     @Configuration

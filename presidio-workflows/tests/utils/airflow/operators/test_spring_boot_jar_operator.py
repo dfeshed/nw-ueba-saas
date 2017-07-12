@@ -14,6 +14,8 @@ JAR_PATH = PATH + '/tests/resources/jars/test-mock-project-0.0.1-SNAPSHOT.jar'
 MAIN_CLASS = 'com.fortscale.test.TestMockProjectApplication'
 LAUNCHER = 'org.springframework.boot.loader.PropertiesLauncher'
 DEFAULT_DATE = datetime(2014, 1, 1)
+COMMAND = 'run'
+
 
 
 def assert_bash_comment(task, expected_bash_comment, expected_java_args={}):
@@ -31,8 +33,13 @@ def assert_bash_comment(task, expected_bash_comment, expected_java_args={}):
     assert bash_command == expected_bash_comment
 
     args = task_bash_command[-(len(task_bash_command)-launcher_index):].strip()
-    java_args_dict = {k:v.strip('"') for k,v in [i.split("=",1) for i in args.split(" ")]}
+    shell_command_index = args.rfind(COMMAND) + len(COMMAND)
+    assert shell_command_index >= 0
 
+    args_without_command = args[shell_command_index:].strip()
+
+    args_splited = args_without_command.strip(SpringBootJarOperator.java_args_prefix).split(SpringBootJarOperator.java_args_prefix)
+    java_args_dict = {k:v.strip('"') for k,v in [i.strip().split(" ",1) for i in args_splited]}
     assert java_args_dict == expected_java_args
 
 

@@ -1,16 +1,17 @@
 package fortscale.ml.model.store;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.mongodb.core.MongoTemplate;
 
-/**
- * Created by barak_schuster on 6/6/17.
- */
 @Configuration
 public class ModelStoreConfig {
-    @Bean
-    public ModelStore modelStore()
-    {
-        return new ModelStore();
-    }
+	@Autowired
+	private MongoTemplate mongoTemplate;
+
+	@Bean
+	public ModelStore modelStore() {
+		return new ModelStore(mongoTemplate);
+	}
 }

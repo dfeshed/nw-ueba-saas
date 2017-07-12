@@ -21,21 +21,21 @@ public class AdeEnrichedDlpFileContext {
     private String malwareScanResult;
     private String executingApplication;
 
-    public AdeEnrichedDlpFileContext(EnrichedDlpFileRecord enrichedDlpFileRecord){
-        this.normalizedUsername = enrichedDlpFileRecord.getNormalized_username();
-        this.normalizedSrcMachine = enrichedDlpFileRecord.getNormalized_src_machine();
-        this.sourcePath = enrichedDlpFileRecord.getSource_path();
-        this.sourceFileName = enrichedDlpFileRecord.getSource_file_name();
-        this.sourceDriveType = enrichedDlpFileRecord.getSource_drive_type();
-        this.destinationPath = enrichedDlpFileRecord.getDestination_path();
-        this.destinationFileName = enrichedDlpFileRecord.getDestination_file_name();
-        this.destinationDriveType = enrichedDlpFileRecord.getDestination_drive_type();
-        this.fileSize = enrichedDlpFileRecord.getFile_size();
-        this.eventType = enrichedDlpFileRecord.getEvent_type();
-        this.wasBlocked = enrichedDlpFileRecord.isWas_blocked();
-        this.wasClassified = enrichedDlpFileRecord.isWas_classified();
-        this.malwareScanResult = enrichedDlpFileRecord.getMalware_scan_result();
-        this.executingApplication = enrichedDlpFileRecord.getExecuting_application();
+    public AdeEnrichedDlpFileContext(EnrichedDlpFileRecord enrichedDlpFileRecord) {
+        this.normalizedUsername = enrichedDlpFileRecord.getNormalizedUsername();
+        this.normalizedSrcMachine = enrichedDlpFileRecord.getNormalizedSrcMachine();
+        this.sourcePath = enrichedDlpFileRecord.getSourcePath();
+        this.sourceFileName = enrichedDlpFileRecord.getSourceFileName();
+        this.sourceDriveType = enrichedDlpFileRecord.getSourceDriveType();
+        this.destinationPath = enrichedDlpFileRecord.getDestinationPath();
+        this.destinationFileName = enrichedDlpFileRecord.getDestinationFileName();
+        this.destinationDriveType = enrichedDlpFileRecord.getDestinationDriveType();
+        this.fileSize = enrichedDlpFileRecord.getFileSize();
+        this.eventType = enrichedDlpFileRecord.getEventType();
+        this.wasBlocked = enrichedDlpFileRecord.isWasBlocked();
+        this.wasClassified = enrichedDlpFileRecord.isWasClassified();
+        this.malwareScanResult = enrichedDlpFileRecord.getMalwareScanResult();
+        this.executingApplication = enrichedDlpFileRecord.getExecutingApplication();
     }
 
     public String getNormalizedUsername() {
