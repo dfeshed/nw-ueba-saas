@@ -3,7 +3,7 @@ import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 
 import { enhancePackets } from 'recon/reducers/packets/util';
-import { payloadProcessedPackets } from 'recon/reducers/packets/selectors';
+import { renderedPackets } from 'recon/reducers/packets/selectors';
 import DataHelper from '../../../../helpers/data-helper';
 
 const packetFields = [
@@ -45,7 +45,7 @@ moduleForComponent('recon-event-detail/single-packet', 'Integration | Component 
 test('single packet renders default', function(assert) {
   assert.expect(3);
 
-  const processedPackets = payloadProcessedPackets({
+  const processedPackets = renderedPackets({
     visuals: {
       isRequestShown: true,
       isResponseShown: true,
@@ -81,7 +81,7 @@ test('single packet renders default', function(assert) {
 test('single packet renders with hidden header/footer bytes', function(assert) {
   assert.expect(4);
 
-  const processedPackets = payloadProcessedPackets({
+  const processedPackets = renderedPackets({
     visuals: {
       isRequestShown: true,
       isResponseShown: true,
@@ -120,7 +120,7 @@ test('single packet renders with hidden header/footer bytes', function(assert) {
 test('single (continuous) packet renders with hidden header/footer bytes', function(assert) {
   assert.expect(4);
 
-  const processedPackets = payloadProcessedPackets({
+  const processedPackets = renderedPackets({
     visuals: {
       isRequestShown: true,
       isResponseShown: true,

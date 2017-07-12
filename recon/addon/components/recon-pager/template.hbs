@@ -6,7 +6,7 @@
 {{/if}}
 {{#if isPacket}}
   <div class="packet-info">
-    Rendered
+    {{if isRenderingUnderWay 'Rendering' 'Rendered'}}
     <span class="lighter">{{packetCount}} of {{packetTotal}}</span>
     packets
     {{unless isHidden 'to improve performance'}}

@@ -1,4 +1,4 @@
-{{#if processedPackets}}
+{{#if renderedPackets}}
   {{#if stickyContent}}
     <div class="recon-packet-stuck-header">
       {{recon-event-detail/single-packet/header
@@ -8,7 +8,7 @@
     </div>
   {{/if}}
   <div class="scroll-box">
-    {{#each processedPackets key="id" as |packet index|}}
+    {{#each renderedPackets key="id" as |packet index|}}
       {{recon-event-detail/single-packet
         index=index
         packet=packet
@@ -17,7 +17,7 @@
       }}
     {{/each}}
 
-    {{#if hasMoreToDisplay}}
+    {{#if isPacketRenderingUnderWay}}
       <centered class='rendering-more'>
         {{rsa-loader size='large' label=(t 'recon.packetView.renderingMore')}}
       </centered>
@@ -34,7 +34,7 @@
   {{#if hasPackets}}
     {{!-- If all data has been hidden by the user, just leave component markup blank --}}
 
-    {{#unless hasDataBeenHiddenByUserSelection}}
+    {{#if isPacketRenderingUnderWay}}
       {{!--
         If the user has not hidden the data themselves, then the data
         is due to arrive soon via incremental render, so show spinner
@@ -42,7 +42,7 @@
       <div class="recon-loader">
         {{rsa-loader size='larger'}}
       </div>
-    {{/unless}}
+    {{/if}}
   {{else}}
     {{rsa-panel-message message=(t 'recon.packetView.noHexData')}}
   {{/if}}
@@ -55,4 +55,5 @@
   packetTotal=packetTotal
   isPacket=true
   isText=false
+  isRenderingUnderWay=isPacketRenderingUnderWay
 }}

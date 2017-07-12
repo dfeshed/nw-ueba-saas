@@ -5,6 +5,66 @@
 export const BYTES_PER_ROW = 16;
 
 /**
+ * Processes visible packets. There are several outcomes depending upon what is
+ * desired to be shown to the user.
+ *
+ * If we're showing all packet bytes, we group packets of the same sequence
+ * number, then group the individual bytes into rows to be displayed on the UI.
+ *
+ * If we're showing only payload bytes, we disreguard any packets that have no
+ * payload. The packets that are left over that have the same sequence number
+ * are merged together. Also, continuous same-side packets are marked as
+ * continuous packets so that they appear visually under the same header on the
+ * UI.
+ * @param {Array} packets All of a sessions packets
+ * @param {Boolean} isPayloadOnly Should we remove header/footer bytes
+ * @public
+ */
+export const processPacketPayloads = function(packets, isPayloadOnly) {
+  // reset continuation tracking
+  isContinuation(null, null);
+  return packets.reduce((acc, currentPacket) => {
+    const { bytes, payloadSize } = currentPacket;
+    if (isPayloadOnly) {
+      // if there are no bytes, eject
+      if (payloadSize === 0) {
+        return acc;
+      }
+      // Filter out header/footer items from the current packet
+      const _bytes = bytes.filter((b) => !b.isHeader && !b.isFooter);
+      // Get the previous packet
+      const previousPacket = acc[acc.length - 1];
+      // If the current packet is a continuation of the previous,
+      // then the bytes need to be concated together
+      if (previousPacket && isContinuation(currentPacket.side, currentPacket.sequence)) {
+        previousPacket.bytes = previousPacket.bytes.concat(_bytes);
+        // Update the byteRows with the new bytes that were added
+        previousPacket.byteRows = bytesAsRows(previousPacket.bytes);
+      } else {
+        // Set initial continuation tracking
+        isContinuation(currentPacket.side, currentPacket.sequence);
+        // Override isContinuation to mean that the current packet is the
+        // same side as the previous
+        acc.push({
+          ...currentPacket,
+          isContinuation: (previousPacket && currentPacket.side === previousPacket.side),
+          bytes: _bytes,
+          byteRows: bytesAsRows(_bytes)
+        });
+      }
+    } else {
+      // This code path performs just like a map().
+      acc.push({
+        ...currentPacket,
+        isContinuation: isContinuation(currentPacket.side, currentPacket.sequence),
+        byteRows: bytesAsRows(bytes)
+      });
+    }
+    return acc;
+  }, []);
+};
+
+/**
  * A function that enhances all the packets so they are
  * prepared to be displayed.
  * @public
@@ -29,9 +89,9 @@ export const enhancePackets = (packets, packetFields) => {
  * `bytesPerRow` number of bytes.
  * @param {Array} bytes An Array of byte objects
  * @return {Array}
- * @public
+ * @private
  */
-export const bytesAsRows = (bytes) => {
+const bytesAsRows = (bytes) => {
   const rows = [];
   const len = bytes.length;
   for (let i = 0; i < len; i = i + BYTES_PER_ROW) {
@@ -222,3 +282,16 @@ const findKnownSignatures = (bytes) => {
     }
   }, []);
 };
+
+const isContinuation = (() => {
+  let _previousSide, _previousSequence;
+  return (side, sequence) => {
+    if (side === _previousSide && sequence === _previousSequence) {
+      return true;
+    } else {
+      _previousSide = side;
+      _previousSequence = sequence;
+      return false;
+    }
+  };
+})();

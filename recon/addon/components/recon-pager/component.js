@@ -32,6 +32,14 @@ export default Component.extend({
   isPacket: false,
 
   /**
+   * Whether rendering of results is still taking place
+   * @type Boolean
+   * @default false
+   * @public
+   */
+  isRenderingUnderWay: false,
+
+  /**
    * Whether or not this pager is for text
    * @type Boolean
    * @default false
