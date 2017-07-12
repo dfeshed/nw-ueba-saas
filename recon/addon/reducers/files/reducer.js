@@ -33,13 +33,13 @@ const filesInitialState = {
  * @private
  */
 const _fileExtractState = (state) => ({
-  ...filesInitialState,
   fileExtractStatus: (state.fileExtractStatus === 'wait' ||
                       state.fileExtractStatus === 'queued') ? 'queued' : null
 });
 
 const filesReducer = handleActions({
   [ACTION_TYPES.INITIALIZE]: (state, { payload }) => ({
+    ...filesInitialState,
     ..._fileExtractState(state),
     linkToFileAction: payload.linkToFileAction
   }),
