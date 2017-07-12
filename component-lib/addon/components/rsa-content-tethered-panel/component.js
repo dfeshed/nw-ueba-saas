@@ -120,10 +120,66 @@ export default Component.extend({
         }
         break;
     }
+
     return position;
   }),
 
-  horizontalModifier: computed('anchorWidth', 'anchorHeight', function() {
+  forceWithinWindow() {
+    let position = this.get('position');
+    const width = $(window).width();
+    const height = $(window).height();
+    const panel = $('.ember-tether .panel-content');
+    const panelHeight = panel.height();
+    const panelWidth = panel.width();
+    const offset = panel.offset();
+    const borderWidth = 2;
+    const edgeMargin = 7;
+    const pxModifier = borderWidth + edgeMargin;
+
+    const panelBottom = () => {
+      return panel.offset().top + panelHeight + pxModifier;
+    };
+    const panelTop = () => {
+      return panel.offset().top + pxModifier;
+    };
+    const panelLeft = () => {
+      return panel.offset().left + pxModifier;
+    };
+    const panelRight = () => {
+      return panel.offset().left + panelWidth + pxModifier;
+    };
+
+    let newPosition = position;
+
+    if (!offset) {
+      return;
+    }
+
+    const reposition = (initialSide, newSide) => {
+      newPosition = position.replace(initialSide, newSide);
+      return (newPosition === position) ? `${position}-${newSide}` : newPosition;
+    };
+
+    if (height < panelBottom()) {
+      position = reposition('bottom', 'top');
+    }
+
+    if (panelTop() <= 0) {
+      position = reposition('top', 'bottom');
+    }
+
+    if (panelLeft() <= 0) {
+      position = reposition('left', 'right');
+    }
+
+    if (width < panelRight()) {
+      position = reposition('right', 'left');
+    }
+
+    this.set('position', position);
+  },
+
+  horizontalModifier: computed('anchorWidth', 'anchorHeight', 'position', function() {
     const anchorWidth = `${this.get('anchorWidth')}px`;
     const anchorHeight = `${this.get('anchorHeight')}px`;
     let styleString;
@@ -139,11 +195,13 @@ export default Component.extend({
         styleString = `left: -${anchorWidth}`;
       }
 
-      return styleString;
+      if (styleString) {
+        return styleString;
+      }
     }
   }),
 
-  verticalModifier: computed('anchorHeight', function() {
+  verticalModifier: computed('anchorHeight', 'position', function() {
     const halfAnchorHeight = `${this.get('anchorHeight') / 2}px`;
 
     if (!this.get('isPopover')) {
@@ -154,12 +212,16 @@ export default Component.extend({
         topOrBottom = 'bottom';
       }
 
-      return `margin-${topOrBottom}: calc(-1rem - 7px - ${halfAnchorHeight})`;
+      if (topOrBottom) {
+        return `margin-${topOrBottom}: calc(-1rem - 7px - ${halfAnchorHeight})`;
+      }
     }
   }),
 
   styleModifiers: computed('horizontalModifier', 'verticalModifier', function() {
-    return htmlSafe(`${this.get('horizontalModifier')}; ${this.get('verticalModifier')};`);
+    const horizontalModifier = this.get('horizontalModifier') || '';
+    const verticalModifier = this.get('verticalModifier') || '';
+    return htmlSafe(`${horizontalModifier}${verticalModifier}`);
   }),
 
   targetClass: computed('panelId', function() {
@@ -215,6 +277,8 @@ export default Component.extend({
         });
 
         run.schedule('afterRender', () => {
+          this.forceWithinWindow();
+
           $(`.${this.get('elementId')}`).on('mouseenter', () => {
             this.set('isHovering', true);
           });
@@ -258,6 +322,10 @@ export default Component.extend({
         if (width) {
           this.set('anchorWidth', width);
         }
+
+        run.schedule('afterRender', this, function() {
+          this.forceWithinWindow();
+        });
       }
     });
   },
