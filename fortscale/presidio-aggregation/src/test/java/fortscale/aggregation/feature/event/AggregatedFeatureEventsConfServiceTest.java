@@ -7,20 +7,18 @@ import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
 import net.minidev.json.JSONObject;
 import org.json.JSONException;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.skyscreamer.jsonassert.JSONAssert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.skyscreamer.jsonassert.JSONAssert;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -30,7 +28,6 @@ import java.util.Set;
  * Created by amira on 20/10/2015.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@Ignore
 public class AggregatedFeatureEventsConfServiceTest {
 
     static final String BUCKET_CONF_AS_STRING1 = "{\"name\":\"bc1\",\"adeEventTypes\":[\"ssh\"],\"contextFieldNames\":[\"field1\",\"field2\"],\"strategyName\":\"strategy1\",\"aggrFeatureConfs\":[{\"name\":\"aggr-feature-1\",\"featureNamesMap\":{\"param1\":[\"feature1\",\"feature2\"]},\"aggrFeatureFuncJson\":{\"type\":\"func1\"},\"allFeatureNames\":[\"feature2\",\"feature1\"],\"filter\":null}],\"expireAfterSeconds\":null,\"allFeatureNames\":[\"feature2\",\"feature1\"]}";
