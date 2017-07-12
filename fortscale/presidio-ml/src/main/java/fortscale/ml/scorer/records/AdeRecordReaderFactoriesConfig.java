@@ -17,10 +17,4 @@ public class AdeRecordReaderFactoriesConfig {
     public AdeRecordReaderFactory adeRecordReaderFactory() {
         return new AdeRecordReaderFactory();
     }
-
-    @Bean
-    public AdeScoredRecordReaderFactory adeScoredRecordReaderFactory() {
-        return new AdeScoredRecordReaderFactory();
-    }
-
 }

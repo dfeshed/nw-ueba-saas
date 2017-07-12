@@ -20,9 +20,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import presidio.ade.domain.record.AdeRecord;
+import presidio.ade.domain.record.AdeRecordReaderFactory;
 import presidio.ade.domain.record.enriched.AdeEnrichedDlpFileContext;
 import presidio.ade.domain.record.enriched.EnrichedDlpFileRecord;
-import presidio.ade.domain.record.scored.AdeScoredRecordReaderFactory;
 import presidio.ade.domain.record.scored.enriched_scored.AdeScoredDlpFileRecord;
 
 import java.time.Instant;
@@ -74,8 +74,7 @@ public class FeatureBucketsServiceTest {
     public void featureBucketAggregatorInitialize(FeatureBucketsAggregatorStore featureBucketsAggregatorStore) {
         Map<String, Transformation<?>> transformations = new HashMap<>();
         Collection<RecordReaderFactory> recordReaderFactories = new ArrayList<>();
-        AdeScoredRecordReaderFactory adeScoredRecordReaderFactory = new AdeScoredRecordReaderFactory();
-        recordReaderFactories.add(adeScoredRecordReaderFactory);
+        recordReaderFactories.add(new AdeRecordReaderFactory());
         RecordReaderFactoryService recordReaderFactoryService = new RecordReaderFactoryService(recordReaderFactories, transformations);
         featureBucketAggregator = new FeatureBucketAggregator(featureBucketsAggregatorStore, bucketConfigurationService, recordReaderFactoryService);
     }

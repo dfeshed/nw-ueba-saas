@@ -15,7 +15,7 @@
           "name": "highest_date_time_score",
           "featureNamesMap": {
             "maximize": [
-              "date_time"
+              "score"
             ]
           },
           "aggrFeatureFuncJson": {
@@ -31,10 +31,10 @@
       "name": "normalized_src_machine_dlpfile_daily",
       "expireAfterSeconds": 31536000,
       "contextFieldNames": [
-        "normalized_src_machine"
+        "context.normalizedUsername"
       ],
       "adeEventTypes": [
-        "scored_enriched.normalized_src_machine"
+        "scored_enriched.dlpfile.normalizedSrcMachine"
       ],
       "strategyName": "fixed_duration_hourly",
       "aggrFeatureConfs": [
@@ -42,10 +42,10 @@
           "name": "normalized_src_machine_to_highest_score_map",
           "featureNamesMap": {
             "groupBy": [
-              "normalized_src_machine"
+              "context.normalizedSrcMachine"
             ],
             "maximize": [
-              "normalized_src_machine_score"
+              "score"
             ]
           },
           "aggrFeatureFuncJson": {

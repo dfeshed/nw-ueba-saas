@@ -6,7 +6,7 @@
       "contextFieldNames": [
         "normalized_username"
       ],
-      "dataSources": [
+      "adeEventTypes": [
         "dlpfile"
       ],
       "strategyName": "fixed_duration_daily",
