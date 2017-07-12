@@ -26,7 +26,7 @@ public class AdeEventTypeToAdeEnrichedRecordClassResolverConfigTest {
 
     @Test
     public void testDlpmailIsNotResolved(){
-        Class<? extends EnrichedRecord> enrichedRecord = adeEventTypeToAdeEnrichedRecordClassResolver.getClass(DlpFileRecord.DLP_FILE_STR.toLowerCase());
+        Class<? extends EnrichedRecord> enrichedRecord = adeEventTypeToAdeEnrichedRecordClassResolver.getClass("dlpmail");
         Assert.assertTrue(enrichedRecord == null);
     }
 
