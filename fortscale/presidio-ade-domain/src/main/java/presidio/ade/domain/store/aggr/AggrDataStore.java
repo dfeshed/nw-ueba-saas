@@ -1,6 +1,6 @@
 package presidio.ade.domain.store.aggr;
 
-import presidio.ade.domain.record.aggregated.AdeAggrRecord;
+import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.store.AdeDataStoreCleanupParams;
 
 import java.util.List;
@@ -14,7 +14,7 @@ public interface AggrDataStore {
      *
      * @param records         to be stored
      */
-    void store(List<? extends AdeAggrRecord> records);
+    void store(List<? extends AdeAggregationRecord> records);
 
     /**
      * cleanup store by filtering params

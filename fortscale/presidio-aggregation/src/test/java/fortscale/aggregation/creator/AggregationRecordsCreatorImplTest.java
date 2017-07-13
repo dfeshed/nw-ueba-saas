@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
-import presidio.ade.domain.record.aggregated.AdeAggrRecord;
+import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -27,25 +27,25 @@ import java.util.*;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration()
-public class AggregationsCreatorImplTest {
+public class AggregationRecordsCreatorImplTest {
     @Autowired
-    private AggregationsCreator aggregationsCreator;
+    private AggregationRecordsCreator aggregationRecordsCreator;
     @Autowired
     private AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
 
     @Test
     public void shouldReturnEmptyAggregationsForZeroFeatureBuckets() throws Exception {
         List<FeatureBucket> featureBuckets = Collections.emptyList();
-        List<AdeAggrRecord> aggregations = aggregationsCreator.createAggregations(featureBuckets);
+        List<AdeAggregationRecord> aggregations = aggregationRecordsCreator.createAggregationRecords(featureBuckets);
         Assert.assertTrue(aggregations.isEmpty());
         featureBuckets = null;
-        aggregations = aggregationsCreator.createAggregations(featureBuckets);
+        aggregations = aggregationRecordsCreator.createAggregationRecords(featureBuckets);
         Assert.assertTrue(aggregations.isEmpty());
     }
 
     @Test
     public void createAggregations() throws Exception {
-        List<AdeAggrRecord> aggregations = aggregationsCreator.createAggregations(generateFeatureBuckets());
+        List<AdeAggregationRecord> aggregations = aggregationRecordsCreator.createAggregationRecords(generateFeatureBuckets());
         Assert.assertTrue(aggregations.size() > 0);
     }
 

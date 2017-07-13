@@ -12,29 +12,26 @@ import java.util.Map;
  * Created by barak_schuster on 7/9/17.
  */
 @Document
-public class AdeAggrRecord extends AdeRecord {
+public class AdeAggregationRecord extends AdeRecord {
     @Indexed
     private Instant endInstant;
     @Field
-    private Map<String, Object> aggregatedFeatureInfo;
+    private String featureName;
     @Field
-    private String aggregatedFeatureName;
+    private Double featureValue;
     @Field
-    private Double aggregatedFeatureValue;
-    @Field
-    private String bucketConfName;
+    private String featureBucketConfName;
     @Field
     private Map<String, String> context;
     @Field
     private AggregatedFeatureType aggregatedFeatureType;
 
-    public AdeAggrRecord(Instant startInstant, Instant endInstant, Map<String, Object> aggregatedFeatureInfo, String aggregatedFeatureName, Double aggregatedFeatureValue, String bucketConfName, Map<String, String> context,AggregatedFeatureType aggregatedFeatureType) {
+    public AdeAggregationRecord(Instant startInstant, Instant endInstant, String featureName, Double featureValue, String featureBucketConfName, Map<String, String> context, AggregatedFeatureType aggregatedFeatureType) {
         super(startInstant);
         this.endInstant = endInstant;
-        this.aggregatedFeatureInfo = aggregatedFeatureInfo;
-        this.aggregatedFeatureName = aggregatedFeatureName;
-        this.aggregatedFeatureValue = aggregatedFeatureValue;
-        this.bucketConfName = bucketConfName;
+        this.featureName = featureName;
+        this.featureValue = featureValue;
+        this.featureBucketConfName = featureBucketConfName;
         this.context = context;
         this.aggregatedFeatureType = aggregatedFeatureType;
     }
@@ -48,20 +45,16 @@ public class AdeAggrRecord extends AdeRecord {
         return endInstant;
     }
 
-    public Map<String, Object> getAggregatedFeatureInfo() {
-        return aggregatedFeatureInfo;
+    public String getFeatureName() {
+        return featureName;
     }
 
-    public String getAggregatedFeatureName() {
-        return aggregatedFeatureName;
+    public Double getFeatureValue() {
+        return featureValue;
     }
 
-    public Double getAggregatedFeatureValue() {
-        return aggregatedFeatureValue;
-    }
-
-    public String getBucketConfName() {
-        return bucketConfName;
+    public String getFeatureBucketConfName() {
+        return featureBucketConfName;
     }
 
     public Map<String, String> getContext() {
