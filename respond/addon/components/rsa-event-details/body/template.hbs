@@ -1,11 +1,236 @@
 {{#rsa-property-tree
   model=model
   skipUnknowns=false
-  order="timestamp, type, description, source, destination, domain, detector, size, data, related_links"
-  hidden="enrichment, from, to, detected_by, file, indicatorId, id"
+  order="timestamp, type, description, source, destination, domain"
+  skipUnknowns=true
   scalarValueComponentClass="rsa-event-details/body-value"
   propertyNameFormatter=propertyNameFormatter
   as |property|
+}}
+  {{property.scalar}}
+  {{#property.nested as |nested|}}
+    {{nested.scalar}}
+    {{#nested.nested as |doubleNested|}}
+      {{doubleNested.scalar}}
+      {{#doubleNested.nested as |tripleNested|}}
+        {{tripleNested.scalar}}
+      {{/doubleNested.nested}}
+    {{/nested.nested}}
+  {{/property.nested}}
+{{/rsa-property-tree}}
+
+{{!Enrichment section}}
+{{#with c2data as |c2|}}
+  <div class="rsa-property-tree">
+    <table>
+      <tr class="key">
+        <td class="key-name">
+          {{t 'respond.eventDetails.labels.enrichment'}}
+        </td>
+        <td class="key-value">
+          <div class="rsa-property-tree">
+            <table>
+
+              {{!Domain Registration (for performance, not always included in every c2 event) }}
+              {{#if c2.whois.registrar_name}}
+                <tr class="key">
+                  <td class="key-name">
+                    {{t 'respond.eventDetails.labels.enrichmentSections.domain_registration'}}
+                  </td>
+                  <td class="key-value">
+                    {{#rsa-property-tree
+                      model=c2.whois
+                      modelPath="whois"
+                      order="registrar_name, registrant_organization, registrant_name, registrant_email, registrant_telephone, registrant_street1, registrant_postal_code, registrant_city, registrant_state, registrant_country"
+                      skipUnknowns=true
+                      scalarValueComponentClass="rsa-event-details/body-value"
+                      propertyNameFormatter=propertyNameFormatter
+                      as |property|
+                    }}
+                      {{property.scalar}}
+                    {{/rsa-property-tree}}
+                  </td>
+                </tr>
+              {{/if}}
+
+              {{!Command and Control Risk}}
+              <tr class="key">
+                <td class="key-name">
+                  {{t 'respond.eventDetails.labels.enrichmentSections.command_control_risk'}}
+                </td>
+                <td class="key-value">
+                  {{#rsa-property-tree
+                    model=c2.command_control
+                    modelPath="command_control"
+                    order="aggregate, confidence"
+                    skipUnknowns=false
+                    scalarValueComponentClass="rsa-event-details/body-value"
+                    propertyNameFormatter=propertyNameFormatter
+                    as |property|
+                  }}
+                    {{property.scalar}}
+                  {{/rsa-property-tree}}
+                </td>
+              </tr>
+
+              {{!Beaconing Behavior}}
+              <tr class="key">
+                <td class="key-name">
+                  {{t 'respond.eventDetails.labels.enrichmentSections.beaconing_behavior'}}
+                </td>
+                <td class="key-value">
+                  {{#rsa-property-tree
+                    model=c2.smooth
+                    modelPath="smooth"
+                    order="score"
+                    skipUnknowns=true
+                    scalarValueComponentClass="rsa-event-details/body-value"
+                    propertyNameFormatter=propertyNameFormatter
+                    as |property|
+                  }}
+                    {{property.scalar}}
+                  {{/rsa-property-tree}}
+                  {{#rsa-property-tree
+                    model=c2.beaconing
+                    modelPath="beaconing"
+                    order="period"
+                    skipUnknowns=true
+                    scalarValueComponentClass="rsa-event-details/body-value"
+                    propertyNameFormatter=propertyNameFormatter
+                    as |property|
+                  }}
+                    {{property.scalar}}
+                  {{/rsa-property-tree}}
+                </td>
+              </tr>
+
+              {{!Domain Age}}
+              <tr class="key">
+                <td class="key-name">
+                  {{t 'respond.eventDetails.labels.enrichmentSections.domain_age'}}
+                </td>
+                <td class="key-value">
+                  {{#rsa-property-tree
+                    model=c2.whois
+                    modelPath="whois"
+                    order="age_scoreNetWitness, estimated_domain_age_daysNetWitness, created_dateNetWitness, updated_dateNetWitness"
+                    skipUnknowns=true
+                    scalarValueComponentClass="rsa-event-details/body-value"
+                    propertyNameFormatter=propertyNameFormatter
+                    as |property|
+                  }}
+                    {{property.scalar}}
+                  {{/rsa-property-tree}}
+                  {{#rsa-property-tree
+                    model=c2.newdomain
+                    modelPath="newdomain"
+                    order="score, age"
+                    skipUnknowns=true
+                    scalarValueComponentClass="rsa-event-details/body-value"
+                    propertyNameFormatter=propertyNameFormatter
+                    as |property|
+                  }}
+                    {{property.scalar}}
+                  {{/rsa-property-tree}}
+                </td>
+              </tr>
+
+              {{!Expiring Domain}}
+              <tr class="key">
+                <td class="key-name">
+                  {{t 'respond.eventDetails.labels.enrichmentSections.expiring_domain'}}
+                </td>
+                <td class="key-value">
+                  {{#rsa-property-tree
+                    model=c2.whois
+                    modelPath="whois"
+                    order="validity_scoreNetWitness, expires_dateNetWitness, estimated_domain_validity_daysNetWitness"
+                    skipUnknowns=true
+                    scalarValueComponentClass="rsa-event-details/body-value"
+                    propertyNameFormatter=propertyNameFormatter
+                    as |property|
+                  }}
+                    {{property.scalar}}
+                  {{/rsa-property-tree}}
+                </td>
+              </tr>
+
+              {{!Rare Domain}}
+              <tr class="key">
+                <td class="key-name">
+                  {{t 'respond.eventDetails.labels.enrichmentSections.rare_domain'}}
+                </td>
+                <td class="key-value">
+                  {{#rsa-property-tree
+                    model=c2.referer
+                    modelPath="referer"
+                    order="score, cardinality, num_events"
+                    skipUnknowns=true
+                    scalarValueComponentClass="rsa-event-details/body-value"
+                    propertyNameFormatter=propertyNameFormatter
+                    as |property|
+                  }}
+                    {{property.scalar}}
+                  {{/rsa-property-tree}}
+                </td>
+              </tr>
+
+              {{!No Referers}}
+              <tr class="key">
+                <td class="key-name">
+                  {{t 'respond.eventDetails.labels.enrichmentSections.no_referers'}}
+                </td>
+                <td class="key-value">
+                  {{#rsa-property-tree
+                    model=c2.referer
+                    modelPath="referer"
+                    order="ratio_score, cond_cardinality, ratio, num_events"
+                    skipUnknowns=true
+                    scalarValueComponentClass="rsa-event-details/body-value"
+                    propertyNameFormatter=propertyNameFormatter
+                    as |property|
+                  }}
+                    {{property.scalar}}
+                  {{/rsa-property-tree}}
+                </td>
+              </tr>
+
+              {{!Rare User Agent}}
+              <tr class="key">
+                <td class="key-name">
+                  {{t 'respond.eventDetails.labels.enrichmentSections.rare_user_agent'}}
+                </td>
+                <td class="key-value">
+                  {{#rsa-property-tree
+                    model=c2.ua
+                    modelPath="ua"
+                    order="ratio_score, cond_cardinality, ratio, num_events"
+                    skipUnknowns=true
+                    scalarValueComponentClass="rsa-event-details/body-value"
+                    propertyNameFormatter=propertyNameFormatter
+                    as |property|
+                  }}
+                    {{property.scalar}}
+                  {{/rsa-property-tree}}
+                </td>
+              </tr>
+
+            </table>
+          </div>
+        </td>
+      </tr>
+    </table>
+  </div>
+{{/with}}
+
+{{#rsa-property-tree
+  model=model
+  skipUnknowns=false
+  order="detector, size, data, related_links"
+  hidden="from, to, detected_by, file, indicatorId, id, timestamp, type, description, source, destination, domain, enrichment"
+  scalarValueComponentClass="rsa-event-details/body-value"
+  propertyNameFormatter=propertyNameFormatter
+as |property|
 }}
   {{property.scalar}}
   {{#property.nested as |nested|}}

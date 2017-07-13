@@ -5,6 +5,7 @@ import service from 'ember-service/inject';
 import { next } from 'ember-runloop';
 import computed from 'ember-computed-decorators';
 import { underscore, capitalize } from 'ember-string';
+import get from 'ember-metal/get';
 
 // Checks if a given i18n lookup result is "empty". This is done by looking for the special text "Missing translation".
 function is18nValueMissing(safeStr) {
@@ -37,6 +38,15 @@ export default Component.extend(HighlightsEntities, {
    */
   model: null,
 
+  // Shortcut to the c2 POJO, which may be in 1 of 2 paths under the enrichment POJO.
+  @computed('model')
+  c2data: (model) => {
+    if (!model) {
+      return null;
+    }
+    return get(model, 'enrichment.http-packet.c2') || get(model, 'enrichment.http-log.c2');
+  },
+
   // Configuration for wiring up entities to context tooltip.
   // @see context/addon/mixins/highlights-entities
   autoHighlightEntities: true,
@@ -61,7 +71,10 @@ export default Component.extend(HighlightsEntities, {
 
     return (name, fullPath) => {
 
-      // First look for an i18n entry for the full path.
+      // First remove the C2 flow name (if present), since it is irrelevant.
+      name = name.replace('http-packet_', '').replace('http-log_', '');
+
+      // Next look for an i18n entry for the full path.
       // If no entry found for full path, lookup one for just the leaf property name.
       const result = i18n.t(
         `${prefix}${fullPath.replace(/\./g, '_')}`,

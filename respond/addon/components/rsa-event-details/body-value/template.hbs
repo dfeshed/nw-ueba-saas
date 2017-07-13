@@ -1,7 +1,23 @@
-{{#if (eq key 'timestamp')}}
+{{#if isTimestamp}}
   {{rsa-content-datetime timestamp=value withTimeAgo=true}}
 {{else if (eq fullPath 'type')}}
   {{t (concat 'respond.eventDetails.type.' value)}}
+{{else if (eq fullPath 'newdomain.age')}}
+  {{#with valueAsHours as |hours|}}
+    {{hours}} {{t 'respond.eventDetails.periodValue.hours'}}
+  {{/with}}
+{{else if (eq key 'period')}}
+  {{#with valueAsPeriod as |period|}}
+    {{#with period.hours as |hours|}}
+      {{hours}} {{t 'respond.eventDetails.periodValue.hours'}}
+    {{/with}}
+    {{#with period.minutes as |minutes|}}
+      {{minutes}} {{t 'respond.eventDetails.periodValue.minutes'}}
+    {{/with}}
+    {{#unless (eq period.seconds null)}}
+      {{period.seconds}} {{t 'respond.eventDetails.periodValue.seconds'}}
+    {{/unless}}
+  {{/with}}
 {{else}}
   {{value}}
 {{/if}}
