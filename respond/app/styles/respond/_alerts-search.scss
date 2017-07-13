@@ -47,13 +47,17 @@ $alertsSearchLineHeight: 2rem;
           line-height: 1.5;
         }
 
-        input[type=text] {
+        input[type="text"] {
           /* for consistency with ember-power-select's styling */
           line-height: $alertsSearchLineHeight;
           border-bottom: 1px solid rsa-color(gray, light);
+          height: 30px;
+          &:-ms-input-placeholder {
+            color: rsa-color(gray);
+          }
         }
 
-        .ember-power-select-trigger[aria-disabled=true] {
+        .ember-power-select-trigger[aria-disabled="true"] {
           /* overwrites defaults from component-lib, which would otherwise make the bg color light gray */
           background-color: transparent;
         }

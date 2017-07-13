@@ -91,12 +91,14 @@
       box-sizing: border-box;
     }
     textarea {
+      @include rsa-font(body, small);
       box-sizing: border-box;
       height: 100px;
       width: 100%;
       resize: none;
       background-color: transparent;
-      color: rsa-color(white)
+      color: rsa-color(white);
+
     }
     .metadata {
       display: block;

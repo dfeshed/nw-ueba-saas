@@ -61,6 +61,10 @@
     min-width: 30px;
     position: relative;
 
+    &:first-child { // checkbox cell should never show ellipsis
+      text-overflow: clip;
+    }
+
     .number-type {
       text-align: right;
     }

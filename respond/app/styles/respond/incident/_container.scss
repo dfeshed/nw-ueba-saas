@@ -43,6 +43,7 @@ $tasksAndJournalPanelWidth: 400px;
       height: 100%;
       z-index: 2;
       pointer-events: auto;
+      width: $tasksAndJournalPanelWidth;
       max-width: $tasksAndJournalPanelWidth;
       background-color: rsa-color(gray, darker, $rsa-somewhat-opaque);
 

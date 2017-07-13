@@ -103,6 +103,7 @@ $incidentInspectorResizerBleed: ($incidentInspectorResizerWidth - 1px) / 2;
   }
 
   &__toolbar {
+    min-height: 25px;
     border-bottom: 1px solid rsa-color(gray,light,$rsa-nearly-transparent);
 
     .rsa-tab {
