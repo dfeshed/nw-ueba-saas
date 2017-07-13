@@ -6,6 +6,10 @@ import fortscale.common.general.CommonStrings;
 import fortscale.common.general.DataSource;
 import fortscale.domain.core.AbstractAuditableDocument;
 import fortscale.utils.logging.Logger;
+import fortscale.utils.monitoring.aspect.annotations.End;
+import fortscale.utils.monitoring.aspect.annotations.RunTime;
+import fortscale.utils.monitoring.aspect.annotations.Start;
+import org.aspectj.lang.annotation.Before;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.input.core.services.converters.DlpFileConverter;
 import presidio.input.core.services.data.AdeDataService;
@@ -30,11 +34,16 @@ public class InputExecutionServiceImpl implements PresidioExecutionService {
     }
 
     @Override
+    @RunTime
+    @Start
+    @End
     public void run(DataSource dataSource, Instant startDate, Instant endDate, Double fixedDuration) throws Exception {
         logger.info("Started input processing with params: data source:{}, from {}:{}, until {}:{}.",dataSource, CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate, CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
 
         final List<? extends AbstractAuditableDocument> dataRecords = find(dataSource, startDate, endDate);
         logger.info("Found {} dataRecords for datasource:{}, startTime:{}, endTime:{}.", dataSource, startDate, endDate);
+
+        Thread.sleep(10000);
 
         final List<DlpFileEnrichedDocument> enrichedRecords = enrich(dataRecords);
 

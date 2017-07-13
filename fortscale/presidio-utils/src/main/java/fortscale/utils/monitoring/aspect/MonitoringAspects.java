@@ -1,5 +1,7 @@
 package fortscale.utils.monitoring.aspect;
 
+import com.sun.rowset.internal.WebRowSetXmlReader;
+import fortscale.utils.logging.Logger;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.After;
@@ -24,6 +26,7 @@ import static fortscale.utils.monitoring.aspect.MetricsNames.START;
 @Component
 public class MonitoringAspects {
 
+    private static final Logger logger = Logger.getLogger(MonitoringAspects.class);
 
     @Autowired
     private DropwizardMetricServices counterService;
@@ -40,7 +43,9 @@ public class MonitoringAspects {
 
     @Before("@annotation(fortscale.utils.monitoring.aspect.annotations.Start)")
     public void start(JoinPoint joinPoint) {
-        counterService.increment(new StringBuilder(joinPoint.getSignature().toShortString()).append(START).toString());
+        String metric = joinPoint.getSignature().toShortString();
+        logger.info("Metric {} increment with annotation Start. ", metric);
+        counterService.increment(new StringBuilder(metric).append(START).toString());
     }
 
     /**
@@ -54,7 +59,9 @@ public class MonitoringAspects {
 
     @After("@annotation(fortscale.utils.monitoring.aspect.annotations.End)")
     public void end(JoinPoint joinPoint) {
-        counterService.increment(new StringBuilder(joinPoint.getSignature().toShortString()).append(END).toString());
+        String metric  = joinPoint.getSignature().toShortString();
+        logger.info("Metric {} increment with annotation End. ", metric);
+        counterService.increment(new StringBuilder(metric).append(END).toString());
     }
 
     /**
@@ -68,7 +75,10 @@ public class MonitoringAspects {
 
     @AfterThrowing("@annotation(fortscale.utils.monitoring.aspect.annotations.ExceptionThrown)")
     public void exceptionThrown(JoinPoint joinPoint) {
-        counterService.increment(new StringBuilder(joinPoint.getSignature().toShortString()).append(EXCEPTION_THROWN).toString());
+        String metric  = joinPoint.getSignature().toShortString();
+        logger.info("Metric {} increment with annotation exceptionThrown. ", metric);
+        counterService.increment(new StringBuilder(metric).append(EXCEPTION_THROWN).toString());
+
     }
 
     /**
@@ -82,11 +92,13 @@ public class MonitoringAspects {
 
     @Around("@annotation(fortscale.utils.monitoring.aspect.annotations.RunTime)")
     public void runTime(ProceedingJoinPoint joinPoint) throws Throwable {
-        String metricName = new StringBuilder(joinPoint.getSignature().toShortString()).append(RUN_TIME).toString();
+        String metricName = joinPoint.getSignature().toShortString();
         long startTime = System.nanoTime();
         joinPoint.proceed();
         long endTime = System.nanoTime();
-        counterService.submit(metricName, endTime - startTime);
+        long time=Long.divideUnsigned(endTime-startTime,1000000000);
+        counterService.submit(new StringBuilder(metricName).append(RUN_TIME).toString(), time);
+        logger.info("Metric {} run time is {} milli seconds. ", metricName,time);
     }
 
     /**
@@ -100,9 +112,10 @@ public class MonitoringAspects {
      */
     @Around("@annotation(fortscale.utils.monitoring.aspect.annotations.NumberOfFailedValidation)")
     public void numberOfFailedValidation(ProceedingJoinPoint joinPoint) throws Throwable {
-        String metricName = new StringBuilder(joinPoint.getSignature().toShortString()).append(NUMBER_OF_FAILED_VALIDATION).toString();
+        String metricName = joinPoint.getSignature().toShortString();
         int numberOfFailedValidationDocuments = ((List<? extends Serializable>) joinPoint.proceed()).size();
-        counterService.submit(metricName, numberOfFailedValidationDocuments);
+        counterService.submit(new StringBuilder(metricName).append(NUMBER_OF_FAILED_VALIDATION).toString(), numberOfFailedValidationDocuments);
+        logger.info("Metric {} got {} failed validations. ", metricName, numberOfFailedValidationDocuments);
     }
 
 }

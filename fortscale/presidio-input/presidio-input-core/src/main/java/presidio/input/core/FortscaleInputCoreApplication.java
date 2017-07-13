@@ -15,10 +15,10 @@ import presidio.input.core.spring.InputProductionConfiguration;
 
 
 @SpringBootApplication
-@ComponentScan(
+/*@ComponentScan(
         excludeFilters = { //only scan for spring-boot beans
                 @ComponentScan.Filter(type = FilterType.REGEX, pattern = "fortscale.*"),
-                @ComponentScan.Filter(type = FilterType.REGEX, pattern = "presidio.*")})
+                @ComponentScan.Filter(type = FilterType.REGEX, pattern = "presidio.*")})*/
 public class FortscaleInputCoreApplication extends PresidioShellableApplication {
 
 
