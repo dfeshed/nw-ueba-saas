@@ -10,15 +10,15 @@ import java.time.Instant;
 @Document
 public class AuthenticationRawEvent extends AbstractAuditableDocument {
 
-    public static final String DATA_SOURCE_FIELD_NAME = "operationType";
-    public static final String AUTHENTICATION_TYPE_FIELD_NAME = "operationType";
-    public static final String IS_DST_MACHINE_REMOTE_FIELD_NAME = "operationType";
-    public static final String NORMALIZED_DST_MACHINE_FIELD_NAME = "operationType";
-    public static final String NORMALIZED_SRC_MACHINE_FIELD_NAME = "operationType";
-    public static final String RESILT_FIELD_NAME = "operationType";
-    public static final String NORMALIZED_USERNAME_FIELD_NAME = "operationType";
-    public static final String RESULT_CODE_FIELD_NAME = "operationType";
-    private static final String EVENT_ID_FIELD_NAME = "eventId";
+    public static final String DATA_SOURCE_FIELD_NAME = "dataSource";
+    public static final String AUTHENTICATION_TYPE_FIELD_NAME = "authenticationType";
+    public static final String IS_DST_MACHINE_REMOTE_FIELD_NAME = "isDstMachineRemote";
+    public static final String NORMALIZED_DST_MACHINE_FIELD_NAME = "normalizedDstMachine";
+    public static final String NORMALIZED_SRC_MACHINE_FIELD_NAME = "normalizedSrcMachine";
+    public static final String RESULT_FIELD_NAME = "result";
+    public static final String NORMALIZED_USERNAME_FIELD_NAME = "normalizedUsername";
+    public static final String RESULT_CODE_FIELD_NAME = "resultCode";
+    public static final String EVENT_ID_FIELD_NAME = "eventId";
 
     @Field(DATA_SOURCE_FIELD_NAME)
     @NotEmpty
@@ -36,7 +36,7 @@ public class AuthenticationRawEvent extends AbstractAuditableDocument {
     @Field(NORMALIZED_USERNAME_FIELD_NAME)
     @NotEmpty
     private String normalizedUsername;
-    @Field(RESILT_FIELD_NAME)
+    @Field(RESULT_FIELD_NAME)
     private EventResult result;
     @Field(RESULT_CODE_FIELD_NAME)
     private AuthenticationResultCode resultCode;

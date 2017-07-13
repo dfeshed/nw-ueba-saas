@@ -7,6 +7,8 @@ import fortscale.domain.core.AbstractAuditableDocument;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import presidio.adapter.services.api.FetchService;
+import presidio.sdk.api.domain.ActiveDirectoryRawEvent;
+import presidio.sdk.api.domain.AuthenticationRawEvent;
 import presidio.sdk.api.domain.DlpFileDataDocument;
 import presidio.sdk.api.domain.FileRawEvent;
 import presidio.sdk.api.services.CoreManagerService;
@@ -85,6 +87,19 @@ public class AdapterExecutionServiceImpl implements PresidioExecutionService {
                 for (String[] record : records) {
                     createdDocuments.add(new FileRawEvent(record));
                 }
+                break;
+            }
+            case ACTIVE_DIRECTORY:{
+                for (String[] record : records) {
+                    createdDocuments.add(new ActiveDirectoryRawEvent(record));
+                }
+                break;
+            }
+            case AUTHENTICATION:{
+                for (String[] record : records) {
+                    createdDocuments.add(new AuthenticationRawEvent(record));
+                }
+                break;
             }
             default: {
                 //should not happen

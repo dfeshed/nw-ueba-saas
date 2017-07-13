@@ -19,7 +19,7 @@ public class ActiveDirectoryRawEvent extends AbstractAuditableDocument {
     private static final String EVENT_ID_FIELD_NAME = "eventId";
 
     @Field(OPERATION_TYPE_FIELD_NAME)
-    private ActiveDiractoryOperationType operationType;//enum
+    private ActiveDirectoryOperationType operationType;
     @Field(IS_SECURITY_SENSITIVE_OPERATION_FIELD_NAME)
     private boolean isSecuritySensitiveOperation;
     @Field(IS_USER_ADMINISTRATOR_FIELD_NAME)
@@ -36,7 +36,7 @@ public class ActiveDirectoryRawEvent extends AbstractAuditableDocument {
     @Field(EVENT_ID_FIELD_NAME)
     private String eventId;
 
-    public ActiveDirectoryRawEvent(ActiveDiractoryOperationType operationType, boolean isSecuritySensitiveOperation,
+    public ActiveDirectoryRawEvent(ActiveDirectoryOperationType operationType, boolean isSecuritySensitiveOperation,
                                    boolean isUserAdministrator, String objectName, EventResult result,
                                    String normalizesUsername, String eventId) {
         this.operationType = operationType;
@@ -51,7 +51,7 @@ public class ActiveDirectoryRawEvent extends AbstractAuditableDocument {
     public ActiveDirectoryRawEvent(String[] event) {
         dateTime = Instant.parse(event[0]);
         this.eventId = event[1];
-        this.operationType = ActiveDiractoryOperationType.valueOf(event[2]);
+        this.operationType = ActiveDirectoryOperationType.valueOf(event[2]);
         this.isSecuritySensitiveOperation = Boolean.valueOf(event[3]);
         this.isUserAdministrator = Boolean.valueOf(event[4]);
         this.objectName = event[5];
@@ -62,11 +62,11 @@ public class ActiveDirectoryRawEvent extends AbstractAuditableDocument {
     public ActiveDirectoryRawEvent() {
     }
 
-    public ActiveDiractoryOperationType getOperationType() {
+    public ActiveDirectoryOperationType getOperationType() {
         return operationType;
     }
 
-    public void setOperationType(ActiveDiractoryOperationType operationType) {
+    public void setOperationType(ActiveDirectoryOperationType operationType) {
         this.operationType = operationType;
     }
 

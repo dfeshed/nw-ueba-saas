@@ -1,9 +1,6 @@
 package presidio.sdk.api.domain;
 
-/**
- * Created by alexp on 11-Jul-17.
- */
-public enum ActiveDiractoryOperationType {
+public enum ActiveDirectoryOperationType {
     ACCOUNT_MANAGEMENT,
     PASSWORD_CHANGED,
     PASSWORD_CHANGED_BY_NON_OWNER,

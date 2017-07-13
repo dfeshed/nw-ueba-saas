@@ -22,12 +22,12 @@ public class FileRawEvent extends AbstractAuditableDocument {
     public static final String FILE_SIZE_FIELD_NAME = "fileSize";
     public static final String IS_SRC_DRIVE_SHARED_FIELD_NAME = "isSrcDriveShared";
     public static final String IS_DST_DRIVE_SHARED_FIELD_NAME = "isDstDriveShared";
+    public static final String EVENT_ID_FIELD_NAME = "eventId";
 
 
     @NotEmpty
     @Field(DATA_SOURCE_FIELD_NAME)
     private String dataSource;
-    @NotEmpty
     @Field(OPERATION_TYPE_FIELD_NAME)
     private FileOperationType operationType;
     @NotEmpty
@@ -49,13 +49,16 @@ public class FileRawEvent extends AbstractAuditableDocument {
     private boolean isSrcDriveShared;
     @Field(IS_DST_DRIVE_SHARED_FIELD_NAME)
     private boolean isDstDriveShared;
+    @NotEmpty
+    @Field(EVENT_ID_FIELD_NAME)
+    private String eventId;
 
     public FileRawEvent() {
     }
 
     public FileRawEvent(String dataSource, FileOperationType operationType, String normalizedUsername, EventResult result,
                         String srcFilePath, String dstFilePath, String srcFolderPath, String dstFolderPath, Long fileSize,
-                        boolean isSrcDriveShared, boolean isDstDriveShared) {
+                        boolean isSrcDriveShared, boolean isDstDriveShared, String eventId) {
         this.dataSource = dataSource;
         this.operationType = operationType;
         this.normalizedUsername = normalizedUsername;
@@ -67,21 +70,23 @@ public class FileRawEvent extends AbstractAuditableDocument {
         this.fileSize = fileSize;
         this.isSrcDriveShared = isSrcDriveShared;
         this.isDstDriveShared = isDstDriveShared;
+        this.eventId = eventId;
     }
 
     public FileRawEvent(String[] record) {
         dateTime = Instant.parse(record[0]);
-        this.dataSource = record[1];
-        this.operationType = FileOperationType.valueOf(record[2]);
-        this.normalizedUsername = record[3];
-        this.result = EventResult.valueOf(record[4]);
-        this.srcFilePath = record[5];
-        this.dstFilePath = record[6];
-        this.srcFolderPath = record[7];
-        this.dstFolderPath = record[8];
-        this.fileSize = Long.valueOf(record[9]);
-        this.isSrcDriveShared = Boolean.getBoolean(record[10]);
-        this.isDstDriveShared = Boolean.getBoolean(record[11]);
+        this.eventId = record[1];
+        this.dataSource = record[2];
+        this.operationType = FileOperationType.valueOf(record[3]);
+        this.normalizedUsername = record[4];
+        this.result = EventResult.valueOf(record[5]);
+        this.srcFilePath = record[6];
+        this.dstFilePath = record[7];
+        this.srcFolderPath = record[8];
+        this.dstFolderPath = record[9];
+        this.fileSize = Long.valueOf(record[10]);
+        this.isSrcDriveShared = Boolean.getBoolean(record[11]);
+        this.isDstDriveShared = Boolean.getBoolean(record[12]);
     }
 
     public String getDataSource() {
