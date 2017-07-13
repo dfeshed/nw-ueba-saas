@@ -25,6 +25,8 @@ import presidio.ade.domain.store.scored.ScoredEnrichedDataStoreMongoConfig;
         AdeRecordReaderFactoriesConfig.class
 })
 public class EnrichedEventsScoringServiceConfig {
+
+
     @Autowired
     private RecordReaderFactoryService recordReaderFactoryService;
     @Autowired
@@ -34,6 +36,7 @@ public class EnrichedEventsScoringServiceConfig {
     @Autowired
     private AdeEnrichedScoredRecordBuilder adeEnrichedScoredRecordBuilder;
 
+
     @Bean
     public EnrichedEventsScoringService enrichedEventsScoringService() {
         return new EnrichedEventsScoringServiceImpl(
@@ -42,4 +45,6 @@ public class EnrichedEventsScoringServiceConfig {
                 scoredEnrichedDataStore,
                 adeEnrichedScoredRecordBuilder);
     }
+
+
 }

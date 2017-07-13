@@ -3,12 +3,15 @@ package fortscale.aggregation.feature.bucket;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import fortscale.common.feature.Feature;
-import fortscale.utils.time.TimeUtils;
-import fortscale.utils.time.TimestampUtils;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-import java.util.*;
+
+import java.time.Instant;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @JsonAutoDetect(fieldVisibility=Visibility.ANY, getterVisibility=Visibility.NONE,isGetterVisibility = Visibility.NONE, setterVisibility=Visibility.NONE)
 public class FeatureBucket {
@@ -26,9 +29,9 @@ public class FeatureBucket {
 	private String id;
 
 	@Field(START_TIME_FIELD)
-	private long startTime;
+	private Instant startTime;
 	@Field(END_TIME_FIELD)
-	private long endTime;
+	private Instant endTime;
 	@Field(FEATURE_BUCKET_CONF_NAME_FIELD)
 	private String featureBucketConfName;
 	@Field(CONTEXT_FIELD_NAMES_FIELD)
@@ -46,19 +49,19 @@ public class FeatureBucket {
 
 	private Map<String, Feature> aggregatedFeatures = new HashMap<>();
 
-	public long getStartTime() {
+	public Instant getStartTime() {
 		return startTime;
 	}
 
-	public void setStartTime(long startTime) {
+	public void setStartTime(Instant startTime) {
 		this.startTime = startTime;
 	}
 
-	public long getEndTime() {
+	public Instant getEndTime() {
 		return endTime;
 	}
 
-	public void setEndTime(long endTime) {
+	public void setEndTime(Instant endTime) {
 		this.endTime = endTime;
 	}
 
@@ -146,8 +149,8 @@ public class FeatureBucket {
 	@Override
 	public String toString() {
 		return "FeatureBucket{" +
-				"startTime=" + TimeUtils.getFormattedTime(TimestampUtils.convertToMilliSeconds(startTime)) +
-				", endTime=" + TimeUtils.getFormattedTime(TimestampUtils.convertToMilliSeconds(endTime)) +
+				"startTime=" + startTime +
+				", endTime=" + endTime +
 				", id='" + id + '\'' +
 				", bucketId='" + bucketId + '\'' +
 				'}';

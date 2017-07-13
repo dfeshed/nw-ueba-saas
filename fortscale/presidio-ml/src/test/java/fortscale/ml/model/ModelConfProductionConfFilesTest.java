@@ -22,6 +22,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 import org.springframework.context.annotation.Bean;
@@ -67,7 +68,9 @@ public class ModelConfProductionConfFilesTest {
 		private String bucketConfJsonAdditionalFilesPath;
 
 		@Bean
-		public BucketConfigurationService bucketConfigurationService() {
+		@Qualifier("modelBucketConfigService")
+		public BucketConfigurationService modelBucketConfigService()
+		{
 			return new BucketConfigurationService(bucketConfJsonFilePath, bucketConfJsonOverridingFilesPath,bucketConfJsonAdditionalFilesPath);
 		}
 

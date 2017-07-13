@@ -1,6 +1,7 @@
 package fortscale.ml.processes.shell.model.aggregation;
 
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,7 +19,8 @@ public class ModelAggregationBucketConfigurationServiceConfig {
     private String bucketConfJsonAdditionalFilesPath;
 
     @Bean
-    public BucketConfigurationService bucketConfigurationService()
+    @Qualifier("modelBucketConfigService")
+    public BucketConfigurationService modelBucketConfigService()
     {
         return new BucketConfigurationService(bucketConfJsonFilePath, bucketConfJsonOverridingFilesPath,bucketConfJsonAdditionalFilesPath);
     }

@@ -7,6 +7,7 @@ import fortscale.ml.scorer.records.RecordReaderFactoryServiceConfig;
 import fortscale.ml.scorer.records.TransformationConfig;
 import fortscale.utils.recordreader.RecordReaderFactoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -23,6 +24,7 @@ import org.springframework.context.annotation.Import;
 public class InMemoryFeatureBucketAggregatorConfig {
 
     @Autowired
+    @Qualifier("modelBucketConfigService")
     private BucketConfigurationService bucketConfigurationService;
     @Autowired
     private RecordReaderFactoryService recordReaderFactoryService;

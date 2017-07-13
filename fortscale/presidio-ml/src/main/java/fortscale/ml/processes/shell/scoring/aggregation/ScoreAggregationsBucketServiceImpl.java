@@ -17,7 +17,7 @@ public class ScoreAggregationsBucketServiceImpl implements ScoreAggregationsBuck
     private BucketConfigurationService bucketConfigurationService;
     private RecordReaderFactoryService recordReaderFactoryService;
     private FeatureBucketAggregator featureBucketAggregator;
-    FeatureBucketsAggregatorInMemory featureBucketsInMemory;
+    private FeatureBucketsAggregatorInMemory featureBucketsInMemory;
 
     public ScoreAggregationsBucketServiceImpl(BucketConfigurationService bucketConfigurationService, RecordReaderFactoryService recordReaderFactoryService) {
         this.bucketConfigurationService = bucketConfigurationService;
