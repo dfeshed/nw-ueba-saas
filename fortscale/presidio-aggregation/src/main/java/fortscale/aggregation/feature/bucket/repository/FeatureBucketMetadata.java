@@ -51,8 +51,8 @@ public class FeatureBucketMetadata {
 	public FeatureBucketMetadata() {}
 
 	public FeatureBucketMetadata(FeatureBucket featureBucket) {
-		this.startTime = featureBucket.getStartTime();
-		this.endTime = featureBucket.getEndTime();
+		this.startTime = featureBucket.getStartTime().toEpochMilli();
+		this.endTime = featureBucket.getEndTime().toEpochMilli();
 		this.strategyId = featureBucket.getStrategyId();
 		this.bucketId = featureBucket.getBucketId();
 		this.featureBucketConfName = featureBucket.getFeatureBucketConfName();

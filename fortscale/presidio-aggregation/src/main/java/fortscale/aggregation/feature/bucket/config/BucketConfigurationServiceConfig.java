@@ -1,6 +1,7 @@
 package fortscale.aggregation.feature.bucket.config;
 
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,6 +22,7 @@ public class BucketConfigurationServiceConfig {
     private String bucketConfJsonAdditionalFilesPath;
 
     @Bean
+    @Qualifier("bucketConfigurationService")
     public BucketConfigurationService bucketConfigurationService()
     {
         return new BucketConfigurationService(dataSourceFieldName, bucketConfJsonFilePath, bucketConfJsonOverridingFilesPath,bucketConfJsonAdditionalFilesPath);

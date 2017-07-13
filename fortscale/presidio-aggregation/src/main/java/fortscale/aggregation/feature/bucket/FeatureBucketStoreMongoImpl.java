@@ -9,6 +9,7 @@ import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -45,12 +46,14 @@ public class FeatureBucketStoreMongoImpl implements FeatureBucketStore {
 	 */
 	@Override
 	public Set<String> getDistinctContextIds(FeatureBucketConf featureBucketConf, TimeRange timeRange) {
-		long startInSeconds = timeRange.getStart().getEpochSecond();
-		long endInSeconds = timeRange.getEnd().getEpochSecond();
-		Query query = new Query(Criteria.where(FeatureBucket.START_TIME_FIELD).gte(startInSeconds).lt(endInSeconds));
+		Query query = new Query(Criteria.where(FeatureBucket.START_TIME_FIELD)
+				.gte(Date.from(timeRange.getStart()))
+				.lt(Date.from(timeRange.getEnd())));
+
 		List<?> distinctContextIds = mongoTemplate
 				.getCollection(getCollectionName(featureBucketConf))
 				.distinct(FeatureBucket.CONTEXT_ID_FIELD, query.getQueryObject());
+
 		return distinctContextIds.stream().map(Object::toString).collect(Collectors.toSet());
 	}
 
@@ -60,12 +63,9 @@ public class FeatureBucketStoreMongoImpl implements FeatureBucketStore {
 	@Override
 	public List<FeatureBucket> getFeatureBuckets(
 			String featureBucketConfName, Set<String> contextIds, TimeRange timeRange) {
-
-		long startInSeconds = timeRange.getStart().getEpochSecond();
-		long endInSeconds = timeRange.getEnd().getEpochSecond();
 		Query query = new Query()
 				.addCriteria(Criteria.where(FeatureBucket.CONTEXT_ID_FIELD).in(contextIds))
-				.addCriteria(Criteria.where(FeatureBucket.START_TIME_FIELD).gte(startInSeconds).lt(endInSeconds));
+				.addCriteria(Criteria.where(FeatureBucket.START_TIME_FIELD).gte(timeRange.getStart()).lt(timeRange.getEnd()));
 		return mongoTemplate.find(query, FeatureBucket.class, getCollectionName(featureBucketConfName));
 	}
 

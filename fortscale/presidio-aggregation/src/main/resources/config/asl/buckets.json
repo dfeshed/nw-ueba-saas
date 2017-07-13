@@ -34,17 +34,6 @@
           }
         },
         {
-          "name": "number_of_events_per_hour_histogram",
-          "featureNamesMap": {
-            "groupBy": [
-              "hour"
-            ]
-          },
-          "aggrFeatureFuncJson": {
-            "type": "aggr_feature_histogram_func"
-          }
-        },
-        {
           "name": "highest_date_time_score",
           "featureNamesMap": {
             "maximize": [
