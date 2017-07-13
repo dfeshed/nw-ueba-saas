@@ -15,7 +15,7 @@
           "name": "highest_date_time_score",
           "featureNamesMap": {
             "maximize": [
-              "date_time_score"
+              "date_time_unix.normalized_username.dlpfile.scorer"
             ]
           },
           "aggrFeatureFuncJson": {
@@ -29,7 +29,7 @@
               "context.normalizedSrcMachine"
             ],
             "maximize": [
-              "normalized_src_machine_score"
+              "normalized_src_machine.normalized_username.dlpfile.scorer"
             ]
           },
           "aggrFeatureFuncJson": {
@@ -53,7 +53,7 @@
           "name": "highest_date_time_score",
           "featureNamesMap": {
             "maximize": [
-              "date_time_score"
+              "date_time_unix.normalized_username.dlpfile.scorer"
             ]
           },
           "aggrFeatureFuncJson": {
@@ -67,7 +67,7 @@
               "context.normalizedSrcMachine"
             ],
             "maximize": [
-              "normalized_src_machine_score"
+              "normalized_src_machine.normalized_username.dlpfile.scorer"
             ]
           },
           "aggrFeatureFuncJson": {

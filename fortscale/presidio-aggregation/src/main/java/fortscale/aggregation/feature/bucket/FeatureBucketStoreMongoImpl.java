@@ -9,12 +9,12 @@ import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-import static org.springframework.data.mongodb.core.query.Criteria.where;
 /**
  * A Mongo based {@link FeatureBucketStore}.
  */
@@ -46,9 +46,9 @@ public class FeatureBucketStoreMongoImpl implements FeatureBucketStore {
 	 */
 	@Override
 	public Set<String> getDistinctContextIds(FeatureBucketConf featureBucketConf, TimeRange timeRange) {
-		Query query = new Query(where(FeatureBucket.START_TIME_FIELD)
-				.gte(timeRange.getStart().getEpochSecond())
-				.lt(timeRange.getEnd().getEpochSecond()));
+		Query query = new Query(Criteria.where(FeatureBucket.START_TIME_FIELD)
+				.gte(Date.from(timeRange.getStart()))
+				.lt(Date.from(timeRange.getEnd())));
 
 		List<?> distinctContextIds = mongoTemplate
 				.getCollection(getCollectionName(featureBucketConf))
