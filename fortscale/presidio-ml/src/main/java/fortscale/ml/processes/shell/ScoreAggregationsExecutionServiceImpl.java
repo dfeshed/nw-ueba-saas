@@ -1,6 +1,6 @@
 package fortscale.ml.processes.shell;
 
-import fortscale.aggregation.creator.AggregationsCreator;
+import fortscale.aggregation.creator.AggregationRecordsCreator;
 import fortscale.common.general.DataSource;
 import fortscale.common.shell.PresidioExecutionService;
 import fortscale.ml.processes.shell.scoring.aggregation.ScoreAggregationsBucketService;
@@ -17,19 +17,19 @@ public class ScoreAggregationsExecutionServiceImpl implements PresidioExecutionS
 	private EnrichedEventsScoringService enrichedEventsScoringService;
 	private EnrichedDataStore enrichedDataStore;
 	private ScoreAggregationsBucketService scoreAggregationsBucketService;
-	private AggregationsCreator aggregationsCreator;
+	private AggregationRecordsCreator aggregationRecordsCreator;
 	private AggrDataStore aggrDataStore;
 
 	public ScoreAggregationsExecutionServiceImpl(
-			EnrichedEventsScoringService enrichedEventsScoringService,
-			EnrichedDataStore enrichedDataStore,
-			ScoreAggregationsBucketService scoreAggregationsBucketService,
-			AggregationsCreator aggregationsCreator, AggrDataStore aggrDataStore) {
+            EnrichedEventsScoringService enrichedEventsScoringService,
+            EnrichedDataStore enrichedDataStore,
+            ScoreAggregationsBucketService scoreAggregationsBucketService,
+            AggregationRecordsCreator aggregationRecordsCreator, AggrDataStore aggrDataStore) {
 
 		this.enrichedEventsScoringService = enrichedEventsScoringService;
 		this.enrichedDataStore = enrichedDataStore;
 		this.scoreAggregationsBucketService = scoreAggregationsBucketService;
-		this.aggregationsCreator = aggregationsCreator;
+		this.aggregationRecordsCreator = aggregationRecordsCreator;
 		this.aggrDataStore = aggrDataStore;
 	}
 
@@ -38,7 +38,7 @@ public class ScoreAggregationsExecutionServiceImpl implements PresidioExecutionS
 		FixedDurationStrategy strategy = FixedDurationStrategy.fromSeconds(fixedDurationStrategyInSeconds.longValue());
 		ScoreAggregationsService service = new ScoreAggregationsService(
 				strategy, enrichedDataStore, enrichedEventsScoringService,
-				scoreAggregationsBucketService,aggregationsCreator,aggrDataStore);
+				scoreAggregationsBucketService, aggregationRecordsCreator,aggrDataStore);
 		service.execute(new TimeRange(startInstant, endInstant), dataSource.getName());
 	}
 

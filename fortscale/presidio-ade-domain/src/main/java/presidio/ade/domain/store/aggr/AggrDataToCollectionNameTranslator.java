@@ -8,7 +8,7 @@ import java.util.Collection;
 /**
  * Created by barak_schuster on 7/10/17.
  */
-public class AggrDataAdeToCollectionNameTranslator implements AdeToCollectionNameTranslator<AggrRecordsMetadata> {
+public class AggrDataToCollectionNameTranslator implements AdeToCollectionNameTranslator<AggrRecordsMetadata> {
     private static final String AGGR_COLLECTION_PREFIX = "aggr_";
 
     @Override
