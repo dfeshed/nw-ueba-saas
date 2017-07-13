@@ -10,12 +10,12 @@ import org.springframework.data.mongodb.core.MongoTemplate;
  * Created by barak_schuster on 7/10/17.
  */
 @Configuration
-@Import(AggrDataAdeToCollectionNameTranslatorConfig.class)
+@Import(AggrDataToCollectionNameTranslatorConfig.class)
 public class AggrDataStoreConfig {
     @Autowired
     public MongoTemplate mongoTemplate;
     @Autowired
-    public AggrDataAdeToCollectionNameTranslator translator;
+    public AggrDataToCollectionNameTranslator translator;
 
     @Bean
     public AggrDataStore aggrDataStore()
