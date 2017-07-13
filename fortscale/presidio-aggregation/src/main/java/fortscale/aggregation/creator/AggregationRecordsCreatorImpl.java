@@ -7,7 +7,7 @@ import fortscale.aggregation.feature.functions.IAggrFeatureEventFunctionsService
 import fortscale.common.feature.AggrFeatureValue;
 import fortscale.common.feature.Feature;
 import fortscale.utils.ConversionUtils;
-import presidio.ade.domain.record.aggregated.AdeAggrRecord;
+import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.record.aggregated.AggregatedFeatureType;
 
 import java.time.Instant;
@@ -19,18 +19,18 @@ import java.util.Map;
 /**
  * Created by barak_schuster on 6/14/17.
  */
-public class AggregationsCreatorImpl implements AggregationsCreator {
+public class AggregationRecordsCreatorImpl implements AggregationRecordsCreator {
     private final IAggrFeatureEventFunctionsService aggrFeatureEventFunctionsService;
     private final AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
 
-    public AggregationsCreatorImpl(IAggrFeatureEventFunctionsService aggrFeatureEventFunctionsService, AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService) {
+    public AggregationRecordsCreatorImpl(IAggrFeatureEventFunctionsService aggrFeatureEventFunctionsService, AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService) {
         this.aggrFeatureEventFunctionsService = aggrFeatureEventFunctionsService;
         this.aggregatedFeatureEventsConfService = aggregatedFeatureEventsConfService;
     }
 
     @Override
-    public List<AdeAggrRecord> createAggregations(List<FeatureBucket> featureBuckets) {
-        List<AdeAggrRecord> aggrRecords = new ArrayList<>();
+    public List<AdeAggregationRecord> createAggregationRecords(List<FeatureBucket> featureBuckets) {
+        List<AdeAggregationRecord> aggrRecords = new ArrayList<>();
         if (featureBuckets != null) {
             for (FeatureBucket featureBucket : featureBuckets) {
                 Map<String, Feature> aggregatedFeatures = featureBucket.getAggregatedFeatures();
@@ -56,9 +56,9 @@ public class AggregationsCreatorImpl implements AggregationsCreator {
                     Map<String, Object> aggregatedFeatureInfo = featureValue.getAdditionalInformationMap();
                     String aggregatedFeatureName = aggregatedFeatureEventConf.getName();
 
-                    AggregatedFeatureType aggregatedFeatureType = AggregatedFeatureType.fromConfStringType(aggregatedFeatureEventConf.getType());
-                    AdeAggrRecord adeAggrRecord = new AdeAggrRecord(startTime, endTime, aggregatedFeatureInfo, aggregatedFeatureName, aggregatedFeatureValue, featureBucketConfName, contextFieldNameToValueMap, aggregatedFeatureType);
-                    aggrRecords.add(adeAggrRecord);
+                    AggregatedFeatureType aggregatedFeatureType = AggregatedFeatureType.fromCodeRepresentation(aggregatedFeatureEventConf.getType());
+                    AdeAggregationRecord adeAggregationRecord = new AdeAggregationRecord(startTime, endTime, aggregatedFeatureName, aggregatedFeatureValue, featureBucketConfName, contextFieldNameToValueMap, aggregatedFeatureType);
+                    aggrRecords.add(adeAggregationRecord);
                 }
             }
         }

@@ -22,8 +22,8 @@ public class AggregationsCreatorConfig {
     private AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
 
     @Bean
-    public AggregationsCreator aggregationsCreator()
+    public AggregationRecordsCreator aggregationsCreator()
     {
-        return new AggregationsCreatorImpl(aggrFeatureEventFunctionsService,aggregatedFeatureEventsConfService);
+        return new AggregationRecordsCreatorImpl(aggrFeatureEventFunctionsService,aggregatedFeatureEventsConfService);
     }
 }

@@ -38,12 +38,11 @@ public class DlpFileDataDocument extends AbstractAuditableDocument {
     public static final String SOURCE_DRIVE_TYPE_FIELD_NAME = "sourceDriveType";
     public static final String DESTINATION_DRIVE_TYPE_FIELD_NAME = "destinationDriveType";
     public static final String EVENT_TYPE_FIELD_NAME = "eventType";
-
     public static final String COPY_EVENT_TYPE = "copy";
     public static final String MOVE_EVENT_TYPE = "move";
     public static final String RECYCLE_EVENT_TYPE = "recycle";
     public static final String DELET_EVENT_TYPE = "delete";
-
+    public static final String OPEN_EVENT_TYPE = "open";
     private static final Logger logger = Logger.getLogger(DlpFileDataDocument.class);
     @Field(DATE_TIME_UNIX_FIELD_NAME)
     protected long dateTimeUnix;
@@ -104,7 +103,7 @@ public class DlpFileDataDocument extends AbstractAuditableDocument {
 
     @Field(EVENT_TYPE_FIELD_NAME)
     @NotEmpty
-    @AcceptableValues(fieldValues = {DlpFileDataDocument.COPY_EVENT_TYPE, DlpFileDataDocument.MOVE_EVENT_TYPE, DlpFileDataDocument.RECYCLE_EVENT_TYPE, DlpFileDataDocument.DELET_EVENT_TYPE})
+    @AcceptableValues(fieldValues = {DlpFileDataDocument.OPEN_EVENT_TYPE, DlpFileDataDocument.COPY_EVENT_TYPE, DlpFileDataDocument.MOVE_EVENT_TYPE, DlpFileDataDocument.RECYCLE_EVENT_TYPE, DlpFileDataDocument.DELET_EVENT_TYPE})
     protected String eventType;
 
 

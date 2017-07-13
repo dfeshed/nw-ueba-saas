@@ -1,6 +1,6 @@
 package fortscale.ml.processes.shell;
 
-import fortscale.aggregation.creator.AggregationsCreator;
+import fortscale.aggregation.creator.AggregationRecordsCreator;
 import fortscale.aggregation.creator.AggregationsCreatorConfig;
 import fortscale.common.shell.PresidioExecutionService;
 import fortscale.ml.model.cache.EventModelsCacheServiceConfig;
@@ -40,13 +40,13 @@ public class ScoreAggregationsConfiguration {
     @Autowired
     private ScoreAggregationsBucketService scoreAggregationsBucketService;
     @Autowired
-    private AggregationsCreator aggregationsCreator;
+    private AggregationRecordsCreator aggregationRecordsCreator;
     @Autowired
     private AggrDataStore aggrDataStore;
 
     @Bean
     public PresidioExecutionService presidioExecutionService() {
         return new ScoreAggregationsExecutionServiceImpl(
-                enrichedEventsScoringService, enrichedDataStore, scoreAggregationsBucketService,aggregationsCreator,aggrDataStore);
+                enrichedEventsScoringService, enrichedDataStore, scoreAggregationsBucketService, aggregationRecordsCreator,aggrDataStore);
     }
 }

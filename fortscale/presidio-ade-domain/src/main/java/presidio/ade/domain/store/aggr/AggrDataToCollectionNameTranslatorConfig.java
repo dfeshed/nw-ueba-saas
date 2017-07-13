@@ -7,9 +7,9 @@ import org.springframework.context.annotation.Configuration;
  * Created by barak_schuster on 7/10/17.
  */
 @Configuration
-public class AggrDataAdeToCollectionNameTranslatorConfig {
+public class AggrDataToCollectionNameTranslatorConfig {
     @Bean
-    public AggrDataAdeToCollectionNameTranslator aggrDataAdeToCollectionNameTranslator() {
-        return new AggrDataAdeToCollectionNameTranslator();
+    public AggrDataToCollectionNameTranslator aggrDataToCollectionNameTranslator() {
+        return new AggrDataToCollectionNameTranslator();
     }
 }

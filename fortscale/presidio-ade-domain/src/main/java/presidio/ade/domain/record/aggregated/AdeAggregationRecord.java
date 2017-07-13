@@ -13,31 +13,30 @@ import java.util.Map;
  * Created by barak_schuster on 7/9/17.
  */
 @Document
-public class AdeAggrRecord extends AdeRecord {
+public class AdeAggregationRecord extends AdeRecord {
     private static final String ADE_EVENT_TYPE_PREFIX = "aggr";
 
     @Indexed
     private Instant endInstant;
-    @Field
-    private Map<String, Object> aggregatedFeatureInfo;
+
     @Field
     private String featureName;
     @Field
     private Double featureValue;
     @Field
-    private String bucketConfName;
+    private String featureBucketConfName;
+
     @Field
     private Map<String, String> context;
     @Field
     private AggregatedFeatureType aggregatedFeatureType;
 
-    public AdeAggrRecord(Instant startInstant, Instant endInstant, Map<String, Object> aggregatedFeatureInfo, String aggregatedFeatureName, Double aggregatedFeatureValue, String bucketConfName, Map<String, String> context,AggregatedFeatureType aggregatedFeatureType) {
+    public AdeAggregationRecord(Instant startInstant, Instant endInstant, String featureName, Double featureValue, String featureBucketConfName, Map<String, String> context, AggregatedFeatureType aggregatedFeatureType) {
         super(startInstant);
         this.endInstant = endInstant;
-        this.aggregatedFeatureInfo = aggregatedFeatureInfo;
-        this.featureName = aggregatedFeatureName;
-        this.featureValue = aggregatedFeatureValue;
-        this.bucketConfName = bucketConfName;
+        this.featureName = featureName;
+        this.featureValue = featureValue;
+        this.featureBucketConfName = featureBucketConfName;
         this.context = context;
         this.aggregatedFeatureType = aggregatedFeatureType;
     }
@@ -56,10 +55,6 @@ public class AdeAggrRecord extends AdeRecord {
         return endInstant;
     }
 
-    public Map<String, Object> getAggregatedFeatureInfo() {
-        return aggregatedFeatureInfo;
-    }
-
     public String getFeatureName() {
         return featureName;
     }
@@ -68,8 +63,8 @@ public class AdeAggrRecord extends AdeRecord {
         return featureValue;
     }
 
-    public String getBucketConfName() {
-        return bucketConfName;
+    public String getFeatureBucketConfName() {
+        return featureBucketConfName;
     }
 
     public Map<String, String> getContext() {
