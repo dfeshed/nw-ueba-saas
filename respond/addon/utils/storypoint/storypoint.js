@@ -77,25 +77,32 @@ export default EmberObject.extend({
    * to compute some quantity for user display (usually some sort of "score").  So our computed result here will
    * not include all the enrichments; just the ones meant for display.
    *
+   * @see ASOC-32758 comments for a list of the latest enrichment POJO property names
    * @example
    * ```
    * enrichment: {
-   *   ctxhub: {
-   *     'domain_is_whitelisted': false
-   *   },
-   *   domain: {
-   *     'ua_ratio_score': 100,
-   *     'ua_score': 100,
-   *     'referer_score': 100,
-   *     ..
-   *   },
-   *   whois: {
-   *     'age_score': 100,
-   *     'validity_score': 100,
-   *     ..
-   *   },
-   *   smooth: {
-   *     'smooth_beaconing_score': 100
+   *   'http-packet': {  // or 'http-log' for log events
+   *     c2: {
+   *       contexthub_whitelist_enrich: {
+   *         'domain_is_whitelisted': false
+   *       },
+   *       ua: {
+   *         ratio_score: 0,
+   *         score: 0
+   *       },
+   *       referer: {
+   *         ratio_score: 100,
+   *         score: 100
+   *       },
+   *       whois: {
+   *         'age_scoreNetWitness': 100,
+   *         'validity_scoreNetWitness': 100
+   *       },
+   *       smooth: {
+   *         score: 100
+   *       },
+   *       ...
+   *     }
    *   }
    * }
    * ```

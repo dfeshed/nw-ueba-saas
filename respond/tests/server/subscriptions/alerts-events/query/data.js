@@ -156,70 +156,68 @@ export default [].concat(
       },
       'type': 'Unknown',
       'enrichment': {
-        'command_control': {
-          'weighted_domain_ua_ratio_score': 37,
-          'weighted_domain_referer_ratio_score': 21,
-          'weighted_domain_referer_score': 23,
-          'confidence': 80,
-          'weighted_whois_age_score': 12,
-          'weighted_whois_validity_score': 12,
-          'aggregate': 20
-        },
-        'whois': {
-          'scaled_validity': 92.1,
-          'domain_name': 'ad.adclick.co.kr',
-          'estimated_domain_validity_days': 3000,
-          'scaled_age': 90.5,
-          'expires_date': '10-dec-2015',
-          'estimated_domain_age_days': 2000,
-          'is_cached': false,
-          'created_date': '23-sep-2015',
-          'updated_date': '2015-09-26',
-          'source': 'DATABASE',
-          'age_score': 10.3,
-          'validity_score': 9.1
-        },
-        'context_hub': {
-          'domain_is_whitelisted': false
-        },
-        'normalized': {
-          'domain': 'ad.adclick.co.kr',
-          'url': '',
-          'timestamp': 1445971625844,
-          'domain_sip': 'ad.adclick.co.kr2.2.2.2'
-        },
-        'domain': {
-          'ua_ratio_score': 91.2,
-          'referer_num_events': 106,
-          'ua_cardinality': 10,
-          'referer_ratio': 0.2,
-          'referer_cardinality': 10,
-          'referer_conditional_cardinality': 2,
-          'ua_num_events': 106,
-          'ua_score': 96.5,
-          'referer_ratio_score': 91.2,
-          'referer_score': 96.5,
-          'ua_conditional_cardinality': 2,
-          'ua_ratio': 0.2
-        },
-        'beaconing': {
-          'beaconing_score': 99,
-          'beaconing_period': 3622
-        },
-        'new_domain': {
-          'age_age': 10000000,
-          'age_score': 98.7
-        },
-        'user_agent': {
-          'rare_ratio': 0.2,
-          'rare_num_events': 106,
-          'rare_conditional_cardinality': 2,
-          'rare_ratio_score': 91.2,
-          'rare_score': 96.5,
-          'rare_cardinality': 10
-        },
-        'smooth': {
-          'smooth_beaconing_score': 99.2
+        'http-packet': {
+          c2: {
+            'command_control': {
+              'weighted_http-packet_c2_ua_ratio_score': 37,
+              'weighted_http-packet_c2_referer_ratio_score': 21,
+              'weighted_http-packet_c2_referer_score': 23,
+              'confidence': 80,
+              'weighted_http-packet_c2_whois_age_score': 12,
+              'weighted_http-packet_c2_whois_validity_score': 12,
+              'aggregate': 20
+            },
+            'whois': {
+              'scaled_validityNetWitness': 92.1,
+              'domain_name': 'ad.adclick.co.kr',
+              'estimated_domain_validity_daysNetWitness': 3000,
+              'scaled_ageNetWitness': 90.5,
+              'expires_dateNetWitness': '10-dec-2015',
+              'estimated_domain_age_daysNetWitness': 2000,
+              'is_cachedNetWitness': false,
+              'created_dateNetWitness': '23-sep-2015',
+              'updated_dateNetWitness': '2015-09-26',
+              'sourceNetWitness': 'DATABASE',
+              'age_scoreNetWitness': 10.3,
+              'validity_scoreNetWitness': 9.1
+            },
+            'contexthub_whitelist_enrich': {
+              'domain_is_whitelisted': false
+            },
+            'normalized': {
+              'domain': 'ad.adclick.co.kr',
+              'full_domain': 'ad.adclick.co.kr',
+              'srcip_full_domain': '2.2.2.2ad.adclick.co.kr',
+              'user_agent': 'Mozilla/4.0'
+            },
+            'referer': {
+              'score': 96.5,
+              'cardinality': 10,
+              'num_events': 106,
+              'cond_cardinality': 2,
+              'ratio': 0.2,
+              'ratio_score': 91.2
+            },
+            'beaconing': {
+              'score': 99,
+              'period': 3622
+            },
+            'newdomain': {
+              'age': 10000000,
+              'score': 98.7
+            },
+            'ua': {
+              'score': 96.5,
+              'cardinality': 10,
+              'num_events': 106,
+              'cond_cardinality': 2,
+              'ratio': 0.2,
+              'ratio_score': 91.2
+            },
+            'smooth': {
+              'score': 99.2
+            }
+          }
         }
       },
       'file': '',
@@ -311,70 +309,68 @@ export default [].concat(
       },
       'type': 'Unknown',
       'enrichment': {
-        'command_control': {
-          'weighted_domain_ua_ratio_score': 37,
-          'weighted_domain_referer_ratio_score': 21,
-          'weighted_domain_referer_score': 23,
-          'confidence': 80,
-          'weighted_whois_age_score': 12,
-          'weighted_whois_validity_score': 12,
-          'aggregate': 20
-        },
-        'whois': {
-          'scaled_validity': 92.1,
-          'domain_name': 'ad.adclick.co.kr',
-          'estimated_domain_validity_days': 3000,
-          'scaled_age': 90.5,
-          'expires_date': '10-dec-2015',
-          'estimated_domain_age_days': 2000,
-          'is_cached': false,
-          'created_date': '23-sep-2015',
-          'updated_date': '2015-09-26',
-          'source': 'DATABASE',
-          'age_score': 10.3,
-          'validity_score': 9.1
-        },
-        'context_hub': {
-          'domain_is_whitelisted': false
-        },
-        'normalized': {
-          'domain': 'ad.adclick.co.kr',
-          'url': '',
-          'timestamp': 1445971625844,
-          'domain_sip': 'ad.adclick.co.kr2.2.2.2'
-        },
-        'domain': {
-          'ua_ratio_score': 91.2,
-          'referer_num_events': 106,
-          'ua_cardinality': 10,
-          'referer_ratio': 0.2,
-          'referer_cardinality': 10,
-          'referer_conditional_cardinality': 2,
-          'ua_num_events': 106,
-          'ua_score': 96.5,
-          'referer_ratio_score': 91.2,
-          'referer_score': 96.5,
-          'ua_conditional_cardinality': 2,
-          'ua_ratio': 0.2
-        },
-        'beaconing': {
-          'beaconing_score': 99,
-          'beaconing_period': 3622
-        },
-        'new_domain': {
-          'age_age': 10000000,
-          'age_score': 98.7
-        },
-        'user_agent': {
-          'rare_ratio': 0.2,
-          'rare_num_events': 106,
-          'rare_conditional_cardinality': 2,
-          'rare_ratio_score': 91.2,
-          'rare_score': 96.5,
-          'rare_cardinality': 10
-        },
-        'smooth': {
-          'smooth_beaconing_score': 99.2
+        'http-packet': {
+          c2: {
+            'command_control': {
+              'weighted_http-packet_c2_ua_ratio_score': 37,
+              'weighted_http-packet_c2_referer_ratio_score': 21,
+              'weighted_http-packet_c2_referer_score': 23,
+              'confidence': 80,
+              'weighted_http-packet_c2_whois_age_score': 12,
+              'weighted_http-packet_c2_whois_validity_score': 12,
+              'aggregate': 20
+            },
+            'whois': {
+              'scaled_validityNetWitness': 92.1,
+              'domain_name': 'ad.adclick.co.kr',
+              'estimated_domain_validity_daysNetWitness': 3000,
+              'scaled_ageNetWitness': 90.5,
+              'expires_dateNetWitness': '10-dec-2015',
+              'estimated_domain_age_daysNetWitness': 2000,
+              'is_cachedNetWitness': false,
+              'created_dateNetWitness': '23-sep-2015',
+              'updated_dateNetWitness': '2015-09-26',
+              'sourceNetWitness': 'DATABASE',
+              'age_scoreNetWitness': 10.3,
+              'validity_scoreNetWitness': 9.1
+            },
+            'contexthub_whitelist_enrich': {
+              'domain_is_whitelisted': false
+            },
+            'normalized': {
+              'domain': 'ad.adclick.co.kr',
+              'full_domain': 'ad.adclick.co.kr',
+              'srcip_full_domain': '2.2.2.2ad.adclick.co.kr',
+              'user_agent': 'Mozilla/4.0'
+            },
+            'referer': {
+              'score': 96.5,
+              'cardinality': 10,
+              'num_events': 106,
+              'cond_cardinality': 2,
+              'ratio': 0.2,
+              'ratio_score': 91.2
+            },
+            'beaconing': {
+              'score': 99,
+              'period': 3622
+            },
+            'newdomain': {
+              'age': 10000000,
+              'score': 98.7
+            },
+            'ua': {
+              'score': 96.5,
+              'cardinality': 10,
+              'num_events': 106,
+              'cond_cardinality': 2,
+              'ratio': 0.2,
+              'ratio_score': 91.2
+            },
+            'smooth': {
+              'score': 99.2
+            }
+          }
         }
       },
       'file': '',
@@ -466,70 +462,68 @@ export default [].concat(
       },
       'type': 'Unknown',
       'enrichment': {
-        'command_control': {
-          'weighted_domain_ua_ratio_score': 37,
-          'weighted_domain_referer_ratio_score': 21,
-          'weighted_domain_referer_score': 23,
-          'confidence': 80,
-          'weighted_whois_age_score': 12,
-          'weighted_whois_validity_score': 12,
-          'aggregate': 20
-        },
-        'whois': {
-          'scaled_validity': 92.1,
-          'domain_name': 'ad.adclick.co.kr',
-          'estimated_domain_validity_days': 3000,
-          'scaled_age': 90.5,
-          'expires_date': '10-dec-2015',
-          'estimated_domain_age_days': 2000,
-          'is_cached': false,
-          'created_date': '23-sep-2015',
-          'updated_date': '2015-09-26',
-          'source': 'DATABASE',
-          'age_score': 10.3,
-          'validity_score': 9.1
-        },
-        'context_hub': {
-          'domain_is_whitelisted': false
-        },
-        'normalized': {
-          'domain': 'ad.adclick.co.kr',
-          'url': '',
-          'timestamp': 1445971625844,
-          'domain_sip': 'ad.adclick.co.kr2.2.2.2'
-        },
-        'domain': {
-          'ua_ratio_score': 91.2,
-          'referer_num_events': 106,
-          'ua_cardinality': 10,
-          'referer_ratio': 0.2,
-          'referer_cardinality': 10,
-          'referer_conditional_cardinality': 2,
-          'ua_num_events': 106,
-          'ua_score': 96.5,
-          'referer_ratio_score': 91.2,
-          'referer_score': 96.5,
-          'ua_conditional_cardinality': 2,
-          'ua_ratio': 0.2
-        },
-        'beaconing': {
-          'beaconing_score': 99,
-          'beaconing_period': 3622
-        },
-        'new_domain': {
-          'age_age': 10000000,
-          'age_score': 98.7
-        },
-        'user_agent': {
-          'rare_ratio': 0.2,
-          'rare_num_events': 106,
-          'rare_conditional_cardinality': 2,
-          'rare_ratio_score': 91.2,
-          'rare_score': 96.5,
-          'rare_cardinality': 10
-        },
-        'smooth': {
-          'smooth_beaconing_score': 99.2
+        'http-packet': {
+          c2: {
+            'command_control': {
+              'weighted_http-packet_c2_ua_ratio_score': 37,
+              'weighted_http-packet_c2_referer_ratio_score': 21,
+              'weighted_http-packet_c2_referer_score': 23,
+              'confidence': 80,
+              'weighted_http-packet_c2_whois_age_score': 12,
+              'weighted_http-packet_c2_whois_validity_score': 12,
+              'aggregate': 20
+            },
+            'whois': {
+              'scaled_validityNetWitness': 92.1,
+              'domain_name': 'ad.adclick.co.kr',
+              'estimated_domain_validity_daysNetWitness': 3000,
+              'scaled_ageNetWitness': 90.5,
+              'expires_dateNetWitness': '10-dec-2015',
+              'estimated_domain_age_daysNetWitness': 2000,
+              'is_cachedNetWitness': false,
+              'created_dateNetWitness': '23-sep-2015',
+              'updated_dateNetWitness': '2015-09-26',
+              'sourceNetWitness': 'DATABASE',
+              'age_scoreNetWitness': 10.3,
+              'validity_scoreNetWitness': 9.1
+            },
+            'contexthub_whitelist_enrich': {
+              'domain_is_whitelisted': false
+            },
+            'normalized': {
+              'domain': 'ad.adclick.co.kr',
+              'full_domain': 'ad.adclick.co.kr',
+              'srcip_full_domain': '2.2.2.2ad.adclick.co.kr',
+              'user_agent': 'Mozilla/4.0'
+            },
+            'referer': {
+              'score': 96.5,
+              'cardinality': 10,
+              'num_events': 106,
+              'cond_cardinality': 2,
+              'ratio': 0.2,
+              'ratio_score': 91.2
+            },
+            'beaconing': {
+              'score': 99,
+              'period': 3622
+            },
+            'newdomain': {
+              'age': 10000000,
+              'score': 98.7
+            },
+            'ua': {
+              'score': 96.5,
+              'cardinality': 10,
+              'num_events': 106,
+              'cond_cardinality': 2,
+              'ratio': 0.2,
+              'ratio_score': 91.2
+            },
+            'smooth': {
+              'score': 99.2
+            }
+          }
         }
       },
       'file': '',
@@ -621,70 +615,68 @@ export default [].concat(
       },
       'type': 'Unknown',
       'enrichment': {
-        'command_control': {
-          'weighted_domain_ua_ratio_score': 37,
-          'weighted_domain_referer_ratio_score': 21,
-          'weighted_domain_referer_score': 23,
-          'confidence': 80,
-          'weighted_whois_age_score': 12,
-          'weighted_whois_validity_score': 12,
-          'aggregate': 20
-        },
-        'whois': {
-          'scaled_validity': 92.1,
-          'domain_name': 'ad.adclick.co.kr',
-          'estimated_domain_validity_days': 3000,
-          'scaled_age': 90.5,
-          'expires_date': '10-dec-2015',
-          'estimated_domain_age_days': 2000,
-          'is_cached': false,
-          'created_date': '23-sep-2015',
-          'updated_date': '2015-09-26',
-          'source': 'DATABASE',
-          'age_score': 10.3,
-          'validity_score': 9.1
-        },
-        'context_hub': {
-          'domain_is_whitelisted': false
-        },
-        'normalized': {
-          'domain': 'ad.adclick.co.kr',
-          'url': '',
-          'timestamp': 1445971625844,
-          'domain_sip': 'ad.adclick.co.kr2.2.2.2'
-        },
-        'domain': {
-          'ua_ratio_score': 91.2,
-          'referer_num_events': 106,
-          'ua_cardinality': 10,
-          'referer_ratio': 0.2,
-          'referer_cardinality': 10,
-          'referer_conditional_cardinality': 2,
-          'ua_num_events': 106,
-          'ua_score': 96.5,
-          'referer_ratio_score': 91.2,
-          'referer_score': 96.5,
-          'ua_conditional_cardinality': 2,
-          'ua_ratio': 0.2
-        },
-        'beaconing': {
-          'beaconing_score': 99,
-          'beaconing_period': 3622
-        },
-        'new_domain': {
-          'age_age': 10000000,
-          'age_score': 98.7
-        },
-        'user_agent': {
-          'rare_ratio': 0.2,
-          'rare_num_events': 106,
-          'rare_conditional_cardinality': 2,
-          'rare_ratio_score': 91.2,
-          'rare_score': 96.5,
-          'rare_cardinality': 10
-        },
-        'smooth': {
-          'smooth_beaconing_score': 99.2
+        'http-packet': {
+          c2: {
+            'command_control': {
+              'weighted_http-packet_c2_ua_ratio_score': 37,
+              'weighted_http-packet_c2_referer_ratio_score': 21,
+              'weighted_http-packet_c2_referer_score': 23,
+              'confidence': 80,
+              'weighted_http-packet_c2_whois_age_score': 12,
+              'weighted_http-packet_c2_whois_validity_score': 12,
+              'aggregate': 20
+            },
+            'whois': {
+              'scaled_validityNetWitness': 92.1,
+              'domain_name': 'ad.adclick.co.kr',
+              'estimated_domain_validity_daysNetWitness': 3000,
+              'scaled_ageNetWitness': 90.5,
+              'expires_dateNetWitness': '10-dec-2015',
+              'estimated_domain_age_daysNetWitness': 2000,
+              'is_cachedNetWitness': false,
+              'created_dateNetWitness': '23-sep-2015',
+              'updated_dateNetWitness': '2015-09-26',
+              'sourceNetWitness': 'DATABASE',
+              'age_scoreNetWitness': 10.3,
+              'validity_scoreNetWitness': 9.1
+            },
+            'contexthub_whitelist_enrich': {
+              'domain_is_whitelisted': false
+            },
+            'normalized': {
+              'domain': 'ad.adclick.co.kr',
+              'full_domain': 'ad.adclick.co.kr',
+              'srcip_full_domain': '2.2.2.2ad.adclick.co.kr',
+              'user_agent': 'Mozilla/4.0'
+            },
+            'referer': {
+              'score': 96.5,
+              'cardinality': 10,
+              'num_events': 106,
+              'cond_cardinality': 2,
+              'ratio': 0.2,
+              'ratio_score': 91.2
+            },
+            'beaconing': {
+              'score': 99,
+              'period': 3622
+            },
+            'newdomain': {
+              'age': 10000000,
+              'score': 98.7
+            },
+            'ua': {
+              'score': 96.5,
+              'cardinality': 10,
+              'num_events': 106,
+              'cond_cardinality': 2,
+              'ratio': 0.2,
+              'ratio_score': 91.2
+            },
+            'smooth': {
+              'score': 99.2
+            }
+          }
         }
       },
       'file': '',

@@ -16,15 +16,27 @@
 const i18nPath = 'respond.enrichment.';
 
 const keys = {
-  'ctxhub.domain_is_whitelisted': 'domainIsWhitelisted',
-  'ctxhub.domain_is_not_whitelisted': 'domainIsNotWhitelisted',
-  'smooth.smooth_beaconing_score': 'uniformTimeIntervals',
-  'new_domain.age_score': 'newDomainToEnvironment',
-  'whois.age_score': 'newDomainRegistration',
-  'whois.validity_score': 'domainRegistrationExpires',
-  'domain.referer_score': 'rareDomainInEnvironment',
-  'domain.referer_ratio_score': 'noReferers',
-  'domain.ua_ratio_score': 'rareUserAgent'
+  // C2 packet model enrichments
+  'http-packet.c2.contexthub_whitelist_enrich.domain_is_whitelisted': 'domainIsWhitelisted',
+  'http-packet.c2.contexthub_whitelist_enrich.domain_is_not_whitelisted': 'domainIsNotWhitelisted',
+  'http-packet.c2.smooth.score': 'uniformTimeIntervals',
+  'http-packet.c2.newdomain.score': 'newDomainToEnvironment',
+  'http-packet.c2.whois.age_scoreNetWitness': 'newDomainRegistration',
+  'http-packet.c2.whois.validity_scoreNetWitness': 'domainRegistrationExpires',
+  'http-packet.c2.referer.score': 'rareDomainInEnvironment',
+  'http-packet.c2.referer.ratio_score': 'noReferers',
+  'http-packet.c2.ua.ratio_score': 'rareUserAgent',
+
+  // C2 log model enrichments:
+  'http-log.c2.contexthub_whitelist_enrich.domain_is_whitelisted': 'domainIsWhitelisted',
+  'http-log.c2.contexthub_whitelist_enrich.domain_is_not_whitelisted': 'domainIsNotWhitelisted',
+  'http-log.c2.smooth.score': 'uniformTimeIntervals',
+  'http-log.c2.newdomain.score': 'newDomainToEnvironment',
+  'http-log.c2.whois.age_scoreNetWitness': 'newDomainRegistration',
+  'http-log.c2.whois.validity_scoreNetWitness': 'domainRegistrationExpires',
+  'http-log.c2.referer.score': 'rareDomainInEnvironment',
+  'http-log.c2.referer.ratio_score': 'noReferers',
+  'http-log.c2.ua.ratio_score': 'rareUserAgent'
 };
 
 Object.keys(keys).forEach((key) => {

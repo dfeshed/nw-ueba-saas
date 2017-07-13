@@ -3,29 +3,57 @@
  * @public
  */
 export default [
+  // C2 packet model enrichments:
   {
-    dataKey: 'ctxhub.domain_is_whitelisted',
+    dataKey: 'http-packet.c2.contexthub_whitelist_enrich.domain_is_whitelisted',
     threshold: 0
   }, {
-    dataKey: 'smooth.smooth_beaconing_score',
+    dataKey: 'http-packet.c2.smooth.score',
     threshold: 50
   }, {
-    dataKey: 'new_domain.age_score',
+    dataKey: 'http-packet.c2.newdomain.score',
     threshold: 50
   }, {
-    dataKey: 'whois.age_score',
+    dataKey: 'http-packet.c2.whois.age_scoreNetWitness',
     threshold: 50
   }, {
-    dataKey: 'whois.validity_score',
+    dataKey: 'http-packet.c2.whois.validity_scoreNetWitness',
     threshold: 50
   }, {
-    dataKey: 'domain.referer_score',
+    dataKey: 'http-packet.c2.referer.score',
     threshold: 50
   }, {
-    dataKey: 'domain.referer_ratio_score',
+    dataKey: 'http-packet.c2.referer.ratio_score',
     threshold: 50
   }, {
-    dataKey: 'domain.ua_ratio_score',
+    dataKey: 'http-packet.c2.ua.ratio_score',
+    threshold: 50
+  },
+
+  // C2 log model enrichments:
+  {
+    dataKey: 'http-log.c2.contexthub_whitelist_enrich.domain_is_whitelisted',
+    threshold: 0
+  }, {
+    dataKey: 'http-log.c2.smooth.score',
+    threshold: 50
+  }, {
+    dataKey: 'http-log.c2.newdomain.score',
+    threshold: 50
+  }, {
+    dataKey: 'http-log.c2.whois.age_scoreNetWitness',
+    threshold: 50
+  }, {
+    dataKey: 'http-log.c2.whois.validity_scoreNetWitness',
+    threshold: 50
+  }, {
+    dataKey: 'http-log.c2.referer.score',
+    threshold: 50
+  }, {
+    dataKey: 'http-log.c2.referer.ratio_score',
+    threshold: 50
+  }, {
+    dataKey: 'http-log.c2.ua.ratio_score',
     threshold: 50
   }
 ];

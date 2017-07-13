@@ -6,20 +6,27 @@ module('Unit | Utility | storypoint/storypoint');
 const eventWithEnrichment = {
   id: 3,
   enrichment: {
-    ctxhub: {
-      'domain_is_whitelisted': false
-    },
-    domain: {
-      'ua_ratio_score': 100,
-      'ua_score': 100,
-      'referer_score': 100
-    },
-    whois: {
-      'age_score': 100,
-      'validity_score': 100
-    },
-    smooth: {
-      'smooth_beaconing_score': 100
+    'http-log': {
+      c2: {
+        contexthub_whitelist_enrich: {
+          'domain_is_whitelisted': false
+        },
+        ua: {
+          'ratio_score': 100,
+          'score': 100
+        },
+        referer: {
+          'ratio_score': 100,
+          'score': 100
+        },
+        whois: {
+          'age_scoreNetWitness': 100,
+          'validity_scoreNetWitness': 100
+        },
+        smooth: {
+          'score': 100
+        }
+      }
     }
   }
 };
@@ -50,7 +57,7 @@ test('it computes an array of enrichments from it last events', function(assert)
   events.pushObject(eventWithEnrichment);
 
   const result2 = subject.get('enrichments');
-  assert.equal(result2.length, 6, 'Expected a non-empty enrichments array when last event has enrichment');
+  assert.equal(result2.length, 7, 'Expected a non-empty enrichments array when last event has enrichment');
   result2.forEach(({ id, key, isEnrichment, allEnrichments }) => {
     assert.equal(
       id,
