@@ -12,6 +12,7 @@ $contextTooltipDatumPadding: 0px;
     overflow: hidden;
     text-overflow: ellipsis;
     margin-right: rsa-whitespace(more);
+    line-height: 1.35;
   }
 
   &__body {
@@ -92,6 +93,13 @@ $contextTooltipDatumPadding: 0px;
     .value {
       @include rsa-font(base, large, uppercase);
       color: rsa-color(white);
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+
+    &.Machines .value, &.LiveConnect .value {
+      font-size: 100%;
+      line-height: 1.75rem;
     }
 
     .text {
