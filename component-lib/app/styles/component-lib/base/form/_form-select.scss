@@ -116,7 +116,7 @@ $ember-power-select-line-height: 2rem;
     &::after {
       font-size: .6rem;
       font-family: 'nw-icon-library-all-1';
-      content: "\e924";
+      content: $icon-arrow-down-12-filled;
       display: block;
       line-height: 1.75em;
     }

@@ -11,7 +11,7 @@
 
   /* inserts a right disclosure arrow */
   &::after {
-    content: "\e916";
+    content: $icon-account-circle-1-filled;
     font-family: 'nw-icon-library-all-1';
     font-size: 1em;
     height: 1em;

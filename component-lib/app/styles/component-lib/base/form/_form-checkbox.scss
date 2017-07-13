@@ -34,7 +34,7 @@
 
   &.checked {
     &::before {
-      content: "\e9af";
+      content: $icon-check-1-filled;
       color:rsa-color(blue);
     }
   }
