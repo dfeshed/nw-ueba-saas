@@ -18,7 +18,7 @@ public class FSPromptProvider extends DefaultPromptProvider {
 
     @Override
     public String getPrompt() {
-        return String.format("fs%s>", processName);
+        return String.format("fs %s>", processName);
     }
 
 
