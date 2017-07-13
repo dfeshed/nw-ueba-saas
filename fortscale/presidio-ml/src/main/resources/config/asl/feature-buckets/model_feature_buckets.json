@@ -4,7 +4,7 @@
       "name": "normalized_username_dlpfile_daily",
       "expireAfterSeconds": 31536000,
       "contextFieldNames": [
-        "normalized_username"
+        "normalizedUsername"
       ],
       "dataSources": [
         "dlpfile"
@@ -26,7 +26,31 @@
           "name": "normalized_src_machine_histogram",
           "featureNamesMap": {
             "groupBy": [
-              "normalized_src_machine"
+              "normalizedSrcMachine"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "normalized_src_machine_dlpfile_daily",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "normalizedSrcMachine"
+      ],
+      "dataSources": [
+        "dlpfile"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "aggrFeatureConfs": [
+        {
+          "name": "normalized_username_histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "normalizedUsername"
             ]
           },
           "aggrFeatureFuncJson": {

@@ -11,4 +11,4 @@ import org.springframework.context.annotation.Import;
 		ModelBuilderFactoryServiceConfig.class,
 		ModelStoreConfig.class
 })
-public class ModelBuildingConfiguration {}
+public class ModelingEngineConfiguration {}
