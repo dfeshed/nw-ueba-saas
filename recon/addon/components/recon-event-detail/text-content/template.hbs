@@ -17,7 +17,7 @@
       if we have content, but no visible text, show spinner,
       working on chewing on data
     --}}
-    {{#each renderedText as |text|}}
+    {{#each renderedText key="firstPacketId" as |text|}}
       {{recon-event-detail/single-text
         isEndpoint=isEndpointEvent
         isLog=isLogEvent

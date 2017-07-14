@@ -9,7 +9,12 @@
 
 {{#unless isSticky}}
   <div class="text-container">
-    {{ initialTextToDisplay }}
+    {{#each renderedPortions as |portion|}}
+      {{recon-event-detail/single-text/text-portion
+        text=portion
+        metaToHighlight=metaToHighlight
+      }}
+    {{/each}}
   </div>
 
   {{!--

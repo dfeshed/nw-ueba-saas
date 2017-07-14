@@ -1,9 +1,9 @@
 import Component from 'ember-component';
 import computed, { alias } from 'ember-computed-decorators';
-import { later, scheduleOnce, join } from 'ember-runloop';
+import { later, scheduleOnce, next } from 'ember-runloop';
 
 import SelectionTooltip from './selection-tooltip-mixin';
-import { retrieveTranslatedData, prepareTextForDisplay } from './util';
+import { retrieveTranslatedData } from './util';
 import layout from './template';
 
 const HIDE_CONTENT_CHARACTER_COUNT = 3000;
@@ -23,6 +23,7 @@ export default Component.extend(SelectionTooltip, {
   metaToHighlight: null,
   packet: null,
   percentRendered: null, // updated as incremental rendering is taking place
+  portionsToRender: [],
   renderedAll: false,
   renderingRemainingText: false,
   stickyRenderedPercent: null,
@@ -95,24 +96,51 @@ export default Component.extend(SelectionTooltip, {
   },
 
   /*
-   * Determines the text entries to display, truncated or not, and then
-   * formats them for display.
+   * Calculated once, is the superset of text portions for incremental rendering
    */
-  @computed('packet.text', 'shouldBeTruncated', 'metaToHighlight.value')
-  initialTextToDisplay(text, shouldBeTruncated, metaToHighlight) {
-    let textEntriesReturn = text;
-    if (shouldBeTruncated) {
-      textEntriesReturn = text.substr(0, SHOW_TRUNCATED_AMOUNT);
+  @computed('packet.text', 'shouldBeTruncated')
+  textPortions(text, shouldBeTruncated) {
+    if (!shouldBeTruncated) {
+      return [text];
     }
 
-    return prepareTextForDisplay(textEntriesReturn, metaToHighlight);
+    const initialTextPortion = text.substr(0, SHOW_TRUNCATED_AMOUNT);
+    this.set('portionsToRender', [initialTextPortion]);
+
+    const portions = [initialTextPortion];
+    let remainingText = text.substr(SHOW_TRUNCATED_AMOUNT);
+    while (remainingText.length > 0) {
+      // get next chunk
+      const chunk = remainingText.substr(0, CHUNK_SIZE);
+      // remove that chunk from the string
+      remainingText = remainingText.replace(chunk, '');
+
+      portions.push(chunk);
+    }
+
+    return portions;
   },
 
-  // when we first render, need to highlight meta,
-  // but if the meta to highlight then changes we need to
-  // redo all the checks
+  @computed('portionsToRender', 'textPortions', 'renderingRemainingText')
+  renderedPortions(portionsToRender, textPortions, renderingRemainingText) {
+    if (!renderingRemainingText && textPortions.length > 0) {
+      // If not rendering remaining text, just render the first portion
+      return [textPortions[0]];
+    } else if (renderingRemainingText) {
+      // if rendering remaining text, render those portions
+      // that are ready for rendering
+      return portionsToRender;
+    } else {
+      // no text portions, render nothing
+      return [];
+    }
+  },
+
   didReceiveAttrs() {
     this._super(...arguments);
+    // when we first render, need to highlight meta,
+    // but if the meta to highlight then changes we need to
+    // redo all the checks
     if (!this.get('isSticky')) {
       scheduleOnce('afterRender', this, this._checkForRenderRemainingText);
     }
@@ -153,63 +181,39 @@ export default Component.extend(SelectionTooltip, {
     this.set('renderingRemainingText', true);
 
     // Build array of text chunks to render
-    const {
-      'packet.text': packetText,
-      'packet.firstPacketId': firstPacketId
-    } = this.getProperties('packet.text', 'packet.firstPacketId');
+    const firstPacketId = this.get('packet.firstPacketId');
+    const textPortions = this.get('textPortions');
 
-    let remainingText = packetText.substr(SHOW_TRUNCATED_AMOUNT);
-    let i = 0;
-    while (remainingText.length > 0) {
-      // get next chunk
-      const chunk = remainingText.substr(0, CHUNK_SIZE);
-      // remove that chunk from the string
-      remainingText = remainingText.replace(chunk, '');
-      // Schedule those chunks for rendering
-      later(this, this._renderChunk, chunk, i * TIME_BETWEEN_CHUNKS);
-      i++;
+    // start with 1 as first chunk already rendered
+    let i = 1;
+    const numPortions = textPortions.length;
+    for (; i < numPortions; i++) {
+      // subtract 1 out of i as we want first chunk to render immediately
+      const whenToRender = (i - 1) * TIME_BETWEEN_CHUNKS;
+      later(this, this._renderChunk, textPortions[i], whenToRender);
     }
 
     // And now when all is done, send/set flag indicating all have been rendered.
+    // account for last i++ which ended the loop and for the fact that i starts at 1
+    const whenToSignalDone = (i - 2) * TIME_BETWEEN_CHUNKS;
     later(() => {
-      // Object.keys(this._map).forEach((k) => console.log(String.fromCharCode(k), this._map[k]));
       this.set('renderedAll', true);
       this.sendAction('showMoreFinished', firstPacketId);
-    }, i * TIME_BETWEEN_CHUNKS);
+    }, whenToSignalDone);
   },
 
-  // _map: {},
-
   _renderChunk(chunk) {
-    const {
-      'packet.text': packetText,
-      'packet.firstPacketId': firstPacketId,
-      'metaToHighlight.value': mth
-    } = this.getProperties('packet.text', 'packet.firstPacketId', 'metaToHighlight.value');
+    this.get('portionsToRender').addObject(chunk);
 
-    // NOTE: this needs to be done with $ as opposed to any
-    // sort of Ember-y thing. Any use of sub-components would
-    // render additional unwanted DOM (and be needless code).
-    // Any manipulation of text to display attached to a computed
-    // will re-render the text each time. So have to brute
-    // force this in.
-    const text = prepareTextForDisplay(chunk, mth);
+    // save/send notifications about the amount
+    // of text that has been rendered so far
+    next(this, function() {
+      const packetText = this.get('packet.text');
+      const firstPacketId = this.get('packet.firstPacketId');
 
-    // text.string.split('').forEach((c) => {
-    //   const charCode = c.charCodeAt(0);
-    //   if (!this._map[charCode]) {
-    //     this._map[charCode] = 1;
-    //   } else {
-    //     this._map[charCode]++;
-    //   }
-    // });
-
-    this.$('.text-container').append(text.string);
-    const percentRendered = Math.ceil((this.$('.text-container').text().length / packetText.length) * 100);
-
-    // save/send notifications about the amount of text that has
-    // been rendered so far
-    join(() => {
+      let percentRendered = Math.ceil((this.$('.text-container').text().length / packetText.length) * 100);
+      // this calculation isn't exact, doesn't need to be, so don't show 100+
+      percentRendered = (percentRendered > 99) ? 99 : percentRendered;
       this.set('percentRendered', percentRendered);
       this.sendAction('updatePercentRendered', { id: firstPacketId, percentRendered });
     });
