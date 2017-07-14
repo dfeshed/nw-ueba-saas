@@ -93,3 +93,25 @@ test('it parses the detector into nodes if a non-null empty source.device is giv
   assert.equal(result.nodes.length, 1, 'Expected nodes for detector but not for source device');
   assert.equal(result.nodes[0].value, 'IP_DETECTOR');
 });
+
+test('it parses the domain field if the destination.device has no domain', function(assert) {
+  const event = {
+    source: {
+      device: {
+        ip_address: ''
+      }
+    },
+    destination: {
+      device: {
+        ip_address: 'IP1',
+        dns_domain: ''
+      }
+    },
+    domain: 'DOMAIN1'
+  };
+
+  const result = eventsToNodesLinks([ event ]);
+  assert.equal(result.nodes.length, 2, 'Expected node for domain');
+  assert.equal(result.nodes[1].value, 'DOMAIN1');
+  assert.equal(result.nodes[1].type, 'domain');
+});

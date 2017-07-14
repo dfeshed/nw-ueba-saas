@@ -137,7 +137,12 @@ function parseEventNodesAndLinks(evt, nodeHash, linkHash) {
     // No nodes parsed from 'source.device', so try parsing from 'detector'.
     sourceDeviceNodes = checkDeviceNodes(detector, nodeHash, evt);
   }
+  // For the destination device, first try parsing nodes from 'destination.device'.
   const destDeviceNodes = checkDeviceNodes(destinationDevice, nodeHash, evt);
+  if (!destDeviceNodes[NodeTypes.DOMAIN]) {
+    // No domain parsed from 'destination.device', so try parsing domain name from 'event.domain'.
+    destDeviceNodes[NodeTypes.DOMAIN] = checkNode(NodeTypes.DOMAIN, evt.domain, nodeHash, evt);
+  }
 
   // Generate nodes for the source & dest users, if any.
   const sourceUserNode = checkNode(NodeTypes.USER, sourceUsername, nodeHash, evt);
