@@ -65,8 +65,8 @@ export default Route.extend(AuthenticatedRouteMixin, {
     if (classicRedirect) {
       window.location = classicRedirect;
       return localStorage.removeItem('rsa-post-auth-redirect');
-    } else if (transition.targetName === 'protected' || transition.targetName === 'protected.index') {
-      this._checkAccessAndTransition(key);
+    } else {
+      this._checkAccessAndTransition(key, transition.targetName);
     }
   },
 
@@ -172,17 +172,26 @@ export default Route.extend(AuthenticatedRouteMixin, {
     }
   },
 
-  _checkAccessAndTransition(key) {
-    if ((key === '/investigate' && this.get('accessControl.hasInvestigateAccess')) ||
-      (key === '/respond' && this.get('accessControl.hasRespondAccess'))) {
-      return this.transitionTo(key);
-    } else if ((key === this.get('accessControl.adminUrl') && this.get('accessControl.hasAdminAccess')) ||
-      (key === this.get('accessControl.configUrl') && this.get('accessControl.hasConfigAccess')) ||
-      (key === '/investigation' && this.get('accessControl.hasInvestigateAccess')) ||
-      (key === '/unified' && this.get('accessControl.hasMonitorAccess'))) {
-      return window.location.href = key;
-    } else {
+  _checkAccessAndTransition(key, transitionName) {
+    if (!key || key === '/unified') {
       return window.location.href = '/unified';
+    } else {
+      const requiresRedirect = (transitionName === 'protected') || (transitionName === 'protected.index');
+      if (
+        (key.includes('respond') && !this.get('accessControl.hasRespondAccess')) ||
+        (key.includes('investigate') && !this.get('accessControl.hasInvestigateAccess'))
+      ) {
+        return this.transitionTo('not-found');
+      } else if ((requiresRedirect && (key === '/respond') || key === '/investigate')) {
+        return this.transitionTo(key);
+      } else if (
+        (key === this.get('accessControl.adminUrl') && this.get('accessControl.hasAdminAccess')) ||
+        (key === this.get('accessControl.configUrl') && this.get('accessControl.hasConfigAccess')) ||
+        (key === '/investigation' && this.get('accessControl.hasInvestigateAccess')) ||
+        (key === '/unified' && this.get('accessControl.hasMonitorAccess'))
+      ) {
+        return window.location.href = key;
+      }
     }
   }
 });
