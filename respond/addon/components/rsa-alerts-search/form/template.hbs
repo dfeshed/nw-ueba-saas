@@ -14,7 +14,7 @@
       disabled=isSearchUnderway
       searchEnabled=false
       matchTriggerWidth=false
-      onchange=onChangeEntityType as |entityType|}}
+      onchange=(action 'changeEntityType') as |entityType|}}
       {{t (concat 'respond.incident.search.types.' entityType.name) }}
     {{/power-select}}
   </div>
@@ -88,6 +88,19 @@
           >
           <label for="rsa-alerts-search-form__detector__{{elementId}}">{{t 'respond.incident.search.devices.detector'}}</label>
         </div>
+        {{#if showDomainOption}}
+          <div class="list-item radio-with-label">
+            <input
+              type="radio"
+              name="device"
+              value="domain"
+              class="rsa-alerts-search-form__device"
+              disabled={{isSearchUnderway}}
+              id="rsa-alerts-search-form__domain__{{elementId}}"
+            >
+            <label for="rsa-alerts-search-form__domain__{{elementId}}">{{t 'respond.incident.search.devices.domain'}}</label>
+          </div>
+        {{/if}}
       </div>
     </div>
   {{/if}}

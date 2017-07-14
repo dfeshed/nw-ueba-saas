@@ -219,7 +219,7 @@ IncidentsAPI.reopenClass({
    * @param {String} entityId ID of an entity; e.g. '10.20.30.40', 'HOST1', 'g00gle.com', 'john_smith', 'setup.exe'
    * @param {String} sinceWhen Name of a canned time range object.
    * @param {String[]} devices List of device fields to be included in filter.
-   * Each device field is either: 'source.device', 'destination.device' or 'detector'.
+   * Each device field is either: 'source.device', 'destination.device', 'detector' or 'domain'.
    * For now, only the first device will be used. When backend supports querying multiple device fields, all the given
    * devices will be used.
    * @param {{ onResponse: Function, onError: Function, onInit: Function, onCompleted: Function }} callbacks
@@ -248,7 +248,7 @@ IncidentsAPI.reopenClass({
         eventField = `${deviceField}.mac_address`;
         break;
       case 'DOMAIN':
-        eventField = `${deviceField}.dns_domain`;
+        eventField = (deviceField === 'domain') ? deviceField : `${deviceField}.dns_domain`;
         break;
       case 'HOST':
         eventField = `${deviceField}.dns_hostname`;

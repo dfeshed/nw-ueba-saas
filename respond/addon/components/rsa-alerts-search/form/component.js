@@ -1,11 +1,12 @@
 import Component from 'ember-component';
 import layout from './template';
-import computed from 'ember-computed-decorators';
+import computed, { equal } from 'ember-computed-decorators';
 import { SINCE_WHEN_TYPES } from 'respond/utils/since-when-types';
 import SEARCHABLE_ENTITY_TYPES from './searchable-entity-types';
 import safeCallback from 'component-lib/utils/safe-callback';
 import $ from 'jquery';
 import { isEmpty } from 'ember-utils';
+import { next } from 'ember-runloop';
 
 export default Component.extend({
   layout,
@@ -64,7 +65,27 @@ export default Component.extend({
     return entityType !== 'FILE_NAME' && entityType !== 'FILE_HASH';
   },
 
+  @equal('selectedEntityTypeName', 'DOMAIN')
+  showDomainOption: null,
+
+  // Ensure that at least some device radio button is checked (unless there are no radios currently shown).
+  // Typically called after user changes the entity type, which in turn changes which radios are available.
+  _validateDevicesSelected() {
+    if (this.get('isDestroying') || this.get('isDestroyed')) {
+      return;
+    }
+    const selected = this.$('.rsa-alerts-search-form__device:checked');
+    if (!selected.length) {
+      this.$('.rsa-alerts-search-form__device').first().prop('checked', true);
+    }
+  },
+
   actions: {
+    changeEntityType() {
+      safeCallback(this.get('onChangeEntityType'), ...arguments);
+      next(this, '_validateDevicesSelected');
+    },
+
     // Collects user inputs and invokes configurable `onSubmit()`.
     search() {
       const devicesSelected = [];

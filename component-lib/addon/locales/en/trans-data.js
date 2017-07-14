@@ -731,6 +731,7 @@ export default {
           source: 'Source',
           destination: 'Destination',
           detector: 'Detector',
+          domain: 'Domain',
           label: 'Look in'
         },
         results: {

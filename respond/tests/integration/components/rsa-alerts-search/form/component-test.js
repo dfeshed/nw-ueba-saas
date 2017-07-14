@@ -52,31 +52,31 @@ test('it shows and hides the device picker options depending upon the selected e
 
   return wait()
     .then(() => {
-      assert.ok(this.$('.rsa-alerts-search-form__device:enabled').length, 'Expected to find device picker options enabled for IP');
+      assert.equal(this.$('.rsa-alerts-search-form__device:enabled').length, 3, 'Expected to find device picker options enabled for IP');
 
       this.set('selectedEntityTypeName', 'MAC_ADDRESS');
       return wait();
     })
     .then(() => {
-      assert.ok(this.$('.rsa-alerts-search-form__device:enabled').length, 'Expected to find device picker options enabled for MAC_ADDRESS');
+      assert.equal(this.$('.rsa-alerts-search-form__device:enabled').length, 3, 'Expected to find device picker options enabled for MAC_ADDRESS');
 
       this.set('selectedEntityTypeName', 'HOST');
       return wait();
     })
     .then(() => {
-      assert.ok(this.$('.rsa-alerts-search-form__device:enabled').length, 'Expected to find device picker options enabled for HOST');
+      assert.equal(this.$('.rsa-alerts-search-form__device:enabled').length, 3, 'Expected to find device picker options enabled for HOST');
 
       this.set('selectedEntityTypeName', 'DOMAIN');
       return wait();
     })
     .then(() => {
-      assert.ok(this.$('.rsa-alerts-search-form__device:enabled').length, 'Expected to find device picker options enabled for DOMAIN');
+      assert.equal(this.$('.rsa-alerts-search-form__device:enabled').length, 4, 'Expected to find device picker options enabled for DOMAIN');
 
       this.set('selectedEntityTypeName', 'USER');
       return wait();
     })
     .then(() => {
-      assert.ok(this.$('.rsa-alerts-search-form__device:enabled').length, 'Expected to find device picker options enabled for USER');
+      assert.equal(this.$('.rsa-alerts-search-form__device:enabled').length, 3, 'Expected to find device picker options enabled for USER');
 
       this.set('selectedEntityTypeName', 'FILE_NAME');
       return wait();

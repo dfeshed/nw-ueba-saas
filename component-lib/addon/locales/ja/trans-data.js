@@ -731,6 +731,7 @@ export default {
           source: 'ja_Source',
           destination: 'ja_Destination',
           detector: 'ja_Detector',
+          domain: 'ja_Domain',
           label: 'ja_Look in'
         },
         results: {
