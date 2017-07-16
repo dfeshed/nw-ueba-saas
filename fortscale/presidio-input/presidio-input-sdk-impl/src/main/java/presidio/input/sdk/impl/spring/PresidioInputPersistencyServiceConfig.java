@@ -41,7 +41,7 @@ public class PresidioInputPersistencyServiceConfig {
 
     @Bean
     public PresidioInputPersistencyService presidioInputPersistencyService() {
-        return new PresidioInputPersistencyServiceMongoImpl(dlpFileDataService());
+        return new PresidioInputPersistencyServiceMongoImpl(dataService());
     }
 
     @Bean
@@ -50,7 +50,7 @@ public class PresidioInputPersistencyServiceConfig {
     }
 
     @Bean
-    public DataService dlpFileDataService() {
+    public DataService dataService() {
         return new DataServiceImpl(dataSourceRepository(), toCollectionNameTranslator(), validationManager());
     }
 
