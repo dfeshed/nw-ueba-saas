@@ -2,17 +2,14 @@ package presidio.input.core;
 
 
 
+
 import fortscale.common.general.PresidioShellableApplication;
 import fortscale.common.shell.config.ShellCommonCommandsConfig;
 import fortscale.utils.logging.Logger;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.FilterType;
-import presidio.input.core.spring.InputCoreConfiguration;
 import presidio.input.core.spring.InputProductionConfiguration;
-
 
 @SpringBootApplication
 /*@ComponentScan(
@@ -28,7 +25,12 @@ public class FortscaleInputCoreApplication extends PresidioShellableApplication 
         logger.info("Start Input Core Main");
 
         ConfigurableApplicationContext ctx = SpringApplication.run(new Object[]{FortscaleInputCoreApplication.class, InputProductionConfiguration.class, ShellCommonCommandsConfig.class}, args);
+        //todo: all the lines under the configurations should be in the parent class and the logger, else they are duplicated
+        ctx.registerShutdownHook();
         run(args, ctx);
+        Thread.currentThread().interrupt();
+        ctx.close();
+
     }
 
 }

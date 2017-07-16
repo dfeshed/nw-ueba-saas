@@ -2,6 +2,7 @@ package presidio.input.core.spring;
 
 
 import fortscale.common.exporter.FileMetricsExporter;
+import fortscale.common.exporter.PresidioSystmePublicMetrics;
 import fortscale.common.shell.PresidioExecutionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.endpoint.MetricsEndpoint;
@@ -23,13 +24,17 @@ public class InputCoreConfiguration {
     @Autowired
     private AdeDataService adeDataService;
 
-    @Autowired
-    private MetricsEndpoint metricsEndpoint;
+
+    private MetricsEndpoint metricsEndpoint(){
+        return  new MetricsEndpoint(new PresidioSystmePublicMetrics());
+    }
 
     @Bean
     public FileMetricsExporter fileMetricsExporter() {
-        return new FileMetricsExporter(metricsEndpoint);
+        return new FileMetricsExporter(metricsEndpoint());
     }
+
+
 /*
     @Autowired
     private NodeClient nodeClient;

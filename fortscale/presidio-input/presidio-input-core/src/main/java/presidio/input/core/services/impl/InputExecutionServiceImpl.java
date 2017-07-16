@@ -1,6 +1,7 @@
 package presidio.input.core.services.impl;
 
 
+import fortscale.common.exporter.FileMetricsExporter;
 import fortscale.common.shell.PresidioExecutionService;
 import fortscale.common.general.CommonStrings;
 import fortscale.common.general.DataSource;
@@ -10,6 +11,7 @@ import fortscale.utils.monitoring.aspect.annotations.End;
 import fortscale.utils.monitoring.aspect.annotations.RunTime;
 import fortscale.utils.monitoring.aspect.annotations.Start;
 import org.aspectj.lang.annotation.Before;
+import org.springframework.beans.factory.annotation.Autowired;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.input.core.services.converters.DlpFileConverter;
 import presidio.input.core.services.data.AdeDataService;
@@ -43,7 +45,6 @@ public class InputExecutionServiceImpl implements PresidioExecutionService {
         final List<? extends AbstractAuditableDocument> dataRecords = find(dataSource, startDate, endDate);
         logger.info("Found {} dataRecords for datasource:{}, startTime:{}, endTime:{}.", dataSource, startDate, endDate);
 
-        Thread.sleep(10000);
 
         final List<DlpFileEnrichedDocument> enrichedRecords = enrich(dataRecords);
 
