@@ -34,25 +34,30 @@ public class FileMetricsExporter implements MetricsExporter , AutoCloseable{
 
     @Scheduled(fixedRate = 5000)
     public void export(){
-        logger.debug("Exporting");
-        String metric;
-        String value;
-        Map<String, Object> map = metricsEndpoint.invoke();
-        for (Map.Entry<String, Object> entry :map.entrySet()) {
-            metric = entry.getKey();
-            value = entry.getValue().toString();
-            if(!fixedMetrics.contains(metric)){
-                if (!customMetrics.containsKey(metric))
-                    customMetrics.put(metric, value);
-                else {
-                    if (!customMetrics.get(metric).equals(value))
-                        customMetrics.replace(metric, value);
+        try {
+            logger.debug("Exporting");
+            String metric;
+            String value;
+            Map<String, Object> map = metricsEndpoint.invoke();
+            for (Map.Entry<String, Object> entry : map.entrySet()) {
+                metric = entry.getKey();
+                value = entry.getValue().toString();
+                if (!fixedMetrics.contains(metric)) {
+                    if (!customMetrics.containsKey(metric))
+                        customMetrics.put(metric, value);
                     else {
-                        break;
+                        if (!customMetrics.get(metric).equals(value))
+                            customMetrics.replace(metric, value);
+                        else {
+                            break;
+                        }
                     }
                 }
+                logger.info("Metric Name : {} Metric Value : {}", metric, value);
             }
-            logger.info("Metric Name : {} Metric Value : {}", metric, value);
+        }
+        catch (Exception ex){
+            logger.error("NOT GOOD");
         }
     }
 
