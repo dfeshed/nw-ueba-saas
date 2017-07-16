@@ -77,7 +77,7 @@ public class AggregationRecordsCreatorImplTest {
 
     @Configuration
     @Import({
-            AggregationsCreatorConfig.class
+            AggregationRecordsCreatorConfig.class
     })
     public static class springConfig {
 

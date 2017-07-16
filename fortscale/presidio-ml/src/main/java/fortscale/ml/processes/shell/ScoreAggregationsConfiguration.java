@@ -1,7 +1,7 @@
 package fortscale.ml.processes.shell;
 
 import fortscale.aggregation.creator.AggregationRecordsCreator;
-import fortscale.aggregation.creator.AggregationsCreatorConfig;
+import fortscale.aggregation.creator.AggregationRecordsCreatorConfig;
 import fortscale.common.shell.PresidioExecutionService;
 import fortscale.ml.model.cache.EventModelsCacheServiceConfig;
 import fortscale.ml.processes.shell.scoring.aggregation.ScoreAggregationsBucketService;
@@ -28,7 +28,7 @@ import presidio.ade.domain.store.enriched.EnrichedDataStoreConfig;
         EnrichedEventsScoringServiceConfig.class,
         EnrichedDataStoreConfig.class,
         ScoreAggregationsBucketServiceConfiguration.class,
-        AggregationsCreatorConfig.class,
+        AggregationRecordsCreatorConfig.class,
         AggrDataStoreConfig.class,
         NullStatsServiceConfig.class // TODO: Remove this
 })
