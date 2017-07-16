@@ -9,26 +9,14 @@ import org.springframework.scheduling.annotation.Scheduled;
 
 import java.util.*;
 
-public class FileMetricsExporter implements MetricsExporter , AutoCloseable{
+public class FileMetricsExporter extends MetricsExporter{
 
     private final Logger logger = Logger.getLogger(FileMetricsExporter.class);
     private MetricsEndpoint metricsEndpoint;
-    private Map<String,String> customMetrics;
-    private final Set<String> fixedMetrics;
 
     public FileMetricsExporter(MetricsEndpoint metricsEndpoint) {
+        super();
         this.metricsEndpoint=metricsEndpoint;
-        this.customMetrics = new HashMap<>();
-        this.fixedMetrics=initFixedMetrics();
-    }
-
-    private Set<String> initFixedMetrics(){
-        Map<String, Object> map = metricsEndpoint.invoke();
-        Set<String> names= new HashSet<>();
-        for (Map.Entry<String, Object> entry :map.entrySet()) {
-            names.add(entry.getKey());
-        }
-        return names;
     }
 
 

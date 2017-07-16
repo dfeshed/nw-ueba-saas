@@ -1,12 +1,16 @@
 package presidio.input.core.spring;
 
 
+import fortscale.common.elastic.ElasticMetricWriter;
+import fortscale.common.exporter.ElasticMetricsExporter;
 import fortscale.common.exporter.FileMetricsExporter;
 import fortscale.common.exporter.PresidioSystmePublicMetrics;
 import fortscale.common.shell.PresidioExecutionService;
+import org.elasticsearch.client.node.NodeClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.endpoint.MetricsEndpoint;
 import org.springframework.context.annotation.*;
+import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import presidio.input.core.services.data.AdeDataService;
 import presidio.input.core.services.impl.InputExecutionServiceImpl;
 import presidio.input.sdk.impl.spring.PresidioInputPersistencyServiceConfig;
@@ -34,21 +38,11 @@ public class InputCoreConfiguration {
         return new FileMetricsExporter(metricsEndpoint());
     }
 
-
-/*
-    @Autowired
-    private NodeClient nodeClient;
-
     @Bean
-    public ElasticsearchTemplate elasticsearchTemplate() {
-        return new ElasticsearchTemplate(nodeClient);
+    public ElasticMetricsExporter elasticMetricsExporter(){
+        return new ElasticMetricsExporter(metricsEndpoint());
     }
 
-    @Bean
-    public ElasticMetricWriter elasticMetricWriter(){
-        return new ElasticMetricWriter(elasticsearchTemplate(),null)
-    }
-    */
     @Bean
     public PresidioExecutionService inputExecutionService() {
         return new InputExecutionServiceImpl(presidioInputPersistencyService, adeDataService);
