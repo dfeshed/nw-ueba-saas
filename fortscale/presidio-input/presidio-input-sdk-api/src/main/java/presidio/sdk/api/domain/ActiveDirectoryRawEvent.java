@@ -1,6 +1,5 @@
 package presidio.sdk.api.domain;
 
-import fortscale.domain.core.AbstractAuditableDocument;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -8,15 +7,12 @@ import org.springframework.data.mongodb.core.mapping.Field;
 import java.time.Instant;
 
 @Document
-public class ActiveDirectoryRawEvent extends AbstractAuditableDocument {
+public class ActiveDirectoryRawEvent extends AbstractInputDocument {
 
     public static final String OPERATION_TYPE_FIELD_NAME = "operationType";
     public static final String IS_SECURITY_SENSITIVE_OPERATION_FIELD_NAME = "isSecuritySensitiveOperation";
     public static final String IS_USER_ADMINISTRATOR_FIELD_NAME = "isUserAdministrator";
     public static final String OBJECT_NAME_FIELD_NAME = "objectName";
-    public static final String RESULT_FIELD_NAME = "result";
-    public static final String NORMALIZED_USERNAME_FIELD_NAME = "normalizesUsername";
-    private static final String EVENT_ID_FIELD_NAME = "eventId";
 
     @Field(OPERATION_TYPE_FIELD_NAME)
     private ActiveDirectoryOperationType operationType;
@@ -27,14 +23,6 @@ public class ActiveDirectoryRawEvent extends AbstractAuditableDocument {
     @NotEmpty
     @Field(OBJECT_NAME_FIELD_NAME)
     private String objectName;
-    @Field(RESULT_FIELD_NAME)
-    private EventResult result;
-    @NotEmpty
-    @Field(NORMALIZED_USERNAME_FIELD_NAME)
-    private String normalizesUsername;
-    @NotEmpty
-    @Field(EVENT_ID_FIELD_NAME)
-    private String eventId;
 
     public ActiveDirectoryRawEvent(ActiveDirectoryOperationType operationType, boolean isSecuritySensitiveOperation,
                                    boolean isUserAdministrator, String objectName, EventResult result,
@@ -44,7 +32,7 @@ public class ActiveDirectoryRawEvent extends AbstractAuditableDocument {
         this.isUserAdministrator = isUserAdministrator;
         this.objectName = objectName;
         this.result = result;
-        this.normalizesUsername = normalizesUsername;
+        this.normalizedUsername = normalizesUsername;
         this.eventId = eventId;
     }
 
@@ -56,7 +44,7 @@ public class ActiveDirectoryRawEvent extends AbstractAuditableDocument {
         this.isUserAdministrator = Boolean.valueOf(event[4]);
         this.objectName = event[5];
         this.result = EventResult.valueOf(event[6]);
-        this.normalizesUsername = event[7];
+        this.normalizedUsername = event[7];
     }
 
     public ActiveDirectoryRawEvent() {
@@ -94,28 +82,19 @@ public class ActiveDirectoryRawEvent extends AbstractAuditableDocument {
         this.objectName = objectName;
     }
 
-    public EventResult getResult() {
-        return result;
-    }
-
-    public void setResult(EventResult result) {
-        this.result = result;
-    }
-
-    public String getNormalizesUsername() {
-        return normalizesUsername;
-    }
-
-    public void setNormalizesUsername(String normalizesUsername) {
-        this.normalizesUsername = normalizesUsername;
-    }
-
-    public String getEventId() {
-        return eventId;
-    }
-
-    public void setEventId(String eventId) {
-        this.eventId = eventId;
+    @Override
+    public String toString() {
+        return "ActiveDirectoryRawEvent{" +
+                "dataSource='" + dataSource + '\'' +
+                ", normalizedUsername='" + normalizedUsername + '\'' +
+                ", operationType=" + operationType +
+                ", eventId='" + eventId + '\'' +
+                ", isSecuritySensitiveOperation=" + isSecuritySensitiveOperation +
+                ", result=" + result +
+                ", isUserAdministrator=" + isUserAdministrator +
+                ", objectName='" + objectName + '\'' +
+                ", dateTime=" + dateTime +
+                '}';
     }
 }
 

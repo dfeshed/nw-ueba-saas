@@ -31,9 +31,9 @@ public class PresidioInputPersistencyServiceMongoImpl implements PresidioInputPe
     public List<? extends AbstractAuditableDocument> find(DataSource dataSource, Instant startDate, Instant endDate) throws Exception {
         logger.info("Finding records for data source:{}, from :{}, until :{}."
                 , dataSource,
-                CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate,
-                CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
-        return dataServiceForDataSource(dataSource).find(startDate, endDate, dataSource);
+                startDate,
+                endDate);
+        return dataService.find(startDate, endDate, dataSource);
     }
 
     @Override
@@ -42,23 +42,11 @@ public class PresidioInputPersistencyServiceMongoImpl implements PresidioInputPe
                 , dataSource,
                 CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate,
                 CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
-        return dataServiceForDataSource(dataSource).clean(startDate, endDate, dataSource);
+        return dataService.clean(startDate, endDate, dataSource);
     }
 
     @Override
     public void cleanAll(DataSource dataSource) throws Exception {
-        dataServiceForDataSource(dataSource).cleanAll(dataSource);
-    }
-
-
-    private DataService dataServiceForDataSource(DataSource dataSource) throws Exception {
-        switch (dataSource) {
-            case DLPFILE:
-                return dataService;
-            default:
-                String errorMessage = String.format("Can't find data service for data source %s.", dataSource);
-                logger.error(errorMessage);
-                throw new Exception(errorMessage);
-        }
+        dataService.cleanAll(dataSource);
     }
 }

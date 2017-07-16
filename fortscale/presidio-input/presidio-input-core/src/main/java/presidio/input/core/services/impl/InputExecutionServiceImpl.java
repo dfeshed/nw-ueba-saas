@@ -72,7 +72,7 @@ public class InputExecutionServiceImpl implements PresidioExecutionService {
     protected List<EnrichedRecord> convert(List<? extends AbstractAuditableDocument> enrichedDocuments,
                                            InputAdeConverter converter) {
         List<EnrichedRecord> records = new ArrayList<>();
-        enrichedDocuments.forEach(doc -> records.add(converter.convert((DlpFileEnrichedDocument) doc)));
+        enrichedDocuments.forEach(doc -> records.add(converter.convert(doc)));
         return records;
     }
 

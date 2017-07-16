@@ -16,7 +16,7 @@ public class ActiveDirectoryConverter implements InputAdeConverter {
         adeRecord.setEventId(activeDirectoryRawEvent.getEventId());
         adeRecord.setResult(activeDirectoryRawEvent.getResult().toString());
         adeRecord.setOperationType(activeDirectoryRawEvent.getOperationType().toString());
-        adeRecord.setNormalizedUsername(activeDirectoryRawEvent.getNormalizesUsername());
+        adeRecord.setNormalizedUsername(activeDirectoryRawEvent.getNormalizedUsername());
         adeRecord.setObjectName(activeDirectoryRawEvent.getObjectName());
         adeRecord.setSecuritySensitiveOperation(activeDirectoryRawEvent.isSecuritySensitiveOperation());
         adeRecord.setUserAdministrator(activeDirectoryRawEvent.isUserAdministrator());

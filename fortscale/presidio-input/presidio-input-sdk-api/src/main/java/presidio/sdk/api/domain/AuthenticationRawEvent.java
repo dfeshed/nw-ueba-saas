@@ -1,6 +1,5 @@
 package presidio.sdk.api.domain;
 
-import fortscale.domain.core.AbstractAuditableDocument;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -8,23 +7,16 @@ import org.springframework.data.mongodb.core.mapping.Field;
 import java.time.Instant;
 
 @Document
-public class AuthenticationRawEvent extends AbstractAuditableDocument {
+public class AuthenticationRawEvent extends AbstractInputDocument {
 
-    public static final String DATA_SOURCE_FIELD_NAME = "dataSource";
     public static final String AUTHENTICATION_TYPE_FIELD_NAME = "authenticationType";
     public static final String IS_DST_MACHINE_REMOTE_FIELD_NAME = "isDstMachineRemote";
     public static final String NORMALIZED_DST_MACHINE_FIELD_NAME = "normalizedDstMachine";
     public static final String NORMALIZED_SRC_MACHINE_FIELD_NAME = "normalizedSrcMachine";
-    public static final String RESULT_FIELD_NAME = "result";
-    public static final String NORMALIZED_USERNAME_FIELD_NAME = "normalizedUsername";
     public static final String RESULT_CODE_FIELD_NAME = "resultCode";
-    public static final String EVENT_ID_FIELD_NAME = "eventId";
 
-    @Field(DATA_SOURCE_FIELD_NAME)
-    @NotEmpty
-    private String dataSource;
     @Field(AUTHENTICATION_TYPE_FIELD_NAME)
-    private AuthenticationType authenticationType;
+    private String authenticationType;
     @Field(IS_DST_MACHINE_REMOTE_FIELD_NAME)
     private boolean isDstMachineRemote;
     @Field(NORMALIZED_DST_MACHINE_FIELD_NAME)
@@ -33,20 +25,12 @@ public class AuthenticationRawEvent extends AbstractAuditableDocument {
     @Field(NORMALIZED_SRC_MACHINE_FIELD_NAME)
     @NotEmpty
     private String normalizedSrcMachine;
-    @Field(NORMALIZED_USERNAME_FIELD_NAME)
-    @NotEmpty
-    private String normalizedUsername;
-    @Field(RESULT_FIELD_NAME)
-    private EventResult result;
     @Field(RESULT_CODE_FIELD_NAME)
-    private AuthenticationResultCode resultCode;
-    @NotEmpty
-    @Field(EVENT_ID_FIELD_NAME)
-    private String eventId;
+    private String resultCode;
 
-    public AuthenticationRawEvent(String dataSource, AuthenticationType authenticationType, boolean isDstMachineRemote,
+    public AuthenticationRawEvent(String dataSource, String authenticationType, boolean isDstMachineRemote,
                                   String normalizedDstMachine, String normalizedSrcMachine, String normalizedUsername,
-                                  EventResult result, AuthenticationResultCode resultCode, String eventId) {
+                                  EventResult result, String resultCode, String eventId) {
         this.dataSource = dataSource;
         this.authenticationType = authenticationType;
         this.isDstMachineRemote = isDstMachineRemote;
@@ -62,32 +46,16 @@ public class AuthenticationRawEvent extends AbstractAuditableDocument {
         dateTime = Instant.parse(record[0]);
         this.eventId = record[1];
         this.dataSource = record[2];
-        this.authenticationType = AuthenticationType.valueOf(record[3]);
+        this.authenticationType = record[3];
         this.isDstMachineRemote = Boolean.getBoolean(record[4]);
         this.normalizedDstMachine = record[5];
         this.normalizedSrcMachine = record[6];
         this.normalizedUsername = record[7];
         this.result = EventResult.valueOf(record[8]);
-        this.resultCode = AuthenticationResultCode.valueOf(record[9]);
+        this.resultCode = record[9];
     }
 
     public AuthenticationRawEvent() {
-    }
-
-    public String getDataSource() {
-        return dataSource;
-    }
-
-    public void setDataSource(String dataSource) {
-        this.dataSource = dataSource;
-    }
-
-    public AuthenticationType getAuthenticationType() {
-        return authenticationType;
-    }
-
-    public void setAuthenticationType(AuthenticationType authenticationType) {
-        this.authenticationType = authenticationType;
     }
 
     public boolean isDstMachineRemote() {
@@ -114,35 +82,35 @@ public class AuthenticationRawEvent extends AbstractAuditableDocument {
         this.normalizedSrcMachine = normalizedSrcMachine;
     }
 
-    public String getNormalizedUsername() {
-        return normalizedUsername;
+    public String getAuthenticationType() {
+        return authenticationType;
     }
 
-    public void setNormalizedUsername(String normalizedUsername) {
-        this.normalizedUsername = normalizedUsername;
+    public void setAuthenticationType(String authenticationType) {
+        this.authenticationType = authenticationType;
     }
 
-    public EventResult getResult() {
-        return result;
-    }
-
-    public void setResult(EventResult result) {
-        this.result = result;
-    }
-
-    public AuthenticationResultCode getResultCode() {
+    public String getResultCode() {
         return resultCode;
     }
 
-    public void setResultCode(AuthenticationResultCode resultCode) {
+    public void setResultCode(String resultCode) {
         this.resultCode = resultCode;
     }
 
-    public String getEventId() {
-        return eventId;
-    }
-
-    public void setEventId(String eventId) {
-        this.eventId = eventId;
+    @Override
+    public String toString() {
+        return "AuthenticationRawEvent{" +
+                "dataSource='" + dataSource + '\'' +
+                ", normalizedUsername='" + normalizedUsername + '\'' +
+                ", authenticationType='" + authenticationType + '\'' +
+                ", eventId='" + eventId + '\'' +
+                ", isDstMachineRemote=" + isDstMachineRemote +
+                ", result=" + result +
+                ", normalizedDstMachine='" + normalizedDstMachine + '\'' +
+                ", normalizedSrcMachine='" + normalizedSrcMachine + '\'' +
+                ", dateTime=" + dateTime +
+                ", resultCode='" + resultCode + '\'' +
+                '}';
     }
 }

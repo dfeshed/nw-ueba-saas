@@ -1,20 +1,15 @@
 package presidio.sdk.api.domain;
 
-import fortscale.domain.core.AbstractAuditableDocument;
-import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.Instant;
 
 @Document
-public class FileRawEvent extends AbstractAuditableDocument {
+public class FileRawEvent extends AbstractInputDocument {
 
 
-    public static final String DATA_SOURCE_FIELD_NAME = "dataSource";
     public static final String OPERATION_TYPE_FIELD_NAME = "operationType";
-    public static final String NORMALIZED_USERNAME_FIELD_NAME = "normalizedUsername";
-    public static final String RESULT_FIELD_NAME = "result";
     public static final String SRC_FILE_PATH_FIELD_NAME = "srcFilePath";
     public static final String DST_FILE_PATH_FIELD_NAME = "dstFilePath";
     public static final String SRC_FOLDER_PATH_FIELD_NAME = "srcFolderPath";
@@ -22,19 +17,10 @@ public class FileRawEvent extends AbstractAuditableDocument {
     public static final String FILE_SIZE_FIELD_NAME = "fileSize";
     public static final String IS_SRC_DRIVE_SHARED_FIELD_NAME = "isSrcDriveShared";
     public static final String IS_DST_DRIVE_SHARED_FIELD_NAME = "isDstDriveShared";
-    public static final String EVENT_ID_FIELD_NAME = "eventId";
 
 
-    @NotEmpty
-    @Field(DATA_SOURCE_FIELD_NAME)
-    private String dataSource;
     @Field(OPERATION_TYPE_FIELD_NAME)
     private FileOperationType operationType;
-    @NotEmpty
-    @Field(NORMALIZED_USERNAME_FIELD_NAME)
-    private String normalizedUsername;
-    @Field(RESULT_FIELD_NAME)
-    private EventResult result;
     @Field(SRC_FILE_PATH_FIELD_NAME)
     private String srcFilePath;
     @Field(DST_FILE_PATH_FIELD_NAME)
@@ -49,9 +35,6 @@ public class FileRawEvent extends AbstractAuditableDocument {
     private boolean isSrcDriveShared;
     @Field(IS_DST_DRIVE_SHARED_FIELD_NAME)
     private boolean isDstDriveShared;
-    @NotEmpty
-    @Field(EVENT_ID_FIELD_NAME)
-    private String eventId;
 
     public FileRawEvent() {
     }
@@ -89,36 +72,12 @@ public class FileRawEvent extends AbstractAuditableDocument {
         this.isDstDriveShared = Boolean.getBoolean(record[12]);
     }
 
-    public String getDataSource() {
-        return dataSource;
-    }
-
-    public void setDataSource(String dataSource) {
-        this.dataSource = dataSource;
-    }
-
     public FileOperationType getOperationType() {
         return operationType;
     }
 
     public void setOperationType(FileOperationType operationType) {
         this.operationType = operationType;
-    }
-
-    public String getNormalizedUsername() {
-        return normalizedUsername;
-    }
-
-    public void setNormalizedUsername(String normalizedUsername) {
-        this.normalizedUsername = normalizedUsername;
-    }
-
-    public EventResult getResult() {
-        return result;
-    }
-
-    public void setResult(EventResult result) {
-        this.result = result;
     }
 
     public String getSrcFilePath() {
@@ -181,11 +140,13 @@ public class FileRawEvent extends AbstractAuditableDocument {
     public String toString() {
         return "FileRawEvent{" +
                 "dataSource='" + dataSource + '\'' +
-                ", operationType=" + operationType +
                 ", normalizedUsername='" + normalizedUsername + '\'' +
+                ", eventId='" + eventId + '\'' +
                 ", result=" + result +
+                ", operationType=" + operationType +
                 ", srcFilePath='" + srcFilePath + '\'' +
                 ", dstFilePath='" + dstFilePath + '\'' +
+                ", dateTime=" + dateTime +
                 ", srcFolderPath='" + srcFolderPath + '\'' +
                 ", dstFolderPath='" + dstFolderPath + '\'' +
                 ", fileSize=" + fileSize +
