@@ -1,12 +1,12 @@
 {
   "BucketConfs": [
     {
-      "name": "normalized_username_dlpfile_daily",
+      "name": "date_time_unix_histogram_normalized_username_dlpfile_daily",
       "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "normalizedUsername"
       ],
-      "dataSources": [
+      "adeEventTypes": [
         "dlpfile"
       ],
       "strategyName": "fixed_duration_daily",
@@ -21,7 +21,20 @@
           "aggrFeatureFuncJson": {
             "type": "aggr_feature_histogram_func"
           }
-        },
+        }
+      ]
+    },
+    {
+      "name": "normalized_src_machine_histogram_normalized_username_dlpfile_daily",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "normalizedUsername"
+      ],
+      "adeEventTypes": [
+        "dlpfile"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "aggrFeatureConfs": [
         {
           "name": "normalized_src_machine_histogram",
           "featureNamesMap": {
@@ -36,12 +49,12 @@
       ]
     },
     {
-      "name": "normalized_src_machine_dlpfile_daily",
+      "name": "normalized_username_histogram_normalized_src_machine_dlpfile_daily",
       "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "normalizedSrcMachine"
       ],
-      "dataSources": [
+      "adeEventTypes": [
         "dlpfile"
       ],
       "strategyName": "fixed_duration_daily",

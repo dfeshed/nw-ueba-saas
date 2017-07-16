@@ -6,8 +6,8 @@
       "contextFieldNames": [
         "context.normalizedUsername"
       ],
-      "dataSources": [
-        "dlpfile"
+      "adeEventTypes": [
+        "scored_enriched.dlpfile.date_time"
       ],
       "strategyName": "fixed_duration_hourly",
       "aggrFeatureConfs": [
@@ -15,7 +15,7 @@
           "name": "highest_date_time_score",
           "featureNamesMap": {
             "maximize": [
-              "date_time"
+              "score"
             ]
           },
           "aggrFeatureFuncJson": {
@@ -31,10 +31,10 @@
       "name": "normalized_src_machine_dlpfile_daily",
       "expireAfterSeconds": 31536000,
       "contextFieldNames": [
-        "normalized_src_machine"
+        "context.normalizedUsername"
       ],
-      "dataSources": [
-        "dlpfile"
+      "adeEventTypes": [
+        "scored_enriched.dlpfile.normalizedSrcMachine"
       ],
       "strategyName": "fixed_duration_hourly",
       "aggrFeatureConfs": [
@@ -42,62 +42,14 @@
           "name": "normalized_src_machine_to_highest_score_map",
           "featureNamesMap": {
             "groupBy": [
-              "normalized_src_machine"
+              "context.normalizedSrcMachine"
             ],
             "maximize": [
-              "normalized_src_machine_score"
+              "score"
             ]
           },
           "aggrFeatureFuncJson": {
             "type": "aggr_feature_feature_to_max_map_func"
-          }
-        }
-      ]
-    },
-    {
-      "name": "normalized_username_dlpfile_daily",
-      "expireAfterSeconds": 31536000,
-      "contextFieldNames": [
-        "normalized_username"
-      ],
-      "dataSources": [
-        "dlpfile"
-      ],
-      "strategyName": "fixed_duration_daily",
-      "aggrFeatureConfs": [
-        {
-          "name": "normalized_username_histogram",
-          "featureNamesMap": {
-            "groupBy": [
-              "normalized_username"
-            ]
-          },
-          "aggrFeatureFuncJson": {
-            "type": "aggr_feature_histogram_func"
-          }
-        }
-      ]
-    },
-    {
-      "name": "normalized_username_dlpmail_hourly",
-      "expireAfterSeconds": 31536000,
-      "contextFieldNames": [
-        "normalized_username"
-      ],
-      "dataSources": [
-        "dlpmail"
-      ],
-      "strategyName": "fixed_duration_hourly",
-      "aggrFeatureConfs": [
-        {
-          "name": "normalized_username_histogram",
-          "featureNamesMap": {
-            "groupBy": [
-              "normalized_username"
-            ]
-          },
-          "aggrFeatureFuncJson": {
-            "type": "aggr_feature_histogram_func"
           }
         }
       ]

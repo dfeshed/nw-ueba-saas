@@ -6,7 +6,7 @@
         "field1",
         "field2"
       ],
-      "dataSources": [
+      "adeEventTypes": [
         "ssh"
       ],
       "strategyName": "strategy1",
@@ -31,7 +31,7 @@
         "field3",
         "field4"
       ],
-      "dataSources": [
+      "adeEventTypes": [
         "vpn"
       ],
       "strategyName": "strategy1",

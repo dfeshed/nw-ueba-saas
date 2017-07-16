@@ -18,6 +18,7 @@ import fortscale.ml.model.selector.IContextSelectorConf;
 import fortscale.ml.model.store.ModelStore;
 import fortscale.utils.factory.FactoryService;
 import fortscale.utils.monitoring.stats.config.NullStatsServiceConfig;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -38,6 +39,7 @@ import java.util.Properties;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(loader = AnnotationConfigContextLoader.class)
+@Ignore
 public class ModelConfProductionConfFilesTest {
 	@Configuration
 	@EnableSpringConfigured
@@ -60,8 +62,6 @@ public class ModelConfProductionConfFilesTest {
 		@Bean public EntityEventMongoStore getEntityEventMongoStore() {return entityEventMongoStore;}
 		@Bean public ModelStore getModelStore() {return modelStore;}
 
-		@Value("${impala.table.fields.data.source}")
-		private String dataSourceFieldName;
 		@Value("${fortscale.aggregation.bucket.conf.json.file.name}")
 		private String bucketConfJsonFilePath;
 		@Value("${fortscale.aggregation.bucket.conf.json.overriding.files.path:#{null}}")
@@ -73,7 +73,7 @@ public class ModelConfProductionConfFilesTest {
 		@Qualifier("modelBucketConfigService")
 		public BucketConfigurationService modelBucketConfigService()
 		{
-			return new BucketConfigurationService(dataSourceFieldName, bucketConfJsonFilePath, bucketConfJsonOverridingFilesPath,bucketConfJsonAdditionalFilesPath);
+			return new BucketConfigurationService(bucketConfJsonFilePath, bucketConfJsonOverridingFilesPath,bucketConfJsonAdditionalFilesPath);
 		}
 
 		@Bean

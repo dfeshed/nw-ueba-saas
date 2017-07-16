@@ -36,7 +36,7 @@ import java.util.Properties;
 @RunWith(SpringJUnit4ClassRunner.class)
 @Category(ModuleTestCategory.class)
 public class ModelFeatureAggregationBucketsServiceTest {
-    private static final String DATA_SOURCE = "dlpfile";
+    private static final String ADE_EVENT_TYPE = "dlpfile";
 
     @Autowired
     private ModelFeatureAggregationBucketsService modelFeatureAggregationBucketsService;
@@ -53,7 +53,7 @@ public class ModelFeatureAggregationBucketsServiceTest {
         TimeRange timeRange = new TimeRange(startTime,endTime);
         String username = "sanityTestUser";
         generateAndPersistAdeEnrichedRecords(timeRange,username);
-        modelFeatureAggregationBucketsService.execute(timeRange,DATA_SOURCE);
+        modelFeatureAggregationBucketsService.execute(timeRange, ADE_EVENT_TYPE);
         String contextId = FeatureBucketUtils.buildContextId(Collections.singletonMap("normalizedUsername", username));
         List<FeatureBucket> featureBucketList = featureBucketStore.getFeatureBuckets(
                 "normalized_username_dlpfile_daily", Collections.singleton(contextId), timeRange);
@@ -63,8 +63,16 @@ public class ModelFeatureAggregationBucketsServiceTest {
         Feature feature = featureBucket.getAggregatedFeatures().get("sum_of_moved_files_to_removable_device_size");
         Assert.assertNull(feature);
 
-        feature = featureBucket.getAggregatedFeatures().get("copied_files_from_remote_device_counter");
+
+        feature = featureBucket.getAggregatedFeatures().get("src_network_folder_paths_histogram");
         Assert.assertNotNull(feature);
+        Assert.assertTrue(feature.getValue() instanceof GenericHistogram);
+        GenericHistogram genericHistogram = (GenericHistogram) feature.getValue();
+        Assert.assertEquals(1,genericHistogram.getHistogramMap().size());
+        Assert.assertEquals(1,genericHistogram.get("/home/test_source_path"),0.0);
+
+        feature = featureBucket.getAggregatedFeatures().get("copied_files_from_remote_device_counter");
+        Assert.assertNotNull(featureBucket.getAggregatedFeatures().toString(),feature);
         Assert.assertTrue(feature.getValue() instanceof AggrFeatureValue);
         AggrFeatureValue aggrFeatureValue = (AggrFeatureValue) feature.getValue();
         Assert.assertEquals(1.0D,aggrFeatureValue.getValue());
@@ -75,12 +83,6 @@ public class ModelFeatureAggregationBucketsServiceTest {
         aggrFeatureValue = (AggrFeatureValue) feature.getValue();
         Assert.assertEquals(1000D,aggrFeatureValue.getValue());
 
-        feature = featureBucket.getAggregatedFeatures().get("src_network_folder_paths_histogram");
-        Assert.assertNotNull(feature);
-        Assert.assertTrue(feature.getValue() instanceof GenericHistogram);
-        GenericHistogram genericHistogram = (GenericHistogram) feature.getValue();
-        Assert.assertEquals(1,genericHistogram.getHistogramMap().size());
-        Assert.assertEquals(1,genericHistogram.get("/home/test_source_path"),0.0);
     }
 
 
@@ -88,20 +90,20 @@ public class ModelFeatureAggregationBucketsServiceTest {
      * Create adeRecords
      */
     public void generateAndPersistAdeEnrichedRecords(TimeRange timeRange,String username) {
-        AdeDataStoreCleanupParams cleanupParams = new AdeDataStoreCleanupParams(timeRange.getStart(),timeRange.getEnd(),DATA_SOURCE);
+        AdeDataStoreCleanupParams cleanupParams = new AdeDataStoreCleanupParams(timeRange.getStart(),timeRange.getEnd(), ADE_EVENT_TYPE);
         enrichedDataStore.cleanup(cleanupParams);
         Instant startTime = timeRange.getStart();
         EnrichedDlpFileRecord enrichedDlpFileRecord = new EnrichedDlpFileRecord(startTime);
         enrichedDlpFileRecord.setNormalizedUsername(username);
         enrichedDlpFileRecord.setWasClassified(false);
         enrichedDlpFileRecord.setNormalizedSrcMachine(String.format("%s_pc", username));
-        enrichedDlpFileRecord.setEventType("copy");
+        enrichedDlpFileRecord.setOperationType("copy");
         enrichedDlpFileRecord.setSourceDriveType("remote");
         enrichedDlpFileRecord.setFileSize(1000);
         enrichedDlpFileRecord.setSourcePath("/home/test_source_path");
 
         List<EnrichedDlpFileRecord> enrichedDlpFileRecordList = Collections.singletonList(enrichedDlpFileRecord);
-        EnrichedRecordsMetadata enrichedRecordsMetadata = new EnrichedRecordsMetadata(DATA_SOURCE, startTime, startTime.plus(1, ChronoUnit.SECONDS));
+        EnrichedRecordsMetadata enrichedRecordsMetadata = new EnrichedRecordsMetadata(ADE_EVENT_TYPE, startTime, startTime.plus(1, ChronoUnit.SECONDS));
         enrichedDataStore.store(enrichedRecordsMetadata, enrichedDlpFileRecordList);
         List<ContextIdToNumOfItems> contextIdToNumOfItemsList = enrichedDataStore.aggregateContextToNumOfEvents(enrichedRecordsMetadata, "normalizedUsername");
         Assert.assertEquals(1, contextIdToNumOfItemsList.size());
@@ -132,7 +134,6 @@ public class ModelFeatureAggregationBucketsServiceTest {
         @Bean
         public static TestPropertiesPlaceholderConfigurer abc() {
             Properties properties = new Properties();
-            properties.put("impala.table.fields.data.source", "dlpfile");
             properties.put("fortscale.model.aggregation.bucket.conf.json.file.name", "classpath:fortscale/config/asl/model/buckets/model_buckets_test.json");
             properties.put("mongo.db.name","model_feature_aggregation");
 

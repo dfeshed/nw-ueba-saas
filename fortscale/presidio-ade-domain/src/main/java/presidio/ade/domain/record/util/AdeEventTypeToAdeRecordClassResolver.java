@@ -13,15 +13,15 @@ import java.util.Map;
  * Add ade record type and pojo class to the map.
  * For example: dlp_file, EnrichedDlpFileRecord.class
  */
-public class DataSourceToAdeRecordClassResolver<T> {
+public class AdeEventTypeToAdeRecordClassResolver<T> {
 
-    private Map<String, Class<? extends T>> dataSourceToAdeRecordClassMap;
+    private Map<String, Class<? extends T>> adeEventTypeToAdeRecordClassMap;
 
     /**
      * @param scanPackage class path to scan
      */
-    public DataSourceToAdeRecordClassResolver(String scanPackage) {
-        dataSourceToAdeRecordClassMap = new HashMap<>();
+    public AdeEventTypeToAdeRecordClassResolver(String scanPackage) {
+        adeEventTypeToAdeRecordClassMap = new HashMap<>();
         findAnnotatedClasses(scanPackage);
     }
 
@@ -37,15 +37,15 @@ public class DataSourceToAdeRecordClassResolver<T> {
             Class<?> pojoClass = Class.forName(beanDef.getBeanClassName());
             if (AdeRecord.class.isAssignableFrom(pojoClass)) {
                 AdeRecordMetadata adeRecord = pojoClass.getAnnotation(AdeRecordMetadata.class);
-                dataSourceToAdeRecordClassMap.put(adeRecord.dataSource(), (Class<? extends T>) pojoClass);
+                adeEventTypeToAdeRecordClassMap.put(adeRecord.adeEventType(), (Class<? extends T>) pojoClass);
             }
         } catch (Exception e) {
             System.err.println("Got exception: " + e.getMessage());
         }
     }
 
-    public Class<? extends T> getClass(String dataSource) {
-        return dataSourceToAdeRecordClassMap.get(dataSource);
+    public Class<? extends T> getClass(String adeEventType) {
+        return adeEventTypeToAdeRecordClassMap.get(adeEventType);
     }
 
     /**

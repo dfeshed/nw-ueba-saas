@@ -13,7 +13,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.util.ReflectionUtils;
 import presidio.ade.domain.record.AdeRecord;
-import presidio.ade.domain.record.enriched.DataSourceToAdeEnrichedRecordClassResolver;
+import presidio.ade.domain.record.enriched.AdeEventTypeToAdeEnrichedRecordClassResolver;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.ade.domain.store.AdeDataStoreCleanupParams;
 
@@ -33,12 +33,12 @@ public class EnrichedDataStoreImplMongo implements EnrichedDataStore {
 
     private final MongoTemplate mongoTemplate;
     private final EnrichedDataAdeToCollectionNameTranslator translator;
-    private final DataSourceToAdeEnrichedRecordClassResolver dataSourceToAdeEnrichedRecordClassResolver;
+    private final AdeEventTypeToAdeEnrichedRecordClassResolver adeEventTypeToAdeEnrichedRecordClassResolver;
 
-    public EnrichedDataStoreImplMongo(MongoTemplate mongoTemplate, EnrichedDataAdeToCollectionNameTranslator translator, DataSourceToAdeEnrichedRecordClassResolver dataSourceToAdeEnrichedRecordClassResolver) {
+    public EnrichedDataStoreImplMongo(MongoTemplate mongoTemplate, EnrichedDataAdeToCollectionNameTranslator translator, AdeEventTypeToAdeEnrichedRecordClassResolver adeEventTypeToAdeEnrichedRecordClassResolver) {
         this.mongoTemplate = mongoTemplate;
         this.translator = translator;
-        this.dataSourceToAdeEnrichedRecordClassResolver = dataSourceToAdeEnrichedRecordClassResolver;
+        this.adeEventTypeToAdeEnrichedRecordClassResolver = adeEventTypeToAdeEnrichedRecordClassResolver;
     }
 
     @Override
@@ -53,8 +53,8 @@ public class EnrichedDataStoreImplMongo implements EnrichedDataStore {
 
         Instant startDate = recordsMetadata.getStartInstant();
         Instant endDate = recordsMetadata.getEndInstant();
-        String dataSource = recordsMetadata.getDataSource();
-        Class<? extends AdeRecord> pojoClass = dataSourceToAdeEnrichedRecordClassResolver.getClass(dataSource);
+        String adeEventType = recordsMetadata.getAdeEventType();
+        Class<? extends AdeRecord> pojoClass = adeEventTypeToAdeEnrichedRecordClassResolver.getClass(adeEventType);
 
         //Get type of context
         String fieldName = getFieldName(pojoClass, contextType);
@@ -97,10 +97,10 @@ public class EnrichedDataStoreImplMongo implements EnrichedDataStore {
 
         Instant startDate = recordsMetadata.getStartInstant();
         Instant endDate = recordsMetadata.getEndInstant();
-        String dataSource = recordsMetadata.getDataSource();
+        String adeEventType = recordsMetadata.getAdeEventType();
 
-        //Get pojoClass by dataSource
-        Class pojoClass = dataSourceToAdeEnrichedRecordClassResolver.getClass(dataSource);
+        //Get pojoClass by adeEventType
+        Class pojoClass = adeEventTypeToAdeEnrichedRecordClassResolver.getClass(adeEventType);
         //Get type of context
         String fieldName = getFieldName(pojoClass, contextType);
 
@@ -121,18 +121,18 @@ public class EnrichedDataStoreImplMongo implements EnrichedDataStore {
     /**
      * Validates that the context type field indexed in the store, otherwise create the index
      *
-     * @param dataSource  data source name
+     * @param adeEventType  data source name
      * @param contextType type of context, field that the aggregateContextToNumOfEvents and readRecords methods use to query.
      */
     @Override
-    public void ensureContextAndDateTimeIndex(String dataSource, String contextType) {
-        //Get pojoClass by dataSource
-        Class pojoClass = dataSourceToAdeEnrichedRecordClassResolver.getClass(dataSource);
+    public void ensureContextAndDateTimeIndex(String adeEventType, String contextType) {
+        //Get pojoClass by adeEventType
+        Class pojoClass = adeEventTypeToAdeEnrichedRecordClassResolver.getClass(adeEventType);
 
         //Get type of context
         String fieldName = getFieldName(pojoClass, contextType);
 
-        String collectionName = translator.toCollectionName(dataSource);
+        String collectionName = translator.toCollectionName(adeEventType);
 
         //used for readRecords
         DBObject indexOptions = new BasicDBObject();

@@ -13,10 +13,10 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = DataSourceToAdeScoredEnrichedRecordClassResolverConfig.class)
+@ContextConfiguration(classes = AdeEventTypeToAdeScoredEnrichedRecordClassResolverConfig.class)
 public class DataSourceToAdeScoredEnrichedRecordClassResolverConfigTest {
     @Autowired
-    private DataSourceToAdeScoredEnrichedRecordClassResolver dataSourceToAdeScoredEnrichedRecordClassResolver;
+    private AdeEventTypeToAdeScoredEnrichedRecordClassResolver dataSourceToAdeScoredEnrichedRecordClassResolver;
 
     @Test
     public void testDlpfileIsResolved(){

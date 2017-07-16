@@ -8,6 +8,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.Instant;
+import java.util.List;
 
 /**
  * A basic ADE record. All ADE related records (enriched and scored) should extend this one.
@@ -30,11 +31,9 @@ public abstract class AdeRecord {
 	}
 
 	/**
-	 * @return a string representation of this record's type
+	 * @return a string representation of the event type
 	 */
-	public String getAdeRecordType() {
-		return getClass().getSimpleName();
-	}
+	public abstract String getAdeEventType();
 
 	public String getId() {
 		return id;
@@ -52,6 +51,5 @@ public abstract class AdeRecord {
 		this.startInstant = startInstant;
 	}
 
-	@Transient
-	public abstract String getDataSource();
+	public abstract List<String> getDataSources();
 }

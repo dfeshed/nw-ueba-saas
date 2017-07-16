@@ -34,12 +34,12 @@ public class ModelFeatureAggregationBucketsService extends FixedDurationStrategy
     }
 
     @Override
-    protected void executeSingleTimeRange(TimeRange timeRange, String dataSource, String contextType) {
+    protected void executeSingleTimeRange(TimeRange timeRange, String adeEventType, String contextType) {
         //For now we don't have multiple contexts so we pass just list of size 1.
         List<String> contextTypes = Collections.singletonList(contextType);
 
         EnrichedRecordPaginationService enrichedRecordPaginationService = new EnrichedRecordPaginationService(enrichedDataStore, 1000, 100, contextType);
-        List<PageIterator<EnrichedRecord>> pageIterators = enrichedRecordPaginationService.getPageIterators(dataSource, timeRange);
+        List<PageIterator<EnrichedRecord>> pageIterators = enrichedRecordPaginationService.getPageIterators(adeEventType, timeRange);
         for (PageIterator<EnrichedRecord> pageIterator : pageIterators) {
             List<FeatureBucket> featureBucketsToInsert = featureBucketAggregator.aggregate(pageIterator,contextTypes, createFeatureBucketStrategyData(timeRange));
             storeFeatureBuckets(featureBucketsToInsert);
@@ -72,8 +72,8 @@ public class ModelFeatureAggregationBucketsService extends FixedDurationStrategy
     }
 
     @Override
-    protected List<String> getDistinctContextTypes(String dataSource) {
-        Set<List<String>> distinctMultipleContextsTypeSet = bucketConfigurationService.getRelatedDistinctContexts(dataSource);
+    protected List<String> getDistinctContextTypes(String adeEventType) {
+        Set<List<String>> distinctMultipleContextsTypeSet = bucketConfigurationService.getRelatedDistinctContexts(adeEventType);
         Set<String> distinctSingleContextTypeSet = new HashSet<>();
         for(List<String> distinctMultipleContexts: distinctMultipleContextsTypeSet){
             distinctSingleContextTypeSet.addAll(distinctMultipleContexts);

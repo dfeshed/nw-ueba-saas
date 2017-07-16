@@ -6,6 +6,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 import presidio.ade.domain.record.AdeRecord;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -14,14 +15,18 @@ import java.util.Map;
  */
 @Document
 public class AdeAggregationRecord extends AdeRecord {
+    private static final String ADE_EVENT_TYPE_PREFIX = "aggr";
+
     @Indexed
     private Instant endInstant;
+
     @Field
     private String featureName;
     @Field
     private Double featureValue;
     @Field
     private String featureBucketConfName;
+
     @Field
     private Map<String, String> context;
     @Field
@@ -38,7 +43,12 @@ public class AdeAggregationRecord extends AdeRecord {
     }
 
     @Override
-    public String getDataSource() {
+    public String getAdeEventType() {
+        return ADE_EVENT_TYPE_PREFIX + "." + getFeatureName();
+    }
+
+    @Override
+    public List<String> getDataSources() {
         return null;
     }
 

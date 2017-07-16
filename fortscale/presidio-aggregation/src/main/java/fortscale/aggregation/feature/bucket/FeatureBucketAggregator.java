@@ -126,7 +126,6 @@ public class FeatureBucketAggregator {
         ret.setBucketId(bucketId);
         ret.setStrategyId(strategyData.getStrategyId());
         ret.setContextFieldNames(featureBucketConf.getContextFieldNames());
-        ret.setDataSources(featureBucketConf.getDataSources());
         ret.setStartTime(Instant.ofEpochSecond(strategyData.getStartTime()));
         ret.setEndTime(Instant.ofEpochSecond(strategyData.getEndTime()));
         ret.setCreatedAt(new Date());

@@ -47,8 +47,8 @@ public class ProductionScorerConfFilesTest {
 
 	@Test
 	public void validate_all_scorer_confs() {
-		for (DataSourceScorerConfs dataSourceScorerConfs : scorerConfService.getAllDataSourceScorerConfs().values()) {
-			for (IScorerConf scorerConf : dataSourceScorerConfs.getScorerConfs()) {
+		for (AdeEventTypeScorerConfs adeEventTypeScorerConfs : scorerConfService.getAllAdeEventTypeScorerConfs().values()) {
+			for (IScorerConf scorerConf : adeEventTypeScorerConfs.getScorerConfs()) {
 				Scorer scorer = scorerFactoryService.getProduct(scorerConf);
 				if (scorer == null) Assert.fail(String.format(NULL_SCORER_ERROR_MSG_FORMAT, scorerConf.getName()));
 			}

@@ -4,7 +4,6 @@ import fortscale.aggregation.feature.event.AggrEvent;
 import net.minidev.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +13,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.util.*;
 import java.util.concurrent.TimeoutException;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath*:META-INF/spring/entity-event-builder-context-test.xml"})
@@ -36,7 +34,7 @@ public class EntityEventBuilderTest extends EntityEventTestBase{
     public void setUp() {
 		((EntityEventDataTestStore)entityEventDataStore).emptyEntityEventDataStore();
 	}
-	
+
 	
 	private EntityEventConf createDefaultEntityEventConf(List<String> contextFields) {
 		List<String> aggregatedFeatureEventNames = new ArrayList<>();

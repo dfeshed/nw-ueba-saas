@@ -1,17 +1,15 @@
 package presidio.ade.domain.record;
 
 import fortscale.common.feature.Feature;
-import fortscale.common.feature.FeatureNumericValue;
-import fortscale.common.feature.FeatureValue;
 import fortscale.utils.recordreader.ReflectionRecordReader;
 import fortscale.utils.recordreader.transformation.Transformation;
 
 import javax.validation.constraints.NotNull;
 import java.time.Instant;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Map;
 
 /**
  * A record reader for {@link AdeRecord}s.
@@ -73,8 +71,12 @@ public class AdeRecordReader extends ReflectionRecordReader {
 		this.adeRecord = adeRecord;
 	}
 
-	public String getAdeRecordType() {
-		return adeRecord.getAdeRecordType();
+	public String getAdeEventType() {
+		return adeRecord.getAdeEventType();
+	}
+
+	public List<String> getDataSources(){
+		return adeRecord.getDataSources();
 	}
 
 	public String getId() {
@@ -91,10 +93,6 @@ public class AdeRecordReader extends ReflectionRecordReader {
 
 	public AdeRecord getAdeRecord(){
 		return this.adeRecord;
-	}
-
-	public String getDataSource(){
-		return adeRecord.getDataSource();
 	}
 
 	/**

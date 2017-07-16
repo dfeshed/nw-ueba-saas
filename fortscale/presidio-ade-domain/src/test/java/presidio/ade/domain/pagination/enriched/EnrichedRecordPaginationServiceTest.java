@@ -10,8 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import presidio.ade.domain.record.enriched.DataSourceToAdeEnrichedRecordClassResolver;
-import presidio.ade.domain.record.enriched.DataSourceToAdeEnrichedRecordClassResolverConfig;
+import presidio.ade.domain.record.enriched.AdeEventTypeToAdeEnrichedRecordClassResolver;
+import presidio.ade.domain.record.enriched.AdeEventTypeToAdeEnrichedRecordClassResolverConfig;
 import presidio.ade.domain.record.enriched.EnrichedDlpFileRecord;
 import presidio.ade.domain.pagination.enriched.mocks.GenerateMocks;
 import presidio.ade.domain.pagination.enriched.groups.EnrichedRecordPaginationServiceGroup;
@@ -27,7 +27,7 @@ import static org.mockito.Mockito.mock;
 import static presidio.ade.domain.record.enriched.EnrichedDlpFileRecord.NORMALIZED_USERNAME_FIELD;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = DataSourceToAdeEnrichedRecordClassResolverConfig.class)
+@ContextConfiguration(classes = AdeEventTypeToAdeEnrichedRecordClassResolverConfig.class)
 public class EnrichedRecordPaginationServiceTest {
 
     private static final int PAGE_SIZE = 3;
@@ -37,7 +37,7 @@ public class EnrichedRecordPaginationServiceTest {
     private  MongoTemplate mongoTemplate;
     
     @Autowired
-    private DataSourceToAdeEnrichedRecordClassResolver dataSourceToAdeEnrichedRecordClassResolver;
+    private AdeEventTypeToAdeEnrichedRecordClassResolver adeEventTypeToAdeEnrichedRecordClassResolver;
 
     @Before
     public void inilize(){
@@ -268,7 +268,7 @@ public class EnrichedRecordPaginationServiceTest {
 
         //create store
         EnrichedDataAdeToCollectionNameTranslator translator = new EnrichedDataAdeToCollectionNameTranslator();
-        enrichedDataStoreImplMongo = new EnrichedDataStoreImplMongo(mongoTemplate, translator, this.dataSourceToAdeEnrichedRecordClassResolver);
+        enrichedDataStoreImplMongo = new EnrichedDataStoreImplMongo(mongoTemplate, translator, this.adeEventTypeToAdeEnrichedRecordClassResolver);
 
         //create pagination service
         EnrichedRecordPaginationService paginationService =

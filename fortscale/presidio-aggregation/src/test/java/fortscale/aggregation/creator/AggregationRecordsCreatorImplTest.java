@@ -66,7 +66,7 @@ public class AggregationRecordsCreatorImplTest {
         HashMap<String, Feature> aggregatedFeatures = new HashMap<>();
         aggregatedFeatures.put("normalized_src_machine_to_highest_score_map", aggrFeature);
         featureBucket.setAggregatedFeatures(aggregatedFeatures);
-        featureBucket.setFeatureBucketConfName("normalized_username_dlpfile_hourly");
+        featureBucket.setFeatureBucketConfName("normalized_src_machine_to_highest_score_map_normalized_username_dlpfile_hourly");
         Map<String, String> contextFieldNameToValueMap = new HashMap<>();
 
         contextFieldNameToValueMap.put("normalized_username", "bestUserInTheWorld");
@@ -84,9 +84,9 @@ public class AggregationRecordsCreatorImplTest {
         @Bean
         public static TestPropertiesPlaceholderConfigurer aggregationCreatorTestProperties() {
             Properties properties = new Properties();
-            properties.put("fortscale.aggregation.bucket.conf.json.file.name", "classpath:config/asl/buckets.json");
+            properties.put("fortscale.aggregation.bucket.conf.json.file.name", "classpath:fortscale/config/asl/feature-buckets/score_aggregation_feature_buckets.json");
             properties.put("fortscale.aggregation.retention.strategy.conf.json.file.name", "classpath:config/asl/retention_strategies.json");
-            properties.put("fortscale.aggregation.feature.event.conf.json.file.name", "classpath:config/asl/aggregated_feature_events.json");
+            properties.put("fortscale.aggregation.feature.event.conf.json.file.name", "classpath:fortscale/config/asl/aggregated-features/score_aggregation_features.json");
             return new TestPropertiesPlaceholderConfigurer(properties);
         }
 

@@ -7,6 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 import presidio.ade.domain.record.util.AdeRecordMetadata;
 
 import java.time.Instant;
+import java.util.List;
 
 /**
  * The enriched authentication record POJO.
@@ -25,6 +26,7 @@ public class EnrichedAuthenticationRecord extends EnrichedRecord {
     public static final String NORMALIZED_DST_MACHINE_FIELD = "normalizedDstMachine";
     public static final String RESULT_FIELD = "result";
     public static final String RESULT_CODE_FIELD = "resultCode";
+
 
 
     @Indexed
@@ -52,6 +54,11 @@ public class EnrichedAuthenticationRecord extends EnrichedRecord {
      */
     public EnrichedAuthenticationRecord(Instant dateTime) {
         super(dateTime);
+    }
+
+    @Override
+    public String getAdeEventType() {
+        return AuthenticationRecord.AUTHENTICATION_STR;
     }
 
     public String getNormalizedUsername() {
@@ -116,12 +123,6 @@ public class EnrichedAuthenticationRecord extends EnrichedRecord {
 
     public void setResultCode(String resultCode) {
         this.resultCode = resultCode;
-    }
-
-    @Override
-    @Transient
-    public String getDataSource() {
-        return AuthenticationRecord.AUTHENTICATION_STR;
     }
 
     @Transient

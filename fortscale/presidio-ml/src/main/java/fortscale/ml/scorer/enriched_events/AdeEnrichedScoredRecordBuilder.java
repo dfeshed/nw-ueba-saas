@@ -4,7 +4,7 @@ import fortscale.domain.feature.score.FeatureScore;
 import fortscale.utils.logging.Logger;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.ade.domain.record.scored.enriched_scored.AdeScoredEnrichedRecord;
-import presidio.ade.domain.record.scored.enriched_scored.DataSourceToAdeScoredEnrichedRecordClassResolver;
+import presidio.ade.domain.record.scored.enriched_scored.AdeEventTypeToAdeScoredEnrichedRecordClassResolver;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -17,9 +17,9 @@ import java.util.List;
 public class AdeEnrichedScoredRecordBuilder {
     private static final Logger logger = Logger.getLogger(AdeEnrichedScoredRecordBuilder.class);
 
-    private DataSourceToAdeScoredEnrichedRecordClassResolver dataSourceToAdeScoredEnrichedRecordClassResolver;
+    private AdeEventTypeToAdeScoredEnrichedRecordClassResolver dataSourceToAdeScoredEnrichedRecordClassResolver;
 
-    public AdeEnrichedScoredRecordBuilder(DataSourceToAdeScoredEnrichedRecordClassResolver dataSourceToAdeScoredEnrichedRecordClassResolver){
+    public AdeEnrichedScoredRecordBuilder(AdeEventTypeToAdeScoredEnrichedRecordClassResolver dataSourceToAdeScoredEnrichedRecordClassResolver){
         this.dataSourceToAdeScoredEnrichedRecordClassResolver = dataSourceToAdeScoredEnrichedRecordClassResolver;
     }
 
@@ -59,9 +59,9 @@ public class AdeEnrichedScoredRecordBuilder {
         Class<? extends AdeScoredEnrichedRecord> pojoClass = dataSourceToAdeScoredEnrichedRecordClassResolver.getClass(enrichedRecord.getDataSource());
 
         try {
-            Constructor<? extends AdeScoredEnrichedRecord> constructor = pojoClass.getConstructor(Instant.class, String.class, Double.class, List.class);
+            Constructor<? extends AdeScoredEnrichedRecord> constructor = pojoClass.getConstructor(Instant.class, String.class, String.class, Double.class, List.class);
             String featureName = featureScore.getName();
-            ret = constructor.newInstance(enrichedRecord.getStartInstant(), featureName, featureScore.getScore(), featureScore.getFeatureScores());
+            ret = constructor.newInstance(enrichedRecord.getStartInstant(), featureName, enrichedRecord.getAdeEventType(), featureScore.getScore(), featureScore.getFeatureScores());
             ret.fillContext(enrichedRecord);
         } catch (NoSuchMethodException e) {
             //TODO: ADD metrics
