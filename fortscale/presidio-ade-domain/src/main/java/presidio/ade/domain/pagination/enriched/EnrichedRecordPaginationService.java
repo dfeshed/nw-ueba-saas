@@ -18,9 +18,11 @@ import java.util.Set;
  */
 public class EnrichedRecordPaginationService extends PaginationService<EnrichedRecord> {
 
+    private static final Logger logger = Logger.getLogger(EnrichedRecordPaginationService.class);
+
     private EnrichedDataStore store;
     private String contextType;
-    private static final Logger logger = Logger.getLogger(EnrichedRecordPaginationService.class);
+
 
     public EnrichedRecordPaginationService(EnrichedDataStore store, int pageSize, int maxGroupSize, String contextType) {
         super(pageSize, maxGroupSize);
@@ -43,7 +45,7 @@ public class EnrichedRecordPaginationService extends PaginationService<EnrichedR
 
     @Override
     protected void ensureContextAndDateTimeIndex(String dataSource) {
-        this.store.ensureContextAndDateTimeIndex(dataSource, this.contextType);
+        this.store.ensureContextAndDateTimeIndex(dataSource.toLowerCase(), this.contextType);
     }
 
 }
