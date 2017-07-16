@@ -53,7 +53,6 @@ public class AggregationRecordsCreatorImpl implements AggregationRecordsCreator 
                     if (aggregatedFeatureValue == null) {
                         throw new IllegalArgumentException(String.format("Feature value doesn't contain a 'value' element: %s", featureValue));
                     }
-                    Map<String, Object> aggregatedFeatureInfo = featureValue.getAdditionalInformationMap();
                     String aggregatedFeatureName = aggregatedFeatureEventConf.getName();
 
                     AggregatedFeatureType aggregatedFeatureType = AggregatedFeatureType.fromCodeRepresentation(aggregatedFeatureEventConf.getType());
