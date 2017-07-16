@@ -31,12 +31,36 @@ public class ModelCacheManagerInMemoryTest {
     public ModelConf modelConf;
     @MockBean
     public AbstractDataRetriever dataRetriever;
-    Duration futureDiffBetweenCachedModelAndEvent = Duration.ofDays(1);
+    private Duration maxDiffBetweenCachedModelAndEvent = Duration.ofDays(1);
     int cacheSize = 100;
 
     @Test
+    public void shouldReloadModelToCacheOnceExpired()
+    {
+        ModelCacheManagerInMemory modelCacheManagerInMemory = new ModelCacheManagerInMemory(modelStore, modelConf, dataRetriever, maxDiffBetweenCachedModelAndEvent, cacheSize);
+        Instant eventTime = Instant.now();
+        HashMap<String, String> context = new HashMap<>();
+        context.put("contextField","non_existing_contextId");
+        String contextId = "non_existing_contextId";
+        Mockito.when(dataRetriever.getContextId(context)).thenReturn(contextId);
+        Instant oldestAllowedModelTime = eventTime.minus(maxDiffBetweenCachedModelAndEvent);
+        Mockito.when(modelStore.getLatestBeforeEventTimeAfterOldestAllowedModelDao(modelConf,contextId,eventTime, oldestAllowedModelTime)).thenReturn(null);
+
+        Model model = modelCacheManagerInMemory.getModel(context, eventTime);
+        Assert.assertEquals(null,model);
+        Mockito.when(modelStore.getLatestBeforeEventTimeAfterOldestAllowedModelDao(modelConf,contextId,eventTime, oldestAllowedModelTime)).thenReturn(null);
+        Model returnedModel = () -> 0;
+        Instant newEventEndTime = eventTime.plus(maxDiffBetweenCachedModelAndEvent).plusMillis(1);
+        ModelDAO returnedModelDao =
+                new ModelDAO("sessionId", contextId, returnedModel, eventTime, newEventEndTime);
+        Mockito.when(modelStore.getLatestBeforeEventTimeAfterOldestAllowedModelDao(modelConf,contextId,newEventEndTime, newEventEndTime.minus(maxDiffBetweenCachedModelAndEvent))).thenReturn(returnedModelDao );
+        model = modelCacheManagerInMemory.getModel(context, newEventEndTime);
+        Assert.assertNotNull(model);
+    }
+
+    @Test
     public void shouldReturnNullModelIfNonExistInStore() throws Exception {
-        ModelCacheManagerInMemory modelCacheManagerInMemory = new ModelCacheManagerInMemory(modelStore, modelConf, dataRetriever, futureDiffBetweenCachedModelAndEvent, cacheSize);
+        ModelCacheManagerInMemory modelCacheManagerInMemory = new ModelCacheManagerInMemory(modelStore, modelConf, dataRetriever, maxDiffBetweenCachedModelAndEvent, cacheSize);
 
         Instant eventTime = Instant.now();
 
@@ -44,7 +68,7 @@ public class ModelCacheManagerInMemoryTest {
         context.put("contextField","non_existing_contextId");
         String contextId = "non_existing_contextId";
         Mockito.when(dataRetriever.getContextId(context)).thenReturn(contextId);
-        Instant oldestAllowedModelTime = eventTime.minus(futureDiffBetweenCachedModelAndEvent);
+        Instant oldestAllowedModelTime = eventTime.minus(maxDiffBetweenCachedModelAndEvent);
         Mockito.when(modelStore.getLatestBeforeEventTimeAfterOldestAllowedModelDao(modelConf,contextId,eventTime, oldestAllowedModelTime)).thenReturn(null);
 
         Model model = modelCacheManagerInMemory.getModel(context, eventTime);
@@ -63,10 +87,10 @@ public class ModelCacheManagerInMemoryTest {
     @Test
     public void shouldReturnModelFromCache() throws Exception {
         ModelCacheManagerInMemory modelCacheManagerInMemory =
-                new ModelCacheManagerInMemory(modelStore, modelConf, dataRetriever, futureDiffBetweenCachedModelAndEvent, cacheSize);
+                new ModelCacheManagerInMemory(modelStore, modelConf, dataRetriever, maxDiffBetweenCachedModelAndEvent, cacheSize);
 
         Instant eventTime = Instant.now();
-        Instant oldestAllowedModelTime = eventTime.minus(futureDiffBetweenCachedModelAndEvent);
+        Instant oldestAllowedModelTime = eventTime.minus(maxDiffBetweenCachedModelAndEvent);
 
         HashMap<String, String> context = new HashMap<>();
         context.put("contextField","existing_contextId");
@@ -94,10 +118,10 @@ public class ModelCacheManagerInMemoryTest {
     public void shouldCleanCacheFromNonUsedModels() throws Exception {
         int lruModelCacheSize = 2;
         ModelCacheManagerInMemory modelCacheManagerInMemory =
-                new ModelCacheManagerInMemory(modelStore, modelConf, dataRetriever, futureDiffBetweenCachedModelAndEvent, lruModelCacheSize);
+                new ModelCacheManagerInMemory(modelStore, modelConf, dataRetriever, maxDiffBetweenCachedModelAndEvent, lruModelCacheSize);
 
         Instant eventTime = Instant.now();
-        Instant oldestAllowedModelTime = eventTime.minus(futureDiffBetweenCachedModelAndEvent);
+        Instant oldestAllowedModelTime = eventTime.minus(maxDiffBetweenCachedModelAndEvent);
 
         HashMap<String, String> context1 = new HashMap<>();
         context1.put("contextField","existing_contextId1");
