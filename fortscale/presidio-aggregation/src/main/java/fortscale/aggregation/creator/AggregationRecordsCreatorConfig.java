@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Import;
  */
 @Configuration
 @Import({AggregatedFeatureEventsConfServiceConfig.class,AggrFeatureFuncServiceConfig.class})
-public class AggregationsCreatorConfig {
+public class AggregationRecordsCreatorConfig {
 
     @Autowired
     private IAggrFeatureEventFunctionsService aggrFeatureEventFunctionsService;
@@ -22,7 +22,7 @@ public class AggregationsCreatorConfig {
     private AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
 
     @Bean
-    public AggregationRecordsCreator aggregationsCreator()
+    public AggregationRecordsCreator aggregationRecordssCreator()
     {
         return new AggregationRecordsCreatorImpl(aggrFeatureEventFunctionsService,aggregatedFeatureEventsConfService);
     }

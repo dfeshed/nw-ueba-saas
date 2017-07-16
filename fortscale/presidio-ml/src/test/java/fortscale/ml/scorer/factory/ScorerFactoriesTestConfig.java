@@ -33,7 +33,7 @@ public class ScorerFactoriesTestConfig {
     @MockBean
     private ModelsCacheService modelCacheService;
     @Bean
-    public static TestPropertiesPlaceholderConfigurer abc() {
+    public static TestPropertiesPlaceholderConfigurer scorerFactoriesTestProperties() {
         Properties properties = new Properties();
         properties.put("fortscale.model.aggregation.bucket.conf.json.file.name", "classpath:fortscale/config/asl/model/buckets/model_buckets_test.json");
         return new TestPropertiesPlaceholderConfigurer(properties);
