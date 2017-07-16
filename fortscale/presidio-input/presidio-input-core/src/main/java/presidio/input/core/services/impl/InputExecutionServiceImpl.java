@@ -7,8 +7,9 @@ import fortscale.common.shell.PresidioExecutionService;
 import fortscale.domain.core.AbstractAuditableDocument;
 import fortscale.utils.logging.Logger;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
+import presidio.ade.domain.store.enriched.EnrichedRecordsMetadata;
+import presidio.ade.sdk.executions.common.ADEManagerSDK;
 import presidio.input.core.services.converters.*;
-import presidio.input.core.services.data.AdeDataService;
 import presidio.sdk.api.domain.DlpFileDataDocument;
 import presidio.sdk.api.domain.DlpFileEnrichedDocument;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
@@ -22,11 +23,11 @@ public class InputExecutionServiceImpl implements PresidioExecutionService {
     private static final Logger logger = Logger.getLogger(InputExecutionServiceImpl.class);
 
     private final PresidioInputPersistencyService presidioInputPersistencyService;
-    private final AdeDataService adeDataService;
+    private final ADEManagerSDK adeManagerSDK;
 
-    public InputExecutionServiceImpl(PresidioInputPersistencyService presidioInputPersistencyService, AdeDataService adeDataService) {
+    public InputExecutionServiceImpl(PresidioInputPersistencyService presidioInputPersistencyService, ADEManagerSDK adeManagerSDK) {
         this.presidioInputPersistencyService = presidioInputPersistencyService;
-        this.adeDataService = adeDataService;
+        this.adeManagerSDK = adeManagerSDK;
     }
 
     @Override
@@ -59,7 +60,8 @@ public class InputExecutionServiceImpl implements PresidioExecutionService {
 
         List<? extends EnrichedRecord> records = convert(enrichedDocuments, converter);
 
-        adeDataService.store(dataSource, startDate, endDate, records);
+        EnrichedRecordsMetadata metaData = new EnrichedRecordsMetadata(dataSource.getName(), startDate, endDate);
+        adeManagerSDK.store(metaData, records);
 
         logger.info("*************input logic comes here***********");
         logger.info("enriched documents: \n{}", enrichedDocuments);
