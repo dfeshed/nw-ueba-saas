@@ -3,6 +3,7 @@ package fortscale.aggregation.feature.event;
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.aggregation.feature.bucket.FeatureBucketConf;
 import fortscale.aggregation.feature.bucket.config.BucketConfigurationServiceConfig;
+import fortscale.global.configuration.GlobalConfiguration;
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
 import net.minidev.json.JSONObject;
 import org.json.JSONException;
@@ -42,9 +43,7 @@ public class AggregatedFeatureEventsConfServiceTest {
 
 
     @Configuration
-    @EnableSpringConfigured
-    @ComponentScan(basePackages = "fortscale.global")
-    @Import({BucketConfigurationServiceConfig.class,})
+    @Import({GlobalConfiguration.class, BucketConfigurationServiceConfig.class,})
     static class ContextConfiguration {
 
         @Value("${streaming.event.field.type.aggr_event}")
