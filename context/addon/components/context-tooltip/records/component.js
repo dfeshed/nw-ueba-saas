@@ -17,7 +17,8 @@ const dispatchToActions = {
 // is not found in this map, we assume it matches the dataSource name of record.
 const recordNameToTabMap = {
   IOC: 'Endpoint',
-  Modules: 'Endpoint'
+  Modules: 'Endpoint',
+  Machines: 'Endpoint'
 };
 
 // Maps the dataSource name to the data type.
@@ -25,18 +26,20 @@ const recordNameToTabMap = {
 const recordNameToDataTypeMap = {
   DEFAULT: 'number',
   Machines: 'string',
-  LiveConnect: 'string'
+  'LiveConnect-Ip': 'string',
+  'LiveConnect-File': 'string',
+  'LiveConnect-Domain': 'string'
 };
 
 // Maps an entity type to the list of dataSource names that we expect to receive data from.
 // Used to layout the UI as we await data values to stream in from server.
 const entityTypeToRecordNamesMap = {
   DEFAULT: ['Incidents', 'Alerts', 'LIST'],
-  IP: ['Incidents', 'Alerts', 'LIST', 'Machines', 'LiveConnect'],
+  IP: ['Incidents', 'Alerts', 'LIST', 'Machines', 'LiveConnect-Ip'],
   HOST: ['Incidents', 'Alerts', 'LIST', 'Machines'],
   MAC_ADDRESS: ['Incidents', 'Alerts', 'LIST', 'Machines'],
-  FILE_HASH: ['Incidents', 'Alerts', 'LIST', 'LiveConnect'],
-  DOMAIN: ['Incidents', 'Alerts', 'LIST', 'LiveConnect']
+  FILE_HASH: ['Incidents', 'Alerts', 'LIST', 'LiveConnect-File'],
+  DOMAIN: ['Incidents', 'Alerts', 'LIST', 'LiveConnect-Domain']
 };
 
 const ContextTooltipRecords = Component.extend({

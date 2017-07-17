@@ -1345,7 +1345,9 @@ export default {
         IOC: 'IOCs',
         Machines: 'Endpoint',
         Modules: 'Modules',
-        LiveConnect: 'LiveConnect'
+        'LiveConnect-Ip': 'LiveConnect',
+        'LiveConnect-File': 'LiveConnect',
+        'LiveConnect-Domain': 'LiveConnect'
       }
     }
   }

@@ -1345,7 +1345,9 @@ export default {
         IOC: 'ja_IOCs',
         Machines: 'ja_Endpoint',
         Modules: 'ja_Modules',
-        LiveConnect: 'ja_LiveConnect'
+        'LiveConnect-Ip': 'ja_LiveConnect',
+        'LiveConnect-File': 'ja_LiveConnect',
+        'LiveConnect-Domain': 'ja_LiveConnect'
       }
     }
   }
