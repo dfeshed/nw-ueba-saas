@@ -16,6 +16,7 @@ import java.util.Arrays;
 public abstract class PresidioShellableApplication {
     private static final Logger logger = Logger.getLogger(PresidioShellableApplication.class);
 
+    @Deprecated
     public static void run(String[] args, ConfigurableApplicationContext ctx) {
         try {
             BootShim bs = new BootShim(args, ctx);
@@ -34,8 +35,18 @@ public abstract class PresidioShellableApplication {
      * @param args               the input arguments
      */
     public static void run(Class<?> configurationClass, String[] args) {
+        logger.info("Starting {} component ",configurationClass.getClass().getName());
         Object[] sources = {configurationClass, ShellCommonCommandsConfig.class};
         ConfigurableApplicationContext context = SpringApplication.run(sources, args);
-        run(args, context);
+        try {
+            BootShim bs = new BootShim(args, context);
+            context.registerShutdownHook();
+            bs.run();
+            Thread.currentThread().interrupt();
+            context.close();
+        } catch (RuntimeException e) {
+            String errorMessage = String.format("Failed to run application with specified args: [%s]", Arrays.toString(args));
+            logger.error(errorMessage, e);
+        }
     }
 }

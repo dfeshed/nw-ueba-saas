@@ -22,15 +22,7 @@ public class FortscaleInputCoreApplication extends PresidioShellableApplication 
     private static final Logger logger = Logger.getLogger(FortscaleInputCoreApplication.class);
 
     public static void main(String[] args) {
-        logger.info("Start Input Core Main");
-
-        ConfigurableApplicationContext ctx = SpringApplication.run(new Object[]{FortscaleInputCoreApplication.class, InputProductionConfiguration.class, ShellCommonCommandsConfig.class}, args);
-        //todo: all the lines under the configurations should be in the parent class and the logger, else they are duplicated
-        ctx.registerShutdownHook();
-        run(args, ctx);
-        Thread.currentThread().interrupt();
-        ctx.close();
-
+        PresidioShellableApplication.run(FortscaleInputCoreApplication.class, args);
     }
 
 }
