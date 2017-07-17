@@ -948,7 +948,9 @@ export default {
         selection: {
           storyPoint: 'in {{count}} selected indicator(s)',
           event: 'in {{count}} selected event(s)'
-        }
+        },
+        hasExceededNodeLimit: 'Showing only first {{limit}} nodes.',
+        showAll: 'Show all data'
       }
     },
     enrichment: {

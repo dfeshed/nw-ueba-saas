@@ -57,7 +57,7 @@ test('it utilizes caching to avoid re-constructing nodes & links when possible',
   assert.equal(firstLink, links2[0], 'Expected link from previous call to be re-used in second call');
   assert.equal(nodes2.length, 11, 'Expected second call to yield additional results');
 
-  const { nodes: nodes3 } = eventsToNodesLinks([ event1, event2 ], true);
+  const { nodes: nodes3 } = eventsToNodesLinks([ event1, event2 ], { ignoreCache: true });
   assert.notEqual(firstNode, nodes3[0], 'Expected node from previous call to NOT be re-used when ignoreCache is set to true');
 });
 
@@ -114,4 +114,13 @@ test('it parses the domain field if the destination.device has no domain', funct
   assert.equal(result.nodes.length, 2, 'Expected node for domain');
   assert.equal(result.nodes[1].value, 'DOMAIN1');
   assert.equal(result.nodes[1].type, 'domain');
+});
+
+test('it stops parsing nodes & links if a node limit is given and exceeded', function(assert) {
+  const nodeLimitRequested = 1;
+  const { nodes, links, nodeLimit, hasExceededNodeLimit } = eventsToNodesLinks([ event1 ], { nodeLimit: nodeLimitRequested });
+  assert.equal(nodes.length, nodeLimit, 'Expected result to include only one node');
+  assert.notOk(links.length, 'Expected no links in result');
+  assert.equal(nodeLimit, nodeLimitRequested, 'Expected result to reflect the given node limit');
+  assert.ok(hasExceededNodeLimit, 'Expected result to indicate that limit was exceeded');
 });

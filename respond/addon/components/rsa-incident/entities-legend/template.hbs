@@ -11,3 +11,15 @@
     {{t (concat 'respond.entity.legend.selection.' sel.type) count=sel.ids.length}}
   </div>
 {{/with}}
+{{#if hasExceededNodeLimit}}
+  <p class="has-exceeded-node-limit">
+    <span>
+      {{t 'respond.entity.legend.hasExceededNodeLimit' limit=nodeLimit}}
+    </span>
+    {{#if showAllAction}}
+      <span class="show-all" {{action 'safeCallback' showAllAction}}>
+        {{t 'respond.entity.legend.showAll'}}
+      </span>
+    {{/if}}
+  </p>
+{{/if}}

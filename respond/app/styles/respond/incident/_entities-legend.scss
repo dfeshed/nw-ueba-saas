@@ -9,6 +9,16 @@
     display: none;
   }
 
+  .has-exceeded-node-limit {
+    margin-top: rsa-whitespace(least);
+    color: rsa-color(gray);
+
+    .show-all {
+      color: rsa-color(blue, light);
+      cursor: pointer;
+    }
+  }
+
   .datum {
     display: inline-block;
     white-space: nowrap;

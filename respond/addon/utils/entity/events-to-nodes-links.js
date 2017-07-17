@@ -1,5 +1,6 @@
 import NodeTypes from './node-types';
 import LinkTypes from './link-types';
+import HashWithLimit from './hash-with-limit';
 import { makeNodeId, makeNode } from './node';
 import { makeLinkId, makeLink } from './link';
 import arrayFromHashValues from 'respond/utils/array/from-hash-values';
@@ -49,11 +50,15 @@ function checkNode(nodeType, nodeValue, nodeHash, evt) {
 
   // Do we already have a node for these inputs?
   const nodeKey = makeNodeId(nodeType, nodeValue);
-  let node = nodeHash[nodeKey];
+  let node = nodeHash.getItem(nodeKey);
   if (!node) {
 
     // No node exists yet for this attr value. Create a new node for it.
-    node = nodeHash[nodeKey] = makeNode(nodeType, nodeValue);
+    node = makeNode(nodeType, nodeValue);
+    if (!nodeHash.setItem(nodeKey, node)) {
+      // Couldn't create new node (probably because of nodeHash size limits.
+      return null;
+    }
   }
 
   // Now that we have a node, add this event to that node's event list.
@@ -223,18 +228,22 @@ function parseEventNodesAndLinks(evt, nodeHash, linkHash) {
  * `events`: {object[]} the subset of the given events in which this link was found.
  *
  * @param {object[]} events Array of normalized event objects, possibly empty.
- * @param {Boolean} [ignoreCache=false] If true, will not read/write cache. Forces the parsing of all given events.
+ * @param {Object} [options={}] Config settings to customize the behavior of this call.
+ * @param {Boolean} [options.ignoreCache=false] If true, will not read/write cache. Forces the parsing of all given events.
  * Otherwise, this function will compare the given events to a cache from the previous invocation (if any). If the
  * cached events array is a subset of the given events array, then this function will re-use the cached results and
  * only parse the new events that are not already cached.
+ * @param {Boolean} [options.nodeLimit] If given, specifies the maximum number of nodes which should be generated.
  * @public
  */
-export default function eventsToNodesAndLinks(events, ignoreCache = false) {
-  let nodeHash = {};
+export default function eventsToNodesAndLinks(events, options = {}) {
+  const { nodeLimit } = options;
+  let nodeHash = HashWithLimit.create({ limit: nodeLimit });
   let linkHash = {};
   let newEvents = events;
 
   // Don't utilize the cache for the trivial empty use-case.
+  let { ignoreCache } = options;
   ignoreCache = ignoreCache || !events || !events.length;
 
   if (!ignoreCache) {
@@ -257,8 +266,10 @@ export default function eventsToNodesAndLinks(events, ignoreCache = false) {
   });
 
   const output = {
-    nodes: arrayFromHashValues(nodeHash),
-    links: arrayFromHashValues(linkHash)
+    nodes: arrayFromHashValues(nodeHash.get('allItems')),
+    links: arrayFromHashValues(linkHash),
+    nodeLimit,
+    hasExceededNodeLimit: nodeHash.get('hasExceededLimit')
   };
 
   // Save results to cache for next time.

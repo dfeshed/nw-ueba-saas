@@ -7,10 +7,15 @@ import { parseNodeId, countNodesByType } from 'respond/utils/entity/node';
 import connect from 'ember-redux/components/connect';
 import { storyEvents } from 'respond/selectors/storyline';
 import CanThrottleAttr from 'respond/mixins/can-throttle-attr';
+import { setHideViz } from 'respond/actions/creators/incidents-creators';
 
 const stateToComputed = (state) => ({
   events: storyEvents(state),
   selection: state.respond.incident.selection
+});
+
+const dispatchToActions = (dispatch) => ({
+  showAll: () => dispatch(setHideViz(true))
 });
 
 const IncidentEntities = Component.extend(CanThrottleAttr, {
@@ -26,10 +31,13 @@ const IncidentEntities = Component.extend(CanThrottleAttr, {
   throttleToAttr: 'eventsThrottled',
   throttleInterval: 1000,
 
+  // Optional max number of nodes to be rendered (for performance governing).
+  nodeLimit: 500,
+
   // Generates a set of nodes & links from a list of events.
-  @computed('eventsThrottled')
-  data(events) {
-    return eventsToNodesAndLinks(events || []);
+  @computed('eventsThrottled', 'nodeLimit')
+  data(events, nodeLimit) {
+    return eventsToNodesAndLinks(events || [], { nodeLimit });
   },
 
   // Generates a filter for the nodes & links from the current selection (if any).
@@ -62,4 +70,4 @@ const IncidentEntities = Component.extend(CanThrottleAttr, {
   }
 });
 
-export default connect(stateToComputed)(IncidentEntities);
+export default connect(stateToComputed, dispatchToActions)(IncidentEntities);
