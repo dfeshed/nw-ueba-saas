@@ -45,50 +45,19 @@ public class AggregatedFeatureEventsConfServiceTest {
     @Configuration
     @Import({BucketConfigurationServiceConfig.class,})
     static class ContextConfiguration {
-
-        @Value("${streaming.event.field.type.aggr_event}")
-        private String eventTypeFieldValue;
-
-        @Value("${streaming.aggr_event.field.context}")
-        private String contextFieldName;
-
         @Bean
         public AggregatedFeatureEventsConfUtilService getAggregatedFeatureEventsConfUtilService(){
-            return new AggregatedFeatureEventsConfUtilService(eventTypeFieldValue, contextFieldName);
+            return new AggregatedFeatureEventsConfUtilService();
         }
-//
-//        @Value("${fortscale.aggregation.retention.strategy.conf.json.file.name}")
-//        private String retentionStrategyConfJsonFilePath;
-//        @Value("${fortscale.aggregation.retention.strategy.conf.json.overriding.files.path}")
-//        private String retentionStrategyConfJsonOverridingFilesPath;
-//        @Value("${fortscale.aggregation.retention.strategy.conf.json.additional.files.path:#{null}}")
-//        private String retentionStrategyConfJsonAdditionalFilesPath;
 
         @Bean
         public RetentionStrategiesConfService getRetentionStrategiesConfService(){
             return new RetentionStrategiesConfService();
         }
 
-        @Value("${fortscale.aggregation.feature.event.conf.json.file.name}")
-        private String aggregatedFeatureEventConfJsonFilePath;
-        @Value("${fortscale.aggregation.feature.event.conf.json.overriding.files.path}")
-        private String aggregatedFeatureEventConfJsonOverridingFilesPath;
-        @Value("${fortscale.aggregation.feature.event.conf.json.additional.files.path:#{null}}")
-        private String aggregatedFeatureEventConfJsonAdditionalFilesPath;
-
-        @Autowired
-        private BucketConfigurationService bucketConfigurationService;
-
-        @Autowired
-        private AggregatedFeatureEventsConfUtilService aggregatedFeatureEventsConfUtilService;
-
-        @Autowired
-        private RetentionStrategiesConfService retentionStrategiesConfService;
-
         @Bean
         public AggregatedFeatureEventsConfService getAggregatedFeatureEventsConfService(){
-            return new AggregatedFeatureEventsConfService(bucketConfigurationService,aggregatedFeatureEventsConfUtilService,null,aggregatedFeatureEventConfJsonFilePath,
-                    aggregatedFeatureEventConfJsonOverridingFilesPath, aggregatedFeatureEventConfJsonAdditionalFilesPath);
+            return new AggregatedFeatureEventsConfService();
         }
 
         @Bean
