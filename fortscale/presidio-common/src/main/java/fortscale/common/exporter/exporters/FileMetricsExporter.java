@@ -1,4 +1,4 @@
-package fortscale.common.exporter;
+package fortscale.common.exporter.exporters;
 
 
 
@@ -9,7 +9,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 
 import java.util.*;
 
-public class FileMetricsExporter extends MetricsExporter{
+public class FileMetricsExporter extends MetricsExporter {
 
     private final Logger logger = Logger.getLogger(FileMetricsExporter.class);
 
