@@ -2,20 +2,14 @@ package fortscale.entity.event;
 
 import fortscale.aggregation.feature.event.AggrEvent;
 import fortscale.aggregation.feature.event.AggrFeatureEventBuilderService;
-import fortscale.entity.event.metrics.EntityEventServiceMetrics;
 import fortscale.utils.ConversionUtils;
 import fortscale.utils.logging.Logger;
-import fortscale.utils.monitoring.stats.StatsService;
 import fortscale.utils.time.TimestampUtils;
 import net.minidev.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.util.Assert;
 
 import java.util.*;
 import java.util.concurrent.TimeoutException;
 
-@Configurable(preConstruction = true)
 public class EntityEventService {
 	private static final Logger logger = Logger.getLogger(EntityEventService.class);
 	private static final String SECONDS_TO_WAIT_BEFORE_FIRING_JSON_FIELD = "secondsToWaitBeforeFiring";
@@ -26,29 +20,18 @@ public class EntityEventService {
 	private Long lastTimeEventsWereFired;
 	// Mapping from a full event name (bucketConfName.aggregatedFeatureEventName) to its related entity event builders
 	private Map<String, Set<EntityEventBuilder>> fullEventNameToBuilders;
-	private EntityEventDataStore entityEventDataStore;
 
-	@Autowired
 	private EntityEventConfService entityEventConfService;
-	@Autowired
 	private AggrFeatureEventBuilderService aggrFeatureEventBuilderService;
-	@Autowired
-	private StatsService statsService;
+	private EntityEventBuilderFactory entityEventBuilderFactory;
 
-	private EntityEventServiceMetrics metrics;
 
-	public EntityEventServiceMetrics getMetrics()
-	{
-		if (metrics==null)
-		{
-			metrics = new EntityEventServiceMetrics(statsService);
-		}
-		return metrics;
-	}
-
-	public EntityEventService(EntityEventDataStore entityEventDataStore) {
-		Assert.notNull(entityEventDataStore);
-		this.entityEventDataStore = entityEventDataStore;
+	public EntityEventService(EntityEventConfService entityEventConfService,
+							  AggrFeatureEventBuilderService aggrFeatureEventBuilderService,
+							  EntityEventBuilderFactory entityEventBuilderFactory) {
+		this.entityEventConfService = entityEventConfService;
+		this.aggrFeatureEventBuilderService = aggrFeatureEventBuilderService;
+		this.entityEventBuilderFactory = entityEventBuilderFactory;
 		getGlobalParams();
 		lastTimeEventsWereFired = -1L;
 		createEntityEventBuilders();
@@ -68,8 +51,8 @@ public class EntityEventService {
 	public void sendNewEntityEventsAndUpdateStore(long currentTimeInMillis, IEntityEventSender sender) throws TimeoutException {
 		long currentTimeInSeconds = TimestampUtils.convertToSeconds(currentTimeInMillis);
 		if (lastTimeEventsWereFired + fireEventsEverySeconds <= currentTimeInSeconds) {
-			getMetrics().sendNewEntityEventAndUpdateStore++;
-			getMetrics().NewEntityEventsSendAndUpdateStoreTime = currentTimeInMillis;
+			//todo: getMetrics().sendNewEntityEventAndUpdateStore++;
+			//todo: getMetrics().NewEntityEventsSendAndUpdateStoreTime = currentTimeInMillis;
 			for (EntityEventBuilder entityEventBuilder : getAllEntityEventBuilders()) {
 				entityEventBuilder.sendNewEntityEventsAndUpdateStore(currentTimeInSeconds, sender);
 			}
@@ -81,7 +64,7 @@ public class EntityEventService {
 	public void sendEntityEventsInTimeRange(Date startTime, Date endTime, long currentTimeInMillis,
 											IEntityEventSender sender, boolean updateStore) throws TimeoutException {
 		long currentTimeInSeconds = TimestampUtils.convertToSeconds(currentTimeInMillis);
-		getMetrics().sendEntityEventsInTimeRange++;
+		//todo: getMetrics().sendEntityEventsInTimeRange++;
 		for (EntityEventBuilder entityEventBuilder : getAllEntityEventBuilders()) {
 			entityEventBuilder.sendEntityEventsInTimeRange(startTime, endTime, currentTimeInSeconds, sender, updateStore);
 		}
@@ -113,7 +96,7 @@ public class EntityEventService {
 		// Iterate all entity event definitions
 		for (EntityEventConf entityEventConf : entityEventDefinitions) {
 			// Create new entity event builder
-			EntityEventBuilder entityEventBuilder = new EntityEventBuilder(secondsToWaitBeforeFiring, entityEventConf, entityEventDataStore);
+			EntityEventBuilder entityEventBuilder = entityEventBuilderFactory.createEntityEventBuilder(secondsToWaitBeforeFiring, entityEventConf);
 
 			// Add the new builder to the mapping of each aggregated feature event in the conf
 			for (String fullEventName : entityEventConf.getAllAggregatedFeatureEventNames()) {

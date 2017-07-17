@@ -1,6 +1,7 @@
 package fortscale.entity.event;
 
 import fortscale.utils.ConversionUtils;
+import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
 import net.minidev.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
 import org.junit.Assert;
@@ -10,16 +11,18 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.test.context.ContextConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import static org.mockito.Mockito.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath*:META-INF/spring/entity-event-context-test.xml"})
 public class EntityEventServiceTest extends EntityEventTestBase {
 	private static final double DELTA = 0.00001;
 
@@ -29,6 +32,9 @@ public class EntityEventServiceTest extends EntityEventTestBase {
 	@Autowired
 	private EntityEventDataStore entityEventDataStore;
 
+	@Autowired
+	private EntityEventServiceFactory entityEventServiceFactory;
+
 	@Before
 	public void setUp() {
 		((EntityEventDataTestStore)entityEventDataStore).emptyEntityEventDataStore();
@@ -36,7 +42,7 @@ public class EntityEventServiceTest extends EntityEventTestBase {
 
 	@Test
 	public void entity_event_service_should_process_messages_correctly_and_fire_events_on_time() throws Exception {
-		EntityEventService entityEventService = new EntityEventService(entityEventDataStore);
+		EntityEventService entityEventService = entityEventServiceFactory.createEntityEventService();
 
 		// First group of messages is relevant only for:
 		// conf1 (context is normalized_username = user1)
@@ -113,5 +119,58 @@ public class EntityEventServiceTest extends EntityEventTestBase {
 
 		// Make sure all 3 cases were checked
 		Assert.assertEquals(0b111, caseChecker);
+	}
+
+
+	@Configuration
+	@Import({EntityEventServiceFactoryConfig.class})
+	public static class EntityEventServiceTestConfiguration{
+//		@Bean
+//		public AggregatedFeatureEventsConfUtilService getAggregatedFeatureEventsConfUtilService(){
+//			return new AggregatedFeatureEventsConfUtilService();
+//		}
+//
+//		@Bean
+//		public AggrFeatureEventBuilderService getAggrFeatureEventBuilderService(){
+//			return new AggrFeatureEventBuilderService();
+//		}
+
+		@Bean
+		public EntityEventGlobalParamsConfService getEntityEventGlobalParamsConfService(){
+			return new EntityEventGlobalParamsConfService();
+		}
+
+		@Bean
+		public EntityEventConfService getEntityEventConfService(){
+			return new EntityEventConfService();
+		}
+
+		@Bean
+		public EntityEventDataStore getEntityEventDataStore(){
+			return new EntityEventDataTestStore();
+		}
+
+		@Bean
+		public static TestPropertiesPlaceholderConfigurer abc() {
+			Properties properties = new Properties();
+			properties.put("fortscale.entity.event.definitions.json.file.path", "classpath:entity_events_test.json");
+			properties.put("fortscale.entity.event.definitions.conf.json.overriding.files.path", "");
+			properties.put("fortscale.entity.event.global.params.json.file.path","entity_events_global_params_test.json");
+			properties.put("fortscale.entity.event.global.params.conf.json.overriding.files.path", "");
+			properties.put("streaming.entity_event.field.entity_event_type", "entity_event_type");
+
+			properties.put("streaming.event.field.type.aggr_event", "aggr_event");
+			properties.put("streaming.aggr_event.field.context", "context");
+			properties.put("impala.table.fields.epochtime", "date_time_unix");
+			properties.put("streaming.aggr_event.field.bucket_conf_name", "bucket_conf_name");
+			properties.put("streaming.aggr_event.field.aggregated_feature_name", "aggregated_feature_name");
+			properties.put("streaming.aggr_event.field.aggregated_feature_value", "aggregated_feature_value");
+			properties.put("impala.table.fields.data.source", "data_source");
+			properties.put("fortscale.entity.event.retrieving.page.size", "200000");
+			properties.put("fortscale.entity.event.store.page.size", "1000");
+//			properties.put("", "");
+
+			return new TestPropertiesPlaceholderConfigurer(properties);
+		}
 	}
 }

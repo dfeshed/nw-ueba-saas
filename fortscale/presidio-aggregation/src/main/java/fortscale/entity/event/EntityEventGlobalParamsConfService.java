@@ -26,7 +26,7 @@ public class EntityEventGlobalParamsConfService extends AslConfigurationService 
 
 	@Override
 	protected String getBaseOverridingConfJsonFolderPath() {
-		return entityEventGlobalParamsConfJsonOverridingFilesPath;
+		return entityEventGlobalParamsConfJsonOverridingFilesPath.isEmpty() ? null : entityEventGlobalParamsConfJsonOverridingFilesPath;
 	}
 
 	@Override

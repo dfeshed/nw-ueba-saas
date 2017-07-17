@@ -25,11 +25,6 @@ public class AggregatedFeatureEventsConfUtilService {
 
 	public AggregatedFeatureEventsConfUtilService(){}
 
-	public AggregatedFeatureEventsConfUtilService(String eventTypeFieldValue, String contextFieldName){
-		this.eventTypeFieldValue = eventTypeFieldValue;
-		this.contextFieldName = contextFieldName;
-	}
-
 	public String buildOutputBucketConfName(AggregatedFeatureEventConf conf){
 		return String.format("%s_%s", conf.getBucketConfName(), conf.getName());
 	}
