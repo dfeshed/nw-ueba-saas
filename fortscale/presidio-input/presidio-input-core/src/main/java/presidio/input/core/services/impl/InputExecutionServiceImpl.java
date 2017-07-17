@@ -1,18 +1,14 @@
 package presidio.input.core.services.impl;
 
 
-import fortscale.common.exporter.FileMetricsExporter;
 import fortscale.common.shell.PresidioExecutionService;
 import fortscale.common.general.CommonStrings;
 import fortscale.common.general.DataSource;
-import fortscale.common.shell.PresidioExecutionService;
 import fortscale.domain.core.AbstractAuditableDocument;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.monitoring.aspect.annotations.End;
 import fortscale.utils.monitoring.aspect.annotations.RunTime;
 import fortscale.utils.monitoring.aspect.annotations.Start;
-import org.aspectj.lang.annotation.Before;
-import org.springframework.beans.factory.annotation.Autowired;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.ade.domain.store.enriched.EnrichedRecordsMetadata;
 import presidio.ade.sdk.executions.common.ADEManagerSDK;

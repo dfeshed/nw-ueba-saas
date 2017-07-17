@@ -1,19 +1,20 @@
 package presidio.input.core.spring;
 
 
-import fortscale.common.exporter.ElasticMetricsExporter;
-import fortscale.common.exporter.FileMetricsExporter;
+import fortscale.common.exporter.exporters.ElasticMetricsExporter;
+import fortscale.common.exporter.ElasticSearchTemplateProducer;
+import fortscale.common.exporter.exporters.FileMetricsExporter;
+import fortscale.common.exporter.exporters.MetricsExporter;
 import fortscale.common.exporter.PresidioSystemPublicMetrics;
 import fortscale.common.shell.PresidioExecutionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.endpoint.MetricsEndpoint;
+import org.springframework.boot.actuate.endpoint.PublicMetrics;
 import org.springframework.context.annotation.*;
-import presidio.input.core.services.data.AdeDataService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import presidio.ade.sdk.executions.common.ADEManagerSDK;
-import presidio.ade.sdk.executions.online.ADEManagerSDKConfig;
 import presidio.input.core.services.impl.InputExecutionServiceImpl;
 import presidio.input.sdk.impl.spring.PresidioInputPersistencyServiceConfig;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
@@ -21,7 +22,7 @@ import presidio.sdk.api.services.PresidioInputPersistencyService;
 @Configuration
 @Import({ PresidioInputPersistencyServiceConfig.class, AdeDataServiceConfig.class})
 @EnableAspectJAutoProxy
-@ComponentScan(basePackages="fortscale.utils.monitoring.aspect")
+@ComponentScan(basePackages= {"fortscale.utils.monitoring.aspect","fortscale.common.exporter"})
 public class InputCoreConfiguration {
 
     @Autowired
@@ -31,18 +32,26 @@ public class InputCoreConfiguration {
     private ADEManagerSDK adeManagerSDK;
 
     @Bean
+    private PublicMetrics publicMetrics(){
+        return new PresidioSystemPublicMetrics();
+    }
+
+    @Autowired
+    private ElasticSearchTemplateProducer elasticSearchTemplateProducer;
+
+    @Bean
     private MetricsEndpoint metricsEndpoint(){
-        return  new MetricsEndpoint(new PresidioSystemPublicMetrics());
+        return  new MetricsEndpoint(publicMetrics());
     }
 
     @Bean
-    public FileMetricsExporter fileMetricsExporter() {
+    public MetricsExporter fileMetricsExporter() {
         return new FileMetricsExporter(metricsEndpoint());
     }
 
     @Bean
-    public ElasticMetricsExporter elasticMetricsExporter(){
-        return new ElasticMetricsExporter(metricsEndpoint());
+    public MetricsExporter elasticMetricsExporter(){
+        return new ElasticMetricsExporter(metricsEndpoint(),elasticSearchTemplateProducer.produceElasticsearchTemplate());
     }
 
     @Bean
