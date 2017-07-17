@@ -98,8 +98,9 @@ const ByteTableComponent = Component.extend({
 
     const table = el.append('table');
     const cells = this._cells = [];
+    const byteRows = this.get('packet.byteRows');
 
-    this.get('packet.byteRows').forEach((byteRow) => {
+    byteRows.forEach((byteRow) => {
       const tr = table.append('tr');
       byteRow.forEach((byte) => {
         const td = tr.append('td')
@@ -121,7 +122,37 @@ const ByteTableComponent = Component.extend({
 
         cells.push(td.nodes()[0]);
       });
+      // Add a fill cell if there is 1 row with less than 16 cells. This helps
+      // align the single-row packet to the other packets with multiple rows.
+      if (byteRows.length === 1 && byteRow.length < 16) {
+        this._addFillCell(byteRow, byteFormat, tr);
+      }
     });
+  },
+
+  /**
+   * Adds a `td` cell to a table row that acts as a space filler.
+   * @param {Object[]} byteRow - The row of data
+   * @param {String} byteFormat - The format of the data
+   * @param {Object} tr - A D3 <tr> selection
+   * @private
+   */
+  _addFillCell(byteRow, byteFormat, tr) {
+    const fillCount = 16 - byteRow.length;
+    const octets = Math.ceil(byteRow.length / 4);
+    const padding = 6; // equal to margin + border + padding from CSS
+    let fill = '&emsp;';
+    if (byteFormat === 'hex') {
+      // For some reason, ascii is fine with a single space, but hex
+      // wouldn't layout appropriately unless there were a number of spaces
+      // equal to what's needed to fill in 16 spaces
+      for (let i = 0; i < fillCount; i++) {
+        fill += '&emsp;';
+      }
+    }
+    tr.append('td')
+      .attr('style', `padding: 0 ${fillCount * padding + (4 - octets)}px`)
+      .html(fill);
   },
 
   mousemoveHandler(d, byte) {
