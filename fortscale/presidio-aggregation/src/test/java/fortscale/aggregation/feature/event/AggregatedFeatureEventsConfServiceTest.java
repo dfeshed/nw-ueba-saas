@@ -43,7 +43,7 @@ public class AggregatedFeatureEventsConfServiceTest {
 
 
     @Configuration
-    @Import({GlobalConfiguration.class, BucketConfigurationServiceConfig.class,})
+    @Import({BucketConfigurationServiceConfig.class,})
     static class ContextConfiguration {
 
         @Value("${streaming.event.field.type.aggr_event}")
@@ -56,24 +56,24 @@ public class AggregatedFeatureEventsConfServiceTest {
         public AggregatedFeatureEventsConfUtilService getAggregatedFeatureEventsConfUtilService(){
             return new AggregatedFeatureEventsConfUtilService(eventTypeFieldValue, contextFieldName);
         }
-
-        @Value("${fortscale.aggregation.retention.strategy.conf.json.file.name}")
-        private String retentionStrategyConfJsonFilePath;
-        @Value("${fortscale.aggregation.retention.strategy.conf.json.overriding.files.path}")
-        private String retentionStrategyConfJsonOverridingFilesPath;
-        @Value("${fortscale.aggregation.retention.strategy.conf.json.additional.files.path}")
-        private String retentionStrategyConfJsonAdditionalFilesPath;
+//
+//        @Value("${fortscale.aggregation.retention.strategy.conf.json.file.name}")
+//        private String retentionStrategyConfJsonFilePath;
+//        @Value("${fortscale.aggregation.retention.strategy.conf.json.overriding.files.path}")
+//        private String retentionStrategyConfJsonOverridingFilesPath;
+//        @Value("${fortscale.aggregation.retention.strategy.conf.json.additional.files.path:#{null}}")
+//        private String retentionStrategyConfJsonAdditionalFilesPath;
 
         @Bean
         public RetentionStrategiesConfService getRetentionStrategiesConfService(){
-            return new RetentionStrategiesConfService(retentionStrategyConfJsonFilePath, retentionStrategyConfJsonOverridingFilesPath,retentionStrategyConfJsonAdditionalFilesPath);
+            return new RetentionStrategiesConfService();
         }
 
         @Value("${fortscale.aggregation.feature.event.conf.json.file.name}")
         private String aggregatedFeatureEventConfJsonFilePath;
         @Value("${fortscale.aggregation.feature.event.conf.json.overriding.files.path}")
         private String aggregatedFeatureEventConfJsonOverridingFilesPath;
-        @Value("${fortscale.aggregation.feature.event.conf.json.additional.files.path}")
+        @Value("${fortscale.aggregation.feature.event.conf.json.additional.files.path:#{null}}")
         private String aggregatedFeatureEventConfJsonAdditionalFilesPath;
 
         @Autowired
