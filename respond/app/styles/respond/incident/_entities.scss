@@ -7,6 +7,9 @@ $entityFileNameColor: $base0;
 $entityFileHashColor: $base0;
 
 .rsa-incident-entities {
+  rect.grid {
+    pointer-events: none;
+  }
 
   &-legend {
     position: absolute;
