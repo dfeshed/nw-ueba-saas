@@ -1,9 +1,11 @@
 package fortscale.common.exporter;
 
+
 import fortscale.utils.logging.Logger;
 import org.elasticsearch.client.Client;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.actuate.endpoint.MetricsEndpoint;
 import org.springframework.data.elasticsearch.client.TransportClientFactoryBean;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
@@ -14,25 +16,46 @@ import org.springframework.scheduling.annotation.Scheduled;
 import java.util.Map;
 import java.util.Properties;
 
+import static org.elasticsearch.node.NodeBuilder.nodeBuilder;
+
 
 public class ElasticMetricsExporter extends MetricsExporter {
 
     private final Logger logger=Logger.getLogger(ElasticMetricsExporter.class);
+
     @Autowired
     private ElasticsearchTemplate elasticsearchTemplate;
     private IndexQuery indexQuery;
-    private Properties properties;
-    private MetricsEndpoint metricsEndpoint;
+
+    @Value("${cluster.name}")
+    private String clusterName;
+    @Value("${cluster.nodes}")
+    private String clusterNodes;
+    @Value("${client.transport.sniff}")
+    private boolean clusterSniff;
+    @Value("${client.transport.ignore_cluster_name}")
+    private boolean clientTransportIgnoreClusterName;
+    @Value("${client.transport.ping_timeout}")
+    private String clientTransportPingTimeout;
+    @Value("${client.transport.nodes_sampler_interval}")
+    private String  clientTransportNodesSamplerInterval;
+
+
 
     public ElasticMetricsExporter(MetricsEndpoint metricsEndpoint) {
-        super();
+        super(metricsEndpoint);
         try {
-            this.metricsEndpoint=metricsEndpoint;
             TransportClientFactoryBean transportClientFactoryBean=new TransportClientFactoryBean();
-            transportClientFactoryBean.setProperties(properties);
+            transportClientFactoryBean.setClientIgnoreClusterName(clientTransportIgnoreClusterName);
+            transportClientFactoryBean.setClientNodesSamplerInterval(clientTransportNodesSamplerInterval);
+            transportClientFactoryBean.setClientPingTimeout(clientTransportPingTimeout);
+            transportClientFactoryBean.setClientTransportSniff(clusterSniff);
+            transportClientFactoryBean.setClusterName(clusterName);
+            transportClientFactoryBean.setClusterNodes(clusterNodes);
             transportClientFactoryBean.afterPropertiesSet();
-            Client cliet=transportClientFactoryBean.getObject();
-            elasticsearchTemplate=new ElasticsearchTemplate(cliet);
+            Client client=transportClientFactoryBean.getObject();
+            elasticsearchTemplate=new ElasticsearchTemplate(client);
+            //elasticsearchTemplate=new ElasticsearchTemplate(nodeBuilder().local(true).node().client());
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -41,10 +64,12 @@ public class ElasticMetricsExporter extends MetricsExporter {
     }
 
 
+
+
     @Scheduled(fixedRate = 5000)
     public void export() {
-        createQuery();
         logger.debug("Exporting");
+        createQuery();
         elasticsearchTemplate.index(indexQuery);
     }
 
@@ -55,33 +80,12 @@ public class ElasticMetricsExporter extends MetricsExporter {
     }
 
     private JSONObject createMetricObject(){
+        logger.debug("Creating JSONObject of metrics to export");
         JSONObject metrics=new JSONObject();
-        try {
-            logger.debug("Exporting");
-            String metric;
-            String value;
-            Map<String, Object> map = metricsEndpoint.invoke();
-            for (Map.Entry<String, Object> entry : map.entrySet()) {
-                metric = entry.getKey();
-                value = entry.getValue().toString();
-                if (!fixedMetrics.contains(metric)) {
-                    if (!customMetrics.containsKey(metric))
-                        customMetrics.put(metric, value);
-                    else {
-                        if (!customMetrics.get(metric).equals(value))
-                            customMetrics.replace(metric, value);
-                        else {
-                            break;
-                        }
-                    }
-                }
-                metrics.append(metric,value);
-            }
+        for (Map.Entry<String, String> entry : readyMetricsToExporter().entrySet()) {
+            metrics.put(entry.getKey(),entry.getValue());
         }
-        catch (Exception ex){
-            logger.error("NOT GOOD");
-        }
-        return  metrics;
+        return metrics;
     }
 
     @Override

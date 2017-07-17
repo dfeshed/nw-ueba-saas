@@ -12,11 +12,9 @@ import java.util.*;
 public class FileMetricsExporter extends MetricsExporter{
 
     private final Logger logger = Logger.getLogger(FileMetricsExporter.class);
-    private MetricsEndpoint metricsEndpoint;
 
     public FileMetricsExporter(MetricsEndpoint metricsEndpoint) {
-        super();
-        this.metricsEndpoint=metricsEndpoint;
+        super(metricsEndpoint);
     }
 
 
@@ -24,28 +22,12 @@ public class FileMetricsExporter extends MetricsExporter{
     public void export(){
         try {
             logger.debug("Exporting");
-            String metric;
-            String value;
-            Map<String, Object> map = metricsEndpoint.invoke();
-            for (Map.Entry<String, Object> entry : map.entrySet()) {
-                metric = entry.getKey();
-                value = entry.getValue().toString();
-                if (!fixedMetrics.contains(metric)) {
-                    if (!customMetrics.containsKey(metric))
-                        customMetrics.put(metric, value);
-                    else {
-                        if (!customMetrics.get(metric).equals(value))
-                            customMetrics.replace(metric, value);
-                        else {
-                            break;
-                        }
-                    }
-                }
-                logger.info("Metric Name : {} Metric Value : {}", metric, value);
+            for (Map.Entry<String, String> entry : readyMetricsToExporter().entrySet()) {
+                logger.info("Metric Name : {} Metric Value : {}", entry.getKey(),  entry.getValue());
             }
         }
         catch (Exception ex){
-            logger.error("NOT GOOD");
+            logger.error("Error accured when exporting metrics {}",ex.getMessage());
         }
     }
 
