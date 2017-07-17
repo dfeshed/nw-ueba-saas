@@ -15,7 +15,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.ade.domain.record.scored.enriched_scored.AdeScoredEnrichedRecord;
-import presidio.ade.domain.record.scored.enriched_scored.DataSourceToAdeScoredEnrichedRecordClassResolver;
+import presidio.ade.domain.record.scored.enriched_scored.AdeEventTypeToAdeScoredEnrichedRecordClassResolver;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -31,7 +31,7 @@ public class AdeEnrichedScoredRecordBuilderTest {
     @Configuration
     public static class AdeEnrichedScoredRecordBuilderTestSpringConfig{
         @MockBean
-        private DataSourceToAdeScoredEnrichedRecordClassResolver dataSourceToAdeScoredEnrichedRecordClassResolver;
+        private AdeEventTypeToAdeScoredEnrichedRecordClassResolver dataSourceToAdeScoredEnrichedRecordClassResolver;
 
         @Bean
         public AdeEnrichedScoredRecordBuilder enrichedScoredRecordBuilder(){
@@ -40,7 +40,7 @@ public class AdeEnrichedScoredRecordBuilderTest {
     }
 
     @Autowired
-    private DataSourceToAdeScoredEnrichedRecordClassResolver dataSourceToAdeScoredEnrichedRecordClassResolver;
+    private AdeEventTypeToAdeScoredEnrichedRecordClassResolver dataSourceToAdeScoredEnrichedRecordClassResolver;
 
     @Autowired
     private AdeEnrichedScoredRecordBuilder enrichedScoredRecordBuilder;

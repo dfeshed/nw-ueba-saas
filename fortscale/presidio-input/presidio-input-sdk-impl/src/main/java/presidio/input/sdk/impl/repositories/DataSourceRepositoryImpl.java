@@ -5,7 +5,6 @@ import fortscale.domain.core.AbstractAuditableDocument;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import presidio.sdk.api.domain.DlpFileDataDocument;
 
 import java.time.Instant;
 import java.util.List;
@@ -43,6 +42,6 @@ public class DataSourceRepositoryImpl implements DataSourceRepository {
     }
 
     private Criteria createDateCriteria(Instant startTime, Instant endTime) {
-        return Criteria.where(DlpFileDataDocument.DATE_TIME_FIELD_NAME).gte(startTime).lt(endTime);
+        return Criteria.where(AbstractAuditableDocument.DATE_TIME_FIELD_NAME).gte(startTime).lt(endTime);
     }
 }

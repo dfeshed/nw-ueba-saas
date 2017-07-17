@@ -13,7 +13,7 @@ import presidio.input.sdk.impl.services.DataServiceImpl;
 import presidio.input.sdk.impl.services.PresidioInputPersistencyServiceMongoImpl;
 import presidio.input.sdk.impl.validators.ValidationManager;
 import presidio.sdk.api.domain.DataService;
-import presidio.sdk.api.domain.InputToCollectionNameTranslator;
+import presidio.sdk.api.utils.InputToCollectionNameTranslator;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
 
 
@@ -41,7 +41,7 @@ public class PresidioInputPersistencyServiceConfig {
 
     @Bean
     public PresidioInputPersistencyService presidioInputPersistencyService() {
-        return new PresidioInputPersistencyServiceMongoImpl(dlpFileDataService());
+        return new PresidioInputPersistencyServiceMongoImpl(dataService());
     }
 
     @Bean
@@ -50,7 +50,7 @@ public class PresidioInputPersistencyServiceConfig {
     }
 
     @Bean
-    public DataService dlpFileDataService() {
+    public DataService dataService() {
         return new DataServiceImpl(dataSourceRepository(), toCollectionNameTranslator(), validationManager());
     }
 

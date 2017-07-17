@@ -1,6 +1,6 @@
 package fortscale.ml.scorer.enriched_events;
 
-import fortscale.ml.model.config.ModelBuildingConfiguration;
+import fortscale.ml.model.config.ModelingEngineConfiguration;
 import fortscale.ml.scorer.ScoringService;
 import fortscale.ml.scorer.records.AdeRecordReaderFactoriesConfig;
 import fortscale.ml.scorer.records.RecordReaderFactoryServiceConfig;
@@ -16,7 +16,7 @@ import presidio.ade.domain.store.scored.ScoredEnrichedDataStoreMongoConfig;
 
 @Configuration
 @Import({
-        ModelBuildingConfiguration.class,
+        ModelingEngineConfiguration.class,
         ScoringSpringConfiguration.class,
         ScoredEnrichedDataStoreMongoConfig.class,
         AdeEnrichedScoredRecordBuilderConfig.class,

@@ -4,18 +4,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import presidio.ade.domain.record.scored.enriched_scored.DataSourceToAdeScoredEnrichedRecordClassResolver;
-import presidio.ade.domain.record.scored.enriched_scored.DataSourceToAdeScoredEnrichedRecordClassResolverConfig;
+import presidio.ade.domain.record.scored.enriched_scored.AdeEventTypeToAdeScoredEnrichedRecordClassResolver;
+import presidio.ade.domain.record.scored.enriched_scored.AdeEventTypeToAdeScoredEnrichedRecordClassResolverConfig;
 
 /**
  * Created by YaronDL on 6/18/2017.
  */
 @Configuration
-@Import({DataSourceToAdeScoredEnrichedRecordClassResolverConfig.class})
+@Import({AdeEventTypeToAdeScoredEnrichedRecordClassResolverConfig.class})
 public class AdeEnrichedScoredRecordBuilderConfig {
 
     @Autowired
-    private DataSourceToAdeScoredEnrichedRecordClassResolver dataSourceToAdeScoredEnrichedRecordClassResolver;
+    private AdeEventTypeToAdeScoredEnrichedRecordClassResolver dataSourceToAdeScoredEnrichedRecordClassResolver;
 
     @Bean
     public AdeEnrichedScoredRecordBuilder enrichedScoredRecordBuilder(){

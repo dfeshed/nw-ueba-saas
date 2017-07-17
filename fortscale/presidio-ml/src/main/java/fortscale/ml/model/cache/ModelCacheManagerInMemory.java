@@ -3,6 +3,7 @@ package fortscale.ml.model.cache;
 import fortscale.ml.model.Model;
 import fortscale.ml.model.ModelConf;
 import fortscale.ml.model.retriever.AbstractDataRetriever;
+import fortscale.ml.model.store.EmptyModelDao;
 import fortscale.ml.model.store.ModelDAO;
 import fortscale.ml.model.store.ModelStore;
 import fortscale.utils.logging.Logger;
@@ -46,28 +47,22 @@ public class ModelCacheManagerInMemory implements ModelCacheManager {
     public Model getModel(Map<String, String> context, Instant eventTime) {
         String contextId = getContextId(context);
 
-        ModelDAO cachedModelDao = null;
+        ModelDAO cachedModelDao;
         logger.debug("getting model for params: contextId={},eventTime={},modelConf={}", contextId,  eventTime,modelConf);
         Instant oldestAllowedModelTime = eventTime.minus(maxDiffBetweenCachedModelAndEvent);
 
         if (lruModelsMap.containsKey(contextId)) {
             Object cachedObject = lruModelsMap.get(contextId);
-            // there is a model in cache
-            if (cachedObject != null) {
-                cachedModelDao = (ModelDAO) cachedObject;
-                // check if model time is valid
-                if (isModelTimeValid(cachedModelDao, oldestAllowedModelTime)) {
-                    logger.debug("found cached model={}", cachedModelDao);
-                    return cachedModelDao.getModel();
-                }
-                // if the model in the cache is too old -> throw it away
-                else {
-                    logger.debug("too old model={} found , deleting it from cache", cachedModelDao);
-                    deleteFromCache(modelConf.getName(), contextId);
-                }
-            } else {
-                logger.debug("found empty model in cache");
-                return null;
+            cachedModelDao = (ModelDAO) cachedObject;
+            // check if model time is valid
+            if (isModelTimeValid(cachedModelDao, oldestAllowedModelTime)) {
+                logger.debug("found cached model={}", cachedModelDao);
+                return cachedModelDao.getModel();
+            }
+            // if the model in the cache is too old -> throw it away
+            else {
+                logger.debug("too old model={} found , deleting it from cache", cachedModelDao);
+                deleteFromCache(modelConf.getName(), contextId);
             }
         }
         logger.debug("no matching model found in cache. retrieving model from db");
@@ -84,7 +79,7 @@ public class ModelCacheManagerInMemory implements ModelCacheManager {
             }
         }
         logger.debug("did not find matching model in db. caching empty model");
-        lruModelsMap.put(contextId, null);
+        lruModelsMap.put(contextId, new EmptyModelDao(eventTime));
 
         return null;
     }

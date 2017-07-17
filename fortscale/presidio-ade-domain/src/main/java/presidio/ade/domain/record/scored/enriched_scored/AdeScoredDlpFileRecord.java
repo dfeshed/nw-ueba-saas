@@ -10,23 +10,24 @@ import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.ade.domain.record.util.AdeRecordMetadata;
 
 import java.time.Instant;
+import java.util.Collections;
 import java.util.List;
 
 /**
  * Created by YaronDL on 6/13/2017.
  */
 @Document
-@AdeRecordMetadata(dataSource =DlpFileRecord.DLP_FILE_STR)
+@AdeRecordMetadata(adeEventType =DlpFileRecord.DLP_FILE_STR)
 public class AdeScoredDlpFileRecord extends AdeScoredEnrichedRecord {
 
     AdeEnrichedDlpFileContext context;
 
-    public AdeScoredDlpFileRecord(Instant date_time, String featureName, Double score, List<FeatureScore> featureScoreList){
-        super(date_time,featureName,score,featureScoreList);
+    public AdeScoredDlpFileRecord(Instant date_time, String featureName, String featureEventType, Double score, List<FeatureScore> featureScoreList){
+        super(date_time,featureName, featureEventType,score,featureScoreList);
     }
 
-    public AdeScoredDlpFileRecord(Instant date_time, String featureName, Double score, List<FeatureScore> featureScoreList, EnrichedDlpFileRecord enrichedDlpFileRecord) {
-        super(date_time, featureName, score, featureScoreList);
+    public AdeScoredDlpFileRecord(Instant date_time, String featureName, String featureEventType, Double score, List<FeatureScore> featureScoreList, EnrichedDlpFileRecord enrichedDlpFileRecord) {
+        super(date_time, featureName, featureEventType, score, featureScoreList);
         this.context = enrichedDlpFileRecord.getContext();
     }
 
@@ -40,9 +41,8 @@ public class AdeScoredDlpFileRecord extends AdeScoredEnrichedRecord {
     }
 
     @Override
-    @Transient
-    public String getDataSource() {
-        return DlpFileRecord.DLP_FILE_STR;
+    public List<String> getDataSources() {
+        return Collections.singletonList(DlpFileRecord.DLP_FILE_STR);
     }
 
     @Override

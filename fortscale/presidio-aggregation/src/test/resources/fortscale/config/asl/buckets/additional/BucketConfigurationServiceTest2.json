@@ -6,7 +6,7 @@
         "field5",
         "field6"
       ],
-      "dataSources": [
+      "adeEventTypes": [
         "ssh",
         "vpn"
       ],

@@ -1,7 +1,6 @@
 package fortscale.aggregation.feature.bucket;
 
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
-import fortscale.aggregation.feature.functions.IAggrFeatureFunctionsService;
 import fortscale.utils.pagination.PageIterator;
 import fortscale.utils.recordreader.RecordReaderFactoryService;
 import presidio.ade.domain.record.AdeRecord;

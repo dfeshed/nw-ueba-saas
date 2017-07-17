@@ -8,7 +8,6 @@ import fortscale.utils.recordreader.RecordReaderFactory;
 import fortscale.utils.recordreader.RecordReaderFactoryService;
 import fortscale.utils.recordreader.transformation.Transformation;
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,9 +20,9 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import presidio.ade.domain.record.AdeRecordReader;
+import presidio.ade.domain.record.AdeRecordReaderFactory;
 import presidio.ade.domain.record.enriched.AdeEnrichedDlpFileContext;
 import presidio.ade.domain.record.enriched.EnrichedDlpFileRecord;
-import presidio.ade.domain.record.scored.AdeScoredRecordReaderFactory;
 import presidio.ade.domain.record.scored.enriched_scored.AdeScoredDlpFileRecord;
 
 import java.time.Instant;
@@ -55,13 +54,12 @@ public class BucketConfigurationServiceTest {
         IAggrFeatureFunctionsService aggrFeatureFunctionsService = new AggrFeatureFuncService();
         Map<String, Transformation<?>> transformations = new HashMap<>();
         Collection<RecordReaderFactory> recordReaderFactories = new ArrayList<>();
-        AdeScoredRecordReaderFactory adeScoredRecordReaderFactory = new AdeScoredRecordReaderFactory();
-        recordReaderFactories.add(adeScoredRecordReaderFactory);
+        recordReaderFactories.add(new AdeRecordReaderFactory());
         recordReaderFactoryService = new RecordReaderFactoryService(recordReaderFactories, transformations);
     }
 
     public void adeRecordInitialize() {
-        adeRecord = new AdeScoredDlpFileRecord(Instant.now(), "date_time", 80.0, new ArrayList<>());
+        adeRecord = new AdeScoredDlpFileRecord(Instant.now(), "date_time","dlpfile", 80.0, new ArrayList<>());
         EnrichedDlpFileRecord enrichedDlpFileRecord = new EnrichedDlpFileRecord(Instant.now());
         enrichedDlpFileRecord.setNormalizedUsername("normalized_username_test1");
         AdeEnrichedDlpFileContext adeEnrichedDlpFileContext = new AdeEnrichedDlpFileContext(enrichedDlpFileRecord);

@@ -1,15 +1,15 @@
 {
-  "data-source-scorers": [
+  "ade-event-type-scorers": [
     {
-      "data-source": "dlpfile",
+      "ade-event-type": "dlpfile",
       "scorers": [
         {
           "type" : "pareto-scorer",
-          "name" : "dlpfile-event-scorer",
+          "name" : "dlpfile-event-score",
           "highest-score-weight" : 0.8,
           "scorers" : [ {
             "type" : "time-model-scorer",
-            "name" : "date_time_unix.normalized_username.dlpfile.scorer",
+            "name" : "date_time_unix.normalized_username.dlpfile.score",
             "additional-models" : [ ],
             "model" : {
               "name" : "date_time_unix.normalized_username.dlpfile"
@@ -21,10 +21,10 @@
             "use-certainty-to-calculate-score" : true
           }, {
             "type" : "reduction-scorer",
-            "name" : "normalized_src_machine.normalized_username.dlpfile.scorer",
+            "name" : "normalized_src_machine.normalized_username.dlpfile.score",
             "main-scorer" : {
               "type" : "category-rarity-model-scorer",
-              "name" : "normalized_src_machine.normalized_username.dlpfile.main_scorer",
+              "name" : "normalized_src_machine.normalized_username.dlpfile.main_score",
               "model" : {
                 "name" : "normalized_src_machine.normalized_username.dlpfile"
               },
@@ -39,10 +39,10 @@
             },
             "reduction-scorer" : {
               "type" : "score-and-certainty-multiplier-scorer",
-              "name" : "normalized_username.normalized_src_machine.dlpfile.reduction_scorer",
+              "name" : "normalized_username.normalized_src_machine.dlpfile.reduction_score",
               "base-scorer" : {
                 "type" : "category-rarity-model-scorer",
-                "name" : "normalized_username.normalized_src_machine.dlpfile.base_scorer",
+                "name" : "normalized_username.normalized_src_machine.dlpfile.base_score",
                 "model" : {
                   "name" : "normalized_username.normalized_src_machine.dlpfile"
                 },

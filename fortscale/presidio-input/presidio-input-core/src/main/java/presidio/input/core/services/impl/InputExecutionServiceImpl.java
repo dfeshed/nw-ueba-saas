@@ -5,6 +5,7 @@ import fortscale.common.exporter.FileMetricsExporter;
 import fortscale.common.shell.PresidioExecutionService;
 import fortscale.common.general.CommonStrings;
 import fortscale.common.general.DataSource;
+import fortscale.common.shell.PresidioExecutionService;
 import fortscale.domain.core.AbstractAuditableDocument;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.monitoring.aspect.annotations.End;
@@ -13,8 +14,9 @@ import fortscale.utils.monitoring.aspect.annotations.Start;
 import org.aspectj.lang.annotation.Before;
 import org.springframework.beans.factory.annotation.Autowired;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
-import presidio.input.core.services.converters.DlpFileConverter;
-import presidio.input.core.services.data.AdeDataService;
+import presidio.ade.domain.store.enriched.EnrichedRecordsMetadata;
+import presidio.ade.sdk.executions.common.ADEManagerSDK;
+import presidio.input.core.services.converters.*;
 import presidio.sdk.api.domain.DlpFileDataDocument;
 import presidio.sdk.api.domain.DlpFileEnrichedDocument;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
@@ -28,11 +30,11 @@ public class InputExecutionServiceImpl implements PresidioExecutionService {
     private static final Logger logger = Logger.getLogger(InputExecutionServiceImpl.class);
 
     private final PresidioInputPersistencyService presidioInputPersistencyService;
-    private final AdeDataService adeDataService;
+    private final ADEManagerSDK adeManagerSDK;
 
-    public InputExecutionServiceImpl(PresidioInputPersistencyService presidioInputPersistencyService, AdeDataService adeDataService) {
+    public InputExecutionServiceImpl(PresidioInputPersistencyService presidioInputPersistencyService, ADEManagerSDK adeManagerSDK) {
         this.presidioInputPersistencyService = presidioInputPersistencyService;
-        this.adeDataService = adeDataService;
+        this.adeManagerSDK = adeManagerSDK;
     }
 
     @Override
@@ -40,29 +42,36 @@ public class InputExecutionServiceImpl implements PresidioExecutionService {
     @Start
     @End
     public void run(DataSource dataSource, Instant startDate, Instant endDate, Double fixedDuration) throws Exception {
-        logger.info("Started input processing with params: data source:{}, from {}:{}, until {}:{}.",dataSource, CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate, CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
+        logger.info("Started input processing with params: data source:{}, from {}:{}, until {}:{}.", dataSource, CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate, CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
 
         final List<? extends AbstractAuditableDocument> dataRecords = find(dataSource, startDate, endDate);
         logger.info("Found {} dataRecords for datasource:{}, startTime:{}, endTime:{}.", dataSource, startDate, endDate);
+        List<? extends AbstractAuditableDocument> enrichedRecords;
+        if (dataSource.equals(DataSource.DLPFILE)) {
+            enrichedRecords = enrich(dataRecords);
+        } else {
+            enrichedRecords = dataRecords;
+        }
+
+        InputAdeConverter converter = getConverter(dataSource);
 
 
-        final List<DlpFileEnrichedDocument> enrichedRecords = enrich(dataRecords);
-
-        if (!storeForAde(enrichedRecords, startDate, endDate, dataSource)) {
+        if (!storeForAde(enrichedRecords, startDate, endDate, dataSource, converter)) {
             logger.error("Failed to save input enriched records into ADE!!!");
             //todo: how to handle?
         }
 
-        logger.info("Finished input run with params : data source:{}, from {}:{}, until {}:{}.",dataSource, CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate, CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
+        logger.info("Finished input run with params : data source:{}, from {}:{}, until {}:{}.", dataSource, CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate, CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
     }
 
-    private boolean storeForAde(List<? extends AbstractAuditableDocument> enrichedDocuments, Instant startDate, Instant endDate, DataSource dataSource) {
+    private boolean storeForAde(List<? extends AbstractAuditableDocument> enrichedDocuments, Instant startDate, Instant endDate, DataSource dataSource, InputAdeConverter converter) {
         logger.debug("Storing {} records.", enrichedDocuments.size());
 
 
-        List<? extends EnrichedRecord> records = convert(enrichedDocuments, new DlpFileConverter());
+        List<? extends EnrichedRecord> records = convert(enrichedDocuments, converter);
 
-        adeDataService.store(dataSource, startDate, endDate, records);
+        EnrichedRecordsMetadata metaData = new EnrichedRecordsMetadata(dataSource.getName(), startDate, endDate);
+        adeManagerSDK.store(metaData, records);
 
         logger.info("*************input logic comes here***********");
         logger.info("enriched documents: \n{}", enrichedDocuments);
@@ -73,9 +82,9 @@ public class InputExecutionServiceImpl implements PresidioExecutionService {
     }
 
     protected List<EnrichedRecord> convert(List<? extends AbstractAuditableDocument> enrichedDocuments,
-                                           DlpFileConverter converter) {
+                                           InputAdeConverter converter) {
         List<EnrichedRecord> records = new ArrayList<>();
-        enrichedDocuments.forEach(doc -> records.add(converter.convert((DlpFileEnrichedDocument) doc)));
+        enrichedDocuments.forEach(doc -> records.add(converter.convert(doc)));
         return records;
     }
 
@@ -97,6 +106,24 @@ public class InputExecutionServiceImpl implements PresidioExecutionService {
 
 
         return enrichedRecords;
+    }
+
+    private InputAdeConverter getConverter(DataSource dataSource) {
+        switch (dataSource) {
+            case DLPFILE:
+                return new DlpFileConverter();
+            case DLPMAIL:
+                break;
+            case PRNLOG:
+                break;
+            case FILE:
+                return new FileConverter();
+            case ACTIVE_DIRECTORY:
+                return new ActiveDirectoryConverter();
+            case AUTHENTICATION:
+                return new AuthenticationConverter();
+        }
+        return null;
     }
 
     @Override

@@ -24,7 +24,7 @@ public class FeatureBucketConf implements Serializable {
 	private static final Logger logger = Logger.getLogger(FeatureBucketConf.class);
 
 	private String name;
-	private List<String> dataSources;
+	private List<String> adeEventTypes;
 	private List<String> contextFieldNames;
 	private String strategyName;
 	private Integer expireAfterSeconds;
@@ -33,15 +33,15 @@ public class FeatureBucketConf implements Serializable {
 
 	public FeatureBucketConf(
 			@JsonProperty("name") String name,
-			@JsonProperty("dataSources") List<String> dataSources,
+			@JsonProperty("adeEventTypes") List<String> adeEventTypes,
 			@JsonProperty("contextFieldNames") List<String> contextFieldNames,
 			@JsonProperty("strategyName") String strategyName,
 			@JsonProperty("aggrFeatureConfs") List<AggregatedFeatureConf> aggrFeatureConfs) {
 
 		Assert.isTrue(StringUtils.isNotBlank(name));
-		Assert.notEmpty(dataSources);
-		for (String dataSource : dataSources) {
-			Assert.isTrue(StringUtils.isNotBlank(dataSource));
+		Assert.notEmpty(adeEventTypes);
+		for (String adeEventType : adeEventTypes) {
+			Assert.isTrue(StringUtils.isNotBlank(adeEventType));
 		}
 		Assert.notEmpty(contextFieldNames);
 		for (String contextFieldName : contextFieldNames) {
@@ -54,7 +54,7 @@ public class FeatureBucketConf implements Serializable {
 		}
 
 		this.name = name;
-		this.dataSources = dataSources;
+		this.adeEventTypes = adeEventTypes;
 		this.contextFieldNames = contextFieldNames;
 		this.strategyName = strategyName;
 		this.allFeatureNames = new HashSet<>();
@@ -66,8 +66,8 @@ public class FeatureBucketConf implements Serializable {
 		return name;
 	}
 
-	public List<String> getDataSources() {
-		return dataSources;
+	public List<String> getAdeEventTypes() {
+		return adeEventTypes;
 	}
 
 	public List<String> getContextFieldNames() {

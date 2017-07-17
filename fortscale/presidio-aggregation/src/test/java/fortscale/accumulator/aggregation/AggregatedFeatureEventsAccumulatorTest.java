@@ -12,6 +12,7 @@ import fortscale.utils.monitoring.stats.StatsService;
 import fortscale.utils.monitoring.stats.config.NullStatsServiceConfig;
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,7 @@ import java.util.Properties;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration
 @ActiveProfiles("test")
+@Ignore
 public class AggregatedFeatureEventsAccumulatorTest {
     @Configuration
     @Import({

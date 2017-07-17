@@ -1,6 +1,7 @@
 package fortscale.aggregation.feature.bucket.config;
 
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,8 +12,6 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class BucketConfigurationServiceConfig {
 
-    @Value("${impala.table.fields.data.source}")
-    private String dataSourceFieldName;
     @Value("${fortscale.aggregation.bucket.conf.json.file.name}")
     private String bucketConfJsonFilePath;
     @Value("${fortscale.aggregation.bucket.conf.json.overriding.files.path:#{null}}")
@@ -21,8 +20,9 @@ public class BucketConfigurationServiceConfig {
     private String bucketConfJsonAdditionalFilesPath;
 
     @Bean
+    @Qualifier("bucketConfigurationService")
     public BucketConfigurationService bucketConfigurationService()
     {
-        return new BucketConfigurationService(dataSourceFieldName, bucketConfJsonFilePath, bucketConfJsonOverridingFilesPath,bucketConfJsonAdditionalFilesPath);
+        return new BucketConfigurationService(bucketConfJsonFilePath, bucketConfJsonOverridingFilesPath,bucketConfJsonAdditionalFilesPath);
     }
 }

@@ -5,6 +5,7 @@ import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.entity.event.EntityEventConfService;
 import fortscale.ml.model.retriever.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -13,6 +14,7 @@ import java.util.Map;
 
 public class ModelConfServiceUtils {
 	@Autowired
+	@Qualifier("modelBucketConfigService")
 	private BucketConfigurationService bucketConfigurationService;
 	@Autowired
 	private AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
@@ -21,11 +23,11 @@ public class ModelConfServiceUtils {
 	@Autowired
 	private ModelConfService modelConfService;
 
-	public Map<String, Collection<ModelConf>> getBucketConfNameToModelConfsMap(String dataSource) {
+	public Map<String, Collection<ModelConf>> getBucketConfNameToModelConfsMap(String adeEventType) {
 		Map<String, Collection<ModelConf>> map = new HashMap<>();
 
 		bucketConfigurationService.getFeatureBucketConfs().forEach(bucketConf -> {
-			if (bucketConf.getDataSources().contains(dataSource)) {
+			if (bucketConf.getAdeEventTypes().contains(adeEventType)) {
 				map.put(bucketConf.getName(), new ArrayList<>());
 			}
 		});

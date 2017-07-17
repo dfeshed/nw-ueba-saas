@@ -4,13 +4,13 @@
       "name" : "date_time_unix.normalized_username.dlpfile",
       "selector" : {
         "type" : "feature_bucket_context_selector",
-        "featureBucketConfName" : "normalized_username_dlpfile_daily"
+        "featureBucketConfName" : "date_time_unix_histogram_normalized_username_dlpfile_daily"
       },
       "retriever" : {
         "type" : "context_histogram_retriever",
         "timeRangeInSeconds" : 7776000,
         "functions" : [ ],
-        "featureBucketConfName" : "normalized_username_dlpfile_daily",
+        "featureBucketConfName" : "date_time_unix_histogram_normalized_username_dlpfile_daily",
         "featureName" : "date_time_unix_histogram"
       },
       "builder" : {
@@ -24,13 +24,13 @@
       "name" : "normalized_src_machine.normalized_username.dlpfile",
       "selector" : {
         "type" : "feature_bucket_context_selector",
-        "featureBucketConfName" : "normalized_username_dlpfile_daily"
+        "featureBucketConfName" : "normalized_src_machine_histogram_normalized_username_dlpfile_daily"
       },
       "retriever" : {
         "type" : "context_histogram_retriever",
         "timeRangeInSeconds" : 7776000,
         "functions" : [ ],
-        "featureBucketConfName" : "normalized_username_dlpfile_daily",
+        "featureBucketConfName" : "normalized_src_machine_histogram_normalized_username_dlpfile_daily",
         "featureName" : "normalized_src_machine_histogram",
         "patternReplacementConf" : {
           "pattern" : "[0-9]",
@@ -48,13 +48,13 @@
       "name" : "normalized_username.normalized_src_machine.dlpfile",
       "selector" : {
         "type" : "feature_bucket_context_selector",
-        "featureBucketConfName" : "normalized_src_machine_dlpfile_daily"
+        "featureBucketConfName" : "normalized_username_histogram_normalized_src_machine_dlpfile_daily"
       },
       "retriever" : {
         "type" : "context_histogram_retriever",
         "timeRangeInSeconds" : 7776000,
         "functions" : [ ],
-        "featureBucketConfName" : "normalized_src_machine_dlpfile_daily",
+        "featureBucketConfName" : "normalized_username_histogram_normalized_src_machine_dlpfile_daily",
         "featureName" : "normalized_username_histogram"
       },
       "builder" : {

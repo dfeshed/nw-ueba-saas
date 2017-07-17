@@ -4,7 +4,6 @@ import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
-import presidio.ade.domain.record.util.AdeRecordMetadata;
 
 import java.time.Instant;
 
@@ -28,6 +27,7 @@ public class EnrichedFileRecord extends EnrichedRecord {
     public static final String RESULT_FIELD = "result";
 
 
+
     @Indexed
     @Field(NORMALIZED_USERNAME_FIELD)
     private String normalizedUsername;
@@ -49,6 +49,7 @@ public class EnrichedFileRecord extends EnrichedRecord {
     private Boolean isDstDriveShared;
     @Field(RESULT_FIELD)
     private String result;
+
 
     /**
      * C'tor.
@@ -141,9 +142,11 @@ public class EnrichedFileRecord extends EnrichedRecord {
 
     @Override
     @Transient
-    public String getDataSource() {
+    public String getAdeEventType() {
         return FileRecord.FILE_STR;
     }
+
+
 
 
     @Transient

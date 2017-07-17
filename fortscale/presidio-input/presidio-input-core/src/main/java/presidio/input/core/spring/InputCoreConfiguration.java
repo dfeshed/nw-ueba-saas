@@ -9,6 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.endpoint.MetricsEndpoint;
 import org.springframework.context.annotation.*;
 import presidio.input.core.services.data.AdeDataService;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
+import presidio.ade.sdk.executions.common.ADEManagerSDK;
+import presidio.ade.sdk.executions.online.ADEManagerSDKConfig;
 import presidio.input.core.services.impl.InputExecutionServiceImpl;
 import presidio.input.sdk.impl.spring.PresidioInputPersistencyServiceConfig;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
@@ -23,7 +28,7 @@ public class InputCoreConfiguration {
     private PresidioInputPersistencyService presidioInputPersistencyService;
 
     @Autowired
-    private AdeDataService adeDataService;
+    private ADEManagerSDK adeManagerSDK;
 
     @Bean
     private MetricsEndpoint metricsEndpoint(){
@@ -42,7 +47,7 @@ public class InputCoreConfiguration {
 
     @Bean
     public PresidioExecutionService inputExecutionService() {
-        return new InputExecutionServiceImpl(presidioInputPersistencyService, adeDataService);
+        return new InputExecutionServiceImpl(presidioInputPersistencyService, adeManagerSDK);
     }
 
 }

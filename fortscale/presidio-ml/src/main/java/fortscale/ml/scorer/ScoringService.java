@@ -1,10 +1,9 @@
 package fortscale.ml.scorer;
 
 import fortscale.domain.feature.score.FeatureScore;
-import fortscale.ml.scorer.config.DataSourceScorerConfs;
+import fortscale.ml.scorer.config.AdeEventTypeScorerConfs;
 import fortscale.ml.scorer.config.IScorerConf;
 import fortscale.ml.scorer.config.ScorerConfService;
-import fortscale.ml.scorer.metrics.ScoringServiceMetrics;
 import fortscale.utils.factory.FactoryService;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.monitoring.stats.StatsService;
@@ -21,9 +20,7 @@ public class ScoringService {
 
 	private ScorerConfService scorerConfService;
 	private FactoryService<Scorer> scorerFactoryService;
-	private StatsService statsService;
-	private Map<String, List<Scorer>> dataSourceToScorersMap;
-	private Map<String, ScoringServiceMetrics> dataSourceToMetricsMap;
+	private Map<String, List<Scorer>> adeEventTypeToScorersMap;
 
 	public ScoringService(
 			ScorerConfService scorerConfService,
@@ -32,51 +29,39 @@ public class ScoringService {
 
 		this.scorerConfService = scorerConfService;
 		this.scorerFactoryService = scorerFactoryService;
-		this.statsService = statsService;
-		this.dataSourceToScorersMap = new HashMap<>();
-		this.dataSourceToMetricsMap = new HashMap<>();
+		this.adeEventTypeToScorersMap = new HashMap<>();
 		loadScorers();
 	}
 
 	public List<FeatureScore> score(AdeRecordReader adeRecordReader) {
-		String dataSource = adeRecordReader.getDataSource();
-		ScoringServiceMetrics dataSourceMetrics = getDataSourceMetrics(dataSource);
-		dataSourceMetrics.calculateScoreTime = adeRecordReader.getDate_time().getEpochSecond();
-		List<Scorer> dataSourceScorers = dataSourceToScorersMap.get(dataSource);
+		String adeEventType = adeRecordReader.getAdeEventType();
+		//todo: dataSourceMetrics.calculateScoreTime = adeRecordReader.getDate_time().getEpochSecond();
+		List<Scorer> adeEventTypeScorers = adeEventTypeToScorersMap.get(adeEventType);
 
-		if (dataSourceScorers == null || dataSourceScorers.isEmpty()) {
-			dataSourceMetrics.dataSourceScorerNotFound++;
-			logger.error("No defined scorers for data source {}. ADE record reader: {}.", dataSource, adeRecordReader);
+		if (adeEventTypeScorers == null || adeEventTypeScorers.isEmpty()) {
+			//todo: dataSourceMetrics.dataSourceScorerNotFound++;
+			logger.error("No defined scorers for ade event type {}. ADE record reader: {}.", adeEventType, adeRecordReader);
 			return null;
 		}
 
-		return dataSourceScorers.stream()
-				.map(dataSourceScorer -> dataSourceScorer.calculateScore(adeRecordReader))
+		return adeEventTypeScorers.stream()
+				.map(adeEventTypeScorer -> adeEventTypeScorer.calculateScore(adeRecordReader))
 				.collect(Collectors.toList());
 	}
 
 	private void loadScorers() {
-		scorerConfService.getAllDataSourceScorerConfs().values().forEach(dataSourceScorerConfs -> {
-			String dataSource = dataSourceScorerConfs.getDataSource();
-			List<Scorer> dataSourceScorers = loadDataSourceScorers(dataSourceScorerConfs);
-			dataSourceToScorersMap.put(dataSource, dataSourceScorers);
-			ScoringServiceMetrics dataSourceMetrics = getDataSourceMetrics(dataSource);
-			dataSourceMetrics.dataSourceScorers = dataSourceScorers.size();
+		scorerConfService.getAllAdeEventTypeScorerConfs().values().forEach(adeEventTypeScorerConfs -> {
+			String adeEventType = adeEventTypeScorerConfs.getAdeEventType();
+			List<Scorer> adeEventTypeScorers = loadAdeEventTypeScorers(adeEventTypeScorerConfs);
+			adeEventTypeToScorersMap.put(adeEventType, adeEventTypeScorers);
+			//todo: dataSourceMetrics.dataSourceScorers = dataSourceScorers.size();
 		});
 	}
 
-	private List<Scorer> loadDataSourceScorers(DataSourceScorerConfs dataSourceScorerConfs) {
-		List<IScorerConf> scorerConfs = dataSourceScorerConfs.getScorerConfs();
+	private List<Scorer> loadAdeEventTypeScorers(AdeEventTypeScorerConfs adeEventTypeScorerConfs) {
+		List<IScorerConf> scorerConfs = adeEventTypeScorerConfs.getScorerConfs();
 		List<Scorer> scorers = new ArrayList<>(scorerConfs.size());
 		scorerConfs.forEach(scorerConf -> scorers.add(scorerFactoryService.getProduct(scorerConf)));
 		return scorers;
-	}
-
-	private ScoringServiceMetrics getDataSourceMetrics(String dataSource) {
-		if (!dataSourceToMetricsMap.containsKey(dataSource)) {
-			dataSourceToMetricsMap.put(dataSource, new ScoringServiceMetrics(statsService, dataSource));
-		}
-
-		return dataSourceToMetricsMap.get(dataSource);
 	}
 }

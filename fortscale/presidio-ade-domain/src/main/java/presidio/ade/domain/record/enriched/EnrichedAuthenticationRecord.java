@@ -7,6 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 import presidio.ade.domain.record.util.AdeRecordMetadata;
 
 import java.time.Instant;
+import java.util.List;
 
 /**
  * The enriched authentication record POJO.
@@ -18,7 +19,6 @@ import java.time.Instant;
 public class EnrichedAuthenticationRecord extends EnrichedRecord {
 
     public static final String AUTHENTICATION_TYPE_FIELD = "authenticationType";
-    public static final String RECORD_ID_FIELD = "recordId";
     public static final String IS_DST_MACHINE_REMOTE_FIELD = "isDstMachineRemote";
     public static final String NORMALIZED_USERNAME_FIELD = "normalizedUsername";
     public static final String NORMALIZED_SRC_MACHINE_FIELD = "normalizedSrcMachine";
@@ -27,13 +27,12 @@ public class EnrichedAuthenticationRecord extends EnrichedRecord {
     public static final String RESULT_CODE_FIELD = "resultCode";
 
 
+
     @Indexed
     @Field(NORMALIZED_USERNAME_FIELD)
     private String normalizedUsername;
     @Field(AUTHENTICATION_TYPE_FIELD)
     private String authenticationType;
-    @Field(RECORD_ID_FIELD)
-    private String recordId;
     @Field(IS_DST_MACHINE_REMOTE_FIELD)
     private Boolean isDstMachineRemote;
     @Field(NORMALIZED_SRC_MACHINE_FIELD)
@@ -54,6 +53,11 @@ public class EnrichedAuthenticationRecord extends EnrichedRecord {
         super(dateTime);
     }
 
+    @Override
+    public String getAdeEventType() {
+        return AuthenticationRecord.AUTHENTICATION_STR;
+    }
+
     public String getNormalizedUsername() {
         return normalizedUsername;
     }
@@ -68,14 +72,6 @@ public class EnrichedAuthenticationRecord extends EnrichedRecord {
 
     public void setAuthenticationType(String authenticationType) {
         this.authenticationType = authenticationType;
-    }
-
-    public String getRecordId() {
-        return recordId;
-    }
-
-    public void setRecordId(String recordId) {
-        this.recordId = recordId;
     }
 
     public Boolean getDstMachineRemote() {
@@ -116,12 +112,6 @@ public class EnrichedAuthenticationRecord extends EnrichedRecord {
 
     public void setResultCode(String resultCode) {
         this.resultCode = resultCode;
-    }
-
-    @Override
-    @Transient
-    public String getDataSource() {
-        return AuthenticationRecord.AUTHENTICATION_STR;
     }
 
     @Transient

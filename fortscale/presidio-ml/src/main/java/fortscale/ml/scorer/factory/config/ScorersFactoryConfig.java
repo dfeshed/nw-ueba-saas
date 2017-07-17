@@ -18,9 +18,9 @@ import java.util.List;
 @Import(DataRetrieverFactoryServiceConfig.class)
 public class ScorersFactoryConfig {
     @Autowired
-    private FactoryService<AbstractDataRetriever> dataRetrieverFactoryService;
+    public FactoryService<AbstractDataRetriever> dataRetrieverFactoryService;
     @Autowired
-    private List<AbstractServiceAutowiringFactory<Scorer>> scorersFactories;
+    public List<AbstractServiceAutowiringFactory<Scorer>> scorersFactories;
 
     @Bean
     public FactoryService<Scorer> scorerFactoryService() {
