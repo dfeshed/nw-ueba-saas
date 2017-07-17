@@ -85,11 +85,11 @@ test('fetching meta key maps twice for the same endpoint will piggyback on the f
   const done = assert.async();
 
   // Request the entity types once...
-  const firstPromise = service.metas('endpointId1');
+  const firstPromise = service.metas('CORE');
   firstPromise.then((firstResponse) => {
 
     // ...and after it succeeds, request the entity types again.
-    const secondPromise = service.metas('endpointId1');
+    const secondPromise = service.metas('CORE');
     secondPromise.then((secondResponse) => {
       assert.equal(firstPromise, secondPromise, 'Expected first promise to be re-used for second request.');
       assert.equal(firstResponse, secondResponse, 'Expected first response to be re-used as second response.');
@@ -105,11 +105,11 @@ test('fetching meta key maps for 2 different endpoints will not piggyback on the
   const done = assert.async();
 
   // Request the entity types once...
-  const firstPromise = service.metas('endpointId1');
+  const firstPromise = service.metas('IM');
   firstPromise.then((firstResponse) => {
 
     // ...and after it succeeds, request the entity types again.
-    const secondPromise = service.metas('endpointId2');
+    const secondPromise = service.metas('CORE');
     secondPromise.then((secondResponse) => {
       assert.notEqual(firstPromise, secondPromise, 'Expected first promise to not be re-used for second request.');
       assert.notEqual(firstResponse, secondResponse, 'Expected first response to not be re-used as second response.');

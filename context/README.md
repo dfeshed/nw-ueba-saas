@@ -231,9 +231,9 @@ Note that the `types()` method caches its results (if successful), so it can be 
 
 ### `metas(endpointId)`: `Promise`
 
-Requests a mapping of meta keys to entity types for a given NetWitness Core endpoint device (i.e., Concentrator or Broker).
+Requests a mapping of meta keys to entity types for either a NetWitness Core endpoint device (i.e., Concentrator or Broker) or for NetWitness Normalized Alert Events.
 
-Use this async call in order to convert a meta key name to an entity type.  The mapping is configurable per endpoint, so this call takes the endpoint's ID as an input param. The call fetches a mapping from the server with a structure similar to the following example:
+Use this async call in order to convert a meta key name to an entity type.  The mapping is different for Core events vs. Normalized Alert events, so this call takes an `endpointId` input param. If `endpointId` is 'IM', the call returns a mapping of Normalized Alert event properties, which is read from this addon's `config`. Otherwise, the call fetches a mapping of Core event properties from the server with a structure similar to the following example:
 
 ```js
 {
@@ -244,16 +244,16 @@ Use this async call in order to convert a meta key name to an entity type.  The 
       enabled: true,
       keys: ['ip.src', 'ip.dst', 'ipv6.src', 'ipv6.dst', .. ]
     }, {
-      type: 'HOST',
+      type: 'MAC_ADDRESS',
       enabled: true,
-      keys: ['hostname.alias', .. ]
+      keys: ['eth.src', 'eth.dst', .. ]
     },
     ..
   ]
 }
 ```
 
-After fetching the JSON structure above from server, the `metas()` method transforms the JSON into a simple flat hash map for ease of use, such as the example below:
+After fetching the JSON structure above, the `metas()` method transforms the JSON into a simple flat hash map for ease of use, such as the example below:
 
 ```js
 {
@@ -262,7 +262,8 @@ After fetching the JSON structure above from server, the `metas()` method transf
   'ipv6.src': 'IP',
   'ipv6.dst': 'IP',
   ..,
-  'hostname.alias': 'HOST',
+  'eth.src': 'MAC_ADDRESS',
+  'eth.dst': 'MAC_ADDRESS',
   ..
 }
 ```

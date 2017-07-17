@@ -77,15 +77,33 @@ export default Service.extend({
    *
    * The mapping of entity types to meta keys is structured as follows:
    * @example
-   * ```js
-   * [ 'IP', 'USER', 'HOST', 'DOMAIN', 'FILE' ]
-   * ```
-   * @param {String} endpointId The ID of the concentrator or broker. The ID 'IM' is reserved. If 'IM' is given,
+   ```js
+   {
+     code: 0,
+     data: [
+       {
+         type: 'IP',
+         enabled: true,
+         keys: ['ip.src', 'ip.dst', 'ipv6.src', 'ipv6.dst', .. ]
+       }, {
+         type: 'MAC_ADDRESS',
+         enabled: true,
+         keys: ['eth.src', 'eth.dst', .. ]
+       },
+       ..
+     ]
+   }
+   ```
+   * @param {String} [endpointId='CORE'] Either 'IM' or 'CORE'. If 'IM' is given,
    * returns a mapping of fields for Normalized Alert Events used by NetWitness' Incident Management module.
+   * Otherwise returns a mapping of meta keys for raw Events used by NetWtiness's Core devices (concentrators & brokers).
    * @returns {Promise}
    * @public
    */
   metas(endpointId) {
+    if (endpointId !== 'IM') {
+      endpointId = 'CORE';
+    }
 
     // If we already have a promise, re-use it
     const promises = this.get('_metasPromises');
@@ -108,12 +126,7 @@ export default Service.extend({
         promise = this.get('request').promiseRequest({
           modelName: 'entity-meta',
           method: 'findAll',
-          query: {
-            filter: [{
-              field: 'endpointId',
-              value: endpointId
-            }]
-          }
+          query: {}
         })
         // If promise fails, clear cached promise, don't re-use
           .catch((err) => {
