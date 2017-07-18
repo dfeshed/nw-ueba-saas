@@ -29,7 +29,7 @@ public class ElasticSearchTemplateProducer {
     public ElasticSearchTemplateProducer(){}
 
     public ElasticsearchTemplate produceElasticsearchTemplate(){
-        logger.debug("Creating ElasticsearchTemplate with params {} , {} , {} , {] , {], {]",
+        logger.debug("Creating ElasticsearchTemplate with params {} , {} , {} , {} , {}, {}",
                 clusterName,clusterNodes,clusterSniff,clientTransportIgnoreClusterName,clientTransportPingTimeout
         ,clientTransportNodesSamplerInterval);
         try {

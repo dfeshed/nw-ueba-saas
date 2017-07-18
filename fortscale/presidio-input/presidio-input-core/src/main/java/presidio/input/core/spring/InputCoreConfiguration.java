@@ -32,15 +32,15 @@ public class InputCoreConfiguration {
     private ADEManagerSDK adeManagerSDK;
 
     @Bean
-    private PublicMetrics publicMetrics(){
+    public PublicMetrics publicMetrics(){
         return new PresidioSystemPublicMetrics();
     }
 
     @Autowired
-    private ElasticSearchTemplateProducer elasticSearchTemplateProducer;
+    public ElasticSearchTemplateProducer elasticSearchTemplateProducer;
 
     @Bean
-    private MetricsEndpoint metricsEndpoint(){
+    public MetricsEndpoint metricsEndpoint(){
         return  new MetricsEndpoint(publicMetrics());
     }
 
