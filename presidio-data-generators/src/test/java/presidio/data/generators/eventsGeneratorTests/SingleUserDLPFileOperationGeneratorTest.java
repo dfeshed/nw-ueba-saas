@@ -1,8 +1,7 @@
 package presidio.data.generators.eventsGeneratorTests;
 
 import org.slf4j.LoggerFactory;
-import org.testng.annotations.Test;
-import presidio.data.generators.event.dlpfile.DLPFileEventsGeneratorTemplateFactory;
+import org.junit.Test;import presidio.data.generators.event.dlpfile.DLPFileEventsGeneratorTemplateFactory;
 import presidio.data.generators.event.dlpfile.DLPFileEventsGenerator;
 import presidio.data.generators.common.GeneratorException;
 

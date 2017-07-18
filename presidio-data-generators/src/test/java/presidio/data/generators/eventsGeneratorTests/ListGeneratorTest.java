@@ -1,7 +1,7 @@
 package presidio.data.generators.eventsGeneratorTests;
 
 import org.junit.Assert;
-import org.testng.annotations.Test;
+import org.junit.Test;
 import presidio.data.generators.common.FixedIPsGenerator;
 import presidio.data.generators.event.dlpfile.SimpleMalwareScanResultGenerator;
 

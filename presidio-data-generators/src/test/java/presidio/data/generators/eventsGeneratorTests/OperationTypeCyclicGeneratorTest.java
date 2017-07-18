@@ -1,7 +1,7 @@
 package presidio.data.generators.eventsGeneratorTests;
 
-import org.testng.Assert;
-import org.testng.annotations.Test;
+import org.junit.Assert;
+import org.junit.Test;
 import presidio.data.generators.file.DEFAULT_EVENT_TYPE;
 import presidio.data.generators.file.OperationTypeCyclicGenerator;
 

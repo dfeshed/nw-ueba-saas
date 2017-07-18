@@ -1,7 +1,7 @@
 package presidio.data.generators.eventsGeneratorTests;
 
+import org.junit.Test;
 import org.slf4j.LoggerFactory;
-import org.testng.annotations.Test;
 import presidio.data.generators.common.FixedIPsGenerator;
 import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.common.time.FloatingTimeGenerator;
