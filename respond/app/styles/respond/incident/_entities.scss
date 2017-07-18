@@ -20,7 +20,8 @@ $entityFileHashColor: $base0;
 
   .rsa-force-layout {
     &-node {
-      opacity: 0;
+      opacity: 1;
+      transition: opacity 0.3s;
 
       .circle {
         stroke: rsa-color(gray,light,$rsa-nearly-opaque);
@@ -81,7 +82,8 @@ $entityFileHashColor: $base0;
     }
 
     &-link {
-      opacity: 0;
+      opacity: 1;
+      transition: opacity 0.3s;
 
       .line {
         stroke: rsa-color(gray,light,$rsa-nearly-opaque);
@@ -136,28 +138,8 @@ $entityFileHashColor: $base0;
     }
   }
 
-  &.is-dragging,
-  &.alpha-level-3,
-  &.alpha-level-2,
-  &.alpha-level-1,
-  &.alpha-level-0 {
-    .rsa-force-layout {
-      &-node {
-        opacity: 1;
-        transition: opacity 0.3s;
-      }
-    }
-  }
-
-  &.is-dragging,
-  &.alpha-level-1,
-  &.alpha-level-0 {
-
-    .rsa-force-layout {
-      &-link {
-        opacity: 1;
-        transition: opacity 0.3s;
-      }
-    }
+  &.hide-nodes .rsa-force-layout-node,
+  &.hide-links .rsa-force-layout-link {
+    opacity: 0;
   }
 }

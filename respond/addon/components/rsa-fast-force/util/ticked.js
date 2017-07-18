@@ -13,14 +13,11 @@ const { run } = Ember;
 export default function() {
 
   const alphaCurrent = this.simulation.alpha();
-  const alphaLevelWas = this.get('alphaLevel');
   this.set('alphaCurrent', alphaCurrent);
-  const alphaLevelIs = this.get('alphaLevel');
-  const alphaLevelChanged = alphaLevelWas !== alphaLevelIs;
 
   const isDragging = this.get('isDragging');
 
-  if (isDragging || alphaLevelIs <= 3) {
+  if (!this.get('shouldHideNodes')) {
     this.joined.nodes
       .attr('transform', (d) => `translate(${d.x},${d.y})`)
       .selectAll('.circle')
@@ -29,7 +26,7 @@ export default function() {
         });
   }
 
-  if (isDragging || alphaLevelIs <= 1) {
+  if (!this.get('shouldHideLinks')) {
     this.joined.links
       .each((d) => {
         const { source, target } = d;
@@ -54,15 +51,26 @@ export default function() {
       .attr('transform', (d) => d.coords.textTransform);
   }
 
-  if (!isDragging && alphaLevelIs === 0) {
-    this.stop();
+  const shouldStop = !isDragging && (alphaCurrent <= this.get('alphaStop'));
+
+  // Determine if we should auto-center the nodes visually. Don't want to disrupt the user's workflow.
+  const alphaMagnitudeWas = this._lastAlphaMagnitude;
+  const alphaMagnitudeIs = Math.round(alphaCurrent * 10);
+  const alphaChangedSignificantly = alphaMagnitudeWas !== alphaMagnitudeIs;
+  if (alphaChangedSignificantly) {
+    this._lastAlphaMagnitude = alphaMagnitudeIs;
   }
 
-  // If autoCenter is enabled, we center the graph each time the alpha level changes, EXCEPT if either
-  // (a) the user is dragging a node; or
-  // (b) the user has previously dragged a node.
-  // If dragging is occuring or has occured, autoCenter could disrupt the user's workflow.
-  if (this.get('autoCenter') && alphaLevelChanged && !isDragging && !this.get('dataHasBeenDragged') && !this.get('userHasZoomed')) {
+  const shouldAutoCenter = this.get('autoCenter') &&
+    (shouldStop || alphaChangedSignificantly) &&  // simulation is done or has cooled substantially
+    !this.get('dataHasBeenDragged') &&  // user has not dragged
+    !this.get('userHasZoomed');         // user has not manually zoomed
+
+  if (shouldAutoCenter) {
     run(this, 'center');
+  }
+
+  if (shouldStop) {
+    this.stop();
   }
 }

@@ -34,11 +34,8 @@ export default Component.extend({
   tagName: 'div',
   layout,
   classNames: 'rsa-force-layout',
-  classNameBindings: ['alphaLevelClass', 'isDragging'],
+  classNameBindings: ['shouldShowNodes:show-nodes:hide-nodes', 'shouldShowLinks:show-links:hide-links', 'isDragging'],
   attributeBindings: ['zoom:data-zoom'],
-
-  @computed('alphaLevel')
-  alphaLevelClass: ((alphaLevel) => `alpha-level-${alphaLevel}`),
 
   // d3 force layout configuration properties.
   // For details, see d3 API docs: https://github.com/mbostock/d3/wiki/Force-Layout
@@ -63,25 +60,78 @@ export default Component.extend({
   alphaCurrent: 0,
 
   /**
-   * A number between 0 (lowest) and 4 (highest) indicating the range of the simulation's current "alpha".
-   *
+   * The alpha level below which nodes will be displayed, because they are too chaotic during the "hot"
+   * stage of the simulation.  The lower we set this number, the cooler the simulation must get before nodes are shown.
+   * If set to zero, the nodes are always shown.
+   * This also serves as a performance optimization: while we don't show the nodes, we also skip manipulating their
+   * DOM, so there is less demand on the browser.
    * @type {number}
-   * @readonly
-   * @private
+   * @public
    */
-  @computed('alphaCurrent')
-  alphaLevel(current) {
-    let level = 0;
-    if (current > 0.05) {
-      level = 4;
-    } else if (current > 0.01) {
-      level = 3;
-    } else if (current > 0.0075) {
-      level = 2;
-    } else if (current > 0.005) {
-      level = 1;
+  alphaShowNodes: 0.49,
+
+  /**
+   * The alpha level below which links will be displayed, because they are too chaotic during the "hot"
+   * stage of the simulation.  The lower we set this number, the cooler the simulation must get before links are shown.
+   * If set to zero, the links are always shown.
+   * This also serves as a performance optimization: while we don't show the links, we also skip manipulating their
+   * DOM, so there is less demand on the browser.
+   * @type {number}
+   * @public
+   */
+  alphaShowLinks: 0.05,
+
+  /**
+   * The alpha level below which the simulation will stop.
+   * @type {number}
+   * @public
+   */
+  alphaStop: 0.005,
+
+  /**
+   * The minimum alpha level at which the simulation will resume if/when new data streams in.
+   * If the simulation is already running when new data arrives, the data is processed and the simulation resumes
+   * at the same alpha level UNLESS it is below this minimum.  In that case, this minimum alpha is applied.
+   * This ensures that a very cool simulation gets re-heated enough to accommodate the newly arrived nodes.
+   * @type {number}
+   * @public
+   */
+  alphaResumeMin: 0.05,
+
+  /**
+   * Determines whether nor not nodes should be shown. Nodes are initially shown only after the simulation's alpha has
+   * sufficiently cooled down to `alphaShowNodes` or less.  However, once nodes are shown, they continue to always be
+   * shown, even if the simulation gets hot again later (e.g., new data records stream in).
+   * @public
+   */
+  @computed('alphaCurrent', 'alphaShowNodes')
+  shouldShowNodes(current, limit) {
+    if (this._nodesWereShown) {
+      return true;
+    } else if (!limit || (current <= limit)) {
+      this._nodesWereShown = true;
+      return true;
+    } else {
+      return false;
     }
-    return level;
+  },
+
+  /**
+   * Determines whether nor not links should be shown. Links are initially shown only after the simulation's alpha has
+   * sufficiently cooled down to `alphaShowLinks` or less.  However, once links are shown, they continue to always be
+   * shown, even if the simulation gets hot again later (e.g., new data records stream in).
+   * @public
+   */
+  @computed('alphaCurrent', 'alphaHideLinks')
+  shouldShowLinks(current, limit) {
+    if (this._linksWereShown) {
+      return true;
+    } else if (!limit || (current <= limit)) {
+      this._linksWereShown = true;
+      return true;
+    } else {
+      return false;
+    }
   },
 
   /**
@@ -473,6 +523,8 @@ export default Component.extend({
       return;
     }
 
+    // For smoother transition, keep track of how hot the simulation was before this interruption.
+    const lastAlpha = simulation.alpha();
     this.stop();
 
     // Compute the node radii and store in the data for future reference (e.g., DOM rendering & to avoid collisions).
@@ -500,7 +552,7 @@ export default Component.extend({
       .force('link').links(links);
 
     if (nodes.length) {
-      simulation.restart();
+      this.start(lastAlpha);
     }
   },
 
@@ -552,14 +604,18 @@ export default Component.extend({
    * Responsible for respecting the `alphaInitial` & `skipFirstFrames` settings.
    * @public
    */
-  start() {
+  start(lastAlpha) {
     const { simulation } = this;
     if (!simulation) {
       // component hasn't rendered yet, exit
       return;
     }
+
+    const isResuming = lastAlpha > this.get('alphaStop');
+    const alpha = !isResuming ? this.get('alphaInitial') : Math.max(lastAlpha, this.get('alphaResumeMin'));
+
     simulation
-      .alpha(this.get('alphaInitial'))
+      .alpha(alpha)
       .restart();
 
     // Skip some of the initial d3 force animation by executing the first frames' computations now, manually.

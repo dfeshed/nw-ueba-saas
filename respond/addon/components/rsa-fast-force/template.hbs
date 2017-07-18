@@ -32,8 +32,8 @@
     </g>
   </g>
 </svg>
-{{#if (eq alphaLevel 4)}}
+{{#unless shouldShowNodes}}
   <centered class="rsa-fast-force__wait">
     {{rsa-loader size="large" label="Rendering graph..."}}
   </centered>
-{{/if}}
+{{/unless}}
