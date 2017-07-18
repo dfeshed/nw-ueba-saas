@@ -181,14 +181,6 @@
       <artifactId>flume-kafka-source</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.apache.flume.flume-ng-legacy-sources</groupId>
-      <artifactId>flume-avro-source</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.flume.flume-ng-legacy-sources</groupId>
-      <artifactId>flume-thrift-source</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.apache.flume.flume-ng-sources</groupId>
       <artifactId>flume-taildir-source</artifactId>
     </dependency>
