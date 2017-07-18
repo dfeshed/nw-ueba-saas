@@ -104,7 +104,7 @@ public class PresidioMongoSource extends AbstractEventDrivenSource implements Co
             int pageNum = 0;// first page
             List<AbstractDocument> currentPage = sourceMongoRepository.findByDateTimeBetween(collectionName, startDate.minusMillis(1), endDate, pageNum, batchSize);
             if (currentPage.size() == 0) {
-                logger.error("Failed to process events for startDate: {}, endDate: {}. There were no events to process", startDate, endDate);
+                logger.warn("Failed to process events for startDate: {}, endDate: {}. There were no events to process", startDate, endDate);
             } else {
                 processPage(currentPage); //handle first event
                 pageNum++;
