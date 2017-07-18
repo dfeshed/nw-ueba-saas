@@ -106,14 +106,16 @@ const FeedbackComponent = Component.extend({
 
   _getParams() {
     const tagValues = (this.get('selectedTags') || []).map((tag) => tag.value);
+    const pojo = this.getProperties('model.lookupKey', 'model.meta', 'selectedRiskLevel', 'selectedConfidenceLevel', 'selectedSkillLevel');
+    const metaType = pojo['model.meta'] === 'FILE_HASH' ? 'FILE' : pojo['model.meta'];
     return {
       source: 'NW-UI',
-      meta: this.get('model.meta'),
-      metaValue: this.get('model.lookupKey'),
-      feedback: this.get('selectedRiskLevel').value,
-      confidenceType: this.get('selectedConfidenceLevel').value,
+      meta: metaType,
+      metaValue: pojo['model.lookupKey'],
+      feedback: pojo.selectedRiskLevel.value,
+      confidenceType: pojo.selectedConfidenceLevel.value,
       riskTagTypes: tagValues,
-      skillLevel: this.get('selectedSkillLevel')
+      skillLevel: pojo.selectedSkillLevel
     };
   },
 

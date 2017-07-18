@@ -1294,7 +1294,11 @@ export default {
       noTrendingCommunityActivity: 'ja_There is no new community activity in the past 30 days',
       noTrendingSubmissionActivity: 'ja_There are no new submissions in the past 30 days',
       skillLevel: 'ja_Analyst Skill Level',
-      skillLevelPrefix: 'ja_Tier {{level}}'
+      skillLevelPrefix: 'ja_Tier {{level}}',
+      noRelatedData: 'ja_There are no Related {{entity}} for this entity.',
+      ips: 'ja_IPs',
+      files: 'ja_Files',
+      domains: 'ja_Domains'
     },
     error: {
       error: 'ja_An unexpected error occurred when attempting to fetch the data.',
@@ -1314,7 +1318,8 @@ export default {
       'transport.refresh.failed': 'ja_Context data is not available as the data source is not reachable.',
       'transport.connect.failed': 'ja_Context data is not available as the data source is not reachable.',
       'live.connect.private.ip.unsupported': 'ja_Only public IP addresses are supported by Live Connect.',
-      'transport.http.error': 'ja_Context lookup failed for this datasource since it returned an error.'
+      'transport.http.error': 'ja_Context lookup failed for this datasource since it returned an error.',
+      'transport.validation.error': 'ja_The data format is not supported for the data source.'
     },
     footer: {
       viewAll: 'ja_VIEW All',

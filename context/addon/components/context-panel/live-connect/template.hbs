@@ -39,6 +39,9 @@
               0
             {{/if}} &#41;
           </div>
+          <div class="rsa-context-panel__liveconnect__related-entity-error">
+            {{empty-related-entity-msg columns.dataStore contextData i18n}}
+          </div>
           {{context-panel/data-table contextData=(get contextData columns.dataStore) dSDetails=columns}}
         {{/if}}
       {{/each}}

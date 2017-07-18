@@ -1294,7 +1294,11 @@ export default {
       noTrendingCommunityActivity: 'There is no new community activity in the past 30 days',
       noTrendingSubmissionActivity: 'There are no new submissions in the past 30 days',
       skillLevel: 'Analyst Skill Level',
-      skillLevelPrefix: 'Tier {{level}}'
+      skillLevelPrefix: 'Tier {{level}}',
+      noRelatedData: 'There are no Related {{entity}} for this entity.',
+      ips: 'IPs',
+      files: 'Files',
+      domains: 'Domains'
     },
     error: {
       error: 'An unexpected error occurred when attempting to fetch the data.',
@@ -1314,7 +1318,8 @@ export default {
       'transport.refresh.failed': 'Context data is not available as the data source is not reachable.',
       'transport.connect.failed': 'Context data is not available as the data source is not reachable.',
       'live.connect.private.ip.unsupported': 'Only public IP addresses are supported by Live Connect.',
-      'transport.http.error': 'Context lookup failed for this datasource since it returned an error.'
+      'transport.http.error': 'Context lookup failed for this datasource since it returned an error.',
+      'transport.validation.error': 'The data format is not supported for the data source.'
     },
     footer: {
       viewAll: 'VIEW All',
