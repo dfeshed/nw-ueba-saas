@@ -173,26 +173,26 @@ export default Route.extend(AuthenticatedRouteMixin, {
   },
 
   _checkAccessAndTransition(key, transitionName) {
-    if (!key || key === '/unified') {
+    if ( // known transition into ember with perms
+      (transitionName && transitionName.includes('respond') && this.get('accessControl.hasRespondAccess')) ||
+      (transitionName && transitionName.includes('investigate') && this.get('accessControl.hasInvestigateAccess'))
+    ) {
+      return this.transitionTo(transitionName);
+    } else if ( // classic default landing page transition with perms
+      (transitionName && !transitionName.includes('respond') && !transitionName.includes('investigate')) &&
+      ((key === this.get('accessControl.adminUrl')) && this.get('accessControl.hasAdminAccess')) ||
+      ((key === this.get('accessControl.configUrl')) && this.get('accessControl.hasConfigAccess')) ||
+      ((key === '/investigation') && this.get('accessControl.hasInvestigateAccess')) ||
+      ((key === '/unified') && this.get('accessControl.hasMonitorAccess'))
+    ) {
+      return window.location.href = key;
+    } else if ( // ember default landing page transition with perms
+      (key && key.includes('respond') && this.get('accessControl.hasRespondAccess')) ||
+      (key && key.includes('investigate') && this.get('accessControl.hasInvestigateAccess'))
+    ) {
+      return this.transitionTo(key);
+    } else { // neither transition nor default landing page found
       return window.location.href = '/unified';
-    } else {
-      const requiresRedirect = (transitionName === 'protected') || (transitionName === 'protected.index');
-      if (
-        (key.includes('respond') && !this.get('accessControl.hasRespondAccess')) ||
-        (key.includes('investigate') && !this.get('accessControl.hasInvestigateAccess'))
-      ) {
-        return this.transitionTo('not-found');
-      } else if ((requiresRedirect && (key === '/respond') || key === '/investigate')) {
-        return this.transitionTo(key);
-      } else if (
-        (!transitionName.includes('respond') && !transitionName.includes('investigate')) &&
-        ((key === this.get('accessControl.adminUrl') && this.get('accessControl.hasAdminAccess')) ||
-        (key === this.get('accessControl.configUrl') && this.get('accessControl.hasConfigAccess')) ||
-        (key === '/investigation' && this.get('accessControl.hasInvestigateAccess')) ||
-        (key === '/unified' && this.get('accessControl.hasMonitorAccess')))
-      ) {
-        return window.location.href = key;
-      }
     }
   }
 });
