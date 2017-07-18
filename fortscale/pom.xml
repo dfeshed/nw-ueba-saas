@@ -181,9 +181,6 @@
         <org.aspectj-version>1.8.7</org.aspectj-version>
         <metrics-core.version>3.0.2</metrics-core.version>
 
-        <!--<google.guava-version>18.0</google.guava-version>-->
-        <!--<spring-elastic.version>3.0.0.M2</spring-elastic.version>-->
-        <!--<elasticsearch-client.version>5.5.0</elasticsearch-client.version>-->
     </properties>
 
     <dependencyManagement>

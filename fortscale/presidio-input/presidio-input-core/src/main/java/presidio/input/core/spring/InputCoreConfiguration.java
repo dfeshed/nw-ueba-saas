@@ -1,8 +1,6 @@
 package presidio.input.core.spring;
 
 
-import fortscale.common.exporter.exporters.ElasticMetricsExporter;
-import fortscale.common.exporter.ElasticSearchTemplateProducer;
 import fortscale.common.exporter.exporters.FileMetricsExporter;
 import fortscale.common.exporter.exporters.MetricsExporter;
 import fortscale.common.exporter.PresidioSystemPublicMetrics;
@@ -36,9 +34,6 @@ public class InputCoreConfiguration {
         return new PresidioSystemPublicMetrics();
     }
 
-    @Autowired
-    public ElasticSearchTemplateProducer elasticSearchTemplateProducer;
-
     @Bean
     public MetricsEndpoint metricsEndpoint(){
         return  new MetricsEndpoint(publicMetrics());
@@ -49,10 +44,6 @@ public class InputCoreConfiguration {
         return new FileMetricsExporter(metricsEndpoint());
     }
 
-    @Bean
-    public MetricsExporter elasticMetricsExporter(){
-        return new ElasticMetricsExporter(metricsEndpoint(),elasticSearchTemplateProducer.produceElasticsearchTemplate());
-    }
 
     @Bean
     public PresidioExecutionService inputExecutionService() {

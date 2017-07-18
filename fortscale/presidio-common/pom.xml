@@ -37,11 +37,6 @@
             <url>http://mirror.fortscale.dom/artifactory/remote-repos</url>
         </repository>
 
-        <repository>
-            <id>spring-libs-snapshot</id>
-            <name>Spring Snapshot Repository</name>
-            <url>http://repo.spring.io/libs-snapshot</url>
-        </repository>
     </repositories>
 
     <pluginRepositories>
@@ -87,11 +82,6 @@
             <!--<artifactId>guava</artifactId>-->
         <!--</dependency>-->
 
-        <dependency>
-            <groupId>org.springframework.data</groupId>
-            <artifactId>spring-data-elasticsearch</artifactId>
-            <version>3.0.0.BUILD-SNAPSHOT</version>
-        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
