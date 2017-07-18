@@ -185,10 +185,11 @@ export default Route.extend(AuthenticatedRouteMixin, {
       } else if ((requiresRedirect && (key === '/respond') || key === '/investigate')) {
         return this.transitionTo(key);
       } else if (
-        (key === this.get('accessControl.adminUrl') && this.get('accessControl.hasAdminAccess')) ||
+        (!transitionName.includes('respond') && !transitionName.includes('investigate')) &&
+        ((key === this.get('accessControl.adminUrl') && this.get('accessControl.hasAdminAccess')) ||
         (key === this.get('accessControl.configUrl') && this.get('accessControl.hasConfigAccess')) ||
         (key === '/investigation' && this.get('accessControl.hasInvestigateAccess')) ||
-        (key === '/unified' && this.get('accessControl.hasMonitorAccess'))
+        (key === '/unified' && this.get('accessControl.hasMonitorAccess')))
       ) {
         return window.location.href = key;
       }
