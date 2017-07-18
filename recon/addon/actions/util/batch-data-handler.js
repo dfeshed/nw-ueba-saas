@@ -1,7 +1,7 @@
 import { join, later } from 'ember-runloop';
 
 const BATCH_CHARACTER_SIZE = 10;
-const WAIT = 100;
+const WAIT = [0, 100];
 
 const batchCancellations = {};
 const dataHandlingCancellations = {};
@@ -49,7 +49,9 @@ export const resumeBatching = () => {
  * - batchCallback: function to call to process a batch
  * - batchSize: OPTIONAL, defaults to BATCH_CHARACTER_SIZE, the size of each batch by
  *   character count of the items being batched after
- * - batchGapTime: OPTIONAL, defaults to WAIT, the time between batchCallback executions
+ * - batchGapTime: OPTIONAL, defaults to WAIT, an array of times between batches. Each batch
+ *   uses the next entry in the array. The last value in the array is used if there are more
+ *   batches than entries in the array.
  */
 export const batchDataHandler = ({
   dataHandler,
@@ -124,7 +126,20 @@ export const batchDataHandler = ({
       return;
     }
 
-    const nextBatchTime = _sendBatch(batchType, batchSize, batchCallback, batchGapTime);
+    const wasBatchSent = _sendBatch(batchType, batchSize, batchCallback);
+
+    // is batch time if no batch was sent
+    let nextBatchTime = 50;
+    if (wasBatchSent) {
+
+      // if only one time left in array, use it
+      if (batchGapTime.length === 1) {
+        nextBatchTime = batchGapTime[0];
+      } else {
+        // otherwise take first time off array and use that
+        nextBatchTime = batchGapTime.shift();
+      }
+    }
 
     later(timeoutCallback, nextBatchTime);
   };
@@ -139,10 +154,10 @@ export const batchDataHandler = ({
     () => queueDoneFilling = true);
 };
 
-const _sendBatch = function(batchType, batchSize, batchCallback, batchGapTime) {
+const _sendBatch = function(batchType, batchSize, batchCallback) {
   // if there is nothing in the queue, will not be batching,
-  // so set default callback time to something short
-  let nextCallbackTime = 50;
+  // need to return that no batch was sent;
+  let wasBatchSent = false;
 
   // If running this fucntion, we are not done processing data,
   // but data queue can be empty waiting for more stuff,
@@ -167,13 +182,12 @@ const _sendBatch = function(batchType, batchSize, batchCallback, batchGapTime) {
     const nextBatch = dataQueue[batchType].splice(0, index + 1).map((r) => r[0]);
     join(this, batchCallback, nextBatch);
 
-    // We sent a batch, so need to wait until batchGapTime
-    // before sending another
-    nextCallbackTime = batchGapTime;
+    // We sent a batch, set flag
+    wasBatchSent = true;
   }
 
-  // Return duration of timeout for next callback
-  return nextCallbackTime;
+  // Return whether or not a batch was sent
+  return wasBatchSent;
 };
 
 // An exported means to nuke any batching that is under way
