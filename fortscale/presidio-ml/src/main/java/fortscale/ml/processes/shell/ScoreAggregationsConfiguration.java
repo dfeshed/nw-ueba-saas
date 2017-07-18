@@ -4,6 +4,7 @@ import fortscale.aggregation.creator.AggregationRecordsCreator;
 import fortscale.aggregation.creator.AggregationRecordsCreatorConfig;
 import fortscale.common.shell.PresidioExecutionService;
 import fortscale.ml.model.cache.EventModelsCacheServiceConfig;
+import fortscale.ml.processes.shell.model.aggregation.ModelAggregationBucketConfigurationServiceConfig;
 import fortscale.ml.processes.shell.scoring.aggregation.ScoreAggregationsBucketService;
 import fortscale.ml.processes.shell.scoring.aggregation.ScoreAggregationsBucketServiceConfiguration;
 import fortscale.ml.scorer.enriched_events.EnrichedEventsScoringService;
@@ -24,12 +25,13 @@ import presidio.ade.domain.store.enriched.EnrichedDataStoreConfig;
 @EnableSpringConfigured
 @Import({
         MongoConfig.class,
-        EventModelsCacheServiceConfig.class,
+        EventModelsCacheServiceConfig.class,//TODO: why?
         EnrichedEventsScoringServiceConfig.class,
         EnrichedDataStoreConfig.class,
         ScoreAggregationsBucketServiceConfiguration.class,
         AggregationRecordsCreatorConfig.class,
         AggrDataStoreConfig.class,
+        ModelAggregationBucketConfigurationServiceConfig.class,
         NullStatsServiceConfig.class // TODO: Remove this
 })
 public class ScoreAggregationsConfiguration {
