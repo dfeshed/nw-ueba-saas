@@ -1,13 +1,47 @@
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import wait from 'ember-test-helpers/wait';
-
-moduleForComponent('context-tooltip', 'Integration | Component | context tooltip actions', {
-  integration: true
-});
+import Service from 'ember-service';
+import rsvp from 'rsvp';
 
 const entityType = 'IP';
 const entityId = '10.20.30.40';
+const metaMap = {
+  IM: {
+    code: 0,
+    data: {
+      'foo': entityType,
+      'bar': entityType,
+      'baz': entityType
+    }
+  },
+  CORE: {
+    code: 0,
+    data: {},
+    coreCatalog: [
+      {
+        name: 'IP',
+        enabled: true,
+        metaKeys: ['foo', 'bar', 'baz']
+      }
+    ]
+  }
+};
+
+const contextService = Service.extend({
+  metas(endpointId) {
+    return rsvp.resolve(metaMap[endpointId]);
+  }
+});
+
+moduleForComponent('context-tooltip', 'Integration | Component | context tooltip actions', {
+  integration: true,
+
+  beforeEach() {
+    this.register('service:context', contextService);
+    this.inject.service('context', { as: 'context' });
+  }
+});
 
 test('it renders an actionsList based on the entityType', function(assert) {
   assert.expect(6);
@@ -28,10 +62,10 @@ test('it renders an actionsList based on the entityType', function(assert) {
     addToListAction
   });
 
-  this.render(hbs`{{context-tooltip/actions 
-    entityType=entityType 
-    entityId=entityId 
-    hideAction=hideAction 
+  this.render(hbs`{{context-tooltip/actions
+    entityType=entityType
+    entityId=entityId
+    hideAction=hideAction
     addToListAction=addToListAction}}`);
 
   return wait()
@@ -49,8 +83,8 @@ test('it only shows the Pivot to Endpoint link for IPs, HOSTs & MAC addresses', 
     entityType: 'IP',
     entityId: '10.20.30.40'
   });
-  this.render(hbs`{{context-tooltip/actions 
-    entityType=entityType 
+  this.render(hbs`{{context-tooltip/actions
+    entityType=entityType
     entityId=entityId}}`);
   return wait()
     .then(() => {
@@ -95,8 +129,8 @@ test('it only shows the Pivot to Investigate link for IPs, HOSTs, MACs, DOMAINs,
     entityType: 'IP',
     entityId: '10.20.30.40'
   });
-  this.render(hbs`{{context-tooltip/actions 
-    entityType=entityType 
+  this.render(hbs`{{context-tooltip/actions
+    entityType=entityType
     entityId=entityId}}`);
   return wait()
     .then(() => {
@@ -157,5 +191,30 @@ test('it only shows the Pivot to Investigate link for IPs, HOSTs, MACs, DOMAINs,
     })
     .then(() => {
       assert.notOk(this.$('.js-test-pivot-to-investigate-link').length, 'Expected to NOT find investigate link for empty IP');
+    });
+});
+
+test('the query in the Pivot to Investigate link includes the meta keys from the meta map', function(assert) {
+  const entityId = '192.168.101.66';
+  const entityType = 'IP';
+
+  this.setProperties({
+    entityType,
+    entityId
+  });
+  this.render(hbs`{{context-tooltip/actions
+    entityType=entityType
+    entityId=entityId
+  }}`);
+
+  const done = assert.async();
+  return wait()
+    .then(() => {
+      const url = this.$('a[href]').attr('href');
+      assert.ok(!!url.match(/query/), 'Expected to find a link to an investigation query');
+      Object.keys(metaMap).forEach((key) => {
+        assert.ok(!!url.indexOf(key) > -1, `Expected to find meta key ${key} in query URL`);
+      });
+      done();
     });
 });
