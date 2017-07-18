@@ -45,58 +45,103 @@ export default {
   'summaryAttributes': [
     {
       'name': 'nwService',
-      'type': 1,
+      'key': '',
+      'type': 'Text',
       'value': 'concentrator'
     },
     {
       'name': 'sessionId',
-      'type': 1,
+      'key': 'sessionid',
+      'type': 'UInt64',
       'value': '59664'
     },
     {
       'name': 'type',
-      'type': 1,
+      'key': '',
+      'type': 'Text',
       'value': 'network'
     },
     {
       'name': 'source',
-      'type': 1,
+      'key': '',
+      'type': 'Text',
       'value': '10.4.61.43'
     },
     {
       'name': 'destination',
-      'type': 1,
+      'key': '',
+      'type': 'Text',
       'value': '10.4.61.53'
     },
     {
       'name': 'service',
-      'type': 1,
-      'value': '443'
+      'key': 'service',
+      'type': 'UInt32',
+      'value': '0'
     },
     {
       'name': 'firstPacketTime',
-      'type': 2,
+      'key': '',
+      'type': 'TimeT',
       'value': '1491232720485'
     },
     {
       'name': 'lastPacketTime',
-      'type': 2,
+      'key': '',
+      'type': 'TimeT',
       'value': '1491232720513'
     },
     {
       'name': 'packetSize',
-      'type': 3,
+      'key': '',
+      'type': 'UInt64',
       'value': '7361'
     },
     {
+      'name': 'requestPacketSize',
+      'key': '',
+      'type': 'UInt64',
+      'value': 4386132
+    },
+    {
+      'name': 'responsePacketSize',
+      'key': '',
+      'type': 'UInt64',
+      'value': 17028
+    },
+    {
       'name': 'payloadSize',
-      'type': 3,
+      'key': '',
+      'type': 'UInt64',
       'value': '5233'
     },
     {
+      'name': 'requestPayloadSize',
+      'key': '',
+      'type': 'UInt64',
+      'value': 4194864
+    }, {
+      'name': 'responsePayloadSize',
+      'key': '',
+      'type': 'UInt64',
+      'value': 0
+    },
+    {
       'name': 'packetCount',
-      'type': 3,
+      'key': '',
+      'type': 'UInt64',
       'value': '32'
+    },
+    {
+      'name': 'requestPacketCount',
+      'key': '',
+      'type': 'UInt64',
+      'value': 2898
+    }, {
+      'name': 'responsePacketCount',
+      'key': '',
+      'type': 'UInt64',
+      'value': 258
     }
   ]
 };
