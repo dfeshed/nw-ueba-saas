@@ -201,6 +201,21 @@
       <groupId>org.apache.flume</groupId>
       <artifactId>flume-ng-auth</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.fortscale.flume</groupId>
+      <artifactId>fortscale-flume-common</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.fortscale.flume</groupId>
+      <artifactId>fortscale-flume-sources</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.fortscale.flume</groupId>
+      <artifactId>fortscale-flume-sinks</artifactId>
+      <version>1.0.0</version>
+    </dependency>
   </dependencies>
 
 </project>
