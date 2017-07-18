@@ -2,6 +2,7 @@ import TabList from 'context/config/dynamic-tab';
 import get from 'ember-metal/get';
 import { isEmpty } from 'ember-utils';
 
+
 const isNotEmpty = (contextData, dataSourceGroup, defaultEnable) => {
   if (!contextData) {
     return defaultEnable;
@@ -115,41 +116,54 @@ const getSortedData = (data, icon, field) => {
   }
 };
 
-const pivotToInvestigateUrl = (entityType, entityId) => {
+const pivotToInvestigateUrl = (entityType, entityId, metas) => {
   let query = '';
+  if (isEmpty(entityType) || isEmpty(entityId)) {
+    return query;
+  }
+
+  if (entityType === 'MAC_ADDRESS') {
+    // ECAT may provide long MACs with 8-pairs of hex values (e.g., 11-11-11-11-11-11-11-11)
+    // but Core only supports 6-pairs of hex values (e.g., 11-11-11-11-11-11)
+    if (String(entityId).length > 17) {
+      return query;
+    }
+    // ECAT can provide hyphenated format, but Core requires colon format instead
+    entityId = String(entityId).replace(/\-/g, ':');
+  }
+
+  if (!isEmpty(metas)) {
+    query = metas.map((meta) => {
+      const delim = (entityType === 'IP' || entityType === 'MAC_ADDRESS') ? '' : '\'';
+      return `${meta}=${delim}${entityId}${delim}`;
+    })
+      .join('||');
+  } else {
+    query = getMetaUrl(entityId, entityType);
+  }
+
+  return `/investigation/choosedevice/navigate/query/${encodeURIComponent(query)}`;
+};
+
+const getMetaUrl = (entityId, entityType) => {
   switch (entityType) {
     case 'IP':
-      query = `ip.src=${entityId}||ip.dst=${entityId}`;
-      break;
+      return `ip.src=${entityId}||ip.dst=${entityId}`;
     case 'DOMAIN':
-      query = `alias.host='${entityId}'||domain.src='${entityId}'||domain.dst='${entityId}'||ad.domain.src='${entityId}'||ad.domain.dst='${entityId}'`;
-      break;
+      return `alias.host='${entityId}'||domain.src='${entityId}'||domain.dst='${entityId}'||ad.domain.src='${entityId}'||ad.domain.dst='${entityId}'`;
     case 'HOST':
-      query = `device.host='${entityId}'`;
-      break;
+      return `device.host='${entityId}'`;
     case 'USER':
-      query = `username='${entityId}'||user.src='${entityId}'||user.dst='${entityId}'||ad.username.src='${entityId}'||ad.username.dst='${entityId}'`;
-      break;
+      return `username='${entityId}'||user.src='${entityId}'||user.dst='${entityId}'||ad.username.src='${entityId}'||ad.username.dst='${entityId}'`;
     case 'FILE_NAME':
-      query = `filename='${entityId}'`;
-      break;
+      return `filename='${entityId}'`;
     case 'FILE_HASH':
-      query = `checksum='${entityId}'`;
-      break;
+      return `checksum='${entityId}'`;
     case 'MAC_ADDRESS':
-      // ECAT may provide long MACs with 8-pairs of hex values (e.g., 11-11-11-11-11-11-11-11)
-      // but Core only supports 6-pairs of hex values (e.g., 11-11-11-11-11-11)
-      if (String(entityId).length > 17) {
-        return '';
-      }
-      // ECAT can provide hyphenated format, but Core requires colon format instead
-      entityId = String(entityId).replace(/\-/g, ':');
-      query = `eth.src=${entityId}||eth.dst=${entityId}`;
-      break;
+      return `eth.src=${entityId}||eth.dst=${entityId}`;
     default:
       return '';
   }
-  return `/investigation/choosedevice/navigate/query/${encodeURIComponent(query)}`;
 };
 
 export {

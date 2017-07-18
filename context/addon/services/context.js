@@ -6,6 +6,7 @@ import { bind } from 'ember-runloop';
 import { warn } from 'ember-debug';
 import rsvp from 'rsvp';
 
+
 /**
  * @class Context service
  * A global API for fetching context-related data from server, such as:
@@ -16,6 +17,7 @@ import rsvp from 'rsvp';
  */
 export default Service.extend({
   request: service(),
+  endpointId: null,
 
   /**
    * Configuration object, injected from context addon's config/environment file.
@@ -104,6 +106,7 @@ export default Service.extend({
     if (endpointId !== 'IM') {
       endpointId = 'CORE';
     }
+    this.endpointId = endpointId;
 
     // If we already have a promise, re-use it
     const promises = this.get('_metasPromises');
@@ -137,19 +140,24 @@ export default Service.extend({
 
       // Once we have the data, flatten the JSON into a simple hash for ease of use (e.g. hash[metaKey] => entityType).
       promise = promise.then((response) => {
-        response = response || {};
-        const { data } = response;
         const hash = {};
-        (data || [])
-          .filterBy('enabled', true)  // omit disabled entries from our output hash
-          .forEach(({ name, metaKeys }) => {
-            (metaKeys || []).forEach((metaKey) => {
-              hash[metaKey] = name;
+
+        if (this.endpointId === 'IM') {
+          response = response || {};
+          const { data } = response;
+          (data || [])
+            .filterBy('enabled', true)  // omit disabled entries from our output hash
+            .forEach(({ name, metaKeys }) => {
+              (metaKeys || []).forEach((metaKey) => {
+                hash[metaKey] = name;
+              });
             });
-          });
+        }
+
         return {
           ...response,
-          data: hash
+          data: hash,
+          coreCatalog: response.data
         };
       });
 

@@ -8,13 +8,15 @@ import { restoreDefault } from 'context/actions/context-creators';
 import { pivotToInvestigateUrl } from 'context/util/context-data-modifier';
 import { isEmpty } from 'ember-utils';
 
+
 const stateToComputed = ({
   context
 }) => ({
   activeTabName: context.activeTabName,
   lookupKey: context.lookupKey,
   toolbar: context.toolbar,
-  meta: context.meta
+  meta: context.meta,
+  entitiesMetas: context.entitiesMetas
 });
 const dispatchToActions = {
   restoreDefault
@@ -33,12 +35,13 @@ const HeaderComponent = Component.extend({
     }
   },
 
-  @computed('lookupKey', 'meta')
-  pivotToInvestigateUrl(lookupKey, meta) {
-    if (isEmpty(lookupKey)) {
+  @computed('lookupKey', 'meta', 'entitiesMetas')
+  pivotToInvestigateUrl(lookupKey, meta, entitiesMetas) {
+    if (isEmpty(lookupKey) || isEmpty(entitiesMetas)) {
       return '';
     }
-    return pivotToInvestigateUrl(meta, lookupKey);
+
+    return pivotToInvestigateUrl(meta, lookupKey, entitiesMetas[meta]);
   },
 
   actions: {

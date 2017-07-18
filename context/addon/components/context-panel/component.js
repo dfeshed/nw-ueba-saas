@@ -3,7 +3,7 @@ import { warn, log } from 'ember-debug';
 import Component from 'ember-component';
 import connect from 'ember-redux/components/connect';
 import computed from 'ember-computed-decorators';
-import { initializeContextPanel, restoreDefault } from 'context/actions/context-creators';
+import { initializeContextPanel, restoreDefault, getContextEntitiesMetas } from 'context/actions/context-creators';
 import liveConnectObj from 'context/config/liveconnect-response-schema';
 import layout from './template';
 import service from 'ember-service/inject';
@@ -21,7 +21,8 @@ const stateToComputed = ({ context }) => ({
 
 const dispatchToActions = {
   initializeContextPanel,
-  restoreDefault
+  restoreDefault,
+  getContextEntitiesMetas
 };
 
 const ContextComponent = Component.extend({
@@ -30,6 +31,7 @@ const ContextComponent = Component.extend({
 
   request: service(),
   eventBus: service(),
+  context: service(),
 
   contextData: null,
   isDisplayed: false,
@@ -64,6 +66,10 @@ const ContextComponent = Component.extend({
   _initializeContextPanel() {
     const { entityId, entityType } = this.getProperties('entityId', 'entityType');
     this.send('initializeContextPanel', { entityId, entityType });
+
+    this.get('context').metas('CORE').then(({ coreCatalog } = {}) => {
+      this.send('getContextEntitiesMetas', { coreCatalog });
+    });
   },
 
   _initModel() {

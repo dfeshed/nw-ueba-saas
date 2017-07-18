@@ -127,9 +127,19 @@ const initializeContextPanel = ({ entityId, entityType }) => {
   };
 };
 
+const getContextEntitiesMetas = ({ coreCatalog }) => {
+  return (dispatch) => {
+    dispatch({
+      type: ACTION_TYPES.GET_CONTEXT_ENTITIES_METAS,
+      payload: coreCatalog
+    });
+  };
+};
+
 export {
   updateActiveTab,
   getDataSources,
   initializeContextPanel,
-  restoreDefault
+  restoreDefault,
+  getContextEntitiesMetas
 };

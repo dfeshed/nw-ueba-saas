@@ -12,7 +12,8 @@ const initialState = {
   errorMessage: null,
   toolbar: null,
   lookupData: [],
-  tabs: null
+  tabs: null,
+  entitiesMetas: null
 };
 
 const context = handleActions({
@@ -36,6 +37,10 @@ const context = handleActions({
     ...state,
     dataSources: payload,
     tabs: getTabs(state.meta, payload)
+  }),
+  [ACTION_TYPES.GET_CONTEXT_ENTITIES_METAS]: (state, { payload }) => ({
+    ...state,
+    entitiesMetas: payload
   }),
   [ACTION_TYPES.CONTEXT_ERROR]: (state, { payload }) => ({
     ...state,
