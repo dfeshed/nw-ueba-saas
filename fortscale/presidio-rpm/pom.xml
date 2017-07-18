@@ -151,11 +151,6 @@
                     <!--<fileEncoding>utf-8</fileEncoding>-->
                     <script>
                         <!-- deploy presidio-workflows lib-->
-                        WORKING_DIR=$(pwd)
-                        echo "deploying presidio-workflows python library"
-                        cd ${rpm-maven-plugin.workflows_packages_directory}
-                        easy_install *
-                        cd "$WORKING_DIR"
                         echo "Running Python project"
                         <!-- post installation commands: -->
                         ${python_path} ${rpm-maven-plugin.script} --rpm_name ${rpm_name} --major ${rpm.version.major} --minor ${rpm.version.minor} --build ${rpm.version.build}
