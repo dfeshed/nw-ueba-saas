@@ -2,7 +2,7 @@ package presidio.data.generators.eventsGeneratorTests;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Assert;
-import org.testng.annotations.Test;
+import org.junit.Test;
 import presidio.data.generators.common.FixedIPsGenerator;
 import presidio.data.generators.domain.Machine;
 import presidio.data.generators.machine.HostnameFromUsernameGenerator;

@@ -1,7 +1,7 @@
 package presidio.data.generators.eventsGeneratorTests;
 
-import org.testng.Assert;
-import org.testng.annotations.Test;
+import org.junit.Assert;
+import org.junit.Test;
 import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.user.SingleUserGenerator;
 import presidio.data.generators.domain.User;
@@ -26,7 +26,7 @@ public class UserGeneratorTest {
         Assert.assertEquals(user.getLastName(), "er");
      }
 
-    @Test (expectedExceptions = GeneratorException.class)
+    @Test (expected = GeneratorException.class)
     public void UserGeneratorExeptionTest() throws GeneratorException {
         SingleUserGenerator generator = new SingleUserGenerator("d");
     }

@@ -1,7 +1,7 @@
 package presidio.data.generators.eventsGeneratorTests;
 
-import org.testng.Assert;
-import org.testng.annotations.Test;
+import org.junit.Assert;
+import org.junit.Test;
 import presidio.data.generators.common.time.FloatingTimeGenerator;
 import presidio.data.generators.common.time.TimeGenerator;
 import presidio.data.generators.common.GeneratorException;
@@ -75,7 +75,7 @@ public class TimeGeneratorTest {
         Assert.assertEquals(TG.getNext().toString(), expected);
     }
 
-    @Test (expectedExceptions = GeneratorException.class)
+    @Test (expected = GeneratorException.class)
     public void TimeGeneratorExeptionTest() throws GeneratorException {
         int startHour = 8;      int startMin = 0;
         int endHour = 9;        int endMin = 0;

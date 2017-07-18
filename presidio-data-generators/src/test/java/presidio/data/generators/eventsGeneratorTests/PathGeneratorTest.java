@@ -1,7 +1,7 @@
 package presidio.data.generators.eventsGeneratorTests;
 
-import org.testng.Assert;
-import org.testng.annotations.Test;
+import org.junit.Assert;
+import org.junit.Test;
 import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.event.dlpfile.DLPFileEventsGeneratorTemplateFactory;
 import presidio.data.generators.file.SimplePathGenerator;

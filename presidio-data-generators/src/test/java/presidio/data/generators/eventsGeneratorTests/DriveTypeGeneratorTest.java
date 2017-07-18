@@ -1,8 +1,9 @@
 package presidio.data.generators.eventsGeneratorTests;
 
 
-import org.testng.Assert;
-import org.testng.annotations.Test;
+
+import org.junit.Assert;
+import org.junit.Test;
 import presidio.data.generators.file.DriveTypePercentageGenerator;
 import presidio.data.generators.common.GeneratorException;
 
