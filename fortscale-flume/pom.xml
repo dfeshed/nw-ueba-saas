@@ -9,6 +9,10 @@
     <version>1.0.0</version>
     <packaging>pom</packaging>
 
+    <properties>
+        <mongo.java.driver.version>3.4.2</mongo.java.driver.version>
+    </properties>
+
     <build>
         <plugins>
             <plugin>
@@ -23,7 +27,6 @@
         </plugins>
     </build>
 
-
     <modules>
         <module>fortscale-flume-common</module>
         <module>fortscale-flume-sources</module>
@@ -32,9 +35,14 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.apache.flume</groupId>
+            <artifactId>flume-ng-core</artifactId>
+            <version>1.7.0</version>
+        </dependency>
+        <dependency>
             <groupId>org.mongodb</groupId>
             <artifactId>mongo-java-driver</artifactId>
-            <version>3.4.2</version>
+            <version>${mongo.java.driver.version}</version>
         </dependency>
         <!-- Spring data mongodb -->
         <!-- https://mvnrepository.com/artifact/org.springframework.data/spring-data-mongodb -->

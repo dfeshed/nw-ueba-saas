@@ -4,9 +4,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.fortscale.flume</groupId>
+    <parent>
+        <groupId>org.fortscale.flume</groupId>
+        <artifactId>fortscale-flume</artifactId>
+        <version>1.0.0</version>
+    </parent>
+
     <artifactId>fortscale-flume-sources</artifactId>
-    <version>1.0.0</version>
 
 
     <build>
@@ -24,11 +28,6 @@
     </build>
 
     <dependencies>
-        <dependency>
-            <groupId>org.apache.flume</groupId>
-            <artifactId>flume-ng-core</artifactId>
-            <version>1.7.0</version>
-        </dependency>
         <dependency>
             <groupId>org.fortscale.flume</groupId>
             <artifactId>fortscale-flume-common</artifactId>

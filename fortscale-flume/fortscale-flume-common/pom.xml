@@ -4,9 +4,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.fortscale.flume</groupId>
+    <parent>
+        <groupId>org.fortscale.flume</groupId>
+        <artifactId>fortscale-flume</artifactId>
+        <version>1.0.0</version>
+    </parent>
+
     <artifactId>fortscale-flume-common</artifactId>
-    <version>1.0.0</version>
+
     <build>
         <plugins>
             <plugin>
@@ -19,18 +24,6 @@
             </plugin>
         </plugins>
     </build>
-    <dependencies>
-        <dependency>
-            <groupId>org.mongodb</groupId>
-            <artifactId>mongo-java-driver</artifactId>
-            <version>3.4.2</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.data</groupId>
-            <artifactId>spring-data-mongodb</artifactId>
-            <version>1.10.4.RELEASE</version>
-        </dependency>
-    </dependencies>
 
 
 </project>

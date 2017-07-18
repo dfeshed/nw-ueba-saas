@@ -9,6 +9,7 @@ import org.apache.flume.instrumentation.SinkCounter;
 import org.apache.flume.sink.AbstractSink;
 import org.flume.sink.mongo.persistency.SinkMongoRepository;
 import org.flume.sink.mongo.persistency.SinkMongoRepositoryImpl;
+
 import org.flume.utils.MongoUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
