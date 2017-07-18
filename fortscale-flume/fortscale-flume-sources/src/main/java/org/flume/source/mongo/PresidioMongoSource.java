@@ -1,4 +1,4 @@
-package org.flume.source.presidioMongoSource;
+package org.flume.source.mongo;
 
 
 import com.google.gson.Gson;
@@ -13,8 +13,8 @@ import org.apache.flume.instrumentation.SourceCounter;
 import org.apache.flume.source.AbstractEventDrivenSource;
 import org.codehaus.jackson.JsonProcessingException;
 import org.flume.domain.AbstractDocument;
-import org.flume.source.presidioMongoSource.persistency.SourceMongoRepository;
-import org.flume.source.presidioMongoSource.persistency.SourceMongoRepositoryImpl;
+import org.flume.source.mongo.persistency.SourceMongoRepository;
+import org.flume.source.mongo.persistency.SourceMongoRepositoryImpl;
 import org.flume.utils.DateUtils;
 import org.flume.utils.MongoUtils;
 import org.slf4j.Logger;

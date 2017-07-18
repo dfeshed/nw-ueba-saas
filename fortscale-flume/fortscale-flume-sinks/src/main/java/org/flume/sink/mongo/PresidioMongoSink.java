@@ -1,4 +1,4 @@
-package org.flume.sink.presidioMongoSink;
+package org.flume.sink.mongo;
 
 import com.mongodb.DBObject;
 import com.mongodb.util.JSON;
@@ -7,8 +7,8 @@ import org.apache.flume.*;
 import org.apache.flume.conf.Configurable;
 import org.apache.flume.instrumentation.SinkCounter;
 import org.apache.flume.sink.AbstractSink;
-import org.flume.sink.presidioMongoSink.persistency.SinkMongoRepository;
-import org.flume.sink.presidioMongoSink.persistency.SinkMongoRepositoryImpl;
+import org.flume.sink.mongo.persistency.SinkMongoRepository;
+import org.flume.sink.mongo.persistency.SinkMongoRepositoryImpl;
 import org.flume.utils.MongoUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

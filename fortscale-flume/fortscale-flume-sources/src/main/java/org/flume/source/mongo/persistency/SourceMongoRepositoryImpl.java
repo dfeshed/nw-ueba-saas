@@ -1,4 +1,4 @@
-package org.flume.source.presidioMongoSource.persistency;
+package org.flume.source.mongo.persistency;
 
 
 import org.flume.domain.AbstractDocument;
