@@ -85,7 +85,7 @@ export const nweCallbackId = createSelector(
   meta,
   (isEndpointEvent, meta) => {
     if (isEndpointEvent) {
-      return meta.filter((d) => d[0] === 'nwe.callback_id')[0][1];
+      return meta.filter((d) => d[0] === 'client')[0][1];
     }
   }
 );

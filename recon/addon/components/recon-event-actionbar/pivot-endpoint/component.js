@@ -13,10 +13,9 @@ const stateToComputed = ({ recon }) => ({
 const PivotToEndpoint = Component.extend({
   layout,
 
-  attributeBindings: ['href', 'target', 'title'],
+  attributeBindings: ['title'],
   classNames: ['pivot-to-endpoint'],
-  tagName: 'a',
-  target: '_blank',
+  tagName: 'div',
 
   i18n: service(),
 
@@ -26,6 +25,12 @@ const PivotToEndpoint = Component.extend({
   @computed
   title() {
     return this.get('i18n').t('recon.textView.pivotToEndpointTitle');
+  },
+
+  actions: {
+    goToEcat() {
+      window.open(this.get('href'), '_blank').focus();
+    }
   }
 });
 
