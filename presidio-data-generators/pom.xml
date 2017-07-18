@@ -10,23 +10,17 @@
 	<description>Presidio Data Generators</description>
 
 	<parent>
-		<groupId>presidio-integration-test</groupId>
-		<artifactId>presidio-integration-test</artifactId>
+		<groupId>presidio-test-utils</groupId>
+		<artifactId>presidio-test-utils</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 
-	<properties>
-		<junit.version>4.12</junit.version>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<java.version>1.8</java.version>
-	</properties>
+
 
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>${junit.version}</version>
 		</dependency>
 	</dependencies>
 	<build>
@@ -57,14 +51,5 @@
 
 		</plugins>
 	</build>
-
-	<distributionManagement>
-		<!-- push changes to artifactory, distribute use of sdk -->
-		<snapshotRepository>
-			<id>mirror.fortscale.dom</id>
-			<name>mirror.fortscale.dom-snapshots</name>
-			<url>http://mirror.fortscale.dom/artifactory/presidio-snapshot-local</url>
-		</snapshotRepository>
-	</distributionManagement>
 
 </project>
