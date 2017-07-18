@@ -16,17 +16,14 @@
       {{#if currentIsCustomRange}}
         {{rsa-form-datetime
           label=(t 'respond.explorer.filters.customStartDate')
-          showTime=true
           isError=hasCustomDateError
           value=(readonly customDateRangeStart)
-          onDateClose=(action 'customStartDateChanged')
+          onChange=(action 'customStartDateChanged')
           errorMessage=customDateErrorMessage}}
-
         {{rsa-form-datetime
           label=(t 'respond.explorer.filters.customEndDate')
-          showTime=true
           value=(readonly customDateRangeEnd)
-          onDateClose=(action 'customEndDateChanged')}}
+          onChange=(action 'customEndDateChanged')}}
       {{else}}
         {{#power-select
           options=timeframes

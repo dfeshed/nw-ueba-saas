@@ -105,18 +105,18 @@
           </hbox>
           <hbox>
             <vbox class="col-xs-6">
-              {{rsa-form-datetime label='Created From Date' placeholder="Start" }}
+              {{rsa-form-datetime label='Created From Date' placeholder="Start" onChange=(action (mut dateValue))}}
             </vbox>
             <vbox class="col-xs-6">
-              {{rsa-form-datetime label='Created To Date' placeholder="End" }}
+              {{rsa-form-datetime label='Created To Date' placeholder="End" onChange=(action (mut dateValue))}}
             </vbox>
           </hbox>
           <hbox>
             <vbox class="col-xs-6">
-              {{rsa-form-datetime label='Updated From Date' placeholder="Start" }}
+              {{rsa-form-datetime label='Updated From Date' placeholder="Start" onChange=(action (mut dateValue))}}
             </vbox>
             <vbox class="col-xs-6">
-              {{rsa-form-datetime label='Updated To Date' placeholder="End" }}
+              {{rsa-form-datetime label='Updated To Date' placeholder="End" onChange=(action (mut dateValue))}}
             </vbox>
           </hbox>
         </section>
