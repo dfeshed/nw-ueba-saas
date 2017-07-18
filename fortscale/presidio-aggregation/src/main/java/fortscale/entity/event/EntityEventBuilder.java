@@ -4,16 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.aggregation.feature.event.AggrEvent;
 import fortscale.aggregation.feature.event.AggrFeatureEventBuilderService;
 import fortscale.domain.SMART.EntityEvent;
-import fortscale.entity.event.metrics.EntityEventBuilderMetrics;
 import fortscale.utils.logging.Logger;
-import fortscale.utils.monitoring.stats.StatsService;
 import net.minidev.json.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.util.Assert;
@@ -22,41 +17,30 @@ import java.util.*;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
-@Configurable(preConstruction = true)
 public class EntityEventBuilder {
 	private static final Logger logger = Logger.getLogger(EntityEventBuilder.class);
 	private static final String CONTEXT_ID_SEPARATOR = "_";
 
 
 
-	@Value("${fortscale.entity.event.retrieving.page.size}")
-	private int retrievingPageSize;
-	@Value("${fortscale.entity.event.store.page.size}")
-	private int storePageSize;
 
-	@Value("${streaming.event.field.type}")
+	private int retrievingPageSize;
+	private int storePageSize;
 	private String eventTypeFieldName;
-	@Value("${streaming.event.field.type.entity_event}")
 	private String eventTypeFieldValue;
-	@Value("${streaming.entity_event.field.entity_event_type}")
 	private String entityEventTypeFieldName;
-	@Value("${impala.table.fields.epochtime}")
 	private String epochtimeFieldName;
 
 	private EntityEventDataStore entityEventDataStore;
-
-	@Autowired
 	private AggrFeatureEventBuilderService aggrFeatureEventBuilderService;
 
-	@Autowired
-	private StatsService statsService;
-
-	private EntityEventBuilderMetrics metrics;
 	private long secondsToWaitBeforeFiring;
 	private EntityEventConf entityEventConf;
 	private JokerFunction jokerFunction;
 
-	public EntityEventBuilder(long secondsToWaitBeforeFiring, EntityEventConf entityEventConf, EntityEventDataStore entityEventDataStore) {
+	public EntityEventBuilder(long secondsToWaitBeforeFiring, EntityEventConf entityEventConf,
+							  EntityEventDataStore entityEventDataStore, AggrFeatureEventBuilderService aggrFeatureEventBuilderService,
+							  int retrievingPageSize, int storePageSize, String eventTypeFieldName, String eventTypeFieldValue, String entityEventTypeFieldName, String epochtimeFieldName) {
 		Assert.isTrue(secondsToWaitBeforeFiring >= 0);
 		Assert.notNull(entityEventConf);
 		Assert.notNull(entityEventDataStore);
@@ -64,6 +48,14 @@ public class EntityEventBuilder {
 		this.secondsToWaitBeforeFiring = secondsToWaitBeforeFiring;
 		this.entityEventConf = entityEventConf;
 		this.entityEventDataStore = entityEventDataStore;
+		this.aggrFeatureEventBuilderService = aggrFeatureEventBuilderService;
+		this.retrievingPageSize = retrievingPageSize;
+		this.storePageSize = storePageSize;
+		this.eventTypeFieldName = eventTypeFieldName;
+		this.eventTypeFieldValue = eventTypeFieldValue;
+		this.entityEventTypeFieldName = entityEventTypeFieldName;
+		this.epochtimeFieldName = epochtimeFieldName;
+
 		String jokerFunctionJson = entityEventConf.getEntityEventFunction().toJSONString();
 		try {
 			this.jokerFunction = (new ObjectMapper()).readValue(jokerFunctionJson, JokerFunction.class);
@@ -74,18 +66,10 @@ public class EntityEventBuilder {
 		}
 	}
 
-	public EntityEventBuilderMetrics getMetrics()
-	{
-		if (metrics==null)
-		{
-			metrics = new EntityEventBuilderMetrics(statsService,entityEventConf.getName(),getContextFieldsAsString());
-		}
-		return metrics;
-	}
 	public void updateEntityEventData(AggrEvent aggrFeatureEvent) {
 		Assert.notNull(aggrFeatureEvent);
 
-		getMetrics().updateEntityEventData++;
+		//todo: getMetrics().updateEntityEventData++;
 
 		Pair<Boolean, EntityEventData> entityEventData = getEntityEventData(aggrFeatureEvent);
 		if (entityEventData != null) {
@@ -94,16 +78,16 @@ public class EntityEventBuilder {
 				entityEventData.getRight().addAggrFeatureEvent(aggrFeatureEvent);
 				entityEventDataStore.storeEntityEventData(entityEventData.getRight());
 			} else {
-				getMetrics().zeroFeature++;
+				//todo: getMetrics().zeroFeature++;
 				if (entityEventData.getLeft()) {
 					entityEventDataStore.storeEntityEventData(entityEventData.getRight());
 				}
 			}
 		}
-		else
-		{
-			getMetrics().nullEntityEventData++;
-		}
+//		else
+//		{
+//			//todo: getMetrics().nullEntityEventData++;
+//		}
 	}
 
 	public void sendNewEntityEventsAndUpdateStore(long currentTimeInSeconds, IEntityEventSender sender) throws TimeoutException {
@@ -116,28 +100,28 @@ public class EntityEventBuilder {
 		for (EntityEventMetaData entityEventMetaData : listOfEntityEventMetaData) {
 			EntityEventData entityEventData = entityEventDataStore.getEntityEventData(entityEventMetaData.getEntityEventName(), entityEventMetaData.getContextId(), entityEventMetaData.getStartTime(), entityEventMetaData.getEndTime());
 			if(entityEventData.getModifiedAtEpochtime() > modifiedAtLte){
-				getMetrics().stopSendingEntityEventDueTooFutureModifiedDate++;
+				//todo: getMetrics().stopSendingEntityEventDueTooFutureModifiedDate++;
 //				listOfEntityEventMetaData = Collections.emptyList();// to keep the time order we don't send any other entity event.
 				break;
 			}
 			sendEntityEvent(entityEventData, currentTimeInSeconds, sender);
 			entityEventDataList.add(entityEventData);
 			if(entityEventDataList.size()>=storePageSize) {
-				getMetrics().storeEntityEventDataListSizeHigherThenPageSize++;
+				//todo: getMetrics().storeEntityEventDataListSizeHigherThenPageSize++;
 				entityEventDataStore.storeEntityEventDataList(entityEventDataList);
 				entityEventDataList = new ArrayList<>();
 			}
 		}
 
 		if(entityEventDataList.size() > 0) {
-			getMetrics().entityEventDataListSizeHigherThenZero++;
+			//todo: getMetrics().entityEventDataListSizeHigherThenZero++;
 			entityEventDataStore.storeEntityEventDataList(entityEventDataList);
 		}
 	}
 
 	public void sendEntityEventsInTimeRange(Date startTime, Date endTime, long currentTimeInSeconds,
 											IEntityEventSender sender, boolean updateStore) throws TimeoutException {
-		getMetrics().sendEntityEventsInTimeRange++;
+		//todo: getMetrics().sendEntityEventsInTimeRange++;
 
 		List<EntityEventData> listOfEntityEventData = entityEventDataStore
 				.getEntityEventDataWithEndTimeInRange(entityEventConf.getName(), startTime, endTime);
@@ -199,8 +183,8 @@ public class EntityEventBuilder {
 	}
 
 	private void sendEntityEvent(EntityEventData entityEventData, long currentTimeInSeconds, IEntityEventSender sender) throws TimeoutException{
-		getMetrics().sendEntityEvent++;
-		getMetrics().sendEntityEventTime=currentTimeInSeconds;
+		//todo: getMetrics().sendEntityEvent++;
+		//todo: getMetrics().sendEntityEventTime=currentTimeInSeconds;
 
 		entityEventData.setTransmissionEpochtime(currentTimeInSeconds);
 		entityEventData.setTransmitted(true);
