@@ -1,9 +1,12 @@
-package source.presidioMongoSource.persistency;
+package org.flume.source.presidioMongoSource.persistency;
 
-import domain.AbstractDocument;
+
+
+import org.flume.domain.AbstractDocument;
 
 import java.time.Instant;
 import java.util.List;
+
 
 public interface SourceMongoRepository {
 

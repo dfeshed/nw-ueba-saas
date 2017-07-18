@@ -1,9 +1,7 @@
-package source.presidioMongoSource;
+package org.flume.source.presidioMongoSource;
 
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.gson.Gson;
-import domain.AbstractDocument;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.flume.Context;
 import org.apache.flume.Event;
@@ -13,13 +11,16 @@ import org.apache.flume.conf.Configurable;
 import org.apache.flume.event.EventBuilder;
 import org.apache.flume.instrumentation.SourceCounter;
 import org.apache.flume.source.AbstractEventDrivenSource;
+import org.codehaus.jackson.JsonProcessingException;
+import org.flume.domain.AbstractDocument;
+import org.flume.source.presidioMongoSource.persistency.SourceMongoRepository;
+import org.flume.source.presidioMongoSource.persistency.SourceMongoRepositoryImpl;
+import org.flume.utils.DateUtils;
+import org.flume.utils.MongoUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import source.presidioMongoSource.persistency.SourceMongoRepository;
-import source.presidioMongoSource.persistency.SourceMongoRepositoryImpl;
-import utils.DateUtils;
-import utils.MongoUtils;
+
 
 import java.net.UnknownHostException;
 import java.nio.charset.Charset;
@@ -136,7 +137,7 @@ public class PresidioMongoSource extends AbstractEventDrivenSource implements Co
         logger.info("PresidioMongoSource is stopping...");
     }
 
-    private SourceMongoRepositoryImpl createRepository(String dbName, String host, int port, String username, String password) throws UnknownHostException {
+    private SourceMongoRepository createRepository(String dbName, String host, int port, String username, String password) throws UnknownHostException {
         final MongoTemplate mongoTemplate = MongoUtils.createMongoTemplate(dbName, host, port, username, password);
         return new SourceMongoRepositoryImpl(mongoTemplate);
     }

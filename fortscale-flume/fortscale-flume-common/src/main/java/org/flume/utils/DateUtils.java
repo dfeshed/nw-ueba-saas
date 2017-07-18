@@ -1,4 +1,4 @@
-package utils;
+package org.flume.utils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

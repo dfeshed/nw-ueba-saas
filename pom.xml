@@ -73,6 +73,8 @@ limitations under the License.
     <module>flume-tools</module>
     <module>flume-ng-auth</module>
     <module>flume-shared</module>
+    <!--      fortscale        -->
+    <module>fortscale-flume</module>
   </modules>
 
   <profiles>
@@ -634,10 +636,10 @@ limitations under the License.
 
     <plugins>
 
-      <plugin>
-        <groupId>org.apache.rat</groupId>
-        <artifactId>apache-rat-plugin</artifactId>
-      </plugin>
+      <!--<plugin>-->
+        <!--<groupId>org.apache.rat</groupId>-->
+        <!--<artifactId>apache-rat-plugin</artifactId>-->
+      <!--</plugin>-->
 
     </plugins>
 

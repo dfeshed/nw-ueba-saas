@@ -1,6 +1,7 @@
-package source.presidioMongoSource.persistency;
+package org.flume.source.presidioMongoSource.persistency;
 
-import domain.AbstractDocument;
+
+import org.flume.domain.AbstractDocument;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -8,6 +9,7 @@ import org.springframework.data.mongodb.core.query.Query;
 
 import java.time.Instant;
 import java.util.List;
+
 
 public class SourceMongoRepositoryImpl implements SourceMongoRepository {
 

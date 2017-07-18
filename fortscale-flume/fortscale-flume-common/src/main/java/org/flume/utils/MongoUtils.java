@@ -1,10 +1,12 @@
-package utils;
+package org.flume.utils;
+
+
 
 
 import com.mongodb.*;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
+import org.springframework.util.StringUtils;
 
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -23,7 +25,7 @@ public class MongoUtils {
         MongoClientOptions writeOptions = MongoClientOptions.builder()
                 .writeConcern(WriteConcern.ACKNOWLEDGED)
                 .build();
-        if (StringUtils.isNotBlank(username) && StringUtils.isNotBlank(password)) {
+        if (!StringUtils.isEmpty(username) && !StringUtils.isEmpty(password)) {
             ServerAddress address = new ServerAddress(host, port);
             List<MongoCredential> credentials = new ArrayList<>();
             credentials.add(

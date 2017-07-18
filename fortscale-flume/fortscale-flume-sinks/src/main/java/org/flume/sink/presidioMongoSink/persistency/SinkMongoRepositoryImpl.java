@@ -1,4 +1,4 @@
-package sink.presidioMongoSink.persistency;
+package org.flume.sink.presidioMongoSink.persistency;
 
 import com.mongodb.BulkWriteResult;
 import com.mongodb.DBObject;

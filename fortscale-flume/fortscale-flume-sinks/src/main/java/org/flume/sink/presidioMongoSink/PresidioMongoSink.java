@@ -1,4 +1,4 @@
-package sink.presidioMongoSink;
+package org.flume.sink.presidioMongoSink;
 
 import com.mongodb.DBObject;
 import com.mongodb.util.JSON;
@@ -7,13 +7,13 @@ import org.apache.flume.*;
 import org.apache.flume.conf.Configurable;
 import org.apache.flume.instrumentation.SinkCounter;
 import org.apache.flume.sink.AbstractSink;
+import org.flume.sink.presidioMongoSink.persistency.SinkMongoRepository;
+import org.flume.sink.presidioMongoSink.persistency.SinkMongoRepositoryImpl;
+import org.flume.utils.MongoUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import sink.presidioMongoSink.persistency.SinkMongoRepository;
-import sink.presidioMongoSink.persistency.SinkMongoRepositoryImpl;
-import source.presidioMongoSource.PresidioMongoSource;
-import utils.MongoUtils;
+
 
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -21,7 +21,7 @@ import java.util.List;
 
 public class PresidioMongoSink extends AbstractSink implements Configurable, Sink {
 
-    private static Logger logger = LoggerFactory.getLogger(PresidioMongoSource.class);
+    private static Logger logger = LoggerFactory.getLogger(PresidioMongoSink.class);
 
     private static String[] mandatoryParams = {"collectionName", "dbName", "host", "hasAuthentication"};
 
