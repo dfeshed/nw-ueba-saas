@@ -25,6 +25,9 @@ public class FetchServiceConfig {
     public FetchService fetchService() {
         Map<DataSource, Fetcher> fetchers = new HashMap<>();
         fetchers.put(DataSource.DLPFILE, new CsvFileFetcher(csvFilesFolderPath, StandardCharsets.UTF_8, ','));
+        fetchers.put(DataSource.AUTHENTICATION, new CsvFileFetcher(csvFilesFolderPath, StandardCharsets.UTF_8, ','));
+        fetchers.put(DataSource.ACTIVE_DIRECTORY, new CsvFileFetcher(csvFilesFolderPath, StandardCharsets.UTF_8, ','));
+        fetchers.put(DataSource.FILE, new CsvFileFetcher(csvFilesFolderPath, StandardCharsets.UTF_8, ','));
         return new FetchServiceImpl(fetchers);
     }
 }

@@ -1,6 +1,7 @@
 package fortscale.entity.event;
 
 import fortscale.aggregation.feature.event.AggrEvent;
+import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
 import net.minidev.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Before;
@@ -8,7 +9,9 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.*;
@@ -17,7 +20,6 @@ import java.util.concurrent.TimeoutException;
 import static org.mockito.Mockito.mock;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath*:META-INF/spring/entity-event-builder-context-test.xml"})
 public class EntityEventBuilderTest extends EntityEventTestBase{
 	private static final String DEFAULT_ENTITY_EVENT_NAME = "testEntityEvent";
 	private static final String USERNAME_CONTEXT_FIELD = "normalized_username";
@@ -28,6 +30,8 @@ public class EntityEventBuilderTest extends EntityEventTestBase{
 
 	@Autowired
 	private EntityEventDataStore entityEventDataStore;
+	@Autowired
+	private EntityEventBuilderFactory entityEventBuilderFactory;
 	
 	
 	
@@ -56,12 +60,12 @@ public class EntityEventBuilderTest extends EntityEventTestBase{
 		List<String> contextFields = new ArrayList<>();
 		contextFields.add(USERNAME_CONTEXT_FIELD);
 		EntityEventConf entityEventConf = createDefaultEntityEventConf(contextFields);
-		new EntityEventBuilder(-1, entityEventConf, entityEventDataStore);
+		entityEventBuilderFactory.createEntityEventBuilder(-1, entityEventConf);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void constructor_should_fail_when_entity_event_conf_is_null() {
-		new EntityEventBuilder(60, null, entityEventDataStore);
+		entityEventBuilderFactory.createEntityEventBuilder(60, null);
 	}
 
 	@Test
@@ -69,7 +73,7 @@ public class EntityEventBuilderTest extends EntityEventTestBase{
 		List<String> contextFields = new ArrayList<>();
 		contextFields.add(USERNAME_CONTEXT_FIELD);
 		EntityEventConf entityEventConf = createDefaultEntityEventConf(contextFields);
-		EntityEventBuilder builder = new EntityEventBuilder(0, entityEventConf, entityEventDataStore);
+		EntityEventBuilder builder = entityEventBuilderFactory.createEntityEventBuilder(0, entityEventConf);
 
 		String username = "user1";
 		JSONObject context = new JSONObject();
@@ -101,7 +105,7 @@ public class EntityEventBuilderTest extends EntityEventTestBase{
 		List<String> contextFields = new ArrayList<>();
 		contextFields.add(USERNAME_CONTEXT_FIELD);
 		EntityEventConf entityEventConf = createDefaultEntityEventConf(contextFields);
-		EntityEventBuilder builder = new EntityEventBuilder(0, entityEventConf, entityEventDataStore);
+		EntityEventBuilder builder = entityEventBuilderFactory.createEntityEventBuilder(0, entityEventConf);
 
 		JSONObject context = new JSONObject();
 		context.put(USERNAME_CONTEXT_FIELD, "user2");
@@ -126,7 +130,7 @@ public class EntityEventBuilderTest extends EntityEventTestBase{
 		List<String> contextFields = new ArrayList<>();
 		contextFields.add(USERNAME_CONTEXT_FIELD);
 		EntityEventConf entityEventConf = createDefaultEntityEventConf(contextFields);
-		EntityEventBuilder builder = new EntityEventBuilder(0, entityEventConf, entityEventDataStore);
+		EntityEventBuilder builder = entityEventBuilderFactory.createEntityEventBuilder(0, entityEventConf);
 
 		JSONObject context1 = new JSONObject();
 		context1.put(USERNAME_CONTEXT_FIELD, "user3");
@@ -154,7 +158,7 @@ public class EntityEventBuilderTest extends EntityEventTestBase{
 		List<String> contextFields = new ArrayList<>();
 		contextFields.add(USERNAME_CONTEXT_FIELD);
 		EntityEventConf entityEventConf = createDefaultEntityEventConf(contextFields);
-		EntityEventBuilder builder = new EntityEventBuilder(0, entityEventConf, entityEventDataStore);
+		EntityEventBuilder builder = entityEventBuilderFactory.createEntityEventBuilder(0, entityEventConf);
 		builder.updateEntityEventData(null);
 	}
 
@@ -164,7 +168,7 @@ public class EntityEventBuilderTest extends EntityEventTestBase{
 		contextFields.add(USERNAME_CONTEXT_FIELD);
 		contextFields.add(SRC_MACHINE_CONTEXT_FIELD);
 		EntityEventConf entityEventConf = createDefaultEntityEventConf(contextFields);
-		EntityEventBuilder builder = new EntityEventBuilder(0, entityEventConf, entityEventDataStore);
+		EntityEventBuilder builder = entityEventBuilderFactory.createEntityEventBuilder(0, entityEventConf);
 
 		JSONObject context = new JSONObject();
 		context.put(USERNAME_CONTEXT_FIELD, "user5");
@@ -182,7 +186,7 @@ public class EntityEventBuilderTest extends EntityEventTestBase{
 		List<String> contextFields = new ArrayList<>();
 		contextFields.add(USERNAME_CONTEXT_FIELD);
 		EntityEventConf entityEventConf = createDefaultEntityEventConf(contextFields);
-		EntityEventBuilder builder = new EntityEventBuilder(0, entityEventConf, entityEventDataStore);
+		EntityEventBuilder builder = entityEventBuilderFactory.createEntityEventBuilder(0, entityEventConf);
 
 		JSONObject context = new JSONObject();
 		context.put(USERNAME_CONTEXT_FIELD, "user6");
@@ -214,7 +218,7 @@ public class EntityEventBuilderTest extends EntityEventTestBase{
 		contextFields.add(USERNAME_CONTEXT_FIELD);
 		contextFields.add(SRC_MACHINE_CONTEXT_FIELD);
 		EntityEventConf entityEventConf = createDefaultEntityEventConf(contextFields);
-		EntityEventBuilder builder = new EntityEventBuilder(secondsToWaitBeforeFiring, entityEventConf, entityEventDataStore);
+		EntityEventBuilder builder = entityEventBuilderFactory.createEntityEventBuilder(secondsToWaitBeforeFiring, entityEventConf);
 
 		String username = "user7";
 		JSONObject context1 = new JSONObject();
@@ -245,5 +249,34 @@ public class EntityEventBuilderTest extends EntityEventTestBase{
 		Assert.assertEquals(2, allEntityEventData.size());
 		for (EntityEventData entityEventData : allEntityEventData)
 			Assert.assertTrue(entityEventData.isTransmitted());
+	}
+
+
+	@Configuration
+	@Import({EntityEventBuilderFactoryConfig.class})
+	public static class EntityEventBuilderTestConfiguration{
+
+		@Bean
+		public EntityEventDataStore getEntityEventDataStore(){
+			return new EntityEventDataTestStore();
+		}
+
+		@Bean
+		public static TestPropertiesPlaceholderConfigurer abc() {
+			Properties properties = new Properties();
+			properties.put("streaming.entity_event.field.entity_event_type", "entity_event_type");
+			properties.put("streaming.event.field.type.aggr_event", "aggr_event");
+			properties.put("streaming.aggr_event.field.context", "context");
+			properties.put("impala.table.fields.epochtime", "date_time_unix");
+			properties.put("streaming.aggr_event.field.bucket_conf_name", "bucket_conf_name");
+			properties.put("streaming.aggr_event.field.aggregated_feature_name", "aggregated_feature_name");
+			properties.put("streaming.aggr_event.field.aggregated_feature_value", "aggregated_feature_value");
+			properties.put("impala.table.fields.data.source", "data_source");
+			properties.put("fortscale.entity.event.retrieving.page.size", "200000");
+			properties.put("fortscale.entity.event.store.page.size", "1000");
+
+
+			return new TestPropertiesPlaceholderConfigurer(properties);
+		}
 	}
 }

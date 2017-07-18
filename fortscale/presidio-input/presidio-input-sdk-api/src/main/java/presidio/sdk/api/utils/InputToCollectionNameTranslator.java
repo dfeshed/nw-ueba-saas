@@ -1,4 +1,4 @@
-package presidio.sdk.api.domain;
+package presidio.sdk.api.utils;
 
 import fortscale.common.general.DataSource;
 import fortscale.utils.mongodb.util.ToCollectionNameTranslator;

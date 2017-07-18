@@ -1,20 +1,22 @@
 package fortscale.entity.event;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
 import net.minidev.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath*:META-INF/spring/entity-event-conf-service-context.xml"})
 public class EntityEventConfServiceTest {
 	@Autowired
 	EntityEventConfService entityEventConfService;
@@ -38,6 +40,32 @@ public class EntityEventConfServiceTest {
 			Assert.assertNotNull(entityEventFunction);
 			JokerFunction jokerFunction = (new ObjectMapper()).readValue(entityEventFunction.toJSONString(), JokerFunction.class);
 			Assert.assertNotNull(jokerFunction);
+		}
+	}
+
+
+	@Configuration
+	public static class EntityEventConfServiceTestConfiguration{
+
+		@Bean
+		public EntityEventGlobalParamsConfService getEntityEventGlobalParamsConfService(){
+			return new EntityEventGlobalParamsConfService();
+		}
+
+		@Bean
+		public EntityEventConfService getEntityEventConfService(){
+			return new EntityEventConfService();
+		}
+
+		@Bean
+		public static TestPropertiesPlaceholderConfigurer abc() {
+			Properties properties = new Properties();
+			properties.put("fortscale.entity.event.definitions.json.file.path", "classpath:entity_events_test.json");
+			properties.put("fortscale.entity.event.definitions.conf.json.overriding.files.path", "");
+			properties.put("fortscale.entity.event.global.params.json.file.path","entity_events_global_params_test.json");
+			properties.put("fortscale.entity.event.global.params.conf.json.overriding.files.path", "");
+
+			return new TestPropertiesPlaceholderConfigurer(properties);
 		}
 	}
 }

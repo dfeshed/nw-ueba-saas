@@ -34,7 +34,7 @@ public class EntityEventConfService extends AslConfigurationService {
 
 	@Override
 	protected String getBaseOverridingConfJsonFolderPath() {
-		return entityEventDefinitionsConfJsonOverridingFilesPath;
+		return entityEventDefinitionsConfJsonOverridingFilesPath.isEmpty() ? null : entityEventDefinitionsConfJsonOverridingFilesPath;
 	}
 
 	@Override

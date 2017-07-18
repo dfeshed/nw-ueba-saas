@@ -35,7 +35,7 @@ public class DlpFileConverterTest {
         Assert.assertEquals(inputEnrichedRecord.getDestinationFileName(), adeRecord.getDestinationFileName());
         Assert.assertEquals(inputEnrichedRecord.getDestinationDriveType(), adeRecord.getDestinationDriveType());
         Assert.assertEquals(inputEnrichedRecord.getFileSize().doubleValue(), adeRecord.getFileSize(), 0d);
-        Assert.assertEquals(inputEnrichedRecord.getEventType(), adeRecord.getDataSource());
+        Assert.assertEquals(inputEnrichedRecord.getEventType(), adeRecord.getOperationType());
         Assert.assertEquals(inputEnrichedRecord.getWasBlocked(), adeRecord.isWasBlocked());
         Assert.assertEquals(inputEnrichedRecord.getWasClassified(), adeRecord.isWasClassified());
         Assert.assertEquals(inputEnrichedRecord.getMalwareScanResult(), adeRecord.getMalwareScanResult());
