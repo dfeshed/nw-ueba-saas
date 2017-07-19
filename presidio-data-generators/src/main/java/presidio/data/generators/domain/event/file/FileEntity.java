@@ -1,4 +1,4 @@
-package presidio.data.generators.domain;
+package presidio.data.generators.domain.event.file;
 
 import java.io.File;
 

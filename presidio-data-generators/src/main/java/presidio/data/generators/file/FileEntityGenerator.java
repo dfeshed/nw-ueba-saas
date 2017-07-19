@@ -2,7 +2,7 @@ package presidio.data.generators.file;
 
 import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.common.precentage.BooleanPercentageGenerator;
-import presidio.data.generators.domain.FileEntity;
+import presidio.data.generators.domain.event.file.FileEntity;
 
 public class FileEntityGenerator implements IFileEntityGenerator {
 
