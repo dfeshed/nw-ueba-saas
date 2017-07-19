@@ -5,8 +5,7 @@ import com.mongodb.util.JSON;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.flume.*;
 import org.apache.flume.conf.Configurable;
-import org.apache.flume.instrumentation.SinkCounter;
-import org.apache.flume.sink.AbstractSink;
+import org.flume.sink.base.AbstractPresidioSink;
 import org.flume.sink.mongo.persistency.SinkMongoRepository;
 import org.flume.sink.mongo.persistency.SinkMongoRepositoryImpl;
 
@@ -18,15 +17,15 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-public class PresidioMongoSink extends AbstractSink implements Configurable, Sink {
+public class PresidioMongoSink extends AbstractPresidioSink implements Configurable, Sink {
 
     private static Logger logger = LoggerFactory.getLogger(PresidioMongoSink.class);
 
     private static String[] mandatoryParams = {"collectionName", "dbName", "host", "hasAuthentication"};
 
-    private final SinkCounter sinkCounter = new SinkCounter("mongo-sink-counter");
 
     private SinkMongoRepository sinkMongoRepository;
     private boolean hasAuthentication;
@@ -37,17 +36,9 @@ public class PresidioMongoSink extends AbstractSink implements Configurable, Sin
     private String username;
     private int batchSize;
 
-
     @Override
-    public void start() {
-        sinkCounter.start();
-        super.start();
-    }
-
-    @Override
-    public void stop() {
-        sinkCounter.stop();
-        super.stop();
+    public synchronized String getName() {
+        return "mongo-sink";
     }
 
     @Override
@@ -56,7 +47,7 @@ public class PresidioMongoSink extends AbstractSink implements Configurable, Sin
         try {
             for (String mandatoryParam : mandatoryParams) {
                 if (!context.containsKey(mandatoryParam)) {
-                    throw new Exception(String.format("Missing mandatory param %s for Mongo sink. Mandatory params are: %s", mandatoryParam, mandatoryParams));
+                    throw new Exception(String.format("Missing mandatory param %s for Mongo sink. Mandatory params are: %s", mandatoryParam, Arrays.toString(mandatoryParams)));
                 }
             }
             hasAuthentication = Boolean.parseBoolean(context.getString("hasAuthentication"));
@@ -84,30 +75,7 @@ public class PresidioMongoSink extends AbstractSink implements Configurable, Sin
     }
 
     @Override
-    public Status process() throws EventDeliveryException {
-        logger.debug("PresidioMongoSink is starting...");
-        sinkCounter.start();
-        Status result = Status.READY;
-        Channel channel = getChannel();
-        Transaction transaction = channel.getTransaction();
-        try {
-            transaction.begin();
-            final List<DBObject> eventsToSave = parseEvents(channel);
-            final int numOfEventsToSave = saveEvents(eventsToSave);
-            logger.debug("PresidioMongoSink has finished processing {} events {}.", numOfEventsToSave);
-            transaction.commit();
-        } catch (Exception ex) {
-            transaction.rollback();
-            throw new EventDeliveryException("Failed to save event: ", ex);
-        } finally {
-            transaction.close();
-            this.stop();
-        }
-
-        return result;
-    }
-
-    private List<DBObject> parseEvents(Channel channel) {
+    protected List<DBObject> parseEvents(Channel channel) {
         Event flumeEvent;
         List<DBObject> eventsToSave = new ArrayList<>();
         for (int i = 0; i < batchSize; i++) {
@@ -124,7 +92,8 @@ public class PresidioMongoSink extends AbstractSink implements Configurable, Sin
         return eventsToSave;
     }
 
-    private int saveEvents(List<DBObject> eventsToSave) {
+    @Override
+    protected int saveEvents(List<DBObject> eventsToSave) {
         final int numOfEventsToSave = eventsToSave.size();
         if (numOfEventsToSave != 0) {
             if (numOfEventsToSave == 1) { // or in other words if batchSize == 1
