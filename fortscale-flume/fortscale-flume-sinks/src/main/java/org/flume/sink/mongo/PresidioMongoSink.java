@@ -101,7 +101,7 @@ public class PresidioMongoSink extends AbstractPresidioSink<DBObject> implements
     }
 
     @Override
-    protected int saveEvents(List<DBObject> eventsToSave) {
+    protected void saveEvents(List<DBObject> eventsToSave) {
         final int numOfEventsToSave = eventsToSave.size();
         if (numOfEventsToSave != 0) {
             if (numOfEventsToSave == 1) { // or in other words if batchSize == 1
@@ -112,7 +112,6 @@ public class PresidioMongoSink extends AbstractPresidioSink<DBObject> implements
                 sinkCounter.addToEventDrainSuccessCount(numOfSavedEvents);
             }
         }
-        return numOfEventsToSave;
     }
 
     private static SinkMongoRepository createRepository(String dbName, String host, int port, String username, String password) throws UnknownHostException {
