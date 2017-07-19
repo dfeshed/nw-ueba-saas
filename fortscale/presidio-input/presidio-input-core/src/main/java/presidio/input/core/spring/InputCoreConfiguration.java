@@ -1,6 +1,7 @@
 package presidio.input.core.spring;
 
 
+import fortscale.common.exporter.ExporterConfiguration;
 import fortscale.common.exporter.exporters.FileMetricsExporter;
 import fortscale.common.exporter.exporters.MetricsExporter;
 import fortscale.common.exporter.PresidioSystemPublicMetrics;
@@ -26,9 +27,7 @@ import presidio.sdk.api.services.PresidioInputPersistencyService;
 import javax.naming.Context;
 
 @Configuration
-@Import({ PresidioInputPersistencyServiceConfig.class, AdeDataServiceConfig.class,ADEManagerSDKConfig.class})
-@EnableAspectJAutoProxy
-@ComponentScan(basePackages= {"fortscale.utils.monitoring.aspect","fortscale.common.exporter","fortscale.utils.monitoring.aspect.annotations"})
+@Import({ PresidioInputPersistencyServiceConfig.class, AdeDataServiceConfig.class,ADEManagerSDKConfig.class,ExporterConfiguration.class})
 public class InputCoreConfiguration {
 
     @Autowired
@@ -36,25 +35,6 @@ public class InputCoreConfiguration {
 
     @Autowired
     private ADEManagerSDK adeManagerSDK;
-
-    @Bean
-    public PublicMetrics publicMetrics(){
-        return new PresidioSystemPublicMetrics();
-    }
-
-    @Bean
-    public MetricsEndpoint metricsEndpoint(){
-        return  new MetricsEndpoint(publicMetrics());
-    }
-
-    @Value("${spring.application.name}")
-    String processName;
-
-
-    @Bean
-    public MetricsExporter fileMetricsExporter() {
-        return new FileMetricsExporter(metricsEndpoint(),processName);
-    }
 
     @Bean
     public PresidioExecutionService inputExecutionService() {
