@@ -20,11 +20,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.flume.CommonStrings.*;
+
 public class PresidioMongoSink extends AbstractPresidioSink<DBObject> implements Configurable, Sink {
+
 
     private static Logger logger = LoggerFactory.getLogger(PresidioMongoSink.class);
 
-    private static String[] mandatoryParams = {"collectionName", "dbName", "host", "hasAuthentication"};
+    private static String[] mandatoryParams = {COLLECTION_NAME, DB_NAME, HOST, HAS_AUTHENTICATION};
 
 
     private SinkMongoRepository sinkMongoRepository;
@@ -47,28 +50,28 @@ public class PresidioMongoSink extends AbstractPresidioSink<DBObject> implements
         try {
             for (String mandatoryParam : mandatoryParams) {
                 if (!context.containsKey(mandatoryParam)) {
-                    throw new Exception(String.format("Missing mandatory param %s for Mongo sink. Mandatory params are: %s", mandatoryParam, Arrays.toString(mandatoryParams)));
+                    throw new Exception(String.format("Missing mandatory param %s for %s. Mandatory params are: %s", mandatoryParam, getName(), Arrays.toString(mandatoryParams)));
                 }
             }
-            hasAuthentication = Boolean.parseBoolean(context.getString("hasAuthentication"));
+            hasAuthentication = Boolean.parseBoolean(context.getString(HAS_AUTHENTICATION));
             if (hasAuthentication) {
-                if (!context.containsKey("username") || !context.containsKey("password")) {
-                    throw new Exception("Missing username and/or password for authentication for Mongo sink (since hasAuthentication = true).");
+                if (!context.containsKey(USERNAME) || !context.containsKey(PASSWORD)) {
+                    throw new Exception(String.format("Missing %s and/or %s for authentication for %s (since %s = true).", USERNAME, PASSWORD, getName(), HAS_AUTHENTICATION));
                 }
 
             }
 
             /* configure mongo */
-            batchSize = Integer.parseInt(context.getString("batchSize", "1"));
-            collectionName = context.getString("collectionName");
-            dbName = context.getString("dbName");
-            host = context.getString("host");
-            port = Integer.parseInt(context.getString("port", "27017"));
-            username = context.getString("username", "");
-            final String password = context.getString("password", "");
+            batchSize = Integer.parseInt(context.getString(BATCH_SIZE, "1"));
+            collectionName = context.getString(COLLECTION_NAME);
+            dbName = context.getString(DB_NAME);
+            host = context.getString(HOST);
+            port = Integer.parseInt(context.getString(PORT, "27017"));
+            username = context.getString(USERNAME, "");
+            final String password = context.getString(PASSWORD, "");
             sinkMongoRepository = createRepository(dbName, host, port, username, password);
         } catch (Exception e) {
-            final String errorMessage = "Failed to configure Presidio Mongo Source.";
+            final String errorMessage = "Failed to configure " + getName();
             logger.error(errorMessage, e);
             throw new FlumeException(errorMessage, e);
         }
@@ -117,8 +120,8 @@ public class PresidioMongoSink extends AbstractPresidioSink<DBObject> implements
         return new ToStringBuilder(this)
                 .append("hasAuthentication", hasAuthentication)
                 .append("dbName", dbName)
-                .append("host", host)
-                .append("port", port)
+                .append(HOST, host)
+                .append(PORT, port)
                 .append("collectionName", collectionName)
                 .append("username", username)
                 .toString();

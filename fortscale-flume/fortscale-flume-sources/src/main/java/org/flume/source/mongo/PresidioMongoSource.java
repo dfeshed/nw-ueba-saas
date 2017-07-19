@@ -12,6 +12,7 @@ import org.apache.flume.event.EventBuilder;
 import org.apache.flume.instrumentation.SourceCounter;
 import org.apache.flume.source.AbstractEventDrivenSource;
 import org.codehaus.jackson.JsonProcessingException;
+import org.flume.CommonStrings;
 import org.flume.domain.AbstractDocument;
 import org.flume.source.mongo.persistency.SourceMongoRepository;
 import org.flume.source.mongo.persistency.SourceMongoRepositoryImpl;
@@ -27,17 +28,18 @@ import java.nio.charset.Charset;
 import java.time.Instant;
 import java.util.List;
 
+import static org.flume.CommonStrings.*;
+
 
 public class PresidioMongoSource extends AbstractEventDrivenSource implements Configurable, EventDrivenSource {
 
     private static Logger logger = LoggerFactory.getLogger(PresidioMongoSource.class);
 
     private final SourceCounter sourceCounter = new SourceCounter("mongo-source-counter");
-    private static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
 
     private SourceMongoRepository sourceMongoRepository;
 
-    private static String[] mandatoryParams = {"collectionName", "dbName", "host", "hasAuthentication", "endDate", "startDate"};
+    private static String[] mandatoryParams = {COLLECTION_NAME, DB_NAME, HOST, HAS_AUTHENTICATION, START_DATE, END_DATE};
 
     private boolean hasAuthentication;
     private Instant startDate;
@@ -59,28 +61,28 @@ public class PresidioMongoSource extends AbstractEventDrivenSource implements Co
                     throw new Exception(String.format("Missing mandatory param %s for Mongo sink. Mandatory params are: %s", mandatoryParam, mandatoryParams));
                 }
             }
-            hasAuthentication = Boolean.parseBoolean(context.getString("hasAuthentication"));
+            hasAuthentication = Boolean.parseBoolean(context.getString(HAS_AUTHENTICATION));
             if (hasAuthentication) {
-                if (!context.containsKey("username") || !context.containsKey("password")) {
-                    throw new Exception("Missing username and/or password for authentication for Mongo sink (since hasAuthentication = true).");
+                if (!context.containsKey(CommonStrings.USERNAME) || !context.containsKey(CommonStrings.PASSWORD)) {
+                    throw new Exception(String.format("Missing %s and/or %s for authentication for %s (since %s = true).",CommonStrings.USERNAME, CommonStrings.PASSWORD, getName(), CommonStrings.HAS_AUTHENTICATION));
                 }
 
             }
 
-            final String dateFormat = context.getString("dateFormat", DEFAULT_DATE_FORMAT);
-            final String endDateAsString = context.getString("endDate");
-            final String startDateAsString = context.getString("startDate");
+            final String dateFormat = context.getString(DATE_FORMAT, DEFAULT_DATE_FORMAT);
+            final String endDateAsString = context.getString(END_DATE);
+            final String startDateAsString = context.getString(START_DATE);
             startDate = DateUtils.getDateFromText(startDateAsString, dateFormat);
             endDate = DateUtils.getDateFromText(endDateAsString, dateFormat);
 
             /* configure mongo */
-            batchSize = Integer.parseInt(context.getString("batchSize", "1"));
-            collectionName = context.getString("collectionName");
-            dbName = context.getString("dbName");
-            host = context.getString("host");
-            port = Integer.parseInt(context.getString("port", "27017"));
-            username = context.getString("username", "");
-            final String password = context.getString("password", "");
+            batchSize = Integer.parseInt(context.getString(BATCH_SIZE, "1"));
+            collectionName = context.getString(COLLECTION_NAME);
+            dbName = context.getString(DB_NAME);
+            host = context.getString(HOST);
+            port = Integer.parseInt(context.getString(PORT, "27017"));
+            username = context.getString(USERNAME, "");
+            final String password = context.getString(PASSWORD, "");
             sourceMongoRepository = createRepository(dbName, host, port, username, password);
         } catch (Exception e) {
             final String errorMessage = "Failed to configure Presidio Mongo Source.";
@@ -97,14 +99,14 @@ public class PresidioMongoSource extends AbstractEventDrivenSource implements Co
 
     @Override
     protected void doStart() throws FlumeException {
-        logger.debug("PresidioMongoSource is processing events for startDate: {}, endDate: {}.");
+        logger.debug("PresidioMongoSource is processing events for {}: {}, {}: {}.", START_DATE, END_DATE, startDate, endDate);
         sourceCounter.start();
 
         try {
             int pageNum = 0;// first page
             List<AbstractDocument> currentPage = sourceMongoRepository.findByDateTimeBetween(collectionName, startDate.minusMillis(1), endDate, pageNum, batchSize);
             if (currentPage.size() == 0) {
-                logger.warn("Failed to process events for startDate: {}, endDate: {}. There were no events to process", startDate, endDate);
+                logger.warn("Failed to process events for {}: {}, {]: {}. There were no events to process", START_DATE, startDate, END_DATE, endDate);
             } else {
                 processPage(currentPage); //handle first event
                 pageNum++;
@@ -114,12 +116,12 @@ public class PresidioMongoSource extends AbstractEventDrivenSource implements Co
                     pageNum++;
                 }
             }
-            logger.debug("PresidioMongoSource has finished processing events for startDate: {}, endDate: {}.");
+            logger.debug("PresidioMongoSource has finished processing events for {}: {}, {}: {}.", START_DATE, startDate, END_DATE, endDate);
             startDate = endDate; // advance the cursor
             this.stop();
 
         } catch (Exception e) {
-            logger.error("PresidioMongoSource has failed to process events for startDate: {}, endDate: {}.", startDate, endDate);
+            logger.error("PresidioMongoSource has failed to process events for }: {}, {}: {}.", START_DATE, startDate, END_DATE, endDate);
             logger.error(e.getMessage());
             this.stop();
         }
