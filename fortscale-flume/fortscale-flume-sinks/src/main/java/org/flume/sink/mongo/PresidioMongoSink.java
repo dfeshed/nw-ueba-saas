@@ -8,19 +8,24 @@ import org.apache.flume.conf.Configurable;
 import org.flume.sink.base.AbstractPresidioSink;
 import org.flume.sink.mongo.persistency.SinkMongoRepository;
 import org.flume.sink.mongo.persistency.SinkMongoRepositoryImpl;
-
 import org.flume.utils.MongoUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;
-
 
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.flume.CommonStrings.*;
+import static org.flume.CommonStrings.BATCH_SIZE;
+import static org.flume.CommonStrings.COLLECTION_NAME;
+import static org.flume.CommonStrings.DB_NAME;
+import static org.flume.CommonStrings.HAS_AUTHENTICATION;
+import static org.flume.CommonStrings.HOST;
+import static org.flume.CommonStrings.PASSWORD;
+import static org.flume.CommonStrings.PORT;
+import static org.flume.CommonStrings.USERNAME;
 
 public class PresidioMongoSink extends AbstractPresidioSink<DBObject> implements Configurable, Sink {
 
@@ -120,8 +125,8 @@ public class PresidioMongoSink extends AbstractPresidioSink<DBObject> implements
         return new ToStringBuilder(this)
                 .append("hasAuthentication", hasAuthentication)
                 .append("dbName", dbName)
-                .append(HOST, host)
-                .append(PORT, port)
+                .append("host", host)
+                .append("port", port)
                 .append("collectionName", collectionName)
                 .append("username", username)
                 .toString();
