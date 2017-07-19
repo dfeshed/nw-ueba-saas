@@ -23,7 +23,7 @@ const respondConfigGen = function(environment) {
         requestDestination: '/ws/respond/incident/details'
       },
       updateRecord: {
-        subscriptionDestination: '/queue/incidents/update',
+        subscriptionDestination: '/user/queue/incidents/update',
         requestDestination: '/ws/respond/incidents/update'
       },
       deleteRecord: {
