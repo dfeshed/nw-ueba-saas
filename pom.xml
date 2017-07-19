@@ -16,46 +16,46 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-  <parent>
-    <groupId>org.apache</groupId>
-    <artifactId>apache</artifactId>
-    <version>18</version>
-  </parent>
+    <parent>
+        <groupId>org.apache</groupId>
+        <artifactId>apache</artifactId>
+        <version>18</version>
+    </parent>
 
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>org.apache.flume</groupId>
-  <artifactId>flume-parent</artifactId>
-  <version>1.7.0</version>
-  <packaging>pom</packaging>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.apache.flume</groupId>
+    <artifactId>flume-parent</artifactId>
+    <version>1.7.0</version>
+    <packaging>pom</packaging>
 
-  <name>Apache Flume</name>
+    <name>Apache Flume</name>
 
-  <properties>
-    <!-- Set default encoding to UTF-8 to remove maven complaints -->
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <properties>
+        <!-- Set default encoding to UTF-8 to remove maven complaints -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-    <!-- Java compiler configuration -->
-    <sourceJavaVersion>1.8</sourceJavaVersion>
-    <targetJavaVersion>1.8</targetJavaVersion>
+        <!-- Java compiler configuration -->
+        <sourceJavaVersion>1.8</sourceJavaVersion>
+        <targetJavaVersion>1.8</targetJavaVersion>
 
-    <!-- defaults for flaky test and focused test exclusions -->
-    <test.exclude.pattern>$</test.exclude.pattern> <!-- junk pattern -->
-    <test.include.pattern>**/Test*.java</test.include.pattern>
-    <siteUrlDeployment>file://people.apache.org/www/incubator.apache.org/flume</siteUrlDeployment>
-    <stagingDirectory>${project.basedir}/target/docs</stagingDirectory>
+        <!-- defaults for flaky test and focused test exclusions -->
+        <test.exclude.pattern>$</test.exclude.pattern> <!-- junk pattern -->
+        <test.include.pattern>**/Test*.java</test.include.pattern>
+        <siteUrlDeployment>file://people.apache.org/www/incubator.apache.org/flume</siteUrlDeployment>
+        <stagingDirectory>${project.basedir}/target/docs</stagingDirectory>
 
-    <avro.version>1.7.4</avro.version>
-    <elasticsearch.version>0.90.1</elasticsearch.version>
-    <hadoop2.version>2.4.0</hadoop2.version>
-    <thrift.version>0.7.0</thrift.version>
-    <kafka.version>0.9.0.1</kafka.version>
-    <kite.version>1.0.0</kite.version>
-    <hive.version>1.0.0</hive.version>
-    <xalan.verion>2.7.1</xalan.verion>
-    <xerces.version>2.9.1</xerces.version>
-  </properties>
+        <avro.version>1.7.4</avro.version>
+        <elasticsearch.version>0.90.1</elasticsearch.version>
+        <hadoop2.version>2.4.0</hadoop2.version>
+        <thrift.version>0.7.0</thrift.version>
+        <kafka.version>0.9.0.1</kafka.version>
+        <kite.version>1.0.0</kite.version>
+        <hive.version>1.0.0</hive.version>
+        <xalan.verion>2.7.1</xalan.verion>
+        <xerces.version>2.9.1</xerces.version>
+    </properties>
 
   <modules>
     <module>flume-ng-core</module>
@@ -1387,44 +1387,43 @@ limitations under the License.
     </dependencies>
   </dependencyManagement>
 
+    <!--<reporting>-->
+    <!--<plugins>-->
 
-  <reporting>
-    <plugins>
+    <!--<plugin>-->
+    <!--<groupId>org.apache.maven.plugins</groupId>-->
+    <!--<artifactId>maven-project-info-reports-plugin</artifactId>-->
+    <!--<version>2.4</version>-->
+    <!--<reportSets>-->
+    <!--<reportSet>-->
+    <!--<reports>-->
+    <!--<report>project-team</report>-->
+    <!--<report>mailing-list</report>-->
+    <!--<report>issue-tracking</report>-->
+    <!--<report>license</report>-->
+    <!--&lt;!&ndash; for now-->
+    <!--<report>modules</report>-->
+    <!--<report>dependencies</report>-->
+    <!--<report>cim</report>-->
+    <!--<report>scm</report>-->
+    <!--&ndash;&gt;-->
+    <!--&lt;!&ndash; warning: the "about" report conflicts with sphinx-maven &ndash;&gt;-->
+    <!--</reports>-->
+    <!--</reportSet>-->
+    <!--</reportSets>-->
+    <!--</plugin>-->
 
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-project-info-reports-plugin</artifactId>
-        <version>2.4</version>
-        <reportSets>
-          <reportSet>
-            <reports>
-              <report>project-team</report>
-              <report>mailing-list</report>
-              <report>issue-tracking</report>
-              <report>license</report>
-<!-- for now
-              <report>modules</report>
-              <report>dependencies</report>
-              <report>cim</report>
-              <report>scm</report>
--->
-              <!-- warning: the "about" report conflicts with sphinx-maven -->
-            </reports>
-          </reportSet>
-        </reportSets>
-      </plugin>
+    <!--<plugin>-->
+    <!--<groupId>org.tomdz.maven</groupId>-->
+    <!--<artifactId>sphinx-maven-plugin</artifactId>-->
+    <!--<version>1.0.2</version>-->
+    <!--<inherited>false</inherited>-->
+    <!--<configuration>-->
+    <!--<sourceDirectory>${project.basedir}/flume-ng-doc/sphinx</sourceDirectory>-->
+    <!--</configuration>-->
+    <!--</plugin>-->
 
-      <plugin>
-        <groupId>org.tomdz.maven</groupId>
-        <artifactId>sphinx-maven-plugin</artifactId>
-        <version>1.0.2</version>
-        <inherited>false</inherited>
-        <configuration>
-          <sourceDirectory>${project.basedir}/flume-ng-doc/sphinx</sourceDirectory>
-        </configuration>
-      </plugin>
-
-    </plugins>
-  </reporting>
+    <!--</plugins>-->
+    <!--</reporting>-->
 
 </project>

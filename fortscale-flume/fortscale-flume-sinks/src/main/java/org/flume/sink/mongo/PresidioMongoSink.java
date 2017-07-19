@@ -5,8 +5,7 @@ import com.mongodb.util.JSON;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.flume.*;
 import org.apache.flume.conf.Configurable;
-import org.apache.flume.instrumentation.SinkCounter;
-import org.apache.flume.sink.AbstractSink;
+import org.flume.sink.base.AbstractPresidioSink;
 import org.flume.sink.mongo.persistency.SinkMongoRepository;
 import org.flume.sink.mongo.persistency.SinkMongoRepositoryImpl;
 
@@ -18,15 +17,18 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-public class PresidioMongoSink extends AbstractSink implements Configurable, Sink {
+import static org.flume.CommonStrings.*;
+
+public class PresidioMongoSink extends AbstractPresidioSink<DBObject> implements Configurable, Sink {
+
 
     private static Logger logger = LoggerFactory.getLogger(PresidioMongoSink.class);
 
-    private static String[] mandatoryParams = {"collectionName", "dbName", "host", "hasAuthentication"};
+    private static String[] mandatoryParams = {COLLECTION_NAME, DB_NAME, HOST, HAS_AUTHENTICATION};
 
-    private final SinkCounter sinkCounter = new SinkCounter("mongo-sink-counter");
 
     private SinkMongoRepository sinkMongoRepository;
     private boolean hasAuthentication;
@@ -37,17 +39,9 @@ public class PresidioMongoSink extends AbstractSink implements Configurable, Sin
     private String username;
     private int batchSize;
 
-
     @Override
-    public void start() {
-        sinkCounter.start();
-        super.start();
-    }
-
-    @Override
-    public void stop() {
-        sinkCounter.stop();
-        super.stop();
+    public synchronized String getName() {
+        return "mongo-" + super.getName();
     }
 
     @Override
@@ -56,58 +50,35 @@ public class PresidioMongoSink extends AbstractSink implements Configurable, Sin
         try {
             for (String mandatoryParam : mandatoryParams) {
                 if (!context.containsKey(mandatoryParam)) {
-                    throw new Exception(String.format("Missing mandatory param %s for Mongo sink. Mandatory params are: %s", mandatoryParam, mandatoryParams));
+                    throw new Exception(String.format("Missing mandatory param %s for %s. Mandatory params are: %s", mandatoryParam, getName(), Arrays.toString(mandatoryParams)));
                 }
             }
-            hasAuthentication = Boolean.parseBoolean(context.getString("hasAuthentication"));
+            hasAuthentication = Boolean.parseBoolean(context.getString(HAS_AUTHENTICATION));
             if (hasAuthentication) {
-                if (!context.containsKey("username") || !context.containsKey("password")) {
-                    throw new Exception("Missing username and/or password for authentication for Mongo sink (since hasAuthentication = true).");
+                if (!context.containsKey(USERNAME) || !context.containsKey(PASSWORD)) {
+                    throw new Exception(String.format("Missing %s and/or %s for authentication for %s (since %s = true).", USERNAME, PASSWORD, getName(), HAS_AUTHENTICATION));
                 }
 
             }
 
             /* configure mongo */
-            batchSize = Integer.parseInt(context.getString("batchSize", "1"));
-            collectionName = context.getString("collectionName");
-            dbName = context.getString("dbName");
-            host = context.getString("host");
-            port = Integer.parseInt(context.getString("port", "27017"));
-            username = context.getString("username", "");
-            final String password = context.getString("password", "");
+            batchSize = Integer.parseInt(context.getString(BATCH_SIZE, "1"));
+            collectionName = context.getString(COLLECTION_NAME);
+            dbName = context.getString(DB_NAME);
+            host = context.getString(HOST);
+            port = Integer.parseInt(context.getString(PORT, "27017"));
+            username = context.getString(USERNAME, "");
+            final String password = context.getString(PASSWORD, "");
             sinkMongoRepository = createRepository(dbName, host, port, username, password);
         } catch (Exception e) {
-            final String errorMessage = "Failed to configure Presidio Mongo Source.";
+            final String errorMessage = "Failed to configure " + getName();
             logger.error(errorMessage, e);
             throw new FlumeException(errorMessage, e);
         }
     }
 
     @Override
-    public Status process() throws EventDeliveryException {
-        logger.debug("PresidioMongoSink is starting...");
-        sinkCounter.start();
-        Status result = Status.READY;
-        Channel channel = getChannel();
-        Transaction transaction = channel.getTransaction();
-        try {
-            transaction.begin();
-            final List<DBObject> eventsToSave = parseEvents(channel);
-            final int numOfEventsToSave = saveEvents(eventsToSave);
-            logger.debug("PresidioMongoSink has finished processing {} events {}.", numOfEventsToSave);
-            transaction.commit();
-        } catch (Exception ex) {
-            transaction.rollback();
-            throw new EventDeliveryException("Failed to save event: ", ex);
-        } finally {
-            transaction.close();
-            this.stop();
-        }
-
-        return result;
-    }
-
-    private List<DBObject> parseEvents(Channel channel) {
+    protected List<DBObject> parseEvents(Channel channel) {
         Event flumeEvent;
         List<DBObject> eventsToSave = new ArrayList<>();
         for (int i = 0; i < batchSize; i++) {
@@ -124,7 +95,8 @@ public class PresidioMongoSink extends AbstractSink implements Configurable, Sin
         return eventsToSave;
     }
 
-    private int saveEvents(List<DBObject> eventsToSave) {
+    @Override
+    protected int saveEvents(List<DBObject> eventsToSave) {
         final int numOfEventsToSave = eventsToSave.size();
         if (numOfEventsToSave != 0) {
             if (numOfEventsToSave == 1) { // or in other words if batchSize == 1
@@ -148,8 +120,8 @@ public class PresidioMongoSink extends AbstractSink implements Configurable, Sin
         return new ToStringBuilder(this)
                 .append("hasAuthentication", hasAuthentication)
                 .append("dbName", dbName)
-                .append("host", host)
-                .append("port", port)
+                .append(HOST, host)
+                .append(PORT, port)
                 .append("collectionName", collectionName)
                 .append("username", username)
                 .toString();
