@@ -1,6 +1,5 @@
 package org.flume.sink.base;
 
-import com.mongodb.DBObject;
 import org.apache.flume.*;
 import org.apache.flume.conf.Configurable;
 import org.apache.flume.instrumentation.SinkCounter;
@@ -10,7 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
-public abstract class AbstractPresidioSink extends AbstractSink implements Configurable, Sink {
+public abstract class AbstractPresidioSink<T> extends AbstractSink implements Configurable, Sink {
 
     private static Logger logger = LoggerFactory.getLogger(AbstractPresidioSink.class);
 
@@ -40,7 +39,7 @@ public abstract class AbstractPresidioSink extends AbstractSink implements Confi
         Transaction transaction = channel.getTransaction();
         try {
             transaction.begin();
-            final List<DBObject> eventsToSave = parseEvents(channel);
+            final List<T> eventsToSave = parseEvents(channel);
             final int numOfEventsToSave = saveEvents(eventsToSave);
             logger.debug("{} has finished processing {} events {}.", getName(), numOfEventsToSave);
             transaction.commit();
@@ -55,7 +54,7 @@ public abstract class AbstractPresidioSink extends AbstractSink implements Confi
         return result;
     }
 
-    protected abstract int saveEvents(List<DBObject> eventsToSave);
+    protected abstract int saveEvents(List<T> eventsToSave);
 
-    protected abstract List<DBObject> parseEvents(Channel channel);
+    protected abstract List<T> parseEvents(Channel channel);
 }

@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class PresidioMongoSink extends AbstractPresidioSink implements Configurable, Sink {
+public class PresidioMongoSink extends AbstractPresidioSink<DBObject> implements Configurable, Sink {
 
     private static Logger logger = LoggerFactory.getLogger(PresidioMongoSink.class);
 
