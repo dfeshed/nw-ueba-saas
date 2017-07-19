@@ -129,11 +129,11 @@ const incident = reduxActions.handleActions({
     // they should not be reset to initialState for every incident
     inspectorWidth: state.inspectorWidth || initialState.inspectorWidth,
     viewMode: state.viewMode || initialState.viewMode,
-    isShowingTasksAndJournal: state.isShowingTasksAndJournal || initialState.isShowingTasksAndJournal,
+    isShowingTasksAndJournal: state.isShowingTasksAndJournal,
     tasksJournalMode: state.tasksJournalMode || initialState.tasksJournalMode,
     defaultSearchTimeFrameName: state.defaultSearchTimeFrameName || initialState.defaultSearchTimeFrameName,
     defaultSearchEntityType: state.defaultSearchEntityType || initialState.defaultSearchEntityType,
-    hideViz: state.hideViz || initialState.hideViz
+    hideViz: state.hideViz
   }),
 
   [ACTION_TYPES.FETCH_INCIDENT_DETAILS]: (state, action) => {

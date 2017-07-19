@@ -33,6 +33,13 @@
   &__table {
     @include rsa-fill-abs();
 
+    // Prevent the column selector from covering the resizer on the last column
+    .enable-column-selector .rsa-data-table-header-cell:last-child {
+      .rsa-data-table-header-cell-resizer.right {
+        right: 30px;
+      }
+    }
+
     .rsa-data-table-body-cell {
       cursor: default;
     }

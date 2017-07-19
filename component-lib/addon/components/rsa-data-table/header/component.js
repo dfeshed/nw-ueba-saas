@@ -8,6 +8,7 @@ export default Component.extend(HasTableParent, {
   layout,
   tagName: 'header',
   classNames: 'rsa-data-table-header',
+  classNameBindings: ['enableColumnSelector'],
   /**
    * CSS selector for the (optional) DOM nodes that can be used to drag-move header cells.
    * If not specified, or if matching node cannot be found, then moving will be disabled.
