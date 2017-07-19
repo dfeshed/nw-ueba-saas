@@ -6,18 +6,20 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
 import presidio.ade.domain.store.enriched.EnrichedDataStoreConfig;
+import presidio.ade.sdk.executions.common.ADEManagerSDK;
+import presidio.ade.sdk.executions.online.ADEManagerSDKConfig;
 import presidio.input.core.services.data.AdeDataService;
 import presidio.input.core.services.data.AdeDataServiceImpl;
 
 @Configuration
-@Import({EnrichedDataStoreConfig.class})
+@Import({ADEManagerSDKConfig.class})
 public class AdeDataServiceConfig {
 
     @Autowired
-    private EnrichedDataStore enrichedDataStore;
+    private ADEManagerSDK adeManagerSDK;
 
     @Bean
     public AdeDataService adeDataService() {
-        return new AdeDataServiceImpl(enrichedDataStore);
+        return new AdeDataServiceImpl(adeManagerSDK);
     }
 }
