@@ -50,7 +50,6 @@ public class FeatureAggregationsExecutionServiceImpl implements PresidioExecutio
         featureAggregationBucketsService.execute(timeRange, dataSource.getName());
     }
 
-    //todo: what is the purpose of clean and cleanAll methods?
     @Override
     public void clean(DataSource dataSource, Instant startDate, Instant endDate) throws Exception {
         // TODO: Implement

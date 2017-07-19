@@ -28,6 +28,7 @@ import java.util.Collection;
 public class DataRetrieverFactoryServiceConfig {
 	@Autowired
 	@Qualifier("modelBucketConfigService")
+	//used for ContextHistogramRetriever
 	public BucketConfigurationService bucketConfigurationService;
 	@Autowired
 	private FeatureBucketReader featureBucketReader;

@@ -28,15 +28,15 @@ import presidio.ade.domain.store.scored.feature_aggregation.ScoredFeatureAggrega
 @EnableSpringConfigured
 @Import({
         MongoConfig.class,
-        EventModelsCacheServiceConfig.class, //TODO: why? who use it - scorer
-        ModelAggregationBucketConfigurationServiceConfig.class, //TODO: why? who use it
+        EventModelsCacheServiceConfig.class,
+        ModelAggregationBucketConfigurationServiceConfig.class,
         FeatureAggregationBucketConfigurationServiceConfig.class,
         EnrichedDataStoreConfig.class,
         InMemoryFeatureAggregatorConfig.class,
         AggregationRecordsCreatorConfig.class,
         FeatureAggregationScoringServiceConfig.class,
         ScoredFeatureAggregatedDataStoreConfig.class,
-        NullStatsServiceConfig.class,
+        NullStatsServiceConfig.class, // TODO: Remove this
 })
 public class FeatureAggregationsConfig {
 

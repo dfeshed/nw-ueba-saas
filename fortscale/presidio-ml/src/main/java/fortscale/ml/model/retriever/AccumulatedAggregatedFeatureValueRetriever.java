@@ -4,7 +4,9 @@ import fortscale.accumulator.aggregation.store.AccumulatedAggregatedFeatureEvent
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.stream.DoubleStream;
 
 public class AccumulatedAggregatedFeatureValueRetriever extends AbstractAggregatedFeatureValueRetriever {
@@ -31,5 +33,11 @@ public class AccumulatedAggregatedFeatureValueRetriever extends AbstractAggregat
                 .getAggregatedFeatureValues()
                 .stream()
                 .mapToDouble(v -> v));
+    }
+    @Override
+    public List<String> getContextFieldNames()
+    {
+        // todo : read from conf
+        return Collections.singletonList("context.normalizedUsername");
     }
 }

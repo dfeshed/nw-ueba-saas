@@ -25,7 +25,7 @@ import presidio.ade.domain.store.enriched.EnrichedDataStoreConfig;
 @EnableSpringConfigured
 @Import({
         MongoConfig.class,
-        EventModelsCacheServiceConfig.class,//TODO: why?
+        EventModelsCacheServiceConfig.class,
         EnrichedEventsScoringServiceConfig.class,
         EnrichedDataStoreConfig.class,
         ScoreAggregationsBucketServiceConfiguration.class,

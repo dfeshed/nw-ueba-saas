@@ -97,7 +97,7 @@
             "type": "aggr_feature_sum_func"
           },
           "filter": {
-            "jsonPath": "[?(@.eventType == 'move' && @.destinationDriveType == 'removable')]"
+            "jsonPath": "[?(@.operationType == 'move' && @.destinationDriveType == 'removable')]"
           }
         }
       ]
@@ -120,7 +120,7 @@
             "type": "aggr_feature_sum_func"
           },
           "filter": {
-            "jsonPath": "[?(@.eventType == 'move' && @.destinationDriveType == 'removable')]"
+            "jsonPath": "[?(@.operationType == 'move' && @.destinationDriveType == 'removable')]"
           }
         }
       ]
@@ -147,7 +147,7 @@
             "type": "aggr_feature_sum_func"
           },
           "filter": {
-            "jsonPath": "[?(@.eventType == 'copy' && @.destinationDriveType == 'removable')]"
+            "jsonPath": "[?(@.operationType == 'copy' && @.destinationDriveType == 'removable')]"
           }
         }
       ]
@@ -170,7 +170,7 @@
             "type": "aggr_feature_sum_func"
           },
           "filter": {
-            "jsonPath": "[?(@.eventType == 'copy' && @.destinationDriveType == 'removable')]"
+            "jsonPath": "[?(@.operationType == 'copy' && @.destinationDriveType == 'removable')]"
           }
         }
       ]
@@ -197,7 +197,7 @@
             "type": "aggr_feature_sum_func"
           },
           "filter": {
-            "jsonPath": "[?(@.eventType == 'move' && @.sourceDriveType == 'remote')]"
+            "jsonPath": "[?(@.operationType == 'move' && @.sourceDriveType == 'remote')]"
           }
         }
       ]
@@ -220,7 +220,7 @@
             "type": "aggr_feature_sum_func"
           },
           "filter": {
-            "jsonPath": "[?(@.eventType == 'move' && @.sourceDriveType == 'remote')]"
+            "jsonPath": "[?(@.operationType == 'move' && @.sourceDriveType == 'remote')]"
           }
         }
       ]
@@ -247,7 +247,7 @@
             "type": "aggr_feature_sum_func"
           },
           "filter": {
-            "jsonPath": "[?(@.eventType == 'copy' && @.sourceDriveType == 'remote')]"
+            "jsonPath": "[?(@.operationType == 'copy' && @.sourceDriveType == 'remote')]"
           }
         }
       ]
@@ -270,7 +270,7 @@
             "type": "aggr_feature_sum_func"
           },
           "filter": {
-            "jsonPath": "[?(@.eventType == 'copy' && @.sourceDriveType == 'remote')]"
+            "jsonPath": "[?(@.operationType == 'copy' && @.sourceDriveType == 'remote')]"
           }
         }
       ]
@@ -293,7 +293,7 @@
             "type": "aggr_feature_sum_func"
           },
           "filter": {
-            "jsonPath": "[?(@.eventType == 'recycle' || @.eventType == 'delete')]"
+            "jsonPath": "[?(@.operationType == 'recycle' || @.operationType == 'delete')]"
           }
         }
       ]
@@ -316,31 +316,7 @@
             "type": "aggr_feature_sum_func"
           },
           "filter": {
-            "jsonPath": "[?(@.eventType == 'open')]"
-          }
-        }
-      ]
-    },
-    {
-      "name": "normalized_src_machine_histogram_normalized_username_dlpfile_daily",
-      "expireAfterSeconds": 31536000,
-      "contextFieldNames": [
-        "normalizedUsername"
-      ],
-      "adeEventTypes": [
-        "dlpfile"
-      ],
-      "strategyName": "fixed_duration_daily",
-      "aggrFeatureConfs": [
-        {
-          "name": "normalized_src_machine_histogram",
-          "featureNamesMap": {
-            "groupBy": [
-              "normalizedSrcMachine"
-            ]
-          },
-          "aggrFeatureFuncJson": {
-            "type": "aggr_feature_histogram_func"
+            "jsonPath": "[?(@.operationType == 'open')]"
           }
         }
       ]
@@ -384,54 +360,6 @@
           },
           "filter": {
             "jsonPath": "[?(@.wasClassified == 'true')]"
-          }
-        }
-      ]
-    },
-    {
-      "name": "date_time_unix_histogram_normalized_username_dlpfile_hourly",
-      "expireAfterSeconds": 31536000,
-      "contextFieldNames": [
-        "normalizedUsername"
-      ],
-      "adeEventTypes": [
-        "dlpfile"
-      ],
-      "strategyName": "fixed_duration_hourly",
-      "aggrFeatureConfs": [
-        {
-          "name": "date_time_unix_histogram",
-          "featureNamesMap": {
-            "groupBy": [
-              "two_minute_resolution_epochtime"
-            ]
-          },
-          "aggrFeatureFuncJson": {
-            "type": "aggr_feature_histogram_func"
-          }
-        }
-      ]
-    },
-    {
-      "name": "executing_application_histogram_normalized_username_dlpfile_hourly",
-      "expireAfterSeconds": 31536000,
-      "contextFieldNames": [
-        "normalizedUsername"
-      ],
-      "adeEventTypes": [
-        "dlpfile"
-      ],
-      "strategyName": "fixed_duration_hourly",
-      "aggrFeatureConfs": [
-        {
-          "name": "executing_application_histogram",
-          "featureNamesMap": {
-            "groupBy": [
-              "executing_application"
-            ]
-          },
-          "aggrFeatureFuncJson": {
-            "type": "aggr_feature_histogram_func"
           }
         }
       ]
@@ -485,7 +413,7 @@
             "type": "aggr_feature_sum_func"
           },
           "filter": {
-            "jsonPath": "[?(@.eventType == 'move' && @.destinationDriveType == 'removable')]"
+            "jsonPath": "[?(@.operationType == 'move' && @.destinationDriveType == 'removable')]"
           }
         }
       ]
@@ -508,7 +436,7 @@
             "type": "aggr_feature_sum_func"
           },
           "filter": {
-            "jsonPath": "[?(@.eventType == 'move' && @.destinationDriveType == 'removable')]"
+            "jsonPath": "[?(@.operationType == 'move' && @.destinationDriveType == 'removable')]"
           }
         }
       ]
@@ -535,7 +463,7 @@
             "type": "aggr_feature_sum_func"
           },
           "filter": {
-            "jsonPath": "[?(@.eventType == 'copy' && @.destinationDriveType == 'removable')]"
+            "jsonPath": "[?(@.operationType == 'copy' && @.destinationDriveType == 'removable')]"
           }
         }
       ]
@@ -558,7 +486,7 @@
             "type": "aggr_feature_sum_func"
           },
           "filter": {
-            "jsonPath": "[?(@.eventType == 'copy' && @.destinationDriveType == 'removable')]"
+            "jsonPath": "[?(@.operationType == 'copy' && @.destinationDriveType == 'removable')]"
           }
         }
       ]
@@ -585,7 +513,7 @@
             "type": "aggr_feature_sum_func"
           },
           "filter": {
-            "jsonPath": "[?(@.eventType == 'move' && @.sourceDriveType == 'remote')]"
+            "jsonPath": "[?(@.operationType == 'move' && @.sourceDriveType == 'remote')]"
           }
         }
       ]
@@ -608,7 +536,7 @@
             "type": "aggr_feature_sum_func"
           },
           "filter": {
-            "jsonPath": "[?(@.eventType == 'move' && @.sourceDriveType == 'remote')]"
+            "jsonPath": "[?(@.operationType == 'move' && @.sourceDriveType == 'remote')]"
           }
         }
       ]
@@ -635,7 +563,7 @@
             "type": "aggr_feature_sum_func"
           },
           "filter": {
-            "jsonPath": "[?(@.eventType == 'copy' && @.sourceDriveType == 'remote')]"
+            "jsonPath": "[?(@.operationType == 'copy' && @.sourceDriveType == 'remote')]"
           }
         }
       ]
@@ -658,7 +586,7 @@
             "type": "aggr_feature_sum_func"
           },
           "filter": {
-            "jsonPath": "[?(@.eventType == 'copy' && @.sourceDriveType == 'remote')]"
+            "jsonPath": "[?(@.operationType == 'copy' && @.sourceDriveType == 'remote')]"
           }
         }
       ]
@@ -681,7 +609,7 @@
             "type": "aggr_feature_sum_func"
           },
           "filter": {
-            "jsonPath": "[?(@.eventType == 'recycle' || @.eventType == 'delete')]"
+            "jsonPath": "[?(@.operationType == 'recycle' || @.operationType == 'delete')]"
           }
         }
       ]
@@ -704,77 +632,10 @@
             "type": "aggr_feature_sum_func"
           },
           "filter": {
-            "jsonPath": "[?(@.eventType == 'open')]"
+            "jsonPath": "[?(@.operationType == 'open')]"
           }
         }
       ]
     },
-    {
-      "name": "normalized_src_machine_histogram_normalized_username_dlpfile_hourly",
-      "expireAfterSeconds": 31536000,
-      "contextFieldNames": [
-        "normalizedUsername"
-      ],
-      "adeEventTypes": [
-        "dlpfile"
-      ],
-      "strategyName": "fixed_duration_hourly",
-      "aggrFeatureConfs": [
-        {
-          "name": "normalized_src_machine_histogram",
-          "featureNamesMap": {
-            "groupBy": [
-              "normalizedSrcMachine"
-            ]
-          },
-          "aggrFeatureFuncJson": {
-            "type": "aggr_feature_histogram_func"
-          }
-        }
-      ]
-    },
-    {
-      "name": "events_counter_normalized_username_dlpfile_hourly",
-      "expireAfterSeconds": 31536000,
-      "contextFieldNames": [
-        "normalizedUsername"
-      ],
-      "adeEventTypes": [
-        "dlpfile"
-      ],
-      "strategyName": "fixed_duration_hourly",
-      "aggrFeatureConfs": [
-        {
-          "name": "events_counter",
-          "featureNamesMap": {},
-          "aggrFeatureFuncJson": {
-            "type": "aggr_feature_sum_func"
-          }
-        }
-      ]
-    },
-    {
-      "name": "classified_files_counter_dlpfile_hourly",
-      "expireAfterSeconds": 31536000,
-      "contextFieldNames": [
-        "normalizedUsername"
-      ],
-      "adeEventTypes": [
-        "dlpfile"
-      ],
-      "strategyName": "fixed_duration_hourly",
-      "aggrFeatureConfs": [
-        {
-          "name": "classified_files_counter",
-          "featureNamesMap": {},
-          "aggrFeatureFuncJson": {
-            "type": "aggr_feature_sum_func"
-          },
-          "filter": {
-            "jsonPath": "[?(@.wasClassified == 'true')]"
-          }
-        }
-      ]
-    }
   ]
 }

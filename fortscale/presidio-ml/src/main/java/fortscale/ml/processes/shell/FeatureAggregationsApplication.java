@@ -10,7 +10,6 @@ import java.util.Arrays;
 
 
 @SpringBootApplication
-//todo: it is for purpose to exclude beans?
 @ComponentScan(excludeFilters = @ComponentScan.Filter(type = FilterType.REGEX, pattern = {"fortscale.*", "presidio.*"}))
 public class FeatureAggregationsApplication extends PresidioShellableApplication {
     private static final Logger logger = Logger.getLogger(FeatureAggregationsApplication.class);

@@ -49,9 +49,7 @@ public class FeatureAggregationService extends FixedDurationStrategyExecutor {
         //For now we don't have multiple contexts so we pass just list of size 1.
         List<String> contextTypes = Collections.singletonList(contextType);
 
-        //todo: pageSize=1000 and mazGroupSize=100 why?
         EnrichedRecordPaginationService enrichedRecordPaginationService = new EnrichedRecordPaginationService(enrichedDataStore, 1000, 100, contextType);
-        // todo: change data source to entity type?
         List<PageIterator<EnrichedRecord>> pageIterators = enrichedRecordPaginationService.getPageIterators(adeEventType, timeRange);
         for (PageIterator<EnrichedRecord> pageIterator : pageIterators) {
             List<FeatureBucket> featureBuckets = featureBucketAggregator.aggregate(pageIterator, contextTypes, createFeatureBucketStrategyData(timeRange));
@@ -72,7 +70,6 @@ public class FeatureAggregationService extends FixedDurationStrategyExecutor {
         return new FeatureBucketStrategyData(strategyName, strategyName, timeRange.getStart().getEpochSecond(), timeRange.getEnd().getEpochSecond());
     }
 
-    //todo: same logic as in module, check if score has same logic and then implements it in FixedDurationStrategyExecutor?
     @Override
     protected List<String> getDistinctContextTypes(String adeEventType) {
         Set<List<String>> distinctMultipleContextsTypeSet = bucketConfigurationService.getRelatedDistinctContexts(adeEventType);
@@ -82,6 +79,5 @@ public class FeatureAggregationService extends FixedDurationStrategyExecutor {
         }
         return new ArrayList<>(distinctSingleContextTypeSet);
     }
-
 
 }

@@ -8,6 +8,7 @@ import presidio.ade.domain.record.AdeRecord;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Created by barak_schuster on 7/9/17.
@@ -15,7 +16,7 @@ import java.util.Map;
  */
 @Document
 public class AdeAggregationRecord extends AdeRecord {
-    private static final String ADE_EVENT_TYPE_PREFIX = "aggr";
+    private static final String ADE_EVENT_TYPE_PREFIX = "aggr_event";
 
     @Indexed
     private Instant endInstant;
@@ -44,7 +45,8 @@ public class AdeAggregationRecord extends AdeRecord {
 
     @Override
     public String getAdeEventType() {
-        return ADE_EVENT_TYPE_PREFIX + "." + getFeatureName();
+        String contexts =  context.keySet().stream().collect(Collectors.joining(""));
+        return ADE_EVENT_TYPE_PREFIX + "." + contexts + "."  + getFeatureName();
     }
 
     @Override
