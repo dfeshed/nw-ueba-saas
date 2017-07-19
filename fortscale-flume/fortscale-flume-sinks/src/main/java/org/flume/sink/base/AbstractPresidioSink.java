@@ -16,6 +16,11 @@ public abstract class AbstractPresidioSink<T> extends AbstractSink implements Co
     protected final SinkCounter sinkCounter = new SinkCounter(getName() + "-counter");
 
     @Override
+    public synchronized String getName() {
+        return "presidio-sink";
+    }
+
+    @Override
     public void start() {
         sinkCounter.start();
         super.start();

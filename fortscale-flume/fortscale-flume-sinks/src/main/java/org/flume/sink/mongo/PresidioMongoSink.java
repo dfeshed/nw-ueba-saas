@@ -38,7 +38,7 @@ public class PresidioMongoSink extends AbstractPresidioSink<DBObject> implements
 
     @Override
     public synchronized String getName() {
-        return "mongo-sink";
+        return "mongo-" + super.getName();
     }
 
     @Override
