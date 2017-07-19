@@ -1,8 +1,6 @@
 package presidio.data.generators.domain.event.file;
 
 
-import presidio.data.generators.domain.FileEntity;
-
 /**
  * Events generator domain, contains all fields for DLPFileOperation generator
  */

@@ -44,12 +44,12 @@ public class FileEventsGenerator implements IEventGenerator {
 
         // fill list of events
         while (getTimeGenerator().hasNext()) {
-            Instant currentTime = getTimeGenerator().getNext();
+            Instant eventTime = getTimeGenerator().getNext();
             User user = getUserGenerator().getNext();
 
             FileOperation operation = getFileOperationGenerator().getNext();
             String datasource = (String) getDataSourceGenerator().getNext();
-            FileEvent ev = new FileEvent(currentTime, user.getNormalizedUsername(), operation, datasource);
+            FileEvent ev = new FileEvent(eventTime, user.getNormalizedUsername(), operation, datasource);
             evList.add(ev);
         }
         return evList;
