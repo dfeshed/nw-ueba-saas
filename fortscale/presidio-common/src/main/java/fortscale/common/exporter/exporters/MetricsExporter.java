@@ -2,7 +2,10 @@ package fortscale.common.exporter.exporters;
 
 
 
+import fortscale.utils.logging.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.endpoint.MetricsEndpoint;
+import org.springframework.context.ApplicationContext;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -34,14 +37,22 @@ import static fortscale.common.general.CommonStrings.GC_PS_MARKSWEEP_TIME;
 
 public abstract class MetricsExporter implements AutoCloseable{
 
+    private final Logger logger = Logger.getLogger(MetricsExporter.class);
+
      private MetricsEndpoint metricsEndpoint;
      private Map<String,String> customMetrics;
      private Set<String> fixedMetrics;
+     private Set<String> tags;
 
-     MetricsExporter(MetricsEndpoint metricsEndpoint){
+
+
+
+    MetricsExporter(MetricsEndpoint metricsEndpoint,String applicationName){
         this.metricsEndpoint=metricsEndpoint;
         this.customMetrics = new HashMap<>();
         this.fixedMetrics=listOfPresidioFixedSystemMetric();
+        this.tags=new HashSet<>();
+        tags.add(applicationName);
     }
 
      Map<String,String> readyMetricsToExporter(){
@@ -59,7 +70,8 @@ public abstract class MetricsExporter implements AutoCloseable{
                     if (!customMetrics.get(metric).equals(value))
                         customMetrics.replace(metric, value);
                     else {
-                        break;
+                        logger.info("****** Metric is not exported, name : {}  value: {}  ********* ",metric,value);
+                        continue;
                     }
                 }
             }

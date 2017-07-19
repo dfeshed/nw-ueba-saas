@@ -5,20 +5,23 @@ package fortscale.common.exporter.exporters;
 import fortscale.utils.logging.Logger;
 import org.springframework.boot.actuate.endpoint.MetricsEndpoint;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 
 
 import java.util.*;
 
+@Component
 public class FileMetricsExporter extends MetricsExporter {
 
     private final Logger logger = Logger.getLogger(FileMetricsExporter.class);
 
-    public FileMetricsExporter(MetricsEndpoint metricsEndpoint) {
-        super(metricsEndpoint);
+    public FileMetricsExporter(MetricsEndpoint metricsEndpoint,String applicationName) {
+        super(metricsEndpoint,applicationName);
+        logger.info("************************  application name :   {}   **************",applicationName);
     }
 
 
-    @Scheduled(fixedRate = 5000)
+    @Scheduled(fixedDelay = 10000)
     public void export(){
         try {
             logger.debug("Exporting");
@@ -27,7 +30,7 @@ public class FileMetricsExporter extends MetricsExporter {
             }
         }
         catch (Exception ex){
-            logger.error("Error accured when exporting metrics {}",ex.getMessage());
+            logger.error("Error accrued when exporting metrics {}",ex.getMessage());
         }
     }
 
@@ -35,7 +38,7 @@ public class FileMetricsExporter extends MetricsExporter {
     @Override
     public void close() throws Exception {
         logger.info("********************************************");
-        logger.info("**************Last Time Metrics ************");
+        logger.info("************* Last Time Metrics ************");
         logger.info("********************************************");
         export();
 

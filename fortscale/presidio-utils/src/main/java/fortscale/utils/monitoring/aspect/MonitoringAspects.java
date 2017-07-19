@@ -1,6 +1,6 @@
 package fortscale.utils.monitoring.aspect;
 
-import com.sun.rowset.internal.WebRowSetXmlReader;
+
 import fortscale.utils.logging.Logger;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -10,7 +10,9 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.actuate.endpoint.MetricsEndpoint;
 import org.springframework.boot.actuate.metrics.dropwizard.DropwizardMetricServices;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
@@ -29,8 +31,24 @@ public class MonitoringAspects {
     private static final Logger logger = Logger.getLogger(MonitoringAspects.class);
 
     @Autowired
-    private DropwizardMetricServices counterService;
+    public MetricsEndpoint metricsEndpoint;
 
+    @Autowired
+    public CustomMetric customMetric;
+
+    private boolean isRegisterd =false;
+
+    public MonitoringAspects(){
+        logger.info("Aspect is activated");
+    }
+
+
+    private boolean toRegister(){
+        if(!isRegisterd){
+            return isRegisterd=true;
+        }
+        return false;
+    }
 
     /**
      * This method provides us counting of a method invocation.
@@ -45,7 +63,9 @@ public class MonitoringAspects {
     public void start(JoinPoint joinPoint) {
         String metric = joinPoint.getSignature().toShortString();
         logger.info("Metric {} increment with annotation Start. ", metric);
-        counterService.increment(new StringBuilder(metric).append(START).toString());
+        customMetric.addIncrementMetric(new StringBuilder(metric).append(START).toString());
+        if(toRegister())
+            metricsEndpoint.registerPublicMetrics(customMetric);
     }
 
     /**
@@ -61,7 +81,9 @@ public class MonitoringAspects {
     public void end(JoinPoint joinPoint) {
         String metric  = joinPoint.getSignature().toShortString();
         logger.info("Metric {} increment with annotation End. ", metric);
-        counterService.increment(new StringBuilder(metric).append(END).toString());
+        customMetric.addIncrementMetric(new StringBuilder(metric).append(END).toString());
+        if(toRegister())
+            metricsEndpoint.registerPublicMetrics(customMetric);
     }
 
     /**
@@ -77,7 +99,9 @@ public class MonitoringAspects {
     public void exceptionThrown(JoinPoint joinPoint) {
         String metric  = joinPoint.getSignature().toShortString();
         logger.info("Metric {} increment with annotation exceptionThrown. ", metric);
-        counterService.increment(new StringBuilder(metric).append(EXCEPTION_THROWN).toString());
+        customMetric.addMetric(new StringBuilder(metric).append(EXCEPTION_THROWN).toString(),1);
+        if(toRegister())
+            metricsEndpoint.registerPublicMetrics(customMetric);
 
     }
 
@@ -97,7 +121,9 @@ public class MonitoringAspects {
         joinPoint.proceed();
         long endTime = System.nanoTime();
         long time=Long.divideUnsigned(endTime-startTime,1000000000);
-        counterService.submit(new StringBuilder(metricName).append(RUN_TIME).toString(), time);
+        customMetric.addGaugeMetric(new StringBuilder(metricName).append(RUN_TIME).toString(),(int)time);
+        if(toRegister())
+            metricsEndpoint.registerPublicMetrics(customMetric);
         logger.info("Metric {} run time is {} milli seconds. ", metricName,time);
     }
 
@@ -114,7 +140,9 @@ public class MonitoringAspects {
     public void numberOfFailedValidation(ProceedingJoinPoint joinPoint) throws Throwable {
         String metricName = joinPoint.getSignature().toShortString();
         int numberOfFailedValidationDocuments = ((List<? extends Serializable>) joinPoint.proceed()).size();
-        counterService.submit(new StringBuilder(metricName).append(NUMBER_OF_FAILED_VALIDATION).toString(), numberOfFailedValidationDocuments);
+        customMetric.addGaugeMetric(new StringBuilder(metricName).append(NUMBER_OF_FAILED_VALIDATION).toString(),numberOfFailedValidationDocuments);
+        if(toRegister())
+            metricsEndpoint.registerPublicMetrics(customMetric);
         logger.info("Metric {} got {} failed validations. ", metricName, numberOfFailedValidationDocuments);
     }
 

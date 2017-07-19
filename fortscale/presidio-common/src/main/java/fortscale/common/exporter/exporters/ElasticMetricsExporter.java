@@ -15,10 +15,10 @@ public class ElasticMetricsExporter extends MetricsExporter {
 
 
 
-    public ElasticMetricsExporter(MetricsEndpoint metricsEndpoint) {
-        super(metricsEndpoint);
-
+    public ElasticMetricsExporter(MetricsEndpoint metricsEndpoint,String applicationName) {
+        super(metricsEndpoint,applicationName);
     }
+
 
     //@Scheduled(fixedRate = 5000)
     public void export() {

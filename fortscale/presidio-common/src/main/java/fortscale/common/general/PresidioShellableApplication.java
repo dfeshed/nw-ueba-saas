@@ -38,15 +38,20 @@ public abstract class PresidioShellableApplication {
         logger.info("Starting {} component ",configurationClass.getClass().getName());
         Object[] sources = {configurationClass, ShellCommonCommandsConfig.class};
         ConfigurableApplicationContext context = SpringApplication.run(sources, args);
+        int exitCode=0;
         try {
             BootShim bs = new BootShim(args, context);
             context.registerShutdownHook();
             bs.run();
-            Thread.currentThread().interrupt();
-            context.close();
         } catch (RuntimeException e) {
             String errorMessage = String.format("Failed to run application with specified args: [%s]", Arrays.toString(args));
             logger.error(errorMessage, e);
+            exitCode=1;
+        }
+        finally {
+            Thread.currentThread().interrupt();
+            context.close();
+            System.exit(exitCode);
         }
     }
 }

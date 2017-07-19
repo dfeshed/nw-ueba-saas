@@ -26,9 +26,9 @@ public class CommonStrings {
     public final static String THREADS_DAEMON="threads.daemon";
     public final static String THREADS_TOTAL_STARTED="threads.totalStarted";
     public final static String THREADS="threads";
-    public final static String GC_PS_SCAVENGE_COUNT="gc.ps_scavenge.count";
-    public final static String GC_PS_SCAVENGE_TIME="gc.ps_scavenge.time";
-    public final static String GC_PS_MARKSWEEP_COUNT="gc.ps_marksweep.count";
-    public final static String GC_PS_MARKSWEEP_TIME="gc.ps_marksweep.time";
+    public final static String GC_PS_SCAVENGE_COUNT="gc.ps.scavenge.count";
+    public final static String GC_PS_SCAVENGE_TIME="gc.ps.scavenge.time";
+    public final static String GC_PS_MARKSWEEP_COUNT="gc.ps.marksweep.count";
+    public final static String GC_PS_MARKSWEEP_TIME="gc.ps.marksweep.time";
 
 }

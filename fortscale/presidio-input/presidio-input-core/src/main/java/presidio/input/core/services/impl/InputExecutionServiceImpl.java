@@ -49,6 +49,8 @@ public class InputExecutionServiceImpl implements PresidioExecutionService {
             enrichedRecords = dataRecords;
         }
 
+        Thread.sleep(10000);
+
         InputAdeConverter converter = getConverter(dataSource);
 
 
@@ -129,6 +131,7 @@ public class InputExecutionServiceImpl implements PresidioExecutionService {
     }
 
     @Override
+    @RunTime
     public void clean(DataSource dataSource, Instant startDate, Instant endDate) throws Exception {
         logger.info("Started clean processing for data source:{}, from {}:{}, until {}:{}."
                 , dataSource,
