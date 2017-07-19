@@ -16,8 +16,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
-import presidio.ade.domain.store.aggr.AggrDataStore;
-import presidio.ade.domain.store.aggr.AggrDataStoreConfig;
+import presidio.ade.domain.store.aggr.AggregatedDataStore;
+import presidio.ade.domain.store.aggr.AggregatedDataStoreConfig;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
 import presidio.ade.domain.store.enriched.EnrichedDataStoreConfig;
 
@@ -30,7 +30,7 @@ import presidio.ade.domain.store.enriched.EnrichedDataStoreConfig;
         EnrichedDataStoreConfig.class,
         ScoreAggregationsBucketServiceConfiguration.class,
         AggregationRecordsCreatorConfig.class,
-        AggrDataStoreConfig.class,
+        AggregatedDataStoreConfig.class,
         ModelAggregationBucketConfigurationServiceConfig.class,
         NullStatsServiceConfig.class // TODO: Remove this
 })
@@ -44,11 +44,11 @@ public class ScoreAggregationsConfiguration {
     @Autowired
     private AggregationRecordsCreator aggregationRecordsCreator;
     @Autowired
-    private AggrDataStore aggrDataStore;
+    private AggregatedDataStore aggregatedDataStore;
 
     @Bean
     public PresidioExecutionService presidioExecutionService() {
         return new ScoreAggregationsExecutionServiceImpl(
-                enrichedEventsScoringService, enrichedDataStore, scoreAggregationsBucketService, aggregationRecordsCreator,aggrDataStore);
+                enrichedEventsScoringService, enrichedDataStore, scoreAggregationsBucketService, aggregationRecordsCreator, aggregatedDataStore);
     }
 }

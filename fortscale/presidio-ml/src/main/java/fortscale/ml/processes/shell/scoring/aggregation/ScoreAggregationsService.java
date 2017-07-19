@@ -12,7 +12,7 @@ import presidio.ade.domain.pagination.enriched.EnrichedRecordPaginationService;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.ade.domain.record.scored.enriched_scored.AdeScoredEnrichedRecord;
-import presidio.ade.domain.store.aggr.AggrDataStore;
+import presidio.ade.domain.store.aggr.AggregatedDataStore;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
 
 import java.util.ArrayList;
@@ -28,7 +28,7 @@ import java.util.List;
  */
 public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
 
-    private final AggrDataStore aggrDataStore;
+    private final AggregatedDataStore aggregatedDataStore;
     private final ScoreAggregationsBucketService scoreAggregationsBucketService;
     private final AggregationRecordsCreator aggregationRecordsCreator;
     private final EnrichedDataStore enrichedDataStore;
@@ -40,18 +40,18 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
      * @param enrichedDataStore
      * @param enrichedEventsScoringService
      * @param aggregationRecordsCreator
-     * @param aggrDataStore
+     * @param aggregatedDataStore
      */
     public ScoreAggregationsService(FixedDurationStrategy strategy, EnrichedDataStore enrichedDataStore,
                                     EnrichedEventsScoringService enrichedEventsScoringService,
                                     ScoreAggregationsBucketService scoreAggregationsBucketService,
-                                    AggregationRecordsCreator aggregationRecordsCreator, AggrDataStore aggrDataStore) {
+                                    AggregationRecordsCreator aggregationRecordsCreator, AggregatedDataStore aggregatedDataStore) {
         super(strategy);
         this.enrichedDataStore = enrichedDataStore;
         this.enrichedEventsScoringService = enrichedEventsScoringService;
         this.scoreAggregationsBucketService = scoreAggregationsBucketService;
         this.aggregationRecordsCreator = aggregationRecordsCreator;
-        this.aggrDataStore = aggrDataStore;
+        this.aggregatedDataStore = aggregatedDataStore;
     }
 
 
@@ -73,7 +73,7 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
             }
             List<FeatureBucket> closedBuckets = scoreAggregationsBucketService.closeBuckets();
             List<AdeAggregationRecord> aggrRecords = aggregationRecordsCreator.createAggregationRecords(closedBuckets);
-            aggrDataStore.store(aggrRecords);
+            aggregatedDataStore.store(aggrRecords);
         }
     }
 

@@ -19,7 +19,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
-import presidio.ade.domain.store.aggr.AggrDataStore;
+import presidio.ade.domain.store.aggr.AggregatedDataStore;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
 import presidio.ade.domain.store.enriched.EnrichedDataStoreConfig;
 import presidio.ade.domain.store.scored.feature_aggregation.ScoredFeatureAggregatedDataStoreConfig;
@@ -53,7 +53,7 @@ public class FeatureAggregationsConfig {
     @Autowired
     private FeatureAggregationScoringService featureAggregationScoringService;
     @Autowired
-    private AggrDataStore scoredFeatureAggregatedStore;
+    private AggregatedDataStore scoredFeatureAggregatedStore;
 
     @Bean
     public PresidioExecutionService featureAggregationBucketExecutionService() {

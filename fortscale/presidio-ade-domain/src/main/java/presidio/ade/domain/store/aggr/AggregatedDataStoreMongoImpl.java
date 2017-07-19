@@ -13,13 +13,13 @@ import java.util.stream.Collectors;
 /**
  * Created by barak_schuster on 7/10/17.
  */
-public class AggrDataStoreMongoImpl implements AggrDataStore {
-    private static final Logger logger = Logger.getLogger(AggrDataStoreMongoImpl.class);
+public class AggregatedDataStoreMongoImpl implements AggregatedDataStore {
+    private static final Logger logger = Logger.getLogger(AggregatedDataStoreMongoImpl.class);
 
     private MongoTemplate mongoTemplate;
     private AggrDataToCollectionNameTranslator translator;
 
-    public AggrDataStoreMongoImpl(MongoTemplate mongoTemplate, AggrDataToCollectionNameTranslator translator) {
+    public AggregatedDataStoreMongoImpl(MongoTemplate mongoTemplate, AggrDataToCollectionNameTranslator translator) {
         this.mongoTemplate = mongoTemplate;
         this.translator = translator;
     }

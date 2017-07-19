@@ -11,7 +11,7 @@ import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.time.TimeRange;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import presidio.ade.domain.store.aggr.AggrDataStore;
+import presidio.ade.domain.store.aggr.AggregatedDataStore;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
 
 import java.time.Instant;
@@ -25,14 +25,14 @@ public class FeatureAggregationsExecutionServiceImpl implements PresidioExecutio
     private InMemoryFeatureBucketAggregator inMemoryFeatureBucketAggregator;
     private FeatureAggregationScoringService featureAggregationScoringService;
     private AggregationRecordsCreator featureAggregationsCreator;
-    private AggrDataStore scoredFeatureAggregatedStore;
+    private AggregatedDataStore scoredFeatureAggregatedStore;
 
     public FeatureAggregationsExecutionServiceImpl(BucketConfigurationService bucketConfigurationService,
                                                    EnrichedDataStore enrichedDataStore,
                                                    InMemoryFeatureBucketAggregator inMemoryFeatureBucketAggregator,
                                                    FeatureAggregationScoringService featureAggregationScoringService,
                                                    AggregationRecordsCreator featureAggregationsCreator,
-                                                   AggrDataStore scoredFeatureAggregatedStore) {
+                                                   AggregatedDataStore scoredFeatureAggregatedStore) {
         this.bucketConfigurationService = bucketConfigurationService;
         this.enrichedDataStore = enrichedDataStore;
         this.featureAggregationScoringService = featureAggregationScoringService;

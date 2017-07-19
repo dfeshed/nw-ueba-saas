@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Created by barak_schuster on 7/10/17.
  */
-public interface AggrDataStore {
+public interface AggregatedDataStore {
     /**
      * stores the given records
      *

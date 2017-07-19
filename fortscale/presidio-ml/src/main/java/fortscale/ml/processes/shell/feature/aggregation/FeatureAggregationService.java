@@ -13,7 +13,7 @@ import presidio.ade.domain.pagination.enriched.EnrichedRecordPaginationService;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.ade.domain.record.scored.feature_aggregation_scored.ScoredFeatureAggregatedRecord;
-import presidio.ade.domain.store.aggr.AggrDataStore;
+import presidio.ade.domain.store.aggr.AggregatedDataStore;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
 
 import java.util.*;
@@ -26,7 +26,7 @@ public class FeatureAggregationService extends FixedDurationStrategyExecutor {
     private InMemoryFeatureBucketAggregator featureBucketAggregator;
     private FeatureAggregationScoringService featureAggregationScoringService;
     private AggregationRecordsCreator featureAggregationsCreator;
-    private AggrDataStore scoredFeatureAggregatedStore;
+    private AggregatedDataStore scoredFeatureAggregatedStore;
 
     public FeatureAggregationService(FixedDurationStrategy fixedDurationStrategy,
                                      BucketConfigurationService bucketConfigurationService,
@@ -34,7 +34,7 @@ public class FeatureAggregationService extends FixedDurationStrategyExecutor {
                                      InMemoryFeatureBucketAggregator featureBucketAggregator,
                                      FeatureAggregationScoringService featureAggregationScoringService,
                                      AggregationRecordsCreator featureAggregationsCreator,
-                                     AggrDataStore scoredFeatureAggregatedStore) {
+                                     AggregatedDataStore scoredFeatureAggregatedStore) {
         super(fixedDurationStrategy);
         this.bucketConfigurationService = bucketConfigurationService;
         this.enrichedDataStore = enrichedDataStore;
