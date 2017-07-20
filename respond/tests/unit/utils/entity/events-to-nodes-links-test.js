@@ -94,7 +94,7 @@ test('it parses the detector into nodes if a non-null empty source.device is giv
   assert.equal(result.nodes[0].value, 'IP_DETECTOR');
 });
 
-test('it parses the domain field if the destination.device has no domain', function(assert) {
+test('it parses the domain field if the destination.device has no host', function(assert) {
   const event = {
     source: {
       device: {
@@ -104,16 +104,16 @@ test('it parses the domain field if the destination.device has no domain', funct
     destination: {
       device: {
         ip_address: 'IP1',
-        dns_domain: ''
+        dns_hostname: ''
       }
     },
-    domain: 'DOMAIN1'
+    domain: 'HOST1'
   };
 
   const result = eventsToNodesLinks([ event ]);
-  assert.equal(result.nodes.length, 2, 'Expected node for domain');
-  assert.equal(result.nodes[1].value, 'DOMAIN1');
-  assert.equal(result.nodes[1].type, 'domain');
+  assert.equal(result.nodes.length, 2, 'Expected node for host');
+  assert.equal(result.nodes[1].value, 'HOST1');
+  assert.equal(result.nodes[1].type, 'host');
 });
 
 test('it stops parsing nodes & links if a node limit is given and exceeded', function(assert) {

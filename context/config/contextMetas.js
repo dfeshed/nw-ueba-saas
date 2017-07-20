@@ -32,7 +32,6 @@ module.exports = {
       name: 'DOMAIN',
       enabled: true,
       metaKeys: [
-        'domain',
         'domain_src',
         'domain_dst',
         'full_domain',
@@ -70,6 +69,7 @@ module.exports = {
       name: 'HOST',
       enabled: true,
       metaKeys: [
+        'domain',
         'alias_host',
         'device_host',
         'dns_hostname'
