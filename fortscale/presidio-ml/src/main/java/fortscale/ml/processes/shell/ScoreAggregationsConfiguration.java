@@ -18,6 +18,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
 import presidio.ade.domain.store.aggr.AggregatedDataStore;
 import presidio.ade.domain.store.aggr.AggregatedDataStoreConfig;
+
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
 import presidio.ade.domain.store.enriched.EnrichedDataStoreConfig;
 

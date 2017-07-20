@@ -26,6 +26,7 @@ public class ScoreAggregationsExecutionServiceImpl implements PresidioExecutionS
             ScoreAggregationsBucketService scoreAggregationsBucketService,
             AggregationRecordsCreator aggregationRecordsCreator, AggregatedDataStore aggregatedDataStore) {
 
+
 		this.enrichedEventsScoringService = enrichedEventsScoringService;
 		this.enrichedDataStore = enrichedDataStore;
 		this.scoreAggregationsBucketService = scoreAggregationsBucketService;
@@ -39,6 +40,7 @@ public class ScoreAggregationsExecutionServiceImpl implements PresidioExecutionS
 		ScoreAggregationsService service = new ScoreAggregationsService(
 				strategy, enrichedDataStore, enrichedEventsScoringService,
 				scoreAggregationsBucketService, aggregationRecordsCreator, aggregatedDataStore);
+
 		service.execute(new TimeRange(startInstant, endInstant), dataSource.getName());
 	}
 

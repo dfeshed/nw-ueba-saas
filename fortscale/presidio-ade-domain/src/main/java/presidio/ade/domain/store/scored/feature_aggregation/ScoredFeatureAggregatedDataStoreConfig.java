@@ -1,5 +1,7 @@
 package presidio.ade.domain.store.scored.feature_aggregation;
 
+import fortscale.utils.mongodb.util.MongoDbBulkOpUtil;
+import fortscale.utils.mongodb.util.MongoDbBulkOpUtilConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,16 +16,18 @@ import presidio.ade.domain.store.aggr.AggregatedDataStoreMongoImpl;
 
 @Configuration
 @Import({
-        ScoredFeaturedDataToCollectionNameTranslatorConfig.class
+        ScoredFeaturedDataToCollectionNameTranslatorConfig.class, MongoDbBulkOpUtilConfig.class
 })
 public class ScoredFeatureAggregatedDataStoreConfig {
     @Autowired
     private MongoTemplate mongoTemplate;
     @Autowired
     private ScoredFeaturedDataToCollectionNameTranslator translator;
+    @Autowired
+    public MongoDbBulkOpUtil mongoDbBulkOpUtil;
 
     @Bean
     public AggregatedDataStore aggregatedDataStore() {
-        return new AggregatedDataStoreMongoImpl(mongoTemplate, translator);
+        return new AggregatedDataStoreMongoImpl(mongoTemplate, translator, mongoDbBulkOpUtil);
     }
 }

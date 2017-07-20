@@ -1,7 +1,7 @@
 package presidio.ade.domain.store.aggr;
 
 import fortscale.utils.logging.Logger;
-import org.springframework.data.mongodb.core.BulkOperations;
+import fortscale.utils.mongodb.util.MongoDbBulkOpUtil;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.store.AdeDataStoreCleanupParams;
@@ -16,12 +16,14 @@ import java.util.stream.Collectors;
 public class AggregatedDataStoreMongoImpl implements AggregatedDataStore {
     private static final Logger logger = Logger.getLogger(AggregatedDataStoreMongoImpl.class);
 
-    private MongoTemplate mongoTemplate;
-    private AggrDataToCollectionNameTranslator translator;
+    private final MongoTemplate mongoTemplate;
+    private final AggrDataToCollectionNameTranslator translator;
+    private final MongoDbBulkOpUtil mongoDbBulkOpUtil;
 
-    public AggregatedDataStoreMongoImpl(MongoTemplate mongoTemplate, AggrDataToCollectionNameTranslator translator) {
+    public AggregatedDataStoreMongoImpl(MongoTemplate mongoTemplate, AggrDataToCollectionNameTranslator translator, MongoDbBulkOpUtil mongoDbBulkOpUtil) {
         this.mongoTemplate = mongoTemplate;
         this.translator = translator;
+        this.mongoDbBulkOpUtil = mongoDbBulkOpUtil;
     }
 
     @Override
@@ -34,7 +36,7 @@ public class AggregatedDataStoreMongoImpl implements AggregatedDataStore {
                     AggrRecordsMetadata metadata = new AggrRecordsMetadata(feature);
                     String collectionName = getCollectionName(metadata);
                     List<? extends AdeAggregationRecord> aggrRecords = featureToAggrList.get(feature);
-                    mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED,collectionName).insert(aggrRecords).execute();
+                    mongoDbBulkOpUtil.insertUnordered(records,collectionName);
                 }
         );
     }
