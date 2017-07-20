@@ -30,7 +30,7 @@ export default FastForce.extend(HighlightsEntities, {
 
       // Set the HTML attributes required by HighlightsEntities mixin.
       nodes.select('.text').each(function({ type, value }) {
-        this.setAttribute('data-meta-key', type);
+        this.setAttribute('data-entity-type', String(type).toUpperCase());
         this.setAttribute('data-entity-id', value);
       });
 
