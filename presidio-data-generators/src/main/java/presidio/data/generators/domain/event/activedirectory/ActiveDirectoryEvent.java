@@ -1,8 +1,11 @@
 package presidio.data.generators.domain.event.activedirectory;
 
+import presidio.data.generators.domain.event.Event;
+
+import java.io.Serializable;
 import java.time.Instant;
 
-public class ActiveDirectoryEvent {
+public class ActiveDirectoryEvent extends Event implements Serializable {
 
     private Instant eventTime;
     private String operationType;
@@ -86,5 +89,20 @@ public class ActiveDirectoryEvent {
 
     public void setDataSource(String dataSource) {
         this.dataSource = dataSource;
+    }
+
+    @Override
+    public String toString() {
+        return "FileEvent{" +
+                "dateTime=" + eventTime +
+                ", normalizedUsername='" + normalizedUsername + '\'' +
+                ", dataSource='" + dataSource + '\'' +
+                ", fileOperation=" + operationType.toString() +
+                '}';
+    }
+
+    @Override
+    public Instant getDateTime() {
+        return eventTime;
     }
 }
