@@ -50,7 +50,7 @@ $entityFileHashColor: $base0;
       }
       .text {
         fill: rsa-color(white);
-        
+
         &.has-context-data {
           @include rsa-has-context-data(true);
           transition: font-size 0.3s;
@@ -91,6 +91,9 @@ $entityFileHashColor: $base0;
       .text {
         fill: rsa-color(gray,light);
         text-shadow: 0 0 1pt #000;
+      }
+      use {
+        fill: rsa-color(gray,light);
       }
 
       &.is-hidden {

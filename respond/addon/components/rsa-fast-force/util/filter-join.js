@@ -14,6 +14,8 @@ export default function() {
   }
 
   if (links) {
-    links.classed('is-hidden', (d) => d.isHidden);
+    links.classed('is-hidden', (d) => d.isHidden)
+      .select('use')
+      .attr('href', (d) => d.isHidden ? '#force-layout__arrow--disabled' : '#force-layout__arrow');
   }
 }

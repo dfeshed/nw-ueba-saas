@@ -111,6 +111,13 @@ export default function() {
     .attr('y1', 0)
     .attr('x2', 0)
     .attr('y2', 0);
+  const { arrowWidth, arrowHeight } = this.getProperties('arrowWidth', 'arrowHeight');
+  linksEnterGroup.append('use')
+    .attr('href', '#force-layout__arrow')
+    .attr('x', -1 * arrowWidth)
+    .attr('y', -1 * (arrowHeight / 2))
+    .attr('width', arrowWidth)
+    .attr('height', arrowHeight);
   linksEnterGroup.append('text')
     .attr('class', 'text')
     .attr('x', 0)

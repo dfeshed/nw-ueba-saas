@@ -27,6 +27,8 @@ export default function forceLayoutLinkCoords(sourceX, sourceY, sourceR, targetX
   const lineLength = Math.sqrt(Math.pow(y2 - y1, 2) + Math.pow(x2 - x1, 2));
   const textOffset = sourceR + lineLength / 2;
   const textTransform = `${svgRotation(deg)} ${svgTranslation(textOffset, 0)}`;
+  const arrowOffset = sourceR + lineLength;
+  const arrowTransform = `${svgRotation(deg)} ${svgTranslation(arrowOffset, 0)}`;
   return {
     sourceX,
     sourceY,
@@ -34,6 +36,7 @@ export default function forceLayoutLinkCoords(sourceX, sourceY, sourceR, targetX
     x2: x2.toFixed(1),
     y1: y1.toFixed(1),
     y2: y2.toFixed(1),
-    textTransform
+    textTransform,
+    arrowTransform
   };
 }

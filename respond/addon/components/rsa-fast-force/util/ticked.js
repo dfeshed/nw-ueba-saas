@@ -49,6 +49,10 @@ export default function() {
     this.joined.links
       .select('.text')
       .attr('transform', (d) => d.coords.textTransform);
+
+    this.joined.links
+      .select('use')
+      .attr('transform', (d) => d.coords.arrowTransform);
   }
 
   const shouldStop = !isDragging && (alphaCurrent <= this.get('alphaStop'));

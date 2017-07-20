@@ -38,25 +38,6 @@ $forceLayoutTransitionDuration: 0.3s;
     transition-duration: $forceLayoutTransitionDuration;
   }
 
-  &-link {
-
-    .line {
-      marker-end: url("#force-layout__arrow");
-    }
-
-    &.is-hidden {
-      .line {
-        marker-end: url("#force-layout__arrow--disabled");
-      }
-    }
-
-    &.is-selected {
-      .line {
-        marker-end: url("#force-layout__arrow--selected");
-      }
-    }
-  }
-
   #force-layout__arrow {
     stroke: none;
     stroke-width: 0;
