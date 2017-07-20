@@ -6,8 +6,9 @@ import presidio.sdk.api.services.PresidioInputPersistencyService;
 
 /**
  * An implementation of PresidioInputPersistencyServiceFactory that allows its user to receive a Spring-created PresidioInputPersistencyService
+ * This implementation should be changed per release
  */
-public class SpringPresidioInputPersistencyServiceFactory implements PresidioInputPersistencyServiceFactory {
+public class PresidioInputPersistencyServiceFactoryImpl implements PresidioInputPersistencyServiceFactory {
 
     @Autowired
     private PresidioInputPersistencyService presidioInputPersistencyService;
