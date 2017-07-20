@@ -1,8 +1,10 @@
-package fortscale.common.exporter;
+package presidio.monitoring.exporter;
 
 
-import fortscale.common.exporter.exporters.FileMetricsExporter;
-import fortscale.common.exporter.exporters.MetricsExporter;
+import presidio.monitoring.aspect.CustomMetric;
+import presidio.monitoring.aspect.MonitoringAspects;
+import presidio.monitoring.exporter.exporters.FileMetricsExporter;
+import presidio.monitoring.exporter.exporters.MetricsExporter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.actuate.endpoint.MetricsEndpoint;
 import org.springframework.boot.actuate.endpoint.PublicMetrics;
@@ -13,12 +15,12 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
 @Configuration
 @EnableAspectJAutoProxy
-@ComponentScan(basePackages = {"fortscale.utils.monitoring.aspect","fortscale.common.exporter","fortscale.utils.monitoring.aspect.annotations"})
+@ComponentScan(basePackages = {"presidio.monitoring.aspect"})
 public class ExporterConfiguration {
 
     @Bean
     public PublicMetrics publicMetrics(){
-        return new PresidioSystemPublicMetrics();
+        return new DefaultPublicMetrics();
     }
 
     @Bean

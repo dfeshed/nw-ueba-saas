@@ -1,4 +1,4 @@
-package fortscale.utils.monitoring.aspect;
+package presidio.monitoring.aspect;
 
 
 import fortscale.utils.logging.Logger;
@@ -11,43 +11,51 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.endpoint.MetricsEndpoint;
-import org.springframework.boot.actuate.metrics.dropwizard.DropwizardMetricServices;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
-import static fortscale.utils.monitoring.aspect.MetricsNames.END;
-import static fortscale.utils.monitoring.aspect.MetricsNames.EXCEPTION_THROWN;
-import static fortscale.utils.monitoring.aspect.MetricsNames.NUMBER_OF_FAILED_VALIDATION;
-import static fortscale.utils.monitoring.aspect.MetricsNames.RUN_TIME;
-import static fortscale.utils.monitoring.aspect.MetricsNames.START;
+import static presidio.monitoring.aspect.ExporterCommonString.END;
+import static presidio.monitoring.aspect.ExporterCommonString.EXCEPTION_THROWN;
+import static presidio.monitoring.aspect.ExporterCommonString.NUMBER_OF_FAILED_VALIDATION;
+import static presidio.monitoring.aspect.ExporterCommonString.RUN_TIME;
+import static presidio.monitoring.aspect.ExporterCommonString.START;
 
 @Aspect
 @Component
 public class MonitoringAspects {
 
     private static final Logger logger = Logger.getLogger(MonitoringAspects.class);
-
+    private boolean isRegisterd =false;
+    private final String LONG="long";
     @Autowired
     public MetricsEndpoint metricsEndpoint;
-
     @Autowired
     public CustomMetric customMetric;
 
-    private boolean isRegisterd =false;
 
-    public MonitoringAspects(){
+/*
+    public MonitoringAspects(MetricsEndpoint metricsEndpoint,CustomMetric customMetric){
         logger.info("Aspect is activated");
+        this.customMetric=customMetric;
+        this.metricsEndpoint=metricsEndpoint;
     }
-
+*/
 
     private boolean toRegister(){
         if(!isRegisterd){
             return isRegisterd=true;
         }
         return false;
+    }
+
+    private <T extends Number> void  addMetric(String name, T value, Set tags,String unit){
+        customMetric.addMetric(name,value,tags,unit);
+        if(toRegister())
+            metricsEndpoint.registerPublicMetrics(customMetric);
     }
 
     /**
@@ -60,12 +68,11 @@ public class MonitoringAspects {
      */
 
     @Before("@annotation(fortscale.utils.monitoring.aspect.annotations.Start)")
-    public void start(JoinPoint joinPoint) {
+    public void start(JoinPoint joinPoint) throws Throwable{
         String metric = joinPoint.getSignature().toShortString();
         logger.info("Metric {} increment with annotation Start. ", metric);
-        customMetric.addIncrementMetric(new StringBuilder(metric).append(START).toString());
-        if(toRegister())
-            metricsEndpoint.registerPublicMetrics(customMetric);
+        Set tags=new HashSet();
+        addMetric(metric+START,1,tags,LONG);
     }
 
     /**
@@ -78,12 +85,11 @@ public class MonitoringAspects {
      */
 
     @After("@annotation(fortscale.utils.monitoring.aspect.annotations.End)")
-    public void end(JoinPoint joinPoint) {
+    public void end(JoinPoint joinPoint) throws Throwable{
         String metric  = joinPoint.getSignature().toShortString();
         logger.info("Metric {} increment with annotation End. ", metric);
-        customMetric.addIncrementMetric(new StringBuilder(metric).append(END).toString());
-        if(toRegister())
-            metricsEndpoint.registerPublicMetrics(customMetric);
+        Set tags=new HashSet();
+        addMetric(metric+END,1,tags,LONG);
     }
 
     /**
@@ -96,12 +102,11 @@ public class MonitoringAspects {
      */
 
     @AfterThrowing("@annotation(fortscale.utils.monitoring.aspect.annotations.ExceptionThrown)")
-    public void exceptionThrown(JoinPoint joinPoint) {
+    public void exceptionThrown(JoinPoint joinPoint) throws Throwable{
         String metric  = joinPoint.getSignature().toShortString();
         logger.info("Metric {} increment with annotation exceptionThrown. ", metric);
-        customMetric.addMetric(new StringBuilder(metric).append(EXCEPTION_THROWN).toString(),1);
-        if(toRegister())
-            metricsEndpoint.registerPublicMetrics(customMetric);
+        Set tags=new HashSet();
+        addMetric(metric+EXCEPTION_THROWN,1,tags,LONG);
 
     }
 
@@ -121,9 +126,8 @@ public class MonitoringAspects {
         joinPoint.proceed();
         long endTime = System.nanoTime();
         long time=Long.divideUnsigned(endTime-startTime,1000000000);
-        customMetric.addGaugeMetric(new StringBuilder(metricName).append(RUN_TIME).toString(),(int)time);
-        if(toRegister())
-            metricsEndpoint.registerPublicMetrics(customMetric);
+        Set tags=new HashSet();
+        addMetric(metricName+RUN_TIME,time,tags,LONG);
         logger.info("Metric {} run time is {} milli seconds. ", metricName,time);
     }
 
@@ -140,9 +144,8 @@ public class MonitoringAspects {
     public void numberOfFailedValidation(ProceedingJoinPoint joinPoint) throws Throwable {
         String metricName = joinPoint.getSignature().toShortString();
         int numberOfFailedValidationDocuments = ((List<? extends Serializable>) joinPoint.proceed()).size();
-        customMetric.addGaugeMetric(new StringBuilder(metricName).append(NUMBER_OF_FAILED_VALIDATION).toString(),numberOfFailedValidationDocuments);
-        if(toRegister())
-            metricsEndpoint.registerPublicMetrics(customMetric);
+        Set tags=new HashSet();
+        addMetric(metricName+NUMBER_OF_FAILED_VALIDATION,numberOfFailedValidationDocuments,tags,LONG);
         logger.info("Metric {} got {} failed validations. ", metricName, numberOfFailedValidationDocuments);
     }
 

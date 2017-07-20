@@ -1,11 +1,11 @@
-package fortscale.common.exporter.exporters;
+package presidio.monitoring.exporter.exporters;
 
 
 
 import fortscale.utils.logging.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.endpoint.MetricsEndpoint;
-import org.springframework.context.ApplicationContext;
+import presidio.monitoring.aspect.CustomMetricEndpoint;
+
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -13,27 +13,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import static fortscale.common.general.CommonStrings.MEM;
-import static fortscale.common.general.CommonStrings.MEM_FREE;
-import static fortscale.common.general.CommonStrings.PROCESSORS;
-import static fortscale.common.general.CommonStrings.UPTIME;
-import static fortscale.common.general.CommonStrings.SYSTEMLOAD_AVERAGE;
-import static fortscale.common.general.CommonStrings.HEAP_COMMITTED;
-import static fortscale.common.general.CommonStrings.HEAP_INIT;
-import static fortscale.common.general.CommonStrings.HEAP_USED;
-import static fortscale.common.general.CommonStrings.HEAP;
-import static fortscale.common.general.CommonStrings.NONHEAP_COMMITTED;
-import static fortscale.common.general.CommonStrings.NONHEAP_INIT;
-import static fortscale.common.general.CommonStrings.NONHEAP_USED;
-import static fortscale.common.general.CommonStrings.NONHEAP;
-import static fortscale.common.general.CommonStrings.THREADS_PEAK;
-import static fortscale.common.general.CommonStrings.THREADS_DAEMON;
-import static fortscale.common.general.CommonStrings.THREADS_TOTAL_STARTED;
-import static fortscale.common.general.CommonStrings.THREADS;
-import static fortscale.common.general.CommonStrings.GC_PS_SCAVENGE_COUNT;
-import static fortscale.common.general.CommonStrings.GC_PS_SCAVENGE_TIME;
-import static fortscale.common.general.CommonStrings.GC_PS_MARKSWEEP_COUNT;
-import static fortscale.common.general.CommonStrings.GC_PS_MARKSWEEP_TIME;
+import static presidio.monitoring.DefaultPublicMetricsNames.*;
+
 
 public abstract class MetricsExporter implements AutoCloseable{
 
@@ -55,8 +36,8 @@ public abstract class MetricsExporter implements AutoCloseable{
         tags.add(applicationName);
     }
 
-     Map<String,String> readyMetricsToExporter(){
-        Map<String, String> metricsForExport=new HashMap<>();
+     Map<String,Object> filterRepitMetrics(){
+        Map<String, Object> metricsForExport=new HashMap<>();
         String metric;
         String value;
         Map<String, Object> map = metricsEndpoint.invoke();
@@ -79,6 +60,7 @@ public abstract class MetricsExporter implements AutoCloseable{
         }
         return metricsForExport;
     }
+
 
 
     private Set<String> listOfPresidioFixedSystemMetric(){

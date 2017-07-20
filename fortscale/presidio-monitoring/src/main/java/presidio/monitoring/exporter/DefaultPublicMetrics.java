@@ -1,6 +1,5 @@
-package fortscale.common.exporter;
+package presidio.monitoring.exporter;
 
-import javafx.application.Application;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.endpoint.PublicMetrics;
 import org.springframework.boot.actuate.metrics.Metric;
@@ -12,7 +11,7 @@ import java.lang.management.*;
 import java.util.*;
 
 @Component
-public class PresidioSystemPublicMetrics implements PublicMetrics{
+public class DefaultPublicMetrics implements PublicMetrics{
 
 
     private Collection<Metric<?>> result;
@@ -22,7 +21,7 @@ public class PresidioSystemPublicMetrics implements PublicMetrics{
     private List<GarbageCollectorMXBean> garbageCollectorMxBeans;
     private ThreadMXBean threadMxBean;
 
-    public PresidioSystemPublicMetrics() {
+    public DefaultPublicMetrics() {
         result = new LinkedHashSet<>();
         heapMemoryUsage = ManagementFactory.getMemoryMXBean().getHeapMemoryUsage();
         nonHeapMemoryUsage = ManagementFactory.getMemoryMXBean().getNonHeapMemoryUsage();
