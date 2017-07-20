@@ -36,7 +36,7 @@ public class AggregatedDataStoreMongoImpl implements AggregatedDataStore {
                     AggrRecordsMetadata metadata = new AggrRecordsMetadata(feature);
                     String collectionName = getCollectionName(metadata);
                     List<? extends AdeAggregationRecord> aggrRecords = featureToAggrList.get(feature);
-                    mongoDbBulkOpUtil.insertUnordered(records,collectionName);
+                    mongoDbBulkOpUtil.insertUnordered(aggrRecords,collectionName);
                 }
         );
     }
