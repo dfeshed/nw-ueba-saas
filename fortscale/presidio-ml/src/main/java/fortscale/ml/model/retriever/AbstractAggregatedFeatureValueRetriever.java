@@ -12,9 +12,12 @@ import fortscale.ml.model.ModelBuilderData.NoDataReason;
 import org.springframework.util.Assert;
 
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
 
 public abstract class AbstractAggregatedFeatureValueRetriever extends AbstractDataRetriever {
+
+    private final String CONTEXT_FIELD = "context";
 
     private AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
 
@@ -90,6 +93,7 @@ public abstract class AbstractAggregatedFeatureValueRetriever extends AbstractDa
     @Override
     public List<String> getContextFieldNames() {
         //TODO: metrics.getContextFieldNames++;
-        return aggregatedFeatureEventConf.getBucketConf().getContextFieldNames();
+        List<String> contextFieldNames = aggregatedFeatureEventConf.getBucketConf().getContextFieldNames();
+        return contextFieldNames.stream().map(c -> CONTEXT_FIELD + "." + c).collect(Collectors.toList());
     }
 }

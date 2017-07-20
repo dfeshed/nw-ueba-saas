@@ -45,8 +45,7 @@ public class AdeAggregationRecord extends AdeRecord {
 
     @Override
     public String getAdeEventType() {
-        String contexts =  context.keySet().stream().collect(Collectors.joining(""));
-        return ADE_EVENT_TYPE_PREFIX + "." + contexts + "."  + getFeatureName();
+        return ADE_EVENT_TYPE_PREFIX + "." + getFeatureName();
     }
 
     @Override

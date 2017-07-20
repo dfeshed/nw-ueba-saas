@@ -1,7 +1,7 @@
 {
   "ade-event-type-scorers": [
     {
-      "ade-event-type" : "aggr_event.normalizedUsername.number_of_distinct_src_network_folder_paths_dlpfile_daily",
+      "ade-event-type" : "aggr_event.number_of_distinct_src_network_folder_paths_normalized_username_daily_dlpfile",
       "scorers" : [ {
         "type" : "low-values-score-reducer",
         "name" : "number_of_distinct_src_network_folder_paths.normalized_username.dlpfile.daily.scorer",
@@ -32,7 +32,7 @@
       } ]
     },
     {
-      "ade-event-type" : "aggr_event.normalizedUsername.number_of_distinct_src_network_folder_paths_dlpfile_hourly",
+      "ade-event-type" : "aggr_event.number_of_distinct_src_network_folder_paths_normalized_username_hourly_dlpfile",
       "scorers" : [ {
         "type" : "low-values-score-reducer",
         "name" : "number_of_distinct_src_network_folder_paths.normalized_username.dlpfile.hourly.scorer",
@@ -63,7 +63,7 @@
       } ]
     },
     {
-      "ade-event-type" : "aggr_event.normalizedUsername.sum_of_moved_files_to_removable_device_size_dlpfile_daily",
+      "ade-event-type" : "aggr_event.sum_of_moved_files_to_removable_device_size_normalized_username_daily_dlpfile",
       "scorers" : [ {
         "type" : "low-values-score-reducer",
         "name" : "sum_of_moved_files_to_removable_device_size.normalized_username.dlpfile.daily.scorer",
@@ -94,7 +94,7 @@
       } ]
     },
     {
-      "ade-event-type" : "aggr_event.normalizedUsername.sum_of_moved_files_to_removable_device_size_dlpfile_hourly",
+      "ade-event-type" : "aggr_event.sum_of_moved_files_to_removable_device_size_normalized_username_hourly_dlpfile",
       "scorers" : [ {
         "type" : "low-values-score-reducer",
         "name" : "sum_of_moved_files_to_removable_device_size.normalized_username.dlpfile.hourly.scorer",
@@ -125,7 +125,7 @@
       } ]
     },
     {
-      "ade-event-type" : "aggr_event.normalizedUsername.number_of_moved_files_to_removable_device_dlpfile_daily",
+      "ade-event-type" : "aggr_event.number_of_moved_files_to_removable_device_normalized_username_daily_dlpfile",
       "scorers" : [ {
         "type" : "low-values-score-reducer",
         "name" : "number_of_moved_files_to_removable_device.normalized_username.dlpfile.daily.scorer",
@@ -156,7 +156,7 @@
       } ]
     },
     {
-      "ade-event-type" : "aggr_event.normalizedUsername.number_of_moved_files_to_removable_device_dlpfile_hourly",
+      "ade-event-type" : "aggr_event.number_of_moved_files_to_removable_device_normalized_username_hourly_dlpfile",
       "scorers" : [ {
         "type" : "low-values-score-reducer",
         "name" : "number_of_moved_files_to_removable_device.normalized_username.dlpfile.hourly.scorer",
@@ -187,7 +187,7 @@
       } ]
     },
     {
-      "ade-event-type" : "aggr_event.normalizedUsername.sum_of_copied_files_to_removable_device_size_dlpfile_daily",
+      "ade-event-type" : "aggr_event.sum_of_copied_files_to_removable_device_size_normalized_username_daily_dlpfile",
       "scorers" : [ {
         "type" : "low-values-score-reducer",
         "name" : "sum_of_copied_files_to_removable_device_size.normalized_username.dlpfile.daily.scorer",
@@ -218,7 +218,7 @@
       } ]
     },
     {
-      "ade-event-type" : "aggr_event.normalizedUsername.sum_of_copied_files_to_removable_device_size_dlpfile_hourly",
+      "ade-event-type" : "aggr_event.sum_of_copied_files_to_removable_device_size_normalized_username_hourly_dlpfile",
       "scorers" : [ {
         "type" : "low-values-score-reducer",
         "name" : "sum_of_copied_files_to_removable_device_size.normalized_username.dlpfile.hourly.scorer",
@@ -249,7 +249,7 @@
       } ]
     },
     {
-      "ade-event-type" : "aggr_event.normalizedUsername.number_of_copied_files_to_removable_device_dlpfile_daily",
+      "ade-event-type" : "aggr_event.number_of_copied_files_to_removable_device_normalized_username_daily_dlpfile",
       "scorers" : [ {
         "type" : "low-values-score-reducer",
         "name" : "number_of_copied_files_to_removable_device.normalized_username.dlpfile.daily.scorer",
@@ -280,7 +280,7 @@
       } ]
     },
     {
-      "ade-event-type" : "aggr_event.normalizedUsername.number_of_copied_files_to_removable_device_dlpfile_hourly",
+      "ade-event-type" : "aggr_event.number_of_copied_files_to_removable_device_normalized_username_hourly_dlpfile",
       "scorers" : [ {
         "type" : "low-values-score-reducer",
         "name" : "number_of_copied_files_to_removable_device.normalized_username.dlpfile.hourly.scorer",
@@ -311,7 +311,7 @@
       } ]
     },
     {
-      "ade-event-type" : "aggr_event.normalizedUsername.sum_of_moved_files_from_remote_device_size_dlpfile_daily",
+      "ade-event-type" : "aggr_event.sum_of_moved_files_from_remote_device_size_normalized_username_daily_dlpfile",
       "scorers" : [ {
         "type" : "low-values-score-reducer",
         "name" : "sum_of_moved_files_from_remote_device_size.normalized_username.dlpfile.daily.scorer",
@@ -342,7 +342,7 @@
       } ]
     },
     {
-      "ade-event-type" : "aggr_event.normalizedUsername.sum_of_moved_files_from_remote_device_size_dlpfile_hourly",
+      "ade-event-type" : "aggr_event.sum_of_moved_files_from_remote_device_size_normalized_username_hourly_dlpfile",
       "scorers" : [ {
         "type" : "low-values-score-reducer",
         "name" : "sum_of_moved_files_from_remote_device_size.normalized_username.dlpfile.hourly.scorer",
@@ -373,7 +373,7 @@
       } ]
     },
     {
-      "ade-event-type" : "aggr_event.normalizedUsername.number_of_moved_files_from_remote_device_dlpfile_daily",
+      "ade-event-type" : "aggr_event.number_of_moved_files_from_remote_device_normalized_username_daily_dlpfile",
       "scorers" : [ {
         "type" : "low-values-score-reducer",
         "name" : "number_of_moved_files_from_remote_device.normalized_username.dlpfile.daily.scorer",
@@ -404,7 +404,7 @@
       } ]
     },
     {
-      "ade-event-type" : "aggr_event.normalizedUsername.number_of_moved_files_from_remote_device_dlpfile_hourly",
+      "ade-event-type" : "aggr_event.number_of_moved_files_from_remote_device_normalized_username_hourly_dlpfile",
       "scorers" : [ {
         "type" : "low-values-score-reducer",
         "name" : "number_of_moved_files_from_remote_device.normalized_username.dlpfile.hourly.scorer",
@@ -435,7 +435,7 @@
       } ]
     },
     {
-      "ade-event-type" : "aggr_event.normalizedUsername.sum_of_copied_files_from_remote_device_size_dlpfile_daily",
+      "ade-event-type" : "aggr_event.sum_of_copied_files_from_remote_device_size_normalized_username_daily_dlpfile",
       "scorers" : [ {
         "type" : "low-values-score-reducer",
         "name" : "sum_of_copied_files_from_remote_device_size.normalized_username.dlpfile.daily.scorer",
@@ -466,7 +466,7 @@
       } ]
     },
     {
-      "ade-event-type" : "aggr_event.normalizedUsername.sum_of_copied_files_from_remote_device_size_dlpfile_hourly",
+      "ade-event-type" : "aggr_event.sum_of_copied_files_from_remote_device_size_normalized_username_hourly_dlpfile",
       "scorers" : [ {
         "type" : "low-values-score-reducer",
         "name" : "sum_of_copied_files_from_remote_device_size.normalized_username.dlpfile.hourly.scorer",
@@ -497,7 +497,7 @@
       } ]
     },
     {
-      "ade-event-type" : "aggr_event.normalizedUsername.number_of_copied_files_from_remote_device_dlpfile_daily",
+      "ade-event-type" : "aggr_event.number_of_copied_files_from_remote_device_normalized_username_daily_dlpfile",
       "scorers" : [ {
         "type" : "low-values-score-reducer",
         "name" : "number_of_copied_files_from_remote_device.normalized_username.dlpfile.daily.scorer",
@@ -528,7 +528,7 @@
       } ]
     },
     {
-      "ade-event-type" : "aggr_event.normalizedUsername.number_of_copied_files_from_remote_device_dlpfile_hourly",
+      "ade-event-type" : "aggr_event.number_of_copied_files_from_remote_device_normalized_username_hourly_dlpfile",
       "scorers" : [ {
         "type" : "low-values-score-reducer",
         "name" : "number_of_copied_files_from_remote_device.normalized_username.dlpfile.hourly.scorer",
@@ -559,7 +559,7 @@
       } ]
     },
     {
-      "ade-event-type" : "aggr_event.normalizedUsername.number_of_recycled_or_deleted_files_dlpfile_daily",
+      "ade-event-type" : "aggr_event.number_of_recycled_or_deleted_files_normalized_username_daily_dlpfile",
       "scorers" : [ {
         "type" : "low-values-score-reducer",
         "name" : "number_of_recycled_or_deleted_files.normalized_username.dlpfile.daily.scorer",
@@ -590,7 +590,7 @@
       } ]
     },
     {
-      "ade-event-type" : "aggr_event.normalizedUsername.number_of_recycled_or_deleted_files_dlpfile_hourly",
+      "ade-event-type" : "aggr_event.number_of_recycled_or_deleted_files_normalized_username_hourly_dlpfile",
       "scorers" : [ {
         "type" : "low-values-score-reducer",
         "name" : "number_of_recycled_or_deleted_files.normalized_username.dlpfile.hourly.scorer",
@@ -621,7 +621,7 @@
       } ]
     },
     {
-      "ade-event-type" : "aggr_event.normalizedUsername.number_of_opened_files_dlpfile_daily",
+      "ade-event-type" : "aggr_event.number_of_opened_files_normalized_username_daily_dlpfile",
       "scorers" : [ {
         "type" : "low-values-score-reducer",
         "name" : "number_of_opened_files.normalized_username.dlpfile.daily.scorer",
@@ -652,7 +652,7 @@
       } ]
     },
     {
-      "ade-event-type" : "aggr_event.normalizedUsername.number_of_opened_files_dlpfile_hourly",
+      "ade-event-type" : "aggr_event.number_of_opened_files_normalized_username_hourly_dlpfile",
       "scorers" : [ {
         "type" : "low-values-score-reducer",
         "name" : "number_of_opened_files.normalized_username.dlpfile.hourly.scorer",
