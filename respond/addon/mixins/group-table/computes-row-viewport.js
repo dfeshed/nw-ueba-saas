@@ -3,7 +3,6 @@ import ComputesRowExtents from './computes-row-extents';
 import computed, { alias } from 'ember-computed-decorators';
 import { debounce } from 'ember-runloop';
 import set from 'ember-metal/set';
-import get from 'ember-metal/get';
 
 /**
  * @class ComputesRowViewport Mixin
@@ -119,7 +118,7 @@ export default Mixin.create(ComputesRowExtents, {
     return {
       index,
       group,
-      isLeaving: isLeaving && get(group, 'isOpen')
+      isLeaving
     };
   },
 

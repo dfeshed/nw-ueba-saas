@@ -120,6 +120,10 @@ export default Component.extend({
    */
   @computed('model', 'resolvedOrder', 'modelPath')
   keys(model, resolvedOrder, modelPath) {
+    if (!model) {
+      return [];
+    }
+
     const propertyNameFormatter = this.get('propertyNameFormatter');
     return resolvedOrder
       .filter((name) => !isEmpty(model[name]))
