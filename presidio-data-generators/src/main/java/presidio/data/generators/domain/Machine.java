@@ -4,11 +4,19 @@ public class Machine {
     private String name;
     private String normalized_name;
     private String ip_address;
+    private boolean remote;
 
     public Machine(String name, String ip_address) {
         this.name = name;
         this.normalized_name = name;
         this.ip_address = ip_address;
+    }
+
+    public Machine(String name, String ip_address, boolean remote) {
+        this.name = name;
+        this.normalized_name = name;
+        this.ip_address = ip_address;
+        this.remote = remote;
     }
 
     public String getName() {
@@ -30,4 +38,12 @@ public class Machine {
     public String getNormalized_name() { return normalized_name; }
 
     public void setNormalized_name(String normalized_name) { this.normalized_name = normalized_name; }
+
+    public String getNormalizedMachinename() {
+        return normalized_name;
+    }
+
+    public boolean isRemote() {
+        return remote;
+    }
 }
