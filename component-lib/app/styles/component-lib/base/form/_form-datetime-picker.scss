@@ -46,6 +46,8 @@
 
   .numInputWrapper {
     span {
+      right: auto;
+
       &.arrowUp {
         &:after {
           border-bottom-color: rsa-color(gray, lightest);
