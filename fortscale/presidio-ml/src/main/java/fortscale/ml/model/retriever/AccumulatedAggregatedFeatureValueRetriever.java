@@ -34,10 +34,4 @@ public class AccumulatedAggregatedFeatureValueRetriever extends AbstractAggregat
                 .stream()
                 .mapToDouble(v -> v));
     }
-    @Override
-    public List<String> getContextFieldNames()
-    {
-        // todo : read from conf
-        return Collections.singletonList("context.normalizedUsername");
-    }
 }

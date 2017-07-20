@@ -16,7 +16,7 @@ public class FeatureAggregationsApplication extends PresidioShellableApplication
 
 
     public static void main(String[] args) {
-        logger.info("Start application: {} with params {}", FeatureAggregationsApplication.class, Arrays.toString(args));
+        logger.info("Start application: {} with params {}", FeatureAggregationsConfigProduction.class, Arrays.toString(args));
         PresidioShellableApplication.run(FeatureAggregationsConfig.class, args);
     }
 }
