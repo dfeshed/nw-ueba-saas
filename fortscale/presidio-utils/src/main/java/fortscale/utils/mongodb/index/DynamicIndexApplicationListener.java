@@ -69,6 +69,10 @@ public class DynamicIndexApplicationListener implements ApplicationListener<Befo
         if (!sourceClass.isAnnotationPresent(Document.class)) {
             return;
         }
+        createCollectionIndexesForClass(collectionName, sourceClass);
+    }
+
+    public void createCollectionIndexesForClass(String collectionName, Class<?> sourceClass) {
         Document sourceClassDocumentAnnotation = sourceClass.getAnnotation(Document.class);
         // in this case it is not a dynamic collection - it is already predefined
         if(!sourceClassDocumentAnnotation.collection().isEmpty())

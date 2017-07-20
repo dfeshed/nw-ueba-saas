@@ -8,7 +8,7 @@
         "context.normalizedUsername"
       ],
       "adeEventTypes": [
-        "dlpfile"
+        "scored_enriched.dlpfile.startInstant.normalized_username.dlpfile.score"
       ],
       "strategyName": "fixed_duration_daily",
       "aggrFeatureConfs": [
@@ -16,7 +16,7 @@
           "name": "highest_date_time_score",
           "featureNamesMap": {
             "maximize": [
-              "date_time_unix.normalized_username.dlpfile.score"
+              "score"
             ]
           },
           "aggrFeatureFuncJson": {
@@ -32,7 +32,7 @@
         "context.normalizedUsername"
       ],
       "adeEventTypes": [
-        "dlpfile"
+        "scored_enriched.dlpfile.normalized_src_machine.normalized_username.dlpfile.score"
       ],
       "strategyName": "fixed_duration_daily",
       "aggrFeatureConfs": [
@@ -43,7 +43,7 @@
               "context.normalizedSrcMachine"
             ],
             "maximize": [
-              "normalized_src_machine.normalized_username.dlpfile.score"
+              "score"
             ]
           },
           "aggrFeatureFuncJson": {
@@ -59,7 +59,7 @@
         "context.normalizedUsername"
       ],
       "adeEventTypes": [
-        "dlpfile"
+        "scored_enriched.dlpfile.date_time_unix.normalized_username.dlpfile.score"
       ],
       "strategyName": "fixed_duration_hourly",
       "aggrFeatureConfs": [
@@ -67,7 +67,7 @@
           "name": "highest_date_time_score",
           "featureNamesMap": {
             "maximize": [
-              "date_time_unix.normalized_username.dlpfile.score"
+              "score"
             ]
           },
           "aggrFeatureFuncJson": {
@@ -83,7 +83,7 @@
         "context.normalizedUsername"
       ],
       "adeEventTypes": [
-        "dlpfile"
+        "scored_enriched.dlpfile.normalized_src_machine.normalized_username.dlpfile.score"
       ],
       "strategyName": "fixed_duration_hourly",
       "aggrFeatureConfs": [
@@ -94,7 +94,7 @@
               "context.normalizedSrcMachine"
             ],
             "maximize": [
-              "normalized_src_machine.normalized_username.dlpfile.score"
+              "score"
             ]
           },
           "aggrFeatureFuncJson": {
