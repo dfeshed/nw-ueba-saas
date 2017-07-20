@@ -53,64 +53,8 @@ public class FileRawEventTest {
     }
 
     @Test
-    @Ignore
-    public void testNoDstFilePath() {
-        String record = "2017-05-20T15:50:00Z,123,file,FOLDER_OPENED,username,SUCCESS,srcFilePath,,srcFolderPath,dstFolderPath,123,false,false";
-
-        FileRawEvent fileRawEvent = new FileRawEvent(record.split(","));
-        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-        Validator validator = factory.getValidator();
-
-        Set<ConstraintViolation<FileRawEvent>> violations = validator.validate(fileRawEvent);
-        Assert.assertEquals(1, violations.size());
-        Assert.assertTrue(violations.iterator().next().getConstraintDescriptor().getAnnotation() instanceof NotEmpty);
-    }
-
-    @Test
-    @Ignore
-    public void testNoSrcFilePath() {
-        String record = "2017-05-20T15:50:00Z,123,file,FOLDER_OPENED,username,SUCCESS,,dstFilePath,srcFolderPath,dstFolderPath,123,false,false";
-
-        FileRawEvent fileRawEvent = new FileRawEvent(record.split(","));
-        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-        Validator validator = factory.getValidator();
-
-        Set<ConstraintViolation<FileRawEvent>> violations = validator.validate(fileRawEvent);
-        Assert.assertEquals(1, violations.size());
-        Assert.assertTrue(violations.iterator().next().getConstraintDescriptor().getAnnotation() instanceof NotEmpty);
-    }
-
-    @Test
     public void testNoUsername() {
         String record = "2017-05-20T15:50:00Z,123,file,FOLDER_OPENED,,SUCCESS,srcFilePath,dstFilePath,srcFolderPath,dstFolderPath,123,false,false";
-
-        FileRawEvent fileRawEvent = new FileRawEvent(record.split(","));
-        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-        Validator validator = factory.getValidator();
-
-        Set<ConstraintViolation<FileRawEvent>> violations = validator.validate(fileRawEvent);
-        Assert.assertEquals(1, violations.size());
-        Assert.assertTrue(violations.iterator().next().getConstraintDescriptor().getAnnotation() instanceof NotEmpty);
-    }
-
-    @Test
-    @Ignore
-    public void testNoDstFolderPath() {
-        String record = "2017-05-20T15:50:00Z,123,file,FOLDER_OPENED,username,SUCCESS,srcFilePath,dstFilePath,srcFolderPath,,123,false,false";
-
-        FileRawEvent fileRawEvent = new FileRawEvent(record.split(","));
-        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-        Validator validator = factory.getValidator();
-
-        Set<ConstraintViolation<FileRawEvent>> violations = validator.validate(fileRawEvent);
-        Assert.assertEquals(1, violations.size());
-        Assert.assertTrue(violations.iterator().next().getConstraintDescriptor().getAnnotation() instanceof NotEmpty);
-    }
-
-    @Test
-    @Ignore
-    public void testNoSrcFolderPath() {
-        String record = "2017-05-20T15:50:00Z,123,file,FOLDER_OPENED,username,SUCCESS,srcFilePath,dstFilePath,,dstFolderPath,123,false,false";
 
         FileRawEvent fileRawEvent = new FileRawEvent(record.split(","));
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
