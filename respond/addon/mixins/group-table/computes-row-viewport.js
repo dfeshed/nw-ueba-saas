@@ -1,6 +1,6 @@
 import Mixin from 'ember-metal/mixin';
 import ComputesRowExtents from './computes-row-extents';
-import computed from 'ember-computed-decorators';
+import computed, { alias } from 'ember-computed-decorators';
 import { debounce } from 'ember-runloop';
 import set from 'ember-metal/set';
 import get from 'ember-metal/get';
@@ -23,6 +23,7 @@ export default Mixin.create(ComputesRowExtents, {
    * @type {Number}
    * @public
    */
+  @alias('viewportIndices.firstGroupIndex')
   firstGroupIndex: 0,
 
   /**
@@ -30,6 +31,7 @@ export default Mixin.create(ComputesRowExtents, {
    * @type {Number}
    * @public
    */
+  @alias('viewportIndices.firstGroupItemIndex')
   firstGroupItemIndex: 0,
 
   /**
@@ -37,6 +39,7 @@ export default Mixin.create(ComputesRowExtents, {
    * @type {Number}
    * @public
    */
+  @alias('viewportIndices.lastGroupIndex')
   lastGroupIndex: 0,
 
   /**
@@ -44,6 +47,7 @@ export default Mixin.create(ComputesRowExtents, {
    * @type {Number}
    * @public
    */
+  @alias('viewportIndices.lastGroupItemIndex')
   lastGroupItemIndex: 0,
 
   /**
@@ -127,30 +131,27 @@ export default Mixin.create(ComputesRowExtents, {
   viewportDomDidChange() {
     const throttle = this.get('viewportThrottle');
     if (throttle) {
-      debounce(this, 'recalcViewportIndices', throttle);
+      debounce(this, 'notifyPropertyChange', 'viewportDom', throttle);
     } else {
-      this.recalcViewportIndices();
+      this.notifyPropertyChange('viewportDom');
     }
   },
 
   /**
-   * Updates the viewport indices, i.e. `firstGroupIndex`, `firstGroupItemIndex`, `lastGroupIndex` & `lastGroupItemIndex`.
+   * Computes the viewport indices, i.e. `firstGroupIndex`, `firstGroupItemIndex`, `lastGroupIndex` & `lastGroupItemIndex`.
    * These attr values correspond to the first & last groups & group items that fit within the viewport.
-   * This logic is implemented as a method, rather than a computed property, in order to support
+   * This computed property uses `viewportDom` as a dependency key, rather than `scrollerPos` &  `scrollerSize`, in order to support
    * debouncing; that is, in order to NOT recompute viewport every single time a scroll or resize event is triggered.
+   * @type {{firstGroupIndex: number, firstGroupItemIndex: number, lastGroupIndex: number, lastGroupItemIndex: number}}
    * @private
    */
-  recalcViewportIndices() {
-    const {
-      viewportBuffer,
-      groupExtents,
-      groupHeaderSize,
-      groupItemSize
-    } = this.getProperties('viewportBuffer', 'groupExtents', 'groupHeaderSize', 'groupItemSize');
+  @computed('viewportDom', 'viewportBuffer', 'groupExtents', 'groupHeaderSize', 'groupItemSize')
+  viewportIndices(viewportDom, viewportBuffer, groupExtents, groupHeaderSize, groupItemSize) {
     const { outerHeight: groupHeaderHeight = 0 } = groupHeaderSize || {};
     const { outerHeight: groupItemHeight = 0 } = groupItemSize || {};
-    const { top: scrollTop = 0 } = this._scrollerPos || {};
-    const { innerHeight: scrollHeight = 0 } = this._scrollerSize || {};
+    const { scrollerPos, scrollerSize } = this.getProperties('scrollerPos', 'scrollerSize');
+    const { top: scrollTop = 0 } = scrollerPos || {};
+    const { innerHeight: scrollHeight = 0 } = scrollerSize || {};
     const actual = {
       top: scrollTop,
       bottom: scrollTop + scrollHeight
@@ -187,12 +188,12 @@ export default Mixin.create(ComputesRowExtents, {
       lastGroupItemIndex = Math.ceil(yDiff / groupItemHeight);
     }
 
-    this.setProperties({
+    return {
       firstGroupIndex,
       firstGroupItemIndex,
       lastGroupIndex,
       lastGroupItemIndex
-    });
+    };
   },
 
   /**

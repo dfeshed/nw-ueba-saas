@@ -64,4 +64,15 @@ test('it computes first & last indices for groups & items correctly', function(a
   assert.equal(subject.get('firstGroupItemIndex'), itemCount - 1, 'Expected first item to be in viewport after scroll');
   assert.equal(subject.get('lastGroupIndex'), 2, 'Expected third group in viewport after scroll');
   assert.ok(subject.get('lastGroupItemIndex') >= itemCount - 1, 'Expected only first item of second group to be in viewport after scroll');
+
+  // Remove all the items from the groups.
+  groups.forEach((group) => {
+    group.set('items', []);
+  });
+  assert.equal(subject.get('lastGroupIndex'), groups.length - 1, 'Expected value to update after group items were removed');
+
+  // Add more than a screenful of items to the first group.
+  groups[0].set('items', (new Array(200)).fill({}));
+  assert.equal(subject.get('lastGroupIndex'), 0, 'Expected value to update after group items were added');
+
 });
