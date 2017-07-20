@@ -17,7 +17,17 @@ export default Component.extend({
   isDisabled: false,
   helpId: contextHelpIds.AddToListHelpIds,
 
-  /**
+  init() {
+    this._super(...arguments);
+    this.get('eventBus').on('rsa-application-modal-open-addToList', () => {
+      this.set('createList', true);
+    });
+  },
+
+  willDestroyElement() {
+    this.get('eventBus').off('rsa-application-modal-open-addToList');
+  },
+    /**
    * The type and id of the entity which is to be added to a list.
    * @type {{type: String, id: String}}
    * @public
