@@ -27,7 +27,8 @@ function roundUpToNearestTen(x) {
  * explicitly to 0, no transition is used and the transform is applied immediately.
  * @public
  */
-export default function(easing = easeCubicInOut, duration = 300) {
+export default function(easing, duration = 300) {
+  easing = easing || easeCubicInOut;
 
   // Determine the box size & position to fit into.  Round the sizes up to the nearest tens, in order to avoid
   // unseemly visual "bouncing" that is caused by minor variances in the nodes' coordinates.
@@ -89,12 +90,21 @@ export default function(easing = easeCubicInOut, duration = 300) {
     selection = selection.transition()
       .ease(easing)
       .duration(duration)
-      .on('end interrupt', () => {
-        this.set('isCentering', false);
+      .on('end interrupt', (d, i) => {
+        if (i === 0) {  // only do this once per transition, not once per data point
+          this.set('isCentering', false);
+        }
+      })
+      .on('start', (d, i) => {
+        if (i === 0) {  // only do this once per transition, not once per data point
+          this.set('isCentering', true);
+        }
       });
   }
 
-  this.set('isCentering', true);
+  if (!useTransition) {
+    this.set('isCentering', true);
+  }
   this.zoomBehavior.transform(selection, transform);
   if (!useTransition) {
     this.set('isCentering', false);

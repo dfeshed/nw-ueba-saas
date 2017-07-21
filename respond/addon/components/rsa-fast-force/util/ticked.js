@@ -59,7 +59,7 @@ export default function() {
 
   // Determine if we should auto-center the nodes visually. Don't want to disrupt the user's workflow.
   const alphaMagnitudeWas = this._lastAlphaMagnitude;
-  const alphaMagnitudeIs = Math.round(alphaCurrent * 10);
+  const alphaMagnitudeIs = (Math.log(alphaCurrent) / Math.log(10)).toFixed(0);
   const alphaChangedSignificantly = alphaMagnitudeWas !== alphaMagnitudeIs;
   if (alphaChangedSignificantly) {
     this._lastAlphaMagnitude = alphaMagnitudeIs;
@@ -71,7 +71,8 @@ export default function() {
     !this.get('userHasZoomed');         // user has not manually zoomed
 
   if (shouldAutoCenter) {
-    run(this, 'center');
+    // For auto center, use a slower duration than the default so we don't startle the user.
+    run(this, 'center', null, 700);
   }
 
   if (shouldStop) {

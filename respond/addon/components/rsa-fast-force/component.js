@@ -185,6 +185,8 @@ export default Component.extend({
     const minDomainValue = 1;
     let maxDomainValue = max(nodes || [], radialAccessor);
     maxDomainValue = Math.max(minDomainValue, maxDomainValue);
+    // If the max domain value is below the max radius, you'll map tiny domain value to huge circles.
+    maxDomainValue = Math.max(maxDomainValue, maxRadius);
     return scaleLinear()
       .domain([
         minDomainValue,
@@ -244,6 +246,8 @@ export default Component.extend({
     const minDomainValue = 1;
     let maxDomainValue = max(links || [], linkWidthAccessor);
     maxDomainValue = Math.max(minDomainValue, maxDomainValue);
+    // If the max domain value is below the max width, you'll map tiny domain value to thick lines.
+    maxDomainValue = Math.max(maxDomainValue, linkMaxWidth);
     return scaleLinear()
       .domain([
         minDomainValue,
