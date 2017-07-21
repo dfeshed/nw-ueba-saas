@@ -45,6 +45,8 @@
   @include rsa-font(header);
 
   .numInputWrapper {
+    width: 20%;
+    
     span {
       right: auto;
 
@@ -63,6 +65,7 @@
       &:after {
         margin-left: rsa-whitespace(less);
       }
+
     }
   }
 }
