@@ -64,13 +64,13 @@ test('it shows and hides the device picker options depending upon the selected e
       return wait();
     })
     .then(() => {
-      assert.equal(this.$('.rsa-alerts-search-form__device:enabled').length, 3, 'Expected to find device picker options enabled for HOST');
+      assert.equal(this.$('.rsa-alerts-search-form__device:enabled').length, 4, 'Expected to find device picker options enabled for HOST');
 
       this.set('selectedEntityTypeName', 'DOMAIN');
       return wait();
     })
     .then(() => {
-      assert.equal(this.$('.rsa-alerts-search-form__device:enabled').length, 4, 'Expected to find device picker options enabled for DOMAIN');
+      assert.equal(this.$('.rsa-alerts-search-form__device:enabled').length, 3, 'Expected to find device picker options enabled for DOMAIN');
 
       this.set('selectedEntityTypeName', 'USER');
       return wait();

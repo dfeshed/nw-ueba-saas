@@ -65,7 +65,7 @@ export default Component.extend({
     return entityType !== 'FILE_NAME' && entityType !== 'FILE_HASH';
   },
 
-  @equal('selectedEntityTypeName', 'DOMAIN')
+  @equal('selectedEntityTypeName', 'HOST')
   showDomainOption: null,
 
   // Ensure that at least some device radio button is checked (unless there are no radios currently shown).

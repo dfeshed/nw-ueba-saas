@@ -248,10 +248,10 @@ IncidentsAPI.reopenClass({
         eventField = `${deviceField}.mac_address`;
         break;
       case 'DOMAIN':
-        eventField = (deviceField === 'domain') ? deviceField : `${deviceField}.dns_domain`;
+        eventField = `${deviceField}.dns_domain`;
         break;
       case 'HOST':
-        eventField = `${deviceField}.dns_hostname`;
+        eventField = (deviceField === 'domain') ? deviceField : `${deviceField}.dns_hostname`;
         break;
       case 'USER':
         eventField = `${deviceField}.user.username`;
