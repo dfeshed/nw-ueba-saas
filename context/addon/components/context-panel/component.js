@@ -67,8 +67,8 @@ const ContextComponent = Component.extend({
     const { entityId, entityType } = this.getProperties('entityId', 'entityType');
     this.send('initializeContextPanel', { entityId, entityType });
 
-    this.get('context').metas('CORE').then(({ coreCatalog } = {}) => {
-      this.send('getContextEntitiesMetas', { coreCatalog });
+    this.get('context').metas('CORE').then(({ data } = {}) => {
+      this.send('getContextEntitiesMetas', { data });
     });
   },
 

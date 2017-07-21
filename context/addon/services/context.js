@@ -82,18 +82,11 @@ export default Service.extend({
    ```js
    {
      code: 0,
-     data: [
-       {
-         type: 'IP',
-         enabled: true,
-         keys: ['ip.src', 'ip.dst', 'ipv6.src', 'ipv6.dst', .. ]
-       }, {
-         type: 'MAC_ADDRESS',
-         enabled: true,
-         keys: ['eth.src', 'eth.dst', .. ]
-       },
+     data: {
+       IP: ['ip.src', 'ip.dst', 'ipv6.src', 'ipv6.dst', .. ],
+       'MAC_ADDRESS': ['eth.src', 'eth.dst', .. ],
        ..
-     ]
+     }
    }
    ```
    * @param {String} [endpointId='CORE'] Either 'IM' or 'CORE'. If 'IM' is given,
@@ -137,29 +130,6 @@ export default Service.extend({
             promises[endpointId] = null;
           });
       }
-
-      // Once we have the data, flatten the JSON into a simple hash for ease of use (e.g. hash[metaKey] => entityType).
-      promise = promise.then((response) => {
-        const hash = {};
-
-        if (this.endpointId === 'IM') {
-          response = response || {};
-          const { data } = response;
-          (data || [])
-            .filterBy('enabled', true)  // omit disabled entries from our output hash
-            .forEach(({ name, metaKeys }) => {
-              (metaKeys || []).forEach((metaKey) => {
-                hash[metaKey] = name;
-              });
-            });
-        }
-
-        return {
-          ...response,
-          data: hash,
-          coreCatalog: response.data
-        };
-      });
 
       // Cache promise for reuse
       promises[endpointId] = promise;

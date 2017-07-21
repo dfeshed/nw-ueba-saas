@@ -65,7 +65,7 @@ It also assumes each matching DOM element must have an HTML string attribute `da
   <span class="entity" data-entity-id="10.20.30.40" data-meta-key="ip.src">10.20.30.40</span>
   ```
 
-In the latter scenario (b), the Component's `entityEndpointId` attr must be set to the id of the endpoint (concentrator/broker) from which the meta value was fetched.  Both the meta key & the endpoint id are required to validate the entity in this case.
+In the latter scenario (b), the Component's `entityEndpointId` attr must be set to either "IM" or "CORE", specifying where the meta value was fetched from (respectively, either the IM MongoDB or a Core Concentrator/Broker).  Both the meta key & the endpoint id are required to validate the entity in this case.
 
 Note that any DOM elements found by this mixin and determined to be enabled for context-lookups will be checked for an `id` attribute.  Those elements which don't have an `id` will be assigned an automatically generated id like `rsa-entity-<#>` where `<#>` is an auto-generated number.  
 
@@ -238,54 +238,25 @@ Use this async call in order to convert a meta key name to an entity type.  The 
 ```js
 {
   code: 0,
-  data: [
-    {
-      type: 'IP',
-      enabled: true,
-      keys: ['ip.src', 'ip.dst', 'ipv6.src', 'ipv6.dst', .. ]
-    }, {
-      type: 'MAC_ADDRESS',
-      enabled: true,
-      keys: ['eth.src', 'eth.dst', .. ]
-    },
+  data: {
+    IP: ['ip.src', 'ip.dst', 'ipv6.src', 'ipv6.dst', .. ],
+    'MAC_ADDRESS': ['eth.src', 'eth.dst', .. ],
     ..
-  ]
+  }
 }
 ```
 
-After fetching the JSON structure above, the `metas()` method transforms the JSON into a simple flat hash map for ease of use, such as the example below:
-
-```js
-{
-  'ip.src': 'IP',
-  'ip.dst': 'IP',
-  'ipv6.src': 'IP',
-  'ipv6.dst': 'IP',
-  ..,
-  'eth.src': 'MAC_ADDRESS',
-  'eth.dst': 'MAC_ADDRESS',
-  ..
-}
-```
-
-Note that the hash map would only include hash keys for meta key names that are mapped to enabled entity types.  
-
-The `metas()` method returns a `Promise` which will resolve with a hash map like the one above when the request completes successfully.  With that hash map, it is straightforward to lookup the entity type for a given meta key, as follows:
+The `metas()` method returns a `Promise` which will resolve with a response like the example above when the request completes successfully.  With that response, it is straightforward to lookup the meta keys for a given entity type, as follows:
 
 ```js
 // file: my-component.js
-const metaKeys = [ .. ];
+const myEntityType = 'IP';
 
 this.get('context').metas(myEndpointId)
-  .then((metasMap) => {
+  .then(({ data }) => {
 
-    // do stuff here with the hashmap
-    metaKeys.forEach((metaKey) => {
-      const entityType = metasMap[metaKey];
-      console.log(`${metaKey} maps to ${entityType}`);
-      ...
-
-    });
+    // do stuff here with the response
+    const myMetaKeys = data[myEntityType];
   });
 ```
 

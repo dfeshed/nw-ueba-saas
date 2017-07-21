@@ -10,21 +10,14 @@ const metaMap = {
   IM: {
     code: 0,
     data: {
-      'foo': entityType,
-      'bar': entityType,
-      'baz': entityType
+      [entityType]: ['foo', 'bar', 'baz']
     }
   },
   CORE: {
     code: 0,
-    data: {},
-    coreCatalog: [
-      {
-        name: 'IP',
-        enabled: true,
-        metaKeys: ['foo', 'bar', 'baz']
-      }
-    ]
+    data: {
+      [entityType]: ['foo', 'bar', 'baz']
+    }
   }
 };
 

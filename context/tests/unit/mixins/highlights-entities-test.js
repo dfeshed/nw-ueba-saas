@@ -19,9 +19,8 @@ const entityTypes = {
 const entityMetas = {
   code: 0,
   data: {
-    'ip.src': 'IP',
-    'ip.dst': 'IP',
-    'hostname.alias': 'HOST'
+    IP: ['ip.src', 'ip.dst'],
+    HOST: ['hostname.alias']
   }
 };
 

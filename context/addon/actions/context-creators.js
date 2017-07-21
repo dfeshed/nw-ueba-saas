@@ -127,11 +127,11 @@ const initializeContextPanel = ({ entityId, entityType }) => {
   };
 };
 
-const getContextEntitiesMetas = ({ coreCatalog }) => {
+const getContextEntitiesMetas = ({ data }) => {
   return (dispatch) => {
     dispatch({
       type: ACTION_TYPES.GET_CONTEXT_ENTITIES_METAS,
-      payload: coreCatalog
+      payload: data
     });
   };
 };

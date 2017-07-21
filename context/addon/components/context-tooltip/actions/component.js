@@ -89,11 +89,11 @@ export default Component.extend({
         // Fetch the list of meta keys that correspond to this entity type.
         //
         this.get('context').metas('CORE')
-        .then(({ coreCatalog }) => {
+        .then(({ data = {} }) => {
           if (this.get('isDestroying') || this.get('isDestroyed')) {
             return;
           }
-          const { metaKeys } = (coreCatalog || []).findBy('name', entityType) || {};
+          const metaKeys = data[entityType];
           const url = pivotToInvestigateUrl(entityType, entityId, metaKeys);
           this.set('pivotToInvestigateUrl', url);
         });

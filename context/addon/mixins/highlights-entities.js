@@ -194,13 +194,12 @@ export default Mixin.create({
    *
    * @example
    * ```js
-   * // Promise fulfills with this map of 5 meta keys to entity types:
+   * // Promise fulfills with this map of entity types to meta keys:
    * {
-   *  'ip.src': 'IP',
-   *  'ip.dst': 'IP',
-   *  'username': 'USER',
-   *  'hostname.alias': 'HOST',
-   *  'domain': 'DOMAIN'
+   *  IP: ['ip.src', 'ip.dst'],
+   *  USER: ['username'],
+   *  HOST: ['alias.host'],
+   *  DOMAIN: ['domain.src', 'domain.dst']
    * }
    * ```
    * @type {Ember.RSVP.Promise}
@@ -366,7 +365,7 @@ export default Mixin.create({
    *
    * @param {jQuery} $el The DOM node wrapped in a jQuery selection object.
    * @param {Object} types A hash that maps valid entity types to `true`.
-   * @param {Object} metas A hash that maps meta keys to entity types.
+   * @param {Object} metas A hash that maps each entity type to an array of meta keys.
    * @returns {null|{ type: String, id: String }} The type & id of the entity, if enabled; null otherwise.
    * @private
    */
@@ -378,7 +377,10 @@ export default Mixin.create({
 
       // DOM doesn't say entity type. Try to compute entity type from meta key (if given).
       const metaKey = $el.attr(HTML_ATTR_META_KEY);
-      type = metaKey ? metas[metaKey] : null;
+      type = Object.keys(metas).find((entity) => {
+        const metaKeyNames = metas[entity] || [];
+        return metaKeyNames.includes(metaKey);
+      });
       $el.attr(HTML_ATTR_ENTITY_TYPE, type || '');
     }
 
