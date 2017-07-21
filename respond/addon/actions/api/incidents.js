@@ -332,6 +332,19 @@ IncidentsAPI.reopenClass({
       modelName: 'incidents',
       query: query.toJSON()
     });
+  },
+
+  createIncidentFromAlerts(name, alertIds) {
+    return promiseRequest({
+      method: 'createRecord',
+      modelName: 'incidents',
+      query: {
+        data: {
+          entity: { name },
+          associated: alertIds.map((id) => ({ id }))
+        }
+      }
+    });
   }
 });
 

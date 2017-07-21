@@ -1,6 +1,15 @@
 import Component from 'ember-component';
-import { empty, gt } from 'ember-computed-decorators';
+import { gt } from 'ember-computed-decorators';
 import service from 'ember-service/inject';
+import connect from 'ember-redux/components/connect';
+import { hasSelectedAlertsBelongingToIncidents } from 'respond/selectors/alerts';
+import { next } from 'ember-runloop';
+
+const stateToComputed = (state) => {
+  return {
+    hasSelectedAlertsBelongingToIncidents: hasSelectedAlertsBelongingToIncidents(state)
+  };
+};
 
 /**
  * @class AlertControls
@@ -8,11 +17,11 @@ import service from 'ember-service/inject';
  *
  * @public
  */
-export default Component.extend({
+const AlertControls = Component.extend({
+  classNames: ['rsa-alerts-toolbar-controls'],
   accessControl: service(),
   i18n: service(),
-
-  @empty('itemsSelected') hasNoSelections: true,
+  eventBus: service(),
 
   @gt('itemsSelected.length', 1) isBulkSelection: false,
 
@@ -46,6 +55,19 @@ export default Component.extend({
   },
 
   actions: {
+    showModal() {
+      this.set('isDisplayingModal', true);
+      next(() => {
+        this.get('eventBus').trigger('rsa-application-modal-open-create-incident');
+      });
+    },
+    closeModal() {
+      this.get('eventBus').trigger('rsa-application-modal-close-create-incident');
+      this.set('isDisplayingModal', false);
+    },
+    createIncident() {
+      this.send('showModal');
+    },
     deleteAlerts() {
       const { itemsSelected, confirm, i18n, deleteConfirmationDialogId } =
         this.getProperties('itemsSelected', 'confirm', 'i18n', 'deleteConfirmationDialogId');
@@ -58,3 +80,5 @@ export default Component.extend({
     }
   }
 });
+
+export default connect(stateToComputed)(AlertControls);

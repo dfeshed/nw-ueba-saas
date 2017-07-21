@@ -10,6 +10,8 @@ const {
   Logger
 } = Ember;
 
+const callbacksDefault = { onSuccess() {}, onFailure() {} };
+
 /**
  * Action creator that dispatches a set of actions for fetching incidents (with or without filters) and sorted by one field.
  * @method getItems
@@ -424,6 +426,21 @@ const addRelatedIndicatorsToIncident = (indicators, incidentId, incidentCreated,
   }
 });
 
+const createIncidentFromAlerts = (name, alertIds, callbacks = callbacksDefault) => ({
+  type: ACTION_TYPES.CREATE_INCIDENT,
+  promise: Incidents.createIncidentFromAlerts(name, alertIds),
+  meta: {
+    onSuccess: (response) => {
+      Logger.debug(ACTION_TYPES.CREATE_INCIDENT, response);
+      callbacks.onSuccess(response);
+    },
+    onFailure: (response) => {
+      ErrorHandlers.handleContentCreationError(response, 'create incident');
+      callbacks.onFailure(response);
+    }
+  }
+});
+
 const clearAddRelatedIndicatorsStatus = () => ({ type: ACTION_TYPES.CLEAR_ADD_RELATED_INDICATORS_STATUS });
 
 // UI STATE CREATORS - INCIDENT
@@ -475,5 +492,6 @@ export {
   startSearchRelatedIndicators,
   stopSearchRelatedIndicators,
   addRelatedIndicatorsToIncident,
-  clearAddRelatedIndicatorsStatus
+  clearAddRelatedIndicatorsStatus,
+  createIncidentFromAlerts
 };

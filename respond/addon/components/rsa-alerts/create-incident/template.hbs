@@ -1,0 +1,19 @@
+<p>
+  {{t 'respond.incidents.actions.actionMessages.createIncidentInstruction' alertCount=alertIds.length}}
+</p>
+{{rsa-form-input label=(t 'respond.incidents.incidentName') value=incidentName}}
+
+<footer>
+  <hbox class="modal-footer-buttons">
+    {{#rsa-form-button defaultAction='handleCancel' class='cancel'}}
+      {{t 'forms.cancel'}}
+    {{/rsa-form-button}}
+    {{#rsa-form-button
+      class="apply"
+      isDisabled=(or isInvalid isCreationInProgress)
+      style='danger'
+      defaultAction='handleApply'}}
+      {{t 'forms.apply'}}
+    {{/rsa-form-button}}
+  </hbox>
+</footer>

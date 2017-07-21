@@ -580,6 +580,7 @@ export default {
       noDescription: 'ja_There is no description for this task'
     },
     incidents: {
+      incidentName: 'ja_Incident Name',
       actions: {
         addEntryLabel: 'ja_Add Entry',
         confirmUpdateTitle: 'ja_Confirm update',
@@ -592,7 +593,10 @@ export default {
           'Deleting an incident from NetWitness will not delete it from other systems. Please note that it will be your responsibility ' +
           'to delete the incident and its remediation tasks from any other applicable systems.',
           addJournalEntrySuccess: 'ja_You added a journal entry to incident {{incidentId}}',
-          addJournalEntryFailure: 'ja_There was a problem adding a journal entry to incident {{incidentId}}'
+          addJournalEntryFailure: 'ja_There was a problem adding a journal entry to incident {{incidentId}}',
+          incidentCreated: 'ja_You successfully created the incident INC-1234 from the selected alerts.',
+          incidentCreationFailed: 'ja_There was a problem creating an incident from the selected alerts',
+          createIncidentInstruction: 'ja_An incident will be created from the selected {{alertCount}} alert(s). Please provide a name for the incident.'
         },
         deselectAll: 'ja_Deselect all'
       },
@@ -622,6 +626,7 @@ export default {
       footer: 'ja_Showing {{count}} out of {{total}} incidents'
     },
     alerts: {
+      createIncident: 'ja_Create Incident',
       actions: {
         actionMessages: {
           deleteWarning: 'ja_Warning: You are about to delete one or more alerts that may be associated with incidents. ' +

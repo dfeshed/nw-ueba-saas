@@ -1,0 +1,12 @@
+@import "create-incident";
+
+.rsa-application-modal-content.create-incident-modal {
+  width: 33%;
+  height: 33%;
+  max-height: 300px;
+  min-height: 250px;
+
+  .modal-content {
+    padding: rsa-whitespace();
+  }
+}

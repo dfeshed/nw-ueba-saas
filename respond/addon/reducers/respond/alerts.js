@@ -1,5 +1,6 @@
 import * as ACTION_TYPES from 'respond/actions/types';
 import reduxActions from 'redux-actions';
+import { handle } from 'redux-pack';
 import { load, persist } from './util/local-storage';
 import explorerInitialState from './util/explorer-reducer-initial-state';
 import explorerReducers from './util/explorer-reducer-fns';
@@ -50,7 +51,28 @@ const alertsReducers = reduxActions.handleActions({
   [ACTION_TYPES.CLEAR_FOCUS_ALERT]: explorerReducers.clearFocusItem,
   [ACTION_TYPES.TOGGLE_ALERT_SELECTED]: explorerReducers.toggleSelectItem,
   [ACTION_TYPES.TOGGLE_SELECT_ALL_ALERTS]: explorerReducers.toggleSelectAll,
-  [ACTION_TYPES.ALERT_SORT_BY]: persistState(explorerReducers.sortBy)
+  [ACTION_TYPES.ALERT_SORT_BY]: persistState(explorerReducers.sortBy),
+  [ACTION_TYPES.CREATE_INCIDENT]: (state, action) => (
+    handle(state, action, {
+      start: (s) => ({ ...s, isTransactionUnderway: true }),
+      success: (s) => {
+        const { payload: { data: { id }, request: { data: { associated } } } } = action;
+        const alertIds = associated.map((association) => (association.id));
+        return {
+          ...s,
+          // Update the alerts (items) that now have an associated incident
+          items: s.items.map((alert) => {
+            if (alertIds.includes(alert.id)) {
+              return { ...alert, incidentId: id, partOfIncident: true };
+            }
+            return alert;
+          })
+        };
+      },
+      failure: (s) => ({ ...s }),
+      finish: (s) => ({ ...s, isTransactionUnderway: false })
+    })
+  )
 
 }, initialState);
 

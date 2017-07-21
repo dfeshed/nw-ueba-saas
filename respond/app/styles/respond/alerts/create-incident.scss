@@ -1,0 +1,27 @@
+$modalHeaderHeight: 52px;
+$footerHeight: 40px;
+
+.rsa-create-incident {
+  p, label {
+    padding: rsa-whitespace();
+  }
+
+  footer {
+    height: $footerHeight;
+    box-sizing: border-box;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    padding: rsa-whitespace(less);
+    background-color: rsa-color(gray, dark, $rsa-nearly-transparent);
+
+
+    .modal-footer-buttons {
+      justify-content: flex-end;
+      .rsa-form-button-wrapper {
+        margin: 0 0 0 rsa-whitespace();
+      }
+    }
+  }
+}
