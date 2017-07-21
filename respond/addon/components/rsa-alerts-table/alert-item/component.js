@@ -33,8 +33,14 @@ export default GroupItem.extend(HighlightsEntities, {
 
   @computed('item')
   toDeviceValues(item) {
-    const { destination: { device } = {} } = item || {};
-    return getDeviceFieldValuePairs(device);
+    const { domain, destination: { device = {} } = {} } = item || {};
+    const devicePairs = getDeviceFieldValuePairs(device);
+
+    // If we didn't find a hostname in event.destination.device, check for it in event.domain field.
+    if (isEmpty(device.dns_hostname) && !isEmpty(domain)) {
+      devicePairs.pushObject({ field: 'domain', value: domain });
+    }
+    return devicePairs;
   },
 
   @computed('item')
@@ -70,5 +76,14 @@ export default GroupItem.extend(HighlightsEntities, {
       }
     });
     return out;
+  },
+
+  // Determines whether to show an arrow between the "from*" values and the "to*" + "file*" values.
+  // It is shown only if we have values to show on both sides of the arrow.
+  @computed('fromDeviceValues.length', 'fromUserValues.length', 'toDeviceValues.length', 'toUserValues.length', 'fileValues.length')
+  shouldShowArrow(fromDeviceLength, fromUserLength, toDeviceLength, toUserLength, fileLength) {
+    const fromCount = fromDeviceLength + fromUserLength;
+    const toCount = toDeviceLength + toUserLength + fileLength;
+    return fromCount && toCount;
   }
 });

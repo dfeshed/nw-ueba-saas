@@ -1,0 +1,8 @@
+.rsa-items-sheet {
+  .rsa-data-table {
+    &-body-row {
+      /* overwrites default component-lib style */
+      border-top-color: transparent;
+    }
+  }
+}

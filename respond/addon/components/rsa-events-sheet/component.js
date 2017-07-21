@@ -33,12 +33,17 @@ export default Component.extend(CanThrottleAttr, {
     field: 'source.device.dns_hostname',
     fieldSuffix: 'dns_hostname',
     title: 'respond.eventsTable.sourceHost',
-    visible: false
+    visible: true
   }, {
     field: 'source.device.mac_address',
     fieldSuffix: 'mac_address',
     title: 'respond.eventsTable.sourceMAC',
-    visible: false
+    visible: true
+  }, {
+    field: 'source.user.username',
+    fieldSuffix: 'username',
+    title: 'respond.eventsTable.sourceUser',
+    visible: true
   }, {
     field: 'destination.device.ip_address',
     fieldSuffix: 'ip_address',
@@ -47,27 +52,27 @@ export default Component.extend(CanThrottleAttr, {
   }, {
     field: 'destination.device.dns_hostname',
     fieldSuffix: 'dns_hostname',
+    alternateField: 'domain',
+    alternateFieldSuffix: 'domain',
     title: 'respond.eventsTable.destinationHost',
-    visible: false
+    width: 150,
+    visible: true
   }, {
     field: 'destination.device.mac_address',
     fieldSuffix: 'mac_address',
     title: 'respond.eventsTable.destinationMAC',
-    visible: false
-  }, {
-    field: 'detector.ip_address',
-    fieldSuffix: 'ip_address',
-    title: 'respond.eventsTable.detectorIP',
-    visible: true
-  }, {
-    field: 'source.user.username',
-    fieldSuffix: 'username',
-    title: 'respond.eventsTable.sourceUser',
+    width: 150,
     visible: true
   }, {
     field: 'destination.user.username',
     fieldSuffix: 'username',
     title: 'respond.eventsTable.destinationUser',
+    width: 150,
+    visible: true
+  }, {
+    field: 'detector.ip_address',
+    fieldSuffix: 'ip_address',
+    title: 'respond.eventsTable.detectorIP',
     visible: true
   }, {
     field: 'data.0.filename',

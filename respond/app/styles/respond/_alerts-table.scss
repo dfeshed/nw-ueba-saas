@@ -182,11 +182,15 @@ $alertsTableDotSize: 5px;
     }
 
     .sep {
-      margin: 0 rsa-whitespace(less);
+      margin: 0 rsa-whitespace(least);
 
       &:last-of-type {
         display: none;
       }
+    }
+
+    .arrow {
+      margin: 0 rsa-whitespace(least);
     }
   }
 

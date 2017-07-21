@@ -52,9 +52,9 @@
             </span>
 
             {{!Arrow that points from source values to destination values}}
-            {{#with (and fromDeviceValues.length toDeviceValues.length)}}
+            {{#if shouldShowArrow}}
               {{rsa-icon class="arrow" name="arrow-right-5" size="smaller"}}
-            {{/with}}
+            {{/if}}
 
             <span class="destination-values">
 

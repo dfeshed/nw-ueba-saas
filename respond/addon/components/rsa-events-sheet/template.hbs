@@ -13,14 +13,18 @@
     fitToWidth=false
     lazy=true
   }}
-    {{rsa-data-table/header enableColumnSelector=true translateTitles=true}}
+    {{rsa-data-table/header enableColumnSelector=false translateTitles=true}}
     {{#rsa-data-table/body showNoResultMessage=false as |item index column|}}
       {{#rsa-events-sheet-cell column=column index=index item=item}}
         {{#if (eq column.field 'timestamp')}}
           {{rsa-content-datetime timestamp=item.timestamp displayDate=true displayTime=true}}
-        {{else}}
+        {{else if (get item column.field)}}
           <span class="entity" data-meta-key="{{column.fieldSuffix}}" data-entity-id="{{get item column.field}}">
             {{get item column.field}}
+          </span>
+        {{else if column.alternateField}}
+          <span class="entity" data-meta-key="{{column.alternateFieldSuffix}}" data-entity-id="{{get item column.alternateField}}">
+            {{get item column.alternateField}}
           </span>
         {{/if}}
       {{/rsa-events-sheet-cell}}
