@@ -113,14 +113,14 @@
       </div>
       <hbox>
         <div class="rsa-context-panel__liveconnect__comm-activity__desc">
-          {{t 'context.lc.submittedActivityDesc2' highrisk=liveConnectData.customerHighRiskFeedbackPercentage}}<br>
-          {{t 'context.lc.submittedActivityDesc3' unsafe=liveConnectData.customerRiskyFeedbackPercentage}}<br>
-          {{t 'context.lc.submittedActivityDesc4' suspicious=liveConnectData.customerSuspiciousFeedbackPercentage}}<br>
+          {{t 'context.lc.submittedActivityDesc2' highrisk= (check-null liveConnectData.customerHighRiskFeedbackPercentage 0)}}<br>
+          {{t 'context.lc.submittedActivityDesc3' unsafe= (check-null liveConnectData.customerRiskyFeedbackPercentage 0)}}<br>
+          {{t 'context.lc.submittedActivityDesc4' suspicious= (check-null liveConnectData.customerSuspiciousFeedbackPercentage 0)}}<br>
         </div>
         <div class="rsa-context-panel__liveconnect__comm-activity__desc">
           {{rsa-content-definition label=(t 'context.lc.submittedActivityDesc5')}}<br>
-          {{t 'context.lc.submittedActivityDesc6' safe=liveConnectData.customerNotRiskyFeedbackPercentage}}<br>
-          {{t 'context.lc.submittedActivityDesc7' unknown=liveConnectData.customerUnknownFeedbackPercentage}}<br>
+          {{t 'context.lc.submittedActivityDesc6' safe= (check-null liveConnectData.customerNotRiskyFeedbackPercentage 0)}}<br>
+          {{t 'context.lc.submittedActivityDesc7' unknown= (check-null liveConnectData.customerUnknownFeedbackPercentage 0)}}<br>
         </div>
       </hbox>
     </vbox>

@@ -1262,7 +1262,7 @@ export default {
       whoisPostalCode: 'ja_Postal Code',
       whoisCountry: 'ja_Country',
       whoisPhone: 'ja_Phone',
-      wohisFax: 'ja_Fax',
+      whoisFax: 'ja_Fax',
       whoisEmail: 'ja_Email',
       domain: 'ja_Domain',
       ipAddress: 'ja_IP Address',
@@ -1319,7 +1319,8 @@ export default {
       'transport.connect.failed': 'ja_Context data is not available as the data source is not reachable.',
       'live.connect.private.ip.unsupported': 'ja_Only public IP addresses are supported by Live Connect.',
       'transport.http.error': 'ja_Context lookup failed for this datasource since it returned an error.',
-      'transport.validation.error': 'ja_The data format is not supported for the data source.'
+      'transport.validation.error': 'ja_The data format is not supported for the data source.',
+      'transport.http.auth.failed': 'ja_Could not fetch context from this data source - Authorization failed.'
     },
     footer: {
       viewAll: 'ja_VIEW All',

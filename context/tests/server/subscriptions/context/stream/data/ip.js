@@ -1490,7 +1490,7 @@ export default [
               'whoisPostalCode': '12345',
               'whoisCountry': 'United States',
               'whoisPhone': '777-555-1234',
-              'wohisFax': '777-555-6789',
+              'whoisFax': '777-555-6789',
               'whoisEmail': 'fsmith@google.com'
             }
           },
@@ -1523,7 +1523,7 @@ export default [
                   'percentage': 34.24
                 }
               ],
-              'customerRiskyFeedbackPercentage': 100.0,
+              'customerRiskyFeedbackPercentage': 50.0,
               'customerRiskyFeedbackPercentageTrend': [
                 {
                   'time': 1401926400000,
@@ -1534,7 +1534,7 @@ export default [
                   'percentage': 45.5
                 }
               ],
-              'customerNotRiskyFeedbackPercentage': 0.0,
+              'customerNotRiskyFeedbackPercentage': 8.0,
               'customerNotRiskyFeedbackPercentageTrend': [
                 {
                   'time': 1401926400000,
@@ -1552,7 +1552,7 @@ export default [
                   'percentage': 9.45
                 }
               ],
-              'customerUnknownFeedbackPercentage': 0.0,
+              'customerUnknownFeedbackPercentage': 6.0,
               'customerUnknownFeedbackPercentageTrend': [
                 {
                   'time': 1401926400000,
@@ -1563,7 +1563,7 @@ export default [
                   'percentage': 34.24
                 }
               ],
-              'customerSuspiciousFeedbackPercentage': 0.0,
+              'customerSuspiciousFeedbackPercentage': 12.0,
               'customerSuspiciousFeedbackPercentageTrend': [
                 {
                   'time': 1401926400000,
@@ -1574,7 +1574,7 @@ export default [
                   'percentage': 34.24
                 }
               ],
-              'customerHighRiskFeedbackPercentage': 0.0,
+              'customerHighRiskFeedbackPercentage': 5.0,
               'customerHighRiskFeedbackPercentageTrend': [
                 {
                   'time': 1401926400000,

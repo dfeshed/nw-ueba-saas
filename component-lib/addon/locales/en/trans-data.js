@@ -1262,7 +1262,7 @@ export default {
       whoisPostalCode: 'Postal Code',
       whoisCountry: 'Country',
       whoisPhone: 'Phone',
-      wohisFax: 'Fax',
+      whoisFax: 'Fax',
       whoisEmail: 'Email',
       domain: 'Domain',
       ipAddress: 'IP Address',
@@ -1319,7 +1319,8 @@ export default {
       'transport.connect.failed': 'Context data is not available as the data source is not reachable.',
       'live.connect.private.ip.unsupported': 'Only public IP addresses are supported by Live Connect.',
       'transport.http.error': 'Context lookup failed for this datasource since it returned an error.',
-      'transport.validation.error': 'The data format is not supported for the data source.'
+      'transport.validation.error': 'The data format is not supported for the data source.',
+      'transport.http.auth.failed': 'Could not fetch context from this data source - Authorization failed.'
     },
     footer: {
       viewAll: 'VIEW All',
