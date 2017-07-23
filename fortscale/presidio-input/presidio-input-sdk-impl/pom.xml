@@ -3,37 +3,19 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-
     <name>presidio-input-sdk-impl</name>
-    <description>Demo project for Spring Boot</description>
+    <description>Presidio Input SDK Implementation</description>
 
     <parent>
         <artifactId>presidio-input</artifactId>
         <groupId>fortscale</groupId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
+
     <artifactId>presidio-input-sdk-impl</artifactId>
     <packaging>jar</packaging>
 
-
-    <properties>
-        <start-class>presidio.input.sdk.impl.Application</start-class>
-    </properties>
-
     <dependencies>
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-task-starter</artifactId>
-            <version>${spring-cloud-task-starter.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-tomcat</artifactId>
-            <scope>provided</scope>
-        </dependency>
-
-
         <dependency>
             <groupId>fortscale</groupId>
             <artifactId>presidio-utils</artifactId>
@@ -42,7 +24,7 @@
         <dependency>
             <groupId>fortscale</groupId>
             <artifactId>presidio-input-sdk-api</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
