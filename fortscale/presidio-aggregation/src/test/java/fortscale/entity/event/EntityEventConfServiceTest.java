@@ -12,7 +12,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -22,12 +21,6 @@ public class EntityEventConfServiceTest {
 
 	@Test
 	public void service_should_deserialize_entity_event_definitions_from_json_file() throws Exception {
-		// Check global params
-		Map<String, Object> globalParams = entityEventConfService.getGlobalParams();
-		Assert.assertNotNull(globalParams);
-		Assert.assertEquals(2, globalParams.size());
-		Assert.assertEquals(1, globalParams.get("secondsToWaitBeforeFiring"));
-		Assert.assertEquals(3, globalParams.get("fireEventsEverySeconds"));
 
 		// Check entity event definitions
 		List<EntityEventConf> entityEventDefinitions = entityEventConfService.getEntityEventDefinitions();
@@ -46,10 +39,6 @@ public class EntityEventConfServiceTest {
 	@Configuration
 	public static class EntityEventConfServiceTestConfiguration{
 
-		@Bean
-		public EntityEventGlobalParamsConfService getEntityEventGlobalParamsConfService(){
-			return new EntityEventGlobalParamsConfService();
-		}
 
 		@Bean
 		public EntityEventConfService getEntityEventConfService(){
