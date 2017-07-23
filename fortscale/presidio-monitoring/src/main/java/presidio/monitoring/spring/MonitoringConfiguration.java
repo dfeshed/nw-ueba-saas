@@ -1,11 +1,11 @@
-package presidio.monitoring.exporter;
+package presidio.monitoring.spring;
 
 
-import presidio.monitoring.aspect.CustomMetric;
-import presidio.monitoring.aspect.CustomMetricEndpoint;
-import presidio.monitoring.aspect.MonitoringAspects;
-import presidio.monitoring.exporter.exporters.FileMetricsExporter;
-import presidio.monitoring.exporter.exporters.MetricsExporter;
+
+import presidio.monitoring.aspect.metrics.CustomMetricEndpoint;
+import presidio.monitoring.aspect.metrics.PresidioDefaultMetrics;
+import presidio.monitoring.export.MetricsExporterElasticImpl;
+import presidio.monitoring.export.MetricsExporter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.actuate.endpoint.MetricsEndpoint;
 import org.springframework.boot.actuate.endpoint.PublicMetrics;
@@ -17,11 +17,11 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 @Configuration
 @EnableAspectJAutoProxy
 @ComponentScan(basePackages = {"presidio.monitoring.aspect"})
-public class ExporterConfiguration {
+public class MonitoringConfiguration {
 
     @Bean
     public PublicMetrics publicMetrics(){
-        return new DefaultPublicMetrics();
+        return new PresidioDefaultMetrics();
     }
 
     @Bean
@@ -35,6 +35,6 @@ public class ExporterConfiguration {
 
     @Bean
     public MetricsExporter fileMetricsExporter() {
-        return new FileMetricsExporter(metricsEndpoint(),processName);
+        return new MetricsExporterElasticImpl(metricsEndpoint(),processName);
     }
 }

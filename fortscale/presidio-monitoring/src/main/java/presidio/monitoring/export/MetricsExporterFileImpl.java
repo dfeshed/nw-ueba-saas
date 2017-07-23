@@ -1,27 +1,26 @@
-package presidio.monitoring.exporter.exporters;
+package presidio.monitoring.export;
 
 
 
 import fortscale.utils.logging.Logger;
 import org.springframework.boot.actuate.endpoint.MetricsEndpoint;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 
 import java.util.*;
 
 @Component
-public class FileMetricsExporter extends MetricsExporter {
+public class MetricsExporterFileImpl extends MetricsExporter {
 
-    private final Logger logger = Logger.getLogger(FileMetricsExporter.class);
+    private final Logger logger = Logger.getLogger(MetricsExporterFileImpl.class);
 
-    public FileMetricsExporter(MetricsEndpoint metricsEndpoint,String applicationName) {
+    public MetricsExporterFileImpl(MetricsEndpoint metricsEndpoint, String applicationName) {
         super(metricsEndpoint,applicationName);
         logger.info("************************  application name :   {}   **************",applicationName);
     }
 
 
-    @Scheduled(fixedDelay = 10000)
+    //@Scheduled(fixedDelay = 10000)
     public void export(){
         try {
             logger.debug("Exporting");

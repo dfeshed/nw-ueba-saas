@@ -1,10 +1,11 @@
-package presidio.monitoring.exporter.exporters;
+package presidio.monitoring.export;
 
 
 
 import fortscale.utils.logging.Logger;
+import org.json.JSONObject;
 import org.springframework.boot.actuate.endpoint.MetricsEndpoint;
-import presidio.monitoring.aspect.CustomMetricEndpoint;
+import presidio.monitoring.aspect.metrics.JsonObjectMetric;
 
 
 import java.util.Arrays;
@@ -21,7 +22,7 @@ public abstract class MetricsExporter implements AutoCloseable{
     private final Logger logger = Logger.getLogger(MetricsExporter.class);
 
      private MetricsEndpoint metricsEndpoint;
-     private Map<String,String> customMetrics;
+     private Map<String,Object> customMetrics;
      private Set<String> fixedMetrics;
      private Set<String> tags;
 
@@ -39,16 +40,18 @@ public abstract class MetricsExporter implements AutoCloseable{
      Map<String,Object> filterRepitMetrics(){
         Map<String, Object> metricsForExport=new HashMap<>();
         String metric;
-        String value;
+        Object value;
         Map<String, Object> map = metricsEndpoint.invoke();
         for (Map.Entry<String, Object> entry : map.entrySet()) {
             metric = entry.getKey();
-            value = entry.getValue().toString();
+            value = entry.getValue();
             if (!fixedMetrics.contains(metric)) {
                 if (!customMetrics.containsKey(metric))
                     customMetrics.put(metric, value);
                 else {
-                    if (!customMetrics.get(metric).equals(value))
+                    JSONObject obj1= (JSONObject) customMetrics.get(metric);
+                    JSONObject obj2= (JSONObject) value;
+                    if (!obj1.get("value").equals(obj2.get("value")))
                         customMetrics.replace(metric, value);
                     else {
                         logger.info("****** Metric is not exported, name : {}  value: {}  ********* ",metric,value);

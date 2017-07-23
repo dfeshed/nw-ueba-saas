@@ -1,28 +1,29 @@
-package presidio.monitoring.exporter.exporters;
+package presidio.monitoring.export;
 
 
 import fortscale.utils.logging.Logger;
 import org.json.JSONObject;
 import org.springframework.boot.actuate.endpoint.MetricsEndpoint;
+import org.springframework.scheduling.annotation.Scheduled;
 
 
 import java.util.Map;
 
 
-public class ElasticMetricsExporter extends MetricsExporter {
+public class MetricsExporterElasticImpl extends MetricsExporter {
 
-    private final Logger logger=Logger.getLogger(ElasticMetricsExporter.class);
+    private final Logger logger=Logger.getLogger(MetricsExporterElasticImpl.class);
 
 
 
-    public ElasticMetricsExporter(MetricsEndpoint metricsEndpoint,String applicationName) {
+    public MetricsExporterElasticImpl(MetricsEndpoint metricsEndpoint, String applicationName) {
         super(metricsEndpoint,applicationName);
     }
 
 
-    //@Scheduled(fixedRate = 5000)
+    @Scheduled(fixedRate = 5000)
     public void export() {
-        logger.debug("Exporting");
+        logger.info("{}",createMetricObject());
     }
 
 

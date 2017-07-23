@@ -1,4 +1,4 @@
-package presidio.monitoring.exporter;
+package presidio.monitoring.aspect.metrics;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.endpoint.PublicMetrics;
@@ -10,8 +10,10 @@ import org.springframework.util.StringUtils;
 import java.lang.management.*;
 import java.util.*;
 
+import static presidio.monitoring.DefaultPublicMetricsNames.*;
+
 @Component
-public class DefaultPublicMetrics implements PublicMetrics{
+public class PresidioDefaultMetrics implements PublicMetrics{
 
 
     private Collection<Metric<?>> result;
@@ -21,7 +23,7 @@ public class DefaultPublicMetrics implements PublicMetrics{
     private List<GarbageCollectorMXBean> garbageCollectorMxBeans;
     private ThreadMXBean threadMxBean;
 
-    public DefaultPublicMetrics() {
+    public PresidioDefaultMetrics() {
         result = new LinkedHashSet<>();
         heapMemoryUsage = ManagementFactory.getMemoryMXBean().getHeapMemoryUsage();
         nonHeapMemoryUsage = ManagementFactory.getMemoryMXBean().getNonHeapMemoryUsage();
@@ -48,28 +50,28 @@ public class DefaultPublicMetrics implements PublicMetrics{
 
 
     private void addMemoryMetrics(Collection<Metric<?>> result) {
-        result.add(newMemoryMetric("mem", runtime.totalMemory() + getTotalNonHeapMemoryIfPossible()));
-        result.add(newMemoryMetric("mem.free", runtime.freeMemory()));
-        result.add(newMemoryMetric("heap.committed", heapMemoryUsage.getCommitted()));
-        result.add(newMemoryMetric("heap.init", heapMemoryUsage.getInit()));
-        result.add(newMemoryMetric("heap.used", heapMemoryUsage.getUsed()));
-        result.add(newMemoryMetric("heap", heapMemoryUsage.getMax()));
-        result.add(newMemoryMetric("nonheap.committed", nonHeapMemoryUsage.getCommitted()));
-        result.add(newMemoryMetric("nonheap.init", nonHeapMemoryUsage.getInit()));
-        result.add(newMemoryMetric("nonheap.used", nonHeapMemoryUsage.getUsed()));
-        result.add(newMemoryMetric("nonheap", nonHeapMemoryUsage.getMax()));
+        result.add(newMemoryMetric(MEM, runtime.totalMemory() + getTotalNonHeapMemoryIfPossible()));
+        result.add(newMemoryMetric(MEM_FREE, runtime.freeMemory()));
+        result.add(newMemoryMetric(HEAP_COMMITTED, heapMemoryUsage.getCommitted()));
+        result.add(newMemoryMetric(HEAP_INIT, heapMemoryUsage.getInit()));
+        result.add(newMemoryMetric(HEAP_USED, heapMemoryUsage.getUsed()));
+        result.add(newMemoryMetric(HEAP, heapMemoryUsage.getMax()));
+        result.add(newMemoryMetric(NONHEAP_COMMITTED, nonHeapMemoryUsage.getCommitted()));
+        result.add(newMemoryMetric(NONHEAP_INIT, nonHeapMemoryUsage.getInit()));
+        result.add(newMemoryMetric(NONHEAP_USED, nonHeapMemoryUsage.getUsed()));
+        result.add(newMemoryMetric(NONHEAP, nonHeapMemoryUsage.getMax()));
     }
 
     private void addManagementMetrics(Collection<Metric<?>> result) {
         try {
-            result.add(new Metric<>("uptime", ManagementFactory.getRuntimeMXBean().getUptime()));
-            result.add(new Metric<>("systemload.average", ManagementFactory.getOperatingSystemMXBean().getSystemLoadAverage()));
+            result.add(new Metric<>(UPTIME, ManagementFactory.getRuntimeMXBean().getUptime()));
+            result.add(new Metric<>(SYSTEMLOAD_AVERAGE, ManagementFactory.getOperatingSystemMXBean().getSystemLoadAverage()));
             for (GarbageCollectorMXBean garbageCollectorMXBean : garbageCollectorMxBeans) {
                 String name = beautifyGcName(garbageCollectorMXBean.getName());
                 result.add(new Metric<>("gc." + name + ".count", garbageCollectorMXBean.getCollectionCount()));
                 result.add(new Metric<>("gc." + name + ".time", garbageCollectorMXBean.getCollectionTime()));
             }
-            result.add(new Metric<>("processors", runtime.availableProcessors()));
+            result.add(new Metric<>(PROCESSORS, runtime.availableProcessors()));
         }
         catch (NoClassDefFoundError ex) {
             // Expected on Google App Engine
@@ -78,10 +80,10 @@ public class DefaultPublicMetrics implements PublicMetrics{
 
 
     private void addThreadMetrics(Collection<Metric<?>> result) {
-        result.add(new Metric<>("threads.peak", (long) threadMxBean.getPeakThreadCount()));
-        result.add(new Metric<>("threads.daemon", (long) threadMxBean.getDaemonThreadCount()));
-        result.add(new Metric<>("threads.totalStarted", threadMxBean.getTotalStartedThreadCount()));
-        result.add(new Metric<>("threads", (long) threadMxBean.getThreadCount()));
+        result.add(new Metric<>(THREADS_PEAK, (long) threadMxBean.getPeakThreadCount()));
+        result.add(new Metric<>(THREADS_DAEMON, (long) threadMxBean.getDaemonThreadCount()));
+        result.add(new Metric<>(THREADS_TOTAL_STARTED, threadMxBean.getTotalStartedThreadCount()));
+        result.add(new Metric<>(THREADS, (long) threadMxBean.getThreadCount()));
     }
 
 

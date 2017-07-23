@@ -12,35 +12,38 @@ import org.aspectj.lang.annotation.Before;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.endpoint.MetricsEndpoint;
 import org.springframework.stereotype.Component;
+import presidio.monitoring.aspect.metrics.PresidioCustomMetrics;
 
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static presidio.monitoring.aspect.ExporterCommonString.END;
-import static presidio.monitoring.aspect.ExporterCommonString.EXCEPTION_THROWN;
-import static presidio.monitoring.aspect.ExporterCommonString.NUMBER_OF_FAILED_VALIDATION;
-import static presidio.monitoring.aspect.ExporterCommonString.RUN_TIME;
-import static presidio.monitoring.aspect.ExporterCommonString.START;
+
 
 @Aspect
 @Component
 public class MonitoringAspects {
 
     private static final Logger logger = Logger.getLogger(MonitoringAspects.class);
+    private final String START = ".Start";
+    private final String END = ".End";
+    private final String EXCEPTION_THROWN = ".ExceptionThrown";
+    private final String RUN_TIME = ".RunTime";
+    private final String NUMBER_OF_FAILED_VALIDATION = ".NumberOfFailedValidation";
+
     private boolean isRegisterd =false;
-    private final String LONG="long";
+    private final String UNIT_TYPE_LONG ="long";
     @Autowired
     public MetricsEndpoint metricsEndpoint;
     @Autowired
-    public CustomMetric customMetric;
+    public PresidioCustomMetrics presidioCustomMetrics;
 
 
 /*
-    public MonitoringAspects(MetricsEndpoint metricsEndpoint,CustomMetric customMetric){
+    public MonitoringAspects(MetricsEndpoint metricsEndpoint,PresidioCustomMetrics presidioCustomMetrics){
         logger.info("Aspect is activated");
-        this.customMetric=customMetric;
+        this.presidioCustomMetrics=presidioCustomMetrics;
         this.metricsEndpoint=metricsEndpoint;
     }
 */
@@ -53,9 +56,9 @@ public class MonitoringAspects {
     }
 
     private <T extends Number> void  addMetric(String name, T value, Set tags,String unit){
-        customMetric.addMetric(name,value,tags,unit);
+        presidioCustomMetrics.addMetric(name,value,tags,unit);
         if(toRegister())
-            metricsEndpoint.registerPublicMetrics(customMetric);
+            metricsEndpoint.registerPublicMetrics(presidioCustomMetrics);
     }
 
     /**
@@ -72,7 +75,7 @@ public class MonitoringAspects {
         String metric = joinPoint.getSignature().toShortString();
         logger.info("Metric {} increment with annotation Start. ", metric);
         Set tags=new HashSet();
-        addMetric(metric+START,1,tags,LONG);
+        addMetric(metric+START,1,tags, UNIT_TYPE_LONG);
     }
 
     /**
@@ -89,7 +92,7 @@ public class MonitoringAspects {
         String metric  = joinPoint.getSignature().toShortString();
         logger.info("Metric {} increment with annotation End. ", metric);
         Set tags=new HashSet();
-        addMetric(metric+END,1,tags,LONG);
+        addMetric(metric+END,1,tags, UNIT_TYPE_LONG);
     }
 
     /**
@@ -106,7 +109,7 @@ public class MonitoringAspects {
         String metric  = joinPoint.getSignature().toShortString();
         logger.info("Metric {} increment with annotation exceptionThrown. ", metric);
         Set tags=new HashSet();
-        addMetric(metric+EXCEPTION_THROWN,1,tags,LONG);
+        addMetric(metric+EXCEPTION_THROWN,1,tags, UNIT_TYPE_LONG);
 
     }
 
@@ -127,7 +130,7 @@ public class MonitoringAspects {
         long endTime = System.nanoTime();
         long time=Long.divideUnsigned(endTime-startTime,1000000000);
         Set tags=new HashSet();
-        addMetric(metricName+RUN_TIME,time,tags,LONG);
+        addMetric(metricName+RUN_TIME,time,tags, UNIT_TYPE_LONG);
         logger.info("Metric {} run time is {} milli seconds. ", metricName,time);
     }
 
@@ -145,7 +148,7 @@ public class MonitoringAspects {
         String metricName = joinPoint.getSignature().toShortString();
         int numberOfFailedValidationDocuments = ((List<? extends Serializable>) joinPoint.proceed()).size();
         Set tags=new HashSet();
-        addMetric(metricName+NUMBER_OF_FAILED_VALIDATION,numberOfFailedValidationDocuments,tags,LONG);
+        addMetric(metricName+NUMBER_OF_FAILED_VALIDATION,numberOfFailedValidationDocuments,tags, UNIT_TYPE_LONG);
         logger.info("Metric {} got {} failed validations. ", metricName, numberOfFailedValidationDocuments);
     }
 

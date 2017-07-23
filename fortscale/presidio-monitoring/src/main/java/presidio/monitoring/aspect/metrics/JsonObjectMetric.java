@@ -1,4 +1,4 @@
-package presidio.monitoring.aspect;
+package presidio.monitoring.aspect.metrics;
 
 import com.google.gson.JsonObject;
 import org.json.JSONArray;
@@ -33,8 +33,6 @@ public class JsonObjectMetric<T extends Number> extends Metric{
         data.put("value",this.getValue());
         data.put("unit",this.getUnit());
         data.put("tags",tags);
-        JSONObject  metric = new JSONObject();
-        metric.put(this.getName(),data);
-        return metric;
+        return data;
     }
 }

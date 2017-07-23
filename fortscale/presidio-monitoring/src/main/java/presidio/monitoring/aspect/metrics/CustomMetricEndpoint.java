@@ -1,4 +1,4 @@
-package presidio.monitoring.aspect;
+package presidio.monitoring.aspect.metrics;
 
 import org.springframework.boot.actuate.endpoint.MetricsEndpoint;
 import org.springframework.boot.actuate.endpoint.PublicMetrics;
@@ -54,8 +54,8 @@ public class CustomMetricEndpoint extends MetricsEndpoint {
         List<PublicMetrics> metrics = new ArrayList<PublicMetrics>(this.publicMetrics);
         for (PublicMetrics publicMetric : metrics) {
             try {
-                if(publicMetric instanceof CustomMetric){
-                    for (JsonObjectMetric<?> metric : ((CustomMetric) publicMetric).customMetrics()) {
+                if(publicMetric instanceof PresidioCustomMetrics){
+                    for (JsonObjectMetric<?> metric : ((PresidioCustomMetrics) publicMetric).applicationMetrics()) {
                         result.put(metric.getName(), metric.getObject());
                     }
                 }

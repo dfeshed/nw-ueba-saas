@@ -1,31 +1,28 @@
-package presidio.monitoring.aspect;
+package presidio.monitoring.aspect.metrics;
 
-import org.h2.util.MathUtils;
 import org.springframework.boot.actuate.endpoint.PublicMetrics;
 import org.springframework.boot.actuate.metrics.Metric;
 import org.springframework.stereotype.Component;
-import org.springframework.util.NumberUtils;
-import scala.collection.Iterator;
 
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Component
-public class CustomMetric implements PublicMetrics{
+public class PresidioCustomMetrics implements PublicMetrics{
 
     private Collection<Metric<?>> result;
 
-    private Collection<JsonObjectMetric<?>> customMetrics;
+    private Collection<JsonObjectMetric<?>> applicationMetrics;
 
-    public CustomMetric(){
+    public PresidioCustomMetrics(){
         result = new LinkedHashSet<>();
-        customMetrics= new LinkedHashSet<>();
+        applicationMetrics = new LinkedHashSet<>();
     }
 
     public <T extends Number>void addMetric(String metricName,T metricValue,Set tags,String unit){
-        if(customMetrics.contains(metricName)){
-            java.util.Iterator<JsonObjectMetric<?>> itr = customMetrics.iterator();
+        if(applicationMetrics.contains(metricName)){
+            java.util.Iterator<JsonObjectMetric<?>> itr = applicationMetrics.iterator();
             while(itr.hasNext()){
                 JsonObjectMetric<?> metric = itr.next();
                 if (metric.getName().equals(metricName)){
@@ -36,7 +33,7 @@ public class CustomMetric implements PublicMetrics{
 
         }
         else{
-            customMetrics.add(new JsonObjectMetric<>(metricName, metricValue, tags,unit));
+            applicationMetrics.add(new JsonObjectMetric<>(metricName, metricValue, tags,unit));
         }
     }
 
@@ -61,8 +58,8 @@ public class CustomMetric implements PublicMetrics{
         return result;
     }
 
-    public Collection<JsonObjectMetric<?>> customMetrics() {
-        return customMetrics;
+    public Collection<JsonObjectMetric<?>> applicationMetrics() {
+        return applicationMetrics;
     }
 
     public void cleanMetrics(){
