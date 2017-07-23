@@ -70,7 +70,7 @@ public class DLPFileEventsGenerator implements IEventGenerator {
 
             DLPFileEvent ev = new DLPFileEvent(currentTime, user.getUsername());
 
-            ev.setNormalizedUsername(user.getNormalizedUsername());
+            ev.setNormalizedUsername(user.getUserId());
             ev.setEventId(getEventIDGen().getNext());
             ev.setFirstName(user.getFirstName());
             ev.setLastName(user.getLastName());
