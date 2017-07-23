@@ -1,6 +1,6 @@
 package presidio.data.generators.user;
 
-import presidio.data.generators.domain.User;
+import presidio.data.domain.User;
 
 public interface IUserGenerator {
 

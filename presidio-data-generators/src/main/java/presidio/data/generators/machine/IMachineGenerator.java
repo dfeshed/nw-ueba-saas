@@ -1,7 +1,7 @@
 package presidio.data.generators.machine;
 
-import presidio.data.generators.domain.Machine;
+import presidio.data.domain.MachineEntity;
 
 public interface IMachineGenerator {
-    Machine getNext();
+    MachineEntity getNext();
 }

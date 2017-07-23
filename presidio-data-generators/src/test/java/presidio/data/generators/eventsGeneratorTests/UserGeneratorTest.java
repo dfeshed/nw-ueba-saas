@@ -4,7 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.user.SingleUserGenerator;
-import presidio.data.generators.domain.User;
+import presidio.data.domain.User;
 
 /**
  * Created by cloudera on 6/1/17.

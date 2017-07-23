@@ -2,7 +2,7 @@ package presidio.data.generators.user;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import presidio.data.generators.common.GeneratorException;
-import presidio.data.generators.domain.User;
+import presidio.data.domain.User;
 
 public class RandomUserGenerator implements IUserGenerator {
 

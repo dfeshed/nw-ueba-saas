@@ -3,7 +3,7 @@ package presidio.data.generators.user;
 import org.apache.commons.lang3.RandomStringUtils;
 import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.common.precentage.BooleanPercentageGenerator;
-import presidio.data.generators.domain.User;
+import presidio.data.domain.User;
 
 // by default 2% admin users will be generated
 public class RandomAdminUserPercentageGenerator implements IUserGenerator {

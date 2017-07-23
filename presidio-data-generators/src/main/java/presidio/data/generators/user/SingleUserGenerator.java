@@ -1,7 +1,7 @@
 package presidio.data.generators.user;
 
 import presidio.data.generators.common.GeneratorException;
-import presidio.data.generators.domain.User;
+import presidio.data.domain.User;
 
 public class SingleUserGenerator implements IUserGenerator {
     private User user;

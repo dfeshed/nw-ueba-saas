@@ -2,7 +2,7 @@ package presidio.data.generators.eventsGeneratorTests;
 
 import org.junit.Assert;
 import org.junit.Test;
-import presidio.data.generators.file.FileNameDefaultExtGenerator;
+import presidio.data.generators.fileentity.FileNameDefaultExtGenerator;
 
 /**
  * Created by cloudera on 6/1/17.

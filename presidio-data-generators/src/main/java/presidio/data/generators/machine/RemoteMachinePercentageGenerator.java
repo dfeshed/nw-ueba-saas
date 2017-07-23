@@ -1,10 +1,9 @@
 package presidio.data.generators.machine;
 
+import presidio.data.domain.MachineEntity;
 import presidio.data.generators.common.FixedIPsGenerator;
 import presidio.data.generators.common.GeneratorException;
-import presidio.data.generators.common.RandomStringGenerator;
 import presidio.data.generators.common.precentage.BooleanPercentageGenerator;
-import presidio.data.generators.domain.Machine;
 
 public class RemoteMachinePercentageGenerator implements IMachineGenerator {
 
@@ -24,8 +23,8 @@ public class RemoteMachinePercentageGenerator implements IMachineGenerator {
         remoteMachineGenerator = rmg;
     }
 
-    public Machine getNext(){
-        return new Machine((String) hostGenerator.getNext(), (String) simpleIPGenerator.getNext(), remoteMachineGenerator.getNext());
+    public MachineEntity getNext(){
+        return new MachineEntity((String) hostGenerator.getNext(), (String) simpleIPGenerator.getNext(), remoteMachineGenerator.getNext());
     }
 
     public HostnameCustomListGenerator getHostGenerator() {

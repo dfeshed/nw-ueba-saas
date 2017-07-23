@@ -1,7 +1,7 @@
 package presidio.data.generators.machine;
 
+import presidio.data.domain.MachineEntity;
 import presidio.data.generators.common.AbstractCyclicValuesGenerator;
-import presidio.data.generators.domain.Machine;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -10,28 +10,28 @@ import presidio.data.generators.utils.StringGeneratorUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StaticIPMachineGenerator extends AbstractCyclicValuesGenerator<Machine> implements IMachineGenerator {
+public class StaticIPMachineGenerator extends AbstractCyclicValuesGenerator<MachineEntity> implements IMachineGenerator {
 
     /**
-     * Generates Machine objects from given pairs of hostname and ip address
+     * Generates MachineEntity objects from given pairs of hostname and ip address
      * @param pairs
      */
     public StaticIPMachineGenerator(List<Pair<String, String>> pairs)  {
         super(buildMachineList(pairs));
     }
 
-    private static Machine[] buildMachineList(List<Pair<String, String>> pairs) {
-        Machine[] machines = new Machine[pairs.size()];
+    private static MachineEntity[] buildMachineList(List<Pair<String, String>> pairs) {
+        MachineEntity[] machineEntities = new MachineEntity[pairs.size()];
 
         int i = 0;
         for(Pair<String, String> pair : pairs) {
-            machines[i++] = new Machine(pair.getLeft(), pair.getRight());
+            machineEntities[i++] = new MachineEntity(pair.getLeft(), pair.getRight());
         }
-        return machines;
+        return machineEntities;
     }
 
     /**
-     * Generates Machine objects by building:
+     * Generates MachineEntity objects by building:
      *     - machine name strings from user name
      *     - host ips as constant "192.168.0." + incremental int value
      *
@@ -42,7 +42,7 @@ public class StaticIPMachineGenerator extends AbstractCyclicValuesGenerator<Mach
         super(buildMachineListByUserList(username, numOfMachines));
     }
 
-    private static Machine[] buildMachineListByUserList(String username, int numOfMachines) {
+    private static MachineEntity[] buildMachineListByUserList(String username, int numOfMachines) {
         String[] machineNames = StringGeneratorUtils.buildUniqueAlphabetStrings(username, "", numOfMachines);
         IPIterator ipIterator = new IPIterator("192.168.0.0");
         List<Pair<String,String>> machineAndIpPairList= new ArrayList<>();

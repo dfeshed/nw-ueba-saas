@@ -1,7 +1,7 @@
 package presidio.data.generators.event.dlpfile;
 
 import presidio.data.generators.common.AbstractCyclicValuesGenerator;
-import presidio.data.generators.file.DEFAULT_APPLICATIONS;
+import presidio.data.generators.dlpfileop.DEFAULT_APPLICATIONS;
 
 /**
  * Created by cloudera on 6/1/17.

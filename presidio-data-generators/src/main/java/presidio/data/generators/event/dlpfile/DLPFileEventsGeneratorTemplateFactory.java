@@ -1,9 +1,9 @@
 package presidio.data.generators.event.dlpfile;
 
-import presidio.data.generators.file.dlpfile.DLPFileOperationGenerator;
+import presidio.data.generators.dlpfileop.DLPFileOperationGenerator;
 import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.event.EntityEventIDFixedPrefixGenerator;
-import presidio.data.generators.file.SimplePathGenerator;
+import presidio.data.generators.fileentity.SimplePathGenerator;
 import presidio.data.generators.machine.SimpleMachineGenerator;
 import presidio.data.generators.user.SingleUserGenerator;
 

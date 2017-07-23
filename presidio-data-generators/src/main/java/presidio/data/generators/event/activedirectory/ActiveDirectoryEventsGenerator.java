@@ -1,10 +1,10 @@
 package presidio.data.generators.event.activedirectory;
 
 import presidio.data.generators.FixedDataSourceGenerator;
-import presidio.data.generators.activedirectory.ActiveDirectoryOperationGenerator;
+import presidio.data.generators.activedirectoryop.ActiveDirectoryOperationGenerator;
 import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.common.time.TimeGenerator;
-import presidio.data.generators.domain.event.activedirectory.ActiveDirectoryEvent;
+import presidio.data.domain.event.activedirectory.ActiveDirectoryEvent;
 import presidio.data.generators.event.EntityEventIDFixedPrefixGenerator;
 import presidio.data.generators.event.IEventGenerator;
 import presidio.data.generators.user.IUserGenerator;

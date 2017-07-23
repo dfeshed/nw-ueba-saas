@@ -2,7 +2,7 @@ package presidio.data.generators.eventsGeneratorTests;
 
 import org.junit.Assert;
 import org.junit.Test;
-import presidio.data.generators.file.FileSizeIncrementalGenerator;
+import presidio.data.generators.fileentity.FileSizeIncrementalGenerator;
 
 public class FileSizeGeneratorTest {
 

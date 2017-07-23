@@ -3,13 +3,13 @@ package presidio.data.generators.event.file;
 import presidio.data.generators.FixedDataSourceGenerator;
 import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.common.time.TimeGenerator;
-import presidio.data.generators.domain.event.file.FileEvent;
-import presidio.data.generators.domain.event.file.FileOperation;
+import presidio.data.domain.event.file.FileEvent;
+import presidio.data.domain.event.file.FileOperation;
 import presidio.data.generators.event.EntityEventIDFixedPrefixGenerator;
 import presidio.data.generators.event.IEventGenerator;
-import presidio.data.generators.file.FileOperationGenerator;
-import presidio.data.generators.file.IFileOperationGenerator;
-import presidio.data.generators.domain.User;
+import presidio.data.generators.fileop.FileOperationGenerator;
+import presidio.data.generators.fileop.IFileOperationGenerator;
+import presidio.data.domain.User;
 import presidio.data.generators.user.IUserGenerator;
 import presidio.data.generators.user.RandomUserGenerator;
 

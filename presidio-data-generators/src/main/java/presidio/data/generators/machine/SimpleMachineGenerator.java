@@ -1,7 +1,7 @@
 package presidio.data.generators.machine;
 
 import presidio.data.generators.common.FixedIPsGenerator;
-import presidio.data.generators.domain.Machine;
+import presidio.data.domain.MachineEntity;
 
 public class SimpleMachineGenerator implements IMachineGenerator {
 
@@ -18,7 +18,7 @@ public class SimpleMachineGenerator implements IMachineGenerator {
         SIPG = sipg;
     }
 
-    public Machine getNext(){
-        return new Machine(HG.getNext(), (String) SIPG.getNext());
+    public MachineEntity getNext(){
+        return new MachineEntity(HG.getNext(), (String) SIPG.getNext());
     }
 }
