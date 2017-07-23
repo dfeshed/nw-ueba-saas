@@ -41,9 +41,7 @@ limitations under the License.
   </build>
 
   <modules>
-    <module>flume-scribe-source</module>
     <module>flume-jms-source</module>
-    <module>flume-twitter-source</module>
     <module>flume-kafka-source</module>
     <module>flume-taildir-source</module>
   </modules>

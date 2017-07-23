@@ -14,4 +14,6 @@ public class CommonStrings {
     public static final String END_DATE = "endDate";
     public static final String START_DATE = "startDate";
     public static final String DATE_FORMAT = "dateFormat";
+    public static final String AUTO_WRAP = "autoWrap";
+    public static final String WRAP_KEY = "wrapKey";
 }

@@ -57,25 +57,24 @@ limitations under the License.
         <xerces.version>2.9.1</xerces.version>
     </properties>
 
-    <modules>
-        <module>flume-ng-core</module>
-        <module>flume-ng-configuration</module>
-        <module>flume-ng-embedded-agent</module>
-        <module>flume-ng-sinks</module>
-        <module>flume-ng-sources</module>
-        <module>flume-ng-node</module>
-        <module>flume-ng-dist</module>
-        <module>flume-ng-channels</module>
-        <module>flume-ng-legacy-sources</module>
-        <module>flume-ng-clients</module>
-        <module>flume-ng-sdk</module>
-        <module>flume-ng-tests</module>
-        <module>flume-tools</module>
-        <module>flume-ng-auth</module>
-        <module>flume-shared</module>
-        <!--      fortscale        -->
-        <module>fortscale-flume</module>
-    </modules>
+  <modules>
+    <module>flume-ng-core</module>
+    <module>flume-ng-configuration</module>
+    <module>flume-ng-embedded-agent</module>
+    <module>flume-ng-sinks</module>
+    <module>flume-ng-sources</module>
+    <module>flume-ng-node</module>
+    <module>flume-ng-dist</module>
+    <module>flume-ng-channels</module>
+    <module>flume-ng-clients</module>
+    <module>flume-ng-sdk</module>
+    <module>flume-ng-tests</module>
+    <module>flume-tools</module>
+    <module>flume-ng-auth</module>
+    <module>flume-shared</module>
+    <!--      fortscale        -->
+    <module>fortscale-flume</module>
+  </modules>
 
     <profiles>
 
@@ -1003,6 +1002,12 @@ limitations under the License.
                 <groupId>javax.jms</groupId>
                 <artifactId>jms</artifactId>
                 <version>1.1</version>
+            </dependency>
+
+            <dependency>
+                <groupId>javax.servlet</groupId>
+                <artifactId>javax.servlet-api</artifactId>
+                <version>3.1.0</version>
             </dependency>
 
             <dependency>
