@@ -1,4 +1,4 @@
-package fortscale.ml.model.config;
+package presidio.ade.processes.shell.modeling;
 
 import fortscale.aggregation.configuration.AslConfigurationPaths;
 import fortscale.aggregation.configuration.AslResourceFactory;
@@ -7,6 +7,7 @@ import fortscale.aggregation.feature.bucket.config.BucketConfigurationServiceCon
 import fortscale.ml.model.ModelingEngineFactory;
 import fortscale.ml.model.ModelingService;
 import fortscale.ml.model.builder.IModelBuilder;
+import fortscale.ml.model.config.ModelingEngineConfiguration;
 import fortscale.ml.model.retriever.AbstractDataRetriever;
 import fortscale.ml.model.selector.IContextSelector;
 import fortscale.ml.model.store.ModelStore;

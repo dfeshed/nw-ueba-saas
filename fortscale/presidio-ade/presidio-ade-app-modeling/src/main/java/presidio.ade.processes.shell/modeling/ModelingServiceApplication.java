@@ -1,10 +1,9 @@
-package fortscale.ml.processes.shell.modeling;
+package presidio.ade.processes.shell.modeling;
 
 import fortscale.common.general.PresidioShellableApplication;
 import fortscale.common.shell.command.FSBannerProvider;
 import fortscale.common.shell.command.FSHistoryFileNameProvider;
 import fortscale.common.shell.command.FSPromptProvider;
-import fortscale.ml.model.config.ModelingServiceConfiguration;
 import fortscale.utils.logging.Logger;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
