@@ -76,6 +76,12 @@
         <dependency>
           <groupId>org.apache.flume.flume-ng-sinks</groupId>
           <artifactId>flume-dataset-sink</artifactId>
+          <exclusions>
+            <exclusion>
+              <groupId>com.fasterxml.jackson.core</groupId>
+              <artifactId>jackson-databind</artifactId>
+            </exclusion>
+          </exclusions>
         </dependency>
         <dependency>
           <groupId>org.apache.flume.flume-ng-sinks</groupId>
@@ -94,6 +100,12 @@
         <dependency>
           <groupId>org.apache.flume.flume-ng-sinks</groupId>
           <artifactId>flume-dataset-sink</artifactId>
+          <exclusions>
+            <exclusion>
+              <groupId>com.fasterxml.jackson.core</groupId>
+              <artifactId>jackson-databind</artifactId>
+            </exclusion>
+          </exclusions>
         </dependency>
         <dependency>
           <groupId>org.apache.flume.flume-ng-sinks</groupId>
@@ -159,6 +171,12 @@
     <dependency>
       <groupId>org.apache.flume.flume-ng-sinks</groupId>
       <artifactId>flume-ng-morphline-solr-sink</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>com.fasterxml.jackson.core</groupId>
+          <artifactId>jackson-databind</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.flume.flume-ng-sinks</groupId>

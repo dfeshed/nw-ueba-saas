@@ -1,5 +1,6 @@
 package org.flume.sink.mongo;
 
+import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.mongodb.util.JSON;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -8,12 +9,10 @@ import org.apache.flume.conf.Configurable;
 import org.flume.sink.base.AbstractPresidioSink;
 import org.flume.sink.mongo.persistency.SinkMongoRepository;
 import org.flume.sink.mongo.persistency.SinkMongoRepositoryImpl;
-
 import org.flume.utils.MongoUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;
-
 
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -38,6 +37,8 @@ public class PresidioMongoSink extends AbstractPresidioSink<DBObject> implements
     private String collectionName;
     private String username;
     private int batchSize;
+    private boolean hasAutoWrap;
+    private String autoWrapKey;
 
     @Override
     public synchronized String getName() {
@@ -53,12 +54,20 @@ public class PresidioMongoSink extends AbstractPresidioSink<DBObject> implements
                     throw new Exception(String.format("Missing mandatory param %s for %s. Mandatory params are: %s", mandatoryParam, getName(), Arrays.toString(mandatoryParams)));
                 }
             }
+
             hasAuthentication = Boolean.parseBoolean(context.getString(HAS_AUTHENTICATION));
             if (hasAuthentication) {
                 if (!context.containsKey(USERNAME) || !context.containsKey(PASSWORD)) {
                     throw new Exception(String.format("Missing %s and/or %s for authentication for %s (since %s = true).", USERNAME, PASSWORD, getName(), HAS_AUTHENTICATION));
                 }
+            }
 
+            hasAutoWrap = Boolean.parseBoolean(context.getString(AUTO_WRAP));
+            if (hasAutoWrap) {
+                if (!context.containsKey(WRAP_KEY)) {
+                    throw new Exception(String.format("Missing %s for auto wrap for %s (since %s = true).",
+                            WRAP_KEY, getName(), AUTO_WRAP));
+                }
             }
 
             /* configure mongo */
@@ -68,6 +77,7 @@ public class PresidioMongoSink extends AbstractPresidioSink<DBObject> implements
             host = context.getString(HOST);
             port = Integer.parseInt(context.getString(PORT, "27017"));
             username = context.getString(USERNAME, "");
+            autoWrapKey = context.getString(WRAP_KEY, "key");
             final String password = context.getString(PASSWORD, "");
             sinkMongoRepository = createRepository(dbName, host, port, username, password);
         } catch (Exception e) {
@@ -88,7 +98,15 @@ public class PresidioMongoSink extends AbstractPresidioSink<DBObject> implements
                 break;
             }
             sinkCounter.incrementEventDrainAttemptCount();
-            final DBObject parsedEvent = (DBObject) JSON.parse(new String(flumeEvent.getBody()));
+
+            DBObject parsedEvent;
+            if (hasAutoWrap) {
+                parsedEvent =  new BasicDBObject(autoWrapKey, new String(flumeEvent.getBody()));
+            }
+            else {
+                parsedEvent = (DBObject) JSON.parse(new String(flumeEvent.getBody()));
+            }
+            
             eventsToSave.add(parsedEvent);
         }
 
@@ -96,7 +114,7 @@ public class PresidioMongoSink extends AbstractPresidioSink<DBObject> implements
     }
 
     @Override
-    protected int saveEvents(List<DBObject> eventsToSave) {
+    protected void saveEvents(List<DBObject> eventsToSave) {
         final int numOfEventsToSave = eventsToSave.size();
         if (numOfEventsToSave != 0) {
             if (numOfEventsToSave == 1) { // or in other words if batchSize == 1
@@ -107,7 +125,6 @@ public class PresidioMongoSink extends AbstractPresidioSink<DBObject> implements
                 sinkCounter.addToEventDrainSuccessCount(numOfSavedEvents);
             }
         }
-        return numOfEventsToSave;
     }
 
     private static SinkMongoRepository createRepository(String dbName, String host, int port, String username, String password) throws UnknownHostException {
@@ -120,8 +137,8 @@ public class PresidioMongoSink extends AbstractPresidioSink<DBObject> implements
         return new ToStringBuilder(this)
                 .append("hasAuthentication", hasAuthentication)
                 .append("dbName", dbName)
-                .append(HOST, host)
-                .append(PORT, port)
+                .append("host", host)
+                .append("port", port)
                 .append("collectionName", collectionName)
                 .append("username", username)
                 .toString();
