@@ -1,4 +1,4 @@
-package fortscale.ml.processes.shell.model.aggregation;
+package presidio.ade.processes.shell.feature.aggregation.buckets;
 
 import fortscale.aggregation.feature.bucket.*;
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;

@@ -1,9 +1,10 @@
-package fortscale.ml.processes.shell.model.aggregation;
+package presidio.ade.processes.shell.feature.aggregation.buckets;
 
 import fortscale.aggregation.feature.bucket.*;
 import fortscale.common.feature.AggrFeatureValue;
 import fortscale.common.feature.Feature;
 import fortscale.common.util.GenericHistogram;
+import fortscale.ml.processes.shell.model.aggregation.ModelAggregationBucketConfigurationServiceConfig;
 import fortscale.utils.pagination.ContextIdToNumOfItems;
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
 import fortscale.utils.test.category.ModuleTestCategory;
@@ -132,9 +133,9 @@ public class ModelFeatureAggregationBucketsServiceTest {
         }
 
         @Bean
-        public static TestPropertiesPlaceholderConfigurer abc() {
+        public static TestPropertiesPlaceholderConfigurer modelFeatureAggregationBucketsServiceTestProp() {
             Properties properties = new Properties();
-            properties.put("fortscale.model.aggregation.bucket.conf.json.file.name", "classpath:fortscale/config/asl/model/buckets/model_buckets_test.json");
+            properties.put("fortscale.model.aggregation.bucket.conf.json.file.name", "classpath:config/asl/model/buckets/model_buckets_test.json");
             properties.put("mongo.db.name","model_feature_aggregation");
 
             return new TestPropertiesPlaceholderConfigurer(properties);

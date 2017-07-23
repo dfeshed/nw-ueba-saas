@@ -14,6 +14,7 @@
     <modules>
         <module>presidio-ade-app-score-aggr</module>
         <module>presidio-ade-app-modeling</module>
+        <module>presidio-ade-app-model-feature-buckets</module>
         <module>presidio-ade-sdk</module>
     </modules>
 </project>
