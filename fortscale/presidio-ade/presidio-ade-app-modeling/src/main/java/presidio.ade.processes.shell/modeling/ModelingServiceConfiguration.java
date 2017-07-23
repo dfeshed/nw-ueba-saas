@@ -13,6 +13,7 @@ import fortscale.ml.model.selector.IContextSelector;
 import fortscale.ml.model.store.ModelStore;
 import fortscale.utils.factory.FactoryService;
 import fortscale.utils.mongodb.config.MongoConfig;
+import fortscale.utils.monitoring.stats.config.NullStatsServiceConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -22,7 +23,13 @@ import org.springframework.context.annotation.Import;
 import java.util.Collections;
 
 @Configuration
-@Import({MongoConfig.class, BucketConfigurationServiceConfig.class, FeatureBucketReaderConfig.class, ModelingEngineConfiguration.class})
+@Import({
+		MongoConfig.class,
+		BucketConfigurationServiceConfig.class,
+		FeatureBucketReaderConfig.class,
+		ModelingEngineConfiguration.class,
+		NullStatsServiceConfig.class
+})
 public class ModelingServiceConfiguration {
 	@Autowired
 	@Qualifier("enrichedRecordModelConfigurationPaths")
