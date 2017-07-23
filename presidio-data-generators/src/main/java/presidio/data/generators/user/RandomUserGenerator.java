@@ -13,9 +13,10 @@ public class RandomUserGenerator implements IUserGenerator {
 
         String username = RandomStringUtils.randomAlphanumeric(10);
         User user = new User(username);
-        user.setNormalizedUsername(username);
+        user.setUserId(username);
         user.setLastName ( username.substring(username.length()-2));
         user.setFirstName (username.substring(0, username.length()-2));
+        user.setAdministrator(false);
 
         return user;
     }

@@ -7,7 +7,7 @@ import presidio.data.generators.common.IStringGenerator;
  * This class is one element data provider from a cyclic list of string values
  */
 public class FixedDataSourceGenerator extends AbstractCyclicValuesGenerator implements IStringGenerator {
-    private final static String[] DEFAULT_VALUES = {"Quest"};
+    private final static String[] DEFAULT_VALUES = {"DefaultDS"};
 
     public FixedDataSourceGenerator() {
         super(DEFAULT_VALUES);

@@ -1,26 +1,22 @@
 package presidio.data.generators.domain.event.activedirectory;
 
+import presidio.data.generators.domain.User;
+
 import java.time.Instant;
 
 public class ActiveDirectoryEvent {
 
     private Instant eventTime;
-    private String operationType;
-    private Boolean isSecuritySensitiveOperation;
-    private Boolean isUserAdministrator;
-    private String objectName;
-    private String result;
-    private String normalizedUsername;
+    private String eventId;
+    private ActiveDirectoryOperation operation;
+    private User user;
     private String dataSource;
 
-    public ActiveDirectoryEvent(Instant eventTime, String normalizedUsername, String operationType, Boolean isSecuritySensitiveOperation, Boolean isUserAdministrator, String objectName, String result, String dataSource) {
+    public ActiveDirectoryEvent(Instant eventTime, String eventId, ActiveDirectoryOperation operation, User user, String dataSource) {
         this.eventTime = eventTime;
-        this.normalizedUsername = normalizedUsername;
-        this.operationType = operationType;
-        this.isSecuritySensitiveOperation = isSecuritySensitiveOperation;
-        this.isUserAdministrator = isUserAdministrator;
-        this.objectName = objectName;
-        this.result = result;
+        this.eventId = eventId;
+        this.operation = operation;
+        this.user = user;
         this.dataSource = dataSource;
     }
 
@@ -32,52 +28,28 @@ public class ActiveDirectoryEvent {
         this.eventTime = eventTime;
     }
 
-    public String getNormalizedUsername() {
-        return normalizedUsername;
+    public String getEventId() {
+        return eventId;
     }
 
-    public void setNormalizedUsername(String normalizedUsername) {
-        this.normalizedUsername = normalizedUsername;
+    public void setEventId(String eventId) {
+        this.eventId = eventId;
     }
 
-    public String getOperationType() {
-        return operationType;
+    public ActiveDirectoryOperation getOperation() {
+        return operation;
     }
 
-    public void setOperationType(String operationType) {
-        this.operationType = operationType;
+    public void setOperation(ActiveDirectoryOperation operation) {
+        this.operation = operation;
     }
 
-    public Boolean getSecuritySensitiveOperation() {
-        return isSecuritySensitiveOperation;
+    public User getUser() {
+        return user;
     }
 
-    public void setSecuritySensitiveOperation(Boolean securitySensitiveOperation) {
-        isSecuritySensitiveOperation = securitySensitiveOperation;
-    }
-
-    public Boolean getUserAdministrator() {
-        return isUserAdministrator;
-    }
-
-    public void setUserAdministrator(Boolean userAdministrator) {
-        isUserAdministrator = userAdministrator;
-    }
-
-    public String getObjectName() {
-        return objectName;
-    }
-
-    public void setObjectName(String objectName) {
-        this.objectName = objectName;
-    }
-
-    public String getResult() {
-        return result;
-    }
-
-    public void setResult(String result) {
-        this.result = result;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public String getDataSource() {
@@ -86,5 +58,16 @@ public class ActiveDirectoryEvent {
 
     public void setDataSource(String dataSource) {
         this.dataSource = dataSource;
+    }
+
+    @Override
+    public String toString() {
+        return "ActiveDirectoryEvent{" +
+                "eventTime=" + eventTime +
+                ", eventId=" + eventId +
+                ", operation=" + operation +
+                ", user=" + user +
+                ", dataSource='" + dataSource + '\'' +
+                '}';
     }
 }

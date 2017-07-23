@@ -88,6 +88,6 @@ public class AuthenticationEventsGeneratorTest {
 
     @Test
     public void NormalizedUserNameTest () {
-        Assert.assertEquals(10, events.get(0).getUser().getNormalizedUsername().length());
+        Assert.assertEquals(10, events.get(0).getUser().getUserId().length());
     }
 }

@@ -49,7 +49,7 @@ public class FileEventsGenerator implements IEventGenerator {
 
             FileOperation operation = getFileOperationGenerator().getNext();
             String datasource = (String) getDataSourceGenerator().getNext();
-            FileEvent ev = new FileEvent(eventTime, user.getNormalizedUsername(), operation, datasource);
+            FileEvent ev = new FileEvent(eventTime, user.getUserId(), operation, datasource);
             evList.add(ev);
         }
         return evList;
