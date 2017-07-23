@@ -1,4 +1,4 @@
-package fortscale.ml.processes.shell.scoring.aggregation;
+package presidio.ade.processes.shell.scoring.aggregation;
 
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.ml.scorer.records.AdeRecordReaderFactoriesConfig;

@@ -12,6 +12,7 @@
     <artifactId>presidio-ade</artifactId>
     <packaging>pom</packaging>
     <modules>
+        <module>presidio-ade-app-score-aggr</module>
         <module>presidio-ade-sdk</module>
     </modules>
 </project>
