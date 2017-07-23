@@ -2,6 +2,7 @@ package presidio.monitoring.exporter;
 
 
 import presidio.monitoring.aspect.CustomMetric;
+import presidio.monitoring.aspect.CustomMetricEndpoint;
 import presidio.monitoring.aspect.MonitoringAspects;
 import presidio.monitoring.exporter.exporters.FileMetricsExporter;
 import presidio.monitoring.exporter.exporters.MetricsExporter;
@@ -25,7 +26,7 @@ public class ExporterConfiguration {
 
     @Bean
     public MetricsEndpoint metricsEndpoint(){
-        return  new MetricsEndpoint(publicMetrics());
+        return  new CustomMetricEndpoint(publicMetrics());
     }
 
     @Value("${spring.application.name}")

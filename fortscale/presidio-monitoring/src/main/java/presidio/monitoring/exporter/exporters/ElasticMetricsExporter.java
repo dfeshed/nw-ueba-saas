@@ -29,7 +29,7 @@ public class ElasticMetricsExporter extends MetricsExporter {
     private JSONObject createMetricObject(){
         logger.debug("Creating JSONObject of metrics to export");
         JSONObject metrics=new JSONObject();
-        for (Map.Entry<String, String> entry : filterRepitMetrics().entrySet()) {
+        for (Map.Entry<String, Object> entry : filterRepitMetrics().entrySet()) {
             metrics.put(entry.getKey(),entry.getValue());
         }
         return metrics;

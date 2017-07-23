@@ -25,7 +25,7 @@ public class FileMetricsExporter extends MetricsExporter {
     public void export(){
         try {
             logger.debug("Exporting");
-            for (Map.Entry<String, String> entry : filterRepitMetrics().entrySet()) {
+            for (Map.Entry<String, Object> entry : filterRepitMetrics().entrySet()) {
                 logger.info("Metric Name : {} Metric Value : {}", entry.getKey(),  entry.getValue());
             }
         }

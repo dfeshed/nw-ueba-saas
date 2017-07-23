@@ -67,7 +67,7 @@ public class MonitoringAspects {
      * @throws Throwable - any exceptin that can be thrown from the execution of the method.
      */
 
-    @Before("@annotation(fortscale.utils.monitoring.aspect.annotations.Start)")
+    @Before("@annotation(presidio.monitoring.aspect.annotations.Start)")
     public void start(JoinPoint joinPoint) throws Throwable{
         String metric = joinPoint.getSignature().toShortString();
         logger.info("Metric {} increment with annotation Start. ", metric);
@@ -84,7 +84,7 @@ public class MonitoringAspects {
      * @throws Throwable - any exceptin that can be thrown from the execution of the method.
      */
 
-    @After("@annotation(fortscale.utils.monitoring.aspect.annotations.End)")
+    @After("@annotation(presidio.monitoring.aspect.annotations.End)")
     public void end(JoinPoint joinPoint) throws Throwable{
         String metric  = joinPoint.getSignature().toShortString();
         logger.info("Metric {} increment with annotation End. ", metric);
@@ -101,7 +101,7 @@ public class MonitoringAspects {
      * @throws Throwable - any exceptin that can be thrown from the execution of the method.
      */
 
-    @AfterThrowing("@annotation(fortscale.utils.monitoring.aspect.annotations.ExceptionThrown)")
+    @AfterThrowing("@annotation(presidio.monitoring.aspect.annotations.ExceptionThrown)")
     public void exceptionThrown(JoinPoint joinPoint) throws Throwable{
         String metric  = joinPoint.getSignature().toShortString();
         logger.info("Metric {} increment with annotation exceptionThrown. ", metric);
@@ -119,7 +119,7 @@ public class MonitoringAspects {
      * @throws Throwable - any exceptin that can be thrown from the execution of the method.
      */
 
-    @Around("@annotation(fortscale.utils.monitoring.aspect.annotations.RunTime)")
+    @Around("@annotation(presidio.monitoring.aspect.annotations.RunTime)")
     public void runTime(ProceedingJoinPoint joinPoint) throws Throwable {
         String metricName = joinPoint.getSignature().toShortString();
         long startTime = System.nanoTime();
@@ -140,7 +140,7 @@ public class MonitoringAspects {
      * @param joinPoint - a point that represent a methods execution, holds data on the method that is going to be executed.
      * @throws Throwable - any exceptin that can be thrown from the execution of the method.
      */
-    @Around("@annotation(fortscale.utils.monitoring.aspect.annotations.NumberOfFailedValidation)")
+    @Around("@annotation(presidio.monitoring.aspect.annotations.NumberOfFailedValidation)")
     public void numberOfFailedValidation(ProceedingJoinPoint joinPoint) throws Throwable {
         String metricName = joinPoint.getSignature().toShortString();
         int numberOfFailedValidationDocuments = ((List<? extends Serializable>) joinPoint.proceed()).size();

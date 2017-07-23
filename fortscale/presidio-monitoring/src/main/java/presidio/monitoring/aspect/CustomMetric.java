@@ -36,7 +36,7 @@ public class CustomMetric implements PublicMetrics{
 
         }
         else{
-            result.add(new JsonObjectMetric<>(metricName, metricValue, tags,unit));
+            customMetrics.add(new JsonObjectMetric<>(metricName, metricValue, tags,unit));
         }
     }
 

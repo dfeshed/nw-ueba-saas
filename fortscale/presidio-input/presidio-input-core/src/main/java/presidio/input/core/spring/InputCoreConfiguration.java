@@ -2,9 +2,6 @@ package presidio.input.core.spring;
 
 
 import presidio.monitoring.exporter.ExporterConfiguration;
-import presidio.monitoring.exporter.exporters.FileMetricsExporter;
-import presidio.monitoring.exporter.exporters.MetricsExporter;
-import presidio.monitoring.exporter.PresidioSystemPublicMetrics;
 import fortscale.common.shell.PresidioExecutionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

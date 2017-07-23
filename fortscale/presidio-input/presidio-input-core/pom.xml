@@ -84,7 +84,11 @@
             <artifactId>javax.servlet-api</artifactId>
             <scope>provided</scope>
         </dependency>
-
+        <dependency>
+            <groupId>fortscale</groupId>
+            <artifactId>presidio-monitoring</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>fortscale</groupId>
