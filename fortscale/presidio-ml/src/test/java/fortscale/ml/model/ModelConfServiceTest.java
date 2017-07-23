@@ -33,7 +33,6 @@ public class ModelConfServiceTest {
 
 	@Test
 	public void shouldDeserializeJsonFile() throws Exception {
-		modelConfService.loadAslConfigurations();
 		List<ModelConf> modelConfs = modelConfService.getModelConfs();
 		Assert.assertNotNull(modelConfs);
 		Assert.assertEquals(2, modelConfs.size());

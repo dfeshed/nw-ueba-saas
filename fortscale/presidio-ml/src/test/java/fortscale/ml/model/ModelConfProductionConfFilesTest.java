@@ -9,7 +9,6 @@ import fortscale.aggregation.feature.event.config.AggregatedFeatureEventsConfSer
 import fortscale.aggregation.feature.event.store.AggregatedFeatureEventsReaderService;
 import fortscale.entity.event.EntityEventConfService;
 import fortscale.entity.event.EntityEventDataReaderService;
-import fortscale.entity.event.EntityEventGlobalParamsConfService;
 import fortscale.entity.event.EntityEventMongoStore;
 import fortscale.ml.model.builder.IModelBuilder;
 import fortscale.ml.model.retriever.AbstractDataRetriever;
@@ -86,10 +85,6 @@ public class ModelConfProductionConfFilesTest {
 			return new EntityEventConfService();
 		}
 
-		@Bean
-		public EntityEventGlobalParamsConfService entityEventGlobalParamsConfService() {
-			return new EntityEventGlobalParamsConfService();
-		}
 
 		@Bean
 		public FactoryService<IContextSelector> contextSelectorFactoryService() {
@@ -125,8 +120,6 @@ public class ModelConfProductionConfFilesTest {
 
 			properties.put("fortscale.entity.event.definitions.json.file.path", "classpath:config/asl/entity_events.json");
 			properties.put("fortscale.entity.event.definitions.conf.json.overriding.files.path", "file:home/cloudera/fortscale/config/asl/entity_events/overriding/entity_events*.json");
-			properties.put("fortscale.entity.event.global.params.json.file.path", "classpath:config/asl/entity_events_global_params.json");
-			properties.put("fortscale.entity.event.global.params.conf.json.overriding.files.path", "file:home/cloudera/config/asl/entity_events/overriding/global_params*.json");
 
 			PropertyPlaceholderConfigurer propertyPlaceholderConfigurer = new PropertyPlaceholderConfigurer();
 			propertyPlaceholderConfigurer.setProperties(properties);

@@ -25,9 +25,11 @@ public class ModelConfServiceConfig {
 
 	@Bean
 	public ModelConfService modelConfService() {
-		return new ModelConfService(
+		ModelConfService modelConfService = new ModelConfService(
 				aslResourceFactory.getResources(baseConfigurationsPath),
 				aslResourceFactory.getResources(overridingConfigurationsPath),
 				aslResourceFactory.getResources(additionalConfigurationsPath));
+		modelConfService.loadAslConfigurations();
+		return modelConfService;
 	}
 }

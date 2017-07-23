@@ -6,7 +6,6 @@ import fortscale.accumulator.entityEvent.translator.AccumulatedEntityEventTransl
 import fortscale.accumulator.translator.BaseAccumulatedFeatureTranslator;
 import fortscale.entity.event.EntityEventConf;
 import fortscale.utils.logging.Logger;
-import fortscale.utils.mongodb.FIndex;
 import fortscale.utils.monitoring.stats.StatsService;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -14,13 +13,10 @@ import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.query.Query;
 
 import java.time.Instant;
-import java.time.Period;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static fortscale.accumulator.util.AccumulatorStoreUtil.getACMExistingCollections;
-import static fortscale.accumulator.util.AccumulatorStoreUtil.getRetentionTimeInDays;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 /**
@@ -34,8 +30,6 @@ public class AccumulatedEntityEventStoreImpl implements AccumulatedEntityEventSt
     private final BaseAccumulatedFeatureTranslator translator;
     private final StatsService statsService;
     private final Map<String,AccumulatedEntityEventStoreMetrics> featureMetricsMap;
-    private final Period acmDailyEntityEventRetentionDuration;
-    private final Period acmHourlyEntityEventRetentionDuration;
     private Set<String> existingCollections;
 
     /**
@@ -43,20 +37,15 @@ public class AccumulatedEntityEventStoreImpl implements AccumulatedEntityEventSt
      * @param mongoTemplate
      * @param translator
      * @param statsService
-     * @param acmDailyRetentionPeriod
-     * @param acmHourlyRetentionPeriod
      */
     public AccumulatedEntityEventStoreImpl(MongoTemplate mongoTemplate, AccumulatedEntityEventTranslator translator,
-                                           StatsService statsService, Period acmDailyRetentionPeriod,
-                                           Period acmHourlyRetentionPeriod)
+                                           StatsService statsService)
     {
         this.mongoTemplate = mongoTemplate;
         this.translator = translator;
         this.statsService = statsService;
         this.featureMetricsMap = new HashMap<>();
         this.existingCollections = new HashSet<>();
-        this.acmDailyEntityEventRetentionDuration = acmDailyRetentionPeriod;
-        this.acmHourlyEntityEventRetentionDuration = acmHourlyRetentionPeriod;
 
         existingCollections = getACMExistingCollections(mongoTemplate,translator.getAcmCollectionNameRegex());
     }
@@ -171,12 +160,7 @@ public class AccumulatedEntityEventStoreImpl implements AccumulatedEntityEventSt
         metics.createCollection++;
         try {
             mongoTemplate.createCollection(collectionName);
-            long retentionTimeInDays = getRetentionTimeInDays(featureName, acmDailyEntityEventRetentionDuration, acmHourlyEntityEventRetentionDuration);
 
-            mongoTemplate.indexOps(collectionName)
-                    .ensureIndex(new FIndex().expire(retentionTimeInDays, TimeUnit.DAYS)
-                            .named(AccumulatedEntityEvent.ACCUMULATED_ENTITY_EVENT_FIELD_NAME_CREATION_TIME)
-                            .on(AccumulatedEntityEvent.ACCUMULATED_ENTITY_EVENT_FIELD_NAME_CREATION_TIME, Sort.Direction.DESC));
             mongoTemplate.indexOps(collectionName)
                     .ensureIndex(new Index().named(AccumulatedEntityEvent.ACCUMULATED_ENTITY_EVENT_FIELD_NAME_START_TIME)
                             .on(AccumulatedEntityEvent.ACCUMULATED_ENTITY_EVENT_FIELD_NAME_START_TIME, Sort.Direction.DESC));

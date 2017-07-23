@@ -2,7 +2,6 @@ package fortscale.entity.event;
 
 import fortscale.accumulator.entityEvent.store.AccumulatedEntityEventStore;
 import fortscale.utils.time.TimestampUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -10,10 +9,14 @@ import java.util.List;
 import java.util.Set;
 
 public class EntityEventDataReaderService {
-	@Autowired
+
 	private EntityEventDataMongoStore entityEventDataMongoStore;
-	@Autowired
 	private AccumulatedEntityEventStore accumulatedEntityEventStore;
+
+	public EntityEventDataReaderService(EntityEventDataMongoStore entityEventDataMongoStore, AccumulatedEntityEventStore accumulatedEntityEventStore) {
+		this.entityEventDataMongoStore = entityEventDataMongoStore;
+		this.accumulatedEntityEventStore = accumulatedEntityEventStore;
+	}
 
 	public Set<String> findDistinctContextsByTimeRange(
 			EntityEventConf entityEventConf, Date startTime, Date endTime) {

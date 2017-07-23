@@ -6,7 +6,6 @@ import fortscale.accumulator.aggregation.translator.AccumulatedAggregatedFeature
 import fortscale.accumulator.translator.BaseAccumulatedFeatureTranslator;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.utils.logging.Logger;
-import fortscale.utils.mongodb.FIndex;
 import fortscale.utils.monitoring.stats.StatsService;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -15,13 +14,10 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
 import java.time.Instant;
-import java.time.Period;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static fortscale.accumulator.util.AccumulatorStoreUtil.getACMExistingCollections;
-import static fortscale.accumulator.util.AccumulatorStoreUtil.getRetentionTimeInDays;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 /**
@@ -34,8 +30,6 @@ public class AccumulatedAggregatedFeatureEventStoreImpl implements AccumulatedAg
     private final MongoTemplate mongoTemplate;
     private final BaseAccumulatedFeatureTranslator translator;
     private final StatsService statsService;
-    private final Period acmDailyRetentionPeriod;
-    private final Period acmHourlyRetentionPeriod;
     private Map<String, AccumulatedAggregatedFeatureEventsStoreMetrics> featureMetricsMap;
     private Set<String> existingCollections;
 
@@ -44,18 +38,13 @@ public class AccumulatedAggregatedFeatureEventStoreImpl implements AccumulatedAg
      * @param mongoTemplate
      * @param translator
      * @param statsService
-     * @param acmDailyRetentionPeriod
-     * @param acmHourlyRetentionPeriod
      */
-    public AccumulatedAggregatedFeatureEventStoreImpl(MongoTemplate mongoTemplate, AccumulatedAggregatedFeatureEventTranslator translator, StatsService statsService, Period acmDailyRetentionPeriod, Period acmHourlyRetentionPeriod) {
+    public AccumulatedAggregatedFeatureEventStoreImpl(MongoTemplate mongoTemplate, AccumulatedAggregatedFeatureEventTranslator translator, StatsService statsService) {
         this.mongoTemplate = mongoTemplate;
         this.translator = translator;
         this.statsService = statsService;
         this.featureMetricsMap = new HashMap<>();
         this.existingCollections = new HashSet<>();
-        this.acmDailyRetentionPeriod = acmDailyRetentionPeriod;
-        this.acmHourlyRetentionPeriod = acmHourlyRetentionPeriod;
-
         existingCollections = getACMExistingCollections(mongoTemplate,translator.getAcmCollectionNameRegex());
     }
 
@@ -75,13 +64,6 @@ public class AccumulatedAggregatedFeatureEventStoreImpl implements AccumulatedAg
         metics.createCollection++;
         try {
             mongoTemplate.createCollection(collectionName);
-
-            long retentionTimeInDays=getRetentionTimeInDays(featureName,acmDailyRetentionPeriod,acmHourlyRetentionPeriod);
-
-            mongoTemplate.indexOps(collectionName)
-                    .ensureIndex(new FIndex().expire(retentionTimeInDays, TimeUnit.DAYS)
-                            .named(AccumulatedAggregatedFeatureEvent.ACCUMULATED_AGGREGATED_FEATURE_EVENT_FIELD_NAME_CREATION_TIME)
-                            .on(AccumulatedAggregatedFeatureEvent.ACCUMULATED_AGGREGATED_FEATURE_EVENT_FIELD_NAME_CREATION_TIME, Sort.Direction.DESC));
             mongoTemplate.indexOps(collectionName)
                     .ensureIndex(new Index().named(AccumulatedAggregatedFeatureEvent.ACCUMULATED_AGGREGATED_FEATURE_EVENT_FIELD_NAME_START_TIME)
                             .on(AccumulatedAggregatedFeatureEvent.ACCUMULATED_AGGREGATED_FEATURE_EVENT_FIELD_NAME_START_TIME, Sort.Direction.DESC));
