@@ -3,18 +3,17 @@ package presidio.data.generators.event.dlpfile;
 import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.common.precentage.BooleanPercentageGenerator;
 import presidio.data.generators.common.time.TimeGenerator;
-import presidio.data.generators.domain.Machine;
-import presidio.data.generators.domain.User;
-import presidio.data.generators.domain.event.file.dlpfile.DLPFileEvent;
-import presidio.data.generators.domain.event.file.dlpfile.DLPFileOperation;
+import presidio.data.domain.MachineEntity;
+import presidio.data.domain.User;
+import presidio.data.domain.event.dlpfile.DLPFileEvent;
+import presidio.data.domain.event.dlpfile.DLPFileOperation;
 import presidio.data.generators.event.EntityEventIDFixedPrefixGenerator;
 import presidio.data.generators.event.IEventGenerator;
-import presidio.data.generators.file.dlpfile.DLPFileOperationGenerator;
-import presidio.data.generators.file.dlpfile.IDLPFileOperationGenerator;
+import presidio.data.generators.dlpfileop.DLPFileOperationGenerator;
+import presidio.data.generators.dlpfileop.IDLPFileOperationGenerator;
 import presidio.data.generators.machine.IMachineGenerator;
 import presidio.data.generators.machine.SimpleMachineGenerator;
 import presidio.data.generators.user.IUserGenerator;
-import presidio.data.generators.file.DriveTypePercentageGenerator;
 import presidio.data.generators.user.RandomUserGenerator;
 
 import java.time.Instant;
@@ -75,7 +74,7 @@ public class DLPFileEventsGenerator implements IEventGenerator {
             ev.setFirstName(user.getFirstName());
             ev.setLastName(user.getLastName());
 
-            Machine sm = getSourceMachineGenerator().getNext();
+            MachineEntity sm = getSourceMachineGenerator().getNext();
             ev.setSrcMachine(sm.getName());
             ev.setNormalized_src_machine(sm.getNormalized_name());
             ev.setSourceIp(sm.getIp_address());

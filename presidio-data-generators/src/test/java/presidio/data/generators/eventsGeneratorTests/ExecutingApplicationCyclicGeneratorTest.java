@@ -2,7 +2,7 @@ package presidio.data.generators.eventsGeneratorTests;
 
 import org.junit.Assert;
 import org.junit.Test;
-import presidio.data.generators.file.DEFAULT_APPLICATIONS;
+import presidio.data.generators.dlpfileop.DEFAULT_APPLICATIONS;
 import presidio.data.generators.event.dlpfile.ExecutingApplicationCyclicGenerator;
 
 public class ExecutingApplicationCyclicGeneratorTest {

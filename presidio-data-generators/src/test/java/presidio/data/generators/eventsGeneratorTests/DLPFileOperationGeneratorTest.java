@@ -3,11 +3,11 @@ package presidio.data.generators.eventsGeneratorTests;
 
 import org.junit.Assert;
 import org.junit.Test;
-import presidio.data.generators.file.DEFAULT_EVENT_TYPE;
-import presidio.data.generators.domain.event.file.dlpfile.DLPFileOperation;
-import presidio.data.generators.file.FileSizeIncrementalGenerator;
-import presidio.data.generators.file.OperationTypeCyclicGenerator;
-import presidio.data.generators.file.dlpfile.DLPFileOperationGenerator;
+import presidio.data.generators.dlpfileop.DLPFileOperationGenerator;
+import presidio.data.domain.event.dlpfile.DLPFileOperation;
+import presidio.data.generators.dlpfileop.DEFAULT_EVENT_TYPE;
+import presidio.data.generators.fileentity.FileSizeIncrementalGenerator;
+import presidio.data.generators.dlpfileop.OperationTypeCyclicGenerator;
 
 public class DLPFileOperationGeneratorTest {
 

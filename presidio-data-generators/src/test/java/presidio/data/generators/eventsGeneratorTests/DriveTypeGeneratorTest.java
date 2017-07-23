@@ -4,7 +4,7 @@ package presidio.data.generators.eventsGeneratorTests;
 
 import org.junit.Assert;
 import org.junit.Test;
-import presidio.data.generators.file.DriveTypePercentageGenerator;
+import presidio.data.generators.event.dlpfile.DriveTypePercentageGenerator;
 import presidio.data.generators.common.GeneratorException;
 
 /**

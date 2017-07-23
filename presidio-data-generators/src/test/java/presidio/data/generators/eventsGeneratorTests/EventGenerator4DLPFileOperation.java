@@ -80,7 +80,7 @@ public class EventGenerator4DLPFileOperation {
 
 
         /***
-         * Source Machine
+         * Source MachineEntity
          */
 
         String[] IP = new String[myTimeGenerator.getSize()];

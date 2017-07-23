@@ -4,8 +4,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import presidio.data.generators.common.GeneratorException;
-import presidio.data.generators.domain.event.activedirectory.AD_OPERATION_TYPE;
-import presidio.data.generators.domain.event.activedirectory.ActiveDirectoryEvent;
+import presidio.data.domain.event.activedirectory.AD_OPERATION_TYPE;
+import presidio.data.domain.event.activedirectory.ActiveDirectoryEvent;
 import presidio.data.generators.event.activedirectory.ActiveDirectoryEventsGenerator;
 import presidio.data.generators.user.RandomAdminUserPercentageGenerator;
 
@@ -20,7 +20,7 @@ public class ActiveDirectoryEventsGeneratorTest {
     /** Default values:
      * time: 8:00 to 16:00, every 10 min, 30 to 1 days back
      * userId (normalizedUsername):  "random" alphanumeric string, 10 chars length
-     * operation type: all types from enum presidio.data.generators.domain.event.activedirectory.AD_OPERATION_TYPE
+     * operation type: all types from enum presidio.data.domain.activedirectoryop.AD_OPERATION_TYPE
      * isSecuritySensitiveOperation: 1%
      * isUserAdministrator: 10% (altering default 2% generator)
      * objectName: "random" alphanumeric string, 20 chars length

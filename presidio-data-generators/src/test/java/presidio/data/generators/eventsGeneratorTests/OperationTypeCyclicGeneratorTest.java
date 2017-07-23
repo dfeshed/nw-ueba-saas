@@ -2,8 +2,8 @@ package presidio.data.generators.eventsGeneratorTests;
 
 import org.junit.Assert;
 import org.junit.Test;
-import presidio.data.generators.file.DEFAULT_EVENT_TYPE;
-import presidio.data.generators.file.OperationTypeCyclicGenerator;
+import presidio.data.generators.dlpfileop.DEFAULT_EVENT_TYPE;
+import presidio.data.generators.dlpfileop.OperationTypeCyclicGenerator;
 
 /**
  * Created by cloudera on 6/1/17.

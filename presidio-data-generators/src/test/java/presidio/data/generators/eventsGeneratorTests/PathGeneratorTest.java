@@ -4,7 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.event.dlpfile.DLPFileEventsGeneratorTemplateFactory;
-import presidio.data.generators.file.SimplePathGenerator;
+import presidio.data.generators.fileentity.SimplePathGenerator;
 
 public class PathGeneratorTest {
 

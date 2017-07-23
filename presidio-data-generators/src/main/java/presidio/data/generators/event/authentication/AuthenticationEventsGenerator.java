@@ -1,23 +1,18 @@
 package presidio.data.generators.event.authentication;
 
 import presidio.data.generators.FixedDataSourceGenerator;
-import presidio.data.generators.activedirectory.ActiveDirOperationTypeCyclicGenerator;
-import presidio.data.generators.authentication.AuthenticationTypeCyclicGenerator;
+import presidio.data.generators.authenticationop.AuthenticationTypeCyclicGenerator;
 import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.common.RandomStringGenerator;
 import presidio.data.generators.common.precentage.BooleanPercentageGenerator;
 import presidio.data.generators.common.precentage.OperationResultPercentageGenerator;
 import presidio.data.generators.common.time.TimeGenerator;
-import presidio.data.generators.domain.Machine;
-import presidio.data.generators.domain.User;
-import presidio.data.generators.domain.event.activedirectory.ActiveDirectoryEvent;
-import presidio.data.generators.domain.event.authentication.AuthenticationEvent;
+import presidio.data.domain.User;
+import presidio.data.domain.event.authentication.AuthenticationEvent;
 import presidio.data.generators.event.EntityEventIDFixedPrefixGenerator;
 import presidio.data.generators.event.IEventGenerator;
-import presidio.data.generators.machine.IMachineGenerator;
 import presidio.data.generators.machine.RemoteMachinePercentageGenerator;
 import presidio.data.generators.machine.SimpleMachineGenerator;
-import presidio.data.generators.user.IUserGenerator;
 import presidio.data.generators.user.RandomUserGenerator;
 
 import java.time.Instant;
