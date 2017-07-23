@@ -7,6 +7,7 @@ import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.domain.event.activedirectory.AD_OPERATION_TYPE;
 import presidio.data.generators.domain.event.activedirectory.ActiveDirectoryEvent;
 import presidio.data.generators.event.activedirectory.ActiveDirectoryEventsGenerator;
+import presidio.data.generators.user.RandomAdminUserPercentageGenerator;
 
 import java.util.HashSet;
 import java.util.List;
@@ -21,7 +22,7 @@ public class ActiveDirectoryEventsGeneratorTest {
      * userId (normalizedUsername):  "random" alphanumeric string, 10 chars length
      * operation type: all types from enum presidio.data.generators.domain.event.activedirectory.AD_OPERATION_TYPE
      * isSecuritySensitiveOperation: 1%
-     * isUserAdministrator: 2%
+     * isUserAdministrator: 10% (altering default 2% generator)
      * objectName: "random" alphanumeric string, 20 chars length
      * result: 100% "Success"
      * dataSource: "DefaultDS"
@@ -32,6 +33,8 @@ public class ActiveDirectoryEventsGeneratorTest {
     @Before
     public void prepare() throws GeneratorException {
         ActiveDirectoryEventsGenerator generator = new ActiveDirectoryEventsGenerator();
+        RandomAdminUserPercentageGenerator adminUsersGenerator = new RandomAdminUserPercentageGenerator(10);
+        generator.setUserGenerator(adminUsersGenerator);
         events = generator.generate();
     }
 
@@ -65,12 +68,12 @@ public class ActiveDirectoryEventsGeneratorTest {
 
     @Test
     public void IsAdministratorPctTest () {
-        // isUserAdministrator 2% of 1392 = 28
+        // isUserAdministrator 10% of 1392 = 140
         int admins = 0;
         for (final ActiveDirectoryEvent ev : events) {
             if (ev.getUser().isAdministrator()) admins++;
         }
-        Assert.assertEquals(28, admins);
+        Assert.assertEquals(140, admins);
     }
 
     @Test
