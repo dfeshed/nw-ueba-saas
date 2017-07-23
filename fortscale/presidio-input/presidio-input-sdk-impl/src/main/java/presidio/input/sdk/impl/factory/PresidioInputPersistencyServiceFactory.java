@@ -1,6 +1,9 @@
 package presidio.input.sdk.impl.factory;
-
-import org.springframework.beans.factory.annotation.Autowired;
+import fortscale.utils.logging.Logger;
+import fortscale.utils.mongodb.config.MongoConfig;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import presidio.input.sdk.impl.spring.PresidioInputPersistencyServiceConfig;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
 
 /**
@@ -8,10 +11,16 @@ import presidio.sdk.api.services.PresidioInputPersistencyService;
  */
 public class PresidioInputPersistencyServiceFactory {
 
-    @Autowired
-    private PresidioInputPersistencyService presidioInputPersistencyService;
+    private static final Logger logger = Logger.getLogger(PresidioInputPersistencyServiceFactory.class);
 
-    public PresidioInputPersistencyService createPresidioInputPersistencyService() {
-        return presidioInputPersistencyService;
+    public PresidioInputPersistencyService createPresidioInputPersistencyService() throws Exception {
+        ApplicationContext ctx = new AnnotationConfigApplicationContext(MongoConfig.class, PresidioInputPersistencyServiceConfig.class); //MongoConfig.class,
+        final PresidioInputPersistencyService presidioInputPersistencyServiceBean = ctx.getBean(PresidioInputPersistencyService.class);
+        if (presidioInputPersistencyServiceBean == null) {
+            final String errorMessage = "Failed to create PresidioInputPersistencyService.";
+            logger.error(errorMessage);
+            throw new Exception(errorMessage);
+        }
+        return presidioInputPersistencyServiceBean;
     }
 }
