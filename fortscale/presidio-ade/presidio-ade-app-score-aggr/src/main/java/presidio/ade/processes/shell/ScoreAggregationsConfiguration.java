@@ -1,11 +1,9 @@
-package fortscale.ml.processes.shell;
+package presidio.ade.processes.shell;
 
 import fortscale.aggregation.creator.AggregationRecordsCreator;
 import fortscale.aggregation.creator.AggregationRecordsCreatorConfig;
 import fortscale.common.shell.PresidioExecutionService;
 import fortscale.ml.model.cache.EventModelsCacheServiceConfig;
-import fortscale.ml.processes.shell.scoring.aggregation.ScoreAggregationsBucketService;
-import fortscale.ml.processes.shell.scoring.aggregation.ScoreAggregationsBucketServiceConfiguration;
 import fortscale.ml.scorer.enriched_events.EnrichedEventsScoringService;
 import fortscale.ml.scorer.enriched_events.EnrichedEventsScoringServiceConfig;
 import fortscale.utils.mongodb.config.MongoConfig;
@@ -19,6 +17,8 @@ import presidio.ade.domain.store.aggr.AggrDataStoreConfig;
 import presidio.ade.domain.store.aggr.AggrgatedDataStore;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
 import presidio.ade.domain.store.enriched.EnrichedDataStoreConfig;
+import presidio.ade.processes.shell.scoring.aggregation.ScoreAggregationsBucketService;
+import presidio.ade.processes.shell.scoring.aggregation.ScoreAggregationsBucketServiceConfiguration;
 
 @Configuration
 @EnableSpringConfigured

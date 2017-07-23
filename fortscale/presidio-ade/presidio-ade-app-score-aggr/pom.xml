@@ -1,52 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-
-
-    <name>presidio-output-processor</name>
-    <description>Demo project for Spring Boot</description>
-
     <parent>
-        <artifactId>presidio-output</artifactId>
+        <artifactId>presidio-ade</artifactId>
         <groupId>fortscale</groupId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
-    <artifactId>presidio-output-processor</artifactId>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>presidio-ade-app-score-aggr</artifactId>
+
     <packaging>jar</packaging>
 
-
     <properties>
-        <start-class>fortscale.FortscaleOutputProcessorApplication</start-class>
+        <start-class>presidio.ade.processes.shell.ScoreAggregationsApplication</start-class>
     </properties>
+
 
     <dependencies>
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-task-starter</artifactId>
-            <version>${spring-cloud-task-starter.version}</version>
+            <groupId>fortscale</groupId>
+            <artifactId>presidio-ml</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
-
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-            <scope>provided</scope>
-        </dependency>
-
-
         <dependency>
             <groupId>fortscale</groupId>
-            <artifactId>presidio-utils</artifactId>
-            <version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-config</artifactId>
+            <artifactId>presidio-ade-domain</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-config</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-task-starter</artifactId>
+            <version>${spring-cloud-task-starter.version}</version>
         </dependency>
     </dependencies>
 
@@ -104,6 +104,5 @@
             </plugin>
         </plugins>
     </build>
-
 
 </project>

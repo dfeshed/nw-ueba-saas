@@ -1,15 +1,15 @@
-package fortscale.ml.processes.shell;
+package presidio.ade.processes.shell;
 
 import fortscale.aggregation.creator.AggregationRecordsCreator;
 import fortscale.common.general.DataSource;
 import fortscale.common.shell.PresidioExecutionService;
-import fortscale.ml.processes.shell.scoring.aggregation.ScoreAggregationsBucketService;
-import fortscale.ml.processes.shell.scoring.aggregation.ScoreAggregationsService;
 import fortscale.ml.scorer.enriched_events.EnrichedEventsScoringService;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.time.TimeRange;
 import presidio.ade.domain.store.aggr.AggrgatedDataStore;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
+import presidio.ade.processes.shell.scoring.aggregation.ScoreAggregationsBucketService;
+import presidio.ade.processes.shell.scoring.aggregation.ScoreAggregationsService;
 
 import java.time.Instant;
 
