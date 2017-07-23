@@ -49,16 +49,24 @@ public abstract class AslConfigurationService
 
 	@Override
 	protected Resource[] getBaseConfigurationResources() throws IOException {
-		return applicationContext.getResources(getBaseConfJsonFilesPath());
+		return getConfigurationResources(getBaseConfJsonFilesPath());
 	}
 
 	@Override
 	protected Resource[] getOverridingConfigurationResources() throws IOException {
-		return applicationContext.getResources(getBaseOverridingConfJsonFolderPath());
+		return getConfigurationResources(getBaseOverridingConfJsonFolderPath());
 	}
 
 	@Override
 	protected Resource[] getAdditionalConfigurationResources() throws IOException {
-		return applicationContext.getResources(getAdditionalConfJsonFolderPath());
+		return getConfigurationResources(getAdditionalConfJsonFolderPath());
+	}
+
+	private Resource[] getConfigurationResources(String locationPattern) throws IOException {
+		if (locationPattern == null) {
+			return null;
+		} else {
+			return applicationContext.getResources(locationPattern);
+		}
 	}
 }

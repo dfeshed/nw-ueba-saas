@@ -26,6 +26,11 @@ public class AslResourceFactory implements ApplicationContextAware {
 	}
 
 	public Resource[] getResources(String locationPattern) {
+		if (locationPattern == null) {
+			logger.info("Location pattern is null - Returning null.");
+			return null;
+		}
+
 		try {
 			return applicationContext.getResources(locationPattern);
 		} catch (IOException e) {

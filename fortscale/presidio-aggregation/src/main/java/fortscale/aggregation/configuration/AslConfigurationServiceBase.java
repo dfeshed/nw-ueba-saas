@@ -58,7 +58,7 @@ public abstract class AslConfigurationServiceBase {
 	/**
 	 * Load the ASL configurations from the resources, as described in the class documentation.
 	 */
-	protected void loadAslConfigurations() throws IllegalArgumentException {
+	public void loadAslConfigurations() throws IllegalArgumentException {
 		loadOverridingOrBaseConfigurations();
 		loadAdditionalConfigurations();
 	}
