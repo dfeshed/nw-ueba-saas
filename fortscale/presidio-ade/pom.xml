@@ -13,6 +13,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>presidio-ade-app-score-aggr</module>
+        <module>presidio-ade-app-modeling</module>
         <module>presidio-ade-sdk</module>
     </modules>
 </project>
