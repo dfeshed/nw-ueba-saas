@@ -24,8 +24,8 @@ public class ActiveDirectoryEvent {
         return eventTime;
     }
 
-    public void setEventTime(Instant eventTime) {
-        this.eventTime = eventTime;
+    public void setEventTime(Instant eventTime){
+        this.eventTime=eventTime;
     }
 
     public String getEventId() {
