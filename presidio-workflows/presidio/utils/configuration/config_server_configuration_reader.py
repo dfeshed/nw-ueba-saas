@@ -1,6 +1,10 @@
+import os
 import requests
 
 from presidio.utils.airflow.configuration.abstract_configuration_reader import AbstractConfigurationReader
+
+SOURCE_KEY = "source"
+PROPERTY_SOURCES_KEY = "propertySources"
 
 
 class ConfigServerConfigurationReader(AbstractConfigurationReader):
@@ -28,7 +32,7 @@ class ConfigServerConfigurationReader(AbstractConfigurationReader):
 
         :return: json containing the configuration for application,profile 
         """
-        return requests.get('/'.join((self.config_server, self.app_name, self.profile)), auth=self.auth).json()
+        return requests.get(str(os.sep).join(self.config_server, self.app_name, self.profile), auth=self.auth).json()
 
     def read_from_store(self, conf_key):
         """
@@ -38,9 +42,9 @@ class ConfigServerConfigurationReader(AbstractConfigurationReader):
             """
         if not self.properties:
             self.properties = self._get_application_properties()
-        property_sources = self.properties["propertySources"]
+        property_sources = self.properties[PROPERTY_SOURCES_KEY]
         for property_source in property_sources:
-            source = property_source["source"]
+            source = property_source[SOURCE_KEY]
             if source.has_key(conf_key):
                 return source[conf_key]
         return None

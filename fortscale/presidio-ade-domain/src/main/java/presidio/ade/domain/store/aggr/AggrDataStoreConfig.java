@@ -23,7 +23,7 @@ public class AggrDataStoreConfig {
 
     @Bean
     public AggrgatedDataStore aggrgatedDataStore() {
-        return new AggrgatedDataStoreMongoImpl(mongoTemplate, translator,mongoDbBulkOpUtil);
+        return new AggregatedDataStoreMongoImpl(mongoTemplate, translator,mongoDbBulkOpUtil);
     }
 
 }

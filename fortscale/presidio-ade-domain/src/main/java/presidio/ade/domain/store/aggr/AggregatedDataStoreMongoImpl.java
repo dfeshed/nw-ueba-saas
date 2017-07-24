@@ -13,14 +13,14 @@ import java.util.stream.Collectors;
 /**
  * Created by barak_schuster on 7/10/17.
  */
-public class AggrgatedDataStoreMongoImpl implements AggrgatedDataStore {
-    private static final Logger logger = Logger.getLogger(AggrgatedDataStoreMongoImpl.class);
+public class AggregatedDataStoreMongoImpl implements AggrgatedDataStore {
+    private static final Logger logger = Logger.getLogger(AggregatedDataStoreMongoImpl.class);
 
     private final MongoTemplate mongoTemplate;
     private final AggrDataToCollectionNameTranslator translator;
     private final MongoDbBulkOpUtil mongoDbBulkOpUtil;
 
-    public AggrgatedDataStoreMongoImpl(MongoTemplate mongoTemplate, AggrDataToCollectionNameTranslator translator, MongoDbBulkOpUtil mongoDbBulkOpUtil) {
+    public AggregatedDataStoreMongoImpl(MongoTemplate mongoTemplate, AggrDataToCollectionNameTranslator translator, MongoDbBulkOpUtil mongoDbBulkOpUtil) {
         this.mongoTemplate = mongoTemplate;
         this.translator = translator;
         this.mongoDbBulkOpUtil = mongoDbBulkOpUtil;
@@ -36,7 +36,7 @@ public class AggrgatedDataStoreMongoImpl implements AggrgatedDataStore {
                     AggrRecordsMetadata metadata = new AggrRecordsMetadata(feature);
                     String collectionName = getCollectionName(metadata);
                     List<? extends AdeAggregationRecord> aggrRecords = featureToAggrList.get(feature);
-                    mongoDbBulkOpUtil.insertUnordered(records,collectionName);
+                    mongoDbBulkOpUtil.insertUnordered(aggrRecords,collectionName);
                 }
         );
     }
