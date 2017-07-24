@@ -25,6 +25,7 @@ import com.google.common.collect.Sets;
 import com.google.common.io.Files;
 import org.apache.commons.io.FileUtils;
 import org.apache.flume.test.util.StagedInstall;
+import org.junit.Ignore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -153,6 +154,7 @@ public class TestSpooldirSource {
     }
   }
 
+  @Ignore
   @Test
   public void testManySpooldirs() throws Exception {
     LOGGER.debug("testManySpooldirs() started.");
