@@ -11,7 +11,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 
 public class MongoDbUtilService {
-    public static final String COLLECTION_ALREADY_EXISTS_ERR_MSG = "collection already exists";
+    public static final String COLLECTION_ALREADY_EXISTS_ERR_MSG = "already exists";
     public static final String TOO_LARGE_OBJECT_MONGO_ERR_MSG = "is larger than MaxDocumentSize";
     private static final Logger logger = Logger.getLogger(MongoDbUtilService.class);
     private MongoTemplate mongoTemplate;

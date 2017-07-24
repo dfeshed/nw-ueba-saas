@@ -5,6 +5,7 @@ import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
 import net.minidev.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -269,7 +270,7 @@ public class EntityEventBuilderTest extends EntityEventTestBase{
 			properties.put("impala.table.fields.epochtime", "date_time_unix");
 			properties.put("streaming.aggr_event.field.bucket_conf_name", "bucket_conf_name");
 			properties.put("streaming.aggr_event.field.aggregated_feature_name", "aggregated_feature_name");
-			properties.put("streaming.aggr_event.field.aggregated_feature_value", "aggregated_feature_value");
+			properties.put("streaming.aggr_event.field.aggregated_feature_value", "featureValue");
 			properties.put("impala.table.fields.data.source", "data_source");
 			properties.put("fortscale.entity.event.retrieving.page.size", "200000");
 			properties.put("fortscale.entity.event.store.page.size", "1000");

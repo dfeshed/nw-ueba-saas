@@ -19,7 +19,7 @@ public class AggrEvent implements Serializable {
     public static final String EVENT_FILED_DATA_SOURCE = "data_source";
     public static final String EVENT_FIELD_FEATURE_TYPE = "aggregated_feature_type";
     public static final String EVENT_FIELD_AGGREGATED_FEATURE_NAME = "aggregated_feature_name";
-    public static final String EVENT_FIELD_AGGREGATED_FEATURE_VALUE = "aggregated_feature_value";
+    public static final String EVENT_FIELD_AGGREGATED_FEATURE_VALUE = "featureValue";
     public static final String EVENT_FIELD_AGGREGATED_FEATURE_INFO = "aggregated_feature_info";
     public static final String EVENT_FIELD_BUCKET_CONF_NAME = "bucket_conf_name";
     public static final String EVENT_FIELD_CONTEXT = "context";

@@ -9,27 +9,28 @@ import fortscale.common.feature.Feature;
 import fortscale.domain.feature.score.FeatureScore;
 import fortscale.ml.model.ModelBuilderData;
 import fortscale.ml.model.ModelBuilderData.NoDataReason;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.util.Assert;
 
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-@Configurable(preConstruction = true)
+
 public class AggregatedFeatureEventUnreducedScoreRetriever extends AbstractDataRetriever {
-	@Autowired
 	private AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
-	@Autowired
 	private AggregatedFeatureEventsReaderService aggregatedFeatureEventsReaderService;
 
 	private AggregatedFeatureEventUnreducedScoreRetrieverConf config;
 	private AggregatedFeatureEventConf aggregatedFeatureEventToCalibrateConf;
 
-	public AggregatedFeatureEventUnreducedScoreRetriever(AggregatedFeatureEventUnreducedScoreRetrieverConf config) {
+	public AggregatedFeatureEventUnreducedScoreRetriever(AggregatedFeatureEventUnreducedScoreRetrieverConf config,
+														 AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService,
+														 AggregatedFeatureEventsReaderService aggregatedFeatureEventsReaderService) {
 		super(config);
 		this.config = config;
+		this.aggregatedFeatureEventsConfService = aggregatedFeatureEventsConfService;
+		this.aggregatedFeatureEventsReaderService = aggregatedFeatureEventsReaderService;
+
 		String aggregatedFeatureEventConfNameToCalibrate = config.getAggregatedFeatureEventToCalibrateConfName();
 		aggregatedFeatureEventToCalibrateConf = aggregatedFeatureEventsConfService
 				.getAggregatedFeatureEventConf(aggregatedFeatureEventConfNameToCalibrate);

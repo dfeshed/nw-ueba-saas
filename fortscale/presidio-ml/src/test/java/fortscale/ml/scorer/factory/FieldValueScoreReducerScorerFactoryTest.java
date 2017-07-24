@@ -9,6 +9,7 @@ import fortscale.ml.scorer.config.IScorerConf;
 import fortscale.ml.scorer.params.FieldValueScoreReducerScorerConfParams;
 import fortscale.utils.factory.FactoryService;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import presidio.ade.domain.record.AdeRecordReader;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = { ScorerFactoriesTestConfig.class})
+@Ignore
 public class FieldValueScoreReducerScorerFactoryTest {
     @MockBean
     private ModelConfService modelConfService;
