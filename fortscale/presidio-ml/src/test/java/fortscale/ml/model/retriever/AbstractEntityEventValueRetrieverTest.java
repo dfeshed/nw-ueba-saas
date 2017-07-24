@@ -10,6 +10,7 @@ import fortscale.ml.model.selector.IContextSelector;
 import fortscale.utils.factory.FactoryService;
 import fortscale.utils.time.TimeRange;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -27,6 +28,7 @@ import static org.mockito.Mockito.when;
 @RunWith(SpringRunner.class)
 @ContextConfiguration(locations = {"classpath*:META-INF/spring/retriever-test-context.xml"})
 @SpringBootTest
+@Ignore
 public class AbstractEntityEventValueRetrieverTest extends EntityEventValueRetrieverTestUtils {
 	@MockBean
 	private FactoryService<IContextSelector> contextSelectorFactoryService;
