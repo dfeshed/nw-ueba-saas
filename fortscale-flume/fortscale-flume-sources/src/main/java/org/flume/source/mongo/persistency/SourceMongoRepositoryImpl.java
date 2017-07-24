@@ -1,6 +1,7 @@
 package org.flume.source.mongo.persistency;
 
 
+import fortscale.domain.core.AbstractAuditableDocument;
 import org.flume.domain.AbstractDocument;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -20,8 +21,8 @@ public class SourceMongoRepositoryImpl implements SourceMongoRepository {
     }
 
     @Override
-    public List<AbstractDocument> findByDateTimeBetween(String collectionName, Instant startDate, Instant endDate, int pageNum, int pageSize) {
+    public List<AbstractAuditableDocument> findByDateTimeBetween(String collectionName, Instant startDate, Instant endDate, int pageNum, int pageSize) {
         final Query timeQuery = new Query(Criteria.where(AbstractDocument.DATE_TIME_FIELD_NAME).gte(startDate).lt(endDate)).with(new PageRequest(pageNum, pageSize));
-        return mongoTemplate.find(timeQuery, AbstractDocument.class, collectionName);
+        return mongoTemplate.find(timeQuery, AbstractAuditableDocument.class, collectionName);
     }
 }

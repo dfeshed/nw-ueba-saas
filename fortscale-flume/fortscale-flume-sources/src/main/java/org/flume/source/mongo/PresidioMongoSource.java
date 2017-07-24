@@ -1,7 +1,8 @@
 package org.flume.source.mongo;
 
 
-import com.google.gson.Gson;
+import com.google.gson.*;
+import fortscale.domain.core.AbstractAuditableDocument;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.flume.Context;
 import org.apache.flume.Event;
@@ -13,19 +14,21 @@ import org.apache.flume.instrumentation.SourceCounter;
 import org.apache.flume.source.AbstractEventDrivenSource;
 import org.codehaus.jackson.JsonProcessingException;
 import org.flume.CommonStrings;
-import org.flume.domain.AbstractDocument;
 import org.flume.source.mongo.persistency.SourceMongoRepository;
 import org.flume.source.mongo.persistency.SourceMongoRepositoryImpl;
 import org.flume.utils.DateUtils;
 import org.flume.utils.MongoUtils;
+import org.joda.time.DateTime;
+import org.joda.time.format.ISODateTimeFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
-
+import java.lang.reflect.Type;
 import java.net.UnknownHostException;
 import java.nio.charset.Charset;
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.flume.CommonStrings.*;
@@ -58,13 +61,13 @@ public class PresidioMongoSource extends AbstractEventDrivenSource implements Co
         try {
             for (String mandatoryParam : mandatoryParams) {
                 if (!context.containsKey(mandatoryParam)) {
-                    throw new Exception(String.format("Missing mandatory param %s for Mongo sink. Mandatory params are: %s", mandatoryParam, mandatoryParams));
+                    throw new Exception(String.format("Missing mandatory param %s for %s. Mandatory params are: %s", getName(), mandatoryParam, Arrays.toString(mandatoryParams)));
                 }
             }
             hasAuthentication = Boolean.parseBoolean(context.getString(HAS_AUTHENTICATION));
             if (hasAuthentication) {
                 if (!context.containsKey(CommonStrings.USERNAME) || !context.containsKey(CommonStrings.PASSWORD)) {
-                    throw new Exception(String.format("Missing %s and/or %s for authentication for %s (since %s = true).",CommonStrings.USERNAME, CommonStrings.PASSWORD, getName(), CommonStrings.HAS_AUTHENTICATION));
+                    throw new Exception(String.format("Missing %s and/or %s for authentication for %s (since %s = true).", CommonStrings.USERNAME, CommonStrings.PASSWORD, getName(), CommonStrings.HAS_AUTHENTICATION));
                 }
 
             }
@@ -85,7 +88,7 @@ public class PresidioMongoSource extends AbstractEventDrivenSource implements Co
             final String password = context.getString(PASSWORD, "");
             sourceMongoRepository = createRepository(dbName, host, port, username, password);
         } catch (Exception e) {
-            final String errorMessage = "Failed to configure Presidio Mongo Source.";
+            final String errorMessage = "Failed to configure ." + getName();
             logger.error(errorMessage, e);
             throw new FlumeException(errorMessage, e);
         }
@@ -99,12 +102,12 @@ public class PresidioMongoSource extends AbstractEventDrivenSource implements Co
 
     @Override
     protected void doStart() throws FlumeException {
-        logger.debug("PresidioMongoSource is processing events for {}: {}, {}: {}.", START_DATE, END_DATE, startDate, endDate);
+        logger.debug("{} is processing events for {}: {}, {}: {}.", getName(), START_DATE, END_DATE, startDate, endDate);
         sourceCounter.start();
 
         try {
             int pageNum = 0;// first page
-            List<AbstractDocument> currentPage = sourceMongoRepository.findByDateTimeBetween(collectionName, startDate.minusMillis(1), endDate, pageNum, batchSize);
+            List<AbstractAuditableDocument> currentPage = sourceMongoRepository.findByDateTimeBetween(collectionName, startDate.minusMillis(1), endDate, pageNum, batchSize);
             if (currentPage.size() == 0) {
                 logger.warn("Failed to process events for {}: {}, {]: {}. There were no events to process", START_DATE, startDate, END_DATE, endDate);
             } else {
@@ -116,12 +119,12 @@ public class PresidioMongoSource extends AbstractEventDrivenSource implements Co
                     pageNum++;
                 }
             }
-            logger.debug("PresidioMongoSource has finished processing events for {}: {}, {}: {}.", START_DATE, startDate, END_DATE, endDate);
+            logger.debug("{} has finished processing events for {}: {}, {}: {}.", getName(), START_DATE, startDate, END_DATE, endDate);
             startDate = endDate; // advance the cursor
             this.stop();
 
         } catch (Exception e) {
-            logger.error("PresidioMongoSource has failed to process events for }: {}, {}: {}.", START_DATE, startDate, END_DATE, endDate);
+            logger.error("{} has failed to process events for }: {}, {}: {}.", getName(), START_DATE, startDate, END_DATE, endDate);
             logger.error(e.getMessage());
             this.stop();
         }
@@ -136,7 +139,7 @@ public class PresidioMongoSource extends AbstractEventDrivenSource implements Co
 
     @Override
     protected void doStop() throws FlumeException {
-        logger.info("PresidioMongoSource is stopping...");
+        logger.info("{} is stopping...", getName());
     }
 
     private SourceMongoRepository createRepository(String dbName, String host, int port, String username, String password) throws UnknownHostException {
@@ -144,29 +147,37 @@ public class PresidioMongoSource extends AbstractEventDrivenSource implements Co
         return new SourceMongoRepositoryImpl(mongoTemplate);
     }
 
-    private void processEvent(AbstractDocument event) throws JsonProcessingException {
+    private void processEvent(AbstractAuditableDocument event) throws JsonProcessingException {
         sourceCounter.incrementEventAcceptedCount();
-        final Event flumeEvent = EventBuilder.withBody(new Gson().toJson(event), Charset.defaultCharset());
-        logger.trace("PresidioMongoSource has finished processing event {}. Sending event to channel", flumeEvent);
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(DateTime.class, new JsonSerializer<DateTime>() {
+                    @Override
+                    public JsonElement serialize(DateTime json, Type typeOfSrc, JsonSerializationContext context) {
+                        return new JsonPrimitive(ISODateTimeFormat.dateTime().print(json));
+                    }
+                })
+                .create();
+        final Event flumeEvent = EventBuilder.withBody(gson.toJson(event), Charset.defaultCharset());
+        logger.trace("{} has finished processing event {}. Sending event to channel", getName(), flumeEvent);
         getChannelProcessor().processEvent(flumeEvent); // Store the Event into this Source's associated Channel(s)
 
     }
 
-    private void processPage(List<AbstractDocument> pageEvents) throws Exception {
+    private void processPage(List<AbstractAuditableDocument> pageEvents) throws Exception {
         sourceCounter.addToEventReceivedCount(pageEvents.size());
         if (!validateEvents(pageEvents)) { //todo
             final String errorMessage = "event validation failed!";
             logger.error(errorMessage);
             throw new Exception(errorMessage);
         } else {
-            for (AbstractDocument pageEvent : pageEvents) {
+            for (AbstractAuditableDocument pageEvent : pageEvents) {
                 processEvent(pageEvent);
             }
         }
     }
 
 
-    private boolean validateEvents(List<AbstractDocument> events) {
+    private boolean validateEvents(List<AbstractAuditableDocument> events) {
         return events != null; //todo
     }
 

@@ -1,8 +1,7 @@
 package org.flume.source.mongo.persistency;
 
 
-
-import org.flume.domain.AbstractDocument;
+import fortscale.domain.core.AbstractAuditableDocument;
 
 import java.time.Instant;
 import java.util.List;
@@ -10,6 +9,6 @@ import java.util.List;
 
 public interface SourceMongoRepository {
 
-    List<AbstractDocument> findByDateTimeBetween(String collectionName, Instant startDate, Instant endDate, int pageNum, int pageSize);
+    List<AbstractAuditableDocument> findByDateTimeBetween(String collectionName, Instant startDate, Instant endDate, int pageNum, int pageSize);
 
 }
