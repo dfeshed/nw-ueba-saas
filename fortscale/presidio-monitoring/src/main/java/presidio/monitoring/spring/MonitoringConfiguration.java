@@ -2,6 +2,7 @@ package presidio.monitoring.spring;
 
 
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import presidio.monitoring.aspect.MonitoringAspects;
 import presidio.monitoring.aspect.metrics.CustomMetricEndpoint;
 import presidio.monitoring.aspect.metrics.PresidioCustomMetrics;
@@ -17,7 +18,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
 @Configuration
-@EnableAspectJAutoProxy
+@EnableAspectJAutoProxy(proxyTargetClass = true)
+@ConditionalOnProperty(prefix="spring.aop",
+        name="proxy.target.class",
+        havingValue="true",
+        matchIfMissing=false)
 @ComponentScan(basePackages = {"presidio.monitoring.aspect"})
 public class MonitoringConfiguration {
 
