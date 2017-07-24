@@ -1,47 +1,51 @@
 package fortscale.ml.model;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import fortscale.aggregation.configuration.AslConfigurationPaths;
-import fortscale.aggregation.configuration.AslConfigurationService;
+import fortscale.aggregation.configuration.AslConfigurationServiceBase;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
+import org.springframework.core.io.Resource;
 import org.springframework.util.Assert;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ModelConfService extends AslConfigurationService {
+public class ModelConfService extends AslConfigurationServiceBase {
 	private static final Logger logger = Logger.getLogger(ModelConfService.class);
 	private static final String MODEL_CONFS_JSON_FIELD_NAME = "ModelConfs";
 
-	private String baseConfigurationPath;
-	private String overridingConfigurationPath;
-	private String additionalConfigurationPath;
-
-	public ModelConfService(AslConfigurationPaths modelConfigurationPaths) {
-		this.baseConfigurationPath = modelConfigurationPaths.getBaseConfigurationPath();
-		this.overridingConfigurationPath = modelConfigurationPaths.getOverridingConfigurationPath();
-		this.additionalConfigurationPath = modelConfigurationPaths.getAdditionalConfigurationPath();
-	}
-
+	private Resource[] baseConfigurationResources;
+	private Resource[] overridingConfigurationResources;
+	private Resource[] additionalConfigurationResources;
 	private List<ModelConf> modelConfs = new ArrayList<>();
 	private Map<String, ModelConf> nameToModelConfMap = new HashMap<>();
 
-	@Override
-	protected String getBaseConfJsonFilesPath() {
-		return baseConfigurationPath;
+	public ModelConfService(
+			Resource[] baseConfigurationResources,
+			Resource[] overridingConfigurationResources,
+			Resource[] additionalConfigurationResources) {
+
+		this.baseConfigurationResources = baseConfigurationResources;
+		this.overridingConfigurationResources = overridingConfigurationResources;
+		this.additionalConfigurationResources = additionalConfigurationResources;
 	}
 
 	@Override
-	protected String getBaseOverridingConfJsonFolderPath() {
-		return overridingConfigurationPath;
+	protected Resource[] getBaseConfigurationResources() throws IOException {
+		return baseConfigurationResources;
 	}
 
 	@Override
-	protected String getAdditionalConfJsonFolderPath() {
-		return additionalConfigurationPath;
+	protected Resource[] getOverridingConfigurationResources() throws IOException {
+		return overridingConfigurationResources;
+	}
+
+	@Override
+	protected Resource[] getAdditionalConfigurationResources() throws IOException {
+		return additionalConfigurationResources;
 	}
 
 	@Override

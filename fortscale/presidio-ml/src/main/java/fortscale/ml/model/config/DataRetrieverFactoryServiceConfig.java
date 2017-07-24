@@ -1,9 +1,11 @@
 package fortscale.ml.model.config;
 
+import fortscale.accumulator.aggregation.store.AccumulatedAggregatedFeatureEventStore;
 import fortscale.accumulator.aggregation.store.config.AccumulatedAggregatedFeatureEventStoreConfig;
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.aggregation.feature.bucket.FeatureBucketReader;
 import fortscale.aggregation.feature.bucket.FeatureBucketReaderConfig;
+import fortscale.aggregation.feature.event.store.AggregatedFeatureEventsMongoStore;
 import fortscale.aggregation.feature.event.store.AggregatedFeatureEventsReaderService;
 import fortscale.aggregation.feature.event.store.config.AggregatedFeatureEventsMongoStoreConfig;
 import fortscale.ml.model.retriever.AbstractDataRetriever;
@@ -35,6 +37,11 @@ public class DataRetrieverFactoryServiceConfig {
 	@Autowired
 	private Collection<AbstractServiceAutowiringFactory<AbstractDataRetriever>> dataRetrieverFactories;
 
+	@Autowired
+	private AggregatedFeatureEventsMongoStore aggregatedFeatureEventsMongoStore;
+	@Autowired
+	private AccumulatedAggregatedFeatureEventStore accumulatedAggregatedFeatureEventStore;
+
 	@Bean
 	public FactoryService<AbstractDataRetriever> dataRetrieverFactoryService() {
 		FactoryService<AbstractDataRetriever> dataRetrieverFactoryService = new FactoryService<>();
@@ -44,6 +51,6 @@ public class DataRetrieverFactoryServiceConfig {
 
 	@Bean
 	public AggregatedFeatureEventsReaderService aggregatedFeatureEventsReaderService() {
-		return new AggregatedFeatureEventsReaderService();
+		return new AggregatedFeatureEventsReaderService(aggregatedFeatureEventsMongoStore,  accumulatedAggregatedFeatureEventStore);
 	}
 }

@@ -39,9 +39,12 @@ public class MongoDbBulkOpUtil {
         {
             return null;
         }
-
-        result = mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED,collectionName).insert(records).execute();
+        if (records.isEmpty())
+        {
+            return null;
+        }
         dynamicIndexApplicationListener.createCollectionIndexesForClass(collectionName,records.get(0).getClass());
+        result = mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED,collectionName).insert(records).execute();
 
         return result;
     }
