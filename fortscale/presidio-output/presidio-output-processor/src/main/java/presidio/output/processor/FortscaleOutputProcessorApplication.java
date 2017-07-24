@@ -1,6 +1,7 @@
 package presidio.output.processor;
 
 
+import fortscale.common.general.PresidioShellableApplication;
 import fortscale.utils.mongodb.config.MongoConfig;
 
 import org.slf4j.Logger;
@@ -17,15 +18,15 @@ import presidio.output.processor.spring.OutputProcessorConfiguration;
 @SpringBootApplication
 @ComponentScan(
 		excludeFilters = @ComponentScan.Filter(type = FilterType.REGEX, pattern = "fortscale.*"))
-@EnableTask
 public class FortscaleOutputProcessorApplication {
 
-
-	private static  Logger log = LoggerFactory.getLogger(FortscaleOutputProcessorApplication.class);
+	private static  Logger logger = LoggerFactory.getLogger(FortscaleOutputProcessorApplication.class);
 
 	public static void main(String[] args) {
-		log.info("shay");
-		SpringApplication.run(new Object[]{FortscaleOutputProcessorApplication.class, MongoConfig.class, OutputProcessorConfiguration.class}, args);
+		logger.info("Starting {}.", FortscaleOutputProcessorApplication.class.getSimpleName());
+		PresidioShellableApplication.run(OutputProcessorConfiguration.class, args);
+
+
 	}
 
 
