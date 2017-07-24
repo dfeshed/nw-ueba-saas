@@ -1,5 +1,7 @@
 package presidio.ade.domain.store.aggr;
 
+import fortscale.utils.mongodb.util.MongoDbBulkOpUtil;
+import fortscale.utils.mongodb.util.MongoDbBulkOpUtilConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,17 +12,18 @@ import org.springframework.data.mongodb.core.MongoTemplate;
  * Created by barak_schuster on 7/10/17.
  */
 @Configuration
-@Import(AggrDataToCollectionNameTranslatorConfig.class)
+@Import({AggrDataToCollectionNameTranslatorConfig.class, MongoDbBulkOpUtilConfig.class})
 public class AggrDataStoreConfig {
     @Autowired
     public MongoTemplate mongoTemplate;
     @Autowired
     public AggrDataToCollectionNameTranslator translator;
+    @Autowired
+    public MongoDbBulkOpUtil mongoDbBulkOpUtil;
 
     @Bean
-    public AggrDataStore aggrDataStore()
-    {
-        return new AggrDataStoreMongoImpl(mongoTemplate,translator);
+    public AggrgatedDataStore aggrgatedDataStore() {
+        return new AggregatedDataStoreMongoImpl(mongoTemplate, translator,mongoDbBulkOpUtil);
     }
 
 }

@@ -2,7 +2,6 @@ package fortscale.entity.event;
 
 import fortscale.aggregation.feature.event.AggrEvent;
 import fortscale.aggregation.feature.event.AggrFeatureEventBuilderService;
-import fortscale.utils.ConversionUtils;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimestampUtils;
 import net.minidev.json.JSONObject;
@@ -32,7 +31,7 @@ public class EntityEventService {
 		this.entityEventConfService = entityEventConfService;
 		this.aggrFeatureEventBuilderService = aggrFeatureEventBuilderService;
 		this.entityEventBuilderFactory = entityEventBuilderFactory;
-		getGlobalParams();
+//		getGlobalParams();
 		lastTimeEventsWereFired = -1L;
 		createEntityEventBuilders();
 	}
@@ -70,24 +69,24 @@ public class EntityEventService {
 		}
 	}
 
-	private void getGlobalParams() {
-		Map<String, Object> globalParams = entityEventConfService.getGlobalParams();
-		String errorMsg;
-
-		secondsToWaitBeforeFiring = ConversionUtils.convertToLong(globalParams.get(SECONDS_TO_WAIT_BEFORE_FIRING_JSON_FIELD));
-		if (secondsToWaitBeforeFiring == null) {
-			errorMsg = String.format("Missing valid long value for field %s", SECONDS_TO_WAIT_BEFORE_FIRING_JSON_FIELD);
-			logger.error(errorMsg);
-			throw new IllegalArgumentException(errorMsg);
-		}
-
-		fireEventsEverySeconds = ConversionUtils.convertToLong(globalParams.get(FIRE_EVENTS_EVERY_SECONDS_JSON_FIELD));
-		if (fireEventsEverySeconds == null) {
-			errorMsg = String.format("Missing valid long value for field %s", FIRE_EVENTS_EVERY_SECONDS_JSON_FIELD);
-			logger.error(errorMsg);
-			throw new IllegalArgumentException(errorMsg);
-		}
-	}
+//	private void getGlobalParams() {
+//		Map<String, Object> globalParams = entityEventConfService.getGlobalParams();
+//		String errorMsg;
+//
+//		secondsToWaitBeforeFiring = ConversionUtils.convertToLong(globalParams.get(SECONDS_TO_WAIT_BEFORE_FIRING_JSON_FIELD));
+//		if (secondsToWaitBeforeFiring == null) {
+//			errorMsg = String.format("Missing valid long value for field %s", SECONDS_TO_WAIT_BEFORE_FIRING_JSON_FIELD);
+//			logger.error(errorMsg);
+//			throw new IllegalArgumentException(errorMsg);
+//		}
+//
+//		fireEventsEverySeconds = ConversionUtils.convertToLong(globalParams.get(FIRE_EVENTS_EVERY_SECONDS_JSON_FIELD));
+//		if (fireEventsEverySeconds == null) {
+//			errorMsg = String.format("Missing valid long value for field %s", FIRE_EVENTS_EVERY_SECONDS_JSON_FIELD);
+//			logger.error(errorMsg);
+//			throw new IllegalArgumentException(errorMsg);
+//		}
+//	}
 
 	private void createEntityEventBuilders() {
 		List<EntityEventConf> entityEventDefinitions = entityEventConfService.getEntityEventDefinitions();
