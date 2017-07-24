@@ -91,6 +91,10 @@ export default function() {
 
   // Now update the radii of all the nodes.
   const nodesUpdate = nodesEnterGroup.merge(nodesAll);
+  nodesUpdate.select('.circle')
+    .attr('r', function(d) {
+      return d.r;
+    });
 
   const linksAll = this.linksLayer
     .selectAll('.rsa-force-layout-link')
@@ -129,7 +133,7 @@ export default function() {
 
   // Now update the stroke widths of all the links.
   const linksUpdate = linksEnterGroup.merge(linksAll);
-  linksUpdate.selectAll('.line')
+  linksUpdate.select('.line')
     .style('stroke-width', (d) => {
       return `${d.stroke}px`;
     });

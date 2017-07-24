@@ -19,11 +19,7 @@ export default function() {
 
   if (!this.get('shouldHideNodes')) {
     this.joined.nodes
-      .attr('transform', (d) => `translate(${d.x},${d.y})`)
-      .selectAll('.circle')
-        .attr('r', function(d) {
-          return d.r;
-        });
+      .attr('transform', (d) => `translate(${d.x},${d.y})`);
   }
 
   if (!this.get('shouldHideLinks')) {
