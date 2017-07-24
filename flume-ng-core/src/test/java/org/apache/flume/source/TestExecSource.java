@@ -399,8 +399,7 @@ public class TestExecSource {
     boolean searchForCommand = true;
     while (searchForCommand) {
       searchForCommand = false;
-      String command = SystemUtils.IS_OS_WI
-      NDOWS ? "cmd /c sleep " + seconds : "sleep " + seconds;
+      String command = SystemUtils.IS_OS_WINDOWS ? "cmd /c sleep " + seconds : "sleep " + seconds;
       String searchTxt = SystemUtils.IS_OS_WINDOWS ? "sleep.exe" : "\b" + command + "\b";
       Pattern pattern = Pattern.compile(searchTxt);
       for (String line : exec(SystemUtils.IS_OS_WINDOWS ?
