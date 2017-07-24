@@ -5,8 +5,8 @@ package presidio.data.generators.event;
  */
 public enum OPERATION_RESULT {
 
-    SUCCESS ("SUCCESS"),
-    FAILURE ("FAILURE");
+    SUCCESS ("Success"),
+    FAILURE ("Failure");
 
     public final String value;
     OPERATION_RESULT(String value){
