@@ -38,6 +38,10 @@
 				<version>2.20</version>
 				<configuration>
 					<skipTests>false</skipTests>
+					<excludes>
+						<exclude>**/ActiveDirectoryEventsGeneratorTest.java</exclude>
+						<exclude>**/AuthenticationEventsGeneratorTest.java</exclude>
+					</excludes>
 				</configuration>
 			</plugin>
 			<plugin>

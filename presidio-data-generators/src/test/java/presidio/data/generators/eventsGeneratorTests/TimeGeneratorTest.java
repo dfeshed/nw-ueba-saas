@@ -1,11 +1,10 @@
 package presidio.data.generators.eventsGeneratorTests;
 
-import org.joda.time.Instant;
 import org.junit.Assert;
 import org.junit.Test;
+import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.common.time.FloatingTimeGenerator;
 import presidio.data.generators.common.time.TimeGenerator;
-import presidio.data.generators.common.GeneratorException;
 
 import java.time.Clock;
 import java.time.LocalDate;

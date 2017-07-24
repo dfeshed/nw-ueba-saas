@@ -21,7 +21,7 @@ public abstract class AbstractStringPercentageGenerator extends AbstractCyclicVa
         String[] ratedOptList;
 
         // Validate parameters
-        if (options.length != percents.length) throw new GeneratorException("generator_31 Exception: Number of options do not match the number of percentages provided.");
+        if (options.length != percents.length) throw new GeneratorException("Generator Exception: Number of options do not match the number of percentages provided.");
 
         for (int i = 0; i< percents.length; i++) {
             if (percents[i] < 0 || percents[i] > 100)
