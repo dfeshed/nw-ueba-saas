@@ -41,7 +41,7 @@ public class AggregatedFeatureValueRetrieverTest {
 
         AbstractDataRetriever abstractDataRetriever = factoryService.getProduct(aggregatedFeatureValueRetrieverConf);
 
-        Assert.assertTrue(abstractDataRetriever instanceof AggregatedFeaturePersonalThresholdModelBuilderDataRetriever);
+        Assert.assertTrue(abstractDataRetriever instanceof AbstractAggregatedFeatureValueRetriever);
     }
 
     @Configuration

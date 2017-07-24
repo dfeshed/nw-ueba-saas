@@ -53,7 +53,7 @@ public class ContextHistogramRetrieverTest {
         when(aggregatedFeatureConf.getName()).thenReturn("test_feature_name");
 
         AbstractDataRetriever abstractDataRetriever = factoryService.getProduct(contextHistogramRetrieverConf);
-        Assert.assertTrue(abstractDataRetriever instanceof AggregatedFeaturePersonalThresholdModelBuilderDataRetriever);
+        Assert.assertTrue(abstractDataRetriever instanceof AbstractDataRetriever);
     }
 
     @Configuration
