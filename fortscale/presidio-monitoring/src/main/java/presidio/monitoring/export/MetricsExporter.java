@@ -5,7 +5,6 @@ package presidio.monitoring.export;
 import fortscale.utils.logging.Logger;
 import org.json.JSONObject;
 import org.springframework.boot.actuate.endpoint.MetricsEndpoint;
-import presidio.monitoring.aspect.metrics.JsonObjectMetric;
 
 
 import java.util.Arrays;
@@ -23,7 +22,7 @@ public abstract class MetricsExporter implements AutoCloseable{
 
      private MetricsEndpoint metricsEndpoint;
      private Map<String,Object> customMetrics;
-     private Set<String> fixedMetrics;
+     private Set<String> defaultInfraMetrics;
      private Set<String> tags;
 
 
@@ -32,7 +31,7 @@ public abstract class MetricsExporter implements AutoCloseable{
     MetricsExporter(MetricsEndpoint metricsEndpoint,String applicationName){
         this.metricsEndpoint=metricsEndpoint;
         this.customMetrics = new HashMap<>();
-        this.fixedMetrics=listOfPresidioFixedSystemMetric();
+        this.defaultInfraMetrics =listOfPresidioFixedSystemMetric();
         this.tags=new HashSet<>();
         tags.add(applicationName);
     }
@@ -45,7 +44,7 @@ public abstract class MetricsExporter implements AutoCloseable{
         for (Map.Entry<String, Object> entry : map.entrySet()) {
             metric = entry.getKey();
             value = entry.getValue();
-            if (!fixedMetrics.contains(metric)) {
+            if (!defaultInfraMetrics.contains(metric)) {
                 if (!customMetrics.containsKey(metric))
                     customMetrics.put(metric, value);
                 else {
