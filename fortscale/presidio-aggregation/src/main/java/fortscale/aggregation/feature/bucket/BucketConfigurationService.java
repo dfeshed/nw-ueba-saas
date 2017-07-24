@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.aggregation.configuration.AslConfigurationService;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
+import org.springframework.util.Assert;
 import presidio.ade.domain.record.AdeRecordReader;
 
 import java.util.*;
@@ -91,6 +92,8 @@ public class BucketConfigurationService extends AslConfigurationService {
 		String adeEventType = adeRecordReader.getAdeEventType();
 		if (adeEventType.isEmpty()) return null;
 		List<FeatureBucketConf> featureBucketConfs = adeEventTypeToListOfBucketConfs.get(adeEventType);
+		Assert.notNull(featureBucketConfs,String.format("no feature bucket conf is defined for adeEventType=%s", adeEventType));
+
 		featureBucketConfs = featureBucketConfs.stream().filter(featureBucketConf -> featureBucketConf.getStrategyName().equals(strategyName) && featureBucketConf.getContextFieldNames().equals(contextFieldNames)).collect(Collectors.toList());
 
 		return featureBucketConfs;

@@ -15,11 +15,6 @@
     <artifactId>presidio-core-manager-sdk-impl</artifactId>
     <packaging>jar</packaging>
 
-    <!--<properties>-->
-    <!--<start-class>presidio.sdk.impl.Application</start-class>-->
-    <!--</properties>-->
-
-
     <dependencies>
 
         <dependency>

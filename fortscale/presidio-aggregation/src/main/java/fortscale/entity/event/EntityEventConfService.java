@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.aggregation.configuration.AslConfigurationService;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.util.ArrayList;
@@ -18,11 +17,8 @@ public class EntityEventConfService extends AslConfigurationService {
 
 	@Value("${fortscale.entity.event.definitions.json.file.path}")
 	private String entityEventDefinitionsConfJsonFilePath;
-	@Value("${fortscale.entity.event.definitions.conf.json.overriding.files.path}")
+	@Value("${fortscale.entity.event.definitions.conf.json.overriding.files.path:#{''}}")
 	private String entityEventDefinitionsConfJsonOverridingFilesPath;
-
-	@Autowired
-	private EntityEventGlobalParamsConfService entityEventGlobalParamsConfService;
 
 	private Map<String, EntityEventConf> entityEventDefinitions = new HashMap<>();
 	private ObjectMapper objectMapper = new ObjectMapper();
@@ -69,10 +65,6 @@ public class EntityEventConfService extends AslConfigurationService {
 
 	public EntityEventConf getEntityEventConf(String name) {
 		return entityEventDefinitions.get(name);
-	}
-
-	public Map<String, Object> getGlobalParams() {
-		return entityEventGlobalParamsConfService.getGlobalParams();
 	}
 
 	public List<String> getEntityEventNames() {

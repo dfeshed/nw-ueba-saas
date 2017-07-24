@@ -39,12 +39,13 @@ public class ActiveDirectoryRawEvent extends AbstractInputDocument {
     public ActiveDirectoryRawEvent(String[] event) {
         dateTime = Instant.parse(event[0]);
         this.eventId = event[1];
-        this.operationType = ActiveDirectoryOperationType.valueOf(event[2]);
-        this.isSecuritySensitiveOperation = Boolean.valueOf(event[3]);
-        this.isUserAdministrator = Boolean.valueOf(event[4]);
-        this.objectName = event[5];
-        this.result = EventResult.valueOf(event[6]);
-        this.normalizedUsername = event[7];
+        this.dataSource =event[2];
+        this.operationType = ActiveDirectoryOperationType.valueOf(event[3]);
+        this.isSecuritySensitiveOperation = Boolean.valueOf(event[4]);
+        this.isUserAdministrator = Boolean.valueOf(event[5]);
+        this.objectName = event[6];
+        this.result = EventResult.valueOf(event[7]);
+        this.normalizedUsername = event[8];
     }
 
     public ActiveDirectoryRawEvent() {
