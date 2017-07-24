@@ -44,7 +44,7 @@ public abstract class AbstractPresidioSink<T> extends AbstractSink implements Co
         Transaction transaction = channel.getTransaction();
         try {
             transaction.begin();
-            final List<T> eventsToSave = parseEvents(channel);
+            final List<T> eventsToSave = getEvents();
             saveEvents(eventsToSave);
             logger.debug("{} has finished processing {} events {}.", getName(), eventsToSave.size());
             transaction.commit();
@@ -61,5 +61,5 @@ public abstract class AbstractPresidioSink<T> extends AbstractSink implements Co
 
     protected abstract void saveEvents(List<T> eventsToSave);
 
-    protected abstract List<T> parseEvents(Channel channel);
+    protected abstract List<T> getEvents() throws Exception;
 }

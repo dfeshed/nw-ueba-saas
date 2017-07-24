@@ -4,7 +4,10 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.mongodb.util.JSON;
 import org.apache.commons.lang.builder.ToStringBuilder;
-import org.apache.flume.*;
+import org.apache.flume.Context;
+import org.apache.flume.Event;
+import org.apache.flume.FlumeException;
+import org.apache.flume.Sink;
 import org.apache.flume.conf.Configurable;
 import org.flume.sink.base.AbstractPresidioSink;
 import org.flume.sink.mongo.persistency.SinkMongoRepository;
@@ -88,11 +91,11 @@ public class PresidioMongoSink extends AbstractPresidioSink<DBObject> implements
     }
 
     @Override
-    protected List<DBObject> parseEvents(Channel channel) {
+    protected List<DBObject> getEvents() {
         Event flumeEvent;
         List<DBObject> eventsToSave = new ArrayList<>();
         for (int i = 0; i < batchSize; i++) {
-            flumeEvent = channel.take();
+            flumeEvent = this.getChannel().take();
             if (flumeEvent == null) {
                 logger.trace("No events to sink...");
                 break;
