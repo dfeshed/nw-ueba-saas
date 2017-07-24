@@ -1,7 +1,9 @@
 package org.flume.source.mongo;
 
 
-import com.google.gson.*;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import fortscale.domain.core.AbstractAuditableDocument;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.flume.Context;
@@ -12,19 +14,15 @@ import org.apache.flume.conf.Configurable;
 import org.apache.flume.event.EventBuilder;
 import org.apache.flume.instrumentation.SourceCounter;
 import org.apache.flume.source.AbstractEventDrivenSource;
-import org.codehaus.jackson.JsonProcessingException;
 import org.flume.CommonStrings;
 import org.flume.source.mongo.persistency.SourceMongoRepository;
 import org.flume.source.mongo.persistency.SourceMongoRepositoryImpl;
 import org.flume.utils.DateUtils;
 import org.flume.utils.MongoUtils;
-import org.joda.time.DateTime;
-import org.joda.time.format.ISODateTimeFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
-import java.lang.reflect.Type;
 import java.net.UnknownHostException;
 import java.nio.charset.Charset;
 import java.time.Instant;
@@ -37,6 +35,14 @@ import static org.flume.CommonStrings.*;
 public class PresidioMongoSource extends AbstractEventDrivenSource implements Configurable, EventDrivenSource {
 
     private static Logger logger = LoggerFactory.getLogger(PresidioMongoSource.class);
+
+    private static ObjectMapper mapper;
+
+    static {
+        mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+    }
+
 
     private final SourceCounter sourceCounter = new SourceCounter("mongo-source-counter");
 
@@ -149,18 +155,11 @@ public class PresidioMongoSource extends AbstractEventDrivenSource implements Co
 
     private void processEvent(AbstractAuditableDocument event) throws JsonProcessingException {
         sourceCounter.incrementEventAcceptedCount();
-        Gson gson = new GsonBuilder()
-                .registerTypeAdapter(DateTime.class, new JsonSerializer<DateTime>() {
-                    @Override
-                    public JsonElement serialize(DateTime json, Type typeOfSrc, JsonSerializationContext context) {
-                        return new JsonPrimitive(ISODateTimeFormat.dateTime().print(json));
-                    }
-                })
-                .create();
-        final Event flumeEvent = EventBuilder.withBody(gson.toJson(event), Charset.defaultCharset());
+        final String eventAsJson;
+        eventAsJson = mapper.writeValueAsString(event);
+        final Event flumeEvent = EventBuilder.withBody(eventAsJson, Charset.defaultCharset());
         logger.trace("{} has finished processing event {}. Sending event to channel", getName(), flumeEvent);
         getChannelProcessor().processEvent(flumeEvent); // Store the Event into this Source's associated Channel(s)
-
     }
 
     private void processPage(List<AbstractAuditableDocument> pageEvents) throws Exception {

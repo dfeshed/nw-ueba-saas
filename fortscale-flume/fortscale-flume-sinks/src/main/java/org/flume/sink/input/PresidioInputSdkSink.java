@@ -1,6 +1,7 @@
 package org.flume.sink.input;
 
-import com.google.gson.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import fortscale.common.general.DataSource;
 import fortscale.domain.core.AbstractAuditableDocument;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -10,14 +11,11 @@ import org.apache.flume.FlumeException;
 import org.apache.flume.Sink;
 import org.apache.flume.conf.Configurable;
 import org.flume.sink.base.AbstractPresidioSink;
-import org.joda.time.DateTime;
-import org.joda.time.format.ISODateTimeFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import presidio.input.sdk.impl.factory.PresidioInputPersistencyServiceFactory;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -28,13 +26,20 @@ public class PresidioInputSdkSink<T extends AbstractAuditableDocument> extends A
 
     private static Logger logger = LoggerFactory.getLogger(PresidioInputSdkSink.class);
 
+    private static ObjectMapper mapper;
+
+    static {
+        mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+    }
+
     private static final String DATA_SOURCE = "dataSource";
     private static final String RECORD_TYPE = "recordType";
 
     private static String[] mandatoryParams = {DATA_SOURCE, RECORD_TYPE};
 
     private PresidioInputPersistencyService presidioInputPersistencyService;
-    private Class recordType;
+    private Class<T> recordType;
     private DataSource dataSource;
     private int batchSize;
 
@@ -61,7 +66,7 @@ public class PresidioInputSdkSink<T extends AbstractAuditableDocument> extends A
                 }
             }
 
-            recordType = Class.forName(context.getString(RECORD_TYPE));
+            recordType = (Class<T>) Class.forName(context.getString(RECORD_TYPE));
             dataSource = DataSource.createDataSource(context.getString(DATA_SOURCE));
             batchSize = Integer.parseInt(context.getString(BATCH_SIZE, "1"));
         } catch (Exception e) {
@@ -85,16 +90,8 @@ public class PresidioInputSdkSink<T extends AbstractAuditableDocument> extends A
             final T parsedEvent;
             final String eventBody = new String(flumeEvent.getBody());
             try {
-                Gson gson = new GsonBuilder()
-                        .registerTypeAdapter(DateTime.class, new JsonSerializer<DateTime>() {
-                            @Override
-                            public JsonElement serialize(DateTime json, Type typeOfSrc, JsonSerializationContext context) {
-                                return new JsonPrimitive(ISODateTimeFormat.dateTime().print(json));
-                            }
-                        })
-                        .create();
-                final Type recordType = this.recordType;
-                parsedEvent = gson.fromJson(eventBody, recordType);
+                final Class<T> recordType = this.recordType;
+                parsedEvent = mapper.readValue(eventBody, recordType);
             } catch (Exception e) {
                 final String errorMessage = String.format("Failed to sink event. event is not of correct type. expected type:%s, actual event body:%s.", recordType, eventBody);
                 logger.error(errorMessage);
