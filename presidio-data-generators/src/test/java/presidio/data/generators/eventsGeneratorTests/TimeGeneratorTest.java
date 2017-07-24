@@ -1,5 +1,6 @@
 package presidio.data.generators.eventsGeneratorTests;
 
+import org.joda.time.Instant;
 import org.junit.Assert;
 import org.junit.Test;
 import presidio.data.generators.common.time.FloatingTimeGenerator;
@@ -24,7 +25,7 @@ public class TimeGeneratorTest {
         LocalTime endTime = LocalTime.of(endHour,endMin);
 
         TimeGenerator TG = new TimeGenerator(startTime,endTime,interval, daysBackFrom, daysBackTo);
-        TG.printIntervals();
+        Assert.assertTrue(TG.hasNext());
     }
 
     @Test
