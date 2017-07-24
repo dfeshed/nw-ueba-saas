@@ -1,11 +1,10 @@
-package fortscale.ml.processes.shell;
+package presidio.ade.processes.shell;
 
 import fortscale.aggregation.creator.AggregationRecordsCreator;
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.aggregation.feature.bucket.InMemoryFeatureBucketAggregator;
 import fortscale.common.general.DataSource;
 import fortscale.common.shell.PresidioExecutionService;
-import fortscale.ml.processes.shell.feature.aggregation.FeatureAggregationService;
 import fortscale.ml.scorer.feature_aggregation_events.FeatureAggregationScoringService;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.time.TimeRange;
@@ -13,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import presidio.ade.domain.store.aggr.AggregatedDataStore;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
+import presidio.ade.processes.shell.feature.aggregation.FeatureAggregationService;
 
 import java.time.Instant;
 

@@ -1,4 +1,4 @@
-package fortscale.ml.processes.shell.feature.aggregation;
+package presidio.ade.processes.shell.feature.aggregation;
 
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -6,9 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-/**
- * Created by YaronDL on 7/2/2017.
- */
+
 @Configuration
 public class FeatureAggregationBucketConfigurationServiceConfig {
     @Value("${fortscale.feature.aggregation.bucket.conf.json.file.name}")

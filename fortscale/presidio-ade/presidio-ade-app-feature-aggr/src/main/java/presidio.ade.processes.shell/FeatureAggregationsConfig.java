@@ -1,4 +1,4 @@
-package fortscale.ml.processes.shell;
+package presidio.ade.processes.shell;
 
 import fortscale.aggregation.creator.AggregationRecordsCreator;
 import fortscale.aggregation.creator.AggregationRecordsCreatorConfig;
@@ -6,28 +6,25 @@ import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.aggregation.feature.bucket.InMemoryFeatureBucketAggregator;
 import fortscale.common.shell.PresidioExecutionService;
 import fortscale.ml.model.cache.EventModelsCacheServiceConfig;
-import fortscale.ml.processes.shell.feature.aggregation.FeatureAggregationBucketConfigurationServiceConfig;
-import fortscale.ml.processes.shell.feature.aggregation.InMemoryFeatureAggregatorConfig;
 import fortscale.ml.processes.shell.model.aggregation.ModelAggregationBucketConfigurationServiceConfig;
 import fortscale.ml.scorer.feature_aggregation_events.FeatureAggregationScoringService;
 import fortscale.ml.scorer.feature_aggregation_events.FeatureAggregationScoringServiceConfig;
-import fortscale.utils.mongodb.config.MongoConfig;
 import fortscale.utils.monitoring.stats.config.NullStatsServiceConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
 import presidio.ade.domain.store.aggr.AggregatedDataStore;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
 import presidio.ade.domain.store.enriched.EnrichedDataStoreConfig;
 import presidio.ade.domain.store.scored.feature_aggregation.ScoredFeatureAggregatedDataStoreConfig;
+import presidio.ade.processes.shell.feature.aggregation.FeatureAggregationBucketConfigurationServiceConfig;
+import presidio.ade.processes.shell.feature.aggregation.InMemoryFeatureAggregatorConfig;
 
 @Configuration
-@EnableSpringConfigured
+//@EnableSpringConfigured
 @Import({
-        MongoConfig.class,
         EventModelsCacheServiceConfig.class,
         ModelAggregationBucketConfigurationServiceConfig.class,
         FeatureAggregationBucketConfigurationServiceConfig.class,

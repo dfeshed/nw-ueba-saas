@@ -1,4 +1,4 @@
-package fortscale.ml.processes.shell;
+package presidio.ade.processes.shell;
 
 import fortscale.common.general.PresidioShellableApplication;
 import fortscale.utils.logging.Logger;
@@ -17,7 +17,7 @@ public class FeatureAggregationsApplication extends PresidioShellableApplication
 
     public static void main(String[] args) {
         logger.info("Start application: {} with params {}", FeatureAggregationsConfigProduction.class, Arrays.toString(args));
-        PresidioShellableApplication.run(FeatureAggregationsConfig.class, args);
+        PresidioShellableApplication.run(FeatureAggregationsConfigProduction.class, args);
     }
 }
 
