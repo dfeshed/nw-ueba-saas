@@ -1,7 +1,7 @@
 package presidio.ade.domain.store.aggr;
 
 import fortscale.utils.logging.Logger;
-import org.springframework.data.mongodb.core.BulkOperations;
+import fortscale.utils.mongodb.util.MongoDbBulkOpUtil;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.store.AdeDataStoreCleanupParams;
@@ -13,15 +13,17 @@ import java.util.stream.Collectors;
 /**
  * Created by barak_schuster on 7/10/17.
  */
-public class AggrDataStoreMongoImpl implements AggrDataStore {
-    private static final Logger logger = Logger.getLogger(AggrDataStoreMongoImpl.class);
+public class AggrgatedDataStoreMongoImpl implements AggrgatedDataStore {
+    private static final Logger logger = Logger.getLogger(AggrgatedDataStoreMongoImpl.class);
 
-    private MongoTemplate mongoTemplate;
-    private AggrDataToCollectionNameTranslator translator;
+    private final MongoTemplate mongoTemplate;
+    private final AggrDataToCollectionNameTranslator translator;
+    private final MongoDbBulkOpUtil mongoDbBulkOpUtil;
 
-    public AggrDataStoreMongoImpl(MongoTemplate mongoTemplate, AggrDataToCollectionNameTranslator translator) {
+    public AggrgatedDataStoreMongoImpl(MongoTemplate mongoTemplate, AggrDataToCollectionNameTranslator translator, MongoDbBulkOpUtil mongoDbBulkOpUtil) {
         this.mongoTemplate = mongoTemplate;
         this.translator = translator;
+        this.mongoDbBulkOpUtil = mongoDbBulkOpUtil;
     }
 
     @Override
@@ -34,7 +36,7 @@ public class AggrDataStoreMongoImpl implements AggrDataStore {
                     AggrRecordsMetadata metadata = new AggrRecordsMetadata(feature);
                     String collectionName = getCollectionName(metadata);
                     List<? extends AdeAggregationRecord> aggrRecords = featureToAggrList.get(feature);
-                    mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED,collectionName).insert(aggrRecords).execute();
+                    mongoDbBulkOpUtil.insertUnordered(records,collectionName);
                 }
         );
     }

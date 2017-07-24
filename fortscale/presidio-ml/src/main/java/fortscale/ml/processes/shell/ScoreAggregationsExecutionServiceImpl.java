@@ -8,7 +8,7 @@ import fortscale.ml.processes.shell.scoring.aggregation.ScoreAggregationsService
 import fortscale.ml.scorer.enriched_events.EnrichedEventsScoringService;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.time.TimeRange;
-import presidio.ade.domain.store.aggr.AggrDataStore;
+import presidio.ade.domain.store.aggr.AggrgatedDataStore;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
 
 import java.time.Instant;
@@ -18,19 +18,19 @@ public class ScoreAggregationsExecutionServiceImpl implements PresidioExecutionS
 	private EnrichedDataStore enrichedDataStore;
 	private ScoreAggregationsBucketService scoreAggregationsBucketService;
 	private AggregationRecordsCreator aggregationRecordsCreator;
-	private AggrDataStore aggrDataStore;
+	private AggrgatedDataStore aggrgatedDataStore;
 
 	public ScoreAggregationsExecutionServiceImpl(
             EnrichedEventsScoringService enrichedEventsScoringService,
             EnrichedDataStore enrichedDataStore,
             ScoreAggregationsBucketService scoreAggregationsBucketService,
-            AggregationRecordsCreator aggregationRecordsCreator, AggrDataStore aggrDataStore) {
+            AggregationRecordsCreator aggregationRecordsCreator, AggrgatedDataStore aggrgatedDataStore) {
 
 		this.enrichedEventsScoringService = enrichedEventsScoringService;
 		this.enrichedDataStore = enrichedDataStore;
 		this.scoreAggregationsBucketService = scoreAggregationsBucketService;
 		this.aggregationRecordsCreator = aggregationRecordsCreator;
-		this.aggrDataStore = aggrDataStore;
+		this.aggrgatedDataStore = aggrgatedDataStore;
 	}
 
 	@Override
@@ -38,7 +38,7 @@ public class ScoreAggregationsExecutionServiceImpl implements PresidioExecutionS
 		FixedDurationStrategy strategy = FixedDurationStrategy.fromSeconds(fixedDurationStrategyInSeconds.longValue());
 		ScoreAggregationsService service = new ScoreAggregationsService(
 				strategy, enrichedDataStore, enrichedEventsScoringService,
-				scoreAggregationsBucketService, aggregationRecordsCreator,aggrDataStore);
+				scoreAggregationsBucketService, aggregationRecordsCreator, aggrgatedDataStore);
 		service.execute(new TimeRange(startInstant, endInstant), dataSource.getName());
 	}
 

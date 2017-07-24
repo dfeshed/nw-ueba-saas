@@ -7,8 +7,8 @@ import org.junit.runner.RunWith;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
-import presidio.ade.sdk.executions.common.ADEManagerSDK;
 import presidio.input.core.services.converters.DlpFileConverter;
+import presidio.input.core.services.data.AdeDataService;
 import presidio.sdk.api.domain.DlpFileDataDocument;
 import presidio.sdk.api.domain.DlpFileEnrichedDocument;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
@@ -23,9 +23,9 @@ public class InputExecutionServiceTest {
     private PresidioInputPersistencyService presidioInputPersistencyService;
 
     @MockBean
-    private ADEManagerSDK adeManagerSDK;
+    private AdeDataService adeDataService;
 
-    private InputExecutionServiceImpl processService = new InputExecutionServiceImpl(presidioInputPersistencyService, adeManagerSDK);
+    private InputExecutionServiceImpl processService = new InputExecutionServiceImpl(presidioInputPersistencyService, adeDataService);
 
     @Test
     public void testConverter() {
