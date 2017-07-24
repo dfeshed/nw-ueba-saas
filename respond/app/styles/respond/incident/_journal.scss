@@ -2,8 +2,6 @@ $headerHeight: 30px;
 
 .rsa-incident-journal {
   height: calc(100% - #{$headerHeight});
-  background-color: rsa-color(gray,darker, $rsa-nearly-transparent);
-  border: 1px solid rsa-color(white,base,$rsa-translucent);
 
   &__header {
 

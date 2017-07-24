@@ -4,8 +4,6 @@ $incidentInspectorResizerBleed: ($incidentInspectorResizerWidth - 1px) / 2;
 
 .rsa-incident-inspector {
   position: relative;
-  background-color: rsa-color(gray,darker, $rsa-nearly-opaque);
-  border-right: 1px solid rsa-color(gray,base,$rsa-translucent);
 
   &__wrap {
     position: absolute;

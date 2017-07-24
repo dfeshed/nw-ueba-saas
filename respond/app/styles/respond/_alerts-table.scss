@@ -249,7 +249,7 @@ $alertsTableDotSize: 5px;
 }
 
 .rsa-alerts-table-alert-header {
-  background-color: rsa-color(gray,dark);
+  background-color: $respondBackgroundColor;
 
   &.is-selected {
     background: rsa-color(blue, dark);

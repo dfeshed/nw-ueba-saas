@@ -1,5 +1,6 @@
 .rsa-alert-container {
   .rsa-items-sheet {
     @include rsa-fill-abs();
+    margin: 0 rsa-whitespace(less) rsa-whitespace(less) rsa-whitespace(less);
   }
 }

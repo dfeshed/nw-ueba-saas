@@ -1,9 +1,8 @@
-$zoneBorderColor: rsa-color(gray, darker, $rsa-nearly-transparent);
+$zoneBorderColor: $respondBorderColor;
 $filterPanelMinWidth: 400px;
 $inspectorPanelWidth: 400px;
 $toolbarHeight: 40px;
 $navbarHeight: 50px;
-
 
 page.respond-engine {
   min-height: 100vh;
@@ -22,8 +21,6 @@ page.respond-engine {
     .toolbar-zone {
       min-height: $toolbarHeight;
       max-height: $toolbarHeight;
-      border-bottom: 1px solid $zoneBorderColor;
-      border-top: 1px solid $zoneBorderColor;
     }
 
     .filter-zone, .inspector-zone {
@@ -38,7 +35,6 @@ page.respond-engine {
 
     &.show-filters {
       .filter-zone {
-        border-top: 1px solid $zoneBorderColor;
         border-right: 1px solid $zoneBorderColor;
         max-width: 25%;
         min-width: $filterPanelMinWidth;
@@ -54,7 +50,7 @@ page.respond-engine {
     }
 
     &.show-inspector .inspector-zone {
-      border-right: 1px solid $zoneBorderColor;
+      border-left: 1px solid $zoneBorderColor;
       max-width: $inspectorPanelWidth;
       min-width: $inspectorPanelWidth;
       padding: 0;
@@ -82,9 +78,7 @@ page.respond-engine {
       .items-footer {
         margin: 0 rsa-whitespace();
         max-height: 40px;
-        background-color: rsa-color(gray, darker, $rsa-somewhat-opaque);
         color: rsa-color(gray, lightest);
-        border-top: 1px solid $zoneBorderColor;
         .selection-count {
           padding-left: rsa-whitespace(less);
         }

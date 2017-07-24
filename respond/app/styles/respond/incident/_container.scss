@@ -30,6 +30,8 @@ $tasksAndJournalPanelWidth: 400px;
     &-aside {
       position: relative;
       z-index: 2;
+      background-color: $respondBackgroundColor;
+      border-right: 1px solid $respondBorderColor;
 
       // this section DOES capture mouse events
       pointer-events: auto;
@@ -45,7 +47,8 @@ $tasksAndJournalPanelWidth: 400px;
       pointer-events: auto;
       width: $tasksAndJournalPanelWidth;
       max-width: $tasksAndJournalPanelWidth;
-      background-color: rsa-color(gray, darker, $rsa-somewhat-opaque);
+      background-color: $respondBackgroundColor;
+      border-left: 1px solid $respondBorderColor;
 
       .close-panel {
         cursor: pointer;
@@ -70,6 +73,7 @@ $tasksAndJournalPanelWidth: 400px;
 
       .rsa-items-sheet {
         @include rsa-fill-abs();
+        margin: 0 rsa-whitespace(less) rsa-whitespace(less) rsa-whitespace(less);
         pointer-events: all;
       }
     }
