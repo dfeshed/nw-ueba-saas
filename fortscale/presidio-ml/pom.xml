@@ -66,10 +66,6 @@
             <groupId>net.minidev</groupId>
             <artifactId>json-smart</artifactId>
         </dependency>
-        <dependency>
-            <groupId>presidio-test-utils</groupId>
-            <artifactId>presidio-data-generators</artifactId>
-        </dependency>
 
 
         <!-- test -->
