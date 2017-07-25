@@ -1,6 +1,7 @@
 package presidio.monitoring.aspect;
 
 
+import fortscale.common.general.DataSource;
 import fortscale.utils.logging.Logger;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -134,6 +135,27 @@ public class MonitoringAspects {
         Set tags=new HashSet();
         presidioCustomMetrics.addMetric(metricName+NUMBER_OF_FAILED_VALIDATION,numberOfFailedValidationDocuments,tags, UNIT_TYPE_LONG);
         logger.info("Metric {} got {} failed validations. ", metricName, numberOfFailedValidationDocuments);
+    }
+
+
+
+    /**
+     * This method provides us counting of a method invocation that process a data source .
+     * The annotation Before lets us perform custom behavior before a method invocation.
+     * This behavior occurs when a method is annotated with the annotation @DataSourceProcess.
+     *
+     * @param joinPoint - a point that represent a methods execution, holds data on the method that is going to be executed.
+     * @param dataSource - enum of a type date source.
+     * @throws Throwable - any exceptin that can be thrown from the execution of the method.
+     */
+
+    @Before("@annotation(presidio.monitoring.aspect.annotations.DataSourceProcess) && args(dataSource,..)")
+    public void dataSourceProcess(JoinPoint joinPoint , DataSource dataSource) throws Throwable{
+        String metric = joinPoint.getSignature().toShortString()+dataSource.getName();
+        logger.info("Metric {} increment with annotation Start. ", metric);
+        Set tags=new HashSet();
+        presidioCustomMetrics.addMetric(metric+START,1,tags, UNIT_TYPE_LONG);
+
     }
 
 }

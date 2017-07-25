@@ -815,6 +815,7 @@
     </build>
     <modules>
         <module>presidio-utils</module>
+        <module>presidio-common</module>
         <module>presidio-monitoring</module>
         <module>presidio-global-config</module>
         <module>presidio-domain</module>
@@ -823,7 +824,6 @@
         <module>presidio-services</module>
         <module>presidio-aggregation</module>
         <module>presidio-ade</module>
-        <module>presidio-common</module>
         <module>presidio-monitoring-daemons</module>
         <module>presidio-input</module>
         <module>presidio-core-manager</module>

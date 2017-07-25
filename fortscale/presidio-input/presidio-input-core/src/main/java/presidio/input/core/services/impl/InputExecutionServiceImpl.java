@@ -6,6 +6,7 @@ import fortscale.common.general.CommonStrings;
 import fortscale.common.general.DataSource;
 import fortscale.domain.core.AbstractAuditableDocument;
 import fortscale.utils.logging.Logger;
+import presidio.monitoring.aspect.annotations.DataSourceProcess;
 import presidio.monitoring.aspect.annotations.End;
 import presidio.monitoring.aspect.annotations.RunTime;
 import presidio.monitoring.aspect.annotations.Start;
@@ -36,6 +37,7 @@ public class InputExecutionServiceImpl implements PresidioExecutionService {
     @RunTime
     @Start
     @End
+    @DataSourceProcess
     public void run(DataSource dataSource, Instant startDate, Instant endDate, Double fixedDuration) throws Exception {
         logger.info("Started input processing with params: data source:{}, from {}:{}, until {}:{}.", dataSource, CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate, CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
 
