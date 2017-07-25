@@ -1,3 +1,7 @@
 pytest-cov
 pytest-xdist
 pytest
+requests
+pytz
+mock
+airflow[devel]==1.8.0

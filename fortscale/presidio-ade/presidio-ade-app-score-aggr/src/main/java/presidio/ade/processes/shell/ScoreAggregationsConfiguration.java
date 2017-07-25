@@ -4,6 +4,7 @@ import fortscale.aggregation.creator.AggregationRecordsCreator;
 import fortscale.aggregation.creator.AggregationRecordsCreatorConfig;
 import fortscale.common.shell.PresidioExecutionService;
 import fortscale.ml.model.cache.EventModelsCacheServiceConfig;
+import fortscale.ml.processes.shell.model.aggregation.ModelAggregationBucketConfigurationServiceConfig;
 import fortscale.ml.scorer.enriched_events.EnrichedEventsScoringService;
 import fortscale.ml.scorer.enriched_events.EnrichedEventsScoringServiceConfig;
 import fortscale.utils.mongodb.config.MongoConfig;
@@ -13,8 +14,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
-import presidio.ade.domain.store.aggr.AggrDataStoreConfig;
-import presidio.ade.domain.store.aggr.AggrgatedDataStore;
+import presidio.ade.domain.store.aggr.AggregatedDataStore;
+import presidio.ade.domain.store.aggr.AggregatedDataStoreConfig;
+
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
 import presidio.ade.domain.store.enriched.EnrichedDataStoreConfig;
 import presidio.ade.processes.shell.scoring.aggregation.ScoreAggregationsBucketService;
@@ -29,7 +31,8 @@ import presidio.ade.processes.shell.scoring.aggregation.ScoreAggregationsBucketS
         EnrichedDataStoreConfig.class,
         ScoreAggregationsBucketServiceConfiguration.class,
         AggregationRecordsCreatorConfig.class,
-        AggrDataStoreConfig.class,
+        AggregatedDataStoreConfig.class,
+        ModelAggregationBucketConfigurationServiceConfig.class,
         NullStatsServiceConfig.class // TODO: Remove this
 })
 public class ScoreAggregationsConfiguration {
@@ -42,11 +45,11 @@ public class ScoreAggregationsConfiguration {
     @Autowired
     private AggregationRecordsCreator aggregationRecordsCreator;
     @Autowired
-    private AggrgatedDataStore aggrgatedDataStore;
+    private AggregatedDataStore aggregatedDataStore;
 
     @Bean
     public PresidioExecutionService presidioExecutionService() {
         return new ScoreAggregationsExecutionServiceImpl(
-                enrichedEventsScoringService, enrichedDataStore, scoreAggregationsBucketService, aggregationRecordsCreator, aggrgatedDataStore);
+                enrichedEventsScoringService, enrichedDataStore, scoreAggregationsBucketService, aggregationRecordsCreator, aggregatedDataStore);
     }
 }

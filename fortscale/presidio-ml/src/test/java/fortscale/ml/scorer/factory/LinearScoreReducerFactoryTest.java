@@ -8,6 +8,7 @@ import fortscale.ml.scorer.config.LinearScoreReducerConfTest;
 import fortscale.utils.factory.Factory;
 import fortscale.utils.factory.FactoryService;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import java.io.IOException;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = { ScorerFactoriesTestConfig.class})
+@Ignore
 public class LinearScoreReducerFactoryTest {
 	@MockBean
 	private ModelConfService modelConfService;
