@@ -132,6 +132,9 @@ const pivotToInvestigateUrl = (entityType, entityId, metas) => {
     entityId = String(entityId).replace(/\-/g, ':');
   }
 
+  // For core query syntax, all single quotes and backslashes in a meta value must be prefixed by a backslash.
+  entityId = String(entityId).replace(/('|\\)/g, '\\$1');
+
   if (!isEmpty(metas)) {
     query = metas.map((meta) => {
       const delim = (entityType === 'IP' || entityType === 'MAC_ADDRESS') ? '' : '\'';
@@ -142,7 +145,8 @@ const pivotToInvestigateUrl = (entityType, entityId, metas) => {
     query = getMetaUrl(entityId, entityType);
   }
 
-  return `/investigation/choosedevice/navigate/query/${encodeURIComponent(query)}`;
+  // We must URI encode twice: once for Java Spring and again for the Classic Investigate middle-tier.
+  return `/investigation/choosedevice/navigate/query/${encodeURIComponent(encodeURIComponent(query))}`;
 };
 
 const getMetaUrl = (entityId, entityType) => {
