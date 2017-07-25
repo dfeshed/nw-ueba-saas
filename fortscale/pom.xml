@@ -181,6 +181,8 @@
         <org.aspectj-version>1.8.7</org.aspectj-version>
         <metrics-core.version>3.0.2</metrics-core.version>
         <spring-cloud-task-starter.version>1.1.0.M1</spring-cloud-task-starter.version>
+        <elasticsearch.version>5.4.0</elasticsearch.version>
+        <spring-data-elasticsearch.version>2.1.4.RELEASE</spring-data-elasticsearch.version>
     </properties>
 
     <dependencyManagement>
@@ -550,6 +552,21 @@
                 <groupId>uk.co.jemos.podam</groupId>
                 <artifactId>podam</artifactId>
                 <version>${podam.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.elasticsearch</groupId>
+                <artifactId>elasticsearch</artifactId>
+                <version>${elasticsearch.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.elasticsearch.client</groupId>
+                <artifactId>transport</artifactId>
+                <version>${elasticsearch.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.data</groupId>
+                <artifactId>spring-data-elasticsearch</artifactId>
+                <version>${spring-data-elasticsearch.version}</version>
             </dependency>
         </dependencies>
 
