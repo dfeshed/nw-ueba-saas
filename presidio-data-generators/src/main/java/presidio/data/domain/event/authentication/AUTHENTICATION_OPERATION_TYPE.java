@@ -5,12 +5,14 @@ import java.util.Arrays;
 /**
  * Created by presidio on 7/13/17.
  */
-public enum AUTHENTICATION_TYPE {
+public enum AUTHENTICATION_OPERATION_TYPE {
 
-    AUTHENTICATION_TYPE_TBD ("AUTHENTICATION_TYPE_TBD");
+    NETWORK_OPERATION ("NETWORK"),
+    DOMAIN_OPERATION ("DOMAIN"),
+    INTERACTIVE_OPERATION ("INTERACTIVE");
 
     public final String value;
-    AUTHENTICATION_TYPE(String value){
+    AUTHENTICATION_OPERATION_TYPE(String value){
             this.value = value;
         }
 

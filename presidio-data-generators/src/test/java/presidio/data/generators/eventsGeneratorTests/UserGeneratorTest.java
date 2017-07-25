@@ -5,6 +5,7 @@ import org.junit.Test;
 import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.user.SingleUserGenerator;
 import presidio.data.domain.User;
+import presidio.data.generators.user.UserWithoutIdGenerator;
 
 /**
  * Created by cloudera on 6/1/17.
@@ -29,5 +30,11 @@ public class UserGeneratorTest {
     @Test (expected = GeneratorException.class)
     public void UserGeneratorExeptionTest() throws GeneratorException {
         SingleUserGenerator generator = new SingleUserGenerator("d");
+    }
+
+    @Test
+    public void UserWithoutIdTest() throws GeneratorException {
+        UserWithoutIdGenerator userGenerator = new UserWithoutIdGenerator("username");
+        Assert.assertEquals(userGenerator.getNext().getUserId(),"");
     }
 }

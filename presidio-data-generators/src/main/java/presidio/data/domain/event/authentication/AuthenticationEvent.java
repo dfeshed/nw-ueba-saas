@@ -115,9 +115,9 @@ public class AuthenticationEvent extends Event implements Serializable {
                 ", dataSource='" + dataSource + '\'' +
                 ", authenticationType='" + authenticationType + '\'' +
                 ", eventId='" + eventId + '\'' +
-                ", dstMachineEntity=" + dstMachineEntity +
-                ", srcMachineEntity=" + srcMachineEntity +
-                ", user=" + user +
+                ", dstMachineEntity=" + dstMachineEntity.toString() +
+                ", srcMachineEntity=" + srcMachineEntity.toString() +
+                ", user=" + user.toString() +
                 ", result='" + result + '\'' +
                 ", resultCode='" + resultCode + '\'' +
                 '}';
