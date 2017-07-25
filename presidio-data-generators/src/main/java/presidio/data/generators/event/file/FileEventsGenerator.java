@@ -21,19 +21,18 @@ public class FileEventsGenerator implements IEventGenerator {
     // DEFINE ALL ATTRIBUTE GENERATORS
     private TimeGenerator timeGenerator;
 
-    private EntityEventIDFixedPrefixGenerator eventIDGen;   // Need this? Can't see in Schemas
+    private EntityEventIDFixedPrefixGenerator eventIdGenerator;   // Need this? Can't see in Schemas
 
     private IUserGenerator userGenerator;
     private IFileOperationGenerator fileOperationGenerator; // Handles: source file & folder, destination file & folder, file_size, operation type, operation result
     private FixedDataSourceGenerator dataSourceGenerator;
 
     public FileEventsGenerator() throws GeneratorException {
+
         timeGenerator = new TimeGenerator();
 
         userGenerator = new RandomUserGenerator();
-        User user = userGenerator.getNext();
-
-        eventIDGen = new EntityEventIDFixedPrefixGenerator(user.getUsername());
+        eventIdGenerator = new EntityEventIDFixedPrefixGenerator(userGenerator.getNext().getUsername());
         dataSourceGenerator = new FixedDataSourceGenerator();
         fileOperationGenerator = new FileOperationGenerator();
     }
@@ -44,12 +43,11 @@ public class FileEventsGenerator implements IEventGenerator {
 
         // fill list of events
         while (getTimeGenerator().hasNext()) {
-            Instant eventTime = getTimeGenerator().getNext();
-            User user = getUserGenerator().getNext();
-
-            FileOperation operation = getFileOperationGenerator().getNext();
-            String datasource = (String) getDataSourceGenerator().getNext();
-            FileEvent ev = new FileEvent(eventTime, user.getUserId(), operation, datasource);
+            FileEvent ev = new FileEvent(getEventIdGenerator().getNext(),
+                    getTimeGenerator().getNext(),
+                    getUserGenerator().getNext(),
+                    getFileOperationGenerator().getNext(),
+                    (String) getDataSourceGenerator().getNext());
             evList.add(ev);
         }
         return evList;
@@ -63,12 +61,12 @@ public class FileEventsGenerator implements IEventGenerator {
         this.timeGenerator = timeGenerator;
     }
 
-    public EntityEventIDFixedPrefixGenerator getEventIDGen() {
-        return eventIDGen;
+    public EntityEventIDFixedPrefixGenerator getEventIdGenerator() {
+        return eventIdGenerator;
     }
 
-    public void setEventIDGen(EntityEventIDFixedPrefixGenerator eventIDGen) {
-        this.eventIDGen = eventIDGen;
+    public void setEventIdGenerator(EntityEventIDFixedPrefixGenerator eventIdGenerator) {
+        this.eventIdGenerator = eventIdGenerator;
     }
 
     public IUserGenerator getUserGenerator() {

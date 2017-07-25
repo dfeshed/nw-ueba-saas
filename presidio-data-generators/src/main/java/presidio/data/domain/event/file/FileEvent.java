@@ -1,6 +1,7 @@
 package presidio.data.domain.event.file;
 
 
+import presidio.data.domain.User;
 import presidio.data.domain.event.Event;
 
 import java.io.Serializable;
@@ -9,20 +10,30 @@ import java.time.Instant;
 public class FileEvent extends Event implements Serializable {
     private static final long serialVersionUID = 1L;
 
+    private String eventId;
     private Instant dateTime;
-    private String normalizedUsername;
     private String dataSource;
+    private User user;
     private FileOperation fileOperation;
 
     public FileEvent(Instant dateTime) {
         this.dateTime = dateTime;
     }
 
-    public FileEvent(Instant dateTime, String normalizedUsername, FileOperation fileOperation, String dataSource) {
+    public FileEvent(String eventId, Instant dateTime, User user, FileOperation fileOperation, String dataSource) {
+        this.eventId = eventId;
         this.dateTime = dateTime;
-        this.normalizedUsername = normalizedUsername;
+        this.user = user;
         this.dataSource = dataSource;
         this.fileOperation = fileOperation;
+    }
+
+    public String getEventId() {
+        return eventId;
+    }
+
+    public void setEventId(String eventId) {
+        this.eventId = eventId;
     }
 
     public static long getSerialVersionUID() {
@@ -38,12 +49,12 @@ public class FileEvent extends Event implements Serializable {
         this.dateTime = dateTime;
     }
 
-    public String getNormalizedUsername() {
-        return normalizedUsername;
+    public User getUser() {
+        return user;
     }
 
-    public void setNormalizedUsername(String normalizedUsername) {
-        this.normalizedUsername = normalizedUsername;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public String getDataSource() {
@@ -66,7 +77,7 @@ public class FileEvent extends Event implements Serializable {
     public String toString() {
         return "FileEvent{" +
                 "dateTime=" + dateTime +
-                ", normalizedUsername='" + normalizedUsername + '\'' +
+                ", user='" + user.toString() + '\'' +
                 ", dataSource='" + dataSource + '\'' +
                 ", fileOperation=" + fileOperation.toString() +
                 '}';

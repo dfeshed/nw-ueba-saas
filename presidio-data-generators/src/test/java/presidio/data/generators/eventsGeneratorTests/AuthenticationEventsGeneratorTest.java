@@ -51,8 +51,8 @@ public class AuthenticationEventsGeneratorTest {
         for (AuthenticationEvent ev : events) {
             resultsStrings.add(ev.getResult());
         }
-        Assert.assertTrue(resultsStrings.contains("Success"));
-        Assert.assertFalse(resultsStrings.contains("Failure"));
+        Assert.assertTrue(resultsStrings.contains("SUCCESS"));
+        Assert.assertFalse(resultsStrings.contains("FAILURE"));
     }
 
     @Test

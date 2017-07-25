@@ -28,7 +28,7 @@ public class ActiveDirectoryEventsGenerator implements IEventGenerator {
         timeGenerator = new TimeGenerator();
 
         userGenerator = new RandomAdminUserPercentageGenerator();
-        eventIdGenerator = new EntityEventIDFixedPrefixGenerator("activedir"); // giving any string as entity name in this default generator
+        eventIdGenerator = new EntityEventIDFixedPrefixGenerator(userGenerator.getNext().getUsername()); // giving any string as entity name in this default generator
         activeDirOperationGenerator = new ActiveDirectoryOperationGenerator();
         dataSourceGenerator = new FixedDataSourceGenerator();                                // "DefaultDS"
     }
