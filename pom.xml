@@ -68,7 +68,6 @@ limitations under the License.
     <module>flume-ng-channels</module>
     <module>flume-ng-clients</module>
     <module>flume-ng-sdk</module>
-    <module>flume-ng-tests</module>
     <module>flume-tools</module>
     <module>flume-ng-auth</module>
     <module>flume-shared</module>

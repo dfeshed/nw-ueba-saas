@@ -35,10 +35,7 @@ import org.apache.flume.channel.MemoryChannel;
 import org.apache.flume.channel.ReplicatingChannelSelector;
 import org.apache.flume.conf.Configurables;
 import org.apache.flume.lifecycle.LifecycleException;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 
 import javax.management.Attribute;
 import javax.management.AttributeList;
@@ -237,6 +234,7 @@ public class TestExecSource {
     }
   }
 
+  @Ignore
   @Test
   public void testMonitoredCounterGroup()
       throws InterruptedException, LifecycleException, EventDeliveryException, IOException {
@@ -392,6 +390,7 @@ public class TestExecSource {
    * effort to detect if our sleep time is already in use. Note the
    * ps -ef command should work on both macs and linux.
    */
+  @Ignore
   @Test
   public void testShutdown() throws Exception {
     int seconds = 272; // pick a rare sleep time
