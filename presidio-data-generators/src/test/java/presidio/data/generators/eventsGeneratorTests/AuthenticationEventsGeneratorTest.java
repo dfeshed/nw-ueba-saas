@@ -3,14 +3,12 @@ package presidio.data.generators.eventsGeneratorTests;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import presidio.data.domain.event.authentication.AUTHENTICATION_OPERATION_TYPE;
 import presidio.data.generators.common.GeneratorException;
-import presidio.data.domain.event.authentication.AUTHENTICATION_TYPE;
 import presidio.data.domain.event.authentication.AuthenticationEvent;
 import presidio.data.generators.event.authentication.AuthenticationEventsGenerator;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class AuthenticationEventsGeneratorTest {
 
@@ -19,7 +17,7 @@ public class AuthenticationEventsGeneratorTest {
     /** Default values:
      * time: 8:00 to 16:00, every 10 min, 30 to 1 days back
      * dataSource: "Quest"
-     * authenticationop type: all types from enum presidio.data.domain.authenticationop.AUTHENTICATION_TYPE, not blank
+     * authenticationop type: all types from enum presidio.data.domain.authenticationop.AUTHENTICATION_OPERATION_TYPE, not blank
      * eventId - unique
      * dstMachine: name - "random" alphanumeric string, 10 chars length, 2% remote
      * dstMachine: name - "random" alphanumeric string, 10 chars length
@@ -83,7 +81,9 @@ public class AuthenticationEventsGeneratorTest {
     @Test
     public void AuthenticationTypeTest () {
         // Operation types - see that all included, in the same order as enum
-        Assert.assertEquals(AUTHENTICATION_TYPE.AUTHENTICATION_TYPE_TBD.value, events.get(0).getAuthenticationType());
+        Assert.assertEquals(AUTHENTICATION_OPERATION_TYPE.NETWORK_OPERATION.value, events.get(0).getAuthenticationType());
+        Assert.assertEquals(AUTHENTICATION_OPERATION_TYPE.DOMAIN_OPERATION.value, events.get(1).getAuthenticationType());
+        Assert.assertEquals(AUTHENTICATION_OPERATION_TYPE.INTERACTIVE_OPERATION.value, events.get(2).getAuthenticationType());
     }
 
     @Test
