@@ -23,6 +23,10 @@ public class AdapterExecutionServiceImpl implements PresidioExecutionService {
     private final CoreManagerService coreManagerService;
     private final FetchService fetchService;
 
+    public AdapterExecutionServiceImpl() {
+
+    }
+
     public AdapterExecutionServiceImpl(CoreManagerService coreManagerService, FetchService fetchService) {
         this.coreManagerService = coreManagerService;
         this.fetchService = fetchService;
@@ -31,42 +35,27 @@ public class AdapterExecutionServiceImpl implements PresidioExecutionService {
     @Override
     public void run(DataSource dataSource, Instant startDate, Instant endDate, Double fixedDuration) throws Exception {
         //todo: we need to consider doing the fetch & store at the same iteration
-        logger.info("Start collector processing with params: data source:{}, from {}:{}, until {}:{}.",dataSource, CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate, CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
+        logger.info("Starting Adapter with params: data source: {}, {} : {}, {} : {}.",
+                dataSource, CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate,
+                CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
 
-        final List<String[]> fetchedDocuments;
-        try {
-            fetchedDocuments = fetch(dataSource, startDate, endDate);
-        } catch (Exception e) {
-            logger.error("HEY USER!!! FETCH FAILED! params: data source:{}, from {}:{}, until {}:{}.",dataSource, CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate, CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
-            //todo: how do we handle? alert the user probably?
-            return;
-        }
+        String configurationPath = configureAdapterInstance(dataSource, startDate, endDate);
+        logger.debug("finish configuring adapter. Configuration file path: {}", configurationPath);
 
-        final List<AbstractAuditableDocument> createdDocuments = createDocuments(dataSource, fetchedDocuments);
-
-        final boolean storeSuccessful = store(dataSource, createdDocuments);
-
-        if (!storeSuccessful) {
-            logger.error("store unsuccessful!!!");
-            //todo: how do we handle?
-        }
-
-        logger.info("Finish csv processing");
+        int processID = runAdapterInstance(dataSource);
+        logger.debug("Adapter is now running. processID {}", processID);
     }
 
-    private List<String[]> fetch(DataSource dataSource, Instant startTime, Instant endTime) throws Exception {
-        logger.info("Start fetch");
-        final List<String[]> fetchedRecords = fetchService.fetch(dataSource, startTime, endTime);//todo: maybe the retry logic will be here?
-        logger.info("finish fetch");
-        return fetchedRecords;
+    private String configureAdapterInstance(DataSource dataSource, Instant startDate, Instant endDate) {
+        logger.debug("Start configuring adapter. params: data source: {}, {} : {}, {} : {}.",
+                dataSource, CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate,
+                CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
     }
 
-    private boolean store(DataSource dataSource, List<AbstractAuditableDocument> fetchedDocuments) {
-        logger.info("Start store");
-        final boolean storeSuccessful = coreManagerService.store(dataSource, fetchedDocuments);
-        logger.info("finish store");
-        return storeSuccessful;
+    private int runAdapterInstance(DataSource dataSource) {
     }
+
+
 
     private List<AbstractAuditableDocument> createDocuments(DataSource dataSource, List<String[]> records) throws Exception {
         List<AbstractAuditableDocument> createdDocuments = new ArrayList<>();
