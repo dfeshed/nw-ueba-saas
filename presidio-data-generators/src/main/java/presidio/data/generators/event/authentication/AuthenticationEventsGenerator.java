@@ -25,7 +25,7 @@ public class AuthenticationEventsGenerator implements IEventGenerator {
     private FixedDataSourceGenerator dataSourceGenerator;
     private AuthenticationTypeCyclicGenerator authenticationTypeGenerator;
 
-    private EntityEventIDFixedPrefixGenerator eventIDGenerator;   // Need this? Can't see in Schemas
+    private EntityEventIDFixedPrefixGenerator eventIDGenerator;
     private RandomUserGenerator userGenerator;
     private SimpleMachineGenerator srcMachineGenerator;
     private RemoteMachinePercentageGenerator dstMachineGenerator;
@@ -38,13 +38,14 @@ public class AuthenticationEventsGenerator implements IEventGenerator {
 
     public AuthenticationEventsGenerator() throws GeneratorException {
         timeGenerator = new TimeGenerator();
-        dataSourceGenerator = new FixedDataSourceGenerator();                       // "Quest"
+        dataSourceGenerator = new FixedDataSourceGenerator();
         authenticationTypeGenerator = new AuthenticationTypeCyclicGenerator();
+
         userGenerator = new RandomUserGenerator();
         User user = userGenerator.getNext();
-
         eventIDGenerator = new EntityEventIDFixedPrefixGenerator(user.getUsername());
         srcMachineGenerator = new SimpleMachineGenerator(user.getUsername());
+
         dstMachineGenerator = new RemoteMachinePercentageGenerator();
         BooleanPercentageGenerator remotesGenerator = new BooleanPercentageGenerator(2);
         dstMachineGenerator.setRemoteMachineGenerator(remotesGenerator);

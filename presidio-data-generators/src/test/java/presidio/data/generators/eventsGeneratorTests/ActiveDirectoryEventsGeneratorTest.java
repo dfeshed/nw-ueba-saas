@@ -54,8 +54,8 @@ public class ActiveDirectoryEventsGeneratorTest {
         for (final ActiveDirectoryEvent ev : events) {
             resultsStrings.add(ev.getOperation().getOperationResult());
         }
-        Assert.assertTrue(resultsStrings.contains("Success"));
-        Assert.assertFalse(resultsStrings.contains("Failure"));
+        Assert.assertTrue(resultsStrings.contains("SUCCESS"));
+        Assert.assertFalse(resultsStrings.contains("FAILURE"));
     }
 
     @Test
