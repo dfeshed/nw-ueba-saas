@@ -21,10 +21,11 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.*;
 import static presidio.output.domain.records.AlertEnums.*;
+import org.springframework.test.context.ContextConfiguration;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest()
-@Import(fortscale.utils.elasticsearch.config.ElasticsearchConfig.class)
+@ContextConfiguration(classes=presidio.output.domain.spring.PresidioOutputPersistencyServiceConfig.class)
 public class AlertServiceTest {
 
     @Autowired
