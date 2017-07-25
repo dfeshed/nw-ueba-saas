@@ -35,7 +35,10 @@
 
               {{!Source device info}}
               {{#each fromDeviceValues as |device|}}
-                <span class="from device entity" data-meta-key="{{device.field}}" data-entity-id="{{device.value}}">
+                <span class="from device entity"
+                  data-meta-key="{{device.field}}"
+                  data-entity-id="{{device.value}}"
+                  title="{{t (concat 'respond.eventDetails.labels.' device.field)}}: {{device.value}}">
                   {{device.value}}
                 </span>
                 <span class="sep">&middot;</span>
@@ -43,7 +46,10 @@
 
               {{!Source user info}}
               {{#each fromUserValues as |user|}}
-                <span class="from user entity" data-meta-key="{{user.field}}" data-entity-id="{{user.value}}">
+                <span class="from user entity"
+                  data-meta-key="{{user.field}}"
+                  data-entity-id="{{user.value}}"
+                  title="{{t (concat 'respond.eventDetails.labels.' user.field)}}: {{user.value}}">
                   {{user.value}}
                 </span>
                 <span class="sep">&middot;</span>
@@ -60,7 +66,10 @@
 
               {{!Dest device info}}
               {{#each toDeviceValues as |device|}}
-                <span class="to device entity" data-meta-key="{{device.field}}" data-entity-id="{{device.value}}">
+                <span class="to device entity"
+                  data-meta-key="{{device.field}}"
+                  data-entity-id="{{device.value}}"
+                  title="{{t (concat 'respond.eventDetails.labels.' device.field)}}: {{device.value}}">
                   {{device.value}}
                 </span>
                 <span class="sep">&middot;</span>
@@ -68,7 +77,10 @@
 
               {{!Dest user info}}
               {{#each toUserValues as |user|}}
-                <span class="to user entity" data-meta-key="{{user.field}}" data-entity-id="{{user.value}}">
+                <span class="to user entity"
+                  data-meta-key="{{user.field}}"
+                  data-entity-id="{{user.value}}"
+                  title="{{t (concat 'respond.eventDetails.labels.' user.field)}}: {{user.value}}">
                   {{user.value}}
                 </span>
                 <span class="sep">&middot;</span>
@@ -76,7 +88,10 @@
 
               {{!File info}}
               {{#each fileValues as |file|}}
-                <span class="to user entity" data-meta-key="{{file.field}}" data-entity-id="{{file.value}}">
+                <span class="to user entity"
+                  data-meta-key="{{file.field}}"
+                  data-entity-id="{{file.value}}"
+                  title="{{t (concat 'respond.eventDetails.labels.' file.field)}}: {{file.value}}">
                   {{file.value}}
                 </span>
                 <span class="sep">&middot;</span>

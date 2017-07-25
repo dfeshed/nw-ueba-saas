@@ -104,25 +104,22 @@ $alertsTableDotSize: 5px;
 
       nav {
         @include rsa-font(body, small);
+        margin-top: rsa-whitespace(least);
       }
     }
   }
 
   .tab {
     cursor: pointer;
-    margin-right: rsa-whitespace();
+    display: inline-block;
+    white-space: nowrap;
+    border: 1px solid transparent;
+    border-radius: rsa-whitespace(least);
+    padding: 0 rsa-whitespace(less);
 
     .rsa-icon {
-      margin-right: rsa-whitespace(least);
+      margin: 0 rsa-whitespace(least);
       @include rsa-vendor-prefix(transition, transform linear 0.3s);
-      visibility: hidden;
-    }
-
-    &:hover,
-    &.active {
-      .rsa-icon {
-        visibility: visible;
-      }
     }
   }
 }
@@ -132,7 +129,7 @@ $alertsTableDotSize: 5px;
   @include rsa-font(body, small);
   text-align: left;
   line-height: 1.5;
-  height: 2 * (.85rem * 1.5 + (rsa-whitespace(least) + rsa-whitespace(less))); /* = 2 lines of text x font-size x line-height + vertical padding*/
+  height: 2 * (.85rem * 1.5 + (rsa-whitespace(least) + rsa-whitespace(least))); /* = 2 lines of text x font-size x line-height + vertical padding*/
   overflow: hidden;
   text-overflow: ellipsis;
   vertical-align: middle;
@@ -157,7 +154,7 @@ $alertsTableDotSize: 5px;
 
   .enrichment,
   .event {
-    padding: rsa-whitespace(least) rsa-whitespace() rsa-whitespace(less) $alertsTableConnectorOuterWidth;
+    padding: rsa-whitespace(least) rsa-whitespace() rsa-whitespace(least) $alertsTableConnectorOuterWidth;
     white-space: normal;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -255,15 +252,19 @@ $alertsTableDotSize: 5px;
     background: rsa-color(blue, dark);
   }
 
-  .p,
-  .tab {
+  .p {
     color: rsa-color(gray, light);
   }
 
   .tab {
+    border-color: rsa-color(blue);
+    color: rsa-color(blue);
+
     &.active,
     &:hover {
-      color: rsa-color(blue,light);
+      border-color: rsa-color(blue, light);
+      background-color: rsa-color(blue,light);
+      color: rsa-color(gray,darker);
     }
   }
 

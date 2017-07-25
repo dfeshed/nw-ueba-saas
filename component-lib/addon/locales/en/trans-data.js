@@ -933,6 +933,8 @@ export default {
       sourceIP: 'Source IP',
       destinationIP: 'Destination IP',
       detectorIP: 'Detector IP',
+      sourcePort: 'Source Port',
+      destinationPort: 'Destination Port',
       sourceMAC: 'Source MAC',
       destinationMAC: 'Destination MAC',
       sourceUser: 'Source User',

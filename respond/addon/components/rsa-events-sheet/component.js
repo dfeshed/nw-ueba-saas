@@ -30,6 +30,11 @@ export default Component.extend(CanThrottleAttr, {
     title: 'respond.eventsTable.sourceIP',
     visible: true
   }, {
+    field: 'source.device.port',
+    fieldSuffix: 'port',
+    title: 'respond.eventsTable.sourcePort',
+    visible: true
+  }, {
     field: 'source.device.dns_hostname',
     fieldSuffix: 'dns_hostname',
     title: 'respond.eventsTable.sourceHost',
@@ -48,6 +53,11 @@ export default Component.extend(CanThrottleAttr, {
     field: 'destination.device.ip_address',
     fieldSuffix: 'ip_address',
     title: 'respond.eventsTable.destinationIP',
+    visible: true
+  }, {
+    field: 'destination.device.port',
+    fieldSuffix: 'port',
+    title: 'respond.eventsTable.destinationPort',
     visible: true
   }, {
     field: 'destination.device.dns_hostname',

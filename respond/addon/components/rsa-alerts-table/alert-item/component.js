@@ -5,7 +5,7 @@ import { isEmpty } from 'ember-utils';
 
 function getDeviceFieldValuePairs(device) {
   if (device) {
-    return [ 'dns_domain', 'dns_hostname', 'ip_address', 'mac_address' ]
+    return [ 'dns_domain', 'dns_hostname', 'mac_address', 'ip_address', 'port' ]
       .filter((field) => !isEmpty(device[field]))
       .map((field) => ({ field, value: device[field] }));
   }
