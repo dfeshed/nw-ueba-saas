@@ -3,6 +3,7 @@ package presidio.data.generators.eventsGeneratorTests;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import presidio.data.domain.event.authentication.AuthenticationEvent;
 import presidio.data.generators.common.GeneratorException;
 import presidio.data.domain.event.activedirectory.AD_OPERATION_TYPE;
 import presidio.data.domain.event.activedirectory.ActiveDirectoryEvent;
@@ -50,12 +51,12 @@ public class ActiveDirectoryEventsGeneratorTest {
 
     @Test
     public void ResultsTest () {
-        Set<String> resultsStrings = new HashSet<>();
-        for (final ActiveDirectoryEvent ev : events) {
-            resultsStrings.add(ev.getOperation().getOperationResult());
+        // All should succeed
+        boolean anySuccess = true; // expect to remain "true"
+        for (ActiveDirectoryEvent ev : events) {
+            anySuccess = anySuccess && ev.getOperation().getOperationResult().equalsIgnoreCase("SUCCESS");
         }
-        Assert.assertTrue(resultsStrings.contains("SUCCESS"));
-        Assert.assertFalse(resultsStrings.contains("FAILURE"));
+        Assert.assertTrue(anySuccess);
     }
 
     @Test

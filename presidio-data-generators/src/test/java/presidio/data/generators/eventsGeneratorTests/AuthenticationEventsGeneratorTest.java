@@ -47,12 +47,12 @@ public class AuthenticationEventsGeneratorTest {
 
     @Test
     public void ResultsTest () {
-        Set<String> resultsStrings = new HashSet<>();
+        // All should succeed
+        boolean anySuccess = true; // expect to remain "true"
         for (AuthenticationEvent ev : events) {
-            resultsStrings.add(ev.getResult());
+            anySuccess = anySuccess && ev.getResult().equalsIgnoreCase("SUCCESS");
         }
-        Assert.assertTrue(resultsStrings.contains("SUCCESS"));
-        Assert.assertFalse(resultsStrings.contains("FAILURE"));
+        Assert.assertTrue(anySuccess);
     }
 
     @Test
