@@ -1,11 +1,15 @@
 package presidio.webapp.dto;
 
-/**
- * Created by shays on 21/05/2017.
- */
+import java.time.Instant;
+
 public class Alert {
     private String id;
-    private String description;
+    private String name;
+    private Instant startDate;
+    private Instant endDate;
+    private String username;
+    private Long score;
+    private int indicatorsNum;
 
     public String getId() {
         return id;
@@ -15,11 +19,47 @@ public class Alert {
         this.id = id;
     }
 
-    public String getDescription() {
-        return description;
+    public String getName() {
+        return name;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Instant getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(Instant startDate) {
+        this.startDate = startDate;
+    }
+
+    public Instant getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(Instant endDate) {
+        this.endDate = endDate;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public Long getScore() {
+        return score;
+    }
+
+    public void setScore(Long score) {
+        this.score = score;
+    }
+
+    public void setIndicatorsNum(int indicatorsNum) {
+        this.indicatorsNum = indicatorsNum;
     }
 }

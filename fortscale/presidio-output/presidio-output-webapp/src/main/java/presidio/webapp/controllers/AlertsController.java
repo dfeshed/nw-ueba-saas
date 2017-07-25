@@ -1,23 +1,34 @@
 package presidio.webapp.controllers;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import fortscale.utils.logging.annotation.LogException;
+import org.springframework.web.bind.annotation.*;
 import presidio.webapp.dto.Alert;
+import presidio.webapp.filter.AlertFilter;
+import presidio.webapp.service.AlertService;
 
-/**
- * Created by shays on 21/05/2017.
- */
+import java.util.List;
 
 @RestController
+@RequestMapping(value = "/alert")
 public class AlertsController {
 
-    @RequestMapping(value = "/alert",method = RequestMethod.GET)
-    Alert alert(){
-        Alert a= new Alert();
-        a.setDescription("Alert Description");
-        a.setId("00000001");
-        return  a;
-        
+    private final AlertService alertService;
+
+    public AlertsController(presidio.webapp.service.AlertService alertService) {
+        this.alertService = alertService;
+    }
+
+    @RequestMapping(value = "/{alertId}", method = RequestMethod.GET)
+    @ResponseBody
+    @LogException
+    public Alert getAlertById(@PathVariable String alertId) {
+        return alertService.getAlertById(alertId);
+    }
+
+    @RequestMapping(method = RequestMethod.GET)
+    @ResponseBody
+    @LogException
+    public List<Alert> getAlerts(AlertFilter alertFilter) {
+        return alertService.getAlerts(alertFilter);
     }
 }
