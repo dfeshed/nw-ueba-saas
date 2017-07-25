@@ -176,6 +176,8 @@
         <aspectj.version>1.8.7</aspectj.version>
         <metrics-core.version>3.0.2</metrics-core.version>
         <spring-cloud-task-starter.version>1.1.0.M1</spring-cloud-task-starter.version>
+        <elasticsearch.version>5.4.0</elasticsearch.version>
+        <spring-data-elasticsearch.version>2.1.4.RELEASE</spring-data-elasticsearch.version>
     </properties>
 
     <dependencyManagement>
@@ -517,6 +519,21 @@
                 <artifactId>podam</artifactId>
                 <version>${podam.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.elasticsearch</groupId>
+                <artifactId>elasticsearch</artifactId>
+                <version>${elasticsearch.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.elasticsearch.client</groupId>
+                <artifactId>transport</artifactId>
+                <version>${elasticsearch.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.data</groupId>
+                <artifactId>spring-data-elasticsearch</artifactId>
+                <version>${spring-data-elasticsearch.version}</version>
+            </dependency>
         </dependencies>
 
     </dependencyManagement>
@@ -784,10 +801,10 @@
         <module>presidio-global-config</module>
         <module>presidio-domain</module>
         <module>presidio-ade-domain</module>
+        <module>presidio-ade-sdk</module>
         <module>presidio-ml</module>
         <module>presidio-services</module>
         <module>presidio-aggregation</module>
-        <module>presidio-ade</module>
         <module>presidio-common</module>
         <module>presidio-monitoring-daemons</module>
         <module>presidio-input</module>
