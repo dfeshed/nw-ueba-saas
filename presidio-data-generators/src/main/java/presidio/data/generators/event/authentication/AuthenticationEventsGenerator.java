@@ -35,7 +35,7 @@ public class AuthenticationEventsGenerator implements IEventGenerator {
     // Generates Result object, fields: result (Success/Failure strings) and resultCode (TBD)
     // private ResultPercentageGenerator
     private IStringGenerator resultGenerator;
-    private RandomStringGenerator resultCodeGenerator;
+    private IStringGenerator resultCodeGenerator;
 
     public AuthenticationEventsGenerator() throws GeneratorException {
         timeGenerator = new TimeGenerator();
@@ -74,7 +74,7 @@ public class AuthenticationEventsGenerator implements IEventGenerator {
                 getSrcMachineGenerator().getNext(),
                 getUserGenerator().getNext(),
                 (String) getResultGenerator().getNext(),
-                getResultCodeGenerator().getNext()
+                (String) getResultCodeGenerator().getNext()
             );
             evList.add(ev);
         }
@@ -145,11 +145,11 @@ public class AuthenticationEventsGenerator implements IEventGenerator {
         this.resultGenerator = resultGenerator;
     }
 
-    public RandomStringGenerator getResultCodeGenerator() {
+    public IStringGenerator getResultCodeGenerator() {
         return resultCodeGenerator;
     }
 
-    public void setResultCodeGenerator(RandomStringGenerator resultCodeGenerator) {
+    public void setResultCodeGenerator(IStringGenerator resultCodeGenerator) {
         this.resultCodeGenerator = resultCodeGenerator;
     }
 }
