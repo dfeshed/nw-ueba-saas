@@ -58,10 +58,5 @@ export default [
     title: 'respond.incidents.list.alertCount',
     width: '5%',
     dataType: 'number'
-  },
-  {
-    field: '',
-    title: 'empty',
-    width: 'auto'
   }
 ];

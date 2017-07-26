@@ -51,10 +51,5 @@ export default [
     width: '120px',
     dataType: 'text',
     disableSort: true
-  },
-  {
-    field: '',
-    title: 'empty',
-    width: 'auto'
   }
 ];
