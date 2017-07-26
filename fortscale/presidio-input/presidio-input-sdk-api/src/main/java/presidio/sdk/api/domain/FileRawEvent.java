@@ -72,6 +72,21 @@ public class FileRawEvent extends AbstractInputDocument {
         this.isDstDriveShared = Boolean.getBoolean(record[12]);
     }
 
+    public FileRawEvent(String id, Long version, Instant creationTime, Instant lastModified, Instant dateTime,
+                        String dataSource, String normalizedUsername, String eventId, EventResult result,
+                        FileOperationType operationType, String srcFilePath, String dstFilePath, String srcFolderPath,
+                        String dstFolderPath, Long fileSize, boolean isSrcDriveShared, boolean isDstDriveShared) {
+        super(id, version, creationTime, lastModified, dateTime, dataSource, normalizedUsername, eventId, result);
+        this.operationType = operationType;
+        this.srcFilePath = srcFilePath;
+        this.dstFilePath = dstFilePath;
+        this.srcFolderPath = srcFolderPath;
+        this.dstFolderPath = dstFolderPath;
+        this.fileSize = fileSize;
+        this.isSrcDriveShared = isSrcDriveShared;
+        this.isDstDriveShared = isDstDriveShared;
+    }
+
     public FileOperationType getOperationType() {
         return operationType;
     }

@@ -135,6 +135,34 @@ public class DlpFileDataDocument extends AbstractAuditableDocument {
 
     }
 
+    public DlpFileDataDocument(String id, Long version, Instant creationTime, Instant lastModified, Instant dateTime,
+                               long dateTimeUnix, String executingApplication, String hostname, String firstName,
+                               String lastName, String username, String malwareScanResult, String eventId,
+                               String sourceIp, boolean wasBlocked, boolean wasClassified, String destinationPath,
+                               String destinationFileName, Double fileSize, String sourcePath, String sourceFileName,
+                               String sourceDriveType, String destinationDriveType, String eventType) {
+        super(id, version, creationTime, lastModified, dateTime);
+        this.dateTimeUnix = dateTimeUnix;
+        this.executingApplication = executingApplication;
+        this.hostname = hostname;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.username = username;
+        this.malwareScanResult = malwareScanResult;
+        this.eventId = eventId;
+        this.sourceIp = sourceIp;
+        this.wasBlocked = wasBlocked;
+        this.wasClassified = wasClassified;
+        this.destinationPath = destinationPath;
+        this.destinationFileName = destinationFileName;
+        this.fileSize = fileSize;
+        this.sourcePath = sourcePath;
+        this.sourceFileName = sourceFileName;
+        this.sourceDriveType = sourceDriveType;
+        this.destinationDriveType = destinationDriveType;
+        this.eventType = eventType;
+    }
+
     public long getDateTimeUnix() {
         return dateTimeUnix;
     }

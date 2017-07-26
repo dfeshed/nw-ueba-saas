@@ -1,6 +1,5 @@
 package fortscale.domain.core;
 
-import org.joda.time.DateTime;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.annotation.Version;
@@ -11,14 +10,14 @@ import java.time.Instant;
 
 
 public abstract class AbstractAuditableDocument extends AbstractDocument {
-	private static final long serialVersionUID = -4585812347688862037L;
-
 	public static final String VERSION_FIELD_NAME = "version";
 	public static final String LAST_MODIFIED_FIELD_NAME = "lastModified";
 	public static final String CREATED_AT_FIELD_NAME = "createdAt";
 	public static final String DATE_TIME_FIELD_NAME = "dateTime";
-	
-
+	private static final long serialVersionUID = -4585812347688862037L;
+	@Field(DATE_TIME_FIELD_NAME)
+	@NotNull
+	protected Instant dateTime;
 	@Version
 	@Field(VERSION_FIELD_NAME)
     private Long version;
@@ -31,9 +30,18 @@ public abstract class AbstractAuditableDocument extends AbstractDocument {
 	@Field(LAST_MODIFIED_FIELD_NAME)
     private Instant lastModified;
 
-	@Field(DATE_TIME_FIELD_NAME)
-	@NotNull
-	protected Instant dateTime;
+	public AbstractAuditableDocument() {
+
+	}
+
+	public AbstractAuditableDocument(String id, Long version, Instant creationTime,
+									 Instant lastModified, Instant dateTime) {
+		super(id);
+		this.version = version;
+		this.creationTime = creationTime;
+		this.lastModified = lastModified;
+		this.dateTime = dateTime;
+	}
 
 	@Override
 	public String toString() {
