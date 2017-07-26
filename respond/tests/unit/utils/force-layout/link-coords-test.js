@@ -22,3 +22,17 @@ test('it works with a diagonal link', function(assert) {
   assert.equal(Math.round(Number(result.x2)), 99, 'Unexpected x2 result.');
   assert.equal(Math.round(Number(result.y2)), 99, 'Unexpected y2 result.');
 });
+
+test('it adds a 180deg flip for upside down text on a  link', function(assert) {
+  // Feed it the start & end coords for a horizontal link from left to right.
+  // This should not produce upside down text, so we only expect one SVG rotation.
+  const result1 = forceLayoutLinkCoords(0, 0, 5, 100, 10, 5);
+  const found1 = result1.textTransform.match(/rotate/g);
+  assert.equal(found1.length, 1, 'Expected to find only 1 rotation when text is not upside down');
+
+  // Feed it the start & end coords for a horizontal link from right to left.
+  // This should produce upside down text, so we expect an extra SVG rotation to flip it right side up.
+  const result2 = forceLayoutLinkCoords(0, 0, 5, -100, 10, 5);
+  const found2 = result2.textTransform.match(/rotate/g);
+  assert.equal(found2.length, 2, 'Expected to find an extra rotation to flip upside down text');
+});
