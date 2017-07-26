@@ -186,40 +186,6 @@
     <dependencyManagement>
         <dependencies>
 
-            <!--elastic dependencies -->
-
-
-            <!--<dependency>-->
-            <!--<groupId>junit</groupId>-->
-            <!--<artifactId>junit</artifactId>-->
-            <!--<version>${junit.version}</version>-->
-            <!--</dependency>-->
-            <!--<dependency>-->
-                <!--<groupId>org.elasticsearch.client</groupId>-->
-                <!--<artifactId>transport</artifactId>-->
-                <!--<version>${elasticsearch-client.version}</version>-->
-                <!--<exclusions>-->
-                    <!--<exclusion>  &lt;!&ndash; declare the exclusion here &ndash;&gt;-->
-                        <!--<groupId>com.google.guava</groupId>-->
-                        <!--<artifactId>guava</artifactId>-->
-                    <!--</exclusion>-->
-                <!--</exclusions>-->
-            <!--</dependency>-->
-            <!--<dependency>-->
-                <!--<groupId>com.google.guava</groupId>-->
-                <!--<artifactId>guava</artifactId>-->
-                <!--<version>${google.guava-version}</version>-->
-            <!--</dependency>-->
-
-            <!--<dependency>-->
-                <!--<groupId>org.springframework.data</groupId>-->
-                <!--<artifactId>spring-data-elasticsearch</artifactId>-->
-                <!--<version>${spring-elastic.version}</version>-->
-            <!--</dependency>-->
-
-            <!--elastic dependencies -->
-
-
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-actuator</artifactId>

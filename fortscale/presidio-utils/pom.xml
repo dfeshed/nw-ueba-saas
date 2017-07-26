@@ -11,8 +11,6 @@
     <packaging>jar</packaging>
 
 
-
-
     <dependencies>
         <dependency>
             <groupId>net.sourceforge.argparse4j</groupId>
@@ -173,10 +171,6 @@
             <groupId>uk.co.jemos.podam</groupId>
             <artifactId>podam</artifactId>
         </dependency>
-
-
-
-
     </dependencies>
 
     <build>
