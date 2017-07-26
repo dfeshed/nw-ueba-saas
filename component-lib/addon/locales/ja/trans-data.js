@@ -816,7 +816,7 @@ export default {
         description: 'ja_Description',
         source: 'ja_Source',
         destination: 'ja_Destination',
-        domain: 'ja_Domain',
+        domain: 'ja_Domain/Host',
         detector: 'ja_Detector',
         device: 'ja_Device',
         ip_address: 'ja_IP Address',
