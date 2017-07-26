@@ -34,7 +34,7 @@ public class AggregatedFeatureEventUnreducedScoreRetrieverTest {
 		AggregatedFeatureEventConf aggrFeatureEventConf = Mockito.mock(AggregatedFeatureEventConf.class);
 		when(aggregatedFeatureEventsConfService.getAggregatedFeatureEventConf(config.getAggregatedFeatureEventToCalibrateConfName()))
 				.thenReturn(aggrFeatureEventConf);
-		AggregatedFeatureEventUnreducedScoreRetriever retriever = new AggregatedFeatureEventUnreducedScoreRetriever(config);
+		AggregatedFeatureEventUnreducedScoreRetriever retriever = new AggregatedFeatureEventUnreducedScoreRetriever(config, aggregatedFeatureEventsConfService, aggregatedFeatureEventsReaderService);
 
 		Map<Long, List<AggrEvent>> dateToTopAggFeatureEvents = new HashMap<>();
 		Long yesterday = 1L;

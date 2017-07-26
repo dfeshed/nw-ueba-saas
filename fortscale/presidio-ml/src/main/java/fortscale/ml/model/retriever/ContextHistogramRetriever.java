@@ -12,14 +12,11 @@ import fortscale.ml.model.retriever.metrics.ContextHistogramRetrieverMetrics;
 import fortscale.utils.monitoring.stats.StatsService;
 import fortscale.utils.time.TimeRange;
 import fortscale.utils.time.TimestampUtils;
-import org.springframework.beans.factory.annotation.Autowire;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.util.Assert;
 
 import java.util.*;
 
-@Configurable(preConstruction = true, autowire = Autowire.BY_TYPE)
 public class ContextHistogramRetriever extends AbstractDataRetriever {
 	private BucketConfigurationService bucketConfigurationService;
 	private FeatureBucketReader featureBucketReader;

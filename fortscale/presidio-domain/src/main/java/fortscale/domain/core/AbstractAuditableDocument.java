@@ -25,11 +25,11 @@ public abstract class AbstractAuditableDocument extends AbstractDocument {
 	
     @CreatedDate
     @Field(CREATED_AT_FIELD_NAME)
-    private DateTime creationTime;
+    private Instant creationTime;
     
 	@LastModifiedDate
 	@Field(LAST_MODIFIED_FIELD_NAME)
-    private DateTime lastModified;
+    private Instant lastModified;
 
 	@Field(DATE_TIME_FIELD_NAME)
 	@NotNull
@@ -50,11 +50,11 @@ public abstract class AbstractAuditableDocument extends AbstractDocument {
 		return version;
 	}
 
-	public DateTime getCreationTime() {
+	public Instant getCreationTime() {
 		return creationTime;
 	}
 
-	public DateTime getLastModified() {
+	public Instant getLastModified() {
 		return lastModified;
 	}
 

@@ -23,6 +23,7 @@ import fortscale.ml.scorer.record.TestAdeRecord;
 import fortscale.utils.factory.FactoryService;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -40,6 +41,7 @@ import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = ScorerFactoriesTestConfig.class)
+@Ignore
 public class ModelBasedScoreMapperFactoryTest {
 	@MockBean
 	private ModelConfService modelConfService;
