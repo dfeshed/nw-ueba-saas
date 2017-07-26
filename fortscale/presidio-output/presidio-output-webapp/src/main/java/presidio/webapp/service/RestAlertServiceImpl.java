@@ -50,7 +50,7 @@ public class RestAlertServiceImpl implements RestAlertService {
         AlertQuery alertQuery = createQuery(alertFilter);
         Page<presidio.output.domain.records.Alert> alerts = elasticAlertService.find(alertQuery);
 
-        if (alerts.hasNext()) {
+        if (alerts.hasContent()) {
             alerts.forEach(alert -> result.add(createResult(alert)));
         }
         return result;
@@ -59,8 +59,14 @@ public class RestAlertServiceImpl implements RestAlertService {
     private AlertQuery createQuery(AlertFilter alertFilter) {
         AlertQuery.AlertQueryBuilder alertQueryBuilder = new AlertQuery.AlertQueryBuilder();
         alertQueryBuilder.filterByUserName(alertFilter.getFilterBuUserName());
-        alertQueryBuilder.filterByStartDate(alertFilter.getFilterByStartDate().toEpochMilli());
-        alertQueryBuilder.filterByEndDate(alertFilter.getFilterByEndDate().toEpochMilli());
+        Instant filterByStartDate = alertFilter.getFilterByStartDate();
+        if (filterByStartDate != null) {
+            alertQueryBuilder.filterByStartDate(filterByStartDate.toEpochMilli());
+        }
+        Instant filterByEndDate = alertFilter.getFilterByEndDate();
+        if (filterByEndDate != null) {
+            alertQueryBuilder.filterByEndDate(filterByEndDate.toEpochMilli());
+        }
         alertQueryBuilder.filterBySeverity(alertFilter.getFilterBySeverity());
         alertQueryBuilder.sortField(alertFilter.getSortField(), alertFilter.isAscendingOrder());
         AlertQuery alertQuery = alertQueryBuilder.build();
