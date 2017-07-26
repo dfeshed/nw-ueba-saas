@@ -25,9 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = PresidioInputPersistencyServiceConfig.class)
+@SpringBootTest(classes = {MongodbTestConfig.class, PresidioInputPersistencyServiceConfig.class})
 @EnableMongoRepositories(basePackageClasses = DataSourceRepository.class)
-@Import(MongodbTestConfig.class)
 public class PresidioInputPersistencyServiceMongoImplTest {
 
     @Autowired
