@@ -31,11 +31,10 @@ public class AuthenticationRawEvent extends AbstractInputDocument {
 
     }
 
-    public AuthenticationRawEvent(String id, Long version, Instant creationTime, Instant lastModified,
-                                  Instant dateTime, String dataSource, String normalizedUsername, String eventId,
+    public AuthenticationRawEvent(Instant dateTime, String dataSource, String normalizedUsername, String eventId,
                                   EventResult result, String authenticationType, boolean isDstMachineRemote,
                                   String normalizedDstMachine, String normalizedSrcMachine, String resultCode) {
-        super(id, version, creationTime, lastModified, dateTime, dataSource, normalizedUsername, eventId, result);
+        super(dateTime, dataSource, normalizedUsername, eventId, result);
         this.authenticationType = authenticationType;
         this.isDstMachineRemote = isDstMachineRemote;
         this.normalizedDstMachine = normalizedDstMachine;

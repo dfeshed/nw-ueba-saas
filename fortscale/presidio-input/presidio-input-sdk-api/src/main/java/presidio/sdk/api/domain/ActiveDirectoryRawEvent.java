@@ -51,12 +51,11 @@ public class ActiveDirectoryRawEvent extends AbstractInputDocument {
         this.eventId = eventId;
     }
 
-    public ActiveDirectoryRawEvent(String id, Long version, Instant creationTime, Instant lastModified,
-                                   Instant dateTime, String dataSource, String normalizedUsername, String eventId,
+    public ActiveDirectoryRawEvent(Instant dateTime, String dataSource, String normalizedUsername, String eventId,
                                    EventResult result, ActiveDirectoryOperationType operationType,
                                    boolean isSecuritySensitiveOperation, boolean isUserAdministrator,
                                    String objectName) {
-        super(id, version, creationTime, lastModified, dateTime, dataSource, normalizedUsername, eventId, result);
+        super(dateTime, dataSource, normalizedUsername, eventId, result);
         this.operationType = operationType;
         this.isSecuritySensitiveOperation = isSecuritySensitiveOperation;
         this.isUserAdministrator = isUserAdministrator;

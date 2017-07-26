@@ -34,12 +34,8 @@ public abstract class AbstractAuditableDocument extends AbstractDocument {
 
 	}
 
-	public AbstractAuditableDocument(String id, Long version, Instant creationTime,
-									 Instant lastModified, Instant dateTime) {
-		super(id);
-		this.version = version;
-		this.creationTime = creationTime;
-		this.lastModified = lastModified;
+	public AbstractAuditableDocument(Instant dateTime) {
+		super();
 		this.dateTime = dateTime;
 	}
 

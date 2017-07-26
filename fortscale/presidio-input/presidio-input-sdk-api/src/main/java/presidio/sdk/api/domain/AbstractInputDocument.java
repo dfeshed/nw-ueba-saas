@@ -30,10 +30,9 @@ public class AbstractInputDocument extends AbstractAuditableDocument {
 
     }
 
-    public AbstractInputDocument(String id, Long version, Instant creationTime, Instant lastModified,
-                                 Instant dateTime, String dataSource, String normalizedUsername,
+    public AbstractInputDocument(Instant dateTime, String dataSource, String normalizedUsername,
                                  String eventId, EventResult result) {
-        super(id, version, creationTime, lastModified, dateTime);
+        super(dateTime);
         this.dataSource = dataSource;
         this.normalizedUsername = normalizedUsername;
         this.eventId = eventId;
