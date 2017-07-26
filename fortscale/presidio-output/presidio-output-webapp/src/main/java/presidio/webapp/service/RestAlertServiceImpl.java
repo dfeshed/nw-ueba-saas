@@ -3,6 +3,8 @@ package presidio.webapp.service;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import presidio.output.domain.records.AlertQuery;
+import presidio.output.domain.services.AlertPersistencyService;
+import presidio.output.domain.services.AlertPersistencyServiceImpl;
 import presidio.webapp.dto.Alert;
 import presidio.webapp.filter.AlertFilter;
 
@@ -14,9 +16,9 @@ import java.util.List;
 public class RestAlertServiceImpl implements RestAlertService {
 
 
-    private final presidio.output.domain.services.AlertService elasticAlertService;
+    private final AlertPersistencyService elasticAlertService;
 
-    public RestAlertServiceImpl(presidio.output.domain.services.AlertService elasticAlertService) {
+    public RestAlertServiceImpl(AlertPersistencyService elasticAlertService) {
         this.elasticAlertService = elasticAlertService;
     }
 
@@ -38,7 +40,7 @@ public class RestAlertServiceImpl implements RestAlertService {
         resultAlert.setName(alertData.getAlertType().name());
         resultAlert.setUsername(alertData.getUserName());
         resultAlert.setIndicatorsNum(alertData.getIndicatorsNum());
-        resultAlert.setStartDate(Instant.parse(alertData.getStartDate()));
+        resultAlert.setStartDate(Instant.ofEpochMilli(alertData.getStartDate()));
         return resultAlert;
     }
 
@@ -57,8 +59,8 @@ public class RestAlertServiceImpl implements RestAlertService {
     private AlertQuery createQuery(AlertFilter alertFilter) {
         AlertQuery.AlertQueryBuilder alertQueryBuilder = new AlertQuery.AlertQueryBuilder();
         alertQueryBuilder.filterByUserName(alertFilter.getFilterBuUserName());
-        alertQueryBuilder.filterByStartDate(alertFilter.getFilterByStartDate());
-        alertQueryBuilder.filterByEndDate(alertFilter.getFilterByEndDate());
+        alertQueryBuilder.filterByStartDate(alertFilter.getFilterByStartDate().toEpochMilli());
+        alertQueryBuilder.filterByEndDate(alertFilter.getFilterByEndDate().toEpochMilli());
         alertQueryBuilder.filterBySeverity(alertFilter.getFilterBySeverity());
         alertQueryBuilder.sortField(alertFilter.getSortField(), alertFilter.isAscendingOrder());
         AlertQuery alertQuery = alertQueryBuilder.build();

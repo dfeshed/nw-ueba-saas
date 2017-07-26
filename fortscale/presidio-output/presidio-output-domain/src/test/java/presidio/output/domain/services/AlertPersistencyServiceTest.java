@@ -28,7 +28,7 @@ import org.springframework.test.context.ContextConfiguration;
 @RunWith(SpringRunner.class)
 @SpringBootTest()
 @ContextConfiguration(classes=presidio.output.domain.spring.PresidioOutputPersistencyServiceConfig.class)
-public class AlertServiceTest {
+public class AlertPersistencyServiceTest {
 
     @Autowired
     private AlertPersistencyService alertService;

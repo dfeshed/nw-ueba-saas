@@ -1,13 +1,13 @@
 package presidio.webapp.filter;
 
-import java.util.Date;
+import java.time.Instant;
 
 public class AlertFilter {
     // filters
     private String filterBuUserName;
     private String filterBySeverity;
-    private Date filterByStartDate;
-    private Date filterByEndDate;
+    private Instant filterByStartDate;
+    private Instant filterByEndDate;
 
     // sort
     private String sortField;
@@ -33,19 +33,19 @@ public class AlertFilter {
         this.filterBySeverity = filterBySeverity;
     }
 
-    public Date getFilterByStartDate() {
+    public Instant getFilterByStartDate() {
         return filterByStartDate;
     }
 
-    public void setFilterByStartDate(Date filterByStartDate) {
+    public void setFilterByStartDate(Instant filterByStartDate) {
         this.filterByStartDate = filterByStartDate;
     }
 
-    public Date getFilterByEndDate() {
+    public Instant getFilterByEndDate() {
         return filterByEndDate;
     }
 
-    public void setFilterByEndDate(Date filterByEndDate) {
+    public void setFilterByEndDate(Instant filterByEndDate) {
         this.filterByEndDate = filterByEndDate;
     }
 
