@@ -1,7 +1,7 @@
 import Component from 'ember-component';
 import service from 'ember-service/inject';
 import connect from 'ember-redux/components/connect';
-import computed from 'ember-computed-decorators';
+import computed, { not } from 'ember-computed-decorators';
 
 import layout from './template';
 import { nweCallbackId } from 'recon/reducers/meta/selectors';
@@ -21,6 +21,9 @@ const PivotToEndpoint = Component.extend({
 
   @computed('nweCallbackId')
   href: (callbackId) => `ecatui://${callbackId}`,
+
+  @not('nweCallbackId')
+  isDisabled: false,
 
   @computed
   title() {
