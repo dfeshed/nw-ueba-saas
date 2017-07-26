@@ -8,8 +8,8 @@ public class AlertQuery {
     // filters
     private final String filterBuUserName;
     private final String filterBySeverity;
-    private final Date filterByStartDate;
-    private final Date filterByEndDate;
+    private final long filterByStartDate;
+    private final long filterByEndDate;
 
     // sort
     private final String sortField;
@@ -42,11 +42,11 @@ public class AlertQuery {
         return filterBySeverity;
     }
 
-    public Date getFilterByStartDate() {
+    public long getFilterByStartDate() {
         return filterByStartDate;
     }
 
-    public Date getFilterByEndDate() {
+    public long getFilterByEndDate() {
         return filterByEndDate;
     }
 
@@ -75,8 +75,8 @@ public class AlertQuery {
         // filters
         private String filterByUserName;
         private String filterBySeverity;
-        private Date filterByStartDate;
-        private Date filterByEndDate;
+        private long filterByStartDate;
+        private long filterByEndDate;
 
         // sort
         private String sortField;
@@ -102,12 +102,12 @@ public class AlertQuery {
             return this;
         }
 
-        public AlertQueryBuilder filterByStartDate(Date filterByStartDate) {
+        public AlertQueryBuilder filterByStartDate(long filterByStartDate) {
             this.filterByStartDate = filterByStartDate;
             return this;
         }
 
-        public AlertQueryBuilder filterByEndDate(Date filterByEndDate) {
+        public AlertQueryBuilder filterByEndDate(long filterByEndDate) {
             this.filterByEndDate = filterByEndDate;
             return this;
         }

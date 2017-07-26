@@ -37,11 +37,11 @@ public class Alert {
     @Field(type = FieldType.String, store = true)
     private AlertType alertType;
 
-    @Field (type = FieldType.String, store = true)
-    private String startDate;
+    @Field (type = FieldType.Long, store = true)
+    private long startDate;
 
-    @Field (type = FieldType.String, store = true)
-    private String endDate;
+    @Field (type = FieldType.Long, store = true)
+    private long endDate;
 
     @Field(type = FieldType.Double, store = true)
     private double score;
@@ -61,7 +61,7 @@ public class Alert {
         // empty const for JSON deserialization
     }
 
-    public Alert(String id, String userName, AlertType type, String startDate, String endDate, double score, int indicatorsNum, AlertTimeframe timeframe, AlertSeverity severity) {
+    public Alert(String id, String userName, AlertType type, long startDate, long endDate, double score, int indicatorsNum, AlertTimeframe timeframe, AlertSeverity severity) {
         this.id = id;
         this.userName = userName;
         this.alertType = type;
@@ -98,19 +98,19 @@ public class Alert {
         this.alertType = alertType;
     }
 
-    public String getStartDate() {
+    public long getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(String startDate) {
+    public void setStartDate(long startDate) {
         this.startDate = startDate;
     }
 
-    public String getEndDate() {
+    public long getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(String endDate) {
+    public void setEndDate(long endDate) {
         this.endDate = endDate;
     }
 
