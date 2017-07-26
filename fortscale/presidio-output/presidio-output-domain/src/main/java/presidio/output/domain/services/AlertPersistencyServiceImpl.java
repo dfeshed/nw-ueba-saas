@@ -11,7 +11,7 @@ import presidio.output.domain.repositories.AlertRepository;
 import java.util.List;
 
 @Service
-public class AlertServiceImpl implements AlertService {
+public class AlertPersistencyServiceImpl implements AlertPersistencyService {
 
     @Autowired
     private AlertRepository alertRepository;

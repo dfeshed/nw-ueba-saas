@@ -7,7 +7,7 @@ import presidio.output.domain.records.AlertQuery;
 
 import java.util.List;
 
-public interface AlertService {
+public interface AlertPersistencyService {
 
     Alert save(Alert alert);
 

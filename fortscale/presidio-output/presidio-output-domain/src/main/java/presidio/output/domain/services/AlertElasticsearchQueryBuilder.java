@@ -45,13 +45,13 @@ public class AlertElasticsearchQueryBuilder extends NativeSearchQueryBuilder {
         }
 
         // filter by date range
-        if (alertQuery.getFilterByStartDate() != null || alertQuery.getFilterByEndDate() != null) {
+        if (alertQuery.getFilterByStartDate() > 0 || alertQuery.getFilterByEndDate() > 0) {
             RangeQueryBuilder rangeQuery = rangeQuery(Alert.START_DATE);
-            if (alertQuery.getFilterByStartDate() != null) {
+            if (alertQuery.getFilterByStartDate() > 0 ) {
                 rangeQuery.from(alertQuery.getFilterByStartDate());
             }
-            if (alertQuery.getFilterByEndDate() != null) {
-                rangeQuery.from(alertQuery.getFilterByEndDate());
+            if (alertQuery.getFilterByEndDate() > 0) {
+                rangeQuery.to(alertQuery.getFilterByEndDate());
             }
             boolQueryBuilder.must(rangeQuery);
         }
