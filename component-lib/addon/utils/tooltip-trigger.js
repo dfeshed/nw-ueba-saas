@@ -93,10 +93,14 @@ const unwireTriggerToClick = function(el) {
  * to determine whether the panel component should be toggled. If the callback returns false, the toggle is aborted.
  * @param {Number} [opts.displayDelay=0] Optional pause (in milliseconds) after mouseenter before displaying the tooltip.
  * @param {Number} [opts.hideDelay=0] Optional pause (in milliseconds) after mouseleave before hiding the tooltip.
+ * @param {view} [opts.trigger] Optional Reference to the trigger component view. Note: that if this option property is
+ * not provided and the trigger component used to activate the tether panel is removed/destroyed within the display delay,
+ * the el used for the tether panel may no longer be in the DOM, causing an error in the underlying tether code.
  * @public
  */
 const wireTriggerToHover = function(el, panelId, eventBus, opts = {}) {
   const getIsDisabled = typeof opts.getIsDisabled === 'function' ? opts.getIsDisabled : null;
+  const { trigger } = opts;
   const $el = $(el);
 
   // rsa-content-tethered-panel assumes its trigger ("target") DOM node has a
@@ -115,6 +119,9 @@ const wireTriggerToHover = function(el, panelId, eventBus, opts = {}) {
         }
         if (opts.displayDelay) {
           this[timerProp] = later(() => {
+            if (trigger && (trigger.get('isDestroyed') || trigger.get('isDestroying'))) {
+              return;
+            }
             sendTetherEvent(this, panelId, eventBus, 'display', opts.model);
           }, opts.displayDelay);
         } else {

@@ -413,7 +413,8 @@ export default Mixin.create({
       model: { type, id },
       displayDelay,
       hideDelay,
-      rightClick: triggerEvent === 'contextmenu'
+      rightClick: triggerEvent === 'contextmenu',
+      trigger: this
     });
   },
 
