@@ -18,10 +18,9 @@ import java.util.Arrays;
         excludeFilters = {
                 @ComponentScan.Filter(type = FilterType.REGEX, pattern = "fortscale.*"),
                 @ComponentScan.Filter(type = FilterType.REGEX, pattern = "presidio.*")})
-public class FortscaleAdapterApplication extends PresidioShellableApplication {
-    private static final Logger logger = Logger.getLogger(FortscaleAdapterApplication.class);
+public class FortscaleAdapterApplication  {
 
     public static void main(String[] args) {
-        PresidioShellableApplication.run(FortscaleAdapterApplication.class, args);
+        PresidioShellableApplication.run(new Object[]{AdapterConfigProduction.class}, args);
     }
 }

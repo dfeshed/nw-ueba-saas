@@ -34,9 +34,13 @@ public abstract class PresidioShellableApplication {
      * @param configurationClass where the application's context is configured
      * @param args               the input arguments
      */
-    public static void run(Class<?> configurationClass, String[] args) {
+    public static void run(Object[] configurationClass, String[] args) {
         logger.info("Starting {} component ",configurationClass.getClass().getName());
-        Object[] sources = {configurationClass, ShellCommonCommandsConfig.class};
+        Object[] sources= new Object[configurationClass.length+1];
+        for(int i=0;i<configurationClass.length;i++){
+            sources[i]=configurationClass[i];
+        }
+        sources[configurationClass.length]=ShellCommonCommandsConfig.class;
         ConfigurableApplicationContext context = SpringApplication.run(sources, args);
         int exitCode=0;
         try {
