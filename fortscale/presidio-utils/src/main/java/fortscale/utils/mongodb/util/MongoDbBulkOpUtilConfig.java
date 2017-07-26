@@ -12,9 +12,9 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 @Configuration
 public class MongoDbBulkOpUtilConfig {
     @Autowired
-    public DynamicIndexApplicationListener dynamicIndexApplicationListener;
+    private DynamicIndexApplicationListener dynamicIndexApplicationListener;
     @Autowired
-    public MongoTemplate mongoTemplate;
+    private MongoTemplate mongoTemplate;
 
     @Bean
     public MongoDbBulkOpUtil mongoDbBulkOpUtil() {

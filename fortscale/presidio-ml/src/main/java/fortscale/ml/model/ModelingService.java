@@ -1,7 +1,9 @@
 package fortscale.ml.model;
 
 import fortscale.aggregation.configuration.AslConfigurationPaths;
+import fortscale.aggregation.configuration.AslResourceFactory;
 import fortscale.utils.logging.Logger;
+import org.springframework.core.io.Resource;
 
 import java.time.Instant;
 import java.util.Collection;
@@ -18,7 +20,8 @@ import java.util.stream.Collectors;
  * According to the session ID and the end instant, each {@link ModelingEngine} selects the context IDs,
  * retrieves their data, builds and stores their models.
  * <p>
- * This service requires a {@link ModelingEngineFactory} in order to create the {@link ModelingEngine}s.
+ * This service requires a {@link ModelingEngineFactory} in order to create the {@link ModelingEngine}s and an
+ * {@link AslResourceFactory}, that creates the configuration {@link Resource}s for the {@link ModelConfService}.
  *
  * @author Lior Govrin
  */
@@ -27,20 +30,24 @@ public class ModelingService {
 
 	private Map<String, AslConfigurationPaths> groupNameToModelConfigurationPathsMap;
 	private ModelingEngineFactory modelingEngineFactory;
+	private AslResourceFactory aslResourceFactory;
 
 	/**
 	 * C'tor.
 	 *
 	 * @param modelConfigurationPathsCollection a collection of all configured groups and their configuration paths
 	 * @param modelingEngineFactory             a factory that creates {@link ModelingEngine}s
+	 * @param aslResourceFactory                a factory that creates {@link Resource}s
 	 */
 	public ModelingService(
 			Collection<AslConfigurationPaths> modelConfigurationPathsCollection,
-			ModelingEngineFactory modelingEngineFactory) {
+			ModelingEngineFactory modelingEngineFactory,
+			AslResourceFactory aslResourceFactory) {
 
 		groupNameToModelConfigurationPathsMap = modelConfigurationPathsCollection.stream()
 				.collect(Collectors.toMap(AslConfigurationPaths::getGroupName, Function.identity()));
 		this.modelingEngineFactory = modelingEngineFactory;
+		this.aslResourceFactory = aslResourceFactory;
 	}
 
 	/**
@@ -54,8 +61,11 @@ public class ModelingService {
 			return;
 		}
 
-		ModelConfService modelConfService = new ModelConfService(groupNameToModelConfigurationPathsMap.get(groupName));
-		modelConfService.afterPropertiesSet(); // Load all the modelConfs in the group
+		AslConfigurationPaths modelConfigurationPaths = groupNameToModelConfigurationPathsMap.get(groupName);
+		ModelConfService modelConfService = new ModelConfService(
+				aslResourceFactory.getResources(modelConfigurationPaths.getBaseConfigurationPath()),
+				aslResourceFactory.getResources(modelConfigurationPaths.getOverridingConfigurationPath()),
+				aslResourceFactory.getResources(modelConfigurationPaths.getAdditionalConfigurationPath()));
 		List<ModelConf> modelConfs = modelConfService.getModelConfs();
 		logger.info("Created a modelConfService for group {} with {} modelConfs.", groupName, modelConfs.size());
 		logger.info("Running modeling engines with sessionId {} and endInstant {} as input.", sessionId, endInstant);
@@ -64,5 +74,10 @@ public class ModelingService {
 			modelingEngineFactory.getModelingEngine(modelConf).process(sessionId, endInstant);
 			logger.info("Finished modeling engine process of modelConf {}.", modelConf.getName());
 		}
+	}
+
+	public void clean(String groupName, String sessionId) throws Exception {
+		// TODO
+		logger.info("Clean: groupName {}, sessionId {}.", groupName, sessionId);
 	}
 }
