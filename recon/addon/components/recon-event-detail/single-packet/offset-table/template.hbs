@@ -1,3 +1,5 @@
-{{#each byteRows as |byteRow index|}}
-  <p>{{offset-number index}}</p>
-{{/each}}
+<table>
+  {{#each byteRows as |byteRow index|}}
+    <tr><td>{{offset-number index}}</td></tr>
+  {{/each}}
+</table>

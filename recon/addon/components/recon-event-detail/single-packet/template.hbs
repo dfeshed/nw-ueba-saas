@@ -5,12 +5,12 @@
 }}
 
 {{#if isPacketExpanded}}
-  <section class="rsa-packet__body">
-    {{recon-event-detail/single-packet/offset-table
-      byteRows=packet.byteRows
-    }}
-    <section class="rsa-packet__hex">
-      {{#if viewportEntered}}
+  <section class="rsa-packet__body" style="{{calculatedHeight}}">
+    {{#if viewportEntered}}
+      {{recon-event-detail/single-packet/offset-table
+        byteRows=packet.byteRows
+      }}
+      <section class="rsa-packet__hex">
         {{recon-event-detail/single-packet/byte-table
           byteFormat="hex"
           packet=packet
@@ -20,10 +20,8 @@
           onselect=onselect
           tooltipData=tooltipData
         }}
-      {{/if}}
-    </section>
-    <section class="rsa-packet__ascii">
-      {{#if viewportEntered}}
+      </section>
+      <section class="rsa-packet__ascii">
         {{recon-event-detail/single-packet/byte-table
           byteFormat="ascii"
           packet=packet
@@ -33,7 +31,7 @@
           onselect=onselect
           tooltipData=tooltipData
         }}
-      {{/if}}
-    </section>
+      </section>
+    {{/if}}
   </section>
 {{/if}}
