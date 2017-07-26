@@ -12,7 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import presidio.ade.domain.store.aggr.AggregatedDataStore;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
-import presidio.ade.processes.shell.feature.aggregation.FeatureAggregationService;
+import presidio.ade.processes.shell.aggregation.FeatureAggregationService;
 
 import java.time.Instant;
 

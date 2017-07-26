@@ -1,9 +1,7 @@
-package presidio.ade.processes.shell.feature.aggregation;
+package presidio.ade.processes.shell.aggregation;
 
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.aggregation.feature.bucket.InMemoryFeatureBucketAggregator;
-import fortscale.aggregation.feature.bucket.config.BucketConfigurationServiceConfig;
-import fortscale.ml.processes.shell.model.aggregation.ModelAggregationBucketConfigurationServiceConfig;
 import fortscale.ml.scorer.records.AdeRecordReaderFactoriesConfig;
 import fortscale.ml.scorer.records.RecordReaderFactoryServiceConfig;
 import fortscale.ml.scorer.records.TransformationConfig;
