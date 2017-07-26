@@ -3,6 +3,8 @@ package fortscale.common.general;
 import fortscale.common.shell.config.ShellCommonCommandsConfig;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.shell.BootShim;
+import fortscale.utils.shell.BootShimConfig;
+import fortscale.utils.shell.CommandLineArgsHolder;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 
@@ -18,7 +20,7 @@ public abstract class PresidioShellableApplication {
 
     public static void run(String[] args, ConfigurableApplicationContext ctx) {
         try {
-            BootShim bs = new BootShim(args, ctx);
+            BootShim bs = ctx.getBean(BootShim.class);
             bs.run();
         } catch (RuntimeException e) {
             String errorMessage = String.format("Failed to run application with specified args: [%s]", Arrays.toString(args));
@@ -34,8 +36,9 @@ public abstract class PresidioShellableApplication {
      * @param args               the input arguments
      */
     public static void run(Class<?> configurationClass, String[] args) {
-        Object[] sources = {configurationClass, ShellCommonCommandsConfig.class};
+        Object[] sources = {configurationClass, BootShimConfig.class,ShellCommonCommandsConfig.class};
         ConfigurableApplicationContext context = SpringApplication.run(sources, args);
+        CommandLineArgsHolder.args = args;
         run(args, context);
     }
 }

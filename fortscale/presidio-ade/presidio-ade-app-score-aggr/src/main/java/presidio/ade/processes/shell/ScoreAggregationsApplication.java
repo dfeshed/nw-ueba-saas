@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScan.Filter;
 import org.springframework.context.annotation.FilterType;
+import presidio.ade.processes.shell.scoring.aggregation.config.application.ScoreAggregationsApplicationConfigProduction;
 
 @SpringBootApplication
 @ComponentScan(excludeFilters = @Filter(type = FilterType.REGEX, pattern = {"fortscale.*", "presidio.*"}))
@@ -14,6 +15,6 @@ public class ScoreAggregationsApplication {
 
 	public static void main(String[] args) {
 		logger.info("Starting {}.", ScoreAggregationsApplication.class.getSimpleName());
-		PresidioShellableApplication.run(ScoreAggregationsConfiguration.class, args);
+		PresidioShellableApplication.run(ScoreAggregationsApplicationConfigProduction.class, args);
 	}
 }
