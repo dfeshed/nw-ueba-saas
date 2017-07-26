@@ -1,17 +1,23 @@
 package fortscale.domain.core;
 
 
-import java.io.Serializable;
-
 import org.springframework.data.annotation.Id;
 
+import java.io.Serializable;
+
 public class AbstractDocument implements Serializable{
-	private static final long serialVersionUID = 5043063490239869442L;
-
 	public static final String ID_FIELD = "_id";
-
+	private static final long serialVersionUID = 5043063490239869442L;
 	@Id
 	private String id;
+
+	public AbstractDocument() {
+
+	}
+
+	public AbstractDocument(String id) {
+		this.id = id;
+	}
 
 	/**
 	 * Returns the identifier of the document.
