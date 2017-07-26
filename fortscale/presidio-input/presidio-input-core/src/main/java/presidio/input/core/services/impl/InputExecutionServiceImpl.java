@@ -34,10 +34,6 @@ public class InputExecutionServiceImpl implements PresidioExecutionService {
     }
 
     @Override
-    @RunTime
-    @Start
-    @End
-    @DataSourceProcess
     public void run(DataSource dataSource, Instant startDate, Instant endDate, Double fixedDuration) throws Exception {
         logger.info("Started input processing with params: data source:{}, from {}:{}, until {}:{}.", dataSource, CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate, CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
 
@@ -49,8 +45,6 @@ public class InputExecutionServiceImpl implements PresidioExecutionService {
         } else {
             enrichedRecords = dataRecords;
         }
-
-        Thread.sleep(10000);
 
         InputAdeConverter converter = getConverter(dataSource);
 
