@@ -1,6 +1,7 @@
 package presidio.webapp.service;
 
 import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Service;
 import presidio.output.domain.records.AlertQuery;
 import presidio.webapp.dto.Alert;
 import presidio.webapp.filter.AlertFilter;
@@ -9,12 +10,13 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AlertServiceImpl implements AlertService {
+@Service
+public class RestAlertServiceImpl implements RestAlertService {
 
 
     private final presidio.output.domain.services.AlertService elasticAlertService;
 
-    public AlertServiceImpl(presidio.output.domain.services.AlertService elasticAlertService) {
+    public RestAlertServiceImpl(presidio.output.domain.services.AlertService elasticAlertService) {
         this.elasticAlertService = elasticAlertService;
     }
 
@@ -22,7 +24,11 @@ public class AlertServiceImpl implements AlertService {
     public Alert getAlertById(String id) {
         presidio.output.domain.records.Alert alertData = elasticAlertService.findOne(id);
 
-        Alert resultAlert = createResult(alertData);
+        Alert resultAlert = null;
+        if (alertData != null) {
+            resultAlert = createResult(alertData);
+        }
+
         return resultAlert;
     }
 
@@ -42,7 +48,9 @@ public class AlertServiceImpl implements AlertService {
         AlertQuery alertQuery = createQuery(alertFilter);
         Page<presidio.output.domain.records.Alert> alerts = elasticAlertService.find(alertQuery);
 
-        alerts.forEach(alert -> result.add(createResult(alert)));
+        if (alerts.hasNext()) {
+            alerts.forEach(alert -> result.add(createResult(alert)));
+        }
         return result;
     }
 

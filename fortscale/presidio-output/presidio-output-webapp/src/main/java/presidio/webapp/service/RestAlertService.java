@@ -5,7 +5,7 @@ import presidio.webapp.filter.AlertFilter;
 
 import java.util.List;
 
-public interface AlertService {
+public interface RestAlertService {
 
     Alert getAlertById(String id);
     List<Alert> getAlerts(AlertFilter alertFilter);
