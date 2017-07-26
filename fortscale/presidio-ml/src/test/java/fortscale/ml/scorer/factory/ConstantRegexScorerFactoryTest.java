@@ -7,6 +7,7 @@ import fortscale.ml.scorer.config.ConstantRegexScorerConf;
 import fortscale.ml.scorer.params.ConstantRegexScorerParams;
 import fortscale.utils.factory.FactoryService;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = { ScorerFactoriesTestConfig.class})
+@Ignore
 public class ConstantRegexScorerFactoryTest {
     @MockBean
     private ModelConfService modelConfService;

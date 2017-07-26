@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 /**
  * Created by barak_schuster on 7/10/17.
  */
-public class AggregatedDataStoreMongoImpl implements AggrgatedDataStore {
+public class AggregatedDataStoreMongoImpl implements AggregatedDataStore {
     private static final Logger logger = Logger.getLogger(AggregatedDataStoreMongoImpl.class);
 
     private final MongoTemplate mongoTemplate;

@@ -9,6 +9,7 @@ import fortscale.ml.scorer.config.IScorerConf;
 import fortscale.ml.scorer.config.ScoreMapperConf;
 import fortscale.utils.factory.FactoryService;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -22,6 +23,7 @@ import java.util.HashMap;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { ScorerFactoriesTestConfig.class})
+@Ignore
 public class ScoreMapperFactoryTest {
     @MockBean
     private ModelConfService modelConfService;

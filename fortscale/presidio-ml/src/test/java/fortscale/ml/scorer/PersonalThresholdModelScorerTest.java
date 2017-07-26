@@ -10,6 +10,7 @@ import fortscale.ml.scorer.record.TestAdeRecord;
 import fortscale.utils.factory.FactoryService;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -170,6 +171,7 @@ public class PersonalThresholdModelScorerTest {
     }
 
     @Test
+    @Ignore
     public void shouldDelegateToBaseScorerUsingCalibrationInModel() throws Exception {
         PersonalThresholdModel personalThresholdModel = new PersonalThresholdModel(100, 1000, 0.9);
         String featureScoreName = "calibrated score";
@@ -187,6 +189,7 @@ public class PersonalThresholdModelScorerTest {
     }
 
     @Test
+    @Ignore
     public void shouldDelegateToBaseScorerUsingZeroCalibrationIfModelIsNull() throws Exception {
         String featureScoreName = "calibrated score";
         double score = 0.95;
