@@ -5,9 +5,11 @@ import fortscale.domain.core.AbstractAuditableDocument;
 import fortscale.utils.pagination.PageIterator;
 import fortscale.utils.time.TimeRange;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import presidio.ade.domain.store.smart.SmartDataStore;
 import presidio.ade.domain.store.smart.SmartPageIterator;
+import presidio.output.domain.services.AlertPersistencyService;
 import presidio.output.processor.services.alert.AlertServiceImpl;
 
 import java.time.Instant;
@@ -17,10 +19,13 @@ import java.time.Instant;
  */
 public class AlertServiceTest {
 
-    private AlertServiceImpl alertService = new AlertServiceImpl();
+    @MockBean
+    private AlertPersistencyService alertPersistencyService;
 
     @MockBean
     private SmartDataStore smartDataStore;
+
+    private AlertServiceImpl alertService = new AlertServiceImpl(alertPersistencyService);
 
     @Test
     public void alertServiceTest() {

@@ -25,11 +25,12 @@ public class SmartPageIterator<U extends EntityEvent> implements PageIterator<U>
 
     @Override
     public boolean hasNext() {
-        return false;
+        return true;
     }
 
     @Override
     public List<U> next() {
-        return (List<U>) smartDataStore.readSmarts(timeRange, 0);
+        //TODO- this should be removed from here..doing it ugly for now...
+        return (List<U>) smartDataStore.readSmarts(timeRange, smartScoreThreshold);
     }
 }
