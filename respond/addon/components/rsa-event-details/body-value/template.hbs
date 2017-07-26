@@ -3,9 +3,7 @@
 {{else if (eq fullPath 'type')}}
   {{t (concat 'respond.eventDetails.type.' value)}}
 {{else if (eq fullPath 'newdomain.age')}}
-  {{#with valueAsHours as |hours|}}
-    {{hours}} {{t 'respond.eventDetails.periodValue.hours'}}
-  {{/with}}
+  {{valueAsHours}} {{t 'respond.eventDetails.periodValue.hours'}}
 {{else if (eq key 'period')}}
   {{#with valueAsPeriod as |period|}}
     {{#with period.hours as |hours|}}
