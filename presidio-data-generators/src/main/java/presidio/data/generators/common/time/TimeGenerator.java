@@ -81,7 +81,7 @@ public class TimeGenerator implements ITimeGenerator {
 
     @Override
     public Instant getNext() throws GeneratorException {
-        if (!hasNext()) throw new GeneratorException ("generator_31 Exception occurred: End of the LocalTime interval is reached - no more data.");
+        if (!hasNext()) throw new GeneratorException ("Time Generator Exception occurred: End of the LocalTime interval is reached - no more data.");
         return eventTimes.get(timeIndex++);
     }
 

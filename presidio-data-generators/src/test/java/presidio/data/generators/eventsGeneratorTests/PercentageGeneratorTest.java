@@ -3,6 +3,7 @@ package presidio.data.generators.eventsGeneratorTests;
 import org.junit.Assert;
 import org.junit.Test;
 import presidio.data.generators.common.GeneratorException;
+import presidio.data.generators.common.precentage.BooleanNullsPercentageGenerator;
 import presidio.data.generators.common.precentage.BooleanPercentageGenerator;
 
 public class PercentageGeneratorTest {
@@ -37,5 +38,14 @@ public class PercentageGeneratorTest {
         }
         long percentageActual = Math.round((trueCount/eventsRequired)*100);
         Assert.assertEquals(percentageRequired, percentageActual );
+    }
+
+    @Test
+    public void BooleanNullValueGenerationTest(){
+        BooleanNullsPercentageGenerator generator = new BooleanNullsPercentageGenerator(50);
+        int nullsCount = 0;
+        for (int i = 0; i<100; i++) if (generator.getNext() == null) nullsCount++;
+
+        Assert.assertEquals(50, nullsCount);
     }
 }

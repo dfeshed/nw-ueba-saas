@@ -1,6 +1,7 @@
 package presidio.data.generators.machine;
 
 import presidio.data.domain.MachineEntity;
+import presidio.data.generators.common.AbstractCyclicValuesGenerator;
 import presidio.data.generators.common.FixedIPsGenerator;
 import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.common.precentage.BooleanPercentageGenerator;
@@ -9,7 +10,7 @@ public class RemoteMachinePercentageGenerator implements IMachineGenerator {
 
     private HostnameCustomListGenerator hostGenerator;
     private FixedIPsGenerator simpleIPGenerator;
-    private BooleanPercentageGenerator remoteMachineGenerator;
+    private AbstractCyclicValuesGenerator<Boolean> remoteMachineGenerator;
 
     public RemoteMachinePercentageGenerator() throws GeneratorException {
         hostGenerator = new HostnameCustomListGenerator(new String[] {"host_1", "host_2", "host_3"});
@@ -43,11 +44,11 @@ public class RemoteMachinePercentageGenerator implements IMachineGenerator {
         this.simpleIPGenerator = simpleIPGenerator;
     }
 
-    public BooleanPercentageGenerator getRemoteMachineGenerator() {
+    public AbstractCyclicValuesGenerator<Boolean> getRemoteMachineGenerator() {
         return remoteMachineGenerator;
     }
 
-    public void setRemoteMachineGenerator(BooleanPercentageGenerator remoteMachineGenerator) {
+    public void setRemoteMachineGenerator(AbstractCyclicValuesGenerator<Boolean> remoteMachineGenerator) {
         this.remoteMachineGenerator = remoteMachineGenerator;
     }
 }
