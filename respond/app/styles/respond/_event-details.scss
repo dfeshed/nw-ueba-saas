@@ -1,4 +1,13 @@
 .rsa-event-details {
+  &-header {
+    .title {
+      @include rsa-font(header, large);
+    }
+    .subtitle {
+      padding: rsa-whitespace(less) 0;
+    }
+  }
+
   &-body {
 
     > .rsa-property-tree {

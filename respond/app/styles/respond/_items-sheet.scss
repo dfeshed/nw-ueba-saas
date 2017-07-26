@@ -24,6 +24,13 @@
   }
 
   &__details-view {
+
+    &-header {
+      nav {
+        margin-top: rsa-whitespace();
+      }
+    }
+
     .rsa-items-sheet__scroller {
       overflow: auto;
     }

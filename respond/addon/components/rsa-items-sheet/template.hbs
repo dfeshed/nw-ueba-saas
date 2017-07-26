@@ -8,29 +8,30 @@
       <vbox class="rsa-items-sheet__details-view">
         {{#with resolvedSelectedItem as |item|}}
           <box fit class="rsa-items-sheet__details-view-header">
-            <h2>
-              {{yield (hash
-                detailsHeader=(component detailsHeaderComponentClass model=item)
-              )}}
-            </h2>
+            {{yield (hash
+              detailsHeader=(component detailsHeaderComponentClass model=item)
+            )}}
             {{#if isNavEnabled}}
               <nav>
-                <span>{{selectedOrdinal}} of {{items.length}}</span>
+                {{#rsa-form-button
+                  defaultAction=(action "backToTable")}}
+                  {{t 'respond.eventDetails.backToTable'}}
+                {{/rsa-form-button}}
                 {{#rsa-form-button
                   isIconOnly=true
                   isDisabled=(not isPreviousEnabled)
                   defaultAction=(action "previous")
                 }}
-                  {{rsa-icon name="arrow-left-1" size="small"}}
+                  {{rsa-icon name="arrow-left-12" size="small"}}
                 {{/rsa-form-button}}
+                <span>{{selectedOrdinal}} of {{items.length}}</span>
                 {{#rsa-form-button
                   isIconOnly=true
                   isDisabled=(not isNextEnabled)
                   defaultAction=(action "next")
                 }}
-                  {{rsa-icon name="arrow-right-1" size="small"}}
+                  {{rsa-icon name="arrow-right-12" size="small"}}
                 {{/rsa-form-button}}
-                <span {{action "backToTable"}}>Back to List</span>
               </nav>
             {{/if}}
           </box>

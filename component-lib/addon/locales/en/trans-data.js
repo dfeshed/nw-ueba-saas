@@ -809,6 +809,7 @@ export default {
         'On Demand': 'On Demand',
         Resubmit: 'Resubmit'
       },
+      backToTable: 'Back To Table',
       labels: {
         timestamp: 'Timestamp',
         type: 'Type',

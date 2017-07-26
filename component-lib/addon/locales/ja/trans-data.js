@@ -809,6 +809,7 @@ export default {
         'On Demand': 'ja_On Demand',
         Resubmit: 'ja_Resubmit'
       },
+      backToTable: 'ja_Back To Table',
       labels: {
         timestamp: 'ja_Timestamp',
         type: 'ja_Type',
