@@ -4,7 +4,7 @@ public class MachineEntity {
     private String name;
     private String normalized_name;
     private String ip_address;
-    private boolean remote;
+    private Boolean remote;
 
     public MachineEntity(String name, String ip_address) {
         this.name = name;
@@ -12,7 +12,7 @@ public class MachineEntity {
         this.ip_address = ip_address;
     }
 
-    public MachineEntity(String name, String ip_address, boolean remote) {
+    public MachineEntity(String name, String ip_address, Boolean remote) {
         this.name = name;
         this.normalized_name = name;
         this.ip_address = ip_address;
@@ -43,7 +43,11 @@ public class MachineEntity {
         return normalized_name;
     }
 
-    public boolean isRemote() {
+    public Boolean isRemote() {
         return remote;
+    }
+
+    public void setRemote(Boolean remote) {
+        this.remote = remote;
     }
 }
