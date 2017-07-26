@@ -3,6 +3,7 @@ package presidio.data.generators.event.authentication;
 import presidio.data.generators.FixedDataSourceGenerator;
 import presidio.data.generators.authenticationop.AuthenticationTypeCyclicGenerator;
 import presidio.data.generators.common.GeneratorException;
+import presidio.data.generators.common.IStringGenerator;
 import presidio.data.generators.common.RandomStringGenerator;
 import presidio.data.generators.common.precentage.BooleanPercentageGenerator;
 import presidio.data.generators.common.precentage.OperationResultPercentageGenerator;
@@ -33,7 +34,7 @@ public class AuthenticationEventsGenerator implements IEventGenerator {
     // TODO: implement.
     // Generates Result object, fields: result (Success/Failure strings) and resultCode (TBD)
     // private ResultPercentageGenerator
-    private OperationResultPercentageGenerator resultGenerator;
+    private IStringGenerator resultGenerator;
     private RandomStringGenerator resultCodeGenerator;
 
     public AuthenticationEventsGenerator() throws GeneratorException {
@@ -136,11 +137,11 @@ public class AuthenticationEventsGenerator implements IEventGenerator {
         this.dstMachineGenerator = dstMachineGenerator;
     }
 
-    public OperationResultPercentageGenerator getResultGenerator() {
+    public IStringGenerator getResultGenerator() {
         return resultGenerator;
     }
 
-    public void setResultGenerator(OperationResultPercentageGenerator resultGenerator) {
+    public void setResultGenerator(IStringGenerator resultGenerator) {
         this.resultGenerator = resultGenerator;
     }
 
