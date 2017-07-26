@@ -82,20 +82,22 @@ export default Component.extend(csrfToken, {
       this.logout();
     },
     setLocale(selection) {
-      this.set('i18n.locale', selection);
-      this.get('request').promiseRequest({
-        method: 'setPreference',
-        modelName: 'preferences',
-        query: {
-          data: {
-            userLocale: selection.replace(/en-us/, 'en_US')
+      if (!isEmpty(selection)) {
+        this.set('i18n.locale', selection);
+        this.get('request').promiseRequest({
+          method: 'setPreference',
+          modelName: 'preferences',
+          query: {
+            data: {
+              userLocale: selection.replace(/en-us/, 'en_US')
+            }
           }
-        }
-      }).then(() => {
-        localStorage.setItem('rsa-i18n-default-locale', selection);
-      }).catch(() => {
-        Logger.error('Error updating locale');
-      });
+        }).then(() => {
+          localStorage.setItem('rsa-i18n-default-locale', selection);
+        }).catch(() => {
+          Logger.error('Error updating locale');
+        });
+      }
     },
 
     setDefaultLandingPage(selection) {
