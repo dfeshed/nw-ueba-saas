@@ -2,9 +2,9 @@ $entityUserColor: $magenta;
 $entityHostColor: $violet;
 $entityIPColor: $green;
 $entityDomainColor: $yellow;
-$entityMACColor: $cyan;
-$entityFileNameColor: $base0;
-$entityFileHashColor: $base0;
+$entityMACColor: $respondBackgroundColor;
+$entityFileNameColor: $cyan;
+$entityFileHashColor: $cyan;
 
 .rsa-incident-entities {
   rect.grid {

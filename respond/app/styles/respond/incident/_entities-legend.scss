@@ -51,7 +51,7 @@
     }
     &.mac-address {
       label {
-        color: $entityMACColor;
+        color: rsa-color(gray); // $entityMACColor is too dark to be legible
       }
     }
     &.file-name {
