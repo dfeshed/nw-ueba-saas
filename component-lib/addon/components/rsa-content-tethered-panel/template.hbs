@@ -1,7 +1,7 @@
 {{#if isDisplayed}}
   <span>
     {{#ember-tether target=target attachment=attachment}}
-      <div class="panel-content {{panelClass}} {{position}} {{style}} {{elementId}} {{if isPopover 'is-popover'}}" style={{styleModifiers}}>
+      <div class="panel-content {{panelClass}} {{_position}} {{style}} {{elementId}} {{if isPopover 'is-popover'}}" style={{styleModifiers}}>
         {{#if displayCloseButton}}
           <span class="close-icon" {{action 'hidepanel'}}>
             {{rsa-icon name="close" size="small"}}

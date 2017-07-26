@@ -33,6 +33,9 @@ export default Component.extend({
   target: null,
   panelClass: null,
 
+  // _position is a copy of the originally configured position and potentially modified to avoid window collision (cf forceWithinWindow)
+  _position: computed.oneWay('position'),
+
   displayEventName: computed('panelId', function() {
     return `rsa-content-tethered-panel-display-${this.get('panelId')}`;
   }),
@@ -45,9 +48,9 @@ export default Component.extend({
     return `rsa-content-tethered-panel-toggle-${this.get('panelId')}`;
   }),
 
-  attachment: computed('position', function() {
+  attachment: computed('_position', function() {
     let position = null;
-    switch (this.get('position')) {
+    switch (this.get('_position')) {
       case 'top':
         position = 'bottom center';
         break;
@@ -125,7 +128,8 @@ export default Component.extend({
   }),
 
   forceWithinWindow() {
-    let position = this.get('position');
+    let position = this.get('_position');
+
     const width = $(window).width();
     const height = $(window).height();
     const panel = $('.ember-tether .panel-content');
@@ -176,7 +180,7 @@ export default Component.extend({
       position = reposition('right', 'left');
     }
 
-    this.set('position', position);
+    this.set('_position', position);
   },
 
   horizontalModifier: computed('anchorWidth', 'anchorHeight', 'position', function() {
@@ -261,6 +265,9 @@ export default Component.extend({
   },
 
   _didDisplay(anchorHeight, anchorWidth, elId, model) {
+    // always reset _position to the original position config on display of the panel to avoid reusing the last repositioning
+    // from forceWithinWindow()
+    this.set('_position', this.get('position'));
     run.next(() => {
       if (!this.get('isDestroyed') && !this.get('isDestroying')) {
         if ($(this.get('targetClass')).length > 1) {
@@ -305,6 +312,7 @@ export default Component.extend({
   },
 
   _didToggle(height, width, elId, model) {
+    this.set('_position', this.get('position'));
     run.next(() => {
       if (!this.get('isDestroyed') && !this.get('isDestroying')) {
         if ($(this.get('targetClass')).length > 1) {
