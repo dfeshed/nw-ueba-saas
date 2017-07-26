@@ -1,6 +1,7 @@
 package presidio.data.generators.event.dlpfile;
 
 import presidio.data.generators.common.GeneratorException;
+import presidio.data.generators.common.IStringGenerator;
 import presidio.data.generators.common.precentage.BooleanPercentageGenerator;
 import presidio.data.generators.common.time.TimeGenerator;
 import presidio.data.domain.MachineEntity;
@@ -28,7 +29,7 @@ public class DLPFileEventsGenerator implements IEventGenerator {
     private IMachineGenerator sourceMachineGenerator;
     private IDLPFileOperationGenerator fileOperationGenerator; // Handles: source_path, destination_path, source_file_name, destination_file_name, file_size
 
-    private EntityEventIDFixedPrefixGenerator eventIDGen;
+    private IStringGenerator eventIDGen;
     private ExecutingApplicationCyclicGenerator executingApplicationGenerator;
 
     private DriveTypePercentageGenerator sourceDriveTypeGenerator;
@@ -70,7 +71,7 @@ public class DLPFileEventsGenerator implements IEventGenerator {
             DLPFileEvent ev = new DLPFileEvent(currentTime, user.getUsername());
 
             ev.setNormalizedUsername(user.getUserId());
-            ev.setEventId(getEventIDGen().getNext());
+            ev.setEventId((String)getEventIDGen().getNext());
             ev.setFirstName(user.getFirstName());
             ev.setLastName(user.getLastName());
 
@@ -130,7 +131,7 @@ public class DLPFileEventsGenerator implements IEventGenerator {
         return fileOperationGenerator;
     }
 
-    public EntityEventIDFixedPrefixGenerator getEventIDGen() {
+    public IStringGenerator getEventIDGen() {
         return eventIDGen;
     }
 
@@ -173,7 +174,7 @@ public class DLPFileEventsGenerator implements IEventGenerator {
         this.destinationDriveTypeGenerator = driveTypeGenerator;
     }
 
-    public void setEventIDGenerator(EntityEventIDFixedPrefixGenerator eventIDGen) throws GeneratorException {
+    public void setEventIDGenerator(IStringGenerator eventIDGen) throws GeneratorException {
         this.eventIDGen = eventIDGen;
     }
 

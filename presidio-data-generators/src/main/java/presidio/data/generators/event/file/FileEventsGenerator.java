@@ -3,6 +3,7 @@ package presidio.data.generators.event.file;
 import presidio.data.domain.event.file.FileEvent;
 import presidio.data.generators.FixedDataSourceGenerator;
 import presidio.data.generators.common.GeneratorException;
+import presidio.data.generators.common.IStringGenerator;
 import presidio.data.generators.common.time.TimeGenerator;
 import presidio.data.generators.event.EntityEventIDFixedPrefixGenerator;
 import presidio.data.generators.event.IEventGenerator;
@@ -18,7 +19,7 @@ public class FileEventsGenerator implements IEventGenerator {
     // DEFINE ALL ATTRIBUTE GENERATORS
     private TimeGenerator timeGenerator;
 
-    private EntityEventIDFixedPrefixGenerator eventIdGenerator;   // Need this? Can't see in Schemas
+    private IStringGenerator eventIdGenerator;   // Need this? Can't see in Schemas
 
     private IUserGenerator userGenerator;
     private IFileOperationGenerator fileOperationGenerator; // Handles: source file & folder, destination file & folder, file_size, operation type, operation result
@@ -40,7 +41,7 @@ public class FileEventsGenerator implements IEventGenerator {
 
         // fill list of events
         while (getTimeGenerator().hasNext()) {
-            FileEvent ev = new FileEvent(getEventIdGenerator().getNext(),
+            FileEvent ev = new FileEvent((String)getEventIdGenerator().getNext(),
                     getTimeGenerator().getNext(),
                     getUserGenerator().getNext(),
                     getFileOperationGenerator().getNext(),
@@ -58,11 +59,11 @@ public class FileEventsGenerator implements IEventGenerator {
         this.timeGenerator = timeGenerator;
     }
 
-    public EntityEventIDFixedPrefixGenerator getEventIdGenerator() {
+    public IStringGenerator getEventIdGenerator() {
         return eventIdGenerator;
     }
 
-    public void setEventIdGenerator(EntityEventIDFixedPrefixGenerator eventIdGenerator) {
+    public void setEventIdGenerator(IStringGenerator eventIdGenerator) {
         this.eventIdGenerator = eventIdGenerator;
     }
 

@@ -3,6 +3,7 @@ package presidio.data.generators.event.activedirectory;
 import presidio.data.generators.FixedDataSourceGenerator;
 import presidio.data.generators.activedirectoryop.ActiveDirectoryOperationGenerator;
 import presidio.data.generators.common.GeneratorException;
+import presidio.data.generators.common.IStringGenerator;
 import presidio.data.generators.common.time.TimeGenerator;
 import presidio.data.domain.event.activedirectory.ActiveDirectoryEvent;
 import presidio.data.generators.event.EntityEventIDFixedPrefixGenerator;
@@ -18,7 +19,7 @@ public class ActiveDirectoryEventsGenerator implements IEventGenerator {
     // DEFINE ALL ATTRIBUTE GENERATORS
     private TimeGenerator timeGenerator;
 
-    private EntityEventIDFixedPrefixGenerator eventIdGenerator;   // Need this? Can't see in Schemas
+    private IStringGenerator eventIdGenerator;   // Need this? Can't see in Schemas
 
     private IUserGenerator userGenerator;
     private ActiveDirectoryOperationGenerator activeDirOperationGenerator;
@@ -41,7 +42,7 @@ public class ActiveDirectoryEventsGenerator implements IEventGenerator {
         while (getTimeGenerator().hasNext()) {
             Instant eventTime = getTimeGenerator().getNext();
             ActiveDirectoryEvent ev = new ActiveDirectoryEvent(eventTime,
-                getEventIdGenerator().getNext(),
+                (String) getEventIdGenerator().getNext(),
                 getActiveDirOperationGenerator().getNext(),
                 getUserGenerator().getNext(),
                 (String) getDataSourceGenerator().getNext());
@@ -59,11 +60,11 @@ public class ActiveDirectoryEventsGenerator implements IEventGenerator {
         this.timeGenerator = timeGenerator;
     }
 
-    public EntityEventIDFixedPrefixGenerator getEventIdGenerator() {
+    public IStringGenerator getEventIdGenerator() {
         return eventIdGenerator;
     }
 
-    public void setEventIdGenerator(EntityEventIDFixedPrefixGenerator eventIdGenerator) {
+    public void setEventIdGenerator(IStringGenerator eventIdGenerator) {
         this.eventIdGenerator = eventIdGenerator;
     }
 

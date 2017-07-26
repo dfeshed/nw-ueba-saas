@@ -26,7 +26,7 @@ public class AuthenticationEventsGenerator implements IEventGenerator {
     private FixedDataSourceGenerator dataSourceGenerator;
     private AuthenticationTypeCyclicGenerator authenticationTypeGenerator;
 
-    private EntityEventIDFixedPrefixGenerator eventIDGenerator;
+    private IStringGenerator eventIDGenerator;
     private RandomUserGenerator userGenerator;
     private SimpleMachineGenerator srcMachineGenerator;
     private RemoteMachinePercentageGenerator dstMachineGenerator;
@@ -69,7 +69,7 @@ public class AuthenticationEventsGenerator implements IEventGenerator {
                 eventTime,
                 (String) getDataSourceGenerator().getNext(),
                 (String) getAuthenticationTypeGenerator().getNext(),
-                getEventIDGenerator().getNext(),
+                (String) getEventIDGenerator().getNext(),
                 getDstMachineGenerator().getNext(),
                 getSrcMachineGenerator().getNext(),
                 getUserGenerator().getNext(),
@@ -105,11 +105,11 @@ public class AuthenticationEventsGenerator implements IEventGenerator {
         this.authenticationTypeGenerator = authenticationTypeGenerator;
     }
 
-    public EntityEventIDFixedPrefixGenerator getEventIDGenerator() {
+    public IStringGenerator getEventIDGenerator() {
         return eventIDGenerator;
     }
 
-    public void setEventIDGenerator(EntityEventIDFixedPrefixGenerator eventIDGenerator) {
+    public void setEventIDGenerator(IStringGenerator eventIDGenerator) {
         this.eventIDGenerator = eventIDGenerator;
     }
 
