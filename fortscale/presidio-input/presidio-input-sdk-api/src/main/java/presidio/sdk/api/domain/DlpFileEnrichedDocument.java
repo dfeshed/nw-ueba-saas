@@ -1,11 +1,12 @@
 package presidio.sdk.api.domain;
 
+import java.time.Instant;
+
 //todo: consider composition over inheritance
 public class DlpFileEnrichedDocument extends DlpFileDataDocument {
 
     private final String normalizedUsername;
     private final String normalizedSrcMachine;
-
 
     public DlpFileEnrichedDocument(DlpFileDataDocument record, String normalizedUsername, String normalizedSrcMachine) {
         dateTime = record.getDateTime();
@@ -28,6 +29,18 @@ public class DlpFileEnrichedDocument extends DlpFileDataDocument {
         sourceFileName = record.getSourceFileName();
         sourceDriveType = record.getSourceDriveType();
         destinationDriveType = record.getDestinationDriveType();
+        this.normalizedUsername = normalizedUsername;
+        this.normalizedSrcMachine = normalizedSrcMachine;
+    }
+
+    public DlpFileEnrichedDocument(Instant dateTime, long dateTimeUnix, String executingApplication, String hostname,
+                                   String firstName, String lastName, String username, String malwareScanResult,
+                                   String eventId, String sourceIp, boolean wasBlocked, boolean wasClassified,
+                                   String destinationPath, String destinationFileName, Double fileSize,
+                                   String sourcePath, String sourceFileName, String sourceDriveType,
+                                   String destinationDriveType, String eventType, String normalizedUsername,
+                                   String normalizedSrcMachine) {
+        super(dateTime, dateTimeUnix, executingApplication, hostname, firstName, lastName, username, malwareScanResult, eventId, sourceIp, wasBlocked, wasClassified, destinationPath, destinationFileName, fileSize, sourcePath, sourceFileName, sourceDriveType, destinationDriveType, eventType);
         this.normalizedUsername = normalizedUsername;
         this.normalizedSrcMachine = normalizedSrcMachine;
     }
