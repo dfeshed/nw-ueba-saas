@@ -33,6 +33,13 @@ limitations under the License.
     <name>Apache Flume</name>
 
     <properties>
+        <!--RPM VERSION-->
+
+        <rpm.version.major>1</rpm.version.major>
+        <rpm.version.minor>0</rpm.version.minor>
+        <rpm.version.build>0</rpm.version.build>
+        <rpm.version>${rpm.version.major}.${rpm.version.minor}</rpm.version>
+
         <!-- Set default encoding to UTF-8 to remove maven complaints -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
@@ -55,6 +62,7 @@ limitations under the License.
         <hive.version>1.0.0</hive.version>
         <xalan.verion>2.7.1</xalan.verion>
         <xerces.version>2.9.1</xerces.version>
+        <rpm-maven-plugin.version>2.1.5</rpm-maven-plugin.version>
     </properties>
 
   <modules>
@@ -73,6 +81,7 @@ limitations under the License.
     <module>flume-shared</module>
     <!--      fortscale        -->
     <module>fortscale-flume</module>
+      <module>flume-presidio</module>
   </modules>
 
     <profiles>
@@ -331,16 +340,6 @@ limitations under the License.
         </profile>
 
         <profile>
-            <id>compileThriftLegacy</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-            </activation>
-            <properties>
-                <thrift.executable>${env.THRIFT_HOME}/bin/thrift</thrift.executable>
-            </properties>
-        </profile>
-
-        <profile>
             <id>not-windows</id>
             <activation>
                 <os>
@@ -358,7 +357,7 @@ limitations under the License.
             </activation>
         </profile>
 
-        <profile>
+      <!--  <profile>
             <id>sign</id>
             <build>
                 <plugins>
@@ -376,7 +375,7 @@ limitations under the License.
                     </plugin>
                 </plugins>
             </build>
-        </profile>
+        </profile> -->
 
         <profile>
             <id>site</id>
@@ -432,6 +431,12 @@ limitations under the License.
 
         </profile>
 
+        <profile>
+        <id>rpm</id>
+        <modules>
+            <module>flume-presidio</module>
+        </modules>
+        </profile>
     </profiles>
 
     <inceptionYear>2009</inceptionYear>
