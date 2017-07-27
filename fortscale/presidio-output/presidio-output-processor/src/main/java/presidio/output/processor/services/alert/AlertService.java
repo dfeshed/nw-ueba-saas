@@ -9,8 +9,8 @@ import fortscale.utils.pagination.PageIterator;
 public interface AlertService {
 
     /**
-     *
-     * @param smarts
+     * Convert the received smarts into alerts and persist them
+     * @param smarts- paged smarts list
      */
     void generateAlerts(PageIterator<EntityEvent> smarts);
 }
