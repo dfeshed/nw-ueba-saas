@@ -486,7 +486,7 @@ export default {
     },
     entities: {
       incidents: 'ja_Incidents',
-      remediationTasks: 'ja_Remediation Tasks',
+      remediationTasks: 'ja_Tasks',
       alerts: 'ja_Alerts',
       actionMessages: {
         updateSuccess: 'ja_Your change was successful',
@@ -525,12 +525,12 @@ export default {
       addNewTask: 'ja_Add New Task',
       noTasks: 'ja_There are no tasks for {{incidentId}}',
       openFor: 'ja_Opened',
-      newTaskFor: 'ja_New Remediation Task for',
+      newTaskFor: 'ja_New Task for',
       delete: 'ja_Delete Task',
-      noAccess: 'ja_You do not have permissions to view remediation tasks',
+      noAccess: 'ja_You do not have permissions to view tasks',
       actions: {
         actionMessages: {
-          deleteWarning: 'ja_Deleting a Remediation Task from NetWitness will not delete it from other systems. Please note that it will be your responsibility ' +
+          deleteWarning: 'ja_Deleting a Task from NetWitness will not delete it from other systems. Please note that it will be your responsibility ' +
           'to delete the task from any other applicable systems.'
         }
       },
@@ -589,9 +589,9 @@ export default {
         changeStatus: 'ja_Change Status',
         addJournalEntry: 'ja_Add Journal Entry',
         actionMessages: {
-          deleteWarning: 'ja_Warning: You are about to delete one or more incidents which may have remediation tasks and which may have been escalated. ' +
+          deleteWarning: 'ja_Warning: You are about to delete one or more incidents which may have tasks and which may have been escalated. ' +
           'Deleting an incident from NetWitness will not delete it from other systems. Please note that it will be your responsibility ' +
-          'to delete the incident and its remediation tasks from any other applicable systems.',
+          'to delete the incident and its tasks from any other applicable systems.',
           addJournalEntrySuccess: 'ja_You added a journal entry to incident {{incidentId}}',
           addJournalEntryFailure: 'ja_There was a problem adding a journal entry to incident {{incidentId}}',
           incidentCreated: 'ja_You successfully created the incident INC-1234 from the selected alerts.',
@@ -702,6 +702,7 @@ export default {
         graph: 'ja_View: Graph',
         datasheet: 'ja_View: Datasheet'
       },
+      journalTasksRelated: 'ja_Journal, Tasks, and Related',
       search: {
         tab: 'ja_Related',
         title: 'ja_Related Indicators',
@@ -1002,8 +1003,8 @@ export default {
       NEW: 'ja_New',
       ASSIGNED: 'ja_Assigned',
       IN_PROGRESS: 'ja_In Progress',
-      REMEDIATION_REQUESTED: 'ja_Remediation Requested',
-      REMEDIATION_COMPLETE: 'ja_Remediation Complete',
+      REMEDIATION_REQUESTED: 'ja_Task Requested',
+      REMEDIATION_COMPLETE: 'ja_Task Complete',
       CLOSED: 'ja_Closed',
       CLOSED_FALSE_POSITIVE: 'ja_Closed - False Positive',
       REMEDIATED: 'ja_Remediated',

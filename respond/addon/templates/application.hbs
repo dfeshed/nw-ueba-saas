@@ -11,7 +11,7 @@
       {{/rsa-nav-tab}}
     {{/if}}
     {{#if accessControl.hasRespondRemediationAccess}}
-      {{#rsa-nav-tab  align='left' isActive=(eq routePath 'remediation') click=(action 'navigateTo' 'remediation')}}
+      {{#rsa-nav-tab  align='left' isActive=(eq routePath 'tasks') click=(action 'navigateTo' 'tasks')}}
         <div class="label">{{t "respond.entities.remediationTasks"}}</div>
       {{/rsa-nav-tab}}
     {{/if}}

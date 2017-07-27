@@ -486,7 +486,7 @@ export default {
     },
     entities: {
       incidents: 'Incidents',
-      remediationTasks: 'Remediation Tasks',
+      remediationTasks: 'Tasks',
       alerts: 'Alerts',
       actionMessages: {
         updateSuccess: 'Your change was successful',
@@ -525,12 +525,12 @@ export default {
       addNewTask: 'Add New Task',
       noTasks: 'There are no tasks for {{incidentId}}',
       openFor: 'Opened',
-      newTaskFor: 'New Remediation Task for',
+      newTaskFor: 'New Task for',
       delete: 'Delete Task',
-      noAccess: 'You do not have permissions to view remediation tasks',
+      noAccess: 'You do not have permissions to view tasks',
       actions: {
         actionMessages: {
-          deleteWarning: 'Deleting a Remediation Task from NetWitness will not delete it from other systems. Please note that it will be your responsibility ' +
+          deleteWarning: 'Deleting a Task from NetWitness will not delete it from other systems. Please note that it will be your responsibility ' +
           'to delete the task from any other applicable systems.'
         }
       },
@@ -589,9 +589,9 @@ export default {
         changeStatus: 'Change Status',
         addJournalEntry: 'Add Journal Entry',
         actionMessages: {
-          deleteWarning: 'Warning: You are about to delete one or more incidents which may have remediation tasks and which may have been escalated. ' +
+          deleteWarning: 'Warning: You are about to delete one or more incidents which may have tasks and which may have been escalated. ' +
           'Deleting an incident from NetWitness will not delete it from other systems. Please note that it will be your responsibility ' +
-          'to delete the incident and its remediation tasks from any other applicable systems.',
+          'to delete the incident and its tasks from any other applicable systems.',
           addJournalEntrySuccess: 'You added a journal entry to incident {{incidentId}}',
           addJournalEntryFailure: 'There was a problem adding a journal entry to incident {{incidentId}}',
           incidentCreated: 'You successfully created the incident {{incidentId}} from the selected alerts.',
@@ -702,6 +702,7 @@ export default {
         graph: 'View: Graph',
         datasheet: 'View: Datasheet'
       },
+      journalTasksRelated: 'Journal, Tasks, and Related',
       search: {
         tab: 'Related',
         title: 'Related Indicators',
@@ -1002,8 +1003,8 @@ export default {
       NEW: 'New',
       ASSIGNED: 'Assigned',
       IN_PROGRESS: 'In Progress',
-      REMEDIATION_REQUESTED: 'Remediation Requested',
-      REMEDIATION_COMPLETE: 'Remediation Complete',
+      REMEDIATION_REQUESTED: 'Task Requested',
+      REMEDIATION_COMPLETE: 'Task Complete',
       CLOSED: 'Closed',
       CLOSED_FALSE_POSITIVE: 'Closed - False Positive',
       REMEDIATED: 'Remediated',

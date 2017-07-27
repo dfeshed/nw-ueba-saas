@@ -11,7 +11,7 @@ export default Route.extend({
     } else if (this.get('accessControl.hasRespondAlertsAccess')) {
       this.transitionTo('alerts');
     } else if (this.get('accessControl.hasRespondRemediationAccess')) {
-      this.transitionTo('remediation');
+      this.transitionTo('tasks');
     } else {
       this.transitionToExternal('protected');
     }
