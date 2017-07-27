@@ -35,8 +35,9 @@
     </span>
     <span
       class="rsa-tab text-only {{if (eq viewMode 'storyline') 'is-active' ''}}"
+      title="{{if isStorylineCutoff (t 'respond.incident.indicatorsCutoff' limit=storyPointCount expected=storyPointCountExpected)}}"
       {{action (action "setViewModeAction" "storyline")}}>
-      {{t 'respond.incident.indicators'}} {{#with storyPointCount as |count|}}({{count}}){{/with}}
+      {{t 'respond.incident.indicators'}} {{#with storyPointCount as |count|}}({{count}}{{if isStorylineCutoff '+'}}){{/with}}
     </span>
   </hbox>
   <box fill class="rsa-incident-inspector__body">

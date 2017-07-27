@@ -697,6 +697,7 @@ export default {
       backToIncidents: 'ja_Back To Incidents',
       overview: 'ja_Overview',
       indicators: 'ja_Indicators',
+      indicatorsCutoff: 'ja_Showing {{limit}} of {{expected}} indicators',
       events: 'ja_Events',
       view: {
         graph: 'ja_View: Graph',

@@ -1,5 +1,5 @@
 import connect from 'ember-redux/components/connect';
-import computed from 'ember-computed-decorators';
+import computed, { alias } from 'ember-computed-decorators';
 import { updateItem, setViewMode, resizeIncidentInspector } from 'respond/actions/creators/incidents-creators';
 import { storyPointCount, storyEventCount } from 'respond/selectors/storyline';
 import DragBehavior from 'respond/utils/behaviors/drag';
@@ -11,11 +11,12 @@ import $ from 'jquery';
 import service from 'ember-service/inject';
 
 const stateToComputed = (state) => {
-  const { respond: { dictionaries, users, incident: { id, info, infoStatus, viewMode, inspectorWidth } } } = state;
+  const { respond: { dictionaries, users, incident: { id, info, infoStatus, storylineStatus, viewMode, inspectorWidth } } } = state;
   return {
     incidentId: id,
     info,
     infoStatus,
+    storylineStatus,
     viewMode,
     width: inspectorWidth,
     storyPointCount: storyPointCount(state),
@@ -55,6 +56,7 @@ const IncidentInspector = Component.extend(Notifications, {
   incidentId: null,
   info: null,
   infoStatus: null,
+  storylineStatus: null,
   viewMode: null,
   width: null,
   isResizing: false,
@@ -71,6 +73,16 @@ const IncidentInspector = Component.extend(Notifications, {
   @computed('resolvedWidth')
   style(width) {
     return htmlSafe(`width: ${width}px;`);
+  },
+
+  @alias('info.alertCount')
+  storyPointCountExpected: null,
+
+  @computed('storylineStatus', 'infoStatus', 'storyPointCount', 'storyPointCountExpected')
+  isStorylineCutoff(storylineStatus, infoStatus, storyPointCount, storyPointCountExpected) {
+    return (storylineStatus === 'completed') &&
+      (infoStatus == 'completed') &&
+      (storyPointCount < storyPointCountExpected);
   },
 
   // Wire up a drag behavior on resizer DOM node to invoke the "resizeAction".
