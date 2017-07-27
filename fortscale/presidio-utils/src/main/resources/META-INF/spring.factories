@@ -1,3 +1,4 @@
 # Auto Configure
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-fortscale.utils.elasticsearch.ElasticsearchPresidioDataAutoConfiguration
+#org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+#presidio.elasticsearch.ElasticsearchPresidioDataAutoConfiguration
+
