@@ -2,11 +2,16 @@ package presidio.monitoring.spring;
 
 
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.annotation.Import;
 import presidio.monitoring.aspect.MonitoringAspects;
 import presidio.monitoring.aspect.metrics.CustomMetricEndpoint;
 import presidio.monitoring.aspect.metrics.PresidioCustomMetrics;
 import presidio.monitoring.aspect.metrics.PresidioDefaultMetrics;
+import presidio.monitoring.elastic.repositories.MetricRepository;
+import presidio.monitoring.elastic.services.MetricExportService;
+import presidio.monitoring.elastic.services.MetricExportServiceImpl;
 import presidio.monitoring.export.MetricsExporterElasticImpl;
 import presidio.monitoring.export.MetricsExporter;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,6 +29,7 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
         havingValue="true",
         matchIfMissing=false)
 @ComponentScan(basePackages = {"presidio.monitoring.aspect"})
+@Import(fortscale.utils.elasticsearch.config.ElasticsearchConfig.class)
 public class MonitoringConfiguration {
 
     @Bean
@@ -45,8 +51,15 @@ public class MonitoringConfiguration {
     @Bean
     public MonitoringAspects monitoringAspects(){return new MonitoringAspects(metricsEndpoint(),presidioCustomMetrics());}
 
+    @Autowired
+    public MetricRepository metricRepository;
+
+    @Bean
+    public MetricExportService metricExportService(){return new MetricExportServiceImpl(metricRepository);}
+
+
     @Bean
     public MetricsExporter fileMetricsExporter() {
-        return new MetricsExporterElasticImpl(metricsEndpoint(),processName);
+        return new MetricsExporterElasticImpl(metricsEndpoint(),processName,metricExportService());
     }
 }

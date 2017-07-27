@@ -6,10 +6,12 @@ import org.springframework.boot.actuate.metrics.Metric;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.core.annotation.AnnotationAwareOrderComparator;
 import org.springframework.util.Assert;
+import presidio.monitoring.elastic.records.PresidioMetric;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,13 +57,13 @@ public class CustomMetricEndpoint extends MetricsEndpoint {
         for (PublicMetrics publicMetric : metrics) {
             try {
                 if(publicMetric instanceof PresidioCustomMetrics){
-                    for (JsonObjectMetric<?> metric : ((PresidioCustomMetrics) publicMetric).applicationMetrics()) {
-                        result.put(metric.getName(), metric.getObject());
+                    for (PresidioMetric metric : ((PresidioCustomMetrics) publicMetric).applicationMetrics()) {
+                        result.put(metric.getName(), metric);
                     }
                 }
                 else {
                     for (Metric<?> metric : publicMetric.metrics()) {
-                        result.put(metric.getName(), metric.getValue());
+                        result.put(metric.getName(), new PresidioMetric(metric.getName(),metric.getValue(),new HashSet(),"long"));
                     }
                 }
             }

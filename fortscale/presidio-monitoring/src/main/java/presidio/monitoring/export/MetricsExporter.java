@@ -5,11 +5,14 @@ package presidio.monitoring.export;
 import fortscale.utils.logging.Logger;
 import org.json.JSONObject;
 import org.springframework.boot.actuate.endpoint.MetricsEndpoint;
+import presidio.monitoring.elastic.records.PresidioMetric;
 
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -21,7 +24,7 @@ public abstract class MetricsExporter implements AutoCloseable{
     private final Logger logger = Logger.getLogger(MetricsExporter.class);
 
      private MetricsEndpoint metricsEndpoint;
-     private Map<String,Object> customMetrics;
+     private Map<String,PresidioMetric> customMetrics;
      private Set<String> defaultInfraMetrics;
      private Set<String> tags;
 
@@ -36,21 +39,20 @@ public abstract class MetricsExporter implements AutoCloseable{
         tags.add(applicationName);
     }
 
-     Map<String,Object> filterRepitMetrics(){
-        Map<String, Object> metricsForExport=new HashMap<>();
+        List<PresidioMetric> filterRepitMetrics(){
+        List<PresidioMetric> metricsForExport=new ArrayList<PresidioMetric>(Arrays.asList());
         String metric;
-        Object value;
+        PresidioMetric value;
         Map<String, Object> map = metricsEndpoint.invoke();
         for (Map.Entry<String, Object> entry : map.entrySet()) {
             metric = entry.getKey();
-            value = entry.getValue();
+            value = (PresidioMetric)entry.getValue();
             if (!defaultInfraMetrics.contains(metric)) {
                 if (!customMetrics.containsKey(metric))
                     customMetrics.put(metric, value);
                 else {
-                    JSONObject obj1= (JSONObject) customMetrics.get(metric);
-                    JSONObject obj2= (JSONObject) value;
-                    if (!obj1.get("value").equals(obj2.get("value")))
+                    PresidioMetric presidioMetric=  customMetrics.get(metric);
+                    if (!presidioMetric.equals(value))
                         customMetrics.replace(metric, value);
                     else {
                         logger.info("****** Metric is not exported, name : {}  value: {}  ********* ",metric,value);
@@ -58,7 +60,7 @@ public abstract class MetricsExporter implements AutoCloseable{
                     }
                 }
             }
-            metricsForExport.put(metric,value);
+            metricsForExport.add(value);
         }
         return metricsForExport;
     }

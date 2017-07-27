@@ -3,6 +3,7 @@ package presidio.monitoring.aspect.metrics;
 import org.springframework.boot.actuate.endpoint.PublicMetrics;
 import org.springframework.boot.actuate.metrics.Metric;
 import org.springframework.stereotype.Component;
+import presidio.monitoring.elastic.records.PresidioMetric;
 
 import java.util.Collection;
 import java.util.LinkedHashSet;
@@ -11,29 +12,26 @@ import java.util.Set;
 @Component
 public class PresidioCustomMetrics implements PublicMetrics{
 
-    private Collection<Metric<?>> result;
-
-    private Collection<JsonObjectMetric<?>> applicationMetrics;
+    private Collection<PresidioMetric> applicationMetrics;
 
     public PresidioCustomMetrics(){
-        result = new LinkedHashSet<>();
         applicationMetrics = new LinkedHashSet<>();
     }
 
     public <T extends Number>void addMetric(String metricName,T metricValue,Set tags,String unit){
         if(applicationMetrics.contains(metricName)){
-            java.util.Iterator<JsonObjectMetric<?>> itr = applicationMetrics.iterator();
+            java.util.Iterator<PresidioMetric> itr = applicationMetrics.iterator();
             while(itr.hasNext()){
-                JsonObjectMetric<?> metric = itr.next();
+                PresidioMetric metric = itr.next();
                 if (metric.getName().equals(metricName)){
-                    metric.set(sumOfValues(metricValue,metric.getValue()));
+                    metric.setValue(sumOfValues(metricValue,metric.getValue()));
                     return;
                 }
             }
 
         }
         else{
-            applicationMetrics.add(new JsonObjectMetric<>(metricName, metricValue, tags,unit));
+            applicationMetrics.add(new PresidioMetric(metricName, metricValue, tags,unit));
         }
     }
 
@@ -55,16 +53,11 @@ public class PresidioCustomMetrics implements PublicMetrics{
 
     @Override
     public Collection<Metric<?>> metrics() {
-        return result;
+        return null;
     }
 
-    public Collection<JsonObjectMetric<?>> applicationMetrics() {
+    public Collection<PresidioMetric> applicationMetrics() {
         return applicationMetrics;
     }
-
-    public void cleanMetrics(){
-        result.clear();
-    }
-
 
 }

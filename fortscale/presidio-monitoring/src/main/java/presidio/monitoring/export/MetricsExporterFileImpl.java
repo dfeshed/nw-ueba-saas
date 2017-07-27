@@ -5,6 +5,7 @@ package presidio.monitoring.export;
 import fortscale.utils.logging.Logger;
 import org.springframework.boot.actuate.endpoint.MetricsEndpoint;
 import org.springframework.stereotype.Component;
+import presidio.monitoring.elastic.records.PresidioMetric;
 
 
 import java.util.*;
@@ -24,8 +25,8 @@ public class MetricsExporterFileImpl extends MetricsExporter {
     public void export(){
         try {
             logger.debug("Exporting");
-            for (Map.Entry<String, Object> entry : filterRepitMetrics().entrySet()) {
-                logger.info("Metric Name : {} Metric Value : {}", entry.getKey(),  entry.getValue());
+            for (PresidioMetric metric :filterRepitMetrics()) {
+                logger.info("Metric Name : {} Metric Value : {}", metric.getName(),  metric.getValue());
             }
         }
         catch (Exception ex){
