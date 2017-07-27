@@ -47,6 +47,12 @@
             <name>remote-repos</name>
             <url>http://mirror.fortscale.dom/artifactory/remote-repos</url>
         </repository>
+
+        <repository>
+            <id>spring-libs-snapshot</id>
+            <name>Spring Snapshot Repository</name>
+            <url>http://repo.spring.io/libs-snapshot</url>
+        </repository>
     </repositories>
 
     <pluginRepositories>
@@ -115,7 +121,6 @@
         <test.int.include>**/*TestInt.java</test.int.include>
         <test.int.groups></test.int.groups>
         <test.int.exgroups></test.int.exgroups>
-        <org.aspectj-version>1.7.3</org.aspectj-version>
         <guava.version>15.0</guava.version>
         <cloudera-manager-api.version>5.4.7</cloudera-manager-api.version>
         <!-- maven plugins versions -->
@@ -173,7 +178,7 @@
         <spring-cloud.version>Dalston.SR1</spring-cloud.version>
         <rpm-maven-plugin.version>2.1.5</rpm-maven-plugin.version>
         <spring-actuator-aop.version>1.5.4.RELEASE</spring-actuator-aop.version>
-        <aspectj.version>1.8.7</aspectj.version>
+        <org.aspectj-version>1.8.7</org.aspectj-version>
         <metrics-core.version>3.0.2</metrics-core.version>
         <spring-cloud-task-starter.version>1.1.0.M1</spring-cloud-task-starter.version>
         <elasticsearch.version>5.4.0</elasticsearch.version>
@@ -182,11 +187,6 @@
 
     <dependencyManagement>
         <dependencies>
-            <!--<dependency>-->
-            <!--<groupId>junit</groupId>-->
-            <!--<artifactId>junit</artifactId>-->
-            <!--<version>${junit.version}</version>-->
-            <!--</dependency>-->
 
             <dependency>
                 <groupId>org.springframework.boot</groupId>
@@ -222,7 +222,7 @@
             <dependency>
                 <groupId>jdk.tools</groupId>
                 <artifactId>jdk.tools</artifactId>
-                <version>${java-lang-config.version}</version>
+                <version>${jav-lang-config.version}</version>
                 <scope>system</scope>
                 <systemPath>${java.home}/../lib/tools.jar</systemPath>
             </dependency>
@@ -798,6 +798,8 @@
     </build>
     <modules>
         <module>presidio-utils</module>
+        <module>presidio-common</module>
+        <module>presidio-monitoring</module>
         <module>presidio-global-config</module>
         <module>presidio-domain</module>
         <module>presidio-ade-domain</module>
@@ -805,13 +807,13 @@
         <module>presidio-services</module>
         <module>presidio-aggregation</module>
         <module>presidio-ade</module>
-        <module>presidio-common</module>
         <module>presidio-monitoring-daemons</module>
         <module>presidio-input</module>
         <module>presidio-core-manager</module>
         <module>presidio-adapter</module>
         <module>presidio-output</module>
         <module>presidio-configuration-server</module>
+
 
     </modules>
 
