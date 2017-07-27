@@ -80,7 +80,7 @@
         </plugins>
     </build>
     <properties>
-        <flume.home.directory>/opt/home</flume.home.directory>
+        <flume.home.directory>/opt/flume</flume.home.directory>
     </properties>
 
 
