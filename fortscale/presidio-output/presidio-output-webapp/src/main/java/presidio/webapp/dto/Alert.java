@@ -8,7 +8,7 @@ public class Alert {
     private Instant startDate;
     private Instant endDate;
     private String username;
-    private Long score;
+    private double score;
     private Integer indicatorsNum;
 
     public String getId() {
@@ -51,11 +51,11 @@ public class Alert {
         this.username = username;
     }
 
-    public Long getScore() {
+    public double getScore() {
         return score;
     }
 
-    public void setScore(Long score) {
+    public void setScore(double score) {
         this.score = score;
     }
 

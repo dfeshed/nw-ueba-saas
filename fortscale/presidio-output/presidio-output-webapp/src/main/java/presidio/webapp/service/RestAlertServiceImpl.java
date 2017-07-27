@@ -41,6 +41,8 @@ public class RestAlertServiceImpl implements RestAlertService {
         resultAlert.setUsername(alertData.getUserName());
         resultAlert.setIndicatorsNum(alertData.getIndicatorsNum());
         resultAlert.setStartDate(Instant.ofEpochMilli(alertData.getStartDate()));
+        resultAlert.setEndDate(Instant.ofEpochMilli(alertData.getEndDate()));
+        resultAlert.setScore(alertData.getScore());
         return resultAlert;
     }
 
