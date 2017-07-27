@@ -1,8 +1,8 @@
 package presidio.output.processor;
 
 
-import fortscale.common.general.PresidioShellableApplication;
 
+import fortscale.common.general.PresidioShellableApplication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,7 +22,7 @@ public class FortscaleOutputProcessorApplication {
 
 	public static void main(String[] args) {
 		logger.info("Starting {}.", FortscaleOutputProcessorApplication.class.getSimpleName());
-		PresidioShellableApplication.run(OutputProcessorConfiguration.class, args);
+		PresidioShellableApplication.run(new Object[]{FortscaleOutputProcessorApplication.class, OutputProcessorConfiguration.class}, args);
 
 
 	}

@@ -5,7 +5,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.Ignore;
 import org.junit.runner.RunWith;
-import org.springframework.context.annotation.Import;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
@@ -15,7 +14,9 @@ import fortscale.utils.elasticsearch.PresidioElasticsearchTemplate;
 import presidio.output.domain.records.Alert;
 import presidio.output.domain.records.AlertQuery;
 
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -31,7 +32,7 @@ import org.springframework.test.context.ContextConfiguration;
 public class AlertPersistencyServiceTest {
 
     @Autowired
-    private AlertPersistencyService alertService;
+    private AlertPersistencyService alertPersistencyService;
 
     @Autowired
     private PresidioElasticsearchTemplate esTemplate;
@@ -46,10 +47,11 @@ public class AlertPersistencyServiceTest {
 
     @Test
     public void testSave() {
-
+        long startDate = Instant.now().toEpochMilli(); //"23-FEB-2017"
+        long endDate = Instant.now().toEpochMilli();
         Alert alert =
-                new Alert("1010","user1", AlertType.DATA_EXFILTRATION, 1541127600000l, 1541131200000l, 95.0d,3,AlertTimeframe.HOURLY, AlertSeverity.HIGH);
-        Alert testAlert = alertService.save(alert);
+                new Alert("1010","user1", AlertType.DATA_EXFILTRATION, startDate, endDate, 95.0d,3,AlertTimeframe.HOURLY, AlertSeverity.HIGH);
+        Alert testAlert = alertPersistencyService.save(alert);
 
         assertNotNull(testAlert.getId());
         assertEquals(testAlert.getId(), alert.getId());
@@ -59,13 +61,14 @@ public class AlertPersistencyServiceTest {
 
     @Test
     public void testSaveBulk() {
-
+        long startDate = Instant.now().toEpochMilli(); //"23-FEB-2017"
+        long endDate = Instant.now().toEpochMilli();
         List<Alert> alertList = new ArrayList<>();
         alertList.add(
-                new Alert("1010","user1", AlertType.DATA_EXFILTRATION, 1541127600000l, 1541131200000l, 95.0d,3,AlertTimeframe.HOURLY, AlertSeverity.HIGH));
+                new Alert("1010","user1", AlertType.DATA_EXFILTRATION, startDate, endDate, 95.0d,3,AlertTimeframe.HOURLY, AlertSeverity.HIGH));
         alertList.add(
-                new Alert("1020","user1", AlertType.ANOMALOUS_ADMIN_ACTIVITY, 1541127600000l, 1541131200000l, 95.0d,3,AlertTimeframe.HOURLY, AlertSeverity.HIGH));
-        Iterable<Alert> testAlert = alertService.save(alertList);
+                new Alert("1020","user1", AlertType.ANOMALOUS_ADMIN_ACTIVITY, startDate, endDate, 95.0d,3,AlertTimeframe.HOURLY, AlertSeverity.HIGH));
+        Iterable<Alert> testAlert = alertPersistencyService.save(alertList);
 
         assertThat(Lists.newArrayList(testAlert).size(), is(2));
 
@@ -73,13 +76,14 @@ public class AlertPersistencyServiceTest {
 
     @Test
     public void testFindOne() {
-
+        long startDate = Instant.now().toEpochMilli(); //"23-FEB-2017"
+        long endDate = Instant.now().toEpochMilli();
         Alert alert =
-                new Alert("1010","user1", AlertType.DATA_EXFILTRATION, 1541127600000l, 1541131200000l, 95.0d,3,AlertTimeframe.HOURLY, AlertSeverity.HIGH);
+                new Alert("1010","user1", AlertType.DATA_EXFILTRATION, startDate, endDate, 95.0d,3,AlertTimeframe.HOURLY, AlertSeverity.HIGH);
 
-        alertService.save(alert);
+        alertPersistencyService.save(alert);
 
-        Alert testAlert = alertService.findOne(alert.getId());
+        Alert testAlert = alertPersistencyService.findOne(alert.getId());
 
         assertNotNull(testAlert.getId());
         assertEquals(testAlert.getId(), alert.getId());
@@ -90,16 +94,18 @@ public class AlertPersistencyServiceTest {
 
     @Test
     public void testFindAll() {
+        long startDate = Instant.now().toEpochMilli(); //"23-FEB-2017"
+        long endDate = Instant.now().toEpochMilli();
         List<Alert> alertList = new ArrayList<>();
         alertList.add(
-                new Alert("1010","user1", AlertType.DATA_EXFILTRATION, 1541127600000l, 1541131200000l, 95.0d,3,AlertTimeframe.HOURLY, AlertSeverity.HIGH));
+                new Alert("1010","user1", AlertType.DATA_EXFILTRATION, startDate, endDate, 95.0d,3,AlertTimeframe.HOURLY, AlertSeverity.HIGH));
         alertList.add(
-                new Alert("1020","user1", AlertType.ANOMALOUS_ADMIN_ACTIVITY, 1541127600000l, 1541131200000l, 95.0d,3,AlertTimeframe.HOURLY, AlertSeverity.HIGH));
+                new Alert("1020","user1", AlertType.ANOMALOUS_ADMIN_ACTIVITY, startDate, endDate, 95.0d,3,AlertTimeframe.HOURLY, AlertSeverity.HIGH));
         for (Alert alert : alertList) {
-            alertService.save(alert);
+            alertPersistencyService.save(alert);
         }
 
-        Iterable<Alert> testAlert = alertService.findAll();
+        Iterable<Alert> testAlert = alertPersistencyService.findAll();
         assertThat(Lists.newArrayList(testAlert).size(), is(2));
 
 
@@ -107,40 +113,44 @@ public class AlertPersistencyServiceTest {
 
     @Test
     public void testFindByUserName() {
+        long startDate = Instant.now().toEpochMilli(); //"23-FEB-2017"
+        long endDate = Instant.now().toEpochMilli();
         List<Alert> alertList = new ArrayList<>();
         alertList.add(
-                new Alert("1010","user1", AlertType.DATA_EXFILTRATION, 1541127600000l, 1541131200000l, 95.0d,3,AlertTimeframe.HOURLY, AlertSeverity.HIGH));
+                new Alert("1010","user1", AlertType.DATA_EXFILTRATION, startDate, endDate, 95.0d,3,AlertTimeframe.HOURLY, AlertSeverity.HIGH));
         alertList.add(
-                new Alert("1020","user1", AlertType.ANOMALOUS_ADMIN_ACTIVITY, 1541127600000l, 1541131200000l, 95.0d,3,AlertTimeframe.HOURLY, AlertSeverity.HIGH));
+                new Alert("1020","user1", AlertType.ANOMALOUS_ADMIN_ACTIVITY, startDate, endDate, 95.0d,3,AlertTimeframe.HOURLY, AlertSeverity.HIGH));
         for (Alert alert : alertList) {
-            alertService.save(alert);
+            alertPersistencyService.save(alert);
         }
 
-        Page<Alert> byName1 = alertService.findByUserName("user1",new PageRequest(0, 10));
+        Page<Alert> byName1 = alertPersistencyService.findByUserName("user1",new PageRequest(0, 10));
         assertThat(byName1.getTotalElements(), is(2L));
 
-        Page<Alert> byName2 = alertService.findByUserName("user2",new PageRequest(0, 10));
+        Page<Alert> byName2 = alertPersistencyService.findByUserName("user2",new PageRequest(0, 10));
         assertThat(byName2.getTotalElements(), is(0L));
     }
 
 
     @Test
     public void testDelete() {
-
+        long startDate = Instant.now().toEpochMilli(); //"23-FEB-2017"
+        long endDate = Instant.now().toEpochMilli();
         Alert alert =
-                new Alert("1010","user1", AlertType.DATA_EXFILTRATION, 1541127600000l, 1541131200000l, 95.0d,3,AlertTimeframe.HOURLY, AlertSeverity.HIGH);
-        alertService.save(alert);
-        alertService.delete(alert);
-        Alert testAlert = alertService.findOne(alert.getId());
+                new Alert("1010","user1", AlertType.DATA_EXFILTRATION, startDate, endDate, 95.0d,3,AlertTimeframe.HOURLY, AlertSeverity.HIGH);
+        alertPersistencyService.save(alert);
+        alertPersistencyService.delete(alert);
+        Alert testAlert = alertPersistencyService.findOne(alert.getId());
         assertNull(testAlert);
     }
 
     @Test
     public void testFindByQuery() {
-
+        long startDate = Instant.now().toEpochMilli(); //"23-FEB-2017"
+        long endDate = Instant.now().toEpochMilli();
         Alert alert =
-                new Alert("1010","user1", AlertType.DATA_EXFILTRATION, 1541127600000l, 1541131200000l, 95.0d,3,AlertTimeframe.HOURLY, AlertSeverity.HIGH);
-        alertService.save(alert);
+                new Alert("1010","user1", AlertType.DATA_EXFILTRATION, startDate, endDate, 95.0d,3,AlertTimeframe.HOURLY, AlertSeverity.HIGH);
+        alertPersistencyService.save(alert);
 
         AlertQuery alertQuery =
                 new AlertQuery.AlertQueryBuilder()
@@ -149,7 +159,7 @@ public class AlertPersistencyServiceTest {
                         .aggregateBySeverity(false)
                         .build();
 
-        Page<Alert> testAlert = alertService.find(alertQuery);
+        Page<Alert> testAlert = alertPersistencyService.find(alertQuery);
         assertThat(testAlert.getTotalElements(), is(1L));
     }
 

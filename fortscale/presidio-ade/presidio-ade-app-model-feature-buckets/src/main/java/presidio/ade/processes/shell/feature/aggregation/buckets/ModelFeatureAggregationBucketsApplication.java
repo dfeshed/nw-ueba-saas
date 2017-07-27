@@ -14,6 +14,6 @@ public class ModelFeatureAggregationBucketsApplication {
 
 	public static void main(String[] args) {
 		logger.info("Starting {}.", ModelFeatureAggregationBucketsApplication.class.getSimpleName());
-		PresidioShellableApplication.run(ModelFeatureAggregationBucketsConfiguration.class, args);
+		PresidioShellableApplication.run(new Object[]{ModelFeatureAggregationBucketsConfiguration.class}, args);
 	}
 }
