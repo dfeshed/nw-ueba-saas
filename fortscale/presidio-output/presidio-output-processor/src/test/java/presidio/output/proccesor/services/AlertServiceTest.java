@@ -1,15 +1,21 @@
 package presidio.output.proccesor.services;
 
 import fortscale.domain.SMART.EntityEvent;
-import fortscale.domain.core.AbstractAuditableDocument;
 import fortscale.utils.pagination.PageIterator;
 import fortscale.utils.time.TimeRange;
+import org.junit.Ignore;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.junit.runner.RunWith;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringRunner;
 import presidio.ade.domain.store.smart.SmartDataStore;
 import presidio.ade.domain.store.smart.SmartPageIterator;
 import presidio.output.domain.services.AlertPersistencyService;
+import presidio.output.proccesor.spring.OutputProcessorTestConfiguration;
 import presidio.output.processor.services.alert.AlertServiceImpl;
 
 import java.time.Instant;
@@ -17,6 +23,9 @@ import java.time.Instant;
 /**
  * Created by efratn on 24/07/2017.
  */
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes=presidio.output.proccesor.spring.OutputProcessorTestConfiguration.class)
+@Ignore
 public class AlertServiceTest {
 
     @MockBean
@@ -26,6 +35,13 @@ public class AlertServiceTest {
     private SmartDataStore smartDataStore;
 
     private AlertServiceImpl alertService = new AlertServiceImpl(alertPersistencyService);
+
+    @Configuration
+    @Import({OutputProcessorTestConfiguration.class})
+    @EnableSpringConfigured
+    public static class springConfig {
+    }
+
 
     @Test
     public void alertServiceTest() {
