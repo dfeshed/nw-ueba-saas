@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Import;
 public class PresidioOutputPersistencyServiceConfig {
 
     @Bean
-    public AlertPersistencyService alertService() {
+    public AlertPersistencyService alertPersistencyService() {
         return new AlertPersistencyServiceImpl();
     }
 
