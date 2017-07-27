@@ -1,5 +1,5 @@
 import { module, test } from 'qunit';
-import { storyEventCountExpected } from 'respond/selectors/storyline';
+import { storyEventCountExpected, selectedStoryEventCountExpected } from 'respond/selectors/storyline';
 
 module('Unit | Mixin | Storyline Selector');
 
@@ -81,3 +81,86 @@ test('storyEventCountExpected returns the max result when two counts are availab
   assert.equal(result, 30, 'Expected the maximum result to be returned');
 });
 
+test('selectedStoryEventCountExpected returns the selection size when events are selected', function(assert) {
+  const state = {
+    respond: {
+      incident: {
+        selection: {
+          type: 'event',
+          ids: [ 'event1', 'event2' ]
+        },
+        storyline: [
+          {
+            alert: { numEvents: 10 }
+          },
+          {
+            alert: { numEvents: 20 }
+          }
+        ]
+      }
+    }
+  };
+
+  const result = selectedStoryEventCountExpected(state);
+  assert.equal(result, 2, 'Expected the selection size to be returned');
+});
+
+test('selectedStoryEventCountExpected returns the sum of alert.numEvents when storyPoints are selected', function(assert) {
+  const state = {
+    respond: {
+      incident: {
+        selection: {
+          type: 'storyPoint',
+          ids: [ 'alert2', 'alert3' ]
+        },
+        storyline: [
+          {
+            id: 'alert1',
+            alert: { numEvents: 10 }
+          },
+          {
+            id: 'alert2',
+            alert: { numEvents: 20 }
+          },
+          {
+            id: 'alert3',
+            alert: { numEvents: 30 }
+          }
+        ]
+      }
+    }
+  };
+
+  const result = selectedStoryEventCountExpected(state);
+  assert.equal(result, 50, 'Expected the sum of numEvents of selected alerts to be returned');
+});
+
+test('selectedStoryEventCountExpected returns the sum of all alert.numEvents when nothing is selected', function(assert) {
+  const state = {
+    respond: {
+      incident: {
+        selection: {
+          type: 'storyPoint',
+          ids: []
+        },
+        storyline: [
+          {
+            id: 'alert1',
+            alert: { numEvents: 10 }
+          },
+          {
+            id: 'alert2',
+            alert: { numEvents: 20 }
+          },
+          {
+            id: 'alert3',
+            alert: { numEvents: 30 }
+          }
+        ]
+      }
+    }
+  };
+
+  const result = selectedStoryEventCountExpected(state);
+  assert.equal(result, 60, 'Expected the sum of numEvents of all alerts to be returned');
+});

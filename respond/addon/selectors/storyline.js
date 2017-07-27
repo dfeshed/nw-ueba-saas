@@ -192,3 +192,42 @@ export const storyDatasheet = createSelector(
     }
   }
 );
+
+/**
+ * Computes the total count of events currently selected.
+ *
+ * Note: This selector is designed to be independent of how many event records have been streamed into the UI so far.
+ * In fact, you don't even have to load any events to compute this selector.  It relies solely on the `alert.numEvents`
+ * of each indicator, not the current count of events streamed so far.
+ *
+ * Checks the current selection, which may be either (a) indicators, (b) events or (c) empty.
+ * If (a): returns the sum of each selected indicator's `alert.numEvents`.
+ * If (b): returns the number of selected event ids.
+ * If (c): calls the storyEventCountExpected selector above to compute the total event count for the incident.
+ *
+ * @returns {Number}
+ * @private
+ */
+export const selectedStoryEventCountExpected = createSelector(
+  [ storyEventCountExpected, incidentIndicators, incidentSelection ],
+  (storyEventCountExpected, incidentIndicators, { type, ids }) => {
+    if (!ids || !ids.length) {
+
+      // Nothing selected, so return the unfiltered expected count of events.
+      return storyEventCountExpected;
+    } else if (type === 'storyPoint') {
+
+      // Indicator(s) are selected, so sum up the events inside those selected indicators.
+      const selectedIndicators = incidentIndicators.filter((indicator) => {
+        return ids.includes(indicator.id);
+      });
+      return selectedIndicators.reduce(function(total, indicator) {
+        return total + (indicator.alert.numEvents || 0);
+      }, 0);
+
+    } else if (type === 'event') {
+      // Event(s) are selected, so return the count of selected events.
+      return ids.length;
+    }
+  }
+);
