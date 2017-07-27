@@ -26,26 +26,30 @@ public class FeatureAggregationsExecutionServiceImpl implements PresidioExecutio
     private FeatureAggregationScoringService featureAggregationScoringService;
     private AggregationRecordsCreator featureAggregationsCreator;
     private AggregatedDataStore scoredFeatureAggregatedStore;
+    private int pageSize;
+    private int maxGroupSize;
 
     public FeatureAggregationsExecutionServiceImpl(BucketConfigurationService bucketConfigurationService,
                                                    EnrichedDataStore enrichedDataStore,
                                                    InMemoryFeatureBucketAggregator inMemoryFeatureBucketAggregator,
                                                    FeatureAggregationScoringService featureAggregationScoringService,
                                                    AggregationRecordsCreator featureAggregationsCreator,
-                                                   AggregatedDataStore scoredFeatureAggregatedStore) {
+                                                   AggregatedDataStore scoredFeatureAggregatedStore, int pageSize, int maxGroupSize) {
         this.bucketConfigurationService = bucketConfigurationService;
         this.enrichedDataStore = enrichedDataStore;
         this.featureAggregationScoringService = featureAggregationScoringService;
         this.inMemoryFeatureBucketAggregator = inMemoryFeatureBucketAggregator;
         this.featureAggregationsCreator = featureAggregationsCreator;
         this.scoredFeatureAggregatedStore = scoredFeatureAggregatedStore;
+        this.pageSize = pageSize;
+        this.maxGroupSize = maxGroupSize;
     }
 
     //todo: data source should be event_type
     @Override
     public void run(DataSource dataSource, Instant startDate, Instant endDate, Double fixedDuration) throws Exception {
         FixedDurationStrategy fixedDurationStrategy = FixedDurationStrategy.fromSeconds(fixedDuration.longValue());
-        FeatureAggregationService featureAggregationBucketsService = new FeatureAggregationService(fixedDurationStrategy, bucketConfigurationService, enrichedDataStore, inMemoryFeatureBucketAggregator, featureAggregationScoringService, featureAggregationsCreator, scoredFeatureAggregatedStore);
+        FeatureAggregationService featureAggregationBucketsService = new FeatureAggregationService(fixedDurationStrategy, bucketConfigurationService, enrichedDataStore, inMemoryFeatureBucketAggregator, featureAggregationScoringService, featureAggregationsCreator, scoredFeatureAggregatedStore, pageSize, maxGroupSize);
         TimeRange timeRange = new TimeRange(startDate, endDate);
         featureAggregationBucketsService.execute(timeRange, dataSource.getName());
     }

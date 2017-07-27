@@ -18,7 +18,7 @@ import presidio.ade.domain.store.aggr.AggregatedDataStoreMongoImpl;
 @Import({
         ScoredFeaturedDataToCollectionNameTranslatorConfig.class, MongoDbBulkOpUtilConfig.class
 })
-public class ScoredFeatureAggregatedDataStoreConfig {
+public class ScoredFeatureAggregationDataStoreConfig {
     @Autowired
     private MongoTemplate mongoTemplate;
     @Autowired
