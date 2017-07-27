@@ -1,5 +1,5 @@
 <div class="rsa-context-tree-table__addtoListBox">
-  {{rsa-form-input isReadOnly=true label=(t 'context.addToList.metaValue') placeholder=entityId}}
+  {{rsa-form-input isReadOnly=true label=(t 'context.addToList.metaValue') placeholder=entityId  isError=isError errorMessage=errorMessage}}
   {{#rsa-form-button  class="rsa-context-tree-table__createList-button" isIconOnly=true isFullWidth=true click=(action 'createList')}}
     <div align="left">
       {{t 'context.addToList.newList'}}
@@ -59,7 +59,7 @@
         {{#rsa-form-button isFullWidth=true click=(action 'closeList')}}{{t 'context.addToList.cancel'}}{{/rsa-form-button}}
       </vbox>
       <vbox>
-        {{#rsa-form-button style='primary' isFullWidth=true click=(action 'saveList')}}{{t 'context.addToList.save'}}{{/rsa-form-button}}
+        {{#rsa-form-button style='primary' isFullWidth=true click=(action 'saveList') isDisabled=isDisabled}}{{t 'context.addToList.save'}}{{/rsa-form-button}}
       </vbox>
     </hbox>
   </div>

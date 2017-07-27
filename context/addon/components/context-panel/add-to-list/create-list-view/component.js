@@ -24,6 +24,7 @@ export default Component.extend({
   },
 
   createNewList(list) {
+    this.set('isDisabled', true);
     this.get('request').promiseRequest({
       method: 'stream',
       modelName: 'create-list',
@@ -38,11 +39,13 @@ export default Component.extend({
       list.id = data.id;
       this.get('model.list').push(list);
       this.resetProperties();
-    }).catch((reason) => {
-      Logger.error(`List is not created: ${ reason }`);
+    }).catch(({ meta }) => {
+      const error = meta ? meta.message : 'admin.error';
+      Logger.error(`List is not created: ${ error }`);
       this.setProperties({
+        isDisabled: false,
         isError: true,
-        errorMessage: this.get('i18n').t('context.error.createList')
+        errorMessage: this.get('i18n').t(`context.error.${error}`)
       });
     });
   },
@@ -72,7 +75,7 @@ export default Component.extend({
           errorMessage: this.get('i18n').t('context.error.listValidName')
         });
       }
-      if (!this.get('isError')) {
+      if (!this.get('isError') || !this.get('isDisabled')) {
         this.createNewList(newList);
       }
     },

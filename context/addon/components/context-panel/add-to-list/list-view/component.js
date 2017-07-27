@@ -18,6 +18,13 @@ export default Component.extend({
   eventBus: service(),
 
   active: 'all',
+  resetProperties() {
+    this.setProperties({
+      isError: false,
+      errorMessage: null,
+      isDisabled: false
+    });
+  },
 
   _getQueryParam() {
     const { entityId, entityType } = this.getProperties('entityId', 'entityType');
@@ -67,19 +74,30 @@ export default Component.extend({
 
     closeList() {
       this.get('eventBus').trigger('rsa-application-modal-close-addToList');
+      this.resetProperties();
     },
 
     saveList() {
-      this.set('createList', true);
+      this.setProperties({
+        isDisabled: true,
+        createList: true
+      });
       this.get('request').promiseRequest({
         method: 'stream',
         modelName: 'save-entries',
         query: this._getQueryParam()
-      }).then((response) => {
+      }).then(({ data }) => {
+        this.resetProperties();
         this.get('eventBus').trigger('rsa-application-modal-close-addToList');
-        Logger.debug(`Successfully saved: ${ response }`);
-      }).catch(() => {
-        Logger.error('list was not saved.');
+        Logger.debug(`Successfully saved: ${ data }`);
+      }).catch(({ meta }) => {
+        const error = meta ? meta.message : 'admin.error';
+        Logger.error(`Meta value is not saved ${ error }`);
+        this.setProperties({
+          isDisabled: false,
+          isError: true,
+          errorMessage: this.get('i18n').t(`context.error.${error}`)
+        });
       });
     },
 

@@ -19,13 +19,14 @@ export default Component.extend({
 
   init() {
     this._super(...arguments);
-    this.get('eventBus').on('rsa-application-modal-open-addToList', () => {
+    this.get('eventBus').on('rsa-application-modal-did-close', () => {
       this.set('createList', true);
+      this.set('entity', null);
     });
   },
 
   willDestroyElement() {
-    this.get('eventBus').off('rsa-application-modal-open-addToList');
+    this.get('eventBus').off('rsa-application-modal-did-close');
   },
     /**
    * The type and id of the entity which is to be added to a list.
