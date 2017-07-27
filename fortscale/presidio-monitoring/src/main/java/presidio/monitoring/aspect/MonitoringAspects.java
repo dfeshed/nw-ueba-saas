@@ -56,11 +56,10 @@ public class MonitoringAspects {
 
     @Before("@annotation(presidio.monitoring.aspect.annotations.Start)")
     public void start(JoinPoint joinPoint) throws Throwable{
-        String metric = joinPoint.getSignature().toShortString();
-        logger.info("Metric {} increment with annotation Start. ", metric);
+        String metric = joinPoint.getSignature().toShortString()+START;
         Set tags=new HashSet();
-        presidioCustomMetrics.addMetric(metric+START,1,tags, UNIT_TYPE_LONG);
-
+        presidioCustomMetrics.addMetric(metric,1,tags, UNIT_TYPE_LONG);
+        logger.info("Metric {} increment with annotation Start. ", metric);
     }
 
     /**
@@ -74,10 +73,10 @@ public class MonitoringAspects {
 
     @After("@annotation(presidio.monitoring.aspect.annotations.End)")
     public void end(JoinPoint joinPoint) throws Throwable{
-        String metric  = joinPoint.getSignature().toShortString();
-        logger.info("Metric {} increment with annotation End. ", metric);
+        String metric  = joinPoint.getSignature().toShortString()+END;
         Set tags=new HashSet();
-        presidioCustomMetrics.addMetric(metric+END,1,tags, UNIT_TYPE_LONG);
+        presidioCustomMetrics.addMetric(metric,1,tags, UNIT_TYPE_LONG);
+        logger.debug("Metric {} increment with annotation End. ", metric);
     }
 
     /**
@@ -91,11 +90,10 @@ public class MonitoringAspects {
 
     @AfterThrowing("@annotation(presidio.monitoring.aspect.annotations.ExceptionThrown)")
     public void exceptionThrown(JoinPoint joinPoint) throws Throwable{
-        String metric  = joinPoint.getSignature().toShortString();
-        logger.info("Metric {} increment with annotation exceptionThrown. ", metric);
+        String metric  = joinPoint.getSignature().toShortString()+EXCEPTION_THROWN;
         Set tags=new HashSet();
-        presidioCustomMetrics.addMetric(metric+EXCEPTION_THROWN,1,tags, UNIT_TYPE_LONG);
-
+        presidioCustomMetrics.addMetric(metric,1,tags, UNIT_TYPE_LONG);
+        logger.debug("Metric {} increment with annotation exceptionThrown. ", metric);
     }
 
     /**
@@ -109,14 +107,14 @@ public class MonitoringAspects {
 
     @Around("@annotation(presidio.monitoring.aspect.annotations.RunTime)")
     public void runTime(ProceedingJoinPoint joinPoint) throws Throwable {
-        String metricName = joinPoint.getSignature().toShortString();
+        String metricName = joinPoint.getSignature().toShortString()+RUN_TIME;
         long startTime = System.nanoTime();
         joinPoint.proceed();
         long endTime = System.nanoTime();
         long time=Long.divideUnsigned(endTime-startTime,1000000000);
         Set tags=new HashSet();
-        presidioCustomMetrics.addMetric(metricName+RUN_TIME,time,tags, UNIT_TYPE_LONG);
-        logger.info("Metric {} run time is {} milli seconds. ", metricName,time);
+        presidioCustomMetrics.addMetric(metricName,time,tags, UNIT_TYPE_LONG);
+        logger.debug("Metric {} run time is {} milli seconds. ", metricName,time);
     }
 
     /**
@@ -130,11 +128,11 @@ public class MonitoringAspects {
      */
     @Around("@annotation(presidio.monitoring.aspect.annotations.NumberOfFailedValidation)")
     public void numberOfFailedValidation(ProceedingJoinPoint joinPoint) throws Throwable {
-        String metricName = joinPoint.getSignature().toShortString();
+        String metricName = joinPoint.getSignature().toShortString()+NUMBER_OF_FAILED_VALIDATION;
         int numberOfFailedValidationDocuments = ((List<? extends Serializable>) joinPoint.proceed()).size();
         Set tags=new HashSet();
-        presidioCustomMetrics.addMetric(metricName+NUMBER_OF_FAILED_VALIDATION,numberOfFailedValidationDocuments,tags, UNIT_TYPE_LONG);
-        logger.info("Metric {} got {} failed validations. ", metricName, numberOfFailedValidationDocuments);
+        presidioCustomMetrics.addMetric(metricName,numberOfFailedValidationDocuments,tags, UNIT_TYPE_LONG);
+        logger.debug("Metric {} got {} failed validations. ", metricName, numberOfFailedValidationDocuments);
     }
 
 
@@ -152,10 +150,9 @@ public class MonitoringAspects {
     @Before("@annotation(presidio.monitoring.aspect.annotations.DataSourceProcess) && args(dataSource,..)")
     public void dataSourceProcess(JoinPoint joinPoint , DataSource dataSource) throws Throwable{
         String metric = joinPoint.getSignature().toShortString()+dataSource.getName();
-        logger.info("Metric {} increment with annotation Start. ", metric);
         Set tags=new HashSet();
-        presidioCustomMetrics.addMetric(metric+START,1,tags, UNIT_TYPE_LONG);
-
+        presidioCustomMetrics.addMetric(metric,1,tags, UNIT_TYPE_LONG);
+        logger.debug("Metric {} increment with annotation DataSourceProcess. ", metric);
     }
 
 }

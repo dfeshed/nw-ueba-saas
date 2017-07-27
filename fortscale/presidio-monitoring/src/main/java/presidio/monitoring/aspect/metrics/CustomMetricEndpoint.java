@@ -1,11 +1,13 @@
 package presidio.monitoring.aspect.metrics;
 
+import fortscale.utils.logging.Logger;
 import org.springframework.boot.actuate.endpoint.MetricsEndpoint;
 import org.springframework.boot.actuate.endpoint.PublicMetrics;
 import org.springframework.boot.actuate.metrics.Metric;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.core.annotation.AnnotationAwareOrderComparator;
 import org.springframework.util.Assert;
+import presidio.monitoring.aspect.MonitoringAspects;
 import presidio.monitoring.elastic.records.PresidioMetric;
 
 import java.util.ArrayList;
@@ -19,6 +21,7 @@ import java.util.Map;
 @ConfigurationProperties(prefix = "endpoints.metrics")
 public class CustomMetricEndpoint extends MetricsEndpoint {
 
+    private static final Logger logger = Logger.getLogger(CustomMetricEndpoint.class);
     private final List<PublicMetrics> publicMetrics;
 
     /**
@@ -68,7 +71,7 @@ public class CustomMetricEndpoint extends MetricsEndpoint {
                 }
             }
             catch (Exception ex) {
-                // Could not evaluate metrics
+                logger.info("Error happened when trying to get all metrics. ",ex);
             }
         }
         return result;
