@@ -59,7 +59,7 @@ public class AuthenticationRawEvent extends AbstractInputDocument {
         return isDstMachineRemote;
     }
 
-    public void setDstMachineRemote(boolean dstMachineRemote) {
+    public void setIsDstMachineRemote(boolean dstMachineRemote) {
         isDstMachineRemote = dstMachineRemote;
     }
 
