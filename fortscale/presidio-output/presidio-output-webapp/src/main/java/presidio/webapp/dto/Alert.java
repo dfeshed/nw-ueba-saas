@@ -9,7 +9,7 @@ public class Alert {
     private Instant endDate;
     private String username;
     private Long score;
-    private int indicatorsNum;
+    private Integer indicatorsNum;
 
     public String getId() {
         return id;
@@ -59,7 +59,11 @@ public class Alert {
         this.score = score;
     }
 
-    public void setIndicatorsNum(int indicatorsNum) {
+    public void setIndicatorsNum(Integer indicatorsNum) {
         this.indicatorsNum = indicatorsNum;
+    }
+
+    public Integer getIndicatorsNum() {
+        return indicatorsNum;
     }
 }
