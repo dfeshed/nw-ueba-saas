@@ -30,7 +30,6 @@ public class ModelingServiceApplication {
 				FSHistoryFileNameProvider.class,
 				FSPromptProvider.class
 		};
-		ConfigurableApplicationContext context = SpringApplication.run(sources, args);
-		PresidioShellableApplication.run(args, context);
+		PresidioShellableApplication.run(sources, args);
 	}
 }
