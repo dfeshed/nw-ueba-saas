@@ -12,13 +12,15 @@ import { svgRotation } from 'respond/helpers/svg/rotation';
  * @param {number} targetX The X coordinate of the target node.
  * @param {number} targetY The Y coordinate of the target node.
  * @param {number} targetR The radius of the target node.
+ * @param {number} [arrowWidth=0] Optional width of the arrow symbol at the end of the link.  This number will be
+ * subtracted from the link length so that the link ends at the arrow rather than at the target node.
  * @returns {{x1, x2, y1, y2, textTransform}} An object with properties that specify the link's start coordinates,
  * end coordinates, and an SVG transform for positioning text at the center of the link.
  * @public
  */
-export default function forceLayoutLinkCoords(sourceX, sourceY, sourceR, targetX, targetY, targetR) {
+export default function forceLayoutLinkCoords(sourceX, sourceY, sourceR, targetX, targetY, targetR, arrowWidth = 0) {
   const rad = Math.atan2(targetY - sourceY, targetX - sourceX) || 0;
-  const dr = Math.sqrt(Math.pow(targetX - sourceX, 2) + Math.pow(targetY - sourceY, 2));
+  const dr = Math.sqrt(Math.pow(targetX - sourceX, 2) + Math.pow(targetY - sourceY, 2)) - arrowWidth;
   const x1 = sourceR * Math.cos(rad) || 0;
   const y1 = sourceR * Math.sin(rad) || 0;
   const x2 = Math.max(0, dr - targetR) * Math.cos(rad) || 0;

@@ -36,3 +36,11 @@ test('it adds a 180deg flip for upside down text on a  link', function(assert) {
   const found2 = result2.textTransform.match(/rotate/g);
   assert.equal(found2.length, 2, 'Expected to find an extra rotation to flip upside down text');
 });
+
+test('it subtracts an arrow width, if given, from the link endpoint', function(assert) {
+  // Feed it a horiz link with no arrow width, and them the same link with an arrow width.
+  const arrowWidth = 25;
+  const result1 = forceLayoutLinkCoords(0, 0, 5, 100, 0, 5);
+  const result2 = forceLayoutLinkCoords(0, 0, 5, 100, 0, 5, arrowWidth);
+  assert.equal(result1.x2 - result2.x2, arrowWidth);
+});

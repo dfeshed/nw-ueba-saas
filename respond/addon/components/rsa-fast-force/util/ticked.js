@@ -16,6 +16,7 @@ export default function() {
   this.set('alphaCurrent', alphaCurrent);
 
   const isDragging = this.get('isDragging');
+  const arrowWidth = this.get('arrowWidth');
 
   if (!this.get('shouldHideNodes')) {
     this.joined.nodes
@@ -32,7 +33,8 @@ export default function() {
           source.r,
           target.x,
           target.y,
-          target.r
+          target.r,
+          arrowWidth
         );
       })
       .attr('transform', (d) => `translate(${d.source.x},${d.source.y})`)
