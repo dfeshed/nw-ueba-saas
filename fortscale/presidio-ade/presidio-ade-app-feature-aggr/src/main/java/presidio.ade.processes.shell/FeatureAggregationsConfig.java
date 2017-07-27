@@ -19,11 +19,10 @@ import presidio.ade.domain.store.aggr.AggregatedDataStore;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
 import presidio.ade.domain.store.enriched.EnrichedDataStoreConfig;
 import presidio.ade.domain.store.scored.feature_aggregation.ScoredFeatureAggregatedDataStoreConfig;
-import presidio.ade.processes.shell.feature.aggregation.FeatureAggregationBucketConfigurationServiceConfig;
-import presidio.ade.processes.shell.feature.aggregation.InMemoryFeatureAggregatorConfig;
+import presidio.ade.processes.shell.aggregation.FeatureAggregationBucketConfigurationServiceConfig;
+import presidio.ade.processes.shell.aggregation.InMemoryFeatureAggregatorConfig;
 
 @Configuration
-//@EnableSpringConfigured
 @Import({
         EventModelsCacheServiceConfig.class,
         ModelAggregationBucketConfigurationServiceConfig.class,
