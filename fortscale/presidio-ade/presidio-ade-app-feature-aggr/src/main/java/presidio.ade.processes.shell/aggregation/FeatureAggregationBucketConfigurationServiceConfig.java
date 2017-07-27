@@ -1,4 +1,4 @@
-package presidio.ade.processes.shell.feature.aggregation;
+package presidio.ade.processes.shell.aggregation;
 
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import org.springframework.beans.factory.annotation.Qualifier;
