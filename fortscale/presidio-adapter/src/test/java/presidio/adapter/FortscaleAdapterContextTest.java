@@ -2,6 +2,7 @@ package presidio.adapter;
 
 import fortscale.common.shell.PresidioExecutionService;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import presidio.adapter.configuration.AdapterTestConfiguration;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = AdapterTestConfiguration.class)
+@Ignore
 public class FortscaleAdapterContextTest {
 
     @Autowired
