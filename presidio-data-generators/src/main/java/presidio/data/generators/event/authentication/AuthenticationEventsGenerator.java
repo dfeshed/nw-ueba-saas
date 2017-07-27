@@ -14,6 +14,7 @@ import presidio.data.generators.event.EntityEventIDFixedPrefixGenerator;
 import presidio.data.generators.event.IEventGenerator;
 import presidio.data.generators.machine.RemoteMachinePercentageGenerator;
 import presidio.data.generators.machine.SimpleMachineGenerator;
+import presidio.data.generators.user.IUserGenerator;
 import presidio.data.generators.user.RandomUserGenerator;
 
 import java.time.Instant;
@@ -27,7 +28,7 @@ public class AuthenticationEventsGenerator implements IEventGenerator {
     private AuthenticationTypeCyclicGenerator authenticationTypeGenerator;
 
     private IStringGenerator eventIDGenerator;
-    private RandomUserGenerator userGenerator;
+    private IUserGenerator userGenerator;
     private SimpleMachineGenerator srcMachineGenerator;
     private RemoteMachinePercentageGenerator dstMachineGenerator;
 
@@ -113,11 +114,11 @@ public class AuthenticationEventsGenerator implements IEventGenerator {
         this.eventIDGenerator = eventIDGenerator;
     }
 
-    public RandomUserGenerator getUserGenerator() {
+    public IUserGenerator getUserGenerator() {
         return userGenerator;
     }
 
-    public void setUserGenerator(RandomUserGenerator userGenerator) {
+    public void setUserGenerator(IUserGenerator userGenerator) {
         this.userGenerator = userGenerator;
     }
 

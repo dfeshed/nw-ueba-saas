@@ -5,13 +5,13 @@ public class    User {
     private String userId; // normalisedUserName
     private String firstName;
     private String lastName;
-    private boolean isAdministrator;
+    private Boolean isAdministrator;
 
     public User(String username) {
         this.username = username;
     }
 
-    public User(String username, String userId, String firstName, String lastName, boolean isAdministrator) {
+    public User(String username, String userId, String firstName, String lastName, Boolean isAdministrator) {
         this.username = username;
         this.userId = userId;
         this.firstName = firstName;
@@ -51,22 +51,22 @@ public class    User {
         this.lastName = lastName;
     }
 
-    public boolean isAdministrator() {
+    public Boolean isAdministrator() {
         return isAdministrator;
     }
 
-    public void setAdministrator(boolean administrator) {
+    public void setAdministrator(Boolean administrator) {
         isAdministrator = administrator;
     }
 
     @Override
     public String toString() {
         return "User{" +
-                "username='" + username + '\'' +
-                ", userId='" + userId + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", isAdministrator=" + isAdministrator +
+                "username='" + username.toString() + '\'' +
+                ", userId='" + userId.toString() + '\'' +
+                ", firstName='" + firstName.toString() + '\'' +
+                ", lastName='" + lastName.toString() + '\'' +
+                ", isAdministrator=" + isAdministrator.toString() +
                 '}';
     }
 }
