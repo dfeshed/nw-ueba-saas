@@ -1,6 +1,7 @@
 package presidio.input.core.spring;
 
 
+import presidio.monitoring.spring.MonitoringConfiguration;
 import fortscale.common.shell.PresidioExecutionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -12,7 +13,7 @@ import presidio.input.sdk.impl.spring.PresidioInputPersistencyServiceConfig;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
 
 @Configuration
-@Import({PresidioInputPersistencyServiceConfig.class, AdeDataServiceConfig.class})
+@Import({ PresidioInputPersistencyServiceConfig.class, AdeDataServiceConfig.class,MonitoringConfiguration.class})
 public class InputCoreConfiguration {
 
     @Autowired

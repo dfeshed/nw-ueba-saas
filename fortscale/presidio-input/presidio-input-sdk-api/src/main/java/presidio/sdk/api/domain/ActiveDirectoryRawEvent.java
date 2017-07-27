@@ -24,6 +24,21 @@ public class ActiveDirectoryRawEvent extends AbstractInputDocument {
     @Field(OBJECT_NAME_FIELD_NAME)
     private String objectName;
 
+    public ActiveDirectoryRawEvent(String[] event) {
+        dateTime = Instant.parse(event[0]);
+        this.eventId = event[1];
+        this.dataSource = event[2];
+        this.operationType = ActiveDirectoryOperationType.valueOf(event[3]);
+        this.isSecuritySensitiveOperation = Boolean.valueOf(event[4]);
+        this.isUserAdministrator = Boolean.valueOf(event[5]);
+        this.objectName = event[6];
+        this.result = EventResult.valueOf(event[7]);
+        this.normalizedUsername = event[8];
+    }
+
+    public ActiveDirectoryRawEvent() {
+    }
+
     public ActiveDirectoryRawEvent(ActiveDirectoryOperationType operationType, boolean isSecuritySensitiveOperation,
                                    boolean isUserAdministrator, String objectName, EventResult result,
                                    String normalizesUsername, String eventId) {
@@ -36,19 +51,15 @@ public class ActiveDirectoryRawEvent extends AbstractInputDocument {
         this.eventId = eventId;
     }
 
-    public ActiveDirectoryRawEvent(String[] event) {
-        dateTime = Instant.parse(event[0]);
-        this.eventId = event[1];
-        this.dataSource =event[2];
-        this.operationType = ActiveDirectoryOperationType.valueOf(event[3]);
-        this.isSecuritySensitiveOperation = Boolean.valueOf(event[4]);
-        this.isUserAdministrator = Boolean.valueOf(event[5]);
-        this.objectName = event[6];
-        this.result = EventResult.valueOf(event[7]);
-        this.normalizedUsername = event[8];
-    }
-
-    public ActiveDirectoryRawEvent() {
+    public ActiveDirectoryRawEvent(Instant dateTime, String dataSource, String normalizedUsername, String eventId,
+                                   EventResult result, ActiveDirectoryOperationType operationType,
+                                   boolean isSecuritySensitiveOperation, boolean isUserAdministrator,
+                                   String objectName) {
+        super(dateTime, dataSource, normalizedUsername, eventId, result);
+        this.operationType = operationType;
+        this.isSecuritySensitiveOperation = isSecuritySensitiveOperation;
+        this.isUserAdministrator = isUserAdministrator;
+        this.objectName = objectName;
     }
 
     public ActiveDirectoryOperationType getOperationType() {
@@ -63,7 +74,7 @@ public class ActiveDirectoryRawEvent extends AbstractInputDocument {
         return isSecuritySensitiveOperation;
     }
 
-    public void setSecuritySensitiveOperation(boolean securitySensitiveOperation) {
+    public void setIsSecuritySensitiveOperation(boolean securitySensitiveOperation) {
         isSecuritySensitiveOperation = securitySensitiveOperation;
     }
 
@@ -71,7 +82,7 @@ public class ActiveDirectoryRawEvent extends AbstractInputDocument {
         return isUserAdministrator;
     }
 
-    public void setUserAdministrator(boolean userAdministrator) {
+    public void setIsUserAdministrator(boolean userAdministrator) {
         isUserAdministrator = userAdministrator;
     }
 

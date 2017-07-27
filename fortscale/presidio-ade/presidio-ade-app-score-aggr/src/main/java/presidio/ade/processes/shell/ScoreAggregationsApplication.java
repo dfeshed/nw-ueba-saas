@@ -15,6 +15,6 @@ public class ScoreAggregationsApplication {
 
 	public static void main(String[] args) {
 		logger.info("Starting {}.", ScoreAggregationsApplication.class.getSimpleName());
-		PresidioShellableApplication.run(ScoreAggregationsApplicationConfigProduction.class, args);
+		PresidioShellableApplication.run(new Object[]{ScoreAggregationsApplicationConfigProduction.class}, args);
 	}
 }

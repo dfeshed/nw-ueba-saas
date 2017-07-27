@@ -1,11 +1,15 @@
 package presidio.input.core.services.impl;
 
 
+import fortscale.common.shell.PresidioExecutionService;
 import fortscale.common.general.CommonStrings;
 import fortscale.common.general.DataSource;
-import fortscale.common.shell.PresidioExecutionService;
 import fortscale.domain.core.AbstractAuditableDocument;
 import fortscale.utils.logging.Logger;
+import presidio.monitoring.aspect.annotations.DataSourceProcess;
+import presidio.monitoring.aspect.annotations.End;
+import presidio.monitoring.aspect.annotations.RunTime;
+import presidio.monitoring.aspect.annotations.Start;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.input.core.services.converters.*;
 import presidio.input.core.services.data.AdeDataService;
@@ -121,6 +125,7 @@ public class InputExecutionServiceImpl implements PresidioExecutionService {
     }
 
     @Override
+    @RunTime
     public void clean(DataSource dataSource, Instant startDate, Instant endDate) throws Exception {
         logger.info("Started clean processing for data source:{}, from {}:{}, until {}:{}."
                 , dataSource,

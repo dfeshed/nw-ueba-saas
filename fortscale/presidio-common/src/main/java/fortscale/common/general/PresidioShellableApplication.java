@@ -18,6 +18,7 @@ import java.util.Arrays;
 public abstract class PresidioShellableApplication {
     private static final Logger logger = Logger.getLogger(PresidioShellableApplication.class);
 
+    @Deprecated
     public static void run(String[] args, ConfigurableApplicationContext ctx) {
         try {
             BootShim bs = ctx.getBean(BootShim.class);
@@ -35,10 +36,34 @@ public abstract class PresidioShellableApplication {
      * @param configurationClass where the application's context is configured
      * @param args               the input arguments
      */
-    public static void run(Class<?> configurationClass, String[] args) {
-        Object[] sources = {configurationClass, BootShimConfig.class,ShellCommonCommandsConfig.class};
-        ConfigurableApplicationContext context = SpringApplication.run(sources, args);
+    @SuppressWarnings("deprecation")
+    public static void run(Object[] configurationClass, String[] args) {
+        logger.info("Starting {} component ",configurationClass.getClass().getName());
         CommandLineArgsHolder.args = args;
-        run(args, context);
+        Object[] sources= new Object[configurationClass.length+2];
+        for(int i=0;i<configurationClass.length;i++){
+            sources[i]=configurationClass[i];
+        }
+        sources[configurationClass.length]=ShellCommonCommandsConfig.class;
+        sources[configurationClass.length+1]=BootShimConfig.class;
+        ConfigurableApplicationContext context = SpringApplication.run(sources, args);
+        int exitCode=0;
+        try {
+            context.registerShutdownHook();
+            run(args,context);
+        } catch (RuntimeException e) {
+            String errorMessage = String.format("Failed to run application with specified args: [%s]", Arrays.toString(args));
+            logger.error(errorMessage, e);
+            exitCode=1;
+        }
+        finally {
+            if (exitCode!=1) {
+                BootShim bs = context.getBean(BootShim.class);
+                exitCode = bs.getShell().getExitShellRequest().getExitCode();
+            }
+            Thread.currentThread().interrupt();
+            context.close();
+            System.exit(exitCode);
+        }
     }
 }

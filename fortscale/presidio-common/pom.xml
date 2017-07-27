@@ -36,6 +36,7 @@
             <name>remote-repos</name>
             <url>http://mirror.fortscale.dom/artifactory/remote-repos</url>
         </repository>
+
     </repositories>
 
     <pluginRepositories>
@@ -106,6 +107,7 @@
             <artifactId>fortscale-global-config</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
+
 
     </dependencies>
 
