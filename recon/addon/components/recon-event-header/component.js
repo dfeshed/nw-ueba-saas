@@ -16,7 +16,8 @@ const EventHeaderComponent = Component.extend({
   tagName: '',
 
   @computed('headerItems')
-  displayedHeaderItems(headerItems = []) {
+  displayedHeaderItems(headerItems) {
+    headerItems = Array.isArray(headerItems) ? headerItems : [];
     return headerItems.reduce((acc, item) => {
       // Get the sort order(so) from recon displayed header object.
       const so = RECON_DISPLAYED_HEADER[item.id];
