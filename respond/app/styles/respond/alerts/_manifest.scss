@@ -10,3 +10,12 @@
     padding: rsa-whitespace();
   }
 }
+
+.alert-names-filter-table .rsa-data-table-body-row:hover {
+  .rsa-data-table-body-cell {
+    background-color: inherit;
+    .rsa-form-checkbox-label {
+      display: inline;
+    }
+  }
+}
