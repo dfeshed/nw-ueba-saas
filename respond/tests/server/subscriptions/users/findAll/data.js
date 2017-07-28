@@ -1,7 +1,7 @@
 export default [
   {
-    'id': '1',
-    'name': 'local',
+    'id': 'local',
+    'name': null,
     'email': null,
     'description': 'local@test.com',
     'type': null,

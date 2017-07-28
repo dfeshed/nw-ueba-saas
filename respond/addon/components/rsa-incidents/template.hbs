@@ -42,7 +42,7 @@
       {{ else if (eq column.field 'status')}}
         {{t (concat 'respond.status.' (get item column.field)) }}
       {{else if (eq column.field "assignee")}}
-        {{get item "assignee.name"}}
+        {{or (get item "assignee.name") (get item "assignee.id")}}
       {{else}}
         {{get item column.field}}
       {{/if}}

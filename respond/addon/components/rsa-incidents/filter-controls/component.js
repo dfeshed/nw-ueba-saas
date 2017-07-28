@@ -56,6 +56,11 @@ const IncidentFilters = Component.extend({
     return categories.filter((category) => (categoryFilters.includes(category)));
   },
 
+  assigneeMatcher({ name, id }, searchTerm) {
+    const userName = name || id;
+    return userName.toLowerCase().indexOf(searchTerm.toLowerCase());
+  },
+
   actions: {
     toggleStatusFilter(status) {
       const statusFilters = this.get('statusFilters');

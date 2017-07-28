@@ -102,9 +102,9 @@
         searchEnabled=false
         triggerComponent=(component "respond-common/button-trigger"
           isDisabled=(or (eq info.status 'CLOSED') (eq info.status 'CLOSED_FALSE_POSITIVE'))
-          label=(if info.assignee info.assignee.name (t 'respond.assignee.none')))
+          label=(if info.assignee (or info.assignee.name info.assignee.id) (t 'respond.assignee.none')))
         onchange=(action 'update' info.id 'assignee') as |option|}}
-        {{option.name}}
+        {{or option.name option.id}}
       {{/power-select}}
     </div>
   {{else}}

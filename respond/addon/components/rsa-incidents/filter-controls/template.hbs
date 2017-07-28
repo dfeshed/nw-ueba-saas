@@ -24,17 +24,18 @@
   <h2>{{ t 'respond.incident.assignee'}}</h2>
   {{#power-select-multiple
     options=(readonly users)
+    matcher=assigneeMatcher
     selected=selectedAssignees
     searchField="name"
     onchange=(action "assigneeChanged") as |users|}}
-    {{users.name}}
+    {{or users.name users.id}}
   {{/power-select-multiple}}
 </section>
 <section class="filter-option category-filter">
   <h2>{{ t 'respond.incident.categories'}}</h2>
   {{#power-select-multiple
     options=categoryTags
-    searchField='name'
+    searchEnabled=false
     selected=selectedCategories
     onchange=(action "categoryChanged") as |category|}}
     {{category}}

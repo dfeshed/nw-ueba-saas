@@ -82,7 +82,7 @@ test('All of the priorities appear as checkboxes, and clicking one dispatches an
 });
 
 test('All of the assignees appear in the dropdown, and selecting one calls dispatch', function(assert) {
-  assert.expect(2);
+  assert.expect(3);
   return initialize.then(() => {
     this.on('updateFilter', function() {
       assert.ok(true);
@@ -90,7 +90,14 @@ test('All of the assignees appear in the dropdown, and selecting one calls dispa
     this.render(hbs`{{rsa-incidents/filter-controls updateFilter=(action 'updateFilter')}}`);
     const selector = '.filter-option.assignee-filter';
     clickTrigger(selector);
-    assert.equal($('.ember-power-select-options li.ember-power-select-option').length, 6, 'There are 6 assignees available');
+    const $options = $('.ember-power-select-options li.ember-power-select-option');
+    const assigneeNames = $options.length && $options.map((index, item) => {
+      const optionText = $(item).text().trim();
+      return optionText.length ? optionText : null;
+    });
+    assert.equal($options.length, 6, 'There are 6 assignee options');
+    assert.equal(assigneeNames.length, 6, 'Each assignee option has a text value');
+
     selectFirstOption();
   });
 });
