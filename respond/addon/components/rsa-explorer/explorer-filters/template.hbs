@@ -17,12 +17,12 @@
         {{rsa-form-datetime
           label=(t 'respond.explorer.filters.customStartDate')
           isError=hasCustomDateError
-          value=(readonly customDateRangeStart)
+          value=(unbound customDateRangeStart)
           onChange=(action 'customStartDateChanged')
           errorMessage=customDateErrorMessage}}
         {{rsa-form-datetime
           label=(t 'respond.explorer.filters.customEndDate')
-          value=(readonly customDateRangeEnd)
+          value=(unbound customDateRangeEnd)
           onChange=(action 'customEndDateChanged')}}
       {{else}}
         {{#power-select

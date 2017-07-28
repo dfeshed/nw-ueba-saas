@@ -5,7 +5,6 @@ import computed from 'ember-computed-decorators';
 import { SINCE_WHEN_TYPES } from 'respond/utils/since-when-types';
 import moment from 'moment';
 import config from 'ember-get-config';
-import run from 'ember-runloop';
 
 /**
  * The filters component provides a default set of controls for filtering the result set items in the Explorer, and
@@ -153,43 +152,33 @@ export default Component.extend({
 
   actions: {
     reset() {
-      run.schedule('afterRender', () => {
-        this.sendAction('resetFilters');
-      });
+      this.sendAction('resetFilters');
     },
 
     toggleCustomDate() {
-      run.schedule('afterRender', () => {
-        this.sendAction('toggleCustomDate');
-      });
+      this.sendAction('toggleCustomDate');
     },
 
     onChangeTimeframe(timeframe) {
-      run.schedule('afterRender', () => {
-        const dateFilterField = this.get('defaultDateFilterField') || 'created';
-        this.sendAction('updateFilter', { [dateFilterField]: timeframe });
-      });
+      const dateFilterField = this.get('defaultDateFilterField') || 'created';
+      this.sendAction('updateFilter', { [dateFilterField]: timeframe });
     },
 
     customStartDateChanged([date]) {
-      run.schedule('afterRender', () => {
-        const dateFilterField = this.get('defaultDateFilterField') || 'created';
-        const start = date ? this._toUTCTimestamp(date) : null;
-        const end = this.get('timeframeFilter.end');
-        this.sendAction('updateFilter', {
-          [dateFilterField]: { start, end }
-        });
+      const dateFilterField = this.get('defaultDateFilterField') || 'created';
+      const start = date ? this._toUTCTimestamp(date) : null;
+      const end = this.get('timeframeFilter.end');
+      this.sendAction('updateFilter', {
+        [dateFilterField]: { start, end }
       });
     },
 
     customEndDateChanged([date]) {
-      run.schedule('afterRender', () => {
-        const dateFilterField = this.get('defaultDateFilterField') || 'created';
-        const end = date ? this._toUTCTimestamp(date) : null;
-        const start = this.get('timeframeFilter.start');
-        this.sendAction('updateFilter', {
-          [dateFilterField]: { start, end }
-        });
+      const dateFilterField = this.get('defaultDateFilterField') || 'created';
+      const end = date ? this._toUTCTimestamp(date) : null;
+      const start = this.get('timeframeFilter.start');
+      this.sendAction('updateFilter', {
+        [dateFilterField]: { start, end }
       });
     }
   }
