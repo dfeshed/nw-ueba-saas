@@ -456,6 +456,7 @@ const singleSelectNode = (id) => ({ type: ACTION_TYPES.SET_INCIDENT_SELECTION, p
 const toggleSelectNode = (id) => ({ type: ACTION_TYPES.TOGGLE_INCIDENT_SELECTION, payload: { type: 'node', id } });
 const singleSelectLink = (id) => ({ type: ACTION_TYPES.SET_INCIDENT_SELECTION, payload: { type: 'link', id } });
 const toggleSelectLink = (id) => ({ type: ACTION_TYPES.TOGGLE_INCIDENT_SELECTION, payload: { type: 'link', id } });
+const clearSelection = () => ({ type: ACTION_TYPES.CLEAR_INCIDENT_SELECTION });
 
 export {
   getItems,
@@ -486,6 +487,7 @@ export {
   toggleSelectLink,
   singleSelectNode,
   toggleSelectNode,
+  clearSelection,
   toggleTasksAndJournalPanel,
   setDefaultSearchTimeFrameName,
   setDefaultSearchEntityType,

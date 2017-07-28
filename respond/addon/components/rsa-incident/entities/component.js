@@ -7,7 +7,7 @@ import { parseNodeId, countNodesByType } from 'respond/utils/entity/node';
 import connect from 'ember-redux/components/connect';
 import { storyEvents } from 'respond/selectors/storyline';
 import CanThrottleAttr from 'respond/mixins/can-throttle-attr';
-import { setHideViz } from 'respond/actions/creators/incidents-creators';
+import { setHideViz, clearSelection } from 'respond/actions/creators/incidents-creators';
 
 const stateToComputed = (state) => ({
   events: storyEvents(state),
@@ -15,7 +15,10 @@ const stateToComputed = (state) => ({
 });
 
 const dispatchToActions = (dispatch) => ({
-  showAll: () => dispatch(setHideViz(true))
+  showAll: () => {
+    dispatch(setHideViz(true));
+    dispatch(clearSelection());
+  }
 });
 
 const IncidentEntities = Component.extend(CanThrottleAttr, {

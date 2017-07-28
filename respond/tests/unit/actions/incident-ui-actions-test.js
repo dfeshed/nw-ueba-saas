@@ -76,7 +76,7 @@ test('The SET_INCIDENT_SELECTION action property modifies the app state', functi
   assert.deepEqual(endState3, expectedEndState3);
 });
 
-test('The TOGGLE_INCIDENT_SELECTION action property modifies the app state', function(assert) {
+test('The TOGGLE_INCIDENT_SELECTION action properly modifies the app state', function(assert) {
   const type = 'foo';
   const id1 = 'id1';
   const id2 = 'id2';
@@ -111,6 +111,25 @@ test('The TOGGLE_INCIDENT_SELECTION action property modifies the app state', fun
     payload: { type, id: id2 }
   });
   assert.deepEqual(endState2, expectedEndState2);
+});
+
+test('The CLEAR_INCIDENT_SELECTION action properly modifies the app state', function(assert) {
+  const initState = copy(initialState);
+
+  // Set the initial selection to some non-empty value.
+  const type1 = 'foo';
+  const id1 = 'id1';
+  initState.selection = { type: type1, ids: [id1] };
+
+  const expectedEndState = {
+    ...initState,
+    selection: { type: '', ids: [] }
+  };
+
+  const endState = incidentReducer(initState, {
+    type: ACTION_TYPES.CLEAR_INCIDENT_SELECTION
+  });
+  assert.deepEqual(endState, expectedEndState);
 });
 
 test('The SET_DEFAULT_SEARCH_TIME_FRAME_NAME action properly modifies the app state', function(assert) {

@@ -246,6 +246,11 @@ const incident = reduxActions.handleActions({
     hideViz: payload
   })),
 
+  [ACTION_TYPES.CLEAR_INCIDENT_SELECTION]: (state) => ({
+    ...state,
+    selection: { type: '', ids: [] }
+  }),
+
   [ACTION_TYPES.SET_INCIDENT_SELECTION]: (state, { payload: { type, id } }) => {
     const { selection: { type: wasType, ids: wasIds } } = state;
     let newSelection;
