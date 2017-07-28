@@ -10,9 +10,9 @@
     <div>
       <span>
         {{#rsa-form-button
-          isIconOnly=true
+          isIconOnly=true title= (t 'context.header.help.title')
           defaultAction=(action 'goToHelp' helpId.moduleId helpId.topicId)}}
-          {{rsa-icon name="help-circle" style="lined"}}
+          {{rsa-icon name="help-circle" style="lined" }}
         {{/rsa-form-button}}
       </span>
       <span class="rsa-context-panel-header__close-icon">

@@ -1039,8 +1039,8 @@ export default {
     DOMAIN: 'Domain',
     noValues: 'Context Sources with no values: ',
     dsNotConfigured: 'Context Sources not configured: ',
-    marketingText: ' is not a currently configured data source in Context Hub. Contact your Administrator to enable this feature. Context Hub centralizes data sources from Endpoint, Alerts, Incidents, Lists and many more sources on-demand. For more information , click ',
-    lcMarketingText: 'Live Connect collects, analyzes, and assesses Threat Intelligence data such as IP Addresses, Domains, and File Hashes collected from various sources. Live connect is not a default data source in Context Hub, you need to manually enable it. For more information , click ',
+    marketingText: ' is not a currently configured data source in Context Hub. Contact your Administrator to enable this feature. Context Hub centralizes data sources from Endpoint, Alerts, Incidents, Lists and many more sources on-demand. For more information , click Help.',
+    lcMarketingText: 'Live Connect collects, analyzes, and assesses Threat Intelligence data such as IP Addresses, Domains, and File Hashes collected from various sources. Live connect is not a default data source in Context Hub, you need to manually enable it. For more information , click Help.',
     timeUnit: {
       allData: 'ALL DATA',
       HOUR: 'HOUR',
@@ -1055,6 +1055,16 @@ export default {
       YEARS: 'YEARS',
       WEEK: 'WEEK',
       WEEKS: 'WEEKS'
+    },
+    marketingDSType: {
+      Users: 'Active Directory',
+      Alerts: 'Respond(Alerts)',
+      Incidents: 'Respond(Incidents)',
+      Machines: 'Endpoint (Machines)',
+      Modules: 'Endpoint (Modules)',
+      IOC: 'Endpoint (IOC)',
+      Archer: 'Archer',
+      LIST: 'List'
     },
     header: {
       title: {
@@ -1083,7 +1093,10 @@ export default {
       liveConnect: 'Live Connect',
       unsafe: 'Unsafe',
       closeButton: {
-        title: 'Close Panel'
+        title: 'Close'
+      },
+      help: {
+        title: 'Help'
       }
     },
     toolbar: {
@@ -1337,7 +1350,6 @@ export default {
     },
     footer: {
       viewAll: 'VIEW All',
-      total: 'Showing {{count}}',
       title: {
         incidents: 'Incident(s)',
         alerts: 'Alert(s)',
@@ -1345,7 +1357,8 @@ export default {
         users: 'User(s)',
         endpoint: 'Host',
         archer: 'Asset'
-      }
+      },
+      resultCount: '(First {{count}} Results)'
     },
     tooltip: {
       contextHighlights: 'Context Highlights',

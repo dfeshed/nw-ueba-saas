@@ -1,11 +1,7 @@
-<span>
-  {{#unless (eq footerDSTitle 'none')}}
-    {{t 'context.footer.total' count=headerData.count}} {{footerDSTitle}}
-  {{/unless}}
-</span>
-{{#if headerData.timeWindow.lastUpdated}}
+<span>{{dSResultCount}}</span>
+{{#if footerTimeStamp.lastUpdated}}
   <span title= {{t dSDetails.title}}>
-    {{t 'context.timeWindow'}}{{headerData.timeWindow.timeWindow}} |
-    {{t 'context.lastUpdated'}}{{rsa-content-datetime timestamp=headerData.timeWindow.lastUpdated asTimeAgo=true}}
+    {{t 'context.timeWindow'}}{{footerTimeStamp.timeWindow}} |
+    {{t 'context.lastUpdated'}}{{rsa-content-datetime timestamp=footerTimeStamp.lastUpdated asTimeAgo=true}}
   </span>
 {{/if}}

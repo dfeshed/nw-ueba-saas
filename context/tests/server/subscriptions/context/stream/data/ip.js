@@ -241,7 +241,8 @@ export default [
     'resultMeta': {
       'timeQuerySubmitted': 1486022329719,
       'timeFilter.timeUnit': 'DAY',
-      'timeFilter.timeUnitCount': '7'
+      'timeFilter.timeUnitCount': '7',
+      'limit': 50
     },
     'pagingEnabled': false,
     'currentPageId': 0,
@@ -486,7 +487,8 @@ export default [
     'resultMeta': {
       'timeQuerySubmitted': 1458242092315,
       'timeFilter.timeUnit': 'DAY',
-      'timeFilter.timeUnitCount': '7'
+      'timeFilter.timeUnitCount': '7',
+      'limit': 100
     },
     'pagingEnabled': false,
     'currentPageId': 0,

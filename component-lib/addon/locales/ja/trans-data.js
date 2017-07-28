@@ -1039,8 +1039,8 @@ export default {
     DOMAIN: 'ja_Domain',
     noValues: 'ja_Context Sources with no values: ',
     dsNotConfigured: 'ja_Context Sources not configured: ',
-    marketingText: 'ja_ is not a currently configured data source in Context Hub. Contact your Administrator to enable this feature. Context Hub centralizes data sources from Endpoint, Alerts, Incidents, Lists and many more sources on-demand. For more information , click ',
-    lcMarketingText: 'ja_Live Connect collects, analyzes, and assesses Threat Intelligence data such as IP Addresses, Domains, and File Hashes collected from various sources. Live connect is not a default data source in Context Hub, you need to manually enable it. For more information , click ',
+    marketingText: 'ja_ is not a currently configured data source in Context Hub. Contact your Administrator to enable this feature. Context Hub centralizes data sources from Endpoint, Alerts, Incidents, Lists and many more sources on-demand. For more information , click Help.',
+    lcMarketingText: 'ja_Live Connect collects, analyzes, and assesses Threat Intelligence data such as IP Addresses, Domains, and File Hashes collected from various sources. Live connect is not a default data source in Context Hub, you need to manually enable it. For more information , click Help.',
     timeUnit: {
       allData: 'ja_ALL DATA',
       HOUR: 'ja_HOUR',
@@ -1055,6 +1055,16 @@ export default {
       YEARS: 'ja_YEARS',
       WEEK: 'ja_WEEK',
       WEEKS: 'ja_WEEKS'
+    },
+    marketingDSType: {
+      Users: 'ja_Active Directory',
+      Alerts: 'ja_Respond(Alerts)',
+      Incidents: 'ja_Respond(Incidents)',
+      Machines: 'ja_Endpoint (Machines)',
+      Modules: 'ja_Endpoint (Modules)',
+      IOC: 'ja_Endpoint (IOC)',
+      Archer: 'ja_Archer',
+      LIST: 'ja_List'
     },
     header: {
       title: {
@@ -1084,6 +1094,9 @@ export default {
       unsafe: 'ja_Unsafe',
       closeButton: {
         title: 'ja_Close Panel'
+      },
+      help: {
+        title: 'ja_Help'
       }
     },
     toolbar: {
@@ -1337,7 +1350,6 @@ export default {
     },
     footer: {
       viewAll: 'ja_VIEW All',
-      total: 'ja_Showing {{count}}',
       title: {
         incidents: 'ja_Incident(s)',
         alerts: 'ja_Alert(s)',
@@ -1345,7 +1357,8 @@ export default {
         users: 'ja_User(s)',
         endpoint: 'ja_Host',
         archer: 'ja_Asset'
-      }
+      },
+      resultCount: 'ja_(First {{count}} Results)'
     },
     tooltip: {
       contextHighlights: 'ja_Context Highlights',

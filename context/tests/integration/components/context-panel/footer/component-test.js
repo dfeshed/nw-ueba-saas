@@ -1,6 +1,6 @@
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
-import alertData from '../../../../data/alert-data';
+import listData from '../../../../data/list';
 import * as ACTION_TYPES from 'context/actions/types';
 import EmberObject from 'ember-object';
 import dSDetails from 'context/config/im-alerts';
@@ -17,15 +17,15 @@ test('it renders', function(assert) {
   const dataSourceData = EmberObject.create({
     class: 'alarm-sound',
     isConfigured: true,
-    dataSourceType: 'Alerts',
+    dataSourceType: 'LIST',
     displayType: 'table',
     details: dSDetails,
-    field: 'Alerts',
+    field: 'LIST',
     tabRequired: true,
-    title: 'context.header.alerts'
+    title: 'context.header.lIST'
   });
   const contextData = EmberObject.create({});
-  contextData.set('Alerts', alertData);
+  contextData.set('LIST', listData);
   this.set('contextData', contextData);
 
   this.get('redux').dispatch({
@@ -34,11 +34,11 @@ test('it renders', function(assert) {
   });
 
   this.get('redux').dispatch({ type: ACTION_TYPES.GET_ALL_DATA_SOURCES, payload: [dataSourceData] });
-  this.get('redux').dispatch({ type: ACTION_TYPES.GET_LOOKUP_DATA, payload: [alertData] });
+  this.get('redux').dispatch({ type: ACTION_TYPES.GET_LOOKUP_DATA, payload: [listData] });
   this.get('redux').dispatch({
     type: ACTION_TYPES.UPDATE_ACTIVE_TAB,
-    payload: 'Alerts'
+    payload: 'lIST'
   });
   this.render(hbs`{{context-panel/footer}}`);
-  assert.equal(this.$('.rsa-context-panel__footer').text().trim(), 'Showing 8 Alert(s)', 'Showing total count for alert data.');
+  assert.equal(this.$('.rsa-context-panel__footer').text().trim(), '0 List(s)', 'Showing total count for list data.');
 });

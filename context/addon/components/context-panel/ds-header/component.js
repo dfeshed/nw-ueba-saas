@@ -34,6 +34,11 @@ const DSHeaderComponent = Component.extend({
     }
     return getErrorMessage(dsData, this.get('i18n'));
   },
+  @computed('dSDetails')
+  dsTypeMarketing({ dataSourceGroup }) {
+    return this.get('i18n').t(`context.marketingDSType.${dataSourceGroup}`);
+
+  },
   @computed('dataSources', 'activeTabName', 'dSDetails')
   isConfigured(dataSources, activeTabName, { dataSourceGroup }) {
     if (!dataSources) {
