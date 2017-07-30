@@ -2,13 +2,14 @@ package presidio.data.generators.user;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import presidio.data.generators.common.GeneratorException;
+import presidio.data.generators.common.IBooleanGenerator;
 import presidio.data.generators.common.precentage.BooleanPercentageGenerator;
 import presidio.data.domain.User;
 
 // by default 2% admin users will be generated
 public class RandomAdminUserPercentageGenerator implements IUserGenerator {
 
-    private BooleanPercentageGenerator isAdminGenerator;
+    private IBooleanGenerator isAdminGenerator;
 
     public RandomAdminUserPercentageGenerator() throws GeneratorException {
         isAdminGenerator = new BooleanPercentageGenerator(2);
@@ -25,16 +26,16 @@ public class RandomAdminUserPercentageGenerator implements IUserGenerator {
         user.setUserId(username);
         user.setLastName ( username.substring(username.length()-2));
         user.setFirstName (username.substring(0, username.length()-2));
-        user.setAdministrator(getIsAdminGenerator().getNext());
+        user.setAdministrator((Boolean)getIsAdminGenerator().getNext());
 
         return user;
     }
 
-    public BooleanPercentageGenerator getIsAdminGenerator() {
+    public IBooleanGenerator getIsAdminGenerator() {
         return isAdminGenerator;
     }
 
-    public void setIsAdminGenerator(BooleanPercentageGenerator isAdminGenerator) {
+    public void setIsAdminGenerator(IBooleanGenerator isAdminGenerator) {
         this.isAdminGenerator = isAdminGenerator;
     }
 }
