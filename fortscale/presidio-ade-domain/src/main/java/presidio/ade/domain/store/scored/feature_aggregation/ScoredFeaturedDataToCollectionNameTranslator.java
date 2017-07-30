@@ -5,7 +5,7 @@ import presidio.ade.domain.store.aggr.AggrRecordsMetadata;
 
 
 public class ScoredFeaturedDataToCollectionNameTranslator extends AggrDataToCollectionNameTranslator {
-    private static final String SCORED_FEATURE_AGGR_COLLECTION_PREFIX = "scored_feature_aggregation_";
+    private static final String SCORED_FEATURE_AGGR_COLLECTION_PREFIX = "scored_feature_aggr_";
 
     @Override
     public String toCollectionName(AggrRecordsMetadata metadata) {
