@@ -1,8 +1,8 @@
-package presidio.webapp.filter;
+package presidio.webapp.restquery;
 
 import java.time.Instant;
 
-public class AlertFilter {
+public class RestAlertQuery {
     // filters
     private String filterBuUserName;
     private String filterBySeverity;

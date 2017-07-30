@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import presidio.webapp.dto.Alert;
 import presidio.webapp.dto.ListResponseBean;
 import presidio.webapp.dto.SingleEntityResponseBean;
-import presidio.webapp.filter.AlertFilter;
+import presidio.webapp.restquery.RestAlertQuery;
 import presidio.webapp.service.RestAlertService;
 
 @RestController
@@ -30,10 +30,10 @@ public class AlertsController {
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
     @LogException
-    public ListResponseBean<Alert> getAlerts(AlertFilter alertFilter) {
+    public ListResponseBean<Alert> getAlerts(RestAlertQuery restAlertQuery) {
         ListResponseBean<Alert> responseBean = new ListResponseBean<>();
-        responseBean.setData(restAlertService.getAlerts(alertFilter));
-        responseBean.setPage(alertFilter.getPageNumber());
+        responseBean.setData(restAlertService.getAlerts(restAlertQuery));
+        responseBean.setPage(restAlertQuery.getPageNumber());
         return responseBean;
     }
 }

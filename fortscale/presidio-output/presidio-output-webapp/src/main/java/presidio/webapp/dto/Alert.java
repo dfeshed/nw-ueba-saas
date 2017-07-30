@@ -4,7 +4,7 @@ import java.time.Instant;
 
 public class Alert {
     private String id;
-    private String name;
+    private String alertClassification;
     private Instant startDate;
     private Instant endDate;
     private String username;
@@ -19,12 +19,12 @@ public class Alert {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getAlertClassification() {
+        return alertClassification;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setAlertClassification(String alertClassification) {
+        this.alertClassification = alertClassification;
     }
 
     public Instant getStartDate() {
