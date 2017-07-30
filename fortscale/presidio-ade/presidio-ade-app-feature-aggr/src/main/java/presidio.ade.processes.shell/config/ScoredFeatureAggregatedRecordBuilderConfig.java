@@ -1,5 +1,6 @@
-package fortscale.ml.scorer.feature_aggregation_events;
+package presidio.ade.processes.shell.config;
 
+import fortscale.ml.scorer.feature_aggregation_events.ScoredFeatureAggregatedRecordBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
