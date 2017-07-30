@@ -1,6 +1,7 @@
 package presidio.data.generators.activedirectoryop;
 
 import presidio.data.generators.common.GeneratorException;
+import presidio.data.generators.common.IBooleanGenerator;
 import presidio.data.generators.common.RandomStringGenerator;
 import presidio.data.generators.common.precentage.BooleanPercentageGenerator;
 import presidio.data.generators.common.precentage.OperationResultPercentageGenerator;
@@ -9,7 +10,7 @@ import presidio.data.domain.event.activedirectory.ActiveDirectoryOperation;
 public class ActiveDirectoryOperationGenerator implements IActiveDirectoryOperationGenerator{
 
     private ActiveDirOperationTypeCyclicGenerator operationTypeGenerator;
-    private BooleanPercentageGenerator isSecuritySensitiveOperationGenerator;
+    private IBooleanGenerator isSecuritySensitiveOperationGenerator;
     private RandomStringGenerator objectNameGenerator;
     private OperationResultPercentageGenerator resultGenerator;
 
@@ -30,7 +31,7 @@ public class ActiveDirectoryOperationGenerator implements IActiveDirectoryOperat
         this.operationTypeGenerator = operationTypeGenerator;
     }
 
-    public BooleanPercentageGenerator getIsSecuritySensitiveOperationGenerator() {
+    public IBooleanGenerator getIsSecuritySensitiveOperationGenerator() {
         return isSecuritySensitiveOperationGenerator;
     }
 
@@ -58,7 +59,7 @@ public class ActiveDirectoryOperationGenerator implements IActiveDirectoryOperat
     public ActiveDirectoryOperation getNext() {
         return new ActiveDirectoryOperation(
                 (String) getOperationTypeGenerator().getNext(),
-                getIsSecuritySensitiveOperationGenerator().getNext(),
+                (Boolean)getIsSecuritySensitiveOperationGenerator().getNext(),
                 getObjectNameGenerator().getNext(),
                 (String) getResultGenerator().getNext());
 
