@@ -1,4 +1,4 @@
-package presidio.ade.sdk.executions.online;
+package presidio.ade.sdk.common;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -8,15 +8,13 @@ import presidio.ade.domain.store.enriched.EnrichedDataStore;
 import presidio.ade.domain.store.enriched.EnrichedDataStoreConfig;
 import presidio.ade.domain.store.smart.SmartDataStore;
 import presidio.ade.domain.store.smart.SmartDataStoreMongoConfig;
-import presidio.ade.sdk.executions.common.ADEManagerSDK;
-import presidio.ade.sdk.executions.common.ADEManagerSDKImpl;
 
 /**
- * Created by barak_schuster on 5/22/17.
+ * @author Barak Schuster
  */
 @Configuration
 @Import({EnrichedDataStoreConfig.class, SmartDataStoreMongoConfig.class})
-public class ADEManagerSDKConfig {
+public class AdeManagerSdkConfig {
     @Autowired
     private EnrichedDataStore enrichedDataStore;
 
@@ -24,7 +22,7 @@ public class ADEManagerSDKConfig {
     private SmartDataStore smartDataStore;
 
     @Bean
-    public ADEManagerSDK adeOnlineSDK() {
-        return new ADEManagerSDKImpl(enrichedDataStore, smartDataStore);
+    public AdeManagerSdk adeManagerSdk() {
+        return new AdeManagerSdkImpl(enrichedDataStore, smartDataStore);
     }
 }
