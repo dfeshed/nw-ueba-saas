@@ -1,4 +1,4 @@
-package fortscale.ml.scorer.factory.config;
+package fortscale.ml.scorer.factory;
 
 import fortscale.ml.model.config.DataRetrieverFactoryServiceConfig;
 import fortscale.ml.model.retriever.AbstractDataRetriever;

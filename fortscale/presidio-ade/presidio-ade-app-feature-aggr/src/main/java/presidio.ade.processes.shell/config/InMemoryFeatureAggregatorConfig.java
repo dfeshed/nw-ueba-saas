@@ -1,4 +1,4 @@
-package presidio.ade.processes.shell.aggregation;
+package presidio.ade.processes.shell.config;
 
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.aggregation.feature.bucket.InMemoryFeatureBucketAggregator;
@@ -24,7 +24,7 @@ import org.springframework.context.annotation.Import;
 public class InMemoryFeatureAggregatorConfig {
 
     @Autowired
-    @Qualifier("featureAggregationBucketConfigService")
+    @Qualifier("bucketConfigurationService")
     private BucketConfigurationService bucketConfigurationService;
     @Autowired
     private RecordReaderFactoryService recordReaderFactoryService;

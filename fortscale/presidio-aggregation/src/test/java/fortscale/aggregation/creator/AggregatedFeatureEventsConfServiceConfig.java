@@ -1,7 +1,8 @@
-package fortscale.aggregation.feature.event.config;
+package fortscale.aggregation.creator;
 
 import fortscale.aggregation.feature.bucket.config.BucketConfigurationServiceConfig;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
+import fortscale.aggregation.feature.event.config.AggregatedFeatureEventsConfUtilServiceConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;

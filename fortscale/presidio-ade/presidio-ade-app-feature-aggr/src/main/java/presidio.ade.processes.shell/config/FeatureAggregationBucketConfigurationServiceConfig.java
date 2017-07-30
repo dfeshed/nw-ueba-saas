@@ -1,4 +1,4 @@
-package presidio.ade.processes.shell.aggregation;
+package presidio.ade.processes.shell.config;
 
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -13,12 +13,12 @@ public class FeatureAggregationBucketConfigurationServiceConfig {
     private String bucketConfJsonFilePath;
     @Value("${fortscale.feature.aggregation.bucket.conf.json.overriding.files.path:#{null}}")
     private String bucketConfJsonOverridingFilesPath;
-    @Value("${fortscalef.eature.aggregation.bucket.conf.json.additional.files.path:#{null}}")
+    @Value("${fortscale.feature.aggregation.bucket.conf.json.additional.files.path:#{null}}")
     private String bucketConfJsonAdditionalFilesPath;
 
     @Bean
-    @Qualifier("featureAggregationBucketConfigService")
-    public BucketConfigurationService featureAggregationBucketConfigService() {
+    @Qualifier("bucketConfigurationService")
+    public BucketConfigurationService bucketConfigurationService() {
         return new BucketConfigurationService(bucketConfJsonFilePath, bucketConfJsonOverridingFilesPath, bucketConfJsonAdditionalFilesPath);
     }
 }

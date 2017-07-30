@@ -1,10 +1,12 @@
-package fortscale.ml.scorer.feature_aggregation_events;
+package presidio.ade.processes.shell.config;
 
-import fortscale.accumulator.aggregation.store.config.AccumulatedAggregatedFeatureEventStoreConfig;
-import fortscale.aggregation.feature.event.config.AggregatedFeatureEventsConfServiceConfig;
+
+
 import fortscale.ml.scorer.ScoringService;
+import fortscale.ml.scorer.feature_aggregation_events.FeatureAggregationScoringService;
+import fortscale.ml.scorer.feature_aggregation_events.FeatureAggregationScoringServiceImpl;
+import fortscale.ml.scorer.feature_aggregation_events.ScoredFeatureAggregatedRecordBuilder;
 import fortscale.ml.scorer.records.RecordReaderFactoryServiceConfig;
-import fortscale.ml.scorer.spring.config.ScoringSpringConfiguration;
 import fortscale.utils.recordreader.RecordReaderFactoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -15,7 +17,7 @@ import org.springframework.context.annotation.Import;
 @Import({
         AggregatedFeatureEventsConfServiceConfig.class,
         RecordReaderFactoryServiceConfig.class,
-        ScoringSpringConfiguration.class,
+        ScoringServiceConfig.class,
         ScoredFeatureAggregatedRecordBuilderConfig.class,
 })
 public class FeatureAggregationScoringServiceConfig {

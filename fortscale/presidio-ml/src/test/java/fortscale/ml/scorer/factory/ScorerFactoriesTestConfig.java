@@ -5,7 +5,6 @@ import fortscale.aggregation.feature.bucket.FeatureBucketReader;
 import fortscale.global.configuration.GlobalConfiguration;
 import fortscale.ml.model.cache.EventModelsCacheService;
 import fortscale.ml.model.cache.ModelsCacheService;
-import fortscale.ml.scorer.factory.config.ScorersFactoryConfig;
 import fortscale.utils.mongodb.util.MongoDbUtilService;
 import fortscale.utils.monitoring.stats.config.NullStatsServiceConfig;
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
