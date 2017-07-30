@@ -13,7 +13,7 @@ import presidio.webapp.service.RestAlertService;
 
 @Import({MongoConfig.class, PresidioOutputPersistencyServiceConfig.class})
 @Configuration
-public class WebConf {
+public class OutputWebappConfiguration {
 
     @Autowired
     AlertPersistencyService alertService;
