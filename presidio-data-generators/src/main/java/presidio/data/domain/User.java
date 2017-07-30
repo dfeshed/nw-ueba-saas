@@ -62,11 +62,11 @@ public class    User {
     @Override
     public String toString() {
         return "User{" +
-                "username='" + username.toString() + '\'' +
-                ", userId='" + userId.toString() + '\'' +
-                ", firstName='" + firstName.toString() + '\'' +
-                ", lastName='" + lastName.toString() + '\'' +
-                ", isAdministrator=" + isAdministrator.toString() +
+                "username='" + username + '\'' +
+                ", userId='" + userId + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", isAdministrator=" + isAdministrator +
                 '}';
     }
 }

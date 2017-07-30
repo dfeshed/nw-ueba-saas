@@ -6,10 +6,10 @@ public class FileEntity {
     String filePath;
     String  fileName;
     long    fileSize;
-    boolean isDriveShared;
-    boolean isDirectory;
+    Boolean isDriveShared;
+    Boolean isDirectory;
 
-    public FileEntity(String fileName, String filePath, long fileSize, boolean isDriveShared, boolean isDirectory) {
+    public FileEntity(String fileName, String filePath, long fileSize, Boolean isDriveShared, Boolean isDirectory) {
         this.filePath = filePath;
         this.fileName = fileName;
         this.fileSize = fileSize;
@@ -41,19 +41,19 @@ public class FileEntity {
         this.fileSize = fileSize;
     }
 
-    public boolean isDriveShared() {
+    public Boolean isDriveShared() {
         return isDriveShared;
     }
 
-    public void setDriveShared(boolean driveShared) {
+    public void setDriveShared(Boolean driveShared) {
         isDriveShared = driveShared;
     }
 
-    public boolean isDirectory() {
+    public Boolean isDirectory() {
         return isDirectory;
     }
 
-    public void setDirectory(boolean directory) {
+    public void setDirectory(Boolean directory) {
         isDirectory = directory;
     }
 

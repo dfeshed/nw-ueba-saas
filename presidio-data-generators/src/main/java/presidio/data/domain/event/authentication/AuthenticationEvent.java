@@ -111,7 +111,7 @@ public class AuthenticationEvent extends Event implements Serializable {
     @Override
     public String toString() {
         return "AuthenticationEvent{" +
-                "eventTime=" + eventTime.toString() +
+                "eventTime=" + eventTime +
                 ", dataSource='" + dataSource + '\'' +
                 ", authenticationType='" + authenticationType.toString() + '\'' +
                 ", eventId='" + eventId + '\'' +
