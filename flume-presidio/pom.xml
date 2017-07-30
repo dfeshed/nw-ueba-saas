@@ -33,7 +33,7 @@
                     <mappings>
                         <mapping>
                             <directoryIncluded>false</directoryIncluded>
-                            <directory>${flume.home.directory}</directory>
+                            <directory>${flume_home_directory}</directory>
                             <username>presidio</username>
                             <groupname>presidio</groupname>
                             <sources>
