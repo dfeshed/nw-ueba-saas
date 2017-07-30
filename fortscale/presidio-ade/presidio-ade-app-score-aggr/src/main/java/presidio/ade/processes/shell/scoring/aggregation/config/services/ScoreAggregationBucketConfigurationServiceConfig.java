@@ -1,4 +1,4 @@
-package presidio.ade.processes.shell.scoring.aggregation;
+package presidio.ade.processes.shell.scoring.aggregation.config.services;
 
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import org.springframework.beans.factory.annotation.Value;

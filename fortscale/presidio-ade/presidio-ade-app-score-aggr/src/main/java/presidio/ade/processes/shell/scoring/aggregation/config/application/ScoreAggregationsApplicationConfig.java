@@ -1,41 +1,42 @@
-package presidio.ade.processes.shell;
+package presidio.ade.processes.shell.scoring.aggregation.config.application;
 
 import fortscale.aggregation.creator.AggregationRecordsCreator;
-import fortscale.aggregation.creator.AggregationRecordsCreatorConfig;
 import fortscale.common.shell.PresidioExecutionService;
-import fortscale.ml.model.cache.EventModelsCacheServiceConfig;
-import fortscale.ml.processes.shell.model.aggregation.ModelAggregationBucketConfigurationServiceConfig;
+import fortscale.common.shell.config.ShellCommonCommandsConfig;
 import fortscale.ml.scorer.enriched_events.EnrichedEventsScoringService;
-import fortscale.ml.scorer.enriched_events.EnrichedEventsScoringServiceConfig;
-import fortscale.utils.mongodb.config.MongoConfig;
 import fortscale.utils.monitoring.stats.config.NullStatsServiceConfig;
+import fortscale.utils.shell.BootShimConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
 import presidio.ade.domain.store.aggr.AggregatedDataStore;
 import presidio.ade.domain.store.aggr.AggregatedDataStoreConfig;
-
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
 import presidio.ade.domain.store.enriched.EnrichedDataStoreConfig;
+import presidio.ade.processes.shell.ScoreAggregationsExecutionServiceImpl;
 import presidio.ade.processes.shell.scoring.aggregation.ScoreAggregationsBucketService;
-import presidio.ade.processes.shell.scoring.aggregation.ScoreAggregationsBucketServiceConfiguration;
+import presidio.ade.processes.shell.scoring.aggregation.config.services.AggregationRecordsCreatorConfig;
+import presidio.ade.processes.shell.scoring.aggregation.config.services.EnrichedEventsScoringServiceConfig;
+import presidio.ade.processes.shell.scoring.aggregation.config.services.ScoreAggregationsBucketServiceConfiguration;
 
+/**
+ * Created by barak_schuster on 7/25/17.
+ */
 @Configuration
-@EnableSpringConfigured
 @Import({
-        MongoConfig.class,
-        EventModelsCacheServiceConfig.class,
+//        application-specific confs
         EnrichedEventsScoringServiceConfig.class,
-        EnrichedDataStoreConfig.class,
-        ScoreAggregationsBucketServiceConfiguration.class,
         AggregationRecordsCreatorConfig.class,
+        ScoreAggregationsBucketServiceConfiguration.class,
+//        common application confs
+        EnrichedDataStoreConfig.class,
         AggregatedDataStoreConfig.class,
-        ModelAggregationBucketConfigurationServiceConfig.class,
-        NullStatsServiceConfig.class // TODO: Remove this
+        ShellCommonCommandsConfig.class,
+        BootShimConfig.class,
+        NullStatsServiceConfig.class, // todo: remove this
 })
-public class ScoreAggregationsConfiguration {
+public class ScoreAggregationsApplicationConfig {
     @Autowired
     private EnrichedEventsScoringService enrichedEventsScoringService;
     @Autowired

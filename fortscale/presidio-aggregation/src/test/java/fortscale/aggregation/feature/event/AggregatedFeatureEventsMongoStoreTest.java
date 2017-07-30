@@ -62,11 +62,6 @@ public class AggregatedFeatureEventsMongoStoreTest {
         }
 
         @Bean
-        RetentionStrategiesConfService retentionStrategiesConfService() {
-            return mock(RetentionStrategiesConfService.class);
-        }
-
-        @Bean
         public BucketConfigurationService bucketConfigurationService() {
             return mock(BucketConfigurationService.class);
         }
@@ -81,7 +76,6 @@ public class AggregatedFeatureEventsMongoStoreTest {
 
             aggrFeatureEventsConfService = mock(AggregatedFeatureEventsConfService.class);
             when(aggrFeatureEventsConfService.getAggregatedFeatureEventConf(anyString())).thenReturn(aggregatedFeatureEventConf);
-            when(aggrFeatureEventsConfService.getAggrFeatureRetnetionStrategy(anyString())).thenReturn(retentionStrategy);
             return aggrFeatureEventsConfService;
         }
 
