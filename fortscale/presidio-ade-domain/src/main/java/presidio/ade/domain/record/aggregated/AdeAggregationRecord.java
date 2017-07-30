@@ -8,7 +8,6 @@ import presidio.ade.domain.record.AdeRecord;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * Created by barak_schuster on 7/9/17.

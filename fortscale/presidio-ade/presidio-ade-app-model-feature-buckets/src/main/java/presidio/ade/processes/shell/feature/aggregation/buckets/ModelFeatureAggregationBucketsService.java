@@ -68,7 +68,7 @@ public class ModelFeatureAggregationBucketsService extends FixedDurationStrategy
 
     protected FeatureBucketStrategyData createFeatureBucketStrategyData(TimeRange timeRange){
         String strategyName = "fixed_duration_" + StringUtils.lowerCase(this.strategy.name());
-        return new FeatureBucketStrategyData(strategyName,strategyName,timeRange.getStart().getEpochSecond(), timeRange.getEnd().getEpochSecond());
+        return new FeatureBucketStrategyData(strategyName,strategyName,timeRange);
     }
 
     @Override

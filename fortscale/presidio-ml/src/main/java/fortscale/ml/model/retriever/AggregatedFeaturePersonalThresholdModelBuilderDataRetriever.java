@@ -20,7 +20,6 @@ import java.util.stream.Stream;
 
 @Configurable(preConstruction = true)
 public class AggregatedFeaturePersonalThresholdModelBuilderDataRetriever extends AbstractDataRetriever {
-	private AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
 	private AggregatedFeatureEventsReaderService aggregatedFeatureEventsReaderService;
 
 	private AggregatedFeatureEventConf aggregatedFeatureEventConfToCalibrate;
@@ -31,7 +30,6 @@ public class AggregatedFeaturePersonalThresholdModelBuilderDataRetriever extends
 																	   AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService,
 																	   AggregatedFeatureEventsReaderService aggregatedFeatureEventsReaderService) {
 		super(config);
-		this.aggregatedFeatureEventsConfService = aggregatedFeatureEventsConfService;
 		this.aggregatedFeatureEventsReaderService = aggregatedFeatureEventsReaderService;
 
 		String aggregatedFeatureEventConfNameToCalibrate = config.getAggregatedFeatureEventConfNameToCalibrate();

@@ -3,7 +3,7 @@ package fortscale.ml.scorer.feature_aggregation_events;
 import fortscale.domain.feature.score.FeatureScore;
 import fortscale.utils.logging.Logger;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
-import presidio.ade.domain.record.scored.feature_aggregation_scored.ScoredFeatureAggregatedRecord;
+import presidio.ade.domain.record.scored.feature_aggregation.ScoredFeatureAggregationRecord;
 
 
 import java.util.List;
@@ -12,7 +12,7 @@ import java.util.List;
 public class ScoredFeatureAggregatedRecordBuilder {
     private static final Logger logger = Logger.getLogger(ScoredFeatureAggregatedRecordBuilder.class);
 
-    public void fill(List<ScoredFeatureAggregatedRecord> scoredFeatureAggregatedRecords, AdeAggregationRecord featureAdeAggrRecord, List<FeatureScore> featureScoreList) {
+    public void fill(List<ScoredFeatureAggregationRecord> scoredFeatureAggregationRecords, AdeAggregationRecord featureAdeAggrRecord, List<FeatureScore> featureScoreList) {
 
         if (featureScoreList.size() == 0) {
             //TODO: add metrics.
@@ -36,8 +36,8 @@ public class ScoredFeatureAggregatedRecordBuilder {
         }
 
         for (FeatureScore featureScore : eventScore.getFeatureScores()) {
-            ScoredFeatureAggregatedRecord scoredFeatureAggregatedRecord = new ScoredFeatureAggregatedRecord(featureScore.getScore(), featureAdeAggrRecord.getStartInstant(), featureAdeAggrRecord.getEndInstant(), featureAdeAggrRecord.getFeatureName(), featureAdeAggrRecord.getFeatureValue(), featureAdeAggrRecord.getFeatureBucketConfName(), featureAdeAggrRecord.getContext(), featureAdeAggrRecord.getAggregatedFeatureType());
-            scoredFeatureAggregatedRecords.add(scoredFeatureAggregatedRecord);
+            ScoredFeatureAggregationRecord scoredFeatureAggregationRecord = new ScoredFeatureAggregationRecord(featureScore.getScore(), featureAdeAggrRecord.getStartInstant(), featureAdeAggrRecord.getEndInstant(), featureAdeAggrRecord.getFeatureName(), featureAdeAggrRecord.getFeatureValue(), featureAdeAggrRecord.getFeatureBucketConfName(), featureAdeAggrRecord.getContext(), featureAdeAggrRecord.getAggregatedFeatureType());
+            scoredFeatureAggregationRecords.add(scoredFeatureAggregationRecord);
         }
 
     }
