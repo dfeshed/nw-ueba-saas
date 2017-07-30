@@ -35,7 +35,7 @@ public class ActiveDirectoryOperationGenerator implements IActiveDirectoryOperat
         return isSecuritySensitiveOperationGenerator;
     }
 
-    public void setIsSecuritySensitiveOperationGenerator(BooleanPercentageGenerator isSecuritySensitiveOperationGenerator) {
+    public void setIsSecuritySensitiveOperationGenerator(IBooleanGenerator isSecuritySensitiveOperationGenerator) {
         this.isSecuritySensitiveOperationGenerator = isSecuritySensitiveOperationGenerator;
     }
 
