@@ -1,28 +1,25 @@
-package fortscale.common.general;
+package fortscale.common.shell;
 
 import fortscale.common.shell.config.ShellCommonCommandsConfig;
+import fortscale.common.shell.config.ShellableApplicationConfig;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.shell.BootShim;
-import fortscale.utils.shell.BootShimConfig;
 import fortscale.utils.shell.CommandLineArgsHolder;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.shell.core.ExitShellRequest;
 
 import java.util.Arrays;
+import java.util.List;
 
 /**
- * Abstract class for running spring boot application with spring shell operation support
+ * Used for running spring boot application with spring shell operation support
  *
  * Created by efratn on 15/06/2017.
  */
-public abstract class PresidioShellableApplication {
-    private static final Logger logger = Logger.getLogger(PresidioShellableApplication.class);
+public class PresidioShellableApplication {
 
-    private static ExitShellRequest run(ConfigurableApplicationContext ctx) {
-        BootShim bs = ctx.getBean(BootShim.class);
-        return bs.run();
-    }
+    private static final Logger logger = Logger.getLogger(PresidioShellableApplication.class);
 
     /**
      * Create a default {@link ConfigurableApplicationContext}, that contains the {@link ShellCommonCommandsConfig}
@@ -31,16 +28,13 @@ public abstract class PresidioShellableApplication {
      * @param configurationClass where the application's context is configured
      * @param args               the input arguments
      */
-    public static void run(Object[] configurationClass, String[] args) {
-        logger.info("Starting {} component ",configurationClass.getClass().getName());
+    public static void run(List<Class> configurationClass, String[] args) {
+        logger.debug("Starting {} component ",configurationClass.getClass().getName());
+
         CommandLineArgsHolder.args = args;
-        Object[] sources= new Object[configurationClass.length+2];
-        for(int i=0;i<configurationClass.length;i++){
-            sources[i]=configurationClass[i];
-        }
-        sources[configurationClass.length]=ShellCommonCommandsConfig.class;
-        sources[configurationClass.length+1]=BootShimConfig.class;
-        ConfigurableApplicationContext context = SpringApplication.run(sources, args);
+
+        configurationClass.add(ShellableApplicationConfig.class);
+        ConfigurableApplicationContext context = SpringApplication.run(configurationClass.toArray(), args);
         int exitCode=0;
         try {
             context.registerShutdownHook();
@@ -56,5 +50,10 @@ public abstract class PresidioShellableApplication {
             context.close();
             System.exit(exitCode);
         }
+    }
+
+    private static ExitShellRequest run(ConfigurableApplicationContext ctx) {
+        BootShim bs = ctx.getBean(BootShim.class);
+        return bs.run();
     }
 }
