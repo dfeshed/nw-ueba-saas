@@ -4,10 +4,10 @@ import java.time.Instant;
 
 public class RestAlertQuery {
     // filters
-    private String filterBuUserName;
-    private String filterBySeverity;
-    private Instant filterByStartDate;
-    private Instant filterByEndDate;
+    private String userName;
+    private String severity;
+    private Instant startDate;
+    private Instant endDate;
 
     // sort
     private String sortField;
@@ -17,36 +17,36 @@ public class RestAlertQuery {
     private int pageNumber;
     private int pageSize;
 
-    public String getFilterBuUserName() {
-        return filterBuUserName;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setFilterBuUserName(String filterBuUserName) {
-        this.filterBuUserName = filterBuUserName;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
-    public String getFilterBySeverity() {
-        return filterBySeverity;
+    public String getSeverity() {
+        return severity;
     }
 
-    public void setFilterBySeverity(String filterBySeverity) {
-        this.filterBySeverity = filterBySeverity;
+    public void setSeverity(String severity) {
+        this.severity = severity;
     }
 
-    public Instant getFilterByStartDate() {
-        return filterByStartDate;
+    public Instant getStartDate() {
+        return startDate;
     }
 
-    public void setFilterByStartDate(Instant filterByStartDate) {
-        this.filterByStartDate = filterByStartDate;
+    public void setStartDate(Instant startDate) {
+        this.startDate = startDate;
     }
 
-    public Instant getFilterByEndDate() {
-        return filterByEndDate;
+    public Instant getEndDate() {
+        return endDate;
     }
 
-    public void setFilterByEndDate(Instant filterByEndDate) {
-        this.filterByEndDate = filterByEndDate;
+    public void setEndDate(Instant endDate) {
+        this.endDate = endDate;
     }
 
     public String getSortField() {

@@ -59,16 +59,16 @@ public class RestAlertServiceImpl implements RestAlertService {
 
     private AlertQuery createQuery(RestAlertQuery restAlertQuery) {
         AlertQuery.AlertQueryBuilder alertQueryBuilder = new AlertQuery.AlertQueryBuilder();
-        alertQueryBuilder.filterByUserName(restAlertQuery.getFilterBuUserName());
-        Instant filterByStartDate = restAlertQuery.getFilterByStartDate();
+        alertQueryBuilder.filterByUserName(restAlertQuery.getUserName());
+        Instant filterByStartDate = restAlertQuery.getStartDate();
         if (filterByStartDate != null) {
             alertQueryBuilder.filterByStartDate(filterByStartDate.toEpochMilli());
         }
-        Instant filterByEndDate = restAlertQuery.getFilterByEndDate();
+        Instant filterByEndDate = restAlertQuery.getEndDate();
         if (filterByEndDate != null) {
             alertQueryBuilder.filterByEndDate(filterByEndDate.toEpochMilli());
         }
-        alertQueryBuilder.filterBySeverity(restAlertQuery.getFilterBySeverity());
+        alertQueryBuilder.filterBySeverity(restAlertQuery.getSeverity());
         alertQueryBuilder.sortField(restAlertQuery.getSortField(), restAlertQuery.isAscendingOrder());
         AlertQuery alertQuery = alertQueryBuilder.build();
         return alertQuery;
