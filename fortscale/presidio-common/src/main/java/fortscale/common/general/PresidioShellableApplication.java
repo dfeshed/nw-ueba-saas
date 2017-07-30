@@ -3,8 +3,11 @@ package fortscale.common.general;
 import fortscale.common.shell.config.ShellCommonCommandsConfig;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.shell.BootShim;
+import fortscale.utils.shell.BootShimConfig;
+import fortscale.utils.shell.CommandLineArgsHolder;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.shell.core.ExitShellRequest;
 
 import java.util.Arrays;
 
@@ -16,15 +19,9 @@ import java.util.Arrays;
 public abstract class PresidioShellableApplication {
     private static final Logger logger = Logger.getLogger(PresidioShellableApplication.class);
 
-    @Deprecated
-    public static void run(String[] args, ConfigurableApplicationContext ctx) {
-        try {
-            BootShim bs = new BootShim(args, ctx);
-            bs.run();
-        } catch (RuntimeException e) {
-            String errorMessage = String.format("Failed to run application with specified args: [%s]", Arrays.toString(args));
-            logger.error(errorMessage, e);
-        }
+    private static ExitShellRequest run(ConfigurableApplicationContext ctx) {
+        BootShim bs = ctx.getBean(BootShim.class);
+        return bs.run();
     }
 
     /**
@@ -36,17 +33,19 @@ public abstract class PresidioShellableApplication {
      */
     public static void run(Object[] configurationClass, String[] args) {
         logger.info("Starting {} component ",configurationClass.getClass().getName());
-        Object[] sources= new Object[configurationClass.length+1];
+        CommandLineArgsHolder.args = args;
+        Object[] sources= new Object[configurationClass.length+2];
         for(int i=0;i<configurationClass.length;i++){
             sources[i]=configurationClass[i];
         }
         sources[configurationClass.length]=ShellCommonCommandsConfig.class;
+        sources[configurationClass.length+1]=BootShimConfig.class;
         ConfigurableApplicationContext context = SpringApplication.run(sources, args);
         int exitCode=0;
         try {
-            BootShim bs = new BootShim(args, context);
             context.registerShutdownHook();
-            bs.run();
+            ExitShellRequest exitShellRequest = run(context);
+            exitCode = exitShellRequest.getExitCode();
         } catch (RuntimeException e) {
             String errorMessage = String.format("Failed to run application with specified args: [%s]", Arrays.toString(args));
             logger.error(errorMessage, e);

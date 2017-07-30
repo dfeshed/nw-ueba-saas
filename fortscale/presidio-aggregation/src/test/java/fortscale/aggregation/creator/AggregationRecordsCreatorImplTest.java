@@ -85,7 +85,6 @@ public class AggregationRecordsCreatorImplTest {
         public static TestPropertiesPlaceholderConfigurer aggregationCreatorTestProperties() {
             Properties properties = new Properties();
             properties.put("fortscale.aggregation.bucket.conf.json.file.name", "classpath:fortscale/config/asl/feature-buckets/score_aggregation_feature_buckets.json");
-            properties.put("fortscale.aggregation.retention.strategy.conf.json.file.name", "classpath:config/asl/retention_strategies.json");
             properties.put("fortscale.aggregation.feature.event.conf.json.file.name", "classpath:fortscale/config/asl/aggregated-features/score_aggregation_features.json");
             return new TestPropertiesPlaceholderConfigurer(properties);
         }

@@ -1,7 +1,10 @@
 package fortscale.aggregation.feature.event.store;
 
 import com.mongodb.BulkWriteResult;
-import fortscale.aggregation.feature.event.*;
+import fortscale.aggregation.feature.event.AggrEvent;
+import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
+import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
+import fortscale.aggregation.feature.event.ScoredEventsCounterReader;
 import fortscale.aggregation.feature.event.store.translator.AggregatedFeatureNameTranslationService;
 import fortscale.common.metrics.PersistenceTaskStoreMetrics;
 import fortscale.utils.MongoStoreUtils;
@@ -20,7 +23,6 @@ import org.springframework.data.mongodb.core.query.Query;
 
 import java.time.Instant;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public class AggregatedFeatureEventsMongoStore implements ScoredEventsCounterReader {
@@ -59,7 +61,7 @@ public class AggregatedFeatureEventsMongoStore implements ScoredEventsCounterRea
 		if(collectionName == null){
 			collectionName = aggregatedFeatureNameTranslationService.toCollectionName(aggregatedFeatureName);
 			if(!mongoTemplate.collectionExists(collectionName)){
-				createCollection(collectionName, getRetentionInSeconds(aggregatedFeatureName));
+				createCollection(collectionName);
 			}
 			aggregatedFeatureNameToExistingCollectionNameMap.put(aggregatedFeatureName, collectionName);
 		}
@@ -216,39 +218,8 @@ public class AggregatedFeatureEventsMongoStore implements ScoredEventsCounterRea
 
 	}
 
-	private long getRetentionInSeconds(String aggregatedFeatureName) {
-		// Get retention strategy name
-		AggregatedFeatureEventConf aggregatedFeatureEventConf =
-				aggregatedFeatureEventsConfService
-				.getAggregatedFeatureEventConf(aggregatedFeatureName);
-		String retentionStrategyName = aggregatedFeatureEventConf.getRetentionStrategyName();
 
-		// Assert retention strategy name
-		if (retentionStrategyName == null) {
-			String errorMsg = String.format(
-					"Aggregated feature conf doesn't have retention strategy. Feature name: %s",
-					aggregatedFeatureName);
-			throw new IllegalArgumentException(errorMsg);
-		}
-
-		// Get retention strategy
-		AggrFeatureRetentionStrategy retentionStrategy =
-				aggregatedFeatureEventsConfService
-				.getAggrFeatureRetnetionStrategy(retentionStrategyName);
-
-		// Assert retention strategy
-		if (retentionStrategy == null) {
-			String errorMsg = String.format(
-					"No aggregated feature retention strategy with the name [%s] exists in the %s",
-					retentionStrategyName, AggregatedFeatureEventsConfService.class.getSimpleName());
-			throw new IllegalArgumentException(errorMsg);
-		}
-
-		// Return retention
-		return retentionStrategy.getRetentionInSeconds();
-	}
-
-	private void createCollection(String collectionName, long retentionInSeconds) {
+	private void createCollection(String collectionName) {
 		// Create collection
 		mongoTemplate.createCollection(collectionName);
 
@@ -257,10 +228,7 @@ public class AggregatedFeatureEventsMongoStore implements ScoredEventsCounterRea
 				.on(AggrEvent.EVENT_FIELD_START_TIME_UNIX, Sort.Direction.DESC));
 		mongoTemplate.indexOps(collectionName).ensureIndex(new Index()
 				.on(AggrEvent.EVENT_FIELD_CONTEXT, Sort.Direction.DESC));
-		mongoTemplate.indexOps(collectionName).ensureIndex(new FIndex()
-				.expire(retentionInSeconds, TimeUnit.SECONDS)
-				.named(AggrEvent.EVENT_FIELD_CREATION_DATE_TIME)
-				.on(AggrEvent.EVENT_FIELD_CREATION_DATE_TIME, Sort.Direction.DESC));
+
 		mongoTemplate.indexOps(collectionName).ensureIndex(new FIndex()
 				.on(AggrEvent.EVENT_FIELD_CONTEXT_ID, Sort.Direction.ASC)
 				.on(AggrEvent.EVENT_FIELD_START_TIME, Sort.Direction.ASC));

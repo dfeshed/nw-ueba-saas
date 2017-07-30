@@ -74,7 +74,7 @@ public class ActiveDirectoryRawEvent extends AbstractInputDocument {
         return isSecuritySensitiveOperation;
     }
 
-    public void setSecuritySensitiveOperation(boolean securitySensitiveOperation) {
+    public void setIsSecuritySensitiveOperation(boolean securitySensitiveOperation) {
         isSecuritySensitiveOperation = securitySensitiveOperation;
     }
 
@@ -82,7 +82,7 @@ public class ActiveDirectoryRawEvent extends AbstractInputDocument {
         return isUserAdministrator;
     }
 
-    public void setUserAdministrator(boolean userAdministrator) {
+    public void setIsUserAdministrator(boolean userAdministrator) {
         isUserAdministrator = userAdministrator;
     }
 
