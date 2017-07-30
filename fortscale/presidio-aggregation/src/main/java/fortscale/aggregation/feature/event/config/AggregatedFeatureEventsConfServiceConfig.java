@@ -11,8 +11,7 @@ import org.springframework.context.annotation.Import;
  */
 @Configuration
 @Import({BucketConfigurationServiceConfig.class,
-        AggregatedFeatureEventsConfUtilServiceConfig.class,
-        RetentionStrategiesConfServiceConfig.class})
+        AggregatedFeatureEventsConfUtilServiceConfig.class})
 public class AggregatedFeatureEventsConfServiceConfig {
     @Bean
     public AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService()
