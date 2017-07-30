@@ -22,7 +22,7 @@ public class OutputExecutionServiceImpl implements PresidioExecutionService {
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private static int SMART_SCORE_THRESHOLD = 0;
+    public static int SMART_SCORE_THRESHOLD = 50;
 
     private final ADEManagerSDK adeManagerSDK;
     private final AlertService alertService;

@@ -9,12 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
+import presidio.output.proccesor.spring.OutputProcessorTestConfiguration;
 import presidio.output.processor.services.OutputExecutionServiceImpl;
 import presidio.output.processor.spring.OutputProcessorConfiguration;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = OutputProcessorConfiguration.class)
-@Import(MongodbTestConfig.class)
+@SpringBootTest(classes = OutputProcessorTestConfiguration.class)
 public class FortscaleOutputProcessorApplicationTest {
 
 	@Autowired
