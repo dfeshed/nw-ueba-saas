@@ -68,8 +68,8 @@ public class ActiveDirectoryEvent extends Event implements Serializable {
         return "ActiveDirectoryEvent{" +
                 "eventTime=" + eventTime +
                 ", eventId=" + eventId +
-                ", operation=" + operation +
-                ", user=" + user +
+                ", operation=" + operation.toString() +
+                ", user=" + user.toString() +
                 ", dataSource='" + dataSource + '\'' +
                 '}';
     }

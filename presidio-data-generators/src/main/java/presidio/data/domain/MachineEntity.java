@@ -50,4 +50,14 @@ public class MachineEntity {
     public void setRemote(Boolean remote) {
         this.remote = remote;
     }
+
+    @Override
+    public String toString() {
+        return "MachineEntity{" +
+                "name='" + name + '\'' +
+                ", normalized_name='" + normalized_name + '\'' +
+                ", ip_address='" + ip_address + '\'' +
+                ", remote=" + remote +
+                '}';
+    }
 }
