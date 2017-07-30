@@ -8,5 +8,5 @@ import java.util.List;
 
 public interface FeatureAggregationScoringService {
 
-    void scoreEvents(List<ScoredFeatureAggregationRecord> scoredFeatureAggregationRecords, List<AdeAggregationRecord> featureAdeAggrRecords);
+    List<ScoredFeatureAggregationRecord> scoreEvents(List<AdeAggregationRecord> featureAdeAggrRecords);
 }

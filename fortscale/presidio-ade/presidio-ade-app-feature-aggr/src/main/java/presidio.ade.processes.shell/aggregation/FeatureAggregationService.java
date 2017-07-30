@@ -61,8 +61,7 @@ public class FeatureAggregationService extends FixedDurationStrategyExecutor {
             //feature bucket creation
             List<AdeAggregationRecord> featureAdeAggrRecords = featureAggregationsCreator.createAggregationRecords(featureBuckets);
 
-            List<ScoredFeatureAggregationRecord> scoredFeatureAggregationRecords = new ArrayList<>();
-            featureAggregationScoringService.scoreEvents(scoredFeatureAggregationRecords, featureAdeAggrRecords);
+            List<ScoredFeatureAggregationRecord> scoredFeatureAggregationRecords = featureAggregationScoringService.scoreEvents(featureAdeAggrRecords);
 
             scoredFeatureAggregatedStore.store(scoredFeatureAggregationRecords);
         }
@@ -71,7 +70,7 @@ public class FeatureAggregationService extends FixedDurationStrategyExecutor {
 
     protected FeatureBucketStrategyData createFeatureBucketStrategyData(TimeRange timeRange) {
         String strategyName = "fixed_duration_" + StringUtils.lowerCase(this.strategy.name());
-        return new FeatureBucketStrategyData(strategyName, strategyName, timeRange.getStart().getEpochSecond(), timeRange.getEnd().getEpochSecond());
+        return new FeatureBucketStrategyData(strategyName, strategyName, timeRange);
     }
 
     @Override

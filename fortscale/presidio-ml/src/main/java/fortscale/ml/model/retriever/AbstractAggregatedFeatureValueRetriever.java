@@ -17,9 +17,8 @@ import java.util.stream.DoubleStream;
 
 public abstract class AbstractAggregatedFeatureValueRetriever extends AbstractDataRetriever {
 
-    private final String CONTEXT_FIELD = "context";
+    private static final String CONTEXT_FIELD = "context";
 
-    private AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
 
     private AggregatedFeatureEventConf aggregatedFeatureEventConf;
 
@@ -27,7 +26,6 @@ public abstract class AbstractAggregatedFeatureValueRetriever extends AbstractDa
                                                    AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService,
                                                    boolean isAccumulation) {
         super(config);
-        this.aggregatedFeatureEventsConfService = aggregatedFeatureEventsConfService;
         String aggregatedFeatureEventConfName = config.getAggregatedFeatureEventConfName();
         aggregatedFeatureEventConf = aggregatedFeatureEventsConfService
                 .getAggregatedFeatureEventConf(aggregatedFeatureEventConfName);
