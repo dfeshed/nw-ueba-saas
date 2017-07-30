@@ -33,7 +33,7 @@
                     <mappings>
                         <mapping>
                             <directoryIncluded>false</directoryIncluded>
-                            <directory>${flume.home.directory}</directory>
+                            <directory>${flume_home_directory}</directory>
                             <username>presidio</username>
                             <groupname>presidio</groupname>
                             <sources>
@@ -54,12 +54,15 @@
                     <postinstallScriptlet>
                         <script>
                             <!-- post installation commands: -->
-                            export FLUME_HOME=/opt/flume
+                            echo "Creating env variable"
+                            export FLUME_HOME=${flume_home_directory}
+                            echo "Writing env variable to /etc/profile"
                             echo "export FLUME_HOME=/opt/flume" >> /etc/profile
                             chmod -v +x ${FLUME_HOME}/bin/flume-ng.ps1
                             chmod -v +x ${FLUME_HOME}/bin/flume-ng
+                            echo "Editing flume-ng file"
                             sed -i -e 's/\r$//' ${FLUME_HOME}/bin/flume-ng
-                            chown -R presidio:presidio ${FLUME_HOME}
+                            chown -v -R presidio:presidio ${FLUME_HOME}
 
                             <!--end of post installation -->"
                         </script>
@@ -73,8 +76,7 @@
                     <postremoveScriptlet>
                         <script>
                             <!-- post remove commands -->
-
-
+                            rm -v -rf ${flume_home_directory}
                         </script>
                     </postremoveScriptlet>
                 </configuration>
@@ -82,7 +84,7 @@
         </plugins>
     </build>
     <properties>
-        <flume.home.directory>/opt/flume</flume.home.directory>
+        <flume_home_directory>/opt/flume</flume_home_directory>
     </properties>
 
 
