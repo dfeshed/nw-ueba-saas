@@ -7,6 +7,7 @@ import fortscale.utils.shell.BootShimConfig;
 import fortscale.utils.shell.CommandLineArgsHolder;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.shell.core.ExitShellRequest;
 
 import java.util.Arrays;
 
@@ -18,9 +19,9 @@ import java.util.Arrays;
 public abstract class PresidioShellableApplication {
     private static final Logger logger = Logger.getLogger(PresidioShellableApplication.class);
 
-    private static void run(ConfigurableApplicationContext ctx) {
+    private static ExitShellRequest run(ConfigurableApplicationContext ctx) {
         BootShim bs = ctx.getBean(BootShim.class);
-        bs.run();
+        return bs.run();
     }
 
     /**
@@ -43,17 +44,14 @@ public abstract class PresidioShellableApplication {
         int exitCode=0;
         try {
             context.registerShutdownHook();
-            run(context);
+            ExitShellRequest exitShellRequest = run(context);
+            exitCode = exitShellRequest.getExitCode();
         } catch (RuntimeException e) {
             String errorMessage = String.format("Failed to run application with specified args: [%s]", Arrays.toString(args));
             logger.error(errorMessage, e);
             exitCode=1;
         }
         finally {
-            if (exitCode!=1) {
-                BootShim bs = context.getBean(BootShim.class);
-                exitCode = bs.getShell().getExitShellRequest().getExitCode();
-            }
             Thread.currentThread().interrupt();
             context.close();
             System.exit(exitCode);
