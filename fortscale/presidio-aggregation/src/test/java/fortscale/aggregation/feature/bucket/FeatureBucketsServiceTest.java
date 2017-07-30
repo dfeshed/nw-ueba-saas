@@ -10,6 +10,7 @@ import fortscale.utils.recordreader.RecordReaderFactoryService;
 import fortscale.utils.recordreader.transformation.Transformation;
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
 import fortscale.utils.test.category.ModuleTestCategory;
+import fortscale.utils.time.TimeRange;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -86,7 +87,8 @@ public class FeatureBucketsServiceTest {
      */
     public void strategyDataInitialize() {
         long epochtime = 1435737600;
-        strategyData = new FeatureBucketStrategyData(STRATEGY_EVENT_CONTEXT_ID, STRATEGY_NAME, epochtime, epochtime + DEFAULT_END_TIME_DELTA_IN_SECONDS, new HashMap<>());
+        TimeRange timeRange = new TimeRange(epochtime,epochtime + DEFAULT_END_TIME_DELTA_IN_SECONDS);
+        strategyData = new FeatureBucketStrategyData(STRATEGY_EVENT_CONTEXT_ID, STRATEGY_NAME, timeRange, new HashMap<>());
     }
 
     /**

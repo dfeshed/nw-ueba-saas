@@ -17,7 +17,6 @@ import java.util.stream.Stream;
 
 
 public class AggregatedFeatureEventUnreducedScoreRetriever extends AbstractDataRetriever {
-	private AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
 	private AggregatedFeatureEventsReaderService aggregatedFeatureEventsReaderService;
 
 	private AggregatedFeatureEventUnreducedScoreRetrieverConf config;
@@ -28,7 +27,6 @@ public class AggregatedFeatureEventUnreducedScoreRetriever extends AbstractDataR
 														 AggregatedFeatureEventsReaderService aggregatedFeatureEventsReaderService) {
 		super(config);
 		this.config = config;
-		this.aggregatedFeatureEventsConfService = aggregatedFeatureEventsConfService;
 		this.aggregatedFeatureEventsReaderService = aggregatedFeatureEventsReaderService;
 
 		String aggregatedFeatureEventConfNameToCalibrate = config.getAggregatedFeatureEventToCalibrateConfName();

@@ -4,7 +4,6 @@ import fortscale.accumulator.aggregation.store.AccumulatedAggregatedFeatureEvent
 import fortscale.accumulator.entityEvent.store.AccumulatedEntityEventStore;
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.aggregation.feature.bucket.FeatureBucketReader;
-import fortscale.aggregation.feature.event.RetentionStrategiesConfService;
 import fortscale.aggregation.feature.event.config.AggregatedFeatureEventsConfServiceConfig;
 import fortscale.aggregation.feature.event.store.AggregatedFeatureEventsReaderService;
 import fortscale.entity.event.EntityEventConfService;
@@ -75,10 +74,6 @@ public class ModelConfProductionConfFilesTest {
 			return new BucketConfigurationService(bucketConfJsonFilePath, bucketConfJsonOverridingFilesPath,bucketConfJsonAdditionalFilesPath);
 		}
 
-		@Bean
-		public RetentionStrategiesConfService retentionStrategiesConfService() {
-			return new RetentionStrategiesConfService();
-		}
 
 		@Bean
 		public EntityEventConfService entityEventConfService() {
@@ -114,9 +109,6 @@ public class ModelConfProductionConfFilesTest {
 			properties.put("fortscale.aggregation.feature.event.conf.json.additional.files.path", "file:home/cloudera/fortscale/config/asl/aggregation_events/additional/*.json");
 			properties.put("streaming.event.field.type.aggr_event", "aggr_event");
 			properties.put("streaming.aggr_event.field.context", "context");
-			properties.put("fortscale.aggregation.retention.strategy.conf.json.file.name", "classpath:config/asl/retention_strategies.json");
-			properties.put("fortscale.aggregation.retention.strategy.conf.json.overriding.files.path", "file:home/cloudera/fortscale/config/asl/retention_strategy/overriding/*.json");
-			properties.put("fortscale.aggregation.retention.strategy.conf.json.additional.files.path", "file:home/cloudera/fortscale/config/asl/retention_strategy/additional/*.json");
 
 			properties.put("fortscale.entity.event.definitions.json.file.path", "classpath:config/asl/entity_events.json");
 			properties.put("fortscale.entity.event.definitions.conf.json.overriding.files.path", "file:home/cloudera/fortscale/config/asl/entity_events/overriding/entity_events*.json");

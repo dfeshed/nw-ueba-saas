@@ -138,7 +138,7 @@ public class FileRawEvent extends AbstractInputDocument {
         return isSrcDriveShared;
     }
 
-    public void setSrcDriveShared(boolean srcDriveShared) {
+    public void setIsSrcDriveShared(boolean srcDriveShared) {
         isSrcDriveShared = srcDriveShared;
     }
 
@@ -146,7 +146,7 @@ public class FileRawEvent extends AbstractInputDocument {
         return isDstDriveShared;
     }
 
-    public void setDstDriveShared(boolean dstDriveShared) {
+    public void setIsDstDriveShared(boolean dstDriveShared) {
         isDstDriveShared = dstDriveShared;
     }
 

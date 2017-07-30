@@ -22,6 +22,7 @@ public class BootShim {
 
     private CommandLine commandLine;
     private ConfigurableApplicationContext ctx;
+    private JLineShellComponent shell;
 
 
     public BootShim(String[] args, ConfigurableApplicationContext context) {
@@ -41,6 +42,7 @@ public class BootShim {
         } else {
             scanner.scan(new String[]{"org.springframework.shell.commands", "org.springframework.shell.converters", "org.springframework.shell.plugin.support"});
         }
+        shell = this.ctx.getBean(SHELL_BEAN_NAME, JLineShellComponent.class);
 
     }
 
@@ -63,7 +65,7 @@ public class BootShim {
 
     public ExitShellRequest run() {
         String[] commandsToExecuteAndThenQuit = commandLine.getShellCommandsToExecute();
-        JLineShellComponent shell = this.ctx.getBean(SHELL_BEAN_NAME, JLineShellComponent.class);
+
         ExitShellRequest exitShellRequest;
         if (null != commandsToExecuteAndThenQuit) {
             boolean successful = false;
@@ -96,4 +98,7 @@ public class BootShim {
         return exitShellRequest;
     }
 
+    public JLineShellComponent getShell() {
+        return shell;
+    }
 }

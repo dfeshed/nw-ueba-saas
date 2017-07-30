@@ -6,8 +6,9 @@ import fortscale.utils.logging.Logger;
 import fortscale.utils.recordreader.RecordReaderFactoryService;
 import presidio.ade.domain.record.AdeRecordReader;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
-import presidio.ade.domain.record.scored.feature_aggregation_scored.ScoredFeatureAggregatedRecord;
+import presidio.ade.domain.record.scored.feature_aggregation.ScoredFeatureAggregationRecord;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -28,7 +29,9 @@ public class FeatureAggregationScoringServiceImpl implements FeatureAggregationS
         this.scoredFeatureAggregatedRecordBuilder = scoredFeatureAggregatedRecordBuilder;
     }
 
-    public void scoreEvents(List<ScoredFeatureAggregatedRecord> scoredFeatureAggregatedRecords, List<AdeAggregationRecord> featureAdeAggrRecords) {
+    public List<ScoredFeatureAggregationRecord>  scoreEvents(List<AdeAggregationRecord> featureAdeAggrRecords) {
+        List<ScoredFeatureAggregationRecord> scoredFeatureAggregationRecords = new ArrayList<>();
+
         if (featureAdeAggrRecords.size() == 0) {
             logger.warn("got an empty feature aggregation record list");
         }
@@ -36,8 +39,9 @@ public class FeatureAggregationScoringServiceImpl implements FeatureAggregationS
         for (AdeAggregationRecord featureAdeAggrRecord : featureAdeAggrRecords) {
             AdeRecordReader adeRecordReader = (AdeRecordReader) recordReaderFactoryService.getRecordReader(featureAdeAggrRecord);
             List<FeatureScore> featureScoreList = scoringService.score(adeRecordReader);
-            scoredFeatureAggregatedRecordBuilder.fill(scoredFeatureAggregatedRecords, featureAdeAggrRecord, featureScoreList);
+            scoredFeatureAggregatedRecordBuilder.fill(scoredFeatureAggregationRecords, featureAdeAggrRecord, featureScoreList);
         }
 
+        return scoredFeatureAggregationRecords;
     }
 }
