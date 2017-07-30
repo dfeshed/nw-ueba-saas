@@ -14,7 +14,7 @@ import static presidio.monitoring.elastic.records.PresidioMetric.TYPE;
 
 
 @Document(indexName = METRIC_INDEX_NAME, type = TYPE)
-public class PresidioMetric<T extends Number> {
+public class PresidioMetric{
 
 
     public static final String METRIC_INDEX_NAME = "presidio-monitoring";
@@ -27,19 +27,19 @@ public class PresidioMetric<T extends Number> {
     @Field(type = FieldType.String, store = true)
     private String name;
 
-    @Field(type = FieldType.Object, store = true)
-    private T value;
+    @Field(type = FieldType.Double, store = true)
+    private double value;
 
     @Field(type = FieldType.Date, store = true)
     private Date timestamp;
 
     @Field(type = FieldType.Object, store = true)
-    private Set tags;
+    private Set<String> tags;
 
     @Field(type = FieldType.String, store = true)
     private String unit;
 
-    public PresidioMetric(String name, T value, Set tags, String unit) {
+    public PresidioMetric(String name, double value, Set<String>  tags, String unit) {
         this.id=System.nanoTime()+"";
         this.name = name;
         this.value = value;
@@ -59,7 +59,7 @@ public class PresidioMetric<T extends Number> {
         this.name = name;
     }
 
-    public void setValue(T value) {
+    public void setValue(double value) {
         this.value = value;
     }
 
@@ -83,7 +83,7 @@ public class PresidioMetric<T extends Number> {
         return id;
     }
 
-    public T getValue() {
+    public double getValue() {
         return value;
     }
 
@@ -91,7 +91,7 @@ public class PresidioMetric<T extends Number> {
         return timestamp;
     }
 
-    public Set getTags() {
+    public Set<String>  getTags() {
         return tags;
     }
 
@@ -99,11 +99,23 @@ public class PresidioMetric<T extends Number> {
         return unit;
     }
 
-    public boolean equals(PresidioMetric presidioMetric){
-        return equaleValues(this.value,(T)presidioMetric.getValue());
+    @Override
+    public String toString() {
+        return "PresidioMetric{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", value=" + value +
+                ", timestamp=" + timestamp +
+                ", tags=" + tags +
+                ", unit='" + unit + '\'' +
+                '}';
     }
 
-    private boolean equaleValues(T value1 , T value2){
+    public boolean equals(PresidioMetric presidioMetric){
+        return this.value == presidioMetric.getValue();
+    }
+
+    private <T extends Number>boolean equaleValues(T value1 , T value2){
         if(value1 instanceof Integer) {
             Integer _result = (Integer) value1 - (Integer) value2;
             return _result==0;

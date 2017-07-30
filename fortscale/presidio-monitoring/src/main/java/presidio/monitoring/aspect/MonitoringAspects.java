@@ -33,6 +33,7 @@ public class MonitoringAspects {
     private final String NUMBER_OF_FAILED_VALIDATION = ".NumberOfFailedValidation";
 
     private final String UNIT_TYPE_LONG ="long";
+    private final String UNIT_TYPE_DOUBLE ="double";
     public MetricsEndpoint metricsEndpoint;
     public PresidioCustomMetrics presidioCustomMetrics;
 
@@ -58,7 +59,7 @@ public class MonitoringAspects {
     public void start(JoinPoint joinPoint) throws Throwable{
         String metric = joinPoint.getSignature().toShortString()+START;
         Set tags=new HashSet();
-        presidioCustomMetrics.addMetric(metric,1,tags, UNIT_TYPE_LONG);
+        presidioCustomMetrics.addMetric(metric,1,tags, UNIT_TYPE_DOUBLE);
         logger.info("Metric {} increment with annotation Start. ", metric);
     }
 
@@ -75,7 +76,7 @@ public class MonitoringAspects {
     public void end(JoinPoint joinPoint) throws Throwable{
         String metric  = joinPoint.getSignature().toShortString()+END;
         Set tags=new HashSet();
-        presidioCustomMetrics.addMetric(metric,1,tags, UNIT_TYPE_LONG);
+        presidioCustomMetrics.addMetric(metric,1,tags, UNIT_TYPE_DOUBLE);
         logger.debug("Metric {} increment with annotation End. ", metric);
     }
 
@@ -92,7 +93,7 @@ public class MonitoringAspects {
     public void exceptionThrown(JoinPoint joinPoint) throws Throwable{
         String metric  = joinPoint.getSignature().toShortString()+EXCEPTION_THROWN;
         Set tags=new HashSet();
-        presidioCustomMetrics.addMetric(metric,1,tags, UNIT_TYPE_LONG);
+        presidioCustomMetrics.addMetric(metric,1,tags, UNIT_TYPE_DOUBLE);
         logger.debug("Metric {} increment with annotation exceptionThrown. ", metric);
     }
 
@@ -113,7 +114,7 @@ public class MonitoringAspects {
         long endTime = System.nanoTime();
         long time=Long.divideUnsigned(endTime-startTime,1000000000);
         Set tags=new HashSet();
-        presidioCustomMetrics.addMetric(metricName,time,tags, UNIT_TYPE_LONG);
+        presidioCustomMetrics.addMetric(metricName,Double.longBitsToDouble(time),tags, UNIT_TYPE_DOUBLE);
         logger.debug("Metric {} run time is {} milli seconds. ", metricName,time);
     }
 
@@ -131,7 +132,7 @@ public class MonitoringAspects {
         String metricName = joinPoint.getSignature().toShortString()+NUMBER_OF_FAILED_VALIDATION;
         int numberOfFailedValidationDocuments = ((List<? extends Serializable>) joinPoint.proceed()).size();
         Set tags=new HashSet();
-        presidioCustomMetrics.addMetric(metricName,numberOfFailedValidationDocuments,tags, UNIT_TYPE_LONG);
+        presidioCustomMetrics.addMetric(metricName,numberOfFailedValidationDocuments,tags, UNIT_TYPE_DOUBLE);
         logger.debug("Metric {} got {} failed validations. ", metricName, numberOfFailedValidationDocuments);
     }
 
@@ -151,7 +152,7 @@ public class MonitoringAspects {
     public void dataSourceProcess(JoinPoint joinPoint , DataSource dataSource) throws Throwable{
         String metric = joinPoint.getSignature().toShortString()+dataSource.getName();
         Set tags=new HashSet();
-        presidioCustomMetrics.addMetric(metric,1,tags, UNIT_TYPE_LONG);
+        presidioCustomMetrics.addMetric(metric,1,tags, UNIT_TYPE_DOUBLE);
         logger.debug("Metric {} increment with annotation DataSourceProcess. ", metric);
     }
 

@@ -18,13 +18,13 @@ public class PresidioCustomMetrics implements PublicMetrics{
         applicationMetrics = new LinkedHashSet<>();
     }
 
-    public <T extends Number>void addMetric(String metricName,T metricValue,Set tags,String unit){
+    public <T extends Number>void addMetric(String metricName,double metricValue,Set tags,String unit){
         if(applicationMetrics.contains(metricName)){
             java.util.Iterator<PresidioMetric> itr = applicationMetrics.iterator();
             while(itr.hasNext()){
                 PresidioMetric metric = itr.next();
                 if (metric.getName().equals(metricName)){
-                    metric.setValue(sumOfValues(metricValue,metric.getValue()));
+                    metric.setValue(metricValue+metric.getValue());
                     return;
                 }
             }

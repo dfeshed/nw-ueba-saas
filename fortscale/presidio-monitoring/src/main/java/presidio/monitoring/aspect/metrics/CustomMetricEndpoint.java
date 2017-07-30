@@ -66,7 +66,7 @@ public class CustomMetricEndpoint extends MetricsEndpoint {
                 }
                 else {
                     for (Metric<?> metric : publicMetric.metrics()) {
-                        result.put(metric.getName(), new PresidioMetric(metric.getName(),metric.getValue(),new HashSet(),"long"));
+                        result.put(metric.getName(), new PresidioMetric(metric.getName(),getLong(metric.getValue()),new HashSet(),"long"));
                     }
                 }
             }
@@ -77,4 +77,19 @@ public class CustomMetricEndpoint extends MetricsEndpoint {
         return result;
     }
 
+
+    private <T extends Number>long getLong(T value){
+        Long longNumber;
+        if(value instanceof Double){
+            longNumber = ((Double)value).longValue();
+        }
+
+        else if(value instanceof Integer){
+            longNumber = ((Integer)value).longValue();
+        }
+        else {
+            longNumber = (Long) value;
+        }
+        return longNumber.longValue();
+    }
 }

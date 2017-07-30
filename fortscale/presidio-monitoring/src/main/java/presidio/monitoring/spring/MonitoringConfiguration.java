@@ -5,6 +5,7 @@ package presidio.monitoring.spring;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
 import presidio.monitoring.aspect.MonitoringAspects;
 import presidio.monitoring.aspect.metrics.CustomMetricEndpoint;
 import presidio.monitoring.aspect.metrics.PresidioCustomMetrics;
@@ -29,6 +30,7 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
         havingValue="true",
         matchIfMissing=false)
 @ComponentScan(basePackages = {"presidio.monitoring.aspect"})
+@EnableElasticsearchRepositories(basePackages = "presidio.monitoring.elastic.repositories")
 @Import(fortscale.utils.elasticsearch.config.ElasticsearchConfig.class)
 public class MonitoringConfiguration {
 
@@ -52,7 +54,7 @@ public class MonitoringConfiguration {
     public MonitoringAspects monitoringAspects(){return new MonitoringAspects(metricsEndpoint(),presidioCustomMetrics());}
 
     @Autowired
-    public MetricRepository metricRepository;
+    private MetricRepository metricRepository;
 
     @Bean
     public MetricExportService metricExportService(){return new MetricExportServiceImpl(metricRepository);}
