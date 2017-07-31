@@ -53,24 +53,27 @@
 
   footer {
     min-width: calc(100vw / 4);
-    position: absolute;
-    bottom: 0;
-    height: $applicationHeaderHeight;
-    line-height: $applicationHeaderHeight;
-    left: 0;
-    right: 0;
     border-top: 1px solid rsa-color(blue);
     background-color: rsa-color(gray, darkest);
+    line-height: 4rem;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+    p, a {
+      line-height: 2rem;
+      white-space: nowrap;
+      padding: 0 rsa-whitespace();
+    }
 
     p {
       color: rsa-color(gray);
-      padding: 0 rsa-whitespace();
     }
 
     a {
       color: rsa-color(blue);
-      padding: 0 rsa-whitespace();
-      display: inline-block;
+      display: block;
       text-align: right;
 
       &:hover {

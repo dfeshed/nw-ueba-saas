@@ -102,15 +102,11 @@
 </form>
 
 <footer>
-  <hbox>
-    <vbox xs="6">
-      <p>
-        {{t 'userPreferences.version'}} {{version}}
-      </p>
-    </vbox>
+  <vbox>
+    <p>
+      {{t 'userPreferences.version'}} {{version}}
+    </p>
 
-    <vbox xs="6">
-      <a {{action 'logout'}}>{{t 'userPreferences.signOut'}}</a>
-    </vbox>
-  </hbox>
+    <a {{action 'logout'}}>{{t 'userPreferences.signOut'}}</a>
+  </vbox>
 </footer>
