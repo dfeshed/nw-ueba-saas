@@ -58,7 +58,7 @@ public class ModelFeatureAggregationBucketsServiceTest {
         TimeRange timeRange = new TimeRange(startTime,endTime);
         String username = "sanityTestUser";
         generateAndPersistAdeEnrichedRecords(timeRange,username);
-        CommandResult commandResult = bootShim.getShell().executeCommand(String.format("run --data_source %s --start_date %s --end_date %s --fixed_duration_strategy 3600", ADE_EVENT_TYPE.toUpperCase(), startTime.toString(), endTime.toString()));
+        CommandResult commandResult = bootShim.getShell().executeCommand(String.format("run --schema %s --start_date %s --end_date %s --fixed_duration_strategy 3600", ADE_EVENT_TYPE.toUpperCase(), startTime.toString(), endTime.toString()));
         Assert.assertTrue(commandResult.isSuccess());
 //        modelFeatureAggregationBucketsService.execute(timeRange, ADE_EVENT_TYPE);
         String contextId = FeatureBucketUtils.buildContextId(Collections.singletonMap("normalizedUsername", username));

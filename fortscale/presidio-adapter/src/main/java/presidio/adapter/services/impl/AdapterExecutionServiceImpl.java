@@ -1,7 +1,7 @@
 package presidio.adapter.services.impl;
 
 import fortscale.common.general.CommonStrings;
-import fortscale.common.general.DataSource;
+import fortscale.common.general.Schema;
 import fortscale.common.shell.PresidioExecutionService;
 import fortscale.domain.core.AbstractAuditableDocument;
 import org.slf4j.Logger;
@@ -33,7 +33,7 @@ public class AdapterExecutionServiceImpl implements PresidioExecutionService {
     }
 
     @Override
-    public void run(DataSource dataSource, Instant startDate, Instant endDate, Double fixedDuration) throws Exception {
+    public void run(Schema schema, Instant startDate, Instant endDate, Double fixedDuration) throws Exception {
         //todo: we need to consider doing the fetch & store at the same iteration
         logger.info("Starting Adapter with params: data source: {}, {} : {}, {} : {}.",
                 dataSource, CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate,
@@ -59,7 +59,7 @@ public class AdapterExecutionServiceImpl implements PresidioExecutionService {
 
     private List<AbstractAuditableDocument> createDocuments(DataSource dataSource, List<String[]> records) throws Exception {
         List<AbstractAuditableDocument> createdDocuments = new ArrayList<>();
-        switch (dataSource) { //todo: we can use a document factory instead of switch case
+        switch (schema) { //todo: we can use a document factory instead of switch case
             case DLPFILE: {
                 for (String[] record : records) {
                     createdDocuments.add(new DlpFileDataDocument(record));
@@ -92,7 +92,7 @@ public class AdapterExecutionServiceImpl implements PresidioExecutionService {
             }
             default: {
                 //should not happen
-                throw new Exception("create documents failed. this is weird - should not happen. dataSource=" + dataSource.name()); //todo: temp
+                throw new Exception("create documents failed. this is weird - should not happen. schema=" + schema.name()); //todo: temp
             }
         }
 
@@ -101,12 +101,12 @@ public class AdapterExecutionServiceImpl implements PresidioExecutionService {
     }
 
     @Override
-    public void clean(DataSource dataSource, Instant startDate, Instant endDate) throws Exception {
+    public void clean(Schema schema, Instant startDate, Instant endDate) throws Exception {
 
     }
 
     @Override
-    public void cleanAll(DataSource dataSource) throws Exception {
+    public void cleanAll(Schema schema) throws Exception {
 
     }
 }
