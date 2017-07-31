@@ -15,6 +15,7 @@ import fortscale.ml.scorer.config.ModelInfo;
 import fortscale.utils.factory.FactoryService;
 import net.minidev.json.JSONObject;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.internal.util.reflection.Whitebox;
@@ -30,6 +31,7 @@ import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = { ScorerFactoriesTestConfig.class})
+@Ignore
 public class CategoryRarityModelScorerFactoryTest {
     @MockBean
     private ModelConfService modelConfService;

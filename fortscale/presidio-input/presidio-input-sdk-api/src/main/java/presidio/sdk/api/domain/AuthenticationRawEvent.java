@@ -14,7 +14,6 @@ public class AuthenticationRawEvent extends AbstractInputDocument {
     public static final String NORMALIZED_DST_MACHINE_FIELD_NAME = "normalizedDstMachine";
     public static final String NORMALIZED_SRC_MACHINE_FIELD_NAME = "normalizedSrcMachine";
     public static final String RESULT_CODE_FIELD_NAME = "resultCode";
-
     @Field(AUTHENTICATION_TYPE_FIELD_NAME)
     private String authenticationType;
     @Field(IS_DST_MACHINE_REMOTE_FIELD_NAME)
@@ -28,18 +27,19 @@ public class AuthenticationRawEvent extends AbstractInputDocument {
     @Field(RESULT_CODE_FIELD_NAME)
     private String resultCode;
 
-    public AuthenticationRawEvent(String dataSource, String authenticationType, boolean isDstMachineRemote,
-                                  String normalizedDstMachine, String normalizedSrcMachine, String normalizedUsername,
-                                  EventResult result, String resultCode, String eventId) {
-        this.dataSource = dataSource;
+    public AuthenticationRawEvent() {
+
+    }
+
+    public AuthenticationRawEvent(Instant dateTime, String dataSource, String normalizedUsername, String eventId,
+                                  EventResult result, String authenticationType, boolean isDstMachineRemote,
+                                  String normalizedDstMachine, String normalizedSrcMachine, String resultCode) {
+        super(dateTime, dataSource, normalizedUsername, eventId, result);
         this.authenticationType = authenticationType;
         this.isDstMachineRemote = isDstMachineRemote;
         this.normalizedDstMachine = normalizedDstMachine;
         this.normalizedSrcMachine = normalizedSrcMachine;
-        this.normalizedUsername = normalizedUsername;
-        this.result = result;
         this.resultCode = resultCode;
-        this.eventId = eventId;
     }
 
     public AuthenticationRawEvent(String record[]) {
@@ -55,14 +55,11 @@ public class AuthenticationRawEvent extends AbstractInputDocument {
         this.resultCode = record[9];
     }
 
-    public AuthenticationRawEvent() {
-    }
-
-    public boolean isDstMachineRemote() {
+    public boolean getIsDstMachineRemote() {
         return isDstMachineRemote;
     }
 
-    public void setDstMachineRemote(boolean dstMachineRemote) {
+    public void setIsDstMachineRemote(boolean dstMachineRemote) {
         isDstMachineRemote = dstMachineRemote;
     }
 

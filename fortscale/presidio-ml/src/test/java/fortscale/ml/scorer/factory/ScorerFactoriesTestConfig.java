@@ -5,10 +5,10 @@ import fortscale.aggregation.feature.bucket.FeatureBucketReader;
 import fortscale.global.configuration.GlobalConfiguration;
 import fortscale.ml.model.cache.EventModelsCacheService;
 import fortscale.ml.model.cache.ModelsCacheService;
-import fortscale.ml.scorer.factory.config.ScorersFactoryConfig;
 import fortscale.utils.mongodb.util.MongoDbUtilService;
 import fortscale.utils.monitoring.stats.config.NullStatsServiceConfig;
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,7 +21,8 @@ import java.util.Properties;
 @Import({ScorersFactoryConfig.class, GlobalConfiguration.class, NullStatsServiceConfig.class})
 public class ScorerFactoriesTestConfig {
     @MockBean
-    private BucketConfigurationService bucketConfigurationService;
+    @Qualifier("modelBucketConfigService")
+    private BucketConfigurationService modelBucketConfigService;
     @MockBean
     private FeatureBucketReader featureBucketReader;
     @MockBean

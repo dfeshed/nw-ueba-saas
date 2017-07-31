@@ -15,7 +15,7 @@ import java.util.Map;
  */
 @Document
 public class AdeAggregationRecord extends AdeRecord {
-    private static final String ADE_EVENT_TYPE_PREFIX = "aggr";
+    private static final String ADE_EVENT_TYPE_PREFIX = "aggr_event";
 
     @Indexed
     private Instant endInstant;

@@ -85,12 +85,17 @@ public class ReflectionRecordReader implements RecordReader {
 
 		for (String key : fieldPath.split(fieldPathDelimiter)) {
 			try {
-				// Find a field named "key" in the class, or in any of its superclasses up to Object
-				Field field = ReflectionUtils.findField(value.getClass(), key);
-				// If there is no such field, extract the value using one of the transformations
-				if (field == null) value = getFromTransformation(key, value);
-				// Else, extract the value from the field
-				else value = getFromField(field, value);
+				if(value instanceof Map){
+					value = ((Map) value).get(key);
+				}
+				else {
+					// Find a field named "key" in the class, or in any of its superclasses up to Object
+					Field field = ReflectionUtils.findField(value.getClass(), key);
+					// If there is no such field, extract the value using one of the transformations
+					if (field == null) value = getFromTransformation(key, value);
+						// Else, extract the value from the field
+					else value = getFromField(field, value);
+				}
 			} catch (RequiredFieldNotFoundException | IllegalAccessException | NoSuchFeatureException e) {
 				String format = "Cannot extract the value of {} from {}. Record = {}, field path = {}.";
 				logger.error(format, key, value, record, fieldPath, e);

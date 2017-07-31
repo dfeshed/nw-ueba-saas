@@ -72,6 +72,20 @@ public class FileRawEvent extends AbstractInputDocument {
         this.isDstDriveShared = Boolean.getBoolean(record[12]);
     }
 
+    public FileRawEvent(Instant dateTime, String dataSource, String normalizedUsername, String eventId, EventResult result,
+                        FileOperationType operationType, String srcFilePath, String dstFilePath, String srcFolderPath,
+                        String dstFolderPath, Long fileSize, boolean isSrcDriveShared, boolean isDstDriveShared) {
+        super(dateTime, dataSource, normalizedUsername, eventId, result);
+        this.operationType = operationType;
+        this.srcFilePath = srcFilePath;
+        this.dstFilePath = dstFilePath;
+        this.srcFolderPath = srcFolderPath;
+        this.dstFolderPath = dstFolderPath;
+        this.fileSize = fileSize;
+        this.isSrcDriveShared = isSrcDriveShared;
+        this.isDstDriveShared = isDstDriveShared;
+    }
+
     public FileOperationType getOperationType() {
         return operationType;
     }
@@ -120,19 +134,19 @@ public class FileRawEvent extends AbstractInputDocument {
         this.fileSize = fileSize;
     }
 
-    public boolean isSrcDriveShared() {
+    public boolean getIsSrcDriveShared() {
         return isSrcDriveShared;
     }
 
-    public void setSrcDriveShared(boolean srcDriveShared) {
+    public void setIsSrcDriveShared(boolean srcDriveShared) {
         isSrcDriveShared = srcDriveShared;
     }
 
-    public boolean isDstDriveShared() {
+    public boolean getIsDstDriveShared() {
         return isDstDriveShared;
     }
 
-    public void setDstDriveShared(boolean dstDriveShared) {
+    public void setIsDstDriveShared(boolean dstDriveShared) {
         isDstDriveShared = dstDriveShared;
     }
 

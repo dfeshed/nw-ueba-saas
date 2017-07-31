@@ -1,19 +1,22 @@
 package presidio.ade.processes.shell.feature.aggregation.buckets;
 
-import fortscale.common.general.PresidioShellableApplication;
-import fortscale.utils.logging.Logger;
+import fortscale.common.shell.PresidioShellableApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScan.Filter;
 import org.springframework.context.annotation.FilterType;
+import presidio.ade.processes.shell.feature.aggregation.buckets.config.ModelFeatureAggregationBucketsConfigurationProduction;
+
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @SpringBootApplication
 @ComponentScan(excludeFilters = @Filter(type = FilterType.REGEX, pattern = {"fortscale.*", "presidio.*"}))
 public class ModelFeatureAggregationBucketsApplication {
-	private static final Logger logger = Logger.getLogger(ModelFeatureAggregationBucketsApplication.class);
 
 	public static void main(String[] args) {
-		logger.info("Starting {}.", ModelFeatureAggregationBucketsApplication.class.getSimpleName());
-		PresidioShellableApplication.run(ModelFeatureAggregationBucketsConfiguration.class, args);
+		List<Class> sources = Stream.of(ModelFeatureAggregationBucketsConfigurationProduction.class).collect(Collectors.toList());
+		PresidioShellableApplication.run(sources, args);
 	}
 }

@@ -10,6 +10,7 @@ import fortscale.utils.recordreader.RecordReaderFactoryService;
 import fortscale.utils.recordreader.transformation.Transformation;
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
 import fortscale.utils.test.category.ModuleTestCategory;
+import fortscale.utils.time.TimeRange;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -18,7 +19,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit4.SpringRunner;
 import presidio.ade.domain.record.AdeRecord;
 import presidio.ade.domain.record.AdeRecordReaderFactory;
 import presidio.ade.domain.record.enriched.AdeEnrichedDlpFileContext;
@@ -31,7 +34,7 @@ import java.util.*;
 import static junit.framework.Assert.assertTrue;
 
 
-@RunWith(SpringJUnit4ClassRunner.class)
+@RunWith(SpringRunner.class)
 @Category(ModuleTestCategory.class)
 public class FeatureBucketsServiceTest {
 
@@ -48,8 +51,8 @@ public class FeatureBucketsServiceTest {
     private static final String STRATEGY_EVENT_CONTEXT_ID = "fixed_duration_hourly";
     private static final String STRATEGY_NAME = "fixed_duration_hourly";
 
-    private static final String BUCKET_ID1 = "fixed_duration_hourly_1435737600###context.normalizedUsername###normalized_username_test1";
-    private static final String BUCKET_ID2 = "fixed_duration_hourly_1435737600###context.normalizedUsername###normalized_username_test2";
+    private static final String BUCKET_ID1 = "fixed_duration_hourly_1435737600###context.normalizedUsername###normalized_username_test1###normalized_username_dlpfile_hourly";
+    private static final String BUCKET_ID2 = "fixed_duration_hourly_1435737600###context.normalizedUsername###normalized_username_test2###normalized_username_dlpfile_hourly";
 
     @Before
     public void initialize() {
@@ -84,7 +87,8 @@ public class FeatureBucketsServiceTest {
      */
     public void strategyDataInitialize() {
         long epochtime = 1435737600;
-        strategyData = new FeatureBucketStrategyData(STRATEGY_EVENT_CONTEXT_ID, STRATEGY_NAME, epochtime, epochtime + DEFAULT_END_TIME_DELTA_IN_SECONDS, new HashMap<>());
+        TimeRange timeRange = new TimeRange(epochtime,epochtime + DEFAULT_END_TIME_DELTA_IN_SECONDS);
+        strategyData = new FeatureBucketStrategyData(STRATEGY_EVENT_CONTEXT_ID, STRATEGY_NAME, timeRange, new HashMap<>());
     }
 
     /**

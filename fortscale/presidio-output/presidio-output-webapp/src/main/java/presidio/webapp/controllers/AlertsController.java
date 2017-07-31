@@ -1,23 +1,39 @@
 package presidio.webapp.controllers;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import fortscale.utils.logging.annotation.LogException;
+import org.springframework.web.bind.annotation.*;
 import presidio.webapp.dto.Alert;
-
-/**
- * Created by shays on 21/05/2017.
- */
+import presidio.webapp.dto.ListResponseBean;
+import presidio.webapp.dto.SingleEntityResponseBean;
+import presidio.webapp.restquery.RestAlertQuery;
+import presidio.webapp.service.RestAlertService;
 
 @RestController
+@RequestMapping(value = "/alert")
 public class AlertsController {
 
-    @RequestMapping(value = "/alert",method = RequestMethod.GET)
-    Alert alert(){
-        Alert a= new Alert();
-        a.setDescription("Alert Description");
-        a.setId("00000001");
-        return  a;
-        
+    private final RestAlertService restAlertService;
+
+    public AlertsController(RestAlertService restAlertService) {
+        this.restAlertService = restAlertService;
+    }
+
+    @RequestMapping(value = "/{alertId}", method = RequestMethod.GET)
+    @ResponseBody
+    @LogException
+    public SingleEntityResponseBean<Alert> getAlertById(@PathVariable String alertId) {
+        SingleEntityResponseBean<Alert> responseBean = new SingleEntityResponseBean<>();
+        responseBean.setData(restAlertService.getAlertById(alertId));
+        return responseBean;
+    }
+
+    @RequestMapping(method = RequestMethod.GET)
+    @ResponseBody
+    @LogException
+    public ListResponseBean<Alert> getAlerts(RestAlertQuery restAlertQuery) {
+        ListResponseBean<Alert> responseBean = new ListResponseBean<>();
+        responseBean.setData(restAlertService.getAlerts(restAlertQuery));
+        responseBean.setPage(restAlertQuery.getPageNumber());
+        return responseBean;
     }
 }

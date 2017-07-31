@@ -9,7 +9,6 @@ import fortscale.domain.feature.score.FeatureScore;
 import fortscale.ml.model.ModelBuilderData;
 import fortscale.ml.model.ModelBuilderData.NoDataReason;
 import fortscale.ml.model.PersonalThresholdModelBuilderData;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.util.Assert;
 
@@ -21,17 +20,18 @@ import java.util.stream.Stream;
 
 @Configurable(preConstruction = true)
 public class AggregatedFeaturePersonalThresholdModelBuilderDataRetriever extends AbstractDataRetriever {
-	@Autowired
-	private AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
-	@Autowired
 	private AggregatedFeatureEventsReaderService aggregatedFeatureEventsReaderService;
 
 	private AggregatedFeatureEventConf aggregatedFeatureEventConfToCalibrate;
 	private int desiredNumberOfIndicators;
 	private String scoreNameToCalibrate;
 
-	public AggregatedFeaturePersonalThresholdModelBuilderDataRetriever(AggregatedFeaturePersonalThresholdModelBuilderDataRetrieverConf config) {
+	public AggregatedFeaturePersonalThresholdModelBuilderDataRetriever(AggregatedFeaturePersonalThresholdModelBuilderDataRetrieverConf config,
+																	   AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService,
+																	   AggregatedFeatureEventsReaderService aggregatedFeatureEventsReaderService) {
 		super(config);
+		this.aggregatedFeatureEventsReaderService = aggregatedFeatureEventsReaderService;
+
 		String aggregatedFeatureEventConfNameToCalibrate = config.getAggregatedFeatureEventConfNameToCalibrate();
 		aggregatedFeatureEventConfToCalibrate = aggregatedFeatureEventsConfService
 				.getAggregatedFeatureEventConf(aggregatedFeatureEventConfNameToCalibrate);
