@@ -1,6 +1,5 @@
 package presidio.webapp.spring;
 
-import fortscale.utils.mongodb.config.MongoConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -8,12 +7,12 @@ import org.springframework.context.annotation.Import;
 import presidio.output.domain.services.AlertPersistencyService;
 import presidio.output.domain.spring.PresidioOutputPersistencyServiceConfig;
 import presidio.webapp.controllers.AlertsController;
-import presidio.webapp.service.RestAlertServiceImpl;
 import presidio.webapp.service.RestAlertService;
+import presidio.webapp.service.RestAlertServiceImpl;
 
-@Import({MongoConfig.class, PresidioOutputPersistencyServiceConfig.class})
+@Import({PresidioOutputPersistencyServiceConfig.class})
 @Configuration
-public class WebConf {
+public class OutputWebappConfiguration {
 
     @Autowired
     AlertPersistencyService alertService;
