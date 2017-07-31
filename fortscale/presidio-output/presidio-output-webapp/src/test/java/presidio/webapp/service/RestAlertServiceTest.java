@@ -5,10 +5,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.cglib.core.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.test.context.ContextConfiguration;
@@ -17,7 +15,7 @@ import presidio.output.domain.records.Alert;
 import presidio.output.domain.records.AlertEnums;
 import presidio.output.domain.services.AlertPersistencyService;
 import presidio.webapp.restquery.RestAlertQuery;
-import presidio.webapp.spring.OutputWebappConfiguration;
+import presidio.webapp.spring.OutputWebappConfigurationTest;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -30,25 +28,14 @@ import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest()
-@ContextConfiguration(classes = OutputWebappConfiguration.class)
+@ContextConfiguration(classes = OutputWebappConfigurationTest.class)
 public class RestAlertServiceTest {
 
     @Autowired
     RestAlertService restAlertService;
 
-    @MockBean
-    AlertPersistencyService alertService;
-
     @Autowired
-    private PresidioElasticsearchTemplate esTemplate;
-
-    @Before
-    public void before() {
-        esTemplate.deleteIndex(Alert.class);
-        esTemplate.createIndex(Alert.class);
-        esTemplate.putMapping(Alert.class);
-        esTemplate.refresh(Alert.class);
-    }
+    AlertPersistencyService alertService;
 
     @Test
     public void getAlertByIdSuccess()

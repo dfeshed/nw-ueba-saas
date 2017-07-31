@@ -1,20 +1,16 @@
 package presidio.webapp.spring;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 import presidio.output.domain.services.AlertPersistencyService;
-import presidio.output.domain.spring.PresidioOutputPersistencyServiceConfig;
 import presidio.webapp.controllers.AlertsController;
 import presidio.webapp.service.RestAlertService;
 import presidio.webapp.service.RestAlertServiceImpl;
 
-@Import({PresidioOutputPersistencyServiceConfig.class})
 @Configuration
-public class OutputWebappConfiguration {
-
-    @Autowired
+public class OutputWebappConfigurationTest {
+    @MockBean
     AlertPersistencyService alertService;
 
     @Bean
@@ -26,5 +22,4 @@ public class OutputWebappConfiguration {
     AlertsController getAlertsController() {
         return new AlertsController(restAlertService());
     }
-
 }
