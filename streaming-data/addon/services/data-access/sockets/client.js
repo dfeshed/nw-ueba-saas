@@ -136,35 +136,21 @@ export default EmberObject.extend({
    */
   connect() {
     const headers = this.headers || {};
-    const stompClient = this.get('stompClient');
 
-    return this.set('promise', new RSVP.Promise((resolve, reject) => {
-      if (!stompClient) {
-        this.set('isConnecting', false);
-        reject('stompClient is not connected');
-      } else {
-        const stompClientUrl = stompClient.ws.url;
-        const stompClientConnected = stompClient.connected;
+    const me = this;
+    return this.set('promise',
+      new RSVP.Promise(function(resolve, reject) {
 
-        const disconnectedRespond = (stompClientUrl.indexOf('respond') !== -1) && !stompClientConnected;
-        const disconnectedInvestigate = (stompClientUrl.indexOf('investigate') !== -1) && !stompClientConnected;
-
-        if (disconnectedRespond || disconnectedInvestigate) {
-          this.set('isConnecting', false);
-          reject('stompClient is not connected');
-        } else {
-          this.set('isConnecting', true);
-
-          this.get('stompClient').connect(headers, () => {
-            this.set('isConnecting', false);
-            resolve(this);
-          }, (e) => {
-            this.set('isConnecting', false);
-            reject(e);
-          });
-        }
-      }
-    }));
+        me.set('isConnecting', true);
+        me.get('stompClient').connect(headers, function() {
+          me.set('isConnecting', false);
+          resolve(me);
+        }, function(e) {
+          me.set('isConnecting', false);
+          reject(e);
+        });
+      })
+    );
   },
 
   /**
@@ -239,6 +225,7 @@ export default EmberObject.extend({
    * @public
    */
   subscribe(destination, callback, headers) {
+
     // Previously, we checked here for the requested subscription in the cache.
     // But we are going to stop re-using subscriptions now, so that server requests have
     // a 1-to-1 mapping with subscriptions, which we hope will allow us to re-use
