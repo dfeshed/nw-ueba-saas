@@ -1,7 +1,7 @@
 package presidio.monitoring.aspect;
 
 
-import fortscale.common.general.DataSource;
+import fortscale.common.general.PresidioSchemas;
 import fortscale.utils.logging.Logger;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -143,13 +143,13 @@ public class MonitoringAspects {
      * This behavior occurs when a method is annotated with the annotation @DataSourceProcess.
      *
      * @param joinPoint - a point that represent a methods execution, holds data on the method that is going to be executed.
-     * @param dataSource - enum of a type date source.
+     * @param presidioSchemas - enum of a type date source.
      * @throws Throwable - any exceptin that can be thrown from the execution of the method.
      */
 
-    @Before("@annotation(presidio.monitoring.aspect.annotations.DataSourceProcess) && args(dataSource,..)")
-    public void dataSourceProcess(JoinPoint joinPoint , DataSource dataSource) throws Throwable{
-        String metric = joinPoint.getSignature().toShortString()+dataSource.getName();
+    @Before("@annotation(presidio.monitoring.aspect.annotations.DataSourceProcess) && args(presidioSchemas,..)")
+    public void dataSourceProcess(JoinPoint joinPoint , PresidioSchemas presidioSchemas) throws Throwable{
+        String metric = joinPoint.getSignature().toShortString()+ presidioSchemas.getName();
         Set tags=new HashSet();
         presidioCustomMetrics.addMetric(metric,1,tags, UNIT_TYPE_LONG);
         logger.debug("Metric {} increment with annotation DataSourceProcess. ", metric);

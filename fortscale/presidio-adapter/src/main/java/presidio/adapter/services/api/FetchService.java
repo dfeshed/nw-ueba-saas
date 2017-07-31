@@ -1,12 +1,12 @@
 package presidio.adapter.services.api;
 
 
-import fortscale.common.general.DataSource;
+import fortscale.common.general.PresidioSchemas;
 
 import java.time.Instant;
 import java.util.List;
 
 public interface FetchService {
 
-    List<String[]> fetch(DataSource dataSource, Instant startime, Instant endtime) throws Exception;
+    List<String[]> fetch(PresidioSchemas presidioSchemas, Instant startime, Instant endtime) throws Exception;
 }

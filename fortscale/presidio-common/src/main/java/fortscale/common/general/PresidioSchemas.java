@@ -1,14 +1,14 @@
 package fortscale.common.general;
 
 
-public enum DataSource {
+public enum PresidioSchemas {
 
     DLPFILE("dlpfile"), DLPMAIL("dlpmail"), PRNLOG("prnlog"), FILE("file"), ACTIVE_DIRECTORY("active_directory"),
     AUTHENTICATION("authentication");
 
     private String name;
 
-    DataSource(String name) {
+    PresidioSchemas(String name) {
         this.name = name;
     }
 
@@ -16,7 +16,7 @@ public enum DataSource {
         return name;
     }
 
-    public static DataSource createDataSource(String dataSourceName) throws IllegalArgumentException {
-        return DataSource.valueOf(dataSourceName.toUpperCase());
+    public static PresidioSchemas createDataSource(String dataSourceName) throws IllegalArgumentException {
+        return PresidioSchemas.valueOf(dataSourceName.toUpperCase());
     }
 }
