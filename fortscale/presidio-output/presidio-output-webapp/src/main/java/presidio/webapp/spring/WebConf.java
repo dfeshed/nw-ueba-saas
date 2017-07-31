@@ -1,18 +1,31 @@
 package presidio.webapp.spring;
 
 import fortscale.utils.mongodb.config.MongoConfig;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import presidio.output.domain.services.AlertPersistencyService;
+import presidio.output.domain.spring.PresidioOutputPersistencyServiceConfig;
 import presidio.webapp.controllers.AlertsController;
+import presidio.webapp.service.RestAlertServiceImpl;
+import presidio.webapp.service.RestAlertService;
 
-/**
- * Created by shays on 21/05/2017.
- */
-@Import(MongoConfig.class)
+@Import({MongoConfig.class, PresidioOutputPersistencyServiceConfig.class})
+@Configuration
 public class WebConf {
 
+    @Autowired
+    AlertPersistencyService alertService;
+
     @Bean
-    AlertsController getAlertsController(){
-        return new AlertsController();
+    RestAlertService restAlertService(){
+        return new RestAlertServiceImpl(alertService);
     }
+
+    @Bean
+    AlertsController getAlertsController() {
+        return new AlertsController(restAlertService());
+    }
+
 }

@@ -16,7 +16,6 @@ import presidio.output.domain.records.AlertQuery;
 
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
