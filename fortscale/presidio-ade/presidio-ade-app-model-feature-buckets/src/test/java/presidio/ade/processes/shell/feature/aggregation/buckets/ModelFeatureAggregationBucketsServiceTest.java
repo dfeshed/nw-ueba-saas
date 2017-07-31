@@ -5,10 +5,11 @@ import fortscale.aggregation.feature.bucket.FeatureBucketStore;
 import fortscale.aggregation.feature.bucket.FeatureBucketUtils;
 import fortscale.common.feature.AggrFeatureValue;
 import fortscale.common.feature.Feature;
-import fortscale.common.shell.config.ShellableApplicationConfig;
+import fortscale.common.shell.command.PresidioCommands;
 import fortscale.common.util.GenericHistogram;
 import fortscale.utils.pagination.ContextIdToNumOfItems;
 import fortscale.utils.shell.BootShim;
+import fortscale.utils.shell.BootShimConfig;
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
 import fortscale.utils.test.category.ModuleTestCategory;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
@@ -118,7 +119,8 @@ public class ModelFeatureAggregationBucketsServiceTest {
 
     @Configuration
     @Import({MongodbTestConfig.class,
-            ShellableApplicationConfig.class
+            PresidioCommands.class,
+            BootShimConfig.class
     })
     public static class ModelFeatureAggregationBucketsServiceTestConfiguration extends ModelFeatureAggregationBucketsConfiguration {
 

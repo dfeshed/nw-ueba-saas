@@ -2,8 +2,9 @@ package presidio.input.core;
 
 
 import fortscale.common.shell.PresidioExecutionService;
-import fortscale.common.shell.config.ShellableApplicationConfig;
+import fortscale.common.shell.command.PresidioCommands;
 import fortscale.utils.shell.BootShim;
+import fortscale.utils.shell.BootShimConfig;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
 import org.junit.Assert;
 import org.junit.Test;
@@ -13,7 +14,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
 import org.springframework.shell.core.CommandResult;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import presidio.input.core.services.impl.InputExecutionServiceImpl;
 import presidio.input.core.spring.InputCoreConfiguration;
@@ -41,7 +41,7 @@ public class FortscaleInputCoreApplicationTest {
     }
 
     @Configuration
-    @Import({InputCoreConfiguration.class, MongodbTestConfig.class, ShellableApplicationConfig.class})
+    @Import({InputCoreConfiguration.class, MongodbTestConfig.class, BootShimConfig.class, PresidioCommands.class})
     @EnableSpringConfigured
     public static class springConfig {
 
