@@ -2,7 +2,7 @@ import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from '../../../../helpers/engine-resolver';
 import wait from 'ember-test-helpers/wait';
-import { incidentDetails } from '../../../../server/data';
+import { incidentDetails } from '../../../../data/data';
 
 moduleForComponent('rsa-incident-overview', 'Integration | Component | Incident Overview', {
   integration: true,

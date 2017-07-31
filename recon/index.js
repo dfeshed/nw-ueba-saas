@@ -8,17 +8,22 @@ const projectName = 'recon';
 module.exports = {
   name: projectName,
 
+  options: {
+    'ember-cli-babel': {
+      includePolyfill: true
+    },
+    babel: {
+      plugins: [
+        'transform-object-rest-spread',
+        'transform-decorators-legacy'
+      ]
+    }
+  },
+
   // See ../common.js for details on this function
   isDevelopingAddon: isDevelopingAddon(projectName),
 
-  init() {
-    this._super.init && this._super.init.apply(this, arguments);
-    this.options = this.options || {};
-    this.options.babel = this.options.babel || {};
-    this.options.babel.stage = 0;
-  },
-
   socketRouteGenerator: require('./config/socketRoutes'),
 
-  mockDestinations: path.join(__dirname, 'tests', 'server', 'subscriptions')
+  mockDestinations: path.join(__dirname, 'tests', 'data', 'subscriptions')
 };

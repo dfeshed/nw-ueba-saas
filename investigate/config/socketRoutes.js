@@ -76,6 +76,12 @@ module.exports = function(environment) {
   if (mergedConfig) {
     return mergedConfig;
   }
+
+  // as of ember 2.14, for some reason environment can be undefined
+  if (!environment) {
+    return {};
+  }
+
   const configGenerators = [investigateConfigGen, reconConfigGen, contextConfigGen];
   mergedConfig = common.mergeSocketConfigs(configGenerators, environment);
   return mergedConfig;

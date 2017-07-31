@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { getAlerts, getSelectedAlerts, hasSelectedAlertsBelongingToIncidents } from 'respond/selectors/alerts';
-import data from '../../server/data';
+import data from '../../data/data';
 
 const { storyline: items } = data;
 

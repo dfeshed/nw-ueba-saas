@@ -1,6 +1,6 @@
 import Ember from 'ember';
 import * as ACTION_TYPES from 'respond/actions/types';
-import { incidentDetails, storyline, events } from '../server/data';
+import { incidentDetails, storyline, events } from '../data/data';
 
 const { run, RSVP } = Ember;
 

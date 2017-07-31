@@ -4,7 +4,13 @@ const EmberAddon = require('ember-cli/lib/broccoli/ember-addon');
 module.exports = function(defaults) {
   const app = new EmberAddon(defaults, {
     'ember-cli-babel': {
-      stage: 0
+      includePolyfill: true
+    },
+    babel: {
+      plugins: [
+        'transform-object-rest-spread',
+        'transform-decorators-legacy'
+      ]
     }
   });
 

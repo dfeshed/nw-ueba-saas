@@ -23,6 +23,11 @@ const generateSocketConfiguration = function(environment) {
     return socketConfig;
   }
 
+  // as of ember 2.14, for some reason environment can be undefined
+  if (!environment) {
+    return {};
+  }
+
   socketConfig = common.mergeSocketConfigs(configGenerators, environment);
 
   // UNCOMMENT to see combined socketConfig on startup

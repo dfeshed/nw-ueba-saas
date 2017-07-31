@@ -17,6 +17,15 @@ if (EmberApp.env() === 'development') {
 module.exports = {
   name: projectName,
   options: {
+    'ember-cli-babel': {
+      includePolyfill: true
+    },
+    babel: {
+      plugins: [
+        'transform-object-rest-spread',
+        'transform-decorators-legacy'
+      ]
+    },
     nodeAssets: {
       clipboard: {
         srcDir: 'dist',

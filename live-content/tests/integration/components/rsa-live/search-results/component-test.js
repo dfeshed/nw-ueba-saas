@@ -1,6 +1,6 @@
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
-import searchResults from '../../../../server/subscriptions/live-search/findAll/data';
+import searchResults from '../../../../data/subscriptions/live-search/findAll/data';
 import { FETCH_SEARCH_RESULTS_SUCCESS, RESOURCE_TOGGLE_SELECT } from 'live-content/actions/live-content/types';
 import engineResolverFor from '../../../../helpers/engine-resolver';
 import Ember from 'ember';

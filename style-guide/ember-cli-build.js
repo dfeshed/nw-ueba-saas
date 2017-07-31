@@ -12,13 +12,13 @@ module.exports = function(defaults) {
       enabled: appEnv !== 'test'
     },
     'ember-cli-babel': {
-      stage: 0,
       includePolyfill: true
     },
-    nodeAssets: {
-      'highlightjs': {
-        import: ['highlight.pack.js']
-      }
+    babel: {
+      plugins: [
+        'transform-object-rest-spread',
+        'transform-decorators-legacy'
+      ]
     }
   });
 

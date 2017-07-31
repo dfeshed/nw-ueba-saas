@@ -9,7 +9,7 @@ export default Service.extend({
   @alias('i18n.locale') locale: null,
   @readOnly @alias('appVersion.version') version: null,
 
-  investigateModule: 'investigate',
+  investigateModule: 'investigation',
   invEventAnalysis: 'invEventAnalysis',
   invFileAnalysis: 'invFileAnalysis',
   invPacketAnalysis: 'invPacketAnalysis',

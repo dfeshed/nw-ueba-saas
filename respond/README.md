@@ -28,8 +28,7 @@ You can also run vs the sa [`mock-server`](https://github.rsa.lab.emc.com/asoc/s
 This requires two terminal windows.
 
 ```
-cd tests/server
-node server.js
+node mockserver.js
 ```
 
 This starts the mock-server.

@@ -49,13 +49,10 @@ function runEmberTestWithMockServer {
   info "Starting Express mock test server for $1"
 
   # run mock server
-  cd tests/server
-  MOCK_PORT=$mockPort node server.js &
+  MOCK_PORT=$mockPort node mockserver.js &
   checkError "Mock server for $1 refused to start"
   local PID=$!
   success "$1 mock server started, process id: $PID"
-
-  cd ../..
 
   # now run the tests
   info "Running 'ember exam' for $1 on port $testemPort"

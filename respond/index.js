@@ -15,10 +15,15 @@ module.exports = EngineAddon.extend({
   lazyLoading: false,
 
   init() {
+    // babel stuff declared here in order to enable
+    // investigate working by itself outside of sa
     this._super.init && this._super.init.apply(this, arguments);
     this.options = this.options || {};
     this.options.babel = this.options.babel || {};
-    this.options.babel.stage = 0;
+    this.options.babel.plugins = [
+      'transform-object-rest-spread',
+      'transform-decorators-legacy'
+    ];
   },
 
   // This allows node environment variables
@@ -31,7 +36,7 @@ module.exports = EngineAddon.extend({
 
   socketRouteGenerator: require('./config/socketRoutes'),
 
-  mockDestinations: path.join(__dirname, 'tests', 'server', 'subscriptions'),
+  mockDestinations: path.join(__dirname, 'tests', 'data', 'subscriptions'),
 
   // See ../common.js for details on this function
   isDevelopingAddon: common.isDevelopingAddon(projectName),

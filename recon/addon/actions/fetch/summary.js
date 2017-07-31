@@ -1,6 +1,6 @@
 import Ember from 'ember';
 import { basicPromiseRequest } from '../util/query-util';
-import Object from 'ember-object';
+import EmberObject from 'ember-object';
 
 const { RSVP, A } = Ember;
 
@@ -10,7 +10,7 @@ const _generateHeaderItems = (items) => (
       item.id = item.name;
     }
 
-    headerItems.pushObject(Object.create(item));
+    headerItems.pushObject(EmberObject.create(item));
 
     return headerItems;
   }, A([]))

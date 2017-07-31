@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { hasSelectedClosedIncidents } from 'respond/selectors/incidents';
-import data from '../../server/data';
+import data from '../../data/data';
 
 const { incidents: items } = data;
 

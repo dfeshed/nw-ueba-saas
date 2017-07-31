@@ -65,6 +65,8 @@ test('it renders', function(assert) {
 
   let $el = this.$('.rsa-investigate-breadcrumb');
   assert.equal($el.length, 1, 'Expected root DOM element.');
+  // IF THIS FAILS, MAY BE BECAUSE FEATURE FLAGS ARE NOT SET RIGHT
+  // NEED 11.1 enabled
   assert.equal($el.find('.js-test-service').text().trim(), displayName, 'Expected service displayName in DOM to match service data.');
 
   $el = this.$('.js-test-value');
