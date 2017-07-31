@@ -1,7 +1,7 @@
 package presidio.adapter.services.impl;
 
 import fortscale.common.general.CommonStrings;
-import fortscale.common.general.PresidioSchemas;
+import fortscale.common.general.Schema;
 import fortscale.common.shell.PresidioExecutionService;
 import fortscale.domain.core.AbstractAuditableDocument;
 import org.slf4j.Logger;
@@ -29,22 +29,22 @@ public class AdapterExecutionServiceImpl implements PresidioExecutionService {
     }
 
     @Override
-    public void run(PresidioSchemas presidioSchemas, Instant startDate, Instant endDate, Double fixedDuration) throws Exception {
+    public void run(Schema schema, Instant startDate, Instant endDate, Double fixedDuration) throws Exception {
         //todo: we need to consider doing the fetch & store at the same iteration
-        logger.info("Start collector processing with params: data source:{}, from {}:{}, until {}:{}.", presidioSchemas, CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate, CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
+        logger.info("Start collector processing with params: data source:{}, from {}:{}, until {}:{}.", schema, CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate, CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
 
         final List<String[]> fetchedDocuments;
         try {
-            fetchedDocuments = fetch(presidioSchemas, startDate, endDate);
+            fetchedDocuments = fetch(schema, startDate, endDate);
         } catch (Exception e) {
-            logger.error("HEY USER!!! FETCH FAILED! params: data source:{}, from {}:{}, until {}:{}.", presidioSchemas, CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate, CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
+            logger.error("HEY USER!!! FETCH FAILED! params: data source:{}, from {}:{}, until {}:{}.", schema, CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate, CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
             //todo: how do we handle? alert the user probably?
             return;
         }
 
-        final List<AbstractAuditableDocument> createdDocuments = createDocuments(presidioSchemas, fetchedDocuments);
+        final List<AbstractAuditableDocument> createdDocuments = createDocuments(schema, fetchedDocuments);
 
-        final boolean storeSuccessful = store(presidioSchemas, createdDocuments);
+        final boolean storeSuccessful = store(schema, createdDocuments);
 
         if (!storeSuccessful) {
             logger.error("store unsuccessful!!!");
@@ -54,23 +54,23 @@ public class AdapterExecutionServiceImpl implements PresidioExecutionService {
         logger.info("Finish csv processing");
     }
 
-    private List<String[]> fetch(PresidioSchemas presidioSchemas, Instant startTime, Instant endTime) throws Exception {
+    private List<String[]> fetch(Schema schema, Instant startTime, Instant endTime) throws Exception {
         logger.info("Start fetch");
-        final List<String[]> fetchedRecords = fetchService.fetch(presidioSchemas, startTime, endTime);//todo: maybe the retry logic will be here?
+        final List<String[]> fetchedRecords = fetchService.fetch(schema, startTime, endTime);//todo: maybe the retry logic will be here?
         logger.info("finish fetch");
         return fetchedRecords;
     }
 
-    private boolean store(PresidioSchemas presidioSchemas, List<AbstractAuditableDocument> fetchedDocuments) {
+    private boolean store(Schema schema, List<AbstractAuditableDocument> fetchedDocuments) {
         logger.info("Start store");
-        final boolean storeSuccessful = coreManagerService.store(presidioSchemas, fetchedDocuments);
+        final boolean storeSuccessful = coreManagerService.store(schema, fetchedDocuments);
         logger.info("finish store");
         return storeSuccessful;
     }
 
-    private List<AbstractAuditableDocument> createDocuments(PresidioSchemas presidioSchemas, List<String[]> records) throws Exception {
+    private List<AbstractAuditableDocument> createDocuments(Schema schema, List<String[]> records) throws Exception {
         List<AbstractAuditableDocument> createdDocuments = new ArrayList<>();
-        switch (presidioSchemas) { //todo: we can use a document factory instead of switch case
+        switch (schema) { //todo: we can use a document factory instead of switch case
             case DLPFILE: {
                 for (String[] record : records) {
                     createdDocuments.add(new DlpFileDataDocument(record));
@@ -103,7 +103,7 @@ public class AdapterExecutionServiceImpl implements PresidioExecutionService {
             }
             default: {
                 //should not happen
-                throw new Exception("create documents failed. this is weird - should not happen. presidioSchemas=" + presidioSchemas.name()); //todo: temp
+                throw new Exception("create documents failed. this is weird - should not happen. schema=" + schema.name()); //todo: temp
             }
         }
 
@@ -112,12 +112,12 @@ public class AdapterExecutionServiceImpl implements PresidioExecutionService {
     }
 
     @Override
-    public void clean(PresidioSchemas presidioSchemas, Instant startDate, Instant endDate) throws Exception {
+    public void clean(Schema schema, Instant startDate, Instant endDate) throws Exception {
 
     }
 
     @Override
-    public void cleanAll(PresidioSchemas presidioSchemas) throws Exception {
+    public void cleanAll(Schema schema) throws Exception {
 
     }
 }

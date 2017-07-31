@@ -1,6 +1,6 @@
 package presidio.sdk.api.domain;
 
-import fortscale.common.general.PresidioSchemas;
+import fortscale.common.general.Schema;
 import fortscale.domain.core.AbstractAuditableDocument;
 
 import java.time.Instant;
@@ -11,12 +11,12 @@ import java.util.List;
  */
 public interface DataService {
 
-    boolean store(List<? extends AbstractAuditableDocument> documents, PresidioSchemas presidioSchemas);
+    boolean store(List<? extends AbstractAuditableDocument> documents, Schema schema);
 
-    List<? extends AbstractAuditableDocument> find(Instant startDate, Instant endDate, PresidioSchemas presidioSchemas);
+    List<? extends AbstractAuditableDocument> find(Instant startDate, Instant endDate, Schema schema);
 
-    int clean(Instant startDate, Instant endDate, PresidioSchemas presidioSchemas);
+    int clean(Instant startDate, Instant endDate, Schema schema);
 
-    void cleanAll(PresidioSchemas presidioSchemas);
+    void cleanAll(Schema schema);
 
 }

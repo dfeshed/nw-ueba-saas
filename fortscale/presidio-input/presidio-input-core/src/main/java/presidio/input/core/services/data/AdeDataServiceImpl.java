@@ -1,6 +1,6 @@
 package presidio.input.core.services.data;
 
-import fortscale.common.general.PresidioSchemas;
+import fortscale.common.general.Schema;
 import fortscale.utils.logging.Logger;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.ade.domain.store.AdeDataStoreCleanupParams;
@@ -22,15 +22,15 @@ public class AdeDataServiceImpl implements AdeDataService {
     }
 
     @Override
-    public void store(PresidioSchemas presidioSchemas, Instant startDate, Instant endDate, List<? extends EnrichedRecord> records) {
-        EnrichedRecordsMetadata recordsMetaData = new EnrichedRecordsMetadata(presidioSchemas.getName().toLowerCase(), startDate, endDate);
+    public void store(Schema schema, Instant startDate, Instant endDate, List<? extends EnrichedRecord> records) {
+        EnrichedRecordsMetadata recordsMetaData = new EnrichedRecordsMetadata(schema.getName().toLowerCase(), startDate, endDate);
         logger.info("Calling ADE SDK store for {} records with metadata {}", records.size(), recordsMetaData);
         adeManagerSDK.store(recordsMetaData, records);
     }
 
     @Override
-    public void cleanup(PresidioSchemas presidioSchemas, Instant startDate, Instant endDate) {
-        AdeDataStoreCleanupParams cleanupParams = new AdeDataStoreCleanupParams(startDate, endDate, presidioSchemas.getName().toLowerCase());
+    public void cleanup(Schema schema, Instant startDate, Instant endDate) {
+        AdeDataStoreCleanupParams cleanupParams = new AdeDataStoreCleanupParams(startDate, endDate, schema.getName().toLowerCase());
         logger.info("Calling ADE SDK cleanup with cleanup params {}", cleanupParams);
         adeManagerSDK.cleanup(cleanupParams);
     }

@@ -1,7 +1,7 @@
 package presidio.input.sdk.impl.services;
 
 import fortscale.common.general.CommonStrings;
-import fortscale.common.general.PresidioSchemas;
+import fortscale.common.general.Schema;
 import fortscale.domain.core.AbstractAuditableDocument;
 import fortscale.utils.logging.Logger;
 import presidio.sdk.api.domain.DataService;
@@ -20,33 +20,33 @@ public class PresidioInputPersistencyServiceMongoImpl implements PresidioInputPe
     }
 
     @Override
-    public boolean store(PresidioSchemas presidioSchemas, List<? extends AbstractAuditableDocument> records) {
+    public boolean store(Schema schema, List<? extends AbstractAuditableDocument> records) {
         logger.info("Storing {} records for data source {}",
-                records.size(), presidioSchemas);
+                records.size(), schema);
 
-        return dataService.store(records, presidioSchemas);
+        return dataService.store(records, schema);
     }
 
     @Override
-    public List<? extends AbstractAuditableDocument> find(PresidioSchemas presidioSchemas, Instant startDate, Instant endDate) throws Exception {
+    public List<? extends AbstractAuditableDocument> find(Schema schema, Instant startDate, Instant endDate) throws Exception {
         logger.info("Finding records for data source:{}, from :{}, until :{}."
-                , presidioSchemas,
+                , schema,
                 startDate,
                 endDate);
-        return dataService.find(startDate, endDate, presidioSchemas);
+        return dataService.find(startDate, endDate, schema);
     }
 
     @Override
-    public int clean(PresidioSchemas presidioSchemas, Instant startDate, Instant endDate) throws Exception {
+    public int clean(Schema schema, Instant startDate, Instant endDate) throws Exception {
         logger.info("Deleting records for data source:{}, from {}:{}, until {}:{}."
-                , presidioSchemas,
+                , schema,
                 CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate,
                 CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
-        return dataService.clean(startDate, endDate, presidioSchemas);
+        return dataService.clean(startDate, endDate, schema);
     }
 
     @Override
-    public void cleanAll(PresidioSchemas presidioSchemas) throws Exception {
-        dataService.cleanAll(presidioSchemas);
+    public void cleanAll(Schema schema) throws Exception {
+        dataService.cleanAll(schema);
     }
 }
