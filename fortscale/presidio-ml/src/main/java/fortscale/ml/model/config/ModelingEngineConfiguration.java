@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Import;
 @Configuration
 @Import({
 		ContextSelectorFactoryServiceConfig.class,
-		DataRetrieverFactoryServiceConfig.class,
+//		DataRetrieverFactoryServiceConfig.class,
 		ModelBuilderFactoryServiceConfig.class,
 		ModelStoreConfig.class
 })

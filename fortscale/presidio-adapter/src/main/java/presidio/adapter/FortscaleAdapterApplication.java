@@ -1,16 +1,16 @@
 package presidio.adapter;
 
-import fortscale.common.general.PresidioShellableApplication;
-import fortscale.common.shell.config.ShellCommonCommandsConfig;
-import fortscale.utils.logging.Logger;
-import org.springframework.boot.SpringApplication;
+import fortscale.common.shell.PresidioShellableApplication;
+import fortscale.common.shell.config.ShellableApplicationConfig;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import presidio.adapter.spring.AdapterConfigProduction;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 @SpringBootApplication
@@ -21,6 +21,7 @@ import java.util.Arrays;
 public class FortscaleAdapterApplication  {
 
     public static void main(String[] args) {
-        PresidioShellableApplication.run(new Object[]{AdapterConfigProduction.class}, args);
+        List<Class> sources = Stream.of(AdapterConfigProduction.class).collect(Collectors.toList());
+        PresidioShellableApplication.run(sources, args);
     }
 }

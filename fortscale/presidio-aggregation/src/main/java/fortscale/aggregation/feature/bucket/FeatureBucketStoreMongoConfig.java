@@ -1,6 +1,5 @@
 package fortscale.aggregation.feature.bucket;
 
-import fortscale.utils.mongodb.config.MongoConfig;
 import fortscale.utils.mongodb.util.MongoDbUtilService;
 import fortscale.utils.mongodb.util.MongoDbUtilServiceConfig;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +14,7 @@ import java.util.concurrent.TimeUnit;
  * Created by YaronDL on 7/3/2017.
  */
 @Configuration
-@Import({MongoConfig.class, MongoDbUtilServiceConfig.class})
+@Import({MongoDbUtilServiceConfig.class})
 public class FeatureBucketStoreMongoConfig {
     private static final long DEFAULT_EXPIRE_AFTER_SECONDS = TimeUnit.DAYS.toSeconds(90);
 

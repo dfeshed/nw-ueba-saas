@@ -8,7 +8,7 @@ import fortscale.ml.model.retriever.AbstractDataRetriever;
 import fortscale.ml.model.retriever.AbstractDataRetrieverConf;
 import fortscale.ml.model.selector.IContextSelector;
 import fortscale.ml.scorer.Scorer;
-import fortscale.ml.scorer.factory.config.ScorersFactoryConfig;
+import fortscale.ml.scorer.factory.ScorersFactoryConfig;
 import fortscale.utils.factory.AbstractServiceAutowiringFactory;
 import fortscale.utils.factory.FactoryService;
 import org.junit.Assert;

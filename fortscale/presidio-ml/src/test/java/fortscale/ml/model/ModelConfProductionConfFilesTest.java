@@ -4,7 +4,6 @@ import fortscale.accumulator.aggregation.store.AccumulatedAggregatedFeatureEvent
 import fortscale.accumulator.entityEvent.store.AccumulatedEntityEventStore;
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.aggregation.feature.bucket.FeatureBucketReader;
-import fortscale.aggregation.feature.event.config.AggregatedFeatureEventsConfServiceConfig;
 import fortscale.aggregation.feature.event.store.AggregatedFeatureEventsReaderService;
 import fortscale.entity.event.EntityEventConfService;
 import fortscale.entity.event.EntityEventDataReaderService;
@@ -42,7 +41,9 @@ public class ModelConfProductionConfFilesTest {
 	@Configuration
 	@EnableSpringConfigured
 	@ComponentScan(basePackages = "fortscale.ml.model.selector,fortscale.ml.model.retriever,fortscale.ml.model.builder")
-	@Import({NullStatsServiceConfig.class, AggregatedFeatureEventsConfServiceConfig.class, ModelConfServiceConfig.class})
+	@Import({NullStatsServiceConfig.class,
+//			AggregatedFeatureEventsConfServiceConfig.class,
+			ModelConfServiceConfig.class})
 	static class ContextConfiguration {
 		@Mock private FeatureBucketReader featureBucketReader;
 		@Mock private AggregatedFeatureEventsReaderService aggregatedFeatureEventsReaderService;

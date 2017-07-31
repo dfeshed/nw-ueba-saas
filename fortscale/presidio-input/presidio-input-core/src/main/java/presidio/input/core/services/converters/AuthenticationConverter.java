@@ -14,7 +14,7 @@ public class AuthenticationConverter implements InputAdeConverter {
         adeRecord.setResult(authenticationRawEvent.getResult().toString());
         adeRecord.setAuthenticationType(authenticationRawEvent.getAuthenticationType().toString());
         adeRecord.setEventId(authenticationRawEvent.getEventId());
-        adeRecord.setDstMachineRemote(authenticationRawEvent.isDstMachineRemote());
+        adeRecord.setDstMachineRemote(authenticationRawEvent.getIsDstMachineRemote());
         adeRecord.setNormalizedDstMachine(authenticationRawEvent.getNormalizedDstMachine());
         adeRecord.setNormalizedSrcMachine(authenticationRawEvent.getNormalizedSrcMachine());
         adeRecord.setResultCode(authenticationRawEvent.getResultCode().toString());
