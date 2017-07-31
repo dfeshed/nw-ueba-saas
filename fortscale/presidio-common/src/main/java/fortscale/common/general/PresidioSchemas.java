@@ -16,7 +16,7 @@ public enum PresidioSchemas {
         return name;
     }
 
-    public static PresidioSchemas createDataSource(String dataSourceName) throws IllegalArgumentException {
+    public static PresidioSchemas createSchema(String dataSourceName) throws IllegalArgumentException {
         return PresidioSchemas.valueOf(dataSourceName.toUpperCase());
     }
 }
