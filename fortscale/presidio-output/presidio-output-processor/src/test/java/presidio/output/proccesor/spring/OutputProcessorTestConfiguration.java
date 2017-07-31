@@ -1,6 +1,7 @@
 package presidio.output.proccesor.spring;
 
 import fortscale.common.shell.PresidioExecutionService;
+import fortscale.common.shell.config.ShellableApplicationConfig;
 import fortscale.utils.mongodb.config.MongoConfig;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,7 @@ import presidio.output.processor.spring.AlertServiceElasticConfig;
  * Created by shays on 17/05/2017.
  */
 @Configuration
-@Import({MongodbTestConfig.class, ADEManagerSDKConfig.class, AlertServiceElasticConfig.class})
+@Import({MongodbTestConfig.class, ADEManagerSDKConfig.class, AlertServiceElasticConfig.class, ShellableApplicationConfig.class})
 public class OutputProcessorTestConfiguration {
 
     @Autowired

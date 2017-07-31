@@ -19,7 +19,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 @Category(ModuleTestCategory.class)
 @ContextConfiguration(classes = ScoreAggregationsApplicationConfigTest.class)
 public class ScoreAggregationsApplicationTest {
-    public static final String EXECUTION_COMMAND = "run  --data_source DLPFILE --start_date 2017-06-13T07:00:00.00Z --end_date 2017-06-13T09:00:00.00Z --fixed_duration_strategy 3600";
+    public static final String EXECUTION_COMMAND = "run  --schema DLPFILE --start_date 2017-06-13T07:00:00.00Z --end_date 2017-06-13T09:00:00.00Z --fixed_duration_strategy 3600";
 
     @Autowired
     private BootShim bootShim;
