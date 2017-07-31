@@ -15,8 +15,8 @@ public class FileConverter implements InputAdeConverter {
         adeRecord.setAbsoluteSrcFolderFilePath(fileRawEvent.getSrcFilePath());
         adeRecord.setAbsoluteDstFilePath(fileRawEvent.getDstFilePath());
         adeRecord.setAbsoluteDstFolderFilePath(fileRawEvent.getDstFolderPath());
-        adeRecord.setDstDriveShared(fileRawEvent.isDstDriveShared());
-        adeRecord.setSrcDriveShared(fileRawEvent.isSrcDriveShared());
+        adeRecord.setDstDriveShared(fileRawEvent.getIsDstDriveShared());
+        adeRecord.setSrcDriveShared(fileRawEvent.getIsSrcDriveShared());
         adeRecord.setFileSize(fileRawEvent.getFileSize());
         adeRecord.setNormalizedUsername(fileRawEvent.getNormalizedUsername());
         adeRecord.setOperationType(fileRawEvent.getOperationType().toString());
