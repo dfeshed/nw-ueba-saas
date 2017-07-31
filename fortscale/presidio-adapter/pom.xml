@@ -22,6 +22,12 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.github.stefanbirkner</groupId>
+            <artifactId>system-rules</artifactId>
+            <version>1.16.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-task-starter</artifactId>
             <version>${spring-cloud-task-starter.version}</version>

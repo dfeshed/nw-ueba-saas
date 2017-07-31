@@ -809,7 +809,6 @@
         <module>presidio-ade</module>
         <module>presidio-monitoring-daemons</module>
         <module>presidio-input</module>
-        <module>presidio-core-manager</module>
         <module>presidio-adapter</module>
         <module>presidio-output</module>
         <module>presidio-configuration-server</module>
