@@ -1,8 +1,6 @@
 package presidio.webapp.service;
 
-import fortscale.utils.elasticsearch.PresidioElasticsearchTemplate;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,9 +19,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.Matchers.anyObject;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
@@ -74,7 +70,6 @@ public class RestAlertServiceTest {
         secondAlert.setId("differentId");
         secondAlert.setUserName("differentUserName");
         List<Alert> resultList = new ArrayList<>();
-        resultList.add(firstAlert);
         Page<Alert> page = new PageImpl<>(resultList);
         when(alertService.find(anyObject())).thenReturn(page);
 
@@ -82,6 +77,23 @@ public class RestAlertServiceTest {
         restAlertQuery.setUserName(firstAlert.getUserName());
         List<presidio.webapp.dto.Alert> alerts = restAlertService.getAlerts(restAlertQuery);
         Assert.assertEquals(1, alerts.size());
+    }
+
+    @Test
+    public void getAlertsNoAlert() {
+        Alert firstAlert = createAlert();
+        Alert secondAlert = createAlert();
+        secondAlert.setId("differentId");
+        secondAlert.setUserName("differentUserName");
+        List<Alert> resultList = new ArrayList<>();
+        resultList.add(firstAlert);
+        Page<Alert> page = new PageImpl<>(resultList);
+        when(alertService.find(anyObject())).thenReturn(page);
+
+        RestAlertQuery restAlertQuery = new RestAlertQuery();
+        restAlertQuery.setUserName("someUserName");
+        List<presidio.webapp.dto.Alert> alerts = restAlertService.getAlerts(restAlertQuery);
+        Assert.assertEquals(0, alerts.size());
     }
 
     private Alert createAlert() {
