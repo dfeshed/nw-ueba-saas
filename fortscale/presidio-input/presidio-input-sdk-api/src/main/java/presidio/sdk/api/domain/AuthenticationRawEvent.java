@@ -55,7 +55,7 @@ public class AuthenticationRawEvent extends AbstractInputDocument {
         this.resultCode = record[9];
     }
 
-    public boolean isDstMachineRemote() {
+    public boolean getIsDstMachineRemote() {
         return isDstMachineRemote;
     }
 
