@@ -5,10 +5,11 @@ import fortscale.aggregation.feature.bucket.FeatureBucketStore;
 import fortscale.aggregation.feature.bucket.FeatureBucketUtils;
 import fortscale.common.feature.AggrFeatureValue;
 import fortscale.common.feature.Feature;
-import fortscale.common.shell.config.ShellableApplicationConfig;
+import fortscale.common.shell.command.PresidioCommands;
 import fortscale.common.util.GenericHistogram;
 import fortscale.utils.pagination.ContextIdToNumOfItems;
 import fortscale.utils.shell.BootShim;
+import fortscale.utils.shell.BootShimConfig;
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
 import fortscale.utils.test.category.ModuleTestCategory;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
@@ -58,7 +59,7 @@ public class ModelFeatureAggregationBucketsServiceTest {
         TimeRange timeRange = new TimeRange(startTime,endTime);
         String username = "sanityTestUser";
         generateAndPersistAdeEnrichedRecords(timeRange,username);
-        CommandResult commandResult = bootShim.getShell().executeCommand(String.format("run --data_source %s --start_date %s --end_date %s --fixed_duration_strategy 3600", ADE_EVENT_TYPE.toUpperCase(), startTime.toString(), endTime.toString()));
+        CommandResult commandResult = bootShim.getShell().executeCommand(String.format("run --schema %s --start_date %s --end_date %s --fixed_duration_strategy 3600", ADE_EVENT_TYPE.toUpperCase(), startTime.toString(), endTime.toString()));
         Assert.assertTrue(commandResult.isSuccess());
 //        modelFeatureAggregationBucketsService.execute(timeRange, ADE_EVENT_TYPE);
         String contextId = FeatureBucketUtils.buildContextId(Collections.singletonMap("normalizedUsername", username));
@@ -118,7 +119,8 @@ public class ModelFeatureAggregationBucketsServiceTest {
 
     @Configuration
     @Import({MongodbTestConfig.class,
-            ShellableApplicationConfig.class
+            PresidioCommands.class,
+            BootShimConfig.class
     })
     public static class ModelFeatureAggregationBucketsServiceTestConfiguration extends ModelFeatureAggregationBucketsConfiguration {
 

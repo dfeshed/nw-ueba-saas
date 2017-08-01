@@ -29,6 +29,16 @@ public class AggrFeatureDistinctValuesCounterFuncTest {
 		return new AggregatedFeatureEventConf(name, "F", "bucketConfName", 3, 1, 300, "HIGHEST_SCORE", map, new JSONObject());
 	}
 
+	private AggrFeatureValue createExpected(Long numberOfDistinctValues, GenericHistogram ...genericHistograms){
+		AggrFeatureValue ret = new AggrFeatureValue(numberOfDistinctValues,0L);
+		GenericHistogram sumGenericHistogram = new GenericHistogram();
+		for(GenericHistogram hist: genericHistograms){
+			sumGenericHistogram.add(hist);
+		}
+		ret.setTotal((long)sumGenericHistogram.getTotalCount());
+		return ret;
+	}
+
 	@Test
 	public void testCalculateAggrFeature() {
 		String aggregatedFeatureEventName = "aggregatedFeatureEventTestName";
@@ -71,15 +81,62 @@ public class AggrFeatureDistinctValuesCounterFuncTest {
 		Assert.assertEquals(expectedAggrFeatureValue.getValue(), actualAggrFeatureValue.getValue());
 		Assert.assertEquals(expectedAggrFeatureValue.getAdditionalInformationMap(), actualAggrFeatureValue.getAdditionalInformationMap());
 	}
-	
-	private AggrFeatureValue createExpected(Long numberOfDistinctValues, GenericHistogram ...genericHistograms){
-		AggrFeatureValue ret = new AggrFeatureValue(numberOfDistinctValues,0L);
-		GenericHistogram sumGenericHistogram = new GenericHistogram();
-		for(GenericHistogram hist: genericHistograms){
-			sumGenericHistogram.add(hist);
-		}
-		ret.setTotal((long)sumGenericHistogram.getTotalCount());
-		return ret;
+
+	@Test
+	public void testCalculateAggrFeatureWhenHistogramsAreEmpty() {
+		String aggregatedFeatureEventName = "aggregatedFeatureEventTestName";
+
+		GenericHistogram histogram1 = new GenericHistogram();
+
+		GenericHistogram notListedHistogram = new GenericHistogram();
+		notListedHistogram.add("first", 1.0);
+		notListedHistogram.add("fifths", 5.0);
+		notListedHistogram.add("tenth", 10.0);
+
+		Map<String, Feature> bucket1FeatureMap = AggrFeatureTestUtils.createFeatureMap(
+				new ImmutablePair<String, Object>("feature1", histogram1),
+				new ImmutablePair<String, Object>("feature2", notListedHistogram)
+		);
+
+		GenericHistogram histogram2 = new GenericHistogram();
+		Map<String, Feature> bucket2FeatureMap = AggrFeatureTestUtils.createFeatureMap(
+				new ImmutablePair<String, Object>("feature1", histogram2),
+				new ImmutablePair<String, Object>("feature2", 42)
+		);
+
+		List<Map<String, Feature>> listOfFeatureMaps = new ArrayList<>();
+		listOfFeatureMaps.add(bucket1FeatureMap);
+		listOfFeatureMaps.add(bucket2FeatureMap);
+
+		AggrFeatureDistinctValuesCounterFunc function = new AggrFeatureDistinctValuesCounterFunc();
+		Feature actual1 = function.calculateAggrFeature(createAggregatedFeatureEventConf(aggregatedFeatureEventName, 1), listOfFeatureMaps);
+		Assert.assertNull(actual1);
+	}
+
+	@Test
+	public void testCalculateAggrFeatureWhenFeatureDoesNotExist() {
+		String aggregatedFeatureEventName = "aggregatedFeatureEventTestName";
+
+		GenericHistogram notListedHistogram = new GenericHistogram();
+		notListedHistogram.add("first", 1.0);
+		notListedHistogram.add("fifths", 5.0);
+		notListedHistogram.add("tenth", 10.0);
+
+		Map<String, Feature> bucket1FeatureMap = AggrFeatureTestUtils.createFeatureMap(
+				new ImmutablePair<String, Object>("feature2", notListedHistogram)
+		);
+
+		Map<String, Feature> bucket2FeatureMap = AggrFeatureTestUtils.createFeatureMap(
+				new ImmutablePair<String, Object>("feature2", 42)
+		);
+
+		List<Map<String, Feature>> listOfFeatureMaps = new ArrayList<>();
+		listOfFeatureMaps.add(bucket1FeatureMap);
+		listOfFeatureMaps.add(bucket2FeatureMap);
+
+		AggrFeatureDistinctValuesCounterFunc function = new AggrFeatureDistinctValuesCounterFunc();
+		Feature actual1 = function.calculateAggrFeature(createAggregatedFeatureEventConf(aggregatedFeatureEventName, 1), listOfFeatureMaps);
+		Assert.assertNull(actual1);
 	}
 
 	@Test

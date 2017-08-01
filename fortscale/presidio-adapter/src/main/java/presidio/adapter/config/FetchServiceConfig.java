@@ -1,7 +1,7 @@
 package presidio.adapter.config;
 
 
-import fortscale.common.general.DataSource;
+import fortscale.common.general.Schema;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,11 +23,11 @@ public class FetchServiceConfig {
 
     @Bean
     public FetchService fetchService() {
-        Map<DataSource, Fetcher> fetchers = new HashMap<>();
-        fetchers.put(DataSource.DLPFILE, new CsvFileFetcher(csvFilesFolderPath, StandardCharsets.UTF_8, ','));
-        fetchers.put(DataSource.AUTHENTICATION, new CsvFileFetcher(csvFilesFolderPath, StandardCharsets.UTF_8, ','));
-        fetchers.put(DataSource.ACTIVE_DIRECTORY, new CsvFileFetcher(csvFilesFolderPath, StandardCharsets.UTF_8, ','));
-        fetchers.put(DataSource.FILE, new CsvFileFetcher(csvFilesFolderPath, StandardCharsets.UTF_8, ','));
+        Map<Schema, Fetcher> fetchers = new HashMap<>();
+        fetchers.put(Schema.DLPFILE, new CsvFileFetcher(csvFilesFolderPath, StandardCharsets.UTF_8, ','));
+        fetchers.put(Schema.AUTHENTICATION, new CsvFileFetcher(csvFilesFolderPath, StandardCharsets.UTF_8, ','));
+        fetchers.put(Schema.ACTIVE_DIRECTORY, new CsvFileFetcher(csvFilesFolderPath, StandardCharsets.UTF_8, ','));
+        fetchers.put(Schema.FILE, new CsvFileFetcher(csvFilesFolderPath, StandardCharsets.UTF_8, ','));
         return new FetchServiceImpl(fetchers);
     }
 }

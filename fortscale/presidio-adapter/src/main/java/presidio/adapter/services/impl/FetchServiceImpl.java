@@ -1,6 +1,6 @@
 package presidio.adapter.services.impl;
 
-import fortscale.common.general.DataSource;
+import fortscale.common.general.Schema;
 import fortscale.utils.logging.Logger;
 import presidio.adapter.services.api.FetchService;
 import presidio.adapter.services.api.Fetcher;
@@ -13,23 +13,23 @@ import java.util.Map;
 public class FetchServiceImpl implements FetchService {
     private final Logger logger = Logger.getLogger(FetchServiceImpl.class);
 
-    private Map<DataSource, Fetcher> fetchers;
+    private Map<Schema, Fetcher> fetchers;
 
-    public FetchServiceImpl(Map<DataSource, Fetcher> fetchers) {
+    public FetchServiceImpl(Map<Schema, Fetcher> fetchers) {
         this.fetchers = fetchers;
     }
 
     @Override
-    public List<String[]> fetch(DataSource dataSource, Instant startTime, Instant endTime) throws Exception {
-        logger.info("fetching dataSource {} from start time {} to end time {}.", dataSource, startTime, endTime); //todo: can we have timezone issues?
-        final Fetcher fetcher = fetchers.get(dataSource);
+    public List<String[]> fetch(Schema schema, Instant startTime, Instant endTime) throws Exception {
+        logger.info("fetching schema {} from start time {} to end time {}.", schema, startTime, endTime); //todo: can we have timezone issues?
+        final Fetcher fetcher = fetchers.get(schema);
         if (fetcher == null) {
-            logger.error("There's no fetcher for dataSource {}. Supported datasources are {}", fetchers.keySet());
-            throw new Exception("Unsupported dataSource: " + dataSource);
+            logger.error("There's no fetcher for schema {}. Supported datasources are {}", fetchers.keySet());
+            throw new Exception("Unsupported schema: " + schema);
         }
 
         try {
-            return fetcher.fetch(dataSource, startTime, endTime);
+            return fetcher.fetch(schema, startTime, endTime);
         } catch (Exception e) {
             logger.warn("fetch failed and we don't retry for now");
             //todo: how do we handle? maybe retry?
