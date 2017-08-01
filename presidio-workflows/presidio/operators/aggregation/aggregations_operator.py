@@ -1,5 +1,7 @@
 from abc import ABCMeta, abstractmethod
+
 from airflow.utils.decorators import apply_defaults
+
 from presidio.operators.fixed_duration_jar_operator import FixedDurationJarOperator
 from presidio.utils.services.fixed_duration_strategy import fixed_duration_strategy_to_string
 
@@ -43,18 +45,12 @@ class AggregationsOperator(FixedDurationJarOperator):
             'data_source': self.data_source,
         }
 
-        jvm_args = {
-            'jar_path': self.get_jar_file_path(),
-            'main_class': self.get_main_class()
-        }
-
         print('agg operator. commad=', command)
         print('agg operator. kwargs=', kwargs)
         super(AggregationsOperator, self).__init__(
             task_id=self.task_id,
             fixed_duration_strategy=self.fixed_duration_strategy,
             command=command,
-            jvm_args=jvm_args,
             java_args=java_args,
             *args,
             **kwargs
@@ -67,16 +63,3 @@ class AggregationsOperator(FixedDurationJarOperator):
         """
         pass
 
-    @abstractmethod
-    def get_jar_file_path(self):
-        """
-        :return: The full path to the JAR file that will be executed
-        """
-        pass
-
-    @abstractmethod
-    def get_main_class(self):
-        """
-        :return: The main class to the JAR file that will be executed
-        """
-        pass

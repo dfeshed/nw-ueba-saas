@@ -1,7 +1,12 @@
+import logging
+
 import os
 import requests
+from requests import ConnectionError
 
 from presidio.utils.airflow.configuration.abstract_configuration_reader import AbstractConfigurationReader
+
+OUTPUT_FORMAT = "json"
 
 SOURCE_KEY = "source"
 PROPERTY_SOURCES_KEY = "propertySources"
@@ -32,7 +37,17 @@ class ConfigServerConfigurationReader(AbstractConfigurationReader):
 
         :return: json containing the configuration for application,profile 
         """
-        return requests.get(str(os.sep).join(self.config_server, self.app_name, self.profile), auth=self.auth).json()
+        request_path = "%s-%s.%s" % (self.app_name,self.profile, OUTPUT_FORMAT)
+
+        config_server_address = str(os.sep).join((self.config_server, request_path))
+        logging.info("connecting to config server address: %s",config_server_address)
+        try:
+            config_server_properties = requests.get(config_server_address, auth=self.auth).json()
+        except ConnectionError as e:
+            logging.error(("failed to connect to config server=%s" % config_server_address), e)
+            raise e
+
+        return config_server_properties
 
     def read_from_store(self, conf_key):
         """
@@ -42,9 +57,20 @@ class ConfigServerConfigurationReader(AbstractConfigurationReader):
             """
         if not self.properties:
             self.properties = self._get_application_properties()
-        property_sources = self.properties[PROPERTY_SOURCES_KEY]
-        for property_source in property_sources:
-            source = property_source[SOURCE_KEY]
-            if source.has_key(conf_key):
-                return source[conf_key]
-        return None
+        value = self.properties
+        for key in conf_key.split("."):
+            if isinstance(value, dict):
+                value = value.get(key)
+            else:
+                value = value
+        return value
+
+    def set_properties(self,properties):
+        """
+        setter to be used in unit test in order to prevent config server usage 
+        :param properties: 
+        """
+        logging.info("config reader properties are set manually. you must be in testing it...")
+        self.properties = properties
+
+
