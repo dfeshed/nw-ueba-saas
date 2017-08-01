@@ -13,9 +13,7 @@ import java.time.Instant;
 @Document
 //todo: add @AdeRecordMetadata annotation
 public class EnrichedFileRecord extends EnrichedRecord {
-
-
-    public static final String NORMALIZED_USERNAME_FIELD = "normalizedUsername";
+    public static final String USER_ID_FIELD = "userId";
     public static final String ABSOLUTE_SRC_FILE_PATH_FIELD = "absoluteSrcFilePath";
     public static final String ABSOLUTE_DST_FILE_PATH_FIELD = "absoluteDstFilePath";
     public static final String ABSOLUTE_SRC_FOLDER_FILE_PATH_FIELD = "absoluteSrcFolderFilePath";
@@ -27,8 +25,8 @@ public class EnrichedFileRecord extends EnrichedRecord {
 
 
     @Indexed
-    @Field(NORMALIZED_USERNAME_FIELD)
-    private String normalizedUsername;
+    @Field(USER_ID_FIELD)
+    private String userId;
     @Field(ABSOLUTE_SRC_FILE_PATH_FIELD)
     private String absoluteSrcFilePath;
     @Field(ABSOLUTE_DST_FILE_PATH_FIELD)
@@ -54,12 +52,12 @@ public class EnrichedFileRecord extends EnrichedRecord {
         super(startInstant);
     }
 
-    public String getNormalizedUsername() {
-        return normalizedUsername;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setNormalizedUsername(String normalizedUsername) {
-        this.normalizedUsername = normalizedUsername;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String getAbsoluteSrcFilePath() {

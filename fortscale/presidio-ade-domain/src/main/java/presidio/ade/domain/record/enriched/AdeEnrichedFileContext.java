@@ -5,7 +5,7 @@ import fortscale.common.general.EventResult;
 
 public class AdeEnrichedFileContext {
 
-    private String normalizedUsername;
+    private String userId;
     private EventResult result;
     private String operationType;
     private Boolean isSrcDriveShared;
@@ -13,19 +13,19 @@ public class AdeEnrichedFileContext {
 
 
     public AdeEnrichedFileContext(EnrichedFileRecord enrichedFileRecord) {
-        this.normalizedUsername = enrichedFileRecord.getNormalizedUsername();
+        this.userId = enrichedFileRecord.getUserId();
         this.result = enrichedFileRecord.getResult();
         this.operationType = enrichedFileRecord.getOperationType();
         this.isSrcDriveShared = enrichedFileRecord.getSrcDriveShared();
         this.isDstDriveShared = enrichedFileRecord.getDstDriveShared();
     }
 
-    public String getNormalizedUsername() {
-        return normalizedUsername;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setNormalizedUsername(String normalizedUsername) {
-        this.normalizedUsername = normalizedUsername;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public EventResult getResult() {

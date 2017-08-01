@@ -15,7 +15,6 @@ import java.time.Instant;
 @Document
 //todo: add @AdeRecordMetadata annotation
 public class EnrichedAuthenticationRecord extends EnrichedRecord {
-    public static final String IS_DST_MACHINE_REMOTE_FIELD = "isDstMachineRemote";
     public static final String USER_ID_FIELD = "userId";
     public static final String SRC_MACHINE_ID_FIELD = "SrcMachineId";
     public static final String DST_MACHINE_ID_FIELD = "dstMachineId";
@@ -29,8 +28,6 @@ public class EnrichedAuthenticationRecord extends EnrichedRecord {
     @Indexed
     @Field(USER_ID_FIELD)
     private String userId;
-    @Field(IS_DST_MACHINE_REMOTE_FIELD)
-    private Boolean isDstMachineRemote;
     @Field(SRC_MACHINE_ID_FIELD)
     private String SrcMachineId;
     @Field(DST_MACHINE_ID_FIELD)
@@ -62,14 +59,6 @@ public class EnrichedAuthenticationRecord extends EnrichedRecord {
 
     public void setUserId(String userId) {
         this.userId = userId;
-    }
-
-    public Boolean getDstMachineRemote() {
-        return isDstMachineRemote;
-    }
-
-    public void setDstMachineRemote(Boolean dstMachineRemote) {
-        isDstMachineRemote = dstMachineRemote;
     }
 
     public String getSrcMachineId() {

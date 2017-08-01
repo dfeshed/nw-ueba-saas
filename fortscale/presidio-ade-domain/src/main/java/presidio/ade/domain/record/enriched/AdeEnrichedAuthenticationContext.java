@@ -4,23 +4,21 @@ package presidio.ade.domain.record.enriched;
 import fortscale.common.general.EventResult;
 
 public class AdeEnrichedAuthenticationContext {
-    private String normalizedUsername;
+    private String userId;
     private EventResult result;
-    private Boolean isDstMachineRemote;
 
 
     public AdeEnrichedAuthenticationContext(EnrichedAuthenticationRecord enrichedAuthenticationRecord) {
-        this.normalizedUsername = enrichedAuthenticationRecord.getUserId();
+        this.userId = enrichedAuthenticationRecord.getUserId();
         this.result = enrichedAuthenticationRecord.getResult();
-        this.isDstMachineRemote = enrichedAuthenticationRecord.getDstMachineRemote();
     }
 
-    public String getNormalizedUsername() {
-        return normalizedUsername;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setNormalizedUsername(String normalizedUsername) {
-        this.normalizedUsername = normalizedUsername;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public EventResult getResult() {
@@ -29,13 +27,5 @@ public class AdeEnrichedAuthenticationContext {
 
     public void setResult(EventResult result) {
         this.result = result;
-    }
-
-    public Boolean getDstMachineRemote() {
-        return isDstMachineRemote;
-    }
-
-    public void setDstMachineRemote(Boolean dstMachineRemote) {
-        isDstMachineRemote = dstMachineRemote;
     }
 }
