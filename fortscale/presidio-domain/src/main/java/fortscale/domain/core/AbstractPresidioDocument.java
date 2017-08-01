@@ -25,11 +25,11 @@ public class AbstractPresidioDocument extends AbstractAuditableDocument {
     @Field(RESULT_FIELD_NAME)
     protected EventResult result;
 
-    public AbstractInputDocument() {
+    public AbstractPresidioDocument() {
 
     }
 
-    public AbstractInputDocument(Instant dateTime, String dataSource, String normalizedUsername,
+    public AbstractPresidioDocument(Instant dateTime, String dataSource, String normalizedUsername,
                                  String eventId, EventResult result) {
         super(dateTime);
         this.dataSource = dataSource;
