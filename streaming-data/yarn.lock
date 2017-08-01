@@ -2292,9 +2292,9 @@ ember-cli@2.14.1:
     walk-sync "^0.3.0"
     yam "0.0.22"
 
-ember-exam@0.6.0:
-  version "0.6.0"
-  resolved "https://registry.npmjs.org/ember-exam/-/ember-exam-0.6.0.tgz#665a5c14c80daeea0d85b1beb62b7f5c2e29d14f"
+ember-exam@0.7.0:
+  version "0.7.0"
+  resolved "https://registry.npmjs.org/ember-exam/-/ember-exam-0.7.0.tgz#740ad0e4df3cb6cff8e83ae9c98536d8bb04332a"
   dependencies:
     chalk "^1.1.3"
     cli-table2 "^0.2.0"
@@ -4585,13 +4585,13 @@ right-align@^0.1.1:
   dependencies:
     align-text "^0.1.1"
 
-rimraf@2.x.x, rimraf@^2.2.8, rimraf@^2.3.2, rimraf@^2.3.4, rimraf@^2.4.4, rimraf@^2.5.3, rimraf@^2.6.1:
+rimraf@2.x.x, rimraf@^2.2.8, rimraf@^2.3.2, rimraf@^2.3.4, rimraf@^2.4.4, rimraf@^2.5.3, rimraf@^2.5.4, rimraf@^2.6.1:
   version "2.6.1"
   resolved "https://registry.npmjs.org/rimraf/-/rimraf-2.6.1.tgz#c2338ec643df7a1b7fe5c54fa86f57428a55f33d"
   dependencies:
     glob "^7.0.5"
 
-rimraf@^2.4.3, rimraf@^2.5.4:
+rimraf@^2.4.3:
   version "2.5.4"
   resolved "https://registry.npmjs.org/rimraf/-/rimraf-2.5.4.tgz#96800093cbf1a0c86bd95b4625467535c29dfa04"
   dependencies:
