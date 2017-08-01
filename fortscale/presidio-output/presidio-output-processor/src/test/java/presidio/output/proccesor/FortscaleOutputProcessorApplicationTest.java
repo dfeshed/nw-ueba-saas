@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.shell.core.CommandResult;
 import org.springframework.test.context.junit4.SpringRunner;
 import presidio.output.proccesor.spring.OutputProcessorTestConfiguration;
+import presidio.output.processor.services.OutputExecutionService;
 import presidio.output.processor.services.OutputExecutionServiceImpl;
 import presidio.output.processor.spring.OutputProcessorConfiguration;
 
@@ -26,7 +27,7 @@ public class FortscaleOutputProcessorApplicationTest {
 	private BootShim bootShim;
 
 	@Autowired
-	PresidioExecutionService executionService;
+	OutputExecutionService executionService;
 
 	@Test
 	public void contextLoads() throws Exception {
