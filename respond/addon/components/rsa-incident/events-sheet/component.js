@@ -1,6 +1,6 @@
 import EventsSheet from 'respond/components/rsa-events-sheet/component';
 import layout from './template';
-import connect from 'ember-redux/components/connect';
+import { connect } from 'ember-redux';
 import { storyDatasheet, selectedStoryEventCountExpected } from 'respond/selectors/storyline';
 import computed from 'ember-computed-decorators';
 

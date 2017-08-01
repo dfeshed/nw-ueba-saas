@@ -1,7 +1,7 @@
 import Component from 'ember-component';
 import layout from './template';
 import computed, { alias } from 'ember-computed-decorators';
-import connect from 'ember-redux/components/connect';
+import { connect } from 'ember-redux';
 import { highlightMeta } from 'recon/actions/interaction-creators';
 
 import metaToLimit from './limited-meta';

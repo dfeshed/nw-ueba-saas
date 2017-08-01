@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import connect from 'ember-redux/components/connect';
+import { connect } from 'ember-redux';
 import { toggleTasksAndJournalPanel, setHideViz } from 'respond/actions/creators/incidents-creators';
 
 const {

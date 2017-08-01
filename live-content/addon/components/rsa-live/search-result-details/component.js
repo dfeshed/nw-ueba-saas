@@ -1,6 +1,6 @@
 import Ember from 'ember';
 import computed from 'ember-computed-decorators';
-import connect from 'ember-redux/components/connect';
+import { connect } from 'ember-redux';
 
 const { Component } = Ember;
 

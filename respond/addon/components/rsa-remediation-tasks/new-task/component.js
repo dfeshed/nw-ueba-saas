@@ -1,5 +1,5 @@
 import Component from 'ember-component';
-import connect from 'ember-redux/components/connect';
+import { connect } from 'ember-redux';
 import { createItem } from 'respond/actions/creators/remediation-task-creators';
 import computed from 'ember-computed-decorators';
 import FLASH_MESSAGE_TYPES from 'respond/utils/flash-message-types';

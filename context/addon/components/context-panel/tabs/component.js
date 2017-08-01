@@ -1,5 +1,5 @@
 import Component from 'ember-component';
-import connect from 'ember-redux/components/connect';
+import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
 import * as ContextActions from 'context/actions/context-creators';
 import layout from './template';

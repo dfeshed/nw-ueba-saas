@@ -1,6 +1,6 @@
 import { assert } from 'ember-metal/utils';
 import Component from 'ember-component';
-import connect from 'ember-redux/components/connect';
+import { connect } from 'ember-redux';
 import { and } from 'ember-computed-decorators';
 import observer from 'ember-metal/observer';
 import { later, next } from 'ember-runloop';

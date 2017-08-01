@@ -1,4 +1,4 @@
-import connect from 'ember-redux/components/connect';
+import { connect } from 'ember-redux';
 import { toggleTasksAndJournalPanel, setTasksJournalMode } from 'respond/actions/creators/incidents-creators';
 import Component from 'ember-component';
 import computed, { alias } from 'ember-computed-decorators';

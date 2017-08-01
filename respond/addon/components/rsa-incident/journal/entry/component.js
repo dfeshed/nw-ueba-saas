@@ -1,5 +1,5 @@
 import Component from 'ember-component';
-import connect from 'ember-redux/components/connect';
+import { connect } from 'ember-redux';
 import Notifications from 'respond/mixins/notifications';
 import Confirmable from 'respond/mixins/confirmable';
 import { deleteJournalEntry, updateJournalEntry } from 'respond/actions/creators/journal-creators';

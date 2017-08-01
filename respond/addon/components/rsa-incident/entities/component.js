@@ -4,7 +4,7 @@ import eventsToNodesAndLinks from 'respond/utils/entity/events-to-nodes-links';
 import selectionToFilter from 'respond/utils/entity/selection-to-filter';
 import arrayFromHash from 'respond/utils/array/from-hash';
 import { parseNodeId, countNodesByType } from 'respond/utils/entity/node';
-import connect from 'ember-redux/components/connect';
+import { connect } from 'ember-redux';
 import { storyEvents } from 'respond/selectors/storyline';
 import CanThrottleAttr from 'respond/mixins/can-throttle-attr';
 import { setHideViz, clearSelection } from 'respond/actions/creators/incidents-creators';

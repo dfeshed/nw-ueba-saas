@@ -1,6 +1,6 @@
 import Component from 'ember-component';
 import service from 'ember-service/inject';
-import connect from 'ember-redux/components/connect';
+import { connect } from 'ember-redux';
 import computed, { not } from 'ember-computed-decorators';
 
 import layout from './template';

@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import Component from 'ember-component';
 import computed, { filterBy, gt, alias } from 'ember-computed-decorators';
-import connect from 'ember-redux/components/connect';
+import { connect } from 'ember-redux';
 import ReconPager from 'recon/mixins/recon-pager';
 import ReconPanelHelp from 'recon/mixins/recon-panel-help';
 

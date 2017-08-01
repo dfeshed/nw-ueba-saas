@@ -1,6 +1,6 @@
 import Component from 'ember-component';
 import { htmlSafe } from 'ember-string';
-import connect from 'ember-redux/components/connect';
+import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
 
 import {

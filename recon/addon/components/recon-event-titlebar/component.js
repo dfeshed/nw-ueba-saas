@@ -1,6 +1,6 @@
 import Component from 'ember-component';
 import computed from 'ember-computed-decorators';
-import connect from 'ember-redux/components/connect';
+import { connect } from 'ember-redux';
 import layout from './template';
 import { RECON_VIEW_TYPES } from 'recon/utils/reconstruction-types';
 import {

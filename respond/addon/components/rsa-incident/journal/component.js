@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import connect from 'ember-redux/components/connect';
+import { connect } from 'ember-redux';
 import service from 'ember-service/inject';
 
 const { Component } = Ember;

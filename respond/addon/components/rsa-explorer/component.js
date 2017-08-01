@@ -1,7 +1,7 @@
 import Component from 'ember-component';
 import { isEmberArray } from 'ember-array/utils';
 import { assert } from 'ember-metal/utils';
-import connect from 'ember-redux/components/connect';
+import { connect } from 'ember-redux';
 import actionBroker from 'respond/actions/action-creator-broker';
 import service from 'ember-service/inject';
 import { camelize } from 'ember-string';

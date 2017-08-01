@@ -58,11 +58,11 @@
     "flexi": "2.0.0-beta.12",
     "liquid-fire": "0.27.1",
     "pikaday-time": "1.4.1",
-    "redux": "3.6.0",
-    "redux-actions": "^1.2.0",
-    "redux-pack": "0.1.4",
+    "redux": "3.7.2",
+    "redux-actions": "2.2.1",
+    "redux-pack": "0.1.5",
     "redux-thunk": "2.2.0",
-    "reselect": "2.5.4",
+    "reselect": "3.0.1",
     "tether": "^1.4.0"
   },
   "devDependencies": {
@@ -93,8 +93,8 @@
     "eslint-plugin-ember-suave": "^1.0.0",
     "javascript-detect-element-resize": "git://github.rsa.lab.emc.com/bellg3/javascript-detect-element-resize.git",
     "loader.js": "^4.2.3",
-    "redux-persist": "^4.6.0",
-    "redux-persist-transform-filter": "0.0.9"
+    "redux-persist": "4.8.3",
+    "redux-persist-transform-filter": "0.0.15"
   },
   "ember-addon": {
     "configPath": "tests/dummy/config"

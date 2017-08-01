@@ -1,5 +1,5 @@
 import DataTableBodyRow from 'component-lib/components/rsa-data-table/body-row/component';
-import connect from 'ember-redux/components/connect';
+import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
 
 const stateToComputed = (state) => {

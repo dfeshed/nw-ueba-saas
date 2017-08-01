@@ -3,7 +3,7 @@ import observer from 'ember-metal/observer';
 import { schedule } from 'ember-runloop';
 import service from 'ember-service/inject';
 import $ from 'jquery';
-import connect from 'ember-redux/components/connect';
+import { connect } from 'ember-redux';
 import computed, { alias, notEmpty, equal } from 'ember-computed-decorators';
 
 import intToHex from 'recon/utils/int-to-hex';

@@ -1,5 +1,5 @@
 import Component from 'ember-component';
-import connect from 'ember-redux/components/connect';
+import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
 import { updateItem, deleteItem } from 'respond/actions/creators/remediation-task-creators';
 import Confirmable from 'respond/mixins/confirmable';

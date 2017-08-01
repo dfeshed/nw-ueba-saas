@@ -4921,6 +4921,10 @@ lodash.flatten@^3.0.2:
     lodash._baseflatten "^3.0.0"
     lodash._isiterateecall "^3.0.0"
 
+lodash.forin@^4.4.0:
+  version "4.4.0"
+  resolved "https://registry.npmjs.org/lodash.forin/-/lodash.forin-4.4.0.tgz#5d3f20ae564011fbe88381f7d98949c9c9519731"
+
 lodash.get@^4.4.2:
   version "4.4.2"
   resolved "https://registry.npmjs.org/lodash.get/-/lodash.get-4.4.2.tgz#2d177f652fa31e939b4438d5341499dfa3825e99"
@@ -4932,6 +4936,10 @@ lodash.isarguments@^3.0.0:
 lodash.isarray@^3.0.0:
   version "3.0.4"
   resolved "https://registry.npmjs.org/lodash.isarray/-/lodash.isarray-3.0.4.tgz#79e4eb88c36a8122af86f844aa9bcd851b5fbb55"
+
+lodash.isempty@^4.4.0:
+  version "4.4.0"
+  resolved "https://registry.npmjs.org/lodash.isempty/-/lodash.isempty-4.4.0.tgz#6f86cbedd8be4ec987be9aaf33c9684db1b31e7e"
 
 lodash.keys@^3.0.0:
   version "3.1.2"
@@ -4952,6 +4960,10 @@ lodash.mergewith@^4.6.0:
 lodash.omit@^4.1.0:
   version "4.5.0"
   resolved "https://registry.npmjs.org/lodash.omit/-/lodash.omit-4.5.0.tgz#6eb19ae5a1ee1dd9df0b969e66ce0b7fa30b5e60"
+
+lodash.pickby@^4.6.0:
+  version "4.6.0"
+  resolved "https://registry.npmjs.org/lodash.pickby/-/lodash.pickby-4.6.0.tgz#7dea21d8c18d7703a27c704c15d3b84a67e33aff"
 
 lodash.restparam@^3.0.0:
   version "3.6.1"
@@ -5972,6 +5984,15 @@ reduce-reducers@^0.1.0:
   version "0.1.2"
   resolved "https://registry.npmjs.org/reduce-reducers/-/reduce-reducers-0.1.2.tgz#fa1b4718bc5292a71ddd1e5d839c9bea9770f14b"
 
+redux-actions@2.2.1:
+  version "2.2.1"
+  resolved "https://registry.npmjs.org/redux-actions/-/redux-actions-2.2.1.tgz#d64186b25649a13c05478547d7cd7537b892410d"
+  dependencies:
+    invariant "^2.2.1"
+    lodash "^4.13.1"
+    lodash-es "^4.17.4"
+    reduce-reducers "^0.1.0"
+
 redux-actions@^1.2.0:
   version "1.2.2"
   resolved "https://registry.npmjs.org/redux-actions/-/redux-actions-1.2.2.tgz#31f15ba494fe130f05c4a9f486c99cc8725f80cd"
@@ -5980,25 +6001,28 @@ redux-actions@^1.2.0:
     lodash "^4.13.1"
     reduce-reducers "^0.1.0"
 
-redux-pack@0.1.4:
-  version "0.1.4"
-  resolved "https://registry.npmjs.org/redux-pack/-/redux-pack-0.1.4.tgz#ce6be0f6070b6883494e320ef614c4a09b921c18"
+redux-pack@0.1.5:
+  version "0.1.5"
+  resolved "https://registry.npmjs.org/redux-pack/-/redux-pack-0.1.5.tgz#1973b26ef749dfc020e8a61d54cf3e55ec8ae4cd"
   dependencies:
     deline "^1.0.4"
     invariant "^2.2.2"
     uuid "^3.0.1"
 
-redux-persist-transform-filter@0.0.9:
-  version "0.0.9"
-  resolved "https://registry.npmjs.org/redux-persist-transform-filter/-/redux-persist-transform-filter-0.0.9.tgz#aa2e46f7d51fcfa5c005f754f5d934b5d57b0aca"
+redux-persist-transform-filter@0.0.15:
+  version "0.0.15"
+  resolved "https://registry.npmjs.org/redux-persist-transform-filter/-/redux-persist-transform-filter-0.0.15.tgz#07614b2d595d88ff4e2fbbafc15d0b2293396ae6"
   dependencies:
+    lodash.forin "^4.4.0"
     lodash.get "^4.4.2"
+    lodash.isempty "^4.4.0"
+    lodash.pickby "^4.6.0"
     lodash.set "^4.3.2"
     lodash.unset "^4.5.2"
 
-redux-persist@^4.6.0:
-  version "4.6.0"
-  resolved "https://registry.npmjs.org/redux-persist/-/redux-persist-4.6.0.tgz#3994793d5f2f38bf02591c9e693e16bf8eae2728"
+redux-persist@4.8.3:
+  version "4.8.3"
+  resolved "https://registry.npmjs.org/redux-persist/-/redux-persist-4.8.3.tgz#fbad95e7582483635c91a3dd83da4789e7a09107"
   dependencies:
     json-stringify-safe "^5.0.1"
     lodash "^4.17.4"
@@ -6008,14 +6032,14 @@ redux-thunk@2.2.0:
   version "2.2.0"
   resolved "https://registry.npmjs.org/redux-thunk/-/redux-thunk-2.2.0.tgz#e615a16e16b47a19a515766133d1e3e99b7852e5"
 
-redux@3.6.0:
-  version "3.6.0"
-  resolved "https://registry.npmjs.org/redux/-/redux-3.6.0.tgz#887c2b3d0b9bd86eca2be70571c27654c19e188d"
+redux@3.7.2:
+  version "3.7.2"
+  resolved "https://registry.npmjs.org/redux/-/redux-3.7.2.tgz#06b73123215901d25d065be342eb026bc1c8537b"
   dependencies:
     lodash "^4.2.1"
     lodash-es "^4.2.1"
     loose-envify "^1.1.0"
-    symbol-observable "^1.0.2"
+    symbol-observable "^1.0.3"
 
 regenerate@^1.2.1:
   version "1.3.2"
@@ -6161,9 +6185,9 @@ requires-port@1.x.x:
   version "1.0.0"
   resolved "https://registry.npmjs.org/requires-port/-/requires-port-1.0.0.tgz#925d2601d39ac485e091cf0da5c6e694dc3dcaff"
 
-reselect@2.5.4:
-  version "2.5.4"
-  resolved "https://registry.npmjs.org/reselect/-/reselect-2.5.4.tgz#b7d23fdf00b83fa7ad0279546f8dbbbd765c7047"
+reselect@3.0.1:
+  version "3.0.1"
+  resolved "https://registry.npmjs.org/reselect/-/reselect-3.0.1.tgz#efdaa98ea7451324d092b2b2163a6a1d7a9a2147"
 
 resolve-dir@^0.1.0:
   version "0.1.1"
@@ -6718,7 +6742,7 @@ supports-color@^3.1.0:
   dependencies:
     has-flag "^1.0.0"
 
-symbol-observable@^1.0.2:
+symbol-observable@^1.0.3:
   version "1.0.4"
   resolved "https://registry.npmjs.org/symbol-observable/-/symbol-observable-1.0.4.tgz#29bf615d4aa7121bdd898b22d4b3f9bc4e2aa03d"
 

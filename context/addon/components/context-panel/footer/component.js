@@ -1,5 +1,5 @@
 import layout from './template';
-import connect from 'ember-redux/components/connect';
+import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
 import Component from 'ember-component';
 import { getTimeWindow } from 'context/util/context-data-modifier';

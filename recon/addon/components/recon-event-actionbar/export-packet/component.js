@@ -1,5 +1,5 @@
 import Component from 'ember-component';
-import connect from 'ember-redux/components/connect';
+import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
 import { extractFiles, didDownloadFiles } from 'recon/actions/interaction-creators';
 import ReconExport from 'recon/mixins/recon-export';

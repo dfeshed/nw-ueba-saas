@@ -2306,7 +2306,7 @@ ember-cli-babel@^5.1.6, ember-cli-babel@^5.1.7, ember-cli-babel@^5.1.9:
     ember-cli-version-checker "^1.0.2"
     resolve "^1.1.2"
 
-ember-cli-babel@^6.0.0, ember-cli-babel@^6.0.0-beta.3, ember-cli-babel@^6.0.0-beta.7, ember-cli-babel@^6.3.0:
+ember-cli-babel@^6.0.0, ember-cli-babel@^6.0.0-beta.7, ember-cli-babel@^6.1.0, ember-cli-babel@^6.3.0:
   version "6.6.0"
   resolved "https://registry.npmjs.org/ember-cli-babel/-/ember-cli-babel-6.6.0.tgz#a8362bc44841bfdf89b389f3197f104d7ba526da"
   dependencies:
@@ -2727,11 +2727,11 @@ ember-qunit@^2.1.3:
   dependencies:
     ember-test-helpers "^0.6.3"
 
-ember-redux@2.4.0:
-  version "2.4.0"
-  resolved "https://registry.npmjs.org/ember-redux/-/ember-redux-2.4.0.tgz#abe446357832c5b7827f7193781beae4f835265c"
+ember-redux@2.10.0:
+  version "2.10.0"
+  resolved "https://registry.npmjs.org/ember-redux/-/ember-redux-2.10.0.tgz#0a361ef7fed6dece652d449a05550b56bddafb54"
   dependencies:
-    ember-cli-babel "^6.0.0-beta.3"
+    ember-cli-babel "^6.1.0"
 
 ember-resolver@^4.0.0:
   version "4.3.0"

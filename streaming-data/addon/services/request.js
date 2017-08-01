@@ -35,7 +35,7 @@ export default Service.extend({
    * @private
    */
   _currentRouteName() {
-    return this.get('router.router.targetState.routerJs.activeTransition.targetName') ||
+    return this.get('router._routerMicrolib.targetState.routerJs.activeTransition.targetName') ||
       this.get('router.currentRouteName') ||
       '';
   },

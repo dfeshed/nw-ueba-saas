@@ -1,7 +1,7 @@
 import Ember from 'ember';
 import layout from './template';
 import computed from 'ember-computed-decorators';
-import connect from 'ember-redux/components/connect';
+import { connect } from 'ember-redux';
 import riskLevels from './risk-levels';
 import confidenceLevels from './confidence-levels';
 

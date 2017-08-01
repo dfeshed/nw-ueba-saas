@@ -1,6 +1,6 @@
 import Component from 'ember-component';
 import { isEmpty } from 'ember-utils';
-import connect from 'ember-redux/components/connect';
+import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
 import { RECON_DISPLAYED_HEADER, HAS_TOOLTIP } from 'recon/utils/recon-event-header';
 import layout from './template';

@@ -1,7 +1,7 @@
 import Component from 'ember-component';
 import { join } from 'ember-runloop';
 import { htmlSafe } from 'ember-string';
-import connect from 'ember-redux/components/connect';
+import { connect } from 'ember-redux';
 import computed, { not, readOnly } from 'ember-computed-decorators';
 import { SpanielObserver } from 'spaniel';
 

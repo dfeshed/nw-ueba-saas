@@ -3,7 +3,7 @@ import layout from './template';
 import service from 'ember-service/inject';
 import computed, { equal } from 'ember-computed-decorators';
 import safeCallback from 'component-lib/utils/safe-callback';
-import connect from 'ember-redux/components/connect';
+import { connect } from 'ember-redux';
 import { updateActiveTab } from 'context/actions/context-creators';
 import { next } from 'ember-runloop';
 

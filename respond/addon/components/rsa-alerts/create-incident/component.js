@@ -1,6 +1,6 @@
 import Component from 'ember-component';
 import computed from 'ember-computed-decorators';
-import connect from 'ember-redux/components/connect';
+import { connect } from 'ember-redux';
 import { createIncidentFromAlerts } from 'respond/actions/creators/incidents-creators';
 import Notifications from 'respond/mixins/notifications';
 import { isEmpty, typeOf } from 'ember-utils';

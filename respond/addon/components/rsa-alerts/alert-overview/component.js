@@ -1,6 +1,6 @@
 import Component from 'ember-component';
 import computed from 'ember-computed-decorators';
-import connect from 'ember-redux/components/connect';
+import { connect } from 'ember-redux';
 
 const stateToComputed = (state) => {
   const { respond: { alert: { originalAlert, originalAlertStatus } } } = state;

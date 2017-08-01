@@ -2,7 +2,7 @@ import Ember from 'ember';
 import Component from 'ember-component';
 import service from 'ember-service/inject';
 import computed from 'ember-computed-decorators';
-import connect from 'ember-redux/components/connect';
+import { connect } from 'ember-redux';
 import { storyEvents, storyEventSelections } from 'respond/selectors/storyline';
 import { singleSelectEvent } from 'respond/actions/creators/incidents-creators';
 import indexOfBy from 'respond/utils/array/index-of-by';

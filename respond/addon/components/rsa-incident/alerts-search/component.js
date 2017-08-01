@@ -1,6 +1,6 @@
 import Component from 'ember-component';
 import layout from './template';
-import connect from 'ember-redux/components/connect';
+import { connect } from 'ember-redux';
 import * as ACTION_TYPES from 'respond/actions/types';
 
 import {

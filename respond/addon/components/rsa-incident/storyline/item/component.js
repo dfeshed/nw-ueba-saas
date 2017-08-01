@@ -3,7 +3,7 @@ import ListItem from 'respond/components/rsa-list/item/component';
 import HighlightsEntities from 'context/mixins/highlights-entities';
 import layout from './template';
 import computed from 'ember-computed-decorators';
-import connect from 'ember-redux/components/connect';
+import { connect } from 'ember-redux';
 import { singleSelectStoryPoint, toggleSelectStoryPoint } from 'respond/actions/creators/incidents-creators';
 
 const stateToComputed = () => ({ });

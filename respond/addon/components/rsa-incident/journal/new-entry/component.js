@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import connect from 'ember-redux/components/connect';
+import { connect } from 'ember-redux';
 import { createJournalEntry } from 'respond/actions/creators/journal-creators';
 import { empty } from 'ember-computed-decorators';
 import Notifications from 'respond/mixins/notifications';

@@ -1,6 +1,6 @@
 import Component from 'ember-component';
 import computed from 'ember-computed';
-import connect from 'ember-redux/components/connect';
+import { connect } from 'ember-redux';
 import { decodeText } from 'recon/actions/data-creators';
 import layout from './template';
 

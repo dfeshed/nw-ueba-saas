@@ -2,7 +2,7 @@ import Component from 'ember-component';
 import layout from './template';
 import computed from 'ember-computed-decorators';
 import { htmlSafe } from 'ember-string';
-import connect from 'ember-redux/components/connect';
+import { connect } from 'ember-redux';
 import { resizeAlertInspector } from 'respond/actions/creators/alert-creators';
 import $ from 'jquery';
 

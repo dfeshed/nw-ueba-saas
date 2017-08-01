@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import connect from 'ember-redux/components/connect';
+import { connect } from 'ember-redux';
 import { BLUR_RESOURCE } from 'live-content/actions/live-content/types';
 import computed from 'ember-computed-decorators';
 import * as DataActions from 'live-content/actions/live-content/live-search-creators';

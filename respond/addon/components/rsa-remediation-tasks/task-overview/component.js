@@ -1,6 +1,6 @@
 import Component from 'ember-component';
 import computed from 'ember-computed-decorators';
-import connect from 'ember-redux/components/connect';
+import { connect } from 'ember-redux';
 import service from 'ember-service/inject';
 
 const closedStatuses = ['REMEDIATED', 'RISK_ACCEPTED', 'NOT_APPLICABLE'];

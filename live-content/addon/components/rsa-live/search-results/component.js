@@ -3,7 +3,7 @@ import columns from './column-config';
 import computed, { equal, gt } from 'ember-computed-decorators';
 import * as DataActions from 'live-content/actions/live-content/live-search-creators';
 import { RESOURCE_TOGGLE_SELECT, FOCUS_RESOURCE, BLUR_RESOURCE } from 'live-content/actions/live-content/types';
-import connect from 'ember-redux/components/connect';
+import { connect } from 'ember-redux';
 
 const { Component } = Ember;
 

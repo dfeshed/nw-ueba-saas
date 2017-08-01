@@ -1,7 +1,7 @@
 import Component from 'ember-component';
 import { scheduleOnce, debounce } from 'ember-runloop';
 import computed, { gt } from 'ember-computed-decorators';
-import connect from 'ember-redux/components/connect';
+import { connect } from 'ember-redux';
 import layout from './template';
 import { totalMetaToHighlight } from 'recon/reducers/text/selectors';
 
