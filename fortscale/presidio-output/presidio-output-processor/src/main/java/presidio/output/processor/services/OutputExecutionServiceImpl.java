@@ -1,8 +1,6 @@
 package presidio.output.processor.services;
 
 import fortscale.common.general.CommonStrings;
-import fortscale.common.general.DataSource;
-import fortscale.common.shell.PresidioExecutionService;
 import fortscale.domain.SMART.EntityEvent;
 import fortscale.utils.pagination.PageIterator;
 import fortscale.utils.time.TimeRange;
@@ -18,7 +16,7 @@ import java.time.Instant;
  * Main output functionality is implemented here
  */
 
-public class OutputExecutionServiceImpl implements PresidioExecutionService {
+public class OutputExecutionServiceImpl implements OutputExecutionService {
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -38,15 +36,13 @@ public class OutputExecutionServiceImpl implements PresidioExecutionService {
      * 2. Enrich alerts with information from Input component (fields which were not part of the ADE schema)
      * 3. Alerts classification (rule based semantics)
      * 4. Calculates supporting information
-     * @param dataSource
      * @param startDate
      * @param endDate
-     * @param fixedDuration
      * @throws Exception
      */
     @Override
-    public void run(DataSource dataSource, Instant startDate, Instant endDate, Double fixedDuration, Double featureBucketStrategy) throws Exception {
-        logger.debug("Started output process with params: data source:{}, from {}:{}, until {}:{}.", dataSource, CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate, CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
+    public void run(Instant startDate, Instant endDate) throws Exception {
+        logger.debug("Started output process with params: start date {}:{}, end date {}:{}.", CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate, CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
 
         //1. Get SMARTs from ADE
         //TODO- change page size and score threshold (configurable)
@@ -57,12 +53,12 @@ public class OutputExecutionServiceImpl implements PresidioExecutionService {
     }
 
     @Override
-    public void clean(DataSource dataSource, Instant startDate, Instant endDate) throws Exception {
+    public void clean(Instant startDate, Instant endDate) throws Exception {
         // TODO: Implement
     }
 
     @Override
-    public void cleanAll(DataSource dataSource) throws Exception {
+    public void cleanAll() throws Exception {
         // TODO: Implement
     }
 }

@@ -1,6 +1,6 @@
 package fortscale.common.shell;
 
-import fortscale.common.general.DataSource;
+import fortscale.common.general.Schema;
 
 import java.time.Instant;
 
@@ -9,9 +9,9 @@ import java.time.Instant;
  */
 public interface PresidioExecutionService {
 
-    public void run(DataSource dataSource, Instant startDate, Instant endDate, Double fixedDuration, Double featureBucketStrategy) throws Exception;
+    public void run(Schema schema, Instant startDate, Instant endDate, Double fixedDuration, Double featureBucketStrategy) throws Exception;
 
-    public void clean(DataSource dataSource, Instant startDate, Instant endDate) throws Exception;
+    public void clean(Schema schema, Instant startDate, Instant endDate) throws Exception;
 
-    public void cleanAll(DataSource dataSource) throws Exception;
+    public void cleanAll(Schema schema) throws Exception;
 }

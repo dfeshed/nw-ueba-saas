@@ -1,7 +1,7 @@
 package presidio.ade.processes.shell;
 
 import fortscale.aggregation.creator.AggregationRecordsCreator;
-import fortscale.common.general.DataSource;
+import fortscale.common.general.Schema;
 import fortscale.common.shell.PresidioExecutionService;
 import fortscale.ml.scorer.enriched_events.EnrichedEventsScoringService;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
@@ -35,22 +35,22 @@ public class ScoreAggregationsExecutionServiceImpl implements PresidioExecutionS
 	}
 
 	@Override
-	public void run(DataSource dataSource, Instant startInstant, Instant endInstant, Double fixedDurationStrategyInSeconds, Double featureBucketStrategy) throws Exception {
+	public void run(Schema schema, Instant startInstant, Instant endInstant, Double fixedDurationStrategyInSeconds, Double featureBucketStrategy) throws Exception {
 		FixedDurationStrategy strategy = FixedDurationStrategy.fromSeconds(fixedDurationStrategyInSeconds.longValue());
 		ScoreAggregationsService service = new ScoreAggregationsService(
 				strategy, enrichedDataStore, enrichedEventsScoringService,
 				scoreAggregationsBucketService, aggregationRecordsCreator, aggregatedDataStore);
 
-		service.execute(new TimeRange(startInstant, endInstant), dataSource.getName());
+		service.execute(new TimeRange(startInstant, endInstant), schema.getName());
 	}
 
 	@Override
-	public void clean(DataSource dataSource, Instant startInstant, Instant endInstant) throws Exception {
+	public void clean(Schema schema, Instant startInstant, Instant endInstant) throws Exception {
 		// TODO: Implement
 	}
 
 	@Override
-	public void cleanAll(DataSource dataSource) throws Exception {
+	public void cleanAll(Schema schema) throws Exception {
 		// TODO: Implement
 	}
 }

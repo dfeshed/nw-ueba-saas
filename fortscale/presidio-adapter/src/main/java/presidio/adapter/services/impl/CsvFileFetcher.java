@@ -1,7 +1,7 @@
 package presidio.adapter.services.impl;
 
 import com.opencsv.CSVReader;
-import fortscale.common.general.DataSource;
+import fortscale.common.general.Schema;
 import fortscale.utils.logging.Logger;
 import presidio.adapter.services.api.Fetcher;
 
@@ -29,8 +29,8 @@ public class CsvFileFetcher implements Fetcher {
     }
 
     @Override
-    public List<String[]> fetch(DataSource dataSource, Instant startTime, Instant endTime) throws Exception {
-        final String csvFile = buildFileName(dataSource);
+    public List<String[]> fetch(Schema schema, Instant startTime, Instant endTime) throws Exception {
+        final String csvFile = buildFileName(schema);
         CSVReader reader = new CSVReader(new BufferedReader(new InputStreamReader(new FileInputStream(csvFile), charset), delimiter));
 
         final List<String[]> records = new ArrayList<>();
@@ -60,8 +60,8 @@ public class CsvFileFetcher implements Fetcher {
         //todo: also... - the name 'filter' can be better :-)
     }
 
-    private String buildFileName(DataSource dataSource) {
-        final String fileName = dataSource.name() + ".csv"; //todo: we should consider extracting to a service if someone else uses these files
+    private String buildFileName(Schema schema) {
+        final String fileName = schema.name() + ".csv"; //todo: we should consider extracting to a service if someone else uses these files
         return Paths.get(csvFilesFolderPath, fileName).toString();
     }
 }

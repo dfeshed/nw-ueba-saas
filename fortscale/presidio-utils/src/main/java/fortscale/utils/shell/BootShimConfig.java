@@ -12,9 +12,15 @@ import org.springframework.context.annotation.Configuration;
 public class BootShimConfig {
     @Autowired
     private ConfigurableApplicationContext context;
+
     @Bean
     public BootShim bootShim()
     {
         return new BootShim(CommandLineArgsHolder.args,context);
+    }
+
+    @Bean
+    public InstantConverter instantConverter() {
+        return new InstantConverter();
     }
 }

@@ -14,8 +14,11 @@ public abstract class AbstractAggrFeatureEventHistogram extends AbstractAggrFeat
     @Override
     protected AggrFeatureValue calculateAggrFeatureValue(AggregatedFeatureEventConf aggrFeatureEventConf, List<Map<String, Feature>> multipleBucketsAggrFeaturesMapList) {
     	GenericHistogram histogram = AggrFeatureHistogramFunc.calculateHistogramFromBucketAggrFeature(aggrFeatureEventConf, multipleBucketsAggrFeaturesMapList);
-        AggrFeatureValue aggrFeatureValue = calculateHistogramAggrFeatureValue(histogram);
-        fillAggrFeatureValueWithAdditionalInfo(aggrFeatureValue, histogram);
+        AggrFeatureValue aggrFeatureValue = null;
+        if(!histogram.getHistogramMap().isEmpty()) {
+            aggrFeatureValue = calculateHistogramAggrFeatureValue(histogram);
+            fillAggrFeatureValueWithAdditionalInfo(aggrFeatureValue, histogram);
+        }
         return aggrFeatureValue;
     }
     

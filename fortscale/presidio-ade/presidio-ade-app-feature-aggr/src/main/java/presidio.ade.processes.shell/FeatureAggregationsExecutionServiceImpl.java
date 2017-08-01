@@ -3,7 +3,7 @@ package presidio.ade.processes.shell;
 import fortscale.aggregation.creator.AggregationRecordsCreator;
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.aggregation.feature.bucket.InMemoryFeatureBucketAggregator;
-import fortscale.common.general.DataSource;
+import fortscale.common.general.Schema;
 import fortscale.common.shell.PresidioExecutionService;
 import fortscale.ml.scorer.feature_aggregation_events.FeatureAggregationScoringService;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
@@ -45,21 +45,22 @@ public class FeatureAggregationsExecutionServiceImpl implements PresidioExecutio
         this.maxGroupSize = maxGroupSize;
     }
 
+    //todo: data source should be event_type
     @Override
-    public void run(DataSource dataSource, Instant startDate, Instant endDate, Double fixedDuration, Double featureBucketStrategy) throws Exception {
+    public void run(Schema schema, Instant startDate, Instant endDate, Double fixedDuration, Double featureBucketStrategy) throws Exception {
         FixedDurationStrategy fixedDurationStrategy = FixedDurationStrategy.fromSeconds(fixedDuration.longValue());
         FeatureAggregationService featureAggregationBucketsService = new FeatureAggregationService(fixedDurationStrategy, bucketConfigurationService, enrichedDataStore, inMemoryFeatureBucketAggregator, featureAggregationScoringService, featureAggregationsCreator, scoredFeatureAggregatedStore, pageSize, maxGroupSize);
         TimeRange timeRange = new TimeRange(startDate, endDate);
-        featureAggregationBucketsService.execute(timeRange, dataSource.getName());
+        featureAggregationBucketsService.execute(timeRange, schema.getName());
     }
 
     @Override
-    public void clean(DataSource dataSource, Instant startDate, Instant endDate) throws Exception {
+    public void clean(Schema schema, Instant startDate, Instant endDate) throws Exception {
         // TODO: Implement
     }
 
     @Override
-    public void cleanAll(DataSource dataSource) throws Exception {
+    public void cleanAll(Schema schema) throws Exception {
         // TODO: Implement
     }
 }
