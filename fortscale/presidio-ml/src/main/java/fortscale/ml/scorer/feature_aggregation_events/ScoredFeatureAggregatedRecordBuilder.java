@@ -36,7 +36,8 @@ public class ScoredFeatureAggregatedRecordBuilder {
         }
 
         for (FeatureScore featureScore : eventScore.getFeatureScores()) {
-            ScoredFeatureAggregationRecord scoredFeatureAggregationRecord = new ScoredFeatureAggregationRecord(featureScore.getScore(), featureAdeAggrRecord.getStartInstant(), featureAdeAggrRecord.getEndInstant(), featureAdeAggrRecord.getFeatureName(), featureAdeAggrRecord.getFeatureValue(), featureAdeAggrRecord.getFeatureBucketConfName(), featureAdeAggrRecord.getContext(), featureAdeAggrRecord.getAggregatedFeatureType());
+            ScoredFeatureAggregationRecord scoredFeatureAggregationRecord = new ScoredFeatureAggregationRecord(featureScore.getScore(), featureScore.getFeatureScores(),
+                    featureAdeAggrRecord.getStartInstant(), featureAdeAggrRecord.getEndInstant(), featureAdeAggrRecord.getFeatureName(), featureAdeAggrRecord.getFeatureValue(), featureAdeAggrRecord.getFeatureBucketConfName(), featureAdeAggrRecord.getContext(), featureAdeAggrRecord.getAggregatedFeatureType());
             scoredFeatureAggregationRecords.add(scoredFeatureAggregationRecord);
         }
 
