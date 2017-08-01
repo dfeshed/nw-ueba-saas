@@ -3,12 +3,18 @@ package presidio.adapter.util;
 import fortscale.common.general.Schema;
 
 import java.io.File;
+import java.time.Instant;
 
+/**
+ * This class is a util class for handling and creating Flume configuration files
+ * <p>
+ * not static so it could be mocked
+ */
 public class FlumeConfigurationUtil {
 
     private static final String AGENT_NAME_FLAG = "--name";
     private static final String CONF_FOLDER_FLAG = "--conf";
-    private static final String CONF_FILE_PATH_FLAG = "--conf-file";
+    protected static final String CONF_FILE_PATH_FLAG = "--conf-file";
     protected static final String BIN_FLUME_NG_PATH = "bin/flume-ng";
     private static final String EXECUTE_AGENT_COMMAND = "agent";
 
@@ -17,7 +23,7 @@ public class FlumeConfigurationUtil {
      *
      * @param schema
      */
-    public static String createSchemaPrefix(Schema schema) { //active Directory => active_directory
+    public String createSchemaPrefix(Schema schema) { //active Directory => active_directory
         return schema.getName().toLowerCase().replace(" ", "_");
     }
 
@@ -25,11 +31,11 @@ public class FlumeConfigurationUtil {
     /**
      * FLUME_HOME/conf/
      */
-    public static String createConfFolderPath() { //flume_home/conf/
+    public String createConfFolderPath() { //flume_home/conf/
         return getFlumeHome() + "conf" + File.separator;
     }
 
-    public static String getFlumeHome() {
+    public String getFlumeHome() {
         final String flumeHome = System.getenv("FLUME_HOME");
         return flumeHome;
     }
@@ -39,7 +45,7 @@ public class FlumeConfigurationUtil {
      *
      * @param schema
      */
-    public static String createConfFileName(Schema schema) { //active Directory => active_directory.properties
+    public String createConfFileName(Schema schema) { //active Directory => active_directory.properties
         return createSchemaPrefix(schema) + ".properties";
     }
 
@@ -48,7 +54,7 @@ public class FlumeConfigurationUtil {
      *
      * @param schema
      */
-    public static String createAgentName(Schema schema) { //active Directory => active_directoryAgent
+    public String createAgentName(Schema schema) { //active Directory => active_directoryAgent
         return createSchemaPrefix(schema) + "Agent";
     }
 
@@ -58,21 +64,25 @@ public class FlumeConfigurationUtil {
      *
      * @param schema
      */
-    public static String getConfFilePathArgument(Schema schema) {
-        return CONF_FILE_PATH_FLAG + " " + FlumeConfigurationUtil.createConfFileName(schema);
+    public String getConfFilePathArgument(Schema schema) {
+        return CONF_FILE_PATH_FLAG + " " + createConfFileName(schema);
     }
 
 
     /**
-     * -conf FLUME_HOME/conf/
+     * --conf FLUME_HOME/conf/
      *
-     * @return -conf FLUME_HOME/conf/
+     * @return --conf FLUME_HOME/conf/
      */
-    public static String getConfFolderArgument() {
-        return CONF_FOLDER_FLAG + " " + FlumeConfigurationUtil.createConfFolderPath();
+    public String getConfFolderArgument() {
+        return CONF_FOLDER_FLAG + " " + createConfFolderPath();
     }
 
-    public static String getExecuteAgentCommand() {
+
+    /**
+     * @return "agent"
+     */
+    public String getExecuteAgentCommand() {
         return EXECUTE_AGENT_COMMAND;
     }
 
@@ -82,15 +92,30 @@ public class FlumeConfigurationUtil {
      * @param schema
      * @return
      */
-    public static String getAgentNameArgument(Schema schema) {
-        return AGENT_NAME_FLAG + " " + FlumeConfigurationUtil.createAgentName(schema);
+    public String getAgentNameArgument(Schema schema) {
+        return AGENT_NAME_FLAG + " " + createAgentName(schema);
     }
 
     /**
      * FLUME_HOME/bin/flume-ng
      */
-    public static String getFlumeExecutionScriptPath() {
-        return FlumeConfigurationUtil.getFlumeHome() + BIN_FLUME_NG_PATH;
+    public String getFlumeExecutionScriptPath() {
+        return getFlumeHome() + BIN_FLUME_NG_PATH;
     }
 
+    /**
+     * datasource_sd---ed
+     *
+     * @param schema
+     * @param startDate
+     * @param endDate
+     * @return datasource_sd---ed
+     */
+    public String createJobName(Schema schema, Instant startDate, Instant endDate) { //datasource_sd---ed
+        return createSchemaPrefix(schema) + "_" + startDate.toString() + "---" + endDate.toString();
+    }
+
+    public String getFlumeExecutionConfFileArgument(String flumeExecutionConfFilePath) {
+        return CONF_FILE_PATH_FLAG + " " + flumeExecutionConfFilePath;
+    }
 }

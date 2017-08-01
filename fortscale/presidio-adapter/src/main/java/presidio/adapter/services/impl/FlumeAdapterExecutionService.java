@@ -22,6 +22,14 @@ public class FlumeAdapterExecutionService implements PresidioExecutionService {
     private static final String FLUME_CONF_START_DATE_FIELD_NAME = "startDate";
     private static final String FLUME_CONF_END_DATE_FIELD_NAME = "endDate";
 
+    private final ProcessExecutor processExecutor;
+    private final FlumeConfigurationUtil flumeConfigurationUtil;
+
+    public FlumeAdapterExecutionService(ProcessExecutor processExecutor, FlumeConfigurationUtil flumeConfigurationUtil) {
+        this.processExecutor = processExecutor;
+        this.flumeConfigurationUtil = flumeConfigurationUtil;
+    }
+
     @Override
     public void clean(Schema schema, Instant startDate, Instant endDate) throws Exception {
         throw new UnsupportedOperationException("not supported");
@@ -38,17 +46,17 @@ public class FlumeAdapterExecutionService implements PresidioExecutionService {
                 schema, CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate,
                 CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
 
-        String configurationPath = configureAdapterInstance(schema, startDate, endDate);
-        logger.info("finish configuring adapter. Configuration file path: {}", configurationPath);
+        String newFilePath = createExecutionConfFile(schema, startDate, endDate);
+        logger.info("finish configuring adapter. Configuration file path: {}", newFilePath);
 
-        String jobName = createJobName(schema, startDate, endDate);
-        runAdapterInstance(schema, jobName);
+        String jobName = flumeConfigurationUtil.createJobName(schema, startDate, endDate);
+        runAdapterInstance(schema, jobName, newFilePath);
         logger.info("Adapter for schema {] is now running.", schema);
     }
 
-    private String configureAdapterInstance(Schema schema, Instant startDate, Instant endDate) throws IOException {
+    private String createExecutionConfFile(Schema schema, Instant startDate, Instant endDate) throws IOException {
         /* load the properties */
-        final String confFilePath = FlumeConfigurationUtil.createConfFolderPath() + FlumeConfigurationUtil.createConfFileName(schema);
+        final String confFilePath = flumeConfigurationUtil.createConfFolderPath() + flumeConfigurationUtil.createConfFileName(schema);
         FileInputStream in = new FileInputStream(confFilePath);
         Properties props = new Properties();
         props.load(in);
@@ -65,38 +73,24 @@ public class FlumeAdapterExecutionService implements PresidioExecutionService {
         }
 
         /* save the properties */
-        FileOutputStream out = new FileOutputStream(createJobName(schema, startDate, endDate) + ".properties");
+        final String newFileName = flumeConfigurationUtil.createConfFolderPath() + flumeConfigurationUtil.createJobName(schema, startDate, endDate) + ".properties";
+        FileOutputStream out = new FileOutputStream(newFileName);
         props.store(out, null);
         out.close();
 
-        return confFilePath;
+        return newFileName;
     }
 
 
-    private void runAdapterInstance(Schema schema, String jobName) {
-        final String flumeExecutionScriptPath = FlumeConfigurationUtil.getFlumeExecutionScriptPath();
-        final String executionArgument = FlumeConfigurationUtil.getExecuteAgentCommand();
-        final String agentNameArgument = FlumeConfigurationUtil.getAgentNameArgument(schema);
-        final String confFolderArgument = FlumeConfigurationUtil.getConfFolderArgument();
-        final String confFilePathArgument = FlumeConfigurationUtil.getConfFilePathArgument(schema);
+    private void runAdapterInstance(Schema schema, String jobName, String newFilePath) {
+        final String flumeExecutionScriptPath = flumeConfigurationUtil.getFlumeExecutionScriptPath();
+        final String executionArgument = flumeConfigurationUtil.getExecuteAgentCommand();
+        final String agentNameArgument = flumeConfigurationUtil.getAgentNameArgument(schema);
+        final String confFolderArgument = flumeConfigurationUtil.getConfFolderArgument();
+        final String newFlumeExecutionConfFileArgument = flumeConfigurationUtil.getFlumeExecutionConfFileArgument(newFilePath);
 
-        List<String> arguments = Arrays.asList(flumeExecutionScriptPath, executionArgument, agentNameArgument, confFolderArgument, confFilePathArgument);
-        ProcessExecutor.executeProcess(jobName, arguments, FlumeConfigurationUtil.getFlumeHome());
+        List<String> arguments = Arrays.asList(flumeExecutionScriptPath, executionArgument, agentNameArgument, confFolderArgument, newFlumeExecutionConfFileArgument);
+        processExecutor.executeProcess(jobName, arguments, flumeConfigurationUtil.getFlumeHome());
     }
-
-
-    /**
-     * datasource_sd---ed
-     *
-     * @param schema
-     * @param startDate
-     * @param endDate
-     * @return datasource_sd---ed
-     */
-    private String createJobName(Schema schema, Instant startDate, Instant endDate) { //datasource_sd---ed
-        return FlumeConfigurationUtil.createSchemaPrefix(schema) + "_" + startDate.toString() + "---" + endDate.toString();
-    }
-
-
 }
 
