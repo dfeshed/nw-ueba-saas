@@ -1,6 +1,7 @@
 package presidio.webapp.service;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,12 +20,15 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.Matchers.*;
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest()
 @ContextConfiguration(classes = OutputWebappConfigurationTest.class)
+@Ignore
 public class RestAlertServiceTest {
 
     @Autowired
@@ -34,8 +38,7 @@ public class RestAlertServiceTest {
     AlertPersistencyService alertService;
 
     @Test
-    public void getAlertByIdSuccess()
-    {
+    public void getAlertByIdSuccess() {
         Alert alert = createAlert();
         when(alertService.findOne(eq(alert.getId()))).thenReturn(alert);
 
