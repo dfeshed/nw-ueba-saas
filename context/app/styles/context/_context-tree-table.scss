@@ -198,6 +198,7 @@
     padding-bottom: rsa-whitespace(less);
     border-bottom: 1px solid rsa-color(black);
     padding-left: rsa-whitespace(less);
+    @include rsa-word-wrap();
   }
 
   .rsa-nav-tab{

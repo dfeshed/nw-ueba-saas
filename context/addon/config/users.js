@@ -8,6 +8,10 @@ export default {
   title: 'context.ADdata.title',
   rows: [{
     cell: [{
+      field: 'displayName',
+      title: 'context.ADdata.displayName'
+    },
+    {
       field: 'employeeID',
       title: 'context.ADdata.employeeID'
     },
@@ -18,14 +22,14 @@ export default {
     {
       field: 'mail',
       title: 'context.ADdata.email'
-    },
-    {
-      field: 'sAMAccountName',
-      title: 'context.ADdata.adUserID'
     }]
   },
   {
     cell: [{
+      field: 'sAMAccountName',
+      title: 'context.ADdata.adUserID'
+    },
+    {
       field: 'title',
       title: 'context.ADdata.jobTitle'
     },
@@ -38,14 +42,14 @@ export default {
       title: 'context.ADdata.groups',
       dataType: 'group',
       count: 'groupCount'
-    },
-    {
-      field: 'company',
-      title: 'context.ADdata.company'
     }]
   },
   {
-    cell: [{
+    cell: [ {
+      field: 'company',
+      title: 'context.ADdata.company'
+    },
+    {
       field: 'department',
       title: 'context.ADdata.department'
     },
@@ -57,21 +61,18 @@ export default {
       field: 'lastLogon',
       title: 'context.ADdata.lastLogon',
       dataType: 'datetime'
-    },
-    {
-      field: 'lastLogonTimestamp',
-      title: 'context.ADdata.lastLogonTimeStamp',
-      dataType: 'datetime'
     }]
   },
   {
     cell: [{
-      field: 'distinguishedName',
-      title: 'context.ADdata.distinguishedName'
+      field: 'lastLogonTimestamp',
+      title: 'context.ADdata.lastLogonTimeStamp',
+      dataType: 'datetime'
     },
     {
-      field: 'displayName',
-      title: 'context.ADdata.displayName'
-    }]
+      field: 'distinguishedName',
+      title: 'context.ADdata.distinguishedName'
+    }
+    ]
   }]
 };
