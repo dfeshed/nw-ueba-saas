@@ -17,7 +17,7 @@ public class FeatureAggregationsApplication {
 
 
     public static void main(String[] args) {
-        List<Class> sources = Stream.of(FeatureAggregationsConfigProduction.class).collect(Collectors.toList());
+        List<Class> sources = Stream.of(FeatureAggregationsConfigurationProduction.class).collect(Collectors.toList());
 
         // The supported CLI commands for the application
         sources.add(PresidioCommands.class);

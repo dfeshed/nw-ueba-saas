@@ -9,8 +9,7 @@ import org.springframework.context.annotation.Import;
 @Configuration
 @Import({
         MongoConfig.class,
-        FeatureAggregationsConfig.class
 })
-public class FeatureAggregationsConfigProduction {
+public class FeatureAggregationsConfigurationProduction extends FeatureAggregationsConfiguration {
 
 }

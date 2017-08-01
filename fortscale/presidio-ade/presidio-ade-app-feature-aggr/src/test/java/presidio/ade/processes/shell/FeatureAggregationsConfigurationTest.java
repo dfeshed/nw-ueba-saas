@@ -17,7 +17,7 @@ import java.util.Properties;
 @Import({MongodbTestConfig.class,
         PresidioCommands.class,
         BootShimConfig.class})
-public class FeatureAggregationsConfigTest extends FeatureAggregationsConfig{
+public class FeatureAggregationsConfigurationTest extends FeatureAggregationsConfiguration {
     @Bean
     public static TestPropertiesPlaceholderConfigurer featureAggregationsApplicationTestProperties() {
         Properties properties = new Properties();
