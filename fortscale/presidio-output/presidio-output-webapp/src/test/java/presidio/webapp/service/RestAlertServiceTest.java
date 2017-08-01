@@ -1,6 +1,7 @@
 package presidio.webapp.service;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,6 +65,7 @@ public class RestAlertServiceTest {
     }
 
     @Test
+    @Ignore
     public void getAlertsSuccess_filterBuUsername() {
         Alert firstAlert = createAlert();
         Alert secondAlert = createAlert();
@@ -80,6 +82,7 @@ public class RestAlertServiceTest {
     }
 
     @Test
+    @Ignore
     public void getAlertsNoAlert() {
         Alert firstAlert = createAlert();
         Alert secondAlert = createAlert();
