@@ -1,5 +1,6 @@
 package presidio.ade.domain.store.enriched;
 
+import fortscale.domain.core.EnrichedRecordsMetadata;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.ade.domain.store.AdeDataStoreCleanupParams;
 

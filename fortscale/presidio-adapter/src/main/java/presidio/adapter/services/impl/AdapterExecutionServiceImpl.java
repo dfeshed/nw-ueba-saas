@@ -7,10 +7,10 @@ import fortscale.domain.core.AbstractAuditableDocument;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import presidio.adapter.services.api.FetchService;
-import presidio.sdk.api.domain.ActiveDirectoryRawEvent;
-import presidio.sdk.api.domain.AuthenticationRawEvent;
+import fortscale.domain.core.ActiveDirectoryRawEvent;
+import fortscale.domain.core.AuthenticationRawEvent;
 import presidio.sdk.api.domain.DlpFileDataDocument;
-import presidio.sdk.api.domain.FileRawEvent;
+import fortscale.domain.core.FileRawEvent;
 import presidio.sdk.api.services.CoreManagerService;
 
 import java.time.Instant;

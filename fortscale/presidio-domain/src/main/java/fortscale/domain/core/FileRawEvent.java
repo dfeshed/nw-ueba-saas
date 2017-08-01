@@ -1,4 +1,4 @@
-package presidio.sdk.api.domain;
+package fortscale.domain.core;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -6,7 +6,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 import java.time.Instant;
 
 @Document
-public class FileRawEvent extends AbstractInputDocument {
+public class FileRawEvent extends AbstractPresidioDocument {
 
 
     public static final String OPERATION_TYPE_FIELD_NAME = "operationType";

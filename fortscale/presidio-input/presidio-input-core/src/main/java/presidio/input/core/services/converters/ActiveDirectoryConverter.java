@@ -3,7 +3,7 @@ package presidio.input.core.services.converters;
 import fortscale.domain.core.AbstractAuditableDocument;
 import presidio.ade.domain.record.enriched.EnrichedActiveDirectoryRecord;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
-import presidio.sdk.api.domain.ActiveDirectoryRawEvent;
+import fortscale.domain.core.ActiveDirectoryRawEvent;
 
 /**
  * Created by alexp on 11-Jul-17.
