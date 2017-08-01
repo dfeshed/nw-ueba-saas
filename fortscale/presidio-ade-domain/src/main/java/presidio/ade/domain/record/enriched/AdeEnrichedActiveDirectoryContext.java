@@ -5,27 +5,25 @@ import fortscale.common.general.EventResult;
 
 public class AdeEnrichedActiveDirectoryContext {
 
-    private String normalizedUsername;
+    private String userId;
     private EventResult result;
-    private Boolean isSecuritySensitiveOperation;
-    private Boolean isUserAdministrator;
+    private Boolean isUserAdmin;
     private String operationType;
 
 
     public AdeEnrichedActiveDirectoryContext(EnrichedActiveDirectoryRecord enrichedActiveDirectoryRecord) {
-        this.normalizedUsername = enrichedActiveDirectoryRecord.getNormalizedUsername();
+        this.userId = enrichedActiveDirectoryRecord.getUserId();
         this.result = enrichedActiveDirectoryRecord.getResult();
-        this.isSecuritySensitiveOperation = enrichedActiveDirectoryRecord.getSecuritySensitiveOperation();
-        this.isUserAdministrator = enrichedActiveDirectoryRecord.getUserAdministrator();
+        this.isUserAdmin = enrichedActiveDirectoryRecord.getUserAdmin();
         this.operationType = enrichedActiveDirectoryRecord.getOperationType();
     }
 
-    public String getNormalizedUsername() {
-        return normalizedUsername;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setNormalizedUsername(String normalizedUsername) {
-        this.normalizedUsername = normalizedUsername;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public EventResult getResult() {
@@ -36,20 +34,12 @@ public class AdeEnrichedActiveDirectoryContext {
         this.result = result;
     }
 
-    public Boolean getSecuritySensitiveOperation() {
-        return isSecuritySensitiveOperation;
+    public Boolean getUserAdmin() {
+        return isUserAdmin;
     }
 
-    public void setSecuritySensitiveOperation(Boolean securitySensitiveOperation) {
-        isSecuritySensitiveOperation = securitySensitiveOperation;
-    }
-
-    public Boolean getUserAdministrator() {
-        return isUserAdministrator;
-    }
-
-    public void setUserAdministrator(Boolean userAdministrator) {
-        isUserAdministrator = userAdministrator;
+    public void setUserAdmin(Boolean userAdmin) {
+        isUserAdmin = userAdmin;
     }
 
     public String getOperationType() {

@@ -4,7 +4,6 @@ import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
-import presidio.ade.domain.record.util.AdeRecordMetadata;
 
 import java.time.Instant;
 
@@ -14,22 +13,17 @@ import java.time.Instant;
 @Document
 //todo: add @AdeRecordMetadata annotation
 public class EnrichedActiveDirectoryRecord extends EnrichedRecord {
-
-
-    public static final String NORMALIZED_USERNAME_FIELD = "normalizedUsername";
-    public static final String IS_SECURITY_SENSITIVE_OPERATION_FIELD = "isSecuritySensitiveOperation";
-    public static final String IS_USER_ADMINISTRATOR_FIELD = "isUserAdministrator";
-    public static final String OBJECT_NAME = "objectName";
+    public static final String USER_ID_FIELD = "userId";
+    public static final String IS_USER_ADMIN_FIELD = "isUserAdmin";
+    public static final String OBJECT_ID = "objectId";
 
     @Indexed
-    @Field(NORMALIZED_USERNAME_FIELD)
-    private String normalizedUsername;
-    @Field(IS_SECURITY_SENSITIVE_OPERATION_FIELD)
-    private Boolean isSecuritySensitiveOperation;
-    @Field(IS_USER_ADMINISTRATOR_FIELD)
-    private Boolean isUserAdministrator;
-    @Field(OBJECT_NAME)
-    private String objectName;
+    @Field(USER_ID_FIELD)
+    private String userId;
+    @Field(IS_USER_ADMIN_FIELD)
+    private Boolean isUserAdmin;
+    @Field(OBJECT_ID)
+    private String objectId;
 
     /**
      * C'tor.
@@ -40,36 +34,28 @@ public class EnrichedActiveDirectoryRecord extends EnrichedRecord {
         super(startInstant);
     }
 
-    public String getNormalizedUsername() {
-        return normalizedUsername;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setNormalizedUsername(String normalizedUsername) {
-        this.normalizedUsername = normalizedUsername;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
-    public Boolean getSecuritySensitiveOperation() {
-        return isSecuritySensitiveOperation;
+    public Boolean getUserAdmin() {
+        return isUserAdmin;
     }
 
-    public void setSecuritySensitiveOperation(Boolean securitySensitiveOperation) {
-        isSecuritySensitiveOperation = securitySensitiveOperation;
+    public void setUserAdmin(Boolean isUserAdmin) {
+        isUserAdmin = isUserAdmin;
     }
 
-    public Boolean getUserAdministrator() {
-        return isUserAdministrator;
+    public String getObjectId() {
+        return objectId;
     }
 
-    public void setUserAdministrator(Boolean userAdministrator) {
-        isUserAdministrator = userAdministrator;
-    }
-
-    public String getObjectName() {
-        return objectName;
-    }
-
-    public void setObjectName(String objectName) {
-        this.objectName = objectName;
+    public void setObjectId(String objectId) {
+        this.objectId = objectId;
     }
 
     @Override
