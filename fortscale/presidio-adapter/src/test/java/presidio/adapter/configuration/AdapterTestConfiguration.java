@@ -1,6 +1,7 @@
 package presidio.adapter.configuration;
 
 import com.github.fakemongo.Fongo;
+import fortscale.common.shell.command.PresidioCommands;
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,7 +17,7 @@ import java.util.Properties;
  * Created by shays on 26/06/2017.
  */
 @Configuration
-@Import(AdapterConfig.class)
+@Import({AdapterConfig.class, PresidioCommands.class})
 public class AdapterTestConfiguration {
 
 
