@@ -1,4 +1,4 @@
-from coverage.config import os
+import os
 
 from presidio.utils.configuration.config_server_configuration_reader_singleton import \
     ConfigServerConfigurationReaderSingleton
