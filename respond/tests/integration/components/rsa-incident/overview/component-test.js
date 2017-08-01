@@ -16,7 +16,7 @@ test('it renders', function(assert) {
     const $el = this.$('.rsa-incident-overview');
     assert.equal($el.length, 1, 'Expected to find overview root element in DOM.');
 
-    [ '.created', '.by', '.sealed', '.sources', '.catalyst-count' ].forEach((selector) => {
+    [ '.created', '.by', '.sources', '.catalyst-count' ].forEach((selector) => {
       const $field = $el.find(`${selector} span`);
       assert.ok($field.text().trim(), `Expected to find non-empty field element in DOM for: ${selector}`);
     });

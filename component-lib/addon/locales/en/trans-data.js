@@ -594,7 +594,7 @@ export default {
           'to delete the incident and its tasks from any other applicable systems.',
           addJournalEntrySuccess: 'You added a journal entry to incident {{incidentId}}',
           addJournalEntryFailure: 'There was a problem adding a journal entry to incident {{incidentId}}',
-          incidentCreated: 'You successfully created the incident {{incidentId}} from the selected alerts.',
+          incidentCreated: 'You successfully created the incident {{incidentId}} from the selected alerts. The incident\'s priority has been set to LOW by default.',
           incidentCreationFailed: 'There was a problem creating an incident from the selected alerts',
           createIncidentInstruction: 'An incident will be created from the selected {{alertCount}} alert(s). Please provide a name for the incident.'
         },
