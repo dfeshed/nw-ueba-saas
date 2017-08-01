@@ -66,7 +66,7 @@ public class ProcessExecutor {
      * Class used to clear the invoked process out buffer
      * InvokedProcessOutputReader dies as soon as the input stream is invalid
      */
-    private class InvokedProcessOutputReader extends Thread {
+    private static class InvokedProcessOutputReader extends Thread {
         private BufferedReader input;
         private final String jobName;
 
