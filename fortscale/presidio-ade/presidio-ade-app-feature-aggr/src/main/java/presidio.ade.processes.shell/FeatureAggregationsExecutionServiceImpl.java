@@ -45,9 +45,8 @@ public class FeatureAggregationsExecutionServiceImpl implements PresidioExecutio
         this.maxGroupSize = maxGroupSize;
     }
 
-    //todo: data source should be event_type
     @Override
-    public void run(DataSource dataSource, Instant startDate, Instant endDate, Double fixedDuration) throws Exception {
+    public void run(DataSource dataSource, Instant startDate, Instant endDate, Double fixedDuration, Double featureBucketStrategy) throws Exception {
         FixedDurationStrategy fixedDurationStrategy = FixedDurationStrategy.fromSeconds(fixedDuration.longValue());
         FeatureAggregationService featureAggregationBucketsService = new FeatureAggregationService(fixedDurationStrategy, bucketConfigurationService, enrichedDataStore, inMemoryFeatureBucketAggregator, featureAggregationScoringService, featureAggregationsCreator, scoredFeatureAggregatedStore, pageSize, maxGroupSize);
         TimeRange timeRange = new TimeRange(startDate, endDate);

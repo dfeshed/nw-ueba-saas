@@ -45,7 +45,7 @@ public class OutputExecutionServiceImpl implements PresidioExecutionService {
      * @throws Exception
      */
     @Override
-    public void run(DataSource dataSource, Instant startDate, Instant endDate, Double fixedDuration) throws Exception {
+    public void run(DataSource dataSource, Instant startDate, Instant endDate, Double fixedDuration, Double featureBucketStrategy) throws Exception {
         logger.debug("Started output process with params: data source:{}, from {}:{}, until {}:{}.", dataSource, CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate, CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
 
         //1. Get SMARTs from ADE

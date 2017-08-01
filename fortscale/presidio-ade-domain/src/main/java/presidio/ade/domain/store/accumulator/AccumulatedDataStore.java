@@ -1,20 +1,20 @@
-package presidio.ade.domain.store.aggr;
+package presidio.ade.domain.store.accumulator;
 
-import presidio.ade.domain.record.aggregated.AdeContextualAggregatedRecord;
+import presidio.ade.domain.record.AdeRecord;
+import presidio.ade.domain.record.accumulator.AccumulatedAggregationFeatureRecord;
+import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.store.AdeDataStoreCleanupParams;
 
 import java.util.List;
 
-/**
- * Created by barak_schuster on 7/10/17.
- */
-public interface AggregatedDataStore {
+
+public interface AccumulatedDataStore {
     /**
      * stores the given records
      *
      * @param records         to be stored
      */
-    void store(List<? extends AdeContextualAggregatedRecord> records);
+    void store(List<? extends AccumulatedAggregationFeatureRecord> records);
 
     /**
      * cleanup store by filtering params
