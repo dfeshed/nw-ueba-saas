@@ -1,14 +1,16 @@
 package presidio.ade.domain.record.enriched;
 
 
+import fortscale.common.general.EventResult;
+
 public class AdeEnrichedAuthenticationContext {
     private String normalizedUsername;
-    private String result;
+    private EventResult result;
     private Boolean isDstMachineRemote;
 
 
     public AdeEnrichedAuthenticationContext(EnrichedAuthenticationRecord enrichedAuthenticationRecord) {
-        this.normalizedUsername = enrichedAuthenticationRecord.getNormalizedUsername();
+        this.normalizedUsername = enrichedAuthenticationRecord.getUserId();
         this.result = enrichedAuthenticationRecord.getResult();
         this.isDstMachineRemote = enrichedAuthenticationRecord.getDstMachineRemote();
     }
@@ -21,11 +23,11 @@ public class AdeEnrichedAuthenticationContext {
         this.normalizedUsername = normalizedUsername;
     }
 
-    public String getResult() {
+    public EventResult getResult() {
         return result;
     }
 
-    public void setResult(String result) {
+    public void setResult(EventResult result) {
         this.result = result;
     }
 

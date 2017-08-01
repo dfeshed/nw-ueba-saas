@@ -1,4 +1,4 @@
-package presidio.sdk.api.domain;
+package fortscale.common.general;
 
 /**
  * Created by alexp on 09-Jul-17.
@@ -6,3 +6,4 @@ package presidio.sdk.api.domain;
 public enum EventResult {
     SUCCESS, FAILURE;
 }
+

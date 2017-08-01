@@ -1,10 +1,12 @@
 package presidio.ade.domain.record.enriched;
 
 
+import fortscale.common.general.EventResult;
+
 public class AdeEnrichedFileContext {
 
     private String normalizedUsername;
-    private String result;
+    private EventResult result;
     private String operationType;
     private Boolean isSrcDriveShared;
     private Boolean isDstDriveShared;
@@ -26,11 +28,11 @@ public class AdeEnrichedFileContext {
         this.normalizedUsername = normalizedUsername;
     }
 
-    public String getResult() {
+    public EventResult getResult() {
         return result;
     }
 
-    public void setResult(String result) {
+    public void setResult(EventResult result) {
         this.result = result;
     }
 

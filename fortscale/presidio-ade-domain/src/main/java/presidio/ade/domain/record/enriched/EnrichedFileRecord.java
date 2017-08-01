@@ -21,10 +21,8 @@ public class EnrichedFileRecord extends EnrichedRecord {
     public static final String ABSOLUTE_SRC_FOLDER_FILE_PATH_FIELD = "absoluteSrcFolderFilePath";
     public static final String ABSOLUTE_DST_FOLDER_FILE_PATH_FIELD = "absoluteDstFolderFilePath";
     public static final String FILE_SIZE_FIELD = "fileSize";
-    public static final String OPERATION_TYPE_FIELD = "operationType";
     public static final String IS_SRC_DRIVE_SHARED_FIELD = "isSrcDriveShared";
     public static final String IS_DST_DRIVE_SHARED_FIELD = "isDstDriveShared";
-    public static final String RESULT_FIELD = "result";
 
 
 
@@ -41,23 +39,19 @@ public class EnrichedFileRecord extends EnrichedRecord {
     private String absoluteDstFolderFilePath;
     @Field(FILE_SIZE_FIELD)
     private Long fileSize;
-    @Field(OPERATION_TYPE_FIELD)
-    private String operationType;
     @Field(IS_SRC_DRIVE_SHARED_FIELD)
     private Boolean isSrcDriveShared;
     @Field(IS_DST_DRIVE_SHARED_FIELD)
     private Boolean isDstDriveShared;
-    @Field(RESULT_FIELD)
-    private String result;
 
 
     /**
      * C'tor.
      *
-     * @param dateTime The record's logical time
+     * @param startInstant The record's logical time
      */
-    public EnrichedFileRecord(Instant dateTime) {
-        super(dateTime);
+    public EnrichedFileRecord(Instant startInstant) {
+        super(startInstant);
     }
 
     public String getNormalizedUsername() {
@@ -108,14 +102,6 @@ public class EnrichedFileRecord extends EnrichedRecord {
         this.fileSize = fileSize;
     }
 
-    public String getOperationType() {
-        return operationType;
-    }
-
-    public void setOperationType(String operationType) {
-        this.operationType = operationType;
-    }
-
     public Boolean getSrcDriveShared() {
         return isSrcDriveShared;
     }
@@ -132,13 +118,6 @@ public class EnrichedFileRecord extends EnrichedRecord {
         isDstDriveShared = dstDriveShared;
     }
 
-    public String getResult() {
-        return result;
-    }
-
-    public void setResult(String result) {
-        this.result = result;
-    }
 
     @Override
     @Transient
