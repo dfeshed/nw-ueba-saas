@@ -5,6 +5,7 @@ import fortscale.utils.monitoring.stats.StatsMetricsGroup;
 import fortscale.utils.monitoring.stats.StatsMetricsGroupAttributes;
 import fortscale.utils.monitoring.stats.StatsService;
 import fortscale.utils.monitoring.stats.StatsStringFlexMetric;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.assertNull;
@@ -16,7 +17,7 @@ import java.lang.reflect.Field;
 /**
  * Created by gaashh on 5/29/16.
  */
-
+@Ignore
 public class StatsStringFieldTest {
 
     // String flex metric helper class
