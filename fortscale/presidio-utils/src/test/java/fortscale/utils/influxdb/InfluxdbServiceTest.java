@@ -1,6 +1,7 @@
 package fortscale.utils.influxdb;
 
 import org.junit.After;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,7 @@ import static org.mockito.Mockito.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration
+@Ignore
 public class InfluxdbServiceTest {
 
 	static InfluxdbService remoteService = mock(InfluxdbService.class);

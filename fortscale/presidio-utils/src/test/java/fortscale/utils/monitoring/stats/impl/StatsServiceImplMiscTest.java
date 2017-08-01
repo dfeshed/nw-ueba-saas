@@ -11,6 +11,7 @@ import fortscale.utils.monitoring.stats.annotations.StatsStringMetricParams;
 import fortscale.utils.monitoring.stats.engine.StatsEngineMetricsGroupData;
 import fortscale.utils.monitoring.stats.impl.engine.testing.StatsTestingEngine;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.HashMap;
@@ -21,7 +22,7 @@ import static fortscale.utils.monitoring.stats.impl.StatsTestingUtils.*;
  * Created by gaashh on 4/3/16.
  */
 
-
+@Ignore
 public class StatsServiceImplMiscTest {
 
     final double epsilon = 0.0000001;

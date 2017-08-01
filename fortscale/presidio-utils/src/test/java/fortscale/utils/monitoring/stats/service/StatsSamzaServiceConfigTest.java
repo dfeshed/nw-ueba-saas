@@ -5,6 +5,7 @@ import fortscale.utils.monitoring.stats.config.StandardStatsServiceConfig;
 import fortscale.utils.process.hostnameService.config.HostnameServiceConfig;
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,7 @@ import java.util.Properties;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(loader=AnnotationConfigContextLoader.class)
+@Ignore
 // See https://spring.io/blog/2011/06/21/spring-3-1-m2-testing-with-configuration-classes-and-profiles
 public class StatsSamzaServiceConfigTest {
 
