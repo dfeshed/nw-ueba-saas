@@ -41,7 +41,7 @@ public class FlumeAdapterExecutionService implements PresidioExecutionService {
     }
 
     @Override
-    public void run(Schema schema, Instant startDate, Instant endDate, Double fixedDuration) throws Exception {
+    public void run(Schema schema, Instant startDate, Instant endDate, Double fixedDuration, Double featureBucketStrategy) throws Exception {
         logger.info("Starting Adapter with params: schema: {}, {} : {}, {} : {}.",
                 schema, CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate,
                 CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
