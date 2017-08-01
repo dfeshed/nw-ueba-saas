@@ -2,7 +2,7 @@ package presidio.ade.processes.shell;
 
 import fortscale.accumulator.AccumulationsStore;
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
-import fortscale.common.general.DataSource;
+import fortscale.common.general.Schema;
 import fortscale.common.shell.PresidioExecutionService;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.time.TimeRange;
@@ -45,23 +45,23 @@ public class AccumulateAggregationsExecutionServiceImpl implements PresidioExecu
     }
 
     @Override
-    public void run(DataSource dataSource, Instant startDate, Instant endDate, Double fixedDuration, Double featureBucketStrategy) throws Exception {
+    public void run(Schema schema, Instant startDate, Instant endDate, Double fixedDuration, Double featureBucketStrategy) throws Exception {
         //strategy for accumulator
         FixedDurationStrategy fixedDurationStrategy = FixedDurationStrategy.fromSeconds(fixedDuration.longValue());
         //strategy for aggregator
         FixedDurationStrategy strategy = FixedDurationStrategy.fromSeconds(featureBucketStrategy.longValue());
         AccumulateAggregationsService featureAggregationBucketsService = new AccumulateAggregationsService(fixedDurationStrategy, bucketConfigurationService, enrichedDataStore, accumulatedDataStore, pageSize, maxGroupSize, strategy, accumulateAggregationsBucketService, accumulationsStore);
         TimeRange timeRange = new TimeRange(startDate, endDate);
-        featureAggregationBucketsService.execute(timeRange, dataSource.getName());
+        featureAggregationBucketsService.execute(timeRange, schema.getName());
     }
 
     @Override
-    public void clean(DataSource dataSource, Instant startDate, Instant endDate) throws Exception {
+    public void clean(Schema schema, Instant startDate, Instant endDate) throws Exception {
         // TODO: Implement
     }
 
     @Override
-    public void cleanAll(DataSource dataSource) throws Exception {
+    public void cleanAll(Schema schema) throws Exception {
         // TODO: Implement
     }
 }

@@ -1,4 +1,4 @@
-package presidio.ade.processes.shell;
+package presidio.ade.processes.shell.config;
 
 import fortscale.utils.mongodb.config.MongoConfig;
 import org.springframework.context.annotation.Configuration;
@@ -9,10 +9,9 @@ import org.springframework.context.annotation.Import;
  */
 @Configuration
 @Import({
-        MongoConfig.class,
-        AccumulateAggregationsConfig.class
+        MongoConfig.class
 })
-public class AccumulateAggregationsConfigProduction {
+public class AccumulateAggregationsConfigurationProduction extends AccumulateAggregationsConfiguration {
 
 }
 

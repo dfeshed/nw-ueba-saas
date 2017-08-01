@@ -1,4 +1,4 @@
-package presidio.ade.processes.shell;
+package presidio.ade.processes.shell.config;
 
 import fortscale.accumulator.AccumulationsStore;
 import fortscale.accumulator.AccumulationsStoreConfig;
@@ -15,6 +15,7 @@ import presidio.ade.domain.store.accumulator.AccumulatedDataStore;
 import presidio.ade.domain.store.accumulator.AccumulatedDataStoreConfig;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
 import presidio.ade.domain.store.enriched.EnrichedDataStoreConfig;
+import presidio.ade.processes.shell.AccumulateAggregationsExecutionServiceImpl;
 import presidio.ade.processes.shell.accumulate.AccumulateAggregationsBucketService;
 import presidio.ade.processes.shell.config.AccumulateAggregationsBucketServiceConfig;
 
@@ -31,7 +32,7 @@ import presidio.ade.processes.shell.config.AccumulateAggregationsBucketServiceCo
         EnrichedDataStoreConfig.class,
         NullStatsServiceConfig.class, // TODO: Remove this
 })
-public class AccumulateAggregationsConfig {
+public class AccumulateAggregationsConfiguration {
 
     @Autowired
     private AccumulateAggregationsBucketService accumulateAggregationsBucketService;
