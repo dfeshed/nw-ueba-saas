@@ -4,7 +4,7 @@ import fortscale.utils.pagination.PageIterator;
 import fortscale.utils.time.TimeRange;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
-import presidio.ade.domain.store.enriched.EnrichedRecordsMetadata;
+import fortscale.domain.core.EnrichedRecordsMetadata;
 
 import java.util.List;
 import java.util.Set;

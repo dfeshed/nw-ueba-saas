@@ -1,4 +1,4 @@
-package presidio.sdk.api.domain;
+package fortscale.domain.core;
 
 public enum ActiveDirectoryOperationType {
     ACCOUNT_MANAGEMENT,

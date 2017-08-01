@@ -10,7 +10,7 @@ import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.ade.domain.record.scored.AdeScoredRecord;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
 import presidio.ade.domain.store.AdeDataStoreCleanupParams;
-import presidio.ade.domain.store.enriched.EnrichedRecordsMetadata;
+import fortscale.domain.core.EnrichedRecordsMetadata;
 import presidio.ade.domain.store.smart.SmartDataStore;
 import presidio.ade.domain.store.smart.SmartPageIterator;
 import presidio.ade.sdk.executions.historical.PrepareHistoricalRunTimeParams;

@@ -1,12 +1,11 @@
-package presidio.sdk.api.domain;
+package fortscale.domain.core;
 
-import fortscale.domain.core.AbstractAuditableDocument;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.Instant;
 
-public class AbstractInputDocument extends AbstractAuditableDocument {
+public class AbstractPresidioDocument extends AbstractAuditableDocument {
 
     public static final String DATA_SOURCE_FIELD_NAME = "dataSource";
     public static final String NORMALIZED_USERNAME_FIELD_NAME = "normalizedUsername";

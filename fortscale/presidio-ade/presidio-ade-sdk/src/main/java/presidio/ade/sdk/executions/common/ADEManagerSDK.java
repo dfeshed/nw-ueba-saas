@@ -9,7 +9,7 @@ import fortscale.utils.time.TimeRange;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.ade.domain.record.scored.AdeScoredRecord;
 import presidio.ade.domain.store.AdeDataStoreCleanupParams;
-import presidio.ade.domain.store.enriched.EnrichedRecordsMetadata;
+import fortscale.domain.core.EnrichedRecordsMetadata;
 import presidio.ade.sdk.executions.historical.PrepareHistoricalRunTimeParams;
 import presidio.ade.sdk.executions.online.PrepareOnlineRunTimeParams;
 
