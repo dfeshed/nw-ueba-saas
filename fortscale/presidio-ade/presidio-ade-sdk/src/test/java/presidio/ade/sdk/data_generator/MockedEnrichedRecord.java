@@ -1,4 +1,4 @@
-package presidio.ade.sdk.executions.online;
+package presidio.ade.sdk.data_generator;
 
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -9,8 +9,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * shouldInsertDataAndCreateIndexes pojo used to mock ade enriched data
- * Created by barak_schuster on 5/28/17.
+ * @author Barak Schuster
  */
 @Document
 public class MockedEnrichedRecord extends EnrichedRecord {

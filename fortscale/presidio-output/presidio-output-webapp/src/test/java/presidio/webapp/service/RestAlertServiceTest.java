@@ -65,13 +65,10 @@ public class RestAlertServiceTest {
     }
 
     @Test
-    @Ignore
     public void getAlertsSuccess_filterBuUsername() {
         Alert firstAlert = createAlert();
-        Alert secondAlert = createAlert();
-        secondAlert.setId("differentId");
-        secondAlert.setUserName("differentUserName");
         List<Alert> resultList = new ArrayList<>();
+        resultList.add(firstAlert);
         Page<Alert> page = new PageImpl<>(resultList);
         when(alertService.find(anyObject())).thenReturn(page);
 
@@ -82,14 +79,8 @@ public class RestAlertServiceTest {
     }
 
     @Test
-    @Ignore
     public void getAlertsNoAlert() {
-        Alert firstAlert = createAlert();
-        Alert secondAlert = createAlert();
-        secondAlert.setId("differentId");
-        secondAlert.setUserName("differentUserName");
         List<Alert> resultList = new ArrayList<>();
-        resultList.add(firstAlert);
         Page<Alert> page = new PageImpl<>(resultList);
         when(alertService.find(anyObject())).thenReturn(page);
 

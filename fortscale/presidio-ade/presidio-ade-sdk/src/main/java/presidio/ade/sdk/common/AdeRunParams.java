@@ -1,16 +1,16 @@
-package presidio.ade.sdk.executions.historical;
+package presidio.ade.sdk.common;
 
 import java.time.Duration;
 import java.time.Instant;
 
 /**
- * Created by barak_schuster on 6/8/17.
+ * @author Barak Schuster
  */
-public abstract class ADERunParams {
+public abstract class AdeRunParams {
     private final Instant startInstant;
     private final Duration timeDelta;
 
-    public ADERunParams(Instant startInstant, Duration timeDelta) {
+    public AdeRunParams(Instant startInstant, Duration timeDelta) {
         this.startInstant = startInstant;
         this.timeDelta = timeDelta;
     }
