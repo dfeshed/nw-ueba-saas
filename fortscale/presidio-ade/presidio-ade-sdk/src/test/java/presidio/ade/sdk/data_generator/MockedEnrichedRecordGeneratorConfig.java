@@ -1,4 +1,4 @@
-package presidio.ade.sdk.executions.data.generator;
+package presidio.ade.sdk.data_generator;
 
 import fortscale.utils.test.data.generator.InstantAttributeStrategyConfig;
 import fortscale.utils.time.SystemDateService;
