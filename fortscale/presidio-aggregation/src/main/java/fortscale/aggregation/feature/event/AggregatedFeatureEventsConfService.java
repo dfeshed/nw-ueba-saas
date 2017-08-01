@@ -37,8 +37,6 @@ public class AggregatedFeatureEventsConfService extends AslConfigurationService 
 	@Autowired
 	private AggregatedFeatureEventsConfUtilService aggregatedFeatureEventsConfUtilService;
 
-	@Autowired
-	private RetentionStrategiesConfService retentionStrategiesConfService;
 
 	// List of aggregated feature event configurations
 	private List<AggregatedFeatureEventConf> aggregatedFeatureEventConfList = new ArrayList<>();
@@ -194,10 +192,6 @@ public class AggregatedFeatureEventsConfService extends AslConfigurationService 
 		}
 	}
 
-
-	public AggrFeatureRetentionStrategy getAggrFeatureRetnetionStrategy(String strategyName) {
-		return retentionStrategiesConfService.getAggrFeatureRetentionStrategy(strategyName);
-	}
 
 	public List<String> getAggrFeatureEventNameList() {
 		List<String> names = new ArrayList<>();

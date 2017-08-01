@@ -1,16 +1,16 @@
 package presidio.adapter;
 
-import fortscale.common.general.PresidioShellableApplication;
-import fortscale.common.shell.config.ShellCommonCommandsConfig;
-import fortscale.utils.logging.Logger;
-import org.springframework.boot.SpringApplication;
+import fortscale.common.shell.PresidioShellableApplication;
+import fortscale.common.shell.command.PresidioCommands;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import presidio.adapter.spring.AdapterConfigProduction;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 @SpringBootApplication
@@ -18,13 +18,15 @@ import java.util.Arrays;
         excludeFilters = {
                 @ComponentScan.Filter(type = FilterType.REGEX, pattern = "fortscale.*"),
                 @ComponentScan.Filter(type = FilterType.REGEX, pattern = "presidio.*")})
-public class FortscaleAdapterApplication extends PresidioShellableApplication {
-    private static final Logger logger = Logger.getLogger(FortscaleAdapterApplication.class);
+public class FortscaleAdapterApplication  {
 
     public static void main(String[] args) {
-        logger.info("starting Adapter with params " + Arrays.toString(args));
+        List<Class> sources = new ArrayList<>();
+        sources.add(AdapterConfigProduction.class);
 
-        ConfigurableApplicationContext ctx = SpringApplication.run(new Object[]{FortscaleAdapterApplication.class, AdapterConfigProduction.class, ShellCommonCommandsConfig.class}, args);
-        run(args, ctx);
+        // The supported CLI commands for the application
+        sources.add(PresidioCommands.class);
+
+        PresidioShellableApplication.run(sources, args);
     }
 }

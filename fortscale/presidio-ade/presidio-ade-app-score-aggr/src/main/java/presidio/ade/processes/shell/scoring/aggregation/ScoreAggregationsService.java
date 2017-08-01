@@ -94,7 +94,7 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
         {
             strategyName="fixed_duration_daily";
         }
-        return new FeatureBucketStrategyData(strategyName,strategyName,timeRange.getStart().getEpochSecond(), timeRange.getEnd().getEpochSecond());
+        return new FeatureBucketStrategyData(strategyName,strategyName,timeRange);
     }
 
     public List<String> getDistinctContextTypes(String dataSource){

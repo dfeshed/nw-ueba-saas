@@ -6,7 +6,7 @@ import presidio.ade.domain.store.aggr.AggrDataToCollectionNameTranslator;
 
 
 @Configuration
-public class ScoredFeaturedDataToCollectionNameTranslatorConfig extends AggrDataToCollectionNameTranslator {
+public class ScoredFeaturedDataToCollectionNameTranslatorConfig {
 
     @Bean
     public ScoredFeaturedDataToCollectionNameTranslator scoredFeaturedDataToCollectionNameTranslator() {

@@ -1,4 +1,4 @@
-package presidio.ade.processes.shell.feature.aggregation;
+package presidio.ade.processes.shell.aggregation;
 
 import fortscale.aggregation.creator.AggregationRecordsCreator;
 import fortscale.aggregation.feature.bucket.*;
@@ -12,7 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 import presidio.ade.domain.pagination.enriched.EnrichedRecordPaginationService;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
-import presidio.ade.domain.record.scored.feature_aggregation_scored.ScoredFeatureAggregatedRecord;
+import presidio.ade.domain.record.scored.feature_aggregation.ScoredFeatureAggregationRecord;
 import presidio.ade.domain.store.aggr.AggregatedDataStore;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
 
@@ -27,6 +27,8 @@ public class FeatureAggregationService extends FixedDurationStrategyExecutor {
     private FeatureAggregationScoringService featureAggregationScoringService;
     private AggregationRecordsCreator featureAggregationsCreator;
     private AggregatedDataStore scoredFeatureAggregatedStore;
+    private int pageSize;
+    private int maxGroupSize;
 
     public FeatureAggregationService(FixedDurationStrategy fixedDurationStrategy,
                                      BucketConfigurationService bucketConfigurationService,
@@ -34,7 +36,7 @@ public class FeatureAggregationService extends FixedDurationStrategyExecutor {
                                      InMemoryFeatureBucketAggregator featureBucketAggregator,
                                      FeatureAggregationScoringService featureAggregationScoringService,
                                      AggregationRecordsCreator featureAggregationsCreator,
-                                     AggregatedDataStore scoredFeatureAggregatedStore) {
+                                     AggregatedDataStore scoredFeatureAggregatedStore, int pageSize, int maxGroupSize) {
         super(fixedDurationStrategy);
         this.bucketConfigurationService = bucketConfigurationService;
         this.enrichedDataStore = enrichedDataStore;
@@ -42,6 +44,8 @@ public class FeatureAggregationService extends FixedDurationStrategyExecutor {
         this.featureAggregationScoringService = featureAggregationScoringService;
         this.featureAggregationsCreator = featureAggregationsCreator;
         this.scoredFeatureAggregatedStore = scoredFeatureAggregatedStore;
+        this.pageSize = pageSize;
+        this.maxGroupSize = maxGroupSize;
     }
 
     @Override
@@ -49,7 +53,7 @@ public class FeatureAggregationService extends FixedDurationStrategyExecutor {
         //For now we don't have multiple contexts so we pass just list of size 1.
         List<String> contextTypes = Collections.singletonList(contextType);
 
-        EnrichedRecordPaginationService enrichedRecordPaginationService = new EnrichedRecordPaginationService(enrichedDataStore, 1000, 100, contextType);
+        EnrichedRecordPaginationService enrichedRecordPaginationService = new EnrichedRecordPaginationService(enrichedDataStore, pageSize, maxGroupSize, contextType);
         List<PageIterator<EnrichedRecord>> pageIterators = enrichedRecordPaginationService.getPageIterators(adeEventType, timeRange);
         for (PageIterator<EnrichedRecord> pageIterator : pageIterators) {
             List<FeatureBucket> featureBuckets = featureBucketAggregator.aggregate(pageIterator, contextTypes, createFeatureBucketStrategyData(timeRange));
@@ -57,17 +61,16 @@ public class FeatureAggregationService extends FixedDurationStrategyExecutor {
             //feature bucket creation
             List<AdeAggregationRecord> featureAdeAggrRecords = featureAggregationsCreator.createAggregationRecords(featureBuckets);
 
-            List<ScoredFeatureAggregatedRecord> scoredFeatureAggregatedRecords = new ArrayList<>();
-            featureAggregationScoringService.scoreEvents(scoredFeatureAggregatedRecords, featureAdeAggrRecords);
+            List<ScoredFeatureAggregationRecord> scoredFeatureAggregationRecords = featureAggregationScoringService.scoreEvents(featureAdeAggrRecords);
 
-            scoredFeatureAggregatedStore.store(scoredFeatureAggregatedRecords);
+            scoredFeatureAggregatedStore.store(scoredFeatureAggregationRecords);
         }
     }
 
 
     protected FeatureBucketStrategyData createFeatureBucketStrategyData(TimeRange timeRange) {
         String strategyName = "fixed_duration_" + StringUtils.lowerCase(this.strategy.name());
-        return new FeatureBucketStrategyData(strategyName, strategyName, timeRange.getStart().getEpochSecond(), timeRange.getEnd().getEpochSecond());
+        return new FeatureBucketStrategyData(strategyName, strategyName, timeRange);
     }
 
     @Override

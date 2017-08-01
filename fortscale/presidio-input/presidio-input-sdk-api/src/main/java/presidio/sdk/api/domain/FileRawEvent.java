@@ -134,19 +134,19 @@ public class FileRawEvent extends AbstractInputDocument {
         this.fileSize = fileSize;
     }
 
-    public boolean isSrcDriveShared() {
+    public boolean getIsSrcDriveShared() {
         return isSrcDriveShared;
     }
 
-    public void setSrcDriveShared(boolean srcDriveShared) {
+    public void setIsSrcDriveShared(boolean srcDriveShared) {
         isSrcDriveShared = srcDriveShared;
     }
 
-    public boolean isDstDriveShared() {
+    public boolean getIsDstDriveShared() {
         return isDstDriveShared;
     }
 
-    public void setDstDriveShared(boolean dstDriveShared) {
+    public void setIsDstDriveShared(boolean dstDriveShared) {
         isDstDriveShared = dstDriveShared;
     }
 

@@ -2,33 +2,39 @@ package presidio.input.core;
 
 
 
-import fortscale.common.general.PresidioShellableApplication;
-import fortscale.common.shell.config.ShellCommonCommandsConfig;
-import fortscale.utils.logging.Logger;
-import org.springframework.boot.SpringApplication;
+
+import fortscale.common.shell.PresidioShellableApplication;
+import fortscale.common.shell.command.PresidioCommands;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.boot.autoconfigure.data.elasticsearch.ElasticsearchAutoConfiguration;
+import org.springframework.boot.autoconfigure.data.elasticsearch.ElasticsearchDataAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
-import presidio.input.core.spring.InputCoreConfiguration;
 import presidio.input.core.spring.InputProductionConfiguration;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @SpringBootApplication
 @ComponentScan(
         excludeFilters = { //only scan for spring-boot beans
                 @ComponentScan.Filter(type = FilterType.REGEX, pattern = "fortscale.*"),
                 @ComponentScan.Filter(type = FilterType.REGEX, pattern = "presidio.*")})
-public class FortscaleInputCoreApplication extends PresidioShellableApplication {
-
-
-    private static final Logger logger = Logger.getLogger(FortscaleInputCoreApplication.class);
+@EnableAutoConfiguration(exclude={ElasticsearchAutoConfiguration.class, ElasticsearchDataAutoConfiguration.class})
+public class FortscaleInputCoreApplication {
 
     public static void main(String[] args) {
-        logger.info("Start Input Core Main");
+        List<Class> sources = new ArrayList<>();
+        sources.add(FortscaleInputCoreApplication.class);
+        sources.add(InputProductionConfiguration.class);
 
-        ConfigurableApplicationContext ctx = SpringApplication.run(new Object[]{FortscaleInputCoreApplication.class, InputProductionConfiguration.class, ShellCommonCommandsConfig.class}, args);
-        run(args, ctx);
+        // The supported CLI commands for the application
+        sources.add(PresidioCommands.class);
+
+        PresidioShellableApplication.run(sources, args);
     }
 
 }

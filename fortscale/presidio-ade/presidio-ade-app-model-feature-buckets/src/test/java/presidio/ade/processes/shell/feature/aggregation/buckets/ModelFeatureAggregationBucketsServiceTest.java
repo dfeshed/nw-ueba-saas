@@ -1,14 +1,18 @@
 package presidio.ade.processes.shell.feature.aggregation.buckets;
 
-import fortscale.aggregation.feature.bucket.*;
+import fortscale.aggregation.feature.bucket.FeatureBucket;
+import fortscale.aggregation.feature.bucket.FeatureBucketStore;
+import fortscale.aggregation.feature.bucket.FeatureBucketUtils;
 import fortscale.common.feature.AggrFeatureValue;
 import fortscale.common.feature.Feature;
+import fortscale.common.shell.command.PresidioCommands;
 import fortscale.common.util.GenericHistogram;
-import fortscale.ml.processes.shell.model.aggregation.ModelAggregationBucketConfigurationServiceConfig;
 import fortscale.utils.pagination.ContextIdToNumOfItems;
+import fortscale.utils.shell.BootShim;
+import fortscale.utils.shell.BootShimConfig;
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
 import fortscale.utils.test.category.ModuleTestCategory;
-import fortscale.utils.test.mongodb.FongoTestConfig;
+import fortscale.utils.test.mongodb.MongodbTestConfig;
 import fortscale.utils.time.TimeRange;
 import org.junit.Assert;
 import org.junit.Test;
@@ -18,12 +22,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.shell.core.CommandResult;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import presidio.ade.domain.record.enriched.EnrichedDlpFileRecord;
 import presidio.ade.domain.store.AdeDataStoreCleanupParams;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
-import presidio.ade.domain.store.enriched.EnrichedDataStoreConfig;
 import presidio.ade.domain.store.enriched.EnrichedRecordsMetadata;
+import presidio.ade.processes.shell.feature.aggregation.buckets.config.ModelFeatureAggregationBucketsConfiguration;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -40,11 +45,11 @@ public class ModelFeatureAggregationBucketsServiceTest {
     private static final String ADE_EVENT_TYPE = "dlpfile";
 
     @Autowired
-    private ModelFeatureAggregationBucketsService modelFeatureAggregationBucketsService;
-    @Autowired
     private EnrichedDataStore enrichedDataStore;
     @Autowired
-    FeatureBucketStore featureBucketStore;
+    private FeatureBucketStore featureBucketStore;
+    @Autowired
+    private BootShim bootShim;
 
 
     @Test
@@ -54,7 +59,9 @@ public class ModelFeatureAggregationBucketsServiceTest {
         TimeRange timeRange = new TimeRange(startTime,endTime);
         String username = "sanityTestUser";
         generateAndPersistAdeEnrichedRecords(timeRange,username);
-        modelFeatureAggregationBucketsService.execute(timeRange, ADE_EVENT_TYPE);
+        CommandResult commandResult = bootShim.getShell().executeCommand(String.format("run --schema %s --start_date %s --end_date %s --fixed_duration_strategy 3600", ADE_EVENT_TYPE.toUpperCase(), startTime.toString(), endTime.toString()));
+        Assert.assertTrue(commandResult.isSuccess());
+//        modelFeatureAggregationBucketsService.execute(timeRange, ADE_EVENT_TYPE);
         String contextId = FeatureBucketUtils.buildContextId(Collections.singletonMap("normalizedUsername", username));
         List<FeatureBucket> featureBucketList = featureBucketStore.getFeatureBuckets(
                 "normalized_username_dlpfile_daily", Collections.singleton(contextId), timeRange);
@@ -111,32 +118,16 @@ public class ModelFeatureAggregationBucketsServiceTest {
     }
 
     @Configuration
-    @Import({FongoTestConfig.class,
-            ModelAggregationBucketConfigurationServiceConfig.class,
-            EnrichedDataStoreConfig.class,
-            InMemoryFeatureBucketAggregatorConfig.class,
-            FeatureBucketStoreMongoConfig.class,
+    @Import({MongodbTestConfig.class,
+            PresidioCommands.class,
+            BootShimConfig.class
     })
-    public static class ModelFeatureAggregationBucketsServiceTestConfiguration {
-        @Autowired
-        private BucketConfigurationService bucketConfigurationService;
-        @Autowired
-        private EnrichedDataStore enrichedDataStore;
-        @Autowired
-        private InMemoryFeatureBucketAggregator featureBucketAggregator;
-        @Autowired
-        FeatureBucketStore featureBucketStore;
-
-        @Bean
-        public ModelFeatureAggregationBucketsService getModelFeatureAggregationBucketsService(){
-            return new ModelFeatureAggregationBucketsService(bucketConfigurationService,enrichedDataStore,featureBucketAggregator,featureBucketStore);
-        }
+    public static class ModelFeatureAggregationBucketsServiceTestConfiguration extends ModelFeatureAggregationBucketsConfiguration {
 
         @Bean
         public static TestPropertiesPlaceholderConfigurer modelFeatureAggregationBucketsServiceTestProp() {
             Properties properties = new Properties();
             properties.put("fortscale.model.aggregation.bucket.conf.json.file.name", "classpath:config/asl/model/buckets/model_buckets_test.json");
-            properties.put("mongo.db.name","model_feature_aggregation");
 
             return new TestPropertiesPlaceholderConfigurer(properties);
         }

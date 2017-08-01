@@ -1,9 +1,7 @@
 package fortscale.aggregation.feature.event;
 
-import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.aggregation.feature.bucket.FeatureBucketConf;
 import fortscale.aggregation.feature.bucket.config.BucketConfigurationServiceConfig;
-import fortscale.global.configuration.GlobalConfiguration;
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
 import net.minidev.json.JSONObject;
 import org.json.JSONException;
@@ -12,12 +10,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.List;
@@ -50,10 +45,6 @@ public class AggregatedFeatureEventsConfServiceTest {
             return new AggregatedFeatureEventsConfUtilService();
         }
 
-        @Bean
-        public RetentionStrategiesConfService getRetentionStrategiesConfService(){
-            return new RetentionStrategiesConfService();
-        }
 
         @Bean
         public AggregatedFeatureEventsConfService getAggregatedFeatureEventsConfService(){
@@ -73,9 +64,6 @@ public class AggregatedFeatureEventsConfServiceTest {
 
             properties.put("fortscale.aggregation.feature.event.conf.json.file.name", "classpath:config/asl/aggregated_feature_events.json");
             properties.put("fortscale.aggregation.feature.event.conf.json.overriding.files.path", "classpath:fortscale/config/asl/aggregation_events/overriding/*.json");
-
-            properties.put("fortscale.aggregation.retention.strategy.conf.json.file.name", "classpath:config/asl/retention_strategies.json");
-            properties.put("fortscale.aggregation.retention.strategy.conf.json.overriding.files.path", "classpath:fortscale/config/asl/retention_strategy/overriding/*.json");
 
             return new TestPropertiesPlaceholderConfigurer(properties);
         }

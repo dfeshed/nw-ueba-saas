@@ -1,10 +1,11 @@
 package presidio.adapter.configuration;
 
 import com.github.fakemongo.Fongo;
+import fortscale.common.shell.command.PresidioCommands;
+import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.data.mongodb.MongoDbFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
@@ -16,7 +17,7 @@ import java.util.Properties;
  * Created by shays on 26/06/2017.
  */
 @Configuration
-@Import(AdapterConfig.class)
+@Import({AdapterConfig.class, PresidioCommands.class})
 public class AdapterTestConfiguration {
 
 
@@ -36,13 +37,12 @@ public class AdapterTestConfiguration {
     }
 
     @Bean
-    public PropertySourcesPlaceholderConfigurer properties() throws Exception {
-        final PropertySourcesPlaceholderConfigurer pspc = new PropertySourcesPlaceholderConfigurer();
+    public TestPropertiesPlaceholderConfigurer properties() throws Exception {
 
         Properties properties = new Properties();
-        properties.setProperty("fortscale.adapter.csvfetcher.csvfilesfolderpath", "file_path");
-        pspc.setProperties(properties);
-        return pspc;
+        properties.put("fortscale.adapter.csvfetcher.csvfilesfolderpath", "file_path");
+
+        return new TestPropertiesPlaceholderConfigurer(properties);
     }
 
 

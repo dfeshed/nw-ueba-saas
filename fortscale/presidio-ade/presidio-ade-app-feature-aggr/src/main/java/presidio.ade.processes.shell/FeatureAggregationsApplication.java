@@ -1,23 +1,28 @@
 package presidio.ade.processes.shell;
 
-import fortscale.common.general.PresidioShellableApplication;
-import fortscale.utils.logging.Logger;
+import fortscale.common.shell.PresidioShellableApplication;
+import fortscale.common.shell.command.PresidioCommands;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 
-import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 @SpringBootApplication
 @ComponentScan(excludeFilters = @ComponentScan.Filter(type = FilterType.REGEX, pattern = {"fortscale.*", "presidio.*"}))
-public class FeatureAggregationsApplication extends PresidioShellableApplication {
-    private static final Logger logger = Logger.getLogger(FeatureAggregationsApplication.class);
+public class FeatureAggregationsApplication {
 
 
     public static void main(String[] args) {
-        logger.info("Start application: {} with params {}", FeatureAggregationsConfigProduction.class, Arrays.toString(args));
-        PresidioShellableApplication.run(FeatureAggregationsConfigProduction.class, args);
+        List<Class> sources = Stream.of(FeatureAggregationsConfigProduction.class).collect(Collectors.toList());
+
+        // The supported CLI commands for the application
+        sources.add(PresidioCommands.class);
+
+        PresidioShellableApplication.run(sources, args);
     }
 }
 

@@ -5,11 +5,11 @@ import presidio.ade.domain.store.aggr.AggrRecordsMetadata;
 
 
 public class ScoredFeaturedDataToCollectionNameTranslator extends AggrDataToCollectionNameTranslator {
-    private static final String SCORED_AGGR_COLLECTION_PREFIX = "scored_aggr_feature_";
+    private static final String SCORED_FEATURE_AGGR_COLLECTION_PREFIX = "scored_feature_aggr_";
 
     @Override
     public String toCollectionName(AggrRecordsMetadata metadata) {
-        return String.format("%s%s", SCORED_AGGR_COLLECTION_PREFIX, metadata.getFeatureName());
+        return String.format("%s%s", SCORED_FEATURE_AGGR_COLLECTION_PREFIX, metadata.getFeatureName());
     }
 
 }

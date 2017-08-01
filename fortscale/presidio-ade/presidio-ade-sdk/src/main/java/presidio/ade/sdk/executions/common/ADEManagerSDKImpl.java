@@ -3,7 +3,7 @@ package presidio.ade.sdk.executions.common;
 import fortscale.accumulator.aggregation.event.AccumulatedAggregatedFeatureEvent;
 import fortscale.aggregation.feature.bucket.FeatureBucket;
 import fortscale.aggregation.feature.event.AggrEvent;
-import fortscale.common.event.EntityEvent;
+import fortscale.domain.SMART.EntityEvent;
 import fortscale.utils.pagination.PageIterator;
 import fortscale.utils.time.TimeRange;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
@@ -11,6 +11,8 @@ import presidio.ade.domain.record.scored.AdeScoredRecord;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
 import presidio.ade.domain.store.AdeDataStoreCleanupParams;
 import presidio.ade.domain.store.enriched.EnrichedRecordsMetadata;
+import presidio.ade.domain.store.smart.SmartDataStore;
+import presidio.ade.domain.store.smart.SmartPageIterator;
 import presidio.ade.sdk.executions.historical.PrepareHistoricalRunTimeParams;
 import presidio.ade.sdk.executions.online.PrepareOnlineRunTimeParams;
 
@@ -22,9 +24,12 @@ import java.util.Set;
  * Created by barak_schuster on 5/18/17.
  */
 public class ADEManagerSDKImpl implements ADEManagerSDK {
-    protected EnrichedDataStore store;
 
-    public ADEManagerSDKImpl(EnrichedDataStore store) {
+    protected EnrichedDataStore store;
+    protected SmartDataStore smartDataStore;
+
+    public ADEManagerSDKImpl(EnrichedDataStore store, SmartDataStore smartDataStore) {
+        this.smartDataStore = smartDataStore;
         this.store = store;
     }
 
@@ -125,7 +130,8 @@ public class ADEManagerSDKImpl implements ADEManagerSDK {
 
     @Override
     public PageIterator<EntityEvent> findSmarts(TimeRange timeRange, int pageSize, int scoreThreshold) {
-        throw new UnsupportedOperationException();
+        //TODO- ADE team to change this
+        return new SmartPageIterator<EntityEvent>(smartDataStore, timeRange, scoreThreshold);
     }
 
     @Override

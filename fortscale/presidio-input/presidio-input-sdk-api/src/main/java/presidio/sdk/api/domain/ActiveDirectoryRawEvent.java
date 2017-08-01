@@ -1,5 +1,6 @@
 package presidio.sdk.api.domain;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -70,19 +71,21 @@ public class ActiveDirectoryRawEvent extends AbstractInputDocument {
         this.operationType = operationType;
     }
 
-    public boolean isSecuritySensitiveOperation() {
+    @JsonProperty(value = "isSecuritySensitiveOperation")
+    public boolean getIsSecuritySensitiveOperation() {
         return isSecuritySensitiveOperation;
     }
 
-    public void setSecuritySensitiveOperation(boolean securitySensitiveOperation) {
+    public void setIsSecuritySensitiveOperation(boolean securitySensitiveOperation) {
         isSecuritySensitiveOperation = securitySensitiveOperation;
     }
 
-    public boolean isUserAdministrator() {
+    @JsonProperty(value = "isUserAdministrator")
+    public boolean getIsUserAdministrator() {
         return isUserAdministrator;
     }
 
-    public void setUserAdministrator(boolean userAdministrator) {
+    public void setIsUserAdministrator(boolean userAdministrator) {
         isUserAdministrator = userAdministrator;
     }
 
