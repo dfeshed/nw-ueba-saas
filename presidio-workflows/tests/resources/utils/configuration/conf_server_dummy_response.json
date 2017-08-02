@@ -3,22 +3,9 @@
   "profiles": [
     "dev"
   ],
-  "label": null,
-  "version": null,
-  "state": null,
-  "propertySources": [
-    {
-      "name": "file://home/user/core/configurations/foo.properties",
-      "source": {
-        "foo.moo.index": "OFF",
-        "foo.bar.name": "once upon a time"
-      }
-    },
-    {
-      "name": "file://home/user/core/configurations/application.properties",
-      "source": {
-        "aaa.bbb": "#dot#"
-      }
-    }
-  ]
+  "aaa":
+  {
+   "bbb": "#dot#"
+  }
+
 }
