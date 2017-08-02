@@ -8,10 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.shell.core.CommandResult;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import presidio.adapter.spring.AdapterShellConfig;
+import presidio.adapter.spring.AdapterShellTestConfig;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = AdapterShellConfig.class)
+@ContextConfiguration(classes = AdapterShellTestConfig.class)
 public class FortscaleAdapterShellTest {
 
 
