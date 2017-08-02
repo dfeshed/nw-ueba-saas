@@ -5,9 +5,6 @@ import presidio.ade.domain.record.enriched.EnrichedActiveDirectoryRecord;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
 import fortscale.domain.core.ActiveDirectoryRawEvent;
 
-/**
- * Created by alexp on 11-Jul-17.
- */
 public class ActiveDirectoryConverter implements InputAdeConverter {
     @Override
     public EnrichedRecord convert(AbstractAuditableDocument document) {
@@ -16,9 +13,9 @@ public class ActiveDirectoryConverter implements InputAdeConverter {
         adeRecord.setEventId(activeDirectoryRawEvent.getEventId());
         adeRecord.setResult(activeDirectoryRawEvent.getResult().toString());
         adeRecord.setOperationType(activeDirectoryRawEvent.getOperationType().toString());
-        adeRecord.setNormalizedUsername(activeDirectoryRawEvent.getNormalizedUsername());
-        adeRecord.setObjectName(activeDirectoryRawEvent.getObjectName());
-        adeRecord.setSecuritySensitiveOperation(activeDirectoryRawEvent.getIsSecuritySensitiveOperation());
+        adeRecord.setNormalizedUsername(activeDirectoryRawEvent.getUserId());
+        adeRecord.setObjectName(activeDirectoryRawEvent.getObjectId());
+//        adeRecord.setSecuritySensitiveOperation(activeDirectoryRawEvent.getIsSecuritySensitiveOperation());
         adeRecord.setUserAdministrator(activeDirectoryRawEvent.getIsUserAdministrator());
         return adeRecord;
     }

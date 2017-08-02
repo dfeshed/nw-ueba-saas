@@ -12,12 +12,12 @@ public class AuthenticationConverter implements InputAdeConverter {
         EnrichedAuthenticationRecord adeRecord = new EnrichedAuthenticationRecord(authenticationRawEvent.getDateTime());
         adeRecord.setNormalizedUsername(adeRecord.getNormalizedUsername());
         adeRecord.setResult(authenticationRawEvent.getResult().toString());
-        adeRecord.setAuthenticationType(authenticationRawEvent.getAuthenticationType().toString());
+        adeRecord.setAuthenticationType(authenticationRawEvent.getOperationType());
         adeRecord.setEventId(authenticationRawEvent.getEventId());
-        adeRecord.setDstMachineRemote(authenticationRawEvent.getIsDstMachineRemote());
-        adeRecord.setNormalizedDstMachine(authenticationRawEvent.getNormalizedDstMachine());
-        adeRecord.setNormalizedSrcMachine(authenticationRawEvent.getNormalizedSrcMachine());
-        adeRecord.setResultCode(authenticationRawEvent.getResultCode().toString());
+//        adeRecord.setDstMachineRemote(authenticationRawEvent.getIsDstMachineRemote());
+        adeRecord.setNormalizedDstMachine(authenticationRawEvent.getDstMachineId());
+        adeRecord.setNormalizedSrcMachine(authenticationRawEvent.getSrcMachineId());
+//        adeRecord.setResultCode(authenticationRawEvent.getResultCode().toString());
         return adeRecord;
     }
 }
