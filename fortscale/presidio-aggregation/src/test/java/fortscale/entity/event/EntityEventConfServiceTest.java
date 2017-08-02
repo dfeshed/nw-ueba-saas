@@ -51,8 +51,6 @@ public class EntityEventConfServiceTest {
 			Properties properties = new Properties();
 			properties.put("fortscale.entity.event.definitions.json.file.path", "classpath:entity_events_test.json");
 			properties.put("fortscale.entity.event.definitions.conf.json.overriding.files.path", "");
-			properties.put("fortscale.entity.event.global.params.json.file.path","entity_events_global_params_test.json");
-			properties.put("fortscale.entity.event.global.params.conf.json.overriding.files.path", "");
 
 			return new TestPropertiesPlaceholderConfigurer(properties);
 		}
