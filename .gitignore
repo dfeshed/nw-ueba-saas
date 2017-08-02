@@ -15,3 +15,5 @@ fortscale/fortscale-collection/ipConflicts.log
 *.pyc
 
 fortscale/presidio-adapter/spring-shell\.log
+
+fortscale/presidio-utils/spring-shell\.log
