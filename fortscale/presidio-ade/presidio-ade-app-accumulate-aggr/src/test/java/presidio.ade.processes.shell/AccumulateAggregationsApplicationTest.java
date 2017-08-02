@@ -16,10 +16,10 @@ import org.springframework.test.context.junit4.SpringRunner;
  */
 @RunWith(SpringRunner.class)
 @Category(ModuleTestCategory.class)
-@ContextConfiguration(classes = FeatureAggregationsConfigurationTest.class)
-public class FeatureAggregationsApplicationTest {
+@ContextConfiguration(classes = AccumulateAggregationsConfigurationTest.class)
+public class AccumulateAggregationsApplicationTest {
 
-    public static final String EXECUTION_COMMAND = "run  --schema DLPFILE --start_date 2017-06-13T07:00:00.00Z --end_date 2017-06-13T09:00:00.00Z --fixed_duration_strategy 3600";
+    public static final String EXECUTION_COMMAND = "run  --schema DLPFILE --start_date 2017-06-13T00:00:00Z --end_date 2017-06-15T00:00:00Z --fixed_duration_strategy 86400 --feature_bucket_strategy 3600";
 
     @Autowired
     private BootShim bootShim;

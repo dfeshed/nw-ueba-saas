@@ -33,7 +33,7 @@ import presidio.ade.processes.shell.config.InMemoryFeatureAggregatorConfig;
         ScoredFeatureAggregationDataStoreConfig.class,
         NullStatsServiceConfig.class, // TODO: Remove this
 })
-public class FeatureAggregationsConfig {
+public class FeatureAggregationsConfiguration {
 
 
     @Autowired
