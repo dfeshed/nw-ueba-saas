@@ -12,8 +12,9 @@ import java.io.File;
 public class FlumeConfigurationUtilTest {
 
     public static final String SOME_FLUME_HOME_PATH = "/some_flume_home/";
+    public static final String mockedModuleName = "adapter";
 
-    private final FlumeConfigurationUtil mockFlumeConfigurationUtil = new FlumeConfigurationUtil();
+    private final FlumeConfigurationUtil mockFlumeConfigurationUtil = new FlumeConfigurationUtil(mockedModuleName);
 
     @Rule
     public final EnvironmentVariables environmentVariables = new EnvironmentVariables();
@@ -38,7 +39,7 @@ public class FlumeConfigurationUtilTest {
     @Test
     public void createConfFolderPath() throws Exception {
         final String confFolderPath = mockFlumeConfigurationUtil.createConfFolderPath();
-        final String expected = SOME_FLUME_HOME_PATH + "conf" + File.separator;
+        final String expected = SOME_FLUME_HOME_PATH + "conf" + File.separator + mockedModuleName + File.separator;
         Assert.assertEquals("Conf folder path is invalid", expected, confFolderPath);
     }
 
@@ -66,7 +67,7 @@ public class FlumeConfigurationUtilTest {
     @Test
     public void getConfFolderArgument() throws Exception {
         final String confFolderPath = mockFlumeConfigurationUtil.getConfFolderArgument();
-        final String expected = "--conf " + SOME_FLUME_HOME_PATH + "conf" + File.separator;
+        final String expected = "--conf " + SOME_FLUME_HOME_PATH + "conf" + File.separator + mockedModuleName + File.separator;
         Assert.assertEquals("Conf folder argument is invalid", expected, confFolderPath);
     }
 
