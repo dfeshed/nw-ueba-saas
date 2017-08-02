@@ -15,6 +15,9 @@ public class AbstractPresidioDocument extends AbstractAuditableDocument {
     public static final String RESULT_FIELD_NAME = "result";
     public static final String OPERATION_TYPE_FIELD_NAME = "operationType";
     public static final String OPERATION_TYPE_CATEGORY_FIELD_NAME = "operationTypeCategory";
+    public static final String USER_NAME_FIELD_NAME = "userName";
+    public static final String DISPLAY_NAME_FIELD_NAME = "displayName";
+    public static final String ADDITIONAL_INFO_FIELD_NAME = "additionalInfo";
 
     @NotEmpty
     @Field(EVENT_ID_FIELD_NAME)
@@ -38,15 +41,22 @@ public class AbstractPresidioDocument extends AbstractAuditableDocument {
     @Field(RESULT_FIELD_NAME)
     protected EventResult result;
 
+    @Field(USER_NAME_FIELD_NAME)
     protected String userName;
+
+    @Field(DISPLAY_NAME_FIELD_NAME)
     protected String userDisplayName;
+
+    @Field(ADDITIONAL_INFO_FIELD_NAME)
     protected Map<String, String> additionalInfo;
 
     public AbstractPresidioDocument() {
 
     }
 
-    public AbstractPresidioDocument(Instant dateTime, String eventId, String dataSource, String userId, String operationType, List<String> operationTypeCategory, EventResult result) {
+    public AbstractPresidioDocument(Instant dateTime, String eventId, String dataSource, String userId,
+                                    String operationType, List<String> operationTypeCategory, EventResult result,
+                                    String userName, String userDisplayName, Map<String, String> additionalInfo) {
         super(dateTime);
         this.eventId = eventId;
         this.dataSource = dataSource;
@@ -54,6 +64,9 @@ public class AbstractPresidioDocument extends AbstractAuditableDocument {
         this.operationType = operationType;
         this.operationTypeCategory = operationTypeCategory;
         this.result = result;
+        this.userName = userName;
+        this.userDisplayName = userDisplayName;
+        this.additionalInfo = additionalInfo;
     }
 
     public String getDataSource() {
@@ -104,16 +117,29 @@ public class AbstractPresidioDocument extends AbstractAuditableDocument {
         this.operationTypeCategory = operationTypeCategory;
     }
 
-
-    @Override
-    public String toString() {
-        return "AbstractPresidioDocument{" +
-                "eventId='" + eventId + '\'' +
-                ", dataSource='" + dataSource + '\'' +
-                ", userId='" + userId + '\'' +
-                ", operationType='" + operationType + '\'' +
-                ", operationTypeCategory=" + operationTypeCategory +
-                ", result=" + result +
-                "} " + super.toString();
+    public String getUserName() {
+        return userName;
     }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getUserDisplayName() {
+        return userDisplayName;
+    }
+
+    public void setUserDisplayName(String userDisplayName) {
+        this.userDisplayName = userDisplayName;
+    }
+
+    public Map<String, String> getAdditionalInfo() {
+        return additionalInfo;
+    }
+
+    public void setAdditionalInfo(Map<String, String> additionalInfo) {
+        this.additionalInfo = additionalInfo;
+    }
+
+
 }

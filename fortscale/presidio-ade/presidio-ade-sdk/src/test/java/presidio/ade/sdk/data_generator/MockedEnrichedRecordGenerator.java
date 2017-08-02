@@ -1,7 +1,7 @@
 package presidio.ade.sdk.data_generator;
 
 import fortscale.utils.time.SystemDateService;
-import presidio.ade.domain.store.enriched.EnrichedRecordsMetadata;
+import fortscale.domain.core.EnrichedRecordsMetadata;
 import uk.co.jemos.podam.api.PodamFactory;
 
 import java.time.Duration;

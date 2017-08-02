@@ -4,8 +4,8 @@ import fortscale.common.general.Schema;
 import fortscale.utils.logging.Logger;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.ade.domain.store.AdeDataStoreCleanupParams;
-import presidio.ade.domain.store.enriched.EnrichedRecordsMetadata;
-import presidio.ade.sdk.executions.common.ADEManagerSDK;
+import fortscale.domain.core.EnrichedRecordsMetadata;
+import presidio.ade.sdk.common.AdeManagerSdk;
 
 import java.time.Instant;
 import java.util.List;
@@ -13,9 +13,9 @@ import java.util.List;
 public class AdeDataServiceImpl implements AdeDataService {
     private static final Logger logger = Logger.getLogger(AdeDataServiceImpl.class);
 
-    private final ADEManagerSDK adeManagerSDK;
+    private final AdeManagerSdk adeManagerSDK;
 
-    public AdeDataServiceImpl(ADEManagerSDK adeManagerSdk) {
+    public AdeDataServiceImpl(AdeManagerSdk adeManagerSdk) {
         this.adeManagerSDK = adeManagerSdk;
     }
 
@@ -23,7 +23,7 @@ public class AdeDataServiceImpl implements AdeDataService {
     public void store(Schema schema, Instant startDate, Instant endDate, List<? extends EnrichedRecord> records) {
         EnrichedRecordsMetadata recordsMetaData = new EnrichedRecordsMetadata(schema.getName().toLowerCase(), startDate, endDate);
         logger.info("Calling ADE SDK store for {} records with metadata {}", records.size(), recordsMetaData);
-        adeManagerSDK.store(recordsMetaData, records);
+//        adeManagerSDK.store(recordsMetaData, records);
     }
 
     @Override

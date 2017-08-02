@@ -10,13 +10,6 @@ public class ActiveDirectoryConverter implements InputAdeConverter {
     public EnrichedRecord convert(AbstractAuditableDocument document) {
         ActiveDirectoryRawEvent activeDirectoryRawEvent = (ActiveDirectoryRawEvent) document;
         EnrichedActiveDirectoryRecord adeRecord = new EnrichedActiveDirectoryRecord(activeDirectoryRawEvent.getDateTime());
-        adeRecord.setEventId(activeDirectoryRawEvent.getEventId());
-        adeRecord.setResult(activeDirectoryRawEvent.getResult().toString());
-        adeRecord.setOperationType(activeDirectoryRawEvent.getOperationType().toString());
-        adeRecord.setNormalizedUsername(activeDirectoryRawEvent.getUserId());
-        adeRecord.setObjectName(activeDirectoryRawEvent.getObjectId());
-//        adeRecord.setSecuritySensitiveOperation(activeDirectoryRawEvent.getIsSecuritySensitiveOperation());
-        adeRecord.setUserAdministrator(activeDirectoryRawEvent.getIsUserAdministrator());
         return adeRecord;
     }
 }

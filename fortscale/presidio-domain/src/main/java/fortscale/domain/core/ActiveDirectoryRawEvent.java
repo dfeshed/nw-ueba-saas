@@ -8,6 +8,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Document
 public class ActiveDirectoryRawEvent extends AbstractPresidioDocument {
@@ -36,10 +37,11 @@ public class ActiveDirectoryRawEvent extends AbstractPresidioDocument {
         }
     }
 
-    public ActiveDirectoryRawEvent(Instant dateTime, String eventId, String dataSource, String userId,
-                                   String operationType, List<String> operationTypeCategory, EventResult result,
-                                   boolean isUserAdmin, String objectId) {
-        super(dateTime, eventId, dataSource, userId, operationType, operationTypeCategory, result);
+    public ActiveDirectoryRawEvent(Instant dateTime, String eventId, String dataSource, String userId, String operationType,
+                                   List<String> operationTypeCategory, EventResult result, String userName,
+                                   String userDisplayName, Map<String, String> additionalInfo, boolean isUserAdmin,
+                                   String objectId) {
+        super(dateTime, eventId, dataSource, userId, operationType, operationTypeCategory, result, userName, userDisplayName, additionalInfo);
         this.isUserAdmin = isUserAdmin;
         this.objectId = objectId;
     }
@@ -72,5 +74,13 @@ public class ActiveDirectoryRawEvent extends AbstractPresidioDocument {
         isUserAdmin = userAdmin;
     }
 
+
+    @Override
+    public String toString() {
+        return "ActiveDirectoryRawEvent{" +
+                "isUserAdmin=" + isUserAdmin +
+                ", objectId='" + objectId + '\'' +
+                '}';
+    }
 }
 

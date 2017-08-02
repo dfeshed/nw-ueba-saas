@@ -1,7 +1,7 @@
 package presidio.ade.domain.record.enriched;
 
 
-import fortscale.common.general.EventResult;
+import fortscale.domain.core.EventResult;
 
 public class AdeEnrichedAuthenticationContext {
     private String userId;

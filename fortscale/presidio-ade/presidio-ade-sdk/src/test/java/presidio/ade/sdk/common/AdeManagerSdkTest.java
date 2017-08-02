@@ -17,7 +17,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import presidio.ade.domain.store.enriched.EnrichedDataAdeToCollectionNameTranslator;
-import presidio.ade.domain.store.enriched.EnrichedRecordsMetadata;
+import fortscale.domain.core.EnrichedRecordsMetadata;
 import presidio.ade.sdk.data_generator.MockedEnrichedRecord;
 import presidio.ade.sdk.data_generator.MockedEnrichedRecordGenerator;
 import presidio.ade.sdk.data_generator.MockedEnrichedRecordGeneratorConfig;
