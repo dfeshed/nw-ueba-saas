@@ -18,9 +18,9 @@ public class ScoredEnrichedDataStoreMongoImpl implements ScoredEnrichedDataStore
     private static final Logger logger = Logger.getLogger(ScoredEnrichedDataStoreMongoImpl.class);
 
     private final MongoTemplate mongoTemplate;
-    private final ScoredDataAdeToCollectionNameTranslator translator;
+    private final AdeScoredEnrichedRecordToCollectionNameTranslator translator;
 
-    public ScoredEnrichedDataStoreMongoImpl(MongoTemplate mongoTemplate, ScoredDataAdeToCollectionNameTranslator translator) {
+    public ScoredEnrichedDataStoreMongoImpl(MongoTemplate mongoTemplate, AdeScoredEnrichedRecordToCollectionNameTranslator translator) {
         this.mongoTemplate = mongoTemplate;
         this.translator = translator;
     }

@@ -17,7 +17,6 @@ public class AggregatedFeatureEventConfTest {
 	private static final String ANOMALY_TYPE = "anomalyType";
 	private  static final String EVIDENCES_FILTER_STRATEGY = "evidencesFilterStrategy";
 	private static final String FUNCTION_TYPE = "functionType1";
-	private static final String FEATURE_RETENTION_STRATEGY_DAILY = "feature_retention_strategy_daily";
 
 	@Test
 	public void configuration_should_be_deserialized_from_event_json() throws Exception {
@@ -132,8 +131,7 @@ public class AggregatedFeatureEventConfTest {
 				EVIDENCES_FILTER_STRATEGY,
 				aggregatedFeatureNamesMap,
 				aggregatedFeatureEventFunction,
-				false,
-				FEATURE_RETENTION_STRATEGY_DAILY);
+				false);
 		AggregatedFeatureEventConf actual = (new ObjectMapper()).readValue(jsonAsString, AggregatedFeatureEventConf.class);
 
 		Assert.assertNotNull(actual);
@@ -147,7 +145,6 @@ public class AggregatedFeatureEventConfTest {
 		Assert.assertEquals(allAggregatedFeatureNames, actual.getAllAggregatedFeatureNames());
 		Assert.assertEquals(aggregatedFeatureEventFunction, actual.getAggregatedFeatureEventFunction());
 		Assert.assertEquals(false, actual.getFireEventsAlsoForEmptyBucketTicks());
-		Assert.assertEquals(FEATURE_RETENTION_STRATEGY_DAILY, actual.getRetentionStrategyName());
 
 	}
 
@@ -199,8 +196,7 @@ public class AggregatedFeatureEventConfTest {
 				EVIDENCES_FILTER_STRATEGY,
 				aggregatedFeatureNamesMap,
 				aggregatedFeatureEventFunction,
-				true,
-				null);
+				true);
 		AggregatedFeatureEventConf actual = (new ObjectMapper()).readValue(jsonAsString, AggregatedFeatureEventConf.class);
 
 		Assert.assertNotNull(actual);
@@ -410,8 +406,7 @@ public class AggregatedFeatureEventConfTest {
 			String evidencesFilterStrategy,
 			Map<String, List<String>> aggregatedFeatureNamesMap,
 			JSONObject aggregatedFeatureEventFunction,
-			boolean fireEventsAlsoForEmptyBucketTicks,
-			String retentionStrategyName) {
+			boolean fireEventsAlsoForEmptyBucketTicks) {
 
 		JSONObject result = new JSONObject();
 		result.put("name", name);
@@ -427,10 +422,6 @@ public class AggregatedFeatureEventConfTest {
 
 		if(fireEventsAlsoForEmptyBucketTicks) {
 			result.put("fireEventsAlsoForEmptyBucketTicks", fireEventsAlsoForEmptyBucketTicks);
-		}
-
-		if(retentionStrategyName!=null) {
-			result.put("retentionStrategyName", retentionStrategyName);
 		}
 		return result.toJSONString();
 	}
@@ -448,7 +439,7 @@ public class AggregatedFeatureEventConfTest {
 			JSONObject aggregatedFeatureEventFunction) {
 
 		return createAggregatedFeatureEvent2(name, type, bucketConfName, numberOfBuckets, bucketsLeap,
-				waitAfterBucketCloseSeconds, anomalyType, evidencesFilterStrategy, aggregatedFeatureNamesMap, aggregatedFeatureEventFunction, false, null);
+				waitAfterBucketCloseSeconds, anomalyType, evidencesFilterStrategy, aggregatedFeatureNamesMap, aggregatedFeatureEventFunction, false);
 	}
 
 	private Map<String, List<String>> getSimpleAggregatedFeatureNamesMap() {

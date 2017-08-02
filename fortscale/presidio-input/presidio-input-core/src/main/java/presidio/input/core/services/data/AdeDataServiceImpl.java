@@ -1,18 +1,16 @@
 package presidio.input.core.services.data;
 
 import fortscale.common.general.Schema;
-import fortscale.domain.core.EnrichedRecordsMetadata;
 import fortscale.utils.logging.Logger;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.ade.domain.store.AdeDataStoreCleanupParams;
+import presidio.ade.domain.store.enriched.EnrichedRecordsMetadata;
 import presidio.ade.sdk.executions.common.ADEManagerSDK;
 
 import java.time.Instant;
 import java.util.List;
 
-
 public class AdeDataServiceImpl implements AdeDataService {
-
     private static final Logger logger = Logger.getLogger(AdeDataServiceImpl.class);
 
     private final ADEManagerSDK adeManagerSDK;

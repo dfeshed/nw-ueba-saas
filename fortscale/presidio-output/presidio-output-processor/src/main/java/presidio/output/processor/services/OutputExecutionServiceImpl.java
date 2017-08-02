@@ -6,7 +6,7 @@ import fortscale.utils.pagination.PageIterator;
 import fortscale.utils.time.TimeRange;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import presidio.ade.sdk.executions.common.ADEManagerSDK;
+import presidio.ade.sdk.common.AdeManagerSdk;
 import presidio.output.processor.services.alert.AlertService;
 
 import java.time.Instant;
@@ -22,11 +22,11 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
 
     public static int SMART_SCORE_THRESHOLD = 50;
 
-    private final ADEManagerSDK adeManagerSDK;
+    private final AdeManagerSdk adeManagerSdk;
     private final AlertService alertService;
 
-    public OutputExecutionServiceImpl(ADEManagerSDK adeManagerSDK, AlertService alertService) {
-        this.adeManagerSDK = adeManagerSDK;
+    public OutputExecutionServiceImpl(AdeManagerSdk adeManagerSdk, AlertService alertService) {
+        this.adeManagerSdk = adeManagerSdk;
         this.alertService = alertService;
     }
 
@@ -46,7 +46,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
 
         //1. Get SMARTs from ADE
         //TODO- change page size and score threshold (configurable)
-        PageIterator<EntityEvent> smarts = adeManagerSDK.findSmarts(new TimeRange(startDate, endDate), 100, SMART_SCORE_THRESHOLD);
+        PageIterator<EntityEvent> smarts = adeManagerSdk.getSmartRecords(new TimeRange(startDate, endDate), 100, SMART_SCORE_THRESHOLD);
         alertService.generateAlerts(smarts);
     }
 

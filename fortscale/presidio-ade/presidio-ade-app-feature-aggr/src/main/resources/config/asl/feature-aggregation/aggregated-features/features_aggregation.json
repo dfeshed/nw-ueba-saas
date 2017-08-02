@@ -16,8 +16,7 @@
       "aggregatedFeatureEventFunction": {
         "type": "aggr_feature_distinct_values_counter_func",
         "includeValues": false
-      },
-      "retentionStrategyName": "daily_feature_retention_strategy"
+      }
     },
     {
       "name": "sum_of_moved_files_to_removable_device_size_normalized_username_daily_dlpfile",
@@ -34,8 +33,7 @@
       },
       "aggregatedFeatureEventFunction": {
         "type": "aggr_feature_sum_func"
-      },
-      "retentionStrategyName": "daily_feature_retention_strategy"
+      }
     },
     {
       "name": "number_of_moved_files_to_removable_device_normalized_username_daily_dlpfile",
@@ -52,8 +50,7 @@
       },
       "aggregatedFeatureEventFunction": {
         "type": "aggr_feature_sum_func"
-      },
-      "retentionStrategyName": "daily_feature_retention_strategy"
+      }
     },
     {
       "name": "sum_of_copied_files_to_removable_device_size_normalized_username_daily_dlpfile",
@@ -70,8 +67,7 @@
       },
       "aggregatedFeatureEventFunction": {
         "type": "aggr_feature_sum_func"
-      },
-      "retentionStrategyName": "daily_feature_retention_strategy"
+      }
     },
     {
       "name": "number_of_copied_files_to_removable_device_normalized_username_daily_dlpfile",
@@ -88,8 +84,7 @@
       },
       "aggregatedFeatureEventFunction": {
         "type": "aggr_feature_sum_func"
-      },
-      "retentionStrategyName": "daily_feature_retention_strategy"
+      }
     },
     {
       "name": "sum_of_moved_files_from_remote_device_size_normalized_username_daily_dlpfile",
@@ -106,8 +101,7 @@
       },
       "aggregatedFeatureEventFunction": {
         "type": "aggr_feature_sum_func"
-      },
-      "retentionStrategyName": "daily_feature_retention_strategy"
+      }
     },
     {
       "name": "number_of_moved_files_from_remote_device_normalized_username_daily_dlpfile",
@@ -124,8 +118,7 @@
       },
       "aggregatedFeatureEventFunction": {
         "type": "aggr_feature_sum_func"
-      },
-      "retentionStrategyName": "daily_feature_retention_strategy"
+      }
     },
     {
       "name": "sum_of_copied_files_from_remote_device_size_normalized_username_daily_dlpfile",
@@ -142,8 +135,7 @@
       },
       "aggregatedFeatureEventFunction": {
         "type": "aggr_feature_sum_func"
-      },
-      "retentionStrategyName": "daily_feature_retention_strategy"
+      }
     },
     {
       "name": "number_of_copied_files_from_remote_device_normalized_username_daily_dlpfile",
@@ -160,8 +152,7 @@
       },
       "aggregatedFeatureEventFunction": {
         "type": "aggr_feature_sum_func"
-      },
-      "retentionStrategyName": "daily_feature_retention_strategy"
+      }
     },
     {
       "name": "number_of_recycled_or_deleted_files_normalized_username_daily_dlpfile",
@@ -178,8 +169,7 @@
       },
       "aggregatedFeatureEventFunction": {
         "type": "aggr_feature_sum_func"
-      },
-      "retentionStrategyName": "daily_feature_retention_strategy"
+      }
     },
     {
       "name": "number_of_opened_files_normalized_username_daily_dlpfile",
@@ -196,8 +186,7 @@
       },
       "aggregatedFeatureEventFunction": {
         "type": "aggr_feature_sum_func"
-      },
-      "retentionStrategyName": "daily_feature_retention_strategy"
+      }
     },
     {
       "name": "number_of_distinct_src_network_folder_paths_normalized_username_hourly_dlpfile",
@@ -215,8 +204,7 @@
       "aggregatedFeatureEventFunction": {
         "type": "aggr_feature_distinct_values_counter_func",
         "includeValues": false
-      },
-      "retentionStrategyName": "hourly_feature_retention_strategy"
+      }
     },
     {
       "name": "sum_of_moved_files_to_removable_device_size_normalized_username_hourly_dlpfile",
@@ -233,8 +221,7 @@
       },
       "aggregatedFeatureEventFunction": {
         "type": "aggr_feature_sum_func"
-      },
-      "retentionStrategyName": "hourly_feature_retention_strategy"
+      }
     },
     {
       "name": "number_of_moved_files_to_removable_device_normalized_username_hourly_dlpfile",
@@ -251,8 +238,7 @@
       },
       "aggregatedFeatureEventFunction": {
         "type": "aggr_feature_sum_func"
-      },
-      "retentionStrategyName": "hourly_feature_retention_strategy"
+      }
     },
     {
       "name": "sum_of_copied_files_to_removable_device_size_normalized_username_hourly_dlpfile",
@@ -269,8 +255,7 @@
       },
       "aggregatedFeatureEventFunction": {
         "type": "aggr_feature_sum_func"
-      },
-      "retentionStrategyName": "hourly_feature_retention_strategy"
+      }
     },
     {
       "name": "number_of_copied_files_to_removable_device_normalized_username_hourly_dlpfile",
@@ -287,8 +272,7 @@
       },
       "aggregatedFeatureEventFunction": {
         "type": "aggr_feature_sum_func"
-      },
-      "retentionStrategyName": "hourly_feature_retention_strategy"
+      }
     },
     {
       "name": "sum_of_moved_files_from_remote_device_size_normalized_username_hourly_dlpfile",
@@ -305,8 +289,7 @@
       },
       "aggregatedFeatureEventFunction": {
         "type": "aggr_feature_sum_func"
-      },
-      "retentionStrategyName": "hourly_feature_retention_strategy"
+      }
     },
     {
       "name": "number_of_moved_files_from_remote_device_normalized_username_hourly_dlpfile",
@@ -323,8 +306,7 @@
       },
       "aggregatedFeatureEventFunction": {
         "type": "aggr_feature_sum_func"
-      },
-      "retentionStrategyName": "hourly_feature_retention_strategy"
+      }
     },
     {
       "name": "sum_of_copied_files_from_remote_device_size_normalized_username_hourly_dlpfile",
@@ -341,8 +323,7 @@
       },
       "aggregatedFeatureEventFunction": {
         "type": "aggr_feature_sum_func"
-      },
-      "retentionStrategyName": "hourly_feature_retention_strategy"
+      }
     },
     {
       "name": "number_of_copied_files_from_remote_device_normalized_username_hourly_dlpfile",
@@ -359,8 +340,7 @@
       },
       "aggregatedFeatureEventFunction": {
         "type": "aggr_feature_sum_func"
-      },
-      "retentionStrategyName": "hourly_feature_retention_strategy"
+      }
     },
     {
       "name": "number_of_recycled_or_deleted_files_normalized_username_hourly_dlpfile",
@@ -377,8 +357,7 @@
       },
       "aggregatedFeatureEventFunction": {
         "type": "aggr_feature_sum_func"
-      },
-      "retentionStrategyName": "hourly_feature_retention_strategy"
+      }
     },
     {
       "name": "number_of_opened_files_normalized_username_hourly_dlpfile",
@@ -395,8 +374,7 @@
       },
       "aggregatedFeatureEventFunction": {
         "type": "aggr_feature_sum_func"
-      },
-      "retentionStrategyName": "hourly_feature_retention_strategy"
+      }
     }
   ]
 }

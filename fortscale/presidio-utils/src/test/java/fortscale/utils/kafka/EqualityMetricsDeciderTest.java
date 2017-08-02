@@ -1,6 +1,7 @@
 package fortscale.utils.kafka;
 
 import org.json.JSONObject;
+import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
@@ -8,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-
+@Ignore
 public class EqualityMetricsDeciderTest {
 
 

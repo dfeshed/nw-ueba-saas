@@ -61,7 +61,7 @@ public class BucketConfigurationServiceTest {
     public void adeRecordInitialize() {
         adeRecord = new AdeScoredDlpFileRecord(Instant.now(), "date_time","dlpfile", 80.0, new ArrayList<>());
         EnrichedDlpFileRecord enrichedDlpFileRecord = new EnrichedDlpFileRecord(Instant.now());
-        enrichedDlpFileRecord.setNormalizedUsername("normalized_username_test1");
+        enrichedDlpFileRecord.setUserId("normalized_username_test1");
         AdeEnrichedDlpFileContext adeEnrichedDlpFileContext = new AdeEnrichedDlpFileContext(enrichedDlpFileRecord);
         adeRecord.setContext(adeEnrichedDlpFileContext);
     }
@@ -70,7 +70,7 @@ public class BucketConfigurationServiceTest {
     public void testGetRelatedBucketConfs() {
         AdeRecordReader reader = (AdeRecordReader) recordReaderFactoryService.getRecordReader(adeRecord);
         List<String> contextFieldNames = new ArrayList<>();
-        contextFieldNames.add("context.normalizedUsername");
+        contextFieldNames.add("context.userId");
         List<FeatureBucketConf> bc = bch.getRelatedBucketConfs(reader, "fixed_duration_hourly", contextFieldNames);
         Assert.assertEquals(1, bc.size());
         FeatureBucketConf fbc = bc.get(0);
