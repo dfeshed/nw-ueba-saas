@@ -4,7 +4,7 @@
       "name": "date_time_unix_histogram_normalized_username_dlpfile_daily",
       "expireAfterSeconds": 31536000,
       "contextFieldNames": [
-        "normalizedUsername"
+        "userId"
       ],
       "adeEventTypes": [
         "dlpfile"
@@ -28,7 +28,7 @@
       "name": "executing_application_histogram_normalized_username_dlpfile_daily",
       "expireAfterSeconds": 31536000,
       "contextFieldNames": [
-        "normalizedUsername"
+        "userId"
       ],
       "adeEventTypes": [
         "dlpfile"
@@ -52,7 +52,7 @@
       "name": "src_network_folder_paths_histogram_normalized_username_dlpfile_daily",
       "expireAfterSeconds": 31536000,
       "contextFieldNames": [
-        "normalizedUsername"
+        "userId"
       ],
       "adeEventTypes": [
         "dlpfile"
@@ -79,7 +79,7 @@
       "name": "sum_of_moved_files_to_removable_device_size_normalized_username_dlpfile_daily",
       "expireAfterSeconds": 31536000,
       "contextFieldNames": [
-        "normalizedUsername"
+        "userId"
       ],
       "adeEventTypes": [
         "dlpfile"
@@ -106,7 +106,7 @@
       "name": "moved_files_to_removable_device_counter_normalized_username_dlpfile_daily",
       "expireAfterSeconds": 31536000,
       "contextFieldNames": [
-        "normalizedUsername"
+        "userId"
       ],
       "adeEventTypes": [
         "dlpfile"
@@ -129,7 +129,7 @@
       "name": "sum_of_copied_files_to_removable_device_size_normalized_username_dlpfile_daily",
       "expireAfterSeconds": 31536000,
       "contextFieldNames": [
-        "normalizedUsername"
+        "userId"
       ],
       "adeEventTypes": [
         "dlpfile"
@@ -156,7 +156,7 @@
       "name": "copied_files_to_removable_device_counter_normalized_username_dlpfile_daily",
       "expireAfterSeconds": 31536000,
       "contextFieldNames": [
-        "normalizedUsername"
+        "userId"
       ],
       "adeEventTypes": [
         "dlpfile"
@@ -179,7 +179,7 @@
       "name": "sum_of_moved_files_from_remote_device_size_normalized_username_dlpfile_daily",
       "expireAfterSeconds": 31536000,
       "contextFieldNames": [
-        "normalizedUsername"
+        "userId"
       ],
       "adeEventTypes": [
         "dlpfile"
@@ -206,7 +206,7 @@
       "name": "moved_files_from_remote_device_counter_normalized_username_dlpfile_daily",
       "expireAfterSeconds": 31536000,
       "contextFieldNames": [
-        "normalizedUsername"
+        "userId"
       ],
       "adeEventTypes": [
         "dlpfile"
@@ -229,7 +229,7 @@
       "name": "sum_of_copied_files_from_remote_device_size_normalized_username_dlpfile_daily",
       "expireAfterSeconds": 31536000,
       "contextFieldNames": [
-        "normalizedUsername"
+        "userId"
       ],
       "adeEventTypes": [
         "dlpfile"
@@ -256,7 +256,7 @@
       "name": "copied_files_from_remote_device_counter_normalized_username_dlpfile_daily",
       "expireAfterSeconds": 31536000,
       "contextFieldNames": [
-        "normalizedUsername"
+        "userId"
       ],
       "adeEventTypes": [
         "dlpfile"
@@ -279,7 +279,7 @@
       "name": "recycled_or_deleted_files_counter_username_dlpfile_daily",
       "expireAfterSeconds": 31536000,
       "contextFieldNames": [
-        "normalizedUsername"
+        "userId"
       ],
       "adeEventTypes": [
         "dlpfile"
@@ -302,7 +302,7 @@
       "name": "opened_files_counter_normalized_username_dlpfile_daily",
       "expireAfterSeconds": 31536000,
       "contextFieldNames": [
-        "normalizedUsername"
+        "userId"
       ],
       "adeEventTypes": [
         "dlpfile"
@@ -325,7 +325,7 @@
       "name": "events_counter_normalized_username_dlpfile_daily",
       "expireAfterSeconds": 31536000,
       "contextFieldNames": [
-        "normalizedUsername"
+        "userId"
       ],
       "adeEventTypes": [
         "dlpfile"
@@ -345,7 +345,7 @@
       "name": "classified_files_counter_dlpfile_daily",
       "expireAfterSeconds": 31536000,
       "contextFieldNames": [
-        "normalizedUsername"
+        "userId"
       ],
       "adeEventTypes": [
         "dlpfile"
@@ -368,7 +368,7 @@
       "name": "src_network_folder_paths_histogram_normalized_username_dlpfile_hourly",
       "expireAfterSeconds": 31536000,
       "contextFieldNames": [
-        "normalizedUsername"
+        "userId"
       ],
       "adeEventTypes": [
         "dlpfile"
@@ -395,7 +395,7 @@
       "name": "sum_of_moved_files_to_removable_device_size_normalized_username_dlpfile_hourly",
       "expireAfterSeconds": 31536000,
       "contextFieldNames": [
-        "normalizedUsername"
+        "userId"
       ],
       "adeEventTypes": [
         "dlpfile"
@@ -422,7 +422,7 @@
       "name": "moved_files_to_removable_device_counter_normalized_username_dlpfile_hourly",
       "expireAfterSeconds": 31536000,
       "contextFieldNames": [
-        "normalizedUsername"
+        "userId"
       ],
       "adeEventTypes": [
         "dlpfile"
@@ -445,7 +445,7 @@
       "name": "sum_of_copied_files_to_removable_device_size_normalized_username_dlpfile_hourly",
       "expireAfterSeconds": 31536000,
       "contextFieldNames": [
-        "normalizedUsername"
+        "userId"
       ],
       "adeEventTypes": [
         "dlpfile"
@@ -472,7 +472,7 @@
       "name": "copied_files_to_removable_device_counter_normalized_username_dlpfile_hourly",
       "expireAfterSeconds": 31536000,
       "contextFieldNames": [
-        "normalizedUsername"
+        "userId"
       ],
       "adeEventTypes": [
         "dlpfile"
@@ -495,7 +495,7 @@
       "name": "sum_of_moved_files_from_remote_device_size_normalized_username_dlpfile_hourly",
       "expireAfterSeconds": 31536000,
       "contextFieldNames": [
-        "normalizedUsername"
+        "userId"
       ],
       "adeEventTypes": [
         "dlpfile"
@@ -522,7 +522,7 @@
       "name": "moved_files_from_remote_device_counter_normalized_username_dlpfile_hourly",
       "expireAfterSeconds": 31536000,
       "contextFieldNames": [
-        "normalizedUsername"
+        "userId"
       ],
       "adeEventTypes": [
         "dlpfile"
@@ -545,7 +545,7 @@
       "name": "sum_of_copied_files_from_remote_device_size_normalized_username_dlpfile_hourly",
       "expireAfterSeconds": 31536000,
       "contextFieldNames": [
-        "normalizedUsername"
+        "userId"
       ],
       "adeEventTypes": [
         "dlpfile"
@@ -572,7 +572,7 @@
       "name": "copied_files_from_remote_device_counter_normalized_username_dlpfile_hourly",
       "expireAfterSeconds": 31536000,
       "contextFieldNames": [
-        "normalizedUsername"
+        "userId"
       ],
       "adeEventTypes": [
         "dlpfile"
@@ -595,7 +595,7 @@
       "name": "recycled_or_deleted_files_counter_username_dlpfile_hourly",
       "expireAfterSeconds": 31536000,
       "contextFieldNames": [
-        "normalizedUsername"
+        "userId"
       ],
       "adeEventTypes": [
         "dlpfile"
@@ -618,7 +618,7 @@
       "name": "opened_files_counter_normalized_username_dlpfile_hourly",
       "expireAfterSeconds": 31536000,
       "contextFieldNames": [
-        "normalizedUsername"
+        "userId"
       ],
       "adeEventTypes": [
         "dlpfile"

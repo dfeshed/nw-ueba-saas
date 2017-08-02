@@ -19,8 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.junit4.SpringRunner;
 import presidio.ade.domain.record.AdeRecord;
 import presidio.ade.domain.record.AdeRecordReaderFactory;
@@ -51,8 +49,8 @@ public class FeatureBucketsServiceTest {
     private static final String STRATEGY_EVENT_CONTEXT_ID = "fixed_duration_hourly";
     private static final String STRATEGY_NAME = "fixed_duration_hourly";
 
-    private static final String BUCKET_ID1 = "fixed_duration_hourly_1435737600###context.normalizedUsername###normalized_username_test1###normalized_username_dlpfile_hourly";
-    private static final String BUCKET_ID2 = "fixed_duration_hourly_1435737600###context.normalizedUsername###normalized_username_test2###normalized_username_dlpfile_hourly";
+    private static final String BUCKET_ID1 = "fixed_duration_hourly_1435737600###context.userId###normalized_username_test1###normalized_username_dlpfile_hourly";
+    private static final String BUCKET_ID2 = "fixed_duration_hourly_1435737600###context.userId###normalized_username_test2###normalized_username_dlpfile_hourly";
 
     @Before
     public void initialize() {
@@ -96,7 +94,7 @@ public class FeatureBucketsServiceTest {
      */
     public void contextFieldNamesInitialize() {
         contextFieldNames = new ArrayList<>();
-        contextFieldNames.add("context.normalizedUsername");
+        contextFieldNames.add("context.userId");
     }
 
     /**
@@ -107,12 +105,12 @@ public class FeatureBucketsServiceTest {
         AdeScoredDlpFileRecord adeRecord1 = new AdeScoredDlpFileRecord(Instant.now(), "date_time","dlpfile", 80.0, new ArrayList<>());
 
         EnrichedDlpFileRecord enrichedDlpFileRecord = new EnrichedDlpFileRecord(Instant.now());
-        enrichedDlpFileRecord.setNormalizedUsername("normalized_username_test1");
+        enrichedDlpFileRecord.setUserId("normalized_username_test1");
         AdeEnrichedDlpFileContext adeEnrichedDlpFileContext = new AdeEnrichedDlpFileContext(enrichedDlpFileRecord);
         adeRecord1.setContext(adeEnrichedDlpFileContext);
 
         AdeScoredDlpFileRecord adeRecord2 = new AdeScoredDlpFileRecord(Instant.now(), "date_time","dlpfile", 10.0, new ArrayList<>());
-        enrichedDlpFileRecord.setNormalizedUsername("normalized_username_test2");
+        enrichedDlpFileRecord.setUserId("normalized_username_test2");
         adeEnrichedDlpFileContext = new AdeEnrichedDlpFileContext(enrichedDlpFileRecord);
         adeRecord2.setContext(adeEnrichedDlpFileContext);
 

@@ -16,8 +16,8 @@ import java.time.Instant;
 @Document
 @AdeRecordMetadata(adeEventType = DlpFileRecord.DLP_FILE_STR)
 public class EnrichedDlpFileRecord extends EnrichedRecord {
-    public static final String NORMALIZED_USERNAME_FIELD = "normalizedUsername";
-    public static final String NORMALIZED_SRC_MACHINE_FIELD = "normalizedSrcMachine";
+    public static final String USER_ID_FIELD = "userId";
+    public static final String SRC_MACHINE_ID_FIELD = "srcMachineId";
     public static final String SOURCE_PATH_FIELD = "sourcePath";
     public static final String SOURCE_FILE_NAME_FIELD = "sourceFileName";
     public static final String SOURCE_DRIVE_TYPE_FIELD = "sourceDriveType";
@@ -31,10 +31,10 @@ public class EnrichedDlpFileRecord extends EnrichedRecord {
     public static final String EXECUTING_APPLICATION_FIELD = "executingApplication";
 
     @Indexed
-    @Field(NORMALIZED_USERNAME_FIELD)
-    private String normalizedUsername;
-    @Field(NORMALIZED_SRC_MACHINE_FIELD)
-    private String normalizedSrcMachine;
+    @Field(USER_ID_FIELD)
+    private String userId;
+    @Field(SRC_MACHINE_ID_FIELD)
+    private String srcMachineId;
     @Field(SOURCE_PATH_FIELD)
     private String sourcePath;
     @Field(SOURCE_FILE_NAME_FIELD)
@@ -79,20 +79,20 @@ public class EnrichedDlpFileRecord extends EnrichedRecord {
         return getAdeEventType();
     }
 
-    public String getNormalizedUsername() {
-        return normalizedUsername;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setNormalizedUsername(String normalizedUsername) {
-        this.normalizedUsername = normalizedUsername;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
-    public String getNormalizedSrcMachine() {
-        return normalizedSrcMachine;
+    public String getSrcMachineId() {
+        return srcMachineId;
     }
 
-    public void setNormalizedSrcMachine(String normalizedSrcMachine) {
-        this.normalizedSrcMachine = normalizedSrcMachine;
+    public void setSrcMachineId(String srcMachineId) {
+        this.srcMachineId = srcMachineId;
     }
 
     public String getSourcePath() {

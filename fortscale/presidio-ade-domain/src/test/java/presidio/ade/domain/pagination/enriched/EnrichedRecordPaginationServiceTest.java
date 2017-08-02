@@ -24,7 +24,6 @@ import java.util.*;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
-import static presidio.ade.domain.record.enriched.EnrichedDlpFileRecord.NORMALIZED_USERNAME_FIELD;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = AdeEventTypeToAdeEnrichedRecordClassResolverConfig.class)
@@ -272,7 +271,7 @@ public class EnrichedRecordPaginationServiceTest {
 
         //create pagination service
         EnrichedRecordPaginationService paginationService =
-                new EnrichedRecordPaginationService(enrichedDataStoreImplMongo, PAGE_SIZE, MAX_GROUP_SIZE, NORMALIZED_USERNAME_FIELD);
+                new EnrichedRecordPaginationService(enrichedDataStoreImplMongo, PAGE_SIZE, MAX_GROUP_SIZE, EnrichedDlpFileRecord.USER_ID_FIELD);
 
         TimeRange timeRange = new TimeRange(NOW, NOW);
 
@@ -308,7 +307,7 @@ public class EnrichedRecordPaginationServiceTest {
                 amountOfPages++;
                 for (EnrichedDlpFileRecord enrichedDlpFileRecord : list) {
                     enrichedDlpFileRecordList.add(enrichedDlpFileRecord);
-                    String name = enrichedDlpFileRecord.getNormalizedUsername();
+                    String name = enrichedDlpFileRecord.getUserId();
                     contextIdList.add(name);
                 }
             }
