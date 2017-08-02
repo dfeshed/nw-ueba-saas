@@ -1,5 +1,6 @@
 package fortscale.domain.core;
 
+import fortscale.common.general.EventResult;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.mongodb.core.mapping.Field;
 

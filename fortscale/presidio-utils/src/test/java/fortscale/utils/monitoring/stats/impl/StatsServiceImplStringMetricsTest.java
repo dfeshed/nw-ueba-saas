@@ -8,6 +8,7 @@ import fortscale.utils.monitoring.stats.annotations.StatsStringMetricParams;
 import fortscale.utils.monitoring.stats.engine.StatsEngineMetricsGroupData;
 import fortscale.utils.monitoring.stats.impl.engine.testing.StatsTestingEngine;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static fortscale.utils.monitoring.stats.impl.StatsTestingUtils.engineGroupDataGetStringValueByName;
@@ -15,6 +16,7 @@ import static fortscale.utils.monitoring.stats.impl.StatsTestingUtils.engineGrou
 /**
  * Created by gaashh on 5/30/16.
  */
+@Ignore
 public class StatsServiceImplStringMetricsTest {
 
     @StatsMetricsGroupParams(name = "STRING-METRICS")

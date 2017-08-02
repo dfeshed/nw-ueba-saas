@@ -4,8 +4,8 @@ package presidio.ade.domain.record.enriched;
  * Created by YaronDL on 6/14/2017.
  */
 public class AdeEnrichedDlpFileContext {
-    private String normalizedUsername;
-    private String normalizedSrcMachine;
+    private String userId;
+    private String srcMachineId;
     private String sourcePath;
     private String sourceFileName;
     private String sourceDriveType;
@@ -20,8 +20,8 @@ public class AdeEnrichedDlpFileContext {
     private String executingApplication;
 
     public AdeEnrichedDlpFileContext(EnrichedDlpFileRecord enrichedDlpFileRecord) {
-        this.normalizedUsername = enrichedDlpFileRecord.getNormalizedUsername();
-        this.normalizedSrcMachine = enrichedDlpFileRecord.getNormalizedSrcMachine();
+        this.userId = enrichedDlpFileRecord.getUserId();
+        this.srcMachineId = enrichedDlpFileRecord.getSrcMachineId();
         this.sourcePath = enrichedDlpFileRecord.getSourcePath();
         this.sourceFileName = enrichedDlpFileRecord.getSourceFileName();
         this.sourceDriveType = enrichedDlpFileRecord.getSourceDriveType();
@@ -36,20 +36,20 @@ public class AdeEnrichedDlpFileContext {
         this.executingApplication = enrichedDlpFileRecord.getExecutingApplication();
     }
 
-    public String getNormalizedUsername() {
-        return normalizedUsername;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setNormalizedUsername(String normalizedUsername) {
-        this.normalizedUsername = normalizedUsername;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
-    public String getNormalizedSrcMachine() {
-        return normalizedSrcMachine;
+    public String getSrcMachineId() {
+        return srcMachineId;
     }
 
-    public void setNormalizedSrcMachine(String normalizedSrcMachine) {
-        this.normalizedSrcMachine = normalizedSrcMachine;
+    public void setSrcMachineId(String srcMachineId) {
+        this.srcMachineId = srcMachineId;
     }
 
     public String getSourcePath() {

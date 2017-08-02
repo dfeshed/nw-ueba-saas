@@ -14,3 +14,4 @@ fortscale/fortscale-streaming/log/
 fortscale/fortscale-collection/ipConflicts.log
 *.pyc
 
+fortscale/presidio-adapter/spring-shell\.log

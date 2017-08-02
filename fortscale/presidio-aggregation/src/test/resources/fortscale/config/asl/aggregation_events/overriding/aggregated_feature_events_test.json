@@ -23,8 +23,7 @@
           "param2": "valueOfParam2",
           "param3": "valueOfParam3"
         }
-      },
-      "retentionStrategyName": "hourly_feature_retention_strategy"
+      }
     },
     {
       "name": "name2",
@@ -49,8 +48,7 @@
           "param2": "valueOfParam2",
           "param3": "valueOfParam3"
         }
-      },
-      "retentionStrategyName": "daily_feature_retention_strategy"
+      }
     }
   ]
 }
