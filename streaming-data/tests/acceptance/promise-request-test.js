@@ -112,6 +112,7 @@ test('when error code is returned, reject is called', function(assert) {
 });
 
 test('when applyStreamParams set to true, stream properties should be added', function(assert) {
+  const done = assert.async();
   assert.expect(1);
   visit('/');
 
@@ -127,8 +128,10 @@ test('when applyStreamParams set to true, stream properties should be added', fu
       }
     }).then(function(response) {
       assert.ok(response.request.stream && response.request.stream.limit, 'returned request should contain stream and stream.limit');
+      done();
     }).catch(function(/* response */) {
       assert.ok(false, 'Socket response should not error out');
+      done();
     });
   });
 });
