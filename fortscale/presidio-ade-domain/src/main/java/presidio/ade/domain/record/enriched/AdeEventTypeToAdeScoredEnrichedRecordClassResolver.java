@@ -1,4 +1,4 @@
-package presidio.ade.domain.record.scored.enriched_scored;
+package presidio.ade.domain.record.enriched;
 
 import presidio.ade.domain.record.util.AdeEventTypeToAdeRecordClassResolver;
 

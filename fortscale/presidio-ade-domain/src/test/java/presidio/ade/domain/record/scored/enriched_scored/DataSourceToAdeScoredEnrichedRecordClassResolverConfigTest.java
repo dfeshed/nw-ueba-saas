@@ -11,6 +11,10 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import presidio.ade.domain.record.enriched.AdeEventTypeToAdeScoredEnrichedRecordClassResolver;
+import presidio.ade.domain.record.enriched.AdeEventTypeToAdeScoredEnrichedRecordClassResolverConfig;
+import presidio.ade.domain.record.enriched.AdeScoredEnrichedRecord;
+import presidio.ade.domain.record.enriched.dlpfile.AdeScoredDlpFileRecord;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = AdeEventTypeToAdeScoredEnrichedRecordClassResolverConfig.class)

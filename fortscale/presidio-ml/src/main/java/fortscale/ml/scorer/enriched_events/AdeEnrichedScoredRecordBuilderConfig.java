@@ -4,8 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import presidio.ade.domain.record.scored.enriched_scored.AdeEventTypeToAdeScoredEnrichedRecordClassResolver;
-import presidio.ade.domain.record.scored.enriched_scored.AdeEventTypeToAdeScoredEnrichedRecordClassResolverConfig;
+import presidio.ade.domain.record.enriched.AdeEventTypeToAdeScoredEnrichedRecordClassResolver;
+import presidio.ade.domain.record.enriched.AdeEventTypeToAdeScoredEnrichedRecordClassResolverConfig;
 
 /**
  * Created by YaronDL on 6/18/2017.

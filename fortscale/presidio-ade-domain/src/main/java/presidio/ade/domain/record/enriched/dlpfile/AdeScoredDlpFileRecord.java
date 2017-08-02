@@ -1,12 +1,9 @@
-package presidio.ade.domain.record.scored.enriched_scored;
+package presidio.ade.domain.record.enriched.dlpfile;
 
 import fortscale.domain.feature.score.FeatureScore;
-import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
-import presidio.ade.domain.record.enriched.AdeEnrichedDlpFileContext;
-import presidio.ade.domain.record.enriched.DlpFileRecord;
-import presidio.ade.domain.record.enriched.EnrichedDlpFileRecord;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
+import presidio.ade.domain.record.enriched.AdeScoredEnrichedRecord;
 import presidio.ade.domain.record.util.AdeRecordMetadata;
 
 import java.time.Instant;
@@ -17,7 +14,7 @@ import java.util.List;
  * Created by YaronDL on 6/13/2017.
  */
 @Document
-@AdeRecordMetadata(adeEventType =DlpFileRecord.DLP_FILE_STR)
+@AdeRecordMetadata(adeEventType = AdeDlpFileRecord.DLP_FILE_STR)
 public class AdeScoredDlpFileRecord extends AdeScoredEnrichedRecord {
 
     AdeEnrichedDlpFileContext context;
@@ -42,7 +39,7 @@ public class AdeScoredDlpFileRecord extends AdeScoredEnrichedRecord {
 
     @Override
     public List<String> getDataSources() {
-        return Collections.singletonList(DlpFileRecord.DLP_FILE_STR);
+        return Collections.singletonList(AdeDlpFileRecord.DLP_FILE_STR);
     }
 
     @Override

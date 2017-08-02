@@ -14,8 +14,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
-import presidio.ade.domain.record.scored.enriched_scored.AdeScoredEnrichedRecord;
-import presidio.ade.domain.record.scored.enriched_scored.AdeEventTypeToAdeScoredEnrichedRecordClassResolver;
+import presidio.ade.domain.record.enriched.AdeScoredEnrichedRecord;
+import presidio.ade.domain.record.enriched.AdeEventTypeToAdeScoredEnrichedRecordClassResolver;
 
 import java.time.Instant;
 import java.util.ArrayList;

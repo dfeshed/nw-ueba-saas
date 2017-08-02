@@ -1,39 +1,83 @@
-package presidio.ade.domain.record.enriched;
+package presidio.ade.domain.record.enriched.dlpfile;
+
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
+import presidio.ade.domain.record.enriched.EnrichedRecord;
+import presidio.ade.domain.record.util.AdeRecordMetadata;
+
+import java.time.Instant;
 
 /**
- * Created by YaronDL on 6/14/2017.
+ * The enriched DLP file event POJO.
+ * <p>
+ * Created by Lior Govrin on 05/06/2017.
  */
-public class AdeEnrichedDlpFileContext {
+@Document
+@AdeRecordMetadata(adeEventType = AdeDlpFileRecord.DLP_FILE_STR)
+public class EnrichedDlpFileRecord extends EnrichedRecord {
+    public static final String USER_ID_FIELD = "userId";
+    public static final String SRC_MACHINE_ID_FIELD = "srcMachineId";
+    public static final String SOURCE_PATH_FIELD = "sourcePath";
+    public static final String SOURCE_FILE_NAME_FIELD = "sourceFileName";
+    public static final String SOURCE_DRIVE_TYPE_FIELD = "sourceDriveType";
+    public static final String DESTINATION_PATH_FIELD = "destinationPath";
+    public static final String DESTINATION_FILE_NAME_FIELD = "destinationFileName";
+    public static final String DESTINATION_DRIVE_TYPE_FIELD = "destinationDriveType";
+    public static final String FILE_SIZE_FIELD = "fileSize";
+    public static final String WAS_BLOCKED_FIELD = "wasBlocked";
+    public static final String WAS_CLASSIFIED_FIELD = "wasClassified";
+    public static final String MALWARE_SCAN_RESULT_FIELD = "malwareScanResult";
+    public static final String EXECUTING_APPLICATION_FIELD = "executingApplication";
+
+    @Indexed
+    @Field(USER_ID_FIELD)
     private String userId;
+    @Field(SRC_MACHINE_ID_FIELD)
     private String srcMachineId;
+    @Field(SOURCE_PATH_FIELD)
     private String sourcePath;
+    @Field(SOURCE_FILE_NAME_FIELD)
     private String sourceFileName;
+    @Field(SOURCE_DRIVE_TYPE_FIELD)
     private String sourceDriveType;
+    @Field(DESTINATION_PATH_FIELD)
     private String destinationPath;
+    @Field(DESTINATION_FILE_NAME_FIELD)
     private String destinationFileName;
+    @Field(DESTINATION_DRIVE_TYPE_FIELD)
     private String destinationDriveType;
+    @Field(FILE_SIZE_FIELD)
     private double fileSize;
-    private String operationType;
+    @Field(WAS_BLOCKED_FIELD)
     private boolean wasBlocked;
+    @Field(WAS_CLASSIFIED_FIELD)
     private boolean wasClassified;
+    @Field(MALWARE_SCAN_RESULT_FIELD)
     private String malwareScanResult;
+    @Field(EXECUTING_APPLICATION_FIELD)
     private String executingApplication;
 
-    public AdeEnrichedDlpFileContext(EnrichedDlpFileRecord enrichedDlpFileRecord) {
-        this.userId = enrichedDlpFileRecord.getUserId();
-        this.srcMachineId = enrichedDlpFileRecord.getSrcMachineId();
-        this.sourcePath = enrichedDlpFileRecord.getSourcePath();
-        this.sourceFileName = enrichedDlpFileRecord.getSourceFileName();
-        this.sourceDriveType = enrichedDlpFileRecord.getSourceDriveType();
-        this.destinationPath = enrichedDlpFileRecord.getDestinationPath();
-        this.destinationFileName = enrichedDlpFileRecord.getDestinationFileName();
-        this.destinationDriveType = enrichedDlpFileRecord.getDestinationDriveType();
-        this.fileSize = enrichedDlpFileRecord.getFileSize();
-        this.operationType = enrichedDlpFileRecord.getOperationType();
-        this.wasBlocked = enrichedDlpFileRecord.isWasBlocked();
-        this.wasClassified = enrichedDlpFileRecord.isWasClassified();
-        this.malwareScanResult = enrichedDlpFileRecord.getMalwareScanResult();
-        this.executingApplication = enrichedDlpFileRecord.getExecutingApplication();
+    /**
+     * C'tor.
+     *
+     * @param startInstant The record's logical time
+     */
+    public EnrichedDlpFileRecord(Instant startInstant) {
+        super(startInstant);
+    }
+
+    @Override
+    @Transient
+    public String getAdeEventType() {
+        return AdeDlpFileRecord.DLP_FILE_STR;
+    }
+
+    @Override
+    @Transient
+    public String getDataSource() {
+        return getAdeEventType();
     }
 
     public String getUserId() {
@@ -108,14 +152,6 @@ public class AdeEnrichedDlpFileContext {
         this.fileSize = fileSize;
     }
 
-    public String getOperationType() {
-        return operationType;
-    }
-
-    public void setOperationType(String operationType) {
-        this.operationType = operationType;
-    }
-
     public boolean isWasBlocked() {
         return wasBlocked;
     }
@@ -146,5 +182,10 @@ public class AdeEnrichedDlpFileContext {
 
     public void setExecutingApplication(String executingApplication) {
         this.executingApplication = executingApplication;
+    }
+
+    @Transient
+    public AdeEnrichedDlpFileContext getContext() {
+        return new AdeEnrichedDlpFileContext(this);
     }
 }

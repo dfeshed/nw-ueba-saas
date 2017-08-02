@@ -4,7 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringRunner;
-import presidio.ade.domain.record.enriched.EnrichedDlpFileRecord;
+import presidio.ade.domain.record.enriched.dlpfile.EnrichedDlpFileRecord;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.sdk.api.domain.DlpFileDataDocument;
 import presidio.sdk.api.domain.DlpFileEnrichedDocument;

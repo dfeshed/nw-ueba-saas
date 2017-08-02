@@ -1,4 +1,4 @@
-package presidio.ade.domain.record.enriched;
+package presidio.ade.domain.record.enriched.activedirectory;
 
 
 import fortscale.common.general.EventResult;

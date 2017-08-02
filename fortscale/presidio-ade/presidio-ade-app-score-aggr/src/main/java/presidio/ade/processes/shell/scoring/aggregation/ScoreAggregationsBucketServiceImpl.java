@@ -6,7 +6,7 @@ import fortscale.aggregation.feature.bucket.FeatureBucketAggregator;
 import fortscale.aggregation.feature.bucket.FeatureBucketsAggregatorInMemory;
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
 import fortscale.utils.recordreader.RecordReaderFactoryService;
-import presidio.ade.domain.record.scored.enriched_scored.AdeScoredEnrichedRecord;
+import presidio.ade.domain.record.enriched.AdeScoredEnrichedRecord;
 
 import java.util.List;
 

@@ -3,8 +3,8 @@ package fortscale.ml.scorer.enriched_events;
 import fortscale.domain.feature.score.FeatureScore;
 import fortscale.utils.logging.Logger;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
-import presidio.ade.domain.record.scored.enriched_scored.AdeScoredEnrichedRecord;
-import presidio.ade.domain.record.scored.enriched_scored.AdeEventTypeToAdeScoredEnrichedRecordClassResolver;
+import presidio.ade.domain.record.enriched.AdeScoredEnrichedRecord;
+import presidio.ade.domain.record.enriched.AdeEventTypeToAdeScoredEnrichedRecordClassResolver;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
