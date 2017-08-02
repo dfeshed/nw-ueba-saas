@@ -17,3 +17,11 @@ fortscale/fortscale-collection/ipConflicts.log
 fortscale/presidio-adapter/spring-shell\.log
 
 fortscale/presidio-utils/spring-shell\.log
+
+fortscale/presidio-ade/presidio-ade-app-score-aggr/spring-shell\.log
+
+fortscale/presidio-ade/presidio-ade-app-model-feature-buckets/spring-shell\.log
+
+fortscale/presidio-ade/presidio-ade-app-feature-aggr/spring-shell\.log
+
+fortscale/presidio-input/presidio-input-core/spring-shell\.log
