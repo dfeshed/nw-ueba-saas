@@ -4,7 +4,7 @@ import fortscale.domain.feature.score.FeatureScore;
 import org.springframework.data.mongodb.core.mapping.Document;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.ade.domain.record.enriched.AdeScoredEnrichedRecord;
-import presidio.ade.domain.record.util.AdeRecordMetadata;
+import presidio.ade.domain.record.util.AdeScoredEnrichedMetadata;
 
 import java.time.Instant;
 import java.util.Collections;
@@ -14,7 +14,7 @@ import java.util.List;
  * Created by YaronDL on 6/13/2017.
  */
 @Document
-@AdeRecordMetadata(adeEventType = AdeDlpFileRecord.DLP_FILE_STR)
+@AdeScoredEnrichedMetadata(erichedRecord = EnrichedDlpFileRecord.class)
 public class AdeScoredDlpFileRecord extends AdeScoredEnrichedRecord {
 
     AdeEnrichedDlpFileContext context;
