@@ -26,8 +26,8 @@ public class DlpFileConverterTest {
 
     private void assertRecords(DlpFileEnrichedDocument inputEnrichedRecord, EnrichedDlpFileRecord adeRecord) {
         Assert.assertEquals(inputEnrichedRecord.getDateTime(), adeRecord.getStartInstant());
-        Assert.assertEquals(inputEnrichedRecord.getNormalizedUsername(), adeRecord.getNormalizedUsername());
-        Assert.assertEquals(inputEnrichedRecord.getNormalizedSrcMachine(), adeRecord.getNormalizedSrcMachine());
+        Assert.assertEquals(inputEnrichedRecord.getNormalizedUsername(), adeRecord.getUserId());
+        Assert.assertEquals(inputEnrichedRecord.getNormalizedSrcMachine(), adeRecord.getSrcMachineId());
         Assert.assertEquals(inputEnrichedRecord.getSourcePath(), adeRecord.getSourcePath());
         Assert.assertEquals(inputEnrichedRecord.getSourceFileName(), adeRecord.getSourceFileName());
         Assert.assertEquals(inputEnrichedRecord.getSourceDriveType(), adeRecord.getSourceDriveType());

@@ -79,7 +79,7 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
 
     private List<String> getAggregationContext() {
         // todo: figure out from conf
-        return Collections.singletonList("context.normalizedUsername");
+        return Collections.singletonList("context.userId");
     }
 
     protected FeatureBucketStrategyData createFeatureBucketStrategyData(TimeRange timeRange){
@@ -99,6 +99,6 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
 
     public List<String> getDistinctContextTypes(String dataSource){
         //todo: figure it out from the configuration.
-        return Collections.singletonList("normalizedUsername");
+        return Collections.singletonList("userId");
     }
 }
