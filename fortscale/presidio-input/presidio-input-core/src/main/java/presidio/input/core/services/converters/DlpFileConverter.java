@@ -14,8 +14,8 @@ public class DlpFileConverter implements InputAdeConverter {
     public EnrichedRecord convert(AbstractAuditableDocument document) {
         DlpFileEnrichedDocument dlpFileEnrichedDocument = (DlpFileEnrichedDocument) document;
         EnrichedDlpFileRecord adeRecord = new EnrichedDlpFileRecord(dlpFileEnrichedDocument.getDateTime());
-        adeRecord.setNormalizedUsername(dlpFileEnrichedDocument.getNormalizedUsername());
-        adeRecord.setNormalizedSrcMachine(dlpFileEnrichedDocument.getNormalizedSrcMachine());
+        adeRecord.setUserId(dlpFileEnrichedDocument.getNormalizedUsername());
+        adeRecord.setSrcMachineId(dlpFileEnrichedDocument.getNormalizedSrcMachine());
         adeRecord.setSourcePath(dlpFileEnrichedDocument.getSourcePath());
         adeRecord.setSourceFileName(dlpFileEnrichedDocument.getSourceFileName());
         adeRecord.setSourceDriveType(dlpFileEnrichedDocument.getSourceDriveType());

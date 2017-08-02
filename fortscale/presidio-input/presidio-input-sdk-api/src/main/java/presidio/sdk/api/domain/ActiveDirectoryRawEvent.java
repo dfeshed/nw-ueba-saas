@@ -1,6 +1,7 @@
 package presidio.sdk.api.domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import fortscale.common.general.EventResult;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;

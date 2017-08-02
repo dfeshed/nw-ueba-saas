@@ -4,7 +4,7 @@
       "name": "date_time_unix_histogram_normalized_username_dlpfile_daily",
       "expireAfterSeconds": 31536000,
       "contextFieldNames": [
-        "normalizedUsername"
+        "userId"
       ],
       "adeEventTypes": [
         "dlpfile"
@@ -28,7 +28,7 @@
       "name": "normalized_src_machine_histogram_normalized_username_dlpfile_daily",
       "expireAfterSeconds": 31536000,
       "contextFieldNames": [
-        "normalizedUsername"
+        "userId"
       ],
       "adeEventTypes": [
         "dlpfile"
@@ -39,7 +39,7 @@
           "name": "normalized_src_machine_histogram",
           "featureNamesMap": {
             "groupBy": [
-              "normalizedSrcMachine"
+              "srcMachineId"
             ]
           },
           "aggrFeatureFuncJson": {
@@ -52,7 +52,7 @@
       "name": "normalized_username_histogram_normalized_src_machine_dlpfile_daily",
       "expireAfterSeconds": 31536000,
       "contextFieldNames": [
-        "normalizedSrcMachine"
+        "srcMachineId"
       ],
       "adeEventTypes": [
         "dlpfile"
@@ -63,7 +63,7 @@
           "name": "normalized_username_histogram",
           "featureNamesMap": {
             "groupBy": [
-              "normalizedUsername"
+              "userId"
             ]
           },
           "aggrFeatureFuncJson": {

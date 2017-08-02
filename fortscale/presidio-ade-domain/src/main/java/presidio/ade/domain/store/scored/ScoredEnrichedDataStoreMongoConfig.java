@@ -18,7 +18,7 @@ public class ScoredEnrichedDataStoreMongoConfig {
     @Autowired
     private MongoTemplate mongoTemplate;
     @Autowired
-    private ScoredDataAdeToCollectionNameTranslator translator;
+    private AdeScoredEnrichedRecordToCollectionNameTranslator translator;
 
     @Bean
     public ScoredEnrichedDataStore scoredDataStore() { return new ScoredEnrichedDataStoreMongoImpl(mongoTemplate, translator);}

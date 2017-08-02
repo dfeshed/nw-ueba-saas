@@ -1,36 +1,38 @@
 package presidio.ade.domain.record.enriched;
 
 
+import fortscale.common.general.EventResult;
+
 public class AdeEnrichedFileContext {
 
-    private String normalizedUsername;
-    private String result;
+    private String userId;
+    private EventResult result;
     private String operationType;
     private Boolean isSrcDriveShared;
     private Boolean isDstDriveShared;
 
 
     public AdeEnrichedFileContext(EnrichedFileRecord enrichedFileRecord) {
-        this.normalizedUsername = enrichedFileRecord.getNormalizedUsername();
+        this.userId = enrichedFileRecord.getUserId();
         this.result = enrichedFileRecord.getResult();
         this.operationType = enrichedFileRecord.getOperationType();
         this.isSrcDriveShared = enrichedFileRecord.getSrcDriveShared();
         this.isDstDriveShared = enrichedFileRecord.getDstDriveShared();
     }
 
-    public String getNormalizedUsername() {
-        return normalizedUsername;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setNormalizedUsername(String normalizedUsername) {
-        this.normalizedUsername = normalizedUsername;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
-    public String getResult() {
+    public EventResult getResult() {
         return result;
     }
 
-    public void setResult(String result) {
+    public void setResult(EventResult result) {
         this.result = result;
     }
 
