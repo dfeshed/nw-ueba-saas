@@ -8,10 +8,9 @@ import org.springframework.context.annotation.FilterType;
 import presidio.ade.processes.shell.config.AccumulateAggregationsConfiguration;
 import presidio.ade.processes.shell.config.AccumulateAggregationsConfigurationProduction;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 
 @SpringBootApplication
@@ -22,7 +21,13 @@ public class AccumulateAggregationsApplication {
 
     public static void main(String[] args) {
         logger.info("Start application: {} with params {}", AccumulateAggregationsConfigurationProduction.class, Arrays.toString(args));
-        List<Class> sources = Stream.of(AccumulateAggregationsConfigurationProduction.class).collect(Collectors.toList());
+
+        List<Class> sources = new ArrayList<Class>();
+        // The supported CLI commands for the application
+        sources.add(AccumulateServiceCommands.class);
+        // The Spring configuration of the application
+        sources.add(AccumulateAggregationsConfigurationProduction.class);
+
         PresidioShellableApplication.run(sources, args);
     }
 }

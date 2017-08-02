@@ -35,13 +35,10 @@ public class PresidioCommands implements CommandMarker {
             final Instant endTime,
 
             @CliOption(key = {CommonStrings.COMMAND_LINE_FIXED_DURATION_FIELD_NAME}, help = "the internal time intervals that the processing will be done by")
-            final Double fixedDuration,
-
-            @CliOption(key = {CommonStrings.COMMAND_LINE_FEATURE_BUCKET_STRATEGY_FIELD_NAME}, help = "the internal time intervals that the processing will be done by")
-            final Double featureBucketStrategy
+            final Double fixedDuration
 
     ) throws Exception {
-           executionService.run(schema, startTime, endTime, fixedDuration, featureBucketStrategy);
+           executionService.run(schema, startTime, endTime, fixedDuration);
     }
 
     @CliCommand(value = "clean", help = "clean application data for specified time range and data source")

@@ -9,9 +9,9 @@ import java.time.Instant;
  */
 public interface PresidioExecutionService {
 
-    public void run(Schema schema, Instant startDate, Instant endDate, Double fixedDuration, Double featureBucketStrategy) throws Exception;
+    void run(Schema schema, Instant startDate, Instant endDate, Double fixedDuration) throws Exception;
 
-    public void clean(Schema schema, Instant startDate, Instant endDate) throws Exception;
+    void clean(Schema schema, Instant startDate, Instant endDate) throws Exception;
 
-    public void cleanAll(Schema schema) throws Exception;
+    void cleanAll(Schema schema) throws Exception;
 }

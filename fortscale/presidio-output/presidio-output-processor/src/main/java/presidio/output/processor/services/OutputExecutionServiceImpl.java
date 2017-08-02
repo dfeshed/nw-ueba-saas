@@ -48,8 +48,6 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
         //TODO- change page size and score threshold (configurable)
         PageIterator<EntityEvent> smarts = adeManagerSdk.getSmartRecords(new TimeRange(startDate, endDate), 100, SMART_SCORE_THRESHOLD);
         alertService.generateAlerts(smarts);
-
-
     }
 
     @Override

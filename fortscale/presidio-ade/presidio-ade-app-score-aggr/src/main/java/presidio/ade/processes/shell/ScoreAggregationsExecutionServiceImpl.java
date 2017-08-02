@@ -35,7 +35,7 @@ public class ScoreAggregationsExecutionServiceImpl implements PresidioExecutionS
 	}
 
 	@Override
-	public void run(Schema schema, Instant startInstant, Instant endInstant, Double fixedDurationStrategyInSeconds, Double featureBucketStrategy) throws Exception {
+	public void run(Schema schema, Instant startInstant, Instant endInstant, Double fixedDurationStrategyInSeconds) throws Exception {
 		FixedDurationStrategy strategy = FixedDurationStrategy.fromSeconds(fixedDurationStrategyInSeconds.longValue());
 		ScoreAggregationsService service = new ScoreAggregationsService(
 				strategy, enrichedDataStore, enrichedEventsScoringService,

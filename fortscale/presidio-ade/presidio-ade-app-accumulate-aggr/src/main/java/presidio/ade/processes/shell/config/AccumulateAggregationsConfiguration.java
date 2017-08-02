@@ -3,7 +3,6 @@ package presidio.ade.processes.shell.config;
 import fortscale.accumulator.AccumulationsStore;
 import fortscale.accumulator.AccumulationsStoreConfig;
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
-import fortscale.common.shell.PresidioExecutionService;
 import fortscale.utils.monitoring.stats.config.NullStatsServiceConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -15,9 +14,8 @@ import presidio.ade.domain.store.accumulator.AccumulatedDataStore;
 import presidio.ade.domain.store.accumulator.AccumulatedDataStoreConfig;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
 import presidio.ade.domain.store.enriched.EnrichedDataStoreConfig;
-import presidio.ade.processes.shell.AccumulateAggregationsExecutionServiceImpl;
+import presidio.ade.processes.shell.AccumulateAggregationsExecutionService;
 import presidio.ade.processes.shell.accumulate.AccumulateAggregationsBucketService;
-import presidio.ade.processes.shell.config.AccumulateAggregationsBucketServiceConfig;
 
 /**
  * Created by maria_dorohin on 7/26/17.
@@ -51,7 +49,7 @@ public class AccumulateAggregationsConfiguration {
     private int maxGroupSize;
 
     @Bean
-    public PresidioExecutionService featureAggregationBucketExecutionService() {
-        return new AccumulateAggregationsExecutionServiceImpl(bucketConfigurationService, enrichedDataStore, accumulatedDataStore, accumulateAggregationsBucketService, accumulationsStore, pageSize, maxGroupSize);
+    public AccumulateAggregationsExecutionService featureAggregationBucketExecutionService() {
+        return new AccumulateAggregationsExecutionService(bucketConfigurationService, enrichedDataStore, accumulatedDataStore, accumulateAggregationsBucketService, accumulationsStore, pageSize, maxGroupSize);
     }
 }

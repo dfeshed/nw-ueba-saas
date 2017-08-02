@@ -3,7 +3,6 @@ package presidio.ade.processes.shell;
 import fortscale.accumulator.AccumulationsStore;
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.common.general.Schema;
-import fortscale.common.shell.PresidioExecutionService;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.time.TimeRange;
 import org.slf4j.Logger;
@@ -18,8 +17,8 @@ import java.time.Instant;
 /**
  * Created by maria_dorohin on 7/26/17.
  */
-public class AccumulateAggregationsExecutionServiceImpl implements PresidioExecutionService {
-    private static Logger logger = LoggerFactory.getLogger(AccumulateAggregationsExecutionServiceImpl.class);
+public class AccumulateAggregationsExecutionService {
+    private static Logger logger = LoggerFactory.getLogger(AccumulateAggregationsExecutionService.class);
 
 
     private BucketConfigurationService bucketConfigurationService;
@@ -30,11 +29,11 @@ public class AccumulateAggregationsExecutionServiceImpl implements PresidioExecu
     private AccumulateAggregationsBucketService accumulateAggregationsBucketService;
     private AccumulationsStore accumulationsStore;
 
-    public AccumulateAggregationsExecutionServiceImpl(BucketConfigurationService bucketConfigurationService,
-                                                      EnrichedDataStore enrichedDataStore,
-                                                      AccumulatedDataStore accumulatedDataStore,
-                                                      AccumulateAggregationsBucketService accumulateAggregationsBucketService,
-                                                      AccumulationsStore accumulationsStore, int pageSize, int maxGroupSize) {
+    public AccumulateAggregationsExecutionService(BucketConfigurationService bucketConfigurationService,
+                                                  EnrichedDataStore enrichedDataStore,
+                                                  AccumulatedDataStore accumulatedDataStore,
+                                                  AccumulateAggregationsBucketService accumulateAggregationsBucketService,
+                                                  AccumulationsStore accumulationsStore, int pageSize, int maxGroupSize) {
         this.bucketConfigurationService = bucketConfigurationService;
         this.enrichedDataStore = enrichedDataStore;
         this.accumulatedDataStore = accumulatedDataStore;
@@ -44,7 +43,6 @@ public class AccumulateAggregationsExecutionServiceImpl implements PresidioExecu
         this.accumulationsStore = accumulationsStore;
     }
 
-    @Override
     public void run(Schema schema, Instant startDate, Instant endDate, Double fixedDuration, Double featureBucketStrategy) throws Exception {
         //strategy for accumulator
         FixedDurationStrategy fixedDurationStrategy = FixedDurationStrategy.fromSeconds(fixedDuration.longValue());
@@ -55,13 +53,7 @@ public class AccumulateAggregationsExecutionServiceImpl implements PresidioExecu
         featureAggregationBucketsService.execute(timeRange, schema.getName());
     }
 
-    @Override
     public void clean(Schema schema, Instant startDate, Instant endDate) throws Exception {
-        // TODO: Implement
-    }
-
-    @Override
-    public void cleanAll(Schema schema) throws Exception {
         // TODO: Implement
     }
 }
