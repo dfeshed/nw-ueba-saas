@@ -16,7 +16,7 @@ public enum Schema {
         return name;
     }
 
-    public static Schema createSchema(String dataSourceName) throws IllegalArgumentException {
-        return Schema.valueOf(dataSourceName.toUpperCase());
+    public static Schema createSchema(String schemaName) throws IllegalArgumentException {
+        return Schema.valueOf(schemaName.toUpperCase());
     }
 }
