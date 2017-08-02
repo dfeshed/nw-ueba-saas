@@ -1,0 +1,97 @@
+package presidio.output.domain.records.events;
+
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
+
+/**
+ * Created by efratn on 02/08/2017.
+ */
+@Document
+//TODO add index
+public class FileEnrichedEvent extends EnrichedEvent {
+
+    public static final String ABSOLUTE_SRC_FILE_PATH_FIELD = "absoluteSrcFilePath";
+    public static final String ABSOLUTE_DST_FILE_PATH_FIELD = "absoluteDstFilePath";
+    public static final String ABSOLUTE_SRC_FOLDER_FILE_PATH_FIELD = "absoluteSrcFolderFilePath";
+    public static final String ABSOLUTE_DST_FOLDER_FILE_PATH_FIELD = "absoluteDstFolderFilePath";
+    public static final String FILE_SIZE_FIELD = "fileSize";
+    public static final String IS_SRC_DRIVE_SHARED_FIELD = "isSrcDriveShared";
+    public static final String IS_DST_DRIVE_SHARED_FIELD = "isDstDriveShared";
+
+    @Field(ABSOLUTE_SRC_FILE_PATH_FIELD)
+    private String absoluteSrcFilePath;
+
+    @Field(ABSOLUTE_DST_FILE_PATH_FIELD)
+    private String absoluteDstFilePath;
+
+    @Field(ABSOLUTE_SRC_FOLDER_FILE_PATH_FIELD)
+    private String absoluteSrcFolderFilePath;
+
+    @Field(ABSOLUTE_DST_FOLDER_FILE_PATH_FIELD)
+    private String absoluteDstFolderFilePath;
+
+    @Field(FILE_SIZE_FIELD)
+    private Long fileSize;
+
+    @Field(IS_SRC_DRIVE_SHARED_FIELD)
+    private Boolean isSrcDriveShared;
+
+    @Field(IS_DST_DRIVE_SHARED_FIELD)
+    private Boolean isDstDriveShared;
+
+    public String getAbsoluteSrcFilePath() {
+        return absoluteSrcFilePath;
+    }
+
+    public String getAbsoluteDstFilePath() {
+        return absoluteDstFilePath;
+    }
+
+    public String getAbsoluteSrcFolderFilePath() {
+        return absoluteSrcFolderFilePath;
+    }
+
+    public String getAbsoluteDstFolderFilePath() {
+        return absoluteDstFolderFilePath;
+    }
+
+    public Long getFileSize() {
+        return fileSize;
+    }
+
+    public Boolean getSrcDriveShared() {
+        return isSrcDriveShared;
+    }
+
+    public Boolean getDstDriveShared() {
+        return isDstDriveShared;
+    }
+
+    public void setAbsoluteSrcFilePath(String absoluteSrcFilePath) {
+        this.absoluteSrcFilePath = absoluteSrcFilePath;
+    }
+
+    public void setAbsoluteDstFilePath(String absoluteDstFilePath) {
+        this.absoluteDstFilePath = absoluteDstFilePath;
+    }
+
+    public void setAbsoluteSrcFolderFilePath(String absoluteSrcFolderFilePath) {
+        this.absoluteSrcFolderFilePath = absoluteSrcFolderFilePath;
+    }
+
+    public void setAbsoluteDstFolderFilePath(String absoluteDstFolderFilePath) {
+        this.absoluteDstFolderFilePath = absoluteDstFolderFilePath;
+    }
+
+    public void setFileSize(Long fileSize) {
+        this.fileSize = fileSize;
+    }
+
+    public void setSrcDriveShared(Boolean srcDriveShared) {
+        isSrcDriveShared = srcDriveShared;
+    }
+
+    public void setDstDriveShared(Boolean dstDriveShared) {
+        isDstDriveShared = dstDriveShared;
+    }
+}
