@@ -1,7 +1,5 @@
-package presidio.output.domain.records;
+package presidio.output.domain.records.alerts;
 
-
-import java.util.Date;
 
 public class AlertQuery {
 

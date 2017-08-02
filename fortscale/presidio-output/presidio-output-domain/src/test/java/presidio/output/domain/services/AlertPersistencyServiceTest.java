@@ -11,8 +11,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.junit4.SpringRunner;
 import fortscale.utils.elasticsearch.PresidioElasticsearchTemplate;
-import presidio.output.domain.records.Alert;
-import presidio.output.domain.records.AlertQuery;
+import presidio.output.domain.records.alerts.Alert;
+import presidio.output.domain.records.alerts.AlertQuery;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -21,8 +21,9 @@ import java.util.List;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.*;
-import static presidio.output.domain.records.AlertEnums.*;
+import static presidio.output.domain.records.alerts.AlertEnums.*;
 import org.springframework.test.context.ContextConfiguration;
+import presidio.output.domain.services.alerts.AlertPersistencyService;
 
 @Ignore
 @RunWith(SpringRunner.class)

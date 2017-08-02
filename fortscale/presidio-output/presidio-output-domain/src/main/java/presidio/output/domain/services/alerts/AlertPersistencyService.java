@@ -1,9 +1,9 @@
-package presidio.output.domain.services;
+package presidio.output.domain.services.alerts;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import presidio.output.domain.records.Alert;
-import presidio.output.domain.records.AlertQuery;
+import presidio.output.domain.records.alerts.Alert;
+import presidio.output.domain.records.alerts.AlertQuery;
 
 import java.util.List;
 
