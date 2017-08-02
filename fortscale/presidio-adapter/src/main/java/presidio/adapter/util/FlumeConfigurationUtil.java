@@ -17,6 +17,11 @@ public class FlumeConfigurationUtil {
     protected static final String CONF_FILE_PATH_FLAG = "--conf-file";
     protected static final String BIN_FLUME_NG_PATH = "bin/flume-ng";
     private static final String EXECUTE_AGENT_COMMAND = "agent";
+    private final String moduleName;
+
+    public FlumeConfigurationUtil(String moduleName) {
+        this.moduleName = moduleName;
+    }
 
     /**
      * active Directory => active_directoryAgent
@@ -32,7 +37,7 @@ public class FlumeConfigurationUtil {
      * FLUME_HOME/conf/
      */
     public String createConfFolderPath() { //flume_home/conf/
-        return getFlumeHome() + "conf" + File.separator;
+        return getFlumeHome() + "conf" + File.separator + moduleName + File.separator;
     }
 
     public String getFlumeHome() {

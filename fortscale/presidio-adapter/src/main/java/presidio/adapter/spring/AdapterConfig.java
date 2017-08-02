@@ -13,6 +13,6 @@ public class AdapterConfig {
 
     @Bean
     public PresidioExecutionService adapterExecutionService() {
-        return new FlumeAdapterExecutionService(new ProcessExecutor(), new FlumeConfigurationUtil());
+        return new FlumeAdapterExecutionService(new ProcessExecutor(), new FlumeConfigurationUtil("adapter"));
     }
 }
