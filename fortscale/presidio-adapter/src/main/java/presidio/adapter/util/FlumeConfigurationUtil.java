@@ -3,7 +3,11 @@ package presidio.adapter.util;
 import fortscale.common.general.Schema;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.time.Instant;
+import java.util.Properties;
 
 /**
  * This class is a util class for handling and creating Flume configuration files
@@ -12,6 +16,8 @@ import java.time.Instant;
  */
 public class FlumeConfigurationUtil {
 
+    private static final String FLUME_CONF_START_DATE_FIELD_NAME = "startDate";
+    private static final String FLUME_CONF_END_DATE_FIELD_NAME = "endDate";
     private static final String AGENT_NAME_FLAG = "--name";
     private static final String CONF_FOLDER_FLAG = "--conf";
     protected static final String CONF_FILE_PATH_FLAG = "--conf-file";
@@ -21,6 +27,33 @@ public class FlumeConfigurationUtil {
 
     public FlumeConfigurationUtil(String moduleName) {
         this.moduleName = moduleName;
+    }
+
+    public String createExecutionConfFile(Schema schema, Instant startDate, Instant endDate) throws IOException {
+        /* load the properties */
+        final String confFilePath = createConfFolderPath() + createConfFileName(schema);
+        FileInputStream in = new FileInputStream(confFilePath);
+        Properties props = new Properties();
+        props.load(in);
+        in.close();
+
+        /* edit the properties */
+        for (Object key : props.keySet()) {
+            String currProperty = (String) key;
+            if (currProperty.endsWith(FLUME_CONF_START_DATE_FIELD_NAME)) {
+                props.setProperty(currProperty, startDate.toString());
+            } else if (currProperty.endsWith(FLUME_CONF_END_DATE_FIELD_NAME)) {
+                props.setProperty(currProperty, endDate.toString());
+            }
+        }
+
+        /* save the properties */
+        final String newFileName = createConfFolderPath() + createJobName(schema, startDate, endDate) + ".properties";
+        FileOutputStream out = new FileOutputStream(newFileName);
+        props.store(out, null);
+        out.close();
+
+        return newFileName;
     }
 
     /**
