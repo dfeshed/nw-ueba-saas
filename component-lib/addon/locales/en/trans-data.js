@@ -1137,7 +1137,8 @@ export default {
       listTitle: 'List',
       descriptionTitle: 'Description',
       filter: 'Filter Results',
-      listName: 'Enter List Name'
+      listName: 'Enter List Name',
+      headerMessage: 'Value has been updated in the list(s). The context indicator for this value will be updated when the page is reloaded.'
     },
     ADdata: {
       title: 'User Information',

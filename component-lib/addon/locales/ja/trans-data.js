@@ -1168,7 +1168,8 @@ export default {
       listTitle: 'ja_List',
       descriptionTitle: 'ja_Description',
       filter: 'ja_Filter Results',
-      listName: 'ja_Enter List Name'
+      listName: 'ja_Enter List Name',
+      headerMessage: 'ja_Value has been updated in the list(s). The context indicator for this value will be updated when the page is reloaded.'
     },
     modules: {
       title: 'ja_Top Suspicious Modules',

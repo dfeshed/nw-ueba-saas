@@ -1,4 +1,5 @@
 <div class="rsa-context-tree-table__addtoListBox">
+  <div class="rsa-context-tree-table__headerMessage">{{t 'context.addToList.headerMessage'}}</div>
   {{rsa-form-input isReadOnly=true label=(t 'context.addToList.metaValue') placeholder=entityId  isError=isError errorMessage=errorMessage}}
   {{#rsa-form-button  class="rsa-context-tree-table__createList-button" isIconOnly=true isFullWidth=true click=(action 'createList')}}
     <div align="left">

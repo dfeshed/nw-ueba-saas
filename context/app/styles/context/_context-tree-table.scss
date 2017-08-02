@@ -126,8 +126,14 @@
 
     }
   }
+  &__headerMessage{
+    padding-bottom: rsa-whitespace();
+    @include rsa-font(default, small);
+    color: rsa-color(white);
+  }
+
   &__addtoListBox, &__createList{
-    padding: rsa-whitespace();
+    padding: rsa-whitespace(less);
     max-width: 100%;
     width: 500px;
     height:400px;
