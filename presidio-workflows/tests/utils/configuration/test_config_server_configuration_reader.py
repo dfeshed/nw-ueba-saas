@@ -25,4 +25,4 @@ def _read_conf_file(conf_reader):
     file_path = pkg_resources.resource_filename('tests',
                                                 'resources/utils/configuration/conf_server_dummy_response.json')
     with open(file_path) as data_file:
-        conf_reader.properties = json.load(data_file)
+        conf_reader.set_properties(properties=json.load(data_file))

@@ -3,6 +3,7 @@ package fortscale.utils.monitoring.stats.service;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.monitoring.stats.StatsService;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.time.LocalDateTime;
@@ -17,7 +18,7 @@ import java.time.ZoneOffset;
  *
  * Created by gaashh on 5/3/16.
  */
-
+@Ignore
 public class StatsNullServiceTest {
 
     private static final Logger logger = Logger.getLogger(StatsNullServiceTest.class);

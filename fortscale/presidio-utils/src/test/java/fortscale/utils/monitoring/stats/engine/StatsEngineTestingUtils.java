@@ -1,6 +1,7 @@
 package fortscale.utils.monitoring.stats.engine;
 
 import fortscale.utils.monitoring.stats.StatsMetricsTag;
+import org.junit.Ignore;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.List;
  * 
  * Created by gaashh on 5/2/16.
  */
+@Ignore
 public class StatsEngineTestingUtils {
 
     static final long ABOUT_YEAR_2001_EPOCH_TIME = 1000000000;

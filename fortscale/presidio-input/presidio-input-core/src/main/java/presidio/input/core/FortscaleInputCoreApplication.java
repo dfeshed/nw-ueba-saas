@@ -4,7 +4,7 @@ package presidio.input.core;
 
 
 import fortscale.common.shell.PresidioShellableApplication;
-import fortscale.common.shell.config.ShellableApplicationConfig;
+import fortscale.common.shell.command.PresidioCommands;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.data.elasticsearch.ElasticsearchAutoConfiguration;
@@ -13,7 +13,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import presidio.input.core.spring.InputProductionConfiguration;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -27,7 +27,13 @@ import java.util.stream.Stream;
 public class FortscaleInputCoreApplication {
 
     public static void main(String[] args) {
-        List<Class> sources = Stream.of(FortscaleInputCoreApplication.class, InputProductionConfiguration.class).collect(Collectors.toList());
+        List<Class> sources = new ArrayList<>();
+        sources.add(FortscaleInputCoreApplication.class);
+        sources.add(InputProductionConfiguration.class);
+
+        // The supported CLI commands for the application
+        sources.add(PresidioCommands.class);
+
         PresidioShellableApplication.run(sources, args);
     }
 

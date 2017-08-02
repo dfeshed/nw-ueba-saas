@@ -1,6 +1,8 @@
-import dateutil.parser
 import logging
+
+import dateutil.parser
 from airflow import DAG
+
 from presidio.factories.abstract_dag_factory import AbstractDagFactory
 from presidio.factories.dag_factories_exceptions import DagsConfigurationContainsOverlappingDatesException
 
@@ -15,7 +17,7 @@ class PresidioDagFactory(AbstractDagFactory):
         :return: list of created dags 
         """
         configuration_reader = dag_params.get('conf_reader')
-        dags_configs = configuration_reader.read(conf_key='dags_configs')
+        dags_configs = configuration_reader.read(conf_key='dags.dags_configs')
         logging.info("creating dynamic dags")
         created_dags = self.create_dags(dags_configs=dags_configs)
         return created_dags

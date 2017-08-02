@@ -21,3 +21,4 @@
 .coverage
 .coveragerc
 coverage.xml
+/.idea/

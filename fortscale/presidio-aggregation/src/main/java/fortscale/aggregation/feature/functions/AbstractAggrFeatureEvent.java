@@ -16,7 +16,10 @@ public abstract class AbstractAggrFeatureEvent implements IAggrFeatureEventFunct
         }
     	
     	AggrFeatureValue aggrFeatureValue = calculateAggrFeatureValue(aggrFeatureEventConf, multipleBucketsAggrFeaturesMapList);
-        Feature resFeature = new Feature(aggrFeatureEventConf.getName(), aggrFeatureValue);
+    	Feature resFeature = null;
+    	if(aggrFeatureValue != null) {
+            resFeature = new Feature(aggrFeatureEventConf.getName(), aggrFeatureValue);
+        }
 
         return resFeature;
     }

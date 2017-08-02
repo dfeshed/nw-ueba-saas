@@ -16,8 +16,8 @@ import java.time.Instant;
 @Document
 @AdeRecordMetadata(adeEventType = DlpFileRecord.DLP_FILE_STR)
 public class EnrichedDlpFileRecord extends EnrichedRecord {
-    public static final String NORMALIZED_USERNAME_FIELD = "normalizedUsername";
-    public static final String NORMALIZED_SRC_MACHINE_FIELD = "normalizedSrcMachine";
+    public static final String USER_ID_FIELD = "userId";
+    public static final String SRC_MACHINE_ID_FIELD = "srcMachineId";
     public static final String SOURCE_PATH_FIELD = "sourcePath";
     public static final String SOURCE_FILE_NAME_FIELD = "sourceFileName";
     public static final String SOURCE_DRIVE_TYPE_FIELD = "sourceDriveType";
@@ -25,17 +25,16 @@ public class EnrichedDlpFileRecord extends EnrichedRecord {
     public static final String DESTINATION_FILE_NAME_FIELD = "destinationFileName";
     public static final String DESTINATION_DRIVE_TYPE_FIELD = "destinationDriveType";
     public static final String FILE_SIZE_FIELD = "fileSize";
-    public static final String OPERATION_TYPE_FIELD = "operationType";
     public static final String WAS_BLOCKED_FIELD = "wasBlocked";
     public static final String WAS_CLASSIFIED_FIELD = "wasClassified";
     public static final String MALWARE_SCAN_RESULT_FIELD = "malwareScanResult";
     public static final String EXECUTING_APPLICATION_FIELD = "executingApplication";
 
     @Indexed
-    @Field(NORMALIZED_USERNAME_FIELD)
-    private String normalizedUsername;
-    @Field(NORMALIZED_SRC_MACHINE_FIELD)
-    private String normalizedSrcMachine;
+    @Field(USER_ID_FIELD)
+    private String userId;
+    @Field(SRC_MACHINE_ID_FIELD)
+    private String srcMachineId;
     @Field(SOURCE_PATH_FIELD)
     private String sourcePath;
     @Field(SOURCE_FILE_NAME_FIELD)
@@ -50,8 +49,6 @@ public class EnrichedDlpFileRecord extends EnrichedRecord {
     private String destinationDriveType;
     @Field(FILE_SIZE_FIELD)
     private double fileSize;
-    @Field(OPERATION_TYPE_FIELD)
-    private String operationType;
     @Field(WAS_BLOCKED_FIELD)
     private boolean wasBlocked;
     @Field(WAS_CLASSIFIED_FIELD)
@@ -82,20 +79,20 @@ public class EnrichedDlpFileRecord extends EnrichedRecord {
         return getAdeEventType();
     }
 
-    public String getNormalizedUsername() {
-        return normalizedUsername;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setNormalizedUsername(String normalizedUsername) {
-        this.normalizedUsername = normalizedUsername;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
-    public String getNormalizedSrcMachine() {
-        return normalizedSrcMachine;
+    public String getSrcMachineId() {
+        return srcMachineId;
     }
 
-    public void setNormalizedSrcMachine(String normalizedSrcMachine) {
-        this.normalizedSrcMachine = normalizedSrcMachine;
+    public void setSrcMachineId(String srcMachineId) {
+        this.srcMachineId = srcMachineId;
     }
 
     public String getSourcePath() {
@@ -152,14 +149,6 @@ public class EnrichedDlpFileRecord extends EnrichedRecord {
 
     public void setFileSize(double fileSize) {
         this.fileSize = fileSize;
-    }
-
-    public String getOperationType() {
-        return operationType;
-    }
-
-    public void setOperationType(String operationType) {
-        this.operationType = operationType;
     }
 
     public boolean isWasBlocked() {

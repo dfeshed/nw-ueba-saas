@@ -1,5 +1,7 @@
 package presidio.webapp.dto;
 
+import org.apache.http.HttpStatus;
+
 public class SingleEntityResponseBean<T> extends ResponseBean {
 
     private T data;
@@ -10,6 +12,7 @@ public class SingleEntityResponseBean<T> extends ResponseBean {
     }
 
     public SingleEntityResponseBean() {
+        this.setStatus(HttpStatus.SC_OK);
     }
 
     public T getData() {

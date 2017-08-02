@@ -31,7 +31,7 @@ public abstract class AbstractAggrFeatureEventFeatureToMaxMapFunc extends Abstra
     @Override
     protected AggrFeatureValue calculateAggrFeatureValue(AggregatedFeatureEventConf aggrFeatureEventConf, List<Map<String, Feature>> multipleBucketsAggrFeaturesMapList) {
         AggrFeatureValue featuresGroupToMax = calculateFeaturesGroupToMaxFromBucketAggrFeature(aggrFeatureEventConf, multipleBucketsAggrFeaturesMapList);
-        return calculateFeaturesGroupToMaxValue(featuresGroupToMax);
+        return featuresGroupToMax == null ? null : calculateFeaturesGroupToMaxValue(featuresGroupToMax);
     }
 
     protected abstract AggrFeatureValue calculateFeaturesGroupToMaxValue(AggrFeatureValue aggrFeatureValue);
@@ -59,7 +59,7 @@ public abstract class AbstractAggrFeatureEventFeatureToMaxMapFunc extends Abstra
             total += ((AggrFeatureValue) aggrFeature.getValue()).getTotal();
         }
 
-        return new AggrFeatureValue(featuresGroupToMax, total);
+        return featuresGroupToMax.isEmpty()? null : new AggrFeatureValue(featuresGroupToMax, total);
     }
 
     private String getFeatureToPick(AggregatedFeatureEventConf aggrFeatureEventConf) {

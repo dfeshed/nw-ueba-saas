@@ -4,7 +4,7 @@ package presidio.ade.domain.record.scored.enriched_scored;
  * Created by YaronDL on 6/15/2017.
  */
 
-import fortscale.common.general.DataSource;
+import fortscale.common.general.Schema;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,13 +20,13 @@ public class DataSourceToAdeScoredEnrichedRecordClassResolverConfigTest {
 
     @Test
     public void testDlpfileIsResolved(){
-        Class<? extends AdeScoredEnrichedRecord> record = dataSourceToAdeScoredEnrichedRecordClassResolver.getClass(DataSource.DLPFILE.toString().toLowerCase());
+        Class<? extends AdeScoredEnrichedRecord> record = dataSourceToAdeScoredEnrichedRecordClassResolver.getClass(Schema.DLPFILE.toString().toLowerCase());
         Assert.assertTrue(record.equals(AdeScoredDlpFileRecord.class));
     }
 
     @Test
     public void testDlpmailIsNotResolved(){
-        Class<? extends AdeScoredEnrichedRecord> record = dataSourceToAdeScoredEnrichedRecordClassResolver.getClass(DataSource.DLPMAIL.toString().toLowerCase());
+        Class<? extends AdeScoredEnrichedRecord> record = dataSourceToAdeScoredEnrichedRecordClassResolver.getClass(Schema.DLPMAIL.toString().toLowerCase());
         Assert.assertTrue(record == null);
     }
 

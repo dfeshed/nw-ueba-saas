@@ -14,12 +14,11 @@ public class ActiveDirectoryConverter implements InputAdeConverter {
         ActiveDirectoryRawEvent activeDirectoryRawEvent = (ActiveDirectoryRawEvent) document;
         EnrichedActiveDirectoryRecord adeRecord = new EnrichedActiveDirectoryRecord(activeDirectoryRawEvent.getDateTime());
         adeRecord.setEventId(activeDirectoryRawEvent.getEventId());
-        adeRecord.setResult(activeDirectoryRawEvent.getResult().toString());
+        adeRecord.setResult(activeDirectoryRawEvent.getResult());
         adeRecord.setOperationType(activeDirectoryRawEvent.getOperationType().toString());
-        adeRecord.setNormalizedUsername(activeDirectoryRawEvent.getNormalizedUsername());
-        adeRecord.setObjectName(activeDirectoryRawEvent.getObjectName());
-        adeRecord.setSecuritySensitiveOperation(activeDirectoryRawEvent.isSecuritySensitiveOperation());
-        adeRecord.setUserAdministrator(activeDirectoryRawEvent.isUserAdministrator());
+        adeRecord.setUserId(activeDirectoryRawEvent.getNormalizedUsername());
+        adeRecord.setObjectId(activeDirectoryRawEvent.getObjectName());
+        adeRecord.setUserAdmin(activeDirectoryRawEvent.getIsUserAdministrator());
         return adeRecord;
     }
 }

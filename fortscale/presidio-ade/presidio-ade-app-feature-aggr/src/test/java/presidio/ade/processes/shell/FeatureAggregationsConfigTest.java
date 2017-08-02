@@ -1,6 +1,6 @@
 package presidio.ade.processes.shell;
 
-import fortscale.common.shell.config.ShellCommonCommandsConfig;
+import fortscale.common.shell.command.PresidioCommands;
 import fortscale.utils.shell.BootShimConfig;
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
@@ -15,7 +15,7 @@ import java.util.Properties;
  */
 @Configuration
 @Import({MongodbTestConfig.class,
-        ShellCommonCommandsConfig.class,
+        PresidioCommands.class,
         BootShimConfig.class})
 public class FeatureAggregationsConfigTest extends FeatureAggregationsConfig{
     @Bean

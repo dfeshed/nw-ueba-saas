@@ -1,5 +1,6 @@
 package presidio.sdk.api.domain;
 
+import fortscale.common.general.EventResult;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -134,7 +135,7 @@ public class FileRawEvent extends AbstractInputDocument {
         this.fileSize = fileSize;
     }
 
-    public boolean isSrcDriveShared() {
+    public boolean getIsSrcDriveShared() {
         return isSrcDriveShared;
     }
 
@@ -142,7 +143,7 @@ public class FileRawEvent extends AbstractInputDocument {
         isSrcDriveShared = srcDriveShared;
     }
 
-    public boolean isDstDriveShared() {
+    public boolean getIsDstDriveShared() {
         return isDstDriveShared;
     }
 

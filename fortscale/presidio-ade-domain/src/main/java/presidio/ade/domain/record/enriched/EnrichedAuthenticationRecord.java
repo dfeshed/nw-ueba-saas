@@ -4,10 +4,8 @@ import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
-import presidio.ade.domain.record.util.AdeRecordMetadata;
 
 import java.time.Instant;
-import java.util.List;
 
 /**
  * The enriched authentication record POJO.
@@ -17,40 +15,37 @@ import java.util.List;
 @Document
 //todo: add @AdeRecordMetadata annotation
 public class EnrichedAuthenticationRecord extends EnrichedRecord {
+    public static final String USER_ID_FIELD = "userId";
+    public static final String SRC_MACHINE_ID_FIELD = "SrcMachineId";
+    public static final String DST_MACHINE_ID_FIELD = "dstMachineId";
+    public static final String SRC_MACHINE_NAME_REGEX_CLUSTER = "srcMachineNameRegexCluster";
+    public static final String DST_MACHINE_NAME_REGEX_CLUSTER = "dstMachineNameRegexCluster";
+    public static final String DST_MACHINE_DOMAIN = "dstMachineDomain";
 
-    public static final String AUTHENTICATION_TYPE_FIELD = "authenticationType";
-    public static final String IS_DST_MACHINE_REMOTE_FIELD = "isDstMachineRemote";
-    public static final String NORMALIZED_USERNAME_FIELD = "normalizedUsername";
-    public static final String NORMALIZED_SRC_MACHINE_FIELD = "normalizedSrcMachine";
-    public static final String NORMALIZED_DST_MACHINE_FIELD = "normalizedDstMachine";
-    public static final String RESULT_FIELD = "result";
-    public static final String RESULT_CODE_FIELD = "resultCode";
 
 
 
     @Indexed
-    @Field(NORMALIZED_USERNAME_FIELD)
-    private String normalizedUsername;
-    @Field(AUTHENTICATION_TYPE_FIELD)
-    private String authenticationType;
-    @Field(IS_DST_MACHINE_REMOTE_FIELD)
-    private Boolean isDstMachineRemote;
-    @Field(NORMALIZED_SRC_MACHINE_FIELD)
-    private String normalizedSrcMachine;
-    @Field(NORMALIZED_DST_MACHINE_FIELD)
-    private String normalizedDstMachine;
-    @Field(RESULT_FIELD)
-    private String result;
-    @Field(RESULT_CODE_FIELD)
-    private String resultCode;
+    @Field(USER_ID_FIELD)
+    private String userId;
+    @Field(SRC_MACHINE_ID_FIELD)
+    private String SrcMachineId;
+    @Field(DST_MACHINE_ID_FIELD)
+    private String dstMachineId;
+    @Field(SRC_MACHINE_NAME_REGEX_CLUSTER)
+    private String srcMachineNameRegexCluster;
+    @Field(DST_MACHINE_NAME_REGEX_CLUSTER)
+    private String dstMachineNameRegexCluster;
+    @Field(DST_MACHINE_DOMAIN)
+    private String dstMachineDomain;
 
     /**
      * C'tor.
      *
-     * @param dateTime The record's logical time
+     * @param startInstant The record's logical time
      */
-    public EnrichedAuthenticationRecord(Instant dateTime) {
-        super(dateTime);
+    public EnrichedAuthenticationRecord(Instant startInstant) {
+        super(startInstant);
     }
 
     @Override
@@ -58,60 +53,52 @@ public class EnrichedAuthenticationRecord extends EnrichedRecord {
         return AuthenticationRecord.AUTHENTICATION_STR;
     }
 
-    public String getNormalizedUsername() {
-        return normalizedUsername;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setNormalizedUsername(String normalizedUsername) {
-        this.normalizedUsername = normalizedUsername;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
-    public String getAuthenticationType() {
-        return authenticationType;
+    public String getSrcMachineId() {
+        return SrcMachineId;
     }
 
-    public void setAuthenticationType(String authenticationType) {
-        this.authenticationType = authenticationType;
+    public void setSrcMachineId(String srcMachineId) {
+        this.SrcMachineId = srcMachineId;
     }
 
-    public Boolean getDstMachineRemote() {
-        return isDstMachineRemote;
+    public String getDstMachineId() {
+        return dstMachineId;
     }
 
-    public void setDstMachineRemote(Boolean dstMachineRemote) {
-        isDstMachineRemote = dstMachineRemote;
+    public void setDstMachineId(String dstMachineId) {
+        this.dstMachineId = dstMachineId;
     }
 
-    public String getNormalizedSrcMachine() {
-        return normalizedSrcMachine;
+    public String getSrcMachineNameRegexCluster() {
+        return srcMachineNameRegexCluster;
     }
 
-    public void setNormalizedSrcMachine(String normalizedSrcMachine) {
-        this.normalizedSrcMachine = normalizedSrcMachine;
+    public void setSrcMachineNameRegexCluster(String srcMachineNameRegexCluster) {
+        this.srcMachineNameRegexCluster = srcMachineNameRegexCluster;
     }
 
-    public String getNormalizedDstMachine() {
-        return normalizedDstMachine;
+    public String getDstMachineNameRegexCluster() {
+        return dstMachineNameRegexCluster;
     }
 
-    public void setNormalizedDstMachine(String normalizedDstMachine) {
-        this.normalizedDstMachine = normalizedDstMachine;
+    public void setDstMachineNameRegexCluster(String dstMachineNameRegexCluster) {
+        this.dstMachineNameRegexCluster = dstMachineNameRegexCluster;
     }
 
-    public String getResult() {
-        return result;
+    public String getDstMachineDomain() {
+        return dstMachineDomain;
     }
 
-    public void setResult(String result) {
-        this.result = result;
-    }
-
-    public String getResultCode() {
-        return resultCode;
-    }
-
-    public void setResultCode(String resultCode) {
-        this.resultCode = resultCode;
+    public void setDstMachineDomain(String dstMachineDomain) {
+        this.dstMachineDomain = dstMachineDomain;
     }
 
     @Transient

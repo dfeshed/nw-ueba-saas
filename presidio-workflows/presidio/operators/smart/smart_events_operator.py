@@ -1,4 +1,5 @@
 from airflow.utils.decorators import apply_defaults
+
 from presidio.operators.fixed_duration_jar_operator import FixedDurationJarOperator
 
 
@@ -33,17 +34,12 @@ class SmartEventsOperator(FixedDurationJarOperator):
             'smart_events_conf': smart_events_conf
         }
 
-        jvm_args = {
-            'jar_path': SmartEventsOperator._JAR_FILE_PATH,
-            'main_class': SmartEventsOperator._MAIN_CLASS
-        }
-
         super(SmartEventsOperator, self).__init__(
             # The smart_events_conf usually contains the fixed_duration_strategy and the
             # phrase "smart_events" in its name, so it can serve as the task_id as well
             task_id=task_id or smart_events_conf,
             fixed_duration_strategy=fixed_duration_strategy,
-            jvm_args=jvm_args,
+            jvm_args={},
             java_args=java_args,
             *args,
             **kwargs
