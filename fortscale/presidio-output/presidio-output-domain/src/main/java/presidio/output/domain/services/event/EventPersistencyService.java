@@ -17,5 +17,5 @@ public interface EventPersistencyService {
      * @param schema storing is done according to events schema
      * @param records  data to be stored
      */
-    void store(Schema schema, List<? extends EnrichedEvent> records);
+    void store(Schema schema, List<? extends EnrichedEvent> records) throws Exception;
 }

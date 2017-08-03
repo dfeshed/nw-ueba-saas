@@ -7,7 +7,6 @@ import org.springframework.data.mongodb.core.mapping.Field;
  * Created by efratn on 02/08/2017.
  */
 @Document
-//TODO add indexes
 public class ActiveDirectoryEnrichedEvent extends EnrichedEvent{
 
     public static final String IS_USER_ADMIN_FIELD = "isUserAdmin";

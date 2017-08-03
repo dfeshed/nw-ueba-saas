@@ -9,11 +9,12 @@ import fortscale.utils.mongodb.util.ToCollectionNameTranslator;
  * Created by barak_schuster on 5/18/17.
  */
 public class OutputToCollectionNameTranslator implements ToCollectionNameTranslator<Schema> {
-    private static final String ENRICHED_COLLECTION_PREFIX = "output_enriched_events_";
+    private static final String COMPONENT_NAME = "output_";
+    private static final String COLLECTION_DESCRIPTION = "_enriched_events";
 
     @Override
     public String toCollectionName(Schema schema) {
-        return String.format(ENRICHED_COLLECTION_PREFIX + "%s", schema);
+        return String.format(COMPONENT_NAME + "%s" + COLLECTION_DESCRIPTION, schema.toString().toLowerCase());
     }
 
 }

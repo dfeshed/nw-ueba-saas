@@ -29,13 +29,15 @@ public class EventPersistencyServiceImpl implements EventPersistencyService {
     }
 
     @Override
-    public void store(Schema schema, List<? extends EnrichedEvent> events) {
+    public void store(Schema schema, List<? extends EnrichedEvent> events) throws Exception {
         logger.info("storing events by schema={}", schema);
         String collectionName = toCollectionNameTranslator.toCollectionName(schema);
         try {
             eventRepository.saveEvents(collectionName, events);
         } catch (Exception e) {
-            //TODO
+            String errorMsg = String.format("Failed to store events by schema %s", schema);
+            logger.error(errorMsg, e);
+            throw e;
         }
     }
 }

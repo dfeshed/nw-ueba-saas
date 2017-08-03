@@ -6,14 +6,13 @@ import fortscale.common.general.Schema;
 import fortscale.domain.core.EventResult;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
 import org.junit.Assert;
-import org.junit.Ignore;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
-import presidio.output.domain.records.events.EnrichedEvent;
 import presidio.output.domain.records.events.FileEnrichedEvent;
 import presidio.output.domain.services.event.EventPersistencyService;
 import presidio.output.domain.spring.EventPersistencyServiceConfig;
@@ -24,7 +23,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-@Ignore
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = {MongodbTestConfig.class, EventPersistencyServiceConfig.class})
 public class EventPersistencyServiceTest {
@@ -35,27 +33,34 @@ public class EventPersistencyServiceTest {
     private OutputToCollectionNameTranslator toCollectionNameTranslator;
     @Autowired
     private MongoTemplate mongoTemplate;
-//
-//    @Before
-//    public void before() {
-//        esTemplate.deleteIndex(Alert.class);
-//        esTemplate.createIndex(Alert.class);
-//        esTemplate.putMapping(Alert.class);
-//        esTemplate.refresh(Alert.class);
-//    }
+
+    @Before
+    public void before(){
+        mongoTemplate.dropCollection(toCollectionNameTranslator.toCollectionName(Schema.DLPFILE));
+    }
+
+    @Test
+    public void contextLoads() throws Exception {
+        Assert.assertNotNull(eventPersistencyService);
+    }
 
     @Test
     public void testSave() {
+        //creating event Pojo
         Instant eventDate = Instant.now();
-        EnrichedEvent event = new EnrichedEvent(eventDate, eventDate, "eventId", Schema.FILE.toString(),
-                "userId", "username", "userDisplayName", "dataSource", "oppType", new ArrayList<>(),
-                EventResult.FAILURE, "resultCode", new HashMap<>());
-
-        List<EnrichedEvent> events = new ArrayList<>();
+        FileEnrichedEvent event = new FileEnrichedEvent(eventDate, eventDate, "eventId", Schema.FILE.toString(),
+                "userId", "username", "userDisplayName", "dataSource", "oppType", new ArrayList<String>(),
+                EventResult.FAILURE, "resultCode", new HashMap<String, String>(), "absoluteSrcFilePath", "absoluteDstFilePath",
+                "absoluteSrcFolderFilePath", "absoluteDstFolderFilePath", 20L, true, true);
+        List<FileEnrichedEvent> events = new ArrayList<>();
         events.add(event);
 
         //store the events into mongp
-        eventPersistencyService.store(Schema.FILE, events);
+        try {
+            eventPersistencyService.store(Schema.FILE, events);
+        } catch (Exception e) {
+            Assert.fail();
+        }
 
         //check that data was stored
         String collectionName = toCollectionNameTranslator.toCollectionName(Schema.FILE);
