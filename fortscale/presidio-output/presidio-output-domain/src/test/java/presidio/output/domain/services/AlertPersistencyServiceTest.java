@@ -5,6 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.Ignore;
 import org.junit.runner.RunWith;
+import org.springframework.context.annotation.Import;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
@@ -46,7 +47,7 @@ public class AlertPersistencyServiceTest {
 
     @Test
     public void testSave() {
-        long startDate = Instant.now().toEpochMilli(); //"23-FEB-2017"
+        long startDate = Instant.now().toEpochMilli();
         long endDate = Instant.now().toEpochMilli();
         Alert alert =
                 new Alert("1010","user1", AlertType.DATA_EXFILTRATION, startDate, endDate, 95.0d,3,AlertTimeframe.HOURLY, AlertSeverity.HIGH);
@@ -60,7 +61,7 @@ public class AlertPersistencyServiceTest {
 
     @Test
     public void testSaveBulk() {
-        long startDate = Instant.now().toEpochMilli(); //"23-FEB-2017"
+        long startDate = Instant.now().toEpochMilli();
         long endDate = Instant.now().toEpochMilli();
         List<Alert> alertList = new ArrayList<>();
         alertList.add(
@@ -75,7 +76,7 @@ public class AlertPersistencyServiceTest {
 
     @Test
     public void testFindOne() {
-        long startDate = Instant.now().toEpochMilli(); //"23-FEB-2017"
+        long startDate = Instant.now().toEpochMilli();
         long endDate = Instant.now().toEpochMilli();
         Alert alert =
                 new Alert("1010","user1", AlertType.DATA_EXFILTRATION, startDate, endDate, 95.0d,3,AlertTimeframe.HOURLY, AlertSeverity.HIGH);
@@ -93,7 +94,7 @@ public class AlertPersistencyServiceTest {
 
     @Test
     public void testFindAll() {
-        long startDate = Instant.now().toEpochMilli(); //"23-FEB-2017"
+        long startDate = Instant.now().toEpochMilli();
         long endDate = Instant.now().toEpochMilli();
         List<Alert> alertList = new ArrayList<>();
         alertList.add(
@@ -112,7 +113,7 @@ public class AlertPersistencyServiceTest {
 
     @Test
     public void testFindByUserName() {
-        long startDate = Instant.now().toEpochMilli(); //"23-FEB-2017"
+        long startDate = Instant.now().toEpochMilli();
         long endDate = Instant.now().toEpochMilli();
         List<Alert> alertList = new ArrayList<>();
         alertList.add(
@@ -133,7 +134,7 @@ public class AlertPersistencyServiceTest {
 
     @Test
     public void testDelete() {
-        long startDate = Instant.now().toEpochMilli(); //"23-FEB-2017"
+        long startDate = Instant.now().toEpochMilli();
         long endDate = Instant.now().toEpochMilli();
         Alert alert =
                 new Alert("1010","user1", AlertType.DATA_EXFILTRATION, startDate, endDate, 95.0d,3,AlertTimeframe.HOURLY, AlertSeverity.HIGH);
@@ -145,21 +146,45 @@ public class AlertPersistencyServiceTest {
 
     @Test
     public void testFindByQuery() {
-        long startDate = Instant.now().toEpochMilli(); //"23-FEB-2017"
+
+        long startDate = Instant.now().toEpochMilli();
         long endDate = Instant.now().toEpochMilli();
-        Alert alert =
-                new Alert("1010","user1", AlertType.DATA_EXFILTRATION, startDate, endDate, 95.0d,3,AlertTimeframe.HOURLY, AlertSeverity.HIGH);
-        alertPersistencyService.save(alert);
+
+        List<Alert> alertList = new ArrayList<>();
+        alertList.add(
+                new Alert("1000",
+                        "normalized_username_ipusr3@somebigcompany.com", AlertType.DATA_EXFILTRATION, startDate-1, endDate+5, 95.0d,3,AlertTimeframe.HOURLY, AlertSeverity.HIGH));
+        alertList.add(
+                new Alert("1001",
+                        "normalized_username_ipusr3@somebigcompany.com", AlertType.DATA_EXFILTRATION, startDate, endDate+5, 95.0d,3,AlertTimeframe.HOURLY, AlertSeverity.HIGH));
+        alertList.add(
+                new Alert("1002",
+                        "normalized_username_ipusr3@somebigcompany.com", AlertType.DATA_EXFILTRATION, startDate+1, endDate+5, 95.0d,3,AlertTimeframe.HOURLY, AlertSeverity.HIGH));
+        alertList.add(
+                new Alert("1003",
+                        "normalized_username_ipusr3@somebigcompany.com", AlertType.DATA_EXFILTRATION, startDate+2, endDate+5, 95.0d,3,AlertTimeframe.HOURLY, AlertSeverity.HIGH));
+        alertList.add(
+                new Alert("1004",
+                        "normalized_username_ipusr4@somebigcompany.com", AlertType.ANOMALOUS_ADMIN_ACTIVITY, startDate, endDate+5, 95.0d,3,AlertTimeframe.HOURLY, AlertSeverity.HIGH));
+        alertList.add(
+                new Alert("1005",
+                        "normalized_username_ipusr3@somebigcompany.com", AlertType.ANOMALOUS_ADMIN_ACTIVITY, startDate, endDate+5, 95.0d,3,AlertTimeframe.HOURLY, AlertSeverity.MEDIUM));
+        for (Alert alert : alertList) {
+            alertPersistencyService.save(alert);
+        }
 
         AlertQuery alertQuery =
                 new AlertQuery.AlertQueryBuilder()
-                        .filterByUserName("user1")
+                        .filterByUserName("normalized_username_ipusr3")
+                        .filterBySeverity(AlertSeverity.HIGH.toString())
+                        .filterByStartDate(startDate)
+                        .filterByEndDate(endDate+1)
                         .sortField(Alert.SCORE, true)
                         .aggregateBySeverity(false)
                         .build();
 
         Page<Alert> testAlert = alertPersistencyService.find(alertQuery);
-        assertThat(testAlert.getTotalElements(), is(1L));
+        assertThat(testAlert.getTotalElements(), is(2L));
     }
 
 }
