@@ -3,7 +3,7 @@ package presidio.input.core.services.converters;
 import fortscale.domain.core.AbstractAuditableDocument;
 import presidio.ade.domain.record.enriched.EnrichedFileRecord;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
-import fortscale.domain.core.FileRawEvent;
+import presidio.sdk.api.domain.FileRawEvent;
 
 public class FileConverter implements InputAdeConverter {
 

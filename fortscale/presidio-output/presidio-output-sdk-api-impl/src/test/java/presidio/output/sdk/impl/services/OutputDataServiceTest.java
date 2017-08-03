@@ -1,7 +1,6 @@
 package presidio.output.sdk.impl.services;
 
-import fortscale.domain.core.AbstractPresidioDocument;
-import fortscale.domain.core.EnrichedRecordsMetadata;
+import fortscale.common.general.Schema;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -32,12 +31,11 @@ public class OutputDataServiceTest {
         //creating meta data
         Instant startDate = Instant.now();
         Instant endDate = Instant.now().plus(1, ChronoUnit.HOURS);
-        EnrichedRecordsMetadata metaData = new EnrichedRecordsMetadata("File", startDate, endDate);
 
         //create meta data
-        List<? extends AbstractPresidioDocument> events = new ArrayList<FileEnrichedEvent>();
+        List<FileEnrichedEvent> events = new ArrayList<FileEnrichedEvent>();
 
-        outputDataServiceSDK.store(metaData, events);
+        outputDataServiceSDK.store(Schema.FILE, events);
 
     }
 

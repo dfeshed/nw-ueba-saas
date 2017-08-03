@@ -1,4 +1,4 @@
-package fortscale.domain.core;
+package presidio.sdk.api.domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import fortscale.common.general.EventResult;

@@ -1,11 +1,13 @@
 package presidio.output.domain.records.events;
 
 import fortscale.common.general.EventResult;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 
@@ -29,36 +31,17 @@ public class EnrichedEvent {
     public static final String USER_DISPLAY_NAME_FIELD = "userdisplayName";
     private static final String ADDITIONAL_INFO = "additionalInfo";
     private static final String USER_ID_FIELD = "userId";
-
-    public EnrichedEvent() {}
-
-    public EnrichedEvent(String eventId,
-                         String schema,
-                         String userId,
-                         String userName,
-                         String userDisplayName,
-                         String dataSource,
-                         String operationType,
-                         List<String> operationTypeCategories,
-                         EventResult result,
-                         String resultCode,
-                         Map<String, String> additionalnfo) {
-        this.eventId = eventId;
-        this.schema = schema;
-        this.userId = userId;
-        this.userName = userName;
-        this.userDisplayName = userDisplayName;
-        this.dataSource = dataSource;
-        this.operationType = operationType;
-        this.operationTypeCategories = operationTypeCategories;
-        this.result = result;
-        this.resultCode = resultCode;
-        this.additionalnfo = additionalnfo;
-    }
+    private static final String START_INSTANT_FIELD = "eventDate";
 
     @Id
     @Field
     private String id;
+
+    @CreatedDate
+    private Instant createdDate;
+
+    @Field(START_INSTANT_FIELD)
+    private Instant eventDate;
 
     @Field(EVENT_ID_FIELD)
     private String eventId;
@@ -93,6 +76,36 @@ public class EnrichedEvent {
 
     @Field(ADDITIONAL_INFO)
     private Map<String,String> additionalnfo;
+
+    public EnrichedEvent() {}
+
+    public EnrichedEvent(Instant createdDate,
+                         Instant eventDate,
+                         String eventId,
+                         String schema,
+                         String userId,
+                         String userName,
+                         String userDisplayName,
+                         String dataSource,
+                         String operationType,
+                         List<String> operationTypeCategories,
+                         EventResult result,
+                         String resultCode,
+                         Map<String, String> additionalnfo) {
+        this.createdDate = createdDate;
+        this.eventDate = eventDate;
+        this.eventId = eventId;
+        this.schema = schema;
+        this.userId = userId;
+        this.userName = userName;
+        this.userDisplayName = userDisplayName;
+        this.dataSource = dataSource;
+        this.operationType = operationType;
+        this.operationTypeCategories = operationTypeCategories;
+        this.result = result;
+        this.resultCode = resultCode;
+        this.additionalnfo = additionalnfo;
+    }
 
     public String getEventId() {
         return eventId;

@@ -1,4 +1,4 @@
-package fortscale.domain.core;
+package presidio.sdk.api.domain;
 
 /**
  * Created by alexp on 09-Jul-17.

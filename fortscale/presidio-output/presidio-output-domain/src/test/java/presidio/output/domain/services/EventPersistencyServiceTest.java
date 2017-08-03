@@ -37,9 +37,8 @@ public class EventPersistencyServiceTest {
 
     @Test
     public void testSave() {
-        Instant startDate = Instant.now();
-        Instant endDate = Instant.now();
-        EnrichedEvent event = new EnrichedEvent("eventId", Schema.FILE.toString(),
+        Instant eventDate = Instant.now();
+        EnrichedEvent event = new EnrichedEvent(eventDate, eventDate, "eventId", Schema.FILE.toString(),
                 "userId", "username", "userDisplayName", "dataSource", "oppType", new ArrayList<>(),
                 EventResult.FAILURE, "resultCode", new HashMap<>());
 

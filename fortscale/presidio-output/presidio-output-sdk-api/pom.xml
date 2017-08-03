@@ -19,7 +19,7 @@
     <dependencies>
         <dependency>
             <groupId>fortscale</groupId>
-            <artifactId>presidio-domain</artifactId>
+            <artifactId>presidio-output-domain</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

@@ -1,7 +1,7 @@
 package presidio.output.sdk.api;
 
-import presidio.output.domain.records.events.EnrichedEvent;
 import fortscale.common.general.Schema;
+import presidio.output.domain.records.events.EnrichedEvent;
 
 import java.util.List;
 

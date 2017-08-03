@@ -1,6 +1,7 @@
-package fortscale.domain.core;
+package presidio.sdk.api.domain;
 
 import fortscale.common.general.EventResult;
+import fortscale.domain.core.AbstractAuditableDocument;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.mongodb.core.mapping.Field;
 

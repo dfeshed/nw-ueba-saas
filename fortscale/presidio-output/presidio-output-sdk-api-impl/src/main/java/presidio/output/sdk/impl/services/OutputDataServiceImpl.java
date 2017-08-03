@@ -1,10 +1,9 @@
 package presidio.output.sdk.impl.services;
 
-import fortscale.domain.core.EnrichedRecordsMetadata;
 import presidio.output.sdk.api.OutputDataServiceSDK;
-import presidio.output.domain.records.events.*;
-
 import java.util.List;
+import fortscale.common.general.Schema;
+import presidio.output.domain.records.events.EnrichedEvent;
 
 /**
  * Created by efratn on 19/07/2017.
@@ -12,7 +11,7 @@ import java.util.List;
 public class OutputDataServiceImpl implements OutputDataServiceSDK {
 
     @Override
-    public void store(EnrichedRecordsMetadata metaData, List<? extends EnrichedEvent> records) {
+    public void store(Schema schema, List<? extends EnrichedEvent> records) {
         //TODO add here the actual storing
     }
 }
