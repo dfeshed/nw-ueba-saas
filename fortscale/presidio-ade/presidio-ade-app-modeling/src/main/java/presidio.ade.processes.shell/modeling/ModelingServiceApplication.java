@@ -12,8 +12,6 @@ import org.springframework.context.annotation.FilterType;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @SpringBootApplication
 @ComponentScan(excludeFilters = @Filter(type = FilterType.REGEX, pattern = {"fortscale.*", "presidio.*"}))
@@ -29,6 +27,9 @@ public class ModelingServiceApplication {
 
 		// The Spring configuration of the application
 		sources.add(ModelingServiceConfiguration.class);
+
+		// TODO Instant converter
+
 		PresidioShellableApplication.run(sources, args);
 	}
 }

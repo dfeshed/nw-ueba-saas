@@ -1,8 +1,8 @@
 package fortscale.common.shell.command;
 
 import fortscale.common.general.CommonStrings;
+import fortscale.common.general.Schema;
 import fortscale.common.shell.PresidioExecutionService;
-import fortscale.common.general.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.shell.core.CommandMarker;
 import org.springframework.shell.core.annotation.CliCommand;
@@ -25,8 +25,8 @@ public class PresidioCommands implements CommandMarker {
 
     @CliCommand(value = "run", help = "run events with specified time range and data source")
     public void run(
-            @CliOption(key = {CommonStrings.COMMAND_LINE_DATA_SOURCE_FIELD_NAME}, mandatory = true, help = "data source")
-            final DataSource dataSource,
+            @CliOption(key = {CommonStrings.COMMAND_LINE_SCHEMA_FIELD_NAME}, mandatory = true, help = "events schema")
+            final Schema schema,
 
             @CliOption(key = {CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME}, mandatory = true, help = "events with (logical) time greater than specified start time will be processed")
             final Instant startTime,
@@ -38,13 +38,13 @@ public class PresidioCommands implements CommandMarker {
             final Double fixedDuration
 
     ) throws Exception {
-           executionService.run(dataSource, startTime, endTime, fixedDuration);
+           executionService.run(schema, startTime, endTime, fixedDuration);
     }
 
     @CliCommand(value = "clean", help = "clean application data for specified time range and data source")
     public void clean(
-            @CliOption(key = {CommonStrings.COMMAND_LINE_DATA_SOURCE_FIELD_NAME}, mandatory = true, help = "data source")
-            final DataSource dataSource,
+            @CliOption(key = {CommonStrings.COMMAND_LINE_SCHEMA_FIELD_NAME}, mandatory = true, help = "events schema")
+            final Schema schema,
 
             @CliOption(key = {CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME}, mandatory = true, help = "events with (logical) time greater than specified start time will be processed")
             final Instant startTime,
@@ -53,15 +53,15 @@ public class PresidioCommands implements CommandMarker {
             final Instant endTime
 
     ) throws Exception {
-        executionService.clean(dataSource, startTime, endTime);
+        executionService.clean(schema, startTime, endTime);
     }
 
     @CliCommand(value = "cleanAll", help = "clean application data for specified data source")
     public void cleanAll(
-            @CliOption(key = {CommonStrings.COMMAND_LINE_DATA_SOURCE_FIELD_NAME}, mandatory = true, help = "data source")
-            final DataSource dataSource
+            @CliOption(key = {CommonStrings.COMMAND_LINE_SCHEMA_FIELD_NAME}, mandatory = true, help = "events schema")
+            final Schema schema
 
     ) throws Exception {
-        executionService.cleanAll(dataSource);
+        executionService.cleanAll(schema);
     }
 }

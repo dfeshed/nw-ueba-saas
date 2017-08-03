@@ -5,7 +5,7 @@
 
 
     <name>presidio-output-processor</name>
-    <description>Demo project for Spring Boot</description>
+    <description>Presidio output processor application</description>
 
     <parent>
         <artifactId>presidio-output</artifactId>
@@ -17,7 +17,7 @@
 
 
     <properties>
-        <start-class>fortscale.FortscaleOutputProcessorApplication</start-class>
+        <start-class>presidio.FortscaleOutputProcessorApplication</start-class>
     </properties>
 
     <dependencies>

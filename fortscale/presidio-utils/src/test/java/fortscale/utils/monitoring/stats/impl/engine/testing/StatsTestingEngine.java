@@ -3,6 +3,7 @@ package fortscale.utils.monitoring.stats.impl.engine.testing;
 import fortscale.utils.monitoring.stats.engine.StatsEngineBase;
 import fortscale.utils.monitoring.stats.engine.StatsEngineMetricsGroupData;
 import fortscale.utils.monitoring.stats.models.engine.EngineData;
+import org.junit.Ignore;
 
 import java.util.HashMap;
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.List;
 /**
  * Created by gaashh on 4/6/16.
  */
+@Ignore
 public class StatsTestingEngine extends StatsEngineBase {
 
     HashMap<String,StatsEngineMetricsGroupData> latestMetricsGroupData;

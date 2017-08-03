@@ -1,5 +1,6 @@
 package presidio.sdk.api.domain;
 
+import fortscale.common.general.EventResult;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -55,7 +56,7 @@ public class AuthenticationRawEvent extends AbstractInputDocument {
         this.resultCode = record[9];
     }
 
-    public boolean isDstMachineRemote() {
+    public boolean getIsDstMachineRemote() {
         return isDstMachineRemote;
     }
 

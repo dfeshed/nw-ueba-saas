@@ -21,17 +21,3 @@ class FeatureAggregationsOperator(AggregationsOperator):
         """
 
         return 'feature_aggregations'
-
-    def get_jar_file_path(self):
-        """
-        :return: The full path to the "Feature Aggregations" JAR file
-        """
-
-        return '/home/presidio/dev-projects/presidio-core/presidio-workflows/tests/resources/jars/test-mock-project-0.0.1-SNAPSHOT.jar'
-
-    def get_main_class(self):
-        """
-       :return: The main class name of JAR file
-       """
-
-        return 'com.fortscale.test.TestMockProjectApplication'

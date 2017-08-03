@@ -4,6 +4,7 @@ import fortscale.utils.monitoring.stats.StatsMetricsTag;
 import fortscale.utils.monitoring.stats.impl.engine.testing.StatsTestingEngine;
 import org.junit.Assert;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.LinkedList;
@@ -12,6 +13,7 @@ import java.util.List;
 /**
  * Created by gaashh on 4/17/16.
  */
+@Ignore
 public class StatsBaseEngineTest {
     
 

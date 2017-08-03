@@ -11,7 +11,7 @@ import fortscale.utils.time.TimeRange;
 import presidio.ade.domain.pagination.enriched.EnrichedRecordPaginationService;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
-import presidio.ade.domain.record.scored.enriched_scored.AdeScoredEnrichedRecord;
+import presidio.ade.domain.record.enriched.AdeScoredEnrichedRecord;
 import presidio.ade.domain.store.aggr.AggregatedDataStore;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
 
@@ -79,7 +79,7 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
 
     private List<String> getAggregationContext() {
         // todo: figure out from conf
-        return Collections.singletonList("context.normalizedUsername");
+        return Collections.singletonList("context.userId");
     }
 
     protected FeatureBucketStrategyData createFeatureBucketStrategyData(TimeRange timeRange){
@@ -99,6 +99,6 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
 
     public List<String> getDistinctContextTypes(String dataSource){
         //todo: figure it out from the configuration.
-        return Collections.singletonList("normalizedUsername");
+        return Collections.singletonList("userId");
     }
 }
