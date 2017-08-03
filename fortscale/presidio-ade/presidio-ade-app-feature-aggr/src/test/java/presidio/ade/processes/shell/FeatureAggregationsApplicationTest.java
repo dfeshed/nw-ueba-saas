@@ -16,7 +16,7 @@ import org.springframework.test.context.junit4.SpringRunner;
  */
 @RunWith(SpringRunner.class)
 @Category(ModuleTestCategory.class)
-@ContextConfiguration(classes = FeatureAggregationsConfigTest.class)
+@ContextConfiguration(classes = FeatureAggregationsConfigurationTest.class)
 public class FeatureAggregationsApplicationTest {
 
     public static final String EXECUTION_COMMAND = "run  --schema DLPFILE --start_date 2017-06-13T07:00:00.00Z --end_date 2017-06-13T09:00:00.00Z --fixed_duration_strategy 3600";

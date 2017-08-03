@@ -1,9 +1,9 @@
 package presidio.input.core.services.converters;
 
 import fortscale.domain.core.AbstractAuditableDocument;
-import presidio.ade.domain.record.enriched.EnrichedActiveDirectoryRecord;
+import presidio.ade.domain.record.enriched.activedirectory.EnrichedActiveDirectoryRecord;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
-import fortscale.domain.core.ActiveDirectoryRawEvent;
+import presidio.sdk.api.domain.ActiveDirectoryRawEvent;
 
 public class ActiveDirectoryConverter implements InputAdeConverter {
     @Override

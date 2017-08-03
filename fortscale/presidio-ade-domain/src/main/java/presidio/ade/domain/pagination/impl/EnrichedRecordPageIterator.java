@@ -4,7 +4,7 @@ import fortscale.utils.pagination.PageIterator;
 import fortscale.utils.time.TimeRange;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
-import fortscale.domain.core.EnrichedRecordsMetadata;
+import presidio.ade.domain.store.enriched.EnrichedRecordsMetadata;
 
 import java.util.List;
 import java.util.Set;
@@ -27,6 +27,7 @@ public class EnrichedRecordPageIterator<U extends EnrichedRecord> implements Pag
     private int pageSize;
     private int totalNumOfItems;
     private Set<String> contextIds;
+    private String fieldNameToSortBy;
 
     /**
      * @param timeRange
@@ -37,7 +38,7 @@ public class EnrichedRecordPageIterator<U extends EnrichedRecord> implements Pag
      * @param pageSize        num of events in each page
      * @param totalNumOfItems total num of events in the all pages
      */
-    public EnrichedRecordPageIterator(TimeRange timeRange, String contextType, String adeEventType, Set<String> contextIds, EnrichedDataStore store, int pageSize, int totalNumOfItems, int totalAmountOfPages) {
+    public EnrichedRecordPageIterator(TimeRange timeRange, String contextType, String adeEventType, Set<String> contextIds, EnrichedDataStore store, int pageSize, int totalNumOfItems, int totalAmountOfPages, String fieldNameToSortBy) {
         this.currentPage = 0;
         this.timeRange = timeRange;
         this.contextType = contextType;
@@ -47,6 +48,7 @@ public class EnrichedRecordPageIterator<U extends EnrichedRecord> implements Pag
         this.pageSize = pageSize;
         this.totalNumOfItems = totalNumOfItems;
         this.totalAmountOfPages = totalAmountOfPages;
+        this.fieldNameToSortBy = fieldNameToSortBy;
     }
 
     @Override
@@ -64,8 +66,12 @@ public class EnrichedRecordPageIterator<U extends EnrichedRecord> implements Pag
         EnrichedRecordsMetadata enrichedRecordsMetadata = new EnrichedRecordsMetadata(this.adeEventType, this.timeRange.getStart(), this.timeRange.getEnd());
         int numOfItemsToSkip = this.currentPage * this.pageSize;
         this.currentPage++;
-        return this.store.readRecords(enrichedRecordsMetadata, this.contextIds, contextType, numOfItemsToSkip, this.pageSize);
 
+        if(this.fieldNameToSortBy.isEmpty()){
+            return this.store.readRecords(enrichedRecordsMetadata, this.contextIds, contextType, numOfItemsToSkip, this.pageSize);
+        }
+
+        return this.store.readSortedRecords(enrichedRecordsMetadata, this.contextIds, contextType, numOfItemsToSkip, this.pageSize, this.fieldNameToSortBy);
     }
 
 }

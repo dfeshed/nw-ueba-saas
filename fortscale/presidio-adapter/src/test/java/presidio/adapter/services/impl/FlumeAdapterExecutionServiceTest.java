@@ -46,14 +46,12 @@ public class FlumeAdapterExecutionServiceTest {
         Mockito.when(mockProcessExecutor.executeProcess(Mockito.anyString(), Mockito.anyListOf(String.class), Mockito.anyString())).thenReturn(null);
 
         mockFlumeConfigurationUtil = Mockito.mock(FlumeConfigurationUtil.class);
-        Path currentRelativePath = Paths.get("");
-        String currentDirectory = currentRelativePath.toAbsolutePath().toString();
-        mockedFlumeHome = currentDirectory + File.separator + "src" + File.separator + "test" + File.separator + "resources" + File.separator;
-        mockedConfFolder = mockedFlumeHome + "conf" + File.separator;
-        mockedPropertiesFile = Paths.get("flume-test.properties").normalize().toString();
+        mockedFlumeHome = "some_flume_home" + File.separator;
+        mockedConfFolder = mockedFlumeHome + "conf" + File.separator + "adapter" + File.separator;
+        mockedPropertiesFile = Paths.get("active_directory.properties").normalize().toString();
         mockedAgent = "mockedAgent";
         mockedAfterTestsFilePath = mockedConfFolder + "after_test_" + mockedPropertiesFile;
-        mockedJobName = "after_test_flume-test";
+        mockedJobName = "active_directory.properties";
         mockedFlumeExecutionScriptPath = mockedFlumeHome + "bin" + File.separator + "flume-ng";
         Mockito.when(mockFlumeConfigurationUtil.getFlumeHome()).thenReturn(mockedFlumeHome);
         Mockito.when(mockFlumeConfigurationUtil.createConfFolderPath()).thenReturn(mockedConfFolder);
@@ -66,17 +64,11 @@ public class FlumeAdapterExecutionServiceTest {
         Mockito.when(mockFlumeConfigurationUtil.getConfFilePathArgument(Mockito.any(Schema.class))).thenReturn("--conf-file " + mockedPropertiesFile);
         Mockito.when(mockFlumeConfigurationUtil.createJobName(Mockito.any(Schema.class), Mockito.any(Instant.class), Mockito.any(Instant.class))).thenReturn(mockedJobName);
         Mockito.when(mockFlumeConfigurationUtil.getFlumeExecutionConfFileArgument(mockedAfterTestsFilePath)).thenReturn("--conf-file " + mockedAfterTestsFilePath);
+        Mockito.when(mockFlumeConfigurationUtil.createExecutionConfFile(Mockito.any(Schema.class), Mockito.any(Instant.class), Mockito.any(Instant.class))).thenReturn(mockedAfterTestsFilePath);
 
         flumeAdapterExecutionService = new FlumeAdapterExecutionService(mockProcessExecutor, mockFlumeConfigurationUtil);
 
 
-        final Path pathToTestCreatedFile = Paths.get(mockedAfterTestsFilePath);
-        try {
-            Files.delete(pathToTestCreatedFile);
-        } catch (IOException e) {
-            //ignore
-        }
-        Files.createFile(pathToTestCreatedFile);
 
     }
 
@@ -92,14 +84,12 @@ public class FlumeAdapterExecutionServiceTest {
 
     @Test
     public void run() throws Exception {
-
-
         Instant startDate = Instant.EPOCH; //1970-01-01T00:00:00Z
         Instant endDate = startDate.plus((Duration.ofDays(365))); //1971-01-01T00:00:00Z
         flumeAdapterExecutionService.run(Schema.ACTIVE_DIRECTORY, startDate, endDate, null);
 
         final List<String> expectedArgumentList = Arrays.asList(mockedFlumeExecutionScriptPath, "agent", "--name " + mockedAgent, "--conf " + mockedConfFolder, "--conf-file " + mockedAfterTestsFilePath);
-        Mockito.verify(mockProcessExecutor).executeProcess("after_test_flume-test", expectedArgumentList, mockedFlumeHome);
+        Mockito.verify(mockProcessExecutor).executeProcess(mockedJobName, expectedArgumentList, mockedFlumeHome);
     }
 
 }

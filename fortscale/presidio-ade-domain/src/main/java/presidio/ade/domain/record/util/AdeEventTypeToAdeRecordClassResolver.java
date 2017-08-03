@@ -1,28 +1,20 @@
 package presidio.ade.domain.record.util;
 
 import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
 import presidio.ade.domain.record.AdeRecord;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Scan given class path for records.
  * Add ade record type and pojo class to the map.
  * For example: dlp_file, EnrichedDlpFileRecord.class
  */
-public class AdeEventTypeToAdeRecordClassResolver<T> {
-
-    private Map<String, Class<? extends T>> adeEventTypeToAdeRecordClassMap;
-
+public class AdeEventTypeToAdeRecordClassResolver<K extends String, T extends AdeRecord> extends KeyToAdeRecordClassResolver {
     /**
      * @param scanPackage class path to scan
      */
     public AdeEventTypeToAdeRecordClassResolver(String scanPackage) {
-        adeEventTypeToAdeRecordClassMap = new HashMap<>();
-        findAnnotatedClasses(scanPackage);
+        super(scanPackage);
     }
 
     /**
@@ -32,51 +24,22 @@ public class AdeEventTypeToAdeRecordClassResolver<T> {
      * @param beanDef bean definition of AdeRecordMetadata class
      */
     @SuppressWarnings("unchecked")
-    private void addItemsToMap(BeanDefinition beanDef) {
+    @Override
+    protected void addItemsToMap(BeanDefinition beanDef) {
         try {
             Class<?> pojoClass = Class.forName(beanDef.getBeanClassName());
             if (AdeRecord.class.isAssignableFrom(pojoClass)) {
                 AdeRecordMetadata adeRecord = pojoClass.getAnnotation(AdeRecordMetadata.class);
-                adeEventTypeToAdeRecordClassMap.put(adeRecord.adeEventType(), (Class<? extends T>) pojoClass);
+                keyToAdeRecordClassMap.put(adeRecord.adeEventType(), pojoClass);
             }
         } catch (Exception e) {
             System.err.println("Got exception: " + e.getMessage());
         }
     }
 
-    public Class<? extends T> getClass(String adeEventType) {
-        return adeEventTypeToAdeRecordClassMap.get(adeEventType);
-    }
-
-    /**
-     * Get the provider and scan the class path for candidate components (e.g: EnrichedDlpFileRecord).
-     *
-     * @param scanPackage class path to scan
-     */
-    public void findAnnotatedClasses(String scanPackage) {
-        // A component provider that scans the classpath
-        ClassPathScanningCandidateComponentProvider provider = createComponentScanner();
-
-        //Scan the class path for candidate components.
-        for (BeanDefinition beanDef : provider.findCandidateComponents(scanPackage)) {
-            addItemsToMap(beanDef);
-        }
-    }
-
-    /**
-     * Create provider that scans the classpath from a base package.
-     *
-     * @return provider
-     */
-    private ClassPathScanningCandidateComponentProvider createComponentScanner() {
-        // A component provider that scans the classpath from a base package.
-        // Don't pull default filters (@Component, etc.).
-        ClassPathScanningCandidateComponentProvider provider
-                = new ClassPathScanningCandidateComponentProvider(false);
-
-        //Create new AnnotationTypeFilter for the AdeRecordMetadata.class and add an it to the provider.
-        provider.addIncludeFilter(new AnnotationTypeFilter(AdeRecordMetadata.class));
-        return provider;
+    @Override
+    protected AnnotationTypeFilter getAnnotationTypeFilter() {
+        return new AnnotationTypeFilter(AdeRecordMetadata.class);
     }
 
 }

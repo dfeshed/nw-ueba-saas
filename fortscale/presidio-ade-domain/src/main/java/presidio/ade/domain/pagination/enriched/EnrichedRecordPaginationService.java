@@ -8,8 +8,9 @@ import fortscale.utils.time.TimeRange;
 import presidio.ade.domain.pagination.impl.EnrichedRecordPageIterator;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
-import fortscale.domain.core.EnrichedRecordsMetadata;
+import presidio.ade.domain.store.enriched.EnrichedRecordsMetadata;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -22,12 +23,21 @@ public class EnrichedRecordPaginationService extends PaginationService<EnrichedR
 
     private EnrichedDataStore store;
     private String contextType;
+    private String fieldNameToSortBy;
 
 
     public EnrichedRecordPaginationService(EnrichedDataStore store, int pageSize, int maxGroupSize, String contextType) {
         super(pageSize, maxGroupSize);
         this.store = store;
         this.contextType = contextType;
+        this.fieldNameToSortBy = "";
+    }
+
+    public EnrichedRecordPaginationService(EnrichedDataStore store, int pageSize, int maxGroupSize, String contextType, String fieldNameToSortBy) {
+        super(pageSize, maxGroupSize);
+        this.store = store;
+        this.contextType = contextType;
+        this.fieldNameToSortBy = fieldNameToSortBy;
     }
 
     @Override
@@ -40,7 +50,7 @@ public class EnrichedRecordPaginationService extends PaginationService<EnrichedR
     protected <U extends EnrichedRecord> PageIterator<U> createPageIterator(String adeEventType, TimeRange timeRange, Set<String> contextIds, int totalNumOfItems) {
         int totalAmountOfPages = (int) Math.ceil((double) totalNumOfItems / this.getPageSize());
         logger.debug("Num of pages is: {}",totalAmountOfPages);
-        return new EnrichedRecordPageIterator<>(timeRange, this.contextType, adeEventType, contextIds, this.store, this.getPageSize(), totalNumOfItems, totalAmountOfPages);
+        return new EnrichedRecordPageIterator<>(timeRange, this.contextType, adeEventType, contextIds, this.store, this.getPageSize(), totalNumOfItems, totalAmountOfPages, this.fieldNameToSortBy);
     }
 
     @Override
