@@ -6,12 +6,14 @@ import fortscale.aggregation.feature.event.store.AggregatedFeatureEventsMongoSto
 import fortscale.aggregation.feature.event.store.translator.AggregatedFeatureNameTranslationService;
 import fortscale.aggregation.feature.event.store.translator.AggregatedFeatureNameTranslationServiceConfig;
 import fortscale.utils.MongoStoreUtils;
+import fortscale.utils.monitoring.stats.StatsService;
 import fortscale.utils.monitoring.stats.config.NullStatsServiceConfig;
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -45,15 +47,30 @@ public class AggregatedFeatureEventsMongoStoreTest {
         private static final String FORTSCALE_TEST_DB = "fortscaleTestDb";
         private AggregatedFeatureEventsConfService aggrFeatureEventsConfService;
 
+        @Value("#{'${fortscale.store.collection.backup.prefix}'.split(',')}")
+        private List<String> backupCollectionNamesPrefixes;
+        @Autowired
+        private MongoTemplate mongoTemplate;
+        @Autowired
+        private AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
+        @Autowired
+        private StatsService statsService;
+        @Autowired
+        private AggregatedFeatureNameTranslationService aggregatedFeatureNameTranslationService;
+
         private MongoDbFactory mongoDbFactory() {
             Fongo fongo = new Fongo(FORTSCALE_TEST_DB);
-
             return new SimpleMongoDbFactory(fongo.getMongo(), FORTSCALE_TEST_DB);
         }
 
         @Bean
         public AggregatedFeatureEventsMongoStore aggregatedFeatureEventsMongoStore() {
-            return new AggregatedFeatureEventsMongoStore();
+            return new AggregatedFeatureEventsMongoStore(
+                    mongoTemplate,
+                    aggregatedFeatureEventsConfService,
+                    statsService,
+                    aggregatedFeatureNameTranslationService,
+                    backupCollectionNamesPrefixes);
         }
 
         @Bean
