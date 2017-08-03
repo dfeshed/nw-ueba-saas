@@ -22,7 +22,7 @@ public class OutputDataServiceConfig {
     private EventPersistencyService eventPersistencyService;
 
     @Bean
-    private OutputDataServiceSDK outputDataServiceSDK() {
+    public OutputDataServiceSDK outputDataServiceSDK() {
         return new OutputDataServiceImpl(eventPersistencyService);
     }
 

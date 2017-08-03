@@ -7,18 +7,12 @@ import fortscale.common.general.Schema;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
-import presidio.output.domain.records.events.EnrichedEvent;
 import presidio.output.domain.records.events.FileEnrichedEvent;
 import presidio.output.domain.services.event.EventPersistencyService;
 import presidio.output.domain.spring.EventPersistencyServiceConfig;
@@ -46,13 +40,19 @@ public class EventPersistencyServiceTest {
     }
 
     @Test
-    public void testSave() {
-        Instant eventDate = Instant.now();
-        EnrichedEvent event = new EnrichedEvent(eventDate, eventDate, "eventId", Schema.FILE.toString(),
-                "userId", "username", "userDisplayName", "dataSource", "oppType", new ArrayList<>(),
-                EventResult.FAILURE, "resultCode", new HashMap<>());
+    public void contextLoads() throws Exception {
+        Assert.assertNotNull(eventPersistencyService);
+    }
 
-        List<EnrichedEvent> events = new ArrayList<>();
+    @Test
+    public void testSave() {
+        //creating event Pojo
+        Instant eventDate = Instant.now();
+        FileEnrichedEvent event = new FileEnrichedEvent(eventDate, eventDate, "eventId", Schema.FILE.toString(),
+                "userId", "username", "userDisplayName", "dataSource", "oppType", new ArrayList<String>(),
+                EventResult.FAILURE, "resultCode", new HashMap<String, String>(), "absoluteSrcFilePath", "absoluteDstFilePath",
+                "absoluteSrcFolderFilePath", "absoluteDstFolderFilePath", 20L, true, true);
+        List<FileEnrichedEvent> events = new ArrayList<>();
         events.add(event);
 
         //store the events into mongp
