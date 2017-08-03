@@ -1,7 +1,7 @@
 {
   "BucketConfs": [
     {
-      "name": "StartInstantHistogramUserIdFileDaily",
+      "name": "startInstantHistogramUserIdFileDaily",
       "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "userId"
@@ -25,7 +25,7 @@
       ]
     },
     {
-      "name": "OperationTypeHistogramUserIdFilePermissionChangeFileDaily",
+      "name": "operationTypeHistogramUserIdFilePermissionChangeFileDaily",
       "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "userId"
@@ -36,7 +36,7 @@
       "strategyName": "fixed_duration_daily",
       "aggrFeatureConfs": [
         {
-          "name": "OperationTypeHistogram",
+          "name": "operationTypeHistogram",
           "featureNamesMap": {
             "groupBy": [
               "operationType"
@@ -52,7 +52,7 @@
       ]
     },
     {
-      "name": "OperationTypeHistogramUserIdFileActionFileDaily",
+      "name": "operationTypeHistogramUserIdFileActionFileDaily",
       "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "userId"
@@ -63,7 +63,7 @@
       "strategyName": "fixed_duration_daily",
       "aggrFeatureConfs": [
         {
-          "name": "OperationTypeHistogram",
+          "name": "operationTypeHistogram",
           "featureNamesMap": {
             "groupBy": [
               "operationType"
