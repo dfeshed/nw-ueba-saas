@@ -25,7 +25,7 @@ import static org.junit.Assert.*;
 import static presidio.output.domain.records.AlertEnums.*;
 import org.springframework.test.context.ContextConfiguration;
 
-//@Ignore
+@Ignore
 @RunWith(SpringRunner.class)
 @SpringBootTest()
 @ContextConfiguration(classes=presidio.output.domain.spring.PresidioOutputPersistencyServiceConfig.class)
