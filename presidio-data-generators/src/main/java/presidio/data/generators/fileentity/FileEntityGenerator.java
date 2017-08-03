@@ -1,16 +1,27 @@
 package presidio.data.generators.fileentity;
 
 import presidio.data.generators.common.GeneratorException;
+import presidio.data.generators.common.IBooleanGenerator;
+import presidio.data.generators.common.ILongGenerator;
+import presidio.data.generators.common.IStringGenerator;
 import presidio.data.generators.common.precentage.BooleanPercentageGenerator;
 import presidio.data.domain.FileEntity;
 
+/**
+ * Default generator for File entity.
+ * - creates both file and folder entities in 9:1 ratio
+ * - folder size is x10 of file size generator values
+ * - 20% of entities on shared drive
+ * - other values - defined in default generators of the fields
+ *
+ * **/
 public class FileEntityGenerator implements IFileEntityGenerator {
 
-    FileNameDefaultExtGenerator fileNameGenerator;
-    SimplePathGenerator filePathGenerator;
-    FileSizeIncrementalGenerator fileSizeGenerator;
-    BooleanPercentageGenerator isDriveSharedGenerator;
-    BooleanPercentageGenerator isDirectoryGenerator;
+    IStringGenerator fileNameGenerator;
+    IStringGenerator filePathGenerator;
+    ILongGenerator fileSizeGenerator;
+    IBooleanGenerator isDriveSharedGenerator;
+    IBooleanGenerator isDirectoryGenerator;
 
     public FileEntityGenerator() throws GeneratorException {
         fileNameGenerator = new FileNameDefaultExtGenerator();
@@ -22,54 +33,52 @@ public class FileEntityGenerator implements IFileEntityGenerator {
     }
 
     public FileEntity getNext(){
-        boolean isDirectory = getIsDirectoryGenerator().getNext();
-
-        // alter file name and size in case if generating folder domain
+        Boolean isDirectory = (Boolean) getIsDirectoryGenerator().getNext();
         String fileName = (String) getFileNameGenerator().getNext();
         String filePath = (String) getFilePathGenerator().getNext();
-        long fileSize = getFileSizeGenerator().getNext() * (isDirectory ? 10:1); // make directory size larger
-        boolean isDriveShared = getIsDriveSharedGenerator().getNext();
+        Long fileSize = getFileSizeGenerator().getNext() * (isDirectory ? 10:1); // make directory size larger
+        Boolean isDriveShared = (Boolean) getIsDriveSharedGenerator().getNext();
 
         return new FileEntity(fileName, filePath ,fileSize, isDriveShared, isDirectory);
     }
 
-    public BooleanPercentageGenerator getIsDriveSharedGenerator() {
+    public IBooleanGenerator getIsDriveSharedGenerator() {
         return isDriveSharedGenerator;
     }
 
-    public void setIsDriveSharedGenerator(BooleanPercentageGenerator isDriveSharedGenerator) {
+    public void setIsDriveSharedGenerator(IBooleanGenerator isDriveSharedGenerator) {
         this.isDriveSharedGenerator = isDriveSharedGenerator;
     }
 
-    public FileNameDefaultExtGenerator getFileNameGenerator() {
+    public IStringGenerator getFileNameGenerator() {
         return fileNameGenerator;
     }
 
-    public void setFileNameGenerator(FileNameDefaultExtGenerator fileNameGenerator) {
+    public void setFileNameGenerator(IStringGenerator fileNameGenerator) {
         this.fileNameGenerator = fileNameGenerator;
     }
 
-    public SimplePathGenerator getFilePathGenerator() {
+    public IStringGenerator getFilePathGenerator() {
         return filePathGenerator;
     }
 
-    public void setFilePathGenerator(SimplePathGenerator filePathGenerator) {
+    public void setFilePathGenerator(IStringGenerator filePathGenerator) {
         this.filePathGenerator = filePathGenerator;
     }
 
-    public FileSizeIncrementalGenerator getFileSizeGenerator() {
+    public ILongGenerator getFileSizeGenerator() {
         return fileSizeGenerator;
     }
 
-    public void setFileSizeGenerator(FileSizeIncrementalGenerator fileSizeGenerator) {
+    public void setFileSizeGenerator(ILongGenerator fileSizeGenerator) {
         this.fileSizeGenerator = fileSizeGenerator;
     }
 
-    public BooleanPercentageGenerator getIsDirectoryGenerator() {
+    public IBooleanGenerator getIsDirectoryGenerator() {
         return isDirectoryGenerator;
     }
 
-    public void setIsDirectoryGenerator(BooleanPercentageGenerator isDirectoryGenerator) {
+    public void setIsDirectoryGenerator(IBooleanGenerator isDirectoryGenerator) {
         this.isDirectoryGenerator = isDirectoryGenerator;
     }
 }

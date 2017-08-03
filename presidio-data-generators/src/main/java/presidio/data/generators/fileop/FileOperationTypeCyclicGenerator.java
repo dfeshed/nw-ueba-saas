@@ -2,11 +2,12 @@ package presidio.data.generators.fileop;
 
 import presidio.data.generators.common.AbstractCyclicValuesGenerator;
 import presidio.data.domain.event.file.FILE_OPERATION_TYPE;
+import presidio.data.generators.common.IStringGenerator;
 
 /**
  * This class is one element data provider from a cyclic list of string values - ADE File
  */
-public class FileOperationTypeCyclicGenerator extends AbstractCyclicValuesGenerator {
+public class FileOperationTypeCyclicGenerator extends AbstractCyclicValuesGenerator implements IStringGenerator{
 
     private static final String[] DEFAULT_FILE_OPERATION_TYPE = {
             FILE_OPERATION_TYPE.FOLDER_OPENED.value,
