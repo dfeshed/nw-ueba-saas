@@ -64,10 +64,12 @@ test('single packet renders default', function(assert) {
   packet.isContinuation = false;
   this.set('packet', packet);
 
+  // forcing viewportEntered becaues phantom gets confused with spaniel
   this.render(hbs`{{recon-event-detail/single-packet
     index=index
     packet=packet
     packetFields=packetFields
+    viewportEntered=true
   }}`);
 
   return wait().then(() => {
@@ -103,10 +105,12 @@ test('single packet renders with hidden header/footer bytes', function(assert) {
   packet.isContinuation = false;
   this.set('packet', packet);
 
+  // forcing viewportEntered becaues phantom gets confused with spaniel
   this.render(hbs`{{recon-event-detail/single-packet
     index=index
     packet=packet
     packetFields=packetFields
+    viewportEntered=true
   }}`);
 
   return wait().then(() => {
@@ -142,10 +146,12 @@ test('single (continuous) packet renders with hidden header/footer bytes', funct
   packet.isContinuation = true;
   this.set('packet', packet);
 
+  // forcing viewportEntered becaues phantom gets confused with spaniel
   this.render(hbs`{{recon-event-detail/single-packet
     index=index
     packet=packet
     packetFields=packetFields
+    viewportEntered=true
   }}`);
 
   return wait().then(() => {

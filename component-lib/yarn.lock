@@ -82,45 +82,43 @@
   dependencies:
     "@glimmer/util" "^0.22.3"
 
-"@html-next/flexi-config@2.0.0-beta.12":
-  version "2.0.0-beta.12"
-  resolved "https://registry.npmjs.org/@html-next/flexi-config/-/flexi-config-2.0.0-beta.12.tgz#af2fa4d90a6d1fb510511c1c02e51a9d6514eac6"
+"@html-next/flexi-config@2.0.0":
+  version "2.0.0"
+  resolved "https://registry.npmjs.org/@html-next/flexi-config/-/flexi-config-2.0.0.tgz#f1808ea0242a4b10342ed606560a588073531116"
   dependencies:
-    ember-cli-babel "^5.1.7"
+    ember-cli-babel "^6.0.0"
 
-"@html-next/flexi-default-styles@2.0.0-beta.12":
-  version "2.0.0-beta.12"
-  resolved "https://registry.npmjs.org/@html-next/flexi-default-styles/-/flexi-default-styles-2.0.0-beta.12.tgz#5f7a58a85e63d84dc75172b4045f0430a91084b0"
+"@html-next/flexi-default-styles@2.0.1":
+  version "2.0.1"
+  resolved "https://registry.npmjs.org/@html-next/flexi-default-styles/-/flexi-default-styles-2.0.1.tgz#edbd0be0a08bd8743edd9d099565d8d57d992161"
   dependencies:
-    "@html-next/flexi-config" "2.0.0-beta.12"
-    ember-cli-babel "^5.1.7"
-    ember-cli-sass "^6.0.0"
+    "@html-next/flexi-config" "2.0.0"
+    broccoli-plugin "^1.3.0"
+    ember-cli-babel "^6.0.0"
+    ember-cli-sass "^6.2.0"
     rsvp "^3.2.0"
 
-"@html-next/flexi-dsl@2.0.0-beta.12":
-  version "2.0.0-beta.12"
-  resolved "https://registry.npmjs.org/@html-next/flexi-dsl/-/flexi-dsl-2.0.0-beta.12.tgz#475f710c48f20c1bf8bbfc1a738e3245985870be"
+"@html-next/flexi-dsl@2.0.1":
+  version "2.0.1"
+  resolved "https://registry.npmjs.org/@html-next/flexi-dsl/-/flexi-dsl-2.0.1.tgz#a037d79e1ab4d6ecbcdd1067177ef9f29c2ad729"
   dependencies:
-    "@html-next/flexi-config" "2.0.0-beta.12"
-    chalk "^1.1.1"
-    debug "^2.2.0"
-    ember-cli-babel "^5.1.7"
+    "@html-next/flexi-config" "2.0.0"
+    ember-cli-babel "^6.0.0"
     ember-cli-preprocess-registry "^3.0.0"
-    object-assign "^4.1.0"
     rsvp "^3.2.0"
 
-"@html-next/flexi-layouts@2.0.0-beta.12":
-  version "2.0.0-beta.12"
-  resolved "https://registry.npmjs.org/@html-next/flexi-layouts/-/flexi-layouts-2.0.0-beta.12.tgz#05c27c57436017fda8ea86fc40d7cc75e43cc53d"
+"@html-next/flexi-layouts@2.0.1":
+  version "2.0.1"
+  resolved "https://registry.npmjs.org/@html-next/flexi-layouts/-/flexi-layouts-2.0.1.tgz#98bbed1669f8abf15eb244b181379b14b589fdfd"
   dependencies:
-    "@html-next/flexi-config" "2.0.0-beta.12"
-    broccoli-funnel "^1.0.1"
-    broccoli-merge-trees "^1.1.1"
+    "@html-next/flexi-config" "2.0.0"
+    broccoli-funnel "^1.2.0"
+    broccoli-merge-trees "^2.0.0"
     broccoli-plugin "^1.2.1"
     chalk "^1.1.1"
-    debug "^2.2.0"
-    ember-cli-babel "^5.1.7"
-    ember-cli-htmlbars "^1.1.1"
+    debug "^2.6.8"
+    ember-cli-babel "^6.0.0"
+    ember-cli-htmlbars "^2.0.1"
     ember-cli-preprocess-registry "^3.0.0"
     rsvp "^3.2.0"
 
@@ -349,6 +347,18 @@ async-disk-cache@^1.0.0:
     rimraf "^2.5.3"
     rsvp "^3.0.18"
 
+async-disk-cache@^1.2.1:
+  version "1.3.2"
+  resolved "https://registry.npmjs.org/async-disk-cache/-/async-disk-cache-1.3.2.tgz#ac53d6152843df202c9406e28d774362608d74dd"
+  dependencies:
+    debug "^2.1.3"
+    heimdalljs "^0.2.3"
+    istextorbinary "2.1.0"
+    mkdirp "^0.5.0"
+    rimraf "^2.5.3"
+    rsvp "^3.0.18"
+    username-sync "1.0.1"
+
 async-each@^1.0.0:
   version "1.0.1"
   resolved "https://registry.npmjs.org/async-each/-/async-each-1.0.1.tgz#19d386a1d9edc6e7c1c85d388aedbcc56d33602d"
@@ -357,6 +367,13 @@ async-foreach@^0.1.3:
   version "0.1.3"
   resolved "https://registry.npmjs.org/async-foreach/-/async-foreach-0.1.3.tgz#36121f845c0578172de419a97dbeb1d16ec34542"
 
+async-promise-queue@^1.0.3:
+  version "1.0.4"
+  resolved "https://registry.npmjs.org/async-promise-queue/-/async-promise-queue-1.0.4.tgz#308baafbc74aff66a0bb6e7f4a18d4fe8434440c"
+  dependencies:
+    async "^2.4.1"
+    debug "^2.6.8"
+
 async@^0.9.0, async@~0.9.0:
   version "0.9.2"
   resolved "https://registry.npmjs.org/async/-/async-0.9.2.tgz#aea74d5e61c1f899613bf64bda66d4c78f2fd17d"
@@ -364,6 +381,12 @@ async@^0.9.0, async@~0.9.0:
 async@^1.3.0, async@^1.4.0, async@^1.5.2:
   version "1.5.2"
   resolved "https://registry.npmjs.org/async/-/async-1.5.2.tgz#ec6a61ae56480c0c3cb241c95618e20892f9672a"
+
+async@^2.4.1:
+  version "2.5.0"
+  resolved "https://registry.npmjs.org/async/-/async-2.5.0.tgz#843190fd6b7357a0b9e1c956edddd5ec8462b54d"
+  dependencies:
+    lodash "^4.14.0"
 
 async@~0.2.6, async@~0.2.9:
   version "0.2.10"
@@ -1226,6 +1249,21 @@ broccoli-babel-transpiler@^6.0.0:
     hash-for-dep "^1.0.2"
     json-stable-stringify "^1.0.0"
 
+broccoli-babel-transpiler@^6.1.1:
+  version "6.1.2"
+  resolved "https://registry.npmjs.org/broccoli-babel-transpiler/-/broccoli-babel-transpiler-6.1.2.tgz#26019c045b5ea3e44cfef62821302f9bd483cabd"
+  dependencies:
+    babel-core "^6.14.0"
+    broccoli-funnel "^1.0.0"
+    broccoli-merge-trees "^1.0.0"
+    broccoli-persistent-filter "^1.4.0"
+    clone "^2.0.0"
+    hash-for-dep "^1.0.2"
+    heimdalljs-logger "^0.1.7"
+    json-stable-stringify "^1.0.0"
+    rsvp "^3.5.0"
+    workerpool "^2.2.1"
+
 broccoli-brocfile-loader@^0.18.0:
   version "0.18.0"
   resolved "https://registry.npmjs.org/broccoli-brocfile-loader/-/broccoli-brocfile-loader-0.18.0.tgz#2e86021c805c34ffc8d29a2fb721cf273e819e4b"
@@ -1432,6 +1470,25 @@ broccoli-persistent-filter@^1.0.1, broccoli-persistent-filter@^1.0.3, broccoli-p
     md5-hex "^1.0.2"
     mkdirp "^0.5.1"
     promise-map-series "^0.2.1"
+    rsvp "^3.0.18"
+    symlink-or-copy "^1.0.1"
+    walk-sync "^0.3.1"
+
+broccoli-persistent-filter@^1.4.0:
+  version "1.4.2"
+  resolved "https://registry.npmjs.org/broccoli-persistent-filter/-/broccoli-persistent-filter-1.4.2.tgz#17af1278a25ff2556f9d7d23e115accfad3a7ce7"
+  dependencies:
+    async-disk-cache "^1.2.1"
+    async-promise-queue "^1.0.3"
+    broccoli-plugin "^1.0.0"
+    crypto "0.0.3"
+    fs-tree-diff "^0.5.2"
+    hash-for-dep "^1.0.2"
+    heimdalljs "^0.2.1"
+    heimdalljs-logger "^0.1.7"
+    mkdirp "^0.5.1"
+    promise-map-series "^0.2.1"
+    rimraf "^2.6.1"
     rsvp "^3.0.18"
     symlink-or-copy "^1.0.1"
     walk-sync "^0.3.1"
@@ -2081,6 +2138,10 @@ crypto-random-string@^1.0.0:
   version "1.0.0"
   resolved "https://registry.npmjs.org/crypto-random-string/-/crypto-random-string-1.0.0.tgz#a230f64f568310e1498009940790ec99545bca7e"
 
+crypto@0.0.3:
+  version "0.0.3"
+  resolved "https://registry.npmjs.org/crypto/-/crypto-0.0.3.tgz#470a81b86be4c5ee17acc8207a1f5315ae20dbb0"
+
 cson-parser@^1.1.0:
   version "1.3.5"
   resolved "https://registry.npmjs.org/cson-parser/-/cson-parser-1.3.5.tgz#7ec675e039145533bf2a6a856073f1599d9c2d24"
@@ -2351,7 +2412,7 @@ debug@2.6.4, debug@^2.1.0, debug@^2.1.1, debug@^2.2.0, debug@^2.4.0:
   dependencies:
     ms "0.7.3"
 
-debug@2.6.8, debug@^2.1.3:
+debug@2.6.8, debug@^2.1.3, debug@^2.6.8:
   version "2.6.8"
   resolved "https://registry.npmjs.org/debug/-/debug-2.6.8.tgz#e731531ca2ede27d188222427da17821d68ff4fc"
   dependencies:
@@ -2544,6 +2605,23 @@ ember-cli-babel@^6.0.0, ember-cli-babel@^6.0.0-beta.4, ember-cli-babel@^6.0.0-be
     clone "^2.0.0"
     ember-cli-version-checker "^2.0.0"
 
+ember-cli-babel@^6.6.0:
+  version "6.7.0"
+  resolved "https://registry.npmjs.org/ember-cli-babel/-/ember-cli-babel-6.7.0.tgz#76ad364141bcd9d693cbb92c7fc523f25dfe8d20"
+  dependencies:
+    amd-name-resolver "0.0.6"
+    babel-plugin-debug-macros "^0.1.11"
+    babel-plugin-ember-modules-api-polyfill "^1.4.1"
+    babel-plugin-transform-es2015-modules-amd "^6.24.0"
+    babel-polyfill "^6.16.0"
+    babel-preset-env "^1.5.1"
+    broccoli-babel-transpiler "^6.1.1"
+    broccoli-debug "^0.6.2"
+    broccoli-funnel "^1.0.0"
+    broccoli-source "^1.1.0"
+    clone "^2.0.0"
+    ember-cli-version-checker "^2.0.0"
+
 ember-cli-broccoli-sane-watcher@^2.0.4:
   version "2.0.4"
   resolved "https://registry.npmjs.org/ember-cli-broccoli-sane-watcher/-/ember-cli-broccoli-sane-watcher-2.0.4.tgz#f43f42f75b7509c212fb926cd9aea86ae19264c6"
@@ -2611,15 +2689,6 @@ ember-cli-htmlbars-inline-precompile@^0.4.3:
     hash-for-dep "^1.0.2"
     silent-error "^1.1.0"
 
-ember-cli-htmlbars@*, ember-cli-htmlbars@^2.0.1:
-  version "2.0.2"
-  resolved "https://registry.npmjs.org/ember-cli-htmlbars/-/ember-cli-htmlbars-2.0.2.tgz#230a9ace7c3454b3acff2768a50f963813a90c38"
-  dependencies:
-    broccoli-persistent-filter "^1.0.3"
-    hash-for-dep "^1.0.2"
-    json-stable-stringify "^1.0.0"
-    strip-bom "^3.0.0"
-
 ember-cli-htmlbars@^1.0.0, ember-cli-htmlbars@^1.0.10, ember-cli-htmlbars@^1.0.3, ember-cli-htmlbars@^1.1.0, ember-cli-htmlbars@^1.1.1:
   version "1.3.0"
   resolved "https://registry.npmjs.org/ember-cli-htmlbars/-/ember-cli-htmlbars-1.3.0.tgz#e090f011239153bf45dab29625f94a46fce205af"
@@ -2629,6 +2698,19 @@ ember-cli-htmlbars@^1.0.0, ember-cli-htmlbars@^1.0.10, ember-cli-htmlbars@^1.0.3
     hash-for-dep "^1.0.2"
     json-stable-stringify "^1.0.0"
     strip-bom "^2.0.0"
+
+ember-cli-htmlbars@^2.0.1:
+  version "2.0.2"
+  resolved "https://registry.npmjs.org/ember-cli-htmlbars/-/ember-cli-htmlbars-2.0.2.tgz#230a9ace7c3454b3acff2768a50f963813a90c38"
+  dependencies:
+    broccoli-persistent-filter "^1.0.3"
+    hash-for-dep "^1.0.2"
+    json-stable-stringify "^1.0.0"
+    strip-bom "^3.0.0"
+
+ember-cli-import-polyfill@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.npmjs.org/ember-cli-import-polyfill/-/ember-cli-import-polyfill-0.2.0.tgz#c1a08a8affb45c97b675926272fe78cf4ca166f2"
 
 ember-cli-inject-live-reload@^1.4.1:
   version "1.6.1"
@@ -2670,15 +2752,17 @@ ember-cli-lodash-subset@^1.0.11, ember-cli-lodash-subset@^1.0.7:
   version "1.0.12"
   resolved "https://registry.npmjs.org/ember-cli-lodash-subset/-/ember-cli-lodash-subset-1.0.12.tgz#af2e77eba5dcb0d77f3308d3a6fd7d3450f6e537"
 
-ember-cli-moment-shim@3.1.0:
-  version "3.1.0"
-  resolved "https://registry.npmjs.org/ember-cli-moment-shim/-/ember-cli-moment-shim-3.1.0.tgz#ec6a39a0dcb4badeaf6dcb74a6c05b0bc576f721"
+ember-cli-moment-shim@^3.4.0:
+  version "3.4.0"
+  resolved "https://registry.npmjs.org/ember-cli-moment-shim/-/ember-cli-moment-shim-3.4.0.tgz#2fbe13d8654097da86abb64016cddf12ff19a3de"
   dependencies:
     broccoli-funnel "^1.1.0"
     broccoli-merge-trees "^2.0.0"
+    broccoli-source "^1.1.0"
     broccoli-stew "^1.4.0"
     chalk "^1.1.3"
-    ember-cli-babel "^5.1.7"
+    ember-cli-babel "^6.6.0"
+    ember-cli-import-polyfill "^0.2.0"
     exists-sync "^0.0.4"
     lodash.defaults "^4.2.0"
     moment "^2.18.1"
@@ -2765,9 +2849,9 @@ ember-cli-qunit@^4.0.0:
     resolve "^1.1.6"
     silent-error "^1.0.0"
 
-ember-cli-sass@^6.0.0:
-  version "6.1.3"
-  resolved "https://registry.npmjs.org/ember-cli-sass/-/ember-cli-sass-6.1.3.tgz#f5224ad4406dcb2815bdaab154ba5f4def49e9df"
+ember-cli-sass@^6.2.0:
+  version "6.2.0"
+  resolved "https://registry.npmjs.org/ember-cli-sass/-/ember-cli-sass-6.2.0.tgz#e1f81289678e1e22d9cf9dbf7fa2de76a0de9a2f"
   dependencies:
     broccoli-funnel "^1.0.0"
     broccoli-merge-trees "^1.1.0"
@@ -2960,7 +3044,7 @@ ember-click-outside@0.1.6:
   resolved "https://registry.npmjs.org/ember-click-outside/-/ember-click-outside-0.1.6.tgz#b56f14277351cccd84edaa78bcd399d71393871a"
   dependencies:
     ember-cli-babel "^5.1.7"
-    ember-cli-htmlbars "*"
+    ember-cli-htmlbars "^1.0.10"
 
 ember-computed-decorators@0.3.0:
   version "0.3.0"
@@ -3262,14 +3346,14 @@ ember-source@2.14.1:
     simple-dom "^0.3.0"
     simple-html-tokenizer "^0.4.1"
 
-ember-spaniel@0.1.3:
-  version "0.1.3"
-  resolved "https://registry.npmjs.org/ember-spaniel/-/ember-spaniel-0.1.3.tgz#580119994d6fcb16184271f19d13d5f3cb7f3e2e"
+ember-spaniel@^0.2.1:
+  version "0.2.1"
+  resolved "https://registry.npmjs.org/ember-spaniel/-/ember-spaniel-0.2.1.tgz#3852bc7427f88fe46a1088a42e3b9bd346e20bf2"
   dependencies:
     calculate-cache-key-for-tree "^1.1.0"
     ember-cli-babel "^5.1.7"
     ember-rollup "^0.3.1"
-    spaniel "^2.1.1"
+    spaniel "^3.1.1"
 
 ember-string-ishtmlsafe-polyfill@1.0.1:
   version "1.0.1"
@@ -3873,12 +3957,13 @@ flatpickr@^3.0.6:
   version "3.0.6"
   resolved "https://registry.npmjs.org/flatpickr/-/flatpickr-3.0.6.tgz#81540f1a0f010fa3b96d929943b6396bbb25b1b6"
 
-flexi@2.0.0-beta.12:
-  version "2.0.0-beta.12"
-  resolved "https://registry.npmjs.org/flexi/-/flexi-2.0.0-beta.12.tgz#ef67768f1c78c8132a804da04ec991b1112461a1"
+flexi@2.0.1:
+  version "2.0.1"
+  resolved "https://registry.npmjs.org/flexi/-/flexi-2.0.1.tgz#a32acb9b37d4b5dcde23be298e1a58f86385c977"
   dependencies:
-    "@html-next/flexi-config" "2.0.0-beta.12"
-    ember-cli-babel "^5.1.7"
+    chalk "^1.1.3"
+    ember-cli-babel "^6.0.0"
+    semver "^5.3.0"
 
 for-in@^1.0.1:
   version "1.0.2"
@@ -5002,7 +5087,7 @@ lodash@^3.10.0, lodash@^3.10.1, lodash@^3.9.3:
   version "3.10.1"
   resolved "https://registry.npmjs.org/lodash/-/lodash-3.10.1.tgz#5bf45e8e49ba4189e17d482789dfd15bd140b7b6"
 
-lodash@^4.0.0, lodash@^4.11.1, lodash@^4.13.1, lodash@^4.17.4, lodash@^4.2.0, lodash@^4.2.1, lodash@^4.3.0, lodash@^4.5.1, lodash@^4.6.1:
+lodash@^4.0.0, lodash@^4.11.1, lodash@^4.13.1, lodash@^4.14.0, lodash@^4.17.4, lodash@^4.2.0, lodash@^4.2.1, lodash@^4.3.0, lodash@^4.5.1, lodash@^4.6.1:
   version "4.17.4"
   resolved "https://registry.npmjs.org/lodash/-/lodash-4.17.4.tgz#78203a4d1c328ae1d86dca6460e369b57f4055ae"
 
@@ -5472,13 +5557,13 @@ object-assign@4.1.0:
   version "4.1.0"
   resolved "https://registry.npmjs.org/object-assign/-/object-assign-4.1.0.tgz#7a3b3d0e98063d43f4c03f2e8ae6cd51a86883a0"
 
+object-assign@4.1.1, object-assign@^4.0.1, object-assign@^4.1.0:
+  version "4.1.1"
+  resolved "https://registry.npmjs.org/object-assign/-/object-assign-4.1.1.tgz#2109adc7965887cfc05cbbd442cac8bfbb360863"
+
 object-assign@^2.0.0:
   version "2.1.1"
   resolved "https://registry.npmjs.org/object-assign/-/object-assign-2.1.1.tgz#43c36e5d569ff8e4816c4efa8be02d26967c18aa"
-
-object-assign@^4.0.1, object-assign@^4.1.0:
-  version "4.1.1"
-  resolved "https://registry.npmjs.org/object-assign/-/object-assign-4.1.1.tgz#2109adc7965887cfc05cbbd442cac8bfbb360863"
 
 object-component@0.0.3:
   version "0.0.3"
@@ -6554,9 +6639,9 @@ source-map@^0.5.0, source-map@^0.5.6, source-map@~0.5.0, source-map@~0.5.1:
   version "0.5.6"
   resolved "https://registry.npmjs.org/source-map/-/source-map-0.5.6.tgz#75ce38f52bf0733c5a7f0c118d81334a2bb5f412"
 
-spaniel@^2.1.1:
-  version "2.2.1"
-  resolved "https://registry.npmjs.org/spaniel/-/spaniel-2.2.1.tgz#eeb947912d6e78f87e9e1cc16a83a420f60236e1"
+spaniel@^3.1.1:
+  version "3.1.2"
+  resolved "https://registry.npmjs.org/spaniel/-/spaniel-3.1.2.tgz#a7445413f021102f653f73ca7522039c2077c6e0"
 
 spawn-args@^0.2.0:
   version "0.2.0"
@@ -7050,6 +7135,10 @@ user-home@^2.0.0:
   dependencies:
     os-homedir "^1.0.0"
 
+username-sync@1.0.1:
+  version "1.0.1"
+  resolved "https://registry.npmjs.org/username-sync/-/username-sync-1.0.1.tgz#1cde87eefcf94b8822984d938ba2b797426dae1f"
+
 utf8-byte-length@^1.0.1:
   version "1.0.4"
   resolved "https://registry.npmjs.org/utf8-byte-length/-/utf8-byte-length-1.0.4.tgz#f45f150c4c66eee968186505ab93fcbb8ad6bf61"
@@ -7240,6 +7329,12 @@ wordwrap@~0.0.2:
 wordwrap@~1.0.0:
   version "1.0.0"
   resolved "https://registry.npmjs.org/wordwrap/-/wordwrap-1.0.0.tgz#27584810891456a4171c8d0226441ade90cbcaeb"
+
+workerpool@^2.2.1:
+  version "2.2.2"
+  resolved "https://registry.npmjs.org/workerpool/-/workerpool-2.2.2.tgz#1cf53bacafd98ca5d808ff54cc72f3fecb5e1d56"
+  dependencies:
+    object-assign "4.1.1"
 
 wrap-ansi@^2.0.0:
   version "2.1.0"
