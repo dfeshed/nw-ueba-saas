@@ -2,7 +2,7 @@ package org.flume.sink.input;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import fortscale.common.general.DataSource;
+import fortscale.common.general.Schema;
 import fortscale.domain.core.AbstractAuditableDocument;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.flume.Context;
@@ -33,14 +33,14 @@ public class PresidioInputSdkSink<T extends AbstractAuditableDocument> extends A
         mapper.registerModule(new JavaTimeModule());
     }
 
-    private static final String DATA_SOURCE = "dataSource";
+    private static final String SCHEMA = "schema";
     private static final String RECORD_TYPE = "recordType";
 
-    private static String[] mandatoryParams = {DATA_SOURCE, RECORD_TYPE};
+    private static String[] mandatoryParams = {SCHEMA, RECORD_TYPE};
 
     private PresidioInputPersistencyService presidioInputPersistencyService;
     private Class<T> recordType;
-    private DataSource dataSource;
+    private Schema schema;
     private int batchSize;
 
     @Override
@@ -67,7 +67,7 @@ public class PresidioInputSdkSink<T extends AbstractAuditableDocument> extends A
             }
 
             recordType = (Class<T>) Class.forName(context.getString(RECORD_TYPE));
-            dataSource = DataSource.createDataSource(context.getString(DATA_SOURCE));
+            schema = Schema.createSchema(context.getString(SCHEMA));
             batchSize = Integer.parseInt(context.getString(BATCH_SIZE, "1"));
         } catch (Exception e) {
             final String errorMessage = "Failed to configure " + getName();
@@ -105,7 +105,7 @@ public class PresidioInputSdkSink<T extends AbstractAuditableDocument> extends A
 
     @Override
     protected void saveEvents(List<T> records) {
-        presidioInputPersistencyService.store(dataSource, records);
+        presidioInputPersistencyService.store(schema, records);
         sinkCounter.addToEventDrainSuccessCount(records.size());
     }
 
@@ -113,7 +113,7 @@ public class PresidioInputSdkSink<T extends AbstractAuditableDocument> extends A
     @Override
     public String toString() {
         return new ToStringBuilder(this)
-                .append("dataSource", dataSource)
+                .append("schema", schema)
                 .append("batchSize", batchSize)
                 .toString();
     }
