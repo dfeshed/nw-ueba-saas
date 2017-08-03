@@ -18,7 +18,6 @@ import java.util.Map;
  * Created by Efrat Noam on 02/08/2017.
  */
 @Document
-//TODO add indexes
 public class EnrichedEvent {
 
     public static final String EVENT_ID_FIELD = "eventId";

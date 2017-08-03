@@ -7,7 +7,6 @@ import org.springframework.data.mongodb.core.mapping.Field;
  * Created by efratn on 02/08/2017.
  */
 @Document
-//TODO add index
 public class AuthenticationEnrichedEvent extends EnrichedEvent {
 
     public static final String SRC_MACHINE_ID_FIELD = "SrcMachineId";

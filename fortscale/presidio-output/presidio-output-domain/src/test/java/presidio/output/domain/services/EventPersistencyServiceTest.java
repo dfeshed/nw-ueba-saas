@@ -56,7 +56,11 @@ public class EventPersistencyServiceTest {
         events.add(event);
 
         //store the events into mongp
-        eventPersistencyService.store(Schema.FILE, events);
+        try {
+            eventPersistencyService.store(Schema.FILE, events);
+        } catch (Exception e) {
+            Assert.fail();
+        }
 
         //check that data was stored
         String collectionName = toCollectionNameTranslator.toCollectionName(Schema.FILE);

@@ -12,7 +12,6 @@ import java.util.Map;
  * Created by efratn on 02/08/2017.
  */
 @Document
-//TODO add index
 public class FileEnrichedEvent extends EnrichedEvent {
 
     public static final String ABSOLUTE_SRC_FILE_PATH_FIELD = "absoluteSrcFilePath";
