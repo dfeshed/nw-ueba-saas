@@ -60,6 +60,7 @@ public class AccumulateAggregationsService extends FixedDurationStrategyExecutor
         //For now we don't have multiple contexts so we pass just list of size 1.
         List<String> contextTypes = Collections.singletonList(contextType);
 
+        //PaginationService sort pages by START_INSTANT_FIELD
         EnrichedRecordPaginationService enrichedRecordPaginationService = new EnrichedRecordPaginationService(enrichedDataStore, pageSize, maxGroupSize, contextType, AdeRecord.START_INSTANT_FIELD);
         List<PageIterator<EnrichedRecord>> pageIterators = enrichedRecordPaginationService.getPageIterators(adeEventType, timeRange);
 
