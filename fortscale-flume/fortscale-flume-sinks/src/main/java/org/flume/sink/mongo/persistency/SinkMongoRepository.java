@@ -2,11 +2,11 @@ package org.flume.sink.mongo.persistency;
 
 
 import com.mongodb.DBObject;
-import fortscale.domain.core.AbstractAuditableDocument;
+import fortscale.domain.core.AbstractDocument;
 
 import java.util.List;
 
-public interface SinkMongoRepository<T extends AbstractAuditableDocument> {
+public interface SinkMongoRepository<T extends AbstractDocument> {
 
     int bulkSave(List<DBObject> events, String collectionName);
 
