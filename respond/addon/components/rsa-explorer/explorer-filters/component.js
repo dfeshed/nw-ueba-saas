@@ -27,6 +27,10 @@ export default Component.extend({
 
   filterControlsComponent: 'respond-common/stub',
 
+  timeFrameFilter: null,
+
+  hasCustomDate: false,
+
   /**
    * The start date (as unix timestamp) on a custom date range.
    * Note: Dates/Times are assumed to be in UTC, and are therefore converted to local date/time
@@ -93,7 +97,7 @@ export default Component.extend({
    * @returns {*}
    */
   @computed('timeframeFilter', 'timeframes')
-  selectedTimeframe(timeframe, timeframes) {
+  selectedTimeframe(timeframe = {}, timeframes) {
     const timeframeName = timeframe.name ? timeframe.name : 'ALL_TIME';
     return timeframes.findBy('name', timeframeName);
   },
@@ -146,7 +150,7 @@ export default Component.extend({
    * @private
    */
   _toUTCTimestamp(date) {
-    const dateParts = [date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes()];
+    const dateParts = [date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds()];
     return moment.tz(dateParts, this._getTimezone()).valueOf();
   },
 

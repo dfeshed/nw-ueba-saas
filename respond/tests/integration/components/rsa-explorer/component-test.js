@@ -52,7 +52,7 @@ test('The yielded toolbar component renders to the DOM with block content', func
   assert.equal(this.$('.rsa-respond-explorer .rsa-explorer-toolbar .block-content').length, 1, 'The toolbar block content renders');
 });
 
-test('The yielded toolbar component renders to the DOM with block content', function(assert) {
+test('The yielded filters component renders to the DOM with block content', function(assert) {
   this.set('columns', []);
   this.render(hbs`
   {{#rsa-explorer columns=columns namespace='remediation-tasks' as |explorer|}}        
