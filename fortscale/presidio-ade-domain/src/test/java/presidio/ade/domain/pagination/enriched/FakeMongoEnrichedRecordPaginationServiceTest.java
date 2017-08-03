@@ -12,7 +12,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import presidio.ade.domain.record.enriched.AdeEventTypeToAdeEnrichedRecordClassResolver;
-import presidio.ade.domain.record.enriched.AdeEnrichedRecordToAdeEnrichedRecordClassResolverConfig;
+import presidio.ade.domain.record.enriched.AdeEventTypeToAdeEnrichedRecordClassResolverConfig;
 import presidio.ade.domain.record.enriched.dlpfile.EnrichedDlpFileRecord;
 import presidio.ade.domain.pagination.enriched.groups.EnrichedRecordPaginationServiceGroup;
 import presidio.ade.domain.store.enriched.EnrichedDataStoreImplMongo;
@@ -27,7 +27,7 @@ import static junit.framework.Assert.assertTrue;
 /**
  * Created by mariad on 6/15/2017.
  */
-@ContextConfiguration(classes = {MongodbTestConfig.class, AdeEnrichedRecordToAdeEnrichedRecordClassResolverConfig.class})
+@ContextConfiguration(classes = {MongodbTestConfig.class, AdeEventTypeToAdeEnrichedRecordClassResolverConfig.class})
 @RunWith(SpringJUnit4ClassRunner.class)
 @Category(ModuleTestCategory.class)
 public class FakeMongoEnrichedRecordPaginationServiceTest {

@@ -14,8 +14,8 @@ import presidio.ade.domain.record.enriched.dlpfile.AdeDlpFileRecord;
 import presidio.ade.domain.record.enriched.dlpfile.EnrichedDlpFileRecord;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = AdeEnrichedRecordToAdeEnrichedRecordClassResolverConfig.class)
-public class AdeEnrichedRecordToAdeEnrichedRecordClassResolverConfigTest {
+@ContextConfiguration(classes = AdeEventTypeToAdeEnrichedRecordClassResolverConfig.class)
+public class AdeEventTypeToAdeEnrichedRecordClassResolverConfigTest {
 
     @Autowired
     private AdeEventTypeToAdeEnrichedRecordClassResolver adeEventTypeToAdeEnrichedRecordClassResolver;
