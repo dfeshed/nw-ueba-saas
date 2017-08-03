@@ -1,12 +1,10 @@
 package presidio.output.domain.records;
 
 
-import java.util.Date;
-
 public class AlertQuery {
 
     // filters
-    private final String filterBuUserName;
+    private final String filterByUserName;
     private final String filterBySeverity;
     private final long filterByStartDate;
     private final long filterByEndDate;
@@ -23,7 +21,7 @@ public class AlertQuery {
     private final boolean aggregateBySeverity;
 
     public AlertQuery(AlertQueryBuilder builder) {
-        this.filterBuUserName = builder.filterByUserName;
+        this.filterByUserName = builder.filterByUserName;
         this.filterBySeverity =  builder.filterBySeverity;
         this.filterByStartDate =  builder.filterByStartDate;
         this.filterByEndDate =  builder.filterByEndDate;
@@ -34,8 +32,8 @@ public class AlertQuery {
         this.aggregateBySeverity = builder.aggregateBySeverity;
     }
 
-    public String getFilterBuUserName() {
-        return filterBuUserName;
+    public String getFilterByUserName() {
+        return filterByUserName;
     }
 
     public String getFilterBySeverity() {
