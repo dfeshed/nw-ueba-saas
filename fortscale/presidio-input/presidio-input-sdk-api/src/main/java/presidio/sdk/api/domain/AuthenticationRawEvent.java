@@ -3,12 +3,14 @@ package presidio.sdk.api.domain;
 import fortscale.domain.core.EventResult;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
+import presidio.sdk.api.validation.FieldsMustHaveDifferentValues;
 
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 
 @Document
+@FieldsMustHaveDifferentValues(fieldNames = {"srcMachineId", "dstMachineId"}, canBothBeEmpty = "false")
 public class AuthenticationRawEvent extends AbstractPresidioDocument {
 
     public static final String SRC_MACHINE_ID_FIELD_NAME = "srcMachineId";

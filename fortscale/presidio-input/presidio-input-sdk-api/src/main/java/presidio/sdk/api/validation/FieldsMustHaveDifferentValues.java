@@ -1,6 +1,6 @@
 package presidio.sdk.api.validation;
 
-import presidio.sdk.api.validation.constraints.NotEmptyIfAnotherFieldHasValueValidator;
+import presidio.sdk.api.validation.constraints.FieldsMustHaveDifferentValuesValidator;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
@@ -8,7 +8,7 @@ import java.lang.annotation.*;
 
 @Target({ElementType.TYPE, ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = NotEmptyIfAnotherFieldHasValueValidator.class)
+@Constraint(validatedBy = FieldsMustHaveDifferentValuesValidator.class)
 @Repeatable(value = MultipleFieldsMustHaveDifferentValues.class)
 public @interface FieldsMustHaveDifferentValues {
 

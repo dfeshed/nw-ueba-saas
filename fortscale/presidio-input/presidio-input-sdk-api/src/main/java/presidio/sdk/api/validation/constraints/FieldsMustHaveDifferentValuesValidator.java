@@ -9,6 +9,7 @@ import presidio.sdk.api.validation.FieldsMustHaveDifferentValues;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -47,7 +48,7 @@ public class FieldsMustHaveDifferentValuesValidator implements ConstraintValidat
             constraintValidatorContext.disableDefaultConstraintViolation();
             constraintValidatorContext.buildConstraintViolationWithTemplate(constraintValidatorContext.getDefaultConstraintMessageTemplate())
                     .addConstraintViolation();
-            logger.info("Validation failed - {} fields cannot have the same values", fieldNames);
+            logger.info("Validation failed - {} fields cannot have the same values", Arrays.toString(fieldNames));
             return false;
         }
 

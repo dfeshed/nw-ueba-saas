@@ -4,6 +4,7 @@ import fortscale.domain.core.EventResult;
 import org.apache.commons.collections.CollectionUtils;
 import org.junit.Assert;
 import org.junit.Test;
+import presidio.sdk.api.validation.FieldsMustHaveDifferentValues;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
@@ -77,6 +78,19 @@ public class AuthenticationRawEventTest {
 
         Set<ConstraintViolation<AuthenticationRawEvent>> violations = validator.validate(authenticationRawEvent);
         Assert.assertTrue(CollectionUtils.isEmpty(violations));
+    }
+
+    @Test
+    public void testSameSrcAndDstMachineId() {
+        AuthenticationRawEvent authenticationRawEvent = createEvent();
+        authenticationRawEvent.setSrcMachineId("id");
+        authenticationRawEvent.setDstMachineId("id");
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        Validator validator = factory.getValidator();
+
+        Set<ConstraintViolation<AuthenticationRawEvent>> violations = validator.validate(authenticationRawEvent);
+        Assert.assertEquals(1, violations.size());
+        Assert.assertTrue(violations.iterator().next().getConstraintDescriptor().getAnnotation() instanceof FieldsMustHaveDifferentValues);
     }
 
     private AuthenticationRawEvent createEvent() {
