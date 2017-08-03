@@ -29,9 +29,8 @@ public class MetricsExporterElasticImpl extends MetricsExporter {
         logger.info("Ended Exporting metrics to elastic");
     }
 
-
     @Override
     public void close() throws Exception {
-        export();
+        //export();
     }
 }

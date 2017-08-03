@@ -46,8 +46,8 @@ public class PresidioShellableApplication {
             exitCode=1;
         }
         finally {
-            Thread.currentThread().interrupt();
             context.close();
+            Thread.currentThread().interrupt();
             System.exit(exitCode);
         }
     }

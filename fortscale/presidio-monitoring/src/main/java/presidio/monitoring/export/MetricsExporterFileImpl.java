@@ -35,12 +35,13 @@ public class MetricsExporterFileImpl extends MetricsExporter {
     }
 
 
+
     @Override
     public void close() throws Exception {
         logger.info("********************************************");
         logger.info("************* Last Time Metrics ************");
         logger.info("********************************************");
-        export();
+        //export();
 
     }
 }

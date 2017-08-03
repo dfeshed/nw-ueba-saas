@@ -71,6 +71,12 @@ public abstract class MetricsExporter implements AutoCloseable{
                 THREADS_TOTAL_STARTED,THREADS,GC_PS_SCAVENGE_COUNT,GC_PS_SCAVENGE_TIME,GC_PS_MARKSWEEP_COUNT,GC_PS_MARKSWEEP_TIME));
     }
 
+    public abstract void export();
+
+    public void flush() {
+        export();
+    }
+
     @Override
     public void close() throws Exception {
         System.out.print("closing");
