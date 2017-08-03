@@ -41,7 +41,7 @@
     {
       "name": "sumOfHighestFileActionFileHourly",
       "type": "P",
-      "bucketConfName": "operationTypeToHighestScoreMapUserIdFileActionFileDaily",
+      "bucketConfName": "operationTypeToHighestScoreMapUserIdFileActionFileHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,

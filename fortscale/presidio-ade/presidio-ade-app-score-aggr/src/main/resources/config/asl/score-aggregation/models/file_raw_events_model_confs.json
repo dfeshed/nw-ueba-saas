@@ -4,13 +4,13 @@
       "name" : "startInstant.userId.file",
       "selector" : {
         "type" : "feature_bucket_context_selector",
-        "featureBucketConfName" : "StartInstantHistogramUserIdFileDaily"
+        "featureBucketConfName" : "startInstantHistogramUserIdFileDaily"
       },
       "retriever" : {
         "type" : "context_histogram_retriever",
         "timeRangeInSeconds" : 7776000,
         "functions" : [ ],
-        "featureBucketConfName" : "StartInstantHistogramUserIdFileDaily",
+        "featureBucketConfName" : "startInstantHistogramUserIdFileDaily",
         "featureName" : "startInstantHistogram"
       },
       "builder" : {
@@ -50,7 +50,7 @@
         "timeRangeInSeconds" : 7776000,
         "functions" : [ ],
         "featureBucketConfName" : "operationTypeHistogramUserIdFilePermissionChangeFileDaily",
-        "featureName" : "normalized_username_histogram"
+        "featureName" : "operationTypeHistogram"
       },
       "builder" : {
         "type" : "category_rarity_model_builder",
@@ -69,7 +69,7 @@
         "timeRangeInSeconds" : 7776000,
         "functions" : [ ],
         "featureBucketConfName" : "operationTypeHistogramUserIdFileActionFileDaily",
-        "featureName" : "normalized_username_histogram"
+        "featureName" : "operationTypeHistogram"
       },
       "builder" : {
         "type" : "category_rarity_model_builder",
