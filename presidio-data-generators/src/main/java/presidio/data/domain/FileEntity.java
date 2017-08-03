@@ -5,11 +5,11 @@ import java.io.File;
 public class FileEntity {
     String filePath;
     String  fileName;
-    long    fileSize;
+    Long    fileSize;
     Boolean isDriveShared;
     Boolean isDirectory;
 
-    public FileEntity(String fileName, String filePath, long fileSize, Boolean isDriveShared, Boolean isDirectory) {
+    public FileEntity(String fileName, String filePath, Long fileSize, Boolean isDriveShared, Boolean isDirectory) {
         this.filePath = filePath;
         this.fileName = fileName;
         this.fileSize = fileSize;
@@ -33,11 +33,11 @@ public class FileEntity {
         this.fileName = fileName;
     }
 
-    public long getFileSize() {
+    public Long getFileSize() {
         return fileSize;
     }
 
-    public void setFileSize(long fileSize) {
+    public void setFileSize(Long fileSize) {
         this.fileSize = fileSize;
     }
 

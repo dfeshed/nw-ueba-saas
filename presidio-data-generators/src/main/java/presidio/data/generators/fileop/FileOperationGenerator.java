@@ -1,58 +1,82 @@
 package presidio.data.generators.fileop;
 
-import presidio.data.generators.common.GeneratorException;
-import presidio.data.generators.common.precentage.OperationResultPercentageGenerator;
 import presidio.data.domain.event.file.FileOperation;
+import presidio.data.generators.common.GeneratorException;
+import presidio.data.generators.common.IStringGenerator;
+import presidio.data.generators.common.IStringListGenerator;
+import presidio.data.generators.common.RandomStringGenerator;
+import presidio.data.generators.common.precentage.OperationResultPercentageGenerator;
 import presidio.data.generators.fileentity.FileEntityGenerator;
+import presidio.data.generators.fileentity.IFileEntityGenerator;
 
 public class FileOperationGenerator implements IFileOperationGenerator {
 
-    private FileEntityGenerator sourceFileEntityGenerator;
-    private FileEntityGenerator destFileEntityGenerator;
-    private FileOperationTypeCyclicGenerator operationTypeGenerator;
-    private OperationResultPercentageGenerator operationResultGenerator;
+    private IFileEntityGenerator sourceFileEntityGenerator;
+    private IFileEntityGenerator destFileEntityGenerator;
+    private IStringGenerator operationTypeGenerator;
+    private IStringListGenerator operationTypeCategoriesGenerator;
+    private IStringGenerator operationResultGenerator;
+    private IStringGenerator operationResultCodeGenerator;
 
     public FileOperationGenerator() throws GeneratorException {
         sourceFileEntityGenerator = new FileEntityGenerator();
         destFileEntityGenerator = new FileEntityGenerator();
         operationTypeGenerator = new FileOperationTypeCyclicGenerator();
         operationResultGenerator = new OperationResultPercentageGenerator();
+        operationResultCodeGenerator = new RandomStringGenerator(6);
+        operationTypeCategoriesGenerator = new FileOpTypeCategoriesGenerator();
     }
 
     public FileOperation getNext(){
         return new FileOperation(getSourceFileEntityGenerator().getNext(), getDestFileEntityGenerator().getNext(),
-                (String)getOperationTypeGenerator().getNext(), (String) getOperationResultGenerator().getNext());
+                (String)getOperationTypeGenerator().getNext(), getOperationTypeCategoriesGenerator().getNext(), (String) getOperationResultGenerator().getNext(), (String) getOperationResultCodeGenerator().getNext());
     }
 
-    public FileEntityGenerator getSourceFileEntityGenerator() {
+    public IFileEntityGenerator getSourceFileEntityGenerator() {
         return sourceFileEntityGenerator;
     }
 
-    public void setSourceFileEntityGenerator(FileEntityGenerator sourceFileEntityGenerator) {
+    public void setSourceFileEntityGenerator(IFileEntityGenerator sourceFileEntityGenerator) {
         this.sourceFileEntityGenerator = sourceFileEntityGenerator;
     }
 
-    public FileEntityGenerator getDestFileEntityGenerator() {
+    public IFileEntityGenerator getDestFileEntityGenerator() {
         return destFileEntityGenerator;
     }
 
-    public void setDestFileEntityGenerator(FileEntityGenerator destFileEntityGenerator) {
+    public void setDestFileEntityGenerator(IFileEntityGenerator destFileEntityGenerator) {
         this.destFileEntityGenerator = destFileEntityGenerator;
     }
 
-    public FileOperationTypeCyclicGenerator getOperationTypeGenerator() {
+    public IStringGenerator getOperationTypeGenerator() {
         return operationTypeGenerator;
     }
 
-    public void setOperationTypeGenerator(FileOperationTypeCyclicGenerator operationTypeGenerator) {
+    public void setOperationTypeGenerator(IStringGenerator operationTypeGenerator) {
         this.operationTypeGenerator = operationTypeGenerator;
     }
 
-    public OperationResultPercentageGenerator getOperationResultGenerator() {
+    public IStringGenerator getOperationResultGenerator() {
         return operationResultGenerator;
     }
 
-    public void setOperationResultGenerator(OperationResultPercentageGenerator operationResultGenerator) {
+    public void setOperationResultGenerator(IStringGenerator operationResultGenerator) {
         this.operationResultGenerator = operationResultGenerator;
+    }
+
+    public IStringGenerator getOperationResultCodeGenerator() {
+        return operationResultCodeGenerator;
+    }
+
+    public void setOperationResultCodeGenerator(IStringGenerator operationResultCodeGenerator) {
+        this.operationResultCodeGenerator = operationResultCodeGenerator;
+    }
+
+    public IStringListGenerator getOperationTypeCategoriesGenerator() {
+        return operationTypeCategoriesGenerator;
+    }
+
+    public void setOperationTypeCategoriesGenerator(IStringListGenerator operationTypeCategoriesGenerator) {
+        this.operationTypeCategoriesGenerator = operationTypeCategoriesGenerator;
     }
 }

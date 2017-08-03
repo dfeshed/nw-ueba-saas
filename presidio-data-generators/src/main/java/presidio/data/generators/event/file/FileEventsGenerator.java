@@ -17,18 +17,14 @@ import java.util.List;
 
 public class FileEventsGenerator implements IEventGenerator {
     // DEFINE ALL ATTRIBUTE GENERATORS
+    private IStringGenerator eventIdGenerator;
     private TimeGenerator timeGenerator;
-
-    private IStringGenerator eventIdGenerator;   // Need this? Can't see in Schemas
-
+    private IStringGenerator dataSourceGenerator;
     private IUserGenerator userGenerator;
     private IFileOperationGenerator fileOperationGenerator; // Handles: source file & folder, destination file & folder, file_size, operation type, operation result
-    private FixedDataSourceGenerator dataSourceGenerator;
 
     public FileEventsGenerator() throws GeneratorException {
-
         timeGenerator = new TimeGenerator();
-
         userGenerator = new RandomUserGenerator();
         eventIdGenerator = new EntityEventIDFixedPrefixGenerator(userGenerator.getNext().getUsername());
         dataSourceGenerator = new FixedDataSourceGenerator();
@@ -83,11 +79,11 @@ public class FileEventsGenerator implements IEventGenerator {
         this.fileOperationGenerator = fileOperationGenerator;
     }
 
-    public FixedDataSourceGenerator getDataSourceGenerator() {
+    public IStringGenerator getDataSourceGenerator() {
         return dataSourceGenerator;
     }
 
-    public void setDataSourceGenerator(FixedDataSourceGenerator dataSourceGenerator) {
+    public void setDataSourceGenerator(IStringGenerator dataSourceGenerator) {
         this.dataSourceGenerator = dataSourceGenerator;
     }
 }
