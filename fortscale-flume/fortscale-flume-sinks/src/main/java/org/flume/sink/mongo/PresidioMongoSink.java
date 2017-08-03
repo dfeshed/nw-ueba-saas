@@ -1,8 +1,8 @@
 package org.flume.sink.mongo;
 
-import com.mongodb.BasicDBObject;
-import com.mongodb.DBObject;
-import com.mongodb.util.JSON;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import fortscale.domain.core.AbstractAuditableDocument;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.flume.Context;
 import org.apache.flume.Event;
@@ -17,17 +17,33 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
+import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.flume.CommonStrings.*;
+import static org.flume.CommonStrings.BATCH_SIZE;
+import static org.flume.CommonStrings.COLLECTION_NAME;
+import static org.flume.CommonStrings.DB_NAME;
+import static org.flume.CommonStrings.HAS_AUTHENTICATION;
+import static org.flume.CommonStrings.HOST;
+import static org.flume.CommonStrings.PASSWORD;
+import static org.flume.CommonStrings.PORT;
+import static org.flume.CommonStrings.USERNAME;
 
-public class PresidioMongoSink extends AbstractPresidioSink<DBObject> implements Configurable, Sink {
+public class PresidioMongoSink<T extends AbstractAuditableDocument> extends AbstractPresidioSink<T> implements Configurable, Sink {
 
 
     private static Logger logger = LoggerFactory.getLogger(PresidioMongoSink.class);
+
+    private static ObjectMapper mapper;
+    private static final String RECORD_TYPE = "recordType";
+
+    static {
+        mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+    }
 
     private static String[] mandatoryParams = {COLLECTION_NAME, DB_NAME, HOST, HAS_AUTHENTICATION};
 
@@ -40,8 +56,9 @@ public class PresidioMongoSink extends AbstractPresidioSink<DBObject> implements
     private String collectionName;
     private String username;
     private int batchSize;
-    private boolean hasAutoWrap;
-    private String autoWrapKey;
+    //    private boolean hasAutoWrap;
+//    private String autoWrapKey;
+    private Class<T> recordType;
 
     @Override
     public synchronized String getName() {
@@ -65,22 +82,23 @@ public class PresidioMongoSink extends AbstractPresidioSink<DBObject> implements
                 }
             }
 
-            hasAutoWrap = Boolean.parseBoolean(context.getString(AUTO_WRAP));
-            if (hasAutoWrap) {
-                if (!context.containsKey(WRAP_KEY)) {
-                    throw new Exception(String.format("Missing %s for auto wrap for %s (since %s = true).",
-                            WRAP_KEY, getName(), AUTO_WRAP));
-                }
-            }
+//            hasAutoWrap = Boolean.parseBoolean(context.getString(AUTO_WRAP));
+//            if (hasAutoWrap) {
+//                if (!context.containsKey(WRAP_KEY)) {
+//                    throw new Exception(String.format("Missing %s for auto wrap for %s (since %s = true).",
+//                            WRAP_KEY, getName(), AUTO_WRAP));
+//                }
+//            }
 
             /* configure mongo */
+            recordType = (Class<T>) Class.forName(context.getString(RECORD_TYPE));
             batchSize = Integer.parseInt(context.getString(BATCH_SIZE, "1"));
             collectionName = context.getString(COLLECTION_NAME);
             dbName = context.getString(DB_NAME);
             host = context.getString(HOST);
             port = Integer.parseInt(context.getString(PORT, "27017"));
             username = context.getString(USERNAME, "");
-            autoWrapKey = context.getString(WRAP_KEY, "key");
+//            autoWrapKey = context.getString(WRAP_KEY, "key");
             final String password = context.getString(PASSWORD, "");
             sinkMongoRepository = createRepository(dbName, host, port, username, password);
         } catch (Exception e) {
@@ -91,9 +109,9 @@ public class PresidioMongoSink extends AbstractPresidioSink<DBObject> implements
     }
 
     @Override
-    protected List<DBObject> getEvents() {
+    protected List<T> getEvents() throws IOException {
         Event flumeEvent;
-        List<DBObject> eventsToSave = new ArrayList<>();
+        List<T> eventsToSave = new ArrayList<>();
         for (int i = 0; i < batchSize; i++) {
             flumeEvent = this.getChannel().take();
             if (flumeEvent == null) {
@@ -102,14 +120,16 @@ public class PresidioMongoSink extends AbstractPresidioSink<DBObject> implements
             }
             sinkCounter.incrementEventDrainAttemptCount();
 
-            DBObject parsedEvent;
-            if (hasAutoWrap) {
-                parsedEvent =  new BasicDBObject(autoWrapKey, new String(flumeEvent.getBody()));
-            }
-            else {
-                parsedEvent = (DBObject) JSON.parse(new String(flumeEvent.getBody()));
-            }
-            
+            T parsedEvent;
+//            if (hasAutoWrap) {
+            final Class<T> recordType = this.recordType;
+
+            parsedEvent = mapper.readValue(new String(flumeEvent.getBody()), recordType);
+//                parsedEvent = new BasicDBObject(autoWrapKey, new String(flumeEvent.getBody()));
+//            } else {
+//                parsedEvent = (DBObject) JSON.parse(new String(flumeEvent.getBody()));
+//            }
+
             eventsToSave.add(parsedEvent);
         }
 
@@ -117,7 +137,7 @@ public class PresidioMongoSink extends AbstractPresidioSink<DBObject> implements
     }
 
     @Override
-    protected void saveEvents(List<DBObject> eventsToSave) {
+    protected void saveEvents(List<T> eventsToSave) {
         final int numOfEventsToSave = eventsToSave.size();
         if (numOfEventsToSave != 0) {
             if (numOfEventsToSave == 1) { // or in other words if batchSize == 1
