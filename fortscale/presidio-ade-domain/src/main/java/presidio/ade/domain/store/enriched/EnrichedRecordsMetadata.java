@@ -1,4 +1,4 @@
-package fortscale.domain.core;
+package presidio.ade.domain.store.enriched;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 

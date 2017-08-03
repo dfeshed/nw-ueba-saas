@@ -16,7 +16,7 @@ import java.util.Map;
  * Created by Efrat Noam on 02/08/2017.
  */
 @Document
-public abstract class EnrichedEvent {
+public class EnrichedEvent {
 
     public static final String EVENT_ID_FIELD = "eventId";
     public static final String SCHEMA_FIELD = "schema";
@@ -29,6 +29,32 @@ public abstract class EnrichedEvent {
     public static final String USER_DISPLAY_NAME_FIELD = "userdisplayName";
     private static final String ADDITIONAL_INFO = "additionalInfo";
     private static final String USER_ID_FIELD = "userId";
+
+    public EnrichedEvent() {}
+
+    public EnrichedEvent(String eventId,
+                         String schema,
+                         String userId,
+                         String userName,
+                         String userDisplayName,
+                         String dataSource,
+                         String operationType,
+                         List<String> operationTypeCategories,
+                         EventResult result,
+                         String resultCode,
+                         Map<String, String> additionalnfo) {
+        this.eventId = eventId;
+        this.schema = schema;
+        this.userId = userId;
+        this.userName = userName;
+        this.userDisplayName = userDisplayName;
+        this.dataSource = dataSource;
+        this.operationType = operationType;
+        this.operationTypeCategories = operationTypeCategories;
+        this.result = result;
+        this.resultCode = resultCode;
+        this.additionalnfo = additionalnfo;
+    }
 
     @Id
     @Field

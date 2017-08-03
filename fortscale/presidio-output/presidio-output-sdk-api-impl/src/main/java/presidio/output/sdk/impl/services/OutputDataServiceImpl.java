@@ -1,8 +1,8 @@
 package presidio.output.sdk.impl.services;
 
-import fortscale.domain.core.AbstractPresidioDocument;
 import fortscale.domain.core.EnrichedRecordsMetadata;
 import presidio.output.sdk.api.OutputDataServiceSDK;
+import presidio.output.domain.records.events.*;
 
 import java.util.List;
 
@@ -11,7 +11,8 @@ import java.util.List;
  */
 public class OutputDataServiceImpl implements OutputDataServiceSDK {
 
-    public void store(EnrichedRecordsMetadata metaData, List<? extends AbstractPresidioDocument> records) {
+    @Override
+    public void store(EnrichedRecordsMetadata metaData, List<? extends EnrichedEvent> records) {
         //TODO add here the actual storing
     }
 }

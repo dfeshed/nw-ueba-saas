@@ -1,7 +1,7 @@
 package presidio.output.domain.services.event;
 
 
-import fortscale.domain.core.EnrichedRecordsMetadata;
+import fortscale.common.general.Schema;
 import presidio.output.domain.records.events.EnrichedEvent;
 
 import java.util.List;
@@ -14,8 +14,8 @@ public interface EventPersistencyService {
     /**
      * persist given records into db
      *
-     * @param metaData some metadata considering the data to be stored. i.e. what is the schema, what is the time range etc...
+     * @param schema storing is done according to events schema
      * @param records  data to be stored
      */
-    void store(EnrichedRecordsMetadata metaData, List<? extends EnrichedEvent> records);
+    void store(Schema schema, List<? extends EnrichedEvent> records);
 }

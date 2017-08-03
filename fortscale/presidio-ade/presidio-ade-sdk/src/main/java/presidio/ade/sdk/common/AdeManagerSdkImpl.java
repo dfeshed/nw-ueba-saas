@@ -3,7 +3,7 @@ package presidio.ade.sdk.common;
 import fortscale.accumulator.aggregation.event.AccumulatedAggregatedFeatureEvent;
 import fortscale.aggregation.feature.bucket.FeatureBucket;
 import fortscale.domain.SMART.EntityEvent;
-import fortscale.domain.core.EnrichedRecordsMetadata;
+import presidio.ade.domain.store.enriched.EnrichedRecordsMetadata;
 import fortscale.utils.pagination.PageIterator;
 import fortscale.utils.time.TimeRange;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;

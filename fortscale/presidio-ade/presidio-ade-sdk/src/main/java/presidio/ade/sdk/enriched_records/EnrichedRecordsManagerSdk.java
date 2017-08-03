@@ -1,6 +1,6 @@
 package presidio.ade.sdk.enriched_records;
 
-import fortscale.domain.core.EnrichedRecordsMetadata;
+import presidio.ade.domain.store.enriched.EnrichedRecordsMetadata;
 import fortscale.utils.time.TimeRange;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.ade.domain.record.scored.enriched_scored.AdeScoredEnrichedRecord;

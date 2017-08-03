@@ -9,6 +9,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.input.core.services.converters.DlpFileConverter;
 import presidio.input.core.services.data.AdeDataService;
+import presidio.output.sdk.api.OutputDataServiceSDK;
 import presidio.sdk.api.domain.DlpFileDataDocument;
 import presidio.sdk.api.domain.DlpFileEnrichedDocument;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
@@ -25,7 +26,12 @@ public class InputExecutionServiceTest {
     @MockBean
     private AdeDataService adeDataService;
 
-    private InputExecutionServiceImpl processService = new InputExecutionServiceImpl(presidioInputPersistencyService, adeDataService);
+    @MockBean
+    private OutputDataServiceSDK outputDataServiceSDK;
+
+    private InputExecutionServiceImpl processService = new InputExecutionServiceImpl(presidioInputPersistencyService,
+            adeDataService,
+            outputDataServiceSDK);
 
     @Test
     public void testConverter() {

@@ -19,9 +19,25 @@
     <dependencies>
         <dependency>
             <groupId>fortscale</groupId>
+            <artifactId>presidio-output-domain</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>fortscale</groupId>
             <artifactId>presidio-output-sdk-api</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>fortscale</groupId>
+            <artifactId>presidio-utils</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
 </project>

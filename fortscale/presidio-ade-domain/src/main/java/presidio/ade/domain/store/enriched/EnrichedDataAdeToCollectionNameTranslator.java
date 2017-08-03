@@ -1,6 +1,5 @@
 package presidio.ade.domain.store.enriched;
 
-import fortscale.domain.core.EnrichedRecordsMetadata;
 import presidio.ade.domain.store.AdeDataStoreCleanupParams;
 import presidio.ade.domain.store.AdeToCollectionNameTranslator;
 

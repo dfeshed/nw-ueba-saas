@@ -7,7 +7,7 @@ import fortscale.common.feature.AggrFeatureValue;
 import fortscale.common.feature.Feature;
 import fortscale.common.shell.command.PresidioCommands;
 import fortscale.common.util.GenericHistogram;
-import fortscale.domain.core.EnrichedRecordsMetadata;
+import presidio.ade.domain.store.enriched.EnrichedRecordsMetadata;
 import fortscale.utils.pagination.ContextIdToNumOfItems;
 import fortscale.utils.shell.BootShim;
 import fortscale.utils.shell.BootShimConfig;

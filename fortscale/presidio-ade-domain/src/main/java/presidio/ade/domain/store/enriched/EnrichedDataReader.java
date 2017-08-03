@@ -1,6 +1,5 @@
 package presidio.ade.domain.store.enriched;
 
-import fortscale.domain.core.EnrichedRecordsMetadata;
 import fortscale.utils.pagination.ContextIdToNumOfItems;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
 

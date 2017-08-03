@@ -3,7 +3,6 @@ package presidio.ade.domain.store.enriched;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
-import fortscale.domain.core.EnrichedRecordsMetadata;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.pagination.ContextIdToNumOfItems;
 import org.springframework.data.mongodb.core.MongoTemplate;
