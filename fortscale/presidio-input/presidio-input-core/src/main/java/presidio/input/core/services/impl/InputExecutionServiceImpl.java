@@ -123,7 +123,7 @@ public class InputExecutionServiceImpl implements PresidioExecutionService {
     }
 
     @Override
-    public void clean(DataSource dataSource, Instant startDate, Instant endDate) throws Exception {
+    public void clean(Schema schema, Instant startDate, Instant endDate) throws Exception {
         logger.info("Started clean processing for data source:{}, from {}:{}, until {}:{}."
                 , schema,
                 CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate,
