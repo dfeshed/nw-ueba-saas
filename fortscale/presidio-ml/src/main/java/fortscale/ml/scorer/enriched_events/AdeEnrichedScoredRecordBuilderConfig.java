@@ -4,21 +4,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import presidio.ade.domain.record.scored.enriched_scored.AdeEventTypeToAdeScoredEnrichedRecordClassResolver;
-import presidio.ade.domain.record.scored.enriched_scored.AdeEventTypeToAdeScoredEnrichedRecordClassResolverConfig;
+import presidio.ade.domain.record.enriched.AdeEnrichedRecordToAdeScoredEnrichedRecordResolverConfig;
+import presidio.ade.domain.record.util.AdeEnrichedRecordToAdeScoredEnrichedRecordResolver;
 
 /**
  * Created by YaronDL on 6/18/2017.
  */
 @Configuration
-@Import({AdeEventTypeToAdeScoredEnrichedRecordClassResolverConfig.class})
+@Import({AdeEnrichedRecordToAdeScoredEnrichedRecordResolverConfig.class})
 public class AdeEnrichedScoredRecordBuilderConfig {
 
     @Autowired
-    private AdeEventTypeToAdeScoredEnrichedRecordClassResolver dataSourceToAdeScoredEnrichedRecordClassResolver;
+    private AdeEnrichedRecordToAdeScoredEnrichedRecordResolver adeEnrichedRecordToAdeScoredEnrichedRecordResolver;
 
     @Bean
     public AdeEnrichedScoredRecordBuilder enrichedScoredRecordBuilder(){
-        return new AdeEnrichedScoredRecordBuilder(dataSourceToAdeScoredEnrichedRecordClassResolver);
+        return new AdeEnrichedScoredRecordBuilder(adeEnrichedRecordToAdeScoredEnrichedRecordResolver);
     }
 }

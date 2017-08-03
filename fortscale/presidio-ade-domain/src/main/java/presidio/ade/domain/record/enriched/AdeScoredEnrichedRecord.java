@@ -1,10 +1,9 @@
-package presidio.ade.domain.record.scored.enriched_scored;
+package presidio.ade.domain.record.enriched;
 
 import fortscale.domain.feature.score.FeatureScore;
-import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.Indexed;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
-import presidio.ade.domain.record.scored.AdeScoredRecord;
+import presidio.ade.domain.record.AdeScoredRecord;
 
 import java.time.Instant;
 import java.util.List;

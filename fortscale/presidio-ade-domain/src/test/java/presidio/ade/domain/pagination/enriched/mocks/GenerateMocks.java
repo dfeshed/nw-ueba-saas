@@ -8,7 +8,7 @@ import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import presidio.ade.domain.record.enriched.EnrichedDlpFileRecord;
+import presidio.ade.domain.record.enriched.dlpfile.EnrichedDlpFileRecord;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
 
 import java.time.Instant;
