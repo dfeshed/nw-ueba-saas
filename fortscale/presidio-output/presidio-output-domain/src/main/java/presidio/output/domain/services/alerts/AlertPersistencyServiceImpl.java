@@ -1,11 +1,11 @@
-package presidio.output.domain.services;
+package presidio.output.domain.services.alerts;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import presidio.output.domain.records.Alert;
-import presidio.output.domain.records.AlertQuery;
+import presidio.output.domain.records.alerts.Alert;
+import presidio.output.domain.records.alerts.AlertQuery;
 import presidio.output.domain.repositories.AlertRepository;
 
 import java.util.List;

@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import presidio.output.domain.services.AlertPersistencyService;
+import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.output.domain.spring.PresidioOutputPersistencyServiceConfig;
 import presidio.output.processor.services.alert.AlertService;
 import presidio.output.processor.services.alert.AlertServiceImpl;

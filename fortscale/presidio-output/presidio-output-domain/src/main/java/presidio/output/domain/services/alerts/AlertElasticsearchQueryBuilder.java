@@ -1,4 +1,4 @@
-package presidio.output.domain.services;
+package presidio.output.domain.services.alerts;
 
 import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.index.query.BoolQueryBuilder;
@@ -10,8 +10,8 @@ import org.elasticsearch.search.sort.FieldSortBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
-import presidio.output.domain.records.AlertQuery;
-import presidio.output.domain.records.Alert;
+import presidio.output.domain.records.alerts.AlertQuery;
+import presidio.output.domain.records.alerts.Alert;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
 

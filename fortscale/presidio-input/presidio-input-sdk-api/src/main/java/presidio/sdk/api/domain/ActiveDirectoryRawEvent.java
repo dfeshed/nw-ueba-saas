@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 import java.time.Instant;
 
 @Document
-public class ActiveDirectoryRawEvent extends AbstractInputDocument {
+public class ActiveDirectoryRawEvent extends AbstractPresidioDocument {
 
     public static final String OPERATION_TYPE_FIELD_NAME = "operationType";
     public static final String IS_SECURITY_SENSITIVE_OPERATION_FIELD_NAME = "isSecuritySensitiveOperation";

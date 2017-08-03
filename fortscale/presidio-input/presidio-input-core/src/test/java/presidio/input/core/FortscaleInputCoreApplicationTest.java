@@ -17,6 +17,7 @@ import org.springframework.shell.core.CommandResult;
 import org.springframework.test.context.junit4.SpringRunner;
 import presidio.input.core.services.impl.InputExecutionServiceImpl;
 import presidio.input.core.spring.InputCoreConfiguration;
+import presidio.output.sdk.impl.spring.OutputDataServiceConfig;
 
 
 @RunWith(SpringRunner.class)
@@ -41,7 +42,11 @@ public class FortscaleInputCoreApplicationTest {
     }
 
     @Configuration
-    @Import({InputCoreConfiguration.class, MongodbTestConfig.class, BootShimConfig.class, PresidioCommands.class})
+    @Import({InputCoreConfiguration.class,
+            MongodbTestConfig.class,
+            BootShimConfig.class,
+            PresidioCommands.class,
+            OutputDataServiceConfig.class})
     @EnableSpringConfigured
     public static class springConfig {
 
