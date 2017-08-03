@@ -87,6 +87,4 @@ public class MonitoringConfiguration {
         ts.setAwaitTerminationSeconds(AWAIT_TERMINATION_SECONDS);
         return ts;
     }
-
-
 }
