@@ -23,4 +23,10 @@ public class BootShimConfig {
     public InstantConverter instantConverter() {
         return new InstantConverter();
     }
+
+    @Bean
+    public FixedDurationStrategyConverter fixedDurationStrategyConverter() {
+        return new FixedDurationStrategyConverter();
+    }
+
 }

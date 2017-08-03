@@ -3,6 +3,7 @@ package presidio.ade.processes.shell;
 import fortscale.common.general.CommonStrings;
 import fortscale.common.general.Schema;
 import fortscale.ml.model.ModelingService;
+import fortscale.utils.fixedduration.FixedDurationStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.shell.core.CommandMarker;
 import org.springframework.shell.core.annotation.CliCommand;
@@ -31,10 +32,10 @@ public class AccumulateServiceCommands implements CommandMarker {
 			final Instant endTime,
 
 			@CliOption(key = {CommonStrings.COMMAND_LINE_FIXED_DURATION_FIELD_NAME}, help = "the internal time intervals that the processing will be done by")
-			final Double fixedDuration,
+			final FixedDurationStrategy fixedDuration,
 
 			@CliOption(key = {CommonStrings.COMMAND_LINE_FEATURE_BUCKET_STRATEGY_FIELD_NAME}, help = "the internal time intervals that the processing will be done by")
-			final Double featureBucketStrategy
+			final FixedDurationStrategy featureBucketStrategy
 
 	) throws Exception {
 		accumulateAggregationsExecutionService.run(schema, startTime, endTime, fixedDuration, featureBucketStrategy);

@@ -33,9 +33,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 @RunWith(SpringRunner.class)
 @Category(ModuleTestCategory.class)
@@ -60,8 +58,6 @@ public class AccumulateAggregationsApplicationTest {
     private EnrichedDataStore enrichedDataStore;
     @Autowired
     private MongoTemplate mongoTemplate;
-    @Autowired
-    public ToCollectionNameTranslator toCollectionNameTranslator;
 
 
     @Test
@@ -87,15 +83,14 @@ public class AccumulateAggregationsApplicationTest {
             CommandResult commandResult = bootShim.getShell().executeCommand(EXECUTION_COMMAND);
             Assert.assertTrue(commandResult.isSuccess());
 
-            Set<String> collectionNames = mongoTemplate.getCollectionNames();
+            String openFileCollectionName = "accm_number_of_opened_files_normalized_username_hourly_dlpfile";
 
-            AggrRecordsMetadata aggrRecordsMetadata = new AggrRecordsMetadata("number_of_opened_files_normalized_username_hourly_dlpfile");
-            List<AccumulatedAggregationFeatureRecord> accumulatedRecords = mongoTemplate.findAll(AccumulatedAggregationFeatureRecord.class, toCollectionNameTranslator.toCollectionName(aggrRecordsMetadata));
+            List<AccumulatedAggregationFeatureRecord> accumulatedRecords = mongoTemplate.findAll(AccumulatedAggregationFeatureRecord.class, openFileCollectionName);
 
             //expected results
             int expectedAccumulatedRecordsSize = DAYS_BACK_FROM - DAYS_BACK_TO;
             int expectedAggregatedFeatureValuesSize = 24;
-            int expectedAggregatedFeatureValue = 2;
+            double expectedAggregatedFeatureValue = 2;
 
             Assert.assertTrue(accumulatedRecords.size() == expectedAccumulatedRecordsSize);
 

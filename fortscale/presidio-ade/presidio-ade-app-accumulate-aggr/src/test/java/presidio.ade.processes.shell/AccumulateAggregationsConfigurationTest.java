@@ -1,13 +1,11 @@
 package presidio.ade.processes.shell;
 
-import fortscale.utils.mongodb.util.ToCollectionNameTranslator;
 import fortscale.utils.shell.BootShimConfig;
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import presidio.ade.domain.store.accumulator.AccumulatedDataToCollectionNameTranslator;
 import presidio.ade.processes.shell.config.AccumulateAggregationsConfiguration;
 
 import java.util.Properties;
@@ -25,16 +23,10 @@ public class AccumulateAggregationsConfigurationTest extends AccumulateAggregati
         properties.put("fortscale.aggregation.feature.event.conf.json.file.name", "classpath:config/asl/feature-aggregation/aggregated-features/*.json");
         //        end ASL paths configurations
         properties.put("streaming.event.field.type.aggr_event", "aggr_event");
-        properties.put("feature.aggregation.pageSize", 1000);
-        properties.put("feature.aggregation.maxGroupSize", 100);
+        properties.put("feature.aggregation.pageIterator.pageSize", 1000);
+        properties.put("feature.aggregation.pageIterator.maxGroupSize", 100);
 
         return new TestPropertiesPlaceholderConfigurer(properties);
     }
-
-    @Bean
-    public ToCollectionNameTranslator toCollectionNameTranslator() {
-        return new AccumulatedDataToCollectionNameTranslator();
-    }
-
 
 }

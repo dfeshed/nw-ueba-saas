@@ -1,6 +1,6 @@
 package presidio.ade.processes.shell;
 
-import fortscale.accumulator.AccumulationsStore;
+import fortscale.accumulator.AccumulationsCache;
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.common.general.Schema;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
@@ -20,35 +20,34 @@ import java.time.Instant;
 public class AccumulateAggregationsExecutionService {
     private static Logger logger = LoggerFactory.getLogger(AccumulateAggregationsExecutionService.class);
 
-
-    private BucketConfigurationService bucketConfigurationService;
-    private EnrichedDataStore enrichedDataStore;
-    private AccumulatedDataStore accumulatedDataStore;
-    private int pageSize;
-    private int maxGroupSize;
-    private AccumulateAggregationsBucketService accumulateAggregationsBucketService;
-    private AccumulationsStore accumulationsStore;
+    private final BucketConfigurationService bucketConfigurationService;
+    private final EnrichedDataStore enrichedDataStore;
+    private final AccumulatedDataStore accumulatedDataStore;
+    private final int pageSize;
+    private final int maxGroupSize;
+    private final AccumulateAggregationsBucketService accumulateAggregationsBucketService;
+    private final AccumulationsCache accumulationsCache;
 
     public AccumulateAggregationsExecutionService(BucketConfigurationService bucketConfigurationService,
                                                   EnrichedDataStore enrichedDataStore,
                                                   AccumulatedDataStore accumulatedDataStore,
                                                   AccumulateAggregationsBucketService accumulateAggregationsBucketService,
-                                                  AccumulationsStore accumulationsStore, int pageSize, int maxGroupSize) {
+                                                  AccumulationsCache accumulationsCache, int pageSize, int maxGroupSize) {
         this.bucketConfigurationService = bucketConfigurationService;
         this.enrichedDataStore = enrichedDataStore;
         this.accumulatedDataStore = accumulatedDataStore;
         this.pageSize = pageSize;
         this.maxGroupSize = maxGroupSize;
         this.accumulateAggregationsBucketService = accumulateAggregationsBucketService;
-        this.accumulationsStore = accumulationsStore;
+        this.accumulationsCache = accumulationsCache;
     }
 
-    public void run(Schema schema, Instant startDate, Instant endDate, Double fixedDuration, Double featureBucketStrategy) throws Exception {
+    public void run(Schema schema, Instant startDate, Instant endDate, FixedDurationStrategy fixedDuration, FixedDurationStrategy featureBucketStrategy) throws Exception {
         //strategy for accumulator
-        FixedDurationStrategy fixedDurationStrategy = FixedDurationStrategy.fromSeconds(fixedDuration.longValue());
+        FixedDurationStrategy fixedDurationStrategy = fixedDuration;
         //strategy for aggregator
-        FixedDurationStrategy strategy = FixedDurationStrategy.fromSeconds(featureBucketStrategy.longValue());
-        AccumulateAggregationsService featureAggregationBucketsService = new AccumulateAggregationsService(fixedDurationStrategy, bucketConfigurationService, enrichedDataStore, accumulatedDataStore, pageSize, maxGroupSize, strategy, accumulateAggregationsBucketService, accumulationsStore);
+        FixedDurationStrategy strategy = featureBucketStrategy;
+        AccumulateAggregationsService featureAggregationBucketsService = new AccumulateAggregationsService(fixedDurationStrategy, bucketConfigurationService, enrichedDataStore, accumulatedDataStore, pageSize, maxGroupSize, strategy, accumulateAggregationsBucketService, accumulationsCache);
         TimeRange timeRange = new TimeRange(startDate, endDate);
         featureAggregationBucketsService.execute(timeRange, schema.getName());
     }

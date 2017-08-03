@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 /**
  * Created by maria_dorohin on 7/30/17.
  */
-public class AccumulationsInMemory implements AccumulationsStore{
+public class AccumulationsInMemory implements AccumulationsCache {
 
     //map<pair<contextId, featureName>,AccumulatedAggregationFeatureRecord>
     private Map<Pair<String, String>, AccumulatedAggregationFeatureRecord> memoryStore;

@@ -20,7 +20,7 @@ public abstract class AdeContextualAggregatedRecord extends AdeRecord {
 
     @Indexed
     private Instant endInstant;
-    @Field
+    @Indexed
     private String contextId;
     @Transient
     private String featureName;
