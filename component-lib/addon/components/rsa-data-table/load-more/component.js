@@ -50,7 +50,25 @@ export default Component.extend(HasTableParent, {
       } else {
         this.$().appendTo(rowsElement);
       }
+
+      const tableBody = this.$().closest('.rsa-data-table-body');
+      tableBody.on('scroll', () => {
+        run.debounce(() => {
+          const left = tableBody.scrollLeft();
+
+          this.$().css({
+            left,
+            right: `-${left}px`
+          });
+        }, 500);
+      });
     });
+  },
+
+  willDestroyElement() {
+    this._super(...arguments);
+
+    const tableBody = this.$().closest('.rsa-data-table-body');
+    tableBody.off('scroll');
   }
 });
-
