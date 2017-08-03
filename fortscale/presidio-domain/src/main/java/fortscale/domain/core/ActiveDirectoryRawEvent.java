@@ -18,24 +18,10 @@ public class ActiveDirectoryRawEvent extends AbstractPresidioDocument {
 
     @Field(IS_USER_ADMIN_FIELD_NAME)
     private boolean isUserAdmin;
+
     @NotEmpty
     @Field(OBJECT_ID_FIELD_NAME)
     private String objectId;
-
-    public ActiveDirectoryRawEvent(String[] event) {
-        this.dateTime = Instant.parse(event[0]);
-        this.eventId = event[1];
-        this.dataSource = event[2];
-        this.userId = event[3];
-        this.operationType = event[4];
-        this.result = EventResult.valueOf(event[5]);
-        this.isUserAdmin = Boolean.valueOf(event[6]);
-        this.objectId = event[7];
-        this.operationTypeCategory = new ArrayList<>();
-        for (int i = 8; i <= event.length; i++) {
-            this.operationTypeCategory.add(event[i]);
-        }
-    }
 
     public ActiveDirectoryRawEvent(Instant dateTime, String eventId, String dataSource, String userId, String operationType,
                                    List<String> operationTypeCategory, EventResult result, String userName,
@@ -80,6 +66,16 @@ public class ActiveDirectoryRawEvent extends AbstractPresidioDocument {
         return "ActiveDirectoryRawEvent{" +
                 "isUserAdmin=" + isUserAdmin +
                 ", objectId='" + objectId + '\'' +
+                ", eventId='" + eventId + '\'' +
+                ", dataSource='" + dataSource + '\'' +
+                ", userId='" + userId + '\'' +
+                ", operationType='" + operationType + '\'' +
+                ", operationTypeCategory=" + operationTypeCategory +
+                ", result=" + result +
+                ", userName='" + userName + '\'' +
+                ", userDisplayName='" + userDisplayName + '\'' +
+                ", additionalInfo=" + additionalInfo +
+                ", dateTime=" + dateTime +
                 '}';
     }
 }

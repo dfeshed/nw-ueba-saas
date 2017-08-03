@@ -1,8 +1,8 @@
 package presidio.sdk.api.domain;
 
 import fortscale.domain.core.AuthenticationRawEvent;
+import fortscale.domain.core.EventResult;
 import org.apache.commons.collections.CollectionUtils;
-import org.hibernate.validator.constraints.NotEmpty;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -10,15 +10,14 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
+import java.time.Instant;
 import java.util.Set;
 
 public class AuthenticationRawEventTest {
 
     @Test
     public void testValidRecord() {
-        String record = "2017-05-20T15:50:00Z,123,file,dd,false,machine,machine,username,SUCCESS,1";
-
-        AuthenticationRawEvent authenticationRawEvent = new AuthenticationRawEvent(record.split(","));
+        AuthenticationRawEvent authenticationRawEvent = createEvent();
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         Validator validator = factory.getValidator();
 
@@ -27,67 +26,67 @@ public class AuthenticationRawEventTest {
     }
 
     @Test
-    public void testNoEventId() {
-        String record = "2017-05-20T15:50:00Z,,file,dd,false,machine,machine,username,SUCCESS,1";
-
-        AuthenticationRawEvent authenticationRawEvent = new AuthenticationRawEvent(record.split(","));
+    public void testNoSrcMachineId() {
+        AuthenticationRawEvent authenticationRawEvent = createEvent();
+        authenticationRawEvent.setSrcMachineId(null);
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         Validator validator = factory.getValidator();
 
         Set<ConstraintViolation<AuthenticationRawEvent>> violations = validator.validate(authenticationRawEvent);
-        Assert.assertEquals(1, violations.size());
-        Assert.assertTrue(violations.iterator().next().getConstraintDescriptor().getAnnotation() instanceof NotEmpty);
+        Assert.assertTrue(CollectionUtils.isEmpty(violations));
     }
 
     @Test
-    public void testNoDataSource() {
-        String record = "2017-05-20T15:50:00Z,123,,dd,false,machine,machine,username,SUCCESS,1";
-
-        AuthenticationRawEvent authenticationRawEvent = new AuthenticationRawEvent(record.split(","));
+    public void testNoSrcMachineName() {
+        AuthenticationRawEvent authenticationRawEvent = createEvent();
+        authenticationRawEvent.setSrcMachineName(null);
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         Validator validator = factory.getValidator();
 
         Set<ConstraintViolation<AuthenticationRawEvent>> violations = validator.validate(authenticationRawEvent);
-        Assert.assertEquals(1, violations.size());
-        Assert.assertTrue(violations.iterator().next().getConstraintDescriptor().getAnnotation() instanceof NotEmpty);
+        Assert.assertTrue(CollectionUtils.isEmpty(violations));
     }
 
     @Test
-    public void testNoDstMachine() {
-        String record = "2017-05-20T15:50:00Z,123,ff,dd,false,,machine,username,SUCCESS,1";
-
-        AuthenticationRawEvent authenticationRawEvent = new AuthenticationRawEvent(record.split(","));
+    public void testNoDstMachineId() {
+        AuthenticationRawEvent authenticationRawEvent = createEvent();
+        authenticationRawEvent.setDstMachineId(null);
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         Validator validator = factory.getValidator();
 
         Set<ConstraintViolation<AuthenticationRawEvent>> violations = validator.validate(authenticationRawEvent);
-        Assert.assertEquals(1, violations.size());
-        Assert.assertTrue(violations.iterator().next().getConstraintDescriptor().getAnnotation() instanceof NotEmpty);
+        Assert.assertTrue(CollectionUtils.isEmpty(violations));
     }
 
     @Test
-    public void testNoSrcMachine() {
-        String record = "2017-05-20T15:50:00Z,123,ff,dd,false,machine,,username,SUCCESS,1";
-
-        AuthenticationRawEvent authenticationRawEvent = new AuthenticationRawEvent(record.split(","));
+    public void testNoDstMachineName() {
+        AuthenticationRawEvent authenticationRawEvent = createEvent();
+        authenticationRawEvent.setDstMachineName(null);
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         Validator validator = factory.getValidator();
 
         Set<ConstraintViolation<AuthenticationRawEvent>> violations = validator.validate(authenticationRawEvent);
-        Assert.assertEquals(1, violations.size());
-        Assert.assertTrue(violations.iterator().next().getConstraintDescriptor().getAnnotation() instanceof NotEmpty);
+        Assert.assertTrue(CollectionUtils.isEmpty(violations));
     }
 
     @Test
-    public void testNoUsername() {
-        String record = "2017-05-20T15:50:00Z,123,ff,dd,false,machine,machine,,SUCCESS,1";
-
-        AuthenticationRawEvent authenticationRawEvent = new AuthenticationRawEvent(record.split(","));
+    public void testNoDstMachineDomain() {
+        AuthenticationRawEvent authenticationRawEvent = createEvent();
+        authenticationRawEvent.setDstMachineDomain(null);
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         Validator validator = factory.getValidator();
 
         Set<ConstraintViolation<AuthenticationRawEvent>> violations = validator.validate(authenticationRawEvent);
-        Assert.assertEquals(1, violations.size());
-        Assert.assertTrue(violations.iterator().next().getConstraintDescriptor().getAnnotation() instanceof NotEmpty);
+        Assert.assertTrue(CollectionUtils.isEmpty(violations));
+    }
+
+    private AuthenticationRawEvent createEvent() {
+        AuthenticationRawEvent authenticationRawEvent = new AuthenticationRawEvent(Instant.now(), "eventId",
+                "dataSource", "userId", "operationType", null,
+                EventResult.SUCCESS, "userName", "userDisplayName", null,
+                "srcMachineId", "srcMachineName", "dstMachineId",
+                "dstMachineName", "dstMachineDomain");
+
+        return authenticationRawEvent;
     }
 }

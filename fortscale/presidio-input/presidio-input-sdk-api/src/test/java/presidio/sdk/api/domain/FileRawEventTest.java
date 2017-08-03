@@ -1,8 +1,8 @@
 package presidio.sdk.api.domain;
 
+import fortscale.domain.core.EventResult;
 import fortscale.domain.core.FileRawEvent;
 import org.apache.commons.collections.CollectionUtils;
-import org.hibernate.validator.constraints.NotEmpty;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -10,15 +10,14 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
+import java.time.Instant;
 import java.util.Set;
 
 public class FileRawEventTest {
 
     @Test
     public void testValidRecord() {
-        String record = "2017-05-20T15:50:00Z,123,file,FOLDER_OPENED,username,SUCCESS,srcFilePath,dstFilePath,srcFolderPath,dstFolderPath,123,false,false";
-
-        FileRawEvent fileRawEvent = new FileRawEvent(record.split(","));
+        FileRawEvent fileRawEvent = createEvent();
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         Validator validator = factory.getValidator();
 
@@ -26,42 +25,11 @@ public class FileRawEventTest {
         Assert.assertTrue(CollectionUtils.isEmpty(violations));
     }
 
-    @Test
-    public void testNoEventId() {
-        String record = "2017-05-20T15:50:00Z,,file,FOLDER_OPENED,username,SUCCESS,srcFilePath,dstFilePath,srcFolderPath,dstFolderPath,123,false,false";
-
-        FileRawEvent fileRawEvent = new FileRawEvent(record.split(","));
-        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-        Validator validator = factory.getValidator();
-
-        Set<ConstraintViolation<FileRawEvent>> violations = validator.validate(fileRawEvent);
-        Assert.assertEquals(1, violations.size());
-        Assert.assertTrue(violations.iterator().next().getConstraintDescriptor().getAnnotation() instanceof NotEmpty);
-    }
-
-    @Test
-    public void testNoDataSource() {
-        String record = "2017-05-20T15:50:00Z,123,,FOLDER_OPENED,username,SUCCESS,srcFilePath,dstFilePath,srcFolderPath,dstFolderPath,123,false,false";
-
-        FileRawEvent fileRawEvent = new FileRawEvent(record.split(","));
-        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-        Validator validator = factory.getValidator();
-
-        Set<ConstraintViolation<FileRawEvent>> violations = validator.validate(fileRawEvent);
-        Assert.assertEquals(1, violations.size());
-        Assert.assertTrue(violations.iterator().next().getConstraintDescriptor().getAnnotation() instanceof NotEmpty);
-    }
-
-    @Test
-    public void testNoUsername() {
-        String record = "2017-05-20T15:50:00Z,123,file,FOLDER_OPENED,,SUCCESS,srcFilePath,dstFilePath,srcFolderPath,dstFolderPath,123,false,false";
-
-        FileRawEvent fileRawEvent = new FileRawEvent(record.split(","));
-        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-        Validator validator = factory.getValidator();
-
-        Set<ConstraintViolation<FileRawEvent>> violations = validator.validate(fileRawEvent);
-        Assert.assertEquals(1, violations.size());
-        Assert.assertTrue(violations.iterator().next().getConstraintDescriptor().getAnnotation() instanceof NotEmpty);
+    public FileRawEvent createEvent() {
+        FileRawEvent fileRawEvent = new FileRawEvent(Instant.now(), "eventId", "dataSource",
+                "userId", "operationType", null, EventResult.SUCCESS,
+                "userName", "userDisplayName", null, "srcFilePath",
+                true, "dstFilePath", true, 0L);
+        return fileRawEvent;
     }
 }

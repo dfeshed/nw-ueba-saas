@@ -4,7 +4,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.Instant;
-import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 @Document
 public class FileRawEvent extends AbstractPresidioDocument {
@@ -34,22 +35,16 @@ public class FileRawEvent extends AbstractPresidioDocument {
     public FileRawEvent() {
     }
 
-    public FileRawEvent(String[] event) {
-        this.dateTime = Instant.parse(event[0]);
-        this.eventId = event[1];
-        this.dataSource = event[2];
-        this.userId = event[3];
-        this.operationType = event[4];
-        this.result = EventResult.valueOf(event[5]);
-        this.srcFilePath = event[6];
-        this.isDstDriveShared = Boolean.parseBoolean(event[7]);
-        this.dstFilePath = event[7];
-        this.isDstDriveShared = Boolean.parseBoolean(event[8]);
-        this.fileSize = Long.valueOf(event[9]);
-        this.operationTypeCategory = new ArrayList<>();
-        for (int i = 8; i <= event.length; i++) {
-            this.operationTypeCategory.add(event[i]);
-        }
+    public FileRawEvent(Instant dateTime, String eventId, String dataSource, String userId, String operationType,
+                        List<String> operationTypeCategory, EventResult result, String userName, String userDisplayName,
+                        Map<String, String> additionalInfo, String srcFilePath, boolean isSrcDriveShared,
+                        String dstFilePath, boolean isDstDriveShared, Long fileSize) {
+        super(dateTime, eventId, dataSource, userId, operationType, operationTypeCategory, result, userName, userDisplayName, additionalInfo);
+        this.srcFilePath = srcFilePath;
+        this.isSrcDriveShared = isSrcDriveShared;
+        this.dstFilePath = dstFilePath;
+        this.isDstDriveShared = isDstDriveShared;
+        this.fileSize = fileSize;
     }
 
     public String getSrcFilePath() {
@@ -106,5 +101,27 @@ public class FileRawEvent extends AbstractPresidioDocument {
 
     public void setDstDriveShared(boolean dstDriveShared) {
         isDstDriveShared = dstDriveShared;
+    }
+
+
+    @Override
+    public String toString() {
+        return "FileRawEvent{" +
+                "srcFilePath='" + srcFilePath + '\'' +
+                ", isSrcDriveShared=" + isSrcDriveShared +
+                ", dstFilePath='" + dstFilePath + '\'' +
+                ", isDstDriveShared=" + isDstDriveShared +
+                ", fileSize=" + fileSize +
+                ", eventId='" + eventId + '\'' +
+                ", dataSource='" + dataSource + '\'' +
+                ", userId='" + userId + '\'' +
+                ", operationType='" + operationType + '\'' +
+                ", operationTypeCategory=" + operationTypeCategory +
+                ", result=" + result +
+                ", userName='" + userName + '\'' +
+                ", userDisplayName='" + userDisplayName + '\'' +
+                ", additionalInfo=" + additionalInfo +
+                ", dateTime=" + dateTime +
+                '}';
     }
 }

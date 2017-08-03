@@ -1,6 +1,7 @@
 package presidio.sdk.api.domain;
 
 import fortscale.domain.core.ActiveDirectoryRawEvent;
+import fortscale.domain.core.EventResult;
 import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.junit.Assert;
@@ -10,15 +11,14 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
+import java.time.Instant;
 import java.util.Set;
 
 public class ActiveDirectoryRawEventTest {
 
     @Test
     public void testValidRecord() {
-        String record = "2017-06-29T08:00:00Z,123456,data_source,ACCOUNT_MANAGEMENT,true,false,objectName1,SUCCESS,testusr1";
-
-        ActiveDirectoryRawEvent activeDirectoryRawEvent = new ActiveDirectoryRawEvent(record.split(","));
+        ActiveDirectoryRawEvent activeDirectoryRawEvent = createEvent();
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         Validator validator = factory.getValidator();
 
@@ -27,10 +27,9 @@ public class ActiveDirectoryRawEventTest {
     }
 
     @Test
-    public void testNoEventId() {
-        String record = "2017-06-29T08:00:00Z,,data_source,ACCOUNT_MANAGEMENT,true,false,objectName1,SUCCESS,testusr1";
-
-        ActiveDirectoryRawEvent activeDirectoryRawEvent = new ActiveDirectoryRawEvent(record.split(","));
+    public void testNoObjectId() {
+        ActiveDirectoryRawEvent activeDirectoryRawEvent = createEvent();
+        activeDirectoryRawEvent.setObjectId(null);
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         Validator validator = factory.getValidator();
 
@@ -39,29 +38,11 @@ public class ActiveDirectoryRawEventTest {
         Assert.assertTrue(violations.iterator().next().getConstraintDescriptor().getAnnotation() instanceof NotEmpty);
     }
 
-    @Test
-    public void testNoDataSource() {
-        String record = "2017-06-29T08:00:00Z,123,,ACCOUNT_MANAGEMENT,true,false,objectName1,SUCCESS,testusr1";
-
-        ActiveDirectoryRawEvent activeDirectoryRawEvent = new ActiveDirectoryRawEvent(record.split(","));
-        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-        Validator validator = factory.getValidator();
-
-        Set<ConstraintViolation<ActiveDirectoryRawEvent>> violations = validator.validate(activeDirectoryRawEvent);
-        Assert.assertEquals(1, violations.size());
-        Assert.assertTrue(violations.iterator().next().getConstraintDescriptor().getAnnotation() instanceof NotEmpty);
-    }
-
-    @Test
-    public void testNoObjectName() {
-        String record = "2017-06-29T08:00:00Z,123,data source,ACCOUNT_MANAGEMENT,true,false,,SUCCESS,testusr1";
-
-        ActiveDirectoryRawEvent activeDirectoryRawEvent = new ActiveDirectoryRawEvent(record.split(","));
-        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-        Validator validator = factory.getValidator();
-
-        Set<ConstraintViolation<ActiveDirectoryRawEvent>> violations = validator.validate(activeDirectoryRawEvent);
-        Assert.assertEquals(1, violations.size());
-        Assert.assertTrue(violations.iterator().next().getConstraintDescriptor().getAnnotation() instanceof NotEmpty);
+    public ActiveDirectoryRawEvent createEvent() {
+        ActiveDirectoryRawEvent activeDirectoryRawEvent = new ActiveDirectoryRawEvent(Instant.now(), "eventId",
+                "dataSource", "userId", "operationType", null,
+                EventResult.SUCCESS, "userName", "userDisplayName", null,
+                false, "objectId");
+        return activeDirectoryRawEvent;
     }
 }

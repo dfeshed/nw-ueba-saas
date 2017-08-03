@@ -142,4 +142,19 @@ public class AbstractPresidioDocument extends AbstractAuditableDocument {
     }
 
 
+    @Override
+    public String toString() {
+        return "AbstractPresidioDocument{" +
+                "eventId='" + eventId + '\'' +
+                ", dataSource='" + dataSource + '\'' +
+                ", userId='" + userId + '\'' +
+                ", operationType='" + operationType + '\'' +
+                ", operationTypeCategory=" + operationTypeCategory +
+                ", result=" + result +
+                ", userName='" + userName + '\'' +
+                ", userDisplayName='" + userDisplayName + '\'' +
+                ", additionalInfo=" + additionalInfo +
+                ", dateTime=" + dateTime +
+                '}';
+    }
 }
