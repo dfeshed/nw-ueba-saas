@@ -817,6 +817,7 @@
         <module>presidio-adapter</module>
         <module>presidio-output</module>
         <module>presidio-configuration-server</module>
+        <module>presidio-manager</module>
 
 
     </modules>
