@@ -1,8 +1,10 @@
 package presidio.ade.processes.shell;
 
 import fortscale.utils.shell.BootShimConfig;
+import fortscale.utils.shell.FixedDurationStrategyConverter;
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;

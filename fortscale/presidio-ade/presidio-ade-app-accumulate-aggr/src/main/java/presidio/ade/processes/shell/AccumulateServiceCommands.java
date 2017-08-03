@@ -32,10 +32,10 @@ public class AccumulateServiceCommands implements CommandMarker {
 			final Instant endTime,
 
 			@CliOption(key = {CommonStrings.COMMAND_LINE_FIXED_DURATION_FIELD_NAME}, help = "the internal time intervals that the processing will be done by")
-			final FixedDurationStrategy fixedDuration,
+			final Double fixedDuration,
 
 			@CliOption(key = {CommonStrings.COMMAND_LINE_FEATURE_BUCKET_STRATEGY_FIELD_NAME}, help = "the internal time intervals that the processing will be done by")
-			final FixedDurationStrategy featureBucketStrategy
+			final Double featureBucketStrategy
 
 	) throws Exception {
 		accumulateAggregationsExecutionService.run(schema, startTime, endTime, fixedDuration, featureBucketStrategy);

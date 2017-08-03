@@ -42,11 +42,11 @@ public class AccumulateAggregationsExecutionService {
         this.accumulationsCache = accumulationsCache;
     }
 
-    public void run(Schema schema, Instant startDate, Instant endDate, FixedDurationStrategy fixedDuration, FixedDurationStrategy featureBucketStrategy) throws Exception {
+    public void run(Schema schema, Instant startDate, Instant endDate, Double fixedDuration, Double featureBucketStrategy) throws Exception {
         //strategy for accumulator
-        FixedDurationStrategy fixedDurationStrategy = fixedDuration;
+        FixedDurationStrategy fixedDurationStrategy = FixedDurationStrategy.fromSeconds(fixedDuration.longValue());
         //strategy for aggregator
-        FixedDurationStrategy strategy = featureBucketStrategy;
+        FixedDurationStrategy strategy = FixedDurationStrategy.fromSeconds(featureBucketStrategy.longValue());
         AccumulateAggregationsService featureAggregationBucketsService = new AccumulateAggregationsService(fixedDurationStrategy, bucketConfigurationService, enrichedDataStore, accumulatedDataStore, pageSize, maxGroupSize, strategy, accumulateAggregationsBucketService, accumulationsCache);
         TimeRange timeRange = new TimeRange(startDate, endDate);
         featureAggregationBucketsService.execute(timeRange, schema.getName());

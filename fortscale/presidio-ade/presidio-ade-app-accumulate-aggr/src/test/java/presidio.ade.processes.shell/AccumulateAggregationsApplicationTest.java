@@ -32,6 +32,7 @@ import presidio.data.generators.user.SingleUserGenerator;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,16 +43,13 @@ public class AccumulateAggregationsApplicationTest {
 
     private static final int DAYS_BACK_FROM = 3;
     private static final int DAYS_BACK_TO = 1;
-    private static final long FIXED_DURATION_STRATEGY = 86400;
-    private static final long FEATURE_BUCKET_STRATEGY = 3600;
 
     private static final Schema ADE_EVENT_TYPE = Schema.DLPFILE;
     private static final Duration DURATION = Duration.ofDays(1);
     private static final Instant START_DATE = TimeService.floorTime(Instant.now().minus(Duration.ofDays(DAYS_BACK_FROM)), DURATION);
     private static final Instant END_DATE = TimeService.floorTime(Instant.now().minus(Duration.ofDays(DAYS_BACK_TO)), DURATION);
 
-    private static final String EXECUTION_COMMAND = String.format("run  --schema %s --start_date %s --end_date %s --fixed_duration_strategy %s --feature_bucket_strategy %s", ADE_EVENT_TYPE, START_DATE, END_DATE, FIXED_DURATION_STRATEGY, FEATURE_BUCKET_STRATEGY);
-
+    public static final String EXECUTION_COMMAND = String.format("run  --schema %s --start_date %s --end_date %s --fixed_duration_strategy %s --feature_bucket_strategy %s", ADE_EVENT_TYPE, START_DATE.toString(), END_DATE.toString(), 86400, 3600);
     @Autowired
     private BootShim bootShim;
     @Autowired
