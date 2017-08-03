@@ -500,6 +500,7 @@ export default {
       alert: 'Alert'
     },
     explorer: {
+      noResults: 'No results were found. Try expanding your time range or adjusting existing filters to include more results.',
       confirmation: {
         updateTitle: 'Confirm Update',
         deleteTitle: 'Confirm Delete',

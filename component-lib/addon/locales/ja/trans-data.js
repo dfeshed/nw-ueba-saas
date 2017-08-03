@@ -500,6 +500,7 @@ export default {
       alert: 'ja_Alert'
     },
     explorer: {
+      noResults: 'ja_No results were found. Try expanding your time range or adjusting existing filters to include more results.',
       confirmation: {
         updateTitle: 'ja_Confirm Update',
         deleteTitle: 'ja_Confirm Delete',
