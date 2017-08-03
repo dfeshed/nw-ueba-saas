@@ -6,9 +6,6 @@ import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import presidio.monitoring.export.MetricsExporter;
 
-/**
- * Created by miriw on 02/08/2017.
- */
 
 public class ContextClosedMonitoringHandler implements ApplicationListener<ContextClosedEvent> {
 
