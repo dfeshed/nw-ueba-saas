@@ -38,7 +38,9 @@
                             <groupname>presidio</groupname>
                             <sources>
                                 <source>
-                                    <location>${project.basedir}/../flume-ng-dist/target/apache-flume-1.7.0-bin/apache-flume-1.7.0-bin/</location>
+                                    <location>
+                                        ${project.basedir}/../flume-ng-dist/target/apache-flume-1.7.0-bin/apache-flume-1.7.0-bin/
+                                    </location>
                                 </source>
                             </sources>
                         </mapping>
@@ -84,7 +86,7 @@
         </plugins>
     </build>
     <properties>
-        <flume_home_directory>/opt/flume</flume_home_directory>
+        <flume_home_directory>/opt/flume/</flume_home_directory>
     </properties>
 
 
