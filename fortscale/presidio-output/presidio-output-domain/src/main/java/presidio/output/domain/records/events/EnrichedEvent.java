@@ -153,8 +153,8 @@ public class EnrichedEvent {
         return result;
     }
 
-    public Map<String,String> getResultCode() {
-        return additionalnfo;
+    public String getResultCode() {
+        return resultCode;
     }
 
     public void setUserName(String userName) {

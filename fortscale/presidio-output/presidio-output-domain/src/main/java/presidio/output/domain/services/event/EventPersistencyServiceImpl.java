@@ -35,7 +35,7 @@ public class EventPersistencyServiceImpl implements EventPersistencyService {
         try {
             eventRepository.saveEvents(collectionName, events);
         } catch (Exception e) {
-            //TODO
+            System.out.print(e);
         }
     }
 }

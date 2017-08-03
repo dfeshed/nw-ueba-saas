@@ -1,7 +1,12 @@
 package presidio.output.domain.records.events;
 
+import fortscale.common.general.EventResult;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
+
+import java.time.Instant;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by efratn on 02/08/2017.
@@ -38,6 +43,54 @@ public class FileEnrichedEvent extends EnrichedEvent {
 
     @Field(IS_DST_DRIVE_SHARED_FIELD)
     private Boolean isDstDriveShared;
+
+    public FileEnrichedEvent() {}
+
+    public FileEnrichedEvent(String absoluteSrcFilePath,
+                             String absoluteDstFilePath,
+                             String absoluteSrcFolderFilePath,
+                             String absoluteDstFolderFilePath,
+                             Long fileSize,
+                             Boolean isSrcDriveShared,
+                             Boolean isDstDriveShared) {
+        this.absoluteSrcFilePath = absoluteSrcFilePath;
+        this.absoluteDstFilePath = absoluteDstFilePath;
+        this.absoluteSrcFolderFilePath = absoluteSrcFolderFilePath;
+        this.absoluteDstFolderFilePath = absoluteDstFolderFilePath;
+        this.fileSize = fileSize;
+        this.isSrcDriveShared = isSrcDriveShared;
+        this.isDstDriveShared = isDstDriveShared;
+    }
+
+    public FileEnrichedEvent(Instant createdDate,
+                             Instant eventDate,
+                             String eventId,
+                             String schema,
+                             String userId,
+                             String userName,
+                             String userDisplayName,
+                             String dataSource,
+                             String operationType,
+                             List<String> operationTypeCategories,
+                             EventResult result,
+                             String resultCode,
+                             Map<String, String> additionalnfo,
+                             String absoluteSrcFilePath,
+                             String absoluteDstFilePath,
+                             String absoluteSrcFolderFilePath,
+                             String absoluteDstFolderFilePath,
+                             Long fileSize,
+                             Boolean isSrcDriveShared,
+                             Boolean isDstDriveShared) {
+        super(createdDate, eventDate, eventId, schema, userId, userName, userDisplayName, dataSource, operationType, operationTypeCategories, result, resultCode, additionalnfo);
+        this.absoluteSrcFilePath = absoluteSrcFilePath;
+        this.absoluteDstFilePath = absoluteDstFilePath;
+        this.absoluteSrcFolderFilePath = absoluteSrcFolderFilePath;
+        this.absoluteDstFolderFilePath = absoluteDstFolderFilePath;
+        this.fileSize = fileSize;
+        this.isSrcDriveShared = isSrcDriveShared;
+        this.isDstDriveShared = isDstDriveShared;
+    }
 
     public String getAbsoluteSrcFilePath() {
         return absoluteSrcFilePath;

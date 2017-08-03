@@ -1,5 +1,6 @@
 package presidio.output.domain.repositories;
 
+import fortscale.domain.core.AbstractAuditableDocument;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import presidio.output.domain.records.events.EnrichedEvent;
@@ -20,6 +21,6 @@ public class EventMongoRepositoryImpl implements EventRepository {
 
     @Override
     public void saveEvents(String collectionName, List<? extends EnrichedEvent> events) throws Exception{
-        mongoTemplate.save(events, collectionName);
+        mongoTemplate.insert(events, collectionName);
     }
 }

@@ -14,7 +14,7 @@ public interface OutputDataServiceSDK {
      * persist given records into output db
      *
      * @param schema storing is done according to schema
-     * @param records  data to be stored
+     * @param events  data to be stored
      */
-    public void store(Schema schema, List<? extends EnrichedEvent> records);
+    public void store(Schema schema, List<? extends EnrichedEvent> events);
 }
