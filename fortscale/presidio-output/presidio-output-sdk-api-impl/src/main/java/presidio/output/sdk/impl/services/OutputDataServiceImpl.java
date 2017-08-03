@@ -15,6 +15,10 @@ public class OutputDataServiceImpl implements OutputDataServiceSDK {
     @Autowired
     private EventPersistencyService eventPersistencyService;
 
+    public OutputDataServiceImpl(EventPersistencyService eventPersistencyService) {
+        this.eventPersistencyService = eventPersistencyService;
+    }
+
     @Override
     public void store(Schema schema, List<? extends EnrichedEvent> events) {
         eventPersistencyService.store(schema, events);

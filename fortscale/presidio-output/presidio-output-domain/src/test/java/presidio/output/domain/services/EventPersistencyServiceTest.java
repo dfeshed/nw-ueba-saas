@@ -6,6 +6,7 @@ import fortscale.common.general.EventResult;
 import fortscale.common.general.Schema;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,14 +39,11 @@ public class EventPersistencyServiceTest {
     private OutputToCollectionNameTranslator toCollectionNameTranslator;
     @Autowired
     private MongoTemplate mongoTemplate;
-//
-//    @Before
-//    public void before() {
-//        esTemplate.deleteIndex(Alert.class);
-//        esTemplate.createIndex(Alert.class);
-//        esTemplate.putMapping(Alert.class);
-//        esTemplate.refresh(Alert.class);
-//    }
+
+    @Before
+    public void before(){
+        mongoTemplate.dropCollection(toCollectionNameTranslator.toCollectionName(Schema.DLPFILE));
+    }
 
     @Test
     public void testSave() {
