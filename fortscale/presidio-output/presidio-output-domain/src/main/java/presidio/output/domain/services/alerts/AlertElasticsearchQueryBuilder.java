@@ -2,6 +2,7 @@ package presidio.output.domain.services.alerts;
 
 import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.Operator;
 import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.elasticsearch.search.aggregations.bucket.terms.TermsAggregationBuilder;
 import org.elasticsearch.search.aggregations.support.ValueType;
@@ -35,8 +36,8 @@ public class AlertElasticsearchQueryBuilder extends NativeSearchQueryBuilder {
         final BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
 
         // filter by username
-        if (StringUtils.isNotEmpty(alertQuery.getFilterBuUserName())) {
-            boolQueryBuilder.must(matchQuery(Alert.USER_NAME, alertQuery.getFilterBuUserName()));
+        if (StringUtils.isNotEmpty(alertQuery.getFilterByUserName())) {
+            boolQueryBuilder.must(matchQuery(Alert.USER_NAME, alertQuery.getFilterByUserName()).operator(Operator.AND));
         }
 
         // filter by severity

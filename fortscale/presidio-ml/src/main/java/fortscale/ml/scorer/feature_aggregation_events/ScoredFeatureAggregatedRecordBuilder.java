@@ -3,7 +3,7 @@ package fortscale.ml.scorer.feature_aggregation_events;
 import fortscale.domain.feature.score.FeatureScore;
 import fortscale.utils.logging.Logger;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
-import presidio.ade.domain.record.scored.feature_aggregation.ScoredFeatureAggregationRecord;
+import presidio.ade.domain.record.aggregated.ScoredFeatureAggregationRecord;
 
 
 import java.util.List;
