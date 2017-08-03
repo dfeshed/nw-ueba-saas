@@ -72,7 +72,7 @@ public class MonitoringConfiguration {
 
     @Bean
     public MetricsExporter fileMetricsExporter() {
-        return new MetricsExporterElasticImpl(metricsEndpoint(),processName,metricExportService());
+        return new MetricsExporterElasticImpl(metricsEndpoint(),processName,metricExportService(),taskScheduler());
     }
 
     @Bean
@@ -88,9 +88,5 @@ public class MonitoringConfiguration {
         return ts;
     }
 
-    @Bean
-    public ApplicationListener<ContextClosedEvent> contextClosedHandler() {
-        return new ContextClosedMonitoringHandler();
-    }
 
 }

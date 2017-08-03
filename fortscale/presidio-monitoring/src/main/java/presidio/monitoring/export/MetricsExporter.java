@@ -4,6 +4,9 @@ package presidio.monitoring.export;
 
 import fortscale.utils.logging.Logger;
 import org.springframework.boot.actuate.endpoint.MetricsEndpoint;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ContextClosedEvent;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import presidio.monitoring.elastic.records.PresidioMetric;
 
 
@@ -17,7 +20,7 @@ import java.util.Set;
 
 import static presidio.monitoring.DefaultPublicMetricsNames.*;
 
-public abstract class MetricsExporter implements AutoCloseable{
+public abstract class MetricsExporter implements ApplicationListener<ContextClosedEvent> {
 
     private final Logger logger = Logger.getLogger(MetricsExporter.class);
 
@@ -25,13 +28,15 @@ public abstract class MetricsExporter implements AutoCloseable{
      private Map<String,PresidioMetric> customMetrics;
      private Set<String> defaultInfraMetrics;
      private Set<String> tags;
+     private ThreadPoolTaskScheduler scheduler;
 
 
 
 
-    MetricsExporter(MetricsEndpoint metricsEndpoint,String applicationName){
+    MetricsExporter(MetricsEndpoint metricsEndpoint,String applicationName,ThreadPoolTaskScheduler scheduler){
         this.metricsEndpoint=metricsEndpoint;
         this.customMetrics = new HashMap<>();
+        this.scheduler=scheduler;
         this.defaultInfraMetrics =listOfPresidioFixedSystemMetric();
         this.tags=new HashSet<>();
         tags.add(applicationName);
@@ -78,7 +83,11 @@ public abstract class MetricsExporter implements AutoCloseable{
     }
 
     @Override
-    public void close() throws Exception {
-        System.out.print("closing");
+    public void onApplicationEvent(ContextClosedEvent event) {
+        // flush the metrics
+        this.flush();
+        // shutdown the scheduler
+        scheduler.shutdown();
     }
+
 }
