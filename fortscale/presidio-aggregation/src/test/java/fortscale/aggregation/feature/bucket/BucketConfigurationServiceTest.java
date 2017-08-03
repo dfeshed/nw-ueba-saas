@@ -21,9 +21,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import presidio.ade.domain.record.AdeRecordReader;
 import presidio.ade.domain.record.AdeRecordReaderFactory;
-import presidio.ade.domain.record.enriched.AdeEnrichedDlpFileContext;
-import presidio.ade.domain.record.enriched.EnrichedDlpFileRecord;
-import presidio.ade.domain.record.scored.enriched_scored.AdeScoredDlpFileRecord;
+import presidio.ade.domain.record.enriched.dlpfile.AdeEnrichedDlpFileContext;
+import presidio.ade.domain.record.enriched.dlpfile.EnrichedDlpFileRecord;
+import presidio.ade.domain.record.enriched.dlpfile.AdeScoredDlpFileRecord;
 
 import java.time.Instant;
 import java.util.*;

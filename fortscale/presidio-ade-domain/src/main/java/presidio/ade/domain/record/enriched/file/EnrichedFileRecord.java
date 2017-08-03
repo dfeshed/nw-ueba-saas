@@ -1,9 +1,11 @@
-package presidio.ade.domain.record.enriched;
+package presidio.ade.domain.record.enriched.file;
 
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
+import presidio.ade.domain.record.enriched.EnrichedRecord;
+import presidio.ade.domain.record.util.AdeRecordMetadata;
 
 import java.time.Instant;
 
@@ -11,7 +13,7 @@ import java.time.Instant;
  * The enriched file record POJO.
  */
 @Document
-//todo: add @AdeRecordMetadata annotation
+@AdeRecordMetadata(adeEventType = AdeFileRecord.FILE_STR)
 public class EnrichedFileRecord extends EnrichedRecord {
     public static final String USER_ID_FIELD = "userId";
     public static final String ABSOLUTE_SRC_FILE_PATH_FIELD = "absoluteSrcFilePath";
@@ -120,7 +122,7 @@ public class EnrichedFileRecord extends EnrichedRecord {
     @Override
     @Transient
     public String getAdeEventType() {
-        return FileRecord.FILE_STR;
+        return AdeFileRecord.FILE_STR;
     }
 
 

@@ -1,9 +1,11 @@
-package presidio.ade.domain.record.enriched;
+package presidio.ade.domain.record.enriched.activedirectory;
 
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
+import presidio.ade.domain.record.enriched.EnrichedRecord;
+import presidio.ade.domain.record.util.AdeRecordMetadata;
 
 import java.time.Instant;
 
@@ -11,7 +13,7 @@ import java.time.Instant;
  * The enriched active directory record POJO.
  */
 @Document
-//todo: add @AdeRecordMetadata annotation
+@AdeRecordMetadata(adeEventType = AdeActiveDirectoryRecord.ACTIVE_DIRECTORY_STR)
 public class EnrichedActiveDirectoryRecord extends EnrichedRecord {
     public static final String USER_ID_FIELD = "userId";
     public static final String IS_USER_ADMIN_FIELD = "isUserAdmin";
@@ -61,7 +63,7 @@ public class EnrichedActiveDirectoryRecord extends EnrichedRecord {
     @Override
     @Transient
     public String getAdeEventType() {
-        return ActiveDirectoryRecord.ACTIVE_DIRECTORY_STR;
+        return AdeActiveDirectoryRecord.ACTIVE_DIRECTORY_STR;
     }
 
     @Transient
