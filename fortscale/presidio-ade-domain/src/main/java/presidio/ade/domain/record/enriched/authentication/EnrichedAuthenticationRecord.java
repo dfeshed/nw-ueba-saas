@@ -1,9 +1,11 @@
-package presidio.ade.domain.record.enriched;
+package presidio.ade.domain.record.enriched.authentication;
 
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
+import presidio.ade.domain.record.enriched.EnrichedRecord;
+import presidio.ade.domain.record.util.AdeRecordMetadata;
 
 import java.time.Instant;
 
@@ -13,7 +15,7 @@ import java.time.Instant;
  * interactive remote : src machine is original and dst machine is computer.
  */
 @Document
-//todo: add @AdeRecordMetadata annotation
+@AdeRecordMetadata(adeEventType = AdeAuthenticationRecord.AUTHENTICATION_STR)
 public class EnrichedAuthenticationRecord extends EnrichedRecord {
     public static final String USER_ID_FIELD = "userId";
     public static final String SRC_MACHINE_ID_FIELD = "SrcMachineId";
@@ -50,7 +52,7 @@ public class EnrichedAuthenticationRecord extends EnrichedRecord {
 
     @Override
     public String getAdeEventType() {
-        return AuthenticationRecord.AUTHENTICATION_STR;
+        return AdeAuthenticationRecord.AUTHENTICATION_STR;
     }
 
     public String getUserId() {

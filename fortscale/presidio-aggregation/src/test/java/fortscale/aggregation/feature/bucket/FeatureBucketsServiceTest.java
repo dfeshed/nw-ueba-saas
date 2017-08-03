@@ -22,9 +22,9 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 import presidio.ade.domain.record.AdeRecord;
 import presidio.ade.domain.record.AdeRecordReaderFactory;
-import presidio.ade.domain.record.enriched.AdeEnrichedDlpFileContext;
-import presidio.ade.domain.record.enriched.EnrichedDlpFileRecord;
-import presidio.ade.domain.record.scored.enriched_scored.AdeScoredDlpFileRecord;
+import presidio.ade.domain.record.enriched.dlpfile.AdeEnrichedDlpFileContext;
+import presidio.ade.domain.record.enriched.dlpfile.EnrichedDlpFileRecord;
+import presidio.ade.domain.record.enriched.dlpfile.AdeScoredDlpFileRecord;
 
 import java.time.Instant;
 import java.util.*;

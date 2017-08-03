@@ -2,7 +2,7 @@ package presidio.ade.domain.store.scored;
 
 import fortscale.utils.logging.Logger;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import presidio.ade.domain.record.scored.enriched_scored.AdeScoredEnrichedRecord;
+import presidio.ade.domain.record.enriched.AdeScoredEnrichedRecord;
 import presidio.ade.domain.store.AdeDataStoreCleanupParams;
 
 import java.util.ArrayList;

@@ -10,6 +10,8 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import presidio.ade.domain.record.enriched.dlpfile.AdeDlpFileRecord;
+import presidio.ade.domain.record.enriched.dlpfile.EnrichedDlpFileRecord;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = AdeEventTypeToAdeEnrichedRecordClassResolverConfig.class)
@@ -20,7 +22,7 @@ public class AdeEventTypeToAdeEnrichedRecordClassResolverConfigTest {
 
     @Test
     public void testDlpfileIsResolved(){
-        Class<? extends EnrichedRecord> enrichedRecord = adeEventTypeToAdeEnrichedRecordClassResolver.getClass(DlpFileRecord.DLP_FILE_STR.toLowerCase());
+        Class<? extends EnrichedRecord> enrichedRecord = adeEventTypeToAdeEnrichedRecordClassResolver.getClass(AdeDlpFileRecord.DLP_FILE_STR.toLowerCase());
         Assert.assertTrue(enrichedRecord.equals(EnrichedDlpFileRecord.class));
     }
 

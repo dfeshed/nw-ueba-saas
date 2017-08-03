@@ -1,7 +1,7 @@
 package presidio.input.core.services.converters;
 
 import fortscale.domain.core.AbstractAuditableDocument;
-import presidio.ade.domain.record.enriched.EnrichedFileRecord;
+import presidio.ade.domain.record.enriched.file.EnrichedFileRecord;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.sdk.api.domain.FileRawEvent;
 

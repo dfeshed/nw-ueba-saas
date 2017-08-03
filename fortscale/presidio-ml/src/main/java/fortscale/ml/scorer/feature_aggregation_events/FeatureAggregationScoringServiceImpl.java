@@ -6,7 +6,7 @@ import fortscale.utils.logging.Logger;
 import fortscale.utils.recordreader.RecordReaderFactoryService;
 import presidio.ade.domain.record.AdeRecordReader;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
-import presidio.ade.domain.record.scored.feature_aggregation.ScoredFeatureAggregationRecord;
+import presidio.ade.domain.record.aggregated.ScoredFeatureAggregationRecord;
 
 import java.util.ArrayList;
 import java.util.List;
