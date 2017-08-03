@@ -1,10 +1,10 @@
-package presidio.ade.domain.record.scored.feature_aggregation;
+package presidio.ade.domain.record.aggregated;
 
 import fortscale.domain.feature.score.FeatureScore;
 import org.springframework.data.mongodb.core.mapping.Field;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.record.aggregated.AggregatedFeatureType;
-import presidio.ade.domain.record.scored.AdeScoredRecord;
+import presidio.ade.domain.record.AdeScoredRecord;
 
 import java.time.Instant;
 import java.util.List;

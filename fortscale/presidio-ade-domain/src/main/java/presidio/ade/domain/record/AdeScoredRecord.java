@@ -1,4 +1,4 @@
-package presidio.ade.domain.record.scored;
+package presidio.ade.domain.record;
 
 import fortscale.domain.feature.score.FeatureScore;
 import org.springframework.data.annotation.Transient;

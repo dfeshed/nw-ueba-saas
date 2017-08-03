@@ -1,7 +1,7 @@
 package fortscale.ml.scorer.enriched_events;
 
 import presidio.ade.domain.record.enriched.EnrichedRecord;
-import presidio.ade.domain.record.scored.enriched_scored.AdeScoredEnrichedRecord;
+import presidio.ade.domain.record.enriched.AdeScoredEnrichedRecord;
 
 import java.util.List;
 

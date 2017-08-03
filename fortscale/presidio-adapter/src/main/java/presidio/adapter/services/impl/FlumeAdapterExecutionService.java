@@ -7,20 +7,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import presidio.adapter.util.FlumeConfigurationUtil;
 import presidio.adapter.util.ProcessExecutor;
-
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Properties;
+
 
 public class FlumeAdapterExecutionService implements PresidioExecutionService {
     private static Logger logger = LoggerFactory.getLogger(FlumeAdapterExecutionService.class);
-
-    private static final String FLUME_CONF_START_DATE_FIELD_NAME = "startDate";
-    private static final String FLUME_CONF_END_DATE_FIELD_NAME = "endDate";
 
     private final ProcessExecutor processExecutor;
     private final FlumeConfigurationUtil flumeConfigurationUtil;
@@ -46,7 +39,7 @@ public class FlumeAdapterExecutionService implements PresidioExecutionService {
                 schema, CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate,
                 CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
 
-        String newFilePath = createExecutionConfFile(schema, startDate, endDate);
+        String newFilePath = flumeConfigurationUtil.createExecutionConfFile(schema, startDate, endDate);
         logger.info("finish configuring adapter. Configuration file path: {}", newFilePath);
 
         String jobName = flumeConfigurationUtil.createJobName(schema, startDate, endDate);
@@ -54,32 +47,6 @@ public class FlumeAdapterExecutionService implements PresidioExecutionService {
         logger.info("Adapter for schema {] is now running.", schema);
     }
 
-    private String createExecutionConfFile(Schema schema, Instant startDate, Instant endDate) throws IOException {
-        /* load the properties */
-        final String confFilePath = flumeConfigurationUtil.createConfFolderPath() + flumeConfigurationUtil.createConfFileName(schema);
-        FileInputStream in = new FileInputStream(confFilePath);
-        Properties props = new Properties();
-        props.load(in);
-        in.close();
-
-        /* edit the properties */
-        for (Object key : props.keySet()) {
-            String currProperty = (String) key;
-            if (currProperty.endsWith(FLUME_CONF_START_DATE_FIELD_NAME)) {
-                props.setProperty(currProperty, startDate.toString());
-            } else if (currProperty.endsWith(FLUME_CONF_END_DATE_FIELD_NAME)) {
-                props.setProperty(currProperty, endDate.toString());
-            }
-        }
-
-        /* save the properties */
-        final String newFileName = flumeConfigurationUtil.createConfFolderPath() + flumeConfigurationUtil.createJobName(schema, startDate, endDate) + ".properties";
-        FileOutputStream out = new FileOutputStream(newFileName);
-        props.store(out, null);
-        out.close();
-
-        return newFileName;
-    }
 
 
     private void runAdapterInstance(Schema schema, String jobName, String newFilePath) {

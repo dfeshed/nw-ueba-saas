@@ -10,13 +10,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import presidio.ade.domain.pagination.enriched.groups.EnrichedRecordPaginationServiceGroup;
+import presidio.ade.domain.pagination.enriched.mocks.GenerateMocks;
 import presidio.ade.domain.record.enriched.AdeEventTypeToAdeEnrichedRecordClassResolver;
 import presidio.ade.domain.record.enriched.AdeEventTypeToAdeEnrichedRecordClassResolverConfig;
-import presidio.ade.domain.record.enriched.EnrichedDlpFileRecord;
-import presidio.ade.domain.pagination.enriched.mocks.GenerateMocks;
-import presidio.ade.domain.pagination.enriched.groups.EnrichedRecordPaginationServiceGroup;
-import presidio.ade.domain.store.enriched.EnrichedDataStoreImplMongo;
+import presidio.ade.domain.record.enriched.dlpfile.EnrichedDlpFileRecord;
 import presidio.ade.domain.store.enriched.EnrichedDataAdeToCollectionNameTranslator;
+import presidio.ade.domain.store.enriched.EnrichedDataStoreImplMongo;
 
 import java.time.Instant;
 import java.util.*;
