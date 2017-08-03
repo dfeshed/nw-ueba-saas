@@ -23,7 +23,7 @@ public class OutputDataServiceImpl implements OutputDataServiceSDK {
     }
 
     @Override
-    public void store(Schema schema, List<? extends EnrichedEvent> events) {
+    public void store(Schema schema, List<? extends EnrichedEvent> events) throws Exception {
         logger.debug("storing events for schema {} into output persistency", schema);
         eventPersistencyService.store(schema, events);
     }
