@@ -1,5 +1,7 @@
 from __future__ import generators
 
+import json
+
 import pkg_resources
 import pytest
 from airflow.operators.dummy_operator import DummyOperator
@@ -8,8 +10,7 @@ from presidio.builders.presidio_dag_builder import PresidioDagBuilder
 from presidio.factories.dag_factories_exceptions import DagsConfigurationContainsOverlappingDatesException
 from presidio.factories.presidio_dag_factory import PresidioDagFactory
 from presidio.utils.airflow.dag.dag_factory import DagFactories
-from presidio.utils.airflow.variable.variable_configuration_reader import VariableReader
-import json
+from presidio.utils.configuration.config_server_reader_test_builder import ConfigServerConfigurationReaderTestBuilder
 
 
 class DummyPresidioDagBuilder(PresidioDagBuilder):
@@ -19,6 +20,8 @@ class DummyPresidioDagBuilder(PresidioDagBuilder):
 
 class TestPresidioDagFactory:
     def setup_method(self, method):
+        self.conf_reader= ConfigServerConfigurationReaderTestBuilder().build()
+
         PresidioDagFactory()
         self.dag_builder = DummyPresidioDagBuilder()
 
@@ -26,13 +29,22 @@ class TestPresidioDagFactory:
         default_conf_file_path = pkg_resources.resource_filename('tests',
                                                                  'resources/variables/dags/test_workflow_creator_overlapping_config.json')
         name_space = globals()
+        data = self.get_json_from_file(default_conf_file_path)
+        self.conf_reader.set_properties(data)
         with pytest.raises(DagsConfigurationContainsOverlappingDatesException):
             self._create_dags(default_conf_file_path=default_conf_file_path,name_space=name_space)
+
+    def get_json_from_file(self, default_conf_file_path):
+        with open(default_conf_file_path) as data_file:
+            data = json.load(data_file)
+        return data
 
     def test_should_create_dags_by_configuration(self):
         default_conf_file_path = pkg_resources.resource_filename('tests',
                                                                  'resources/variables/dags/test_workflow_creator_config.json')
         name_space = globals()
+        data = self.get_json_from_file(default_conf_file_path)
+        self.conf_reader.set_properties(data)
         dags = self._create_dags(default_conf_file_path=default_conf_file_path,name_space=name_space)
 
         with open(default_conf_file_path) as conf_file:
@@ -55,8 +67,7 @@ class TestPresidioDagFactory:
 
     def _create_dags(self, default_conf_file_path,name_space):
 
-        variable_reader = VariableReader(default_value_file_path=default_conf_file_path,
-                                         var_key='test_presidio_dag_factory')
-        dags = DagFactories.create_dags("PresidioDag", conf_reader=variable_reader, name_space=name_space,
+        conf_reader = self.conf_reader
+        dags = DagFactories.create_dags("PresidioDag", conf_reader=conf_reader, name_space=name_space,
                                         dag_builder=self.dag_builder)
         return dags

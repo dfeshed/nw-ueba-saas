@@ -2,7 +2,7 @@ package presidio.ade.processes.shell.scoring.aggregation;
 
 import fortscale.aggregation.feature.bucket.FeatureBucket;
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
-import presidio.ade.domain.record.scored.enriched_scored.AdeScoredEnrichedRecord;
+import presidio.ade.domain.record.enriched.AdeScoredEnrichedRecord;
 
 import java.util.List;
 

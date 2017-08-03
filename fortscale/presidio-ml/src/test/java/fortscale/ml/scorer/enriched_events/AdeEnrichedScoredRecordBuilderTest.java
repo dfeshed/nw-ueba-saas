@@ -14,8 +14,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
-import presidio.ade.domain.record.scored.enriched_scored.AdeScoredEnrichedRecord;
-import presidio.ade.domain.record.scored.enriched_scored.AdeEventTypeToAdeScoredEnrichedRecordClassResolver;
+import presidio.ade.domain.record.enriched.AdeScoredEnrichedRecord;
+import presidio.ade.domain.record.util.AdeEnrichedRecordToAdeScoredEnrichedRecordResolver;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -31,16 +31,16 @@ public class AdeEnrichedScoredRecordBuilderTest {
     @Configuration
     public static class AdeEnrichedScoredRecordBuilderTestSpringConfig{
         @MockBean
-        private AdeEventTypeToAdeScoredEnrichedRecordClassResolver dataSourceToAdeScoredEnrichedRecordClassResolver;
+        private AdeEnrichedRecordToAdeScoredEnrichedRecordResolver adeEnrichedRecordToAdeScoredEnrichedRecordResolver;
 
         @Bean
         public AdeEnrichedScoredRecordBuilder enrichedScoredRecordBuilder(){
-            return new AdeEnrichedScoredRecordBuilder(dataSourceToAdeScoredEnrichedRecordClassResolver);
+            return new AdeEnrichedScoredRecordBuilder(adeEnrichedRecordToAdeScoredEnrichedRecordResolver);
         }
     }
 
     @Autowired
-    private AdeEventTypeToAdeScoredEnrichedRecordClassResolver dataSourceToAdeScoredEnrichedRecordClassResolver;
+    private AdeEnrichedRecordToAdeScoredEnrichedRecordResolver adeEnrichedRecordToAdeScoredEnrichedRecordResolver;
 
     @Autowired
     private AdeEnrichedScoredRecordBuilder enrichedScoredRecordBuilder;
@@ -68,9 +68,9 @@ public class AdeEnrichedScoredRecordBuilderTest {
 
         //Class<? extends AdeScoredEnrichedRecord> pojoClass = dataSourceToAdeScoredEnrichedRecordClassResolver.getClass(enrichedRecord.getDataSource());
         String testDataSource = "testDs";
-        when(enrichedRecord.getDataSource()).thenReturn(testDataSource);
+//        when(enrichedRecord.getDataSource()).thenReturn(testDataSource);
         Class<? extends AdeScoredEnrichedRecord> pojoClass = AdeScoredEnrichedTestingRecord.class;
-        doReturn(pojoClass).when(dataSourceToAdeScoredEnrichedRecordClassResolver).getClass(testDataSource);
+        doReturn(pojoClass).when(adeEnrichedRecordToAdeScoredEnrichedRecordResolver).getClass(any());
 
         enrichedScoredRecordBuilder.fill(scoredRecordList, enrichedRecord, rootFeatureScoreList);
 

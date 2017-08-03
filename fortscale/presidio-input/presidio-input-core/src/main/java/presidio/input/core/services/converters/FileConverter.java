@@ -1,7 +1,7 @@
 package presidio.input.core.services.converters;
 
 import fortscale.domain.core.AbstractAuditableDocument;
-import presidio.ade.domain.record.enriched.EnrichedFileRecord;
+import presidio.ade.domain.record.enriched.file.EnrichedFileRecord;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.sdk.api.domain.FileRawEvent;
 
@@ -15,12 +15,12 @@ public class FileConverter implements InputAdeConverter {
         adeRecord.setAbsoluteSrcFolderFilePath(fileRawEvent.getSrcFilePath());
         adeRecord.setAbsoluteDstFilePath(fileRawEvent.getDstFilePath());
         adeRecord.setAbsoluteDstFolderFilePath(fileRawEvent.getDstFolderPath());
-        adeRecord.setDstDriveShared(fileRawEvent.isDstDriveShared());
-        adeRecord.setSrcDriveShared(fileRawEvent.isSrcDriveShared());
+        adeRecord.setDstDriveShared(fileRawEvent.getIsDstDriveShared());
+        adeRecord.setSrcDriveShared(fileRawEvent.getIsSrcDriveShared());
         adeRecord.setFileSize(fileRawEvent.getFileSize());
-        adeRecord.setNormalizedUsername(fileRawEvent.getNormalizedUsername());
+        adeRecord.setUserId(fileRawEvent.getNormalizedUsername());
         adeRecord.setOperationType(fileRawEvent.getOperationType().toString());
-        adeRecord.setResult(fileRawEvent.getResult().toString());
+        adeRecord.setResult(fileRawEvent.getResult());
         adeRecord.setEventId(fileRawEvent.getId());
         return adeRecord;
     }

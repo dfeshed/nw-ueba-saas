@@ -1,6 +1,6 @@
 package presidio.input.core.services.data;
 
-import fortscale.common.general.DataSource;
+import fortscale.common.general.Schema;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
 
 import java.time.Instant;
@@ -11,19 +11,19 @@ public interface AdeDataService {
     /**
      * stores the given records
      *
-     * @param dataSource
+     * @param schema
      * @param startDate
      * @param endDate
      * @param records
      */
-    void store(DataSource dataSource, Instant startDate, Instant endDate, List<? extends EnrichedRecord> records);
+    void store(Schema schema, Instant startDate, Instant endDate, List<? extends EnrichedRecord> records);
 
     /**
      * cleans the store according to the given params
      *
-     * @param dataSource
+     * @param schema
      * @param startDate
      * @param endDate
      */
-    void cleanup(DataSource dataSource, Instant startDate, Instant endDate);
+    void cleanup(Schema schema, Instant startDate, Instant endDate);
 }

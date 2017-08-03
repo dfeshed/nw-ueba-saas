@@ -42,23 +42,23 @@ public abstract class MetricsExporter implements ApplicationListener<ContextClos
         tags.add(applicationName);
     }
 
-        List<PresidioMetric> filterRepitMetrics(){
-        List<PresidioMetric> metricsForExport=new ArrayList<PresidioMetric>(Arrays.asList());
+    List<PresidioMetric> filterRepitMetrics() {
+        List<PresidioMetric> metricsForExport = new ArrayList<PresidioMetric>(Arrays.asList());
         String metric;
         PresidioMetric value;
         Map<String, Object> map = metricsEndpoint.invoke();
         for (Map.Entry<String, Object> entry : map.entrySet()) {
             metric = entry.getKey();
-            value = (PresidioMetric)entry.getValue();
+            value = (PresidioMetric) entry.getValue();
             if (!defaultInfraMetrics.contains(metric)) {
                 if (!customMetrics.containsKey(metric))
                     customMetrics.put(metric, value);
                 else {
-                    PresidioMetric presidioMetric=  customMetrics.get(metric);
+                    PresidioMetric presidioMetric = customMetrics.get(metric);
                     if (!presidioMetric.equals(value))
                         customMetrics.replace(metric, value);
                     else {
-                        logger.info("****** Metric is not exported, name : {}  value: {}  ********* ",metric,value);
+                        logger.info("****** Metric is not exported, name : {}  value: {}  ********* ", metric, value);
                         continue;
                     }
                 }
@@ -69,11 +69,10 @@ public abstract class MetricsExporter implements ApplicationListener<ContextClos
     }
 
 
-
-    private Set<String> listOfPresidioFixedSystemMetric(){
-        return new HashSet<>(Arrays.asList(MEM, MEM_FREE,PROCESSORS,UPTIME,SYSTEMLOAD_AVERAGE,HEAP_COMMITTED,
-                HEAP_INIT,HEAP_USED,HEAP,NONHEAP_COMMITTED,NONHEAP_INIT,NONHEAP,NONHEAP_USED,THREADS_PEAK,THREADS_DAEMON,
-                THREADS_TOTAL_STARTED,THREADS,GC_PS_SCAVENGE_COUNT,GC_PS_SCAVENGE_TIME,GC_PS_MARKSWEEP_COUNT,GC_PS_MARKSWEEP_TIME));
+    private Set<String> listOfPresidioFixedSystemMetric() {
+        return new HashSet<>(Arrays.asList(MEM, MEM_FREE, PROCESSORS, UPTIME, SYSTEMLOAD_AVERAGE, HEAP_COMMITTED,
+                HEAP_INIT, HEAP_USED, HEAP, NONHEAP_COMMITTED, NONHEAP_INIT, NONHEAP, NONHEAP_USED, THREADS_PEAK, THREADS_DAEMON,
+                THREADS_TOTAL_STARTED, THREADS, GC_PS_SCAVENGE_COUNT, GC_PS_SCAVENGE_TIME, GC_PS_MARKSWEEP_COUNT, GC_PS_MARKSWEEP_TIME));
     }
 
     public abstract void export();
@@ -89,5 +88,4 @@ public abstract class MetricsExporter implements ApplicationListener<ContextClos
         // shutdown the scheduler
         scheduler.shutdown();
     }
-
 }

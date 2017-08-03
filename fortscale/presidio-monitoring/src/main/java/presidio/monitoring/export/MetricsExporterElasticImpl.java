@@ -8,8 +8,6 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import presidio.monitoring.elastic.services.MetricExportService;
 
 
-
-
 public class MetricsExporterElasticImpl extends MetricsExporter {
 
     private final Logger logger=Logger.getLogger(MetricsExporterElasticImpl.class);

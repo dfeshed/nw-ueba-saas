@@ -8,6 +8,7 @@ import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 import fortscale.utils.monitoring.stats.engine.StatsEngineMetricsGroupData;
 import fortscale.utils.monitoring.stats.impl.engine.testing.StatsTestingEngine;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.time.LocalDateTime;
@@ -20,6 +21,7 @@ import static fortscale.utils.monitoring.stats.impl.StatsTestingUtils.engineGrou
 /**
  * Created by gaashh on 5/30/16.
  */
+@Ignore
 public class StatsServiceImplDateMetricsTest {
 
     @StatsMetricsGroupParams(name = "DATE-METRICS")

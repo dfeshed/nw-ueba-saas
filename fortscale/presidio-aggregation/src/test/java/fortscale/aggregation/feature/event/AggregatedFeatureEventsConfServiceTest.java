@@ -95,7 +95,7 @@ public class AggregatedFeatureEventsConfServiceTest {
         String evidencesFilterStrategy = aggregatedFeatureEventConf.getEvidencesFilterStrategy();
         int numberOfBuckets = aggregatedFeatureEventConf.getNumberOfBuckets();
         String outputBucketStrategy = aggregatedFeatureEventConf.getOutputBucketStrategy();
-        String retentionStrategyName = aggregatedFeatureEventConf.getRetentionStrategyName();
+
 
         Assert.assertEquals("bc1", bucketConfName);
         Assert.assertEquals(BUCKET_CONF_AS_STRING1, featureBucketConf.toString());
@@ -109,7 +109,6 @@ public class AggregatedFeatureEventsConfServiceTest {
         Assert.assertEquals("HIGHEST_SCORE", evidencesFilterStrategy);
         Assert.assertEquals(1, numberOfBuckets);
         Assert.assertNull(outputBucketStrategy);
-        Assert.assertEquals("hourly_feature_retention_strategy", retentionStrategyName);
     }
 
     private void assertAggregatedFeatureEventConf2(AggregatedFeatureEventConf aggregatedFeatureEventConf) throws JSONException {
@@ -125,7 +124,6 @@ public class AggregatedFeatureEventsConfServiceTest {
         String evidencesFilterStrategy = aggregatedFeatureEventConf.getEvidencesFilterStrategy();
         int numberOfBuckets = aggregatedFeatureEventConf.getNumberOfBuckets();
         String outputBucketStrategy = aggregatedFeatureEventConf.getOutputBucketStrategy();
-        String retentionStrategyName = aggregatedFeatureEventConf.getRetentionStrategyName();
 
         Assert.assertEquals("bc2", bucketConfName);
         JSONAssert.assertEquals(BUCKET_CONF_AS_STRING2, featureBucketConf.toString(), false);
@@ -138,8 +136,8 @@ public class AggregatedFeatureEventsConfServiceTest {
         Assert.assertEquals("HIGHEST_SCORE_PER_VALUE", evidencesFilterStrategy);
         Assert.assertEquals(2, numberOfBuckets);
         Assert.assertNull(outputBucketStrategy);
-        Assert.assertEquals("daily_feature_retention_strategy", retentionStrategyName);
     }
+
     @Test
     public void getAggregatedFeatureEventConfListTest() throws JSONException {
         List<AggregatedFeatureEventConf> aggregatedFeatureEventConfs = aggregatedFeatureEventsConfService.getAggregatedFeatureEventConfList();
