@@ -14,11 +14,32 @@ public class PresidioCustomMetrics implements PublicMetrics{
 
     private Collection<PresidioMetric> applicationMetrics;
 
+    public static Collection<PresidioMetric> customInMethodMetrics;
+
     public PresidioCustomMetrics(){
         applicationMetrics = new LinkedHashSet<>();
+        customInMethodMetrics= new LinkedHashSet<>();
     }
 
-    public <T extends Number>void addMetric(String metricName,double metricValue,Set tags,String unit){
+    public static void addInMethodMetric(String metricName,double metricValue,Set tags,String unit){
+        if(customInMethodMetrics.contains(metricName)){
+            java.util.Iterator<PresidioMetric> itr = customInMethodMetrics.iterator();
+            while(itr.hasNext()){
+                PresidioMetric metric = itr.next();
+                if (metric.getName().equals(metricName)){
+                    metric.setValue(metricValue+metric.getValue());
+                    return;
+                }
+            }
+
+        }
+        else{
+            customInMethodMetrics.add(new PresidioMetric(metricName, metricValue, tags,unit));
+        }
+    }
+
+
+    public void addMetric(String metricName,double metricValue,Set tags,String unit){
         if(applicationMetrics.contains(metricName)){
             java.util.Iterator<PresidioMetric> itr = applicationMetrics.iterator();
             while(itr.hasNext()){
@@ -57,6 +78,10 @@ public class PresidioCustomMetrics implements PublicMetrics{
     }
 
     public Collection<PresidioMetric> applicationMetrics() {
+        if(customInMethodMetrics.isEmpty()){
+            return applicationMetrics;
+        }
+        applicationMetrics.addAll(customInMethodMetrics);
         return applicationMetrics;
     }
 

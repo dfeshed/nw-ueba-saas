@@ -27,10 +27,6 @@ public class MetricExportServiceImpl implements MetricExportService {
 
     public Iterable<PresidioMetric> save(List<PresidioMetric> presidioMetric) {
         logger.info("Exporting metrics to elastic, number of metrics {}",presidioMetric.size());
-        for(PresidioMetric presidioMetric1 : presidioMetric){
-            save( presidioMetric1);
-        }
-        return presidioMetric;
-        //return metricRepository.save(presidioMetric);
+        return metricRepository.save(presidioMetric);
     }
 }

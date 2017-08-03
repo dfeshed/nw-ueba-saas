@@ -3,7 +3,6 @@ package presidio.monitoring.export;
 
 
 import fortscale.utils.logging.Logger;
-import org.json.JSONObject;
 import org.springframework.boot.actuate.endpoint.MetricsEndpoint;
 import presidio.monitoring.elastic.records.PresidioMetric;
 
@@ -17,7 +16,6 @@ import java.util.Map;
 import java.util.Set;
 
 import static presidio.monitoring.DefaultPublicMetricsNames.*;
-
 
 public abstract class MetricsExporter implements AutoCloseable{
 

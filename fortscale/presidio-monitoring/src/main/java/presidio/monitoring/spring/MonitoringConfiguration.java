@@ -5,11 +5,18 @@ package presidio.monitoring.spring;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Import;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
+import org.springframework.scheduling.quartz.SimpleThreadPoolTaskExecutor;
 import presidio.monitoring.aspect.MonitoringAspects;
 import presidio.monitoring.aspect.metrics.CustomMetricEndpoint;
 import presidio.monitoring.aspect.metrics.PresidioCustomMetrics;
 import presidio.monitoring.aspect.metrics.PresidioDefaultMetrics;
+import presidio.monitoring.aspect.services.MetricCollectingService;
+import presidio.monitoring.aspect.services.MetricCollectingServiceImpl;
 import presidio.monitoring.elastic.repositories.MetricRepository;
 import presidio.monitoring.elastic.services.MetricExportService;
 import presidio.monitoring.elastic.services.MetricExportServiceImpl;
@@ -24,6 +31,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
 @Configuration
+@EnableScheduling
 @EnableAspectJAutoProxy(proxyTargetClass = true)
 @ConditionalOnProperty(prefix="spring.aop",
         name="proxy.target.class",
@@ -33,6 +41,7 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 @EnableElasticsearchRepositories(basePackages = "presidio.monitoring.elastic.repositories")
 @Import(fortscale.utils.elasticsearch.config.ElasticsearchConfig.class)
 public class MonitoringConfiguration {
+
 
     @Bean
     public PublicMetrics publicMetrics(){
@@ -64,4 +73,9 @@ public class MonitoringConfiguration {
     public MetricsExporter fileMetricsExporter() {
         return new MetricsExporterElasticImpl(metricsEndpoint(),processName,metricExportService());
     }
+
+    @Bean
+    public MetricCollectingService metricCollectingService(){return new MetricCollectingServiceImpl();}
+
+
 }

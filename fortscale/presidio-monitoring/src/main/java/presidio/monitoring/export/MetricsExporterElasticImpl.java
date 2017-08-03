@@ -2,17 +2,11 @@ package presidio.monitoring.export;
 
 
 import fortscale.utils.logging.Logger;
-import org.json.JSONObject;
 import org.springframework.boot.actuate.endpoint.MetricsEndpoint;
 import org.springframework.scheduling.annotation.Scheduled;
-import presidio.monitoring.elastic.records.PresidioMetric;
 import presidio.monitoring.elastic.services.MetricExportService;
 
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 
 
 public class MetricsExporterElasticImpl extends MetricsExporter {
@@ -30,8 +24,9 @@ public class MetricsExporterElasticImpl extends MetricsExporter {
 
     @Scheduled(fixedRate = 5000)
     public void export() {
-        logger.debug("Exporting metrics to elastic");
+        logger.info("Exporting metrics to elastic");
         metricExportService.save(filterRepitMetrics());
+        logger.info("Ended Exporting metrics to elastic");
     }
 
 

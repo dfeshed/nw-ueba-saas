@@ -6,10 +6,7 @@ import fortscale.common.general.CommonStrings;
 import fortscale.common.general.DataSource;
 import fortscale.domain.core.AbstractAuditableDocument;
 import fortscale.utils.logging.Logger;
-import presidio.monitoring.aspect.annotations.DataSourceProcess;
-import presidio.monitoring.aspect.annotations.End;
 import presidio.monitoring.aspect.annotations.RunTime;
-import presidio.monitoring.aspect.annotations.Start;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.input.core.services.converters.*;
 import presidio.input.core.services.data.AdeDataService;
@@ -28,13 +25,13 @@ public class InputExecutionServiceImpl implements PresidioExecutionService {
     private final PresidioInputPersistencyService presidioInputPersistencyService;
     private final AdeDataService adeDataService;
 
+
     public InputExecutionServiceImpl(PresidioInputPersistencyService presidioInputPersistencyService, AdeDataService adeDataService) {
         this.presidioInputPersistencyService = presidioInputPersistencyService;
         this.adeDataService = adeDataService;
     }
 
     @Override
-    @RunTime
     public void run(DataSource dataSource, Instant startDate, Instant endDate, Double fixedDuration) throws Exception {
         logger.info("Started input processing with params: data source:{}, from {}:{}, until {}:{}.", dataSource, CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate, CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
 
@@ -126,7 +123,6 @@ public class InputExecutionServiceImpl implements PresidioExecutionService {
     }
 
     @Override
-    @RunTime
     public void clean(DataSource dataSource, Instant startDate, Instant endDate) throws Exception {
         logger.info("Started clean processing for data source:{}, from {}:{}, until {}:{}."
                 , dataSource,
