@@ -1,7 +1,6 @@
 package presidio.sdk.api.domain;
 
 import fortscale.domain.core.EventResult;
-import fortscale.domain.core.FileRawEvent;
 import org.apache.commons.collections.CollectionUtils;
 import org.junit.Assert;
 import org.junit.Test;

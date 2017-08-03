@@ -1,6 +1,6 @@
 package presidio.output.domain.records.events;
 
-import fortscale.common.general.EventResult;
+import fortscale.domain.core.EventResult;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -77,9 +77,10 @@ public class EnrichedEvent {
     private String resultCode;
 
     @Field(ADDITIONAL_INFO)
-    private Map<String,String> additionalnfo;
+    private Map<String, String> additionalnfo;
 
-    public EnrichedEvent() {}
+    public EnrichedEvent() {
+    }
 
     public EnrichedEvent(Instant createdDate,
                          Instant eventDate,
@@ -153,7 +154,7 @@ public class EnrichedEvent {
         return result;
     }
 
-    public Map<String,String> getResultCode() {
+    public Map<String, String> getResultCode() {
         return additionalnfo;
     }
 

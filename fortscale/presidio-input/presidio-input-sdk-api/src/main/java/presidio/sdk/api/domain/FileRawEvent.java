@@ -1,5 +1,6 @@
 package presidio.sdk.api.domain;
 
+import fortscale.domain.core.EventResult;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 

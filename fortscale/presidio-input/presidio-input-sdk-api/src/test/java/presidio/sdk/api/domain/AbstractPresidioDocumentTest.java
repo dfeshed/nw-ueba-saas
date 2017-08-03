@@ -1,6 +1,5 @@
 package presidio.sdk.api.domain;
 
-import fortscale.domain.core.AbstractPresidioDocument;
 import fortscale.domain.core.EventResult;
 import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.validator.constraints.NotEmpty;

@@ -1,9 +1,9 @@
 package presidio.input.core.services.converters;
 
 import fortscale.domain.core.AbstractAuditableDocument;
-import fortscale.domain.core.AuthenticationRawEvent;
-import presidio.ade.domain.record.enriched.EnrichedAuthenticationRecord;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
+import presidio.ade.domain.record.enriched.authentication.EnrichedAuthenticationRecord;
+import presidio.sdk.api.domain.AuthenticationRawEvent;
 
 public class AuthenticationConverter implements InputAdeConverter {
     @Override
