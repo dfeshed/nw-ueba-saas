@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.Instant;
 
-public class AbstractInputDocument extends AbstractAuditableDocument {
+public class AbstractPresidioDocument extends AbstractAuditableDocument {
 
     public static final String DATA_SOURCE_FIELD_NAME = "dataSource";
     public static final String NORMALIZED_USERNAME_FIELD_NAME = "normalizedUsername";
@@ -27,11 +27,11 @@ public class AbstractInputDocument extends AbstractAuditableDocument {
     @Field(RESULT_FIELD_NAME)
     protected EventResult result;
 
-    public AbstractInputDocument() {
+    public AbstractPresidioDocument() {
 
     }
 
-    public AbstractInputDocument(Instant dateTime, String dataSource, String normalizedUsername,
+    public AbstractPresidioDocument(Instant dateTime, String dataSource, String normalizedUsername,
                                  String eventId, EventResult result) {
         super(dateTime);
         this.dataSource = dataSource;
