@@ -29,7 +29,7 @@ public class AggregatedFeatureEventsConfServiceConfig {
     private String aggregatedFeatureEventsAdditionalConfigurationPath;
 
     @Autowired
-    @Qualifier("bucketConfigurationService")
+    @Qualifier("scoreAggregationBucketConfigService")
     private BucketConfigurationService bucketConfigurationService;
     @Autowired
     private AggregatedFeatureEventsConfUtilService aggregatedFeatureEventsConfUtilService;
