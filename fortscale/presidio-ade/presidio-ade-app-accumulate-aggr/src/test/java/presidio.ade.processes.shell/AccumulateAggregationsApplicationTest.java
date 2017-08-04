@@ -1,8 +1,6 @@
 package presidio.ade.processes.shell;
 
 import fortscale.common.general.Schema;
-import fortscale.utils.mongodb.util.ToCollectionNameTranslator;
-import fortscale.utils.pagination.ContextIdToNumOfItems;
 import fortscale.utils.shell.BootShim;
 import fortscale.utils.test.category.ModuleTestCategory;
 import fortscale.utils.time.TimeService;
@@ -17,7 +15,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import presidio.ade.domain.record.accumulator.AccumulatedAggregationFeatureRecord;
 import presidio.ade.domain.record.enriched.dlpfile.EnrichedDlpFileRecord;
-import presidio.ade.domain.store.aggr.AggrRecordsMetadata;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
 import presidio.ade.domain.store.enriched.EnrichedRecordsMetadata;
 import presidio.data.domain.event.dlpfile.DLPFileEvent;
