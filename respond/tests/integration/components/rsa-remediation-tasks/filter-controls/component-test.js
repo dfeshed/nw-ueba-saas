@@ -9,6 +9,7 @@ import {
 import triggerNativeEvent from '../../../../helpers/trigger-native-event';
 import RSVP from 'rsvp';
 import $ from 'jquery';
+import wait from 'ember-test-helpers/wait';
 
 let initialize;
 
@@ -90,5 +91,44 @@ test('All of the createdBy users appear in the dropdown, and selecting one calls
     clickTrigger(selector);
     assert.equal($('.ember-power-select-options li.ember-power-select-option').length, 6, 'There are 6 created by users available');
     selectFirstOption();
+  });
+});
+
+
+test('The task id filter field is rendered to the DOM', function(assert) {
+  return initialize.then(() => {
+    this.render(hbs`{{rsa-remediation-tasks/filter-controls}}`);
+    assert.equal(this.$('.filter-option.id-filter input').length, 1, 'The ID filter input appears in the DOM');
+  });
+});
+
+test('If the task id filter does not match the REM-# format, an error message is shown and no update is made', function(assert) {
+  return initialize.then(() => {
+    this.on('updateFilter', function() {
+      assert.ok(false);
+    });
+    this.render(hbs`{{rsa-remediation-tasks/filter-controls updateFilter=(action 'updateFilter')}}`);
+    const $input = this.$('.filter-option.id-filter input');
+    $input.val('blah blah');
+    $input.trigger('keyup');
+    return wait().then(() => {
+      assert.equal(this.$('label').hasClass('is-error'), true, 'The id filter control has an error class');
+    });
+  });
+});
+
+test('If the task id filter is provided a valid input, the updateFilter function is called', function(assert) {
+  assert.expect(2);
+  return initialize.then(() => {
+    this.on('updateFilter', function() {
+      assert.ok(true);
+    });
+    this.render(hbs`{{rsa-remediation-tasks/filter-controls updateFilter=(action 'updateFilter')}}`);
+    const $input = this.$('.filter-option.id-filter input');
+    $input.val('rem-123');
+    $input.trigger('keyup');
+    return wait().then(() => {
+      assert.equal(this.$('label').hasClass('is-error'), false, 'The id filter control has no error class');
+    });
   });
 });

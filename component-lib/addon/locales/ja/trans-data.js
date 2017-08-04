@@ -538,6 +538,11 @@ export default {
           'to delete the task from any other applicable systems.'
         }
       },
+      filters: {
+        taskId: 'ja_Task ID',
+        idFilterPlaceholder: 'ja_e.g., REM-123',
+        idFilterError: 'ja_The ID must match the format: REM-###'
+      },
       list: {
         priority: 'ja_Priority',
         select: 'ja_Select',
@@ -606,6 +611,9 @@ export default {
       },
       filters: {
         timeRange: 'ja_Time Range',
+        incidentId: 'ja_Incident ID',
+        idFilterPlaceholder: 'ja_e.g., INC-123',
+        idFilterError: 'ja_The ID must match the format: INC-###',
         reset: 'ja_Reset Filters',
         customDateRange: 'ja_Custom Date Range',
         customStartDate: 'ja_Start Date',

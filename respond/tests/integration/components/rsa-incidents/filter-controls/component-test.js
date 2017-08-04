@@ -10,6 +10,7 @@ import {
 import triggerNativeEvent from '../../../../helpers/trigger-native-event';
 import RSVP from 'rsvp';
 import $ from 'jquery';
+import wait from 'ember-test-helpers/wait';
 
 let initialize;
 
@@ -113,5 +114,43 @@ test('All of the parent categories appear in the dropdown, and selecting one cal
     clickTrigger(selector);
     assert.equal($('.ember-power-select-options li.ember-power-select-option').length, 7, 'There are 7 parent categories available');
     selectFirstOption();
+  });
+});
+
+test('The incident id filter field is rendered to the DOM', function(assert) {
+  return initialize.then(() => {
+    this.render(hbs`{{rsa-incidents/filter-controls}}`);
+    assert.equal(this.$('.filter-option.id-filter input').length, 1, 'The ID filter input appears in the DOM');
+  });
+});
+
+test('If the incident id filter does not match the INC-# format, an error message is shown and no update is made', function(assert) {
+  return initialize.then(() => {
+    this.on('updateFilter', function() {
+      assert.ok(false);
+    });
+    this.render(hbs`{{rsa-incidents/filter-controls updateFilter=(action 'updateFilter')}}`);
+    const $input = this.$('.filter-option.id-filter input');
+    $input.val('blah blah');
+    $input.trigger('keyup');
+    return wait().then(() => {
+      assert.equal(this.$('label').hasClass('is-error'), true, 'The id filter control has an error class');
+    });
+  });
+});
+
+test('If the incident id filter is provided a valid input, the updateFilter function is called', function(assert) {
+  assert.expect(2);
+  return initialize.then(() => {
+    this.on('updateFilter', function() {
+      assert.ok(true);
+    });
+    this.render(hbs`{{rsa-incidents/filter-controls updateFilter=(action 'updateFilter')}}`);
+    const $input = this.$('.filter-option.id-filter input');
+    $input.val('inc-123');
+    $input.trigger('keyup');
+    return wait().then(() => {
+      assert.equal(this.$('label').hasClass('is-error'), false, 'The id filter control has no error class');
+    });
   });
 });

@@ -1,3 +1,22 @@
+<section class="filter-option id-filter">
+  <label class="rsa-form-input {{unless isIdFilterValid 'is-error'}}">
+    <span class="rsa-form-label">
+      {{ t 'respond.remediationTasks.filters.taskId'}}
+    </span>
+
+    {{input
+      type="text"
+      value=(readonly idFilter)
+      placeholder=(t 'respond.remediationTasks.filters.idFilterPlaceholder')
+      key-up="idFilterChanged"}}
+
+    {{#unless isIdFilterValid}}
+      <div class="input-error">
+        {{t 'respond.remediationTasks.filters.idFilterError'}}
+      </div>
+    {{/unless}}
+  </label>
+</section>
 <section class="filter-option priority-filter">
   <h2>{{ t 'respond.remediationTasks.list.priority'}}</h2>
   {{#each priorityTypes as |priorityType|}}

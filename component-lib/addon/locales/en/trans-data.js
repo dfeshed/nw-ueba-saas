@@ -538,6 +538,11 @@ export default {
           'to delete the task from any other applicable systems.'
         }
       },
+      filters: {
+        taskId: 'Task ID',
+        idFilterPlaceholder: 'e.g., REM-123',
+        idFilterError: 'The ID must match the format: REM-###'
+      },
       list: {
         priority: 'Priority',
         select: 'Select',
@@ -606,6 +611,9 @@ export default {
       },
       filters: {
         timeRange: 'Time Range',
+        incidentId: 'Incident ID',
+        idFilterPlaceholder: 'e.g., INC-123',
+        idFilterError: 'The ID must match the format: INC-###',
         reset: 'Reset Filters',
         customDateRange: 'Custom Date Range',
         customStartDate: 'Start Date',

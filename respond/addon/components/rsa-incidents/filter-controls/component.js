@@ -1,6 +1,7 @@
 import Component from 'ember-component';
 import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
+import { debounce } from 'ember-runloop';
 
 const stateToComputed = (state) => {
   const {
@@ -14,6 +15,7 @@ const stateToComputed = (state) => {
   return {
     priorityFilters: itemsFilters.priority || [],
     statusFilters: itemsFilters.status || [],
+    idFilter: itemsFilters.id,
     assigneeFilters: itemsFilters['assignee.id'],
     priorityTypes,
     statusTypes,
@@ -31,6 +33,8 @@ const stateToComputed = (state) => {
  */
 const IncidentFilters = Component.extend({
   tagName: '',
+
+  isIdFilterValid: true,
 
   /**
    * The user objects that have been selected via the assignee picker
@@ -62,6 +66,15 @@ const IncidentFilters = Component.extend({
   },
 
   actions: {
+    idFilterChanged(value = '') {
+      const isValid = !value ? true : (/^INC-\d+$/i).test(value);
+      this.set('isIdFilterValid', isValid);
+      if (isValid) {
+        const id = value.toUpperCase();
+        debounce(this, this.get('updateFilter'), { id }, 1000);
+      }
+    },
+
     toggleStatusFilter(status) {
       const statusFilters = this.get('statusFilters');
       this.get('updateFilter')({
