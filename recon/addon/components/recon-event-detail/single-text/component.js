@@ -220,6 +220,33 @@ export default Component.extend(SelectionTooltip, {
   },
 
   actions: {
+    copyText() {
+      // When the user selects the "Copy Selected Text" option, we need to
+      // reselect the original text because the mouseup handler removes the
+      // browser's selection. The best way to do this is to create a temporary
+      // textarea, set it's value to the selected text, and then "copy" it.
+      const text = this.get('originalString');
+      if (window.clipboardData && window.clipboardData.setData) {
+        // IE specific code path to prevent textarea being shown while dialog is visible.
+        return window.clipboardData.setData('Text', text);
+      } else if (document.queryCommandSupported && document.queryCommandSupported('copy')) {
+        const fakeEl = document.createElement('textarea');
+        fakeEl.textContent = text;
+        fakeEl.style.position = 'fixed';  // Prevent scrolling to bottom of page in MS Edge.
+        document.body.appendChild(fakeEl);
+        fakeEl.select();
+        try {
+          return document.execCommand('copy');  // Security exception may be thrown by some browsers.
+        } catch (ex) {
+          return false;
+        } finally {
+          document.body.removeChild(fakeEl);
+          this.set('userInComponent', false);
+          this.unTether();
+        }
+      }
+    },
+
     decodeText() {
       this._handleEncodeDecode('decode', 'Decoded');
     },

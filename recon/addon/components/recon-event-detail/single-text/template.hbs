@@ -42,6 +42,7 @@
           <div class='selection-name'>URL Format</div>
           <div class='selection-value'>{{encDecStrUrl}}</div>
         {{else}}
+          <div class="list-item" {{action 'copyText'}}>Copy Selected Text</div>
           <div class="list-item" {{action 'decodeText'}}>Decode Selected Text</div>
           <div class="list-item" {{action 'encodeText'}}>Encode Selected Text</div>
         {{/if}}

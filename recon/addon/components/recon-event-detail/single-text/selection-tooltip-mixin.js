@@ -32,7 +32,6 @@ export default Mixin.create({
    * for instance, leave the tether panel in place if someone has the tooltip
    * open and clicks outside the component to close it.
    */
-
   mouseEnter() {
     this.set('userInComponent', true);
   },
