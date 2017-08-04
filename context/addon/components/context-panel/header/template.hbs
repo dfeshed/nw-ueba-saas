@@ -1,12 +1,16 @@
 <hbox>
-  <vbox xs='8'>
+  <vbox xs='10'>
     <div class="rsa-context-panel-header__title">
       {{#if headerTitle}}
-        <span> {{headerTitle}} :</span> {{lookupKey}} 
+        <span>{{headerTitle}} :</span>
+        {{#rsa-content-tethered-panel-trigger class="rsa-context-panel-header__title__lookup" panel='headerLookup'}}{{lookupKey}}{{/rsa-content-tethered-panel-trigger}}
+        {{#rsa-content-tethered-panel style="primary" displayCloseButton=false position='bottom-left' panelId='headerLookup'}}
+          <div class="rsa-context-panel-header__tooltip"> {{lookupKey}}</div>
+        {{/rsa-content-tethered-panel}}
       {{/if}}
     </div>
   </vbox>
-  <vbox xs='4' class="rsa-context-panel-header__header-icons">
+  <vbox xs='2' class="rsa-context-panel-header__header-icons">
     <div>
       <span>
         {{#rsa-form-button

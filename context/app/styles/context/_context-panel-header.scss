@@ -23,6 +23,23 @@
 
   &__title {
     @include rsa-font(header, large);
+    height: inherit;
+    > span {
+      height: inherit;
+      vertical-align: text-top;
+    }
+    &__lookup {
+      max-width: 75%;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+  }
+
+  &__tooltip {
+      padding:rsa-whitespace(less);
+      max-width: 350px;
+      word-break: break-all;
   }
 
   &__unsafe {

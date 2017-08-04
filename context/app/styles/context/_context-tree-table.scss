@@ -150,6 +150,13 @@
     }
   }
 
+  &__metavalue input {
+    width: 500px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+
   &__table_header{
     padding: rsa-whitespace(less);
     margin: 0.5rem 0;
