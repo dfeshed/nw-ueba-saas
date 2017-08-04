@@ -163,7 +163,9 @@ export default Component.extend({
             this.$('.js-test-login-username-input').focus();
           }
         }
-      );
+      ).catch(() => {
+        this.updateLoginProperties(_STATUS.ERROR, 'login.communicationError');
+      });
     }
   },
 

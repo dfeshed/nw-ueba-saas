@@ -43,6 +43,7 @@ export default {
     passwordNoChange: 'ja_New password cannot match your old password.',
     passwordChangeFailed: 'ja_There was an issue while saving your password change. Please try again.',
     genericError: 'ja_Authentication error. Please try again.',
+    communicationError: 'ja_The server could not be reached. Please contact your system admin.',
     userLocked: 'ja_User account is locked',
     userDisabled: 'ja_User account is disabled',
     userExpired: 'ja_User account has expired',

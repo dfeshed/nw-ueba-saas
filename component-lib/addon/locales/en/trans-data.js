@@ -43,6 +43,7 @@ export default {
     passwordChangeFailed: 'There was an issue while saving your password change. Please try again.',
     lostPasswordLink: 'Lost Password?',
     genericError: 'Authentication error. Please try again.',
+    communicationError: 'The server could not be reached. Please contact your system admin.',
     userLocked: 'User account is locked',
     userDisabled: 'User account is disabled',
     userExpired: 'User account has expired',
