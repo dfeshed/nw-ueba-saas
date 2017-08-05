@@ -18,7 +18,7 @@ import java.util.Properties;
 public class ModelingServiceConfigurationTest {
 	private static final String PROPERTIES_FILE_PATH =
 			"/home/presidio/dev-projects/presidio-core/fortscale/presidio-configuration-server/" +
-			"src/main/resources/configurations/modeling-service.properties";
+			"src/main/resources/configurations/modeling-service-dev.properties";
 
 	@Bean
 	public static TestPropertiesPlaceholderConfigurer modelingServiceConfigurationTestPropertiesPlaceholderConfigurer()
