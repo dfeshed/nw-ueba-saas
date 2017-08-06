@@ -9,7 +9,6 @@ import presidio.ade.domain.record.AdeRecordReader;
 import java.util.ArrayList;
 import java.util.List;
 
-@Configurable(preConstruction = true)
 public class LinearScoreReducer extends AbstractScorer {
 	private static final Logger logger = Logger.getLogger(LinearScoreReducer.class);
 

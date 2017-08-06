@@ -26,18 +26,11 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class EntityEventMongoStore  implements ScoredEventsCounterReader {
-
-	private static final int SECONDS_IN_DAY = 24 * 60 * 60;
+public class EntityEventMongoStore implements ScoredEventsCounterReader {
 	private static final Logger logger = Logger.getLogger(EntityEventMongoStore.class);
-	private Map<String,PersistenceTaskStoreMetrics> collectionMetricsMap;
 
-
-	@Autowired
-	private StatsService statsService;
-	@Value("${streaming.event.field.type.entity_event}")
-	private String eventTypeFieldValue;
-
+	// TODO: Remove stats service
+	private StatsService statsService = null;
 
 	@Value("#{'${fortscale.store.collection.backup.prefix}'.split(',')}")
 	private List<String> backupCollectionNamesPrefixes;
@@ -73,18 +66,6 @@ public class EntityEventMongoStore  implements ScoredEventsCounterReader {
 			collectionMetrics.writes++;
 			mongoTemplate.save(entityEvent, collectionName);
 		}
-	}
-
-	public void flush() {
-		if (collectionToEntityEventListMap.isEmpty()) {
-			return;
-		}
-		for(String collectionName: collectionToEntityEventListMap.keySet()) {
-
-			List<EntityEvent> entityEvents = collectionToEntityEventListMap.get(collectionName);
-			bulkInsertEntityEvents(collectionName, entityEvents);
-		}
-		collectionToEntityEventListMap = new HashMap<>();
 	}
 
 	/**
@@ -193,27 +174,6 @@ public class EntityEventMongoStore  implements ScoredEventsCounterReader {
 
 		return totalNumberOfEvents;
 	}
-
-	/**
-
-	 * CRUD operations are kept at {@link this#collectionMetricsMap}.
-	 * before any crud is preformed in this class, this method should be called
-	 *
-	 * @param collectionName metrics are per collection
-	 * @return metrics for collection
-	 */
-	private PersistenceTaskStoreMetrics getCollectionMetrics(String collectionName) {
-		if (collectionMetricsMap == null) {
-			collectionMetricsMap = new HashMap<>();
-		}
-		PersistenceTaskStoreMetrics metrics = collectionMetricsMap.get(collectionName);
-		if(metrics==null) {
-			metrics = new PersistenceTaskStoreMetrics(statsService, collectionName);
-			collectionMetricsMap.put(collectionName,metrics);
-		}
-		return metrics;
-	}
-
 
 	public List<EntityEvent> findEntityEventsByEndTimeRange(Instant from, Instant to, String featureName) {
 

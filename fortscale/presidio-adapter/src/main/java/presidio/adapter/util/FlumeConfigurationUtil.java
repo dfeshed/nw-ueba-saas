@@ -67,7 +67,7 @@ public class FlumeConfigurationUtil {
 
 
     /**
-     * FLUME_HOME/conf/
+     * FLUME_HOME/conf/module_name/
      */
     public String createConfFolderPath() { //flume_home/conf/
         return getFlumeHome() + "conf" + File.separator + moduleName + File.separator;
