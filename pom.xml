@@ -25,14 +25,6 @@ limitations under the License.
 
     <name>Presidio Flume</name>
 
-    <!--<modelVersion>4.0.0</modelVersion>-->
-    <!--<groupId>presidio.flume.core</groupId>-->
-    <!--<artifactId>presidio-flume</artifactId>-->
-    <!--<packaging>pom</packaging>-->
-    <!--<version>1.7.0</version>-->
-    <!--&lt;!&ndash;<packaging>pom</packaging>&ndash;&gt;-->
-    <!--<name>Presidio Flume</name>-->
-
 
     <properties>
         <!--RPM VERSION-->
@@ -1344,43 +1336,5 @@ limitations under the License.
         </dependencies>
     </dependencyManagement>
 
-    <!--<reporting>-->
-    <!--<plugins>-->
-
-    <!--<plugin>-->
-    <!--<groupId>org.apache.maven.plugins</groupId>-->
-    <!--<artifactId>maven-project-info-reports-plugin</artifactId>-->
-    <!--<version>2.4</version>-->
-    <!--<reportSets>-->
-    <!--<reportSet>-->
-    <!--<reports>-->
-    <!--<report>project-team</report>-->
-    <!--<report>mailing-list</report>-->
-    <!--<report>issue-tracking</report>-->
-    <!--<report>license</report>-->
-    <!--&lt;!&ndash; for now-->
-    <!--<report>modules</report>-->
-    <!--<report>dependencies</report>-->
-    <!--<report>cim</report>-->
-    <!--<report>scm</report>-->
-    <!--&ndash;&gt;-->
-    <!--&lt;!&ndash; warning: the "about" report conflicts with sphinx-maven &ndash;&gt;-->
-    <!--</reports>-->
-    <!--</reportSet>-->
-    <!--</reportSets>-->
-    <!--</plugin>-->
-
-    <!--<plugin>-->
-    <!--<groupId>org.tomdz.maven</groupId>-->
-    <!--<artifactId>sphinx-maven-plugin</artifactId>-->
-    <!--<version>1.0.2</version>-->
-    <!--<inherited>false</inherited>-->
-    <!--<configuration>-->
-    <!--<sourceDirectory>${project.basedir}/flume-ng-doc/sphinx</sourceDirectory>-->
-    <!--</configuration>-->
-    <!--</plugin>-->
-
-    <!--</plugins>-->
-    <!--</reporting>-->
 
 </project>
