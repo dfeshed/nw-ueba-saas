@@ -5,9 +5,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.fortscale.flume</groupId>
+        <groupId>presidio.flume.core</groupId>
         <artifactId>fortscale-flume</artifactId>
-        <version>1.0.0</version>
+        <version>1.7.0</version>
     </parent>
 
     <artifactId>fortscale-flume-sources</artifactId>
@@ -44,11 +44,6 @@
             <version>2.8.9</version>
         </dependency>
         <dependency>
-            <groupId>org.fortscale.flume</groupId>
-            <artifactId>fortscale-flume-common</artifactId>
-            <version>1.0.0</version>
-        </dependency>
-        <dependency>
             <groupId>fortscale</groupId>
             <artifactId>presidio-input-sdk-api</artifactId>
             <version>1.0.0-SNAPSHOT</version>
@@ -69,6 +64,11 @@
                     <artifactId>log4j-over-slf4j</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>presidio.flume.core</groupId>
+            <artifactId>fortscale-flume-common</artifactId>
+            <version>1.7.0</version>
         </dependency>
 
     </dependencies>

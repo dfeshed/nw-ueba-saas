@@ -15,71 +15,71 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-  <parent>
-    <artifactId>flume-parent</artifactId>
-    <groupId>org.apache.flume</groupId>
-    <version>1.7.0</version>
-  </parent>
+    <parent>
+        <artifactId>presidio-flume</artifactId>
+        <groupId>presidio.flume.core</groupId>
+        <version>1.7.0</version>
+    </parent>
 
-  <artifactId>flume-ng-embedded-agent</artifactId>
-  <name>Flume NG Embedded Agent</name>
-  <description>Flume Embedded Agent: Stable public API for Embedding a Flume 1.x Agent</description>
+    <artifactId>flume-ng-embedded-agent</artifactId>
+    <name>Flume NG Embedded Agent</name>
+    <description>Flume Embedded Agent: Stable public API for Embedding a Flume 1.x Agent</description>
 
-  <dependencies>
+    <dependencies>
 
-    <dependency>
-      <groupId>org.apache.flume</groupId>
-      <artifactId>flume-ng-sdk</artifactId>
-    </dependency>
+        <dependency>
+            <groupId>presidio.flume.core</groupId>
+            <artifactId>flume-ng-sdk</artifactId>
+        </dependency>
 
-    <dependency>
-      <groupId>org.apache.flume</groupId>
-      <artifactId>flume-ng-configuration</artifactId>
-    </dependency>
+        <dependency>
+            <groupId>presidio.flume.core</groupId>
+            <artifactId>flume-ng-configuration</artifactId>
+        </dependency>
 
-    <dependency>
-      <groupId>org.apache.flume</groupId>
-      <artifactId>flume-ng-core</artifactId>
-    </dependency>
+        <dependency>
+            <groupId>presidio.flume.core</groupId>
+            <artifactId>flume-ng-core</artifactId>
+        </dependency>
 
-    <dependency>
-      <groupId>org.apache.flume</groupId>
-      <artifactId>flume-ng-node</artifactId>
-    </dependency>
+        <dependency>
+            <groupId>presidio.flume.core</groupId>
+            <artifactId>flume-ng-node</artifactId>
+        </dependency>
 
-    <dependency>
-      <groupId>org.apache.flume.flume-ng-channels</groupId>
-      <artifactId>flume-file-channel</artifactId>
-    </dependency>
+        <dependency>
+            <groupId>presidio.flume.core.flume-ng-channels</groupId>
+            <artifactId>flume-file-channel</artifactId>
+        </dependency>
 
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <scope>test</scope>
-    </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
 
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-      <!-- only used for tests -->
-      <optional>true</optional>
-    </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <!-- only used for tests -->
+            <optional>true</optional>
+        </dependency>
 
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-log4j12</artifactId>
-      <!-- only used for tests -->
-      <optional>true</optional>
-    </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <!-- only used for tests -->
+            <optional>true</optional>
+        </dependency>
 
-    <dependency>
-      <groupId>org.mockito</groupId>
-      <artifactId>mockito-all</artifactId>
-      <scope>test</scope>
-    </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <scope>test</scope>
+        </dependency>
 
-  </dependencies>
+    </dependencies>
 </project>

@@ -16,79 +16,79 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-  <modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-  <parent>
-    <artifactId>flume-parent</artifactId>
-    <groupId>org.apache.flume</groupId>
-    <version>1.7.0</version>
-  </parent>
+    <parent>
+        <artifactId>presidio-flume</artifactId>
+        <groupId>presidio.flume.core</groupId>
+        <version>1.7.0</version>
+    </parent>
 
-  <groupId>org.apache.flume</groupId>
-  <artifactId>flume-ng-sinks</artifactId>
-  <name>Flume NG Sinks</name>
-  <packaging>pom</packaging>
+    <groupId>presidio.flume.core</groupId>
+    <artifactId>flume-ng-sinks</artifactId>
+    <name>Flume NG Sinks</name>
+    <packaging>pom</packaging>
 
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.rat</groupId>
-        <artifactId>apache-rat-plugin</artifactId>
-      </plugin>
-    </plugins>
-  </build>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.rat</groupId>
+                <artifactId>apache-rat-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 
-  <modules>
-    <module>flume-hdfs-sink</module>
-    <module>flume-ng-elasticsearch-sink</module>
-    <module>flume-ng-morphline-solr-sink</module>
-    <module>flume-ng-kafka-sink</module>
-  </modules>
+    <modules>
+        <module>flume-hdfs-sink</module>
+        <module>flume-ng-elasticsearch-sink</module>
+        <module>flume-ng-morphline-solr-sink</module>
+        <module>flume-ng-kafka-sink</module>
+    </modules>
 
-  <profiles>
+    <profiles>
 
-    <profile>
-      <id>hadoop-1.0</id>
-      <activation>
-        <property>
-          <name>flume.hadoop.profile</name>
-          <value>1</value>
-        </property>
-      </activation>
-    </profile>
+        <profile>
+            <id>hadoop-1.0</id>
+            <activation>
+                <property>
+                    <name>flume.hadoop.profile</name>
+                    <value>1</value>
+                </property>
+            </activation>
+        </profile>
 
-    <profile>
-      <id>hadoop-2</id>
-      <activation>
-        <property>
-          <name>flume.hadoop.profile</name>
-          <value>2</value>
-        </property>
-      </activation>
-      <!-- add the flume-dataset-sink, which is only compatible with hadoop-2
-           -->
-      <modules>
-        <module>flume-hive-sink</module>
-      </modules>
-    </profile>
+        <profile>
+            <id>hadoop-2</id>
+            <activation>
+                <property>
+                    <name>flume.hadoop.profile</name>
+                    <value>2</value>
+                </property>
+            </activation>
+            <!-- add the flume-dataset-sink, which is only compatible with hadoop-2
+                 -->
+            <modules>
+                <module>flume-hive-sink</module>
+            </modules>
+        </profile>
 
-    <profile>
-      <id>hbase-1</id>
-      <activation>
-        <property>
-          <name>!flume.hadoop.profile</name>
-        </property>
-      </activation>
-      <!-- add the flume-dataset-sink, which is only compatible with hadoop-2
-           -->
-      <modules>
-        <module>flume-hive-sink</module>
-      </modules>
-    </profile>
+        <profile>
+            <id>hbase-1</id>
+            <activation>
+                <property>
+                    <name>!flume.hadoop.profile</name>
+                </property>
+            </activation>
+            <!-- add the flume-dataset-sink, which is only compatible with hadoop-2
+                 -->
+            <modules>
+                <module>flume-hive-sink</module>
+            </modules>
+        </profile>
 
 
-  </profiles>
+    </profiles>
 
 </project>

@@ -10,7 +10,7 @@
         <version>1.7.0</version>
     </parent>
 
-    <artifactId>fortscale-flume-common</artifactId>
+    <artifactId>fortscale-flume-interceptors</artifactId>
 
     <build>
         <plugins>

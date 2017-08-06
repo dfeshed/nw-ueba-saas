@@ -94,7 +94,7 @@ public class PresidioMongoSource extends AbstractEventDrivenSource implements Co
             port = Integer.parseInt(context.getString(PORT, "27017"));
             username = context.getString(USERNAME, "");
             final String password = context.getString(PASSWORD, "");
-            dateTimeField = context.getString(DATE_TIME_FIELD, DEFAULT_DATE_TIME_FIELD_NAME);
+            dateTimeField = context.getString(CommonStrings.DATE_TIME_FIELD, CommonStrings.DEFAULT_DATE_TIME_FIELD_NAME);
             sourceMongoRepository = createRepository(dbName, host, port, username, password);
         } catch (Exception e) {
             final String errorMessage = "Failed to configure ." + getName();

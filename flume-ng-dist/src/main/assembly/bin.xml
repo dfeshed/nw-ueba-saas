@@ -37,7 +37,7 @@
       <unpack>false</unpack>
       <useProjectArtifact>false</useProjectArtifact>
       <excludes>
-        <exclude>org.apache.flume.flume-ng-clients:flume-ng-log4jappender:jar:jar-with-dependencies</exclude>
+        <exclude>presidio.flume.core.flume-ng-clients:flume-ng-log4jappender:jar:jar-with-dependencies</exclude>
         <!-- The below test classes get pulled in by flume-shared-kafka-test,
              but we don't want them in the final release classpath. Maybe there
              is a better way to exclude all of the dependencies of that module;
@@ -51,7 +51,7 @@
       <unpack>false</unpack>
       <useProjectArtifact>false</useProjectArtifact>
       <includes>
-        <include>org.apache.flume.flume-ng-clients:flume-ng-log4jappender:jar:jar-with-dependencies</include>
+        <include>presidio.flume.core.flume-ng-clients:flume-ng-log4jappender:jar:jar-with-dependencies</include>
       </includes>
     </dependencySet>
   </dependencySets>
