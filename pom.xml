@@ -436,7 +436,7 @@ limitations under the License.
         <profile>
             <id>rpm</id>
             <modules>
-                <module>flume-presidio</module>
+                <module>fortscale-flume/fortscale-flume-rpm</module>
             </modules>
         </profile>
     </profiles>
