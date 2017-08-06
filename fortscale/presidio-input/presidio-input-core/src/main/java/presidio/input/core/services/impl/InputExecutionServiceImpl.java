@@ -127,7 +127,6 @@ public class InputExecutionServiceImpl implements PresidioExecutionService {
     }
 
     @Override
-    @RunTime
     public void clean(Schema schema, Instant startDate, Instant endDate) throws Exception {
         logger.info("Started clean processing for data source:{}, from {}:{}, until {}:{}."
                 , schema,

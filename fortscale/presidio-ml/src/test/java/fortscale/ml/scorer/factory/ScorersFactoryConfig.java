@@ -15,10 +15,10 @@ import java.util.List;
 
 @Configuration
 @ComponentScan(value = {"fortscale.ml.scorer.factory"})
-@Import(DataRetrieverFactoryServiceConfig.class)
+//@Import(DataRetrieverFactoryServiceConfig.class)
 public class ScorersFactoryConfig {
-    @Autowired
-    public FactoryService<AbstractDataRetriever> dataRetrieverFactoryService;
+//    @Autowired
+//    public FactoryService<AbstractDataRetriever> dataRetrieverFactoryService;
     @Autowired
     public List<AbstractServiceAutowiringFactory<Scorer>> scorersFactories;
 

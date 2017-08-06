@@ -15,26 +15,10 @@ import java.util.List;
  */
 @Document
 @AdeScoredEnrichedMetadata(erichedRecord = EnrichedDlpFileRecord.class)
-public class AdeScoredDlpFileRecord extends AdeScoredEnrichedRecord {
+public class AdeScoredDlpFileRecord extends AdeScoredEnrichedRecord<AdeEnrichedDlpFileContext> {
 
-    AdeEnrichedDlpFileContext context;
-
-    public AdeScoredDlpFileRecord(Instant date_time, String featureName, String featureEventType, Double score, List<FeatureScore> featureScoreList){
-        super(date_time,featureName, featureEventType,score,featureScoreList);
-    }
-
-    public AdeScoredDlpFileRecord(Instant date_time, String featureName, String featureEventType, Double score, List<FeatureScore> featureScoreList, EnrichedDlpFileRecord enrichedDlpFileRecord) {
-        super(date_time, featureName, featureEventType, score, featureScoreList);
-        this.context = enrichedDlpFileRecord.getContext();
-    }
-
-
-    public AdeEnrichedDlpFileContext getContext(){
-        return context;
-    }
-
-    public void setContext(AdeEnrichedDlpFileContext context) {
-        this.context = context;
+    public AdeScoredDlpFileRecord(Instant date_time, String featureName, String featureEventType, Double score, List<FeatureScore> featureScoreList, EnrichedRecord enrichedRecord){
+        super(date_time, featureName, featureEventType,score, featureScoreList, enrichedRecord);
     }
 
     @Override
