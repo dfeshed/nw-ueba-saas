@@ -23,12 +23,20 @@ public abstract class PaginationService<T> {
     private int pageSize;
     // num of context ids in group
     private int maxGroupSize;
+    //fieldName that paginationService uses to sort pages
+    private String sortBy;
 
     private static final Logger logger = Logger.getLogger(PaginationService.class);
 
     public PaginationService(int pageSize, int maxGroupSize) {
         this.pageSize = pageSize;
         this.maxGroupSize = maxGroupSize;
+        this.sortBy = "";
+    }
+
+    public PaginationService(int pageSize, int maxGroupSize, String sortBy) {
+        this(pageSize,maxGroupSize);
+        this.sortBy = sortBy;
     }
 
     public int getPageSize() {
@@ -93,7 +101,6 @@ public abstract class PaginationService<T> {
      */
     protected abstract void ensureContextAndDateTimeIndex(String adeEventType);
 
-
     /**
      *
      * Creates groups, which contain pair of total num of events and set of contextIds.
@@ -154,6 +161,14 @@ public abstract class PaginationService<T> {
             end--;
         }
         return groups;
+    }
+
+
+    /**
+     * @return get field name that paginationService uses to sort pages
+     */
+    public String getSortBy() {
+        return sortBy;
     }
 }
 

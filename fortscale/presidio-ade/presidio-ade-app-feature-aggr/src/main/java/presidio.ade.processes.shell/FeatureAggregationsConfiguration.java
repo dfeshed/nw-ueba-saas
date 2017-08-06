@@ -49,9 +49,9 @@ public class FeatureAggregationsConfiguration {
     private FeatureAggregationScoringService featureAggregationScoringService;
     @Autowired
     private AggregatedDataStore scoredFeatureAggregatedStore;
-    @Value("${feature.aggregation.pageSize}")
+    @Value("${feature.aggregation.pageIterator.pageSize}")
     private int pageSize;
-    @Value("${feature.aggregation.maxGroupSize}")
+    @Value("${feature.aggregation.pageIterator.maxGroupSize}")
     private int maxGroupSize;
 
     @Bean
