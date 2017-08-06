@@ -1,0 +1,81 @@
+{
+  "ModelConfs": [
+    {
+      "name" : "startInstant.userId.file",
+      "selector" : {
+        "type" : "feature_bucket_context_selector",
+        "featureBucketConfName" : "startInstantHistogramUserIdFileDaily"
+      },
+      "retriever" : {
+        "type" : "context_histogram_retriever",
+        "timeRangeInSeconds" : 7776000,
+        "functions" : [ ],
+        "featureBucketConfName" : "startInstantHistogramUserIdFileDaily",
+        "featureName" : "startInstantHistogram"
+      },
+      "builder" : {
+        "type" : "time_model_builder",
+        "timeResolution" : 86400,
+        "bucketSize" : 600,
+        "maxRareTimestampCount" : 10
+      }
+    },
+    {
+      "name" : "operationType.userId.file",
+      "selector" : {
+        "type" : "feature_bucket_context_selector",
+        "featureBucketConfName" : "operationTypeHistogramUserIdFileDaily"
+      },
+      "retriever" : {
+        "type" : "context_histogram_retriever",
+        "timeRangeInSeconds" : 7776000,
+        "functions" : [ ],
+        "featureBucketConfName" : "operationTypeHistogramUserIdFileDaily",
+        "featureName" : "operationTypeHistogram"
+      },
+      "builder" : {
+        "type" : "category_rarity_model_builder",
+        "numOfBuckets" : 30,
+        "entriesToSaveInModel" : 100
+      }
+    },
+    {
+      "name" : "operationType.userIdFilePermissionChange.file",
+      "selector" : {
+        "type" : "feature_bucket_context_selector",
+        "featureBucketConfName" : "operationTypeHistogramUserIdFilePermissionChangeFileDaily"
+      },
+      "retriever" : {
+        "type" : "context_histogram_retriever",
+        "timeRangeInSeconds" : 7776000,
+        "functions" : [ ],
+        "featureBucketConfName" : "operationTypeHistogramUserIdFilePermissionChangeFileDaily",
+        "featureName" : "operationTypeHistogram"
+      },
+      "builder" : {
+        "type" : "category_rarity_model_builder",
+        "numOfBuckets" : 30,
+        "entriesToSaveInModel" : 100
+      }
+    },
+    {
+      "name" : "operationType.userIdFileAction.file",
+      "selector" : {
+        "type" : "feature_bucket_context_selector",
+        "featureBucketConfName" : "operationTypeHistogramUserIdFileActionFileDaily"
+      },
+      "retriever" : {
+        "type" : "context_histogram_retriever",
+        "timeRangeInSeconds" : 7776000,
+        "functions" : [ ],
+        "featureBucketConfName" : "operationTypeHistogramUserIdFileActionFileDaily",
+        "featureName" : "operationTypeHistogram"
+      },
+      "builder" : {
+        "type" : "category_rarity_model_builder",
+        "numOfBuckets" : 30,
+        "entriesToSaveInModel" : 100
+      }
+    }
+  ]
+}

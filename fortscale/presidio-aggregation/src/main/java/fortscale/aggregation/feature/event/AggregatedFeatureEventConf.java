@@ -149,7 +149,7 @@ public class AggregatedFeatureEventConf implements Serializable {
 	}
 
 	public void setAnomalyType(String anomalyType) {
-		Assert.isTrue(StringUtils.isNotBlank(anomalyType));
+//		Assert.isTrue(StringUtils.isNotBlank(anomalyType));
 		this.anomalyType = anomalyType;
 	}
 

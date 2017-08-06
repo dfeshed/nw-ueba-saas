@@ -18,9 +18,9 @@ public class ScoreAggregationsApplicationConfigTest extends ScoreAggregationsApp
     public static TestPropertiesPlaceholderConfigurer scoreAggregationsApplicationTestProperties() {
         Properties properties = new Properties();
         //        start ASL paths configurations
-        properties.put("fortscale.model.aggregation.bucket.conf.json.file.name", "classpath:config/asl/score-aggregation/feature-buckets/model_feature_buckets.json");
-        properties.put("fortscale.score.aggregation.bucket.conf.json.file.name", "classpath:config/asl/score-aggregation/feature-buckets/score_aggregation_feature_buckets.json");
-        properties.put("fortscale.aggregation.feature.event.conf.json.file.name", "classpath:config/asl/score-aggregation/aggregated-features/score_aggregation_events.json");
+        properties.put("fortscale.model.aggregation.bucket.conf.json.file.name", "classpath:config/asl/score-aggregation/feature-buckets/model/*.json");
+        properties.put("fortscale.score.aggregation.bucket.conf.json.file.name", "classpath:config/asl/score-aggregation/feature-buckets/score_aggregation/*.json");
+        properties.put("fortscale.aggregation.feature.event.conf.json.file.name", "classpath:config/asl/score-aggregation/aggregated-features/*.json");
         properties.put("presidio.modeling.base.configurations.path", "classpath:config/asl/score-aggregation/models/*.json");
         properties.put("fortscale.scorer.configurations.location.path", "classpath:config/asl/score-aggregation/scorers/*.json");
         //        end ASL paths configurations
