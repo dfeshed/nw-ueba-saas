@@ -14,7 +14,6 @@ import presidio.data.domain.event.authentication.AuthenticationEvent;
 import presidio.data.generators.event.EntityEventIDFixedPrefixGenerator;
 import presidio.data.generators.event.IEventGenerator;
 import presidio.data.generators.machine.IMachineGenerator;
-import presidio.data.generators.machine.RemoteMachinePercentageGenerator;
 import presidio.data.generators.machine.SimpleMachineGenerator;
 import presidio.data.generators.user.IUserGenerator;
 import presidio.data.generators.user.RandomUserGenerator;
@@ -50,8 +49,8 @@ public class AuthenticationEventsGenerator implements IEventGenerator {
         operationTypeGenerator = new AuthenticationTypeCyclicGenerator();
         operationTypeCategoriesGenerator = new AuthenticationOpTypeCategoriesGenerator();
 
-        srcMachineGenerator = new SimpleMachineGenerator(user.getUsername());
-        dstMachineGenerator = new RemoteMachinePercentageGenerator();
+        srcMachineGenerator = new SimpleMachineGenerator();
+        dstMachineGenerator = new SimpleMachineGenerator(); // need domain machine percentage generator
         resultGenerator = new OperationResultPercentageGenerator();                 // 100% "Success"
         resultCodeGenerator = new RandomStringGenerator();                          // TBD
     }
