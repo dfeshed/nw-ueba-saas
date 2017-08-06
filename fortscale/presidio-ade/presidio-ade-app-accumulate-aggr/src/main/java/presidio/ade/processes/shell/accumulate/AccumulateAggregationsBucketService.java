@@ -1,12 +1,8 @@
 package presidio.ade.processes.shell.accumulate;
 
-import fortscale.accumulator.AccumulationsStore;
 import fortscale.accumulator.Accumulator;
-import fortscale.accumulator.AccumulatorService;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.pagination.PageIterator;
-import fortscale.utils.time.TimeRange;
-import presidio.ade.domain.record.accumulator.AccumulatedAggregationFeatureRecord;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
 
 import java.util.List;

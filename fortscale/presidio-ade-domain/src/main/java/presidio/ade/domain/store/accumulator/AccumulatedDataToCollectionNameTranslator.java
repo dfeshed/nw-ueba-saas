@@ -8,7 +8,7 @@ import java.util.Collection;
 
 
 public class AccumulatedDataToCollectionNameTranslator implements AdeToCollectionNameTranslator<AggrRecordsMetadata> {
-    private static final String AGGR_COLLECTION_PREFIX = "accumulate_aggregations_";
+    private static final String AGGR_COLLECTION_PREFIX = "accm_";
 
     @Override
     public String toCollectionName(AggrRecordsMetadata metadata) {

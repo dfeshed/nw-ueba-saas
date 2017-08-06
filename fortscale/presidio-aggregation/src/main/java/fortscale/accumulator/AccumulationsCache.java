@@ -1,13 +1,11 @@
 package fortscale.accumulator;
 
-import fortscale.aggregation.feature.bucket.FeatureBucket;
 import presidio.ade.domain.record.accumulator.AccumulatedAggregationFeatureRecord;
 
 import java.util.List;
-import java.util.Map;
 
 
-public interface AccumulationsStore {
+public interface AccumulationsCache {
 
     /**
      * Store accumulated record in memory

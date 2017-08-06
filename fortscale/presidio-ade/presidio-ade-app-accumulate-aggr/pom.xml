@@ -45,6 +45,10 @@
             <artifactId>spring-cloud-task-starter</artifactId>
             <version>${spring-cloud-task-starter.version}</version>
         </dependency>
+        <dependency>
+            <groupId>presidio-test-utils</groupId>
+            <artifactId>presidio-data-generators</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
