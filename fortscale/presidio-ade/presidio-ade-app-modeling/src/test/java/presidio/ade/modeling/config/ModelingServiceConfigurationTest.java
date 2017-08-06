@@ -24,8 +24,7 @@ public class ModelingServiceConfigurationTest {
 		// Feature aggregation event conf service
 		properties.put("presidio.ade.modeling.feature.aggregation.event.confs.base.path", "${presidio.ade.modeling.config.asl.path}/feature_aggregation_events/*.json");
 		// Smart event conf service
-		// TODO: Refactor once smarts are implemented
-		properties.put("fortscale.entity.event.definitions.json.file.path", "classpath:config/asl/entity_events.json");
+		properties.put("fortscale.entity.event.definitions.json.file.path", "${presidio.ade.modeling.config.asl.path}/smart_events/*.json");
 		// Model conf service
 		properties.put("presidio.ade.modeling.enriched.records.group.name", "enriched-record-models");
 		properties.put("presidio.ade.modeling.enriched.records.base.configuration.path", "${presidio.ade.modeling.config.asl.path}/models/enriched_records/*.json");
