@@ -203,7 +203,7 @@ limitations under the License.
                                 <phase>generate-sources</phase>
                                 <configuration>
                                     <target>
-                                        <mkdir dir="${project.build.directory}/generated-sources/java/presidio.flume.core"/>
+                                        <mkdir dir="${project.build.directory}/generated-sources/java/presidio/flume/core"/>
                                         <exec executable="powershell">
                                             <arg
                                                     line="-executionpolicy unrestricted -file ${basedir}\scripts\saveVersion.ps1  ${project.version} ${project.build.directory}"/>
