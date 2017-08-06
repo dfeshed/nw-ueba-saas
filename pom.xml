@@ -18,14 +18,10 @@ limitations under the License.
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-        <groupId>org.apache</groupId>
-        <artifactId>apache</artifactId>
-        <version>18</version>
-    </parent>
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.apache.flume</groupId>
-    <artifactId>flume-parent</artifactId>
+    <artifactId>presidio-flume</artifactId>
     <version>1.7.0</version>
     <packaging>pom</packaging>
 
@@ -1365,7 +1361,7 @@ limitations under the License.
         </dependencies>
     </dependencyManagement>
 
-    <!--<reporting>-->-
+    <!--<reporting>-->
     <!--<plugins>-->
 
     <!--<plugin>-->
