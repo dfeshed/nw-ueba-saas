@@ -1,63 +1,46 @@
 package presidio.data.domain;
 
 public class MachineEntity {
-    private String name;
-    private String normalized_name;
-    private String ip_address;
-    private Boolean remote;
+    private String machineId;
+    private String machineNameRegexCluster;
+    private String machineDomain;
 
-    public MachineEntity(String name, String ip_address) {
-        this.name = name;
-        this.normalized_name = name;
-        this.ip_address = ip_address;
+    public MachineEntity(String machineId, String machineNameRegexCluster, String machineDomain) {
+        this.machineId = machineId;
+        this.machineNameRegexCluster = machineNameRegexCluster;
+        this.machineDomain = machineDomain;
     }
 
-    public MachineEntity(String name, String ip_address, Boolean remote) {
-        this.name = name;
-        this.normalized_name = name;
-        this.ip_address = ip_address;
-        this.remote = remote;
+    public String getMachineId() {
+        return machineId;
     }
 
-    public String getName() {
-        return name;
+    public void setMachineId(String machineId) {
+        this.machineId = machineId;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public String getMachineNameRegexCluster() {
+        return machineNameRegexCluster;
     }
 
-    public String getIp_address() {
-        return ip_address;
+    public void setMachineNameRegexCluster(String machineNameRegexCluster) {
+        this.machineNameRegexCluster = machineNameRegexCluster;
     }
 
-    public void setIp_address(String ip_address) {
-        this.ip_address = ip_address;
+    public String getMachineDomain() {
+        return machineDomain;
     }
 
-    public String getNormalized_name() { return normalized_name; }
-
-    public void setNormalized_name(String normalized_name) { this.normalized_name = normalized_name; }
-
-    public String getNormalizedMachinename() {
-        return normalized_name;
-    }
-
-    public Boolean isRemote() {
-        return remote;
-    }
-
-    public void setRemote(Boolean remote) {
-        this.remote = remote;
+    public void setMachineDomain(String machineDomain) {
+        this.machineDomain = machineDomain;
     }
 
     @Override
     public String toString() {
         return "MachineEntity{" +
-                "name='" + name + '\'' +
-                ", normalized_name='" + normalized_name + '\'' +
-                ", ip_address='" + ip_address + '\'' +
-                ", remote=" + remote +
+                ", machineId='" + machineId + '\'' +
+                ", machineNameRegexCluster='" + machineNameRegexCluster + '\'' +
+                ", machineDomain='" + machineDomain + '\'' +
                 '}';
     }
 }

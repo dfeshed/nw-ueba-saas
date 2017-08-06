@@ -14,7 +14,7 @@ public class DLPFileEventsGeneratorTemplateFactory {
 
         DLPFileEventsGenerator generator = new DLPFileEventsGenerator();
         generator.setUserGenerator(new SingleUserGenerator(username)); // Handles: username, first_name, last_name
-        generator.setSourceMachineGenerator(new SimpleMachineGenerator(username)); // Handles: hostname, source_ip
+        generator.setSourceMachineGenerator(new SimpleMachineGenerator()); // Handles: hostname, source_ip
         generator.setEventIDGenerator(new EntityEventIDFixedPrefixGenerator(username));
 
         return generator;

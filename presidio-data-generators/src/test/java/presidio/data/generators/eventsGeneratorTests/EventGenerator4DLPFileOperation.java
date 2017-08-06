@@ -59,44 +59,4 @@ public class EventGenerator4DLPFileOperation {
         EVGEN.generate();
     }
 
-    @Test
-    public void FieldGeneratorsTest() throws GeneratorException, IOException {
-        DLPFileEventsGenerator EVGEN = new DLPFileEventsGenerator();
-
-        /***
-         * Date Time
-         */
-        TimeGenerator myTimeGenerator =
-                new TimeGenerator(LocalTime.of(8,00), LocalTime.of(10,00), 10, 1, 1);
-        EVGEN.setTimeGenerator(myTimeGenerator);
-
-        /***
-         * Executing Application
-         */
-
-        String[] myApps = {"Word.exe", "Excel.exe", "PowerPoint.exe", "Access.exe", "Outlook.exe", "OneNote.exe"};
-        ExecutingApplicationCyclicGenerator myExecutingApplicationGen = new ExecutingApplicationCyclicGenerator(myApps);
-        EVGEN.setExecutingApplicationListGenerator(myExecutingApplicationGen);
-
-
-        /***
-         * Source MachineEntity
-         */
-
-        String[] IP = new String[myTimeGenerator.getSize()];
-
-        for(int i = 1; i <= myTimeGenerator.getSize(); i++){
-            StringBuilder hostip = new StringBuilder();
-            IP[i - 1] = hostip.append("192.168.0.").append(i).toString();
-        }
-
-        HostnameFromUsernameGenerator HG = new HostnameFromUsernameGenerator("LiranAv",myTimeGenerator.getSize());
-
-        FixedIPsGenerator SIPG = new FixedIPsGenerator(IP);
-
-        SimpleMachineGenerator mySrcMachineGen = new SimpleMachineGenerator(HG,SIPG);
-        EVGEN.setSourceMachineGenerator(mySrcMachineGen);
-
-        EVGEN.generate();
-    }
 }

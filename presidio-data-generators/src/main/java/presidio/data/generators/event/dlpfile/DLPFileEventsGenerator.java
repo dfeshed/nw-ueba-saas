@@ -45,7 +45,7 @@ public class DLPFileEventsGenerator implements IEventGenerator {
         userGenerator = new RandomUserGenerator();
         User user = userGenerator.getNext();
 
-        sourceMachineGenerator = new SimpleMachineGenerator(user.getUsername());
+        sourceMachineGenerator = new SimpleMachineGenerator();
         fileOperationGenerator = new DLPFileOperationGenerator(); // Handles: source_path, destination_path, source_file_name, destination_file_name, file_size
 
         eventIDGen = new EntityEventIDFixedPrefixGenerator(user.getUsername());
@@ -76,9 +76,9 @@ public class DLPFileEventsGenerator implements IEventGenerator {
             ev.setLastName(user.getLastName());
 
             MachineEntity sm = getSourceMachineGenerator().getNext();
-            ev.setSrcMachine(sm.getName());
-            ev.setNormalized_src_machine(sm.getNormalized_name());
-            ev.setSourceIp(sm.getIp_address());
+            //ev.setSrcMachine(sm.getName());
+            //ev.setNormalized_src_machine(sm.getNormalized_name());
+            //ev.setSourceIp(sm.getIp_address());
             ev.setExecutingApplication((String)getExecutingApplicationGenerator().getNext());
 
             DLPFileOperation f = getFileOperationGenerator().getNext();

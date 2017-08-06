@@ -8,8 +8,7 @@ import presidio.data.generators.common.GeneratorException;
 import presidio.data.domain.event.authentication.AuthenticationEvent;
 import presidio.data.generators.common.precentage.BooleanPercentageGenerator;
 import presidio.data.generators.event.authentication.AuthenticationEventsGenerator;
-import presidio.data.generators.machine.IMachineGenerator;
-import presidio.data.generators.machine.RemoteMachinePercentageGenerator;
+import presidio.data.generators.machine.SimpleMachineGenerator;
 
 import java.util.List;
 
@@ -19,7 +18,6 @@ public class AuthenticationEventsGeneratorTest {
 
     /** Default values:
      * time: 8:00 to 16:00, every 10 min, 30 to 1 days back
-     * dataSource: "Quest"
      * authenticationop type: all types from enum presidio.data.domain.authenticationop.AUTHENTICATION_OPERATION_TYPE, not blank
      * eventId - unique
      * dstMachine: name - "random" alphanumeric string, 10 chars length, 2% remote
@@ -33,12 +31,6 @@ public class AuthenticationEventsGeneratorTest {
     @Before
     public void prepare() throws GeneratorException {
         AuthenticationEventsGenerator generator = new AuthenticationEventsGenerator();
-
-        RemoteMachinePercentageGenerator dstMachineGen = new RemoteMachinePercentageGenerator();
-        BooleanPercentageGenerator remoteGen = new BooleanPercentageGenerator(3);
-        dstMachineGen.setRemoteMachineGenerator(remoteGen);
-
-        generator.setDstMachineGenerator(dstMachineGen);
         events = generator.generate();
     }
 
@@ -68,23 +60,13 @@ public class AuthenticationEventsGeneratorTest {
     }
 
     @Test
-    public void IsDstMachineRemotePctTest () {
-        // remote dest machines - 3% of 1392 = 42
-        int remotes = 0;
-        for (AuthenticationEvent ev : events) {
-            if (ev.getDstMachineEntity().isRemote()) remotes++;
-        }
-        Assert.assertEquals(42, remotes);
+    public void DstMachineId () {
+        Assert.assertEquals("host_1", events.get(0).getDstMachineEntity().getMachineId());
     }
 
     @Test
-    public void NormalizedDstMachine () {
-        Assert.assertEquals("host_1", events.get(0).getDstMachineEntity().getNormalizedMachinename());
-    }
-
-    @Test
-    public void NormalizedSrcMachine () {
-        Assert.assertEquals(14, events.get(0).getSrcMachineEntity().getNormalizedMachinename().length());
+    public void SrcMachineId () {
+        Assert.assertEquals(6, events.get(0).getSrcMachineEntity().getMachineId().length());
     }
 
     @Test
