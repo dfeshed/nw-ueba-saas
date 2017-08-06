@@ -6,10 +6,7 @@ import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.fileentity.IFileEntityGenerator;
 import presidio.data.generators.fileentity.NullFileEntityGenerator;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 
 public class FileOperationGeneratorTemplateFactory {
     private HashMap<String,String[]> opType2OpCategoryMap = new HashMap<>();
@@ -17,7 +14,6 @@ public class FileOperationGeneratorTemplateFactory {
     public FileOperationGeneratorTemplateFactory() {
 
         String [] fileActionCategory = new String[] {FILE_OPERATION_TYPE_CATEGORIES.FILE_ACTION.value};
-
         String [] filePermissionChangeCategory = new String[] {FILE_OPERATION_TYPE_CATEGORIES.FILE_PERMISSION_CHANGE.value};
 
         opType2OpCategoryMap.put(FILE_OPERATION_TYPE.FOLDER_OPENED.value, fileActionCategory);
