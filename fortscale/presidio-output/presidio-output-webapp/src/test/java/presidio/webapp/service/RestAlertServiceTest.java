@@ -10,9 +10,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
-import presidio.output.domain.records.Alert;
-import presidio.output.domain.records.AlertEnums;
-import presidio.output.domain.services.AlertPersistencyService;
+import presidio.output.domain.records.alerts.Alert;
+import presidio.output.domain.records.alerts.AlertEnums;
+import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.webapp.restquery.RestAlertQuery;
 import presidio.webapp.spring.OutputWebappConfigurationTest;
 

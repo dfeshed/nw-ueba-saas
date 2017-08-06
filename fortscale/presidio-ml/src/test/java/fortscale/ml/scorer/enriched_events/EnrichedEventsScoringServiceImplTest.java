@@ -14,7 +14,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import presidio.ade.domain.record.AdeRecordReader;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
-import presidio.ade.domain.record.scored.enriched_scored.AdeScoredEnrichedRecord;
+import presidio.ade.domain.record.enriched.AdeScoredEnrichedRecord;
 import presidio.ade.domain.store.scored.ScoredEnrichedDataStore;
 
 import java.util.ArrayList;

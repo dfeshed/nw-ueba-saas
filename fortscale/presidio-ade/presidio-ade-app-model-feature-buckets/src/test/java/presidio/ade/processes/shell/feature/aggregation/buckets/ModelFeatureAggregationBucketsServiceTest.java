@@ -7,6 +7,7 @@ import fortscale.common.feature.AggrFeatureValue;
 import fortscale.common.feature.Feature;
 import fortscale.common.shell.command.PresidioCommands;
 import fortscale.common.util.GenericHistogram;
+import presidio.ade.domain.store.enriched.EnrichedRecordsMetadata;
 import fortscale.utils.pagination.ContextIdToNumOfItems;
 import fortscale.utils.shell.BootShim;
 import fortscale.utils.shell.BootShimConfig;
@@ -24,10 +25,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.shell.core.CommandResult;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import presidio.ade.domain.record.enriched.EnrichedDlpFileRecord;
+import presidio.ade.domain.record.enriched.dlpfile.EnrichedDlpFileRecord;
 import presidio.ade.domain.store.AdeDataStoreCleanupParams;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
-import presidio.ade.domain.store.enriched.EnrichedRecordsMetadata;
 import presidio.ade.processes.shell.feature.aggregation.buckets.config.ModelFeatureAggregationBucketsConfiguration;
 
 import java.time.Instant;
@@ -62,7 +62,7 @@ public class ModelFeatureAggregationBucketsServiceTest {
         CommandResult commandResult = bootShim.getShell().executeCommand(String.format("run --schema %s --start_date %s --end_date %s --fixed_duration_strategy 3600", ADE_EVENT_TYPE.toUpperCase(), startTime.toString(), endTime.toString()));
         Assert.assertTrue(commandResult.isSuccess());
 //        modelFeatureAggregationBucketsService.execute(timeRange, ADE_EVENT_TYPE);
-        String contextId = FeatureBucketUtils.buildContextId(Collections.singletonMap("normalizedUsername", username));
+        String contextId = FeatureBucketUtils.buildContextId(Collections.singletonMap("userId", username));
         List<FeatureBucket> featureBucketList = featureBucketStore.getFeatureBuckets(
                 "normalized_username_dlpfile_daily", Collections.singleton(contextId), timeRange);
         Assert.assertEquals(1,featureBucketList.size());
@@ -102,9 +102,9 @@ public class ModelFeatureAggregationBucketsServiceTest {
         enrichedDataStore.cleanup(cleanupParams);
         Instant startTime = timeRange.getStart();
         EnrichedDlpFileRecord enrichedDlpFileRecord = new EnrichedDlpFileRecord(startTime);
-        enrichedDlpFileRecord.setNormalizedUsername(username);
+        enrichedDlpFileRecord.setUserId(username);
         enrichedDlpFileRecord.setWasClassified(false);
-        enrichedDlpFileRecord.setNormalizedSrcMachine(String.format("%s_pc", username));
+        enrichedDlpFileRecord.setSrcMachineId(String.format("%s_pc", username));
         enrichedDlpFileRecord.setOperationType("copy");
         enrichedDlpFileRecord.setSourceDriveType("remote");
         enrichedDlpFileRecord.setFileSize(1000);
@@ -113,7 +113,7 @@ public class ModelFeatureAggregationBucketsServiceTest {
         List<EnrichedDlpFileRecord> enrichedDlpFileRecordList = Collections.singletonList(enrichedDlpFileRecord);
         EnrichedRecordsMetadata enrichedRecordsMetadata = new EnrichedRecordsMetadata(ADE_EVENT_TYPE, startTime, startTime.plus(1, ChronoUnit.SECONDS));
         enrichedDataStore.store(enrichedRecordsMetadata, enrichedDlpFileRecordList);
-        List<ContextIdToNumOfItems> contextIdToNumOfItemsList = enrichedDataStore.aggregateContextToNumOfEvents(enrichedRecordsMetadata, "normalizedUsername");
+        List<ContextIdToNumOfItems> contextIdToNumOfItemsList = enrichedDataStore.aggregateContextToNumOfEvents(enrichedRecordsMetadata, "userId");
         Assert.assertEquals(1, contextIdToNumOfItemsList.size());
     }
 

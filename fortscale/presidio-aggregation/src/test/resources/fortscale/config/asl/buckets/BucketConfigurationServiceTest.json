@@ -4,7 +4,7 @@
       "name": "normalized_username_dlpfile_hourly",
       "expireAfterSeconds": 31536000,
       "contextFieldNames": [
-        "context.normalizedUsername"
+        "context.userId"
       ],
       "adeEventTypes": [
         "scored_enriched.dlpfile.date_time"
@@ -31,10 +31,10 @@
       "name": "normalized_src_machine_dlpfile_daily",
       "expireAfterSeconds": 31536000,
       "contextFieldNames": [
-        "context.normalizedUsername"
+        "context.userId"
       ],
       "adeEventTypes": [
-        "scored_enriched.dlpfile.normalizedSrcMachine"
+        "scored_enriched.dlpfile.srcMachineId"
       ],
       "strategyName": "fixed_duration_hourly",
       "aggrFeatureConfs": [
@@ -42,7 +42,7 @@
           "name": "normalized_src_machine_to_highest_score_map",
           "featureNamesMap": {
             "groupBy": [
-              "context.normalizedSrcMachine"
+              "context.srcMachineId"
             ],
             "maximize": [
               "score"

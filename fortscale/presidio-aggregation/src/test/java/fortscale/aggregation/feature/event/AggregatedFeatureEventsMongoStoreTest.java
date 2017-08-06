@@ -69,10 +69,6 @@ public class AggregatedFeatureEventsMongoStoreTest {
         @Bean
         public AggregatedFeatureEventsConfService aggrFeatureEventsConfService() {
             AggregatedFeatureEventConf aggregatedFeatureEventConf = mock(AggregatedFeatureEventConf.class);
-            String retentionStrategyName = "retentionStrategyName";
-            when(aggregatedFeatureEventConf.getRetentionStrategyName()).thenReturn(retentionStrategyName);
-            int retentionInSeconds = 10;
-            AggrFeatureRetentionStrategy retentionStrategy = new AggrFeatureRetentionStrategy(retentionStrategyName, retentionInSeconds);
 
             aggrFeatureEventsConfService = mock(AggregatedFeatureEventsConfService.class);
             when(aggrFeatureEventsConfService.getAggregatedFeatureEventConf(anyString())).thenReturn(aggregatedFeatureEventConf);

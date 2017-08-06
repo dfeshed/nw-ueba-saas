@@ -4,7 +4,7 @@
       "name": "normalized_username_dlpfile_daily",
       "expireAfterSeconds": 31536000,
       "contextFieldNames": [
-        "normalizedUsername"
+        "userId"
       ],
       "adeEventTypes": [
         "dlpfile"
@@ -156,7 +156,7 @@
           "name": "normalized_src_machine_histogram",
           "featureNamesMap": {
             "groupBy": [
-              "normalizedSrcMachine"
+              "srcMachineId"
             ]
           },
           "aggrFeatureFuncJson": {

@@ -1,2 +1,0 @@
-// null 1.1.0.RELEASE log opened at 2017-08-01 16:25:46
-run  --schema DLPFILE --start_date 2017-06-13T07:00:00.00Z --end_date 2017-06-13T09:00:00.00Z --fixed_duration_strategy 3600

@@ -23,4 +23,5 @@ public class BootShimConfig {
     public InstantConverter instantConverter() {
         return new InstantConverter();
     }
+
 }

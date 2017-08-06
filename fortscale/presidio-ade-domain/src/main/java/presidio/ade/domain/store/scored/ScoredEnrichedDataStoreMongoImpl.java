@@ -2,7 +2,7 @@ package presidio.ade.domain.store.scored;
 
 import fortscale.utils.logging.Logger;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import presidio.ade.domain.record.scored.enriched_scored.AdeScoredEnrichedRecord;
+import presidio.ade.domain.record.enriched.AdeScoredEnrichedRecord;
 import presidio.ade.domain.store.AdeDataStoreCleanupParams;
 
 import java.util.ArrayList;
@@ -18,9 +18,9 @@ public class ScoredEnrichedDataStoreMongoImpl implements ScoredEnrichedDataStore
     private static final Logger logger = Logger.getLogger(ScoredEnrichedDataStoreMongoImpl.class);
 
     private final MongoTemplate mongoTemplate;
-    private final ScoredDataAdeToCollectionNameTranslator translator;
+    private final AdeScoredEnrichedRecordToCollectionNameTranslator translator;
 
-    public ScoredEnrichedDataStoreMongoImpl(MongoTemplate mongoTemplate, ScoredDataAdeToCollectionNameTranslator translator) {
+    public ScoredEnrichedDataStoreMongoImpl(MongoTemplate mongoTemplate, AdeScoredEnrichedRecordToCollectionNameTranslator translator) {
         this.mongoTemplate = mongoTemplate;
         this.translator = translator;
     }

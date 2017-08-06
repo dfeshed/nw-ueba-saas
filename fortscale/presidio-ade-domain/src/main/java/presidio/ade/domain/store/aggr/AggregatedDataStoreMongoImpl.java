@@ -3,7 +3,7 @@ package presidio.ade.domain.store.aggr;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.mongodb.util.MongoDbBulkOpUtil;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
+import presidio.ade.domain.record.aggregated.AdeContextualAggregatedRecord;
 import presidio.ade.domain.store.AdeDataStoreCleanupParams;
 
 import java.util.List;
@@ -27,15 +27,15 @@ public class AggregatedDataStoreMongoImpl implements AggregatedDataStore {
     }
 
     @Override
-    public void store(List<? extends AdeAggregationRecord> records) {
-        Map<String, ? extends List<? extends AdeAggregationRecord>> featureToAggrList = records.stream().collect(Collectors.groupingBy(AdeAggregationRecord::getFeatureName));
+    public void store(List<? extends AdeContextualAggregatedRecord> records) {
+        Map<String, ? extends List<? extends AdeContextualAggregatedRecord>> featureToAggrList = records.stream().collect(Collectors.groupingBy(AdeContextualAggregatedRecord::getFeatureName));
 
         featureToAggrList.keySet().forEach(
                 feature ->
                 {
                     AggrRecordsMetadata metadata = new AggrRecordsMetadata(feature);
                     String collectionName = getCollectionName(metadata);
-                    List<? extends AdeAggregationRecord> aggrRecords = featureToAggrList.get(feature);
+                    List<? extends AdeContextualAggregatedRecord> aggrRecords = featureToAggrList.get(feature);
                     mongoDbBulkOpUtil.insertUnordered(aggrRecords,collectionName);
                 }
         );

@@ -16,8 +16,10 @@
 	
 	<modules>
 		<module>presidio-output-domain</module>
-		<module>presidio-output-processor</module>		
-		<module>presidio-output-webapp</module>		
+		<module>presidio-output-processor</module>
+		<module>presidio-output-webapp</module>
+		<module>presidio-output-sdk-api</module>
+		<module>presidio-output-sdk-api-impl</module>
 	</modules>
 
 

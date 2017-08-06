@@ -1,10 +1,10 @@
 package presidio.input.core.services.data;
 
 import fortscale.common.general.Schema;
+import presidio.ade.domain.store.enriched.EnrichedRecordsMetadata;
 import fortscale.utils.logging.Logger;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.ade.domain.store.AdeDataStoreCleanupParams;
-import presidio.ade.domain.store.enriched.EnrichedRecordsMetadata;
 import presidio.ade.sdk.common.AdeManagerSdk;
 
 import java.time.Instant;

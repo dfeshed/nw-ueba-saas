@@ -196,7 +196,12 @@
 
     <dependencyManagement>
         <dependencies>
-
+            <dependency>
+                <groupId>presidio-test-utils</groupId>
+                <artifactId>presidio-data-generators</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+                <scope>test</scope>
+            </dependency>
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-actuator</artifactId>
@@ -821,6 +826,7 @@
         <module>presidio-adapter</module>
         <module>presidio-output</module>
         <module>presidio-configuration-server</module>
+        <module>presidio-manager</module>
 
 
     </modules>
