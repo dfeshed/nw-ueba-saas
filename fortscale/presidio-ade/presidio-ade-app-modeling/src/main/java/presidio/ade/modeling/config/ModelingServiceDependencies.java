@@ -12,7 +12,6 @@ import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.aggregation.feature.event.store.AggregatedFeatureEventsMongoStore;
 import fortscale.aggregation.feature.event.store.AggregatedFeatureEventsReaderService;
 import fortscale.aggregation.feature.event.store.translator.AggregatedFeatureNameTranslationService;
-import fortscale.entity.event.EntityEventConfService;
 import fortscale.entity.event.EntityEventDataMongoStore;
 import fortscale.entity.event.EntityEventDataReaderService;
 import fortscale.entity.event.EntityEventMongoStore;
@@ -34,7 +33,8 @@ import java.util.Collections;
 @Configuration
 @Import({
 		ModelingServiceFeatureBucketConfServiceConfig.class,
-		ModelingServiceFeatureAggregationEventConfServiceConfig.class
+		ModelingServiceFeatureAggregationEventConfServiceConfig.class,
+		ModelingServiceEntityEventConfServiceConfig.class
 })
 public class ModelingServiceDependencies {
 	private static final StatsService statsService = null;
@@ -123,11 +123,6 @@ public class ModelingServiceDependencies {
 	/****************************
 	 * Smart event related beans.
 	 ****************************/
-
-	@Bean
-	public EntityEventConfService entityEventConfService() {
-		return new EntityEventConfService();
-	}
 
 	@Bean
 	public EntityEventDataMongoStore entityEventDataMongoStore() {
