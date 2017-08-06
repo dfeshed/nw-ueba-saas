@@ -81,7 +81,7 @@ limitations under the License.
         <module>flume-tools</module>
         <module>flume-ng-auth</module>
         <module>flume-shared</module>
-        <!--      fortscale        -->
+        <!--      fortscale - must be last!    -->
         <module>fortscale-flume</module>
     </modules>
 
