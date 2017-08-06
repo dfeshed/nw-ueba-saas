@@ -1,4 +1,4 @@
-package presidio.ade.processes.shell.modeling;
+package presidio.ade.modeling;
 
 import fortscale.common.general.CommonStrings;
 import fortscale.ml.model.ModelingService;
@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.shell.core.CommandMarker;
 import org.springframework.shell.core.annotation.CliCommand;
 import org.springframework.shell.core.annotation.CliOption;
+import org.springframework.stereotype.Component;
 
 import java.time.Instant;
 
@@ -14,6 +15,7 @@ import java.time.Instant;
  *
  * @author Lior Govrin
  */
+@Component
 public class ModelingServiceCommands implements CommandMarker {
 	@Autowired
 	private ModelingService modelingService;

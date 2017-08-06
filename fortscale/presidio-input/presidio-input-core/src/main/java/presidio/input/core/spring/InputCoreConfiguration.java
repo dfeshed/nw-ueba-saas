@@ -11,10 +11,11 @@ import presidio.input.core.services.data.AdeDataService;
 import presidio.input.core.services.impl.InputExecutionServiceImpl;
 import presidio.input.sdk.impl.spring.PresidioInputPersistencyServiceConfig;
 import presidio.output.sdk.api.OutputDataServiceSDK;
+import presidio.output.sdk.impl.spring.OutputDataServiceConfig;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
 
 @Configuration
-@Import({ PresidioInputPersistencyServiceConfig.class, AdeDataServiceConfig.class,MonitoringConfiguration.class})
+@Import({ PresidioInputPersistencyServiceConfig.class, AdeDataServiceConfig.class,OutputDataServiceConfig.class,MonitoringConfiguration.class})
 public class InputCoreConfiguration {
 
     @Autowired
