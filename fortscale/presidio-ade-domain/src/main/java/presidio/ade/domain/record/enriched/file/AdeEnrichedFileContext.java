@@ -1,7 +1,7 @@
 package presidio.ade.domain.record.enriched.file;
 
 
-import fortscale.common.general.EventResult;
+import fortscale.domain.core.EventResult;
 
 public class AdeEnrichedFileContext {
 

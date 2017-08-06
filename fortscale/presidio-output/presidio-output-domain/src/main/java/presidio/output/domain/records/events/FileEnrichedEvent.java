@@ -1,6 +1,6 @@
 package presidio.output.domain.records.events;
 
-import fortscale.common.general.EventResult;
+import fortscale.domain.core.EventResult;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 

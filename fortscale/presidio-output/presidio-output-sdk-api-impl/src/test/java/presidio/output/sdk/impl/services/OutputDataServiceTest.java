@@ -1,7 +1,7 @@
 package presidio.output.sdk.impl.services;
 
-import fortscale.common.general.EventResult;
 import fortscale.common.general.Schema;
+import fortscale.domain.core.EventResult;
 import fortscale.utils.mongodb.util.ToCollectionNameTranslator;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
 import org.junit.Assert;
