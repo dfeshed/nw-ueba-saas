@@ -3,7 +3,11 @@ package presidio.data.generators.eventsGeneratorTests;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import presidio.data.domain.event.activedirectory.ACTIVEDIRECTORY_OP_TYPE_CATEGORIES;
 import presidio.data.domain.event.authentication.AuthenticationEvent;
+import presidio.data.generators.activedirectoryop.ActiveDirectoryOpGeneratorTemplateFactory;
+import presidio.data.generators.activedirectoryop.ActiveDirectoryOperationGenerator;
+import presidio.data.generators.activedirectoryop.IActiveDirectoryOperationGenerator;
 import presidio.data.generators.common.GeneratorException;
 import presidio.data.domain.event.activedirectory.AD_OPERATION_TYPE;
 import presidio.data.domain.event.activedirectory.ActiveDirectoryEvent;
@@ -22,7 +26,6 @@ public class ActiveDirectoryEventsGeneratorTest {
      * time: 8:00 to 16:00, every 10 min, 30 to 1 days back
      * userId (normalizedUsername):  "random" alphanumeric string, 10 chars length
      * operation type: all types from enum presidio.data.domain.activedirectoryop.AD_OPERATION_TYPE
-     * isSecuritySensitiveOperation: 1%
      * isUserAdministrator: 10% (altering default 2% generator)
      * objectName: "random" alphanumeric string, 20 chars length
      * result: 100% "Success"
@@ -78,16 +81,6 @@ public class ActiveDirectoryEventsGeneratorTest {
     }
 
     @Test
-    public void IsSecuritySensitiveOpPctTest () {
-        // isSecuritySensitiveOperation 1% of 1392 = 14
-        int sensitiveOps = 0;
-        for (final ActiveDirectoryEvent ev : events) {
-            if (ev.getOperation().getSecuritySensitiveOperation()) sensitiveOps++;
-        }
-        Assert.assertEquals(14, sensitiveOps);
-    }
-
-    @Test
     public void OperationTypeTest () {
         // Operation types - see that all included, in the same order as enum
         Assert.assertEquals(AD_OPERATION_TYPE.ACCOUNT_MANAGEMENT.value, events.get(0).getOperation().getOperationType());
@@ -110,5 +103,18 @@ public class ActiveDirectoryEventsGeneratorTest {
         Assert.assertEquals(10, events.get(0).getUser().getUserId().length());
         Assert.assertEquals(10, events.get(1000).getUser().getUserId().length());
         Assert.assertEquals(10, events.get(1391).getUser().getUserId().length());
+    }
+
+    @Test
+    public void SensitiveOperationTest () throws GeneratorException {
+
+        ActiveDirectoryEventsGenerator generator = new ActiveDirectoryEventsGenerator();
+        IActiveDirectoryOperationGenerator opGenerator = new ActiveDirectoryOpGeneratorTemplateFactory().getActiveDirectoryOperationsGenerator(
+                AD_OPERATION_TYPE.NESTED_MEMBER_ADDED_TO_CRITICAL_ENTERPRISE_GROUP.value);
+
+        generator.setActiveDirOperationGenerator(opGenerator);
+        events = generator.generate();
+
+        Assert.assertTrue(events.get(0).getOperation().getOperationTypeCategories().contains(ACTIVEDIRECTORY_OP_TYPE_CATEGORIES.SECURITY_SENSITIVE_OPERATION.value));
     }
 }

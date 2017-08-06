@@ -2,6 +2,7 @@ package presidio.data.generators.event.activedirectory;
 
 import presidio.data.generators.FixedDataSourceGenerator;
 import presidio.data.generators.activedirectoryop.ActiveDirectoryOperationGenerator;
+import presidio.data.generators.activedirectoryop.IActiveDirectoryOperationGenerator;
 import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.common.IStringGenerator;
 import presidio.data.generators.common.time.TimeGenerator;
@@ -16,22 +17,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ActiveDirectoryEventsGenerator implements IEventGenerator {
-    // DEFINE ALL ATTRIBUTE GENERATORS
+
+    private IStringGenerator eventIdGenerator;
     private TimeGenerator timeGenerator;
-
-    private IStringGenerator eventIdGenerator;   // Need this? Can't see in Schemas
-
+    private IStringGenerator dataSourceGenerator;
     private IUserGenerator userGenerator;
-    private ActiveDirectoryOperationGenerator activeDirOperationGenerator;
-    private FixedDataSourceGenerator dataSourceGenerator;
+    private IActiveDirectoryOperationGenerator activeDirOperationGenerator;
 
     public ActiveDirectoryEventsGenerator() throws GeneratorException {
         timeGenerator = new TimeGenerator();
-
         userGenerator = new RandomAdminUserPercentageGenerator();
         eventIdGenerator = new EntityEventIDFixedPrefixGenerator(userGenerator.getNext().getUsername()); // giving any string as entity name in this default generator
-        activeDirOperationGenerator = new ActiveDirectoryOperationGenerator();
         dataSourceGenerator = new FixedDataSourceGenerator();                                // "DefaultDS"
+        activeDirOperationGenerator = new ActiveDirectoryOperationGenerator();
     }
 
 
@@ -42,10 +40,10 @@ public class ActiveDirectoryEventsGenerator implements IEventGenerator {
         while (getTimeGenerator().hasNext()) {
             Instant eventTime = getTimeGenerator().getNext();
             ActiveDirectoryEvent ev = new ActiveDirectoryEvent(eventTime,
-                (String) getEventIdGenerator().getNext(),
-                getActiveDirOperationGenerator().getNext(),
-                getUserGenerator().getNext(),
-                (String) getDataSourceGenerator().getNext());
+                    (String) getEventIdGenerator().getNext(),
+                    getUserGenerator().getNext(),
+                    (String) getDataSourceGenerator().getNext(),
+                    getActiveDirOperationGenerator().getNext());
 
             evList.add(ev);
         }
@@ -76,19 +74,19 @@ public class ActiveDirectoryEventsGenerator implements IEventGenerator {
         this.userGenerator = userGenerator;
     }
 
-    public ActiveDirectoryOperationGenerator getActiveDirOperationGenerator() {
+    public IActiveDirectoryOperationGenerator getActiveDirOperationGenerator() {
         return activeDirOperationGenerator;
     }
 
-    public void setActiveDirOperationGenerator(ActiveDirectoryOperationGenerator activeDirOperationGenerator) {
+    public void setActiveDirOperationGenerator(IActiveDirectoryOperationGenerator activeDirOperationGenerator) {
         this.activeDirOperationGenerator = activeDirOperationGenerator;
     }
 
-    public FixedDataSourceGenerator getDataSourceGenerator() {
+    public IStringGenerator getDataSourceGenerator() {
         return dataSourceGenerator;
     }
 
-    public void setDataSourceGenerator(FixedDataSourceGenerator dataSourceGenerator) {
+    public void setDataSourceGenerator(IStringGenerator dataSourceGenerator) {
         this.dataSourceGenerator = dataSourceGenerator;
     }
 }

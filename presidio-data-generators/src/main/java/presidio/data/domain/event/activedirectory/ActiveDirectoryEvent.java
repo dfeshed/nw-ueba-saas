@@ -15,12 +15,12 @@ public class ActiveDirectoryEvent extends Event implements Serializable {
     private User user;
     private String dataSource;
 
-    public ActiveDirectoryEvent(Instant eventTime, String eventId, ActiveDirectoryOperation operation, User user, String dataSource) {
+    public ActiveDirectoryEvent(Instant eventTime, String eventId, User user, String dataSource, ActiveDirectoryOperation operation) {
         this.eventTime = eventTime;
         this.eventId = eventId;
-        this.operation = operation;
         this.user = user;
         this.dataSource = dataSource;
+        this.operation = operation;
     }
 
     public Instant getEventTime() {

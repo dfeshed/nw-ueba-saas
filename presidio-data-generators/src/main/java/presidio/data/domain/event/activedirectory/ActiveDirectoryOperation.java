@@ -1,6 +1,8 @@
 package presidio.data.domain.event.activedirectory;
 
 
+import java.util.List;
+
 /**
  * ActiveDirectory operation entity.
  * Filled by ActiveDirectory events generator.
@@ -8,15 +10,18 @@ package presidio.data.domain.event.activedirectory;
  */
 public class ActiveDirectoryOperation {
     private String operationType;   // not using AD_OPERATION_TYPE enum, to be able create data for invalid values test
-    private Boolean isSecuritySensitiveOperation;
+    private List<String> operationTypeCategories;
     private String objectName;
     private String operationResult;
+    private String operationResultCode;
 
-    public ActiveDirectoryOperation(String operationType, Boolean isSecuritySensitiveOperation, String objectName, String operationResult) {
+    public ActiveDirectoryOperation(String operationType, List<String> operationTypeCategories,
+                                    String objectName, String operationResult, String operationResultCode) {
         this.operationType = operationType;
-        this.isSecuritySensitiveOperation = isSecuritySensitiveOperation;
+        this.operationTypeCategories = operationTypeCategories;
         this.objectName = objectName;
         this.operationResult = operationResult;
+        this.operationResultCode = operationResultCode;
     }
 
     public String getOperationType() {
@@ -25,14 +30,6 @@ public class ActiveDirectoryOperation {
 
     public void setOperationType(String operationType) {
         this.operationType = operationType;
-    }
-
-    public Boolean getSecuritySensitiveOperation() {
-        return isSecuritySensitiveOperation;
-    }
-
-    public void setSecuritySensitiveOperation(Boolean securitySensitiveOperation) {
-        isSecuritySensitiveOperation = securitySensitiveOperation;
     }
 
     public String getObjectName() {
@@ -51,13 +48,30 @@ public class ActiveDirectoryOperation {
         this.operationResult = operationResult;
     }
 
+    public List<String> getOperationTypeCategories() {
+        return operationTypeCategories;
+    }
+
+    public void setOperationTypeCategories(List<String> operationTypeCategories) {
+        this.operationTypeCategories = operationTypeCategories;
+    }
+
+    public String getOperationResultCode() {
+        return operationResultCode;
+    }
+
+    public void setOperationResultCode(String operationResultCode) {
+        this.operationResultCode = operationResultCode;
+    }
+
     @Override
     public String toString() {
         return "ActiveDirectoryOperation{" +
                 "operationType='" + operationType + '\'' +
-                ", isSecuritySensitiveOperation=" + isSecuritySensitiveOperation +
+                ", operationTypeCategories=" + operationTypeCategories +
                 ", objectName='" + objectName + '\'' +
                 ", operationResult='" + operationResult + '\'' +
+                ", operationResultCode='" + operationResultCode + '\'' +
                 '}';
     }
 }
