@@ -11,9 +11,6 @@ import fortscale.aggregation.feature.bucket.FeatureBucketConf;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
 import net.minidev.json.parser.ParseException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 
 import java.util.*;
 
@@ -23,18 +20,10 @@ public class AggregatedFeatureEventsConfService extends AslConfigurationService 
 	private static final Logger logger = Logger.getLogger(AggregatedFeatureEventsConfService.class);
 	private static final String AGGREGATED_FEATURE_EVENTS_JSON_FIELD_NAME = "AggregatedFeatureEvents";
 
-	@Value("${fortscale.aggregation.feature.event.conf.json.file.name}")
-	private String aggregatedFeatureEventConfJsonFilePath;
-	@Value("${fortscale.aggregation.feature.event.conf.json.overriding.files.path:#{null}}")
-	private String aggregatedFeatureEventConfJsonOverridingFilesPath;
-	@Value("${fortscale.aggregation.feature.event.conf.json.additional.files.path:#{null}}")
-	private String aggregatedFeatureEventConfJsonAdditionalFilesPath;
-
-	@Autowired
-	@Qualifier("bucketConfigurationService")
+	private String aggregatedFeatureEventsBaseConfigurationPath;
+	private String aggregatedFeatureEventsOverridingConfigurationPath;
+	private String aggregatedFeatureEventsAdditionalConfigurationPath;
 	private BucketConfigurationService bucketConfigurationService;
-
-	@Autowired
 	private AggregatedFeatureEventsConfUtilService aggregatedFeatureEventsConfUtilService;
 
 
@@ -42,21 +31,33 @@ public class AggregatedFeatureEventsConfService extends AslConfigurationService 
 	private List<AggregatedFeatureEventConf> aggregatedFeatureEventConfList = new ArrayList<>();
 	private Map<String, List<AggregatedFeatureEventConf>> bucketConfName2FeatureEventConfMap = new HashMap<>();
 
-	public AggregatedFeatureEventsConfService(){}
+	public AggregatedFeatureEventsConfService(
+			String aggregatedFeatureEventsBaseConfigurationPath,
+			String aggregatedFeatureEventsOverridingConfigurationPath,
+			String aggregatedFeatureEventsAdditionalConfigurationPath,
+			BucketConfigurationService bucketConfigurationService,
+			AggregatedFeatureEventsConfUtilService aggregatedFeatureEventsConfUtilService) {
+
+		this.aggregatedFeatureEventsBaseConfigurationPath = aggregatedFeatureEventsBaseConfigurationPath;
+		this.aggregatedFeatureEventsOverridingConfigurationPath = aggregatedFeatureEventsOverridingConfigurationPath;
+		this.aggregatedFeatureEventsAdditionalConfigurationPath = aggregatedFeatureEventsAdditionalConfigurationPath;
+		this.bucketConfigurationService = bucketConfigurationService;
+		this.aggregatedFeatureEventsConfUtilService = aggregatedFeatureEventsConfUtilService;
+	}
 
 	@Override
 	protected String getBaseConfJsonFilesPath() {
-		return aggregatedFeatureEventConfJsonFilePath;
+		return aggregatedFeatureEventsBaseConfigurationPath;
 	}
 
 	@Override
 	protected String getBaseOverridingConfJsonFolderPath() {
-		return aggregatedFeatureEventConfJsonOverridingFilesPath;
+		return aggregatedFeatureEventsOverridingConfigurationPath;
 	}
 
 	@Override
 	protected String getAdditionalConfJsonFolderPath() {
-		return aggregatedFeatureEventConfJsonAdditionalFilesPath;
+		return aggregatedFeatureEventsAdditionalConfigurationPath;
 	}
 
 	@Override
@@ -104,8 +105,7 @@ public class AggregatedFeatureEventsConfService extends AslConfigurationService 
 
 	public List<AggregatedFeatureEventConf> getAggregatedFeatureEventConfList(String bucketConfName){
 		List<AggregatedFeatureEventConf> ret = bucketConfName2FeatureEventConfMap.get(bucketConfName);
-
-		return ret != null ? ret : Collections.<AggregatedFeatureEventConf>emptyList();
+		return ret != null ? ret : Collections.emptyList();
 	}
 
 	public String getAnomalyType(String aggregatedFeatureName){
@@ -195,11 +195,8 @@ public class AggregatedFeatureEventsConfService extends AslConfigurationService 
 
 	public List<String> getAggrFeatureEventNameList() {
 		List<String> names = new ArrayList<>();
-
-		aggregatedFeatureEventConfList.forEach(aggregatedFeatureEventConf -> {
-			names.add(aggregatedFeatureEventConf.getName());
-		});
-
+		aggregatedFeatureEventConfList.forEach(aggregatedFeatureEventConf ->
+				names.add(aggregatedFeatureEventConf.getName()));
 		return names;
 	}
 

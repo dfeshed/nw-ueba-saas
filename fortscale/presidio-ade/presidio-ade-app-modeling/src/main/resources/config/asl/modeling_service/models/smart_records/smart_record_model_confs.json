@@ -32,7 +32,6 @@
         "type": "smart_values_model_builder"
       }
     },
-
     {
       "name": "entity_event.global.normalized_username.daily",
       "retriever": {
@@ -57,7 +56,6 @@
         "type": "smart_values_prior_model_builder"
       }
     },
-
     {
       "name": "entity_event.global.alert_control.daily",
       "retriever": {
@@ -88,7 +86,5 @@
         "minMaximalScore": 50
       }
     }
-
-
   ]
 }

@@ -17,9 +17,9 @@ public class ScoreAggregationBucketConfigurationServiceConfig {
     @Value("${fortscale.score.aggregation.bucket.conf.json.additional.files.path:#{null}}")
     private String bucketConfJsonAdditionalFilesPath;
 
-    @Bean
-    public BucketConfigurationService bucketConfigurationService()
+    @Bean("scoreAggregationBucketConfigService")
+    public BucketConfigurationService scoreAggregationBucketConfigService()
     {
-        return new BucketConfigurationService(bucketConfJsonFilePath, bucketConfJsonOverridingFilesPath,bucketConfJsonAdditionalFilesPath);
+        return new BucketConfigurationService(bucketConfJsonFilePath, bucketConfJsonOverridingFilesPath, bucketConfJsonAdditionalFilesPath);
     }
 }

@@ -66,6 +66,7 @@ public class ModelingService {
 				aslResourceFactory.getResources(modelConfigurationPaths.getBaseConfigurationPath()),
 				aslResourceFactory.getResources(modelConfigurationPaths.getOverridingConfigurationPath()),
 				aslResourceFactory.getResources(modelConfigurationPaths.getAdditionalConfigurationPath()));
+		modelConfService.loadAslConfigurations();
 		List<ModelConf> modelConfs = modelConfService.getModelConfs();
 		logger.info("Created a modelConfService for group {} with {} modelConfs.", groupName, modelConfs.size());
 		logger.info("Running modeling engines with sessionId {} and endInstant {} as input.", sessionId, endInstant);

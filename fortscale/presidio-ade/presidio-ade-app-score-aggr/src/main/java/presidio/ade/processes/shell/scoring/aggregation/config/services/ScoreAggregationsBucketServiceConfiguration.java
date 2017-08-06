@@ -14,20 +14,19 @@ import presidio.ade.processes.shell.scoring.aggregation.ScoreAggregationsBucketS
  * Created by YaronDL on 7/2/2017.
  */
 @Configuration
-@Import({ScoreAggregationBucketConfigurationServiceConfig.class,
+@Import({
+        ScoreAggregationBucketConfigurationServiceConfig.class,
         ScoringAggregationsRecordReaderFactoryServiceConfig.class
 })
 public class ScoreAggregationsBucketServiceConfiguration {
-
     @Autowired
-    @Qualifier("bucketConfigurationService")
+    @Qualifier("scoreAggregationBucketConfigService")
     private BucketConfigurationService bucketConfigurationService;
     @Autowired
     private RecordReaderFactoryService recordReaderFactoryService;
 
-
     @Bean
-    public ScoreAggregationsBucketService getScoreAggregationsBucketService(){
-        return new ScoreAggregationsBucketServiceImpl(bucketConfigurationService,recordReaderFactoryService);
+    public ScoreAggregationsBucketService getScoreAggregationsBucketService() {
+        return new ScoreAggregationsBucketServiceImpl(bucketConfigurationService, recordReaderFactoryService);
     }
 }
