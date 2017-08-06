@@ -4,7 +4,9 @@ package presidio.monitoring.export;
 
 import fortscale.utils.logging.Logger;
 import org.springframework.boot.actuate.endpoint.MetricsEndpoint;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Component;
+import presidio.monitoring.elastic.records.PresidioMetric;
 
 
 import java.util.*;
@@ -14,8 +16,8 @@ public class MetricsExporterFileImpl extends MetricsExporter {
 
     private final Logger logger = Logger.getLogger(MetricsExporterFileImpl.class);
 
-    public MetricsExporterFileImpl(MetricsEndpoint metricsEndpoint, String applicationName) {
-        super(metricsEndpoint,applicationName);
+    public MetricsExporterFileImpl(MetricsEndpoint metricsEndpoint, String applicationName,ThreadPoolTaskScheduler scheduler) {
+        super(metricsEndpoint,applicationName,scheduler);
         logger.info("************************  application name :   {}   **************",applicationName);
     }
 
@@ -24,8 +26,8 @@ public class MetricsExporterFileImpl extends MetricsExporter {
     public void export(){
         try {
             logger.debug("Exporting");
-            for (Map.Entry<String, Object> entry : filterRepitMetrics().entrySet()) {
-                logger.info("Metric Name : {} Metric Value : {}", entry.getKey(),  entry.getValue());
+            for (PresidioMetric metric :filterRepitMetrics()) {
+                logger.info("Metric Name : {} Metric Value : {}", metric.getName(),  metric.getValue());
             }
         }
         catch (Exception ex){
@@ -33,13 +35,4 @@ public class MetricsExporterFileImpl extends MetricsExporter {
         }
     }
 
-
-    @Override
-    public void close() throws Exception {
-        logger.info("********************************************");
-        logger.info("************* Last Time Metrics ************");
-        logger.info("********************************************");
-        export();
-
-    }
 }

@@ -2,42 +2,30 @@ package presidio.monitoring.export;
 
 
 import fortscale.utils.logging.Logger;
-import org.json.JSONObject;
 import org.springframework.boot.actuate.endpoint.MetricsEndpoint;
 import org.springframework.scheduling.annotation.Scheduled;
-
-
-import java.util.Map;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
+import presidio.monitoring.elastic.services.MetricExportService;
 
 
 public class MetricsExporterElasticImpl extends MetricsExporter {
 
     private final Logger logger=Logger.getLogger(MetricsExporterElasticImpl.class);
 
+    private MetricExportService metricExportService;
 
 
-    public MetricsExporterElasticImpl(MetricsEndpoint metricsEndpoint, String applicationName) {
-        super(metricsEndpoint,applicationName);
+    public MetricsExporterElasticImpl(MetricsEndpoint metricsEndpoint, String applicationName,MetricExportService metricExportService,ThreadPoolTaskScheduler scheduler) {
+        super(metricsEndpoint,applicationName,scheduler);
+        this.metricExportService=metricExportService;
     }
 
 
     @Scheduled(fixedRate = 5000)
     public void export() {
-        logger.info("{}",createMetricObject());
+        logger.info("Exporting metrics to elastic");
+        metricExportService.save(filterRepitMetrics());
+        logger.info("Ended Exporting metrics to elastic");
     }
 
-
-    private JSONObject createMetricObject(){
-        logger.debug("Creating JSONObject of metrics to export");
-        JSONObject metrics=new JSONObject();
-        for (Map.Entry<String, Object> entry : filterRepitMetrics().entrySet()) {
-            metrics.put(entry.getKey(),entry.getValue());
-        }
-        return metrics;
-    }
-
-    @Override
-    public void close() throws Exception {
-        export();
-    }
 }

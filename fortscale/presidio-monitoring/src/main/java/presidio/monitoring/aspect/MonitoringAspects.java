@@ -33,6 +33,7 @@ public class MonitoringAspects {
     private final String NUMBER_OF_FAILED_VALIDATION = ".NumberOfFailedValidation";
 
     private final String UNIT_TYPE_LONG ="long";
+    private final String UNIT_TYPE_DOUBLE ="double";
     public MetricsEndpoint metricsEndpoint;
     public PresidioCustomMetrics presidioCustomMetrics;
 
