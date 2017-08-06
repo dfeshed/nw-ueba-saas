@@ -7,7 +7,6 @@ import org.springframework.boot.actuate.metrics.Metric;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.core.annotation.AnnotationAwareOrderComparator;
 import org.springframework.util.Assert;
-import presidio.monitoring.aspect.MonitoringAspects;
 import presidio.monitoring.elastic.records.PresidioMetric;
 
 import java.util.ArrayList;
@@ -22,7 +21,10 @@ import java.util.Map;
 public class CustomMetricEndpoint extends MetricsEndpoint {
 
     private static final Logger logger = Logger.getLogger(CustomMetricEndpoint.class);
+
     private final List<PublicMetrics> publicMetrics;
+
+    private final String UNIT_TYPE_LONG ="long";
 
     /**
      * Create a new {@link CustomMetricEndpoint} instance.
@@ -66,7 +68,7 @@ public class CustomMetricEndpoint extends MetricsEndpoint {
                 }
                 else {
                     for (Metric<?> metric : publicMetric.metrics()) {
-                        result.put(metric.getName(), new PresidioMetric(metric.getName(),getLong(metric.getValue()),new HashSet(),"long"));
+                        result.put(metric.getName(), new PresidioMetric(metric.getName(),getLong(metric.getValue()),new HashSet(),UNIT_TYPE_LONG));
                     }
                 }
             }

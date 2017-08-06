@@ -21,7 +21,7 @@ public class PresidioCustomMetrics implements PublicMetrics{
         customInMethodMetrics= new LinkedHashSet<>();
     }
 
-    public static void addInMethodMetric(String metricName,double metricValue,Set tags,String unit){
+    public static void addInMethodMetric(String metricName,long metricValue,Set tags,String unit){
         if(customInMethodMetrics.contains(metricName)){
             java.util.Iterator<PresidioMetric> itr = customInMethodMetrics.iterator();
             while(itr.hasNext()){
@@ -39,7 +39,7 @@ public class PresidioCustomMetrics implements PublicMetrics{
     }
 
 
-    public void addMetric(String metricName,double metricValue,Set tags,String unit){
+    public void addMetric(String metricName,long metricValue,Set tags,String unit){
         if(applicationMetrics.contains(metricName)){
             java.util.Iterator<PresidioMetric> itr = applicationMetrics.iterator();
             while(itr.hasNext()){
@@ -53,21 +53,6 @@ public class PresidioCustomMetrics implements PublicMetrics{
         }
         else{
             applicationMetrics.add(new PresidioMetric(metricName, metricValue, tags,unit));
-        }
-    }
-
-    private <T extends Number> T sumOfValues(T value1 , T value2){
-        if(value1 instanceof Integer) {
-            Integer _result = (Integer) value1 + (Integer) value2;
-            return (T) _result;
-        }
-        else if(value1 instanceof Double) {
-            Double _result = (Double) value1 + (Double) value2;
-            return (T) _result;
-        }
-        else {
-            Long _result = (Long) value1 +(Long) value2;
-            return (T) _result;
         }
     }
 

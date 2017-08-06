@@ -14,7 +14,7 @@ public class MetricCollectingServiceImpl implements MetricCollectingService {
     public MetricCollectingServiceImpl(){}
 
     @Override
-    public void addMtric(String metricName, double metricValue, Set tags, String unit) {
+    public void addMetric(String metricName, long metricValue, Set tags, String unit) {
         logger.debug("Adding metric name {} , value {} , tags {} , unit {}",metricName,metricValue,tags,unit);
         PresidioCustomMetrics.addInMethodMetric(metricName,metricValue,tags,unit);
     }

@@ -27,8 +27,8 @@ public class PresidioMetric{
     @Field(type = FieldType.String, store = true)
     private String name;
 
-    @Field(type = FieldType.Double, store = true)
-    private double value;
+    @Field(type = FieldType.Long, store = true)
+    private long value;
 
     @Field(type = FieldType.Date, store = true)
     private Date timestamp;
@@ -39,7 +39,7 @@ public class PresidioMetric{
     @Field(type = FieldType.String, store = true)
     private String unit;
 
-    public PresidioMetric(String name, double value, Set<String>  tags, String unit) {
+    public PresidioMetric(String name, long value, Set<String>  tags, String unit) {
         this.id=System.nanoTime()+"";
         this.name = name;
         this.value = value;
@@ -59,7 +59,7 @@ public class PresidioMetric{
         this.name = name;
     }
 
-    public void setValue(double value) {
+    public void setValue(long value) {
         this.value = value;
     }
 
@@ -83,7 +83,7 @@ public class PresidioMetric{
         return id;
     }
 
-    public double getValue() {
+    public long getValue() {
         return value;
     }
 
@@ -115,17 +115,4 @@ public class PresidioMetric{
         return this.value == presidioMetric.getValue();
     }
 
-    private <T extends Number>boolean equaleValues(T value1 , T value2){
-        if(value1 instanceof Integer) {
-            Integer _result = (Integer) value1 - (Integer) value2;
-            return _result==0;
-        }
-        else if(value1 instanceof Double) {
-            Double _result = (Double) value1 - (Double) value2;
-            return _result==0;
-        }
-        else {
-            return  ((Long) value1 -(Long) value2)==0;
-        }
-    }
 }
