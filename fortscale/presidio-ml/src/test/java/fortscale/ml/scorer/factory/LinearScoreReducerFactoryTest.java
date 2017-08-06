@@ -1,26 +1,27 @@
 package fortscale.ml.scorer.factory;
 
 import fortscale.ml.model.ModelConfService;
+import fortscale.ml.scorer.ConstantRegexScorer;
 import fortscale.ml.scorer.LinearScoreReducer;
 import fortscale.ml.scorer.Scorer;
 import fortscale.ml.scorer.config.LinearScoreReducerConf;
 import fortscale.ml.scorer.config.LinearScoreReducerConfTest;
+import fortscale.utils.factory.AbstractServiceAutowiringFactory;
 import fortscale.utils.factory.Factory;
 import fortscale.utils.factory.FactoryService;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.IOException;
+import java.util.List;
 
-@RunWith(SpringRunner.class)
-@ContextConfiguration(classes = { ScorerFactoriesTestConfig.class})
-@Ignore
+@RunWith(SpringJUnit4ClassRunner.class)
 public class LinearScoreReducerFactoryTest {
 	@MockBean
 	private ModelConfService modelConfService;
@@ -56,5 +57,28 @@ public class LinearScoreReducerFactoryTest {
 						LinearScoreReducerConfTest.defaultReducedScorerConfJsonObject, 0.36)));
 		Assert.assertNotNull(scorer);
 		Assert.assertEquals(LinearScoreReducer.class, scorer.getClass());
+	}
+
+	@Configuration
+	public static class LinearScoreReducerFactoryTestConfig{
+		@Autowired
+		public List<AbstractServiceAutowiringFactory<Scorer>> scorersFactories;
+
+		@Bean
+		public LinearScoreReducerFactory getLinearScoreReducerFactory(){
+			return new LinearScoreReducerFactory();
+		}
+
+		@Bean
+		public ConstantRegexScorerFactory getConstantRegexScorer(){
+			return new ConstantRegexScorerFactory();
+		}
+
+		@Bean
+		public FactoryService<Scorer> scorerFactoryService() {
+			FactoryService<Scorer> scorerFactoryService = new FactoryService<>();
+			scorersFactories.forEach(x -> x.registerFactoryService(scorerFactoryService));
+			return scorerFactoryService;
+		}
 	}
 }
