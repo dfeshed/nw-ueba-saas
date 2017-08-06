@@ -20,8 +20,6 @@ public class AccumulateAggregationsApplication {
 
 
     public static void main(String[] args) {
-        logger.info("Start application: {} with params {}", AccumulateAggregationsConfigurationProduction.class, Arrays.toString(args));
-
         List<Class> sources = new ArrayList<Class>();
         // The supported CLI commands for the application
         sources.add(AccumulateServiceCommands.class);

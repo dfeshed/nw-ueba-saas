@@ -20,10 +20,14 @@ public abstract class AdeContextualAggregatedRecord extends AdeRecord {
 
     @Indexed
     private Instant endInstant;
-    @Field
+    @Indexed
     private String contextId;
     @Transient
     private String featureName;
+
+    public AdeContextualAggregatedRecord(){
+        super();
+    }
 
     public AdeContextualAggregatedRecord(Instant startInstant, Instant endInstant, String contextId, String featureName){
         super(startInstant);
@@ -41,6 +45,14 @@ public abstract class AdeContextualAggregatedRecord extends AdeRecord {
                 .sorted(Comparator.comparing(Map.Entry::getKey))
                 .map(entry -> StringUtils.join(entry.getKey(), CONTEXT_ID_SEPARATOR, entry.getValue()))
                 .collect(Collectors.joining(CONTEXT_ID_SEPARATOR));
+    }
+
+    /**
+     * Set feature name
+     * @param featureName
+     */
+    public void setFeatureName(String featureName) {
+        this.featureName = featureName;
     }
 
     /**

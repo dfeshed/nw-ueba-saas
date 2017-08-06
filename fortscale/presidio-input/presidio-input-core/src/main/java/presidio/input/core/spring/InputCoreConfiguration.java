@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Import;
 import presidio.input.core.services.data.AdeDataService;
 import presidio.input.core.services.impl.InputExecutionServiceImpl;
 import presidio.input.sdk.impl.spring.PresidioInputPersistencyServiceConfig;
+import presidio.output.sdk.api.OutputDataServiceSDK;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
 
 @Configuration
@@ -22,9 +23,12 @@ public class InputCoreConfiguration {
     @Autowired
     private AdeDataService adeDataService;
 
+    @Autowired
+    private OutputDataServiceSDK outputDataServiceSDK;
+
     @Bean
     public PresidioExecutionService inputExecutionService() {
-        return new InputExecutionServiceImpl(presidioInputPersistencyService, adeDataService);
+        return new InputExecutionServiceImpl(presidioInputPersistencyService, adeDataService, outputDataServiceSDK);
     }
 
 }

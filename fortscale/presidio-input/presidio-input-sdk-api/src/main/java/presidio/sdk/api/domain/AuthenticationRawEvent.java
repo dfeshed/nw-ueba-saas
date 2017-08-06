@@ -8,7 +8,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 import java.time.Instant;
 
 @Document
-public class AuthenticationRawEvent extends AbstractInputDocument {
+public class AuthenticationRawEvent extends AbstractPresidioDocument {
 
     public static final String AUTHENTICATION_TYPE_FIELD_NAME = "authenticationType";
     public static final String IS_DST_MACHINE_REMOTE_FIELD_NAME = "isDstMachineRemote";

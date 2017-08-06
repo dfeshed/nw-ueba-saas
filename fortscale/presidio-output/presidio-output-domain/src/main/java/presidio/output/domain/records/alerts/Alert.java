@@ -1,4 +1,4 @@
-package presidio.output.domain.records;
+package presidio.output.domain.records.alerts;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
@@ -7,8 +7,6 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-
-import static presidio.output.domain.records.AlertEnums.*;
 
 @Document(indexName = Alert.INDEX_NAME, type = Alert.ALERT_TYPE)
 public class Alert {
@@ -35,7 +33,7 @@ public class Alert {
     private String userName;
 
     @Field(type = FieldType.String, store = true)
-    private AlertType alertType;
+    private AlertEnums.AlertType alertType;
 
     @Field (type = FieldType.Long, store = true)
     private long startDate;
@@ -51,17 +49,17 @@ public class Alert {
 
     @Field(type = FieldType.String, store = true)
     @Enumerated(EnumType.STRING)
-    private AlertTimeframe timeframe;
+    private AlertEnums.AlertTimeframe timeframe;
 
     @Field (type = FieldType.String, store = true)
     @Enumerated(EnumType.STRING)
-    private AlertSeverity severity;
+    private AlertEnums.AlertSeverity severity;
 
     public Alert(){
         // empty const for JSON deserialization
     }
 
-    public Alert(String id, String userName, AlertType type, long startDate, long endDate, double score, int indicatorsNum, AlertTimeframe timeframe, AlertSeverity severity) {
+    public Alert(String id, String userName, AlertEnums.AlertType type, long startDate, long endDate, double score, int indicatorsNum, AlertEnums.AlertTimeframe timeframe, AlertEnums.AlertSeverity severity) {
         this.id = id;
         this.userName = userName;
         this.alertType = type;
@@ -90,11 +88,11 @@ public class Alert {
         this.userName = userName;
     }
 
-    public AlertType getAlertType() {
+    public AlertEnums.AlertType getAlertType() {
         return alertType;
     }
 
-    public void setAlertType(AlertType alertType) {
+    public void setAlertType(AlertEnums.AlertType alertType) {
         this.alertType = alertType;
     }
 
@@ -130,19 +128,19 @@ public class Alert {
         this.indicatorsNum = indicatorsNum;
     }
 
-    public AlertTimeframe getTimeframe() {
+    public AlertEnums.AlertTimeframe getTimeframe() {
         return timeframe;
     }
 
-    public void setTimeframe(AlertTimeframe timeframe) {
+    public void setTimeframe(AlertEnums.AlertTimeframe timeframe) {
         this.timeframe = timeframe;
     }
 
-    public AlertSeverity getSeverity() {
+    public AlertEnums.AlertSeverity getSeverity() {
         return severity;
     }
 
-    public void setSeverity(AlertSeverity severity) {
+    public void setSeverity(AlertEnums.AlertSeverity severity) {
         this.severity = severity;
     }
 }

@@ -3,7 +3,6 @@ package presidio.sdk.api.domain;
 import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import javax.validation.ConstraintViolation;

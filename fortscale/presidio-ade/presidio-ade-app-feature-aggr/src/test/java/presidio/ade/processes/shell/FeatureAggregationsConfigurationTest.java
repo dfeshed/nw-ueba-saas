@@ -31,8 +31,8 @@ public class FeatureAggregationsConfigurationTest extends FeatureAggregationsCon
         properties.put("fortscale.model.cache.futureDiffBetweenCachedModelAndEvent", "PT48H");
         properties.put("fortscale.model.cache.size", 100);
         properties.put("streaming.event.field.type.aggr_event","aggr_event");
-        properties.put("feature.aggregation.pageSize",1000);
-        properties.put("feature.aggregation.maxGroupSize",100);
+        properties.put("feature.aggregation.pageIterator.pageSize",1000);
+        properties.put("feature.aggregation.pageIterator.maxGroupSize",100);
 
         return new TestPropertiesPlaceholderConfigurer(properties);
     }

@@ -7,20 +7,17 @@ import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.record.aggregated.AdeContextualAggregatedRecord;
 
 import java.time.Instant;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * Created by maria_dorohin on 7/30/17.
  */
 public class AccumulatorService implements Accumulator {
 
-    private AccumulationsStore accumulationsInMemory;
+    private AccumulationsCache accumulationsInMemory;
     private FixedDurationStrategy fixedDurationStrategy;
 
-    public AccumulatorService(AccumulationsStore accumulationsInMemory, FixedDurationStrategy fixedDurationStrategy) {
+    public AccumulatorService(AccumulationsCache accumulationsInMemory, FixedDurationStrategy fixedDurationStrategy) {
         this.accumulationsInMemory = accumulationsInMemory;
         this.fixedDurationStrategy = fixedDurationStrategy;
     }

@@ -1,7 +1,7 @@
 package presidio.ade.processes.shell.config;
 
-import fortscale.accumulator.AccumulationsStore;
-import fortscale.accumulator.AccumulationsStoreConfig;
+import fortscale.accumulator.AccumulationsCache;
+import fortscale.accumulator.AccumulationsCacheConfig;
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.utils.monitoring.stats.config.NullStatsServiceConfig;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,7 @@ import presidio.ade.processes.shell.accumulate.AccumulateAggregationsBucketServi
         //        application-specific confs
         AccumulateAggregationsBucketServiceConfig.class,
         //        common application confs
-        AccumulationsStoreConfig.class,
+        AccumulationsCacheConfig.class,
         AccumulatedDataStoreConfig.class,
         EnrichedDataStoreConfig.class,
         NullStatsServiceConfig.class, // TODO: Remove this
@@ -42,14 +42,14 @@ public class AccumulateAggregationsConfiguration {
     @Autowired
     private AccumulatedDataStore accumulatedDataStore;
     @Autowired
-    private AccumulationsStore accumulationsStore;
-    @Value("${feature.aggregation.pageSize}")
+    private AccumulationsCache accumulationsCache;
+    @Value("${feature.aggregation.pageIterator.pageSize}")
     private int pageSize;
-    @Value("${feature.aggregation.maxGroupSize}")
+    @Value("${feature.aggregation.pageIterator.maxGroupSize}")
     private int maxGroupSize;
 
     @Bean
     public AccumulateAggregationsExecutionService featureAggregationBucketExecutionService() {
-        return new AccumulateAggregationsExecutionService(bucketConfigurationService, enrichedDataStore, accumulatedDataStore, accumulateAggregationsBucketService, accumulationsStore, pageSize, maxGroupSize);
+        return new AccumulateAggregationsExecutionService(bucketConfigurationService, enrichedDataStore, accumulatedDataStore, accumulateAggregationsBucketService, accumulationsCache, pageSize, maxGroupSize);
     }
 }

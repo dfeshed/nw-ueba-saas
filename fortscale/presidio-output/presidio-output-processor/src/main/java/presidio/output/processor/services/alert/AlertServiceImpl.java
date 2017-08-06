@@ -5,9 +5,9 @@ import fortscale.utils.logging.Logger;
 import fortscale.utils.pagination.PageIterator;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import presidio.output.domain.records.Alert;
-import presidio.output.domain.records.AlertEnums;
-import presidio.output.domain.services.AlertPersistencyService;
+import presidio.output.domain.records.alerts.Alert;
+import presidio.output.domain.records.alerts.AlertEnums;
+import presidio.output.domain.services.alerts.AlertPersistencyService;
 
 import java.util.ArrayList;
 import java.util.List;
