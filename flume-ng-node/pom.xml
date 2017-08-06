@@ -24,7 +24,7 @@
 
     <parent>
         <artifactId>presidio-flume</artifactId>
-        <groupId>org.apache.flume</groupId>
+        <groupId>presidio.flume.core</groupId>
         <version>1.7.0</version>
     </parent>
 
@@ -58,42 +58,37 @@
     <dependencies>
 
         <dependency>
-            <groupId>org.apache.flume</groupId>
+            <groupId>presidio.flume.core</groupId>
             <artifactId>flume-ng-sdk</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>org.apache.flume</groupId>
+            <groupId>presidio.flume.core</groupId>
             <artifactId>flume-ng-configuration</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>org.apache.flume</groupId>
+            <groupId>presidio.flume.core</groupId>
             <artifactId>flume-ng-core</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>org.apache.flume.flume-ng-sinks</groupId>
+            <groupId>presidio.flume.core.flume-ng-sinks</groupId>
             <artifactId>flume-hdfs-sink</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>org.apache.flume.flume-ng-sinks</groupId>
-            <artifactId>flume-irc-sink</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.flume.flume-ng-channels</groupId>
+            <groupId>presidio.flume.core.flume-ng-channels</groupId>
             <artifactId>flume-jdbc-channel</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>org.apache.flume.flume-ng-channels</groupId>
+            <groupId>presidio.flume.core.flume-ng-channels</groupId>
             <artifactId>flume-file-channel</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>org.apache.flume.flume-ng-channels</groupId>
+            <groupId>presidio.flume.core.flume-ng-channels</groupId>
             <artifactId>flume-spillable-memory-channel</artifactId>
         </dependency>
 

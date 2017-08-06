@@ -20,7 +20,7 @@ limitations under the License.
 
     <parent>
         <artifactId>presidio-flume</artifactId>
-        <groupId>org.apache.flume</groupId>
+        <groupId>presidio.flume.core</groupId>
         <version>1.7.0</version>
     </parent>
 
@@ -62,8 +62,8 @@ limitations under the License.
                                             do
                                             thrift --gen java:hashcode -o $JAVA_DIR $THRIFT_FILE
                                             done
-                                            SRC_DIR=$JAVA_DIR/gen-java/org/apache/flume/thrift/
-                                            DEST_DIR=src/main/java/org/apache/flume/thrift
+                                            SRC_DIR=$JAVA_DIR/gen-java/presidio.flume.core/thrift/
+                                            DEST_DIR=src/main/java/presidio.flume.core/thrift
                                             if [ ! -d $DEST_DIR ] ; then
                                             mkdir $DEST_DIR 2&gt; /dev/null
                                             STATUS=$?

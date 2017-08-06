@@ -4,9 +4,15 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.fortscale.flume</groupId>
+    <parent>
+        <groupId>presidio.flume.core</groupId>
+        <artifactId>presidio-flume</artifactId>
+        <version>1.7.0</version>
+    </parent>
+
+
     <artifactId>fortscale-flume</artifactId>
-    <version>1.0.0</version>
+    <name>Fortscale Flume</name>
     <packaging>pom</packaging>
 
     <properties>
@@ -33,11 +39,12 @@
         <module>fortscale-flume-sources</module>
         <module>fortscale-flume-sinks</module>
         <module>fortscale-flume-interceptors</module>
+        <module>fortscale-flume-rpm</module>
     </modules>
 
     <dependencies>
         <dependency>
-            <groupId>org.apache.flume</groupId>
+            <groupId>presidio.flume.core</groupId>
             <artifactId>flume-ng-core</artifactId>
             <version>1.7.0</version>
         </dependency>

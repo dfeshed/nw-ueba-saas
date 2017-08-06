@@ -21,11 +21,11 @@ limitations under the License.
 
     <parent>
         <artifactId>presidio-flume</artifactId>
-        <groupId>org.apache.flume</groupId>
+        <groupId>presidio.flume.core</groupId>
         <version>1.7.0</version>
     </parent>
 
-    <groupId>org.apache.flume</groupId>
+    <groupId>presidio.flume.core</groupId>
     <artifactId>flume-ng-core</artifactId>
     <name>Flume NG Core</name>
 
@@ -203,7 +203,7 @@ limitations under the License.
                                 <phase>generate-sources</phase>
                                 <configuration>
                                     <target>
-                                        <mkdir dir="${project.build.directory}/generated-sources/java/org/apache/flume"/>
+                                        <mkdir dir="${project.build.directory}/generated-sources/java/presidio.flume.core"/>
                                         <exec executable="powershell">
                                             <arg
                                                     line="-executionpolicy unrestricted -file ${basedir}\scripts\saveVersion.ps1  ${project.version} ${project.build.directory}"/>
@@ -247,24 +247,24 @@ limitations under the License.
     <dependencies>
 
         <dependency>
-            <groupId>org.apache.flume</groupId>
+            <groupId>presidio.flume.core</groupId>
             <artifactId>flume-ng-sdk</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>org.apache.flume</groupId>
+            <groupId>presidio.flume.core</groupId>
             <artifactId>flume-ng-sdk</artifactId>
             <classifier>tests</classifier>
             <scope>test</scope>
         </dependency>
 
         <dependency>
-            <groupId>org.apache.flume</groupId>
+            <groupId>presidio.flume.core</groupId>
             <artifactId>flume-ng-configuration</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>org.apache.flume</groupId>
+            <groupId>presidio.flume.core</groupId>
             <artifactId>flume-ng-auth</artifactId>
         </dependency>
 

@@ -19,7 +19,7 @@ limitations under the License.
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <artifactId>presidio-flume</artifactId>
-        <groupId>org.apache.flume</groupId>
+        <groupId>presidio.flume.core</groupId>
         <version>1.7.0</version>
         <relativePath>..</relativePath>
     </parent>

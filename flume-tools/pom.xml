@@ -24,11 +24,11 @@ limitations under the License.
 
     <parent>
         <artifactId>presidio-flume</artifactId>
-        <groupId>org.apache.flume</groupId>
+        <groupId>presidio.flume.core</groupId>
         <version>1.7.0</version>
     </parent>
 
-    <groupId>org.apache.flume</groupId>
+    <groupId>presidio.flume.core</groupId>
     <artifactId>flume-tools</artifactId>
 
     <name>Flume NG Tools</name>
@@ -45,7 +45,7 @@ limitations under the License.
         </dependency>
 
         <dependency>
-            <groupId>org.apache.flume.flume-ng-channels</groupId>
+            <groupId>presidio.flume.core.flume-ng-channels</groupId>
             <artifactId>flume-file-channel</artifactId>
         </dependency>
 

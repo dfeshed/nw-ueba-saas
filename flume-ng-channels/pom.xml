@@ -22,11 +22,10 @@ limitations under the License.
 
     <parent>
         <artifactId>presidio-flume</artifactId>
-        <groupId>org.apache.flume</groupId>
+        <groupId>presidio.flume.core</groupId>
         <version>1.7.0</version>
     </parent>
 
-    <groupId>org.apache.flume</groupId>
     <artifactId>flume-ng-channels</artifactId>
     <name>Flume NG Channels</name>
     <packaging>pom</packaging>

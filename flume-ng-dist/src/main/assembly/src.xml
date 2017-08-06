@@ -37,20 +37,20 @@
       <useAllReactorProjects>true</useAllReactorProjects>
 
       <includes>
-        <include>org.apache.flume:flume-ng-configuration</include>
-        <include>org.apache.flume:flume-ng-sdk</include>
-        <include>org.apache.flume:flume-ng-core</include>
-        <include>org.apache.flume:flume-ng-node</include>
-        <include>org.apache.flume:flume-ng-dist</include>
-        <include>org.apache.flume:flume-ng-channels</include>
-        <include>org.apache.flume:flume-ng-sinks</include>
-        <include>org.apache.flume:flume-ng-sources</include>
-        <include>org.apache.flume:flume-ng-legacy-sources</include>
-        <include>org.apache.flume:flume-ng-clients</include>
-        <include>org.apache.flume:flume-ng-embedded-agent</include>
-        <include>org.apache.flume:flume-tools</include>
-        <include>org.apache.flume:flume-ng-auth</include>
-        <include>org.apache.flume:flume-shared</include>
+        <include>presidio.flume.core:flume-ng-configuration</include>
+        <include>presidio.flume.core:flume-ng-sdk</include>
+        <include>presidio.flume.core:flume-ng-core</include>
+        <include>presidio.flume.core:flume-ng-node</include>
+        <include>presidio.flume.core:flume-ng-dist</include>
+        <include>presidio.flume.core:flume-ng-channels</include>
+        <include>presidio.flume.core:flume-ng-sinks</include>
+        <include>presidio.flume.core:flume-ng-sources</include>
+        <include>presidio.flume.core:flume-ng-legacy-sources</include>
+        <include>presidio.flume.core:flume-ng-clients</include>
+        <include>presidio.flume.core:flume-ng-embedded-agent</include>
+        <include>presidio.flume.core:flume-tools</include>
+        <include>presidio.flume.core:flume-ng-auth</include>
+        <include>presidio.flume.core:flume-shared</include>
       </includes>
 
       <sources>

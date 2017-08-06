@@ -20,7 +20,7 @@ limitations under the License.
 
     <parent>
         <artifactId>presidio-flume</artifactId>
-        <groupId>org.apache.flume</groupId>
+        <groupId>presidio.flume.core</groupId>
         <version>1.7.0</version>
     </parent>
 
@@ -75,7 +75,7 @@ limitations under the License.
         </dependency>
 
         <dependency>
-            <groupId>org.apache.flume</groupId>
+            <groupId>presidio.flume.core</groupId>
             <artifactId>flume-ng-sdk</artifactId>
         </dependency>
 

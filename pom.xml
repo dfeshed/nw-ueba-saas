@@ -17,15 +17,22 @@ limitations under the License.
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
-
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.apache.flume</groupId>
+    <groupId>presidio.flume.core</groupId>
     <artifactId>presidio-flume</artifactId>
     <version>1.7.0</version>
     <packaging>pom</packaging>
 
-    <name>Apache Flume</name>
+    <name>Presidio Flume</name>
+
+    <!--<modelVersion>4.0.0</modelVersion>-->
+    <!--<groupId>presidio.flume.core</groupId>-->
+    <!--<artifactId>presidio-flume</artifactId>-->
+    <!--<packaging>pom</packaging>-->
+    <!--<version>1.7.0</version>-->
+    <!--&lt;!&ndash;<packaging>pom</packaging>&ndash;&gt;-->
+    <!--<name>Presidio Flume</name>-->
+
 
     <properties>
         <!--RPM VERSION-->
@@ -76,8 +83,21 @@ limitations under the License.
         <module>flume-shared</module>
         <!--      fortscale        -->
         <module>fortscale-flume</module>
-        <module>flume-presidio</module>
     </modules>
+
+    <distributionManagement>
+        <!-- push changes to artifactory, distribute use of sdk -->
+        <snapshotRepository>
+            <id>mirror.fortscale.dom</id>
+            <name>mirror.fortscale.dom-snapshots</name>
+            <url>http://mirror.fortscale.dom/artifactory/presidio-snapshot-local</url>
+        </snapshotRepository>
+        <repository>
+            <id>mirror.fortscale.dom</id>
+            <name>mirror.fortscale.dom-snapshots</name>
+            <url>http://mirror.fortscale.dom/artifactory/presidio-snapshot-local</url>
+        </repository>
+    </distributionManagement>
 
     <profiles>
 
@@ -202,13 +222,6 @@ limitations under the License.
                         <version>3.4.5</version>
                         <scope>test</scope>
                     </dependency>
-
-                    <!-- only compatible with hadoop-2 -->
-                    <dependency>
-                        <groupId>org.apache.flume.flume-ng-sinks</groupId>
-                        <artifactId>flume-dataset-sink</artifactId>
-                        <version>1.7.0</version>
-                    </dependency>
                 </dependencies>
             </dependencyManagement>
         </profile>
@@ -324,12 +337,6 @@ limitations under the License.
                         <scope>test</scope>
                     </dependency>
 
-                    <!-- only compatible with hadoop-2 -->
-                    <dependency>
-                        <groupId>org.apache.flume.flume-ng-sinks</groupId>
-                        <artifactId>flume-dataset-sink</artifactId>
-                        <version>${project.version}</version>
-                    </dependency>
                 </dependencies>
             </dependencyManagement>
         </profile>
@@ -693,7 +700,7 @@ limitations under the License.
 
                         <dependencySourceIncludes>
                             <!-- include ONLY flume multi-module dependencies -->
-                            <dependencySourceInclude>org.apache.flume:*</dependencySourceInclude>
+                            <dependencySourceInclude>presidio.flume.core:*</dependencySourceInclude>
                         </dependencySourceIncludes>
                     </configuration>
                 </plugin>
@@ -1018,157 +1025,133 @@ limitations under the License.
             <!-- internal module dependencies -->
 
             <dependency>
-                <groupId>org.apache.flume</groupId>
+                <groupId>presidio.flume.core</groupId>
                 <artifactId>flume-ng-configuration</artifactId>
                 <version>1.7.0</version>
             </dependency>
             <dependency>
-                <groupId>org.apache.flume</groupId>
+                <groupId>presidio.flume.core</groupId>
                 <artifactId>flume-ng-core</artifactId>
                 <version>1.7.0</version>
             </dependency>
 
             <dependency>
-                <groupId>org.apache.flume</groupId>
+                <groupId>presidio.flume.core</groupId>
                 <artifactId>flume-tools</artifactId>
                 <version>1.7.0</version>
             </dependency>
 
             <dependency>
-                <groupId>org.apache.flume</groupId>
+                <groupId>presidio.flume.core</groupId>
                 <artifactId>flume-ng-node</artifactId>
                 <version>1.7.0</version>
             </dependency>
 
             <dependency>
-                <groupId>org.apache.flume.flume-ng-channels</groupId>
+                <groupId>presidio.flume.core.flume-ng-channels</groupId>
                 <artifactId>flume-file-channel</artifactId>
                 <version>1.7.0</version>
             </dependency>
 
             <dependency>
-                <groupId>org.apache.flume.flume-ng-channels</groupId>
+                <groupId>presidio.flume.core.flume-ng-channels</groupId>
                 <artifactId>flume-jdbc-channel</artifactId>
                 <version>1.7.0</version>
             </dependency>
 
             <dependency>
-                <groupId>org.apache.flume.flume-ng-channels</groupId>
+                <groupId>presidio.flume.core.flume-ng-channels</groupId>
                 <artifactId>flume-kafka-channel</artifactId>
                 <version>1.7.0</version>
             </dependency>
 
             <dependency>
-                <groupId>org.apache.flume.flume-ng-channels</groupId>
+                <groupId>presidio.flume.core.flume-ng-channels</groupId>
                 <artifactId>flume-spillable-memory-channel</artifactId>
                 <version>1.7.0</version>
             </dependency>
 
             <dependency>
-                <groupId>org.apache.flume.flume-ng-channels</groupId>
+                <groupId>presidio.flume.core.flume-ng-channels</groupId>
                 <artifactId>flume-recoverable-memory-channel</artifactId>
                 <version>1.7.0</version>
             </dependency>
 
             <dependency>
-                <groupId>org.apache.flume.flume-shared</groupId>
+                <groupId>presidio.flume.core.flume-shared</groupId>
                 <artifactId>flume-shared-kafka-test</artifactId>
                 <version>1.7.0</version>
                 <scope>test</scope>
             </dependency>
 
             <dependency>
-                <groupId>org.apache.flume.flume-ng-sinks</groupId>
+                <groupId>presidio.flume.core.flume-ng-sinks</groupId>
                 <artifactId>flume-hdfs-sink</artifactId>
                 <version>1.7.0</version>
             </dependency>
 
             <dependency>
-                <groupId>org.apache.flume.flume-ng-sinks</groupId>
+                <groupId>presidio.flume.core.flume-ng-sinks</groupId>
                 <artifactId>flume-hive-sink</artifactId>
                 <version>1.7.0</version>
             </dependency>
 
             <dependency>
-                <groupId>org.apache.flume.flume-ng-sinks</groupId>
+                <groupId>presidio.flume.core.flume-ng-sinks</groupId>
                 <artifactId>flume-irc-sink</artifactId>
                 <version>1.7.0</version>
             </dependency>
 
             <dependency>
-                <groupId>org.apache.flume.flume-ng-sinks</groupId>
+                <groupId>presidio.flume.core.flume-ng-sinks</groupId>
                 <artifactId>flume-ng-hbase-sink</artifactId>
                 <version>1.7.0</version>
             </dependency>
 
             <dependency>
-                <groupId>org.apache.flume.flume-ng-sinks</groupId>
+                <groupId>presidio.flume.core.flume-ng-sinks</groupId>
                 <artifactId>flume-ng-elasticsearch-sink</artifactId>
                 <version>1.7.0</version>
             </dependency>
 
             <dependency>
-                <groupId>org.apache.flume.flume-ng-sinks</groupId>
+                <groupId>presidio.flume.core.flume-ng-sinks</groupId>
                 <artifactId>flume-ng-morphline-solr-sink</artifactId>
                 <version>1.7.0</version>
             </dependency>
 
             <dependency>
-                <groupId>org.apache.flume.flume-ng-sinks</groupId>
+                <groupId>presidio.flume.core.flume-ng-sinks</groupId>
                 <artifactId>flume-ng-kafka-sink</artifactId>
                 <version>1.7.0</version>
             </dependency>
 
             <dependency>
-                <groupId>org.apache.flume.flume-ng-sources</groupId>
-                <artifactId>flume-scribe-source</artifactId>
-                <version>1.7.0</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.flume.flume-ng-sources</groupId>
+                <groupId>presidio.flume.core.flume-ng-sources</groupId>
                 <artifactId>flume-jms-source</artifactId>
                 <version>1.7.0</version>
             </dependency>
 
             <dependency>
-                <groupId>org.apache.flume.flume-ng-sources</groupId>
-                <artifactId>flume-twitter-source</artifactId>
-                <version>1.7.0</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.flume.flume-ng-legacy-sources</groupId>
-                <artifactId>flume-thrift-source</artifactId>
-                <version>1.7.0</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.flume.flume-ng-sources</groupId>
+                <groupId>presidio.flume.core.flume-ng-sources</groupId>
                 <artifactId>flume-kafka-source</artifactId>
                 <version>1.7.0</version>
             </dependency>
 
             <dependency>
-                <groupId>org.apache.flume.flume-ng-legacy-sources</groupId>
-                <artifactId>flume-avro-source</artifactId>
-                <version>1.7.0</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.flume</groupId>
+                <groupId>presidio.flume.core</groupId>
                 <artifactId>flume-ng-sdk</artifactId>
                 <version>1.7.0</version>
             </dependency>
 
             <dependency>
-                <groupId>org.apache.flume.flume-ng-sources</groupId>
+                <groupId>presidio.flume.core.flume-ng-sources</groupId>
                 <artifactId>flume-taildir-source</artifactId>
                 <version>1.7.0</version>
             </dependency>
 
             <dependency>
-                <groupId>org.apache.flume</groupId>
+                <groupId>presidio.flume.core</groupId>
                 <artifactId>flume-ng-sdk</artifactId>
                 <version>1.7.0</version>
                 <classifier>tests</classifier>
@@ -1176,26 +1159,26 @@ limitations under the License.
             </dependency>
 
             <dependency>
-                <groupId>org.apache.flume</groupId>
+                <groupId>presidio.flume.core</groupId>
                 <artifactId>flume-ng-auth</artifactId>
                 <version>1.7.0</version>
             </dependency>
 
             <dependency>
-                <groupId>org.apache.flume.flume-ng-clients</groupId>
+                <groupId>presidio.flume.core.flume-ng-clients</groupId>
                 <artifactId>flume-ng-log4jappender</artifactId>
                 <version>1.7.0</version>
             </dependency>
 
             <dependency>
-                <groupId>org.apache.flume.flume-ng-clients</groupId>
+                <groupId>presidio.flume.core.flume-ng-clients</groupId>
                 <artifactId>flume-ng-log4jappender</artifactId>
                 <version>1.7.0</version>
                 <classifier>jar-with-dependencies</classifier>
             </dependency>
 
             <dependency>
-                <groupId>org.apache.flume</groupId>
+                <groupId>presidio.flume.core</groupId>
                 <artifactId>flume-ng-embedded-agent</artifactId>
                 <version>1.7.0</version>
             </dependency>
