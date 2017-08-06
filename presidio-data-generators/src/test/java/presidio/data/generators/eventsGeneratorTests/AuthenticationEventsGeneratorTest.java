@@ -90,9 +90,9 @@ public class AuthenticationEventsGeneratorTest {
     @Test
     public void AuthenticationTypeTest () {
         // Operation types - see that all included, in the same order as enum
-        Assert.assertEquals(AUTHENTICATION_OPERATION_TYPE.NETWORK_OPERATION.value, events.get(0).getAuthenticationType());
-        Assert.assertEquals(AUTHENTICATION_OPERATION_TYPE.DOMAIN_OPERATION.value, events.get(1).getAuthenticationType());
-        Assert.assertEquals(AUTHENTICATION_OPERATION_TYPE.INTERACTIVE_OPERATION.value, events.get(2).getAuthenticationType());
+        Assert.assertEquals(AUTHENTICATION_OPERATION_TYPE.NETWORK_OPERATION.value, events.get(0).getOperationType());
+        Assert.assertEquals(AUTHENTICATION_OPERATION_TYPE.DOMAIN_OPERATION.value, events.get(1).getOperationType());
+        Assert.assertEquals(AUTHENTICATION_OPERATION_TYPE.INTERACTIVE_OPERATION.value, events.get(2).getOperationType());
     }
 
     @Test

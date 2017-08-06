@@ -6,34 +6,45 @@ import presidio.data.domain.event.Event;
 
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.List;
 
 public class AuthenticationEvent extends Event implements Serializable {
     private static final long serialVersionUID = 1L;
 
+    private String eventId;
     private Instant eventTime;
     private String dataSource;
-    private String authenticationType;
-    private String eventId;
-    private MachineEntity dstMachineEntity;
-    private MachineEntity srcMachineEntity;
     private User user;
+    private String operationType;
+    private List<String> operationTypeCategories;
+    private MachineEntity srcMachineEntity;
+    private MachineEntity dstMachineEntity;
     private String result;
     private String resultCode;
 
-    public AuthenticationEvent(Instant eventTime, String dataSource, String authenticationType, String eventId, MachineEntity dstMachineEntity, MachineEntity srcMachineEntity, User user, String result, String resultCode) {
+    public AuthenticationEvent(String eventId, Instant eventTime, String dataSource, User user, String operationType, List<String> operationTypeCategories, MachineEntity srcMachineEntity, MachineEntity dstMachineEntity, String result, String resultCode) {
+        this.eventId = eventId;
         this.eventTime = eventTime;
         this.dataSource = dataSource;
-        this.authenticationType = authenticationType;
-        this.eventId = eventId;
-        this.dstMachineEntity = dstMachineEntity;
-        this.srcMachineEntity = srcMachineEntity;
         this.user = user;
+        this.operationType = operationType;
+        this.operationTypeCategories = operationTypeCategories;
+        this.srcMachineEntity = srcMachineEntity;
+        this.dstMachineEntity = dstMachineEntity;
         this.result = result;
         this.resultCode = resultCode;
     }
 
     public static long getSerialVersionUID() {
         return serialVersionUID;
+    }
+
+    public String getEventId() {
+        return eventId;
+    }
+
+    public void setEventId(String eventId) {
+        this.eventId = eventId;
     }
 
     public Instant getEventTime() {
@@ -52,28 +63,28 @@ public class AuthenticationEvent extends Event implements Serializable {
         this.dataSource = dataSource;
     }
 
-    public String getAuthenticationType() {
-        return authenticationType;
+    public User getUser() {
+        return user;
     }
 
-    public void setAuthenticationType(String authenticationType) {
-        this.authenticationType = authenticationType;
+    public void setUser(User user) {
+        this.user = user;
     }
 
-    public String getEventId() {
-        return eventId;
+    public String getOperationType() {
+        return operationType;
     }
 
-    public void setEventId(String eventId) {
-        this.eventId = eventId;
+    public void setOperationType(String operationType) {
+        this.operationType = operationType;
     }
 
-    public MachineEntity getDstMachineEntity() {
-        return dstMachineEntity;
+    public List<String> getOperationTypeCategories() {
+        return operationTypeCategories;
     }
 
-    public void setDstMachineEntity(MachineEntity dstMachineEntity) {
-        this.dstMachineEntity = dstMachineEntity;
+    public void setOperationTypeCategories(List<String> operationTypeCategories) {
+        this.operationTypeCategories = operationTypeCategories;
     }
 
     public MachineEntity getSrcMachineEntity() {
@@ -84,12 +95,12 @@ public class AuthenticationEvent extends Event implements Serializable {
         this.srcMachineEntity = srcMachineEntity;
     }
 
-    public User getUser() {
-        return user;
+    public MachineEntity getDstMachineEntity() {
+        return dstMachineEntity;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setDstMachineEntity(MachineEntity dstMachineEntity) {
+        this.dstMachineEntity = dstMachineEntity;
     }
 
     public String getResult() {
@@ -111,13 +122,14 @@ public class AuthenticationEvent extends Event implements Serializable {
     @Override
     public String toString() {
         return "AuthenticationEvent{" +
-                "eventTime=" + eventTime +
+                "eventId='" + eventId + '\'' +
+                ", eventTime=" + eventTime +
                 ", dataSource='" + dataSource + '\'' +
-                ", authenticationType='" + authenticationType.toString() + '\'' +
-                ", eventId='" + eventId + '\'' +
-                ", dstMachineEntity=" + dstMachineEntity.toString() +
-                ", srcMachineEntity=" + srcMachineEntity.toString() +
                 ", user=" + user.toString() +
+                ", operationType='" + operationType + '\'' +
+                ", operationTypeCategories=" + operationTypeCategories +
+                ", srcMachineEntity=" + srcMachineEntity.toString() +
+                ", dstMachineEntity=" + dstMachineEntity.toString() +
                 ", result='" + result + '\'' +
                 ", resultCode='" + resultCode + '\'' +
                 '}';
