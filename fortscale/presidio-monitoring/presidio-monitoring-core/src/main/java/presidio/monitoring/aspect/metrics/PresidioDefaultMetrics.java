@@ -1,19 +1,22 @@
 package presidio.monitoring.aspect.metrics;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.endpoint.PublicMetrics;
 import org.springframework.boot.actuate.metrics.Metric;
-import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import java.lang.management.*;
-import java.util.*;
+import java.lang.management.GarbageCollectorMXBean;
+import java.lang.management.ManagementFactory;
+import java.lang.management.MemoryUsage;
+import java.lang.management.ThreadMXBean;
+import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.List;
 
 import static presidio.monitoring.DefaultPublicMetricsNames.*;
 
 @Component
-public class PresidioDefaultMetrics implements PublicMetrics{
+public class PresidioDefaultMetrics implements PublicMetrics {
 
 
     private Collection<Metric<?>> result;
@@ -35,8 +38,6 @@ public class PresidioDefaultMetrics implements PublicMetrics{
     private Metric<Long> newMemoryMetric(String name, long bytes) {
         return new Metric<>(name, bytes / 1024);
     }
-
-
 
 
     @Override
@@ -72,8 +73,7 @@ public class PresidioDefaultMetrics implements PublicMetrics{
                 result.add(new Metric<>("gc." + name + ".time", garbageCollectorMXBean.getCollectionTime()));
             }
             result.add(new Metric<>(PROCESSORS, runtime.availableProcessors()));
-        }
-        catch (NoClassDefFoundError ex) {
+        } catch (NoClassDefFoundError ex) {
             // Expected on Google App Engine
         }
     }
@@ -90,6 +90,7 @@ public class PresidioDefaultMetrics implements PublicMetrics{
     /**
      * Turn GC names like 'PS Scavenge' or 'PS MarkSweep' into something that is more
      * metrics friendly.
+     *
      * @param name the source name
      * @return a metric friendly name
      */
@@ -100,8 +101,7 @@ public class PresidioDefaultMetrics implements PublicMetrics{
     private long getTotalNonHeapMemoryIfPossible() {
         try {
             return ManagementFactory.getMemoryMXBean().getNonHeapMemoryUsage().getUsed();
-        }
-        catch (Throwable ex) {
+        } catch (Throwable ex) {
             return 0;
         }
     }

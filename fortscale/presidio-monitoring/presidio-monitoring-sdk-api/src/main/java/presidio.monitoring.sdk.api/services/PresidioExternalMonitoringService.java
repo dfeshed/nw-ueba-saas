@@ -9,5 +9,7 @@ public interface PresidioExternalMonitoringService {
 
     void reportNumberOfProcessedEventsMetric(long value, Set tags);
 
+    void reportCustomMetric(String metricName, long value, Set tags, String valueType);
+
 
 }
