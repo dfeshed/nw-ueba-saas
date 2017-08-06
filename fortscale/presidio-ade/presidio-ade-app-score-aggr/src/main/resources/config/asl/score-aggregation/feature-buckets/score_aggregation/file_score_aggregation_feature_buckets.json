@@ -1,0 +1,89 @@
+
+{
+  "BucketConfs": [
+    {
+      "name": "highestStartInstantScoreUserIdFileHourly",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "context.userId"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.file.startInstant.userId.file.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "highestStartInstantScore",
+          "featureNamesMap": {
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "operationTypeToHighestScoreMapUserIdFilePermissionChangeFileHourly",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "context.userId"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.file.operationType.userIdFilePermissionChange.file.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "operationTypeToHighestScoreMap",
+          "featureNamesMap": {
+            "groupBy": [
+              "context.operationType"
+            ],
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.operationType == 'LOCAL_SHARE_PERMISSIONS_CHANGED' || @.operationType == 'FOLDER_ACCESS_RIGHTS_CHANGED' || @.operationType == 'FILE_ACCESS_RIGHTS_CHANGED' || @.operationType == 'FILE_CLASSIFICATION_CHANGED' || @.operationType == 'FOLDER_CLASSIFICATION_CHANGED' || @.operationType == 'FILE_CENTRAL_ACCESS_POLICY_CHANGED')]"
+          }
+        }
+      ]
+    },
+    {
+      "name": "operationTypeToHighestScoreMapUserIdFileActionFileHourly",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "context.userId"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.file.operationType.userIdFileAction.file.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "operationTypeToHighestScoreMap",
+          "featureNamesMap": {
+            "groupBy": [
+              "context.operationType"
+            ],
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.operationType == 'FOLDER_OPENED' || @.operationType == 'FILE_DELETED' || @.operationType == 'FILE_OPENED' || @.operationType == 'FILE_RENAMED' || @.operationType == 'FILE_MOVED')]"
+          }
+        }
+      ]
+    }
+  ]
+}

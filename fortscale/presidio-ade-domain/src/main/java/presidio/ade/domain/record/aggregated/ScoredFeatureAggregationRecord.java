@@ -13,7 +13,7 @@ import java.util.Map;
 /**
  * Created by mariad on 7/11/2017.
  */
-public class ScoredFeatureAggregationRecord extends AdeAggregationRecord implements AdeScoredRecord{
+public class ScoredFeatureAggregationRecord extends AdeAggregationRecord implements AdeScoredRecord {
 
     public static final String SCORE_FIELD_NAME = "score";
 
@@ -21,7 +21,11 @@ public class ScoredFeatureAggregationRecord extends AdeAggregationRecord impleme
     private Double score;
     private List<FeatureScore> featureScoreList;
 
-    public ScoredFeatureAggregationRecord(Double score, List<FeatureScore> featureScoreList, Instant startInstant, Instant endInstant, String aggregatedFeatureName, Double aggregatedFeatureValue, String bucketConfName, Map<String, String> context, AggregatedFeatureType aggregatedFeatureType){
+    public ScoredFeatureAggregationRecord() {
+        super();
+    }
+
+    public ScoredFeatureAggregationRecord(Double score, List<FeatureScore> featureScoreList, Instant startInstant, Instant endInstant, String aggregatedFeatureName, Double aggregatedFeatureValue, String bucketConfName, Map<String, String> context, AggregatedFeatureType aggregatedFeatureType) {
         super(startInstant, endInstant, aggregatedFeatureName, aggregatedFeatureValue, bucketConfName, context, aggregatedFeatureType);
         this.score = score;
         this.featureScoreList = featureScoreList;

@@ -1,9 +1,9 @@
 package presidio.ade.sdk.enriched_records;
 
+import presidio.ade.domain.store.enriched.EnrichedRecordsMetadata;
 import fortscale.utils.time.TimeRange;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.ade.domain.record.enriched.AdeScoredEnrichedRecord;
-import presidio.ade.domain.store.enriched.EnrichedRecordsMetadata;
 import presidio.ade.sdk.common.RunId;
 import presidio.ade.sdk.historical_runs.HistoricalRunsManagerSdk;
 import presidio.ade.sdk.online_run.OnlineRunManagerSdk;

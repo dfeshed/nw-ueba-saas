@@ -67,12 +67,15 @@ public class EnrichedDataStoreImplMongo implements EnrichedDataStore {
 
 
     @Override
-    public <U extends EnrichedRecord> List<U> readSortedRecords(EnrichedRecordsMetadata recordsMetadata, Set<String> contextIds, String contextType, int numOfItemsToSkip, int numOfItemsToRead, String fieldNameToSortBy) {
+    public <U extends EnrichedRecord> List<U> readSortedRecords(EnrichedRecordsMetadata recordsMetadata, Set<String> contextIds, String contextType, int numOfItemsToSkip, int numOfItemsToRead, String sortBy) {
         String adeEventType = recordsMetadata.getAdeEventType();
         Class<? extends AdeRecord> pojoClass = adeEventTypeToAdeEnrichedRecordClassResolver.getClass(adeEventType);
 
         Query query = buildQuery(recordsMetadata, contextIds, contextType, numOfItemsToSkip, numOfItemsToRead, pojoClass);
-        query.with(new Sort(Sort.Direction.ASC, fieldNameToSortBy));
+
+        //Get field name
+        String sortByFieldName = getFieldName(pojoClass, sortBy);
+        query.with(new Sort(Sort.Direction.ASC, sortByFieldName));
 
         String collectionName = translator.toCollectionName(recordsMetadata);
 

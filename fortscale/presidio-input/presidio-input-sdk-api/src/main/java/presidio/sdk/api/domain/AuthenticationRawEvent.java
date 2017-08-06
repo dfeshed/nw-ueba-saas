@@ -1,114 +1,114 @@
 package presidio.sdk.api.domain;
 
-import fortscale.common.general.EventResult;
-import org.hibernate.validator.constraints.NotEmpty;
+import fortscale.domain.core.EventResult;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
+import presidio.sdk.api.validation.FieldsMustHaveDifferentValues;
 
 import java.time.Instant;
+import java.util.List;
+import java.util.Map;
 
 @Document
-public class AuthenticationRawEvent extends AbstractInputDocument {
+@FieldsMustHaveDifferentValues(fieldNames = {"srcMachineId", "dstMachineId"}, canBothBeEmpty = "false")
+public class AuthenticationRawEvent extends AbstractPresidioDocument {
 
-    public static final String AUTHENTICATION_TYPE_FIELD_NAME = "authenticationType";
-    public static final String IS_DST_MACHINE_REMOTE_FIELD_NAME = "isDstMachineRemote";
-    public static final String NORMALIZED_DST_MACHINE_FIELD_NAME = "normalizedDstMachine";
-    public static final String NORMALIZED_SRC_MACHINE_FIELD_NAME = "normalizedSrcMachine";
-    public static final String RESULT_CODE_FIELD_NAME = "resultCode";
-    @Field(AUTHENTICATION_TYPE_FIELD_NAME)
-    private String authenticationType;
-    @Field(IS_DST_MACHINE_REMOTE_FIELD_NAME)
-    private boolean isDstMachineRemote;
-    @Field(NORMALIZED_DST_MACHINE_FIELD_NAME)
-    @NotEmpty
-    private String normalizedDstMachine;
-    @Field(NORMALIZED_SRC_MACHINE_FIELD_NAME)
-    @NotEmpty
-    private String normalizedSrcMachine;
-    @Field(RESULT_CODE_FIELD_NAME)
-    private String resultCode;
+    public static final String SRC_MACHINE_ID_FIELD_NAME = "srcMachineId";
+    public static final String DST_MACHINE_ID_FIELD_NAME = "dstMachineId";
+    private static final String SRC_MACHINE_NAME_FIELD_NAME = "srcMachineName";
+    private static final String DST_MACHINE_NAME_FIELD_NAME = "dstMachineName";
+    private static final String DST_MACHINE_DOMAIN_FIELD_NAME = "dstMachineDomain";
+
+    @Field(SRC_MACHINE_ID_FIELD_NAME)
+    private String srcMachineId;
+
+    @Field(SRC_MACHINE_NAME_FIELD_NAME)
+    private String srcMachineName;
+
+    @Field(DST_MACHINE_ID_FIELD_NAME)
+    private String dstMachineId;
+
+    @Field(DST_MACHINE_NAME_FIELD_NAME)
+    private String dstMachineName;
+
+    @Field(DST_MACHINE_DOMAIN_FIELD_NAME)
+    private String dstMachineDomain;
 
     public AuthenticationRawEvent() {
 
     }
 
-    public AuthenticationRawEvent(Instant dateTime, String dataSource, String normalizedUsername, String eventId,
-                                  EventResult result, String authenticationType, boolean isDstMachineRemote,
-                                  String normalizedDstMachine, String normalizedSrcMachine, String resultCode) {
-        super(dateTime, dataSource, normalizedUsername, eventId, result);
-        this.authenticationType = authenticationType;
-        this.isDstMachineRemote = isDstMachineRemote;
-        this.normalizedDstMachine = normalizedDstMachine;
-        this.normalizedSrcMachine = normalizedSrcMachine;
-        this.resultCode = resultCode;
+    public AuthenticationRawEvent(Instant dateTime, String eventId, String dataSource, String userId, String operationType,
+                                  List<String> operationTypeCategory, EventResult result, String userName,
+                                  String userDisplayName, Map<String, String> additionalInfo, String srcMachineId,
+                                  String srcMachineName, String dstMachineId, String dstMachineName, String dstMachineDomain) {
+        super(dateTime, eventId, dataSource, userId, operationType, operationTypeCategory, result, userName, userDisplayName, additionalInfo);
+        this.srcMachineId = srcMachineId;
+        this.srcMachineName = srcMachineName;
+        this.dstMachineId = dstMachineId;
+        this.dstMachineName = dstMachineName;
+        this.dstMachineDomain = dstMachineDomain;
     }
 
-    public AuthenticationRawEvent(String record[]) {
-        dateTime = Instant.parse(record[0]);
-        this.eventId = record[1];
-        this.dataSource = record[2];
-        this.authenticationType = record[3];
-        this.isDstMachineRemote = Boolean.getBoolean(record[4]);
-        this.normalizedDstMachine = record[5];
-        this.normalizedSrcMachine = record[6];
-        this.normalizedUsername = record[7];
-        this.result = EventResult.valueOf(record[8]);
-        this.resultCode = record[9];
+    public String getDstMachineId() {
+        return dstMachineId;
     }
 
-    public boolean getIsDstMachineRemote() {
-        return isDstMachineRemote;
+    public void setDstMachineId(String dstMachineId) {
+        this.dstMachineId = dstMachineId;
     }
 
-    public void setIsDstMachineRemote(boolean dstMachineRemote) {
-        isDstMachineRemote = dstMachineRemote;
+    public String getSrcMachineId() {
+        return srcMachineId;
     }
 
-    public String getNormalizedDstMachine() {
-        return normalizedDstMachine;
+    public void setSrcMachineId(String srcMachineId) {
+        this.srcMachineId = srcMachineId;
     }
 
-    public void setNormalizedDstMachine(String normalizedDstMachine) {
-        this.normalizedDstMachine = normalizedDstMachine;
+    public String getSrcMachineName() {
+        return srcMachineName;
     }
 
-    public String getNormalizedSrcMachine() {
-        return normalizedSrcMachine;
+    public void setSrcMachineName(String srcMachineName) {
+        this.srcMachineName = srcMachineName;
     }
 
-    public void setNormalizedSrcMachine(String normalizedSrcMachine) {
-        this.normalizedSrcMachine = normalizedSrcMachine;
+    public String getDstMachineName() {
+        return dstMachineName;
     }
 
-    public String getAuthenticationType() {
-        return authenticationType;
+    public void setDstMachineName(String dstMachineName) {
+        this.dstMachineName = dstMachineName;
     }
 
-    public void setAuthenticationType(String authenticationType) {
-        this.authenticationType = authenticationType;
+    public String getDstMachineDomain() {
+        return dstMachineDomain;
     }
 
-    public String getResultCode() {
-        return resultCode;
+    public void setDstMachineDomain(String dstMachineDomain) {
+        this.dstMachineDomain = dstMachineDomain;
     }
 
-    public void setResultCode(String resultCode) {
-        this.resultCode = resultCode;
-    }
 
     @Override
     public String toString() {
         return "AuthenticationRawEvent{" +
-                "dataSource='" + dataSource + '\'' +
-                ", normalizedUsername='" + normalizedUsername + '\'' +
-                ", authenticationType='" + authenticationType + '\'' +
+                "srcMachineId='" + srcMachineId + '\'' +
+                ", srcMachineName='" + srcMachineName + '\'' +
+                ", dstMachineId='" + dstMachineId + '\'' +
+                ", dstMachineName='" + dstMachineName + '\'' +
+                ", dstMachineDomain='" + dstMachineDomain + '\'' +
                 ", eventId='" + eventId + '\'' +
-                ", isDstMachineRemote=" + isDstMachineRemote +
+                ", dataSource='" + dataSource + '\'' +
+                ", userId='" + userId + '\'' +
+                ", operationType='" + operationType + '\'' +
+                ", operationTypeCategory=" + operationTypeCategory +
                 ", result=" + result +
-                ", normalizedDstMachine='" + normalizedDstMachine + '\'' +
-                ", normalizedSrcMachine='" + normalizedSrcMachine + '\'' +
+                ", userName='" + userName + '\'' +
+                ", userDisplayName='" + userDisplayName + '\'' +
+                ", additionalInfo=" + additionalInfo +
                 ", dateTime=" + dateTime +
-                ", resultCode='" + resultCode + '\'' +
                 '}';
     }
 }

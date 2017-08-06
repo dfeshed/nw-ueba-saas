@@ -3,8 +3,8 @@ package presidio.output.domain.spring;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
-import presidio.output.domain.services.AlertPersistencyService;
-import presidio.output.domain.services.AlertPersistencyServiceImpl;
+import presidio.output.domain.services.alerts.AlertPersistencyService;
+import presidio.output.domain.services.alerts.AlertPersistencyServiceImpl;
 import org.springframework.context.annotation.Import;
 
 @Configuration

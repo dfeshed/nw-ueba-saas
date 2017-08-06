@@ -16,14 +16,16 @@ public class AccumulatedAggregationFeatureRecord extends AdeContextualAggregated
     @Field
     private List<Double> aggregatedFeatureValues;
 
+    public AccumulatedAggregationFeatureRecord() {
+        super();
+    }
 
-    public AccumulatedAggregationFeatureRecord(Instant startInstant, Instant endTime, String contextId, String featureName) {
-        super(startInstant, endTime, contextId, featureName);
+    public AccumulatedAggregationFeatureRecord(Instant startInstant, Instant endInstant, String contextId, String featureName) {
+        super(startInstant, endInstant, contextId, featureName);
         this.aggregatedFeatureValues = new ArrayList<>();
     }
 
     /**
-     *
      * @return list of aggregated feature values
      */
     public List<Double> getAggregatedFeatureValues() {
@@ -32,6 +34,7 @@ public class AccumulatedAggregationFeatureRecord extends AdeContextualAggregated
 
     /**
      * Set aggregated feature values
+     *
      * @param aggregatedFeatureValues
      */
     public void setAggregatedFeatureValues(List<Double> aggregatedFeatureValues) {
