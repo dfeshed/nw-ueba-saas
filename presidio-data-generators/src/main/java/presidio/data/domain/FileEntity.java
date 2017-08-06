@@ -58,7 +58,7 @@ public class FileEntity {
     }
 
     public String getAbsoluteFilePath() {
-        return isDirectory ? "" : (filePath + File.separator + fileName);
+        return (isDirectory == null || isDirectory) ? fileName : (filePath + File.separator + fileName);
     }
 
     @Override

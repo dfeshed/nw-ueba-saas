@@ -15,7 +15,7 @@ public class RemoteMachinePercentageGenerator implements IMachineGenerator {
     public RemoteMachinePercentageGenerator() throws GeneratorException {
         hostGenerator = new HostnameCustomListGenerator(new String[] {"host_1", "host_2", "host_3"});
         simpleIPGenerator = new FixedIPsGenerator();
-        remoteMachineGenerator = new BooleanPercentageGenerator();
+        remoteMachineGenerator = new BooleanPercentageGenerator(2);
     }
 
     public RemoteMachinePercentageGenerator(HostnameCustomListGenerator hg, FixedIPsGenerator sipg, BooleanPercentageGenerator rmg)  {

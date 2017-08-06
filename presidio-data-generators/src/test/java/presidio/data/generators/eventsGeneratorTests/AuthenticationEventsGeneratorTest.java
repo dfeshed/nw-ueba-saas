@@ -6,7 +6,10 @@ import org.junit.Test;
 import presidio.data.domain.event.authentication.AUTHENTICATION_OPERATION_TYPE;
 import presidio.data.generators.common.GeneratorException;
 import presidio.data.domain.event.authentication.AuthenticationEvent;
+import presidio.data.generators.common.precentage.BooleanPercentageGenerator;
 import presidio.data.generators.event.authentication.AuthenticationEventsGenerator;
+import presidio.data.generators.machine.IMachineGenerator;
+import presidio.data.generators.machine.RemoteMachinePercentageGenerator;
 
 import java.util.List;
 
@@ -30,6 +33,12 @@ public class AuthenticationEventsGeneratorTest {
     @Before
     public void prepare() throws GeneratorException {
         AuthenticationEventsGenerator generator = new AuthenticationEventsGenerator();
+
+        RemoteMachinePercentageGenerator dstMachineGen = new RemoteMachinePercentageGenerator();
+        BooleanPercentageGenerator remoteGen = new BooleanPercentageGenerator(3);
+        dstMachineGen.setRemoteMachineGenerator(remoteGen);
+
+        generator.setDstMachineGenerator(dstMachineGen);
         events = generator.generate();
     }
 
@@ -60,12 +69,12 @@ public class AuthenticationEventsGeneratorTest {
 
     @Test
     public void IsDstMachineRemotePctTest () {
-        // remote dest machines - 2% of 1392 = 28
+        // remote dest machines - 3% of 1392 = 42
         int remotes = 0;
         for (AuthenticationEvent ev : events) {
             if (ev.getDstMachineEntity().isRemote()) remotes++;
         }
-        Assert.assertEquals(28, remotes);
+        Assert.assertEquals(42, remotes);
     }
 
     @Test

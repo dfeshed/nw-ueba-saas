@@ -12,6 +12,7 @@ import presidio.data.domain.User;
 import presidio.data.domain.event.authentication.AuthenticationEvent;
 import presidio.data.generators.event.EntityEventIDFixedPrefixGenerator;
 import presidio.data.generators.event.IEventGenerator;
+import presidio.data.generators.machine.IMachineGenerator;
 import presidio.data.generators.machine.RemoteMachinePercentageGenerator;
 import presidio.data.generators.machine.SimpleMachineGenerator;
 import presidio.data.generators.user.IUserGenerator;
@@ -29,8 +30,8 @@ public class AuthenticationEventsGenerator implements IEventGenerator {
 
     private IStringGenerator eventIDGenerator;
     private IUserGenerator userGenerator;
-    private SimpleMachineGenerator srcMachineGenerator;
-    private RemoteMachinePercentageGenerator dstMachineGenerator;
+    private IMachineGenerator srcMachineGenerator;
+    private IMachineGenerator dstMachineGenerator;
 
     // TODO: implement.
     // Generates Result object, fields: result (Success/Failure strings) and resultCode (TBD)
@@ -49,9 +50,6 @@ public class AuthenticationEventsGenerator implements IEventGenerator {
         srcMachineGenerator = new SimpleMachineGenerator(user.getUsername());
 
         dstMachineGenerator = new RemoteMachinePercentageGenerator();
-        BooleanPercentageGenerator remotesGenerator = new BooleanPercentageGenerator(2);
-        dstMachineGenerator.setRemoteMachineGenerator(remotesGenerator);
-
         resultGenerator = new OperationResultPercentageGenerator();                 // 100% "Success"
         resultCodeGenerator = new RandomStringGenerator();                          // TBD
     }
@@ -122,19 +120,19 @@ public class AuthenticationEventsGenerator implements IEventGenerator {
         this.userGenerator = userGenerator;
     }
 
-    public SimpleMachineGenerator getSrcMachineGenerator() {
+    public IMachineGenerator getSrcMachineGenerator() {
         return srcMachineGenerator;
     }
 
-    public void setSrcMachineGenerator(SimpleMachineGenerator srcMachineGenerator) {
+    public void setSrcMachineGenerator(IMachineGenerator srcMachineGenerator) {
         this.srcMachineGenerator = srcMachineGenerator;
     }
 
-    public RemoteMachinePercentageGenerator getDstMachineGenerator() {
+    public IMachineGenerator getDstMachineGenerator() {
         return dstMachineGenerator;
     }
 
-    public void setDstMachineGenerator(RemoteMachinePercentageGenerator dstMachineGenerator) {
+    public void setDstMachineGenerator(IMachineGenerator dstMachineGenerator) {
         this.dstMachineGenerator = dstMachineGenerator;
     }
 
