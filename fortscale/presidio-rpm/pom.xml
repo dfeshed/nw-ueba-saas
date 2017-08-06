@@ -44,7 +44,7 @@
                         <goal>exec</goal>
                     </goals>
                     <configuration>
-                        <executable>${rpm-maven-plugin.workflows-build-script-path}</executable>
+                        <executable>sh ${rpm-maven-plugin.workflows-build-script-path}</executable>
                     </configuration>
                 </execution>
             </executions>
