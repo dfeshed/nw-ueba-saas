@@ -2,7 +2,7 @@ package org.flume.sink.mongo.persistency;
 
 import com.mongodb.BulkWriteResult;
 import com.mongodb.DBObject;
-import fortscale.domain.core.AbstractAuditableDocument;
+import fortscale.domain.core.AbstractDocument;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.mongodb.BulkOperationException;
@@ -12,7 +12,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import java.util.List;
 
 
-public class SinkMongoRepositoryImpl<T extends AbstractAuditableDocument> implements SinkMongoRepository<T> {
+public class SinkMongoRepositoryImpl<T extends AbstractDocument> implements SinkMongoRepository<T> {
 
     private static final Logger logger = LoggerFactory.getLogger(SinkMongoRepositoryImpl.class);
 

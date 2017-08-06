@@ -14,6 +14,6 @@ public class CommonStrings {
     public static final String END_DATE = "endDate";
     public static final String START_DATE = "startDate";
     public static final String DATE_FORMAT = "dateFormat";
-    public static final String AUTO_WRAP = "autoWrap";
-    public static final String WRAP_KEY = "wrapKey";
+    public static final String DATE_TIME_FIELD = "dateTimeField";
+    public static String DEFAULT_DATE_TIME_FIELD_NAME = "dateTime";
 }
