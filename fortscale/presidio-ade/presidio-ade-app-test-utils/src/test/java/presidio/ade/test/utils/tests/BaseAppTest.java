@@ -22,9 +22,17 @@ public abstract class BaseAppTest {
     @Autowired
     protected BootShim bootShim;
 
+    /**
+     * test spring context loading and "empty" shell-execution
+     */
     @Test
     public void contextTest() {
-        CommandResult commandResult = bootShim.getShell().executeCommand(getContextTestExecutionCommand());
+        executeAndAssertCommandSuccess(getContextTestExecutionCommand());
+    }
+
+    protected void executeAndAssertCommandSuccess(String command)
+    {
+        CommandResult commandResult = bootShim.getShell().executeCommand(command);
         Assert.assertTrue(commandResult.isSuccess());
     }
 
@@ -36,4 +44,6 @@ public abstract class BaseAppTest {
     {
 
     }
+
+
 }

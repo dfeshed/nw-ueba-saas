@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.shell.core.CommandResult;
 import org.springframework.test.context.ContextConfiguration;
 import presidio.ade.domain.record.accumulator.AccumulatedAggregationFeatureRecord;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
@@ -34,7 +33,7 @@ public class AccumulateAggregationsApplicationTest extends EnricheSourceBaseAppT
     @Autowired
     private MongoTemplate mongoTemplate;
 
-    @Import({AccumulateAggregationsConfigurationTest.class,EnricheSourceBaseAppTest.EnricheSourceSpringConfig.class })
+    @Import({AccumulateAggregationsConfigurationTest.class,EnrichedSourceSpringConfig.class })
     @Configuration
     protected static class AccumulateAggregationsTestConfig {
 
@@ -42,6 +41,11 @@ public class AccumulateAggregationsApplicationTest extends EnricheSourceBaseAppT
 
     @Override
     protected String getContextTestExecutionCommand() {
+        return EXECUTION_COMMAND;
+    }
+
+    @Override
+    protected String getSanityTestExecutionCommand() {
         return EXECUTION_COMMAND;
     }
 
@@ -56,8 +60,6 @@ public class AccumulateAggregationsApplicationTest extends EnricheSourceBaseAppT
      */
     @Override
     protected void assertSanityTest() {
-        CommandResult commandResult = bootShim.getShell().executeCommand(EXECUTION_COMMAND);
-        Assert.assertTrue(commandResult.isSuccess());
 
         String openFileCollectionName = "accm_number_of_opened_files_normalized_username_hourly_dlpfile";
 
