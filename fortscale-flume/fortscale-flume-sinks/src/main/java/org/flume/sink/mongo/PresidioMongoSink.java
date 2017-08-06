@@ -2,7 +2,7 @@ package org.flume.sink.mongo;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import fortscale.domain.core.AbstractAuditableDocument;
+import fortscale.domain.core.AbstractDocument;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.flume.Context;
 import org.apache.flume.Event;
@@ -32,7 +32,7 @@ import static org.flume.CommonStrings.PASSWORD;
 import static org.flume.CommonStrings.PORT;
 import static org.flume.CommonStrings.USERNAME;
 
-public class PresidioMongoSink<T extends AbstractAuditableDocument> extends AbstractPresidioSink<T> implements Configurable, Sink {
+public class PresidioMongoSink<T extends AbstractDocument> extends AbstractPresidioSink<T> implements Configurable, Sink {
 
 
     private static Logger logger = LoggerFactory.getLogger(PresidioMongoSink.class);
@@ -56,8 +56,6 @@ public class PresidioMongoSink<T extends AbstractAuditableDocument> extends Abst
     private String collectionName;
     private String username;
     private int batchSize;
-    //    private boolean hasAutoWrap;
-//    private String autoWrapKey;
     private Class<T> recordType;
 
     @Override
@@ -82,14 +80,6 @@ public class PresidioMongoSink<T extends AbstractAuditableDocument> extends Abst
                 }
             }
 
-//            hasAutoWrap = Boolean.parseBoolean(context.getString(AUTO_WRAP));
-//            if (hasAutoWrap) {
-//                if (!context.containsKey(WRAP_KEY)) {
-//                    throw new Exception(String.format("Missing %s for auto wrap for %s (since %s = true).",
-//                            WRAP_KEY, getName(), AUTO_WRAP));
-//                }
-//            }
-
             /* configure mongo */
             recordType = (Class<T>) Class.forName(context.getString(RECORD_TYPE));
             batchSize = Integer.parseInt(context.getString(BATCH_SIZE, "1"));
@@ -98,7 +88,6 @@ public class PresidioMongoSink<T extends AbstractAuditableDocument> extends Abst
             host = context.getString(HOST);
             port = Integer.parseInt(context.getString(PORT, "27017"));
             username = context.getString(USERNAME, "");
-//            autoWrapKey = context.getString(WRAP_KEY, "key");
             final String password = context.getString(PASSWORD, "");
             sinkMongoRepository = createRepository(dbName, host, port, username, password);
         } catch (Exception e) {
@@ -121,14 +110,9 @@ public class PresidioMongoSink<T extends AbstractAuditableDocument> extends Abst
             sinkCounter.incrementEventDrainAttemptCount();
 
             T parsedEvent;
-//            if (hasAutoWrap) {
             final Class<T> recordType = this.recordType;
 
             parsedEvent = mapper.readValue(new String(flumeEvent.getBody()), recordType);
-//                parsedEvent = new BasicDBObject(autoWrapKey, new String(flumeEvent.getBody()));
-//            } else {
-//                parsedEvent = (DBObject) JSON.parse(new String(flumeEvent.getBody()));
-//            }
 
             eventsToSave.add(parsedEvent);
         }
