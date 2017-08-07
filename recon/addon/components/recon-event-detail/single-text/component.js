@@ -9,7 +9,13 @@ import layout from './template';
 const HIDE_CONTENT_CHARACTER_COUNT = 3000;
 const SHOW_TRUNCATED_AMOUNT = 2000;
 const CHUNK_SIZE = 6000;
-const TIME_BETWEEN_CHUNKS = 1000;
+let TIME_BETWEEN_CHUNKS = 1250;
+
+// gimp IE along since it renders text slowly
+const IS_IE = !!window.document.documentMode;
+if (IS_IE) {
+  TIME_BETWEEN_CHUNKS = 2500;
+}
 
 export default Component.extend(SelectionTooltip, {
   classNameBindings: ['packet.side', 'isSticky::rsa-text-entry'],

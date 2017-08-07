@@ -3,7 +3,7 @@ import { buildBaseQuery, addStreaming } from 'recon/actions/util/query-util';
 import { batchDataHandler, HANDLERS, BATCH_TYPES } from 'recon/actions/util/batch-data-handler';
 
 const BATCH_CHARACTER_SIZE = 5000;
-let TIME_BETWEEN_BATCHES = [];
+let TIME_BETWEEN_BATCHES = [3000, 500];
 
 // gimp IE along since it renders slowly
 // first packets render right away so take longer
@@ -11,8 +11,6 @@ let TIME_BETWEEN_BATCHES = [];
 const IS_IE = !!window.document.documentMode;
 if (IS_IE) {
   TIME_BETWEEN_BATCHES = [5000, 850];
-} else {
-  TIME_BETWEEN_BATCHES = [3000, 500];
 }
 
 // The data, once in memory, is much larger because it has already been processed
