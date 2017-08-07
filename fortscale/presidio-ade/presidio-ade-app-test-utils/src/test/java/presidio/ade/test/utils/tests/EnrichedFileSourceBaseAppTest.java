@@ -1,17 +1,15 @@
 package presidio.ade.test.utils.tests;
 
-import fortscale.utils.test.category.ModuleTestCategory;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import presidio.ade.test.utils.EnrichedEventsGenerator;
 import presidio.ade.test.utils.EnrichedEventsGeneratorConfig;
+import presidio.ade.test.utils.generators.EnrichedFileGeneratorConfig;
 import presidio.data.generators.common.GeneratorException;
 
-@Category(ModuleTestCategory.class)
-public abstract class EnricheSourceBaseAppTest extends BaseAppTest {
+public abstract class EnrichedFileSourceBaseAppTest extends BaseAppTest {
     @Autowired
     protected EnrichedEventsGenerator enrichedEventsGenerator;
 
@@ -31,10 +29,9 @@ public abstract class EnricheSourceBaseAppTest extends BaseAppTest {
 
     protected abstract void assertSanityTest();
 
-    @Import({EnrichedEventsGeneratorConfig.class, BaseAppTest.springConfig.class})
+    @Import({EnrichedFileGeneratorConfig.class, BaseAppTest.springConfig.class})
     @Configuration
     protected static class EnrichedSourceSpringConfig {
 
     }
 }
-
