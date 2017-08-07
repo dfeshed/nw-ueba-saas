@@ -1,9 +1,7 @@
 package presidio.ade.domain.record.aggregated;
 
-import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
-import presidio.ade.domain.record.AdeRecord;
 
 import java.time.Instant;
 import java.util.List;
@@ -14,11 +12,8 @@ import java.util.Map;
  * @see AggregatedFeatureType
  */
 @Document
-public class AdeAggregationRecord extends AdeRecord {
+public class AdeAggregationRecord extends AdeContextualAggregatedRecord {
     private static final String ADE_EVENT_TYPE_PREFIX = "aggr_event";
-
-    @Indexed
-    private Instant endInstant;
 
     @Field
     private String featureName;
@@ -26,16 +21,17 @@ public class AdeAggregationRecord extends AdeRecord {
     private Double featureValue;
     @Field
     private String featureBucketConfName;
-
     @Field
     private Map<String, String> context;
     @Field
     private AggregatedFeatureType aggregatedFeatureType;
 
+    public AdeAggregationRecord() {
+        super();
+    }
+
     public AdeAggregationRecord(Instant startInstant, Instant endInstant, String featureName, Double featureValue, String featureBucketConfName, Map<String, String> context, AggregatedFeatureType aggregatedFeatureType) {
-        super(startInstant);
-        this.endInstant = endInstant;
-        this.featureName = featureName;
+        super(startInstant, endInstant, getAggregatedFeatureContextId(context), featureName);
         this.featureValue = featureValue;
         this.featureBucketConfName = featureBucketConfName;
         this.context = context;
@@ -50,22 +46,6 @@ public class AdeAggregationRecord extends AdeRecord {
     @Override
     public List<String> getDataSources() {
         return null;
-    }
-
-    /**
-     *
-     * @return aggregation accumulates records between between a time range. it consist of a start and end. this is the end...
-     */
-    public Instant getEndInstant() {
-        return endInstant;
-    }
-
-    /**
-     *
-     * @return name of the aggregated feature. i.e. sum_of_xxx_daily or highest_xxx_score_daily
-     */
-    public String getFeatureName() {
-        return featureName;
     }
 
     /**

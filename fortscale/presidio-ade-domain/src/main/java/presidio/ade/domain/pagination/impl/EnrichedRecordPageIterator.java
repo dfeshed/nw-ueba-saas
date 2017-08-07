@@ -27,17 +27,19 @@ public class EnrichedRecordPageIterator<U extends EnrichedRecord> implements Pag
     private int pageSize;
     private int totalNumOfItems;
     private Set<String> contextIds;
+    private String sortBy;
 
     /**
      * @param timeRange
      * @param contextType     context type (e.g:NORMALIZED_USERNAME_FIELD, NORMALIZED_SRC_MACHINE_FIELD)
-     * @param adeEventType      ade evnet type
+     * @param adeEventType    ade evnet type
      * @param contextIds      set of context ids
      * @param store
      * @param pageSize        num of events in each page
      * @param totalNumOfItems total num of events in the all pages
+     * @param sortBy          used to get sorted pages by field name
      */
-    public EnrichedRecordPageIterator(TimeRange timeRange, String contextType, String adeEventType, Set<String> contextIds, EnrichedDataStore store, int pageSize, int totalNumOfItems, int totalAmountOfPages) {
+    public EnrichedRecordPageIterator(TimeRange timeRange, String contextType, String adeEventType, Set<String> contextIds, EnrichedDataStore store, int pageSize, int totalNumOfItems, int totalAmountOfPages, String sortBy) {
         this.currentPage = 0;
         this.timeRange = timeRange;
         this.contextType = contextType;
@@ -47,6 +49,7 @@ public class EnrichedRecordPageIterator<U extends EnrichedRecord> implements Pag
         this.pageSize = pageSize;
         this.totalNumOfItems = totalNumOfItems;
         this.totalAmountOfPages = totalAmountOfPages;
+        this.sortBy = sortBy;
     }
 
     @Override
@@ -64,8 +67,12 @@ public class EnrichedRecordPageIterator<U extends EnrichedRecord> implements Pag
         EnrichedRecordsMetadata enrichedRecordsMetadata = new EnrichedRecordsMetadata(this.adeEventType, this.timeRange.getStart(), this.timeRange.getEnd());
         int numOfItemsToSkip = this.currentPage * this.pageSize;
         this.currentPage++;
-        return this.store.readRecords(enrichedRecordsMetadata, this.contextIds, contextType, numOfItemsToSkip, this.pageSize);
 
+        if (this.sortBy.isEmpty()) {
+            return this.store.readRecords(enrichedRecordsMetadata, this.contextIds, contextType, numOfItemsToSkip, this.pageSize);
+        }
+
+        return this.store.readSortedRecords(enrichedRecordsMetadata, this.contextIds, contextType, numOfItemsToSkip, this.pageSize, this.sortBy);
     }
 
 }

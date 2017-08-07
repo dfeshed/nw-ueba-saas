@@ -42,6 +42,9 @@ public class AggregationRecordsCreatorImpl implements AggregationRecordsCreator 
                 Instant endTime = featureBucket.getEndTime();
                 for (AggregatedFeatureEventConf aggregatedFeatureEventConf : aggregatedFeatureEventConfList) {
                     Feature feature = aggrFeatureEventFunctionsService.calculateAggrFeature(aggregatedFeatureEventConf, multipleBucketsAggrFeaturesMapList);
+                    if(feature == null){
+                        continue;
+                    }
                     AggrFeatureValue featureValue;
                     Double aggregatedFeatureValue;
                     try {

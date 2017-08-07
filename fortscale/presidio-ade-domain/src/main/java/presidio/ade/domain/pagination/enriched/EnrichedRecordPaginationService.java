@@ -10,6 +10,7 @@ import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
 import presidio.ade.domain.store.enriched.EnrichedRecordsMetadata;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -30,6 +31,12 @@ public class EnrichedRecordPaginationService extends PaginationService<EnrichedR
         this.contextType = contextType;
     }
 
+    public EnrichedRecordPaginationService(EnrichedDataStore store, int pageSize, int maxGroupSize, String contextType, String sortBy) {
+        super(pageSize, maxGroupSize, sortBy);
+        this.store = store;
+        this.contextType = contextType;
+    }
+
     @Override
     protected List<ContextIdToNumOfItems> getContextIdToNumOfItemsList(String adeEventType, TimeRange timeRange) {
         EnrichedRecordsMetadata enrichedRecordsMetadata = new EnrichedRecordsMetadata(adeEventType, timeRange.getStart(), timeRange.getEnd());
@@ -40,7 +47,7 @@ public class EnrichedRecordPaginationService extends PaginationService<EnrichedR
     protected <U extends EnrichedRecord> PageIterator<U> createPageIterator(String adeEventType, TimeRange timeRange, Set<String> contextIds, int totalNumOfItems) {
         int totalAmountOfPages = (int) Math.ceil((double) totalNumOfItems / this.getPageSize());
         logger.debug("Num of pages is: {}",totalAmountOfPages);
-        return new EnrichedRecordPageIterator<>(timeRange, this.contextType, adeEventType, contextIds, this.store, this.getPageSize(), totalNumOfItems, totalAmountOfPages);
+        return new EnrichedRecordPageIterator<>(timeRange, this.contextType, adeEventType, contextIds, this.store, this.getPageSize(), totalNumOfItems, totalAmountOfPages, this.getSortBy());
     }
 
     @Override

@@ -1,6 +1,7 @@
 package presidio.ade.processes.shell;
 
 import fortscale.common.shell.PresidioShellableApplication;
+import fortscale.common.shell.command.PresidioCommands;
 import fortscale.utils.logging.Logger;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
@@ -20,6 +21,10 @@ public class ScoreAggregationsApplication {
 	public static void main(String[] args) {
 		logger.info("Starting {}.", ScoreAggregationsApplication.class.getSimpleName());
 		List<Class> sources = Stream.of(ScoreAggregationsApplicationConfigProduction.class).collect(Collectors.toList());
+
+		// The supported CLI commands for the application
+		sources.add(PresidioCommands.class);
+
 		PresidioShellableApplication.run(sources, args);
 	}
 }

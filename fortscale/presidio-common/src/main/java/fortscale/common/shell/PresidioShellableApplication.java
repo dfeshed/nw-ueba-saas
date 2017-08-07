@@ -1,9 +1,11 @@
 package fortscale.common.shell;
 
-import fortscale.common.shell.config.ShellCommonCommandsConfig;
-import fortscale.common.shell.config.ShellableApplicationConfig;
+import fortscale.common.shell.command.FSBannerProvider;
+import fortscale.common.shell.command.FSHistoryFileNameProvider;
+import fortscale.common.shell.command.FSPromptProvider;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.shell.BootShim;
+import fortscale.utils.shell.BootShimConfig;
 import fortscale.utils.shell.CommandLineArgsHolder;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -22,7 +24,7 @@ public class PresidioShellableApplication {
     private static final Logger logger = Logger.getLogger(PresidioShellableApplication.class);
 
     /**
-     * Create a default {@link ConfigurableApplicationContext}, that contains the {@link ShellCommonCommandsConfig}
+     * Create a default {@link ConfigurableApplicationContext}, that contains the {@link BootShimConfig}
      * and the given configuration class. Run the application with the given input arguments.
      *
      * @param configurationClass where the application's context is configured
@@ -33,7 +35,12 @@ public class PresidioShellableApplication {
 
         CommandLineArgsHolder.args = args;
 
-        configurationClass.add(ShellableApplicationConfig.class);
+        //Required beans for the shell
+        configurationClass.add(FSBannerProvider.class);
+        configurationClass.add(FSHistoryFileNameProvider.class);
+        configurationClass.add(FSPromptProvider.class);
+        configurationClass.add(BootShimConfig.class);
+
         ConfigurableApplicationContext context = SpringApplication.run(configurationClass.toArray(), args);
         int exitCode=0;
         try {
@@ -46,8 +53,8 @@ public class PresidioShellableApplication {
             exitCode=1;
         }
         finally {
-            Thread.currentThread().interrupt();
             context.close();
+            Thread.currentThread().interrupt();
             System.exit(exitCode);
         }
     }

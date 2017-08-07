@@ -53,6 +53,15 @@
             <name>Spring Snapshot Repository</name>
             <url>http://repo.spring.io/libs-snapshot</url>
         </repository>
+        <repository>
+            <id>mirror.fortscale.dom</id>
+            <name>mirror.fortscale.dom-snapshots</name>
+            <url>http://mirror.fortscale.dom/artifactory/presidio-test-utils-snapshot-local</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+        </repository>
     </repositories>
 
     <pluginRepositories>
@@ -187,7 +196,12 @@
 
     <dependencyManagement>
         <dependencies>
-
+            <dependency>
+                <groupId>presidio-test-utils</groupId>
+                <artifactId>presidio-data-generators</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+                <scope>test</scope>
+            </dependency>
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-actuator</artifactId>
@@ -809,10 +823,10 @@
         <module>presidio-ade</module>
         <module>presidio-monitoring-daemons</module>
         <module>presidio-input</module>
-        <module>presidio-core-manager</module>
         <module>presidio-adapter</module>
         <module>presidio-output</module>
         <module>presidio-configuration-server</module>
+        <module>presidio-manager</module>
 
 
     </modules>

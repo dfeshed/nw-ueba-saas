@@ -3,8 +3,8 @@ package fortscale.ml.scorer.enriched_events;
 import fortscale.domain.feature.score.FeatureScore;
 import fortscale.utils.logging.Logger;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
-import presidio.ade.domain.record.scored.enriched_scored.AdeScoredEnrichedRecord;
-import presidio.ade.domain.record.scored.enriched_scored.AdeEventTypeToAdeScoredEnrichedRecordClassResolver;
+import presidio.ade.domain.record.enriched.AdeScoredEnrichedRecord;
+import presidio.ade.domain.record.util.AdeEnrichedRecordToAdeScoredEnrichedRecordResolver;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -17,10 +17,10 @@ import java.util.List;
 public class AdeEnrichedScoredRecordBuilder {
     private static final Logger logger = Logger.getLogger(AdeEnrichedScoredRecordBuilder.class);
 
-    private AdeEventTypeToAdeScoredEnrichedRecordClassResolver dataSourceToAdeScoredEnrichedRecordClassResolver;
+    private AdeEnrichedRecordToAdeScoredEnrichedRecordResolver adeEnrichedRecordToAdeScoredEnrichedRecordResolver;
 
-    public AdeEnrichedScoredRecordBuilder(AdeEventTypeToAdeScoredEnrichedRecordClassResolver dataSourceToAdeScoredEnrichedRecordClassResolver){
-        this.dataSourceToAdeScoredEnrichedRecordClassResolver = dataSourceToAdeScoredEnrichedRecordClassResolver;
+    public AdeEnrichedScoredRecordBuilder(AdeEnrichedRecordToAdeScoredEnrichedRecordResolver adeEnrichedRecordToAdeScoredEnrichedRecordResolver){
+        this.adeEnrichedRecordToAdeScoredEnrichedRecordResolver = adeEnrichedRecordToAdeScoredEnrichedRecordResolver;
     }
 
     public void fill(List<AdeScoredEnrichedRecord> scoredRecordList, EnrichedRecord enrichedRecord, List<FeatureScore> featureScoreList){
@@ -56,12 +56,12 @@ public class AdeEnrichedScoredRecordBuilder {
 
     private AdeScoredEnrichedRecord buildAdeEnrichedScoredRecord(EnrichedRecord enrichedRecord, FeatureScore featureScore) {
         AdeScoredEnrichedRecord ret = null;
-        Class<? extends AdeScoredEnrichedRecord> pojoClass = dataSourceToAdeScoredEnrichedRecordClassResolver.getClass(enrichedRecord.getDataSource());
+        Class<? extends AdeScoredEnrichedRecord> pojoClass = adeEnrichedRecordToAdeScoredEnrichedRecordResolver.getClass(enrichedRecord.getClass());
 
         try {
-            Constructor<? extends AdeScoredEnrichedRecord> constructor = pojoClass.getConstructor(Instant.class, String.class, String.class, Double.class, List.class);
+            Constructor<? extends AdeScoredEnrichedRecord> constructor = pojoClass.getConstructor(Instant.class, String.class, String.class, Double.class, List.class, EnrichedRecord.class);
             String featureName = featureScore.getName();
-            ret = constructor.newInstance(enrichedRecord.getStartInstant(), featureName, enrichedRecord.getAdeEventType(), featureScore.getScore(), featureScore.getFeatureScores());
+            ret = constructor.newInstance(enrichedRecord.getStartInstant(), featureName, enrichedRecord.getAdeEventType(), featureScore.getScore(), featureScore.getFeatureScores(), enrichedRecord);
             ret.fillContext(enrichedRecord);
         } catch (NoSuchMethodException e) {
             //TODO: ADD metrics

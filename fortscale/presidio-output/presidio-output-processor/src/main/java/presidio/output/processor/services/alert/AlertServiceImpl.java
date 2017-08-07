@@ -3,10 +3,11 @@ package presidio.output.processor.services.alert;
 import fortscale.domain.SMART.EntityEvent;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.pagination.PageIterator;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import presidio.output.domain.records.Alert;
-import presidio.output.domain.records.AlertEnums;
-import presidio.output.domain.services.AlertPersistencyService;
+import presidio.output.domain.records.alerts.Alert;
+import presidio.output.domain.records.alerts.AlertEnums;
+import presidio.output.domain.services.alerts.AlertPersistencyService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,14 +30,18 @@ public class AlertServiceImpl implements AlertService {
     public void generateAlerts(PageIterator<EntityEvent> smartPageIterator) {
         List<Alert> alerts = new ArrayList<Alert>();
 
-        while(smartPageIterator.hasNext()) {
+        while (smartPageIterator.hasNext()) {
             List<EntityEvent> smarts = smartPageIterator.next();
 
-            smarts.stream().forEach(smart -> {alerts.add(convertSmartToAlert(smart));});
+            smarts.stream().forEach(smart -> {
+                alerts.add(convertSmartToAlert(smart));
+            });
             break; //TODO !!! remove this once ADE Team will implement SmartPageIterator.hasNext(). currently only one page is returned.
         }
 
-        alertPersistencyService.save(alerts);
+        if (CollectionUtils.isNotEmpty(alerts)) {
+            alertPersistencyService.save(alerts);
+        }
         logger.debug("{} output alerts were generated", alerts.size());
     }
 

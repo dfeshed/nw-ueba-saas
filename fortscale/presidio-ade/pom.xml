@@ -16,6 +16,8 @@
         <module>presidio-ade-app-modeling</module>
         <module>presidio-ade-app-model-feature-buckets</module>
         <module>presidio-ade-app-feature-aggr</module>
+        <module>presidio-ade-app-accumulate-aggr</module>
         <module>presidio-ade-sdk</module>
+        <module>presidio-ade-app-test-utils</module>
     </modules>
 </project>

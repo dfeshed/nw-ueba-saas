@@ -1,6 +1,7 @@
 package fortscale.aggregation.feature.event.config;
 
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfUtilService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -9,9 +10,13 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 public class AggregatedFeatureEventsConfUtilServiceConfig {
+    @Value("${streaming.event.field.type.aggr_event}")
+    private String eventTypeFieldValue;
+    @Value("${streaming.aggr_event.field.context}")
+    private String contextFieldName;
+
     @Bean
-    public AggregatedFeatureEventsConfUtilService aggregatedFeatureEventsConfUtilService()
-    {
-        return new AggregatedFeatureEventsConfUtilService();
+    public AggregatedFeatureEventsConfUtilService aggregatedFeatureEventsConfUtilService() {
+        return new AggregatedFeatureEventsConfUtilService(eventTypeFieldValue, contextFieldName);
     }
 }

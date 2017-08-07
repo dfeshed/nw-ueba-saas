@@ -11,22 +11,26 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import presidio.output.processor.spring.OutputProcessorConfiguration;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 
 @SpringBootApplication
-@ComponentScan(
-		excludeFilters = {@ComponentScan.Filter(type = FilterType.REGEX, pattern = "fortscale.*"),
-							@ComponentScan.Filter(type = FilterType.REGEX, pattern = "presidio.*")})
+@ComponentScan(excludeFilters = @ComponentScan.Filter(type = FilterType.REGEX, pattern = {"fortscale.*", "presidio.*"}))
 public class FortscaleOutputProcessorApplication {
 
 	private static  Logger logger = LoggerFactory.getLogger(FortscaleOutputProcessorApplication.class);
 
 	public static void main(String[] args) {
 		logger.info("Starting {}.", FortscaleOutputProcessorApplication.class.getSimpleName());
-		List<Class> sources = Stream.of(FortscaleOutputProcessorApplication.class, OutputProcessorConfiguration.class).collect(Collectors.toList());
+		List<Class> sources = new ArrayList<>();
+
+		// The Spring configuration of the application
+		sources.add(OutputProcessorConfiguration.class);
+
+		// The supported CLI commands for the application
+		sources.add(OutputShellCommands.class);
+
 		PresidioShellableApplication.run(sources, args);
 	}
 

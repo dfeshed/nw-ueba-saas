@@ -2,7 +2,6 @@ package presidio.ade.processes.shell.scoring.aggregation.config.application;
 
 import fortscale.aggregation.creator.AggregationRecordsCreator;
 import fortscale.common.shell.PresidioExecutionService;
-import fortscale.common.shell.config.ShellCommonCommandsConfig;
 import fortscale.ml.scorer.enriched_events.EnrichedEventsScoringService;
 import fortscale.utils.monitoring.stats.config.NullStatsServiceConfig;
 import fortscale.utils.shell.BootShimConfig;
@@ -32,7 +31,6 @@ import presidio.ade.processes.shell.scoring.aggregation.config.services.ScoreAgg
 //        common application confs
         EnrichedDataStoreConfig.class,
         AggregatedDataStoreConfig.class,
-        ShellCommonCommandsConfig.class,
         BootShimConfig.class,
         NullStatsServiceConfig.class, // todo: remove this
 })

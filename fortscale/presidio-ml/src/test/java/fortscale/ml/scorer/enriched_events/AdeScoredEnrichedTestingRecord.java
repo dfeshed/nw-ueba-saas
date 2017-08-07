@@ -2,7 +2,7 @@ package fortscale.ml.scorer.enriched_events;
 
 import fortscale.domain.feature.score.FeatureScore;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
-import presidio.ade.domain.record.scored.enriched_scored.AdeScoredEnrichedRecord;
+import presidio.ade.domain.record.enriched.AdeScoredEnrichedRecord;
 
 import java.time.Instant;
 import java.util.Collections;
@@ -11,21 +11,14 @@ import java.util.List;
 /**
  * Created by YaronDL on 6/18/2017.
  */
-public class AdeScoredEnrichedTestingRecord extends AdeScoredEnrichedRecord {
-    private EnrichedRecord enrichedRecord;
-
-    public AdeScoredEnrichedTestingRecord(Instant date_time, String featureName, String featureEventType, Double score, List<FeatureScore> featureScoreList) {
-        super(date_time, featureName, featureEventType, score, featureScoreList);
+public class AdeScoredEnrichedTestingRecord extends AdeScoredEnrichedRecord<EnrichedRecord> {
+    public AdeScoredEnrichedTestingRecord(Instant date_time, String featureName, String featureEventType, Double score, List<FeatureScore> featureScoreList, EnrichedRecord enrichedRecord) {
+        super(date_time, featureName, featureEventType, score, featureScoreList, enrichedRecord);
     }
 
     @Override
     public void fillContext(EnrichedRecord enrichedRecord) {
-        this.enrichedRecord = enrichedRecord;
-    }
-
-    @Override
-    public EnrichedRecord getContext() {
-        return enrichedRecord;
+        setContext(enrichedRecord);
     }
 
     @Override

@@ -5,6 +5,7 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.pagination.ContextIdToNumOfItems;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
@@ -50,18 +51,11 @@ public class EnrichedDataStoreImplMongo implements EnrichedDataStore {
 
     @Override
     public <U extends EnrichedRecord> List<U> readRecords(EnrichedRecordsMetadata recordsMetadata, Set<String> contextIds, String contextType, int numOfItemsToSkip, int numOfItemsToRead) {
-
-        Instant startDate = recordsMetadata.getStartInstant();
-        Instant endDate = recordsMetadata.getEndInstant();
         String adeEventType = recordsMetadata.getAdeEventType();
         Class<? extends AdeRecord> pojoClass = adeEventTypeToAdeEnrichedRecordClassResolver.getClass(adeEventType);
 
-        //Get type of context
-        String fieldName = getFieldName(pojoClass, contextType);
+        Query query = buildQuery(recordsMetadata, contextIds, contextType, numOfItemsToSkip, numOfItemsToRead, pojoClass);
 
-        Criteria dateTimeCriteria = Criteria.where(EnrichedRecord.START_INSTANT_FIELD).gte(startDate).lt(endDate);
-        Criteria contextCriteria = Criteria.where(fieldName).in(contextIds);
-        Query query = new Query(dateTimeCriteria).addCriteria(contextCriteria).skip(numOfItemsToSkip).limit(numOfItemsToRead);
         String collectionName = translator.toCollectionName(recordsMetadata);
 
         // the pojoClass is Class<? extends AdeRecord>, while find method should get Class<U>
@@ -69,6 +63,50 @@ public class EnrichedDataStoreImplMongo implements EnrichedDataStore {
         List<U> enrichedRecordList = mongoTemplate.find(query, (Class<U>) pojoClass, collectionName);
 
         return enrichedRecordList;
+    }
+
+
+    @Override
+    public <U extends EnrichedRecord> List<U> readSortedRecords(EnrichedRecordsMetadata recordsMetadata, Set<String> contextIds, String contextType, int numOfItemsToSkip, int numOfItemsToRead, String sortBy) {
+        String adeEventType = recordsMetadata.getAdeEventType();
+        Class<? extends AdeRecord> pojoClass = adeEventTypeToAdeEnrichedRecordClassResolver.getClass(adeEventType);
+
+        Query query = buildQuery(recordsMetadata, contextIds, contextType, numOfItemsToSkip, numOfItemsToRead, pojoClass);
+
+        //Get field name
+        String sortByFieldName = getFieldName(pojoClass, sortBy);
+        query.with(new Sort(Sort.Direction.ASC, sortByFieldName));
+
+        String collectionName = translator.toCollectionName(recordsMetadata);
+
+        // the pojoClass is Class<? extends AdeRecord>, while find method should get Class<U>
+        @SuppressWarnings("unchecked")
+        List<U> enrichedRecordList = mongoTemplate.find(query, (Class<U>) pojoClass, collectionName);
+
+        return enrichedRecordList;
+    }
+
+    /**
+     * Build query
+     * @param recordsMetadata
+     * @param contextIds
+     * @param contextType
+     * @param numOfItemsToSkip
+     * @param numOfItemsToRead
+     * @param pojoClass
+     * @return
+     */
+    private Query buildQuery(EnrichedRecordsMetadata recordsMetadata, Set<String> contextIds, String contextType, int numOfItemsToSkip, int numOfItemsToRead, Class<? extends AdeRecord> pojoClass) {
+        Instant startDate = recordsMetadata.getStartInstant();
+        Instant endDate = recordsMetadata.getEndInstant();
+        //Get type of context
+        String fieldName = getFieldName(pojoClass, contextType);
+
+        Criteria dateTimeCriteria = Criteria.where(EnrichedRecord.START_INSTANT_FIELD).gte(startDate).lt(endDate);
+        Criteria contextCriteria = Criteria.where(fieldName).in(contextIds);
+        Query query = new Query(dateTimeCriteria).addCriteria(contextCriteria).skip(numOfItemsToSkip).limit(numOfItemsToRead);
+
+        return query;
     }
 
     @Override
@@ -121,8 +159,8 @@ public class EnrichedDataStoreImplMongo implements EnrichedDataStore {
     /**
      * Validates that the context type field indexed in the store, otherwise create the index
      *
-     * @param adeEventType  data source name
-     * @param contextType type of context, field that the aggregateContextToNumOfEvents and readRecords methods use to query.
+     * @param adeEventType data source name
+     * @param contextType  type of context, field that the aggregateContextToNumOfEvents and readRecords methods use to query.
      */
     @Override
     public void ensureContextAndDateTimeIndex(String adeEventType, String contextType) {

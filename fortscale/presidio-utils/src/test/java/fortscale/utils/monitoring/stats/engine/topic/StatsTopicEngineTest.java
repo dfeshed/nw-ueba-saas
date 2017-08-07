@@ -4,6 +4,7 @@ import fortscale.utils.kafka.KafkaEventsWriter;
 import fortscale.utils.monitoring.stats.engine.StatsEngineLongMetricData;
 import fortscale.utils.monitoring.stats.engine.StatsEngineMetricsGroupData;
 import fortscale.utils.monitoring.stats.engine.StatsEngineTestingUtils;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
@@ -17,6 +18,7 @@ import static org.mockito.Mockito.times;
 /**
  * Created by gaashh on 5/2/16.
  */
+@Ignore
 public class StatsTopicEngineTest {
 
 
