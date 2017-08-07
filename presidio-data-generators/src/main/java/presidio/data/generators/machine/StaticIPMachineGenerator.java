@@ -25,7 +25,7 @@ public class StaticIPMachineGenerator extends AbstractCyclicValuesGenerator<Mach
 
         int i = 0;
         for(Pair<String, String> pair : pairs) {
-            //machineEntities[i++] = new MachineEntity(pair.getLeft(), pair.getRight());
+            machineEntities[i++] = new MachineEntity(pair.getLeft(), pair.getRight(), "","");
         }
         return machineEntities;
     }
