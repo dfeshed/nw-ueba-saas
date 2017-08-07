@@ -19,7 +19,7 @@ import java.util.*;
 /**
  * This interceptor is used to replace certain values int the received JSON.
  * Returns the same JSON without with the new values.
- * i.e - for the given input 'type#fileDelete>file_delete',for field 'type' change value from 'fileDelete' to 'file_delete'.
+ * i.e (using default delimiters) - the given input 'type#fileDelete>file_delete' means - for field 'type' change value from 'fileDelete' to 'file_delete'.
  */
 public class PresidioJsonFieldValueReplacerInterceptor extends AbstractPresidioInterceptor {
 
