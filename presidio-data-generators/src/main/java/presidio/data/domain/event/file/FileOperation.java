@@ -2,6 +2,7 @@ package presidio.data.domain.event.file;
 
 
 import presidio.data.domain.FileEntity;
+import presidio.data.domain.event.OperationType;
 
 import java.util.List;
 
@@ -11,16 +12,14 @@ import java.util.List;
 public class FileOperation {
     private FileEntity sourceFile;
     private FileEntity destinationFile;
-    private String operationType;
-    private List<String> operationTypesCategories;
+    private OperationType operationType;
     private String operationResult;
     private String operationResultCode;
 
-    public FileOperation(FileEntity sourceFile, FileEntity destinationFile, String operationType, List<String> operationTypesCategories, String operationResult, String operationResultCode) {
+    public FileOperation(FileEntity sourceFile, FileEntity destinationFile, OperationType operationType, String operationResult, String operationResultCode) {
         this.sourceFile = sourceFile;
         this.destinationFile = destinationFile;
         this.operationType = operationType;
-        this.operationTypesCategories = operationTypesCategories;
         this.operationResult = operationResult;
         this.operationResultCode = operationResultCode;
     }
@@ -41,11 +40,11 @@ public class FileOperation {
         this.destinationFile = destinationFile;
     }
 
-    public String getOperationType() {
+    public OperationType getOperationType() {
         return operationType;
     }
 
-    public void setOperationType(String operationType) {
+    public void setOperationType(OperationType operationType) {
         this.operationType = operationType;
     }
 
@@ -55,14 +54,6 @@ public class FileOperation {
 
     public void setOperationResult(String operationResult) {
         this.operationResult = operationResult;
-    }
-
-    public List<String> getOperationTypesCategories() {
-        return operationTypesCategories;
-    }
-
-    public void setOperationTypesCategories(List<String> operationTypesCategories) {
-        this.operationTypesCategories = operationTypesCategories;
     }
 
     public String getOperationResultCode() {
@@ -77,8 +68,7 @@ public class FileOperation {
     public String toString() {
         return  "File operation: " + sourceFile.toString() +
                 "," + destinationFile.toString() +
-                "," + operationType +
-                "," + operationTypesCategories.toString() +
+                "," + operationType.toString() +
                 "," + operationResult +
                 "," + operationResultCode;
     }

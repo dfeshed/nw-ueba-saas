@@ -4,7 +4,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import presidio.data.domain.FileEntity;
-import presidio.data.domain.event.file.FILE_OPERATION_TYPE;
 import presidio.data.domain.event.file.FILE_OPERATION_TYPE_CATEGORIES;
 import presidio.data.domain.event.file.FileEvent;
 import presidio.data.generators.common.GeneratorException;
@@ -30,7 +29,7 @@ public class FileEventsMoveOpGeneratorTest {
         FileEventsGenerator generator = new FileEventsGenerator();
 
         FileOperationGeneratorTemplateFactory opGenTemplateFactory = new FileOperationGeneratorTemplateFactory();
-        IFileOperationGenerator opGen = opGenTemplateFactory.getFileOperationsGenerator(FILE_OPERATION_TYPE.FILE_MOVED.value);
+        IFileOperationGenerator opGen = opGenTemplateFactory.createMoveFileOperationsGenerator();
         generator.setFileOperationGenerator(opGen);
         events = generator.generate();
     }
@@ -72,7 +71,8 @@ public class FileEventsMoveOpGeneratorTest {
         Assert.assertNotNull(destFile.getFileName());
         Assert.assertNotNull(destFile.getFilePath());
         Assert.assertNotNull(destFile.getFileSize());
-        List<String> categories = events.get(1).getFileOperation().getOperationTypesCategories();
+        List<String> categories = events.get(1).getFileOperation().getOperationType().getCategories();
+        Assert.assertEquals(1, categories.size());
         Assert.assertTrue(categories.contains(FILE_OPERATION_TYPE_CATEGORIES.FILE_ACTION.value));
     }
 }

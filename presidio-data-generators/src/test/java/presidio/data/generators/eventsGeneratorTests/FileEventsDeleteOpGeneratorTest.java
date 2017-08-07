@@ -4,7 +4,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import presidio.data.domain.FileEntity;
-import presidio.data.domain.event.file.FILE_OPERATION_TYPE;
 import presidio.data.domain.event.file.FileEvent;
 import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.event.file.FileEventsGenerator;
@@ -29,7 +28,7 @@ public class FileEventsDeleteOpGeneratorTest {
     public void prepare() throws GeneratorException {
         FileEventsGenerator generator = new FileEventsGenerator();
 
-        IFileOperationGenerator opGen = new FileOperationGeneratorTemplateFactory().getDeleteFileOperationsGenerator();
+        IFileOperationGenerator opGen = new FileOperationGeneratorTemplateFactory().createDeleteFileOperationsGenerator();
         generator.setFileOperationGenerator(opGen);
         events = generator.generate();
     }
