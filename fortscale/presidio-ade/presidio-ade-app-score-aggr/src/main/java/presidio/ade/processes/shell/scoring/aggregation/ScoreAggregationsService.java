@@ -83,17 +83,8 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
     }
 
     protected FeatureBucketStrategyData createFeatureBucketStrategyData(TimeRange timeRange){
-        String strategyName;
+        String strategyName = strategy.toStrategyName();
 
-        if(strategy.equals(FixedDurationStrategy.HOURLY))
-        {
-            // todo refactor buckets json stratgy and then delete this condition
-            strategyName="fixed_duration_hourly";
-        }
-        else
-        {
-            strategyName="fixed_duration_daily";
-        }
         return new FeatureBucketStrategyData(strategyName,strategyName,timeRange);
     }
 

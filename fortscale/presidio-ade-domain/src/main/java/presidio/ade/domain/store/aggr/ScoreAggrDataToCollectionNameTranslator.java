@@ -8,14 +8,18 @@ import java.util.Collection;
 /**
  * Created by barak_schuster on 7/10/17.
  */
-public class AggrDataToCollectionNameTranslator implements AdeToCollectionNameTranslator<AggrRecordsMetadata> {
-    private static final String AGGR_COLLECTION_PREFIX = "aggr_";
+public class ScoreAggrDataToCollectionNameTranslator implements AdeToCollectionNameTranslator<AggrRecordsMetadata> {
+    private static final String AGGR_COLLECTION_PREFIX = "aggr_of_score";
 
     @Override
     public String toCollectionName(AggrRecordsMetadata metadata) {
         String featureName = metadata.getFeatureName();
 
-        return String.format("%s%s", AGGR_COLLECTION_PREFIX,featureName);
+        return toCollectionName(featureName);
+    }
+
+    public String toCollectionName(String featureName) {
+        return String.format("%s_%s", AGGR_COLLECTION_PREFIX,featureName);
     }
 
     @Override

@@ -17,10 +17,10 @@ public class AggregatedDataStoreMongoImpl implements AggregatedDataStore {
     private static final Logger logger = Logger.getLogger(AggregatedDataStoreMongoImpl.class);
 
     private final MongoTemplate mongoTemplate;
-    private final AggrDataToCollectionNameTranslator translator;
+    private final ScoreAggrDataToCollectionNameTranslator translator;
     private final MongoDbBulkOpUtil mongoDbBulkOpUtil;
 
-    public AggregatedDataStoreMongoImpl(MongoTemplate mongoTemplate, AggrDataToCollectionNameTranslator translator, MongoDbBulkOpUtil mongoDbBulkOpUtil) {
+    public AggregatedDataStoreMongoImpl(MongoTemplate mongoTemplate, ScoreAggrDataToCollectionNameTranslator translator, MongoDbBulkOpUtil mongoDbBulkOpUtil) {
         this.mongoTemplate = mongoTemplate;
         this.translator = translator;
         this.mongoDbBulkOpUtil = mongoDbBulkOpUtil;

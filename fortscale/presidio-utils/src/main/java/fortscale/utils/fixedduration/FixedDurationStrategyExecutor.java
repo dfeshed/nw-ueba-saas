@@ -31,7 +31,14 @@ public abstract class FixedDurationStrategyExecutor {
         for(String contextType: getDistinctContextTypes(adeEventType)) {
             for (TimeRange timePartition : partitionedTimeRanges) {
                 logger.debug("executing on time partition={}", timePartition);
-                executeSingleTimeRange(timePartition, adeEventType,contextType);
+                try {
+                    executeSingleTimeRange(timePartition, adeEventType,contextType);
+                }
+                catch (Exception e)
+                {
+                    logger.error("an error occurred while executing on time partition={},adeEventType={},contextType={}",timePartition,adeEventType,contextType,e);
+                    throw e;
+                }
             }
         }
     }
