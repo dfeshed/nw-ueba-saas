@@ -121,6 +121,7 @@ public class PresidioMongoSink<T extends AbstractDocument> extends AbstractPresi
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     protected void saveEvents(List<T> eventsToSave) {
         final int numOfEventsToSave = eventsToSave.size();
         if (numOfEventsToSave != 0) {
@@ -137,6 +138,11 @@ public class PresidioMongoSink<T extends AbstractDocument> extends AbstractPresi
     private static SinkMongoRepository createRepository(String dbName, String host, int port, String username, String password) throws UnknownHostException {
         final MongoTemplate mongoTemplate = MongoUtils.createMongoTemplate(dbName, host, port, username, password);
         return new SinkMongoRepositoryImpl(mongoTemplate);
+    }
+
+    @SuppressWarnings("unchecked")
+    private Class<T> getRecordType(String recordTypeAsString) throws ClassNotFoundException {
+        return (Class<T>) Class.forName(recordTypeAsString);
     }
 
     @Override
