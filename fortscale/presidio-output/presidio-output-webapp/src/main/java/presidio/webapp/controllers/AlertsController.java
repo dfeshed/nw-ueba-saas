@@ -1,6 +1,8 @@
 package presidio.webapp.controllers;
 
 import fortscale.utils.logging.annotation.LogException;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.apache.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import presidio.webapp.dto.Alert;
@@ -11,6 +13,7 @@ import presidio.webapp.service.RestAlertService;
 
 @RestController
 @RequestMapping(value = "/alerts")
+@Api
 public class AlertsController {
 
     private final RestAlertService restAlertService;
@@ -22,6 +25,7 @@ public class AlertsController {
     @RequestMapping(value = "/{alertId}", method = RequestMethod.GET)
     @ResponseBody
     @LogException
+    @ApiOperation(value = "Return alert by alert id" ,response = SingleEntityResponseBean.class)
     public SingleEntityResponseBean<Alert> getAlertById(@PathVariable String alertId) {
         SingleEntityResponseBean<Alert> responseBean = new SingleEntityResponseBean<>();
         try {
@@ -36,6 +40,7 @@ public class AlertsController {
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
     @LogException
+    @ApiOperation(value = "Return alerts" ,response = ListResponseBean.class)
     public ListResponseBean<Alert> getAlerts(RestAlertQuery restAlertQuery) {
         ListResponseBean<Alert> responseBean = new ListResponseBean<>();
         try {

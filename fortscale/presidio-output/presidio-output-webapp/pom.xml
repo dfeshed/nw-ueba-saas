@@ -170,18 +170,53 @@
                     </execution>
                 </executions>
             </plugin>
+            <!--Plugin for generating yml file from output controllers-->
+            <plugin>
+                <groupId>com.github.kongchen</groupId>
+                <artifactId>swagger-maven-plugin</artifactId>
+                <version>3.1.2</version>
+                <configuration>
+                    <apiSources>
+                        <apiSource>
+                            <springmvc>true</springmvc>
+                            <locations>presidio.webapp.controllers</locations>
+                            <schemes>http,https</schemes>
+                            <host>www.[host]:[port]</host>
+                            <basePath>/v1</basePath>
+                            <info>
+                                <title>Swagger spec for presidio output REST API</title>
+                                <version>v1</version>
+                                <description>This is a sample spec for presidio output REST API</description>
+                            </info>
+                            <swaggerDirectory>generated/swagger/client</swaggerDirectory>
+                            <outputFormats>yaml</outputFormats>
+                        </apiSource>
+                    </apiSources>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>auto-generate-output-yml</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!--Plugin for generating REST client from yml file generated on previous step-->
             <plugin>
                 <groupId>io.swagger</groupId>
                 <artifactId>swagger-codegen-maven-plugin</artifactId>
                 <version>2.2.3</version>
                 <executions>
                     <execution>
+                        <id>auto-generate-REST-client</id>
                         <goals>
                             <goal>generate</goal>
                         </goals>
                         <configuration>
                             <!-- specify the swagger yaml -->
-                            <inputSpec>./src/main/resources/tmp_Fortscale-Presidio-Output-1.0.0-swagger.yaml</inputSpec>
+                            <inputSpec>./generated/swagger/client/swagger.yaml</inputSpec>
                             <library>jersey2</library>
                             <!-- target to generate java client code -->
                             <language>java</language>
