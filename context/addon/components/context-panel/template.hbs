@@ -3,34 +3,34 @@
     {{context-panel/tabs model=model }}
   {{/if}}    
 </div>
-<div class='rsa-context-panel__layout'>
-  {{context-panel/header closePanel=closePanel}}
-  <div class='rsa-context-panel__body_layout'>
-    {{#if isReady}}
-      {{#if errorMessage}}
-        <hbox class='rsa-context-panel__loader'>
-          <span class='rsa-context-panel__error-text'>
-            {{rsa-icon style='lined' name='report-problem-triangle'}} {{t errorMessage}}
-          </span>
-        </hbox>
-      {{else}}
+{{#if isReady}}
+  {{#if errorMessage}}
+    <hbox class='rsa-context-panel__loader'>
+      <span class='rsa-context-panel__error-text'>
+        {{rsa-icon style='lined' name='report-problem-triangle'}} {{t errorMessage}}
+      </span>
+    </hbox>
+  {{else}}
+    <div class='rsa-context-panel__layout'>
+      {{context-panel/header closePanel=closePanel}}
+      <div class='rsa-context-panel__body_layout'>
         <hbox class='rsa-context-panel__body_size'>
           {{context-panel/body contextData=model.contextData model=model }}
         </hbox>    
-      {{/if}}
-      <hbox>
-        {{context-panel/live-connect/feedback model=model}}
-      </hbox>      
-    {{else}}
-      <hbox class='rsa-context-panel__loader'>
-        <div class="rsa-loader is-largest">
-          <div class="rsa-loader__wheel"></div>
-          <div class="rsa-loader__text"></div>
-        </div>
-      </hbox>
-    {{/if}}  
-  </div>
-  {{context-panel/footer}}
-</div>
+        <hbox>
+          {{context-panel/live-connect/feedback model=model}}
+        </hbox>      
+      </div>
+      {{context-panel/footer}}
+    </div>
+  {{/if}}
+{{else}}
+  <hbox class='rsa-context-panel__loader'>
+    <div class="rsa-loader is-largest">
+      <div class="rsa-loader__wheel"></div>
+      <div class="rsa-loader__text"></div>
+    </div>
+  </hbox>
+{{/if}}  
 
 

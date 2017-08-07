@@ -83,10 +83,11 @@ const getDataSources = (meta) => {
         }
       },
       // some job failed
-      () => {
+      ({ meta }) => {
+        const error = (meta && meta.message) ? meta.message : 'admin.error';
         dispatch({
           type: ACTION_TYPES.CONTEXT_ERROR,
-          payload: 'context.error.dataSourcesFailed'
+          payload: `context.error.${error}`
         });
       }
     );
@@ -117,10 +118,11 @@ const initializeContextPanel = ({ entityId, entityType }) => {
         });
       },
       // some job failed
-      () => {
+      ({ meta }) => {
+        const error = (meta && meta.message) ? meta.message : 'admin.error';
         dispatch({
           type: ACTION_TYPES.CONTEXT_ERROR,
-          payload: 'context.error.error'
+          payload: `context.error.${error}`
         });
       }
     );
