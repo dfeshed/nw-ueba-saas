@@ -33,6 +33,17 @@ public class AslConfigurationPaths {
 		this.additionalConfigurationPath = additionalConfigurationPath;
 	}
 
+	/**
+	 * C'tor.
+	 * No overriding nor additional configurations.
+	 *
+	 * @param groupName             the name of the logical group
+	 * @param baseConfigurationPath the path to the base configurations
+	 */
+	public AslConfigurationPaths(String groupName, String baseConfigurationPath) {
+		this(groupName, baseConfigurationPath, null, null);
+	}
+
 	public String getGroupName() {
 		return groupName;
 	}

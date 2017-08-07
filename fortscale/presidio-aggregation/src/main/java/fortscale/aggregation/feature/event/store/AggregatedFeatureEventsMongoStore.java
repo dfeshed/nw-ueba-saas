@@ -11,8 +11,6 @@ import fortscale.utils.MongoStoreUtils;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.mongodb.FIndex;
 import fortscale.utils.monitoring.stats.StatsService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.BulkOperationException;
 import org.springframework.data.mongodb.core.BulkOperations;
@@ -26,24 +24,27 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class AggregatedFeatureEventsMongoStore implements ScoredEventsCounterReader {
-
-
 	private static final Logger logger = Logger.getLogger(AggregatedFeatureEventsMongoStore.class);
 
-	@Autowired
 	private MongoTemplate mongoTemplate;
-	@Autowired
 	private AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
-	@Autowired
 	private StatsService statsService;
-
-	@Autowired
 	private AggregatedFeatureNameTranslationService aggregatedFeatureNameTranslationService;
+	private List<String> backupCollectionNamesPrefixes;
 
-    @Value("#{'${fortscale.store.collection.backup.prefix}'.split(',')}")
-    private List<String> backupCollectionNamesPrefixes;
+	public AggregatedFeatureEventsMongoStore(
+			MongoTemplate mongoTemplate,
+			AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService,
+			StatsService statsService,
+			AggregatedFeatureNameTranslationService aggregatedFeatureNameTranslationService,
+			List<String> backupCollectionNamesPrefixes) {
 
-
+		this.mongoTemplate = mongoTemplate;
+		this.aggregatedFeatureEventsConfService = aggregatedFeatureEventsConfService;
+		this.statsService = statsService;
+		this.aggregatedFeatureNameTranslationService = aggregatedFeatureNameTranslationService;
+		this.backupCollectionNamesPrefixes = backupCollectionNamesPrefixes;
+	}
 
 	private Map<String, String> aggregatedFeatureNameToExistingCollectionNameMap = new HashMap<>();
 	private List<String> allAggrFeatureEventCollectionNames;
