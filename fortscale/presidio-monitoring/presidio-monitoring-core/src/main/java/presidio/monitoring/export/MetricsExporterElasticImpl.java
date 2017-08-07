@@ -21,7 +21,7 @@ public class MetricsExporterElasticImpl extends MetricsExporter {
     }
 
 
-    @Scheduled(fixedRate = 5000)
+    @Scheduled(fixedRateString = "${monitoring.fixed.rate}")
     public void export() {
         logger.info("Exporting metrics to elastic");
         metricExportService.save(filterRepitMetrics());
