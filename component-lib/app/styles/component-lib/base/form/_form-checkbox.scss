@@ -1,63 +1,44 @@
 .rsa-form-checkbox-label {
   position: relative;
+  display: inline-flex;
+  align-items: center;
 
   .rsa-form-checkbox {
-    vertical-align: baseline;
+    align-self: flex-start;
     visibility: hidden;
-    display: inline-block;
-    box-sizing: border-box;
-    width: calc(1rem - 1px);
-    padding: 1px;
-    height: calc(1rem - 1px);
-    border: 1px solid transparent;
-    margin-right: rsa-whitespace(least);
-    position: relative;
+    position: absolute;
   }
 
   &::before {
     font-family: 'nw-icon-library-all-1';
-    content: '';
-    visibility: visible;
-    display: block;
-    border: 1px solid $formCheckboxBorderColor;
-    display: inline-block;
-    box-sizing: border-box;
-    font-size: .5rem;
-    width: calc(1rem - 2px);
-    padding: 0 2px;
-    height: calc(1rem - 2px);
-    line-height: calc(1rem - 2px);
-    position: absolute;
-    top: 3px;
-    left: 0;
+    content: $rsa-icon-check-box-unchecked-1-filled;
+    position: relative;
+    top: -1px;
+    text-indent: 1px;
+    margin-right: rsa-whitespace(least);
   }
 
   &.checked {
     &::before {
-      content: $rsa-icon-check-1-filled;
-      color:rsa-color(blue);
+      color: $formCheckboxActiveColor;
+      content: $rsa-icon-check-box-1-filled;
     }
   }
 
   &:hover:not(.disabled) {
     cursor: pointer;
+    color: $formCheckboxActiveColor;
 
     &::before {
-      border-color: $formCheckboxHoverBorderColor;
-    }
-
-    &.checked {
-      &::before {
-        border-color: rsa-color(blue);
-      }
+      color: $formCheckboxActiveColor;
     }
   }
 
   &.disabled {
     color: $formCheckboxBorderColor;
 
-    ::before {
-      opacity: $rsa-translucent;
+    &::before {
+      color: $formCheckboxBorderColor;
     }
   }
 
@@ -65,20 +46,11 @@
     color: $formCheckboxErrorColor;
 
     &::before {
-      border-color: $formCheckboxErrorColor;
       color: $formCheckboxErrorColor;
-    }
-  }
-
-  &.error:hover:not(.disabled) {
-    cursor: pointer;
-
-    &::before {
-      border-color: rsa-color(red, light);
     }
   }
 }
 
 li > .rsa-form-checkbox-label {
-  display: block;
+  display: flex;
 }

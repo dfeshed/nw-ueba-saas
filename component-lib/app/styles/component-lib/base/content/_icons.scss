@@ -337,6 +337,11 @@
     content: $rsa-icon-check-box-1-filled;
   }
 }
+.rsa-icon-check-box-unchecked-1-filled {
+  &:before {
+    content: $rsa-icon-check-box-unchecked-1-filled;
+  }
+}
 .rsa-icon-check-circle-1-filled {
   &:before {
     content: $rsa-icon-check-circle-1-filled;
@@ -807,6 +812,16 @@
     content: $rsa-icon-play-button-2-filled;
   }
 }
+.rsa-icon-radio-button-selected-1-filled {
+  &:before {
+    content: $rsa-icon-radio-button-selected-1-filled;
+  }
+}
+.rsa-icon-radio-button-unselected-1-filled {
+  &:before {
+    content: $rsa-icon-radio-button-unselected-1-filled;
+  }
+}
 .rsa-icon-rank-army-star-2-filled {
   &:before {
     content: $rsa-icon-rank-army-star-2-filled;
@@ -1240,6 +1255,11 @@
 .rsa-icon-check-box-1-lined {
   &:before {
     content: $rsa-icon-check-box-1-lined;
+  }
+}
+.rsa-icon-check-box-unchecked-1-lined {
+  &:before {
+    content: $rsa-icon-check-box-unchecked-1-lined;
   }
 }
 .rsa-icon-check-circle-1-lined {
@@ -1710,6 +1730,16 @@
 .rsa-icon-play-button-2-lined {
   &:before {
     content: $rsa-icon-play-button-2-lined;
+  }
+}
+.rsa-icon-radio-button-selected-1-lined {
+  &:before {
+    content: $rsa-icon-radio-button-selected-1-lined;
+  }
+}
+.rsa-icon-radio-button-unselected-1-lined {
+  &:before {
+    content: $rsa-icon-radio-button-unselected-1-lined;
   }
 }
 .rsa-icon-rank-army-star-2-lined {

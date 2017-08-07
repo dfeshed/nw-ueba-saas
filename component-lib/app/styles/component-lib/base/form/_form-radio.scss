@@ -1,69 +1,45 @@
 .rsa-form-radio-label {
   position: relative;
-  line-height: 2rem;
-  color: rsa-color(gray, lightest);
+  display: inline-flex;
+  align-items: center;
 
   input {
+    align-self: flex-start;
     visibility: hidden;
-    margin-right: rsa-whitespace(least);
-  }
-
-  &::before,
-  &::after {
-    content: '';
-    text-indent: 10rem;
-    overflow: hidden;
-    visibility: visible;
-    display: block;
     position: absolute;
-    top: 3px;
+    top: 0;
     left: 0;
-    border-radius: 10rem;
   }
 
   &::before {
-    width: 11px;
-    height: 11px;
-    border: 1px solid rsa-color(gray);
-  }
-
-  &::after {
-    background: transparent;
-    width: 7px;
-    height: 7px;
-    margin: 3px;
+    font-family: 'nw-icon-library-all-1';
+    content: $rsa-icon-radio-button-unselected-1-filled;
+    position: relative;
+    margin-right: rsa-whitespace(least);
   }
 
   &.checked {
-    &::after {
-      background-color: rsa-color(blue);
+    &::before {
+      content: $rsa-icon-radio-button-selected-1-filled;
+      color: rsa-color(blue);
     }
   }
 
   &:hover:not(.disabled) {
     cursor: pointer;
-
-    input:not(.disabled) {
-      cursor: pointer;
-    }
+    color: rsa-color(blue);
 
     &::before {
-      border-color: rsa-color(gray, lighter);
-    }
-
-    &.checked {
-      &::before {
-        border-color: rsa-color(blue);
-      }
+      color: rsa-color(blue);
     }
   }
 
   &.disabled {
-    opacity: $rsa-translucent;
+    color: rsa-color(gray);
 
     &.checked {
-      &::after {
-        background-color: rsa-color(gray);
+      &::before {
+        color: rsa-color(gray);
       }
     }
   }
@@ -72,20 +48,20 @@
     color: rsa-color(red);
 
     &::before {
-      border-color: rsa-color(red);
+      color: rsa-color(red);
     }
 
     &.checked {
-      &::after {
-        background-color: rsa-color(red);
-      }
-    }
-
-
-    &:hover {
       &::before {
-        border-color: rsa-color(red, light)!important;
+        color: rsa-color(red);
       }
+
+      &:hover {
+        &::before {
+          color: rsa-color(blue);
+        }
+      }
+
     }
   }
 }
@@ -99,6 +75,6 @@
   }
 
   .rsa-form-radio-label {
-    margin-right: 1rem;
+    margin-right: rsa-whitespace();
   }
 }
