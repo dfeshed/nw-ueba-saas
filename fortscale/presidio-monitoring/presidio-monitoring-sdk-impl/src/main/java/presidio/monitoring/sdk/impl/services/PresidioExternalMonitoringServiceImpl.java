@@ -28,4 +28,9 @@ public class PresidioExternalMonitoringServiceImpl implements PresidioExternalMo
     public void reportNumberOfProcessedEventsMetric(long value, Set tags) {
         metricCollectingService.addMetric(NUMBER_OF_PROCESSED_EVENTS_METRIC, value, tags, TYPE_LONG);
     }
+
+    @Override
+    public void reportCustomMetric(String metricName, long value, Set tags, String valueType) {
+        metricCollectingService.addMetric(metricName, value, tags, valueType);
+    }
 }
