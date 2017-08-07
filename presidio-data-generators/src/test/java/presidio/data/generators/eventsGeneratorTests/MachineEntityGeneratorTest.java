@@ -10,9 +10,6 @@ import presidio.data.generators.machine.StaticIPMachineGenerator;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by cloudera on 6/6/17.
- */
 public class MachineEntityGeneratorTest {
 
     /***
@@ -49,8 +46,8 @@ public class MachineEntityGeneratorTest {
         sm = generator.getNext();
         Assert.assertEquals(sm.getMachineId(), "host2");
         Assert.assertEquals(sm.getMachineIp(), "251.104.0.35"); //default IP
-
     }
+
     /***
      * Setting custom Hostname and IP generators that are part of MachineEntity generator
      * Creating events where same user connects to 3 different source machines
