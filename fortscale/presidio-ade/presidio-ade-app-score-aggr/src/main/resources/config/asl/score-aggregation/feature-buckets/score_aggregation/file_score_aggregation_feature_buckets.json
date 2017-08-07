@@ -48,9 +48,6 @@
           },
           "aggrFeatureFuncJson": {
             "type": "aggr_feature_feature_to_max_map_func"
-          },
-          "filter": {
-            "jsonPath": "[?(@.operationType == 'LOCAL_SHARE_PERMISSIONS_CHANGED' || @.operationType == 'FOLDER_ACCESS_RIGHTS_CHANGED' || @.operationType == 'FILE_ACCESS_RIGHTS_CHANGED' || @.operationType == 'FILE_CLASSIFICATION_CHANGED' || @.operationType == 'FOLDER_CLASSIFICATION_CHANGED' || @.operationType == 'FILE_CENTRAL_ACCESS_POLICY_CHANGED')]"
           }
         }
       ]
@@ -78,9 +75,6 @@
           },
           "aggrFeatureFuncJson": {
             "type": "aggr_feature_feature_to_max_map_func"
-          },
-          "filter": {
-            "jsonPath": "[?(@.operationType == 'FOLDER_OPENED' || @.operationType == 'FILE_DELETED' || @.operationType == 'FILE_OPENED' || @.operationType == 'FILE_RENAMED' || @.operationType == 'FILE_MOVED')]"
           }
         }
       ]

@@ -11,6 +11,9 @@ public enum FixedDurationStrategy {
     DAILY,
     HOURLY;
 
+    public static final String STRATEGY_NAME_FIXED_DURATION_HOURLY = "fixed_duration_hourly";
+    public static final String STRATEGY_NAME_FIXED_DURATION_DAILY = "fixed_duration_daily";
+
     public Duration toDuration() {
         if (this.equals(DAILY)) {
             return Duration.ofDays(1);
@@ -20,6 +23,17 @@ public enum FixedDurationStrategy {
         }
     }
 
+    public String toStrategyName()
+    {
+        if (this.equals(DAILY))
+        {
+            return STRATEGY_NAME_FIXED_DURATION_DAILY;
+        }
+        else
+        {
+            return STRATEGY_NAME_FIXED_DURATION_HOURLY;
+        }
+    }
     public static FixedDurationStrategy fromDuration(Duration duration)
     {
         if(duration.equals(Duration.ofDays(1)))
@@ -35,5 +49,21 @@ public enum FixedDurationStrategy {
     public static FixedDurationStrategy fromSeconds(long durationInSeconds)
     {
         return fromDuration(Duration.ofSeconds(durationInSeconds));
+    }
+
+    public static FixedDurationStrategy fromStartegyName(String strategyName)
+    {
+        if (strategyName.equals(STRATEGY_NAME_FIXED_DURATION_HOURLY))
+        {
+            return FixedDurationStrategy.HOURLY;
+        }
+        else if (strategyName.equals(STRATEGY_NAME_FIXED_DURATION_DAILY))
+        {
+            return FixedDurationStrategy.DAILY;
+        }
+        else
+        {
+            throw new RuntimeException("Unsupported fixed duration strategy name");
+        }
     }
 }

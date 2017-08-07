@@ -3,8 +3,12 @@ package presidio.ade.domain.record.enriched.file;
 
 import fortscale.domain.core.EventResult;
 
+import java.util.List;
+
 public class AdeEnrichedFileContext {
 
+    private final String eventId;
+    private final List<String> operationTypeCategories;
     private String userId;
     private EventResult result;
     private String operationType;
@@ -18,6 +22,8 @@ public class AdeEnrichedFileContext {
         this.operationType = enrichedFileRecord.getOperationType();
         this.isSrcDriveShared = enrichedFileRecord.getSrcDriveShared();
         this.isDstDriveShared = enrichedFileRecord.getDstDriveShared();
+        this.eventId = enrichedFileRecord.getEventId();
+        this.operationTypeCategories = enrichedFileRecord.getOperationTypeCategories();
     }
 
     public String getUserId() {
@@ -58,5 +64,13 @@ public class AdeEnrichedFileContext {
 
     public void setDstDriveShared(Boolean dstDriveShared) {
         isDstDriveShared = dstDriveShared;
+    }
+
+    public String getEventId() {
+        return eventId;
+    }
+
+    public List<String> getOperationTypeCategories() {
+        return operationTypeCategories;
     }
 }

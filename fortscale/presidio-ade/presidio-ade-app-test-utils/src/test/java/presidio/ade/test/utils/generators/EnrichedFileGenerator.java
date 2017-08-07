@@ -28,7 +28,7 @@ public class EnrichedFileGenerator implements EnrichedEventsGenerator {
     private static final int DAYS_BACK_FROM = 3;
     private static final int DAYS_BACK_TO = 1;
 
-    private static final Schema ADE_EVENT_TYPE = Schema.DLPFILE;
+    private static final Schema ADE_EVENT_TYPE = Schema.FILE;
     private static final Duration DURATION = Duration.ofDays(1);
     private static final Instant START_DATE = TimeService.floorTime(Instant.now().minus(Duration.ofDays(DAYS_BACK_FROM)), DURATION);
     private static final Instant END_DATE = TimeService.floorTime(Instant.now().minus(Duration.ofDays(DAYS_BACK_TO)), DURATION);
@@ -52,14 +52,11 @@ public class EnrichedFileGenerator implements EnrichedEventsGenerator {
         generator.setTimeGenerator(new TimeGenerator(LocalTime.of(0, 0), LocalTime.of(23, 59), interval, DAYS_BACK_FROM, DAYS_BACK_TO));
         generator.setUserGenerator(new SingleUserGenerator(testUser));
 
-        OperationTypeCyclicGenerator operationTypeCyclicGenerator = new OperationTypeCyclicGenerator();
-        FileOperationGenerator fileOperationGenerator = new FileOperationGenerator();
-
         List<FileEvent> event = generator.generate();
-        List<EnrichedFileRecord> enrichedDlpFileRecords = converter.convert(event);
+        List<EnrichedFileRecord> enrichedRecords = converter.convert(event);
 
         EnrichedRecordsMetadata enrichedRecordsMetadata = new EnrichedRecordsMetadata(ADE_EVENT_TYPE.getName(), START_DATE, END_DATE);
-        enrichedDataStore.store(enrichedRecordsMetadata, enrichedDlpFileRecords);
+        enrichedDataStore.store(enrichedRecordsMetadata, enrichedRecords);
     }
 
     @Override

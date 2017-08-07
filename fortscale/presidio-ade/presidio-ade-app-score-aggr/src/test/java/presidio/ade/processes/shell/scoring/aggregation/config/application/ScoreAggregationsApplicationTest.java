@@ -1,23 +1,38 @@
 package presidio.ade.processes.shell.scoring.aggregation.config.application;
 
+import com.mongodb.DBCollection;
+import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
+import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.common.general.Schema;
 import fortscale.common.shell.command.PresidioCommands;
+import fortscale.ml.scorer.Scorer;
+import fortscale.ml.scorer.config.AdeEventTypeScorerConfs;
+import fortscale.ml.scorer.config.IScorerConf;
+import fortscale.ml.scorer.config.ScorerConfService;
+import fortscale.ml.scorer.config.ScorerContainerConf;
+import fortscale.utils.factory.FactoryService;
+import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.test.category.ModuleTestCategory;
 import fortscale.utils.time.TimeService;
-import org.junit.FixMethodOrder;
+import org.junit.Assert;
 import org.junit.experimental.categories.Category;
-import org.junit.runner.RunWith;
-import org.junit.runners.MethodSorters;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.testng.annotations.BeforeTest;
+import presidio.ade.domain.record.aggregated.AggregatedFeatureType;
+import presidio.ade.domain.store.aggr.ScoreAggrDataToCollectionNameTranslator;
+import presidio.ade.domain.store.scored.AdeScoredEnrichedRecordToCollectionNameTranslator;
 import presidio.ade.test.utils.tests.EnrichedFileSourceBaseAppTest;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static presidio.ade.domain.record.enriched.AdeScoredEnrichedRecord.EVENT_TYPE_PREFIX;
 
 
 /**
@@ -36,9 +51,19 @@ public class ScoreAggregationsApplicationTest extends EnrichedFileSourceBaseAppT
     private static final Instant END_DATE = TimeService.floorTime(Instant.now().minus(Duration.ofDays(DAYS_BACK_TO)), DURATION);
 
     public static final String EXECUTION_COMMAND = String.format("run  --schema %s --start_date %s --end_date %s --fixed_duration_strategy %s ", ADE_EVENT_TYPE, START_DATE.toString(), END_DATE.toString(), 3600);
+    @Autowired
+    private ScorerConfService scorerConfService;
+    @Autowired
+    private AdeScoredEnrichedRecordToCollectionNameTranslator adeScoredEnrichedRecordToCollectionNameTranslator;
+    @Autowired
+    private ScoreAggrDataToCollectionNameTranslator scoreAggrDataToCollectionNameTranslator;
+    @Autowired
+    private FactoryService<Scorer> scorerFactoryService;
+    @Autowired
+    private AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
+
     @BeforeTest
-    public void beforeTest()
-    {
+    public void beforeTest() {
         mongoTemplate.getCollectionNames().forEach(collection -> mongoTemplate.dropCollection(collection));
     }
 
@@ -54,12 +79,41 @@ public class ScoreAggregationsApplicationTest extends EnrichedFileSourceBaseAppT
 
     @Override
     protected void assertSanityTest() {
-        Set<String> collectionNames = mongoTemplate.getCollectionNames();
-        System.out.println("aa");
+        mongoTemplate.getCollectionNames();
+        AdeEventTypeScorerConfs adeEventTypeScorerConfs = scorerConfService.getAdeEventTypeScorerConfs(ADE_EVENT_TYPE.getName());
+        List<IScorerConf> scorerConfs = adeEventTypeScorerConfs.getScorerConfs().stream().filter(x -> x instanceof ScorerContainerConf).collect(Collectors.toList());
+        List<ScorerContainerConf> scorerContainerConfs = new ArrayList<>();
+        scorerConfs.forEach(scorerConf -> scorerContainerConfs.add(((ScorerContainerConf) scorerConf)));
+        scorerContainerConfs.forEach(
+                scorerContainerConf -> {
+                    List<IScorerConf> scorerConfList = scorerContainerConf.getScorerConfList();
+                    Assert.assertTrue("scorers conf should contain at least one configuration value",scorerConfList.size() > 0);
+                    scorerConfList.forEach(
+                            fileScorer -> {
+                                String scorerName = fileScorer.getName();
+                                String adeEventType = String.format("%s_%s_%s", EVENT_TYPE_PREFIX.toLowerCase(), ADE_EVENT_TYPE.getName(), scorerName);
+                                String collectionName = adeScoredEnrichedRecordToCollectionNameTranslator.toCollectionName(adeEventType);
+                                DBCollection collection = mongoTemplate.getCollection(collectionName);
+                                Assert.assertTrue(String.format("scored collection=%s must have at least one scored record",collectionName),collection.count() > 0);
+                            });
+                });
+        Assert.assertTrue(scorerContainerConfs.size() > 0);
+        List<AggregatedFeatureEventConf> hourlyScoreAggrConfs = aggregatedFeatureEventsConfService.getAggregatedFeatureEventConfList().stream().filter(conf -> {
+            boolean isScoreAggregationConf = AggregatedFeatureType.fromCodeRepresentation(conf.getType()).equals(AggregatedFeatureType.SCORE_AGGREGATION);
+            String strategyName = conf.getBucketConf().getStrategyName();
+            boolean isHourly = FixedDurationStrategy.fromStartegyName(strategyName).equals(FixedDurationStrategy.HOURLY);
+            return (isScoreAggregationConf && isHourly);
+        }).collect(Collectors.toList());
+
+        hourlyScoreAggrConfs.forEach(conf -> {
+            String collectionName = scoreAggrDataToCollectionNameTranslator.toCollectionName(conf.getName());
+            DBCollection collection = mongoTemplate.getCollection(collectionName);
+            Assert.assertTrue(String.format("scored aggr collection=%s must have at least one record",collectionName),collection.count() > 0);
+        });
     }
 
     @Configuration
-    @Import({EnrichedSourceSpringConfig.class,ScoreAggregationsApplicationConfigTest.class, PresidioCommands.class})
+    @Import({EnrichedSourceSpringConfig.class, ScoreAggregationsApplicationConfigTest.class, PresidioCommands.class})
     protected static class springConfigScoreAggregationsApplication {
 
     }
