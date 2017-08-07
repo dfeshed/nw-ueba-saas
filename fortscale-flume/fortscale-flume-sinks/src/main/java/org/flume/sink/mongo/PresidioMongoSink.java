@@ -45,7 +45,7 @@ public class PresidioMongoSink<T extends AbstractDocument> extends AbstractPresi
         mapper.registerModule(new JavaTimeModule());
     }
 
-    private static String[] mandatoryParams = {COLLECTION_NAME, DB_NAME, HOST, HAS_AUTHENTICATION};
+    private static String[] mandatoryParams = {COLLECTION_NAME, DB_NAME, HOST, HAS_AUTHENTICATION, RECORD_TYPE};
 
 
     private SinkMongoRepository sinkMongoRepository;
@@ -73,6 +73,11 @@ public class PresidioMongoSink<T extends AbstractDocument> extends AbstractPresi
                 }
             }
 
+            final String recordTypeAsString = context.getString(RECORD_TYPE);
+            if (Class.forName(recordTypeAsString) == null) {
+                throw new Exception(String.format("%s:[%s] is not a valid type for %s.", RECORD_TYPE, recordTypeAsString, getName()));
+            }
+
             hasAuthentication = Boolean.parseBoolean(context.getString(HAS_AUTHENTICATION));
             if (hasAuthentication) {
                 if (!context.containsKey(USERNAME) || !context.containsKey(PASSWORD)) {
@@ -81,7 +86,7 @@ public class PresidioMongoSink<T extends AbstractDocument> extends AbstractPresi
             }
 
             /* configure mongo */
-            recordType = (Class<T>) Class.forName(context.getString(RECORD_TYPE));
+            recordType = getRecordType(recordTypeAsString);
             batchSize = Integer.parseInt(context.getString(BATCH_SIZE, "1"));
             collectionName = context.getString(COLLECTION_NAME);
             dbName = context.getString(DB_NAME);
