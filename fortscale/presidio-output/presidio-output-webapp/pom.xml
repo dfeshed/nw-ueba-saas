@@ -211,6 +211,7 @@
                 <executions>
                     <execution>
                         <id>auto-generate-REST-client</id>
+                        <phase>compile</phase>
                         <goals>
                             <goal>generate</goal>
                         </goals>
@@ -222,7 +223,8 @@
                             <language>java</language>
                             <generateApiTests>false</generateApiTests>
                             <generateModelTests>false</generateModelTests>
-
+                            <artifactId>presidio-output-generated-client</artifactId>
+                            
 
                             <!-- hint: if you want to generate java server code, e.g. based on Spring Boot,
                                  you can use the following target: <language>spring</language> -->
