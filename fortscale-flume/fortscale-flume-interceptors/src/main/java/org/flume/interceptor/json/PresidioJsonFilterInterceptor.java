@@ -15,17 +15,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+/**
+ * This interceptor is used to remove certain (redundant) fields from the received JSON
+ * Returns the same JSON without the aforementioned fields
+ */
 public class PresidioJsonFilterInterceptor extends AbstractPresidioInterceptor {
 
-    public static final String FIELDS_TO_FILTER_CONF_NAME = "fields_to_filter";
-    public static final String DELIMITER_CONF_NAME = "delimiter";
 
-    private static final Logger logger = LoggerFactory
-            .getLogger(PresidioJsonFilterInterceptor.class);
+
+    private static final Logger logger = LoggerFactory.getLogger(PresidioJsonFilterInterceptor.class);
 
     private final List<String> fieldsToFilter;
 
-    public PresidioJsonFilterInterceptor(List<String> fieldsToFilter) {
+    PresidioJsonFilterInterceptor(List<String> fieldsToFilter) {
         this.fieldsToFilter = fieldsToFilter;
     }
 
@@ -49,13 +51,15 @@ public class PresidioJsonFilterInterceptor extends AbstractPresidioInterceptor {
      */
     public static class Builder implements Interceptor.Builder {
 
+        private static final String FIELDS_TO_FILTER_CONF_NAME = "fields_to_filter";
+        private static final String DELIMITER_CONF_NAME = "delimiter";
         private static final String DEFAULT_DELIMITER_VALUE = ",";
 
         private List<String> fieldsToFilter;
 
         @Override
         public void configure(Context context) {
-            String fieldsToFilterArrayAsString = context.getString(FIELDS_TO_FILTER_CONF_NAME, "");
+            String fieldsToFilterArrayAsString = context.getString(FIELDS_TO_FILTER_CONF_NAME);
             Preconditions.checkArgument(StringUtils.isNotEmpty(fieldsToFilterArrayAsString), FIELDS_TO_FILTER_CONF_NAME + " can not be empty.");
 
             String delim = context.getString(DELIMITER_CONF_NAME, DEFAULT_DELIMITER_VALUE);
@@ -65,7 +69,7 @@ public class PresidioJsonFilterInterceptor extends AbstractPresidioInterceptor {
             fieldsToFilter = new ArrayList<>();
             for (int i = 0; i < fieldToFilterArray.length; i++) {
                 currFieldToFilter = fieldToFilterArray[i];
-                Preconditions.checkArgument(StringUtils.isNotEmpty(currFieldToFilter), "field_to_filter(index={}) can not be empty. {}={}.", i, FIELDS_TO_FILTER_CONF_NAME, fieldsToFilterArrayAsString);
+                Preconditions.checkArgument(StringUtils.isNotEmpty(currFieldToFilter), "{}(index={}) can not be empty. {}={}.", FIELDS_TO_FILTER_CONF_NAME, i, FIELDS_TO_FILTER_CONF_NAME, fieldsToFilterArrayAsString);
                 fieldsToFilter.add(currFieldToFilter);
             }
 
