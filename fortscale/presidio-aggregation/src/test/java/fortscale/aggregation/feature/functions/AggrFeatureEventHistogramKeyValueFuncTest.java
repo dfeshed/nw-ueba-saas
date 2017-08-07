@@ -1,5 +1,6 @@
 package fortscale.aggregation.feature.functions;
 
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.aggregation.feature.event.AggrEvent;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
@@ -146,7 +147,7 @@ public class AggrFeatureEventHistogramKeyValueFuncTest {
 		Assert.assertEquals(new Long(3), aggrFeatureValue.getTotal());
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test(expected = JsonMappingException.class)
 	public void should_fail_when_the_required_key_is_missing() throws Exception {
 		AggregatedFeatureEventConf conf = getAggregatedFeatureEventConf(
 				"my_aggregated_feature_event",

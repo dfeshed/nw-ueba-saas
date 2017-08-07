@@ -1,16 +1,13 @@
 package fortscale.aggregation.feature.functions;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.common.feature.AggrFeatureValue;
-import fortscale.common.feature.Feature;
 import fortscale.common.util.GenericHistogram;
 import org.springframework.util.Assert;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -29,40 +26,48 @@ import java.util.Map;
  */
 @JsonTypeName(AggrFeatureEventHistogramKeyValueFunc.AGGR_FEATURE_FUNCTION_TYPE)
 @JsonAutoDetect(
-		fieldVisibility = Visibility.ANY,
-		getterVisibility = Visibility.NONE,
-		isGetterVisibility = Visibility.NONE,
-		setterVisibility = Visibility.NONE
+		creatorVisibility = JsonAutoDetect.Visibility.ANY,
+		fieldVisibility = JsonAutoDetect.Visibility.NONE,
+		getterVisibility = JsonAutoDetect.Visibility.NONE,
+		isGetterVisibility = JsonAutoDetect.Visibility.NONE,
+		setterVisibility = JsonAutoDetect.Visibility.NONE
 )
-public class AggrFeatureEventHistogramKeyValueFunc implements IAggrFeatureEventFunction {
+public class AggrFeatureEventHistogramKeyValueFunc extends AbstractAggrFeatureEventHistogram {
 	public static final String AGGR_FEATURE_FUNCTION_TYPE = "aggr_feature_histogram_key_value_func";
 	public static final String KEY_FIELD_NAME = "key";
 
-	@JsonProperty(KEY_FIELD_NAME)
-	private String key;
+	private final String key;
+
+	/**
+	 * C'tor.
+	 *
+	 * @param key The key whose number of appearances (counter) is required
+	 */
+	@JsonCreator
+	public AggrFeatureEventHistogramKeyValueFunc(@JsonProperty(KEY_FIELD_NAME) String key) {
+		Assert.hasText(key, "Function is missing the key whose value needs to be retrieved.");
+		this.key = key;
+	}
 
 	@Override
-	public Feature calculateAggrFeature(
-			AggregatedFeatureEventConf aggregatedFeatureEventConf,
-			List<Map<String, Feature>> mapsOfAggregatedFeaturesFromMultipleFeatureBuckets) {
-
-		Assert.hasText(key, "Function is missing the key whose value needs to be retrieved.");
-		GenericHistogram genericHistogram = AggrFeatureHistogramFunc.calculateHistogramFromBucketAggrFeature(
-				aggregatedFeatureEventConf, mapsOfAggregatedFeaturesFromMultipleFeatureBuckets);
-		Feature aggregatedFeature = null;
+	protected AggrFeatureValue calculateHistogramAggrFeatureValue(GenericHistogram genericHistogram) {
+		AggrFeatureValue aggrFeatureValue = null;
 
 		if (genericHistogram != null) {
+			// Get the underlying map from key to number of appearances (counter)
 			Map<String, Double> histogramMap = genericHistogram.getHistogramMap();
 
 			if (histogramMap != null && !histogramMap.isEmpty()) {
 				Double counter = histogramMap.get(key);
-				counter = (counter == null || counter.isNaN() || counter.isInfinite()) ? 0 : counter;
-				long totalCount = (long)genericHistogram.getTotalCount();
-				AggrFeatureValue aggrFeatureValue = new AggrFeatureValue(counter, totalCount);
-				aggregatedFeature = new Feature(aggregatedFeatureEventConf.getName(), aggrFeatureValue);
+				counter = counter == null ? 0 : counter;
+
+				// If counter is NaN or infinite, act as if there weren't any counts at all
+				if (!counter.isNaN() && !counter.isInfinite()) {
+					aggrFeatureValue = new AggrFeatureValue(counter, (long)genericHistogram.getTotalCount());
+				}
 			}
 		}
 
-		return aggregatedFeature;
+		return aggrFeatureValue;
 	}
 }
