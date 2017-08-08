@@ -4,15 +4,10 @@ from datetime import timedelta
 
 from presidio.builders.presidio_dag_builder import PresidioDagBuilder
 from presidio.operators.fixed_duration_jar_operator import FixedDurationJarOperator
+from presidio.utils.configuration.config_server_configuration_reader_singleton import \
+    ConfigServerConfigurationReaderSingleton
 
-JAR_PATH = \
-    '/home/presidio/dev-projects/presidio-core/fortscale/target/dependencies/presidio-input-core-1.0.0-SNAPSHOT.jar'
-MAIN_CLASS = 'presidio.input.core.FortscaleInputCoreApplication'
-
-jvm_args = {
-    'jar_path': JAR_PATH,
-    'main_class': MAIN_CLASS
-}
+INPUT_JVM_ARGS_CONFIG_PATH = 'dags.tasks_instances.input_task.jvm_args'
 
 
 class InputDagBuilder(PresidioDagBuilder):
@@ -30,6 +25,7 @@ class InputDagBuilder(PresidioDagBuilder):
         """
 
         self.data_sources = data_sources
+        self.jvm_args = InputDagBuilder.conf_reader.read(conf_key=INPUT_JVM_ARGS_CONFIG_PATH)
 
     def build(self, input_dag):
         """
