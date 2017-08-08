@@ -1,20 +1,26 @@
 package presidio.monitoring.aspect.metrics;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import fortscale.utils.logging.Logger;
 import org.springframework.boot.actuate.endpoint.PublicMetrics;
 import org.springframework.boot.actuate.metrics.Metric;
-import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
+import presidio.monitoring.aspect.MonitoringAspects;
 
-import java.lang.management.*;
-import java.util.*;
+import java.lang.management.GarbageCollectorMXBean;
+import java.lang.management.ManagementFactory;
+import java.lang.management.MemoryUsage;
+import java.lang.management.ThreadMXBean;
+import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.List;
 
 import static presidio.monitoring.DefaultPublicMetricsNames.*;
 
 @Component
-public class PresidioDefaultMetrics implements PublicMetrics{
+public class PresidioDefaultMetrics implements PublicMetrics {
 
+    private static final Logger logger = Logger.getLogger(PresidioDefaultMetrics.class);
 
     private Collection<Metric<?>> result;
     private MemoryUsage heapMemoryUsage;
@@ -35,8 +41,6 @@ public class PresidioDefaultMetrics implements PublicMetrics{
     private Metric<Long> newMemoryMetric(String name, long bytes) {
         return new Metric<>(name, bytes / 1024);
     }
-
-
 
 
     @Override
@@ -72,9 +76,8 @@ public class PresidioDefaultMetrics implements PublicMetrics{
                 result.add(new Metric<>("gc." + name + ".time", garbageCollectorMXBean.getCollectionTime()));
             }
             result.add(new Metric<>(PROCESSORS, runtime.availableProcessors()));
-        }
-        catch (NoClassDefFoundError ex) {
-            // Expected on Google App Engine
+        } catch (Exception ex) {
+            logger.info("Error when trying to collect defoult metrics.",ex);
         }
     }
 
@@ -90,6 +93,7 @@ public class PresidioDefaultMetrics implements PublicMetrics{
     /**
      * Turn GC names like 'PS Scavenge' or 'PS MarkSweep' into something that is more
      * metrics friendly.
+     *
      * @param name the source name
      * @return a metric friendly name
      */
@@ -100,8 +104,8 @@ public class PresidioDefaultMetrics implements PublicMetrics{
     private long getTotalNonHeapMemoryIfPossible() {
         try {
             return ManagementFactory.getMemoryMXBean().getNonHeapMemoryUsage().getUsed();
-        }
-        catch (Throwable ex) {
+        } catch (Throwable ex) {
+            logger.info("Error when trying to collect defoult metrics.",ex);
             return 0;
         }
     }
