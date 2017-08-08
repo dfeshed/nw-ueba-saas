@@ -2,18 +2,18 @@ package presidio.data.generators.fileop;
 
 import presidio.data.domain.event.OperationType;
 import presidio.data.domain.event.file.FILE_OPERATION_TYPE;
-import presidio.data.domain.event.file.FILE_OPERATION_TYPE_CATEGORIES;
 import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.fileentity.IFileEntityGenerator;
 import presidio.data.generators.fileentity.NullFileEntityGenerator;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 
+/**
+ * Created by YaronDL on 8/8/2017.
+ */
 public class FileOperationGeneratorTemplateFactory {
-    private HashMap<String,List<String>> opType2OpCategoryMap = getOpType2OpCategoryMap();
     /**
      * "Delete" operations generator
      * Operation type - any FILE_DELETE
@@ -21,10 +21,11 @@ public class FileOperationGeneratorTemplateFactory {
      * Operation Type Categories list - only FILE_OPERATION
      **/
     public IFileOperationGenerator createDeleteFileOperationsGenerator() throws GeneratorException {
-
+        return createDeleteFileOperationsGenerator(null);
+    }
+    public IFileOperationGenerator createDeleteFileOperationsGenerator(List<String> categories) throws GeneratorException {
         FileOperationGenerator generator = new FileOperationGenerator();
-        FixedFileOperationTypeGenerator fixedFileOperationTypeGenerator = new FixedFileOperationTypeGenerator(new OperationType(FILE_OPERATION_TYPE.FILE_DELETED.value, Collections.singletonList(FILE_OPERATION_TYPE_CATEGORIES.FILE_ACTION.value)));
-        generator.setOperationTypeGenerator(fixedFileOperationTypeGenerator);
+        generator.setOperationTypeGenerator(getFixedFileOperationTypeGenerator(FILE_OPERATION_TYPE.FILE_DELETED.value, categories));
 
         IFileEntityGenerator nullFileEntityGenerator = new NullFileEntityGenerator();
         generator.setDestFileEntityGenerator(nullFileEntityGenerator);
@@ -33,48 +34,46 @@ public class FileOperationGeneratorTemplateFactory {
     }
 
     public IFileOperationGenerator createMoveFileOperationsGenerator() throws GeneratorException {
-        return getFileOperationsGenerator(FILE_OPERATION_TYPE.FILE_MOVED.value);
+        return createMoveFileOperationsGenerator(null);
+    }
+    public IFileOperationGenerator createMoveFileOperationsGenerator(List<String> categories) throws GeneratorException {
+        return getFileOperationsGenerator(FILE_OPERATION_TYPE.FILE_MOVED.value, categories);
     }
 
+
     public IFileOperationGenerator createLocalSharePermissionsChangeOperationsGenerator() throws GeneratorException {
-        return getFileOperationsGenerator(FILE_OPERATION_TYPE.LOCAL_SHARE_PERMISSIONS_CHANGED.value);
+        return createLocalSharePermissionsChangeOperationsGenerator(null);
+    }
+    public IFileOperationGenerator createLocalSharePermissionsChangeOperationsGenerator(List<String> categories) throws GeneratorException {
+        return getFileOperationsGenerator(FILE_OPERATION_TYPE.LOCAL_SHARE_PERMISSIONS_CHANGED.value, categories);
     }
 
     /**
-     * Operation type - any FILE OPERATION except DELETE
-     * Sets operation category according to the operation type
+     * operationType - FILE OPERATION
+     * categories - categories that the operation type belong to
      **/
-    private IFileOperationGenerator getFileOperationsGenerator(String operationType) throws GeneratorException {
+    private IFileOperationGenerator getFileOperationsGenerator(String operationType, List<String> categories) throws GeneratorException {
         FileOperationGenerator generator = new FileOperationGenerator();
-        generator.setOperationTypeGenerator(getFixedFileOperationTypeGenerator(operationType));
+        generator.setOperationTypeGenerator(getFixedFileOperationTypeGenerator(operationType, categories));
 
         return generator;
     }
 
-    private FixedFileOperationTypeGenerator getFixedFileOperationTypeGenerator(String operationType){
-        return new FixedFileOperationTypeGenerator(new OperationType(operationType, getOperationTypeCategrories(operationType)));
+    private FixedFileOperationTypeGenerator getFixedFileOperationTypeGenerator(String operationType, List<String> categories){
+        return new FixedFileOperationTypeGenerator(new OperationType(operationType, getOperationTypeCategrories(operationType, categories)));
     }
 
-    private List<String> getOperationTypeCategrories(String operationType){
-        List<String> categories = opType2OpCategoryMap.get(operationType);
-        return categories == null ? Collections.emptyList() : categories;
+    private List<String> getOperationTypeCategrories(String operationType, List<String> categories){
+        List<String> ret = new ArrayList<>();
+        if(categories != null){
+            ret.addAll(categories);
+        }
+        ret.addAll(getOperationTypeCategrories(operationType));
+        return ret == null ? Collections.emptyList() : ret;
     }
 
-    private static HashMap<String, List<String>> getOpType2OpCategoryMap() {
-        HashMap<String, List<String>> opType2OpCategoryMap = new HashMap<>();
-        opType2OpCategoryMap.put(FILE_OPERATION_TYPE.FOLDER_OPENED.value, Collections.singletonList(FILE_OPERATION_TYPE_CATEGORIES.FILE_ACTION.value));
-        opType2OpCategoryMap.put(FILE_OPERATION_TYPE.FILE_DELETED.value, Collections.singletonList(FILE_OPERATION_TYPE_CATEGORIES.FILE_ACTION.value));
-        opType2OpCategoryMap.put(FILE_OPERATION_TYPE.FILE_OPENED.value, Collections.singletonList(FILE_OPERATION_TYPE_CATEGORIES.FILE_ACTION.value));
-        opType2OpCategoryMap.put(FILE_OPERATION_TYPE.FILE_RENAMED.value, Collections.singletonList(FILE_OPERATION_TYPE_CATEGORIES.FILE_ACTION.value));
-        opType2OpCategoryMap.put(FILE_OPERATION_TYPE.FILE_MOVED.value, Collections.singletonList(FILE_OPERATION_TYPE_CATEGORIES.FILE_ACTION.value));
-
-        opType2OpCategoryMap.put(FILE_OPERATION_TYPE.LOCAL_SHARE_PERMISSIONS_CHANGED.value, Collections.singletonList(FILE_OPERATION_TYPE_CATEGORIES.FILE_PERMISSION_CHANGE.value));
-        opType2OpCategoryMap.put(FILE_OPERATION_TYPE.FOLDER_ACCESS_RIGHTS_CHANGED.value, Collections.singletonList(FILE_OPERATION_TYPE_CATEGORIES.FILE_PERMISSION_CHANGE.value));
-        opType2OpCategoryMap.put(FILE_OPERATION_TYPE.FILE_ACCESS_RIGHTS_CHANGED.value, Collections.singletonList(FILE_OPERATION_TYPE_CATEGORIES.FILE_PERMISSION_CHANGE.value));
-        opType2OpCategoryMap.put(FILE_OPERATION_TYPE.FILE_CLASSIFICATION_CHANGED.value, Collections.singletonList(FILE_OPERATION_TYPE_CATEGORIES.FILE_PERMISSION_CHANGE.value));
-        opType2OpCategoryMap.put(FILE_OPERATION_TYPE.FOLDER_CLASSIFICATION_CHANGED.value, Collections.singletonList(FILE_OPERATION_TYPE_CATEGORIES.FILE_PERMISSION_CHANGE.value));
-        opType2OpCategoryMap.put(FILE_OPERATION_TYPE.FILE_CENTRAL_ACCESS_POLICY_CHANGED.value, Collections.singletonList(FILE_OPERATION_TYPE_CATEGORIES.FILE_PERMISSION_CHANGE.value));
-        return opType2OpCategoryMap;
+    protected List<String> getOperationTypeCategrories(String operationType){
+        return Collections.emptyList();
     }
 
     /**
