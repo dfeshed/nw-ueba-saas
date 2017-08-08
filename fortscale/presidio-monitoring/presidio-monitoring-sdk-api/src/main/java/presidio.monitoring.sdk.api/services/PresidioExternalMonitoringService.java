@@ -5,11 +5,11 @@ import java.util.Set;
 
 public interface PresidioExternalMonitoringService {
 
-    void reportNumberOfFilteredEventMetric(long value, Set tags);
+    void reportNumberOfFilteredEventMetric(long value, Set<String> tags);
 
-    void reportNumberOfProcessedEventsMetric(long value, Set tags);
+    void reportNumberOfProcessedEventsMetric(long value, Set<String> tags);
 
-    void reportCustomMetric(String metricName, long value, Set tags, String valueType);
+    void reportCustomMetric(String metricName, long value, Set<String> tags, String valueType);
 
 
 }

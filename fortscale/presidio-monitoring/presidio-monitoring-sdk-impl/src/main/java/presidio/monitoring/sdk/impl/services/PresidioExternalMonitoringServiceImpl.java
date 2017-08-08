@@ -20,17 +20,17 @@ public class PresidioExternalMonitoringServiceImpl implements PresidioExternalMo
     }
 
     @Override
-    public void reportNumberOfFilteredEventMetric(long value, Set tags) {
+    public void reportNumberOfFilteredEventMetric(long value, Set<String> tags) {
         metricCollectingService.addMetric(FILTERED_EVENT_METRIC, value, tags, TYPE_LONG);
     }
 
     @Override
-    public void reportNumberOfProcessedEventsMetric(long value, Set tags) {
+    public void reportNumberOfProcessedEventsMetric(long value, Set<String> tags) {
         metricCollectingService.addMetric(NUMBER_OF_PROCESSED_EVENTS_METRIC, value, tags, TYPE_LONG);
     }
 
     @Override
-    public void reportCustomMetric(String metricName, long value, Set tags, String valueType) {
+    public void reportCustomMetric(String metricName, long value, Set<String> tags, String valueType) {
         metricCollectingService.addMetric(metricName, value, tags, valueType);
     }
 }

@@ -1,9 +1,11 @@
 package presidio.monitoring.aspect.metrics;
 
+import fortscale.utils.logging.Logger;
 import org.springframework.boot.actuate.endpoint.PublicMetrics;
 import org.springframework.boot.actuate.metrics.Metric;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
+import presidio.monitoring.aspect.MonitoringAspects;
 
 import java.lang.management.GarbageCollectorMXBean;
 import java.lang.management.ManagementFactory;
@@ -18,6 +20,7 @@ import static presidio.monitoring.DefaultPublicMetricsNames.*;
 @Component
 public class PresidioDefaultMetrics implements PublicMetrics {
 
+    private static final Logger logger = Logger.getLogger(PresidioDefaultMetrics.class);
 
     private Collection<Metric<?>> result;
     private MemoryUsage heapMemoryUsage;
@@ -73,8 +76,8 @@ public class PresidioDefaultMetrics implements PublicMetrics {
                 result.add(new Metric<>("gc." + name + ".time", garbageCollectorMXBean.getCollectionTime()));
             }
             result.add(new Metric<>(PROCESSORS, runtime.availableProcessors()));
-        } catch (NoClassDefFoundError ex) {
-            // Expected on Google App Engine
+        } catch (Exception ex) {
+            logger.info("Error when trying to collect defoult metrics.",ex);
         }
     }
 
@@ -102,6 +105,7 @@ public class PresidioDefaultMetrics implements PublicMetrics {
         try {
             return ManagementFactory.getMemoryMXBean().getNonHeapMemoryUsage().getUsed();
         } catch (Throwable ex) {
+            logger.info("Error when trying to collect defoult metrics.",ex);
             return 0;
         }
     }
