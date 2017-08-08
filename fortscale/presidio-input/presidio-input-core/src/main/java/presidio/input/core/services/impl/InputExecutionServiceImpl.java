@@ -6,7 +6,6 @@ import fortscale.common.shell.PresidioExecutionService;
 import fortscale.common.general.CommonStrings;
 import fortscale.domain.core.AbstractAuditableDocument;
 import fortscale.utils.logging.Logger;
-import presidio.monitoring.aspect.annotations.RunTime;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.input.core.services.converters.*;
 import presidio.input.core.services.data.AdeDataService;

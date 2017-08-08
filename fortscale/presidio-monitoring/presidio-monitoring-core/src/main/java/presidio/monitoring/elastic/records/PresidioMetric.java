@@ -67,8 +67,8 @@ public class PresidioMetric{
         this.timestamp = timestamp;
     }
 
-    public void setTags(Set tags) {
-        this.tags = tags;
+    public void setTags(Set<String> tags) {
+        this.tags.addAll(tags);
     }
 
     public void setUnit(String unit) {

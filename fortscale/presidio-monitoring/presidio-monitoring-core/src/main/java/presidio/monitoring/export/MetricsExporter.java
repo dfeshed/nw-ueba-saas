@@ -50,6 +50,7 @@ public abstract class MetricsExporter implements ApplicationListener<ContextClos
         for (Map.Entry<String, Object> entry : map.entrySet()) {
             metric = entry.getKey();
             value = (PresidioMetric) entry.getValue();
+            value.setTags(tags);
             if (!defaultInfraMetrics.contains(metric)) {
                 if (!customMetrics.containsKey(metric))
                     customMetrics.put(metric, value);
