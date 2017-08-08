@@ -1,5 +1,7 @@
 package presidio.data.generators.fileop;
 
+import presidio.data.domain.event.OperationType;
+import presidio.data.domain.event.file.FILE_OPERATION_TYPE;
 import presidio.data.domain.event.file.FileOperation;
 import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.common.IStringGenerator;
@@ -9,6 +11,7 @@ import presidio.data.generators.fileentity.FileEntityGenerator;
 import presidio.data.generators.fileentity.IFileEntityGenerator;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -16,32 +19,24 @@ import java.util.List;
  *
  * **/
 public class FileOperationGenerator implements IFileOperationGenerator {
-    private HashMap<String,String[]> opType2OpCategoryMap = new OpTypeCategories().getOpType2OpCategoryMap();
-
     private IFileEntityGenerator sourceFileEntityGenerator;
     private IFileEntityGenerator destFileEntityGenerator;
-    private IStringGenerator operationTypeGenerator;
+    private IFileOperationTypeGenerator operationTypeGenerator;
     private IStringGenerator operationResultGenerator;
     private IStringGenerator operationResultCodeGenerator;
 
     public FileOperationGenerator() throws GeneratorException {
         sourceFileEntityGenerator = new FileEntityGenerator();
         destFileEntityGenerator = new FileEntityGenerator();
-        operationTypeGenerator = new FileOperationTypeCyclicGenerator();
+        operationTypeGenerator = new FixedFileOperationTypeGenerator(new OperationType("dummyOperationType", Collections.emptyList()));
         operationResultGenerator = new OperationResultPercentageGenerator();
         operationResultCodeGenerator = new RandomStringGenerator(6);
     }
 
     public FileOperation getNext(){
-        String operationType = (String) getOperationTypeGenerator().getNext();
         return new FileOperation(getSourceFileEntityGenerator().getNext(), getDestFileEntityGenerator().getNext(),
-                operationType, getOperationTypeCategories(operationType), (String) getOperationResultGenerator().getNext(), (String) getOperationResultCodeGenerator().getNext());
+                operationTypeGenerator.getNext(), (String) getOperationResultGenerator().getNext(), (String) getOperationResultCodeGenerator().getNext());
     }
-
-    private List<String> getOperationTypeCategories(String operationType) {
-        return Arrays.asList(opType2OpCategoryMap.get(operationType));
-    }
-
 
     public IFileEntityGenerator getSourceFileEntityGenerator() {
         return sourceFileEntityGenerator;
@@ -59,11 +54,11 @@ public class FileOperationGenerator implements IFileOperationGenerator {
         this.destFileEntityGenerator = destFileEntityGenerator;
     }
 
-    public IStringGenerator getOperationTypeGenerator() {
+    public IFileOperationTypeGenerator getOperationTypeGenerator() {
         return operationTypeGenerator;
     }
 
-    public void setOperationTypeGenerator(IStringGenerator operationTypeGenerator) {
+    public void setOperationTypeGenerator(IFileOperationTypeGenerator operationTypeGenerator) {
         this.operationTypeGenerator = operationTypeGenerator;
     }
 

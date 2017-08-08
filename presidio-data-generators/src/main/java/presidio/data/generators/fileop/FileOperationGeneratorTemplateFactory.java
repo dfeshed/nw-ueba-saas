@@ -1,54 +1,79 @@
 package presidio.data.generators.fileop;
 
+import presidio.data.domain.event.OperationType;
 import presidio.data.domain.event.file.FILE_OPERATION_TYPE;
 import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.fileentity.IFileEntityGenerator;
 import presidio.data.generators.fileentity.NullFileEntityGenerator;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
+/**
+ * Created by YaronDL on 8/8/2017.
+ */
 public class FileOperationGeneratorTemplateFactory {
-    private HashMap<String,String[]> opType2OpCategoryMap = new OpTypeCategories().getOpType2OpCategoryMap();
-
     /**
      * "Delete" operations generator
      * Operation type - any FILE_DELETE
      * Destination file - all fields are "null"
      * Operation Type Categories list - only FILE_OPERATION
      **/
-    public IFileOperationGenerator getDeleteFileOperationsGenerator() throws GeneratorException {
-
-        CustomFileOperationGenerator generator = new CustomFileOperationGenerator();
-
-        FileOperationTypeCyclicGenerator deleteOpTypeGenerator = new FileOperationTypeCyclicGenerator(new String[] {FILE_OPERATION_TYPE.FILE_DELETED.value});
-        generator.setOperationTypeGenerator(deleteOpTypeGenerator);
+    public IFileOperationGenerator createDeleteFileOperationsGenerator() throws GeneratorException {
+        return createDeleteFileOperationsGenerator(null);
+    }
+    public IFileOperationGenerator createDeleteFileOperationsGenerator(List<String> categories) throws GeneratorException {
+        FileOperationGenerator generator = new FileOperationGenerator();
+        generator.setOperationTypeGenerator(getFixedFileOperationTypeGenerator(FILE_OPERATION_TYPE.FILE_DELETED.value, categories));
 
         IFileEntityGenerator nullFileEntityGenerator = new NullFileEntityGenerator();
         generator.setDestFileEntityGenerator(nullFileEntityGenerator);
 
-        FileOpTypeCategoriesGenerator opTypeCategoriesGenerator = new FileOpTypeCategoriesGenerator(
-                opType2OpCategoryMap.get(FILE_OPERATION_TYPE.FILE_DELETED.value));
-        generator.setOperationTypeCategoriesGenerator(opTypeCategoriesGenerator);
+        return generator;
+    }
+
+    public IFileOperationGenerator createMoveFileOperationsGenerator() throws GeneratorException {
+        return createMoveFileOperationsGenerator(null);
+    }
+    public IFileOperationGenerator createMoveFileOperationsGenerator(List<String> categories) throws GeneratorException {
+        return getFileOperationsGenerator(FILE_OPERATION_TYPE.FILE_MOVED.value, categories);
+    }
+
+
+    public IFileOperationGenerator createLocalSharePermissionsChangeOperationsGenerator() throws GeneratorException {
+        return createLocalSharePermissionsChangeOperationsGenerator(null);
+    }
+    public IFileOperationGenerator createLocalSharePermissionsChangeOperationsGenerator(List<String> categories) throws GeneratorException {
+        return getFileOperationsGenerator(FILE_OPERATION_TYPE.LOCAL_SHARE_PERMISSIONS_CHANGED.value, categories);
+    }
+
+    /**
+     * operationType - FILE OPERATION
+     * categories - categories that the operation type belong to
+     **/
+    private IFileOperationGenerator getFileOperationsGenerator(String operationType, List<String> categories) throws GeneratorException {
+        FileOperationGenerator generator = new FileOperationGenerator();
+        generator.setOperationTypeGenerator(getFixedFileOperationTypeGenerator(operationType, categories));
 
         return generator;
     }
 
-    /**
-     * Operation type - any FILE OPERATION except DELETE
-     * Sets operation category according to the operation type
-     **/
-    public IFileOperationGenerator getFileOperationsGenerator(String operationType) throws GeneratorException {
+    private FixedFileOperationTypeGenerator getFixedFileOperationTypeGenerator(String operationType, List<String> categories){
+        return new FixedFileOperationTypeGenerator(new OperationType(operationType, getOperationTypeCategrories(operationType, categories)));
+    }
 
-        CustomFileOperationGenerator generator = new CustomFileOperationGenerator();
-        FileOperationTypeCyclicGenerator opTypeGen = new FileOperationTypeCyclicGenerator(
-                new String[] {operationType});
-        generator.setOperationTypeGenerator(opTypeGen);
+    private List<String> getOperationTypeCategrories(String operationType, List<String> categories){
+        List<String> ret = new ArrayList<>();
+        if(categories != null){
+            ret.addAll(categories);
+        }
+        ret.addAll(getOperationTypeCategrories(operationType));
+        return ret == null ? Collections.emptyList() : ret;
+    }
 
-        FileOpTypeCategoriesGenerator opTypeCategoriesGenerator = new FileOpTypeCategoriesGenerator(
-            opType2OpCategoryMap.get(operationType));
-        generator.setOperationTypeCategoriesGenerator(opTypeCategoriesGenerator);
-
-        return generator;
+    protected List<String> getOperationTypeCategrories(String operationType){
+        return Collections.emptyList();
     }
 
     /**
