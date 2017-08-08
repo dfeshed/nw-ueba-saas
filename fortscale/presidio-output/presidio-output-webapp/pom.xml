@@ -295,30 +295,6 @@
                     <mainClass>presidio.webapp.clientbuilder.ClientBuilder</mainClass>
                 </configuration>
             </plugin>
-            <!--<plugin>-->
-            <!--<artifactId>maven-clean-plugin</artifactId>-->
-            <!--<executions>-->
-            <!--<execution>-->
-            <!--<id>clean-additional-generated-files</id>-->
-            <!--<phase>generate-sources</phase>-->
-            <!--<goals>-->
-            <!--<goal>clean</goal>-->
-            <!--</goals>-->
-            <!--<configuration>-->
-            <!--<excludeDefaultDirectories>true</excludeDefaultDirectories>-->
-            <!--<filesets>-->
-            <!--<fileset>-->
-            <!--<directory>${project.build.directory}/generated-sources/swagger</directory>-->
-            <!--<excludes>-->
-            <!--<exclude>src/main/java/**</exclude>-->
-            <!--</excludes>-->
-            <!--<followSymlinks>false</followSymlinks>-->
-            <!--</fileset>-->
-            <!--</filesets>-->
-            <!--</configuration>-->
-            <!--</execution>-->
-            <!--</executions>-->
-            <!--</plugin>-->
         </plugins>
     </build>
 
