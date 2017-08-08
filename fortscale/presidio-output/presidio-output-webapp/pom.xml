@@ -256,18 +256,11 @@
                             <!-- target to generate java client code -->
                             <language>java</language>
                             <library>jersey2</library>
-                            <!--<language>spring</language>-->
-                            <!--<library>spring-mvc</library>-->
-                            <!--<generateApiTests>true</generateApiTests>-->
-                            <!--<generateModelTests>false</generateModelTests>-->
-                            <!--<artifactId>presidio-output-generated-client</artifactId>-->
+
                             <modelPackage>presidio.output.client.model</modelPackage>
                             <apiPackage>presidio.output.client.api</apiPackage>
                             <invokerPackage>presidio.output.client.client</invokerPackage>
-                            <!-- hint: if you want to generate java server code, e.g. based on Spring Boot,
-                                 you can use the following target: <language>spring</language> -->
 
-                            <!-- output to /target/generated-sources/swagger/ -->
                             <configOptions>
                                 <groupId>fortscaled</groupId>
                                 <artifactId>residio-output-generated-client</artifactId>
