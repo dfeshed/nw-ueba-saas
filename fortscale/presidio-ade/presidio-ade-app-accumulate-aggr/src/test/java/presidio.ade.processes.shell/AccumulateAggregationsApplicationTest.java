@@ -3,6 +3,7 @@ package presidio.ade.processes.shell;
 import fortscale.common.general.Schema;
 import fortscale.utils.time.TimeService;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -17,11 +18,12 @@ import java.time.Instant;
 import java.util.List;
 
 @ContextConfiguration
+@Ignore
 public class AccumulateAggregationsApplicationTest extends EnrichedSourceBaseAppTest {
     private static final int DAYS_BACK_FROM = 3;
     private static final int DAYS_BACK_TO = 1;
 
-    private static final Schema ADE_EVENT_TYPE = Schema.DLPFILE;
+    private static final Schema ADE_EVENT_TYPE = Schema.FILE;
     private static final Duration DURATION = Duration.ofDays(1);
     private static final Instant START_DATE = TimeService.floorTime(Instant.now().minus(Duration.ofDays(DAYS_BACK_FROM)), DURATION);
     private static final Instant END_DATE = TimeService.floorTime(Instant.now().minus(Duration.ofDays(DAYS_BACK_TO)), DURATION);

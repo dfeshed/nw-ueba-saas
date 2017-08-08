@@ -13,7 +13,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
  */
 @Configuration
 @Import({AccumulatedDataToCollectionNameTranslatorConfig.class, MongoDbBulkOpUtilConfig.class})
-public class AccumulatedDataStoreConfig {
+public class AggregationEventsAccumulationDataStoreConfig {
     @Autowired
     public MongoTemplate mongoTemplate;
     @Autowired
@@ -22,9 +22,9 @@ public class AccumulatedDataStoreConfig {
     public MongoDbBulkOpUtil mongoDbBulkOpUtil;
 
     @Bean
-    public AccumulatedDataStore aggrDataStore()
+    public AggregationEventsAccumulationDataStore aggrDataStore()
     {
-        return new AccumulatedDataStoreMongoImpl(mongoTemplate,translator,mongoDbBulkOpUtil);
+        return new AggregationEventsAccumulationDataStoreMongoImpl(mongoTemplate,translator,mongoDbBulkOpUtil);
     }
 
 }

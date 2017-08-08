@@ -56,6 +56,8 @@ public class Feature implements Serializable {
             featureValue = new FeatureStringValue((String)object);
         } else if (object instanceof Number) {
             featureValue = new FeatureNumericValue((Number)object);
+        } else if (object.getClass().isEnum()) {
+            featureValue = new FeatureStringValue(((Enum) object).name());
         }
 
         return new Feature(name, featureValue);

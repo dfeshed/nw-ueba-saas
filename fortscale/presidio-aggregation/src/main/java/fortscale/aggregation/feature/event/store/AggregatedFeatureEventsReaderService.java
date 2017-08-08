@@ -1,8 +1,8 @@
 package fortscale.aggregation.feature.event.store;
 
-import fortscale.accumulator.aggregation.store.AccumulatedAggregatedFeatureEventStore;
 import fortscale.aggregation.feature.event.AggrEvent;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
+import presidio.ade.domain.store.accumulator.AggregationEventsAccumulationDataReader;
 
 import java.util.Date;
 import java.util.List;
@@ -13,11 +13,11 @@ public class AggregatedFeatureEventsReaderService {
 
 	private AggregatedFeatureEventsMongoStore aggregatedFeatureEventsMongoStore;
 
-	private AccumulatedAggregatedFeatureEventStore accumulatedAggregatedFeatureEventStore;
+	private AggregationEventsAccumulationDataReader aggregationEventsAccumulationDataReader;
 
-	public AggregatedFeatureEventsReaderService(AggregatedFeatureEventsMongoStore aggregatedFeatureEventsMongoStore, AccumulatedAggregatedFeatureEventStore accumulatedAggregatedFeatureEventStore) {
+	public AggregatedFeatureEventsReaderService(AggregatedFeatureEventsMongoStore aggregatedFeatureEventsMongoStore, AggregationEventsAccumulationDataReader aggregationEventsAccumulationDataReader) {
 		this.aggregatedFeatureEventsMongoStore = aggregatedFeatureEventsMongoStore;
-		this.accumulatedAggregatedFeatureEventStore = accumulatedAggregatedFeatureEventStore;
+		this.aggregationEventsAccumulationDataReader = aggregationEventsAccumulationDataReader;
 	}
 
 	public Set<String> findDistinctContextsByTimeRange(
@@ -29,8 +29,8 @@ public class AggregatedFeatureEventsReaderService {
 	public Set<String> findDistinctAcmContextsByTimeRange(
 			AggregatedFeatureEventConf aggregatedFeatureEventConf, Date startTime, Date endTime) {
 
-		return accumulatedAggregatedFeatureEventStore.findDistinctContextsByTimeRange(
-				aggregatedFeatureEventConf, startTime, endTime);
+		return aggregationEventsAccumulationDataReader.findDistinctAcmContextsByTimeRange(
+				aggregatedFeatureEventConf.getName(), startTime, endTime);
 	}
 
 	public List<AggrEvent> findAggrEventsByContextIdAndTimeRange(

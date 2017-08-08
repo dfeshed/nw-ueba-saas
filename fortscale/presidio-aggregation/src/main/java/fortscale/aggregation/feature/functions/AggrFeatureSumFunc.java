@@ -99,6 +99,10 @@ public class AggrFeatureSumFunc implements IAggrFeatureFunction, IAggrFeatureEve
 			}
 		}
 
+        if (total == 0) {
+            return null;
+        }
+
 		return new Feature(aggrFeatureEventConf.getName(), new AggrFeatureValue(sum, total));
 	}
 

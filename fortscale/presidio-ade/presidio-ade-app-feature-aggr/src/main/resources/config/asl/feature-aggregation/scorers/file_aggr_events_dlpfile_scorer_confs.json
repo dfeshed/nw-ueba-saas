@@ -1,0 +1,314 @@
+{
+  "ade-event-type-scorers": [
+    {
+      "ade-event-type" : "aggr_event.numberOfSuccessfulPermissionChangeUserIdFileHourly",
+      "scorers" : [ {
+        "type" : "low-values-score-reducer",
+        "name" : "numberOfSuccessfulPermissionChange.userId.file.hourly.scorer",
+        "base-scorer" : {
+          "type" : "continuous-values-model-scorer",
+          "name" : "numberOfSuccessfulPermissionChange.userId.file.hourly.base_scorer",
+          "model" : {
+            "name" : "numberOfSuccessfulPermissionChange.userId.file.hourly"
+          },
+          "additional-models" : [ ],
+          "quad-poly-calibration-conf" : {
+            "a1" : 1500.0,
+            "a2" : 499999.0,
+            "sensitivity" : 1.0,
+            "is-score-for-small-values" : false,
+            "is-score-for-large-values" : true
+          },
+          "number-of-samples-to-influence-enough" : 30,
+          "min-number-of-samples-to-influence" : 1,
+          "use-certainty-to-calculate-score" : true
+        },
+        "reduction-configs" : [ {
+          "reducingFeatureName" : "featureValue",
+          "reducingFactor" : 0,
+          "maxValueForFullyReduce" : 3.0,
+          "minValueForNotReduce" : 6.0
+        } ]
+      } ]
+    },
+    {
+      "ade-event-type" : "aggr_event.numberOfSuccessfulFileActionUserIdFileHourly",
+      "scorers" : [ {
+        "type" : "low-values-score-reducer",
+        "name" : "numberOfSuccessfulFileAction.userId.file.hourly.scorer",
+        "base-scorer" : {
+          "type" : "continuous-values-model-scorer",
+          "name" : "numberOfSuccessfulFileAction.userId.file.hourly.base_scorer",
+          "model" : {
+            "name" : "numberOfSuccessfulFileAction.userId.file.hourly"
+          },
+          "additional-models" : [ ],
+          "quad-poly-calibration-conf" : {
+            "a1" : 1500.0,
+            "a2" : 499999.0,
+            "sensitivity" : 1.0,
+            "is-score-for-small-values" : false,
+            "is-score-for-large-values" : true
+          },
+          "number-of-samples-to-influence-enough" : 30,
+          "min-number-of-samples-to-influence" : 1,
+          "use-certainty-to-calculate-score" : true
+        },
+        "reduction-configs" : [ {
+          "reducingFeatureName" : "featureValue",
+          "reducingFactor" : 0,
+          "maxValueForFullyReduce" : 3.0,
+          "minValueForNotReduce" : 6.0
+        } ]
+      } ]
+    },
+    {
+      "ade-event-type" : "aggr_event.numberOfFailedlPermissionChangeUserIdFileHourly",
+      "scorers" : [ {
+        "type" : "low-values-score-reducer",
+        "name" : "numberOfFailedlPermissionChange.userId.file.hourly.scorer",
+        "base-scorer" : {
+          "type" : "continuous-values-model-scorer",
+          "name" : "numberOfFailedlPermissionChange.userId.file.hourly.base_scorer",
+          "model" : {
+            "name" : "numberOfFailedlPermissionChange.userId.file.hourly"
+          },
+          "additional-models" : [ ],
+          "quad-poly-calibration-conf" : {
+            "a1" : 1500.0,
+            "a2" : 499999.0,
+            "sensitivity" : 1.0,
+            "is-score-for-small-values" : false,
+            "is-score-for-large-values" : true
+          },
+          "number-of-samples-to-influence-enough" : 30,
+          "min-number-of-samples-to-influence" : 1,
+          "use-certainty-to-calculate-score" : true
+        },
+        "reduction-configs" : [ {
+          "reducingFeatureName" : "featureValue",
+          "reducingFactor" : 0,
+          "maxValueForFullyReduce" : 3.0,
+          "minValueForNotReduce" : 6.0
+        } ]
+      } ]
+    },
+    {
+      "ade-event-type" : "aggr_event.numberOfFailedFileActionUserIdFileHourly",
+      "scorers" : [ {
+        "type" : "low-values-score-reducer",
+        "name" : "numberOfFailedFileAction.userId.file.hourly.scorer",
+        "base-scorer" : {
+          "type" : "continuous-values-model-scorer",
+          "name" : "numberOfFailedFileAction.userId.file.hourly.base_scorer",
+          "model" : {
+            "name" : "numberOfFailedFileAction.userId.file.hourly"
+          },
+          "additional-models" : [ ],
+          "quad-poly-calibration-conf" : {
+            "a1" : 1500.0,
+            "a2" : 499999.0,
+            "sensitivity" : 1.0,
+            "is-score-for-small-values" : false,
+            "is-score-for-large-values" : true
+          },
+          "number-of-samples-to-influence-enough" : 30,
+          "min-number-of-samples-to-influence" : 1,
+          "use-certainty-to-calculate-score" : true
+        },
+        "reduction-configs" : [ {
+          "reducingFeatureName" : "featureValue",
+          "reducingFactor" : 0,
+          "maxValueForFullyReduce" : 3.0,
+          "minValueForNotReduce" : 6.0
+        } ]
+      } ]
+    },
+    {
+      "ade-event-type" : "aggr_event.numberOfDistinctFileOpenedUserIdFileHourly",
+      "scorers" : [ {
+        "type" : "low-values-score-reducer",
+        "name" : "numberOfDistinctFileOpened.userId.file.hourly.scorer",
+        "base-scorer" : {
+          "type" : "continuous-values-model-scorer",
+          "name" : "numberOfDistinctFileOpened.userId.file.hourly.base_scorer",
+          "model" : {
+            "name" : "numberOfDistinctFileOpened.userId.file.hourly"
+          },
+          "additional-models" : [ ],
+          "quad-poly-calibration-conf" : {
+            "a1" : 1500.0,
+            "a2" : 499999.0,
+            "sensitivity" : 1.0,
+            "is-score-for-small-values" : false,
+            "is-score-for-large-values" : true
+          },
+          "number-of-samples-to-influence-enough" : 30,
+          "min-number-of-samples-to-influence" : 1,
+          "use-certainty-to-calculate-score" : true
+        },
+        "reduction-configs" : [ {
+          "reducingFeatureName" : "featureValue",
+          "reducingFactor" : 0,
+          "maxValueForFullyReduce" : 3.0,
+          "minValueForNotReduce" : 6.0
+        } ]
+      } ]
+    },
+    {
+      "ade-event-type" : "aggr_event.numberOfDistinctFolderOpenedUserIdFileHourly",
+      "scorers" : [ {
+        "type" : "low-values-score-reducer",
+        "name" : "numberOfDistinctFolderOpened.userId.file.hourly.scorer",
+        "base-scorer" : {
+          "type" : "continuous-values-model-scorer",
+          "name" : "numberOfDistinctFolderOpened.userId.file.hourly.base_scorer",
+          "model" : {
+            "name" : "numberOfDistinctFolderOpened.userId.file.hourly"
+          },
+          "additional-models" : [ ],
+          "quad-poly-calibration-conf" : {
+            "a1" : 1500.0,
+            "a2" : 499999.0,
+            "sensitivity" : 1.0,
+            "is-score-for-small-values" : false,
+            "is-score-for-large-values" : true
+          },
+          "number-of-samples-to-influence-enough" : 30,
+          "min-number-of-samples-to-influence" : 1,
+          "use-certainty-to-calculate-score" : true
+        },
+        "reduction-configs" : [ {
+          "reducingFeatureName" : "featureValue",
+          "reducingFactor" : 0,
+          "maxValueForFullyReduce" : 3.0,
+          "minValueForNotReduce" : 6.0
+        } ]
+      } ]
+    },
+    {
+      "ade-event-type" : "aggr_event.numberOfFileDeletedUserIdFileHourly",
+      "scorers" : [ {
+        "type" : "low-values-score-reducer",
+        "name" : "numberOfFileDeleted.userId.file.hourly.scorer",
+        "base-scorer" : {
+          "type" : "continuous-values-model-scorer",
+          "name" : "numberOfFileDeleted.userId.file.hourly.base_scorer",
+          "model" : {
+            "name" : "numberOfFileDeleted.userId.file.hourly"
+          },
+          "additional-models" : [ ],
+          "quad-poly-calibration-conf" : {
+            "a1" : 1500.0,
+            "a2" : 499999.0,
+            "sensitivity" : 1.0,
+            "is-score-for-small-values" : false,
+            "is-score-for-large-values" : true
+          },
+          "number-of-samples-to-influence-enough" : 30,
+          "min-number-of-samples-to-influence" : 1,
+          "use-certainty-to-calculate-score" : true
+        },
+        "reduction-configs" : [ {
+          "reducingFeatureName" : "featureValue",
+          "reducingFactor" : 0,
+          "maxValueForFullyReduce" : 3.0,
+          "minValueForNotReduce" : 6.0
+        } ]
+      } ]
+    },
+    {
+      "ade-event-type" : "aggr_event.numberOfSuccessfulFileRenamedUserIdFileHourly",
+      "scorers" : [ {
+        "type" : "low-values-score-reducer",
+        "name" : "numberOfSuccessfulFileRenamed.userId.file.hourly.scorer",
+        "base-scorer" : {
+          "type" : "continuous-values-model-scorer",
+          "name" : "numberOfSuccessfulFileRenamed.userId.file.hourly.base_scorer",
+          "model" : {
+            "name" : "numberOfSuccessfulFileRenamed.userId.file.hourly"
+          },
+          "additional-models" : [ ],
+          "quad-poly-calibration-conf" : {
+            "a1" : 1500.0,
+            "a2" : 499999.0,
+            "sensitivity" : 1.0,
+            "is-score-for-small-values" : false,
+            "is-score-for-large-values" : true
+          },
+          "number-of-samples-to-influence-enough" : 30,
+          "min-number-of-samples-to-influence" : 1,
+          "use-certainty-to-calculate-score" : true
+        },
+        "reduction-configs" : [ {
+          "reducingFeatureName" : "featureValue",
+          "reducingFactor" : 0,
+          "maxValueForFullyReduce" : 3.0,
+          "minValueForNotReduce" : 6.0
+        } ]
+      } ]
+    },
+    {
+      "ade-event-type" : "aggr_event.numberOfFileMovedFromSharedDriveUserIdFileHourly",
+      "scorers" : [ {
+        "type" : "low-values-score-reducer",
+        "name" : "numberOfFileMovedFromSharedDrive.userId.file.hourly.scorer",
+        "base-scorer" : {
+          "type" : "continuous-values-model-scorer",
+          "name" : "numberOfFileMovedFromSharedDrive.userId.file.hourly.base_scorer",
+          "model" : {
+            "name" : "numberOfFileMovedFromSharedDrive.userId.file.hourly"
+          },
+          "additional-models" : [ ],
+          "quad-poly-calibration-conf" : {
+            "a1" : 1500.0,
+            "a2" : 499999.0,
+            "sensitivity" : 1.0,
+            "is-score-for-small-values" : false,
+            "is-score-for-large-values" : true
+          },
+          "number-of-samples-to-influence-enough" : 30,
+          "min-number-of-samples-to-influence" : 1,
+          "use-certainty-to-calculate-score" : true
+        },
+        "reduction-configs" : [ {
+          "reducingFeatureName" : "featureValue",
+          "reducingFactor" : 0,
+          "maxValueForFullyReduce" : 3.0,
+          "minValueForNotReduce" : 6.0
+        } ]
+      } ]
+    },
+    {
+      "ade-event-type" : "aggr_event.numberOfFileMovedToSharedDriveUserIdFileHourly",
+      "scorers" : [ {
+        "type" : "low-values-score-reducer",
+        "name" : "numberOfFileMovedToSharedDrive.userId.file.hourly.scorer",
+        "base-scorer" : {
+          "type" : "continuous-values-model-scorer",
+          "name" : "numberOfFileMovedToSharedDrive.userId.file.hourly.base_scorer",
+          "model" : {
+            "name" : "numberOfFileMovedToSharedDrive.userId.file.hourly"
+          },
+          "additional-models" : [ ],
+          "quad-poly-calibration-conf" : {
+            "a1" : 1500.0,
+            "a2" : 499999.0,
+            "sensitivity" : 1.0,
+            "is-score-for-small-values" : false,
+            "is-score-for-large-values" : true
+          },
+          "number-of-samples-to-influence-enough" : 30,
+          "min-number-of-samples-to-influence" : 1,
+          "use-certainty-to-calculate-score" : true
+        },
+        "reduction-configs" : [ {
+          "reducingFeatureName" : "featureValue",
+          "reducingFactor" : 0,
+          "maxValueForFullyReduce" : 3.0,
+          "minValueForNotReduce" : 6.0
+        } ]
+      } ]
+    }
+  ]
+}

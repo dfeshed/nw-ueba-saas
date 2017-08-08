@@ -1,7 +1,5 @@
 package presidio.ade.processes.shell.scoring.aggregation.config.services;
 
-import fortscale.accumulator.aggregation.store.AccumulatedAggregatedFeatureEventStore;
-import fortscale.accumulator.aggregation.store.config.AccumulatedAggregatedFeatureEventStoreConfig;
 import fortscale.aggregation.feature.bucket.FeatureBucketReaderConfig;
 import fortscale.aggregation.feature.event.store.AggregatedFeatureEventsMongoStore;
 import fortscale.aggregation.feature.event.store.AggregatedFeatureEventsReaderService;
@@ -13,6 +11,8 @@ import fortscale.utils.factory.FactoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
 import org.springframework.context.annotation.ComponentScan.Filter;
+import presidio.ade.domain.store.accumulator.AggregationEventsAccumulationDataReader;
+import presidio.ade.domain.store.accumulator.AggregationEventsAccumulationDataReaderConfig;
 
 import java.util.Collection;
 
@@ -26,7 +26,7 @@ import java.util.Collection;
         CustomContextHistogramRetrieverFactoryConfig.class,
         // common application confs
         FeatureBucketReaderConfig.class,
-        AccumulatedAggregatedFeatureEventStoreConfig.class,
+        AggregationEventsAccumulationDataReaderConfig.class,
         AggregatedFeatureEventsMongoStoreConfig.class
 })
 @ComponentScan(
@@ -37,11 +37,10 @@ import java.util.Collection;
 public class DataRetrieverFactoryServiceConfig {
     @Autowired
     private Collection<AbstractServiceAutowiringFactory<AbstractDataRetriever>> dataRetrieverFactories;
-
     @Autowired
     private AggregatedFeatureEventsMongoStore aggregatedFeatureEventsMongoStore;
     @Autowired
-    private AccumulatedAggregatedFeatureEventStore accumulatedAggregatedFeatureEventStore;
+    AggregationEventsAccumulationDataReader aggregationEventsAccumulationDataReader;
 
     @Bean
     public FactoryService<AbstractDataRetriever> dataRetrieverFactoryService() {
@@ -52,6 +51,6 @@ public class DataRetrieverFactoryServiceConfig {
 
     @Bean
     public AggregatedFeatureEventsReaderService aggregatedFeatureEventsReaderService() {
-        return new AggregatedFeatureEventsReaderService(aggregatedFeatureEventsMongoStore, accumulatedAggregatedFeatureEventStore);
+        return new AggregatedFeatureEventsReaderService(aggregatedFeatureEventsMongoStore, aggregationEventsAccumulationDataReader);
     }
 }
