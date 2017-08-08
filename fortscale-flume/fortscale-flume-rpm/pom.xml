@@ -10,7 +10,7 @@
         <version>1.7.0</version>
     </parent>
 
-    <artifactId>fortscale-flume-rpm</artifactId>
+    <artifactId>flume-presidio</artifactId>
 
     <build>
         <plugins>
