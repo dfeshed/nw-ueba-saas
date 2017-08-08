@@ -47,12 +47,6 @@
         </dependency>
         <dependency>
             <groupId>fortscale</groupId>
-            <artifactId>presidio-monitoring</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>fortscale</groupId>
             <artifactId>presidio-utils</artifactId>
             <version>${project.version}</version>
         </dependency>
