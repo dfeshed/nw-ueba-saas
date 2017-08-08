@@ -83,14 +83,6 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
   &-header-row {
     white-space: nowrap;
     position: relative;
-
-    .rsa-form-checkbox-label {
-      margin: 0;
-
-      &::before {
-        top: 1px;
-      }
-    }
   }
 
   &-header-row {
@@ -117,14 +109,6 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
 
       + .rsa-data-table-body-row {
         border-top: 1px solid transparent;
-      }
-
-      .rsa-form-checkbox-label {
-        display: block;
-
-        &::before {
-          top: 3px;
-        }
       }
     }
 
