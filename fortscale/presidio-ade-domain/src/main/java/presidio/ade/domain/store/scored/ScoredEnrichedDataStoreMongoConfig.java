@@ -12,7 +12,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 
 @Configuration
 @Import({
-        ScoredDataToCollectionNameTranslatorConfig.class
+        AdeScoredEnrichedRecordToCollectionNameTranslatorConfig.class
 })
 public class ScoredEnrichedDataStoreMongoConfig {
     @Autowired
