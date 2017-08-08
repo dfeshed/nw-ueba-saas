@@ -21,14 +21,14 @@ import java.util.*;
  * Returns the same JSON without with the new values.
  * i.e (using default delimiters) - the given input 'type#fileDelete>file_delete' means - for field 'type' change value from 'fileDelete' to 'file_delete'.
  */
-public class PresidioJsonFieldValueReplacerInterceptor extends AbstractPresidioInterceptor {
+public class JsonFieldValueReplacerInterceptor extends AbstractPresidioInterceptor {
 
-    private static final Logger logger = LoggerFactory.getLogger(PresidioJsonFilterInterceptor.class);
+    private static final Logger logger = LoggerFactory.getLogger(JsonFieldValueReplacerInterceptor.class);
 
 
     private final List<FieldValueReplacement> replacements;
 
-    PresidioJsonFieldValueReplacerInterceptor(List<FieldValueReplacement> replacements) {
+    JsonFieldValueReplacerInterceptor(List<FieldValueReplacement> replacements) {
         this.replacements = replacements;
     }
 
@@ -93,7 +93,7 @@ public class PresidioJsonFieldValueReplacerInterceptor extends AbstractPresidioI
 
 
     /**
-     * Builder which builds new instance of the PresidioJsonFieldValueReplacerInterceptor.
+     * Builder which builds new instance of the JsonFieldValueReplacerInterceptor.
      */
     public static class Builder implements Interceptor.Builder {
 
@@ -161,8 +161,8 @@ public class PresidioJsonFieldValueReplacerInterceptor extends AbstractPresidioI
 
         @Override
         public Interceptor build() {
-            logger.info("Creating PresidioJsonFieldValueReplacerInterceptor: {}={}", REPLACEMENTS_CONF_NAME, replacements);
-            return new PresidioJsonFieldValueReplacerInterceptor(replacements);
+            logger.info("Creating JsonFieldValueReplacerInterceptor: {}={}", REPLACEMENTS_CONF_NAME, replacements);
+            return new JsonFieldValueReplacerInterceptor(replacements);
         }
     }
 }
