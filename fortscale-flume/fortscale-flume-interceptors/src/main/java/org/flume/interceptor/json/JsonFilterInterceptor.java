@@ -19,15 +19,15 @@ import java.util.List;
  * This interceptor is used to remove certain (redundant) fields from the received JSON
  * Returns the same JSON without the aforementioned fields
  */
-public class PresidioJsonFilterInterceptor extends AbstractPresidioInterceptor {
+public class JsonFilterInterceptor extends AbstractPresidioInterceptor {
 
 
 
-    private static final Logger logger = LoggerFactory.getLogger(PresidioJsonFilterInterceptor.class);
+    private static final Logger logger = LoggerFactory.getLogger(JsonFilterInterceptor.class);
 
     private final List<String> fieldsToFilter;
 
-    PresidioJsonFilterInterceptor(List<String> fieldsToFilter) {
+    JsonFilterInterceptor(List<String> fieldsToFilter) {
         this.fieldsToFilter = fieldsToFilter;
     }
 
@@ -47,7 +47,7 @@ public class PresidioJsonFilterInterceptor extends AbstractPresidioInterceptor {
 
 
     /**
-     * Builder which builds new instance of the PresidioJsonFilterInterceptor.
+     * Builder which builds new instance of the JsonFilterInterceptor.
      */
     public static class Builder implements Interceptor.Builder {
 
@@ -77,8 +77,8 @@ public class PresidioJsonFilterInterceptor extends AbstractPresidioInterceptor {
 
         @Override
         public Interceptor build() {
-            logger.info("Creating PresidioJsonFilterInterceptor: {}={}", FIELDS_TO_FILTER_CONF_NAME, fieldsToFilter);
-            return new PresidioJsonFilterInterceptor(fieldsToFilter);
+            logger.info("Creating JsonFilterInterceptor: {}={}", FIELDS_TO_FILTER_CONF_NAME, fieldsToFilter);
+            return new JsonFilterInterceptor(fieldsToFilter);
         }
     }
 }
