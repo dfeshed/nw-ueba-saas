@@ -1,5 +1,5 @@
 import { module, test } from 'qunit';
-import { getAlerts, getSelectedAlerts, hasSelectedAlertsBelongingToIncidents } from 'respond/selectors/alerts';
+import { getAlerts, getSelectedAlerts, hasSelectedAlertsBelongingToIncidents, getAlertNames } from 'respond/selectors/alerts';
 import data from '../../data/data';
 
 const { storyline: items } = data;
@@ -60,4 +60,16 @@ test('hasSelectedAlertsBelongingToIncidents() is true when at least of the selec
 
   const result = hasSelectedAlertsBelongingToIncidents(state);
   assert.equal(result, true, 'At least one of the selected alerts is part of an incident');
+});
+
+test('getAlertNames() returns sorted array', function(assert) {
+  const state = {
+    respond: {
+      dictionaries: {
+        alertNames: ['Whale', 'beetle', 'Aardvark', '12Monkeys', 'human']
+      }
+    }
+  };
+  const result = getAlertNames(state);
+  assert.equal(result.join(','), '12Monkeys,Aardvark,beetle,human,Whale', 'The alert names are returned sorted by name');
 });

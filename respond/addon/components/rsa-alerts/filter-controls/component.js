@@ -1,12 +1,13 @@
 import Component from 'ember-component';
 import { connect } from 'ember-redux';
+import { getAlertNames } from 'respond/selectors/alerts';
 
 const defaultSeverityRange = [0, 100];
 
 const stateToComputed = (state) => {
   const {
     respond: {
-      dictionaries: { alertTypes, alertSources, alertNames },
+      dictionaries: { alertTypes, alertSources },
       alerts: { itemsFilters }
     }
   } = state;
@@ -22,7 +23,7 @@ const stateToComputed = (state) => {
     partOfIncidentFilters: itemsFilters.partOfIncident || [],
     alertTypes,
     alertSources,
-    alertNames
+    alertNames: getAlertNames(state)
   };
 };
 

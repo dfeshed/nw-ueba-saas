@@ -2,6 +2,7 @@ import reselect from 'reselect';
 
 const { createSelector } = reselect;
 const alertsState = (state) => state.respond.alerts;
+const dictionaryState = (state) => state.respond.dictionaries;
 
 /**
  * Produces the set of known alerts from state
@@ -35,4 +36,16 @@ export const hasSelectedAlertsBelongingToIncidents = createSelector(
   (alerts, selectedAlerts) => {
     return alerts.some((alert) => selectedAlerts.includes(alert.id) && alert.partOfIncident);
   }
+);
+
+/**
+ * Produces a sorted array of alert names present in the system
+ * @method getAlertNames
+ * @public
+ */
+export const getAlertNames = createSelector(
+  dictionaryState,
+  (dictionaryState) => (dictionaryState.alertNames.sort((a, b) => {
+    return a.localeCompare(b);
+  }))
 );
