@@ -53,6 +53,16 @@ public class JsonFieldJoinerInterceptor extends AbstractPresidioInterceptor {
         eventBodyAsJson.addProperty(targetField, result);
         logger.trace("Field {} was appended to field {} and the result[{}] was placed in field {}.", baseField, toAppendField, result, targetField);
 
+        if (removeBaseField) {
+            logger.trace("Removing base field {}.", baseField);
+            eventBodyAsJson.remove(baseField);
+        }
+
+        if (removeToAppendField) {
+            logger.trace("Removing to append field {}.", toAppendField);
+            eventBodyAsJson.remove(toAppendField);
+        }
+
         event.setBody(eventBodyAsJson.toString().getBytes());
         return event;
     }
@@ -69,6 +79,8 @@ public class JsonFieldJoinerInterceptor extends AbstractPresidioInterceptor {
         private static final String TARGET_FIELD_CONF_NAME = "target_field";
         private static final String REMOVE_BASE_FIELD_CONF_NAME = "remove_base_field";
         private static final String REMOVE_TO_APPEND_CONF_NAME = "remove_to_append_field";
+        public static final boolean DEFAULT_REMOVE_BASE_FIELD_VALUE = false;
+        public static final boolean DEFAULT_REMOVE_TO_APPEND_VALUE = false;
 
         private String baseField;
         private String toAppendField;
@@ -87,10 +99,10 @@ public class JsonFieldJoinerInterceptor extends AbstractPresidioInterceptor {
             targetField = context.getString(TO_APPEND_FIELD_CONF_NAME);
             Preconditions.checkArgument(StringUtils.isNotEmpty(targetField), TARGET_FIELD_CONF_NAME + " can not be empty.");
 
-            removeBaseField = context.getBoolean(TO_APPEND_FIELD_CONF_NAME);
+            removeBaseField = context.getBoolean(TO_APPEND_FIELD_CONF_NAME, DEFAULT_REMOVE_BASE_FIELD_VALUE);
             Preconditions.checkArgument(removeBaseField != null, REMOVE_BASE_FIELD_CONF_NAME + " can not be empty.");
 
-            removeToAppendField = context.getBoolean(REMOVE_TO_APPEND_CONF_NAME);
+            removeToAppendField = context.getBoolean(REMOVE_TO_APPEND_CONF_NAME, DEFAULT_REMOVE_TO_APPEND_VALUE);
             Preconditions.checkArgument(removeToAppendField != null, REMOVE_TO_APPEND_CONF_NAME + " can not be empty.");
         }
 
