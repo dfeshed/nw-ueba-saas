@@ -46,20 +46,21 @@ export const retrieveTranslatedData = function(operation, string) {
 };
 
 export const prepareTextForDisplay = function(text, metaToHighlight) {
-  text = _generateHTMLSafeText(text);
+  const safeText = _generateHTMLSafeText(text);
+  let markedText;
 
   if (metaToHighlight) {
-    const metaStringRegex = new RegExp(String(metaToHighlight), 'gi');
-    const foundMatch = text.match(metaStringRegex);
-    if (foundMatch) {
-      text = text.replace(
-        metaStringRegex,
-        `<span class='highlighted-meta'>${foundMatch[0]}</span>`
-      );
+    // Escape RegEx special characters
+    const pattern = metaToHighlight.replace(/[-[\]{}()*+?.,\\^$|#]/g, '\\$&');
+    const regex = new RegExp(pattern, 'gi'); // case insensitive
+    if (safeText.match(regex)) {
+      // Use the special replacement pattern "$&" to replace matches so that
+      // case changes are applied to the corresponding match
+      markedText = safeText.replace(regex, '<span class="highlighted-meta">$&</span>');
     }
   }
 
-  return htmlSafe(text);
+  return htmlSafe(markedText || safeText);
 };
 
 
@@ -73,7 +74,6 @@ const _generateHTMLSafeText = (text) => {
     .replace(/\>/g, '&gt;')
     .replace(/(?:\r\n|\r|\n)/g, '<br>')
     .replace(/\t/g, '&nbsp;&nbsp;')
-    .replace(/ /g, '&nbsp;')
     .replace(/[\x00-\x1F]/g, '.')
     // https://bedfordjira.na.rsa.net/browse/ASOC-35522
     // Replacing this specific character, because if we do not

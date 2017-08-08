@@ -83,11 +83,12 @@ export const totalMetaToHighlight = createSelector(
     if (!metaToHighlight || textEntries.length === 0) {
       return 0;
     }
-    const metaStringRegex = new RegExp(String(metaToHighlight.value), 'gi');
+    // Escape RegEx special characters
+    const pattern = metaToHighlight.value.replace(/[-[\]{}()*+?.,\\^$|#]/g, '\\$&');
+    const regex = new RegExp(pattern, 'gi');
     const fullText = textEntries.map((p) => p.text).join(' ');
-    const matches = fullText.match(metaStringRegex);
-    const totalMatches = matches ? matches.length : 0;
-    return totalMatches;
+    const matches = fullText.match(regex);
+    return matches ? matches.length : 0;
   }
 );
 
