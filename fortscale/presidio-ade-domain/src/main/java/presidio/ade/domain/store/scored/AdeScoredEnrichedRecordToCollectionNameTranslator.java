@@ -12,7 +12,12 @@ import java.util.Collection;
 public class AdeScoredEnrichedRecordToCollectionNameTranslator implements AdeToCollectionNameTranslator<AdeScoredEnrichedRecord> {
     @Override
     public String toCollectionName(AdeScoredEnrichedRecord scoredRecord) {
-        return scoredRecord.getAdeEventType().replaceAll("\\.","_");
+        String adeEventType = scoredRecord.getAdeEventType();
+        return toCollectionName(adeEventType);
+    }
+
+    public String toCollectionName(String adeEventType) {
+        return adeEventType.replaceAll("\\.","_");
     }
 
     @Override

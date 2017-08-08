@@ -10,14 +10,14 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import presidio.ade.domain.record.accumulator.AccumulatedAggregationFeatureRecord;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
-import presidio.ade.test.utils.tests.EnricheSourceBaseAppTest;
+import presidio.ade.test.utils.tests.EnrichedSourceBaseAppTest;
 
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 
 @ContextConfiguration
-public class AccumulateAggregationsApplicationTest extends EnricheSourceBaseAppTest {
+public class AccumulateAggregationsApplicationTest extends EnrichedSourceBaseAppTest {
     private static final int DAYS_BACK_FROM = 3;
     private static final int DAYS_BACK_TO = 1;
 

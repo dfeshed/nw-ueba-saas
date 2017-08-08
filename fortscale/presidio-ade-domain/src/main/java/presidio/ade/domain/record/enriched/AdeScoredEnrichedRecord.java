@@ -2,6 +2,7 @@ package presidio.ade.domain.record.enriched;
 
 import fortscale.domain.feature.score.FeatureScore;
 import org.springframework.data.mongodb.core.index.Indexed;
+import presidio.ade.domain.record.AdeRecord;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.ade.domain.record.AdeScoredRecord;
 
@@ -11,8 +12,8 @@ import java.util.List;
 /**
  * Created by YaronDL on 6/14/2017.
  */
-public abstract class AdeScoredEnrichedRecord<U> extends EnrichedRecord implements AdeScoredRecord{
-    private static final String EVENT_TYPE_PREFIX = "scored_enriched";
+public abstract class AdeScoredEnrichedRecord<U> extends AdeRecord implements AdeScoredRecord{
+    public static final String EVENT_TYPE_PREFIX = "scored_enriched";
 
     @Indexed
     private String featureName;
