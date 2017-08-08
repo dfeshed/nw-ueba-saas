@@ -689,7 +689,8 @@ export default {
         'Security Analytics Investigator': 'ja_Security Analytics Investigator',
         'Web Threat Detection': 'ja_Web Threat Detection',
         'Malware Analysis': 'ja_Malware Analysis',
-        'Reporting Engine': 'ja_Reporting Engine'
+        'Reporting Engine': 'ja_Reporting Engine',
+        'NetWitness Investigate': 'ja_NetWitness Investigate'
       },
       backToAlerts: 'ja_Back To Alerts'
     },

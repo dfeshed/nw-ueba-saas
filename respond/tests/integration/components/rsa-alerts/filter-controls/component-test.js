@@ -61,7 +61,7 @@ test('All of the alert source filters appear as checkboxes, and clicking one dis
     this.render(hbs`{{rsa-alerts/filter-controls updateFilter=(action 'updateFilter')}}`);
 
     const selector = '.filter-option.alert-source-filter .rsa-form-checkbox-label';
-    assert.equal(this.$(selector).length, 5, 'There should be 5 alert source filter options');
+    assert.equal(this.$(selector).length, 6, 'There should be 6 alert source filter options');
     this.$('.filter-option.alert-source-filter .rsa-form-checkbox-label input.rsa-form-checkbox:first').click();
   });
 });
