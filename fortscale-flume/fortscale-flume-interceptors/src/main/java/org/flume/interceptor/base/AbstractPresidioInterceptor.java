@@ -1,6 +1,8 @@
 package org.flume.interceptor.base;
 
 import com.google.common.collect.Lists;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import org.apache.flume.Event;
 import org.apache.flume.interceptor.Interceptor;
 
@@ -28,5 +30,10 @@ public abstract class AbstractPresidioInterceptor implements Interceptor {
     @Override
     public void close() {
 
+    }
+
+    protected JsonObject getEventBodyAsJson(Event event) {
+        final String eventBodyAsString = new String(event.getBody());
+        return new JsonParser().parse(eventBodyAsString).getAsJsonObject();
     }
 }
