@@ -35,12 +35,14 @@
       <div class="reconTooltip">
         {{#if isActionClicked }}
           <header>{{tooltipHeading}}</header>
-          <div class='selection-name'>Original Selection</div>
-          <div class='selection-value'>{{originalString}}</div>
-          <div class='selection-name'>Base64 Format</div>
-          <div class='selection-value'>{{encDecStrBase64}}</div>
-          <div class='selection-name'>URL Format</div>
-          <div class='selection-value'>{{encDecStrUrl}}</div>
+          <div class="body">
+            <div class='selection-name'>Original Selection</div>
+            <div class='selection-value'>{{originalString}}</div>
+            <div class='selection-name'>Base64 Format</div>
+            <div class='selection-value'>{{encDecStrBase64}}</div>
+            <div class='selection-name'>URL Format</div>
+            <div class='selection-value'>{{encDecStrUrl}}</div>
+          </div>
         {{else}}
           <div class="list-item" {{action 'copyText'}}>Copy Selected Text</div>
           <div class="list-item" {{action 'decodeText'}}>Decode Selected Text</div>

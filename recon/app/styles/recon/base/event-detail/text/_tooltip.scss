@@ -25,6 +25,11 @@
     padding: rsa-whitespace(less) rsa-whitespace();
   }
 
+  .body {
+    overflow-y: scroll;
+    max-height: 200px;
+  }
+
   .selection-name {
     @include rsa-font(header, small);
     padding: rsa-whitespace() rsa-whitespace() rsa-whitespace(less);
@@ -34,7 +39,7 @@
     @include rsa-font(body);
     @include rsa-word-wrap();
     padding: 0 rsa-whitespace() rsa-whitespace(less);
-    max-width: 12.5rem;
+    max-width: 25rem;
   }
 
   > p {
