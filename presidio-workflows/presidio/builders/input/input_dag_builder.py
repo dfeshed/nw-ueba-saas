@@ -17,6 +17,8 @@ class InputDagBuilder(PresidioDagBuilder):
     returns the DAG according to the given attributes.
     """
 
+    conf_reader = ConfigServerConfigurationReaderSingleton().config_server_reader
+
     def __init__(self, data_sources):
         """
         C'tor.
