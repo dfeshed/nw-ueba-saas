@@ -8,6 +8,7 @@ $inputHeight: 33px;
   position: relative;
   font-size: 0; // fixes the gap adjacent inline-element
   width: auto;
+  max-width: calc(100% - #{$editButtonWidth});
 
   &__value {
     height: 100%;
@@ -22,6 +23,13 @@ $inputHeight: 33px;
 
     &.placeholder {
       font-style: italic;
+    }
+  }
+
+  &.input {
+    .editable-field__value {
+      text-overflow: ellipsis;
+      overflow: hidden;
     }
   }
 
@@ -44,7 +52,7 @@ $inputHeight: 33px;
   }
 
   &.textarea {
-    width: 100%;
+    width: auto;
     min-height: 150px;
     .editable-field__value {
       padding-right: $editButtonWidth;
@@ -107,6 +115,7 @@ $inputHeight: 33px;
     padding: 0;
     border: none;
     width: 100%;
+    max-width: 100%;
 
     &.input {
       height: $inputHeight;
