@@ -18,10 +18,10 @@ import java.time.Instant;
 @AdeRecordMetadata(adeEventType = AdeAuthenticationRecord.AUTHENTICATION_STR)
 public class EnrichedAuthenticationRecord extends EnrichedRecord {
     public static final String USER_ID_FIELD = "userId";
-    public static final String SRC_MACHINE_ID_FIELD = "SrcMachineId";
+    public static final String SRC_MACHINE_ID_FIELD = "srcMachineId";
     public static final String DST_MACHINE_ID_FIELD = "dstMachineId";
-    public static final String SRC_MACHINE_NAME_REGEX_CLUSTER = "srcMachineNameRegexCluster";
-    public static final String DST_MACHINE_NAME_REGEX_CLUSTER = "dstMachineNameRegexCluster";
+    public static final String SRC_MACHINE_NAME_REGEX_CLUSTER_FIELD = "srcMachineNameRegexCluster";
+    public static final String DST_MACHINE_NAME_REGEX_CLUSTER_FIELD = "dstMachineNameRegexCluster";
     public static final String DST_MACHINE_DOMAIN = "dstMachineDomain";
 
 
@@ -31,12 +31,12 @@ public class EnrichedAuthenticationRecord extends EnrichedRecord {
     @Field(USER_ID_FIELD)
     private String userId;
     @Field(SRC_MACHINE_ID_FIELD)
-    private String SrcMachineId;
+    private String srcMachineId;
     @Field(DST_MACHINE_ID_FIELD)
     private String dstMachineId;
-    @Field(SRC_MACHINE_NAME_REGEX_CLUSTER)
+    @Field(SRC_MACHINE_NAME_REGEX_CLUSTER_FIELD)
     private String srcMachineNameRegexCluster;
-    @Field(DST_MACHINE_NAME_REGEX_CLUSTER)
+    @Field(DST_MACHINE_NAME_REGEX_CLUSTER_FIELD)
     private String dstMachineNameRegexCluster;
     @Field(DST_MACHINE_DOMAIN)
     private String dstMachineDomain;
@@ -64,11 +64,11 @@ public class EnrichedAuthenticationRecord extends EnrichedRecord {
     }
 
     public String getSrcMachineId() {
-        return SrcMachineId;
+        return srcMachineId;
     }
 
     public void setSrcMachineId(String srcMachineId) {
-        this.SrcMachineId = srcMachineId;
+        this.srcMachineId = srcMachineId;
     }
 
     public String getDstMachineId() {
