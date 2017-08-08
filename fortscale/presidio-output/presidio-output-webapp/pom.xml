@@ -271,23 +271,6 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>1.6.0</version>
-                <executions>
-                    <execution>
-                        <phase>install</phase>
-                        <goals>
-                            <goal>java</goal>
-                        </goals>
-                        <inherited>false</inherited>
-                    </execution>
-                </executions>
-                <configuration>
-                    <mainClass>presidio.webapp.clientbuilder.ClientBuilder</mainClass>
-                </configuration>
-            </plugin>
         </plugins>
     </build>
 
