@@ -174,13 +174,20 @@
             <plugin>
                 <groupId>com.github.kongchen</groupId>
                 <artifactId>swagger-maven-plugin</artifactId>
-                <version>3.1.2</version>
+                <version>3.1.4</version>
                 <configuration>
                     <apiSources>
                         <apiSource>
                             <springmvc>true</springmvc>
-                            <locations>presidio.webapp.controllers</locations>
-                            <schemes>http,https</schemes>
+                            <locations>
+                                <location>
+                                    presidio.webapp.controllers
+                                </location>
+                            </locations>
+                            <schemes>
+                                <scheme>http</scheme>
+                                <scheme>https</scheme>
+                            </schemes>
                             <host>www.[host]:[port]</host>
                             <basePath>/v1</basePath>
                             <info>
@@ -218,19 +225,26 @@
                         <configuration>
                             <!-- specify the swagger yaml -->
                             <inputSpec>./generated/swagger/client/swagger.yaml</inputSpec>
-                            <library>jersey2</library>
+
                             <!-- target to generate java client code -->
-                            <language>java</language>
+                            <!--<language>java</language>-->
+                            <language>spring</language>
+                            <library>spring-mvc</library>
                             <generateApiTests>false</generateApiTests>
                             <generateModelTests>false</generateModelTests>
-                            <artifactId>presidio-output-generated-client</artifactId>
-                            
-
+                            <!--<artifactId>presidio-output-generated-client</artifactId>-->
+                            <!--<modelPackage>my.project.client.model</modelPackage>-->
+                            <!--<apiPackage>my.project.client.api</apiPackage>-->
+                            <!--<invokerPackage>my.project.client</invokerPackage>-->
                             <!-- hint: if you want to generate java server code, e.g. based on Spring Boot,
                                  you can use the following target: <language>spring</language> -->
 
                             <!-- output to /target/generated-sources/swagger/ -->
                             <configOptions>
+                                <groupId>com.your.group.id</groupId>
+                                <artifactId>your-artifact-id</artifactId>
+                                <artifactVersion>0.0.1-SNAPSHOT</artifactVersion>
+                                <!--<library>j8-async</library>-->
                                 <!--<sourceFolder>swagger</sourceFolder>-->
                                 <!--<output>target/generated-sources</output>-->
                                 <!--<dateLibrary>java8</dateLibrary>-->
@@ -238,11 +252,11 @@
                                 <!--<modelPackage>presidio.webapp.dto.test</modelPackage>-->
                             </configOptions>
                             <!--<environmentVariables>-->
-                                <!--<library>jersey2</library>-->
+                            <!--<library>jersey2</library>-->
                             <!--</environmentVariables>-->
 
                             <!-- override the default library to jersey2 -->
-                            <library>jersey2</library>
+                            <!--<library>jersey2</library>-->
                         </configuration>
                     </execution>
                 </executions>
