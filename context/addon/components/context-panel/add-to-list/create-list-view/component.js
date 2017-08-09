@@ -75,8 +75,7 @@ export default Component.extend({
           errorMessage: this.get('i18n').t('context.error.listValidName'),
           isDisabled: true
         });
-      }
-      if (!this.get('isError') || !this.get('isDisabled')) {
+      } else if (!this.get('isError') || !this.get('isDisabled')) {
         this.createNewList(newList);
       }
     },

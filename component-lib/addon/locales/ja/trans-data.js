@@ -1180,7 +1180,7 @@ export default {
       descriptionTitle: 'ja_Description',
       filter: 'ja_Filter Results',
       listName: 'ja_Enter List Name',
-      headerMessage: 'ja_Value has been updated in the list(s). The context indicator for this value will be updated when the page is reloaded.'
+      headerMessage: 'ja_Click on save to update the list(s). Refresh the page to view the updates.'
     },
     modules: {
       title: 'ja_Top Suspicious Modules',
