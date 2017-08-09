@@ -3,7 +3,6 @@ package org.apache.flume.interceptor.presidio;
 
 
 import com.google.common.base.Preconditions;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.apache.commons.lang.StringUtils;
@@ -27,14 +26,14 @@ public class JsonTimestampWithOffsetFormatterInterceptor extends AbstractInterce
 
     private final String originField;
     private final String originFormat;
-    private final String timezoneField;
+    private final String timezoneOffsetField;
     private final String destinationField;
     private final String destinationFormat;
 
-    public JsonTimestampWithOffsetFormatterInterceptor(String originField, String originFormat, String timezoneField, String destinationField, String destinationFormat) {
+    public JsonTimestampWithOffsetFormatterInterceptor(String originField, String originFormat, String timezoneOffsetField, String destinationField, String destinationFormat) {
         this.originField = originField;
         this.originFormat = originFormat;
-        this.timezoneField = timezoneField;
+        this.timezoneOffsetField = timezoneOffsetField;
         this.destinationField = destinationField;
         this.destinationFormat = destinationFormat;
     }
@@ -44,29 +43,27 @@ public class JsonTimestampWithOffsetFormatterInterceptor extends AbstractInterce
         final String eventBodyAsString = new String(event.getBody());
         JsonObject eventBodyAsJson = new JsonParser().parse(eventBodyAsString).getAsJsonObject();
 
-        final JsonElement originFieldValue = eventBodyAsJson.get(originField);
-        final JsonElement originFormatValue = eventBodyAsJson.get(originFormat);
-        final JsonElement timezoneFieldValue = eventBodyAsJson.get(timezoneField);
-        final JsonElement destinationFormatValue = eventBodyAsJson.get(destinationFormat);
+        final String originTimestamp = eventBodyAsJson.get(originField).getAsString();
+        final int timezoneOffset = eventBodyAsJson.get(timezoneOffsetField).getAsInt();
 
-        final String newTimestamp = getNewTimestamp(originFieldValue, originFormatValue, timezoneFieldValue, destinationFormatValue);
+        final String newTimestamp = getNewTimestamp(originTimestamp, originFormat, timezoneOffset, destinationFormat);
 
         eventBodyAsJson.addProperty(destinationField, newTimestamp);
         event.setBody(eventBodyAsJson.toString().getBytes());
         return event;
     }
 
-    private String getNewTimestamp(JsonElement originFieldValue, JsonElement originFormatValue, JsonElement timezoneFieldValue, JsonElement destinationFormatValue) {
+    private String getNewTimestamp(String originTimestamp, String originFormat, int timezoneOffset, String destinationFormat) {
 
         /* get time as instant with the given time zone */
-        final ZoneId originZoneId = ZoneId.ofOffset("UTC", ZoneOffset.ofHours(timezoneFieldValue.getAsInt()));
+        final ZoneId originZoneId = ZoneId.ofOffset("UTC", ZoneOffset.ofHours(timezoneOffset));
         final Instant originTimeAsInstant = Instant.from(DateTimeFormatter
-                .ofPattern(originFormatValue.getAsString())
+                .ofPattern(originFormat)
                 .withZone(originZoneId)
-                .parse(originFieldValue.getAsString()));
+                .parse(originTimestamp));
 
         /* configure target time format and time zone (all times should be in UTC) */
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(destinationFormatValue.getAsString());
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(destinationFormat);
         final ZoneId destinationZoneId = ZoneId.ofOffset("UTC", ZoneOffset.UTC); //always UTC
 
         /* format timestamp from its origin form to destination form (form = format + time zone) */
@@ -78,7 +75,7 @@ public class JsonTimestampWithOffsetFormatterInterceptor extends AbstractInterce
         return new ToStringBuilder(this)
                 .append("originField", originField)
                 .append("originFormat", originFormat)
-                .append("timezoneField", timezoneField)
+                .append("timezoneOffsetField", timezoneOffsetField)
                 .append("destinationField", destinationField)
                 .append("destinationFormat", destinationFormat)
                 .toString();
@@ -91,13 +88,13 @@ public class JsonTimestampWithOffsetFormatterInterceptor extends AbstractInterce
 
         static final String ORIGIN_FIELD_CONF_NAME = "originField";
         static final String ORIGIN_FORMAT_CONF_NAME = "originFormat";
-        static final String TIMEZONE_FIELD_CONF_NAME = "timezoneField";
+        static final String TIMEZONE_OFFSET_FIELD_CONF_NAME = "timezoneOffsetField";
         static final String DESTINATION_FIELD_CONF_NAME = "destinationField";
         static final String DESTINATION_FORMAT_CONF_NAME = "destinationFormat";
 
         private String originField;
         private String originFormat;
-        private String timezoneField;
+        private String timezoneOffsetField;
         private String destinationField;
         private String destinationFormat;
 
@@ -109,8 +106,8 @@ public class JsonTimestampWithOffsetFormatterInterceptor extends AbstractInterce
             originFormat = context.getString(ORIGIN_FORMAT_CONF_NAME);
             Preconditions.checkArgument(StringUtils.isNotEmpty(originFormat), ORIGIN_FORMAT_CONF_NAME + " can not be empty.");
 
-            timezoneField = context.getString(TIMEZONE_FIELD_CONF_NAME);
-            Preconditions.checkArgument(StringUtils.isNotEmpty(timezoneField), TIMEZONE_FIELD_CONF_NAME + " can not be empty.");
+            timezoneOffsetField = context.getString(TIMEZONE_OFFSET_FIELD_CONF_NAME);
+            Preconditions.checkArgument(StringUtils.isNotEmpty(timezoneOffsetField), TIMEZONE_OFFSET_FIELD_CONF_NAME + " can not be empty.");
 
             destinationField = context.getString(DESTINATION_FIELD_CONF_NAME);
             Preconditions.checkArgument(StringUtils.isNotEmpty(destinationField), DESTINATION_FIELD_CONF_NAME + " can not be empty.");
@@ -121,7 +118,7 @@ public class JsonTimestampWithOffsetFormatterInterceptor extends AbstractInterce
 
         @Override
         public Interceptor build() {
-            final JsonTimestampWithOffsetFormatterInterceptor jsonTimestampWithOffsetFormatterInterceptor = new JsonTimestampWithOffsetFormatterInterceptor(originField, originFormat, timezoneField, destinationField, destinationFormat);
+            final JsonTimestampWithOffsetFormatterInterceptor jsonTimestampWithOffsetFormatterInterceptor = new JsonTimestampWithOffsetFormatterInterceptor(originField, originFormat, timezoneOffsetField, destinationField, destinationFormat);
             logger.info("Creating JsonTimestampWithOffsetFormatterInterceptor: {}", jsonTimestampWithOffsetFormatterInterceptor);
             return jsonTimestampWithOffsetFormatterInterceptor;
         }
