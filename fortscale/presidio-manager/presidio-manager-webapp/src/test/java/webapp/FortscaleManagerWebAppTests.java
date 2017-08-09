@@ -7,14 +7,10 @@ import com.fasterxml.jackson.databind.node.TextNode;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
 import org.springframework.test.context.junit4.SpringRunner;
 import presidio.manager.air.flow.service.ConfigurationProcessingServiceImpl;
 import presidio.manager.api.records.PresidioManagerConfiguration;
 import presidio.webapp.service.ConfigurationProcessingManager;
-import presidio.webapp.spring.ManagerWebappConfiguration;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -29,7 +25,7 @@ public class FortscaleManagerWebAppTests {
     }
 
 
-    public void createGoodPresidioConfiguration(){
+    public void createGoodPresidioConfiguration() {
         JsonNode system;
         JsonNode dataPipeline;
         ObjectNode objectNode = new ObjectNode(new JsonNodeFactory(false));
