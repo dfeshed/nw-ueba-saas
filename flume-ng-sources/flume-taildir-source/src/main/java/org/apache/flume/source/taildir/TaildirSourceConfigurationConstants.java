@@ -27,7 +27,7 @@ public class TaildirSourceConfigurationConstants {
 
   /** Path of position file. */
   public static final String POSITION_FILE = "positionFile";
-  public static final String DEFAULT_POSITION_FILE = "/.flume/taildir_position.presidio";
+  public static final String DEFAULT_POSITION_FILE = "/.flume/taildir_position.json";
 
   /** What size to batch with before sending to ChannelProcessor. */
   public static final String BATCH_SIZE = "batchSize";
