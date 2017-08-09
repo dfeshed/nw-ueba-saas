@@ -7,11 +7,17 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.flume.Context;
 import org.apache.flume.Event;
 import org.apache.flume.interceptor.Interceptor;
-import org.flume.interceptor.base.AbstractPresidioInterceptor;
+import org.flume.interceptor.base.AbstractInterceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class JsonFieldJoinerInterceptor extends AbstractPresidioInterceptor {
+
+
+/**
+ * This interceptor is used to join 2 fields in the received JSON (append and put in a single field).
+ * Returns the same JSON with the new field {@link #targetField}, and with/without filtering the {@link #baseField} and {@link #toAppendField} fields according to {@link #removeBaseField} and {@link #removeToAppendField}
+ */
+public class JsonFieldJoinerInterceptor extends AbstractJsonInterceptor {
 
     private static final Logger logger = LoggerFactory.getLogger(JsonFieldJoinerInterceptor.class);
 

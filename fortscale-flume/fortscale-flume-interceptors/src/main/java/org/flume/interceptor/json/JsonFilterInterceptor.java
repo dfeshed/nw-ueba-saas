@@ -2,13 +2,12 @@ package org.flume.interceptor.json;
 
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.flume.Context;
 import org.apache.flume.Event;
 import org.apache.flume.interceptor.Interceptor;
-import org.flume.interceptor.base.AbstractPresidioInterceptor;
+import org.flume.interceptor.base.AbstractInterceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,7 +19,7 @@ import java.util.List;
  * This interceptor is used to remove certain (redundant) fields from the received JSON
  * Returns the same JSON without the aforementioned fields
  */
-public class JsonFilterInterceptor extends AbstractPresidioInterceptor {
+public class JsonFilterInterceptor extends AbstractJsonInterceptor {
 
     private static final Logger logger = LoggerFactory.getLogger(JsonFilterInterceptor.class);
 

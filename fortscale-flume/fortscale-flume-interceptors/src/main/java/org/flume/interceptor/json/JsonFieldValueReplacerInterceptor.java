@@ -4,24 +4,24 @@ package org.flume.interceptor.json;
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.flume.Context;
 import org.apache.flume.Event;
 import org.apache.flume.interceptor.Interceptor;
-import org.flume.interceptor.base.AbstractPresidioInterceptor;
+import org.flume.interceptor.base.AbstractInterceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
+
 /**
- * This interceptor is used to replace certain values int the received JSON.
+ * This interceptor is used to replace certain values in the received JSON.
  * Returns the same JSON without with the new values.
  * i.e (using default delimiters) - the given input 'type#fileDelete>file_delete' means - for field 'type' change value from 'fileDelete' to 'file_delete'.
  */
-public class JsonFieldValueReplacerInterceptor extends AbstractPresidioInterceptor {
+public class JsonFieldValueReplacerInterceptor extends AbstractJsonInterceptor {
 
     private static final Logger logger = LoggerFactory.getLogger(JsonFieldValueReplacerInterceptor.class);
 

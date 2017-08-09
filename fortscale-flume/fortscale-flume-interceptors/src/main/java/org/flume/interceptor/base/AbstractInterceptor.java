@@ -8,7 +8,7 @@ import org.apache.flume.interceptor.Interceptor;
 
 import java.util.List;
 
-public abstract class AbstractPresidioInterceptor implements Interceptor {
+public abstract class AbstractInterceptor implements Interceptor {
 
     @Override
     public List<Event> intercept(List<Event> events) {
@@ -30,10 +30,5 @@ public abstract class AbstractPresidioInterceptor implements Interceptor {
     @Override
     public void close() {
 
-    }
-
-    protected JsonObject getEventBodyAsJson(Event event) {
-        final String eventBodyAsString = new String(event.getBody());
-        return new JsonParser().parse(eventBodyAsString).getAsJsonObject();
     }
 }
