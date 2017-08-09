@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.flume.Context;
 import org.apache.flume.Event;
 import org.apache.flume.interceptor.Interceptor;
@@ -21,8 +22,6 @@ import java.util.List;
  */
 public class JsonFilterInterceptor extends AbstractPresidioInterceptor {
 
-
-
     private static final Logger logger = LoggerFactory.getLogger(JsonFilterInterceptor.class);
 
     private final List<String> fieldsToFilter;
@@ -33,8 +32,8 @@ public class JsonFilterInterceptor extends AbstractPresidioInterceptor {
 
     @Override
     public Event intercept(Event event) {
-        final String eventBodyAsString = new String(event.getBody());
-        JsonObject eventBodyAsJson = new JsonParser().parse(eventBodyAsString).getAsJsonObject();
+        final JsonObject eventBodyAsJson = getEventBodyAsJson(event);
+
         for (String fieldToFilter : fieldsToFilter) {
             if (eventBodyAsJson.remove(fieldToFilter) != null) {
                 logger.trace("Field {} was removed.", fieldToFilter);
@@ -45,6 +44,12 @@ public class JsonFilterInterceptor extends AbstractPresidioInterceptor {
         return event;
     }
 
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+                .append("fieldsToFilter", fieldsToFilter)
+                .toString();
+    }
 
     /**
      * Builder which builds new instance of the JsonFilterInterceptor.
@@ -77,8 +82,9 @@ public class JsonFilterInterceptor extends AbstractPresidioInterceptor {
 
         @Override
         public Interceptor build() {
-            logger.info("Creating JsonFilterInterceptor: {}={}", FIELDS_TO_FILTER_CONF_NAME, fieldsToFilter);
-            return new JsonFilterInterceptor(fieldsToFilter);
+            final JsonFilterInterceptor jsonFilterInterceptor = new JsonFilterInterceptor(fieldsToFilter);
+            logger.info("Creating JsonFilterInterceptor: {}", jsonFilterInterceptor);
+            return jsonFilterInterceptor;
         }
     }
 }

@@ -34,8 +34,8 @@ public class JsonFieldValueReplacerInterceptor extends AbstractPresidioIntercept
 
     @Override
     public Event intercept(Event event) {
-        final String eventBodyAsString = new String(event.getBody());
-        JsonObject eventBodyAsJson = new JsonParser().parse(eventBodyAsString).getAsJsonObject();
+        final JsonObject eventBodyAsJson = getEventBodyAsJson(event);
+
 
         String currField;
         String currOriginalValue;
@@ -89,8 +89,12 @@ public class JsonFieldValueReplacerInterceptor extends AbstractPresidioIntercept
         }
     }
 
-
-
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+                .append("replacements", replacements)
+                .toString();
+    }
 
     /**
      * Builder which builds new instance of the JsonFieldValueReplacerInterceptor.
@@ -161,8 +165,9 @@ public class JsonFieldValueReplacerInterceptor extends AbstractPresidioIntercept
 
         @Override
         public Interceptor build() {
-            logger.info("Creating JsonFieldValueReplacerInterceptor: {}={}", REPLACEMENTS_CONF_NAME, replacements);
-            return new JsonFieldValueReplacerInterceptor(replacements);
+            final JsonFieldValueReplacerInterceptor jsonFieldValueReplacerInterceptor = new JsonFieldValueReplacerInterceptor(replacements);
+            logger.info("Creating JsonFieldValueReplacerInterceptor: {}", jsonFieldValueReplacerInterceptor);
+            return jsonFieldValueReplacerInterceptor;
         }
     }
 }
