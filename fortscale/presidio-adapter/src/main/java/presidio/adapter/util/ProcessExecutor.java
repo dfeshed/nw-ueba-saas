@@ -47,6 +47,8 @@ public class ProcessExecutor {
 
     private Process doExecuteProcess(String jobName, ProcessBuilder processBuilder) {
         try {
+            String command = getCommand(processBuilder);
+            logger.info("Running command {}", command);
             final Process process = processBuilder.start();
             final Charset charset = Charset.defaultCharset();
             InvokedProcessOutputReader invokedProcessOutputReader = new InvokedProcessOutputReader(new BufferedReader(new InputStreamReader(process.getInputStream(), charset)), jobName);
@@ -59,6 +61,15 @@ public class ProcessExecutor {
             return null;
         }
 
+    }
+
+    private String getCommand(ProcessBuilder processBuilder) {
+        final List<String> args = processBuilder.command();
+        StringBuilder stringBuilder = new StringBuilder();
+        for (String arg : args) {
+            stringBuilder.append(arg);
+        }
+        return stringBuilder.toString();
     }
 
 
@@ -80,7 +91,7 @@ public class ProcessExecutor {
             try {
                 String line;
                 while ((line = input.readLine()) != null) {
-                    logger.warn("Stderr[{}] = '{}'", jobName, line);
+                    logger.warn("log[{}] = '{}'", jobName, line);
                 }
             } catch (IOException e) {
                 logger.info("InvokedProcessOutputReader for job {} is exiting...", jobName, e);
