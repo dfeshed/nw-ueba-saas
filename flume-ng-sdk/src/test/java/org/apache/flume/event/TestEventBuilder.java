@@ -61,7 +61,7 @@ public class TestEventBuilder {
   public void testJsonEventUnsupportedEncoding() {
     JSONEvent jsonEvent = new JSONEvent();
     jsonEvent.setCharset("dummy");
-    jsonEvent.setBody("This is presidio event".getBytes());
+    jsonEvent.setBody("This is json event".getBytes());
     jsonEvent.getBody();
   }
 }

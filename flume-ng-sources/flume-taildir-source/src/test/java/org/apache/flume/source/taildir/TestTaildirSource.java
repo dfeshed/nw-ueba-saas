@@ -74,7 +74,7 @@ public class TestTaildirSource {
 
     source.setChannelProcessor(new ChannelProcessor(rcs));
     tmpDir = Files.createTempDir();
-    posFilePath = tmpDir.getAbsolutePath() + "/taildir_position_test.presidio";
+    posFilePath = tmpDir.getAbsolutePath() + "/taildir_position_test.json";
   }
 
   @After

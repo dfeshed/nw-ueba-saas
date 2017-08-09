@@ -122,7 +122,7 @@ public class HTTPMetricsServer implements MonitorService {
         ((Request) request).setHandled(true);
         return;
       } else if (target.equalsIgnoreCase("/metrics")) {
-        response.setContentType("application/presidio;charset=utf-8");
+        response.setContentType("application/json;charset=utf-8");
         response.setStatus(HttpServletResponse.SC_OK);
         Map<String, Map<String, String>> metricsMap = JMXPollUtil.getAllMBeans();
         String json = gson.toJson(metricsMap, mapType);

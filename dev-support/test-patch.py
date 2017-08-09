@@ -72,7 +72,7 @@ def jira_post_comment(result, defect, branch, username, password):
   body += [ "" ]
   body += [ "This message is automatically generated." ]
   body = "{\"body\": \"%s\"}" % ("\\n".join(body))
-  headers = {'Content-Type' : 'application/presidio'}
+  headers = {'Content-Type' : 'application/json'}
   response = jira_request(result, url, username, password, body, headers)
   body = response.read()
   if response.code != 201:

@@ -136,7 +136,7 @@ public class TestElasticSearchSink extends AbstractElasticSearchSinkTest {
     Transaction tx = channel.getTransaction();
     tx.begin();
     Event event = EventBuilder.withBody(
-        "{\"event\":\"presidio content\",\"num\":1}".getBytes());
+        "{\"event\":\"json content\",\"num\":1}".getBytes());
     channel.put(event);
     tx.commit();
     tx.close();
@@ -147,13 +147,13 @@ public class TestElasticSearchSink extends AbstractElasticSearchSinkTest {
             .refresh(Requests.refreshRequest(timestampedIndexName)).actionGet();
 
     Map<String, Object> expectedBody = new HashMap<String, Object>();
-    expectedBody.put("event", "presidio content");
+    expectedBody.put("event", "json content");
     expectedBody.put("num", 1);
 
     assertSearch(1,
         performSearch(QueryBuilders.matchAllQuery()), expectedBody, event);
     assertSearch(1,
-        performSearch(QueryBuilders.fieldQuery("@message.event", "presidio")),
+        performSearch(QueryBuilders.fieldQuery("@message.event", "json")),
         expectedBody, event);
   }
 
