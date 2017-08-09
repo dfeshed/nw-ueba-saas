@@ -13,9 +13,7 @@ import presidio.ade.processes.shell.config.AccumulateAggregationsConfiguration;
 import java.util.Properties;
 
 @Configuration
-@Import({MongodbTestConfig.class,
-        AccumulateServiceCommands.class,
-        BootShimConfig.class})
+@Import({MongodbTestConfig.class})
 public class AccumulateAggregationsConfigurationTest extends AccumulateAggregationsConfiguration {
     @Bean
     public static TestPropertiesPlaceholderConfigurer accumulateAggregationsApplicationTestProperties() {

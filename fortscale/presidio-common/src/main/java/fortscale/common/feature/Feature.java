@@ -2,6 +2,7 @@ package fortscale.common.feature;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import org.apache.commons.lang.StringUtils;
 
 import java.io.Serializable;
 
@@ -53,10 +54,10 @@ public class Feature implements Serializable {
         FeatureValue featureValue = null;
 
         if (object instanceof String) {
-            featureValue = new FeatureStringValue((String)object);
+            featureValue = new FeatureStringValue((String) object);
         } else if (object instanceof Number) {
-            featureValue = new FeatureNumericValue((Number)object);
-        } else if (object.getClass().isEnum()) {
+            featureValue = new FeatureNumericValue((Number) object);
+        } else if (object != null && object.getClass().isEnum()) {
             featureValue = new FeatureStringValue(((Enum) object).name());
         }
 

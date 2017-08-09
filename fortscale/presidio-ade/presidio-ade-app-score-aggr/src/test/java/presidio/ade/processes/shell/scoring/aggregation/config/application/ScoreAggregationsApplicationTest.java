@@ -24,6 +24,7 @@ import org.testng.annotations.BeforeTest;
 import presidio.ade.domain.record.aggregated.AggregatedFeatureType;
 import presidio.ade.domain.store.aggr.ScoreAggrDataToCollectionNameTranslator;
 import presidio.ade.domain.store.scored.AdeScoredEnrichedRecordToCollectionNameTranslator;
+import presidio.ade.test.utils.generators.EnrichedFileGeneratorConfig;
 import presidio.ade.test.utils.tests.EnrichedFileSourceBaseAppTest;
 
 import java.time.Duration;
@@ -113,7 +114,7 @@ public class ScoreAggregationsApplicationTest extends EnrichedFileSourceBaseAppT
     }
 
     @Configuration
-    @Import({EnrichedSourceSpringConfig.class, ScoreAggregationsApplicationConfigTest.class, PresidioCommands.class})
+    @Import({EnrichedSourceSpringConfig.class, ScoreAggregationsApplicationConfigTest.class, PresidioCommands.class, EnrichedFileGeneratorConfig.class})
     protected static class springConfigScoreAggregationsApplication {
 
     }

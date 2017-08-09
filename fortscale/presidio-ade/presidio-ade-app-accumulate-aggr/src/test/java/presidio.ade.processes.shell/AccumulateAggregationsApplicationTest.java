@@ -3,7 +3,6 @@ package presidio.ade.processes.shell;
 import fortscale.common.general.Schema;
 import fortscale.utils.time.TimeService;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -11,15 +10,15 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import presidio.ade.domain.record.accumulator.AccumulatedAggregationFeatureRecord;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
-import presidio.ade.test.utils.tests.EnrichedSourceBaseAppTest;
+import presidio.ade.test.utils.generators.EnrichedSuccessfulFileOpenedGeneratorConfig;
+import presidio.ade.test.utils.tests.EnrichedFileSourceBaseAppTest;
 
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 
 @ContextConfiguration
-@Ignore
-public class AccumulateAggregationsApplicationTest extends EnrichedSourceBaseAppTest {
+public class AccumulateAggregationsApplicationTest extends EnrichedFileSourceBaseAppTest {
     private static final int DAYS_BACK_FROM = 3;
     private static final int DAYS_BACK_TO = 1;
 
@@ -28,14 +27,15 @@ public class AccumulateAggregationsApplicationTest extends EnrichedSourceBaseApp
     private static final Instant START_DATE = TimeService.floorTime(Instant.now().minus(Duration.ofDays(DAYS_BACK_FROM)), DURATION);
     private static final Instant END_DATE = TimeService.floorTime(Instant.now().minus(Duration.ofDays(DAYS_BACK_TO)), DURATION);
 
-    public static final String EXECUTION_COMMAND = String.format("run  --schema %s --start_date %s --end_date %s --fixed_duration_strategy %s --feature_bucket_strategy %s", ADE_EVENT_TYPE, START_DATE.toString(), END_DATE.toString(), 86400, 3600);
+
+    public static final String EXECUTION_COMMAND = String.format("run --schema %s --start_date %s --end_date %s --fixed_duration_strategy %s --feature_bucket_strategy %s", ADE_EVENT_TYPE, START_DATE.toString(), END_DATE.toString(), 86400, 3600);
 
     @Autowired
     private EnrichedDataStore enrichedDataStore;
     @Autowired
     private MongoTemplate mongoTemplate;
 
-    @Import({AccumulateAggregationsConfigurationTest.class,EnrichedSourceSpringConfig.class })
+    @Import({EnrichedSourceSpringConfig.class, AccumulateAggregationsConfigurationTest.class, AccumulateServiceCommands.class, EnrichedSuccessfulFileOpenedGeneratorConfig.class})
     @Configuration
     protected static class AccumulateAggregationsTestConfig {
 
@@ -56,14 +56,15 @@ public class AccumulateAggregationsApplicationTest extends EnrichedSourceBaseApp
      * Operation type of all the events is "open"
      * <p>
      * Expected result:
-     * 2 accumulatedRecords - record per each day.
+     * 2 accumulatedRecords - record per day.
      * 24 aggregatedFeatureValues for each record.
      * value of each aggregatedFeatureValues is 2 (2 opens files in each hour)
      */
     @Override
     protected void assertSanityTest() {
 
-        String openFileCollectionName = "accm_number_of_opened_files_normalized_username_hourly_dlpfile";
+        String openFileCollectionName = "accm_numberOfSuccessfulFileActionUserIdFileHourly";
+        String failedOpenFileCollectionName = "accm_numberOfFailedFileActionUserIdFileHourly";
 
         List<AccumulatedAggregationFeatureRecord> accumulatedRecords = mongoTemplate.findAll(AccumulatedAggregationFeatureRecord.class, openFileCollectionName);
 
@@ -73,7 +74,24 @@ public class AccumulateAggregationsApplicationTest extends EnrichedSourceBaseApp
         double expectedAggregatedFeatureValue = 2;
 
         Assert.assertTrue(accumulatedRecords.size() == expectedAccumulatedRecordsSize);
+        assertRecords(accumulatedRecords, expectedAggregatedFeatureValuesSize, expectedAggregatedFeatureValue);
 
+        List<AccumulatedAggregationFeatureRecord> fileOpenFailedAccumulatedRecords = mongoTemplate.findAll(AccumulatedAggregationFeatureRecord.class, failedOpenFileCollectionName);
+        //expected results
+        expectedAggregatedFeatureValuesSize = 24;
+        expectedAggregatedFeatureValue = 0;
+        Assert.assertTrue(fileOpenFailedAccumulatedRecords.size() == expectedAccumulatedRecordsSize);
+        assertRecords(fileOpenFailedAccumulatedRecords, expectedAggregatedFeatureValuesSize, expectedAggregatedFeatureValue);
+    }
+
+    /**
+     * Assert accumulation records result
+     *
+     * @param accumulatedRecords                  list of accumulated records
+     * @param expectedAggregatedFeatureValuesSize num of aggregated features
+     * @param expectedAggregatedFeatureValue      value for each feature aggregation
+     */
+    private void assertRecords(List<AccumulatedAggregationFeatureRecord> accumulatedRecords, int expectedAggregatedFeatureValuesSize, double expectedAggregatedFeatureValue) {
         long days = 0;
         for (AccumulatedAggregationFeatureRecord accumulatedRecord : accumulatedRecords) {
             Duration duration = Duration.ofDays(days);
