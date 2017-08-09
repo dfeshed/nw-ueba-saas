@@ -91,7 +91,7 @@ public class JsonTimestampWithOffsetFormatterInterceptor extends AbstractInterce
 
         static final String ORIGIN_FIELD_CONF_NAME = "originField";
         static final String ORIGIN_FORMAT_CONF_NAME = "originFormat";
-        static final String TIMEZONE_CONF_NAME = "timezoneField";
+        static final String TIMEZONE_FIELD_CONF_NAME = "timezoneField";
         static final String DESTINATION_FIELD_CONF_NAME = "destinationField";
         static final String DESTINATION_FORMAT_CONF_NAME = "destinationFormat";
 
@@ -109,8 +109,8 @@ public class JsonTimestampWithOffsetFormatterInterceptor extends AbstractInterce
             originFormat = context.getString(ORIGIN_FORMAT_CONF_NAME);
             Preconditions.checkArgument(StringUtils.isNotEmpty(originFormat), ORIGIN_FORMAT_CONF_NAME + " can not be empty.");
 
-            timezoneField = context.getString(TIMEZONE_CONF_NAME);
-            Preconditions.checkArgument(StringUtils.isNotEmpty(timezoneField), TIMEZONE_CONF_NAME + " can not be empty.");
+            timezoneField = context.getString(TIMEZONE_FIELD_CONF_NAME);
+            Preconditions.checkArgument(StringUtils.isNotEmpty(timezoneField), TIMEZONE_FIELD_CONF_NAME + " can not be empty.");
 
             destinationField = context.getString(DESTINATION_FIELD_CONF_NAME);
             Preconditions.checkArgument(StringUtils.isNotEmpty(destinationField), DESTINATION_FIELD_CONF_NAME + " can not be empty.");
