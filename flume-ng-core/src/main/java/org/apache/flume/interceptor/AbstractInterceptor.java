@@ -2,6 +2,7 @@ package org.apache.flume.interceptor;
 
 import com.google.common.collect.Lists;
 import org.apache.flume.Event;
+import org.apache.flume.conf.ConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,10 +30,15 @@ public abstract class AbstractInterceptor implements Interceptor {
         try {
             return doIntercept(event);
         }
-        catch (Exception ex) {
-            logger.warn("{} interception had failed. Forwarding event without any modifications. Exception: ",
-                    this.getClass().getName(), ex);
-            return event;
+        catch (ConfigurationException e){
+            logger.error("Bad configuration in {}. Dropping event. Exception: ",
+                    this.getClass().getName(), e);
+            return null;
+        }
+        catch (Exception e) {
+            logger.error("{} interception had failed. Dropping event. Exception: ",
+                    this.getClass().getName(), e);
+            return null;
         }
     }
 

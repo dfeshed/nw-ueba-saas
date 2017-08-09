@@ -84,8 +84,7 @@ public class JsonFilterInterceptorTest {
         Event event = EventBuilder.withBody(EVENT_NOT_JSON, Charsets.UTF_8);
 
         event = interceptor.intercept(event);
-        String interceptValue = new String(event.getBody());
 
-        Assert.assertEquals(EVENT_NOT_JSON, interceptValue);
+        Assert.assertNull(event);
     }
 }

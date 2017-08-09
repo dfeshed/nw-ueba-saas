@@ -21,7 +21,7 @@ public class JsonFieldRenamerInterceptorTest {
     @Before
     public void init() throws InstantiationException, IllegalAccessException, ClassNotFoundException {
         builder = InterceptorBuilderFactory.newInstance(
-                InterceptorType.JSON_FILTER.toString());
+                InterceptorType.JSON_RENAMER.toString());
     }
 
 
@@ -88,9 +88,8 @@ public class JsonFieldRenamerInterceptorTest {
         Event event = EventBuilder.withBody(EVENT_NOT_JSON, Charsets.UTF_8);
 
         event = interceptor.intercept(event);
-        String interceptValue = new String(event.getBody());
 
-        Assert.assertEquals(EVENT_NOT_JSON, interceptValue);
+        Assert.assertNull(event);
     }
 
 }
