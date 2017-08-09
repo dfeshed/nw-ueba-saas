@@ -79,8 +79,8 @@ public class JsonFieldJoinerInterceptor extends AbstractPresidioInterceptor {
         private static final String TARGET_FIELD_CONF_NAME = "target_field";
         private static final String REMOVE_BASE_FIELD_CONF_NAME = "remove_base_field";
         private static final String REMOVE_TO_APPEND_CONF_NAME = "remove_to_append_field";
-        public static final boolean DEFAULT_REMOVE_BASE_FIELD_VALUE = false;
-        public static final boolean DEFAULT_REMOVE_TO_APPEND_VALUE = false;
+        private static final boolean DEFAULT_REMOVE_BASE_FIELD_VALUE = false;
+        private static final boolean DEFAULT_REMOVE_TO_APPEND_VALUE = false;
 
         private String baseField;
         private String toAppendField;
