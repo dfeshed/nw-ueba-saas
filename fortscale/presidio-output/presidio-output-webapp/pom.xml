@@ -53,20 +53,19 @@
             <groupId>fortscale</groupId>
             <artifactId>presidio-output-domain</artifactId>
             <version>1.0.0-SNAPSHOT</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-data-mongodb</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-api</artifactId>
             <version>2.7</version>
         </dependency>
-
-
-        <!-- dependencies for the swagger client being generated -->
-        <!--<dependency>
-            <groupId>io.swagger</groupId>
-            <artifactId>swagger-codegen-maven-plugin</artifactId>
-            <version>2.2.3</version>
-        </dependency>-->
+        
 
         <dependency>
             <groupId>io.swagger</groupId>
@@ -128,6 +127,11 @@
             <version>${jackson-version}</version>
         </dependency>
         <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+            <version>2.8.6</version>
+        </dependency>
+        <dependency>
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>
             <version>${jodatime-version}</version>
@@ -139,6 +143,8 @@
             <artifactId>migbase64</artifactId>
             <version>2.2</version>
         </dependency>
+
+
     </dependencies>
     <build>
         <plugins>
@@ -174,13 +180,20 @@
             <plugin>
                 <groupId>com.github.kongchen</groupId>
                 <artifactId>swagger-maven-plugin</artifactId>
-                <version>3.1.2</version>
+                <version>3.1.4</version>
                 <configuration>
                     <apiSources>
                         <apiSource>
                             <springmvc>true</springmvc>
-                            <locations>presidio.webapp.controllers</locations>
-                            <schemes>http,https</schemes>
+                            <locations>
+                                <location>
+                                    presidio.webapp.controllers
+                                </location>
+                            </locations>
+                            <schemes>
+                                <scheme>http</scheme>
+                                <scheme>https</scheme>
+                            </schemes>
                             <host>www.[host]:[port]</host>
                             <basePath>/v1</basePath>
                             <info>
@@ -218,55 +231,21 @@
                         <configuration>
                             <!-- specify the swagger yaml -->
                             <inputSpec>./generated/swagger/client/swagger.yaml</inputSpec>
-                            <library>jersey2</library>
+
                             <!-- target to generate java client code -->
                             <language>java</language>
-                            <generateApiTests>false</generateApiTests>
-                            <generateModelTests>false</generateModelTests>
-                            <artifactId>presidio-output-generated-client</artifactId>
-                            
-
-                            <!-- hint: if you want to generate java server code, e.g. based on Spring Boot,
-                                 you can use the following target: <language>spring</language> -->
-
-                            <!-- output to /target/generated-sources/swagger/ -->
-                            <configOptions>
-                                <!--<sourceFolder>swagger</sourceFolder>-->
-                                <!--<output>target/generated-sources</output>-->
-                                <!--<dateLibrary>java8</dateLibrary>-->
-                                <!--<apiPackage>presidio.webapp.controllers.test</apiPackage>-->
-                                <!--<modelPackage>presidio.webapp.dto.test</modelPackage>-->
-                            </configOptions>
-                            <!--<environmentVariables>-->
-                                <!--<library>jersey2</library>-->
-                            <!--</environmentVariables>-->
-
-                            <!-- override the default library to jersey2 -->
                             <library>jersey2</library>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <artifactId>maven-clean-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>clean-additional-generated-files</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>clean</goal>
-                        </goals>
-                        <configuration>
-                            <excludeDefaultDirectories>true</excludeDefaultDirectories>
-                            <filesets>
-                                <fileset>
-                                    <directory>${project.build.directory}/generated-sources/swagger</directory>
-                                    <excludes>
-                                        <exclude>src/main/java/**</exclude>
-                                    </excludes>
-                                    <followSymlinks>false</followSymlinks>
-                                </fileset>
-                            </filesets>
+
+                            <modelPackage>presidio.output.client.model</modelPackage>
+                            <apiPackage>presidio.output.client.api</apiPackage>
+                            <invokerPackage>presidio.output.client.client</invokerPackage>
+
+                            <configOptions>
+                                <groupId>fortscaled</groupId>
+                                <artifactId>residio-output-generated-client</artifactId>
+                                <version>1.0.0-SNAPSHOT</version>
+
+                            </configOptions>
                         </configuration>
                     </execution>
                 </executions>

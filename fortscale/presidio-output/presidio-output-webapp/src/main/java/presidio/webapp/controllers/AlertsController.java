@@ -25,8 +25,8 @@ public class AlertsController {
     @RequestMapping(value = "/{alertId}", method = RequestMethod.GET)
     @ResponseBody
     @LogException
-    @ApiOperation(value = "Return alert by alert id" ,response = SingleEntityResponseBean.class)
-    public SingleEntityResponseBean<Alert> getAlertById(@PathVariable String alertId) {
+    @ApiOperation(value = "Return alert by alert id", response = SingleEntityResponseBean.class)
+    public SingleEntityResponseBean<Alert> getAlertById(@PathVariable("alertId") String alertId) {
         SingleEntityResponseBean<Alert> responseBean = new SingleEntityResponseBean<>();
         try {
             responseBean.setData(restAlertService.getAlertById(alertId));
