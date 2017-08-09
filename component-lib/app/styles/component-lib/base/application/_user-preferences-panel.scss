@@ -15,6 +15,10 @@
     width: calc(100vw / 4);
   }
 
+  .rsa-form-radio-label {
+    line-height: 2rem;
+  }
+
   .rsa-content-section-header {
     min-width: calc(100vw / 4);
     padding: rsa-whitespace();
