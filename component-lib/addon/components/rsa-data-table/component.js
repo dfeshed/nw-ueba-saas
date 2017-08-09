@@ -131,6 +131,14 @@ export default Component.extend(DomWatcher, EKMixin, {
   selectedIndex: -1,
 
   /**
+   * Whether or not to scroll to the selectedIndex when first rendering the table.
+   * @type {boolean}
+   * @default false
+   * @public
+   */
+  scrollToInitialSelectedIndex: false,
+
+  /**
    * Optional configuration that specifies which columns are to be displayed.
    * The following formats for `columns` are supported:
    * (1) A comma-delimited list of field names (e.g., `name,created,desc`). Each comma-delimited value should be
@@ -302,6 +310,40 @@ export default Component.extend(DomWatcher, EKMixin, {
       fn(selectedItem, selectedItemIndex, e, this);
     }
   }),
+
+  didInsertElement() {
+    this._super(...arguments);
+    const selectedIndex = this.get('selectedIndex');
+    if (this.get('scrollToInitialSelectedIndex') && selectedIndex > 1) {
+      run.schedule('afterRender', this, this.scrollToInitial, selectedIndex, 0);
+    }
+  },
+
+  scrollToInitial(selectedIndex, callCount) {
+    // don't want to try forever, if this recurses too much, just stop
+    if (callCount < 25) {
+      // First row needed to measure height of items so can calculate
+      // how far to scroll
+      const $firstRow = $('.rsa-data-table-body-row');
+      if ($firstRow.length > 0) {
+        const heightForAllTableRows = this.$('.rsa-data-table-body-rows').height();
+        const howFarToScrollTable = $firstRow.outerHeight() * (selectedIndex - 1);
+
+        // data could be flowing in over time, so the number of rows in the table may not
+        // immediately be enough to scroll to the selected row.
+        // if the height of the container surpasses where the item should be,
+        // we can scroll to it and exit recursion. Otherwise let it try again later.
+        if (heightForAllTableRows >= howFarToScrollTable) {
+          this.$('.rsa-data-table-body').scrollTop(howFarToScrollTable);
+          return;
+        }
+      }
+
+      // If we are unable to scroll to the item, then try again in 100 millis
+      callCount++;
+      run.later(this, this.scrollToInitial, selectedIndex, callCount, 100);
+    }
+  },
 
   actions: {
     /**

@@ -27,7 +27,7 @@ function removeTetherFix() {
   document.body.removeChild(styleElement);
 }
 
-const mockCount = 10;
+const mockCount = 30;
 const mockColumnsConfig = [{
   field: 'foo'
 }, {
@@ -163,8 +163,8 @@ test('it renders imperatively (with an array config) the correct number of expec
   assert.equal(firstRow.find('.rsa-data-table-body-cell').slice(1, 2).text().trim(), 'bar0', 'Correct contents of body-cell found.');
 
   const lastRow = rows.last();
-  assert.equal(lastRow.find('.rsa-data-table-body-cell').first().text().trim(), 'foo9', 'Correct contents of body-cell found.');
-  assert.equal(lastRow.find('.rsa-data-table-body-cell').slice(1, 2).text().trim(), 'bar9', 'Correct contents of body-cell found.');
+  assert.equal(lastRow.find('.rsa-data-table-body-cell').first().text().trim(), `foo${mockCount - 1}`, 'Correct contents of body-cell found.');
+  assert.equal(lastRow.find('.rsa-data-table-body-cell').slice(1, 2).text().trim(), `bar${mockCount - 1}`, 'Correct contents of body-cell found.');
 
   assert.equal(this.$('.rsa-data-table-header-row').length, 1, 'Correct number of header-row dom elements found.');
   assert.equal(this.$('.rsa-data-table-header-cell').length, 2, 'Correct number of body-cell dom elements found.');
@@ -312,4 +312,36 @@ test('it applies an is-error class to cells when isError=true.', function(assert
 
   const errorCell = this.$('.rsa-data-table-body-cell.is-error');
   assert.equal(errorCell.length, 1, 'One cell has an error.');
+});
+
+
+test('it scrolls table to top when scrollToInitialSelectedIndex is provided.', function(assert) {
+  const index = 7;
+  this.setProperties({
+    items: mockItems,
+    columnsConfig: mockColumnsConfig,
+    selectedIndex: index,
+    scrollToInitialSelectedIndex: true
+  });
+  this.render(hbs`
+    <style type="text/css">
+      .rsa-data-table-body {
+        height: 200px;
+        overflow: auto;
+      }
+    </style>
+    {{#rsa-data-table scrollToInitialSelectedIndex=scrollToInitialSelectedIndex lazy=false items=items columnsConfig=columnsConfig selectedIndex=selectedIndex}}
+      {{#rsa-data-table/body as |item index column|}}
+        {{#rsa-data-table/body-cell item=item index=index column=column~}}
+          {{get item column.field}}
+        {{~/rsa-data-table/body-cell}}
+      {{/rsa-data-table/body}}
+    {{/rsa-data-table}}
+  `);
+
+  assert.equal(this.$('.rsa-data-table').length, 1, 'data-table root dom element found.');
+
+  const rowHeight = this.$('.rsa-data-table-body-row').outerHeight();
+  const [ { scrollTop } ] = this.$('.rsa-data-table-body');
+  assert.equal(scrollTop, rowHeight * (index - 1), 'seventh item is scrolled to top of container');
 });
