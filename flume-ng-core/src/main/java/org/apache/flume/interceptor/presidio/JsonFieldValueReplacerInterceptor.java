@@ -1,5 +1,5 @@
 
-package org.apache.flume.interceptor;
+package org.apache.flume.interceptor.presidio;
 
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonElement;
@@ -9,6 +9,8 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.flume.Context;
 import org.apache.flume.Event;
+import org.apache.flume.interceptor.AbstractInterceptor;
+import org.apache.flume.interceptor.Interceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

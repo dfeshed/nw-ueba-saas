@@ -100,7 +100,7 @@ public class TestTaildirEventReader {
   @Before
   public void setUp() {
     tmpDir = Files.createTempDir();
-    posFilePath = tmpDir.getAbsolutePath() + "/taildir_position_test.json";
+    posFilePath = tmpDir.getAbsolutePath() + "/taildir_position_test.presidio";
   }
 
   @After

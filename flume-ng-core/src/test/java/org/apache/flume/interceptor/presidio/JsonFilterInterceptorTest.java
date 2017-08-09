@@ -1,9 +1,12 @@
-package org.apache.flume.interceptor;
+package org.apache.flume.interceptor.presidio;
 
 import com.google.common.base.Charsets;
 import org.apache.flume.Context;
 import org.apache.flume.Event;
 import org.apache.flume.event.EventBuilder;
+import org.apache.flume.interceptor.Interceptor;
+import org.apache.flume.interceptor.InterceptorBuilderFactory;
+import org.apache.flume.interceptor.InterceptorType;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,11 +41,11 @@ public class JsonFilterInterceptorTest {
         Event event = EventBuilder.withBody(EVENT_SIGNLE_KEY, Charsets.UTF_8);
 
         event = interceptor.intercept(event);
-        String replacedKeys = new String(event.getBody());
-        Assert.assertNotSame(EVENT_SIGNLE_KEY, replacedKeys);
+        String interceptValue = new String(event.getBody());
+        Assert.assertNotSame(EVENT_SIGNLE_KEY, interceptValue);
 
 
-        Assert.assertEquals("{}", replacedKeys);
+        Assert.assertEquals("{}", interceptValue);
     }
 
     @Test
@@ -60,10 +63,10 @@ public class JsonFilterInterceptorTest {
         Event event = EventBuilder.withBody(EVENT_DOUBLE_KEY, Charsets.UTF_8);
 
         event = interceptor.intercept(event);
-        String replacedKeys = new String(event.getBody());
-        Assert.assertNotSame(EVENT_DOUBLE_KEY, replacedKeys);
+        String interceptValue = new String(event.getBody());
+        Assert.assertNotSame(EVENT_DOUBLE_KEY, interceptValue);
 
-        Assert.assertEquals("{\"orig3\":\"value3\"}", replacedKeys);
+        Assert.assertEquals("{\"orig3\":\"value3\"}", interceptValue);
     }
 
     @Test
@@ -81,8 +84,8 @@ public class JsonFilterInterceptorTest {
         Event event = EventBuilder.withBody(EVENT_NOT_JSON, Charsets.UTF_8);
 
         event = interceptor.intercept(event);
-        String replacedKeys = new String(event.getBody());
+        String interceptValue = new String(event.getBody());
 
-        Assert.assertEquals(EVENT_NOT_JSON, replacedKeys);
+        Assert.assertEquals(EVENT_NOT_JSON, interceptValue);
     }
 }

@@ -58,7 +58,7 @@ import org.slf4j.LoggerFactory;
  * The JSON handler supports UTF-8, UTF-16 and UTF-32.
  *
  * To set the charset, the request must have content type specified as
- * "application/json; charset=UTF-8" (replace UTF-8 with UTF-16 or UTF-32 as
+ * "application/presidio; charset=UTF-8" (replace UTF-8 with UTF-16 or UTF-32 as
  * required).
  *
  * One way to create an event in the format expected by this handler, is to

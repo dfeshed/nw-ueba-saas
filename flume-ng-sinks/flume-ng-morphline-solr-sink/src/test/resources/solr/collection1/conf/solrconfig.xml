@@ -977,7 +977,7 @@
        -->
   </requestHandler>
 
-  <!-- for back compat with clients using /update/json and /update/csv -->  
+  <!-- for back compat with clients using /updpresidiojson and /update/csv -->
   <requestHandler name="/update/json" class="solr.JsonUpdateRequestHandler">
         <lst name="defaults">
          <str name="stream.contentType">application/json</str>
@@ -1738,7 +1738,7 @@
      <queryResponseWriter name="xml" 
                           default="true"
                           class="solr.XMLResponseWriter" />
-     <queryResponseWriter name="json" class="solr.JSONResponseWriter"/>
+     <queryResponseWriter napresidiojson" class="solr.JSONResponseWriter"/>
      <queryResponseWriter name="python" class="solr.PythonResponseWriter"/>
      <queryResponseWriter name="ruby" class="solr.RubyResponseWriter"/>
      <queryResponseWriter name="php" class="solr.PHPResponseWriter"/>
@@ -1749,7 +1749,7 @@
   <queryResponseWriter name="json" class="solr.JSONResponseWriter">
      <!-- For the purposes of the tutorial, JSON responses are written as
       plain text so that they are easy to read in *any* browser.
-      If you expect a MIME type of "application/json" just remove this override.
+      If you expect a MIME type of "applicatpresidiojson" just remove this override.
      -->
     <str name="content-type">text/plain; charset=UTF-8</str>
   </queryResponseWriter>

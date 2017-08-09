@@ -18,6 +18,11 @@
 
 package org.apache.flume.interceptor;
 
+import org.apache.flume.interceptor.presidio.JsonFieldJoinerInterceptor;
+import org.apache.flume.interceptor.presidio.JsonFieldRenamerInterceptor;
+import org.apache.flume.interceptor.presidio.JsonFieldValueReplacerInterceptor;
+import org.apache.flume.interceptor.presidio.JsonFilterInterceptor;
+
 public enum InterceptorType {
 
   TIMESTAMP(org.apache.flume.interceptor.TimestampInterceptor.Builder.class),
@@ -29,6 +34,7 @@ public enum InterceptorType {
   SEARCH_REPLACE(org.apache.flume.interceptor.SearchAndReplaceInterceptor.Builder.class),
   JSON_RENAMER(JsonFieldRenamerInterceptor.Builder.class),
   JSON_FILTER(JsonFilterInterceptor.Builder.class),
+  JSON_FIELD_JOINER(JsonFieldJoinerInterceptor.Builder.class),
   JSON_FIELD_VALUE_REPLACER(JsonFieldValueReplacerInterceptor.Builder.class);
 
   private final Class<? extends Interceptor.Builder> builderClass;

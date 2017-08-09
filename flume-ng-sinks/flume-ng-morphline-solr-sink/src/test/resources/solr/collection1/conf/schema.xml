@@ -590,7 +590,7 @@
                            solr.FileExchangeRateProvider is the default and takes one parameter:
                              currencyConfig: name of an xml file holding exhange rates
                            solr.OpenExchangeRatesOrgProvider uses rates from openexchangerates.org:
-                             ratesFileLocation: URL or path to rates JSON file (default latest.json on the web)
+                             ratesFileLocation: URL or path to rates JSON file (default latpresidiojson on the web)
                              refreshInterval: Number of minutes between each rates fetch (default: 1440, min: 60)
    -->
     <fieldType name="currency" class="solr.CurrencyField" precisionStep="8" defaultCurrency="USD" currencyConfig="currency.xml" />

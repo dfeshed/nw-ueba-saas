@@ -160,7 +160,7 @@ public class TestHTTPSource {
             + "{\"headers\":{\"e\": \"f\"},\"body\": \"random_body2\"}]");
     //if we do not set the content type to JSON, the client will use
     //ISO-8859-1 as the charset. JSON standard does not support this.
-    input.setContentType("application/json");
+    input.setContentType("application/presidio");
     postRequest.setEntity(input);
 
     HttpResponse response = httpClient.execute(postRequest);
@@ -204,7 +204,7 @@ public class TestHTTPSource {
 
     StringEntity input = new StringEntity("[{\"headers\":{\"a\": \"b\"},\"body\": \"random_body\"},"
             + "{\"headers\":{\"e\": \"f\"},\"body\": \"random_body2\"}]", "UTF-16");
-    input.setContentType("application/json; charset=utf-16");
+    input.setContentType("application/presidio; charset=utf-16");
     postRequest.setEntity(input);
 
     HttpResponse response = httpClient.execute(postRequest);
@@ -230,7 +230,7 @@ public class TestHTTPSource {
   public void testInvalid() throws Exception {
     StringEntity input = new StringEntity("[{\"a\": \"b\",[\"d\":\"e\"],\"body\": \"random_body\"},"
             + "{\"e\": \"f\",\"body\": \"random_body2\"}]");
-    input.setContentType("application/json");
+    input.setContentType("application/presidio");
     postRequest.setEntity(input);
     HttpResponse response = httpClient.execute(postRequest);
 
@@ -257,7 +257,7 @@ public class TestHTTPSource {
   public void testSingleEvent() throws Exception {
     StringEntity input = new StringEntity("[{\"headers\" : {\"a\": \"b\"},\"body\":"
             + " \"random_body\"}]");
-    input.setContentType("application/json");
+    input.setContentType("application/presidio");
     postRequest.setEntity(input);
 
     httpClient.execute(postRequest);
@@ -319,7 +319,7 @@ public class TestHTTPSource {
     Gson gson = new Gson();
     String json = gson.toJson(events, listType);
     StringEntity input = new StringEntity(json);
-    input.setContentType("application/json; charset=" + encoding);
+    input.setContentType("application/presidio; charset=" + encoding);
     postRequest.setEntity(input);
     HttpResponse resp = httpClient.execute(postRequest);
     return new ResultWrapper(resp, events);

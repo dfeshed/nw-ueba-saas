@@ -382,7 +382,7 @@ public class TestHiveSink {
       txn.begin();
       for (int j = 1; j <= batchSize; j++) {
         Event event = new SimpleEvent();
-        String body = "{\"id\" : 1, \"msg\" : \"using json serializer\"}";
+        String body = "{\"id\" : 1, \"msg\" : \"using presidio serializer\"}";
         event.setBody(body.getBytes());
         bodies.add(body);
         channel.put(event);
