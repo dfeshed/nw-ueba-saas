@@ -2,12 +2,11 @@ package presidio.webapp.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import fortscale.utils.logging.Logger;
+import presidio.manager.api.records.DataPipeLineConfiguration;
 import presidio.manager.api.records.PresidioManagerConfiguration;
+import presidio.manager.api.records.PresidioSystemConfiguration;
 import presidio.manager.api.records.ValidationResponse;
 import presidio.manager.api.service.ConfigurationProcessingService;
-import presidio.webapp.model.configuration.DataConfiguration;
-import presidio.webapp.model.configuration.ModelConfiguration;
-import presidio.webapp.model.configuration.SystemConfiguration;
 
 
 public class ConfigurationProcessingManager implements ConfigurationProcessingService {
@@ -17,7 +16,6 @@ public class ConfigurationProcessingManager implements ConfigurationProcessingSe
 
     private ConfigurationProcessingService CPSAirflow;
     private ConfigurationProcessingService CPSSecurityManager;
-    private ModelConfiguration modelConfiguration;
 
 
     @Override
@@ -37,26 +35,25 @@ public class ConfigurationProcessingManager implements ConfigurationProcessingSe
     }
 
 
-    public ConfigurationProcessingManager(ConfigurationProcessingService CPSAirflow, ConfigurationProcessingService CPSSecurityManager, ModelConfiguration modelConfiguration) {
+    public ConfigurationProcessingManager(ConfigurationProcessingService CPSAirflow, ConfigurationProcessingService CPSSecurityManager) {
         this.CPSAirflow = CPSAirflow;
         this.CPSSecurityManager = CPSSecurityManager;
-        this.modelConfiguration = modelConfiguration;
     }
 
-    public void setConfiguration(JsonNode node) {
-        SystemConfiguration systemConfiguration = modelConfiguration.getSystem();
-        DataConfiguration dataConfiguration = modelConfiguration.getDataPipeline();
+    public PresidioManagerConfiguration setConfiguration(JsonNode node) {
+        DataPipeLineConfiguration dataPipeLineConfiguration = new DataPipeLineConfiguration();
+        PresidioSystemConfiguration presidioSystemConfiguration = new PresidioSystemConfiguration();
         JsonNode system = node.get("system");
         JsonNode data = node.get("dataPipeline");
         if (data != null)
-            systemConfiguration.setParameters(system);
+            dataPipeLineConfiguration.setParameters(system);
         else
             logger.info("Json is missing the system configuration.");
         if (system != null)
-            dataConfiguration.setParameters(data);
+            presidioSystemConfiguration.setParameters(data);
         else
             logger.info("Json is missing the dataPipeLine configuration.");
-
+        return new PresidioManagerConfiguration(dataPipeLineConfiguration, presidioSystemConfiguration);
     }
 
 }

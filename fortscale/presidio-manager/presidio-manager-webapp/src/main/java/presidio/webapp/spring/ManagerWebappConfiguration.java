@@ -10,9 +10,6 @@ import presidio.manager.api.service.ConfigurationProcessingService;
 import presidio.security.manager.spring.SecurityManagerConfiguration;
 import presidio.webapp.controller.configuration.ConfigurationApi;
 import presidio.webapp.controller.configuration.ConfigurationApiController;
-import presidio.webapp.model.configuration.DataConfiguration;
-import presidio.webapp.model.configuration.ModelConfiguration;
-import presidio.webapp.model.configuration.SystemConfiguration;
 import presidio.webapp.service.ConfigurationProcessingManager;
 
 import javax.annotation.Resource;
@@ -29,24 +26,10 @@ public class ManagerWebappConfiguration {
     @Resource(name = "securityManagerConfigurationProcessingService")
     ConfigurationProcessingService ConfigurationProcessingServiceSecurityManager;
 
-    @Bean
-    SystemConfiguration systemConfiguration() {
-        return new SystemConfiguration();
-    }
-
-    @Bean
-    DataConfiguration dataConfiguration() {
-        return new DataConfiguration();
-    }
-
-    @Bean
-    ModelConfiguration modelConfiguration() {
-        return new ModelConfiguration().system(systemConfiguration()).dataPipeline(dataConfiguration());
-    }
 
     @Bean
     ConfigurationProcessingManager configurationServiceImpl() {
-        return new ConfigurationProcessingManager(ConfigurationProcessingServiceAirflow, ConfigurationProcessingServiceSecurityManager, modelConfiguration());
+        return new ConfigurationProcessingManager(ConfigurationProcessingServiceAirflow, ConfigurationProcessingServiceSecurityManager);
     }
 
     @Bean
