@@ -17,8 +17,9 @@ import java.util.Properties;
 public class FlumeConfigurationUtilTest {
 
     public static final String mockedModuleName = "adapter";
+    public static final String mockedSmartKit = "ca";
     private String mockedFlumeHome;
-    private final FlumeConfigurationUtil testedFlumeConfigurationUtil = new FlumeConfigurationUtil(mockedModuleName);
+    private final FlumeConfigurationUtil testedFlumeConfigurationUtil = new FlumeConfigurationUtil(mockedModuleName, mockedSmartKit);
 
     @Rule
     public final EnvironmentVariables environmentVariables = new EnvironmentVariables();
@@ -119,7 +120,7 @@ public class FlumeConfigurationUtilTest {
     @Test
     public void createAgentName() throws Exception {
         final String agentName = testedFlumeConfigurationUtil.createAgentName(Schema.ACTIVE_DIRECTORY);
-        final String expected = "active_directoryAgent";
+        final String expected = "caActive_directoryAgent";
         Assert.assertEquals("Agent name is invalid", expected, agentName);
     }
 
@@ -147,7 +148,7 @@ public class FlumeConfigurationUtilTest {
     @Test
     public void getAgentNameArgument() throws Exception {
         final String agentNameArgument = testedFlumeConfigurationUtil.getAgentNameArgument(Schema.ACTIVE_DIRECTORY);
-        final String expected = "--name active_directoryAgent";
+        final String expected = "--name caActive_directoryAgent";
         Assert.assertEquals("Agent name argument is invalid", expected, agentNameArgument);
     }
 
