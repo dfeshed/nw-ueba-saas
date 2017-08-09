@@ -2,7 +2,7 @@ general:
   deployment:
     bins:
       base_path:
-        /home/presidio/presidio-core/bin
+        /home/presidio/dev-projects/presidio-core/fortscale/target/dependencies
 dags:
   dags_configs:
   - dag_id: full_flow
@@ -18,16 +18,12 @@ dags:
     start_date: '2017-01-01 10:00:00'
     end_date: '2017-01-01 11:00:00'
   tasks_instances:
-    - input_task:
-        jvm_args:
-          jar_path: ${general.deployment.bins.base_path}/presidio-input-core-1.0.0-SNAPSHOT.jar
-          main_class: presidio.input.core.FortscaleInputCoreApplication
-    - hourly_DLPFILE_feature_aggregations:
-        jvm_args:
-          jar_path: ${general.deployment.bins.base_path}/presidio-ade-app-score-aggr-1.0.0-SNAPSHOT.jar
-          main_class: presidio.ade.processes.shell.ScoreAggregationsApplication
-          xmx: 500
-          xms: 70
+  - hourly_DLPFILE_feature_aggregations:
+      jvm_args:
+        jar_path: ${general.deployment.bins.base_path}/presidio-ade-app-score-aggr-1.0.0-SNAPSHOT.jar
+        main_class: presidio.ade.processes.shell.ScoreAggregationsApplication
+        xmx: 500
+        xms: 70
   operators:
     default_jar_values:
       java_path: /usr/bin/java
@@ -54,5 +50,12 @@ dags:
       jvm_args:
         jar_path: ${general.deployment.bins.base_path}/presidio-ade-app-score-aggr-1.0.0-SNAPSHOT.jar
         main_class: presidio.ade.processes.shell.ScoreAggregationsApplication
+        xmx: 500
+        xms: 70
+  components:
+    input:
+      jvm_args:
+        jar_path: ${general.deployment.bins.base_path}/presidio-input-core-1.0.0-SNAPSHOT.jar
+        main_class: presidio.input.core.FortscaleInputCoreApplication
         xmx: 500
         xms: 70
