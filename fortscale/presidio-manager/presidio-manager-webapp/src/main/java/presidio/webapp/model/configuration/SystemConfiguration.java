@@ -194,37 +194,5 @@ public class SystemConfiguration {
         }
         return o.toString().replace("\n", "\n    ");
     }
-
-    public void setParameters(JsonNode node) {
-        Iterator<Map.Entry<String, JsonNode>> itr = node.fields();
-        String key;
-        while (itr.hasNext()) {
-            key = itr.next().getKey();
-            setValues(key, node.get(key).toString());
-        }
-    }
-
-    private void setValues(String key, String value) {
-        switch (key) {
-            case "password":
-                setPassword(value);
-                break;
-            case "username":
-                setUsername(value);
-                break;
-            case "adminGroup":
-                setAdminGroup(value);
-                break;
-            case "analystGroup":
-                setAnalystGroup(value);
-                break;
-            case "smtpHost":
-                setSmtpHost(value);
-                break;
-            case "kdcUrl":
-                setKdcUrl(value);
-                break;
-        }
-    }
 }
 

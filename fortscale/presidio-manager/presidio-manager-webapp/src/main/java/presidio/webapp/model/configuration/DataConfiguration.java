@@ -105,8 +105,5 @@ public class DataConfiguration {
         return o.toString().replace("\n", "\n    ");
     }
 
-    public void setParameters(JsonNode node) {
-    }
-
 }
 
