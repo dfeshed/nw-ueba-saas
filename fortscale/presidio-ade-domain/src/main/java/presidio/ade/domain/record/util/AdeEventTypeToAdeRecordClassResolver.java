@@ -9,7 +9,7 @@ import presidio.ade.domain.record.AdeRecord;
  * Add ade record type and pojo class to the map.
  * For example: dlp_file, EnrichedDlpFileRecord.class
  */
-public class AdeEventTypeToAdeRecordClassResolver<K extends String, T extends AdeRecord> extends KeyToAdeRecordClassResolver {
+public class AdeEventTypeToAdeRecordClassResolver<T extends AdeRecord> extends KeyToAdeRecordClassResolver<String,T> {
     /**
      * @param scanPackage class path to scan
      */
@@ -30,7 +30,7 @@ public class AdeEventTypeToAdeRecordClassResolver<K extends String, T extends Ad
             Class<?> pojoClass = Class.forName(beanDef.getBeanClassName());
             if (AdeRecord.class.isAssignableFrom(pojoClass)) {
                 AdeRecordMetadata adeRecord = pojoClass.getAnnotation(AdeRecordMetadata.class);
-                keyToAdeRecordClassMap.put(adeRecord.adeEventType(), pojoClass);
+                keyToAdeRecordClassMap.put(adeRecord.adeEventType(), (Class<? extends T>)pojoClass);
             }
         } catch (Exception e) {
             System.err.println("Got exception: " + e.getMessage());
