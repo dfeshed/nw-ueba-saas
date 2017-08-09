@@ -1,5 +1,18 @@
 #!/bin/bash
 
+if [ "$1" = "--uninstall" ]; then
+
+echo "Stopping config server"
+systemctl stop configserver
+echo "Removing chkconfig setting"
+chkconfig --del configserver
+echo "Removing configuration service files"
+rm -rf -v /etc/init.d/configserver
+systemctl daemon-reload
+rm -rf -v  /var/log/presidio/configurationserver/
+
+else
+
 echo "Creating configuration server log folder"
 log_dir=/var/log/presidio/configurationserver/
 mkdir $log_dir
@@ -21,5 +34,6 @@ chkconfig --add configserver
 echo "Starting config server"
 systemctl stop configserver
 systemctl start configserver
+systemctl daemon-reload
 
-
+fi
