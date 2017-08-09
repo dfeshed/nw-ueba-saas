@@ -16,6 +16,9 @@
 
     <modules>
         <module>presidio-manager-webapp</module>
+        <module>presidio-manager-airflow</module>
+        <module>presidio-security-manager</module>
+        <module>presidio-manager-api</module>
     </modules>
 
 

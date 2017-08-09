@@ -9,10 +9,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 import presidio.webapp.model.PatchRequest;
-import presidio.webapp.model.configuration.ConfigurationResponseError;
 import presidio.webapp.model.configuration.ConfigurationResponse;
+import presidio.webapp.model.configuration.ConfigurationResponseError;
 import presidio.webapp.model.configuration.SecuredConfiguration;
-import presidio.webapp.service.ConfigurationService;
+import presidio.webapp.service.ConfigurationProcessingManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,10 +23,10 @@ import java.util.List;
 @Controller
 public class ConfigurationApiController implements ConfigurationApi {
 
-    private ConfigurationService configurationService;
+    private ConfigurationProcessingManager configurationProcessingManager;
 
-    public ConfigurationApiController(ConfigurationService configurationService) {
-        this.configurationService = configurationService;
+    public ConfigurationApiController(ConfigurationProcessingManager configurationProcessingManager) {
+        this.configurationProcessingManager = configurationProcessingManager;
     }
 
     public ResponseEntity<List<SecuredConfiguration>> configurationGet() {
@@ -41,14 +41,14 @@ public class ConfigurationApiController implements ConfigurationApi {
 
     public ResponseEntity<SecuredConfiguration> configurationPatch(
             @ApiParam(value = "A Json patch request as defined by RFC 6902 (http://jsonpatch.com/)",
-            required=true)
+                    required = true)
             @RequestBody PatchRequest jsonPatch) {
 
         //TODO- implement
         return new ResponseEntity<SecuredConfiguration>(HttpStatus.OK);
     }
 
-    public ResponseEntity<ConfigurationResponse> configurationPut(@ApiParam(value = "Presidio Configuration" ,required=true ) @RequestBody JsonNode body) {
+    public ResponseEntity<ConfigurationResponse> configurationPut(@ApiParam(value = "Presidio Configuration", required = true) @RequestBody JsonNode body) {
         //TODO- example only! should be changed to real implementation once the SDK will be ready
         ConfigurationResponse configurationResponse = new ConfigurationResponse();
 
