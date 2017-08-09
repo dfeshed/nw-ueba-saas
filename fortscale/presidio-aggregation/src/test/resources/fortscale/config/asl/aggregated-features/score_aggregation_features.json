@@ -8,7 +8,6 @@
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
       "anomalyType": "event_time",
-      "evidencesFilterStrategy": "HIGHEST_SCORE",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "highest_date_time_score"
@@ -26,7 +25,6 @@
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
       "anomalyType": "normalized_src_machine",
-      "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "normalized_src_machine_to_highest_score_map"
@@ -49,7 +47,6 @@
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
       "anomalyType": "event_time",
-      "evidencesFilterStrategy": "HIGHEST_SCORE",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "highest_date_time_score"
@@ -67,7 +64,6 @@
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
       "anomalyType": "normalized_src_machine",
-      "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "normalized_src_machine_to_highest_score_map"

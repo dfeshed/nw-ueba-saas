@@ -89,7 +89,6 @@ public class AggregatedFeatureEventsConfServiceTest {
         Map<String, List<String>> featureNameMap = aggregatedFeatureEventConf.getAggregatedFeatureNamesMap();
         Set<String> featureNames = aggregatedFeatureEventConf.getAllAggregatedFeatureNames();
         String anomalyType = aggregatedFeatureEventConf.getAnomalyType();
-        String evidencesFilterStrategy = aggregatedFeatureEventConf.getEvidencesFilterStrategy();
         int numberOfBuckets = aggregatedFeatureEventConf.getNumberOfBuckets();
         String outputBucketStrategy = aggregatedFeatureEventConf.getOutputBucketStrategy();
 
@@ -103,7 +102,6 @@ public class AggregatedFeatureEventsConfServiceTest {
         Assert.assertEquals(FEATURE_NAME_MAP_AS_STRING1, featureNameMap.toString());
         JSONAssert.assertEquals(FEATURE_NAMES_AS_STRING1, featureNames.toString(), false);
         Assert.assertEquals("number_of_successful_ssh_events_hourly", anomalyType);
-        Assert.assertEquals("HIGHEST_SCORE", evidencesFilterStrategy);
         Assert.assertEquals(1, numberOfBuckets);
         Assert.assertNull(outputBucketStrategy);
     }
@@ -118,7 +116,6 @@ public class AggregatedFeatureEventsConfServiceTest {
         Map<String, List<String>> featureNameMap = aggregatedFeatureEventConf.getAggregatedFeatureNamesMap();
         Set<String> featureNames = aggregatedFeatureEventConf.getAllAggregatedFeatureNames();
         String anomalyType = aggregatedFeatureEventConf.getAnomalyType();
-        String evidencesFilterStrategy = aggregatedFeatureEventConf.getEvidencesFilterStrategy();
         int numberOfBuckets = aggregatedFeatureEventConf.getNumberOfBuckets();
         String outputBucketStrategy = aggregatedFeatureEventConf.getOutputBucketStrategy();
 
@@ -130,7 +127,6 @@ public class AggregatedFeatureEventsConfServiceTest {
         Assert.assertEquals(false, fireEventsAlsoForEmptyBucketTicks);
         JSONAssert.assertEquals(FEATURE_NAMES_AS_STRING2, featureNames.toString(), false);
         Assert.assertEquals("number_of_successful_ssh_events_daily", anomalyType);
-        Assert.assertEquals("HIGHEST_SCORE_PER_VALUE", evidencesFilterStrategy);
         Assert.assertEquals(2, numberOfBuckets);
         Assert.assertNull(outputBucketStrategy);
     }
@@ -148,12 +144,6 @@ public class AggregatedFeatureEventsConfServiceTest {
     public void getAnomalyTypeTest() {
         Assert.assertEquals("number_of_successful_ssh_events_hourly", aggregatedFeatureEventsConfService.getAnomalyType("name1"));
         Assert.assertEquals("number_of_successful_ssh_events_daily", aggregatedFeatureEventsConfService.getAnomalyType("name2"));
-    }
-
-    @Test
-    public void getEvidenceReadingStrategyTest() {
-        Assert.assertEquals(AggrEventEvidenceFilteringStrategyEnum.HIGHEST_SCORE, aggregatedFeatureEventsConfService.getEvidenceReadingStrategy("name1"));
-        Assert.assertEquals(AggrEventEvidenceFilteringStrategyEnum.HIGHEST_SCORE_PER_VALUE, aggregatedFeatureEventsConfService.getEvidenceReadingStrategy("name2"));
     }
 
 }
