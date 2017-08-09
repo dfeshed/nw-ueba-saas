@@ -35,7 +35,7 @@ public class AggrFeatureSumFuncTest {
 		}
 		Map<String, List<String>> map = new HashMap<>();
 		map.put("sum", list);
-		return new AggregatedFeatureEventConf(name, "F", "bucketConfName", 3, 1, 300, "HIGHEST_SCORE",  map, new JSONObject());
+		return new AggregatedFeatureEventConf(name, "F", "bucketConfName", 3, 1, 300,  map, new JSONObject());
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -112,8 +112,7 @@ public class AggrFeatureSumFuncTest {
 		AggregatedFeatureEventConf conf = createAggregatedFeatureEventConf("NonExistingFeature", 1);
 		AggrFeatureSumFunc function = new AggrFeatureSumFunc();
 		Feature actual1 = function.calculateAggrFeature(conf, listOfFeatureMaps);
-		AggrFeatureValue aggrFeatureValue = (AggrFeatureValue)actual1.getValue();
-		Assert.assertEquals(0D, aggrFeatureValue.getValue());
+		Assert.assertEquals(null, actual1);
 	}
 
 	@Test(expected = IllegalArgumentException.class)

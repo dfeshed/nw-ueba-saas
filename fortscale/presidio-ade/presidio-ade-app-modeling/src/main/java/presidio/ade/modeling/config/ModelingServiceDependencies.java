@@ -1,8 +1,5 @@
 package presidio.ade.modeling.config;
 
-import fortscale.accumulator.aggregation.store.AccumulatedAggregatedFeatureEventStore;
-import fortscale.accumulator.aggregation.store.AccumulatedAggregatedFeatureEventStoreImpl;
-import fortscale.accumulator.aggregation.translator.AccumulatedAggregatedFeatureEventTranslator;
 import fortscale.accumulator.entityEvent.store.AccumulatedEntityEventStore;
 import fortscale.accumulator.entityEvent.store.AccumulatedEntityEventStoreImpl;
 import fortscale.accumulator.entityEvent.translator.AccumulatedEntityEventTranslator;
@@ -24,6 +21,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import presidio.ade.domain.store.accumulator.*;
 
 import java.util.Collections;
 
@@ -34,7 +32,8 @@ import java.util.Collections;
 @Import({
 		ModelingServiceFeatureBucketConfServiceConfig.class,
 		ModelingServiceFeatureAggregationEventConfServiceConfig.class,
-		ModelingServiceEntityEventConfServiceConfig.class
+		ModelingServiceEntityEventConfServiceConfig.class,
+		AggregationEventsAccumulationDataReaderConfig.class
 })
 public class ModelingServiceDependencies {
 	private static final StatsService statsService = null;
@@ -55,11 +54,7 @@ public class ModelingServiceDependencies {
 	@Autowired
 	private AggregatedFeatureNameTranslationService aggregatedFeatureNameTranslationService;
 	@Autowired
-	private AccumulatedAggregatedFeatureEventTranslator accumulatedAggregatedFeatureEventTranslator;
-	@Autowired
 	private AggregatedFeatureEventsMongoStore aggregatedFeatureEventsMongoStore;
-	@Autowired
-	private AccumulatedAggregatedFeatureEventStore accumulatedAggregatedFeatureEventStore;
 	@Autowired
 	private EntityEventTranslationService entityEventTranslationService;
 	@Autowired
@@ -68,6 +63,9 @@ public class ModelingServiceDependencies {
 	private EntityEventDataMongoStore entityEventDataMongoStore;
 	@Autowired
 	private AccumulatedEntityEventStore accumulatedEntityEventStore;
+
+	@Autowired
+	private AggregationEventsAccumulationDataReader aggregationEventsAccumulationDataReader;
 
 	/*******************************
 	 * Feature bucket related beans.
@@ -84,7 +82,6 @@ public class ModelingServiceDependencies {
 	/******************************************
 	 * Feature aggregation event related beans.
 	 ******************************************/
-
 	@Bean
 	public AggregatedFeatureNameTranslationService aggregatedFeatureNameTranslationService() {
 		return new AggregatedFeatureNameTranslationService(eventTypeFieldValueAggrEvent);
@@ -101,23 +98,10 @@ public class ModelingServiceDependencies {
 	}
 
 	@Bean
-	public AccumulatedAggregatedFeatureEventTranslator accumulatedAggregatedFeatureEventTranslator() {
-		return new AccumulatedAggregatedFeatureEventTranslator(aggregatedFeatureNameTranslationService);
-	}
-
-	@Bean
-	public AccumulatedAggregatedFeatureEventStore accumulatedAggregatedFeatureEventStore() {
-		return new AccumulatedAggregatedFeatureEventStoreImpl(
-				mongoTemplate,
-				accumulatedAggregatedFeatureEventTranslator,
-				statsService);
-	}
-
-	@Bean
 	public AggregatedFeatureEventsReaderService aggregatedFeatureEventsReaderService() {
 		return new AggregatedFeatureEventsReaderService(
 				aggregatedFeatureEventsMongoStore,
-				accumulatedAggregatedFeatureEventStore);
+				aggregationEventsAccumulationDataReader);
 	}
 
 	/****************************

@@ -29,13 +29,12 @@ public abstract class PaginationService<T> {
     private static final Logger logger = Logger.getLogger(PaginationService.class);
 
     public PaginationService(int pageSize, int maxGroupSize) {
-        this.pageSize = pageSize;
-        this.maxGroupSize = maxGroupSize;
-        this.sortBy = "";
+        this(pageSize, maxGroupSize, null);
     }
 
     public PaginationService(int pageSize, int maxGroupSize, String sortBy) {
-        this(pageSize,maxGroupSize);
+        this.pageSize = pageSize;
+        this.maxGroupSize = maxGroupSize;
         this.sortBy = sortBy;
     }
 

@@ -3,31 +3,31 @@ package fortscale.ml.model.selector;
 import fortscale.aggregation.exceptions.InvalidAggregatedFeatureEventConfNameException;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
-import fortscale.aggregation.feature.event.store.AggregatedFeatureEventsReaderService;
 import fortscale.utils.time.TimeRange;
+import presidio.ade.domain.store.accumulator.AggregationEventsAccumulationDataReader;
 
 import java.util.Date;
 import java.util.Set;
 
 public class AggregatedEventContextSelector implements IContextSelector {
 	private AggregatedFeatureEventConf aggregatedFeatureEventConf;
-	private AggregatedFeatureEventsReaderService aggregatedFeatureEventsReaderService;
+	private AggregationEventsAccumulationDataReader aggregationEventsAccumulationDataReader;
 
 	public AggregatedEventContextSelector(
 			AggregatedEventContextSelectorConf conf,
 			AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService,
-			AggregatedFeatureEventsReaderService aggregatedFeatureEventsReaderService) {
+			AggregationEventsAccumulationDataReader aggregationEventsAccumulationDataReader) {
 
 		this.aggregatedFeatureEventConf = aggregatedFeatureEventsConfService
 				.getAggregatedFeatureEventConf(conf.getAggregatedFeatureEventConfName());
-		this.aggregatedFeatureEventsReaderService = aggregatedFeatureEventsReaderService;
+		this.aggregationEventsAccumulationDataReader = aggregationEventsAccumulationDataReader;
 		validate(conf);
 	}
 
 	@Override
 	public Set<String> getContexts(TimeRange timeRange) {
-		return aggregatedFeatureEventsReaderService.findDistinctAcmContextsByTimeRange(
-				aggregatedFeatureEventConf,
+		return aggregationEventsAccumulationDataReader.findDistinctAcmContextsByTimeRange(
+				aggregatedFeatureEventConf.getName(),
 				Date.from(timeRange.getStart()),
 				Date.from(timeRange.getEnd()));
 	}
