@@ -1,11 +1,8 @@
 package presidio.webapp.model.configuration;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.JsonNode;
 import io.swagger.annotations.ApiModelProperty;
 
-import java.util.Iterator;
-import java.util.Map;
 import java.util.Objects;
 
 /**
