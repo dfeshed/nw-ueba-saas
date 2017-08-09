@@ -94,9 +94,9 @@
 
   &__createList{
     .rsa-form-input textarea, .rsa-form-textarea textarea {
-      min-height: 12rem;
+      min-height: 15rem;
       width: 288%;
-      max-height: 12rem;
+      max-height: 15rem;
       max-width: 499px;
     }
 
@@ -111,7 +111,7 @@
     }
 
     .list-desc{
-      height: 270px;
+      height: 300px;
     }
 
     .rsa-form-button{
@@ -136,7 +136,7 @@
     padding: rsa-whitespace(less);
     max-width: 100%;
     width: 500px;
-    height:400px;
+    height:450px;
 
     .rsa-nav-tab.is-left-aligned-primary{
       padding: rsa-whitespace(base) rsa-whitespace(less);
@@ -150,7 +150,11 @@
     }
   }
 
-  &__metavalue input {
+  &__metaValue {
+    height: 69px;
+  }
+
+  &__metaValue input {
     width: 500px;
     text-overflow: ellipsis;
     white-space: nowrap;

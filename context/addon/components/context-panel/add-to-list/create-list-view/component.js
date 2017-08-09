@@ -72,7 +72,8 @@ export default Component.extend({
       if (isEmpty(newList.name) || newList.name.length > 255) {
         this.setProperties({
           isError: true,
-          errorMessage: this.get('i18n').t('context.error.listValidName')
+          errorMessage: this.get('i18n').t('context.error.listValidName'),
+          isDisabled: true
         });
       }
       if (!this.get('isError') || !this.get('isDisabled')) {

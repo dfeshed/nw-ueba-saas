@@ -1,7 +1,7 @@
 <div class="rsa-context-tree-table__addtoListBox">
   <div class="rsa-context-tree-table__headerMessage">{{t 'context.addToList.headerMessage'}}</div>
   {{#rsa-content-tethered-panel-trigger panel='listMeta'}}
-    {{rsa-form-input class="rsa-context-tree-table__metavalue" isReadOnly=true label=(t 'context.addToList.metaValue') placeholder=entityId  isError=isError errorMessage=errorMessage}}
+    {{rsa-form-input class="rsa-context-tree-table__metaValue" isReadOnly=true label=(t 'context.addToList.metaValue') placeholder=entityId  isError=isError errorMessage=errorMessage}}
   {{/rsa-content-tethered-panel-trigger}}
   {{#rsa-content-tethered-panel displayCloseButton=false style="primary" position='left' panelId='listMeta'}}
     <div class="rsa-context-panel-header__tooltip" >{{entityId}}</div>
