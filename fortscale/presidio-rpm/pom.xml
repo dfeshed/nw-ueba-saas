@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    
+	<modelVersion>4.0.0</modelVersion>
+    <properties>
+        <rpm-maven-plugin.directory>${rpm-maven-plugin.deployment_target_directory}/installation</rpm-maven-plugin.directory>
+        <rpm-maven-plugin.script>
+            ${rpm-maven-plugin.directory}/installation-scripts/infrastructure/deploy/manager/deploy_manager.py
+        </rpm-maven-plugin.script>
+        <rpm_name>presidio</rpm_name>
+        <rpm-maven-plugin.deployment_target_directory>/home/presidio/presidio-core
+        </rpm-maven-plugin.deployment_target_directory>
+        <rpm-maven-plugin.script.system_user>presidio</rpm-maven-plugin.script.system_user>
+        <rpm-maven-plugin.script.get_current_build_version_string>"$(rpm -qa | grep ${rpm_name} | cut -d"-" -f3 | cut
+            -d"." -f1)"
+        </rpm-maven-plugin.script.get_current_build_version_string>
+        <rpm-maven-plugin.script.version_temp_file>/tmp/version.txt</rpm-maven-plugin.script.version_temp_file>
+        <python_path>/usr/local/bin/python</python_path>
+        <rpm-maven-plugin.workflows_packages_directory>${rpm-maven-plugin.deployment_target_directory}/packages
+        </rpm-maven-plugin.workflows_packages_directory>
+        <rpm-maven-plugin.workflows-build-script-path>${project.basedir}/build-scripts/build-workflows.sh
+        </rpm-maven-plugin.workflows-build-script-path>
+        <exclude.rpm>presidio-quest-ca</exclude.rpm>
+        <exclude.rpm2>flume-presidio</exclude.rpm2>
+    </properties>
+    <parent>
+        <artifactId>fortscale</artifactId>
+        <groupId>fortscale</groupId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+    
+
+    <artifactId>${rpm_name}</artifactId>
+<build>
+    <plugins>
+        <plugin>
+            <artifactId>exec-maven-plugin</artifactId>
+            <groupId>org.codehaus.mojo</groupId>
+            <executions>
+                <execution>
+                    <id>build workflows</id>
+                    <phase>generate-sources</phase>
+                    <goals>
+                        <goal>exec</goal>
+                    </goals>
+                    <configuration>
+                        <executable>${rpm-maven-plugin.workflows-build-script-path}</executable>
+                    </configuration>
+                </execution>
+            </executions>
+        </plugin>
+        <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>rpm-maven-plugin</artifactId>
+            <version>${rpm-maven-plugin.version}</version>
+            <extensions>true</extensions>
+            <executions>
+                <execution>
+                    <id>generate-rpm</id>
+                    <goals>
+                        <goal>rpm</goal>
+                    </goals>
+                </execution>
+            </executions>
+            <configuration>
+                <group>Application/Collectors</group>
+                <release>${rpm.version.build}</release>
+                <needarch>true</needarch>
+                <mappings>
+                    <mapping>
+                        <!-- package presidio workflows library-->
+                        <directoryIncluded>false</directoryIncluded>
+                        <directory>${rpm-maven-plugin.workflows_packages_directory}</directory>
+                        <username>presidio</username>
+                        <groupname>presidio</groupname>
+                        <sources>
+                            <source>
+                                <location>${project.parent.build.directory}/eggs</location>
+                            </source>
+                        </sources>
+                    </mapping>
+                    <mapping>
+                        <!--package dags-->
+                        <directoryIncluded>true</directoryIncluded>
+                        <directory>${rpm-maven-plugin.deployment_target_directory}/airflow/dags</directory>
+                        <username>presidio</username>
+                        <groupname>presidio</groupname>
+                        <sources>
+                            <source>
+                                <location>${project.parent.build.directory}/../../presidio-workflows/presidio/dags</location>
+                            </source>
+                        </sources>
+                    </mapping>
+                    <mapping>
+                        <directoryIncluded>false</directoryIncluded>
+                        <directory>${rpm-maven-plugin.deployment_target_directory}/bin</directory>
+                        <username>presidio</username>
+                        <groupname>presidio</groupname>
+                        <sources>
+                            <source>
+                                <location>${project.parent.build.directory}/dependencies/</location>
+                            </source>
+                        </sources>
+                    </mapping>
+                    <mapping>
+                        <directoryIncluded>false</directoryIncluded>
+                        <directory>${rpm-maven-plugin.deployment_target_directory}/configurations</directory>
+                        <username>presidio</username>
+                        <groupname>presidio</groupname>
+                        <sources>
+                            <source>
+                                <location>${project.parent.build.directory}/extra-resources/</location>
+                            </source>
+                        </sources>
+                    </mapping>
+                    <mapping>
+                        <directoryIncluded>false</directoryIncluded>
+                        <directory>${rpm-maven-plugin.directory}</directory>
+                        <username>presidio</username>
+                        <groupname>presidio</groupname>
+                        <sources>
+                            <source>
+                                <location>src/main/python</location>
+                            </source>
+                        </sources>
+                    </mapping>
+                    <mapping>
+                        <directory>${rpm-maven-plugin.directory}</directory>
+
+                        <username>presidio</username>
+                        <groupname>presidio</groupname>
+                        <sources>
+                            <source>
+                                <location>src/main/python</location>
+                            </source>
+                        </sources>
+                    </mapping>
+                </mappings>
+                <preinstallScriptlet>
+                    <script>
+                        echo "Creating temp version file"
+                        <!-- pre installation commands: -->
+                        rpm -qa | grep ${rpm_name} | grep -v ${exclude.rpm} | grep -v ${exclude.rpm2} | cut -d"-" -f2 | cut -d"." -f1 > ${rpm-maven-plugin.script.version_temp_file}
+                        rpm -qa | grep ${rpm_name} | grep -v ${exclude.rpm} | grep -v ${exclude.rpm2} | cut -d"-" -f2 | cut -d"." -f2 >> ${rpm-maven-plugin.script.version_temp_file}
+                        rpm -qa | grep ${rpm_name} | grep -v ${exclude.rpm} | grep -v ${exclude.rpm2} | cut -d"-" -f3 | cut -d"." -f1 >> ${rpm-maven-plugin.script.version_temp_file}
+                        <!-- end of post installation -->
+                    </script>
+                </preinstallScriptlet>
+                <postinstallScriptlet>
+                    <!--<scriptFile>src/main/scripts/postinstall</scriptFile>-->
+                    <!--<fileEncoding>utf-8</fileEncoding>-->
+                    <script>
+                        <!-- deploy presidio-workflows lib-->
+                        echo "Running Python project"
+                        <!-- post installation commands: -->
+                        ${python_path} ${rpm-maven-plugin.script} --rpm_name ${rpm_name} --major ${rpm.version.major} --minor ${rpm.version.minor} --build ${rpm.version.build}
+                        <!--changing ownership of project main folder -->
+                        #echo "Changing ownership of /project main repository"
+                        chown -R -v ${rpm-maven-plugin.script.system_user}:${rpm-maven-plugin.script.system_user} ${rpm-maven-plugin.deployment_target_directory}
+                        #echo "Removing temporary files"
+                        rm -rf -v ${rpm-maven-plugin.script.version_temp_file}
+                        <!--end of post installation -->"
+                    </script>
+                </postinstallScriptlet>
+                <preremoveScriptlet>
+                    <script>
+                        <!-- pre remove commands -->
+                        ${python_path} ${rpm-maven-plugin.script} --rpm_name ${rpm_name} --major ${rpm.version.major} --minor ${rpm.version.minor} --build ${rpm.version.build} --uninstall
+
+                    </script>
+                </preremoveScriptlet>
+                <postremoveScriptlet>
+                    <script>
+                        <!-- post remove commands -->
+                        <!-- remove presidio-core main folder -->
+
+                    </script>
+                </postremoveScriptlet>
+            </configuration>
+        </plugin>
+    </plugins>
+</build>
+</project>

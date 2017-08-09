@@ -10,8 +10,9 @@
           "normalized_username_daily"
         ],
         "data_sources": [
-          "dlpfile"
-        ]
+          "DLPFILE"
+        ],
+        "command":"run"
       },
       "schedule_interval": "timedelta(hours=1)",
       "start_date": "2017-01-01 10:00:00",

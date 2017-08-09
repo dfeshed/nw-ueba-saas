@@ -1,15 +1,18 @@
 package presidio.sdk.api.services;
 
 
-import fortscale.common.general.Datasource;
+import fortscale.common.general.Schema;
 import fortscale.domain.core.AbstractAuditableDocument;
 
+import java.time.Instant;
 import java.util.List;
 
 public interface PresidioInputPersistencyService {
-    boolean store(Datasource datasource, List<AbstractAuditableDocument> records);
+    boolean store(Schema schema, List<? extends AbstractAuditableDocument> records);
 
-    List<? extends AbstractAuditableDocument> find(Datasource dataSource, long startTime, long endTime); //todo: we can discuss the name. for now using spring's terminology
+    List<? extends AbstractAuditableDocument> find(Schema schema, Instant startTime, Instant endTime) throws Exception; //todo: we can discuss the name. for now using spring's terminology
 
-    int clean(Datasource dataSource, long startTime, long endTime);
+    int clean(Schema schema, Instant startTime, Instant endTime) throws Exception;
+
+    void cleanAll(Schema schema) throws Exception;
 }

@@ -1,0 +1,106 @@
+{
+  "BucketConfs": [
+    {
+      "name": "highest_date_time_score_normalized_username_dlpfile_daily",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "context.userId"
+      ],
+      "adeEventTypes": [
+        "dlpfile"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "aggrFeatureConfs": [
+        {
+          "name": "highest_date_time_score",
+          "featureNamesMap": {
+            "maximize": [
+              "date_time_unix.normalized_username.dlpfile.score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "normalized_src_machine_to_highest_score_map_normalized_username_dlpfile_daily",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "context.userId"
+      ],
+      "adeEventTypes": [
+        "dlpfile"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "aggrFeatureConfs": [
+        {
+          "name": "normalized_src_machine_to_highest_score_map",
+          "featureNamesMap": {
+            "groupBy": [
+              "context.srcMachineId"
+            ],
+            "maximize": [
+              "normalized_src_machine.normalized_username.dlpfile.score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "highest_date_time_score_normalized_username_dlpfile_hourly",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "context.userId"
+      ],
+      "adeEventTypes": [
+        "dlpfile"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "highest_date_time_score",
+          "featureNamesMap": {
+            "maximize": [
+              "date_time_unix.normalized_username.dlpfile.score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "normalized_src_machine_to_highest_score_map_normalized_username_dlpfile_hourly",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "context.userId"
+      ],
+      "adeEventTypes": [
+        "dlpfile"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "normalized_src_machine_to_highest_score_map",
+          "featureNamesMap": {
+            "groupBy": [
+              "context.srcMachineId"
+            ],
+            "maximize": [
+              "normalized_src_machine.normalized_username.dlpfile.score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
+        }
+      ]
+    }
+  ]
+}

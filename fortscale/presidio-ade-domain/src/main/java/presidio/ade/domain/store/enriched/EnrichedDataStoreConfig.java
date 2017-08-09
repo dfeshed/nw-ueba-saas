@@ -5,19 +5,24 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import presidio.ade.domain.record.enriched.AdeEventTypeToAdeEnrichedRecordClassResolver;
+import presidio.ade.domain.record.enriched.AdeEventTypeToAdeEnrichedRecordClassResolverConfig;
 
 @Configuration
 @Import({
-		EnrichedDataToCollectionNameTranslatorConfig.class
+		EnrichedDataToCollectionNameTranslatorConfig.class,
+		AdeEventTypeToAdeEnrichedRecordClassResolverConfig.class
 })
 public class EnrichedDataStoreConfig {
 	@Autowired
 	private MongoTemplate mongoTemplate;
 	@Autowired
-	private EnrichedDataToCollectionNameTranslator translator;
+	private EnrichedDataAdeToCollectionNameTranslator translator;
+	@Autowired
+	private AdeEventTypeToAdeEnrichedRecordClassResolver adeEventTypeToAdeEnrichedRecordClassResolver;
 
 	@Bean
 	public EnrichedDataStore enrichedDataStore() {
-		return new EnrichedDataStoreImplMongo(mongoTemplate, translator);
+		return new EnrichedDataStoreImplMongo(mongoTemplate, translator, adeEventTypeToAdeEnrichedRecordClassResolver);
 	}
 }

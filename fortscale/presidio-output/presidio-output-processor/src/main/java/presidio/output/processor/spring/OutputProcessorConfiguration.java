@@ -1,26 +1,31 @@
 package presidio.output.processor.spring;
 
-import org.springframework.boot.CommandLineRunner;
+import fortscale.utils.mongodb.config.MongoConfig;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import presidio.output.processor.services.OutputProcessServiceImpl;
+import org.springframework.context.annotation.Import;
+import presidio.ade.sdk.common.AdeManagerSdk;
+import presidio.ade.sdk.common.AdeManagerSdkConfig;
+import presidio.output.processor.services.OutputExecutionService;
+import presidio.output.processor.services.OutputExecutionServiceImpl;
+import presidio.output.processor.services.alert.AlertService;
 
 /**
  * Created by shays on 17/05/2017.
  */
 @Configuration
+@Import({MongoConfig.class, AdeManagerSdkConfig.class, AlertServiceElasticConfig.class})
 public class OutputProcessorConfiguration {
 
-    @Bean
-    public OutputProcessServiceImpl outputProcessService(){
-        return new OutputProcessServiceImpl();
-    }
+    @Autowired
+    private AdeManagerSdk adeManagerSdk;
+
+    @Autowired
+    private AlertService alertService;
 
     @Bean
-    public CommandLineRunner commandLineRunner2() {
-
-        return params -> outputProcessService().run(params);
+    public OutputExecutionService outputProcessService() {
+        return new OutputExecutionServiceImpl(adeManagerSdk, alertService);
     }
-
-
 }

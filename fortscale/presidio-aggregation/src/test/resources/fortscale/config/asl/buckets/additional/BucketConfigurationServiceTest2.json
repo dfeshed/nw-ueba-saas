@@ -1,0 +1,30 @@
+{
+  "BucketConfs": [
+    {
+      "name": "bc3",
+      "contextFieldNames": [
+        "field5",
+        "field6"
+      ],
+      "adeEventTypes": [
+        "ssh",
+        "vpn"
+      ],
+      "strategyName": "strategy1",
+      "aggrFeatureConfs": [
+        {
+          "name": "aggr-feature-3",
+          "featureNamesMap": {
+            "param1": [
+              "feature5",
+              "feature6"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "func3"
+          }
+        }
+      ]
+    }
+  ]
+}

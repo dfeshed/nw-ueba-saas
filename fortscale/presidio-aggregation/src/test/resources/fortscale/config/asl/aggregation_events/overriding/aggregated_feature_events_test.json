@@ -1,0 +1,54 @@
+{
+  "AggregatedFeatureEvents": [
+    {
+      "name": "name1",
+      "type": "F",
+      "bucketConfName": "bc1",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 1,
+      "anomalyType": "number_of_successful_ssh_events_hourly",
+      "evidencesFilterStrategy": "HIGHEST_SCORE",
+      "aggregatedFeatureNamesMap": {
+        "functionArgument": [
+          "aggregatedFeatureName1",
+          "aggregatedFeatureName2",
+          "aggregatedFeatureName3"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "type1",
+        "params": {
+          "param1": "valueOfParam1",
+          "param2": "valueOfParam2",
+          "param3": "valueOfParam3"
+        }
+      }
+    },
+    {
+      "name": "name2",
+      "type": "F",
+      "bucketConfName": "bc2",
+      "numberOfBuckets": 2,
+      "bucketsLeap": 2,
+      "waitAfterBucketCloseSeconds": 2,
+      "anomalyType": "number_of_successful_ssh_events_daily",
+      "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
+      "aggregatedFeatureNamesMap": {
+        "functionArgument": [
+          "aggregatedFeatureName1",
+          "aggregatedFeatureName2",
+          "aggregatedFeatureName3"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "type2",
+        "params": {
+          "param1": "valueOfParam1",
+          "param2": "valueOfParam2",
+          "param3": "valueOfParam3"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "name": "score-aggregation",
+  "profiles": [
+    "dev"
+  ],
+  "aaa":
+  {
+   "bbb": "#dot#"
+  }
+
+}

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>fortscale</artifactId>
+        <groupId>fortscale</groupId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>presidio-ade</artifactId>
+    <packaging>pom</packaging>
+    <modules>
+        <module>presidio-ade-app-score-aggr</module>
+        <module>presidio-ade-app-modeling</module>
+        <module>presidio-ade-app-model-feature-buckets</module>
+        <module>presidio-ade-app-feature-aggr</module>
+        <module>presidio-ade-app-accumulate-aggr</module>
+        <module>presidio-ade-sdk</module>
+        <module>presidio-ade-app-test-utils</module>
+    </modules>
+</project>

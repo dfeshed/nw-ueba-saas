@@ -6,8 +6,8 @@ from presidio.builders.presidio_dag_builder import PresidioDagBuilder
 from presidio.operators.fixed_duration_jar_operator import FixedDurationJarOperator
 
 JAR_PATH = \
-    '/home/presidio/dev-projects/presidio-core/presidio-workflows/tests/resources/jars/test-mock-project-0.0.1-SNAPSHOT.jar'
-MAIN_CLASS = 'com.fortscale.test.TestMockProjectApplication'
+    '/home/presidio/dev-projects/presidio-core/fortscale/target/dependencies/presidio-output-processor-1.0.0-SNAPSHOT.jar'
+MAIN_CLASS = 'presidio.output.processor.FortscaleOutputProcessorApplication'
 
 jvm_args = {
     'jar_path': JAR_PATH,
@@ -42,18 +42,18 @@ class OutputDagBuilder(PresidioDagBuilder):
 
         logging.info("populating the output dag, dag_id=%s ", output_dag.dag_id)
 
-        # Iterate all configured data sources
-        for data_source in self.data_sources:
-            java_args = {
-                'data_source': data_source,
-            }
+        java_args = {
+            'schema': self.data_sources[0],
+        }
 
-            # Create jar operator for each data source
-            FixedDurationJarOperator(
-                task_id='output_{}'.format(data_source),
-                fixed_duration_strategy=timedelta(hours=1),
-                jvm_args=jvm_args,
-                java_args=java_args,
-                dag=output_dag)
+        # Create jar operator
+        FixedDurationJarOperator(
+            task_id='output_processor',
+            fixed_duration_strategy=timedelta(hours=1),
+            command=PresidioDagBuilder.presidio_command,
+            jvm_args=jvm_args,
+            java_args=java_args,
+            dag=output_dag)
+        # Iterate all configured data sources
 
         return output_dag

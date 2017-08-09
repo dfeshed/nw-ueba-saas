@@ -10,12 +10,12 @@ import java.time.Instant;
  * Created by barak_schuster on 5/18/17.
  */
 public class EnrichedRecordsMetadata {
-	private final String dataSource;
+	private final String adeEventType;
 	private final Instant startInstant;
 	private final Instant endInstant;
 
-	public EnrichedRecordsMetadata(String dataSource, Instant startInstant, Instant endInstant) {
-		this.dataSource = dataSource;
+	public EnrichedRecordsMetadata(String adeEventType, Instant startInstant, Instant endInstant) {
+		this.adeEventType = adeEventType;
 		this.startInstant = startInstant;
 		this.endInstant = endInstant;
 	}
@@ -28,8 +28,8 @@ public class EnrichedRecordsMetadata {
 		return ToStringBuilder.reflectionToString(this);
 	}
 
-	public String getDataSource() {
-		return dataSource;
+	public String getAdeEventType() {
+		return adeEventType;
 	}
 
 	public Instant getStartInstant() {

@@ -1,31 +1,65 @@
 package presidio.input.sdk.impl.spring;
 
+import fortscale.utils.mongodb.util.ToCollectionNameTranslator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
-import presidio.input.sdk.impl.repositories.DlpFileDataRepository;
-import presidio.input.sdk.impl.services.DlpFileDataServiceImpl;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
+import presidio.input.sdk.impl.repositories.DataSourceRepository;
+import presidio.input.sdk.impl.repositories.DataSourceRepositoryImpl;
+import presidio.input.sdk.impl.services.DataServiceImpl;
 import presidio.input.sdk.impl.services.PresidioInputPersistencyServiceMongoImpl;
-import presidio.sdk.api.domain.DlpFileDataService;
+import presidio.input.sdk.impl.validators.ValidationManager;
+import presidio.sdk.api.domain.DataService;
+import presidio.sdk.api.utils.InputToCollectionNameTranslator;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
 
 
 @Configuration
-@EnableMongoRepositories(basePackageClasses = DlpFileDataRepository.class)
+@EnableMongoRepositories(basePackages = "presidio.input.sdk.impl.repositories")
+@PropertySource("classpath:application.properties")
 public class PresidioInputPersistencyServiceConfig {
 
+    @Bean
+    public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
+        return new PropertySourcesPlaceholderConfigurer();
+    }
+
     @Autowired
-    private DlpFileDataRepository dlpFileDataRepository;
+    private MongoTemplate mongoTemplate;
 
     @Bean
-    public DlpFileDataService dlpFileDataService() {
-        return new DlpFileDataServiceImpl(dlpFileDataRepository);
+    public ToCollectionNameTranslator toCollectionNameTranslator(){
+        return new InputToCollectionNameTranslator();
+    }
+
+    @Bean
+    public DataSourceRepository dataSourceRepository(){
+        return new DataSourceRepositoryImpl(mongoTemplate);
+    }
+
+    @Bean
+    public LocalValidatorFactoryBean localValidatorFactoryBean(){
+        return new LocalValidatorFactoryBean();
     }
 
     @Bean
     public PresidioInputPersistencyService presidioInputPersistencyService() {
-        return new PresidioInputPersistencyServiceMongoImpl(dlpFileDataService());
+        return new PresidioInputPersistencyServiceMongoImpl(dataService());
+    }
+
+    @Bean
+    public ValidationManager validationManager(){
+        return new ValidationManager(localValidatorFactoryBean().getValidator());
+    }
+
+    @Bean
+    public DataService dataService() {
+        return new DataServiceImpl(dataSourceRepository(), toCollectionNameTranslator(), validationManager());
     }
 
 }
