@@ -27,7 +27,9 @@ public enum InterceptorType {
       org.apache.flume.interceptor.RegexFilteringInterceptor.Builder.class),
   REGEX_EXTRACTOR(org.apache.flume.interceptor.RegexExtractorInterceptor.Builder.class),
   SEARCH_REPLACE(org.apache.flume.interceptor.SearchAndReplaceInterceptor.Builder.class),
-  JSON_RENAMER(PresidioJsonRenamerInterceptor.Builder.class);
+  JSON_RENAMER(JsonFieldRenamerInterceptor.Builder.class),
+  JSON_FILTER(JsonFilterInterceptor.Builder.class),
+  JSON_FIELD_VALUE_REPLACER(JsonFieldValueReplacerInterceptor.Builder.class);
 
   private final Class<? extends Interceptor.Builder> builderClass;
 

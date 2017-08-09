@@ -1,4 +1,4 @@
-package org.flume.interceptor.json;
+package org.apache.flume.interceptor;
 
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonObject;
@@ -6,8 +6,6 @@ import com.google.gson.JsonParser;
 import org.apache.commons.lang.StringUtils;
 import org.apache.flume.Context;
 import org.apache.flume.Event;
-import org.apache.flume.interceptor.Interceptor;
-import org.flume.interceptor.base.AbstractPresidioInterceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,20 +17,18 @@ import java.util.List;
  * This interceptor is used to remove certain (redundant) fields from the received JSON
  * Returns the same JSON without the aforementioned fields
  */
-public class PresidioJsonFilterInterceptor extends AbstractPresidioInterceptor {
+public class JsonFilterInterceptor extends AbstractInterceptor {
 
-
-
-    private static final Logger logger = LoggerFactory.getLogger(PresidioJsonFilterInterceptor.class);
+    private static final Logger logger = LoggerFactory.getLogger(JsonFilterInterceptor.class);
 
     private final List<String> fieldsToFilter;
 
-    PresidioJsonFilterInterceptor(List<String> fieldsToFilter) {
+    JsonFilterInterceptor(List<String> fieldsToFilter) {
         this.fieldsToFilter = fieldsToFilter;
     }
 
     @Override
-    public Event intercept(Event event) {
+    public Event doIntercept(Event event) {
         final String eventBodyAsString = new String(event.getBody());
         JsonObject eventBodyAsJson = new JsonParser().parse(eventBodyAsString).getAsJsonObject();
         for (String fieldToFilter : fieldsToFilter) {
@@ -47,13 +43,13 @@ public class PresidioJsonFilterInterceptor extends AbstractPresidioInterceptor {
 
 
     /**
-     * Builder which builds new instance of the PresidioJsonFilterInterceptor.
+     * Builder which builds new instance of the JsonFilterInterceptor.
      */
     public static class Builder implements Interceptor.Builder {
 
-        private static final String FIELDS_TO_FILTER_CONF_NAME = "fields_to_filter";
-        private static final String DELIMITER_CONF_NAME = "delimiter";
-        private static final String DEFAULT_DELIMITER_VALUE = ",";
+        static final String FIELDS_TO_FILTER_CONF_NAME = "fields_to_filter";
+        static final String DELIMITER_CONF_NAME = "delimiter";
+        static final String DEFAULT_DELIMITER_VALUE = ",";
 
         private List<String> fieldsToFilter;
 
@@ -77,8 +73,8 @@ public class PresidioJsonFilterInterceptor extends AbstractPresidioInterceptor {
 
         @Override
         public Interceptor build() {
-            logger.info("Creating PresidioJsonFilterInterceptor: {}={}", FIELDS_TO_FILTER_CONF_NAME, fieldsToFilter);
-            return new PresidioJsonFilterInterceptor(fieldsToFilter);
+            logger.info("Creating JsonFilterInterceptor: {}={}", FIELDS_TO_FILTER_CONF_NAME, fieldsToFilter);
+            return new JsonFilterInterceptor(fieldsToFilter);
         }
     }
 }

@@ -1,5 +1,5 @@
 
-package org.flume.interceptor.json;
+package org.apache.flume.interceptor;
 
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonElement;
@@ -9,31 +9,30 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.flume.Context;
 import org.apache.flume.Event;
-import org.apache.flume.interceptor.Interceptor;
-import org.flume.interceptor.base.AbstractPresidioInterceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * This interceptor is used to replace certain values int the received JSON.
+ * This interceptor is used to replace certain values in the received JSON.
  * Returns the same JSON without with the new values.
  * i.e (using default delimiters) - the given input 'type#fileDelete>file_delete' means - for field 'type' change value from 'fileDelete' to 'file_delete'.
  */
-public class PresidioJsonFieldValueReplacerInterceptor extends AbstractPresidioInterceptor {
+public class JsonFieldValueReplacerInterceptor extends AbstractInterceptor {
 
-    private static final Logger logger = LoggerFactory.getLogger(PresidioJsonFilterInterceptor.class);
+    private static final Logger logger = LoggerFactory.getLogger(JsonFilterInterceptor.class);
 
 
     private final List<FieldValueReplacement> replacements;
 
-    PresidioJsonFieldValueReplacerInterceptor(List<FieldValueReplacement> replacements) {
+    JsonFieldValueReplacerInterceptor(List<FieldValueReplacement> replacements) {
         this.replacements = replacements;
     }
 
     @Override
-    public Event intercept(Event event) {
+    public Event doIntercept(Event event) {
         final String eventBodyAsString = new String(event.getBody());
         JsonObject eventBodyAsJson = new JsonParser().parse(eventBodyAsString).getAsJsonObject();
 
@@ -93,15 +92,15 @@ public class PresidioJsonFieldValueReplacerInterceptor extends AbstractPresidioI
 
 
     /**
-     * Builder which builds new instance of the PresidioJsonFieldValueReplacerInterceptor.
+     * Builder which builds new instance of the JsonFieldValueReplacerInterceptor.
      */
     public static class Builder implements Interceptor.Builder {
 
-        private static final String REPLACEMENTS_CONF_NAME = "replacements";
+        static final String REPLACEMENTS_CONF_NAME = "replacements";
 
-        private static final String DELIMITER_CONF_NAME = "delimiter";
-        private static final String FIELD_CONF_NAME = "field_delimiter";
-        private static final String VALUES_CONF_NAME = "value_delimiter";
+        static final String DELIMITER_CONF_NAME = "delimiter";
+        static final String FIELD_DELIMITER_CONF_NAME = "field_delimiter";
+        static final String VALUES_DELIMITER_CONF_NAME = "value_delimiter";
 
         private static final String DEFAULT_DELIMITER_VALUE = ",";
         private static final String DEFAULT_FIELD_DELIMITER_VALUE = "#";
@@ -115,8 +114,8 @@ public class PresidioJsonFieldValueReplacerInterceptor extends AbstractPresidioI
             Preconditions.checkArgument(StringUtils.isNotEmpty(replacementsAsString), REPLACEMENTS_CONF_NAME + " can not be empty.");
 
             String delim = context.getString(DELIMITER_CONF_NAME, DEFAULT_DELIMITER_VALUE);
-            String fieldDelim = context.getString(FIELD_CONF_NAME, DEFAULT_FIELD_DELIMITER_VALUE);
-            String valueDelim = context.getString(VALUES_CONF_NAME, DEFAULT_VALUES_DELIMITER_VALUE);
+            String fieldDelim = context.getString(FIELD_DELIMITER_CONF_NAME, DEFAULT_FIELD_DELIMITER_VALUE);
+            String valueDelim = context.getString(VALUES_DELIMITER_CONF_NAME, DEFAULT_VALUES_DELIMITER_VALUE);
 
 
 
@@ -146,7 +145,7 @@ public class PresidioJsonFieldValueReplacerInterceptor extends AbstractPresidioI
                 Preconditions.checkArgument(StringUtils.isNotEmpty(currValuesAsString),  "{} - Invalid value {}. Values (original>new) can't be empty.", REPLACEMENTS_CONF_NAME, currReplacementAsString);
 
                 /* parse 'original value' and 'new value' from 'values' */
-                currValuesArray = currReplacementAsString.split(valueDelim);
+                currValuesArray = currValuesAsString.split(valueDelim);
                 currOriginalValue = currValuesArray[0];
                 Preconditions.checkArgument(StringUtils.isNotEmpty(currOriginalValue),  "{} - Invalid value {}. Original value can't be empty.", REPLACEMENTS_CONF_NAME, currReplacementAsString);
                 currNewValue = currValuesArray[1];
@@ -161,8 +160,8 @@ public class PresidioJsonFieldValueReplacerInterceptor extends AbstractPresidioI
 
         @Override
         public Interceptor build() {
-            logger.info("Creating PresidioJsonFieldValueReplacerInterceptor: {}={}", REPLACEMENTS_CONF_NAME, replacements);
-            return new PresidioJsonFieldValueReplacerInterceptor(replacements);
+            logger.info("Creating JsonFieldValueReplacerInterceptor: {}={}", REPLACEMENTS_CONF_NAME, replacements);
+            return new JsonFieldValueReplacerInterceptor(replacements);
         }
     }
 }

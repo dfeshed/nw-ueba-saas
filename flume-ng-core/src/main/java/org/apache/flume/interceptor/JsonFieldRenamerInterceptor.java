@@ -6,7 +6,6 @@ import com.google.gson.JsonParser;
 import org.apache.commons.lang.StringUtils;
 import org.apache.flume.Context;
 import org.apache.flume.Event;
-import org.flume.interceptor.base.AbstractPresidioInterceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,32 +14,31 @@ import java.util.Arrays;
 import java.util.List;
 
 
-public class PresidioJsonRenamerInterceptor extends AbstractPresidioInterceptor {
-
-    public static final String ORIGIN_FIELDS_CONF_NAME = "originFieldsList";
-    public static final String DESTINATION_FIELDS_CONF_NAME = "destinationFieldsList";
-    public static final String DELIMITER_CONF_NAME = "delimiter";
+public class JsonFieldRenamerInterceptor extends AbstractInterceptor {
 
     private static final Logger logger = LoggerFactory
-            .getLogger(PresidioJsonRenamerInterceptor.class);
+            .getLogger(JsonFieldRenamerInterceptor.class);
 
     private final List<String> originFields;
     private final List<String> destinationFields;
 
-    public PresidioJsonRenamerInterceptor(List<String> originFields, List<String> destinationFields) {
+    public JsonFieldRenamerInterceptor(List<String> originFields, List<String> destinationFields) {
         this.originFields = originFields;
         this.destinationFields = destinationFields;
     }
 
     @Override
-    public Event intercept(Event event) {
+    public Event doIntercept(Event event) {
         final String eventBodyAsString = new String(event.getBody());
-        JsonObject eventBodyAsJson = new JsonParser().parse(eventBodyAsString).getAsJsonObject();
+
+        JsonObject eventBodyAsJson;
+        eventBodyAsJson = new JsonParser().parse(eventBodyAsString).getAsJsonObject();
+
 
         String currField;
         for (int i = 0; i < originFields.size(); i++) {
             currField = originFields.get(i);
-            if (eventBodyAsJson.has(currField)){
+            if (eventBodyAsJson.has(currField)) {
                 eventBodyAsJson.add(destinationFields.get(i), eventBodyAsJson.get(currField));
                 eventBodyAsJson.remove(currField);
             }
@@ -52,9 +50,13 @@ public class PresidioJsonRenamerInterceptor extends AbstractPresidioInterceptor 
 
 
     /**
-     * Builder which builds new instance of the PresidioJsonFilterInterceptor.
+     * Builder which builds new instance of the JsonFilterInterceptor.
      */
     public static class Builder implements Interceptor.Builder {
+
+        static final String ORIGIN_FIELDS_CONF_NAME = "originFieldsList";
+        static final String DESTINATION_FIELDS_CONF_NAME = "destinationFieldsList";
+        static final String DELIMITER_CONF_NAME = "delimiter";
 
         private static final String DEFAULT_DELIMITER_VALUE = ",";
 
@@ -85,7 +87,7 @@ public class PresidioJsonRenamerInterceptor extends AbstractPresidioInterceptor 
 
                 currDestinationFilter = destinationFields[i];
                 Preconditions.checkArgument(StringUtils.isNotEmpty(currDestinationFilter), "currDestinationFilter(index={}) can not be empty. {}={}.",
-                        i,DESTINATION_FIELDS_CONF_NAME , Arrays.toString(destinationFields));
+                        i, DESTINATION_FIELDS_CONF_NAME, Arrays.toString(destinationFields));
                 this.destinationFields.add(currDestinationFilter);
             }
 
@@ -93,12 +95,12 @@ public class PresidioJsonRenamerInterceptor extends AbstractPresidioInterceptor 
 
         @Override
         public Interceptor build() {
-            logger.info("Creating PresidioJsonFilterInterceptor: {}={}, {}={}",
+            logger.info("Creating JsonFilterInterceptor: {}={}, {}={}",
                     ORIGIN_FIELDS_CONF_NAME, originFields, DESTINATION_FIELDS_CONF_NAME, destinationFields);
-            return new PresidioJsonRenamerInterceptor(originFields, destinationFields);
+            return new JsonFieldRenamerInterceptor(originFields, destinationFields);
         }
 
-        private String[] getStringArrayFromConfiguration(Context context, String key, String delimiter){
+        private String[] getStringArrayFromConfiguration(Context context, String key, String delimiter) {
             String arrayAsString = context.getString(key, "");
             Preconditions.checkArgument(StringUtils.isNotEmpty(arrayAsString),
                     key + " can not be empty.");
