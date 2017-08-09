@@ -30,7 +30,7 @@ public interface Interceptor {
   /**
    * Any initialization / startup needed by the Interceptor.
    */
-  public void initialize();
+   void initialize();
 
   /**
    * Interception of a single {@link Event}.
@@ -38,7 +38,7 @@ public interface Interceptor {
    * @return Original or modified event, or {@code null} if the Event
    * is to be dropped (i.e. filtered out).
    */
-  public Event intercept(Event event);
+  Event intercept(Event event);
 
   /**
    * Interception of a batch of {@linkplain Event events}.
@@ -48,15 +48,15 @@ public interface Interceptor {
    * Also, this method MUST NOT return {@code null}. If all events are dropped,
    * then an empty List is returned.
    */
-  public List<Event> intercept(List<Event> events);
+  List<Event> intercept(List<Event> events);
 
   /**
    * Perform any closing / shutdown needed by the Interceptor.
    */
-  public void close();
+  void close();
 
   /** Builder implementations MUST have a no-arg constructor */
-  public interface Builder extends Configurable {
-    public Interceptor build();
+  interface Builder extends Configurable {
+    Interceptor build();
   }
 }

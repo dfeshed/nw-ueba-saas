@@ -118,11 +118,6 @@ limitations under the License.
                 </executions>
             </plugin>
 
-            <plugin>
-                <groupId>org.apache.rat</groupId>
-                <artifactId>apache-rat-plugin</artifactId>
-            </plugin>
-
         </plugins>
     </build>
 

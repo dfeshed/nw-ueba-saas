@@ -24,15 +24,6 @@
     <artifactId>flume-ng-elasticsearch-sink</artifactId>
     <name>Flume NG ElasticSearch Sink</name>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.rat</groupId>
-                <artifactId>apache-rat-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>
-
     <dependencies>
 
         <dependency>
