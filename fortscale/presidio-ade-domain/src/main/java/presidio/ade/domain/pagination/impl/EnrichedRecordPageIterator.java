@@ -2,6 +2,7 @@ package presidio.ade.domain.pagination.impl;
 
 import fortscale.utils.pagination.PageIterator;
 import fortscale.utils.time.TimeRange;
+import org.apache.commons.lang.StringUtils;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
 import presidio.ade.domain.store.enriched.EnrichedRecordsMetadata;
@@ -68,7 +69,7 @@ public class EnrichedRecordPageIterator<U extends EnrichedRecord> implements Pag
         int numOfItemsToSkip = this.currentPage * this.pageSize;
         this.currentPage++;
 
-        if (this.sortBy.isEmpty()) {
+        if (StringUtils.isBlank(sortBy)) {
             return this.store.readRecords(enrichedRecordsMetadata, this.contextIds, contextType, numOfItemsToSkip, this.pageSize);
         }
 
