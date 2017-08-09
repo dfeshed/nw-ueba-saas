@@ -60,7 +60,8 @@
           <label title={{item}} class="rsa-form-checkbox-label {{if (contains item alertNameFilters) 'checked'}}">
             {{rsa-form-checkbox
               checked=(contains item alertNameFilters)
-              change=(action 'toggleAlertNameFilter' item)}} {{item}}
+              change=(action 'toggleAlertNameFilter' item)}}
+            <span class="alert-name">{{item}}</span>
           </label>
         {{/rsa-data-table/body-cell}}
       {{/rsa-data-table/body}}

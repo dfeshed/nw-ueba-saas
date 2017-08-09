@@ -28,20 +28,14 @@ $maxHeightAlertNamesTable: $alertNamesRowHeight * $minimumRowsBeforeScrollbar;
     label {
       @include rsa-font(body);
       color: rsa-color(white);
-      &::before {
-        top: 5px;
-      }
-    }
-  }
-
-  &:hover {
-    .rsa-data-table-body-cell {
-      background-color: inherit;
     }
   }
 
   .rsa-data-table-body-cell {
     padding: 0;
+  }
 
+  .rsa-form-checkbox-label:hover {
+    color: rsa-color(blue);
   }
 }

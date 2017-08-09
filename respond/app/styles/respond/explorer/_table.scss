@@ -27,9 +27,12 @@
       // 20px padding on the right gives space for the column sort button
       padding: 0 20px 0 rsa-whitespace(less);
 
-      &:first-child {
+      &:first-child { // checkbox cell
         padding: 0 0 0 rsa-whitespace(less);
         min-width: 30px;
+        .rsa-form-checkbox-label {
+          font-size: 0.85rem;
+        }
       }
       button {
         cursor: pointer;
