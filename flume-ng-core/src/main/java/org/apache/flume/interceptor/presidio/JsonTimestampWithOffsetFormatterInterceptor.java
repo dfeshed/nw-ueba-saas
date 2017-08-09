@@ -69,7 +69,7 @@ public class JsonTimestampWithOffsetFormatterInterceptor extends AbstractInterce
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(destinationFormatValue.getAsString());
         final ZoneId destinationZoneId = ZoneId.ofOffset("UTC", ZoneOffset.UTC); //always UTC
 
-        /* format timestamp from its original form to destination form (format + time zone) */
+        /* format timestamp from its origin form to destination form (form = format + time zone) */
         return formatter.format(ZonedDateTime.ofInstant(originTimeAsInstant, destinationZoneId));
     }
 
