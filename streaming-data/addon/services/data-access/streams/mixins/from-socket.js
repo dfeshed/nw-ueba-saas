@@ -204,6 +204,7 @@ export default Mixin.create({
    */
   completed() {
     const ret = this._super(...arguments);
+    this.set('isStreaming', false);
     this._stopFromSocket();
     return ret;
   },

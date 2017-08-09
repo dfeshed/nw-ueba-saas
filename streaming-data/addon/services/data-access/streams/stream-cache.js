@@ -63,7 +63,7 @@ function cleanUpRouteStreams(newRouteName) {
  */
 function _cleanUpDuplicateStream(_method, _modelName) {
   // create array of all streams
-  const allStreams = [ ..._streams.ANON ];
+  const allStreams = [];
   Object.keys(_streams).forEach((routeName) => allStreams.push(..._streams[routeName]));
 
   allStreams.forEach(({ method, modelName, stream }) => {
