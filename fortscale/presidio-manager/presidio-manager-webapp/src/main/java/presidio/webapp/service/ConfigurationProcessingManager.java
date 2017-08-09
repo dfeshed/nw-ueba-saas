@@ -46,14 +46,15 @@ public class ConfigurationProcessingManager implements ConfigurationProcessingSe
         PresidioSystemConfiguration presidioSystemConfiguration = null;
         JsonNode system = node.get(SYSTEM);
         JsonNode data = node.get(DATA_PIPE_LINE);
-        if (data != null)
-            dataPipeLineConfiguration = DataPipeLineConfiguration.dataPipeLineConfigurationFactory(system);
-        else
-            logger.info("Json is missing the system configuration.");
         if (system != null)
-            presidioSystemConfiguration = PresidioSystemConfiguration.presidioSystemConfigurationFactory(data);
+            presidioSystemConfiguration = PresidioSystemConfiguration.presidioSystemConfigurationFactory(system);
         else
             logger.info("Json is missing the dataPipeLine configuration.");
+        if (data != null)
+            dataPipeLineConfiguration = DataPipeLineConfiguration.dataPipeLineConfigurationFactory(data);
+        else
+            logger.info("Json is missing the system configuration.");
+
         return new PresidioManagerConfiguration(dataPipeLineConfiguration, presidioSystemConfiguration);
     }
 

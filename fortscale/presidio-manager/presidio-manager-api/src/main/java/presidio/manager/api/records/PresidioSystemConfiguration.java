@@ -52,7 +52,7 @@ public class PresidioSystemConfiguration {
         String key;
         while (itr.hasNext()) {
             key = itr.next().toString();
-            setKeyValue(key, node.get(key).toString());
+            setKeyValue(key, node.get(key).asText());
         }
     }
 
@@ -64,10 +64,10 @@ public class PresidioSystemConfiguration {
 
     private void setKeyValue(String key, String value) {
         switch (key) {
-            case "userName":
+            case "username":
                 setUserName(value);
                 break;
-            case "passWord":
+            case "password":
                 setPassWord(value);
                 break;
             case "adminGroup":

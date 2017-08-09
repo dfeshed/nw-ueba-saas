@@ -9,7 +9,7 @@ public class ConfigurationProcessingServiceImpl implements ConfigurationProcessi
 
     @Override
     public ValidationResponse validateConfiguration(PresidioManagerConfiguration presidioManagerConfiguration) {
-        return null;
+        return new ValidationResponse();
     }
 
     @Override
