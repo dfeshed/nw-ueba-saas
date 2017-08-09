@@ -29,14 +29,19 @@ public class JsonTimestampWithOffsetFormatterInterceptor extends AbstractInterce
     private final String timezoneOffsetField;
     private final String destinationField;
     private final String destinationFormat;
+    private final Boolean removeOriginField;
+    private final Boolean removeTimezoneOffsetField;
 
-    public JsonTimestampWithOffsetFormatterInterceptor(String originField, String originFormat, String timezoneOffsetField, String destinationField, String destinationFormat) {
+    public JsonTimestampWithOffsetFormatterInterceptor(String originField, String originFormat, String timezoneOffsetField, String destinationField, String destinationFormat, Boolean removeOriginField, Boolean removeTimezoneOffsetField) {
         this.originField = originField;
         this.originFormat = originFormat;
         this.timezoneOffsetField = timezoneOffsetField;
         this.destinationField = destinationField;
         this.destinationFormat = destinationFormat;
+        this.removeOriginField = removeOriginField;
+        this.removeTimezoneOffsetField = removeTimezoneOffsetField;
     }
+
 
     @Override
     public Event doIntercept(Event event) {
@@ -47,8 +52,21 @@ public class JsonTimestampWithOffsetFormatterInterceptor extends AbstractInterce
         final int timezoneOffset = eventBodyAsJson.get(timezoneOffsetField).getAsInt();
 
         final String newTimestamp = getNewTimestamp(originTimestamp, originFormat, timezoneOffset, destinationFormat);
-
         eventBodyAsJson.addProperty(destinationField, newTimestamp);
+//        logger.trace("Field {} was appended to field {} and the result[{}] was placed in field {}.", originField, toAppendField, result, targetField); //todo
+
+        if (removeOriginField) {
+            logger.trace("Removing origin field {}.", originField);
+            eventBodyAsJson.remove(originField);
+        }
+
+        if (removeTimezoneOffsetField) {
+            logger.trace("Removing timezone offset field {}.", timezoneOffsetField);
+            eventBodyAsJson.remove(timezoneOffsetField);
+        }
+
+
+
         event.setBody(eventBodyAsJson.toString().getBytes());
         return event;
     }
@@ -78,6 +96,8 @@ public class JsonTimestampWithOffsetFormatterInterceptor extends AbstractInterce
                 .append("timezoneOffsetField", timezoneOffsetField)
                 .append("destinationField", destinationField)
                 .append("destinationFormat", destinationFormat)
+                .append("removeOriginField", removeOriginField)
+                .append("removeTimezoneOffsetField", removeTimezoneOffsetField)
                 .toString();
     }
 
@@ -91,12 +111,16 @@ public class JsonTimestampWithOffsetFormatterInterceptor extends AbstractInterce
         static final String TIMEZONE_OFFSET_FIELD_CONF_NAME = "timezoneOffsetField";
         static final String DESTINATION_FIELD_CONF_NAME = "destinationField";
         static final String DESTINATION_FORMAT_CONF_NAME = "destinationFormat";
+        static final String REMOVE_ORIGIN_CONF_NAME = "removeOrigin";
+        static final String REMOVE_TIMEZONE_OFFSET_CONF_NAME = "removeTimezoneOffset";
 
         private String originField;
         private String originFormat;
         private String timezoneOffsetField;
         private String destinationField;
         private String destinationFormat;
+        private Boolean removeOriginField;
+        private Boolean removeTimezoneOffsetField;
 
         @Override
         public void configure(Context context) {
@@ -114,11 +138,17 @@ public class JsonTimestampWithOffsetFormatterInterceptor extends AbstractInterce
 
             destinationFormat = context.getString(DESTINATION_FORMAT_CONF_NAME, "yyyy-MM-dd'T'HH:mm:ss");
             Preconditions.checkArgument(StringUtils.isNotEmpty(destinationFormat), DESTINATION_FORMAT_CONF_NAME + " can not be empty.");
+
+            removeOriginField = context.getBoolean(REMOVE_ORIGIN_CONF_NAME, true);
+            Preconditions.checkArgument(removeOriginField != null, REMOVE_ORIGIN_CONF_NAME + " can not be empty.");
+
+            removeTimezoneOffsetField = context.getBoolean(REMOVE_TIMEZONE_OFFSET_CONF_NAME, true);
+            Preconditions.checkArgument(removeTimezoneOffsetField != null, REMOVE_TIMEZONE_OFFSET_CONF_NAME + " can not be empty.");
         }
 
         @Override
         public Interceptor build() {
-            final JsonTimestampWithOffsetFormatterInterceptor jsonTimestampWithOffsetFormatterInterceptor = new JsonTimestampWithOffsetFormatterInterceptor(originField, originFormat, timezoneOffsetField, destinationField, destinationFormat);
+            final JsonTimestampWithOffsetFormatterInterceptor jsonTimestampWithOffsetFormatterInterceptor = new JsonTimestampWithOffsetFormatterInterceptor(originField, originFormat, timezoneOffsetField, destinationField, destinationFormat, removeOriginField, removeTimezoneOffsetField);
             logger.info("Creating JsonTimestampWithOffsetFormatterInterceptor: {}", jsonTimestampWithOffsetFormatterInterceptor);
             return jsonTimestampWithOffsetFormatterInterceptor;
         }
