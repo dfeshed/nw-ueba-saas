@@ -90,8 +90,12 @@ public class JsonFieldValueReplacerInterceptor extends AbstractInterceptor {
         }
     }
 
-
-
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+                .append("replacements", replacements)
+                .toString();
+    }
 
     /**
      * Builder which builds new instance of the JsonFieldValueReplacerInterceptor.
@@ -162,8 +166,9 @@ public class JsonFieldValueReplacerInterceptor extends AbstractInterceptor {
 
         @Override
         public Interceptor build() {
-            logger.info("Creating JsonFieldValueReplacerInterceptor: {}={}", REPLACEMENTS_CONF_NAME, replacements);
-            return new JsonFieldValueReplacerInterceptor(replacements);
+            final JsonFieldValueReplacerInterceptor jsonFieldValueReplacerInterceptor = new JsonFieldValueReplacerInterceptor(replacements);
+            logger.info("Creating JsonFieldValueReplacerInterceptor: {}", jsonFieldValueReplacerInterceptor);
+            return jsonFieldValueReplacerInterceptor;
         }
     }
 }

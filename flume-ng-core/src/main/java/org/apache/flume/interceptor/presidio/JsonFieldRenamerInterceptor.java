@@ -24,7 +24,7 @@ public class JsonFieldRenamerInterceptor extends AbstractInterceptor {
     private final List<String> originFields;
     private final List<String> destinationFields;
 
-    public JsonFieldRenamerInterceptor(List<String> originFields, List<String> destinationFields) {
+    JsonFieldRenamerInterceptor(List<String> originFields, List<String> destinationFields) {
         this.originFields = originFields;
         this.destinationFields = destinationFields;
     }

@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.flume.Context;
 import org.apache.flume.Event;
 import org.apache.flume.interceptor.AbstractInterceptor;
@@ -43,6 +44,12 @@ public class JsonFilterInterceptor extends AbstractInterceptor {
         return event;
     }
 
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+                .append("fieldsToFilter", fieldsToFilter)
+                .toString();
+    }
 
     /**
      * Builder which builds new instance of the JsonFilterInterceptor.
@@ -75,8 +82,9 @@ public class JsonFilterInterceptor extends AbstractInterceptor {
 
         @Override
         public Interceptor build() {
-            logger.info("Creating JsonFilterInterceptor: {}={}", FIELDS_TO_FILTER_CONF_NAME, fieldsToFilter);
-            return new JsonFilterInterceptor(fieldsToFilter);
+            final JsonFilterInterceptor jsonFilterInterceptor = new JsonFilterInterceptor(fieldsToFilter);
+            logger.info("Creating JsonFilterInterceptor: {}", jsonFilterInterceptor);
+            return jsonFilterInterceptor;
         }
     }
 }

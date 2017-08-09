@@ -15,8 +15,8 @@ import org.junit.Test;
  * Created by tomerd on 8/8/2017.
  */
 public class JsonFieldRenamerInterceptorTest {
-    Interceptor.Builder builder;
-    Interceptor interceptor;
+    private Interceptor.Builder builder;
+    private Interceptor interceptor;
 
     @Before
     public void init() throws InstantiationException, IllegalAccessException, ClassNotFoundException {

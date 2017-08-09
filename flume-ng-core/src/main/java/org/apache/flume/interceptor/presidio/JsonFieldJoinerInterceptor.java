@@ -13,6 +13,10 @@ import org.apache.flume.interceptor.Interceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * This interceptor is used to join 2 fields in the received JSON (append and put in a single field).
+ * Returns the same JSON with the new field {@link #targetField}, and with/without filtering the {@link #baseField} and {@link #toAppendField} fields according to {@link #removeBaseField} and {@link #removeToAppendField}
+ */
 public class JsonFieldJoinerInterceptor extends AbstractInterceptor {
 
     private static final Logger logger = LoggerFactory.getLogger(JsonFieldJoinerInterceptor.class);
@@ -23,7 +27,7 @@ public class JsonFieldJoinerInterceptor extends AbstractInterceptor {
     private final Boolean removeBaseField;
     private final Boolean removeToAppendField;
 
-    public JsonFieldJoinerInterceptor(String baseField, String toAppendField, String targetField, Boolean removeBaseField, Boolean removeToAppendField) {
+    JsonFieldJoinerInterceptor(String baseField, String toAppendField, String targetField, Boolean removeBaseField, Boolean removeToAppendField) {
         this.baseField = baseField;
         this.toAppendField = toAppendField;
         this.targetField = targetField;

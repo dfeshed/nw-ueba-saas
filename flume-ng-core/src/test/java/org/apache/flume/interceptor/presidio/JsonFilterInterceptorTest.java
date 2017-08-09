@@ -16,8 +16,8 @@ import org.junit.Test;
  */
 public class JsonFilterInterceptorTest {
 
-    Interceptor.Builder builder;
-    Interceptor interceptor;
+    private Interceptor.Builder builder;
+    private Interceptor interceptor;
 
     @Before
     public void init() throws InstantiationException, IllegalAccessException, ClassNotFoundException {
