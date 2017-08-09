@@ -30,15 +30,6 @@ limitations under the License.
     <artifactId>flume-hive-sink</artifactId>
     <name>Flume NG Hive Sink</name>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.rat</groupId>
-                <artifactId>apache-rat-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>
-
     <profiles>
         <profile>
             <id>hadoop-1.0</id>

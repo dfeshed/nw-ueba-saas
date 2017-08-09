@@ -31,15 +31,6 @@
     <artifactId>flume-spillable-memory-channel</artifactId>
     <name>Flume NG Spillable Memory channel</name>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.rat</groupId>
-                <artifactId>apache-rat-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>
-
     <dependencies>
 
         <dependency>

@@ -1,8 +1,9 @@
-package org.apache.flume.interceptor;
+package org.apache.flume.interceptor.presidio;
 
 import com.google.common.collect.Lists;
 import org.apache.flume.Event;
 import org.apache.flume.conf.ConfigurationException;
+import org.apache.flume.interceptor.Interceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,7 +37,7 @@ public abstract class AbstractInterceptor implements Interceptor {
             return null;
         }
         catch (Exception e) {
-            logger.error("{} interception had failed. Dropping event. Exception: ",
+            logger.error("{} interception has failed. Dropping event. Exception: ",
                     this.getClass().getName(), e);
             return null;
         }

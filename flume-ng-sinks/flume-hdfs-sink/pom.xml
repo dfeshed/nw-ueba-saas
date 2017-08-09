@@ -30,15 +30,6 @@ limitations under the License.
     <artifactId>flume-hdfs-sink</artifactId>
     <name>Flume NG HDFS Sink</name>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.rat</groupId>
-                <artifactId>apache-rat-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>
-
     <dependencies>
 
         <dependency>

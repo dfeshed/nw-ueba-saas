@@ -572,29 +572,7 @@
         <url>http://www.apache.org</url>
     </organization>
 
-    <!--<distributionManagement>-->
-    <!--&lt;!&ndash;<repository>&ndash;&gt;-->
-    <!--&lt;!&ndash;<id>apache.staging.https</id>&ndash;&gt;-->
-    <!--&lt;!&ndash;<name>Apache Staging Repository</name>&ndash;&gt;-->
-    <!--&lt;!&ndash;<url>https://repository.apache.org/service/local/staging/deploy/maven2/</url>&ndash;&gt;-->
-    <!--&lt;!&ndash;</repository>&ndash;&gt;-->
-    <!--<snapshotRepository>-->
-    <!--<id>mirror.fortscale.dom</id>-->
-    <!--<name>mirror.fortscale.dom-snapshots</name>-->
-    <!--<url>http://mirror.fortscale.dom/artifactory/presidio-snapshot-local</url>-->
-    <!--</snapshotRepository>-->
-    <!--</distributionManagement>-->
-
     <build>
-
-        <plugins>
-
-            <!--<plugin>-->
-            <!--<groupId>org.apache.rat</groupId>-->
-            <!--<artifactId>apache-rat-plugin</artifactId>-->
-            <!--</plugin>-->
-
-        </plugins>
 
         <pluginManagement>
             <plugins>
@@ -625,45 +603,6 @@
                             <exclude>${test.exclude.pattern}</exclude>
                         </excludes>
                     </configuration>
-                </plugin>
-
-                <plugin>
-                    <groupId>org.apache.rat</groupId>
-                    <artifactId>apache-rat-plugin</artifactId>
-                    <version>0.11</version>
-                    <executions>
-                        <execution>
-                            <id>verify.rat</id>
-                            <phase>verify</phase>
-                            <goals>
-                                <goal>check</goal>
-                            </goals>
-                            <configuration>
-                                <excludes>
-                                    <exclude>**/.idea/</exclude>
-                                    <exclude>**/*.iml</exclude>
-                                    <exclude>**/nb-configuration.xml</exclude>
-                                    <exclude>.git/</exclude>
-                                    <exclude>patchprocess/</exclude>
-                                    <exclude>.gitignore</exclude>
-                                    <!-- ASF jenkins box puts the Maven repo in our root directory. -->
-                                    <exclude>.repository/</exclude>
-                                    <exclude>**/*.diff</exclude>
-                                    <exclude>**/*.patch</exclude>
-                                    <exclude>**/*.avsc</exclude>
-                                    <exclude>**/*.avro</exclude>
-                                    <exclude>**/docs/**</exclude>
-                                    <exclude>**/test/resources/**</exclude>
-                                    <exclude>**/.settings/*</exclude>
-                                    <exclude>**/.classpath</exclude>
-                                    <exclude>**/.project</exclude>
-                                    <exclude>**/target/**</exclude>
-                                    <exclude>**/derby.log</exclude>
-                                    <exclude>**/metastore_db/</exclude>
-                                </excludes>
-                            </configuration>
-                        </execution>
-                    </executions>
                 </plugin>
 
                 <plugin>

@@ -38,8 +38,6 @@
         <module>fortscale-flume-common</module>
         <module>fortscale-flume-sources</module>
         <module>fortscale-flume-sinks</module>
-        <module>fortscale-flume-interceptors</module>
-        <!--<module>fortscale-flume-rpm</module>-->
     </modules>
 
     <dependencies>

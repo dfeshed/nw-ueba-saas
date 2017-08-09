@@ -30,15 +30,6 @@
     <artifactId>flume-kafka-source</artifactId>
     <name>Flume Kafka Source</name>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.rat</groupId>
-                <artifactId>apache-rat-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>
-
     <dependencies>
         <dependency>
             <groupId>junit</groupId>

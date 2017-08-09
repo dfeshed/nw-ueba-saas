@@ -8,7 +8,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.flume.Context;
 import org.apache.flume.Event;
 import org.apache.flume.conf.ConfigurationException;
-import org.apache.flume.interceptor.AbstractInterceptor;
 import org.apache.flume.interceptor.Interceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
