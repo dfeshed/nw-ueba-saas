@@ -122,6 +122,8 @@ class SpringBootJarOperator(BashOperator):
 
         self.timezone(bash_command)
 
+        self.spring_profile(bash_command)
+
         self.logback(bash_command)
 
         self.remote_debug_options(bash_command)
@@ -252,6 +254,17 @@ class SpringBootJarOperator(BashOperator):
         timezone = self.merged_args.get(JVM_ARGS_CONF_KEY).get('timezone' )
         if not is_blank(timezone):
             bash_command.append(timezone)
+
+    def spring_profile(self, bash_command):
+        """
+
+        :param bash_command: list of bash comments
+        :type bash_command list
+        :return: 
+        """
+        profile = self.merged_args.get(JVM_ARGS_CONF_KEY).get('profile')
+        if not is_blank(profile):
+            bash_command.append('-Dspring.profiles.active={}'.format(profile))
 
     def remote_debug_options(self, bash_command):
         """
