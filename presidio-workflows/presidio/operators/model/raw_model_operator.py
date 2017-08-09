@@ -15,7 +15,7 @@ class RawModelOperator(ModelOperator):
     ui_fgcolor = '#000000'
 
     @apply_defaults
-    def __init__(self, data_source, task_id=None, *args, **kwargs):
+    def __init__(self, command, data_source, task_id=None, *args, **kwargs):
         """
         C'tor.
         :param data_source: The data source whose models are going to be built
@@ -26,7 +26,7 @@ class RawModelOperator(ModelOperator):
 
         self.data_source = data_source
 
-        super(RawModelOperator, self).__init__(task_id,*args,**kwargs)
+        super(RawModelOperator, self).__init__(command=command,task_id=task_id,*args,**kwargs)
 
 
     def get_task_id(self):
@@ -43,18 +43,3 @@ class RawModelOperator(ModelOperator):
             'data_source': self.data_source,
         }
         return java_args
-
-
-    def get_jar_file_path(self):
-        """
-        :return: The full path to the JAR file
-        """
-
-        return '/home/presidio/dev-projects/presidio-core/presidio-workflows/tests/resources/jars/test-mock-project-0.0.1-SNAPSHOT.jar'
-
-    def get_main_class(self):
-        """
-       :return: The main class name of JAR file
-       """
-
-        return 'com.fortscale.test.TestMockProjectApplication'

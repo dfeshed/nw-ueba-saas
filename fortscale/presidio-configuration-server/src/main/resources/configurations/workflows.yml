@@ -52,3 +52,15 @@ dags:
         main_class: presidio.ade.processes.shell.ScoreAggregationsApplication
         xmx: 500
         xms: 70
+    RawModelFeatureAggregationBucketsOperator:
+      jvm_args:
+        jar_path: ${general.deployment.bins.base_path}/test-mock-project-0.0.1-SNAPSHOT.jar
+        main_class: com.fortscale.test.TestMockProjectApplication
+        xmx: 500
+        xms: 70
+    RawModelOperator:
+      jvm_args:
+        jar_path: ${general.deployment.bins.base_path}/test-mock-project-0.0.1-SNAPSHOT.jar
+        main_class: com.fortscale.test.TestMockProjectApplication
+        xmx: 500
+        xms: 70

@@ -14,7 +14,7 @@ class RawModelFeatureAggregationBucketsOperator(FixedDurationJarOperator):
     """
 
     @apply_defaults
-    def __init__(self, fixed_duration_strategy, data_source, task_id=None, *args, **kwargs):
+    def __init__(self, fixed_duration_strategy, command, data_source, task_id=None, *args, **kwargs):
         """
         C'tor.
         :param fixed_duration_strategy: The duration covered by the feature bucket aggregations (currently only daily)
@@ -37,15 +37,12 @@ class RawModelFeatureAggregationBucketsOperator(FixedDurationJarOperator):
             'data_source': self.data_source,
         }
 
-        jvm_args = {
-            'jar_path': self.get_jar_file_path(),
-            'main_class': self.get_main_class()
-        }
-
+        print('agg operator. commad=', command)
+        print('agg operator. kwargs=', kwargs)
         super(RawModelFeatureAggregationBucketsOperator, self).__init__(
             task_id=self.task_id,
             fixed_duration_strategy=self.fixed_duration_strategy,
-            jvm_args=jvm_args,
+            command=command,
             java_args=java_args,
             *args,
             **kwargs
@@ -57,17 +54,3 @@ class RawModelFeatureAggregationBucketsOperator(FixedDurationJarOperator):
         """
         return 'raw_model_feature_aggregation_buckets'
 
-    def get_jar_file_path(self):
-        """
-        :return: The full path to the JAR file that will be executed
-        """
-        return '/home/presidio/dev-projects/presidio-core/presidio-workflows/tests/resources/jars/test-mock-project-0.0.1-SNAPSHOT.jar'
-
-    def get_main_class(self):
-        """
-        :return: The main class to the JAR file that will be executed
-        """
-        if self.fixed_duration_strategy == timedelta(days=1):
-            return 'com.fortscale.test.TestMockProjectApplication'
-        else:
-            raise UnsupportedFixedDurationStrategyError(self.fixed_duration_strategy)

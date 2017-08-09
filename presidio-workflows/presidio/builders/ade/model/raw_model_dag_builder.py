@@ -31,9 +31,11 @@ class RawModelDagBuilder(PresidioDagBuilder):
         """
 
         raw_model_feature_aggregation_buckets_operator = RawModelFeatureAggregationBucketsOperator(fixed_duration_strategy = FIX_DURATION_STRATEGY_DAILY,
+                                                                                                   command=PresidioDagBuilder.presidio_command,
                                                                                                    data_source=self.data_source,
                                                                                                    dag=raw_model_dag)
         raw_model_operator = RawModelOperator(data_source=self.data_source,
+                                              command=PresidioDagBuilder.presidio_command,
                                               dag=raw_model_dag)
 
         raw_model_feature_aggregation_buckets_operator.set_downstream(raw_model_operator)
