@@ -12,7 +12,7 @@ public class DataPipeLineConfiguration {
 
     private SchemasEnum[] schemasEnum;
 
-    public DataPipeLineConfiguration() {
+    private DataPipeLineConfiguration() {
         this.startTime = null;
         this.schemasEnum = null;
     }
@@ -25,13 +25,19 @@ public class DataPipeLineConfiguration {
         this.schemasEnum = schemasEnum;
     }
 
-    public void setParameters(JsonNode node) {
+    private void setParameters(JsonNode node) {
         Iterator<String> itr = node.fieldNames();
         String key;
         while (itr.hasNext()) {
             key = itr.next().toString();
             setKeyValue(key, node.get(key));
         }
+    }
+
+    public static DataPipeLineConfiguration dataPipeLineConfigurationFactory(JsonNode node) {
+        DataPipeLineConfiguration dataPipeLineConfiguration = new DataPipeLineConfiguration();
+        dataPipeLineConfiguration.setParameters(node);
+        return dataPipeLineConfiguration;
     }
 
     private void setKeyValue(String key, Object value) {

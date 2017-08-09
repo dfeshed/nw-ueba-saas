@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
+import presidio.manager.api.records.ValidationResponse;
 import presidio.webapp.model.PatchRequest;
 import presidio.webapp.model.configuration.ConfigurationResponse;
 import presidio.webapp.model.configuration.ConfigurationResponseError;
@@ -49,23 +50,25 @@ public class ConfigurationApiController implements ConfigurationApi {
     }
 
     public ResponseEntity<ConfigurationResponse> configurationPut(@ApiParam(value = "Presidio Configuration", required = true) @RequestBody JsonNode body) {
-        //TODO- example only! should be changed to real implementation once the SDK will be ready
         ConfigurationResponse configurationResponse = new ConfigurationResponse();
 
-        configurationResponse.setMessage("error message");
-        configurationResponse.setCode(HttpStatus.BAD_REQUEST.toString());
+        ValidationResponse validationResponse = configurationProcessingManager.validateConfiguration(configurationProcessingManager.presidioManagerConfigurationFactory(body));
+        if (!validationResponse.isValid()) {
 
-        List<ConfigurationResponseError> errorList = new ArrayList<ConfigurationResponseError>();
-        ConfigurationResponseError error = new ConfigurationResponseError();
-        error.domain(ConfigurationResponseError.DomainEnum.DATA_PIPLINE);
-        error.reason(ConfigurationResponseError.ReasonEnum.INVALID_PROPERTY);
-        error.message("error message");
-        error.location("location");
-        error.locationType(ConfigurationResponseError.LocationTypeEnum.JSON_PATH);
+            configurationResponse.setMessage("error message");
+            configurationResponse.setCode(HttpStatus.BAD_REQUEST.toString());
 
-        errorList.add(error);
-        configurationResponse.error(errorList);
+            List<ConfigurationResponseError> errorList = new ArrayList<ConfigurationResponseError>();
+            ConfigurationResponseError error = new ConfigurationResponseError();
+            error.domain(ConfigurationResponseError.DomainEnum.DATA_PIPLINE);
+            error.reason(ConfigurationResponseError.ReasonEnum.INVALID_PROPERTY);
+            error.message("error message");
+            error.location("location");
+            error.locationType(ConfigurationResponseError.LocationTypeEnum.JSON_PATH);
 
+            errorList.add(error);
+            configurationResponse.error(errorList);
+        }
         return new ResponseEntity<ConfigurationResponse>(configurationResponse, HttpStatus.OK);
     }
 

@@ -13,7 +13,8 @@ public class ConfigurationProcessingManager implements ConfigurationProcessingSe
 
     private static final Logger logger = Logger.getLogger(ConfigurationProcessingManager.class);
 
-
+    private final String SYSTEM = "system";
+    private final String DATA_PIPE_LINE = "dataPipeline";
     private ConfigurationProcessingService CPSAirflow;
     private ConfigurationProcessingService CPSSecurityManager;
 
@@ -40,17 +41,17 @@ public class ConfigurationProcessingManager implements ConfigurationProcessingSe
         this.CPSSecurityManager = CPSSecurityManager;
     }
 
-    public PresidioManagerConfiguration setConfiguration(JsonNode node) {
-        DataPipeLineConfiguration dataPipeLineConfiguration = new DataPipeLineConfiguration();
-        PresidioSystemConfiguration presidioSystemConfiguration = new PresidioSystemConfiguration();
-        JsonNode system = node.get("system");
-        JsonNode data = node.get("dataPipeline");
+    public PresidioManagerConfiguration presidioManagerConfigurationFactory(JsonNode node) {
+        DataPipeLineConfiguration dataPipeLineConfiguration = null;
+        PresidioSystemConfiguration presidioSystemConfiguration = null;
+        JsonNode system = node.get(SYSTEM);
+        JsonNode data = node.get(DATA_PIPE_LINE);
         if (data != null)
-            dataPipeLineConfiguration.setParameters(system);
+            dataPipeLineConfiguration = DataPipeLineConfiguration.dataPipeLineConfigurationFactory(system);
         else
             logger.info("Json is missing the system configuration.");
         if (system != null)
-            presidioSystemConfiguration.setParameters(data);
+            presidioSystemConfiguration = PresidioSystemConfiguration.presidioSystemConfigurationFactory(data);
         else
             logger.info("Json is missing the dataPipeLine configuration.");
         return new PresidioManagerConfiguration(dataPipeLineConfiguration, presidioSystemConfiguration);

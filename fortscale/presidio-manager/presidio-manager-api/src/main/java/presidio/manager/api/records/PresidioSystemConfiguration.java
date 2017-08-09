@@ -20,6 +20,8 @@ public class PresidioSystemConfiguration {
 
     private String kdcUrl = null;
 
+    private PresidioSystemConfiguration() {
+    }
 
     public void setUserName(String userName) {
         this.userName = userName;
@@ -45,13 +47,19 @@ public class PresidioSystemConfiguration {
         this.kdcUrl = kdcUrl;
     }
 
-    public void setParameters(JsonNode node) {
+    private void setParameters(JsonNode node) {
         Iterator<String> itr = node.fieldNames();
         String key;
         while (itr.hasNext()) {
             key = itr.next().toString();
             setKeyValue(key, node.get(key).toString());
         }
+    }
+
+    public static PresidioSystemConfiguration presidioSystemConfigurationFactory(JsonNode node) {
+        PresidioSystemConfiguration presidioSystemConfiguration = new PresidioSystemConfiguration();
+        presidioSystemConfiguration.setParameters(node);
+        return presidioSystemConfiguration;
     }
 
     private void setKeyValue(String key, String value) {
