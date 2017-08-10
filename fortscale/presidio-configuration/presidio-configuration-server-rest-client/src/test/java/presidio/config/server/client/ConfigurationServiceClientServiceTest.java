@@ -30,7 +30,7 @@ import java.util.Properties;
 @RunWith(SpringRunner.class)
 @SpringBootTest()
 @ContextConfiguration(classes = ConfigurationServiceClientServiceTest.SpringConfig.class)
-@Ignore
+//@Ignore
 //@ContextConfiguration(classes = {ConfigServerClientServiceConfiguration.class})
 public class ConfigurationServiceClientServiceTest {
 

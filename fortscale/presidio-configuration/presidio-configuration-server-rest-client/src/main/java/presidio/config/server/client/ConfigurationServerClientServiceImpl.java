@@ -23,7 +23,6 @@ public class ConfigurationServerClientServiceImpl implements ConfigurationServer
     @Value("${spring.cloud.config.password}")
     private static String configServerPassword;
 
-    @Autowired
     private RestTemplate restTemplate;
 
     public ConfigurationServerClientServiceImpl(RestTemplate restTemplate) {
@@ -43,7 +42,7 @@ public class ConfigurationServerClientServiceImpl implements ConfigurationServer
 //        String url = configServerUri + "/" + fileName; //TODO take from properties
         String uri = "http://localhost:8888" + "/" + fileName;
 
-        ResponseEntity<String> loginResponse = restTemplate.exchange(uri, HttpMethod.POST, entity, String.class);
+        ResponseEntity<String> loginResponse = restTemplate.exchange(uri, HttpMethod.PUT, entity, String.class);
     }
 
     HttpHeaders createHeaders(String username, String password){
