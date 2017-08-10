@@ -7,6 +7,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import presidio.ade.domain.record.aggregated.AdeEventTypeToAdeAggregationRecordClassResolver;
+import presidio.ade.domain.record.aggregated.AdeEventTypeToAdeAggregationRecordClassResolverConfig;
+import presidio.ade.domain.store.aggr.AggrDataToCollectionNameTranslator;
+import presidio.ade.domain.store.aggr.AggrDataToCollectionNameTranslatorConfig;
 import presidio.ade.domain.store.aggr.AggregatedDataStore;
 import presidio.ade.domain.store.aggr.AggregatedDataStoreMongoImpl;
 
@@ -15,19 +19,21 @@ import presidio.ade.domain.store.aggr.AggregatedDataStoreMongoImpl;
  */
 
 @Configuration
-@Import({
-        ScoredFeaturedDataToCollectionNameTranslatorConfig.class, MongoDbBulkOpUtilConfig.class
+@Import({AggrDataToCollectionNameTranslatorConfig.class,
+         MongoDbBulkOpUtilConfig.class,AdeEventTypeToAdeAggregationRecordClassResolverConfig.class
 })
 public class ScoredFeatureAggregationDataStoreConfig {
     @Autowired
     private MongoTemplate mongoTemplate;
     @Autowired
-    private ScoredFeaturedDataToCollectionNameTranslator translator;
+    private AggrDataToCollectionNameTranslator translator;
     @Autowired
-    public MongoDbBulkOpUtil mongoDbBulkOpUtil;
+    private MongoDbBulkOpUtil mongoDbBulkOpUtil;
+    @Autowired
+    private AdeEventTypeToAdeAggregationRecordClassResolver adeEventTypeToAdeAggregationRecordClassResolver;
 
     @Bean
     public AggregatedDataStore aggregatedDataStore() {
-        return new AggregatedDataStoreMongoImpl(mongoTemplate, translator, mongoDbBulkOpUtil);
+        return new AggregatedDataStoreMongoImpl(mongoTemplate, translator, mongoDbBulkOpUtil,adeEventTypeToAdeAggregationRecordClassResolver );
     }
 }

@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class AggrDataToCollectionNameTranslatorConfig {
     @Bean
-    public ScoreAggrDataToCollectionNameTranslator aggrDataToCollectionNameTranslator() {
-        return new ScoreAggrDataToCollectionNameTranslator();
+    public AggrDataToCollectionNameTranslator aggrDataToCollectionNameTranslator() {
+        return new AggrDataToCollectionNameTranslator();
     }
 }
