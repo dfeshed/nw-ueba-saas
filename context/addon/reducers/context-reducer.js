@@ -10,7 +10,7 @@ const initialState = {
   activeTabName: 'LIST',
   dataSources: null,
   errorMessage: null,
-  toolbar: null,
+  headerButtons: null,
   lookupData: [],
   tabs: null,
   entitiesMetas: null
@@ -26,7 +26,7 @@ const context = handleActions({
     errorMessage: null,
     lookupData: [],
     tabs: null,
-    toolbar: TabList.find((tab) => tab.tabType === payload.meta).toolbar,
+    headerButtons: TabList.find((tab) => tab.tabType === payload.meta).headerButtons,
     ...payload
   }),
   [ACTION_TYPES.UPDATE_ACTIVE_TAB]: (state, { payload }) => ({

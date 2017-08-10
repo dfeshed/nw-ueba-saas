@@ -97,25 +97,6 @@ const datasources = {
   }
 };
 
-const toolbar = {
-  addToList: {
-    field: 'Add/Remove from List',
-    title: 'context.toolbar.addToList',
-    componentName: 'add-to-list'
-  },
-  endpoint: {
-    field: 'Endpoint',
-    title: 'context.tooltip.ecat',
-    componentName: 'endpoint'
-
-  },
-  investigate: {
-    field: 'Investigate',
-    title: 'context.tooltip.investigate',
-    componentName: 'investigate'
-  }
-};
-
 export default [{
   tabType: 'IP',
   header: 'context.modules.header',
@@ -129,10 +110,10 @@ export default [{
     datasources.alert,
     datasources.liveConnectIp
   ],
-  toolbar: [
-    toolbar.addToList,
-    toolbar.endpoint,
-    toolbar.investigate
+  headerButtons: [
+    'add-to-list',
+    'endpoint',
+    'investigate'
   ]
 },
 
@@ -147,9 +128,9 @@ export default [{
     datasources.incident,
     datasources.alert
   ],
-  toolbar: [
-    toolbar.addToList,
-    toolbar.investigate
+  headerButtons: [
+    'add-to-list',
+    'investigate'
   ]
 },
 
@@ -164,10 +145,10 @@ export default [{
     datasources.incident,
     datasources.alert
   ],
-  toolbar: [
-    toolbar.addToList,
-    toolbar.endpoint,
-    toolbar.investigate
+  headerButtons: [
+    'add-to-list',
+    'endpoint',
+    'investigate'
   ]
 },
 
@@ -183,10 +164,10 @@ export default [{
     datasources.incident,
     datasources.alert
   ],
-  toolbar: [
-    toolbar.addToList,
-    toolbar.endpoint,
-    toolbar.investigate
+  headerButtons: [
+    'add-to-list',
+    'endpoint',
+    'investigate'
   ]
 },
 
@@ -200,9 +181,9 @@ export default [{
     datasources.incident,
     datasources.alert
   ],
-  toolbar: [
-    toolbar.addToList,
-    toolbar.investigate
+  headerButtons: [
+    'add-to-list',
+    'investigate'
   ]
 },
 
@@ -217,9 +198,9 @@ export default [{
     datasources.alert,
     datasources.liveConnectFile
   ],
-  toolbar: [
-    toolbar.addToList,
-    toolbar.investigate
+  headerButtons: [
+    'add-to-list',
+    'investigate'
   ]
 },
 
@@ -234,8 +215,8 @@ export default [{
     datasources.alert,
     datasources.liveConnectDomain
   ],
-  toolbar: [
-    toolbar.addToList,
-    toolbar.investigate
+  headerButtons: [
+    'add-to-list',
+    'investigate'
   ]
 }];

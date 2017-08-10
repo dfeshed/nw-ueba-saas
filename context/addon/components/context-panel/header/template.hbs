@@ -15,7 +15,7 @@
       <span>
         {{#rsa-form-button
           isIconOnly=true title= (t 'context.header.help.title')
-          defaultAction=(action 'goToHelp' helpId.moduleId helpId.topicId)}}
+          defaultAction=(action 'goToHelp')}}
           {{rsa-icon name="help-circle" style="lined" }}
         {{/rsa-form-button}}
       </span>
@@ -26,21 +26,4 @@
       </span>
     </div>
   </vbox>
-</hbox>
-<hbox class="rsa-context-panel-header__tab">
-  {{#each toolbar as | buttons | }} 
-    {{#if (eq buttons.componentName 'add-to-list')}} 
-      {{#rsa-form-button defaultAction=(route-action "openContextAddToList" (hash type=meta id=lookupKey)) }} 
-        {{t 'context.addToList.title'}}
-      {{/rsa-form-button}} 
-    {{else if (eq buttons.componentName 'endpoint')}}
-      <a href="ecatui://{{lookupKey}}" target="_blank" class='rsa-context-panel__linkButton' title= {{t 'context.hostSummary.endpoint'}}>
-        {{t 'context.tooltip.ecat'}}
-      </a>
-    {{else if (eq buttons.componentName 'investigate')}}
-      <a href="{{pivotToInvestigateUrl}}" target="_blank" class='rsa-context-panel__linkButton'>
-        {{t 'context.tooltip.investigate'}}
-      </a>
-    {{/if}}
-  {{/each}}
 </hbox>
