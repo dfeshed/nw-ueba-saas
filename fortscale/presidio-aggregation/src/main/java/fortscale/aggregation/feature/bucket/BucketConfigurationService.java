@@ -137,6 +137,11 @@ public class BucketConfigurationService extends AslConfigurationService {
 
 	public Set<List<String>> getRelatedDistinctContexts(String adeEventType){
 		List<FeatureBucketConf> featureBucketConfs = adeEventTypeToListOfBucketConfs.get(adeEventType);
+		if(featureBucketConfs == null){
+			logger.warn("no feature bucket conf for the given ade event type {}", adeEventType);
+			//todo: add metric
+			return Collections.emptySet();
+		}
 		Set<List<String>> distinctContextsSet = new HashSet<>();
 		for(FeatureBucketConf featureBucketConf: featureBucketConfs){
 			distinctContextsSet.add(featureBucketConf.getContextFieldNames());

@@ -120,7 +120,7 @@
         <quartz.version>2.2.1</quartz.version>
         <perf4j.version>0.9.16</perf4j.version>
 
-        <jackson.dataformat.version>2.2.3</jackson.dataformat.version>
+        <jackson.dataformat.version>2.8.9</jackson.dataformat.version>
 
         <test.exclude>nothingToExlude</test.exclude>
         <test.include>**/*Test.java</test.include>
