@@ -30,10 +30,11 @@ public class GenericResourceWritableRepository implements ResourceWritableReposi
     public String store(String application, String profile, String label, boolean override, String content) throws IOException{
 
         String location = getLocation(application, profile, label);
-        String local = getPropertyPath(application, profile, "property");
-        Resource resource = new FileSystemResource(this.resourceLoader.getResource(location).createRelative(local).getFile());
+        // TODO: add path, profile etc ...
+        //String local = getPropertyPath(application, profile, "json");
+        Resource resource = new FileSystemResource(this.resourceLoader.getResource(location).createRelative(application).getFile());
         if (!WritableResource.class.isInstance(resource)) {
-            System.err.println(String.format("resource is not writable %s/%s", location, local));
+            System.err.println(String.format("resource is not writable %s/%s", location, application));
             //TODO: error handling
         }
 

@@ -32,7 +32,7 @@ public class ResourceWriteController {
 
 
 
-    @RequestMapping(value="/{name}", method = RequestMethod.POST)
+    @RequestMapping(value="/{name:.+}", method = RequestMethod.PUT)
     public String postConfiguration(@PathVariable String name, HttpServletRequest request,
                            @RequestParam(defaultValue = "true") boolean resolvePlaceholders, @RequestBody String properties)
             throws IOException {
