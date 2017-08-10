@@ -1,10 +1,11 @@
-package presidio.sdk.api.domain;
+package presidio.sdk.api.domain.rawevents;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import fortscale.domain.core.EventResult;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
+import presidio.sdk.api.domain.AbstractPresidioDocument;
 
 import java.time.Instant;
 import java.util.List;
@@ -33,6 +34,12 @@ public class ActiveDirectoryRawEvent extends AbstractPresidioDocument {
     }
 
     public ActiveDirectoryRawEvent() {
+    }
+
+    public ActiveDirectoryRawEvent(ActiveDirectoryRawEvent other) {
+        super(other);
+        this.isUserAdmin = other.isUserAdmin;
+        this.objectId = other.objectId;
     }
 
     @JsonProperty(value = "isUserAdmin")

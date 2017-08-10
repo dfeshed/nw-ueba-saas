@@ -4,8 +4,9 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringRunner;
-import presidio.ade.domain.record.enriched.dlpfile.EnrichedDlpFileRecord;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
+import presidio.ade.domain.record.enriched.dlpfile.EnrichedDlpFileRecord;
+import presidio.input.core.services.converters.inputtoade.DlpFileConverter;
 import presidio.sdk.api.domain.DlpFileDataDocument;
 import presidio.sdk.api.domain.DlpFileEnrichedDocument;
 
@@ -13,7 +14,7 @@ import presidio.sdk.api.domain.DlpFileEnrichedDocument;
 public class DlpFileConverterTest {
 
     @Test
-    public void testConverter_valid(){
+    public void testConverter_valid() {
         DlpFileConverter dlpFileConverter = new DlpFileConverter();
         DlpFileDataDocument inputRecord = new DlpFileDataDocument(("2017-06-06T10:10:10.00Z,executing_application,hostname," +
                 "first_name,dddd,last_name,username,malware_scan_result,event_id,source_ip,false,false,destination_path," +

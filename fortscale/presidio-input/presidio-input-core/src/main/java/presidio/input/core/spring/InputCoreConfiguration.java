@@ -1,7 +1,6 @@
 package presidio.input.core.spring;
 
 
-import presidio.monitoring.spring.MonitoringConfiguration;
 import fortscale.common.shell.PresidioExecutionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -10,12 +9,13 @@ import org.springframework.context.annotation.Import;
 import presidio.input.core.services.data.AdeDataService;
 import presidio.input.core.services.impl.InputExecutionServiceImpl;
 import presidio.input.sdk.impl.spring.PresidioInputPersistencyServiceConfig;
+import presidio.monitoring.spring.MonitoringConfiguration;
 import presidio.output.sdk.api.OutputDataServiceSDK;
 import presidio.output.sdk.impl.spring.OutputDataServiceConfig;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
 
 @Configuration
-@Import({ PresidioInputPersistencyServiceConfig.class, AdeDataServiceConfig.class,OutputDataServiceConfig.class,MonitoringConfiguration.class})
+@Import({PresidioInputPersistencyServiceConfig.class, AdeDataServiceConfig.class, OutputDataServiceConfig.class, MonitoringConfiguration.class})
 public class InputCoreConfiguration {
 
     @Autowired
@@ -31,5 +31,6 @@ public class InputCoreConfiguration {
     public PresidioExecutionService inputExecutionService() {
         return new InputExecutionServiceImpl(presidioInputPersistencyService, adeDataService, outputDataServiceSDK);
     }
+
 
 }

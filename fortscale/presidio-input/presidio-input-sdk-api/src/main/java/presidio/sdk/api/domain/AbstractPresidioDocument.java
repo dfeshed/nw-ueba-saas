@@ -52,6 +52,19 @@ public class AbstractPresidioDocument extends AbstractAuditableDocument {
     @Field(ADDITIONAL_INFO_FIELD_NAME)
     protected Map<String, String> additionalInfo;
 
+    public AbstractPresidioDocument(AbstractPresidioDocument other) {
+        super(other);
+        this.eventId = other.eventId;
+        this.dataSource = other.dataSource;
+        this.userId = other.userId;
+        this.operationType = other.operationType;
+        this.operationTypeCategory = other.operationTypeCategory;
+        this.result = other.result;
+        this.userName = other.userName;
+        this.userDisplayName = other.userDisplayName;
+        this.additionalInfo = other.additionalInfo;
+    }
+
     public AbstractPresidioDocument() {
 
     }

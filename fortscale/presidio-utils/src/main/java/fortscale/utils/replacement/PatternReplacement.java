@@ -1,4 +1,4 @@
-package fortscale.ml.model.retriever.pattern.replacement;
+package fortscale.utils.replacement;
 
 public class PatternReplacement {
 	private PatternReplacementConf patternReplacementConf;

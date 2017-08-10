@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.common.feature.Feature;
 import fortscale.ml.model.ModelBuilderData;
 import fortscale.ml.model.retriever.function.IDataRetrieverFunction;
-import fortscale.ml.model.retriever.pattern.replacement.PatternReplacement;
+import fortscale.utils.replacement.PatternReplacement;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimestampUtils;
 import net.minidev.json.JSONObject;

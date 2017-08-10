@@ -2,9 +2,11 @@ package presidio.input.sdk.impl.repositories;
 
 import com.mongodb.WriteResult;
 import fortscale.domain.core.AbstractAuditableDocument;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import presidio.sdk.api.domain.AbstractPresidioDocument;
 
 import java.time.Instant;
 import java.util.List;
@@ -39,6 +41,27 @@ public class DataSourceRepositoryImpl implements DataSourceRepository {
     @Override
     public void cleanCollection(String collectionName) {
         mongoTemplate.dropCollection(collectionName);
+    }
+
+    @Override
+    public <U extends AbstractPresidioDocument> List<U> readRecords(String collectionName, Instant startDate, Instant endDate, int numOfItemsToSkip, int pageSize) {
+        Query query = getQuery(startDate, endDate, numOfItemsToSkip, pageSize);
+
+        query.with(new Sort(Sort.Direction.ASC, AbstractPresidioDocument.DATE_TIME_FIELD_NAME));
+
+        List<U> recordList =  mongoTemplate.find(query, (Class<U>)AbstractPresidioDocument.class, collectionName);
+        return recordList;
+
+    }
+
+    public long count(String collectionName, Instant startDate, Instant endDate) {
+        Query query = new Query(createDateCriteria(startDate, endDate));
+        return mongoTemplate.count(query, collectionName);
+    }
+
+    private Query getQuery(Instant startDate, Instant endDate, int numOfItemsToSkip, int pageSize) {
+        Criteria dateTimeCriteria = createDateCriteria(startDate, endDate);
+        return new Query(dateTimeCriteria).skip(numOfItemsToSkip).limit(pageSize);
     }
 
     private Criteria createDateCriteria(Instant startTime, Instant endTime) {
