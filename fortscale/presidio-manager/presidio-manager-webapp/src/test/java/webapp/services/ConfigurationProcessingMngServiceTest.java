@@ -1,4 +1,4 @@
-package webapp;
+package webapp.services;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
@@ -14,7 +14,7 @@ import presidio.webapp.service.ConfigurationProcessingManager;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class FortscaleManagerWebAppTests {
+public class ConfigurationProcessingMngServiceTest {
 
 
     private ConfigurationProcessingManager configurationProcessingManager;
