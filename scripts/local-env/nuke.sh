@@ -13,12 +13,13 @@ info "If this is your first time setting up environment, this part will be fast.
 function nukeNode {
   info "Removing $1 node_modules"
   rm -rf $1/node_modules
-  mkdir $1/node_modules
-  touch $1/node_modules/.metadata_never_index
 }
 
 info "Cleaning NPM cache"
 npm cache clean
+
+rm -rf $scriptDir/../node_modules
+touch node_modules/.metadata_never_index
 
 nukeNode mock-server
 nukeNode component-lib

@@ -26,10 +26,10 @@
     "babel-plugin-transform-object-rest-spread": "^6.23.0",
     "ember-cli-babel": "^6.3.0",
     "ember-cli-htmlbars": "^2.0.1",
-    "ember-math-helpers": "2.0.3",
+    "ember-math-helpers": "2.0.5",
     "ember-moment": "7.2.0",
     "ember-redux": "2.10.0",
-    "flexi": "2.0.0-beta.12"
+    "flexi": "2.0.1"
   },
   "devDependencies": {
     "babel-eslint": "^7.1.1",

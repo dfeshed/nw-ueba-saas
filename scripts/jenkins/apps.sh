@@ -33,18 +33,11 @@ function doInstallApp {
 IFS=', ' read -r -a TESTEM_PORTS_ARRAY <<< "$TESTEM_PORTS"
 IFS=', ' read -r -a MOCK_SERVER_PORTS_ARRAY <<< "$MOCK_SERVER_PORTS"
 
-function runAppYarnInstall {
-  info "Running 'yarn' for $1"
-  yarn
-  checkError "Yarn install failed for $1"
-  success "Installed $1 NPM dependencies"
-}
-
 function runEmberTestWithMockServer {
   local mockPort=${MOCK_SERVER_PORTS_ARRAY[$RANDOM % ${#MOCK_SERVER_PORTS_ARRAY[@]} ]}
   local testemPort=${TESTEM_PORTS_ARRAY[$RANDOM % ${#TESTEM_PORTS_ARRAY[@]} ]}
 
-  yarn add --force file:../mock-server
+  yarn link mock-server
 
   info "Starting Express mock test server for $1"
 
@@ -95,17 +88,7 @@ function buildEmberApp {
 
   cd $1
 
-  # Yarn install all app dependencies
-  local shouldInstallApp=$(doInstallApp $1)
-  if [[ "$shouldInstallApp" == "false" ]]
-  then
-    info "No reason to install $1, skipping it"
-  else
-    info "Installing $1 dependencies"
-
-    # install Yarn/NPM deps
-    runAppYarnInstall $1
-  fi
+  ln -s ../node_modules node_modules
 
   local shouldTestApp=$(doTestApp $1)
   if [[ "$shouldTestApp" == "false" ]]
@@ -161,7 +144,7 @@ function buildMockServer {
     info "No reason to test mock-server, skipping it"
   else
     info "Installing mock-server dependencies"
-    runAppYarnInstall mock-server
+    yarn
   fi
 
   # Run eslint/tests on mock-server code
@@ -180,6 +163,8 @@ function buildMockServer {
     success "mock-server tests passed"
   fi
 
+  yarn link
+
   cd $CWD
 }
 
@@ -188,6 +173,9 @@ info "Building apps"
 
 # install node scripts deps
 cd scripts/node
+yarn
+# install all UI depedencies
+cd ../..
 yarn
 cd $CWD
 

@@ -1,18 +1,8 @@
-# This can be run to quickly NPM install
-# all the dependencies for all the apps
-
-function installYarnDeps {
-  info "Using Yarn to install NPM dependencies for: $1"
-  yarn
-  checkError "Failed to install NPM dependencies for $1, try again, if this persists (it shouldn't) then get some help."
-}
-
-function installAppDeps {
+function prepareApp {
   cd ../$1
 
-  installYarnDeps $1
-
   yarn link mock-server
+  ln -s ../node_modules node_modules
 
   # At present, the script only supports OS X and Windows
   # If the user is not on Mac, then user must be Windows (CYGWIN*|MINGW32*|MSYS*)
@@ -36,20 +26,24 @@ scriptDir="$(dirname $0)"
 info "Running install for node build utilities"
 cd $scriptDir/node
 yarn
-cd $CWD
+
+# run install on node build node utilities
+info "Running install for all application node packages"
+cd ../..
+yarn
 
 # mock-server is just Yarn install
 cd $scriptDir/../mock-server
-installYarnDeps mock-server
+yarn
 yarn link
 
-installAppDeps component-lib
-installAppDeps streaming-data
-installAppDeps recon
-installAppDeps style-guide
-installAppDeps investigate
-installAppDeps respond
-installAppDeps context
-installAppDeps sa
+prepareApp component-lib
+prepareApp streaming-data
+prepareApp recon
+prepareApp style-guide
+prepareApp investigate
+prepareApp respond
+prepareApp context
+prepareApp sa
 
 cd $CWD
