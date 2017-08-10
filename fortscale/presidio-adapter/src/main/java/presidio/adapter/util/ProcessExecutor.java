@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.util.List;
+import java.util.StringJoiner;
 
 
 /**
@@ -65,11 +66,11 @@ public class ProcessExecutor {
 
     private String getCommand(ProcessBuilder processBuilder) {
         final List<String> args = processBuilder.command();
-        StringBuilder stringBuilder = new StringBuilder();
+        StringJoiner  stringJoiner = new StringJoiner(" ");
         for (String arg : args) {
-            stringBuilder.append(arg);
+            stringJoiner.add(arg);
         }
-        return stringBuilder.toString();
+        return stringJoiner.toString();
     }
 
 
