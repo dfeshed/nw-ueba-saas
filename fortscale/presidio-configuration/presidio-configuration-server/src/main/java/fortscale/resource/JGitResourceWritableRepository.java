@@ -17,7 +17,7 @@ import java.io.IOException;
 
 public class JGitResourceWritableRepository extends GenericResourceWritableRepository {
 
-    private static final String ADD_FILE_MESSAGE = "add configuration file: %s by configuration server";
+    private static final String ADD_FILE_MESSAGE = "add configuration file: %s by configuration server REST api";
 
     private SearchPathLocator service;
     private JGitEnvironmentRepository gitAccessor;
@@ -36,7 +36,7 @@ public class JGitResourceWritableRepository extends GenericResourceWritableRepos
         String fullPath = super.store(application, profile, label, override, content);
         Git git = createGitClient();
         add(git, fullPath);
-        commit(git, String.format(ADD_FILE_MESSAGE, application);
+        commit(git, String.format(ADD_FILE_MESSAGE, application));
         return fullPath;
     }
 
