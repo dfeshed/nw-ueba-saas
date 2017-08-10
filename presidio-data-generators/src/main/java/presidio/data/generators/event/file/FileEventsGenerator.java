@@ -7,8 +7,12 @@ import presidio.data.generators.common.IStringGenerator;
 import presidio.data.generators.common.time.TimeGenerator;
 import presidio.data.generators.event.EntityEventIDFixedPrefixGenerator;
 import presidio.data.generators.event.IEventGenerator;
+import presidio.data.generators.fileentity.FileSystemEntityGenerator;
+import presidio.data.generators.fileentity.IFileSystemEntityGenerator;
 import presidio.data.generators.fileop.FileOperationGenerator;
 import presidio.data.generators.fileop.IFileOperationGenerator;
+import presidio.data.generators.machine.IMachineGenerator;
+import presidio.data.generators.machine.SimpleMachineGenerator;
 import presidio.data.generators.user.IUserGenerator;
 import presidio.data.generators.user.RandomUserGenerator;
 
@@ -22,6 +26,8 @@ public class FileEventsGenerator implements IEventGenerator {
     private IStringGenerator dataSourceGenerator;
     private IUserGenerator userGenerator;
     private IFileOperationGenerator fileOperationGenerator; // Handles: source file & folder, destination file & folder, file_size, operation type, operation result
+    private IFileSystemEntityGenerator fileSystemGenerator;
+    private IMachineGenerator machineEntityGenerator;
 
     public FileEventsGenerator() throws GeneratorException {
         timeGenerator = new TimeGenerator();
@@ -29,6 +35,8 @@ public class FileEventsGenerator implements IEventGenerator {
         eventIdGenerator = new EntityEventIDFixedPrefixGenerator(userGenerator.getNext().getUsername());
         dataSourceGenerator = new FixedDataSourceGenerator();
         fileOperationGenerator = new FileOperationGenerator();
+        fileSystemGenerator = new FileSystemEntityGenerator(userGenerator.getNext().getUsername());
+        machineEntityGenerator = new SimpleMachineGenerator();
     }
 
 
@@ -41,7 +49,9 @@ public class FileEventsGenerator implements IEventGenerator {
                     getTimeGenerator().getNext(),
                     getUserGenerator().getNext(),
                     getFileOperationGenerator().getNext(),
-                    (String) getDataSourceGenerator().getNext());
+                    (String) getDataSourceGenerator().getNext(),
+                    getFileSystemGenerator().getNext(),
+                    getMachineEntityGenerator().getNext());
             evList.add(ev);
         }
         return evList;
@@ -85,5 +95,21 @@ public class FileEventsGenerator implements IEventGenerator {
 
     public void setDataSourceGenerator(IStringGenerator dataSourceGenerator) {
         this.dataSourceGenerator = dataSourceGenerator;
+    }
+
+    public IFileSystemEntityGenerator getFileSystemGenerator() {
+        return fileSystemGenerator;
+    }
+
+    public void setFileSystemGenerator(IFileSystemEntityGenerator fileSystemGenerator) {
+        this.fileSystemGenerator = fileSystemGenerator;
+    }
+
+    public IMachineGenerator getMachineEntityGenerator() {
+        return machineEntityGenerator;
+    }
+
+    public void setMachineEntityGenerator(IMachineGenerator machineEntityGenerator) {
+        this.machineEntityGenerator = machineEntityGenerator;
     }
 }

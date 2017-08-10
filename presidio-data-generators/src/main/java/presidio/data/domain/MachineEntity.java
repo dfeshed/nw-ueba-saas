@@ -5,19 +5,33 @@ public class MachineEntity {
     private String machineIp;
     private String machineNameRegexCluster;
     private String machineDomain;
+    private String machineDomainDN;
+    private String osVersion;
+    private String origin;
 
     public MachineEntity(String machineId, String machineNameRegexCluster, String machineDomain) {
         this.machineId = machineId;
-        this.machineIp = "0.0.0.1";
+        this.machineIp = "10.0.0.1";
         this.machineNameRegexCluster = machineNameRegexCluster;
         this.machineDomain = machineDomain;
+        this.osVersion = "Windows Server 2016 Datacenter";
+        this.machineDomainDN = "DC=catest,DC=quest,DC=azure,DC=ca";
+        this.origin = "vmMember.catest.quest.azure.ca";
     }
 
     public MachineEntity(String machineId, String machineIp, String machineNameRegexCluster, String machineDomain) {
-        this.machineId = machineId;
+        this(machineId, machineNameRegexCluster, machineDomain);
         this.machineIp = machineIp;
+    }
+
+    public MachineEntity(String machineId, String machineNameRegexCluster, String machineDomain, String machineDomainDN, String osVersion, String origin) {
+        this.machineId = machineId;
+        this.machineIp = "10.0.0.1";
         this.machineNameRegexCluster = machineNameRegexCluster;
         this.machineDomain = machineDomain;
+        this.machineDomainDN = machineDomainDN;
+        this.osVersion = osVersion;
+        this.origin = origin;
     }
 
     public String getMachineId() {
@@ -52,6 +66,30 @@ public class MachineEntity {
         this.machineDomain = machineDomain;
     }
 
+    public String getOsVersion() {
+        return osVersion;
+    }
+
+    public void setOsVersion(String osVersion) {
+        this.osVersion = osVersion;
+    }
+
+    public String getMachineDomainDN() {
+        return machineDomainDN;
+    }
+
+    public void setMachineDomainDN(String machineDomainDN) {
+        this.machineDomainDN = machineDomainDN;
+    }
+
+    public String getOrigin() {
+        return origin;
+    }
+
+    public void setOrigin(String origin) {
+        this.origin = origin;
+    }
+
     @Override
     public String toString() {
         return "MachineEntity{" +
@@ -59,6 +97,9 @@ public class MachineEntity {
                 ", machineIp='" + machineIp + '\'' +
                 ", machineNameRegexCluster='" + machineNameRegexCluster + '\'' +
                 ", machineDomain='" + machineDomain + '\'' +
+                ", machineDomainDN='" + machineDomainDN + '\'' +
+                ", osVersion='" + osVersion + '\'' +
+                ", origin='" + origin + '\'' +
                 '}';
     }
 }
