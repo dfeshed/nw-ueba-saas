@@ -151,7 +151,7 @@ public abstract class PaginationService<T> {
                 totalNumOfItems += first.getTotalNumOfItems();
                 contextIds.add(first.getContextId());
                 start++;
-                first = contextIdToNumOfItemsList.get(start);
+                first = sortedList.get(start);
                 numOfHandledContextIds++;
             }
 
