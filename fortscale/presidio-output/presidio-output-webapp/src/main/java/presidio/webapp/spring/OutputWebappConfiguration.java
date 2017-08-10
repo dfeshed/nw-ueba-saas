@@ -18,7 +18,7 @@ public class OutputWebappConfiguration {
     AlertPersistencyService alertService;
 
     @Bean
-    RestAlertService restAlertService(){
+    RestAlertService restAlertService() {
         return new RestAlertServiceImpl(alertService);
     }
 
