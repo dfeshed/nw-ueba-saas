@@ -68,6 +68,10 @@ public class ConfigurationApiController implements ConfigurationApi {
             errorList.add(error);
             configurationResponse.error(errorList);
         }
+        else {
+            configurationResponse.code("201");
+            configurationResponse.message("Created");
+        }
         return new ResponseEntity<ConfigurationResponse>(configurationResponse, HttpStatus.OK);
     }
 
