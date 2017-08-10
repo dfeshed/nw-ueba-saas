@@ -167,6 +167,7 @@
                 <preremoveScriptlet>
                     <script>
                         <!-- pre remove commands -->
+                        echo "pre remove script"
                         ${python_path} ${rpm-maven-plugin.script} --rpm_name ${rpm_name} --major ${rpm.version.major} --minor ${rpm.version.minor} --build ${rpm.version.build} --uninstall
 
                     </script>
@@ -175,6 +176,7 @@
                     <script>
                         <!-- post remove commands -->
                         <!-- remove presidio-core main folder -->
+                        echo "post remove script"
 
                     </script>
                 </postremoveScriptlet>
