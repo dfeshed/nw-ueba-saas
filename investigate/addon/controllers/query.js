@@ -25,7 +25,7 @@ export default Controller.extend({
       return index;
     }
 
-    return eventId;
+    return -1;
   },
 
   /**

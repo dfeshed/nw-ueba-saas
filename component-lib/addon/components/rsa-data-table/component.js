@@ -313,21 +313,23 @@ export default Component.extend(DomWatcher, EKMixin, {
 
   didInsertElement() {
     this._super(...arguments);
-    const selectedIndex = this.get('selectedIndex');
-    if (this.get('scrollToInitialSelectedIndex') && selectedIndex > 1) {
-      run.schedule('afterRender', this, this.scrollToInitial, selectedIndex, 0);
+    if (this.get('scrollToInitialSelectedIndex')) {
+      run.schedule('afterRender', this, this.scrollToInitial, 0);
     }
   },
 
-  scrollToInitial(selectedIndex, callCount) {
+  scrollToInitial(callCount) {
+    // selectedIndex can change (essentially from not found to found)
+    // as data flows in, so pull each time through scrollToInitial
+    const selectedIndex = this.get('selectedIndex');
     // don't want to try forever, if this recurses too much, just stop
-    if (callCount < 25) {
-      // First row needed to measure height of items so can calculate
-      // how far to scroll
-      const $firstRow = $('.rsa-data-table-body-row');
+    if (selectedIndex && callCount < 50) {
+      // First row needed to measure height of
+      // items so can calculate how far to scroll
+      const $firstRow = this.$('.rsa-data-table-body-row');
       if ($firstRow.length > 0) {
         const heightForAllTableRows = this.$('.rsa-data-table-body-rows').height();
-        const howFarToScrollTable = $firstRow.outerHeight() * (selectedIndex - 1);
+        const howFarToScrollTable = $firstRow.outerHeight() * selectedIndex;
 
         // data could be flowing in over time, so the number of rows in the table may not
         // immediately be enough to scroll to the selected row.

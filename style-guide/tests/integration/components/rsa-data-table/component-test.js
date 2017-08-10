@@ -343,5 +343,5 @@ test('it scrolls table to top when scrollToInitialSelectedIndex is provided.', f
 
   const rowHeight = this.$('.rsa-data-table-body-row').outerHeight();
   const [ { scrollTop } ] = this.$('.rsa-data-table-body');
-  assert.equal(scrollTop, rowHeight * (index - 1), 'seventh item is scrolled to top of container');
+  assert.equal(scrollTop, rowHeight * index, 'seventh item is scrollTop\'d the correct number of pixels such that it is at the top of the table');
 });
