@@ -7,5 +7,5 @@ import com.fasterxml.jackson.databind.JsonNode;
  */
 public interface ConfigurationServerClientService {
 
-    public void storeFile(JsonNode requestBody);
+    void storeConfigurationFile(String fileName, JsonNode configFileContent);
 }
