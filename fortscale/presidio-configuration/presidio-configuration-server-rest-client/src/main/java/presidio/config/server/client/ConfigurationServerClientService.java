@@ -1,4 +1,4 @@
-package presidio.webapp.service;
+package presidio.config.server.client;
 
 import com.fasterxml.jackson.databind.JsonNode;
 

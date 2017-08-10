@@ -1,4 +1,4 @@
-package presidio.webapp.service;
+package presidio.config.server.client;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +8,7 @@ import org.springframework.web.client.RestTemplate;
 /**
  * Created by efratn on 09/08/2017.
  */
-public class ConfigurationServerClientImpl implements ConfigurationServerClientService{
+public class ConfigurationServerClientServiceImpl implements ConfigurationServerClientService{
 
 //    @Value("")
     private static final String configServerHost = "localhost";
@@ -22,7 +22,7 @@ public class ConfigurationServerClientImpl implements ConfigurationServerClientS
     @Autowired
     private RestTemplate restTemplate;
 
-    public ConfigurationServerClientImpl(RestTemplate restTemplate) {
+    public ConfigurationServerClientServiceImpl(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
 
