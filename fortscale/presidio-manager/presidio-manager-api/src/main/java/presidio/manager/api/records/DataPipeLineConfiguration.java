@@ -51,4 +51,11 @@ public class DataPipeLineConfiguration {
         }
     }
 
+    public Instant getStartTime() {
+        return startTime;
+    }
+
+    public SchemasEnum[] getSchemasEnum() {
+        return schemasEnum;
+    }
 }
