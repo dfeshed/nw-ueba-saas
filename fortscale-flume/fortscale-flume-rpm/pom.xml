@@ -60,7 +60,7 @@
                             echo "Creating env variable"
                             export FLUME_HOME=${flume_home_directory}
                             echo "Writing env variable to /etc/profile"
-                            echo "export FLUME_HOME=/opt/flume" >> /etc/profile
+                            echo "export FLUME_HOME=/opt/flume/" >> /etc/profile
                             chmod -v +x ${FLUME_HOME}/bin/flume-ng.ps1
                             chmod -v +x ${FLUME_HOME}/bin/flume-ng
                             echo "Editing flume-ng file"
