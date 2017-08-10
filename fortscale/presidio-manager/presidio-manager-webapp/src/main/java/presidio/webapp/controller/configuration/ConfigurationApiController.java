@@ -65,7 +65,6 @@ public class ConfigurationApiController implements ConfigurationApi {
             error.message("error message");
             error.location("location");
             error.locationType(ConfigurationResponseError.LocationTypeEnum.JSON_PATH);
-
             errorList.add(error);
             configurationResponse.error(errorList);
         }
