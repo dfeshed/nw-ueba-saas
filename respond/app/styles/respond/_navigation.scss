@@ -8,8 +8,8 @@ $navbarHeight: 50px;
     }
   }
 }
-// Hide the Respond nav bar on the incident details page for now
-.respond-engine.incident {
+// Hide the Respond nav bar on the incident and alert details page
+.respond-engine.incident, .respond-engine.alert {
   > .rsa-nav-tab-group {
     display: none;
   }

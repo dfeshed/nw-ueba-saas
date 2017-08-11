@@ -20,7 +20,7 @@
     {{/rsa-form-button}}
   </span>
 {{else}}
-  <span class="editable-field__value {{unless text 'placeholder'}}" {{action 'edit'}}>{{or text placeholder}}</span>
+  <span class="editable-field__value {{unless text 'placeholder'}}" {{action 'edit'}} title="{{text}}">{{or text placeholder}}</span>
   <span class="action edit-field">
     {{#unless isDisabled}}
       {{#rsa-form-button isIconOnly=true isDisabled=isDisabled title='Edit Field' defaultAction='edit'}}
