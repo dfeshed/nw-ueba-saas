@@ -199,7 +199,7 @@ IncidentsAPI.reopenClass({
    */
   getAlertsForIncident(incidentId, { onResponse = NOOP, onError = NOOP, onInit = NOOP, onCompleted = NOOP }) {
     const query = FilterQuery.create()
-      .addSortBy('alert.timestamp', false)
+      .addSortBy('receivedTime', false)
       .addFilter('incidentId', incidentId);
 
     return streamRequest({
@@ -259,8 +259,8 @@ IncidentsAPI.reopenClass({
     }
 
     const query = FilterQuery.create()
-      .addSortBy('alert.timestamp', false)
-      .addSinceWhenFilter('alert.timestamp', sinceWhen)
+      .addSortBy('receivedTime', false)
+      .addSinceWhenFilter('receivedTime', sinceWhen)
       .addFilter(`alert.events.${eventField}`, entityId);
 
     return streamRequest({
