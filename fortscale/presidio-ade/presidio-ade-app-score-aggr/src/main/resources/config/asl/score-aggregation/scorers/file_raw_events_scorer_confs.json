@@ -22,60 +22,72 @@
               "use-certainty-to-calculate-score": true
             },
             {
-              "type": "max-scorer-container",
+              "type": "conditional-scorer",
               "name": "operationType.userIdFilePermissionChange.file.score",
-              "scorers": [
-                {
-                  "type": "category-rarity-model-scorer",
-                  "name": "operationType.userIdFilePermissionChange.file.scorer",
-                  "model": {
-                    "name": "operationType.userIdFilePermissionChange.file"
+              "conditional-field": "operationTypeCategories",
+              "conditional-value": "FILE_PERMISSION_CHANGE",
+              "scorer": {
+                "type": "max-scorer-container",
+                "name": "operationType.userIdFilePermissionChange.file.score",
+                "scorers": [
+                  {
+                    "type": "category-rarity-model-scorer",
+                    "name": "operationType.userIdFilePermissionChange.file.scorer",
+                    "model": {
+                      "name": "operationType.userIdFilePermissionChange.file"
+                    },
+                    "max-rare-count": 5,
+                    "max-num-of-rare-features": 15,
+                    "number-of-samples-to-influence-enough": 30,
+                    "use-certainty-to-calculate-score": true
                   },
-                  "max-rare-count": 5,
-                  "max-num-of-rare-features": 15,
-                  "number-of-samples-to-influence-enough": 30,
-                  "use-certainty-to-calculate-score": true
-                },
-                {
-                  "type": "category-rarity-model-scorer",
-                  "name": "operationType.userId.file.scorer",
-                  "model": {
-                    "name": "operationType.userId.file"
-                  },
-                  "max-rare-count": 5,
-                  "max-num-of-rare-features": 15,
-                  "number-of-samples-to-influence-enough": 30,
-                  "use-certainty-to-calculate-score": true
-                }
-              ]
+                  {
+                    "type": "category-rarity-model-scorer",
+                    "name": "operationType.userId.file.scorer",
+                    "model": {
+                      "name": "operationType.userId.file"
+                    },
+                    "max-rare-count": 5,
+                    "max-num-of-rare-features": 15,
+                    "number-of-samples-to-influence-enough": 30,
+                    "use-certainty-to-calculate-score": true
+                  }
+                ]
+              }
             },
             {
-              "type": "max-scorer-container",
+              "type": "conditional-scorer",
               "name": "operationType.userIdFileAction.file.score",
-              "scorers": [
-                {
-                  "type": "category-rarity-model-scorer",
-                  "name": "operationType.userIdFileAction.file.scorer",
-                  "model": {
-                    "name": "operationType.userIdFileAction.file"
+              "conditional-field": "operationTypeCategories",
+              "conditional-value": "FILE_ACTION",
+              "scorer": {
+                "type": "max-scorer-container",
+                "name": "operationType.userIdFileAction.file.score",
+                "scorers": [
+                  {
+                    "type": "category-rarity-model-scorer",
+                    "name": "operationType.userIdFileAction.file.scorer",
+                    "model": {
+                      "name": "operationType.userIdFileAction.file"
+                    },
+                    "max-rare-count": 5,
+                    "max-num-of-rare-features": 15,
+                    "number-of-samples-to-influence-enough": 30,
+                    "use-certainty-to-calculate-score": true
                   },
-                  "max-rare-count": 5,
-                  "max-num-of-rare-features": 15,
-                  "number-of-samples-to-influence-enough": 30,
-                  "use-certainty-to-calculate-score": true
-                },
-                {
-                  "type": "category-rarity-model-scorer",
-                  "name": "operationType.userId.file.scorer",
-                  "model": {
-                    "name": "operationType.userId.file"
-                  },
-                  "max-rare-count": 5,
-                  "max-num-of-rare-features": 15,
-                  "number-of-samples-to-influence-enough": 30,
-                  "use-certainty-to-calculate-score": true
-                }
-              ]
+                  {
+                    "type": "category-rarity-model-scorer",
+                    "name": "operationType.userId.file.scorer",
+                    "model": {
+                      "name": "operationType.userId.file"
+                    },
+                    "max-rare-count": 5,
+                    "max-num-of-rare-features": 15,
+                    "number-of-samples-to-influence-enough": 30,
+                    "use-certainty-to-calculate-score": true
+                  }
+                ]
+              }
             }
           ]
         }
