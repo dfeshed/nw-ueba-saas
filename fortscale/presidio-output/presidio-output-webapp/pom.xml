@@ -145,7 +145,7 @@
                                     <type>${project.packaging}</type>
                                 </artifactItem>
                             </artifactItems>
-                            <outputDirectory>../../target/dependencies</outputDirectory>
+                            <outputDirectory>../../target/war-dependencies</outputDirectory>
                         </configuration>
                     </execution>
                 </executions>
