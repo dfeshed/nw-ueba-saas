@@ -58,12 +58,12 @@ public class AuthenticationEventsGeneratorTest {
 
     @Test
     public void DstMachineId () {
-        Assert.assertEquals("host_1", events.get(0).getDstMachineEntity().getMachineId());
+        Assert.assertEquals(14 , events.get(0).getDstMachineEntity().getMachineId().length());
     }
 
     @Test
     public void SrcMachineId () {
-        Assert.assertEquals(6, events.get(0).getSrcMachineEntity().getMachineId().length());
+        Assert.assertEquals(14, events.get(0).getSrcMachineEntity().getMachineId().length());
     }
 
     @Test

@@ -10,7 +10,7 @@ public class FixedMachineGenerator implements IMachineGenerator {
 
     public FixedMachineGenerator(String machineName)  {
         String machineNameRegexCluster = machineName.replaceAll("\\d","");
-        machineEntity = new MachineEntity(machineName, machineNameRegexCluster, "domain");
+        machineEntity = new MachineEntity(machineName, machineNameRegexCluster, "DC=catest,DC=quest,DC=azure,DC=ca");
     }
 
     public MachineEntity getNext(){
