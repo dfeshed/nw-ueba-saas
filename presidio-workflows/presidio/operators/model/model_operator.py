@@ -18,7 +18,7 @@ class ModelOperator(SpringBootJarOperator):
 
     __metaclass__ = ABCMeta
 
-    def __init__(self, command, task_id=None, *args, **kwargs):
+    def __init__(self, command, session_id, group_name, task_id=None, *args, **kwargs):
         """
         C'tor.
         :param task_id: The task ID of this operator - If None, the ID is generated automatically
@@ -28,7 +28,10 @@ class ModelOperator(SpringBootJarOperator):
         self.task_id = task_id or self.get_task_id()
         self.interval = kwargs.get('dag').schedule_interval
 
-        java_args = self.get_java_args()
+        java_args = {
+            'group_name': group_name,
+            'session_id': session_id
+        }
 
         print('agg operator. commad=', command)
         print('agg operator. kwargs=', kwargs)
@@ -64,9 +67,3 @@ class ModelOperator(SpringBootJarOperator):
         """
         pass
 
-    @abstractmethod
-    def get_java_args(self):
-        """
-        :return: The java args
-        """
-        pass
