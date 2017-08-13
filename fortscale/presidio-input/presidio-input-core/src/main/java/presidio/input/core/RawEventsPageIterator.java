@@ -30,7 +30,7 @@ public class RawEventsPageIterator<U extends AbstractPresidioDocument> implement
         this.pageSize = pageSize;
         this.startDate = startDate;
         this.endDate = endDate;
-        long totalNumberOfEvents = presidioInputPersistencyService.count(schema, startDate, endDate);
+        float totalNumberOfEvents = presidioInputPersistencyService.count(schema, startDate, endDate);
         this.totalAmountOfPages = (int) Math.ceil(totalNumberOfEvents / pageSize);
     }
 

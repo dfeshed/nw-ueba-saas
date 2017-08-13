@@ -44,6 +44,9 @@ public class AuthenticationRawEvent extends AbstractPresidioDocument {
         this.dstMachineDomain = other.dstMachineDomain;
     }
 
+    public AuthenticationRawEvent() {
+    }
+
     public AuthenticationRawEvent(Instant dateTime, String eventId, String dataSource, String userId, String operationType,
                                   List<String> operationTypeCategory, EventResult result, String userName,
                                   String userDisplayName, Map<String, String> additionalInfo, String srcMachineId,

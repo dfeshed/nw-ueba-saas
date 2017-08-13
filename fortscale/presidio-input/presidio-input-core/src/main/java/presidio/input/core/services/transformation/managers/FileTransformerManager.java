@@ -7,6 +7,7 @@ import presidio.sdk.api.domain.AbstractPresidioDocument;
 import presidio.sdk.api.domain.rawevents.FileRawEvent;
 import presidio.sdk.api.domain.transformedevents.FileTransformedEvent;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Component("FILE")
@@ -16,6 +17,8 @@ public class FileTransformerManager extends TransformationManager {
     private Set<String> folderOperations;
 
     public FileTransformerManager() {
+        folderOperations = new HashSet<>();
+        folderOperations.add("folder");
 
         transformers.add(new FolderPathTransformer(FileRawEvent.SRC_FILE_PATH_FIELD_NAME, FileRawEvent.SRC_FILE_PATH_FIELD_NAME,
                 "srcFolderPath", FileRawEvent.OPERATION_TYPE_FIELD_NAME, folderOperations));

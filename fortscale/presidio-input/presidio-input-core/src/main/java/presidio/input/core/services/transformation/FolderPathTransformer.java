@@ -39,8 +39,8 @@ public class FolderPathTransformer implements Transformer {
                         outputFolderPath = filePathValue;
                     } else {
 
-                        String[] splitFilePath = filePathValue.split(File.pathSeparator);
-                        outputFolderPath = StringUtils.join(ArrayUtils.remove(splitFilePath, splitFilePath.length - 1), File.pathSeparator);
+                        String[] splitFilePath = filePathValue.split(File.separator);
+                        outputFolderPath = StringUtils.join(ArrayUtils.remove(splitFilePath, splitFilePath.length - 1), File.separator);
                         outputFilePath = filePathValue;
                     }
                     try {
