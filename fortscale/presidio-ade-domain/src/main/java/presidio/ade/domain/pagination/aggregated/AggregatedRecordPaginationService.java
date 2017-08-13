@@ -15,6 +15,8 @@ import java.util.stream.Collectors;
  * Create map of active contextid's across aggregated features in a given timerange
  * Create groups of context ids based on the map, pageSize(number of contexts in page)
  * Create PageIterator for each group, while each PageIterator should be consist of one page.
+ * - all the data of set contexts is in one page. assuming that aggregated data will not be consume a lot of memory resources
+ *
  * Use getPageIterators() method to get list of PageIterators.
  * <p>
  * See reference for test: AggregatedRecordPaginationServiceTest

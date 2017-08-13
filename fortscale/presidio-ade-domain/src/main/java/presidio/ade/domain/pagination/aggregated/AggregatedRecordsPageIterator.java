@@ -23,6 +23,10 @@ public class AggregatedRecordsPageIterator<U extends AdeAggregationRecord> imple
     }
 
 
+    /**
+     *
+     * @return false, since each page holds all the data for set of contexts
+     */
     @Override
     public boolean hasNext() {
         return false;

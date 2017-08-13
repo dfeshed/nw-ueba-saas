@@ -32,6 +32,7 @@ public class AggregatedDataStoreMongoImpl implements AggregatedDataStore {
     private final AggrDataToCollectionNameTranslator translator;
     private final MongoDbBulkOpUtil mongoDbBulkOpUtil;
     private AggregatedRecordPaginationService aggregatedRecordPaginationService;
+
     public AggregatedDataStoreMongoImpl(MongoTemplate mongoTemplate, AggrDataToCollectionNameTranslator translator, MongoDbBulkOpUtil mongoDbBulkOpUtil) {
         this.mongoTemplate = mongoTemplate;
         this.translator = translator;

@@ -29,6 +29,10 @@ public interface AggregatedDataReader {
 
     <U extends AdeAggregationRecord> List<U> readRecords(Set<AggregatedDataPaginationParam> aggregatedDataPaginationParamSet, Set<String> contextIds, TimeRange timeRange);
 
+    /**
+     * setter method used for reading data in pages {@link this#read(Set, TimeRange)}
+     * @param aggregatedRecordPaginationService
+     */
     void setAggregatedRecordPaginationService(AggregatedRecordPaginationService aggregatedRecordPaginationService);
 
 }
