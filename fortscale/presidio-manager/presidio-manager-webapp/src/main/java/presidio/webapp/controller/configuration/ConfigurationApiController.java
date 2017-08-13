@@ -2,7 +2,6 @@ package presidio.webapp.controller.configuration;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import io.swagger.annotations.ApiParam;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -10,12 +9,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 import presidio.config.server.client.ConfigurationServerClientService;
-import presidio.manager.api.records.ValidationResponse;
+import presidio.manager.api.records.ConfigurationBadParamDetails;
+import presidio.manager.api.records.ValidationResults;
 import presidio.webapp.model.PatchRequest;
 import presidio.webapp.model.configuration.ConfigurationResponse;
 import presidio.webapp.model.configuration.ConfigurationResponseError;
 import presidio.webapp.model.configuration.SecuredConfiguration;
-import presidio.webapp.service.ConfigurationProcessingManager;
+import presidio.webapp.service.ConfigurationManagerService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,13 +28,13 @@ public class ConfigurationApiController implements ConfigurationApi {
 
     private static String PRESIDO_CONFIGURATION_FILE_NAME = "application-presidio.json";
 
-    private ConfigurationProcessingManager configurationProcessingManager;
+    private ConfigurationManagerService configurationManagerService;
 
     private ConfigurationServerClientService configServerClient;
 
-    public ConfigurationApiController(ConfigurationProcessingManager configurationProcessingManager,
+    public ConfigurationApiController(ConfigurationManagerService configurationManagerService,
                                       ConfigurationServerClientService configServerClient) {
-        this.configurationProcessingManager = configurationProcessingManager;
+        this.configurationManagerService = configurationManagerService;
         this.configServerClient = configServerClient;
     }
 
@@ -60,31 +60,33 @@ public class ConfigurationApiController implements ConfigurationApi {
     public ResponseEntity<ConfigurationResponse> configurationPut(@ApiParam(value = "Presidio Configuration", required = true) @RequestBody JsonNode body) {
         ConfigurationResponse configurationResponse = new ConfigurationResponse();
 
-        ValidationResponse validationResponse = configurationProcessingManager.validateConfiguration(configurationProcessingManager.presidioManagerConfigurationFactory(body));
-        if (!validationResponse.isValid()) {
-
+        ValidationResults validationResults = configurationManagerService.validateConfiguration(configurationManagerService.presidioManagerConfigurationFactory(body));
+        if (!validationResults.isValid()) {
             configurationResponse.setMessage("error message");
             configurationResponse.setCode(HttpStatus.BAD_REQUEST.toString());
 
             List<ConfigurationResponseError> errorList = new ArrayList<ConfigurationResponseError>();
-            ConfigurationResponseError error = new ConfigurationResponseError();
-            error.domain(ConfigurationResponseError.DomainEnum.DATA_PIPLINE);
-            error.reason(ConfigurationResponseError.ReasonEnum.INVALID_PROPERTY);
-            error.message("error message");
-            error.location("location");
-            error.locationType(ConfigurationResponseError.LocationTypeEnum.JSON_PATH);
-            errorList.add(error);
+            ConfigurationResponseError error;
+            for (ConfigurationBadParamDetails cbpd : validationResults.getErrorsList()) {
+                error = new ConfigurationResponseError();
+                error.domain(ConfigurationResponseError.DomainEnum.fromValue(cbpd.getDomain()));
+                error.reason(ConfigurationResponseError.ReasonEnum.fromValue(cbpd.getReason()));
+                error.message(cbpd.getErrorMessage());
+                error.location(cbpd.getLocation());
+                error.locationType(ConfigurationResponseError.LocationTypeEnum.fromValue(cbpd.getLocationType()));
+                errorList.add(error);
+            }
             configurationResponse.error(errorList);
             return new ResponseEntity<ConfigurationResponse>(configurationResponse, HttpStatus.BAD_REQUEST);
         } else {
             configurationResponse.code("201");
             configurationResponse.message("Created");
 
-        //storing configuration file into config server
-        configServerClient.storeConfigurationFile(PRESIDO_CONFIGURATION_FILE_NAME, body);
+            //storing configuration file into config server
+            configServerClient.storeConfigurationFile(PRESIDO_CONFIGURATION_FILE_NAME, body);
 
-        //applying configuration to all consumers
-        configurationProcessingManager.applyConfiguration();
+            //applying configuration to all consumers
+            configurationManagerService.applyConfiguration();
 
         }
         return new ResponseEntity<ConfigurationResponse>(configurationResponse, HttpStatus.OK);

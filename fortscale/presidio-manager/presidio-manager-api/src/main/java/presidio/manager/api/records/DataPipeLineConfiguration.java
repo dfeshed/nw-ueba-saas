@@ -2,61 +2,80 @@ package presidio.manager.api.records;
 
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 
-import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 public class DataPipeLineConfiguration {
 
-    private Instant startTime;
+    private String startTime = null;
 
-    private SchemasEnum[] schemasEnum;
+    private String[] schemas = null;
 
-    private DataPipeLineConfiguration() {
-        this.startTime = null;
-        this.schemasEnum = null;
-    }
+    private boolean isStracturValid = false;
 
-    public void setStartTime(Instant startTime) {
-        this.startTime = startTime;
-    }
+    private List<String> badParams = null;
 
-    public void setSchemasEnum(SchemasEnum[] schemasEnum) {
-        this.schemasEnum = schemasEnum;
-    }
+    private final String START_TIME = "startTime";
+    private final String SCHEMAS = "schemas";
 
-    private void setParameters(JsonNode node) {
+
+    public DataPipeLineConfiguration(JsonNode node) {
+        this.badParams = new ArrayList<>();
         Iterator<String> itr = node.fieldNames();
         String key;
         while (itr.hasNext()) {
             key = itr.next().toString();
             setKeyValue(key, node.get(key));
         }
+        if (badParams.isEmpty())
+            isStracturValid = true;
     }
 
-    public static DataPipeLineConfiguration dataPipeLineConfigurationFactory(JsonNode node) {
-        DataPipeLineConfiguration dataPipeLineConfiguration = new DataPipeLineConfiguration();
-        dataPipeLineConfiguration.setParameters(node);
-        return dataPipeLineConfiguration;
+    public void setStartTime(String startTime) {
+        this.startTime = startTime;
+    }
+
+    public void setSchemas(String[] schemas) {
+        this.schemas = schemas;
     }
 
     private void setKeyValue(String key, JsonNode value) {
         switch (key) {
-            case "startTime":
-                setStartTime(Instant.parse(value.asText()));
+            case START_TIME:
+                setStartTime(value.asText());
                 break;
-            case "schemas":
-                String array=value.toString();
-                setSchemasEnum(SchemasEnum.fromValue((array.substring(1, array.length() - 1)).split(",")));
+            case SCHEMAS:
+                setSchemas(nodeToString((ArrayNode) value));
                 break;
+            default:
+                badParams.add(key);
         }
     }
 
-    public Instant getStartTime() {
+    private String[] nodeToString(ArrayNode jn) {
+        String[] str = new String[jn.size()];
+        for (int i = 0; i < jn.size(); i++) {
+            str[i] = jn.get(i).asText();
+        }
+        return str;
+    }
+
+    public String getStartTime() {
         return startTime;
     }
 
-    public SchemasEnum[] getSchemasEnum() {
-        return schemasEnum;
+    public String[] getSchemas() {
+        return schemas;
+    }
+
+    public boolean isStracturValid() {
+        return isStracturValid;
+    }
+
+    public List<String> getBadParams() {
+        return badParams;
     }
 }

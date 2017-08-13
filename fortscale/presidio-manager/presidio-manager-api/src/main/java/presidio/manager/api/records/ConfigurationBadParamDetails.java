@@ -3,18 +3,42 @@ package presidio.manager.api.records;
 
 public class ConfigurationBadParamDetails {
 
-    private String fieldName;
+    private String domain;
 
-    private String message;
+    private String location;
 
     private String reason;
 
     private String locationType;
 
-    public ConfigurationBadParamDetails(String fieldName, String message, String reason, String locationType) {
-        this.fieldName = fieldName;
-        this.message = message;
+    private String errorMessage;
+
+    public ConfigurationBadParamDetails(String domain, String location, String reason, String locationType, String errorMessage) {
+        this.domain = domain;
+        this.location = location;
         this.reason = reason;
         this.locationType = locationType;
+        this.errorMessage = errorMessage;
+    }
+
+
+    public String getDomain() {
+        return domain;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public String getReason() {
+        return reason;
+    }
+
+    public String getLocationType() {
+        return locationType;
+    }
+
+    public String getErrorMessage() {
+        return errorMessage;
     }
 }

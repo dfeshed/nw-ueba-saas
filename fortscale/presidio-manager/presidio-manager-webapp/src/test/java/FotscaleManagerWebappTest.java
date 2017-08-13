@@ -5,23 +5,23 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.Assert;
-import presidio.webapp.service.ConfigurationProcessingManager;
+import presidio.webapp.service.ConfigurationManagerService;
 import webapp.spring.ManagerWebappConfigurationTest;
 
 /**
  * Created by efratn on 10/08/2017.
-**/
+ **/
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @ContextConfiguration(classes = ManagerWebappConfigurationTest.class)
 public class FotscaleManagerWebappTest {
 
 
-    private ConfigurationProcessingManager configurationProcessingManager;
+    private ConfigurationManagerService configurationManagerService;
     private JsonNode goodPresidioConfiguration;
 
     @Test
     public void contextLoads() {
-        Assert.notNull(configurationProcessingManager, "client service on sprint context cannot be null");
+        Assert.notNull(configurationManagerService, "client service on sprint context cannot be null");
     }
 }
