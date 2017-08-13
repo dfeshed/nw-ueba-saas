@@ -106,7 +106,7 @@ public class FlumeConfigurationUtilTest {
     @Test
     public void createConfFolderPath() throws Exception {
         final String confFolderPath = testedFlumeConfigurationUtil.createConfFolderPath();
-        final String expected = mockedFlumeHome + "conf" + File.separator + mockedModuleName + File.separator;
+        final String expected = mockedFlumeHome + "conf" + File.separator ;
         Assert.assertEquals("Conf folder path is invalid", expected, confFolderPath);
     }
 
@@ -134,7 +134,7 @@ public class FlumeConfigurationUtilTest {
     @Test
     public void getConfFolderArgument() throws Exception {
         final String confFolderPath = testedFlumeConfigurationUtil.getConfFolderArgument();
-        final String expected = "--conf " + mockedFlumeHome + "conf" + File.separator + mockedModuleName + File.separator;
+        final String expected = "--conf " + mockedFlumeHome + "conf" + File.separator;
         Assert.assertEquals("Conf folder argument is invalid", expected, confFolderPath);
     }
 

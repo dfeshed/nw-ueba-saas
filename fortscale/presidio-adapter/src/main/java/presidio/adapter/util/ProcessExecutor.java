@@ -52,7 +52,7 @@ public class ProcessExecutor {
             logger.info("Running command {}", command);
             final Process process = processBuilder.start();
             final Charset charset = Charset.defaultCharset();
-            InvokedProcessOutputReader invokedProcessOutputReader = new InvokedProcessOutputReader(new BufferedReader(new InputStreamReader(process.getInputStream(), charset)), jobName);
+            InvokedProcessOutputReader invokedProcessOutputReader = new InvokedProcessOutputReader(new BufferedReader(new InputStreamReader(process.getInputStream(), charset)), "flume: "+jobName);
             invokedProcessOutputReader.setName("invokedProcessOutputReader-[" + jobName + "]");
             invokedProcessOutputReader.setDaemon(true);
             invokedProcessOutputReader.start();
