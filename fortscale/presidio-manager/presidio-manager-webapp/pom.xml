@@ -68,7 +68,7 @@
         </dependency>
         <dependency>
             <groupId>fortscale</groupId>
-            <artifactId>presidio-configuration-server-rest-client</artifactId>
+            <artifactId>presidio-configuration-client</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
