@@ -1,11 +1,9 @@
 package presidio.data.domain.event.file;
 
-
 import presidio.data.domain.FileSystemEntity;
 import presidio.data.domain.MachineEntity;
 import presidio.data.domain.User;
 import presidio.data.domain.event.Event;
-import presidio.data.generators.fileentity.FileSystemEntityGenerator;
 
 import java.io.Serializable;
 import java.time.Instant;
@@ -127,16 +125,11 @@ public class FileEvent extends Event implements Serializable {
     }
 
     public String getFileDescription() {
-        this.fileDescription = buildFileDescription(this.getFileOperation().getOperationType().toString(), this.fileOperation.getSourceFile().getFilePath(), this.getUser().getUsername());
-        return this.fileDescription;
+        return fileDescription;
     }
 
     public void setFileDescription(String fileDescription) {
         this.fileDescription = fileDescription;
-    }
-
-    public String buildFileDescription(String operationType, String filePath, String userName){
-        return this.fileDescription = "The file " + filePath +  " " + operationType.split(" ")[1] + " on " + userName;
     }
 
     @Override
@@ -149,6 +142,7 @@ public class FileEvent extends Event implements Serializable {
                 ", fileOperation=" + fileOperation +
                 ", fileSystemEntity=" + fileSystemEntity +
                 ", machineEntity=" + machineEntity +
+                ", fileDescription='" + fileDescription + '\'' +
                 '}';
     }
 }

@@ -39,21 +39,22 @@ public class FileEventsGenerator implements IEventGenerator {
         machineEntityGenerator = new SimpleMachineGenerator();
     }
 
-
     public List<FileEvent> generate () throws GeneratorException {
         List<FileEvent> evList = new ArrayList<>() ;
 
         // fill list of events
         while (getTimeGenerator().hasNext()) {
-            FileEvent ev = new FileEvent((String)getEventIdGenerator().getNext(),
+            FileEvent ev = new FileEvent(getEventIdGenerator().getNext(),
                     getTimeGenerator().getNext(),
                     getUserGenerator().getNext(),
                     getFileOperationGenerator().getNext(),
-                    (String) getDataSourceGenerator().getNext(),
+                    getDataSourceGenerator().getNext(),
                     getFileSystemGenerator().getNext(),
                     getMachineEntityGenerator().getNext());
+            ev.setFileDescription(FileDescriptionGenerator.buildFileDescription(ev));
             evList.add(ev);
         }
+
         return evList;
     }
 
