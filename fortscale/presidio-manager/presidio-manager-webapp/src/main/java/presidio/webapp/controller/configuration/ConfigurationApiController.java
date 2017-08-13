@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 import presidio.config.server.client.ConfigurationServerClientService;
+import presidio.manager.api.records.ConfigurationBadParamDetails;
 import presidio.manager.api.records.ValidationResponse;
 import presidio.webapp.model.PatchRequest;
 import presidio.webapp.model.configuration.ConfigurationResponse;
@@ -62,23 +63,25 @@ public class ConfigurationApiController implements ConfigurationApi {
 
         ValidationResponse validationResponse = configurationProcessingManager.validateConfiguration(configurationProcessingManager.presidioManagerConfigurationFactory(body));
         if (!validationResponse.isValid()) {
-
-            configurationResponse.setMessage("error message");
-            configurationResponse.setCode(HttpStatus.BAD_REQUEST.toString());
-
             List<ConfigurationResponseError> errorList = new ArrayList<ConfigurationResponseError>();
             ConfigurationResponseError error = new ConfigurationResponseError();
-            error.domain(ConfigurationResponseError.DomainEnum.DATA_PIPLINE);
-            error.reason(ConfigurationResponseError.ReasonEnum.INVALID_PROPERTY);
-            error.message("error message");
-            error.location("location");
-            error.locationType(ConfigurationResponseError.LocationTypeEnum.JSON_PATH);
-            errorList.add(error);
+            configurationResponse.setMessage("error message"); //TODO we should get general error message from response
+            configurationResponse.setCode(HttpStatus.BAD_REQUEST.toString());
+
+            for ( ConfigurationBadParamDetails badParamDetails : validationResponse.getErrorsList()) {
+                error.domain(ConfigurationResponseError.DomainEnum.DATA_PIPLINE); //TODO- we should get domain from response
+                error.reason(ConfigurationResponseError.ReasonEnum.valueOf(badParamDetails.getReason()));
+                error.message(badParamDetails.getMessage());
+                error.location(badParamDetails.getLocation());
+                error.locationType(ConfigurationResponseError.LocationTypeEnum.fromValue(badParamDetails.getLocationType()));
+                errorList.add(error);
+            }
             configurationResponse.error(errorList);
             return new ResponseEntity<ConfigurationResponse>(configurationResponse, HttpStatus.BAD_REQUEST);
-        } else {
-            configurationResponse.code("201");
-            configurationResponse.message("Created");
+        }
+        
+        configurationResponse.code("201");
+        configurationResponse.message("Created");
 
         //storing configuration file into config server
         configServerClient.storeConfigurationFile(PRESIDO_CONFIGURATION_FILE_NAME, body);
@@ -86,7 +89,6 @@ public class ConfigurationApiController implements ConfigurationApi {
         //applying configuration to all consumers
         configurationProcessingManager.applyConfiguration();
 
-        }
         return new ResponseEntity<ConfigurationResponse>(configurationResponse, HttpStatus.OK);
     }
 

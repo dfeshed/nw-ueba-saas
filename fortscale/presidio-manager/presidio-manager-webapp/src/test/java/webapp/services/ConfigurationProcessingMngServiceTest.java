@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.util.Assert;
 import presidio.manager.air.flow.service.ConfigurationProcessingServiceImpl;
 import presidio.manager.api.records.PresidioManagerConfiguration;
 import presidio.webapp.service.ConfigurationProcessingManager;
@@ -27,6 +28,7 @@ public class ConfigurationProcessingMngServiceTest {
 
     @Test
     public void contextLoads() {
+        Assert.notNull(configurationProcessingManager, "configurationProcessingMng cannot be null on spring context");
     }
 
 
