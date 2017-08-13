@@ -1,16 +1,21 @@
 package webapp.services;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
 import org.springframework.test.context.junit4.SpringRunner;
 import presidio.manager.air.flow.service.ConfigurationProcessingServiceImpl;
 import presidio.manager.api.records.PresidioManagerConfiguration;
 import presidio.webapp.service.ConfigurationProcessingManager;
+import presidio.webapp.spring.ManagerWebappConfiguration;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -27,6 +32,7 @@ public class ConfigurationProcessingMngServiceTest {
 
     public void createGoodPresidioConfiguration() {
         JsonNode system;
+        ArrayNode arrayNode;
         JsonNode dataPipeline;
         ObjectNode objectNode = new ObjectNode(new JsonNodeFactory(false));
 
@@ -44,8 +50,9 @@ public class ConfigurationProcessingMngServiceTest {
         system = objectNode.set("kdcUrl", textNode);
 
         objectNode = new ObjectNode(new JsonNodeFactory(false));
-        textNode = new TextNode("[file]");
-        objectNode.set("schemas", textNode);
+        arrayNode= new ArrayNode(new JsonNodeFactory(false));
+        arrayNode.add("file");
+        objectNode.set("schemas", arrayNode);
         textNode = new TextNode("2007-12-03T10:15:30.00Z");
         dataPipeline = objectNode.set("startTime", textNode);
 
@@ -60,6 +67,13 @@ public class ConfigurationProcessingMngServiceTest {
         configurationProcessingManager = new ConfigurationProcessingManager(new ConfigurationProcessingServiceImpl(), new ConfigurationProcessingServiceImpl());
         PresidioManagerConfiguration presidioManagerConfiguration = configurationProcessingManager.presidioManagerConfigurationFactory(goodPresidioConfiguration);
         configurationProcessingManager.validateConfiguration(presidioManagerConfiguration);
+    }
+
+    @Configuration
+    @Import(value = {ManagerWebappConfiguration.class})
+    @EnableSpringConfigured
+    public static class springConfig {
+
     }
 
 }

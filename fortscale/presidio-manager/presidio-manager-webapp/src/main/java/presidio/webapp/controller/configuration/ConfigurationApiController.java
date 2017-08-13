@@ -76,7 +76,9 @@ public class ConfigurationApiController implements ConfigurationApi {
             errorList.add(error);
             configurationResponse.error(errorList);
             return new ResponseEntity<ConfigurationResponse>(configurationResponse, HttpStatus.BAD_REQUEST);
-        }
+        } else {
+            configurationResponse.code("201");
+            configurationResponse.message("Created");
 
         //storing configuration file into config server
         configServerClient.storeConfigurationFile(PRESIDO_CONFIGURATION_FILE_NAME, body);
@@ -84,6 +86,7 @@ public class ConfigurationApiController implements ConfigurationApi {
         //applying configuration to all consumers
         configurationProcessingManager.applyConfiguration();
 
+        }
         return new ResponseEntity<ConfigurationResponse>(configurationResponse, HttpStatus.OK);
     }
 
