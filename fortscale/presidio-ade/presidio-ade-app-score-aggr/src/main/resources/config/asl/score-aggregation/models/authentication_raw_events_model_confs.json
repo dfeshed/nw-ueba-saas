@@ -50,7 +50,7 @@
         "timeRangeInSeconds" : 7776000,
         "functions" : [ ],
         "featureBucketConfName" : "dstMachineNameRegexClusterHistogramUserIdAuthenticationDaily",
-        "featureName" : "dstMachineNameRegexCluster"
+        "featureName" : "dstMachineNameRegexClusterHistogram"
       },
       "builder" : {
         "type" : "category_rarity_model_builder",
