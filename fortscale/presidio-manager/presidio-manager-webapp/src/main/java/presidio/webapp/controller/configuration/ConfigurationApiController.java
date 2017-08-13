@@ -75,6 +75,7 @@ public class ConfigurationApiController implements ConfigurationApi {
             error.locationType(ConfigurationResponseError.LocationTypeEnum.JSON_PATH);
             errorList.add(error);
             configurationResponse.error(errorList);
+            return new ResponseEntity<ConfigurationResponse>(configurationResponse, HttpStatus.BAD_REQUEST);
         }
 
         //storing configuration file into config server
