@@ -25,7 +25,7 @@ public class EventModelsCacheService {
 
 	private Map<String, String> resolveContext(AdeRecordReader adeRecordReader, List<String> contextFieldNames) {
 		Map<String, String> resolvedContext = new HashMap<>();
-		contextFieldNames.forEach(contextFieldName -> resolvedContext.put(contextFieldName, adeRecordReader.get(contextFieldName, String.class)));
+		contextFieldNames.forEach(contextFieldName -> resolvedContext.put(contextFieldName, adeRecordReader.getContext(contextFieldName)));
 		return resolvedContext;
 	}
 

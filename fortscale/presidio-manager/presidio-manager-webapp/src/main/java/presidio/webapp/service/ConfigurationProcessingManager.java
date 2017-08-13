@@ -1,7 +1,6 @@
 package presidio.webapp.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import fortscale.utils.logging.Logger;
 import presidio.manager.api.records.DataPipeLineConfiguration;
 import presidio.manager.api.records.PresidioManagerConfiguration;
 import presidio.manager.api.records.PresidioSystemConfiguration;
@@ -11,7 +10,6 @@ import presidio.manager.api.service.ConfigurationProcessingService;
 
 public class ConfigurationProcessingManager implements ConfigurationProcessingService {
 
-    private static final Logger logger = Logger.getLogger(ConfigurationProcessingManager.class);
 
     private final String SYSTEM = "system";
     private final String DATA_PIPE_LINE = "dataPipeline";
@@ -48,12 +46,8 @@ public class ConfigurationProcessingManager implements ConfigurationProcessingSe
         JsonNode data = node.get(DATA_PIPE_LINE);
         if (system != null)
             presidioSystemConfiguration = PresidioSystemConfiguration.presidioSystemConfigurationFactory(system);
-        else
-            logger.info("Json is missing the dataPipeLine configuration.");
         if (data != null)
             dataPipeLineConfiguration = DataPipeLineConfiguration.dataPipeLineConfigurationFactory(data);
-        else
-            logger.info("Json is missing the system configuration.");
 
         return new PresidioManagerConfiguration(dataPipeLineConfiguration, presidioSystemConfiguration);
     }

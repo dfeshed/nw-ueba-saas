@@ -24,9 +24,11 @@ public class FlumeConfigurationUtil {
     protected static final String BIN_FLUME_NG_PATH = "bin/flume-ng";
     private static final String EXECUTE_AGENT_COMMAND = "agent";
     private final String moduleName;
+    private final String smartKit;
 
-    public FlumeConfigurationUtil(String moduleName) {
+    public FlumeConfigurationUtil(String moduleName, String smartKit) {
         this.moduleName = moduleName;
+        this.smartKit = smartKit;
     }
 
     public String createExecutionConfFile(Schema schema, Instant startDate, Instant endDate) throws IOException {
@@ -93,7 +95,9 @@ public class FlumeConfigurationUtil {
      * @param schema
      */
     public String createAgentName(Schema schema) { //active Directory => active_directoryAgent
-        return createSchemaPrefix(schema) + "Agent";
+        final String schemaPrefix = createSchemaPrefix(schema);
+        String agentSchemaPrefix = Character.toUpperCase(schemaPrefix.charAt(0)) + schemaPrefix.substring(1);
+        return smartKit + agentSchemaPrefix + "Agent";
     }
 
 

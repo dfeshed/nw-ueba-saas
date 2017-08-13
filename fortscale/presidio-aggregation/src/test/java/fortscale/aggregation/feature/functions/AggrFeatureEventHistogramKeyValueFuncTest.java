@@ -176,7 +176,6 @@ public class AggrFeatureEventHistogramKeyValueFuncTest {
 				1,
 				1,
 				300,
-				"test_evidence_filter_strategy",
 				singletonMap(AggrFeatureHistogramFunc.GROUP_BY_FIELD_NAME, singletonList(aggregatedFeatureName)),
 				getAggregatedFeatureEventFunctionJsonObject(aggregatedFeatureEventFunctionKey)
 		);

@@ -8,7 +8,6 @@
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
       "anomalyType": " ",
-      "evidencesFilterStrategy": "HIGHEST_SCORE",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "highestStartInstantScore"
@@ -26,7 +25,6 @@
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
       "anomalyType": " ",
-      "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "operationTypeToHighestScoreMap"
@@ -46,7 +44,6 @@
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
       "anomalyType": " ",
-      "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "operationTypeToHighestScoreMap"

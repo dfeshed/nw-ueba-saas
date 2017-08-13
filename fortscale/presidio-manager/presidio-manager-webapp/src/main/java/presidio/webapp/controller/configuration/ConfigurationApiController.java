@@ -2,12 +2,14 @@ package presidio.webapp.controller.configuration;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import io.swagger.annotations.ApiParam;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
+import presidio.config.server.client.ConfigurationServerClientService;
 import presidio.manager.api.records.ValidationResponse;
 import presidio.webapp.model.PatchRequest;
 import presidio.webapp.model.configuration.ConfigurationResponse;
@@ -24,10 +26,16 @@ import java.util.List;
 @Controller
 public class ConfigurationApiController implements ConfigurationApi {
 
+    private static String PRESIDO_CONFIGURATION_FILE_NAME = "application-presidio.json";
+
     private ConfigurationProcessingManager configurationProcessingManager;
 
-    public ConfigurationApiController(ConfigurationProcessingManager configurationProcessingManager) {
+    private ConfigurationServerClientService configServerClient;
+
+    public ConfigurationApiController(ConfigurationProcessingManager configurationProcessingManager,
+                                      ConfigurationServerClientService configServerClient) {
         this.configurationProcessingManager = configurationProcessingManager;
+        this.configServerClient = configServerClient;
     }
 
     public ResponseEntity<List<SecuredConfiguration>> configurationGet() {
@@ -67,6 +75,17 @@ public class ConfigurationApiController implements ConfigurationApi {
             error.locationType(ConfigurationResponseError.LocationTypeEnum.JSON_PATH);
             errorList.add(error);
             configurationResponse.error(errorList);
+            return new ResponseEntity<ConfigurationResponse>(configurationResponse, HttpStatus.BAD_REQUEST);
+        } else {
+            configurationResponse.code("201");
+            configurationResponse.message("Created");
+
+        //storing configuration file into config server
+        configServerClient.storeConfigurationFile(PRESIDO_CONFIGURATION_FILE_NAME, body);
+
+        //applying configuration to all consumers
+        configurationProcessingManager.applyConfiguration();
+
         }
         return new ResponseEntity<ConfigurationResponse>(configurationResponse, HttpStatus.OK);
     }

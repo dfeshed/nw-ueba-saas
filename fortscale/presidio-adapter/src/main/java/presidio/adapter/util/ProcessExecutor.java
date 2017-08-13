@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.util.List;
+import java.util.StringJoiner;
 
 
 /**
@@ -47,6 +48,8 @@ public class ProcessExecutor {
 
     private Process doExecuteProcess(String jobName, ProcessBuilder processBuilder) {
         try {
+            String command = getCommand(processBuilder);
+            logger.info("Running command {}", command);
             final Process process = processBuilder.start();
             final Charset charset = Charset.defaultCharset();
             InvokedProcessOutputReader invokedProcessOutputReader = new InvokedProcessOutputReader(new BufferedReader(new InputStreamReader(process.getInputStream(), charset)), jobName);
@@ -59,6 +62,15 @@ public class ProcessExecutor {
             return null;
         }
 
+    }
+
+    private String getCommand(ProcessBuilder processBuilder) {
+        final List<String> args = processBuilder.command();
+        StringJoiner  stringJoiner = new StringJoiner(" ");
+        for (String arg : args) {
+            stringJoiner.add(arg);
+        }
+        return stringJoiner.toString();
     }
 
 
@@ -80,7 +92,7 @@ public class ProcessExecutor {
             try {
                 String line;
                 while ((line = input.readLine()) != null) {
-                    logger.warn("Stderr[{}] = '{}'", jobName, line);
+                    logger.warn("log[{}] = '{}'", jobName, line);
                 }
             } catch (IOException e) {
                 logger.info("InvokedProcessOutputReader for job {} is exiting...", jobName, e);

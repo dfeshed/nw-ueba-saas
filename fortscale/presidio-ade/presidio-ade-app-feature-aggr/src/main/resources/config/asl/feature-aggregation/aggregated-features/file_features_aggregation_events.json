@@ -1,0 +1,172 @@
+{
+  "AggregatedFeatureEvents": [
+    {
+      "name": "numberOfSuccessfulPermissionChangeUserIdFileHourly",
+      "type": "F",
+      "bucketConfName": "permissionChangeResultHistogramUserIdFileHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 300,
+      "aggregatedFeatureNamesMap": {
+        "groupBy": [
+          "permissionChangeHistogram"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_histogram_key_value_func",
+        "key": "SUCCESS"
+      }
+    },
+    {
+      "name": "numberOfSuccessfulFileActionUserIdFileHourly",
+      "type": "F",
+      "bucketConfName": "fileActionResultHistogramUserIdFileHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 300,
+      "aggregatedFeatureNamesMap": {
+        "groupBy": [
+          "fileActionHistogram"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_histogram_key_value_func",
+        "key": "SUCCESS"
+      }
+    },
+    {
+      "name": "numberOfFailedlPermissionChangeUserIdFileHourly",
+      "type": "F",
+      "bucketConfName": "permissionChangeResultHistogramUserIdFileHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 300,
+      "aggregatedFeatureNamesMap": {
+        "groupBy": [
+          "permissionChangeHistogram"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_histogram_key_value_func",
+        "key": "failed"
+      }
+    },
+    {
+      "name": "numberOfFailedFileActionUserIdFileHourly",
+      "type": "F",
+      "bucketConfName": "fileActionResultHistogramUserIdFileHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 300,
+      "aggregatedFeatureNamesMap": {
+        "groupBy": [
+          "fileActionHistogram"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_histogram_key_value_func",
+        "key": "failed"
+      }
+    },
+    {
+      "name": "numberOfDistinctFileOpenedUserIdFileHourly",
+      "type": "F",
+      "bucketConfName": "fileOpenedAbsoluteSrcFilePathHistogramUserIdFileHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 300,
+      "aggregatedFeatureNamesMap": {
+        "groupBy": [
+          "distinctOpenedFilesHistogram"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_distinct_values_counter_func",
+        "includeValues": false
+      }
+    },
+    {
+      "name": "numberOfDistinctFolderOpenedUserIdFileHourly",
+      "type": "F",
+      "bucketConfName": "folderOpenedAbsoluteSrcFolderFilePathHistogramUserIdFileHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 300,
+      "aggregatedFeatureNamesMap": {
+        "groupBy": [
+          "distinctOpenedFoldersHistogram"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_distinct_values_counter_func",
+        "includeValues": false
+      }
+    },
+    {
+      "name": "numberOfFileDeletedUserIdFileHourly",
+      "type": "F",
+      "bucketConfName": "fileDeletedCounterUserIdFileHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 300,
+      "aggregatedFeatureNamesMap": {
+        "sum": [
+          "deletedFilesCounter"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_sum_func"
+      }
+    },
+    {
+      "name": "numberOfSuccessfulFileRenamedUserIdFileHourly",
+      "type": "F",
+      "bucketConfName": "fileRenamedResultRenamedFilesHistogramUserIdFileHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 300,
+      "aggregatedFeatureNamesMap": {
+        "groupBy": [
+          "successfulRenamedFilesHistogram"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_histogram_key_value_func",
+        "key": "SUCCESS"
+      }
+    },
+    {
+      "name": "numberOfFileMovedFromSharedDriveUserIdFileHourly",
+      "type": "F",
+      "bucketConfName": "fileMovedFromSharedDriveCounterUserIdFileHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 300,
+      "aggregatedFeatureNamesMap": {
+        "sum": [
+          "movedFilesFromSharedDriveCounter"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_sum_func"
+      }
+    },
+    {
+      "name": "numberOfFileMovedToSharedDriveUserIdFileHourly",
+      "type": "F",
+      "bucketConfName": "fileMovedToSharedDriveCounterUserIdFileHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 300,
+      "aggregatedFeatureNamesMap": {
+        "sum": [
+          "movedFilesToSharedDriveCounter"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_sum_func"
+      }
+    }
+  ]
+}
+

@@ -5,8 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import presidio.ade.test.utils.EnrichedEventsGenerator;
-import presidio.ade.test.utils.EnrichedEventsGeneratorConfig;
-import presidio.ade.test.utils.generators.EnrichedFileGeneratorConfig;
 import presidio.data.generators.common.GeneratorException;
 
 public abstract class EnrichedFileSourceBaseAppTest extends BaseAppTest {
@@ -29,7 +27,7 @@ public abstract class EnrichedFileSourceBaseAppTest extends BaseAppTest {
 
     protected abstract void assertSanityTest();
 
-    @Import({EnrichedFileGeneratorConfig.class, BaseAppTest.springConfig.class})
+    @Import({BaseAppTest.springConfig.class})
     @Configuration
     protected static class EnrichedSourceSpringConfig {
 

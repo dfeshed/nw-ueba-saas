@@ -20,14 +20,16 @@ public class FixedDurationStrategyConverter implements Converter<FixedDurationSt
 
     @Override
     public FixedDurationStrategy convertFromText(String text, Class<?> requiredType, String optionContext) {
+
+        long parseLong;
         try {
-            Long.parseLong(text);
+            parseLong = Long.parseLong(text);
         } catch (NumberFormatException e) {
-            logger.error("Invalid duration format for shell parameter: {}.", text);
-            throw new IllegalArgumentException("Could not parse date: " + e.getMessage());
+            logger.error(String.format("Invalid duration format for shell parameter: %s.", text), e);
+            throw new IllegalArgumentException("Could not parse long.", e);
         }
 
-        return FixedDurationStrategy.fromSeconds(Long.parseLong(text));
+        return FixedDurationStrategy.fromSeconds(parseLong);
     }
 
     @Override
