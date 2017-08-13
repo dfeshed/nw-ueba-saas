@@ -1,2 +1,2 @@
 org.springframework.boot.env.PropertySourceLoader=\
-fortscale.sourceloader.JsonPropertySourceLoader
+fortscale.configuration.sourceloader.JsonPropertySourceLoader

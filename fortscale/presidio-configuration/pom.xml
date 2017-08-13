@@ -17,7 +17,7 @@
 
     <modules>
         <module>presidio-configuration-server</module>
-        <module>presidio-configuration-server-rest-client</module>
+        <module>presidio-configuration-client</module>
     </modules>
     
 </project>
