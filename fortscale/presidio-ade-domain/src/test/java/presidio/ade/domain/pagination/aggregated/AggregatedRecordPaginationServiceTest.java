@@ -14,7 +14,6 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
-import presidio.ade.domain.record.aggregated.AdeEventTypeToAdeAggregationRecordClassResolverConfig;
 import presidio.ade.domain.record.aggregated.AggregatedFeatureType;
 import presidio.ade.domain.record.aggregated.ScoredFeatureAggregationRecord;
 import presidio.ade.domain.store.aggr.AggrDataToCollectionNameTranslator;
@@ -31,7 +30,6 @@ import static presidio.ade.domain.record.aggregated.AggregatedFeatureType.SCORE_
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = {
-        AdeEventTypeToAdeAggregationRecordClassResolverConfig.class,
         AggregatedDataStoreConfig.class,
         MongodbTestConfig.class
 })
@@ -46,7 +44,9 @@ public class AggregatedRecordPaginationServiceTest {
     private HashSet<AggregatedDataPaginationParam> aggregatedDataPaginationParamSet;
     private AggregatedRecordPaginationService paginationService;
     private final int AMOUNT_OF_GENERATED_CONTEXTS = 15;
-
+    private final int AMOUNT_OF_SCORE_AGGR_PER_CONTEXT = 2;
+    private final int AMOUNT_OF_RECORDS_PER_FEATURE = 2;
+    private final int AMOUNT_OF_FEATURE_AGGR_PER_CONTEXT = 1;
     @Before
     public void setup()
     {
@@ -55,9 +55,6 @@ public class AggregatedRecordPaginationServiceTest {
         Instant endInstant = startInstant.plus(Duration.ofHours(1));
         String featureName = "featureName";
 
-        int amountOfScoreAggrPerContext = 2;
-        int amountOfRecordsPerFeature = 2;
-        int amountOfFeatureAggrPerContext = 1;
         aggregatedDataPaginationParamSet = new HashSet<>();
         for(int i = 0; i< AMOUNT_OF_GENERATED_CONTEXTS; i++)
         {
@@ -65,18 +62,18 @@ public class AggregatedRecordPaginationServiceTest {
             context.put("userId",String.format("Gandalf%d",i));
             double featureValue = 5D;
 
-            for (int featureNameCnt=0; featureNameCnt<amountOfScoreAggrPerContext; featureNameCnt++)
+            for (int featureNameCnt=0; featureNameCnt<AMOUNT_OF_SCORE_AGGR_PER_CONTEXT; featureNameCnt++)
             {
                 String enumeratedFeatureName = String.format("P_%s%d", featureName, featureNameCnt);
 
-                List<AdeAggregationRecord> scoreAggrRecords = generateUserScoreAggrRecord(context, enumeratedFeatureName, featureValue, amountOfRecordsPerFeature, startInstant, endInstant);
+                List<AdeAggregationRecord> scoreAggrRecords = generateUserScoreAggrRecord(context, enumeratedFeatureName, featureValue, AMOUNT_OF_RECORDS_PER_FEATURE, startInstant, endInstant);
                 addRecordsToPaginationParamsSet(scoreAggrRecords);
                 aggregatedDataStore.store(scoreAggrRecords,SCORE_AGGREGATION);
             }
-            for (int featureNameCnt = 0; featureNameCnt<amountOfFeatureAggrPerContext; featureNameCnt++)
+            for (int featureNameCnt = 0; featureNameCnt<AMOUNT_OF_FEATURE_AGGR_PER_CONTEXT; featureNameCnt++)
             {
                 String enumeratedFeatureName = String.format("F_%s%d", featureName, featureNameCnt);
-                List<AdeAggregationRecord> featureAggrRecord = generateUserFeatureAggrRecord(context, enumeratedFeatureName, featureValue, amountOfRecordsPerFeature, startInstant, endInstant);
+                List<AdeAggregationRecord> featureAggrRecord = generateUserFeatureAggrRecord(context, enumeratedFeatureName, featureValue, AMOUNT_OF_RECORDS_PER_FEATURE, startInstant, endInstant);
                 addRecordsToPaginationParamsSet(featureAggrRecord);
                 aggregatedDataStore.store(featureAggrRecord,FEATURE_AGGREGATION);
             }
@@ -140,7 +137,7 @@ public class AggregatedRecordPaginationServiceTest {
             List<AdeAggregationRecord> pageRecords = pageIterator.next();
             Assert.assertTrue("page must not be empty",pageRecords.size()>0);
             boolean hasNext = pageIterator.hasNext();
-            Assert.assertFalse("pageIterator must contain at exactly one page",hasNext);
+            Assert.assertFalse("pageIterator must contain exactly one page",hasNext);
         });
     }
 

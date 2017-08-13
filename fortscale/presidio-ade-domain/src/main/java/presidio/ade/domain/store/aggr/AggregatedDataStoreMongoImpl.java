@@ -13,8 +13,8 @@ import presidio.ade.domain.pagination.aggregated.AggregatedDataPaginationParam;
 import presidio.ade.domain.pagination.aggregated.AggregatedRecordsPageIterator;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.record.aggregated.AdeContextualAggregatedRecord;
-import presidio.ade.domain.record.aggregated.AdeEventTypeToAdeAggregationRecordClassResolver;
 import presidio.ade.domain.record.aggregated.AggregatedFeatureType;
+import presidio.ade.domain.record.aggregated.ScoredFeatureAggregationRecord;
 import presidio.ade.domain.store.AdeDataStoreCleanupParams;
 
 import java.time.Instant;
@@ -30,12 +30,11 @@ public class AggregatedDataStoreMongoImpl implements AggregatedDataStore {
     private final MongoTemplate mongoTemplate;
     private final AggrDataToCollectionNameTranslator translator;
     private final MongoDbBulkOpUtil mongoDbBulkOpUtil;
-    private AdeEventTypeToAdeAggregationRecordClassResolver adeEventTypeToAdeAggregationRecordClassResolver;
-    public AggregatedDataStoreMongoImpl(MongoTemplate mongoTemplate, AggrDataToCollectionNameTranslator translator, MongoDbBulkOpUtil mongoDbBulkOpUtil, AdeEventTypeToAdeAggregationRecordClassResolver adeEventTypeToAdeAggregationRecordClassResolver) {
+
+    public AggregatedDataStoreMongoImpl(MongoTemplate mongoTemplate, AggrDataToCollectionNameTranslator translator, MongoDbBulkOpUtil mongoDbBulkOpUtil) {
         this.mongoTemplate = mongoTemplate;
         this.translator = translator;
         this.mongoDbBulkOpUtil = mongoDbBulkOpUtil;
-        this.adeEventTypeToAdeAggregationRecordClassResolver = adeEventTypeToAdeAggregationRecordClassResolver;
     }
 
     @Override
@@ -115,12 +114,25 @@ public class AggregatedDataStoreMongoImpl implements AggregatedDataStore {
             Criteria dateTimeCriteria = Criteria.where(AdeAggregationRecord.START_INSTANT_FIELD).gte(from).lt(to);
             Criteria contextIdsCriteria = Criteria.where(AdeAggregationRecord.CONTEXT_ID_FIELD).in(contextIds);
             Query query = new Query(dateTimeCriteria).addCriteria(contextIdsCriteria);
-            String adeEventType = aggregatedDataPaginationParam.getAdeEventType();
-            Class<? extends AdeAggregationRecord> clz = adeEventTypeToAdeAggregationRecordClassResolver.getClass(adeEventType);
+            AggregatedFeatureType aggregatedFeatureType = aggregatedDataPaginationParam.getAggregatedFeatureType();
+            Class<? extends AdeAggregationRecord> clz = resolveClass(aggregatedFeatureType);
             Assert.notNull(clz,"adeEventType class must not be null");
             List<U> featureDocuments = mongoTemplate.find(query, (Class<U>) clz, collectionName);
             result.addAll(featureDocuments);
         });
         return result;
+    }
+
+    private Class<? extends AdeAggregationRecord> resolveClass(AggregatedFeatureType aggregatedFeatureType) {
+        Class<? extends AdeAggregationRecord> clz = null;
+        if(aggregatedFeatureType.equals(AggregatedFeatureType.SCORE_AGGREGATION))
+        {
+            clz = AdeAggregationRecord.class;
+        }
+        else if(aggregatedFeatureType.equals(AggregatedFeatureType.FEATURE_AGGREGATION))
+        {
+            clz = ScoredFeatureAggregationRecord.class;
+        }
+        return clz;
     }
 }
