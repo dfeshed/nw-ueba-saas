@@ -1,0 +1,28 @@
+{
+  "BucketConfs": [
+    {
+      "name": "continuousDataFeatureBucket",
+      "expireAfterSeconds": 86400,
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "test"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "aggrFeatureConfs": [
+        {
+          "name": "continuousDataFeature",
+          "featureNamesMap": {
+            "groupBy": [
+              "continuousData"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        }
+      ]
+    }
+  ]
+}
