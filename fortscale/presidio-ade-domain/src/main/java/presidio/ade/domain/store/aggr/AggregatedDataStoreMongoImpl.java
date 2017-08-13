@@ -4,13 +4,14 @@ import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.mongodb.util.MongoDbBulkOpUtil;
+import fortscale.utils.pagination.PageIterator;
 import fortscale.utils.time.TimeRange;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.util.Assert;
 import presidio.ade.domain.pagination.aggregated.AggregatedDataPaginationParam;
-import presidio.ade.domain.pagination.aggregated.AggregatedRecordsPageIterator;
+import presidio.ade.domain.pagination.aggregated.AggregatedRecordPaginationService;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.record.aggregated.AdeContextualAggregatedRecord;
 import presidio.ade.domain.record.aggregated.AggregatedFeatureType;
@@ -30,11 +31,15 @@ public class AggregatedDataStoreMongoImpl implements AggregatedDataStore {
     private final MongoTemplate mongoTemplate;
     private final AggrDataToCollectionNameTranslator translator;
     private final MongoDbBulkOpUtil mongoDbBulkOpUtil;
-
+    private AggregatedRecordPaginationService aggregatedRecordPaginationService;
     public AggregatedDataStoreMongoImpl(MongoTemplate mongoTemplate, AggrDataToCollectionNameTranslator translator, MongoDbBulkOpUtil mongoDbBulkOpUtil) {
         this.mongoTemplate = mongoTemplate;
         this.translator = translator;
         this.mongoDbBulkOpUtil = mongoDbBulkOpUtil;
+    }
+
+    public void setAggregatedRecordPaginationService(AggregatedRecordPaginationService aggregatedRecordPaginationService) {
+        this.aggregatedRecordPaginationService = aggregatedRecordPaginationService;
     }
 
     @Override
@@ -63,12 +68,10 @@ public class AggregatedDataStoreMongoImpl implements AggregatedDataStore {
 
 
     @Override
-    public <U extends AdeAggregationRecord> List<AggregatedRecordsPageIterator<U>> read(Set<AggrRecordsMetadata> recordsMetadata, Set<String> contextIds, String contextType, TimeRange timeRange, int pageSize, int totalNumOfItems, int totalAmountOfPages) {
-        int currentPage = 0;
-
-        List<AggregatedRecordsPageIterator<U>> pageIterators = new LinkedList<>();
-
-        return null;
+    public <U extends AdeAggregationRecord> List<PageIterator<U>> read(Set<AggregatedDataPaginationParam> aggregatedDataPaginationParamSet, TimeRange timeRange) {
+        Assert.notNull(aggregatedRecordPaginationService,"pagination service must be set in order to read data in pages");
+        List<PageIterator<U>> pageIterators = aggregatedRecordPaginationService.getPageIterators(aggregatedDataPaginationParamSet, timeRange);
+        return pageIterators;
     }
 
     @Override

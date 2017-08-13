@@ -10,6 +10,16 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * AggregatedRecordPaginationService responsible for:
+ * Create map of active contextid's across aggregated features in a given timerange
+ * Create groups of context ids based on the map, pageSize(number of contexts in page)
+ * Create PageIterator for each group, while each PageIterator should be consist of one page.
+ * Use getPageIterators() method to get list of PageIterators.
+ * <p>
+ * See reference for test: AggregatedRecordPaginationServiceTest
+ *
+ */
 public class AggregatedRecordPaginationService extends PaginationServiceBySet<AdeAggregationRecord> {
     private static final Logger logger = Logger.getLogger(AggregatedRecordPaginationService.class);
 
@@ -17,8 +27,15 @@ public class AggregatedRecordPaginationService extends PaginationServiceBySet<Ad
     public AggregatedRecordPaginationService(int amountOfContextsInPage,AggregatedDataReader dataReader) {
         super(amountOfContextsInPage, amountOfContextsInPage);
         this.dataReader = dataReader;
+        this.dataReader.setAggregatedRecordPaginationService(this);
     }
 
+    /**
+     *
+     * @param aggregatedDataPaginationParamSet ade event type
+     * @param timeRange  the time range
+     * @return map of active contextid's across aggregated features in a given time range
+     */
     @Override
     protected List<ContextIdToNumOfItems> getContextIdToNumOfItemsList(Set<AggregatedDataPaginationParam> aggregatedDataPaginationParamSet, TimeRange timeRange) {
         Set<String> distinctContextIds = dataReader.findDistinctContextIds(timeRange, aggregatedDataPaginationParamSet);
