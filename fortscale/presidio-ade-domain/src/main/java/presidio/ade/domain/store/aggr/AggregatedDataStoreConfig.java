@@ -17,7 +17,7 @@ public class AggregatedDataStoreConfig {
     @Autowired
     public MongoTemplate mongoTemplate;
     @Autowired
-    public ScoreAggrDataToCollectionNameTranslator translator;
+    public AggrDataToCollectionNameTranslator translator;
     @Autowired
     public MongoDbBulkOpUtil mongoDbBulkOpUtil;
 

@@ -9,7 +9,6 @@ import presidio.ade.domain.record.AdeRecord;
 import presidio.ade.domain.record.accumulator.AccumulatedAggregationFeatureRecord;
 import presidio.ade.domain.record.aggregated.AdeContextualAggregatedRecord;
 import presidio.ade.domain.store.AdeDataStoreCleanupParams;
-import presidio.ade.domain.store.aggr.AggrRecordsMetadata;
 
 import java.time.Instant;
 import java.util.Date;
@@ -41,7 +40,7 @@ public class AggregationEventsAccumulationDataStoreMongoImpl implements Aggregat
         featureToAggrList.keySet().forEach(
                 feature ->
                 {
-                    AggrRecordsMetadata metadata = new AggrRecordsMetadata(feature);
+                    AccumulatedRecordsMetaData metadata = new AccumulatedRecordsMetaData(feature);
                     String collectionName = getCollectionName(metadata);
                     List<? extends AccumulatedAggregationFeatureRecord> aggrRecords = featureToAggrList.get(feature);
                     mongoDbBulkOpUtil.insertUnordered(aggrRecords, collectionName);
@@ -49,7 +48,7 @@ public class AggregationEventsAccumulationDataStoreMongoImpl implements Aggregat
         );
     }
 
-    protected String getCollectionName(AggrRecordsMetadata metadata) {
+    protected String getCollectionName(AccumulatedRecordsMetaData metadata) {
         return translator.toCollectionName(metadata);
     }
 
@@ -58,7 +57,7 @@ public class AggregationEventsAccumulationDataStoreMongoImpl implements Aggregat
             String aggregatedFeatureName, Date startTime, Date endTime) {
 
 
-        AggrRecordsMetadata metadata = new AggrRecordsMetadata(aggregatedFeatureName);
+        AccumulatedRecordsMetaData metadata = new AccumulatedRecordsMetaData(aggregatedFeatureName);
         String collectionName = getCollectionName(metadata);
 
         Criteria startTimeCriteria = Criteria.where(AdeRecord.START_INSTANT_FIELD).gte(startTime);
@@ -78,7 +77,7 @@ public class AggregationEventsAccumulationDataStoreMongoImpl implements Aggregat
         logger.debug("getting accumulated events for featureName={}", aggregatedFeatureName);
 
 
-        AggrRecordsMetadata metadata = new AggrRecordsMetadata(aggregatedFeatureName);
+        AccumulatedRecordsMetaData metadata = new AccumulatedRecordsMetaData(aggregatedFeatureName);
         String collectionName = getCollectionName(metadata);
 
         Query query = new Query()

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true">
+
+<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+	<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+		<Pattern>%d %-5level %logger{50}.%M\(%line\): [%thread] [%X{}] %msg%n%xEx{full}</Pattern>
+	</encoder>
+</appender>
+<logger name="com.github.fakemongo" level="INFO" />
+<logger name="com.mongodb.FongoDBCollection" level="INFO" />
+<logger name="com.mongodb.FongoDB" level="INFO" />
+<logger name="org.springframework.data.mongodb" level="INFO" />
+<logger name="org.springframework.data" level="INFO"/>
+<logger name="org.springframework.data.mongodb.core.index.MongoPersistentEntityIndexResolver" level="WARN" />
+<root level="INFO">
+	<appender-ref ref="STDOUT" />
+	<!--<appender-ref ref="LogFile" />-->
+</root>
+
+</configuration>
