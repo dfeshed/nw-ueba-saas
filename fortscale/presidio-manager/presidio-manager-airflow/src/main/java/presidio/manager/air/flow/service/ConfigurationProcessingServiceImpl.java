@@ -17,19 +17,19 @@ public class ConfigurationProcessingServiceImpl implements ConfigurationProcessi
     public ValidationResponse validateConfiguration(PresidioManagerConfiguration presidioManagerConfiguration) {
         DataPipeLineConfiguration dataPipeLineConfiguration = presidioManagerConfiguration.getDataPipeLineConfiguration();
         if(dataPipeLineConfiguration == null) {
-            ConfigurationBadParamDetails error = new ConfigurationBadParamDetails("dataPipeline", "missing data pipleine configuration", "missingProperty", "jsonPath");
+            ConfigurationBadParamDetails error = new ConfigurationBadParamDetails("dataPipeline", "missing data pipleine configuration", "missingProperty", "jsonPath", "location");
             return new ValidationResponse(error);
         }
 
         SchemasEnum[] schemasEnum = dataPipeLineConfiguration.getSchemasEnum();
         if(schemasEnum == null || schemasEnum.length == 0 ) {
-            ConfigurationBadParamDetails error = new ConfigurationBadParamDetails("schemas", "missing schemas configuration", "missingProperty", "jsonPath");
+            ConfigurationBadParamDetails error = new ConfigurationBadParamDetails("schemas", "missing schemas configuration", "missingProperty", "jsonPath", "location");
             return new ValidationResponse(error);
         }
 
         Instant startTime = dataPipeLineConfiguration.getStartTime();
         if(startTime == null) {
-            ConfigurationBadParamDetails error = new ConfigurationBadParamDetails("startTime", "missing datapipline startTime configuration", "missingProperty", "jsonPath");
+            ConfigurationBadParamDetails error = new ConfigurationBadParamDetails("startTime", "missing datapipline startTime configuration", "missingProperty", "jsonPath", "location");
             return new ValidationResponse(error);
         }
 
