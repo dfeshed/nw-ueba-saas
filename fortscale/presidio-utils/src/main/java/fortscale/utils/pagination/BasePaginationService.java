@@ -77,7 +77,7 @@ public abstract class BasePaginationService<T> {
                 totalNumOfItems += first.getTotalNumOfItems();
                 contextIds.add(first.getContextId());
                 start++;
-                first = contextIdToNumOfItemsList.get(start);
+                first = sortedList.get(start);
                 numOfHandledContextIds++;
             }
 
