@@ -35,7 +35,8 @@ class RawModelDagBuilder(PresidioDagBuilder):
                                                                                                    data_source=self.data_source,
                                                                                                    dag=raw_model_dag)
         raw_model_operator = RawModelOperator(data_source=self.data_source,
-                                              command=PresidioDagBuilder.presidio_command,
+                                              command="process",
+                                              session_id=raw_model_dag.dag_id.split('.',1)[0],
                                               dag=raw_model_dag)
 
         raw_model_feature_aggregation_buckets_operator.set_downstream(raw_model_operator)
