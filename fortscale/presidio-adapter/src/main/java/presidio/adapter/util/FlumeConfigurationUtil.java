@@ -32,12 +32,20 @@ public class FlumeConfigurationUtil {
     }
 
     public String createExecutionConfFile(Schema schema, Instant startDate, Instant endDate) throws IOException {
-        /* load the properties */
-        final String confFilePath = createConfFolderPath() + createConfFileName(schema);
-        FileInputStream in = new FileInputStream(confFilePath);
         Properties props = new Properties();
-        props.load(in);
-        in.close();
+        FileInputStream in = null;
+        FileOutputStream out = null;
+
+        /* load the properties */
+        try {
+            final String confFilePath = createConfFolderPath() + createConfFileName(schema);
+            in = new FileInputStream(confFilePath);
+            props.load(in);
+        } finally {
+            if (in != null) {
+                in.close();
+            }
+        }
 
         /* edit the properties */
         for (Object key : props.keySet()) {
@@ -50,12 +58,16 @@ public class FlumeConfigurationUtil {
         }
 
         /* save the properties */
-        final String newFileName = createConfFolderPath() + createJobName(schema, startDate, endDate) + ".properties";
-        FileOutputStream out = new FileOutputStream(newFileName);
-        props.store(out, null);
-        out.close();
-
-        return newFileName;
+        try {
+            final String newFileName = createConfFolderPath() + createJobName(schema, startDate, endDate) + ".properties";
+            out = new FileOutputStream(newFileName);
+            props.store(out, null);
+            return newFileName;
+        } finally {
+            if (out != null) {
+                out.close();
+            }
+        }
     }
 
     /**
