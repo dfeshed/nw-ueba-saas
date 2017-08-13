@@ -15,6 +15,16 @@ public class ValidationResponse {
         this.isValid = true;
     }
 
+    public ValidationResponse(List<ConfigurationBadParamDetails> errorsList) {
+        this.errorsList = new ArrayList<>();
+        addToErrorList(errorsList);
+    }
+
+    public ValidationResponse(ConfigurationBadParamDetails error) {
+        this.errorsList = new ArrayList<>();
+        addToErrorList(error);
+    }
+
     public boolean isValid() {
         return this.isValid;
     }

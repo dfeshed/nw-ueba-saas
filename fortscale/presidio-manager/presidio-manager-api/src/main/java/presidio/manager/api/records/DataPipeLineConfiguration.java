@@ -30,7 +30,7 @@ public class DataPipeLineConfiguration {
         String key;
         while (itr.hasNext()) {
             key = itr.next().toString();
-            setKeyValue(key, node.get(key).asText());
+            setKeyValue(key, node.get(key));
         }
     }
 
@@ -40,15 +40,23 @@ public class DataPipeLineConfiguration {
         return dataPipeLineConfiguration;
     }
 
-    private void setKeyValue(String key, String value) {
+    private void setKeyValue(String key, JsonNode value) {
         switch (key) {
             case "startTime":
-                setStartTime(Instant.parse(value));
+                setStartTime(Instant.parse(value.asText()));
                 break;
             case "schemas":
-                setSchemasEnum(SchemasEnum.fromValue((value.substring(1, value.length() - 1)).split(",")));
+                String array=value.toString();
+                setSchemasEnum(SchemasEnum.fromValue((array.substring(1, array.length() - 1)).split(",")));
                 break;
         }
     }
 
+    public Instant getStartTime() {
+        return startTime;
+    }
+
+    public SchemasEnum[] getSchemasEnum() {
+        return schemasEnum;
+    }
 }
