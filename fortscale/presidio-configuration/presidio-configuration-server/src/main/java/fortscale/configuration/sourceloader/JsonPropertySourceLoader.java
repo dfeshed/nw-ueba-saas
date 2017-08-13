@@ -1,19 +1,23 @@
-package fortscale.sourceloader;
+package fortscale.configuration.sourceloader;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.boot.env.PropertySourceLoader;
 import org.springframework.boot.json.JsonParser;
 import org.springframework.boot.json.JsonParserFactory;
 import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.env.PropertySource;
 import org.springframework.core.io.Resource;
-import org.springframework.util.ClassUtils;
-import org.springframework.util.StringUtils;
+import org.springframework.util.FileCopyUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
 
+/**
+ * Strategy to load '.json' files into a {@link PropertySource}.
+ */
 public class JsonPropertySourceLoader implements PropertySourceLoader {
 
     public String[] getFileExtensions() {
@@ -29,6 +33,13 @@ public class JsonPropertySourceLoader implements PropertySourceLoader {
         return null;
     }
 
+    /**
+     *  Analysis Resource by Map
+     *
+     * @param resource
+     * @return
+     * @throws IOException
+     */
     private Map<String, Object> mapPropertySource(Resource resource) throws IOException {
         if (resource == null) {
             return null;
@@ -36,37 +47,39 @@ public class JsonPropertySourceLoader implements PropertySourceLoader {
         Map<String, Object> result = new HashMap<String, Object>();
         JsonParser parser = JsonParserFactory.getJsonParser();
         Map<String, Object> map = parser.parseMap(readFile(resource));
-        nestMap("", result, map);
+        flatMap("", result, map);
         return result;
     }
 
+
+    /**
+     *  Read Resource
+     *
+     * @param resource
+     * @return The file content in string
+     * @throws IOException
+     */
     private String readFile(Resource resource) throws IOException {
         InputStream inputStream = resource.getInputStream();
-        List<Byte> byteList = new LinkedList<Byte>();
-        byte[] readByte = new byte[1024];
-        int length;
-        while ((length = inputStream.read(readByte)) > 0) {
-            for (int i = 0; i < length; i++) {
-                byteList.add(readByte[i]);
-            }
-        }
-        byte[] allBytes = new byte[byteList.size()];
-        int index = 0;
-        for (Byte soloByte : byteList) {
-            allBytes[index] = soloByte;
-            index += 1;
-        }
-        return new String(allBytes, "UTF-8");
+        String content = FileCopyUtils.copyToString(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
+        return content;
     }
 
-    @SuppressWarnings("unchecked")
-    private void nestMap(String prefix, Map<String, Object> result, Map<String, Object> map) {
+    /**
+     * Handle map（map may be nested in map，recursive processing)，
+     * the final output is a non nested map
+     *
+     * @param prefix - prefix
+     * @param result - Treated map
+     * @param map - Pre processed map
+     */
+    private void flatMap(String prefix, Map<String, Object> result, Map<String, Object> map) {
         if (prefix.length() > 0) {
             prefix += ".";
         }
         for (Map.Entry<String, Object> entrySet : map.entrySet()) {
             if (entrySet.getValue() instanceof Map) {
-                nestMap(prefix + entrySet.getKey(), result, (Map<String, Object>) entrySet.getValue());
+                flatMap(prefix + entrySet.getKey(), result, (Map<String, Object>) entrySet.getValue());
             } else {
                 result.put(prefix + entrySet.getKey().toString(), entrySet.getValue());
             }
