@@ -12,10 +12,10 @@ public class AuthenticationTransformerManager extends TransformationManager {
     public AuthenticationTransformerManager() {
         super();
         transformers.add(new PatternReplacementTransformer(AuthenticationRawEvent.SRC_MACHINE_NAME_FIELD_NAME,
-                AuthenticationTransformedEvent.SRC_MACHINE_CLUSTER_FIELD_NAME, "[0-9]", "", "", "(.*[a-zA-Z]){5}.*"));
+                AuthenticationTransformedEvent.SRC_MACHINE_CLUSTER_FIELD_NAME, "[0-9]", "", null, "(.*[a-zA-Z]){5}.*"));
 
         transformers.add(new PatternReplacementTransformer(AuthenticationRawEvent.DST_MACHINE_NAME_FIELD_NAME,
-                AuthenticationTransformedEvent.DST_MACHINE_CLUSTER_FIELD_NAME, "[0-9]", "", "", "(.*[a-zA-Z]){5}.*"));
+                AuthenticationTransformedEvent.DST_MACHINE_CLUSTER_FIELD_NAME, "[0-9]", "", null, "(.*[a-zA-Z]){5}.*"));
     }
 
     @Override

@@ -49,7 +49,7 @@ public class EnrichedActiveDirectoryRecord extends EnrichedRecord {
     }
 
     public void setUserAdmin(Boolean isUserAdmin) {
-        isUserAdmin = isUserAdmin;
+        this.isUserAdmin = isUserAdmin;
     }
 
     public String getObjectId() {

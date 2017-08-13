@@ -1,5 +1,6 @@
 package presidio.input.core.services.transformation.managers;
 
+import org.apache.commons.collections.CollectionUtils;
 import presidio.input.core.services.transformation.Transformer;
 import presidio.sdk.api.domain.AbstractPresidioDocument;
 
@@ -21,10 +22,14 @@ public abstract class TransformationManager {
         List<AbstractPresidioDocument> transformedEvents = new ArrayList<>();
 
         events.forEach(event -> {
-            transformers.forEach(transformer -> {
-                AbstractPresidioDocument transformedDocument = getTransformedDocument(event);
-                transformedEvents.addAll(transformer.transform(Arrays.asList(transformedDocument)));
-            });
+            AbstractPresidioDocument transformedDocument = getTransformedDocument(event);
+            if (CollectionUtils.isEmpty(transformers)){
+                transformedEvents.add(transformedDocument);
+            }else {
+                transformers.forEach(transformer -> {
+                    transformedEvents.addAll(transformer.transform(Arrays.asList(transformedDocument)));
+                });
+            }
         });
 
         return transformedEvents;
