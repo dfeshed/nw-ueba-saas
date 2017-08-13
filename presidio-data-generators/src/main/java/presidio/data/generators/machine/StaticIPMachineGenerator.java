@@ -1,7 +1,7 @@
 package presidio.data.generators.machine;
 
 import presidio.data.domain.MachineEntity;
-import presidio.data.generators.common.AbstractCyclicValuesGenerator;
+import presidio.data.generators.common.CyclicValuesGenerator;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -10,7 +10,7 @@ import presidio.data.generators.utils.StringGeneratorUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StaticIPMachineGenerator extends AbstractCyclicValuesGenerator<MachineEntity> implements IMachineGenerator {
+public class StaticIPMachineGenerator extends CyclicValuesGenerator<MachineEntity> implements IMachineGenerator {
 
     /**
      * Generates MachineEntity objects from given pairs of hostname and ip address

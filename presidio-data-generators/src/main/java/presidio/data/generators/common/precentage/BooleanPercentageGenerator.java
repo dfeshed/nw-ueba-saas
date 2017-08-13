@@ -1,6 +1,6 @@
 package presidio.data.generators.common.precentage;
 
-import presidio.data.generators.common.AbstractCyclicValuesGenerator;
+import presidio.data.generators.common.CyclicValuesGenerator;
 import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.common.IBooleanGenerator;
 import presidio.data.generators.utils.MathUtils;
@@ -9,7 +9,7 @@ import presidio.data.generators.utils.MathUtils;
 /**
  *
  */
-public class BooleanPercentageGenerator extends AbstractCyclicValuesGenerator<Boolean> implements IBooleanGenerator{
+public class BooleanPercentageGenerator extends CyclicValuesGenerator<Boolean> implements IBooleanGenerator{
     public BooleanPercentageGenerator(int percent) {
         super(buildValuesList(percent));
     }

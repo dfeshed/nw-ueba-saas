@@ -11,12 +11,8 @@ public class MachineEntity {
 
     public MachineEntity(String machineId, String machineNameRegexCluster, String machineDomain) {
         this.machineId = machineId;
-        this.machineIp = "10.0.0.1";
         this.machineNameRegexCluster = machineNameRegexCluster;
         this.machineDomain = machineDomain;
-        this.osVersion = "Windows Server 2016 Datacenter";
-        this.machineDomainDN = "DC=catest,DC=quest,DC=azure,DC=ca";
-        this.origin = "vmMember.catest.quest.azure.ca";
     }
 
     public MachineEntity(String machineId, String machineIp, String machineNameRegexCluster, String machineDomain) {
@@ -26,7 +22,16 @@ public class MachineEntity {
 
     public MachineEntity(String machineId, String machineNameRegexCluster, String machineDomain, String machineDomainDN, String osVersion, String origin) {
         this.machineId = machineId;
-        this.machineIp = "10.0.0.1";
+        this.machineNameRegexCluster = machineNameRegexCluster;
+        this.machineDomain = machineDomain;
+        this.machineDomainDN = machineDomainDN;
+        this.osVersion = osVersion;
+        this.origin = origin;
+    }
+
+    public MachineEntity(String machineId, String machineIP, String machineNameRegexCluster, String machineDomain, String machineDomainDN, String osVersion, String origin) {
+        this.machineId = machineId;
+        this.machineIp = machineIP;
         this.machineNameRegexCluster = machineNameRegexCluster;
         this.machineDomain = machineDomain;
         this.machineDomainDN = machineDomainDN;

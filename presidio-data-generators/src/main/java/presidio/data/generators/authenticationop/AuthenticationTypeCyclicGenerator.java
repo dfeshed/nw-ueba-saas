@@ -1,13 +1,13 @@
 package presidio.data.generators.authenticationop;
 
-import presidio.data.generators.common.AbstractCyclicValuesGenerator;
+import presidio.data.generators.common.CyclicValuesGenerator;
 import presidio.data.domain.event.authentication.AUTHENTICATION_OPERATION_TYPE;
 import presidio.data.generators.common.IStringGenerator;
 
 /**
  * This class is one element data provider from a cyclic list of string values - ADE File
  */
-public class AuthenticationTypeCyclicGenerator extends AbstractCyclicValuesGenerator implements IStringGenerator {
+public class AuthenticationTypeCyclicGenerator extends CyclicValuesGenerator<String> implements IStringGenerator {
 
     private static final String[] DEFAULT_AUTHENTICATION_TYPE = {
             AUTHENTICATION_OPERATION_TYPE.NETWORK_OPERATION.value,

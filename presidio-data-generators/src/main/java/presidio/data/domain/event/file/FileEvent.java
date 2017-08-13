@@ -20,6 +20,7 @@ public class FileEvent extends Event implements Serializable {
     private FileOperation fileOperation;
     private FileSystemEntity fileSystemEntity;
     private MachineEntity machineEntity;
+    private String fileDescription;
 
     public FileEvent(Instant dateTime) {
         this.dateTime = dateTime;
@@ -50,6 +51,18 @@ public class FileEvent extends Event implements Serializable {
         this.fileOperation = fileOperation;
         this.fileSystemEntity = fileSystemEntity;
         this.machineEntity = machineEntity;
+
+    }
+
+    public FileEvent(String eventId, Instant dateTime, User user, FileOperation fileOperation, String dataSource, FileSystemEntity fileSystemEntity, MachineEntity machineEntity, String fileDescription) {
+        this.eventId = eventId;
+        this.dateTime = dateTime;
+        this.user = user;
+        this.dataSource = dataSource;
+        this.fileOperation = fileOperation;
+        this.fileSystemEntity = fileSystemEntity;
+        this.machineEntity = machineEntity;
+        this.fileDescription = fileDescription;
     }
 
     public String getEventId() {
@@ -111,6 +124,19 @@ public class FileEvent extends Event implements Serializable {
 
     public void setMachineEntity(MachineEntity machineEntity) {
         this.machineEntity = machineEntity;
+    }
+
+    public String getFileDescription() {
+        this.fileDescription = buildFileDescription(this.getFileOperation().getOperationType().toString(), this.fileOperation.getSourceFile().getFilePath(), this.getUser().getUsername());
+        return this.fileDescription;
+    }
+
+    public void setFileDescription(String fileDescription) {
+        this.fileDescription = fileDescription;
+    }
+
+    public String buildFileDescription(String operationType, String filePath, String userName){
+        return this.fileDescription = "The file " + filePath +  " " + operationType.split(" ")[1] + " on " + userName;
     }
 
     @Override

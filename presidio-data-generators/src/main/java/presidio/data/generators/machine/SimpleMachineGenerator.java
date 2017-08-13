@@ -1,12 +1,15 @@
 package presidio.data.generators.machine;
 
 import presidio.data.domain.MachineEntity;
+import presidio.data.generators.common.FixedIPsGenerator;
 import presidio.data.generators.common.IStringGenerator;
 import presidio.data.generators.common.RandomStringGenerator;
+import presidio.data.generators.common.StringCyclicValuesGenerator;
 
 public class SimpleMachineGenerator implements IMachineGenerator {
 
     private IStringGenerator machineIdGenerator;
+    private IStringGenerator machineIP;
     private IStringGenerator machineNameRegexClusterGenerator;
     private IStringGenerator machineDomainGenerator;
     private IStringGenerator osVersionGenerator;
@@ -15,11 +18,12 @@ public class SimpleMachineGenerator implements IMachineGenerator {
 
     public SimpleMachineGenerator()  {
         machineIdGenerator = new HostnameCustomListGenerator(new String[] {"host_1","host_2","host_3"});
+        machineIP = new FixedIPsGenerator();
         machineNameRegexClusterGenerator = new RandomStringGenerator(10);
         machineDomainGenerator = new RandomStringGenerator(10);
-        osVersionGenerator = new CustomListGenerator(new String [] {"Windows Server 2016 Datacenter"});
-        machineDomainDN = new CustomListGenerator(new String[] {"DC=catest,DC=quest,DC=azure,DC=ca"});
-        origin = new CustomListGenerator(new String[] {"vmMember.catest.quest.azure.ca"});
+        osVersionGenerator = new StringCyclicValuesGenerator(new String [] {"Windows Server 2016 Datacenter"});
+        machineDomainDN = new StringCyclicValuesGenerator(new String[] {"DC=catest,DC=quest,DC=azure,DC=ca"});
+        origin = new StringCyclicValuesGenerator(new String[] {"vmMember.catest.quest.azure.ca"});
     }
 
     public IStringGenerator getMachineIdGenerator() {
@@ -70,12 +74,21 @@ public class SimpleMachineGenerator implements IMachineGenerator {
         this.origin = origin;
     }
 
+    public IStringGenerator getMachineIP() {
+        return machineIP;
+    }
+
+    public void setMachineIP(IStringGenerator machineIP) {
+        this.machineIP = machineIP;
+    }
+
     public MachineEntity getNext(){
-        return new MachineEntity((String) getMachineIdGenerator().getNext(),
-                (String) getMachineNameRegexClusterGenerator().getNext(),
-                (String) getMachineDomainGenerator().getNext(),
-                (String) getMachineDomainDN().getNext(),
-                (String) getOsVersionGenerator().getNext(),
-                (String) getOrigin().getNext());
+        return new MachineEntity(getMachineIdGenerator().getNext(),
+                getMachineIP().getNext(),
+                getMachineNameRegexClusterGenerator().getNext(),
+                getMachineDomainGenerator().getNext(),
+                getMachineDomainDN().getNext(),
+                getOsVersionGenerator().getNext(),
+                getOrigin().getNext());
     }
 }

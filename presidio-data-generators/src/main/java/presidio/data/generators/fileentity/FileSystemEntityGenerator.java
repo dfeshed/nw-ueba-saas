@@ -3,14 +3,17 @@ package presidio.data.generators.fileentity;
 import presidio.data.domain.FileSystemEntity;
 import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.common.IStringGenerator;
+import presidio.data.generators.common.StringCyclicValuesGenerator;
 
 public class FileSystemEntityGenerator implements IFileSystemEntityGenerator {
 
-    IStringGenerator fileSystemTypeGenerator;
-    IStringGenerator fileSystemLogonIDGenerator;
+    private static final String[] DEFAULT_EXTENSIONS = {"1"};
+
+    private IStringGenerator fileSystemTypeGenerator;
+    private IStringGenerator fileSystemLogonIDGenerator;
 
     public FileSystemEntityGenerator(String userName) throws GeneratorException {
-        fileSystemTypeGenerator = new FileSystemTypeDefaultGenerator();
+        fileSystemTypeGenerator = new StringCyclicValuesGenerator(DEFAULT_EXTENSIONS);
         fileSystemLogonIDGenerator = new FileSystemLogonIDGenerator(userName);
     }
 
