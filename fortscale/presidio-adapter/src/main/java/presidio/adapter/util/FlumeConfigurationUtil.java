@@ -37,8 +37,9 @@ public class FlumeConfigurationUtil {
         FileOutputStream out = null;
 
         /* load the properties */
+        final String moduleConfFolder = createConfFolderPath() + moduleName + File.separator;
         try {
-            final String confFilePath = createConfFolderPath() + createConfFileName(schema);
+            final String confFilePath = moduleConfFolder + createConfFileName(schema);
             in = new FileInputStream(confFilePath);
             props.load(in);
         } finally {
@@ -59,7 +60,7 @@ public class FlumeConfigurationUtil {
 
         /* save the properties */
         try {
-            final String newFileName = createConfFolderPath() + createJobName(schema, startDate, endDate) + ".properties";
+            final String newFileName = moduleConfFolder + createJobName(schema, startDate, endDate) + ".properties";
             out = new FileOutputStream(newFileName);
             props.store(out, null);
             return newFileName;
@@ -84,7 +85,7 @@ public class FlumeConfigurationUtil {
      * FLUME_HOME/conf/module_name/
      */
     public String createConfFolderPath() { //flume_home/conf/
-        return getFlumeHome() + "conf" + File.separator + moduleName + File.separator;
+        return getFlumeHome() + "conf" + File.separator;
     }
 
     public String getFlumeHome() {

@@ -1,5 +1,6 @@
 package presidio.adapter.services.impl;
 
+import com.google.common.collect.ImmutableList;
 import fortscale.common.general.CommonStrings;
 import fortscale.common.general.Schema;
 import fortscale.common.shell.PresidioExecutionService;
@@ -10,10 +11,6 @@ import presidio.adapter.util.ProcessExecutor;
 
 import java.io.IOException;
 import java.time.Instant;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.StringJoiner;
 
 
 public class FlumeAdapterExecutionService implements PresidioExecutionService {
@@ -52,7 +49,7 @@ public class FlumeAdapterExecutionService implements PresidioExecutionService {
     private void runFlumeExecution(Schema schema, Instant startDate, Instant endDate, String newFilePath) {
         String jobName = flumeConfigurationUtil.createJobName(schema, startDate, endDate);
         runAdapterInstance(schema, jobName, newFilePath);
-        logger.info("Adapter for schema {] is now running.", schema);
+        logger.info("Adapter for schema[{}] with conf file[{}] is now running.", schema, newFilePath);
     }
 
     private String configureNewFlumeExecution(Schema schema, Instant startDate, Instant endDate) throws IOException {
@@ -69,16 +66,22 @@ public class FlumeAdapterExecutionService implements PresidioExecutionService {
         final String confFolderArgument = flumeConfigurationUtil.getConfFolderArgument();
         final String newFlumeExecutionConfFileArgument = flumeConfigurationUtil.getFlumeExecutionConfFileArgument(newFilePath);
 
+        final String[] confFolderArgumentSplit = confFolderArgument.split(" ");
+        final String confFlag = confFolderArgumentSplit[0];
+        final String confFlagValue = confFolderArgumentSplit[1];
 
-        StringJoiner stringJoiner = new StringJoiner(" ");
-        final String command = stringJoiner
-                .add(flumeExecutionScriptPath)
-                .add(executionArgument)
-                .add(agentNameArgument)
-                .add(confFolderArgument)
-                .add(newFlumeExecutionConfFileArgument)
-                .toString();
-        processExecutor.executeProcess(jobName, Collections.singletonList(command), flumeConfigurationUtil.getFlumeHome());
+        final String[] newFlumeExecutionConfFileArgumentSplit = newFlumeExecutionConfFileArgument.split(" ");
+        final String confFileFlag = newFlumeExecutionConfFileArgumentSplit[0];
+        final String confFileFlagValue = newFlumeExecutionConfFileArgumentSplit[1];
+
+        final ImmutableList<String> args = ImmutableList.of(
+                flumeExecutionScriptPath,
+                executionArgument, agentNameArgument,
+                confFlag, confFlagValue,
+                confFileFlag,
+                confFileFlagValue);
+
+        processExecutor.executeProcess(jobName, args, flumeConfigurationUtil.getFlumeHome());
     }
 }
 
