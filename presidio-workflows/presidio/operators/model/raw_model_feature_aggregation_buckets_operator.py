@@ -34,7 +34,7 @@ class RawModelFeatureAggregationBucketsOperator(FixedDurationJarOperator):
         )
 
         java_args = {
-            'data_source': self.data_source,
+            'schema': self.data_source,
         }
 
         print('agg operator. commad=', command)
