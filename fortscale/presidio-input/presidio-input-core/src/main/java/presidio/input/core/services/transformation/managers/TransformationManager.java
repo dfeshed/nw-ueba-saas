@@ -19,19 +19,21 @@ public abstract class TransformationManager {
 
     public List<AbstractPresidioDocument> run(List<AbstractPresidioDocument> events) {
 
-        List<AbstractPresidioDocument> transformedEvents = new ArrayList<>();
+        List<AbstractPresidioDocument> result = new ArrayList<>();
 
         events.forEach(event -> {
             AbstractPresidioDocument transformedDocument = getTransformedDocument(event);
+            List<AbstractPresidioDocument> transformedDocuments = Arrays.asList(transformedDocument);
             if (CollectionUtils.isEmpty(transformers)){
-                transformedEvents.add(transformedDocument);
+                result.add(transformedDocument);
             }else {
                 transformers.forEach(transformer -> {
-                    transformedEvents.addAll(transformer.transform(Arrays.asList(transformedDocument)));
+                    transformer.transform(transformedDocuments);
                 });
+                result.addAll(transformedDocuments);
             }
         });
 
-        return transformedEvents;
+        return result;
     }
 }

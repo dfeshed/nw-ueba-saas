@@ -199,4 +199,12 @@ public class EnrichedEvent {
     public void setUserId(String userId) {
         this.userId = userId;
     }
+
+    public Instant getEventDate() {
+        return eventDate;
+    }
+
+    public void setEventDate(Instant eventDate) {
+        this.eventDate = eventDate;
+    }
 }
