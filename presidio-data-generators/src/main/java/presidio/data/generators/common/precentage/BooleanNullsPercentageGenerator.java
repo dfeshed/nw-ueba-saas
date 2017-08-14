@@ -1,6 +1,6 @@
 package presidio.data.generators.common.precentage;
 
-import presidio.data.generators.common.AbstractCyclicValuesGenerator;
+import presidio.data.generators.common.CyclicValuesGenerator;
 import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.common.IBooleanGenerator;
 import presidio.data.generators.utils.MathUtils;
@@ -9,7 +9,7 @@ import presidio.data.generators.utils.MathUtils;
 /**
  * Generates specified percent of null values, the rest - false
  */
-public class BooleanNullsPercentageGenerator extends AbstractCyclicValuesGenerator<Boolean> implements IBooleanGenerator{
+public class BooleanNullsPercentageGenerator extends CyclicValuesGenerator<Boolean> implements IBooleanGenerator{
     public BooleanNullsPercentageGenerator(int percent) {
         super(buildValuesList(percent));
     }

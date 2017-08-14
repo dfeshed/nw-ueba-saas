@@ -1,13 +1,13 @@
 package presidio.data.generators.activedirectoryop;
 
-import presidio.data.generators.common.AbstractCyclicValuesGenerator;
+import presidio.data.generators.common.CyclicValuesGenerator;
 import presidio.data.domain.event.activedirectory.AD_OPERATION_TYPE;
 import presidio.data.generators.common.IStringGenerator;
 
 /**
  * This class is one element data provider from a cyclic list of string values - ADE File
  */
-public class ActiveDirOperationTypeCyclicGenerator extends AbstractCyclicValuesGenerator implements IStringGenerator
+public class ActiveDirOperationTypeCyclicGenerator extends CyclicValuesGenerator<String> implements IStringGenerator
 {
 
     private static final String[] DEFAULT_AD_OPERATION_TYPE = {

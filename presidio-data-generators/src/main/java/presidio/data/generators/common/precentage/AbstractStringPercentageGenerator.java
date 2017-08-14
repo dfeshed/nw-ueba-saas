@@ -2,11 +2,11 @@ package presidio.data.generators.common.precentage;
 
 
 import presidio.data.generators.common.GeneratorException;
-import presidio.data.generators.common.AbstractCyclicValuesGenerator;
+import presidio.data.generators.common.CyclicValuesGenerator;
 import presidio.data.generators.utils.MathUtils;
 
 
-public abstract class AbstractStringPercentageGenerator extends AbstractCyclicValuesGenerator {
+public abstract class AbstractStringPercentageGenerator extends CyclicValuesGenerator<String> {
     private static final int[] DEFAULT_PERCENT = new int[] {100, 0};
 
     public AbstractStringPercentageGenerator(String option) throws GeneratorException {

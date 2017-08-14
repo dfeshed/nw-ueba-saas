@@ -1,6 +1,6 @@
 package presidio.data.generators.fileentity;
 
-import presidio.data.generators.common.AbstractCyclicValuesGenerator;
+import presidio.data.generators.common.CyclicValuesGenerator;
 import presidio.data.generators.common.IStringGenerator;
 
 import java.io.File;
@@ -9,7 +9,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-public class SimplePathGenerator extends AbstractCyclicValuesGenerator implements IStringGenerator {
+public class SimplePathGenerator extends CyclicValuesGenerator<String> implements IStringGenerator {
     private static final String[] DEFAULT_PATHS_ARRAY = {"/usr/someuser/somesubdir/1", "/usr/someuser/somesubdir/2"};
 
     public SimplePathGenerator() {

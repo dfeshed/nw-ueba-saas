@@ -1,9 +1,9 @@
 package presidio.data.generators.fileentity;
 
-import presidio.data.generators.common.AbstractCyclicValuesGenerator;
+import presidio.data.generators.common.CyclicValuesGenerator;
 import presidio.data.generators.common.IStringGenerator;
 
-public class FileNameDefaultExtGenerator extends AbstractCyclicValuesGenerator implements IStringGenerator {
+public class FileNameDefaultExtGenerator extends CyclicValuesGenerator<String> implements IStringGenerator {
 
     private static final String[] DEFAULT_EXTENSIONS = {"jar","db","_db","mdb","accdb","wdb","sqlite","sdf","myd",
             "dbf","db3","sql","dbs","mdf","cpp","7z","gzip","zip","rar","tar","war","dmg","taz","tbz","tbz2"};
