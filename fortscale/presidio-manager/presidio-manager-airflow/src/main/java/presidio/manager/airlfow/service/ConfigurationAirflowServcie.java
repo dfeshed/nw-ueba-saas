@@ -18,7 +18,7 @@ import java.util.List;
 public class ConfigurationAirflowServcie implements ConfigurationProcessingService {
 
 
-    private final String DATA_PIPE_LINE = "dataPipline";
+    private final String DATA_PIPE_LINE = "dataPipeline";
     private final String UNSUPPORTED_ERROR = "unsupportedFieldError";
     private final String MISSING_PROPERTY = "missingProperty";
     private final String INVALID_PROPERTY = "invalidProperty";
@@ -26,12 +26,12 @@ public class ConfigurationAirflowServcie implements ConfigurationProcessingServi
     private final String LOCATION_TYPE_SCHEMAS = "dataPipeline/schemas";
     private final String LOCATION_TYPE_START_TIME = "dataPipeline/startTime";
     private final String UNSUPPORTED_ERROR_MESSAGE = "Unsupported Error, %s field is not supported. Allowed values: [schemas,startTime]";
-    private final String MISSIG_DATA_ERROR_MESSAGE = "Missing data pipleine configuration";
+    private final String MISSIG_DATA_ERROR_MESSAGE = "Missing dataPipeline configuration";
     private final String MISSIG_SCHEMAS_ERROR_MESSAGE = "Missing schemas configuration";
-    private final String MISSIG_START_TIME_ERROR_MESSAGE = "Missing datapipline startTime configuration";
-    private final String START_TIME_UNVALID_MESSAGE = "datapipline startTime format is unvalid. Allwod format is: ";
-    private final String SCHEMA_UNVALID_MESSAGE = "datapipline schema %s field is not supported. Allowed values:[%s]";
-    private final String START_TIME_FUTRE_DATE_MESSAGE = "datapipline startTime date is in the futre.";
+    private final String MISSIG_START_TIME_ERROR_MESSAGE = "Missing dataPipeline startTime configuration";
+    private final String START_TIME_UNVALID_MESSAGE = "dataPipeline startTime format is invalid. Allowed format is: yyyy-mm-ddThh:mm:ss.ffZ";
+    private final String SCHEMA_UNVALID_MESSAGE = "dataPipeline schema %s field is not supported. Allowed values:%s";
+    private final String START_TIME_FUTRE_DATE_MESSAGE = "dataPipeline startTime date is in the future.";
     private final String FILE = "file";
     private final String ACTIVE_DIRACTORY = "active directory";
     private final String AUTHENTICATION = "authentication ";

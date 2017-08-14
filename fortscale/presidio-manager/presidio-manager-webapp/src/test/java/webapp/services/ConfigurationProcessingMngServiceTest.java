@@ -28,8 +28,9 @@ public class ConfigurationProcessingMngServiceTest {
 
     private ConfigurationManagerService configurationManagerService;
     private JsonNode goodPresidioConfiguration;
+    private JsonNode presidioConfigurationOnlySystem;
     private JsonNode dataPipeLineWithThreeFields;
-    private JsonNode dataPipeLineWithUnvalidSchema;
+    private JsonNode dataPipeLineWithInvalidSchema;
 
 
     @Before
@@ -37,6 +38,7 @@ public class ConfigurationProcessingMngServiceTest {
         createDataPipeLineWithThreeFields();
         createDataPipeLineWithUnvalidSchema();
         createGoodPresidioConfiguration();
+        createPresidioConfigurationOnlySystem();
         configurationManagerService = new ConfigurationManagerService(new ConfigurationAirflowServcie(), new ConfigurationSecurityService());
     }
 
@@ -71,7 +73,7 @@ public class ConfigurationProcessingMngServiceTest {
         TextNode textNode = new TextNode("2007-12-03T10:15:30.00Z");
         dataPipeline = objectNode.set("startTime", textNode);
         objectNode = new ObjectNode(new JsonNodeFactory(false));
-        dataPipeLineWithUnvalidSchema = objectNode.set("dataPipeline", dataPipeline);
+        dataPipeLineWithInvalidSchema = objectNode.set("dataPipeline", dataPipeline);
     }
 
 
@@ -107,30 +109,53 @@ public class ConfigurationProcessingMngServiceTest {
         goodPresidioConfiguration = objectNode.set("dataPipeline", dataPipeline);
     }
 
+    public void createPresidioConfigurationOnlySystem() {
+        JsonNode system;
+        ObjectNode objectNode = new ObjectNode(new JsonNodeFactory(false));
+
+        TextNode textNode = new TextNode("presidio@somecompany.dom");
+        objectNode.set("username", textNode);
+        textNode = new TextNode("password");
+        objectNode.set("password", textNode);
+        textNode = new TextNode("presidio-admins-somecompany");
+        objectNode.set("adminGroup", textNode);
+        textNode = new TextNode("presidio-soc-team-somecompany");
+        objectNode.set("analystGroup", textNode);
+        textNode = new TextNode("name.of-server.com:25");
+        objectNode.set("smtpHost", textNode);
+        textNode = new TextNode("string");
+        system = objectNode.set("kdcUrl", textNode);
+
+        objectNode = new ObjectNode(new JsonNodeFactory(false));
+        presidioConfigurationOnlySystem = objectNode.set("system", system);
+    }
+
     @Test
     public void validConfiguration() {
-        //configurationManagerService = new ConfigurationManagerService(new ConfigurationAirflowServcie(), new ConfigurationSecurityService());
         PresidioManagerConfiguration presidioManagerConfiguration = configurationManagerService.presidioManagerConfigurationFactory(goodPresidioConfiguration);
         ValidationResults validationResults = configurationManagerService.validateConfiguration(presidioManagerConfiguration);
         Assert.assertEquals(validationResults.getErrorsList().size(), 0);
     }
 
     @Test
-    public void unvalidConfigurationDataPipeLineWithUnvalidSchema() {
-        //createDataPipeLineWithUnvalidSchema();
-        //configurationManagerService = new ConfigurationManagerService(new ConfigurationAirflowServcie(), new ConfigurationSecurityService());
-        PresidioManagerConfiguration presidioManagerConfiguration = configurationManagerService.presidioManagerConfigurationFactory(dataPipeLineWithUnvalidSchema);
+    public void invalidPresidioConfigurationOnlySystem() {
+        PresidioManagerConfiguration presidioManagerConfiguration = configurationManagerService.presidioManagerConfigurationFactory(presidioConfigurationOnlySystem);
         ValidationResults validationResults = configurationManagerService.validateConfiguration(presidioManagerConfiguration);
-        Assert.assertFalse(validationResults.getErrorsList().size() != 1);
+        Assert.assertEquals(validationResults.getErrorsList().size(), 1);
     }
 
     @Test
-    public void unvalidConfigurationDataPipeLineWithThreeFields() {
-        //createDataPipeLineWithThreeFields();
-        //configurationManagerService = new ConfigurationManagerService(new ConfigurationAirflowServcie(), new ConfigurationSecurityService());
+    public void invalidConfigurationDataPipeLineWithUnvalidSchema() {
+        PresidioManagerConfiguration presidioManagerConfiguration = configurationManagerService.presidioManagerConfigurationFactory(dataPipeLineWithInvalidSchema);
+        ValidationResults validationResults = configurationManagerService.validateConfiguration(presidioManagerConfiguration);
+        Assert.assertEquals(validationResults.getErrorsList().size(), 1);
+    }
+
+    @Test
+    public void invalidConfigurationDataPipeLineWithThreeFields() {
         PresidioManagerConfiguration presidioManagerConfiguration = configurationManagerService.presidioManagerConfigurationFactory(dataPipeLineWithThreeFields);
         ValidationResults validationResults = configurationManagerService.validateConfiguration(presidioManagerConfiguration);
-        Assert.assertFalse(validationResults.getErrorsList().size() != 1);
+        Assert.assertEquals(validationResults.getErrorsList().size(), 1);
     }
 
     @Configuration
