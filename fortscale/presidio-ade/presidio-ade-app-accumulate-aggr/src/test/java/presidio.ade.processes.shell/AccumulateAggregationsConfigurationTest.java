@@ -1,10 +1,7 @@
 package presidio.ade.processes.shell;
 
-import fortscale.utils.shell.BootShimConfig;
-import fortscale.utils.shell.FixedDurationStrategyConverter;
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -19,7 +16,7 @@ public class AccumulateAggregationsConfigurationTest extends AccumulateAggregati
     public static TestPropertiesPlaceholderConfigurer accumulateAggregationsApplicationTestProperties() {
         Properties properties = new Properties();
         //        start ASL paths configurations
-        properties.put("fortscale.feature.aggregation.bucket.conf.json.file.name", "classpath:config/asl/feature-aggregation/feature-buckets/file_feature_aggregation_buckets.json");
+        properties.put("fortscale.feature.aggregation.bucket.conf.json.file.name", "classpath:config/asl/feature-aggregation/feature-buckets/*.json");
         properties.put("fortscale.aggregation.feature.event.conf.json.file.name", "classpath:config/asl/feature-aggregation/aggregated-features/*.json");
         //        end ASL paths configurations
         properties.put("streaming.event.field.type.aggr_event", "aggr_event");
