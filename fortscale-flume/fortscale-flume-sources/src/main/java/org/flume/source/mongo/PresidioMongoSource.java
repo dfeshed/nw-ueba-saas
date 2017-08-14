@@ -3,6 +3,7 @@ package org.flume.source.mongo;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import fortscale.domain.core.AbstractDocument;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -41,6 +42,7 @@ public class PresidioMongoSource extends AbstractEventDrivenSource implements Co
     static {
         mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
+        mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
     }
 
 
