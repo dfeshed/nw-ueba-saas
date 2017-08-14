@@ -49,7 +49,7 @@ export const prepareTextForDisplay = function(text, metaToHighlight) {
   const safeText = _generateHTMLSafeText(text);
   let markedText;
 
-  if (metaToHighlight) {
+  if (metaToHighlight && _isString(metaToHighlight)) {
     // Escape RegEx special characters
     const pattern = metaToHighlight.replace(/[-[\]{}()*+?.,\\^$|#]/g, '\\$&');
     const regex = new RegExp(pattern, 'gi'); // case insensitive
@@ -63,6 +63,7 @@ export const prepareTextForDisplay = function(text, metaToHighlight) {
   return htmlSafe(markedText || safeText);
 };
 
+const _isString = (s) => Object.prototype.toString.call(s) === '[object String]';
 
 /*
  * Processes text content and normalizes it for use in

@@ -1,10 +1,8 @@
 import Component from 'ember-component';
 import layout from './template';
-import computed, { alias } from 'ember-computed-decorators';
+import computed, { alias, bool } from 'ember-computed-decorators';
 import { connect } from 'ember-redux';
 import { highlightMeta } from 'recon/actions/interaction-creators';
-
-import metaToLimit from './limited-meta';
 
 const dispatchToActions = {
   highlightMeta
@@ -17,21 +15,56 @@ const MetaContentItem = Component.extend({
   classNameBindings: ['isHovering', 'isSelected'],
   isHovering: false,
 
-  // Passed in, boolean, whether or not the event has payload to view
+  /**
+   * Whether or not the event has payload to view.
+   * @type {boolean}
+   * @public
+   */
   eventHasPayload: undefined,
-  // Passed in, boolean for if text view or not
+
+  /**
+   * If text view or not.
+   * @type {boolean}
+   * @public
+   */
   isTextView: undefined,
-  // Passed in, null or object with {name, value}
+
+  /**
+   * null or object with {name, value}
+   * @type {object}
+   * @public
+   */
   metaToHighlight: undefined,
 
-  @alias('item.0') name: null,
-  @alias('item.1') value: null,
+  /**
+   * Array of meta objects with the number of occurances within the text.
+   * @type {object[]}
+   * @public
+   */
+  metaHighlightCount: undefined,
+
+  /**
+   * The meta name
+   * @type {string}
+   * @public
+   */
+  @alias('item.0')
+  name: null,
+
+  /**
+   * The meta value
+   * @type {*}
+   * @public
+   */
+  @alias('item.1')
+  value: null,
+
   /**
    * Determines if the meta should be highlighted and selected
    * @param {boolean} isTextView If text view or not, so we can deselect on other views
    * @param {object} metaToHighlight The meta to highlighted, passed down in, grabbed from redux
-   * @param {string|*} name The name of the meta key
-   * @param {string|*} value The value for the meta
+   * @param {string} name The name of the meta key
+   * @param {*} value The value for the meta
    * @returns {boolean} If selected or not
    * @private
    */
@@ -40,25 +73,49 @@ const MetaContentItem = Component.extend({
     if (metaToHighlight && isTextView) {
       return name === metaToHighlight.name && String(metaToHighlight.value) === String(value);
     }
-
     return false;
   },
+
+  /**
+   * The number of times the meta value exists in the text.
+   * @param {string} name The meta name.
+   * @param {object[]} metaHighlightCount List of all meta values contained
+   * within the text.
+   * @return {number}
+   * @public
+   */
+  @computed('name', 'metaHighlightCount')
+  totalCount(name, metaHighlightCount) {
+    let count = 0;
+    if (metaHighlightCount) {
+      const meta = metaHighlightCount.find((meta) => meta.name === name);
+      count = (meta) ? meta.count : 0;
+    }
+    return count;
+  },
+
+  /**
+   * Is there meta to highlight.
+   * @type {boolean}
+   * @public
+   */
+  @bool('totalCount')
+  hasMetaToHighlight: false,
 
   /*
    * Only show meta highlight binoculars if:
    * 1) User is hovering or has already selected the item
-   * 2) And the user is on text view
-   * 3) And the event actually has payload to highlight
-   * 4) And the meta is one of the metas that are highlightable
+   * 2) The event actually has payload to highlight
+   * 3) The meta exists in the text
    */
-  @computed('isHovering', 'isSelected', 'isTextView', 'eventHasPayload')
-  shouldShowBinoculars(isHovering, isSelected, isTextView, eventHasPayload) {
-    return (isHovering || isSelected) && isTextView && eventHasPayload && metaToLimit.includes(this.get('name'));
+  @computed('isHovering', 'isSelected', 'eventHasPayload', 'hasMetaToHighlight')
+  shouldShowBinoculars(isHovering, isSelected, eventHasPayload, hasMetaToHighlight) {
+    return (isHovering || isSelected) && eventHasPayload && hasMetaToHighlight;
   },
 
-  @computed('isSelected', 'isTextView', 'eventHasPayload')
-  shouldShowHighlightScroller(isSelected, isTextView, eventHasPayload) {
-    return isSelected && isTextView && eventHasPayload && metaToLimit.includes(this.get('name'));
+  @computed('isSelected', 'eventHasPayload', 'hasMetaToHighlight')
+  shouldShowHighlightScroller(isSelected, eventHasPayload, hasMetaToHighlight) {
+    return isSelected && eventHasPayload && hasMetaToHighlight;
   },
 
   mouseEnter() {

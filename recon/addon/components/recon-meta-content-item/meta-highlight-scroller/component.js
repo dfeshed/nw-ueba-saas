@@ -1,27 +1,20 @@
 import Component from 'ember-component';
 import { scheduleOnce, debounce } from 'ember-runloop';
 import computed, { gt } from 'ember-computed-decorators';
-import { connect } from 'ember-redux';
 import layout from './template';
-import { totalMetaToHighlight } from 'recon/reducers/text/selectors';
 
-const stateToComputed = ({ recon }) => ({
-  numberOfHighlightedMetas: totalMetaToHighlight(recon)
-});
-
-const MetaHighlightStatus = Component.extend({
+export default Component.extend({
   layout,
-
   tagName: 'div',
-
   classNames: ['meta-highlight-scroller'],
 
   index: 0,
+  totalCount: 0,
 
-  @gt('numberOfHighlightedMetas', 1)
+  @gt('totalCount', 1)
   showControls: false,
 
-  @gt('numberOfHighlightedMetas', 0)
+  @gt('totalCount', 0)
   hasMatches: false,
 
   // index is 0 based, so need to add 1, but just show 0 if no matches
@@ -64,24 +57,22 @@ const MetaHighlightStatus = Component.extend({
     // - WhereIsParentWindow
     // - BufferForReadability
     const scrollTop = currentScrollTop + metaOffset - parentWindowOffset - 60;
-
     $parent.find('.scroll-box').animate({ scrollTop }, 1000);
   },
 
   _moveIndex(newIndex) {
-    const numberOfHighlightedMetas = this.get('numberOfHighlightedMetas');
-    if (newIndex === numberOfHighlightedMetas) {
+    const totalCount = this.get('totalCount');
+    if (newIndex === totalCount) {
       // If incremented past number, then set index back to 0
       // they have wrapped around the result set
       this.set('index', 0);
     } else if (newIndex < 0) {
       // if decremented before the beginning, then set index
       // to end, the have wrapped around the result set
-      this.set('index', numberOfHighlightedMetas - 1);
+      this.set('index', totalCount - 1);
     } else {
       this.set('index', newIndex);
     }
-
     // users can get spammy, debouce this to
     // fast scroll the list if they click a bunch
     // otherwise 20 clicks = 20 seconds as it animates each one
@@ -99,5 +90,3 @@ const MetaHighlightStatus = Component.extend({
   }
 
 });
-
-export default connect(stateToComputed)(MetaHighlightStatus);

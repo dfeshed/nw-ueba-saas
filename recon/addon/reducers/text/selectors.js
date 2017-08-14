@@ -1,21 +1,62 @@
 import reselect from 'reselect';
-
-import { isRequestShown, isResponseShown } from 'recon/reducers/visuals/selectors';
+import getMetaKeysByEventType from './limited-meta';
+import {
+  isRequestShown,
+  isResponseShown,
+  isTextView
+} from 'recon/reducers/visuals/selectors';
+import {
+  eventType,
+  isEndpointEvent
+} from 'recon/reducers/meta/selectors';
 
 const { createSelector } = reselect;
 const textContent = (recon) => recon.text.textContent;
 const renderIds = (recon) => recon.text.renderIds;
-const metaToHighlight = (recon) => recon.text.metaToHighlight;
+const meta = (recon) => recon.meta.meta;
+
+/**
+ * Returns an event meta array that has the following structure:
+ * [ <name>, <value> ]
+ * @param {object[]} eventMeta The meta for an event.
+ * @param {string} key The meta key to look for
+ * @return {object[]}
+ * @private
+ */
+const _getEventMetaByKey = (eventMeta, key) => eventMeta.find((meta) => meta[0] === key);
+
+const _isString = (s) => Object.prototype.toString.call(s) === '[object String]';
+
+/**
+ * Counts the number of occurances of a meta string within some text.
+ * @param {Object} meta The meta to look for
+ * @param {string} text The text to look through
+ * @return {number} The count
+ * @private
+ */
+const _findMetaCountInString = (meta, text) => {
+  let matches;
+  if (_isString(meta) && _isString(text)) {
+    // Escape RegEx special characters
+    const pattern = meta.replace(/[-[\]{}()*+?.,\\^$|#]/g, '\\$&');
+    const regex = new RegExp(pattern, 'gi');
+    matches = text.match(regex);
+  }
+  return matches ? matches.length : 0;
+};
 
 export const hasTextContent = createSelector(
   [textContent],
   (textContent) => textContent && textContent.length > 0
 );
 
-// textContent can at different times be null, an empty array
-// or a populated array. An empty array means the event has
-// no text content. If textContent is null, then it is still
-// being fetched.
+/**
+ * A selector that tells you if the content has been retrieved.
+ * The `textContent` property can at different times be null, an empty array or
+ * a populated array. An empty array means the event has no text content. If
+ * `textContent` is `null`, then it is still being fetched.
+ * @public
+ */
 export const contentRetrieved = createSelector(
   [textContent],
   (textContent) => textContent !== null
@@ -76,19 +117,31 @@ export const renderedText = createSelector(
   }
 );
 
-
-export const totalMetaToHighlight = createSelector(
-  [renderedText, metaToHighlight],
-  (textEntries, metaToHighlight) => {
-    if (!metaToHighlight || textEntries.length === 0) {
-      return 0;
+/**
+ * A selector that goes through the renderedText and counts the number of
+ * occurances for each meta that's relevent to the type of event.
+ * @public
+ */
+export const metaHighlightCount = createSelector(
+  [renderedText, isTextView, eventType, isEndpointEvent, meta],
+  (renderedText, isTextView, eventType, isEndpointEvent, eventMeta) => {
+    const metaCounts = [];
+    if (isTextView && renderedText && renderedText.length > 0) {
+      const eventTypeName = isEndpointEvent ? 'endpoint' : eventType.name.toLowerCase();
+      const metaKeys = getMetaKeysByEventType(eventTypeName);
+      const fullText = renderedText.map((p) => p.text).join(' ');
+      metaKeys.forEach((metaKey) => {
+        const meta = _getEventMetaByKey(eventMeta, metaKey);
+        if (meta && meta.length === 2) {
+          const count = _findMetaCountInString(meta[1], fullText);
+          metaCounts.push({
+            name: metaKey,
+            count
+          });
+        }
+      });
     }
-    // Escape RegEx special characters
-    const pattern = metaToHighlight.value.replace(/[-[\]{}()*+?.,\\^$|#]/g, '\\$&');
-    const regex = new RegExp(pattern, 'gi');
-    const fullText = textEntries.map((p) => p.text).join(' ');
-    const matches = fullText.match(regex);
-    return matches ? matches.length : 0;
+    return metaCounts;
   }
 );
 

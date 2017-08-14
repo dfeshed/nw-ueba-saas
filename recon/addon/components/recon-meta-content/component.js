@@ -1,7 +1,10 @@
 import Component from 'ember-component';
 import { connect } from 'ember-redux';
 import { isTextView } from 'recon/reducers/visuals/selectors';
-import { eventHasPayload } from 'recon/reducers/text/selectors';
+import {
+  eventHasPayload,
+  metaHighlightCount
+} from 'recon/reducers/text/selectors';
 import layout from './template';
 
 const stateToComputed = ({ recon, recon: { meta, text } }) => ({
@@ -10,7 +13,8 @@ const stateToComputed = ({ recon, recon: { meta, text } }) => ({
   meta: meta.meta,
   metaError: meta.metaError,
   metaLoading: meta.metaLoading,
-  metaToHighlight: text.metaToHighlight
+  metaToHighlight: text.metaToHighlight,
+  metaHighlightCount: metaHighlightCount(recon)
 });
 
 const MetaContentComponent = Component.extend({
