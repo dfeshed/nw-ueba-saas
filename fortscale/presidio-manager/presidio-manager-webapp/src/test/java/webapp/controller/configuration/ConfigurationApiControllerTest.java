@@ -12,7 +12,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.Assert;
 import presidio.config.server.client.ConfigurationServerClientService;
 import presidio.webapp.controller.configuration.ConfigurationApiController;
-import presidio.webapp.service.ConfigurationProcessingManager;
+import presidio.webapp.service.ConfigurationManagerService;
 import presidio.webapp.spring.ManagerWebappConfiguration;
 
 import java.io.File;
@@ -29,7 +29,7 @@ public class ConfigurationApiControllerTest {
     private static String CONFIG_JSON_FILE_NAME = "presidio_configuration_test.json";
 
     @MockBean
-    private ConfigurationProcessingManager configurationProcessingManager;
+    private ConfigurationManagerService configurationProcessingManager;
 
     @MockBean
     private ConfigurationServerClientService configServerClient;

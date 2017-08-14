@@ -9,33 +9,33 @@ import org.springframework.web.client.RestTemplate;
 import presidio.config.server.client.ConfigurationServerClientService;
 import presidio.config.server.client.ConfigurationServerClientServiceImpl;
 import presidio.config.server.spring.ConfigServerClientServiceConfiguration;
-import presidio.manager.air.flow.spring.AirFlowConfiguration;
+import presidio.manager.airlfow.spring.AirflowConfiguration;
 import presidio.manager.api.service.ConfigurationProcessingService;
 import presidio.security.manager.spring.SecurityManagerConfiguration;
 import presidio.webapp.controller.configuration.ConfigurationApi;
 import presidio.webapp.controller.configuration.ConfigurationApiController;
-import presidio.webapp.service.ConfigurationProcessingManager;
+import presidio.webapp.service.ConfigurationManagerService;
 
 import javax.annotation.Resource;
 
 @Configuration
-@Import(value = {SecurityManagerConfiguration.class, AirFlowConfiguration.class, ConfigServerClientServiceConfiguration.class})
+@Import(value = {SecurityManagerConfiguration.class, AirflowConfiguration.class, ConfigServerClientServiceConfiguration.class})
 public class ManagerWebappConfiguration {
 
     @Autowired
-    @Resource(name = "airflowConfigurationProcessingService")
-    ConfigurationProcessingService ConfigurationProcessingServiceAirflow;
+    @Resource(name = "configurationAirflowServcie")
+    ConfigurationProcessingService configurationAirflowServcie;
 
     @Autowired
-    @Resource(name = "securityManagerConfigurationProcessingService")
-    ConfigurationProcessingService ConfigurationProcessingServiceSecurityManager;
+    @Resource(name = "configurationSecurityService")
+    ConfigurationProcessingService configurationSecurityService;
 
     @Autowired
     private RestTemplate restTemplate;
 
     @Bean
-    ConfigurationProcessingManager configurationServiceImpl() {
-        return new ConfigurationProcessingManager(ConfigurationProcessingServiceAirflow, ConfigurationProcessingServiceSecurityManager);
+    ConfigurationManagerService configurationServiceImpl() {
+        return new ConfigurationManagerService(configurationAirflowServcie, configurationSecurityService);
     }
 
     @Bean

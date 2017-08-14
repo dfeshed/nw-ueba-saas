@@ -4,39 +4,39 @@ package presidio.manager.api.records;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ValidationResponse {
+public class ValidationResults {
 
     private List<ConfigurationBadParamDetails> errorsList;
 
     private boolean isValid;
 
-    public ValidationResponse() {
+    public ValidationResults() {
         this.errorsList = new ArrayList<>();
         this.isValid = true;
     }
 
-    public ValidationResponse(List<ConfigurationBadParamDetails> errorsList) {
+    public ValidationResults(List<ConfigurationBadParamDetails> errorsList) {
         this.errorsList = new ArrayList<>();
-        addToErrorList(errorsList);
+        addErrors(errorsList);
     }
 
-    public ValidationResponse(ConfigurationBadParamDetails error) {
+    public ValidationResults(ConfigurationBadParamDetails error) {
         this.errorsList = new ArrayList<>();
-        addToErrorList(error);
+        addError(error);
     }
 
     public boolean isValid() {
         return this.isValid;
     }
 
-    public void addToErrorList(List<ConfigurationBadParamDetails> errorsList) {
-        if (!errorsList.isEmpty()) {
+    public void addErrors(List<ConfigurationBadParamDetails> errorsList) {
+        if (errorsList != null && !errorsList.isEmpty()) {
             this.errorsList.addAll(errorsList);
             this.isValid = false;
         }
     }
 
-    public void addToErrorList(ConfigurationBadParamDetails errorsList) {
+    public void addError(ConfigurationBadParamDetails errorsList) {
         this.errorsList.add(errorsList);
         this.isValid = false;
     }
