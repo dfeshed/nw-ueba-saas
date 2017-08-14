@@ -81,7 +81,6 @@ public class ScoreAggregationsApplicationTest extends EnrichedFileSourceBaseAppT
 
     @Override
     protected void assertSanityTest() {
-        mongoTemplate.getCollectionNames();
         AdeEventTypeScorerConfs adeEventTypeScorerConfs = scorerConfService.getAdeEventTypeScorerConfs(ADE_EVENT_TYPE.getName());
         List<IScorerConf> scorerConfs = adeEventTypeScorerConfs.getScorerConfs().stream().filter(x -> x instanceof ScorerContainerConf).collect(Collectors.toList());
         List<ScorerContainerConf> scorerContainerConfs = new ArrayList<>();
@@ -102,9 +101,10 @@ public class ScoreAggregationsApplicationTest extends EnrichedFileSourceBaseAppT
         Assert.assertTrue(scorerContainerConfs.size() > 0);
         List<AggregatedFeatureEventConf> hourlyScoreAggrConfs = aggregatedFeatureEventsConfService.getAggregatedFeatureEventConfList().stream().filter(conf -> {
             boolean isScoreAggregationConf = AggregatedFeatureType.fromCodeRepresentation(conf.getType()).equals(AggregatedFeatureType.SCORE_AGGREGATION);
+
             String strategyName = conf.getBucketConf().getStrategyName();
             boolean isHourly = FixedDurationStrategy.fromStartegyName(strategyName).equals(FixedDurationStrategy.HOURLY);
-            return (isScoreAggregationConf && isHourly);
+            return (isScoreAggregationConf && isHourly && conf.getName().contains("File"));
         }).collect(Collectors.toList());
 
         hourlyScoreAggrConfs.forEach(conf -> {
