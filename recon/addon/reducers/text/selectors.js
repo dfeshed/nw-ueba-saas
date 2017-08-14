@@ -9,14 +9,14 @@ const _renderIds = (recon) => recon.text.renderIds;
 const _meta = (recon) => recon.meta.meta;
 
 /**
- * Returns an event meta array that has the following structure:
+ * Returns an Array of event meta Arrays that have the following structure:
  * [ <name>, <value> ]
- * @param {object[]} eventMeta The meta for an event.
+ * @param {object[]} eventMeta The meta for an event
  * @param {string} key The meta key to look for
- * @return {object[]}
+ * @return {object[]} An Array of Arrays that contain the event meta
  * @private
  */
-const _getEventMetaByKey = (eventMeta, key) => eventMeta.find((meta) => meta[0] === key);
+const _getEventMetaByKey = (eventMeta, key) => eventMeta.filter((meta) => meta[0] === key);
 
 const _isString = (s) => Object.prototype.toString.call(s) === '[object String]';
 
@@ -101,6 +101,8 @@ export const renderedText = createSelector(
 /**
  * A selector that goes through the renderedText and counts the number of
  * occurances for each meta that's relevent to the type of event.
+ * @return {object[]} The number of occurances of each meta within the
+ +                    rendered text.
  * @public
  */
 export const metaHighlightCount = createSelector(
@@ -112,13 +114,17 @@ export const metaHighlightCount = createSelector(
       const metaKeys = getMetaKeysByEventType(eventTypeName);
       const fullText = renderedText.map((p) => p.text).join(' ');
       metaKeys.forEach((metaKey) => {
-        const meta = _getEventMetaByKey(eventMeta, metaKey);
-        if (meta && meta.length === 2) {
-          const count = _findMetaCountInString(meta[1], fullText);
-          metaCounts.push({
-            name: metaKey,
-            count
-          });
+        const metas = _getEventMetaByKey(eventMeta, metaKey);
+        for (let i = 0; i < metas.length; i++) {
+          const meta = metas[i];
+          if (meta && meta.length === 2) {
+            const count = _findMetaCountInString(meta[1], fullText);
+            metaCounts.push({
+              name: metaKey,
+              value: meta[1],
+              count
+            });
+          }
         }
       });
     }
