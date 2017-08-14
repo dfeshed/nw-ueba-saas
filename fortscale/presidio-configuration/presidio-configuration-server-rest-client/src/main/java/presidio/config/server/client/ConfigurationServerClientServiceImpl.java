@@ -32,17 +32,13 @@ public class ConfigurationServerClientServiceImpl implements ConfigurationServer
     @Override
     public void storeConfigurationFile(String fileName, JsonNode configFileContent) {
         // set headers with basic auth to config server
-//        HttpHeaders headers = createHeaders(configServerUserName, configServerPassword); //TODO take from properties
-        String username = "config";
-        String password = "secure";
-        HttpHeaders headers = createHeaders(username, password);
+        HttpHeaders headers = createHeaders(configServerUserName, configServerPassword); //TODO take from properties
         headers.setContentType(MediaType.TEXT_PLAIN);
         HttpEntity<String> entity = new HttpEntity<>(configFileContent.toString(), headers);
 
-//        String url = configServerUri + "/" + fileName; //TODO take from properties
-        String uri = "http://localhost:8888" + "/" + fileName;
+        String url = configServerUri + "/" + fileName; //TODO take from properties
 
-        ResponseEntity<String> loginResponse = restTemplate.exchange(uri, HttpMethod.PUT, entity, String.class);
+        ResponseEntity<String> loginResponse = restTemplate.exchange(url, HttpMethod.PUT, entity, String.class);
     }
 
     HttpHeaders createHeaders(String username, String password){
