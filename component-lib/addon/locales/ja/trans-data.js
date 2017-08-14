@@ -214,7 +214,6 @@ export default {
     eventHeader: {
       nwService: 'ja_NW Service',
       sessionId: 'ja_Session ID',
-      nweCallbackId: 'ja_NWE Server',
       type: 'ja_Type',
       source: 'ja_Source IP:PORT',
       destination: 'ja_Destination IP:PORT',

@@ -6,7 +6,6 @@
 const RECON_DISPLAYED_HEADER = {
   nwService: 0,
   sessionId: 5,
-  nweCallbackId: 10,
   source: 15,
   destination: 20,
   service: 25,
