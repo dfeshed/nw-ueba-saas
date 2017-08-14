@@ -33,6 +33,7 @@ public enum InterceptorType {
   JSON_FILTER(JsonFilterInterceptor.Builder.class),
   JSON_FIELD_JOINER(JsonFieldJoinerInterceptor.Builder.class),
   JSON_FIELD_VALUE_REPLACER(JsonFieldValueReplacerInterceptor.Builder.class),
+  JSON_MAP_CREATOR(JsonMapCreatorInterceptor.Builder.class),
   JSON_TIMESTAMP_WITH_OFFSET(JsonTimestampWithOffsetFormatterInterceptor.Builder.class);
 
   private final Class<? extends Interceptor.Builder> builderClass;
