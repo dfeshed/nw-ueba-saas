@@ -56,7 +56,7 @@ public class JsonFieldValueReplacerInterceptor extends AbstractInterceptor {
                 }
             }
             else {
-                logger.info("Field {} doesn't exist. Replacement [{}]. No replacement made", currField, replacement);
+                logger.warn("Field {} doesn't exist. Replacement [{}]. No replacement made", currField, replacement);
             }
         }
 
