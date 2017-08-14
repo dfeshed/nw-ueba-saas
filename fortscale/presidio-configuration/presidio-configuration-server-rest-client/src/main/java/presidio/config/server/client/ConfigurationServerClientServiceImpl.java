@@ -36,14 +36,14 @@ public class ConfigurationServerClientServiceImpl implements ConfigurationServer
         headers.setContentType(MediaType.TEXT_PLAIN);
         HttpEntity<String> entity = new HttpEntity<>(configFileContent.toString(), headers);
 
-        String url = configServerUri + "/" + fileName; //TODO take from properties
+        String url = String.format("%s/%s",configServerUri ,fileName); //TODO take from properties
 
         ResponseEntity<String> loginResponse = restTemplate.exchange(url, HttpMethod.PUT, entity, String.class);
     }
 
     HttpHeaders createHeaders(String username, String password){
         return new HttpHeaders() {{
-            String auth = username + ":" + password;
+            String auth = String.format("%s:%s",username,password);
             byte[] encodedAuth = Base64.encodeBase64(
                     auth.getBytes(Charset.forName("US-ASCII")) );
             String authHeader = "Basic " + new String( encodedAuth );
