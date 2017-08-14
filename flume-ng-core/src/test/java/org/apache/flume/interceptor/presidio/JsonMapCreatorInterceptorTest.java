@@ -11,8 +11,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-
 /**
  * Created by tomerd on 8/14/2017.
  */
@@ -31,7 +29,7 @@ public class JsonMapCreatorInterceptorTest {
 
         Context ctx = new Context();
         ctx.put(JsonMapCreatorInterceptor.Builder.FIELDS_TO_JOIN_CONF_NAME, "name,ip");
-        ctx.put(JsonMapCreatorInterceptor.Builder.MAP_KEY_CONF_NAME, "additionalInfo");
+        ctx.put(JsonMapCreatorInterceptor.Builder.MAP_KEY_NAME_CONF_NAME, "additionalInfo");
 
         builder.configure(ctx);
 
