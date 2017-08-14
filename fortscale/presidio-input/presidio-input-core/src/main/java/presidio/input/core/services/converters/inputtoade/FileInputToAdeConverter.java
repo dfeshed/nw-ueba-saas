@@ -6,7 +6,7 @@ import presidio.ade.domain.record.enriched.file.EnrichedFileRecord;
 import presidio.sdk.api.domain.rawevents.FileRawEvent;
 import presidio.sdk.api.domain.transformedevents.FileTransformedEvent;
 
-public class FileConverter implements InputAdeConverter {
+public class FileInputToAdeConverter implements InputAdeConverter {
 
     @Override
     public EnrichedRecord convert(AbstractAuditableDocument document) {

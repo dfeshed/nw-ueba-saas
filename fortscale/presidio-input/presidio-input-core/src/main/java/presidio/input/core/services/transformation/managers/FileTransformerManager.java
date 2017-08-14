@@ -1,34 +1,39 @@
 package presidio.input.core.services.transformation.managers;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 import presidio.input.core.services.transformation.FolderPathTransformer;
+import presidio.input.core.services.transformation.Transformer;
 import presidio.sdk.api.domain.AbstractPresidioDocument;
 import presidio.sdk.api.domain.rawevents.FileRawEvent;
 import presidio.sdk.api.domain.transformedevents.FileTransformedEvent;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-@Component("FILE")
-public class FileTransformerManager extends TransformationManager {
+public class FileTransformerManager implements TransformationManager {
 
     @Value("${folder_operation_types}")
-    private Set<String> folderOperations;
+    private String[] folderOperationTypes;
+    private List<Transformer> transformers;
 
-    public FileTransformerManager() {
-        folderOperations = new HashSet<>();
-        folderOperations.add("folder");
+    @Override
+    public List<Transformer> getTransformers() {
+        if (transformers == null) {
 
-        transformers.add(new FolderPathTransformer(FileRawEvent.SRC_FILE_PATH_FIELD_NAME, FileRawEvent.SRC_FILE_PATH_FIELD_NAME,
-                "srcFolderPath", FileRawEvent.OPERATION_TYPE_FIELD_NAME, folderOperations));
+            List<String> folderOperations = Arrays.asList(folderOperationTypes);
+            transformers = new ArrayList<>();
+            transformers.add(new FolderPathTransformer(FileRawEvent.SRC_FILE_PATH_FIELD_NAME, FileRawEvent.SRC_FILE_PATH_FIELD_NAME,
+                    "srcFolderPath", FileRawEvent.OPERATION_TYPE_FIELD_NAME, folderOperations));
 
-        transformers.add(new FolderPathTransformer(FileRawEvent.DST_FILE_PATH_FIELD_NAME, FileRawEvent.DST_FILE_PATH_FIELD_NAME,
-                "dstFolderPath", FileRawEvent.OPERATION_TYPE_FIELD_NAME, folderOperations));
+            transformers.add(new FolderPathTransformer(FileRawEvent.DST_FILE_PATH_FIELD_NAME, FileRawEvent.DST_FILE_PATH_FIELD_NAME,
+                    "dstFolderPath", FileRawEvent.OPERATION_TYPE_FIELD_NAME, folderOperations));
+        }
+        return transformers;
     }
 
     @Override
-    protected <U extends AbstractPresidioDocument> U getTransformedDocument(AbstractPresidioDocument rawEvent) {
+    public <U extends AbstractPresidioDocument> U getTransformedDocument(AbstractPresidioDocument rawEvent) {
         return (U) new FileTransformedEvent((FileRawEvent) rawEvent);
     }
 }

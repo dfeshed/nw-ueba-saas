@@ -5,7 +5,9 @@ import fortscale.common.general.CommonStrings;
 import fortscale.common.general.Schema;
 import fortscale.common.shell.PresidioExecutionService;
 import fortscale.utils.logging.Logger;
+import presidio.input.core.services.converters.ConverterService;
 import presidio.input.core.services.data.AdeDataService;
+import presidio.input.core.services.transformation.managers.TransformationService;
 import presidio.output.sdk.api.OutputDataServiceSDK;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
 
@@ -18,20 +20,24 @@ public class InputExecutionServiceImpl implements PresidioExecutionService {
     private final PresidioInputPersistencyService presidioInputPersistencyService;
     private final AdeDataService adeDataService;
     private final OutputDataServiceSDK outputDataServiceSDK;
+    private final TransformationService transformationService;
+    private final ConverterService converterService;
 
     public InputExecutionServiceImpl(PresidioInputPersistencyService presidioInputPersistencyService,
                                      AdeDataService adeDataService,
-                                     OutputDataServiceSDK outputDataServiceSDK) {
+                                     OutputDataServiceSDK outputDataServiceSDK, TransformationService transformationService, ConverterService converterService) {
         this.presidioInputPersistencyService = presidioInputPersistencyService;
         this.adeDataService = adeDataService;
         this.outputDataServiceSDK = outputDataServiceSDK;
+        this.transformationService = transformationService;
+        this.converterService = converterService;
     }
 
     @Override
     public void run(Schema schema, Instant startDate, Instant endDate, Double fixedDuration) throws Exception {
         logger.info("Started input processing with params: data source:{}, from {}:{}, until {}:{}.", schema, CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate, CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
 
-        InputCoreManager inputCoreManager = new InputCoreManager(presidioInputPersistencyService, adeDataService, outputDataServiceSDK);
+        InputCoreManager inputCoreManager = new InputCoreManager(presidioInputPersistencyService, adeDataService, outputDataServiceSDK, transformationService, converterService);
         inputCoreManager.run(schema, startDate, endDate);
         logger.info("Finished input run with params : data source:{}, from {}:{}, until {}:{}.", schema, CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate, CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
     }

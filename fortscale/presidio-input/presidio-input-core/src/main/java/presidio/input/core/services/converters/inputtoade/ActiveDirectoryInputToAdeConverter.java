@@ -5,7 +5,7 @@ import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.ade.domain.record.enriched.activedirectory.EnrichedActiveDirectoryRecord;
 import presidio.sdk.api.domain.rawevents.ActiveDirectoryRawEvent;
 
-public class ActiveDirectoryConverter implements InputAdeConverter {
+public class ActiveDirectoryInputToAdeConverter implements InputAdeConverter {
     @Override
     public EnrichedRecord convert(AbstractAuditableDocument document) {
         ActiveDirectoryRawEvent activeDirectoryRawEvent = (ActiveDirectoryRawEvent) document;

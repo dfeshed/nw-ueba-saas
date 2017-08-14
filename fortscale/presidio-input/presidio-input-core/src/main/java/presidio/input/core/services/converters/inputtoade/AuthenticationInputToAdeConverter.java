@@ -6,7 +6,7 @@ import presidio.ade.domain.record.enriched.authentication.EnrichedAuthentication
 
 import presidio.sdk.api.domain.transformedevents.AuthenticationTransformedEvent;
 
-public class AuthenticationConverter implements InputAdeConverter {
+public class AuthenticationInputToAdeConverter implements InputAdeConverter {
     @Override
     public EnrichedRecord convert(AbstractAuditableDocument document) {
         AuthenticationTransformedEvent authenticationRawEvent = (AuthenticationTransformedEvent) document;

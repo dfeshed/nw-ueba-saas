@@ -1,11 +1,8 @@
 package presidio.input.core.services.converters.inputtooutput;
 
-import fortscale.domain.core.AbstractAuditableDocument;
 import presidio.output.domain.records.events.EnrichedEvent;
+import presidio.sdk.api.domain.AbstractPresidioDocument;
 
-/**
- * Created by alexp on 10-Jul-17.
- */
 public interface InputOutputConverter {
-    EnrichedEvent convert(AbstractAuditableDocument document);
+    EnrichedEvent convert(AbstractPresidioDocument document);
 }

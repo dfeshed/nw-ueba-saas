@@ -1,13 +1,13 @@
 package presidio.input.core.services.converters.inputtooutput;
 
-import fortscale.domain.core.AbstractAuditableDocument;
 import presidio.output.domain.records.events.EnrichedEvent;
 import presidio.output.domain.records.events.FileEnrichedEvent;
+import presidio.sdk.api.domain.AbstractPresidioDocument;
 import presidio.sdk.api.domain.transformedevents.FileTransformedEvent;
 
 public class FileInputToOutputConverter implements InputOutputConverter {
     @Override
-    public EnrichedEvent convert(AbstractAuditableDocument document) {
+    public EnrichedEvent convert(AbstractPresidioDocument document) {
         FileTransformedEvent transformedEvent = (FileTransformedEvent) document;
         FileEnrichedEvent outputEvent = new FileEnrichedEvent();
         outputEvent.setEventId(transformedEvent.getEventId());

@@ -16,9 +16,9 @@ public class FolderPathTransformer implements Transformer {
     private final String inputPathFieldName;
     private final String operationTypeFieldName;
     private final String folderPathFieldName;
-    private final Set<String> folderOperations;
+    private final List<String> folderOperations;
 
-    public FolderPathTransformer(String inputPathFieldName, String filePathFieldName, String folderPathFieldName, String operationTypeFieldName, Set<String> folderOperations) {
+    public FolderPathTransformer(String inputPathFieldName, String filePathFieldName, String folderPathFieldName, String operationTypeFieldName, List<String> folderOperations) {
         this.inputPathFieldName = inputPathFieldName;
         this.filePathFieldName = filePathFieldName;
         this.folderPathFieldName = folderPathFieldName;

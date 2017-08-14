@@ -1,13 +1,13 @@
 package presidio.input.core.services.converters.inputtooutput;
 
-import fortscale.domain.core.AbstractAuditableDocument;
 import presidio.output.domain.records.events.ActiveDirectoryEnrichedEvent;
 import presidio.output.domain.records.events.EnrichedEvent;
+import presidio.sdk.api.domain.AbstractPresidioDocument;
 import presidio.sdk.api.domain.rawevents.ActiveDirectoryRawEvent;
 
 public class ActiveDirectoryInputToOutputConverter implements InputOutputConverter {
     @Override
-    public EnrichedEvent convert(AbstractAuditableDocument document) {
+    public EnrichedEvent convert(AbstractPresidioDocument document) {
         ActiveDirectoryRawEvent transformedEvent = (ActiveDirectoryRawEvent) document;
         ActiveDirectoryEnrichedEvent outputEvent = new ActiveDirectoryEnrichedEvent();
         outputEvent.setEventId(transformedEvent.getEventId());
