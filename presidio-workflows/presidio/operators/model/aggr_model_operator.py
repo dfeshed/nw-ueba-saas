@@ -4,9 +4,9 @@ from presidio.utils.exceptions import UnsupportedFixedDurationStrategyError
 from presidio.operators.model.model_operator import ModelOperator
 
 
-RAW_MODEL_GROUP_NAME = "enriched-record-models"
+AGGR_MODEL_GROUP_NAME = "feature-aggregation-record-models"
 
-class RawModelOperator(ModelOperator):
+class AggrModelOperator(ModelOperator):
     """
     Runs a "Raw Model" task (JAR). 
     the jar build the raw model after the feature buckets have been updated.
@@ -16,7 +16,6 @@ class RawModelOperator(ModelOperator):
     ui_color = '#1abc9c'
     ui_fgcolor = '#000000'
 
-    @apply_defaults
     def __init__(self, command, data_source, session_id, task_id=None, *args, **kwargs):
         """
         C'tor.
@@ -28,13 +27,11 @@ class RawModelOperator(ModelOperator):
 
         self.data_source = data_source
 
-        super(RawModelOperator, self).__init__(command=command,session_id=session_id, group_name=RAW_MODEL_GROUP_NAME,task_id=task_id,*args,**kwargs)
+        super(AggrModelOperator, self).__init__(command=command,session_id=session_id, group_name=AGGR_MODEL_GROUP_NAME,task_id=task_id,*args,**kwargs)
 
 
     def get_task_id(self):
         """
         :return: The task id 
         """
-        return '{}_{}'.format(self.data_source, 'raw_model')
-
-
+        return '{}_{}'.format(self.data_source, 'aggr_model')
