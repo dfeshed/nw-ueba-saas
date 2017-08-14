@@ -1,5 +1,7 @@
 package presidio.manager.airlfow.service;
 
+
+import org.apache.commons.lang3.ArrayUtils;
 import presidio.manager.api.records.ConfigurationBadParamDetails;
 import presidio.manager.api.records.DataPipeLineConfiguration;
 import presidio.manager.api.records.PresidioManagerConfiguration;
@@ -45,18 +47,17 @@ public class ConfigurationAirflowServcie implements ConfigurationProcessingServi
     public ValidationResults validateConfiguration(PresidioManagerConfiguration presidioManagerConfiguration) {
         DataPipeLineConfiguration dataPipeLineConfiguration = presidioManagerConfiguration.getDataPipeLineConfiguration();
         ValidationResults validationResults = new ValidationResults();
-        if (!dataPipeLineConfiguration.isStracturValid()) {
-            return UnsupportedError(dataPipeLineConfiguration);
-        }
-
         if (dataPipeLineConfiguration == null) {
             ConfigurationBadParamDetails error = new ConfigurationBadParamDetails(DATA_PIPE_LINE, DATA_PIPE_LINE, MISSING_PROPERTY, LOCATION_TYPE, MISSIG_DATA_ERROR_MESSAGE);
             validationResults.addError(error);
             return validationResults;
         }
+        if (!dataPipeLineConfiguration.isStracturValid()) {
+            return UnsupportedError(dataPipeLineConfiguration);
+        }
 
         String[] schemas = dataPipeLineConfiguration.getSchemas();
-        if (schemas == null || schemas.length == 0) {
+        if (ArrayUtils.isEmpty(schemas)) {
             ConfigurationBadParamDetails error = new ConfigurationBadParamDetails(DATA_PIPE_LINE, LOCATION_TYPE_SCHEMAS, MISSING_PROPERTY, LOCATION_TYPE, MISSIG_SCHEMAS_ERROR_MESSAGE);
             validationResults.addError(error);
         } else {

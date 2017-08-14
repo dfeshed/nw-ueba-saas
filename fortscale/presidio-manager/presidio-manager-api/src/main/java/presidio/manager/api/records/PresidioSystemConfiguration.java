@@ -38,7 +38,7 @@ public class PresidioSystemConfiguration {
         Iterator<String> itr = node.fieldNames();
         String key;
         while (itr.hasNext()) {
-            key = itr.next().toString();
+            key = itr.next();
             setKeyValue(key, node.get(key).asText());
         }
         if (badParams.isEmpty())
