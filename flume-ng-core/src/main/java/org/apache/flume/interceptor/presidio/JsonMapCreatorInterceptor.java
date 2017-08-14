@@ -56,7 +56,7 @@ public class JsonMapCreatorInterceptor extends AbstractInterceptor{
         if (mapToAdd.entrySet().size() > 0){
             eventBodyAsJson.add(mapKey, mapToAdd);
         } else {
-            logger.debug("The event does not contains any of the configured fields. Map was not added to the event.");
+            logger.warn("The event does not contain any of the configured fields. Map was not added to the event.");
         }
 
         event.setBody(eventBodyAsJson.toString().getBytes());
@@ -96,7 +96,7 @@ public class JsonMapCreatorInterceptor extends AbstractInterceptor{
             Preconditions.checkArgument(StringUtils.isNotEmpty(mapKey), MAP_KEY_CONF_NAME+ " can not be empty.");
 
             String delimiter = context.getString(DELIMITER_CONF_NAME, DEFAULT_DELIMITER_VALUE);
-            deleteFields = context.getBoolean(DELETE_FIELDS_CONF_NAME, true);
+            deleteFields = context.getBoolean(DELETE_FIELDS_CONF_NAME, false);
 
             final String[] fieldToJoinArray = fieldsToJoinArrayAsString.split(delimiter);
             String currFieldToFilter;
@@ -111,7 +111,7 @@ public class JsonMapCreatorInterceptor extends AbstractInterceptor{
         @Override
         public Interceptor build() {
             final JsonMapCreatorInterceptor jsonMapCreatorInterceptor = new JsonMapCreatorInterceptor(fieldsToJoin, mapKey, deleteFields);
-            logger.info("Creating JsonFilterInterceptor: {}", jsonMapCreatorInterceptor);
+            logger.info("Creating JsonMapCreatorInterceptor: {}", jsonMapCreatorInterceptor);
             return jsonMapCreatorInterceptor;
         }
     }
