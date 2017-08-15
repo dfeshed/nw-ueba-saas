@@ -73,7 +73,7 @@ public class JsonFilterInterceptor extends AbstractInterceptor {
             fieldsToFilter = new ArrayList<>();
             for (int i = 0; i < fieldToFilterArray.length; i++) {
                 currFieldToFilter = fieldToFilterArray[i];
-                Preconditions.checkArgument(StringUtils.isNotEmpty(currFieldToFilter), "{}(index={}) can not be empty. {}={}.", FIELDS_TO_FILTER_CONF_NAME, i, FIELDS_TO_FILTER_CONF_NAME, fieldsToFilterArrayAsString);
+                Preconditions.checkArgument(StringUtils.isNotEmpty(currFieldToFilter), "%s(index=%s) can not be empty. %s=%s.", FIELDS_TO_FILTER_CONF_NAME, i, FIELDS_TO_FILTER_CONF_NAME, fieldsToFilterArrayAsString);
                 fieldsToFilter.add(currFieldToFilter);
             }
 

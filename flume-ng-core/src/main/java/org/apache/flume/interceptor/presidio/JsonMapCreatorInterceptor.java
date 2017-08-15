@@ -103,7 +103,7 @@ public class JsonMapCreatorInterceptor extends AbstractInterceptor{
             fieldsToJoin = new ArrayList<>();
             for (int i = 0; i < fieldToJoinArray.length; i++) {
                 currFieldToFilter = fieldToJoinArray[i];
-                Preconditions.checkArgument(StringUtils.isNotEmpty(currFieldToFilter), "{}(index={}) can not be empty. {}={}.", FIELDS_TO_JOIN_CONF_NAME, i, FIELDS_TO_JOIN_CONF_NAME, fieldsToJoinArrayAsString);
+                Preconditions.checkArgument(StringUtils.isNotEmpty(currFieldToFilter), "%s(index=%s) can not be empty. %s=%s.", FIELDS_TO_JOIN_CONF_NAME, i, FIELDS_TO_JOIN_CONF_NAME, fieldsToJoinArrayAsString);
                 fieldsToJoin.add(currFieldToFilter);
             }
         }
