@@ -31,7 +31,7 @@ import java.util.Properties;
 //@ContextConfiguration(classes = {ConfigServerClientServiceConfiguration.class})
 public class ConfigurationServiceClientServiceTest {
 
-    private static String CONFIG_JSON_FILE_NAME = "presidio_configuration_test.json";
+    private static String CONFIG_JSON_FILE_NAME = "presidio_configuration_test";
 
     @Autowired
     private ConfigurationServerClientService client;
@@ -58,7 +58,7 @@ public class ConfigurationServiceClientServiceTest {
     @Test
     public void storeJsonConfigFile() throws IOException {
         ObjectMapper mapper = new ObjectMapper();
-        File from = new File(".//src//test//resources//" + CONFIG_JSON_FILE_NAME);
+        File from = new File(String.format(".//src//test//resources//%s.json",CONFIG_JSON_FILE_NAME ));
         JsonNode json = mapper.readTree(from);
 
         client.storeConfigurationFile(CONFIG_JSON_FILE_NAME, json);

@@ -4,9 +4,12 @@ import com.fasterxml.jackson.databind.JsonNode;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.ByteArrayInputStream;
 import java.nio.charset.Charset;
 
 /**
@@ -32,13 +35,13 @@ public class ConfigurationServerClientServiceImpl implements ConfigurationServer
     @Override
     public void storeConfigurationFile(String fileName, JsonNode configFileContent) {
         // set headers with basic auth to config server
-        HttpHeaders headers = createHeaders(configServerUserName, configServerPassword); //TODO take from properties
-        headers.setContentType(MediaType.TEXT_PLAIN);
-        HttpEntity<String> entity = new HttpEntity<>(configFileContent.toString(), headers);
+        HttpHeaders headers = createHeaders(configServerUserName, configServerPassword);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        Resource resource = new InputStreamResource(new ByteArrayInputStream(configFileContent.toString().getBytes()));
+        HttpEntity<Resource> entity = new HttpEntity<>(resource, headers);
 
-        String url = String.format("%s/%s",configServerUri ,fileName); //TODO take from properties
-
-        ResponseEntity<String> loginResponse = restTemplate.exchange(url, HttpMethod.PUT, entity, String.class);
+        String url = String.format("%s/%s",configServerUri ,fileName);
+        ResponseEntity<Void> loginResponse = restTemplate.exchange(url, HttpMethod.PUT, entity, Void.class);
     }
 
     HttpHeaders createHeaders(String username, String password){

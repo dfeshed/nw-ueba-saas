@@ -1,4 +1,4 @@
-package fortscale.resource;
+package fortscale.configuration.resource;
 
 import org.springframework.cloud.config.server.environment.EnvironmentRepository;
 import org.springframework.cloud.config.server.support.EnvironmentPropertySource;

@@ -20,9 +20,11 @@ import java.util.Map;
  */
 public class JsonPropertySourceLoader implements PropertySourceLoader {
 
+    public static final String JSON = "json";
+
     public String[] getFileExtensions() {
         //  Configuration file format （ Extension name ）
-        return new String[] { "json" };
+        return new String[] {JSON};
     }
 
     public PropertySource<?> load(String name, Resource resource, String profile) throws IOException {
