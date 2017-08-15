@@ -14,6 +14,10 @@ import java.util.List;
  * Created by YaronDL on 8/8/2017.
  */
 public class FileOperationGeneratorTemplateFactory {
+
+
+    /*********************************    File Action Categories:    *********************************/
+
     /**
      * "Delete" operations generator
      * Operation type - any FILE_DELETE
@@ -40,12 +44,111 @@ public class FileOperationGeneratorTemplateFactory {
         return getFileOperationsGenerator(FILE_OPERATION_TYPE.FILE_MOVED.value, categories);
     }
 
+    public IFileOperationGenerator createRenameFileOperationsGenerator() throws GeneratorException {
+        return createRenameFileOperationsGenerator(null);
+    }
+    public IFileOperationGenerator createRenameFileOperationsGenerator(List<String> categories) throws GeneratorException {
+        return getFileOperationsGenerator(FILE_OPERATION_TYPE.FILE_RENAMED.value, categories);
+    }
+
+    public IFileOperationGenerator createOpenFileOperationsGenerator() throws GeneratorException {
+        return createOpenFileOperationsGenerator(null);
+    }
+    public IFileOperationGenerator createOpenFileOperationsGenerator(List<String> categories) throws GeneratorException {
+        FileOperationGenerator generator = new FileOperationGenerator();
+        generator.setOperationTypeGenerator(getFixedFileOperationTypeGenerator(FILE_OPERATION_TYPE.FILE_OPENED.value, categories));
+
+        IFileEntityGenerator nullFileEntityGenerator = new NullFileEntityGenerator();
+        generator.setDestFileEntityGenerator(nullFileEntityGenerator);
+
+        return generator;
+    }
+
+    public IFileOperationGenerator createFolderOpenFileOperationsGenerator() throws GeneratorException {
+        return createFolderOpenFileOperationsGenerator(null);
+    }
+    public IFileOperationGenerator createFolderOpenFileOperationsGenerator(List<String> categories) throws GeneratorException {
+        FileOperationGenerator generator = new FileOperationGenerator();
+        generator.setOperationTypeGenerator(getFixedFileOperationTypeGenerator(FILE_OPERATION_TYPE.FOLDER_OPENED.value, categories));
+
+        IFileEntityGenerator nullFileEntityGenerator = new NullFileEntityGenerator();
+        generator.setDestFileEntityGenerator(nullFileEntityGenerator);
+
+        return generator;
+    }
+
+    /*********************************    File Permission Change Categories:    *********************************/
+
+    public IFileOperationGenerator createFolderAccessRightsChangedFileOperationsGenerator() throws GeneratorException {
+        return createFolderAccessRightsChangedFileOperationsGenerator(null);
+    }
+    public IFileOperationGenerator createFolderAccessRightsChangedFileOperationsGenerator(List<String> categories) throws GeneratorException {
+        FileOperationGenerator generator = new FileOperationGenerator();
+        generator.setOperationTypeGenerator(getFixedFileOperationTypeGenerator(FILE_OPERATION_TYPE.FOLDER_ACCESS_RIGHTS_CHANGED.value, categories));
+
+        IFileEntityGenerator nullFileEntityGenerator = new NullFileEntityGenerator();
+        generator.setDestFileEntityGenerator(nullFileEntityGenerator);
+
+        return generator;
+    }
 
     public IFileOperationGenerator createLocalSharePermissionsChangeOperationsGenerator() throws GeneratorException {
         return createLocalSharePermissionsChangeOperationsGenerator(null);
     }
     public IFileOperationGenerator createLocalSharePermissionsChangeOperationsGenerator(List<String> categories) throws GeneratorException {
         return getFileOperationsGenerator(FILE_OPERATION_TYPE.LOCAL_SHARE_PERMISSIONS_CHANGED.value, categories);
+    }
+
+    public IFileOperationGenerator createFileAccessRightsChangedOperationsGenerator() throws GeneratorException {
+        return createFileAccessRightsChangedOperationsGenerator(null);
+    }
+    public IFileOperationGenerator createFileAccessRightsChangedOperationsGenerator(List<String> categories) throws GeneratorException {
+        FileOperationGenerator generator = new FileOperationGenerator();
+        generator.setOperationTypeGenerator(getFixedFileOperationTypeGenerator(FILE_OPERATION_TYPE.FILE_ACCESS_RIGHTS_CHANGED.value, categories));
+
+        IFileEntityGenerator nullFileEntityGenerator = new NullFileEntityGenerator();
+        generator.setDestFileEntityGenerator(nullFileEntityGenerator);
+
+        return generator;
+    }
+
+    public IFileOperationGenerator createFileCalssificationChangedOperationsGenerator() throws GeneratorException {
+        return createFileCalssificationChangedOperationsGenerator(null);
+    }
+    public IFileOperationGenerator createFileCalssificationChangedOperationsGenerator(List<String> categories) throws GeneratorException {
+        FileOperationGenerator generator = new FileOperationGenerator();
+        generator.setOperationTypeGenerator(getFixedFileOperationTypeGenerator(FILE_OPERATION_TYPE.FILE_CLASSIFICATION_CHANGED.value, categories));
+
+        IFileEntityGenerator nullFileEntityGenerator = new NullFileEntityGenerator();
+        generator.setDestFileEntityGenerator(nullFileEntityGenerator);
+
+        return generator;
+    }
+
+    public IFileOperationGenerator createFolderCalssificationChangedOperationsGenerator() throws GeneratorException {
+        return createFolderCalssificationChangedOperationsGenerator(null);
+    }
+    public IFileOperationGenerator createFolderCalssificationChangedOperationsGenerator(List<String> categories) throws GeneratorException {
+        FileOperationGenerator generator = new FileOperationGenerator();
+        generator.setOperationTypeGenerator(getFixedFileOperationTypeGenerator(FILE_OPERATION_TYPE.FOLDER_CLASSIFICATION_CHANGED.value, categories));
+
+        IFileEntityGenerator nullFileEntityGenerator = new NullFileEntityGenerator();
+        generator.setDestFileEntityGenerator(nullFileEntityGenerator);
+
+        return generator;
+    }
+
+    public IFileOperationGenerator createFileCentralAccessPolicyChangedOperationsGenerator() throws GeneratorException {
+        return createFileCentralAccessPolicyChangedOperationsGenerator(null);
+    }
+    public IFileOperationGenerator createFileCentralAccessPolicyChangedOperationsGenerator(List<String> categories) throws GeneratorException {
+        FileOperationGenerator generator = new FileOperationGenerator();
+        generator.setOperationTypeGenerator(getFixedFileOperationTypeGenerator(FILE_OPERATION_TYPE.FILE_CENTRAL_ACCESS_POLICY_CHANGED.value, categories));
+
+        IFileEntityGenerator nullFileEntityGenerator = new NullFileEntityGenerator();
+        generator.setDestFileEntityGenerator(nullFileEntityGenerator);
+
+        return generator;
     }
 
     /**
