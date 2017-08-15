@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
-import presidio.ade.test.utils.EnrichedEventsGenerator;
+import presidio.ade.test.utils.EventsGenerator;
 
 @Configuration
 public class EnrichedSuccessfulFileOpenedGeneratorConfig {
@@ -12,7 +12,7 @@ public class EnrichedSuccessfulFileOpenedGeneratorConfig {
     private EnrichedDataStore enrichedDataStore;
 
     @Bean
-    public EnrichedEventsGenerator enrichedEventsFileOpenedGenerator()
+    public EventsGenerator enrichedEventsFileOpenedGenerator()
     {
         return new EnrichedSuccessfulFileOpenedGenerator(enrichedDataStore);
     }

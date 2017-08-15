@@ -20,7 +20,7 @@ import java.time.Instant;
 import java.time.LocalTime;
 import java.util.List;
 
-public class EnrichedEventsGeneratorImpl implements EnrichedEventsGenerator {
+public class EnrichedEventsGeneratorImpl implements EventsGenerator<EnrichedDlpFileRecord> {
     private static final int DAYS_BACK_FROM = 3;
     private static final int DAYS_BACK_TO = 1;
 
@@ -42,7 +42,7 @@ public class EnrichedEventsGeneratorImpl implements EnrichedEventsGenerator {
      *
      * @throws GeneratorException
      */
-    public void generateAndPersist(int interval) throws GeneratorException {
+    public List<EnrichedDlpFileRecord> generateAndPersist(int interval) throws GeneratorException {
         String testUser = "testUser";
         DLPFileEventsGenerator generator = new DLPFileEventsGenerator();
         generator.setTimeGenerator(new TimeGenerator(LocalTime.of(0, 0), LocalTime.of(23, 59), interval, DAYS_BACK_FROM, DAYS_BACK_TO));
@@ -58,10 +58,11 @@ public class EnrichedEventsGeneratorImpl implements EnrichedEventsGenerator {
 
         EnrichedRecordsMetadata enrichedRecordsMetadata = new EnrichedRecordsMetadata(ADE_EVENT_TYPE.getName(), START_DATE, END_DATE);
         enrichedDataStore.store(enrichedRecordsMetadata, enrichedDlpFileRecords);
+        return enrichedDlpFileRecords;
     }
 
     @Override
-    public void generateAndPersistSanityData() throws GeneratorException {
-        generateAndPersist(30);
+    public List<EnrichedDlpFileRecord> generateAndPersistSanityData() throws GeneratorException {
+        return generateAndPersist(30);
     }
 }

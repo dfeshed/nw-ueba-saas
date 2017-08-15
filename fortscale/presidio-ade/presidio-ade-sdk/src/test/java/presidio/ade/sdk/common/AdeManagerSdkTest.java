@@ -3,35 +3,52 @@ package presidio.ade.sdk.common;
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
+import fortscale.utils.test.category.ModuleTestCategory;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
 import fortscale.utils.time.SystemDateService;
+import fortscale.utils.time.TimeRange;
 import fortscale.utils.time.impl.config.SystemDateServiceImplForcedConfig;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.util.Pair;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit4.SpringRunner;
+import presidio.ade.domain.record.AdeRecord;
+import presidio.ade.domain.record.enriched.AdeScoredEnrichedRecord;
+import presidio.ade.domain.record.enriched.file.AdeScoredFileRecord;
 import presidio.ade.domain.store.enriched.EnrichedDataAdeToCollectionNameTranslator;
 import presidio.ade.domain.store.enriched.EnrichedRecordsMetadata;
 import presidio.ade.sdk.data_generator.MockedEnrichedRecord;
 import presidio.ade.sdk.data_generator.MockedEnrichedRecordGenerator;
 import presidio.ade.sdk.data_generator.MockedEnrichedRecordGeneratorConfig;
+import presidio.ade.test.utils.generators.ScoredEnrichedFileGenerator;
+import presidio.ade.test.utils.generators.ScoredEnrichedFileGeneratorConfig;
+import presidio.data.generators.common.GeneratorException;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
+import java.util.stream.Collectors;
+
+import static presidio.ade.test.utils.generators.ScoredEnrichedFileGenerator.GENERATED_SCORE;
+import static presidio.ade.test.utils.generators.ScoredEnrichedFileGenerator.GENERATED_USER;
 
 /**
  * @author Barak Schuster
  */
 @ContextConfiguration
-@RunWith(SpringJUnit4ClassRunner.class)
+@RunWith(SpringRunner.class)
+@Category(ModuleTestCategory.class)
 public class AdeManagerSdkTest {
     @Autowired
     private AdeManagerSdk adeManagerSdk;
@@ -43,6 +60,32 @@ public class AdeManagerSdkTest {
     private MongoTemplate mongoTemplate;
     @Autowired
     private EnrichedDataAdeToCollectionNameTranslator translator;
+    @Autowired
+    private ScoredEnrichedFileGenerator scoredEnrichedFileGenerator;
+
+    @Test
+    public void testScoredEnrichedQueries() throws GeneratorException {
+        List<AdeScoredFileRecord> generatedScoredRecords = scoredEnrichedFileGenerator.generateAndPersistSanityData();
+        String adeEventType = generatedScoredRecords.get(0).getAdeEventType();
+        List<String> eventIds = generatedScoredRecords.stream().map(x -> x.getContext().getEventId()).collect(Collectors.toList());
+        List<AdeScoredEnrichedRecord> retrievedScoredEnrichedRecords = adeManagerSdk.findScoredEnrichedRecords(eventIds, adeEventType, GENERATED_SCORE);
+        Assert.assertEquals(generatedScoredRecords.size(),retrievedScoredEnrichedRecords.size());
+        Instant startInstant = retrievedScoredEnrichedRecords.stream().min(Comparator.comparing(AdeRecord::getStartInstant)).get().getStartInstant();
+        Instant endInstant = retrievedScoredEnrichedRecords.stream().max(Comparator.comparing(AdeRecord::getStartInstant)).get().getStartInstant();
+        TimeRange timeRange = new TimeRange(startInstant, endInstant);
+        Pair<String, String> contextFieldAndValue = Pair.of("userId", GENERATED_USER);
+        List<String> distinctOperationTypes = adeManagerSdk.findScoredEnrichedRecordsDistinctFeatureValues(adeEventType, contextFieldAndValue, timeRange, "operationType", GENERATED_SCORE);
+        Assert.assertTrue(distinctOperationTypes.size()>=1);
+    }
+
+    @Test
+    public void shouldGetScoreAggregationNameToAdeEventTypeMap()
+    {
+        Map<String, List<String>> scoreAggregationNameToAdeEventTypeMap = adeManagerSdk.getAggregationNameToAdeEventTypeMap();
+        Assert.assertNotNull(scoreAggregationNameToAdeEventTypeMap);
+        Assert.assertTrue(scoreAggregationNameToAdeEventTypeMap.size()>0);
+        scoreAggregationNameToAdeEventTypeMap.values().forEach(value -> Assert.assertTrue(value.size()>=1));
+    }
 
     @Test
     public void shouldInsertDataAndCreateIndexes() {
@@ -65,12 +108,17 @@ public class AdeManagerSdkTest {
             MongodbTestConfig.class,
             AdeManagerSdkConfig.class,
             SystemDateServiceImplForcedConfig.class,
-            MockedEnrichedRecordGeneratorConfig.class
+            MockedEnrichedRecordGeneratorConfig.class,
+            ScoredEnrichedFileGeneratorConfig.class
     })
     public static class springConfig {
         @Bean
         public static TestPropertiesPlaceholderConfigurer AdeManagerSdkTestPropertiesConfigurer() {
             Properties properties = new Properties();
+            properties.put("streaming.event.field.type.aggr_event", "aggr_event");
+            properties.put("streaming.aggr_event.field.context", "context");
+            properties.put("fortscale.ademanager.aggregation.feature.event.conf.json.file.name","classpath:config/asl/manager/aggregated-features/*/*.json");
+            properties.put("fortscale.ademanager.aggregation.bucket.conf.json.file.name","classpath:config/asl/manager/feature-buckets/*/*.json");
             return new TestPropertiesPlaceholderConfigurer(properties);
         }
     }

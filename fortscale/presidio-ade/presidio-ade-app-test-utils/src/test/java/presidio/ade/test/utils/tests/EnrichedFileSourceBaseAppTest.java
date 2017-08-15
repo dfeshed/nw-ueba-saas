@@ -4,12 +4,12 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import presidio.ade.test.utils.EnrichedEventsGenerator;
+import presidio.ade.test.utils.EventsGenerator;
 import presidio.data.generators.common.GeneratorException;
 
 public abstract class EnrichedFileSourceBaseAppTest extends BaseAppTest {
     @Autowired
-    protected EnrichedEventsGenerator enrichedEventsGenerator;
+    protected EventsGenerator eventsGenerator;
 
     /**
      * Generate 2 events per hour along 24 hours for 2 days.
@@ -18,7 +18,7 @@ public abstract class EnrichedFileSourceBaseAppTest extends BaseAppTest {
      */
     @Test
     public void sanityTest() throws GeneratorException {
-        enrichedEventsGenerator.generateAndPersistSanityData();
+        eventsGenerator.generateAndPersistSanityData();
         executeAndAssertCommandSuccess(getSanityTestExecutionCommand());
         assertSanityTest();
     }

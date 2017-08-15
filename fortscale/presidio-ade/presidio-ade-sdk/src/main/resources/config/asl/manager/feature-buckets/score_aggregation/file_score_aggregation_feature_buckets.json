@@ -1,0 +1,83 @@
+
+{
+  "BucketConfs": [
+    {
+      "name": "highestStartInstantScoreUserIdFileHourly",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "context.userId"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.file.startInstant.userId.file.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "highestStartInstantScore",
+          "featureNamesMap": {
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "operationTypeToHighestScoreMapUserIdFilePermissionChangeFileHourly",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "context.userId"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.file.operationType.userIdFilePermissionChange.file.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "operationTypeToHighestScoreMap",
+          "featureNamesMap": {
+            "groupBy": [
+              "context.operationType"
+            ],
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "operationTypeToHighestScoreMapUserIdFileActionFileHourly",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "context.userId"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.file.operationType.userIdFileAction.file.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "operationTypeToHighestScoreMap",
+          "featureNamesMap": {
+            "groupBy": [
+              "context.operationType"
+            ],
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
+        }
+      ]
+    }
+  ]
+}
