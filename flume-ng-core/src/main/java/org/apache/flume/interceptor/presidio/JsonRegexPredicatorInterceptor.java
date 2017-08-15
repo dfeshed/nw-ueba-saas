@@ -29,7 +29,7 @@ public class JsonRegexPredicatorInterceptor extends AbstractInterceptor {
     private final List<String> regexList;
     private final Boolean deleteFields;
 
-    public JsonRegexPredicatorInterceptor(List<String> valueFields, List<String> predicitionFields, List<String> regexList, Boolean deleteFields) {
+    JsonRegexPredicatorInterceptor(List<String> valueFields, List<String> predicitionFields, List<String> regexList, Boolean deleteFields) {
         this.valueFields = valueFields;
         this.predicatorFields = predicitionFields;
         this.regexList = regexList;
@@ -64,6 +64,11 @@ public class JsonRegexPredicatorInterceptor extends AbstractInterceptor {
                 pattern = Pattern.compile(currRegexField);
                 matcher = pattern.matcher(fieldValue);
                 eventBodyAsJson.addProperty(currPredicatorField, matcher.matches());
+
+                if (deleteFields) {
+                    logger.trace("Removing origin field {}.", currValueField);
+                    eventBodyAsJson.remove(currValueField);
+                }
             } else {
                 logger.warn("Current event doesn't contain the key: {}", currValueField);
             }
