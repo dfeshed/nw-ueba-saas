@@ -1,0 +1,232 @@
+{
+  "AggregatedFeatureEvents": [
+    {
+      "name": "highestStartInstantScoreActiveDirectoryHourly",
+      "type": "P",
+      "bucketConfName": "highestStartInstantScoreUserIdActiveDirectoryHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 300,
+      "anomalyType": " ",
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "highestStartInstantScore"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_map_values_max_sum_func"
+      }
+    },
+    {
+      "name": "adminPasswordChangedScoreActiveDirectoryHourly",
+      "type": "P",
+      "bucketConfName": "adminPasswordChangedScoreUserIdActiveDirectoryHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 300,
+      "anomalyType": " ",
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "adminPasswordChangedScore"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_map_values_max_sum_func",
+        "includeValues": true,
+        "minScoreToInclude": 1
+      }
+    },
+    {
+      "name": "userAccountEnabledScoreActiveDirectoryHourly",
+      "type": "P",
+      "bucketConfName": "userAccountEnabledScoreUserIdActiveDirectoryHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 300,
+      "anomalyType": " ",
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "userAccountEnabledScore"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_map_values_max_sum_func",
+        "includeValues": true,
+        "minScoreToInclude": 1
+      }
+    },
+
+    {
+      "name": "userAccountDisabledScoreActiveDirectoryHourly",
+      "type": "P",
+      "bucketConfName": "userAccountDisabledScoreUserIdActiveDirectoryHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 300,
+      "anomalyType": " ",
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "userAccountDisabledScore"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_map_values_max_sum_func",
+        "includeValues": true,
+        "minScoreToInclude": 1
+      }
+    },
+
+    {
+      "name": "userAccountUnlockedScoreActiveDirectoryHourly",
+      "type": "P",
+      "bucketConfName": "userAccountUnlockedScoreUserIdActiveDirectoryHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 300,
+      "anomalyType": " ",
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "userAccountUnlockedScore"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_map_values_max_sum_func",
+        "includeValues": true,
+        "minScoreToInclude": 1
+      }
+    },
+    {
+      "name": "userAccountTypeChangedScoreActiveDirectoryHourly",
+      "type": "P",
+      "bucketConfName": "userAccountTypeChangedScoreUserIdActiveDirectoryHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 300,
+      "anomalyType": " ",
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "userAccountTypeChangedScore"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_map_values_max_sum_func",
+        "includeValues": true,
+        "minScoreToInclude": 1
+      }
+    },
+    {
+      "name": "userAccountLockedScoreActiveDirectoryHourly",
+      "type": "P",
+      "bucketConfName": "userAccountLockedScoreUserIdActiveDirectoryHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 300,
+      "anomalyType": " ",
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "userAccountLockedScore"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_map_values_max_sum_func",
+        "includeValues": true,
+        "minScoreToInclude": 1
+      }
+    },
+    {
+      "name": "userPasswordNeverExpiresOptionChangedScoreActiveDirectoryHourly",
+      "type": "P",
+      "bucketConfName": "userPasswordNeverExpiresOptionChangedScoreUserIdActiveDirectoryHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 300,
+      "anomalyType": " ",
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "userPasswordNeverExpiresOptionChangedScore"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_map_values_max_sum_func",
+        "includeValues": true,
+        "minScoreToInclude": 1
+      }
+    },
+    {
+      "name": "passwordChangedByNonOwnerScoreActiveDirectoryHourly",
+      "type": "P",
+      "bucketConfName": "passwordChangedByNonOwnerScoreUserIdActiveDirectoryHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 300,
+      "anomalyType": " ",
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "passwordChangedByNonOwnerScore"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_map_values_max_sum_func",
+        "includeValues": true,
+        "minScoreToInclude": 1
+      }
+    },
+    {
+      "name": "passwordChangedScoreActiveDirectoryHourly",
+      "type": "P",
+      "bucketConfName": "passwordChangedScoreUserIdActiveDirectoryHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 300,
+      "anomalyType": " ",
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "passwordChangedScore"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_map_values_max_sum_func",
+        "includeValues": true,
+        "minScoreToInclude": 1
+      }
+    },
+    {
+      "name": "nestedMemberAddedToCriticalEnterpriseGroupScoreActiveDirectoryHourly",
+      "type": "P",
+      "bucketConfName": "nestedMemberAddedToCriticalEnterpriseGroupScoreUserIdActiveDirectoryHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 300,
+      "anomalyType": " ",
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "nestedMemberAddedToCriticalEnterpriseGroupScore"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_map_values_max_sum_func",
+        "includeValues": true,
+        "minScoreToInclude": 1
+      }
+    },
+    {
+      "name": "memberAddedToCriticalEnterpriseGroupScoreActiveDirectoryHourly",
+      "type": "P",
+      "bucketConfName": "memberAddedToCriticalEnterpriseGroupScoreUserIdActiveDirectoryHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 300,
+      "anomalyType": " ",
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "memberAddedToCriticalEnterpriseGroupScore"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_map_values_max_sum_func",
+        "includeValues": true,
+        "minScoreToInclude": 1
+      }
+    }
+  ]
+}

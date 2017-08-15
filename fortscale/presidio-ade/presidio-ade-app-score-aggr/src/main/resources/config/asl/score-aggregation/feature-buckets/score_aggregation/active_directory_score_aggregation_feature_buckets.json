@@ -1,0 +1,332 @@
+{
+  "BucketConfs": [
+    {
+      "name": "highestStartInstantScoreUserIdActiveDirectoryHourly",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "context.userId"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.active_directory.startInstant.userId.activeDirectory.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "highestStartInstantScore",
+          "featureNamesMap": {
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "adminPasswordChangedScoreUserIdActiveDirectoryHourly",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "context.userId"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.active_directory.adminPasswordChanged.userId.activeDirectory.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "adminPasswordChangedScore",
+          "featureNamesMap": {
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.operationType == 'PASSWORD_CHANGED' || @.isUserAdmin == 'true')]"
+          }
+        }
+      ]
+    },
+    {
+      "name": "userAccountEnabledScoreUserIdActiveDirectoryHourly",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "context.userId"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.active_directory.userAccountEnabled.userId.activeDirectory.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "userAccountEnabledScore",
+          "featureNamesMap": {
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.operationType == 'USER_ACCOUNT_ENABLED')]"
+          }
+        }
+      ]
+    },
+    {
+      "name": "userAccountDisabledScoreUserIdActiveDirectoryHourly",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "context.userId"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.active_directory.userAccountDisabled.userId.activeDirectory.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "userAccountDisabledScore",
+          "featureNamesMap": {
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.operationType == 'USER_ACCOUNT_DISABLED')]"
+          }
+        }
+      ]
+    },
+    {
+      "name": "userAccountUnlockedScoreUserIdActiveDirectoryHourly",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "context.userId"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.active_directory.userAccountUnlocked.userId.activeDirectory.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "userAccountUnlockedScore",
+          "featureNamesMap": {
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.operationType == 'USER_ACCOUNT_UNLOCKED')]"
+          }
+        }
+      ]
+    },
+    {
+      "name": "userAccountTypeChangedScoreUserIdActiveDirectoryHourly",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "context.userId"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.active_directory.userAccountTypeChanged.userId.activeDirectory.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "userAccountTypeChangedScore",
+          "featureNamesMap": {
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.operationType == 'USER_ACCOUNT_TYPE_CHANGED')]"
+          }
+        }
+      ]
+    },
+    {
+      "name": "userAccountLockedScoreUserIdActiveDirectoryHourly",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "context.userId"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.active_directory.userAccountLocked.userId.activeDirectory.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "userAccountLockedScore",
+          "featureNamesMap": {
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.operationType == 'USER_ACCOUNT_LOCKED')]"
+          }
+        }
+      ]
+    },
+    {
+      "name": "userPasswordNeverExpiresOptionChangedScoreUserIdActiveDirectoryHourly",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "context.userId"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.active_directory.userPasswordNeverExpiresOptionChanged.userId.activeDirectory.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "userPasswordNeverExpiresOptionChangedScore",
+          "featureNamesMap": {
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.operationType == 'USER_PASSWORD_NEVER_EXPIRES_OPTION_CHANGED')]"
+          }
+        }
+      ]
+    },
+    {
+      "name": "passwordChangedByNonOwnerScoreUserIdActiveDirectoryHourly",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "context.userId"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.active_directory.passwordChangedByNonOwner.userId.activeDirectory.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "passwordChangedByNonOwnerScore",
+          "featureNamesMap": {
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.operationType == 'PASSWORD_CHANGED_BY_NON_OWNER')]"
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "passwordChangedScoreUserIdActiveDirectoryHourly",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "context.userId"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.active_directory.passwordChanged.userId.activeDirectory.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "passwordChangedScore",
+          "featureNamesMap": {
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.operationType == 'PASSWORD_CHANGED')]"
+          }
+        }
+      ]
+    },
+    {
+      "name": "nestedMemberAddedToCriticalEnterpriseGroupScoreUserIdActiveDirectoryHourly",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "context.userId"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.active_directory.nestedMemberAddedToCriticalGroup.userId.activeDirectory.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "nestedMemberAddedToCriticalEnterpriseGroupScore",
+          "featureNamesMap": {
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.operationType == 'NESTED_MEMBER_ADDED_TO_CRITICAL_ENTERPRISE_GROUP')]"
+          }
+        }
+      ]
+    },
+    {
+      "name": "memberAddedToCriticalEnterpriseGroupScoreUserIdActiveDirectoryHourly",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "context.userId"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.active_directory.memberAddedToCriticalGroup.userId.activeDirectory.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "memberAddedToCriticalEnterpriseGroupScore",
+          "featureNamesMap": {
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.operationType == 'MEMBER_ADDED_TO_CRITICAL_ENTERPRISE_GROUP')]"
+          }
+        }
+      ]
+    }
+
+
+
+
+
+
+  ]
+}

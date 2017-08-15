@@ -8,10 +8,8 @@ import org.junit.Test;
 
 import java.io.IOException;
 
-/**
- * Created by YaronDL on 8/6/2017.
- */
-public class ConditionalScorerConfTest {
+
+public class BooleanConditionalScorerConfTest {
     public static final JSONObject defaultScorerConfJsonObject;
 
     static {
@@ -27,41 +25,41 @@ public class ConditionalScorerConfTest {
     public void should_deserialize_conditional_scorer_conf_from_json() throws IOException {
         String name = "mySubScorer";
         String conditionalField = "myConditionalField";
-        String conditionalValue = "myConditionalValue";
+        Boolean conditionalValue = true;
 
         JSONObject jsonObject = getConditionalScorerConfJsonObject(
-                ConditionalScorerConf.SCORER_TYPE, name, defaultScorerConfJsonObject, conditionalField, conditionalValue);
+                BooleanConditionalScorerConf.SCORER_TYPE, name, defaultScorerConfJsonObject, conditionalField, conditionalValue);
         IScorerConf scorerConf = getScorerConf(jsonObject);
 
-        Assert.assertEquals(ConditionalScorerConf.class, scorerConf.getClass());
+        Assert.assertEquals(BooleanConditionalScorerConf.class, scorerConf.getClass());
         Assert.assertEquals(name, scorerConf.getName());
-        Assert.assertEquals(getScorerConf(defaultScorerConfJsonObject), ((ConditionalScorerConf)scorerConf).getScorer());
-        Assert.assertEquals(conditionalField, ((ConditionalScorerConf)scorerConf).getConditionalField());
-        Assert.assertEquals(conditionalValue, ((ConditionalScorerConf)scorerConf).getConditionalValue());
+        Assert.assertEquals(getScorerConf(defaultScorerConfJsonObject), ((BooleanConditionalScorerConf)scorerConf).getScorer());
+        Assert.assertEquals(conditionalField, ((BooleanConditionalScorerConf)scorerConf).getConditionalField());
+        Assert.assertEquals(conditionalValue, ((BooleanConditionalScorerConf)scorerConf).getConditionalValue());
     }
 
     @Test(expected = JsonMappingException.class)
     public void should_fail_when_name_is_null() throws IOException {
         String conditionalField = "myConditionalField";
-        String conditionalValue = "myConditionalValue";
-        JSONObject jsonObject = getConditionalScorerConfJsonObject(ConditionalScorerConf.SCORER_TYPE, null, defaultScorerConfJsonObject, conditionalField, conditionalValue);
+        Boolean conditionalValue = true;
+        JSONObject jsonObject = getConditionalScorerConfJsonObject(BooleanConditionalScorerConf.SCORER_TYPE, null, defaultScorerConfJsonObject, conditionalField, conditionalValue);
         getScorerConf(jsonObject);
     }
 
     @Test(expected = JsonMappingException.class)
     public void should_fail_when_name_is_empty() throws IOException {
         String conditionalField = "myConditionalField";
-        String conditionalValue = "myConditionalValue";
+        Boolean conditionalValue = true;
         JSONObject jsonObject = getConditionalScorerConfJsonObject(
-                ConditionalScorerConf.SCORER_TYPE, "", defaultScorerConfJsonObject, conditionalField, conditionalValue);
+                BooleanConditionalScorerConf.SCORER_TYPE, "", defaultScorerConfJsonObject, conditionalField, conditionalValue);
         getScorerConf(jsonObject);
     }
 
     @Test(expected = JsonMappingException.class)
     public void should_fail_when_name_is_blank() throws IOException {
         String conditionalField = "myConditionalField";
-        String conditionalValue = "myConditionalValue";
-        JSONObject jsonObject = getConditionalScorerConfJsonObject(ConditionalScorerConf.SCORER_TYPE, "   ", defaultScorerConfJsonObject, conditionalField, conditionalValue);
+        Boolean conditionalValue = true;
+        JSONObject jsonObject = getConditionalScorerConfJsonObject(BooleanConditionalScorerConf.SCORER_TYPE, "   ", defaultScorerConfJsonObject, conditionalField, conditionalValue);
         getScorerConf(jsonObject);
     }
 
@@ -69,8 +67,8 @@ public class ConditionalScorerConfTest {
     public void should_fail_when_scorer_conf_is_null() throws IOException {
         String name = "myConditionalScorer";
         String conditionalField = "myConditionalField";
-        String conditionalValue = "myConditionalValue";
-        JSONObject jsonObject = getConditionalScorerConfJsonObject(ConditionalScorerConf.SCORER_TYPE, name, null, conditionalField, conditionalValue);
+        Boolean conditionalValue = true;
+        JSONObject jsonObject = getConditionalScorerConfJsonObject(BooleanConditionalScorerConf.SCORER_TYPE, name, null, conditionalField, conditionalValue);
         getScorerConf(jsonObject);
     }
 
@@ -78,9 +76,9 @@ public class ConditionalScorerConfTest {
     public void should_fail_when_conditional_field_is_null() throws IOException {
         String name = "myConditionalScorer";
         String conditionalField = null;
-        String conditionalValue = "myConditionalValue";
+        Boolean conditionalValue = true;
         JSONObject jsonObject = getConditionalScorerConfJsonObject(
-                ConditionalScorerConf.SCORER_TYPE, name, defaultScorerConfJsonObject, conditionalField, conditionalValue);
+                BooleanConditionalScorerConf.SCORER_TYPE, name, defaultScorerConfJsonObject, conditionalField, conditionalValue);
         getScorerConf(jsonObject);
     }
 
@@ -88,9 +86,9 @@ public class ConditionalScorerConfTest {
     public void should_fail_when_conditional_field_is_empty() throws IOException {
         String name = "myConditionalScorer";
         String conditionalField = "";
-        String conditionalValue = "myConditionalValue";
+        Boolean conditionalValue = false;
         JSONObject jsonObject = getConditionalScorerConfJsonObject(
-                ConditionalScorerConf.SCORER_TYPE, name, defaultScorerConfJsonObject, conditionalField, conditionalValue);
+                BooleanConditionalScorerConf.SCORER_TYPE, name, defaultScorerConfJsonObject, conditionalField, conditionalValue);
         getScorerConf(jsonObject);
     }
 
@@ -98,9 +96,9 @@ public class ConditionalScorerConfTest {
     public void should_fail_when_conditional_field_is_blank() throws IOException {
         String name = "myConditionalScorer";
         String conditionalField = "   ";
-        String conditionalValue = "myConditionalValue";
+        Boolean conditionalValue = true;
         JSONObject jsonObject = getConditionalScorerConfJsonObject(
-                ConditionalScorerConf.SCORER_TYPE, name, defaultScorerConfJsonObject, conditionalField, conditionalValue);
+                BooleanConditionalScorerConf.SCORER_TYPE, name, defaultScorerConfJsonObject, conditionalField, conditionalValue);
         getScorerConf(jsonObject);
     }
 
@@ -114,35 +112,14 @@ public class ConditionalScorerConfTest {
     public void should_fail_when_conditional_value_is_null() throws IOException {
         String name = "myConditionalScorer";
         String conditionalField = "myConditionalField";
-        String conditionalValue = null;
+        Boolean conditionalValue = null;
         JSONObject jsonObject = getConditionalScorerConfJsonObject(
-                ConditionalScorerConf.SCORER_TYPE, name, defaultScorerConfJsonObject, conditionalField, conditionalValue);
-        getScorerConf(jsonObject);
-    }
-
-    @Test(expected = JsonMappingException.class)
-    public void should_fail_when_conditional_value_is_empty() throws IOException {
-        String name = "myConditionalScorer";
-        String conditionalField = "myConditionalField";
-        String conditionalValue = "";
-        JSONObject jsonObject = getConditionalScorerConfJsonObject(
-                ConditionalScorerConf.SCORER_TYPE, name, defaultScorerConfJsonObject, conditionalField, conditionalValue);
-        getScorerConf(jsonObject);
-    }
-
-    @Test(expected = JsonMappingException.class)
-    public void should_fail_when_conditional_value_is_blank() throws IOException {
-        String name = "myConditionalScorer";
-        String conditionalField = "myConditionalField";
-        String conditionalValue = "   ";
-        JSONObject jsonObject = getConditionalScorerConfJsonObject(
-                ConditionalScorerConf.SCORER_TYPE, name, defaultScorerConfJsonObject, conditionalField, conditionalValue);
+                BooleanConditionalScorerConf.SCORER_TYPE, name, defaultScorerConfJsonObject, conditionalField, conditionalValue);
         getScorerConf(jsonObject);
     }
 
 
-
-    public static JSONObject getConditionalScorerConfJsonObject(String type, String name, JSONObject scorer, String conditionalField, String conditionalValue) {
+    public static JSONObject getConditionalScorerConfJsonObject(String type, String name, JSONObject scorer, String conditionalField, Boolean conditionalValue) {
 
         JSONObject jsonObject = new JSONObject();
         if (type != null) jsonObject.put("type", type);
