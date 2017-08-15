@@ -30,7 +30,7 @@ public class PlaceholdersBodyAdvisor implements ResponseBodyAdvice<String>{
 
     @Override
     public String beforeBodyWrite(String body, MethodParameter returnType, MediaType selectedContentType, Class<? extends HttpMessageConverter<?>> selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
-        org.springframework.cloud.config.environment.Environment placeholdersMainEnv = environemntRepository.findOne(PRESIDIO,"production",null);
+        org.springframework.cloud.config.environment.Environment placeholdersMainEnv = environemntRepository.findOne(PRESIDIO, "production",null);
         StandardEnvironment properiesResolver = EnvironmentPropertySource.prepareEnvironment(placeholdersMainEnv);
         String bodyWithPlaceholdersResolved = EnvironmentPropertySource.resolvePlaceholders(properiesResolver, body);
         return  bodyWithPlaceholdersResolved;
