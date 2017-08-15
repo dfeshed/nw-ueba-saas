@@ -44,9 +44,6 @@
           },
           "aggrFeatureFuncJson": {
             "type": "aggr_feature_feature_to_max_map_func"
-          },
-          "filter": {
-            "jsonPath": "[?(@.operationType == 'PASSWORD_CHANGED' || @.isUserAdmin == 'true')]"
           }
         }
       ]
@@ -71,9 +68,6 @@
           },
           "aggrFeatureFuncJson": {
             "type": "aggr_feature_feature_to_max_map_func"
-          },
-          "filter": {
-            "jsonPath": "[?(@.operationType == 'USER_ACCOUNT_ENABLED')]"
           }
         }
       ]
@@ -98,9 +92,6 @@
           },
           "aggrFeatureFuncJson": {
             "type": "aggr_feature_feature_to_max_map_func"
-          },
-          "filter": {
-            "jsonPath": "[?(@.operationType == 'USER_ACCOUNT_DISABLED')]"
           }
         }
       ]
@@ -125,9 +116,6 @@
           },
           "aggrFeatureFuncJson": {
             "type": "aggr_feature_feature_to_max_map_func"
-          },
-          "filter": {
-            "jsonPath": "[?(@.operationType == 'USER_ACCOUNT_UNLOCKED')]"
           }
         }
       ]
@@ -152,9 +140,6 @@
           },
           "aggrFeatureFuncJson": {
             "type": "aggr_feature_feature_to_max_map_func"
-          },
-          "filter": {
-            "jsonPath": "[?(@.operationType == 'USER_ACCOUNT_TYPE_CHANGED')]"
           }
         }
       ]
@@ -179,9 +164,6 @@
           },
           "aggrFeatureFuncJson": {
             "type": "aggr_feature_feature_to_max_map_func"
-          },
-          "filter": {
-            "jsonPath": "[?(@.operationType == 'USER_ACCOUNT_LOCKED')]"
           }
         }
       ]
@@ -206,9 +188,6 @@
           },
           "aggrFeatureFuncJson": {
             "type": "aggr_feature_feature_to_max_map_func"
-          },
-          "filter": {
-            "jsonPath": "[?(@.operationType == 'USER_PASSWORD_NEVER_EXPIRES_OPTION_CHANGED')]"
           }
         }
       ]
@@ -233,9 +212,6 @@
           },
           "aggrFeatureFuncJson": {
             "type": "aggr_feature_feature_to_max_map_func"
-          },
-          "filter": {
-            "jsonPath": "[?(@.operationType == 'PASSWORD_CHANGED_BY_NON_OWNER')]"
           }
         }
       ]
@@ -261,9 +237,6 @@
           },
           "aggrFeatureFuncJson": {
             "type": "aggr_feature_feature_to_max_map_func"
-          },
-          "filter": {
-            "jsonPath": "[?(@.operationType == 'PASSWORD_CHANGED')]"
           }
         }
       ]
@@ -288,9 +261,6 @@
           },
           "aggrFeatureFuncJson": {
             "type": "aggr_feature_feature_to_max_map_func"
-          },
-          "filter": {
-            "jsonPath": "[?(@.operationType == 'NESTED_MEMBER_ADDED_TO_CRITICAL_ENTERPRISE_GROUP')]"
           }
         }
       ]
@@ -315,18 +285,9 @@
           },
           "aggrFeatureFuncJson": {
             "type": "aggr_feature_feature_to_max_map_func"
-          },
-          "filter": {
-            "jsonPath": "[?(@.operationType == 'MEMBER_ADDED_TO_CRITICAL_ENTERPRISE_GROUP')]"
           }
         }
       ]
     }
-
-
-
-
-
-
   ]
 }
