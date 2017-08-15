@@ -11,10 +11,13 @@ import fortscale.aggregation.feature.bucket.FeatureBucketConf;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
 import net.minidev.json.parser.ParseException;
+import presidio.ade.domain.record.aggregated.AggregatedFeatureType;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static fortscale.aggregation.feature.event.AggrEvent.AGGREGATED_FEATURE_TYPE_F_VALUE;
+import static presidio.ade.domain.record.aggregated.AggregatedFeatureType.SCORE_AGGREGATION;
 
 public class AggregatedFeatureEventsConfService extends AslConfigurationService {
 	private static final Logger logger = Logger.getLogger(AggregatedFeatureEventsConfService.class);
@@ -95,6 +98,15 @@ public class AggregatedFeatureEventsConfService extends AslConfigurationService 
 
 		// nothing found
 		return null;
+	}
+
+	public List<AggregatedFeatureEventConf> getScoreAggregatedFeatureEventConfList()
+	{
+		return this.getAggregatedFeatureEventConfList().stream().filter(aggregatedFeatureEventConf -> {
+			String aggregationTypeCode = aggregatedFeatureEventConf.getType();
+			AggregatedFeatureType aggregatedFeatureType = AggregatedFeatureType.fromCodeRepresentation(aggregationTypeCode);
+			return aggregatedFeatureType.equals(SCORE_AGGREGATION);
+		}).collect(Collectors.toList());
 	}
 
 	public List<AggregatedFeatureEventConf> getAggregatedFeatureEventConfList() {

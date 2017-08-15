@@ -1,31 +1,16 @@
-package presidio.ade.domain.store.scored;
+package presidio.ade.sdk.scored_enriched_records;
 
 import fortscale.utils.time.TimeRange;
 import org.springframework.data.util.Pair;
 import presidio.ade.domain.record.enriched.AdeScoredEnrichedRecord;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
-import presidio.ade.domain.store.AdeDataStoreCleanupParams;
 
 import java.util.List;
 
 /**
- * Created by YaronDL on 6/13/2017.
+ * Created by barak_schuster on 15/08/2017.
  */
-public interface ScoredEnrichedDataStore {
-
-    /**
-     * stores the given records
-     *
-     * @param records         to be stored
-     */
-    void store(List<? extends AdeScoredEnrichedRecord> records);
-
-    /**
-     * cleanup store by filtering params
-     *
-     * @param cleanupParams to build the remove query
-     */
-    void cleanup(AdeDataStoreCleanupParams cleanupParams);
+public interface ScoredEnrichedRecordsManagerSdk {
 
     /**
      *
@@ -44,5 +29,5 @@ public interface ScoredEnrichedDataStore {
      * @param scoreThreshold distinct values would be fetched only for records having score greater then this value
      * @return distinct feature values
      */
-    List<String> findScoredEnrichedRecordsDistinctFeatureValues(String adeEventType, Pair<String,String> contextFieldAndValue, TimeRange timeRange,String distinctFieldName,Double scoreThreshold);
+    List<String> findScoredEnrichedRecordsDistinctFeatureValues(String adeEventType, Pair<String,String> contextFieldAndValue, TimeRange timeRange, String distinctFieldName, Double scoreThreshold);
 }

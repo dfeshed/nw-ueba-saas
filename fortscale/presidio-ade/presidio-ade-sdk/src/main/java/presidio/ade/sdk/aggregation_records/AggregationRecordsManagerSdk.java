@@ -3,8 +3,10 @@ package presidio.ade.sdk.aggregation_records;
 import fortscale.accumulator.aggregation.event.AccumulatedAggregatedFeatureEvent;
 import fortscale.utils.time.TimeRange;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
+import presidio.ade.sdk.scored_enriched_records.ScoredEnrichedRecordsManagerSdk;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Provides the ADE's consumers with APIs related to Aggregation Records.
@@ -34,4 +36,20 @@ public interface AggregationRecordsManagerSdk {
 	 */
 	List<AccumulatedAggregatedFeatureEvent> getAccumulatedAggregatedFeatureEvents(
 			String featureName, String contextId, TimeRange timeRange);
+
+	/**
+	 *
+	 * @return mapping of score aggregation name to adeEventType. can be used in order to retrieve the right parameters for {@link ScoredEnrichedRecordsManagerSdk#findScoredEnrichedRecords(List, String)}
+	 */
+	Map<String,List<String>> getScoreAggregationNameToAdeEventTypeMap();
+
+	/**
+	 * syntactic suger for {@link this#getScoreAggregationNameToAdeEventTypeMap()}
+	 * @param scoreAggregationName
+	 * @return adeEventTypes for scoreAggregationName
+	 */
+	default List<String> getScoreAggregationNameAdeEventTypes(String scoreAggregationName)
+	{
+		return getScoreAggregationNameToAdeEventTypeMap().get(scoreAggregationName);
+	}
 }

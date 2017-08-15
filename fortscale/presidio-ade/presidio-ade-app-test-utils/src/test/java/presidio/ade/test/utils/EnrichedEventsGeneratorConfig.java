@@ -11,7 +11,7 @@ public class EnrichedEventsGeneratorConfig {
     private EnrichedDataStore enrichedDataStore;
 
     @Bean
-    public EnrichedEventsGenerator enrichedEventsGenerator()
+    public EventsGenerator enrichedEventsGenerator()
     {
         return new EnrichedEventsGeneratorImpl(enrichedDataStore);
     }

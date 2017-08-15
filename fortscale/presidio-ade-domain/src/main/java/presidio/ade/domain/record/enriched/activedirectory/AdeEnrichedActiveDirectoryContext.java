@@ -2,16 +2,21 @@ package presidio.ade.domain.record.enriched.activedirectory;
 
 
 import fortscale.domain.core.EventResult;
+import presidio.ade.domain.record.enriched.BaseEnrichedContext;
 
-public class AdeEnrichedActiveDirectoryContext {
+public class AdeEnrichedActiveDirectoryContext  extends BaseEnrichedContext {
 
     private String userId;
     private EventResult result;
     private Boolean isUserAdmin;
     private String operationType;
 
+    public AdeEnrichedActiveDirectoryContext() {
+        super();
+    }
 
     public AdeEnrichedActiveDirectoryContext(EnrichedActiveDirectoryRecord enrichedActiveDirectoryRecord) {
+        super(enrichedActiveDirectoryRecord.getEventId());
         this.userId = enrichedActiveDirectoryRecord.getUserId();
         this.result = enrichedActiveDirectoryRecord.getResult();
         this.isUserAdmin = enrichedActiveDirectoryRecord.getUserAdmin();

@@ -2,22 +2,31 @@ package presidio.ade.sdk.common;
 
 import fortscale.accumulator.aggregation.event.AccumulatedAggregatedFeatureEvent;
 import fortscale.aggregation.feature.bucket.FeatureBucket;
+import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
+import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.domain.SMART.EntityEvent;
-import presidio.ade.domain.store.enriched.EnrichedRecordsMetadata;
 import fortscale.utils.pagination.PageIterator;
 import fortscale.utils.time.TimeRange;
+import org.springframework.data.util.Pair;
+import org.springframework.util.Assert;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
-import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.ade.domain.record.enriched.AdeScoredEnrichedRecord;
+import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.ade.domain.store.AdeDataStoreCleanupParams;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
+import presidio.ade.domain.store.enriched.EnrichedRecordsMetadata;
+import presidio.ade.domain.store.scored.ScoredEnrichedDataStore;
 import presidio.ade.domain.store.smart.SmartDataStore;
 import presidio.ade.domain.store.smart.SmartPageIterator;
 import presidio.ade.sdk.historical_runs.HistoricalRunParams;
 import presidio.ade.sdk.online_run.OnlineRunParams;
 
+import java.util.AbstractMap.SimpleEntry;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+
+import static java.util.stream.Collectors.toMap;
 
 /**
  * @author Barak Schuster
@@ -25,10 +34,14 @@ import java.util.Set;
 public class AdeManagerSdkImpl implements AdeManagerSdk {
     private EnrichedDataStore enrichedDataStore;
     private SmartDataStore smartDataStore;
-
-    public AdeManagerSdkImpl(EnrichedDataStore enrichedDataStore, SmartDataStore smartDataStore) {
+    private ScoredEnrichedDataStore scoredEnrichedDataStore;
+    private AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
+    private Map<String, List<String>> scoreAggregationNameToAdeEventTypeMap;
+    public AdeManagerSdkImpl(EnrichedDataStore enrichedDataStore, SmartDataStore smartDataStore, ScoredEnrichedDataStore scoredEnrichedDataStore, AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService) {
         this.enrichedDataStore = enrichedDataStore;
         this.smartDataStore = smartDataStore;
+        this.scoredEnrichedDataStore = scoredEnrichedDataStore;
+        this.aggregatedFeatureEventsConfService = aggregatedFeatureEventsConfService;
     }
 
     @Override
@@ -155,8 +168,13 @@ public class AdeManagerSdkImpl implements AdeManagerSdk {
     }
 
     @Override
-    public List<AdeScoredEnrichedRecord> getScoredEnrichedRecords(String featureName, String contextId, TimeRange timeRange) {
-        throw new UnsupportedOperationException();
+    public List<AdeScoredEnrichedRecord> findScoredEnrichedRecords(List<String> eventIds, String adeEventType) {
+        return scoredEnrichedDataStore.findScoredEnrichedRecords(eventIds,adeEventType);
+    }
+
+    @Override
+    public List<String> findScoredEnrichedRecordsDistinctFeatureValues(String adeEventType, Pair<String, String> contextFieldAndValue, TimeRange timeRange, String distinctFieldName, Double scoreThreshold) {
+        return scoredEnrichedDataStore.findScoredEnrichedRecordsDistinctFeatureValues(adeEventType,contextFieldAndValue,timeRange,distinctFieldName,scoreThreshold);
     }
 
     @Override
@@ -167,6 +185,27 @@ public class AdeManagerSdkImpl implements AdeManagerSdk {
     @Override
     public List<AccumulatedAggregatedFeatureEvent> getAccumulatedAggregatedFeatureEvents(String featureName, String contextId, TimeRange timeRange) {
         throw new UnsupportedOperationException();
+    }
+
+
+    @Override
+    public Map<String, List<String>> getScoreAggregationNameToAdeEventTypeMap() {
+        // lazy initiation of the map
+        if(scoreAggregationNameToAdeEventTypeMap != null)
+        {
+            return scoreAggregationNameToAdeEventTypeMap;
+        }
+        // get only score aggregation confs
+        List<AggregatedFeatureEventConf> scoreAggregatedFeatureEventConfList = aggregatedFeatureEventsConfService.getScoreAggregatedFeatureEventConfList();
+        Assert.notEmpty(scoreAggregatedFeatureEventConfList,"no score aggregations are defined. should have at least one");
+        scoreAggregationNameToAdeEventTypeMap =
+                scoreAggregatedFeatureEventConfList.stream()
+                        // map conf to featurename, bucketConf.adeEventTypes
+                        .map(aggregatedFeatureEventConf -> new SimpleEntry<String, List<String>>(aggregatedFeatureEventConf.getName(), aggregatedFeatureEventConf.getBucketConf().getAdeEventTypes()))
+                        // collect to map :)
+                        .collect(toMap(SimpleEntry::getKey, SimpleEntry::getValue));
+
+        return scoreAggregationNameToAdeEventTypeMap ;
     }
 
     @Override
