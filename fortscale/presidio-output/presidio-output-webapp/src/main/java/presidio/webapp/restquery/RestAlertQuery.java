@@ -1,11 +1,20 @@
 package presidio.webapp.restquery;
 
-import java.time.Instant;
+import io.swagger.annotations.ApiModel;
 
-public class RestAlertQuery {
+import java.io.Serializable;
+import java.time.Instant;
+import java.util.Set;
+
+@ApiModel("AlertQuery")
+public class RestAlertQuery implements Serializable {
     // filters
+
     private String userName;
-    private String severity;
+    //TODO: should be ENUM
+    private Set<String> severities;
+
+
     private Instant startDate;
     private Instant endDate;
 
@@ -25,12 +34,12 @@ public class RestAlertQuery {
         this.userName = userName;
     }
 
-    public String getSeverity() {
-        return severity;
+    public Set<String> getSeverities() {
+        return severities;
     }
 
-    public void setSeverity(String severity) {
-        this.severity = severity;
+    public void setSeverities(Set<String> severities) {
+        this.severities = severities;
     }
 
     public Instant getStartDate() {
