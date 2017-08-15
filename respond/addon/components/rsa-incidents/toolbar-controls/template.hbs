@@ -1,5 +1,5 @@
 {{#if accessControl.respondCanManageIncidents}}
-  <div class="action-control">
+  <div class="action-control bulk-update-priority">
     {{#power-select
       options=priorityTypes
       matchTriggerWidth=false
@@ -17,7 +17,7 @@
     {{/power-select}}
 
   </div>
-  <div class="action-control">
+  <div class="action-control bulk-update-status">
     {{#power-select
       options=statusTypes
       disabled=hasNoSelections
@@ -34,7 +34,7 @@
 
     {{/power-select}}
   </div>
-  <div class="action-control">
+  <div class="action-control bulk-update-assignee">
     {{#power-select
       options=users
       disabled=(or hasNoSelections hasSelectedClosedIncidents)
@@ -47,13 +47,13 @@
         label=(t 'respond.incidents.actions.changeAssignee'))
       onchange=(action 'updateIncidentAssignee' itemsSelected) as |option|}}
 
-      {{option.name}}
+      {{or option.name option.id}}
 
     {{/power-select}}
   </div>
 {{/if}}
 {{#if accessControl.respondCanDeleteIncidents}}
-  <div class="action-control">
+  <div class="action-control bulk-delete">
     {{#rsa-form-button
       style='danger'
       isDisabled=hasNoSelections
