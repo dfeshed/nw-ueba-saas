@@ -26,7 +26,7 @@ import java.util.List;
 @Controller
 public class ConfigurationApiController implements ConfigurationApi {
 
-    private static String PRESIDO_CONFIGURATION_FILE_NAME = "application-presidio.json";
+    private static String PRESIDO_CONFIGURATION_FILE_NAME = "application-presidio";
 
     private ConfigurationManagerService configurationManagerService;
 
