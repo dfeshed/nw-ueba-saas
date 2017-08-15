@@ -971,6 +971,7 @@ export default {
           storyPoint: 'ja_in {{count}} selected indicator(s)',
           event: 'ja_in {{count}} selected event(s)'
         },
+        selectionNotShown: 'ja_The selected nodes could not be shown due to size limits.',
         hasExceededNodeLimit: 'ja_Showing only first {{limit}} nodes.',
         showAll: 'ja_Show all data'
       }

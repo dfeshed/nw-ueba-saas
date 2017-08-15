@@ -8,7 +8,11 @@
 </div>
 {{#with resolvedSelection as |sel|}}
   <div class="selection">
-    {{t (concat 'respond.entity.legend.selection.' sel.type) count=sel.ids.length}}
+    {{#if selectionCanBeRendered}}
+      {{t (concat 'respond.entity.legend.selection.' sel.type) count=sel.ids.length}}
+    {{else}}
+      {{t 'respond.entity.legend.selectionNotShown'}}
+    {{/if}}
   </div>
 {{/with}}
 {{#if hasExceededNodeLimit}}

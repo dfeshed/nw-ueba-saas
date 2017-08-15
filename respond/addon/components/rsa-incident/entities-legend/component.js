@@ -24,6 +24,11 @@ const EntitiesLegend = Component.extend({
   hasExceededNodeLimit: false,
 
   /**
+   * @public
+   */
+  selectionCanBeRendered: true,
+
+  /**
    * Configurable callback to be invoked when user clicks on "Show All Data" link.
    * @type {Function}
    * @public

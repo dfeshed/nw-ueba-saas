@@ -6,6 +6,7 @@ import { makeLinkId, makeLink } from './link';
 import arrayFromHashValues from 'respond/utils/array/from-hash-values';
 import { isEmpty } from 'ember-utils';
 import { isEmberArray } from 'ember-array/utils';
+import set from 'ember-metal/set';
 
 // Maps properties of a device POJO (from a normalized alert's source, destination or detector) to node types.
 const DEVICE_PROPS_TO_NODE_TYPES = {
@@ -57,6 +58,13 @@ function checkNode(nodeType, nodeValue, nodeHash, evt) {
     node = makeNode(nodeType, nodeValue);
     if (!nodeHash.setItem(nodeKey, node)) {
       // Couldn't create new node (probably because of nodeHash size limits.
+      // Cache the event id and the event's parent indicator id, for future reference.
+      if (!isEmpty(evt.id)) {
+        set(nodeHash.get('eventIdsNotRendered'), evt.id, true);
+      }
+      if (!isEmpty(evt.indicatorId)) {
+        set(nodeHash.get('indicatorIdsNotRendered'), evt.indicatorId, true);
+      }
       return null;
     }
   }
@@ -240,7 +248,11 @@ function parseEventNodesAndLinks(evt, nodeHash, linkHash) {
  */
 export default function eventsToNodesAndLinks(events, options = {}) {
   const { nodeLimit } = options;
-  let nodeHash = HashWithLimit.create({ limit: nodeLimit });
+  let nodeHash = HashWithLimit.create({
+    limit: nodeLimit,
+    indicatorIdsNotRendered: {},
+    eventIdsNotRendered: {}
+  });
   let linkHash = {};
   let newEvents = events;
 
@@ -271,7 +283,9 @@ export default function eventsToNodesAndLinks(events, options = {}) {
     nodes: arrayFromHashValues(nodeHash.get('allItems')),
     links: arrayFromHashValues(linkHash),
     nodeLimit,
-    hasExceededNodeLimit: nodeHash.get('hasExceededLimit')
+    hasExceededNodeLimit: nodeHash.get('hasExceededLimit'),
+    indicatorIdsNotRendered: nodeHash.get('indicatorIdsNotRendered'),
+    eventIdsNotRendered: nodeHash.get('eventIdsNotRendered')
   };
 
   // Save results to cache for next time.

@@ -43,10 +43,26 @@ const IncidentEntities = Component.extend(CanThrottleAttr, {
     return eventsToNodesAndLinks(events || [], { nodeLimit });
   },
 
-  // Generates a filter for the nodes & links from the current selection (if any).
+  // False only if both of the following conditions are true:
+  // (1) the data exceeded node count limit, and
+  // (2) the current selection includes an event/alert id that was truncated.
   @computed('data', 'selection')
-  filter(data, selection) {
-    return selectionToFilter(data, selection);
+  selectionCanBeRendered(data, selection) {
+    const { hasExceededNodeLimit, indicatorIdsNotRendered, eventIdsNotRendered } = data || {};
+    if (hasExceededNodeLimit && selection) {
+      const { type, ids = [] } = selection;
+      const hash = (type === 'event') ? eventIdsNotRendered : indicatorIdsNotRendered;
+      if (ids.any((id) => hash.hasOwnProperty(id))) {
+        return false;
+      }
+    }
+    return true;
+  },
+
+  // Generates a filter for the nodes & links from the current selection (if any).
+  @computed('data', 'selection', 'selectionCanBeRendered')
+  filter(data, selection, selectionCanBeRendered) {
+    return selectionToFilter(data, selectionCanBeRendered ? selection : null);
   },
 
   // Computes the counts of data nodes, grouped by node type.
