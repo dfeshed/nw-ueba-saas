@@ -18,7 +18,7 @@ public class ModelingServiceConfigurationTest {
 	@Bean
 	public static TestPropertiesPlaceholderConfigurer modelingServiceConfigurationTestPropertiesPlaceholderConfigurer() {
 		Properties properties = new Properties();
-		properties.put("presidio.ade.modeling.config.asl.path", "classpath:config/asl/modeling_service");
+		properties.put("presidio.ade.modeling.config.asl.path", "classpath*:config/asl/modeling_service");
 		// Feature bucket conf service
 		properties.put("presidio.ade.modeling.feature.bucket.confs.base.path", "${presidio.ade.modeling.config.asl.path}/feature_buckets/*.json");
 		// Feature aggregation event conf service

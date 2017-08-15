@@ -4,6 +4,8 @@ from presidio.utils.exceptions import UnsupportedFixedDurationStrategyError
 from presidio.operators.model.model_operator import ModelOperator
 
 
+RAW_MODEL_GROUP_NAME = "enriched-record-models"
+
 class RawModelOperator(ModelOperator):
     """
     Runs a "Raw Model" task (JAR). 
@@ -15,7 +17,7 @@ class RawModelOperator(ModelOperator):
     ui_fgcolor = '#000000'
 
     @apply_defaults
-    def __init__(self, command, data_source, task_id=None, *args, **kwargs):
+    def __init__(self, command, data_source, session_id, task_id=None, *args, **kwargs):
         """
         C'tor.
         :param data_source: The data source whose models are going to be built
@@ -26,7 +28,7 @@ class RawModelOperator(ModelOperator):
 
         self.data_source = data_source
 
-        super(RawModelOperator, self).__init__(command=command,task_id=task_id,*args,**kwargs)
+        super(RawModelOperator, self).__init__(command=command,session_id=session_id, group_name=RAW_MODEL_GROUP_NAME,task_id=task_id,*args,**kwargs)
 
 
     def get_task_id(self):
@@ -35,11 +37,4 @@ class RawModelOperator(ModelOperator):
         """
         return '{}_{}'.format(self.data_source, 'raw_model')
 
-    def get_java_args(self):
-        """
-        :return: The java args
-        """
-        java_args = {
-            'data_source': self.data_source,
-        }
-        return java_args
+

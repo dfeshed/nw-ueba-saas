@@ -53,13 +53,25 @@ dags:
         xms: 70
     RawModelFeatureAggregationBucketsOperator:
       jvm_args:
-        jar_path: ${general.deployment.bins.base_path}/test-mock-project-0.0.1-SNAPSHOT.jar
-        main_class: com.fortscale.test.TestMockProjectApplication
+        jar_path: ${general.deployment.bins.base_path}/presidio-ade-app-model-feature-buckets-1.0.0-SNAPSHOT.jar
+        main_class: presidio.ade.processes.shell.feature.aggregation.buckets.ModelFeatureAggregationBucketsApplication
         xmx: 500
         xms: 70
     RawModelOperator:
       jvm_args:
-        jar_path: ${general.deployment.bins.base_path}/test-mock-project-0.0.1-SNAPSHOT.jar
-        main_class: com.fortscale.test.TestMockProjectApplication
+        jar_path: ${general.deployment.bins.base_path}/presidio-ade-app-modeling-1.0.0-SNAPSHOT.jar
+        main_class: presidio.ade.modeling.ModelingServiceApplication
+        xmx: 500
+        xms: 70
+    AggrModelAccumulateAggregationsOperator:
+      jvm_args:
+        jar_path: ${general.deployment.bins.base_path}/presidio-ade-app-accumulate-aggr-1.0.0-SNAPSHOT.jar
+        main_class: presidio.ade.processes.shell.AccumulateAggregationsApplication
+        xmx: 500
+        xms: 70
+    AggrModelOperator:
+      jvm_args:
+        jar_path: ${general.deployment.bins.base_path}/presidio-ade-app-modeling-1.0.0-SNAPSHOT.jar
+        main_class: presidio.ade.modeling.ModelingServiceApplication
         xmx: 500
         xms: 70

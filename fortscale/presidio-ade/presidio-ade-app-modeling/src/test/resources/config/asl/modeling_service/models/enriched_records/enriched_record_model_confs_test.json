@@ -1,0 +1,21 @@
+{
+  "ModelConfs": [
+    {
+      "name": "continuousData.userId.test",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "continuousDataFeatureBucket"
+      },
+      "retriever": {
+        "type": "context_histogram_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "continuousDataFeatureBucket",
+        "featureName": "continuousDataFeature"
+      },
+      "builder": {
+        "type": "continuous_histogram_model_builder"
+      }
+    }
+  ]
+}
