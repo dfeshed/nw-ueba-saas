@@ -17,7 +17,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Created by tomerd on 8/14/2017.
+ * This interceptor is used to indicate whether a field's value matches a regex.
+ * Returns the same JSON with additional predicate.
+ *
  */
 public class JsonRegexPredicatorInterceptor extends AbstractInterceptor {
     private static final Logger logger = LoggerFactory.getLogger(JsonRegexPredicatorInterceptor.class);
