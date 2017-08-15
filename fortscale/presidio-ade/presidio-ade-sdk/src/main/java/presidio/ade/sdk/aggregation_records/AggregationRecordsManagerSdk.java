@@ -1,8 +1,8 @@
 package presidio.ade.sdk.aggregation_records;
 
-import fortscale.accumulator.aggregation.event.AccumulatedAggregatedFeatureEvent;
+import fortscale.aggregation.feature.bucket.FeatureBucket;
 import fortscale.utils.time.TimeRange;
-import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
+import presidio.ade.domain.record.accumulator.AccumulatedAggregationFeatureRecord;
 import presidio.ade.sdk.scored_enriched_records.ScoredEnrichedRecordsManagerSdk;
 
 import java.util.List;
@@ -14,27 +14,16 @@ import java.util.Map;
  * @author Lior Govrin
  */
 public interface AggregationRecordsManagerSdk {
-	/**
-	 * Get a list of {@link AdeAggregationRecord}s with the given feature name, context ID and time range.
-	 *
-	 * @param featureName the name of the aggregation feature
-	 * @param contextId   the context ID (i.e. username)
-	 * @param timeRange   the start and end instants of the records
-	 * @return a list of {@link AdeAggregationRecord}s
-	 */
-	List<AdeAggregationRecord> getAggregationRecords(
-			String featureName, String contextId, TimeRange timeRange);
 
 	/**
-	 * Get a list of {@link AccumulatedAggregatedFeatureEvent}s with the given feature name, context ID and time range.
-	 * TODO: Replace with new POJO.
+	 * Get a list of {@link AccumulatedAggregationFeatureRecord}s with the given feature name, context ID and time range.
 	 *
 	 * @param featureName the name of the aggregation feature that is accumulated
 	 * @param contextId   the context ID (i.e. username)
 	 * @param timeRange   the start and end instants of the records
-	 * @return a list of {@link AccumulatedAggregatedFeatureEvent}s
+	 * @return a list of {@link AccumulatedAggregationFeatureRecord}s
 	 */
-	List<AccumulatedAggregatedFeatureEvent> getAccumulatedAggregatedFeatureEvents(
+	List<AccumulatedAggregationFeatureRecord> getAccumulatedAggregatedFeatureEvents(
 			String featureName, String contextId, TimeRange timeRange);
 
 	/**
@@ -51,5 +40,26 @@ public interface AggregationRecordsManagerSdk {
 	default List<String> getScoreAggregationNameAdeEventTypes(String scoreAggregationName)
 	{
 		return getAggregationNameToAdeEventTypeMap().get(scoreAggregationName);
+	}
+
+	Map<String,String> getAggregationNameToFeatureBucketConfNameMap();
+
+	/**
+	 *
+	 * @param contextId context to retrieve feature buckets for
+	 * @param bucketConfName indicates the name of the bucket
+	 * @param timeRange filtering by time (gte start, lt end)
+	 * @return feature buckets by filtering params
+	 */
+	List<FeatureBucket> findFeatureBuckets(String contextId, String bucketConfName, TimeRange timeRange);
+
+	/**
+	 * converts aggregation feature name to bucketConfName and return {@link this#findFeatureBuckets(String, String, TimeRange)}
+	 * @return feature buckets related to feature name by filtering params
+	 */
+	default List<FeatureBucket> findFeatureBucketsByAggregationFeatureName(String contextId, String aggregationFeatureName, TimeRange timeRange)
+	{
+		String bucketConfName = getAggregationNameToFeatureBucketConfNameMap().get(aggregationFeatureName);
+		return findFeatureBuckets(contextId, bucketConfName, timeRange);
 	}
 }

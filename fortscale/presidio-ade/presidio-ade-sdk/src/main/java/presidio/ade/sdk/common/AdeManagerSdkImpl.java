@@ -1,7 +1,7 @@
 package presidio.ade.sdk.common;
 
-import fortscale.accumulator.aggregation.event.AccumulatedAggregatedFeatureEvent;
 import fortscale.aggregation.feature.bucket.FeatureBucket;
+import fortscale.aggregation.feature.bucket.FeatureBucketReader;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.domain.SMART.EntityEvent;
@@ -9,10 +9,11 @@ import fortscale.utils.pagination.PageIterator;
 import fortscale.utils.time.TimeRange;
 import org.springframework.data.util.Pair;
 import org.springframework.util.Assert;
-import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
+import presidio.ade.domain.record.accumulator.AccumulatedAggregationFeatureRecord;
 import presidio.ade.domain.record.enriched.AdeScoredEnrichedRecord;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.ade.domain.store.AdeDataStoreCleanupParams;
+import presidio.ade.domain.store.accumulator.AggregationEventsAccumulationDataReader;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
 import presidio.ade.domain.store.enriched.EnrichedRecordsMetadata;
 import presidio.ade.domain.store.scored.ScoredEnrichedDataStore;
@@ -25,6 +26,7 @@ import java.util.AbstractMap.SimpleEntry;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toMap;
 
@@ -37,11 +39,17 @@ public class AdeManagerSdkImpl implements AdeManagerSdk {
     private ScoredEnrichedDataStore scoredEnrichedDataStore;
     private AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
     private Map<String, List<String>> aggregationNameToAdeEventTypeMap;
-    public AdeManagerSdkImpl(EnrichedDataStore enrichedDataStore, SmartDataStore smartDataStore, ScoredEnrichedDataStore scoredEnrichedDataStore, AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService) {
+    private Map<String, String> aggregationNameToFeatureBucketConfName;
+    private FeatureBucketReader featureBucketReader;
+    private AggregationEventsAccumulationDataReader aggregationEventsAccumulationDataReader;
+
+    public AdeManagerSdkImpl(EnrichedDataStore enrichedDataStore, SmartDataStore smartDataStore, ScoredEnrichedDataStore scoredEnrichedDataStore, AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService, FeatureBucketReader featureBucketReader, AggregationEventsAccumulationDataReader aggregationEventsAccumulationDataReader) {
         this.enrichedDataStore = enrichedDataStore;
         this.smartDataStore = smartDataStore;
         this.scoredEnrichedDataStore = scoredEnrichedDataStore;
         this.aggregatedFeatureEventsConfService = aggregatedFeatureEventsConfService;
+        this.featureBucketReader = featureBucketReader;
+        this.aggregationEventsAccumulationDataReader = aggregationEventsAccumulationDataReader;
     }
 
     @Override
@@ -177,14 +185,11 @@ public class AdeManagerSdkImpl implements AdeManagerSdk {
         return scoredEnrichedDataStore.findScoredEnrichedRecordsDistinctFeatureValues(adeEventType,contextFieldAndValue,timeRange,distinctFieldName,scoreThreshold);
     }
 
-    @Override
-    public List<AdeAggregationRecord> getAggregationRecords(String featureName, String contextId, TimeRange timeRange) {
-        throw new UnsupportedOperationException();
-    }
+
 
     @Override
-    public List<AccumulatedAggregatedFeatureEvent> getAccumulatedAggregatedFeatureEvents(String featureName, String contextId, TimeRange timeRange) {
-        throw new UnsupportedOperationException();
+    public List<AccumulatedAggregationFeatureRecord> getAccumulatedAggregatedFeatureEvents(String featureName, String contextId, TimeRange timeRange) {
+        return aggregationEventsAccumulationDataReader.findAccumulatedEventsByContextIdAndStartTimeRange(featureName,contextId,timeRange);
     }
 
 
@@ -209,6 +214,22 @@ public class AdeManagerSdkImpl implements AdeManagerSdk {
     }
 
     @Override
+    public Map<String, String> getAggregationNameToFeatureBucketConfNameMap() {
+        if(aggregationNameToFeatureBucketConfName != null)
+        {
+            return aggregationNameToFeatureBucketConfName;
+        }
+        aggregationNameToFeatureBucketConfName =
+                aggregatedFeatureEventsConfService.getAggregatedFeatureEventConfList().stream().collect(Collectors.toMap(AggregatedFeatureEventConf::getName, AggregatedFeatureEventConf::getBucketConfName));
+        return aggregationNameToFeatureBucketConfName;
+    }
+
+    @Override
+    public List<FeatureBucket> findFeatureBuckets(String contextId, String bucketConfName, TimeRange timeRange) {
+        return featureBucketReader.getFeatureBuckets(bucketConfName,contextId,timeRange);
+    }
+
+    @Override
     public PageIterator<EntityEvent> getSmartRecords(TimeRange timeRange, int pageSize, int scoreThreshold) {
         // TODO: Replace temporary implementation
         return new SmartPageIterator<>(smartDataStore, timeRange, scoreThreshold);
@@ -225,8 +246,4 @@ public class AdeManagerSdkImpl implements AdeManagerSdk {
         // TODO: Implement
     }
 
-    @Override
-    public List<FeatureBucket> getFeatureBuckets(String featureBucketName, String aggregatedFeatureName, String contextId, TimeRange timeRange) {
-        throw new UnsupportedOperationException();
-    }
 }

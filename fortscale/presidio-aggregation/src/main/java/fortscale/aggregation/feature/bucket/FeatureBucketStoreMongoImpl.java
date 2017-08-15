@@ -69,6 +69,14 @@ public class FeatureBucketStoreMongoImpl implements FeatureBucketStore {
 		return mongoTemplate.find(query, FeatureBucket.class, getCollectionName(featureBucketConfName));
 	}
 
+	@Override
+	public List<FeatureBucket> getFeatureBuckets(String featureBucketConfName, String contextIds, TimeRange timeRange) {
+		Query query = new Query()
+				.addCriteria(Criteria.where(FeatureBucket.CONTEXT_ID_FIELD).is(contextIds))
+				.addCriteria(Criteria.where(FeatureBucket.START_TIME_FIELD).gte(timeRange.getStart()).lt(timeRange.getEnd()));
+		return mongoTemplate.find(query, FeatureBucket.class, getCollectionName(featureBucketConfName));
+	}
+
 	/**
 	 * @see FeatureBucketStore#storeFeatureBucket(FeatureBucketConf, FeatureBucket)
 	 */
