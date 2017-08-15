@@ -57,6 +57,11 @@ public class GenericWritableResourceRepository implements WritableResourceReposi
     }
 
     @Override
+    public void delete(String application, String profile, String label, String extension) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public void update(String application, String profile, String label, String key, String value) {
         throw new UnsupportedOperationException();
     }
