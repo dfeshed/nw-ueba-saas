@@ -2,6 +2,7 @@ from abc import ABCMeta, abstractmethod
 from airflow.utils.decorators import apply_defaults
 from presidio.utils.airflow.operators.spring_boot_jar_operator import SpringBootJarOperator
 from presidio.utils.airflow.context_wrapper import ContextWrapper
+from presidio.utils.services.time_service import convert_to_utc
 
 
 
@@ -17,7 +18,7 @@ class ModelOperator(SpringBootJarOperator):
 
     __metaclass__ = ABCMeta
 
-    def __init__(self, command, task_id=None, *args, **kwargs):
+    def __init__(self, command, session_id, group_name, task_id=None, *args, **kwargs):
         """
         C'tor.
         :param task_id: The task ID of this operator - If None, the ID is generated automatically
@@ -25,8 +26,12 @@ class ModelOperator(SpringBootJarOperator):
         """
 
         self.task_id = task_id or self.get_task_id()
+        self.interval = kwargs.get('dag').schedule_interval
 
-        java_args = self.get_java_args()
+        java_args = {
+            'group_name': group_name,
+            'session_id': session_id
+        }
 
         print('agg operator. commad=', command)
         print('agg operator. kwargs=', kwargs)
@@ -50,10 +55,10 @@ class ModelOperator(SpringBootJarOperator):
 
         end_date = execution_date + self.interval
         java_args = {
-            'end_date': end_date.isoformat()
+            'end_date': convert_to_utc(end_date)
         }
-        super(SpringBootJarOperator, self).update_java_args(java_args)
-        super(SpringBootJarOperator, self).execute(context)
+        super(ModelOperator, self).update_java_args(java_args)
+        super(ModelOperator, self).execute(context)
 
     @abstractmethod
     def get_task_id(self):
@@ -62,9 +67,3 @@ class ModelOperator(SpringBootJarOperator):
         """
         pass
 
-    @abstractmethod
-    def get_java_args(self):
-        """
-        :return: The java args
-        """
-        pass
