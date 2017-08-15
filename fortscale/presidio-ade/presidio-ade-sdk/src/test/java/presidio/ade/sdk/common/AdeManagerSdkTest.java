@@ -68,7 +68,7 @@ public class AdeManagerSdkTest {
         List<AdeScoredFileRecord> generatedScoredRecords = scoredEnrichedFileGenerator.generateAndPersistSanityData();
         String adeEventType = generatedScoredRecords.get(0).getAdeEventType();
         List<String> eventIds = generatedScoredRecords.stream().map(x -> x.getContext().getEventId()).collect(Collectors.toList());
-        List<AdeScoredEnrichedRecord> retrievedScoredEnrichedRecords = adeManagerSdk.findScoredEnrichedRecords(eventIds, adeEventType);
+        List<AdeScoredEnrichedRecord> retrievedScoredEnrichedRecords = adeManagerSdk.findScoredEnrichedRecords(eventIds, adeEventType, GENERATED_SCORE);
         Assert.assertEquals(generatedScoredRecords.size(),retrievedScoredEnrichedRecords.size());
         Instant startInstant = retrievedScoredEnrichedRecords.stream().min(Comparator.comparing(AdeRecord::getStartInstant)).get().getStartInstant();
         Instant endInstant = retrievedScoredEnrichedRecords.stream().max(Comparator.comparing(AdeRecord::getStartInstant)).get().getStartInstant();
@@ -81,7 +81,7 @@ public class AdeManagerSdkTest {
     @Test
     public void shouldGetScoreAggregationNameToAdeEventTypeMap()
     {
-        Map<String, List<String>> scoreAggregationNameToAdeEventTypeMap = adeManagerSdk.getScoreAggregationNameToAdeEventTypeMap();
+        Map<String, List<String>> scoreAggregationNameToAdeEventTypeMap = adeManagerSdk.getAggregationNameToAdeEventTypeMap();
         Assert.assertNotNull(scoreAggregationNameToAdeEventTypeMap);
         Assert.assertTrue(scoreAggregationNameToAdeEventTypeMap.size()>0);
         scoreAggregationNameToAdeEventTypeMap.values().forEach(value -> Assert.assertTrue(value.size()>=1));

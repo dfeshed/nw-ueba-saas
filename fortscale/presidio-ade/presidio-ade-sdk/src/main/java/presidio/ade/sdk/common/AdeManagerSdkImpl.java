@@ -36,7 +36,7 @@ public class AdeManagerSdkImpl implements AdeManagerSdk {
     private SmartDataStore smartDataStore;
     private ScoredEnrichedDataStore scoredEnrichedDataStore;
     private AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
-    private Map<String, List<String>> scoreAggregationNameToAdeEventTypeMap;
+    private Map<String, List<String>> aggregationNameToAdeEventTypeMap;
     public AdeManagerSdkImpl(EnrichedDataStore enrichedDataStore, SmartDataStore smartDataStore, ScoredEnrichedDataStore scoredEnrichedDataStore, AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService) {
         this.enrichedDataStore = enrichedDataStore;
         this.smartDataStore = smartDataStore;
@@ -168,8 +168,8 @@ public class AdeManagerSdkImpl implements AdeManagerSdk {
     }
 
     @Override
-    public List<AdeScoredEnrichedRecord> findScoredEnrichedRecords(List<String> eventIds, String adeEventType) {
-        return scoredEnrichedDataStore.findScoredEnrichedRecords(eventIds,adeEventType);
+    public List<AdeScoredEnrichedRecord> findScoredEnrichedRecords(List<String> eventIds, String adeEventType, Double scoreThreshold) {
+        return scoredEnrichedDataStore.findScoredEnrichedRecords(eventIds,adeEventType, scoreThreshold);
     }
 
     @Override
@@ -189,23 +189,23 @@ public class AdeManagerSdkImpl implements AdeManagerSdk {
 
 
     @Override
-    public Map<String, List<String>> getScoreAggregationNameToAdeEventTypeMap() {
+    public Map<String, List<String>> getAggregationNameToAdeEventTypeMap() {
         // lazy initiation of the map
-        if(scoreAggregationNameToAdeEventTypeMap != null)
+        if(aggregationNameToAdeEventTypeMap != null)
         {
-            return scoreAggregationNameToAdeEventTypeMap;
+            return aggregationNameToAdeEventTypeMap;
         }
         // get only score aggregation confs
-        List<AggregatedFeatureEventConf> scoreAggregatedFeatureEventConfList = aggregatedFeatureEventsConfService.getScoreAggregatedFeatureEventConfList();
-        Assert.notEmpty(scoreAggregatedFeatureEventConfList,"no score aggregations are defined. should have at least one");
-        scoreAggregationNameToAdeEventTypeMap =
-                scoreAggregatedFeatureEventConfList.stream()
+        List<AggregatedFeatureEventConf> aggregatedFeatureEventConfList = aggregatedFeatureEventsConfService.getAggregatedFeatureEventConfList();
+        Assert.notEmpty(aggregatedFeatureEventConfList,"no score aggregations are defined. should have at least one");
+        aggregationNameToAdeEventTypeMap =
+                aggregatedFeatureEventConfList.stream()
                         // map conf to featurename, bucketConf.adeEventTypes
                         .map(aggregatedFeatureEventConf -> new SimpleEntry<String, List<String>>(aggregatedFeatureEventConf.getName(), aggregatedFeatureEventConf.getBucketConf().getAdeEventTypes()))
                         // collect to map :)
                         .collect(toMap(SimpleEntry::getKey, SimpleEntry::getValue));
 
-        return scoreAggregationNameToAdeEventTypeMap ;
+        return aggregationNameToAdeEventTypeMap;
     }
 
     @Override

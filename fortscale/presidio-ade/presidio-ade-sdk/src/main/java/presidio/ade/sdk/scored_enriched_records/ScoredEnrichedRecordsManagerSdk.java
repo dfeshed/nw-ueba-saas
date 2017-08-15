@@ -16,9 +16,10 @@ public interface ScoredEnrichedRecordsManagerSdk {
      *
      * @param eventIds {@link EnrichedRecord#eventId}
      * @param adeEventType type of {@link AdeScoredEnrichedRecord} - symbolize the scored feature name
+     * @param scoreThreshold
      * @return a list of all the scored enriched records that originated from given params
      */
-    List<AdeScoredEnrichedRecord> findScoredEnrichedRecords(List<String> eventIds, String adeEventType);
+    List<AdeScoredEnrichedRecord> findScoredEnrichedRecords(List<String> eventIds, String adeEventType, Double scoreThreshold);
 
     /**
      *

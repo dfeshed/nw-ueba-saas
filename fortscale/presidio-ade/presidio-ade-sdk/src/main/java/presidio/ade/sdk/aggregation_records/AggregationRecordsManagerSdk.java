@@ -39,17 +39,17 @@ public interface AggregationRecordsManagerSdk {
 
 	/**
 	 *
-	 * @return mapping of score aggregation name to adeEventType. can be used in order to retrieve the right parameters for {@link ScoredEnrichedRecordsManagerSdk#findScoredEnrichedRecords(List, String)}
+	 * @return mapping of aggregation name to adeEventType. can be used in order to retrieve the right parameters for {@link ScoredEnrichedRecordsManagerSdk#findScoredEnrichedRecords(List, String, Double)}
 	 */
-	Map<String,List<String>> getScoreAggregationNameToAdeEventTypeMap();
+	Map<String,List<String>> getAggregationNameToAdeEventTypeMap();
 
 	/**
-	 * syntactic suger for {@link this#getScoreAggregationNameToAdeEventTypeMap()}
+	 * syntactic suger for {@link this#getAggregationNameToAdeEventTypeMap()}
 	 * @param scoreAggregationName
 	 * @return adeEventTypes for scoreAggregationName
 	 */
 	default List<String> getScoreAggregationNameAdeEventTypes(String scoreAggregationName)
 	{
-		return getScoreAggregationNameToAdeEventTypeMap().get(scoreAggregationName);
+		return getAggregationNameToAdeEventTypeMap().get(scoreAggregationName);
 	}
 }

@@ -59,9 +59,11 @@ public class ScoredEnrichedDataStoreMongoImpl implements ScoredEnrichedDataStore
     }
 
     @Override
-    public List<AdeScoredEnrichedRecord> findScoredEnrichedRecords(List<String> eventIds, String adeEventType) {
+    public List<AdeScoredEnrichedRecord> findScoredEnrichedRecords(List<String> eventIds, String adeEventType, Double scoreThreshold) {
         String collectionName = translator.toCollectionName(adeEventType);
-        Query query = Query.query(Criteria.where(String.format("%s.%s", CONTEXT_FIELD_NAME, EVENT_ID_FIELD_NAME)).in(eventIds));
+        Criteria scoreFilter = Criteria.where(SCORE_FIELD_NAME).gte(scoreThreshold);
+        Criteria eventIdsFilter = Criteria.where(String.format("%s.%s", CONTEXT_FIELD_NAME, EVENT_ID_FIELD_NAME)).in(eventIds);
+        Query query = Query.query(eventIdsFilter).addCriteria(scoreFilter);
         return mongoTemplate.find(query,AdeScoredEnrichedRecord.class,collectionName);
     }
 
