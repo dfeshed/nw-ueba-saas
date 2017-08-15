@@ -48,6 +48,12 @@ const RemediationTaskFilters = Component.extend({
     return users.filter((user) => (createdByFilters.includes(user.id)));
   },
 
+  // Custom search for the createdBy filter to ensure that if the user.name is not found, we also search id
+  createdByMatcher({ name, id }, searchTerm) {
+    const userName = name || id;
+    return userName.toLowerCase().indexOf(searchTerm.toLowerCase());
+  },
+
   actions: {
     idFilterChanged(value = '') {
       const isValid = !value ? true : (/^REM-\d+$/i).test(value);

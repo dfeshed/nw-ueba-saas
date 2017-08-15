@@ -48,8 +48,8 @@
   {{#power-select-multiple
     options=(readonly users)
     selected=selectedCreatedBys
-    searchField="name"
+    matcher=createdByMatcher
     onchange=(action "createdByChanged") as |users|}}
-    {{users.name}}
+    {{or users.name users.id}}
   {{/power-select-multiple}}
 </section>

@@ -81,7 +81,7 @@ test('All of the priorities appear as checkboxes, and clicking one dispatches an
 });
 
 test('All of the createdBy users appear in the dropdown, and selecting one calls dispatch', function(assert) {
-  assert.expect(2);
+  assert.expect(3);
   return initialize.then(() => {
     this.on('updateFilter', function() {
       assert.ok(true);
@@ -89,7 +89,13 @@ test('All of the createdBy users appear in the dropdown, and selecting one calls
     this.render(hbs`{{rsa-remediation-tasks/filter-controls updateFilter=(action 'updateFilter')}}`);
     const selector = '.filter-option.createdby-filter';
     clickTrigger(selector);
-    assert.equal($('.ember-power-select-options li.ember-power-select-option').length, 6, 'There are 6 created by users available');
+    const $options = $('.ember-power-select-options li.ember-power-select-option');
+    const createdByNames = $options.length && $options.map((index, item) => {
+      const optionText = $(item).text().trim();
+      return optionText.length ? optionText : null;
+    });
+    assert.equal($options.length, 6, 'There are 6 createdBy options');
+    assert.equal(createdByNames.length, 6, 'Each createdBy option has a text value');
     selectFirstOption();
   });
 });
