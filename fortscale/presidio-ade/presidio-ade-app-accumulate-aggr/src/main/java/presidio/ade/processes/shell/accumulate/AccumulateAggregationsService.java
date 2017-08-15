@@ -12,7 +12,7 @@ import presidio.ade.domain.pagination.enriched.EnrichedRecordPaginationService;
 import presidio.ade.domain.record.AdeRecord;
 import presidio.ade.domain.record.accumulator.AccumulatedAggregationFeatureRecord;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
-import presidio.ade.domain.store.accumulator.AccumulatedDataStore;
+import presidio.ade.domain.store.accumulator.AggregationEventsAccumulationDataStore;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
 
 import java.util.*;
@@ -22,7 +22,7 @@ public class AccumulateAggregationsService extends FixedDurationStrategyExecutor
 
     private BucketConfigurationService bucketConfigurationService;
     private EnrichedDataStore enrichedDataStore;
-    private AccumulatedDataStore accumulatedDataStore;
+    private AggregationEventsAccumulationDataStore aggregationEventsAccumulationDataStore;
     private int pageSize;
     private int maxGroupSize;
     private FixedDurationStrategy featureBucketDuration;
@@ -32,13 +32,13 @@ public class AccumulateAggregationsService extends FixedDurationStrategyExecutor
     public AccumulateAggregationsService(FixedDurationStrategy fixedDurationStrategy,
                                          BucketConfigurationService bucketConfigurationService,
                                          EnrichedDataStore enrichedDataStore,
-                                         AccumulatedDataStore accumulatedDataStore, int pageSize, int maxGroupSize, FixedDurationStrategy featureBucketDuration,
+                                         AggregationEventsAccumulationDataStore aggregationEventsAccumulationDataStore, int pageSize, int maxGroupSize, FixedDurationStrategy featureBucketDuration,
                                          AccumulateAggregationsBucketService accumulateAggregationsBucketService,
                                          AccumulationsCache accumulationsCache) {
         super(fixedDurationStrategy);
         this.bucketConfigurationService = bucketConfigurationService;
         this.enrichedDataStore = enrichedDataStore;
-        this.accumulatedDataStore = accumulatedDataStore;
+        this.aggregationEventsAccumulationDataStore = aggregationEventsAccumulationDataStore;
         this.pageSize = pageSize;
         this.maxGroupSize = maxGroupSize;
         this.featureBucketDuration = featureBucketDuration;
@@ -64,7 +64,7 @@ public class AccumulateAggregationsService extends FixedDurationStrategyExecutor
             List<AccumulatedAggregationFeatureRecord> accumulatedRecords = accumulationsCache.getAllAccumulatedRecords();
             accumulationsCache.clean();
 
-            accumulatedDataStore.store(accumulatedRecords);
+            aggregationEventsAccumulationDataStore.store(accumulatedRecords);
         }
     }
 

@@ -23,9 +23,6 @@ import java.util.List;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 public class LinearScoreReducerFactoryTest {
-	@MockBean
-	private ModelConfService modelConfService;
-
 	@Autowired
 	private FactoryService<Scorer> scorerFactoryService;
 	@Autowired

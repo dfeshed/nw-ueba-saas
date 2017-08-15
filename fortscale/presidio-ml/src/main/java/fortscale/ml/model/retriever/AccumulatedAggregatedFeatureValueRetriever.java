@@ -1,22 +1,20 @@
 package fortscale.ml.model.retriever;
 
-import fortscale.accumulator.aggregation.store.AccumulatedAggregatedFeatureEventStore;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
+import presidio.ade.domain.store.accumulator.AggregationEventsAccumulationDataReader;
 
-import java.util.Collections;
 import java.util.Date;
-import java.util.List;
 import java.util.stream.DoubleStream;
 
 public class AccumulatedAggregatedFeatureValueRetriever extends AbstractAggregatedFeatureValueRetriever {
 
-    private AccumulatedAggregatedFeatureEventStore store;
+    private AggregationEventsAccumulationDataReader aggregationEventsAccumulationDataReader;
 
 
-    public AccumulatedAggregatedFeatureValueRetriever(AccumulatedAggregatedFeatureValueRetrieverConf config, AccumulatedAggregatedFeatureEventStore store, AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService) {
+    public AccumulatedAggregatedFeatureValueRetriever(AccumulatedAggregatedFeatureValueRetrieverConf config, AggregationEventsAccumulationDataReader aggregationEventsAccumulationDataReader, AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService) {
         super(config, aggregatedFeatureEventsConfService, true);
-        this.store = store;
+        this.aggregationEventsAccumulationDataReader = aggregationEventsAccumulationDataReader;
     }
 
     @Override
@@ -24,8 +22,8 @@ public class AccumulatedAggregatedFeatureValueRetriever extends AbstractAggregat
                                                        String contextId,
                                                        Date startTime,
                                                        Date endTime) {
-        return store.findAccumulatedEventsByContextIdAndStartTimeRange(
-                aggregatedFeatureEventConf,
+        return aggregationEventsAccumulationDataReader.findAccumulatedEventsByContextIdAndStartTimeRange(
+                aggregatedFeatureEventConf.getName(),
                 contextId,
                 getStartTime(endTime).toInstant(),
                 endTime.toInstant()

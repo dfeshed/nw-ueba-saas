@@ -11,7 +11,7 @@
     <artifactId>presidio-ade-app-modeling</artifactId>
     <packaging>jar</packaging>
     <properties>
-        <start-class>presidio.ade.processes.shell.ModelingServiceApplication</start-class>
+        <start-class>presidio.ade.modeling.ModelingServiceApplication</start-class>
     </properties>
     <dependencies>
         <dependency>

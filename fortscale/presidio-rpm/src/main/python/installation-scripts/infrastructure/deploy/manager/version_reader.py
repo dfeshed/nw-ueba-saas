@@ -6,7 +6,7 @@ from version_descriptor import VersionDescriptor
 
 class VersionReader():
     def read_current(self, rpm_name):
-        version_temp_file='/tmp/version.txt'
+        version_temp_file = '/tmp/version.txt'
         if not os.path.isfile(version_temp_file):
             return VersionDescriptor(major=0, minor=0, build=0)
 

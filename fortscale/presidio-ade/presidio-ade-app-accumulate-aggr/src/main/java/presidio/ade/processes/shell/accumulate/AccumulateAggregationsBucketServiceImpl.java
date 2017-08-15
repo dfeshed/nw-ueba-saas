@@ -106,7 +106,7 @@ public class AccumulateAggregationsBucketServiceImpl implements AccumulateAggreg
      */
     private Map<Instant, List<AdeRecord>> getStartDateToRecordsOrderedMap(List<? extends AdeRecord> adeRecords, FixedDurationStrategy featureBucketStrategy) {
 
-        Map<Instant, List<AdeRecord>> startDateToRecords = new HashMap<>();
+        Map<Instant, List<AdeRecord>> startDateToRecords = new TreeMap<>();
 
         for (AdeRecord adeRecord : adeRecords) {
             Instant start = adeRecord.getStartInstant();
@@ -121,10 +121,7 @@ public class AccumulateAggregationsBucketServiceImpl implements AccumulateAggreg
                 startDateToRecords.put(start, records);
             }
         }
-
-        return startDateToRecords.entrySet().stream().sorted(reverseOrder(Map.Entry.comparingByKey())).collect(Collectors.toMap(Map.Entry::getKey,
-                Map.Entry::getValue,
-                (v1, v2) -> v1));
+        return startDateToRecords;
     }
 
 

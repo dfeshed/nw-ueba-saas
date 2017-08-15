@@ -186,6 +186,7 @@ class AnomalyDetectionEngineDagBuilder(PresidioDagBuilder):
         for smart_events_conf in smart_events_confs:
             # Create the smart events operator for the configuration
             smart_events_operator = SmartEventsOperator(
+                command=PresidioDagBuilder.presidio_command,
                 fixed_duration_strategy=fixed_duration_strategy,
                 smart_events_conf=smart_events_conf,
                 dag=anomaly_detection_engine_dag

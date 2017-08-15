@@ -21,7 +21,7 @@ import presidio.sdk.api.services.PresidioInputPersistencyService;
 
 @Configuration
 @EnableMongoRepositories(basePackages = "presidio.input.sdk.impl.repositories")
-@PropertySource("classpath:application.properties")
+@PropertySource("classpath:inputSdk.properties")
 public class PresidioInputPersistencyServiceConfig {
 
     @Bean

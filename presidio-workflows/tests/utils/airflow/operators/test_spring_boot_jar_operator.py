@@ -181,7 +181,7 @@ class TestSpringBootJarOperator(object):
         logging.info('test remote debug:')
         jvm_args = {
             'remote_debug_enabled': True,
-            'remote_debug_port': 9200,
+            'remote_debug_port': 9211,
             'remote_debug_suspend': False,
             'jar_path': JAR_PATH,
             'main_class': MAIN_CLASS,
@@ -190,7 +190,7 @@ class TestSpringBootJarOperator(object):
         dag = DAG(
             "test_remote_debug", default_args=default_args, schedule_interval=timedelta(1))
 
-        expected_bash_comment = '/usr/bin/java -Xms100m -Xmx2048m -Duser.timezone=UTC -agentlib:jdwp=transport=dt_socket,address=9200,server=y,suspend=n -cp ' + JAR_PATH + ' -Dloader.main=' + MAIN_CLASS + ' ' + LAUNCHER
+        expected_bash_comment = '/usr/bin/java -Xms100m -Xmx2048m -Duser.timezone=UTC -agentlib:jdwp=transport=dt_socket,address=9211,server=y,suspend=n -cp ' + JAR_PATH + ' -Dloader.main=' + MAIN_CLASS + ' ' + LAUNCHER
         expected_java_args = {'a': 'one', 'b': 'two'}
         build_and_run_task(jvm_args, dag, java_args, expected_bash_comment, expected_java_args)
 
@@ -229,7 +229,7 @@ class TestSpringBootJarOperator(object):
             'xms': 101,
             'xmx': 2049,
             'remote_debug_enabled': True,
-            'remote_debug_port': 9200,
+            'remote_debug_port': 9222,
             'jar_path': JAR_PATH,
             'main_class': MAIN_CLASS,
             'java_overriding_logback_conf_path': PATH + '/tests/resources/xmls/test_logback.xml',
@@ -242,7 +242,7 @@ class TestSpringBootJarOperator(object):
         dag = DAG(
             "test_all_params", default_args=default_args, schedule_interval=timedelta(1))
 
-        expected_bash_comment = '/usr/bin/java -Xms101m -Xmx2049m -Duser.timezone=America/New_York -Dlogback.configurationFile=' + PATH + '/tests/resources/xmls/test_logback.xml -agentlib:jdwp=transport=dt_socket,address=9200,server=y,suspend=n -cp ' + JAR_PATH + ' -Dloader.main=' + MAIN_CLASS + ' ' + LAUNCHER
+        expected_bash_comment = '/usr/bin/java -Xms101m -Xmx2049m -Duser.timezone=America/New_York -Dlogback.configurationFile=' + PATH + '/tests/resources/xmls/test_logback.xml -agentlib:jdwp=transport=dt_socket,address=9222,server=y,suspend=n -cp ' + JAR_PATH + ' -Dloader.main=' + MAIN_CLASS + ' ' + LAUNCHER
         expected_java_args = {'a': 'one', 'b': 'two'}
         build_and_run_task(jvm_args, dag, java_args, expected_bash_comment, expected_java_args)
 

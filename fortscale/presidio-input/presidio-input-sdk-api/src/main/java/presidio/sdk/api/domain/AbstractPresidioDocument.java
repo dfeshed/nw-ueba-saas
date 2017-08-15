@@ -12,13 +12,13 @@ import java.util.Map;
 public class AbstractPresidioDocument extends AbstractAuditableDocument {
 
     public static final String DATA_SOURCE_FIELD_NAME = "dataSource";
-    public static final String USER_ID_FIELD_NAME = "normalizedUsername";
+    public static final String USER_ID_FIELD_NAME = "userId";
     public static final String EVENT_ID_FIELD_NAME = "eventId";
     public static final String RESULT_FIELD_NAME = "result";
     public static final String OPERATION_TYPE_FIELD_NAME = "operationType";
     public static final String OPERATION_TYPE_CATEGORY_FIELD_NAME = "operationTypeCategory";
     public static final String USER_NAME_FIELD_NAME = "userName";
-    public static final String DISPLAY_NAME_FIELD_NAME = "displayName";
+    public static final String USER_DISPLAY_NAME_FIELD_NAME = "userDisplayName";
     public static final String ADDITIONAL_INFO_FIELD_NAME = "additionalInfo";
 
     @NotEmpty
@@ -46,7 +46,7 @@ public class AbstractPresidioDocument extends AbstractAuditableDocument {
     @Field(USER_NAME_FIELD_NAME)
     protected String userName;
 
-    @Field(DISPLAY_NAME_FIELD_NAME)
+    @Field(USER_DISPLAY_NAME_FIELD_NAME)
     protected String userDisplayName;
 
     @Field(ADDITIONAL_INFO_FIELD_NAME)

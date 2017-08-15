@@ -13,6 +13,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import presidio.ade.domain.store.accumulator.AggregationEventsAccumulationDataReader;
 
 import java.util.Collections;
 
@@ -49,7 +50,7 @@ public class AccumulatedAggregatedFeatureValueRetrieverTest {
     public static class AccumulatedAggregatedFeatureValueRetrieverTestConfig {
 
         @MockBean
-        private AccumulatedAggregatedFeatureEventStore store;
+        private AggregationEventsAccumulationDataReader store;
         @MockBean
         private AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
         @Autowired

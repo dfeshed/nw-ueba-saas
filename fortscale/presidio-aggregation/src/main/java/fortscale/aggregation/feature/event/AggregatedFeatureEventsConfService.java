@@ -118,20 +118,6 @@ public class AggregatedFeatureEventsConfService extends AslConfigurationService 
 		return null;
 	}
 
-	public AggrEventEvidenceFilteringStrategyEnum getEvidenceReadingStrategy(String aggregatedFeatureName){
-		String strategy = "";
-		for (AggregatedFeatureEventConf aggregatedFeatureEventConf : aggregatedFeatureEventConfList) {
-			if (aggregatedFeatureEventConf.getName().equals(aggregatedFeatureName)) {
-				strategy = aggregatedFeatureEventConf.getEvidencesFilterStrategy();
-			}
-		}
-
-		return AggrEventEvidenceFilteringStrategyEnum.valueOf(strategy);
-	}
-
-
-
-
 
 	private void createOutputBuckets(){
 		for (AggregatedFeatureEventConf conf : aggregatedFeatureEventConfList) {

@@ -8,7 +8,6 @@
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
       "anomalyType": "event_time",
-      "evidencesFilterStrategy": "HIGHEST_SCORE",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "highest_date_time_score"
@@ -26,7 +25,6 @@
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
       "anomalyType": "normalized_src_machine",
-      "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "normalized_src_machine_to_highest_score_map"
@@ -48,7 +46,6 @@
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
-      "evidencesFilterStrategy": "HIGHEST_SCORE",
       "aggregatedFeatureNamesMap": {
         "groupBy": [
           "src_network_folder_paths_histogram"
@@ -66,7 +63,6 @@
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
-      "evidencesFilterStrategy": "HIGHEST_SCORE",
       "aggregatedFeatureNamesMap": {
         "sum": [
           "sum_of_moved_files_to_removable_device_size"
@@ -83,7 +79,6 @@
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
-      "evidencesFilterStrategy": "HIGHEST_SCORE",
       "aggregatedFeatureNamesMap": {
         "sum": [
           "moved_files_to_removable_device_counter"
@@ -100,7 +95,6 @@
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
-      "evidencesFilterStrategy": "HIGHEST_SCORE",
       "aggregatedFeatureNamesMap": {
         "sum": [
           "sum_of_copied_files_to_removable_device_size"
@@ -117,7 +111,6 @@
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
-      "evidencesFilterStrategy": "HIGHEST_SCORE",
       "aggregatedFeatureNamesMap": {
         "sum": [
           "copied_files_to_removable_device_counter"
@@ -134,7 +127,6 @@
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
-      "evidencesFilterStrategy": "HIGHEST_SCORE",
       "aggregatedFeatureNamesMap": {
         "sum": [
           "sum_of_moved_files_from_remote_device_size"
@@ -151,7 +143,6 @@
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
-      "evidencesFilterStrategy": "HIGHEST_SCORE",
       "aggregatedFeatureNamesMap": {
         "sum": [
           "moved_files_from_remote_device_counter"
@@ -168,7 +159,6 @@
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
-      "evidencesFilterStrategy": "HIGHEST_SCORE",
       "aggregatedFeatureNamesMap": {
         "sum": [
           "sum_of_copied_files_from_remote_device_size"
@@ -185,7 +175,6 @@
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
-      "evidencesFilterStrategy": "HIGHEST_SCORE",
       "aggregatedFeatureNamesMap": {
         "sum": [
           "copied_files_from_remote_device_counter"
@@ -202,7 +191,6 @@
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
-      "evidencesFilterStrategy": "HIGHEST_SCORE",
       "aggregatedFeatureNamesMap": {
         "sum": [
           "recycled_or_deleted_files_counter"
@@ -219,7 +207,6 @@
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
-      "evidencesFilterStrategy": "HIGHEST_SCORE",
       "aggregatedFeatureNamesMap": {
         "sum": [
           "opened_files_counter"
@@ -237,7 +224,6 @@
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
       "anomalyType": "event_time",
-      "evidencesFilterStrategy": "HIGHEST_SCORE",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "highest_date_time_score"
@@ -255,7 +241,6 @@
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
       "anomalyType": "normalized_src_machine",
-      "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "normalized_src_machine_to_highest_score_map"
@@ -277,7 +262,6 @@
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
-      "evidencesFilterStrategy": "HIGHEST_SCORE",
       "aggregatedFeatureNamesMap": {
         "groupBy": [
           "src_network_folder_paths_histogram"
@@ -295,7 +279,6 @@
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
-      "evidencesFilterStrategy": "HIGHEST_SCORE",
       "aggregatedFeatureNamesMap": {
         "sum": [
           "sum_of_moved_files_to_removable_device_size"
@@ -312,7 +295,6 @@
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
-      "evidencesFilterStrategy": "HIGHEST_SCORE",
       "aggregatedFeatureNamesMap": {
         "sum": [
           "moved_files_to_removable_device_counter"
@@ -329,7 +311,6 @@
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
-      "evidencesFilterStrategy": "HIGHEST_SCORE",
       "aggregatedFeatureNamesMap": {
         "sum": [
           "sum_of_copied_files_to_removable_device_size"
@@ -346,7 +327,6 @@
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
-      "evidencesFilterStrategy": "HIGHEST_SCORE",
       "aggregatedFeatureNamesMap": {
         "sum": [
           "copied_files_to_removable_device_counter"
@@ -363,7 +343,6 @@
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
-      "evidencesFilterStrategy": "HIGHEST_SCORE",
       "aggregatedFeatureNamesMap": {
         "sum": [
           "sum_of_moved_files_from_remote_device_size"
@@ -380,7 +359,6 @@
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
-      "evidencesFilterStrategy": "HIGHEST_SCORE",
       "aggregatedFeatureNamesMap": {
         "sum": [
           "moved_files_from_remote_device_counter"
@@ -397,7 +375,6 @@
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
-      "evidencesFilterStrategy": "HIGHEST_SCORE",
       "aggregatedFeatureNamesMap": {
         "sum": [
           "sum_of_copied_files_from_remote_device_size"
@@ -414,7 +391,6 @@
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
-      "evidencesFilterStrategy": "HIGHEST_SCORE",
       "aggregatedFeatureNamesMap": {
         "sum": [
           "copied_files_from_remote_device_counter"
@@ -431,7 +407,6 @@
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
-      "evidencesFilterStrategy": "HIGHEST_SCORE",
       "aggregatedFeatureNamesMap": {
         "sum": [
           "recycled_or_deleted_files_counter"
@@ -448,7 +423,6 @@
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
-      "evidencesFilterStrategy": "HIGHEST_SCORE",
       "aggregatedFeatureNamesMap": {
         "sum": [
           "opened_files_counter"
@@ -466,7 +440,6 @@
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
       "anomalyType": "event_time",
-      "evidencesFilterStrategy": "HIGHEST_SCORE",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "highest_date_time_score"
@@ -483,7 +456,6 @@
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
-      "evidencesFilterStrategy": "HIGHEST_SCORE",
       "aggregatedFeatureNamesMap": {
         "sum": [
           "emails_to_external_recipient_counter"
@@ -500,7 +472,6 @@
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
-      "evidencesFilterStrategy": "HIGHEST_SCORE",
       "aggregatedFeatureNamesMap": {
         "sum": [
           "attachments_to_external_recipient_counter"
@@ -517,7 +488,6 @@
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
-      "evidencesFilterStrategy": "HIGHEST_SCORE",
       "aggregatedFeatureNamesMap": {
         "sum": [
           "sum_of_attachments_to_external_recipient_size"
@@ -534,7 +504,6 @@
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
-      "evidencesFilterStrategy": "HIGHEST_SCORE",
       "aggregatedFeatureNamesMap": {
         "sum": [
           "email_attachments_counter"
@@ -551,7 +520,6 @@
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
-      "evidencesFilterStrategy": "HIGHEST_SCORE",
       "aggregatedFeatureNamesMap": {
         "sum": [
           "sum_of_email_attachment_file_size"
@@ -569,7 +537,6 @@
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
       "anomalyType": "normalized_src_machine",
-      "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "normalized_src_machine_to_highest_score_map"
@@ -592,7 +559,6 @@
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
       "anomalyType": "email_sender",
-      "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "email_sender_to_highest_score_map"
@@ -612,7 +578,6 @@
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
       "anomalyType": "email_recipient_domain",
-      "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "email_recipient_domain_to_highest_score_map"
@@ -632,7 +597,6 @@
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
       "anomalyType": "executing_application",
-      "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "executing_application_to_highest_score_map"
@@ -652,7 +616,6 @@
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
       "anomalyType": "attachment_file_extension",
-      "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "attachment_file_extension_to_highest_score_map"
@@ -672,7 +635,6 @@
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
       "anomalyType": "attachment_file_size",
-      "evidencesFilterStrategy": "HIGHEST_SCORE",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "highest_attachment_file_size_score"
@@ -690,7 +652,6 @@
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
       "anomalyType": "event_time",
-      "evidencesFilterStrategy": "HIGHEST_SCORE",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "highest_date_time_score"
@@ -707,7 +668,6 @@
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
-      "evidencesFilterStrategy": "HIGHEST_SCORE",
       "aggregatedFeatureNamesMap": {
         "sum": [
           "emails_to_external_recipient_counter"
@@ -724,7 +684,6 @@
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
-      "evidencesFilterStrategy": "HIGHEST_SCORE",
       "aggregatedFeatureNamesMap": {
         "sum": [
           "attachments_to_external_recipient_counter"
@@ -741,7 +700,6 @@
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
-      "evidencesFilterStrategy": "HIGHEST_SCORE",
       "aggregatedFeatureNamesMap": {
         "sum": [
           "sum_of_attachments_to_external_recipient_size"
@@ -758,7 +716,6 @@
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
-      "evidencesFilterStrategy": "HIGHEST_SCORE",
       "aggregatedFeatureNamesMap": {
         "sum": [
           "email_attachments_counter"
@@ -775,7 +732,6 @@
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
-      "evidencesFilterStrategy": "HIGHEST_SCORE",
       "aggregatedFeatureNamesMap": {
         "sum": [
           "sum_of_email_attachment_file_size"
@@ -793,7 +749,6 @@
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
       "anomalyType": "normalized_src_machine",
-      "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "normalized_src_machine_to_highest_score_map"
@@ -816,7 +771,6 @@
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
       "anomalyType": "email_sender",
-      "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "email_sender_to_highest_score_map"
@@ -836,7 +790,6 @@
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
       "anomalyType": "email_recipient_domain",
-      "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "email_recipient_domain_to_highest_score_map"
@@ -856,7 +809,6 @@
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
       "anomalyType": "executing_application",
-      "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "executing_application_to_highest_score_map"
@@ -876,7 +828,6 @@
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
       "anomalyType": "attachment_file_extension",
-      "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "attachment_file_extension_to_highest_score_map"
@@ -896,7 +847,6 @@
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
       "anomalyType": "attachment_file_size",
-      "evidencesFilterStrategy": "HIGHEST_SCORE",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "highest_attachment_file_size_score"
@@ -914,7 +864,6 @@
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
       "anomalyType": "event_time",
-      "evidencesFilterStrategy": "HIGHEST_SCORE",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "highest_date_time_score"
@@ -932,7 +881,6 @@
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
       "anomalyType": "event_time",
-      "evidencesFilterStrategy": "HIGHEST_SCORE",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "highest_date_time_score"
@@ -949,7 +897,6 @@
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
-      "evidencesFilterStrategy": "HIGHEST_SCORE",
       "aggregatedFeatureNamesMap": {
         "sum": [
           "events_counter"
@@ -966,7 +913,6 @@
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
-      "evidencesFilterStrategy": "HIGHEST_SCORE",
       "aggregatedFeatureNamesMap": {
         "sum": [
           "events_counter"
@@ -983,7 +929,6 @@
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
-      "evidencesFilterStrategy": "HIGHEST_SCORE",
       "aggregatedFeatureNamesMap": {
         "sum": [
           "sum_of_total_pages"
@@ -1000,7 +945,6 @@
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
-      "evidencesFilterStrategy": "HIGHEST_SCORE",
       "aggregatedFeatureNamesMap": {
         "sum": [
           "sum_of_total_pages"
@@ -1017,7 +961,6 @@
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
-      "evidencesFilterStrategy": "HIGHEST_SCORE",
       "aggregatedFeatureNamesMap": {
         "groupBy": [
           "normalized_src_machine_histogram"
@@ -1037,7 +980,6 @@
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
       "anomalyType": "normalized_src_machine",
-      "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "normalized_src_machine_to_highest_score_map"
@@ -1059,7 +1001,6 @@
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
-      "evidencesFilterStrategy": "HIGHEST_SCORE",
       "aggregatedFeatureNamesMap": {
         "groupBy": [
           "normalized_src_machine_histogram"
@@ -1079,7 +1020,6 @@
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
       "anomalyType": "normalized_src_machine",
-      "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "normalized_src_machine_to_highest_score_map"
@@ -1102,7 +1042,6 @@
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
       "anomalyType": "normalized_dst_machine",
-      "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "normalized_dst_machine_to_highest_score_map"
@@ -1125,7 +1064,6 @@
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
       "anomalyType": "normalized_dst_machine",
-      "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "normalized_dst_machine_to_highest_score_map"
@@ -1147,7 +1085,6 @@
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
-      "evidencesFilterStrategy": "HIGHEST_SCORE",
       "aggregatedFeatureNamesMap": {
         "sum": [
           "sum_of_file_size"
@@ -1164,7 +1101,6 @@
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
-      "evidencesFilterStrategy": "HIGHEST_SCORE",
       "aggregatedFeatureNamesMap": {
         "sum": [
           "sum_of_file_size"

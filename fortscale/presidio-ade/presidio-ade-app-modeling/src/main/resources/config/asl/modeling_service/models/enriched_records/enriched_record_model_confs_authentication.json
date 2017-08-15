@@ -1,0 +1,62 @@
+{
+  "ModelConfs": [
+    {
+      "name" : "startInstant.userId.authentication",
+      "selector" : {
+        "type" : "feature_bucket_context_selector",
+        "featureBucketConfName" : "startInstantHistogramUserIdAuthenticationDaily"
+      },
+      "retriever" : {
+        "type" : "context_histogram_retriever",
+        "timeRangeInSeconds" : 7776000,
+        "functions" : [ ],
+        "featureBucketConfName" : "startInstantHistogramUserIdAuthenticationDaily",
+        "featureName" : "startInstantHistogram"
+      },
+      "builder" : {
+        "type" : "time_model_builder",
+        "timeResolution" : 86400,
+        "bucketSize" : 600,
+        "maxRareTimestampCount" : 10
+      }
+    },
+    {
+      "name" : "srcMachineNameRegexCluster.userId.authentication",
+      "selector" : {
+        "type" : "feature_bucket_context_selector",
+        "featureBucketConfName" : "srcMachineNameRegexClusterHistogramUserIdAuthenticationDaily"
+      },
+      "retriever" : {
+        "type" : "context_histogram_retriever",
+        "timeRangeInSeconds" : 7776000,
+        "functions" : [ ],
+        "featureBucketConfName" : "srcMachineNameRegexClusterHistogramUserIdAuthenticationDaily",
+        "featureName" : "srcMachineNameRegexClusterHistogram"
+      },
+      "builder" : {
+        "type" : "category_rarity_model_builder",
+        "numOfBuckets" : 30,
+        "entriesToSaveInModel" : 100
+      }
+    },
+    {
+      "name" : "dstMachineNameRegexCluster.userId.authentication",
+      "selector" : {
+        "type" : "feature_bucket_context_selector",
+        "featureBucketConfName" : "dstMachineNameRegexClusterHistogramUserIdAuthenticationDaily"
+      },
+      "retriever" : {
+        "type" : "context_histogram_retriever",
+        "timeRangeInSeconds" : 7776000,
+        "functions" : [ ],
+        "featureBucketConfName" : "dstMachineNameRegexClusterHistogramUserIdAuthenticationDaily",
+        "featureName" : "dstMachineNameRegexClusterHistogram"
+      },
+      "builder" : {
+        "type" : "category_rarity_model_builder",
+        "numOfBuckets" : 30,
+        "entriesToSaveInModel" : 100
+      }
+    }
+  ]
+}

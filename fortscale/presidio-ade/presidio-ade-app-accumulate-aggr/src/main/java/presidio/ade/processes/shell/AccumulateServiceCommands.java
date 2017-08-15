@@ -2,8 +2,6 @@ package presidio.ade.processes.shell;
 
 import fortscale.common.general.CommonStrings;
 import fortscale.common.general.Schema;
-import fortscale.ml.model.ModelingService;
-import fortscale.utils.fixedduration.FixedDurationStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.shell.core.CommandMarker;
 import org.springframework.shell.core.annotation.CliCommand;
@@ -12,7 +10,7 @@ import org.springframework.shell.core.annotation.CliOption;
 import java.time.Instant;
 
 /**
- * The supported CLI commands for the {@link ModelingService}.
+ * The supported CLI commands for the {@link AccumulateAggregationsExecutionService}.
  *
  * @author Lior Govrin
  */

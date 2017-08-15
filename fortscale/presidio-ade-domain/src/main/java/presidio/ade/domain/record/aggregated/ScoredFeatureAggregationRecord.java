@@ -1,9 +1,8 @@
 package presidio.ade.domain.record.aggregated;
 
 import fortscale.domain.feature.score.FeatureScore;
+import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
-import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
-import presidio.ade.domain.record.aggregated.AggregatedFeatureType;
 import presidio.ade.domain.record.AdeScoredRecord;
 
 import java.time.Instant;
@@ -13,6 +12,7 @@ import java.util.Map;
 /**
  * Created by mariad on 7/11/2017.
  */
+@Document
 public class ScoredFeatureAggregationRecord extends AdeAggregationRecord implements AdeScoredRecord {
 
     public static final String SCORE_FIELD_NAME = "score";

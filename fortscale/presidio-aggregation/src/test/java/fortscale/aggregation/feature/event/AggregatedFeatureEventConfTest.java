@@ -15,7 +15,6 @@ public class AggregatedFeatureEventConfTest {
 	private static final int BUCKETS_LEAP = 1;
 	private static final long WAIT_AFTER_BUCKET_CLOSE_SECONDS = 500;
 	private static final String ANOMALY_TYPE = "anomalyType";
-	private  static final String EVIDENCES_FILTER_STRATEGY = "evidencesFilterStrategy";
 	private static final String FUNCTION_TYPE = "functionType1";
 
 	@Test
@@ -63,7 +62,6 @@ public class AggregatedFeatureEventConfTest {
 				BUCKETS_LEAP,
 				WAIT_AFTER_BUCKET_CLOSE_SECONDS,
 				ANOMALY_TYPE,
-				EVIDENCES_FILTER_STRATEGY,
 				aggregatedFeatureNamesMap,
 				aggregatedFeatureEventFunction);
 		AggregatedFeatureEventConf actual = (new ObjectMapper()).readValue(jsonAsString, AggregatedFeatureEventConf.class);
@@ -128,7 +126,6 @@ public class AggregatedFeatureEventConfTest {
 				BUCKETS_LEAP,
 				WAIT_AFTER_BUCKET_CLOSE_SECONDS,
 				ANOMALY_TYPE,
-				EVIDENCES_FILTER_STRATEGY,
 				aggregatedFeatureNamesMap,
 				aggregatedFeatureEventFunction,
 				false);
@@ -193,7 +190,6 @@ public class AggregatedFeatureEventConfTest {
 				BUCKETS_LEAP,
 				WAIT_AFTER_BUCKET_CLOSE_SECONDS,
 				ANOMALY_TYPE,
-				EVIDENCES_FILTER_STRATEGY,
 				aggregatedFeatureNamesMap,
 				aggregatedFeatureEventFunction,
 				true);
@@ -222,7 +218,6 @@ public class AggregatedFeatureEventConfTest {
 				BUCKETS_LEAP,
 				WAIT_AFTER_BUCKET_CLOSE_SECONDS,
 				ANOMALY_TYPE,
-				EVIDENCES_FILTER_STRATEGY,
 				getSimpleAggregatedFeatureNamesMap(),
 				new JSONObject());
 		AggregatedFeatureEventConf actual = (new ObjectMapper()).readValue(jsonAsString, AggregatedFeatureEventConf.class);
@@ -252,7 +247,6 @@ public class AggregatedFeatureEventConfTest {
 				BUCKETS_LEAP,
 				WAIT_AFTER_BUCKET_CLOSE_SECONDS,
 				ANOMALY_TYPE,
-				EVIDENCES_FILTER_STRATEGY,
 				getSimpleAggregatedFeatureNamesMap(),
 				getSimpleAggregatedFeatureEventFunction());
 		(new ObjectMapper()).readValue(jsonAsString, AggregatedFeatureEventConf.class);
@@ -268,7 +262,6 @@ public class AggregatedFeatureEventConfTest {
 				BUCKETS_LEAP,
 				WAIT_AFTER_BUCKET_CLOSE_SECONDS,
 				ANOMALY_TYPE,
-				EVIDENCES_FILTER_STRATEGY,
 				getSimpleAggregatedFeatureNamesMap(),
 				getSimpleAggregatedFeatureEventFunction());
 		(new ObjectMapper()).readValue(jsonAsString, AggregatedFeatureEventConf.class);
@@ -284,7 +277,6 @@ public class AggregatedFeatureEventConfTest {
 				BUCKETS_LEAP,
 				WAIT_AFTER_BUCKET_CLOSE_SECONDS,
 				ANOMALY_TYPE,
-				EVIDENCES_FILTER_STRATEGY,
 				getSimpleAggregatedFeatureNamesMap(),
 				getSimpleAggregatedFeatureEventFunction());
 		(new ObjectMapper()).readValue(jsonAsString, AggregatedFeatureEventConf.class);
@@ -300,7 +292,6 @@ public class AggregatedFeatureEventConfTest {
 				0,
 				WAIT_AFTER_BUCKET_CLOSE_SECONDS,
 				ANOMALY_TYPE,
-				EVIDENCES_FILTER_STRATEGY,
 				getSimpleAggregatedFeatureNamesMap(),
 				getSimpleAggregatedFeatureEventFunction());
 		(new ObjectMapper()).readValue(jsonAsString, AggregatedFeatureEventConf.class);
@@ -316,7 +307,6 @@ public class AggregatedFeatureEventConfTest {
 				BUCKETS_LEAP,
 				-1,
 				ANOMALY_TYPE,
-				EVIDENCES_FILTER_STRATEGY,
 				getSimpleAggregatedFeatureNamesMap(),
 				getSimpleAggregatedFeatureEventFunction());
 		(new ObjectMapper()).readValue(jsonAsString, AggregatedFeatureEventConf.class);
@@ -332,7 +322,6 @@ public class AggregatedFeatureEventConfTest {
 				BUCKETS_LEAP,
 				WAIT_AFTER_BUCKET_CLOSE_SECONDS,
 				ANOMALY_TYPE,
-				EVIDENCES_FILTER_STRATEGY,
 				null,
 				getSimpleAggregatedFeatureEventFunction());
 		(new ObjectMapper()).readValue(jsonAsString, AggregatedFeatureEventConf.class);
@@ -348,7 +337,6 @@ public class AggregatedFeatureEventConfTest {
 				BUCKETS_LEAP,
 				WAIT_AFTER_BUCKET_CLOSE_SECONDS,
 				ANOMALY_TYPE,
-				EVIDENCES_FILTER_STRATEGY,
 				new HashMap<String, List<String>>(),
 				getSimpleAggregatedFeatureEventFunction());
 		(new ObjectMapper()).readValue(jsonAsString, AggregatedFeatureEventConf.class);
@@ -366,7 +354,6 @@ public class AggregatedFeatureEventConfTest {
 				BUCKETS_LEAP,
 				WAIT_AFTER_BUCKET_CLOSE_SECONDS,
 				ANOMALY_TYPE,
-				EVIDENCES_FILTER_STRATEGY,
 				aggregatedFeatureNamesMap,
 				getSimpleAggregatedFeatureEventFunction());
 		(new ObjectMapper()).readValue(jsonAsString, AggregatedFeatureEventConf.class);
@@ -382,7 +369,6 @@ public class AggregatedFeatureEventConfTest {
 				BUCKETS_LEAP,
 				WAIT_AFTER_BUCKET_CLOSE_SECONDS,
 				ANOMALY_TYPE,
-				EVIDENCES_FILTER_STRATEGY,
 				getSimpleAggregatedFeatureNamesMap(),
 				null);
 		(new ObjectMapper()).readValue(jsonAsString, AggregatedFeatureEventConf.class);
@@ -403,7 +389,6 @@ public class AggregatedFeatureEventConfTest {
 			int bucketsLeap,
 			long waitAfterBucketCloseSeconds,
 			String anomalyType,
-			String evidencesFilterStrategy,
 			Map<String, List<String>> aggregatedFeatureNamesMap,
 			JSONObject aggregatedFeatureEventFunction,
 			boolean fireEventsAlsoForEmptyBucketTicks) {
@@ -416,7 +401,6 @@ public class AggregatedFeatureEventConfTest {
 		result.put("bucketsLeap", bucketsLeap);
 		result.put("waitAfterBucketCloseSeconds", waitAfterBucketCloseSeconds);
 		result.put("anomalyType", anomalyType);
-		result.put("evidencesFilterStrategy", evidencesFilterStrategy);
 		result.put("aggregatedFeatureNamesMap", aggregatedFeatureNamesMap);
 		result.put("aggregatedFeatureEventFunction", aggregatedFeatureEventFunction);
 
@@ -434,12 +418,11 @@ public class AggregatedFeatureEventConfTest {
 			int bucketsLeap,
 			long waitAfterBucketCloseSeconds,
 			String anomalyType,
-			String evidencesFilterStrategy,
 			Map<String, List<String>> aggregatedFeatureNamesMap,
 			JSONObject aggregatedFeatureEventFunction) {
 
 		return createAggregatedFeatureEvent2(name, type, bucketConfName, numberOfBuckets, bucketsLeap,
-				waitAfterBucketCloseSeconds, anomalyType, evidencesFilterStrategy, aggregatedFeatureNamesMap, aggregatedFeatureEventFunction, false);
+				waitAfterBucketCloseSeconds, anomalyType, aggregatedFeatureNamesMap, aggregatedFeatureEventFunction, false);
 	}
 
 	private Map<String, List<String>> getSimpleAggregatedFeatureNamesMap() {

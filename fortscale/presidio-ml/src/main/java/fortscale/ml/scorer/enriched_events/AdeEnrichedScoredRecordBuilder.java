@@ -2,6 +2,7 @@ package fortscale.ml.scorer.enriched_events;
 
 import fortscale.domain.feature.score.FeatureScore;
 import fortscale.utils.logging.Logger;
+import org.springframework.util.Assert;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.ade.domain.record.enriched.AdeScoredEnrichedRecord;
 import presidio.ade.domain.record.util.AdeEnrichedRecordToAdeScoredEnrichedRecordResolver;
@@ -57,7 +58,7 @@ public class AdeEnrichedScoredRecordBuilder {
     private AdeScoredEnrichedRecord buildAdeEnrichedScoredRecord(EnrichedRecord enrichedRecord, FeatureScore featureScore) {
         AdeScoredEnrichedRecord ret = null;
         Class<? extends AdeScoredEnrichedRecord> pojoClass = adeEnrichedRecordToAdeScoredEnrichedRecordResolver.getClass(enrichedRecord.getClass());
-
+        Assert.notNull(pojoClass ,String.format("did not found matching scored record class for enriched record: %s",enrichedRecord));
         try {
             Constructor<? extends AdeScoredEnrichedRecord> constructor = pojoClass.getConstructor(Instant.class, String.class, String.class, Double.class, List.class, EnrichedRecord.class);
             String featureName = featureScore.getName();

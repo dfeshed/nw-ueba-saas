@@ -10,8 +10,9 @@ import fortscale.utils.pagination.PageIterator;
 import fortscale.utils.time.TimeRange;
 import presidio.ade.domain.pagination.enriched.EnrichedRecordPaginationService;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
-import presidio.ade.domain.record.enriched.EnrichedRecord;
+import presidio.ade.domain.record.aggregated.AggregatedFeatureType;
 import presidio.ade.domain.record.enriched.AdeScoredEnrichedRecord;
+import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.ade.domain.store.aggr.AggregatedDataStore;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
 
@@ -73,7 +74,7 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
             }
             List<FeatureBucket> closedBuckets = scoreAggregationsBucketService.closeBuckets();
             List<AdeAggregationRecord> aggrRecords = aggregationRecordsCreator.createAggregationRecords(closedBuckets);
-            aggregatedDataStore.store(aggrRecords);
+            aggregatedDataStore.store(aggrRecords, AggregatedFeatureType.SCORE_AGGREGATION);
         }
     }
 
@@ -83,17 +84,8 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
     }
 
     protected FeatureBucketStrategyData createFeatureBucketStrategyData(TimeRange timeRange){
-        String strategyName;
+        String strategyName = strategy.toStrategyName();
 
-        if(strategy.equals(FixedDurationStrategy.HOURLY))
-        {
-            // todo refactor buckets json stratgy and then delete this condition
-            strategyName="fixed_duration_hourly";
-        }
-        else
-        {
-            strategyName="fixed_duration_daily";
-        }
         return new FeatureBucketStrategyData(strategyName,strategyName,timeRange);
     }
 

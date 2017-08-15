@@ -5,6 +5,7 @@ import fortscale.utils.logging.Logger;
 import org.apache.commons.collections.CollectionUtils;
 
 import javax.validation.ConstraintViolation;
+import javax.validation.Path;
 import javax.validation.Validator;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,9 +32,17 @@ public class ValidationManager {
             if (CollectionUtils.isEmpty(violations)) {
                 result.add(document);
             }
+            else {
+                logger.warn("Validation for event with id {} failed. There were {} violations.", document.getId(), violations.size());
+                for (ConstraintViolation<AbstractAuditableDocument> violation : violations) {
+                    final Path propertyPath = violation.getPropertyPath();
+                    final String message = violation.getMessage();
+                    logger.debug("Violation occurred. Property: {}, Message: {}.", propertyPath, message);
+                }
+            }
         }
 
-        logger.info("{} records are valid", result.size());
+        logger.info("{} out of {} records are valid.", result.size(), documents.size());
         return result;
     }
 }
