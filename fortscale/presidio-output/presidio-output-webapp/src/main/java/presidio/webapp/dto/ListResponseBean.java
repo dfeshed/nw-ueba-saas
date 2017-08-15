@@ -5,7 +5,7 @@ import java.util.List;
 public class ListResponseBean<T> extends ResponseBean {
 
     private List<T> data;
-    private int total;
+    private long total;
     private int page;
 
     public ListResponseBean() {
@@ -26,11 +26,11 @@ public class ListResponseBean<T> extends ResponseBean {
         this.data = data;
     }
 
-    public int getTotal() {
+    public long getTotal() {
         return total;
     }
 
-    public void setTotal(int total) {
+    public void setTotal(long total) {
         this.total = total;
     }
 
