@@ -13,6 +13,7 @@ import presidio.data.domain.User;
 import presidio.data.domain.event.authentication.AuthenticationEvent;
 import presidio.data.generators.event.EntityEventIDFixedPrefixGenerator;
 import presidio.data.generators.event.IEventGenerator;
+import presidio.data.generators.machine.FixedMachineGenerator;
 import presidio.data.generators.machine.IMachineGenerator;
 import presidio.data.generators.machine.SimpleMachineGenerator;
 import presidio.data.generators.user.IUserGenerator;
@@ -32,8 +33,8 @@ public class AuthenticationEventsGenerator implements IEventGenerator {
     private IStringGenerator operationTypeGenerator;
     private IStringListGenerator operationTypeCategoriesGenerator;
 
-    private IMachineGenerator srcMachineGenerator;
-    private IMachineGenerator dstMachineGenerator;
+    private FixedMachineGenerator srcMachineGenerator;
+    private FixedMachineGenerator dstMachineGenerator;
 
     private IStringGenerator resultGenerator;
     private IStringGenerator resultCodeGenerator;
@@ -49,8 +50,8 @@ public class AuthenticationEventsGenerator implements IEventGenerator {
         operationTypeGenerator = new AuthenticationTypeCyclicGenerator();
         operationTypeCategoriesGenerator = new AuthenticationOpTypeCategoriesGenerator();
 
-        srcMachineGenerator = new SimpleMachineGenerator();
-        dstMachineGenerator = new SimpleMachineGenerator(); // need domain machine percentage generator
+        srcMachineGenerator = new FixedMachineGenerator(user.getUserId()+ "_SRC");
+        dstMachineGenerator = new FixedMachineGenerator(user.getUserId()+ "_DST");; // need domain machine percentage generator
         resultGenerator = new OperationResultPercentageGenerator();                 // 100% "Success"
         resultCodeGenerator = new RandomStringGenerator();                          // TBD
     }
@@ -122,19 +123,19 @@ public class AuthenticationEventsGenerator implements IEventGenerator {
         this.userGenerator = userGenerator;
     }
 
-    public IMachineGenerator getSrcMachineGenerator() {
+    public FixedMachineGenerator getSrcMachineGenerator() {
         return srcMachineGenerator;
     }
 
-    public void setSrcMachineGenerator(IMachineGenerator srcMachineGenerator) {
+    public void setSrcMachineGenerator(FixedMachineGenerator srcMachineGenerator) {
         this.srcMachineGenerator = srcMachineGenerator;
     }
 
-    public IMachineGenerator getDstMachineGenerator() {
+    public FixedMachineGenerator getDstMachineGenerator() {
         return dstMachineGenerator;
     }
 
-    public void setDstMachineGenerator(IMachineGenerator dstMachineGenerator) {
+    public void setDstMachineGenerator(FixedMachineGenerator dstMachineGenerator) {
         this.dstMachineGenerator = dstMachineGenerator;
     }
 
