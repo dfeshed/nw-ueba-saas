@@ -118,10 +118,13 @@ export default Route.extend(AuthenticatedRouteMixin, {
             defaultComponentUrl
           } = response.data;
 
-          localStorage.setItem('rsa-i18n-default-locale', userLocale.replace(/_/, '-').toLowerCase());
+          if (userLocale) {
+            const locale = userLocale.replace(/_/, '-').toLowerCase();
+            localStorage.setItem('rsa-i18n-default-locale', locale);
+            this.set('i18n.locale', locale);
+          }
 
           this.setProperties({
-            'i18n.locale': userLocale.replace(/_/, '-').toLowerCase(),
             'dateFormat.selected': dateFormat,
             'timeFormat.selected': timeFormat,
             'timezone.selected': timeZone
