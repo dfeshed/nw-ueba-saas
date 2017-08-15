@@ -42,6 +42,13 @@
     hbox {
       padding: 0 rsa-whitespace() rsa-whitespace();
     }
+
+    .change-password {
+      text-align: right;
+      text-decoration: none;
+      color: rsa-color(blue);
+      margin-top: rsa-whitespace(more);
+    }
   }
 
   vbox {

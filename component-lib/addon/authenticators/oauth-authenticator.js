@@ -132,14 +132,19 @@ export default OAuth2PasswordGrant.extend(csrfToken, oauthToken, {
           }
 
           const daysRemaining = response.expiryUserNotify;
+          let passwordChangeKey = 'login.changePasswordSoon';
+
+          if (daysRemaining === 0) {
+            passwordChangeKey = 'login.changePasswordToday';
+          }
+
           if (daysRemaining > -1) {
-            this.get('flashMessages').warning(this.get('i18n').t('login.changePasswordSoon', {
+            this.get('flashMessages').warning(this.get('i18n').t(passwordChangeKey, {
               daysRemaining
             }), {
               sticky: true
             });
           }
-
 
           const expiresAt = this._absolutizeExpirationTime(response.expires_in);
           this._scheduleAccessTokenRefresh(response.expires_in, expiresAt, response.refresh_token);
