@@ -28,6 +28,7 @@ public class FileEventsGenerator implements IEventGenerator {
     private IFileOperationGenerator fileOperationGenerator; // Handles: source file & folder, destination file & folder, file_size, operation type, operation result
     private IFileSystemEntityGenerator fileSystemGenerator;
     private IMachineGenerator machineEntityGenerator;
+    private IFileDescriptionGenerator fileDescriptionGenerator;
 
     public FileEventsGenerator() throws GeneratorException {
         timeGenerator = new TimeGenerator();
@@ -37,6 +38,7 @@ public class FileEventsGenerator implements IEventGenerator {
         fileOperationGenerator = new FileOperationGenerator();
         fileSystemGenerator = new FileSystemEntityGenerator(userGenerator.getNext().getUsername());
         machineEntityGenerator = new SimpleMachineGenerator();
+        fileDescriptionGenerator = new FileDescriptionGenerator();
     }
 
     public List<FileEvent> generate () throws GeneratorException {
@@ -44,15 +46,15 @@ public class FileEventsGenerator implements IEventGenerator {
 
         // fill list of events
         while (getTimeGenerator().hasNext()) {
-            FileEvent ev = new FileEvent(getEventIdGenerator().getNext(),
+            FileEvent fileEvent = new FileEvent(getEventIdGenerator().getNext(),
                     getTimeGenerator().getNext(),
                     getUserGenerator().getNext(),
                     getFileOperationGenerator().getNext(),
                     getDataSourceGenerator().getNext(),
                     getFileSystemGenerator().getNext(),
                     getMachineEntityGenerator().getNext());
-            ev.setFileDescription(FileDescriptionGenerator.buildFileDescription(ev));
-            evList.add(ev);
+            fileDescriptionGenerator.updateFileDescription(fileEvent);
+            evList.add(fileEvent);
         }
 
         return evList;
@@ -112,5 +114,13 @@ public class FileEventsGenerator implements IEventGenerator {
 
     public void setMachineEntityGenerator(IMachineGenerator machineEntityGenerator) {
         this.machineEntityGenerator = machineEntityGenerator;
+    }
+
+    public IFileDescriptionGenerator getFileDescriptionGenerator() {
+        return fileDescriptionGenerator;
+    }
+
+    public void setFileDescriptionGenerator(IFileDescriptionGenerator fileDescriptionGenerator) {
+        this.fileDescriptionGenerator = fileDescriptionGenerator;
     }
 }
