@@ -24,6 +24,7 @@
         </rpm-maven-plugin.workflows-build-script-path>
         <exclude.rpm>presidio-quest-ca</exclude.rpm>
         <exclude.rpm2>flume-presidio</exclude.rpm2>
+        <tomcat_webapps_directory>/opt/tomcat/webapps</tomcat_webapps_directory>
     </properties>
     <parent>
         <artifactId>fortscale</artifactId>
@@ -106,6 +107,17 @@
                     </mapping>
                     <mapping>
                         <directoryIncluded>false</directoryIncluded>
+                        <directory>${tomcat_webapps_directory}</directory>
+                        <username>presidio</username>
+                        <groupname>presidio</groupname>
+                        <sources>
+                            <source>
+                                <location>${project.parent.build.directory}/war-dependencies/</location>
+                            </source>
+                        </sources>
+                    </mapping>
+                    <mapping>
+                        <directoryIncluded>false</directoryIncluded>
                         <directory>${rpm-maven-plugin.deployment_target_directory}/configurations</directory>
                         <username>presidio</username>
                         <groupname>presidio</groupname>
@@ -161,6 +173,8 @@
                         chown -R -v ${rpm-maven-plugin.script.system_user}:${rpm-maven-plugin.script.system_user} ${rpm-maven-plugin.deployment_target_directory}
                         #echo "Removing temporary files"
                         rm -rf -v ${rpm-maven-plugin.script.version_temp_file}
+                        echo "Retarting Tomcat"
+                        systemctl restart tomcat.service
                         <!--end of post installation -->"
                     </script>
                 </postinstallScriptlet>

@@ -6,17 +6,20 @@ import presidio.ade.domain.record.enriched.file.EnrichedFileRecord;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
 import presidio.ade.domain.store.enriched.EnrichedRecordsMetadata;
 import presidio.ade.test.utils.EnrichedEventsGenerator;
-
 import presidio.ade.test.utils.converters.FileRaw2EnrichedConverter;
+import presidio.data.domain.event.OperationType;
 import presidio.data.domain.event.file.FileEvent;
 import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.common.time.TimeGenerator;
 import presidio.data.generators.event.file.FileEventsGenerator;
+import presidio.data.generators.fileop.FileOperationGenerator;
+import presidio.data.generators.fileop.FixedFileOperationTypeGenerator;
 import presidio.data.generators.user.SingleUserGenerator;
 
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class EnrichedFileGenerator implements EnrichedEventsGenerator {
@@ -44,14 +47,36 @@ public class EnrichedFileGenerator implements EnrichedEventsGenerator {
      */
     public void generateAndPersist(int interval) throws GeneratorException {
         String testUser = "testUser";
-        FileEventsGenerator generator = new FileEventsGenerator();
-        generator.setTimeGenerator(new TimeGenerator(LocalTime.of(0, 0), LocalTime.of(23, 59), interval, DAYS_BACK_FROM, DAYS_BACK_TO));
-        generator.setUserGenerator(new SingleUserGenerator(testUser));
+        FileEventsGenerator filePermissionEventGenerator = new FileEventsGenerator();
+        filePermissionEventGenerator.setTimeGenerator(new TimeGenerator(LocalTime.of(0, 0), LocalTime.of(23, 59), interval, DAYS_BACK_FROM, DAYS_BACK_TO));
+        filePermissionEventGenerator.setUserGenerator(new SingleUserGenerator(testUser));
+        FileOperationGenerator fileOperationGenerator = new FileOperationGenerator();
+        ArrayList<String> filePermissionCategories = new ArrayList<>();
+        filePermissionCategories.add("FILE_PERMISSION_CHANGE");
+        String permissionOperationName = "FILE_ACCESS_RIGHTS_CHANGED";
 
-        List<FileEvent> event = generator.generate();
+        OperationType permissionOperationType = new OperationType(permissionOperationName, filePermissionCategories);
+        FixedFileOperationTypeGenerator fileOpTypePremmisionCategoriesGenerator = new FixedFileOperationTypeGenerator(permissionOperationType);
+
+        fileOperationGenerator.setOperationTypeGenerator(fileOpTypePremmisionCategoriesGenerator);
+
+        filePermissionEventGenerator.setFileOperationGenerator(fileOperationGenerator);
+        List<FileEvent> event = filePermissionEventGenerator.generate();
+        FileEventsGenerator fileActionEventGenerator = new FileEventsGenerator();
+        FileOperationGenerator fileOperationActionGenerator = new FileOperationGenerator();
+        fileActionEventGenerator.setTimeGenerator(new TimeGenerator(LocalTime.of(0, 0), LocalTime.of(23, 59), interval, DAYS_BACK_FROM, DAYS_BACK_TO));
+        fileActionEventGenerator.setUserGenerator(new SingleUserGenerator(testUser));
+        ArrayList<String> fileActionCategories = new ArrayList<>();
+        fileActionCategories.add("FILE_ACTION");
+        String actionOperationName = "FOLDER_OPENED";
+        OperationType fileActionOperationType = new OperationType(actionOperationName, fileActionCategories);
+        FixedFileOperationTypeGenerator fileOpTypeActionCategoriesGenerator = new FixedFileOperationTypeGenerator(fileActionOperationType);
+        fileOperationActionGenerator.setOperationTypeGenerator(fileOpTypeActionCategoriesGenerator);
+        fileActionEventGenerator.setFileOperationGenerator(fileOperationActionGenerator);
+        event.addAll(fileActionEventGenerator.generate());
         List<EnrichedFileRecord> enrichedRecords = converter.convert(event);
-
         EnrichedRecordsMetadata enrichedRecordsMetadata = new EnrichedRecordsMetadata(ADE_EVENT_TYPE.getName(), START_DATE, END_DATE);
+
         enrichedDataStore.store(enrichedRecordsMetadata, enrichedRecords);
     }
 
