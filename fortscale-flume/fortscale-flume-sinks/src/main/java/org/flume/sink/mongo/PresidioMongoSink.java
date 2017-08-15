@@ -7,8 +7,6 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.flume.Context;
 import org.apache.flume.Event;
 import org.apache.flume.FlumeException;
-import org.apache.flume.Sink;
-import org.apache.flume.conf.Configurable;
 import org.flume.sink.base.AbstractPresidioSink;
 import org.flume.sink.mongo.persistency.SinkMongoRepository;
 import org.flume.sink.mongo.persistency.SinkMongoRepositoryImpl;
@@ -23,17 +21,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.flume.CommonStrings.BATCH_SIZE;
-import static org.flume.CommonStrings.COLLECTION_NAME;
-import static org.flume.CommonStrings.DB_NAME;
-import static org.flume.CommonStrings.HAS_AUTHENTICATION;
-import static org.flume.CommonStrings.HOST;
-import static org.flume.CommonStrings.PASSWORD;
-import static org.flume.CommonStrings.PORT;
-import static org.flume.CommonStrings.USERNAME;
+import static org.apache.flume.CommonStrings.BATCH_SIZE;
+import static org.apache.flume.CommonStrings.COLLECTION_NAME;
+import static org.apache.flume.CommonStrings.DB_NAME;
+import static org.apache.flume.CommonStrings.HAS_AUTHENTICATION;
+import static org.apache.flume.CommonStrings.HOST;
+import static org.apache.flume.CommonStrings.PASSWORD;
+import static org.apache.flume.CommonStrings.PORT;
+import static org.apache.flume.CommonStrings.USERNAME;
 
-public class PresidioMongoSink<T extends AbstractDocument> extends AbstractPresidioSink<T> implements Configurable, Sink {
-
+public class PresidioMongoSink<T extends AbstractDocument> extends AbstractPresidioSink<T>  {
 
     private static Logger logger = LoggerFactory.getLogger(PresidioMongoSink.class);
 
@@ -112,6 +109,11 @@ public class PresidioMongoSink<T extends AbstractDocument> extends AbstractPresi
                 logger.trace("No events to sink...");
                 break;
             }
+            final boolean isControlDoneMessage = isGotControlDoneMessage(flumeEvent);
+            if (isControlDoneMessage) {
+                break;
+            }
+
             sinkCounter.incrementEventDrainAttemptCount();
 
             T parsedEvent;

@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.flume.CommonStrings.BATCH_SIZE;
+import static org.apache.flume.CommonStrings.BATCH_SIZE;
 
 public class PresidioInputSdkSink<T extends AbstractAuditableDocument> extends AbstractPresidioSink<T> implements Configurable, Sink {
 
@@ -58,6 +58,7 @@ public class PresidioInputSdkSink<T extends AbstractAuditableDocument> extends A
 
     @Override
     public void configure(Context context) {
+        super.configure(context);
         logger.debug("context is: {}", context);
         try {
             for (String mandatoryParam : mandatoryParams) {
@@ -84,6 +85,10 @@ public class PresidioInputSdkSink<T extends AbstractAuditableDocument> extends A
             flumeEvent = this.getChannel().take();
             if (flumeEvent == null) {
                 logger.trace("No events to sink...");
+                break;
+            }
+            final boolean isControlDoneMessage = isGotControlDoneMessage(flumeEvent);
+            if (isControlDoneMessage) {
                 break;
             }
             sinkCounter.incrementEventDrainAttemptCount();

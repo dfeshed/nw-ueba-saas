@@ -1,12 +1,15 @@
-package org.flume;
+package org.apache.flume;
 
 public class CommonStrings {
 
+
+    public static final String IS_DONE = "isDone";
     public static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
     public static final String USERNAME = "username";
     public static final String PASSWORD = "password";
     public static final String HAS_AUTHENTICATION = "hasAuthentication";
     public static final String BATCH_SIZE = "batchSize";
+    public static final String IS_BATCH = "isBatch";
     public static final String COLLECTION_NAME = "collectionName";
     public static final String DB_NAME = "dbName";
     public static final String HOST = "host";

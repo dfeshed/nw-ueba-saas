@@ -336,6 +336,8 @@ public class Application {
       }
       application.start();
 
+      logger.debug("Setting Options {} for LifecycleSupervisor.", options);
+      LifecycleSupervisor.options = options;
       final Application appReference = application;
       Runtime.getRuntime().addShutdownHook(new Thread("agent-shutdown-hook") {
         @Override
