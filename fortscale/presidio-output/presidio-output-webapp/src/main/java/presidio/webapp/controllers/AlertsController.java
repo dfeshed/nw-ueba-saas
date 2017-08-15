@@ -30,6 +30,7 @@ public class AlertsController {
         AlertSingleEntityResponseBean responseBean = new AlertSingleEntityResponseBean();
         try {
             responseBean.setData(restAlertService.getAlertById(alertId));
+            responseBean.setStatus(HttpStatus.SC_OK);
 
         } catch (Exception e) {
             responseBean.setErrorMessage(String.format("Got error while getting alert by id - %s", e.getMessage()));
@@ -47,6 +48,7 @@ public class AlertsController {
         try {
             responseBean.setData(restAlertService.getAlerts(restAlertQuery));
             responseBean.setPage(restAlertQuery.getPageNumber());
+            responseBean.setStatus(HttpStatus.SC_OK);
         } catch (Exception e) {
             responseBean.setErrorMessage(String.format("Got error while getting alert by filter - %s", e.getMessage()));
             responseBean.setStatus(HttpStatus.SC_INTERNAL_SERVER_ERROR);
