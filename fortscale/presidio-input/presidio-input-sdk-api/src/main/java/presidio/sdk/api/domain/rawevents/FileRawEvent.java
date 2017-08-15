@@ -1,8 +1,9 @@
-package presidio.sdk.api.domain;
+package presidio.sdk.api.domain.rawevents;
 
 import fortscale.domain.core.EventResult;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
+import presidio.sdk.api.domain.AbstractPresidioDocument;
 
 import java.time.Instant;
 import java.util.List;
@@ -34,6 +35,15 @@ public class FileRawEvent extends AbstractPresidioDocument {
     private Long fileSize;
 
     public FileRawEvent() {
+    }
+
+    public FileRawEvent(FileRawEvent other) {
+        super(other);
+        this.srcFilePath = other.srcFilePath;
+        this.isSrcDriveShared = other.isSrcDriveShared;
+        this.dstFilePath = other.dstFilePath;
+        this.isDstDriveShared = other.isDstDriveShared;
+        this.fileSize = other.fileSize;
     }
 
     public FileRawEvent(Instant dateTime, String eventId, String dataSource, String userId, String operationType,

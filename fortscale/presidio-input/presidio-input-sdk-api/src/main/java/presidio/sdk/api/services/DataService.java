@@ -1,7 +1,8 @@
-package presidio.sdk.api.domain;
+package presidio.sdk.api.services;
 
 import fortscale.common.general.Schema;
 import fortscale.domain.core.AbstractAuditableDocument;
+import presidio.sdk.api.domain.AbstractPresidioDocument;
 
 import java.time.Instant;
 import java.util.List;
@@ -19,4 +20,7 @@ public interface DataService {
 
     void cleanAll(Schema schema);
 
+    <U extends AbstractPresidioDocument> List<U> readRecords(Schema schema, Instant startDate, Instant endDate, int numOfItemsToSkip, int pageSize);
+
+    long count(Schema schema, Instant startDate, Instant endDate);
 }

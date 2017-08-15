@@ -1,8 +1,9 @@
-package presidio.sdk.api.domain;
+package presidio.sdk.api.domain.rawevents;
 
 import fortscale.domain.core.EventResult;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
+import presidio.sdk.api.domain.AbstractPresidioDocument;
 import presidio.sdk.api.validation.FieldsMustHaveDifferentValues;
 
 import java.time.Instant;
@@ -15,9 +16,9 @@ public class AuthenticationRawEvent extends AbstractPresidioDocument {
 
     public static final String SRC_MACHINE_ID_FIELD_NAME = "srcMachineId";
     public static final String DST_MACHINE_ID_FIELD_NAME = "dstMachineId";
-    private static final String SRC_MACHINE_NAME_FIELD_NAME = "srcMachineName";
-    private static final String DST_MACHINE_NAME_FIELD_NAME = "dstMachineName";
-    private static final String DST_MACHINE_DOMAIN_FIELD_NAME = "dstMachineDomain";
+    public static final String SRC_MACHINE_NAME_FIELD_NAME = "srcMachineName";
+    public static final String DST_MACHINE_NAME_FIELD_NAME = "dstMachineName";
+    public static final String DST_MACHINE_DOMAIN_FIELD_NAME = "dstMachineDomain";
 
     @Field(SRC_MACHINE_ID_FIELD_NAME)
     private String srcMachineId;
@@ -34,8 +35,16 @@ public class AuthenticationRawEvent extends AbstractPresidioDocument {
     @Field(DST_MACHINE_DOMAIN_FIELD_NAME)
     private String dstMachineDomain;
 
-    public AuthenticationRawEvent() {
+    public AuthenticationRawEvent(AuthenticationRawEvent other) {
+        super(other);
+        this.srcMachineId = other.srcMachineId;
+        this.srcMachineName = other.srcMachineName;
+        this.dstMachineId = other.dstMachineId;
+        this.dstMachineName = other.dstMachineName;
+        this.dstMachineDomain = other.dstMachineDomain;
+    }
 
+    public AuthenticationRawEvent() {
     }
 
     public AuthenticationRawEvent(Instant dateTime, String eventId, String dataSource, String userId, String operationType,

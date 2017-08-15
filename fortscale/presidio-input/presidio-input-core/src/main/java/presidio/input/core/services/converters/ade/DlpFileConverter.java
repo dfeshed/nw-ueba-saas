@@ -1,8 +1,8 @@
-package presidio.input.core.services.converters;
+package presidio.input.core.services.converters.ade;
 
 import fortscale.domain.core.AbstractAuditableDocument;
-import presidio.ade.domain.record.enriched.dlpfile.EnrichedDlpFileRecord;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
+import presidio.ade.domain.record.enriched.dlpfile.EnrichedDlpFileRecord;
 import presidio.sdk.api.domain.DlpFileEnrichedDocument;
 
 /**
