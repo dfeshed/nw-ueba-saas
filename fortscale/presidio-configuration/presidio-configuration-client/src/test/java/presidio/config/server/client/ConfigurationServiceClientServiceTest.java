@@ -27,8 +27,7 @@ import java.util.Properties;
 @RunWith(SpringRunner.class)
 @SpringBootTest()
 @ContextConfiguration(classes = ConfigurationServiceClientServiceTest.SpringConfig.class)
-@Ignore
-//@ContextConfiguration(classes = {ConfigServerClientServiceConfiguration.class})
+@Ignore //This is ignored since it must have up and running configuration server
 public class ConfigurationServiceClientServiceTest {
 
     private static String CONFIG_JSON_FILE_NAME = "presidio_configuration_test";
