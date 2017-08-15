@@ -3,6 +3,10 @@ package presidio.sdk.api.domain.transformedevents;
 import presidio.sdk.api.domain.rawevents.FileRawEvent;
 
 public class FileTransformedEvent extends FileRawEvent {
+
+    public static final String SRC_FOLDER_PATH_FIELD_NAME = "srcFolderPath";
+    public static final String DST_FOLDER_PATH_FIELD_NAME = "dstFolderPath";
+
     private String srcFolderPath;
     private String dstFolderPath;
 

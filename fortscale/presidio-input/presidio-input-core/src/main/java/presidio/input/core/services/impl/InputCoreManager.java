@@ -3,6 +3,7 @@ package presidio.input.core.services.impl;
 import fortscale.common.general.Schema;
 import fortscale.domain.core.AbstractAuditableDocument;
 import fortscale.utils.logging.Logger;
+import org.springframework.beans.factory.annotation.Value;
 import presidio.input.core.RawEventsPageIterator;
 import presidio.input.core.services.converters.ConverterService;
 import presidio.input.core.services.data.AdeDataService;
@@ -24,6 +25,9 @@ public class InputCoreManager {
     private final TransformationService transformationService;
     private final ConverterService converterService;
 
+    @Value("${page.iterator.page.size}")
+    private int pageSize;
+
     public InputCoreManager(PresidioInputPersistencyService persistencyService, AdeDataService adeDataService,
                             OutputDataServiceSDK outputDataServiceSDK, TransformationService transformationService, ConverterService converterService) {
         this.persistencyService = persistencyService;
@@ -34,7 +38,6 @@ public class InputCoreManager {
     }
 
     public void run(Schema schema, Instant startDate, Instant endDate) {
-        int pageSize = 1000;
         RawEventsPageIterator rawEventsPageIterator = new RawEventsPageIterator(startDate, endDate, persistencyService, schema, pageSize);
 
         while (rawEventsPageIterator.hasNext()) {
@@ -43,20 +46,20 @@ public class InputCoreManager {
             logger.debug("Processing {} events", nextEvents.size());
 
             List transformedEvents = transformationService.run(nextEvents, schema);
-            storeToAde(schema, startDate, endDate, converterService, transformedEvents);
+            storeToAde(schema, startDate, endDate, transformedEvents);
             try {
-                storeToOutput(converterService, transformedEvents, schema);
+                storeToOutput(transformedEvents, schema);
             } catch (Exception e) {
                 logger.error("Error storing transformed data to output ", e);
             }
         }
     }
 
-    private void storeToOutput(ConverterService converterService, List<? extends AbstractPresidioDocument> transformedEvents, Schema schema) throws Exception {
+    private void storeToOutput(List<? extends AbstractPresidioDocument> transformedEvents, Schema schema) throws Exception {
         outputDataServiceSDK.store(schema, converterService.convertToOutput(transformedEvents, schema));
     }
 
-    private void storeToAde(Schema schema, Instant startDate, Instant endDate, ConverterService converterService, List<? extends AbstractAuditableDocument> transformedEvents) {
+    private void storeToAde(Schema schema, Instant startDate, Instant endDate, List<? extends AbstractAuditableDocument> transformedEvents) {
         adeDataService.store(schema, startDate, endDate, converterService.convertToAde(transformedEvents, schema));
     }
 

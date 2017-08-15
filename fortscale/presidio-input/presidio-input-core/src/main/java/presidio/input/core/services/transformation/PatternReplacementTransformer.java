@@ -1,5 +1,6 @@
 package presidio.input.core.services.transformation;
 
+import fortscale.utils.logging.Logger;
 import fortscale.utils.replacement.PatternReplacement;
 import fortscale.utils.replacement.PatternReplacementConf;
 import presidio.sdk.api.domain.AbstractPresidioDocument;
@@ -8,6 +9,8 @@ import presidio.sdk.api.utils.ReflectionUtils;
 import java.util.List;
 
 public class PatternReplacementTransformer implements Transformer {
+
+    private static final Logger logger = Logger.getLogger(PatternReplacementTransformer.class);
 
     private final String outputFieldName;
     private final String inputFieldName;
@@ -36,7 +39,7 @@ public class PatternReplacementTransformer implements Transformer {
             try {
                 ReflectionUtils.setFieldValue(document, outputFieldName, replacedPattern);
             } catch (IllegalAccessException e) {
-                e.printStackTrace();
+                logger.error("error setting the {} field value", outputFieldName, e);
             }
         });
         return documents;

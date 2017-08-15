@@ -1,5 +1,6 @@
 package presidio.input.core.services.transformation;
 
+import fortscale.utils.logging.Logger;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.util.CollectionUtils;
@@ -8,10 +9,10 @@ import presidio.sdk.api.utils.ReflectionUtils;
 
 import java.io.File;
 import java.util.List;
-import java.util.Set;
 
 public class FolderPathTransformer implements Transformer {
 
+    private static final Logger logger = Logger.getLogger(FolderPathTransformer.class);
     private final String filePathFieldName;
     private final String inputPathFieldName;
     private final String operationTypeFieldName;
@@ -47,7 +48,7 @@ public class FolderPathTransformer implements Transformer {
                         ReflectionUtils.setFieldValue(document, filePathFieldName, outputFilePath);
                         ReflectionUtils.setFieldValue(document, folderPathFieldName, outputFolderPath);
                     } catch (IllegalAccessException e) {
-                        e.printStackTrace();
+                        logger.error("error setting one of {} {} field values", filePathFieldName, folderPathFieldName, e);
                     }
                 }
         );

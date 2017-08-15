@@ -1,4 +1,4 @@
-package presidio.input.core.services.converters.inputtooutput;
+package presidio.input.core.services.converters.output;
 
 import presidio.output.domain.records.events.EnrichedEvent;
 import presidio.output.domain.records.events.FileEnrichedEvent;

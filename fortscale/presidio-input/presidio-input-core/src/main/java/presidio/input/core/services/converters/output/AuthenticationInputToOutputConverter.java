@@ -1,15 +1,15 @@
-package presidio.input.core.services.converters.inputtooutput;
+package presidio.input.core.services.converters.output;
 
-import presidio.output.domain.records.events.ActiveDirectoryEnrichedEvent;
+import presidio.output.domain.records.events.AuthenticationEnrichedEvent;
 import presidio.output.domain.records.events.EnrichedEvent;
 import presidio.sdk.api.domain.AbstractPresidioDocument;
-import presidio.sdk.api.domain.rawevents.ActiveDirectoryRawEvent;
+import presidio.sdk.api.domain.transformedevents.AuthenticationTransformedEvent;
 
-public class ActiveDirectoryInputToOutputConverter implements InputOutputConverter {
+public class AuthenticationInputToOutputConverter implements InputOutputConverter {
     @Override
     public EnrichedEvent convert(AbstractPresidioDocument document) {
-        ActiveDirectoryRawEvent transformedEvent = (ActiveDirectoryRawEvent) document;
-        ActiveDirectoryEnrichedEvent outputEvent = new ActiveDirectoryEnrichedEvent();
+        AuthenticationTransformedEvent transformedEvent = (AuthenticationTransformedEvent) document;
+        AuthenticationEnrichedEvent outputEvent = new AuthenticationEnrichedEvent();
         outputEvent.setEventId(transformedEvent.getEventId());
         outputEvent.setEventDate(transformedEvent.getDateTime());
         outputEvent.setDataSource(transformedEvent.getDataSource());
@@ -20,8 +20,11 @@ public class ActiveDirectoryInputToOutputConverter implements InputOutputConvert
         outputEvent.setUserName(transformedEvent.getUserName());
         outputEvent.setUserDisplayName(transformedEvent.getUserDisplayName());
         outputEvent.setAdditionalnfo(transformedEvent.getAdditionalInfo());
-        outputEvent.setObjectId(transformedEvent.getObjectId());
-        outputEvent.setUserAdmin(transformedEvent.isUserAdmin());
+        outputEvent.setSrcMachineId(transformedEvent.getSrcMachineId());
+        outputEvent.setSrcMachineNameRegexCluster(transformedEvent.getSrcMachineCluster());
+        outputEvent.setDstMachineId(transformedEvent.getDstMachineId());
+        outputEvent.setDstMachineNameRegexCluster(transformedEvent.getDstMachineCluster());
+        outputEvent.setDstMachineDomain(transformedEvent.getDstMachineDomain());
         return outputEvent;
     }
 }

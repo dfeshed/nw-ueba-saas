@@ -13,7 +13,7 @@ import java.util.List;
 
 public class FileTransformerManager implements TransformationManager {
 
-    @Value("${folder_operation_types}")
+    @Value("${folder.operation.types}")
     private String[] folderOperationTypes;
     private List<Transformer> transformers;
 
@@ -24,10 +24,10 @@ public class FileTransformerManager implements TransformationManager {
             List<String> folderOperations = Arrays.asList(folderOperationTypes);
             transformers = new ArrayList<>();
             transformers.add(new FolderPathTransformer(FileRawEvent.SRC_FILE_PATH_FIELD_NAME, FileRawEvent.SRC_FILE_PATH_FIELD_NAME,
-                    "srcFolderPath", FileRawEvent.OPERATION_TYPE_FIELD_NAME, folderOperations));
+                    FileTransformedEvent.SRC_FOLDER_PATH_FIELD_NAME, FileRawEvent.OPERATION_TYPE_FIELD_NAME, folderOperations));
 
             transformers.add(new FolderPathTransformer(FileRawEvent.DST_FILE_PATH_FIELD_NAME, FileRawEvent.DST_FILE_PATH_FIELD_NAME,
-                    "dstFolderPath", FileRawEvent.OPERATION_TYPE_FIELD_NAME, folderOperations));
+                    FileTransformedEvent.DST_FOLDER_PATH_FIELD_NAME, FileRawEvent.OPERATION_TYPE_FIELD_NAME, folderOperations));
         }
         return transformers;
     }

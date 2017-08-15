@@ -6,7 +6,7 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringRunner;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.ade.domain.record.enriched.dlpfile.EnrichedDlpFileRecord;
-import presidio.input.core.services.converters.inputtoade.DlpFileConverter;
+import presidio.input.core.services.converters.ade.DlpFileConverter;
 import presidio.sdk.api.domain.DlpFileDataDocument;
 import presidio.sdk.api.domain.DlpFileEnrichedDocument;
 
