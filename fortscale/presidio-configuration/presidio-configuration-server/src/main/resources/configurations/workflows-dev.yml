@@ -12,10 +12,12 @@ dags:
       daily_smart_events_confs:
       - normalized_username_daily
       command: run
-      data_sources: ${dataPipeline.schemas}
-    schedule_interval: timedelta(hours=1)
-    start_date:  ${dataPipeline.startTime}
-    end_date: ${dataPipeline.endTime}
+      data_sources:
+      - FILE
+      command: run
+      schedule_interval: timedelta(hours=1)
+      start_date: '2017-01-01 10:00:00'
+      end_date: '2017-01-01 11:00:00'
   tasks_instances:
     hourly_DLPFILE_feature_aggregations:
       jvm_args:
