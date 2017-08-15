@@ -1,6 +1,8 @@
 package org.apache.flume.interceptor.presidio;
 
 import com.google.common.collect.Lists;
+import org.apache.commons.lang.BooleanUtils;
+import org.apache.flume.CommonStrings;
 import org.apache.flume.Event;
 import org.apache.flume.conf.ConfigurationException;
 import org.apache.flume.interceptor.Interceptor;
@@ -28,6 +30,9 @@ public abstract class AbstractInterceptor implements Interceptor {
 
     @Override
     public Event intercept(Event event) {
+        if (isGotControlDoneMessage(event)) {
+            return event;
+        }
         try {
             return doIntercept(event);
         }
@@ -53,5 +58,9 @@ public abstract class AbstractInterceptor implements Interceptor {
     @Override
     public void close() {
 
+    }
+
+    private boolean isGotControlDoneMessage(Event flumeEvent) {
+        return BooleanUtils.toBoolean(flumeEvent.getHeaders().get(CommonStrings.IS_DONE));
     }
 }
