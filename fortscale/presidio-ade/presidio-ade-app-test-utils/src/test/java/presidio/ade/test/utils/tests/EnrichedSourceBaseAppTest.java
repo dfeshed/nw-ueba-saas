@@ -6,15 +6,14 @@ import org.junit.experimental.categories.Category;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import presidio.ade.test.utils.EnrichedEventsGenerator;
 import presidio.ade.test.utils.EnrichedEventsGeneratorConfig;
+import presidio.ade.test.utils.EventsGenerator;
 import presidio.data.generators.common.GeneratorException;
 
 @Category(ModuleTestCategory.class)
 public abstract class EnrichedSourceBaseAppTest extends BaseAppTest {
     @Autowired
-    protected EnrichedEventsGenerator enrichedEventsGenerator;
+    protected EventsGenerator eventsGenerator;
 
     /**
      * Generate 2 events per hour along 24 hours for 2 days.
@@ -23,7 +22,7 @@ public abstract class EnrichedSourceBaseAppTest extends BaseAppTest {
      */
     @Test
     public void sanityTest() throws GeneratorException {
-        enrichedEventsGenerator.generateAndPersistSanityData();
+        eventsGenerator.generateAndPersistSanityData();
         executeAndAssertCommandSuccess(getSanityTestExecutionCommand());
         assertSanityTest();
     }
