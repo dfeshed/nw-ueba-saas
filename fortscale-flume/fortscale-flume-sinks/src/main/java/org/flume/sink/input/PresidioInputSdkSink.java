@@ -4,14 +4,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import fortscale.common.general.Schema;
 import fortscale.domain.core.AbstractAuditableDocument;
-import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.flume.Context;
 import org.apache.flume.Event;
 import org.apache.flume.FlumeException;
 import org.apache.flume.Sink;
 import org.apache.flume.conf.Configurable;
-import org.apache.flume.CommonStrings;
 import org.flume.sink.base.AbstractPresidioSink;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -89,12 +87,9 @@ public class PresidioInputSdkSink<T extends AbstractAuditableDocument> extends A
                 logger.trace("No events to sink...");
                 break;
             }
-            final boolean isControlMessage = BooleanUtils.toBoolean(flumeEvent.getHeaders().get(CommonStrings.IS_DONE));
-            if (isControlMessage) {
-                if (isBatch) {
-                    isDone = true;
-                }
-                continue;
+            final boolean isControlDoneMessage = isGotControlDoneMessage(flumeEvent);
+            if (isControlDoneMessage) {
+                break;
             }
             sinkCounter.incrementEventDrainAttemptCount();
             final T parsedEvent;

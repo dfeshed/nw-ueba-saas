@@ -1,7 +1,9 @@
 package org.flume.sink.base;
 
+import org.apache.commons.lang.BooleanUtils;
 import org.apache.flume.*;
 import org.apache.flume.conf.Configurable;
+import org.apache.flume.event.JSONEvent;
 import org.apache.flume.instrumentation.SinkCounter;
 import org.apache.flume.sink.AbstractSink;
 import org.slf4j.Logger;
@@ -74,4 +76,19 @@ public abstract class AbstractPresidioSink<T> extends AbstractSink implements Co
     protected abstract void saveEvents(List<T> eventsToSave);
 
     protected abstract List<T> getEvents() throws Exception;
+
+    protected boolean isGotControlDoneMessage(Event flumeEvent) {
+        final boolean isControlDoneMessage = BooleanUtils.toBoolean(flumeEvent.getHeaders().get(CommonStrings.IS_DONE));
+        if (isControlDoneMessage) {
+            logger.debug("Sink {} got a control DONE message.", getName());
+            if (isBatch) {
+                isDone = true;
+            }
+            if (this.getChannel().take() != null) {
+                logger.error("Got a control message DONE while there are still more records to process. This is not a valid state!");
+            }
+        }
+
+        return isControlDoneMessage;
+    }
 }

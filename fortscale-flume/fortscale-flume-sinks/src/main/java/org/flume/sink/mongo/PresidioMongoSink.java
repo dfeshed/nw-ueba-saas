@@ -3,12 +3,10 @@ package org.flume.sink.mongo;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import fortscale.domain.core.AbstractDocument;
-import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.flume.Context;
 import org.apache.flume.Event;
 import org.apache.flume.FlumeException;
-import org.apache.flume.CommonStrings;
 import org.flume.sink.base.AbstractPresidioSink;
 import org.flume.sink.mongo.persistency.SinkMongoRepository;
 import org.flume.sink.mongo.persistency.SinkMongoRepositoryImpl;
@@ -111,13 +109,9 @@ public class PresidioMongoSink<T extends AbstractDocument> extends AbstractPresi
                 logger.trace("No events to sink...");
                 break;
             }
-            final boolean isControlMessage = BooleanUtils.toBoolean(flumeEvent.getHeaders().get(CommonStrings.IS_DONE));
-            if (isControlMessage) {
-                logger.debug("Sink {} got a control message.", getName());
-                if (isBatch) {
-                    isDone = true;
-                }
-                continue;
+            final boolean isControlDoneMessage = isGotControlDoneMessage(flumeEvent);
+            if (isControlDoneMessage) {
+                break;
             }
 
             sinkCounter.incrementEventDrainAttemptCount();
