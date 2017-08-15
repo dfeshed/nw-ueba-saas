@@ -14,7 +14,7 @@ import presidio.webapp.service.RestAlertService;
 @RestController
 @RequestMapping(value = "/alerts")
 @Api(value = "AlertController", description = "Alert Controller")
-public class AlertsController implements AlertsControllerApi {
+public class AlertsController {
 
     private final RestAlertService restAlertService;
 
