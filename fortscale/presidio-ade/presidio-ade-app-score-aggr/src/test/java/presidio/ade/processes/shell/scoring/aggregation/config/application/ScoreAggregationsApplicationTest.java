@@ -15,12 +15,12 @@ import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.test.category.ModuleTestCategory;
 import fortscale.utils.time.TimeService;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.experimental.categories.Category;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
-import org.testng.annotations.BeforeTest;
 import presidio.ade.domain.record.aggregated.AggregatedFeatureType;
 import presidio.ade.domain.store.aggr.AggrDataToCollectionNameTranslator;
 import presidio.ade.domain.store.aggr.AggrRecordsMetadata;
@@ -64,7 +64,7 @@ public class ScoreAggregationsApplicationTest extends EnrichedFileSourceBaseAppT
     @Autowired
     private AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
 
-    @BeforeTest
+    @Before
     public void beforeTest() {
         mongoTemplate.getCollectionNames().forEach(collection -> mongoTemplate.dropCollection(collection));
     }

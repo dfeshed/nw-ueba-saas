@@ -65,7 +65,7 @@ public class AdeManagerSdkTest {
 
     @Test
     public void testScoredEnrichedQueries() throws GeneratorException {
-        List<AdeScoredFileRecord> generatedScoredRecords = scoredEnrichedFileGenerator.generateAndPersistSanityData();
+        List<AdeScoredFileRecord> generatedScoredRecords = scoredEnrichedFileGenerator.generateAndPersistSanityData(30);
         String adeEventType = generatedScoredRecords.get(0).getAdeEventType();
         List<String> eventIds = generatedScoredRecords.stream().map(x -> x.getContext().getEventId()).collect(Collectors.toList());
         List<AdeScoredEnrichedRecord> retrievedScoredEnrichedRecords = adeManagerSdk.findScoredEnrichedRecords(eventIds, adeEventType, GENERATED_SCORE);
