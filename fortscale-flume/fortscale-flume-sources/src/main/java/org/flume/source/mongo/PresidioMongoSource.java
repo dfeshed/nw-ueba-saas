@@ -15,7 +15,6 @@ import org.apache.flume.conf.Configurable;
 import org.apache.flume.event.EventBuilder;
 import org.apache.flume.instrumentation.SourceCounter;
 import org.apache.flume.source.AbstractEventDrivenSource;
-import org.flume.CommonStrings;
 import org.flume.source.mongo.persistency.SourceMongoRepository;
 import org.flume.source.mongo.persistency.SourceMongoRepositoryImpl;
 import org.flume.utils.DateUtils;
@@ -29,8 +28,9 @@ import java.nio.charset.Charset;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
+import org.apache.flume.CommonStrings;
 
-import static org.flume.CommonStrings.*;
+import static org.apache.flume.CommonStrings.*;
 
 
 public class PresidioMongoSource extends AbstractEventDrivenSource implements Configurable, EventDrivenSource {
@@ -75,9 +75,9 @@ public class PresidioMongoSource extends AbstractEventDrivenSource implements Co
             }
             boolean hasAuthentication = Boolean.parseBoolean(context.getString(HAS_AUTHENTICATION));
             if (hasAuthentication) {
-                if (!context.containsKey(CommonStrings.USERNAME) || !context.containsKey(CommonStrings.PASSWORD)) {
+                if (!context.containsKey(USERNAME) || !context.containsKey(CommonStrings.PASSWORD)) {
                     throw new Exception(String.format("Missing %s and/or %s for authentication for %s (since %s = true).",
-                            CommonStrings.USERNAME, CommonStrings.PASSWORD, getName(), CommonStrings.HAS_AUTHENTICATION));
+                            USERNAME, CommonStrings.PASSWORD, getName(), HAS_AUTHENTICATION));
                 }
 
             }

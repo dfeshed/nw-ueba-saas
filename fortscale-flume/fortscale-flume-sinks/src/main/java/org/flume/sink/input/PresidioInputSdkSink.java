@@ -4,12 +4,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import fortscale.common.general.Schema;
 import fortscale.domain.core.AbstractAuditableDocument;
+import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.flume.Context;
 import org.apache.flume.Event;
 import org.apache.flume.FlumeException;
 import org.apache.flume.Sink;
 import org.apache.flume.conf.Configurable;
+import org.apache.flume.CommonStrings;
 import org.flume.sink.base.AbstractPresidioSink;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.flume.CommonStrings.BATCH_SIZE;
+import static org.apache.flume.CommonStrings.BATCH_SIZE;
 
 public class PresidioInputSdkSink<T extends AbstractAuditableDocument> extends AbstractPresidioSink<T> implements Configurable, Sink {
 
@@ -58,6 +60,7 @@ public class PresidioInputSdkSink<T extends AbstractAuditableDocument> extends A
 
     @Override
     public void configure(Context context) {
+        super.configure(context);
         logger.debug("context is: {}", context);
         try {
             for (String mandatoryParam : mandatoryParams) {
@@ -85,6 +88,13 @@ public class PresidioInputSdkSink<T extends AbstractAuditableDocument> extends A
             if (flumeEvent == null) {
                 logger.trace("No events to sink...");
                 break;
+            }
+            final boolean isControlMessage = BooleanUtils.toBoolean(flumeEvent.getHeaders().get(CommonStrings.IS_DONE));
+            if (isControlMessage) {
+                if (isBatch) {
+                    isDone = true;
+                }
+                continue;
             }
             sinkCounter.incrementEventDrainAttemptCount();
             final T parsedEvent;

@@ -74,6 +74,6 @@ public interface Sink extends LifecycleAware, NamedComponent {
   public Status process() throws EventDeliveryException;
 
   public static enum Status {
-    READY, BACKOFF
+    READY, DONE, BACKOFF
   }
 }

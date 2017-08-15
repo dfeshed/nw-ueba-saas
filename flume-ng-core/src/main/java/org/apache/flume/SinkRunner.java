@@ -23,6 +23,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.flume.lifecycle.LifecycleAware;
 import org.apache.flume.lifecycle.LifecycleState;
+import org.apache.flume.lifecycle.LifecycleSupervisor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -142,13 +143,19 @@ public class SinkRunner implements LifecycleAware {
 
       while (!shouldStop.get()) {
         try {
-          if (policy.process().equals(Sink.Status.BACKOFF)) {
+          final Sink.Status status = policy.process();
+          if (status.equals(Sink.Status.BACKOFF)) {
             counterGroup.incrementAndGet("runner.backoffs");
 
             Thread.sleep(Math.min(
                 counterGroup.incrementAndGet("runner.backoffs.consecutive")
                 * backoffSleepIncrement, maxBackoffSleep));
-          } else {
+          }
+          else if (status.equals(Sink.Status.DONE)) {
+            logger.info("Execution with options {} is done. Stopping Flume agent.", LifecycleSupervisor.options);
+            Thread.currentThread().interrupt();
+          }
+          else {
             counterGroup.set("runner.backoffs.consecutive", 0L);
           }
         } catch (InterruptedException e) {

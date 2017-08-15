@@ -27,6 +27,7 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.cli.Options;
 import org.apache.flume.FlumeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,6 +38,7 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 public class LifecycleSupervisor implements LifecycleAware {
 
   private static final Logger logger = LoggerFactory.getLogger(LifecycleSupervisor.class);
+  public static Options options = new Options();
 
   private Map<LifecycleAware, Supervisoree> supervisedProcesses;
   private Map<LifecycleAware, ScheduledFuture<?>> monitorFutures;
