@@ -48,7 +48,7 @@
       },
       "aggregatedFeatureEventFunction": {
         "type": "aggr_feature_histogram_key_value_func",
-        "key": "failed"
+        "key": "FAILURE"
       }
     },
     {
@@ -65,7 +65,7 @@
       },
       "aggregatedFeatureEventFunction": {
         "type": "aggr_feature_histogram_key_value_func",
-        "key": "failed"
+        "key": "FAILURE"
       }
     },
     {

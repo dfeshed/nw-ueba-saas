@@ -5,5 +5,5 @@ import presidio.data.generators.common.GeneratorException;
 import java.util.List;
 
 public interface EventsGenerator<T> {
-    List<T> generateAndPersistSanityData() throws GeneratorException;
+    List<T> generateAndPersistSanityData(int interval) throws GeneratorException;
 }

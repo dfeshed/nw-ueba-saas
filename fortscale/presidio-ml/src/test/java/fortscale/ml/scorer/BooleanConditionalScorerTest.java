@@ -6,29 +6,22 @@ import org.junit.Test;
 import presidio.ade.domain.record.AdeRecordReader;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-/**
- * Created by YaronDL on 8/6/2017.
- */
-public class ConditionalScorerTest {
+public class BooleanConditionalScorerTest {
 
     @Test
-    public void testGettingScoreWhenListContainsValue(){
+    public void testGettingScoreWhenFieldEqualToValue(){
         String conditionalField = "context.operationTypeCategories";
-        String conditionalValue = "FILE_ACTION";
+        Boolean conditionalValue = true;
         double expectedScore = 98;
-        ConditionalScorer conditionalScorer = new ConditionalScorer("myConditionalScorer", getScorerMock(expectedScore), conditionalField, conditionalValue);
+        ConditionalScorer conditionalScorer = new BooleanConditionalScorer("myConditionalScorer", getScorerMock(expectedScore), conditionalField, conditionalValue);
         AdeRecordReader adeRecordReader = mock(AdeRecordReader.class);
-        List<String> fieldValues = new ArrayList<>();
-        fieldValues.add(conditionalValue);
-        fieldValues.add("justAnotherValue");
-        when(adeRecordReader.get(conditionalField, List.class)).thenReturn(fieldValues);
+        when(adeRecordReader.get(conditionalField, Boolean.class)).thenReturn(conditionalValue);
 
         FeatureScore featureScore = conditionalScorer.calculateScore(adeRecordReader);
         Assert.assertNotNull(featureScore);
@@ -36,16 +29,13 @@ public class ConditionalScorerTest {
     }
 
     @Test
-    public void testGettingNoFeatureScoreWhenListDoesNotContainValue(){
+    public void testGettingScoreWhenFieldIsNotEqualToValue(){
         String conditionalField = "context.operationTypeCategories";
-        String conditionalValue = "FILE_ACTION";
+        Boolean conditionalValue = true;
         double expectedScore = 98;
-        ConditionalScorer conditionalScorer = new ConditionalScorer("myConditionalScorer", getScorerMock(expectedScore), conditionalField, conditionalValue);
+        ConditionalScorer conditionalScorer = new BooleanConditionalScorer("myConditionalScorer", getScorerMock(expectedScore), conditionalField, conditionalValue);
         AdeRecordReader adeRecordReader = mock(AdeRecordReader.class);
-        List<String> fieldValues = new ArrayList<>();
-        fieldValues.add("Value");
-        fieldValues.add("justAnotherValue");
-        when(adeRecordReader.get(conditionalField, List.class)).thenReturn(fieldValues);
+        when(adeRecordReader.get(conditionalField, Boolean.class)).thenReturn(!conditionalValue);
 
         FeatureScore featureScore = conditionalScorer.calculateScore(adeRecordReader);
         Assert.assertNull(featureScore);
@@ -54,9 +44,9 @@ public class ConditionalScorerTest {
     @Test
     public void testGettingNoFeatureScoreWhenFieldDoesNotExist(){
         String conditionalField = "context.operationTypeCategories";
-        String conditionalValue = "FILE_ACTION";
+        Boolean conditionalValue = true;
         double expectedScore = 98;
-        ConditionalScorer conditionalScorer = new ConditionalScorer("myConditionalScorer", getScorerMock(expectedScore), conditionalField, conditionalValue);
+        ConditionalScorer conditionalScorer = new BooleanConditionalScorer("myConditionalScorer", getScorerMock(expectedScore), conditionalField, conditionalValue);
         AdeRecordReader adeRecordReader = mock(AdeRecordReader.class);
         when(adeRecordReader.get(conditionalField, List.class)).thenReturn(null);
 

@@ -3,7 +3,7 @@ package presidio.ade.domain.record.enriched.activedirectory;
 import org.springframework.data.annotation.Transient;
 
 public interface AdeActiveDirectoryRecord {
-    public static final String ACTIVE_DIRECTORY_STR = "activedirectory";
+    public static final String ACTIVE_DIRECTORY_STR = "active_directory";
 
     @Transient
     default String getAdeEventType() {

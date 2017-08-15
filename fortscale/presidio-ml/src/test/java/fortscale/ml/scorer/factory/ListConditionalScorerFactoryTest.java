@@ -1,9 +1,9 @@
 package fortscale.ml.scorer.factory;
 
-import fortscale.ml.scorer.ConditionalScorer;
+import fortscale.ml.scorer.ListConditionalScorer;
 import fortscale.ml.scorer.Scorer;
-import fortscale.ml.scorer.config.ConditionalScorerConf;
-import fortscale.ml.scorer.config.ConditionalScorerConfTest;
+import fortscale.ml.scorer.config.ListConditionalScorerConf;
+import fortscale.ml.scorer.config.ListConditionalScorerConfTest;
 import fortscale.utils.factory.AbstractServiceAutowiringFactory;
 import fortscale.utils.factory.Factory;
 import fortscale.utils.factory.FactoryService;
@@ -23,28 +23,28 @@ import java.util.List;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 
-public class ConditionalScorerFactoryTest {
+public class ListConditionalScorerFactoryTest {
     @Autowired
     private FactoryService<Scorer> scorerFactoryService;
     @Autowired
-    private ConditionalScorerFactory conditionalScorerFactory;
+    private ListConditionalScorerFactory listConditionalScorerFactory;
 
     @Test
     public void conditional_scorer_factory_should_register_to_factory_service() {
-        Factory<Scorer> scorerFactory = scorerFactoryService.getFactory(ConditionalScorerConf.SCORER_TYPE);
+        Factory<Scorer> scorerFactory = scorerFactoryService.getFactory(ListConditionalScorerConf.SCORER_TYPE);
         Assert.assertNotNull(scorerFactory);
-        Assert.assertEquals(conditionalScorerFactory, scorerFactory);
+        Assert.assertEquals(listConditionalScorerFactory, scorerFactory);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void get_product_should_fail_when_factory_config_is_null() {
-        conditionalScorerFactory.getProduct(null);
+        listConditionalScorerFactory.getProduct(null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void get_product_should_fail_when_factory_config_is_of_wrong_type() throws IOException {
-        conditionalScorerFactory.getProduct(ConditionalScorerConfTest.getScorerConf(
-                ConditionalScorerConfTest.defaultScorerConfJsonObject));
+        listConditionalScorerFactory.getProduct(ListConditionalScorerConfTest.getScorerConf(
+                ListConditionalScorerConfTest.defaultScorerConfJsonObject));
     }
 
     @Test
@@ -52,10 +52,10 @@ public class ConditionalScorerFactoryTest {
         String name = "mySubScorer";
         String conditionalField = "myConditionalField";
         String conditionalValue = "myConditionalValue";
-        Scorer scorer = conditionalScorerFactory.getProduct(ConditionalScorerConfTest.getScorerConf(
-                ConditionalScorerConfTest.getConditionalScorerConfJsonObject(ConditionalScorerConf.SCORER_TYPE, name, ConditionalScorerConfTest.defaultScorerConfJsonObject, conditionalField, conditionalValue)));
+        Scorer scorer = listConditionalScorerFactory.getProduct(ListConditionalScorerConfTest.getScorerConf(
+                ListConditionalScorerConfTest.getConditionalScorerConfJsonObject(ListConditionalScorerConf.SCORER_TYPE, name, ListConditionalScorerConfTest.defaultScorerConfJsonObject, conditionalField, conditionalValue)));
         Assert.assertNotNull(scorer);
-        Assert.assertEquals(ConditionalScorer.class, scorer.getClass());
+        Assert.assertEquals(ListConditionalScorer.class, scorer.getClass());
     }
 
     @Configuration
@@ -64,8 +64,8 @@ public class ConditionalScorerFactoryTest {
         public List<AbstractServiceAutowiringFactory<Scorer>> scorersFactories;
 
         @Bean
-        public ConditionalScorerFactory getConditionalScorerFactory(){
-            return new ConditionalScorerFactory();
+        public ListConditionalScorerFactory getConditionalScorerFactory(){
+            return new ListConditionalScorerFactory();
         }
 
         @Bean
