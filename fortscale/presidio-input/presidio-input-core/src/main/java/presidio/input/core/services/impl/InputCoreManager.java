@@ -18,15 +18,17 @@ import java.util.List;
 public class InputCoreManager {
 
     private static final Logger logger = Logger.getLogger(InputCoreManager.class);
-    private final PresidioInputPersistencyService persistencyService;
 
+    private final int DEFAULT_PAGE_SIZE = 1000;
+
+    private final PresidioInputPersistencyService persistencyService;
     private final AdeDataService adeDataService;
     private final OutputDataServiceSDK outputDataServiceSDK;
     private final TransformationService transformationService;
     private final ConverterService converterService;
 
     @Value("${page.iterator.page.size}")
-    private int pageSize;
+    private Integer pageSize;
 
     public InputCoreManager(PresidioInputPersistencyService persistencyService, AdeDataService adeDataService,
                             OutputDataServiceSDK outputDataServiceSDK, TransformationService transformationService, ConverterService converterService) {
@@ -38,6 +40,10 @@ public class InputCoreManager {
     }
 
     public void run(Schema schema, Instant startDate, Instant endDate) {
+        if (pageSize == null){
+            pageSize = DEFAULT_PAGE_SIZE;
+        }
+
         RawEventsPageIterator rawEventsPageIterator = new RawEventsPageIterator(startDate, endDate, persistencyService, schema, pageSize);
 
         while (rawEventsPageIterator.hasNext()) {
