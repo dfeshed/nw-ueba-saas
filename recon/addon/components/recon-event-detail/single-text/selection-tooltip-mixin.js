@@ -1,10 +1,30 @@
-import Ember from 'ember';
 import Mixin from 'ember-metal/mixin';
 import service from 'ember-service/inject';
+import { throttle } from 'ember-runloop';
 import $ from 'jquery';
 import { sendTetherEvent } from 'component-lib/utils/tooltip-trigger';
 
-const { run } = Ember;
+const ELEMENT_NODE = 1;
+const TEXT_NODE = 3;
+
+/**
+ * Get the `className` of the parent node. We check what type of node is
+ * passed in because different types of nodes have different paths to their
+ * parent's className.
+ * @param {object} node A DOM node
+ * @return {string} The className of the node
+ * @private
+ */
+const _getContainerClassName = (node) => {
+  const type = node.nodeType;
+  let className;
+  if (type === ELEMENT_NODE) {
+    className = node.className;
+  } else if (type === TEXT_NODE) {
+    className = node.parentNode.className;
+  }
+  return className;
+};
 
 export default Mixin.create({
   didDrag: false,
@@ -53,12 +73,12 @@ export default Mixin.create({
       // get the range of the highlighted selection. This range object includes
       // the start and end offsets of the selection.
       const range = selection.getRangeAt(0).cloneRange();
-      const startContainer = range.startContainer.parentNode.className;
-      const endContainer = range.endContainer.parentNode.className;
+      const startContainerClassName = _getContainerClassName(range.startContainer);
+      const endContainerClassName = _getContainerClassName(range.endContainer);
 
       // Create a span tag around the highlighted selection. This span tag is used for
       // tethering.
-      if (startContainer === 'text-container' && endContainer === 'text-container' && !range.collapsed) {
+      if (startContainerClassName === 'text-container' && endContainerClassName === 'text-container' && !range.collapsed) {
         const newNode = document.createElement('span');
         const index = this.elementId; // index is appended at the end of each span class
         const spanClass = `span${index}`;
@@ -116,7 +136,7 @@ export default Mixin.create({
   // Hide the tooltip on scroll. Throttling the scroll handler, so that unTether
   // is never called frequently than the spacing period
   _handleScroll() {
-    run.throttle(this, this.unTether, 500);
+    throttle(this, this.unTether, 500);
   },
 
   // For the click events outside the recon component; close the recon tooltip if it is open

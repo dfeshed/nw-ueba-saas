@@ -17,6 +17,8 @@ if (IS_IE) {
   TIME_BETWEEN_CHUNKS = 2500;
 }
 
+const SUPPORTS_COPY_PASTE = document.queryCommandSupported && document.queryCommandSupported('copy');
+
 export default Component.extend(SelectionTooltip, {
   classNameBindings: ['packet.side', 'isSticky::rsa-text-entry'],
   layout,
@@ -34,6 +36,7 @@ export default Component.extend(SelectionTooltip, {
   renderingRemainingText: false,
   stickyRenderedPercent: null,
   tooltipHeading: null,
+  supportsCopyPaste: SUPPORTS_COPY_PASTE,
 
   // Tooltip has two views depending upon being in IF/ELSE conditional
   // The IF conditional shows the final encoded/decoded text that has the closeButton X
@@ -232,24 +235,19 @@ export default Component.extend(SelectionTooltip, {
       // browser's selection. The best way to do this is to create a temporary
       // textarea, set it's value to the selected text, and then "copy" it.
       const text = this.get('originalString');
-      if (window.clipboardData && window.clipboardData.setData) {
-        // IE specific code path to prevent textarea being shown while dialog is visible.
-        return window.clipboardData.setData('Text', text);
-      } else if (document.queryCommandSupported && document.queryCommandSupported('copy')) {
-        const fakeEl = document.createElement('textarea');
-        fakeEl.textContent = text;
-        fakeEl.style.position = 'fixed';  // Prevent scrolling to bottom of page in MS Edge.
-        document.body.appendChild(fakeEl);
-        fakeEl.select();
-        try {
-          return document.execCommand('copy');  // Security exception may be thrown by some browsers.
-        } catch (ex) {
-          return false;
-        } finally {
-          document.body.removeChild(fakeEl);
-          this.set('userInComponent', false);
-          this.unTether();
-        }
+      const fakeEl = document.createElement('textarea');
+      fakeEl.textContent = text;
+      fakeEl.style.position = 'fixed';  // Prevent scrolling to bottom of page in MS Edge.
+      document.body.appendChild(fakeEl);
+      fakeEl.select();
+      try {
+        return document.execCommand('copy');  // Security exception may be thrown by some browsers.
+      } catch (ex) {
+        return false;
+      } finally {
+        document.body.removeChild(fakeEl);
+        this.set('userInComponent', false);
+        this.unTether();
       }
     },
 
