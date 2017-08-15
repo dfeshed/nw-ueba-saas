@@ -1,4 +1,8 @@
 from presidio.builders.presidio_dag_builder import PresidioDagBuilder
+from presidio.operators.model.aggr_model_accumulate_aggregation_operator import AggrModelAccumulateAggregationsOperator
+from presidio.operators.model.aggr_model_operator import AggrModelOperator
+from presidio.utils.services.fixed_duration_strategy import FIX_DURATION_STRATEGY_DAILY
+
 
 
 
@@ -38,6 +42,17 @@ class AggrModelDagBuilder(PresidioDagBuilder):
         :return: The input DAG, after the operator flow was added
         :rtype: airflow.models.DAG
         """
+        aggr_model_accumulate_aggregations_operator = AggrModelAccumulateAggregationsOperator(
+            fixed_duration_strategy=FIX_DURATION_STRATEGY_DAILY,
+            feature_bucket_strategy=self._fixed_duration_strategy,
+            command=PresidioDagBuilder.presidio_command,
+            data_source=self._data_source,
+            dag=aggr_model_dag)
+        aggr_model_operator = AggrModelOperator(data_source=self._data_source,
+                                              command="process",
+                                              session_id=aggr_model_dag.dag_id.split('.', 1)[0],
+                                              dag=aggr_model_dag)
 
+        aggr_model_accumulate_aggregations_operator.set_downstream(aggr_model_operator)
 
         return aggr_model_dag

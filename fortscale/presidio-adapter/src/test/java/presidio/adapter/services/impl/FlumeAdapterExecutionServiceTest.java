@@ -23,7 +23,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = AdapterTestConfig.class)
+//@ContextConfiguration(classes = AdapterTestConfig.class)
 public class FlumeAdapterExecutionServiceTest {
 
 
@@ -43,11 +43,11 @@ public class FlumeAdapterExecutionServiceTest {
     public void setUp() throws Exception {
 
         mockProcessExecutor = Mockito.mock(ProcessExecutor.class);
-        Mockito.when(mockProcessExecutor.executeProcess(Mockito.anyString(), Mockito.anyListOf(String.class), Mockito.anyString())).thenReturn(null);
+        Mockito.when(mockProcessExecutor.executeProcess(Mockito.anyString(), Mockito.anyListOf(String.class), Mockito.anyString())).thenReturn(0);
 
         mockFlumeConfigurationUtil = Mockito.mock(FlumeConfigurationUtil.class);
         mockedFlumeHome = "some_flume_home" + File.separator;
-        mockedConfFolder = mockedFlumeHome + "conf" + File.separator + "adapter" + File.separator;
+        mockedConfFolder = mockedFlumeHome + "conf" + File.separator;
         mockedPropertiesFile = Paths.get("active_directory.properties").normalize().toString();
         mockedAgent = "mockedAgent";
         mockedAfterTestsFilePath = mockedConfFolder + "after_test_" + mockedPropertiesFile;
@@ -88,7 +88,7 @@ public class FlumeAdapterExecutionServiceTest {
         Instant endDate = startDate.plus((Duration.ofDays(365))); //1971-01-01T00:00:00Z
         flumeAdapterExecutionService.run(Schema.ACTIVE_DIRECTORY, startDate, endDate, null);
 
-        final List<String> expectedArgumentList = Arrays.asList(mockedFlumeExecutionScriptPath, "agent", "--name " + mockedAgent, "--conf " + mockedConfFolder, "--conf-file " + mockedAfterTestsFilePath);
+        final List<String> expectedArgumentList = Arrays.asList(mockedFlumeExecutionScriptPath, "agent", "--name " + mockedAgent, "--conf", mockedConfFolder, "--conf-file", mockedAfterTestsFilePath);
         Mockito.verify(mockProcessExecutor).executeProcess(mockedJobName, expectedArgumentList, mockedFlumeHome);
     }
 

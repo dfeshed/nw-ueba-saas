@@ -22,7 +22,8 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
 import org.testng.annotations.BeforeTest;
 import presidio.ade.domain.record.aggregated.AggregatedFeatureType;
-import presidio.ade.domain.store.aggr.ScoreAggrDataToCollectionNameTranslator;
+import presidio.ade.domain.store.aggr.AggrDataToCollectionNameTranslator;
+import presidio.ade.domain.store.aggr.AggrRecordsMetadata;
 import presidio.ade.domain.store.scored.AdeScoredEnrichedRecordToCollectionNameTranslator;
 import presidio.ade.test.utils.generators.EnrichedFileGeneratorConfig;
 import presidio.ade.test.utils.tests.EnrichedFileSourceBaseAppTest;
@@ -57,7 +58,7 @@ public class ScoreAggregationsApplicationTest extends EnrichedFileSourceBaseAppT
     @Autowired
     private AdeScoredEnrichedRecordToCollectionNameTranslator adeScoredEnrichedRecordToCollectionNameTranslator;
     @Autowired
-    private ScoreAggrDataToCollectionNameTranslator scoreAggrDataToCollectionNameTranslator;
+    private AggrDataToCollectionNameTranslator aggrDataToCollectionNameTranslator;
     @Autowired
     private FactoryService<Scorer> scorerFactoryService;
     @Autowired
@@ -80,7 +81,6 @@ public class ScoreAggregationsApplicationTest extends EnrichedFileSourceBaseAppT
 
     @Override
     protected void assertSanityTest() {
-        mongoTemplate.getCollectionNames();
         AdeEventTypeScorerConfs adeEventTypeScorerConfs = scorerConfService.getAdeEventTypeScorerConfs(ADE_EVENT_TYPE.getName());
         List<IScorerConf> scorerConfs = adeEventTypeScorerConfs.getScorerConfs().stream().filter(x -> x instanceof ScorerContainerConf).collect(Collectors.toList());
         List<ScorerContainerConf> scorerContainerConfs = new ArrayList<>();
@@ -101,13 +101,14 @@ public class ScoreAggregationsApplicationTest extends EnrichedFileSourceBaseAppT
         Assert.assertTrue(scorerContainerConfs.size() > 0);
         List<AggregatedFeatureEventConf> hourlyScoreAggrConfs = aggregatedFeatureEventsConfService.getAggregatedFeatureEventConfList().stream().filter(conf -> {
             boolean isScoreAggregationConf = AggregatedFeatureType.fromCodeRepresentation(conf.getType()).equals(AggregatedFeatureType.SCORE_AGGREGATION);
+
             String strategyName = conf.getBucketConf().getStrategyName();
             boolean isHourly = FixedDurationStrategy.fromStartegyName(strategyName).equals(FixedDurationStrategy.HOURLY);
-            return (isScoreAggregationConf && isHourly);
+            return (isScoreAggregationConf && isHourly && conf.getName().contains("File"));
         }).collect(Collectors.toList());
 
         hourlyScoreAggrConfs.forEach(conf -> {
-            String collectionName = scoreAggrDataToCollectionNameTranslator.toCollectionName(conf.getName());
+            String collectionName = aggrDataToCollectionNameTranslator.toCollectionName(new AggrRecordsMetadata(conf.getName(),AggregatedFeatureType.SCORE_AGGREGATION));
             DBCollection collection = mongoTemplate.getCollection(collectionName);
             Assert.assertTrue(String.format("scored aggr collection=%s must have at least one record",collectionName),collection.count() > 0);
         });

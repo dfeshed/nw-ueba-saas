@@ -1,5 +1,7 @@
 package presidio.ade.domain.record.aggregated;
 
+import org.springframework.data.mongodb.core.index.CompoundIndex;
+import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -12,8 +14,9 @@ import java.util.Map;
  * @see AggregatedFeatureType
  */
 @Document
+@CompoundIndexes({@CompoundIndex(name = "context_pagination", def = "{'contextId': -1, 'startInstant': -1}")})
 public class AdeAggregationRecord extends AdeContextualAggregatedRecord {
-    private static final String ADE_EVENT_TYPE_PREFIX = "aggr_event";
+    public static final String ADE_AGGR_EVENT_TYPE_PREFIX = "aggr_event";
 
     @Field
     private String featureName;
@@ -40,7 +43,7 @@ public class AdeAggregationRecord extends AdeContextualAggregatedRecord {
 
     @Override
     public String getAdeEventType() {
-        return ADE_EVENT_TYPE_PREFIX + "." + getFeatureName();
+        return ADE_AGGR_EVENT_TYPE_PREFIX + "." + getFeatureName();
     }
 
     @Override
