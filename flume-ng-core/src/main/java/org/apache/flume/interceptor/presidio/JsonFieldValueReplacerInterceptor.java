@@ -139,22 +139,22 @@ public class JsonFieldValueReplacerInterceptor extends AbstractInterceptor {
             for (int i = 0; i < replacementsArray.length; i++) {
                 /* get current 'replacement' */
                 currReplacementAsString = replacementsArray[i];
-                Preconditions.checkArgument(StringUtils.isNotEmpty(currReplacementAsString), "{}(index={}) can not be empty. {}={}.", REPLACEMENTS_CONF_NAME, i, REPLACEMENTS_CONF_NAME, replacementsAsString);
+                Preconditions.checkArgument(StringUtils.isNotEmpty(currReplacementAsString), "%s(index=%s) can not be empty. %s=%s.", REPLACEMENTS_CONF_NAME, i, REPLACEMENTS_CONF_NAME, replacementsAsString);
 
 
                 /* parse 'field' and 'values' from 'replacement' */
                 final String[] currReplacementArray = currReplacementAsString.split(fieldDelim);
                 currField = currReplacementArray[0];
-                Preconditions.checkArgument(StringUtils.isNotEmpty(currField),  "{} - Invalid value {}. field can't be empty.", REPLACEMENTS_CONF_NAME, currReplacementAsString);
+                Preconditions.checkArgument(StringUtils.isNotEmpty(currField),  "%s - Invalid value %s. field can't be empty.", REPLACEMENTS_CONF_NAME, currReplacementAsString);
                 currValuesAsString = currReplacementArray[1];
-                Preconditions.checkArgument(StringUtils.isNotEmpty(currValuesAsString),  "{} - Invalid value {}. Values (original>new) can't be empty.", REPLACEMENTS_CONF_NAME, currReplacementAsString);
+                Preconditions.checkArgument(StringUtils.isNotEmpty(currValuesAsString),  "{} - Invalid value %s. Values (original>new) can't be empty.", REPLACEMENTS_CONF_NAME, currReplacementAsString);
 
                 /* parse 'original value' and 'new value' from 'values' */
                 currValuesArray = currValuesAsString.split(valueDelim);
                 currOriginalValue = currValuesArray[0];
-                Preconditions.checkArgument(StringUtils.isNotEmpty(currOriginalValue),  "{} - Invalid value {}. Original value can't be empty.", REPLACEMENTS_CONF_NAME, currReplacementAsString);
+                Preconditions.checkArgument(StringUtils.isNotEmpty(currOriginalValue),  "%s - Invalid value %s. Original value can't be empty.", REPLACEMENTS_CONF_NAME, currReplacementAsString);
                 currNewValue = currValuesArray[1];
-                Preconditions.checkArgument(StringUtils.isNotEmpty(currNewValue),  "{} - Invalid value {}. New value can't be empty.", REPLACEMENTS_CONF_NAME, currReplacementAsString);
+                Preconditions.checkArgument(StringUtils.isNotEmpty(currNewValue),  "%s - Invalid value %s. New value can't be empty.", REPLACEMENTS_CONF_NAME, currReplacementAsString);
 
 
                 FieldValueReplacement currReplacement = new FieldValueReplacement(currField, currOriginalValue, currNewValue);

@@ -72,7 +72,7 @@ public class JsonFieldRenamerInterceptor extends AbstractInterceptor {
             final String[] destinationFields = getStringArrayFromConfiguration(context, DESTINATION_FIELDS_CONF_NAME, delimiter);
 
             Preconditions.checkArgument(originFields.length == destinationFields.length,
-                    "originFieldsList length is not equals destinationFieldsList length. originFieldsList: {} destinationFieldsList: {}",
+                    "originFieldsList length is not equals destinationFieldsList length. originFieldsList: %s destinationFieldsList: %s",
                     originFields, destinationFields);
 
 
@@ -82,12 +82,12 @@ public class JsonFieldRenamerInterceptor extends AbstractInterceptor {
             this.destinationFields = new ArrayList<>();
             for (int i = 0; i < originFields.length; i++) {
                 currOriginFilter = originFields[i];
-                Preconditions.checkArgument(StringUtils.isNotEmpty(currOriginFilter), "originFieldsList(index={}) can not be empty. {}={}.",
+                Preconditions.checkArgument(StringUtils.isNotEmpty(currOriginFilter), "originFieldsList(index=%s) can not be empty. %s=%s.",
                         i, ORIGIN_FIELDS_CONF_NAME, Arrays.toString(originFields));
                 this.originFields.add(currOriginFilter);
 
                 currDestinationFilter = destinationFields[i];
-                Preconditions.checkArgument(StringUtils.isNotEmpty(currDestinationFilter), "currDestinationFilter(index={}) can not be empty. {}={}.",
+                Preconditions.checkArgument(StringUtils.isNotEmpty(currDestinationFilter), "currDestinationFilter(index=%s) can not be empty. %s=%s.",
                         i, DESTINATION_FIELDS_CONF_NAME, Arrays.toString(destinationFields));
                 this.destinationFields.add(currDestinationFilter);
             }
