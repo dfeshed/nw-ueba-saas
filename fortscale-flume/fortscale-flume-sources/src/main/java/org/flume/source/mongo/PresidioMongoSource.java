@@ -7,14 +7,11 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import fortscale.domain.core.AbstractDocument;
 import org.apache.commons.lang.builder.ToStringBuilder;
-import org.apache.flume.Context;
-import org.apache.flume.Event;
-import org.apache.flume.EventDrivenSource;
-import org.apache.flume.FlumeException;
+import org.apache.flume.*;
 import org.apache.flume.conf.Configurable;
 import org.apache.flume.event.EventBuilder;
 import org.apache.flume.instrumentation.SourceCounter;
-import org.apache.flume.source.AbstractEventDrivenSource;
+import org.apache.flume.source.AbstractBatchableEventDrivenSource;
 import org.flume.source.mongo.persistency.SourceMongoRepository;
 import org.flume.source.mongo.persistency.SourceMongoRepositoryImpl;
 import org.flume.utils.DateUtils;
@@ -22,18 +19,14 @@ import org.flume.utils.MongoUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;
-
 import java.net.UnknownHostException;
 import java.nio.charset.Charset;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
-import org.apache.flume.CommonStrings;
-
 import static org.apache.flume.CommonStrings.*;
 
-
-public class PresidioMongoSource extends AbstractEventDrivenSource implements Configurable, EventDrivenSource {
+public class PresidioMongoSource extends AbstractBatchableEventDrivenSource implements Configurable, EventDrivenSource {
 
     private static Logger logger = LoggerFactory.getLogger(PresidioMongoSource.class);
 
@@ -44,7 +37,6 @@ public class PresidioMongoSource extends AbstractEventDrivenSource implements Co
         mapper.registerModule(new JavaTimeModule());
         mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
     }
-
 
     private final SourceCounter sourceCounter = new SourceCounter("mongo-source-counter");
 
@@ -64,7 +56,7 @@ public class PresidioMongoSource extends AbstractEventDrivenSource implements Co
 
 
     @Override
-    protected void doConfigure(Context context) throws FlumeException {
+    protected void doBatchConfigure(Context context) throws FlumeException {
         logger.debug("context is: {}", context);
         try {
             for (String mandatoryParam : mandatoryParams) {
@@ -75,9 +67,9 @@ public class PresidioMongoSource extends AbstractEventDrivenSource implements Co
             }
             boolean hasAuthentication = Boolean.parseBoolean(context.getString(HAS_AUTHENTICATION));
             if (hasAuthentication) {
-                if (!context.containsKey(USERNAME) || !context.containsKey(CommonStrings.PASSWORD)) {
+                if (!context.containsKey(USERNAME) || !context.containsKey(PASSWORD)) {
                     throw new Exception(String.format("Missing %s and/or %s for authentication for %s (since %s = true).",
-                            USERNAME, CommonStrings.PASSWORD, getName(), HAS_AUTHENTICATION));
+                            USERNAME, PASSWORD, getName(), HAS_AUTHENTICATION));
                 }
 
             }
@@ -96,7 +88,7 @@ public class PresidioMongoSource extends AbstractEventDrivenSource implements Co
             port = Integer.parseInt(context.getString(PORT, "27017"));
             username = context.getString(USERNAME, "");
             final String password = context.getString(PASSWORD, "");
-            dateTimeField = context.getString(CommonStrings.DATE_TIME_FIELD, CommonStrings.DEFAULT_DATE_TIME_FIELD_NAME);
+            dateTimeField = context.getString(DATE_TIME_FIELD, DEFAULT_DATE_TIME_FIELD_NAME);
             sourceMongoRepository = createRepository(dbName, host, port, username, password);
         } catch (Exception e) {
             final String errorMessage = "Failed to configure ." + getName();
@@ -137,6 +129,8 @@ public class PresidioMongoSource extends AbstractEventDrivenSource implements Co
             logger.debug("{} has finished processing events for {}: {}, {}: {}.",
                     getName(), START_DATE, startDate, END_DATE, endDate);
             startDate = endDate; // advance the cursor
+
+            sendDoneControlMessage();
             this.stop();
 
         } catch (Exception e) {

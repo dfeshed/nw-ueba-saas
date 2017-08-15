@@ -20,7 +20,7 @@
 package org.apache.flume.lifecycle;
 
 public enum LifecycleState {
-  IDLE, START, STOP, ERROR;
+  IDLE, START, STOP, ERROR, DONE;
 
   public static final LifecycleState[] START_OR_ERROR = new LifecycleState[] {
       START, ERROR };
