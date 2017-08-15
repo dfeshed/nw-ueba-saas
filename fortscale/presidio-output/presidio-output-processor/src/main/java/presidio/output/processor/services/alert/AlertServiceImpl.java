@@ -34,7 +34,9 @@ public class AlertServiceImpl implements AlertService {
             List<EntityEvent> smarts = smartPageIterator.next();
 
             smarts.stream().forEach(smart -> {
-                alerts.add(convertSmartToAlert(smart));
+                Alert alert = convertSmartToAlert(smart);
+                if (alert != null)
+                    alerts.add(alert);
             });
             break; //TODO !!! remove this once ADE Team will implement SmartPageIterator.hasNext(). currently only one page is returned.
         }
@@ -46,19 +48,18 @@ public class AlertServiceImpl implements AlertService {
     }
 
     private Alert convertSmartToAlert(EntityEvent smart) {
-
-        String id = smart.getId();
-        String userName = smart.getContextId();
-        AlertEnums.AlertType type = AlertEnums.AlertType.GLOBAL; //TODO change this to "AlertClassification"
-        long startDate = smart.getStart_time_unix();
-        long endDate = smart.getEnd_time_unix();
         double score = smart.getScore();
-        int indicatorsNum = smart.getAggregated_feature_events().size();
-        //TODO- on the new ADE SMART POJO there should be a dedicated field for Daily/Hourly
-        AlertEnums.AlertTimeframe timeframe = AlertEnums.AlertTimeframe.DAILY;
-        //TODO- calculate Severity, currently hard-coded
-        AlertEnums.AlertSeverity severity = AlertEnums.AlertSeverity.CRITICAL;
-
-        return new Alert(id, userName, type, startDate, endDate, score, indicatorsNum, timeframe, severity);
+        if (score >= 50) {
+            String id = smart.getId();
+            String userName = smart.getContextId();
+            AlertEnums.AlertType type = AlertEnums.AlertType.GLOBAL; //TODO change this to "AlertClassification"
+            long startDate = smart.getStart_time_unix();
+            long endDate = smart.getEnd_time_unix();
+            int indicatorsNum = smart.getAggregated_feature_events().size();
+            //TODO- on the new ADE SMART POJO there should be a dedicated field for Daily/Hourly
+            AlertEnums.AlertTimeframe timeframe = AlertEnums.AlertTimeframe.DAILY;
+            return new Alert(id, userName, type, startDate, endDate, score, indicatorsNum, timeframe, AlertEnums.AlertSeverity.severity(score));
+        }
+        return null;
     }
 }

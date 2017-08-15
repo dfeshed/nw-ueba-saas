@@ -1,4 +1,4 @@
-package presidio.output.domain.services;
+package presidio.output.domain.services.events;
 
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
@@ -35,7 +35,7 @@ public class EventPersistencyServiceTest {
     private MongoTemplate mongoTemplate;
 
     @Before
-    public void before(){
+    public void before() {
         mongoTemplate.dropCollection(toCollectionNameTranslator.toCollectionName(Schema.DLPFILE));
     }
 
