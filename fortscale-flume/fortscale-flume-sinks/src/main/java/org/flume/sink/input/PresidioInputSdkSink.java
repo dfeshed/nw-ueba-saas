@@ -105,8 +105,15 @@ public class PresidioInputSdkSink<T extends AbstractAuditableDocument> extends A
 
     @Override
     protected void saveEvents(List<T> records) {
-        presidioInputPersistencyService.store(schema, records);
-        sinkCounter.addToEventDrainSuccessCount(records.size());
+        final boolean allSavedSuccessfully = presidioInputPersistencyService.store(schema, records);
+        final int size = records.size();
+        if (allSavedSuccessfully) {
+            logger.info("{} were saved successfully.", size);
+            sinkCounter.addToEventDrainSuccessCount(size);
+        }
+        else {
+            logger.warn("Not all records out of {} total records were saved successfully", size);
+        }
     }
 
 
