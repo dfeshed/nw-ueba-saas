@@ -23,7 +23,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = AdapterTestConfig.class)
+//@ContextConfiguration(classes = AdapterTestConfig.class)
 public class FlumeAdapterExecutionServiceTest {
 
 
@@ -43,7 +43,7 @@ public class FlumeAdapterExecutionServiceTest {
     public void setUp() throws Exception {
 
         mockProcessExecutor = Mockito.mock(ProcessExecutor.class);
-        Mockito.when(mockProcessExecutor.executeProcess(Mockito.anyString(), Mockito.anyListOf(String.class), Mockito.anyString())).thenReturn(null);
+        Mockito.when(mockProcessExecutor.executeProcess(Mockito.anyString(), Mockito.anyListOf(String.class), Mockito.anyString())).thenReturn(0);
 
         mockFlumeConfigurationUtil = Mockito.mock(FlumeConfigurationUtil.class);
         mockedFlumeHome = "some_flume_home" + File.separator;
