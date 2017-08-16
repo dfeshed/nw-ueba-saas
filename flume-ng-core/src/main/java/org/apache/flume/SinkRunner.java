@@ -20,7 +20,6 @@
 package org.apache.flume;
 
 import java.util.concurrent.atomic.AtomicBoolean;
-
 import org.apache.flume.lifecycle.LifecycleAware;
 import org.apache.flume.lifecycle.LifecycleState;
 import org.apache.flume.lifecycle.LifecycleSupervisor;
@@ -44,7 +43,7 @@ import org.slf4j.LoggerFactory;
 public class SinkRunner implements LifecycleAware {
 
   private static final Logger logger = LoggerFactory
-      .getLogger(SinkRunner.class);
+          .getLogger(SinkRunner.class);
   private static final long backoffSleepIncrement = 1000;
   private static final long maxBackoffSleep = 5000;
 
@@ -87,7 +86,7 @@ public class SinkRunner implements LifecycleAware {
 
     runnerThread = new Thread(runner);
     runnerThread.setName("SinkRunner-PollingRunner-" +
-        policy.getClass().getSimpleName());
+            policy.getClass().getSimpleName());
     runnerThread.start();
 
     lifecycleState = LifecycleState.START;
@@ -106,7 +105,7 @@ public class SinkRunner implements LifecycleAware {
           runnerThread.join(500);
         } catch (InterruptedException e) {
           logger.debug("Interrupted while waiting for runner thread to exit. Exception follows.",
-                       e);
+                  e);
         }
       }
     }
@@ -118,7 +117,7 @@ public class SinkRunner implements LifecycleAware {
   @Override
   public String toString() {
     return "SinkRunner: { policy:" + getPolicy() + " counterGroup:"
-        + counterGroup + " }";
+            + counterGroup + " }";
   }
 
   @Override
@@ -148,12 +147,12 @@ public class SinkRunner implements LifecycleAware {
             counterGroup.incrementAndGet("runner.backoffs");
 
             Thread.sleep(Math.min(
-                counterGroup.incrementAndGet("runner.backoffs.consecutive")
-                * backoffSleepIncrement, maxBackoffSleep));
+                    counterGroup.incrementAndGet("runner.backoffs.consecutive")
+                            * backoffSleepIncrement, maxBackoffSleep));
           }
           else if (status.equals(Sink.Status.DONE)) {
             logger.info("Execution with options {} is done. Stopping Flume agent.", LifecycleSupervisor.options);
-            Thread.currentThread().interrupt();
+            selfDestruct();
           }
           else {
             counterGroup.set("runner.backoffs.consecutive", 0L);
@@ -179,4 +178,26 @@ public class SinkRunner implements LifecycleAware {
     }
 
   }
+
+  private static void selfDestruct() {
+    final Thread mainThread = getThreadByName("main-presidio-flume-thread");
+    if (mainThread != null) {
+      mainThread.interrupt();
+    }
+  }
+
+  private static Thread getThreadByName(String threadName) {
+    for (Thread t : Thread.getAllStackTraces().keySet()) {
+      if (t.getName().equals(threadName)) return t;
+    }
+    return null;
+  }
+
+//    final Collection<Thread> threadsByName = ThreadUtils.findThreadsByName("main-presidio-flume-thread");
+//    for (Thread thread : threadsByName) {
+//      if (!thread.isInterrupted()) {
+//        thread.interrupt();
+//      }
+//    }
 }
+
