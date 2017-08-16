@@ -5,11 +5,16 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.apache.http.HttpStatus;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
+import presidio.webapp.dto.Alert;
 import presidio.webapp.dto.AlertListEntityResponseBean;
 import presidio.webapp.dto.AlertSingleEntityResponseBean;
 import presidio.webapp.restquery.RestAlertQuery;
 import presidio.webapp.service.RestAlertService;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/alerts")
@@ -46,9 +51,17 @@ public class AlertsController {
     public AlertListEntityResponseBean getAlerts(@ApiParam(name = "alertQuery", value = "Filter for Alerts") RestAlertQuery restAlertQuery) {
         AlertListEntityResponseBean responseBean = new AlertListEntityResponseBean();
         try {
-            responseBean.setData(restAlertService.getAlerts(restAlertQuery));
+            Page<presidio.output.domain.records.alerts.Alert> alertsPage = restAlertService.getAlerts(restAlertQuery);
+
+            List<Alert> alerts = new ArrayList<>();
+            if (alertsPage.hasContent()) {
+                alertsPage.forEach(alert -> alerts.add(restAlertService.createResult(alert)));
+            }
+
+            responseBean.setData(alerts);
             responseBean.setPage(restAlertQuery.getPageNumber());
             responseBean.setStatus(HttpStatus.SC_OK);
+            responseBean.setTotal(alertsPage.getTotalElements());
         } catch (Exception e) {
             responseBean.setErrorMessage(String.format("Got error while getting alert by filter - %s", e.getMessage()));
             responseBean.setStatus(HttpStatus.SC_INTERNAL_SERVER_ERROR);
