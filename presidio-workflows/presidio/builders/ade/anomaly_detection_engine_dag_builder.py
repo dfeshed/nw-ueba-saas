@@ -49,18 +49,11 @@ class AnomalyDetectionEngineDagBuilder(PresidioDagBuilder):
 
         # Following are gap configuation which should be moved to configuration file.
         # In the end we might not define these sensors so I do not create configurtion file for it.
-        hourly_aggregations_max_gap_from_daily_aggregations_in_timedelta = timedelta(hours=6)
         hourly_aggregations_max_gap_from_hourly_smart_in_timedelta = timedelta(hours=24)
         hourly_smart_max_gap_from_hourly_smart_model_in_timedelta = timedelta(days=2)
-        daily_aggregations_max_gap_from_daily_smart_in_timedelta = timedelta(hours=24)
-        ade_root_max_gap_from_raw_model_in_timedelta = timedelta(days=2)
-        ade_root_max_gap_from_hourly_aggr_model_in_timedelta = timedelta(days=2)
-        ade_root_max_gap_from_daily_aggr_model_in_timedelta = timedelta(days=2)
-        daily_smart_max_gap_from_daily_smart_model_in_timedelta = timedelta(days=2)
 
         # smart model build conf
         hourly_smart_build_model_interval_in_timedelta = timedelta(days=2)
-        daily_smart_build_model_interval_in_timedelta = timedelta(days=4)
 
         hourly_aggregations_sub_dag_operator_list = []
 
@@ -107,17 +100,11 @@ class AnomalyDetectionEngineDagBuilder(PresidioDagBuilder):
             raw_model_sub_dag_operator = self._get_raw_model_sub_dag_operator(data_source,anomaly_detection_engine_dag)
             task_sensor_service.add_task_sequential_sensor(raw_model_sub_dag_operator)
             task_sensor_service.add_task_short_circuit(raw_model_sub_dag_operator, daily_short_circuit_operator)
-            task_sensor_service.add_task_gap_sensor(ade_root_task,
-                                                    raw_model_sub_dag_operator,
-                                                    ade_root_max_gap_from_raw_model_in_timedelta)
 
             # Create the hourly aggr model subDag operator for the data source
             hourly_aggr_model_sub_dag_operator = self._get_aggr_model_sub_dag_operator(data_source, FIX_DURATION_STRATEGY_HOURLY, anomaly_detection_engine_dag)
             task_sensor_service.add_task_sequential_sensor(hourly_aggr_model_sub_dag_operator)
             task_sensor_service.add_task_short_circuit(hourly_aggr_model_sub_dag_operator, daily_short_circuit_operator)
-            task_sensor_service.add_task_gap_sensor(ade_root_task,
-                                                    hourly_aggr_model_sub_dag_operator,
-                                                    ade_root_max_gap_from_hourly_aggr_model_in_timedelta)
 
             #defining the flow itself on each data source
 
