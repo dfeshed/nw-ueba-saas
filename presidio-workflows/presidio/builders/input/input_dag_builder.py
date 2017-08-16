@@ -7,7 +7,7 @@ from presidio.operators.fixed_duration_jar_operator import FixedDurationJarOpera
 from presidio.utils.configuration.config_server_configuration_reader_singleton import \
     ConfigServerConfigurationReaderSingleton
 
-INPUT_JVM_ARGS_CONFIG_PATH = 'dags.tasks_instances.input_task.jvm_args'
+INPUT_JVM_ARGS_CONFIG_PATH = 'components.input.jvm_args'
 
 
 class InputDagBuilder(PresidioDagBuilder):
