@@ -22,6 +22,9 @@
         </rpm-maven-plugin.workflows_packages_directory>
         <rpm-maven-plugin.workflows-build-script-path>${project.basedir}/build-scripts/build-workflows.sh
         </rpm-maven-plugin.workflows-build-script-path>
+        <exclude.rpm>presidio-quest-ca</exclude.rpm>
+        <exclude.rpm2>flume-presidio</exclude.rpm2>
+        <tomcat_webapps_directory>/opt/tomcat/webapps</tomcat_webapps_directory>
     </properties>
     <parent>
         <artifactId>fortscale</artifactId>
@@ -104,6 +107,17 @@
                     </mapping>
                     <mapping>
                         <directoryIncluded>false</directoryIncluded>
+                        <directory>${tomcat_webapps_directory}</directory>
+                        <username>presidio</username>
+                        <groupname>presidio</groupname>
+                        <sources>
+                            <source>
+                                <location>${project.parent.build.directory}/war-dependencies/</location>
+                            </source>
+                        </sources>
+                    </mapping>
+                    <mapping>
+                        <directoryIncluded>false</directoryIncluded>
                         <directory>${rpm-maven-plugin.deployment_target_directory}/configurations</directory>
                         <username>presidio</username>
                         <groupname>presidio</groupname>
@@ -140,9 +154,9 @@
                     <script>
                         echo "Creating temp version file"
                         <!-- pre installation commands: -->
-                        rpm -qa | grep ${rpm_name} | cut -d"-" -f2 | cut -d"." -f1 > ${rpm-maven-plugin.script.version_temp_file}
-                        rpm -qa | grep ${rpm_name} | cut -d"-" -f2 | cut -d"." -f2 >> ${rpm-maven-plugin.script.version_temp_file}
-                        rpm -qa | grep ${rpm_name} | cut -d"-" -f3 | cut -d"." -f1 >> ${rpm-maven-plugin.script.version_temp_file}
+                        rpm -qa | grep ${rpm_name} | grep -v ${exclude.rpm} | grep -v ${exclude.rpm2} | cut -d"-" -f2 | cut -d"." -f1 > ${rpm-maven-plugin.script.version_temp_file}
+                        rpm -qa | grep ${rpm_name} | grep -v ${exclude.rpm} | grep -v ${exclude.rpm2} | cut -d"-" -f2 | cut -d"." -f2 >> ${rpm-maven-plugin.script.version_temp_file}
+                        rpm -qa | grep ${rpm_name} | grep -v ${exclude.rpm} | grep -v ${exclude.rpm2} | cut -d"-" -f3 | cut -d"." -f1 >> ${rpm-maven-plugin.script.version_temp_file}
                         <!-- end of post installation -->
                     </script>
                 </preinstallScriptlet>
@@ -159,13 +173,18 @@
                         chown -R -v ${rpm-maven-plugin.script.system_user}:${rpm-maven-plugin.script.system_user} ${rpm-maven-plugin.deployment_target_directory}
                         #echo "Removing temporary files"
                         rm -rf -v ${rpm-maven-plugin.script.version_temp_file}
+                        echo "Retarting Tomcat"
+                        systemctl restart tomcat.service
                         <!--end of post installation -->"
                     </script>
                 </postinstallScriptlet>
                 <preremoveScriptlet>
                     <script>
                         <!-- pre remove commands -->
-                        ${python_path} ${rpm-maven-plugin.script} --rpm_name ${rpm_name} --major ${rpm.version.major} --minor ${rpm.version.minor} --build ${rpm.version.build} --uninstall
+                        if [ "$1" = 0 ] ; then
+                            echo "pre remove condition passed"
+                            ${python_path} ${rpm-maven-plugin.script} --rpm_name ${rpm_name} --major ${rpm.version.major} --minor ${rpm.version.minor} --build ${rpm.version.build} --uninstall
+                        fi
 
                     </script>
                 </preremoveScriptlet>
@@ -173,6 +192,7 @@
                     <script>
                         <!-- post remove commands -->
                         <!-- remove presidio-core main folder -->
+                        
 
                     </script>
                 </postremoveScriptlet>

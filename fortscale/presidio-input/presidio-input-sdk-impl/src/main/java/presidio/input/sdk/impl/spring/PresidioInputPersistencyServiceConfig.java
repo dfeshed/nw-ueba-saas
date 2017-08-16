@@ -14,14 +14,14 @@ import presidio.input.sdk.impl.repositories.DataSourceRepositoryImpl;
 import presidio.input.sdk.impl.services.DataServiceImpl;
 import presidio.input.sdk.impl.services.PresidioInputPersistencyServiceMongoImpl;
 import presidio.input.sdk.impl.validators.ValidationManager;
-import presidio.sdk.api.domain.DataService;
+import presidio.sdk.api.services.DataService;
 import presidio.sdk.api.utils.InputToCollectionNameTranslator;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
 
 
 @Configuration
 @EnableMongoRepositories(basePackages = "presidio.input.sdk.impl.repositories")
-@PropertySource("classpath:application.properties")
+@PropertySource("classpath:inputSdk.properties")
 public class PresidioInputPersistencyServiceConfig {
 
     @Bean

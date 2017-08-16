@@ -4,6 +4,7 @@ import fortscale.domain.core.EventResult;
 import org.apache.commons.collections.CollectionUtils;
 import org.junit.Assert;
 import org.junit.Test;
+import presidio.sdk.api.domain.rawevents.AuthenticationRawEvent;
 import presidio.sdk.api.validation.FieldsMustHaveDifferentValues;
 
 import javax.validation.ConstraintViolation;

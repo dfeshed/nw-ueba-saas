@@ -17,7 +17,7 @@ public class AdapterTestConfig {
     @Bean
     public PresidioExecutionService presidioExecutionService() {
         final ProcessExecutor mockProcessExecutor = Mockito.mock(ProcessExecutor.class);
-        Mockito.when(mockProcessExecutor.executeProcess(Mockito.anyString(), Mockito.anyListOf(String.class), Mockito.anyString())).thenReturn(null);
+        Mockito.when(mockProcessExecutor.executeProcess(Mockito.anyString(), Mockito.anyListOf(String.class), Mockito.anyString())).thenReturn(0);
 
         final FlumeConfigurationUtil mockFlumeConfigurationUtil = Mockito.mock(FlumeConfigurationUtil.class);
         return new FlumeAdapterExecutionService(mockProcessExecutor, mockFlumeConfigurationUtil);

@@ -192,7 +192,8 @@ class Deploy_Manager:
     def exec_file(self, file_to_exec):
         self.add_log(log_string='Preparing Presidio python project ', log_level='info')
         self.add_log(log_string='[0/1] ', log_level='info')
-        os.system('chmod +x ' + file_to_exec)
+        file_name = file_to_exec.split(" ")
+        os.system('chmod +x ' + file_name[0])
         self.add_log(log_string='[1/1] ', log_level='info')
         self.add_log(log_string='Executing project ', log_level='info')
         os.system(file_to_exec)

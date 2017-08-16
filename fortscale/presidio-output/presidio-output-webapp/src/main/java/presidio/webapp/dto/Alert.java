@@ -1,12 +1,10 @@
 package presidio.webapp.dto;
 
-import java.time.Instant;
-
 public class Alert {
     private String id;
     private String alertClassification;
-    private Instant startDate;
-    private Instant endDate;
+    private long startDate;
+    private long endDate;
     private String username;
     private double score;
     private Integer indicatorsNum;
@@ -25,22 +23,6 @@ public class Alert {
 
     public void setAlertClassification(String alertClassification) {
         this.alertClassification = alertClassification;
-    }
-
-    public Instant getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(Instant startDate) {
-        this.startDate = startDate;
-    }
-
-    public Instant getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(Instant endDate) {
-        this.endDate = endDate;
     }
 
     public String getUsername() {
@@ -65,5 +47,21 @@ public class Alert {
 
     public Integer getIndicatorsNum() {
         return indicatorsNum;
+    }
+
+    public long getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(long startDate) {
+        this.startDate = startDate;
+    }
+
+    public long getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(long endDate) {
+        this.endDate = endDate;
     }
 }

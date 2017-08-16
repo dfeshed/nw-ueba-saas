@@ -1,0 +1,24 @@
+{
+  "ModelConfs": [
+    {
+      "name" : "startInstant.userId.activeDirectory",
+      "selector" : {
+        "type" : "feature_bucket_context_selector",
+        "featureBucketConfName" : "startInstantHistogramUserIdActiveDirectoryDaily"
+      },
+      "retriever" : {
+        "type" : "context_histogram_retriever",
+        "timeRangeInSeconds" : 7776000,
+        "functions" : [ ],
+        "featureBucketConfName" : "startInstantHistogramUserIdActiveDirectoryDaily",
+        "featureName" : "startInstantHistogram"
+      },
+      "builder" : {
+        "type" : "time_model_builder",
+        "timeResolution" : 86400,
+        "bucketSize" : 600,
+        "maxRareTimestampCount" : 10
+      }
+    }
+  ]
+}

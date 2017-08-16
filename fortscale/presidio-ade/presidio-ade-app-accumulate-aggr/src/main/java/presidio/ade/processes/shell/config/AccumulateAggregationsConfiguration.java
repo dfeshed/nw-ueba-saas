@@ -10,8 +10,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import presidio.ade.domain.store.accumulator.AccumulatedDataStore;
-import presidio.ade.domain.store.accumulator.AccumulatedDataStoreConfig;
+import presidio.ade.domain.store.accumulator.AggregationEventsAccumulationDataStore;
+import presidio.ade.domain.store.accumulator.AggregationEventsAccumulationDataStoreConfig;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
 import presidio.ade.domain.store.enriched.EnrichedDataStoreConfig;
 import presidio.ade.processes.shell.AccumulateAggregationsExecutionService;
@@ -26,7 +26,7 @@ import presidio.ade.processes.shell.accumulate.AccumulateAggregationsBucketServi
         AccumulateAggregationsBucketServiceConfig.class,
         //        common application confs
         AccumulationsCacheConfig.class,
-        AccumulatedDataStoreConfig.class,
+        AggregationEventsAccumulationDataStoreConfig.class,
         EnrichedDataStoreConfig.class,
         NullStatsServiceConfig.class, // TODO: Remove this
 })
@@ -40,7 +40,7 @@ public class AccumulateAggregationsConfiguration {
     @Autowired
     private EnrichedDataStore enrichedDataStore;
     @Autowired
-    private AccumulatedDataStore accumulatedDataStore;
+    private AggregationEventsAccumulationDataStore aggregationEventsAccumulationDataStore;
     @Autowired
     private AccumulationsCache accumulationsCache;
     @Value("${feature.aggregation.pageIterator.pageSize}")
@@ -50,6 +50,6 @@ public class AccumulateAggregationsConfiguration {
 
     @Bean
     public AccumulateAggregationsExecutionService featureAggregationBucketExecutionService() {
-        return new AccumulateAggregationsExecutionService(bucketConfigurationService, enrichedDataStore, accumulatedDataStore, accumulateAggregationsBucketService, accumulationsCache, pageSize, maxGroupSize);
+        return new AccumulateAggregationsExecutionService(bucketConfigurationService, enrichedDataStore, aggregationEventsAccumulationDataStore, accumulateAggregationsBucketService, accumulationsCache, pageSize, maxGroupSize);
     }
 }

@@ -1,13 +1,14 @@
 package presidio.webapp.restquery;
 
-import java.time.Instant;
+import io.swagger.annotations.ApiModel;
 
+@ApiModel("AlertQuery")
 public class RestAlertQuery {
     // filters
     private String userName;
     private String severity;
-    private Instant startDate;
-    private Instant endDate;
+    private long startDate;
+    private long endDate;
 
     // sort
     private String sortField;
@@ -33,19 +34,19 @@ public class RestAlertQuery {
         this.severity = severity;
     }
 
-    public Instant getStartDate() {
+    public long getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(Instant startDate) {
+    public void setStartDate(long startDate) {
         this.startDate = startDate;
     }
 
-    public Instant getEndDate() {
+    public long getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(Instant endDate) {
+    public void setEndDate(long endDate) {
         this.endDate = endDate;
     }
 

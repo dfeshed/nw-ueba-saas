@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import fortscale.ml.model.retriever.pattern.replacement.PatternReplacementConf;
+import fortscale.utils.replacement.PatternReplacementConf;
 import fortscale.utils.factory.FactoryConfig;
 import net.minidev.json.JSONObject;
 import org.springframework.util.Assert;

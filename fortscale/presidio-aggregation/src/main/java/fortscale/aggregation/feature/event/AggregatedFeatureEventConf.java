@@ -23,7 +23,6 @@ public class AggregatedFeatureEventConf implements Serializable {
 	private int bucketsLeap;
 	private long waitAfterBucketCloseSeconds;
 	private String anomalyType;
-	private String evidencesFilterStrategy;
 	private Map<String, List<String>> aggregatedFeatureNamesMap;
 	private JSONObject aggregatedFeatureEventFunction;
 	private String type;
@@ -38,7 +37,6 @@ public class AggregatedFeatureEventConf implements Serializable {
 			@JsonProperty("numberOfBuckets") int numberOfBuckets,
 			@JsonProperty("bucketsLeap") int bucketsLeap,
 			@JsonProperty("waitAfterBucketCloseSeconds") long waitAfterBucketCloseSeconds,
-			@JsonProperty("evidencesFilterStrategy") String evidencesFilterStrategy,
 			@JsonProperty("aggregatedFeatureNamesMap") Map<String, List<String>> aggregatedFeatureNamesMap,
 			@JsonProperty("aggregatedFeatureEventFunction") JSONObject aggregatedFeatureEventFunction) {
 
@@ -49,8 +47,6 @@ public class AggregatedFeatureEventConf implements Serializable {
 		setNumberOfBuckets(numberOfBuckets);
 		setBucketsLeap(bucketsLeap);
 		setWaitAfterBucketCloseSeconds(waitAfterBucketCloseSeconds);
-		setEvidencesFilterStrategy(evidencesFilterStrategy);
-		setEvidencesFilterStrategy(evidencesFilterStrategy);
 		setAggregatedFeatureEventFunction(aggregatedFeatureEventFunction);
 		setAggregatedFeatureNamesMap(aggregatedFeatureNamesMap);
 	}
@@ -88,8 +84,6 @@ public class AggregatedFeatureEventConf implements Serializable {
 	}
 
 	public String getAnomalyType() { return anomalyType; }
-
-	public String getEvidencesFilterStrategy() { return evidencesFilterStrategy; }
 
 	public Map<String, List<String>> getAggregatedFeatureNamesMap() {
 		Map<String, List<String>> mapClone = new HashMap<>(aggregatedFeatureNamesMap.size());
@@ -153,10 +147,6 @@ public class AggregatedFeatureEventConf implements Serializable {
 		this.anomalyType = anomalyType;
 	}
 
-	public void setEvidencesFilterStrategy(String evidencesFilterStrategy) {
-		Assert.isTrue(StringUtils.isNotBlank(evidencesFilterStrategy));
-		this.evidencesFilterStrategy = evidencesFilterStrategy;
-	}
 
 	public void setAggregatedFeatureNamesMap(Map<String, List<String>> aggregatedFeatureNamesMap) {
 		Assert.notEmpty(aggregatedFeatureNamesMap);

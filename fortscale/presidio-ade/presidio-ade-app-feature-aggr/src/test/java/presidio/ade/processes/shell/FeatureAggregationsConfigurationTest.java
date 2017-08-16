@@ -14,16 +14,14 @@ import java.util.Properties;
  * Created by barak_schuster on 7/30/17.
  */
 @Configuration
-@Import({MongodbTestConfig.class,
-        PresidioCommands.class,
-        BootShimConfig.class})
+@Import({MongodbTestConfig.class})
 public class FeatureAggregationsConfigurationTest extends FeatureAggregationsConfiguration {
     @Bean
     public static TestPropertiesPlaceholderConfigurer featureAggregationsApplicationTestProperties() {
         Properties properties = new Properties();
         //        start ASL paths configurations
-        properties.put("fortscale.model.aggregation.bucket.conf.json.file.name", "classpath:config/asl/feature-aggregation/feature-buckets/model_feature_buckets.json");
-        properties.put("fortscale.feature.aggregation.bucket.conf.json.file.name", "classpath:config/asl/feature-aggregation/feature-buckets/feature_aggregation_buckets.json");
+        properties.put("fortscale.model.aggregation.bucket.conf.json.file.name", "classpath:config/asl/feature-aggregation/feature-buckets/model/*.json");
+        properties.put("fortscale.feature.aggregation.bucket.conf.json.file.name", "classpath:config/asl/feature-aggregation/feature-buckets/feature_aggregation/*.json");
         properties.put("fortscale.aggregation.feature.event.conf.json.file.name", "classpath:config/asl/feature-aggregation/aggregated-features/*.json");
         properties.put("presidio.modeling.base.configurations.path", "classpath:config/asl/feature-aggregation/models/*.json");
         properties.put("fortscale.scorer.configurations.location.path", "classpath:config/asl/feature-aggregation/scorers/*.json");

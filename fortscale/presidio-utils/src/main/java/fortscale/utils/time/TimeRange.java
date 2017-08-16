@@ -53,11 +53,21 @@ public class TimeRange implements Comparable<TimeRange> {
         return start;
     }
 
+    public Date getStartAsDate()
+    {
+        return Date.from(start);
+    }
+
     /**
      * @return the end point of this range on the time line
      */
     public Instant getEnd() {
         return end;
+    }
+
+    public Date getEndAsDate()
+    {
+        return Date.from(end);
     }
 
     @Override

@@ -24,18 +24,29 @@ public class FlumeConfigurationUtil {
     protected static final String BIN_FLUME_NG_PATH = "bin/flume-ng";
     private static final String EXECUTE_AGENT_COMMAND = "agent";
     private final String moduleName;
+    private final String smartKit;
 
-    public FlumeConfigurationUtil(String moduleName) {
+    public FlumeConfigurationUtil(String moduleName, String smartKit) {
         this.moduleName = moduleName;
+        this.smartKit = smartKit;
     }
 
     public String createExecutionConfFile(Schema schema, Instant startDate, Instant endDate) throws IOException {
-        /* load the properties */
-        final String confFilePath = createConfFolderPath() + createConfFileName(schema);
-        FileInputStream in = new FileInputStream(confFilePath);
         Properties props = new Properties();
-        props.load(in);
-        in.close();
+        FileInputStream in = null;
+        FileOutputStream out = null;
+
+        /* load the properties */
+        final String moduleConfFolder = createConfFolderPath() + moduleName + File.separator;
+        try {
+            final String confFilePath = moduleConfFolder + createConfFileName(schema);
+            in = new FileInputStream(confFilePath);
+            props.load(in);
+        } finally {
+            if (in != null) {
+                in.close();
+            }
+        }
 
         /* edit the properties */
         for (Object key : props.keySet()) {
@@ -48,12 +59,16 @@ public class FlumeConfigurationUtil {
         }
 
         /* save the properties */
-        final String newFileName = createConfFolderPath() + createJobName(schema, startDate, endDate) + ".properties";
-        FileOutputStream out = new FileOutputStream(newFileName);
-        props.store(out, null);
-        out.close();
-
-        return newFileName;
+        try {
+            final String newFileName = moduleConfFolder + createJobName(schema, startDate, endDate) + ".properties";
+            out = new FileOutputStream(newFileName);
+            props.store(out, null);
+            return newFileName;
+        } finally {
+            if (out != null) {
+                out.close();
+            }
+        }
     }
 
     /**
@@ -70,7 +85,7 @@ public class FlumeConfigurationUtil {
      * FLUME_HOME/conf/module_name/
      */
     public String createConfFolderPath() { //flume_home/conf/
-        return getFlumeHome() + "conf" + File.separator + moduleName + File.separator;
+        return getFlumeHome() + "conf" + File.separator;
     }
 
     public String getFlumeHome() {
@@ -93,7 +108,9 @@ public class FlumeConfigurationUtil {
      * @param schema
      */
     public String createAgentName(Schema schema) { //active Directory => active_directoryAgent
-        return createSchemaPrefix(schema) + "Agent";
+        final String schemaPrefix = createSchemaPrefix(schema);
+        String agentSchemaPrefix = Character.toUpperCase(schemaPrefix.charAt(0)) + schemaPrefix.substring(1);
+        return smartKit + agentSchemaPrefix + "Agent";
     }
 
 

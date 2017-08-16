@@ -111,4 +111,13 @@ public class AdeRecordReader extends ReflectionRecordReader {
 		return featureMap;
 	}
 
+	/**
+	 *
+	 * @param contextFieldName context field name
+	 * @return context value
+	 */
+	public String getContext(String contextFieldName){
+		return get(contextFieldName, String.class);
+	}
+
 }

@@ -17,10 +17,14 @@ import java.util.stream.Collectors;
  */
 public abstract class AdeContextualAggregatedRecord extends AdeRecord {
     private static final String CONTEXT_ID_SEPARATOR = "#";
+    public static final String END_INSTANT_FIELD = "endInstant";
+    public static final String CONTEXT_ID_FIELD = "contextId";
 
     @Indexed
+    @Field(END_INSTANT_FIELD)
     private Instant endInstant;
     @Indexed
+    @Field(CONTEXT_ID_FIELD)
     private String contextId;
     @Transient
     private String featureName;

@@ -17,9 +17,6 @@ import java.util.stream.DoubleStream;
 
 public abstract class AbstractAggregatedFeatureValueRetriever extends AbstractDataRetriever {
 
-    private static final String CONTEXT_FIELD = "context";
-
-
     private AggregatedFeatureEventConf aggregatedFeatureEventConf;
 
     public AbstractAggregatedFeatureValueRetriever(AbstractAggregatedFeatureValueRetrieverConf config,
@@ -91,7 +88,7 @@ public abstract class AbstractAggregatedFeatureValueRetriever extends AbstractDa
     @Override
     public List<String> getContextFieldNames() {
         //TODO: metrics.getContextFieldNames++;
-        List<String> contextFieldNames = aggregatedFeatureEventConf.getBucketConf().getContextFieldNames();
-        return contextFieldNames.stream().map(c -> CONTEXT_FIELD + "." + c).collect(Collectors.toList());
+        return aggregatedFeatureEventConf.getBucketConf().getContextFieldNames();
+
     }
 }

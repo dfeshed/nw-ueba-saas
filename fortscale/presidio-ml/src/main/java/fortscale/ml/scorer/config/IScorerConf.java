@@ -24,7 +24,8 @@ import fortscale.utils.factory.FactoryConfig;
         @JsonSubTypes.Type(value = ScoreAndCertaintyMultiplierScorerConf.class, name = ScoreAndCertaintyMultiplierScorerConf.SCORER_TYPE),
         @JsonSubTypes.Type(value = GaussianModelScorerConf.class, name = GaussianModelScorerConf.SCORER_TYPE),
         @JsonSubTypes.Type(value = PersonalThresholdModelScorerConf.class, name = PersonalThresholdModelScorerConf.SCORER_TYPE),
-        @JsonSubTypes.Type(value = ConditionalScorerConf.class, name = ConditionalScorerConf.SCORER_TYPE)
+        @JsonSubTypes.Type(value = ListConditionalScorerConf.class, name = ListConditionalScorerConf.SCORER_TYPE),
+        @JsonSubTypes.Type(value = BooleanConditionalScorerConf.class, name = BooleanConditionalScorerConf.SCORER_TYPE)
 })
 public interface IScorerConf extends FactoryConfig {
     String getName();

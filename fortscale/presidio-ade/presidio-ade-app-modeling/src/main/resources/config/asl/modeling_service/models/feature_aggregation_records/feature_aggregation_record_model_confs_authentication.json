@@ -1,0 +1,116 @@
+{
+  "ModelConfs": [
+    {
+      "name": "numberOfSuccessfulAuthentications.userId.authentication.hourly",
+      "selector": {
+        "type": "aggregated_event_context_selector",
+        "aggregatedFeatureEventConfName": "numberOfSuccessfulAuthenticationsUserIdAuthenticationHourly"
+      },
+      "retriever": {
+        "type": "accumulated_aggregated_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "aggregatedFeatureEventConfName": "numberOfSuccessfulAuthenticationsUserIdAuthenticationHourly"
+      },
+      "builder": {
+        "type": "continuous_histogram_model_builder"
+      }
+    },
+    {
+      "name": "numberOfFailedAuthentications.userId.authentication.hourly",
+      "selector": {
+        "type": "aggregated_event_context_selector",
+        "aggregatedFeatureEventConfName": "numberOfFailedAuthenticationsChangeUserIdAuthenticationHourly"
+      },
+      "retriever": {
+        "type": "accumulated_aggregated_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "aggregatedFeatureEventConfName": "numberOfFailedAuthenticationsChangeUserIdAuthenticationHourly"
+      },
+      "builder": {
+        "type": "continuous_histogram_model_builder"
+      }
+    },
+    {
+      "name": "numberOfDistinctDstMachineDomain.userId.authentication.hourly",
+      "selector": {
+        "type": "aggregated_event_context_selector",
+        "aggregatedFeatureEventConfName": "numberOfDistinctDstMachineDomainUserIdAuthenticationHourly"
+      },
+      "retriever": {
+        "type": "accumulated_aggregated_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "aggregatedFeatureEventConfName": "numberOfDistinctDstMachineDomainUserIdAuthenticationHourly"
+      },
+      "builder": {
+        "type": "continuous_histogram_model_builder"
+      }
+    },
+    {
+      "name": "numberOfDistinctSrcMachineId.userId.authentication.hourly",
+      "selector": {
+        "type": "aggregated_event_context_selector",
+        "aggregatedFeatureEventConfName": "numberOfDistinctSrcMachineIdUserIdAuthenticationHourly"
+      },
+      "retriever": {
+        "type": "accumulated_aggregated_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "aggregatedFeatureEventConfName": "numberOfDistinctSrcMachineIdUserIdAuthenticationHourly"
+      },
+      "builder": {
+        "type": "continuous_histogram_model_builder"
+      }
+    },
+    {
+      "name": "numberOfDistinctDstMachineId.userId.authentication.hourly",
+      "selector": {
+        "type": "aggregated_event_context_selector",
+        "aggregatedFeatureEventConfName": "numberOfDistinctDstMachineIdUserIdAuthenticationHourly"
+      },
+      "retriever": {
+        "type": "accumulated_aggregated_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "aggregatedFeatureEventConfName": "numberOfDistinctDstMachineIdUserIdAuthenticationHourly"
+      },
+      "builder": {
+        "type": "continuous_histogram_model_builder"
+      }
+    },
+    {
+      "name": "numberOfDistinctSrcMachineNameRegexCluster.userId.authentication.hourly",
+      "selector": {
+        "type": "aggregated_event_context_selector",
+        "aggregatedFeatureEventConfName": "numberOfDistinctSrcMachineNameRegexClusterUserIdAuthenticationHourly"
+      },
+      "retriever": {
+        "type": "accumulated_aggregated_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "aggregatedFeatureEventConfName": "numberOfDistinctSrcMachineNameRegexClusterUserIdAuthenticationHourly"
+      },
+      "builder": {
+        "type": "continuous_histogram_model_builder"
+      }
+    },
+    {
+      "name": "numberOfDistinctDstMachineNameRegexCluster.userId.authentication.hourly",
+      "selector": {
+        "type": "aggregated_event_context_selector",
+        "aggregatedFeatureEventConfName": "numberOfDistinctDstMachineNameRegexClusterUserIdAuthenticationHourly"
+      },
+      "retriever": {
+        "type": "accumulated_aggregated_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "aggregatedFeatureEventConfName": "numberOfDistinctDstMachineNameRegexClusterUserIdAuthenticationHourly"
+      },
+      "builder": {
+        "type": "continuous_histogram_model_builder"
+      }
+    }
+  ]
+}

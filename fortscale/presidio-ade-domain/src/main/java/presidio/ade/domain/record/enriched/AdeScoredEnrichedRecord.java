@@ -2,8 +2,8 @@ package presidio.ade.domain.record.enriched;
 
 import fortscale.domain.feature.score.FeatureScore;
 import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Field;
 import presidio.ade.domain.record.AdeRecord;
-import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.ade.domain.record.AdeScoredRecord;
 
 import java.time.Instant;
@@ -12,18 +12,27 @@ import java.util.List;
 /**
  * Created by YaronDL on 6/14/2017.
  */
-public abstract class AdeScoredEnrichedRecord<U> extends AdeRecord implements AdeScoredRecord{
+public abstract class AdeScoredEnrichedRecord<U extends BaseEnrichedContext> extends AdeRecord implements AdeScoredRecord{
     public static final String EVENT_TYPE_PREFIX = "scored_enriched";
+    public static final String CONTEXT_FIELD_NAME = "context";
+    public static final String SCORE_FIELD_NAME = "score";
 
     @Indexed
     private String featureName;
     private String featureEventType;
+    @Indexed
+    @Field(SCORE_FIELD_NAME)
     private Double score;
     private List<FeatureScore> featureScoreList;
+    @Field(CONTEXT_FIELD_NAME)
     private U context;
 
-    public AdeScoredEnrichedRecord(Instant date_time, String featureName, String featureEventType, Double score, List<FeatureScore> featureScoreList, EnrichedRecord enrichedRecord) {
-        super(date_time);
+    public AdeScoredEnrichedRecord() {
+        super();
+    }
+
+    public AdeScoredEnrichedRecord(Instant startInstant, String featureName, String featureEventType, Double score, List<FeatureScore> featureScoreList, EnrichedRecord enrichedRecord) {
+        super(startInstant);
         this.featureName = featureName;
         this.featureEventType = featureEventType;
         this.score = score;

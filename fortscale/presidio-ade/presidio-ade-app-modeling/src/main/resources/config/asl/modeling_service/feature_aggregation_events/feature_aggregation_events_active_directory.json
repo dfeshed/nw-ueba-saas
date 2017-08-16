@@ -1,0 +1,55 @@
+{
+  "AggregatedFeatureEvents": [
+    {
+      "name": "numberOfGroupMembershipOperationUserIdActiveDirectoryHourly",
+      "type": "F",
+      "bucketConfName": "groupMembershipOperationCounterUserIdActiveDirectoryHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 300,
+      "aggregatedFeatureNamesMap": {
+        "sum": [
+          "groupMembershipOperationCounter"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_sum_func"
+      }
+    },
+    {
+      "name": "numberOfSuccessfulOperationTypeUserIdActiveDirectoryHourly",
+      "type": "F",
+      "bucketConfName": "operationTypeResultHistogramUserIdActiveDirectoryHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 300,
+      "aggregatedFeatureNamesMap": {
+        "groupBy": [
+          "operationTypeHistogram"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_histogram_key_value_func",
+        "key": "SUCCESS"
+      }
+    },
+    {
+      "name": "numberOfFailedlOperationTypeUserIdActiveDirectoryHourly",
+      "type": "F",
+      "bucketConfName": "operationTypeResultHistogramUserIdActiveDirectoryHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 300,
+      "aggregatedFeatureNamesMap": {
+        "groupBy": [
+          "operationTypeHistogram"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_histogram_key_value_func",
+        "key": "FAILURE"
+      }
+    }
+  ]
+}
+

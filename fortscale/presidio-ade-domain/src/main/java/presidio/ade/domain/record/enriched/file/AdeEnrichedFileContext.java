@@ -2,27 +2,36 @@ package presidio.ade.domain.record.enriched.file;
 
 
 import fortscale.domain.core.EventResult;
+import presidio.ade.domain.record.enriched.BaseEnrichedContext;
 
 import java.util.List;
 
-public class AdeEnrichedFileContext {
+public class AdeEnrichedFileContext extends BaseEnrichedContext {
 
-    private final String eventId;
-    private final List<String> operationTypeCategories;
+    public static final String EVENT_ID_FIELD_NAME = "eventId";
+
+    private List<String> operationTypeCategories;
     private String userId;
     private EventResult result;
     private String operationType;
     private Boolean isSrcDriveShared;
     private Boolean isDstDriveShared;
 
+    public AdeEnrichedFileContext() {
+        super();
+    }
+
+    public AdeEnrichedFileContext(String eventId) {
+        super(eventId);
+    }
 
     public AdeEnrichedFileContext(EnrichedFileRecord enrichedFileRecord) {
+        super(enrichedFileRecord.getEventId());
         this.userId = enrichedFileRecord.getUserId();
         this.result = enrichedFileRecord.getResult();
         this.operationType = enrichedFileRecord.getOperationType();
         this.isSrcDriveShared = enrichedFileRecord.getSrcDriveShared();
         this.isDstDriveShared = enrichedFileRecord.getDstDriveShared();
-        this.eventId = enrichedFileRecord.getEventId();
         this.operationTypeCategories = enrichedFileRecord.getOperationTypeCategories();
     }
 
@@ -66,9 +75,6 @@ public class AdeEnrichedFileContext {
         isDstDriveShared = dstDriveShared;
     }
 
-    public String getEventId() {
-        return eventId;
-    }
 
     public List<String> getOperationTypeCategories() {
         return operationTypeCategories;

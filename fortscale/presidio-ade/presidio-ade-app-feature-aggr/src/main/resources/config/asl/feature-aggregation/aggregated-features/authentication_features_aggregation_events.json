@@ -1,0 +1,124 @@
+{
+  "AggregatedFeatureEvents": [
+    {
+      "name": "numberOfSuccessfulAuthenticationsUserIdAuthenticationHourly",
+      "type": "F",
+      "bucketConfName": "successfulAuthenticationHistogramUserIdAuthenticationHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 300,
+      "aggregatedFeatureNamesMap": {
+        "groupBy": [
+          "successfulAuthenticationHistogram"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_histogram_key_value_func",
+        "key": "SUCCESS"
+      }
+    },
+    {
+      "name": "numberOfFailedAuthenticationsChangeUserIdAuthenticationHourly",
+      "type": "F",
+      "bucketConfName": "failedAuthenticationHistogramUserIdAuthenticationHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 300,
+      "aggregatedFeatureNamesMap": {
+        "groupBy": [
+          "failedAuthenticationHistogram"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_histogram_key_value_func",
+        "key": "FAILURE"
+      }
+    },
+    {
+      "name": "numberOfDistinctDstMachineDomainUserIdAuthenticationHourly",
+      "type": "F",
+      "bucketConfName": "dstMachineDomainHistogramUserIdAuthenticationHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 300,
+      "aggregatedFeatureNamesMap": {
+        "groupBy": [
+          "distinctDstMachineDomainHistogram"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_distinct_values_counter_func",
+        "includeValues": false
+      }
+    },
+    {
+      "name": "numberOfDistinctSrcMachineIdUserIdAuthenticationHourly",
+      "type": "F",
+      "bucketConfName": "srcMachineIdHistogramUserIdAuthenticationHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 300,
+      "aggregatedFeatureNamesMap": {
+        "groupBy": [
+          "distinctSrcMachineIdHistogram"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_distinct_values_counter_func",
+        "includeValues": false
+      }
+    },
+    {
+      "name": "numberOfDistinctDstMachineIdUserIdAuthenticationHourly",
+      "type": "F",
+      "bucketConfName": "dstMachineIdHistogramUserIdAuthenticationHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 300,
+      "aggregatedFeatureNamesMap": {
+        "groupBy": [
+          "distinctDstMachineIdHistogram"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_distinct_values_counter_func",
+        "includeValues": false
+      }
+    },
+    {
+      "name": "numberOfDistinctSrcMachineNameRegexClusterUserIdAuthenticationHourly",
+      "type": "F",
+      "bucketConfName": "srcMachineNameRegexClusterHistogramUserIdAuthenticationHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 300,
+      "aggregatedFeatureNamesMap": {
+        "groupBy": [
+          "distinctSrcMachineNameRegexClusterHistogram"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_distinct_values_counter_func",
+        "includeValues": false
+      }
+    },
+    {
+      "name": "numberOfDistinctDstMachineNameRegexClusterUserIdAuthenticationHourly",
+      "type": "F",
+      "bucketConfName": "dstMachineNameRegexClusterHistogramUserIdAuthenticationHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 300,
+      "aggregatedFeatureNamesMap": {
+        "groupBy": [
+          "distinctDstMachineNameRegexClusterHistogram"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_distinct_values_counter_func",
+        "includeValues": false
+      }
+    }
+
+  ]
+}

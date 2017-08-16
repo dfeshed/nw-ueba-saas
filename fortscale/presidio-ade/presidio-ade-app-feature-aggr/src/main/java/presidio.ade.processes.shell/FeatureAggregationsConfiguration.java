@@ -13,9 +13,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import presidio.ade.domain.store.aggr.AggregatedDataStore;
+import presidio.ade.domain.store.aggr.AggregatedDataStoreConfig;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
 import presidio.ade.domain.store.enriched.EnrichedDataStoreConfig;
-import presidio.ade.domain.store.scored.feature_aggregation.ScoredFeatureAggregationDataStoreConfig;
 import presidio.ade.processes.shell.config.AggregationRecordsCreatorConfig;
 import presidio.ade.processes.shell.config.EventModelsCacheServiceConfig;
 import presidio.ade.processes.shell.config.FeatureAggregationScoringServiceConfig;
@@ -30,7 +30,7 @@ import presidio.ade.processes.shell.config.InMemoryFeatureAggregatorConfig;
         FeatureAggregationScoringServiceConfig.class,
         //        common application confs
         EnrichedDataStoreConfig.class,
-        ScoredFeatureAggregationDataStoreConfig.class,
+        AggregatedDataStoreConfig.class,
         NullStatsServiceConfig.class, // TODO: Remove this
 })
 public class FeatureAggregationsConfiguration {
