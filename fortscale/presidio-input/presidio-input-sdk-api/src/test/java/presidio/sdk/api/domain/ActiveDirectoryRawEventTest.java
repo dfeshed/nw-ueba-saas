@@ -5,6 +5,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.junit.Assert;
 import org.junit.Test;
+import presidio.sdk.api.domain.rawevents.ActiveDirectoryRawEvent;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;

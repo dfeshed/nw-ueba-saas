@@ -1,0 +1,16 @@
+{
+  "system": {
+    "username": "presidio@somecompany.dom",
+    "password": "password",
+    "adminGroup": "presidio-admins-somecompany",
+    "analystGroup": "presidio-soc-team-somecompany",
+    "smtpHost": "name.of-server.com:25",
+    "kdcUrl": "string"
+  },
+  "dataPipeline": {
+    "schemas": [
+      "file","active directory"
+    ],
+    "startTime": "2017-01-01 08:00:00"
+  }
+}

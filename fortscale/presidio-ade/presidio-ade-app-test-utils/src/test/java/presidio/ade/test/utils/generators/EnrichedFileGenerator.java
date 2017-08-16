@@ -82,7 +82,7 @@ public class EnrichedFileGenerator implements EventsGenerator<EnrichedFileRecord
     }
 
     @Override
-    public List<EnrichedFileRecord> generateAndPersistSanityData() throws GeneratorException {
-        return generateAndPersist(30);
+    public List<EnrichedFileRecord> generateAndPersistSanityData(int interval) throws GeneratorException {
+        return generateAndPersist(interval);
     }
 }

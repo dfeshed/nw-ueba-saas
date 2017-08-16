@@ -1,6 +1,8 @@
 package presidio.webapp.dto;
 
-public abstract class ResponseBean {
+import java.io.Serializable;
+
+public abstract class ResponseBean implements Serializable {
     protected String errorMessage;
     protected int status;
 

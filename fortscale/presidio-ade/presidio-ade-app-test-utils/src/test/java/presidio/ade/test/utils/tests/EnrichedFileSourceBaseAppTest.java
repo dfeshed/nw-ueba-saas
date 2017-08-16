@@ -8,6 +8,9 @@ import presidio.ade.test.utils.EventsGenerator;
 import presidio.data.generators.common.GeneratorException;
 
 public abstract class EnrichedFileSourceBaseAppTest extends BaseAppTest {
+
+    private static final int INTERVAL=30;
+
     @Autowired
     protected EventsGenerator eventsGenerator;
 
@@ -18,9 +21,13 @@ public abstract class EnrichedFileSourceBaseAppTest extends BaseAppTest {
      */
     @Test
     public void sanityTest() throws GeneratorException {
-        eventsGenerator.generateAndPersistSanityData();
+        eventsGenerator.generateAndPersistSanityData(getInterval());
         executeAndAssertCommandSuccess(getSanityTestExecutionCommand());
         assertSanityTest();
+    }
+
+    protected int getInterval(){
+        return INTERVAL;
     }
 
     protected abstract String getSanityTestExecutionCommand();

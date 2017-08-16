@@ -41,7 +41,7 @@ public class ScoredEnrichedFileGenerator implements EventsGenerator<AdeScoredFil
     }
 
     @Override
-    public List<AdeScoredFileRecord> generateAndPersistSanityData() throws GeneratorException {
+    public List<AdeScoredFileRecord> generateAndPersistSanityData(int interval) throws GeneratorException {
         String testUser = GENERATED_USER;
         FileEventsGenerator filePermissionEventGenerator = new FileEventsGenerator();
         filePermissionEventGenerator.setTimeGenerator(new TimeGenerator(LocalTime.of(0, 0), LocalTime.of(23, 59), 30, DAYS_BACK_FROM, DAYS_BACK_TO));

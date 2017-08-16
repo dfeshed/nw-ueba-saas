@@ -1,8 +1,9 @@
 package presidio.webapp.dto;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class ListResponseBean<T> extends ResponseBean {
+public class ListResponseBean<T> extends ResponseBean implements Serializable {
 
     private List<T> data;
     private long total;
