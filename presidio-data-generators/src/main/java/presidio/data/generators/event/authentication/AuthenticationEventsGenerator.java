@@ -37,6 +37,7 @@ public class AuthenticationEventsGenerator implements IEventGenerator {
 
     private IStringGenerator resultGenerator;
     private IStringGenerator resultCodeGenerator;
+    private IAuthenticationDescriptionGenerator authenticationDescriptionGenerator;
 
     public AuthenticationEventsGenerator() throws GeneratorException {
         userGenerator = new RandomUserGenerator();
@@ -53,6 +54,7 @@ public class AuthenticationEventsGenerator implements IEventGenerator {
         dstMachineGenerator = new SimpleMachineGenerator(); // need domain machine percentage generator
         resultGenerator = new OperationResultPercentageGenerator();                 // 100% "Success"
         resultCodeGenerator = new RandomStringGenerator();                          // TBD
+        authenticationDescriptionGenerator = new AuthenticationDescriptionGenerator();
     }
 
 
@@ -66,17 +68,18 @@ public class AuthenticationEventsGenerator implements IEventGenerator {
             User user = getUserGenerator().getNext();
 
             AuthenticationEvent ev = new AuthenticationEvent(
-                (String) getEventIDGenerator().getNext(),
-                eventTime,
-                (String) getDataSourceGenerator().getNext(),
+                    getEventIDGenerator().getNext(),
+                    eventTime,
+                    getDataSourceGenerator().getNext(),
                     getUserGenerator().getNext(),
-                    (String) getOperationTypeGenerator().getNext(),
-                    (List<String>) getOperationTypeCategoriesGenerator().getNext(),
+                    getOperationTypeGenerator().getNext(),
+                    getOperationTypeCategoriesGenerator().getNext(),
                     getSrcMachineGenerator().getNext(),
                     getDstMachineGenerator().getNext(),
-                (String) getResultGenerator().getNext(),
-                (String) getResultCodeGenerator().getNext()
+                    getResultGenerator().getNext(),
+                    getResultCodeGenerator().getNext()
             );
+            authenticationDescriptionGenerator.updateFileDescription(ev);
             evList.add(ev);
         }
         return evList;
@@ -160,5 +163,13 @@ public class AuthenticationEventsGenerator implements IEventGenerator {
 
     public void setOperationTypeCategoriesGenerator(IStringListGenerator operationTypeCategoriesGenerator) {
         this.operationTypeCategoriesGenerator = operationTypeCategoriesGenerator;
+    }
+
+    public IAuthenticationDescriptionGenerator getAuthenticationDescriptionGenerator() {
+        return authenticationDescriptionGenerator;
+    }
+
+    public void setAuthenticationDescriptionGenerator(IAuthenticationDescriptionGenerator authenticationDescriptionGenerator) {
+        this.authenticationDescriptionGenerator = authenticationDescriptionGenerator;
     }
 }

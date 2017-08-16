@@ -5,10 +5,14 @@ import presidio.data.generators.activedirectoryop.ActiveDirectoryOperationGenera
 import presidio.data.generators.activedirectoryop.IActiveDirectoryOperationGenerator;
 import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.common.IStringGenerator;
+import presidio.data.generators.common.RandomStringGenerator;
+import presidio.data.generators.common.precentage.OperationResultPercentageGenerator;
 import presidio.data.generators.common.time.TimeGenerator;
 import presidio.data.domain.event.activedirectory.ActiveDirectoryEvent;
 import presidio.data.generators.event.EntityEventIDFixedPrefixGenerator;
 import presidio.data.generators.event.IEventGenerator;
+import presidio.data.generators.machine.IMachineGenerator;
+import presidio.data.generators.machine.SimpleMachineGenerator;
 import presidio.data.generators.user.IUserGenerator;
 import presidio.data.generators.user.RandomAdminUserPercentageGenerator;
 
@@ -24,12 +28,23 @@ public class ActiveDirectoryEventsGenerator implements IEventGenerator {
     private IUserGenerator userGenerator;
     private IActiveDirectoryOperationGenerator activeDirOperationGenerator;
 
+    private IMachineGenerator srcMachineGenerator;
+    private IMachineGenerator dstMachineGenerator;
+
+    private IStringGenerator resultGenerator;
+    private IStringGenerator resultCodeGenerator;
+
     public ActiveDirectoryEventsGenerator() throws GeneratorException {
         timeGenerator = new TimeGenerator();
         userGenerator = new RandomAdminUserPercentageGenerator();
         eventIdGenerator = new EntityEventIDFixedPrefixGenerator(userGenerator.getNext().getUsername()); // giving any string as entity name in this default generator
         dataSourceGenerator = new FixedDataSourceGenerator();                                // "DefaultDS"
         activeDirOperationGenerator = new ActiveDirectoryOperationGenerator();
+
+        srcMachineGenerator = new SimpleMachineGenerator();
+        dstMachineGenerator = new SimpleMachineGenerator();
+        resultGenerator = new OperationResultPercentageGenerator();
+        resultCodeGenerator = new RandomStringGenerator();
     }
 
 
@@ -40,10 +55,14 @@ public class ActiveDirectoryEventsGenerator implements IEventGenerator {
         while (getTimeGenerator().hasNext()) {
             Instant eventTime = getTimeGenerator().getNext();
             ActiveDirectoryEvent ev = new ActiveDirectoryEvent(eventTime,
-                    (String) getEventIdGenerator().getNext(),
+                    getEventIdGenerator().getNext(),
                     getUserGenerator().getNext(),
-                    (String) getDataSourceGenerator().getNext(),
-                    getActiveDirOperationGenerator().getNext());
+                    getDataSourceGenerator().getNext(),
+                    getActiveDirOperationGenerator().getNext(),
+                    getSrcMachineGenerator().getNext(),
+                    getDstMachineGenerator().getNext(),
+                    getResultGenerator().getNext()
+                    );
 
             evList.add(ev);
         }
@@ -88,5 +107,37 @@ public class ActiveDirectoryEventsGenerator implements IEventGenerator {
 
     public void setDataSourceGenerator(IStringGenerator dataSourceGenerator) {
         this.dataSourceGenerator = dataSourceGenerator;
+    }
+
+    public IMachineGenerator getSrcMachineGenerator() {
+        return srcMachineGenerator;
+    }
+
+    public void setSrcMachineGenerator(IMachineGenerator srcMachineGenerator) {
+        this.srcMachineGenerator = srcMachineGenerator;
+    }
+
+    public IMachineGenerator getDstMachineGenerator() {
+        return dstMachineGenerator;
+    }
+
+    public void setDstMachineGenerator(IMachineGenerator dstMachineGenerator) {
+        this.dstMachineGenerator = dstMachineGenerator;
+    }
+
+    public IStringGenerator getResultGenerator() {
+        return resultGenerator;
+    }
+
+    public void setResultGenerator(IStringGenerator resultGenerator) {
+        this.resultGenerator = resultGenerator;
+    }
+
+    public IStringGenerator getResultCodeGenerator() {
+        return resultCodeGenerator;
+    }
+
+    public void setResultCodeGenerator(IStringGenerator resultCodeGenerator) {
+        this.resultCodeGenerator = resultCodeGenerator;
     }
 }
