@@ -92,7 +92,7 @@ public abstract class MonitoredCounterGroup {
       counterMap.get(counter).set(0L);
     }
     startTime.set(System.currentTimeMillis());
-    logger.info("Component type: " + type + ", name: " + name + " started");
+    logger.debug("Component type: " + type + ", name: " + name + " started");
   }
 
   /**
@@ -116,7 +116,7 @@ public abstract class MonitoredCounterGroup {
               + name + ": Successfully unregistered pre-existing MBean.");
         }
         ManagementFactory.getPlatformMBeanServer().registerMBean(this, objName);
-        logger.info("Monitored counter group for type: " + type + ", name: "
+        logger.debug("Monitored counter group for type: " + type + ", name: "
             + name + ": Successfully registered new MBean.");
         registered = true;
       } catch (Exception ex) {
@@ -146,19 +146,19 @@ public abstract class MonitoredCounterGroup {
     stopTime.set(System.currentTimeMillis());
 
     // Prints out a message indicating that this component has been stopped
-    logger.info("Component type: " + type + ", name: " + name + " stopped");
+    logger.debug("Component type: " + type + ", name: " + name + " stopped");
 
     // Retrieve the type for this counter group
     final String typePrefix = type.name().toLowerCase(Locale.ENGLISH);
 
     // Print out the startTime for this component
-    logger.info("Shutdown Metric for type: " + type + ", "
+    logger.debug("Shutdown Metric for type: " + type + ", "
         + "name: " + name + ". "
         + typePrefix + "." + COUNTER_GROUP_START_TIME
         + " == " + startTime);
 
     // Print out the stopTime for this component
-    logger.info("Shutdown Metric for type: " + type + ", "
+    logger.debug("Shutdown Metric for type: " + type + ", "
         + "name: " + name + ". "
         + typePrefix + "." + COUNTER_GROUP_STOP_TIME
         + " == " + stopTime);
@@ -174,7 +174,7 @@ public abstract class MonitoredCounterGroup {
       // Retrieves the value from the original counterMap.
       final long counterMapValue = get(counterMapKey);
 
-      logger.info("Shutdown Metric for type: " + type + ", "
+      logger.debug("Shutdown Metric for type: " + type + ", "
           + "name: " + name + ". "
           + counterMapKey + " == " + counterMapValue);
     }

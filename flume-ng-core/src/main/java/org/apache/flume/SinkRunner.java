@@ -19,13 +19,13 @@
 
 package org.apache.flume;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-
 import org.apache.flume.lifecycle.LifecycleAware;
 import org.apache.flume.lifecycle.LifecycleState;
 import org.apache.flume.lifecycle.LifecycleSupervisor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * <p>
@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
  * {@linkplain Sink#process() process} events if any are available in the
  * {@link Channel}.
  * </p>
- *
+ * <p>
  * <p>
  * Note that, unlike {@linkplain Source sources}, all sinks are polled.
  * </p>
@@ -43,140 +43,147 @@ import org.slf4j.LoggerFactory;
  */
 public class SinkRunner implements LifecycleAware {
 
-  private static final Logger logger = LoggerFactory
-      .getLogger(SinkRunner.class);
-  private static final long backoffSleepIncrement = 1000;
-  private static final long maxBackoffSleep = 5000;
+    private static final Logger logger = LoggerFactory
+            .getLogger(SinkRunner.class);
+    private static final long backoffSleepIncrement = 1000;
+    private static final long maxBackoffSleep = 5000;
 
-  private CounterGroup counterGroup;
-  private PollingRunner runner;
-  private Thread runnerThread;
-  private LifecycleState lifecycleState;
+    private CounterGroup counterGroup;
+    private PollingRunner runner;
+    private Thread runnerThread;
+    private LifecycleState lifecycleState;
+    private SinkProcessor policy;
 
-  private SinkProcessor policy;
-
-  public SinkRunner() {
-    counterGroup = new CounterGroup();
-    lifecycleState = LifecycleState.IDLE;
-  }
-
-  public SinkRunner(SinkProcessor policy) {
-    this();
-    setSink(policy);
-  }
-
-  public SinkProcessor getPolicy() {
-    return policy;
-  }
-
-  public void setSink(SinkProcessor policy) {
-    this.policy = policy;
-  }
-
-  @Override
-  public void start() {
-    SinkProcessor policy = getPolicy();
-
-    policy.start();
-
-    runner = new PollingRunner();
-
-    runner.policy = policy;
-    runner.counterGroup = counterGroup;
-    runner.shouldStop = new AtomicBoolean();
-
-    runnerThread = new Thread(runner);
-    runnerThread.setName("SinkRunner-PollingRunner-" +
-        policy.getClass().getSimpleName());
-    runnerThread.start();
-
-    lifecycleState = LifecycleState.START;
-  }
-
-  @Override
-  public void stop() {
-
-    if (runnerThread != null) {
-      runner.shouldStop.set(true);
-      runnerThread.interrupt();
-
-      while (runnerThread.isAlive()) {
-        try {
-          logger.debug("Waiting for runner thread to exit");
-          runnerThread.join(500);
-        } catch (InterruptedException e) {
-          logger.debug("Interrupted while waiting for runner thread to exit. Exception follows.",
-                       e);
-        }
-      }
+    public SinkRunner() {
+        counterGroup = new CounterGroup();
+        lifecycleState = LifecycleState.IDLE;
     }
 
-    getPolicy().stop();
-    lifecycleState = LifecycleState.STOP;
-  }
+    public SinkRunner(SinkProcessor policy) {
+        this();
+        setSink(policy);
+    }
 
-  @Override
-  public String toString() {
-    return "SinkRunner: { policy:" + getPolicy() + " counterGroup:"
-        + counterGroup + " }";
-  }
+    public SinkProcessor getPolicy() {
+        return policy;
+    }
 
-  @Override
-  public LifecycleState getLifecycleState() {
-    return lifecycleState;
-  }
-
-  /**
-   * {@link Runnable} that {@linkplain SinkProcessor#process() polls} a
-   * {@link SinkProcessor} and manages event delivery notification,
-   * {@link Sink.Status BACKOFF} delay handling, etc.
-   */
-  public static class PollingRunner implements Runnable {
-
-    private SinkProcessor policy;
-    private AtomicBoolean shouldStop;
-    private CounterGroup counterGroup;
+    public void setSink(SinkProcessor policy) {
+        this.policy = policy;
+    }
 
     @Override
-    public void run() {
-      logger.debug("Polling sink runner starting");
+    public void start() {
+        SinkProcessor policy = getPolicy();
 
-      while (!shouldStop.get()) {
-        try {
-          final Sink.Status status = policy.process();
-          if (status.equals(Sink.Status.BACKOFF)) {
+        policy.start();
+
+        runner = new PollingRunner();
+
+        runner.policy = policy;
+        runner.counterGroup = counterGroup;
+        runner.shouldStop = new AtomicBoolean();
+
+        runnerThread = new Thread(runner);
+        runnerThread.setName("SinkRunner-PollingRunner-" +
+                policy.getClass().getSimpleName());
+        runnerThread.start();
+
+        lifecycleState = LifecycleState.START;
+    }
+
+    @Override
+    public void stop() {
+
+        if (runnerThread != null) {
+            runner.shouldStop.set(true);
+            runnerThread.interrupt();
+
+            while (runnerThread.isAlive()) {
+                try {
+                    logger.debug("Waiting for runner thread to exit");
+                    runnerThread.join(500);
+                } catch (InterruptedException e) {
+                    logger.debug("Interrupted while waiting for runner thread to exit. Exception follows.",
+                            e);
+                }
+            }
+        }
+
+        getPolicy().stop();
+        lifecycleState = LifecycleState.STOP;
+    }
+
+    @Override
+    public String toString() {
+        return "SinkRunner: { policy:" + getPolicy() + " counterGroup:"
+                + counterGroup + " }";
+    }
+
+    @Override
+    public LifecycleState getLifecycleState() {
+        return lifecycleState;
+    }
+
+    /**
+     * {@link Runnable} that {@linkplain SinkProcessor#process() polls} a
+     * {@link SinkProcessor} and manages event delivery notification,
+     * {@link Sink.Status BACKOFF} delay handling, etc.
+     */
+    public static class PollingRunner implements Runnable {
+
+        private SinkProcessor policy;
+        private AtomicBoolean shouldStop;
+        private CounterGroup counterGroup;
+
+        @Override
+        public void run() {
+            logger.debug("Polling sink runner starting");
+
+            while (!shouldStop.get()) {
+                try {
+                    final Sink.Status status = policy.process();
+                    if (status.equals(Sink.Status.BACKOFF)) {
+                        backoff();
+                    } else if (status.equals(Sink.Status.DONE)) {
+                        shutdownFlume();
+                    } else {
+                        counterGroup.set("runner.backoffs.consecutive", 0L);
+                    }
+                } catch (InterruptedException e) {
+                    logger.debug("Interrupted while processing an event. Exiting.");
+                    counterGroup.incrementAndGet("runner.interruptions");
+                } catch (Exception e) {
+                    logger.error("Unable to deliver event. Exception follows.", e);
+                    if (e instanceof EventDeliveryException) {
+                        counterGroup.incrementAndGet("runner.deliveryErrors");
+                    } else {
+                        counterGroup.incrementAndGet("runner.errors");
+                    }
+                    try {
+                        Thread.sleep(maxBackoffSleep);
+                    } catch (InterruptedException ex) {
+                        Thread.currentThread().interrupt();
+                    }
+                }
+            }
+            logger.debug("Polling runner exiting. Metrics:{}", counterGroup);
+        }
+
+        private void backoff() throws InterruptedException {
             counterGroup.incrementAndGet("runner.backoffs");
 
             Thread.sleep(Math.min(
-                counterGroup.incrementAndGet("runner.backoffs.consecutive")
-                * backoffSleepIncrement, maxBackoffSleep));
-          }
-          else if (status.equals(Sink.Status.DONE)) {
-            logger.info("Execution with options {} is done. Stopping Flume agent.", LifecycleSupervisor.options);
-            Thread.currentThread().interrupt();
-          }
-          else {
-            counterGroup.set("runner.backoffs.consecutive", 0L);
-          }
-        } catch (InterruptedException e) {
-          logger.debug("Interrupted while processing an event. Exiting.");
-          counterGroup.incrementAndGet("runner.interruptions");
-        } catch (Exception e) {
-          logger.error("Unable to deliver event. Exception follows.", e);
-          if (e instanceof EventDeliveryException) {
-            counterGroup.incrementAndGet("runner.deliveryErrors");
-          } else {
-            counterGroup.incrementAndGet("runner.errors");
-          }
-          try {
-            Thread.sleep(maxBackoffSleep);
-          } catch (InterruptedException ex) {
-            Thread.currentThread().interrupt();
-          }
+                    counterGroup.incrementAndGet("runner.backoffs.consecutive")
+                            * backoffSleepIncrement, maxBackoffSleep));
         }
-      }
-      logger.debug("Polling runner exiting. Metrics:{}", counterGroup);
-    }
 
-  }
+        private void shutdownFlume() {
+            logger.info("Flume agent execution with options {} is done. Shutting down Flume agent...", LifecycleSupervisor.options);
+            shouldStop.set(true);
+            System.exit(0);
+        }
+
+    }
 }
+

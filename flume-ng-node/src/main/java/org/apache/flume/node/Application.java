@@ -228,6 +228,7 @@ public class Application {
 
     try {
 
+      Thread.currentThread().setName("main-presidio-flume-thread");
       boolean isZkConfigured = false;
 
       Options options = new Options();
