@@ -11,7 +11,7 @@ const { assert, Helper, isEqual, isNone, isPresent, typeOf } = Ember;
  * @returns {boolean}
  * @public
  */
-export function contains([value, collection]) {
+export function contains(value, collection) {
   const collectionType = typeOf(collection);
   let doesContain = false;
 
@@ -24,13 +24,15 @@ export function contains([value, collection]) {
     isEqual(collectionType, 'array') || isEqual(collectionType, 'object')
   );
 
-  if (isEqual(collectionType, 'array') && collection.indexOf(value) > -1) {
-    doesContain = true;
-  } else if (isPresent(collection[value])) {
+  if (
+    (isEqual(collectionType, 'array') && collection.indexOf(value) > -1) ||
+    (isEqual(collectionType, 'object') && collection.hasOwnProperty(value) && isPresent(collection[value]))) {
     doesContain = true;
   }
 
   return doesContain;
 }
 
-export default Helper.helper(contains);
+export default Helper.helper(function([value, collection]) {
+  return contains(value, collection);
+});
