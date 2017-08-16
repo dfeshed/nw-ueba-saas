@@ -7,7 +7,10 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import fortscale.domain.core.AbstractDocument;
 import org.apache.commons.lang.builder.ToStringBuilder;
-import org.apache.flume.*;
+import org.apache.flume.Context;
+import org.apache.flume.Event;
+import org.apache.flume.EventDrivenSource;
+import org.apache.flume.FlumeException;
 import org.apache.flume.conf.Configurable;
 import org.apache.flume.event.EventBuilder;
 import org.apache.flume.instrumentation.SourceCounter;
@@ -19,11 +22,13 @@ import org.flume.utils.MongoUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;
+
 import java.net.UnknownHostException;
 import java.nio.charset.Charset;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
+
 import static org.apache.flume.CommonStrings.*;
 
 public class PresidioMongoSource extends AbstractBatchableEventDrivenSource implements Configurable, EventDrivenSource {
@@ -161,9 +166,9 @@ public class PresidioMongoSource extends AbstractBatchableEventDrivenSource impl
 
     private void processEvent(AbstractDocument event) throws JsonProcessingException {
         sourceCounter.incrementEventAcceptedCount();
-        final String eventAsJson;
-        eventAsJson = mapper.writeValueAsString(event);
-        final Event flumeEvent = EventBuilder.withBody(eventAsJson, Charset.defaultCharset());
+        final String eventAsString;
+        eventAsString = mapper.writeValueAsString(event);
+        final Event flumeEvent = EventBuilder.withBody(eventAsString, Charset.defaultCharset());
         logger.trace("{} has finished processing event {}. Sending event to channel", getName(), flumeEvent);
         getChannelProcessor().processEvent(flumeEvent); // Store the Event into this Source's associated Channel(s)
     }
