@@ -2,7 +2,9 @@ package presidio.webapp.dto;
 
 import org.apache.http.HttpStatus;
 
-public class SingleEntityResponseBean<T> extends ResponseBean {
+import java.io.Serializable;
+
+public class SingleEntityResponseBean<T> extends ResponseBean implements Serializable {
 
     private T data;
 

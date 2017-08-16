@@ -25,3 +25,6 @@ fortscale/presidio-ade/presidio-ade-app-modeling/spring-shell\.log
 fortscale/presidio-ade/presidio-ade-app-score-aggr/spring-shell\.log
 fortscale/presidio-ade/presidio-ade-app-test-utils/spring-shell\.log
 fortscale/presidio-ade/presidio-ade-sdk/spring-shell\.log
+fortscale/presidio-output/presidio-output-interfaces/
+fortscale/presidio-output/generated/swagger/
+fortscale/presidio-output/presidio-output-webapp/generated/
