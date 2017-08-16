@@ -20,7 +20,6 @@ import java.util.List;
 
 public class EnrichedSuccessfulFileOpenedGenerator extends EnrichedFileGenerator {
 
-
     public EnrichedSuccessfulFileOpenedGenerator(EnrichedDataStore enrichedDataStore) {
         super(enrichedDataStore);
     }
@@ -31,7 +30,7 @@ public class EnrichedSuccessfulFileOpenedGenerator extends EnrichedFileGenerator
      * @throws GeneratorException
      */
     @Override
-    public void generateAndPersist(int interval) throws GeneratorException {
+    public List<EnrichedFileRecord> generateAndPersist(int interval) throws GeneratorException {
         String testUser = "testUser";
         FileEventsGenerator generator = new FileEventsGenerator();
         generator.setTimeGenerator(new TimeGenerator(LocalTime.of(0, 0), LocalTime.of(23, 59), interval, DAYS_BACK_FROM, DAYS_BACK_TO));
@@ -51,5 +50,6 @@ public class EnrichedSuccessfulFileOpenedGenerator extends EnrichedFileGenerator
 
         EnrichedRecordsMetadata enrichedRecordsMetadata = new EnrichedRecordsMetadata(ADE_EVENT_TYPE.getName(), START_DATE, END_DATE);
         enrichedDataStore.store(enrichedRecordsMetadata, enrichedRecords);
+        return enrichedRecords;
     }
 }

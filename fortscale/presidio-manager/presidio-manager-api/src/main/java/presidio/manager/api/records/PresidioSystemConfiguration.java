@@ -3,9 +3,9 @@ package presidio.manager.api.records;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Map;
+import java.util.List;
 
 public class PresidioSystemConfiguration {
 
@@ -24,7 +24,7 @@ public class PresidioSystemConfiguration {
 
     private boolean isStracturValid;
 
-    private Map<String, String> badParams;
+    private List<String> badParams;
 
     private final String USER_NAME = "username";
     private final String PASSWORD = "password";
@@ -34,7 +34,7 @@ public class PresidioSystemConfiguration {
     private final String SMTP_HOST = "smtpHost";
 
     public PresidioSystemConfiguration(JsonNode node) {
-        badParams = new HashMap<>();
+        this.badParams = new ArrayList();
         Iterator<String> itr = node.fieldNames();
         String key;
         while (itr.hasNext()) {
@@ -91,7 +91,7 @@ public class PresidioSystemConfiguration {
                 setSmtpHost(value);
                 break;
             default:
-                badParams.put(key, value);
+                badParams.add(key);
         }
     }
 }

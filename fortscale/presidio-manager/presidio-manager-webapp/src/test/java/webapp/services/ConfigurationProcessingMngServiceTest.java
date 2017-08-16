@@ -31,6 +31,7 @@ public class ConfigurationProcessingMngServiceTest {
     private JsonNode presidioConfigurationOnlySystem;
     private JsonNode dataPipeLineWithThreeFields;
     private JsonNode dataPipeLineWithInvalidSchema;
+    private JsonNode jsonWithGeneralError;
 
 
     @Before
@@ -39,6 +40,7 @@ public class ConfigurationProcessingMngServiceTest {
         createDataPipeLineWithUnvalidSchema();
         createGoodPresidioConfiguration();
         createPresidioConfigurationOnlySystem();
+        createjsonWithGeneralError();
         configurationManagerService = new ConfigurationManagerService(new ConfigurationAirflowServcie(), new ConfigurationSecurityService());
     }
 
@@ -47,6 +49,14 @@ public class ConfigurationProcessingMngServiceTest {
         Assert.assertNotNull("configurationManagerService cannot be null on spring context", configurationManagerService);
     }
 
+    public void createjsonWithGeneralError() {
+        JsonNode general;
+        ObjectNode objectNode = new ObjectNode(new JsonNodeFactory(false));
+        TextNode textNode = new TextNode("general");
+        general = objectNode.set("general", textNode);
+        objectNode = new ObjectNode(new JsonNodeFactory(false));
+        jsonWithGeneralError = objectNode.set("general", general);
+    }
     public void createDataPipeLineWithThreeFields() {
         ArrayNode arrayNode;
         JsonNode dataPipeline;
@@ -134,28 +144,35 @@ public class ConfigurationProcessingMngServiceTest {
     public void validConfiguration() {
         PresidioManagerConfiguration presidioManagerConfiguration = configurationManagerService.presidioManagerConfigurationFactory(goodPresidioConfiguration);
         ValidationResults validationResults = configurationManagerService.validateConfiguration(presidioManagerConfiguration);
-        Assert.assertEquals(validationResults.getErrorsList().size(), 0);
+        Assert.assertEquals(0,validationResults.getErrorsList().size());
+    }
+
+    @Test
+    public void generalErrorConfiguration() {
+        PresidioManagerConfiguration presidioManagerConfiguration = configurationManagerService.presidioManagerConfigurationFactory(jsonWithGeneralError);
+        ValidationResults validationResults = configurationManagerService.validateConfiguration(presidioManagerConfiguration);
+        Assert.assertEquals(2,validationResults.getErrorsList().size() );
     }
 
     @Test
     public void invalidPresidioConfigurationOnlySystem() {
         PresidioManagerConfiguration presidioManagerConfiguration = configurationManagerService.presidioManagerConfigurationFactory(presidioConfigurationOnlySystem);
         ValidationResults validationResults = configurationManagerService.validateConfiguration(presidioManagerConfiguration);
-        Assert.assertEquals(validationResults.getErrorsList().size(), 1);
+        Assert.assertEquals(1,validationResults.getErrorsList().size());
     }
 
     @Test
     public void invalidConfigurationDataPipeLineWithUnvalidSchema() {
         PresidioManagerConfiguration presidioManagerConfiguration = configurationManagerService.presidioManagerConfigurationFactory(dataPipeLineWithInvalidSchema);
         ValidationResults validationResults = configurationManagerService.validateConfiguration(presidioManagerConfiguration);
-        Assert.assertEquals(validationResults.getErrorsList().size(), 1);
+        Assert.assertEquals(1,validationResults.getErrorsList().size());
     }
 
     @Test
     public void invalidConfigurationDataPipeLineWithThreeFields() {
         PresidioManagerConfiguration presidioManagerConfiguration = configurationManagerService.presidioManagerConfigurationFactory(dataPipeLineWithThreeFields);
         ValidationResults validationResults = configurationManagerService.validateConfiguration(presidioManagerConfiguration);
-        Assert.assertEquals(validationResults.getErrorsList().size(), 1);
+        Assert.assertEquals(1,validationResults.getErrorsList().size());
     }
 
     @Configuration

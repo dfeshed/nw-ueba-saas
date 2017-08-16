@@ -10,60 +10,68 @@ import java.time.Instant;
 
 
 public abstract class AbstractAuditableDocument extends AbstractDocument {
-	public static final String VERSION_FIELD_NAME = "version";
-	public static final String LAST_MODIFIED_FIELD_NAME = "lastModified";
-	public static final String CREATED_AT_FIELD_NAME = "createdAt";
-	public static final String DATE_TIME_FIELD_NAME = "dateTime";
-	private static final long serialVersionUID = -4585812347688862037L;
-	@Field(DATE_TIME_FIELD_NAME)
-	@NotNull
-	protected Instant dateTime;
-	@Version
-	@Field(VERSION_FIELD_NAME)
+    public static final String VERSION_FIELD_NAME = "version";
+    public static final String LAST_MODIFIED_FIELD_NAME = "lastModified";
+    public static final String CREATED_AT_FIELD_NAME = "createdAt";
+    public static final String DATE_TIME_FIELD_NAME = "dateTime";
+    private static final long serialVersionUID = -4585812347688862037L;
+    @Field(DATE_TIME_FIELD_NAME)
+    @NotNull
+    protected Instant dateTime;
+    @Version
+    @Field(VERSION_FIELD_NAME)
     private Long version;
-	
+
     @CreatedDate
     @Field(CREATED_AT_FIELD_NAME)
     private Instant creationTime;
-    
-	@LastModifiedDate
-	@Field(LAST_MODIFIED_FIELD_NAME)
+
+    @LastModifiedDate
+    @Field(LAST_MODIFIED_FIELD_NAME)
     private Instant lastModified;
 
-	public AbstractAuditableDocument() {
+    public AbstractAuditableDocument(AbstractAuditableDocument other) {
+        super(other);
+        this.dateTime = other.dateTime;
+        this.version = other.version;
+        this.creationTime = other.creationTime;
+        this.lastModified = other.lastModified;
+    }
 
-	}
+    public AbstractAuditableDocument() {
 
-	public AbstractAuditableDocument(Instant dateTime) {
-		super();
-		this.dateTime = dateTime;
-	}
+    }
 
-	@Override
-	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append(super.toString()).append(", ");
-		sb.append("CreatedAt: ").append(getCreationTime()).append(", ");
-		sb.append("Version: ").append(getVersion()).append(", ");
-		sb.append("LastModified: ").append(getLastModified());
-		return sb.toString();
-	}
-	
-	
-	public Long getVersion() {
-		return version;
-	}
+    public AbstractAuditableDocument(Instant dateTime) {
+        super();
+        this.dateTime = dateTime;
+    }
 
-	public Instant getCreationTime() {
-		return creationTime;
-	}
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(super.toString()).append(", ");
+        sb.append("CreatedAt: ").append(getCreationTime()).append(", ");
+        sb.append("Version: ").append(getVersion()).append(", ");
+        sb.append("LastModified: ").append(getLastModified());
+        return sb.toString();
+    }
 
-	public Instant getLastModified() {
-		return lastModified;
-	}
 
-	public Instant getDateTime() {
-		return dateTime;
-	}
+    public Long getVersion() {
+        return version;
+    }
+
+    public Instant getCreationTime() {
+        return creationTime;
+    }
+
+    public Instant getLastModified() {
+        return lastModified;
+    }
+
+    public Instant getDateTime() {
+        return dateTime;
+    }
 
 }

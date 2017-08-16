@@ -11,7 +11,6 @@
     "schemas": [
       "file","active directory"
     ],
-    "startTime": "2017-01-01 08:00:00",
-	"endTime": "2017-01-01 09:00:00"
+    "startTime": "2017-01-01 08:00:00"
   }
 }

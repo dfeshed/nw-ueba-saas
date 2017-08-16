@@ -37,8 +37,10 @@ public class ValidationResults {
     }
 
     public void addError(ConfigurationBadParamDetails errorsList) {
-        this.errorsList.add(errorsList);
-        this.isValid = false;
+        if (errorsList!=null) {
+            this.errorsList.add(errorsList);
+            this.isValid = false;
+        }
     }
 
     public List<ConfigurationBadParamDetails> getErrorsList() {

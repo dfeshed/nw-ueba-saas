@@ -5,11 +5,13 @@ import fortscale.common.shell.PresidioExecutionService;
 import fortscale.common.shell.command.PresidioCommands;
 import fortscale.utils.shell.BootShim;
 import fortscale.utils.shell.BootShimConfig;
+import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
@@ -18,6 +20,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import presidio.input.core.services.impl.InputExecutionServiceImpl;
 import presidio.input.core.spring.InputCoreConfiguration;
 import presidio.output.sdk.impl.spring.OutputDataServiceConfig;
+
+import java.util.Properties;
 
 
 @RunWith(SpringRunner.class)
@@ -49,6 +53,17 @@ public class FortscaleInputCoreApplicationTest {
             OutputDataServiceConfig.class})
     @EnableSpringConfigured
     public static class springConfig {
+        @Bean
+        public static TestPropertiesPlaceholderConfigurer inputCoreTestConfigurer()
+        {
+            Properties properties = new Properties();
+            properties.put("streaming.event.field.type.aggr_event", "aggr_event");
+            properties.put("streaming.aggr_event.field.context", "context");
+            properties.put("fortscale.ademanager.aggregation.feature.event.conf.json.file.name","classpath:config/asl/manager/aggregated-features/*/*.json");
+            properties.put("fortscale.ademanager.aggregation.bucket.conf.json.file.name","classpath:config/asl/manager/feature-buckets/*/*.json");
+            properties.put("page.iterator.page.size","1000");
+            return new TestPropertiesPlaceholderConfigurer(properties);
+        }
 
     }
 }

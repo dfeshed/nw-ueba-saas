@@ -25,14 +25,14 @@ public class PresidioConfigServerConfiguration {
         ResourceLoader resourceLoader;
 
         @Autowired
-        SearchPathLocator service;
+        SearchPathLocator searchPathLocator;
 
         @Autowired
         JGitEnvironmentRepository gitAccessor;
 
         @Bean
-        public JGitWritableResourceRepository defaultResourceWritableRepository(SearchPathLocator service, JGitEnvironmentRepository gitAccessor) {
-            JGitWritableResourceRepository repository = new JGitWritableResourceRepository(service, gitAccessor);
+        public JGitWritableResourceRepository defaultResourceWritableRepository(SearchPathLocator searchPathLocator, JGitEnvironmentRepository gitAccessor) {
+            JGitWritableResourceRepository repository = new JGitWritableResourceRepository(searchPathLocator, gitAccessor);
             return repository;
         }
     }
@@ -45,11 +45,11 @@ public class PresidioConfigServerConfiguration {
         ResourceLoader resourceLoader;
 
         @Autowired
-        SearchPathLocator service;
+        SearchPathLocator searchPathLocator;
 
         @Bean
-        public WritableResourceRepository nativeResourceWritableRepository(SearchPathLocator service) {
-            return new GenericWritableResourceRepository(service);
+        public WritableResourceRepository nativeResourceWritableRepository(SearchPathLocator searchPathLocator) {
+            return new GenericWritableResourceRepository(searchPathLocator);
         }
     }
 

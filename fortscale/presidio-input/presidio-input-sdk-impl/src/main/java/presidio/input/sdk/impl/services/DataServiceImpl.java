@@ -6,8 +6,9 @@ import fortscale.domain.core.AbstractAuditableDocument;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.mongodb.util.ToCollectionNameTranslator;
 import presidio.input.sdk.impl.repositories.DataSourceRepository;
-import presidio.sdk.api.domain.DataService;
 import presidio.input.sdk.impl.validators.ValidationManager;
+import presidio.sdk.api.domain.AbstractPresidioDocument;
+import presidio.sdk.api.services.DataService;
 
 import java.time.Instant;
 import java.util.List;
@@ -56,6 +57,16 @@ public class DataServiceImpl implements DataService {
     public void cleanAll(Schema schema) {
         logger.info("Cleaning entire collection {}", toCollectionNameTranslator.toCollectionName(schema));
         dataSourceRepository.cleanCollection(toCollectionNameTranslator.toCollectionName(schema));
+    }
+
+    @Override
+    public <U extends AbstractPresidioDocument> List<U> readRecords(Schema schema, Instant startDate, Instant endDate, int numOfItemsToSkip, int pageSize) {
+        return dataSourceRepository.readRecords(toCollectionNameTranslator.toCollectionName(schema), startDate, endDate,  numOfItemsToSkip, pageSize);
+    }
+
+    @Override
+    public long count(Schema schema, Instant startDate, Instant endDate) {
+        return dataSourceRepository.count(toCollectionNameTranslator.toCollectionName(schema), startDate, endDate);
     }
 }
 

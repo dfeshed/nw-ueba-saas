@@ -25,10 +25,10 @@ public class GenericWritableResourceRepository implements WritableResourceReposi
 
     private ResourceLoader resourceLoader;
 
-    private SearchPathLocator service;
+    private SearchPathLocator searchPathLocator;
 
-    public GenericWritableResourceRepository(SearchPathLocator service) {
-        this.service = service;
+    public GenericWritableResourceRepository(SearchPathLocator searchPathLocator) {
+        this.searchPathLocator = searchPathLocator;
     }
 
     @Override
@@ -73,7 +73,7 @@ public class GenericWritableResourceRepository implements WritableResourceReposi
 
 
     protected String getLocation(String application, String profile, String label) {
-        String[] locations = this.service.getLocations(application, profile, label).getLocations();
+        String[] locations = this.searchPathLocator.getLocations(application, profile, label).getLocations();
         if (locations.length == 0) {
             throw new IllegalStateException("The configuration is invalid. no location for configuration server files.");
         }

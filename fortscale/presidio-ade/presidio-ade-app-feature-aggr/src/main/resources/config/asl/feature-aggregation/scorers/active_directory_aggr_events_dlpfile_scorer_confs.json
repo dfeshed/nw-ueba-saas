@@ -1,0 +1,109 @@
+{
+  "ade-event-type-scorers": [
+    {
+      "ade-event-type": "aggr_event.numberOfGroupMembershipOperationUserIdActiveDirectoryHourly",
+      "scorers": [
+        {
+          "type": "low-values-score-reducer",
+          "name": "numberOfGroupMembershipOperation.userId.activeDirectory.hourly.scorer",
+          "base-scorer": {
+            "type": "continuous-values-model-scorer",
+            "name": "numberOfGroupMembershipOperation.userId.activeDirectory.hourly.base_scorer",
+            "model": {
+              "name": "numberOfGroupMembershipOperation.userId.activeDirectory.hourly"
+            },
+            "additional-models": [],
+            "quad-poly-calibration-conf": {
+              "a1": 1500.0,
+              "a2": 499999.0,
+              "sensitivity": 1.0,
+              "is-score-for-small-values": false,
+              "is-score-for-large-values": true
+            },
+            "number-of-samples-to-influence-enough": 30,
+            "min-number-of-samples-to-influence": 1,
+            "use-certainty-to-calculate-score": true
+          },
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "featureValue",
+              "reducingFactor": 0,
+              "maxValueForFullyReduce": 3.0,
+              "minValueForNotReduce": 6.0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ade-event-type": "aggr_event.numberOfSuccessfulOperationTypeUserIdActiveDirectoryHourly",
+      "scorers": [
+        {
+          "type": "low-values-score-reducer",
+          "name": "numberOfSuccessfulOperationType.userId.activeDirectory.hourly.scorer",
+          "base-scorer": {
+            "type": "continuous-values-model-scorer",
+            "name": "numberOfSuccessfulOperationType.userId.activeDirectory.hourly.base_scorer",
+            "model": {
+              "name": "numberOfSuccessfulOperationType.userId.activeDirectory.hourly"
+            },
+            "additional-models": [],
+            "quad-poly-calibration-conf": {
+              "a1": 1500.0,
+              "a2": 499999.0,
+              "sensitivity": 1.0,
+              "is-score-for-small-values": false,
+              "is-score-for-large-values": true
+            },
+            "number-of-samples-to-influence-enough": 30,
+            "min-number-of-samples-to-influence": 1,
+            "use-certainty-to-calculate-score": true
+          },
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "featureValue",
+              "reducingFactor": 0,
+              "maxValueForFullyReduce": 3.0,
+              "minValueForNotReduce": 6.0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ade-event-type": "aggr_event.numberOfFailedlOperationTypeUserIdActiveDirectoryHourly",
+      "scorers": [
+        {
+          "type": "low-values-score-reducer",
+          "name": "numberOfFailedlOperationType.userId.activeDirectory.hourly.scorer",
+          "base-scorer": {
+            "type": "continuous-values-model-scorer",
+            "name": "numberOfFailedlOperationType.userId.activeDirectory.hourly.base_scorer",
+            "model": {
+              "name": "numberOfFailedlOperationType.userId.activeDirectory.hourly"
+            },
+            "additional-models": [],
+            "quad-poly-calibration-conf": {
+              "a1": 1500.0,
+              "a2": 499999.0,
+              "sensitivity": 1.0,
+              "is-score-for-small-values": false,
+              "is-score-for-large-values": true
+            },
+            "number-of-samples-to-influence-enough": 30,
+            "min-number-of-samples-to-influence": 1,
+            "use-certainty-to-calculate-score": true
+          },
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "featureValue",
+              "reducingFactor": 0,
+              "maxValueForFullyReduce": 3.0,
+              "minValueForNotReduce": 6.0
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

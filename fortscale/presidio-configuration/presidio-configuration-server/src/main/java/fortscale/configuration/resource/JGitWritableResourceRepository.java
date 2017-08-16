@@ -14,7 +14,6 @@ import org.springframework.util.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 
 /**
@@ -24,13 +23,13 @@ public class JGitWritableResourceRepository extends GenericWritableResourceRepos
 
     private static final String ADD_FILE_MESSAGE = "add configuration file: %s by configuration server REST api";
 
-    private SearchPathLocator service;
+    private SearchPathLocator searchPathLocator;
     private JGitEnvironmentRepository gitAccessor;
     private JGitWritableResourceRepository.JGitFactory gitFactory = new JGitWritableResourceRepository.JGitFactory();
 
-    public JGitWritableResourceRepository(SearchPathLocator service, JGitEnvironmentRepository gitAccessor) {
-        super(service);
-        this.service = service;
+    public JGitWritableResourceRepository(SearchPathLocator searchPathLocator, JGitEnvironmentRepository gitAccessor) {
+        super(searchPathLocator);
+        this.searchPathLocator = searchPathLocator;
         this.gitAccessor = gitAccessor; // TODO: make sure that cloneOnStart is on
     }
 

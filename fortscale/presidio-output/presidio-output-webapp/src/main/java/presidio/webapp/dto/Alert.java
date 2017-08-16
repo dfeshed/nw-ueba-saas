@@ -1,8 +1,11 @@
 package presidio.webapp.dto;
 
+
+import java.io.Serializable;
 import java.time.Instant;
 
-public class Alert {
+
+public class Alert implements Serializable {
     private String id;
     private String alertClassification;
     private Instant startDate;
@@ -59,11 +62,11 @@ public class Alert {
         this.score = score;
     }
 
-    public void setIndicatorsNum(Integer indicatorsNum) {
-        this.indicatorsNum = indicatorsNum;
-    }
-
     public Integer getIndicatorsNum() {
         return indicatorsNum;
+    }
+
+    public void setIndicatorsNum(Integer indicatorsNum) {
+        this.indicatorsNum = indicatorsNum;
     }
 }

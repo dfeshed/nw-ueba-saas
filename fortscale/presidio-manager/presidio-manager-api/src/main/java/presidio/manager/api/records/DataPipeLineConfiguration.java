@@ -10,13 +10,13 @@ import java.util.List;
 
 public class DataPipeLineConfiguration {
 
-    private String startTime = null;
+    private String startTime;
 
-    private String[] schemas = null;
+    private String[] schemas;
 
-    private boolean isStracturValid = false;
+    private boolean isStracturValid;
 
-    private List<String> badParams = null;
+    private List<String> badParams;
 
     private final String START_TIME = "startTime";
     private final String SCHEMAS = "schemas";

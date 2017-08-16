@@ -22,7 +22,7 @@
               "use-certainty-to-calculate-score": true
             },
             {
-              "type": "conditional-scorer",
+              "type": "list-conditional-scorer",
               "name": "operationType.userIdFilePermissionChange.file.score",
               "conditional-field": "operationTypeCategories",
               "conditional-value": "FILE_PERMISSION_CHANGE",
@@ -56,7 +56,7 @@
               }
             },
             {
-              "type": "conditional-scorer",
+              "type": "list-conditional-scorer",
               "name": "operationType.userIdFileAction.file.score",
               "conditional-field": "operationTypeCategories",
               "conditional-value": "FILE_ACTION",

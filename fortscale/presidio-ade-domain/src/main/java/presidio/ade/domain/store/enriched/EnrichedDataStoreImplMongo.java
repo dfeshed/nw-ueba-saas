@@ -160,7 +160,7 @@ public class EnrichedDataStoreImplMongo implements EnrichedDataStore {
      * Validates that the context type field indexed in the store, otherwise create the index
      *
      * @param adeEventType data source name
-     * @param contextType  type of context, field that the aggregateContextToNumOfEvents and readRecords methods use to query.
+     * @param contextType  type of context, field that the aggregateContextToNumOfEvents and findScoredEnrichedRecords methods use to query.
      */
     @Override
     public void ensureContextAndDateTimeIndex(String adeEventType, String contextType) {
@@ -172,7 +172,7 @@ public class EnrichedDataStoreImplMongo implements EnrichedDataStore {
 
         String collectionName = translator.toCollectionName(adeEventType);
 
-        //used for readRecords
+        //used for findScoredEnrichedRecords
         DBObject indexOptions = new BasicDBObject();
 
         //  IndexDirection.ASCENDING = 1

@@ -21,7 +21,7 @@ public class ConfigurationResponseError {
 
         SECURITY("security"),
 
-        DATA_PIPLINE("dataPipline");
+        DATA_PIPELINE("dataPipeline");
 
         private String value;
 

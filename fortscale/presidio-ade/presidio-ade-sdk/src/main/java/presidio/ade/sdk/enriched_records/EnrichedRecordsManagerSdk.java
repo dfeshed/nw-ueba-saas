@@ -1,9 +1,7 @@
 package presidio.ade.sdk.enriched_records;
 
-import presidio.ade.domain.store.enriched.EnrichedRecordsMetadata;
-import fortscale.utils.time.TimeRange;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
-import presidio.ade.domain.record.enriched.AdeScoredEnrichedRecord;
+import presidio.ade.domain.store.enriched.EnrichedRecordsMetadata;
 import presidio.ade.sdk.common.RunId;
 import presidio.ade.sdk.historical_runs.HistoricalRunsManagerSdk;
 import presidio.ade.sdk.online_run.OnlineRunManagerSdk;
@@ -27,13 +25,4 @@ public interface EnrichedRecordsManagerSdk {
 	 */
 	void storeEnrichedRecords(EnrichedRecordsMetadata metadata, List<? extends EnrichedRecord> records);
 
-	/**
-	 * Get a list of all the scored enriched records with the given feature name, context ID and time range.
-	 *
-	 * @param featureName the name of the scored feature
-	 * @param contextId   the context ID (i.e. username)
-	 * @param timeRange   the start and end instants of the records
-	 * @return a list of {@link AdeScoredEnrichedRecord}s
-	 */
-	List<AdeScoredEnrichedRecord> getScoredEnrichedRecords(String featureName, String contextId, TimeRange timeRange);
 }

@@ -5,7 +5,7 @@ import fortscale.utils.time.TimeService;
 import presidio.ade.domain.record.enriched.file.EnrichedFileRecord;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
 import presidio.ade.domain.store.enriched.EnrichedRecordsMetadata;
-import presidio.ade.test.utils.EnrichedEventsGenerator;
+import presidio.ade.test.utils.EventsGenerator;
 import presidio.ade.test.utils.converters.FileRaw2EnrichedConverter;
 import presidio.data.domain.event.OperationType;
 import presidio.data.domain.event.file.FileEvent;
@@ -22,7 +22,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EnrichedFileGenerator implements EnrichedEventsGenerator {
+public class EnrichedFileGenerator implements EventsGenerator<EnrichedFileRecord> {
 
     protected static final int DAYS_BACK_FROM = 3;
     protected static final int DAYS_BACK_TO = 1;
@@ -45,7 +45,7 @@ public class EnrichedFileGenerator implements EnrichedEventsGenerator {
      *
      * @throws GeneratorException
      */
-    public void generateAndPersist(int interval) throws GeneratorException {
+    public List<EnrichedFileRecord> generateAndPersist(int interval) throws GeneratorException {
         String testUser = "testUser";
         FileEventsGenerator filePermissionEventGenerator = new FileEventsGenerator();
         filePermissionEventGenerator.setTimeGenerator(new TimeGenerator(LocalTime.of(0, 0), LocalTime.of(23, 59), interval, DAYS_BACK_FROM, DAYS_BACK_TO));
@@ -78,10 +78,11 @@ public class EnrichedFileGenerator implements EnrichedEventsGenerator {
         EnrichedRecordsMetadata enrichedRecordsMetadata = new EnrichedRecordsMetadata(ADE_EVENT_TYPE.getName(), START_DATE, END_DATE);
 
         enrichedDataStore.store(enrichedRecordsMetadata, enrichedRecords);
+        return enrichedRecords;
     }
 
     @Override
-    public void generateAndPersistSanityData() throws GeneratorException {
-        generateAndPersist(30);
+    public List<EnrichedFileRecord> generateAndPersistSanityData(int interval) throws GeneratorException {
+        return generateAndPersist(interval);
     }
 }

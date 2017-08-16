@@ -61,12 +61,10 @@ public class JsonPropertySourceLoaderTest {
         assertThat(source.getPropertyNames()).isEqualTo(expected.toArray(new String[] {}));
     }
 
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void invalidJson() throws Exception {
         ByteArrayResource resource = new ByteArrayResource("{\"foo\": \"bar\"".getBytes());
         PropertySource<?> source = this.loader.load("resource", resource, null);
-        assertThat(source).isNotNull();
-        assertThat(source.getProperty("foo")).isEqualTo("bar");
     }
 
 }
