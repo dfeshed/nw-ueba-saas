@@ -2,8 +2,6 @@ package presidio.webapp.restquery;
 
 import io.swagger.annotations.ApiModel;
 
-import java.time.Instant;
-
 @ApiModel("AlertQuery")
 public class RestAlertQuery {
     // filters

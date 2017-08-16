@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiParam;
 import org.apache.http.HttpStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
+import presidio.webapp.dto.Alert;
 import presidio.webapp.dto.AlertListEntityResponseBean;
 import presidio.webapp.dto.AlertSingleEntityResponseBean;
 import presidio.webapp.restquery.RestAlertQuery;
