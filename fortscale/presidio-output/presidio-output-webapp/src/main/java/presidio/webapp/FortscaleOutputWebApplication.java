@@ -17,10 +17,10 @@ public class FortscaleOutputWebApplication extends SpringBootServletInitializer 
 
 	@Override
 	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-		return application.sources(FortscaleOutputWebApplication.class);
+		return application.sources(FortscaleOutputWebApplication.class, OutputWebappConfiguration.class);
 	}
 
 	public static void main(String[] args) {
-		SpringApplication.run(new Object[]{OutputWebappConfiguration.class}, args);
+		SpringApplication.run(new Object[]{FortscaleOutputWebApplication.class, OutputWebappConfiguration.class}, args);
 	}
 }
