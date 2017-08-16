@@ -59,7 +59,7 @@
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>../target/extra-resources</outputDirectory>
+                            <outputDirectory>../../target/extra-resources</outputDirectory>
                             <resources>
                                 <resource>
                                     <directory>src/main/resources/configurations</directory>
@@ -89,7 +89,7 @@
                                     <type>${project.packaging}</type>
                                 </artifactItem>
                             </artifactItems>
-                            <outputDirectory>../target/dependencies</outputDirectory>
+                            <outputDirectory>../../target/dependencies</outputDirectory>
                         </configuration>
                     </execution>
                 </executions>
