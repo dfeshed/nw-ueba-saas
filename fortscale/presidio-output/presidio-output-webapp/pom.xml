@@ -20,6 +20,7 @@
         <java.version>1.8</java.version>
         <swagger-annotations-version>1.5.8</swagger-annotations-version>
         <jersey-version>2.22.2</jersey-version>
+        <exec-maven-plugin>1.2.1</exec-maven-plugin>
 
     </properties>
     <dependencies>
@@ -250,37 +251,37 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
-                <version>1.2.1</version>
+                <version>${exec-maven-plugin}</version>
                 <executions>
                     <execution>
-                        <id>compile-jni</id>
-                        <phase>compile</phase>
+                        <id>compile-client</id>
+                        <phase>install</phase>
                         <goals>
                             <goal>exec</goal>
                         </goals>
                         <configuration>
-                            <executable>./compile-client${script.extension}</executable>
+                            <executable>compile-client${script.extension}</executable>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
-            
+
             <!-- deploy generated swagger client manually-->
             <!-- You must have following seetings in maven settings.xml: <server>  <id>mirror.fortscale.dom</id> <username>admin</username> <password>P@ssw0rd</password> </server>
             -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
-                <version>1.2.1</version>
+                <version>${exec-maven-plugin}</version>
                 <executions>
                     <execution>
-                        <id>compile-jni</id>
+                        <id>deploy-client</id>
                         <phase>deploy</phase>
                         <goals>
                             <goal>exec</goal>
                         </goals>
                         <configuration>
-                            <executable>./deploy-client${script.extension}</executable>
+                            <executable>deploy-client${script.extension}</executable>
                         </configuration>
                     </execution>
                 </executions>
