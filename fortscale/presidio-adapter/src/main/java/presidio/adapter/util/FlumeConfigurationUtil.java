@@ -7,7 +7,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.Instant;
-import java.util.Properties;
+import java.util.*;
 
 /**
  * This class is a util class for handling and creating Flume configuration files
@@ -32,7 +32,7 @@ public class FlumeConfigurationUtil {
     }
 
     public String createExecutionConfFile(Schema schema, Instant startDate, Instant endDate) throws IOException {
-        Properties props = new Properties();
+        Properties props = new OrderedProperties();
         FileInputStream in = null;
         FileOutputStream out = null;
 
@@ -49,7 +49,7 @@ public class FlumeConfigurationUtil {
         }
 
         /* edit the properties */
-        for (Object key : props.keySet()) {
+        for(Object key :props.keySet()) {
             String currProperty = (String) key;
             if (currProperty.endsWith(FLUME_CONF_START_DATE_FIELD_NAME)) {
                 props.setProperty(currProperty, startDate.toString());
@@ -76,6 +76,7 @@ public class FlumeConfigurationUtil {
      *
      * @param schema
      */
+
     public String createSchemaPrefix(Schema schema) { //active Directory => active_directory
         return schema.getName().toLowerCase().replace(" ", "_");
     }
@@ -173,4 +174,24 @@ public class FlumeConfigurationUtil {
     public String getFlumeExecutionConfFileArgument(String flumeExecutionConfFilePath) {
         return CONF_FILE_PATH_FLAG + " " + flumeExecutionConfFilePath;
     }
+
+    private static class OrderedProperties extends Properties {
+        @Override
+        @SuppressWarnings("NullableProblems") //due to intellij bug
+        public Set<Object> keySet() {
+            return Collections.unmodifiableSet(new TreeSet<>(super.keySet()));
+        }
+
+        @Override
+        public synchronized Enumeration<Object> keys() {
+            return Collections.enumeration(new TreeSet<>(super.keySet()));
+        }
+    }
+
+
+
 }
+
+
+
+

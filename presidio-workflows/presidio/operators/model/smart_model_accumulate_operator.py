@@ -4,7 +4,7 @@ from presidio.operators.fixed_duration_jar_operator import FixedDurationJarOpera
 from presidio.utils.services.fixed_duration_strategy import fixed_duration_strategy_to_string
 
 
-class AggrModelAccumulateAggregationsOperator(FixedDurationJarOperator):
+class SmartModelAccumulateOperator(FixedDurationJarOperator):
     """
     Runs a accumulate aggregations task (a JAR file) for aggregation events model building, using a bash command.
     The c'tor accepts the task arguments that are constant throughout the
@@ -13,32 +13,30 @@ class AggrModelAccumulateAggregationsOperator(FixedDurationJarOperator):
     """
 
     @apply_defaults
-    def __init__(self, fixed_duration_strategy, feature_bucket_strategy, command, data_source, task_id=None, *args, **kwargs):
+    def __init__(self, fixed_duration_strategy, command, smart_events_conf, task_id=None, *args, **kwargs):
         """
         C'tor.
         :param fixed_duration_strategy: The duration covered by the feature bucket aggregations (currently only daily)
         :type fixed_duration_strategy: timedelta
-        :param data_source: The data source whose events should be aggregated
-        :type data_source: string
+        :param smart_events_conf: The smart event conf to do the accumulation on
+        :type smart_events_conf: string
         :param task_id: The task ID of this operator - If None, the ID is generated automatically
         :type task_id: string
         """
 
-        self.data_source = data_source
-        self.task_id = task_id or '{}_{}_{}'.format(
-            fixed_duration_strategy_to_string(fixed_duration_strategy),
-            self.data_source,
+        self._smart_events_conf = smart_events_conf
+        self.task_id = task_id or '{}_{}'.format(
+            self._smart_events_conf,
             self.get_task_name()
         )
 
         java_args = {
-            'schema': self.data_source,
-            'feature_bucket_strategy': feature_bucket_strategy.total_seconds(),
+            'conf': self._smart_events_conf,
         }
 
         print('agg operator. commad=', command)
         print('agg operator. kwargs=', kwargs)
-        super(AggrModelAccumulateAggregationsOperator, self).__init__(
+        super(SmartModelAccumulateOperator, self).__init__(
             task_id=self.task_id,
             fixed_duration_strategy=fixed_duration_strategy,
             command=command,
@@ -51,5 +49,5 @@ class AggrModelAccumulateAggregationsOperator(FixedDurationJarOperator):
         """
         :return: The task name
         """
-        return 'aggr_model_accumulate_aggregations'
+        return 'smart_model_accumulation'
 
