@@ -1,4 +1,13 @@
+from datetime import timedelta
+from airflow.operators.python_operator import ShortCircuitOperator
+
 from presidio.builders.presidio_dag_builder import PresidioDagBuilder
+
+from presidio.operators.model.smart_model_accumulate_operator import SmartModelAccumulateOperator
+from presidio.operators.model.smart_model_operator import SmartModelOperator
+from presidio.utils.services.fixed_duration_strategy import is_execution_date_valid
+
+from presidio.utils.airflow.operators.sensor.task_sensor_service import TaskSensorService
 
 
 class SmartModelDagBuilder(PresidioDagBuilder):
@@ -16,17 +25,18 @@ class SmartModelDagBuilder(PresidioDagBuilder):
         returns the DAG according to the given data source and fixed duration strategy
         """
 
-    def __init__(self, smart_events_conf, build_model_interval):
+    def __init__(self, fixed_duration_strategy, smart_events_conf):
         """
         C'tor.
         :param smart_events_conf: The name of the configuration defining the smart events.
         :type smart_events_conf: str
-        :param build_model_interval: The interval that new models should be calculated.
-        :type build_model_interval: datetime.timedelta
         """
 
+        self._fixed_duration_strategy = fixed_duration_strategy
         self._smart_events_conf = smart_events_conf
-        self._build_model_interval = build_model_interval
+        self._build_model_interval = timedelta(days=2)
+        self._accumulate_interval = timedelta(days=1)
+        self._accumulate_operator_gap_from_smart_model_operator_in_timedelta = timedelta(days=2)
 
     def build(self, smart_model_dag):
         """
@@ -40,5 +50,46 @@ class SmartModelDagBuilder(PresidioDagBuilder):
         :return: The input DAG, after the operator flow was added
         :rtype: airflow.models.DAG
         """
+        task_sensor_service = TaskSensorService()
+
+        #defining the smart model accumulator
+        smart_model_accumulate_operator = SmartModelAccumulateOperator(
+            fixed_duration_strategy=self._fixed_duration_strategy,
+            command=PresidioDagBuilder.presidio_command,
+            smart_events_conf=self._smart_events_conf,
+            dag=smart_model_dag)
+        accumulate_short_circuit_operator = ShortCircuitOperator(
+            task_id='accumulate_short_circuit',
+            dag=smart_model_dag,
+            python_callable=lambda **kwargs: is_execution_date_valid(kwargs['execution_date'],
+                                                                     self._accumulate_interval,
+                                                                     smart_model_dag.schedule_interval),
+            provide_context=True
+        )
+        task_sensor_service.add_task_short_circuit(smart_model_accumulate_operator, accumulate_short_circuit_operator)
+
+        #defining the smart model
+        smart_model_operator = SmartModelOperator(smart_events_conf=self._smart_events_conf,
+                                                command="process",
+                                                session_id=smart_model_dag.dag_id.split('.', 1)[0],
+                                                dag=smart_model_dag)
+
+        smart_model_short_circuit_operator = ShortCircuitOperator(
+            task_id='smart_model_short_circuit',
+            dag=smart_model_dag,
+            python_callable=lambda **kwargs: is_execution_date_valid(kwargs['execution_date'],
+                                                                     self._build_model_interval,
+                                                                     smart_model_dag.schedule_interval),
+            provide_context=True
+        )
+        task_sensor_service.add_task_short_circuit(smart_model_operator, smart_model_short_circuit_operator)
+
+        #defining the dependencies between the operators
+        task_sensor_service.add_task_gap_sensor(smart_model_accumulate_operator,
+                                                smart_model_operator,
+                                                self._accumulate_operator_gap_from_smart_model_operator_in_timedelta)
+        smart_model_accumulate_operator.set_downstream(smart_model_short_circuit_operator)
+
+
 
         return smart_model_dag
