@@ -6,11 +6,10 @@ import service from 'ember-service/inject';
 import { contextHelpIds } from 'context/config/help-ids';
 import { restoreDefault } from 'context/actions/context-creators';
 
-const stateToComputed = ({
-  context
-}) => ({
+const stateToComputed = ({ context }) => ({
   activeTabName: context.activeTabName,
-  lookupKey: context.lookupKey
+  lookupKey: context.lookupKey,
+  errorMessage: context.errorMessage
 });
 const dispatchToActions = {
   restoreDefault

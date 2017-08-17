@@ -11,7 +11,7 @@ radial-gradient(circle at 85% 85%, rsa-color(gray, darker, .1) 0, rsa-color(gray
   @include rsa-col(justify, fill);
   background-image: $panelBackgroundImage;
   background-color: rsa-color(gray, darkest);
-  height: calc(100% - 40px);
+  height: 100%;
   display: flex;
   flex-direction: row;
   &__linkButton {

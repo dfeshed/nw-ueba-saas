@@ -1,7 +1,7 @@
 <hbox>
   <vbox xs='10'>
     <div class="rsa-context-panel-header__title">
-      {{#if headerTitle}}
+      {{#if (and headerTitle (not errorMessage))}}
         <span>{{headerTitle}} :</span>
         {{#rsa-content-tethered-panel-trigger class="rsa-context-panel-header__title__lookup" panel='headerLookup'}}{{lookupKey}}{{/rsa-content-tethered-panel-trigger}}
         {{#rsa-content-tethered-panel style="primary" displayCloseButton=false position='bottom-left' panelId='headerLookup'}}
