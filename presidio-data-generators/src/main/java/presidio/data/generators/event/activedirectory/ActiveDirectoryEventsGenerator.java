@@ -1,6 +1,6 @@
 package presidio.data.generators.event.activedirectory;
 
-import presidio.data.domain.MachineEntity;
+import presidio.data.domain.event.activedirectory.ActiveDirectoryEvent;
 import presidio.data.generators.FixedDataSourceGenerator;
 import presidio.data.generators.activedirectoryop.ActiveDirectoryOperationGenerator;
 import presidio.data.generators.activedirectoryop.IActiveDirectoryOperationGenerator;
@@ -9,14 +9,12 @@ import presidio.data.generators.common.IStringGenerator;
 import presidio.data.generators.common.RandomStringGenerator;
 import presidio.data.generators.common.precentage.OperationResultPercentageGenerator;
 import presidio.data.generators.common.time.TimeGenerator;
-import presidio.data.domain.event.activedirectory.ActiveDirectoryEvent;
 import presidio.data.generators.event.EntityEventIDFixedPrefixGenerator;
 import presidio.data.generators.event.IEventGenerator;
 import presidio.data.generators.machine.IMachineGenerator;
 import presidio.data.generators.machine.SimpleMachineGenerator;
 import presidio.data.generators.user.IUserGenerator;
 import presidio.data.generators.user.RandomAdminUserPercentageGenerator;
-import presidio.data.generators.user.RandomObjectDNGenerator;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -35,8 +33,8 @@ public class ActiveDirectoryEventsGenerator implements IEventGenerator {
 
     private IStringGenerator resultGenerator;
     private IStringGenerator resultCodeGenerator;
-    private IStringGenerator objectDNGenerator;
     private IActiveDirectoryDescriptionGenerator activeDirectoryDescriptionGenerator;
+    private IStringGenerator objectNameGenerator;
 
     public ActiveDirectoryEventsGenerator() throws GeneratorException {
         timeGenerator = new TimeGenerator();
@@ -49,7 +47,7 @@ public class ActiveDirectoryEventsGenerator implements IEventGenerator {
         dstMachineGenerator = new SimpleMachineGenerator();
         resultGenerator = new OperationResultPercentageGenerator();
         resultCodeGenerator = new RandomStringGenerator();
-        objectDNGenerator = new RandomObjectDNGenerator();
+        objectNameGenerator = new ObjectNameGenerator();
         activeDirectoryDescriptionGenerator = new ActiveDirectoryDescriptionGenerator();
     }
 
@@ -60,6 +58,7 @@ public class ActiveDirectoryEventsGenerator implements IEventGenerator {
         // fill list of events
         while (getTimeGenerator().hasNext()) {
             Instant eventTime = getTimeGenerator().getNext();
+            String objectName = getObjectNameGenerator().getNext();
             ActiveDirectoryEvent ev = new ActiveDirectoryEvent(eventTime,
                     getEventIdGenerator().getNext(),
                     getUserGenerator().getNext(),
@@ -68,7 +67,8 @@ public class ActiveDirectoryEventsGenerator implements IEventGenerator {
                     getSrcMachineGenerator().getNext(),
                     getDstMachineGenerator().getNext(),
                     getResultGenerator().getNext(),
-                    getObjectDNGenerator().getNext() + getSrcMachineGenerator().getNext().getMachineDomainDN()
+                    objectName,
+                    getObjectDN(objectName)
                     );
             activeDirectoryDescriptionGenerator.updateDescription(ev);
             evList.add(ev);
@@ -148,11 +148,23 @@ public class ActiveDirectoryEventsGenerator implements IEventGenerator {
         this.resultCodeGenerator = resultCodeGenerator;
     }
 
-    public IStringGenerator getObjectDNGenerator() {
-        return objectDNGenerator;
+    public String getObjectDN(String objectName) {
+        return "ca=" + objectName + ",CN=Users," + getSrcMachineGenerator().getNext().getMachineDomainDN();
     }
 
-    public void setObjectDNGenerator(IStringGenerator objectDNGenerator) {
-        this.objectDNGenerator = objectDNGenerator;
+    public IActiveDirectoryDescriptionGenerator getActiveDirectoryDescriptionGenerator() {
+        return activeDirectoryDescriptionGenerator;
+    }
+
+    public void setActiveDirectoryDescriptionGenerator(IActiveDirectoryDescriptionGenerator activeDirectoryDescriptionGenerator) {
+        this.activeDirectoryDescriptionGenerator = activeDirectoryDescriptionGenerator;
+    }
+
+    public IStringGenerator getObjectNameGenerator() {
+        return objectNameGenerator;
+    }
+
+    public void setObjectNameGenerator(IStringGenerator objectNameGenerator) {
+        this.objectNameGenerator = objectNameGenerator;
     }
 }

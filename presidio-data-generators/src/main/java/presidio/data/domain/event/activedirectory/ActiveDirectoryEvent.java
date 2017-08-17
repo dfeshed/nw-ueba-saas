@@ -21,6 +21,7 @@ public class ActiveDirectoryEvent extends Event implements Serializable {
     private String result;
     private String activeDirectoryDescription;
     private String objectDN;
+    private String objectName;
 
     public ActiveDirectoryEvent(Instant eventTime, String eventId, User user, String dataSource, ActiveDirectoryOperation operation) {
         this.eventTime = eventTime;
@@ -30,7 +31,7 @@ public class ActiveDirectoryEvent extends Event implements Serializable {
         this.operation = operation;
     }
 
-    public ActiveDirectoryEvent(Instant eventTime, String eventId, User user, String dataSource, ActiveDirectoryOperation operation, MachineEntity srcMachineEntity, MachineEntity dstMachineEntity, String result, String objectDN) {
+    public ActiveDirectoryEvent(Instant eventTime, String eventId, User user, String dataSource, ActiveDirectoryOperation operation, MachineEntity srcMachineEntity, MachineEntity dstMachineEntity, String result, String objectName, String objectDN) {
         this.eventTime = eventTime;
         this.eventId = eventId;
         this.operation = operation;
@@ -40,6 +41,7 @@ public class ActiveDirectoryEvent extends Event implements Serializable {
         this.dstMachineEntity = dstMachineEntity;
         this.result = result;
         this.objectDN = objectDN;
+        this.objectName = objectName;
     }
 
     public Instant getEventTime() {
@@ -122,6 +124,10 @@ public class ActiveDirectoryEvent extends Event implements Serializable {
         this.objectDN = objectDN;
     }
 
+    public String getObjectName() { return objectName; }
+
+    public void setObjectName(String objectName) { this.objectName = objectName; }
+
     @Override
     public Instant getDateTime() {
         return eventTime;
@@ -140,6 +146,7 @@ public class ActiveDirectoryEvent extends Event implements Serializable {
                 ", result='" + result + '\'' +
                 ", activeDirectoryDescription='" + activeDirectoryDescription + '\'' +
                 ", objectDN='" + objectDN + '\'' +
+                ", objectName='" + objectName + '\'' +
                 '}';
     }
 }
