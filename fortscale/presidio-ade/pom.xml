@@ -25,11 +25,11 @@
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${project.build.directory}</outputDirectory>
+                            <outputDirectory>${project.parent.build.directory}/extra-resources</outputDirectory>
                             <resources>
                                 <resource>
                                     <filtering>false</filtering>
-                                    <directory>${project.basedir}/src/main/resources</directory>
+                                    <directory>${project.basedir}/src/main/resources/config</directory>
                                 </resource>
                             </resources>
                         </configuration>
