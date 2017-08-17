@@ -5,7 +5,7 @@ from presidio.builders.presidio_dag_builder import PresidioDagBuilder
 
 from presidio.operators.model.smart_model_accumulate_operator import SmartModelAccumulateOperator
 from presidio.operators.model.smart_model_operator import SmartModelOperator
-from presidio.utils.services.fixed_duration_strategy import FIX_DURATION_STRATEGY_DAILY, is_execution_date_valid
+from presidio.utils.services.fixed_duration_strategy import is_execution_date_valid
 
 from presidio.utils.airflow.operators.sensor.task_sensor_service import TaskSensorService
 
@@ -62,7 +62,7 @@ class SmartModelDagBuilder(PresidioDagBuilder):
             task_id='accumulate_short_circuit',
             dag=smart_model_dag,
             python_callable=lambda **kwargs: is_execution_date_valid(kwargs['execution_date'],
-                                                                     self._build_model_interval,
+                                                                     self._accumulate_interval,
                                                                      smart_model_dag.schedule_interval),
             provide_context=True
         )
@@ -88,7 +88,7 @@ class SmartModelDagBuilder(PresidioDagBuilder):
         task_sensor_service.add_task_gap_sensor(smart_model_accumulate_operator,
                                                 smart_model_operator,
                                                 self._accumulate_operator_gap_from_smart_model_operator_in_timedelta)
-        smart_model_accumulate_operator.set_downstream(smart_model_operator)
+        smart_model_accumulate_operator.set_downstream(smart_model_short_circuit_operator)
 
 
 
