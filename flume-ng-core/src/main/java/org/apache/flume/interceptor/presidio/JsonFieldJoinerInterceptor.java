@@ -51,7 +51,7 @@ public class JsonFieldJoinerInterceptor extends AbstractInterceptor {
         final String baseValue;
         final String toAppendValue;
 
-        if (baseFieldValue == null ) {
+        if (baseFieldValue == null || baseFieldValue.toString().equals("null")) {
             if (filterOnMissingBaseField) {
                 throw new ConfigurationException("Failed to join fields. Base field doesn't exist.");
             } else {
@@ -62,7 +62,7 @@ public class JsonFieldJoinerInterceptor extends AbstractInterceptor {
             baseValue = baseFieldValue.getAsString();
         }
 
-        if (toAppendFieldValue == null) {
+        if (toAppendFieldValue == null || toAppendFieldValue.toString().equals("null")) {
             if (filterOnMissingToAppendField) {
                 throw new ConfigurationException("Failed to join fields. To Append field doesn't exist.");
             } else {
