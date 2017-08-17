@@ -66,7 +66,7 @@ public abstract class AslConfigurationService
 		Resource[] configurationResources = getConfigurationResources(baseOverridingConfJsonFolderPath);
 		if(configurationResources == null)
 		{
-			logger.warn("did not found any overriding resources under the path: {}",baseOverridingConfJsonFolderPath);
+			logger.debug("did not found any overriding resources under the path: {}",baseOverridingConfJsonFolderPath);
 		}
 		return configurationResources;
 	}
