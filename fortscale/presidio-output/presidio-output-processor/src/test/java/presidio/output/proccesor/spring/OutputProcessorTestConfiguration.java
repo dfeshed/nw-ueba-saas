@@ -44,8 +44,6 @@ public class OutputProcessorTestConfiguration {
         Properties properties = new Properties();
         properties.put("streaming.event.field.type.aggr_event", "aggr_event");
         properties.put("streaming.aggr_event.field.context", "context");
-        properties.put("fortscale.ademanager.aggregation.feature.event.conf.json.file.name","classpath:config/asl/manager/aggregated-features/*/*.json");
-        properties.put("fortscale.ademanager.aggregation.bucket.conf.json.file.name","classpath:config/asl/manager/feature-buckets/*/*.json");
         return new TestPropertiesPlaceholderConfigurer(properties);
     }
 }
