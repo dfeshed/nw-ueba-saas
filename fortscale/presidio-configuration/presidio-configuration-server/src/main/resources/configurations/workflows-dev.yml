@@ -2,7 +2,7 @@ general:
   deployment:
     bins:
       base_path:
-        /home/presidio/presidio-core/bin
+        /home/presidio/dev-projects/presidio-core/fortscale/target/dependencies
 dags:
   dags_configs:
   - dag_id: full_flow
@@ -77,6 +77,18 @@ dags:
       jvm_args:
         jar_path: ${general.deployment.bins.base_path}/presidio-ade-app-modeling-1.0.0-SNAPSHOT.jar
         main_class: presidio.ade.modeling.ModelingServiceApplication
+        xmx: 500
+        xms: 70
+    SmartModelAccumulateOperator:
+      jvm_args:
+        jar_path: ${general.deployment.bins.base_path}/test-mock-project-0.0.1-SNAPSHOT.jar
+        main_class: com.fortscale.test.TestMockProjectApplication
+        xmx: 500
+        xms: 70
+    SmartModelOperator:
+      jvm_args:
+        jar_path: ${general.deployment.bins.base_path}/test-mock-project-0.0.1-SNAPSHOT.jar
+        main_class: com.fortscale.test.TestMockProjectApplication
         xmx: 500
         xms: 70
 components:
