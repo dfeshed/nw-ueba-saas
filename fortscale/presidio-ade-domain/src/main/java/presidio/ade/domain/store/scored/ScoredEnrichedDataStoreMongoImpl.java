@@ -18,7 +18,7 @@ import java.util.Map;
 
 import static presidio.ade.domain.record.enriched.AdeScoredEnrichedRecord.CONTEXT_FIELD_NAME;
 import static presidio.ade.domain.record.enriched.AdeScoredEnrichedRecord.SCORE_FIELD_NAME;
-import static presidio.ade.domain.record.enriched.file.AdeEnrichedFileContext.EVENT_ID_FIELD_NAME;
+import static presidio.ade.domain.record.enriched.BaseEnrichedContext.EVENT_ID_FIELD_NAME;
 
 /**
  * Created by YaronDL on 6/13/2017.
