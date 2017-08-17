@@ -101,7 +101,8 @@ $entityFileHashColor: $cyan;
           stroke: rsa-color(gray,base,$rsa-nearly-transparent);
         }
         .text {
-          fill: rsa-color(gray,base,$rsa-transparent);
+          fill: rsa-color(gray,base,$rsa-nearly-transparent);
+          text-shadow: none;
         }
       }
 

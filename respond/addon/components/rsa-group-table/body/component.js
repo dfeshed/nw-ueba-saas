@@ -75,7 +75,7 @@ export default Component.extend(HasSizeAttr, HasScrollAttr, {
   @computed('table.{totalColumnsWidth,scrollerPos.left}')
   stickyHeaderScrollerStyle(width, scrollLeft) {
     const px = $.isNumeric(scrollLeft) ? scrollLeft : 0;
-    return htmlSafe(`width:${width}; transform: translateX(-${px}px)`);
+    return htmlSafe(`width:${width}; left: -${px}px`);
   },
 
   // Returns the first group (if any) that has items; otherwise the first group, if any.

@@ -117,7 +117,7 @@ export default function() {
     .attr('y2', 0);
   const { arrowWidth, arrowHeight } = this.getProperties('arrowWidth', 'arrowHeight');
   linksEnterGroup.append('use')
-    .attr('href', '#force-layout__arrow')
+    .attr('xlink:href', '#force-layout__arrow')
     .attr('x', 0)
     .attr('y', -1 * (arrowHeight / 2))
     .attr('width', arrowWidth)

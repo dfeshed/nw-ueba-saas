@@ -86,7 +86,7 @@ export default Component.extend(HasSizeAttr, Clickable, {
   @computed('index', 'table.groupItemSize.outerHeight')
   style(index, itemHeight) {
     const top = index * itemHeight;
-    const styleText = $.isNumeric(top) ? `transform: translateY(${top}px)` : '';
+    const styleText = $.isNumeric(top) ? `top: ${top}px` : '';
     return htmlSafe(`${styleText}`);
   },
 

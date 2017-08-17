@@ -46,6 +46,6 @@ export default Component.extend({
   @computed('table.scrollerPos.left')
   tableStyle(scrollLeft) {
     const px = $.isNumeric(scrollLeft) ? scrollLeft : 0;
-    return htmlSafe(`transform: translateX(-${px}px)`);
+    return htmlSafe(`left: -${px}px`);
   }
 });

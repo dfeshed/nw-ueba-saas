@@ -8,10 +8,12 @@ $incidentInspectorResizerBleed: ($incidentInspectorResizerWidth - 1px) / 2;
   &__wrap {
     position: absolute;
     @include rsa-fill-abs(0, $incidentInspectorResizerBleed, 0, 0);
+    z-index: 1;
   }
 
   &__resizer {
     position: absolute;
+    z-index: 2;
     top: 0;
     bottom: 0;
     right: -1 * $incidentInspectorResizerBleed;
