@@ -23,8 +23,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import java.io.UnsupportedEncodingException;
 import java.net.UnknownHostException;
 import java.nio.charset.Charset;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
@@ -159,7 +165,7 @@ public class PresidioMongoSource extends AbstractBatchableEventDrivenSource impl
     }
 
     private SourceMongoRepository createRepository(String dbName, String host, int port, String username, String password)
-            throws UnknownHostException {
+            throws UnknownHostException, BadPaddingException, NoSuchAlgorithmException, IllegalBlockSizeException, UnsupportedEncodingException, NoSuchPaddingException, InvalidKeyException {
         final MongoTemplate mongoTemplate = MongoUtils.createMongoTemplate(dbName, host, port, username, password);
         return new SourceMongoRepositoryImpl(mongoTemplate);
     }

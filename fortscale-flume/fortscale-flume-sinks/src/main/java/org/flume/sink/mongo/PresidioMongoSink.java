@@ -15,8 +15,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.UnknownHostException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -30,7 +36,7 @@ import static org.apache.flume.CommonStrings.PASSWORD;
 import static org.apache.flume.CommonStrings.PORT;
 import static org.apache.flume.CommonStrings.USERNAME;
 
-public class PresidioMongoSink<T extends AbstractDocument> extends AbstractPresidioSink<T>  {
+public class PresidioMongoSink<T extends AbstractDocument> extends AbstractPresidioSink<T> {
 
     private static Logger logger = LoggerFactory.getLogger(PresidioMongoSink.class);
 
@@ -142,7 +148,7 @@ public class PresidioMongoSink<T extends AbstractDocument> extends AbstractPresi
         }
     }
 
-    private static SinkMongoRepository createRepository(String dbName, String host, int port, String username, String password) throws UnknownHostException {
+    private static SinkMongoRepository createRepository(String dbName, String host, int port, String username, String password) throws UnknownHostException, BadPaddingException, NoSuchAlgorithmException, IllegalBlockSizeException, UnsupportedEncodingException, NoSuchPaddingException, InvalidKeyException {
         final MongoTemplate mongoTemplate = MongoUtils.createMongoTemplate(dbName, host, port, username, password);
         return new SinkMongoRepositoryImpl(mongoTemplate);
     }
