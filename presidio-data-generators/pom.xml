@@ -7,7 +7,7 @@
   <packaging>jar</packaging>
 
 	<name>presidio-data-generators</name>
-	<description>Presidio Data Generators</description>
+	<activeDirectoryDescription>Presidio Data Generators</activeDirectoryDescription>
 
 	<parent>
 		<groupId>presidio-test-utils</groupId>

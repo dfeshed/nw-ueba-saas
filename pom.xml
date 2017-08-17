@@ -9,7 +9,7 @@
 	<packaging>pom</packaging>
 
 	<name>presidio-test-utils</name>
-	<description>Presidio Test Utils</description>
+	<activeDirectoryDescription>Presidio Test Utils</activeDirectoryDescription>
 	
 	<parent>
 		<groupId>org.springframework.boot</groupId>

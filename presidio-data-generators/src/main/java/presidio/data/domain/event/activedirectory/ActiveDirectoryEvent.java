@@ -7,7 +7,6 @@ import java.io.Serializable;
 import presidio.data.domain.User;
 
 import java.time.Instant;
-import java.util.List;
 
 public class ActiveDirectoryEvent extends Event implements Serializable {
 
@@ -20,6 +19,8 @@ public class ActiveDirectoryEvent extends Event implements Serializable {
     private MachineEntity srcMachineEntity;
     private MachineEntity dstMachineEntity;
     private String result;
+    private String activeDirectoryDescription;
+    private String objectDN;
 
     public ActiveDirectoryEvent(Instant eventTime, String eventId, User user, String dataSource, ActiveDirectoryOperation operation) {
         this.eventTime = eventTime;
@@ -29,7 +30,7 @@ public class ActiveDirectoryEvent extends Event implements Serializable {
         this.operation = operation;
     }
 
-    public ActiveDirectoryEvent(Instant eventTime, String eventId, User user, String dataSource, ActiveDirectoryOperation operation, MachineEntity srcMachineEntity, MachineEntity dstMachineEntity, String result) {
+    public ActiveDirectoryEvent(Instant eventTime, String eventId, User user, String dataSource, ActiveDirectoryOperation operation, MachineEntity srcMachineEntity, MachineEntity dstMachineEntity, String result, String objectDN) {
         this.eventTime = eventTime;
         this.eventId = eventId;
         this.operation = operation;
@@ -38,6 +39,7 @@ public class ActiveDirectoryEvent extends Event implements Serializable {
         this.srcMachineEntity = srcMachineEntity;
         this.dstMachineEntity = dstMachineEntity;
         this.result = result;
+        this.objectDN = objectDN;
     }
 
     public Instant getEventTime() {
@@ -104,6 +106,22 @@ public class ActiveDirectoryEvent extends Event implements Serializable {
         this.result = result;
     }
 
+    public String getActiveDirectoryDescription() {
+        return activeDirectoryDescription;
+    }
+
+    public void setActiveDirectoryDescription(String activeDirectoryDescription) {
+        this.activeDirectoryDescription = activeDirectoryDescription;
+    }
+
+    public String getObjectDN() {
+        return objectDN;
+    }
+
+    public void setObjectDN(String objectDN) {
+        this.objectDN = objectDN;
+    }
+
     @Override
     public Instant getDateTime() {
         return eventTime;
@@ -120,6 +138,8 @@ public class ActiveDirectoryEvent extends Event implements Serializable {
                 ", srcMachineEntity=" + srcMachineEntity +
                 ", dstMachineEntity=" + dstMachineEntity +
                 ", result='" + result + '\'' +
+                ", activeDirectoryDescription='" + activeDirectoryDescription + '\'' +
+                ", objectDN='" + objectDN + '\'' +
                 '}';
     }
 }

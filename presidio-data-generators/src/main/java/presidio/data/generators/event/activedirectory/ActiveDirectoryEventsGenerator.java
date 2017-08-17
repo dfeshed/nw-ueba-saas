@@ -1,5 +1,6 @@
 package presidio.data.generators.event.activedirectory;
 
+import presidio.data.domain.MachineEntity;
 import presidio.data.generators.FixedDataSourceGenerator;
 import presidio.data.generators.activedirectoryop.ActiveDirectoryOperationGenerator;
 import presidio.data.generators.activedirectoryop.IActiveDirectoryOperationGenerator;
@@ -15,6 +16,7 @@ import presidio.data.generators.machine.IMachineGenerator;
 import presidio.data.generators.machine.SimpleMachineGenerator;
 import presidio.data.generators.user.IUserGenerator;
 import presidio.data.generators.user.RandomAdminUserPercentageGenerator;
+import presidio.data.generators.user.RandomObjectDNGenerator;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -33,6 +35,8 @@ public class ActiveDirectoryEventsGenerator implements IEventGenerator {
 
     private IStringGenerator resultGenerator;
     private IStringGenerator resultCodeGenerator;
+    private IStringGenerator objectDNGenerator;
+    private IActiveDirectoryDescriptionGenerator activeDirectoryDescriptionGenerator;
 
     public ActiveDirectoryEventsGenerator() throws GeneratorException {
         timeGenerator = new TimeGenerator();
@@ -45,6 +49,8 @@ public class ActiveDirectoryEventsGenerator implements IEventGenerator {
         dstMachineGenerator = new SimpleMachineGenerator();
         resultGenerator = new OperationResultPercentageGenerator();
         resultCodeGenerator = new RandomStringGenerator();
+        objectDNGenerator = new RandomObjectDNGenerator();
+        activeDirectoryDescriptionGenerator = new ActiveDirectoryDescriptionGenerator();
     }
 
 
@@ -61,9 +67,10 @@ public class ActiveDirectoryEventsGenerator implements IEventGenerator {
                     getActiveDirOperationGenerator().getNext(),
                     getSrcMachineGenerator().getNext(),
                     getDstMachineGenerator().getNext(),
-                    getResultGenerator().getNext()
+                    getResultGenerator().getNext(),
+                    getObjectDNGenerator().getNext() + getSrcMachineGenerator().getNext().getMachineDomainDN()
                     );
-
+            activeDirectoryDescriptionGenerator.updateDescription(ev);
             evList.add(ev);
         }
         return evList;
@@ -139,5 +146,13 @@ public class ActiveDirectoryEventsGenerator implements IEventGenerator {
 
     public void setResultCodeGenerator(IStringGenerator resultCodeGenerator) {
         this.resultCodeGenerator = resultCodeGenerator;
+    }
+
+    public IStringGenerator getObjectDNGenerator() {
+        return objectDNGenerator;
+    }
+
+    public void setObjectDNGenerator(IStringGenerator objectDNGenerator) {
+        this.objectDNGenerator = objectDNGenerator;
     }
 }
