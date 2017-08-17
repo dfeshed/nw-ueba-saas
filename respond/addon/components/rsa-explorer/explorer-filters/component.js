@@ -13,7 +13,7 @@ import config from 'ember-get-config';
  * @public
  */
 export default Component.extend({
-  classNames: ['explorer-filters'],
+  classNames: ['explorer-filters', 'flexi-fill'],
 
   i18n: service(),
 
