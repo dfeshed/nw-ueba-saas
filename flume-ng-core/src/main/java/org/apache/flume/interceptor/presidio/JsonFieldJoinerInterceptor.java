@@ -23,13 +23,17 @@ public class JsonFieldJoinerInterceptor extends AbstractInterceptor {
     private final String baseField;
     private final String toAppendField;
     private final String targetField;
+    private final Boolean filterOnMissingBaseField;
+    private final Boolean filterOnMissingToAppendField;
     private final Boolean removeBaseField;
     private final Boolean removeToAppendField;
 
-    JsonFieldJoinerInterceptor(String baseField, String toAppendField, String targetField, Boolean removeBaseField, Boolean removeToAppendField) {
+    JsonFieldJoinerInterceptor(String baseField, String toAppendField, String targetField, Boolean filterOnMissingBaseField, Boolean filterOnMissingToAppendField, Boolean removeBaseField, Boolean removeToAppendField) {
         this.baseField = baseField;
         this.toAppendField = toAppendField;
         this.targetField = targetField;
+        this.filterOnMissingBaseField = filterOnMissingBaseField;
+        this.filterOnMissingToAppendField = filterOnMissingToAppendField;
         this.removeBaseField = removeBaseField;
         this.removeToAppendField = removeToAppendField;
     }
@@ -44,14 +48,32 @@ public class JsonFieldJoinerInterceptor extends AbstractInterceptor {
         final JsonElement toAppendFieldValue = eventBodyAsJson.get(this.toAppendField);
         final JsonElement targetFieldOriginalValue = eventBodyAsJson.get(this.targetField);
 
-        if (baseFieldValue == null) {
-            throw new ConfigurationException("Failed to join fields. Base field doesn't exist.");
-        }
-        if (toAppendFieldValue == null) {
-            throw new ConfigurationException("Failed to join fields. To append field doesn't exist. {}");
+        final String baseValue;
+        final String toAppendValue;
+
+        if (baseFieldValue == null ) {
+            if (filterOnMissingBaseField) {
+                throw new ConfigurationException("Failed to join fields. Base field doesn't exist.");
+            } else {
+                baseValue = "";
+                logger.debug("Base field: '{}' doesn't exist. Appending empty String", this.toAppendField);
+            }
+        } else {
+            baseValue = baseFieldValue.getAsString();
         }
 
-        final String result = baseFieldValue.getAsString() + toAppendFieldValue.getAsString();
+        if (toAppendFieldValue == null) {
+            if (filterOnMissingToAppendField) {
+                throw new ConfigurationException("Failed to join fields. To Append field doesn't exist.");
+            } else {
+                toAppendValue = "";
+                logger.debug("To append field: '{}' doesn't exist. Appending empty String", this.toAppendField);
+            }
+        } else {
+            toAppendValue = toAppendFieldValue.getAsString();
+        }
+
+        final String result = baseValue + toAppendValue;
         if (targetFieldOriginalValue != null) {
             logger.warn("Target field {} already exists with value {}. Will be overridden with {}.", targetField, toAppendFieldValue, result);
         }
@@ -83,15 +105,22 @@ public class JsonFieldJoinerInterceptor extends AbstractInterceptor {
         static final String BASE_FIELD_CONF_NAME = "base_field";
         static final String TO_APPEND_FIELD_CONF_NAME = "to_append_field";
         static final String TARGET_FIELD_CONF_NAME = "target_field";
+
+        static final String FILTER_ON_MISSING_BASE_FIELD_CONF_NAME = "filter_on_missing_base_field";
+        static final String FILTER_ON_MISSING_TO_APPEND_FIELD_CONF_NAME = "filter_on_missing_to_append_field";
         static final String REMOVE_BASE_FIELD_CONF_NAME = "remove_base_field";
         static final String REMOVE_TO_APPEND_CONF_NAME = "remove_to_append_field";
 
+        private static final boolean DEFAULT_FILTER_ON_MISSING_BASE_FIELD_VALUE = false;
+        private static final boolean DEFAULT_FILTER_ON_MISSING_TO_APPEND_FIELD_VALUE = false;
         private static final boolean DEFAULT_REMOVE_BASE_FIELD_VALUE = false;
         private static final boolean DEFAULT_REMOVE_TO_APPEND_VALUE = false;
 
         private String baseField;
         private String toAppendField;
         private String targetField;
+        private Boolean filterOnMissingBaseField;
+        private Boolean filterOnMissingToAppendField;
         private Boolean removeBaseField;
         private Boolean removeToAppendField;
 
@@ -106,16 +135,19 @@ public class JsonFieldJoinerInterceptor extends AbstractInterceptor {
             targetField = context.getString(TARGET_FIELD_CONF_NAME);
             Preconditions.checkArgument(StringUtils.isNotEmpty(targetField), TARGET_FIELD_CONF_NAME + " can not be empty.");
 
+            filterOnMissingBaseField = context.getBoolean(FILTER_ON_MISSING_BASE_FIELD_CONF_NAME, DEFAULT_FILTER_ON_MISSING_BASE_FIELD_VALUE);
+
+            filterOnMissingToAppendField = context.getBoolean(FILTER_ON_MISSING_TO_APPEND_FIELD_CONF_NAME, DEFAULT_FILTER_ON_MISSING_TO_APPEND_FIELD_VALUE);
+
             removeBaseField = context.getBoolean(REMOVE_BASE_FIELD_CONF_NAME, DEFAULT_REMOVE_BASE_FIELD_VALUE);
-            Preconditions.checkArgument(removeBaseField != null, REMOVE_BASE_FIELD_CONF_NAME + " can not be empty.");
 
             removeToAppendField = context.getBoolean(REMOVE_TO_APPEND_CONF_NAME, DEFAULT_REMOVE_TO_APPEND_VALUE);
-            Preconditions.checkArgument(removeToAppendField != null, REMOVE_TO_APPEND_CONF_NAME + " can not be empty.");
         }
 
         @Override
         public Interceptor build() {
-            final JsonFieldJoinerInterceptor jsonFieldJoinerInterceptor = new JsonFieldJoinerInterceptor(baseField, toAppendField, targetField, removeBaseField, removeToAppendField);
+            final JsonFieldJoinerInterceptor jsonFieldJoinerInterceptor = new JsonFieldJoinerInterceptor(baseField, toAppendField,
+                    targetField, filterOnMissingBaseField, filterOnMissingToAppendField, removeBaseField, removeToAppendField);
             logger.info("Creating JsonFieldJoinerInterceptor: {}", jsonFieldJoinerInterceptor);
             return jsonFieldJoinerInterceptor;
         }

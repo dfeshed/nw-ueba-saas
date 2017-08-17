@@ -31,6 +31,8 @@ public class JsonFieldJoinerInterceptorTest {
         ctx.put(JsonFieldJoinerInterceptor.Builder.BASE_FIELD_CONF_NAME, "folderName");
         ctx.put(JsonFieldJoinerInterceptor.Builder.TO_APPEND_FIELD_CONF_NAME, "fileName");
         ctx.put(JsonFieldJoinerInterceptor.Builder.TARGET_FIELD_CONF_NAME, "fullPath");
+        ctx.put(JsonFieldJoinerInterceptor.Builder.FILTER_ON_MISSING_BASE_FIELD_CONF_NAME, "true");
+        ctx.put(JsonFieldJoinerInterceptor.Builder.FILTER_ON_MISSING_TO_APPEND_FIELD_CONF_NAME, "true");
         ctx.put(JsonFieldJoinerInterceptor.Builder.REMOVE_BASE_FIELD_CONF_NAME, "true");
         ctx.put(JsonFieldJoinerInterceptor.Builder.REMOVE_TO_APPEND_CONF_NAME, "true");
 
