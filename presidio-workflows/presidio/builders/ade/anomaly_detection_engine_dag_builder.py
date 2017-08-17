@@ -46,15 +46,6 @@ class AnomalyDetectionEngineDagBuilder(PresidioDagBuilder):
         :return: The given ADE DAG, after it has been populated
         :rtype: airflow.models.DAG
         """
-
-        # Following are gap configuation which should be moved to configuration file.
-        # In the end we might not define these sensors so I do not create configurtion file for it.
-        hourly_aggregations_max_gap_from_hourly_smart_in_timedelta = timedelta(hours=24)
-        hourly_smart_max_gap_from_hourly_smart_model_in_timedelta = timedelta(days=2)
-
-        # smart model build conf
-        hourly_smart_build_model_interval_in_timedelta = timedelta(days=2)
-
         hourly_aggregations_sub_dag_operator_list = []
 
         task_sensor_service = TaskSensorService()
@@ -121,15 +112,13 @@ class AnomalyDetectionEngineDagBuilder(PresidioDagBuilder):
         # define the smart operator and smart model sub dag with their sensor, short circuit and flow dependecies.
         self._build_smart_flow(anomaly_detection_engine_dag, self.hourly_smart_events_confs, FIX_DURATION_STRATEGY_HOURLY, task_sensor_service,
                                hourly_short_circuit_operator,
-                               hourly_aggregations_sub_dag_operator_list, hourly_aggregations_max_gap_from_hourly_smart_in_timedelta,
-                               hourly_smart_build_model_interval_in_timedelta, hourly_smart_max_gap_from_hourly_smart_model_in_timedelta)
+                               hourly_aggregations_sub_dag_operator_list)
 
 
         return anomaly_detection_engine_dag
 
     def _build_smart_flow(self, anomaly_detection_engine_dag, smart_events_confs, fixed_duration_strategy, task_sensor_service, short_circuit_operator,
-                          aggregations_sub_dag_operator_list, aggregations_max_gap_from_smart_in_timedelta,
-                          smart_build_model_interval_in_timedelta, smart_max_gap_from_smart_model_in_timedelta):
+                          aggregations_sub_dag_operator_list):
         # Iterate all smart configurations and
         # define the smart operator and smart model sub dag with their sensor, short circuit and flow dependecies.
         for smart_events_conf in smart_events_confs:
@@ -146,20 +135,14 @@ class AnomalyDetectionEngineDagBuilder(PresidioDagBuilder):
             # The hourly smart events operator should start after all hourly aggregations subDAG operators are finished
             for aggregations_sub_dag_operator in aggregations_sub_dag_operator_list:
                 aggregations_sub_dag_operator.set_downstream(smart_events_operator)
-                task_sensor_service.add_task_gap_sensor(aggregations_sub_dag_operator,
-                                                        smart_events_operator,
-                                                        aggregations_max_gap_from_smart_in_timedelta)
 
             # Create the smart model sub dag for the configuration
-            smart_model_sub_dag_operator = self._get_smart_model_sub_dag_operator(smart_events_conf,
-                                                                                  smart_build_model_interval_in_timedelta,
+            smart_model_sub_dag_operator = self._get_smart_model_sub_dag_operator(fixed_duration_strategy,
+                                                                                  smart_events_conf,
                                                                                   anomaly_detection_engine_dag)
             task_sensor_service.add_task_sequential_sensor(smart_model_sub_dag_operator)
-            task_sensor_service.add_task_short_circuit(smart_model_sub_dag_operator,
-                                                       short_circuit_operator)
-            task_sensor_service.add_task_gap_sensor(smart_events_operator,
-                                                    smart_model_sub_dag_operator,
-                                                    smart_max_gap_from_smart_model_in_timedelta)
+            task_sensor_service.add_task_short_circuit(smart_model_sub_dag_operator, short_circuit_operator)
+
 
             # The hourly smart event operator should be followed by the hourly smart model sub dag
             smart_events_operator.set_downstream(smart_model_sub_dag_operator)
@@ -190,11 +173,11 @@ class AnomalyDetectionEngineDagBuilder(PresidioDagBuilder):
             anomaly_detection_engine_dag)
 
     @staticmethod
-    def _get_smart_model_sub_dag_operator(smart_events_conf, build_model_interval, anomaly_detection_engine_dag):
+    def _get_smart_model_sub_dag_operator(fixed_duration_strategy, smart_events_conf, anomaly_detection_engine_dag):
         smart_model_dag_id = '{}_smart_model'.format(smart_events_conf)
 
         return AnomalyDetectionEngineDagBuilder.create_sub_dag_operator(
-            SmartModelDagBuilder(smart_events_conf, build_model_interval), smart_model_dag_id,
+            SmartModelDagBuilder(fixed_duration_strategy, smart_events_conf), smart_model_dag_id,
             anomaly_detection_engine_dag)
 
     @staticmethod
