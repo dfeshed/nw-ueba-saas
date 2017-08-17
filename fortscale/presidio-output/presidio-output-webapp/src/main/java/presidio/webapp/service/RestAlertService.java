@@ -1,12 +1,14 @@
 package presidio.webapp.service;
 
+import org.springframework.data.domain.Page;
 import presidio.webapp.dto.Alert;
 import presidio.webapp.restquery.RestAlertQuery;
-
-import java.util.List;
 
 public interface RestAlertService {
 
     Alert getAlertById(String id);
-    List<Alert> getAlerts(RestAlertQuery restAlertQuery);
+
+    Page<presidio.output.domain.records.alerts.Alert> getAlerts(RestAlertQuery restAlertQuery);
+
+    Alert createResult(presidio.output.domain.records.alerts.Alert alertData);
 }

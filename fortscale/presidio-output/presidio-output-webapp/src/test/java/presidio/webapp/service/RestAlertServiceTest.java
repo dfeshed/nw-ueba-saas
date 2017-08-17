@@ -58,8 +58,8 @@ public class RestAlertServiceTest {
         when(alertService.find(anyObject())).thenReturn(page);
 
         RestAlertQuery restAlertQuery = new RestAlertQuery();
-        List<presidio.webapp.dto.Alert> alerts = restAlertService.getAlerts(restAlertQuery);
-        Assert.assertEquals(1, alerts.size());
+        Page<Alert> alerts = restAlertService.getAlerts(restAlertQuery);
+        Assert.assertEquals(1, alerts.getNumberOfElements());
     }
 
     @Test
@@ -72,8 +72,8 @@ public class RestAlertServiceTest {
 
         RestAlertQuery restAlertQuery = new RestAlertQuery();
         restAlertQuery.setUserName(firstAlert.getUserName());
-        List<presidio.webapp.dto.Alert> alerts = restAlertService.getAlerts(restAlertQuery);
-        Assert.assertEquals(1, alerts.size());
+        Page<Alert> alerts = restAlertService.getAlerts(restAlertQuery);
+        Assert.assertEquals(1, alerts.getNumberOfElements());
     }
 
     @Test
@@ -84,8 +84,8 @@ public class RestAlertServiceTest {
 
         RestAlertQuery restAlertQuery = new RestAlertQuery();
         restAlertQuery.setUserName("someUserName");
-        List<presidio.webapp.dto.Alert> alerts = restAlertService.getAlerts(restAlertQuery);
-        Assert.assertEquals(0, alerts.size());
+        Page<Alert> alerts = restAlertService.getAlerts(restAlertQuery);
+        Assert.assertEquals(0, alerts.getNumberOfElements());
     }
 
     private Alert createAlert() {
