@@ -8,7 +8,7 @@
     <description>Presidio Connector Manager API</description>
 
     <parent>
-        <artifactId>presidio-input</artifactId>
+        <artifactId>presidio-connector-manager</artifactId>
         <groupId>fortscale</groupId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
