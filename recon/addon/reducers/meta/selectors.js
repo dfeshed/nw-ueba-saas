@@ -46,6 +46,11 @@ const determineEventType = (meta) => {
     return entry[0] === 'medium';
   });
 
+  // handle odd case where there just is no medium
+  if (!medium) {
+    return DEFAULT_EVENT_TYPE;
+  }
+
   const eventType = EVENT_TYPES.findBy('medium', medium[1]);
 
   // Unknown event type? Just return the default.
