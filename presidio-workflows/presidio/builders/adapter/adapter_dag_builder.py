@@ -27,7 +27,7 @@ class AdapterDagBuilder(PresidioDagBuilder):
         """
 
         self.data_sources = data_sources
-        self.jvm_args = InputDagBuilder.conf_reader.read(conf_key=ADAPTER_JVM_ARGS_CONFIG_PATH)
+        self.jvm_args = AdapterDagBuilder.conf_reader.read(conf_key=ADAPTER_JVM_ARGS_CONFIG_PATH)
 
     def build(self, adapter_dag):
         """
