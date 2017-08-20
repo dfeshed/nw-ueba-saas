@@ -21,6 +21,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import presidio.ade.domain.store.smart.SmartDataStore;
 import presidio.ade.domain.store.smart.SmartPageIterator;
+import presidio.output.domain.records.alerts.AlertEnums;
+import presidio.output.domain.services.alerts.AlertEnumsSeverityService;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.output.domain.spring.AlertEnumsConfig;
 import presidio.output.processor.services.OutputExecutionServiceImpl;
@@ -52,6 +54,9 @@ public class AlertServiceTest {
 
     @Autowired
     private AlertServiceImpl alertService;
+
+    @Autowired
+    private AlertEnumsSeverityService alertEnumsSeverityService;
 
     @Configuration
     @EnableSpringConfigured
@@ -98,6 +103,14 @@ public class AlertServiceTest {
         Mockito.verify(alertPersistencyService).save(argument.capture());
         final int generatedAlertsListSize = argument.getValue().size();
         assertEquals(smartSize, generatedAlertsListSize);
+    }
+
+    @Test
+    public void severityTest() {
+        assertEquals(alertEnumsSeverityService.severity(51), AlertEnums.AlertSeverity.LOW);
+        assertEquals(alertEnumsSeverityService.severity(71), AlertEnums.AlertSeverity.MEDIUM);
+        assertEquals(alertEnumsSeverityService.severity(86), AlertEnums.AlertSeverity.HIGH);
+        assertEquals(alertEnumsSeverityService.severity(97), AlertEnums.AlertSeverity.CRITICAL);
     }
 
     private EntityEvent generateSingleSmart(int score) {

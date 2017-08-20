@@ -5,7 +5,19 @@ public class AlertEnums {
 
 
     public enum AlertSeverity {
-        CRITICAL, HIGH, MEDIUM, LOW
+        CRITICAL("critical"), HIGH("high"), MEDIUM("medium"), LOW("low");
+
+        private String value;
+
+        AlertSeverity(String name) {
+            this.value = value;
+        }
+
+        @Override
+        public String toString() {
+            return String.valueOf(value);
+        }
+        
     }
 
     public enum AlertTimeframe {
