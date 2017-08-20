@@ -1,6 +1,5 @@
 package fortscale.ml.model.retriever;
 
-import fortscale.accumulator.aggregation.store.AccumulatedAggregatedFeatureEventStore;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.ml.model.retriever.factories.AccumulatedAggregatedFeatureValueRetrieverFactory;
@@ -25,30 +24,23 @@ import static org.mockito.Mockito.when;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 public class AccumulatedAggregatedFeatureValueRetrieverTest {
-
     @Autowired
     public FactoryService<AbstractDataRetriever> factoryService;
 
     @Autowired
     private AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
 
-
     @Test
     public void test() {
-
         AccumulatedAggregatedFeatureValueRetrieverConf accumulatedAggregatedFeatureValueRetrieverConf = new AccumulatedAggregatedFeatureValueRetrieverConf(1, Collections.emptyList(), "test_conf_name");
-
         AggregatedFeatureEventConf aggregatedFeatureEventConf = mock(AggregatedFeatureEventConf.class);
         when(aggregatedFeatureEventsConfService.getAggregatedFeatureEventConf("test_conf_name")).thenReturn(aggregatedFeatureEventConf);
         AbstractDataRetriever abstractDataRetriever = factoryService.getProduct(accumulatedAggregatedFeatureValueRetrieverConf);
-
         Assert.assertTrue(abstractDataRetriever instanceof AccumulatedAggregatedFeatureValueRetriever);
     }
 
-
     @Configuration
     public static class AccumulatedAggregatedFeatureValueRetrieverTestConfig {
-
         @MockBean
         private AggregationEventsAccumulationDataReader store;
         @MockBean
@@ -67,8 +59,5 @@ public class AccumulatedAggregatedFeatureValueRetrieverTest {
         public AccumulatedAggregatedFeatureValueRetrieverFactory accumulatedAggregatedFeatureValueRetrieverFactory() {
             return new AccumulatedAggregatedFeatureValueRetrieverFactory();
         }
-
     }
-
-
 }

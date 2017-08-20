@@ -1,18 +1,11 @@
 package presidio.ade.modeling.config;
 
-import fortscale.accumulator.entityEvent.store.AccumulatedEntityEventStore;
-import fortscale.accumulator.entityEvent.store.AccumulatedEntityEventStoreImpl;
-import fortscale.accumulator.entityEvent.translator.AccumulatedEntityEventTranslator;
 import fortscale.aggregation.feature.bucket.FeatureBucketReader;
 import fortscale.aggregation.feature.bucket.FeatureBucketStoreMongoImpl;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.aggregation.feature.event.store.AggregatedFeatureEventsMongoStore;
 import fortscale.aggregation.feature.event.store.AggregatedFeatureEventsReaderService;
 import fortscale.aggregation.feature.event.store.translator.AggregatedFeatureNameTranslationService;
-import fortscale.entity.event.EntityEventDataMongoStore;
-import fortscale.entity.event.EntityEventDataReaderService;
-import fortscale.entity.event.EntityEventMongoStore;
-import fortscale.entity.event.translator.EntityEventTranslationService;
 import fortscale.utils.mongodb.util.MongoDbUtilService;
 import fortscale.utils.monitoring.stats.StatsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +14,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import presidio.ade.domain.store.accumulator.*;
+import presidio.ade.domain.store.accumulator.AggregationEventsAccumulationDataReader;
+import presidio.ade.domain.store.accumulator.AggregationEventsAccumulationDataReaderConfig;
 
 import java.util.Collections;
 
@@ -42,8 +36,6 @@ public class ModelingServiceDependencies {
 	private long featureBucketsDefaultExpireAfterSeconds;
 	@Value("${presidio.ade.modeling.event.type.field.value.aggr.event}")
 	private String eventTypeFieldValueAggrEvent;
-	@Value("${presidio.ade.modeling.event.type.field.value.entity.event}")
-	private String eventTypeFieldValueEntityEvent;
 
 	@Autowired
 	private MongoTemplate mongoTemplate;
@@ -55,15 +47,6 @@ public class ModelingServiceDependencies {
 	private AggregatedFeatureNameTranslationService aggregatedFeatureNameTranslationService;
 	@Autowired
 	private AggregatedFeatureEventsMongoStore aggregatedFeatureEventsMongoStore;
-	@Autowired
-	private EntityEventTranslationService entityEventTranslationService;
-	@Autowired
-	private AccumulatedEntityEventTranslator accumulatedEntityEventTranslator;
-	@Autowired
-	private EntityEventDataMongoStore entityEventDataMongoStore;
-	@Autowired
-	private AccumulatedEntityEventStore accumulatedEntityEventStore;
-
 	@Autowired
 	private AggregationEventsAccumulationDataReader aggregationEventsAccumulationDataReader;
 
@@ -82,6 +65,7 @@ public class ModelingServiceDependencies {
 	/******************************************
 	 * Feature aggregation event related beans.
 	 ******************************************/
+
 	@Bean
 	public AggregatedFeatureNameTranslationService aggregatedFeatureNameTranslationService() {
 		return new AggregatedFeatureNameTranslationService(eventTypeFieldValueAggrEvent);
@@ -107,34 +91,4 @@ public class ModelingServiceDependencies {
 	/****************************
 	 * Smart event related beans.
 	 ****************************/
-
-	@Bean
-	public EntityEventDataMongoStore entityEventDataMongoStore() {
-		return new EntityEventDataMongoStore();
-	}
-
-	@Bean
-	public EntityEventTranslationService entityEventTranslationService() {
-		return new EntityEventTranslationService(eventTypeFieldValueEntityEvent);
-	}
-
-	@Bean
-	public AccumulatedEntityEventTranslator accumulatedEntityEventTranslator() {
-		return new AccumulatedEntityEventTranslator(entityEventTranslationService);
-	}
-
-	@Bean
-	public AccumulatedEntityEventStore accumulatedEntityEventStore() {
-		return new AccumulatedEntityEventStoreImpl(mongoTemplate, accumulatedEntityEventTranslator, statsService);
-	}
-
-	@Bean
-	public EntityEventDataReaderService entityEventDataReaderService() {
-		return new EntityEventDataReaderService(entityEventDataMongoStore, accumulatedEntityEventStore);
-	}
-
-	@Bean
-	public EntityEventMongoStore entityEventMongoStore() {
-		return new EntityEventMongoStore();
-	}
 }
