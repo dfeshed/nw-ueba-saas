@@ -91,3 +91,10 @@ dags:
         main_class: com.fortscale.test.TestMockProjectApplication
         xmx: 500
         xms: 70
+components:
+  input:
+    jvm_args:
+    jar_path: ${general.deployment.bins.base_path}/presidio-input-core-1.0.0-SNAPSHOT.jar
+    main_class: presidio.input.core.FortscaleInputCoreApplication
+    xmx: 500
+    xms: 70
