@@ -46,6 +46,10 @@ public class OutputProcessorTestConfiguration {
         properties.put("streaming.aggr_event.field.context", "context");
         properties.put("fortscale.ademanager.aggregation.feature.event.conf.json.file.name","classpath:config/asl/manager/aggregated-features/*/*.json");
         properties.put("fortscale.ademanager.aggregation.bucket.conf.json.file.name","classpath:config/asl/manager/feature-buckets/*/*.json");
+        properties.put("severity.critical", 95);
+        properties.put("severity.high", 85);
+        properties.put("severity.mid", 70);
+        properties.put("severity.low", 50);
         return new TestPropertiesPlaceholderConfigurer(properties);
     }
 }
