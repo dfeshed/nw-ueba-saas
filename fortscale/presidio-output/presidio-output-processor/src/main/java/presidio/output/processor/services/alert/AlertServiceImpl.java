@@ -7,6 +7,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.alerts.AlertEnums;
+import presidio.output.domain.services.alerts.AlertEnumsSeverityService;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 
 import java.util.ArrayList;
@@ -21,6 +22,9 @@ public class AlertServiceImpl implements AlertService {
 
     @Autowired
     private AlertPersistencyService alertPersistencyService;
+
+    @Autowired
+    private AlertEnumsSeverityService alertEnumsSeverityService;
 
     public AlertServiceImpl(AlertPersistencyService alertPersistencyService) {
         this.alertPersistencyService = alertPersistencyService;
@@ -58,7 +62,8 @@ public class AlertServiceImpl implements AlertService {
             int indicatorsNum = smart.getAggregated_feature_events().size();
             //TODO- on the new ADE SMART POJO there should be a dedicated field for Daily/Hourly
             AlertEnums.AlertTimeframe timeframe = AlertEnums.AlertTimeframe.DAILY;
-            return new Alert(id, userName, type, startDate, endDate, score, indicatorsNum, timeframe, AlertEnums.AlertSeverity.severity(score));
+            AlertEnums.AlertSeverity severity = alertEnumsSeverityService.severity(score);
+            return new Alert(id, userName, type, startDate, endDate, score, indicatorsNum, timeframe, severity);
         }
         return null;
     }
