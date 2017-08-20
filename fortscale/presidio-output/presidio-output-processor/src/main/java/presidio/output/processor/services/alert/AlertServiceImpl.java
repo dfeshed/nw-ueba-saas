@@ -20,14 +20,14 @@ public class AlertServiceImpl implements AlertService {
 
     private static final Logger logger = Logger.getLogger(AlertServiceImpl.class);
 
-    @Autowired
+
     private AlertPersistencyService alertPersistencyService;
 
-    @Autowired
     private AlertEnumsSeverityService alertEnumsSeverityService;
 
-    public AlertServiceImpl(AlertPersistencyService alertPersistencyService) {
+    public AlertServiceImpl(AlertPersistencyService alertPersistencyService,AlertEnumsSeverityService alertEnumsSeverityService) {
         this.alertPersistencyService = alertPersistencyService;
+        this.alertEnumsSeverityService=alertEnumsSeverityService;
     }
 
     @Override
