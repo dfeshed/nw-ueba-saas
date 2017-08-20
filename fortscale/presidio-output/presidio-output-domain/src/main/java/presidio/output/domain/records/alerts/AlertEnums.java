@@ -1,37 +1,40 @@
 package presidio.output.domain.records.alerts;
 
-import org.springframework.beans.factory.annotation.Value;
 
 public class AlertEnums {
 
-    public static enum AlertSeverity {
+    private static double criticalScore;
+    private static double highScore;
+    private static double midScore;
+    private static double lowScore;
+
+    public AlertEnums(double criticalScore, double highScore, double midScore, double lowScore) {
+        this.criticalScore = criticalScore;
+        this.highScore = highScore;
+        this.midScore = midScore;
+        this.lowScore = lowScore;
+    }
+
+    public enum AlertSeverity {
         CRITICAL, HIGH, MEDIUM, LOW;
 
-        @Value("${severity.critical.score}")
-        private static double CRITICAL_SCORE;
-        @Value("${severity.high.score}")
-        private static double HIGH_SCORE;
-        @Value("${severity.mid.score}")
-        private static double MID_SCORE;
-        @Value("${severity.low.score}")
-        private static double LOW_SCORE;
 
         public static AlertSeverity severity(double score) {
-            if (LOW_SCORE <= score && score < MID_SCORE)
+            if (lowScore <= score && score < midScore)
                 return LOW;
-            if (MID_SCORE <= score && score < HIGH_SCORE)
+            if (midScore <= score && score < highScore)
                 return MEDIUM;
-            if (HIGH_SCORE <= score && score < CRITICAL_SCORE)
+            if (highScore <= score && score < criticalScore)
                 return HIGH;
             return CRITICAL;
         }
     }
 
-    public static enum AlertTimeframe {
+    public enum AlertTimeframe {
         HOURLY, DAILY
     }
 
-    public static enum AlertType {
+    public enum AlertType {
         GLOBAL, DATA_EXFILTRATION, BRUTE_FORCE, ANOMALOUS_ADMIN_ACTIVITY, SNOOPING
     }
 
