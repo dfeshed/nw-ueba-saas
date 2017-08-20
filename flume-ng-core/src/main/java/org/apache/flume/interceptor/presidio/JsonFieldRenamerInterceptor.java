@@ -23,10 +23,12 @@ public class JsonFieldRenamerInterceptor extends AbstractInterceptor {
 
     private final List<String> originFields;
     private final List<String> destinationFields;
+    private final Boolean deleteNullFields;
 
-    JsonFieldRenamerInterceptor(List<String> originFields, List<String> destinationFields) {
+    JsonFieldRenamerInterceptor(List<String> originFields, List<String> destinationFields, Boolean deleteMissingFields) {
         this.originFields = originFields;
         this.destinationFields = destinationFields;
+        this.deleteNullFields = deleteMissingFields;
     }
 
     @Override
@@ -41,10 +43,15 @@ public class JsonFieldRenamerInterceptor extends AbstractInterceptor {
         for (int i = 0; i < originFields.size(); i++) {
             currField = originFields.get(i);
             JsonElement jsonElement = eventBodyAsJson.get(currField);
-            if (eventBodyAsJson.has(currField) &&
-                    !jsonElement.isJsonNull()) {
-                eventBodyAsJson.add(destinationFields.get(i), jsonElement);
-                eventBodyAsJson.remove(currField);
+            if (eventBodyAsJson.has(currField)) {
+                if (jsonElement.isJsonNull()) {
+                    if (deleteNullFields) {
+                        eventBodyAsJson.remove(currField);
+                    }
+                } else {
+                    eventBodyAsJson.add(destinationFields.get(i), jsonElement);
+                    eventBodyAsJson.remove(currField);
+                }
             }
         }
 
@@ -60,15 +67,21 @@ public class JsonFieldRenamerInterceptor extends AbstractInterceptor {
 
         static final String ORIGIN_FIELDS_CONF_NAME = "originFieldsList";
         static final String DESTINATION_FIELDS_CONF_NAME = "destinationFieldsList";
+        static final String DELETE_NULL_FIELDS = "deleteNullFields";
         static final String DELIMITER_CONF_NAME = "delimiter";
 
         private static final String DEFAULT_DELIMITER_VALUE = ",";
+        private static final Boolean DEFAULT_DELETE_NULL_FIELDS_VALUE = true;
 
         private List<String> originFields;
         private List<String> destinationFields;
+        private Boolean deleteNullFields;
+
 
         @Override
         public void configure(Context context) {
+            deleteNullFields = context.getBoolean(DELETE_NULL_FIELDS, DEFAULT_DELETE_NULL_FIELDS_VALUE);
+
             String delimiter = context.getString(DELIMITER_CONF_NAME, DEFAULT_DELIMITER_VALUE);
 
             final String[] originFields = getStringArrayFromConfiguration(context, ORIGIN_FIELDS_CONF_NAME, delimiter);
@@ -101,7 +114,7 @@ public class JsonFieldRenamerInterceptor extends AbstractInterceptor {
         public Interceptor build() {
             logger.info("Creating JsonFilterInterceptor: {}={}, {}={}",
                     ORIGIN_FIELDS_CONF_NAME, originFields, DESTINATION_FIELDS_CONF_NAME, destinationFields);
-            return new JsonFieldRenamerInterceptor(originFields, destinationFields);
+            return new JsonFieldRenamerInterceptor(originFields, destinationFields, deleteNullFields);
         }
 
         private String[] getStringArrayFromConfiguration(Context context, String key, String delimiter) {
