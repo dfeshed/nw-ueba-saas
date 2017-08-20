@@ -1,16 +1,30 @@
 package presidio.output.domain.records.alerts;
 
+
 public class AlertEnums {
 
-    public static enum AlertSeverity {
-        CRITICAL, HIGH, MEDIUM, LOW
+
+    public enum AlertSeverity {
+        CRITICAL("critical"), HIGH("high"), MEDIUM("medium"), LOW("low");
+
+        private String value;
+
+        AlertSeverity(String name) {
+            this.value = value;
+        }
+
+        @Override
+        public String toString() {
+            return String.valueOf(value);
+        }
+        
     }
 
-    public static enum AlertTimeframe {
+    public enum AlertTimeframe {
         HOURLY, DAILY
     }
 
-    public static enum AlertType {
+    public enum AlertType {
         GLOBAL, DATA_EXFILTRATION, BRUTE_FORCE, ANOMALOUS_ADMIN_ACTIVITY, SNOOPING
     }
 
