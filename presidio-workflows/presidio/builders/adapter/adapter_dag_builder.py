@@ -4,15 +4,10 @@ from datetime import timedelta
 
 from presidio.builders.presidio_dag_builder import PresidioDagBuilder
 from presidio.operators.fixed_duration_jar_operator import FixedDurationJarOperator
+from presidio.utils.configuration.config_server_configuration_reader_singleton import \
+    ConfigServerConfigurationReaderSingleton
 
-JAR_PATH = \
-    '/home/presidio/dev-projects/presidio-core/fortscale/target/dependencies/presidio-adapter-1.0.0-SNAPSHOT.jar'
-MAIN_CLASS = 'presidio.adapter.FortscaleAdapterApplication'
-
-jvm_args = {
-    'jar_path': JAR_PATH,
-    'main_class': MAIN_CLASS
-}
+ADAPTER_JVM_ARGS_CONFIG_PATH = 'components.adapter.jvm_args'
 
 
 class AdapterDagBuilder(PresidioDagBuilder):
@@ -22,6 +17,8 @@ class AdapterDagBuilder(PresidioDagBuilder):
     returns the DAG according to the given attributes.
     """
 
+    conf_reader = ConfigServerConfigurationReaderSingleton().config_server_reader
+
     def __init__(self, data_sources):
         """
         C'tor.
@@ -30,6 +27,7 @@ class AdapterDagBuilder(PresidioDagBuilder):
         """
 
         self.data_sources = data_sources
+        self.jvm_args = AdapterDagBuilder.conf_reader.read(conf_key=ADAPTER_JVM_ARGS_CONFIG_PATH)
 
     def build(self, adapter_dag):
         """
@@ -53,7 +51,7 @@ class AdapterDagBuilder(PresidioDagBuilder):
                 task_id='adapter_{}'.format(data_source),
                 fixed_duration_strategy=timedelta(hours=1),
                 command=PresidioDagBuilder.presidio_command,
-                jvm_args=jvm_args,
+                jvm_args=self.jvm_args,
                 java_args=java_args,
                 dag=adapter_dag)
 
