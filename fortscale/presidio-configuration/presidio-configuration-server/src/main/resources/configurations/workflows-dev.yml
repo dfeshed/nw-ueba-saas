@@ -2,7 +2,7 @@ general:
   deployment:
     bins:
       base_path:
-        /home/presidio/dev-projects/presidio-core/fortscale/target/dependencies
+        /home/presidio/presidio-core/bin
 dags:
   dags_configs:
   - dag_id: full_flow
@@ -11,14 +11,15 @@ dags:
       - normalized_username_hourly
       daily_smart_events_confs:
       - normalized_username_daily
-      command: run
       data_sources:
       - AUTHENTICATION
       - FILE
       - ACTIVE_DIRECTORY
-      schedule_interval: timedelta(hours=1)
-      start_date: '2017-01-01 10:00:00'
-      end_date: '2017-01-01 11:00:00'
+      command: run
+    schedule_interval: timedelta(hours=1)
+    start_date: '2017-01-01 10:00:00'
+    end_date: '2017-01-01 11:00:00'
+
   tasks_instances:
     hourly_DLPFILE_feature_aggregations:
       jvm_args:
@@ -36,7 +37,6 @@ dags:
         remote_debug_enabled: False
         remote_debug_suspend: False
         jmx_enabled: False
-        profile: dev
     SmartEventsOperator:
       jvm_args:
         jar_path: ${general.deployment.bins.base_path}/test-mock-project-0.0.1-SNAPSHOT.jar
@@ -94,11 +94,11 @@ dags:
 components:
   adapter:
     jvm_args:
-    jar_path: ${general.deployment.bins.base_path}/presidio-adapter-1.0.0-SNAPSHOT.jar
-    main_class: presidio.adapter.FortscaleAdapterApplication
+      jar_path: ${general.deployment.bins.base_path}/presidio-adapter-1.0.0-SNAPSHOT.jar
+      main_class: presidio.adapter.FortscaleAdapterApplication
   input:
     jvm_args:
-    jar_path: ${general.deployment.bins.base_path}/presidio-input-core-1.0.0-SNAPSHOT.jar
-    main_class: presidio.input.core.FortscaleInputCoreApplication
-    xmx: 500
-    xms: 70
+      jar_path: ${general.deployment.bins.base_path}/presidio-input-core-1.0.0-SNAPSHOT.jar
+      main_class: presidio.input.core.FortscaleInputCoreApplication
+      xmx: 500
+      xms: 70

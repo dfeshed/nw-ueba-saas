@@ -7,7 +7,7 @@ from presidio.operators.fixed_duration_jar_operator import FixedDurationJarOpera
 from presidio.utils.configuration.config_server_configuration_reader_singleton import \
     ConfigServerConfigurationReaderSingleton
 
-ADAPTER_JVM_ARGS_CONFIG_PATH = 'components.input.jvm_args'
+ADAPTER_JVM_ARGS_CONFIG_PATH = 'components.adapter.jvm_args'
 
 
 class AdapterDagBuilder(PresidioDagBuilder):
