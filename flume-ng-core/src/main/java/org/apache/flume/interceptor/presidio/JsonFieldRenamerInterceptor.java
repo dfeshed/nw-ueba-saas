@@ -1,6 +1,7 @@
 package org.apache.flume.interceptor.presidio;
 
 import com.google.common.base.Preconditions;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.apache.commons.lang.StringUtils;
@@ -39,8 +40,10 @@ public class JsonFieldRenamerInterceptor extends AbstractInterceptor {
         String currField;
         for (int i = 0; i < originFields.size(); i++) {
             currField = originFields.get(i);
-            if (eventBodyAsJson.has(currField)) {
-                eventBodyAsJson.add(destinationFields.get(i), eventBodyAsJson.get(currField));
+            JsonElement jsonElement = eventBodyAsJson.get(currField);
+            if (eventBodyAsJson.has(currField) &&
+                    !jsonElement.isJsonNull()) {
+                eventBodyAsJson.add(destinationFields.get(i), jsonElement);
                 eventBodyAsJson.remove(currField);
             }
         }
