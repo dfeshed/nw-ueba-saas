@@ -2,12 +2,11 @@ package presidio.config.server.client;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.apache.tomcat.util.codec.binary.Base64;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.ByteArrayInputStream;
 import java.nio.charset.Charset;
@@ -15,21 +14,19 @@ import java.nio.charset.Charset;
 /**
  * Created by efratn on 09/08/2017.
  */
-public class ConfigurationServerClientServiceImpl implements ConfigurationServerClientService{
+public class ConfigurationServerClientServiceImpl implements ConfigurationServerClientService {
 
-    @Value("${spring.cloud.config.uri}")
-    private static String configServerUri;
 
-    @Value("${spring.cloud.config.username}")
-    private static String configServerUserName;
-
-    @Value("${spring.cloud.config.password}")
-    private static String configServerPassword;
-
+    private  String configServerUri;
+    private  String configServerUserName;
+    private  String configServerPassword;
     private RestTemplate restTemplate;
 
-    public ConfigurationServerClientServiceImpl(RestTemplate restTemplate) {
+    public ConfigurationServerClientServiceImpl(RestTemplate restTemplate, String configServerUri, String configServerUserName, String configServerPassword) {
         this.restTemplate = restTemplate;
+        this.configServerUri = configServerUri;
+        this.configServerUserName = configServerUserName;
+        this.configServerPassword = configServerPassword;
     }
 
     @Override
