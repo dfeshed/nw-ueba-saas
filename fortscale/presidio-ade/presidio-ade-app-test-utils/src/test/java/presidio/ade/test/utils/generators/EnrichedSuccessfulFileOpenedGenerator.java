@@ -20,7 +20,6 @@ import java.util.List;
 
 public class EnrichedSuccessfulFileOpenedGenerator extends EnrichedFileGenerator {
 
-
     public EnrichedSuccessfulFileOpenedGenerator(EnrichedDataStore enrichedDataStore) {
         super(enrichedDataStore);
     }

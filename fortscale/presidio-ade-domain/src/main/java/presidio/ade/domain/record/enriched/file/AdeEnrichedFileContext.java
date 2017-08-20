@@ -7,9 +7,6 @@ import presidio.ade.domain.record.enriched.BaseEnrichedContext;
 import java.util.List;
 
 public class AdeEnrichedFileContext extends BaseEnrichedContext {
-
-    public static final String EVENT_ID_FIELD_NAME = "eventId";
-
     private List<String> operationTypeCategories;
     private String userId;
     private EventResult result;

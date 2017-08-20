@@ -7,10 +7,6 @@ import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.webapp.dto.Alert;
 import presidio.webapp.restquery.RestAlertQuery;
 
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-
 @Service
 public class RestAlertServiceImpl implements RestAlertService {
 
@@ -33,41 +29,32 @@ public class RestAlertServiceImpl implements RestAlertService {
         return resultAlert;
     }
 
-    private Alert createResult(presidio.output.domain.records.alerts.Alert alertData) {
+    @Override
+    public Alert createResult(presidio.output.domain.records.alerts.Alert alertData) {
         Alert resultAlert = new Alert();
         resultAlert.setId(alertData.getId());
         resultAlert.setAlertClassification(alertData.getAlertType().name());
         resultAlert.setUsername(alertData.getUserName());
         resultAlert.setIndicatorsNum(alertData.getIndicatorsNum());
-        resultAlert.setStartDate(Instant.ofEpochMilli(alertData.getStartDate()));
-        resultAlert.setEndDate(Instant.ofEpochMilli(alertData.getEndDate()));
+        resultAlert.setStartDate(alertData.getStartDate());
+        resultAlert.setEndDate(alertData.getEndDate());
         resultAlert.setScore(alertData.getScore());
         return resultAlert;
     }
 
     @Override
-    public List<Alert> getAlerts(RestAlertQuery restAlertQuery) {
-        List<Alert> result = new ArrayList<>();
+    public Page<presidio.output.domain.records.alerts.Alert> getAlerts(RestAlertQuery restAlertQuery) {
         AlertQuery alertQuery = createQuery(restAlertQuery);
         Page<presidio.output.domain.records.alerts.Alert> alerts = elasticAlertService.find(alertQuery);
 
-        if (alerts.hasContent()) {
-            alerts.forEach(alert -> result.add(createResult(alert)));
-        }
-        return result;
+        return alerts;
     }
 
     private AlertQuery createQuery(RestAlertQuery restAlertQuery) {
         AlertQuery.AlertQueryBuilder alertQueryBuilder = new AlertQuery.AlertQueryBuilder();
         alertQueryBuilder.filterByUserName(restAlertQuery.getUserName());
-        Instant filterByStartDate = restAlertQuery.getStartDate();
-        if (filterByStartDate != null) {
-            alertQueryBuilder.filterByStartDate(filterByStartDate.toEpochMilli());
-        }
-        Instant filterByEndDate = restAlertQuery.getEndDate();
-        if (filterByEndDate != null) {
-            alertQueryBuilder.filterByEndDate(filterByEndDate.toEpochMilli());
-        }
+        alertQueryBuilder.filterByStartDate(restAlertQuery.getStartDate());
+        alertQueryBuilder.filterByEndDate(restAlertQuery.getEndDate());
         alertQueryBuilder.filterBySeverity(restAlertQuery.getSeverity());
         alertQueryBuilder.sortField(restAlertQuery.getSortField(), restAlertQuery.isAscendingOrder());
         AlertQuery alertQuery = alertQueryBuilder.build();
