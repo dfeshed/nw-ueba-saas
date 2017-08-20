@@ -78,4 +78,8 @@ public class FeatureScore implements IFeatureScore{
         return new EqualsBuilder().append(this.name, other.name).append(this.score, other.score).append(this.featureScores, other.featureScores).append(this.getCertainty(), other.getCertainty()).isEquals();
     }
 
+    @Override
+    public String toString() {
+        return "FeatureScore{}";
+    }
 }

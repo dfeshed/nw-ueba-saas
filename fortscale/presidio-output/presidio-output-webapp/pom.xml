@@ -21,6 +21,7 @@
         <java.version>1.8</java.version>
         <swagger-annotations-version>1.5.8</swagger-annotations-version>
         <jersey-version>2.22.2</jersey-version>
+        <exec-maven-plugin>1.2.1</exec-maven-plugin>
 
     </properties>
     <dependencies>
@@ -40,7 +41,6 @@
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jsr310</artifactId>
-            <version>2.8.6</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -123,11 +123,32 @@
             <artifactId>migbase64</artifactId>
             <version>2.2</version>
         </dependency>
-
-
     </dependencies>
+    <profiles>
+        <profile>
+            <id>Windows</id>
+            <activation>
+                <os>
+                    <family>Windows</family>
+                </os>
+            </activation>
+            <properties>
+                <script.extension>.bat</script.extension>
+            </properties>
+        </profile>
+        <profile>
+            <id>unix</id>
+            <activation>
+                <os>
+                    <family>unix</family>
+                </os>
+            </activation>
+            <properties>
+                <script.extension>.sh</script.extension>
+            </properties>
+        </profile>
+    </profiles>
     <build>
-        <finalName>presidio-output</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
@@ -150,6 +171,7 @@
                                     <artifactId>${project.artifactId}</artifactId>
                                     <version>${project.version}</version>
                                     <type>${project.packaging}</type>
+                                    <destFileName>presidio-output.war</destFileName>
                                 </artifactItem>
                             </artifactItems>
                             <outputDirectory>../../target/war-dependencies</outputDirectory>
@@ -227,6 +249,45 @@
                                 <artifactId>presidio-output-generated-client</artifactId>
                                 <version>1.0.0-SNAPSHOT</version>
                             </configOptions>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- compile generated swagger client manually-->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>${exec-maven-plugin}</version>
+                <executions>
+                    <execution>
+                        <id>compile-client</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>${basedir}/compile-client${script.extension}</executable>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- deploy generated swagger client manually-->
+            <!-- You must have following seetings in maven settings.xml: <server>  <id>mirror.fortscale.dom</id> <username>admin</username> <password>P@ssw0rd</password> </server>
+            -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>${exec-maven-plugin}</version>
+                <executions>
+                    <execution>
+                        <id>deploy-client</id>
+                        <phase>deploy</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>${basedir}/deploy-client${script.extension}</executable>
                         </configuration>
                     </execution>
                 </executions>

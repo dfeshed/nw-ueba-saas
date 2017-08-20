@@ -1,5 +1,6 @@
 from datetime import timedelta
 from airflow.operators.python_operator import ShortCircuitOperator
+from airflow.operators.bash_operator import BashOperator
 
 from presidio.builders.presidio_dag_builder import PresidioDagBuilder
 
@@ -91,5 +92,10 @@ class SmartModelDagBuilder(PresidioDagBuilder):
         smart_model_accumulate_operator.set_downstream(smart_model_short_circuit_operator)
 
 
+        #the following line is a workaround for bug in Airflow AIRFLOW-585 : Fix race condition in backfill execution loop
+        t2 = BashOperator(
+            task_id='sleep',
+            bash_command='sleep 5',
+            dag=smart_model_dag)
 
         return smart_model_dag
