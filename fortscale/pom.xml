@@ -822,7 +822,7 @@
         <module>presidio-output</module>
         <module>presidio-configuration</module>
         <module>presidio-manager</module>
-
+        <module>presidio-connector-manager</module>
 
     </modules>
 
