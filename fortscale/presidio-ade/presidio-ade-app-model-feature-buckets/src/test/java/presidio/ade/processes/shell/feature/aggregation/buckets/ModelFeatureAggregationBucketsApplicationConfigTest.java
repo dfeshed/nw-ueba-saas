@@ -16,7 +16,7 @@ public class ModelFeatureAggregationBucketsApplicationConfigTest extends ModelFe
     public static TestPropertiesPlaceholderConfigurer modelFeatureAggregationBucketsApplicationTestProperties() {
         Properties properties = new Properties();
         //        start ASL paths configurations
-        properties.put("fortscale.model.aggregation.bucket.conf.json.file.name", "classpath:config/asl/model-aggregation/feature-buckets/*.json");
+        properties.put("fortscale.model.aggregation.bucket.conf.json.file.name", "classpath:config/asl/feature-buckets/models/enriched-records/*.json");
 
         //        end ASL paths configurations
 
