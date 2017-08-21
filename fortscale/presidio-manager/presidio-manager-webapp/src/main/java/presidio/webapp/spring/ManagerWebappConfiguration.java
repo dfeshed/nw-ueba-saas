@@ -31,9 +31,6 @@ public class ManagerWebappConfiguration {
     ConfigurationProcessingService configurationSecurityService;
 
     @Autowired
-    private RestTemplate restTemplate;
-
-    @Autowired
     private ConfigurationServerClientService configServerClient;
 
     @Bean
