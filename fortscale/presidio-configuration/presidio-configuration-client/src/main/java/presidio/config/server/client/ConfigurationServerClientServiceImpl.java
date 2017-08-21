@@ -1,6 +1,7 @@
 package presidio.config.server.client;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
@@ -32,7 +33,7 @@ public class ConfigurationServerClientServiceImpl implements ConfigurationServer
         Resource resource = new InputStreamResource(new ByteArrayInputStream(configFileContent.toString().getBytes()));
         HttpEntity<Resource> entity = new HttpEntity<>(resource, headers);
 
-        String url = String.format("%s/%s",configServerUri ,fileName);
+        String url = String.format("%s/%s", configServerUri , fileName);
         return restTemplate.exchange(url, HttpMethod.PUT, entity, Void.class);
     }
 
@@ -56,5 +57,14 @@ public class ConfigurationServerClientServiceImpl implements ConfigurationServer
         httpHeaders.set("Authorization", authHeader);
 
         return httpHeaders;
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+                .append("configServerUri", configServerUri)
+                .append("configServerUserName", configServerUserName)
+                .append("configServerPassword", Base64.encodeBase64(configServerPassword.getBytes()))
+                .toString();
     }
 }
