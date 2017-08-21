@@ -22,11 +22,11 @@ import org.springframework.test.context.junit4.SpringRunner;
 import presidio.ade.domain.store.smart.SmartDataStore;
 import presidio.ade.domain.store.smart.SmartPageIterator;
 import presidio.output.domain.records.alerts.AlertEnums;
-import presidio.output.domain.services.alerts.AlertEnumsSeverityService;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
-import presidio.output.domain.spring.AlertEnumsConfig;
 import presidio.output.processor.services.OutputExecutionServiceImpl;
+import presidio.output.processor.services.alert.AlertEnumsSeverityService;
 import presidio.output.processor.services.alert.AlertServiceImpl;
+import presidio.output.processor.spring.AlertEnumsConfig;
 import presidio.output.processor.spring.AlertServiceElasticConfig;
 
 import java.time.Instant;
