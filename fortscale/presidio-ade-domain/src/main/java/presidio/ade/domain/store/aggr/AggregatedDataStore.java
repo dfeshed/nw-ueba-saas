@@ -1,7 +1,7 @@
 package presidio.ade.domain.store.aggr;
 
 import presidio.ade.domain.pagination.aggregated.AggregatedDataReader;
-import presidio.ade.domain.record.aggregated.AdeContextualAggregatedRecord;
+import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.record.aggregated.AggregatedFeatureType;
 import presidio.ade.domain.store.AdeDataStoreCleanupParams;
 
@@ -17,7 +17,7 @@ public interface AggregatedDataStore extends AggregatedDataReader {
      * @param records         to be stored
      * @param aggregatedFeatureType
      */
-    void store(List<? extends AdeContextualAggregatedRecord> records, AggregatedFeatureType aggregatedFeatureType);
+    void store(List<? extends AdeAggregationRecord> records, AggregatedFeatureType aggregatedFeatureType);
 
     /**
      * cleanup store by filtering params

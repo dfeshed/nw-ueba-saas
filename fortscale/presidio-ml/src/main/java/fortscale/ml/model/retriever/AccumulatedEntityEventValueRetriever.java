@@ -1,12 +1,12 @@
 package fortscale.ml.model.retriever;
 
-import fortscale.accumulator.entityEvent.event.AccumulatedEntityEvent;
-import fortscale.accumulator.entityEvent.store.AccumulatedEntityEventStore;
 import fortscale.entity.event.EntityEventConf;
 import fortscale.entity.event.JokerEntityEventData;
 import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import presidio.ade.domain.record.accumulator.AccumulatedSmartRecord;
+import presidio.ade.domain.store.accumulator.smart.SmartAccumulationDataReader;
 
 import java.util.*;
 import java.util.stream.Stream;
@@ -16,7 +16,7 @@ public class AccumulatedEntityEventValueRetriever extends AbstractEntityEventVal
 	private static final Logger logger = Logger.getLogger(AccumulatedEntityEventValueRetriever.class);
 
 	@Autowired
-	private AccumulatedEntityEventStore store;
+	private SmartAccumulationDataReader reader;
 
 	public AccumulatedEntityEventValueRetriever(AccumulatedEntityEventValueRetrieverConf config) {
 		super(config, false);
@@ -28,14 +28,14 @@ public class AccumulatedEntityEventValueRetriever extends AbstractEntityEventVal
 
 	@Override
 	protected Stream<JokerEntityEventData> readJokerEntityEventData(EntityEventConf entityEventConf, String contextId, Date startTime, Date endTime) {
-		List<AccumulatedEntityEvent> accumulatedEntityEvents = store.findAccumulatedEventsByContextIdAndStartTimeRange(
-				entityEventConf, contextId, getStartTime(endTime).toInstant(), endTime.toInstant());
+		List<AccumulatedSmartRecord> accumulatedEntityEvents = reader.findAccumulatedEventsByContextIdAndStartTimeRange(
+				entityEventConf.getName(), contextId, getStartTime(endTime).toInstant(), endTime.toInstant());
 		List<JokerEntityEventData> jokerEntityEventDataList = new ArrayList<>();
 
-		for (AccumulatedEntityEvent accumulatedEntityEvent : accumulatedEntityEvents) {
+		for (AccumulatedSmartRecord accumulatedEntityEvent : accumulatedEntityEvents) {
 			for (Integer activityTime : accumulatedEntityEvent.getActivityTime()) {
 				Map<String, Double> fullAggregatedFeatureEventNameToScore = new HashMap<>();
-				for (Map.Entry<String, Map<Integer, Double>> aggrFeature : accumulatedEntityEvent.getAggregated_feature_events_values_map().entrySet()) {
+				for (Map.Entry<String, Map<Integer, Double>> aggrFeature : accumulatedEntityEvent.getAggregatedFeatureEventsValuesMap().entrySet()) {
 					Double activityTimeScore = aggrFeature.getValue().get(activityTime);
 					String featureName = aggrFeature.getKey();
 					if (activityTimeScore == null) {
@@ -47,7 +47,7 @@ public class AccumulatedEntityEventValueRetriever extends AbstractEntityEventVal
 					}
 
 				}
-				jokerEntityEventDataList.add(new JokerEntityEventData(accumulatedEntityEvent.getStart_time().getEpochSecond(), fullAggregatedFeatureEventNameToScore));
+				jokerEntityEventDataList.add(new JokerEntityEventData(accumulatedEntityEvent.getStartInstant().getEpochSecond(), fullAggregatedFeatureEventNameToScore));
 			}
 		}
 		return jokerEntityEventDataList.stream();
@@ -84,7 +84,7 @@ public class AccumulatedEntityEventValueRetriever extends AbstractEntityEventVal
 //				}));
 
 
-	public void setStore(AccumulatedEntityEventStore store){
-		this.store = store;
+	public void setReader(SmartAccumulationDataReader reader){
+		this.reader = reader;
 	}
 }

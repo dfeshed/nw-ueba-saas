@@ -35,6 +35,8 @@ public class SmartRecord extends AdeContextualAggregatedRecord implements AdeSco
 	List<FeatureScore> featureScores;
 	@Field(AGGREGATION_RECORDS_FIELD)
 	List<AdeAggregationRecord> aggregationRecords;
+	@Field
+	private String featureName;
 
 	public SmartRecord(
 			TimeRange timeRange,
@@ -46,12 +48,13 @@ public class SmartRecord extends AdeContextualAggregatedRecord implements AdeSco
 			List<FeatureScore> featureScores,
 			List<AdeAggregationRecord> aggregationRecords) {
 
-		super(timeRange.getStart(), timeRange.getEnd(), contextId, featureName);
+		super(timeRange.getStart(), timeRange.getEnd(), contextId);
 		this.fixedDurationStrategy = fixedDurationStrategy;
 		this.smartValue = smartValue;
 		this.smartScore = smartScore;
 		this.featureScores = featureScores;
 		this.aggregationRecords = aggregationRecords;
+		this.featureName = featureName;
 	}
 
 	@Override
@@ -104,5 +107,21 @@ public class SmartRecord extends AdeContextualAggregatedRecord implements AdeSco
 
 	public void setAggregationRecords(List<AdeAggregationRecord> aggregationRecords) {
 		this.aggregationRecords = aggregationRecords;
+	}
+
+	/**
+	 * Set feature name
+	 * @param featureName
+	 */
+	public void setFeatureName(String featureName) {
+		this.featureName = featureName;
+	}
+
+	/**
+	 *
+	 * @return name of the aggregated feature. i.e. sum_of_xxx_daily or highest_xxx_score_daily
+	 */
+	public String getFeatureName() {
+		return featureName;
 	}
 }
