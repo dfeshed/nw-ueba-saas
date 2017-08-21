@@ -1,7 +1,5 @@
 package presidio.ade.sdk.common;
 
-import fortscale.aggregation.feature.bucket.FeatureBucket;
-import fortscale.utils.time.TimeRange;
 import presidio.ade.sdk.aggregation_records.AggregationRecordsManagerSdk;
 import presidio.ade.sdk.cleanup.CleanupManagerSdk;
 import presidio.ade.sdk.enriched_records.EnrichedRecordsManagerSdk;
@@ -10,7 +8,6 @@ import presidio.ade.sdk.online_run.OnlineRunManagerSdk;
 import presidio.ade.sdk.scored_enriched_records.ScoredEnrichedRecordsManagerSdk;
 import presidio.ade.sdk.smart_records.SmartRecordsManagerSdk;
 
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -40,10 +37,4 @@ public interface AdeManagerSdk extends
      * @see #getDirtyDataMarkers().
      */
     void setDirtyDataMarkers(Set<DirtyDataMarker> dirtyDataMarkers);
-
-    /**
-     * TODO: Should be removed.
-     */
-    List<FeatureBucket> getFeatureBuckets(
-            String featureBucketName, String aggregatedFeatureName, String contextId, TimeRange timeRange);
 }
