@@ -1,9 +1,12 @@
 package presidio.ade.processes.shell.feature.aggregation.buckets;
 
+import fortscale.aggregation.feature.bucket.FeatureBucket;
+import fortscale.aggregation.feature.bucket.FeatureBucketStoreMongoImpl;
 import fortscale.common.general.Schema;
 import fortscale.common.shell.command.PresidioCommands;
 import fortscale.utils.test.category.ModuleTestCategory;
 import fortscale.utils.time.TimeService;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.experimental.categories.Category;
 import org.springframework.context.annotation.Configuration;
@@ -14,6 +17,9 @@ import presidio.ade.test.utils.tests.EnrichedFileSourceBaseAppTest;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Category(ModuleTestCategory.class)
@@ -28,6 +34,7 @@ public class ModelFeatureAggregationBucketsApplicationTest extends EnrichedFileS
     private static final Instant END_DATE = TimeService.floorTime(Instant.now().minus(Duration.ofDays(DAYS_BACK_TO)), DURATION);
 
     public static final String EXECUTION_COMMAND = String.format("run  --schema %s --start_date %s --end_date %s --fixed_duration_strategy %s ", ADE_EVENT_TYPE, START_DATE.toString(), END_DATE.toString(), 3600);
+
 
     @Before
     public void beforeTest() {
@@ -46,7 +53,12 @@ public class ModelFeatureAggregationBucketsApplicationTest extends EnrichedFileS
 
     @Override
     protected void assertSanityTest() {
-
+        Collection<String> collectionNames = mongoTemplate.getCollectionNames().stream().filter(x -> x.startsWith(FeatureBucketStoreMongoImpl.COLLECTION_NAME_PREFIX)).collect(Collectors.toList());
+        Assert.assertEquals(4, collectionNames.size());
+        for (String collectionName: collectionNames){
+            List<FeatureBucket> featureBucketList = mongoTemplate.findAll(FeatureBucket.class, collectionName);
+            Assert.assertTrue(featureBucketList.size()==(DAYS_BACK_FROM - DAYS_BACK_TO));
+        }
     }
 
     @Configuration
