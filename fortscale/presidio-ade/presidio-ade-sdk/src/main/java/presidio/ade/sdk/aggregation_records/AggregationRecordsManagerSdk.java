@@ -17,12 +17,14 @@ public interface AggregationRecordsManagerSdk {
 
 	/**
 	 * Get a list of {@link AccumulatedAggregationFeatureRecord}s with the given feature name, context ID and time range.
-	 *
+	 * NOTE: Accumulations are not a product the ADE should expose. it should be calculated separately.
+	 * it  is only for temporal usage. do not add any more calls to this method!!!
 	 * @param featureName the name of the aggregation feature that is accumulated
 	 * @param contextId   the context ID (i.e. username)
 	 * @param timeRange   the start and end instants of the records
 	 * @return a list of {@link AccumulatedAggregationFeatureRecord}s
 	 */
+	@Deprecated
 	List<AccumulatedAggregationFeatureRecord> getAccumulatedAggregatedFeatureEvents(
 			String featureName, String contextId, TimeRange timeRange);
 
@@ -45,12 +47,15 @@ public interface AggregationRecordsManagerSdk {
 	Map<String,String> getAggregationNameToFeatureBucketConfNameMap();
 
 	/**
+	 * NOTE: featurebuckets are not a product the ADE should expose. it should be calculated separately.
+	 * it  is only for temporal usage. do not add any more calls to this method!!!
 	 *
 	 * @param contextId context to retrieve feature buckets for
 	 * @param bucketConfName indicates the name of the bucket
 	 * @param timeRange filtering by time (gte start, lt end)
 	 * @return feature buckets by filtering params
 	 */
+	@Deprecated
 	List<FeatureBucket> findFeatureBuckets(String contextId, String bucketConfName, TimeRange timeRange);
 
 }
