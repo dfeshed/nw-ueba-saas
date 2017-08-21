@@ -2,7 +2,6 @@ package presidio.config.server.client;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.apache.tomcat.util.codec.binary.Base64;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.*;
@@ -16,19 +15,17 @@ import java.nio.charset.Charset;
  */
 public class ConfigurationServerClientServiceImpl implements ConfigurationServerClientService{
 
-    @Value("${spring.cloud.config.uri}")
+
     private String configServerUri;
-
-    @Value("${spring.cloud.config.username}")
     private String configServerUserName;
-
-    @Value("${spring.cloud.config.password}")
     private String configServerPassword;
-
     private RestTemplate restTemplate;
 
-    public ConfigurationServerClientServiceImpl(RestTemplate restTemplate) {
+    public ConfigurationServerClientServiceImpl(RestTemplate restTemplate, String configServerUri, String configServerUserName, String configServerPassword) {
         this.restTemplate = restTemplate;
+        this.configServerUri = configServerUri;
+        this.configServerUserName = configServerUserName;
+        this.configServerPassword = configServerPassword;
     }
 
     @Override

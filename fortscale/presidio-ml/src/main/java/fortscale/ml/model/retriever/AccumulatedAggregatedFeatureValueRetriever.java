@@ -28,7 +28,7 @@ public class AccumulatedAggregatedFeatureValueRetriever extends AbstractAggregat
                 getStartTime(endTime).toInstant(),
                 endTime.toInstant()
         ).stream().flatMapToDouble(accAggEvent -> accAggEvent
-                .getAggregatedFeatureValues()
+                .getAggregatedFeatureValuesAsList()
                 .stream()
                 .mapToDouble(v -> v));
     }

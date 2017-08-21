@@ -191,6 +191,7 @@
         <spring-cloud-task-starter.version>1.1.0.M1</spring-cloud-task-starter.version>
         <elasticsearch.version>5.4.0</elasticsearch.version>
         <spring-data-elasticsearch.version>2.1.4.RELEASE</spring-data-elasticsearch.version>
+        <build-helper-maven-plugin.version>3.0.0</build-helper-maven-plugin.version>
     </properties>
 
     <dependencyManagement>

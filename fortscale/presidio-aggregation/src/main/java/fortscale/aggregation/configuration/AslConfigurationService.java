@@ -1,5 +1,6 @@
 package fortscale.aggregation.configuration;
 
+import fortscale.utils.logging.Logger;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
@@ -19,6 +20,7 @@ import java.io.IOException;
 public abstract class AslConfigurationService
 		extends AslConfigurationServiceBase
 		implements ApplicationContextAware, InitializingBean {
+	private static final Logger logger = Logger.getLogger(AslConfigurationService.class);
 
 	private ApplicationContext applicationContext;
 
@@ -49,12 +51,24 @@ public abstract class AslConfigurationService
 
 	@Override
 	protected Resource[] getBaseConfigurationResources() throws IOException {
-		return getConfigurationResources(getBaseConfJsonFilesPath());
+		String baseConfJsonFilesPath = getBaseConfJsonFilesPath();
+		Resource[] configurationResources = getConfigurationResources(baseConfJsonFilesPath);
+		if(configurationResources == null)
+		{
+			logger.warn("did not found any base resources under the path: {}",baseConfJsonFilesPath);
+		}
+		return configurationResources;
 	}
 
 	@Override
 	protected Resource[] getOverridingConfigurationResources() throws IOException {
-		return getConfigurationResources(getBaseOverridingConfJsonFolderPath());
+		String baseOverridingConfJsonFolderPath = getBaseOverridingConfJsonFolderPath();
+		Resource[] configurationResources = getConfigurationResources(baseOverridingConfJsonFolderPath);
+		if(configurationResources == null)
+		{
+			logger.debug("did not found any overriding resources under the path: {}",baseOverridingConfJsonFolderPath);
+		}
+		return configurationResources;
 	}
 
 	@Override
