@@ -59,6 +59,6 @@ public class AlertServiceImpl implements AlertService {
         //TODO- calculate Severity, currently hard-coded
         AlertEnums.AlertSeverity severity = AlertEnums.AlertSeverity.CRITICAL;
 
-        return new Alert(id, userName, type, startDate, endDate, score, indicatorsNum, timeframe, severity);
+        return new Alert(userName, type, startDate, endDate, score, indicatorsNum, timeframe, severity);
     }
 }

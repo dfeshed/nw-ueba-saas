@@ -1,15 +1,15 @@
 package presidio.output.domain.records.alerts;
 
-import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
+import presidio.output.domain.records.AbstractElasticDocument;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 
 @Document(indexName = Alert.INDEX_NAME, type = Alert.ALERT_TYPE)
-public class Alert {
+public class Alert extends AbstractElasticDocument{
 
     public static final String INDEX_NAME = "presidio-output";
     public static final String ALERT_TYPE = "alert";
@@ -24,10 +24,6 @@ public class Alert {
     public static final String INDICATORS_NUM = "indicatorsNum";
     public static final String TIMRFRAME = "timeframe";
     public static final String SEVERITY = "severity";
-
-    @Id
-    @Field(type = FieldType.String, store = true)
-    private String id;
 
     @Field(type = FieldType.String, store = true)
     private String userName;
@@ -59,8 +55,8 @@ public class Alert {
         // empty const for JSON deserialization
     }
 
-    public Alert(String id, String userName, AlertEnums.AlertType type, long startDate, long endDate, double score, int indicatorsNum, AlertEnums.AlertTimeframe timeframe, AlertEnums.AlertSeverity severity) {
-        this.id = id;
+    public Alert(String userName, AlertEnums.AlertType type, long startDate, long endDate, double score, int indicatorsNum, AlertEnums.AlertTimeframe timeframe, AlertEnums.AlertSeverity severity) {
+        super();
         this.userName = userName;
         this.alertType = type;
         this.startDate = startDate;
@@ -69,15 +65,6 @@ public class Alert {
         this.indicatorsNum = indicatorsNum;
         this.timeframe = timeframe;
         this.severity = severity;
-    }
-
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public String getUserName() {
