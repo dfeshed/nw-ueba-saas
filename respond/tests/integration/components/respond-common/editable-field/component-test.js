@@ -159,6 +159,22 @@ test('Clicking the confirm button returns the component to base (non-editing) mo
   });
 });
 
+test('Confirm button is disabled when the value is empty and attribute allowEmptyValue is false', function(assert) {
+  assert.expect(2);
+  this.set('value', 'Julius Caesar');
+  const editableFieldInputSelector = '.editable-field input';
+  this.render(hbs`{{respond-common/editable-field value=value allowEmptyValue=false }}`);
+  this.$('.editable-field .editable-field__value').click();
+  return wait().then(() => {
+    assert.equal(this.$(editableFieldInputSelector).val().trim(), 'Julius Caesar', 'The editable field component shows an input with the original value');
+    this.$(editableFieldInputSelector).val('').change();
+    return wait();
+  })
+    .then(() => {
+      assert.equal(this.$('.confirm-changes .rsa-form-button-wrapper.is-disabled').length, 1, 'The confirm button is disabled');
+    });
+});
+
 test('A change in the value while the component is in edit mode resets the component to non-edit mode with the new value', function(assert) {
   assert.expect(4);
   this.set('value', 'Julius Caesar');

@@ -2,6 +2,7 @@
 <div class="name">
   {{respond-common/editable-field
     value=info.name
+    allowEmptyValue=false
     isDisabled=(not accessControl.respondCanManageIncidents)
     placeholder=(t 'respond.empty')
     onFieldChange=(action 'updateName' info.id 'name')

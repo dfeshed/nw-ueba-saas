@@ -19,6 +19,7 @@
           {{respond-common/editable-field
             value=info.name
             inputMaxlength=150
+            allowEmptyValue=false
             placeholder=(t 'respond.empty')
             isDisabled=(not accessControl.respondCanManageIncidents)
             onFieldChange=(action 'updateItem' info.id 'name')

@@ -1,5 +1,6 @@
 import Component from 'ember-component';
 import computed, { oneWay } from 'ember-computed-decorators';
+import { isEmpty } from 'ember-utils';
 
 export default Component.extend({
   classNames: ['editable-field'],
@@ -57,6 +58,32 @@ export default Component.extend({
    * @public
    */
   isDisabled: false,
+
+  /**
+   * Whether the user can make a change to the editable-field if the change is only whitespace or empty string. If
+   * false, the confirm button will be disabled and the user will not be able to "save" the change. Note: this does
+   * not preclude the value from starting as empty.
+   * @type {boolean}
+   * @property allowEmptyValue
+   * @public
+   */
+  allowEmptyValue: true,
+
+  /**
+   * Returns true if the current text in the editable field is invalid.
+   * @param text
+   * @param allowEmptyValue
+   * @returns {boolean}
+   * @public
+   */
+  @computed('text', 'allowEmptyValue')
+  isInvalid(text, allowEmptyValue) {
+    let isInvalid = false;
+    if (!allowEmptyValue && isEmpty(text.trim())) {
+      isInvalid = true;
+    }
+    return isInvalid;
+  },
 
   /**
    * The hasChanges property represents whether or not the user has modified the original value while in editing mode.

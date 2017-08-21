@@ -10,7 +10,7 @@
     }}
   {{/if}}
   <span class="action confirm-changes">
-    {{#rsa-form-button isIconOnly=true title='Confirm edit' defaultAction='confirm'}}
+    {{#rsa-form-button isDisabled=isInvalid isIconOnly=true title='Confirm edit' defaultAction='confirm'}}
       {{rsa-icon name='check-2'}}
     {{/rsa-form-button}}
   </span>

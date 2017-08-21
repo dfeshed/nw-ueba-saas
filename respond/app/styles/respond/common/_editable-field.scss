@@ -194,7 +194,7 @@ $inputHeight: 33px;
 
   &.has-changes {
 
-    span.confirm-changes .rsa-form-button-wrapper i {
+    span.confirm-changes .rsa-form-button-wrapper:not(.is-disabled) i {
       color: rsa-color(green);
     }
   }
