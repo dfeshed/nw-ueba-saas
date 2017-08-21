@@ -45,6 +45,17 @@
             <artifactId>spring-cloud-task-starter</artifactId>
             <version>${spring-cloud-task-starter.version}</version>
         </dependency>
+        <dependency>
+            <groupId>fortscale</groupId>
+            <artifactId>presidio-ade-app-test-utils</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+            <scope>test</scope>
+            <type>test-jar</type>
+        </dependency>
+        <dependency>
+            <groupId>presidio-test-utils</groupId>
+            <artifactId>presidio-data-generators</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
