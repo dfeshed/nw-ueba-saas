@@ -1,6 +1,8 @@
 import { streamRequest, promiseRequest } from 'streaming-data/services/data-access/requests';
 import buildExplorerQuery from './util/explorer-build-query';
 import filterQuery from 'respond/utils/filter-query';
+import chunk from 'respond/utils/array/chunk';
+import RSVP from 'rsvp';
 
 const NOOP = () => {};
 
@@ -69,21 +71,27 @@ export default {
   },
 
   /**
-   * Executes a websocket delete incident call and returns a Promise
+   * Executes a websocket delete alert call and returns a Promise. The alert ids submitted are split up into
+   * chunks of 500 to ensure that the request size never exceeds the maximum of 16KB
    * @method deleteIncident
    * @public
-   * @param incidentId The id of the incident to delete
+   * @param alertId The id of the incident to delete
    * @returns {Promise}
    */
   delete(alertId) {
-    const query = filterQuery.create()
-      .addFilter('_id', alertId);
+    const requests = [];
+    const alertIdChunks = chunk(alertId, 500);
 
-    return promiseRequest({
-      method: 'deleteRecord',
-      modelName: 'alerts',
-      query: query.toJSON()
+    alertIdChunks.forEach((chunk) => {
+      const query = filterQuery.create().addFilter('_id', chunk);
+      requests.push(promiseRequest({
+        method: 'deleteRecord',
+        modelName: 'alerts',
+        query: query.toJSON()
+      }));
     });
+
+    return RSVP.allSettled(requests);
   },
 
   /**

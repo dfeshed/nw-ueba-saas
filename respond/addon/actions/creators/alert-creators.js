@@ -73,19 +73,27 @@ const getOriginalAlert = (entityId) => ({
  * @returns {{type, promise, meta: {onSuccess: (function(*=)), onFailure: (function(*=))}}}
  */
 const deleteItem = (entityId, callbacks = callbacksDefault) => {
-  return {
-    type: ACTION_TYPES.DELETE_ALERT,
-    promise: alerts.delete(entityId),
-    meta: {
-      onSuccess: (response) => {
-        Logger.debug(ACTION_TYPES.DELETE_ALERT, response);
-        callbacks.onSuccess(response);
-      },
-      onFailure: (response) => {
-        errorHandlers.handleContentDeletionError(response, 'alert');
-        callbacks.onFailure(response);
+  return (dispatch) => {
+    const deleteAlerts = alerts.delete(entityId); // call delete and get back promise
+    const reloadItems = entityId.length >= 500;
+
+    dispatch({
+      type: ACTION_TYPES.DELETE_ALERT,
+      promise: deleteAlerts,
+      meta: {
+        onSuccess: (response) => {
+          Logger.debug(ACTION_TYPES.DELETE_ALERT, response);
+          callbacks.onSuccess(response);
+          if (reloadItems) {
+            dispatch(getItems());
+          }
+        },
+        onFailure: (response) => {
+          errorHandlers.handleContentDeletionError(response, 'alert');
+          callbacks.onFailure(response);
+        }
       }
-    }
+    });
   };
 };
 

@@ -1,4 +1,5 @@
 import { handle } from 'redux-pack';
+import { isEmberArray } from 'ember-array/utils';
 import { SINCE_WHEN_TYPES_BY_NAME } from 'respond/utils/since-when-types';
 
 function defaultCustomDateRange() {
@@ -39,7 +40,17 @@ const _handleUpdates = (action) => {
 const _handleDeletes = (action) => {
   return (state) => {
     const { items, focusedItem, itemsSelected, itemsTotal } = state;
-    const { payload: { data: removedItemIds } } = action;
+    const { payload } = action;
+    let removedItemIds = [];
+
+    // If the payload is an array, we had multiple promises being settled, each of which has its own payload/resolved value
+    if (isEmberArray(payload)) {
+      payload.forEach(({ value: { data } }) => {
+        removedItemIds = [...removedItemIds, ...data];
+      });
+    } else {
+      removedItemIds = payload.data;
+    }
 
     // Filter out newly deleted items from the itemsSelected array
     const updatedItemsSelected = itemsSelected.filter((itemId) => (!removedItemIds.includes(itemId)));
@@ -54,7 +65,8 @@ const _handleDeletes = (action) => {
       // if we have a focused item and it's one that's being deleted, reset focusedItem to null
       focusedItem: focusedItem && removedItemIds.includes(focusedItem.id) ? null : focusedItem,
       // Update the itemsTotal count to account for the newly removed items
-      itemsTotal: itemsTotal - removedItemIds.length
+      itemsTotal: itemsTotal - removedItemIds.length,
+      isSelectAll: false
     };
   };
 };
