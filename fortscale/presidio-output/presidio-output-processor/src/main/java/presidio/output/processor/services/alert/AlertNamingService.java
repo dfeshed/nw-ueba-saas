@@ -1,4 +1,4 @@
-package presidio.output.domain.services.alerts;
+package presidio.output.processor.services.alert;
 
 
 import presidio.output.domain.records.alerts.AlertPriority;

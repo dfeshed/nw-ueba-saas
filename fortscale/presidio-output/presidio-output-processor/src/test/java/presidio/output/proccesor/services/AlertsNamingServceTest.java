@@ -1,4 +1,4 @@
-package presidio.output.domain.services.alerts;
+package presidio.output.proccesor.services;
 
 
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
@@ -11,7 +11,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
-import presidio.output.domain.spring.AlertNamingConfig;
+import presidio.output.processor.services.alert.AlertNamingService;
+import presidio.output.processor.spring.AlertNamingConfig;
 
 import java.util.ArrayList;
 import java.util.Arrays;
