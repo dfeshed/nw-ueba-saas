@@ -5,8 +5,10 @@ import org.springframework.data.mongodb.core.mapping.Field;
 import presidio.ade.domain.record.aggregated.AdeContextualAggregatedRecord;
 
 import java.time.Instant;
-import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by maria_dorohin on 7/26/17.
@@ -15,7 +17,8 @@ public class AccumulatedAggregationFeatureRecord extends AdeContextualAggregated
 
     private static final String ADE_ACCUMULATION_EVENT_TYPE_PREFIX = "accumulation_aggr_event";
     @Field
-    private List<Double> aggregatedFeatureValues;
+    private Map<Integer,Double> aggregatedFeatureValues;
+
     @Transient
     private String featureName;
 
@@ -25,14 +28,23 @@ public class AccumulatedAggregationFeatureRecord extends AdeContextualAggregated
 
     public AccumulatedAggregationFeatureRecord(Instant startInstant, Instant endInstant, String contextId, String featureName) {
         super(startInstant, endInstant, contextId);
-        this.aggregatedFeatureValues = new ArrayList<>();
         this.featureName = featureName;
+        this.aggregatedFeatureValues = new HashMap();
     }
 
     /**
      * @return list of aggregated feature values
      */
-    public List<Double> getAggregatedFeatureValues() {
+    public Collection<Double> getAggregatedFeatureValuesAsList() {
+        return aggregatedFeatureValues.values();
+    }
+
+    /**
+     *
+     * @return map of aggregated feature values.
+     * the key is the floored start hour integer, the value is the actual aggregated feature value
+     */
+    public Map<Integer, Double> getAggregatedFeatureValues() {
         return aggregatedFeatureValues;
     }
 
@@ -41,7 +53,7 @@ public class AccumulatedAggregationFeatureRecord extends AdeContextualAggregated
      *
      * @param aggregatedFeatureValues
      */
-    public void setAggregatedFeatureValues(List<Double> aggregatedFeatureValues) {
+    public void setAggregatedFeatureValues(Map<Integer,Double> aggregatedFeatureValues) {
         this.aggregatedFeatureValues = aggregatedFeatureValues;
     }
 

@@ -79,3 +79,26 @@ dags:
         main_class: presidio.ade.modeling.ModelingServiceApplication
         xmx: 500
         xms: 70
+    SmartModelAccumulateOperator:
+      jvm_args:
+        jar_path: ${general.deployment.bins.base_path}/test-mock-project-0.0.1-SNAPSHOT.jar
+        main_class: com.fortscale.test.TestMockProjectApplication
+        xmx: 500
+        xms: 70
+    SmartModelOperator:
+      jvm_args:
+        jar_path: ${general.deployment.bins.base_path}/test-mock-project-0.0.1-SNAPSHOT.jar
+        main_class: com.fortscale.test.TestMockProjectApplication
+        xmx: 500
+        xms: 70
+components:
+  adapter:
+    jvm_args:
+      jar_path: ${general.deployment.bins.base_path}/presidio-adapter-1.0.0-SNAPSHOT.jar
+      main_class: presidio.adapter.FortscaleAdapterApplication
+  input:
+    jvm_args:
+      jar_path: ${general.deployment.bins.base_path}/presidio-input-core-1.0.0-SNAPSHOT.jar
+      main_class: presidio.input.core.FortscaleInputCoreApplication
+      xmx: 500
+      xms: 70

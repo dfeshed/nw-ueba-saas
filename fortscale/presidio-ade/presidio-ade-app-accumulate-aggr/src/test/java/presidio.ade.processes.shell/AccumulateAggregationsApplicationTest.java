@@ -15,6 +15,7 @@ import presidio.ade.test.utils.tests.EnrichedFileSourceBaseAppTest;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Collection;
 import java.util.List;
 
 @ContextConfiguration
@@ -99,7 +100,7 @@ public class AccumulateAggregationsApplicationTest extends EnrichedFileSourceBas
             Instant end = start.plusSeconds((DURATION.getSeconds()));
             days++;
 
-            List<Double> aggregatedFeatureValues = accumulatedRecord.getAggregatedFeatureValues();
+            Collection<Double> aggregatedFeatureValues = accumulatedRecord.getAggregatedFeatureValuesAsList();
             Assert.assertTrue(aggregatedFeatureValues.size() == expectedAggregatedFeatureValuesSize);
 
             Assert.assertTrue(accumulatedRecord.getStartInstant().equals(start));

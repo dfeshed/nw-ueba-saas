@@ -108,12 +108,13 @@ public abstract class AslConfigurationServiceBase {
 	}
 
 	private void loadConfigurationResources(Resource[] resources) throws IllegalArgumentException {
-		Map<String, InputStream> filenameToInputStreamMap = new HashMap<>();
+		Map<String, InputStream> filePathToInputStreamMap = new HashMap<>();
 
 		for (Resource resource : resources) {
 			try {
 				InputStream inputStream = resource.getInputStream();
-				filenameToInputStreamMap.put(resource.getFilename(), inputStream);
+				String filePath = resource.getURI().toString();
+				filePathToInputStreamMap.put(filePath, inputStream);
 			} catch (Exception e) {
 				String msg = String.format("Failed to open JSON file %s.", resource.getFilename());
 				logger.error(msg, e);
@@ -121,7 +122,7 @@ public abstract class AslConfigurationServiceBase {
 			}
 		}
 
-		for (Map.Entry<String, InputStream> entry : filenameToInputStreamMap.entrySet()) {
+		for (Map.Entry<String, InputStream> entry : filePathToInputStreamMap.entrySet()) {
 			try {
 				loadInputStreamConfigurations(entry.getValue());
 			} catch (Exception e) {

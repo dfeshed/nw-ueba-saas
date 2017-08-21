@@ -57,6 +57,15 @@ public class SmartRecord extends AdeContextualAggregatedRecord implements AdeSco
 		this.featureName = featureName;
 	}
 
+	public SmartRecord(
+			TimeRange timeRange,
+			String contextId,
+			String featureName,
+			FixedDurationStrategy fixedDurationStrategy) {
+
+		this(timeRange, contextId, featureName, fixedDurationStrategy, 0, 0, null, null);
+	}
+
 	@Override
 	public String getAdeEventType() {
 		return ADE_EVENT_TYPE_PREFIX + getFeatureName();
@@ -108,6 +117,12 @@ public class SmartRecord extends AdeContextualAggregatedRecord implements AdeSco
 	public void setAggregationRecords(List<AdeAggregationRecord> aggregationRecords) {
 		this.aggregationRecords = aggregationRecords;
 	}
+
+	@Override
+	public String toString() {
+		return "SmartRecord{}";
+	}
+
 
 	/**
 	 * Set feature name

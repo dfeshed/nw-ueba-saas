@@ -3,7 +3,7 @@ import logging
 from airflow.operators.sensors import BaseSensorOperator
 from airflow.utils.state import State
 from airflow import settings
-from airflow.models import TaskInstance
+from airflow.models import TaskInstance,DagRun
 
 
 class TaskGapSensorOperator(BaseSensorOperator):
@@ -38,7 +38,7 @@ class TaskGapSensorOperator(BaseSensorOperator):
     def poke(self, context):
         '''
 
-        @return: the number of tasks to wait for.
+        @return: bool - whether there are tasks to wait for.
         '''
 
         execution_date_lt = context['execution_date'] - self._execution_delta
@@ -49,9 +49,23 @@ class TaskGapSensorOperator(BaseSensorOperator):
             '{self._external_task_id} on '
             '{execution_date_lt} ... '.format(**locals()))
 
-        num_of_task_instances_to_wait_for = self.get_num_of_task_instances_to_wait_for(execution_date_lt)
+        is_finished_wait_for_tasks = True
+        if(self.get_num_of_dag_runs_to_wait_for(execution_date_lt) > 0):
+            is_finished_wait_for_tasks = self.get_num_of_task_instances_to_wait_for(execution_date_lt) == 0
 
-        return num_of_task_instances_to_wait_for == 0
+        return is_finished_wait_for_tasks
+
+    def get_num_of_dag_runs_to_wait_for(self, execution_date_lt):
+        session = settings.Session()
+        num_of_dag_runs_to_wait_for = session.query(DagRun).filter(
+            DagRun.dag_id == self._external_dag_id,
+            DagRun.execution_date < execution_date_lt,
+            DagRun.state == State.RUNNING,
+        ).count()
+
+        session.commit()
+        session.close()
+        return num_of_dag_runs_to_wait_for
 
     def get_num_of_task_instances_to_wait_for(self, execution_date_lt):
         TI = TaskInstance

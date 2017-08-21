@@ -1,24 +1,35 @@
 package presidio.config.server.spring;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.web.client.RestTemplate;
 import presidio.config.server.client.ConfigurationServerClientServiceImpl;
 import presidio.config.server.client.ConfigurationServerClientService;
 
-/**
- * Created by efratn on 09/08/2017.
- */
 @Configuration
+@PropertySource("classpath:configServerClientBootstrap.properties")
 public class ConfigServerClientServiceConfiguration {
 
     @Bean
-    public RestTemplate restTemplate() {
-        return new RestTemplate();
+    public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
+        return new PropertySourcesPlaceholderConfigurer();
     }
+
+    @Value("${spring.cloud.config.uri}")
+    private  String configServerUri;
+
+    @Value("${spring.cloud.config.username}")
+    private  String configServerUserName;
+
+    @Value("${spring.cloud.config.password}")
+    private  String configServerPassword;
 
     @Bean
     public ConfigurationServerClientService configurationServerClientService() {
-        return new ConfigurationServerClientServiceImpl(restTemplate());
+        final RestTemplate restTemplate = new RestTemplate();
+        return new ConfigurationServerClientServiceImpl(restTemplate, configServerUri, configServerUserName, configServerPassword);
     }
 }

@@ -1,5 +1,4 @@
 from datetime import timedelta
-from presidio.utils.exceptions import UnsupportedFixedDurationStrategyError
 from airflow.utils.decorators import apply_defaults
 from presidio.operators.fixed_duration_jar_operator import FixedDurationJarOperator
 from presidio.utils.services.fixed_duration_strategy import fixed_duration_strategy_to_string

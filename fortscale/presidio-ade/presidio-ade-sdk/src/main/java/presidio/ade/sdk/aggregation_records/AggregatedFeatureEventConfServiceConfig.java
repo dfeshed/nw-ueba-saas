@@ -17,7 +17,7 @@ import org.springframework.context.annotation.Import;
 @Configuration
 @Import({AggregatedFeatureEventsConfUtilServiceConfig.class, AdeManagerSdkBucketConfigurationServiceConfig.class})
 public class AggregatedFeatureEventConfServiceConfig {
-    @Value("${fortscale.ademanager.aggregation.feature.event.conf.json.file.name}")
+    @Value("${fortscale.ademanager.aggregation.feature.event.conf.json.file.name:classpath:config/asl/aggregation-records/**/*.json}")
     private String aggregatedFeatureEventsBaseConfigurationPath;
     @Value("${fortscale.ademanager.aggregation.feature.event.conf.json.overriding.files.path:#{null}}")
     private String aggregatedFeatureEventsOverridingConfigurationPath;

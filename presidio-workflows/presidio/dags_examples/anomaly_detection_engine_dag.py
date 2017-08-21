@@ -11,14 +11,14 @@ default_args = {
     'email': ['airflow@airflow.com'],
     'email_on_failure': False,
     'email_on_retry': False,
-    'retries': 1,
+    'retries': 0,
     'retry_delay': timedelta(minutes=5),
     # 'queue': 'bash_queue',
     # 'pool': 'backfill',
     # 'priority_weight': 10,
     # 'end_date': datetime(2016, 1, 1),
 }
-dag = DAG('anomaly_detection_engine_dag_example', start_date=datetime(2015, 7, 2, 23), schedule_interval=timedelta(minutes=60), default_args=default_args)
+dag = DAG('anomaly_detection_engine_dag_example', start_date=datetime(2015, 7, 1, 23), schedule_interval=timedelta(minutes=60), default_args=default_args)
 #dag_builder = AnomalyDetectionEngineDagBuilder(['dlpfile','dlpmail'],['hourly_smart','hourly_exfiltration'],['daily_smart'])
 dag_builder = AnomalyDetectionEngineDagBuilder(['FILE'],['hourly_smart','hourly_exfiltration'],[])
 dag_builder.build(dag)

@@ -16,8 +16,8 @@ public class AccumulateAggregationsConfigurationTest extends AccumulateAggregati
     public static TestPropertiesPlaceholderConfigurer accumulateAggregationsApplicationTestProperties() {
         Properties properties = new Properties();
         //        start ASL paths configurations
-        properties.put("fortscale.feature.aggregation.bucket.conf.json.file.name", "classpath:config/asl/feature-aggregation/feature-buckets/*.json");
-        properties.put("fortscale.aggregation.feature.event.conf.json.file.name", "classpath:config/asl/feature-aggregation/aggregated-features/*.json");
+        properties.put("fortscale.feature.aggregation.bucket.conf.json.file.name", "classpath:config/asl/feature-buckets/feature-aggregation/*.json");
+        properties.put("fortscale.aggregation.feature.event.conf.json.file.name", "classpath:config/asl/aggregation-records/feature-aggregation-records/*.json");
         //        end ASL paths configurations
         properties.put("streaming.event.field.type.aggr_event", "aggr_event");
         properties.put("feature.aggregation.pageIterator.pageSize", 1000);
