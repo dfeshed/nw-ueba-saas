@@ -44,6 +44,10 @@ public class OutputProcessorTestConfiguration {
         Properties properties = new Properties();
         properties.put("streaming.event.field.type.aggr_event", "aggr_event");
         properties.put("streaming.aggr_event.field.context", "context");
+        properties.put("severity.critical", 95);
+        properties.put("severity.high", 85);
+        properties.put("severity.mid", 70);
+        properties.put("severity.low", 50);
         return new TestPropertiesPlaceholderConfigurer(properties);
     }
 }

@@ -7,6 +7,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.alerts.AlertEnums;
+import presidio.output.domain.services.alerts.AlertEnumsSeverityService;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 
 import java.util.ArrayList;
@@ -19,11 +20,14 @@ public class AlertServiceImpl implements AlertService {
 
     private static final Logger logger = Logger.getLogger(AlertServiceImpl.class);
 
-    @Autowired
+
     private AlertPersistencyService alertPersistencyService;
 
-    public AlertServiceImpl(AlertPersistencyService alertPersistencyService) {
+    private AlertEnumsSeverityService alertEnumsSeverityService;
+
+    public AlertServiceImpl(AlertPersistencyService alertPersistencyService,AlertEnumsSeverityService alertEnumsSeverityService) {
         this.alertPersistencyService = alertPersistencyService;
+        this.alertEnumsSeverityService=alertEnumsSeverityService;
     }
 
     @Override
@@ -34,7 +38,9 @@ public class AlertServiceImpl implements AlertService {
             List<EntityEvent> smarts = smartPageIterator.next();
 
             smarts.stream().forEach(smart -> {
-                alerts.add(convertSmartToAlert(smart));
+                Alert alert = convertSmartToAlert(smart);
+                if (alert != null)
+                    alerts.add(alert);
             });
             break; //TODO !!! remove this once ADE Team will implement SmartPageIterator.hasNext(). currently only one page is returned.
         }
@@ -46,19 +52,19 @@ public class AlertServiceImpl implements AlertService {
     }
 
     private Alert convertSmartToAlert(EntityEvent smart) {
-
-        String id = smart.getId();
-        String userName = smart.getContextId();
-        AlertEnums.AlertType type = AlertEnums.AlertType.GLOBAL; //TODO change this to "AlertClassification"
-        long startDate = smart.getStart_time_unix();
-        long endDate = smart.getEnd_time_unix();
         double score = smart.getScore();
-        int indicatorsNum = smart.getAggregated_feature_events().size();
-        //TODO- on the new ADE SMART POJO there should be a dedicated field for Daily/Hourly
-        AlertEnums.AlertTimeframe timeframe = AlertEnums.AlertTimeframe.DAILY;
-        //TODO- calculate Severity, currently hard-coded
-        AlertEnums.AlertSeverity severity = AlertEnums.AlertSeverity.CRITICAL;
-
-        return new Alert(id, userName, type, startDate, endDate, score, indicatorsNum, timeframe, severity);
+        if (score >= 50) {
+            String id = smart.getId();
+            String userName = smart.getContextId();
+            AlertEnums.AlertType type = AlertEnums.AlertType.GLOBAL; //TODO change this to "AlertClassification"
+            long startDate = smart.getStart_time_unix();
+            long endDate = smart.getEnd_time_unix();
+            int indicatorsNum = smart.getAggregated_feature_events().size();
+            //TODO- on the new ADE SMART POJO there should be a dedicated field for Daily/Hourly
+            AlertEnums.AlertTimeframe timeframe = AlertEnums.AlertTimeframe.DAILY;
+            AlertEnums.AlertSeverity severity = alertEnumsSeverityService.severity(score);
+            return new Alert(id, userName, type, startDate, endDate, score, indicatorsNum, timeframe, severity);
+        }
+        return null;
     }
 }

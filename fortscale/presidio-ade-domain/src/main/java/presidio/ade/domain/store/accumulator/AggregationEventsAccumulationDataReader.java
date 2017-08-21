@@ -1,7 +1,7 @@
 package presidio.ade.domain.store.accumulator;
 
+import fortscale.utils.time.TimeRange;
 import presidio.ade.domain.record.accumulator.AccumulatedAggregationFeatureRecord;
-import presidio.ade.domain.store.AdeDataStoreCleanupParams;
 
 import java.time.Instant;
 import java.util.Date;
@@ -34,4 +34,17 @@ public interface AggregationEventsAccumulationDataReader {
             String contextId,
             Instant startTime,
             Instant endTime);
+
+    /**
+     * @see this#findAccumulatedEventsByContextIdAndStartTimeRange(String, String, Instant, Instant) - this method is just syntactic sugar
+     */
+    default List<AccumulatedAggregationFeatureRecord> findAccumulatedEventsByContextIdAndStartTimeRange(
+            String aggregatedFeatureName,
+            String contextId,
+            TimeRange timeRange)
+    {
+        Instant start = timeRange.getStart();
+        Instant end = timeRange.getEnd();
+        return findAccumulatedEventsByContextIdAndStartTimeRange(aggregatedFeatureName, contextId, start, end);
+    }
 }
