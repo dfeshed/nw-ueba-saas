@@ -53,13 +53,4 @@ public interface AggregationRecordsManagerSdk {
 	 */
 	List<FeatureBucket> findFeatureBuckets(String contextId, String bucketConfName, TimeRange timeRange);
 
-	/**
-	 * converts aggregation feature name to bucketConfName and return {@link this#findFeatureBuckets(String, String, TimeRange)}
-	 * @return feature buckets related to feature name by filtering params
-	 */
-	default List<FeatureBucket> findFeatureBucketsByAggregationFeatureName(String contextId, String aggregationFeatureName, TimeRange timeRange)
-	{
-		String bucketConfName = getAggregationNameToFeatureBucketConfNameMap().get(aggregationFeatureName);
-		return findFeatureBuckets(contextId, bucketConfName, timeRange);
-	}
 }
