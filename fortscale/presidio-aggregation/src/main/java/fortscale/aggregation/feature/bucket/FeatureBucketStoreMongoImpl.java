@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
  */
 public class FeatureBucketStoreMongoImpl implements FeatureBucketStore {
 	private static final Logger logger = Logger.getLogger(FeatureBucketStoreMongoImpl.class);
-	private static final String COLLECTION_NAME_PREFIX = "aggr_";
+	public static final String COLLECTION_NAME_PREFIX = "aggr_";
 
 	private MongoTemplate mongoTemplate;
 	private MongoDbUtilService mongoDbUtilService;

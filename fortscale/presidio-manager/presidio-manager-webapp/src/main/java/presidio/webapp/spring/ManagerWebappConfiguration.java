@@ -31,7 +31,7 @@ public class ManagerWebappConfiguration {
     ConfigurationProcessingService configurationSecurityService;
 
     @Autowired
-    private RestTemplate restTemplate;
+    private ConfigurationServerClientService configServerClient;
 
     @Bean
     ConfigurationManagerService configurationServiceImpl() {
@@ -39,12 +39,7 @@ public class ManagerWebappConfiguration {
     }
 
     @Bean
-    public ConfigurationServerClientService configServerClient() {
-        return new ConfigurationServerClientServiceImpl(restTemplate);
-    }
-
-    @Bean
     ConfigurationApi configurationApi() {
-        return new ConfigurationApiController(configurationServiceImpl(), configServerClient());
+        return new ConfigurationApiController(configurationServiceImpl(), configServerClient);
     }
 }
