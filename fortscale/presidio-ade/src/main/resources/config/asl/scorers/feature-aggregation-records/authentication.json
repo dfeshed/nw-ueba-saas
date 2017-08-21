@@ -7,21 +7,18 @@
           "type": "low-values-score-reducer",
           "name": "numberOfSuccessfulAuthentications.userId.authentication.hourly.scorer",
           "base-scorer": {
-            "type": "continuous-values-model-scorer",
+            "type": "gaussian-model-scorer",
             "name": "numberOfSuccessfulAuthentications.userId.authentication.hourly.base_scorer",
             "model": {
               "name": "numberOfSuccessfulAuthentications.userId.authentication.hourly"
             },
-            "additional-models": [],
-            "quad-poly-calibration-conf": {
-              "a1": 1500.0,
-              "a2": 499999.0,
-              "sensitivity": 1.0,
-              "is-score-for-small-values": false,
-              "is-score-for-large-values": true
-            },
+            "additional-models": [
+              {
+                "name": "numberOfSuccessfulAuthentications.userId.prior.global.authentication.hourly"
+              }
+            ],
+            "global-influence": 20,
             "number-of-samples-to-influence-enough": 30,
-            "min-number-of-samples-to-influence": 1,
             "use-certainty-to-calculate-score": true
           },
           "reduction-configs": [
@@ -42,21 +39,18 @@
           "type": "low-values-score-reducer",
           "name": "numberOfFailedAuthentications.userId.authentication.hourly.scorer",
           "base-scorer": {
-            "type": "continuous-values-model-scorer",
+            "type": "gaussian-model-scorer",
             "name": "numberOfFailedAuthentications.userId.authentication.hourly.base_scorer",
             "model": {
               "name": "numberOfFailedAuthentications.userId.authentication.hourly"
             },
-            "additional-models": [],
-            "quad-poly-calibration-conf": {
-              "a1": 1500.0,
-              "a2": 499999.0,
-              "sensitivity": 1.0,
-              "is-score-for-small-values": false,
-              "is-score-for-large-values": true
-            },
+            "additional-models": [
+              {
+                "name": "numberOfFailedAuthentications.userId.prior.global.authentication.hourly"
+              }
+            ],
+            "global-influence": 20,
             "number-of-samples-to-influence-enough": 30,
-            "min-number-of-samples-to-influence": 1,
             "use-certainty-to-calculate-score": true
           },
           "reduction-configs": [
@@ -77,21 +71,18 @@
           "type": "low-values-score-reducer",
           "name": "numberOfDistinctDstMachineDomain.userId.authentication.hourly.scorer",
           "base-scorer": {
-            "type": "continuous-values-model-scorer",
+            "type": "gaussian-model-scorer",
             "name": "numberOfDistinctDstMachineDomain.userId.authentication.hourly.base_scorer",
             "model": {
               "name": "numberOfDistinctDstMachineDomain.userId.authentication.hourly"
             },
-            "additional-models": [],
-            "quad-poly-calibration-conf": {
-              "a1": 1500.0,
-              "a2": 499999.0,
-              "sensitivity": 1.0,
-              "is-score-for-small-values": false,
-              "is-score-for-large-values": true
-            },
+            "additional-models": [
+              {
+                "name": "numberOfDistinctDstMachineDomain.userId.prior.global.authentication.hourly"
+              }
+            ],
+            "global-influence": 20,
             "number-of-samples-to-influence-enough": 30,
-            "min-number-of-samples-to-influence": 1,
             "use-certainty-to-calculate-score": true
           },
           "reduction-configs": [
@@ -112,21 +103,18 @@
           "type": "low-values-score-reducer",
           "name": "numberOfDistinctSrcMachineId.userId.authentication.hourly.scorer",
           "base-scorer": {
-            "type": "continuous-values-model-scorer",
+            "type": "gaussian-model-scorer",
             "name": "numberOfDistinctSrcMachineId.userId.authentication.hourly.base_scorer",
             "model": {
               "name": "numberOfDistinctSrcMachineId.userId.authentication.hourly"
             },
-            "additional-models": [],
-            "quad-poly-calibration-conf": {
-              "a1": 1500.0,
-              "a2": 499999.0,
-              "sensitivity": 1.0,
-              "is-score-for-small-values": false,
-              "is-score-for-large-values": true
-            },
+            "additional-models": [
+              {
+                "name": "numberOfDistinctSrcMachineId.userId.prior.global.authentication.hourly"
+              }
+            ],
+            "global-influence": 20,
             "number-of-samples-to-influence-enough": 30,
-            "min-number-of-samples-to-influence": 1,
             "use-certainty-to-calculate-score": true
           },
           "reduction-configs": [
@@ -147,21 +135,18 @@
           "type": "low-values-score-reducer",
           "name": "numberOfDistinctDstMachineId.userId.authentication.hourly.scorer",
           "base-scorer": {
-            "type": "continuous-values-model-scorer",
+            "type": "gaussian-model-scorer",
             "name": "numberOfDistinctDstMachineId.userId.authentication.hourly.base_scorer",
             "model": {
               "name": "numberOfDistinctDstMachineId.userId.authentication.hourly"
             },
-            "additional-models": [],
-            "quad-poly-calibration-conf": {
-              "a1": 1500.0,
-              "a2": 499999.0,
-              "sensitivity": 1.0,
-              "is-score-for-small-values": false,
-              "is-score-for-large-values": true
-            },
+            "additional-models": [
+              {
+                "name": "numberOfDistinctDstMachineId.userId.prior.global.authentication.hourly"
+              }
+            ],
+            "global-influence": 20,
             "number-of-samples-to-influence-enough": 30,
-            "min-number-of-samples-to-influence": 1,
             "use-certainty-to-calculate-score": true
           },
           "reduction-configs": [
@@ -182,21 +167,18 @@
           "type": "low-values-score-reducer",
           "name": "numberOfDistinctDstMachineNameRegexCluster.userId.authentication.hourly.scorer",
           "base-scorer": {
-            "type": "continuous-values-model-scorer",
+            "type": "gaussian-model-scorer",
             "name": "numberOfDistinctDstMachineNameRegexCluster.userId.authentication.hourly.base_scorer",
             "model": {
               "name": "numberOfDistinctDstMachineNameRegexCluster.userId.authentication.hourly"
             },
-            "additional-models": [],
-            "quad-poly-calibration-conf": {
-              "a1": 1500.0,
-              "a2": 499999.0,
-              "sensitivity": 1.0,
-              "is-score-for-small-values": false,
-              "is-score-for-large-values": true
-            },
+            "additional-models": [
+              {
+                "name": "numberOfDistinctDstMachineNameRegexCluster.userId.prior.global.authentication.hourly"
+              }
+            ],
+            "global-influence": 20,
             "number-of-samples-to-influence-enough": 30,
-            "min-number-of-samples-to-influence": 1,
             "use-certainty-to-calculate-score": true
           },
           "reduction-configs": [
@@ -217,21 +199,18 @@
           "type": "low-values-score-reducer",
           "name": "numberOfDistinctSrcMachineNameRegexCluster.userId.authentication.hourly.scorer",
           "base-scorer": {
-            "type": "continuous-values-model-scorer",
+            "type": "gaussian-model-scorer",
             "name": "numberOfDistinctSrcMachineNameRegexCluster.userId.authentication.hourly.base_scorer",
             "model": {
               "name": "numberOfDistinctSrcMachineNameRegexCluster.userId.authentication.hourly"
             },
-            "additional-models": [],
-            "quad-poly-calibration-conf": {
-              "a1": 1500.0,
-              "a2": 499999.0,
-              "sensitivity": 1.0,
-              "is-score-for-small-values": false,
-              "is-score-for-large-values": true
-            },
+            "additional-models": [
+              {
+                "name": "numberOfDistinctSrcMachineNameRegexCluster.userId.prior.global.authentication.hourly"
+              }
+            ],
+            "global-influence": 20,
             "number-of-samples-to-influence-enough": 30,
-            "min-number-of-samples-to-influence": 1,
             "use-certainty-to-calculate-score": true
           },
           "reduction-configs": [
