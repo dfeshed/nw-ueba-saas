@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
  */
 public class FeatureBucketStoreMongoImpl implements FeatureBucketStore {
 	private static final Logger logger = Logger.getLogger(FeatureBucketStoreMongoImpl.class);
-	private static final String COLLECTION_NAME_PREFIX = "aggr_";
+	public static final String COLLECTION_NAME_PREFIX = "aggr_";
 
 	private MongoTemplate mongoTemplate;
 	private MongoDbUtilService mongoDbUtilService;
@@ -65,6 +65,14 @@ public class FeatureBucketStoreMongoImpl implements FeatureBucketStore {
 			String featureBucketConfName, Set<String> contextIds, TimeRange timeRange) {
 		Query query = new Query()
 				.addCriteria(Criteria.where(FeatureBucket.CONTEXT_ID_FIELD).in(contextIds))
+				.addCriteria(Criteria.where(FeatureBucket.START_TIME_FIELD).gte(timeRange.getStart()).lt(timeRange.getEnd()));
+		return mongoTemplate.find(query, FeatureBucket.class, getCollectionName(featureBucketConfName));
+	}
+
+	@Override
+	public List<FeatureBucket> getFeatureBuckets(String featureBucketConfName, String contextIds, TimeRange timeRange) {
+		Query query = new Query()
+				.addCriteria(Criteria.where(FeatureBucket.CONTEXT_ID_FIELD).is(contextIds))
 				.addCriteria(Criteria.where(FeatureBucket.START_TIME_FIELD).gte(timeRange.getStart()).lt(timeRange.getEnd()));
 		return mongoTemplate.find(query, FeatureBucket.class, getCollectionName(featureBucketConfName));
 	}

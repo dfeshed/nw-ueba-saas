@@ -7,6 +7,8 @@ import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.record.aggregated.AdeContextualAggregatedRecord;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 
 /**
@@ -31,13 +33,14 @@ public class AccumulatorService implements Accumulator {
 
             AccumulatedAggregationFeatureRecord accumulatedRecord = accumulationsInMemory.getAccumulatedRecord(featureName, context);
 
+            Instant adeAggregationRecordStartInstant = adeAggregationRecord.getStartInstant();
             if (accumulatedRecord == null) {
-                Instant startInstant = TimeService.floorTime(adeAggregationRecord.getStartInstant(), fixedDurationStrategy.toDuration());
+                Instant startInstant = TimeService.floorTime(adeAggregationRecordStartInstant, fixedDurationStrategy.toDuration());
                 Instant endInstant = getEndInstant(startInstant);
                 accumulatedRecord = new AccumulatedAggregationFeatureRecord(startInstant, endInstant, context, featureName);
             }
-
-            accumulatedRecord.getAggregatedFeatureValues().add(adeAggregationRecord.getFeatureValue());
+            int adeAggregationRecordStartHour = LocalDateTime.ofInstant(adeAggregationRecordStartInstant, ZoneOffset.UTC).getHour();
+            accumulatedRecord.getAggregatedFeatureValues().put(adeAggregationRecordStartHour,adeAggregationRecord.getFeatureValue());
             accumulationsInMemory.storeAccumulatedRecords(featureName, context, accumulatedRecord);
         }
 
