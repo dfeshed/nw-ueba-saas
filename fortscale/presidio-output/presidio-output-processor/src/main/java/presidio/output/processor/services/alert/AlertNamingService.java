@@ -17,30 +17,30 @@ public class AlertNamingService {
     private Map<String, AlertPriority> indicatorToAlert;
 
 
-    public AlertNamingService(String alerts, String indicators, String alertsPriority) {
+    public AlertNamingService(String alerts, String indicators, String alertsByPriority) {
         indicatorToAlert = new HashMap<>();
-        List<String> list = alertsAndPriority(alertsPriority);
+        List<String> list = setAlertsByPriority(alertsByPriority);
         createIndicatorToAlertByPriority(alerts, indicators, list);
 
     }
 
-    private List<String> alertsAndPriority(String alertsByPriority) {
-        String[] names = alertsByPriority.split(COMA);
+    private List<String> setAlertsByPriority(String alertsByPriority) {
+        String[] names = alertsByPriority.replace(LOWER_LINE, SPACE).split(COMA);
         List<String> alerts = new ArrayList<>();
         for (String name : names) {
-            alerts.add(name.replace(LOWER_LINE, SPACE));
+            alerts.add(name);
         }
         return alerts;
     }
 
-    private void createIndicatorToAlertByPriority(String alerts, String indicators, List<String> priority) {
-        String[] indicatorsNames = indicators.split(COMA);
-        String[] alertsNames = alerts.split(COMA);
+    private void createIndicatorToAlertByPriority(String alerts, String indicators, List<String> alertsByPriority) {
+        String[] indicatorsNames = indicators.replace(LOWER_LINE, SPACE).split(COMA);
+        String[] alertsNames = alerts.replace(LOWER_LINE, SPACE).split(COMA);
         String alertName, indicatorName;
         for (int i = 0; i < indicatorsNames.length; i++) {
-            indicatorName = indicatorsNames[i].replace(LOWER_LINE, SPACE);
-            alertName = alertsNames[i].replace(LOWER_LINE, SPACE);
-            this.indicatorToAlert.put(indicatorName, new AlertPriority(alertName, priority.indexOf(alertName)));
+            indicatorName = indicatorsNames[i];
+            alertName = alertsNames[i];
+            this.indicatorToAlert.put(indicatorName, new AlertPriority(alertName, alertsByPriority.indexOf(alertName)));
         }
     }
 
@@ -58,11 +58,11 @@ public class AlertNamingService {
         return alertName;
     }
 
-    public List<String> alertsFromIndictors(List<String> indicators) {
-        List<String> alertName = new ArrayList<>();
+    public List<String> alertNamesFromIndictors(List<String> indicators) {
+        List<String> alertNames = new ArrayList<>();
         for (String indicator : indicators) {
-            alertName.add(indicatorToAlert.get(indicator).getName());
+            alertNames.add(indicatorToAlert.get(indicator).getName());
         }
-        return alertName;
+        return alertNames;
     }
 }

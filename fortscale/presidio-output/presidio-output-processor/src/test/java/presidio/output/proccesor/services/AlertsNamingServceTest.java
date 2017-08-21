@@ -53,7 +53,7 @@ public class AlertsNamingServceTest {
     @Test
     public void listOfAlerts() {
         List indicators = new ArrayList(Arrays.asList("Abnormal file action operation type", "Abnormal logon day time"));
-        List names = alertNamingService.alertsFromIndictors(indicators);
+        List names = alertNamingService.alertNamesFromIndictors(indicators);
         assertEquals(2, names.size());
     }
 }
