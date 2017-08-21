@@ -33,18 +33,16 @@ public class ManagerWebappConfiguration {
     @Autowired
     private RestTemplate restTemplate;
 
+    @Autowired
+    private ConfigurationServerClientService configServerClient;
+
     @Bean
     ConfigurationManagerService configurationServiceImpl() {
         return new ConfigurationManagerService(configurationAirflowServcie, configurationSecurityService);
     }
 
     @Bean
-    public ConfigurationServerClientService configServerClient() {
-        return new ConfigurationServerClientServiceImpl(restTemplate);
-    }
-
-    @Bean
     ConfigurationApi configurationApi() {
-        return new ConfigurationApiController(configurationServiceImpl(), configServerClient());
+        return new ConfigurationApiController(configurationServiceImpl(), configServerClient);
     }
 }
