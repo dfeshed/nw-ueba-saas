@@ -212,7 +212,6 @@ public class GaussianPriorModelBuilderConfTest {
 	public void shouldUseProperDefaults() {
 		GaussianPriorModelBuilderConf conf = new GaussianPriorModelBuilderConfBuilder()
 				.setDistanceBetweenSegmentCenters(1)
-				.setMinNumOfSamplesToLearnFrom(1)
 				.setMaxSegmentWidthToNotDiscardBecauseOfBadRatio(10)
 				.build();
 
@@ -220,7 +219,8 @@ public class GaussianPriorModelBuilderConfTest {
 		Assert.assertEquals(0.1, conf.getMaxRatioBetweenSegmentSizeToCenter(), 0.00001);
 		Assert.assertEquals(1, conf.getPadding(), 0.00001);
 		Assert.assertEquals(0.99, conf.getQuantile(), 0.00001);
+		Assert.assertEquals(10, conf.getMinNumOfSamplesToLearnFrom());
 		Assert.assertEquals(30, conf.getMinQuantileComplementSize());
-		Assert.assertEquals(1, conf.getMinAllowedDistFromMean(), 0.00001);
+		Assert.assertEquals(0, conf.getMinAllowedDistFromMean(), 0.00001);
 	}
 }

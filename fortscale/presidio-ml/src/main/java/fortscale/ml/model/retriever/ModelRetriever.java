@@ -1,55 +1,55 @@
 package fortscale.ml.model.retriever;
 
 import fortscale.common.feature.Feature;
-import fortscale.ml.model.Model;
-import fortscale.ml.model.ModelBuilderData;
+import fortscale.ml.model.*;
 import fortscale.ml.model.ModelBuilderData.NoDataReason;
-import fortscale.ml.model.ModelConf;
-import fortscale.ml.model.ModelConfService;
 import fortscale.ml.model.retriever.metrics.ModelRetrieverMetrics;
 import fortscale.ml.model.store.ModelDAO;
 import fortscale.ml.model.store.ModelStore;
 import fortscale.utils.monitoring.stats.StatsService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.util.Assert;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Configurable(preConstruction = true)
 public class ModelRetriever extends AbstractDataRetriever {
-	@Autowired
+	private final ModelRetrieverConf config;
 	private ModelConfService modelConfService;
-	@Autowired
 	private ModelStore modelStore;
-	@Autowired
-	private StatsService statsService;
 
 	private ModelConf modelConf;
-	private ModelRetrieverMetrics metrics;
 
-	public ModelRetriever(ModelRetrieverConf config) {
+	public ModelRetriever(ModelRetrieverConf config, ModelStore modelStore) {
 		super(config);
+		this.config = config;
+		this.modelStore = modelStore;
 
-		modelConf = modelConfService.getModelConf(config.getModelConfName());
-		Assert.notNull(modelConf);
-		metrics = new ModelRetrieverMetrics(statsService, modelConf);
 	}
 
 	@Override
 	public ModelBuilderData retrieve(String contextId, Date endTime) {
 		Assert.isNull(contextId, String.format("%s can't be used with a context", getClass().getSimpleName()));
+		fillModelConfService();
+
 		List<Model> models = modelStore.getAllContextsModelDaosWithLatestEndTimeLte(modelConf, endTime.getTime() / 1000).stream()
 				.map(ModelDAO::getModel)
 				.collect(Collectors.toList());
-		metrics.retrieveCalls++;
-		metrics.retrievedModels++;
 
 		if (models.isEmpty()) {
 			return new ModelBuilderData(NoDataReason.NO_DATA_IN_DATABASE);
 		} else {
 			return new ModelBuilderData(models);
+		}
+	}
+
+	private void fillModelConfService() {
+		if(modelConfService == null)
+		{
+			modelConfService = DynamicModelConfServiceContainer.getModelConfService();
+			String modelConfName = config.getModelConfName();
+			modelConf = this.modelConfService.getModelConf(modelConfName);
+			Assert.notNull(modelConf,String.format("failed to find modelConf for modelConfName=%s",modelConfName));
 		}
 	}
 
@@ -68,13 +68,11 @@ public class ModelRetriever extends AbstractDataRetriever {
 
 	@Override
 	public List<String> getContextFieldNames() {
-		metrics.getContextFieldNames++;
 		return Collections.emptyList();
 	}
 
 	@Override
 	public String getContextId(Map<String, String> context) {
-		metrics.getContextId++;
 		return null;
 	}
 }
