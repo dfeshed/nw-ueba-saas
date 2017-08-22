@@ -6,26 +6,20 @@ import org.elasticsearch.search.sort.FieldSortBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
+import presidio.output.domain.records.alerts.AlertQuery;
 import presidio.output.domain.records.users.User;
 import presidio.output.domain.records.users.UserQuery;
+import presidio.output.domain.services.ElasticsearchQueryBuilder;
 
 import static org.elasticsearch.index.query.QueryBuilders.matchQuery;
 
-public class UserElasticsearchQueryBuilder extends NativeSearchQueryBuilder {
+public class UserElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<UserQuery> {
 
     public UserElasticsearchQueryBuilder(UserQuery userQuery) {
-
-        // filters
-        withFilter(userQuery);
-
-        // sort
-        withSort(userQuery);
-
-        // paging
-        withPageable(userQuery);
+        super(userQuery);
     }
 
-    private void withFilter(UserQuery userQuery) {
+    public void withFilter(UserQuery userQuery) {
         final BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
 
         // filter by alert classifications
@@ -38,7 +32,7 @@ public class UserElasticsearchQueryBuilder extends NativeSearchQueryBuilder {
         }
     }
 
-    private void withSort(UserQuery userQuery) {
+    public void withSort(UserQuery userQuery) {
         if (StringUtils.isNotEmpty(userQuery.getSortField())) {
             FieldSortBuilder sortBuilder = new FieldSortBuilder(userQuery.getSortField());
             SortOrder order = userQuery.isAscendingOrder()? SortOrder.ASC: SortOrder.DESC;
@@ -47,11 +41,16 @@ public class UserElasticsearchQueryBuilder extends NativeSearchQueryBuilder {
         }
     }
 
-    private void withPageable(UserQuery userQuery) {
+    public void withPageable(UserQuery userQuery) {
         if (userQuery.getPageNumber() > -1 || userQuery.getPageSize() > -1) {
             PageRequest pageRequest = new PageRequest(userQuery.getPageNumber(), userQuery.getPageSize());
             super.withPageable(pageRequest);
         }
+    }
+
+    @Override
+    public void addAggregation(UserQuery query) {
+        //TODO
     }
 
 }

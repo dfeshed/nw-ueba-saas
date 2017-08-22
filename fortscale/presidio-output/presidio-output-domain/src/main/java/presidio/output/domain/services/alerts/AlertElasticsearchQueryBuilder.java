@@ -12,27 +12,17 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import presidio.output.domain.records.alerts.AlertQuery;
 import presidio.output.domain.records.alerts.Alert;
+import presidio.output.domain.services.ElasticsearchQueryBuilder;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
 
-public class AlertElasticsearchQueryBuilder extends NativeSearchQueryBuilder {
+public class AlertElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<AlertQuery> {
 
     public AlertElasticsearchQueryBuilder(AlertQuery alertQuery) {
-
-        // filters
-        withFilter(alertQuery);
-
-        // sort
-        withSort(alertQuery);
-
-        // paging
-        withPageable(alertQuery);
-
-        // aggregations
-        addAggregation(alertQuery);
+        super(alertQuery);
     }
 
-    private void withFilter(AlertQuery alertQuery) {
+    public void withFilter(AlertQuery alertQuery) {
         final BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
 
         // filter by username
@@ -62,7 +52,7 @@ public class AlertElasticsearchQueryBuilder extends NativeSearchQueryBuilder {
         }
     }
 
-    private void withSort(AlertQuery alertQuery) {
+    public void withSort(AlertQuery alertQuery) {
         if (StringUtils.isNotEmpty(alertQuery.getSortField())) {
             FieldSortBuilder sortBuilder = new FieldSortBuilder(alertQuery.getSortField());
             SortOrder order = alertQuery.isAscendingOrder()? SortOrder.ASC: SortOrder.DESC;
@@ -71,14 +61,14 @@ public class AlertElasticsearchQueryBuilder extends NativeSearchQueryBuilder {
         }
     }
 
-    private void withPageable(AlertQuery alertQuery) {
+    public void withPageable(AlertQuery alertQuery) {
         if (alertQuery.getPageNumber() > -1 || alertQuery.getPageSize() > -1) {
             PageRequest pageRequest = new PageRequest(alertQuery.getPageNumber(), alertQuery.getPageSize());
             super.withPageable(pageRequest);
         }
     }
 
-    private void addAggregation(AlertQuery alertQuery) {
+    public void addAggregation(AlertQuery alertQuery) {
         if (alertQuery.isAggregateBySeverity()) {
             TermsAggregationBuilder termsAggregationBuilder = new TermsAggregationBuilder(Alert.SEVERITY, ValueType.STRING);
             super.addAggregation(termsAggregationBuilder);
