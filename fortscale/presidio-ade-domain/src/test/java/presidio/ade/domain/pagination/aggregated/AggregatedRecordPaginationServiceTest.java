@@ -47,12 +47,17 @@ public class AggregatedRecordPaginationServiceTest {
     private final int AMOUNT_OF_SCORE_AGGR_PER_CONTEXT = 2;
     private final int AMOUNT_OF_RECORDS_PER_FEATURE = 2;
     private final int AMOUNT_OF_FEATURE_AGGR_PER_CONTEXT = 1;
+    private Instant startInstant;
+    private Instant endInstant;
+
     @Before
     public void setup()
     {
         paginationService = new AggregatedRecordPaginationService(10,aggregatedDataStore);
-        Instant startInstant = Instant.EPOCH.plus(Duration.ofDays(1));
-        Instant endInstant = startInstant.plus(Duration.ofHours(1));
+        this.startInstant = Instant.EPOCH.plus(Duration.ofDays(1));
+        Instant startInstant = this.startInstant;
+        this.endInstant = startInstant.plus(Duration.ofHours(1));
+        Instant endInstant = this.endInstant;
         String featureName = "featureName";
 
         aggregatedDataPaginationParamSet = new HashSet<>();
@@ -130,7 +135,7 @@ public class AggregatedRecordPaginationServiceTest {
 
     @Test
     public void getPageIterator() throws Exception {
-        TimeRange timeRange = new TimeRange(Instant.EPOCH, Instant.now());
+        TimeRange timeRange = new TimeRange(startInstant, endInstant);
         List<PageIterator<AdeAggregationRecord>> pageIterators = paginationService.getPageIterators(aggregatedDataPaginationParamSet, timeRange);
         Assert.assertEquals("pagination service should contain multiple page iterators",2,pageIterators.size());
         pageIterators.forEach(pageIterator -> {

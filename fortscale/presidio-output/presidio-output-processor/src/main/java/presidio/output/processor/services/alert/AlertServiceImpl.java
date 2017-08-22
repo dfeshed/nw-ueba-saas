@@ -4,10 +4,8 @@ import fortscale.domain.SMART.EntityEvent;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.pagination.PageIterator;
 import org.apache.commons.collections.CollectionUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.alerts.AlertEnums;
-import presidio.output.domain.services.alerts.AlertEnumsSeverityService;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 
 import java.util.ArrayList;
@@ -25,9 +23,9 @@ public class AlertServiceImpl implements AlertService {
 
     private AlertEnumsSeverityService alertEnumsSeverityService;
 
-    public AlertServiceImpl(AlertPersistencyService alertPersistencyService,AlertEnumsSeverityService alertEnumsSeverityService) {
+    public AlertServiceImpl(AlertPersistencyService alertPersistencyService, AlertEnumsSeverityService alertEnumsSeverityService) {
         this.alertPersistencyService = alertPersistencyService;
-        this.alertEnumsSeverityService=alertEnumsSeverityService;
+        this.alertEnumsSeverityService = alertEnumsSeverityService;
     }
 
     @Override

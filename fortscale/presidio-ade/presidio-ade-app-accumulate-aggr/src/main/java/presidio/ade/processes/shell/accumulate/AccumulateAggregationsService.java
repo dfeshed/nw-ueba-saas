@@ -56,7 +56,7 @@ public class AccumulateAggregationsService extends FixedDurationStrategyExecutor
         List<PageIterator<EnrichedRecord>> pageIterators = enrichedRecordPaginationService.getPageIterators(adeEventType, timeRange);
 
         for (PageIterator<EnrichedRecord> pageIterator : pageIterators) {
-            Accumulator accumulatorService = new AccumulatorService(accumulationsCache, strategy);
+            Accumulator accumulatorService = new AccumulatorService(accumulationsCache, strategy, featureBucketDuration);
 
             accumulateAggregationsBucketService.aggregateAndAccumulate(pageIterator, contextTypes, featureBucketDuration, accumulatorService);
 
