@@ -1,4 +1,4 @@
-package presidio.connector.manager.impl.services;
+package presidio.input.sdk.impl.services;
 
 import fortscale.common.general.CommonStrings;
 import fortscale.common.general.Schema;

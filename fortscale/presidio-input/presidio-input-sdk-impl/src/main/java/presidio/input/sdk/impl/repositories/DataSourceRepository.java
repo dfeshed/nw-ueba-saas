@@ -1,4 +1,4 @@
-package presidio.connector.manager.impl.repositories;
+package presidio.input.sdk.impl.repositories;
 
 import fortscale.domain.core.AbstractAuditableDocument;
 import presidio.sdk.api.domain.AbstractPresidioDocument;

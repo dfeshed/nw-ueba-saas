@@ -1,4 +1,4 @@
-package presidio.connector.manager.impl.spring;
+package presidio.input.sdk.impl.spring;
 
 import fortscale.utils.mongodb.util.ToCollectionNameTranslator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,11 +9,11 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
-import presidio.connector.manager.impl.repositories.DataSourceRepository;
-import presidio.connector.manager.impl.repositories.DataSourceRepositoryImpl;
-import presidio.connector.manager.impl.services.DataServiceImpl;
-import presidio.connector.manager.impl.services.PresidioInputPersistencyServiceMongoImpl;
-import presidio.connector.manager.impl.validators.ValidationManager;
+import presidio.input.sdk.impl.repositories.DataSourceRepository;
+import presidio.input.sdk.impl.repositories.DataSourceRepositoryImpl;
+import presidio.input.sdk.impl.services.DataServiceImpl;
+import presidio.input.sdk.impl.services.PresidioInputPersistencyServiceMongoImpl;
+import presidio.input.sdk.impl.validators.ValidationManager;
 import presidio.sdk.api.services.DataService;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
 import presidio.sdk.api.utils.InputToCollectionNameTranslator;
@@ -33,17 +33,17 @@ public class PresidioInputPersistencyServiceConfig {
     }
 
     @Bean
-    public ToCollectionNameTranslator toCollectionNameTranslator(){
+    public ToCollectionNameTranslator toCollectionNameTranslator() {
         return new InputToCollectionNameTranslator();
     }
 
     @Bean
-    public DataSourceRepository dataSourceRepository(){
+    public DataSourceRepository dataSourceRepository() {
         return new DataSourceRepositoryImpl(mongoTemplate);
     }
 
     @Bean
-    public LocalValidatorFactoryBean localValidatorFactoryBean(){
+    public LocalValidatorFactoryBean localValidatorFactoryBean() {
         return new LocalValidatorFactoryBean();
     }
 
@@ -53,7 +53,7 @@ public class PresidioInputPersistencyServiceConfig {
     }
 
     @Bean
-    public ValidationManager validationManager(){
+    public ValidationManager validationManager() {
         return new ValidationManager(localValidatorFactoryBean().getValidator());
     }
 

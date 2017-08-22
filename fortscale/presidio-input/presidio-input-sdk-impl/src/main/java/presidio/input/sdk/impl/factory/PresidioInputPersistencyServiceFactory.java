@@ -1,9 +1,10 @@
-package presidio.connector.manager.impl.factory;
+package presidio.input.sdk.impl.factory;
+
 import fortscale.utils.logging.Logger;
 import fortscale.utils.mongodb.config.MongoConfig;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import presidio.connector.manager.impl.spring.PresidioInputPersistencyServiceConfig;
+import presidio.input.sdk.impl.spring.PresidioInputPersistencyServiceConfig;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
 
 /**

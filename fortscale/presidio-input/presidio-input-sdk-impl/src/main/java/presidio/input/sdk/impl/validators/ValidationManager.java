@@ -1,4 +1,4 @@
-package presidio.connector.manager.impl.validators;
+package presidio.input.sdk.impl.validators;
 
 import fortscale.domain.core.AbstractAuditableDocument;
 import fortscale.utils.logging.Logger;
@@ -31,8 +31,7 @@ public class ValidationManager {
 
             if (CollectionUtils.isEmpty(violations)) {
                 result.add(document);
-            }
-            else {
+            } else {
                 logger.warn("Validation for event with id {} failed. There were {} violations.", document.getId(), violations.size());
                 for (ConstraintViolation<AbstractAuditableDocument> violation : violations) {
                     final Path propertyPath = violation.getPropertyPath();

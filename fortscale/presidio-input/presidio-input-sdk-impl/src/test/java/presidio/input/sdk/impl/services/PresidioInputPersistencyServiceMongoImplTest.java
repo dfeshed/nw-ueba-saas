@@ -1,4 +1,4 @@
-package presidio.connector.manager.impl.services;
+package presidio.input.sdk.impl.services;
 
 
 import fortscale.common.general.Schema;
@@ -14,8 +14,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.test.context.junit4.SpringRunner;
-import presidio.connector.manager.impl.repositories.DataSourceRepository;
-import presidio.connector.manager.impl.spring.PresidioInputPersistencyServiceConfig;
+import presidio.input.sdk.impl.repositories.DataSourceRepository;
+import presidio.input.sdk.impl.spring.PresidioInputPersistencyServiceConfig;
 import presidio.sdk.api.domain.DlpFileDataDocument;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
 
@@ -38,7 +38,7 @@ public class PresidioInputPersistencyServiceMongoImplTest {
     private PresidioInputPersistencyService presidioInputPersistencyService;
 
     @Before
-    public void before(){
+    public void before() {
         mongoTemplate.dropCollection(toCollectionNameTranslator.toCollectionName(Schema.DLPFILE));
     }
 
