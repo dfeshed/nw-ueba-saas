@@ -2,6 +2,7 @@ package fortscale.domain.feature.score;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
 
 import java.util.Collections;
 import java.util.List;
@@ -78,8 +79,11 @@ public class FeatureScore implements IFeatureScore{
         return new EqualsBuilder().append(this.name, other.name).append(this.score, other.score).append(this.featureScores, other.featureScores).append(this.getCertainty(), other.getCertainty()).isEquals();
     }
 
+    /**
+     * @return ToString you know...
+     */
     @Override
     public String toString() {
-        return "FeatureScore{}";
+        return ToStringBuilder.reflectionToString(this);
     }
 }
