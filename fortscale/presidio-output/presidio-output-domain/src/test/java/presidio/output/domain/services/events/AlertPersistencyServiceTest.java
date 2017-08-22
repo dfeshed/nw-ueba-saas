@@ -174,7 +174,7 @@ public class AlertPersistencyServiceTest {
         AlertQuery alertQuery =
                 new AlertQuery.AlertQueryBuilder()
                         .filterByUserName("normalized_username_ipusr3")
-                        .filterBySeverity(AlertSeverity.HIGH.toString())
+                        .filterBySeverity(AlertSeverity.HIGH.name())
                         .filterByStartDate(startDate)
                         .filterByEndDate(endDate + 1)
                         .sortField(Alert.SCORE, true)
