@@ -58,7 +58,7 @@
         "context.userId"
       ],
       "adeEventTypes": [
-        "scored_enriched.authentication.dstMachineNameRegexCluster.userId..authentication.score"
+        "scored_enriched.authentication.dstMachineNameRegexCluster.userId.authentication.score"
       ],
       "strategyName": "fixed_duration_hourly",
       "aggrFeatureConfs": [
