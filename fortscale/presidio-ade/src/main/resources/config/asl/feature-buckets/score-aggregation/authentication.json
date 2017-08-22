@@ -4,7 +4,7 @@
       "name": "highestStartInstantScoreUserIdAuthenticationHourly",
       "expireAfterSeconds": 31536000,
       "contextFieldNames": [
-        "context.userId"
+        "userId"
       ],
       "adeEventTypes": [
         "scored_enriched.authentication.startInstant.userId.authentication.score"
@@ -28,7 +28,7 @@
       "name": "srcMachineNameRegexClusterToHighestScoreMapUserIdAuthenticationHourly",
       "expireAfterSeconds": 31536000,
       "contextFieldNames": [
-        "context.userId"
+        "userId"
       ],
       "adeEventTypes": [
         "scored_enriched.authentication.srcMachineNameRegexCluster.userId.authentication.score"
@@ -55,7 +55,7 @@
       "name": "dstMachineNameRegexClusterToHighestScoreMapUserIdAuthenticationHourly",
       "expireAfterSeconds": 31536000,
       "contextFieldNames": [
-        "context.userId"
+        "userId"
       ],
       "adeEventTypes": [
         "scored_enriched.authentication.dstMachineNameRegexCluster.userId.authentication.score"

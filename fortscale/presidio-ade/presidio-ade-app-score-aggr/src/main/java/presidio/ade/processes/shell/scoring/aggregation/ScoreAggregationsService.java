@@ -80,7 +80,7 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
 
     private List<String> getAggregationContext() {
         // todo: figure out from conf
-        return Collections.singletonList("context.userId");
+        return Collections.singletonList("userId");
     }
 
     protected FeatureBucketStrategyData createFeatureBucketStrategyData(TimeRange timeRange){
