@@ -3,6 +3,7 @@ package presidio.ade.processes.shell;
 import fortscale.common.general.Schema;
 import fortscale.common.shell.command.PresidioCommands;
 import fortscale.ml.model.ContinuousDataModel;
+import fortscale.ml.model.GaussianPriorModel;
 import fortscale.ml.model.Model;
 import fortscale.ml.model.store.ModelDAO;
 import fortscale.utils.test.category.ModuleTestCategory;
@@ -27,6 +28,7 @@ import presidio.ade.test.utils.tests.EnrichedFileSourceBaseAppTest;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -64,10 +66,20 @@ public class FeatureAggregationsApplicationTest extends EnrichedFileSourceBaseAp
 
     @Before
     public void beforeTest() {
-        ContinuousDataModel model = new ContinuousDataModel();
-        model.setParameters(200, 1, 1, 1);
-        ModelDAO modelDao = new ModelDAO("test_model", "userId#testUser", model, START_DATE.minus(Duration.ofDays(30)), START_DATE.minus(Duration.ofDays(1)));
-        mongoTemplate.insert(modelDao, "model_numberOfSuccessfulFileAction.userId.file.hourly");
+        ContinuousDataModel continuousDataModel = new ContinuousDataModel();
+        continuousDataModel.setParameters(200, 1, 1, 1);
+        GaussianPriorModel gaussianPriorModel = new GaussianPriorModel()
+                .init(Collections.singletonList(new GaussianPriorModel.SegmentPrior().init(0, 0, 0)));
+
+        String sessionId = "test_model";
+        Instant startTime = START_DATE.minus(Duration.ofDays(30));
+        Instant endTime = START_DATE.minus(Duration.ofDays(1));
+        ModelDAO continousModelDao = new ModelDAO(sessionId, "userId#testUser", continuousDataModel, startTime, endTime);
+
+        ModelDAO priorModelDao = new ModelDAO(sessionId, null, gaussianPriorModel, startTime, endTime);
+        mongoTemplate.insert(continousModelDao, "model_numberOfSuccessfulFileAction.userId.file.hourly");
+        mongoTemplate.insert(priorModelDao, "model_numberOfSuccessfulFileAction.userId.prior.global.file.hourly");
+
         int t = 0;
     }
 

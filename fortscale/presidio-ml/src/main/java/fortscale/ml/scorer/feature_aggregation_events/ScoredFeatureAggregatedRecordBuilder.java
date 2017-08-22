@@ -20,26 +20,17 @@ public class ScoredFeatureAggregatedRecordBuilder {
             return;
         }
 
-        //expect to get as a root feature score which hold the event score and inside it all the relevant features.
+        //Expect to have only one Feature Aggregation.
         if (featureScoreList.size() > 1) {
             //TODO: add metrics.
             logger.error("after calculating an feature aggregate record we got feature score list of size > 1 while expecting to get a root which hold the event score and inside it all the relevant features. the feature aggregate record: {}", featureAdeAggrRecord);
             return;
         }
 
-        FeatureScore eventScore = featureScoreList.get(0);
-
-        if (eventScore.getFeatureScores().size() == 0) {
-            //TODO: add metrics.
-            logger.error("after calculating an feature aggregate record we got an empty feature score list!!! the feature aggregate record: {}", featureAdeAggrRecord);
-            return;
-        }
-
-        for (FeatureScore featureScore : eventScore.getFeatureScores()) {
-            ScoredFeatureAggregationRecord scoredFeatureAggregationRecord = new ScoredFeatureAggregationRecord(featureScore.getScore(), featureScore.getFeatureScores(),
-                    featureAdeAggrRecord.getStartInstant(), featureAdeAggrRecord.getEndInstant(), featureAdeAggrRecord.getFeatureName(), featureAdeAggrRecord.getFeatureValue(), featureAdeAggrRecord.getFeatureBucketConfName(), featureAdeAggrRecord.getContext(), featureAdeAggrRecord.getAggregatedFeatureType());
-            scoredFeatureAggregationRecords.add(scoredFeatureAggregationRecord);
-        }
+        FeatureScore featureScore = featureScoreList.get(0);
+        ScoredFeatureAggregationRecord scoredFeatureAggregationRecord = new ScoredFeatureAggregationRecord(featureScore.getScore(), featureScore.getFeatureScores(),
+                featureAdeAggrRecord.getStartInstant(), featureAdeAggrRecord.getEndInstant(), featureAdeAggrRecord.getFeatureName(), featureAdeAggrRecord.getFeatureValue(), featureAdeAggrRecord.getFeatureBucketConfName(), featureAdeAggrRecord.getContext(), featureAdeAggrRecord.getAggregatedFeatureType());
+        scoredFeatureAggregationRecords.add(scoredFeatureAggregationRecord);
 
     }
 

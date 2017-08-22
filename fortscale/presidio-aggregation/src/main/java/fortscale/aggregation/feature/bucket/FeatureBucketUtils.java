@@ -50,7 +50,7 @@ public class FeatureBucketUtils {
 
 		for (String contextFieldName : sorted) {
 			builder.append(BUCKET_ID_BUILDER_SEPARATOR);
-			String contextValue = adeRecordReader.get(contextFieldName, String.class);
+			String contextValue = adeRecordReader.getContext(contextFieldName);
 
 			// Return null as the bucket ID if one of the contexts is missing
 			if (StringUtils.isBlank(contextValue)) {

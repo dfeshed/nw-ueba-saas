@@ -7,22 +7,29 @@
           "type": "low-values-score-reducer",
           "name": "numberOfGroupMembershipOperation.userId.activeDirectory.hourly.scorer",
           "base-scorer": {
-            "type": "continuous-values-model-scorer",
-            "name": "numberOfGroupMembershipOperation.userId.activeDirectory.hourly.base_scorer",
-            "model": {
-              "name": "numberOfGroupMembershipOperation.userId.activeDirectory.hourly"
+            "type": "score-mapper",
+            "name": "numberOfGroupMembershipOperation.userId.activeDirectory.hourly.mapper",
+            "score-mapping-conf": {
+              "mapping": {
+                "95.0": 0,
+                "100.0": 100
+              }
             },
-            "additional-models": [],
-            "quad-poly-calibration-conf": {
-              "a1": 1500.0,
-              "a2": 499999.0,
-              "sensitivity": 1.0,
-              "is-score-for-small-values": false,
-              "is-score-for-large-values": true
-            },
-            "number-of-samples-to-influence-enough": 30,
-            "min-number-of-samples-to-influence": 1,
-            "use-certainty-to-calculate-score": true
+            "base-scorer": {
+              "type": "gaussian-model-scorer",
+              "name": "numberOfGroupMembershipOperation.userId.activeDirectory.hourly.base_scorer",
+              "model": {
+                "name": "numberOfGroupMembershipOperation.userId.activeDirectory.hourly"
+              },
+              "additional-models": [
+                {
+                  "name": "numberOfGroupMembershipOperation.userId.prior.global.activeDirectory.hourly"
+                }
+              ],
+              "global-influence": 20,
+              "number-of-samples-to-influence-enough": 30,
+              "use-certainty-to-calculate-score": true
+            }
           },
           "reduction-configs": [
             {
@@ -42,22 +49,29 @@
           "type": "low-values-score-reducer",
           "name": "numberOfSuccessfulOperationType.userId.activeDirectory.hourly.scorer",
           "base-scorer": {
-            "type": "continuous-values-model-scorer",
-            "name": "numberOfSuccessfulOperationType.userId.activeDirectory.hourly.base_scorer",
-            "model": {
-              "name": "numberOfSuccessfulOperationType.userId.activeDirectory.hourly"
+            "type": "score-mapper",
+            "name": "numberOfSuccessfulOperationType.userId.activeDirectory.hourly.mapper",
+            "score-mapping-conf": {
+              "mapping": {
+                "95.0": 0,
+                "100.0": 100
+              }
             },
-            "additional-models": [],
-            "quad-poly-calibration-conf": {
-              "a1": 1500.0,
-              "a2": 499999.0,
-              "sensitivity": 1.0,
-              "is-score-for-small-values": false,
-              "is-score-for-large-values": true
-            },
-            "number-of-samples-to-influence-enough": 30,
-            "min-number-of-samples-to-influence": 1,
-            "use-certainty-to-calculate-score": true
+            "base-scorer": {
+              "type": "gaussian-model-scorer",
+              "name": "numberOfSuccessfulOperationType.userId.activeDirectory.hourly.base_scorer",
+              "model": {
+                "name": "numberOfSuccessfulOperationType.userId.activeDirectory.hourly"
+              },
+              "additional-models": [
+                {
+                  "name": "numberOfSuccessfulOperationType.userId.prior.global.activeDirectory.hourly"
+                }
+              ],
+              "global-influence": 20,
+              "number-of-samples-to-influence-enough": 30,
+              "use-certainty-to-calculate-score": true
+            }
           },
           "reduction-configs": [
             {
@@ -77,22 +91,29 @@
           "type": "low-values-score-reducer",
           "name": "numberOfFailedlOperationType.userId.activeDirectory.hourly.scorer",
           "base-scorer": {
-            "type": "continuous-values-model-scorer",
-            "name": "numberOfFailedlOperationType.userId.activeDirectory.hourly.base_scorer",
-            "model": {
-              "name": "numberOfFailedlOperationType.userId.activeDirectory.hourly"
+            "type": "score-mapper",
+            "name": "numberOfFailedlOperationType.userId.activeDirectory.hourly.mapper",
+            "score-mapping-conf": {
+              "mapping": {
+                "95.0": 0,
+                "100.0": 100
+              }
             },
-            "additional-models": [],
-            "quad-poly-calibration-conf": {
-              "a1": 1500.0,
-              "a2": 499999.0,
-              "sensitivity": 1.0,
-              "is-score-for-small-values": false,
-              "is-score-for-large-values": true
-            },
-            "number-of-samples-to-influence-enough": 30,
-            "min-number-of-samples-to-influence": 1,
-            "use-certainty-to-calculate-score": true
+            "base-scorer": {
+              "type": "gaussian-model-scorer",
+              "name": "numberOfFailedlOperationType.userId.activeDirectory.hourly.base_scorer",
+              "model": {
+                "name": "numberOfFailedlOperationType.userId.activeDirectory.hourly"
+              },
+              "additional-models": [
+                {
+                  "name": "numberOfFailedlOperationType.userId.prior.global.activeDirectory.hourly"
+                }
+              ],
+              "global-influence": 20,
+              "number-of-samples-to-influence-enough": 30,
+              "use-certainty-to-calculate-score": true
+            }
           },
           "reduction-configs": [
             {
