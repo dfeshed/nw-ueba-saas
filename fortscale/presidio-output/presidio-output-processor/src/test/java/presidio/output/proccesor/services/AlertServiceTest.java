@@ -26,11 +26,11 @@ import presidio.ade.domain.record.aggregated.SmartRecord;
 import presidio.ade.domain.store.smart.SmartRecordDataReader;
 import presidio.ade.domain.store.smart.SmartRecordsMetadata;
 import presidio.output.domain.records.alerts.AlertEnums;
-import presidio.output.domain.services.alerts.AlertEnumsSeverityService;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
-import presidio.output.domain.spring.AlertEnumsConfig;
 import presidio.output.processor.services.OutputExecutionServiceImpl;
+import presidio.output.processor.services.alert.AlertEnumsSeverityService;
 import presidio.output.processor.services.alert.AlertServiceImpl;
+import presidio.output.processor.spring.AlertEnumsConfig;
 import presidio.output.processor.spring.AlertServiceElasticConfig;
 
 import java.time.Instant;

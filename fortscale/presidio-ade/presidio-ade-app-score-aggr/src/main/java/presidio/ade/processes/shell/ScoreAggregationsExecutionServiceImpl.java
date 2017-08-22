@@ -1,6 +1,8 @@
 package presidio.ade.processes.shell;
 
 import fortscale.aggregation.creator.AggregationRecordsCreator;
+import fortscale.aggregation.feature.bucket.BucketConfigurationService;
+import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.common.general.Schema;
 import fortscale.common.shell.PresidioExecutionService;
 import fortscale.ml.scorer.enriched_events.EnrichedEventsScoringService;
@@ -14,6 +16,8 @@ import presidio.ade.processes.shell.scoring.aggregation.ScoreAggregationsService
 import java.time.Instant;
 
 public class ScoreAggregationsExecutionServiceImpl implements PresidioExecutionService {
+	private final AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
+	private final BucketConfigurationService bucketConfigurationService;
 	private EnrichedEventsScoringService enrichedEventsScoringService;
 	private EnrichedDataStore enrichedDataStore;
 	private ScoreAggregationsBucketService scoreAggregationsBucketService;
@@ -21,10 +25,11 @@ public class ScoreAggregationsExecutionServiceImpl implements PresidioExecutionS
 	private AggregatedDataStore aggregatedDataStore;
 
 	public ScoreAggregationsExecutionServiceImpl(
-            EnrichedEventsScoringService enrichedEventsScoringService,
-            EnrichedDataStore enrichedDataStore,
-            ScoreAggregationsBucketService scoreAggregationsBucketService,
-            AggregationRecordsCreator aggregationRecordsCreator, AggregatedDataStore aggregatedDataStore) {
+			EnrichedEventsScoringService enrichedEventsScoringService,
+			EnrichedDataStore enrichedDataStore,
+			ScoreAggregationsBucketService scoreAggregationsBucketService,
+			AggregationRecordsCreator aggregationRecordsCreator, AggregatedDataStore aggregatedDataStore,
+			AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService, BucketConfigurationService bucketConfigurationService) {
 
 
 		this.enrichedEventsScoringService = enrichedEventsScoringService;
@@ -32,6 +37,8 @@ public class ScoreAggregationsExecutionServiceImpl implements PresidioExecutionS
 		this.scoreAggregationsBucketService = scoreAggregationsBucketService;
 		this.aggregationRecordsCreator = aggregationRecordsCreator;
 		this.aggregatedDataStore = aggregatedDataStore;
+		this.aggregatedFeatureEventsConfService = aggregatedFeatureEventsConfService;
+		this.bucketConfigurationService = bucketConfigurationService;
 	}
 
 	@Override
@@ -39,7 +46,7 @@ public class ScoreAggregationsExecutionServiceImpl implements PresidioExecutionS
 		FixedDurationStrategy strategy = FixedDurationStrategy.fromSeconds(fixedDurationStrategyInSeconds.longValue());
 		ScoreAggregationsService service = new ScoreAggregationsService(
 				strategy, enrichedDataStore, enrichedEventsScoringService,
-				scoreAggregationsBucketService, aggregationRecordsCreator, aggregatedDataStore);
+				scoreAggregationsBucketService, aggregationRecordsCreator, aggregatedDataStore, aggregatedFeatureEventsConfService, bucketConfigurationService);
 
 		service.execute(new TimeRange(startInstant, endInstant), schema.getName());
 	}

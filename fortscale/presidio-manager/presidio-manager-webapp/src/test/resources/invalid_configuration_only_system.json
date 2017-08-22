@@ -1,0 +1,10 @@
+{
+  "system": {
+    "username": "presidio@somecompany.dom",
+    "password": "password",
+    "adminGroup": "presidio-admins-somecompany",
+    "analystGroup": "presidio-soc-team-somecompany",
+    "smtpHost": "name.of-server.com:25",
+    "kdcUrl": "string"
+  }
+}

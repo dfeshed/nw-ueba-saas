@@ -1,9 +1,10 @@
-package presidio.output.domain.spring;
+package presidio.output.processor.spring;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import presidio.output.domain.services.alerts.AlertEnumsSeverityService;
+import presidio.output.processor.services.alert.AlertEnumsSeverityService;
+
 
 @Configuration
 public class AlertEnumsConfig {

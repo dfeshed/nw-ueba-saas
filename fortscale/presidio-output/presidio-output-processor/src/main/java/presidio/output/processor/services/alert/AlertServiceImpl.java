@@ -6,7 +6,6 @@ import org.apache.commons.collections.CollectionUtils;
 import presidio.ade.domain.record.aggregated.SmartRecord;
 import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.alerts.AlertEnums;
-import presidio.output.domain.services.alerts.AlertEnumsSeverityService;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 
 import java.time.temporal.ChronoField;
@@ -25,9 +24,9 @@ public class AlertServiceImpl implements AlertService {
 
     private AlertEnumsSeverityService alertEnumsSeverityService;
 
-    public AlertServiceImpl(AlertPersistencyService alertPersistencyService,AlertEnumsSeverityService alertEnumsSeverityService) {
+    public AlertServiceImpl(AlertPersistencyService alertPersistencyService, AlertEnumsSeverityService alertEnumsSeverityService) {
         this.alertPersistencyService = alertPersistencyService;
-        this.alertEnumsSeverityService=alertEnumsSeverityService;
+        this.alertEnumsSeverityService = alertEnumsSeverityService;
     }
 
     @Override
