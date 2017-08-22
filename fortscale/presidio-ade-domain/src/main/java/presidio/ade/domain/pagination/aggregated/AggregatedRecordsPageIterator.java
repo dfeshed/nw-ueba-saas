@@ -43,7 +43,6 @@ public class AggregatedRecordsPageIterator<U extends AdeAggregationRecord> imple
         if(hasNext)
         {
             result = true;
-            hasNext = false;
         }
         return result;
     }
@@ -51,6 +50,7 @@ public class AggregatedRecordsPageIterator<U extends AdeAggregationRecord> imple
     @Override
     public List<U> next() {
         List<U> readRecords = this.dataReader.readRecords(this.aggregatedDataPaginationParamSet, this.contextIds,this.timeRange);
+        this.hasNext = false;
         return readRecords;
     }
 }
