@@ -1,4 +1,4 @@
-package presidio.output.domain.services.events;
+package presidio.output.domain.services;
 
 import fortscale.utils.elasticsearch.PresidioElasticsearchTemplate;
 import org.assertj.core.util.Lists;
