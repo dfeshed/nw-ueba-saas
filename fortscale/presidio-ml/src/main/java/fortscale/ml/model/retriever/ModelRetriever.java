@@ -17,11 +17,8 @@ public class ModelRetriever extends AbstractDataRetriever {
 	private final ModelRetrieverConf config;
 	private ModelConfService modelConfService;
 	private ModelStore modelStore;
-	@Autowired
-	private StatsService statsService;
 
 	private ModelConf modelConf;
-	private ModelRetrieverMetrics metrics;
 
 	public ModelRetriever(ModelRetrieverConf config, ModelStore modelStore) {
 		super(config);
@@ -38,8 +35,6 @@ public class ModelRetriever extends AbstractDataRetriever {
 		List<Model> models = modelStore.getAllContextsModelDaosWithLatestEndTimeLte(modelConf, endTime.getTime() / 1000).stream()
 				.map(ModelDAO::getModel)
 				.collect(Collectors.toList());
-		metrics.retrieveCalls++;
-		metrics.retrievedModels++;
 
 		if (models.isEmpty()) {
 			return new ModelBuilderData(NoDataReason.NO_DATA_IN_DATABASE);
@@ -73,13 +68,11 @@ public class ModelRetriever extends AbstractDataRetriever {
 
 	@Override
 	public List<String> getContextFieldNames() {
-		metrics.getContextFieldNames++;
 		return Collections.emptyList();
 	}
 
 	@Override
 	public String getContextId(Map<String, String> context) {
-		metrics.getContextId++;
 		return null;
 	}
 }
