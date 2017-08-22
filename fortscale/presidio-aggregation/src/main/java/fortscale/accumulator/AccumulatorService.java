@@ -6,6 +6,7 @@ import presidio.ade.domain.record.accumulator.AccumulatedAggregationFeatureRecor
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.record.aggregated.AdeContextualAggregatedRecord;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 
@@ -14,12 +15,16 @@ import java.util.List;
  */
 public class AccumulatorService implements Accumulator {
 
+    private final FixedDurationStrategy aggregationStrategy;
     private AccumulationsCache accumulationsInMemory;
-    private FixedDurationStrategy fixedDurationStrategy;
+    private FixedDurationStrategy accumulationStrategy;
+    private long aggregationFixedDurationStrategyInMillis;
 
-    public AccumulatorService(AccumulationsCache accumulationsInMemory, FixedDurationStrategy fixedDurationStrategy) {
+    public AccumulatorService(AccumulationsCache accumulationsInMemory, FixedDurationStrategy accumulationStrategy, FixedDurationStrategy aggregationStrategy) {
         this.accumulationsInMemory = accumulationsInMemory;
-        this.fixedDurationStrategy = fixedDurationStrategy;
+        this.accumulationStrategy = accumulationStrategy;
+        this.aggregationStrategy = aggregationStrategy;
+        this.aggregationFixedDurationStrategyInMillis = aggregationStrategy.toDuration().toMillis();
     }
 
     @Override
@@ -31,25 +36,33 @@ public class AccumulatorService implements Accumulator {
 
             AccumulatedAggregationFeatureRecord accumulatedRecord = accumulationsInMemory.getAccumulatedRecord(featureName, context);
 
+            Instant adeAggregationRecordStartInstant = adeAggregationRecord.getStartInstant();
             if (accumulatedRecord == null) {
-                Instant startInstant = TimeService.floorTime(adeAggregationRecord.getStartInstant(), fixedDurationStrategy.toDuration());
+                Instant startInstant = TimeService.floorTime(adeAggregationRecordStartInstant, accumulationStrategy.toDuration());
                 Instant endInstant = getEndInstant(startInstant);
                 accumulatedRecord = new AccumulatedAggregationFeatureRecord(startInstant, endInstant, context, featureName);
             }
-
-            accumulatedRecord.getAggregatedFeatureValues().add(adeAggregationRecord.getFeatureValue());
+            int currentTimePartitionNumberInt = calcFeatureValueMapKey(accumulatedRecord, adeAggregationRecordStartInstant);
+            accumulatedRecord.getAggregatedFeatureValues().put(currentTimePartitionNumberInt,adeAggregationRecord.getFeatureValue());
             accumulationsInMemory.storeAccumulatedRecords(featureName, context, accumulatedRecord);
         }
 
     }
 
+    private int calcFeatureValueMapKey(AccumulatedAggregationFeatureRecord accumulatedRecord, Instant adeAggregationRecordStartInstant) {
+        Instant accumulatedRecordStartInstant = accumulatedRecord.getStartInstant();
+        Duration aggrPreviousTimePartition = Duration.between(accumulatedRecordStartInstant, adeAggregationRecordStartInstant);
+        Long currentTimePartitionNumber = aggrPreviousTimePartition.toMillis() / aggregationFixedDurationStrategyInMillis;
+        return currentTimePartitionNumber.intValue();
+    }
+
     /**
-     * Calculate end instant by start instant and fixedDurationStrategy
+     * Calculate end instant by start instant and accumulationStrategy
      * @param startInstant start time
      * @return Instant
      */
     private Instant getEndInstant(Instant startInstant) {
-        return startInstant.plusSeconds(fixedDurationStrategy.toDuration().getSeconds());
+        return startInstant.plusSeconds(accumulationStrategy.toDuration().getSeconds());
     }
 
 }

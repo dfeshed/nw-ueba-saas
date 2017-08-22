@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 public class AdeManagerSdkBucketConfigurationServiceConfig {
-    @Value("${fortscale.ademanager.aggregation.bucket.conf.json.file.name}")
+    @Value("${fortscale.ademanager.aggregation.bucket.conf.json.file.name:classpath:config/asl/feature-buckets/**/**/*.json}")
     private String bucketConfJsonFilePath;
     @Value("${fortscale.ademanager.aggregation.bucket.conf.json.overriding.files.path:#{null}}")
     private String bucketConfJsonOverridingFilesPath;
