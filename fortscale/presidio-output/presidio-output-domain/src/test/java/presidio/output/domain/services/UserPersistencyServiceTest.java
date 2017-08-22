@@ -114,12 +114,14 @@ public class UserPersistencyServiceTest {
     }
 
     @Test
-    public void testFindByQuery() {
+    public void testFindByQueryFilterByIndicatorsAndClassifications() {
 
         User user1 = generateUser();
         User user2 = generateUser();
         User user3 = generateUser();
+        User user4 = generateUser();
         user2.setUserScore(100d);
+        user4.setUserScore(50d);
         List<String> classification = new ArrayList<String>();
         user3.setAlertClassifications(classification);
         List<String> indicators = new ArrayList<String>();;
@@ -128,6 +130,7 @@ public class UserPersistencyServiceTest {
         userList.add(user1);
         userList.add(user2);
         userList.add(user3);
+        userList.add(user4);
         userPersistencyService.save(userList);
 
         List<String> classificationFilter = new ArrayList<String>();
@@ -139,11 +142,13 @@ public class UserPersistencyServiceTest {
                 new UserQuery.UserQueryBuilder()
                         .filterByAlertClassifications(classificationFilter)
                         .filterByIndicators(indicatorFilter)
-//                        .sortField(User.SCORE_FIELD_NAME, true) //TODO add sorting
+                        .sortField(User.SCORE_FIELD_NAME, false)
                         .build();
 
         Page<User> foundUsers = userPersistencyService.find(userQuery);
-        assertThat(foundUsers.getTotalElements(), is(2L));
+        assertThat(foundUsers.getTotalElements(), is(3L));
+        assertTrue(foundUsers.iterator().next().getUserScore() == 100d); //verify the sorting- descending order, score 100 should be the first
     }
+
 
 }

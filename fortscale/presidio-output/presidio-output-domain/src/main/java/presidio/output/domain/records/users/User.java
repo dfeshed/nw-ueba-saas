@@ -20,18 +20,26 @@ public class User extends AbstractElasticDocument {
 
     public static final String ALERT_CLASSIFICATOINS_FIELD_NAME = "alertClassifications";
     public static final String INDICATORS_FIELD_NAME = "indicators";
-    public static final String SCORE_FIELD_NAME = "indicators";
+    public static final String SCORE_FIELD_NAME = "userScore";
+    public static final String USER_ID_FIELD_NAME = "userId";
+    public static final String USER_NAME_FIELD_NAME = "userName";
+    public static final String USER_DISPLAY_NAME_FIELD_NAME = "userDisplayName";
+
 
     @Field(type = FieldType.String, store = true)
+    @JsonProperty(USER_ID_FIELD_NAME)
     private String userId;
 
     @Field(type = FieldType.String, store = true)
+    @JsonProperty(USER_NAME_FIELD_NAME)
     private String userName;
 
     @Field(type = FieldType.String, store = true)
+    @JsonProperty(USER_DISPLAY_NAME_FIELD_NAME)
     private String userDisplayName;
 
     @Field(type = FieldType.Double, store = true)
+    @JsonProperty(SCORE_FIELD_NAME)
     private double userScore;
 
     @Field(type = FieldType.String, store = true)
