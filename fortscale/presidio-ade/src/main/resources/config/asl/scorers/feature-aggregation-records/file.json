@@ -7,19 +7,29 @@
           "type": "low-values-score-reducer",
           "name": "numberOfSuccessfulPermissionChange.userId.file.hourly.scorer",
           "base-scorer": {
-            "type": "gaussian-model-scorer",
-            "name": "numberOfSuccessfulPermissionChange.userId.file.hourly.base_scorer",
-            "model": {
-              "name": "numberOfSuccessfulPermissionChange.userId.file.hourly"
-            },
-            "additional-models": [
+            "type": "score-mapper",
+            "name": "numberOfSuccessfulPermissionChange.userId.file.hourly.mapper",
+            "score-mapping-conf": {"mapping":
               {
-                "name": "numberOfSuccessfulPermissionChange.userId.prior.global.file.hourly"
+                "95.0": 0,
+                "100.0": 100
               }
-            ],
-            "global-influence": 20,
-            "number-of-samples-to-influence-enough": 30,
-            "use-certainty-to-calculate-score": true
+            },
+            "base-scorer": {
+              "type": "gaussian-model-scorer",
+              "name": "numberOfSuccessfulPermissionChange.userId.file.hourly.base_scorer",
+              "model": {
+                "name": "numberOfSuccessfulPermissionChange.userId.file.hourly"
+              },
+              "additional-models": [
+                {
+                  "name": "numberOfSuccessfulPermissionChange.userId.prior.global.file.hourly"
+                }
+              ],
+              "global-influence": 20,
+              "number-of-samples-to-influence-enough": 30,
+              "use-certainty-to-calculate-score": true
+            }
           },
           "reduction-configs": [
             {
@@ -38,20 +48,31 @@
         {
           "type": "low-values-score-reducer",
           "name": "numberOfSuccessfulFileAction.userId.file.hourly.scorer",
+
           "base-scorer": {
-            "type": "gaussian-model-scorer",
-            "name": "numberOfSuccessfulFileAction.userId.file.hourly.base_scorer",
-            "model": {
-              "name": "numberOfSuccessfulFileAction.userId.file.hourly"
-            },
-            "additional-models": [
-              {
-                "name": "numberOfSuccessfulFileAction.userId.prior.global.file.hourly"
+            "type": "score-mapper",
+            "name": "numberOfSuccessfulFileAction.userId.file.hourly.mapper",
+            "score-mapping-conf": {
+              "mapping": {
+                "95.0": 0,
+                "100.0": 100
               }
-            ],
-            "global-influence": 20,
-            "number-of-samples-to-influence-enough": 30,
-            "use-certainty-to-calculate-score": true
+            },
+            "base-scorer": {
+              "type": "gaussian-model-scorer",
+              "name": "numberOfSuccessfulFileAction.userId.file.hourly.base_scorer",
+              "model": {
+                "name": "numberOfSuccessfulFileAction.userId.file.hourly"
+              },
+              "additional-models": [
+                {
+                  "name": "numberOfSuccessfulFileAction.userId.prior.global.file.hourly"
+                }
+              ],
+              "global-influence": 20,
+              "number-of-samples-to-influence-enough": 30,
+              "use-certainty-to-calculate-score": true
+            }
           },
           "reduction-configs": [
             {
@@ -71,19 +92,29 @@
           "type": "low-values-score-reducer",
           "name": "numberOfFailedPermissionChange.userId.file.hourly.scorer",
           "base-scorer": {
-            "type": "gaussian-model-scorer",
-            "name": "numberOfFailedPermissionChange.userId.file.hourly.base_scorer",
-            "model": {
-              "name": "numberOfFailedPermissionChange.userId.file.hourly"
-            },
-            "additional-models": [
-              {
-                "name": "numberOfFailedPermissionChange.userId.prior.global.file.hourly"
+            "type": "score-mapper",
+            "name": "numberOfFailedPermissionChange.userId.file.hourly.mapper",
+            "score-mapping-conf": {
+              "mapping": {
+                "95.0": 0,
+                "100.0": 100
               }
-            ],
-            "global-influence": 20,
-            "number-of-samples-to-influence-enough": 30,
-            "use-certainty-to-calculate-score": true
+            },
+            "base-scorer": {
+              "type": "gaussian-model-scorer",
+              "name": "numberOfFailedPermissionChange.userId.file.hourly.base_scorer",
+              "model": {
+                "name": "numberOfFailedPermissionChange.userId.file.hourly"
+              },
+              "additional-models": [
+                {
+                  "name": "numberOfFailedPermissionChange.userId.prior.global.file.hourly"
+                }
+              ],
+              "global-influence": 20,
+              "number-of-samples-to-influence-enough": 30,
+              "use-certainty-to-calculate-score": true
+            }
           },
           "reduction-configs": [
             {
@@ -103,19 +134,29 @@
           "type": "low-values-score-reducer",
           "name": "numberOfFailedFileAction.userId.file.hourly.scorer",
           "base-scorer": {
-            "type": "gaussian-model-scorer",
-            "name": "numberOfFailedFileAction.userId.file.hourly.base_scorer",
-            "model": {
-              "name": "numberOfFailedFileAction.userId.file.hourly"
+            "type": "score-mapper",
+            "name": "numberOfFailedFileAction.userId.file.hourly.mapper",
+            "score-mapping-conf": {"mapping":
+            {
+              "95.0": 0,
+              "100.0": 100
+            }
             },
-            "additional-models": [
-              {
-                "name": "numberOfFailedFileAction.userId.prior.global.file.hourly"
-              }
-            ],
-            "global-influence": 20,
-            "number-of-samples-to-influence-enough": 30,
-            "use-certainty-to-calculate-score": true
+            "base-scorer": {
+              "type": "gaussian-model-scorer",
+              "name": "numberOfFailedFileAction.userId.file.hourly.base_scorer",
+              "model": {
+                "name": "numberOfFailedFileAction.userId.file.hourly"
+              },
+              "additional-models": [
+                {
+                  "name": "numberOfFailedFileAction.userId.prior.global.file.hourly"
+                }
+              ],
+              "global-influence": 20,
+              "number-of-samples-to-influence-enough": 30,
+              "use-certainty-to-calculate-score": true
+            }
           },
           "reduction-configs": [
             {
@@ -135,6 +176,15 @@
           "type": "low-values-score-reducer",
           "name": "numberOfDistinctFileOpened.userId.file.hourly.scorer",
           "base-scorer": {
+            "type": "score-mapper",
+            "name": "numberOfDistinctFileOpened.userId.file.hourly.mapper",
+            "score-mapping-conf": {"mapping":
+            {
+              "95.0": 0,
+              "100.0": 100
+            }
+            },
+            "base-scorer": {
             "type": "gaussian-model-scorer",
             "name": "numberOfDistinctFileOpened.userId.file.hourly.base_scorer",
             "model": {
@@ -148,6 +198,7 @@
             "global-influence": 20,
             "number-of-samples-to-influence-enough": 30,
             "use-certainty-to-calculate-score": true
+            }
           },
           "reduction-configs": [
             {
@@ -167,19 +218,29 @@
           "type": "low-values-score-reducer",
           "name": "numberOfDistinctFolderOpened.userId.file.hourly.scorer",
           "base-scorer": {
-            "type": "gaussian-model-scorer",
-            "name": "numberOfDistinctFolderOpened.userId.file.hourly.base_scorer",
-            "model": {
-              "name": "numberOfDistinctFolderOpened.userId.file.hourly"
-            },
-            "additional-models": [
-              {
-                "name": "numberOfDistinctFolderOpened.userId.prior.global.file.hourly"
+            "type": "score-mapper",
+            "name": "numberOfDistinctFolderOpened.userId.file.hourly.mapper",
+            "score-mapping-conf": {
+              "mapping": {
+                "95.0": 0,
+                "100.0": 100
               }
-            ],
-            "global-influence": 20,
-            "number-of-samples-to-influence-enough": 30,
-            "use-certainty-to-calculate-score": true
+            },
+            "base-scorer": {
+              "type": "gaussian-model-scorer",
+              "name": "numberOfDistinctFolderOpened.userId.file.hourly.base_scorer",
+              "model": {
+                "name": "numberOfDistinctFolderOpened.userId.file.hourly"
+              },
+              "additional-models": [
+                {
+                  "name": "numberOfDistinctFolderOpened.userId.prior.global.file.hourly"
+                }
+              ],
+              "global-influence": 20,
+              "number-of-samples-to-influence-enough": 30,
+              "use-certainty-to-calculate-score": true
+            }
           },
           "reduction-configs": [
             {
@@ -199,19 +260,29 @@
           "type": "low-values-score-reducer",
           "name": "numberOfFileDeleted.userId.file.hourly.scorer",
           "base-scorer": {
-            "type": "gaussian-model-scorer",
-            "name": "numberOfFileDeleted.userId.file.hourly.base_scorer",
-            "model": {
-              "name": "numberOfFileDeleted.userId.file.hourly"
-            },
-            "additional-models": [
-              {
-                "name": "numberOfFileDeleted.userId.prior.global.file.hourly"
+            "type": "score-mapper",
+            "name": "numberOfFileDeleted.userId.file.hourly.mapper",
+            "score-mapping-conf": {
+              "mapping": {
+                "95.0": 0,
+                "100.0": 100
               }
-            ],
-            "global-influence": 20,
-            "number-of-samples-to-influence-enough": 30,
-            "use-certainty-to-calculate-score": true
+            },
+            "base-scorer": {
+              "type": "gaussian-model-scorer",
+              "name": "numberOfFileDeleted.userId.file.hourly.base_scorer",
+              "model": {
+                "name": "numberOfFileDeleted.userId.file.hourly"
+              },
+              "additional-models": [
+                {
+                  "name": "numberOfFileDeleted.userId.prior.global.file.hourly"
+                }
+              ],
+              "global-influence": 20,
+              "number-of-samples-to-influence-enough": 30,
+              "use-certainty-to-calculate-score": true
+            }
           },
           "reduction-configs": [
             {
@@ -231,19 +302,29 @@
           "type": "low-values-score-reducer",
           "name": "numberOfSuccessfulFileRenamed.userId.file.hourly.scorer",
           "base-scorer": {
-            "type": "gaussian-model-scorer",
-            "name": "numberOfSuccessfulFileRenamed.userId.file.hourly.base_scorer",
-            "model": {
-              "name": "numberOfSuccessfulFileRenamed.userId.file.hourly"
-            },
-            "additional-models": [
-              {
-                "name": "numberOfSuccessfulFileRenamed.userId.prior.global.file.hourly"
+            "type": "score-mapper",
+            "name": "numberOfSuccessfulFileRenamed.userId.file.hourly.mapper",
+            "score-mapping-conf": {
+              "mapping": {
+                "95.0": 0,
+                "100.0": 100
               }
-            ],
-            "global-influence": 20,
-            "number-of-samples-to-influence-enough": 30,
-            "use-certainty-to-calculate-score": true
+            },
+            "base-scorer": {
+              "type": "gaussian-model-scorer",
+              "name": "numberOfSuccessfulFileRenamed.userId.file.hourly.base_scorer",
+              "model": {
+                "name": "numberOfSuccessfulFileRenamed.userId.file.hourly"
+              },
+              "additional-models": [
+                {
+                  "name": "numberOfSuccessfulFileRenamed.userId.prior.global.file.hourly"
+                }
+              ],
+              "global-influence": 20,
+              "number-of-samples-to-influence-enough": 30,
+              "use-certainty-to-calculate-score": true
+            }
           },
           "reduction-configs": [
             {
@@ -263,19 +344,29 @@
           "type": "low-values-score-reducer",
           "name": "numberOfFileMovedFromSharedDrive.userId.file.hourly.scorer",
           "base-scorer": {
-            "type": "gaussian-model-scorer",
-            "name": "numberOfFileMovedFromSharedDrive.userId.file.hourly.base_scorer",
-            "model": {
-              "name": "numberOfFileMovedFromSharedDrive.userId.file.hourly"
-            },
-            "additional-models": [
-              {
-                "name": "numberOfFileMovedFromSharedDrive.userId.prior.global.file.hourly"
+            "type": "score-mapper",
+            "name": "numberOfFileMovedFromSharedDrive.userId.file.hourly.mapper",
+            "score-mapping-conf": {
+              "mapping": {
+                "95.0": 0,
+                "100.0": 100
               }
-            ],
-            "global-influence": 20,
-            "number-of-samples-to-influence-enough": 30,
-            "use-certainty-to-calculate-score": true
+            },
+            "base-scorer": {
+              "type": "gaussian-model-scorer",
+              "name": "numberOfFileMovedFromSharedDrive.userId.file.hourly.base_scorer",
+              "model": {
+                "name": "numberOfFileMovedFromSharedDrive.userId.file.hourly"
+              },
+              "additional-models": [
+                {
+                  "name": "numberOfFileMovedFromSharedDrive.userId.prior.global.file.hourly"
+                }
+              ],
+              "global-influence": 20,
+              "number-of-samples-to-influence-enough": 30,
+              "use-certainty-to-calculate-score": true
+            }
           },
           "reduction-configs": [
             {
@@ -295,19 +386,29 @@
           "type": "low-values-score-reducer",
           "name": "numberOfFileMovedToSharedDrive.userId.file.hourly.scorer",
           "base-scorer": {
-            "type": "gaussian-model-scorer",
-            "name": "numberOfFileMovedToSharedDrive.userId.file.hourly.base_scorer",
-            "model": {
-              "name": "numberOfFileMovedToSharedDrive.userId.file.hourly"
-            },
-            "additional-models": [
-              {
-                "name": "numberOfFileMovedToSharedDrive.userId.prior.global.file.hourly"
+            "type": "score-mapper",
+            "name": "numberOfFileMovedToSharedDrive.userId.file.hourly.mapper",
+            "score-mapping-conf": {
+              "mapping": {
+                "95.0": 0,
+                "100.0": 100
               }
-            ],
-            "global-influence": 20,
-            "number-of-samples-to-influence-enough": 30,
-            "use-certainty-to-calculate-score": true
+            },
+            "base-scorer": {
+              "type": "gaussian-model-scorer",
+              "name": "numberOfFileMovedToSharedDrive.userId.file.hourly.base_scorer",
+              "model": {
+                "name": "numberOfFileMovedToSharedDrive.userId.file.hourly"
+              },
+              "additional-models": [
+                {
+                  "name": "numberOfFileMovedToSharedDrive.userId.prior.global.file.hourly"
+                }
+              ],
+              "global-influence": 20,
+              "number-of-samples-to-influence-enough": 30,
+              "use-certainty-to-calculate-score": true
+            }
           },
           "reduction-configs": [
             {
