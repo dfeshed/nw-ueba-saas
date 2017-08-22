@@ -25,13 +25,14 @@ public enum FixedDurationStrategy {
 
     public String toStrategyName()
     {
-        if (this.equals(DAILY))
+        switch (this)
         {
-            return STRATEGY_NAME_FIXED_DURATION_DAILY;
-        }
-        else
-        {
-            return STRATEGY_NAME_FIXED_DURATION_HOURLY;
+            case DAILY:
+                return STRATEGY_NAME_FIXED_DURATION_DAILY;
+            case HOURLY:
+                return STRATEGY_NAME_FIXED_DURATION_HOURLY;
+            default:
+                throw new RuntimeException("cannot convert fixedDurationStrategy into strategyName");
         }
     }
     public static FixedDurationStrategy fromDuration(Duration duration)
@@ -63,7 +64,7 @@ public enum FixedDurationStrategy {
         }
         else
         {
-            throw new RuntimeException("Unsupported fixed duration strategy name");
+            throw new IllegalArgumentException("Unsupported fixed duration strategy name");
         }
     }
 }
