@@ -23,28 +23,29 @@ public class ConnectorServiceImpl implements ConnectorService {
     }
 
     @Override
-/**
- * Apply validation for "/configuation" from "https://app.swaggerhub.com/apis/Fortscale/Presidio-V2/1.0.0"
- */
+    /**
+     * Apply validation for "/configuation" from "https://app.swaggerhub.com/apis/Fortscale/Presidio-V2/1.0.0"
+     */
     public ValidationResults validateConfiguration(PresidioManagerConfiguration presidioManagerConfiguration) {
 
         ValidationResults validationResults = new ValidationResults();
         if (presidioManagerConfiguration == null) {
-            //TODO: Set Error
-            ConfigurationBadParamDetails error = new ConfigurationBadParamDetails("1", "1", "1", "2", "3");
+
+            ConfigurationBadParamDetails error = new ConfigurationBadParamDetails("ALL", "ALL", "invalidParamter", "jsonPath", "Nothing Configured");
             validationResults.addError(error);
         }
         if (presidioManagerConfiguration.getDataPipeLineConfiguration() == null) {
-            //TODO: Set Error
-            ConfigurationBadParamDetails error = new ConfigurationBadParamDetails("1", "1", "1", "2", "3");
+
+            ConfigurationBadParamDetails error = new ConfigurationBadParamDetails("dataPipeline", "dataPipeline", "invalidParamter", "jsonPath", "DataPipline is empty");
             validationResults.addError(error);
         }
         String[] schemas = presidioManagerConfiguration.getDataPipeLineConfiguration().getSchemas();
         if (schemas == null || schemas.length == 0) {
-            //TODO: Set Error
-            ConfigurationBadParamDetails error = new ConfigurationBadParamDetails("1", "1", "1", "2", "3");
+
+            ConfigurationBadParamDetails error = new ConfigurationBadParamDetails("dataPipeline", "dataPipeline/scehmas", "No Schema Defined", "jsonPath", "Scehma Types Cannot be empty");
             validationResults.addError(error);
         }
+
 
         return validationResults;
     }

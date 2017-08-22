@@ -11,7 +11,7 @@ import presidio.sdk.api.service.ConnectorService;
 import java.util.Map;
 
 /**
- * Created by shays on 22/08/2017.
+ * Init the connector manager
  */
 @Configuration
 public class ConnectorManagerConfiguration {
@@ -26,7 +26,7 @@ public class ConnectorManagerConfiguration {
     ConnectorService connectorService() throws Exception {
         final RestTemplate restTemplate = new RestTemplate();
 
-
+        //Get host and port from connector-manager module configuration
         Map<String, String> properties = this.configurationServerClientService.readConfigurationAsProperties(PREISIDO_CONNECTOR_MANAGER_APPNAME, null);
         String connectorHostname = properties.get(PREISIDO_COLLECTOR_HOST_KEY);
         String connectorPort = properties.get(PREISIDO_COLLECTOR_PORT_KEY);
