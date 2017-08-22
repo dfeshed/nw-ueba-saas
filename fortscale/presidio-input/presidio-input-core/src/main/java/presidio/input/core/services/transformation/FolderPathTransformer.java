@@ -9,7 +9,6 @@ import presidio.sdk.api.utils.ReflectionUtils;
 
 import java.io.File;
 import java.util.List;
-import java.util.regex.Pattern;
 
 public class FolderPathTransformer implements Transformer {
 
@@ -40,8 +39,8 @@ public class FolderPathTransformer implements Transformer {
                         outputFilePath = null;
                         outputFolderPath = filePathValue;
                     } else {
-                        String pattern = Pattern.quote(System.getProperty("file.separator"));
-                        String[] splitFilePath = filePathValue.split(pattern);
+
+                        String[] splitFilePath = filePathValue.split(File.separator);
                         outputFolderPath = StringUtils.join(ArrayUtils.remove(splitFilePath, splitFilePath.length - 1), File.separator);
                         outputFilePath = filePathValue;
                     }
