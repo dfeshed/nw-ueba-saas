@@ -37,6 +37,7 @@
 <section class="rsa-incident-journal-entry__note">
   {{respond-common/editable-field
     type='textarea'
+    allowEmptyValue=false
     value=entry.notes
     isDisabled=(not accessControl.respondCanManageJournal)
     onFieldChange=(action 'handleNoteChange')}}
