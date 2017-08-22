@@ -131,7 +131,7 @@ public class FeatureBucketAggregator {
         ret.setCreatedAt(new Date());
 
         for (String contextFieldName : featureBucketConf.getContextFieldNames()) {
-            String contextValue = adeRecordReader.get(contextFieldName, String.class);
+            String contextValue = adeRecordReader.getContext(contextFieldName);
             ret.addToContextFieldNameToValueMap(contextFieldName, contextValue);
         }
 
