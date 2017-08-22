@@ -1,12 +1,15 @@
 package presidio.output.processor.services.alert;
 
 
+import net.minidev.json.JSONObject;
 import presidio.output.domain.records.alerts.AlertPriority;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class AlertNamingService {
 
@@ -44,25 +47,32 @@ public class AlertNamingService {
         }
     }
 
-    public String alertNameFromIndictors(List<String> indicators) {
-        int priority = indicatorToAlert.size();
-        String alertName = "";
+    public List<String> alertNamesFromIndictorsByPriority(List<String> indicators) {
+        int priority, place, remove, numberOfIndicators;
+        List<String> list = new ArrayList<>();
+        Set<String> set = new HashSet<>();
+        String alertName;
         AlertPriority alertPriority;
-        for (String indicator : indicators) {
-            alertPriority = indicatorToAlert.get(indicator);
-            if (alertPriority.getPriority() < priority) {
-                priority = alertPriority.getPriority();
-                alertName = alertPriority.getName();
+        numberOfIndicators = indicators.size();
+        for (int i = 0; i < numberOfIndicators; i++) {
+            priority = indicatorToAlert.size() + 1;
+            alertName = "";
+            place = 0;
+            remove = 0;
+            for (String indicator : indicators) {
+                alertPriority = indicatorToAlert.get(indicator);
+                if (alertPriority.getPriority() < priority) {
+                    priority = alertPriority.getPriority();
+                    alertName = alertPriority.getName();
+                    remove = place;
+                }
+                place++;
             }
+            indicators.remove(remove);
+            set.add(alertName);
         }
-        return alertName;
+        list.addAll(set);
+        return list;
     }
 
-    public List<String> alertNamesFromIndictors(List<String> indicators) {
-        List<String> alertNames = new ArrayList<>();
-        for (String indicator : indicators) {
-            alertNames.add(indicatorToAlert.get(indicator).getName());
-        }
-        return alertNames;
-    }
 }

@@ -1,5 +1,6 @@
 package presidio.output.domain.records.alerts;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
@@ -7,6 +8,7 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import java.util.List;
 
 @Document(indexName = Alert.INDEX_NAME, type = Alert.ALERT_TYPE)
 public class Alert {
@@ -15,6 +17,7 @@ public class Alert {
     public static final String ALERT_TYPE = "alert";
 
     // field names
+    public static final String CLASSIFICATION = "classification";
     public static final String ID = "id";
     public static final String USER_NAME = "userName";
     public static final String TYPE = "alertType";
@@ -24,6 +27,10 @@ public class Alert {
     public static final String INDICATORS_NUM = "indicatorsNum";
     public static final String TIMRFRAME = "timeframe";
     public static final String SEVERITY = "severity";
+
+    @Field(type = FieldType.String, store = true)
+    @JsonProperty(CLASSIFICATION)
+    private List<String> classification;
 
     @Id
     @Field(type = FieldType.String, store = true)
@@ -35,10 +42,10 @@ public class Alert {
     @Field(type = FieldType.String, store = true)
     private AlertEnums.AlertType alertType;
 
-    @Field (type = FieldType.Long, store = true)
+    @Field(type = FieldType.Long, store = true)
     private long startDate;
 
-    @Field (type = FieldType.Long, store = true)
+    @Field(type = FieldType.Long, store = true)
     private long endDate;
 
     @Field(type = FieldType.Double, store = true)
@@ -51,15 +58,16 @@ public class Alert {
     @Enumerated(EnumType.STRING)
     private AlertEnums.AlertTimeframe timeframe;
 
-    @Field (type = FieldType.String, store = true)
+    @Field(type = FieldType.String, store = true)
     @Enumerated(EnumType.STRING)
     private AlertEnums.AlertSeverity severity;
 
-    public Alert(){
+    public Alert() {
         // empty const for JSON deserialization
     }
 
-    public Alert(String id, String userName, AlertEnums.AlertType type, long startDate, long endDate, double score, int indicatorsNum, AlertEnums.AlertTimeframe timeframe, AlertEnums.AlertSeverity severity) {
+    public Alert(List<String> classification, String id, String userName, AlertEnums.AlertType type, long startDate, long endDate, double score, int indicatorsNum, AlertEnums.AlertTimeframe timeframe, AlertEnums.AlertSeverity severity) {
+        this.classification = classification;
         this.id = id;
         this.userName = userName;
         this.alertType = type;
@@ -71,6 +79,13 @@ public class Alert {
         this.severity = severity;
     }
 
+    public List<String> getClassification() {
+        return classification;
+    }
+
+    public void setClassification(List<String> classification) {
+        this.classification = classification;
+    }
 
     public String getId() {
         return id;

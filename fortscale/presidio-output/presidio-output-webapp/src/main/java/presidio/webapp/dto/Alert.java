@@ -1,13 +1,23 @@
 package presidio.webapp.dto;
 
+import java.util.List;
+
 public class Alert {
     private String id;
-    private String alertClassification;
     private long startDate;
     private long endDate;
     private String username;
     private double score;
     private Integer indicatorsNum;
+    private List<String> classifications;
+
+    public List<String> getClassifications() {
+        return classifications;
+    }
+
+    public void setClassifications(List<String> classifications) {
+        this.classifications = classifications;
+    }
 
     public String getId() {
         return id;
@@ -15,14 +25,6 @@ public class Alert {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public String getAlertClassification() {
-        return alertClassification;
-    }
-
-    public void setAlertClassification(String alertClassification) {
-        this.alertClassification = alertClassification;
     }
 
     public String getUsername() {

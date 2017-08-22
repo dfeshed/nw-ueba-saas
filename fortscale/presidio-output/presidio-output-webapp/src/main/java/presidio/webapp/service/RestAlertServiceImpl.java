@@ -33,12 +33,12 @@ public class RestAlertServiceImpl implements RestAlertService {
     public Alert createResult(presidio.output.domain.records.alerts.Alert alertData) {
         Alert resultAlert = new Alert();
         resultAlert.setId(alertData.getId());
-        resultAlert.setAlertClassification(alertData.getAlertType().name());
         resultAlert.setUsername(alertData.getUserName());
         resultAlert.setIndicatorsNum(alertData.getIndicatorsNum());
         resultAlert.setStartDate(alertData.getStartDate());
         resultAlert.setEndDate(alertData.getEndDate());
         resultAlert.setScore(alertData.getScore());
+        resultAlert.setClassifications(alertData.getClassification());
         return resultAlert;
     }
 
