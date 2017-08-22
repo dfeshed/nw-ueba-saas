@@ -17,6 +17,20 @@
       }
     },
     {
+      "name": "numberOfSuccessfulAuthentications.userId.prior.global.authentication.hourly",
+      "retriever": {
+        "type": "model_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "modelConfName": "numberOfSuccessfulAuthentications.userId.authentication.hourly"
+      },
+      "builder": {
+        "type": "gaussian_prior_model_builder",
+        "distanceBetweenSegmentCenters": 1,
+        "maxSegmentWidthToNotDiscardBecauseOfBadRatio": 3
+      }
+    },
+    {
       "name": "numberOfFailedAuthentications.userId.authentication.hourly",
       "selector": {
         "type": "aggregated_event_context_selector",
@@ -30,6 +44,20 @@
       },
       "builder": {
         "type": "continuous_histogram_model_builder"
+      }
+    },
+    {
+      "name": "numberOfFailedAuthentications.userId.prior.global.authentication.hourly",
+      "retriever": {
+        "type": "model_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "modelConfName": "numberOfFailedAuthentications.userId.authentication.hourly"
+      },
+      "builder": {
+        "type": "gaussian_prior_model_builder",
+        "distanceBetweenSegmentCenters": 1,
+        "maxSegmentWidthToNotDiscardBecauseOfBadRatio": 3
       }
     },
     {
@@ -49,6 +77,20 @@
       }
     },
     {
+      "name": "numberOfDistinctDstMachineDomain.userId.prior.global.authentication.hourly",
+      "retriever": {
+        "type": "model_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "modelConfName": "numberOfDistinctDstMachineDomain.userId.authentication.hourly"
+      },
+      "builder": {
+        "type": "gaussian_prior_model_builder",
+        "distanceBetweenSegmentCenters": 1,
+        "maxSegmentWidthToNotDiscardBecauseOfBadRatio": 3
+      }
+    },
+    {
       "name": "numberOfDistinctSrcMachineId.userId.authentication.hourly",
       "selector": {
         "type": "aggregated_event_context_selector",
@@ -62,6 +104,20 @@
       },
       "builder": {
         "type": "continuous_histogram_model_builder"
+      }
+    },
+    {
+      "name": "numberOfDistinctSrcMachineId.userId.prior.global.authentication.hourly",
+      "retriever": {
+        "type": "model_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "modelConfName": "numberOfDistinctSrcMachineId.userId.authentication.hourly"
+      },
+      "builder": {
+        "type": "gaussian_prior_model_builder",
+        "distanceBetweenSegmentCenters": 1,
+        "maxSegmentWidthToNotDiscardBecauseOfBadRatio": 3
       }
     },
     {
@@ -81,6 +137,20 @@
       }
     },
     {
+      "name": "numberOfDistinctDstMachineId.userId.prior.global.authentication.hourly",
+      "retriever": {
+        "type": "model_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "modelConfName": "numberOfDistinctDstMachineId.userId.authentication.hourly"
+      },
+      "builder": {
+        "type": "gaussian_prior_model_builder",
+        "distanceBetweenSegmentCenters": 1,
+        "maxSegmentWidthToNotDiscardBecauseOfBadRatio": 3
+      }
+    },
+    {
       "name": "numberOfDistinctSrcMachineNameRegexCluster.userId.authentication.hourly",
       "selector": {
         "type": "aggregated_event_context_selector",
@@ -97,6 +167,20 @@
       }
     },
     {
+      "name": "numberOfDistinctSrcMachineNameRegexCluster.userId.prior.global.authentication.hourly",
+      "retriever": {
+        "type": "model_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "modelConfName": "numberOfDistinctSrcMachineNameRegexCluster.userId.authentication.hourly"
+      },
+      "builder": {
+        "type": "gaussian_prior_model_builder",
+        "distanceBetweenSegmentCenters": 1,
+        "maxSegmentWidthToNotDiscardBecauseOfBadRatio": 3
+      }
+    },
+    {
       "name": "numberOfDistinctDstMachineNameRegexCluster.userId.authentication.hourly",
       "selector": {
         "type": "aggregated_event_context_selector",
@@ -110,6 +194,20 @@
       },
       "builder": {
         "type": "continuous_histogram_model_builder"
+      }
+    },
+    {
+      "name": "numberOfDistinctDstMachineNameRegexCluster.userId.prior.global.authentication.hourly",
+      "retriever": {
+        "type": "model_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "modelConfName": "numberOfDistinctDstMachineNameRegexCluster.userId.authentication.hourly"
+      },
+      "builder": {
+        "type": "gaussian_prior_model_builder",
+        "distanceBetweenSegmentCenters": 1,
+        "maxSegmentWidthToNotDiscardBecauseOfBadRatio": 3
       }
     }
   ]

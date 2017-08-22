@@ -159,6 +159,29 @@
       ]
     },
     {
+      "name": "fileMovedCounterUserIdFileHourly",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "file"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "movedFilesFromSharedDriveCounter",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.operationType == 'FILE_MOVED')]"
+          }
+        }
+      ]
+    },
+    {
       "name": "fileMovedFromSharedDriveCounterUserIdFileHourly",
       "expireAfterSeconds": 31536000,
       "contextFieldNames": [
@@ -176,7 +199,7 @@
             "type": "aggr_feature_sum_func"
           },
           "filter": {
-            "jsonPath": "[?(@.operationType == 'FILE_MOVED' && @.isSrcDriveShared == 'true')]"
+            "jsonPath": "[?(@.operationType == 'FILE_MOVED' && @.isSrcDriveShared == 'true' && @.isDstDriveShared == 'false')]"
           }
         }
       ]
@@ -199,7 +222,7 @@
             "type": "aggr_feature_sum_func"
           },
           "filter": {
-            "jsonPath": "[?(@.operationType == 'FILE_MOVED' && @.isDstDriveShared == 'true')]"
+            "jsonPath": "[?(@.operationType == 'FILE_MOVED' && @.isSrcDriveShared == 'false' && @.isDstDriveShared == 'true')]"
           }
         }
       ]
