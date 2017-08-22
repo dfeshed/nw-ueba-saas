@@ -12,6 +12,7 @@ import presidio.data.generators.common.precentage.OperationResultPercentageGener
 import presidio.data.generators.common.time.TimeGenerator;
 import presidio.data.generators.event.EntityEventIDFixedPrefixGenerator;
 import presidio.data.generators.event.IEventGenerator;
+import presidio.data.generators.event.OPERATION_RESULT;
 import presidio.data.generators.machine.IMachineGenerator;
 import presidio.data.generators.machine.SimpleMachineGenerator;
 import presidio.data.generators.user.IUserGenerator;
@@ -69,7 +70,7 @@ public class ActiveDirectoryEventsGenerator implements IEventGenerator {
                     getActiveDirOperationGenerator().getNext(),
                     srcMachine,
                     getDstMachineGenerator().getNext(),
-                    getResultGenerator().getNext(),
+                    convertResultToQuestConvention(getResultGenerator().getNext()),
                     objectName,
                     getObjectDN(objectName, machineDomainDN)
                     );
@@ -169,5 +170,15 @@ public class ActiveDirectoryEventsGenerator implements IEventGenerator {
 
     public void setObjectNameGenerator(IStringGenerator objectNameGenerator) {
         this.objectNameGenerator = objectNameGenerator;
+    }
+
+    private String convertResultToQuestConvention(String result) {
+        if (result.equals(OPERATION_RESULT.SUCCESS.value)){
+            return "Success";
+        } else if (result.equals(OPERATION_RESULT.FAILURE.value)) {
+            return "Failure";
+        }
+
+        return result;
     }
 }
