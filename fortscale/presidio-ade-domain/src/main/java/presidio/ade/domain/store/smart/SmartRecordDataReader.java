@@ -1,6 +1,7 @@
-package presidio.ade.domain.store.aggr.smart;
+package presidio.ade.domain.store.smart;
 
 import fortscale.utils.pagination.ContextIdToNumOfItems;
+import fortscale.utils.time.TimeRange;
 import presidio.ade.domain.record.aggregated.SmartRecord;
 
 import java.util.List;
@@ -29,10 +30,16 @@ public interface SmartRecordDataReader {
      * @param numOfItemsToRead num of items to read
      * @return list of Smart records
      */
-    List<SmartRecord> readRecords(SmartRecordsMetadata smartRecordsMetadata, Set<String> contextIds, int numOfItemsToSkip, int numOfItemsToRead);
+    List<SmartRecord> readRecords(SmartRecordsMetadata smartRecordsMetadata, Set<String> contextIds, int numOfItemsToSkip, int numOfItemsToRead, int scoreThreshold);
 
     /**
      * Validate that the contextId indexed in the store.
      */
     void ensureContextIdIndex(String configurationName);
+
+    /**
+     *
+     * @return smart collection names
+     */
+    Set<String> getAllSmartConfigurationNames();
 }

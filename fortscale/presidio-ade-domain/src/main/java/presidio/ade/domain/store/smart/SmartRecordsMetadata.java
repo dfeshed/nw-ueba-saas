@@ -1,4 +1,4 @@
-package presidio.ade.domain.store.aggr.smart;
+package presidio.ade.domain.store.smart;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 

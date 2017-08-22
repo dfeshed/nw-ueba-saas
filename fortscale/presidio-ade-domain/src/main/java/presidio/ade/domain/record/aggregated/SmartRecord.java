@@ -38,6 +38,10 @@ public class SmartRecord extends AdeContextualAggregatedRecord implements AdeSco
 	@Field
 	private String featureName;
 
+	public SmartRecord(){
+		super();
+	}
+
 	public SmartRecord(
 			TimeRange timeRange,
 			String contextId,

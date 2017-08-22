@@ -1,4 +1,4 @@
-package presidio.ade.domain.store.aggr.smart;
+package presidio.ade.domain.store.smart;
 
 import fortscale.utils.logging.Logger;
 import fortscale.utils.mongodb.util.MongoDbBulkOpUtil;
@@ -10,11 +10,12 @@ import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import presidio.ade.domain.record.AdeRecord;
 import presidio.ade.domain.record.aggregated.*;
-import presidio.ade.domain.record.enriched.EnrichedRecord;
 
 import java.time.Instant;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.match;
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.newAggregation;
@@ -43,7 +44,7 @@ public class SmartRecordStoreMongoImpl implements SmartRecordDataStore {
 
         //Create Aggregation on context ids
         Aggregation agg = newAggregation(
-                match(where(EnrichedRecord.START_INSTANT_FIELD).gte(Date.from(startDate)).lt(Date.from(endDate))),
+                match(where(AdeRecord.START_INSTANT_FIELD).gte(Date.from(startDate)).lt(Date.from(endDate))),
                 Aggregation.group(AdeContextualAggregatedRecord.CONTEXT_ID_FIELD).count().as(ContextIdToNumOfItems.TOTAL_NUM_OF_ITEMS_FIELD),
                 Aggregation.project(ContextIdToNumOfItems.TOTAL_NUM_OF_ITEMS_FIELD).and("_id").as(ContextIdToNumOfItems.CONTEXT_ID_FIELD).andExclude("_id")
         );
@@ -54,14 +55,15 @@ public class SmartRecordStoreMongoImpl implements SmartRecordDataStore {
     }
 
     @Override
-    public List<SmartRecord> readRecords(SmartRecordsMetadata smartRecordsMetadata, Set<String> contextIds, int numOfItemsToSkip, int numOfItemsToRead) {
+    public List<SmartRecord> readRecords(SmartRecordsMetadata smartRecordsMetadata, Set<String> contextIds, int numOfItemsToSkip, int numOfItemsToRead, int scoreThreshold) {
         Instant startDate = smartRecordsMetadata.getStartInstant();
         Instant endDate = smartRecordsMetadata.getEndInstant();
         String collectionName = translator.toCollectionName(smartRecordsMetadata);
 
-        Criteria dateTimeCriteria = Criteria.where(EnrichedRecord.START_INSTANT_FIELD).gte(startDate).lt(endDate);
+        Criteria dateTimeCriteria = Criteria.where(AdeRecord.START_INSTANT_FIELD).gte(startDate).lt(endDate);
         Criteria contextCriteria = Criteria.where(AdeContextualAggregatedRecord.CONTEXT_ID_FIELD).in(contextIds);
-        Query query = new Query(dateTimeCriteria).addCriteria(contextCriteria).skip(numOfItemsToSkip).limit(numOfItemsToRead);
+        Criteria scoreCriteria = Criteria.where(SmartRecord.SMART_SCORE_FIELD).gte(scoreThreshold);
+        Query query = new Query(dateTimeCriteria).addCriteria(contextCriteria).addCriteria(scoreCriteria).skip(numOfItemsToSkip).limit(numOfItemsToRead);
 
         List<SmartRecord> smartRecords = mongoTemplate.find(query, SmartRecord.class, collectionName);
 
@@ -75,5 +77,21 @@ public class SmartRecordStoreMongoImpl implements SmartRecordDataStore {
 
         mongoTemplate.indexOps(collectionName).ensureIndex(new Index()
                 .on(AdeContextualAggregatedRecord.CONTEXT_ID_FIELD, Sort.Direction.ASC));
+    }
+
+    /**
+     * @return all smart collections
+     */
+    public Set<String> getAllSmartConfigurationNames() {
+
+       String prefix = SmartDataToCollectionNameTranslator.SCORE_SMART_COLLECTION_PREFIX;
+        //get all smart collections
+        Set<String> collections = mongoTemplate.getCollectionNames();
+        collections = collections.stream().filter(c ->
+                c.startsWith(prefix)
+        ).map(c->  c.replaceFirst(prefix, "")).collect(Collectors.toSet());
+
+         return collections;
+
     }
 }

@@ -7,8 +7,8 @@ import fortscale.utils.pagination.PageIterator;
 import fortscale.utils.time.TimeRange;
 import javafx.util.Pair;
 import presidio.ade.domain.record.aggregated.SmartRecord;
-import presidio.ade.domain.store.aggr.smart.SmartRecordDataReader;
-import presidio.ade.domain.store.aggr.smart.SmartRecordsMetadata;
+import presidio.ade.domain.store.smart.SmartRecordDataReader;
+import presidio.ade.domain.store.smart.SmartRecordsMetadata;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +18,7 @@ public class SmartPaginationService extends BasePaginationService<SmartRecord> {
 
 
     private static final Logger logger = Logger.getLogger(SmartPaginationService.class);
-    private SmartRecordDataReader reader;
+    protected SmartRecordDataReader reader;
 
     public SmartPaginationService(SmartRecordDataReader reader, int pageSize, int maxGroupSize) {
         super(pageSize, maxGroupSize);
@@ -39,8 +39,21 @@ public class SmartPaginationService extends BasePaginationService<SmartRecord> {
 
         //Validate if indexes exist, otherwise add them.
         ensureContextIdIndex(configurationName);
-
         List<ContextIdToNumOfItems> contextIdToNumOfItemsList = getContextIdToNumOfItemsList(configurationName, timeRange);
+        return getScoreThresholdPageIterators(configurationName, timeRange, contextIdToNumOfItemsList, Integer.MIN_VALUE);
+    }
+
+
+    /**
+     * Create pageIterators.
+     * records filtered by scoreThreshold.
+     * @param configurationName
+     * @param timeRange
+     * @param smartScoreThreshold
+     * @return list of pageIterators.
+     */
+    protected List<PageIterator<SmartRecord>> getScoreThresholdPageIterators(String configurationName, TimeRange timeRange, List<ContextIdToNumOfItems> contextIdToNumOfItemsList, int smartScoreThreshold) {
+
         //groups is a list, where each group contains pair of total num of records and set of contextId.
         List<Pair<Integer, Set<String>>> groups = getGroups(contextIdToNumOfItemsList);
         List<PageIterator<SmartRecord>> pageIteratorList = new ArrayList<>(groups.size());
@@ -49,7 +62,7 @@ public class SmartPaginationService extends BasePaginationService<SmartRecord> {
         for (Pair<Integer, Set<String>> group : groups) {
             Set<String> contextIds = group.getValue();
             int totalNumOfItems = group.getKey();
-            PageIterator<SmartRecord> pageIterator = createPageIterator(configurationName, timeRange, contextIds, totalNumOfItems);
+            PageIterator<SmartRecord> pageIterator = createPageIterator(configurationName, timeRange, contextIds, totalNumOfItems, smartScoreThreshold);
             pageIteratorList.add(pageIterator);
         }
 
@@ -67,6 +80,7 @@ public class SmartPaginationService extends BasePaginationService<SmartRecord> {
         return this.reader.aggregateContextIdToNumOfEvents(smartRecordsMetadata);
     }
 
+
     /**
      * @param configurationName smart configuration record
      * @param timeRange         timeRange
@@ -74,10 +88,10 @@ public class SmartPaginationService extends BasePaginationService<SmartRecord> {
      * @param totalNumOfItems   total num of records in page
      * @return PageIterator
      */
-    protected PageIterator<SmartRecord> createPageIterator(String configurationName, TimeRange timeRange, Set<String> contextIds, int totalNumOfItems) {
+    protected PageIterator<SmartRecord> createPageIterator(String configurationName, TimeRange timeRange, Set<String> contextIds, int totalNumOfItems, int smartScoreThreshold) {
         int totalAmountOfPages = (int) Math.ceil((double) totalNumOfItems / this.getPageSize());
         logger.debug("Num of pages is: {}", totalAmountOfPages);
-        return new SmartRecordPageIterator(timeRange, configurationName, contextIds, this.reader, this.getPageSize(), totalAmountOfPages);
+        return new SmartRecordPageIterator(timeRange, configurationName, contextIds, this.reader, this.getPageSize(), totalAmountOfPages, smartScoreThreshold);
     }
 
     /**

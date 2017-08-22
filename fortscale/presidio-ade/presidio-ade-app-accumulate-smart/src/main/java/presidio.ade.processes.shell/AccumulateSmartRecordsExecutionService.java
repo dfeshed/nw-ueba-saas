@@ -6,7 +6,7 @@ import fortscale.utils.time.TimeRange;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import presidio.ade.domain.store.accumulator.smart.SmartAccumulationDataStore;
-import presidio.ade.domain.store.aggr.smart.SmartRecordDataReader;
+import presidio.ade.domain.store.smart.SmartRecordDataReader;
 import presidio.ade.processes.shell.accumulate.AccumulateSmartRecordsService;
 
 import java.time.Instant;

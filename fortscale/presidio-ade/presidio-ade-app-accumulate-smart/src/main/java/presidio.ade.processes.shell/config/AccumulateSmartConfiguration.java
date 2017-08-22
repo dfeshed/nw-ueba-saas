@@ -10,8 +10,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import presidio.ade.domain.store.accumulator.smart.SmartAccumulationDataStore;
 import presidio.ade.domain.store.accumulator.smart.SmartAccumulationDataStoreConfig;
-import presidio.ade.domain.store.aggr.smart.SmartRecordDataReader;
-import presidio.ade.domain.store.aggr.smart.SmartRecordsDataReaderConfig;
+import presidio.ade.domain.store.smart.SmartRecordDataReader;
+import presidio.ade.domain.store.smart.SmartRecordsDataReaderConfig;
 import presidio.ade.processes.shell.AccumulateSmartRecordsExecutionService;
 
 @Configuration

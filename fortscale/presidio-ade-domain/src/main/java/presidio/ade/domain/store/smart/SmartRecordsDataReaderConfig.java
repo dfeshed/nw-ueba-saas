@@ -1,4 +1,4 @@
-package presidio.ade.domain.store.aggr.smart;
+package presidio.ade.domain.store.smart;
 
 import fortscale.utils.mongodb.util.MongoDbBulkOpUtil;
 import fortscale.utils.mongodb.util.MongoDbBulkOpUtilConfig;

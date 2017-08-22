@@ -9,7 +9,7 @@ import presidio.ade.domain.pagination.smart.SmartPaginationService;
 import presidio.ade.domain.record.accumulator.AccumulatedSmartRecord;
 import presidio.ade.domain.record.aggregated.SmartRecord;
 import presidio.ade.domain.store.accumulator.smart.SmartAccumulationDataStore;
-import presidio.ade.domain.store.aggr.smart.SmartRecordDataReader;
+import presidio.ade.domain.store.smart.SmartRecordDataReader;
 
 import java.util.*;
 

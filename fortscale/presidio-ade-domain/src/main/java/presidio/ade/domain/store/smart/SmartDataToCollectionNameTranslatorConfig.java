@@ -1,4 +1,4 @@
-package presidio.ade.domain.store.aggr.smart;
+package presidio.ade.domain.store.smart;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
