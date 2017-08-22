@@ -1,7 +1,6 @@
 package presidio.output.processor.services.alert;
 
 
-import net.minidev.json.JSONObject;
 import presidio.output.domain.records.alerts.AlertPriority;
 
 import java.util.ArrayList;

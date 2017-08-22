@@ -2,7 +2,6 @@ package presidio.output.proccesor.services;
 
 
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
-import net.minidev.json.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,9 +15,8 @@ import presidio.output.processor.services.alert.AlertNamingService;
 import presidio.output.processor.spring.AlertNamingConfig;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
 import static org.junit.Assert.assertEquals;
@@ -47,30 +45,14 @@ public class AlertsNamingServceTest {
 
     @Test
     public void classiticationsAsTowOptions() {
-        Map<String, String> map = new HashMap<>();
-        map.put("aggregated_feature_name", "Abnormal file action operation type");
-        JSONObject obj1 = new JSONObject(map);
-        map.clear();
-        map.put("aggregated_feature_name", "Abnormal logon day time");
-        JSONObject obj2 = new JSONObject(map);
-        List<JSONObject> indicators = new ArrayList();
-        indicators.add(obj1);
-        indicators.add(obj2);
+        List indicators = new ArrayList(Arrays.asList("Abnormal file action operation type", "Abnormal logon day time"));
         List<String> names = alertNamingService.alertNamesFromIndictorsByPriority(indicators);
         assertEquals(2, names.size());
     }
 
     @Test
     public void classiticationsAsOneOption() {
-        Map<String, String> map = new HashMap<>();
-        map.put("aggregated_feature_name", "Abnormal event day time");
-        JSONObject obj1 = new JSONObject(map);
-        map.clear();
-        map.put("aggregated_feature_name", "Abnormal Active Directory day time operation");
-        JSONObject obj2 = new JSONObject(map);
-        List<JSONObject> indicators = new ArrayList();
-        indicators.add(obj1);
-        indicators.add(obj2);
+        List indicators = new ArrayList(Arrays.asList("Abnormal event day time", "Abnormal Active Directory day time operation"));
         List<String> names = alertNamingService.alertNamesFromIndictorsByPriority(indicators);
         assertEquals(1, names.size());
     }
