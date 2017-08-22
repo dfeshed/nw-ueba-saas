@@ -6,6 +6,8 @@ import org.springframework.data.elasticsearch.repository.config.EnableElasticsea
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.output.domain.services.alerts.AlertPersistencyServiceImpl;
 import org.springframework.context.annotation.Import;
+import presidio.output.domain.services.users.UserPersistencyService;
+import presidio.output.domain.services.users.UserPersistencyServiceImpl;
 
 @Configuration
 @EnableElasticsearchRepositories(basePackages = "presidio.output.domain.repositories")
@@ -15,6 +17,11 @@ public class PresidioOutputPersistencyServiceConfig {
     @Bean
     public AlertPersistencyService alertPersistencyService() {
         return new AlertPersistencyServiceImpl();
+    }
+
+    @Bean
+    public UserPersistencyService userPersistencyService() {
+        return new UserPersistencyServiceImpl();
     }
 
 }
