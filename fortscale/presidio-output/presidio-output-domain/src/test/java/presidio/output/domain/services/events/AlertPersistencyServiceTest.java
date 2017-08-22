@@ -51,7 +51,6 @@ public class AlertPersistencyServiceTest {
         esTemplate.putMapping(Alert.class);
         esTemplate.refresh(Alert.class);
         classifications = new ArrayList<>(Arrays.asList("Mass Changes to Critical Enterprise Groups"));
-        ;
     }
 
     @Test
