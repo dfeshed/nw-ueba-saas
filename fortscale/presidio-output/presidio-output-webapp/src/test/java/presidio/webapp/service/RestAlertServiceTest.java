@@ -36,6 +36,7 @@ public class RestAlertServiceTest {
     @Test
     public void getAlertByIdSuccess() {
         Alert alert = createAlert();
+        alert.setId("id");
         when(alertService.findOne(eq(alert.getId()))).thenReturn(alert);
 
         presidio.webapp.dto.Alert alertById = restAlertService.getAlertById("id");
