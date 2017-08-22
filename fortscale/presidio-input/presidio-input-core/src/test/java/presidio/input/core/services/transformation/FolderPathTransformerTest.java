@@ -19,8 +19,8 @@ public class FolderPathTransformerTest {
     public void testFolderPathTransformation_FileOperation(){
         FileRawEvent fileRawEvent = new FileRawEvent(Instant.now(), "id", "dataSource", "userId",
                 "operationType", null, EventResult.SUCCESS, "userName",
-                "displayName", null, "C://file/file.txt", false,
-                "C://dst/file.txt", false,0l);
+                "displayName", null, "C:\\file\\file.txt", false,
+                "C:\\dst\\file.txt", false,0l);
 
         List<String> folderOperations = new ArrayList<>();
         FolderPathTransformer folderPathTransformer = new FolderPathTransformer("srcFilePath",
@@ -28,8 +28,8 @@ public class FolderPathTransformerTest {
 
         List<AbstractPresidioDocument> transformed = folderPathTransformer.transform(Arrays.asList(new FileTransformedEvent(fileRawEvent)));
 
-        Assert.assertEquals("C://file", ((FileTransformedEvent)transformed.get(0)).getSrcFolderPath());
-        Assert.assertEquals("C://file/file.txt", ((FileTransformedEvent)transformed.get(0)).getSrcFilePath());
+        Assert.assertEquals("C:\\file", ((FileTransformedEvent)transformed.get(0)).getSrcFolderPath());
+        Assert.assertEquals("C:\\file\\file.txt", ((FileTransformedEvent)transformed.get(0)).getSrcFilePath());
     }
 
     @Test
