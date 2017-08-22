@@ -29,9 +29,9 @@ public class EnrichedEvent {
     public static final String RESULT_CODE_FIELD = "resultCode";
     public static final String USERNAME_FIELD = "userName";
     public static final String USER_DISPLAY_NAME_FIELD = "userdisplayName";
-    private static final String ADDITIONAL_INFO = "additionalInfo";
-    private static final String USER_ID_FIELD = "userId";
-    private static final String START_INSTANT_FIELD = "eventDate";
+    public static final String ADDITIONAL_INFO = "additionalInfo";
+    public static final String USER_ID_FIELD = "userId";
+    public static final String START_INSTANT_FIELD = "eventDate";
 
     @Id
     @Indexed

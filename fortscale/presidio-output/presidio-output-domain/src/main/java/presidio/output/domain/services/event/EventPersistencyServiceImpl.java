@@ -40,4 +40,9 @@ public class EventPersistencyServiceImpl implements EventPersistencyService {
             throw e;
         }
     }
+
+    @Override
+    public EnrichedEvent findLatestEventForUser(String userId) {
+        return eventRepository.findLatestEventForUser(userId);
+    }
 }

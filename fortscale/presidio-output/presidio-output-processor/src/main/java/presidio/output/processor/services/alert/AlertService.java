@@ -1,7 +1,8 @@
 package presidio.output.processor.services.alert;
 
 import fortscale.domain.SMART.EntityEvent;
-import fortscale.utils.pagination.PageIterator;
+import presidio.output.domain.records.alerts.Alert;
+import presidio.output.domain.records.users.User;
 
 /**
  * Created by efratn on 24/07/2017.
@@ -10,7 +11,8 @@ public interface AlertService {
 
     /**
      * Convert the received smarts into alerts and persist them
-     * @param smarts- paged smarts list
+     * @param smart - ADE SMART to be converted into Presidio Alert
+     * @param user- user entity related to the specified alert
      */
-    void generateAlerts(PageIterator<EntityEvent> smarts);
+    Alert generateAlert(EntityEvent smart, User user);
 }

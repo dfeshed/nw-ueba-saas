@@ -13,7 +13,7 @@ import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Properties;
-
+@Ignore
 public class FlumeConfigurationUtilTest {
 
     public static final String mockedModuleName = "adapter";

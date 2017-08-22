@@ -23,10 +23,15 @@ public class Alert extends AbstractElasticDocument{
     public static final String INDICATORS_NUM = "indicatorsNum";
     public static final String TIMEFRAME = "timeframe";
     public static final String SEVERITY = "severity";
+    public static final String USER_ID = "userId";
 
     @Field(type = FieldType.String, store = true)
     @JsonProperty(USER_NAME)
     private String userName;
+
+    @Field(type = FieldType.String, store = true)
+    @JsonProperty(USER_ID)
+    private String userId;
 
     @Field(type = FieldType.String, store = true)
     @JsonProperty(TYPE)
@@ -62,8 +67,9 @@ public class Alert extends AbstractElasticDocument{
         // empty const for JSON deserialization
     }
 
-    public Alert(String userName, AlertEnums.AlertType type, long startDate, long endDate, double score, int indicatorsNum, AlertEnums.AlertTimeframe timeframe, AlertEnums.AlertSeverity severity) {
+    public Alert(String userId, String userName, AlertEnums.AlertType type, long startDate, long endDate, double score, int indicatorsNum, AlertEnums.AlertTimeframe timeframe, AlertEnums.AlertSeverity severity) {
         super();
+        this.userId = userId;
         this.userName = userName;
         this.alertType = type;
         this.startDate = startDate;
@@ -72,6 +78,14 @@ public class Alert extends AbstractElasticDocument{
         this.indicatorsNum = indicatorsNum;
         this.timeframe = timeframe;
         this.severity = severity;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String getUserName() {
