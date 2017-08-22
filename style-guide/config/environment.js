@@ -25,6 +25,10 @@ module.exports = function(environment) {
       includeLocales: ['en', 'ja'],
       includeTimezone: 'subset'
     },
+    i18n: {
+      defaultLocale: 'en',
+      includedLocales: ['en', 'ja']
+    },
     EmberENV: {
       FEATURES: {
         // Here you can enable experimental features on an ember canary build

@@ -5,6 +5,7 @@ import csrfToken from 'component-lib/mixins/csrf-token';
 import Route from 'ember-route';
 import RSVP from 'rsvp';
 import service from 'ember-service/inject';
+import config from 'ember-get-config';
 
 const {
   testing
@@ -23,6 +24,15 @@ export default Route.extend(ApplicationRouteMixin, csrfToken, {
   },
 
   beforeModel(transition) {
+    const locale = localStorage.getItem('rsa-i18n-default-locale');
+
+    if ((config.i18n.includedLocales.length <= 1) || !locale) {
+      localStorage.setItem('rsa-i18n-default-locale', config.i18n.defaultLocale);
+      this.set('i18n.locale', config.i18n.defaultLocale);
+    } else {
+      this.set('i18n.locale', locale);
+    }
+
     if (
       !this.get('session.isAuthenticated') &&
       transition.targetName !== 'login' &&

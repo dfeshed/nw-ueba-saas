@@ -21,6 +21,10 @@ module.exports = function(environment) {
     timeFormatDefault: 'HR24',
     timezoneDefault: 'UTC',
     landingPageDefault: '/respond',
+    i18n: {
+      defaultLocale: 'en',
+      includedLocales: ['en', 'ja']
+    },
     timezones: [{
       'displayLabel': 'UTC (GMT+00:00)',
       'offset': 'GMT+00:00',
@@ -142,6 +146,10 @@ module.exports = function(environment) {
     // ENV.featureFlags['show-respond-route'] = false;
     ENV.adminServerAvailable = true;
 
+    ENV.i18n = {
+      defaultLocale: 'en',
+      includedLocales: ['en']
+    }
   }
 
   return ENV;

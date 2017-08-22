@@ -70,9 +70,6 @@ export default Route.extend(AuthenticatedRouteMixin, {
   },
 
   model() {
-    localStorage.setItem('rsa-i18n-default-locale', config.i18n.defaultLocale);
-    this.set('i18n.locale', config.i18n.defaultLocale);
-
     if (config.adminServerAvailable) {
       const permissionsPromise = new RSVP.Promise((resolve, reject) => {
         this.request.promiseRequest({
@@ -117,7 +114,7 @@ export default Route.extend(AuthenticatedRouteMixin, {
             defaultComponentUrl
           } = response.data;
 
-          if (userLocale) {
+          if (userLocale && config.i18n.includedLocales.length > 1) {
             const locale = userLocale.replace(/_/, '-').toLowerCase();
             localStorage.setItem('rsa-i18n-default-locale', locale);
             this.set('i18n.locale', locale);
