@@ -7,6 +7,8 @@ import presidio.output.domain.records.alerts.AlertEnums;
 import presidio.output.domain.records.users.User;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 
+import java.util.List;
+
 /**
  * Created by efratn on 24/07/2017.
  */
@@ -14,11 +16,14 @@ public class AlertServiceImpl implements AlertService {
 
     private static final Logger logger = Logger.getLogger(AlertServiceImpl.class);
 
-    private AlertEnumsSeverityService alertEnumsSeverityService;
+    private final AlertEnumsSeverityService alertEnumsSeverityService;
+    private final AlertPersistencyService alertPersistencyService;
 
 
-    public AlertServiceImpl(AlertEnumsSeverityService alertEnumsSeverityService) {
+    public AlertServiceImpl(AlertPersistencyService alertPersistencyService,
+                            AlertEnumsSeverityService alertEnumsSeverityService) {
         this.alertEnumsSeverityService = alertEnumsSeverityService;
+        this.alertPersistencyService = alertPersistencyService;
     }
 
     @Override
@@ -37,6 +42,11 @@ public class AlertServiceImpl implements AlertService {
         AlertEnums.AlertTimeframe timeframe = AlertEnums.AlertTimeframe.DAILY;
         AlertEnums.AlertSeverity severity = alertEnumsSeverityService.severity(score);
         return new Alert(user.getUserId(), userName, type, startDate, endDate, score, indicatorsNum, timeframe, severity);
+    }
+
+    @Override
+    public void save(List<Alert> alerts) {
+        alertPersistencyService.save(alerts);
     }
 
 }

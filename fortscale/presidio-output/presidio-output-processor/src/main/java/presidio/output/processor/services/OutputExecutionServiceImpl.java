@@ -9,13 +9,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import presidio.ade.sdk.common.AdeManagerSdk;
 import presidio.output.domain.records.alerts.Alert;
-import presidio.output.domain.records.events.EnrichedEvent;
 import presidio.output.domain.records.users.User;
-import presidio.output.domain.services.alerts.AlertPersistencyService;
-import presidio.output.domain.services.event.EventPersistencyService;
 import presidio.output.domain.services.users.UserPersistencyService;
 import presidio.output.processor.services.alert.AlertService;
-import presidio.output.processor.services.user.UserDetails;
 import presidio.output.processor.services.user.UserService;
 
 import java.time.Instant;
@@ -36,22 +32,13 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
     private final AdeManagerSdk adeManagerSdk;
     private final AlertService alertService;
     private final UserService userService;
-    private final EventPersistencyService eventPersistencyService;
-    private final AlertPersistencyService alertPersistencyService;
-    private final UserPersistencyService userPersistencyService;
 
     public OutputExecutionServiceImpl(AdeManagerSdk adeManagerSdk,
                                       AlertService alertService,
-                                      UserService userService,
-                                      EventPersistencyService eventPersistencyService,
-                                      AlertPersistencyService alertPersistencyService,
-                                      UserPersistencyService userPersistencyService) {
+                                      UserService userService) {
         this.adeManagerSdk = adeManagerSdk;
         this.alertService = alertService;
         this.userService = userService;
-        this.eventPersistencyService = eventPersistencyService;
-        this.alertPersistencyService = alertPersistencyService;
-        this.userPersistencyService = userPersistencyService;
     }
 
     /**
@@ -83,7 +70,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
                 //TODO- user id should be taken from indicators
                 String userId = smart.getContext().get("normalized_username");
 
-                User userEntity = userService.createUserEntity(getUserDetails(userId));
+                User userEntity = userService.createUserEntity(userId);
                 Alert alertEntity = alertService.generateAlert(smart, userEntity);
 
                 if (alertEntity != null)
@@ -100,23 +87,16 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
 
     private void storeAlerts(List<Alert> alerts) {
         if (CollectionUtils.isNotEmpty(alerts)) {
-            alertPersistencyService.save(alerts);
+            alertService.save(alerts);
         }
         logger.debug("{} output alerts were generated", alerts.size());
     }
 
     private void storeUsers(List<User> users) {
         if (CollectionUtils.isNotEmpty(users)) {
-            userPersistencyService.save(users);
+            userService.save(users);
         }
         logger.debug("{} output users were generated", users.size());
-    }
-
-    private UserDetails getUserDetails(String userId) {
-        EnrichedEvent event = eventPersistencyService.findLatestEventForUser(userId);
-        String userDisplayName = event.getUserDisplayName();
-        String userName = event.getUserName();
-        return new UserDetails(userName, userDisplayName, userId);
     }
 
     @Override

@@ -21,7 +21,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import presidio.ade.domain.store.smart.SmartDataStore;
 import presidio.ade.domain.store.smart.SmartPageIterator;
+import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.alerts.AlertEnums;
+import presidio.output.domain.records.users.User;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.output.processor.services.OutputExecutionServiceImpl;
 import presidio.output.processor.services.alert.AlertEnumsSeverityService;
@@ -37,6 +39,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by efratn on 24/07/2017.
@@ -92,18 +95,21 @@ public class AlertServiceTest {
 
     @Test
     public void allSmartsAboveScoreThreshold() {
-        int smartSize = 3;
-        int numOfSmartsBelowScoreThreshold = 0;
-        setup(smartSize, numOfSmartsBelowScoreThreshold, OutputExecutionServiceImpl.SMART_SCORE_THRESHOLD);
-        PageIterator<EntityEvent> smarts = new SmartPageIterator<EntityEvent>(smartDataStore, timeRange, OutputExecutionServiceImpl.SMART_SCORE_THRESHOLD);
-        alertService.generateAlerts(smarts);
+//        int smartSize = 3;
+//        int numOfSmartsBelowScoreThreshold = 0;
+//        setup(smartSize, numOfSmartsBelowScoreThreshold, OutputExecutionServiceImpl.SMART_SCORE_THRESHOLD);
+//        PageIterator<EntityEvent> smarts = new SmartPageIterator<EntityEvent>(smartDataStore, timeRange, OutputExecutionServiceImpl.SMART_SCORE_THRESHOLD);
+        User userEntity = new User("userId", "userName", "displayName", 0d, new ArrayList<String>(), new ArrayList<String>());
+        Alert alert = alertService.generateAlert(generateSingleSmart(1), userEntity);
 
-        ArgumentCaptor<List> argument = ArgumentCaptor.forClass(List.class);
-        Mockito.verify(alertPersistencyService, VerificationModeFactory.times(1)).save(Mockito.anyList());
-        Mockito.verify(alertPersistencyService).save(argument.capture());
-        final int generatedAlertsListSize = argument.getValue().size();
-        assertEquals(smartSize, generatedAlertsListSize);
+//        ArgumentCaptor<List> argument = ArgumentCaptor.forClass(List.class);
+//        Mockito.verify(alertPersistencyService, VerificationModeFactory.times(1)).save(Mockito.anyList());
+//        Mockito.verify(alertPersistencyService).save(argument.capture());
+//        final int generatedAlertsListSize = argument.getValue().size();
+//        assertEquals(smartSize, generatedAlertsListSize);
+        assertTrue(alert.equals(null));
     }
+
 
     @Test
     public void severityTest() {
