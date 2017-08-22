@@ -20,7 +20,7 @@ import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import presidio.ade.domain.store.smart.SmartDataStore;
-import presidio.ade.domain.store.smart.SmartPageIterator;
+import presidio.ade.domain.store.smart.SmartRecordPageIterator;
 import presidio.output.domain.records.alerts.AlertEnums;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.output.processor.services.OutputExecutionServiceImpl;
@@ -87,7 +87,7 @@ public class AlertServiceTest {
             smarts.add(generateSingleSmart(scoreThreshold + 1));
         }
 
-        Mockito.when(smartDataStore.readSmarts(timeRange, scoreThreshold)).thenReturn(smarts);
+        Mockito.when(smartDataStore.readSmartRecords(timeRange, scoreThreshold)).thenReturn(smarts);
     }
 
     @Test
@@ -95,7 +95,7 @@ public class AlertServiceTest {
         int smartSize = 3;
         int numOfSmartsBelowScoreThreshold = 0;
         setup(smartSize, numOfSmartsBelowScoreThreshold, OutputExecutionServiceImpl.SMART_SCORE_THRESHOLD);
-        PageIterator<EntityEvent> smarts = new SmartPageIterator<EntityEvent>(smartDataStore, timeRange, OutputExecutionServiceImpl.SMART_SCORE_THRESHOLD);
+        PageIterator<EntityEvent> smarts = new SmartRecordPageIterator<>(smartDataStore, timeRange, OutputExecutionServiceImpl.SMART_SCORE_THRESHOLD);
         alertService.generateAlerts(smarts);
 
         ArgumentCaptor<List> argument = ArgumentCaptor.forClass(List.class);

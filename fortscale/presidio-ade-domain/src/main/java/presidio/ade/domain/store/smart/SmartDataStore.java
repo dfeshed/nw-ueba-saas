@@ -1,15 +1,14 @@
 package presidio.ade.domain.store.smart;
 
-import fortscale.domain.SMART.EntityEvent;
-import fortscale.utils.time.TimeRange;
+import presidio.ade.domain.record.aggregated.SmartRecord;
 
-import java.util.List;
+import java.util.Collection;
 
 /**
- * Created by efratn on 23/07/2017.
+ * Exposes the methods that read from and write to the {@link SmartRecord}s store.
+ *
+ * @author Lior Govrin
  */
-public interface SmartDataStore {
-
-    List<EntityEvent> readSmarts(TimeRange timeRange, int scoreThreshold);
-
+public interface SmartDataStore extends SmartDataReader {
+	void storeSmartRecords(String smartRecordConfName, Collection<SmartRecord> smartRecords);
 }

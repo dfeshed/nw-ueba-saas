@@ -18,7 +18,7 @@ import presidio.ade.domain.store.enriched.EnrichedDataStore;
 import presidio.ade.domain.store.enriched.EnrichedRecordsMetadata;
 import presidio.ade.domain.store.scored.ScoredEnrichedDataStore;
 import presidio.ade.domain.store.smart.SmartDataStore;
-import presidio.ade.domain.store.smart.SmartPageIterator;
+import presidio.ade.domain.store.smart.SmartRecordPageIterator;
 import presidio.ade.sdk.historical_runs.HistoricalRunParams;
 import presidio.ade.sdk.online_run.OnlineRunParams;
 
@@ -205,8 +205,8 @@ public class AdeManagerSdkImpl implements AdeManagerSdk {
         Assert.notEmpty(aggregatedFeatureEventConfList,"no score aggregations are defined. should have at least one");
         aggregationNameToAdeEventTypeMap =
                 aggregatedFeatureEventConfList.stream()
-                        // map conf to featurename, bucketConf.adeEventTypes
-                        .map(aggregatedFeatureEventConf -> new SimpleEntry<String, List<String>>(aggregatedFeatureEventConf.getName(), aggregatedFeatureEventConf.getBucketConf().getAdeEventTypes()))
+                        // map conf to feature name, bucketConf.adeEventTypes
+                        .map(aggregatedFeatureEventConf -> new SimpleEntry<>(aggregatedFeatureEventConf.getName(), aggregatedFeatureEventConf.getBucketConf().getAdeEventTypes()))
                         // collect to map :)
                         .collect(toMap(SimpleEntry::getKey, SimpleEntry::getValue));
 
@@ -232,7 +232,7 @@ public class AdeManagerSdkImpl implements AdeManagerSdk {
     @Override
     public PageIterator<EntityEvent> getSmartRecords(TimeRange timeRange, int pageSize, int scoreThreshold) {
         // TODO: Replace temporary implementation
-        return new SmartPageIterator<>(smartDataStore, timeRange, scoreThreshold);
+        return new SmartRecordPageIterator<>(smartDataStore, timeRange, scoreThreshold);
     }
 
     @Override
@@ -245,5 +245,4 @@ public class AdeManagerSdkImpl implements AdeManagerSdk {
     public void setDirtyDataMarkers(Set<DirtyDataMarker> dirtyDataMarkers) {
         // TODO: Implement
     }
-
 }
