@@ -1,5 +1,6 @@
 package presidio.data.generators.event.activedirectory;
 
+import presidio.data.domain.MachineEntity;
 import presidio.data.domain.event.activedirectory.ActiveDirectoryEvent;
 import presidio.data.generators.FixedDataSourceGenerator;
 import presidio.data.generators.activedirectoryop.ActiveDirectoryOperationGenerator;
@@ -47,7 +48,7 @@ public class ActiveDirectoryEventsGenerator implements IEventGenerator {
         dstMachineGenerator = new SimpleMachineGenerator();
         resultGenerator = new OperationResultPercentageGenerator();
         resultCodeGenerator = new RandomStringGenerator();
-        objectNameGenerator = new ObjectNameGenerator();
+        objectNameGenerator = new DefaultObjectNameGenerator();
         activeDirectoryDescriptionGenerator = new ActiveDirectoryDescriptionGenerator();
     }
 
@@ -59,16 +60,18 @@ public class ActiveDirectoryEventsGenerator implements IEventGenerator {
         while (getTimeGenerator().hasNext()) {
             Instant eventTime = getTimeGenerator().getNext();
             String objectName = getObjectNameGenerator().getNext();
+            MachineEntity srcMachine = getSrcMachineGenerator().getNext();
+            String machineDomainDN = srcMachine.getMachineDomainDN();
             ActiveDirectoryEvent ev = new ActiveDirectoryEvent(eventTime,
                     getEventIdGenerator().getNext(),
                     getUserGenerator().getNext(),
                     getDataSourceGenerator().getNext(),
                     getActiveDirOperationGenerator().getNext(),
-                    getSrcMachineGenerator().getNext(),
+                    srcMachine,
                     getDstMachineGenerator().getNext(),
                     getResultGenerator().getNext(),
                     objectName,
-                    getObjectDN(objectName)
+                    getObjectDN(objectName, machineDomainDN)
                     );
             activeDirectoryDescriptionGenerator.updateDescription(ev);
             evList.add(ev);
@@ -148,8 +151,8 @@ public class ActiveDirectoryEventsGenerator implements IEventGenerator {
         this.resultCodeGenerator = resultCodeGenerator;
     }
 
-    public String getObjectDN(String objectName) {
-        return "ca=" + objectName + ",CN=Users," + getSrcMachineGenerator().getNext().getMachineDomainDN();
+    public String getObjectDN(String objectName, String machineDomainDN) {
+        return "ca=" + objectName + ",CN=Users," + machineDomainDN;
     }
 
     public IActiveDirectoryDescriptionGenerator getActiveDirectoryDescriptionGenerator() {
