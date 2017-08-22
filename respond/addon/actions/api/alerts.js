@@ -73,22 +73,20 @@ export default {
   /**
    * Executes a websocket delete alert call and returns a Promise. The alert ids submitted are split up into
    * chunks of 500 to ensure that the request size never exceeds the maximum of 16KB
-   * @method deleteIncident
+   * @method delete
    * @public
    * @param alertId The id of the incident to delete
    * @returns {Promise}
    */
   delete(alertId) {
-    const requests = [];
     const alertIdChunks = chunk(alertId, 500);
-
-    alertIdChunks.forEach((chunk) => {
+    const requests = alertIdChunks.map((chunk) => {
       const query = filterQuery.create().addFilter('_id', chunk);
-      requests.push(promiseRequest({
+      return promiseRequest({
         method: 'deleteRecord',
         modelName: 'alerts',
         query: query.toJSON()
-      }));
+      });
     });
 
     return RSVP.allSettled(requests);

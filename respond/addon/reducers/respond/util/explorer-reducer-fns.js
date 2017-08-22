@@ -43,12 +43,10 @@ const _handleDeletes = (action) => {
     const { payload } = action;
     let removedItemIds = [];
 
-    // If the payload is an array, we had multiple promises being settled, each of which has its own payload/resolved value
+    // If the payload is an array, we had multiple promises (deletion requests) being settled, each of which has its own payload/resolved value
     if (isEmberArray(payload)) {
-      payload.forEach(({ value: { data } }) => {
-        removedItemIds = [...removedItemIds, ...data];
-      });
-    } else {
+      removedItemIds = payload.reduce((removed, { value: { data } }) => removed.concat(data), []);
+    } else { // a single promise (deletion request) resolved
       removedItemIds = payload.data;
     }
 

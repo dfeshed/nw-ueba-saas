@@ -77,19 +77,26 @@ const updateItem = (entityId, field, updatedValue, callbacks = callbacksDefault)
  * @returns {{type, promise: *, meta: {onSuccess: (function(*=)), onFailure: (function(*=))}}}
  */
 const deleteItem = (entityId, callbacks = callbacksDefault) => {
-  return {
-    type: ACTION_TYPES.DELETE_REMEDIATION_TASK,
-    promise: RemediationTasks.deleteRemediationTask(entityId),
-    meta: {
-      onSuccess: (response) => {
-        Logger.debug(ACTION_TYPES.DELETE_REMEDIATION_TASK, response);
-        callbacks.onSuccess(response);
-      },
-      onFailure: (response) => {
-        ErrorHandlers.handleContentDeletionError(response, 'remediation task');
-        callbacks.onFailure(response);
+  return (dispatch) => {
+    const reloadItems = entityId.length >= 500; // deletions of more than 500 items should trigger subsequent refresh/reload
+
+    dispatch({
+      type: ACTION_TYPES.DELETE_REMEDIATION_TASK,
+      promise: RemediationTasks.deleteRemediationTask(entityId),
+      meta: {
+        onSuccess: (response) => {
+          Logger.debug(ACTION_TYPES.DELETE_REMEDIATION_TASK, response);
+          callbacks.onSuccess(response);
+          if (reloadItems) {
+            dispatch(getItems());
+          }
+        },
+        onFailure: (response) => {
+          ErrorHandlers.handleContentDeletionError(response, 'remediation task');
+          callbacks.onFailure(response);
+        }
       }
-    }
+    });
   };
 };
 

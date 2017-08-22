@@ -86,20 +86,27 @@ const updateItem = (entityId, field, updatedValue, callbacks) => {
   };
 };
 
-const deleteItem = (entityId, callbacks) => {
-  return {
-    type: ACTION_TYPES.DELETE_INCIDENT,
-    promise: Incidents.delete(entityId),
-    meta: {
-      onSuccess: (response) => {
-        Logger.debug(ACTION_TYPES.DELETE_INCIDENT, response);
-        callbacks.onSuccess(response);
-      },
-      onFailure: (response) => {
-        ErrorHandlers.handleContentDeletionError(response, 'incident');
-        callbacks.onFailure(response);
+const deleteItem = (entityId, callbacks = callbacksDefault) => {
+  return (dispatch) => {
+    const reloadItems = entityId.length >= 500; // deletions of more than 500 items should trigger subsequent refresh/reload
+
+    dispatch({
+      type: ACTION_TYPES.DELETE_INCIDENT,
+      promise: Incidents.delete(entityId),
+      meta: {
+        onSuccess: (response) => {
+          Logger.debug(ACTION_TYPES.DELETE_INCIDENT, response);
+          callbacks.onSuccess(response);
+          if (reloadItems) {
+            dispatch(getItems());
+          }
+        },
+        onFailure: (response) => {
+          ErrorHandlers.handleContentDeletionError(response, 'incident');
+          callbacks.onFailure(response);
+        }
       }
-    }
+    });
   };
 };
 

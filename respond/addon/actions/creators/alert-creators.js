@@ -74,12 +74,11 @@ const getOriginalAlert = (entityId) => ({
  */
 const deleteItem = (entityId, callbacks = callbacksDefault) => {
   return (dispatch) => {
-    const deleteAlerts = alerts.delete(entityId); // call delete and get back promise
-    const reloadItems = entityId.length >= 500;
+    const reloadItems = entityId.length >= 500; // deletions of more than 500 items should trigger subsequent refresh/reload
 
     dispatch({
       type: ACTION_TYPES.DELETE_ALERT,
-      promise: deleteAlerts,
+      promise: alerts.delete(entityId),
       meta: {
         onSuccess: (response) => {
           Logger.debug(ACTION_TYPES.DELETE_ALERT, response);

@@ -78,11 +78,7 @@ export default Component.extend({
    */
   @computed('text', 'allowEmptyValue')
   isInvalid(text, allowEmptyValue) {
-    let isInvalid = false;
-    if (!allowEmptyValue && isEmpty(text.trim())) {
-      isInvalid = true;
-    }
-    return isInvalid;
+    return !allowEmptyValue && isEmpty(text.trim());
   },
 
   /**

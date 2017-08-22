@@ -35,6 +35,7 @@
     <span>
       {{respond-common/editable-field
         value=info.name
+        allowEmptyValue=false
         placeholder=(t 'respond.empty')
         isDisabled=(not accessControl.respondCanManageRemediation)
         onFieldChange=(action 'editableFieldChange' info.id 'name')

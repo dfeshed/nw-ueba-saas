@@ -1,9 +1,9 @@
 import EmberObject from 'ember-object';
-import { assert } from 'ember-metal/utils';
 import { promiseRequest, streamRequest } from 'streaming-data/services/data-access/requests';
 import FilterQuery from 'respond/utils/filter-query';
-import { isEmpty, isPresent, typeOf, isNone } from 'ember-utils';
 import { isEmberArray } from 'ember-array/utils';
+import chunk from 'respond/utils/array/chunk';
+import RSVP from 'rsvp';
 import buildExplorerQuery from './util/explorer-build-query';
 
 const IncidentsAPI = EmberObject.extend({});
@@ -99,92 +99,6 @@ IncidentsAPI.reopenClass({
         }
       }
     });
-  },
-
-  /**
-   * Executes a websocket request to update an incident's priority
-   * @method changeIncidentPriority
-   * @public
-   * @param incidentId
-   * @param newPriorityValue
-   * @returns {Promise}
-   */
-  changeIncidentPriority(incidentId, newPriorityValue) {
-    assert('An incident ID is provided', isPresent(incidentId));
-    assert('newPriorityValue is provided as a string', typeOf(newPriorityValue) === 'string');
-    return IncidentsAPI.updateIncident(incidentId, 'priority', newPriorityValue);
-  },
-
-  /**
-   * Executes a websocket request to update the priority on multiple incidents simultaneously. Delegates to
-   * changeIncidentPriority() which can handle bulk updates.
-   * @method bulkChangeIncidentPriority
-   * @public
-   * @param incidentIds An array of incident IDs
-   * @param newPriorityValue
-   * @returns {Promise}
-   */
-  bulkChangeIncidentPriority(incidentIds, newPriorityValue) {
-    assert('bulkChangeIncidentPriority is provided array of incident IDs', isEmberArray(incidentIds) && !isEmpty(incidentIds));
-    return IncidentsAPI.changeIncidentPriority(incidentIds, newPriorityValue);
-  },
-
-  /**
-   * Executes a websocket request to update the status on a single incident
-   * @method changeIncidentStatus
-   * @public
-   * @param incidentId
-   * @param newStatusValue
-   * @returns {*}
-   */
-  changeIncidentStatus(incidentId, newStatusValue) {
-    assert('An incident ID is provided', isPresent(incidentId));
-    assert('newStatusValue is provided as a string', typeOf(newStatusValue) === 'string');
-    return IncidentsAPI.updateIncident(incidentId, 'status', newStatusValue);
-  },
-
-  /**
-   * Executes a websocket request to update the status on multiple incidents simultaneously. Delegates to
-   * changeIncidentStatus() which can handle bulk updates.
-   * @method bulkChangeIncidentStatus
-   * @public
-   * @param incidentIds An array of incident IDs
-   * @param newStatusValue
-   * @returns {Promise}
-   */
-  bulkChangeIncidentStatus(incidentIds, newStatusValue) {
-    assert('bulkChangeIncidentStatus is provided array of incident IDs', isEmberArray(incidentIds) && !isEmpty(incidentIds));
-    return IncidentsAPI.changeIncidentStatus(incidentIds, newStatusValue);
-  },
-
-  /**
-   * Executes a websocket request to update the assignee on a single incident
-   * @method changeIncidentAssignee
-   * @public
-   * @param incidentId
-   * @param newAssignee {Object} Object with four properties (id, firstName, lastName, email)
-   * @returns {Promise}
-   */
-  changeIncidentAssignee(incidentId, newAssignee) {
-    assert('An incident ID is provided', isPresent(incidentId));
-    assert('newAssignee is provided as an object', typeOf(newAssignee) === 'object');
-    assert('newAssignee object has all required properties', !isNone(newAssignee.id) &&
-      !isNone(newAssignee.name));
-    return IncidentsAPI.updateIncident(incidentId, 'assignee', newAssignee);
-  },
-
-  /**
-   * Executes a websocket request to update the assignee on multiple incidents simultaneously. Delegates to
-   * changeIncidentAssignee() which can handle bulk updates.
-   * @method bulkChangeIncidentAssignee
-   * @public
-   * @param incidentIds An array of incident IDs
-   * @param newAssignee {Object} Object with four properties (id, firstName, lastName, email)
-   * @returns {Promise}
-   */
-  bulkChangeIncidentAssignee(incidentIds, newAssignee) {
-    assert('bulkChangeIncidentAssignee is provided array of incident IDs', isEmberArray(incidentIds) && !isEmpty(incidentIds));
-    return IncidentsAPI.changeIncidentAssignee(incidentIds, newAssignee);
   },
 
   /**
@@ -318,20 +232,23 @@ IncidentsAPI.reopenClass({
 
   /**
    * Executes a websocket delete incident call and returns a Promise
-   * @method deleteIncident
+   * @method delete
    * @public
-   * @param incidentId The id of the incident to delete
+   * @param incidentId The id of the incident to delete (or an array of ids)
    * @returns {Promise}
    */
   delete(incidentId) {
-    const query = FilterQuery.create()
-      .addFilter('_id', incidentId);
-
-    return promiseRequest({
-      method: 'deleteRecord',
-      modelName: 'incidents',
-      query: query.toJSON()
+    const incidentIdChunks = chunk(incidentId, 500);
+    const requests = incidentIdChunks.map((chunk) => {
+      const query = FilterQuery.create().addFilter('_id', chunk);
+      return promiseRequest({
+        method: 'deleteRecord',
+        modelName: 'incidents',
+        query: query.toJSON()
+      });
     });
+
+    return RSVP.allSettled(requests);
   },
 
   createIncidentFromAlerts(name, alertIds) {
