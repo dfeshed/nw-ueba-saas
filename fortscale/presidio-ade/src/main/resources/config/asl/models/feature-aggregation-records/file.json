@@ -17,6 +17,20 @@
       }
     },
     {
+      "name": "numberOfSuccessfulPermissionChange.userId.prior.global.file.hourly",
+      "retriever": {
+        "type": "model_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "modelConfName": "numberOfSuccessfulPermissionChange.userId.file.hourly"
+      },
+      "builder": {
+        "type": "gaussian_prior_model_builder",
+        "distanceBetweenSegmentCenters": 1,
+        "maxSegmentWidthToNotDiscardBecauseOfBadRatio": 3
+      }
+    },
+    {
       "name": "numberOfSuccessfulFileAction.userId.file.hourly",
       "selector": {
         "type": "aggregated_event_context_selector",
@@ -30,6 +44,20 @@
       },
       "builder": {
         "type": "continuous_histogram_model_builder"
+      }
+    },
+    {
+      "name": "numberOfSuccessfulFileAction.userId.prior.global.file.hourly",
+      "retriever": {
+        "type": "model_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "modelConfName": "numberOfSuccessfulFileAction.userId.file.hourly"
+      },
+      "builder": {
+        "type": "gaussian_prior_model_builder",
+        "distanceBetweenSegmentCenters": 1,
+        "maxSegmentWidthToNotDiscardBecauseOfBadRatio": 3
       }
     },
     {
@@ -49,6 +77,20 @@
       }
     },
     {
+      "name": "numberOfFailedPermissionChange.userId.prior.global.file.hourly",
+      "retriever": {
+        "type": "model_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "modelConfName": "numberOfFailedPermissionChange.userId.file.hourly"
+      },
+      "builder": {
+        "type": "gaussian_prior_model_builder",
+        "distanceBetweenSegmentCenters": 1,
+        "maxSegmentWidthToNotDiscardBecauseOfBadRatio": 3
+      }
+    },
+    {
       "name": "numberOfFailedFileAction.userId.file.hourly",
       "selector": {
         "type": "aggregated_event_context_selector",
@@ -62,6 +104,20 @@
       },
       "builder": {
         "type": "continuous_histogram_model_builder"
+      }
+    },
+    {
+      "name": "numberOfFailedFileAction.userId.prior.global.file.hourly",
+      "retriever": {
+        "type": "model_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "modelConfName": "numberOfFailedFileAction.userId.file.hourly"
+      },
+      "builder": {
+        "type": "gaussian_prior_model_builder",
+        "distanceBetweenSegmentCenters": 1,
+        "maxSegmentWidthToNotDiscardBecauseOfBadRatio": 3
       }
     },
     {
@@ -81,6 +137,20 @@
       }
     },
     {
+      "name": "numberOfDistinctFileOpened.userId.prior.global.file.hourly",
+      "retriever": {
+        "type": "model_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "modelConfName": "numberOfDistinctFileOpened.userId.file.hourly"
+      },
+      "builder": {
+        "type": "gaussian_prior_model_builder",
+        "distanceBetweenSegmentCenters": 1,
+        "maxSegmentWidthToNotDiscardBecauseOfBadRatio": 3
+      }
+    },
+    {
       "name": "numberOfDistinctFolderOpened.userId.file.hourly",
       "selector": {
         "type": "aggregated_event_context_selector",
@@ -94,6 +164,20 @@
       },
       "builder": {
         "type": "continuous_histogram_model_builder"
+      }
+    },
+    {
+      "name": "numberOfDistinctFolderOpened.userId.prior.global.file.hourly",
+      "retriever": {
+        "type": "model_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "modelConfName": "numberOfDistinctFolderOpened.userId.file.hourly"
+      },
+      "builder": {
+        "type": "gaussian_prior_model_builder",
+        "distanceBetweenSegmentCenters": 1,
+        "maxSegmentWidthToNotDiscardBecauseOfBadRatio": 3
       }
     },
     {
@@ -113,6 +197,20 @@
       }
     },
     {
+      "name": "numberOfFileDeleted.userId.prior.global.file.hourly",
+      "retriever": {
+        "type": "model_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "modelConfName": "numberOfFileDeleted.userId.file.hourly"
+      },
+      "builder": {
+        "type": "gaussian_prior_model_builder",
+        "distanceBetweenSegmentCenters": 1,
+        "maxSegmentWidthToNotDiscardBecauseOfBadRatio": 3
+      }
+    },
+    {
       "name": "numberOfSuccessfulFileRenamed.userId.file.hourly",
       "selector": {
         "type": "aggregated_event_context_selector",
@@ -126,6 +224,20 @@
       },
       "builder": {
         "type": "continuous_histogram_model_builder"
+      }
+    },
+    {
+      "name": "numberOfSuccessfulFileRenamed.userId.prior.global.file.hourly",
+      "retriever": {
+        "type": "model_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "modelConfName": "numberOfSuccessfulFileRenamed.userId.file.hourly"
+      },
+      "builder": {
+        "type": "gaussian_prior_model_builder",
+        "distanceBetweenSegmentCenters": 1,
+        "maxSegmentWidthToNotDiscardBecauseOfBadRatio": 3
       }
     },
     {
@@ -145,6 +257,20 @@
       }
     },
     {
+      "name": "numberOfFileMovedFromSharedDrive.userId.prior.global.file.hourly",
+      "retriever": {
+        "type": "model_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "modelConfName": "numberOfFileMovedFromSharedDrive.userId.file.hourly"
+      },
+      "builder": {
+        "type": "gaussian_prior_model_builder",
+        "distanceBetweenSegmentCenters": 1,
+        "maxSegmentWidthToNotDiscardBecauseOfBadRatio": 3
+      }
+    },
+    {
       "name": "numberOfFileMovedToSharedDrive.userId.file.hourly",
       "selector": {
         "type": "aggregated_event_context_selector",
@@ -158,6 +284,20 @@
       },
       "builder": {
         "type": "continuous_histogram_model_builder"
+      }
+    },
+    {
+      "name": "numberOfFileMovedToSharedDrive.userId.prior.global.file.hourly",
+      "retriever": {
+        "type": "model_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "modelConfName": "numberOfFileMovedToSharedDrive.userId.file.hourly"
+      },
+      "builder": {
+        "type": "gaussian_prior_model_builder",
+        "distanceBetweenSegmentCenters": 1,
+        "maxSegmentWidthToNotDiscardBecauseOfBadRatio": 3
       }
     }
   ]

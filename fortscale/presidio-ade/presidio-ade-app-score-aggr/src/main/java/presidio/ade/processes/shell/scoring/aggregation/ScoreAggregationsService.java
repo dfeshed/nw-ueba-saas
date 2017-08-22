@@ -1,8 +1,10 @@
 package presidio.ade.processes.shell.scoring.aggregation;
 
 import fortscale.aggregation.creator.AggregationRecordsCreator;
+import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.aggregation.feature.bucket.FeatureBucket;
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
+import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.ml.scorer.enriched_events.EnrichedEventsScoringService;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.fixedduration.FixedDurationStrategyExecutor;
@@ -17,8 +19,10 @@ import presidio.ade.domain.store.aggr.AggregatedDataStore;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * 1. Iterates over enriched records and scores them
@@ -34,6 +38,9 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
     private final AggregationRecordsCreator aggregationRecordsCreator;
     private final EnrichedDataStore enrichedDataStore;
     private final EnrichedEventsScoringService enrichedEventsScoringService;
+    private AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
+    private List<String> aggregationContext;
+    private BucketConfigurationService bucketConfigurationService;
 
     /**
      * C'tor
@@ -42,17 +49,22 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
      * @param enrichedEventsScoringService
      * @param aggregationRecordsCreator
      * @param aggregatedDataStore
+     * @param aggregatedFeatureEventsConfService
+     * @param bucketConfigurationService
      */
     public ScoreAggregationsService(FixedDurationStrategy strategy, EnrichedDataStore enrichedDataStore,
                                     EnrichedEventsScoringService enrichedEventsScoringService,
                                     ScoreAggregationsBucketService scoreAggregationsBucketService,
-                                    AggregationRecordsCreator aggregationRecordsCreator, AggregatedDataStore aggregatedDataStore) {
+                                    AggregationRecordsCreator aggregationRecordsCreator, AggregatedDataStore aggregatedDataStore, AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService, BucketConfigurationService bucketConfigurationService) {
         super(strategy);
         this.enrichedDataStore = enrichedDataStore;
         this.enrichedEventsScoringService = enrichedEventsScoringService;
         this.scoreAggregationsBucketService = scoreAggregationsBucketService;
         this.aggregationRecordsCreator = aggregationRecordsCreator;
         this.aggregatedDataStore = aggregatedDataStore;
+        this.aggregatedFeatureEventsConfService = aggregatedFeatureEventsConfService;
+        this.bucketConfigurationService = bucketConfigurationService;
+        this.aggregationContext = getAggregationContext();
     }
 
 
@@ -61,7 +73,6 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
         //For now we don't have multiple contexts so we pass just list of size 1.
         List<String> contextTypes = new ArrayList<>();
         contextTypes.add(contextType);
-        List<String> aggregationContext = getAggregationContext();
 
         EnrichedRecordPaginationService enrichedRecordPaginationService = new EnrichedRecordPaginationService(enrichedDataStore, 1000, 100, contextType);
         List<PageIterator<EnrichedRecord>> pageIterators = enrichedRecordPaginationService.getPageIterators(dataSource, timeRange);
@@ -79,8 +90,7 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
     }
 
     private List<String> getAggregationContext() {
-        // todo: figure out from conf
-        return Collections.singletonList("context.userId");
+        return aggregatedFeatureEventsConfService.getAggregatedFeatureEventConfList().stream().map(x -> x.getBucketConf().getContextFieldNames()).flatMap(List::stream).distinct().collect(Collectors.toList());
     }
 
     protected FeatureBucketStrategyData createFeatureBucketStrategyData(TimeRange timeRange){
@@ -90,7 +100,11 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
     }
 
     public List<String> getDistinctContextTypes(String dataSource){
-        //todo: figure it out from the configuration.
-        return Collections.singletonList("userId");
+        Set<List<String>> distinctMultipleContextsTypeSet = bucketConfigurationService.getRelatedDistinctContexts(dataSource);
+        Set<String> distinctSingleContextTypeSet = new HashSet<>();
+        for (List<String> distinctMultipleContexts : distinctMultipleContextsTypeSet) {
+            distinctSingleContextTypeSet.addAll(distinctMultipleContexts);
+        }
+        return new ArrayList<>(distinctSingleContextTypeSet);
     }
 }

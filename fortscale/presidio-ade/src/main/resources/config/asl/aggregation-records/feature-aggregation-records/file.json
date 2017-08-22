@@ -136,6 +136,22 @@
       }
     },
     {
+      "name": "numberOfFileMovedUserIdFileHourly",
+      "type": "F",
+      "bucketConfName": "fileMovedCounterUserIdFileHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 300,
+      "aggregatedFeatureNamesMap": {
+        "sum": [
+          "movedFilesCounter"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_sum_func"
+      }
+    },
+    {
       "name": "numberOfFileMovedFromSharedDriveUserIdFileHourly",
       "type": "F",
       "bucketConfName": "fileMovedFromSharedDriveCounterUserIdFileHourly",

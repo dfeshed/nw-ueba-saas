@@ -5,7 +5,7 @@
       "name": "highestStartInstantScoreUserIdFileHourly",
       "expireAfterSeconds": 31536000,
       "contextFieldNames": [
-        "context.userId"
+        "userId"
       ],
       "adeEventTypes": [
         "scored_enriched.file.startInstant.userId.file.score"
@@ -29,7 +29,7 @@
       "name": "operationTypeToHighestScoreMapUserIdFilePermissionChangeFileHourly",
       "expireAfterSeconds": 31536000,
       "contextFieldNames": [
-        "context.userId"
+        "userId"
       ],
       "adeEventTypes": [
         "scored_enriched.file.operationType.userIdFilePermissionChange.file.score"
@@ -56,7 +56,7 @@
       "name": "operationTypeToHighestScoreMapUserIdFileActionFileHourly",
       "expireAfterSeconds": 31536000,
       "contextFieldNames": [
-        "context.userId"
+        "userId"
       ],
       "adeEventTypes": [
         "scored_enriched.file.operationType.userIdFileAction.file.score"

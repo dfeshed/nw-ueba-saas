@@ -56,24 +56,42 @@ public class ModelingService {
 	 * @param endInstant the end time of the models that are built
 	 */
 	public void process(String groupName, String sessionId, Instant endInstant) throws Exception {
-		if (!groupNameToModelConfigurationPathsMap.containsKey(groupName)) {
-			logger.error("Group {} is not configured. Ending modeling service process.", groupName);
-			return;
+		try {
+			if (!groupNameToModelConfigurationPathsMap.containsKey(groupName)) {
+				logger.error("Group {} is not configured. Ending modeling service process.", groupName);
+				return;
+			}
+
+			AslConfigurationPaths modelConfigurationPaths = groupNameToModelConfigurationPathsMap.get(groupName);
+			ModelConfService modelConfService = new ModelConfService(
+					aslResourceFactory.getResources(modelConfigurationPaths.getBaseConfigurationPath()),
+					aslResourceFactory.getResources(modelConfigurationPaths.getOverridingConfigurationPath()),
+					aslResourceFactory.getResources(modelConfigurationPaths.getAdditionalConfigurationPath()));
+			modelConfService.loadAslConfigurations();
+			DynamicModelConfServiceContainer.setModelConfService(modelConfService);
+			List<ModelConf> modelConfs = modelConfService.getModelConfs();
+			logger.info("Created a modelConfService for group {} with {} modelConfs.", groupName, modelConfs.size());
+			logger.info("Running modeling engines with sessionId {} and endInstant {} as input.", sessionId, endInstant);
+
+			for (ModelConf modelConf : modelConfs) {
+				ModelingEngine modelingEngine = modelingEngineFactory.getModelingEngine(modelConf);
+				String modelConfName = modelConf.getName();
+				try {
+					modelingEngine.process(sessionId, endInstant);
+				}
+				catch (Exception e)
+				{
+					logger.error("encountered error while building model for modelConfName={}",modelConfName,e);
+					throw e;
+				}
+
+				logger.info("Finished modeling engine process of modelConf {}.", modelConfName);
+			}
 		}
-
-		AslConfigurationPaths modelConfigurationPaths = groupNameToModelConfigurationPathsMap.get(groupName);
-		ModelConfService modelConfService = new ModelConfService(
-				aslResourceFactory.getResources(modelConfigurationPaths.getBaseConfigurationPath()),
-				aslResourceFactory.getResources(modelConfigurationPaths.getOverridingConfigurationPath()),
-				aslResourceFactory.getResources(modelConfigurationPaths.getAdditionalConfigurationPath()));
-		modelConfService.loadAslConfigurations();
-		List<ModelConf> modelConfs = modelConfService.getModelConfs();
-		logger.info("Created a modelConfService for group {} with {} modelConfs.", groupName, modelConfs.size());
-		logger.info("Running modeling engines with sessionId {} and endInstant {} as input.", sessionId, endInstant);
-
-		for (ModelConf modelConf : modelConfs) {
-			modelingEngineFactory.getModelingEngine(modelConf).process(sessionId, endInstant);
-			logger.info("Finished modeling engine process of modelConf {}.", modelConf.getName());
+		catch (Exception e)
+		{
+			logger.error("encountered error while building models for groupName={}, sessionId={}, endInstant={}",groupName, sessionId, endInstant,e);
+			throw e;
 		}
 	}
 
