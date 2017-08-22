@@ -12,10 +12,9 @@ import java.util.List;
 /**
  * Created by efratn on 20/08/2017.
  */
-@Document(indexName = User.INDEX_NAME, type = User.USER_DOC_TYPE)
+@Document(indexName = AbstractElasticDocument.INDEX_NAME, type = User.USER_DOC_TYPE)
 public class User extends AbstractElasticDocument {
 
-    public static final String INDEX_NAME = "presidio-output";
     public static final String USER_DOC_TYPE = "user";
 
     public static final String ALERT_CLASSIFICATOINS_FIELD_NAME = "alertClassifications";

@@ -10,6 +10,8 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
  */
 public abstract class AbstractElasticDocument {
 
+    public static final String INDEX_NAME = "presidio-output";
+
     @Id
     @Field(type = FieldType.String, store = true)
     private String id;

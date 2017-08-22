@@ -9,10 +9,9 @@ import presidio.output.domain.records.AbstractElasticDocument;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 
-@Document(indexName = Alert.INDEX_NAME, type = Alert.ALERT_TYPE)
+@Document(indexName = AbstractElasticDocument.INDEX_NAME, type = Alert.ALERT_TYPE)
 public class Alert extends AbstractElasticDocument{
 
-    public static final String INDEX_NAME = "presidio-output";
     public static final String ALERT_TYPE = "alert";
 
     // field names
