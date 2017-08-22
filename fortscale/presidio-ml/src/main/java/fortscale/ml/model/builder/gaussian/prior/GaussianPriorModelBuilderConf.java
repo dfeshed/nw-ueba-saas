@@ -18,9 +18,10 @@ public class GaussianPriorModelBuilderConf implements IModelBuilderConf {
 	private static final int NUMBER_OF_NEIGHBOURS_DEFAULT_VALUE = 10;
 	private static final double MAX_RATIO_BETWEEN_SEGMENT_SIZE_TO_CENTER_DEFAULT_VALUE = 0.1;
 	private static final double PADDING_DEFAULT_VALUE = 1;
+	private static final Integer MIN_NUM_OF_SAMPLES_TO_LEARN_FROM_DEFAULT_VALUE = 10;
 	private static final double QUANTILE_DEFAULT_VALUE = 0.99;
 	private static final int MIN_QUANTILE_COMPLEMENT_DEFAULT_VALUE = 30;
-	private static final double MIN_ALLOWED_DIST_FROM_MEAN_DEFAULT_VALUE = 1;
+	private static final double MIN_ALLOWED_DIST_FROM_MEAN_DEFAULT_VALUE = 0;
 
 	private double distanceBetweenSegmentCenters;
 	private int numberOfNeighbours;
@@ -38,7 +39,7 @@ public class GaussianPriorModelBuilderConf implements IModelBuilderConf {
 										 @JsonProperty("maxRatioBetweenSegmentSizeToCenter") Double maxRatioBetweenSegmentSizeToCenter,
 										 @JsonProperty("maxSegmentWidthToNotDiscardBecauseOfBadRatio") double maxSegmentWidthToNotDiscardBecauseOfBadRatio,
 										 @JsonProperty("padding") Double padding,
-										 @JsonProperty("minNumOfSamplesToLearnFrom") int minNumOfSamplesToLearnFrom,
+										 @JsonProperty("minNumOfSamplesToLearnFrom") Integer minNumOfSamplesToLearnFrom,
 										 @JsonProperty("quantile") Double quantile,
 										 @JsonProperty("minQuantileComplementSize") Integer minQuantileComplementSize,
 										 @JsonProperty("minAllowedDistFromMean") Double minAllowedDistFromMean) {
@@ -92,8 +93,11 @@ public class GaussianPriorModelBuilderConf implements IModelBuilderConf {
 		this.padding = padding;
 	}
 
-	private void setMinNumOfSamplesToLearnFrom(int minNumOfSamplesToLearnFrom) {
-		Assert.isTrue(minNumOfSamplesToLearnFrom >= 0, "minNumOfSamplesToLearnFrom is mandatory and must be a non-negative double.");
+	private void setMinNumOfSamplesToLearnFrom(Integer minNumOfSamplesToLearnFrom) {
+		if (minNumOfSamplesToLearnFrom == null) {
+			minNumOfSamplesToLearnFrom = MIN_NUM_OF_SAMPLES_TO_LEARN_FROM_DEFAULT_VALUE;
+		}
+		Assert.isTrue(minNumOfSamplesToLearnFrom >= 0, "minNumOfSamplesToLearnFrom must be a non-negative double.");
 		this.minNumOfSamplesToLearnFrom = minNumOfSamplesToLearnFrom;
 	}
 
