@@ -10,20 +10,20 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import presidio.ade.domain.store.accumulator.smart.SmartAccumulationDataStore;
 import presidio.ade.domain.store.accumulator.smart.SmartAccumulationDataStoreConfig;
-import presidio.ade.domain.store.smart.SmartRecordDataReader;
-import presidio.ade.domain.store.smart.SmartRecordsDataReaderConfig;
+import presidio.ade.domain.store.smart.SmartDataReader;
+import presidio.ade.domain.store.smart.SmartDataReaderConfig;
 import presidio.ade.processes.shell.AccumulateSmartRecordsExecutionService;
 
 @Configuration
 @Import({
-        SmartRecordsDataReaderConfig.class,
+        SmartDataReaderConfig.class,
         SmartAccumulationsCacheConfig.class,
         SmartAccumulationDataStoreConfig.class,
 })
 public class AccumulateSmartConfiguration {
 
     @Autowired
-    private SmartRecordDataReader smartRecordDataReader;
+    private SmartDataReader smartDataReader;
     @Autowired
     private SmartAccumulationsCache smartAccumulationsCache;
     @Autowired
@@ -36,6 +36,6 @@ public class AccumulateSmartConfiguration {
 
     @Bean
     public AccumulateSmartRecordsExecutionService accumulateSmartRecordsExecutionService() {
-        return new AccumulateSmartRecordsExecutionService(pageSize, maxGroupSize, smartRecordDataReader, smartAccumulationDataStore, smartAccumulationsCache);
+        return new AccumulateSmartRecordsExecutionService(pageSize, maxGroupSize, smartDataReader, smartAccumulationDataStore, smartAccumulationsCache);
     }
 }

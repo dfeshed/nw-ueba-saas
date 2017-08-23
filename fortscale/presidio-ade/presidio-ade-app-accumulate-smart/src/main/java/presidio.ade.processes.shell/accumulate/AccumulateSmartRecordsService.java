@@ -9,7 +9,7 @@ import presidio.ade.domain.pagination.smart.SmartPaginationService;
 import presidio.ade.domain.record.accumulator.AccumulatedSmartRecord;
 import presidio.ade.domain.record.aggregated.SmartRecord;
 import presidio.ade.domain.store.accumulator.smart.SmartAccumulationDataStore;
-import presidio.ade.domain.store.smart.SmartRecordDataReader;
+import presidio.ade.domain.store.smart.SmartDataReader;
 
 import java.util.*;
 
@@ -19,13 +19,13 @@ import java.util.*;
 public class AccumulateSmartRecordsService extends AccumulationStrategyExecutor {
 
 
-    private SmartRecordDataReader reader;
+    private SmartDataReader reader;
     private int pageSize;
     private int maxGroupSize;
     private SmartAccumulationsCache smartAccumulationsCache;
     private SmartAccumulationDataStore smartAccumulationDataStore;
 
-    public AccumulateSmartRecordsService(FixedDurationStrategy accumulationStrategy, SmartRecordDataReader reader,
+    public AccumulateSmartRecordsService(FixedDurationStrategy accumulationStrategy, SmartDataReader reader,
                                          int pageSize, int maxGroupSize,
                                          SmartAccumulationsCache smartAccumulationsCache,
                                          SmartAccumulationDataStore smartAccumulationDataStore) {

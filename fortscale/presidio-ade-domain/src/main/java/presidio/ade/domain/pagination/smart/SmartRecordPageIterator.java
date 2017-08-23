@@ -3,7 +3,7 @@ package presidio.ade.domain.pagination.smart;
 import fortscale.utils.pagination.PageIterator;
 import fortscale.utils.time.TimeRange;
 import presidio.ade.domain.record.aggregated.SmartRecord;
-import presidio.ade.domain.store.smart.SmartRecordDataReader;
+import presidio.ade.domain.store.smart.SmartDataReader;
 import presidio.ade.domain.store.smart.SmartRecordsMetadata;
 
 import java.util.List;
@@ -20,7 +20,7 @@ public class SmartRecordPageIterator implements PageIterator<SmartRecord> {
     private String configurationName;
     private int currentPage;
     private int totalAmountOfPages;
-    private SmartRecordDataReader reader;
+    private SmartDataReader reader;
     private int pageSize;
     private int smartScoreThreshold;
     private Set<String> contextIds;
@@ -32,7 +32,7 @@ public class SmartRecordPageIterator implements PageIterator<SmartRecord> {
      * @param reader            smart reader
      * @param pageSize          num of events in each page
      */
-    public SmartRecordPageIterator(TimeRange timeRange, String configurationName, Set<String> contextIds, SmartRecordDataReader reader, int pageSize, int totalAmountOfPages, int smartScoreThreshold) {
+    public SmartRecordPageIterator(TimeRange timeRange, String configurationName, Set<String> contextIds, SmartDataReader reader, int pageSize, int totalAmountOfPages, int smartScoreThreshold) {
         this.currentPage = 0;
         this.timeRange = timeRange;
         this.configurationName = configurationName;

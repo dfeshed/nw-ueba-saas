@@ -5,7 +5,7 @@ import fortscale.utils.pagination.ContextIdToNumOfItems;
 import fortscale.utils.pagination.PageIterator;
 import fortscale.utils.time.TimeRange;
 import presidio.ade.domain.record.aggregated.SmartRecord;
-import presidio.ade.domain.store.smart.SmartRecordDataReader;
+import presidio.ade.domain.store.smart.SmartDataReader;
 
 import java.util.*;
 
@@ -14,7 +14,7 @@ public class ScoreThresholdSmartPaginationService extends SmartPaginationService
 
     private static final Logger logger = Logger.getLogger(ScoreThresholdSmartPaginationService.class);
 
-    public ScoreThresholdSmartPaginationService(SmartRecordDataReader reader, int pageSize) {
+    public ScoreThresholdSmartPaginationService(SmartDataReader reader, int pageSize) {
         super(reader, pageSize, Integer.MAX_VALUE);
     }
 

@@ -4,6 +4,7 @@ import fortscale.aggregation.feature.bucket.FeatureBucket;
 import fortscale.aggregation.feature.bucket.FeatureBucketReader;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
+import fortscale.domain.SMART.EntityEvent;
 import fortscale.utils.pagination.PageIterator;
 import fortscale.utils.time.TimeRange;
 import org.springframework.data.util.Pair;
@@ -15,7 +16,7 @@ import presidio.ade.domain.record.enriched.AdeScoredEnrichedRecord;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.ade.domain.store.AdeDataStoreCleanupParams;
 import presidio.ade.domain.store.accumulator.AggregationEventsAccumulationDataReader;
-import presidio.ade.domain.store.smart.SmartRecordDataReader;
+import presidio.ade.domain.store.smart.SmartDataReader;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
 import presidio.ade.domain.store.enriched.EnrichedRecordsMetadata;
 import presidio.ade.domain.store.scored.ScoredEnrichedDataStore;
@@ -35,7 +36,7 @@ import static java.util.stream.Collectors.toMap;
  */
 public class AdeManagerSdkImpl implements AdeManagerSdk {
     private EnrichedDataStore enrichedDataStore;
-    private SmartRecordDataReader smartRecordDataReader;
+    private SmartDataReader smartDataReader;
     private ScoredEnrichedDataStore scoredEnrichedDataStore;
     private AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
     private Map<String, List<String>> aggregationNameToAdeEventTypeMap;
@@ -43,9 +44,9 @@ public class AdeManagerSdkImpl implements AdeManagerSdk {
     private FeatureBucketReader featureBucketReader;
     private AggregationEventsAccumulationDataReader aggregationEventsAccumulationDataReader;
 
-    public AdeManagerSdkImpl(EnrichedDataStore enrichedDataStore, SmartRecordDataReader smartRecordDataReader, ScoredEnrichedDataStore scoredEnrichedDataStore, AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService, FeatureBucketReader featureBucketReader, AggregationEventsAccumulationDataReader aggregationEventsAccumulationDataReader) {
+    public AdeManagerSdkImpl(EnrichedDataStore enrichedDataStore, SmartDataReader smartRecordDataReader, ScoredEnrichedDataStore scoredEnrichedDataStore, AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService, FeatureBucketReader featureBucketReader, AggregationEventsAccumulationDataReader aggregationEventsAccumulationDataReader) {
         this.enrichedDataStore = enrichedDataStore;
-        this.smartRecordDataReader = smartRecordDataReader;
+        this.smartDataReader = smartDataReader;
         this.scoredEnrichedDataStore = scoredEnrichedDataStore;
         this.aggregatedFeatureEventsConfService = aggregatedFeatureEventsConfService;
         this.featureBucketReader = featureBucketReader;
@@ -231,7 +232,7 @@ public class AdeManagerSdkImpl implements AdeManagerSdk {
 
     @Override
     public PageIterator<SmartRecord> getSmartRecords(TimeRange timeRange, int pageSize, int scoreThreshold) {
-        ScoreThresholdSmartPaginationService smartPaginationService = new ScoreThresholdSmartPaginationService(smartRecordDataReader, pageSize);
+        ScoreThresholdSmartPaginationService smartPaginationService = new ScoreThresholdSmartPaginationService(smartDataReader, pageSize);
         return smartPaginationService.getPageIterator(timeRange, scoreThreshold);
     }
 

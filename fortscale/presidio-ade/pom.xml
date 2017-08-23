@@ -45,6 +45,7 @@
         <module>presidio-ade-app-feature-aggr</module>
         <module>presidio-ade-app-accumulate-aggr</module>
         <module>presidio-ade-app-accumulate-smart</module>
+        <module>presidio-ade-app-smart</module>
         <module>presidio-ade-sdk</module>
         <module>presidio-ade-app-test-utils</module>
     </modules>

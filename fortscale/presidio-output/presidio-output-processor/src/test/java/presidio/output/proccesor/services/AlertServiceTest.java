@@ -17,13 +17,12 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
-import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import presidio.ade.domain.pagination.smart.ScoreThresholdSmartPaginationService;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.record.aggregated.SmartRecord;
-import presidio.ade.domain.store.smart.SmartRecordDataReader;
+import presidio.ade.domain.store.smart.SmartDataReader;
 import presidio.ade.domain.store.smart.SmartRecordsMetadata;
 import presidio.output.domain.records.alerts.AlertEnums;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
@@ -52,7 +51,7 @@ public class AlertServiceTest {
     private AlertPersistencyService alertPersistencyService;
 
     @MockBean
-    private SmartRecordDataReader smartRecordDataReader;
+    private SmartDataReader smartDataReader;
 
     @Autowired
     private AlertServiceImpl alertService;
@@ -93,14 +92,14 @@ public class AlertServiceTest {
         }
 
         List<ContextIdToNumOfItems> contextIdToNumOfItems = Collections.singletonList(new ContextIdToNumOfItems(contextId, smartListSize));
-        Mockito.when(smartRecordDataReader.aggregateContextIdToNumOfEvents(any(SmartRecordsMetadata.class))).thenReturn(contextIdToNumOfItems);
+        Mockito.when(smartDataReader.aggregateContextIdToNumOfEvents(any(SmartRecordsMetadata.class))).thenReturn(contextIdToNumOfItems);
         Set<String> contextIds = new HashSet<>();
         contextIds.add(contextId);
-        Mockito.when(smartRecordDataReader.readRecords(any(SmartRecordsMetadata.class), eq(contextIds), eq(0), eq(1000), eq(OutputExecutionServiceImpl.SMART_SCORE_THRESHOLD))).thenReturn(smarts);
+        Mockito.when(smartDataReader.readRecords(any(SmartRecordsMetadata.class), eq(contextIds), eq(0), eq(1000), eq(OutputExecutionServiceImpl.SMART_SCORE_THRESHOLD))).thenReturn(smarts);
 
         Set<String> confNames = new HashSet<>();
         confNames.add(configurationName);
-        Mockito.when(smartRecordDataReader.getAllSmartConfigurationNames()).thenReturn(confNames);
+        Mockito.when(smartDataReader.getAllSmartConfigurationNames()).thenReturn(confNames);
 
     }
 
@@ -110,7 +109,7 @@ public class AlertServiceTest {
         int numOfSmartsBelowScoreThreshold = 0;
         setup(smartSize, numOfSmartsBelowScoreThreshold, OutputExecutionServiceImpl.SMART_SCORE_THRESHOLD);
 
-        ScoreThresholdSmartPaginationService smartPaginationService = new ScoreThresholdSmartPaginationService(smartRecordDataReader, 1000);
+        ScoreThresholdSmartPaginationService smartPaginationService = new ScoreThresholdSmartPaginationService(smartDataReader, 1000);
         PageIterator<SmartRecord> smarts = smartPaginationService.getPageIterator(timeRange, OutputExecutionServiceImpl.SMART_SCORE_THRESHOLD);
 
         alertService.generateAlerts(smarts);

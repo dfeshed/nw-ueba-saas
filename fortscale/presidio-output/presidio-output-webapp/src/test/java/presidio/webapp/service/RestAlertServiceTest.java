@@ -36,6 +36,7 @@ public class RestAlertServiceTest {
     @Test
     public void getAlertByIdSuccess() {
         Alert alert = createAlert();
+        alert.setId("id");
         when(alertService.findOne(eq(alert.getId()))).thenReturn(alert);
 
         presidio.webapp.dto.Alert alertById = restAlertService.getAlertById("id");
@@ -89,7 +90,7 @@ public class RestAlertServiceTest {
     }
 
     private Alert createAlert() {
-        return new Alert("id", "username", AlertEnums.AlertType.SNOOPING,
+        return new Alert("username", AlertEnums.AlertType.SNOOPING,
                 Instant.parse("2017-01-01T00:00:00Z").toEpochMilli(), Instant.parse("2017-01-01T11:00:00Z").toEpochMilli(),
                 10, 10, AlertEnums.AlertTimeframe.DAILY, AlertEnums.AlertSeverity.CRITICAL);
     }

@@ -6,7 +6,7 @@ import presidio.ade.domain.store.AdeToCollectionNameTranslator;
 import java.util.Collection;
 
 public class SmartDataToCollectionNameTranslator implements AdeToCollectionNameTranslator<SmartRecordsMetadata> {
-    public static final String SCORE_SMART_COLLECTION_PREFIX = "scored_smart_";
+    public static final String SMART_COLLECTION_PREFIX = "smart_";
 
     @Override
     public String toCollectionName(SmartRecordsMetadata arg) {
@@ -15,7 +15,7 @@ public class SmartDataToCollectionNameTranslator implements AdeToCollectionNameT
 
 
     public String toCollectionName(String configurationName) {
-        return String.format(SCORE_SMART_COLLECTION_PREFIX + "%s", configurationName);
+        return String.format(SMART_COLLECTION_PREFIX + "%s", configurationName);
     }
 
     @Override

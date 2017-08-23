@@ -7,7 +7,7 @@ import fortscale.utils.pagination.PageIterator;
 import fortscale.utils.time.TimeRange;
 import javafx.util.Pair;
 import presidio.ade.domain.record.aggregated.SmartRecord;
-import presidio.ade.domain.store.smart.SmartRecordDataReader;
+import presidio.ade.domain.store.smart.SmartDataReader;
 import presidio.ade.domain.store.smart.SmartRecordsMetadata;
 
 import java.util.ArrayList;
@@ -18,9 +18,9 @@ public class SmartPaginationService extends BasePaginationService<SmartRecord> {
 
 
     private static final Logger logger = Logger.getLogger(SmartPaginationService.class);
-    protected SmartRecordDataReader reader;
+    protected SmartDataReader reader;
 
-    public SmartPaginationService(SmartRecordDataReader reader, int pageSize, int maxGroupSize) {
+    public SmartPaginationService(SmartDataReader reader, int pageSize, int maxGroupSize) {
         super(pageSize, maxGroupSize);
         this.reader = reader;
     }

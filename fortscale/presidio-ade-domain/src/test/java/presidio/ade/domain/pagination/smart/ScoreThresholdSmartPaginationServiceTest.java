@@ -15,8 +15,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import presidio.ade.domain.record.aggregated.SmartRecord;
 import presidio.ade.domain.store.smart.SmartDataToCollectionNameTranslator;
-import presidio.ade.domain.store.smart.SmartRecordDataReader;
-import presidio.ade.domain.store.smart.SmartRecordsDataReaderConfig;
+import presidio.ade.domain.store.smart.SmartDataReader;
+import presidio.ade.domain.store.smart.SmartDataReaderConfig;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -28,7 +28,7 @@ import java.util.*;
  */
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = {
-        SmartRecordsDataReaderConfig.class,
+        SmartDataReaderConfig.class,
         MongodbTestConfig.class
 })
 public class ScoreThresholdSmartPaginationServiceTest {
@@ -36,13 +36,13 @@ public class ScoreThresholdSmartPaginationServiceTest {
     @Autowired
     private MongoTemplate mongoTemplate;
     @Autowired
-    private SmartRecordDataReader smartRecordDataReader;
+    private SmartDataReader smartDataReader;
 
     private ScoreThresholdSmartPaginationService paginationService;
 
     @Before
     public void setup() {
-        paginationService = new ScoreThresholdSmartPaginationService(smartRecordDataReader, 3);
+        paginationService = new ScoreThresholdSmartPaginationService(smartDataReader, 3);
 
         List<SmartRecord> smartRecords = new ArrayList<>();
 
@@ -68,7 +68,7 @@ public class ScoreThresholdSmartPaginationServiceTest {
         collections.add("CollectionName1");
         collections.add("CollectionName2");
         for (String collectionName : collections) {
-            mongoTemplate.insert(smartRecords, SmartDataToCollectionNameTranslator.SCORE_SMART_COLLECTION_PREFIX + collectionName);
+            mongoTemplate.insert(smartRecords, SmartDataToCollectionNameTranslator.SMART_COLLECTION_PREFIX + collectionName);
         }
 
         mongoTemplate.insert(smartRecords, "NotSmartCollectionName");

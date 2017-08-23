@@ -1,6 +1,5 @@
 package presidio.ade.domain.store.smart;
 
-import fortscale.utils.logging.Logger;
 import fortscale.utils.mongodb.util.MongoDbBulkOpUtil;
 import fortscale.utils.pagination.ContextIdToNumOfItems;
 import org.springframework.data.domain.Sort;
@@ -11,7 +10,8 @@ import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import presidio.ade.domain.record.AdeRecord;
-import presidio.ade.domain.record.aggregated.*;
+import presidio.ade.domain.record.aggregated.AdeContextualAggregatedRecord;
+import presidio.ade.domain.record.aggregated.SmartRecord;
 
 import java.time.Instant;
 import java.util.*;
@@ -21,17 +21,26 @@ import static org.springframework.data.mongodb.core.aggregation.Aggregation.matc
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.newAggregation;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
-public class SmartRecordStoreMongoImpl implements SmartRecordDataStore {
-    private static final Logger logger = Logger.getLogger(SmartRecordStoreMongoImpl.class);
+/**
+ * A mongo based implementation for the {@link SmartDataStore}.
+ *
+ * @author Lior Govrin
+ */
+public class SmartDataStoreMongoImpl implements SmartDataStore {
 
-    private final MongoTemplate mongoTemplate;
-    private final SmartDataToCollectionNameTranslator translator;
     private final MongoDbBulkOpUtil mongoDbBulkOpUtil;
+    private final SmartDataToCollectionNameTranslator translator;
+    private final MongoTemplate mongoTemplate;
 
-    public SmartRecordStoreMongoImpl(MongoTemplate mongoTemplate, SmartDataToCollectionNameTranslator translator, MongoDbBulkOpUtil mongoDbBulkOpUtil) {
-        this.mongoTemplate = mongoTemplate;
-        this.translator = translator;
+    public SmartDataStoreMongoImpl(MongoDbBulkOpUtil mongoDbBulkOpUtil, SmartDataToCollectionNameTranslator translator, MongoTemplate mongoTemplate) {
         this.mongoDbBulkOpUtil = mongoDbBulkOpUtil;
+        this.translator = translator;
+        this.mongoTemplate = mongoTemplate;
+    }
+
+    @Override
+    public void storeSmartRecords(String smartRecordConfName, Collection<SmartRecord> smartRecords) {
+        mongoDbBulkOpUtil.insertUnordered(new ArrayList<>(smartRecords), translator.toCollectionName(smartRecordConfName));
     }
 
     @Override
@@ -84,14 +93,20 @@ public class SmartRecordStoreMongoImpl implements SmartRecordDataStore {
      */
     public Set<String> getAllSmartConfigurationNames() {
 
-       String prefix = SmartDataToCollectionNameTranslator.SCORE_SMART_COLLECTION_PREFIX;
+        String prefix = SmartDataToCollectionNameTranslator.SMART_COLLECTION_PREFIX;
         //get all smart collections
         Set<String> collections = mongoTemplate.getCollectionNames();
         collections = collections.stream().filter(c ->
                 c.startsWith(prefix)
         ).map(c->  c.replaceFirst(prefix, "")).collect(Collectors.toSet());
 
-         return collections;
+        return collections;
 
     }
+
+
+
+
+
+
 }

@@ -8,20 +8,21 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
-
+/**
+ * @author Lior Govrin
+ */
 @Configuration
 @Import({SmartDataToCollectionNameTranslatorConfig.class, MongoDbBulkOpUtilConfig.class})
-public class SmartRecordsDataReaderConfig {
-    @Autowired
-    public MongoTemplate mongoTemplate;
-    @Autowired
-    public SmartDataToCollectionNameTranslator translator;
-    @Autowired
-    public MongoDbBulkOpUtil mongoDbBulkOpUtil;
+public class SmartDataStoreConfig {
+	@Autowired
+	private MongoDbBulkOpUtil mongoDbBulkOpUtil;
+	@Autowired
+	public SmartDataToCollectionNameTranslator translator;
+	@Autowired
+	private MongoTemplate mongoTemplate;
 
-    @Bean
-    public SmartRecordDataReader smartRecordDataReader() {
-        return new SmartRecordStoreMongoImpl(mongoTemplate, translator, mongoDbBulkOpUtil);
-    }
-
+	@Bean
+	public SmartDataStore smartDataStore() {
+		return new SmartDataStoreMongoImpl(mongoDbBulkOpUtil, translator, mongoTemplate);
+	}
 }

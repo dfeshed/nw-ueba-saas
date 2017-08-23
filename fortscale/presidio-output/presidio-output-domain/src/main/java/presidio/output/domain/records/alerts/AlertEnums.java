@@ -12,12 +12,6 @@ public class AlertEnums {
         AlertSeverity(String name) {
             this.value = value;
         }
-
-        @Override
-        public String toString() {
-            return String.valueOf(value);
-        }
-        
     }
 
     public enum AlertTimeframe {

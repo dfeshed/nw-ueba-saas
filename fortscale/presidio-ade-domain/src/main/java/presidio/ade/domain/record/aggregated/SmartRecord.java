@@ -32,9 +32,9 @@ public class SmartRecord extends AdeContextualAggregatedRecord implements AdeSco
 	@Field(SMART_SCORE_FIELD)
 	private double smartScore;
 	@Field(FEATURE_SCORES_FIELD)
-	List<FeatureScore> featureScores;
+	private List<FeatureScore> featureScores;
 	@Field(AGGREGATION_RECORDS_FIELD)
-	List<AdeAggregationRecord> aggregationRecords;
+	private List<AdeAggregationRecord> aggregationRecords;
 	@Field
 	private String featureName;
 
@@ -124,7 +124,12 @@ public class SmartRecord extends AdeContextualAggregatedRecord implements AdeSco
 
 	@Override
 	public String toString() {
-		return "SmartRecord{}";
+		return String.format(
+				"%s{start = %s, end = %s, contextId = %s, featureName = %s, " +
+				"fixedDurationStrategy = %s, smartValue = %.5f, smartScore = %.5f}",
+				getClass().getSimpleName(), getStartInstant().toString(), getEndInstant().toString(),
+				getContextId(), getFeatureName(), getFixedDurationStrategy().toStrategyName(),
+				getSmartValue(), getScore());
 	}
 
 
