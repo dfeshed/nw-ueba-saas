@@ -1,4 +1,4 @@
-package presidio.output.domain.services.events;
+package presidio.output.domain.services;
 
 import fortscale.utils.elasticsearch.PresidioElasticsearchTemplate;
 import org.assertj.core.util.Lists;
@@ -18,7 +18,6 @@ import presidio.output.domain.services.alerts.AlertPersistencyService;
 
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -42,25 +41,20 @@ public class AlertPersistencyServiceTest {
     @Autowired
     private PresidioElasticsearchTemplate esTemplate;
 
-    private List<String> classifications;
-
     @Before
     public void before() {
         esTemplate.deleteIndex(Alert.class);
         esTemplate.createIndex(Alert.class);
         esTemplate.putMapping(Alert.class);
         esTemplate.refresh(Alert.class);
-        classifications = new ArrayList<>(Arrays.asList("Mass Changes to Critical Enterprise Groups"));
     }
 
     @Test
     public void testSave() {
         long startDate = Instant.now().toEpochMilli();
         long endDate = Instant.now().toEpochMilli();
-        List<String> classifications = new ArrayList<>(Arrays.asList("Mass Changes to Critical Enterprise Groups"));
-        ;
         Alert alert =
-                new Alert(classifications, "1010", "user1", AlertType.DATA_EXFILTRATION, startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH);
+                new Alert("user1", AlertType.DATA_EXFILTRATION, startDate, endDate, 95.0d,3,AlertTimeframe.HOURLY, AlertSeverity.HIGH);
         Alert testAlert = alertPersistencyService.save(alert);
 
         assertNotNull(testAlert.getId());
@@ -75,9 +69,9 @@ public class AlertPersistencyServiceTest {
         long endDate = Instant.now().toEpochMilli();
         List<Alert> alertList = new ArrayList<>();
         alertList.add(
-                new Alert(classifications, "1010", "user1", AlertType.DATA_EXFILTRATION, startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH));
+                new Alert("user1", AlertType.DATA_EXFILTRATION, startDate, endDate, 95.0d,3,AlertTimeframe.HOURLY, AlertSeverity.HIGH));
         alertList.add(
-                new Alert(classifications, "1020", "user1", AlertType.ANOMALOUS_ADMIN_ACTIVITY, startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH));
+                new Alert("user1", AlertType.ANOMALOUS_ADMIN_ACTIVITY, startDate, endDate, 95.0d,3,AlertTimeframe.HOURLY, AlertSeverity.HIGH));
         Iterable<Alert> testAlert = alertPersistencyService.save(alertList);
 
         assertThat(Lists.newArrayList(testAlert).size(), is(2));
@@ -88,9 +82,8 @@ public class AlertPersistencyServiceTest {
     public void testFindOne() {
         long startDate = Instant.now().toEpochMilli();
         long endDate = Instant.now().toEpochMilli();
-        ;
         Alert alert =
-                new Alert(classifications, "1010", "user1", AlertType.DATA_EXFILTRATION, startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH);
+                new Alert("user1", AlertType.DATA_EXFILTRATION, startDate, endDate, 95.0d,3,AlertTimeframe.HOURLY, AlertSeverity.HIGH);
 
         alertPersistencyService.save(alert);
 
@@ -109,9 +102,9 @@ public class AlertPersistencyServiceTest {
         long endDate = Instant.now().toEpochMilli();
         List<Alert> alertList = new ArrayList<>();
         alertList.add(
-                new Alert(classifications, "1010", "user1", AlertType.DATA_EXFILTRATION, startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH));
+                new Alert("user1", AlertType.DATA_EXFILTRATION, startDate, endDate, 95.0d,3,AlertTimeframe.HOURLY, AlertSeverity.HIGH));
         alertList.add(
-                new Alert(classifications, "1020", "user1", AlertType.ANOMALOUS_ADMIN_ACTIVITY, startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH));
+                new Alert("user1", AlertType.ANOMALOUS_ADMIN_ACTIVITY, startDate, endDate, 95.0d,3,AlertTimeframe.HOURLY, AlertSeverity.HIGH));
         for (Alert alert : alertList) {
             alertPersistencyService.save(alert);
         }
@@ -128,9 +121,9 @@ public class AlertPersistencyServiceTest {
         long endDate = Instant.now().toEpochMilli();
         List<Alert> alertList = new ArrayList<>();
         alertList.add(
-                new Alert(classifications, "1010", "user1", AlertType.DATA_EXFILTRATION, startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH));
+                new Alert("user1", AlertType.DATA_EXFILTRATION, startDate, endDate, 95.0d,3,AlertTimeframe.HOURLY, AlertSeverity.HIGH));
         alertList.add(
-                new Alert(classifications, "1020", "user1", AlertType.ANOMALOUS_ADMIN_ACTIVITY, startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH));
+                new Alert("user1", AlertType.ANOMALOUS_ADMIN_ACTIVITY, startDate, endDate, 95.0d,3,AlertTimeframe.HOURLY, AlertSeverity.HIGH));
         for (Alert alert : alertList) {
             alertPersistencyService.save(alert);
         }
@@ -148,7 +141,7 @@ public class AlertPersistencyServiceTest {
         long startDate = Instant.now().toEpochMilli();
         long endDate = Instant.now().toEpochMilli();
         Alert alert =
-                new Alert(classifications, "1010", "user1", AlertType.DATA_EXFILTRATION, startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH);
+                new Alert("user1", AlertType.DATA_EXFILTRATION, startDate, endDate, 95.0d,3,AlertTimeframe.HOURLY, AlertSeverity.HIGH);
         alertPersistencyService.save(alert);
         alertPersistencyService.delete(alert);
         Alert testAlert = alertPersistencyService.findOne(alert.getId());
@@ -163,23 +156,17 @@ public class AlertPersistencyServiceTest {
 
         List<Alert> alertList = new ArrayList<>();
         alertList.add(
-                new Alert(classifications, "1000",
-                        "normalized_username_ipusr3@somebigcompany.com", AlertType.DATA_EXFILTRATION, startDate - 1, endDate + 5, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH));
+                new Alert("normalized_username_ipusr3@somebigcompany.com", AlertType.DATA_EXFILTRATION, startDate-1, endDate+5, 95.0d,3,AlertTimeframe.HOURLY, AlertSeverity.HIGH));
         alertList.add(
-                new Alert(classifications, "1001",
-                        "normalized_username_ipusr3@somebigcompany.com", AlertType.DATA_EXFILTRATION, startDate, endDate + 5, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH));
+                new Alert("normalized_username_ipusr3@somebigcompany.com", AlertType.DATA_EXFILTRATION, startDate, endDate+5, 95.0d,3,AlertTimeframe.HOURLY, AlertSeverity.HIGH));
         alertList.add(
-                new Alert(classifications, "1002",
-                        "normalized_username_ipusr3@somebigcompany.com", AlertType.DATA_EXFILTRATION, startDate + 1, endDate + 5, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH));
+                new Alert("normalized_username_ipusr3@somebigcompany.com", AlertType.DATA_EXFILTRATION, startDate+1, endDate+5, 95.0d,3,AlertTimeframe.HOURLY, AlertSeverity.HIGH));
         alertList.add(
-                new Alert(classifications, "1003",
-                        "normalized_username_ipusr3@somebigcompany.com", AlertType.DATA_EXFILTRATION, startDate + 2, endDate + 5, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH));
+                new Alert("normalized_username_ipusr3@somebigcompany.com", AlertType.DATA_EXFILTRATION, startDate+2, endDate+5, 95.0d,3,AlertTimeframe.HOURLY, AlertSeverity.HIGH));
         alertList.add(
-                new Alert(classifications, "1004",
-                        "normalized_username_ipusr4@somebigcompany.com", AlertType.ANOMALOUS_ADMIN_ACTIVITY, startDate, endDate + 5, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH));
+                new Alert("normalized_username_ipusr4@somebigcompany.com", AlertType.ANOMALOUS_ADMIN_ACTIVITY, startDate, endDate+5, 95.0d,3,AlertTimeframe.HOURLY, AlertSeverity.HIGH));
         alertList.add(
-                new Alert(classifications, "1005",
-                        "normalized_username_ipusr3@somebigcompany.com", AlertType.ANOMALOUS_ADMIN_ACTIVITY, startDate, endDate + 5, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.MEDIUM));
+                new Alert("normalized_username_ipusr3@somebigcompany.com", AlertType.ANOMALOUS_ADMIN_ACTIVITY, startDate, endDate+5, 95.0d,3,AlertTimeframe.HOURLY, AlertSeverity.MEDIUM));
         for (Alert alert : alertList) {
             alertPersistencyService.save(alert);
         }
@@ -187,7 +174,7 @@ public class AlertPersistencyServiceTest {
         AlertQuery alertQuery =
                 new AlertQuery.AlertQueryBuilder()
                         .filterByUserName("normalized_username_ipusr3")
-                        .filterBySeverity(AlertSeverity.HIGH.toString())
+                        .filterBySeverity(AlertSeverity.HIGH.name())
                         .filterByStartDate(startDate)
                         .filterByEndDate(endDate + 1)
                         .sortField(Alert.SCORE, true)

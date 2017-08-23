@@ -1,4 +1,4 @@
-package presidio.output.domain.services.events;
+package presidio.output.domain.services;
 
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;

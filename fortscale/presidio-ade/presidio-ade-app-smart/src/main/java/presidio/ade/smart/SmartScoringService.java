@@ -40,7 +40,7 @@ public class SmartScoringService {
 	 * @param smartRecords the smart records that are scored
 	 */
 	public void score(Collection<SmartRecord> smartRecords) {
-		logger.info("Going to calculate the value and score of {} smart records.", smartRecords.size());
+		logger.debug("Going to calculate the value and score of {} smart records.", smartRecords.size());
 		smartRecords.forEach(this::score);
 	}
 

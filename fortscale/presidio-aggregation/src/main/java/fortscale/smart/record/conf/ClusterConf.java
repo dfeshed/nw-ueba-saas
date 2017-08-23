@@ -24,16 +24,17 @@ import java.util.List;
 )
 public class ClusterConf {
 	private List<String> aggregationRecordNames;
-	private double weight;
+	private Double weight;
 
 	@JsonCreator
 	public ClusterConf(
 			@JsonProperty("aggregationRecordNames") List<String> aggregationRecordNames,
-			@JsonProperty("weight") double weight) {
+			@JsonProperty("weight") Double weight) {
 
 		Assert.notEmpty(aggregationRecordNames, "The list of aggregation record names cannot be empty.");
 		aggregationRecordNames.forEach(ClusterConf::assertAggregationRecordName);
-		// The weight is not mandatory - If it's zero or negative, a default weight will be used instead
+		// The weight is optional - If it's null, a default weight will be used instead
+		if (weight != null) Assert.isTrue(0 <= weight && weight <= 1, "The weight must be in the range [0,1].");
 
 		this.aggregationRecordNames = aggregationRecordNames;
 		this.weight = weight;
@@ -47,11 +48,11 @@ public class ClusterConf {
 		this.aggregationRecordNames = aggregationRecordNames;
 	}
 
-	public double getWeight() {
+	public Double getWeight() {
 		return weight;
 	}
 
-	public void setWeight(double weight) {
+	public void setWeight(Double weight) {
 		this.weight = weight;
 	}
 

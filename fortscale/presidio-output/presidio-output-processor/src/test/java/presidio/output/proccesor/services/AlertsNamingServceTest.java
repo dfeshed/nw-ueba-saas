@@ -42,6 +42,7 @@ public class AlertsNamingServceTest {
             return new TestPropertiesPlaceholderConfigurer(properties);
         }
     }
+    
 
     @Test
     public void classiticationsAsTowOptions() {

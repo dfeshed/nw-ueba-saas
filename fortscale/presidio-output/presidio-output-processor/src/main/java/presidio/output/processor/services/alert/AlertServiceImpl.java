@@ -5,6 +5,7 @@ import fortscale.utils.logging.Logger;
 import fortscale.utils.pagination.PageIterator;
 import net.minidev.json.JSONObject;
 import org.apache.commons.collections.CollectionUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.alerts.AlertEnums;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
@@ -21,6 +22,7 @@ public class AlertServiceImpl implements AlertService {
 
     private final String AGGREGATED_FEATURE_NAME = "aggregated_feature_name";
 
+    @Autowired
     private AlertPersistencyService alertPersistencyService;
 
     private AlertEnumsSeverityService alertEnumsSeverityService;
