@@ -1,6 +1,7 @@
 package presidio.output.processor.services.alert;
 
 import fortscale.utils.logging.Logger;
+import fortscale.utils.pagination.PageIterator;
 import org.apache.commons.collections.CollectionUtils;
 import presidio.ade.domain.record.aggregated.SmartRecord;
 import org.springframework.beans.factory.annotation.Autowired;

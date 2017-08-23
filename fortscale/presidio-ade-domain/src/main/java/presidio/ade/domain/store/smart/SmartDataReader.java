@@ -1,8 +1,6 @@
 package presidio.ade.domain.store.smart;
 
-import fortscale.domain.SMART.EntityEvent;
 import fortscale.utils.pagination.ContextIdToNumOfItems;
-import fortscale.utils.time.TimeRange;
 import presidio.ade.domain.record.aggregated.SmartRecord;
 
 import java.util.List;

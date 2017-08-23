@@ -103,10 +103,4 @@ public class SmartDataStoreMongoImpl implements SmartDataStore {
         return collections;
 
     }
-
-
-
-
-
-
 }

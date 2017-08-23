@@ -16,7 +16,7 @@ import presidio.output.proccesor.spring.OutputProcessorTestConfiguration;
 import presidio.output.processor.services.OutputExecutionService;
 import presidio.output.processor.services.OutputExecutionServiceImpl;
 import presidio.output.processor.spring.OutputProcessorConfiguration;
-
+@Ignore
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = OutputProcessorTestConfiguration.class)
 public class FortscaleOutputProcessorApplicationTest {
