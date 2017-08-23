@@ -1,8 +1,6 @@
 package presidio.output.domain.records.alerts;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
@@ -13,7 +11,7 @@ import javax.persistence.Enumerated;
 import java.util.List;
 
 @Document(indexName = AbstractElasticDocument.INDEX_NAME, type = Alert.ALERT_TYPE)
-public class Alert extends AbstractElasticDocument{
+public class Alert extends AbstractElasticDocument {
 
     public static final String ALERT_TYPE = "alert";
 
@@ -40,11 +38,11 @@ public class Alert extends AbstractElasticDocument{
     @JsonProperty(TYPE)
     private AlertEnums.AlertType alertType;
 
-    @Field (type = FieldType.Long, store = true)
+    @Field(type = FieldType.Long, store = true)
     @JsonProperty(START_DATE)
     private long startDate;
 
-    @Field (type = FieldType.Long, store = true)
+    @Field(type = FieldType.Long, store = true)
     @JsonProperty(END_DATE)
     private long endDate;
 
@@ -70,9 +68,9 @@ public class Alert extends AbstractElasticDocument{
         // empty const for JSON deserialization
     }
 
-        this.classification = classification;
-    public Alert(List<String> classification, String id, String userName, AlertEnums.AlertType type, long startDate, long endDate, double score, int indicatorsNum, AlertEnums.AlertTimeframe timeframe, AlertEnums.AlertSeverity severity) {
+    public Alert(List<String> classification, String userName, AlertEnums.AlertType type, long startDate, long endDate, double score, int indicatorsNum, AlertEnums.AlertTimeframe timeframe, AlertEnums.AlertSeverity severity) {
         super();
+        this.classification = classification;
         this.userName = userName;
         this.alertType = type;
         this.startDate = startDate;
@@ -89,14 +87,6 @@ public class Alert extends AbstractElasticDocument{
 
     public void setClassification(List<String> classification) {
         this.classification = classification;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public String getUserName() {
