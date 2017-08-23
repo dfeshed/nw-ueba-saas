@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import presidio.ade.sdk.common.AdeManagerSdk;
 import presidio.ade.sdk.common.AdeManagerSdkConfig;
+import presidio.output.domain.spring.EventPersistencyServiceConfig;
 import presidio.output.processor.OutputShellCommands;
 import presidio.output.processor.services.OutputExecutionService;
 import presidio.output.processor.services.OutputExecutionServiceImpl;
@@ -28,7 +29,8 @@ import java.util.Properties;
         AlertServiceElasticConfig.class,
         OutputShellCommands.class,
         BootShimConfig.class,
-        UserServiceConfig.class})
+        UserServiceConfig.class,
+        EventPersistencyServiceConfig.class})
 public class OutputProcessorTestConfiguration {
 
     @Autowired
@@ -43,17 +45,5 @@ public class OutputProcessorTestConfiguration {
     @Bean
     public OutputExecutionService outputProcessService() {
         return new OutputExecutionServiceImpl(adeManagerSdk, alertService, userService);
-    }
-    @Bean
-    public static TestPropertiesPlaceholderConfigurer outputProcessorTestConfigurationTestConfigurer()
-    {
-        Properties properties = new Properties();
-        properties.put("streaming.event.field.type.aggr_event", "aggr_event");
-        properties.put("streaming.aggr_event.field.context", "context");
-        properties.put("severity.critical", 95);
-        properties.put("severity.high", 85);
-        properties.put("severity.mid", 70);
-        properties.put("severity.low", 50);
-        return new TestPropertiesPlaceholderConfigurer(properties);
     }
 }

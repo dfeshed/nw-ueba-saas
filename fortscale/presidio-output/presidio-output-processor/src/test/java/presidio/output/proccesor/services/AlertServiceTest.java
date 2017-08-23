@@ -94,20 +94,22 @@ public class AlertServiceTest {
     }
 
     @Test
-    public void allSmartsAboveScoreThreshold() {
-//        int smartSize = 3;
-//        int numOfSmartsBelowScoreThreshold = 0;
-//        setup(smartSize, numOfSmartsBelowScoreThreshold, OutputExecutionServiceImpl.SMART_SCORE_THRESHOLD);
-//        PageIterator<EntityEvent> smarts = new SmartPageIterator<EntityEvent>(smartDataStore, timeRange, OutputExecutionServiceImpl.SMART_SCORE_THRESHOLD);
+    public void generateAlertWithLowSmartScore() {
         User userEntity = new User("userId", "userName", "displayName", 0d, new ArrayList<String>(), new ArrayList<String>());
-        Alert alert = alertService.generateAlert(generateSingleSmart(1), userEntity);
+        Alert alert = alertService.generateAlert(generateSingleSmart(30), userEntity);
+        assertTrue(alert == null);
+    }
 
-//        ArgumentCaptor<List> argument = ArgumentCaptor.forClass(List.class);
-//        Mockito.verify(alertPersistencyService, VerificationModeFactory.times(1)).save(Mockito.anyList());
-//        Mockito.verify(alertPersistencyService).save(argument.capture());
-//        final int generatedAlertsListSize = argument.getValue().size();
-//        assertEquals(smartSize, generatedAlertsListSize);
-        assertTrue(alert.equals(null));
+    @Test
+    public void generateAlertTest() {
+        User userEntity = new User("userId", "userName", "displayName", 0d, new ArrayList<String>(), new ArrayList<String>());
+        EntityEvent smart = generateSingleSmart(60);
+        Alert alert = alertService.generateAlert(smart, userEntity);
+        assertEquals(alert.getUserId(), userEntity.getUserId());
+        assertEquals(alert.getUserName(), userEntity.getUserName());
+//        assertEquals(alert.getAlertType() //TODO- test here if the classification is correct once classification is implemented
+        assertTrue(alert.getScore() == smart.getScore());
+
     }
 
 
