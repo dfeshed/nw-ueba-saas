@@ -8,35 +8,29 @@
         <version>1.0.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>presidio-ade-app-score-aggr</artifactId>
-
+    <artifactId>presidio-ade-app-smart</artifactId>
     <packaging>jar</packaging>
-
     <properties>
-        <start-class>presidio.ade.processes.shell.ScoreAggregationsApplication</start-class>
+        <start-class>presidio.ade.smart.SmartApplication</start-class>
     </properties>
-
-
     <dependencies>
-        <dependency>
-            <groupId>fortscale</groupId>
-            <artifactId>presidio-ml</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
-        </dependency>
         <dependency>
             <groupId>fortscale</groupId>
             <artifactId>presidio-ade-domain</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
+            <groupId>fortscale</groupId>
+            <artifactId>presidio-ml</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-config</artifactId>
         </dependency>
-
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-            <scope>test</scope>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-task-starter</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -44,22 +38,11 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-task-starter</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>fortscale</groupId>
-            <artifactId>presidio-ade-app-test-utils</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
             <scope>test</scope>
-            <type>test-jar</type>
-        </dependency>
-        <dependency>
-            <groupId>presidio-test-utils</groupId>
-            <artifactId>presidio-data-generators</artifactId>
         </dependency>
     </dependencies>
-
     <build>
         <plugins>
             <plugin>
@@ -73,7 +56,6 @@
                     </archive>
                 </configuration>
             </plugin>
-
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
@@ -123,5 +105,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>

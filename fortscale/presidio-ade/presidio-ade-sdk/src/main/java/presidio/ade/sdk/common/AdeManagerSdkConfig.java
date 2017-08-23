@@ -15,7 +15,7 @@ import presidio.ade.domain.store.enriched.EnrichedDataStoreConfig;
 import presidio.ade.domain.store.scored.ScoredEnrichedDataStore;
 import presidio.ade.domain.store.scored.ScoredEnrichedDataStoreMongoConfig;
 import presidio.ade.domain.store.smart.SmartDataStore;
-import presidio.ade.domain.store.smart.SmartDataStoreMongoConfig;
+import presidio.ade.domain.store.smart.SmartDataStoreConfig;
 import presidio.ade.sdk.aggregation_records.AggregatedFeatureEventConfServiceConfig;
 
 /**
@@ -23,7 +23,7 @@ import presidio.ade.sdk.aggregation_records.AggregatedFeatureEventConfServiceCon
  */
 @Configuration
 @Import({EnrichedDataStoreConfig.class,
-        SmartDataStoreMongoConfig.class,
+        SmartDataStoreConfig.class,
         ScoredEnrichedDataStoreMongoConfig.class,
         AggregatedFeatureEventConfServiceConfig.class,
         FeatureBucketStoreMongoConfig.class,

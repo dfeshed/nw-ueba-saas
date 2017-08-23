@@ -6,7 +6,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * Created by barak_schuster on 7/25/17.
+ * @author Barak Schuster
+ * @author Lior Govrin
  */
 @Configuration
 public class BootShimConfig {
@@ -14,9 +15,8 @@ public class BootShimConfig {
     private ConfigurableApplicationContext context;
 
     @Bean
-    public BootShim bootShim()
-    {
-        return new BootShim(CommandLineArgsHolder.args,context);
+    public BootShim bootShim() {
+        return new BootShim(CommandLineArgsHolder.args, context);
     }
 
     @Bean
@@ -24,4 +24,8 @@ public class BootShimConfig {
         return new InstantConverter();
     }
 
+    @Bean
+    public FixedDurationStrategyConverter fixedDurationStrategyConverter() {
+        return new FixedDurationStrategyConverter();
+    }
 }
