@@ -13,8 +13,8 @@ import java.util.Set;
 
 public class ValidationManager {
 
-    private Validator validator;
     private static final Logger logger = Logger.getLogger(ValidationManager.class);
+    private Validator validator;
 
     public ValidationManager(Validator validator) {
         this.validator = validator;
@@ -31,8 +31,7 @@ public class ValidationManager {
 
             if (CollectionUtils.isEmpty(violations)) {
                 result.add(document);
-            }
-            else {
+            } else {
                 logger.warn("Validation for event with id {} failed. There were {} violations.", document.getId(), violations.size());
                 for (ConstraintViolation<AbstractAuditableDocument> violation : violations) {
                     final Path propertyPath = violation.getPropertyPath();

@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import presidio.ade.domain.pagination.aggregated.AggregatedDataReader;
 import presidio.ade.domain.store.smart.SmartDataStore;
+import presidio.ade.domain.store.smart.SmartDataStoreConfig;
 import presidio.ade.smart.SmartApplicationCommands;
 import presidio.ade.smart.SmartScoringService;
 import presidio.ade.smart.SmartService;
@@ -27,7 +28,7 @@ import presidio.ade.smart.SmartService;
 		SmartApplicationAggregationRecordConfig.class,
 		SmartApplicationAggregationDataReaderConfig.class,
 		SmartApplicationSmartScoringServiceConfig.class,
-		SmartApplicationSmartDataStoreConfig.class
+		SmartDataStoreConfig.class
 })
 public class SmartApplicationConfiguration {
 	@Autowired

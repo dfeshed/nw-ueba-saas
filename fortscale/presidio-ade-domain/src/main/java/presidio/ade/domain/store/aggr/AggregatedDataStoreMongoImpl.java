@@ -44,8 +44,8 @@ public class AggregatedDataStoreMongoImpl implements AggregatedDataStore {
     }
 
     @Override
-    public void store(List<? extends AdeContextualAggregatedRecord> records, AggregatedFeatureType aggregatedFeatureType) {
-        Map<String, ? extends List<? extends AdeContextualAggregatedRecord>> featureToAggrList = records.stream().collect(Collectors.groupingBy(AdeContextualAggregatedRecord::getFeatureName));
+    public void store(List<? extends AdeAggregationRecord> records, AggregatedFeatureType aggregatedFeatureType) {
+        Map<String, ? extends List<? extends AdeContextualAggregatedRecord>> featureToAggrList = records.stream().collect(Collectors.groupingBy(AdeAggregationRecord::getFeatureName));
 
         featureToAggrList.keySet().forEach(
                 feature ->

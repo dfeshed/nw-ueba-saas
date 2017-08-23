@@ -1,12 +1,10 @@
 package presidio.input.sdk.impl.repositories;
 
-import fortscale.common.general.Schema;
 import fortscale.domain.core.AbstractAuditableDocument;
 import presidio.sdk.api.domain.AbstractPresidioDocument;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.Set;
 
 public interface DataSourceRepository {
     List<? extends AbstractAuditableDocument> getDataSourceDataBetweenDates(String collectionName, Instant startTime, Instant endTime);

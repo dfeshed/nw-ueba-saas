@@ -91,7 +91,7 @@ public class SmartService {
 		return smartRecordConf.getAggregationRecordNames().stream()
 				.map(name -> {
 					String type = aggregatedFeatureEventsConfService.getAggregatedFeatureEventConf(name).getType();
-					return new AggregatedDataPaginationParam(null, name, fromCodeRepresentation(type));
+					return new AggregatedDataPaginationParam(name, fromCodeRepresentation(type));
 				})
 				.collect(Collectors.toSet());
 	}

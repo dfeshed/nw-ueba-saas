@@ -15,8 +15,8 @@ import presidio.input.sdk.impl.services.DataServiceImpl;
 import presidio.input.sdk.impl.services.PresidioInputPersistencyServiceMongoImpl;
 import presidio.input.sdk.impl.validators.ValidationManager;
 import presidio.sdk.api.services.DataService;
-import presidio.sdk.api.utils.InputToCollectionNameTranslator;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
+import presidio.sdk.api.utils.InputToCollectionNameTranslator;
 
 
 @Configuration
@@ -24,26 +24,26 @@ import presidio.sdk.api.services.PresidioInputPersistencyService;
 @PropertySource("classpath:inputSdk.properties")
 public class PresidioInputPersistencyServiceConfig {
 
+    @Autowired
+    private MongoTemplate mongoTemplate;
+
     @Bean
     public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
         return new PropertySourcesPlaceholderConfigurer();
     }
 
-    @Autowired
-    private MongoTemplate mongoTemplate;
-
     @Bean
-    public ToCollectionNameTranslator toCollectionNameTranslator(){
+    public ToCollectionNameTranslator toCollectionNameTranslator() {
         return new InputToCollectionNameTranslator();
     }
 
     @Bean
-    public DataSourceRepository dataSourceRepository(){
+    public DataSourceRepository dataSourceRepository() {
         return new DataSourceRepositoryImpl(mongoTemplate);
     }
 
     @Bean
-    public LocalValidatorFactoryBean localValidatorFactoryBean(){
+    public LocalValidatorFactoryBean localValidatorFactoryBean() {
         return new LocalValidatorFactoryBean();
     }
 
@@ -53,7 +53,7 @@ public class PresidioInputPersistencyServiceConfig {
     }
 
     @Bean
-    public ValidationManager validationManager(){
+    public ValidationManager validationManager() {
         return new ValidationManager(localValidatorFactoryBean().getValidator());
     }
 

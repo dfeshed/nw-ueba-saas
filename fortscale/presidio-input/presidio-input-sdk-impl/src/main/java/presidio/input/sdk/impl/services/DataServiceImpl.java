@@ -61,7 +61,7 @@ public class DataServiceImpl implements DataService {
 
     @Override
     public <U extends AbstractPresidioDocument> List<U> readRecords(Schema schema, Instant startDate, Instant endDate, int numOfItemsToSkip, int pageSize) {
-        return dataSourceRepository.readRecords(toCollectionNameTranslator.toCollectionName(schema), startDate, endDate,  numOfItemsToSkip, pageSize);
+        return dataSourceRepository.readRecords(toCollectionNameTranslator.toCollectionName(schema), startDate, endDate, numOfItemsToSkip, pageSize);
     }
 
     @Override

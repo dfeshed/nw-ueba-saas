@@ -26,18 +26,15 @@ public abstract class AdeContextualAggregatedRecord extends AdeRecord {
     @Indexed
     @Field(CONTEXT_ID_FIELD)
     private String contextId;
-    @Transient
-    private String featureName;
 
     public AdeContextualAggregatedRecord(){
         super();
     }
 
-    public AdeContextualAggregatedRecord(Instant startInstant, Instant endInstant, String contextId, String featureName){
+    public AdeContextualAggregatedRecord(Instant startInstant, Instant endInstant, String contextId){
         super(startInstant);
         this.endInstant = endInstant;
         this.contextId = contextId;
-        this.featureName = featureName;
     }
 
     /**
@@ -51,13 +48,6 @@ public abstract class AdeContextualAggregatedRecord extends AdeRecord {
                 .collect(Collectors.joining(CONTEXT_ID_SEPARATOR));
     }
 
-    /**
-     * Set feature name
-     * @param featureName
-     */
-    public void setFeatureName(String featureName) {
-        this.featureName = featureName;
-    }
 
     /**
      * @return end Instant
@@ -86,14 +76,6 @@ public abstract class AdeContextualAggregatedRecord extends AdeRecord {
      */
     public void setContextId(String contextId) {
         this.contextId = contextId;
-    }
-
-    /**
-     *
-     * @return name of the aggregated feature. i.e. sum_of_xxx_daily or highest_xxx_score_daily
-     */
-    public String getFeatureName() {
-        return featureName;
     }
 
 }

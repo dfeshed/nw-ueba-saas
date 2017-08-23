@@ -14,7 +14,8 @@ import presidio.ade.domain.store.enriched.EnrichedDataStore;
 import presidio.ade.domain.store.enriched.EnrichedDataStoreConfig;
 import presidio.ade.domain.store.scored.ScoredEnrichedDataStore;
 import presidio.ade.domain.store.scored.ScoredEnrichedDataStoreMongoConfig;
-import presidio.ade.domain.store.smart.SmartDataStore;
+import presidio.ade.domain.store.smart.SmartDataReader;
+import presidio.ade.domain.store.smart.SmartDataReaderConfig;
 import presidio.ade.domain.store.smart.SmartDataStoreConfig;
 import presidio.ade.sdk.aggregation_records.AggregatedFeatureEventConfServiceConfig;
 
@@ -23,7 +24,7 @@ import presidio.ade.sdk.aggregation_records.AggregatedFeatureEventConfServiceCon
  */
 @Configuration
 @Import({EnrichedDataStoreConfig.class,
-        SmartDataStoreConfig.class,
+        SmartDataReaderConfig.class,
         ScoredEnrichedDataStoreMongoConfig.class,
         AggregatedFeatureEventConfServiceConfig.class,
         FeatureBucketStoreMongoConfig.class,
@@ -34,7 +35,7 @@ public class AdeManagerSdkConfig {
     private EnrichedDataStore enrichedDataStore;
 
     @Autowired
-    private SmartDataStore smartDataStore;
+    private SmartDataReader smartDataReader;
 
     @Autowired
     private ScoredEnrichedDataStore scoredEnrichedDataStore;
@@ -51,6 +52,6 @@ public class AdeManagerSdkConfig {
 
     @Bean
     public AdeManagerSdk adeManagerSdk() {
-        return new AdeManagerSdkImpl(enrichedDataStore, smartDataStore, scoredEnrichedDataStore, adeManagerSdkAggregatedFeatureEventsConfService, featureBucketReader, aggregationEventsAccumulationDataReader);
+        return new AdeManagerSdkImpl(enrichedDataStore, smartDataReader, scoredEnrichedDataStore, adeManagerSdkAggregatedFeatureEventsConfService, featureBucketReader, aggregationEventsAccumulationDataReader);
     }
 }

@@ -1,11 +1,11 @@
 package presidio.output.processor.services;
 
 import fortscale.common.general.CommonStrings;
-import fortscale.domain.SMART.EntityEvent;
 import fortscale.utils.pagination.PageIterator;
 import fortscale.utils.time.TimeRange;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import presidio.ade.domain.record.aggregated.SmartRecord;
 import presidio.ade.sdk.common.AdeManagerSdk;
 import presidio.output.processor.services.alert.AlertService;
 
@@ -46,7 +46,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
 
         //1. Get SMARTs from ADE
         //TODO- change page size and score threshold (configurable)
-        PageIterator<EntityEvent> smarts = adeManagerSdk.getSmartRecords(new TimeRange(startDate, endDate), 100, SMART_SCORE_THRESHOLD);
+        PageIterator<SmartRecord> smarts = adeManagerSdk.getSmartRecords(new TimeRange(startDate, endDate), 100, SMART_SCORE_THRESHOLD);
         alertService.generateAlerts(smarts);
     }
 
