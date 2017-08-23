@@ -2,11 +2,17 @@ package fortscale.smart.record.conf;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.aggregation.configuration.AslConfigurationService;
+import fortscale.aggregation.feature.bucket.FeatureBucketConf;
+import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
+import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
+import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
+import presidio.ade.domain.pagination.aggregated.AggregatedDataPaginationParam;
+import presidio.ade.domain.record.aggregated.AggregatedFeatureType;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * A service that manages all the {@link SmartRecordConf}s.
@@ -20,17 +26,20 @@ public class SmartRecordConfService extends AslConfigurationService {
 	private String baseConfigurationsPath;
 	private String overridingConfigurationsPath;
 	private String additionalConfigurationsPath;
+	private AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
 	private ObjectMapper objectMapper;
 	private Map<String, SmartRecordConf> nameToSmartRecordConfMap;
 
 	public SmartRecordConfService(
 			String baseConfigurationsPath,
 			String overridingConfigurationsPath,
-			String additionalConfigurationsPath) {
+			String additionalConfigurationsPath,
+			AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService) {
 
 		this.baseConfigurationsPath = baseConfigurationsPath;
 		this.overridingConfigurationsPath = overridingConfigurationsPath;
 		this.additionalConfigurationsPath = additionalConfigurationsPath;
+		this.aggregatedFeatureEventsConfService = aggregatedFeatureEventsConfService;
 		this.objectMapper = new ObjectMapper();
 		this.nameToSmartRecordConfMap = new HashMap<>();
 	}
@@ -68,11 +77,91 @@ public class SmartRecordConfService extends AslConfigurationService {
 			throw new IllegalArgumentException(msg, e);
 		}
 
-		// TODO: If defined, add to smart record conf singleton cluster confs for missing aggregation record names
+		validateSmartRecordConf(smartRecordConf);
+		if (smartRecordConf.isIncludeAllAggregationRecords()) completeClusterConfs(smartRecordConf);
 		nameToSmartRecordConfMap.put(smartRecordConf.getName(), smartRecordConf);
 	}
 
+	/**
+	 * @param name the name of the {@link SmartRecordConf}
+	 * @return the corresponding {@link SmartRecordConf}
+	 */
 	public SmartRecordConf getSmartRecordConf(String name) {
 		return nameToSmartRecordConfMap.get(name);
+	}
+
+	/**
+	 * @param smartRecordConfName the name of the {@link SmartRecordConf}
+	 * @return a set of {@link AggregatedDataPaginationParam}s, one for each aggregation record configured
+	 *         in the corresponding {@link SmartRecordConf} (contains the aggregation record's name and type)
+	 */
+	public Set<AggregatedDataPaginationParam> getPaginationParams(String smartRecordConfName) {
+		SmartRecordConf smartRecordConf = nameToSmartRecordConfMap.get(smartRecordConfName);
+
+		if (smartRecordConf == null) {
+			logger.error("Smart record conf {} doesn't exist. Returning null pagination params.", smartRecordConfName);
+			return null;
+		}
+
+		return smartRecordConf.getAggregationRecordNames().stream()
+				.map(name -> {
+					String type = aggregatedFeatureEventsConfService.getAggregatedFeatureEventConf(name).getType();
+					return new AggregatedDataPaginationParam(name, AggregatedFeatureType.fromCodeRepresentation(type));
+				})
+				.collect(Collectors.toSet());
+	}
+
+	private void validateSmartRecordConf(SmartRecordConf smartRecordConf) {
+		String smartRecordName = smartRecordConf.getName();
+		Set<String> smartRecordContexts = new HashSet<>(smartRecordConf.getContexts());
+		String smartRecordStrategyName = smartRecordConf.getFixedDurationStrategy().toStrategyName();
+
+		for (String aggregationRecordName : smartRecordConf.getAggregationRecordNames()) {
+			AggregatedFeatureEventConf aggregatedFeatureEventConf = aggregatedFeatureEventsConfService
+					.getAggregatedFeatureEventConf(aggregationRecordName);
+
+			if (aggregatedFeatureEventConf == null) {
+				String msg = String.format("Aggregation record %s is not configured.", aggregationRecordName);
+				logger.error(msg);
+				throw new IllegalArgumentException(msg);
+			}
+
+			FeatureBucketConf featureBucketConf = aggregatedFeatureEventConf.getBucketConf();
+			Set<String> featureBucketContextFieldNames = new HashSet<>(featureBucketConf.getContextFieldNames());
+			String featureBucketStrategyName = featureBucketConf.getStrategyName();
+
+			if (!featureBucketContextFieldNames.equals(smartRecordContexts)) {
+				String msg = String.format("The context field names of aggregation record %s " +
+						"do not match those of smart record %s.", aggregationRecordName, smartRecordName);
+				logger.error(msg);
+				throw new IllegalArgumentException(msg);
+			}
+
+			if (!featureBucketStrategyName.equals(smartRecordStrategyName)) {
+				String msg = String.format("The fixed duration strategy of aggregation record %s " +
+						"does not match that of smart record %s.", aggregationRecordName, smartRecordName);
+				logger.error(msg);
+				throw new IllegalArgumentException(msg);
+			}
+		}
+	}
+
+	private void completeClusterConfs(SmartRecordConf smartRecordConf) {
+		List<String> contexts = smartRecordConf.getContexts();
+		FixedDurationStrategy fixedDurationStrategy = smartRecordConf.getFixedDurationStrategy();
+		Collection<AggregatedFeatureEventConf> aggregatedFeatureEventConfs = aggregatedFeatureEventsConfService
+				.getAggregatedFeatureEventConfs(contexts, fixedDurationStrategy);
+		Set<String> aggregationRecordNames = smartRecordConf.getAggregationRecordNames();
+
+		for (AggregatedFeatureEventConf aggregatedFeatureEventConf : aggregatedFeatureEventConfs) {
+			String aggregatedFeatureEventConfName = aggregatedFeatureEventConf.getName();
+
+			if (!aggregationRecordNames.contains(aggregatedFeatureEventConfName)) {
+				List<String> singletonList = Collections.singletonList(aggregatedFeatureEventConfName);
+				ClusterConf clusterConf = new ClusterConf(singletonList, smartRecordConf.getDefaultWeight());
+				smartRecordConf.getClusterConfs().add(clusterConf);
+				aggregationRecordNames.add(aggregatedFeatureEventConfName);
+			}
+		}
 	}
 }
