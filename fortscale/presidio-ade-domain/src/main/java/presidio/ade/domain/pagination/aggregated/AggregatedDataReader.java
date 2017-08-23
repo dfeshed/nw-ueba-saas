@@ -1,5 +1,6 @@
 package presidio.ade.domain.pagination.aggregated;
 
+import com.google.common.collect.Sets;
 import fortscale.utils.pagination.PageIterator;
 import fortscale.utils.time.TimeRange;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
@@ -25,6 +26,11 @@ public interface AggregatedDataReader {
      * @return distict context id's across features in given timerange
      */
     Set<String> findDistinctContextIds(TimeRange timeRange, Set<AggregatedDataPaginationParam> aggregatedDataPaginationParamSet);
+
+    default Set<String> findDistinctContextIds(TimeRange timeRange, AggregatedDataPaginationParam aggregatedDataPaginationParam)
+    {
+        return findDistinctContextIds(timeRange, Sets.newHashSet(aggregatedDataPaginationParam));
+    }
 
 
     <U extends AdeAggregationRecord> List<U> readRecords(Set<AggregatedDataPaginationParam> aggregatedDataPaginationParamSet, Set<String> contextIds, TimeRange timeRange);
