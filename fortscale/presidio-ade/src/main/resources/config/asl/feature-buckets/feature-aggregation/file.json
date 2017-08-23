@@ -170,7 +170,7 @@
       "strategyName": "fixed_duration_hourly",
       "aggrFeatureConfs": [
         {
-          "name": "movedFilesFromSharedDriveCounter",
+          "name": "movedFilesCounter",
           "featureNamesMap": {},
           "aggrFeatureFuncJson": {
             "type": "aggr_feature_sum_func"
