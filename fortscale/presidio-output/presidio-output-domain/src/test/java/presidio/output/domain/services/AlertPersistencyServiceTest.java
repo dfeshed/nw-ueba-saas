@@ -42,6 +42,7 @@ public class AlertPersistencyServiceTest {
     @Autowired
     private PresidioElasticsearchTemplate esTemplate;
     List<String> classifications;
+    List<String> classifications2;
 
     @Before
     public void before() {
@@ -49,7 +50,8 @@ public class AlertPersistencyServiceTest {
         esTemplate.createIndex(Alert.class);
         esTemplate.putMapping(Alert.class);
         esTemplate.refresh(Alert.class);
-        classifications = new ArrayList<>(Arrays.asList(""));
+        classifications = new ArrayList<>(Arrays.asList("a","b","c"));
+        classifications2 = new ArrayList<>(Arrays.asList("d"));
     }
 
     @Test
@@ -182,10 +184,35 @@ public class AlertPersistencyServiceTest {
                         .filterByEndDate(endDate + 1)
                         .sortField(Alert.SCORE, true)
                         .aggregateBySeverity(false)
+                        .filterByClassification(classifications2)
                         .build();
 
         Page<Alert> testAlert = alertPersistencyService.find(alertQuery);
         assertThat(testAlert.getTotalElements(), is(2L));
+    }
+
+    @Test
+    public void testFindByQueryWiteClassification() {
+
+        long startDate = Instant.now().toEpochMilli();
+        long endDate = Instant.now().toEpochMilli();
+
+        List<Alert> alertList = new ArrayList<>();
+        alertList.add(
+                new Alert(classifications, "normalized_username_ipusr3@somebigcompany.com", AlertType.DATA_EXFILTRATION, startDate - 1, endDate + 5, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH));
+        for (Alert alert : alertList) {
+            alertPersistencyService.save(alert);
+        }
+
+        AlertQuery alertQuery =
+                new AlertQuery.AlertQueryBuilder()
+                        .sortField(Alert.SCORE, true)
+                        .aggregateBySeverity(false)
+                        .filterByClassification(classifications2)
+                        .build();
+
+        Page<Alert> testAlert = alertPersistencyService.find(alertQuery);
+        assertThat(testAlert.getTotalElements(), is(0L));
     }
 
 }
