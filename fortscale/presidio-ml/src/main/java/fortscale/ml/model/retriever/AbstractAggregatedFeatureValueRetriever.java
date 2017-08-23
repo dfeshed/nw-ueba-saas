@@ -1,8 +1,6 @@
 package fortscale.ml.model.retriever;
 
 import fortscale.aggregation.exceptions.InvalidAggregatedFeatureEventConfNameException;
-import fortscale.aggregation.feature.event.AggrEvent;
-import fortscale.aggregation.feature.event.AggrFeatureEventBuilderService;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.common.feature.Feature;
@@ -10,9 +8,10 @@ import fortscale.common.util.GenericHistogram;
 import fortscale.ml.model.ModelBuilderData;
 import fortscale.ml.model.ModelBuilderData.NoDataReason;
 import org.springframework.util.Assert;
+import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
+import presidio.ade.domain.record.aggregated.AdeContextualAggregatedRecord;
 
 import java.util.*;
-import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
 
 public abstract class AbstractAggregatedFeatureValueRetriever extends AbstractDataRetriever {
@@ -74,14 +73,14 @@ public abstract class AbstractAggregatedFeatureValueRetriever extends AbstractDa
     public String getContextId(Map<String, String> context) {
         //TODO: metrics.getContextId++;
         Assert.notEmpty(context);
-        return AggrFeatureEventBuilderService.getAggregatedFeatureContextId(context);
+        return AdeContextualAggregatedRecord.getAggregatedFeatureContextId(context);
     }
 
     @Override
     public Set<String> getEventFeatureNames() {
         //TODO: metrics.getEventFeatureNames++;
         Set<String> set = new HashSet<>(1);
-        set.add(AggrEvent.EVENT_FIELD_AGGREGATED_FEATURE_VALUE);
+        set.add(AdeAggregationRecord.FEATURE_VALUE_FIELD_NAME);
         return set;
     }
 

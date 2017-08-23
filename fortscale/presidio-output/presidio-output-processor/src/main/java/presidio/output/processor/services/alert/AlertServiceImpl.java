@@ -1,12 +1,19 @@
 package presidio.output.processor.services.alert;
 
-import fortscale.domain.SMART.EntityEvent;
 import fortscale.utils.logging.Logger;
+import fortscale.utils.pagination.PageIterator;
+import net.minidev.json.JSONObject;
+import org.apache.commons.collections.CollectionUtils;
+import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
+import presidio.ade.domain.record.aggregated.SmartRecord;
+import org.springframework.beans.factory.annotation.Autowired;
 import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.alerts.AlertEnums;
 import presidio.output.domain.records.users.User;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 
+import java.time.temporal.ChronoField;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -20,28 +27,32 @@ public class AlertServiceImpl implements AlertService {
     private final AlertPersistencyService alertPersistencyService;
 
 
-    public AlertServiceImpl(AlertPersistencyService alertPersistencyService,
-                            AlertEnumsSeverityService alertEnumsSeverityService) {
-        this.alertEnumsSeverityService = alertEnumsSeverityService;
+    private AlertNamingService alertNamingService;
+
+    public AlertServiceImpl(AlertPersistencyService alertPersistencyService, AlertEnumsSeverityService alertEnumsSeverityService, AlertNamingService alertNamingService) {
         this.alertPersistencyService = alertPersistencyService;
+        this.alertEnumsSeverityService = alertEnumsSeverityService;
+        this.alertNamingService = alertNamingService;
     }
 
     @Override
-    public Alert generateAlert(EntityEvent smart, User user) {
+    public Alert generateAlert(SmartRecord smart, User user) {
         double score = smart.getScore();
         if (score < 50) {
             return null;
         }
 
-        String userName = user.getUserName();
+        String id = smart.getId();
+        List<String> classification = alertNamingService.alertNamesFromIndicatorsByPriority(extractIndicatorNames(smart.getAggregationRecords()));
+        String userName = smart.getContextId();
         AlertEnums.AlertType type = AlertEnums.AlertType.GLOBAL; //TODO change this to "AlertClassification"
-        long startDate = smart.getStart_time_unix();
-        long endDate = smart.getEnd_time_unix();
-        int indicatorsNum = smart.getAggregated_feature_events().size();
+        long startDate = smart.getStartInstant().getLong(ChronoField.INSTANT_SECONDS);
+        long endDate = smart.getEndInstant().getLong(ChronoField.INSTANT_SECONDS);
+        int indicatorsNum = smart.getAggregationRecords().size();
         //TODO- on the new ADE SMART POJO there should be a dedicated field for Daily/Hourly
         AlertEnums.AlertTimeframe timeframe = AlertEnums.AlertTimeframe.DAILY;
         AlertEnums.AlertSeverity severity = alertEnumsSeverityService.severity(score);
-        return new Alert(user.getUserId(), userName, type, startDate, endDate, score, indicatorsNum, timeframe, severity);
+        return new Alert(user.getUserId(), classification, userName, type, startDate, endDate, score, indicatorsNum, timeframe, severity);
     }
 
     @Override
@@ -49,4 +60,11 @@ public class AlertServiceImpl implements AlertService {
         alertPersistencyService.save(alerts);
     }
 
+
+    private List<String> extractIndicatorNames(List<AdeAggregationRecord> indicators) {
+        List<String> indicatorsNames = new ArrayList<>();
+        for (AdeAggregationRecord indicator : indicators)
+            indicatorsNames.add(indicator.getFeatureName());
+        return indicatorsNames;
+    }
 }

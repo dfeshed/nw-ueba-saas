@@ -17,9 +17,12 @@ import presidio.webapp.spring.OutputWebappConfigurationTest;
 
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-import static org.mockito.Matchers.*;
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
@@ -90,7 +93,8 @@ public class RestAlertServiceTest {
     }
 
     private Alert createAlert() {
-        return new Alert("userId", "username", AlertEnums.AlertType.SNOOPING,
+        List<String> classifications = new ArrayList<>(Arrays.asList("Mass Changes to Critical Enterprise Groups"));
+        return new Alert("userId", classifications,"username", AlertEnums.AlertType.SNOOPING,
                 Instant.parse("2017-01-01T00:00:00Z").toEpochMilli(), Instant.parse("2017-01-01T11:00:00Z").toEpochMilli(),
                 10, 10, AlertEnums.AlertTimeframe.DAILY, AlertEnums.AlertSeverity.CRITICAL);
     }

@@ -16,7 +16,7 @@ import presidio.ade.domain.record.aggregated.AggregatedFeatureType;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static fortscale.aggregation.feature.event.AggrEvent.AGGREGATED_FEATURE_TYPE_F_VALUE;
+import static presidio.ade.domain.record.aggregated.AggregatedFeatureType.FEATURE_AGGREGATION_CODE_REPRESENTATION;
 import static presidio.ade.domain.record.aggregated.AggregatedFeatureType.SCORE_AGGREGATION;
 
 public class AggregatedFeatureEventsConfService extends AslConfigurationService {
@@ -202,7 +202,7 @@ public class AggregatedFeatureEventsConfService extends AslConfigurationService 
 		List<String> names = new ArrayList<>();
 
 		aggregatedFeatureEventConfList.forEach(aggregatedFeatureEventConf -> {
-			if(aggregatedFeatureEventConf.getType().toUpperCase().equals(AGGREGATED_FEATURE_TYPE_F_VALUE)) {
+			if(aggregatedFeatureEventConf.getType().toUpperCase().equals(FEATURE_AGGREGATION_CODE_REPRESENTATION)) {
 				names.add(aggregatedFeatureEventConf.getName());
 			}
 		});

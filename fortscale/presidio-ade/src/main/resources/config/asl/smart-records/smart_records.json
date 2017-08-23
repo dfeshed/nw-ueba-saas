@@ -1,160 +1,24 @@
 {
-  "EntityEventDefinitions": [
+  "SmartRecordConfs": [
     {
-      "name": "normalized_username_daily",
-      "daysToRetainDocument": 365,
-      "contextFields": [
-        "normalized_username"
+      "name": "userId_hourly",
+      "contexts": [
+        "userId"
       ],
-      "aggregatedFeatureEventNamesMap": {
-        "aggregatedFeatureEventNames": [
-          "normalized_username_dlpfile_daily.number_of_distinct_src_network_folder_paths_dlpfile_daily",
-          "normalized_username_dlpfile_daily.sum_of_moved_files_to_removable_device_size_dlpfile_daily",
-          "normalized_username_dlpfile_daily.number_of_moved_files_to_removable_device_dlpfile_daily",
-          "normalized_username_dlpfile_daily.sum_of_copied_files_to_removable_device_size_dlpfile_daily",
-          "normalized_username_dlpfile_daily.number_of_copied_files_to_removable_device_dlpfile_daily",
-          "normalized_username_dlpfile_daily.sum_of_moved_files_from_remote_device_size_dlpfile_daily",
-          "normalized_username_dlpfile_daily.number_of_moved_files_from_remote_device_dlpfile_daily",
-          "normalized_username_dlpfile_daily.sum_of_copied_files_from_remote_device_size_dlpfile_daily",
-          "normalized_username_dlpfile_daily.number_of_copied_files_from_remote_device_dlpfile_daily",
-          "normalized_username_dlpfile_daily.number_of_recycled_or_deleted_files_dlpfile_daily",
-          "normalized_username_dlpfile_daily.number_of_opened_files_dlpfile_daily",
-          "normalized_username_dlpfile_daily.highest_date_time_score_dlpfile_daily",
-          "normalized_username_dlpfile_daily.sum_of_highest_normalized_src_machine_scores_dlpfile_daily"
-        ]
-      },
-      "entityEventFunction": {
-        "clusters": {
-          "number_of_distinct_src_network_folder_paths_dlpfile_daily": [
-            "normalized_username_dlpfile_daily.number_of_distinct_src_network_folder_paths_dlpfile_daily"
-          ],
-          "sum_of_moved_files_to_removable_device_size_dlpfile_daily": [
-            "normalized_username_dlpfile_daily.sum_of_moved_files_to_removable_device_size_dlpfile_daily"
-          ],
-          "number_of_moved_files_to_removable_device_dlpfile_daily": [
-            "normalized_username_dlpfile_daily.number_of_moved_files_to_removable_device_dlpfile_daily"
-          ],
-          "sum_of_copied_files_to_removable_device_size_dlpfile_daily": [
-            "normalized_username_dlpfile_daily.sum_of_copied_files_to_removable_device_size_dlpfile_daily"
-          ],
-          "number_of_copied_files_to_removable_device_dlpfile_daily": [
-            "normalized_username_dlpfile_daily.number_of_copied_files_to_removable_device_dlpfile_daily"
-          ],
-          "sum_of_moved_files_from_remote_device_size_dlpfile_daily": [
-            "normalized_username_dlpfile_daily.sum_of_moved_files_from_remote_device_size_dlpfile_daily"
-          ],
-          "number_of_moved_files_from_remote_device_dlpfile_daily": [
-            "normalized_username_dlpfile_daily.number_of_moved_files_from_remote_device_dlpfile_daily"
-          ],
-          "sum_of_copied_files_from_remote_device_size_dlpfile_daily": [
-            "normalized_username_dlpfile_daily.sum_of_copied_files_from_remote_device_size_dlpfile_daily"
-          ],
-          "number_of_copied_files_from_remote_device_dlpfile_daily": [
-            "normalized_username_dlpfile_daily.number_of_copied_files_from_remote_device_dlpfile_daily"
-          ],
-          "number_of_recycled_or_deleted_files_dlpfile_daily": [
-            "normalized_username_dlpfile_daily.number_of_recycled_or_deleted_files_dlpfile_daily"
-          ],
-          "number_of_opened_files_dlpfile_daily": [
-            "normalized_username_dlpfile_daily.number_of_opened_files_dlpfile_daily"
+      "includeAllAggregationRecords": true,
+      "defaultWeight": 0.5,
+      "clusterConfs": [
+        {
+          "aggregationRecordNames": [
+            "userPasswordNeverExpiresOptionChangedScoreActiveDirectoryHourly"
           ]
         },
-        "alphas": {
-          "number_of_distinct_src_network_folder_paths_dlpfile_daily": 0.09,
-          "sum_of_moved_files_to_removable_device_size_dlpfile_daily": 0.09,
-          "number_of_moved_files_to_removable_device_dlpfile_daily": 0.09,
-          "sum_of_copied_files_to_removable_device_size_dlpfile_daily": 0.09,
-          "number_of_copied_files_to_removable_device_dlpfile_daily": 0.09,
-          "sum_of_moved_files_from_remote_device_size_dlpfile_daily": 0.09,
-          "number_of_moved_files_from_remote_device_dlpfile_daily": 0.09,
-          "sum_of_copied_files_from_remote_device_size_dlpfile_daily": 0.09,
-          "number_of_copied_files_from_remote_device_dlpfile_daily": 0.09,
-          "number_of_recycled_or_deleted_files_dlpfile_daily": 0.09,
-          "number_of_opened_files_dlpfile_daily": 0.09
-        },
-        "betas": {
-          "normalized_username_dlpfile_daily.highest_date_time_score_dlpfile_daily": 0.002,
-          "normalized_username_dlpfile_daily.sum_of_highest_normalized_src_machine_scores_dlpfile_daily": 0.002
-        }
-      }
-    },
-    {
-      "name": "normalized_username_hourly",
-      "daysToRetainDocument": 365,
-      "contextFields": [
-        "normalized_username"
-      ],
-      "aggregatedFeatureEventNamesMap": {
-        "aggregatedFeatureEventNames": [
-          "normalized_username_dlpfile_hourly.number_of_distinct_src_network_folder_paths_dlpfile_hourly",
-          "normalized_username_dlpfile_hourly.sum_of_moved_files_to_removable_device_size_dlpfile_hourly",
-          "normalized_username_dlpfile_hourly.number_of_moved_files_to_removable_device_dlpfile_hourly",
-          "normalized_username_dlpfile_hourly.sum_of_copied_files_to_removable_device_size_dlpfile_hourly",
-          "normalized_username_dlpfile_hourly.number_of_copied_files_to_removable_device_dlpfile_hourly",
-          "normalized_username_dlpfile_hourly.sum_of_moved_files_from_remote_device_size_dlpfile_hourly",
-          "normalized_username_dlpfile_hourly.number_of_moved_files_from_remote_device_dlpfile_hourly",
-          "normalized_username_dlpfile_hourly.sum_of_copied_files_from_remote_device_size_dlpfile_hourly",
-          "normalized_username_dlpfile_hourly.number_of_copied_files_from_remote_device_dlpfile_hourly",
-          "normalized_username_dlpfile_hourly.number_of_recycled_or_deleted_files_dlpfile_hourly",
-          "normalized_username_dlpfile_hourly.number_of_opened_files_dlpfile_hourly",
-          "normalized_username_dlpfile_hourly.highest_date_time_score_dlpfile_hourly",
-          "normalized_username_dlpfile_hourly.sum_of_highest_normalized_src_machine_scores_dlpfile_hourly"
-        ]
-      },
-      "entityEventFunction": {
-        "clusters": {
-          "number_of_distinct_src_network_folder_paths_dlpfile_hourly": [
-            "normalized_username_dlpfile_hourly.number_of_distinct_src_network_folder_paths_dlpfile_hourly"
-          ],
-          "sum_of_moved_files_to_removable_device_size_dlpfile_hourly": [
-            "normalized_username_dlpfile_hourly.sum_of_moved_files_to_removable_device_size_dlpfile_hourly"
-          ],
-          "number_of_moved_files_to_removable_device_dlpfile_hourly": [
-            "normalized_username_dlpfile_hourly.number_of_moved_files_to_removable_device_dlpfile_hourly"
-          ],
-          "sum_of_copied_files_to_removable_device_size_dlpfile_hourly": [
-            "normalized_username_dlpfile_hourly.sum_of_copied_files_to_removable_device_size_dlpfile_hourly"
-          ],
-          "number_of_copied_files_to_removable_device_dlpfile_hourly": [
-            "normalized_username_dlpfile_hourly.number_of_copied_files_to_removable_device_dlpfile_hourly"
-          ],
-          "sum_of_moved_files_from_remote_device_size_dlpfile_hourly": [
-            "normalized_username_dlpfile_hourly.sum_of_moved_files_from_remote_device_size_dlpfile_hourly"
-          ],
-          "number_of_moved_files_from_remote_device_dlpfile_hourly": [
-            "normalized_username_dlpfile_hourly.number_of_moved_files_from_remote_device_dlpfile_hourly"
-          ],
-          "sum_of_copied_files_from_remote_device_size_dlpfile_hourly": [
-            "normalized_username_dlpfile_hourly.sum_of_copied_files_from_remote_device_size_dlpfile_hourly"
-          ],
-          "number_of_copied_files_from_remote_device_dlpfile_hourly": [
-            "normalized_username_dlpfile_hourly.number_of_copied_files_from_remote_device_dlpfile_hourly"
-          ],
-          "number_of_recycled_or_deleted_files_dlpfile_hourly": [
-            "normalized_username_dlpfile_hourly.number_of_recycled_or_deleted_files_dlpfile_hourly"
-          ],
-          "number_of_opened_files_dlpfile_hourly": [
-            "normalized_username_dlpfile_hourly.number_of_opened_files_dlpfile_hourly"
+        {
+          "aggregationRecordNames": [
+            "numberOfSuccessfulOperationTypeUserIdActiveDirectoryHourly"
           ]
-        },
-        "alphas": {
-          "number_of_distinct_src_network_folder_paths_dlpfile_hourly": 0.09,
-          "sum_of_moved_files_to_removable_device_size_dlpfile_hourly": 0.09,
-          "number_of_moved_files_to_removable_device_dlpfile_hourly": 0.09,
-          "sum_of_copied_files_to_removable_device_size_dlpfile_hourly": 0.09,
-          "number_of_copied_files_to_removable_device_dlpfile_hourly": 0.09,
-          "sum_of_moved_files_from_remote_device_size_dlpfile_hourly": 0.09,
-          "number_of_moved_files_from_remote_device_dlpfile_hourly": 0.09,
-          "sum_of_copied_files_from_remote_device_size_dlpfile_hourly": 0.09,
-          "number_of_copied_files_from_remote_device_dlpfile_hourly": 0.09,
-          "number_of_recycled_or_deleted_files_dlpfile_hourly": 0.09,
-          "number_of_opened_files_dlpfile_hourly": 0.09
-        },
-        "betas": {
-          "normalized_username_dlpfile_hourly.highest_date_time_score_dlpfile_hourly": 0.002,
-          "normalized_username_dlpfile_hourly.sum_of_highest_normalized_src_machine_scores_dlpfile_hourly": 0.002
         }
-      }
+      ]
     }
   ]
 }

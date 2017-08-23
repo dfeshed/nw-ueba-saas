@@ -49,7 +49,7 @@ public class DataSourceRepositoryImpl implements DataSourceRepository {
 
         query.with(new Sort(Sort.Direction.ASC, AbstractPresidioDocument.DATE_TIME_FIELD_NAME));
 
-        List<U> recordList =  mongoTemplate.find(query, (Class<U>)AbstractPresidioDocument.class, collectionName);
+        List<U> recordList = mongoTemplate.find(query, (Class<U>) AbstractPresidioDocument.class, collectionName);
         return recordList;
 
     }

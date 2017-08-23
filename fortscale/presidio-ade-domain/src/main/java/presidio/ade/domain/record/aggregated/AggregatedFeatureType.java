@@ -9,12 +9,16 @@ public enum AggregatedFeatureType {
     SCORE_AGGREGATION, //AKA P
     FEATURE_AGGREGATION; // AKA F
 
+
+    public static final String FEATURE_AGGREGATION_CODE_REPRESENTATION = "F";
+    public static final String SCORE_AGGREGATION_CODE_REPRESENTATION = "P";
+
     public static AggregatedFeatureType fromCodeRepresentation(String type) {
-        if(type.equals("P"))
+        if(type.equals(SCORE_AGGREGATION_CODE_REPRESENTATION))
         {
             return SCORE_AGGREGATION;
         }
-        else if (type.equals("F"))
+        else if (type.equals(FEATURE_AGGREGATION_CODE_REPRESENTATION))
         {
             return FEATURE_AGGREGATION;
         }

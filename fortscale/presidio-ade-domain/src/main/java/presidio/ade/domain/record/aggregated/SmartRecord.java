@@ -32,9 +32,15 @@ public class SmartRecord extends AdeContextualAggregatedRecord implements AdeSco
 	@Field(SMART_SCORE_FIELD)
 	private double smartScore;
 	@Field(FEATURE_SCORES_FIELD)
-	List<FeatureScore> featureScores;
+	private List<FeatureScore> featureScores;
 	@Field(AGGREGATION_RECORDS_FIELD)
-	List<AdeAggregationRecord> aggregationRecords;
+	private List<AdeAggregationRecord> aggregationRecords;
+	@Field
+	private String featureName;
+
+	public SmartRecord(){
+		super();
+	}
 
 	public SmartRecord(
 			TimeRange timeRange,
@@ -46,12 +52,13 @@ public class SmartRecord extends AdeContextualAggregatedRecord implements AdeSco
 			List<FeatureScore> featureScores,
 			List<AdeAggregationRecord> aggregationRecords) {
 
-		super(timeRange.getStart(), timeRange.getEnd(), contextId, featureName);
+		super(timeRange.getStart(), timeRange.getEnd(), contextId);
 		this.fixedDurationStrategy = fixedDurationStrategy;
 		this.smartValue = smartValue;
 		this.smartScore = smartScore;
 		this.featureScores = featureScores;
 		this.aggregationRecords = aggregationRecords;
+		this.featureName = featureName;
 	}
 
 	public SmartRecord(
@@ -117,6 +124,28 @@ public class SmartRecord extends AdeContextualAggregatedRecord implements AdeSco
 
 	@Override
 	public String toString() {
-		return "SmartRecord{}";
+		return String.format(
+				"%s{start = %s, end = %s, contextId = %s, featureName = %s, " +
+				"fixedDurationStrategy = %s, smartValue = %.5f, smartScore = %.5f}",
+				getClass().getSimpleName(), getStartInstant().toString(), getEndInstant().toString(),
+				getContextId(), getFeatureName(), getFixedDurationStrategy().toStrategyName(),
+				getSmartValue(), getScore());
+	}
+
+
+	/**
+	 * Set feature name
+	 * @param featureName
+	 */
+	public void setFeatureName(String featureName) {
+		this.featureName = featureName;
+	}
+
+	/**
+	 *
+	 * @return name of the aggregated feature. i.e. sum_of_xxx_daily or highest_xxx_score_daily
+	 */
+	public String getFeatureName() {
+		return featureName;
 	}
 }

@@ -1,17 +1,12 @@
 package presidio.output.proccesor;
 
-import fortscale.common.shell.PresidioExecutionService;
-import fortscale.common.shell.command.PresidioCommands;
 import fortscale.utils.shell.BootShim;
-import fortscale.utils.shell.BootShimConfig;
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
-import fortscale.utils.test.mongodb.MongodbTestConfig;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -21,7 +16,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import presidio.output.proccesor.spring.OutputProcessorTestConfiguration;
 import presidio.output.processor.services.OutputExecutionService;
 import presidio.output.processor.services.OutputExecutionServiceImpl;
-import presidio.output.processor.spring.OutputProcessorConfiguration;
 
 import java.util.Properties;
 

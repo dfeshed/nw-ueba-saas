@@ -1,12 +1,12 @@
 package presidio.output.processor.services;
 
 import fortscale.common.general.CommonStrings;
-import fortscale.domain.SMART.EntityEvent;
 import fortscale.utils.pagination.PageIterator;
 import fortscale.utils.time.TimeRange;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import presidio.ade.domain.record.aggregated.SmartRecord;
 import presidio.ade.sdk.common.AdeManagerSdk;
 import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.users.User;
@@ -57,18 +57,18 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
 
         //1. Get SMARTs from ADE and generate alerts
         //TODO- change page size and score threshold (configurable)
-        PageIterator<EntityEvent> smartPageIterator = adeManagerSdk.getSmartRecords(new TimeRange(startDate, endDate), 100, SMART_SCORE_THRESHOLD);
+        PageIterator<SmartRecord> smartPageIterator = adeManagerSdk.getSmartRecords(new TimeRange(startDate, endDate), 100, SMART_SCORE_THRESHOLD);
 
         //2. For each smart: generate Alert entity and User
         List<Alert> alerts = new ArrayList<Alert>();
         List<User> users = new ArrayList<User>();
         while (smartPageIterator.hasNext()) {
-            List<EntityEvent> smarts = smartPageIterator.next();
+            List<SmartRecord> smarts = smartPageIterator.next();
 
             smarts.stream().forEach(smart -> {
                 //TODO change this after new SMART POJO is ready
-                //TODO- user id should be taken from indicators
-                String userId = smart.getContext().get("normalized_username");
+                //TODO- user id should be taken from SMART POJO directly
+                String userId = smart.getAggregationRecords().get(0).getContext().get("userId");
 
                 User userEntity = userService.createUserEntity(userId);
                 Alert alertEntity = alertService.generateAlert(smart, userEntity);

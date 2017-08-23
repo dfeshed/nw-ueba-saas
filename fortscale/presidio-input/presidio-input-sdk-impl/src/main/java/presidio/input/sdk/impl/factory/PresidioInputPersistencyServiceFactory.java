@@ -1,4 +1,5 @@
 package presidio.input.sdk.impl.factory;
+
 import fortscale.utils.logging.Logger;
 import fortscale.utils.mongodb.config.MongoConfig;
 import org.springframework.context.ApplicationContext;

@@ -8,4 +8,6 @@ public class CommonStrings {
     public static final String COMMAND_LINE_FEATURE_BUCKET_STRATEGY_FIELD_NAME = "feature_bucket_strategy";
     public static final String COMMAND_LINE_GROUP_NAME_FIELD_NAME = "group_name";
     public static final String COMMAND_LINE_SESSION_ID_FIELD_NAME = "session_id";
+    public static final String COMMAND_LINE_SMART_RECORD_CONF_NAME_FIELD_NAME = "smart_record_conf_name";
+    public static final String COMMAND_LINE_ACCUMULATE_DURATION = "accumulate_duration";
 }

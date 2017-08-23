@@ -1,10 +1,13 @@
 package presidio.output.domain.records.alerts;
 
 
+import java.util.List;
+
 public class AlertQuery {
 
     // filters
     private final String filterByUserName;
+    private final List<String> filterByClassification;
     private final String filterBySeverity;
     private final long filterByStartDate;
     private final long filterByEndDate;
@@ -21,19 +24,24 @@ public class AlertQuery {
     private final boolean aggregateBySeverity;
 
     public AlertQuery(AlertQueryBuilder builder) {
+        this.filterByClassification = builder.filterByClassification;
         this.filterByUserName = builder.filterByUserName;
-        this.filterBySeverity =  builder.filterBySeverity;
-        this.filterByStartDate =  builder.filterByStartDate;
-        this.filterByEndDate =  builder.filterByEndDate;
-        this.sortField =  builder.sortField;
-        this.ascendingOrder =  builder.ascendingOrder;
-        this.pageNumber =  builder.pageNumber;
-        this.pageSize =  builder.pageSize;
+        this.filterBySeverity = builder.filterBySeverity;
+        this.filterByStartDate = builder.filterByStartDate;
+        this.filterByEndDate = builder.filterByEndDate;
+        this.sortField = builder.sortField;
+        this.ascendingOrder = builder.ascendingOrder;
+        this.pageNumber = builder.pageNumber;
+        this.pageSize = builder.pageSize;
         this.aggregateBySeverity = builder.aggregateBySeverity;
     }
 
     public String getFilterByUserName() {
         return filterByUserName;
+    }
+
+    public List<String> getFilterByClassification() {
+        return filterByClassification;
     }
 
     public String getFilterBySeverity() {
@@ -72,6 +80,7 @@ public class AlertQuery {
 
         // filters
         private String filterByUserName;
+        private List<String> filterByClassification;
         private String filterBySeverity;
         private long filterByStartDate;
         private long filterByEndDate;
@@ -92,6 +101,11 @@ public class AlertQuery {
 
         public AlertQueryBuilder filterByUserName(String filterBuUserName) {
             this.filterByUserName = filterBuUserName;
+            return this;
+        }
+
+        public AlertQueryBuilder filterByClassification(List<String> filterClassification) {
+            this.filterByClassification = filterClassification;
             return this;
         }
 
