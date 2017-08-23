@@ -17,10 +17,11 @@ import java.util.Map;
 @CompoundIndexes({@CompoundIndex(name = "context_pagination", def = "{'contextId': -1, 'startInstant': -1}")})
 public class AdeAggregationRecord extends AdeContextualAggregatedRecord {
     public static final String ADE_AGGR_EVENT_TYPE_PREFIX = "aggr_event";
+    public static final String FEATURE_VALUE_FIELD_NAME = "featureValue";
 
     @Field
     private String featureName;
-    @Field
+    @Field(FEATURE_VALUE_FIELD_NAME)
     private Double featureValue;
     @Field
     private String featureBucketConfName;

@@ -1,9 +1,6 @@
 package presidio.ade.processes.shell.scoring.aggregation.config.services;
 
 import fortscale.aggregation.feature.bucket.FeatureBucketReaderConfig;
-import fortscale.aggregation.feature.event.store.AggregatedFeatureEventsMongoStore;
-import fortscale.aggregation.feature.event.store.AggregatedFeatureEventsReaderService;
-import fortscale.aggregation.feature.event.store.config.AggregatedFeatureEventsMongoStoreConfig;
 import fortscale.ml.model.retriever.AbstractDataRetriever;
 import fortscale.ml.model.retriever.factories.ContextHistogramRetrieverFactory;
 import fortscale.utils.factory.AbstractServiceAutowiringFactory;
@@ -27,7 +24,6 @@ import java.util.Collection;
         // common application confs
         FeatureBucketReaderConfig.class,
         AggregationEventsAccumulationDataReaderConfig.class,
-        AggregatedFeatureEventsMongoStoreConfig.class
 })
 @ComponentScan(
         value = "fortscale.ml.model.retriever.factories",
@@ -38,8 +34,6 @@ public class DataRetrieverFactoryServiceConfig {
     @Autowired
     private Collection<AbstractServiceAutowiringFactory<AbstractDataRetriever>> dataRetrieverFactories;
     @Autowired
-    private AggregatedFeatureEventsMongoStore aggregatedFeatureEventsMongoStore;
-    @Autowired
     AggregationEventsAccumulationDataReader aggregationEventsAccumulationDataReader;
 
     @Bean
@@ -47,10 +41,5 @@ public class DataRetrieverFactoryServiceConfig {
         FactoryService<AbstractDataRetriever> dataRetrieverFactoryService = new FactoryService<>();
         dataRetrieverFactories.forEach(factory -> factory.registerFactoryService(dataRetrieverFactoryService));
         return dataRetrieverFactoryService;
-    }
-
-    @Bean
-    public AggregatedFeatureEventsReaderService aggregatedFeatureEventsReaderService() {
-        return new AggregatedFeatureEventsReaderService(aggregatedFeatureEventsMongoStore, aggregationEventsAccumulationDataReader);
     }
 }

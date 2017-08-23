@@ -1,16 +1,13 @@
 package fortscale.ml.model.retriever;
 
-import fortscale.aggregation.feature.event.AggrFeatureEventBuilderService;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
-import fortscale.aggregation.feature.event.store.AggregatedFeatureEventsReaderService;
 import fortscale.common.feature.Feature;
 import fortscale.domain.feature.score.FeatureScore;
 import fortscale.ml.model.ModelBuilderData;
-import fortscale.ml.model.ModelBuilderData.NoDataReason;
-import fortscale.ml.model.PersonalThresholdModelBuilderData;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.util.Assert;
+import presidio.ade.domain.record.aggregated.AdeContextualAggregatedRecord;
 
 import java.util.Date;
 import java.util.List;
@@ -20,17 +17,14 @@ import java.util.stream.Stream;
 
 @Configurable(preConstruction = true)
 public class AggregatedFeaturePersonalThresholdModelBuilderDataRetriever extends AbstractDataRetriever {
-	private AggregatedFeatureEventsReaderService aggregatedFeatureEventsReaderService;
 
 	private AggregatedFeatureEventConf aggregatedFeatureEventConfToCalibrate;
 	private int desiredNumberOfIndicators;
 	private String scoreNameToCalibrate;
 
 	public AggregatedFeaturePersonalThresholdModelBuilderDataRetriever(AggregatedFeaturePersonalThresholdModelBuilderDataRetrieverConf config,
-																	   AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService,
-																	   AggregatedFeatureEventsReaderService aggregatedFeatureEventsReaderService) {
+																	   AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService) {
 		super(config);
-		this.aggregatedFeatureEventsReaderService = aggregatedFeatureEventsReaderService;
 
 		String aggregatedFeatureEventConfNameToCalibrate = config.getAggregatedFeatureEventConfNameToCalibrate();
 		aggregatedFeatureEventConfToCalibrate = aggregatedFeatureEventsConfService
@@ -42,32 +36,35 @@ public class AggregatedFeaturePersonalThresholdModelBuilderDataRetriever extends
 	@Override
 	public ModelBuilderData retrieve(String contextId, Date endTime) {
 		Date startTime = getStartTime(endTime);
-		int numOfContexts = aggregatedFeatureEventsReaderService.findDistinctAcmContextsByTimeRange(
-				aggregatedFeatureEventConfToCalibrate, startTime, endTime)
-				.size();
-		long numOfOrganizationScores = aggregatedFeatureEventsReaderService.findNumOfAggrEventsByTimeRange(
-				aggregatedFeatureEventConfToCalibrate, startTime, endTime);
-		List<FeatureScore> featureScores = aggregatedFeatureEventsReaderService.findAggrEventWithTopKScore(
-				aggregatedFeatureEventConfToCalibrate, startTime, endTime, desiredNumberOfIndicators)
-				.getFeatureScores();
-		double scoreToCalibrate = findScoreToCalibrate(featureScores, scoreNameToCalibrate);
-
-		if (numOfContexts == 0) {
-			if (numOfOrganizationScores != 0 || !featureScores.isEmpty()) {
-				logger.error("Retrieved data for contextId {}, endTime {} is not consistent.",
-						contextId, endTime.toString());
-				logger.error("numOfContexts {}, numOfOrganizationScores {}, featureScores size {}.",
-						numOfContexts, numOfOrganizationScores, featureScores.size());
-			}
-
-			return new ModelBuilderData(NoDataReason.NO_DATA_IN_DATABASE);
-		}
-
-		PersonalThresholdModelBuilderData data = new PersonalThresholdModelBuilderData()
-				.setNumOfContexts(numOfContexts)
-				.setNumOfOrganizationScores(numOfOrganizationScores)
-				.setOrganizationKTopProbOfHighScore(scoreToCalibrate);
-		return new ModelBuilderData(data);
+		// todo: the following query assumes long term persistence of aggr records. this should be replaced to be retrieved from accumulated data.
+//
+//		int numOfContexts = aggregatedFeatureEventsReaderService.findDistinctAcmContextsByTimeRange(
+//				aggregatedFeatureEventConfToCalibrate, startTime, endTime)
+//				.size();
+//		long numOfOrganizationScores = aggregatedFeatureEventsReaderService.findNumOfAggrEventsByTimeRange(
+//				aggregatedFeatureEventConfToCalibrate, startTime, endTime);
+//		List<FeatureScore> featureScores = aggregatedFeatureEventsReaderService.findAggrEventWithTopKScore(
+//				aggregatedFeatureEventConfToCalibrate, startTime, endTime, desiredNumberOfIndicators)
+//				.getFeatureScores();
+//		double scoreToCalibrate = findScoreToCalibrate(featureScores, scoreNameToCalibrate);
+//
+//		if (numOfContexts == 0) {
+//			if (numOfOrganizationScores != 0 || !featureScores.isEmpty()) {
+//				logger.error("Retrieved data for contextId {}, endTime {} is not consistent.",
+//						contextId, endTime.toString());
+//				logger.error("numOfContexts {}, numOfOrganizationScores {}, featureScores size {}.",
+//						numOfContexts, numOfOrganizationScores, featureScores.size());
+//			}
+//
+//			return new ModelBuilderData(NoDataReason.NO_DATA_IN_DATABASE);
+//		}
+//
+//		PersonalThresholdModelBuilderData data = new PersonalThresholdModelBuilderData()
+//				.setNumOfContexts(numOfContexts)
+//				.setNumOfOrganizationScores(numOfOrganizationScores)
+//				.setOrganizationKTopProbOfHighScore(scoreToCalibrate);
+//		return new ModelBuilderData(data);
+		return null;
 	}
 
 	private Stream<FeatureScore> flattenFeatureScoresRecursively(List<FeatureScore> featureScores) {
@@ -111,6 +108,6 @@ public class AggregatedFeaturePersonalThresholdModelBuilderDataRetriever extends
 	@Override
 	public String getContextId(Map<String, String> context) {
 		Assert.notEmpty(context);
-		return AggrFeatureEventBuilderService.getAggregatedFeatureContextId(context);
+		return AdeContextualAggregatedRecord.getAggregatedFeatureContextId(context);
 	}
 }
