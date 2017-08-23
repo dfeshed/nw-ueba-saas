@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 public class ScoreMapping {
 	@JsonAutoDetect(
 			fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE,
-			setterVisibility = Visibility.ANY, isGetterVisibility = Visibility.NONE)
+			setterVisibility = Visibility.NONE, isGetterVisibility = Visibility.NONE)
 	public static class ScoreMappingConf {
 		private Map<Double, Double> mapping;
 
