@@ -37,13 +37,13 @@ const FooterComponent = Component.extend({
       return '';
     } else {
       const count = dsData && dsData.resultList ? dsData.resultList.length : 0;
-      let dataSource = `${count } ${ this.get('i18n').t(`context.footer.title.${activeTabName.camelize()}`)}`;
+      const dataSource = `${count } ${ this.get('i18n').t(`context.footer.title.${activeTabName.camelize()}`)}`;
       if (footerIncludedTabs.includes(activeTabName)) {
-        dataSource = dsData.resultMeta ? `${dataSource } ${ this.get('i18n').t('context.footer.resultCount', { count: dsData.resultMeta.limit })}` : dataSource;
+        if (dsData && dsData.resultMeta) {
+          return `${dataSource } ${ this.get('i18n').t('context.footer.resultCount', { count: dsData.resultMeta.limit })}`;
+        }
       }
-
       return dataSource;
-
     }
   }
 });
