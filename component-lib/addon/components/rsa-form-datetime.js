@@ -2,6 +2,7 @@ import Component from 'ember-component';
 import layout from '../templates/components/rsa-form-datetime';
 import service from 'ember-service/inject';
 import computed, { equal } from 'ember-computed-decorators';
+import { isEmpty } from 'ember-utils';
 
 export default Component.extend({
   layout,
@@ -68,6 +69,19 @@ export default Component.extend({
   @computed('convertedTimeFormat', 'convertedDateFormat')
   convertedFullFormat: (timeFormat, dateFormat) => {
     return `${dateFormat} ${timeFormat}`;
+  },
+
+  actions: {
+    forceChangeOnClose(selectedDates, dateString, flatpikr) {
+      const selectedDate = selectedDates.get('firstObject');
+      const selectedDateMs = selectedDate.getTime();
+      const inputDate = new Date(flatpikr.element.value);
+      const inputDateMs = new Date(flatpikr.element.value).getTime();
+
+      if (!isEmpty(inputDateMs) && inputDateMs !== selectedDateMs) {
+        this.onChange([inputDate]);
+      }
+    }
   }
 
 });
