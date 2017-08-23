@@ -30,16 +30,16 @@ public class AlertElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<Al
             boolQueryBuilder.must(matchQuery(Alert.USER_NAME, alertQuery.getFilterByUserName()).operator(Operator.AND));
         }
 
+        // filter by severity
+        if (StringUtils.isNotEmpty(alertQuery.getFilterBySeverity())) {
+            boolQueryBuilder.must(matchQuery(Alert.SEVERITY, alertQuery.getFilterBySeverity()).operator(Operator.AND));
+        }
+
         // filter by classification
         if (alertQuery.getFilterByClassification() != null && !(alertQuery.getFilterByClassification()).isEmpty()) {
             for (String classification : alertQuery.getFilterByClassification()) {
-                boolQueryBuilder.must(matchQuery(Alert.CLASSIFICATION, classification).operator(Operator.OR));
+                boolQueryBuilder.should(matchQuery(Alert.CLASSIFICATION, classification).operator(Operator.OR));
             }
-        }
-
-        // filter by severity
-        if (StringUtils.isNotEmpty(alertQuery.getFilterBySeverity())) {
-            boolQueryBuilder.must(matchQuery(Alert.SEVERITY, alertQuery.getFilterBySeverity()));
         }
 
         // filter by date range
