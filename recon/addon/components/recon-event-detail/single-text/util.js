@@ -50,8 +50,11 @@ export const prepareTextForDisplay = function(text, metaToHighlight) {
   let markedText;
 
   if (metaToHighlight && _isString(metaToHighlight)) {
-    // Escape RegEx special characters
-    const pattern = metaToHighlight.replace(/[-[\]{}()*+?.,\\^$|#]/g, '\\$&');
+    // Escape RegEx special characters and convert < and > to HTML safe strings
+    const pattern = metaToHighlight
+      .replace(/[-[\]{}()*+?.,\\^$|#]/g, '\\$&')
+      .replace(/\</g, '&lt;')
+      .replace(/\>/g, '&gt;');
     const regex = new RegExp(pattern, 'gi'); // case insensitive
     if (safeText.match(regex)) {
       // Use the special replacement pattern "$&" to replace matches so that
