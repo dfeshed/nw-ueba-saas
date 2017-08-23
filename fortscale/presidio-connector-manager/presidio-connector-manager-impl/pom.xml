@@ -26,7 +26,17 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
         </dependency>
-       
+        <dependency>
+            <groupId>fortscale</groupId>
+            <artifactId>presidio-configuration-client</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>fortscale</groupId>
+            <artifactId>presidio-configuration-client</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
     </dependencies>
 
 </project>

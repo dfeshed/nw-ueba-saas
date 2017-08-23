@@ -1,4 +1,4 @@
-package presidio.input.sdk.impl.services;
+package presidio.connector.manager.impl.services;
 
 
 import org.junit.Test;
