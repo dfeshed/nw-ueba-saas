@@ -21,7 +21,7 @@ public class FlumeConfigurationUtil {
     private static final String AGENT_NAME_FLAG = "--name";
     private static final String CONF_FOLDER_FLAG = "--conf";
     protected static final String CONF_FILE_PATH_FLAG = "--conf-file";
-    protected static final String BIN_FLUME_NG_PATH = "bin/flume-ng";
+    protected static final String BIN_FLUME_NG_PATH = "bin" + File.separator + "flume-ng";
     private static final String EXECUTE_AGENT_COMMAND = "agent";
     private final String moduleName;
     private final String smartKit;
