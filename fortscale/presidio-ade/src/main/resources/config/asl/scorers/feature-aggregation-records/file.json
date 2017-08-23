@@ -1,14 +1,14 @@
 {
   "ade-event-type-scorers": [
     {
-      "ade-event-type": "aggr_event.numberOfSuccessfulPermissionChangeUserIdFileHourly",
+      "ade-event-type": "aggr_event.numberOfSuccessfulFilePermissionChangesUserIdFileHourly",
       "scorers": [
         {
           "type": "low-values-score-reducer",
-          "name": "numberOfSuccessfulPermissionChange.userId.file.hourly.scorer",
+          "name": "numberOfSuccessfulFilePermissionChanges.userId.file.hourly.scorer",
           "base-scorer": {
             "type": "score-mapper",
-            "name": "numberOfSuccessfulPermissionChange.userId.file.hourly.mapper",
+            "name": "numberOfSuccessfulFilePermissionChanges.userId.file.hourly.mapper",
             "score-mapping-conf": {"mapping":
               {
                 "95.0": 0,
@@ -17,13 +17,13 @@
             },
             "base-scorer": {
               "type": "gaussian-model-scorer",
-              "name": "numberOfSuccessfulPermissionChange.userId.file.hourly.base_scorer",
+              "name": "numberOfSuccessfulFilePermissionChanges.userId.file.hourly.base_scorer",
               "model": {
-                "name": "numberOfSuccessfulPermissionChange.userId.file.hourly"
+                "name": "numberOfSuccessfulFilePermissionChanges.userId.file.hourly"
               },
               "additional-models": [
                 {
-                  "name": "numberOfSuccessfulPermissionChange.userId.prior.global.file.hourly"
+                  "name": "numberOfSuccessfulFilePermissionChanges.userId.prior.global.file.hourly"
                 }
               ],
               "global-influence": 20,
@@ -43,15 +43,15 @@
       ]
     },
     {
-      "ade-event-type": "aggr_event.numberOfSuccessfulFileActionUserIdFileHourly",
+      "ade-event-type": "aggr_event.numberOfSuccessfulFileActionsUserIdFileHourly",
       "scorers": [
         {
           "type": "low-values-score-reducer",
-          "name": "numberOfSuccessfulFileAction.userId.file.hourly.scorer",
+          "name": "numberOfSuccessfulFileActions.userId.file.hourly.scorer",
 
           "base-scorer": {
             "type": "score-mapper",
-            "name": "numberOfSuccessfulFileAction.userId.file.hourly.mapper",
+            "name": "numberOfSuccessfulFileActions.userId.file.hourly.mapper",
             "score-mapping-conf": {
               "mapping": {
                 "95.0": 0,
@@ -60,13 +60,13 @@
             },
             "base-scorer": {
               "type": "gaussian-model-scorer",
-              "name": "numberOfSuccessfulFileAction.userId.file.hourly.base_scorer",
+              "name": "numberOfSuccessfulFileActions.userId.file.hourly.base_scorer",
               "model": {
-                "name": "numberOfSuccessfulFileAction.userId.file.hourly"
+                "name": "numberOfSuccessfulFileActions.userId.file.hourly"
               },
               "additional-models": [
                 {
-                  "name": "numberOfSuccessfulFileAction.userId.prior.global.file.hourly"
+                  "name": "numberOfSuccessfulFileActions.userId.prior.global.file.hourly"
                 }
               ],
               "global-influence": 20,
@@ -86,14 +86,14 @@
       ]
     },
     {
-      "ade-event-type": "aggr_event.numberOfFailedPermissionChangeUserIdFileHourly",
+      "ade-event-type": "aggr_event.numberOfFailedFilePermissionChangesUserIdFileHourly",
       "scorers": [
         {
           "type": "low-values-score-reducer",
-          "name": "numberOfFailedPermissionChange.userId.file.hourly.scorer",
+          "name": "numberOfFailedFilePermissionChanges.userId.file.hourly.scorer",
           "base-scorer": {
             "type": "score-mapper",
-            "name": "numberOfFailedPermissionChange.userId.file.hourly.mapper",
+            "name": "numberOfFailedFilePermissionChanges.userId.file.hourly.mapper",
             "score-mapping-conf": {
               "mapping": {
                 "95.0": 0,
@@ -102,13 +102,13 @@
             },
             "base-scorer": {
               "type": "gaussian-model-scorer",
-              "name": "numberOfFailedPermissionChange.userId.file.hourly.base_scorer",
+              "name": "numberOfFailedFilePermissionChanges.userId.file.hourly.base_scorer",
               "model": {
-                "name": "numberOfFailedPermissionChange.userId.file.hourly"
+                "name": "numberOfFailedFilePermissionChanges.userId.file.hourly"
               },
               "additional-models": [
                 {
-                  "name": "numberOfFailedPermissionChange.userId.prior.global.file.hourly"
+                  "name": "numberOfFailedFilePermissionChanges.userId.prior.global.file.hourly"
                 }
               ],
               "global-influence": 20,
@@ -128,14 +128,14 @@
       ]
     },
     {
-      "ade-event-type": "aggr_event.numberOfFailedFileActionUserIdFileHourly",
+      "ade-event-type": "aggr_event.numberOfFailedFileActionsUserIdFileHourly",
       "scorers": [
         {
           "type": "low-values-score-reducer",
-          "name": "numberOfFailedFileAction.userId.file.hourly.scorer",
+          "name": "numberOfFailedFileActions.userId.file.hourly.scorer",
           "base-scorer": {
             "type": "score-mapper",
-            "name": "numberOfFailedFileAction.userId.file.hourly.mapper",
+            "name": "numberOfFailedFileActions.userId.file.hourly.mapper",
             "score-mapping-conf": {"mapping":
             {
               "95.0": 0,
@@ -144,13 +144,13 @@
             },
             "base-scorer": {
               "type": "gaussian-model-scorer",
-              "name": "numberOfFailedFileAction.userId.file.hourly.base_scorer",
+              "name": "numberOfFailedFileActions.userId.file.hourly.base_scorer",
               "model": {
-                "name": "numberOfFailedFileAction.userId.file.hourly"
+                "name": "numberOfFailedFileActions.userId.file.hourly"
               },
               "additional-models": [
                 {
-                  "name": "numberOfFailedFileAction.userId.prior.global.file.hourly"
+                  "name": "numberOfFailedFileActions.userId.prior.global.file.hourly"
                 }
               ],
               "global-influence": 20,

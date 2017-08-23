@@ -1,28 +1,28 @@
 {
   "ModelConfs": [
     {
-      "name": "numberOfSuccessfulPermissionChange.userId.file.hourly",
+      "name": "numberOfSuccessfulFilePermissionChanges.userId.file.hourly",
       "selector": {
         "type": "aggregated_event_context_selector",
-        "aggregatedFeatureEventConfName": "numberOfSuccessfulPermissionChangeUserIdFileHourly"
+        "aggregatedFeatureEventConfName": "numberOfSuccessfulFilePermissionChangesUserIdFileHourly"
       },
       "retriever": {
         "type": "accumulated_aggregated_feature_value_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
-        "aggregatedFeatureEventConfName": "numberOfSuccessfulPermissionChangeUserIdFileHourly"
+        "aggregatedFeatureEventConfName": "numberOfSuccessfulFilePermissionChangesUserIdFileHourly"
       },
       "builder": {
         "type": "continuous_histogram_model_builder"
       }
     },
     {
-      "name": "numberOfSuccessfulPermissionChange.userId.prior.global.file.hourly",
+      "name": "numberOfSuccessfulFilePermissionChanges.userId.prior.global.file.hourly",
       "retriever": {
         "type": "model_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
-        "modelConfName": "numberOfSuccessfulPermissionChange.userId.file.hourly"
+        "modelConfName": "numberOfSuccessfulFilePermissionChanges.userId.file.hourly"
       },
       "builder": {
         "type": "gaussian_prior_model_builder",
@@ -31,28 +31,28 @@
       }
     },
     {
-      "name": "numberOfSuccessfulFileAction.userId.file.hourly",
+      "name": "numberOfSuccessfulFileActions.userId.file.hourly",
       "selector": {
         "type": "aggregated_event_context_selector",
-        "aggregatedFeatureEventConfName": "numberOfSuccessfulFileActionUserIdFileHourly"
+        "aggregatedFeatureEventConfName": "numberOfSuccessfulFileActionsUserIdFileHourly"
       },
       "retriever": {
         "type": "accumulated_aggregated_feature_value_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
-        "aggregatedFeatureEventConfName": "numberOfSuccessfulFileActionUserIdFileHourly"
+        "aggregatedFeatureEventConfName": "numberOfSuccessfulFileActionsUserIdFileHourly"
       },
       "builder": {
         "type": "continuous_histogram_model_builder"
       }
     },
     {
-      "name": "numberOfSuccessfulFileAction.userId.prior.global.file.hourly",
+      "name": "numberOfSuccessfulFileActions.userId.prior.global.file.hourly",
       "retriever": {
         "type": "model_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
-        "modelConfName": "numberOfSuccessfulFileAction.userId.file.hourly"
+        "modelConfName": "numberOfSuccessfulFileActions.userId.file.hourly"
       },
       "builder": {
         "type": "gaussian_prior_model_builder",
@@ -61,28 +61,28 @@
       }
     },
     {
-      "name": "numberOfFailedPermissionChange.userId.file.hourly",
+      "name": "numberOfFailedFilePermissionChanges.userId.file.hourly",
       "selector": {
         "type": "aggregated_event_context_selector",
-        "aggregatedFeatureEventConfName": "numberOfFailedPermissionChangeUserIdFileHourly"
+        "aggregatedFeatureEventConfName": "numberOfFailedFilePermissionChangesUserIdFileHourly"
       },
       "retriever": {
         "type": "accumulated_aggregated_feature_value_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
-        "aggregatedFeatureEventConfName": "numberOfFailedPermissionChangeUserIdFileHourly"
+        "aggregatedFeatureEventConfName": "numberOfFailedFilePermissionChangesUserIdFileHourly"
       },
       "builder": {
         "type": "continuous_histogram_model_builder"
       }
     },
     {
-      "name": "numberOfFailedPermissionChange.userId.prior.global.file.hourly",
+      "name": "numberOfFailedFilePermissionChanges.userId.prior.global.file.hourly",
       "retriever": {
         "type": "model_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
-        "modelConfName": "numberOfFailedPermissionChange.userId.file.hourly"
+        "modelConfName": "numberOfFailedFilePermissionChanges.userId.file.hourly"
       },
       "builder": {
         "type": "gaussian_prior_model_builder",
@@ -91,28 +91,28 @@
       }
     },
     {
-      "name": "numberOfFailedFileAction.userId.file.hourly",
+      "name": "numberOfFailedFileActions.userId.file.hourly",
       "selector": {
         "type": "aggregated_event_context_selector",
-        "aggregatedFeatureEventConfName": "numberOfFailedFileActionUserIdFileHourly"
+        "aggregatedFeatureEventConfName": "numberOfFailedFileActionsUserIdFileHourly"
       },
       "retriever": {
         "type": "accumulated_aggregated_feature_value_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
-        "aggregatedFeatureEventConfName": "numberOfFailedFileActionUserIdFileHourly"
+        "aggregatedFeatureEventConfName": "numberOfFailedFileActionsUserIdFileHourly"
       },
       "builder": {
         "type": "continuous_histogram_model_builder"
       }
     },
     {
-      "name": "numberOfFailedFileAction.userId.prior.global.file.hourly",
+      "name": "numberOfFailedFileActions.userId.prior.global.file.hourly",
       "retriever": {
         "type": "model_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
-        "modelConfName": "numberOfFailedFileAction.userId.file.hourly"
+        "modelConfName": "numberOfFailedFileActions.userId.file.hourly"
       },
       "builder": {
         "type": "gaussian_prior_model_builder",

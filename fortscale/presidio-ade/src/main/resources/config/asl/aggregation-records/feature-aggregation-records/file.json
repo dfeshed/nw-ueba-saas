@@ -1,15 +1,15 @@
 {
   "AggregatedFeatureEvents": [
     {
-      "name": "numberOfSuccessfulPermissionChangeUserIdFileHourly",
+      "name": "numberOfSuccessfulFilePermissionChangesUserIdFileHourly",
       "type": "F",
-      "bucketConfName": "permissionChangeResultHistogramUserIdFileHourly",
+      "bucketConfName": "filePermissionChangeResultHistogramUserIdFileHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "groupBy": [
-          "permissionChangeHistogram"
+          "filePermissionChangeHistogram"
         ]
       },
       "aggregatedFeatureEventFunction": {
@@ -18,7 +18,7 @@
       }
     },
     {
-      "name": "numberOfSuccessfulFileActionUserIdFileHourly",
+      "name": "numberOfSuccessfulFileActionsUserIdFileHourly",
       "type": "F",
       "bucketConfName": "fileActionResultHistogramUserIdFileHourly",
       "numberOfBuckets": 1,
@@ -35,15 +35,15 @@
       }
     },
     {
-      "name": "numberOfFailedPermissionChangeUserIdFileHourly",
+      "name": "numberOfFailedFilePermissionChangesUserIdFileHourly",
       "type": "F",
-      "bucketConfName": "permissionChangeResultHistogramUserIdFileHourly",
+      "bucketConfName": "filePermissionChangeResultHistogramUserIdFileHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "groupBy": [
-          "permissionChangeHistogram"
+          "filePermissionChangeHistogram"
         ]
       },
       "aggregatedFeatureEventFunction": {
@@ -52,7 +52,7 @@
       }
     },
     {
-      "name": "numberOfFailedFileActionUserIdFileHourly",
+      "name": "numberOfFailedFileActionsUserIdFileHourly",
       "type": "F",
       "bucketConfName": "fileActionResultHistogramUserIdFileHourly",
       "numberOfBuckets": 1,
@@ -71,13 +71,13 @@
     {
       "name": "numberOfDistinctFileOpenedUserIdFileHourly",
       "type": "F",
-      "bucketConfName": "fileOpenedAbsoluteSrcFilePathHistogramUserIdFileHourly",
+      "bucketConfName": "absoluteSrcFilePathHistogramUserIdFileOpenedFileHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "groupBy": [
-          "distinctOpenedFilesHistogram"
+          "absoluteSrcFilePathHistogram"
         ]
       },
       "aggregatedFeatureEventFunction": {
@@ -88,13 +88,13 @@
     {
       "name": "numberOfDistinctFolderOpenedUserIdFileHourly",
       "type": "F",
-      "bucketConfName": "folderOpenedAbsoluteSrcFolderFilePathHistogramUserIdFileHourly",
+      "bucketConfName": "absoluteSrcFolderPathHistogramUserIdFolderOpenedFileHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "groupBy": [
-          "distinctOpenedFoldersHistogram"
+          "absoluteSrcFolderPathHistogram"
         ]
       },
       "aggregatedFeatureEventFunction": {
@@ -111,7 +111,7 @@
       "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "sum": [
-          "deletedFilesCounter"
+          "fileDeletedCounter"
         ]
       },
       "aggregatedFeatureEventFunction": {
@@ -121,13 +121,13 @@
     {
       "name": "numberOfSuccessfulFileRenamedUserIdFileHourly",
       "type": "F",
-      "bucketConfName": "fileRenamedResultRenamedFilesHistogramUserIdFileHourly",
+      "bucketConfName": "fileRenamedResultHistogramUserIdFileHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "groupBy": [
-          "successfulRenamedFilesHistogram"
+          "fileRenamedResultHistogram"
         ]
       },
       "aggregatedFeatureEventFunction": {
@@ -144,7 +144,7 @@
       "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "sum": [
-          "movedFilesCounter"
+          "FileMovedCounter"
         ]
       },
       "aggregatedFeatureEventFunction": {
@@ -160,7 +160,7 @@
       "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "sum": [
-          "movedFilesFromSharedDriveCounter"
+          "fileMovedFromSharedDriveCounter"
         ]
       },
       "aggregatedFeatureEventFunction": {
@@ -176,7 +176,7 @@
       "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "sum": [
-          "movedFilesToSharedDriveCounter"
+          "fileMovedToSharedDriveCounter"
         ]
       },
       "aggregatedFeatureEventFunction": {
