@@ -4,6 +4,7 @@ import fortscale.utils.logging.Logger;
 import fortscale.utils.pagination.PageIterator;
 import net.minidev.json.JSONObject;
 import org.apache.commons.collections.CollectionUtils;
+import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.record.aggregated.SmartRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import presidio.output.domain.records.alerts.Alert;
@@ -21,8 +22,6 @@ import java.util.List;
 public class AlertServiceImpl implements AlertService {
 
     private static final Logger logger = Logger.getLogger(AlertServiceImpl.class);
-
-    private final String AGGREGATED_FEATURE_NAME = "aggregated_feature_name";
 
     private final AlertEnumsSeverityService alertEnumsSeverityService;
     private final AlertPersistencyService alertPersistencyService;
@@ -44,7 +43,7 @@ public class AlertServiceImpl implements AlertService {
         }
 
         String id = smart.getId();
-        List<String> classification = alertNamingService.alertNamesFromIndicatorsByPriority(extractIndicatorNames(smart.getAggregated_feature_events()));
+        List<String> classification = alertNamingService.alertNamesFromIndicatorsByPriority(extractIndicatorNames(smart.getAggregationRecords()));
         String userName = smart.getContextId();
         AlertEnums.AlertType type = AlertEnums.AlertType.GLOBAL; //TODO change this to "AlertClassification"
         long startDate = smart.getStartInstant().getLong(ChronoField.INSTANT_SECONDS);
@@ -62,10 +61,10 @@ public class AlertServiceImpl implements AlertService {
     }
 
 
-    private List<String> extractIndicatorNames(List<JSONObject> indicators) {
+    private List<String> extractIndicatorNames(List<AdeAggregationRecord> indicators) {
         List<String> indicatorsNames = new ArrayList<>();
-        for (JSONObject obj : indicators)
-            indicatorsNames.add(obj.getAsString(AGGREGATED_FEATURE_NAME));
+        for (AdeAggregationRecord indicator : indicators)
+            indicatorsNames.add(indicator.getFeatureName());
         return indicatorsNames;
     }
 }

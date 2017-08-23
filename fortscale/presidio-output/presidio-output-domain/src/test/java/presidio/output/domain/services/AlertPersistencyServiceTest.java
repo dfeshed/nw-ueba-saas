@@ -80,9 +80,9 @@ public class AlertPersistencyServiceTest {
         long endDate = Instant.now().toEpochMilli();
         List<Alert> alertList = new ArrayList<>();
         alertList.add(
-                new Alert("userId"classifications1, "user1", AlertType.DATA_EXFILTRATION, startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH));
+                new Alert("userId", classifications1, "user1", AlertType.DATA_EXFILTRATION, startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH));
         alertList.add(
-                new Alert("userId"classifications1, "user1", AlertType.ANOMALOUS_ADMIN_ACTIVITY, startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH));
+                new Alert("userId", classifications1, "user1", AlertType.ANOMALOUS_ADMIN_ACTIVITY, startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH));
         Iterable<Alert> testAlert = alertPersistencyService.save(alertList);
 
         assertThat(Lists.newArrayList(testAlert).size(), is(2));

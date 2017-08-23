@@ -67,8 +67,8 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
 
             smarts.stream().forEach(smart -> {
                 //TODO change this after new SMART POJO is ready
-                //TODO- user id should be taken from indicators
-                String userId = smart.getContext().get("normalized_username");
+                //TODO- user id should be taken from SMART POJO directly
+                String userId = smart.getAggregationRecords().get(0).getContext().get("userId");
 
                 User userEntity = userService.createUserEntity(userId);
                 Alert alertEntity = alertService.generateAlert(smart, userEntity);
