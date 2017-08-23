@@ -1,6 +1,7 @@
 package fortscale.utils.pagination;
 
 import javafx.util.Pair;
+import org.springframework.data.mongodb.core.aggregation.ArrayOperators;
 
 import java.util.*;
 
@@ -17,11 +18,10 @@ import java.util.*;
  */
 public abstract class BasePaginationService<T> {
     // num of events in page
-    protected int pageSize;
+    private int pageSize;
     // num of context ids in group
-    protected int maxGroupSize;
+    private int maxGroupSize;
 
-    //fieldName that paginationService uses to sort pages
     public BasePaginationService(int pageSize, int maxGroupSize) {
         this.pageSize = pageSize;
         this.maxGroupSize = maxGroupSize;
@@ -88,8 +88,19 @@ public abstract class BasePaginationService<T> {
         return groups;
     }
 
-    public int getPageSize() {
+    protected int getPageSize() {
         return pageSize;
     }
 
+    protected void setPageSize(int pageSize) {
+        this.pageSize = pageSize;
+    }
+
+    protected int getMaxGroupSize() {
+        return maxGroupSize;
+    }
+
+    protected void setMaxGroupSize(int maxGroupSize) {
+        this.maxGroupSize = maxGroupSize;
+    }
 }

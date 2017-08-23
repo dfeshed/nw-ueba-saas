@@ -1,33 +1,26 @@
 package fortscale.ml.model.retriever;
 
-import fortscale.aggregation.feature.event.AggrEvent;
-import fortscale.aggregation.feature.event.AggrFeatureEventBuilderService;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
-import fortscale.aggregation.feature.event.store.AggregatedFeatureEventsReaderService;
 import fortscale.common.feature.Feature;
 import fortscale.domain.feature.score.FeatureScore;
 import fortscale.ml.model.ModelBuilderData;
-import fortscale.ml.model.ModelBuilderData.NoDataReason;
 import org.springframework.util.Assert;
+import presidio.ade.domain.record.aggregated.AdeContextualAggregatedRecord;
 
 import java.util.*;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 
 public class AggregatedFeatureEventUnreducedScoreRetriever extends AbstractDataRetriever {
-	private AggregatedFeatureEventsReaderService aggregatedFeatureEventsReaderService;
 
 	private AggregatedFeatureEventUnreducedScoreRetrieverConf config;
 	private AggregatedFeatureEventConf aggregatedFeatureEventToCalibrateConf;
 
 	public AggregatedFeatureEventUnreducedScoreRetriever(AggregatedFeatureEventUnreducedScoreRetrieverConf config,
-														 AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService,
-														 AggregatedFeatureEventsReaderService aggregatedFeatureEventsReaderService) {
+														 AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService) {
 		super(config);
 		this.config = config;
-		this.aggregatedFeatureEventsReaderService = aggregatedFeatureEventsReaderService;
 
 		String aggregatedFeatureEventConfNameToCalibrate = config.getAggregatedFeatureEventToCalibrateConfName();
 		aggregatedFeatureEventToCalibrateConf = aggregatedFeatureEventsConfService
@@ -38,27 +31,29 @@ public class AggregatedFeatureEventUnreducedScoreRetriever extends AbstractDataR
 	@Override
 	public ModelBuilderData retrieve(String contextId, Date endTime) {
 		Assert.isNull(contextId, String.format("%s can't be used with a context", this.getClass().getSimpleName()));
-		Map<Long, List<AggrEvent>> dateToTopAggrEvents = aggregatedFeatureEventsReaderService.getDateToTopAggrEvents(
-				aggregatedFeatureEventToCalibrateConf,
-				endTime,
-				config.getNumOfDays(),
-				config.getNumOfIndicatorsPerDay());
-
-		if (dateToTopAggrEvents.isEmpty()) {
-			return new ModelBuilderData(NoDataReason.NO_DATA_IN_DATABASE);
-		}
-
-		Map<Long, List<Double>> data = dateToTopAggrEvents.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue()
-				.stream()
-				.map(aggrEvent -> findScoreToCalibrate(aggrEvent.getFeatureScores(), config.getScoreNameToCalibrate()))
-				.filter(unreducedScore -> unreducedScore != null)
-				.collect(Collectors.toList())));
-
-		if (data.isEmpty()) {
-			return new ModelBuilderData(NoDataReason.ALL_DATA_FILTERED);
-		} else {
-			return new ModelBuilderData(data);
-		}
+		// todo: the following query assumes long term persistence of aggr records. this should be replaced to be retrieved from accumulated data.
+//		Map<Long, List<AggrEvent>> dateToTopAggrEvents = aggregatedFeatureEventsReaderService.getDateToTopAggrEvents(
+//				aggregatedFeatureEventToCalibrateConf,
+//				endTime,
+//				config.getNumOfDays(),
+//				config.getNumOfIndicatorsPerDay());
+//
+//		if (dateToTopAggrEvents.isEmpty()) {
+//			return new ModelBuilderData(NoDataReason.NO_DATA_IN_DATABASE);
+//		}
+//
+//		Map<Long, List<Double>> data = dateToTopAggrEvents.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue()
+//				.stream()
+//				.map(aggrEvent -> findScoreToCalibrate(aggrEvent.getFeatureScores(), config.getScoreNameToCalibrate()))
+//				.filter(unreducedScore -> unreducedScore != null)
+//				.collect(Collectors.toList())));
+//
+//		if (data.isEmpty()) {
+//			return new ModelBuilderData(NoDataReason.ALL_DATA_FILTERED);
+//		} else {
+//			return new ModelBuilderData(data);
+//		}
+		return null;
 	}
 
 	private Stream<FeatureScore> flattenFeatureScoresRecursively(List<FeatureScore> featureScores) {
@@ -103,6 +98,6 @@ public class AggregatedFeatureEventUnreducedScoreRetriever extends AbstractDataR
 	@Override
 	public String getContextId(Map<String, String> context) {
 		Assert.notEmpty(context);
-		return AggrFeatureEventBuilderService.getAggregatedFeatureContextId(context);
+		return AdeContextualAggregatedRecord.getAggregatedFeatureContextId(context);
 	}
 }

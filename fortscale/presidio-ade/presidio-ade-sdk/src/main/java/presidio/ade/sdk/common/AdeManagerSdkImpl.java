@@ -4,21 +4,21 @@ import fortscale.aggregation.feature.bucket.FeatureBucket;
 import fortscale.aggregation.feature.bucket.FeatureBucketReader;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
-import fortscale.domain.SMART.EntityEvent;
 import fortscale.utils.pagination.PageIterator;
 import fortscale.utils.time.TimeRange;
 import org.springframework.data.util.Pair;
 import org.springframework.util.Assert;
+import presidio.ade.domain.pagination.smart.ScoreThresholdSmartPaginationService;
 import presidio.ade.domain.record.accumulator.AccumulatedAggregationFeatureRecord;
+import presidio.ade.domain.record.aggregated.SmartRecord;
 import presidio.ade.domain.record.enriched.AdeScoredEnrichedRecord;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.ade.domain.store.AdeDataStoreCleanupParams;
 import presidio.ade.domain.store.accumulator.AggregationEventsAccumulationDataReader;
+import presidio.ade.domain.store.smart.SmartDataReader;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
 import presidio.ade.domain.store.enriched.EnrichedRecordsMetadata;
 import presidio.ade.domain.store.scored.ScoredEnrichedDataStore;
-import presidio.ade.domain.store.smart.SmartDataStore;
-import presidio.ade.domain.store.smart.SmartPageIterator;
 import presidio.ade.sdk.historical_runs.HistoricalRunParams;
 import presidio.ade.sdk.online_run.OnlineRunParams;
 
@@ -35,7 +35,7 @@ import static java.util.stream.Collectors.toMap;
  */
 public class AdeManagerSdkImpl implements AdeManagerSdk {
     private EnrichedDataStore enrichedDataStore;
-    private SmartDataStore smartDataStore;
+    private SmartDataReader smartDataReader;
     private ScoredEnrichedDataStore scoredEnrichedDataStore;
     private AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
     private Map<String, List<String>> aggregationNameToAdeEventTypeMap;
@@ -43,9 +43,9 @@ public class AdeManagerSdkImpl implements AdeManagerSdk {
     private FeatureBucketReader featureBucketReader;
     private AggregationEventsAccumulationDataReader aggregationEventsAccumulationDataReader;
 
-    public AdeManagerSdkImpl(EnrichedDataStore enrichedDataStore, SmartDataStore smartDataStore, ScoredEnrichedDataStore scoredEnrichedDataStore, AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService, FeatureBucketReader featureBucketReader, AggregationEventsAccumulationDataReader aggregationEventsAccumulationDataReader) {
+    public AdeManagerSdkImpl(EnrichedDataStore enrichedDataStore, SmartDataReader smartRecordDataReader, ScoredEnrichedDataStore scoredEnrichedDataStore, AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService, FeatureBucketReader featureBucketReader, AggregationEventsAccumulationDataReader aggregationEventsAccumulationDataReader) {
         this.enrichedDataStore = enrichedDataStore;
-        this.smartDataStore = smartDataStore;
+        this.smartDataReader = smartDataReader;
         this.scoredEnrichedDataStore = scoredEnrichedDataStore;
         this.aggregatedFeatureEventsConfService = aggregatedFeatureEventsConfService;
         this.featureBucketReader = featureBucketReader;
@@ -230,9 +230,9 @@ public class AdeManagerSdkImpl implements AdeManagerSdk {
     }
 
     @Override
-    public PageIterator<EntityEvent> getSmartRecords(TimeRange timeRange, int pageSize, int scoreThreshold) {
-        // TODO: Replace temporary implementation
-        return new SmartPageIterator<>(smartDataStore, timeRange, scoreThreshold);
+    public PageIterator<SmartRecord> getSmartRecords(TimeRange timeRange, int pageSize, int scoreThreshold) {
+        ScoreThresholdSmartPaginationService smartPaginationService = new ScoreThresholdSmartPaginationService(smartDataReader, pageSize);
+        return smartPaginationService.getPageIterator(timeRange, scoreThreshold);
     }
 
     @Override

@@ -38,7 +38,7 @@ public class PresidioInputPersistencyServiceMongoImplTest {
     private PresidioInputPersistencyService presidioInputPersistencyService;
 
     @Before
-    public void before(){
+    public void before() {
         mongoTemplate.dropCollection(toCollectionNameTranslator.toCollectionName(Schema.DLPFILE));
     }
 

@@ -3,6 +3,7 @@ package presidio.ade.sdk.smart_records;
 import fortscale.domain.SMART.EntityEvent;
 import fortscale.utils.pagination.PageIterator;
 import fortscale.utils.time.TimeRange;
+import presidio.ade.domain.record.aggregated.SmartRecord;
 
 /**
  * Provides the ADE's consumers with APIs related to Smart Records.
@@ -19,5 +20,5 @@ public interface SmartRecordsManagerSdk {
 	 * @param scoreThreshold the scores should be greater than or equal to this threshold
 	 * @return an iterator over {@link EntityEvent}s
 	 */
-	PageIterator<EntityEvent> getSmartRecords(TimeRange timeRange, int pageSize, int scoreThreshold);
+	PageIterator<SmartRecord> getSmartRecords(TimeRange timeRange, int pageSize, int scoreThreshold);
 }

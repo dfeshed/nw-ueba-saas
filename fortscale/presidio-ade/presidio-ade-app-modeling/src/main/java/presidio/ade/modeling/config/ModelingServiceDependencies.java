@@ -3,9 +3,6 @@ package presidio.ade.modeling.config;
 import fortscale.aggregation.feature.bucket.FeatureBucketReader;
 import fortscale.aggregation.feature.bucket.FeatureBucketStoreMongoImpl;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
-import fortscale.aggregation.feature.event.store.AggregatedFeatureEventsMongoStore;
-import fortscale.aggregation.feature.event.store.AggregatedFeatureEventsReaderService;
-import fortscale.aggregation.feature.event.store.translator.AggregatedFeatureNameTranslationService;
 import fortscale.utils.mongodb.util.MongoDbUtilService;
 import fortscale.utils.monitoring.stats.StatsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +13,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import presidio.ade.domain.store.accumulator.AggregationEventsAccumulationDataReader;
 import presidio.ade.domain.store.accumulator.AggregationEventsAccumulationDataReaderConfig;
-
-import java.util.Collections;
 
 /**
  * @author Lior Govrin
@@ -44,10 +39,6 @@ public class ModelingServiceDependencies {
 	@Autowired
 	private AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
 	@Autowired
-	private AggregatedFeatureNameTranslationService aggregatedFeatureNameTranslationService;
-	@Autowired
-	private AggregatedFeatureEventsMongoStore aggregatedFeatureEventsMongoStore;
-	@Autowired
 	private AggregationEventsAccumulationDataReader aggregationEventsAccumulationDataReader;
 
 	/*******************************
@@ -60,32 +51,6 @@ public class ModelingServiceDependencies {
 				mongoTemplate,
 				mongoDbUtilService,
 				featureBucketsDefaultExpireAfterSeconds);
-	}
-
-	/******************************************
-	 * Feature aggregation event related beans.
-	 ******************************************/
-
-	@Bean
-	public AggregatedFeatureNameTranslationService aggregatedFeatureNameTranslationService() {
-		return new AggregatedFeatureNameTranslationService(eventTypeFieldValueAggrEvent);
-	}
-
-	@Bean
-	public AggregatedFeatureEventsMongoStore aggregatedFeatureEventsMongoStore() {
-		return new AggregatedFeatureEventsMongoStore(
-				mongoTemplate,
-				aggregatedFeatureEventsConfService,
-				statsService,
-				aggregatedFeatureNameTranslationService,
-				Collections.emptyList());
-	}
-
-	@Bean
-	public AggregatedFeatureEventsReaderService aggregatedFeatureEventsReaderService() {
-		return new AggregatedFeatureEventsReaderService(
-				aggregatedFeatureEventsMongoStore,
-				aggregationEventsAccumulationDataReader);
 	}
 
 	/****************************
