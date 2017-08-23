@@ -5,8 +5,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 import presidio.output.domain.records.alerts.Alert;
 
+import java.util.List;
+
 public interface AlertRepository extends ElasticsearchRepository<Alert, String> {
 
     Page<Alert> findByUserName(String userName, Pageable pageable);
+
+    Page<Alert> findByClassification(List<String> classification, Pageable pageable);
 
 }
