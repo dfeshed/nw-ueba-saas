@@ -7,7 +7,7 @@ import java.util.Collection;
 
 
 public class SmartAccumulatedDataToCollectionNameTranslator implements AdeToCollectionNameTranslator<SmartAccumulatedRecordsMetaData> {
-    private static final String SMART_ACCUMULATION_COLLECTION_PREFIX = "accm_scored_";
+    private static final String SMART_ACCUMULATION_COLLECTION_PREFIX = "accm_smart_";
 
     @Override
     public String toCollectionName(SmartAccumulatedRecordsMetaData arg) {
