@@ -5,8 +5,10 @@ import presidio.output.domain.records.alerts.AlertPriority;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class AlertNamingService {
 
@@ -19,8 +21,7 @@ public class AlertNamingService {
 
     public AlertNamingService(String alerts, String indicators, String alertsByPriority) {
         indicatorToAlert = new HashMap<>();
-        List<String> list = setAlertsByPriority(alertsByPriority);
-        createIndicatorToAlertByPriority(alerts, indicators, list);
+        createIndicatorToAlertByPriority(alerts, indicators, setAlertsByPriority(alertsByPriority));
 
     }
 
@@ -44,25 +45,32 @@ public class AlertNamingService {
         }
     }
 
-    public String alertNameFromIndictors(List<String> indicators) {
-        int priority = indicatorToAlert.size();
-        String alertName = "";
+    public List<String> alertNamesFromIndicatorsByPriority(List<String> indicators) {
+        int priority, place, remove, numberOfIndicators;
+        List<String> classificationByPriority = new ArrayList<>();
+        Set<String> tempClassificationByPriority = new HashSet<>();
+        String alertName;
         AlertPriority alertPriority;
-        for (String indicator : indicators) {
-            alertPriority = indicatorToAlert.get(indicator);
-            if (alertPriority.getPriority() < priority) {
-                priority = alertPriority.getPriority();
-                alertName = alertPriority.getName();
+        numberOfIndicators = indicators.size();
+        for (int i = 0; i < numberOfIndicators; i++) {
+            priority = indicatorToAlert.size() + 1;
+            alertName = "";
+            place = 0;
+            remove = 0;
+            for (String indicator : indicators) {
+                alertPriority = indicatorToAlert.get(indicator);
+                if (alertPriority.getPriority() < priority) {
+                    priority = alertPriority.getPriority();
+                    alertName = alertPriority.getName();
+                    remove = place;
+                }
+                place++;
             }
+            indicators.remove(remove);
+            tempClassificationByPriority.add(alertName);
         }
-        return alertName;
+        classificationByPriority.addAll(tempClassificationByPriority);
+        return classificationByPriority;
     }
 
-    public List<String> alertNamesFromIndictors(List<String> indicators) {
-        List<String> alertNames = new ArrayList<>();
-        for (String indicator : indicators) {
-            alertNames.add(indicatorToAlert.get(indicator).getName());
-        }
-        return alertNames;
-    }
 }
