@@ -21,8 +21,7 @@ public class AlertNamingService {
 
     public AlertNamingService(String alerts, String indicators, String alertsByPriority) {
         indicatorToAlert = new HashMap<>();
-        List<String> list = setAlertsByPriority(alertsByPriority);
-        createIndicatorToAlertByPriority(alerts, indicators, list);
+        createIndicatorToAlertByPriority(alerts, indicators, setAlertsByPriority(alertsByPriority));
 
     }
 
@@ -46,10 +45,10 @@ public class AlertNamingService {
         }
     }
 
-    public List<String> alertNamesFromIndictorsByPriority(List<String> indicators) {
+    public List<String> alertNamesFromIndicatorsByPriority(List<String> indicators) {
         int priority, place, remove, numberOfIndicators;
-        List<String> list = new ArrayList<>();
-        Set<String> set = new HashSet<>();
+        List<String> classificationByPriority = new ArrayList<>();
+        Set<String> tempClassificationByPriority = new HashSet<>();
         String alertName;
         AlertPriority alertPriority;
         numberOfIndicators = indicators.size();
@@ -68,10 +67,10 @@ public class AlertNamingService {
                 place++;
             }
             indicators.remove(remove);
-            set.add(alertName);
+            tempClassificationByPriority.add(alertName);
         }
-        list.addAll(set);
-        return list;
+        classificationByPriority.addAll(tempClassificationByPriority);
+        return classificationByPriority;
     }
 
 }

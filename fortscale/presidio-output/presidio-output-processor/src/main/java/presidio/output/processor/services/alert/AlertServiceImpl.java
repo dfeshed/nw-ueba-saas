@@ -60,7 +60,7 @@ public class AlertServiceImpl implements AlertService {
         double score = smart.getScore();
         if (score >= 50) {
             String id = smart.getId();
-            List<String> classification = alertNamingService.alertNamesFromIndictorsByPriority(extractIndicatorNames(smart.getAggregated_feature_events()));
+            List<String> classification = alertNamingService.alertNamesFromIndicatorsByPriority(extractIndicatorNames(smart.getAggregated_feature_events()));
             String userName = smart.getContextId();
             AlertEnums.AlertType type = AlertEnums.AlertType.GLOBAL; //TODO change this to "AlertClassification"
             long startDate = smart.getStart_time_unix();

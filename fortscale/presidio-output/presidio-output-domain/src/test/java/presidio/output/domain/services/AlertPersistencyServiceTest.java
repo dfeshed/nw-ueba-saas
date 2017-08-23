@@ -53,7 +53,7 @@ public class AlertPersistencyServiceTest {
         esTemplate.createIndex(Alert.class);
         esTemplate.putMapping(Alert.class);
         esTemplate.refresh(Alert.class);
-        classifications1 = new ArrayList<>(Arrays.asList("a","b","c"));
+        classifications1 = new ArrayList<>(Arrays.asList("a", "b", "c"));
         classifications2 = new ArrayList<>(Arrays.asList("b"));
         classifications3 = new ArrayList<>(Arrays.asList("a"));
         classifications4 = new ArrayList<>(Arrays.asList("d"));
