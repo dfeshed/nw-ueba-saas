@@ -79,16 +79,18 @@ const MetaContentItem = Component.extend({
   /**
    * The number of times the meta value exists in the text.
    * @param {string} name The meta name.
-   * @param {object[]} metaHighlightCount List of all meta values contained
-   * within the text.
+   * @param {object[]} metaHighlightCount List of all meta and their counts
+   * contained within the text.
    * @return {number}
    * @public
    */
-  @computed('name', 'metaHighlightCount')
-  totalCount(name, metaHighlightCount) {
+  @computed('name', 'value', 'metaHighlightCount')
+  totalCount(name, value, metaHighlightCount) {
     let count = 0;
     if (metaHighlightCount) {
-      const meta = metaHighlightCount.find((meta) => meta.name === name);
+      const meta = metaHighlightCount.find(
+        (meta) => meta.name === name && meta.value === value
+      );
       count = (meta) ? meta.count : 0;
     }
     return count;
