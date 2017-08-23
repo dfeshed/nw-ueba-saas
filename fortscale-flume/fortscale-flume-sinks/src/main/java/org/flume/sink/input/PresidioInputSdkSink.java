@@ -57,6 +57,7 @@ public class PresidioInputSdkSink<T extends AbstractAuditableDocument> extends A
 
 
     @Override
+    @SuppressWarnings("unchecked")
     public void configure(Context context) {
         super.configure(context);
         logger.debug("context is: {}", context);
@@ -115,8 +116,7 @@ public class PresidioInputSdkSink<T extends AbstractAuditableDocument> extends A
         if (allSavedSuccessfully) {
             logger.info("{} were saved successfully.", size);
             sinkCounter.addToEventDrainSuccessCount(size);
-        }
-        else {
+        } else {
             logger.warn("Not all records out of {} total records were saved successfully", size);
         }
     }
