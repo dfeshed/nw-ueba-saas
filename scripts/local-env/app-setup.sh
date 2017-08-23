@@ -1,8 +1,8 @@
 function prepareApp {
   cd ../$1
 
-  yarn link mock-server
   ln -s ../node_modules node_modules
+  yarn link mock-server
 
   # At present, the script only supports OS X and Windows
   # If the user is not on Mac, then user must be Windows (CYGWIN*|MINGW32*|MSYS*)
@@ -33,6 +33,7 @@ cd ../..
 yarn
 
 # mock-server is just Yarn install
+info "Running install for mock server"
 cd $scriptDir/../mock-server
 yarn
 yarn link

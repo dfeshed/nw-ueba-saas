@@ -12,7 +12,7 @@ info "If this is your first time setting up environment, this part will be fast.
 
 function nukeNode {
   info "Removing $1 node_modules"
-  rm -rf $1/node_modules
+  rm -rf $scriptDir/../$1/node_modules
 }
 
 info "Cleaning NPM cache"
