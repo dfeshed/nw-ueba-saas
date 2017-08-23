@@ -4,7 +4,8 @@ import {
   addFileTypeFilter,
   addSessionIdsFilter,
   addFileSelectionsFilter,
-  addFilenameFilter
+  addFilenameFilter,
+  addEventTypeFilter
 } from '../util/query-util';
 
 /**
@@ -22,11 +23,12 @@ import {
  * download URL, which can be used to fetch the actual files (zipped).
  * @public
  */
-export default function fetchExtractJobId(endpointId, eventId, fileType, filename, filenames) {
+export default function fetchExtractJobId(endpointId, eventId, fileType, filename, filenames, eventType) {
   let query = endpointFilter(endpointId);
   query = addSessionIdsFilter(query, [ eventId ]);
   query = addFilenameFilter(query, filename);
   query = addFileTypeFilter(query, fileType);
+  query = addEventTypeFilter(query, eventType);
 
   if (fileType !== 'LOG') {
     query = addFileSelectionsFilter(query, filenames);

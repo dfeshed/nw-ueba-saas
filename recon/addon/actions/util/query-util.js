@@ -102,6 +102,14 @@ const addFileTypeFilter = (query, type) => {
   );
 };
 
+const addEventTypeFilter = (query, type) => {
+  return _addFilter(
+    query,
+    'eventtype',
+    type
+  );
+};
+
 const addFileSelectionsFilter = (query, filenames = []) => {
   if (filenames.length) {
     query = _addFilter(
@@ -143,6 +151,7 @@ export {
   addFileTypeFilter,
   addFileSelectionsFilter,
   addFilenameFilter,
+  addEventTypeFilter,
   addMaxPackets,
   addSessionIdsFilter,
   endpointFilter,

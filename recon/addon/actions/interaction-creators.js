@@ -6,6 +6,10 @@ import * as ACTION_TYPES from './types';
 import { fetchExtractJobId } from './fetch';
 import { getHeaderItem } from 'recon/utils/recon-event-header';
 import { selectedFiles } from 'recon/reducers/files/selectors';
+import {
+  isEndpointEvent,
+  isLogEvent
+} from 'recon/reducers/meta/selectors';
 
 const { Logger } = Ember;
 
@@ -62,9 +66,17 @@ const extractFiles = (type = 'FILES') => {
 
     const filename = createFilename(headerItems, selectedFileNames);
 
+    let eventType = 'NETWORK';
+
+    if (isEndpointEvent(recon)) {
+      eventType = 'ENDPOINT';
+    } else if (isLogEvent(recon)) {
+      eventType = 'LOG';
+    }
+
     dispatch({
       type: ACTION_TYPES.FILE_EXTRACT_JOB_ID_RETRIEVE,
-      promise: fetchExtractJobId(endpointId, eventId, type, filename, selectedFileNames),
+      promise: fetchExtractJobId(endpointId, eventId, type, filename, selectedFileNames, eventType),
       meta: {
         onFailure(response) {
           Logger.error('Error fetching job id for extraction', { endpointId, eventId }, response);
