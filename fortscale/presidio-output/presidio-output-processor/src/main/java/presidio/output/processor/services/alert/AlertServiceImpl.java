@@ -2,10 +2,10 @@ package presidio.output.processor.services.alert;
 
 import fortscale.utils.logging.Logger;
 import fortscale.utils.pagination.PageIterator;
-import net.minidev.json.JSONObject;
 import org.apache.commons.collections.CollectionUtils;
-import presidio.ade.domain.record.aggregated.SmartRecord;
 import org.springframework.beans.factory.annotation.Autowired;
+import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
+import presidio.ade.domain.record.aggregated.SmartRecord;
 import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.alerts.AlertEnums;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
@@ -13,6 +13,7 @@ import presidio.output.domain.services.alerts.AlertPersistencyService;
 import java.time.temporal.ChronoField;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by efratn on 24/07/2017.
@@ -60,7 +61,8 @@ public class AlertServiceImpl implements AlertService {
         double score = smart.getScore();
         if (score >= 50) {
             String id = smart.getId();
-            List<String> classification = alertNamingService.alertNamesFromIndicatorsByPriority(extractIndicatorNames(smart.getAggregated_feature_events()));
+            List<String> indicatorsNames = extractIndicatorsNames(smart);
+            List<String> classification = alertNamingService.alertNamesFromIndicatorsByPriority(indicatorsNames);
             String userName = smart.getContextId();
             AlertEnums.AlertType type = AlertEnums.AlertType.GLOBAL; //TODO change this to "AlertClassification"
             long startDate = smart.getStartInstant().getLong(ChronoField.INSTANT_SECONDS);
@@ -74,10 +76,7 @@ public class AlertServiceImpl implements AlertService {
         return null;
     }
 
-    private List<String> extractIndicatorNames(List<JSONObject> indicators) {
-        List<String> indicatorsNames = new ArrayList<>();
-        for (JSONObject obj : indicators)
-            indicatorsNames.add(obj.getAsString(AGGREGATED_FEATURE_NAME));
-        return indicatorsNames;
+    private List<String> extractIndicatorsNames(SmartRecord smart) {
+        return smart.getAggregationRecords().stream().map(AdeAggregationRecord::getFeatureName).collect(Collectors.toList());
     }
 }
