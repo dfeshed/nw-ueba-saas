@@ -69,7 +69,7 @@ public class AlertServiceImpl implements AlertService {
             //TODO- on the new ADE SMART POJO there should be a dedicated field for Daily/Hourly
             AlertEnums.AlertTimeframe timeframe = AlertEnums.AlertTimeframe.DAILY;
             AlertEnums.AlertSeverity severity = alertEnumsSeverityService.severity(score);
-            return new Alert(classification, id, userName, type, startDate, endDate, score, indicatorsNum, timeframe, severity);
+            return new Alert(classification, userName, type, startDate, endDate, score, indicatorsNum, timeframe, severity);
         }
         return null;
     }
