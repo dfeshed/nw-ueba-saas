@@ -42,13 +42,7 @@ public class AlertsNamingServceTest {
             return new TestPropertiesPlaceholderConfigurer(properties);
         }
     }
-
-    @Test
-    public void alertNameMassChangestoCriticalEnterpriseGroups() {
-        List indicators = new ArrayList(Arrays.asList("Abnormal file action operation type", "Abnormal logon day time"));
-        String name = alertNamingService.alertNameFromIndictors(indicators);
-        assertEquals("Mass Changes to Critical Enterprise Groups", name);
-    }
+    
 
     @Test
     public void listOfAlerts() {
