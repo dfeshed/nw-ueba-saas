@@ -241,6 +241,36 @@
       }
     },
     {
+      "name": "numberOfFileMoved.userId.file.hourly",
+      "selector": {
+        "type": "aggregated_event_context_selector",
+        "aggregatedFeatureEventConfName": "numberOfFileMovedUserIdFileHourly"
+      },
+      "retriever": {
+        "type": "accumulated_aggregated_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "aggregatedFeatureEventConfName": "numberOfFileMovedUserIdFileHourly"
+      },
+      "builder": {
+        "type": "continuous_histogram_model_builder"
+      }
+    },
+    {
+      "name": "numberOfFileMoved.userId.prior.global.file.hourly",
+      "retriever": {
+        "type": "model_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "modelConfName": "numberOfFileMoved.userId.file.hourly"
+      },
+      "builder": {
+        "type": "gaussian_prior_model_builder",
+        "distanceBetweenSegmentCenters": 1,
+        "maxSegmentWidthToNotDiscardBecauseOfBadRatio": 3
+      }
+    },
+    {
       "name": "numberOfFileMovedFromSharedDrive.userId.file.hourly",
       "selector": {
         "type": "aggregated_event_context_selector",

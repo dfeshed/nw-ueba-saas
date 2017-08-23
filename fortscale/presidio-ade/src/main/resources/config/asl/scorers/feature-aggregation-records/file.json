@@ -338,6 +338,48 @@
       ]
     },
     {
+      "ade-event-type": "aggr_event.numberOfFileMovedUserIdFileHourly",
+      "scorers": [
+        {
+          "type": "low-values-score-reducer",
+          "name": "numberOfFileMoved.userId.file.hourly.scorer",
+          "base-scorer": {
+            "type": "score-mapper",
+            "name": "numberOfFileMoved.userId.file.hourly.mapper",
+            "score-mapping-conf": {
+              "mapping": {
+                "95.0": 0,
+                "100.0": 100
+              }
+            },
+            "base-scorer": {
+              "type": "gaussian-model-scorer",
+              "name": "numberOfFileMoved.userId.file.hourly.base_scorer",
+              "model": {
+                "name": "numberOfFileMoved.userId.file.hourly"
+              },
+              "additional-models": [
+                {
+                  "name": "numberOfFileMoved.userId.prior.global.file.hourly"
+                }
+              ],
+              "global-influence": 20,
+              "number-of-samples-to-influence-enough": 30,
+              "use-certainty-to-calculate-score": true
+            }
+          },
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "featureValue",
+              "reducingFactor": 0,
+              "maxValueForFullyReduce": 3.0,
+              "minValueForNotReduce": 6.0
+            }
+          ]
+        }
+      ]
+    },
+    {
       "ade-event-type": "aggr_event.numberOfFileMovedFromSharedDriveUserIdFileHourly",
       "scorers": [
         {
