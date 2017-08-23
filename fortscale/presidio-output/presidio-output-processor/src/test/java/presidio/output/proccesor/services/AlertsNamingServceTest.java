@@ -42,12 +42,21 @@ public class AlertsNamingServceTest {
             return new TestPropertiesPlaceholderConfigurer(properties);
         }
     }
-    
+
 
     @Test
-    public void listOfAlerts() {
+    public void classiticationsAsTowOptions() {
         List indicators = new ArrayList(Arrays.asList("Abnormal file action operation type", "Abnormal logon day time"));
-        List names = alertNamingService.alertNamesFromIndictors(indicators);
+        List<String> names = alertNamingService.alertNamesFromIndicatorsByPriority(indicators);
         assertEquals(2, names.size());
     }
+
+    @Test
+    public void classiticationsAsOneOption() {
+        List indicators = new ArrayList(Arrays.asList("Abnormal event day time", "Abnormal Active Directory day time operation"));
+        List<String> names = alertNamingService.alertNamesFromIndicatorsByPriority(indicators);
+        assertEquals(1, names.size());
+    }
 }
+
+

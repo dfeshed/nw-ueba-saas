@@ -8,13 +8,15 @@ import presidio.output.domain.records.AbstractElasticDocument;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import java.util.List;
 
 @Document(indexName = AbstractElasticDocument.INDEX_NAME, type = Alert.ALERT_TYPE)
-public class Alert extends AbstractElasticDocument{
+public class Alert extends AbstractElasticDocument {
 
     public static final String ALERT_TYPE = "alert";
 
     // field names
+    public static final String CLASSIFICATION = "classification";
     public static final String USER_NAME = "userName";
     public static final String TYPE = "alertType";
     public static final String START_DATE = "startDate";
@@ -25,6 +27,10 @@ public class Alert extends AbstractElasticDocument{
     public static final String SEVERITY = "severity";
 
     @Field(type = FieldType.String, store = true)
+    @JsonProperty(CLASSIFICATION)
+    private List<String> classification;
+
+    @Field(type = FieldType.String, store = true)
     @JsonProperty(USER_NAME)
     private String userName;
 
@@ -32,11 +38,11 @@ public class Alert extends AbstractElasticDocument{
     @JsonProperty(TYPE)
     private AlertEnums.AlertType alertType;
 
-    @Field (type = FieldType.Long, store = true)
+    @Field(type = FieldType.Long, store = true)
     @JsonProperty(START_DATE)
     private long startDate;
 
-    @Field (type = FieldType.Long, store = true)
+    @Field(type = FieldType.Long, store = true)
     @JsonProperty(END_DATE)
     private long endDate;
 
@@ -53,17 +59,18 @@ public class Alert extends AbstractElasticDocument{
     @JsonProperty(TIMEFRAME)
     private AlertEnums.AlertTimeframe timeframe;
 
-    @Field (type = FieldType.String, store = true)
+    @Field(type = FieldType.String, store = true)
     @Enumerated(EnumType.STRING)
     @JsonProperty(SEVERITY)
     private AlertEnums.AlertSeverity severity;
 
-    public Alert(){
+    public Alert() {
         // empty const for JSON deserialization
     }
 
-    public Alert(String userName, AlertEnums.AlertType type, long startDate, long endDate, double score, int indicatorsNum, AlertEnums.AlertTimeframe timeframe, AlertEnums.AlertSeverity severity) {
+    public Alert(List<String> classification, String userName, AlertEnums.AlertType type, long startDate, long endDate, double score, int indicatorsNum, AlertEnums.AlertTimeframe timeframe, AlertEnums.AlertSeverity severity) {
         super();
+        this.classification = classification;
         this.userName = userName;
         this.alertType = type;
         this.startDate = startDate;
@@ -72,6 +79,14 @@ public class Alert extends AbstractElasticDocument{
         this.indicatorsNum = indicatorsNum;
         this.timeframe = timeframe;
         this.severity = severity;
+    }
+
+    public List<String> getClassification() {
+        return classification;
+    }
+
+    public void setClassification(List<String> classification) {
+        this.classification = classification;
     }
 
     public String getUserName() {

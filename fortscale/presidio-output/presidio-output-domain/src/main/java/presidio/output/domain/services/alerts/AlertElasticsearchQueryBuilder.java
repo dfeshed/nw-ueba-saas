@@ -9,12 +9,12 @@ import org.elasticsearch.search.aggregations.support.ValueType;
 import org.elasticsearch.search.sort.FieldSortBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
-import presidio.output.domain.records.alerts.AlertQuery;
 import presidio.output.domain.records.alerts.Alert;
+import presidio.output.domain.records.alerts.AlertQuery;
 import presidio.output.domain.services.ElasticsearchQueryBuilder;
 
-import static org.elasticsearch.index.query.QueryBuilders.*;
+import static org.elasticsearch.index.query.QueryBuilders.matchQuery;
+import static org.elasticsearch.index.query.QueryBuilders.rangeQuery;
 
 public class AlertElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<AlertQuery> {
 
@@ -32,13 +32,20 @@ public class AlertElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<Al
 
         // filter by severity
         if (StringUtils.isNotEmpty(alertQuery.getFilterBySeverity())) {
-            boolQueryBuilder.must(matchQuery(Alert.SEVERITY, alertQuery.getFilterBySeverity()));
+            boolQueryBuilder.must(matchQuery(Alert.SEVERITY, alertQuery.getFilterBySeverity()).operator(Operator.AND));
+        }
+
+        // filter by classification
+        if (alertQuery.getFilterByClassification() != null && !(alertQuery.getFilterByClassification()).isEmpty()) {
+            for (String classification : alertQuery.getFilterByClassification()) {
+                boolQueryBuilder.should(matchQuery(Alert.CLASSIFICATION, classification).operator(Operator.OR));
+            }
         }
 
         // filter by date range
         if (alertQuery.getFilterByStartDate() > 0 || alertQuery.getFilterByEndDate() > 0) {
             RangeQueryBuilder rangeQuery = rangeQuery(Alert.START_DATE);
-            if (alertQuery.getFilterByStartDate() > 0 ) {
+            if (alertQuery.getFilterByStartDate() > 0) {
                 rangeQuery.from(alertQuery.getFilterByStartDate());
             }
             if (alertQuery.getFilterByEndDate() > 0) {
@@ -55,7 +62,7 @@ public class AlertElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<Al
     public void withSort(AlertQuery alertQuery) {
         if (StringUtils.isNotEmpty(alertQuery.getSortField())) {
             FieldSortBuilder sortBuilder = new FieldSortBuilder(alertQuery.getSortField());
-            SortOrder order = alertQuery.isAscendingOrder()? SortOrder.ASC: SortOrder.DESC;
+            SortOrder order = alertQuery.isAscendingOrder() ? SortOrder.ASC : SortOrder.DESC;
             sortBuilder.order(order);
             super.withSort(sortBuilder);
         }
