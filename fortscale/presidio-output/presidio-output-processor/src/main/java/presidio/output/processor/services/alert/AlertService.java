@@ -1,6 +1,6 @@
 package presidio.output.processor.services.alert;
 
-import fortscale.domain.SMART.EntityEvent;
+import presidio.ade.domain.record.aggregated.SmartRecord;
 import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.users.User;
 
@@ -16,7 +16,7 @@ public interface AlertService {
      * @param smart - ADE SMART to be converted into Presidio Alert
      * @param user- user entity related to the specified alert
      */
-    Alert generateAlert(EntityEvent smart, User user);
+    Alert generateAlert(SmartRecord smart, User user);
 
     void save(List<Alert> alerts);
 }

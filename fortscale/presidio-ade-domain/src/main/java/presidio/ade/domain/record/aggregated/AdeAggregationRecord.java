@@ -17,10 +17,11 @@ import java.util.Map;
 @CompoundIndexes({@CompoundIndex(name = "context_pagination", def = "{'contextId': -1, 'startInstant': -1}")})
 public class AdeAggregationRecord extends AdeContextualAggregatedRecord {
     public static final String ADE_AGGR_EVENT_TYPE_PREFIX = "aggr_event";
+    public static final String FEATURE_VALUE_FIELD_NAME = "featureValue";
 
     @Field
     private String featureName;
-    @Field
+    @Field(FEATURE_VALUE_FIELD_NAME)
     private Double featureValue;
     @Field
     private String featureBucketConfName;
@@ -34,11 +35,12 @@ public class AdeAggregationRecord extends AdeContextualAggregatedRecord {
     }
 
     public AdeAggregationRecord(Instant startInstant, Instant endInstant, String featureName, Double featureValue, String featureBucketConfName, Map<String, String> context, AggregatedFeatureType aggregatedFeatureType) {
-        super(startInstant, endInstant, getAggregatedFeatureContextId(context), featureName);
+        super(startInstant, endInstant, getAggregatedFeatureContextId(context));
         this.featureValue = featureValue;
         this.featureBucketConfName = featureBucketConfName;
         this.context = context;
         this.aggregatedFeatureType = aggregatedFeatureType;
+        this.featureName = featureName;
     }
 
     @Override
@@ -81,5 +83,21 @@ public class AdeAggregationRecord extends AdeContextualAggregatedRecord {
      */
     public AggregatedFeatureType getAggregatedFeatureType() {
         return aggregatedFeatureType;
+    }
+
+    /**
+     * Set feature name
+     * @param featureName
+     */
+    public void setFeatureName(String featureName) {
+        this.featureName = featureName;
+    }
+
+    /**
+     *
+     * @return name of the aggregated feature. i.e. sum_of_xxx_daily or highest_xxx_score_daily
+     */
+    public String getFeatureName() {
+        return featureName;
     }
 }

@@ -43,17 +43,20 @@ public class AlertsNamingServceTest {
         }
     }
 
+
     @Test
-    public void alertNameMassChangestoCriticalEnterpriseGroups() {
+    public void classiticationsAsTowOptions() {
         List indicators = new ArrayList(Arrays.asList("Abnormal file action operation type", "Abnormal logon day time"));
-        String name = alertNamingService.alertNameFromIndictors(indicators);
-        assertEquals("Mass Changes to Critical Enterprise Groups", name);
+        List<String> names = alertNamingService.alertNamesFromIndicatorsByPriority(indicators);
+        assertEquals(2, names.size());
     }
 
     @Test
-    public void listOfAlerts() {
-        List indicators = new ArrayList(Arrays.asList("Abnormal file action operation type", "Abnormal logon day time"));
-        List names = alertNamingService.alertNamesFromIndictors(indicators);
-        assertEquals(2, names.size());
+    public void classiticationsAsOneOption() {
+        List indicators = new ArrayList(Arrays.asList("Abnormal event day time", "Abnormal Active Directory day time operation"));
+        List<String> names = alertNamingService.alertNamesFromIndicatorsByPriority(indicators);
+        assertEquals(1, names.size());
     }
 }
+
+

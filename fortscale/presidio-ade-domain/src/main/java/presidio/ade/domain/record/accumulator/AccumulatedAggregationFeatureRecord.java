@@ -1,5 +1,6 @@
 package presidio.ade.domain.record.accumulator;
 
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Field;
 import presidio.ade.domain.record.aggregated.AdeContextualAggregatedRecord;
 
@@ -18,12 +19,16 @@ public class AccumulatedAggregationFeatureRecord extends AdeContextualAggregated
     @Field
     private Map<Integer,Double> aggregatedFeatureValues;
 
+    @Transient
+    private String featureName;
+
     public AccumulatedAggregationFeatureRecord() {
         super();
     }
 
     public AccumulatedAggregationFeatureRecord(Instant startInstant, Instant endInstant, String contextId, String featureName) {
-        super(startInstant, endInstant, contextId, featureName);
+        super(startInstant, endInstant, contextId);
+        this.featureName = featureName;
         this.aggregatedFeatureValues = new HashMap();
     }
 
@@ -60,5 +65,21 @@ public class AccumulatedAggregationFeatureRecord extends AdeContextualAggregated
     @Override
     public List<String> getDataSources() {
         return null;
+    }
+
+    /**
+     * Set feature name
+     *
+     * @param featureName
+     */
+    public void setFeatureName(String featureName) {
+        this.featureName = featureName;
+    }
+
+    /**
+     * @return name of the aggregated feature. i.e. sum_of_xxx_daily or highest_xxx_score_daily
+     */
+    public String getFeatureName() {
+        return featureName;
     }
 }

@@ -30,7 +30,6 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-task-starter</artifactId>
-            <version>${spring-cloud-task-starter.version}</version>
         </dependency>
         <dependency>
             <groupId>fortscale</groupId>

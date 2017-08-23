@@ -3,7 +3,6 @@ package presidio.ade.processes.shell.config;
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.aggregation.feature.bucket.FeatureBucketReader;
 import fortscale.aggregation.feature.bucket.FeatureBucketReaderConfig;
-import fortscale.aggregation.feature.event.store.AggregatedFeatureEventsReaderService;
 import fortscale.ml.model.retriever.AbstractDataRetriever;
 import fortscale.utils.factory.AbstractServiceAutowiringFactory;
 import fortscale.utils.factory.FactoryService;
@@ -13,6 +12,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import presidio.ade.domain.store.accumulator.AggregationEventsAccumulationDataReader;
+import presidio.ade.domain.store.accumulator.AggregationEventsAccumulationDataReaderConfig;
 
 import java.util.Collection;
 
@@ -23,16 +24,15 @@ import java.util.Collection;
 @Configuration
 @Import({
 //        application-specific confs
-        AggregatedFeatureEventsReaderServiceConfig.class,
         ModelFeatureAggregationBucketConfigurationServiceConfig.class,
 //        common application confs
+        AggregationEventsAccumulationDataReaderConfig.class,
         FeatureBucketReaderConfig.class
 })
 @ComponentScan("fortscale.ml.model.retriever.factories")
 public class FeatureAggregationDataRetrieverFactoryServiceConfig {
     @Autowired
-    public AggregatedFeatureEventsReaderService aggregatedFeatureEventsReaderService;
-
+    private AggregationEventsAccumulationDataReader aggregationEventsAccumulationDataReader;
     @Autowired
     @Qualifier("modelBucketConfigService")
     //used for ContextHistogramRetriever

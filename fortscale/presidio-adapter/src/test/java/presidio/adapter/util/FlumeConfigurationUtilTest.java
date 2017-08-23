@@ -3,6 +3,7 @@ package presidio.adapter.util;
 import fortscale.common.general.Schema;
 import org.junit.*;
 import org.junit.contrib.java.lang.system.EnvironmentVariables;
+import org.junit.runner.RunWith;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -13,7 +14,8 @@ import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Properties;
-@Ignore
+
+@RunWith(value=RunOnlyOnLinux.class)
 public class FlumeConfigurationUtilTest {
 
     public static final String mockedModuleName = "adapter";

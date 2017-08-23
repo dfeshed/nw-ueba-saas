@@ -2,10 +2,13 @@ package presidio.webapp.restquery;
 
 import io.swagger.annotations.ApiModel;
 
+import java.util.List;
+
 @ApiModel("AlertQuery")
 public class RestAlertQuery {
     // filters
     private String userName;
+    private List<String> classification;
     private String severity;
     private long startDate;
     private long endDate;
@@ -24,6 +27,14 @@ public class RestAlertQuery {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public List<String> getClassification() {
+        return classification;
+    }
+
+    public void setClassification(List<String> classification) {
+        this.classification = classification;
     }
 
     public String getSeverity() {

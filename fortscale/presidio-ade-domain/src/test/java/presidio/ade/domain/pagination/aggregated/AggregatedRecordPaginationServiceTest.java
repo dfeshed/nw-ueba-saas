@@ -99,7 +99,7 @@ public class AggregatedRecordPaginationServiceTest {
 
     private void addRecordsToPaginationParamsSet(List<AdeAggregationRecord> records) {
         records.forEach(record -> {
-            AggregatedDataPaginationParam aggregatedDataPaginationParam = new AggregatedDataPaginationParam(record.getAdeEventType(),record.getFeatureName(),record.getAggregatedFeatureType());
+            AggregatedDataPaginationParam aggregatedDataPaginationParam = new AggregatedDataPaginationParam(record.getFeatureName(),record.getAggregatedFeatureType());
             aggregatedDataPaginationParamSet.add(aggregatedDataPaginationParam);
         });
     }

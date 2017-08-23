@@ -1,0 +1,26 @@
+{
+  "authenticationId": "88d50a05-ab3b-474f-b5c8-7a5280c8355a",
+  "webhookConfiguration": {
+    "connector": {
+      "connectorStrategy": "quest-webhook",
+      "dataAvailabilityStrategy": "time-heuristic",
+      "dataAvailbilityConf": [
+        {
+          "schema": "active directory",
+          "delay": 3600000
+        },
+        {
+          "schema": "file",
+          "delay": 3600000
+        }
+      ],
+      "webhookConf": {
+        "batchSize": 1000,
+        "heartbeatInterval": 1,
+        "notificationInterval": 5,
+        "notificationUrl": "/api/v1.0/webhook",
+        "subscriptionId": "<subscription Id>"
+      }
+    }
+  }
+}

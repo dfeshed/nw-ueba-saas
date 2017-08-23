@@ -13,6 +13,7 @@ import presidio.ade.domain.pagination.aggregated.AggregatedDataPaginationParam;
 import presidio.ade.domain.pagination.aggregated.AggregatedDataReader;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.record.aggregated.SmartRecord;
+import presidio.ade.domain.store.smart.SmartDataStore;
 
 import java.util.Collection;
 import java.util.Set;
@@ -38,6 +39,7 @@ public class SmartService {
 	private final AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
 	private final AggregatedDataReader aggregatedDataReader;
 	private final SmartScoringService smartScoringService;
+	private final SmartDataStore smartDataStore;
 
 	/**
 	 * C'tor.
@@ -46,17 +48,20 @@ public class SmartService {
 	 * @param aggregatedFeatureEventsConfService contains all the {@link AggregatedFeatureEventConf}s
 	 * @param aggregatedDataReader               reads from the store of {@link AdeAggregationRecord}s
 	 * @param smartScoringService                scores {@link SmartRecord}s
+	 * @param smartDataStore                     the store of {@link SmartRecord}s
 	 */
 	public SmartService(
 			SmartRecordConfService smartRecordConfService,
 			AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService,
 			AggregatedDataReader aggregatedDataReader,
-			SmartScoringService smartScoringService) {
+			SmartScoringService smartScoringService,
+			SmartDataStore smartDataStore) {
 
 		this.smartRecordConfService = smartRecordConfService;
 		this.aggregatedFeatureEventsConfService = aggregatedFeatureEventsConfService;
 		this.aggregatedDataReader = aggregatedDataReader;
 		this.smartScoringService = smartScoringService;
+		this.smartDataStore = smartDataStore;
 	}
 
 	/**
@@ -77,7 +82,7 @@ public class SmartService {
 				while (iterator.hasNext()) aggregator.updateSmartRecords(iterator.next());
 				Collection<SmartRecord> records = aggregator.getSmartRecords();
 				smartScoringService.score(records);
-				// TODO: Store scored smart records
+				smartDataStore.storeSmartRecords(smartRecordConfName, records);
 			}
 		}
 	}
@@ -86,7 +91,7 @@ public class SmartService {
 		return smartRecordConf.getAggregationRecordNames().stream()
 				.map(name -> {
 					String type = aggregatedFeatureEventsConfService.getAggregatedFeatureEventConf(name).getType();
-					return new AggregatedDataPaginationParam(null, name, fromCodeRepresentation(type));
+					return new AggregatedDataPaginationParam(name, fromCodeRepresentation(type));
 				})
 				.collect(Collectors.toSet());
 	}

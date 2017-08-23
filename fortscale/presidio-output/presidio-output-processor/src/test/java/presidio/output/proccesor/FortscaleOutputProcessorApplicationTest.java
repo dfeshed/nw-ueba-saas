@@ -22,6 +22,7 @@ import presidio.output.proccesor.spring.OutputProcessorTestConfiguration;
 import presidio.output.processor.services.OutputExecutionService;
 import presidio.output.processor.services.OutputExecutionServiceImpl;
 import presidio.output.processor.spring.OutputProcessorConfiguration;
+@Ignore
 
 import java.util.Properties;
 
