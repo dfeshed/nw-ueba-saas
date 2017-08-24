@@ -22,26 +22,58 @@
               "use-certainty-to-calculate-score": true
             },
             {
-              "type": "category-rarity-model-scorer",
-              "name": "srcMachineNameRegexCluster.userId.authentication.score",
-              "model": {
-                "name": "srcMachineNameRegexCluster.userId.authentication"
+              "type": "reduction-scorer",
+              "name": "srcMachine.userId.authentication.score",
+              "main-scorer": {
+                "type": "category-rarity-model-scorer",
+                "name": "srcMachineNameRegexCluster.userId.authentication.score",
+                "model": {
+                  "name": "srcMachineNameRegexCluster.userId.authentication"
+                },
+                "max-rare-count": 5,
+                "max-num-of-rare-features": 15
               },
-              "max-rare-count": 5,
-              "max-num-of-rare-features": 15,
-              "number-of-samples-to-influence-enough": 30,
-              "use-certainty-to-calculate-score": true
+              "reduction-scorer": {
+                "type": "score-and-certainty-multiplier-scorer",
+                "name": "userId.srcMachineId.authentication.reduction.score",
+                "base-scorer": {
+                  "type": "category-rarity-model-scorer",
+                  "name": "userId.srcMachineId.authentication.score",
+                  "model": {
+                    "name": "userId.srcMachineId.authentication"
+                  },
+                  "max-rare-count": 5,
+                  "max-num-of-rare-features": 15
+                }
+              },
+              "reduction-weight": 0.5
             },
             {
-              "type": "category-rarity-model-scorer",
-              "name": "dstMachineNameRegexCluster.userId.authentication.score",
-              "model": {
-                "name": "dstMachineNameRegexCluster.userId.authentication"
+              "type": "reduction-scorer",
+              "name": "dstMachine.userId.authentication.score",
+              "main-scorer": {
+                "type": "category-rarity-model-scorer",
+                "name": "dstMachineNameRegexCluster.userId.authentication.score",
+                "model": {
+                  "name": "dstMachineNameRegexCluster.userId.authentication"
+                },
+                "max-rare-count": 5,
+                "max-num-of-rare-features": 15
               },
-              "max-rare-count": 5,
-              "max-num-of-rare-features": 15,
-              "number-of-samples-to-influence-enough": 30,
-              "use-certainty-to-calculate-score": true
+              "reduction-scorer": {
+                "type": "score-and-certainty-multiplier-scorer",
+                "name": "userId.dstMachineId.authentication.reduction.score",
+                "base-scorer": {
+                  "type": "category-rarity-model-scorer",
+                  "name": "userId.dstMachineId.authentication.score",
+                  "model": {
+                    "name": "userId.dstMachineId.authentication"
+                  },
+                  "max-rare-count": 5,
+                  "max-num-of-rare-features": 15
+                }
+              },
+              "reduction-weight": 0.5
             }
           ]
         }

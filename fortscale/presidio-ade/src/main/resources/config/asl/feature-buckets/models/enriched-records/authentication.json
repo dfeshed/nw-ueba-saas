@@ -49,6 +49,30 @@
       ]
     },
     {
+      "name": "userIdHistogramSrcMachineIdAuthenticationDaily",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "srcMachineId"
+      ],
+      "adeEventTypes": [
+        "authentication"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "aggrFeatureConfs": [
+        {
+          "name": "userIdHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "userId"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        }
+      ]
+    },
+    {
       "name": "dstMachineNameRegexClusterHistogramUserIdAuthenticationDaily",
       "expireAfterSeconds": 31536000,
       "contextFieldNames": [
@@ -64,6 +88,30 @@
           "featureNamesMap": {
             "groupBy": [
               "dstMachineNameRegexCluster"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "userIdHistogramDstMachineIdAuthenticationDaily",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "dstMachineId"
+      ],
+      "adeEventTypes": [
+        "authentication"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "aggrFeatureConfs": [
+        {
+          "name": "userIdHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "userId"
             ]
           },
           "aggrFeatureFuncJson": {
