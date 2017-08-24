@@ -2,11 +2,9 @@ package presidio.output.processor.services.alert;
 
 import fortscale.utils.logging.Logger;
 import fortscale.utils.pagination.PageIterator;
-import net.minidev.json.JSONObject;
 import org.apache.commons.collections.CollectionUtils;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.record.aggregated.SmartRecord;
-import org.springframework.beans.factory.annotation.Autowired;
 import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.alerts.AlertEnums;
 import presidio.output.domain.records.users.User;
@@ -15,6 +13,7 @@ import presidio.output.domain.services.alerts.AlertPersistencyService;
 import java.time.temporal.ChronoField;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by efratn on 24/07/2017.
@@ -60,11 +59,7 @@ public class AlertServiceImpl implements AlertService {
         alertPersistencyService.save(alerts);
     }
 
-
-    private List<String> extractIndicatorNames(List<AdeAggregationRecord> indicators) {
-        List<String> indicatorsNames = new ArrayList<>();
-        for (AdeAggregationRecord indicator : indicators)
-            indicatorsNames.add(indicator.getFeatureName());
-        return indicatorsNames;
+    private List<String> extractIndicatorsNames(SmartRecord smart) {
+        return smart.getAggregationRecords().stream().map(AdeAggregationRecord::getFeatureName).collect(Collectors.toList());
     }
 }

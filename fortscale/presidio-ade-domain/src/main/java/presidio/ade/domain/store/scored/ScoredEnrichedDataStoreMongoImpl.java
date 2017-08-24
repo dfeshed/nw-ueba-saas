@@ -3,6 +3,7 @@ package presidio.ade.domain.store.scored;
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
 import fortscale.utils.logging.Logger;
+import fortscale.utils.mongodb.util.MongoDbBulkOpUtil;
 import fortscale.utils.time.TimeRange;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -29,10 +30,12 @@ public class ScoredEnrichedDataStoreMongoImpl implements ScoredEnrichedDataStore
 
     private final MongoTemplate mongoTemplate;
     private final AdeScoredEnrichedRecordToCollectionNameTranslator translator;
+    private final MongoDbBulkOpUtil mongoDbBulkOpUtil;
 
-    public ScoredEnrichedDataStoreMongoImpl(MongoTemplate mongoTemplate, AdeScoredEnrichedRecordToCollectionNameTranslator translator) {
+    public ScoredEnrichedDataStoreMongoImpl(MongoTemplate mongoTemplate, AdeScoredEnrichedRecordToCollectionNameTranslator translator, MongoDbBulkOpUtil mongoDbBulkOpUtil) {
         this.mongoTemplate = mongoTemplate;
         this.translator = translator;
+        this.mongoDbBulkOpUtil = mongoDbBulkOpUtil;
     }
 
     @Override
@@ -49,7 +52,9 @@ public class ScoredEnrichedDataStoreMongoImpl implements ScoredEnrichedDataStore
         }
 
         for(Map.Entry<String, List<AdeScoredEnrichedRecord>> entry: collectionNameToRecordList.entrySet()){
-            mongoTemplate.insert(entry.getValue(),entry.getKey());
+            List<AdeScoredEnrichedRecord> batchToSave = entry.getValue();
+            String collectionName = entry.getKey();
+            mongoDbBulkOpUtil.insertUnordered(batchToSave,collectionName);
         }
     }
 

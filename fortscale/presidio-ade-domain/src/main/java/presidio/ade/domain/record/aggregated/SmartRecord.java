@@ -3,6 +3,7 @@ package presidio.ade.domain.record.aggregated;
 import fortscale.domain.feature.score.FeatureScore;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.time.TimeRange;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import presidio.ade.domain.record.AdeScoredRecord;
@@ -30,6 +31,7 @@ public class SmartRecord extends AdeContextualAggregatedRecord implements AdeSco
 	@Field(SMART_VALUE_FIELD)
 	private double smartValue;
 	@Field(SMART_SCORE_FIELD)
+	@Indexed
 	private double smartScore;
 	@Field(FEATURE_SCORES_FIELD)
 	private List<FeatureScore> featureScores;

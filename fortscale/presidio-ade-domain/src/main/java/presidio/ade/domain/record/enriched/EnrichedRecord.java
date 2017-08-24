@@ -2,6 +2,7 @@ package presidio.ade.domain.record.enriched;
 
 import fortscale.domain.core.EventResult;
 import org.springframework.data.annotation.Transient;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import presidio.ade.domain.record.AdeRecord;
@@ -27,6 +28,7 @@ public abstract class EnrichedRecord extends AdeRecord {
 
 
     @Field(EVENT_ID_FIELD)
+    @Indexed
     private String eventId;
     @Field(DATA_SOURCE_FIELD)
     private String dataSource;
