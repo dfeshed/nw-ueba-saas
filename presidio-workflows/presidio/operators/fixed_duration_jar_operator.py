@@ -27,8 +27,11 @@ class FixedDurationJarOperator(SpringBootJarOperator):
     def __init__(self, fixed_duration_strategy, command, java_args={}, *args, **kwargs):
         self.interval = kwargs.get('dag').schedule_interval
         self.fixed_duration_strategy = fixed_duration_strategy
-        java_args.update({'fixed_duration_strategy': fixed_duration_strategy.total_seconds()})
+        self.add_fixed_duration_strategy(java_args)
         super(FixedDurationJarOperator, self).__init__(java_args=java_args, command=command, *args, **kwargs)
+
+    def add_fixed_duration_strategy(self, java_args):
+        java_args.update({'fixed_duration_strategy': self.fixed_duration_strategy.total_seconds()})
 
     def execute(self, context):
         """
@@ -53,9 +56,11 @@ class FixedDurationJarOperator(SpringBootJarOperator):
         start_date = floor_time(execution_date, time_delta=self.fixed_duration_strategy)
         end_date = floor_time(execution_date + self.interval,
                               time_delta=self.fixed_duration_strategy)
+        utc_start_date = convert_to_utc(start_date)
+        utc_end_date = convert_to_utc(end_date)
         java_args = {
-            'start_date': convert_to_utc(start_date),
-            'end_date': convert_to_utc(end_date)
+            'start_date': utc_start_date,
+            'end_date': utc_end_date
         }
 
         super(FixedDurationJarOperator, self).update_java_args(java_args)

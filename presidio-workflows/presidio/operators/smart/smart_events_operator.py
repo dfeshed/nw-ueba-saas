@@ -4,6 +4,10 @@ from presidio.operators.fixed_duration_jar_operator import FixedDurationJarOpera
 
 
 class SmartEventsOperator(FixedDurationJarOperator):
+
+    # todo: replace with run
+    liors_special_run_command = "process"
+
     """
     Runs the "Smart Events" task (JAR). The task:
     1. Groups together in a smart event the configured aggregation events from the time interval, per context.
@@ -14,9 +18,6 @@ class SmartEventsOperator(FixedDurationJarOperator):
     # Color configurations for the Airflow UI
     ui_color = '#8e44ad'
     ui_fgcolor = '#ffffff'
-
-    _JAR_FILE_PATH = '/home/presidio/dev-projects/presidio-core/presidio-workflows/tests/resources/jars/test-mock-project-0.0.1-SNAPSHOT.jar'
-    _MAIN_CLASS = 'com.fortscale.test.TestMockProjectApplication'
 
     @apply_defaults
     def __init__(self, fixed_duration_strategy, smart_events_conf, task_id=None, *args, **kwargs):
@@ -29,9 +30,8 @@ class SmartEventsOperator(FixedDurationJarOperator):
         :param task_id: The task ID of this operator - If None, the ID is generated automatically
         :type task_id: string
         """
-
         java_args = {
-            'smart_events_conf': smart_events_conf
+            'smart_record_conf_name': smart_events_conf
         }
 
         super(SmartEventsOperator, self).__init__(
@@ -44,3 +44,5 @@ class SmartEventsOperator(FixedDurationJarOperator):
             *args,
             **kwargs
         )
+    def add_fixed_duration_strategy(self, java_args):
+        pass
