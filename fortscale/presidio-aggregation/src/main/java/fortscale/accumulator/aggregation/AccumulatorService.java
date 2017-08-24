@@ -1,4 +1,4 @@
-package fortscale.accumulator;
+package fortscale.accumulator.aggregation;
 
 import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.time.TimeService;
