@@ -62,7 +62,7 @@ public class AccumulateSmartApplicationTest {
     private static final Instant START_DATE = TimeService.floorTime(Instant.now().minus(Duration.ofDays(DAYS_BACK_FROM)), DURATION);
     private static final Instant END_DATE = TimeService.floorTime(Instant.now().minus(Duration.ofDays(DAYS_BACK_TO)), DURATION);
 
-    public static final String EXECUTION_COMMAND = String.format("run --smart_record_conf_name %s --start_date %s --end_date %s --accumulate_duration %s ", CONFIGURATION_NAME, START_DATE.toString(), END_DATE.toString(), 86400);
+    public static final String EXECUTION_COMMAND = String.format("run --smart_record_conf_name %s --start_date %s --end_date %s --fixed_duration_strategy %s ", CONFIGURATION_NAME, START_DATE.toString(), END_DATE.toString(), 86400);
 
     @Import({AccumulateSmartApplicationConfigurationTest.class, AccumulateSmartServiceCommands.class, BootShimConfig.class
     })
