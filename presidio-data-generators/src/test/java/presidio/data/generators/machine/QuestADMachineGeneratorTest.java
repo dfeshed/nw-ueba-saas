@@ -7,13 +7,13 @@ import presidio.data.domain.MachineEntity;
 /**
  * Created by YaronDL on 8/8/2017.
  */
-public class SimpleMachineGeneratorTest {
+public class QuestADMachineGeneratorTest {
     /***
-     * Custom SimpleMachineGenerator must get username as a parameter.
+     * Custom QuestADMachineGenerator must get username as a parameter.
      */
     @Test
     public void MachineGeneratorCustomUserTest() {
-        SimpleMachineGenerator generator = new SimpleMachineGenerator();
+        QuestADMachineGenerator generator = new QuestADMachineGenerator();
 
         MachineEntity sm = generator.getNext();
         Assert.assertEquals(sm.getMachineId(), "host_1");

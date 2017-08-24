@@ -14,6 +14,7 @@ import presidio.data.generators.event.EntityEventIDFixedPrefixGenerator;
 import presidio.data.generators.event.IEventGenerator;
 import presidio.data.generators.event.OPERATION_RESULT;
 import presidio.data.generators.machine.IMachineGenerator;
+import presidio.data.generators.machine.QuestADMachineGenerator;
 import presidio.data.generators.machine.SimpleMachineGenerator;
 import presidio.data.generators.user.IUserGenerator;
 import presidio.data.generators.user.RandomAdminUserPercentageGenerator;

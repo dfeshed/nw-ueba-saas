@@ -6,10 +6,10 @@ import presidio.data.generators.common.IStringGenerator;
 import presidio.data.generators.common.RandomStringGenerator;
 import presidio.data.generators.common.StringCyclicValuesGenerator;
 
-public class SimpleMachineGenerator implements IMachineGenerator {
+public class QuestADMachineGenerator implements IMachineGenerator {
 
     private IStringGenerator machineIdGenerator;
-    private IStringGenerator machineIP;
+    private IStringGenerator machineIPGenerator;
     private IStringGenerator machineNameRegexClusterGenerator;
     private IStringGenerator machineDomainGenerator;
     private IStringGenerator osVersionGenerator;
@@ -17,11 +17,11 @@ public class SimpleMachineGenerator implements IMachineGenerator {
     private IStringGenerator origin;
     private IStringGenerator machineDomainFQDN;
 
-    public SimpleMachineGenerator()  {
+    public QuestADMachineGenerator()  {
         machineIdGenerator = new HostnameCustomListGenerator(new String[] {"host_1","host_2","host_3"});
-        machineIP = new FixedIPsGenerator();
+        machineIPGenerator = new FixedIPsGenerator();
         machineNameRegexClusterGenerator = new RandomStringGenerator(10);
-        machineDomainGenerator = new RandomStringGenerator(10);
+        machineDomainGenerator = new StringCyclicValuesGenerator("catest");
         osVersionGenerator = new StringCyclicValuesGenerator("Windows Server 2016 Datacenter");
         machineDomainDN = new StringCyclicValuesGenerator("DC=catest,DC=quest,DC=azure,DC=ca");
         origin = new StringCyclicValuesGenerator("vmMember.catest.quest.azure.ca");
@@ -76,12 +76,12 @@ public class SimpleMachineGenerator implements IMachineGenerator {
         this.origin = origin;
     }
 
-    public IStringGenerator getMachineIP() {
-        return machineIP;
+    public IStringGenerator getMachineIPGenerator() {
+        return machineIPGenerator;
     }
 
-    public void setMachineIP(IStringGenerator machineIP) {
-        this.machineIP = machineIP;
+    public void setMachineIPGenerator(IStringGenerator machineIPGenerator) {
+        this.machineIPGenerator = machineIPGenerator;
     }
 
     public IStringGenerator getMachineDomainFQDN() { return machineDomainFQDN; }
@@ -89,9 +89,8 @@ public class SimpleMachineGenerator implements IMachineGenerator {
     public void setMachineDomainFQDN(IStringGenerator machineDomainFQDN) { this.machineDomainFQDN = machineDomainFQDN; }
 
     public MachineEntity getNext(){
-        return new MachineEntity(
-                getMachineIdGenerator().getNext(),
-                getMachineIP().getNext(),
+        return new MachineEntity(getMachineIdGenerator().getNext(),
+                getMachineIPGenerator().getNext(),
                 getMachineNameRegexClusterGenerator().getNext(),
                 getMachineDomainGenerator().getNext(),
                 getMachineDomainDN().getNext(),

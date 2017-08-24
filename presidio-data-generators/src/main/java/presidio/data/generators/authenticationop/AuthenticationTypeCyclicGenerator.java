@@ -22,4 +22,7 @@ public class AuthenticationTypeCyclicGenerator extends CyclicValuesGenerator<Str
     public AuthenticationTypeCyclicGenerator(String[] customList) {
         super(customList);
     }
+    public AuthenticationTypeCyclicGenerator(String operationType) {
+        super(operationType);
+    }
 }

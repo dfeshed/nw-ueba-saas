@@ -1,5 +1,6 @@
 package presidio.data.generators.event.authentication;
 
+import presidio.data.domain.MachineEntity;
 import presidio.data.generators.FixedDataSourceGenerator;
 import presidio.data.generators.authenticationop.AuthenticationOpTypeCategoriesGenerator;
 import presidio.data.generators.authenticationop.AuthenticationTypeCyclicGenerator;
@@ -13,9 +14,10 @@ import presidio.data.domain.User;
 import presidio.data.domain.event.authentication.AuthenticationEvent;
 import presidio.data.generators.event.EntityEventIDFixedPrefixGenerator;
 import presidio.data.generators.event.IEventGenerator;
+import presidio.data.generators.event.OPERATION_RESULT;
 import presidio.data.generators.machine.FixedMachineGenerator;
 import presidio.data.generators.machine.IMachineGenerator;
-import presidio.data.generators.machine.SimpleMachineGenerator;
+import presidio.data.generators.machine.QuestADMachineGenerator;
 import presidio.data.generators.user.IUserGenerator;
 import presidio.data.generators.user.RandomUserGenerator;
 
@@ -33,8 +35,9 @@ public class AuthenticationEventsGenerator implements IEventGenerator {
     private IStringGenerator operationTypeGenerator;
     private IStringListGenerator operationTypeCategoriesGenerator;
 
-    private FixedMachineGenerator srcMachineGenerator;
-    private FixedMachineGenerator dstMachineGenerator;
+    private IMachineGenerator srcMachineGenerator;
+
+    private IMachineGenerator dstMachineGenerator;
 
     private IStringGenerator resultGenerator;
     private IStringGenerator resultCodeGenerator;
@@ -52,7 +55,9 @@ public class AuthenticationEventsGenerator implements IEventGenerator {
         operationTypeCategoriesGenerator = new AuthenticationOpTypeCategoriesGenerator();
 
         srcMachineGenerator = new FixedMachineGenerator(user.getUserId()+ "_SRC");
+
         dstMachineGenerator = new FixedMachineGenerator(user.getUserId()+ "_DST");; // need domain machine percentage generator
+
         resultGenerator = new OperationResultPercentageGenerator();                 // 100% "Success"
         resultCodeGenerator = new RandomStringGenerator();                          // TBD
         authenticationDescriptionGenerator = new AuthenticationDescriptionGenerator();
@@ -67,7 +72,7 @@ public class AuthenticationEventsGenerator implements IEventGenerator {
             Instant eventTime = getTimeGenerator().getNext();
 
             User user = getUserGenerator().getNext();
-
+            MachineEntity srcMachine = getSrcMachineGenerator().getNext();
             AuthenticationEvent ev = new AuthenticationEvent(
                     getEventIDGenerator().getNext(),
                     eventTime,
@@ -75,10 +80,12 @@ public class AuthenticationEventsGenerator implements IEventGenerator {
                     getUserGenerator().getNext(),
                     getOperationTypeGenerator().getNext(),
                     getOperationTypeCategoriesGenerator().getNext(),
-                    getSrcMachineGenerator().getNext(),
+                    srcMachine,
                     getDstMachineGenerator().getNext(),
                     getResultGenerator().getNext(),
-                    getResultCodeGenerator().getNext()
+                    getResultCodeGenerator().getNext(),
+                    getObjectDN(user.getUsername(), srcMachine.getMachineDomainDN()),
+                    getObjectCanonical(srcMachine.getDomainFQDN(), user.getUsername())
             );
             authenticationDescriptionGenerator.updateFileDescription(ev);
             evList.add(ev);
@@ -126,19 +133,19 @@ public class AuthenticationEventsGenerator implements IEventGenerator {
         this.userGenerator = userGenerator;
     }
 
-    public FixedMachineGenerator getSrcMachineGenerator() {
+    public IMachineGenerator getSrcMachineGenerator() {
         return srcMachineGenerator;
     }
 
-    public void setSrcMachineGenerator(FixedMachineGenerator srcMachineGenerator) {
+    public void setSrcMachineGenerator(IMachineGenerator srcMachineGenerator) {
         this.srcMachineGenerator = srcMachineGenerator;
     }
 
-    public FixedMachineGenerator getDstMachineGenerator() {
+    public IMachineGenerator getDstMachineGenerator() {
         return dstMachineGenerator;
     }
 
-    public void setDstMachineGenerator(FixedMachineGenerator dstMachineGenerator) {
+    public void setDstMachineGenerator(IMachineGenerator dstMachineGenerator) {
         this.dstMachineGenerator = dstMachineGenerator;
     }
 
@@ -173,4 +180,14 @@ public class AuthenticationEventsGenerator implements IEventGenerator {
     public void setAuthenticationDescriptionGenerator(IAuthenticationDescriptionGenerator authenticationDescriptionGenerator) {
         this.authenticationDescriptionGenerator = authenticationDescriptionGenerator;
     }
+
+    private String getObjectDN(String userName,String domainDN) {
+        return "CN=" + userName + ",CN=Users," + domainDN;
+    }
+
+    private String getObjectCanonical(String domainFQDN, String userName) {
+        return domainFQDN + "/Users/" + userName;
+    }
+
+
 }

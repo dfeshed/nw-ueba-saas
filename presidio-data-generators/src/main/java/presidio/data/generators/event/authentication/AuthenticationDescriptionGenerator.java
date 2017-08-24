@@ -8,7 +8,7 @@ public class AuthenticationDescriptionGenerator implements IAuthenticationDescri
 
     private String buildFileDescription(AuthenticationEvent authenticationEvent){
         String operationType = authenticationEvent.getOperationType();
-        String authenticationDescription = "User " + authenticationEvent.getUser().getUsername() +
+        String authenticationDescription = "User " + authenticationEvent.getSrcMachineEntity().getDomainFQDN().toUpperCase() + "\\" + authenticationEvent.getUser().getUsername() +
                 " " + operationType + " to computer " + authenticationEvent.getSrcMachineEntity().getMachineId();
         return authenticationDescription;
     }
