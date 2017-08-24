@@ -1,14 +1,13 @@
 from datetime import timedelta
-from airflow.operators.python_operator import ShortCircuitOperator
+
 from airflow.operators.bash_operator import BashOperator
+from airflow.operators.python_operator import ShortCircuitOperator
 
 from presidio.builders.presidio_dag_builder import PresidioDagBuilder
-
 from presidio.operators.model.smart_model_accumulate_operator import SmartModelAccumulateOperator
 from presidio.operators.model.smart_model_operator import SmartModelOperator
-from presidio.utils.services.fixed_duration_strategy import is_execution_date_valid
-
 from presidio.utils.airflow.operators.sensor.task_sensor_service import TaskSensorService
+from presidio.utils.services.fixed_duration_strategy import is_execution_date_valid, FIX_DURATION_STRATEGY_DAILY
 
 
 class SmartModelDagBuilder(PresidioDagBuilder):
@@ -55,7 +54,7 @@ class SmartModelDagBuilder(PresidioDagBuilder):
 
         #defining the smart model accumulator
         smart_model_accumulate_operator = SmartModelAccumulateOperator(
-            fixed_duration_strategy=self._fixed_duration_strategy,
+            fixed_duration_strategy=FIX_DURATION_STRATEGY_DAILY,
             command=PresidioDagBuilder.presidio_command,
             smart_events_conf=self._smart_events_conf,
             dag=smart_model_dag)
