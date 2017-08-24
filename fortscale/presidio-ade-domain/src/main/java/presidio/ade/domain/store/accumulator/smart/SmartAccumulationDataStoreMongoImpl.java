@@ -30,7 +30,7 @@ public class SmartAccumulationDataStoreMongoImpl implements SmartAccumulationDat
 
     @Override
     public void store(List<? extends AdeContextualAggregatedRecord> records, String configurationName) {
-        logger.info(String.format("Store accumulated smart records"));
+        logger.info("Store accumulated smart records");
         SmartAccumulatedRecordsMetaData metadata = new SmartAccumulatedRecordsMetaData(configurationName);
         String collectionName = getCollectionName(metadata);
         mongoDbBulkOpUtil.insertUnordered(records, collectionName);
@@ -50,7 +50,7 @@ public class SmartAccumulationDataStoreMongoImpl implements SmartAccumulationDat
                                                                                           String contextId,
                                                                                           Instant startTimeFrom,
                                                                                           Instant startTimeTo) {
-        logger.debug(String.format("getting accumulated events for smart record name=%s"), configurationName);
+        logger.debug("getting accumulated events for smart record name={}", configurationName);
 
         SmartAccumulatedRecordsMetaData metadata = new SmartAccumulatedRecordsMetaData(configurationName);
         String collectionName = getCollectionName(metadata);
@@ -65,15 +65,15 @@ public class SmartAccumulationDataStoreMongoImpl implements SmartAccumulationDat
                 mongoTemplate.find(query, AccumulatedSmartRecord.class, collectionName);
 
 
-        logger.debug(String.format("found %s accumulated events", accumulatedSmartRecords.size()));
+        logger.debug("found {} accumulated events", accumulatedSmartRecords.size());
         return accumulatedSmartRecords;
     }
 
     @Override
     public Set<String> findDistinctContextsByTimeRange(String configurationName, Instant startInstant, Instant endInstant) {
 
-        logger.debug(String.format("finding distinct contexts by configurationName=%s startTime=%s endTime=%s",
-                configurationName, startInstant, endInstant));
+        logger.debug("finding distinct contexts by configurationName={} startTime={} endTime={}",
+                configurationName, startInstant, endInstant);
 
         SmartAccumulatedRecordsMetaData metadata = new SmartAccumulatedRecordsMetaData(configurationName);
         String collectionName = getCollectionName(metadata);
@@ -86,7 +86,7 @@ public class SmartAccumulationDataStoreMongoImpl implements SmartAccumulationDat
                 .distinct(AdeContextualAggregatedRecord.CONTEXT_ID_FIELD, query.getQueryObject())
                 .stream().collect(Collectors.toSet());
 
-        logger.debug(String.format("found distinct contexts: %s", Arrays.toString(distinctContexts.toArray())));
+        logger.debug("found distinct contexts: {}", Arrays.toString(distinctContexts.toArray()));
         return distinctContexts;
     }
 
