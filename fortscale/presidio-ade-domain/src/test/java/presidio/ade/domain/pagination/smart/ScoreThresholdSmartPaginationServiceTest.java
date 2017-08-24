@@ -14,6 +14,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import presidio.ade.domain.record.aggregated.SmartRecord;
+import presidio.ade.domain.store.smart.SmartDataStore;
 import presidio.ade.domain.store.smart.SmartDataToCollectionNameTranslator;
 import presidio.ade.domain.store.smart.SmartDataReader;
 import presidio.ade.domain.store.smart.SmartDataReaderConfig;
@@ -89,5 +90,17 @@ public class ScoreThresholdSmartPaginationServiceTest {
                 Assert.assertTrue("score must be greater than 40", record.getScore() > 40);
             });
         }
+    }
+
+
+    /**
+     * Test ScoreThresholdSmartPaginationService, where no smart collection exist
+     */
+    @Test
+    public void getPageIteratorWithoutSmartCollections() {
+        mongoTemplate.getCollectionNames().forEach(collection -> mongoTemplate.dropCollection(collection));
+        TimeRange timeRange = new TimeRange(Instant.EPOCH, Instant.now());
+        PageIterator<SmartRecord> pageIterator = paginationService.getPageIterator(timeRange, 40);
+        Assert.assertFalse(pageIterator.hasNext());
     }
 }

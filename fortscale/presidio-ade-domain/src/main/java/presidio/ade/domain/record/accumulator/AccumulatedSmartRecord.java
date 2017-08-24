@@ -23,6 +23,10 @@ public class AccumulatedSmartRecord extends AdeContextualAggregatedRecord {
     @Transient
     private String featureName;
 
+    public AccumulatedSmartRecord(){
+        super();
+    }
+
     public AccumulatedSmartRecord(Instant startInstant, Instant endInstant, String contextId, String featureName) {
         super(startInstant, endInstant, contextId);
         this.featureName = featureName;

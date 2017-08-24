@@ -66,7 +66,8 @@ public class SmartAccumulatorService {
     }
 
     /**
-     * Fill the aggregatedFeatureEventsValuesMap
+     * Fill the aggregatedFeatureEventsValuesMap with aggregatedFeature
+     * If score or value
      *
      * @param adeAggregationRecord             aggregation record
      * @param aggregatedFeatureEventsValuesMap Map<featureName, Map<hour, score | featureValue>>
@@ -80,14 +81,23 @@ public class SmartAccumulatorService {
             hourToScoreMap = new HashMap<>();
         }
 
+        //create add aggregatedFeature record to map if score or value greater that 0.
         AggregatedFeatureType aggregatedFeatureType = adeAggregationRecord.getAggregatedFeatureType();
         if (aggregatedFeatureType.equals(AggregatedFeatureType.SCORE_AGGREGATION)) {
-            hourToScoreMap.put(smartHourOfInstant, adeAggregationRecord.getFeatureValue());
+            double value = adeAggregationRecord.getFeatureValue();
+            if (value > 0) {
+                hourToScoreMap.put(smartHourOfInstant, value);
+            }
         } else if (aggregatedFeatureType.equals(AggregatedFeatureType.FEATURE_AGGREGATION)) {
-            hourToScoreMap.put(smartHourOfInstant, ((ScoredFeatureAggregationRecord) adeAggregationRecord).getScore());
+            double score = ((ScoredFeatureAggregationRecord) adeAggregationRecord).getScore();
+            if (score > 0) {
+                hourToScoreMap.put(smartHourOfInstant, score);
+            }
         }
 
-        aggregatedFeatureEventsValuesMap.put(featureName, hourToScoreMap);
+        if(!hourToScoreMap.isEmpty()) {
+            aggregatedFeatureEventsValuesMap.put(featureName, hourToScoreMap);
+        }
     }
 
 

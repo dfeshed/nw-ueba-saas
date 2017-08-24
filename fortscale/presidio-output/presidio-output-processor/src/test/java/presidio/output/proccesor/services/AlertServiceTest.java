@@ -92,7 +92,7 @@ public class AlertServiceTest {
         }
 
         List<ContextIdToNumOfItems> contextIdToNumOfItems = Collections.singletonList(new ContextIdToNumOfItems(contextId, smartListSize));
-        Mockito.when(smartDataReader.aggregateContextIdToNumOfEvents(any(SmartRecordsMetadata.class))).thenReturn(contextIdToNumOfItems);
+        Mockito.when(smartDataReader.aggregateContextIdToNumOfEvents(any(SmartRecordsMetadata.class),eq(OutputExecutionServiceImpl.SMART_SCORE_THRESHOLD))).thenReturn(contextIdToNumOfItems);
         Set<String> contextIds = new HashSet<>();
         contextIds.add(contextId);
         Mockito.when(smartDataReader.readRecords(any(SmartRecordsMetadata.class), eq(contextIds), eq(0), eq(1000), eq(OutputExecutionServiceImpl.SMART_SCORE_THRESHOLD))).thenReturn(smarts);
