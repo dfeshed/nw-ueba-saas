@@ -5,6 +5,7 @@ import service from 'ember-service/inject';
 import EmberObject from 'ember-object';
 import { warn } from 'ember-debug';
 import { contextHelpIds } from 'context/config/help-ids';
+import { isEmpty } from 'ember-utils';
 
 export default Component.extend({
   layout,
@@ -82,6 +83,9 @@ export default Component.extend({
    */
   _getAllList(entity) {
     const { id: entityId, type: entityType } = entity || {};
+    if (isEmpty(entityType) || isEmpty(entityId)) {
+      return;
+    }
     this.set('createList', true);
     this.get('request').streamRequest({
       method: 'stream',
