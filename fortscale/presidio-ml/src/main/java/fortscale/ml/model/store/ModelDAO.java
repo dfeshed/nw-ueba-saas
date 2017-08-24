@@ -26,6 +26,7 @@ public class ModelDAO {
     @Indexed
     private String sessionId;
     @Field(CONTEXT_ID_FIELD)
+    @Indexed
     private String contextId;
     @Field(CREATION_TIME_FIELD)
     @CreatedDate
