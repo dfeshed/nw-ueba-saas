@@ -14,6 +14,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import presidio.ade.domain.record.aggregated.SmartRecord;
+import presidio.ade.domain.store.smart.SmartDataStore;
 import presidio.ade.domain.store.smart.SmartDataToCollectionNameTranslator;
 import presidio.ade.domain.store.smart.SmartDataReader;
 import presidio.ade.domain.store.smart.SmartDataReaderConfig;
@@ -40,6 +41,7 @@ public class ScoreThresholdSmartPaginationServiceTest {
 
     private ScoreThresholdSmartPaginationService paginationService;
 
+    @Before
     public void setup() {
         paginationService = new ScoreThresholdSmartPaginationService(smartDataReader, 3);
 
@@ -78,7 +80,6 @@ public class ScoreThresholdSmartPaginationServiceTest {
      */
     @Test
     public void getPageIterator() {
-        setup();
         TimeRange timeRange = new TimeRange(Instant.EPOCH, Instant.now());
 
         PageIterator<SmartRecord> pageIterator = paginationService.getPageIterator(timeRange, 40);
@@ -97,8 +98,8 @@ public class ScoreThresholdSmartPaginationServiceTest {
      */
     @Test
     public void getPageIteratorWithoutSmartCollections() {
+        mongoTemplate.getCollectionNames().forEach(collection -> mongoTemplate.dropCollection(collection));
         TimeRange timeRange = new TimeRange(Instant.EPOCH, Instant.now());
-        paginationService = new ScoreThresholdSmartPaginationService(smartDataReader, 3);
         PageIterator<SmartRecord> pageIterator = paginationService.getPageIterator(timeRange, 40);
         Assert.assertFalse(pageIterator.hasNext());
     }
