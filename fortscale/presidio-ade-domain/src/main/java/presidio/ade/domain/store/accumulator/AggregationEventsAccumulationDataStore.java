@@ -12,7 +12,7 @@ public interface AggregationEventsAccumulationDataStore extends AggregationEvent
      *
      * @param records         to be stored
      */
-    void store(List<? extends AccumulatedAggregationFeatureRecord> records);
+    void store(List<AccumulatedAggregationFeatureRecord> records);
 
     /**
      * cleanup store by filtering params
