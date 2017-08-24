@@ -9,8 +9,6 @@ dags:
     args:
       hourly_smart_events_confs:
       - normalized_username_hourly
-      daily_smart_events_confs:
-      - normalized_username_daily
       command: run
       data_sources:
       - AUTHENTICATION
@@ -39,8 +37,8 @@ dags:
         profile: dev
     SmartEventsOperator:
       jvm_args:
-        jar_path: ${general.deployment.bins.base_path}/test-mock-project-0.0.1-SNAPSHOT.jar
-        main_class: com.fortscale.test.TestMockProjectApplication
+        jar_path: ${general.deployment.bins.base_path}/presidio-ade-app-smart-1.0.0-SNAPSHOT.jar
+        main_class: presidio.ade.smart.SmartApplication
         xmx: 500
         xms: 70
     FeatureAggregationsOperator:
@@ -81,8 +79,8 @@ dags:
         xms: 70
     SmartModelAccumulateOperator:
       jvm_args:
-        jar_path: ${general.deployment.bins.base_path}/test-mock-project-0.0.1-SNAPSHOT.jar
-        main_class: com.fortscale.test.TestMockProjectApplication
+        jar_path: ${general.deployment.bins.base_path}/presidio-ade-app-accumulate-smart-1.0.0-SNAPSHOT.jar
+        main_class: presidio.ade.processes.shell.AccumulateSmartApplication
         xmx: 500
         xms: 70
     SmartModelOperator:

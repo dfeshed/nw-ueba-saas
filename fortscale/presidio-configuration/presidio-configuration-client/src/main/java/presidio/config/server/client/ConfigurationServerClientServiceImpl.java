@@ -12,11 +12,9 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.ByteArrayInputStream;
+import java.io.StringReader;
 import java.nio.charset.Charset;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.Properties;
 
 public class ConfigurationServerClientServiceImpl implements ConfigurationServerClientService {
 
@@ -24,6 +22,8 @@ public class ConfigurationServerClientServiceImpl implements ConfigurationServer
     private final String configServerUserName;
     private final String configServerPassword;
     private final RestTemplate restTemplate;
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     public ConfigurationServerClientServiceImpl(RestTemplate restTemplate, String configServerUri, String configServerUserName, String configServerPassword) {
         this.restTemplate = restTemplate;
@@ -57,7 +57,12 @@ public class ConfigurationServerClientServiceImpl implements ConfigurationServer
     }
 
     @Override
-    public Map<String, String> readConfigurationAsProperties(String moduleName, String profile) throws Exception {
+    public Properties readConfigurationAsProperties(String moduleName) throws Exception {
+        return readConfigurationAsProperties(moduleName, null);
+    }
+
+    @Override
+    public Properties readConfigurationAsProperties(String moduleName, String profile) throws Exception {
         String path = "/" + moduleName;
         if (profile != null && profile.length() > 0) {
             path += "-" + profile;
@@ -70,19 +75,11 @@ public class ConfigurationServerClientServiceImpl implements ConfigurationServer
         HttpHeaders headers = createBasicAuthenticationHeaders(configServerUserName, configServerPassword);
         HttpEntity<?> entity = new HttpEntity<>(headers);
 
-        List<String> properties = Arrays.asList(restTemplate.exchange(builder.toUriString(), HttpMethod.GET, entity, String.class).getBody().split("\\n"));
+        String stringOfPropertiesFile = restTemplate.exchange(builder.toUriString(), HttpMethod.GET, entity, String.class).getBody();
+        final Properties p = new Properties();
+        p.load(new StringReader(stringOfPropertiesFile));
 
-        Map<String, String> propertiesMap = new HashMap<>();
-        properties.forEach(line -> {
-            String lineAsString = line.toString();
-            String[] lineParts = lineAsString.split(":");
-            String key = lineParts[0].trim();
-            String value = lineParts[1].trim();
-            propertiesMap.put(key, value);
-        });
-        return propertiesMap;
-
-
+        return p;
     }
 
     @Override
@@ -101,7 +98,7 @@ public class ConfigurationServerClientServiceImpl implements ConfigurationServer
 
         ResponseEntity<String> responseEntity = restTemplate.exchange(builder.toUriString(), HttpMethod.GET, entity, String.class);
 
-        ObjectMapper objectMapper = new ObjectMapper();
+
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
         T response = objectMapper.readValue(responseEntity.getBody(), clazz);

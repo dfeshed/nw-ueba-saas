@@ -1,8 +1,8 @@
 package presidio.ade.processes.shell.accumulate;
 
-import fortscale.accumulator.AccumulationsCache;
-import fortscale.accumulator.Accumulator;
-import fortscale.accumulator.AccumulatorService;
+import fortscale.accumulator.aggregation.AccumulationsCache;
+import fortscale.accumulator.aggregation.Accumulator;
+import fortscale.accumulator.aggregation.AccumulatorService;
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.fixedduration.FixedDurationStrategyExecutor;

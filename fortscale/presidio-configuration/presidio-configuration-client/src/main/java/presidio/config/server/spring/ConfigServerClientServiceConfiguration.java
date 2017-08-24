@@ -6,8 +6,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.web.client.RestTemplate;
-import presidio.config.server.client.ConfigurationServerClientServiceImpl;
 import presidio.config.server.client.ConfigurationServerClientService;
+import presidio.config.server.client.ConfigurationServerClientServiceImpl;
 
 @Configuration
 @PropertySource("classpath:configServerClientBootstrap.properties")
