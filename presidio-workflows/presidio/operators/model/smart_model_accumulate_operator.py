@@ -44,9 +44,6 @@ class SmartModelAccumulateOperator(FixedDurationJarOperator):
             **kwargs
         )
 
-    def add_fixed_duration_strategy(self, java_args):
-        java_args.update({'accumulate_duration': self.fixed_duration_strategy.total_seconds()})
-
     def get_task_name(self):
         """
         :return: The task name
