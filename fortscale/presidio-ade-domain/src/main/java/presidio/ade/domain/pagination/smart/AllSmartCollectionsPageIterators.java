@@ -10,7 +10,7 @@ import java.util.Set;
 /**
  * Implements PageIterator.
  * Go over all lists of PageIterators and get the next page.
- *
+ * <p>
  * See reference for test: ScoreThresholdSmartPaginationServiceTest
  */
 public class AllSmartCollectionsPageIterators implements PageIterator<SmartRecord> {
@@ -24,15 +24,20 @@ public class AllSmartCollectionsPageIterators implements PageIterator<SmartRecor
     /**
      * @param pageIteratorList smart pageIterator
      */
-    public AllSmartCollectionsPageIterators(List<PageIterator<SmartRecord>>  pageIteratorList) {
+    public AllSmartCollectionsPageIterators(List<PageIterator<SmartRecord>> pageIteratorList) {
         this.pageIteratorList = pageIteratorList;
-        this.currentPageIteratorIndex = 1;
-        this.pageIterator = pageIteratorList.get(currentPageIteratorIndex - 1);
+
+        //initialize pageIterator, if pageIteratorList is not empty
+        if (pageIteratorList.size() > 0) {
+            this.currentPageIteratorIndex = 1;
+            this.pageIterator = pageIteratorList.get(currentPageIteratorIndex - 1);
+        }
     }
 
     @Override
     public boolean hasNext() {
-        return this.pageIterator.hasNext() || currentPageIteratorIndex < pageIteratorList.size();
+        return pageIteratorList.size() > 0 &&
+                (this.pageIterator.hasNext() || currentPageIteratorIndex < pageIteratorList.size());
     }
 
     /**

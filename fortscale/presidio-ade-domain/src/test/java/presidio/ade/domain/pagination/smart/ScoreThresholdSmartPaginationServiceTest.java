@@ -40,7 +40,6 @@ public class ScoreThresholdSmartPaginationServiceTest {
 
     private ScoreThresholdSmartPaginationService paginationService;
 
-    @Before
     public void setup() {
         paginationService = new ScoreThresholdSmartPaginationService(smartDataReader, 3);
 
@@ -79,6 +78,7 @@ public class ScoreThresholdSmartPaginationServiceTest {
      */
     @Test
     public void getPageIterator() {
+        setup();
         TimeRange timeRange = new TimeRange(Instant.EPOCH, Instant.now());
 
         PageIterator<SmartRecord> pageIterator = paginationService.getPageIterator(timeRange, 40);
@@ -89,5 +89,17 @@ public class ScoreThresholdSmartPaginationServiceTest {
                 Assert.assertTrue("score must be greater than 40", record.getScore() > 40);
             });
         }
+    }
+
+
+    /**
+     * Test ScoreThresholdSmartPaginationService, where no smart collection exist
+     */
+    @Test
+    public void getPageIteratorWithoutSmartCollections() {
+        TimeRange timeRange = new TimeRange(Instant.EPOCH, Instant.now());
+        paginationService = new ScoreThresholdSmartPaginationService(smartDataReader, 3);
+        PageIterator<SmartRecord> pageIterator = paginationService.getPageIterator(timeRange, 40);
+        Assert.assertFalse(pageIterator.hasNext());
     }
 }
