@@ -42,7 +42,7 @@ public class AlertServiceImpl implements AlertService {
         }
 
         String id = smart.getId();
-        List<String> classification = alertNamingService.alertNamesFromIndicatorsByPriority(extractIndicatorNames(smart.getAggregationRecords()));
+        List<String> classification = alertNamingService.alertNamesFromIndicatorsByPriority(extractIndicatorsNames(smart));
         String userName = smart.getContextId();
         AlertEnums.AlertType type = AlertEnums.AlertType.GLOBAL; //TODO change this to "AlertClassification"
         long startDate = smart.getStartInstant().getLong(ChronoField.INSTANT_SECONDS);
