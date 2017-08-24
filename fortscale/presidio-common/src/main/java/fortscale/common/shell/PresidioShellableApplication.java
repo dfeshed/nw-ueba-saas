@@ -13,6 +13,7 @@ import org.springframework.shell.core.ExitShellRequest;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Used for running spring boot application with spring shell operation support
@@ -31,8 +32,10 @@ public class PresidioShellableApplication {
      * @param args               the input arguments
      */
     public static void run(List<Class> configurationClass, String[] args) {
-        logger.debug("Starting {} component ",configurationClass.getClass().getName());
-
+        if(logger.isDebugEnabled()) {
+            String configurationClasses = configurationClass.stream().map(Class::getSimpleName).collect(Collectors.joining(","));
+            logger.debug("Starting {} component ", configurationClasses);
+        }
         CommandLineArgsHolder.args = args;
 
         //Required beans for the shell
