@@ -72,6 +72,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
 
                 User userEntity = userService.createUserEntity(userId);
                 Alert alertEntity = alertService.generateAlert(smart, userEntity);
+                userEntity.addAlertClassifications(alertEntity.getClassification());
 
                 if (alertEntity != null)
                     alerts.add(alertEntity);

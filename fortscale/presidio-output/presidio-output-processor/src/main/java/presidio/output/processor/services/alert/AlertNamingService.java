@@ -14,7 +14,7 @@ public class AlertNamingService {
 
     private final String COMA = ",";
     private final String LOWER_LINE = "_";
-    private final String SPACE = " ";
+    private final String SPACE = "";
 
     private Map<String, AlertPriority> indicatorToAlert;
 
@@ -59,7 +59,7 @@ public class AlertNamingService {
             remove = 0;
             for (String indicator : indicators) {
                 alertPriority = indicatorToAlert.get(indicator);
-                if (alertPriority.getPriority() < priority) {
+                if (alertPriority!=null && alertPriority.getPriority() < priority) {
                     priority = alertPriority.getPriority();
                     alertName = alertPriority.getName();
                     remove = place;

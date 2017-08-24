@@ -45,7 +45,7 @@ public class AdeManagerSdkImpl implements AdeManagerSdk {
 
     public AdeManagerSdkImpl(EnrichedDataStore enrichedDataStore, SmartDataReader smartRecordDataReader, ScoredEnrichedDataStore scoredEnrichedDataStore, AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService, FeatureBucketReader featureBucketReader, AggregationEventsAccumulationDataReader aggregationEventsAccumulationDataReader) {
         this.enrichedDataStore = enrichedDataStore;
-        this.smartDataReader = smartDataReader;
+        this.smartDataReader = smartRecordDataReader;
         this.scoredEnrichedDataStore = scoredEnrichedDataStore;
         this.aggregatedFeatureEventsConfService = aggregatedFeatureEventsConfService;
         this.featureBucketReader = featureBucketReader;
