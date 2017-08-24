@@ -10,9 +10,9 @@ import java.util.Map;
  * A record reader for {@link AdeRecord}s.
  *
  */
-public class AdeAggregationRecordReader extends AdeRecordReader {
+public class AdeAggregationReader extends AdeRecordReader {
 
-	private static final String CONTEXT_FIELD = "context";
+	private static final String CONTEXT_FIELD = "context.";
 
 	/**
 	 * C'tor.
@@ -20,7 +20,7 @@ public class AdeAggregationRecordReader extends AdeRecordReader {
 	 * @param adeAggregationRecord          the record from which values are extracted
 	 * @param transformations    a map containing the transformations that are used when fields are missing
 	 */
-	public AdeAggregationRecordReader(
+	public AdeAggregationReader(
 			@NotNull AdeAggregationRecord adeAggregationRecord,
 			@NotNull Map<String, Transformation<?>> transformations) {
 
@@ -34,7 +34,7 @@ public class AdeAggregationRecordReader extends AdeRecordReader {
 	 * @return context value
 	 */
 	public String getContext(String contextFieldName){
-		return get(CONTEXT_FIELD + "." + contextFieldName, String.class);
+		return get(CONTEXT_FIELD + contextFieldName, String.class);
 	}
 
 }

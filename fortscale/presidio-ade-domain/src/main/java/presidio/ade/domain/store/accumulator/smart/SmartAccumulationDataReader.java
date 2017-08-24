@@ -4,7 +4,6 @@ package presidio.ade.domain.store.accumulator.smart;
 import presidio.ade.domain.record.accumulator.AccumulatedSmartRecord;
 
 import java.time.Instant;
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 

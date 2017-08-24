@@ -1,7 +1,7 @@
 package presidio.ade.processes.shell.config;
 
-import fortscale.accumulator.AccumulationsCache;
-import fortscale.accumulator.AccumulationsCacheConfig;
+import fortscale.accumulator.aggregation.AccumulationsCache;
+import fortscale.accumulator.aggregation.AccumulationsCacheConfig;
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.utils.monitoring.stats.config.NullStatsServiceConfig;
 import org.springframework.beans.factory.annotation.Autowired;

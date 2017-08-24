@@ -64,8 +64,8 @@ public class AccumulateAggregationsApplicationTest extends EnrichedFileSourceBas
     @Override
     protected void assertSanityTest() {
 
-        String openFileCollectionName = "accm_numberOfSuccessfulFileActionUserIdFileHourly";
-        String failedOpenFileCollectionName = "accm_numberOfFailedFileActionUserIdFileHourly";
+        String openFileCollectionName = "accm_numberOfSuccessfulFileActionsUserIdFileHourly";
+        String failedOpenFileCollectionName = "accm_numberOfFailedFileActionsUserIdFileHourly";
 
         List<AccumulatedAggregationFeatureRecord> accumulatedRecords = mongoTemplate.findAll(AccumulatedAggregationFeatureRecord.class, openFileCollectionName);
 

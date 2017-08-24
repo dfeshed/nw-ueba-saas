@@ -12,7 +12,7 @@ import java.util.Map;
  *
  * Created by Lior Govrin on 19/06/2017.
  */
-public class AdeAggregationRecordReaderFactory implements RecordReaderFactory {
+public class AdeAggregationReaderFactory implements RecordReaderFactory {
 	/**
 	 * @see RecordReaderFactory#getRecordClass()
 	 */
@@ -26,6 +26,6 @@ public class AdeAggregationRecordReaderFactory implements RecordReaderFactory {
 	 */
 	@Override
 	public RecordReader getRecordReader(Object record, Map<String, Transformation<?>> transformations) {
-		return new AdeAggregationRecordReader((AdeAggregationRecord)record, transformations);
+		return new AdeAggregationReader((AdeAggregationRecord)record, transformations);
 	}
 }

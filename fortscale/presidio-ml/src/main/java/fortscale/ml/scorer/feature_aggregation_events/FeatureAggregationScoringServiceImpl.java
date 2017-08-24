@@ -4,7 +4,7 @@ import fortscale.domain.feature.score.FeatureScore;
 import fortscale.ml.scorer.ScoringService;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.recordreader.RecordReaderFactoryService;
-import presidio.ade.domain.record.AdeAggregationRecordReader;
+import presidio.ade.domain.record.AdeAggregationReader;
 import presidio.ade.domain.record.AdeRecordReader;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.record.aggregated.ScoredFeatureAggregationRecord;
@@ -38,7 +38,7 @@ public class FeatureAggregationScoringServiceImpl implements FeatureAggregationS
         }
 
         for (AdeAggregationRecord featureAdeAggrRecord : featureAdeAggrRecords) {
-            AdeRecordReader adeRecordReader = (AdeAggregationRecordReader) recordReaderFactoryService.getRecordReader(featureAdeAggrRecord);
+            AdeRecordReader adeRecordReader = (AdeAggregationReader) recordReaderFactoryService.getRecordReader(featureAdeAggrRecord);
             List<FeatureScore> featureScoreList = scoringService.score(adeRecordReader);
             scoredFeatureAggregatedRecordBuilder.fill(scoredFeatureAggregationRecords, featureAdeAggrRecord, featureScoreList);
         }

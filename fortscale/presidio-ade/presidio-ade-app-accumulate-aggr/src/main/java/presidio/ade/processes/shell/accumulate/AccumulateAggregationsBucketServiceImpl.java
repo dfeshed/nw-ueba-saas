@@ -1,6 +1,6 @@
 package presidio.ade.processes.shell.accumulate;
 
-import fortscale.accumulator.Accumulator;
+import fortscale.accumulator.aggregation.Accumulator;
 import fortscale.aggregation.creator.AggregationRecordsCreator;
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.aggregation.feature.bucket.FeatureBucket;
@@ -14,13 +14,11 @@ import fortscale.utils.time.TimeRange;
 import fortscale.utils.time.TimeService;
 import org.apache.commons.lang3.StringUtils;
 import presidio.ade.domain.record.AdeRecord;
-import presidio.ade.domain.record.accumulator.AccumulatedAggregationFeatureRecord;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
 
 import java.time.Instant;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static java.util.Collections.reverseOrder;
 
