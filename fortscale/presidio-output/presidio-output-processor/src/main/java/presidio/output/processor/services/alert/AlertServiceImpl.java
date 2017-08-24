@@ -3,7 +3,6 @@ package presidio.output.processor.services.alert;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.pagination.PageIterator;
 import org.apache.commons.collections.CollectionUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.record.aggregated.SmartRecord;
 import presidio.output.domain.records.alerts.Alert;
@@ -22,9 +21,6 @@ public class AlertServiceImpl implements AlertService {
 
     private static final Logger logger = Logger.getLogger(AlertServiceImpl.class);
 
-    private final String AGGREGATED_FEATURE_NAME = "aggregated_feature_name";
-
-    @Autowired
     private AlertPersistencyService alertPersistencyService;
 
     private AlertEnumsSeverityService alertEnumsSeverityService;
@@ -44,7 +40,7 @@ public class AlertServiceImpl implements AlertService {
         while (smartPageIterator.hasNext()) {
             List<SmartRecord> smarts = smartPageIterator.next();
 
-            smarts.stream().forEach(smart -> {
+            smarts.forEach(smart -> {
                 Alert alert = convertSmartToAlert(smart);
                 if (alert != null)
                     alerts.add(alert);
