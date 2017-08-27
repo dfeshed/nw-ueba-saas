@@ -2,8 +2,6 @@ package presidio.ade.sdk.aggregation_records;
 
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
-import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfUtilService;
-import fortscale.aggregation.feature.event.config.AggregatedFeatureEventsConfUtilServiceConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,7 +13,7 @@ import org.springframework.context.annotation.Import;
  * Created by barak_schuster on 15/08/2017.
  */
 @Configuration
-@Import({AggregatedFeatureEventsConfUtilServiceConfig.class, AdeManagerSdkBucketConfigurationServiceConfig.class})
+@Import(AdeManagerSdkBucketConfigurationServiceConfig.class)
 public class AggregatedFeatureEventConfServiceConfig {
     @Value("${fortscale.ademanager.aggregation.feature.event.conf.json.file.name:classpath:config/asl/aggregation-records/**/*.json}")
     private String aggregatedFeatureEventsBaseConfigurationPath;
@@ -27,8 +25,6 @@ public class AggregatedFeatureEventConfServiceConfig {
     @Autowired
     @Qualifier("adeManagerSdkBucketConfigurationService")
     private BucketConfigurationService bucketConfigurationService;
-    @Autowired
-    private AggregatedFeatureEventsConfUtilService aggregatedFeatureEventsConfUtilService;
 
     @Bean
     public AggregatedFeatureEventsConfService adeManagerSdkAggregatedFeatureEventsConfService() {
@@ -36,7 +32,6 @@ public class AggregatedFeatureEventConfServiceConfig {
                 aggregatedFeatureEventsBaseConfigurationPath,
                 aggregatedFeatureEventsOverridingConfigurationPath,
                 aggregatedFeatureEventsAdditionalConfigurationPath,
-                bucketConfigurationService,
-                aggregatedFeatureEventsConfUtilService);
+                bucketConfigurationService);
     }
 }
