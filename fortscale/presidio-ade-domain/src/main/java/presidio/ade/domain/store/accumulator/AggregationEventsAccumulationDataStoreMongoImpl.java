@@ -2,6 +2,7 @@ package presidio.ade.domain.store.accumulator;
 
 import fortscale.utils.logging.Logger;
 import fortscale.utils.mongodb.util.MongoDbBulkOpUtil;
+import fortscale.utils.time.TimeRange;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -34,15 +35,15 @@ public class AggregationEventsAccumulationDataStoreMongoImpl implements Aggregat
     }
 
     @Override
-    public void store(List<? extends AccumulatedAggregationFeatureRecord> records) {
-        Map<String, ? extends List<? extends AccumulatedAggregationFeatureRecord>> featureToAggrList = records.stream().collect(Collectors.groupingBy(AccumulatedAggregationFeatureRecord::getFeatureName));
+    public void store(List<AccumulatedAggregationFeatureRecord> records) {
+        Map<String, List<AccumulatedAggregationFeatureRecord>> featureToAggrList = records.stream().collect(Collectors.groupingBy(AccumulatedAggregationFeatureRecord::getFeatureName));
 
         featureToAggrList.keySet().forEach(
                 feature ->
                 {
                     AccumulatedRecordsMetaData metadata = new AccumulatedRecordsMetaData(feature);
                     String collectionName = getCollectionName(metadata);
-                    List<? extends AccumulatedAggregationFeatureRecord> aggrRecords = featureToAggrList.get(feature);
+                    List<AccumulatedAggregationFeatureRecord> aggrRecords = featureToAggrList.get(feature);
                     mongoDbBulkOpUtil.insertUnordered(aggrRecords, collectionName);
                 }
         );
@@ -54,15 +55,14 @@ public class AggregationEventsAccumulationDataStoreMongoImpl implements Aggregat
 
     @Override
     public Set<String> findDistinctAcmContextsByTimeRange(
-            String aggregatedFeatureName, Date startTime, Date endTime) {
+            String aggregatedFeatureName, TimeRange timeRange) {
 
 
         AccumulatedRecordsMetaData metadata = new AccumulatedRecordsMetaData(aggregatedFeatureName);
         String collectionName = getCollectionName(metadata);
 
-        Criteria startTimeCriteria = Criteria.where(AdeRecord.START_INSTANT_FIELD).gte(startTime);
-        Criteria endTimeCriteria = Criteria.where(AdeContextualAggregatedRecord.END_INSTANT_FIELD).lte(endTime);
-        Query query = new Query(startTimeCriteria).addCriteria(endTimeCriteria);
+        Criteria startTimeCriteria = Criteria.where(AdeRecord.START_INSTANT_FIELD).gte(Date.from(timeRange.getStart())).lt(Date.from(timeRange.getEnd()));
+        Query query = new Query(startTimeCriteria);
         Set<String> distinctContexts = (Set<String>) mongoTemplate.getCollection(collectionName).distinct(AdeContextualAggregatedRecord.CONTEXT_ID_FIELD, query.getQueryObject()).stream().collect(Collectors.toSet());
 
         return distinctContexts;

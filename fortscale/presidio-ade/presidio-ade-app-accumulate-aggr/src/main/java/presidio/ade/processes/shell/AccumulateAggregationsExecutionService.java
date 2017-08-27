@@ -1,6 +1,6 @@
 package presidio.ade.processes.shell;
 
-import fortscale.accumulator.AccumulationsCache;
+import fortscale.accumulator.aggregation.AccumulationsCache;
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.common.general.Schema;
 import fortscale.utils.fixedduration.FixedDurationStrategy;

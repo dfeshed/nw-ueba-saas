@@ -1,13 +1,10 @@
-from datetime import timedelta
-
 from airflow import DAG
 from airflow.operators.python_operator import ShortCircuitOperator
 from airflow.operators.subdag_operator import SubDagOperator
-from airflow.operators.dummy_operator import DummyOperator
 
 from presidio.builders.ade.aggregation.aggregations_dag_builder import AggregationsDagBuilder
-from presidio.builders.ade.model.raw_model_dag_builder import RawModelDagBuilder
 from presidio.builders.ade.model.aggr_model_dag_builder import AggrModelDagBuilder
+from presidio.builders.ade.model.raw_model_dag_builder import RawModelDagBuilder
 from presidio.builders.ade.model.smart_model_dag_builder import SmartModelDagBuilder
 from presidio.builders.presidio_dag_builder import PresidioDagBuilder
 from presidio.operators.smart.smart_events_operator import SmartEventsOperator
@@ -110,7 +107,7 @@ class AnomalyDetectionEngineDagBuilder(PresidioDagBuilder):
         for smart_events_conf in smart_events_confs:
             # Create the smart events operator for the configuration
             smart_events_operator = SmartEventsOperator(
-                command=PresidioDagBuilder.presidio_command,
+                command=SmartEventsOperator.liors_special_run_command,
                 fixed_duration_strategy=fixed_duration_strategy,
                 smart_events_conf=smart_events_conf,
                 dag=anomaly_detection_engine_dag

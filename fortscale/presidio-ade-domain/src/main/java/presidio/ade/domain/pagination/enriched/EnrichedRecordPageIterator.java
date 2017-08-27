@@ -1,4 +1,4 @@
-package presidio.ade.domain.pagination.impl;
+package presidio.ade.domain.pagination.enriched;
 
 import fortscale.utils.pagination.PageIterator;
 import fortscale.utils.time.TimeRange;

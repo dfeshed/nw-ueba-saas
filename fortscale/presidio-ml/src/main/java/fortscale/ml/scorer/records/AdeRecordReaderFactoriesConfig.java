@@ -2,7 +2,7 @@ package fortscale.ml.scorer.records;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import presidio.ade.domain.record.AdeAggregationRecordReaderFactory;
+import presidio.ade.domain.record.AdeAggregationReaderFactory;
 import presidio.ade.domain.record.AdeRecordReaderFactory;
 import presidio.ade.domain.record.AdeScoredEnrichedRecordReaderFactory;
 
@@ -20,8 +20,8 @@ public class AdeRecordReaderFactoriesConfig {
     }
 
     @Bean
-    public AdeAggregationRecordReaderFactory adeAggregationRecordReaderFactory() {
-        return new AdeAggregationRecordReaderFactory();
+    public AdeAggregationReaderFactory adeAggregationReaderFactory() {
+        return new AdeAggregationReaderFactory();
     }
 
     @Bean

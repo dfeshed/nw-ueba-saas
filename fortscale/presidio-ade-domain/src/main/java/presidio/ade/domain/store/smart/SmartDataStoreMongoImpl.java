@@ -44,7 +44,7 @@ public class SmartDataStoreMongoImpl implements SmartDataStore {
     }
 
     @Override
-    public List<ContextIdToNumOfItems> aggregateContextIdToNumOfEvents(SmartRecordsMetadata smartRecordsMetadata) {
+    public List<ContextIdToNumOfItems> aggregateContextIdToNumOfEvents(SmartRecordsMetadata smartRecordsMetadata, int scoreThreshold) {
 
         Instant startDate = smartRecordsMetadata.getStartInstant();
         Instant endDate = smartRecordsMetadata.getEndInstant();
@@ -54,6 +54,7 @@ public class SmartDataStoreMongoImpl implements SmartDataStore {
         //Create Aggregation on context ids
         Aggregation agg = newAggregation(
                 match(where(AdeRecord.START_INSTANT_FIELD).gte(Date.from(startDate)).lt(Date.from(endDate))),
+                match(where(SmartRecord.SMART_SCORE_FIELD).gte(scoreThreshold)),
                 Aggregation.group(AdeContextualAggregatedRecord.CONTEXT_ID_FIELD).count().as(ContextIdToNumOfItems.TOTAL_NUM_OF_ITEMS_FIELD),
                 Aggregation.project(ContextIdToNumOfItems.TOTAL_NUM_OF_ITEMS_FIELD).and("_id").as(ContextIdToNumOfItems.CONTEXT_ID_FIELD).andExclude("_id")
         );

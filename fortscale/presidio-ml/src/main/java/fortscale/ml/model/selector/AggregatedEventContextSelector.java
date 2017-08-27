@@ -28,8 +28,7 @@ public class AggregatedEventContextSelector implements IContextSelector {
 	public Set<String> getContexts(TimeRange timeRange) {
 		return aggregationEventsAccumulationDataReader.findDistinctAcmContextsByTimeRange(
 				aggregatedFeatureEventConf.getName(),
-				Date.from(timeRange.getStart()),
-				Date.from(timeRange.getEnd()));
+				timeRange);
 	}
 
 	private void validate(AggregatedEventContextSelectorConf conf) {

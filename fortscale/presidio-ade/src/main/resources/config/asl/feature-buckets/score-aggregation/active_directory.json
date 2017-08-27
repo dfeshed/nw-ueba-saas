@@ -49,6 +49,30 @@
       ]
     },
     {
+      "name": "nonAdminPasswordChangedScoreUserIdActiveDirectoryHourly",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.active_directory.nonAdminPasswordChanged.userId.activeDirectory.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "nonAdminPasswordChangedScore",
+          "featureNamesMap": {
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
+        }
+      ]
+    },
+    {
       "name": "userAccountEnabledScoreUserIdActiveDirectoryHourly",
       "expireAfterSeconds": 31536000,
       "contextFieldNames": [
@@ -205,31 +229,6 @@
       "aggrFeatureConfs": [
         {
           "name": "passwordChangedByNonOwnerScore",
-          "featureNamesMap": {
-            "maximize": [
-              "score"
-            ]
-          },
-          "aggrFeatureFuncJson": {
-            "type": "aggr_feature_feature_to_max_map_func"
-          }
-        }
-      ]
-    },
-
-    {
-      "name": "passwordChangedScoreUserIdActiveDirectoryHourly",
-      "expireAfterSeconds": 31536000,
-      "contextFieldNames": [
-        "userId"
-      ],
-      "adeEventTypes": [
-        "scored_enriched.active_directory.passwordChanged.userId.activeDirectory.score"
-      ],
-      "strategyName": "fixed_duration_hourly",
-      "aggrFeatureConfs": [
-        {
-          "name": "passwordChangedScore",
           "featureNamesMap": {
             "maximize": [
               "score"

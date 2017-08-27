@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonSubTypes({
+		@Type(value = GaussianPriorModel.class, name = "gaussian-prior-model"),
 		@Type(value = CategoryRarityModel.class, name = "category-rarity-model"),
 		@Type(value = ContinuousDataModel.class, name = "continuous-data-model"),
 		@Type(value = TimeModel.class, name = "time-model"),
