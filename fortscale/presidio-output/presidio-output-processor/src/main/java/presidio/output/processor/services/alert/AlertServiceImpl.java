@@ -1,8 +1,6 @@
 package presidio.output.processor.services.alert;
 
 import fortscale.utils.logging.Logger;
-import fortscale.utils.pagination.PageIterator;
-import org.apache.commons.collections.CollectionUtils;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.record.aggregated.SmartRecord;
 import presidio.output.domain.records.alerts.Alert;
@@ -11,7 +9,6 @@ import presidio.output.domain.records.users.User;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 
 import java.time.temporal.ChronoField;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,12 +23,12 @@ public class AlertServiceImpl implements AlertService {
     private final AlertPersistencyService alertPersistencyService;
 
 
-    private AlertNamingService alertNamingService;
+    private AlertClassificationServiceImpl alertClassificationService;
 
-    public AlertServiceImpl(AlertPersistencyService alertPersistencyService, AlertEnumsSeverityService alertEnumsSeverityService, AlertNamingService alertNamingService) {
+    public AlertServiceImpl(AlertPersistencyService alertPersistencyService, AlertEnumsSeverityService alertEnumsSeverityService, AlertClassificationServiceImpl alertClassificationService) {
         this.alertPersistencyService = alertPersistencyService;
         this.alertEnumsSeverityService = alertEnumsSeverityService;
-        this.alertNamingService = alertNamingService;
+        this.alertClassificationService = alertClassificationService;
     }
 
     @Override
@@ -41,17 +38,15 @@ public class AlertServiceImpl implements AlertService {
             return null;
         }
 
-        String id = smart.getId();
-        List<String> classification = alertNamingService.alertNamesFromIndicatorsByPriority(extractIndicatorsNames(smart));
+        List<String> classification = alertClassificationService.getAlertClassificationsFromIndicatorsByPriority(extractIndicatorsNames(smart));
         String userName = smart.getContextId();
-        AlertEnums.AlertType type = AlertEnums.AlertType.GLOBAL; //TODO change this to "AlertClassification"
         long startDate = smart.getStartInstant().getLong(ChronoField.INSTANT_SECONDS);
         long endDate = smart.getEndInstant().getLong(ChronoField.INSTANT_SECONDS);
         int indicatorsNum = smart.getAggregationRecords().size();
         //TODO- on the new ADE SMART POJO there should be a dedicated field for Daily/Hourly
         AlertEnums.AlertTimeframe timeframe = AlertEnums.AlertTimeframe.DAILY;
         AlertEnums.AlertSeverity severity = alertEnumsSeverityService.severity(score);
-        return new Alert(user.getUserId(), classification, userName, type, startDate, endDate, score, indicatorsNum, timeframe, severity);
+        return new Alert(user.getUserId(), classification, userName, startDate, endDate, score, indicatorsNum, timeframe, severity);
     }
 
     @Override

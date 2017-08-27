@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
-import presidio.output.processor.services.alert.AlertNamingService;
+import presidio.output.processor.services.alert.AlertClassificationServiceImpl;
 import presidio.output.processor.spring.AlertNamingConfig;
 
 import java.util.ArrayList;
@@ -28,7 +28,7 @@ public class AlertsNamingServceTest {
 
 
     @Autowired
-    private AlertNamingService alertNamingService;
+    private AlertClassificationServiceImpl alertClassificationService;
 
     @Configuration
     @EnableSpringConfigured
@@ -47,14 +47,14 @@ public class AlertsNamingServceTest {
     @Test
     public void classiticationsAsTowOptions() {
         List indicators = new ArrayList(Arrays.asList("Abnormal file action operation type", "Abnormal logon day time"));
-        List<String> names = alertNamingService.alertNamesFromIndicatorsByPriority(indicators);
+        List<String> names = alertClassificationService.getAlertClassificationsFromIndicatorsByPriority(indicators);
         assertEquals(2, names.size());
     }
 
     @Test
     public void classiticationsAsOneOption() {
         List indicators = new ArrayList(Arrays.asList("Abnormal event day time", "Abnormal Active Directory day time operation"));
-        List<String> names = alertNamingService.alertNamesFromIndicatorsByPriority(indicators);
+        List<String> names = alertClassificationService.getAlertClassificationsFromIndicatorsByPriority(indicators);
         assertEquals(1, names.size());
     }
 }

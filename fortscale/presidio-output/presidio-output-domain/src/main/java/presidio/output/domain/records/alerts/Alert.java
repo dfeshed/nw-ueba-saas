@@ -16,9 +16,8 @@ public class Alert extends AbstractElasticDocument {
     public static final String ALERT_TYPE = "alert";
 
     // field names
-    public static final String CLASSIFICATION = "classification";
+    public static final String CLASSIFICATIONS = "classifications";
     public static final String USER_NAME = "userName";
-    public static final String TYPE = "alertType";
     public static final String START_DATE = "startDate";
     public static final String END_DATE = "endDate";
     public static final String SCORE = "score";
@@ -28,8 +27,8 @@ public class Alert extends AbstractElasticDocument {
     public static final String USER_ID = "userId";
 
     @Field(type = FieldType.String, store = true)
-    @JsonProperty(CLASSIFICATION)
-    private List<String> classification;
+    @JsonProperty(CLASSIFICATIONS)
+    private List<String> classifications;
 
     @Field(type = FieldType.String, store = true)
     @JsonProperty(USER_NAME)
@@ -38,10 +37,6 @@ public class Alert extends AbstractElasticDocument {
     @Field(type = FieldType.String, store = true)
     @JsonProperty(USER_ID)
     private String userId;
-
-    @Field(type = FieldType.String, store = true)
-    @JsonProperty(TYPE)
-    private AlertEnums.AlertType alertType;
 
     @Field(type = FieldType.Long, store = true)
     @JsonProperty(START_DATE)
@@ -73,12 +68,11 @@ public class Alert extends AbstractElasticDocument {
         // empty const for JSON deserialization
     }
 
-    public Alert(String userId, List<String> classification, String userName, AlertEnums.AlertType type, long startDate, long endDate, double score, int indicatorsNum, AlertEnums.AlertTimeframe timeframe, AlertEnums.AlertSeverity severity) {
+    public Alert(String userId, List<String> classifications, String userName, long startDate, long endDate, double score, int indicatorsNum, AlertEnums.AlertTimeframe timeframe, AlertEnums.AlertSeverity severity) {
         super();
-        this.classification = classification;
+        this.classifications = classifications;
         this.userId = userId;
         this.userName = userName;
-        this.alertType = type;
         this.startDate = startDate;
         this.endDate = endDate;
         this.score = score;
@@ -95,12 +89,12 @@ public class Alert extends AbstractElasticDocument {
         this.userId = userId;
     }
 
-    public List<String> getClassification() {
-        return classification;
+    public List<String> getClassifications() {
+        return classifications;
     }
 
-    public void setClassification(List<String> classification) {
-        this.classification = classification;
+    public void setClassifications(List<String> classifications) {
+        this.classifications = classifications;
     }
 
     public String getUserName() {
@@ -111,13 +105,6 @@ public class Alert extends AbstractElasticDocument {
         this.userName = userName;
     }
 
-    public AlertEnums.AlertType getAlertType() {
-        return alertType;
-    }
-
-    public void setAlertType(AlertEnums.AlertType alertType) {
-        this.alertType = alertType;
-    }
 
     public long getStartDate() {
         return startDate;

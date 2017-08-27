@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Import;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.output.domain.spring.PresidioOutputPersistencyServiceConfig;
 import presidio.output.processor.services.alert.AlertEnumsSeverityService;
-import presidio.output.processor.services.alert.AlertNamingService;
+import presidio.output.processor.services.alert.AlertClassificationServiceImpl;
 import presidio.output.processor.services.alert.AlertService;
 import presidio.output.processor.services.alert.AlertServiceImpl;
 
@@ -22,13 +22,13 @@ public class AlertServiceElasticConfig {
     private AlertEnumsSeverityService alertEnumsSeverityService;
 
     @Autowired
-    private AlertNamingService alertNamingService;
+    private AlertClassificationServiceImpl alertClassificationService;
 
     @Autowired
     private AlertPersistencyService alertPersistencyService;
 
     @Bean
     public AlertService alertService() {
-        return new AlertServiceImpl(alertPersistencyService, alertEnumsSeverityService, alertNamingService);
+        return new AlertServiceImpl(alertPersistencyService, alertEnumsSeverityService, alertClassificationService);
     }
 }

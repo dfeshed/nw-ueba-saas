@@ -10,7 +10,6 @@ import presidio.ade.domain.record.aggregated.SmartRecord;
 import presidio.ade.sdk.common.AdeManagerSdk;
 import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.users.User;
-import presidio.output.domain.services.users.UserPersistencyService;
 import presidio.output.processor.services.alert.AlertService;
 import presidio.output.processor.services.user.UserService;
 
@@ -72,7 +71,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
 
                 User userEntity = userService.createUserEntity(userId);
                 Alert alertEntity = alertService.generateAlert(smart, userEntity);
-                userEntity.addAlertClassifications(alertEntity.getClassification());
+                userEntity.addAlertClassifications(alertEntity.getClassifications());
 
                 if (alertEntity != null)
                     alerts.add(alertEntity);
