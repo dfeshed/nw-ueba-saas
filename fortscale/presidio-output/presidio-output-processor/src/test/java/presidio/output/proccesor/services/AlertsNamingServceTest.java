@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
-import presidio.output.processor.services.alert.AlertClassificationServiceImpl;
+import presidio.output.processor.services.alert.AlertClassificationService;
 import presidio.output.processor.spring.AlertNamingConfig;
 
 import java.util.ArrayList;
@@ -28,7 +28,7 @@ public class AlertsNamingServceTest {
 
 
     @Autowired
-    private AlertClassificationServiceImpl alertClassificationService;
+    private AlertClassificationService alertClassificationService;
 
     @Configuration
     @EnableSpringConfigured

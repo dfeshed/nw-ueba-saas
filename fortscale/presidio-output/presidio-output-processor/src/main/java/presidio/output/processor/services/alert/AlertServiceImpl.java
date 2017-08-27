@@ -23,9 +23,9 @@ public class AlertServiceImpl implements AlertService {
     private final AlertPersistencyService alertPersistencyService;
 
 
-    private AlertClassificationServiceImpl alertClassificationService;
+    private AlertClassificationService alertClassificationService;
 
-    public AlertServiceImpl(AlertPersistencyService alertPersistencyService, AlertEnumsSeverityService alertEnumsSeverityService, AlertClassificationServiceImpl alertClassificationService) {
+    public AlertServiceImpl(AlertPersistencyService alertPersistencyService, AlertEnumsSeverityService alertEnumsSeverityService, AlertClassificationService alertClassificationService) {
         this.alertPersistencyService = alertPersistencyService;
         this.alertEnumsSeverityService = alertEnumsSeverityService;
         this.alertClassificationService = alertClassificationService;
