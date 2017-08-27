@@ -46,7 +46,7 @@ public class AlertsNamingServceTest {
 
     @Test
     public void classiticationsAsTowOptions() {
-        List indicators = new ArrayList(Arrays.asList("Abnormal file action operation type", "Abnormal logon day time"));
+        List indicators = new ArrayList(Arrays.asList("Abnormalfileactionoperationtype", "Abnormallogondaytime"));
         List<String> names = alertClassificationService.getAlertClassificationsFromIndicatorsByPriority(indicators);
         assertEquals(2, names.size());
     }

@@ -39,14 +39,13 @@ public class AlertServiceImpl implements AlertService {
         }
 
         List<String> classification = alertClassificationService.getAlertClassificationsFromIndicatorsByPriority(extractIndicatorsNames(smart));
-        String userName = smart.getContextId();
         long startDate = smart.getStartInstant().getLong(ChronoField.INSTANT_SECONDS);
         long endDate = smart.getEndInstant().getLong(ChronoField.INSTANT_SECONDS);
         int indicatorsNum = smart.getAggregationRecords().size();
         //TODO- on the new ADE SMART POJO there should be a dedicated field for Daily/Hourly
         AlertEnums.AlertTimeframe timeframe = AlertEnums.AlertTimeframe.DAILY;
         AlertEnums.AlertSeverity severity = alertEnumsSeverityService.severity(score);
-        return new Alert(user.getUserId(), classification, userName, startDate, endDate, score, indicatorsNum, timeframe, severity);
+        return new Alert(user.getUserId(), classification, user.getUserName(), startDate, endDate, score, indicatorsNum, timeframe, severity);
     }
 
     @Override
