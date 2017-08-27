@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import net.minidev.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
+
 import java.util.*;
 
 public class AggregatedFeatureEventConfTest {
@@ -77,8 +78,6 @@ public class AggregatedFeatureEventConfTest {
 		Assert.assertEquals(aggregatedFeatureNamesMap, actual.getAggregatedFeatureNamesMap());
 		Assert.assertEquals(allAggregatedFeatureNames, actual.getAllAggregatedFeatureNames());
 		Assert.assertEquals(aggregatedFeatureEventFunction, actual.getAggregatedFeatureEventFunction());
-		Assert.assertEquals(false, actual.getFireEventsAlsoForEmptyBucketTicks());
-
 	}
 
 	@Test
@@ -127,8 +126,7 @@ public class AggregatedFeatureEventConfTest {
 				WAIT_AFTER_BUCKET_CLOSE_SECONDS,
 				ANOMALY_TYPE,
 				aggregatedFeatureNamesMap,
-				aggregatedFeatureEventFunction,
-				false);
+				aggregatedFeatureEventFunction);
 		AggregatedFeatureEventConf actual = (new ObjectMapper()).readValue(jsonAsString, AggregatedFeatureEventConf.class);
 
 		Assert.assertNotNull(actual);
@@ -141,8 +139,6 @@ public class AggregatedFeatureEventConfTest {
 		Assert.assertEquals(aggregatedFeatureNamesMap, actual.getAggregatedFeatureNamesMap());
 		Assert.assertEquals(allAggregatedFeatureNames, actual.getAllAggregatedFeatureNames());
 		Assert.assertEquals(aggregatedFeatureEventFunction, actual.getAggregatedFeatureEventFunction());
-		Assert.assertEquals(false, actual.getFireEventsAlsoForEmptyBucketTicks());
-
 	}
 
 	@Test
@@ -191,8 +187,7 @@ public class AggregatedFeatureEventConfTest {
 				WAIT_AFTER_BUCKET_CLOSE_SECONDS,
 				ANOMALY_TYPE,
 				aggregatedFeatureNamesMap,
-				aggregatedFeatureEventFunction,
-				true);
+				aggregatedFeatureEventFunction);
 		AggregatedFeatureEventConf actual = (new ObjectMapper()).readValue(jsonAsString, AggregatedFeatureEventConf.class);
 
 		Assert.assertNotNull(actual);
@@ -205,7 +200,6 @@ public class AggregatedFeatureEventConfTest {
 		Assert.assertEquals(aggregatedFeatureNamesMap, actual.getAggregatedFeatureNamesMap());
 		Assert.assertEquals(allAggregatedFeatureNames, actual.getAllAggregatedFeatureNames());
 		Assert.assertEquals(aggregatedFeatureEventFunction, actual.getAggregatedFeatureEventFunction());
-		Assert.assertEquals(true, actual.getFireEventsAlsoForEmptyBucketTicks());
 	}
 
 	@Test
@@ -337,7 +331,7 @@ public class AggregatedFeatureEventConfTest {
 				BUCKETS_LEAP,
 				WAIT_AFTER_BUCKET_CLOSE_SECONDS,
 				ANOMALY_TYPE,
-				new HashMap<String, List<String>>(),
+				new HashMap<>(),
 				getSimpleAggregatedFeatureEventFunction());
 		(new ObjectMapper()).readValue(jsonAsString, AggregatedFeatureEventConf.class);
 	}
@@ -345,7 +339,7 @@ public class AggregatedFeatureEventConfTest {
 	@Test(expected = Exception.class)
 	public void should_fail_when_trying_to_deserialize_from_json_containing_event_with_aggregated_feature_names_map_that_has_an_empty_list() throws Exception {
 		Map<String, List<String>> aggregatedFeatureNamesMap = new HashMap<>();
-		aggregatedFeatureNamesMap.put("functionArgument", new ArrayList<String>());
+		aggregatedFeatureNamesMap.put("functionArgument", new ArrayList<>());
 		String jsonAsString = createAggregatedFeatureEvent(
 				NAME,
 				TYPE,
@@ -390,8 +384,7 @@ public class AggregatedFeatureEventConfTest {
 			long waitAfterBucketCloseSeconds,
 			String anomalyType,
 			Map<String, List<String>> aggregatedFeatureNamesMap,
-			JSONObject aggregatedFeatureEventFunction,
-			boolean fireEventsAlsoForEmptyBucketTicks) {
+			JSONObject aggregatedFeatureEventFunction) {
 
 		JSONObject result = new JSONObject();
 		result.put("name", name);
@@ -403,10 +396,6 @@ public class AggregatedFeatureEventConfTest {
 		result.put("anomalyType", anomalyType);
 		result.put("aggregatedFeatureNamesMap", aggregatedFeatureNamesMap);
 		result.put("aggregatedFeatureEventFunction", aggregatedFeatureEventFunction);
-
-		if(fireEventsAlsoForEmptyBucketTicks) {
-			result.put("fireEventsAlsoForEmptyBucketTicks", fireEventsAlsoForEmptyBucketTicks);
-		}
 		return result.toJSONString();
 	}
 
@@ -422,7 +411,7 @@ public class AggregatedFeatureEventConfTest {
 			JSONObject aggregatedFeatureEventFunction) {
 
 		return createAggregatedFeatureEvent2(name, type, bucketConfName, numberOfBuckets, bucketsLeap,
-				waitAfterBucketCloseSeconds, anomalyType, aggregatedFeatureNamesMap, aggregatedFeatureEventFunction, false);
+				waitAfterBucketCloseSeconds, anomalyType, aggregatedFeatureNamesMap, aggregatedFeatureEventFunction);
 	}
 
 	private Map<String, List<String>> getSimpleAggregatedFeatureNamesMap() {

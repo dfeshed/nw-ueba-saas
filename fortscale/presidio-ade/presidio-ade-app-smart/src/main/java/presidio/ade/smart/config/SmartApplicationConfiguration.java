@@ -1,6 +1,5 @@
 package presidio.ade.smart.config;
 
-import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.smart.record.conf.SmartRecordConfService;
 import fortscale.utils.mongodb.util.MongoDbBulkOpUtilConfig;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +24,6 @@ import presidio.ade.smart.SmartService;
 		SmartApplicationCommands.class,
 		// Smart application related configurations
 		SmartApplicationSmartRecordConfig.class,
-		SmartApplicationAggregationRecordConfig.class,
 		SmartApplicationAggregationDataReaderConfig.class,
 		SmartApplicationSmartScoringServiceConfig.class,
 		SmartDataStoreConfig.class
@@ -33,8 +31,6 @@ import presidio.ade.smart.SmartService;
 public class SmartApplicationConfiguration {
 	@Autowired
 	private SmartRecordConfService smartRecordConfService;
-	@Autowired
-	private AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
 	@Autowired
 	private AggregatedDataReader aggregatedDataReader;
 	@Autowired
@@ -44,11 +40,6 @@ public class SmartApplicationConfiguration {
 
 	@Bean
 	public SmartService smartService() {
-		return new SmartService(
-				smartRecordConfService,
-				aggregatedFeatureEventsConfService,
-				aggregatedDataReader,
-				smartScoringService,
-				smartDataStore);
+		return new SmartService(smartRecordConfService, aggregatedDataReader, smartScoringService, smartDataStore);
 	}
 }

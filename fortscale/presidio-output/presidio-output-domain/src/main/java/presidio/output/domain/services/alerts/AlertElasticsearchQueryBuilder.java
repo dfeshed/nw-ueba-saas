@@ -38,7 +38,7 @@ public class AlertElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<Al
         // filter by classification
         if (alertQuery.getFilterByClassification() != null && !(alertQuery.getFilterByClassification()).isEmpty()) {
             for (String classification : alertQuery.getFilterByClassification()) {
-                boolQueryBuilder.should(matchQuery(Alert.CLASSIFICATION, classification).operator(Operator.OR));
+                boolQueryBuilder.should(matchQuery(Alert.CLASSIFICATIONS, classification).operator(Operator.OR));
             }
         }
 

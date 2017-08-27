@@ -164,6 +164,11 @@
                     <!--<scriptFile>src/main/scripts/postinstall</scriptFile>-->
                     <!--<fileEncoding>utf-8</fileEncoding>-->
                     <script>
+                        <!-- setting presidio home folder env variable. Should be equal to rpm-maven-plugin.deployment_target_directory property -->
+                        echo "Setting PRESIDIO_HOME to /home/presidio/presidio-core/"
+                        export PRESIDIO_HOME=${rpm-maven-plugin.deployment_target_directory}
+                        echo "Writing env variable PRESIDIO_HOME to /etc/profile"
+                        echo "export PRESIDIO_HOME=/home/presidio/presidio-core/" >> /etc/profile
                         <!-- deploy presidio-workflows lib-->
                         echo "Running Python project"
                         <!-- post installation commands: -->

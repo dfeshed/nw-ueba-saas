@@ -3,14 +3,11 @@ package presidio.output.proccesor.services;
 import fortscale.domain.feature.score.FeatureScore;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.pagination.ContextIdToNumOfItems;
-import fortscale.utils.pagination.PageIterator;
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
 import fortscale.utils.time.TimeRange;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
-import org.mockito.internal.verification.VerificationModeFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -19,12 +16,13 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
-import presidio.ade.domain.pagination.smart.ScoreThresholdSmartPaginationService;
+import presidio.output.domain.records.alerts.Alert;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.record.aggregated.SmartRecord;
 import presidio.ade.domain.store.smart.SmartDataReader;
 import presidio.ade.domain.store.smart.SmartRecordsMetadata;
 import presidio.output.domain.records.alerts.AlertEnums;
+import presidio.output.domain.records.users.User;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.output.processor.services.OutputExecutionServiceImpl;
 import presidio.output.processor.services.alert.AlertEnumsSeverityService;
@@ -36,6 +34,7 @@ import java.time.Instant;
 import java.util.*;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 
@@ -104,21 +103,22 @@ public class AlertServiceTest {
     }
 
     @Test
-    public void allSmartsAboveScoreThreshold() {
-        int smartSize = 3;
-        int numOfSmartsBelowScoreThreshold = 0;
-        setup(smartSize, numOfSmartsBelowScoreThreshold, OutputExecutionServiceImpl.SMART_SCORE_THRESHOLD);
+    public void generateAlertWithLowSmartScore() {
+        User userEntity = new User("userId", "userName", "displayName", 0d, new ArrayList<String>(), new ArrayList<String>());
+        Alert alert = alertService.generateAlert(generateSingleSmart(30), userEntity);
+        assertTrue(alert == null);
+    }
 
-        ScoreThresholdSmartPaginationService smartPaginationService = new ScoreThresholdSmartPaginationService(smartDataReader, 1000);
-        PageIterator<SmartRecord> smarts = smartPaginationService.getPageIterator(timeRange, OutputExecutionServiceImpl.SMART_SCORE_THRESHOLD);
 
-        alertService.generateAlerts(smarts);
-
-        ArgumentCaptor<List> argument = ArgumentCaptor.forClass(List.class);
-        Mockito.verify(alertPersistencyService, VerificationModeFactory.times(1)).save(Mockito.anyList());
-        Mockito.verify(alertPersistencyService).save(argument.capture());
-        final int generatedAlertsListSize = argument.getValue().size();
-        assertEquals(smartSize, generatedAlertsListSize);
+    @Test
+    public void generateAlertTest() {
+        User userEntity = new User("userId", "userName", "displayName", 0d, new ArrayList<String>(), new ArrayList<String>());
+        SmartRecord smart = generateSingleSmart(60);
+        Alert alert = alertService.generateAlert(smart, userEntity);
+        assertEquals(alert.getUserId(), userEntity.getUserId());
+        assertEquals(alert.getUserName(), userEntity.getUserName());
+//        assertEquals(alert.getAlertType() //TODO- test here if the classification is correct once classification is implemented
+        assertTrue(alert.getScore() == smart.getScore());
     }
 
     @Test

@@ -3,6 +3,7 @@ package fortscale.smart.record.conf;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import fortscale.utils.fixedduration.FixedDurationStrategy;
 import org.springframework.util.Assert;
 import presidio.ade.domain.record.aggregated.SmartRecord;
 
@@ -12,8 +13,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * A configuration of {@link SmartRecord}s. The configuration includes all
- * the {@link ClusterConf}s that are used when calculating the smart value.
+ * A configuration of {@link SmartRecord}s.
  *
  * @author Lior Govrin
  */
@@ -27,6 +27,7 @@ import java.util.Set;
 public class SmartRecordConf {
 	private String name;
 	private List<String> contexts;
+	private FixedDurationStrategy fixedDurationStrategy;
 	private boolean includeAllAggregationRecords;
 	private Double defaultWeight;
 	private List<ClusterConf> clusterConfs;
@@ -36,12 +37,14 @@ public class SmartRecordConf {
 	public SmartRecordConf(
 			@JsonProperty("name") String name,
 			@JsonProperty("contexts") List<String> contexts,
+			@JsonProperty("fixedDurationStrategy") String fixedDurationStrategy,
 			@JsonProperty("includeAllAggregationRecords") boolean includeAllAggregationRecords,
 			@JsonProperty("defaultWeight") Double defaultWeight,
 			@JsonProperty("clusterConfs") List<ClusterConf> clusterConfs) {
 
 		this.name = name;
 		this.contexts = contexts;
+		this.fixedDurationStrategy = FixedDurationStrategy.fromStrategyName(fixedDurationStrategy);
 		this.includeAllAggregationRecords = includeAllAggregationRecords;
 		this.defaultWeight = defaultWeight;
 		this.clusterConfs = clusterConfs;
@@ -52,6 +55,22 @@ public class SmartRecordConf {
 
 	public String getName() {
 		return name;
+	}
+
+	public List<String> getContexts() {
+		return contexts;
+	}
+
+	public FixedDurationStrategy getFixedDurationStrategy() {
+		return fixedDurationStrategy;
+	}
+
+	public boolean isIncludeAllAggregationRecords() {
+		return includeAllAggregationRecords;
+	}
+
+	public Double getDefaultWeight() {
+		return defaultWeight;
 	}
 
 	public List<ClusterConf> getClusterConfs() {

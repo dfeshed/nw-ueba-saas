@@ -5,20 +5,9 @@
       "contexts": [
         "userId"
       ],
+      "fixedDurationStrategy": "fixed_duration_hourly",
       "includeAllAggregationRecords": true,
-      "defaultWeight": 0.5,
-      "clusterConfs": [
-        {
-          "aggregationRecordNames": [
-            "userPasswordNeverExpiresOptionChangedScoreActiveDirectoryHourly"
-          ]
-        },
-        {
-          "aggregationRecordNames": [
-            "numberOfSuccessfulOperationTypeUserIdActiveDirectoryHourly"
-          ]
-        }
-      ]
+      "defaultWeight": 0.5
     }
   ]
 }
