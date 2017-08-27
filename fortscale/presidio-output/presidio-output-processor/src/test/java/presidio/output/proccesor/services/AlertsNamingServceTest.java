@@ -53,7 +53,7 @@ public class AlertsNamingServceTest {
 
     @Test
     public void classiticationsAsOneOption() {
-        List indicators = new ArrayList(Arrays.asList("Abnormal event day time", "Abnormal Active Directory day time operation"));
+        List indicators = new ArrayList(Arrays.asList("Abnormaleventdaytime", "AbnormalActiveDirectorydaytimeoperation"));
         List<String> names = alertClassificationService.getAlertClassificationsFromIndicatorsByPriority(indicators);
         assertEquals(1, names.size());
     }
