@@ -1,6 +1,7 @@
 package presidio.ade.domain.store.accumulator.smart;
 
 
+import fortscale.utils.time.TimeRange;
 import presidio.ade.domain.record.accumulator.AccumulatedSmartRecord;
 
 import java.time.Instant;
@@ -30,5 +31,10 @@ public interface SmartAccumulationDataReader {
      * @return set of distinct context ids
      */
     Set<String> findDistinctContextsByTimeRange(String configurationName, Instant startInstant, Instant endInstant);
+
+    default Set<String> findDistinctContextsByTimeRange(String configurationName, TimeRange timeRange)
+    {
+        return findDistinctContextsByTimeRange(configurationName,timeRange.getStart(),timeRange.getEnd());
+    }
 
 }

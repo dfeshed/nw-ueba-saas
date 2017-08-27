@@ -2,6 +2,7 @@ package presidio.ade.processes.shell.scoring.aggregation.config.services;
 
 import fortscale.aggregation.feature.bucket.FeatureBucketReaderConfig;
 import fortscale.ml.model.retriever.AbstractDataRetriever;
+import fortscale.ml.model.retriever.factories.AccumulatedSmartValueRetrieverFactory;
 import fortscale.ml.model.retriever.factories.ContextHistogramRetrieverFactory;
 import fortscale.utils.factory.AbstractServiceAutowiringFactory;
 import fortscale.utils.factory.FactoryService;
@@ -28,7 +29,9 @@ import java.util.Collection;
 @ComponentScan(
         value = "fortscale.ml.model.retriever.factories",
         // the custom context histogram retriever factory is used instead
-        excludeFilters = @Filter(type = FilterType.ASSIGNABLE_TYPE, value = ContextHistogramRetrieverFactory.class)
+        excludeFilters = {@Filter(type = FilterType.ASSIGNABLE_TYPE, value = ContextHistogramRetrieverFactory.class),
+                @Filter(type = FilterType.ASSIGNABLE_TYPE, value = AccumulatedSmartValueRetrieverFactory.class)
+        }
 )
 public class DataRetrieverFactoryServiceConfig {
     @Autowired

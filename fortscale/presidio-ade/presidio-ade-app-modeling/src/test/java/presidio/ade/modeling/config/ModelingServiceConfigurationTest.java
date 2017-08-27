@@ -23,6 +23,7 @@ public class ModelingServiceConfigurationTest {
 		// Feature aggregation event conf service
 		properties.put("presidio.ade.modeling.feature.aggregation.event.confs.base.path", "classpath*:config/asl/aggregation-records/feature-aggregation-records/*.json");
 		// Smart event conf service
+		properties.put("presidio.ade.smart.record.base.configurations.path","classpath*:config/asl/smart-records/*");
         //todo
 		// Model conf service
 		properties.put("presidio.ade.modeling.enriched.records.group.name", "enriched-record-models");
