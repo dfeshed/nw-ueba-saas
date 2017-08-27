@@ -22,7 +22,7 @@ public class OutputShellCommands implements CommandMarker {
     @Autowired
     private OutputExecutionService executionService;
 
-    @CliCommand(value = "run", help = "run events with specified time range and data source")
+    @CliCommand(value = "run", help = "run events with specified time range ")
     public void run(
             @CliOption(key = {CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME}, mandatory = true, help = "events with (logical) time greater than specified start time will be processed")
             final Instant startTime,
@@ -34,7 +34,7 @@ public class OutputShellCommands implements CommandMarker {
            executionService.run(startTime, endTime);
     }
 
-    @CliCommand(value = "clean", help = "clean application data for specified time range and data source")
+    @CliCommand(value = "clean", help = "clean application data for specified time range ")
     public void clean(
             @CliOption(key = {CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME}, mandatory = true, help = "events with (logical) time greater than specified start time will be processed")
             final Instant startTime,

@@ -1,12 +1,12 @@
 package presidio.output.domain.records.alerts;
 
 
-public class AlertPriority {
+public class ClassificationPriority {
 
     private String name;
     private int priority;
 
-    public AlertPriority(String name, int priority) {
+    public ClassificationPriority(String name, int priority) {
         this.name = name;
         this.priority = priority;
     }

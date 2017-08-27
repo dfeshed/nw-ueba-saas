@@ -16,4 +16,6 @@ public interface EventRepository {
      * @param events documents to be stored
      */
     void saveEvents(String collectionName, List<? extends EnrichedEvent> events) throws Exception;
+
+    EnrichedEvent findLatestEventForUser(String userId);
 }
