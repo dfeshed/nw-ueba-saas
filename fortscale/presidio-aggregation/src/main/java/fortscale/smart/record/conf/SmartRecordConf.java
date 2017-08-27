@@ -133,8 +133,4 @@ public class SmartRecordConf {
 			}
 		}
 	}
-
-	public List<String> getContexts() {
-		return contexts;
-	}
 }

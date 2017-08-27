@@ -1,6 +1,8 @@
 package presidio.ade.modeling.config;
 
+import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.smart.record.conf.SmartRecordConfService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,12 +18,15 @@ public class ModelingServiceSmartRecordConfServiceConfig {
     private String smartRecordOverridingConfigurationsPath;
     @Value("${presidio.ade.smart.record.additional.configurations.path:#{null}}")
     private String smartRecordAdditionalConfigurationsPath;
+    @Autowired
+    public AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
 
     @Bean
     public SmartRecordConfService smartRecordConfService() {
         return new SmartRecordConfService(
                 smartRecordBaseConfigurationsPath,
                 smartRecordOverridingConfigurationsPath,
-                smartRecordAdditionalConfigurationsPath);
+                smartRecordAdditionalConfigurationsPath,
+                aggregatedFeatureEventsConfService);
     }
 }
