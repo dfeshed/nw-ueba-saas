@@ -14,12 +14,11 @@ public interface AggregationEventsAccumulationDataReader {
     /**
      *
      * @param aggregatedFeatureName feature name
-     * @param startTime start time
-     * @param endTime end time
+     * @param timeRange
      * @return accumulated context ids by TimeRange
      */
     Set<String> findDistinctAcmContextsByTimeRange(
-            String aggregatedFeatureName, Date startTime, Date endTime);
+            String aggregatedFeatureName, TimeRange timeRange);
 
     /**
      *

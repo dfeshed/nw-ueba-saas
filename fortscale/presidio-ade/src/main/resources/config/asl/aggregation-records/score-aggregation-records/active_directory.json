@@ -37,6 +37,25 @@
       }
     },
     {
+      "name": "nonAdminPasswordChangedScoreActiveDirectoryHourly",
+      "type": "P",
+      "bucketConfName": "nonAdminPasswordChangedScoreUserIdActiveDirectoryHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 300,
+      "anomalyType": " ",
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "nonAdminPasswordChangedScore"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_map_values_max_sum_func",
+        "includeValues": true,
+        "minScoreToInclude": 1
+      }
+    },
+    {
       "name": "userAccountEnabledScoreActiveDirectoryHourly",
       "type": "P",
       "bucketConfName": "userAccountEnabledScoreUserIdActiveDirectoryHourly",
@@ -163,25 +182,6 @@
       "aggregatedFeatureNamesMap": {
         "pick": [
           "passwordChangedByNonOwnerScore"
-        ]
-      },
-      "aggregatedFeatureEventFunction": {
-        "type": "aggr_feature_map_values_max_sum_func",
-        "includeValues": true,
-        "minScoreToInclude": 1
-      }
-    },
-    {
-      "name": "passwordChangedScoreActiveDirectoryHourly",
-      "type": "P",
-      "bucketConfName": "passwordChangedScoreUserIdActiveDirectoryHourly",
-      "numberOfBuckets": 1,
-      "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
-      "anomalyType": " ",
-      "aggregatedFeatureNamesMap": {
-        "pick": [
-          "passwordChangedScore"
         ]
       },
       "aggregatedFeatureEventFunction": {

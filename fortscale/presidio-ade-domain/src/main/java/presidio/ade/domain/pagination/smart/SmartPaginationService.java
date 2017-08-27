@@ -19,6 +19,7 @@ public class SmartPaginationService extends BasePaginationService<SmartRecord> {
 
     private static final Logger logger = Logger.getLogger(SmartPaginationService.class);
     protected SmartDataReader reader;
+    private static final int SCORE_THRESHOLD_DEFAULT = Integer.MIN_VALUE;
 
     public SmartPaginationService(SmartDataReader reader, int pageSize, int maxGroupSize) {
         super(pageSize, maxGroupSize);
@@ -36,23 +37,34 @@ public class SmartPaginationService extends BasePaginationService<SmartRecord> {
      * @return list of PageIterators
      */
     public List<PageIterator<SmartRecord>> getPageIterators(String configurationName, TimeRange timeRange) {
-
-        //Validate if indexes exist, otherwise add them.
-        ensureContextIdIndex(configurationName);
-        List<ContextIdToNumOfItems> contextIdToNumOfItemsList = getContextIdToNumOfItemsList(configurationName, timeRange);
-        return getScoreThresholdPageIterators(configurationName, timeRange, contextIdToNumOfItemsList, Integer.MIN_VALUE);
+        return getScoreThresholdPageIterators(configurationName, timeRange, SCORE_THRESHOLD_DEFAULT);
     }
 
 
     /**
-     * Create pageIterators.
-     * records filtered by scoreThreshold.
-     * @param configurationName
-     * @param timeRange
-     * @param smartScoreThreshold
+     * Get List of pageIterators
+     * @param configurationName configuration name
+     * @param timeRange           the time range
+     * @param smartScoreThreshold the scores should be greater than or equal to this threshold
+     * @return list of PageIterator<SmartRecord>
+     */
+    public List<PageIterator<SmartRecord>> getPageIterators(String configurationName, TimeRange timeRange, int smartScoreThreshold) {
+        return getScoreThresholdPageIterators(configurationName, timeRange, smartScoreThreshold);
+    }
+
+
+    /**
+     * Get List of pageIterators filtered by score.
+     * @param configurationName configuration name
+     * @param timeRange time range
+     * @param smartScoreThreshold the scores should be greater than or equal to this threshold
      * @return list of pageIterators.
      */
-    protected List<PageIterator<SmartRecord>> getScoreThresholdPageIterators(String configurationName, TimeRange timeRange, List<ContextIdToNumOfItems> contextIdToNumOfItemsList, int smartScoreThreshold) {
+    protected List<PageIterator<SmartRecord>> getScoreThresholdPageIterators(String configurationName, TimeRange timeRange, int smartScoreThreshold) {
+
+        //Validate if indexes exist, otherwise add them.
+        ensureContextIdIndex(configurationName);
+        List<ContextIdToNumOfItems> contextIdToNumOfItemsList = getContextIdToNumOfItemsList(configurationName, timeRange, smartScoreThreshold);
 
         //groups is a list, where each group contains pair of total num of records and set of contextId.
         List<Pair<Integer, Set<String>>> groups = getGroups(contextIdToNumOfItemsList);
@@ -73,11 +85,12 @@ public class SmartPaginationService extends BasePaginationService<SmartRecord> {
     /**
      * @param configurationName smart configuration record
      * @param timeRange         timeRange
+     * @param smartScoreThreshold the scores should be greater than or equal to this threshold
      * @return list of contextId to num of items
      */
-    protected List<ContextIdToNumOfItems> getContextIdToNumOfItemsList(String configurationName, TimeRange timeRange) {
+    protected List<ContextIdToNumOfItems> getContextIdToNumOfItemsList(String configurationName, TimeRange timeRange, int smartScoreThreshold) {
         SmartRecordsMetadata smartRecordsMetadata = new SmartRecordsMetadata(configurationName, timeRange.getStart(), timeRange.getEnd());
-        return this.reader.aggregateContextIdToNumOfEvents(smartRecordsMetadata);
+        return this.reader.aggregateContextIdToNumOfEvents(smartRecordsMetadata, smartScoreThreshold);
     }
 
 
@@ -86,6 +99,7 @@ public class SmartPaginationService extends BasePaginationService<SmartRecord> {
      * @param timeRange         timeRange
      * @param contextIds        available context ids in PageIterator
      * @param totalNumOfItems   total num of records in page
+     * @param smartScoreThreshold the scores should be greater than or equal to this threshold
      * @return PageIterator
      */
     protected PageIterator<SmartRecord> createPageIterator(String configurationName, TimeRange timeRange, Set<String> contextIds, int totalNumOfItems, int smartScoreThreshold) {

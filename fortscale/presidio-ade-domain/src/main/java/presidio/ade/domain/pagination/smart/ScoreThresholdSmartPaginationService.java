@@ -9,26 +9,17 @@ import presidio.ade.domain.store.smart.SmartDataReader;
 
 import java.util.*;
 
-public class ScoreThresholdSmartPaginationService extends SmartPaginationService {
+public class ScoreThresholdSmartPaginationService {
 
 
     private static final Logger logger = Logger.getLogger(ScoreThresholdSmartPaginationService.class);
+    private static final int MAX_GROUP_SIZE_DEFAULT = 100;
+    private SmartPaginationService smartPaginationService;
+    private SmartDataReader reader;
 
     public ScoreThresholdSmartPaginationService(SmartDataReader reader, int pageSize) {
-        super(reader, pageSize, Integer.MAX_VALUE);
-    }
-
-    /**
-     * @param timeRange           the time range
-     * @param smartScoreThreshold score threshold
-     * @return list of PageIterator<SmartRecord>
-     */
-    public List<PageIterator<SmartRecord>> getPageIterators(String configurationName, TimeRange timeRange, int smartScoreThreshold) {
-        //Validate if indexes exist, otherwise add them.
-        ensureContextIdIndex(configurationName);
-        List<ContextIdToNumOfItems> contextIdToNumOfItemsList = getContextIdToNumOfItemsList(configurationName, timeRange);
-        setMaxGroupSize(contextIdToNumOfItemsList.size());
-        return getScoreThresholdPageIterators(configurationName, timeRange, contextIdToNumOfItemsList, smartScoreThreshold);
+        smartPaginationService = new SmartPaginationService(reader, pageSize, MAX_GROUP_SIZE_DEFAULT);
+        this.reader = reader;
     }
 
     /**
@@ -45,13 +36,13 @@ public class ScoreThresholdSmartPaginationService extends SmartPaginationService
      */
     public PageIterator<SmartRecord> getPageIterator(TimeRange timeRange, int smartScoreThreshold) {
         Set<String> configurationNames = getSmartConfigurationNames();
-        List<List<PageIterator<SmartRecord>>> pageIteratorsPerCollection = new ArrayList<>();
+        List<PageIterator<SmartRecord>> pageIteratorList = new ArrayList<>();
 
         for (String configurationName : configurationNames) {
-            List<PageIterator<SmartRecord>> pageIterators = getPageIterators(configurationName, timeRange, smartScoreThreshold);
-            pageIteratorsPerCollection.add(pageIterators);
+            List<PageIterator<SmartRecord>> pageIterators = smartPaginationService.getPageIterators(configurationName, timeRange, smartScoreThreshold);
+            pageIteratorList.addAll(pageIterators);
         }
-        return new AllSmartCollectionsPageIterators(pageIteratorsPerCollection);
+        return new AllSmartCollectionsPageIterators(pageIteratorList);
     }
 
     /**

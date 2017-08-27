@@ -1,4 +1,4 @@
-package fortscale.accumulator;
+package fortscale.accumulator.aggregation;
 
 import javafx.util.Pair;
 import presidio.ade.domain.record.accumulator.AccumulatedAggregationFeatureRecord;

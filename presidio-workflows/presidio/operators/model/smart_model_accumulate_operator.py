@@ -1,7 +1,8 @@
 from datetime import timedelta
+
 from airflow.utils.decorators import apply_defaults
+
 from presidio.operators.fixed_duration_jar_operator import FixedDurationJarOperator
-from presidio.utils.services.fixed_duration_strategy import fixed_duration_strategy_to_string
 
 
 class SmartModelAccumulateOperator(FixedDurationJarOperator):
@@ -31,11 +32,9 @@ class SmartModelAccumulateOperator(FixedDurationJarOperator):
         )
 
         java_args = {
-            'conf': self._smart_events_conf,
+            'smart_record_conf_name': self._smart_events_conf,
         }
 
-        print('agg operator. commad=', command)
-        print('agg operator. kwargs=', kwargs)
         super(SmartModelAccumulateOperator, self).__init__(
             task_id=self.task_id,
             fixed_duration_strategy=fixed_duration_strategy,

@@ -15,11 +15,11 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 @Import({AccumulatedDataToCollectionNameTranslatorConfig.class, MongoDbBulkOpUtilConfig.class})
 public class AggregationEventsAccumulationDataReaderConfig {
     @Autowired
-    public MongoTemplate mongoTemplate;
+    private MongoTemplate mongoTemplate;
     @Autowired
-    public AccumulatedDataToCollectionNameTranslator translator;
+    private AccumulatedDataToCollectionNameTranslator translator;
     @Autowired
-    public MongoDbBulkOpUtil mongoDbBulkOpUtil;
+    private MongoDbBulkOpUtil mongoDbBulkOpUtil;
 
     @Bean
     public AggregationEventsAccumulationDataReader aggregationEventsAccumulationDataReader() {
