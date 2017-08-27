@@ -3,7 +3,6 @@ package org.flume.sink.base;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.flume.*;
 import org.apache.flume.conf.Configurable;
-import org.apache.flume.event.JSONEvent;
 import org.apache.flume.instrumentation.SinkCounter;
 import org.apache.flume.sink.AbstractSink;
 import org.slf4j.Logger;
@@ -49,7 +48,6 @@ public abstract class AbstractPresidioSink<T> extends AbstractSink implements Co
     @Override
     public Status process() throws EventDeliveryException {
         logger.debug("{} is starting...", getName());
-        sinkCounter.start();
         Status result = Status.READY;
         Channel channel = getChannel();
         Transaction transaction = channel.getTransaction();
