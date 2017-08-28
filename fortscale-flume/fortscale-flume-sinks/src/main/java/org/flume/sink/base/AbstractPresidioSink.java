@@ -29,7 +29,9 @@ public abstract class AbstractPresidioSink<T> extends AbstractSink implements Co
 
     @Override
     public void start() {
-        sinkCounter.start();
+        if (sinkCounter.getStartTime() == 0L) { //if wasn't started yet
+            sinkCounter.start();
+        }
         super.start();
     }
 
