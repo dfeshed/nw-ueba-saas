@@ -184,35 +184,4 @@ public abstract class AbstractModelScorer extends AbstractScorer {
     public boolean isUseCertaintyToCalculateScore() {
         return isUseCertaintyToCalculateScore;
     }
-
-//    @Override
-//    public FeatureScore calculateScore(AdeRecordReader adeRecordReader) {
-//        Feature feature = Feature.toFeature(featureName, adeRecordReader.get(featureName));
-//        List<Model> additionalModels = IntStream.range(0, additionalModelNames.size())
-//                .mapToObj(i -> eventModelsCacheService.getModel(
-//                        adeRecordReader,
-//                        additionalModelNames.get(i),
-//                        additionalContextFieldNames.get(i)))
-//                .collect(Collectors.toList());
-//        return calculateScoreWithCertainty(getModel(adeRecordReader), additionalModels, feature);
-//    }
-
-
-
-//    public FeatureScore calculateScoreWithCertainty(Model model, List<Model> additionalModels, Feature feature) {
-//        if (model == null || additionalModels.contains(null) || feature == null || feature.getValue() == null) {
-//            return new ModelFeatureScore(getName(), 0d, 0d);
-//        }
-//
-//        double score = calculateScore(model, additionalModels, feature);
-//        double certainty = calculateCertainty(model);
-//
-//        if (isUseCertaintyToCalculateScore) {
-//            return new FeatureScore(getName(), score * certainty);
-//        } else {
-//            return new ModelFeatureScore(getName(), score, certainty);
-//        }
-//    }
-
-
 }
