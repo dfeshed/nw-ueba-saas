@@ -203,7 +203,8 @@ public class CategoryRarityModelScorerTest {
     public void calculateScore_null_feature_test() {
         CategoryRarityModelScorerParams params = new CategoryRarityModelScorerParams();
         CategoryRarityModelScorer scorer = createCategoryRarityModelScorer(params);
-        scorer.calculateScore(new CategoryRarityModel(), Collections.emptyList(), null);
+        Feature feature = null;
+        scorer.calculateScore(new CategoryRarityModel(), Collections.emptyList(), feature);
     }
 
     @Test(expected = IllegalArgumentException.class)

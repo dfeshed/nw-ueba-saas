@@ -54,7 +54,7 @@ public class SmartApplicationSmartScoringServiceConfig {
 
 	@Bean
 	public ScoringService scoringService() {
-		return new ScoringService(scorerConfService, scorerFactoryService, null);
+		return new ScoringService(scorerConfService, scorerFactoryService);
 	}
 
 	@Bean

@@ -11,7 +11,7 @@ import org.springframework.util.Assert;
 
 import java.util.List;
 
-public class ContinuousValuesModelScorer extends AbstractModelScorer {
+public class ContinuousValuesModelScorer extends AbstractModelTerminalScorer {
 	private static final String MODEL_TYPE_ERROR_MSG = String.format(
 			"Model must be of type %s.", ContinuousDataModel.class.getSimpleName());
 	private static final String FEATURE_NULL_ERROR_MSG = "Feature cannot be null.";
