@@ -17,10 +17,32 @@ const itemsFilters = (state) => ({
   [state.defaultDateFilterField]: defaultDateRange(state)
 });
 
+/**
+ * When handling updates, we need to identify the ids of all the updated entities as well as the precise updates
+ * that were made to those entities. This utility function takes an update payload response (from either a regular promise,
+ * or a settled set of promises), and pulls out the entityIds and updates that were made.
+ * @param payload
+ * @returns {{entityIds: *, updates: (*|live.updates|{title}|query.updates|{})}}
+ * @private
+ */
+export const _extractEntityIdsAndUpdates = (payload) => {
+  // The payload can come in as an array (when multiple requests are being settled) or as an object (normal promise response)
+  // To make things easier, we normalize an object payload into the format of the array payload
+  if (!isEmberArray(payload)) {
+    payload = [{ value: { ...payload } }];
+  }
+  return {
+    entityIds: payload.reduce((ids, { value: { request } }) => ids.concat(request.entityIds), []),
+    updates: payload[0].value.request.updates // the updates from each settled request should the same, so just grab them from the first
+  };
+};
+
 // Updates the state value with the value updated on the server
 const _handleUpdates = (action) => {
   return (state) => {
-    const { payload: { request: { updates, entityIds } } } = action;
+    const { payload } = action;
+    const { entityIds, updates } = _extractEntityIdsAndUpdates(payload);
+
     const updatedEntities = state.items.map((entity) => {
       const updatedEntity = entityIds.includes(entity.id) ? { ...entity, ...updates } : entity;
       // reset the focus item to the newly updated entity, if it exists

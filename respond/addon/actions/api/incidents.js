@@ -1,7 +1,6 @@
 import EmberObject from 'ember-object';
 import { promiseRequest, streamRequest } from 'streaming-data/services/data-access/requests';
 import FilterQuery from 'respond/utils/filter-query';
-import { isEmberArray } from 'ember-array/utils';
 import chunk from 'respond/utils/array/chunk';
 import RSVP from 'rsvp';
 import buildExplorerQuery from './util/explorer-build-query';
@@ -87,18 +86,22 @@ IncidentsAPI.reopenClass({
    * @returns {*}
    */
   updateIncident(entityId, field, updatedValue) {
-    const entityIds = isEmberArray(entityId) ? entityId : [entityId];
+    const entityIdChunks = chunk(entityId, 500);
 
-    return promiseRequest({
-      method: 'updateRecord',
-      modelName: 'incidents',
-      query: {
-        entityIds,
-        updates: {
-          [field]: updatedValue
+    const requests = entityIdChunks.map((chunk) => {
+      return promiseRequest({
+        method: 'updateRecord',
+        modelName: 'incidents',
+        query: {
+          entityIds: chunk,
+          updates: {
+            [field]: updatedValue
+          }
         }
-      }
+      });
     });
+
+    return RSVP.allSettled(requests);
   },
 
   /**

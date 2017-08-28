@@ -4,6 +4,7 @@ import { handle } from 'redux-pack';
 import { load, persist } from './util/local-storage';
 import fixNormalizedEvents from './util/events';
 import { toggle } from 'respond/utils/immut/array';
+import { _extractEntityIdsAndUpdates } from '../../reducers/respond/util/explorer-reducer-fns';
 
 const localStorageKey = 'rsa::nw::respond::incident';
 
@@ -107,9 +108,12 @@ const persistIncidentState = (callback) => {
 // we must update that incident's info as well.
 const _handleUpdates = (action) => {
   return (state) => {
-    const { payload: { request: { updates, entityIds } } } = action;
+    const { payload } = action;
     const { id, info } = state;
+    const { entityIds, updates } = _extractEntityIdsAndUpdates(payload);
+
     const updatedIncidentInfo = entityIds.includes(id) ? { ...info, ...updates } : info;
+
     return {
       ...state,
       info: updatedIncidentInfo
@@ -328,7 +332,9 @@ const incident = reduxActions.handleActions({
       start: (s) => ({ ...s }),
       failure: (s) => ({ ...s }),
       success: (s) => {
-        const { payload: { request: { updates, entityIds } } } = action;
+        const { payload } = action;
+        const { entityIds, updates } = _extractEntityIdsAndUpdates(payload);
+
         const updatedEntities = state.tasks.map((entity) => {
           return entityIds.includes(entity.id) ? { ...entity, ...updates } : entity;
         });

@@ -1,7 +1,8 @@
 import { promiseRequest } from 'streaming-data/services/data-access/requests';
 import FilterQuery from 'respond/utils/filter-query';
-import { isEmberArray } from 'ember-array/utils';
 import buildExplorerQuery from './util/explorer-build-query';
+import chunk from 'respond/utils/array/chunk';
+import RSVP from 'rsvp';
 
 const RemediationTasksAPI = {
   /**
@@ -60,18 +61,22 @@ const RemediationTasksAPI = {
    * @param updatedValue {*} - The value to be set/updated on the record's field
    */
   updateRemediationTask(entityId, field, updatedValue) {
-    const entityIds = isEmberArray(entityId) ? entityId : [entityId];
+    const entityIdChunks = chunk(entityId, 500);
 
-    return promiseRequest({
-      method: 'updateRecord',
-      modelName: 'remediation-tasks',
-      query: {
-        entityIds,
-        updates: {
-          [field]: updatedValue
+    const requests = entityIdChunks.map((chunk) => {
+      return promiseRequest({
+        method: 'updateRecord',
+        modelName: 'remediation-tasks',
+        query: {
+          entityIds: chunk,
+          updates: {
+            [field]: updatedValue
+          }
         }
-      }
+      });
     });
+
+    return RSVP.allSettled(requests);
   },
 
   /**
@@ -106,15 +111,19 @@ const RemediationTasksAPI = {
    * @public
    */
   deleteRemediationTask(taskId) {
-    const query = FilterQuery.create()
-      .addFilter('_id', taskId);
-
-    return promiseRequest({
-      method: 'deleteRecord',
-      modelName: 'remediation-tasks',
-      query: query.toJSON()
+    const taskIdChunks = chunk(taskId, 500);
+    const requests = taskIdChunks.map((chunk) => {
+      const query = FilterQuery.create().addFilter('_id', chunk);
+      return promiseRequest({
+        method: 'deleteRecord',
+        modelName: 'remediation-tasks',
+        query: query.toJSON()
+      });
     });
+
+    return RSVP.allSettled(requests);
   }
 };
+
 
 export default RemediationTasksAPI;
