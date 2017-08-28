@@ -47,7 +47,6 @@ public class ModelBasedScoreMapperFactory extends AbstractModelScorerFactory {
 		return new ModelBasedScoreMapper(scorerConf.getName(),
 				modelName,
 				contextFieldNames,
-				featureName,
 				scorerConf.getBaseScorerConf(),
 				factoryService, eventModelsCacheService);
 	}

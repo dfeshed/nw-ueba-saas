@@ -11,7 +11,7 @@ import org.springframework.util.StringUtils;
 
 import java.util.List;
 
-public class CategoryRarityModelScorer extends AbstractModelScorer {
+public class CategoryRarityModelScorer extends AbstractModelTerminalScorer {
     private static final String WRONG_MODEL_TYPE_ERROR_MSG = String.format(
             "%s.calculateScore expects to get a model of type %s",
             CategoryRarityModelScorer.class.getSimpleName(),

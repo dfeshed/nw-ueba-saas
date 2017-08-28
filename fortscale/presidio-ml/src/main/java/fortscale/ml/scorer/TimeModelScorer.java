@@ -9,7 +9,7 @@ import fortscale.ml.scorer.algorithms.TimeModelScorerAlgorithm;
 
 import java.util.List;
 
-public class TimeModelScorer extends AbstractModelScorer {
+public class TimeModelScorer extends AbstractModelTerminalScorer {
     private TimeModelScorerAlgorithm algorithm;
 
     public TimeModelScorer(String scorerName,

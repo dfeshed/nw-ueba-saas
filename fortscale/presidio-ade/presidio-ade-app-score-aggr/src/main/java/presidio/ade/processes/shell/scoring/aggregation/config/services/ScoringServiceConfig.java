@@ -22,8 +22,6 @@ import org.springframework.context.annotation.Import;
 public class ScoringServiceConfig {
     @Autowired
     private FactoryService<Scorer> scorerFactoryService;
-    @Autowired
-    private StatsService statsService;
 
     @Value("${fortscale.scorer.configurations.location.path}")
     private String scorerConfigurationsLocationPath;
@@ -40,7 +38,7 @@ public class ScoringServiceConfig {
 
     @Bean
     public ScoringService scoringService() {
-        return new ScoringService(scorerConfService(), scorerFactoryService, statsService);
+        return new ScoringService(scorerConfService(), scorerFactoryService);
     }
 }
 

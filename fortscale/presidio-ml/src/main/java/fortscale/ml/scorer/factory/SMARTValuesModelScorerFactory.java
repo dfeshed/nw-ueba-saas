@@ -51,11 +51,12 @@ public class SMARTValuesModelScorerFactory extends AbstractModelScorerFactory {
                 additionalModelNames,
                 contextFieldNames,
                 additionalContextFieldNames,
-                featureName,
                 scorerConf.getMinNumOfSamplesToInfluence(),
                 scorerConf.getEnoughNumOfSamplesToInfluence(),
                 scorerConf.isUseCertaintyToCalculateScore(),
+                scorerConf.getBaseScorerConf(),
                 scorerConf.getGlobalInfluence(),
+                factoryService,
                 eventModelsCacheService);
     }
 

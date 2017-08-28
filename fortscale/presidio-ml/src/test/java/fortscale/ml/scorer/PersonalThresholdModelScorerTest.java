@@ -58,6 +58,8 @@ public class PersonalThresholdModelScorerTest {
 
     @Autowired
     private ModelsCacheService modelsCacheService;
+    @Autowired
+    private EventModelsCacheService eventModelsCacheService;
 
     private AbstractModelScorer baseScorer;
     private IScorerConf baseScorerConf;
@@ -85,7 +87,8 @@ public class PersonalThresholdModelScorerTest {
                 "model name",
                 Collections.singletonList("context"),
                 baseScorerConf,
-                99999
+                99999,
+                scorerFactoryService, eventModelsCacheService
         );
     }
 
@@ -96,7 +99,8 @@ public class PersonalThresholdModelScorerTest {
                 "",
                 Collections.singletonList("context"),
                 baseScorerConf,
-                99999
+                99999,
+                scorerFactoryService, eventModelsCacheService
         );
     }
 
@@ -107,7 +111,8 @@ public class PersonalThresholdModelScorerTest {
                 "model name",
                 null,
                 baseScorerConf,
-                99999
+                99999,
+                scorerFactoryService, eventModelsCacheService
         );
     }
 
@@ -118,7 +123,8 @@ public class PersonalThresholdModelScorerTest {
                 "model name",
                 Collections.singletonList("context"),
                 null,
-                99999
+                99999,
+                scorerFactoryService, eventModelsCacheService
         );
     }
 
@@ -129,7 +135,8 @@ public class PersonalThresholdModelScorerTest {
                 "model name",
                 Collections.singletonList("context"),
                 baseScorerConf,
-                0
+                0,
+                scorerFactoryService, eventModelsCacheService
         );
     }
 
@@ -152,7 +159,7 @@ public class PersonalThresholdModelScorerTest {
         AdeRecordReader adeRecordReader = new TestAdeRecord().setContext("context value").getAdeRecordReader();
         scorerFactoryService.register(baseScorerConf.getFactoryName(), factoryConfig -> baseScorer);
         Mockito.when(baseScorer.calculateScore(adeRecordReader)).thenReturn(baseScore);
-        Mockito.when(baseScorer.getModel(adeRecordReader)).thenReturn(baseScorerModel);
+        Mockito.when(baseScorer.getMainModel(adeRecordReader)).thenReturn(baseScorerModel);
         List<String> contextFieldNames = Collections.singletonList("context");
 
         when(modelsCacheService.getModel(
@@ -166,12 +173,12 @@ public class PersonalThresholdModelScorerTest {
                 "model name",
                 contextFieldNames,
                 baseScorerConf,
-                maxRatioFromUniformThreshold
+                maxRatioFromUniformThreshold,
+                scorerFactoryService, eventModelsCacheService
         ).calculateScore(adeRecordReader);
     }
 
     @Test
-    @Ignore
     public void shouldDelegateToBaseScorerUsingCalibrationInModel() throws Exception {
         PersonalThresholdModel personalThresholdModel = new PersonalThresholdModel(100, 1000, 0.9);
         String featureScoreName = "calibrated score";
@@ -189,7 +196,6 @@ public class PersonalThresholdModelScorerTest {
     }
 
     @Test
-    @Ignore
     public void shouldDelegateToBaseScorerUsingZeroCalibrationIfModelIsNull() throws Exception {
         String featureScoreName = "calibrated score";
         double score = 0.95;
