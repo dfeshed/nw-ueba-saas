@@ -1,18 +1,21 @@
 package fortscale.aggregation.feature.event;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import fortscale.aggregation.feature.bucket.FeatureBucketConf;
 import net.minidev.json.JSONObject;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.Assert;
 
 import java.io.Serializable;
 import java.util.*;
 
-@JsonAutoDetect(fieldVisibility = Visibility.NONE, getterVisibility = Visibility.ANY, setterVisibility = Visibility.ANY, isGetterVisibility = Visibility.ANY)
+@JsonAutoDetect(
+		fieldVisibility = JsonAutoDetect.Visibility.NONE,
+		getterVisibility = JsonAutoDetect.Visibility.ANY,
+		isGetterVisibility = JsonAutoDetect.Visibility.ANY,
+		setterVisibility = JsonAutoDetect.Visibility.ANY
+)
 public class AggregatedFeatureEventConf implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -26,8 +29,6 @@ public class AggregatedFeatureEventConf implements Serializable {
 	private Map<String, List<String>> aggregatedFeatureNamesMap;
 	private JSONObject aggregatedFeatureEventFunction;
 	private String type;
-	private String outputBucketStrategy = null;
-	private boolean fireEventsAlsoForEmptyBucketTicks = false;
 
 	@JsonCreator
 	public AggregatedFeatureEventConf(
@@ -83,7 +84,9 @@ public class AggregatedFeatureEventConf implements Serializable {
 		return waitAfterBucketCloseSeconds;
 	}
 
-	public String getAnomalyType() { return anomalyType; }
+	public String getAnomalyType() {
+		return anomalyType;
+	}
 
 	public Map<String, List<String>> getAggregatedFeatureNamesMap() {
 		Map<String, List<String>> mapClone = new HashMap<>(aggregatedFeatureNamesMap.size());
@@ -109,72 +112,55 @@ public class AggregatedFeatureEventConf implements Serializable {
 		return aggregatedFeatureEventFunction;
 	}
 
-	public String getOutputBucketStrategy() {
-		return outputBucketStrategy;
-	}
-
-	public boolean getFireEventsAlsoForEmptyBucketTicks() {
-		return fireEventsAlsoForEmptyBucketTicks;
-	}
-
 	public void setName(String name) {
-		Assert.isTrue(StringUtils.isNotBlank(name));
+		Assert.hasText(name, "name cannot be blank.");
 		this.name = name;
 	}
 
 	public void setBucketConfName(String bucketConfName) {
-		Assert.isTrue(StringUtils.isNotBlank(bucketConfName));
+		Assert.hasText(bucketConfName, "bucketConfName cannot be blank.");
 		this.bucketConfName = bucketConfName;
 	}
 
 	public void setNumberOfBuckets(int numberOfBuckets) {
-		Assert.isTrue(numberOfBuckets >= 1);
+		Assert.isTrue(numberOfBuckets >= 1, "numberOfBuckets must be larger than or equal to 1.");
 		this.numberOfBuckets = numberOfBuckets;
 	}
 
 	public void setBucketsLeap(int bucketsLeap) {
-		Assert.isTrue(bucketsLeap >= 1);
+		Assert.isTrue(bucketsLeap >= 1, "bucketsLeap must be larger than or equal to 1.");
 		this.bucketsLeap = bucketsLeap;
 	}
 
 	public void setWaitAfterBucketCloseSeconds(long waitAfterBucketCloseSeconds) {
-		Assert.isTrue(waitAfterBucketCloseSeconds >= 0);
+		Assert.isTrue(waitAfterBucketCloseSeconds >= 0, "waitAfterBucketCloseSeconds must be larger than or equal to 0.");
 		this.waitAfterBucketCloseSeconds = waitAfterBucketCloseSeconds;
 	}
 
 	public void setAnomalyType(String anomalyType) {
-//		Assert.isTrue(StringUtils.isNotBlank(anomalyType));
 		this.anomalyType = anomalyType;
 	}
 
-
 	public void setAggregatedFeatureNamesMap(Map<String, List<String>> aggregatedFeatureNamesMap) {
-		Assert.notEmpty(aggregatedFeatureNamesMap);
+		Assert.notEmpty(aggregatedFeatureNamesMap, "aggregatedFeatureNamesMap cannot be empty.");
 		for (Map.Entry<String, List<String>> entry : aggregatedFeatureNamesMap.entrySet()) {
-			Assert.isTrue(StringUtils.isNotBlank(entry.getKey()));
-			Assert.notEmpty(entry.getValue());
+			Assert.hasText(entry.getKey(), "aggregatedFeatureNamesMap keys cannot be blank.");
+			Assert.notEmpty(entry.getValue(), "aggregatedFeatureNamesMap values cannot be empty.");
 			for (String aggregatedFeatureName : entry.getValue()) {
-				Assert.isTrue(StringUtils.isNotBlank(aggregatedFeatureName));
+				Assert.hasText(aggregatedFeatureName, "aggregatedFeatureName cannot be blank.");
 			}
 		}
+
 		this.aggregatedFeatureNamesMap = aggregatedFeatureNamesMap;
 	}
 
 	public void setAggregatedFeatureEventFunction(JSONObject aggregatedFeatureEventFunction) {
-		Assert.notNull(aggregatedFeatureEventFunction);
+		Assert.notNull(aggregatedFeatureEventFunction, "aggregatedFeatureEventFunction cannot be null.");
 		this.aggregatedFeatureEventFunction = aggregatedFeatureEventFunction;
 	}
 
 	public void setType(String type) {
-		Assert.isTrue(StringUtils.isNotBlank(type));
+		Assert.hasText(type, "type cannot be blank.");
 		this.type = type;
-	}
-
-	public void setOutputBucketStrategy(String outputBucketStrategy) {
-		this.outputBucketStrategy = outputBucketStrategy;
-	}
-
-	public void setFireEventsAlsoForEmptyBucketTicks(boolean fireEventsAlsoForEmptyBucketTicks) {
-		this.fireEventsAlsoForEmptyBucketTicks = fireEventsAlsoForEmptyBucketTicks;
 	}
 }

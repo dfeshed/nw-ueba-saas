@@ -103,7 +103,7 @@ public class ScoreAggregationsApplicationTest extends EnrichedFileSourceBaseAppT
             boolean isScoreAggregationConf = AggregatedFeatureType.fromCodeRepresentation(conf.getType()).equals(AggregatedFeatureType.SCORE_AGGREGATION);
 
             String strategyName = conf.getBucketConf().getStrategyName();
-            boolean isHourly = FixedDurationStrategy.fromStartegyName(strategyName).equals(FixedDurationStrategy.HOURLY);
+            boolean isHourly = FixedDurationStrategy.fromStrategyName(strategyName).equals(FixedDurationStrategy.HOURLY);
             return (isScoreAggregationConf && isHourly && conf.getName().contains("File"));
         }).collect(Collectors.toList());
 

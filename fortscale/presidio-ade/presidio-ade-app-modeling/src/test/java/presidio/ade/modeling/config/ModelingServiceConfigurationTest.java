@@ -23,7 +23,7 @@ public class ModelingServiceConfigurationTest {
 		// Feature aggregation event conf service
 		properties.put("presidio.ade.modeling.feature.aggregation.event.confs.base.path", "classpath*:config/asl/aggregation-records/feature-aggregation-records/*.json");
 		// Smart event conf service
-        //todo
+		properties.put("presidio.ade.smart.record.base.configurations.path","classpath*:config/asl/smart-records/*");
 		// Model conf service
 		properties.put("presidio.ade.modeling.enriched.records.group.name", "enriched-record-models");
 		properties.put("presidio.ade.modeling.enriched.records.base.configuration.path", "classpath*:config/asl/models/enriched-records/*.json");
@@ -33,8 +33,6 @@ public class ModelingServiceConfigurationTest {
 		properties.put("presidio.ade.modeling.smart.records.base.configuration.path", "classpath*:config/asl/models/smart-records/*.json");
 		// Additional properties
 		properties.put("presidio.ade.modeling.feature.buckets.default.expire.after.seconds", 7776000);
-		properties.put("presidio.ade.modeling.event.type.field.value.aggr.event", "aggr_event");
-		properties.put("presidio.ade.modeling.context.field.key", "context");
 		return new TestPropertiesPlaceholderConfigurer(properties);
 	}
 }

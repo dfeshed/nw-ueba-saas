@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.aggregation.configuration.AslConfigurationService;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.Assert;
 import presidio.ade.domain.record.AdeRecordReader;
 
@@ -17,7 +18,7 @@ import java.util.stream.Collectors;
  */
 public class BucketConfigurationService extends AslConfigurationService {
 	private static final Logger logger = Logger.getLogger(BucketConfigurationService.class);
-	public static final String JSON_CONF_BUCKET_CONFS_NODE_NAME = "BucketConfs";
+	private static final String JSON_CONF_BUCKET_CONFS_NODE_NAME = "BucketConfs";
 
 	private Map<String, FeatureBucketConf> bucketConfs = new HashMap<>();
 	private Map<String, List<FeatureBucketConf>> adeEventTypeToListOfBucketConfs = new HashMap<>();
@@ -26,10 +27,12 @@ public class BucketConfigurationService extends AslConfigurationService {
 	private String bucketConfJsonOverridingFilesPath;
 	private String bucketConfJsonAdditionalFilesPath;
 
+	public BucketConfigurationService(
+			String bucketConfJsonFilePath,
+			String bucketConfJsonOverridingFilesPath,
+			String bucketConfJsonAdditionalFilesPath) {
 
-	public BucketConfigurationService(String bucketConfJsonFilePath,
-									  String bucketConfJsonOverridingFilesPath,String bucketConfJsonAdditionalFilesPath){
-		this.bucketConfJsonFilePath =bucketConfJsonFilePath;
+		this.bucketConfJsonFilePath = bucketConfJsonFilePath;
 		this.bucketConfJsonOverridingFilesPath = bucketConfJsonOverridingFilesPath;
 		this.bucketConfJsonAdditionalFilesPath = bucketConfJsonAdditionalFilesPath;
 	}
@@ -76,77 +79,57 @@ public class BucketConfigurationService extends AslConfigurationService {
 		}
 	}
 
-	public Collection<FeatureBucketConf> getFeatureBucketConfs(){
-		return bucketConfs.values();
-	}
-
 	/**
-	 * Get list of FeatureBucketConf by ade event type, strategyName and contextFieldNames
-	 * @param adeRecordReader
-	 * @param strategyName
-	 * @param contextFieldNames
-	 * @return list of featureBucketConfs
+	 * @return list of {@link FeatureBucketConf}s by adeEventType, strategyName and contextFieldNames
 	 */
-	public List<FeatureBucketConf> getRelatedBucketConfs(AdeRecordReader adeRecordReader, String strategyName, List<String> contextFieldNames) {
+	public List<FeatureBucketConf> getRelatedBucketConfs(
+			AdeRecordReader adeRecordReader, String strategyName, List<String> contextFieldNames) {
+
 		if (adeRecordReader == null) return null;
 		String adeEventType = adeRecordReader.getAdeEventType();
-		if (adeEventType.isEmpty()) return null;
+		if (StringUtils.isEmpty(adeEventType)) return null;
 		List<FeatureBucketConf> featureBucketConfs = adeEventTypeToListOfBucketConfs.get(adeEventType);
-		Assert.notNull(featureBucketConfs,String.format("no feature bucket conf is defined for adeEventType=%s", adeEventType));
+		Assert.notNull(featureBucketConfs, String.format("no feature bucket conf is defined for adeEventType=%s", adeEventType));
 
-		featureBucketConfs = featureBucketConfs.stream().filter(featureBucketConf -> featureBucketConf.getStrategyName().equals(strategyName) && featureBucketConf.getContextFieldNames().equals(contextFieldNames)).collect(Collectors.toList());
+		featureBucketConfs = featureBucketConfs.stream()
+				.filter(featureBucketConf ->
+						featureBucketConf.getStrategyName().equals(strategyName) &&
+						featureBucketConf.getContextFieldNames().equals(contextFieldNames))
+				.collect(Collectors.toList());
 
 		return featureBucketConfs;
 	}
-
 
 	public FeatureBucketConf getBucketConf(String bucketConfName) {
 		return bucketConfs.get(bucketConfName);
 	}
 
-	public boolean isBucketConfExist(String bucketConfName) {
-		return bucketConfs.containsKey(bucketConfName);
-	}
-
-	public void addNewBucketConf(FeatureBucketConf bucketConf) throws BucketAlreadyExistException {
-		FeatureBucketConf existingBucketConf = getBucketConf(bucketConf.getName());
-
-		if (existingBucketConf != null) {
-			throw new BucketAlreadyExistException(existingBucketConf, bucketConf);
-		}
-
-		bucketConfs.put(bucketConf.getName(), bucketConf);
-		List<String> adeEventTypeList = bucketConf.getAdeEventTypes();
-
-		for (String adeEventType : adeEventTypeList) {
-			List<FeatureBucketConf> listOfBucketConfs = adeEventTypeToListOfBucketConfs.get(adeEventType);
-
-			if (listOfBucketConfs == null) {
-				listOfBucketConfs = new ArrayList<>();
-				adeEventTypeToListOfBucketConfs.put(adeEventType, listOfBucketConfs);
-			}
-
-			listOfBucketConfs.add(bucketConf);
-		}
-	}
-
-	public void addNewAggregatedFeatureConfToBucketConf(String bucketConfName, AggregatedFeatureConf aggregatedFeatureConf) {
-		FeatureBucketConf featureBucketConf = getBucketConf(bucketConfName);
-		featureBucketConf.addAggregatedFeatureConf(aggregatedFeatureConf);
-	}
-
-	public Set<List<String>> getRelatedDistinctContexts(String adeEventType){
+	public Set<List<String>> getRelatedDistinctContexts(String adeEventType) {
 		List<FeatureBucketConf> featureBucketConfs = adeEventTypeToListOfBucketConfs.get(adeEventType);
-		if(featureBucketConfs == null){
+		if (featureBucketConfs == null) {
 			logger.warn("no feature bucket conf for the given ade event type {}", adeEventType);
-			//todo: add metric
+			// TODO: Add monitoring metric
 			return Collections.emptySet();
 		}
+
 		Set<List<String>> distinctContextsSet = new HashSet<>();
-		for(FeatureBucketConf featureBucketConf: featureBucketConfs){
+		for (FeatureBucketConf featureBucketConf : featureBucketConfs) {
 			distinctContextsSet.add(featureBucketConf.getContextFieldNames());
 		}
 
 		return distinctContextsSet;
+	}
+
+	private void addNewBucketConf(FeatureBucketConf bucketConf) throws BucketAlreadyExistException {
+		FeatureBucketConf existingBucketConf = getBucketConf(bucketConf.getName());
+		if (existingBucketConf != null) throw new BucketAlreadyExistException(existingBucketConf, bucketConf);
+		bucketConfs.put(bucketConf.getName(), bucketConf);
+		List<String> adeEventTypeList = bucketConf.getAdeEventTypes();
+
+		for (String adeEventType : adeEventTypeList) {
+			List<FeatureBucketConf> listOfBucketConfs = adeEventTypeToListOfBucketConfs
+					.computeIfAbsent(adeEventType, key -> new ArrayList<>());
+			listOfBucketConfs.add(bucketConf);
+		}
 	}
 }
