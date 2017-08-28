@@ -4,7 +4,7 @@
 const EngineAddon = require('ember-engines/lib/engine-addon');
 
 const { isDevelopingAddon } = require('../common');
-const projectName = 'changeme';
+const projectName = 'investigate-events';
 
 module.exports = EngineAddon.extend({
   name: projectName,
@@ -42,8 +42,8 @@ module.exports = EngineAddon.extend({
 
   outputPaths: {
     vendor: {
-      js: '/assets/changeme.js',
-      css: '/assets/changeme.css'
+      js: '/assets/investigate-events.js',
+      css: '/assets/investigate-events.css'
     }
   }
 });

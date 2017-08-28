@@ -2,8 +2,8 @@
 
 1. Copy the contents of this folder to the root of `sa_ui` into a folder named `changeme`
 2. `cd changeme`
-4. Run `yarn`
-5. Run `ember s`
+3. `ln -s ../node_modules node_modules`
+4. `ember s`
 
 You should now have a dummy app showing the engine running at `http://localhost:4200`
 

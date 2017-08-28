@@ -1,5 +1,5 @@
 {
-  "name": "changeme",
+  "name": "investigate-events",
   "version": "0.0.0",
   "description": "The default blueprint for sa-ui engines.",
   "keywords": [
@@ -71,7 +71,8 @@
     "configPath": "tests/dummy/config",
     "paths": [
       "../component-lib",
-      "../streaming-data"
+      "../streaming-data",
+      "../recon"
     ]
   },
   "private": true

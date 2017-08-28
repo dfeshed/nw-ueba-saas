@@ -2,6 +2,7 @@ const ALL_SUBMODULES = [
   'component-lib',
   'mock-server',
   'recon',
+  'investigate-events',
   'investigate',
   'respond',
   'sa',
@@ -30,6 +31,10 @@ const saModuleDependants = {
     'investigate',
     'respond',
     'context'
+  ],
+  'investigate-events': [
+    'sa',
+    'investigate'
   ],
   recon: [
     'sa',
@@ -75,6 +80,11 @@ const saModuleDependencies = {
     'recon',
     'context',
     'respond'
+  ],
+  'investigate-events': [
+    'component-lib',
+    'streaming-data',
+    'mock-server'
   ],
   investigate: [
     'component-lib',

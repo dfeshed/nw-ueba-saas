@@ -42,6 +42,7 @@ prepareApp component-lib
 prepareApp streaming-data
 prepareApp recon
 prepareApp style-guide
+prepareApp investigate-events
 prepareApp investigate
 prepareApp respond
 prepareApp context

@@ -26,6 +26,7 @@ nukeNode component-lib
 nukeNode streaming-data
 nukeNode recon
 nukeNode style-guide
+nukeNode investigate-events
 nukeNode investigate
 nukeNode respond
 nukeNode context
