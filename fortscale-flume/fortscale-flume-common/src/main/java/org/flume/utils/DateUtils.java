@@ -51,6 +51,9 @@ public class DateUtils {
      * @return the given {@code time} rounded 'UP' by the given {@code temporalUnit} using the given {@code zoneOffset}
      */
     public static Instant ceiling(Instant time, TemporalUnit temporalUnit, ZoneOffset zoneOffset) {
+        if (time.equals(floor(time, temporalUnit, zoneOffset))) {
+            return time;
+        }
         /* Convert to LocalDateTime. Use time zone offset */
         LocalDateTime localDateTime = LocalDateTime.ofInstant(time, zoneOffset);
 
