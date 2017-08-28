@@ -36,7 +36,7 @@ public class EnrichedSuccessfulFileOpenedGenerator extends EnrichedFileGenerator
         generator.setTimeGenerator(new TimeGenerator(LocalTime.of(0, 0), LocalTime.of(23, 59), interval, DAYS_BACK_FROM, DAYS_BACK_TO));
         generator.setUserGenerator(new SingleUserGenerator(testUser));
 
-        OperationType operationType = new OperationType("FILE_OPENED", Collections.emptyList());
+        OperationType operationType = new OperationType("FILE_OPENED", Collections.singletonList("FILE_ACTION"));
         FixedFileOperationTypeGenerator fixedFileOperationTypeGenerator = new FixedFileOperationTypeGenerator(operationType);
         FileOperationGenerator fileOperationGenerator = new FileOperationGenerator();
         fileOperationGenerator.setOperationTypeGenerator(fixedFileOperationTypeGenerator);

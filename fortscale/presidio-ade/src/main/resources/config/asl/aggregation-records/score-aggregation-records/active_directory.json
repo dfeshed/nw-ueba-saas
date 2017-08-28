@@ -18,6 +18,23 @@
       }
     },
     {
+      "name": "sumOfHighestSecuritySensitiveOperationActiveDirectoryHourly",
+      "type": "P",
+      "bucketConfName": "operationTypeToHighestScoreMapUserIdSecuritySensitiveActiveDirectoryHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 300,
+      "anomalyType": " ",
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "operationTypeToHighestScoreMap"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_map_values_max_sum_func"
+      }
+    },
+    {
       "name": "adminPasswordChangedScoreActiveDirectoryHourly",
       "type": "P",
       "bucketConfName": "adminPasswordChangedScoreUserIdActiveDirectoryHourly",
