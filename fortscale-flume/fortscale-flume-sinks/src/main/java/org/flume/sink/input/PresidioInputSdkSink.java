@@ -110,7 +110,7 @@ public class PresidioInputSdkSink<T extends AbstractAuditableDocument> extends A
     }
 
     @Override
-    protected void saveEvents(List<T> records) {
+    protected int saveEvents(List<T> records) {
         final boolean allSavedSuccessfully = presidioInputPersistencyService.store(schema, records);
         final int size = records.size();
         if (allSavedSuccessfully) {
@@ -119,6 +119,7 @@ public class PresidioInputSdkSink<T extends AbstractAuditableDocument> extends A
         } else {
             logger.warn("Not all records out of {} total records were saved successfully", size);
         }
+        return size;
     }
 
 
