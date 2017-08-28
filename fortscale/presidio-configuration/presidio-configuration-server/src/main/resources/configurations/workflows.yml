@@ -8,7 +8,7 @@ dags:
   - dag_id: full_flow
     args:
       hourly_smart_events_confs:
-      - normalized_username_hourly
+      - userId_hourly
       data_sources:
       - AUTHENTICATION
       - FILE
