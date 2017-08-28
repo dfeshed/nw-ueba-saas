@@ -173,4 +173,8 @@ public class PresidioMongoSink<T extends AbstractDocument> extends AbstractPresi
                 .append("username", username)
                 .toString();
     }
+
+    public void setSinkMongoRepositoryForTests(SinkMongoRepository sinkMongoRepository) {
+        this.sinkMongoRepository = sinkMongoRepository;
+    }
 }
