@@ -18,4 +18,6 @@ public interface EventPersistencyService {
      * @param records  data to be stored
      */
     void store(Schema schema, List<? extends EnrichedEvent> records) throws Exception;
+
+    EnrichedEvent findLatestEventForUser(String userId);
 }

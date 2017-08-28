@@ -6,8 +6,7 @@ import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 import presidio.output.domain.records.AbstractElasticDocument;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by efratn on 20/08/2017.
@@ -124,7 +123,30 @@ public class User extends AbstractElasticDocument {
         this.alertClassifications = alertClassifications;
     }
 
+
+    public void addAlertClassifications(List<String> alertClassifications) {
+        Set<String> newAlertClassifications = new HashSet<String>(this.alertClassifications);
+        newAlertClassifications.addAll(alertClassifications);
+        this.alertClassifications=new ArrayList<>();
+        this.alertClassifications.addAll(newAlertClassifications);
+    }
+
     public void setIndicators(List<String> indicators) {
         this.indicators = indicators;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        User user = (User) o;
+
+        return userId.equals(user.userId);
+    }
+
+    @Override
+    public int hashCode() {
+        return userId.hashCode();
     }
 }

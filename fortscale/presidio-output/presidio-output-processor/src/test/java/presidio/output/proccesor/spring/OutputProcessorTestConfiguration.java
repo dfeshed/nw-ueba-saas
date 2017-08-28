@@ -9,11 +9,15 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import presidio.ade.sdk.common.AdeManagerSdk;
 import presidio.ade.sdk.common.AdeManagerSdkConfig;
+import presidio.output.domain.spring.EventPersistencyServiceConfig;
 import presidio.output.processor.OutputShellCommands;
 import presidio.output.processor.services.OutputExecutionService;
 import presidio.output.processor.services.OutputExecutionServiceImpl;
 import presidio.output.processor.services.alert.AlertService;
+import presidio.output.processor.services.user.UserScoreService;
+import presidio.output.processor.services.user.UserService;
 import presidio.output.processor.spring.AlertServiceElasticConfig;
+import presidio.output.processor.spring.UserServiceConfig;
 
 import java.util.Properties;
 
@@ -25,7 +29,9 @@ import java.util.Properties;
         AdeManagerSdkConfig.class,
         AlertServiceElasticConfig.class,
         OutputShellCommands.class,
-        BootShimConfig.class})
+        BootShimConfig.class,
+        UserServiceConfig.class,
+        EventPersistencyServiceConfig.class})
 public class OutputProcessorTestConfiguration {
 
     @Autowired
@@ -34,20 +40,14 @@ public class OutputProcessorTestConfiguration {
     @Autowired
     private AlertService alertService;
 
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private UserScoreService userScoreService;
+
     @Bean
     public OutputExecutionService outputProcessService() {
-        return new OutputExecutionServiceImpl(adeManagerSdk, alertService);
-    }
-    @Bean
-    public static TestPropertiesPlaceholderConfigurer outputProcessorTestConfigurationTestConfigurer()
-    {
-        Properties properties = new Properties();
-        properties.put("streaming.event.field.type.aggr_event", "aggr_event");
-        properties.put("streaming.aggr_event.field.context", "context");
-        properties.put("severity.critical", 95);
-        properties.put("severity.high", 85);
-        properties.put("severity.mid", 70);
-        properties.put("severity.low", 50);
-        return new TestPropertiesPlaceholderConfigurer(properties);
+        return new OutputExecutionServiceImpl(adeManagerSdk, alertService, userService,userScoreService);
     }
 }

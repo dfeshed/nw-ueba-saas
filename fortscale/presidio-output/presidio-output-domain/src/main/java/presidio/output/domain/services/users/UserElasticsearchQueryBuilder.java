@@ -32,12 +32,20 @@ public class UserElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<Use
         }
     }
 
+    /**
+     * Add all sort fields
+     * @param userQuery
+     */
     public void withSort(UserQuery userQuery) {
-        if (StringUtils.isNotEmpty(userQuery.getSortField())) {
-            FieldSortBuilder sortBuilder = new FieldSortBuilder(userQuery.getSortField());
-            SortOrder order = userQuery.isAscendingOrder()? SortOrder.ASC: SortOrder.DESC;
-            sortBuilder.order(order);
-            super.withSort(sortBuilder);
+        if (userQuery.getSort()!=null) {
+
+            userQuery.getSort().forEach(order->{
+                FieldSortBuilder sortBuilder = new FieldSortBuilder(order.getProperty());
+                SortOrder direction = order.getDirection().name().equals(SortOrder.ASC.name())? SortOrder.ASC: SortOrder.DESC;
+                sortBuilder.order(direction);
+                super.withSort(sortBuilder);
+            });
+
         }
     }
 

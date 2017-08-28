@@ -61,6 +61,13 @@
             <artifactId>presidio-output-domain</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-module-junit4</artifactId>
+            <version>1.7.1</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
     <build>
