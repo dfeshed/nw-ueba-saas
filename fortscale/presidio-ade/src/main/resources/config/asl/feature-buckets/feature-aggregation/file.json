@@ -22,7 +22,7 @@
             "type": "aggr_feature_histogram_func"
           },
           "filter": {
-            "jsonPath": "[?(@.operationType == 'LOCAL_SHARE_PERMISSIONS_CHANGED' || @.operationType == 'FOLDER_ACCESS_RIGHTS_CHANGED' || @.operationType == 'FILE_ACCESS_RIGHTS_CHANGED' || @.operationType == 'FILE_CLASSIFICATION_CHANGED' || @.operationType == 'FOLDER_CLASSIFICATION_CHANGED' || @.operationType == 'FILE_CENTRAL_ACCESS_POLICY_CHANGED')]"
+            "jsonPath": "[?('FILE_PERMISSION_CHANGE' in @['operationTypeCategories'])]"
           }
         }
       ]
@@ -49,7 +49,7 @@
             "type": "aggr_feature_histogram_func"
           },
           "filter": {
-            "jsonPath": "[?(@.operationType == 'FOLDER_OPENED' || @.operationType == 'FILE_DELETED' || @.operationType == 'FILE_OPENED' || @.operationType == 'FILE_RENAMED' || @.operationType == 'FILE_MOVED')]"
+            "jsonPath": "[?('FILE_ACTION' in @['operationTypeCategories'])]"
           }
         }
       ]

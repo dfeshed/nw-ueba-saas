@@ -79,8 +79,6 @@ public class FeatureAggregationsApplicationTest extends EnrichedFileSourceBaseAp
         ModelDAO priorModelDao = new ModelDAO(sessionId, null, gaussianPriorModel, startTime, endTime);
         mongoTemplate.insert(continousModelDao, "model_numberOfSuccessfulFileAction.userId.file.hourly");
         mongoTemplate.insert(priorModelDao, "model_numberOfSuccessfulFileAction.userId.prior.global.file.hourly");
-
-        int t = 0;
     }
 
 

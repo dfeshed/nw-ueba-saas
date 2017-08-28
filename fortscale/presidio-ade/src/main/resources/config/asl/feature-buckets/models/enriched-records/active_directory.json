@@ -23,6 +23,36 @@
           }
         }
       ]
+    },
+    {
+      "name": "operationTypeHistogramUserIdSecuritySensitiveActiveDirectoryDaily",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "active_directory"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "aggrFeatureConfs": [
+        {
+          "name": "operationTypeHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "operationType"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          },
+          "filter": {
+            "jsonPath": "[?('SECURITY_SENSITIVE_OPERATION' in @['operationTypeCategories'])]"
+          }
+        }
+      ]
     }
+
+
+
   ]
 }
