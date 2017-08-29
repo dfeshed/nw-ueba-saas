@@ -3,11 +3,8 @@ package fortscale.ml.model.retriever;
 import fortscale.common.feature.Feature;
 import fortscale.ml.model.*;
 import fortscale.ml.model.ModelBuilderData.NoDataReason;
-import fortscale.ml.model.retriever.metrics.ModelRetrieverMetrics;
 import fortscale.ml.model.store.ModelDAO;
 import fortscale.ml.model.store.ModelStore;
-import fortscale.utils.monitoring.stats.StatsService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 
 import java.util.*;
@@ -32,7 +29,7 @@ public class ModelRetriever extends AbstractDataRetriever {
 		Assert.isNull(contextId, String.format("%s can't be used with a context", getClass().getSimpleName()));
 		fillModelConfService();
 
-		List<Model> models = modelStore.getAllContextsModelDaosWithLatestEndTimeLte(modelConf, endTime.getTime() / 1000).stream()
+		List<Model> models = modelStore.getAllContextsModelDaosWithLatestEndTimeLte(modelConf, endTime.toInstant()).stream()
 				.map(ModelDAO::getModel)
 				.collect(Collectors.toList());
 
