@@ -14,23 +14,23 @@ import java.util.List;
 public class AccumulatedSmartValueRetrieverConf extends AbstractDataRetrieverConf {
     public static final String ACCUMULATED_SMART_VALUE_RETRIEVER_FACTORY_NAME = "accumulated_smart_value_retriever";
     private final String smartRecordConfName;
-    private final String alphasBetasModelName;
+    private final String weightsModelName;
 
     /**
      * C'tor
      * @param smartRecordConfName - name of smart records defined at {@link fortscale.smart.record.conf.SmartRecordConfService}
-     * @param alphasBetasModelName - name of the model defined at {@link fortscale.ml.model.ModelConfService}
+     * @param weightsModelName - name of the model defined at {@link fortscale.ml.model.ModelConfService}
      */
     @JsonCreator
     public AccumulatedSmartValueRetrieverConf(
             @JsonProperty("timeRangeInSeconds") long timeRangeInSeconds,
             @JsonProperty("functions") List<JSONObject> functions,
             @JsonProperty("smartRecordConfName") String smartRecordConfName,
-            @JsonProperty("alphasBetasModelName") String alphasBetasModelName) {
+            @JsonProperty("weightsModelName") String weightsModelName) {
         super(timeRangeInSeconds, functions);
         Assert.hasText(smartRecordConfName,"smartRecordConfName must be non empty");
         this.smartRecordConfName = smartRecordConfName;
-        this.alphasBetasModelName = alphasBetasModelName;
+        this.weightsModelName = weightsModelName;
     }
 
     @Override
@@ -42,7 +42,7 @@ public class AccumulatedSmartValueRetrieverConf extends AbstractDataRetrieverCon
         return smartRecordConfName;
     }
 
-    public String getAlphasBetasModelName() {
-        return alphasBetasModelName;
+    public String getWeightsModelName() {
+        return weightsModelName;
     }
 }
