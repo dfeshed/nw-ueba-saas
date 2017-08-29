@@ -39,14 +39,6 @@ public abstract class AbstractDataRetriever {
 				null : new PatternReplacement(dataRetrieverConf.getPatternReplacementConf());
 	}
 
-	public String replacePattern(String original) {
-		if (patternReplacement != null) {
-			return patternReplacement.replacePattern(original);
-		} else {
-			return original;
-		}
-	}
-
 	protected Date getStartTime(Date endTime) {
 		long endTimeInSeconds = TimestampUtils.convertToSeconds(endTime.getTime());
 		long startTimeInSeconds = endTimeInSeconds - timeRangeInSeconds;
