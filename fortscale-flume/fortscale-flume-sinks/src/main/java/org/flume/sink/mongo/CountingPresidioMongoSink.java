@@ -83,7 +83,7 @@ public abstract class CountingPresidioMongoSink<T extends AbstractDocument> exte
     }
 
     /**
-     * how to handle failed counter update failure (twice). Can throw exception (unless changed, this will trigger a transaction rollback)
+     * How to handle failed counter update failure (twice). Can throw exception (unless changed, this will trigger a transaction rollback)
      *
      * @param firstException  the exception we got the after the 1st try
      * @param secondException the exception we got the after the 2nd try
@@ -92,13 +92,26 @@ public abstract class CountingPresidioMongoSink<T extends AbstractDocument> exte
         //do nothing
     }
 
+    /**
+     * This method returns the {@link fortscale.common.general.Schema} name for the {@code event}
+     *
+     * @param event the {@link T} whose {@link fortscale.common.general.Schema} we return
+     * @return the {@link fortscale.common.general.Schema} of {@code event}
+     */
     protected abstract String getEventSchemaName(T event);
 
+
+    /**
+     * This method returns the event-time for {@code event}. The time MUST be normalized to UTC time zone
+     *
+     * @param event the {@link T} whose time we return
+     * @return the time of {@code event}
+     */
     protected abstract Instant getEventTimeForCounter(T event);
 
 
     /**
-     * for tests
+     * ONLY for tests
      */
     public void setCountersUtilForTests(CountersUtil countersUtil) {
         this.countersUtil = countersUtil;
