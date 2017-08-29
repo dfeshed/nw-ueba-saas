@@ -1347,7 +1347,7 @@ export default {
       noData: 'No context data is available for this DataSource.',
       listDuplicateName: 'List name already exists!',
       listValidName: 'Enter valid list name (Max length is 255 characters).',
-      'total.entries.exceed.max': 'List size exceeds the limit 500000.',
+      'total.entries.exceed.max': 'List size exceeds the limit 100000.',
       'admin.error': 'Admin service is not reachable. Check your service connectivity.',
       'datasource.disk.usage.high': 'Low disk space. Delete unwanted data to free up space.',
       'context.service.timeout': 'Context Hub service is not reachable. Check your service connectivity.',
