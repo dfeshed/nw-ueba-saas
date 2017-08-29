@@ -159,12 +159,13 @@ public class UserScoreServiceImpl implements UserScoreService{
 
     /**
      * This function load all users' score and store it in a double array
+     * Only for user scores above 0
      */
     private double[] getScoresArray() {
 
 
         Sort sort = new Sort(Sort.Direction.ASC,"score");
-        Page<User> page = userPersistencyService.find(new UserQuery.UserQueryBuilder().pageNumber(0).pageSize(1000).sort(sort).build());
+        Page<User> page = userPersistencyService.find(new UserQuery.UserQueryBuilder().minScore(1).pageNumber(0).pageSize(1000).sort(sort).build());
         int numberOfElements = new Long(page.getTotalElements()).intValue();
         double[] scores = new double[numberOfElements];
         AtomicInteger courser = new AtomicInteger(0);

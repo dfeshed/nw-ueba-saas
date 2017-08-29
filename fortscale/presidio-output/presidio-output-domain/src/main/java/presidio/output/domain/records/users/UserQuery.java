@@ -10,6 +10,8 @@ public class UserQuery {
     // filters
     private final List<String> filterByAlertClassifications;
     private final List<String> filterByIndicators;
+    private Integer minScore;
+    private Integer maxScore;
 
     // sort
     private final Sort sort;
@@ -26,6 +28,8 @@ public class UserQuery {
 
         this.pageNumber =  builder.pageNumber;
         this.pageSize =  builder.pageSize;
+        this.minScore = builder.minScore;
+        this.maxScore = builder.maxScore;
     }
 
     public List<String> getFilterByAlertClassifications() {
@@ -48,13 +52,22 @@ public class UserQuery {
         return pageSize;
     }
 
+    public Integer getMinScore() {
+        return minScore;
+    }
 
+    public Integer getMaxScore() {
+        return maxScore;
+    }
 
     public static class UserQueryBuilder {
 
         // filters
         private List<String> filterByAlertClassifications;
         private List<String> filterByIndicators;
+        private Integer minScore;
+        private Integer maxScore;
+
 
         // sort
         private Sort sort;
@@ -82,6 +95,16 @@ public class UserQuery {
             Sort.Direction dir=ascendingOrder? Sort.Direction.ASC: Sort.Direction.DESC;
             Sort sort = new Sort(dir,sortField);
             return sort(sort);
+        }
+
+        public UserQueryBuilder minScore(Integer minScore) {
+            this.minScore = minScore;
+            return this;
+        }
+
+        public UserQueryBuilder maxScore(Integer maxScore) {
+            this.maxScore = maxScore;
+            return this;
         }
 
         public UserQueryBuilder pageNumber(int pageNumber) {

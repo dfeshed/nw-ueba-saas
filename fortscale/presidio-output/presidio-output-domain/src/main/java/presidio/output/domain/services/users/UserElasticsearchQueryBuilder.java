@@ -2,16 +2,16 @@ package presidio.output.domain.services.users;
 
 import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.elasticsearch.search.sort.FieldSortBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
-import presidio.output.domain.records.alerts.AlertQuery;
 import presidio.output.domain.records.users.User;
 import presidio.output.domain.records.users.UserQuery;
 import presidio.output.domain.services.ElasticsearchQueryBuilder;
 
 import static org.elasticsearch.index.query.QueryBuilders.matchQuery;
+import static org.elasticsearch.index.query.QueryBuilders.rangeQuery;
 
 public class UserElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<UserQuery> {
 
@@ -29,6 +29,18 @@ public class UserElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<Use
 
         if (boolQueryBuilder.hasClauses()) {
             super.withFilter(boolQueryBuilder);
+        }
+
+        if (userQuery.getMinScore() != null || userQuery.getMaxScore() != null){
+            RangeQueryBuilder rangeQuery = rangeQuery(User.SCORE_FIELD_NAME);
+            if (userQuery.getMinScore()>0) {
+                rangeQuery.gte(userQuery.getMinScore());
+            }
+            if (userQuery.getMaxScore()>0) {
+                rangeQuery.lte(userQuery.getMaxScore());
+            }
+
+            boolQueryBuilder.must(rangeQuery);
         }
     }
 

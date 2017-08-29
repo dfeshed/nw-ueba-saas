@@ -49,8 +49,8 @@ public class UserServiceImpl implements UserService{
 
     private UserDetails getUserDetails(String userId) {
         EnrichedEvent event = eventPersistencyService.findLatestEventForUser(userId);
-        String userDisplayName = event.getUserDisplayName();
-        String userName = event.getUserName();
+        String userDisplayName = event==null?userId:event.getUserDisplayName();
+        String userName = event==null?userId:event.getUserName();
         return new UserDetails(userName, userDisplayName, userId);
     }
 
