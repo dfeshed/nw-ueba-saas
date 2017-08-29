@@ -94,22 +94,22 @@ public class CountersUtil {
         }
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     private File createFile(String schemaName, String flumeComponentType) throws IOException {
         final String presidioHome = System.getenv("PRESIDIO_HOME");
-        final String folderName = presidioHome + File.separator + "flume" + File.separator + "counters" + File.separator + flumeComponentType;
-        final String fileName = folderName + File.separator + schemaName;
-        File file = new File(fileName);
-        Files.createDirectories(Paths.get(fileName));
-        if (!file.exists() && !Files.exists(Paths.get(folderName))) {
+        final String folderPath = presidioHome + File.separator + "flume" + File.separator + "counters" + File.separator + flumeComponentType;
+        final String filePath = folderPath + File.separator + schemaName;
+        if (!Files.exists(Paths.get(folderPath))) {
             try {
-                Files.createDirectories(Paths.get(fileName));
+                Files.createDirectories(Paths.get(folderPath));
             } catch (IOException e) {
-                final String warnMessage = "Can't create file " + file;
+                final String warnMessage = "Can't create folder " + folderPath;
                 logger.warn(warnMessage);
                 throw new IOException(warnMessage);
             }
-
         }
+        File file = new File(filePath);
+        file.createNewFile();
         return file;
     }
 
