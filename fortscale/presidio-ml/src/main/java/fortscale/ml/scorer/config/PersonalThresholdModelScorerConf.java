@@ -8,11 +8,9 @@ import org.springframework.util.Assert;
 
 
 @JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
-public class PersonalThresholdModelScorerConf extends AbstractScorerConf {
+public class PersonalThresholdModelScorerConf extends ModelInternalUniScorerConf {
 	public static final String SCORER_TYPE = "personal-threshold-model-scorer";
 
-	private ModelInfo modelInfo;
-	private IScorerConf baseScorerConf;
 	private double maxRatioFromUniformThreshold;
 
 	@JsonCreator
@@ -21,26 +19,14 @@ public class PersonalThresholdModelScorerConf extends AbstractScorerConf {
 											@JsonProperty("base-scorer") IScorerConf baseScorerConf,
 											@JsonProperty("max-ratio-from-uniform-threshold") double maxRatioFromUniformThreshold) {
 
-		super(name);
-		Assert.notNull(modelInfo);
-		Assert.notNull(baseScorerConf);
+		super(name, modelInfo, baseScorerConf);
 		Assert.isTrue(maxRatioFromUniformThreshold > 0, "max-ratio-from-uniform-threshold must be positive.");
-		this.modelInfo = modelInfo;
-		this.baseScorerConf = baseScorerConf;
 		this.maxRatioFromUniformThreshold = maxRatioFromUniformThreshold;
 	}
 
 	@Override
 	public String getFactoryName() {
 		return SCORER_TYPE;
-	}
-
-	public IScorerConf getBaseScorerConf() {
-		return baseScorerConf;
-	}
-
-	public ModelInfo getModelInfo() {
-		return modelInfo;
 	}
 
 	public double getMaxRatioFromUniformThreshold() {

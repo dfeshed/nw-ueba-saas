@@ -1,6 +1,29 @@
 {
   "BucketConfs": [
     {
+      "name": "sensitiveGroupMembershipOperationCounterUserIdActiveDirectoryHourly",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "active_directory"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "sensitiveGroupMembershipOperationCounter",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?('GROUP_MEMBERSHIP' in @['operationTypeCategories'] && 'SECURITY_SENSITIVE_OPERATION' in @['operationTypeCategories'])]"
+          }
+        }
+      ]
+    },
+    {
       "name": "groupMembershipOperationCounterUserIdActiveDirectoryHourly",
       "expireAfterSeconds": 31536000,
       "contextFieldNames": [
@@ -18,7 +41,8 @@
             "type": "aggr_feature_sum_func"
           },
           "filter": {
-            "jsonPath": "[?(@.operationType == 'OWNER_CHANGED_ON_GROUP_OBJECT' || @.operationType == 'NESTED_MEMBER_REMOVED_FROM_GROUP' || @.operationType == 'NESTED_MEMBER_ADDED_TO_GROUP' || @.operationType == 'MEMBER_REMOVED_FROM_GROUP' || @.operationType == 'MEMBER_ADDED_TO_GROUP' || @.operationType == 'GROUP_SAM_ACCOUNT_NAME_CHANGED' || @.operationType == 'GROUP_RENAMED' || @.operationType == 'GROUP_OBJECT_REMOVED' || @.operationType == 'GROUP_OBJECT_MOVED' || @.operationType == 'GROUP_OBJECT_ADDED' || @.operationType == 'GROUP_MEMBER_OF_REMOVED' || @.operationType == 'GROUP_MEMBER_OF_ADDED' || @.operationType == 'DACL_CHANGED_ON_GROUP_OBJECT' || @.operationType == 'USER_MEMBER_OF_REMOVED' || @.operationType == 'USER_MEMBER_OF_ADDED' || @.operationType == 'PRIMARY_GROUP_ID_CHANGED_FOR_USER_OBJECT' || @.operationType == 'NESTED_MEMBER_REMOVED_FROM_CRITICAL_ENTERPRISE_GROUP' || @.operationType == 'NESTED_MEMBER_ADDED_FROM_CRITICAL_ENTERPRISE_GROUP' || @.operationType == 'MEMBER_REMOVED_FROM_CRITICAL_ENTERPRISE_GROUP' || @.operationType == 'MEMBER_ADDED_FROM_CRITICAL_ENTERPRISE_GROUP' || @.operationType == 'OU_GROUP_POLICY_ORDER_CHANGED')]"          }
+            "jsonPath": "[?('GROUP_MEMBERSHIP' in @['operationTypeCategories'])]"
+          }
         }
       ]
     },
@@ -42,6 +66,33 @@
           },
           "aggrFeatureFuncJson": {
             "type": "aggr_feature_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "securitySensitiveOperationResultHistogramUserIdActiveDirectoryHourly",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "active_directory"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "securitySensitiveOperationHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "result"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          },
+          "filter": {
+            "jsonPath": "[?('SECURITY_SENSITIVE_OPERATION' in @['operationTypeCategories'])]"
           }
         }
       ]
