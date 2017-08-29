@@ -1,7 +1,7 @@
 {
   "AggregatedFeatureEvents": [
     {
-      "name": "highestStartInstantScoreFileHourly",
+      "name": "highestStartInstantScoreUserIdFileHourly",
       "type": "P",
       "bucketConfName": "highestStartInstantScoreUserIdFileHourly",
       "numberOfBuckets": 1,
@@ -18,7 +18,7 @@
       }
     },
     {
-      "name": "sumOfHighestFilePermissionChangeScoresFileHourly",
+      "name": "sumOfHighestFilePermissionChangeScoresUserIdFilePermissionChangeFileHourly",
       "type": "P",
       "bucketConfName": "operationTypeToHighestScoreMapUserIdFilePermissionChangeFileHourly",
       "numberOfBuckets": 1,
@@ -37,7 +37,7 @@
       }
     },
     {
-      "name": "sumOfHighestFileActionFileHourly",
+      "name": "sumOfHighestFileActionUserIdFileHourly",
       "type": "P",
       "bucketConfName": "operationTypeToHighestScoreMapUserIdFileActionFileHourly",
       "numberOfBuckets": 1,

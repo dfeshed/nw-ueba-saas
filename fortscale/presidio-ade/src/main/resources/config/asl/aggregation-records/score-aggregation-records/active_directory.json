@@ -1,7 +1,7 @@
 {
   "AggregatedFeatureEvents": [
     {
-      "name": "highestStartInstantScoreActiveDirectoryHourly",
+      "name": "highestStartInstantScoreUserIdActiveDirectoryHourly",
       "type": "P",
       "bucketConfName": "highestStartInstantScoreUserIdActiveDirectoryHourly",
       "numberOfBuckets": 1,
@@ -18,7 +18,7 @@
       }
     },
     {
-      "name": "sumOfHighestSecuritySensitiveOperationActiveDirectoryHourly",
+      "name": "sumOfHighestSecuritySensitiveOperationUserIdSecuritySensitiveActiveDirectoryHourly",
       "type": "P",
       "bucketConfName": "operationTypeToHighestScoreMapUserIdSecuritySensitiveActiveDirectoryHourly",
       "numberOfBuckets": 1,
@@ -35,7 +35,7 @@
       }
     },
     {
-      "name": "adminPasswordChangedScoreActiveDirectoryHourly",
+      "name": "adminPasswordChangedScoreUserIdActiveDirectoryHourly",
       "type": "P",
       "bucketConfName": "adminPasswordChangedScoreUserIdActiveDirectoryHourly",
       "numberOfBuckets": 1,
@@ -54,7 +54,7 @@
       }
     },
     {
-      "name": "nonAdminPasswordChangedScoreActiveDirectoryHourly",
+      "name": "nonAdminPasswordChangedScoreUserIdActiveDirectoryHourly",
       "type": "P",
       "bucketConfName": "nonAdminPasswordChangedScoreUserIdActiveDirectoryHourly",
       "numberOfBuckets": 1,
@@ -73,7 +73,7 @@
       }
     },
     {
-      "name": "userAccountEnabledScoreActiveDirectoryHourly",
+      "name": "userAccountEnabledScoreUserIdActiveDirectoryHourly",
       "type": "P",
       "bucketConfName": "userAccountEnabledScoreUserIdActiveDirectoryHourly",
       "numberOfBuckets": 1,
@@ -93,7 +93,7 @@
     },
 
     {
-      "name": "userAccountDisabledScoreActiveDirectoryHourly",
+      "name": "userAccountDisabledScoreUserIdActiveDirectoryHourly",
       "type": "P",
       "bucketConfName": "userAccountDisabledScoreUserIdActiveDirectoryHourly",
       "numberOfBuckets": 1,
@@ -113,7 +113,7 @@
     },
 
     {
-      "name": "userAccountUnlockedScoreActiveDirectoryHourly",
+      "name": "userAccountUnlockedScoreUserIdActiveDirectoryHourly",
       "type": "P",
       "bucketConfName": "userAccountUnlockedScoreUserIdActiveDirectoryHourly",
       "numberOfBuckets": 1,
@@ -132,7 +132,7 @@
       }
     },
     {
-      "name": "userAccountTypeChangedScoreActiveDirectoryHourly",
+      "name": "userAccountTypeChangedScoreUserIdActiveDirectoryHourly",
       "type": "P",
       "bucketConfName": "userAccountTypeChangedScoreUserIdActiveDirectoryHourly",
       "numberOfBuckets": 1,
@@ -151,7 +151,7 @@
       }
     },
     {
-      "name": "userAccountLockedScoreActiveDirectoryHourly",
+      "name": "userAccountLockedScoreUserIdActiveDirectoryHourly",
       "type": "P",
       "bucketConfName": "userAccountLockedScoreUserIdActiveDirectoryHourly",
       "numberOfBuckets": 1,
@@ -170,7 +170,7 @@
       }
     },
     {
-      "name": "userPasswordNeverExpiresOptionChangedScoreActiveDirectoryHourly",
+      "name": "userPasswordNeverExpiresOptionChangedScoreUserIdActiveDirectoryHourly",
       "type": "P",
       "bucketConfName": "userPasswordNeverExpiresOptionChangedScoreUserIdActiveDirectoryHourly",
       "numberOfBuckets": 1,
@@ -189,7 +189,7 @@
       }
     },
     {
-      "name": "passwordChangedByNonOwnerScoreActiveDirectoryHourly",
+      "name": "passwordChangedByNonOwnerScoreUserIdActiveDirectoryHourly",
       "type": "P",
       "bucketConfName": "passwordChangedByNonOwnerScoreUserIdActiveDirectoryHourly",
       "numberOfBuckets": 1,
@@ -208,7 +208,7 @@
       }
     },
     {
-      "name": "nestedMemberAddedToCriticalEnterpriseGroupScoreActiveDirectoryHourly",
+      "name": "nestedMemberAddedToCriticalEnterpriseGroupScoreUserIdActiveDirectoryHourly",
       "type": "P",
       "bucketConfName": "nestedMemberAddedToCriticalEnterpriseGroupScoreUserIdActiveDirectoryHourly",
       "numberOfBuckets": 1,
@@ -227,7 +227,7 @@
       }
     },
     {
-      "name": "memberAddedToCriticalEnterpriseGroupScoreActiveDirectoryHourly",
+      "name": "memberAddedToCriticalEnterpriseGroupScoreUserIdActiveDirectoryHourly",
       "type": "P",
       "bucketConfName": "memberAddedToCriticalEnterpriseGroupScoreUserIdActiveDirectoryHourly",
       "numberOfBuckets": 1,
