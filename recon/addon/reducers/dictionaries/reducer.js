@@ -1,9 +1,10 @@
+import Immutable from 'seamless-immutable';
 import { handleActions } from 'redux-actions';
 import { handle } from 'redux-pack';
 
 import * as ACTION_TYPES from 'recon/actions/types';
 
-const dictionariesInitialState = {
+const dictionariesInitialState = Immutable.from({
   // NOTE: actual aliases/language data is stored in
   // `.data` inside the following props. This is because
   // when these are provided by investigate the data
@@ -24,30 +25,27 @@ const dictionariesInitialState = {
 
   languageError: null,
   aliasesError: null
-};
+});
 
 const dictionariesReducer = handleActions({
-  [ACTION_TYPES.INITIALIZE]: (state, { payload }) => ({
-    ...dictionariesInitialState,
-
+  [ACTION_TYPES.INITIALIZE]: (state, { payload: { aliases, language } }) => {
     // Initialize can pass aliases and language in
-    aliases: payload.aliases,
-    language: payload.language
-  }),
+    return dictionariesInitialState.merge({ aliases, language });
+  },
 
   [ACTION_TYPES.LANGUAGE_RETRIEVE]: (state, action) => {
     return handle(state, action, {
-      start: (s) => ({ ...s, language: null, languageError: null }),
-      failure: (s) => ({ ...s, languageError: true }),
-      success: (s) => ({ ...s, language: { data: action.payload.data } })
+      start: (s) => s.merge({ language: null, languageError: null }),
+      failure: (s) => s.set('languageError', true),
+      success: (s) => s.set('language', { data: action.payload.data })
     });
   },
 
   [ACTION_TYPES.ALIASES_RETRIEVE]: (state, action) => {
     return handle(state, action, {
-      start: (s) => ({ ...s, aliases: null, aliasesError: null }),
-      failure: (s) => ({ ...s, aliasesError: true }),
-      success: (s) => ({ ...s, aliases: { data: action.payload.data } })
+      start: (s) => s.merge({ aliases: null, aliasesError: null }),
+      failure: (s) => s.set('aliasesError', true),
+      success: (s) => s.set('aliases', { data: action.payload.data })
     });
   }
 }, dictionariesInitialState);

@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import Component from 'ember-component';
-import computed, { filterBy, gt, alias } from 'ember-computed-decorators';
+import computed, { alias } from 'ember-computed-decorators';
 import { connect } from 'ember-redux';
 import ReconPager from 'recon/mixins/recon-pager';
 import ReconPanelHelp from 'recon/mixins/recon-panel-help';
@@ -11,7 +11,8 @@ import {
   filesRetrieved,
   filesWithSelection,
   hasNoFiles,
-  hasSelectedFiles
+  hasSelectedFiles,
+  hasMultipleSessionFiles
 } from 'recon/reducers/files/selectors';
 import {
   deselectAllFiles,
@@ -25,8 +26,9 @@ const stateToComputed = ({ recon, recon: { data, files } }) => ({
   files: filesWithSelection(recon),
   filesRetrieved: filesRetrieved(recon),
   hasNoFiles: hasNoFiles(recon),
+  hasSelectedFiles: hasSelectedFiles(recon),
   linkToFileAction: files.linkToFileAction,
-  hasSelectedFiles: hasSelectedFiles(recon)
+  hasMultipleSessionFiles: hasMultipleSessionFiles(recon)
 });
 
 const dispatchToActions = {
@@ -88,10 +90,6 @@ const FileReconComponent = Component.extend(ReconPager, ReconPanelHelp, {
 
     return calculatedConfig;
   },
-
-  @filterBy('files', 'type', 'session') sessionFiles: null,
-
-  @gt('sessionFiles.length', 1) hasMultipleSessionFiles: null,
 
   @alias('contextualHelp.invFileAnalysis') topic: null,
 

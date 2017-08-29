@@ -44,6 +44,18 @@ export const filesRetrieved = createSelector(
   (files) => files !== null
 );
 
+// Files are retrieved if the list of files
+// isn't null
+const sessionFiles = createSelector(
+  [files],
+  (files) => (files || []).filter((f) => f.type === 'session')
+);
+
+export const hasMultipleSessionFiles = createSelector(
+  [sessionFiles],
+  (files) => files.length > 1
+);
+
 /**
  * Returns an Array of all selected files.
  * @public

@@ -1,9 +1,10 @@
 import { handleActions } from 'redux-actions';
+import Immutable from 'seamless-immutable';
 
 import * as ACTION_TYPES from 'recon/actions/types';
 import { augmentResult, handleSetTo } from 'recon/reducers/util';
 
-const textInitialState = {
+const textInitialState = Immutable.from({
   decode: true,
 
   // the maximum number of packets represented in the textContent
@@ -15,7 +16,7 @@ const textInitialState = {
 
   renderIds: null,
   textContent: null
-};
+});
 
 const textReducer = handleActions({
   [ACTION_TYPES.REHYDRATE]: (state, { payload }) => {
@@ -23,59 +24,51 @@ const textReducer = handleActions({
     if (payload && payload.recon && payload.recon.text) {
       reducerState = payload.recon.text;
     }
-    return {
-      ...state,
-      ...reducerState
-    };
+    return state.merge(reducerState);
   },
 
-  [ACTION_TYPES.INITIALIZE]: (state) => ({
-    ...textInitialState,
-    decode: state.decode // let whatever decode is remain
-  }),
+  [ACTION_TYPES.INITIALIZE]: ({ decode }) => {
+    // let whatever decode is remain, otherwise, start over
+    return textInitialState.merge({ decode });
+  },
 
-  [ACTION_TYPES.TEXT_HIGHLIGHT_META]: (state, { payload }) => ({
-    ...state,
-    metaToHighlight: payload
-  }),
+  [ACTION_TYPES.TEXT_HIGHLIGHT_META]: (state, { payload }) => {
+    return state.set('metaToHighlight', payload);
+  },
 
   // If meta is toggled, need to clear metaToHighlight
-  [ACTION_TYPES.TOGGLE_META]: (state) => ({
-    ...state,
-    metaToHighlight: null
-  }),
+  [ACTION_TYPES.TOGGLE_META]: (state) => {
+    return state.set('metaToHighlight', null);
+  },
 
   [ACTION_TYPES.TEXT_RECEIVE_PAGE]: (state, { payload }) => {
-    const newContent = augmentResult(payload.data);
+    const augmentedEntries = augmentResult(payload.data);
+    const textContent = (state.textContent || Immutable.from([])).concat(augmentedEntries);
+
+    let { maxPacketsReached } = state;
     if (payload.meta && payload.meta.MAX_PACKETS_THRESHOLD) {
-      state.maxPacketsReached = true;
+      maxPacketsReached = true;
     }
-    return {
-      ...state,
-      textContent: state.textContent ? [...state.textContent, ...newContent] : newContent
-    };
+    return state.merge({ textContent, maxPacketsReached });
   },
 
-  [ACTION_TYPES.CHANGE_RECON_VIEW]: (state) => ({
-    ...state,
-    renderIds: []
-  }),
+  [ACTION_TYPES.CHANGE_RECON_VIEW]: (state) => state.set('renderIds', []),
 
   [ACTION_TYPES.TEXT_RENDER_NEXT]: (state, { payload }) => {
-    const ids = payload.map((text) => text.firstPacketId);
-    return {
-      ...state,
-      renderIds: state.renderIds ? [...state.renderIds, ...ids] : ids
-    };
+    const newIds = payload.map((text) => text.firstPacketId);
+    const renderIds = (state.renderIds || Immutable.from([])).concat(newIds);
+    return state.merge({ renderIds });
   },
 
-  [ACTION_TYPES.TOGGLE_TEXT_DECODE]: (state, { payload = {} }) => ({
-    ...state,
-    decode: handleSetTo(payload, state.decode),
-    textContent: [],
-    renderIds: []
-  })
+  [ACTION_TYPES.TOGGLE_TEXT_DECODE]: (state, { payload = {} }) => {
+    return state.merge({
+      decode: handleSetTo(payload, state.decode),
+      textContent: [],
+      renderIds: []
+    });
+  }
 
 }, textInitialState);
 
 export default textReducer;
+

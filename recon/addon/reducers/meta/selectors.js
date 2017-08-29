@@ -34,7 +34,11 @@ const DEFAULT_EVENT_TYPE = EVENT_TYPES_BY_NAME.NETWORK;
 
 // Takes meta array directly rather than part of redux state object
 const metaDirect = (meta) => meta;
-const meta = (state) => state.meta.meta || [];
+
+// TODO, once Immutable.find is a thing, remove this asMutable call
+const meta = (state) => {
+  return state.meta.asMutable().meta || [];
+};
 
 const determineEventType = (meta) => {
   if (!meta || meta.length === 0) {

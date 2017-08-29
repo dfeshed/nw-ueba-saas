@@ -1,5 +1,6 @@
 import { handleActions } from 'redux-actions';
 import { handle } from 'redux-pack';
+import Immutable from 'seamless-immutable';
 
 import * as ACTION_TYPES from 'recon/actions/types';
 
@@ -10,20 +11,18 @@ const headerInitialState = {
 };
 
 const headerReducer = handleActions({
-  [ACTION_TYPES.INITIALIZE]: (/* state */) => ({
-    ...headerInitialState
-  }),
+  [ACTION_TYPES.INITIALIZE]: () => Immutable.from(headerInitialState),
 
   [ACTION_TYPES.SUMMARY_RETRIEVE]: (state, action) => {
     return handle(state, action, {
-      start: (/* s */) => ({ ...headerInitialState, headerLoading: true }),
-      finish: (s) => ({ ...s, headerLoading: false }),
-      failure: (s) => ({ ...s, headerError: true }),
-      success: (s) => ({ ...s, headerItems: action.payload.headerItems })
+      start: (/* s */) => Immutable.from(headerInitialState).set('headerLoading', true),
+      finish: (s) => s.set('headerLoading', false),
+      failure: (s) => s.set('headerError', true),
+      success: (s) => s.set('headerItems', Immutable.from(action.payload.headerItems))
     });
   }
 
-}, headerInitialState);
+}, Immutable.from(headerInitialState));
 
 export default headerReducer;
 

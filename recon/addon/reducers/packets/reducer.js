@@ -1,11 +1,12 @@
 import { handle } from 'redux-pack';
 import { handleActions } from 'redux-actions';
+import Immutable from 'seamless-immutable';
 
 import * as ACTION_TYPES from 'recon/actions/types';
 import { enhancePackets } from './util';
 import { augmentResult, handleSetTo } from 'recon/reducers/util';
 
-const packetsInitialState = {
+const packetsInitialState = Immutable.from({
   isPayloadOnly: false,
   hasStyledBytes: true,
   hasSignaturesHighlighted: false,
@@ -14,7 +15,7 @@ const packetsInitialState = {
   packetsPageSize: 100,
   packetTooltipData: null,
   renderIds: null
-};
+});
 
 const packetReducer = handleActions({
 
@@ -23,26 +24,22 @@ const packetReducer = handleActions({
     if (payload && payload.recon && payload.recon.packets) {
       reducerState = payload.recon.packets;
     }
-    return {
-      ...state,
-      ...reducerState
-    };
+    return state.merge({ ...reducerState });
   },
 
-  [ACTION_TYPES.INITIALIZE]: (state) => ({
-    ...packetsInitialState,
-    // Persist the following state
-    isPayloadOnly: state.isPayloadOnly,
-    hasStyledBytes: state.hasStyledBytes,
-    hasSignaturesHighlighted: state.hasSignaturesHighlighted
-  }),
+  [ACTION_TYPES.INITIALIZE]: (state) => {
+    return packetsInitialState.merge({
+      isPayloadOnly: state.isPayloadOnly,
+      hasStyledBytes: state.hasStyledBytes,
+      hasSignaturesHighlighted: state.hasSignaturesHighlighted
+    });
+  },
 
   [ACTION_TYPES.SUMMARY_RETRIEVE]: (state, action) => {
     return handle(state, action, {
-      start: (s) => ({ ...s, packetFields: null }),
+      start: (s) => s.set('packetFields', null),
       success: (s) => {
         const returnObject = {
-          ...s,
           packetFields: action.payload.packetFields
         };
 
@@ -53,7 +50,7 @@ const packetReducer = handleActions({
           returnObject.packets = enhancePackets(s.packets, returnObject.packetFields);
         }
 
-        return returnObject;
+        return state.merge({ ...returnObject });
       }
     });
   },
@@ -70,52 +67,39 @@ const packetReducer = handleActions({
       newPackets = enhancePackets(newPackets, state.packetFields);
     }
 
-    return {
-      ...state,
-      // have packets already? then this is another page of packets from API
-      // Need to create new packet array with new ones at end
-      packets: state.packets ? [...state.packets, ...newPackets] : newPackets
-    };
+    return state.set('packets', state.packets ? state.packets.concat(newPackets) : newPackets);
   },
 
-  [ACTION_TYPES.CHANGE_RECON_VIEW]: (state) => ({
-    ...state,
-    renderIds: [] // clear out render IDs, going to batch re-render again if the right view is displayed
-  }),
+  // clear out render IDs, going to batch re-render again if the right view is displayed
+  [ACTION_TYPES.CHANGE_RECON_VIEW]: (state) => state.set('renderIds', []),
 
   [ACTION_TYPES.PACKETS_RENDER_NEXT]: (state, { payload }) => {
     const ids = payload.map((p) => p.id);
-    return {
-      ...state,
-      renderIds: state.renderIds ? [...state.renderIds, ...ids] : ids
-    };
+    return state.set('renderIds', state.renderIds ? state.renderIds.concat(ids) : ids);
   },
 
-  [ACTION_TYPES.TOGGLE_BYTE_STYLING]: (state, { payload = {} }) => ({
-    ...state,
-    hasStyledBytes: handleSetTo(payload, state.hasStyledBytes)
-  }),
+  [ACTION_TYPES.TOGGLE_BYTE_STYLING]: (state, { payload = {} }) => {
+    return state.set('hasStyledBytes', handleSetTo(payload, state.hasStyledBytes));
+  },
 
-  [ACTION_TYPES.TOGGLE_KNOWN_SIGNATURES]: (state, { payload = {} }) => ({
-    ...state,
-    hasSignaturesHighlighted: handleSetTo(payload, state.hasSignaturesHighlighted)
-  }),
+  [ACTION_TYPES.TOGGLE_KNOWN_SIGNATURES]: (state, { payload = {} }) => {
+    return state.set('hasSignaturesHighlighted', handleSetTo(payload, state.hasSignaturesHighlighted));
+  },
 
-  [ACTION_TYPES.TOGGLE_PACKET_PAYLOAD_ONLY]: (state, { payload = {} }) => ({
-    ...state,
-    renderIds: [], // clear out render IDs, going to batch re-render again
-    isPayloadOnly: handleSetTo(payload, state.isPayloadOnly)
-  }),
+  [ACTION_TYPES.TOGGLE_PACKET_PAYLOAD_ONLY]: (state, { payload = {} }) => {
+    return state.merge({
+      renderIds: [], // clear out render IDs, going to batch re-render again
+      isPayloadOnly: handleSetTo(payload, state.isPayloadOnly)
+    });
+  },
 
-  [ACTION_TYPES.SHOW_PACKET_TOOLTIP]: (state, { payload }) => ({
-    ...state,
-    packetTooltipData: payload
-  }),
+  [ACTION_TYPES.SHOW_PACKET_TOOLTIP]: (state, { payload }) => {
+    return state.set('packetTooltipData', payload);
+  },
 
-  [ACTION_TYPES.HIDE_PACKET_TOOLTIP]: (state) => ({
-    ...state,
-    packetTooltipData: null
-  })
+  [ACTION_TYPES.HIDE_PACKET_TOOLTIP]: (state) => {
+    return state.set('packetTooltipData', null);
+  }
 }, packetsInitialState);
 
 export default packetReducer;

@@ -4,27 +4,28 @@ import {
   isLogEvent,
   isNetworkEvent
 } from 'recon/reducers/meta/selectors';
+import Immutable from 'seamless-immutable';
 import { module, test } from 'qunit';
 
 module('Unit | Mixin | meta-selectors');
 
 const generateHttpDataTests = function(selector) {
   return {
-    shouldNotBeHttpData: selector({
+    shouldNotBeHttpData: selector(Immutable.from({
       meta: {
         meta: []
       }
-    }),
-    shouldAlsoNotBeHttpData: selector({
+    })),
+    shouldAlsoNotBeHttpData: selector(Immutable.from({
       meta: {
         meta: [['service', 0]]
       }
-    }),
-    shouldBeHttpData: selector({
+    })),
+    shouldBeHttpData: selector(Immutable.from({
       meta: {
         meta: [['service', 80]]
       }
-    })
+    }))
   };
 };
 
@@ -48,16 +49,16 @@ test('isLogEvent', function(assert) {
   assert.expect(2);
 
   const tests = {
-    shouldNotBeLogEvent: isLogEvent({
+    shouldNotBeLogEvent: isLogEvent(Immutable.from({
       meta: {
         meta: [['medium', 1]]
       }
-    }),
-    shouldBeLogEvent: isLogEvent({
+    })),
+    shouldBeLogEvent: isLogEvent(Immutable.from({
       meta: {
         meta: [['medium', 32]]
       }
-    })
+    }))
   };
 
   assert.equal(tests.shouldNotBeLogEvent, false, 'isLogEvent should return false for non log events');
@@ -68,16 +69,16 @@ test('isNetworkEvent', function(assert) {
   assert.expect(2);
 
   const tests = {
-    shouldNotBeNetworkEvent: isNetworkEvent({
+    shouldNotBeNetworkEvent: isNetworkEvent(Immutable.from({
       meta: {
         meta: [['medium', 32]]
       }
-    }),
-    shouldBeNetworkEvent: isNetworkEvent({
+    })),
+    shouldBeNetworkEvent: isNetworkEvent(Immutable.from({
       meta: {
         meta: [['medium', 1]]
       }
-    })
+    }))
   };
 
   assert.equal(tests.shouldNotBeNetworkEvent, false, 'isNetworkEvent should return false for non network events');

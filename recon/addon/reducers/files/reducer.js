@@ -1,3 +1,4 @@
+import Immutable from 'seamless-immutable';
 import { handleActions } from 'redux-actions';
 import { handle } from 'redux-pack';
 
@@ -11,7 +12,7 @@ const fileExtractInitialState = {
   fileExtractLink: null     // url for downloading successful job's results (NOT CURRENTLY USED)
 };
 
-const filesInitialState = {
+const filesInitialState = Immutable.from({
   files: null,
   selectedFileIds: [],
   ...fileExtractInitialState,
@@ -21,7 +22,7 @@ const filesInitialState = {
   // When the user clicks on a linked file, recon invokes a configurable callback
   // that is responsible for handling it (e.g., launching a new query).
   linkToFileAction: null
-};
+});
 
 /**
  * Compute the status of file extraction (download). If we're in the middle of a
@@ -38,21 +39,17 @@ const _fileExtractState = (state) => ({
 });
 
 const filesReducer = handleActions({
-  [ACTION_TYPES.INITIALIZE]: (state, { payload }) => ({
-    ...filesInitialState,
-    ..._fileExtractState(state),
-    linkToFileAction: payload.linkToFileAction
-  }),
+  [ACTION_TYPES.INITIALIZE]: (state, { payload: { linkToFileAction } }) => {
+    return filesInitialState.merge({ ..._fileExtractState(state), linkToFileAction });
+  },
 
-  [ACTION_TYPES.CHANGE_RECON_VIEW]: (state) => ({
-    ...state,
-    ..._fileExtractState(state)
-  }),
+  [ACTION_TYPES.CHANGE_RECON_VIEW]: (state) => {
+    return state.merge(_fileExtractState(state));
+  },
 
-  [ACTION_TYPES.FILES_RETRIEVE_SUCCESS]: (state, { payload }) => ({
-    ...state,
-    files: payload
-  }),
+  [ACTION_TYPES.FILES_RETRIEVE_SUCCESS]: (state, { payload }) => {
+    return state.set('files', payload);
+  },
 
   [ACTION_TYPES.FILES_FILE_TOGGLED]: (state, { payload: fileId }) => {
     let selectedFileIds = [];
@@ -61,47 +58,37 @@ const filesReducer = handleActions({
     } else {
       selectedFileIds = [...state.selectedFileIds, fileId];
     }
-
-    return {
-      ...state,
-      selectedFileIds
-    };
+    return state.merge({ selectedFileIds });
   },
 
-  [ACTION_TYPES.FILES_DESELECT_ALL]: (state) => ({
-    ...state,
-    selectedFileIds: []
-  }),
+  [ACTION_TYPES.FILES_DESELECT_ALL]: (state) => {
+    return state.set('selectedFileIds', []);
+  },
 
-  [ACTION_TYPES.FILES_SELECT_ALL]: (state) => ({
-    ...state,
-    selectedFileIds: (state.files || []).map(({ id }) => id)
-  }),
+  [ACTION_TYPES.FILES_SELECT_ALL]: (state) => {
+    return state.set('selectedFileIds', (state.files || []).map(({ id }) => id));
+  },
 
   [ACTION_TYPES.FILE_EXTRACT_JOB_ID_RETRIEVE]: (state, action) => {
     return handle(state, action, {
-      start: (s) => ({ ...s, ...fileExtractInitialState, fileExtractStatus: 'init' }),
-      failure: (s) => ({ ...s, fileExtractStatus: 'error', fileExtractError: action.payload }),
-      success: (s) => ({ ...s, fileExtractStatus: 'wait', fileExtractJobId: action.payload.data.jobId })
+      start: (s) => s.merge({ ...fileExtractInitialState, fileExtractStatus: 'init' }),
+      failure: (s) => s.merge({ fileExtractStatus: 'error', fileExtractError: action.payload }),
+      success: (s) => s.merge({ fileExtractStatus: 'wait', fileExtractJobId: action.payload.data.jobId })
     });
   },
 
-  [ACTION_TYPES.FILE_EXTRACT_JOB_SUCCESS]: (state, { payload }) => ({
-    ...state,
-    fileExtractStatus: 'success',
-    fileExtractLink: payload.link
-  }),
+  [ACTION_TYPES.FILE_EXTRACT_JOB_SUCCESS]: (state, { payload }) => {
+    return state.merge({ fileExtractStatus: 'success', fileExtractLink: payload.link });
+  },
 
-  [ACTION_TYPES.FILE_EXTRACT_JOB_DOWNLOADED]: (state) => ({
-    ...state,
-    ...fileExtractInitialState
-  }),
+  [ACTION_TYPES.FILE_EXTRACT_JOB_DOWNLOADED]: (state) => {
+    return state.merge(fileExtractInitialState);
+  },
 
   // Files-based notifcation handling
-  [ACTION_TYPES.NOTIFICATION_TEARDOWN_SUCCESS]: (state) => ({
-    ...state,
-    ..._fileExtractState(state)
-  })
+  [ACTION_TYPES.NOTIFICATION_TEARDOWN_SUCCESS]: (state) => {
+    return state.merge(_fileExtractState(state));
+  }
 }, filesInitialState);
 
 export default filesReducer;
