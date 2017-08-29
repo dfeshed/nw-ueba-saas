@@ -28,21 +28,10 @@ public abstract class CountingPresidioMongoSink<T extends AbstractDocument> exte
         int numOfTotalSavedEvents = 0;
         List<List<List<T>>> hourListsPerSchema = new ArrayList<>();
 
+        try {
         /* dividing to groups by time */
-        List<List<T>> hourLists = eventsToSave.stream()
-                .collect(Collectors.groupingBy(x -> DateUtils.ceiling(getEventTimeForCounter(x), ChronoUnit.HOURS)))
-                .entrySet().stream()
-                .map(e -> {
-                    List<T> list = new ArrayList<>();
-                    list.addAll(e.getValue());
-                    return list;
-                })
-                .collect(Collectors.toList());
-
-        /* dividing to all the groups-by-time by schema */
-        for (List<T> hourList : hourLists) {
-            final List<List<T>> currSchemaHourList = hourList.stream()
-                    .collect(Collectors.groupingBy(this::getEventSchemaName))
+            List<List<T>> hourLists = eventsToSave.stream()
+                    .collect(Collectors.groupingBy(x -> DateUtils.ceiling(getEventTimeForCounter(x), ChronoUnit.HOURS)))
                     .entrySet().stream()
                     .map(e -> {
                         List<T> list = new ArrayList<>();
@@ -51,7 +40,23 @@ public abstract class CountingPresidioMongoSink<T extends AbstractDocument> exte
                     })
                     .collect(Collectors.toList());
 
-            hourListsPerSchema.add(currSchemaHourList);
+        /* dividing to all the groups-by-time by schema */
+            for (List<T> hourList : hourLists) {
+                final List<List<T>> currSchemaHourList = hourList.stream()
+                        .collect(Collectors.groupingBy(this::getEventSchemaName))
+                        .entrySet().stream()
+                        .map(e -> {
+                            List<T> list = new ArrayList<>();
+                            list.addAll(e.getValue());
+                            return list;
+                        })
+                        .collect(Collectors.toList());
+
+                hourListsPerSchema.add(currSchemaHourList);
+            }
+        } catch (Exception e) {
+            final String errorMessage = String.format("Failed to save events. %s", e.getMessage());
+            throw new Exception(errorMessage, e);
         }
 
         /* saving each group in it's relevant file (by schema) with the relevant time property */
