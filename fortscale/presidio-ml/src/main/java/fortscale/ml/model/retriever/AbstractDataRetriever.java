@@ -16,7 +16,6 @@ public abstract class AbstractDataRetriever {
 
 	protected long timeRangeInSeconds;
 	protected List<IDataRetrieverFunction> functions;
-	protected PatternReplacement patternReplacement;
 
 	public AbstractDataRetriever(AbstractDataRetrieverConf dataRetrieverConf) {
 		timeRangeInSeconds = dataRetrieverConf.getTimeRangeInSeconds();
@@ -34,9 +33,6 @@ public abstract class AbstractDataRetriever {
 				logger.error(String.format("Could not deserialize function JSON %s", functionConfAsString), e);
 			}
 		}
-
-		patternReplacement = dataRetrieverConf.getPatternReplacementConf() == null ?
-				null : new PatternReplacement(dataRetrieverConf.getPatternReplacementConf());
 	}
 
 	protected Date getStartTime(Date endTime) {

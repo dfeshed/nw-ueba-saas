@@ -29,7 +29,6 @@ import java.util.List;
 public abstract class AbstractDataRetrieverConf implements FactoryConfig {
 	private long timeRangeInSeconds;
 	private List<JSONObject> functions;
-	private PatternReplacementConf patternReplacementConf;
 
 	public AbstractDataRetrieverConf(long timeRangeInSeconds, List<JSONObject> functions) {
 		Assert.isTrue(timeRangeInSeconds > 0, "timeRangeInSeconds must be greater than 0.");
@@ -37,7 +36,6 @@ public abstract class AbstractDataRetrieverConf implements FactoryConfig {
 
 		this.timeRangeInSeconds = timeRangeInSeconds;
 		this.functions = functions;
-		this.patternReplacementConf = null;
 	}
 
 	public long getTimeRangeInSeconds() {
@@ -46,13 +44,5 @@ public abstract class AbstractDataRetrieverConf implements FactoryConfig {
 
 	public List<JSONObject> getFunctionConfs() {
 		return functions;
-	}
-
-	public PatternReplacementConf getPatternReplacementConf() {
-		return patternReplacementConf;
-	}
-
-	public void setPatternReplacementConf(PatternReplacementConf patternReplacementConf) {
-		this.patternReplacementConf = patternReplacementConf;
 	}
 }
