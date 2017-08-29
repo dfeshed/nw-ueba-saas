@@ -56,7 +56,8 @@ export default Component.extend(RowMixin, {
           '1': i18n.t('investigate.medium.network'),
           '32': i18n.t('investigate.medium.log'),
           '33': i18n.t('investigate.medium.correlation'),
-          'endpoint': i18n.t('investigate.medium.endpoint')
+          'endpoint': i18n.t('investigate.medium.endpoint'),
+          'undefined': i18n.t('investigate.medium.undefined')
         }
       },
       locale: this.get('i18n.locale'),

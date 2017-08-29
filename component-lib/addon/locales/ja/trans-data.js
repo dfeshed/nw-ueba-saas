@@ -364,7 +364,8 @@ export default {
       endpoint: 'ja_Endpoint',
       network: 'ja_Network',
       log: 'ja_Log',
-      correlation: 'ja_Correlation'
+      correlation: 'ja_Correlation',
+      undefined: 'ja_Unknown'
     },
     empty: {
       title: 'ja_No events found.',

@@ -364,7 +364,8 @@ export default {
       endpoint: 'Endpoint',
       network: 'Network',
       log: 'Log',
-      correlation: 'Correlation'
+      correlation: 'Correlation',
+      undefined: 'Unknown'
     },
     empty: {
       title: 'No events found.',
