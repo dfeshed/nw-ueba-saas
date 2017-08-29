@@ -34,9 +34,9 @@ public class AccumulatedSmartValueRetriever extends AbstractDataRetriever {
     private final SmartRecordConf smartRecordConf;
     private final String smartRecordConfName;
     private final SmartAccumulationDataReader accumulationDataReader;
-    private final SmartRecordConfService smartRecordConfService;
     private final FactoryService<IContextSelector> contextSelectorFactoryService;
-    private final ModelConf weightsModelConf;
+    private ModelConf weightsModelConf;
+    private final String weightsModelName;
     private ModelConfService modelConfService;
     private final ModelStore modelStore;
     private final SmartWeightsAlgorithm smartWeightsAlgorithm;
@@ -49,13 +49,11 @@ public class AccumulatedSmartValueRetriever extends AbstractDataRetriever {
         this.oldestAllowedModelDurationDiff = oldestAllowedModelDurationDiff;
         Assert.hasText(this.smartRecordConfName,"smart record conf name must be defined for retriever");
         this.accumulationDataReader = accumulationDataReader;
-        this.smartRecordConfService = smartRecordConfService;
         this.contextSelectorFactoryService = contextSelectorFactoryService;
-        this.smartRecordConf = this.smartRecordConfService.getSmartRecordConf(this.smartRecordConfName);
-        String weightsModelName = dataRetrieverConf.getWeightsModelName();
+        this.smartRecordConf = smartRecordConfService.getSmartRecordConf(this.smartRecordConfName);
+        this.weightsModelName = dataRetrieverConf.getWeightsModelName();
         Assert.hasText(weightsModelName ,String.format("weightsModelName must be defined for retriever name=%s",this.smartRecordConfName));
-        this.weightsModelConf = this.modelConfService.getModelConf(weightsModelName);
-        Assert.notNull(this.weightsModelConf ,String.format("modelConf must be defined for retriever name=%s",this.smartRecordConfName));
+
         this.smartWeightsAlgorithm = new SmartWeightsAlgorithm();
     }
 
@@ -63,6 +61,8 @@ public class AccumulatedSmartValueRetriever extends AbstractDataRetriever {
     public ModelBuilderData retrieve(String contextId, Date endTime) {
         if(modelConfService == null) {
             modelConfService = DynamicModelConfServiceContainer.getModelConfService();
+            this.weightsModelConf = this.modelConfService.getModelConf(weightsModelName);
+            Assert.notNull(this.weightsModelConf ,String.format("modelConf must be defined for retriever name=%s",this.smartRecordConfName));
         }
         Instant startTime = getStartTime(endTime).toInstant();
         Instant endTimeInstant = endTime.toInstant();
@@ -117,7 +117,7 @@ public class AccumulatedSmartValueRetriever extends AbstractDataRetriever {
         {
             for(Integer activityTime: accumulatedSmartRecord.getActivityTime())
             {
-                Map<String,Double> featureNameToScore = new HashMap();
+                Map<String,Double> featureNameToScore = new HashMap<>();
                 for (Map.Entry<String, Map<Integer, Double>> aggrFeature : accumulatedSmartRecord.getAggregatedFeatureEventsValuesMap().entrySet()) {
                     Double activityTimeScore = aggrFeature.getValue().get(activityTime);
                     String featureName = aggrFeature.getKey();
@@ -149,7 +149,7 @@ public class AccumulatedSmartValueRetriever extends AbstractDataRetriever {
         for (String contextId : contextIds) {
             readSmartAggregatedRecordData(
                     contextId, timeRange.getStart(), timeRange.getEnd()).
-                    mapToDouble(jokerEntityEventData -> calculateSmartValue(timeRange.getEnd(), jokerEntityEventData))
+                    mapToDouble(smartData -> calculateSmartValue(timeRange.getEnd(), smartData))
                     .max()
                     .ifPresent(maxEntityEventValue -> {
                         // TODO: Retriever functions should be iterated and executed here.
