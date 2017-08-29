@@ -50,10 +50,10 @@ public class ModelStore {
 		mongoTemplate.insert(modelDao, getCollectionName(modelConf));
 	}
 
-	public List<ModelDAO> getAllContextsModelDaosWithLatestEndTimeLte(ModelConf modelConf, long eventEpochtime) {
+	public List<ModelDAO> getAllContextsModelDaosWithLatestEndTimeLte(ModelConf modelConf, Instant eventEpochtime) {
 		String modelDaosGroupName = "modelDaos";
 		Aggregation aggregation = Aggregation.newAggregation(
-				Aggregation.match(new Criteria(ModelDAO.END_TIME_FIELD).lte(new Date(eventEpochtime * 1000))),
+				Aggregation.match(new Criteria(ModelDAO.END_TIME_FIELD).lte(Date.from(eventEpochtime))),
 				Aggregation.group(ModelDAO.CONTEXT_ID_FIELD).push(Aggregation.ROOT).as(modelDaosGroupName));
 		AggregationResults<DBObject> results = mongoTemplate.aggregate(aggregation, getCollectionName(modelConf), DBObject.class);
 		return StreamUtils.createStreamFromIterator(results.iterator())

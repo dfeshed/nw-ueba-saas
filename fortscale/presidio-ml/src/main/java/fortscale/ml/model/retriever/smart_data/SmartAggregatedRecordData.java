@@ -1,4 +1,4 @@
-package fortscale.ml.model.retriever.joker;
+package fortscale.ml.model.retriever.smart_data;
 
 /**
  * Created by barak_schuster on 27/08/2017.
