@@ -24,8 +24,7 @@ public class ScoringService {
 
 	public ScoringService(
 			ScorerConfService scorerConfService,
-			FactoryService<Scorer> scorerFactoryService,
-			StatsService statsService) {
+			FactoryService<Scorer> scorerFactoryService) {
 
 		this.scorerConfService = scorerConfService;
 		this.scorerFactoryService = scorerFactoryService;

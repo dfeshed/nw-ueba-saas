@@ -37,7 +37,9 @@ public class PersonalThresholdModelScorerFactory extends AbstractModelScorerFact
 				modelName,
 				contextFieldNames,
 				scorerConf.getBaseScorerConf(),
-				scorerConf.getMaxRatioFromUniformThreshold()
+				scorerConf.getMaxRatioFromUniformThreshold(),
+				factoryService,
+				eventModelsCacheService
 		);
 	}
 }

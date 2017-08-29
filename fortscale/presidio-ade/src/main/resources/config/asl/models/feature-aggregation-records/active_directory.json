@@ -1,6 +1,36 @@
 {
   "ModelConfs": [
     {
+      "name" : "numberOfSensitiveGroupMembershipOperation.userId.activeDirectory.hourly",
+      "selector" : {
+        "type" : "aggregated_event_context_selector",
+        "aggregatedFeatureEventConfName" : "numberOfSensitiveGroupMembershipOperationUserIdActiveDirectoryHourly"
+      },
+      "retriever" : {
+        "type" : "accumulated_aggregated_feature_value_retriever",
+        "timeRangeInSeconds" : 7776000,
+        "functions" : [ ],
+        "aggregatedFeatureEventConfName" : "numberOfSensitiveGroupMembershipOperationUserIdActiveDirectoryHourly"
+      },
+      "builder" : {
+        "type" : "continuous_histogram_model_builder"
+      }
+    },
+    {
+      "name": "numberOfSensitiveGroupMembershipOperation.userId.prior.global.activeDirectory.hourly",
+      "retriever": {
+        "type": "model_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "modelConfName": "numberOfSensitiveGroupMembershipOperation.userId.activeDirectory.hourly"
+      },
+      "builder": {
+        "type": "gaussian_prior_model_builder",
+        "distanceBetweenSegmentCenters": 1,
+        "maxSegmentWidthToNotDiscardBecauseOfBadRatio": 3
+      }
+    },
+    {
       "name" : "numberOfGroupMembershipOperation.userId.activeDirectory.hourly",
       "selector" : {
         "type" : "aggregated_event_context_selector",
@@ -83,6 +113,36 @@
         "timeRangeInSeconds": 7776000,
         "functions": [],
         "modelConfName": "numberOfFailedlOperationType.userId.activeDirectory.hourly"
+      },
+      "builder": {
+        "type": "gaussian_prior_model_builder",
+        "distanceBetweenSegmentCenters": 1,
+        "maxSegmentWidthToNotDiscardBecauseOfBadRatio": 3
+      }
+    },
+    {
+      "name" : "numberOfSuccessfulSecuritySensitiveOperation.userId.activeDirectory.hourly",
+      "selector" : {
+        "type" : "aggregated_event_context_selector",
+        "aggregatedFeatureEventConfName" : "numberOfSuccessfulSecuritySensitiveOperationUserIdActiveDirectoryHourly"
+      },
+      "retriever" : {
+        "type" : "accumulated_aggregated_feature_value_retriever",
+        "timeRangeInSeconds" : 7776000,
+        "functions" : [ ],
+        "aggregatedFeatureEventConfName" : "numberOfSuccessfulSecuritySensitiveOperationUserIdActiveDirectoryHourly"
+      },
+      "builder" : {
+        "type" : "continuous_histogram_model_builder"
+      }
+    },
+    {
+      "name": "numberOfSuccessfulSecuritySensitiveOperation.userId.prior.global.activeDirectory.hourly",
+      "retriever": {
+        "type": "model_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "modelConfName": "numberOfSuccessfulSecuritySensitiveOperation.userId.activeDirectory.hourly"
       },
       "builder": {
         "type": "gaussian_prior_model_builder",

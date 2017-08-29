@@ -1,6 +1,22 @@
 {
   "AggregatedFeatureEvents": [
     {
+      "name": "numberOfSensitiveGroupMembershipOperationUserIdActiveDirectoryHourly",
+      "type": "F",
+      "bucketConfName": "sensitiveGroupMembershipOperationCounterUserIdActiveDirectoryHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 300,
+      "aggregatedFeatureNamesMap": {
+        "sum": [
+          "sensitiveGroupMembershipOperationCounter"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_sum_func"
+      }
+    },
+    {
       "name": "numberOfGroupMembershipOperationUserIdActiveDirectoryHourly",
       "type": "F",
       "bucketConfName": "groupMembershipOperationCounterUserIdActiveDirectoryHourly",
@@ -48,6 +64,23 @@
       "aggregatedFeatureEventFunction": {
         "type": "aggr_feature_histogram_key_value_func",
         "key": "FAILURE"
+      }
+    },
+    {
+      "name": "numberOfSuccessfulSecuritySensitiveOperationUserIdActiveDirectoryHourly",
+      "type": "F",
+      "bucketConfName": "securitySensitiveOperationResultHistogramUserIdActiveDirectoryHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 300,
+      "aggregatedFeatureNamesMap": {
+        "groupBy": [
+          "securitySensitiveOperationHistogram"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_histogram_key_value_func",
+        "key": "SUCCESS"
       }
     }
   ]

@@ -17,9 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import presidio.ade.domain.record.AdeRecordReader;
 
 import java.time.Instant;
@@ -32,7 +30,7 @@ import static org.mockito.Mockito.when;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(loader = AnnotationConfigContextLoader.class)
+//@ContextConfiguration(loader = AnnotationConfigContextLoader.class)
 public class ModelBasedScoreMapperTest {
 
     @Configuration
@@ -86,18 +84,6 @@ public class ModelBasedScoreMapperTest {
                 null,
                 "model name",
                 Collections.singletonList("context"),
-                "feature name",
-                baseScorerConf,
-                scorerFactoryService, eventModelsCacheService);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void shouldFailGivenEmptyStringAsFeatureName() {
-        new ModelBasedScoreMapper(
-                "scorer name",
-                "model name",
-                Collections.singletonList("context"),
-                "",
                 baseScorerConf,
                 scorerFactoryService, eventModelsCacheService);
     }
@@ -108,7 +94,6 @@ public class ModelBasedScoreMapperTest {
                 "scorer name",
                 "",
                 Collections.singletonList("context"),
-                "feature name",
                 baseScorerConf,
                 scorerFactoryService, eventModelsCacheService);
     }
@@ -119,7 +104,6 @@ public class ModelBasedScoreMapperTest {
                 "scorer name",
                 "model name",
                 null,
-                "feature name",
                 baseScorerConf,
                 scorerFactoryService, eventModelsCacheService);
     }
@@ -130,7 +114,6 @@ public class ModelBasedScoreMapperTest {
                 "scorer name",
                 "model name",
                 Collections.singletonList("context"),
-                "feature name",
                 null,
                 scorerFactoryService, eventModelsCacheService);
     }
@@ -147,7 +130,6 @@ public class ModelBasedScoreMapperTest {
                 featureScoreName,
                 "model name",
                 Collections.singletonList("context"),
-                "feature name",
                 baseScorerConf,
                 scorerFactoryService, eventModelsCacheService).calculateScore(adeRecordReader);
     }

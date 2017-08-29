@@ -1,6 +1,48 @@
 {
   "ade-event-type-scorers": [
     {
+      "ade-event-type": "aggr_event.numberOfSensitiveGroupMembershipOperationUserIdActiveDirectoryHourly",
+      "scorers": [
+        {
+          "type": "low-values-score-reducer",
+          "name": "numberOfSensitiveGroupMembershipOperation.userId.activeDirectory.hourly.scorer",
+          "base-scorer": {
+            "type": "score-mapper",
+            "name": "numberOfSensitiveGroupMembershipOperation.userId.activeDirectory.hourly.mapper",
+            "score-mapping-conf": {
+              "mapping": {
+                "95.0": 0,
+                "100.0": 100
+              }
+            },
+            "base-scorer": {
+              "type": "gaussian-model-scorer",
+              "name": "numberOfSensitiveGroupMembershipOperation.userId.activeDirectory.hourly.base_scorer",
+              "model": {
+                "name": "numberOfSensitiveGroupMembershipOperation.userId.activeDirectory.hourly"
+              },
+              "additional-models": [
+                {
+                  "name": "numberOfSensitiveGroupMembershipOperation.userId.prior.global.activeDirectory.hourly"
+                }
+              ],
+              "global-influence": 20,
+              "number-of-samples-to-influence-enough": 30,
+              "use-certainty-to-calculate-score": true
+            }
+          },
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "featureValue",
+              "reducingFactor": 0,
+              "maxValueForFullyReduce": 3.0,
+              "minValueForNotReduce": 6.0
+            }
+          ]
+        }
+      ]
+    },
+    {
       "ade-event-type": "aggr_event.numberOfGroupMembershipOperationUserIdActiveDirectoryHourly",
       "scorers": [
         {
@@ -108,6 +150,48 @@
               "additional-models": [
                 {
                   "name": "numberOfFailedlOperationType.userId.prior.global.activeDirectory.hourly"
+                }
+              ],
+              "global-influence": 20,
+              "number-of-samples-to-influence-enough": 30,
+              "use-certainty-to-calculate-score": true
+            }
+          },
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "featureValue",
+              "reducingFactor": 0,
+              "maxValueForFullyReduce": 3.0,
+              "minValueForNotReduce": 6.0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ade-event-type": "aggr_event.numberOfSuccessfulSecuritySensitiveOperationUserIdActiveDirectoryHourly",
+      "scorers": [
+        {
+          "type": "low-values-score-reducer",
+          "name": "numberOfSuccessfulSecuritySensitiveOperation.userId.activeDirectory.hourly.scorer",
+          "base-scorer": {
+            "type": "score-mapper",
+            "name": "numberOfSuccessfulSecuritySensitiveOperation.userId.activeDirectory.hourly.mapper",
+            "score-mapping-conf": {
+              "mapping": {
+                "95.0": 0,
+                "100.0": 100
+              }
+            },
+            "base-scorer": {
+              "type": "gaussian-model-scorer",
+              "name": "numberOfSuccessfulSecuritySensitiveOperation.userId.activeDirectory.hourly.base_scorer",
+              "model": {
+                "name": "numberOfSuccessfulSecuritySensitiveOperation.userId.activeDirectory.hourly"
+              },
+              "additional-models": [
+                {
+                  "name": "numberOfSuccessfulSecuritySensitiveOperation.userId.prior.global.activeDirectory.hourly"
                 }
               ],
               "global-influence": 20,
