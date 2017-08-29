@@ -80,7 +80,7 @@ public class SmartWeightsAlgorithm {
     public static Cluster translateClusterSpecsToCluster(List<SmartAggregatedRecordData> smartAggregatedRecordData,
                                                          ClusterConf clusterConf) {
         Set<SmartAggregatedRecordData> aggrFeatureEvents = new HashSet<>();
-        Map<String, SmartAggregatedRecordData> aggrFeatureEventsMap = createJokerAggrEventDataMap(smartAggregatedRecordData);
+        Map<String, SmartAggregatedRecordData> aggrFeatureEventsMap = createAggrFeaturesDataMap(smartAggregatedRecordData);
         for (String aggrFeatureEventName : clusterConf.getAggregationRecordNames()) {
             SmartAggregatedRecordData aggrFeatureEvent = aggrFeatureEventsMap.get(aggrFeatureEventName);
             if (aggrFeatureEvent != null) {
@@ -95,7 +95,7 @@ public class SmartWeightsAlgorithm {
     /**
      * Create a map from a {@link SmartAggregatedRecordData}'s name to itself.
      */
-    private static Map<String, SmartAggregatedRecordData> createJokerAggrEventDataMap(List<SmartAggregatedRecordData> smartAggregatedRecordData) {
+    private static Map<String, SmartAggregatedRecordData> createAggrFeaturesDataMap(List<SmartAggregatedRecordData> smartAggregatedRecordData) {
         return smartAggregatedRecordData.stream()
                 .collect(Collectors.toMap(
                         SmartAggregatedRecordData::getFeatureName,
