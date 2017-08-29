@@ -20,6 +20,11 @@
 #
 
 ################################
+# Presidio env variables
+################################
+export PRESIDIO_HOME=/home/presidio/presidio-core
+
+################################
 # constants
 ################################
 

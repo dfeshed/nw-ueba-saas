@@ -135,17 +135,21 @@ public class PresidioMongoSink<T extends AbstractDocument> extends AbstractPresi
 
     @Override
     @SuppressWarnings("unchecked")
-    protected void saveEvents(List<T> eventsToSave) {
+    protected int saveEvents(List<T> eventsToSave) throws Exception {
         final int numOfEventsToSave = eventsToSave.size();
+        int numOfSavedEvents = 0;
         if (numOfEventsToSave != 0) {
             if (numOfEventsToSave == 1) { // or in other words if batchSize == 1
                 sinkMongoRepository.save(eventsToSave.get(0), collectionName);
+                numOfSavedEvents = 1;
                 sinkCounter.incrementEventDrainSuccessCount();
             } else {
-                final int numOfSavedEvents = sinkMongoRepository.bulkSave(eventsToSave, collectionName);
+                numOfSavedEvents = sinkMongoRepository.bulkSave(eventsToSave, collectionName);
                 sinkCounter.addToEventDrainSuccessCount(numOfSavedEvents);
             }
         }
+
+        return numOfSavedEvents;
     }
 
     private static SinkMongoRepository createRepository(String dbName, String host, int port, String username, String password) throws UnknownHostException, BadPaddingException, NoSuchAlgorithmException, IllegalBlockSizeException, UnsupportedEncodingException, NoSuchPaddingException, InvalidKeyException {
@@ -168,5 +172,9 @@ public class PresidioMongoSink<T extends AbstractDocument> extends AbstractPresi
                 .append("collectionName", collectionName)
                 .append("username", username)
                 .toString();
+    }
+
+    public void setSinkMongoRepositoryForTests(SinkMongoRepository sinkMongoRepository) {
+        this.sinkMongoRepository = sinkMongoRepository;
     }
 }

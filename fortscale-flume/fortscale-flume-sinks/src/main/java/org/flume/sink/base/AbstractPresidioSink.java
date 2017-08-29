@@ -29,7 +29,9 @@ public abstract class AbstractPresidioSink<T> extends AbstractSink implements Co
 
     @Override
     public void start() {
-        sinkCounter.start();
+        if (sinkCounter.getStartTime() == 0L) { //if wasn't started yet
+            sinkCounter.start();
+        }
         super.start();
     }
 
@@ -54,12 +56,12 @@ public abstract class AbstractPresidioSink<T> extends AbstractSink implements Co
         try {
             transaction.begin();
             final List<T> eventsToSave = getEvents();
-            saveEvents(eventsToSave);
-            logger.debug("{} has finished processing {} events {}.", getName(), eventsToSave.size());
+            final int numOfSavedEvents = saveEvents(eventsToSave);
+            logger.debug("{} has finished processing {} events {}.", getName(), numOfSavedEvents);
             transaction.commit();
         } catch (Exception ex) {
             transaction.rollback();
-            throw new EventDeliveryException("Failed to save event: ", ex);
+            throw new EventDeliveryException("Failed to save some events ", ex);
         } finally {
             transaction.close();
             this.stop();
@@ -71,7 +73,7 @@ public abstract class AbstractPresidioSink<T> extends AbstractSink implements Co
         return result;
     }
 
-    protected abstract void saveEvents(List<T> eventsToSave);
+    protected abstract int saveEvents(List<T> eventsToSave) throws Exception;
 
     protected abstract List<T> getEvents() throws Exception;
 

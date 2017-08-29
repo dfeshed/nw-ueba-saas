@@ -1,7 +1,6 @@
 package org.apache.flume.interceptor.presidio;
 
 
-
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -53,8 +52,6 @@ public class JsonTimestampWithOffsetFormatterInterceptor extends AbstractInterce
 
         final String newTimestamp = getNewTimestamp(originTimestamp, originFormat, timezoneOffset, destinationFormat);
         eventBodyAsJson.addProperty(destinationField, newTimestamp);
-//        logger.trace("Field {} was appended to field {} and the result[{}] was placed in field {}.", originField, toAppendField, result, targetField); //todo
-
         if (removeOriginField) {
             logger.trace("Removing origin field {}.", originField);
             eventBodyAsJson.remove(originField);
@@ -64,7 +61,6 @@ public class JsonTimestampWithOffsetFormatterInterceptor extends AbstractInterce
             logger.trace("Removing timezone offset field {}.", timezoneOffsetField);
             eventBodyAsJson.remove(timezoneOffsetField);
         }
-
 
 
         event.setBody(eventBodyAsJson.toString().getBytes());
