@@ -44,7 +44,7 @@ public class AggregatedDataStoreMongoImpl implements AggregatedDataStore {
     }
 
     @Override
-    public <U extends AdeAggregationRecord> List<PageIterator<U>> read(Set<AggregatedDataPaginationParam> aggregatedDataPaginationParamSet, TimeRange timeRange, double threshold) {
+    public <U extends AdeAggregationRecord> List<PageIterator<U>> read(Set<AggregatedDataPaginationParam> aggregatedDataPaginationParamSet, TimeRange timeRange, Double threshold) {
         Assert.notNull(aggregatedRecordPaginationService, NULL_AGGREGATED_RECORD_PAGINATION_SERVICE);
         return aggregatedRecordPaginationService.getPageIterators(aggregatedDataPaginationParamSet, timeRange, threshold);
     }
@@ -55,7 +55,7 @@ public class AggregatedDataStoreMongoImpl implements AggregatedDataStore {
     }
 
     @Override
-    public Set<String> findDistinctContextIds(TimeRange timeRange, Set<AggregatedDataPaginationParam> aggregatedDataPaginationParamSet, double threshold) {
+    public Set<String> findDistinctContextIds(TimeRange timeRange, Set<AggregatedDataPaginationParam> aggregatedDataPaginationParamSet, Double threshold) {
         return doFindDistinctContextIds(timeRange, aggregatedDataPaginationParamSet, threshold);
     }
 
@@ -65,7 +65,7 @@ public class AggregatedDataStoreMongoImpl implements AggregatedDataStore {
     }
 
     @Override
-    public <U extends AdeAggregationRecord> List<U> readRecords(Set<AggregatedDataPaginationParam> aggregatedDataPaginationParamSet, Set<String> contextIds, TimeRange timeRange, double threshold) {
+    public <U extends AdeAggregationRecord> List<U> readRecords(Set<AggregatedDataPaginationParam> aggregatedDataPaginationParamSet, Set<String> contextIds, TimeRange timeRange, Double threshold) {
         return doReadRecords(timeRange, aggregatedDataPaginationParamSet, contextIds, threshold);
     }
 

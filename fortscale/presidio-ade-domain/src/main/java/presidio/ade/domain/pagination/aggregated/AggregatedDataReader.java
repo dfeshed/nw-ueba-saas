@@ -26,7 +26,7 @@ public interface AggregatedDataReader {
      * @param threshold                        only aggregation records with a value / score larger than this threshold will be included
      * @param <U>                              type of records, i.e. {@link AdeAggregationRecord} and {@link ScoredFeatureAggregationRecord}
      */
-    <U extends AdeAggregationRecord> List<PageIterator<U>> read(Set<AggregatedDataPaginationParam> aggregatedDataPaginationParamSet, TimeRange timeRange, double threshold);
+    <U extends AdeAggregationRecord> List<PageIterator<U>> read(Set<AggregatedDataPaginationParam> aggregatedDataPaginationParamSet, TimeRange timeRange, Double threshold);
 
     /**
      * @param timeRange                        from - to : filter on the data timeline
@@ -41,7 +41,7 @@ public interface AggregatedDataReader {
      * @param threshold                        only aggregation records with a value / score larger than this threshold will be included
      * @return distinct context id's across features in given time range
      */
-    Set<String> findDistinctContextIds(TimeRange timeRange, Set<AggregatedDataPaginationParam> aggregatedDataPaginationParamSet, double threshold);
+    Set<String> findDistinctContextIds(TimeRange timeRange, Set<AggregatedDataPaginationParam> aggregatedDataPaginationParamSet, Double threshold);
 
     /**
      * @param aggregatedDataPaginationParamSet contains list of features and their type
@@ -60,14 +60,14 @@ public interface AggregatedDataReader {
      * @param <U>                              type of records, i.e. {@link AdeAggregationRecord} and {@link ScoredFeatureAggregationRecord}
      * @return the corresponding aggregation records in the given time range
      */
-    <U extends AdeAggregationRecord> List<U> readRecords(Set<AggregatedDataPaginationParam> aggregatedDataPaginationParamSet, Set<String> contextIds, TimeRange timeRange, double threshold);
+    <U extends AdeAggregationRecord> List<U> readRecords(Set<AggregatedDataPaginationParam> aggregatedDataPaginationParamSet, Set<String> contextIds, TimeRange timeRange, Double threshold);
 
     /**
      * setter method used for reading data in pages
      *
      * @param aggregatedRecordPaginationService the pagination service
      * @see #read(Set, TimeRange)
-     * @see #read(Set, TimeRange, double)
+     * @see #read(Set, TimeRange, Double)
      */
     void setAggregatedRecordPaginationService(AggregatedRecordPaginationService aggregatedRecordPaginationService);
 }

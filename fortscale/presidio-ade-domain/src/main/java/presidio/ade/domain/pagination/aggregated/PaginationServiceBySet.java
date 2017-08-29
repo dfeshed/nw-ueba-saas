@@ -43,7 +43,7 @@ public abstract class PaginationServiceBySet<T> extends BasePaginationService<T>
      * @param threshold                        only items with a value / score larger than this threshold will be included
      * @return list of page iterators
      */
-    public <U extends T> List<PageIterator<U>> getPageIterators(Set<AggregatedDataPaginationParam> aggregatedDataPaginationParamSet, TimeRange timeRange, double threshold) {
+    public <U extends T> List<PageIterator<U>> getPageIterators(Set<AggregatedDataPaginationParam> aggregatedDataPaginationParamSet, TimeRange timeRange, Double threshold) {
         return doGetPageIterators(aggregatedDataPaginationParamSet, timeRange, threshold);
     }
 
