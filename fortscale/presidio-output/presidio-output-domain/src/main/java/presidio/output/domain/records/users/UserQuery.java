@@ -8,9 +8,11 @@ public class UserQuery {
     // filters
     private final List<String> filterByAlertClassifications;
     private final List<String> filterByIndicators;
+    private String filterByUserId;
+    private String filterByUserName;
 
     // sort
-    private final String sortField;
+    private final List<String> sortField;
     private final boolean ascendingOrder;
 
     // paging
@@ -20,10 +22,20 @@ public class UserQuery {
     public UserQuery(UserQueryBuilder builder) {
         this.filterByAlertClassifications = builder.filterByAlertClassifications;
         this.filterByIndicators = builder.filterByIndicators;
-        this.sortField =  builder.sortField;
-        this.ascendingOrder =  builder.ascendingOrder;
-        this.pageNumber =  builder.pageNumber;
-        this.pageSize =  builder.pageSize;
+        this.sortField = builder.sortField;
+        this.ascendingOrder = builder.ascendingOrder;
+        this.pageNumber = builder.pageNumber;
+        this.pageSize = builder.pageSize;
+        this.filterByUserId = builder.filterByUserId;
+        this.filterByUserName = builder.filterByUserName;
+    }
+
+    public String getFilterByUserId() {
+        return filterByUserId;
+    }
+
+    public String getFilterByUserName() {
+        return filterByUserName;
     }
 
     public List<String> getFilterByAlertClassifications() {
@@ -34,7 +46,7 @@ public class UserQuery {
         return filterByIndicators;
     }
 
-    public String getSortField() {
+    public List<String> getSortField() {
         return sortField;
     }
 
@@ -51,15 +63,16 @@ public class UserQuery {
     }
 
 
-
     public static class UserQueryBuilder {
 
         // filters
         private List<String> filterByAlertClassifications;
         private List<String> filterByIndicators;
+        private String filterByUserId;
+        private String filterByUserName;
 
         // sort
-        private String sortField;
+        private List<String> sortField;
         private boolean ascendingOrder;
 
         // paging
@@ -76,7 +89,17 @@ public class UserQuery {
             return this;
         }
 
-        public UserQueryBuilder sortField(String sortField, boolean ascendingOrder) {
+        public UserQueryBuilder filterByUserName(String filterByUserName) {
+            this.filterByUserName = filterByUserName;
+            return this;
+        }
+
+        public UserQueryBuilder filterByUserId(String filterbyUserId) {
+            this.filterByUserId = filterbyUserId;
+            return this;
+        }
+
+        public UserQueryBuilder sortField(List<String> sortField, boolean ascendingOrder) {
             this.sortField = sortField;
             this.ascendingOrder = ascendingOrder;
             return this;

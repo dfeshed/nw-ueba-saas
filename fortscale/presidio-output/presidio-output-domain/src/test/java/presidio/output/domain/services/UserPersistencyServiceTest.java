@@ -3,34 +3,31 @@ package presidio.output.domain.services;
 import fortscale.utils.elasticsearch.PresidioElasticsearchTemplate;
 import org.assertj.core.util.Lists;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
-import presidio.output.domain.records.alerts.Alert;
-import presidio.output.domain.records.alerts.AlertQuery;
 import presidio.output.domain.records.users.User;
 import presidio.output.domain.records.users.UserQuery;
 import presidio.output.domain.services.users.UserPersistencyService;
 
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.*;
-import static presidio.output.domain.records.alerts.AlertEnums.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
-@Ignore
+
+//@Ignore
 @RunWith(SpringRunner.class)
 @SpringBootTest()
-@ContextConfiguration(classes=presidio.output.domain.spring.PresidioOutputPersistencyServiceConfig.class)
+@ContextConfiguration(classes = presidio.output.domain.spring.PresidioOutputPersistencyServiceConfig.class)
 public class UserPersistencyServiceTest {
 
     @Autowired
@@ -125,7 +122,8 @@ public class UserPersistencyServiceTest {
         user4.setUserScore(50d);
         List<String> classification = new ArrayList<String>();
         user3.setAlertClassifications(classification);
-        List<String> indicators = new ArrayList<String>();;
+        List<String> indicators = new ArrayList<String>();
+        ;
         user3.setIndicators(indicators);
         List<User> userList = new ArrayList<>();
         userList.add(user1);
@@ -139,11 +137,13 @@ public class UserPersistencyServiceTest {
         List<String> indicatorFilter = new ArrayList<String>();
         classificationFilter.add("indicator");
 
+        List<String> sortFields = new ArrayList<>();
+        sortFields.add(User.SCORE_FIELD_NAME);
         UserQuery userQuery =
                 new UserQuery.UserQueryBuilder()
                         .filterByAlertClassifications(classificationFilter)
                         .filterByIndicators(indicatorFilter)
-                        .sortField(User.SCORE_FIELD_NAME, false)
+                        .sortField(sortFields, false)
                         .build();
 
         Page<User> foundUsers = userPersistencyService.find(userQuery);

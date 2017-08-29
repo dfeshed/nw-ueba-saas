@@ -22,6 +22,9 @@ public class AlertServiceImpl implements AlertService {
     private final AlertEnumsSeverityService alertEnumsSeverityService;
     private final AlertPersistencyService alertPersistencyService;
 
+    private final String FiXED_DURATION_HOURLY = "fixed_duration_hourly";
+    private final String HOURLY = "hourly";
+    private final String DAILY = "daily";
 
     private AlertClassificationService alertClassificationService;
 
@@ -42,15 +45,20 @@ public class AlertServiceImpl implements AlertService {
         long startDate = smart.getStartInstant().getLong(ChronoField.INSTANT_SECONDS);
         long endDate = smart.getEndInstant().getLong(ChronoField.INSTANT_SECONDS);
         int indicatorsNum = smart.getAggregationRecords().size();
-        //TODO- on the new ADE SMART POJO there should be a dedicated field for Daily/Hourly
-        AlertEnums.AlertTimeframe timeframe = AlertEnums.AlertTimeframe.DAILY;
         AlertEnums.AlertSeverity severity = alertEnumsSeverityService.severity(score);
-        return new Alert(user.getUserId(), classification, user.getUserName(), startDate, endDate, score, indicatorsNum, timeframe, severity);
+        return new Alert(user.getUserId(), classification, user.getUserName(), startDate, endDate, score, indicatorsNum, getStratgyfromSmart(smart), severity);
     }
 
     @Override
     public void save(List<Alert> alerts) {
         alertPersistencyService.save(alerts);
+    }
+
+    private AlertEnums.AlertTimeframe getStratgyfromSmart(SmartRecord smart) {
+        String strategy = smart.getFixedDurationStrategy().toStrategyName().equals(FiXED_DURATION_HOURLY) ? HOURLY : DAILY;
+        return AlertEnums.AlertTimeframe.getAlertTimeframe(strategy);
+
+
     }
 
     private List<String> extractIndicatorsNames(SmartRecord smart) {

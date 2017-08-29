@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * Created by efratn on 22/08/2017.
  */
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
 
     private final EventPersistencyService eventPersistencyService;
     private final UserPersistencyService userPersistencyService;
@@ -47,5 +47,9 @@ public class UserServiceImpl implements UserService{
         String userDisplayName = event.getUserDisplayName();
         String userName = event.getUserName();
         return new UserDetails(userName, userDisplayName, userId);
+    }
+
+    public void setClassification(User user, List<String> classification) {
+        user.addAlertClassifications(classification);
     }
 }

@@ -9,17 +9,23 @@ public class AlertEnums {
 
         private String value;
 
-        AlertSeverity(String name) {
+        AlertSeverity(String value) {
             this.value = value;
         }
     }
 
     public enum AlertTimeframe {
-        HOURLY, DAILY
-    }
+        HOURLY("hourly"), DAILY("daily");
 
-    public enum AlertType {
-        GLOBAL, DATA_EXFILTRATION, BRUTE_FORCE, ANOMALOUS_ADMIN_ACTIVITY, SNOOPING
+        private String value;
+
+        AlertTimeframe(String value) {
+            this.value = value;
+        }
+
+        public static AlertTimeframe getAlertTimeframe(String value) {
+            return AlertTimeframe.valueOf(value.toUpperCase());
+        }
     }
 
 }
