@@ -34,7 +34,6 @@ public class AccumulatedSmartValueRetriever extends AbstractDataRetriever {
     private final SmartRecordConf smartRecordConf;
     private final String smartRecordConfName;
     private final SmartAccumulationDataReader accumulationDataReader;
-    private final SmartRecordConfService smartRecordConfService;
     private final FactoryService<IContextSelector> contextSelectorFactoryService;
     private ModelConf weightsModelConf;
     private final String weightsModelName;
@@ -50,9 +49,8 @@ public class AccumulatedSmartValueRetriever extends AbstractDataRetriever {
         this.oldestAllowedModelDurationDiff = oldestAllowedModelDurationDiff;
         Assert.hasText(this.smartRecordConfName,"smart record conf name must be defined for retriever");
         this.accumulationDataReader = accumulationDataReader;
-        this.smartRecordConfService = smartRecordConfService;
         this.contextSelectorFactoryService = contextSelectorFactoryService;
-        this.smartRecordConf = this.smartRecordConfService.getSmartRecordConf(this.smartRecordConfName);
+        this.smartRecordConf = smartRecordConfService.getSmartRecordConf(this.smartRecordConfName);
         this.weightsModelName = dataRetrieverConf.getWeightsModelName();
         Assert.hasText(weightsModelName ,String.format("weightsModelName must be defined for retriever name=%s",this.smartRecordConfName));
 
@@ -119,7 +117,7 @@ public class AccumulatedSmartValueRetriever extends AbstractDataRetriever {
         {
             for(Integer activityTime: accumulatedSmartRecord.getActivityTime())
             {
-                Map<String,Double> featureNameToScore = new HashMap();
+                Map<String,Double> featureNameToScore = new HashMap<>();
                 for (Map.Entry<String, Map<Integer, Double>> aggrFeature : accumulatedSmartRecord.getAggregatedFeatureEventsValuesMap().entrySet()) {
                     Double activityTimeScore = aggrFeature.getValue().get(activityTime);
                     String featureName = aggrFeature.getKey();
