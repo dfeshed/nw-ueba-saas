@@ -165,7 +165,7 @@ public class UserScoreServiceImpl implements UserScoreService{
 
 
         Sort sort = new Sort(Sort.Direction.ASC,"score");
-        Page<User> page = userPersistencyService.find(new UserQuery.UserQueryBuilder().minScore(1).pageNumber(0).pageSize(1000).sort(sort).build());
+        Page<User> page = userPersistencyService.find(new UserQuery.UserQueryBuilder().minScore(1).pageNumber(0).pageSize(this.defaultUsersBatchFile).sort(sort).build());
         int numberOfElements = new Long(page.getTotalElements()).intValue();
         double[] scores = new double[numberOfElements];
         AtomicInteger courser = new AtomicInteger(0);
