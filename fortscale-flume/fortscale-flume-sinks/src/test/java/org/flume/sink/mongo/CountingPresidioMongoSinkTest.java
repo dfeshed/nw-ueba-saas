@@ -18,21 +18,12 @@ import java.util.List;
 
 public class CountingPresidioMongoSinkTest {
 
-    private final CountingPresidioMongoSink testSubject = new CountingPresidioMongoSink<AbstractEventTestClass>() {
-        @Override
-        protected String getEventSchemaName(AbstractEventTestClass event) {
-            return event.eventSchemaName;
-        }
-
-        @Override
-        protected Instant getEventTimeForCounter(AbstractEventTestClass event) {
-            return event.eventTimeForCounter;
-        }
-    };
+    private CountingPresidioMongoSink testSubject;
 
     @Before
     public void setUp() throws Exception {
         final SinkMongoRepository mockedRepo = Mockito.mock(SinkMongoRepository.class);
+        final CountersUtil mockedCountersUtil = Mockito.mock(CountersUtil.class);
         Mockito.when(mockedRepo.bulkSave(Mockito.anyListOf(DBObject.class), Mockito.anyString())).then(new Answer<Integer>() {
             @Override
             @SuppressWarnings("unchecked")
@@ -41,16 +32,25 @@ public class CountingPresidioMongoSinkTest {
                 return events.size();
             }
         });
-        testSubject.setSinkMongoRepositoryForTests(mockedRepo);
+        testSubject = new CountingPresidioMongoSink<AbstractEventTestClass>(mockedRepo, mockedCountersUtil) {
+            @Override
+            protected String getEventSchemaName(AbstractEventTestClass event) {
+                return event.eventSchemaName;
+            }
 
-        final CountersUtil mockedCountersUtil = Mockito.mock(CountersUtil.class);
+            @Override
+            protected Instant getEventTimeForCounter(AbstractEventTestClass event) {
+                return event.eventTimeForCounter;
+            }
+        };
+
         Mockito.when(mockedCountersUtil.addToSinkCounter(Mockito.any(Instant.class), Mockito.anyString(), Mockito.anyInt())).then(new Answer<Integer>() {
             @Override
             public Integer answer(InvocationOnMock invocationOnMock) throws Throwable {
                 return (Integer) invocationOnMock.getArguments()[2];
             }
         });
-        testSubject.setCountersUtilForTests(mockedCountersUtil);
+
     }
 
     @Test
