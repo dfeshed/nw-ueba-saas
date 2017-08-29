@@ -19,13 +19,22 @@ public abstract class CountingPresidioMongoSink<T extends AbstractDocument> exte
 
     protected CountersUtil countersUtil = new CountersUtil();
 
-    public CountingPresidioMongoSink(SinkMongoRepository sinkMongoRepository, CountersUtil countersUtil) {
+
+    public CountingPresidioMongoSink() {
+        super();
+    }
+
+    public CountingPresidioMongoSink(SinkMongoRepository sinkMongoRepository) {
         super(sinkMongoRepository);
-        this.countersUtil = countersUtil;
     }
 
     public CountingPresidioMongoSink(CountersUtil countersUtil) {
-        super();
+        this();
+        this.countersUtil = countersUtil;
+    }
+
+    public CountingPresidioMongoSink(SinkMongoRepository sinkMongoRepository, CountersUtil countersUtil) {
+        super(sinkMongoRepository);
         this.countersUtil = countersUtil;
     }
 
