@@ -42,6 +42,12 @@
             <groupId>fortscale</groupId>
             <artifactId>presidio-common</artifactId>
             <version>1.0.0-SNAPSHOT</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>log4j-over-slf4j</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
     </dependencies>
