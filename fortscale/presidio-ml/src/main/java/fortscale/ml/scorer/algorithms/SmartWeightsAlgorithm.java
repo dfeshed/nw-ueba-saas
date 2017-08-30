@@ -79,7 +79,7 @@ public class SmartWeightsAlgorithm {
             List<SmartAggregatedRecordData> smartAggregatedRecordData, List<ClusterConf> clusterConfList) {
 
         return clusterConfList.stream()
-                .map(clusterConf -> translateClusterSpecsToCluster(smartAggregatedRecordData, clusterConf))
+                .map(clusterConf -> translateClusterConfsToCluster(smartAggregatedRecordData, clusterConf))
                 .collect(Collectors.toList());
     }
 
@@ -87,7 +87,7 @@ public class SmartWeightsAlgorithm {
      * Instantiate a {@link Cluster} containing the scores of the given {@link List<SmartAggregatedRecordData>}
      * specified by the given {@link ClusterConf}.
      */
-    public static Cluster translateClusterSpecsToCluster(List<SmartAggregatedRecordData> smartAggregatedRecordData,
+    public static Cluster translateClusterConfsToCluster(List<SmartAggregatedRecordData> smartAggregatedRecordData,
                                                          ClusterConf clusterConf) {
         Set<SmartAggregatedRecordData> aggrFeatureEvents = new HashSet<>();
         Map<String, SmartAggregatedRecordData> aggrFeatureEventsMap = createAggrFeaturesDataMap(smartAggregatedRecordData);
