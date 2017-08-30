@@ -21,15 +21,18 @@ const saModuleDependants = {
     'sa',
     'style-guide',
     'investigate',
+    'investigate-events',
+    'packager',
     'respond',
     'context'
   ],
   docs: [], // lol
-  'live-content': [],
-  'mock-server': [ // This list will grow as more uses the mock-server
+  'mock-server': [
     'streaming-data',
     'recon',
     'investigate',
+    'investigate-events',
+    'packager',
     'respond',
     'context'
   ],
@@ -49,6 +52,8 @@ const saModuleDependants = {
   'streaming-data': [
     'recon',
     'investigate',
+    'investigate-events',
+    'packager',
     'respond',
     'sa',
     'style-guide',
@@ -57,7 +62,6 @@ const saModuleDependants = {
   'style-guide': [], // style-guide is an end state app, nothing depends on it
   context: [
     'sa',
-    'investigate',
     'respond'
   ]
 };
@@ -68,7 +72,6 @@ const saModuleDependants = {
 const saModuleDependencies = {
   'component-lib': [],
   docs: [], // lol
-  'live-content': [],
   'mock-server': [],
   recon: [
     'component-lib',
@@ -86,7 +89,9 @@ const saModuleDependencies = {
     'investigate',
     'recon',
     'context',
-    'respond'
+    'respond',
+    'investigate-events',
+    'packager'
   ],
   'investigate-events': [
     'component-lib',

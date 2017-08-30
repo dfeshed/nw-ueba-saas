@@ -1,5 +1,0 @@
-{{#each steps as |step index|}}
-  <li class="{{if (eq currentStep step.stepNumber) 'active'}} {{if (contains step.stepNumber visitedSteps ) 'visited'}} {{if (contains step.stepNumber invalidStepNumbers) 'invalid'}}">
-    <span>{{step.name}}</span>
-  </li>
-{{/each}}

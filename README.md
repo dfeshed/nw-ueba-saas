@@ -20,7 +20,6 @@ The NetWitness UI is split into many directories, most of which contain ember.js
 * `mock-server` - contains our mock-server, an Express server used by virtually all the Ember projects to mock a real back end.
 * `scripts` - contains scripts for 1) setting up the environment locally and 2) running builds in Jenkins
 * `docs` - contains various documentation about the NetWitness UI, however, **WARNING**, the documentation in this folder is woefully out of date.
-* `live-content` - actually an Ember Engine that is currently not used. Dead code if you will. We leave it there because it isn't hurting us any and we should get back to it soon.
 
 # Setting up the Client Application
 
