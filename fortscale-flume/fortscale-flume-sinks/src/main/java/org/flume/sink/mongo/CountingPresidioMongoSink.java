@@ -11,6 +11,8 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 public abstract class CountingPresidioMongoSink<T extends AbstractDocument> extends PresidioMongoSink<T> {
@@ -46,32 +48,15 @@ public abstract class CountingPresidioMongoSink<T extends AbstractDocument> exte
     @Override
     protected int saveEvents(List<T> eventsToSave) throws Exception {
         int numOfTotalSavedEvents = 0;
-        List<List<List<T>>> hourListsPerSchema = new ArrayList<>();
+        List<List<List<T>>> hourListsPerSchema = new ArrayList<>(); //list of lists-of-events-by-time by schema
 
         try {
-        /* dividing to groups by time */
-            List<List<T>> hourLists = eventsToSave.stream()
-                    .collect(Collectors.groupingBy(x -> DateUtils.ceiling(getEventTimeForCounter(x), ChronoUnit.HOURS)))
-                    .entrySet().stream()
-                    .map(e -> {
-                        List<T> list = new ArrayList<>();
-                        list.addAll(e.getValue());
-                        return list;
-                    })
-                    .collect(Collectors.toList());
+            /* divide the list of events to groups by time */
+            List<List<T>> hourLists = groupBy(eventsToSave, Collectors.groupingBy(x -> DateUtils.ceiling(getEventTimeForCounter(x), ChronoUnit.HOURS)));
 
-        /* dividing to all the groups-by-time by schema */
+            /* divide all the group of events(group-per-time) by schema */
             for (List<T> hourList : hourLists) {
-                final List<List<T>> currSchemaHourList = hourList.stream()
-                        .collect(Collectors.groupingBy(this::getEventSchemaName))
-                        .entrySet().stream()
-                        .map(e -> {
-                            List<T> list = new ArrayList<>();
-                            list.addAll(e.getValue());
-                            return list;
-                        })
-                        .collect(Collectors.toList());
-
+                final List<List<T>> currSchemaHourList = groupBy(hourList, Collectors.groupingBy(this::getEventSchemaName));
                 hourListsPerSchema.add(currSchemaHourList);
             }
         } catch (Exception e) {
@@ -133,4 +118,17 @@ public abstract class CountingPresidioMongoSink<T extends AbstractDocument> exte
      * @return the time of {@code event}
      */
     protected abstract Instant getEventTimeForCounter(T event);
+
+
+    private List<List<T>> groupBy(List<T> eventsToSave, Collector<T, ?, Map<Object, List<T>>> groupByFunction) {
+        return eventsToSave.stream()
+                .collect(groupByFunction)
+                .entrySet().stream()
+                .map(e -> {
+                    List<T> list = new ArrayList<>();
+                    list.addAll(e.getValue());
+                    return list;
+                })
+                .collect(Collectors.toList());
+    }
 }
