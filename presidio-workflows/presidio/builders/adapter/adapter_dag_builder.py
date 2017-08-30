@@ -47,7 +47,9 @@ class AdapterDagBuilder(PresidioDagBuilder):
                 'schema': data_source,
             }
 
-            hour_is_ready_sensor = HourIsReadySensorOperator(data_source)
+            hour_is_ready_sensor = HourIsReadySensorOperator(dag=adapter_dag,
+                                                             task_id='adapter_sensor_{}'.format(data_source),
+                                                             poke_interval=60, schema_name=data_source)
 
             # Create jar operator for each data source
             jar_operator = FixedDurationJarOperator(
