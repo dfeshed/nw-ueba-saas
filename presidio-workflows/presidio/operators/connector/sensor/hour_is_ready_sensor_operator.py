@@ -24,12 +24,10 @@ class HourIsReadySensorOperator(BaseSensorOperator):
     def __init__(
             self,
             schema_name,
-            hour_end_time,
             *args, **kwargs):
         super(HourIsReadySensorOperator, self).__init__(*args, **kwargs)
 
         self._schema_name = schema_name
-        self._hour_end_time = hour_end_time
 
     def poke(self, context):
         try:
@@ -37,7 +35,7 @@ class HourIsReadySensorOperator(BaseSensorOperator):
             @return: bool - whether the events for an hour (whose end time was given as hour_end_time) are ready for
             adapter processing
             """
-            execution_date = context['execution_date']
+            self._hour_end_time = context['execution_date']
             logging.info(
                 'Poking for the following'
                 '{self._schema_name}.'
