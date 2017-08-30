@@ -3,6 +3,7 @@ import logging
 from datetime import timedelta
 
 from presidio.builders.presidio_dag_builder import PresidioDagBuilder
+from presidio.operators.connector.sensor.hour_is_ready_sensor_operator import HourIsReadySensorOperator
 from presidio.operators.fixed_duration_jar_operator import FixedDurationJarOperator
 from presidio.utils.configuration.config_server_configuration_reader_singleton import \
     ConfigServerConfigurationReaderSingleton
@@ -46,13 +47,17 @@ class AdapterDagBuilder(PresidioDagBuilder):
                 'schema': data_source,
             }
 
+            hour_is_ready_sensor = HourIsReadySensorOperator(data_source)
+
             # Create jar operator for each data source
-            FixedDurationJarOperator(
+            jar_operator = FixedDurationJarOperator(
                 task_id='adapter_{}'.format(data_source),
                 fixed_duration_strategy=timedelta(hours=1),
                 command=PresidioDagBuilder.presidio_command,
                 jvm_args=self.jvm_args,
                 java_args=java_args,
                 dag=adapter_dag)
+
+            hour_is_ready_sensor >> jar_operator
 
         return adapter_dag
