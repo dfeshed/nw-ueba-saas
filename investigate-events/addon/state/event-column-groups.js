@@ -8,6 +8,7 @@ const {
 const baseColumns = [
   { field: 'time', title: 'Time', width: 100 },
   { field: 'medium', title: 'Event Type' },
+  { field: 'custom.theme', title: 'Theme' },
   { field: 'size', title: 'Size' }
 ];
 

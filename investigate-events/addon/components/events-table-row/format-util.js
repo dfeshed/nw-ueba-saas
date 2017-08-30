@@ -76,6 +76,12 @@ function _alias(field, value, opts = {}) {
     }
   }
 
+  if (field === 'custom.theme') {
+    // To map service values to meaningful names (21:FTP, 22:SSH, 80:HTTP etc.)
+    hash = opts.aliases && opts.aliases.service;
+    valueLookup = _hashLookup(hash, value);
+  }
+
   if (valueLookup === undefined) {
     hash = opts.aliases && opts.aliases[field];
     valueLookup = _hashLookup(hash, value);

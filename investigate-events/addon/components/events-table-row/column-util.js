@@ -68,6 +68,9 @@ function buildCellContent($cell, field, item, opts) {
     case 'time':
       buildTimeContent($content, item, opts);
       break;
+    case 'custom.theme':
+      buildThemeContent($content, field, item, opts);
+      break;
     default:
       buildDefaultCellContent($content, field, item, opts);
   }
@@ -253,6 +256,29 @@ function buildTimeContent($content, item, opts) {
     .attr('class', 'time')
     .text(time);
     // .html(`<div>${date}</div><div>${time}</div>`);
+}
+
+/**
+ * Builds the inner HTML for the custom "Theme" column.
+ * Has logic to populate "Theme" column based on Event Type (Endpoint, Network, Log etc)
+ * @private
+ */
+function buildThemeContent($content, field, item, opts) {
+  let value;
+  if (isLogEvent(item)) {
+    // Use category for an endpoint event and device.type for a log event
+    value = opts.isEndpoint ? item.category : item['device.type'];
+  } else {
+    // Use service for any event that is not log based
+    value = item.service;
+  }
+
+  const tooltip = formatUtil.tooltip(field, value, opts);
+  const text = formatUtil.text(field, value, opts);
+
+  $content
+    .attr('title', tooltip)
+    .text(text);
 }
 
 /**
