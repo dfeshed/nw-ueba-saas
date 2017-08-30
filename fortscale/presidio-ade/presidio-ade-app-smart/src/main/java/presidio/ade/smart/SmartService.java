@@ -6,7 +6,6 @@ import fortscale.smart.record.conf.SmartRecordConfService;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.fixedduration.FixedDurationStrategyUtils;
 import fortscale.utils.logging.Logger;
-import fortscale.utils.pagination.PageIterator;
 import fortscale.utils.time.TimeRange;
 import presidio.ade.domain.pagination.aggregated.AggregatedDataPaginationParam;
 import presidio.ade.domain.pagination.aggregated.AggregatedDataReader;
@@ -31,6 +30,7 @@ public class SmartService {
 	private static final Logger logger = Logger.getLogger(SmartService.class);
 
 	private final SmartRecordConfService smartRecordConfService;
+	private final Double aggregationRecordsThreshold;
 	private final AggregatedDataReader aggregatedDataReader;
 	private final SmartScoringService smartScoringService;
 	private final SmartDataStore smartDataStore;
@@ -38,18 +38,22 @@ public class SmartService {
 	/**
 	 * C'tor.
 	 *
-	 * @param smartRecordConfService contains all the {@link SmartRecordConf}s
-	 * @param aggregatedDataReader   reads from the store of {@link AdeAggregationRecord}s
-	 * @param smartScoringService    scores {@link SmartRecord}s
-	 * @param smartDataStore         the store of {@link SmartRecord}s
+	 * @param smartRecordConfService      contains all the {@link SmartRecordConf}s
+	 * @param aggregationRecordsThreshold only {@link AdeAggregationRecord}s whose values / scores are larger
+	 *                                    than this threshold will be included in the {@link SmartRecord}s
+	 * @param aggregatedDataReader        reads from the store of {@link AdeAggregationRecord}s
+	 * @param smartScoringService         scores {@link SmartRecord}s
+	 * @param smartDataStore              the store of {@link SmartRecord}s
 	 */
 	public SmartService(
 			SmartRecordConfService smartRecordConfService,
+			Double aggregationRecordsThreshold,
 			AggregatedDataReader aggregatedDataReader,
 			SmartScoringService smartScoringService,
 			SmartDataStore smartDataStore) {
 
 		this.smartRecordConfService = smartRecordConfService;
+		this.aggregationRecordsThreshold = aggregationRecordsThreshold;
 		this.aggregatedDataReader = aggregatedDataReader;
 		this.smartScoringService = smartScoringService;
 		this.smartDataStore = smartDataStore;
@@ -68,14 +72,13 @@ public class SmartService {
 		for (TimeRange partition : FixedDurationStrategyUtils.splitTimeRangeByStrategy(timeRange, strategy)) {
 			logger.info("Starting to process time range partition {}.", partition);
 
-			// Include only score / feature aggregation records with a value / score larger than 0
-			for (PageIterator<AdeAggregationRecord> iterator : aggregatedDataReader.read(params, partition, 0d)) {
+			aggregatedDataReader.read(params, partition, aggregationRecordsThreshold).forEach(iterator -> {
 				SmartRecordAggregator aggregator = new SmartRecordAggregator(conf, strategy, partition);
 				while (iterator.hasNext()) aggregator.updateSmartRecords(iterator.next());
 				Collection<SmartRecord> records = aggregator.getSmartRecords();
 				smartScoringService.score(records);
 				smartDataStore.storeSmartRecords(smartRecordConfName, records);
-			}
+			});
 		}
 	}
 }
