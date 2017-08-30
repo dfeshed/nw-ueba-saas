@@ -4,6 +4,7 @@ import fortscale.domain.feature.score.FeatureScore;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.pagination.ContextIdToNumOfItems;
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
+import fortscale.utils.test.mongodb.FongoTestConfig;
 import fortscale.utils.time.TimeRange;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -43,7 +44,7 @@ import static org.mockito.Matchers.eq;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest()
-@ContextConfiguration(classes = {AlertServiceElasticConfig.class, AlertEnumsConfig.class, AlertServiceTest.SpringConfig.class})
+@ContextConfiguration(classes = {AlertServiceElasticConfig.class, AlertEnumsConfig.class, AlertServiceTest.SpringConfig.class, FongoTestConfig.class})
 public class AlertServiceTest {
 
     @MockBean
