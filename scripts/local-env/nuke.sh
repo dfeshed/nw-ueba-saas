@@ -24,6 +24,7 @@ touch node_modules/.metadata_never_index
 nukeNode mock-server
 nukeNode component-lib
 nukeNode streaming-data
+nukeNode packager
 nukeNode recon
 nukeNode style-guide
 nukeNode investigate-events

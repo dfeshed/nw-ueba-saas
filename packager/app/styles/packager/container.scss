@@ -1,0 +1,51 @@
+$card-radius: 10px;
+$content-card-color: #bdbdbd;
+.packager-container {
+  width: 100vw;
+  height: calc(100vh - 40px);
+  padding: rsa-whitespace();
+  &__body {
+    height: 100%;
+  }
+  .export-files-iframe {
+    height: 0;
+    display: none;
+  }
+}
+.packager-information {
+  .rsa-content-card {
+    border-radius: $card-radius;
+    width: 100%;
+    color: $content-card-color;
+  }
+  &__header {
+    position: relative;
+    border-bottom: 1px solid rsa-color(gray,darkest);
+    font-style: normal;
+    font-size: 1.28rem;
+    font-weight: 100;
+    padding: rsa-whitespace();
+  }
+  &__content {
+    li {
+      padding: rsa-whitespace() rsa-whitespace(less);
+    }
+    padding: 0 rsa-whitespace();
+    &__steps {
+      padding-bottom: rsa-whitespace(most);
+      &__outerList {
+        list-style-type: decimal;
+        padding-left: rsa-whitespace();
+      }
+      &__innerList {
+        padding-left: rsa-whitespace();
+      }
+      &__innerList li {
+        list-style-type: disc;
+      }
+    }
+    &__caution{
+      color: darkorange;
+    }
+  }
+}

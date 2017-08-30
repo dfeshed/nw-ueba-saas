@@ -1,6 +1,7 @@
 const ALL_SUBMODULES = [
   'component-lib',
   'mock-server',
+  'packager',
   'recon',
   'investigate-events',
   'investigate',
@@ -36,6 +37,7 @@ const saModuleDependants = {
     'sa',
     'investigate'
   ],
+  packager: ['sa'],
   recon: [
     'sa',
     'investigate'
@@ -69,6 +71,11 @@ const saModuleDependencies = {
   'live-content': [],
   'mock-server': [],
   recon: [
+    'component-lib',
+    'streaming-data',
+    'mock-server'
+  ],
+  packager: [
     'component-lib',
     'streaming-data',
     'mock-server'

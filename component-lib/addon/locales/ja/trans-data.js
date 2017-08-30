@@ -1401,5 +1401,38 @@ export default {
         'LiveConnect-Domain': 'ja_LiveConnect'
       }
     }
+  },
+  packager: {
+    howToInstall: 'ja_How to install ?',
+    installStep1: 'ja_Unzip the packager.zip file. It includes the following:',
+    installStep1a: 'ja_Agents folder  – Contains executables for Linux (.rpm), Windows (.exe), and Mac (.pkg).',
+    installStep1b: 'ja_Config folder – Contains configuration file to generate the certificate to communicate between the NWE server and the client.',
+    installStep1c: 'ja_AgentPackager.exe file.',
+    installStep2: 'ja_Run the AgentPackager.exe file.',
+    installStep3: 'ja_Enter the password for the certificate. This creates a nwe-agent.exe file in the root folder.',
+    installStep4: 'ja_Run the nwe-agent.exe file to complete the installation.',
+    installCaution: 'ja_Warning:',
+    installCautionText: 'ja_When updating a client, Netwitness Endpoint Service Name should be same as in the old client.',
+    packagerTitle: 'ja_Packager',
+    serviceName: 'ja_Service Name',
+    server: '*ja_Server',
+    port: '*ja_HTTPS Port',
+    proxyServers: 'ja_Proxy Server(s)',
+    exceptions: 'ja_Exception(s)',
+    certificateValidation: 'ja_Certificate Validation',
+    none: 'ja_None',
+    fullChain: 'ja_Full Chain',
+    thumbprint: 'ja_Thumbprint',
+    reset: 'ja_Reset',
+    generateAgent: 'ja_Generate Agent',
+    description: 'ja_Description',
+    title: 'Packager',
+    becon: 'ja_Becon',
+    displayName: 'ja_Display Name',
+    error: {
+      generic: 'ja_An unexpected error has occurred attempting to retrieve this data.'
+    },
+    autoUninstall: 'ja_Auto Uninstall',
+    forceOverwrite: 'ja_Force Overwrite'
   }
 };

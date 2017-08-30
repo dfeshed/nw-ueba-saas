@@ -1,0 +1,28 @@
+.input-content {
+  padding: 0 rsa-whitespace();
+  &__description {
+    padding: rsa-whitespace();
+  }
+  &__fields {
+    .field {
+      padding: rsa-whitespace();
+      .ember-text-area {
+        min-height: 6rem;
+      }
+    }
+    .buttons {
+      float: right;
+      div:first-child {
+        padding-right: rsa-whitespace();
+      }
+    }
+  }
+  .server-input-group {
+    div:first-child {
+      padding-right: rsa-whitespace();
+    }
+  }
+}
+
+
+

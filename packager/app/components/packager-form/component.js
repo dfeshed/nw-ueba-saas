@@ -1,0 +1,1 @@
+export { default } from 'packager/components/packager-form/component';

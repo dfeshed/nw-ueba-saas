@@ -40,6 +40,7 @@ yarn link
 
 prepareApp component-lib
 prepareApp streaming-data
+prepareApp packager
 prepareApp recon
 prepareApp style-guide
 prepareApp investigate-events

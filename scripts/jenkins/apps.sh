@@ -189,6 +189,7 @@ setWebProxy
 buildMockServer
 buildEmberApp streaming-data false true
 buildEmberApp component-lib false
+buildEmberApp packager false true
 buildEmberApp recon false true
 buildEmberApp context false true
 buildEmberApp style-guide true
