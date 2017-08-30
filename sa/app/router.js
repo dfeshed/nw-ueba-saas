@@ -38,6 +38,7 @@ Router.map(function() {
     }
   });
 
+  this.route('error', { path: '/error' });
   this.route('not-found', { path: '/*path' });
 });
 

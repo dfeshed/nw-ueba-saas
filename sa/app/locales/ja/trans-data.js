@@ -6,6 +6,18 @@ export default {
     title: 'ja_NetWitness Suite',
     copyright: 'ja_&copy;2015 RSA Security LLC. All rights reserved.'
   },
+  errorPages: {
+    notFound: {
+      errorDescription: 'ja_Oops! The requested link was not found.',
+      subtitle: 'ja_Page Not Found',
+      title: 'ja_404'
+    },
+    error: {
+      errorDescription: 'ja_We\'ve encountered an internal error and cannot proceed. Please contact an admin for further assistance.',
+      subtitle: 'ja_Internal Error',
+      title: 'ja_500'
+    }
+  },
   monitor: {
     title: 'ja_Monitor',
     details: 'ja_Monitor contents go here.'

@@ -6,6 +6,18 @@ export default {
     title: 'NetWitness Suite',
     copyright: '&copy;2015 RSA Security LLC. All rights reserved.'
   },
+  errorPages: {
+    notFound: {
+      errorDescription: 'Oops! The requested link was not found.',
+      subtitle: 'Page Not Found',
+      title: '404'
+    },
+    error: {
+      errorDescription: 'We\'ve encountered an internal error and cannot proceed. Please contact an admin for further assistance.',
+      subtitle: 'Internal Error',
+      title: '500'
+    }
+  },
   monitor: {
     title: 'Monitor',
     details: 'Monitor contents go here.'
