@@ -1,6 +1,7 @@
 package org.flume.sink.mongo;
 
 import com.mongodb.DBObject;
+import fortscale.common.general.Schema;
 import fortscale.domain.core.AbstractDocument;
 import org.flume.sink.mongo.persistency.SinkMongoRepository;
 import org.flume.utils.CountersUtil;
@@ -34,8 +35,8 @@ public class CountingPresidioMongoSinkTest {
         });
         testSubject = new CountingPresidioMongoSink<AbstractEventTestClass>(mockedRepo, mockedCountersUtil) {
             @Override
-            protected String getEventSchemaName(AbstractEventTestClass event) {
-                return event.eventSchemaName;
+            protected Schema getEventSchema(AbstractEventTestClass event) {
+                return event.eventSchema;
             }
 
             @Override
@@ -44,7 +45,7 @@ public class CountingPresidioMongoSinkTest {
             }
         };
 
-        Mockito.when(mockedCountersUtil.addToSinkCounter(Mockito.any(Instant.class), Mockito.anyString(), Mockito.anyInt())).then(new Answer<Integer>() {
+        Mockito.when(mockedCountersUtil.addToSinkCounter(Mockito.any(Instant.class), Mockito.any(Schema.class), Mockito.anyInt())).then(new Answer<Integer>() {
             @Override
             public Integer answer(InvocationOnMock invocationOnMock) throws Throwable {
                 return (Integer) invocationOnMock.getArguments()[2];
@@ -87,32 +88,32 @@ public class CountingPresidioMongoSinkTest {
 
         Assert.assertEquals(eventsToSave.size(), numOfSavedEvents);
 
-        Mockito.verify(testSubject.countersUtil).addToSinkCounter(endOfTime1, "ad", 2);
-        Mockito.verify(testSubject.countersUtil).addToSinkCounter(endOfTime2, "ad", 1);
+        Mockito.verify(testSubject.countersUtil).addToSinkCounter(endOfTime1, Schema.ACTIVE_DIRECTORY, 2);
+        Mockito.verify(testSubject.countersUtil).addToSinkCounter(endOfTime2, Schema.ACTIVE_DIRECTORY, 1);
 
-        Mockito.verify(testSubject.countersUtil).addToSinkCounter(endOfTime1, "authentication", 1);
-        Mockito.verify(testSubject.countersUtil).addToSinkCounter(endOfTime2, "authentication", 1);
+        Mockito.verify(testSubject.countersUtil).addToSinkCounter(endOfTime1, Schema.AUTHENTICATION, 1);
+        Mockito.verify(testSubject.countersUtil).addToSinkCounter(endOfTime2, Schema.AUTHENTICATION, 1);
 
-        Mockito.verify(testSubject.countersUtil).addToSinkCounter(endOfTime1, "file", 1);
+        Mockito.verify(testSubject.countersUtil).addToSinkCounter(endOfTime1, Schema.FILE, 1);
 
     }
 
     private static class AbstractEventTestClass extends AbstractDocument {
-        protected String eventSchemaName;
+        protected Schema eventSchema;
         protected Instant eventTimeForCounter;
     }
 
     private static class ADEventTestClass extends AbstractEventTestClass {
 
         public ADEventTestClass(Instant eventTimeForCounter) {
-            eventSchemaName = "ad";
+            eventSchema = Schema.ACTIVE_DIRECTORY;
             this.eventTimeForCounter = eventTimeForCounter;
         }
     }
 
     private static class AuthenticationEventTestClass extends AbstractEventTestClass {
         public AuthenticationEventTestClass(Instant eventTimeForCounter) {
-            eventSchemaName = "authentication";
+            eventSchema = Schema.AUTHENTICATION;
             this.eventTimeForCounter = eventTimeForCounter;
         }
 
@@ -121,7 +122,7 @@ public class CountingPresidioMongoSinkTest {
     private static class FileEventTestClass extends AbstractEventTestClass {
 
         public FileEventTestClass(Instant eventTimeForCounter) {
-            eventSchemaName = "file";
+            eventSchema = Schema.FILE;
             this.eventTimeForCounter = eventTimeForCounter;
         }
     }

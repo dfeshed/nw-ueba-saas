@@ -1,5 +1,6 @@
 package org.flume.sink.mongo;
 
+import fortscale.common.general.Schema;
 import fortscale.domain.core.AbstractDocument;
 import fortscale.utils.logging.Logger;
 import org.flume.sink.mongo.persistency.SinkMongoRepository;
@@ -56,7 +57,7 @@ public abstract class CountingPresidioMongoSink<T extends AbstractDocument> exte
 
             /* divide all the group of events(group-per-time) by schema */
             for (List<T> hourList : hourLists) {
-                final List<List<T>> currSchemaHourList = groupBy(hourList, Collectors.groupingBy(this::getEventSchemaName));
+                final List<List<T>> currSchemaHourList = groupBy(hourList, Collectors.groupingBy(this::getEventSchema));
                 hourListsPerSchema.add(currSchemaHourList);
             }
         } catch (Exception e) {
@@ -69,18 +70,18 @@ public abstract class CountingPresidioMongoSink<T extends AbstractDocument> exte
             for (List<T> hourList : hourListPerSchema) {//going over lists of events per hour
                 final T exampleEvent = hourList.get(0);
                 final Instant endOfHourForTimeDetected = DateUtils.ceiling(getEventTimeForCounter(exampleEvent), ChronoUnit.HOURS);
-                final String schemaName = getEventSchemaName(exampleEvent);
+                final Schema schema = getEventSchema(exampleEvent);
                 int numOfSavedEvents = super.saveEvents(hourList);
                 numOfTotalSavedEvents += numOfSavedEvents;
                 try {
-                    countersUtil.addToSinkCounter(endOfHourForTimeDetected, schemaName, numOfSavedEvents);
+                    countersUtil.addToSinkCounter(endOfHourForTimeDetected, schema, numOfSavedEvents);
                 } catch (IOException e1) {
                     final Instant hourEndTime = DateUtils.ceiling(endOfHourForTimeDetected, ChronoUnit.HOURS);
-                    logger.warn("Failed to update sink counters for schema {} and time {}. Trying again.", schemaName, hourEndTime, e1);
+                    logger.warn("Failed to update sink counters for schema {} and time {}. Trying again.", schema, hourEndTime, e1);
                     try {
-                        countersUtil.addToSinkCounter(hourEndTime, schemaName, numOfSavedEvents);
+                        countersUtil.addToSinkCounter(hourEndTime, schema, numOfSavedEvents);
                     } catch (IOException e2) {
-                        logger.error("Failed to update sink counters (2nd try) for schema {} and time {}. This means that the adapter will wait the full time (timeout) until it starts processing this hour.", schemaName, hourEndTime, e2);
+                        logger.error("Failed to update sink counters (2nd try) for schema {} and time {}. This means that the adapter will wait the full time (timeout) until it starts processing this hour.", schema, hourEndTime, e2);
                         handleCounterUpdateFailed(e1, e2);
                     }
 
@@ -103,12 +104,12 @@ public abstract class CountingPresidioMongoSink<T extends AbstractDocument> exte
     }
 
     /**
-     * This method returns the {@link fortscale.common.general.Schema} name for the {@code event}
+     * This method returns the {@link fortscale.common.general.Schema} for the {@code event}
      *
-     * @param event the {@link T} whose {@link fortscale.common.general.Schema} we return
+     * @param event the {@link T} whose {@link Schema} we return
      * @return the {@link fortscale.common.general.Schema} of {@code event}
      */
-    protected abstract String getEventSchemaName(T event);
+    protected abstract Schema getEventSchema(T event);
 
 
     /**

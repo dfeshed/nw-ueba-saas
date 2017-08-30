@@ -1,6 +1,7 @@
 package org.flume.utils;
 
 
+import fortscale.common.general.Schema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,13 +29,13 @@ public class CountersUtil {
      * i.e, all events between 2017-08-03T14:00:00Z---2017-08-03T15:00:00Z will be under 2017-08-03T15:00:00Z
      *
      * @param time                 the time of the event
-     * @param schemaName           the schema of the event
+     * @param schema               the {@link Schema} of the event
      * @param canClosePreviousHour is the hour closed
-     * @param amount               the amount of events that were sinked for given {@code time} and {@code schemaName}
+     * @param amount               the amount of events that were sinked for given {@code time} and {@code schema}
      * @throws IOException when the there a problem with the file
      */
-    public int addToSourceCounter(Instant time, String schemaName, boolean canClosePreviousHour, int amount) throws IOException {
-        return addToCounter(time, schemaName, SOURCE_COUNTERS_FOLDER_NAME, canClosePreviousHour, amount);
+    public int addToSourceCounter(Instant time, Schema schema, boolean canClosePreviousHour, int amount) throws IOException {
+        return addToCounter(time, schema, SOURCE_COUNTERS_FOLDER_NAME, canClosePreviousHour, amount);
     }
 
     /**
@@ -42,16 +43,16 @@ public class CountersUtil {
      * of events that were 'sinked' for this hour {@code time} (by hour ceiling).
      * i.e, all events between 2017-08-03T14:00:00Z---2017-08-03T15:00:00Z will be under 2017-08-03T15:00:00Z
      *
-     * @param time       the time of the events
-     * @param schemaName the schema of the events
-     * @param amount     the amount of events that were sinked for given {@code time} and {@code schemaName}
+     * @param time   the time of the events
+     * @param schema the {@link Schema} of the event
+     * @param amount the amount of events that were sinked for given {@code time} and {@code schema}
      * @throws IOException when the there a problem with the file
      */
-    public int addToSinkCounter(Instant time, String schemaName, int amount) throws IOException {
-        return addToCounter(time, schemaName, SINK_COUNTERS_FOLDER_NAME, false, amount);
+    public int addToSinkCounter(Instant time, Schema schema, int amount) throws IOException {
+        return addToCounter(time, schema, SINK_COUNTERS_FOLDER_NAME, false, amount);
     }
 
-    private int addToCounter(Instant timeDetected, String schemaName, String flumeComponentType, boolean canClosePreviousHour, int amount) throws IOException {
+    private int addToCounter(Instant timeDetected, Schema schema, String flumeComponentType, boolean canClosePreviousHour, int amount) throws IOException {
         final int newCount;
         FileLock lock = null;
         FileChannel channel = null;
@@ -59,7 +60,7 @@ public class CountersUtil {
         FileOutputStream out = null;
         try {
             /* Get the file stuff */
-            File file = createFile(schemaName, flumeComponentType);
+            File file = createFile(schema, flumeComponentType);
             channel = new RandomAccessFile(file, "rw").getChannel();
             lock = channel.lock(); // This method blocks until it can retrieve the lock.
 
@@ -73,7 +74,7 @@ public class CountersUtil {
 
             /* save new count properties */
             out = new FileOutputStream(file.getAbsolutePath());
-            countProperties.store(out, "hour counters for schema " + schemaName);
+            countProperties.store(out, "hour counters for schema " + schema.getName());
             return newCount;
         } finally {
             if (in != null) {
@@ -95,10 +96,10 @@ public class CountersUtil {
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
-    private File createFile(String schemaName, String flumeComponentType) throws IOException {
+    private File createFile(Schema schema, String flumeComponentType) throws IOException {
         final String presidioHome = System.getenv("PRESIDIO_HOME");
         final String folderPath = presidioHome + File.separator + "flume" + File.separator + "counters" + File.separator + flumeComponentType;
-        final String filePath = folderPath + File.separator + schemaName;
+        final String filePath = folderPath + File.separator + schema.getName();
         if (!Files.exists(Paths.get(folderPath))) {
             try {
                 Files.createDirectories(Paths.get(folderPath));
