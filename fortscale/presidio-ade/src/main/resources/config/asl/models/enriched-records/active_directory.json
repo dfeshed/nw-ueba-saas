@@ -19,6 +19,25 @@
         "bucketSize" : 600,
         "maxRareTimestampCount" : 10
       }
+    },
+    {
+      "name" : "operationTypeHistogram.userIdSecuritySensitive.activeDirectory",
+      "selector" : {
+        "type" : "feature_bucket_context_selector",
+        "featureBucketConfName" : "operationTypeHistogramUserIdSecuritySensitiveActiveDirectoryDaily"
+      },
+      "retriever" : {
+        "type" : "context_histogram_retriever",
+        "timeRangeInSeconds" : 7776000,
+        "functions" : [ ],
+        "featureBucketConfName" : "operationTypeHistogramUserIdSecuritySensitiveActiveDirectoryDaily",
+        "featureName" : "operationTypeHistogram"
+      },
+      "builder" : {
+        "type" : "category_rarity_model_builder",
+        "numOfBuckets" : 30,
+        "entriesToSaveInModel" : 100
+      }
     }
   ]
 }

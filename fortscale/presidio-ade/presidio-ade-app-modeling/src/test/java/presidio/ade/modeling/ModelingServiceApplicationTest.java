@@ -78,7 +78,7 @@ public class ModelingServiceApplicationTest {
 		Assert.assertTrue(commandResult.isSuccess());
 
 		// Assert number of models
-		List<ModelDAO> modelDaoList = modelStore.getAllContextsModelDaosWithLatestEndTimeLte(getModelConf(), 1483228800);
+		List<ModelDAO> modelDaoList = modelStore.getAllContextsModelDaosWithLatestEndTimeLte(getModelConf(), Instant.ofEpochSecond(1483228800));
 		Assert.assertEquals(2, modelDaoList.size());
 
 		// Assert models

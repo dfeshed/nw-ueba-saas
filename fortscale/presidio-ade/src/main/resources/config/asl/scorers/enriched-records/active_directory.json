@@ -22,13 +22,30 @@
               "use-certainty-to-calculate-score": true
             },
             {
+              "type": "list-conditional-scorer",
+              "name": "operationType.userIdSecuritySensitive.file.score",
+              "conditional-field": "operationTypeCategories",
+              "conditional-value": "SECURITY_SENSITIVE_OPERATION",
+              "scorer": {
+                "type": "category-rarity-model-scorer",
+                "name": "operationTypeHistogram.userIdSecuritySensitive.activeDirectory.score",
+                "model": {
+                  "name": "operationTypeHistogram.userIdSecuritySensitive.activeDirectory"
+                },
+                "max-rare-count": 5,
+                "max-num-of-rare-features": 15,
+                "number-of-samples-to-influence-enough": 30,
+                "use-certainty-to-calculate-score": true
+              }
+            },
+            {
               "type": "boolean-conditional-scorer",
               "name": "adminPasswordChanged.userId.activeDirectory.score",
               "conditional-field": "isUserAdmin",
               "conditional-value": true,
               "scorer": {
                 "type": "constant-regex-scorer",
-                "name": "passwordChanged.userId.activeDirectory.score",
+                "name": "adminPasswordChanged.userId.activeDirectory.score",
                 "regex": "PASSWORD_CHANGED",
                 "regex-field-name": "operationType",
                 "constant-score": 100
@@ -41,7 +58,7 @@
               "conditional-value": false,
               "scorer": {
                 "type": "constant-regex-scorer",
-                "name": "passwordChanged.userId.activeDirectory.score",
+                "name": "nonAdminPasswordChanged.userId.activeDirectory.score",
                 "regex": "PASSWORD_CHANGED",
                 "regex-field-name": "operationType",
                 "constant-score": 100

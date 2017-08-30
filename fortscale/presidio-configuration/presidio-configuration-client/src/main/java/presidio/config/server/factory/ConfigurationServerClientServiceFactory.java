@@ -13,7 +13,7 @@ public class ConfigurationServerClientServiceFactory {
 
     private static final Logger logger = Logger.getLogger(ConfigurationServerClientServiceFactory.class);
 
-    public static ConfigurationServerClientService createConfigurationServerClientService() throws Exception {
+    public ConfigurationServerClientService createConfigurationServerClientService() throws Exception {
         ApplicationContext ctx = new AnnotationConfigApplicationContext(ConfigServerClientServiceConfiguration.class);
         final ConfigurationServerClientService configurationServerClientServiceBean = ctx.getBean(ConfigurationServerClientService.class);
         if (configurationServerClientServiceBean == null) {
