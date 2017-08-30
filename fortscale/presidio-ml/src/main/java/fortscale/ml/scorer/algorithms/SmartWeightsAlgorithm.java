@@ -1,13 +1,14 @@
 package fortscale.ml.scorer.algorithms;
 
+import fortscale.ml.model.SmartWeightsModel;
 import fortscale.ml.model.retriever.smart_data.SmartAggregatedRecordData;
+import fortscale.smart.SmartUtil;
 import fortscale.smart.record.conf.ClusterConf;
 import org.springframework.util.Assert;
+import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
+import presidio.ade.domain.record.aggregated.SmartRecord;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -49,10 +50,19 @@ public class SmartWeightsAlgorithm {
         }
     }
 
+    public double calculateScore(SmartRecord smartRecord, SmartWeightsModel smartWeightsModel){
+        List<SmartAggregatedRecordData> recordsDataContainer = new ArrayList<>();
+        for (AdeAggregationRecord adeAggregationRecord: smartRecord.getAggregationRecords()){
+            recordsDataContainer.add(new SmartAggregatedRecordData(adeAggregationRecord.getFeatureName(), SmartUtil.getAdeAggregationRecordScore(adeAggregationRecord)));
+        }
+
+        return calculateScore(recordsDataContainer, smartWeightsModel.getClusterConfs());
+    }
+
     public double calculateScore(List<SmartAggregatedRecordData> recordsDataContainer, List<ClusterConf> clusterConfs)
     {
-        Assert.notNull(recordsDataContainer,"smart must contain aggregated feature events");
-        List<Cluster> clusters = translateClustersSpecsToClusters(recordsDataContainer, clusterConfs);
+        Assert.notNull(recordsDataContainer,"records data container should not be null");
+        List<Cluster> clusters = translateClusterConfsToClusters(recordsDataContainer, clusterConfs);
         return roundToEntityEventValuePrecision(calculateEntityEventValue(clusters));
     }
 
@@ -65,7 +75,7 @@ public class SmartWeightsAlgorithm {
      * Instantiate {@link Cluster}s containing the scores of the given {@link List<SmartAggregatedRecordData>}
      * specified by the given {@link ClusterConf}.
      */
-    private List<Cluster> translateClustersSpecsToClusters(
+    private List<Cluster> translateClusterConfsToClusters(
             List<SmartAggregatedRecordData> smartAggregatedRecordData, List<ClusterConf> clusterConfList) {
 
         return clusterConfList.stream()

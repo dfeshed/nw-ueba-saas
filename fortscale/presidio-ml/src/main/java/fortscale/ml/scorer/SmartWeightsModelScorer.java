@@ -4,6 +4,7 @@ import fortscale.domain.feature.score.FeatureScore;
 import fortscale.ml.model.Model;
 import fortscale.ml.model.SmartWeightsModel;
 import fortscale.ml.model.cache.EventModelsCacheService;
+import fortscale.ml.scorer.algorithms.SmartWeightsAlgorithm;
 import org.springframework.util.Assert;
 import presidio.ade.domain.record.AdeRecordReader;
 import presidio.ade.domain.record.aggregated.SmartRecord;
@@ -21,6 +22,7 @@ public class SmartWeightsModelScorer extends AbstractScorer{
         super(scorerName);
         Assert.hasText(modelName, "model name must be provided and cannot be empty or blank.");
         this.modelName = modelName;
+        this.eventModelsCacheService = eventModelsCacheService;
     }
 
     @Override
@@ -33,12 +35,12 @@ public class SmartWeightsModelScorer extends AbstractScorer{
             //todo: add metrics.
             return new FeatureScore(getName(), 0.0);
         }
-        Assert.isInstanceOf(SmartWeightsModel.class, "smart weights model scorer expect to get SmartWeightModel Class.");
+        Assert.isInstanceOf(SmartWeightsModel.class,model, "smart weights model scorer expect to get SmartWeightModel Class.");
         return new FeatureScore(getName(),calculateScore(smartRecord, (SmartWeightsModel) model));
     }
 
     private double calculateScore(SmartRecord smartRecord, SmartWeightsModel smartWeightsModel){
-        //todo: implement it
-        return 0;
+        SmartWeightsAlgorithm smartWeightsAlgorithm = new SmartWeightsAlgorithm();
+        return smartWeightsAlgorithm.calculateScore(smartRecord,smartWeightsModel);
     }
 }
