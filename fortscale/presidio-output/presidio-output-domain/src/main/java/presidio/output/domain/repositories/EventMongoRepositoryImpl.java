@@ -42,6 +42,12 @@ public class EventMongoRepositoryImpl implements EventRepository {
             if (enrichedEvents.size()>0)
                 break;
         }
-        return enrichedEvents.get(0);
+        if (enrichedEvents.size()>0) {
+            return enrichedEvents.get(0);
+        } else {
+            return  null;
+        }
+
+
     }
 }

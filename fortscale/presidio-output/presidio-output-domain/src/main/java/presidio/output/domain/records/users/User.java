@@ -18,6 +18,7 @@ public class User extends AbstractElasticDocument {
 
     public static final String ALERT_CLASSIFICATOINS_FIELD_NAME = "alertClassifications";
     public static final String INDICATORS_FIELD_NAME = "indicators";
+    public static final String USER_SEVERITY_FIELD_NAME = "userSeverity";
     public static final String SCORE_FIELD_NAME = "userScore";
     public static final String USER_ID_FIELD_NAME = "userId";
     public static final String USER_NAME_FIELD_NAME = "userName";
@@ -48,6 +49,17 @@ public class User extends AbstractElasticDocument {
     @JsonProperty(INDICATORS_FIELD_NAME)
     private List<String> indicators;
 
+    @Field(type = FieldType.Auto, store = true)
+    @JsonProperty(USER_SEVERITY_FIELD_NAME)
+    private UserSeverity userSeverity;
+
+    public UserSeverity getUserSeverity() {
+        return userSeverity;
+    }
+
+    public void setUserSeverity(UserSeverity userSeverity) {
+        this.userSeverity = userSeverity;
+    }
 
     public User(){
         // empty const for JSON deserialization
@@ -97,6 +109,8 @@ public class User extends AbstractElasticDocument {
         return userScore;
     }
 
+
+
     public List<String> getAlertClassifications() {
         return alertClassifications;
     }
@@ -119,5 +133,20 @@ public class User extends AbstractElasticDocument {
 
     public void setIndicators(List<String> indicators) {
         this.indicators = indicators;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        User user = (User) o;
+
+        return userId.equals(user.userId);
+    }
+
+    @Override
+    public int hashCode() {
+        return userId.hashCode();
     }
 }

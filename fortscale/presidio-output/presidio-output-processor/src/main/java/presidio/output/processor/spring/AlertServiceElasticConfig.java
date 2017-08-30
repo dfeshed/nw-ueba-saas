@@ -7,12 +7,13 @@ import org.springframework.context.annotation.Import;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.output.domain.spring.PresidioOutputPersistencyServiceConfig;
 import presidio.output.processor.services.alert.*;
+import presidio.output.processor.services.user.UserScoreService;
 
 /**
  * Created by efratn on 24/07/2017.
  */
 @Configuration
-@Import({PresidioOutputPersistencyServiceConfig.class, AlertEnumsConfig.class, AlertNamingConfig.class})
+@Import({PresidioOutputPersistencyServiceConfig.class, AlertEnumsConfig.class, AlertNamingConfig.class, UserServiceConfig.class})
 public class AlertServiceElasticConfig {
 
     @Autowired
@@ -24,8 +25,11 @@ public class AlertServiceElasticConfig {
     @Autowired
     private AlertPersistencyService alertPersistencyService;
 
+     @Autowired
+     private UserScoreService userScoreService;
+
     @Bean
     public AlertService alertService() {
-        return new AlertServiceImpl(alertPersistencyService, alertEnumsSeverityService, alertClassificationService);
+        return new AlertServiceImpl(alertPersistencyService, alertEnumsSeverityService, alertClassificationService,userScoreService);
     }
 }
