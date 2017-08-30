@@ -61,6 +61,14 @@ public class PresidioMongoSink<T extends AbstractDocument> extends AbstractPresi
     private int batchSize;
     private Class<T> recordType;
 
+    public PresidioMongoSink() {
+        this(null);
+    }
+
+    public PresidioMongoSink(SinkMongoRepository sinkMongoRepository) {
+        this.sinkMongoRepository = sinkMongoRepository;
+    }
+
     @Override
     public synchronized String getName() {
         return "mongo-" + super.getName();
@@ -97,7 +105,9 @@ public class PresidioMongoSink<T extends AbstractDocument> extends AbstractPresi
             port = Integer.parseInt(context.getString(PORT, "27017"));
             username = context.getString(USERNAME, "");
             final String password = context.getString(PASSWORD, "");
-            sinkMongoRepository = createRepository(dbName, host, port, username, password);
+            if (sinkMongoRepository == null) {
+                sinkMongoRepository = createRepository(dbName, host, port, username, password);
+            }
         } catch (Exception e) {
             final String errorMessage = "Failed to configure " + getName();
             logger.error(errorMessage, e);
@@ -172,9 +182,5 @@ public class PresidioMongoSink<T extends AbstractDocument> extends AbstractPresi
                 .append("collectionName", collectionName)
                 .append("username", username)
                 .toString();
-    }
-
-    public void setSinkMongoRepositoryForTests(SinkMongoRepository sinkMongoRepository) {
-        this.sinkMongoRepository = sinkMongoRepository;
     }
 }

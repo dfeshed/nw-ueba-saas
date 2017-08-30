@@ -2,6 +2,7 @@ package org.flume.sink.mongo;
 
 import fortscale.domain.core.AbstractDocument;
 import fortscale.utils.logging.Logger;
+import org.flume.sink.mongo.persistency.SinkMongoRepository;
 import org.flume.utils.CountersUtil;
 import org.flume.utils.DateUtils;
 
@@ -17,6 +18,25 @@ public abstract class CountingPresidioMongoSink<T extends AbstractDocument> exte
     private static final Logger logger = Logger.getLogger(CountingPresidioMongoSink.class);
 
     protected CountersUtil countersUtil = new CountersUtil();
+
+
+    public CountingPresidioMongoSink() {
+        super();
+    }
+
+    public CountingPresidioMongoSink(SinkMongoRepository sinkMongoRepository) {
+        super(sinkMongoRepository);
+    }
+
+    public CountingPresidioMongoSink(CountersUtil countersUtil) {
+        this();
+        this.countersUtil = countersUtil;
+    }
+
+    public CountingPresidioMongoSink(SinkMongoRepository sinkMongoRepository, CountersUtil countersUtil) {
+        super(sinkMongoRepository);
+        this.countersUtil = countersUtil;
+    }
 
     @Override
     public synchronized String getName() {
@@ -113,12 +133,4 @@ public abstract class CountingPresidioMongoSink<T extends AbstractDocument> exte
      * @return the time of {@code event}
      */
     protected abstract Instant getEventTimeForCounter(T event);
-
-
-    /**
-     * ONLY for tests
-     */
-    public void setCountersUtilForTests(CountersUtil countersUtil) {
-        this.countersUtil = countersUtil;
-    }
 }
