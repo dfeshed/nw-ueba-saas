@@ -1,7 +1,7 @@
 package presidio.input.sdk.impl.repositories;
 
 import fortscale.domain.core.AbstractAuditableDocument;
-import presidio.sdk.api.domain.AbstractPresidioDocument;
+import presidio.sdk.api.domain.AbstractInputDocument;
 
 import java.time.Instant;
 import java.util.List;
@@ -15,7 +15,7 @@ public interface DataSourceRepository {
 
     void cleanCollection(String collectionName);
 
-    <U extends AbstractPresidioDocument> List<U> readRecords(String collectionName, Instant startDate, Instant endDate, int numOfItemsToSkip, int pageSize);
+    <U extends AbstractInputDocument> List<U> readRecords(String collectionName, Instant startDate, Instant endDate, int numOfItemsToSkip, int pageSize);
 
     long count(String collectionName, Instant startDate, Instant endDate);
 }

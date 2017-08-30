@@ -1,7 +1,7 @@
 package presidio.input.core.services.transformation.managers;
 
 import presidio.input.core.services.transformation.Transformer;
-import presidio.sdk.api.domain.AbstractPresidioDocument;
+import presidio.sdk.api.domain.AbstractInputDocument;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +19,7 @@ public class ActiveDirectoryTransformationManager implements TransformationManag
     }
 
     @Override
-    public <U extends AbstractPresidioDocument> U getTransformedDocument(AbstractPresidioDocument rawEvent) {
+    public <U extends AbstractInputDocument> U getTransformedDocument(AbstractInputDocument rawEvent) {
         return (U) rawEvent;
     }
 }

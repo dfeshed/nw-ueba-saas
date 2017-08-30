@@ -1,4 +1,4 @@
-package fortscale.ml.model.retriever.factories;
+package fortscale.ml.model.retriever.factories.smart;
 
 import fortscale.ml.model.retriever.AbstractDataRetriever;
 import fortscale.ml.model.retriever.AccumulatedSmartValueRetriever;

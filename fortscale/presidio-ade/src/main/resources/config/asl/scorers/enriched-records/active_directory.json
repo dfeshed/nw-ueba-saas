@@ -27,21 +27,15 @@
               "conditional-field": "operationTypeCategories",
               "conditional-value": "SECURITY_SENSITIVE_OPERATION",
               "scorer": {
-                "type": "max-scorer-container",
+                "type": "category-rarity-model-scorer",
                 "name": "operationTypeHistogram.userIdSecuritySensitive.activeDirectory.score",
-                "scorers": [
-                  {
-                    "type": "category-rarity-model-scorer",
-                    "name": "operationTypeHistogram.userIdSecuritySensitive.activeDirectory.scorer",
-                    "model": {
-                      "name": "operationTypeHistogram.userIdSecuritySensitive.activeDirectory"
-                    },
-                    "max-rare-count": 5,
-                    "max-num-of-rare-features": 15,
-                    "number-of-samples-to-influence-enough": 30,
-                    "use-certainty-to-calculate-score": true
-                  }
-                ]
+                "model": {
+                  "name": "operationTypeHistogram.userIdSecuritySensitive.activeDirectory"
+                },
+                "max-rare-count": 5,
+                "max-num-of-rare-features": 15,
+                "number-of-samples-to-influence-enough": 30,
+                "use-certainty-to-calculate-score": true
               }
             },
             {

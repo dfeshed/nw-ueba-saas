@@ -3,14 +3,14 @@ package presidio.sdk.api.domain.rawevents;
 import fortscale.domain.core.EventResult;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
-import presidio.sdk.api.domain.AbstractPresidioDocument;
+import presidio.sdk.api.domain.AbstractInputDocument;
 
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 
 @Document
-public class FileRawEvent extends AbstractPresidioDocument {
+public class FileRawEvent extends AbstractInputDocument {
 
 
     public static final String SRC_FILE_PATH_FIELD_NAME = "srcFilePath";
@@ -49,8 +49,8 @@ public class FileRawEvent extends AbstractPresidioDocument {
     public FileRawEvent(Instant dateTime, String eventId, String dataSource, String userId, String operationType,
                         List<String> operationTypeCategory, EventResult result, String userName, String userDisplayName,
                         Map<String, String> additionalInfo, String srcFilePath, boolean isSrcDriveShared,
-                        String dstFilePath, boolean isDstDriveShared, Long fileSize) {
-        super(dateTime, eventId, dataSource, userId, operationType, operationTypeCategory, result, userName, userDisplayName, additionalInfo);
+                        String dstFilePath, boolean isDstDriveShared, Long fileSize, String resultCode) {
+        super(dateTime, eventId, dataSource, userId, operationType, operationTypeCategory, result, userName, userDisplayName, additionalInfo, resultCode);
         this.srcFilePath = srcFilePath;
         this.isSrcDriveShared = isSrcDriveShared;
         this.dstFilePath = dstFilePath;

@@ -7,7 +7,7 @@ import fortscale.utils.logging.Logger;
 import fortscale.utils.mongodb.util.ToCollectionNameTranslator;
 import presidio.input.sdk.impl.repositories.DataSourceRepository;
 import presidio.input.sdk.impl.validators.ValidationManager;
-import presidio.sdk.api.domain.AbstractPresidioDocument;
+import presidio.sdk.api.domain.AbstractInputDocument;
 import presidio.sdk.api.services.DataService;
 
 import java.time.Instant;
@@ -60,7 +60,7 @@ public class DataServiceImpl implements DataService {
     }
 
     @Override
-    public <U extends AbstractPresidioDocument> List<U> readRecords(Schema schema, Instant startDate, Instant endDate, int numOfItemsToSkip, int pageSize) {
+    public <U extends AbstractInputDocument> List<U> readRecords(Schema schema, Instant startDate, Instant endDate, int numOfItemsToSkip, int pageSize) {
         return dataSourceRepository.readRecords(toCollectionNameTranslator.toCollectionName(schema), startDate, endDate, numOfItemsToSkip, pageSize);
     }
 

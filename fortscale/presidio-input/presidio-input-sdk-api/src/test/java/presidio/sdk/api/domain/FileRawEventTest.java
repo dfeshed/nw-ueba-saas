@@ -29,7 +29,7 @@ public class FileRawEventTest {
         FileRawEvent fileRawEvent = new FileRawEvent(Instant.now(), "eventId", "dataSource",
                 "userId", "operationType", null, EventResult.SUCCESS,
                 "userName", "userDisplayName", null, "srcFilePath",
-                true, "dstFilePath", true, 0L);
+                true, "dstFilePath", true, 0L, "resultCode");
         return fileRawEvent;
     }
 }

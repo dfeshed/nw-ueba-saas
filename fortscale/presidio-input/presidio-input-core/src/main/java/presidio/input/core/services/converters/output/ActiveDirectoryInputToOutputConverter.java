@@ -2,12 +2,12 @@ package presidio.input.core.services.converters.output;
 
 import presidio.output.domain.records.events.ActiveDirectoryEnrichedEvent;
 import presidio.output.domain.records.events.EnrichedEvent;
-import presidio.sdk.api.domain.AbstractPresidioDocument;
+import presidio.sdk.api.domain.AbstractInputDocument;
 import presidio.sdk.api.domain.rawevents.ActiveDirectoryRawEvent;
 
 public class ActiveDirectoryInputToOutputConverter implements InputOutputConverter {
     @Override
-    public EnrichedEvent convert(AbstractPresidioDocument document) {
+    public EnrichedEvent convert(AbstractInputDocument document) {
         ActiveDirectoryRawEvent transformedEvent = (ActiveDirectoryRawEvent) document;
         ActiveDirectoryEnrichedEvent outputEvent = new ActiveDirectoryEnrichedEvent();
         outputEvent.setEventId(transformedEvent.getEventId());

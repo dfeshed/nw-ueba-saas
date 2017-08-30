@@ -14,6 +14,7 @@ import presidio.output.processor.OutputShellCommands;
 import presidio.output.processor.services.OutputExecutionService;
 import presidio.output.processor.services.OutputExecutionServiceImpl;
 import presidio.output.processor.services.alert.AlertService;
+import presidio.output.processor.services.user.UserScoreService;
 import presidio.output.processor.services.user.UserService;
 import presidio.output.processor.spring.AlertServiceElasticConfig;
 import presidio.output.processor.spring.UserServiceConfig;
@@ -42,8 +43,11 @@ public class OutputProcessorTestConfiguration {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private UserScoreService userScoreService;
+
     @Bean
     public OutputExecutionService outputProcessService() {
-        return new OutputExecutionServiceImpl(adeManagerSdk, alertService, userService);
+        return new OutputExecutionServiceImpl(adeManagerSdk, alertService, userService,userScoreService);
     }
 }

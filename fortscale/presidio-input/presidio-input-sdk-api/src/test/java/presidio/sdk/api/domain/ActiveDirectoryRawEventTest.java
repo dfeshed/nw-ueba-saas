@@ -42,7 +42,7 @@ public class ActiveDirectoryRawEventTest {
         ActiveDirectoryRawEvent activeDirectoryRawEvent = new ActiveDirectoryRawEvent(Instant.now(), "eventId",
                 "dataSource", "userId", "operationType", null,
                 EventResult.SUCCESS, "userName", "userDisplayName", null,
-                false, "objectId");
+                false, "objectId", "resultCode");
         return activeDirectoryRawEvent;
     }
 }

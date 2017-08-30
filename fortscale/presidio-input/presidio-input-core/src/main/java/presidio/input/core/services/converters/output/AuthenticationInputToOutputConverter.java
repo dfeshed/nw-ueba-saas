@@ -2,12 +2,12 @@ package presidio.input.core.services.converters.output;
 
 import presidio.output.domain.records.events.AuthenticationEnrichedEvent;
 import presidio.output.domain.records.events.EnrichedEvent;
-import presidio.sdk.api.domain.AbstractPresidioDocument;
+import presidio.sdk.api.domain.AbstractInputDocument;
 import presidio.sdk.api.domain.transformedevents.AuthenticationTransformedEvent;
 
 public class AuthenticationInputToOutputConverter implements InputOutputConverter {
     @Override
-    public EnrichedEvent convert(AbstractPresidioDocument document) {
+    public EnrichedEvent convert(AbstractInputDocument document) {
         AuthenticationTransformedEvent transformedEvent = (AuthenticationTransformedEvent) document;
         AuthenticationEnrichedEvent outputEvent = new AuthenticationEnrichedEvent();
         outputEvent.setEventId(transformedEvent.getEventId());

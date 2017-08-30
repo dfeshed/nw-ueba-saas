@@ -4,7 +4,6 @@ import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.aggregation.feature.bucket.FeatureBucketReader;
 import fortscale.aggregation.feature.bucket.FeatureBucketReaderConfig;
 import fortscale.ml.model.retriever.AbstractDataRetriever;
-import fortscale.ml.model.retriever.factories.AccumulatedSmartValueRetrieverFactory;
 import fortscale.utils.factory.AbstractServiceAutowiringFactory;
 import fortscale.utils.factory.FactoryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +28,7 @@ import java.util.Collection;
 })
 @ComponentScan(value = "fortscale.ml.model.retriever.factories",
         excludeFilters = {
-        @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = AccumulatedSmartValueRetrieverFactory.class)
+                @ComponentScan.Filter(type = FilterType.REGEX, pattern = "fortscale.ml.model.retriever.factories.smart.*")
 })
 public class FeatureAggregationDataRetrieverFactoryServiceConfig {
     @Autowired

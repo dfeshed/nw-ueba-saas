@@ -5,48 +5,52 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringRunner;
-import presidio.sdk.api.domain.AbstractPresidioDocument;
+import presidio.sdk.api.domain.AbstractInputDocument;
 import presidio.sdk.api.domain.rawevents.FileRawEvent;
 import presidio.sdk.api.domain.transformedevents.FileTransformedEvent;
 
+import java.io.File;
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @RunWith(SpringRunner.class)
 public class FolderPathTransformerTest {
 
     @Test
-    public void testFolderPathTransformation_FileOperation(){
+    public void testFolderPathTransformation_FileOperation() {
+        String filePath = String.format("C%sfolder%sfile.txt", File.separator, File.separator);
         FileRawEvent fileRawEvent = new FileRawEvent(Instant.now(), "id", "dataSource", "userId",
                 "operationType", null, EventResult.SUCCESS, "userName",
-                "displayName", null, "C://file/file.txt", false,
-                "C://dst/file.txt", false,0l);
+                "displayName", null, filePath, false,
+                filePath, false, 0l, "resultCode");
 
         List<String> folderOperations = new ArrayList<>();
         FolderPathTransformer folderPathTransformer = new FolderPathTransformer("srcFilePath",
                 "srcFilePath", "srcFolderPath", "operationType", folderOperations);
 
-        List<AbstractPresidioDocument> transformed = folderPathTransformer.transform(Arrays.asList(new FileTransformedEvent(fileRawEvent)));
+        List<AbstractInputDocument> transformed = folderPathTransformer.transform(Arrays.asList(new FileTransformedEvent(fileRawEvent)));
 
-        Assert.assertEquals("C://file", ((FileTransformedEvent)transformed.get(0)).getSrcFolderPath());
-        Assert.assertEquals("C://file/file.txt", ((FileTransformedEvent)transformed.get(0)).getSrcFilePath());
+        Assert.assertEquals(String.format("C%sfolder", File.separator), ((FileTransformedEvent) transformed.get(0)).getSrcFolderPath());
+        Assert.assertEquals(filePath, ((FileTransformedEvent) transformed.get(0)).getSrcFilePath());
     }
 
     @Test
-    public void testFolderPathTransformation_FolderOperation(){
+    public void testFolderPathTransformation_FolderOperation() {
         FileRawEvent fileRawEvent = new FileRawEvent(Instant.now(), "id", "dataSource", "userId",
                 "Folder", null, EventResult.SUCCESS, "userName",
                 "displayName", null, "C://file", false,
-                "C://dst/file.txt", false,0l);
+                "C://dst/file.txt", false, 0l, "resultCode");
 
         List<String> folderOperations = new ArrayList<>();
         folderOperations.add("Folder");
         FolderPathTransformer folderPathTransformer = new FolderPathTransformer("srcFilePath",
                 "srcFilePath", "srcFolderPath", "operationType", folderOperations);
 
-        List<AbstractPresidioDocument> transformed = folderPathTransformer.transform(Arrays.asList(new FileTransformedEvent(fileRawEvent)));
+        List<AbstractInputDocument> transformed = folderPathTransformer.transform(Arrays.asList(new FileTransformedEvent(fileRawEvent)));
 
-        Assert.assertNull(((FileTransformedEvent)transformed.get(0)).getSrcFilePath());
-        Assert.assertEquals("C://file", ((FileTransformedEvent)transformed.get(0)).getSrcFolderPath());
+        Assert.assertNull(((FileTransformedEvent) transformed.get(0)).getSrcFilePath());
+        Assert.assertEquals("C://file", ((FileTransformedEvent) transformed.get(0)).getSrcFolderPath());
     }
 }
