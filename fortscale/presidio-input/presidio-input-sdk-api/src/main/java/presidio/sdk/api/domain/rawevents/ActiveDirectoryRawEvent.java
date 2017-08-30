@@ -5,14 +5,14 @@ import fortscale.domain.core.EventResult;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
-import presidio.sdk.api.domain.AbstractPresidioDocument;
+import presidio.sdk.api.domain.AbstractInputDocument;
 
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 
 @Document
-public class ActiveDirectoryRawEvent extends AbstractPresidioDocument {
+public class ActiveDirectoryRawEvent extends AbstractInputDocument {
 
     public static final String IS_USER_ADMIN_FIELD_NAME = "isUserAdmin";
     public static final String OBJECT_ID_FIELD_NAME = "objectId";
@@ -27,8 +27,8 @@ public class ActiveDirectoryRawEvent extends AbstractPresidioDocument {
     public ActiveDirectoryRawEvent(Instant dateTime, String eventId, String dataSource, String userId, String operationType,
                                    List<String> operationTypeCategory, EventResult result, String userName,
                                    String userDisplayName, Map<String, String> additionalInfo, boolean isUserAdmin,
-                                   String objectId) {
-        super(dateTime, eventId, dataSource, userId, operationType, operationTypeCategory, result, userName, userDisplayName, additionalInfo);
+                                   String objectId, String resultCode) {
+        super(dateTime, eventId, dataSource, userId, operationType, operationTypeCategory, result, userName, userDisplayName, additionalInfo, resultCode);
         this.isUserAdmin = isUserAdmin;
         this.objectId = objectId;
     }

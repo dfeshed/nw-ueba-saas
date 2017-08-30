@@ -127,10 +127,9 @@ public class AggregatedRecordPaginationServiceTest {
     @Test
     public void getContextIdToNumOfItemsList() throws Exception {
         TimeRange timeRange = new TimeRange(Instant.EPOCH, Instant.now());
-
-        List<ContextIdToNumOfItems> contextIdToNumOfItemsList = paginationService.getContextIdToNumOfItemsList(aggregatedDataPaginationParamSet, timeRange);
+        List<ContextIdToNumOfItems> contextIdToNumOfItemsList = paginationService.getContextIdToNumOfItemsList(aggregatedDataPaginationParamSet, timeRange, null);
         Assert.assertEquals(contextIdToNumOfItemsList.size(), AMOUNT_OF_GENERATED_CONTEXTS);
-        contextIdToNumOfItemsList.forEach(contextIdToNumOfItems -> Assert.assertEquals(contextIdToNumOfItems.getTotalNumOfItems(),1));
+        contextIdToNumOfItemsList.forEach(contextIdToNumOfItems -> Assert.assertEquals(contextIdToNumOfItems.getTotalNumOfItems(), 1));
     }
 
     @Test

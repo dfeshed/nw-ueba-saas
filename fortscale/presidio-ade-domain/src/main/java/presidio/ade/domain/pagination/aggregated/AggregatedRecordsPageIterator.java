@@ -10,47 +10,38 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Set;
 
-
 public class AggregatedRecordsPageIterator<U extends AdeAggregationRecord> implements PageIterator<U> {
-
-    private final Set<String> contextIds;
-
     private final AggregatedDataReader dataReader;
-    private final TimeRange timeRange;
     private final Set<AggregatedDataPaginationParam> aggregatedDataPaginationParamSet;
+    private final Set<String> contextIds;
+    private final TimeRange timeRange;
+    private final Double threshold;
     private boolean hasNext;
 
-    public AggregatedRecordsPageIterator(AggregatedDataReader dataReader, Set<AggregatedDataPaginationParam> aggregatedDataPaginationParamSet, Set<String> contextIds, TimeRange timeRange) {
+    public AggregatedRecordsPageIterator(AggregatedDataReader dataReader, Set<AggregatedDataPaginationParam> aggregatedDataPaginationParamSet, Set<String> contextIds, TimeRange timeRange, Double threshold) {
         this.dataReader = dataReader;
         this.aggregatedDataPaginationParamSet = aggregatedDataPaginationParamSet;
         this.contextIds = contextIds;
         this.timeRange = timeRange;
+        this.threshold = threshold;
         // we assume daily/hourly time range
         Duration timeRangeDuration = Duration.between(timeRange.getStart(), timeRange.getEnd());
-        Assert.isTrue(timeRangeDuration.equals(FixedDurationStrategy.HOURLY.toDuration()) ||
-                timeRangeDuration.equals(FixedDurationStrategy.DAILY.toDuration()),"AggregatedRecordsPageIterator assumes daily/hourly range");
+        Assert.isTrue(
+                timeRangeDuration.equals(FixedDurationStrategy.HOURLY.toDuration()) ||
+                timeRangeDuration.equals(FixedDurationStrategy.DAILY.toDuration()),
+                "AggregatedRecordsPageIterator assumes daily/hourly range");
         this.hasNext = true;
     }
 
-
-    /**
-     *
-     * @return false, since each page holds all the data for set of contexts
-     */
     @Override
     public boolean hasNext() {
-        boolean result = false;
-        if(hasNext)
-        {
-            result = true;
-        }
-        return result;
+        return hasNext;
     }
 
     @Override
     public List<U> next() {
-        List<U> readRecords = this.dataReader.readRecords(this.aggregatedDataPaginationParamSet, this.contextIds,this.timeRange);
-        this.hasNext = false;
-        return readRecords;
+        List<U> records = dataReader.readRecords(aggregatedDataPaginationParamSet, contextIds, timeRange, threshold);
+        hasNext = false;
+        return records;
     }
 }

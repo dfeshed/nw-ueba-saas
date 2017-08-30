@@ -9,7 +9,7 @@ import presidio.input.core.services.converters.ConverterService;
 import presidio.input.core.services.data.AdeDataService;
 import presidio.input.core.services.transformation.managers.TransformationService;
 import presidio.output.sdk.api.OutputDataServiceSDK;
-import presidio.sdk.api.domain.AbstractPresidioDocument;
+import presidio.sdk.api.domain.AbstractInputDocument;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
 
 import java.time.Instant;
@@ -61,7 +61,7 @@ public class InputCoreManager {
         }
     }
 
-    private void storeToOutput(List<? extends AbstractPresidioDocument> transformedEvents, Schema schema) throws Exception {
+    private void storeToOutput(List<? extends AbstractInputDocument> transformedEvents, Schema schema) throws Exception {
         outputDataServiceSDK.store(schema, converterService.convertToOutput(transformedEvents, schema));
     }
 

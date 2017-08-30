@@ -6,7 +6,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import presidio.sdk.api.domain.AbstractPresidioDocument;
+import presidio.sdk.api.domain.AbstractInputDocument;
 
 import java.time.Instant;
 import java.util.List;
@@ -44,12 +44,12 @@ public class DataSourceRepositoryImpl implements DataSourceRepository {
     }
 
     @Override
-    public <U extends AbstractPresidioDocument> List<U> readRecords(String collectionName, Instant startDate, Instant endDate, int numOfItemsToSkip, int pageSize) {
+    public <U extends AbstractInputDocument> List<U> readRecords(String collectionName, Instant startDate, Instant endDate, int numOfItemsToSkip, int pageSize) {
         Query query = getQuery(startDate, endDate, numOfItemsToSkip, pageSize);
 
-        query.with(new Sort(Sort.Direction.ASC, AbstractPresidioDocument.DATE_TIME_FIELD_NAME));
+        query.with(new Sort(Sort.Direction.ASC, AbstractInputDocument.DATE_TIME_FIELD_NAME));
 
-        List<U> recordList = mongoTemplate.find(query, (Class<U>) AbstractPresidioDocument.class, collectionName);
+        List<U> recordList = mongoTemplate.find(query, (Class<U>) AbstractInputDocument.class, collectionName);
         return recordList;
 
     }

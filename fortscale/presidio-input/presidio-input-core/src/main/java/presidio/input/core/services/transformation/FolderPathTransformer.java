@@ -4,7 +4,7 @@ import fortscale.utils.logging.Logger;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.util.CollectionUtils;
-import presidio.sdk.api.domain.AbstractPresidioDocument;
+import presidio.sdk.api.domain.AbstractInputDocument;
 import presidio.sdk.api.utils.ReflectionUtils;
 
 import java.io.File;
@@ -28,9 +28,9 @@ public class FolderPathTransformer implements Transformer {
     }
 
     @Override
-    public List<AbstractPresidioDocument> transform(List<AbstractPresidioDocument> documents) {
+    public List<AbstractInputDocument> transform(List<AbstractInputDocument> documents) {
 
-        documents.forEach((AbstractPresidioDocument document) -> {
+        documents.forEach((AbstractInputDocument document) -> {
 
                     String filePathValue = (String) ReflectionUtils.getFieldValue(document, inputPathFieldName);
                     String outputFilePath;
@@ -57,7 +57,7 @@ public class FolderPathTransformer implements Transformer {
         return documents;
     }
 
-    private boolean isFolderOperation(AbstractPresidioDocument document) {
+    private boolean isFolderOperation(AbstractInputDocument document) {
         String operationType = (String) ReflectionUtils.getFieldValue(document, operationTypeFieldName);
         return CollectionUtils.contains(folderOperations.iterator(), operationType);
     }

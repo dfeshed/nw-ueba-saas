@@ -9,7 +9,7 @@ import presidio.input.core.services.converters.ade.InputAdeConverter;
 import presidio.input.core.services.converters.output.InputOutputConverter;
 import presidio.input.core.services.impl.SchemaFactory;
 import presidio.output.domain.records.events.EnrichedEvent;
-import presidio.sdk.api.domain.AbstractPresidioDocument;
+import presidio.sdk.api.domain.AbstractInputDocument;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +21,7 @@ public class ConverterServiceImpl implements ConverterService {
     private SchemaFactory converterFactory;
 
     @Override
-    public List<EnrichedEvent> convertToOutput(List<? extends AbstractPresidioDocument> documents, Schema schema) {
+    public List<EnrichedEvent> convertToOutput(List<? extends AbstractInputDocument> documents, Schema schema) {
         InputOutputConverter inputToOutputConverter = converterFactory.getInputToOutputConverter(String.format("%s.%s", schema.toString(), "input-output-converter"));
 
         List<EnrichedEvent> convertedOutputRecords = new ArrayList<>();
