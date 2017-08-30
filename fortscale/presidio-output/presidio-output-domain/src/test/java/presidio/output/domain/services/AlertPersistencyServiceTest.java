@@ -197,7 +197,7 @@ public class AlertPersistencyServiceTest {
     }
 
     @Test
-    public void testFindByQueryWhiteClassification1() {
+    public void testFindByQueryWitheClassification1() {
 
         long startDate = Instant.now().toEpochMilli();
         long endDate = Instant.now().toEpochMilli();
@@ -225,7 +225,7 @@ public class AlertPersistencyServiceTest {
     }
 
     @Test
-    public void testFindByQueryWhiteClassification2() {
+    public void testFindByQueryWitheClassification2() {
 
         long startDate = Instant.now().toEpochMilli();
         long endDate = Instant.now().toEpochMilli();
@@ -253,7 +253,7 @@ public class AlertPersistencyServiceTest {
     }
 
     @Test
-    public void testFindByQueryWhiteClassification3() {
+    public void testFindByQueryWitheClassification3() {
 
         long startDate = Instant.now().toEpochMilli();
         long endDate = Instant.now().toEpochMilli();
@@ -280,7 +280,7 @@ public class AlertPersistencyServiceTest {
 
 
     @Test
-    public void testFindByQueryWhiteClassificationEmptyFilter() {
+    public void testFindByQueryWitheClassificationEmptyFilter() {
 
         long startDate = Instant.now().toEpochMilli();
         long endDate = Instant.now().toEpochMilli();

@@ -42,7 +42,7 @@ public class UserPersistencyServiceImpl implements UserPersistencyService {
     }
 
     public Page<User> findByUserId(String userId, PageRequest pageRequest) {
-        return userRepository.findByUserID(userId, pageRequest);
+        return userRepository.findByUserId(userId, pageRequest);
     }
 
 

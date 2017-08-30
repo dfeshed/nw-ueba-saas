@@ -12,6 +12,6 @@ public interface UserRepository extends ElasticsearchRepository<User, String> {
 
     Page<User> findByUserName(String userName, Pageable pageable);
 
-    Page<User> findByUserID(String userId, Pageable pageable);
+    Page<User> findByUserId(String userId, Pageable pageable);
 
 }
