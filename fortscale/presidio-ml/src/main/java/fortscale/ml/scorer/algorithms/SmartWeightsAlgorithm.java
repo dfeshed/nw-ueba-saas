@@ -53,12 +53,12 @@ public class SmartWeightsAlgorithm {
     {
         Assert.notNull(recordsDataContainer,"smart must contain aggregated feature events");
         List<Cluster> clusters = translateClustersSpecsToClusters(recordsDataContainer, clusterConfs);
-        return roundToEntityEventValuePrecision(calculateEntityEventValue(clusters));
+        return roundToSmartValuePrecision(calculateSmartValue(clusters));
     }
 
-    private double roundToEntityEventValuePrecision(double entityEventValue) {
+    private double roundToSmartValuePrecision(double smartValue) {
         //TODO: do we really need this function?
-        return Math.round(entityEventValue * 10000000) / 10000000d;
+        return Math.round(smartValue * 10000000) / 10000000d;
     }
 
     /**
@@ -106,7 +106,7 @@ public class SmartWeightsAlgorithm {
     /**
      * Sum the contributions made by the given {@link List<Cluster>} into a single entity event value.
      */
-    private double calculateEntityEventValue(List<Cluster> clusters) {
+    private double calculateSmartValue(List<Cluster> clusters) {
         return clusters.stream()
                 // filter clusters that all of their feature absent from the data
                 .filter(cluster -> !cluster.isEmpty())

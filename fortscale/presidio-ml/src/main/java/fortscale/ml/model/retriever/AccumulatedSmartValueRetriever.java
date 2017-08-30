@@ -21,10 +21,14 @@ import presidio.ade.domain.store.accumulator.smart.SmartAccumulationDataReader;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import static fortscale.ml.model.ModelBuilderData.NoDataReason.NO_DATA_IN_DATABASE;
+import static fortscale.ml.model.retriever.smart_data.SmartAccumulationFlattener.flattenSmartRecordToSmartAggrData;
 
 /**
  * Created by barak_schuster on 24/08/2017.
@@ -79,9 +83,9 @@ public class AccumulatedSmartValueRetriever extends AbstractDataRetriever {
 
         smartAggregatedRecordDataContainerStream.forEach(recordsDataContainer -> {
             noDataInDatabase[0] = false;
-            double entityEventValue = calculateSmartValue(endTimeInstant, recordsDataContainer);
+            double smartValue = calculateSmartValue(endTimeInstant, recordsDataContainer);
             // TODO: Retriever functions should be iterated and executed here.
-            reductionHistogram.add(entityEventValue, 1d);
+            reductionHistogram.add(smartValue, 1d);
         });
 
         if (reductionHistogram.getN() == 0) {
@@ -109,31 +113,12 @@ public class AccumulatedSmartValueRetriever extends AbstractDataRetriever {
     }
 
     private Stream<SmartAggregatedRecordDataContainer> readSmartAggregatedRecordData(String contextId, Instant startTime, Instant endTime) {
-        List<SmartAggregatedRecordDataContainer> smartAggregatedRecordDataContainerList = new ArrayList<>();
-
         List<AccumulatedSmartRecord> accumulatedSmartRecords = accumulationDataReader.findAccumulatedEventsByContextIdAndStartTimeRange(smartRecordConfName, contextId, startTime, endTime);
-
-        for (AccumulatedSmartRecord accumulatedSmartRecord: accumulatedSmartRecords)
-        {
-            for(Integer activityTime: accumulatedSmartRecord.getActivityTime())
-            {
-                Map<String,Double> featureNameToScore = new HashMap<>();
-                for (Map.Entry<String, Map<Integer, Double>> aggrFeature : accumulatedSmartRecord.getAggregatedFeatureEventsValuesMap().entrySet()) {
-                    Double activityTimeScore = aggrFeature.getValue().get(activityTime);
-                    String featureName = aggrFeature.getKey();
-                    if (activityTimeScore == null) {
-                        logger.debug("score does not exists for aggrFeature={} at activityTime={} setting to 0", featureName,activityTime);
-                    }
-                    else {
-                        logger.debug("score={} for aggrFeature={} at activityTime={}", activityTimeScore, featureName, activityTime);
-                        featureNameToScore.put(featureName, activityTimeScore);
-                    }
-                }
-                smartAggregatedRecordDataContainerList.add(new SmartAggregatedRecordDataContainer(startTime,featureNameToScore));
-            }
-        }
+        List<SmartAggregatedRecordDataContainer> smartAggregatedRecordDataContainerList = flattenSmartRecordToSmartAggrData(startTime, accumulatedSmartRecords);
         return smartAggregatedRecordDataContainerList.stream();
     }
+
+
 
     private ModelBuilderData retrieveGlobalModelBuilderData(TimeRange timeRange) {
         AccumulatedSmartContextSelectorConf conf = new AccumulatedSmartContextSelectorConf(smartRecordConfName);
@@ -151,9 +136,9 @@ public class AccumulatedSmartValueRetriever extends AbstractDataRetriever {
                     contextId, timeRange.getStart(), timeRange.getEnd()).
                     mapToDouble(smartData -> calculateSmartValue(timeRange.getEnd(), smartData))
                     .max()
-                    .ifPresent(maxEntityEventValue -> {
+                    .ifPresent(maxSmartValue -> {
                         // TODO: Retriever functions should be iterated and executed here.
-                        reductionHistogram.add(maxEntityEventValue, 1d);
+                        reductionHistogram.add(maxSmartValue, 1d);
                     });
         }
 
