@@ -100,3 +100,9 @@ components:
       main_class: presidio.input.core.FortscaleInputCoreApplication
       xmx: 500
       xms: 70
+  user_score:
+    jvm_args:
+      jar_path: ${general.deployment.bins.base_path}/presidio-output-processor-1.0.0-SNAPSHOT.jar
+      main_class: presidio.output.processor.FortscaleOutputProcessorApplication
+      xmx: 500
+      xms: 70
