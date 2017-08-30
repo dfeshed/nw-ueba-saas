@@ -2,13 +2,13 @@ package presidio.input.core;
 
 import fortscale.common.general.Schema;
 import fortscale.utils.pagination.PageIterator;
-import presidio.sdk.api.domain.AbstractPresidioDocument;
+import presidio.sdk.api.domain.AbstractInputDocument;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
 
 import java.time.Instant;
 import java.util.List;
 
-public class RawEventsPageIterator<U extends AbstractPresidioDocument> implements PageIterator<U> {
+public class RawEventsPageIterator<U extends AbstractInputDocument> implements PageIterator<U> {
 
     private final Instant startDate;
     private final Instant endDate;

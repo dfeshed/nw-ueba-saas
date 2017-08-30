@@ -3,7 +3,7 @@ package presidio.input.core.services.transformation.managers;
 import org.springframework.beans.factory.annotation.Value;
 import presidio.input.core.services.transformation.FolderPathTransformer;
 import presidio.input.core.services.transformation.Transformer;
-import presidio.sdk.api.domain.AbstractPresidioDocument;
+import presidio.sdk.api.domain.AbstractInputDocument;
 import presidio.sdk.api.domain.rawevents.FileRawEvent;
 import presidio.sdk.api.domain.transformedevents.FileTransformedEvent;
 
@@ -33,7 +33,7 @@ public class FileTransformerManager implements TransformationManager {
     }
 
     @Override
-    public <U extends AbstractPresidioDocument> U getTransformedDocument(AbstractPresidioDocument rawEvent) {
+    public <U extends AbstractInputDocument> U getTransformedDocument(AbstractInputDocument rawEvent) {
         return (U) new FileTransformedEvent((FileRawEvent) rawEvent);
     }
 }
