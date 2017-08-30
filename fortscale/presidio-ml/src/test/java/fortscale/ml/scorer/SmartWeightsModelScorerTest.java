@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import presidio.ade.domain.record.AdeRecord;
 import presidio.ade.domain.record.AdeRecordReader;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.record.aggregated.AggregatedFeatureType;
@@ -23,6 +24,7 @@ import presidio.ade.domain.record.aggregated.ScoredFeatureAggregationRecord;
 import presidio.ade.domain.record.aggregated.SmartRecord;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -41,6 +43,20 @@ public class SmartWeightsModelScorerTest {
         new SmartWeightsModelScorer( "scorerName","",eventModelsCacheService);
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldFailGivenWhenAdeRecordIsNotInstanceOfSmartRecord() {
+        prepareSmartWeightModel(Collections.emptyList());
+        AdeRecord adeRecord = Mockito.mock(AdeRecord.class);
+        calculateScore(adeRecord);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldFailGivenWhenModelIsNotInstanceOfSmartWeightModel() {
+        SmartRecord emptyMockedSmartRecord = createMockedSmartRecord(Collections.emptyList());
+        prepareModel(new CategoryRarityModel());
+        calculateScore(emptyMockedSmartRecord);
+    }
+
     @Test
     public void testEmptySmartRecordGetZeroScore(){
         SmartRecord emptyMockedSmartRecord = createMockedSmartRecord(Collections.emptyList());
@@ -49,13 +65,79 @@ public class SmartWeightsModelScorerTest {
         Assert.assertEquals(0.0, featureScore.getScore(), 0.0);
     }
 
-//    @Test(expected = IllegalArgumentException.class)
-//    public void shouldFailToScoreIfGivenWrongModelType() {
-//        String featureName = "F1";
-//        prepareFeature(featureName, new JSONArray());
-//        prepareModel(new CategoryRarityModel());
-//        calculateScore(featureName);
-//    }
+    @Test
+    public void shouldGiveZeroScoreWhenModelDoesNotExist() {
+        String featureName = "dummyFeature";
+        double score = 50.0;
+        AdeAggregationRecord adeAggregationRecord = createMockedAdeAggregationRecordOfSCORE_AGGREGATIONType(featureName,score);
+        SmartRecord smartRecord = createMockedSmartRecord(Collections.singletonList(adeAggregationRecord));
+
+        FeatureScore featureScore = calculateScore(smartRecord);
+        prepareModel(null);
+        Assert.assertEquals(0.0, featureScore.getScore(), 0.0);
+    }
+
+    @Test
+    public void scoreShouldNotIncludeFeaturesWhichDoNotBelongToAnyCluster() {
+        String featureName1 = "dummyFeature1";
+        double score1 = 50.0;
+        AdeAggregationRecord adeAggregationRecord1 = createMockedAdeAggregationRecordOfSCORE_AGGREGATIONType(featureName1,score1);
+
+        String featureName2 = "dummyFeature2";
+        double score2 = 80.0;
+        AdeAggregationRecord adeAggregationRecord2 = createMockedAdeAggregationRecordOfFEATURE_AGGREGATIONType(featureName2,score2);
+
+        String featureName3 = "dummyFeature3";
+        double score3 = 90.0;
+        AdeAggregationRecord adeAggregationRecord3 = createMockedAdeAggregationRecordOfSCORE_AGGREGATIONType(featureName3,score3);
+
+        List<AdeAggregationRecord> adeAggregationRecords = new ArrayList<>();
+        adeAggregationRecords.add(adeAggregationRecord1);
+        adeAggregationRecords.add(adeAggregationRecord2);
+        adeAggregationRecords.add(adeAggregationRecord3);
+
+        SmartRecord smartRecord = createMockedSmartRecord(adeAggregationRecords);
+        double clusterWeight = 0.1;
+        ClusterConf clusterConf1 = new ClusterConf(Collections.singletonList(adeAggregationRecord1.getFeatureName()), clusterWeight);
+        ClusterConf clusterConf2 = new ClusterConf(Collections.singletonList(adeAggregationRecord2.getFeatureName()), clusterWeight);
+        List<ClusterConf> clusterConfs = new ArrayList<>();
+        Collections.addAll(clusterConfs,clusterConf1,clusterConf2);
+        prepareSmartWeightModel(clusterConfs);
+
+        FeatureScore featureScore = calculateScore(smartRecord);
+
+        Assert.assertEquals(clusterWeight * (score1+score2) / 100, featureScore.getScore(), 0.0000001);
+
+    }
+
+    @Test
+    public void shouldGiveScoreWhenSmartContainsSCORE_AGGREGATIONFeatureWhichBelongToAClusterWithNonZeroWeight() {
+        String featureName = "dummyFeature";
+        double score = 50.0;
+        AdeAggregationRecord adeAggregationRecord = createMockedAdeAggregationRecordOfSCORE_AGGREGATIONType(featureName,score);
+
+        shouldGiveScoreWhenSmartContainsFeatureWhichBelongToAClusterWithNonZeroWeight(adeAggregationRecord, score);
+    }
+
+    @Test
+    public void shouldGiveScoreWhenSmartContainsFEATURE_AGGREGATIONFeatureWhichBelongToAClusterWithNonZeroWeight() {
+        String featureName = "dummyFeature";
+        double score = 90.0;
+        AdeAggregationRecord adeAggregationRecord = createMockedAdeAggregationRecordOfFEATURE_AGGREGATIONType(featureName,score);
+
+        shouldGiveScoreWhenSmartContainsFeatureWhichBelongToAClusterWithNonZeroWeight(adeAggregationRecord, score);
+    }
+
+    private void shouldGiveScoreWhenSmartContainsFeatureWhichBelongToAClusterWithNonZeroWeight(AdeAggregationRecord adeAggregationRecord, double score) {
+        SmartRecord smartRecord = createMockedSmartRecord(Collections.singletonList(adeAggregationRecord));
+        double clusterWeight = 0.1;
+        ClusterConf clusterConf = new ClusterConf(Collections.singletonList(adeAggregationRecord.getFeatureName()), clusterWeight);
+        prepareSmartWeightModel(Collections.singletonList(clusterConf));
+
+        FeatureScore featureScore = calculateScore(smartRecord);
+
+        Assert.assertEquals(clusterWeight * score / 100, featureScore.getScore(), 0.0000001);
+    }
 
     private SmartRecord createMockedSmartRecord(List<AdeAggregationRecord> adeAggregationRecords){
         SmartRecord ret = Mockito.mock(SmartRecord.class);
@@ -64,18 +146,20 @@ public class SmartWeightsModelScorerTest {
         return ret;
     }
 
-    private AdeAggregationRecord createMockedAdeAggregationRecordOfSCORE_AGGREGATIONType(double score){
+    private AdeAggregationRecord createMockedAdeAggregationRecordOfSCORE_AGGREGATIONType(String featureName, double score){
         AdeAggregationRecord ret = Mockito.mock(AdeAggregationRecord.class);
         Mockito.when(ret.getAggregatedFeatureType()).thenReturn(AggregatedFeatureType.SCORE_AGGREGATION);
         Mockito.when(ret.getFeatureValue()).thenReturn(score);
+        Mockito.when(ret.getFeatureName()).thenReturn(featureName);
 
         return ret;
     }
 
-    private ScoredFeatureAggregationRecord createMockedAdeAggregationRecordOfFEATURE_AGGREGATIONType(double score){
+    private ScoredFeatureAggregationRecord createMockedAdeAggregationRecordOfFEATURE_AGGREGATIONType(String featureName, double score){
         ScoredFeatureAggregationRecord ret = Mockito.mock(ScoredFeatureAggregationRecord.class);
         Mockito.when(ret.getAggregatedFeatureType()).thenReturn(AggregatedFeatureType.FEATURE_AGGREGATION);
-        Mockito.when(ret.getFeatureValue()).thenReturn(score);
+        Mockito.when(ret.getScore()).thenReturn(score);
+        Mockito.when(ret.getFeatureName()).thenReturn(featureName);
         return ret;
     }
 
@@ -89,52 +173,9 @@ public class SmartWeightsModelScorerTest {
         Mockito.when(modelsCacheService.getModel(Mockito.anyString(), Mockito.eq(Collections.emptyMap()), Mockito.any(Instant.class))).thenReturn(model);
     }
 
-    private FeatureScore calculateScore(SmartRecord smartRecord) {
-        return new SmartWeightsModelScorer("scorerName","modelName",eventModelsCacheService).calculateScore(new AdeRecordReader(smartRecord));
+    private FeatureScore calculateScore(AdeRecord adeRecord) {
+        return new SmartWeightsModelScorer("scorerName","modelName",eventModelsCacheService).calculateScore(new AdeRecordReader(adeRecord));
     }
-
-//    private JokerSpecs prepareAggrFeatureEventsJsonFeature(String featureName, double score, double clusterWeight) {
-//        JSONArray featureValue = new JSONArray();
-//        JSONObject aggrFeatureEvent = new JSONObject();
-//        featureValue.add(aggrFeatureEvent);
-//        aggrFeatureEvent.put("event_type", "aggr_event");
-//        aggrFeatureEvent.put(AggrEvent.EVENT_FIELD_FEATURE_TYPE, AggrEvent.AGGREGATED_FEATURE_TYPE_F_VALUE);
-//        aggrFeatureEvent.put(AggrEvent.EVENT_FIELD_AGGREGATED_FEATURE_INFO, new JSONObject(Collections.singletonMap("total", 1)));
-//        aggrFeatureEvent.put("date_time_unix", 1472540399);
-//        aggrFeatureEvent.put(AggrEvent.EVENT_FIELD_START_TIME, "2016-08-30 06:00:00");
-//        aggrFeatureEvent.put(AggrEvent.EVENT_FIELD_START_TIME_UNIX, 1472536800);
-//        aggrFeatureEvent.put(AggrEvent.EVENT_FIELD_END_TIME, "2016-08-30 06:59:59");
-//        aggrFeatureEvent.put(AggrEvent.EVENT_FIELD_END_TIME_UNIX, 1472540399);
-//        aggrFeatureEvent.put(AggrEvent.EVENT_FIELD_CREATION_EPOCHTIME, 1481980116);
-//        aggrFeatureEvent.put(AggrEvent.EVENT_FIELD_CREATION_DATE_TIME, "2016-12-17 13:08:36");
-//        aggrFeatureEvent.put(AggrEvent.EVENT_FILED_DATA_SOURCE, "aggr_event.normalized_username_prnlog_hourly.sum_of_pages_prnlog_hourly");
-//        JSONArray dataSources = new JSONArray();
-//        dataSources.add("prnlog");
-//        aggrFeatureEvent.put(AggrEvent.EVENT_FIELD_DATA_SOURCES, dataSources);
-//        aggrFeatureEvent.put(AggrEvent.EVENT_FIELD_CONTEXT, new JSONObject(Collections.singletonMap("normalized_username", "prnlogusr3@somebigcompany.com")));
-//        aggrFeatureEvent.put(AggrEvent.EVENT_FIELD_AGGREGATED_FEATURE_VALUE, 1.0);
-//        aggrFeatureEvent.put(AggrEvent.EVENT_FIELD_SCORE, score);
-//        String bucketConfName = "bucketConfName";
-//        aggrFeatureEvent.put(AggrEvent.EVENT_FIELD_BUCKET_CONF_NAME, bucketConfName);
-//        aggrFeatureEvent.put(AggrEvent.EVENT_FIELD_AGGREGATED_FEATURE_NAME, featureName);
-//        prepareFeature(featureName, featureValue);
-//
-//        return new JokerSpecs(
-//                Collections.singletonList(new ClusterSpecs(Collections.singletonList(
-//                        AggregatedFeatureEventsConfUtilService.buildFullAggregatedFeatureEventName(
-//                                bucketConfName,
-//                                featureName
-//                        )
-//                ), clusterWeight))
-//        );
-//    }
-
-
-//    private void prepareFeature(String featureName, Object featureValue) {
-//        Mockito.when(featureExtractService.extract(Mockito.eq(featureName), Mockito.any(EventMessage.class)))
-//                .thenReturn(new Feature(featureName, featureValue));
-//    }
-
 
 
 
