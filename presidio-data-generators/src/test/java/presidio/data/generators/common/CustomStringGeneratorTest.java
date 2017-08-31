@@ -18,4 +18,14 @@ public class CustomStringGeneratorTest {
         CustomStringGenerator generator = new CustomStringGenerator("my string");
         Assert.assertEquals("my string", generator.getNext());
     }
+
+    @Test
+    public void PseudoRandomStringTest(){
+        RandomStringGenerator generator = new RandomStringGenerator(15);
+        System.out.println(generator.getNext());
+        System.out.println(generator.getNext());
+        System.out.println(generator.getNext());
+
+        //Assert.assertEquals("my string", generator.getNext());
+    }
 }
