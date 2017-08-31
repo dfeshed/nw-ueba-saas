@@ -120,9 +120,9 @@ export default Component.extend(SelectionTooltip, {
     let remainingText = text.substr(SHOW_TRUNCATED_AMOUNT);
     while (remainingText.length > 0) {
       // get next chunk
-      const chunk = remainingText.substr(0, CHUNK_SIZE);
+      const chunk = remainingText.slice(0, CHUNK_SIZE);
       // remove that chunk from the string
-      remainingText = remainingText.replace(chunk, '');
+      remainingText = remainingText.slice(CHUNK_SIZE);
 
       portions.push(chunk);
     }
