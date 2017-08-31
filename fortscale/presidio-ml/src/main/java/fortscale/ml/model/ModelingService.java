@@ -3,7 +3,9 @@ package fortscale.ml.model;
 import fortscale.aggregation.configuration.AslConfigurationPaths;
 import fortscale.aggregation.configuration.AslResourceFactory;
 import fortscale.utils.logging.Logger;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.core.io.Resource;
+import org.springframework.util.Assert;
 
 import java.time.Instant;
 import java.util.Collection;
@@ -62,17 +64,9 @@ public class ModelingService {
 				return;
 			}
 
-			AslConfigurationPaths modelConfigurationPaths = groupNameToModelConfigurationPathsMap.get(groupName);
-			ModelConfService modelConfService = new ModelConfService(
-					aslResourceFactory.getResources(modelConfigurationPaths.getBaseConfigurationPath()),
-					aslResourceFactory.getResources(modelConfigurationPaths.getOverridingConfigurationPath()),
-					aslResourceFactory.getResources(modelConfigurationPaths.getAdditionalConfigurationPath()));
-			modelConfService.loadAslConfigurations();
-			DynamicModelConfServiceContainer.setModelConfService(modelConfService);
-			List<ModelConf> modelConfs = modelConfService.getModelConfs();
-			logger.info("Created a modelConfService for group {} with {} modelConfs.", groupName, modelConfs.size());
-			logger.info("Running modeling engines with sessionId {} and endInstant {} as input.", sessionId, endInstant);
+			List<ModelConf> modelConfs = getModelConfs(groupName);
 
+			logger.info("Running modeling engines with sessionId {} and endInstant {} as input.", sessionId, endInstant);
 			for (ModelConf modelConf : modelConfs) {
 				ModelingEngine modelingEngine = modelingEngineFactory.getModelingEngine(modelConf);
 				String modelConfName = modelConf.getName();
@@ -93,6 +87,28 @@ public class ModelingService {
 			logger.error("encountered error while building models for groupName={}, sessionId={}, endInstant={}",groupName, sessionId, endInstant,e);
 			throw e;
 		}
+	}
+
+	private List<ModelConf> getModelConfs(String groupName){
+		String[] groupNames = groupName.split("\\.");
+		Assert.isTrue(groupNames.length <= 2, "a group name is expected to contain at most root group and sub group.");
+		String rootGroupName = groupNames[0];
+		String subGroupName = groupNames.length < 2 ? "" : groupNames[1];
+		AslConfigurationPaths modelConfigurationPaths = groupNameToModelConfigurationPathsMap.get(rootGroupName);
+		ModelConfService modelConfService = new ModelConfService(
+				getResources(modelConfigurationPaths.getBaseConfigurationPath(), subGroupName),
+				getResources(modelConfigurationPaths.getOverridingConfigurationPath(), subGroupName),
+				getResources(modelConfigurationPaths.getAdditionalConfigurationPath(), subGroupName));
+		modelConfService.loadAslConfigurations();
+		DynamicModelConfServiceContainer.setModelConfService(modelConfService);
+		List<ModelConf> modelConfs = modelConfService.getModelConfs();
+		logger.info("Created a modelConfService for group {} with {} modelConfs.", groupName, modelConfs.size());
+		return modelConfs;
+	}
+
+	private Resource[] getResources(String rootGroupPath, String subGroupName){
+		String path = StringUtils.isNotBlank(subGroupName)? rootGroupPath + subGroupName + ".json" : rootGroupPath;
+		return aslResourceFactory.getResources(path);
 	}
 
 	public void clean(String groupName, String sessionId) throws Exception {
