@@ -10,6 +10,7 @@ public class UserQuery {
     private final List<String> filterByIndicators;
     private String filterByUserId;
     private String filterByUserName;
+    private boolean isPrefix;
 
     // sort
     private final List<String> sortField;
@@ -28,6 +29,7 @@ public class UserQuery {
         this.pageSize = builder.pageSize;
         this.filterByUserId = builder.filterByUserId;
         this.filterByUserName = builder.filterByUserName;
+        this.isPrefix = builder.isPrefix;
     }
 
     public String getFilterByUserId() {
@@ -36,6 +38,10 @@ public class UserQuery {
 
     public String getFilterByUserName() {
         return filterByUserName;
+    }
+
+    public boolean isPrefix() {
+        return isPrefix;
     }
 
     public List<String> getFilterByAlertClassifications() {
@@ -70,6 +76,8 @@ public class UserQuery {
         private List<String> filterByIndicators;
         private String filterByUserId;
         private String filterByUserName;
+        private boolean isPrefix;
+
 
         // sort
         private List<String> sortField;
@@ -91,6 +99,11 @@ public class UserQuery {
 
         public UserQueryBuilder filterByUserName(String filterByUserName) {
             this.filterByUserName = filterByUserName;
+            return this;
+        }
+
+        public UserQueryBuilder filterByUserNameWithPrefix(boolean prefixEnabled) {
+            this.isPrefix = prefixEnabled;
             return this;
         }
 
