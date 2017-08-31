@@ -4,7 +4,7 @@ import presidio.data.generators.dlpfileop.DLPFileOperationGenerator;
 import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.event.EntityEventIDFixedPrefixGenerator;
 import presidio.data.generators.fileentity.SimplePathGenerator;
-import presidio.data.generators.machine.SimpleMachineGenerator;
+import presidio.data.generators.machine.QuestADMachineGenerator;
 import presidio.data.generators.user.SingleUserGenerator;
 
 import java.io.InputStream;
@@ -14,7 +14,7 @@ public class DLPFileEventsGeneratorTemplateFactory {
 
         DLPFileEventsGenerator generator = new DLPFileEventsGenerator();
         generator.setUserGenerator(new SingleUserGenerator(username)); // Handles: username, first_name, last_name
-        generator.setSourceMachineGenerator(new SimpleMachineGenerator()); // Handles: hostname, source_ip
+        generator.setSourceMachineGenerator(new QuestADMachineGenerator()); // Handles: hostname, source_ip
         generator.setEventIDGenerator(new EntityEventIDFixedPrefixGenerator(username));
 
         return generator;

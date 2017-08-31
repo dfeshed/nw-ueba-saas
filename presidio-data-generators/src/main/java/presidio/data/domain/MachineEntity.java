@@ -8,6 +8,7 @@ public class MachineEntity {
     private String machineDomainDN;
     private String osVersion;
     private String origin;
+    private String domainFQDN;
 
     public MachineEntity(String machineId, String machineNameRegexCluster, String machineDomain) {
         this.machineId = machineId;
@@ -37,6 +38,17 @@ public class MachineEntity {
         this.machineDomainDN = machineDomainDN;
         this.osVersion = osVersion;
         this.origin = origin;
+    }
+
+    public MachineEntity(String machineId, String machineIP, String machineNameRegexCluster, String machineDomain, String machineDomainDN, String osVersion, String origin, String domainFQDN) {
+        this.machineId = machineId;
+        this.machineIp = machineIP;
+        this.machineNameRegexCluster = machineNameRegexCluster;
+        this.machineDomain = machineDomain;
+        this.machineDomainDN = machineDomainDN;
+        this.osVersion = osVersion;
+        this.origin = origin;
+        this.domainFQDN = domainFQDN;
     }
 
     public String getMachineId() {
@@ -95,6 +107,14 @@ public class MachineEntity {
         this.origin = origin;
     }
 
+    public String getDomainFQDN() {
+        return domainFQDN;
+    }
+
+    public void setDomainFQDN(String domainFQDN) {
+        this.domainFQDN = domainFQDN;
+    }
+
     @Override
     public String toString() {
         return "MachineEntity{" +
@@ -105,6 +125,7 @@ public class MachineEntity {
                 ", machineDomainDN='" + machineDomainDN + '\'' +
                 ", osVersion='" + osVersion + '\'' +
                 ", origin='" + origin + '\'' +
+                ", domainFQDN='" + domainFQDN + '\'' +
                 '}';
     }
 }

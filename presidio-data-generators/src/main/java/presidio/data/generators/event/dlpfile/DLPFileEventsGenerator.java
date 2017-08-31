@@ -13,7 +13,7 @@ import presidio.data.generators.event.IEventGenerator;
 import presidio.data.generators.dlpfileop.DLPFileOperationGenerator;
 import presidio.data.generators.dlpfileop.IDLPFileOperationGenerator;
 import presidio.data.generators.machine.IMachineGenerator;
-import presidio.data.generators.machine.SimpleMachineGenerator;
+import presidio.data.generators.machine.QuestADMachineGenerator;
 import presidio.data.generators.user.IUserGenerator;
 import presidio.data.generators.user.RandomUserGenerator;
 
@@ -45,7 +45,7 @@ public class DLPFileEventsGenerator implements IEventGenerator {
         userGenerator = new RandomUserGenerator();
         User user = userGenerator.getNext();
 
-        sourceMachineGenerator = new SimpleMachineGenerator();
+        sourceMachineGenerator = new QuestADMachineGenerator();
         fileOperationGenerator = new DLPFileOperationGenerator(); // Handles: source_path, destination_path, source_file_name, destination_file_name, file_size
 
         eventIDGen = new EntityEventIDFixedPrefixGenerator(user.getUsername());

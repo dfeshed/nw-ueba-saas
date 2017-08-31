@@ -3,10 +3,10 @@ package presidio.data.generators.user;
 import presidio.data.domain.User;
 import presidio.data.generators.common.GeneratorException;
 
-public class SingleAdminUserGenerator implements IUserGenerator {
+public class AnonymousSingleUserGenerator implements IUserGenerator {
     private User user;
 
-    public SingleAdminUserGenerator(String username) throws GeneratorException {
+    public AnonymousSingleUserGenerator(String username) throws GeneratorException {
         user = new User(username);
         if (username.length() < 2){
             throw new GeneratorException("Generator Exception occurred: username should be at least 2 characters");
@@ -15,8 +15,8 @@ public class SingleAdminUserGenerator implements IUserGenerator {
         user.setUserId(username);
         user.setLastName ("");
         user.setFirstName ("");
-        user.setAdministrator(true);
-        user.setAnonymous(false);
+        user.setAdministrator(false);
+        user.setAnonymous(true);
     }
 
     public User getNext(){

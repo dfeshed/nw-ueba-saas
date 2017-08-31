@@ -12,7 +12,7 @@ import presidio.data.generators.fileentity.IFileSystemEntityGenerator;
 import presidio.data.generators.fileop.FileOperationGenerator;
 import presidio.data.generators.fileop.IFileOperationGenerator;
 import presidio.data.generators.machine.IMachineGenerator;
-import presidio.data.generators.machine.SimpleMachineGenerator;
+import presidio.data.generators.machine.QuestADMachineGenerator;
 import presidio.data.generators.user.IUserGenerator;
 import presidio.data.generators.user.RandomUserGenerator;
 
@@ -37,7 +37,7 @@ public class FileEventsGenerator implements IEventGenerator {
         dataSourceGenerator = new FixedDataSourceGenerator();
         fileOperationGenerator = new FileOperationGenerator();
         fileSystemGenerator = new FileSystemEntityGenerator(userGenerator.getNext().getUsername());
-        machineEntityGenerator = new SimpleMachineGenerator();
+        machineEntityGenerator = new QuestADMachineGenerator();
         fileDescriptionGenerator = new FileDescriptionGenerator();
     }
 

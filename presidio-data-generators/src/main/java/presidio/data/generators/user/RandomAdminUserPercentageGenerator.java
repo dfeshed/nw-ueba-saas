@@ -3,6 +3,7 @@ package presidio.data.generators.user;
 import org.apache.commons.lang3.RandomStringUtils;
 import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.common.IBooleanGenerator;
+import presidio.data.generators.common.RandomStringGenerator;
 import presidio.data.generators.common.precentage.BooleanPercentageGenerator;
 import presidio.data.domain.User;
 
@@ -10,18 +11,22 @@ import presidio.data.domain.User;
 public class RandomAdminUserPercentageGenerator implements IUserGenerator {
 
     private IBooleanGenerator isAdminGenerator;
+    private RandomStringGenerator userNameGenerator;
 
     public RandomAdminUserPercentageGenerator() throws GeneratorException {
         isAdminGenerator = new BooleanPercentageGenerator(2);
+        userNameGenerator = new RandomStringGenerator();
     }
 
     public RandomAdminUserPercentageGenerator(int percent) throws GeneratorException {
         isAdminGenerator = new BooleanPercentageGenerator(percent);
+        userNameGenerator = new RandomStringGenerator();
     }
 
     public User getNext(){
 
-        String username = RandomStringUtils.randomAlphanumeric(10);
+//        String username = RandomStringUtils.randomAlphanumeric(10);
+        String username = userNameGenerator.getNext();
         User user = new User(username);
         user.setUserId(username);
         user.setLastName ( username.substring(username.length()-2));

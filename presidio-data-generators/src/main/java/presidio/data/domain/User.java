@@ -6,9 +6,12 @@ public class User {
     private String firstName;
     private String lastName;
     private Boolean isAdministrator;
+    private Boolean isAnonymous;
+
 
     public User(String username) {
         this.username = username;
+        this.isAnonymous = false;
     }
 
     public User(String username, String userId, String firstName, String lastName, Boolean isAdministrator) {
@@ -17,6 +20,16 @@ public class User {
         this.firstName = firstName;
         this.lastName = lastName;
         this.isAdministrator = isAdministrator;
+        this.isAnonymous = false;
+    }
+
+    public User(String username, String userId, String firstName, String lastName, Boolean isAdministrator, Boolean isAnonymous) {
+        this.username = username;
+        this.userId = userId;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.isAdministrator = isAdministrator;
+        this.isAnonymous = isAnonymous;
     }
 
     public String getUsername() {
@@ -59,6 +72,18 @@ public class User {
         isAdministrator = administrator;
     }
 
+    public Boolean getAdministrator() {
+        return isAdministrator;
+    }
+
+    public Boolean getAnonymous() {
+        return isAnonymous;
+    }
+
+    public void setAnonymous(Boolean anonymous) {
+        isAnonymous = anonymous;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -67,6 +92,7 @@ public class User {
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", isAdministrator=" + isAdministrator +
+                ", isAnonymous=" + isAnonymous +
                 '}';
     }
 }

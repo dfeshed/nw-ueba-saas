@@ -21,6 +21,9 @@ public class AuthenticationEvent extends Event implements Serializable {
     private MachineEntity dstMachineEntity;
     private String result;
     private String resultCode;
+    private String authenticationDescription;
+    private String objectDN;
+    private String objectCanonical;
 
     public AuthenticationEvent(String eventId, Instant eventTime, String dataSource, User user, String operationType, List<String> operationTypeCategories, MachineEntity srcMachineEntity, MachineEntity dstMachineEntity, String result, String resultCode) {
         this.eventId = eventId;
@@ -33,6 +36,21 @@ public class AuthenticationEvent extends Event implements Serializable {
         this.dstMachineEntity = dstMachineEntity;
         this.result = result;
         this.resultCode = resultCode;
+    }
+
+    public AuthenticationEvent(String eventId, Instant eventTime, String dataSource, User user, String operationType, List<String> operationTypeCategories, MachineEntity srcMachineEntity, MachineEntity dstMachineEntity, String result, String resultCode, String objectDN, String objectCanonical) {
+        this.eventId = eventId;
+        this.eventTime = eventTime;
+        this.dataSource = dataSource;
+        this.user = user;
+        this.operationType = operationType;
+        this.operationTypeCategories = operationTypeCategories;
+        this.srcMachineEntity = srcMachineEntity;
+        this.dstMachineEntity = dstMachineEntity;
+        this.result = result;
+        this.resultCode = resultCode;
+        this.objectDN = objectDN;
+        this.objectCanonical = objectCanonical;
     }
 
     public static long getSerialVersionUID() {
@@ -119,19 +137,46 @@ public class AuthenticationEvent extends Event implements Serializable {
         this.resultCode = resultCode;
     }
 
+    public String getAuthenticationDescription() {
+        return authenticationDescription;
+    }
+
+    public void setAuthenticationDescription(String authenticationDescription) {
+        this.authenticationDescription = authenticationDescription;
+    }
+
+    public String getObjectDN() {
+        return objectDN;
+    }
+
+    public void setObjectDN(String objectDN) {
+        this.objectDN = objectDN;
+    }
+
+    public String getObjectCanonical() {
+        return objectCanonical;
+    }
+
+    public void setObjectCanonical(String objectCanonical) {
+        this.objectCanonical = objectCanonical;
+    }
+
     @Override
     public String toString() {
         return "AuthenticationEvent{" +
                 "eventId='" + eventId + '\'' +
                 ", eventTime=" + eventTime +
                 ", dataSource='" + dataSource + '\'' +
-                ", user=" + user.toString() +
+                ", user=" + user +
                 ", operationType='" + operationType + '\'' +
                 ", operationTypeCategories=" + operationTypeCategories +
-                ", srcMachineEntity=" + srcMachineEntity.toString() +
-                ", dstMachineEntity=" + dstMachineEntity.toString() +
+                ", srcMachineEntity=" + srcMachineEntity +
+                ", dstMachineEntity=" + dstMachineEntity +
                 ", result='" + result + '\'' +
                 ", resultCode='" + resultCode + '\'' +
+                ", authenticationDescription='" + authenticationDescription + '\'' +
+                ", objectDN='" + objectDN + '\'' +
+                ", objectCanonical='" + objectCanonical + '\'' +
                 '}';
     }
 
