@@ -3,8 +3,10 @@ package presidio.data.generators.fileop;
 import presidio.data.domain.event.OperationType;
 import presidio.data.domain.event.file.FILE_OPERATION_TYPE;
 import presidio.data.generators.common.GeneratorException;
+import presidio.data.generators.common.precentage.BooleanPercentageGenerator;
 import presidio.data.generators.common.precentage.OperationResultPercentageGenerator;
 import presidio.data.generators.event.OPERATION_RESULT;
+import presidio.data.generators.fileentity.FileEntityGenerator;
 import presidio.data.generators.fileentity.IFileEntityGenerator;
 import presidio.data.generators.fileentity.NullFileEntityGenerator;
 
@@ -45,6 +47,22 @@ public class FileOperationGeneratorTemplateFactory {
     public IFileOperationGenerator createMoveFileOperationsGenerator(List<String> categories) throws GeneratorException {
         return getFileOperationsGenerator(FILE_OPERATION_TYPE.FILE_MOVED.value, categories);
     }
+
+    public IFileOperationGenerator createMoveFromSharedFileOperationsGenerator() throws GeneratorException {
+        return createMoveFromSharedFileOperationsGenerator(null);
+    }
+    public IFileOperationGenerator createMoveFromSharedFileOperationsGenerator(List<String> categories) throws GeneratorException {
+        FileOperationGenerator generator = new FileOperationGenerator();
+        generator.setOperationTypeGenerator(getFixedFileOperationTypeGenerator(FILE_OPERATION_TYPE.FILE_MOVED.value, categories));
+
+        // Source file - shared
+        FileEntityGenerator fileGenerator = new FileEntityGenerator();
+        fileGenerator.setIsDriveSharedGenerator(new BooleanPercentageGenerator(100));
+        generator.setSourceFileEntityGenerator(fileGenerator);
+
+        return generator;
+    }
+
     public IFileOperationGenerator createFailedMoveFileOperationsGenerator() throws GeneratorException {
         return createFailedMoveFileOperationsGenerator(null);
     }
