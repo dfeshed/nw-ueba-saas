@@ -1,89 +1,46 @@
 {
   "ModelConfs": [
     {
-      "name": "entity_event.normalized_username.daily",
+      "name": "smart.userId.hourly",
       "selector": {
-        "type": "entity_event_context_selector",
-        "entityEventConfName": "normalized_username_daily"
+        "type": "accumulated_smart_context_selector",
+        "smartRecordConfName": "userId_hourly"
       },
       "retriever": {
-        "type": "accumulated_entity_event_value_retriever",
-        "timeRangeInSeconds": 7776000,
+        "type": "accumulated_smart_value_retriever",
+        "timeRangeInSeconds": 2592000,
         "functions": [],
-        "entityEventConfName": "normalized_username_daily"
+        "smartRecordConfName": "userId_hourly",
+        "weightsModelName": "smart.global.weights.userId.hourly"
       },
       "builder": {
         "type": "smart_values_model_builder"
       }
     },
     {
-      "name": "entity_event.normalized_username.hourly",
-      "selector": {
-        "type": "entity_event_context_selector",
-        "entityEventConfName": "normalized_username_hourly"
-      },
+      "name": "smart.global.prior.userId.hourly",
       "retriever": {
-        "type": "accumulated_entity_event_value_retriever",
+        "type": "accumulated_smart_value_retriever",
         "timeRangeInSeconds": 2592000,
         "functions": [],
-        "entityEventConfName": "normalized_username_hourly"
-      },
-      "builder": {
-        "type": "smart_values_model_builder"
-      }
-    },
-    {
-      "name": "entity_event.global.normalized_username.daily",
-      "retriever": {
-        "type": "accumulated_entity_event_value_retriever",
-        "timeRangeInSeconds": 7776000,
-        "functions": [],
-        "entityEventConfName": "normalized_username_daily"
+        "smartRecordConfName": "userId_hourly",
+        "weightsModelName": "smart.global.weights.userId.hourly"
       },
       "builder": {
         "type": "smart_values_prior_model_builder"
       }
     },
     {
-      "name": "entity_event.global.normalized_username.hourly",
+      "name": "smart.global.weights.userId.hourly",
       "retriever": {
-        "type": "accumulated_entity_event_value_retriever",
+        "type": "accumulated_smart_data_retriever",
         "timeRangeInSeconds": 2592000,
         "functions": [],
-        "entityEventConfName": "normalized_username_hourly"
+        "smartRecordConfName": "userId_hourly"
       },
       "builder": {
-        "type": "smart_values_prior_model_builder"
-      }
-    },
-    {
-      "name": "entity_event.global.alert_control.daily",
-      "retriever": {
-        "type": "entity_event_unreduced_score_retriever",
-        "functions": [],
-        "entityEventConfName": "normalized_username_daily",
-        "numOfDays": 21,
-        "numOfAlertsPerDay": 1
-      },
-      "builder": {
-        "type": "smart_score_mapping_model_builder",
-        "minThreshold": 1,
-        "minMaximalScore": 50
-      }
-    },
-    {
-      "name": "entity_event.global.alert_control.hourly",
-      "retriever": {
-        "type": "entity_event_unreduced_score_retriever",
-        "functions": [],
-        "entityEventConfName": "normalized_username_hourly",
-        "numOfDays": 21,
-        "numOfAlertsPerDay": 1
-      },
-      "builder": {
-        "type": "smart_score_mapping_model_builder",
-        "minThreshold": 1,
-        "minMaximalScore": 50
+        "type": "weights_model_builder",
+        "smartRecordConfName": "userId_hourly"
       }
     }
   ]
