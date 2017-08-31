@@ -107,7 +107,7 @@ public class ModelingService {
 	}
 
 	private Resource[] getResources(String rootGroupPath, String subGroupName){
-		String path = StringUtils.isNotBlank(subGroupName)? rootGroupPath + subGroupName + ".json" : rootGroupPath;
+		String path = StringUtils.isNotBlank(subGroupName)? rootGroupPath + subGroupName + ".json" : rootGroupPath + "*.json";
 		return aslResourceFactory.getResources(path);
 	}
 
