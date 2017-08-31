@@ -39,7 +39,7 @@ class HourIsReadySensorOperator(BaseSensorOperator):
             logging.info(
                 'Poking for the following: '
                 'schema_name = {self._schema_name}, '
-                'time = {self._hour_end_time}.'.format(**locals()))
+                'time = hour_start_time-{self._hour_end_time}.'.format(**locals()))
             presidio_home = os.environ.get("PRESIDIO_HOME")
             if presidio_home is None:
                 user = os.environ.get("USER")
