@@ -70,18 +70,20 @@ class HourIsReadySensorOperator(BaseSensorOperator):
             if sink_count is None:
                 return False
 
+            logging.debug("Source count for schema {0} and time {1} is : {2}".format(
+                self._schema_name,
+                self._hour_end_time,
+                source_counter_property))
+            logging.debug("Sink count for schema {0} and time {1} is : {2}".format(
+                self._schema_name,
+                self._hour_end_time,
+                sink_count))
+
             if sink_count > source_count:
                 logging.warn("Sink count is larger than the source count. This is an invalid state!. "
                              "source count: {0}, "
                              "sink count: {1}".format(source_counter_property, sink_count))
-                logging.debug("Source count for schema {0} and time {1} is : {2}".format(
-                    self._schema_name,
-                    self._hour_end_time,
-                    source_counter_property))
-                logging.debug("Sink count for schema {0} and time {1} is : {2}".format(
-                    self._schema_name,
-                    self._hour_end_time,
-                    sink_count))
+
             return source_is_ready and source_count <= sink_count
         except Exception as exception:
             logging.error("HourIsReadySensorOperator for schema: {0} and hour_end_time: {1} "
