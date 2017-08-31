@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
 //@ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = ModelScorerTestsConfig.class)
 public class SMARTValuesModelScorerTest {
     @Configuration
-    @EnableSpringConfigured
+//    @EnableSpringConfigured
     static class ContextConfiguration {
         @Bean
         public FactoryService<Scorer> scorerFactoryService() {
