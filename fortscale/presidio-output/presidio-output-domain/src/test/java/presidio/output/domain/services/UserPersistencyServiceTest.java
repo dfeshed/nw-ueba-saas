@@ -152,7 +152,7 @@ public class UserPersistencyServiceTest {
 
         List<String> sortFields = new ArrayList<>();
         sortFields.add(User.SCORE_FIELD_NAME);
-        sortFields.add(User.USER_ID_FIELD_NAME);
+        //sortFields.add(User.USER_ID_FIELD_NAME);
         UserQuery userQuery =
                 new UserQuery.UserQueryBuilder()
                         .filterByAlertClassifications(classificationFilter)
@@ -160,8 +160,8 @@ public class UserPersistencyServiceTest {
                         .build();
 
         Page<User> foundUsers = userPersistencyService.find(userQuery);
-        assertThat(foundUsers.getTotalElements(), is(2L));
-        assertTrue(foundUsers.iterator().next().getUserScore() == 60d); //verify the sorting- descending order, score 100 should be the first
+        assertThat(foundUsers.getTotalElements(), is(3L));
+        assertTrue(foundUsers.iterator().next().getUserScore() == 60d); 
     }
 
 
