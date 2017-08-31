@@ -46,6 +46,7 @@ public class UserPersistencyServiceTest {
     User user2;
     User user3;
     User user4;
+    User user5;
 
 
 
@@ -65,6 +66,7 @@ public class UserPersistencyServiceTest {
         user2=generateUser(classifications2,"user2","userId2","user2",60d);
         user3=generateUser(classifications3,"user3","userId3","user3",70d);
         user4=generateUser(classifications4,"user4","userId4","user4",80d);
+        user5=generateUser(classifications3,"user5","userId5","user4",70d);
     }
 
     @Test
@@ -140,15 +142,17 @@ public class UserPersistencyServiceTest {
         userList.add(user2);
         userList.add(user3);
         userList.add(user4);
+        userList.add(user5);
         userPersistencyService.save(userList);
 
         List<String> classificationFilter = new ArrayList<String>();
-        classificationFilter.add("b");
+        classificationFilter.add("a");
         List<String> indicatorFilter = new ArrayList<String>();
         indicatorFilter.add("indicator");
 
         List<String> sortFields = new ArrayList<>();
         sortFields.add(User.SCORE_FIELD_NAME);
+        sortFields.add(User.USER_ID_FIELD_NAME);
         UserQuery userQuery =
                 new UserQuery.UserQueryBuilder()
                         .filterByAlertClassifications(classificationFilter)
