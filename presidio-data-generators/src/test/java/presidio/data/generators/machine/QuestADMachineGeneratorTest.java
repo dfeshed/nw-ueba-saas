@@ -19,7 +19,7 @@ public class QuestADMachineGeneratorTest {
         Assert.assertEquals(sm.getMachineId(), "host_1");
         Assert.assertEquals(sm.getMachineIp(), "192.168.0.1");
         Assert.assertEquals(sm.getMachineNameRegexCluster().length(), 10);
-        Assert.assertEquals(sm.getMachineDomain().length(), 10);
+        Assert.assertEquals(sm.getMachineDomain().length(), 6);
     }
 
 }
