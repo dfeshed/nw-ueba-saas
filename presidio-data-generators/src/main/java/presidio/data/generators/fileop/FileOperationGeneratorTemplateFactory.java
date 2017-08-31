@@ -56,9 +56,34 @@ public class FileOperationGeneratorTemplateFactory {
         generator.setOperationTypeGenerator(getFixedFileOperationTypeGenerator(FILE_OPERATION_TYPE.FILE_MOVED.value, categories));
 
         // Source file - shared
-        FileEntityGenerator fileGenerator = new FileEntityGenerator();
-        fileGenerator.setIsDriveSharedGenerator(new BooleanPercentageGenerator(100));
-        generator.setSourceFileEntityGenerator(fileGenerator);
+        FileEntityGenerator srcFileGenerator = new FileEntityGenerator();
+        srcFileGenerator.setIsDriveSharedGenerator(new BooleanPercentageGenerator(100));
+        generator.setSourceFileEntityGenerator(srcFileGenerator);
+
+        // Destination file - shared
+        FileEntityGenerator dstFileGenerator = new FileEntityGenerator();
+        dstFileGenerator.setIsDriveSharedGenerator(new BooleanPercentageGenerator());
+        generator.setSourceFileEntityGenerator(dstFileGenerator);
+
+        return generator;
+    }
+
+    public IFileOperationGenerator createMoveToSharedFileOperationsGenerator() throws GeneratorException {
+        return createMoveFromSharedFileOperationsGenerator(null);
+    }
+    public IFileOperationGenerator createMoveToSharedFileOperationsGenerator(List<String> categories) throws GeneratorException {
+        FileOperationGenerator generator = new FileOperationGenerator();
+        generator.setOperationTypeGenerator(getFixedFileOperationTypeGenerator(FILE_OPERATION_TYPE.FILE_MOVED.value, categories));
+
+        // Source file - shared
+        FileEntityGenerator srcFileGenerator = new FileEntityGenerator();
+        srcFileGenerator.setIsDriveSharedGenerator(new BooleanPercentageGenerator());
+        generator.setSourceFileEntityGenerator(srcFileGenerator);
+
+        // Destination file - shared
+        FileEntityGenerator dstFileGenerator = new FileEntityGenerator();
+        dstFileGenerator.setIsDriveSharedGenerator(new BooleanPercentageGenerator(100));
+        generator.setSourceFileEntityGenerator(dstFileGenerator);
 
         return generator;
     }

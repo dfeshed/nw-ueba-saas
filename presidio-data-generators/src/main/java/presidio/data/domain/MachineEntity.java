@@ -108,7 +108,7 @@ public class MachineEntity {
     }
 
     public String getDomainFQDN() {
-        return domainFQDN;
+        return (domainFQDN == null)?"":domainFQDN;
     }
 
     public void setDomainFQDN(String domainFQDN) {
