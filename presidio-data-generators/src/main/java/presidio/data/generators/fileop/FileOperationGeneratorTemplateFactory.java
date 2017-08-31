@@ -3,6 +3,10 @@ package presidio.data.generators.fileop;
 import presidio.data.domain.event.OperationType;
 import presidio.data.domain.event.file.FILE_OPERATION_TYPE;
 import presidio.data.generators.common.GeneratorException;
+import presidio.data.generators.common.precentage.BooleanPercentageGenerator;
+import presidio.data.generators.common.precentage.OperationResultPercentageGenerator;
+import presidio.data.generators.event.OPERATION_RESULT;
+import presidio.data.generators.fileentity.FileEntityGenerator;
 import presidio.data.generators.fileentity.IFileEntityGenerator;
 import presidio.data.generators.fileentity.NullFileEntityGenerator;
 
@@ -44,6 +48,28 @@ public class FileOperationGeneratorTemplateFactory {
         return getFileOperationsGenerator(FILE_OPERATION_TYPE.FILE_MOVED.value, categories);
     }
 
+    public IFileOperationGenerator createMoveFromSharedFileOperationsGenerator() throws GeneratorException {
+        return createMoveFromSharedFileOperationsGenerator(null);
+    }
+    public IFileOperationGenerator createMoveFromSharedFileOperationsGenerator(List<String> categories) throws GeneratorException {
+        FileOperationGenerator generator = new FileOperationGenerator();
+        generator.setOperationTypeGenerator(getFixedFileOperationTypeGenerator(FILE_OPERATION_TYPE.FILE_MOVED.value, categories));
+
+        // Source file - shared
+        FileEntityGenerator fileGenerator = new FileEntityGenerator();
+        fileGenerator.setIsDriveSharedGenerator(new BooleanPercentageGenerator(100));
+        generator.setSourceFileEntityGenerator(fileGenerator);
+
+        return generator;
+    }
+
+    public IFileOperationGenerator createFailedMoveFileOperationsGenerator() throws GeneratorException {
+        return createFailedMoveFileOperationsGenerator(null);
+    }
+    public IFileOperationGenerator createFailedMoveFileOperationsGenerator(List<String> categories) throws GeneratorException {
+        return getFailedFileOperationsGenerator(FILE_OPERATION_TYPE.FILE_MOVED.value, categories);
+    }
+
     public IFileOperationGenerator createRenameFileOperationsGenerator() throws GeneratorException {
         return createRenameFileOperationsGenerator(null);
     }
@@ -55,6 +81,19 @@ public class FileOperationGeneratorTemplateFactory {
         return createOpenFileOperationsGenerator(null);
     }
     public IFileOperationGenerator createOpenFileOperationsGenerator(List<String> categories) throws GeneratorException {
+        FileOperationGenerator generator = new FileOperationGenerator();
+        generator.setOperationTypeGenerator(getFixedFileOperationTypeGenerator(FILE_OPERATION_TYPE.FILE_OPENED.value, categories));
+
+        IFileEntityGenerator nullFileEntityGenerator = new NullFileEntityGenerator();
+        generator.setDestFileEntityGenerator(nullFileEntityGenerator);
+
+        return generator;
+    }
+
+    public IFileOperationGenerator createFailedOpenFileOperationsGenerator() throws GeneratorException {
+        return createOpenFileOperationsGenerator(null);
+    }
+    public IFileOperationGenerator createFailedOpenFileOperationsGenerator(List<String> categories) throws GeneratorException {
         FileOperationGenerator generator = new FileOperationGenerator();
         generator.setOperationTypeGenerator(getFixedFileOperationTypeGenerator(FILE_OPERATION_TYPE.FILE_OPENED.value, categories));
 
@@ -158,6 +197,16 @@ public class FileOperationGeneratorTemplateFactory {
     private IFileOperationGenerator getFileOperationsGenerator(String operationType, List<String> categories) throws GeneratorException {
         FileOperationGenerator generator = new FileOperationGenerator();
         generator.setOperationTypeGenerator(getFixedFileOperationTypeGenerator(operationType, categories));
+
+        return generator;
+    }
+
+    private IFileOperationGenerator getFailedFileOperationsGenerator(String operationType, List<String> categories) throws GeneratorException {
+        FileOperationGenerator generator = new FileOperationGenerator();
+        generator.setOperationTypeGenerator(getFixedFileOperationTypeGenerator(operationType, categories));
+
+        OperationResultPercentageGenerator opResultGenerator = new OperationResultPercentageGenerator(new String[] {OPERATION_RESULT.FAILURE.value}, new int[] {100});
+        generator.setOperationResultGenerator(opResultGenerator);
 
         return generator;
     }

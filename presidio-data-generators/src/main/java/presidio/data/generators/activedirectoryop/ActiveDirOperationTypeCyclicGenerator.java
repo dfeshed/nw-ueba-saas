@@ -33,4 +33,8 @@ public class ActiveDirOperationTypeCyclicGenerator extends CyclicValuesGenerator
     public ActiveDirOperationTypeCyclicGenerator(String[] customList) {
         super(customList);
     }
+
+    public ActiveDirOperationTypeCyclicGenerator(String customType) {
+        super(customType);
+    }
 }
