@@ -39,14 +39,4 @@ public interface SmartDataReader {
 	 * Validate that the contextId indexed in the store.
 	 */
 	void ensureContextIdIndex(String configurationName);
-
-	/**
-	 *
-	 * @return smart collection names
-	 */
-	Set<String> getAllSmartConfigurationNames();
-
-
-
-
 }
