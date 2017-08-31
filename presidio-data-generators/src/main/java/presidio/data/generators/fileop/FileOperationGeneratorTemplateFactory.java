@@ -167,6 +167,13 @@ public class FileOperationGeneratorTemplateFactory {
         return getFileOperationsGenerator(FILE_OPERATION_TYPE.LOCAL_SHARE_PERMISSIONS_CHANGED.value, categories);
     }
 
+    public IFileOperationGenerator createFailedLocalSharePermissionsChangeOperationsGenerator() throws GeneratorException {
+        return createFailedLocalSharePermissionsChangeOperationsGenerator(null);
+    }
+    public IFileOperationGenerator createFailedLocalSharePermissionsChangeOperationsGenerator(List<String> categories) throws GeneratorException {
+        return getFailedFileOperationsGenerator(FILE_OPERATION_TYPE.LOCAL_SHARE_PERMISSIONS_CHANGED.value, categories);
+    }
+
     public IFileOperationGenerator createFileAccessRightsChangedOperationsGenerator() throws GeneratorException {
         return createFileAccessRightsChangedOperationsGenerator(null);
     }
