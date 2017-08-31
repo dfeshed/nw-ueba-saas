@@ -4,7 +4,7 @@ import fortscale.domain.feature.score.FeatureScore;
 import fortscale.ml.model.Model;
 import fortscale.ml.model.SmartWeightsModel;
 import fortscale.ml.model.cache.EventModelsCacheService;
-import fortscale.ml.scorer.algorithms.SmartWeightsAlgorithm;
+import fortscale.ml.scorer.algorithms.SmartWeightsScorerAlgorithm;
 import org.springframework.util.Assert;
 import presidio.ade.domain.record.AdeRecordReader;
 import presidio.ade.domain.record.aggregated.SmartRecord;
@@ -40,7 +40,7 @@ public class SmartWeightsModelScorer extends AbstractScorer{
     }
 
     private double calculateScore(SmartRecord smartRecord, SmartWeightsModel smartWeightsModel){
-        SmartWeightsAlgorithm smartWeightsAlgorithm = new SmartWeightsAlgorithm();
-        return smartWeightsAlgorithm.calculateScore(smartRecord,smartWeightsModel);
+        SmartWeightsScorerAlgorithm smartWeightsScorerAlgorithm = new SmartWeightsScorerAlgorithm();
+        return smartWeightsScorerAlgorithm.calculateScore(smartRecord,smartWeightsModel);
     }
 }

@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 /**
  * Created by barak_schuster on 29/08/2017.
  */
-public class SmartWeightsAlgorithm {
+public class SmartWeightsScorerAlgorithm {
 
     /**
      * Cluster represents an instantiation of a {@link ClusterConf}

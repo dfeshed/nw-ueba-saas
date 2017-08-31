@@ -1,5 +1,6 @@
 package fortscale.ml.model.retriever.smart_data;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -8,6 +9,11 @@ import java.util.List;
 public class SmartWeightsModelBuilderData {
     private int numOfContexts;
     private List<SmartAggregatedRecordDataContainer> smartAggregatedRecordDataContainers;
+
+    public SmartWeightsModelBuilderData() {
+        numOfContexts = 0;
+        smartAggregatedRecordDataContainers = Collections.emptyList();
+    }
 
     public SmartWeightsModelBuilderData(int numOfContexts, List<SmartAggregatedRecordDataContainer> smartAggregatedRecordDataContainers) {
         this.numOfContexts = numOfContexts;
