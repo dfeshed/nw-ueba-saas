@@ -57,13 +57,15 @@ public class FileOperationGeneratorTemplateFactory {
 
         // Source file - shared
         FileEntityGenerator srcFileGenerator = new FileEntityGenerator();
-        srcFileGenerator.setIsDriveSharedGenerator(new BooleanPercentageGenerator(100));
+        BooleanPercentageGenerator isSrcDriveSharedGenerator = new BooleanPercentageGenerator(100);
+        srcFileGenerator.setIsDriveSharedGenerator(isSrcDriveSharedGenerator);
         generator.setSourceFileEntityGenerator(srcFileGenerator);
 
-        // Destination file - shared
+        // Destination file - local
         FileEntityGenerator dstFileGenerator = new FileEntityGenerator();
-        dstFileGenerator.setIsDriveSharedGenerator(new BooleanPercentageGenerator());
-        generator.setSourceFileEntityGenerator(dstFileGenerator);
+        BooleanPercentageGenerator isDstDriveSharedGenerator = new BooleanPercentageGenerator(0);
+        dstFileGenerator.setIsDriveSharedGenerator(isDstDriveSharedGenerator);
+        generator.setDestFileEntityGenerator(dstFileGenerator);
 
         return generator;
     }
@@ -75,15 +77,17 @@ public class FileOperationGeneratorTemplateFactory {
         FileOperationGenerator generator = new FileOperationGenerator();
         generator.setOperationTypeGenerator(getFixedFileOperationTypeGenerator(FILE_OPERATION_TYPE.FILE_MOVED.value, categories));
 
-        // Source file - shared
+        // Source file - local
         FileEntityGenerator srcFileGenerator = new FileEntityGenerator();
-        srcFileGenerator.setIsDriveSharedGenerator(new BooleanPercentageGenerator());
+        BooleanPercentageGenerator isSrcDriveSharedGenerator = new BooleanPercentageGenerator(0);
+        srcFileGenerator.setIsDriveSharedGenerator(isSrcDriveSharedGenerator);
         generator.setSourceFileEntityGenerator(srcFileGenerator);
 
         // Destination file - shared
         FileEntityGenerator dstFileGenerator = new FileEntityGenerator();
-        dstFileGenerator.setIsDriveSharedGenerator(new BooleanPercentageGenerator(100));
-        generator.setSourceFileEntityGenerator(dstFileGenerator);
+        BooleanPercentageGenerator isDstDriveSharedGenerator = new BooleanPercentageGenerator(100);
+        dstFileGenerator.setIsDriveSharedGenerator(isDstDriveSharedGenerator);
+        generator.setDestFileEntityGenerator(dstFileGenerator);
 
         return generator;
     }

@@ -38,4 +38,20 @@ public class BooleanPercentageGeneratorTest {
         long percentageActual = Math.round((trueCount/eventsRequired)*100);
         Assert.assertEquals(percentageRequired, percentageActual );
     }
+
+    @Test
+    public void AllFalseTest() throws GeneratorException {
+        BooleanPercentageGenerator generator = new BooleanPercentageGenerator(0);
+        for (int i = 0; i<1000; i++) {
+            Assert.assertFalse(generator.getNext());
+        }
+    }
+
+    @Test
+    public void AllTrueTest() throws GeneratorException {
+        BooleanPercentageGenerator generator = new BooleanPercentageGenerator();
+        for (int i = 0; i<1000; i++) {
+            Assert.assertTrue(generator.getNext());
+        }
+    }
 }

@@ -15,12 +15,15 @@ public class BooleanPercentageGenerator extends CyclicValuesGenerator<Boolean> i
     }
 
     public BooleanPercentageGenerator() throws GeneratorException {
-        super(buildValuesList(100));
+        // All true
+        super(new Boolean[] {true});
     }
 
     private static Boolean[] buildValuesList(int percent){
-        // build smallest array of options in given whole percentages (at most - 100 elements)
 
+        if (percent <= 0) return new Boolean[] {false}; // All false
+
+        // build smallest array of options in given whole percentages (at most - 100 elements)
         int gcd = MathUtils.gcd(percent,100); // find common denominator
         Boolean[] values = new Boolean[100/gcd];
 
