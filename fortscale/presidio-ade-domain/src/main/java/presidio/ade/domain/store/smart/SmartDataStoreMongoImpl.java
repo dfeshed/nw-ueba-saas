@@ -15,7 +15,6 @@ import presidio.ade.domain.record.aggregated.SmartRecord;
 
 import java.time.Instant;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.match;
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.newAggregation;
@@ -87,21 +86,5 @@ public class SmartDataStoreMongoImpl implements SmartDataStore {
 
         mongoTemplate.indexOps(collectionName).ensureIndex(new Index()
                 .on(AdeContextualAggregatedRecord.CONTEXT_ID_FIELD, Sort.Direction.ASC));
-    }
-
-    /**
-     * @return all smart collections
-     */
-    public Set<String> getAllSmartConfigurationNames() {
-
-        String prefix = SmartDataToCollectionNameTranslator.SMART_COLLECTION_PREFIX;
-        //get all smart collections
-        Set<String> collections = mongoTemplate.getCollectionNames();
-        collections = collections.stream().filter(c ->
-                c.startsWith(prefix)
-        ).map(c->  c.replaceFirst(prefix, "")).collect(Collectors.toSet());
-
-        return collections;
-
     }
 }

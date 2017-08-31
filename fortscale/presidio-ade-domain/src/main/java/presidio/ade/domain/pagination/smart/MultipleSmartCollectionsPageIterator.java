@@ -4,27 +4,23 @@ import fortscale.utils.pagination.PageIterator;
 import presidio.ade.domain.record.aggregated.SmartRecord;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Implements PageIterator.
  * Go over all lists of PageIterators and get the next page.
  * <p>
- * See reference for test: ScoreThresholdSmartPaginationServiceTest
+ * See test for reference: MultipleSmartCollectionsPaginationServiceTest
  */
-public class AllSmartCollectionsPageIterators implements PageIterator<SmartRecord> {
-
+public class MultipleSmartCollectionsPageIterator implements PageIterator<SmartRecord> {
     //list of page iterators.
     private List<PageIterator<SmartRecord>> pageIteratorList;
     private PageIterator<SmartRecord> pageIterator;
     private int currentPageIteratorIndex;
 
-
     /**
      * @param pageIteratorList smart pageIterator
      */
-    public AllSmartCollectionsPageIterators(List<PageIterator<SmartRecord>> pageIteratorList) {
+    public MultipleSmartCollectionsPageIterator(List<PageIterator<SmartRecord>> pageIteratorList) {
         this.pageIteratorList = pageIteratorList;
 
         //initialize pageIterator, if pageIteratorList is not empty
@@ -53,5 +49,4 @@ public class AllSmartCollectionsPageIterators implements PageIterator<SmartRecor
 
         return pageIterator.next();
     }
-
 }

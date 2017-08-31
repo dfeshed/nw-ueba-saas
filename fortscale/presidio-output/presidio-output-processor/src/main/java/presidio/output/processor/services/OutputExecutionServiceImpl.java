@@ -58,8 +58,8 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
         logger.debug("Started output process with params: start date {}:{}, end date {}:{}.", CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate, CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
 
         //1. Get SMARTs from ADE and generate alerts
-        //TODO- change page size and score threshold (configurable)
-        PageIterator<SmartRecord> smartPageIterator = adeManagerSdk.getSmartRecords(new TimeRange(startDate, endDate), 100, SMART_SCORE_THRESHOLD);
+        //TODO- change page size, max group size and score threshold (configurable)
+        PageIterator<SmartRecord> smartPageIterator = adeManagerSdk.getSmartRecords(100, 100, new TimeRange(startDate, endDate), SMART_SCORE_THRESHOLD);
 
         //2. For each smart: generate Alert entity and User
         List<Alert> alerts = new ArrayList<Alert>();
