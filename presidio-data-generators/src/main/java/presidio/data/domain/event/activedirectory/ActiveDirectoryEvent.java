@@ -22,6 +22,7 @@ public class ActiveDirectoryEvent extends Event implements Serializable {
     private String activeDirectoryDescription;
     private String objectDN;
     private String objectName;
+    private String timeZoneOffset;
 
     public ActiveDirectoryEvent(Instant eventTime, String eventId, User user, String dataSource, ActiveDirectoryOperation operation) {
         this.eventTime = eventTime;
@@ -31,7 +32,7 @@ public class ActiveDirectoryEvent extends Event implements Serializable {
         this.operation = operation;
     }
 
-    public ActiveDirectoryEvent(Instant eventTime, String eventId, User user, String dataSource, ActiveDirectoryOperation operation, MachineEntity srcMachineEntity, MachineEntity dstMachineEntity, String result, String objectName, String objectDN) {
+    public ActiveDirectoryEvent(Instant eventTime, String eventId, User user, String dataSource, ActiveDirectoryOperation operation, MachineEntity srcMachineEntity, MachineEntity dstMachineEntity, String result, String objectName, String objectDN, String timeZoneOffset) {
         this.eventTime = eventTime;
         this.eventId = eventId;
         this.operation = operation;
@@ -42,6 +43,7 @@ public class ActiveDirectoryEvent extends Event implements Serializable {
         this.result = result;
         this.objectDN = objectDN;
         this.objectName = objectName;
+        this.timeZoneOffset = timeZoneOffset;
     }
 
     public Instant getEventTime() {
@@ -133,6 +135,14 @@ public class ActiveDirectoryEvent extends Event implements Serializable {
         return eventTime;
     }
 
+    public String getTimeZoneOffset() {
+        return timeZoneOffset;
+    }
+
+    public void setTimeZoneOffset(String timeZoneOffset) {
+        this.timeZoneOffset = timeZoneOffset;
+    }
+
     @Override
     public String toString() {
         return "ActiveDirectoryEvent{" +
@@ -147,6 +157,7 @@ public class ActiveDirectoryEvent extends Event implements Serializable {
                 ", activeDirectoryDescription='" + activeDirectoryDescription + '\'' +
                 ", objectDN='" + objectDN + '\'' +
                 ", objectName='" + objectName + '\'' +
+                ", timeZoneOffset='" + timeZoneOffset + '\'' +
                 '}';
     }
 }

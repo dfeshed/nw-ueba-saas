@@ -5,6 +5,7 @@ import presidio.data.domain.event.activedirectory.ActiveDirectoryEvent;
 import presidio.data.generators.FixedDataSourceGenerator;
 import presidio.data.generators.activedirectoryop.ActiveDirectoryOperationGenerator;
 import presidio.data.generators.activedirectoryop.IActiveDirectoryOperationGenerator;
+import presidio.data.generators.common.CyclicValuesGenerator;
 import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.common.IStringGenerator;
 import presidio.data.generators.common.RandomStringGenerator;
@@ -38,6 +39,7 @@ public class ActiveDirectoryEventsGenerator implements IEventGenerator {
     private IStringGenerator resultCodeGenerator;
     private IActiveDirectoryDescriptionGenerator activeDirectoryDescriptionGenerator;
     private IStringGenerator objectNameGenerator;
+    private CyclicValuesGenerator<String> timeZoneOffsetGenerator;
 
     public ActiveDirectoryEventsGenerator() throws GeneratorException {
         timeGenerator = new TimeGenerator();
@@ -52,6 +54,7 @@ public class ActiveDirectoryEventsGenerator implements IEventGenerator {
         resultCodeGenerator = new RandomStringGenerator();
         objectNameGenerator = new DefaultObjectNameGenerator();
         activeDirectoryDescriptionGenerator = new ActiveDirectoryDescriptionGenerator();
+        timeZoneOffsetGenerator = new CyclicValuesGenerator<>(new String[] {"0", "1", "2"});
     }
 
 
@@ -73,7 +76,8 @@ public class ActiveDirectoryEventsGenerator implements IEventGenerator {
                     getDstMachineGenerator().getNext(),
                     convertResultToQuestConvention(getResultGenerator().getNext()),
                     objectName,
-                    getObjectDN(objectName, machineDomainDN)
+                    getObjectDN(objectName, machineDomainDN),
+                    getTimeZoneOffsetGenerator().getNext()
                     );
             activeDirectoryDescriptionGenerator.updateDescription(ev);
             evList.add(ev);
@@ -171,6 +175,14 @@ public class ActiveDirectoryEventsGenerator implements IEventGenerator {
 
     public void setObjectNameGenerator(IStringGenerator objectNameGenerator) {
         this.objectNameGenerator = objectNameGenerator;
+    }
+
+    public CyclicValuesGenerator<String> getTimeZoneOffsetGenerator() {
+        return timeZoneOffsetGenerator;
+    }
+
+    public void setTimeZoneOffsetGenerator(CyclicValuesGenerator<String> timeZoneOffsetGenerator) {
+        this.timeZoneOffsetGenerator = timeZoneOffsetGenerator;
     }
 
     private String convertResultToQuestConvention(String result) {
