@@ -12,6 +12,7 @@ import presidio.output.domain.records.users.UserQuery;
 import presidio.output.domain.services.ElasticsearchQueryBuilder;
 
 import static org.elasticsearch.index.query.QueryBuilders.matchQuery;
+import static org.elasticsearch.index.query.QueryBuilders.prefixQuery;
 
 public class UserElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<UserQuery> {
 
@@ -25,7 +26,11 @@ public class UserElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<Use
 
         // filter by username
         if (StringUtils.isNotEmpty(userQuery.getFilterByUserName())) {
-            boolQueryBuilder.must(matchQuery(User.USER_NAME_FIELD_NAME, userQuery.getFilterByUserName()).operator(Operator.AND));
+            if (userQuery.isPrefix()) {
+                boolQueryBuilder.must(prefixQuery(User.USER_NAME_FIELD_NAME, userQuery.getFilterByUserName()));
+            } else {
+                boolQueryBuilder.must(matchQuery(User.USER_NAME_FIELD_NAME, userQuery.getFilterByUserName()).operator(Operator.AND));
+            }
         }
 
         // filter by userId
