@@ -43,7 +43,7 @@ class HourIsReadySensorOperator(BaseSensorOperator):
             presidio_home = os.environ.get("PRESIDIO_HOME")
             if presidio_home is None:
                 user = os.environ.get("USER")
-                logging.error("PRESIDIO_HOME is not configured for user {0}".format(user))
+                raise EnvironmentError("PRESIDIO_HOME is not configured for user {0}".format(user))
             source_properties_file = os.path.join(presidio_home, "flume", "counters", "source", self._schema_name)
             logging.info("source_properties_file = " + source_properties_file)
             sink_properties_file = os.path.join(presidio_home, "flume", "counters", "sink", self._schema_name)
