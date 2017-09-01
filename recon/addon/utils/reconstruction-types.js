@@ -4,7 +4,6 @@ import get from 'ember-metal/get';
 export const doesStateHaveViewData =
   (state, type) => !!get(state, type.dataKey);
 
-
 /*
  * code: id
  * name: is used by RECON_VIEW_TYPES_BY_NAME below, when

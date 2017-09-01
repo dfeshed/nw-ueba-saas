@@ -1,8 +1,22 @@
+import run from 'ember-runloop';
 import Component from 'ember-component';
 import layout from './template';
 import computed from 'ember-computed-decorators';
+import connect from 'ember-redux/components/connect';
+import { pageFirst, changePacketsPerPage } from 'recon/actions/data-creators';
+import { packetTotal } from 'recon/reducers/header/selectors';
 
-export default Component.extend({
+const stateToComputed = ({ recon, recon: { packets } }) => ({
+  packetsPageSize: packets.packetsPageSize,
+  packetTotal: packetTotal(recon)
+});
+
+const dispatchToActions = {
+  pageFirst,
+  changePacketsPerPage
+};
+
+const reconPagerComponent = Component.extend({
   layout,
   tagName: 'section',
   classNames: ['recon-pager'],
@@ -32,14 +46,6 @@ export default Component.extend({
   isPacket: false,
 
   /**
-   * Whether rendering of results is still taking place
-   * @type Boolean
-   * @default false
-   * @public
-   */
-  isRenderingUnderWay: false,
-
-  /**
    * Whether or not this pager is for text
    * @type Boolean
    * @default false
@@ -55,28 +61,23 @@ export default Component.extend({
    */
   maxPacketMessaging: null,
 
-  /**
-   * Number of rendered packets.
-   * @type Number
-   * @default 0
-   * @public
-   */
-  packetCount: 0,
-
-  /**
-   * Total number of possible packets. This could be more than `packetCount` and
-   * is configured in the data reducer.
-   * @type Number
-   * @default 0
-   * @public
-   * @see /reducers/packet-reducers#packetsPageSize
-   */
-  packetTotal: 0,
-
   // Resolve to `true` if we have all the packets.
   @computed('packetCount', 'packetTotal')
   isHidden(total = 0, pageSize = 0) {
     return total === pageSize;
+  },
+
+  doChangePacketsPerPage(newPacketsPerPage) {
+    this.send('changePacketsPerPage', newPacketsPerPage, false);
+    this.send('pageFirst');
+  },
+
+  actions: {
+    setPacketsPerPage(newPacketsPerPage) {
+      run.debounce(this, this.doChangePacketsPerPage, newPacketsPerPage, 2000);
+    }
   }
 
 });
+
+export default connect(stateToComputed, dispatchToActions)(reconPagerComponent);

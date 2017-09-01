@@ -53,7 +53,7 @@ test('single packet renders default', function(assert) {
     },
     packets: {
       packetFields,
-      packets: enhancePackets([packets[0]], packetFields),
+      packets: enhancePackets([packets[0]], 0, packetFields, 1),
       renderIds: [packets[0].id]
     }
   });

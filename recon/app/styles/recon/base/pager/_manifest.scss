@@ -7,18 +7,14 @@
   bottom: 0;
   width: 100%;
   height: rsa-whitespace(more);
+  display: flex;
+  justify-content: space-between;
 
   .event-info {
-    position: absolute;
-    top: rsa-whitespace(less);
-    left: rsa-whitespace();
+    padding-top: 3px;
   }
 
   .packet-info {
-    position: absolute;
-    top: rsa-whitespace(less);
-    right: rsa-whitespace();
-
     .disclaimer {
       color:rsa-color(orange);
 
@@ -28,7 +24,25 @@
     }
   }
 
+  .input-packets-per-page {
+    width: 3em;
+    font-weight: bold;
+  }
+
+  .packets-paging {
+    padding-top: 2px;
+    font-size: 14px;
+  }
+
   .lighter {
     color: rsa-color(grey, lighter);
+  }
+}
+
+.data-pagination {
+  
+  button {
+    margin: 0 2px 0 2px;
+    padding: 0.15em 0.15em !important;
   }
 }

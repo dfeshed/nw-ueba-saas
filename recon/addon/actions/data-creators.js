@@ -30,6 +30,7 @@ import {
   fetchTextData,
   batchTextData
 } from './fetch';
+import { packetTotal } from 'recon/reducers/header/selectors';
 
 const { Logger } = Ember;
 
@@ -85,6 +86,7 @@ const _getTextAndPacketInputs = ({ recon: { data, packets, text } }) => ({
   endpointId: data.endpointId,
   eventId: data.eventId,
   packetsPageSize: packets.packetsPageSize,
+  packetsRowIndex: ((packets.pageNumber === 1 ? 0 : packets.pageNumber) * packets.packetsPageSize),
   maxPacketsForText: text.maxPacketsForText,
   decode: text.decode
 });
@@ -164,6 +166,53 @@ const _handleRenderingStateData = (newViewCode) => {
         );
         break;
     }
+  };
+};
+
+const pageFirst = () => {
+  return (dispatch) => {
+    dispatch(_changePageNumber(1));
+  };
+};
+
+const pagePrevious = () => {
+  return (dispatch, getState) => {
+    const pageNumber = getState().recon.packets.pageNumber - 1;
+    dispatch(_changePageNumber(pageNumber));
+  };
+};
+
+const pageNext = () => {
+  return (dispatch, getState) => {
+    const pageNumber = getState().recon.packets.pageNumber + 1;
+    dispatch(_changePageNumber(pageNumber));
+  };
+};
+
+const pageLast = () => {
+  return (dispatch, getState) => {
+    const { recon, recon: { packets: { packetsPageSize } } } = getState();
+    const pageNumber = (Math.floor(packetTotal(recon) / packetsPageSize));
+    dispatch(_changePageNumber(pageNumber));
+  };
+};
+
+const _changePageNumber = (pageNumber) => {
+  return (dispatch, getState) => {
+    dispatch({
+      type: ACTION_TYPES.CHANGE_PAGE_NUMBER,
+      payload: pageNumber
+    });
+    dispatch(_handleFetchingNewData(getState().recon.visuals.currentReconView.code));
+  };
+};
+
+const changePacketsPerPage = (packetsPerPage) => {
+  return (dispatch) => {
+    dispatch({
+      type: ACTION_TYPES.CHANGE_PACKETS_PER_PAGE,
+      payload: packetsPerPage
+    });
   };
 };
 
@@ -439,6 +488,11 @@ export {
   initializeNotifications,
   initializeRecon,
   setIndexAndTotal,
+  pageFirst,
+  pagePrevious,
+  pageNext,
+  pageLast,
+  changePacketsPerPage,
   setNewReconView,
   teardownNotifications,
   toggleMetaData,

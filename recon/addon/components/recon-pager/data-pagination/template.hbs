@@ -1,0 +1,23 @@
+<div class="paging">
+  {{#rsa-form-button
+    isDisabled=isPreviousPageDisabled
+    defaultAction=(action 'pageFirst')}}
+    First
+  {{/rsa-form-button}}
+  {{#rsa-form-button
+    isDisabled=isPreviousPageDisabled
+    defaultAction=(action 'pagePrevious')}}
+    Previous
+  {{/rsa-form-button}}
+  <label>{{pageInformation}}</label>
+  {{#rsa-form-button
+    isDisabled=isNextPageDisabled
+    defaultAction=(action 'pageNext')}}
+    Next
+  {{/rsa-form-button}}
+  {{#rsa-form-button
+    isDisabled=isNextPageDisabled
+    defaultAction=(action 'pageLast')}}
+    Last
+  {{/rsa-form-button}}
+</div>

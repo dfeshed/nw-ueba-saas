@@ -13,8 +13,10 @@ const packetsInitialState = Immutable.from({
   packetFields: null,
   packets: null,
   packetsPageSize: 100,
+  packetsTotal: 100,
   packetTooltipData: null,
-  renderIds: null
+  renderIds: null,
+  pageNumber: 1
 });
 
 const packetReducer = handleActions({
@@ -46,8 +48,9 @@ const packetReducer = handleActions({
         // If packetFields come in and there are already packets present
         // then those packets need to be enhanced before they can be used
         // (can't enhance without the packetFields)
+        const packetsRowIndex = ((s.pageNumber - 1) * s.packetsPageSize);
         if (s.packets) {
-          returnObject.packets = enhancePackets(s.packets, returnObject.packetFields);
+          returnObject.packets = enhancePackets(s.packets, 0, returnObject.packetFields, packetsRowIndex);
         }
 
         return state.merge({ ...returnObject });
@@ -64,7 +67,8 @@ const packetReducer = handleActions({
     // arrive any packets we have accumulated will be enhanced
     // then all at once
     if (state.packetFields) {
-      newPackets = enhancePackets(newPackets, state.packetFields);
+      const packetsRowIndex = ((state.pageNumber - 1) * state.packetsPageSize);
+      newPackets = enhancePackets(newPackets, lastPosition, state.packetFields, packetsRowIndex);
     }
 
     return state.set('packets', state.packets ? state.packets.concat(newPackets) : newPackets);
@@ -99,7 +103,19 @@ const packetReducer = handleActions({
 
   [ACTION_TYPES.HIDE_PACKET_TOOLTIP]: (state) => {
     return state.set('packetTooltipData', null);
+  },
+
+  [ACTION_TYPES.CHANGE_PAGE_NUMBER]: (state, { payload }) => {
+    return state.merge({
+      packets: null,
+      pageNumber: payload
+    });
+  },
+
+  [ACTION_TYPES.CHANGE_PACKETS_PER_PAGE]: (state, { payload }) => {
+    return state.set('packetsPageSize', payload);
   }
+
 }, packetsInitialState);
 
 export default packetReducer;

@@ -9,32 +9,21 @@ test('it renders for Packet view with the appropriate css class names', function
   this.setProperties({
     eventIndex: 1,
     eventTotal: 1000,
-    packetCount: 100,
-    packetTotal: 500,
     isPacket: true
   });
-  this.render(hbs`{{recon-pager eventIndex=eventIndex eventTotal=eventTotal packetCount=packetCount packetTotal=packetTotal isPacket=isPacket}}`);
+  this.render(hbs`{{recon-pager eventIndex=eventIndex eventTotal=eventTotal isPacket=isPacket}}`);
 
   assert.equal(this.$('.recon-pager').length, 1, 'Expected DOM with base CSS class');
-  assert.equal(this.$().text().length, 104, 'Expected extra text');
-
-  this.setProperties({
-    packetCount: 500,
-    packetTotal: 500
-  });
-
-  assert.equal(this.$().text().length, 82, 'Expected no extra text');
+  assert.equal(this.$().text().length, 191, 'Expected no extra text');
 });
 
 test('it renders for non Packet views with the appropriate css class names', function(assert) {
   this.setProperties({
     eventIndex: 1,
-    eventTotal: 1000,
-    packetCount: 100,
-    packetTotal: 500
+    eventTotal: 1000
   });
-  this.render(hbs`{{recon-pager eventIndex=eventIndex eventTotal=eventTotal packetCount=packetCount packetTotal=packetTotal}}`);
+  this.render(hbs`{{recon-pager eventIndex=eventIndex eventTotal=eventTotal}}`);
 
   assert.equal(this.$('.recon-pager').length, 1, 'Expected DOM with base CSS class');
-  assert.equal(this.$().text().length, 31, 'Expected extra text');
+  assert.equal(this.$().text().length, 34, 'Expected extra text');
 });

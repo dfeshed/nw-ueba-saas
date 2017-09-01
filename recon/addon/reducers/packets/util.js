@@ -69,8 +69,8 @@ export const processPacketPayloads = function(packets, isPayloadOnly) {
  * prepared to be displayed.
  * @public
  */
-export const enhancePackets = (packets, packetFields) => {
-  const newPackets = packets.map((p) => {
+export const enhancePackets = (packets, lastPosition, packetFields, packetsRowIndex) => {
+  const newPackets = packets.map((p, i) => {
     const bytes = atob(p.bytes || '').split('');
     const byteCount = bytes.get('length') || 0;
     const convertedBytes = convertBytes(bytes, p.payloadPosition, p.footerPosition);
@@ -78,7 +78,8 @@ export const enhancePackets = (packets, packetFields) => {
     return {
       ...p,
       byteCount,
-      bytes: enhancedBytes
+      bytes: enhancedBytes,
+      pageRowIndex: (packetsRowIndex + 1) + lastPosition + i
     };
   });
   return newPackets;

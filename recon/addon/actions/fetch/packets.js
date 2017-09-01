@@ -19,13 +19,13 @@ if (IS_IE) {
 const BULK_BATCH_CHARACTER_SIZE = 400000;
 
 export const fetchPacketData = (
-  { endpointId, eventId, packetsPageSize },
+  { endpointId, eventId, packetsPageSize, packetsRowIndex },
   dispatchData,
   dispatchBatch,
   dispatchError
 ) => {
   const basicQuery = buildBaseQuery(endpointId, eventId);
-  const streamingQuery = addStreaming(basicQuery, packetsPageSize);
+  const streamingQuery = addStreaming(basicQuery, packetsPageSize, undefined, undefined, packetsRowIndex);
   streamRequest({
     method: 'stream',
     modelName: 'reconstruction-packet-data',

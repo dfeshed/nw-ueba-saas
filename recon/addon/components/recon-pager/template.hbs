@@ -4,14 +4,15 @@
     events
   </div>
 {{/if}}
+
 {{#if isPacket}}
-  <div class="packet-info">
-    {{if isRenderingUnderWay 'Rendering' 'Rendered'}}
-    <span class="lighter">{{packetCount}} of {{packetTotal}}</span>
-    packets
-    {{unless isHidden 'to improve performance'}}
+  <div class="packets-per-page">
+    <input type="number" min="10" max="200" step="10" class="input-packets-per-page" value="{{packetsPageSize}}" onChange={{action 'setPacketsPerPage' value="target.value"}}>
+    <label for="">packets per page</label>
   </div>
+  {{recon-pager/data-pagination}} 
 {{/if}}
+
 {{#if (and isText maxPacketMessaging)}}
   <div class="packet-info">
     {{#rsa-content-tethered-panel-trigger panel='packetDisclaimerInfo'}}
@@ -26,4 +27,5 @@
       <p>{{maxPacketMessaging.disclaimer}}</p>
     {{/rsa-content-tethered-panel}}
   </div>
-{{/if}}
+{{/if}} 
+

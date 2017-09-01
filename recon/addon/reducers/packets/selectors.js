@@ -70,7 +70,6 @@ export const renderedPackets = createSelector(
     if (!packets || packets.length === 0 || !renderIds || renderIds.length === 0) {
       return [];
     }
-
     // just want the packets with their id chosen to be rendered
     return packets.filter((p) => renderIds.includes(p.id));
   }
