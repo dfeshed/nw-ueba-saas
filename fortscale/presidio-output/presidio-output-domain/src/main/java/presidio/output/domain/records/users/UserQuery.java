@@ -1,6 +1,8 @@
 package presidio.output.domain.records.users;
 
 
+import org.springframework.data.domain.Sort;
+
 import java.util.List;
 
 public class UserQuery {
@@ -11,10 +13,12 @@ public class UserQuery {
     private String filterByUserId;
     private String filterByUserName;
     private boolean isPrefix;
+    private Integer minScore;
+    private Integer maxScore;
 
     // sort
-    private final List<String> sortField;
-    private final boolean ascendingOrder;
+    private final Sort sort;
+
 
     // paging
     private final int pageNumber;
@@ -23,8 +27,12 @@ public class UserQuery {
     public UserQuery(UserQueryBuilder builder) {
         this.filterByAlertClassifications = builder.filterByAlertClassifications;
         this.filterByIndicators = builder.filterByIndicators;
-        this.sortField = builder.sortField;
-        this.ascendingOrder = builder.ascendingOrder;
+        this.sort = builder.sort;
+
+        this.pageNumber =  builder.pageNumber;
+        this.pageSize =  builder.pageSize;
+        this.minScore = builder.minScore;
+        this.maxScore = builder.maxScore;
         this.pageNumber = builder.pageNumber;
         this.pageSize = builder.pageSize;
         this.filterByUserId = builder.filterByUserId;
@@ -52,12 +60,8 @@ public class UserQuery {
         return filterByIndicators;
     }
 
-    public List<String> getSortField() {
-        return sortField;
-    }
-
-    public boolean isAscendingOrder() {
-        return ascendingOrder;
+    public Sort getSort() {
+        return sort;
     }
 
     public int getPageNumber() {
@@ -68,6 +72,13 @@ public class UserQuery {
         return pageSize;
     }
 
+    public Integer getMinScore() {
+        return minScore;
+    }
+
+    public Integer getMaxScore() {
+        return maxScore;
+    }
 
     public static class UserQueryBuilder {
 
@@ -77,11 +88,12 @@ public class UserQuery {
         private String filterByUserId;
         private String filterByUserName;
         private boolean isPrefix;
+        private Integer minScore;
+        private Integer maxScore;
 
 
         // sort
-        private List<String> sortField;
-        private boolean ascendingOrder;
+        private Sort sort;
 
         // paging
         private int pageNumber = -1;
@@ -97,6 +109,19 @@ public class UserQuery {
             return this;
         }
 
+        public UserQueryBuilder sort(Sort sort) {
+            this.sort=sort;
+            return this;
+        }
+
+        public UserQueryBuilder sortField(String sortField, boolean ascendingOrder) {
+            Sort.Direction dir=ascendingOrder? Sort.Direction.ASC: Sort.Direction.DESC;
+            Sort sort = new Sort(dir,sortField);
+            return sort(sort);
+        }
+
+        public UserQueryBuilder minScore(Integer minScore) {
+            this.minScore = minScore;
         public UserQueryBuilder filterByUserName(String filterByUserName) {
             this.filterByUserName = filterByUserName;
             return this;
@@ -112,9 +137,11 @@ public class UserQuery {
             return this;
         }
 
-        public UserQueryBuilder sortField(List<String> sortField, boolean ascendingOrder) {
-            this.sortField = sortField;
-            this.ascendingOrder = ascendingOrder;
+            return this;
+        }
+
+        public UserQueryBuilder maxScore(Integer maxScore) {
+            this.maxScore = maxScore;
             return this;
         }
 

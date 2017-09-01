@@ -13,4 +13,6 @@ public interface UserService {
     void save(List<User> users);
 
     void setClassification(User user, List<String> classification);
+
+    public User findUserById(String userId);
 }

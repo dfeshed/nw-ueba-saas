@@ -51,6 +51,7 @@ public abstract class AbstractModelTerminalScorer extends AbstractModelScorer {
                                                 AdeRecordReader adeRecordReader) {
         Feature feature = getFeature(adeRecordReader);
         if (model == null || additionalModels.contains(null) || feature == null || feature.getValue() == null) {
+            //todo: add metrics.
             return null;
         }
         return new FeatureScore(getName(), calculateScore(model, additionalModels, feature));

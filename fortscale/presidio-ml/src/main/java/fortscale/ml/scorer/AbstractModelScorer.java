@@ -45,22 +45,22 @@ public abstract class AbstractModelScorer extends AbstractScorer {
         if (additionalContextFieldNames == null) {
             additionalContextFieldNames = Collections.emptyList();
         }
-        Assert.isTrue(StringUtils.isNotBlank(modelName), "model name must be provided and cannot be empty or blank.");
+        Assert.hasText(modelName, "model name must be provided and cannot be empty or blank.");
 
         Assert.isTrue(additionalModelNames.size() == additionalContextFieldNames.size(),
                 "additionalModelNames and additionalContextFieldNames must have the same size");
 
         for (String additionalModelName : additionalModelNames) {
-            Assert.isTrue(StringUtils.isNotBlank(additionalModelName), "additional model names cannot be empty or blank.");
+            Assert.hasText(additionalModelName, "additional model names cannot be empty or blank.");
         }
 
         Assert.notEmpty(contextFieldNames, "List of context field names cannot be empty.");
         for (String contextFieldName : contextFieldNames) {
-            Assert.isTrue(StringUtils.isNotBlank(contextFieldName), "context field name cannot be null, empty or blank.");
+            Assert.hasText(contextFieldName, "context field name cannot be null, empty or blank.");
         }
         for (List<String> c : additionalContextFieldNames) {
             for (String contextFieldName : c) {
-                Assert.isTrue(StringUtils.isNotBlank(contextFieldName), "context field name cannot be null, empty or blank.");
+                Assert.hasText(contextFieldName, "context field name cannot be null, empty or blank.");
             }
         }
 

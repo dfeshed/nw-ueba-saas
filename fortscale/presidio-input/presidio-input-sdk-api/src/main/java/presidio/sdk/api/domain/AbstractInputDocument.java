@@ -9,7 +9,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 
-public class AbstractPresidioDocument extends AbstractAuditableDocument {
+public class AbstractInputDocument extends AbstractAuditableDocument {
 
     public static final String DATA_SOURCE_FIELD_NAME = "dataSource";
     public static final String USER_ID_FIELD_NAME = "userId";
@@ -20,6 +20,7 @@ public class AbstractPresidioDocument extends AbstractAuditableDocument {
     public static final String USER_NAME_FIELD_NAME = "userName";
     public static final String USER_DISPLAY_NAME_FIELD_NAME = "userDisplayName";
     public static final String ADDITIONAL_INFO_FIELD_NAME = "additionalInfo";
+    public static final String RESULT_CODE_FIELD_NAME = "resultCode";
 
     @NotEmpty
     @Field(EVENT_ID_FIELD_NAME)
@@ -52,7 +53,10 @@ public class AbstractPresidioDocument extends AbstractAuditableDocument {
     @Field(ADDITIONAL_INFO_FIELD_NAME)
     protected Map<String, String> additionalInfo;
 
-    public AbstractPresidioDocument(AbstractPresidioDocument other) {
+    @Field(RESULT_CODE_FIELD_NAME)
+    protected String resultCode;
+
+    public AbstractInputDocument(AbstractInputDocument other) {
         super(other);
         this.eventId = other.eventId;
         this.dataSource = other.dataSource;
@@ -63,15 +67,16 @@ public class AbstractPresidioDocument extends AbstractAuditableDocument {
         this.userName = other.userName;
         this.userDisplayName = other.userDisplayName;
         this.additionalInfo = other.additionalInfo;
+        this.resultCode = other.resultCode;
     }
 
-    public AbstractPresidioDocument() {
+    public AbstractInputDocument() {
 
     }
 
-    public AbstractPresidioDocument(Instant dateTime, String eventId, String dataSource, String userId,
-                                    String operationType, List<String> operationTypeCategory, EventResult result,
-                                    String userName, String userDisplayName, Map<String, String> additionalInfo) {
+    public AbstractInputDocument(Instant dateTime, String eventId, String dataSource, String userId,
+                                 String operationType, List<String> operationTypeCategory, EventResult result,
+                                 String userName, String userDisplayName, Map<String, String> additionalInfo, String resultCode) {
         super(dateTime);
         this.eventId = eventId;
         this.dataSource = dataSource;
@@ -82,6 +87,7 @@ public class AbstractPresidioDocument extends AbstractAuditableDocument {
         this.userName = userName;
         this.userDisplayName = userDisplayName;
         this.additionalInfo = additionalInfo;
+        this.resultCode = resultCode;
     }
 
     public String getDataSource() {
@@ -156,10 +162,17 @@ public class AbstractPresidioDocument extends AbstractAuditableDocument {
         this.additionalInfo = additionalInfo;
     }
 
+    public String getResultCode() {
+        return resultCode;
+    }
+
+    public void setResultCode(String resultCode) {
+        this.resultCode = resultCode;
+    }
 
     @Override
     public String toString() {
-        return "AbstractPresidioDocument{" +
+        return "AbstractInputDocument{" +
                 "eventId='" + eventId + '\'' +
                 ", dataSource='" + dataSource + '\'' +
                 ", userId='" + userId + '\'' +
@@ -170,6 +183,7 @@ public class AbstractPresidioDocument extends AbstractAuditableDocument {
                 ", userDisplayName='" + userDisplayName + '\'' +
                 ", additionalInfo=" + additionalInfo +
                 ", dateTime=" + dateTime +
+                ", resultCode=" + resultCode +
                 '}';
     }
 }

@@ -3,8 +3,8 @@ package presidio.ade.sdk.common;
 import fortscale.aggregation.feature.bucket.FeatureBucketReader;
 import fortscale.aggregation.feature.bucket.FeatureBucketStoreMongoConfig;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
+import fortscale.smart.record.conf.SmartRecordConfService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -16,19 +16,21 @@ import presidio.ade.domain.store.scored.ScoredEnrichedDataStore;
 import presidio.ade.domain.store.scored.ScoredEnrichedDataStoreMongoConfig;
 import presidio.ade.domain.store.smart.SmartDataReader;
 import presidio.ade.domain.store.smart.SmartDataReaderConfig;
-import presidio.ade.domain.store.smart.SmartDataStoreConfig;
-import presidio.ade.sdk.aggregation_records.AggregatedFeatureEventConfServiceConfig;
+import presidio.ade.sdk.aggregation_records.AggregatedFeatureEventsConfServiceConfig;
+import presidio.ade.sdk.smart_records.SmartRecordConfServiceConfig;
 
 /**
  * @author Barak Schuster
  */
 @Configuration
-@Import({EnrichedDataStoreConfig.class,
+@Import({
+        EnrichedDataStoreConfig.class,
         SmartDataReaderConfig.class,
         ScoredEnrichedDataStoreMongoConfig.class,
-        AggregatedFeatureEventConfServiceConfig.class,
+        AggregatedFeatureEventsConfServiceConfig.class,
         FeatureBucketStoreMongoConfig.class,
-        AggregationEventsAccumulationDataReaderConfig.class
+        AggregationEventsAccumulationDataReaderConfig.class,
+        SmartRecordConfServiceConfig.class
 })
 public class AdeManagerSdkConfig {
     @Autowired
@@ -41,17 +43,26 @@ public class AdeManagerSdkConfig {
     private ScoredEnrichedDataStore scoredEnrichedDataStore;
 
     @Autowired
+    private AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
+
+    @Autowired
     private FeatureBucketReader featureBucketReader;
 
     @Autowired
     private AggregationEventsAccumulationDataReader aggregationEventsAccumulationDataReader;
 
     @Autowired
-    @Qualifier("adeManagerSdkAggregatedFeatureEventsConfService")
-    private AggregatedFeatureEventsConfService adeManagerSdkAggregatedFeatureEventsConfService;
+    private SmartRecordConfService smartRecordConfService;
 
     @Bean
     public AdeManagerSdk adeManagerSdk() {
-        return new AdeManagerSdkImpl(enrichedDataStore, smartDataReader, scoredEnrichedDataStore, adeManagerSdkAggregatedFeatureEventsConfService, featureBucketReader, aggregationEventsAccumulationDataReader);
+        return new AdeManagerSdkImpl(
+                enrichedDataStore,
+                smartDataReader,
+                scoredEnrichedDataStore,
+                aggregatedFeatureEventsConfService,
+                featureBucketReader,
+                aggregationEventsAccumulationDataReader,
+                smartRecordConfService);
     }
 }

@@ -3,6 +3,7 @@ package presidio.ade.smart.config;
 import fortscale.smart.record.conf.SmartRecordConfService;
 import fortscale.utils.mongodb.util.MongoDbBulkOpUtilConfig;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -29,6 +30,9 @@ import presidio.ade.smart.SmartService;
 		SmartDataStoreConfig.class
 })
 public class SmartApplicationConfiguration {
+	@Value("${presidio.ade.aggregation.records.threshold:#{null}}")
+	private Double aggregationRecordsThreshold;
+
 	@Autowired
 	private SmartRecordConfService smartRecordConfService;
 	@Autowired
@@ -40,6 +44,11 @@ public class SmartApplicationConfiguration {
 
 	@Bean
 	public SmartService smartService() {
-		return new SmartService(smartRecordConfService, aggregatedDataReader, smartScoringService, smartDataStore);
+		return new SmartService(
+				smartRecordConfService,
+				aggregationRecordsThreshold,
+				aggregatedDataReader,
+				smartScoringService,
+				smartDataStore);
 	}
 }

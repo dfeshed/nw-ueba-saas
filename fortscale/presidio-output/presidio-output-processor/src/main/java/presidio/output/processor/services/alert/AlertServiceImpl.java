@@ -7,6 +7,7 @@ import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.alerts.AlertEnums;
 import presidio.output.domain.records.users.User;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
+import presidio.output.processor.services.user.UserScoreService;
 
 import java.time.temporal.ChronoField;
 import java.util.List;
@@ -21,6 +22,7 @@ public class AlertServiceImpl implements AlertService {
 
     private final AlertEnumsSeverityService alertEnumsSeverityService;
     private final AlertPersistencyService alertPersistencyService;
+    private final UserScoreService userScoreService;
 
     private final String FiXED_DURATION_HOURLY = "fixed_duration_hourly";
     private final String HOURLY = "hourly";
@@ -28,10 +30,12 @@ public class AlertServiceImpl implements AlertService {
 
     private AlertClassificationService alertClassificationService;
 
-    public AlertServiceImpl(AlertPersistencyService alertPersistencyService, AlertEnumsSeverityService alertEnumsSeverityService, AlertClassificationService alertClassificationService) {
+    public AlertServiceImpl(AlertPersistencyService alertPersistencyService, AlertEnumsSeverityService alertEnumsSeverityService, AlertClassificationService alertClassificationService,
+                            UserScoreService userScoreService) {
         this.alertPersistencyService = alertPersistencyService;
         this.alertEnumsSeverityService = alertEnumsSeverityService;
         this.alertClassificationService = alertClassificationService;
+        this.userScoreService= userScoreService;
     }
 
     @Override
@@ -46,7 +50,10 @@ public class AlertServiceImpl implements AlertService {
         long endDate = smart.getEndInstant().getLong(ChronoField.INSTANT_SECONDS);
         int indicatorsNum = smart.getAggregationRecords().size();
         AlertEnums.AlertSeverity severity = alertEnumsSeverityService.severity(score);
-        return new Alert(user.getUserId(), classification, user.getUserName(), startDate, endDate, score, indicatorsNum, getStratgyfromSmart(smart), severity);
+
+        Alert alert = new Alert(user.getUserId(), classification, user.getUserName(), startDate, endDate, score, indicatorsNum, getStratgyfromSmart(smart), severity);
+        userScoreService.increaseUserScoreWithoutSaving(alert,user);
+        return alert;
     }
 
     @Override

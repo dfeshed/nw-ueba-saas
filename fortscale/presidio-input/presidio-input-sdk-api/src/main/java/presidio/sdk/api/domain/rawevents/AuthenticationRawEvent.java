@@ -3,7 +3,7 @@ package presidio.sdk.api.domain.rawevents;
 import fortscale.domain.core.EventResult;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
-import presidio.sdk.api.domain.AbstractPresidioDocument;
+import presidio.sdk.api.domain.AbstractInputDocument;
 import presidio.sdk.api.validation.FieldsMustHaveDifferentValues;
 
 import java.time.Instant;
@@ -12,7 +12,7 @@ import java.util.Map;
 
 @Document
 @FieldsMustHaveDifferentValues(fieldNames = {"srcMachineId", "dstMachineId"}, canBothBeEmpty = "false")
-public class AuthenticationRawEvent extends AbstractPresidioDocument {
+public class AuthenticationRawEvent extends AbstractInputDocument {
 
     public static final String SRC_MACHINE_ID_FIELD_NAME = "srcMachineId";
     public static final String DST_MACHINE_ID_FIELD_NAME = "dstMachineId";
@@ -50,8 +50,8 @@ public class AuthenticationRawEvent extends AbstractPresidioDocument {
     public AuthenticationRawEvent(Instant dateTime, String eventId, String dataSource, String userId, String operationType,
                                   List<String> operationTypeCategory, EventResult result, String userName,
                                   String userDisplayName, Map<String, String> additionalInfo, String srcMachineId,
-                                  String srcMachineName, String dstMachineId, String dstMachineName, String dstMachineDomain) {
-        super(dateTime, eventId, dataSource, userId, operationType, operationTypeCategory, result, userName, userDisplayName, additionalInfo);
+                                  String srcMachineName, String dstMachineId, String dstMachineName, String dstMachineDomain, String resultCode) {
+        super(dateTime, eventId, dataSource, userId, operationType, operationTypeCategory, result, userName, userDisplayName, additionalInfo, resultCode);
         this.srcMachineId = srcMachineId;
         this.srcMachineName = srcMachineName;
         this.dstMachineId = dstMachineId;

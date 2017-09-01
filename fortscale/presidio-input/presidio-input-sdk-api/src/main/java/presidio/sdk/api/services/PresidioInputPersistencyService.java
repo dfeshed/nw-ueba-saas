@@ -3,7 +3,7 @@ package presidio.sdk.api.services;
 
 import fortscale.common.general.Schema;
 import fortscale.domain.core.AbstractAuditableDocument;
-import presidio.sdk.api.domain.AbstractPresidioDocument;
+import presidio.sdk.api.domain.AbstractInputDocument;
 
 import java.time.Instant;
 import java.util.List;
@@ -17,7 +17,7 @@ public interface PresidioInputPersistencyService {
 
     void cleanAll(Schema schema) throws Exception;
 
-    <U extends AbstractPresidioDocument> List<U> readRecords(Schema schema, Instant startDate, Instant endDate, int numOfItemsToSkip, int pageSize);
+    <U extends AbstractInputDocument> List<U> readRecords(Schema schema, Instant startDate, Instant endDate, int numOfItemsToSkip, int pageSize);
 
     long count(Schema schema, Instant startDate, Instant endDate);
 }

@@ -12,6 +12,7 @@ import presidio.output.domain.services.users.UserPersistencyService;
 import presidio.output.processor.services.OutputExecutionService;
 import presidio.output.processor.services.OutputExecutionServiceImpl;
 import presidio.output.processor.services.alert.AlertService;
+import presidio.output.processor.services.user.UserScoreService;
 import presidio.output.processor.services.user.UserService;
 
 /**
@@ -33,6 +34,9 @@ public class OutputProcessorConfiguration {
     @Autowired
     private UserPersistencyService userPersistencyService;
 
+    @Autowired
+    private UserScoreService userScoreService;
+
     @Value("${smart.threshold.score}")
     private int smartThreshold;
 
@@ -41,6 +45,6 @@ public class OutputProcessorConfiguration {
 
     @Bean
     public OutputExecutionService outputProcessService() {
-        return new OutputExecutionServiceImpl(adeManagerSdk, alertService, userService, smartThreshold, smartPageSize);
+        return new OutputExecutionServiceImpl(adeManagerSdk, alertService, userService, userScoreService, smartThreshold, smartPageSize);
     }
 }

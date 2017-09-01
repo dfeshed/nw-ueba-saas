@@ -5,7 +5,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import presidio.input.core.services.impl.SchemaFactory;
-import presidio.sdk.api.domain.AbstractPresidioDocument;
+import presidio.sdk.api.domain.AbstractInputDocument;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,14 +18,14 @@ public class TransformationServiceImpl implements TransformationService {
     private SchemaFactory schemaFactory;
 
     @Override
-    public List<AbstractPresidioDocument> run(List<AbstractPresidioDocument> events, Schema schema) {
+    public List<AbstractInputDocument> run(List<AbstractInputDocument> events, Schema schema) {
         TransformationManager transformationManager = schemaFactory.getTransformationManager(String.format("%s.%s", schema.toString(), "transformer"));
 
-        List<AbstractPresidioDocument> result = new ArrayList<>();
+        List<AbstractInputDocument> result = new ArrayList<>();
 
         events.forEach(event -> {
-            AbstractPresidioDocument transformedDocument = transformationManager.getTransformedDocument(event);
-            List<AbstractPresidioDocument> transformedDocuments = Arrays.asList(transformedDocument);
+            AbstractInputDocument transformedDocument = transformationManager.getTransformedDocument(event);
+            List<AbstractInputDocument> transformedDocuments = Arrays.asList(transformedDocument);
             if (CollectionUtils.isEmpty(transformationManager.getTransformers())) {
                 result.add(transformedDocument);
             } else {

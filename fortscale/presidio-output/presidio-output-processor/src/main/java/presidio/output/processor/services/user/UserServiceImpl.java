@@ -38,6 +38,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User findUserById(String userId) {
+        return userPersistencyService.findUserById(userId);
+    }
+
+    @Override
     public void save(List<User> users) {
         userPersistencyService.save(users);
     }
