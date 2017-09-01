@@ -4,6 +4,7 @@ import org.springframework.http.ResponseEntity;
 import presidio.webapp.model.Patch;
 import presidio.webapp.model.User;
 import presidio.webapp.model.UsersWrapper;
+import presidio.webapp.service.RestUserService;
 
 import java.util.List;
 
@@ -11,6 +12,10 @@ import java.util.List;
 public class UsersApiController implements UsersApi {
 
     private final RestUserService restUserService;
+
+    public UsersApiController(RestUserService restUserService) {
+        this.restUserService = restUserService;
+    }
 
     @Override
     public ResponseEntity<UsersWrapper> usersGet(String name, Integer minScore, Integer maxScore, List<String> tags, Integer limit, Integer offset, String sort) {

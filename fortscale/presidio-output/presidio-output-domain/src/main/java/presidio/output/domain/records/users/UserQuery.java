@@ -29,12 +29,10 @@ public class UserQuery {
         this.filterByIndicators = builder.filterByIndicators;
         this.sort = builder.sort;
 
-        this.pageNumber =  builder.pageNumber;
-        this.pageSize =  builder.pageSize;
-        this.minScore = builder.minScore;
-        this.maxScore = builder.maxScore;
         this.pageNumber = builder.pageNumber;
         this.pageSize = builder.pageSize;
+        this.minScore = builder.minScore;
+        this.maxScore = builder.maxScore;
         this.filterByUserId = builder.filterByUserId;
         this.filterByUserName = builder.filterByUserName;
         this.isPrefix = builder.isPrefix;
@@ -110,18 +108,21 @@ public class UserQuery {
         }
 
         public UserQueryBuilder sort(Sort sort) {
-            this.sort=sort;
+            this.sort = sort;
             return this;
         }
 
         public UserQueryBuilder sortField(String sortField, boolean ascendingOrder) {
-            Sort.Direction dir=ascendingOrder? Sort.Direction.ASC: Sort.Direction.DESC;
-            Sort sort = new Sort(dir,sortField);
+            Sort.Direction dir = ascendingOrder ? Sort.Direction.ASC : Sort.Direction.DESC;
+            Sort sort = new Sort(dir, sortField);
             return sort(sort);
         }
 
         public UserQueryBuilder minScore(Integer minScore) {
             this.minScore = minScore;
+            return this;
+        }
+
         public UserQueryBuilder filterByUserName(String filterByUserName) {
             this.filterByUserName = filterByUserName;
             return this;
@@ -137,8 +138,6 @@ public class UserQuery {
             return this;
         }
 
-            return this;
-        }
 
         public UserQueryBuilder maxScore(Integer maxScore) {
             this.maxScore = maxScore;

@@ -49,8 +49,6 @@ public class UserPersistencyServiceTest {
     User user5;
 
 
-
-
     @Before
     public void before() {
         esTemplate.deleteIndex(User.class);
@@ -62,11 +60,11 @@ public class UserPersistencyServiceTest {
         classifications3 = new ArrayList<>(Arrays.asList("a"));
         classifications4 = new ArrayList<>(Arrays.asList("d"));
         classifications5 = null;
-        user1=generateUser(classifications1,"user1","userId1","user1",50d);
-        user2=generateUser(classifications2,"user2","userId2","user2",60d);
-        user3=generateUser(classifications3,"user3","userId3","user3",70d);
-        user4=generateUser(classifications4,"user4","userId4","user4",80d);
-        user5=generateUser(classifications3,"user5","userId5","user4",70d);
+        user1 = generateUser(classifications1, "user1", "userId1", "user1", 50d);
+        user2 = generateUser(classifications2, "user2", "userId2", "user2", 60d);
+        user3 = generateUser(classifications3, "user3", "userId3", "user3", 70d);
+        user4 = generateUser(classifications4, "user4", "userId4", "user4", 80d);
+        user5 = generateUser(classifications3, "user5", "userId5", "user4", 70d);
     }
 
     @Test
@@ -95,7 +93,7 @@ public class UserPersistencyServiceTest {
 
     }
 
-    private User generateUser(List<String> classifications,String userName, String userId,String displayName,double score) {
+    private User generateUser(List<String> classifications, String userName, String userId, String displayName, double score) {
         ArrayList<String> indicators = new ArrayList<String>();
         indicators.add("indicator");
         return new User(userId, userName, displayName, score, classifications, indicators);
@@ -103,7 +101,7 @@ public class UserPersistencyServiceTest {
 
     @Test
     public void testFindOne() {
-        User user =user1;
+        User user = user1;
         userPersistencyService.save(user);
 
         User foundUser = userPersistencyService.findUserById(user.getId());
@@ -156,12 +154,12 @@ public class UserPersistencyServiceTest {
         UserQuery userQuery =
                 new UserQuery.UserQueryBuilder()
                         .filterByAlertClassifications(classificationFilter)
-                        .sortField(sortFields, false)
+                        .sortField(User.SCORE_FIELD_NAME, false)
                         .build();
 
         Page<User> foundUsers = userPersistencyService.find(userQuery);
         assertThat(foundUsers.getTotalElements(), is(3L));
-        assertTrue(foundUsers.iterator().next().getUserScore() == 60d); 
+        assertTrue(foundUsers.iterator().next().getUserScore() == 60d);
     }
 
 
