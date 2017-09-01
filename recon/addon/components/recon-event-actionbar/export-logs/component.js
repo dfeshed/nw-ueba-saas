@@ -4,7 +4,6 @@ import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
 
 import {
-  eventType,
   isEndpointEvent
 } from 'recon/reducers/meta/selectors';
 import {
@@ -16,7 +15,6 @@ import ReconExport from 'recon/mixins/recon-export';
 import layout from './template';
 
 const stateToComputed = ({ recon, recon: { files } }) => ({
-  eventType: eventType(recon),
   extractLink: files.fileExtractLink,
   isEndpointEvent: isEndpointEvent(recon),
   status: files.fileExtractStatus

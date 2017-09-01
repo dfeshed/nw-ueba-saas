@@ -1,36 +1,39 @@
-import reselect from 'reselect';
+import { createSelector } from 'reselect';
 
 import { RECON_VIEW_TYPES_BY_NAME } from 'recon/utils/reconstruction-types';
 
-const { createSelector } = reselect;
+const _currentReconView = (recon) => recon.visuals.currentReconView;
+const _typeCode = createSelector(
+  [_currentReconView],
+  (currentReconView) => currentReconView ? currentReconView.code : null
+);
 
-const typeCode = (recon) => recon.visuals.currentReconView.code;
-const currentReconView = (recon) => recon.visuals.currentReconView;
 export const isRequestShown = (recon) => recon.visuals.isRequestShown;
+
 export const isResponseShown = (recon) => recon.visuals.isResponseShown;
 
 export const allDataHidden = createSelector(
   [isRequestShown, isResponseShown],
-  (isRequestShown, isResponseShown) => !isRequestShown && !isResponseShown
+  (isRequestShown = true, isResponseShown = true) => !isRequestShown && !isResponseShown
 );
 
 export const hasReconView = createSelector(
-  currentReconView,
+  _currentReconView,
   (view) => !!view
 );
 
 export const isTextView = createSelector(
-  typeCode,
+  _typeCode,
   (code) => code === RECON_VIEW_TYPES_BY_NAME.TEXT.code
 );
 
 export const isFileView = createSelector(
-  typeCode,
+  _typeCode,
   (code) => code === RECON_VIEW_TYPES_BY_NAME.FILE.code
 );
 
 export const isPacketView = createSelector(
-  typeCode,
+  _typeCode,
   (code) => code === RECON_VIEW_TYPES_BY_NAME.PACKET.code
 );
 

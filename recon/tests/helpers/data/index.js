@@ -3,6 +3,7 @@ import encodedTextData from '../../data/subscriptions/reconstruction-text-data/s
 import decodedTextData from '../../data/subscriptions/reconstruction-text-data/stream/decodedData';
 import summaryDataInput from '../../data/subscriptions/reconstruction-summary/query/data';
 import files from '../../data/subscriptions/reconstruction-file-data/query/data';
+import { augmentResult } from 'recon/reducers/util';
 
 const _generateHeaderItems = (items) => (
   items.reduce(function(headerItems, item) {
@@ -14,13 +15,9 @@ const _generateHeaderItems = (items) => (
   }, [])
 );
 
-// TODO: this is duplicated from client code
-const packetDataWithSide = packetData
-  .slice(0, 10)
-  .map((p) => {
-    p.side = (p.side === 1) ? 'request' : 'response';
-    return p;
-  });
+const augmentedTextData = augmentResult(decodedTextData);
+
+const packetDataWithSide = augmentResult(packetData.slice(0, 10));
 
 const summaryData = {
   headerItems: _generateHeaderItems(summaryDataInput.summaryAttributes),
@@ -28,6 +25,7 @@ const summaryData = {
 };
 
 export {
+  augmentedTextData,
   decodedTextData,
   encodedTextData,
   files,

@@ -3,14 +3,12 @@ import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
 
 import { extractFiles, didDownloadFiles } from 'recon/actions/interaction-creators';
-import { eventType } from 'recon/reducers/meta/selectors';
 import { selectedFiles } from 'recon/reducers/files/selectors';
 import ReconExport from 'recon/mixins/recon-export';
 import layout from './template';
 
 const stateToComputed = ({ recon, recon: { files } }) => ({
   selectedFiles: selectedFiles(recon),
-  eventType: eventType(recon),
   extractLink: files.fileExtractLink,
   status: files.fileExtractStatus
 });

@@ -1,10 +1,6 @@
-import reselect from 'reselect';
-
-const { createSelector } = reselect;
+import { createSelector } from 'reselect';
 
 import { RECON_VIEW_TYPES_BY_NAME } from 'recon/utils/reconstruction-types';
-
-const HTTP_DATA = 80;
 
 /*
  * An array to store possible event types, currently just logs and network
@@ -15,7 +11,7 @@ const HTTP_DATA = 80;
  * - medium {int} the code for the event type
  * - forcedView {object} an entry from RECON_VIEW_TYPES_BY_NAME or null if you do not want to force a view
  */
-export const EVENT_TYPES = [
+const EVENT_TYPES = [
   {
     name: 'LOG',
     medium: 32,
@@ -27,20 +23,20 @@ export const EVENT_TYPES = [
     forcedView: null
   }
 ];
-
-export const EVENT_TYPES_BY_NAME = {};
+const EVENT_TYPES_BY_NAME = {};
 EVENT_TYPES.forEach((t) => EVENT_TYPES_BY_NAME[t.name] = t);
 const DEFAULT_EVENT_TYPE = EVENT_TYPES_BY_NAME.NETWORK;
+const HTTP_DATA = 80;
 
 // Takes meta array directly rather than part of redux state object
-const metaDirect = (meta) => meta;
+const _metaDirect = (meta) => meta;
 
 // TODO, once Immutable.find is a thing, remove this asMutable call
-const meta = (state) => {
+const _meta = (state) => {
   return state.meta.asMutable().meta || [];
 };
 
-const determineEventType = (meta) => {
+const _determineEventType = (meta) => {
   if (!meta || meta.length === 0) {
     // network event type is default
     return DEFAULT_EVENT_TYPE;
@@ -62,36 +58,31 @@ const determineEventType = (meta) => {
 };
 
 export const isHttpData = createSelector(
-  meta,
+  _meta,
   (meta) => {
     const service = meta.find((d) => d[0] === 'service');
     return !!service && service[1] === HTTP_DATA;
   }
 );
 
-export const isNotHttpData = createSelector(
-  isHttpData,
-  (isHttpData) => !isHttpData
-);
-
 export const eventType = createSelector(
-  meta,
-  determineEventType
+  _meta,
+  _determineEventType
 );
 
 export const eventTypeFromMetaArray = createSelector(
-  metaDirect,
-  determineEventType
+  _metaDirect,
+  _determineEventType
 );
 
 export const isEndpointEvent = createSelector(
-  meta,
+  _meta,
   (meta) => meta.some((d) => d[0] === 'nwe.callback_id')
 );
 
 export const nweCallbackId = createSelector(
   isEndpointEvent,
-  meta,
+  _meta,
   (isEndpointEvent, meta) => {
     if (isEndpointEvent) {
       const [ client ] = meta.filter((d) => d[0] === 'client');
@@ -104,9 +95,4 @@ export const isLogEvent = createSelector(
   eventType,
   isEndpointEvent,
   (eventType, isEndpointEvent) => eventType.name === EVENT_TYPES_BY_NAME.LOG.name && !isEndpointEvent
-);
-
-export const isNetworkEvent = createSelector(
-  eventType,
-  (eventType) => eventType.name === EVENT_TYPES_BY_NAME.NETWORK.name
 );

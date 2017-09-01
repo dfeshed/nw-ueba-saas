@@ -1,19 +1,12 @@
-import reselect from 'reselect';
-import getMetaKeysByEventType from './limited-meta';
-import {
-  isRequestShown,
-  isResponseShown,
-  isTextView
-} from 'recon/reducers/visuals/selectors';
-import {
-  eventType,
-  isEndpointEvent
-} from 'recon/reducers/meta/selectors';
+import { createSelector } from 'reselect';
 
-const { createSelector } = reselect;
-const textContent = (recon) => recon.text.textContent;
-const renderIds = (recon) => recon.text.renderIds;
-const meta = (recon) => recon.meta.meta;
+import getMetaKeysByEventType from './limited-meta';
+import { isRequestShown, isResponseShown, isTextView } from 'recon/reducers/visuals/selectors';
+import { eventType, isEndpointEvent } from 'recon/reducers/meta/selectors';
+
+const _textContent = (recon) => recon.text.textContent;
+const _renderIds = (recon) => recon.text.renderIds;
+const _meta = (recon) => recon.meta.meta;
 
 /**
  * Returns an event meta array that has the following structure:
@@ -27,39 +20,9 @@ const _getEventMetaByKey = (eventMeta, key) => eventMeta.find((meta) => meta[0] 
 
 const _isString = (s) => Object.prototype.toString.call(s) === '[object String]';
 
-/**
- * Counts the number of occurances of a meta string within some text.
- * @param {Object} meta The meta to look for
- * @param {string} text The text to look through
- * @return {number} The count
- * @private
- */
-const _findMetaCountInString = (meta, text) => {
-  let matches;
-  if (_isString(meta) && _isString(text)) {
-    // Escape RegEx special characters
-    const pattern = meta.replace(/[-[\]{}()*+?.,\\^$|#]/g, '\\$&');
-    const regex = new RegExp(pattern, 'gi');
-    matches = text.match(regex);
-  }
-  return matches ? matches.length : 0;
-};
-
 export const hasTextContent = createSelector(
-  [textContent],
-  (textContent) => textContent && textContent.length > 0
-);
-
-/**
- * A selector that tells you if the content has been retrieved.
- * The `textContent` property can at different times be null, an empty array or
- * a populated array. An empty array means the event has no text content. If
- * `textContent` is `null`, then it is still being fetched.
- * @public
- */
-export const contentRetrieved = createSelector(
-  [textContent],
-  (textContent) => textContent !== null
+  [_textContent],
+  (textContent) => !!textContent && textContent.length > 0
 );
 
 /**
@@ -67,9 +30,9 @@ export const contentRetrieved = createSelector(
  *
  * @public
  */
-export const renderableText = createSelector(
-  [textContent, isRequestShown, isResponseShown],
-  (textContent, isRequestShown, isResponseShown) => {
+const _renderableText = createSelector(
+  [_textContent, isRequestShown, isResponseShown],
+  (textContent, isRequestShown = true, isResponseShown = true) => {
 
     // textContent can be null/empty, eject
     if (!textContent || textContent.length === 0) {
@@ -89,12 +52,30 @@ export const renderableText = createSelector(
   }
 );
 
+/**
+ * Counts the number of occurances of a meta string within some text.
+ * @param {Object} meta The meta to look for
+ * @param {string} text The text to look through
+ * @return {number} The count
+ * @private
+ */
+const _findMetaCountInString = (meta, text) => {
+  let matches;
+  if (_isString(meta) && _isString(text)) {
+    // Escape RegEx special characters
+    const pattern = meta.replace(/[-[\]{}()*+?.,\\^$|#]/g, '\\$&');
+    const regex = new RegExp(pattern, 'gi');
+    matches = text.match(regex);
+  }
+  return matches ? matches.length : 0;
+};
+
 /*
  * Do we have text content but no renderable content
  * because the user has hidden it all?
  */
 export const allDataHidden = createSelector(
-  [hasTextContent, renderableText],
+  [hasTextContent, _renderableText],
   (hasTextContent, renderableText) => hasTextContent && renderableText.length === 0
 );
 
@@ -104,7 +85,7 @@ export const allDataHidden = createSelector(
  * @public
  */
 export const renderedText = createSelector(
-  [renderableText, renderIds],
+  [_renderableText, _renderIds],
   (renderableText, renderIds) => {
 
     // renderIds can be null/empty, eject
@@ -123,7 +104,7 @@ export const renderedText = createSelector(
  * @public
  */
 export const metaHighlightCount = createSelector(
-  [renderedText, isTextView, eventType, isEndpointEvent, meta],
+  [renderedText, isTextView, eventType, isEndpointEvent, _meta],
   (renderedText, isTextView, eventType, isEndpointEvent, eventMeta) => {
     const metaCounts = [];
     if (isTextView && renderedText && renderedText.length > 0) {
@@ -164,7 +145,7 @@ export const eventHasPayload = createSelector(
 
 // the number of text items that are destined to be rendered
 export const numberOfRenderableTextEntries = createSelector(
-  [hasTextContent, renderableText],
+  [hasTextContent, _renderableText],
   (hasTextContent, renderableText) => {
     if (hasTextContent) {
       return renderableText.length;
