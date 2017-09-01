@@ -10,6 +10,7 @@ import OAuth2PasswordGrant from 'ember-simple-auth/authenticators/oauth2-passwor
 import csrfToken from '../mixins/csrf-token';
 import oauthToken from '../mixins/oauth-token';
 import moment from 'moment';
+import config from 'ember-get-config';
 
 const {
   inject: {
@@ -22,6 +23,8 @@ const {
   assign,
   makeArray
 } = Ember;
+
+const { useMockServer, mockServerUrl } = config;
 
 export default OAuth2PasswordGrant.extend(csrfToken, oauthToken, {
 
@@ -111,7 +114,7 @@ export default OAuth2PasswordGrant.extend(csrfToken, oauthToken, {
   authenticate(identification, password, scope = []) {
     return new RSVP.Promise((resolve, reject) => {
       const data = { 'grant_type': 'password', username: identification, password };
-      const serverTokenEndpoint = this.get('serverTokenEndpoint');
+      const serverTokenEndpoint = useMockServer ? `${mockServerUrl}${this.get('serverTokenEndpoint')}` : this.get('serverTokenEndpoint');
       const scopesString = makeArray(scope).join(' ');
       if (!isEmpty(scopesString)) {
         data.scope = scopesString;

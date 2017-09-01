@@ -13,7 +13,8 @@ import {
   createConnectMessage,
   createMessage,
   discoverSubscriptions,
-  subscriptionList
+  subscriptionList,
+  mockAuthResponse
 } from './util';
 
 const start = function({ subscriptionLocations, routes }, cb) {
@@ -44,6 +45,23 @@ const start = function({ subscriptionLocations, routes }, cb) {
     res.json({ 'version': '10.6.0.0-SNAPSHOT', 'commit': 28, 'changeset': 'f716b11', 'date': 1435711785000 });
   });
   app.use('/socket/info', infoRoute);
+
+  // auth route which delivers a fake auth token response for login simulation
+  // eslint-disable-next-line new-cap
+  const authRoute = express.Router();
+  authRoute.post('/', function(req, res) {
+    const validUserNames = ['admin', 'local'];
+    const validPasswords = ['netwitness', 'changeMe'];
+
+    // any combo of the above common usernames/passwords will return successful authentication token
+    if (validUserNames.includes(req.body.username) && validPasswords.includes(req.body.password)) {
+      res.json(mockAuthResponse);
+    } else {
+      res.status(400);
+      res.json({ 'error': 'invalid_grant', 'error_description': 'Bad credentials' });
+    }
+  });
+  app.use('/oauth/token', authRoute);
 
   _processConfiguredRoutes(routes, app);
 
