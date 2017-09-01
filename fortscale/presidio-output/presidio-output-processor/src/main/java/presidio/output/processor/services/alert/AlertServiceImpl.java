@@ -35,7 +35,7 @@ public class AlertServiceImpl implements AlertService {
         this.alertPersistencyService = alertPersistencyService;
         this.alertEnumsSeverityService = alertEnumsSeverityService;
         this.alertClassificationService = alertClassificationService;
-        this.userScoreService= userScoreService;
+        this.userScoreService = userScoreService;
     }
 
     @Override
@@ -52,7 +52,7 @@ public class AlertServiceImpl implements AlertService {
         AlertEnums.AlertSeverity severity = alertEnumsSeverityService.severity(score);
 
         Alert alert = new Alert(user.getUserId(), classification, user.getUserName(), startDate, endDate, score, indicatorsNum, getStratgyfromSmart(smart), severity);
-        userScoreService.increaseUserScoreWithoutSaving(alert,user);
+        userScoreService.increaseUserScoreWithoutSaving(alert, user);
         return alert;
     }
 
