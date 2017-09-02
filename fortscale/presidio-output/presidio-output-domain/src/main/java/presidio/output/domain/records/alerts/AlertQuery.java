@@ -1,6 +1,8 @@
 package presidio.output.domain.records.alerts;
 
 
+import org.springframework.data.domain.Sort;
+
 import java.util.List;
 
 public class AlertQuery {
@@ -13,8 +15,7 @@ public class AlertQuery {
     private final long filterByEndDate;
 
     // sort
-    private final String sortField;
-    private final boolean ascendingOrder;
+    private final Sort sort;
 
     // paging
     private final int pageNumber;
@@ -28,12 +29,15 @@ public class AlertQuery {
         this.filterByUserName = builder.filterByUserName;
         this.filterBySeverity = builder.filterBySeverity;
         this.filterByStartDate = builder.filterByStartDate;
+        this.sort = builder.sort;
         this.filterByEndDate = builder.filterByEndDate;
-        this.sortField = builder.sortField;
-        this.ascendingOrder = builder.ascendingOrder;
         this.pageNumber = builder.pageNumber;
         this.pageSize = builder.pageSize;
         this.aggregateBySeverity = builder.aggregateBySeverity;
+    }
+
+    public Sort getSort() {
+        return sort;
     }
 
     public String getFilterByUserName() {
@@ -54,14 +58,6 @@ public class AlertQuery {
 
     public long getFilterByEndDate() {
         return filterByEndDate;
-    }
-
-    public String getSortField() {
-        return sortField;
-    }
-
-    public boolean isAscendingOrder() {
-        return ascendingOrder;
     }
 
     public int getPageNumber() {
@@ -86,8 +82,7 @@ public class AlertQuery {
         private long filterByEndDate;
 
         // sort
-        private String sortField;
-        private boolean ascendingOrder;
+        private Sort sort;
 
         // paging
         private int pageNumber = -1;
@@ -124,9 +119,8 @@ public class AlertQuery {
             return this;
         }
 
-        public AlertQueryBuilder sortField(String sortField, boolean ascendingOrder) {
-            this.sortField = sortField;
-            this.ascendingOrder = ascendingOrder;
+        public AlertQueryBuilder sortField(Sort sort) {
+            this.sort = sort;
             return this;
         }
 

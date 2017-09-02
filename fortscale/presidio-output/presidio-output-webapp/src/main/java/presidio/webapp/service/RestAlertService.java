@@ -11,4 +11,6 @@ public interface RestAlertService {
     Page<presidio.output.domain.records.alerts.Alert> getAlerts(RestAlertQuery restAlertQuery);
 
     Alert createResult(presidio.output.domain.records.alerts.Alert alertData);
+
+    Page<presidio.webapp.model.Alert> getAlertsByUserId(String userId);
 }

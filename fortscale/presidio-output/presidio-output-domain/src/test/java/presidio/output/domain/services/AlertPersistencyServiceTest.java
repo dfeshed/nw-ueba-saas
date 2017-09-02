@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import presidio.output.domain.records.alerts.Alert;
@@ -47,6 +48,8 @@ public class AlertPersistencyServiceTest {
     List<String> classifications4;
     List<String> classifications5;
 
+    Sort sort;
+
     @Before
     public void before() {
         esTemplate.deleteIndex(Alert.class);
@@ -58,6 +61,7 @@ public class AlertPersistencyServiceTest {
         classifications3 = new ArrayList<>(Arrays.asList("a"));
         classifications4 = new ArrayList<>(Arrays.asList("d"));
         classifications5 = null;
+        sort = new Sort(new Sort.Order(Sort.Direction.ASC, Alert.SCORE));
     }
 
     @Test
@@ -188,7 +192,7 @@ public class AlertPersistencyServiceTest {
                         .filterBySeverity(AlertSeverity.HIGH.name())
                         .filterByStartDate(startDate)
                         .filterByEndDate(endDate + 1)
-                        .sortField(Alert.SCORE, true)
+                        .sortField(sort)
                         .aggregateBySeverity(false)
                         .filterByClassification(classifications2)
                         .build();
@@ -216,7 +220,7 @@ public class AlertPersistencyServiceTest {
 
         AlertQuery alertQuery =
                 new AlertQuery.AlertQueryBuilder()
-                        .sortField(Alert.SCORE, true)
+                        .sortField(sort)
                         .aggregateBySeverity(false)
                         .filterByClassification(classifications1)
                         .build();
@@ -244,7 +248,7 @@ public class AlertPersistencyServiceTest {
 
         AlertQuery alertQuery =
                 new AlertQuery.AlertQueryBuilder()
-                        .sortField(Alert.SCORE, true)
+                        .sortField(sort)
                         .aggregateBySeverity(false)
                         .filterByClassification(classifications3)
                         .build();
@@ -270,7 +274,7 @@ public class AlertPersistencyServiceTest {
 
         AlertQuery alertQuery =
                 new AlertQuery.AlertQueryBuilder()
-                        .sortField(Alert.SCORE, true)
+                        .sortField(sort)
                         .aggregateBySeverity(false)
                         .filterByClassification(classifications4)
                         .build();
@@ -299,7 +303,7 @@ public class AlertPersistencyServiceTest {
 
         AlertQuery alertQuery =
                 new AlertQuery.AlertQueryBuilder()
-                        .sortField(Alert.SCORE, true)
+                        .sortField(sort)
                         .aggregateBySeverity(false)
                         .filterByClassification(classifications5)
                         .build();

@@ -57,8 +57,13 @@ public class RestAlertServiceImpl implements RestAlertService {
         alertQueryBuilder.filterByStartDate(restAlertQuery.getStartDate());
         alertQueryBuilder.filterByEndDate(restAlertQuery.getEndDate());
         alertQueryBuilder.filterBySeverity(restAlertQuery.getSeverity());
-        alertQueryBuilder.sortField(restAlertQuery.getSortField(), restAlertQuery.isAscendingOrder());
+        alertQueryBuilder.sortField(restAlertQuery.getSort());
         AlertQuery alertQuery = alertQueryBuilder.build();
         return alertQuery;
+    }
+
+    @Override
+    public Page<presidio.webapp.model.Alert> getAlertsByUserId(String userId) {
+        return null;
     }
 }

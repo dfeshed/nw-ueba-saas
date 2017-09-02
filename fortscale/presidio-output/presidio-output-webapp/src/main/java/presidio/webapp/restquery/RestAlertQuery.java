@@ -1,6 +1,7 @@
 package presidio.webapp.restquery;
 
 import io.swagger.annotations.ApiModel;
+import org.springframework.data.domain.Sort;
 
 import java.util.List;
 
@@ -14,8 +15,7 @@ public class RestAlertQuery {
     private long endDate;
 
     // sort
-    private String sortField;
-    private boolean ascendingOrder;
+    private Sort sort;
 
     // paging
     private int pageNumber;
@@ -61,20 +61,12 @@ public class RestAlertQuery {
         this.endDate = endDate;
     }
 
-    public String getSortField() {
-        return sortField;
+    public Sort getSort() {
+        return sort;
     }
 
-    public void setSortField(String sortField) {
-        this.sortField = sortField;
-    }
-
-    public boolean isAscendingOrder() {
-        return ascendingOrder;
-    }
-
-    public void setAscendingOrder(boolean ascendingOrder) {
-        this.ascendingOrder = ascendingOrder;
+    public void setSort(Sort sort) {
+        this.sort = sort;
     }
 
     public int getPageNumber() {

@@ -14,5 +14,5 @@ public interface UserService {
 
     void setClassification(User user, List<String> classification);
 
-    public User findUserById(String userId);
+    User findUserById(String userId);
 }

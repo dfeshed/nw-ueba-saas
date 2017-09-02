@@ -28,7 +28,6 @@ public class UserQuery {
         this.filterByAlertClassifications = builder.filterByAlertClassifications;
         this.filterByIndicators = builder.filterByIndicators;
         this.sort = builder.sort;
-
         this.pageNumber = builder.pageNumber;
         this.pageSize = builder.pageSize;
         this.minScore = builder.minScore;

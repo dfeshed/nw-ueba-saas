@@ -60,11 +60,15 @@ public class AlertElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<Al
     }
 
     public void withSort(AlertQuery alertQuery) {
-        if (StringUtils.isNotEmpty(alertQuery.getSortField())) {
-            FieldSortBuilder sortBuilder = new FieldSortBuilder(alertQuery.getSortField());
-            SortOrder order = alertQuery.isAscendingOrder() ? SortOrder.ASC : SortOrder.DESC;
-            sortBuilder.order(order);
-            super.withSort(sortBuilder);
+        if (alertQuery.getSort() != null) {
+
+            alertQuery.getSort().forEach(order -> {
+                FieldSortBuilder sortBuilder = new FieldSortBuilder(order.getProperty());
+                SortOrder direction = order.getDirection().name().equals(SortOrder.ASC.name()) ? SortOrder.ASC : SortOrder.DESC;
+                sortBuilder.order(direction);
+                super.withSort(sortBuilder);
+            });
+
         }
     }
 
