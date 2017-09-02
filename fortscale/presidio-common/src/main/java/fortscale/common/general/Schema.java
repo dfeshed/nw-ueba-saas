@@ -3,7 +3,8 @@ package fortscale.common.general;
 
 public enum Schema {
 
-    FILE("file"), ACTIVE_DIRECTORY("active_directory"), AUTHENTICATION("authentication");
+    DLPFILE("dlpfile"), DLPMAIL("dlpmail"), PRNLOG("prnlog"), FILE("file"), ACTIVE_DIRECTORY("active_directory"),
+    AUTHENTICATION("authentication");
 
     private String name;
 
