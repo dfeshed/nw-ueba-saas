@@ -1,6 +1,5 @@
 package presidio.ade.sdk.smart_records;
 
-import fortscale.domain.SMART.EntityEvent;
 import fortscale.utils.pagination.PageIterator;
 import fortscale.utils.time.TimeRange;
 import presidio.ade.domain.record.aggregated.SmartRecord;
@@ -12,13 +11,14 @@ import presidio.ade.domain.record.aggregated.SmartRecord;
  */
 public interface SmartRecordsManagerSdk {
 	/**
-	 * Get an iterator over {@link EntityEvent}s with the given time
+	 * Get an iterator over {@link SmartRecord}s with the given time
 	 * range and a score greater than or equal to the given threshold.
 	 *
-	 * @param timeRange      the start and end instants of the records
 	 * @param pageSize       the number of records in each page
+	 * @param maxGroupSize   the maximum number of context IDs to keep in memory
+	 * @param timeRange      the start and end instants of the records
 	 * @param scoreThreshold the scores should be greater than or equal to this threshold
-	 * @return an iterator over {@link EntityEvent}s
+	 * @return an iterator over {@link SmartRecord}s
 	 */
-	PageIterator<SmartRecord> getSmartRecords(TimeRange timeRange, int pageSize, int scoreThreshold);
+	PageIterator<SmartRecord> getSmartRecords(int pageSize, int maxGroupSize, TimeRange timeRange, int scoreThreshold);
 }

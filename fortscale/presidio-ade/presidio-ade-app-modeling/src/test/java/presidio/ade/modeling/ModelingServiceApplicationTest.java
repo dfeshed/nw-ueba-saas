@@ -62,8 +62,8 @@ public class ModelingServiceApplicationTest {
 		Assert.assertTrue(commandResult.isSuccess());
 		commandResult = bootShim.getShell().executeCommand(FEATURE_AGGREGATION_RECORDS_LINE);
 		Assert.assertTrue(commandResult.isSuccess());
-//		commandResult = bootShim.getShell().executeCommand(SMART_RECORDS_LINE);
-//		Assert.assertTrue(commandResult.isSuccess());
+		commandResult = bootShim.getShell().executeCommand(SMART_RECORDS_LINE);
+		Assert.assertTrue(commandResult.isSuccess());
 	}
 
 	@Test

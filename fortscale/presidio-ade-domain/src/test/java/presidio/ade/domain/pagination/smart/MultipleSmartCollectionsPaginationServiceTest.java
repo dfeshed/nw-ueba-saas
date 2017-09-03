@@ -14,37 +14,36 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import presidio.ade.domain.record.aggregated.SmartRecord;
-import presidio.ade.domain.store.smart.SmartDataStore;
-import presidio.ade.domain.store.smart.SmartDataToCollectionNameTranslator;
 import presidio.ade.domain.store.smart.SmartDataReader;
 import presidio.ade.domain.store.smart.SmartDataReaderConfig;
+import presidio.ade.domain.store.smart.SmartDataToCollectionNameTranslator;
 
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
 
-
 /**
- * Created by maria_dorohin on 8/22/17.
+ * @author Maria Dorohin
  */
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = {
         SmartDataReaderConfig.class,
         MongodbTestConfig.class
 })
-public class ScoreThresholdSmartPaginationServiceTest {
-
+public class MultipleSmartCollectionsPaginationServiceTest {
     @Autowired
     private MongoTemplate mongoTemplate;
     @Autowired
     private SmartDataReader smartDataReader;
 
-    private ScoreThresholdSmartPaginationService paginationService;
+    private MultipleSmartCollectionsPaginationService paginationService;
 
     @Before
     public void setup() {
-        paginationService = new ScoreThresholdSmartPaginationService(smartDataReader, 3);
-
+        Set<String> configurationNames = new HashSet<>();
+        configurationNames.add("smartRecordConf1");
+        configurationNames.add("smartRecordConf2");
+        paginationService = new MultipleSmartCollectionsPaginationService(configurationNames, smartDataReader, 3, 100);
         List<SmartRecord> smartRecords = new ArrayList<>();
 
         TimeRange timeRange = new TimeRange(Instant.EPOCH.plus(Duration.ofDays(1)), Instant.now().minus(Duration.ofDays(1)));
@@ -65,11 +64,8 @@ public class ScoreThresholdSmartPaginationServiceTest {
             smartRecords.add(smartRecord);
         }
 
-        Set<String> collections = new HashSet<>();
-        collections.add("CollectionName1");
-        collections.add("CollectionName2");
-        for (String collectionName : collections) {
-            mongoTemplate.insert(smartRecords, SmartDataToCollectionNameTranslator.SMART_COLLECTION_PREFIX + collectionName);
+        for (String configurationName : configurationNames) {
+            mongoTemplate.insert(smartRecords, SmartDataToCollectionNameTranslator.SMART_COLLECTION_PREFIX + configurationName);
         }
 
         mongoTemplate.insert(smartRecords, "NotSmartCollectionName");
@@ -81,20 +77,17 @@ public class ScoreThresholdSmartPaginationServiceTest {
     @Test
     public void getPageIterator() {
         TimeRange timeRange = new TimeRange(Instant.EPOCH, Instant.now());
-
         PageIterator<SmartRecord> pageIterator = paginationService.getPageIterator(timeRange, 40);
+
         while (pageIterator.hasNext()) {
             List<SmartRecord> smartRecords = pageIterator.next();
             Assert.assertTrue("page must not be empty", smartRecords.size() > 0);
-            smartRecords.forEach(record -> {
-                Assert.assertTrue("score must be greater than 40", record.getScore() > 40);
-            });
+            smartRecords.forEach(record -> Assert.assertTrue("score must be greater than 40", record.getScore() > 40));
         }
     }
 
-
     /**
-     * Test ScoreThresholdSmartPaginationService, where no smart collection exist
+     * Test MultipleSmartCollectionsPaginationService, where no smart collection exist
      */
     @Test
     public void getPageIteratorWithoutSmartCollections() {
