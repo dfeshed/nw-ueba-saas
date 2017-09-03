@@ -26,7 +26,7 @@ public class ModelingServiceConfigurationTest {
 		properties.put("presidio.ade.smart.record.base.configurations.path","classpath*:config/asl/smart-records/*");
 		// Model conf service
 		properties.put("presidio.ade.modeling.enriched.records.group.name", "enriched-record-models");
-		properties.put("presidio.ade.modeling.enriched.records.base.configuration.path", "classpath*:config/asl/models/enriched-records/");
+		properties.put("presidio.ade.modeling.enriched.records.base.configuration.path", "classpath:config/asl/models/enriched-record-test/");
 		properties.put("presidio.ade.modeling.feature.aggregation.records.group.name", "feature-aggregation-record-models");
 		properties.put("presidio.ade.modeling.feature.aggregation.records.base.configuration.path", "classpath*:config/asl/models/feature-aggregation-records/");
 		properties.put("presidio.ade.modeling.smart.records.group.name", "smart-record-models");

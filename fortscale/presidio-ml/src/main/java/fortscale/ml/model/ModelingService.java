@@ -58,12 +58,8 @@ public class ModelingService {
 	 * @param endInstant the end time of the models that are built
 	 */
 	public void process(String groupName, String sessionId, Instant endInstant) throws Exception {
-		try {
-			if (!groupNameToModelConfigurationPathsMap.containsKey(groupName)) {
-				logger.error("Group {} is not configured. Ending modeling service process.", groupName);
-				return;
-			}
 
+		try {
 			List<ModelConf> modelConfs = getModelConfs(groupName);
 
 			logger.info("Running modeling engines with sessionId {} and endInstant {} as input.", sessionId, endInstant);
@@ -94,6 +90,9 @@ public class ModelingService {
 		Assert.isTrue(groupNames.length <= 2, "a group name is expected to contain at most root group and sub group.");
 		String rootGroupName = groupNames[0];
 		String subGroupName = groupNames.length < 2 ? "" : groupNames[1];
+
+		Assert.isTrue(groupNameToModelConfigurationPathsMap.containsKey(rootGroupName), String.format("Root group %s is not configured.", rootGroupName));
+
 		AslConfigurationPaths modelConfigurationPaths = groupNameToModelConfigurationPathsMap.get(rootGroupName);
 		ModelConfService modelConfService = new ModelConfService(
 				getResources(modelConfigurationPaths.getBaseConfigurationPath(), subGroupName),
@@ -107,6 +106,9 @@ public class ModelingService {
 	}
 
 	private Resource[] getResources(String rootGroupPath, String subGroupName){
+		if(rootGroupPath == null){
+			return null;
+		}
 		String path = StringUtils.isNotBlank(subGroupName)? rootGroupPath + subGroupName + ".json" : rootGroupPath + "*.json";
 		return aslResourceFactory.getResources(path);
 	}
