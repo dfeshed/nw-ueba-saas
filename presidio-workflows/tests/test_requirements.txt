@@ -4,4 +4,4 @@ pytest
 requests
 pytz
 mock
-airflow[devel]==1.8.0
+apache-airflow[devel]==1.8.1
