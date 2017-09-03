@@ -2,6 +2,7 @@ package presidio.output.domain.services;
 
 import fortscale.utils.elasticsearch.PresidioElasticsearchTemplate;
 import org.assertj.core.util.Lists;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -20,6 +21,7 @@ import presidio.output.domain.services.users.UserPersistencyService;
 
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -27,7 +29,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.*;
 import static presidio.output.domain.records.alerts.AlertEnums.*;
 
-@Ignore
+
 @RunWith(SpringRunner.class)
 @SpringBootTest()
 @ContextConfiguration(classes=presidio.output.domain.spring.PresidioOutputPersistencyServiceConfig.class)
@@ -149,6 +151,31 @@ public class UserPersistencyServiceTest {
         Page<User> foundUsers = userPersistencyService.find(userQuery);
         assertThat(foundUsers.getTotalElements(), is(3L));
         assertTrue(foundUsers.iterator().next().getUserScore() == 100d); //verify the sorting- descending order, score 100 should be the first
+    }
+
+    @Test
+    public void testFindByListOfIds(){
+        User user1 = new User("userId1", "userName", "displayName", 0d, null, null);
+        User user2 = new User("userId2", "userName", "displayName", 0d, null, null);
+        User user3 = new User("userId3", "userName", "displayName", 0d, null, null);
+        User user4 = new User("userId4", "userName", "displayName", 0d, null, null);
+
+        List<User> userList = new ArrayList<>();
+        userList.add(user1);
+        userList.add(user2);
+        userList.add(user3);
+        userList.add(user4);
+        Iterable<User> createdUsers = userPersistencyService.save(userList);
+        List<String> userIds = new ArrayList<>();
+        createdUsers.forEach(createdUser ->{
+            String userId = createdUser.getId();
+            userIds.add(userId);
+        });
+
+//        List<String> userIds = Arrays.asList("userId1","userId2","userId5");
+        UserQuery.UserQueryBuilder queryBuilder = new UserQuery.UserQueryBuilder().pageNumber(0).pageSize(10).filterByIds(userIds);
+        Page<User> usersPageResult = userPersistencyService.find(queryBuilder.build());
+        Assert.assertEquals(2,usersPageResult.getContent().size());
     }
 
 

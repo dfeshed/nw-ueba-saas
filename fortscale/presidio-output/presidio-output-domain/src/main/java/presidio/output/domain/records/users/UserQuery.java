@@ -3,6 +3,7 @@ package presidio.output.domain.records.users;
 
 import org.springframework.data.domain.Sort;
 
+import java.util.Collection;
 import java.util.List;
 
 public class UserQuery {
@@ -12,6 +13,8 @@ public class UserQuery {
     private final List<String> filterByIndicators;
     private Integer minScore;
     private Integer maxScore;
+    private Collection<String> filterByIds;
+    private Collection<String> filterByNotHaveAnyOfIds;
 
     // sort
     private final Sort sort;
@@ -24,6 +27,10 @@ public class UserQuery {
     public UserQuery(UserQueryBuilder builder) {
         this.filterByAlertClassifications = builder.filterByAlertClassifications;
         this.filterByIndicators = builder.filterByIndicators;
+        this.filterByNotHaveAnyOfIds = builder.filterByNotHaveAnyOfIds;
+        this.filterByIds = builder.filterByIds;
+
+        //Sort
         this.sort = builder.sort;
 
         this.pageNumber =  builder.pageNumber;
@@ -60,11 +67,21 @@ public class UserQuery {
         return maxScore;
     }
 
+    public Collection<String> getFilterByIds() {
+        return filterByIds;
+    }
+
+    public Collection<String> getFilterByNotHaveAnyOfIds() {
+        return filterByNotHaveAnyOfIds;
+    }
+
     public static class UserQueryBuilder {
 
         // filters
         private List<String> filterByAlertClassifications;
         private List<String> filterByIndicators;
+        private Collection<String> filterByIds;
+        private Collection<String> filterByNotHaveAnyOfIds;
         private Integer minScore;
         private Integer maxScore;
 
@@ -83,6 +100,16 @@ public class UserQuery {
 
         public UserQueryBuilder filterByIndicators(List<String> filterByIndicators) {
             this.filterByIndicators = filterByIndicators;
+            return this;
+        }
+
+        public UserQueryBuilder filterByIds(Collection<String> filterByIds) {
+            this.filterByIds = filterByIds;
+            return this;
+        }
+
+        public UserQueryBuilder filterByNotHaveAnyOfIds(Collection<String> filterByNotHaveAnyOfIds) {
+            this.filterByNotHaveAnyOfIds = filterByNotHaveAnyOfIds;
             return this;
         }
 
