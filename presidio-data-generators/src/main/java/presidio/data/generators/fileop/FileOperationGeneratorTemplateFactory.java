@@ -56,9 +56,38 @@ public class FileOperationGeneratorTemplateFactory {
         generator.setOperationTypeGenerator(getFixedFileOperationTypeGenerator(FILE_OPERATION_TYPE.FILE_MOVED.value, categories));
 
         // Source file - shared
-        FileEntityGenerator fileGenerator = new FileEntityGenerator();
-        fileGenerator.setIsDriveSharedGenerator(new BooleanPercentageGenerator(100));
-        generator.setSourceFileEntityGenerator(fileGenerator);
+        FileEntityGenerator srcFileGenerator = new FileEntityGenerator();
+        BooleanPercentageGenerator isSrcDriveSharedGenerator = new BooleanPercentageGenerator(100);
+        srcFileGenerator.setIsDriveSharedGenerator(isSrcDriveSharedGenerator);
+        generator.setSourceFileEntityGenerator(srcFileGenerator);
+
+        // Destination file - local
+        FileEntityGenerator dstFileGenerator = new FileEntityGenerator();
+        BooleanPercentageGenerator isDstDriveSharedGenerator = new BooleanPercentageGenerator(0);
+        dstFileGenerator.setIsDriveSharedGenerator(isDstDriveSharedGenerator);
+        generator.setDestFileEntityGenerator(dstFileGenerator);
+
+        return generator;
+    }
+
+    public IFileOperationGenerator createMoveToSharedFileOperationsGenerator() throws GeneratorException {
+        return createMoveFromSharedFileOperationsGenerator(null);
+    }
+    public IFileOperationGenerator createMoveToSharedFileOperationsGenerator(List<String> categories) throws GeneratorException {
+        FileOperationGenerator generator = new FileOperationGenerator();
+        generator.setOperationTypeGenerator(getFixedFileOperationTypeGenerator(FILE_OPERATION_TYPE.FILE_MOVED.value, categories));
+
+        // Source file - local
+        FileEntityGenerator srcFileGenerator = new FileEntityGenerator();
+        BooleanPercentageGenerator isSrcDriveSharedGenerator = new BooleanPercentageGenerator(0);
+        srcFileGenerator.setIsDriveSharedGenerator(isSrcDriveSharedGenerator);
+        generator.setSourceFileEntityGenerator(srcFileGenerator);
+
+        // Destination file - shared
+        FileEntityGenerator dstFileGenerator = new FileEntityGenerator();
+        BooleanPercentageGenerator isDstDriveSharedGenerator = new BooleanPercentageGenerator(100);
+        dstFileGenerator.setIsDriveSharedGenerator(isDstDriveSharedGenerator);
+        generator.setDestFileEntityGenerator(dstFileGenerator);
 
         return generator;
     }
@@ -136,6 +165,13 @@ public class FileOperationGeneratorTemplateFactory {
     }
     public IFileOperationGenerator createLocalSharePermissionsChangeOperationsGenerator(List<String> categories) throws GeneratorException {
         return getFileOperationsGenerator(FILE_OPERATION_TYPE.LOCAL_SHARE_PERMISSIONS_CHANGED.value, categories);
+    }
+
+    public IFileOperationGenerator createFailedLocalSharePermissionsChangeOperationsGenerator() throws GeneratorException {
+        return createFailedLocalSharePermissionsChangeOperationsGenerator(null);
+    }
+    public IFileOperationGenerator createFailedLocalSharePermissionsChangeOperationsGenerator(List<String> categories) throws GeneratorException {
+        return getFailedFileOperationsGenerator(FILE_OPERATION_TYPE.LOCAL_SHARE_PERMISSIONS_CHANGED.value, categories);
     }
 
     public IFileOperationGenerator createFileAccessRightsChangedOperationsGenerator() throws GeneratorException {

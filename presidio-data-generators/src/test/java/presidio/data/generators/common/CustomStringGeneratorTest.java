@@ -22,10 +22,9 @@ public class CustomStringGeneratorTest {
     @Test
     public void PseudoRandomStringTest(){
         RandomStringGenerator generator = new RandomStringGenerator(15);
-        System.out.println(generator.getNext());
-        System.out.println(generator.getNext());
-        System.out.println(generator.getNext());
 
-        //Assert.assertEquals("my string", generator.getNext());
+        Assert.assertEquals("mgNlhOmUzLXjgyd", generator.getNext());
+        Assert.assertEquals("rclVnPlyUfnIekK", generator.getNext());
+        Assert.assertEquals("zyVCYeNnhXLPBxS", generator.getNext());
     }
 }
