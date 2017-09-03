@@ -1,5 +1,6 @@
 package fortscale.accumulator.smart;
 
+import fortscale.smart.SmartUtil;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimeRange;
 import presidio.ade.domain.record.accumulator.AccumulatedSmartRecord;
@@ -82,17 +83,9 @@ public class SmartAccumulatorService {
         }
 
         //create add aggregatedFeature record to map if score or value greater that 0.
-        AggregatedFeatureType aggregatedFeatureType = adeAggregationRecord.getAggregatedFeatureType();
-        if (aggregatedFeatureType.equals(AggregatedFeatureType.SCORE_AGGREGATION)) {
-            double value = adeAggregationRecord.getFeatureValue();
-            if (value > 0) {
-                hourToScoreMap.put(smartHourOfInstant, value);
-            }
-        } else if (aggregatedFeatureType.equals(AggregatedFeatureType.FEATURE_AGGREGATION)) {
-            double score = ((ScoredFeatureAggregationRecord) adeAggregationRecord).getScore();
-            if (score > 0) {
-                hourToScoreMap.put(smartHourOfInstant, score);
-            }
+        double score = SmartUtil.getAdeAggregationRecordScore(adeAggregationRecord);
+        if (score > 0) {
+            hourToScoreMap.put(smartHourOfInstant, score);
         }
 
         if(!hourToScoreMap.isEmpty()) {

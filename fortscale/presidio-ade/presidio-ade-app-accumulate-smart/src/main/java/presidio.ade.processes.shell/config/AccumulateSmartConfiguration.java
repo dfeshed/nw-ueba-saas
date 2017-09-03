@@ -3,6 +3,8 @@ package presidio.ade.processes.shell.config;
 
 import fortscale.accumulator.smart.SmartAccumulationsCache;
 import fortscale.accumulator.smart.SmartAccumulationsCacheConfig;
+import fortscale.utils.ttl.TtlService;
+import fortscale.utils.ttl.TtlServiceConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -19,6 +21,7 @@ import presidio.ade.processes.shell.AccumulateSmartRecordsExecutionService;
         SmartDataReaderConfig.class,
         SmartAccumulationsCacheConfig.class,
         SmartAccumulationDataStoreConfig.class,
+        TtlServiceConfig.class,
 })
 public class AccumulateSmartConfiguration {
 
@@ -32,10 +35,12 @@ public class AccumulateSmartConfiguration {
     private int pageSize;
     @Value("${smart.pageIterator.maxGroupSize}")
     private int maxGroupSize;
+    @Autowired
+    private TtlService ttlService;
 
 
     @Bean
     public AccumulateSmartRecordsExecutionService accumulateSmartRecordsExecutionService() {
-        return new AccumulateSmartRecordsExecutionService(pageSize, maxGroupSize, smartDataReader, smartAccumulationDataStore, smartAccumulationsCache);
+        return new AccumulateSmartRecordsExecutionService(pageSize, maxGroupSize, smartDataReader, smartAccumulationDataStore, smartAccumulationsCache, ttlService);
     }
 }

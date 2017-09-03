@@ -96,11 +96,6 @@ public class AlertServiceTest {
         Set<String> contextIds = new HashSet<>();
         contextIds.add(contextId);
         Mockito.when(smartDataReader.readRecords(any(SmartRecordsMetadata.class), eq(contextIds), eq(0), eq(1000), eq(OutputExecutionServiceImpl.SMART_SCORE_THRESHOLD))).thenReturn(smarts);
-
-        Set<String> confNames = new HashSet<>();
-        confNames.add(configurationName);
-        Mockito.when(smartDataReader.getAllSmartConfigurationNames()).thenReturn(confNames);
-
     }
 
     @Test
