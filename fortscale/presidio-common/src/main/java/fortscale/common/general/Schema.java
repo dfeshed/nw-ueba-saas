@@ -17,6 +17,6 @@ public enum Schema {
     }
 
     public static Schema createSchema(String schemaName) throws IllegalArgumentException {
-        return Schema.valueOf(schemaName.toUpperCase());
+        return Schema.valueOf(schemaName.toUpperCase().replace(" ", "_"));
     }
 }

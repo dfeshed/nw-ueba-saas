@@ -1,12 +1,15 @@
 package presidio.output.processor.spring;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import presidio.output.domain.services.event.EventPersistencyService;
 import presidio.output.domain.services.users.UserPersistencyService;
 import presidio.output.domain.spring.EventPersistencyServiceConfig;
+import presidio.output.processor.services.user.UserScoreService;
+import presidio.output.processor.services.user.UserScoreServiceImpl;
 import presidio.output.processor.services.user.UserService;
 import presidio.output.processor.services.user.UserServiceImpl;
 
@@ -17,6 +20,29 @@ import presidio.output.processor.services.user.UserServiceImpl;
 @Import({EventPersistencyServiceConfig.class})
 public class UserServiceConfig {
 
+    @Value("${user.severities.batch.size:1000}")
+    public int defaultUsersBatchFile;
+
+
+    @Value("${user.severities.percent.threshold.critical:75}")
+    private int percentThresholdCritical;
+
+    @Value("${user.severities.percent.threshold.high:50}")
+    private int percentThresholdHigh;
+
+    @Value("${user.severities.percent.threshold.medium:25}")
+    private int percentThresholdMedium;
+
+
+    @Value("${user.score.alert.contribution.low:5}")
+    double alertContributionLow;
+    @Value("${user.score.alert.contribution.medium:10}")
+    double alertContributionMedium;
+    @Value("${user.score.alert.contribution.high:15}")
+    double alertContributionHigh;
+    @Value("${user.score.alert.contribution.critical:20}")
+    double alertContributionCritical;
+
     @Autowired
     private EventPersistencyService eventPersistencyService;
 
@@ -26,6 +52,12 @@ public class UserServiceConfig {
     @Bean
     public UserService userService() {
         return new UserServiceImpl(eventPersistencyService, userPersistencyService);
+    }
+
+    @Bean
+    public UserScoreService userScoreService(){
+        return new UserScoreServiceImpl(userPersistencyService,defaultUsersBatchFile,percentThresholdCritical,percentThresholdHigh,percentThresholdMedium
+                ,alertContributionCritical,alertContributionHigh,alertContributionMedium,alertContributionLow);
     }
 
 }

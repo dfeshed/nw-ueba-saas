@@ -1,7 +1,7 @@
 {
   "AggregatedFeatureEvents": [
     {
-      "name": "highestStartInstantScoreAuthenticationHourly",
+      "name": "highestStartInstantScoreUserIdAuthenticationHourly",
       "type": "P",
       "bucketConfName": "highestStartInstantScoreUserIdAuthenticationHourly",
       "numberOfBuckets": 1,
@@ -18,7 +18,7 @@
       }
     },
     {
-      "name": "sumOfHighestSrcMachineNameRegexClusterScoresAuthenticationHourly",
+      "name": "sumOfHighestSrcMachineNameRegexClusterScoresUserIdAuthenticationHourly",
       "type": "P",
       "bucketConfName": "srcMachineNameRegexClusterToHighestScoreMapUserIdAuthenticationHourly",
       "numberOfBuckets": 1,
@@ -37,7 +37,7 @@
       }
     },
     {
-      "name": "sumOfHighestDstMachineNameRegexClusterAuthenticationHourly",
+      "name": "sumOfHighestDstMachineNameRegexClusterUserIdAuthenticationHourly",
       "type": "P",
       "bucketConfName": "dstMachineNameRegexClusterToHighestScoreMapUserIdAuthenticationHourly",
       "numberOfBuckets": 1,

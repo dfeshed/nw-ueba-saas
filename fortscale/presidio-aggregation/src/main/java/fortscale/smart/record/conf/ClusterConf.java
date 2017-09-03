@@ -4,8 +4,11 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.springframework.util.Assert;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -40,6 +43,11 @@ public class ClusterConf {
 		this.weight = weight;
 	}
 
+	public ClusterConf(ClusterConf other) {
+		this.aggregationRecordNames = new ArrayList<>(other.getAggregationRecordNames());
+		this.weight = new Double(other.getWeight());
+	}
+
 	public List<String> getAggregationRecordNames() {
 		return aggregationRecordNames;
 	}
@@ -58,5 +66,30 @@ public class ClusterConf {
 
 	private static void assertAggregationRecordName(String aggregationRecordName) {
 		Assert.hasText(aggregationRecordName, "The list of aggregation record names cannot contain blanks.");
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (o == null || getClass() != o.getClass()) return false;
+
+		ClusterConf other = (ClusterConf) o;
+
+		return new EqualsBuilder()
+				.append(aggregationRecordNames, other.aggregationRecordNames)
+				.append(weight, other.weight)
+				.build();
+	}
+
+	@Override
+	public int hashCode() {
+		return  new HashCodeBuilder()
+				.append(aggregationRecordNames)
+				.append(weight)
+				.build();
+	}
+
+	@Override
+	public String toString() {
+		return String.format("[%s] -> %f", String.join(", ", aggregationRecordNames), weight);
 	}
 }

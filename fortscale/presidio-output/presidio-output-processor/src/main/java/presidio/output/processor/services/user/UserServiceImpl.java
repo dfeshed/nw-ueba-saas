@@ -38,6 +38,11 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    public User findUserById(String userId){
+        return userPersistencyService.findUserById(userId);
+    }
+
+    @Override
     public void save(List<User> users) {
         userPersistencyService.save(users);
     }
@@ -48,4 +53,6 @@ public class UserServiceImpl implements UserService{
         String userName = event.getUserName();
         return new UserDetails(userName, userDisplayName, userId);
     }
+
+
 }

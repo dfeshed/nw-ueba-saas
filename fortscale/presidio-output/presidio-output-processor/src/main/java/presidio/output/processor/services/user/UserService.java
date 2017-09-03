@@ -11,4 +11,6 @@ public interface UserService {
     User createUserEntity(String userId);
 
     void save(List<User> users);
+
+    public User findUserById(String userId);
 }

@@ -33,6 +33,7 @@ public class ModelingServiceConfigurationTest {
 		properties.put("presidio.ade.modeling.smart.records.base.configuration.path", "classpath*:config/asl/models/smart-records/*.json");
 		// Additional properties
 		properties.put("presidio.ade.modeling.feature.buckets.default.expire.after.seconds", 7776000);
+		properties.put("fortscale.model.retriever.smart.oldestAllowedModelDurationDiff","PT48H");
 		return new TestPropertiesPlaceholderConfigurer(properties);
 	}
 }

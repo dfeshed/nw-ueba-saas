@@ -11,6 +11,7 @@ import presidio.ade.sdk.common.AdeManagerSdk;
 import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.users.User;
 import presidio.output.processor.services.alert.AlertService;
+import presidio.output.processor.services.user.UserScoreService;
 import presidio.output.processor.services.user.UserService;
 
 import java.time.Instant;
@@ -27,17 +28,19 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public static int SMART_SCORE_THRESHOLD = 50;
-
+    private final UserScoreService userScoreService;
     private final AdeManagerSdk adeManagerSdk;
     private final AlertService alertService;
     private final UserService userService;
 
     public OutputExecutionServiceImpl(AdeManagerSdk adeManagerSdk,
                                       AlertService alertService,
-                                      UserService userService) {
+                                      UserService userService,
+                                      UserScoreService userScoreService) {
         this.adeManagerSdk = adeManagerSdk;
         this.alertService = alertService;
         this.userService = userService;
+        this.userScoreService = userScoreService;
     }
 
     /**
@@ -55,8 +58,8 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
         logger.debug("Started output process with params: start date {}:{}, end date {}:{}.", CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate, CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
 
         //1. Get SMARTs from ADE and generate alerts
-        //TODO- change page size and score threshold (configurable)
-        PageIterator<SmartRecord> smartPageIterator = adeManagerSdk.getSmartRecords(new TimeRange(startDate, endDate), 100, SMART_SCORE_THRESHOLD);
+        //TODO- change page size, max group size and score threshold (configurable)
+        PageIterator<SmartRecord> smartPageIterator = adeManagerSdk.getSmartRecords(100, 100, new TimeRange(startDate, endDate), SMART_SCORE_THRESHOLD);
 
         //2. For each smart: generate Alert entity and User
         List<Alert> alerts = new ArrayList<Alert>();
@@ -68,13 +71,16 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
                 //TODO change this after new SMART POJO is ready
                 //TODO- user id should be taken from SMART POJO directly
                 String userId = smart.getAggregationRecords().get(0).getContext().get("userId");
-
-                User userEntity = userService.createUserEntity(userId);
+                User userEntity = userService.findUserById(userId);
+                if (userEntity==null) {
+                    userEntity = userService.createUserEntity(userId);
+                }
                 Alert alertEntity = alertService.generateAlert(smart, userEntity);
                 userEntity.addAlertClassifications(alertEntity.getClassifications());
 
-                if (alertEntity != null)
+                if (alertEntity != null) {
                     alerts.add(alertEntity);
+                }
 
                 users.add(userEntity);
             });
@@ -83,6 +89,9 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
 
         storeAlerts(alerts);
         storeUsers(users);
+        this.userScoreService.updateSeveritiesForUsersList(users,true);
+
+
     }
 
     private void storeAlerts(List<Alert> alerts) {
