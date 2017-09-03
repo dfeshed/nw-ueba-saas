@@ -24,17 +24,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User createUserEntity(String userId) {
         UserDetails userDetails = getUserDetails(userId);
-        List<String> alertClassifications = new ArrayList<>(); //TODO
-        List<String> indicators = new ArrayList<>(); //TODO
-        double userScore = 0d; //TODO temporary hard coded value, to be changed when we will calculate user score
-        User user = new User(userDetails.getUserId(),
-                userDetails.getUserName(),
-                userDetails.getUserDisplayName(),
-                userScore,
-                alertClassifications,
-                indicators, userDetails.isAdmin());
-
-        return user;
+        return new User(userDetails.getUserId(), userDetails.getUserName(), userDetails.getUserDisplayName(), userDetails.isAdmin());
     }
 
     @Override
