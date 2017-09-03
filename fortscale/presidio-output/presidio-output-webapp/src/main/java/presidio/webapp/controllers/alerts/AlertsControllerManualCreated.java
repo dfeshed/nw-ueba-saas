@@ -20,6 +20,8 @@ import presidio.webapp.service.RestAlertService;
 import java.util.ArrayList;
 import java.util.List;
 
+
+@Deprecated
 @RestController
 @RequestMapping(value = "/alerts")
 @Api(value = "AlertController", description = "Alert Controller")
@@ -55,7 +57,7 @@ public class AlertsControllerManualCreated implements AlertsApi {
     public AlertListEntityResponseBean getAlerts(@ApiParam(name = "alertQuery", value = "Filter for Alerts") RestAlertQuery restAlertQuery) {
         AlertListEntityResponseBean responseBean = new AlertListEntityResponseBean();
         try {
-            Page<presidio.output.domain.records.alerts.Alert> alertsPage = restAlertService.getAlerts(restAlertQuery);
+            Page<presidio.output.domain.records.alerts.Alert> alertsPage = null;// restAlertService.getAlerts(restAlertQuery);
 
             List<Alert> alerts = new ArrayList<>();
             if (alertsPage.hasContent()) {

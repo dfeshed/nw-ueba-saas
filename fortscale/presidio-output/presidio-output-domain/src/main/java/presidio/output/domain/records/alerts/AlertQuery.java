@@ -13,6 +13,12 @@ public class AlertQuery {
     private final String filterBySeverity;
     private final long filterByStartDate;
     private final long filterByEndDate;
+    private String filterByFeedback;
+    private double filterByMinScore;
+    private double filterByMaxScore;
+    private List<String> filterByTags;
+    private List<String> filterByAlertsIds;
+    private List<String> filterByIndicatorNams;
 
     // sort
     private final Sort sort;
@@ -34,6 +40,12 @@ public class AlertQuery {
         this.pageNumber = builder.pageNumber;
         this.pageSize = builder.pageSize;
         this.aggregateBySeverity = builder.aggregateBySeverity;
+        this.filterByFeedback = builder.filterByFeedback;
+        this.filterByMinScore = builder.filterByMinScore;
+        this.filterByMaxScore = builder.filterByMaxScore;
+        this.filterByTags = builder.filterByTags;
+        this.filterByAlertsIds = builder.filterByAlertsIds;
+        this.filterByIndicatorNams = builder.filterByIndicatorNams;
     }
 
     public Sort getSort() {
@@ -80,6 +92,12 @@ public class AlertQuery {
         private String filterBySeverity;
         private long filterByStartDate;
         private long filterByEndDate;
+        private String filterByFeedback;
+        private double filterByMinScore;
+        private double filterByMaxScore;
+        private List<String> filterByTags;
+        private List<String> filterByAlertsIds;
+        private List<String> filterByIndicatorNams;
 
         // sort
         private Sort sort;
@@ -92,6 +110,36 @@ public class AlertQuery {
         private boolean aggregateBySeverity;
 
         public AlertQueryBuilder() {
+        }
+
+        public AlertQueryBuilder filterByIndicatorNams(List<String> filterByIndicatorNams) {
+            this.filterByIndicatorNams = filterByIndicatorNams;
+            return this;
+        }
+
+        public AlertQueryBuilder filterByTags(List<String> filterByTags) {
+            this.filterByTags = filterByTags;
+            return this;
+        }
+
+        public AlertQueryBuilder filterByAlertsIds(List<String> filterByAlertsIds) {
+            this.filterByAlertsIds = filterByAlertsIds;
+            return this;
+        }
+
+        public AlertQueryBuilder filterByMinScore(double filterByMinScore) {
+            this.filterByMinScore = filterByMinScore;
+            return this;
+        }
+
+        public AlertQueryBuilder filterByMaxScore(double filterByMaxScore) {
+            this.filterByMaxScore = filterByMaxScore;
+            return this;
+        }
+
+        public AlertQueryBuilder filterByFeedback(String filterByFeedback) {
+            this.filterByFeedback = filterByFeedback;
+            return this;
         }
 
         public AlertQueryBuilder filterByUserName(String filterBuUserName) {

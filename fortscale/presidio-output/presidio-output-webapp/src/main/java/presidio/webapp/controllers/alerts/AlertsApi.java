@@ -22,7 +22,7 @@ import presidio.webapp.model.Patch;
 import java.math.BigDecimal;
 import java.util.List;
 
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-08-31T11:27:51.258Z")
+@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-03T07:54:56.866Z")
 
 @Api(value = "alerts", description = "the alerts API")
 public interface AlertsApi {
@@ -102,21 +102,21 @@ public interface AlertsApi {
             produces = "application/json",
             consumes = "application/json",
             method = RequestMethod.GET)
-    default ResponseEntity<AlertsWrapper> searchAlerts(@ApiParam(value = "Alerts with start time greate or equals to (date as long)") @RequestParam(value = "startTimeFrom", required = false) BigDecimal startTimeFrom,
+    default ResponseEntity<AlertsWrapper> searchAlerts(@ApiParam(value = "The maximum number of records to return", required = true, defaultValue = "10") @RequestParam(value = "pageSize", required = true, defaultValue = "10") Integer pageSize,
+                                                       @ApiParam(value = "The number of page, start from 0", required = true) @RequestParam(value = "pageNumber", required = true) Integer pageNumber,
+                                                       @ApiParam(value = "Alerts with start time greate or equals to (date as long)") @RequestParam(value = "startTimeFrom", required = false) BigDecimal startTimeFrom,
                                                        @ApiParam(value = "Alerts with start time smaller or equals to (date as long)") @RequestParam(value = "startTimeTo", required = false) BigDecimal startTimeTo,
                                                        @ApiParam(value = "Alert Feedback", allowableValues = "NONE, APPROVED, REJECTED") @RequestParam(value = "feedback", required = false) String feedback,
                                                        @ApiParam(value = "Filtering alerts which have a score less than the minimum specified in minScore") @RequestParam(value = "minScore", required = false) Integer minScore,
                                                        @ApiParam(value = "Filtering alerts which have a score higher than the maximum specified in minScore") @RequestParam(value = "maxScore", required = false) Integer maxScore,
                                                        @ApiParam(value = "Comma Seperated List of tags. User should have at least one of the tags. Using '*' says \"all tags\"") @RequestParam(value = "tags", required = false) List<String> tags,
-                                                       @ApiParam(value = "Comma Seperated List of user ids (UUID)") @RequestParam(value = "ids", required = false) List<String> ids,
-                                                       @ApiParam(value = "Name of the alert (exact match)") @RequestParam(value = "name", required = false) String name,
-                                                       @ApiParam(value = "Alert includes indicators with this name (exact match)") @RequestParam(value = "indicatorsType", required = false) String indicatorsType,
-                                                       @ApiParam(value = "The maximum number of records to return", defaultValue = "10") @RequestParam(value = "limit", required = false, defaultValue = "10") Integer limit,
-                                                       @ApiParam(value = "The number of records to skip") @RequestParam(value = "offset", required = false) Integer offset,
-                                                       @ApiParam(value = "The field to sort by. Sort directions can optionally be appended to the sort key, separated by the ‘:’ character.") @RequestParam(value = "sort", required = false) String sort) {
+                                                       @ApiParam(value = "Comma Seperated List of alert ids (UUID)") @RequestParam(value = "ids", required = false) List<String> ids,
+                                                       @ApiParam(value = "Classification of the alert (exact match)") @RequestParam(value = "classification", required = false) List<String> classification,
+                                                       @ApiParam(value = "Alert includes indicators with this name (exact match)") @RequestParam(value = "indicatorsType", required = false) List<String> indicatorsType,
+                                                       @ApiParam(value = "The fields to sort by. Sort directions can optionally be appended to the sort key, separated by the ‘:’ character. Sort fieds should be seperated with comma. I.E. sort=field1:ASC,field2:DESC.") @RequestParam(value = "sort", required = false) List<String> sort,
+                                                       @ApiParam(value = "Alert Severity", allowableValues = "CRITICAL, HIGH, MEDIUM, LOW") @RequestParam(value = "severity", required = false) String severity) {
         // do some magic!
         return new ResponseEntity<AlertsWrapper>(HttpStatus.OK);
     }
 
 }
-

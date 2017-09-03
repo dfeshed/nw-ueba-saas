@@ -14,14 +14,14 @@ import java.util.Objects;
 /**
  * Alert
  */
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-08-31T11:27:51.258Z")
+@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-03T07:32:57.308Z")
 
 public class Alert {
     @JsonProperty("id")
     private String id = null;
 
-    @JsonProperty("name")
-    private String name = null;
+    @JsonProperty("classifiation")
+    private List<String> classifiation = new ArrayList<String>();
 
     @JsonProperty("startDate")
     private Integer startDate = null;
@@ -136,23 +136,28 @@ public class Alert {
         this.id = id;
     }
 
-    public Alert name(String name) {
-        this.name = name;
+    public Alert classifiation(List<String> classifiation) {
+        this.classifiation = classifiation;
+        return this;
+    }
+
+    public Alert addClassifiationItem(String classifiationItem) {
+        this.classifiation.add(classifiationItem);
         return this;
     }
 
     /**
-     * Get name
+     * Get classifiation
      *
-     * @return name
+     * @return classifiation
      **/
-    @ApiModelProperty(example = "Moshe", value = "")
-    public String getName() {
-        return name;
+    @ApiModelProperty(value = "")
+    public List<String> getClassifiation() {
+        return classifiation;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setClassifiation(List<String> classifiation) {
+        this.classifiation = classifiation;
     }
 
     public Alert startDate(Integer startDate) {
@@ -368,7 +373,7 @@ public class Alert {
         }
         Alert alert = (Alert) o;
         return Objects.equals(this.id, alert.id) &&
-                Objects.equals(this.name, alert.name) &&
+                Objects.equals(this.classifiation, alert.classifiation) &&
                 Objects.equals(this.startDate, alert.startDate) &&
                 Objects.equals(this.endDate, alert.endDate) &&
                 Objects.equals(this.username, alert.username) &&
@@ -383,7 +388,7 @@ public class Alert {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, startDate, endDate, username, indicators, score, feedback, userScoreContribution, userScoreContributionFlag, timeframe, feedbackHistory);
+        return Objects.hash(id, classifiation, startDate, endDate, username, indicators, score, feedback, userScoreContribution, userScoreContributionFlag, timeframe, feedbackHistory);
     }
 
     @Override
@@ -392,7 +397,7 @@ public class Alert {
         sb.append("class Alert {\n");
 
         sb.append("    id: ").append(toIndentedString(id)).append("\n");
-        sb.append("    name: ").append(toIndentedString(name)).append("\n");
+        sb.append("    classifiation: ").append(toIndentedString(classifiation)).append("\n");
         sb.append("    startDate: ").append(toIndentedString(startDate)).append("\n");
         sb.append("    endDate: ").append(toIndentedString(endDate)).append("\n");
         sb.append("    username: ").append(toIndentedString(username)).append("\n");

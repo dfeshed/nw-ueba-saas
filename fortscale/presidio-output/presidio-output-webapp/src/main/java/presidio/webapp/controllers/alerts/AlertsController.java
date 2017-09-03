@@ -7,6 +7,7 @@ import presidio.webapp.model.AlertsWrapper;
 import presidio.webapp.model.InlineResponse200;
 import presidio.webapp.model.InlineResponse2001;
 import presidio.webapp.model.Patch;
+import presidio.webapp.restquery.RestAlertQuery;
 import presidio.webapp.service.RestAlertService;
 
 import java.math.BigDecimal;
@@ -23,14 +24,9 @@ public class AlertsController implements AlertsApi {
         this.restAlertService = restAlertService;
     }
 
-
     @Override
     public ResponseEntity<Alert> alertsAlertIdGet(String alertId) {
-        ResponseEntity<Alert> responseEntity=null;
-        presidio.webapp.dto.Alert alert= restAlertService.getAlertById(alertId);
-        if(alert!=null)
-            responseEntity= new ResponseEntity<Alert>(setAlert(alert),HttpStatus.OK);
-        return responseEntity;
+        return null;
     }
 
     @Override
@@ -54,14 +50,20 @@ public class AlertsController implements AlertsApi {
     }
 
     @Override
-    public ResponseEntity<AlertsWrapper> searchAlerts(BigDecimal startTimeFrom, BigDecimal startTimeTo, String feedback, Integer minScore, Integer maxScore, List<String> tags, List<String> ids, String name, String indicatorsType, Integer limit, Integer offset, String sort) {
-        return null;
+    public ResponseEntity<AlertsWrapper> searchAlerts(Integer pageSize, Integer pageNumber, BigDecimal startTimeFrom, BigDecimal startTimeTo, String feedback, Integer minScore, Integer maxScore, List<String> tags, List<String> ids, List<String> classification, List<String> indicatorsType, List<String> sort, String severity) {
+        RestAlertQuery restAlertQuery = new RestAlertQuery();
+        restAlertQuery.setClassification(classification);
+        restAlertQuery.setSeverity(severity);
+        List<Alert> alerts = restAlertService.getAlerts(restAlertQuery);
+        if (alerts != null) {
+            AlertsWrapper alertsWrapper = new AlertsWrapper();
+            alertsWrapper.setAlerts(alerts);
+            alertsWrapper.setTotal(alerts.size());
+            alertsWrapper.setPage(0);
+            return new ResponseEntity(alertsWrapper, HttpStatus.OK);
+        }
+        return new ResponseEntity(null, HttpStatus.BAD_REQUEST);
     }
 
-    private Alert setAlert(presidio.webapp.dto.Alert alertFromdb){
-        Alert alert=new Alert();
-        alert.setId(alertFromdb.getId());
-        alert.setName(alertFromdb.getUsername());
-        return alert;
-    }
+
 }
