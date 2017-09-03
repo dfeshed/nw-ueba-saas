@@ -1,6 +1,7 @@
 package presidio.webapp.restquery;
 
 import io.swagger.annotations.ApiModel;
+import org.springframework.data.domain.Sort;
 
 import java.util.List;
 
@@ -12,10 +13,15 @@ public class RestAlertQuery {
     private String severity;
     private long startDate;
     private long endDate;
+    private String feedback;
+    private double minScore;
+    private double maxScore;
+    private List<String> tags;
+    private List<String> alertsIds;
+    private List<String> indicatorNams;
 
     // sort
-    private String sortField;
-    private boolean ascendingOrder;
+    private Sort sort;
 
     // paging
     private int pageNumber;
@@ -61,20 +67,12 @@ public class RestAlertQuery {
         this.endDate = endDate;
     }
 
-    public String getSortField() {
-        return sortField;
+    public Sort getSort() {
+        return sort;
     }
 
-    public void setSortField(String sortField) {
-        this.sortField = sortField;
-    }
-
-    public boolean isAscendingOrder() {
-        return ascendingOrder;
-    }
-
-    public void setAscendingOrder(boolean ascendingOrder) {
-        this.ascendingOrder = ascendingOrder;
+    public void setSort(Sort sort) {
+        this.sort = sort;
     }
 
     public int getPageNumber() {
@@ -91,5 +89,53 @@ public class RestAlertQuery {
 
     public void setPageSize(int pageSize) {
         this.pageSize = pageSize;
+    }
+
+    public void setFeedback(String feedback) {
+        this.feedback = feedback;
+    }
+
+    public void setMinScore(double minScore) {
+        this.minScore = minScore;
+    }
+
+    public void setMaxScore(double maxScore) {
+        this.maxScore = maxScore;
+    }
+
+    public void setTags(List<String> tags) {
+        this.tags = tags;
+    }
+
+    public void setAlertsIds(List<String> alertsIds) {
+        this.alertsIds = alertsIds;
+    }
+
+    public void setIndicatorNams(List<String> indicatorNams) {
+        this.indicatorNams = indicatorNams;
+    }
+
+    public String getFeedback() {
+        return feedback;
+    }
+
+    public double getMinScore() {
+        return minScore;
+    }
+
+    public double getMaxScore() {
+        return maxScore;
+    }
+
+    public List<String> getTags() {
+        return tags;
+    }
+
+    public List<String> getAlertsIds() {
+        return alertsIds;
+    }
+
+    public List<String> getIndicatorNams() {
+        return indicatorNams;
     }
 }

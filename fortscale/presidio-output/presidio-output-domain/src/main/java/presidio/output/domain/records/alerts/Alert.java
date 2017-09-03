@@ -25,6 +25,7 @@ public class Alert extends AbstractElasticDocument {
     public static final String TIMEFRAME = "timeframe";
     public static final String SEVERITY = "severity";
     public static final String USER_ID = "userId";
+    public static final String IS_USER_ADMIN_FIELD_NAME = "isUserAdmin";
 
     @Field(type = FieldType.String, store = true)
     @JsonProperty(CLASSIFICATIONS)
@@ -64,11 +65,15 @@ public class Alert extends AbstractElasticDocument {
     @JsonProperty(SEVERITY)
     private AlertEnums.AlertSeverity severity;
 
+    @Field(type = FieldType.Boolean, store = true)
+    @JsonProperty(IS_USER_ADMIN_FIELD_NAME)
+    private Boolean isUserAdmin;
+
     public Alert() {
         // empty const for JSON deserialization
     }
 
-    public Alert(String userId, List<String> classifications, String userName, long startDate, long endDate, double score, int indicatorsNum, AlertEnums.AlertTimeframe timeframe, AlertEnums.AlertSeverity severity) {
+    public Alert(String userId, List<String> classifications, String userName, long startDate, long endDate, double score, int indicatorsNum, AlertEnums.AlertTimeframe timeframe, AlertEnums.AlertSeverity severity, Boolean isUserAdmin) {
         super();
         this.classifications = classifications;
         this.userId = userId;
@@ -79,6 +84,7 @@ public class Alert extends AbstractElasticDocument {
         this.indicatorsNum = indicatorsNum;
         this.timeframe = timeframe;
         this.severity = severity;
+        this.isUserAdmin = isUserAdmin;
     }
 
     public String getUserId() {
@@ -104,7 +110,6 @@ public class Alert extends AbstractElasticDocument {
     public void setUserName(String userName) {
         this.userName = userName;
     }
-
 
     public long getStartDate() {
         return startDate;
@@ -152,5 +157,13 @@ public class Alert extends AbstractElasticDocument {
 
     public void setSeverity(AlertEnums.AlertSeverity severity) {
         this.severity = severity;
+    }
+
+    public Boolean getAdmin() {
+        return isUserAdmin;
+    }
+
+    public void setAdmin(Boolean admin) {
+        isUserAdmin = admin;
     }
 }
