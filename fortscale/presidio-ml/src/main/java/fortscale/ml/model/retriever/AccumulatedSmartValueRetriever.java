@@ -9,7 +9,7 @@ import fortscale.ml.model.selector.AccumulatedSmartContextSelectorConf;
 import fortscale.ml.model.selector.IContextSelector;
 import fortscale.ml.model.store.ModelDAO;
 import fortscale.ml.model.store.ModelStore;
-import fortscale.ml.scorer.algorithms.SmartWeightsAlgorithm;
+import fortscale.ml.scorer.algorithms.SmartWeightsScorerAlgorithm;
 import fortscale.smart.record.conf.ClusterConf;
 import fortscale.smart.record.conf.SmartRecordConf;
 import fortscale.smart.record.conf.SmartRecordConfService;
@@ -43,7 +43,7 @@ public class AccumulatedSmartValueRetriever extends AbstractDataRetriever {
     private final String weightsModelName;
     private ModelConfService modelConfService;
     private final ModelStore modelStore;
-    private final SmartWeightsAlgorithm smartWeightsAlgorithm;
+    private final SmartWeightsScorerAlgorithm smartWeightsScorerAlgorithm;
     private final Duration oldestAllowedModelDurationDiff;
 
     public AccumulatedSmartValueRetriever(AccumulatedSmartValueRetrieverConf dataRetrieverConf, SmartAccumulationDataReader accumulationDataReader, SmartRecordConfService smartRecordConfService, FactoryService<IContextSelector> contextSelectorFactoryService, ModelStore modelStore, Duration oldestAllowedModelDurationDiff) {
@@ -58,7 +58,7 @@ public class AccumulatedSmartValueRetriever extends AbstractDataRetriever {
         this.weightsModelName = dataRetrieverConf.getWeightsModelName();
         Assert.hasText(weightsModelName ,String.format("weightsModelName must be defined for retriever name=%s",this.smartRecordConfName));
 
-        this.smartWeightsAlgorithm = new SmartWeightsAlgorithm();
+        this.smartWeightsScorerAlgorithm = new SmartWeightsScorerAlgorithm();
     }
 
     @Override
@@ -103,7 +103,7 @@ public class AccumulatedSmartValueRetriever extends AbstractDataRetriever {
         SmartWeightsModel smartWeightsModel = getModel(endTimeInstant);
         List<ClusterConf> clusterConfs = smartWeightsModel.getClusterConfs();
         List<SmartAggregatedRecordData> aggregatedRecordsData = recordsDataContainer.getSmartAggregatedRecordsData();
-        return smartWeightsAlgorithm.calculateScore(aggregatedRecordsData,clusterConfs);
+        return smartWeightsScorerAlgorithm.calculateScore(aggregatedRecordsData,clusterConfs);
     }
 
     private SmartWeightsModel getModel(Instant endTimeInstant) {

@@ -12,6 +12,10 @@ public class SmartAggregatedRecordDataContainer {
     private Instant startTime;
     private List<SmartAggregatedRecordData> smartAggregatedRecordsData;
 
+    public SmartAggregatedRecordDataContainer(long startTime, Map<String, Double> featureNameToScore) {
+        this(Instant.ofEpochSecond(startTime),featureNameToScore);
+    }
+
     public SmartAggregatedRecordDataContainer(Instant startTime, Map<String, Double> featureNameToScore) {
         this.startTime = startTime;
         this.smartAggregatedRecordsData = featureNameToScore.entrySet().stream().map(entry -> new SmartAggregatedRecordData(entry.getKey(), entry.getValue())).collect(Collectors.toList());
