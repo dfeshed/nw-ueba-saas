@@ -13,8 +13,8 @@ public class UserQuery {
     private final List<String> filterByIndicators;
     private Integer minScore;
     private Integer maxScore;
-    private Collection<String> filterByIds;
-    private Collection<String> filterByNotHaveAnyOfIds;
+    private Collection<String> filterByUserIds;
+    private Collection<String> filterByNotHaveAnyOfUserIds;
 
     // sort
     private final Sort sort;
@@ -27,8 +27,8 @@ public class UserQuery {
     public UserQuery(UserQueryBuilder builder) {
         this.filterByAlertClassifications = builder.filterByAlertClassifications;
         this.filterByIndicators = builder.filterByIndicators;
-        this.filterByNotHaveAnyOfIds = builder.filterByNotHaveAnyOfIds;
-        this.filterByIds = builder.filterByIds;
+        this.filterByNotHaveAnyOfUserIds = builder.filterByNotHaveAnyOfUserIds;
+        this.filterByUserIds = builder.filterByUserIds;
 
         //Sort
         this.sort = builder.sort;
@@ -67,12 +67,12 @@ public class UserQuery {
         return maxScore;
     }
 
-    public Collection<String> getFilterByIds() {
-        return filterByIds;
+    public Collection<String> getFilterByUserIds() {
+        return filterByUserIds;
     }
 
-    public Collection<String> getFilterByNotHaveAnyOfIds() {
-        return filterByNotHaveAnyOfIds;
+    public Collection<String> getFilterByNotHaveAnyOfUserIds() {
+        return filterByNotHaveAnyOfUserIds;
     }
 
     public static class UserQueryBuilder {
@@ -80,8 +80,8 @@ public class UserQuery {
         // filters
         private List<String> filterByAlertClassifications;
         private List<String> filterByIndicators;
-        private Collection<String> filterByIds;
-        private Collection<String> filterByNotHaveAnyOfIds;
+        private Collection<String> filterByUserIds;
+        private Collection<String> filterByNotHaveAnyOfUserIds;
         private Integer minScore;
         private Integer maxScore;
 
@@ -103,13 +103,13 @@ public class UserQuery {
             return this;
         }
 
-        public UserQueryBuilder filterByIds(Collection<String> filterByIds) {
-            this.filterByIds = filterByIds;
+        public UserQueryBuilder filterByUsersIds(Collection<String> filterByUserIds) {
+            this.filterByUserIds = filterByUserIds;
             return this;
         }
 
-        public UserQueryBuilder filterByNotHaveAnyOfIds(Collection<String> filterByNotHaveAnyOfIds) {
-            this.filterByNotHaveAnyOfIds = filterByNotHaveAnyOfIds;
+        public UserQueryBuilder filterByNotHaveAnyOfUserIds(Collection<String> filterByNotHaveAnyOfUserIds) {
+            this.filterByNotHaveAnyOfUserIds = filterByNotHaveAnyOfUserIds;
             return this;
         }
 
