@@ -8,6 +8,7 @@ import fortscale.common.shell.PresidioExecutionService;
 import fortscale.ml.scorer.enriched_events.EnrichedEventsScoringService;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.time.TimeRange;
+import fortscale.utils.ttl.TtlService;
 import presidio.ade.domain.store.aggr.AggregatedDataStore;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
 import presidio.ade.processes.shell.scoring.aggregation.ScoreAggregationsBucketService;
@@ -23,13 +24,14 @@ public class ScoreAggregationsExecutionServiceImpl implements PresidioExecutionS
 	private ScoreAggregationsBucketService scoreAggregationsBucketService;
 	private AggregationRecordsCreator aggregationRecordsCreator;
 	private AggregatedDataStore aggregatedDataStore;
+	private TtlService ttlService;
 
 	public ScoreAggregationsExecutionServiceImpl(
 			EnrichedEventsScoringService enrichedEventsScoringService,
 			EnrichedDataStore enrichedDataStore,
 			ScoreAggregationsBucketService scoreAggregationsBucketService,
 			AggregationRecordsCreator aggregationRecordsCreator, AggregatedDataStore aggregatedDataStore,
-			AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService, BucketConfigurationService bucketConfigurationService) {
+			AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService, BucketConfigurationService bucketConfigurationService, TtlService ttlService) {
 
 
 		this.enrichedEventsScoringService = enrichedEventsScoringService;
@@ -39,6 +41,7 @@ public class ScoreAggregationsExecutionServiceImpl implements PresidioExecutionS
 		this.aggregatedDataStore = aggregatedDataStore;
 		this.aggregatedFeatureEventsConfService = aggregatedFeatureEventsConfService;
 		this.bucketConfigurationService = bucketConfigurationService;
+		this.ttlService = ttlService;
 	}
 
 	@Override
@@ -49,6 +52,7 @@ public class ScoreAggregationsExecutionServiceImpl implements PresidioExecutionS
 				scoreAggregationsBucketService, aggregationRecordsCreator, aggregatedDataStore, aggregatedFeatureEventsConfService, bucketConfigurationService);
 
 		service.execute(new TimeRange(startInstant, endInstant), schema.getName());
+		ttlService.cleanupCollections(startInstant);
 	}
 
 	@Override

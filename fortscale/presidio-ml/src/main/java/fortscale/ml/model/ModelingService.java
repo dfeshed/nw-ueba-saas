@@ -3,6 +3,7 @@ package fortscale.ml.model;
 import fortscale.aggregation.configuration.AslConfigurationPaths;
 import fortscale.aggregation.configuration.AslResourceFactory;
 import fortscale.utils.logging.Logger;
+import fortscale.utils.ttl.TtlService;
 import org.springframework.core.io.Resource;
 
 import java.time.Instant;
@@ -31,6 +32,7 @@ public class ModelingService {
 	private Map<String, AslConfigurationPaths> groupNameToModelConfigurationPathsMap;
 	private ModelingEngineFactory modelingEngineFactory;
 	private AslResourceFactory aslResourceFactory;
+	private TtlService ttlService;
 
 	/**
 	 * C'tor.
@@ -42,12 +44,13 @@ public class ModelingService {
 	public ModelingService(
 			Collection<AslConfigurationPaths> modelConfigurationPathsCollection,
 			ModelingEngineFactory modelingEngineFactory,
-			AslResourceFactory aslResourceFactory) {
+			AslResourceFactory aslResourceFactory, TtlService ttlService) {
 
 		groupNameToModelConfigurationPathsMap = modelConfigurationPathsCollection.stream()
 				.collect(Collectors.toMap(AslConfigurationPaths::getGroupName, Function.identity()));
 		this.modelingEngineFactory = modelingEngineFactory;
 		this.aslResourceFactory = aslResourceFactory;
+		this.ttlService = ttlService;
 	}
 
 	/**
@@ -87,6 +90,7 @@ public class ModelingService {
 
 				logger.info("Finished modeling engine process of modelConf {}.", modelConfName);
 			}
+			ttlService.cleanupCollections(endInstant);
 		}
 		catch (Exception e)
 		{

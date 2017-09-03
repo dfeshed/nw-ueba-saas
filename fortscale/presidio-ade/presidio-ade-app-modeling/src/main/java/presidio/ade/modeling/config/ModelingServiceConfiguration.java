@@ -13,6 +13,8 @@ import fortscale.ml.model.selector.IContextSelector;
 import fortscale.ml.model.store.ModelStore;
 import fortscale.ml.model.store.ModelStoreConfig;
 import fortscale.utils.factory.FactoryService;
+import fortscale.utils.ttl.TtlService;
+import fortscale.utils.ttl.TtlServiceConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -30,7 +32,8 @@ import java.util.Collection;
 		ModelBuilderFactoryServiceConfig.class,
 		ModelStoreConfig.class,
 		ModelingServiceDependencies.class,
-		ModelingServiceCommands.class
+		ModelingServiceCommands.class,
+		TtlServiceConfig.class,
 })
 public class ModelingServiceConfiguration {
 	@Value("${presidio.ade.modeling.enriched.records.group.name}")
@@ -58,6 +61,8 @@ public class ModelingServiceConfiguration {
 	private ModelingEngineFactory modelingEngineFactory;
 	@Autowired
 	private AslResourceFactory aslResourceFactory;
+	@Autowired
+	private TtlService ttlService;
 
 	@Bean
 	public ModelingEngineFactory modelingEngineFactory() {
@@ -79,6 +84,6 @@ public class ModelingServiceConfiguration {
 				new AslConfigurationPaths(enrichedRecordsGroupName, enrichedRecordsBaseConfigurationPath),
 				new AslConfigurationPaths(featureAggrRecordsGroupName, featureAggrRecordsBaseConfigurationPath),
 				new AslConfigurationPaths(smartRecordsGroupName, smartRecordsBaseConfigurationPath));
-		return new ModelingService(modelConfigurationPathsCollection, modelingEngineFactory, aslResourceFactory);
+		return new ModelingService(modelConfigurationPathsCollection, modelingEngineFactory, aslResourceFactory, ttlService);
 	}
 }

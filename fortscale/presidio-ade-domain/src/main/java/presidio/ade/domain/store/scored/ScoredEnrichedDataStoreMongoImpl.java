@@ -5,18 +5,24 @@ import com.mongodb.DBObject;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.mongodb.util.MongoDbBulkOpUtil;
 import fortscale.utils.time.TimeRange;
+import fortscale.utils.ttl.TtlService;
+import fortscale.utils.ttl.TtlServiceAware;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.util.Pair;
+import presidio.ade.domain.record.AdeRecord;
+import presidio.ade.domain.record.aggregated.AdeContextualAggregatedRecord;
 import presidio.ade.domain.record.enriched.AdeScoredEnrichedRecord;
 import presidio.ade.domain.store.AdeDataStoreCleanupParams;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static presidio.ade.domain.record.enriched.AdeScoredEnrichedRecord.CONTEXT_FIELD_NAME;
 import static presidio.ade.domain.record.enriched.AdeScoredEnrichedRecord.SCORE_FIELD_NAME;
 import static presidio.ade.domain.record.enriched.BaseEnrichedContext.EVENT_ID_FIELD_NAME;
@@ -24,13 +30,14 @@ import static presidio.ade.domain.record.enriched.BaseEnrichedContext.EVENT_ID_F
 /**
  * Created by YaronDL on 6/13/2017.
  */
-public class ScoredEnrichedDataStoreMongoImpl implements ScoredEnrichedDataStore {
+public class ScoredEnrichedDataStoreMongoImpl implements ScoredEnrichedDataStore, TtlServiceAware {
 
     private static final Logger logger = Logger.getLogger(ScoredEnrichedDataStoreMongoImpl.class);
 
     private final MongoTemplate mongoTemplate;
     private final AdeScoredEnrichedRecordToCollectionNameTranslator translator;
     private final MongoDbBulkOpUtil mongoDbBulkOpUtil;
+    private TtlService ttlService;
 
     public ScoredEnrichedDataStoreMongoImpl(MongoTemplate mongoTemplate, AdeScoredEnrichedRecordToCollectionNameTranslator translator, MongoDbBulkOpUtil mongoDbBulkOpUtil) {
         this.mongoTemplate = mongoTemplate;
@@ -55,6 +62,7 @@ public class ScoredEnrichedDataStoreMongoImpl implements ScoredEnrichedDataStore
             List<AdeScoredEnrichedRecord> batchToSave = entry.getValue();
             String collectionName = entry.getKey();
             mongoDbBulkOpUtil.insertUnordered(batchToSave,collectionName);
+            ttlService.save(getStoreName(), collectionName);
         }
     }
 
@@ -84,5 +92,22 @@ public class ScoredEnrichedDataStoreMongoImpl implements ScoredEnrichedDataStore
         DBCollection collection = mongoTemplate.getCollection(collectionName);
         DBObject queryObject = query.getQueryObject();
         return collection.distinct(contextualDistinctField, queryObject);
+    }
+
+    @Override
+    public void setTtlService(TtlService ttlService) {
+        this.ttlService = ttlService;
+    }
+
+    @Override
+    public void remove(String collectionName, Instant until) {
+        Query query = new Query()
+                .addCriteria(where(AdeRecord.START_INSTANT_FIELD).lte(until));
+        mongoTemplate.remove(query, collectionName);
+    }
+
+    @Override
+    public String getStoreName(){
+        return "scoredDataStore";
     }
 }
