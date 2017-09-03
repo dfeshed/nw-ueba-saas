@@ -8,6 +8,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.util.Assert;
 
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -109,8 +110,18 @@ public class ModelingService {
 		if(rootGroupPath == null){
 			return null;
 		}
-		String path = StringUtils.isNotBlank(subGroupName)? rootGroupPath + subGroupName.toLowerCase() + ".json" : rootGroupPath + "*.json";
-		return aslResourceFactory.getResources(path);
+		Resource[] resources = aslResourceFactory.getResources(rootGroupPath+ "*.json");
+		//The following code is until we find away to configure the resolver to be case insensitive.
+		if(StringUtils.isBlank(subGroupName)){
+			return resources;
+		} else {
+			for(Resource resource: resources){
+				if(resource.getFilename().equalsIgnoreCase(subGroupName+ ".json")){
+					return new Resource[]{resource};
+				}
+			}
+			return null;
+		}
 	}
 
 	public void clean(String groupName, String sessionId) throws Exception {

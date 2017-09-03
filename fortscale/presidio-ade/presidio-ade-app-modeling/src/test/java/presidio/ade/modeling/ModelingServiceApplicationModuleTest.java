@@ -92,10 +92,15 @@ public class ModelingServiceApplicationModuleTest extends BaseAppTest {
         expectedSchemas.forEach(schema -> executeAndAssertCommandSuccess(String.format(FEATURE_AGGREGATION_RECORDS_LINE_FORMAT,"."+ StringUtils.capitalize(schema))));
     }
 
-//    @Test
-//    public void modeling_service_application_smart_records_sanity_test() {
-//		executeAndAssertCommandSuccess(SMART_RECORDS_LINE);
-//    }
+    @Test
+    public void modeling_service_application_execute_smart_records_sanity_test() {
+		executeAndAssertCommandSuccess(SMART_RECORDS_LINE);
+    }
+
+    @Test
+    public void modeling_service_application_execute_smart_records_specific_conf_sanity_test() {
+        executeAndAssertCommandSuccess(String.format(SMART_RECORDS_LINE_FORMAT,"userId_hourly"));
+    }
 
 
     private void assertIfNotBelongToSchema(String fileName){
