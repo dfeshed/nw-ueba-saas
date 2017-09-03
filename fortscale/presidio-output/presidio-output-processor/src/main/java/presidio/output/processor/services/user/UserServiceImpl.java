@@ -5,7 +5,6 @@ import presidio.output.domain.records.users.User;
 import presidio.output.domain.services.event.EventPersistencyService;
 import presidio.output.domain.services.users.UserPersistencyService;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,16 +23,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User createUserEntity(String userId) {
         UserDetails userDetails = getUserDetails(userId);
-        List<String> alertClassifications = new ArrayList<>(); //TODO
-        List<String> indicators = new ArrayList<>(); //TODO
-        double userScore = 0d; //TODO temporary hard coded value, to be changed when we will calculate user score
-        User user = new User(userDetails.getUserId(),
-                userDetails.getUserName(),
-                userDetails.getUserDisplayName(),
-                userScore,
-                alertClassifications,
-                indicators);
-
+        User user = new User(userDetails.getUserId(), userDetails.getUserName(), userDetails.getUserDisplayName());
         return user;
     }
 
@@ -56,5 +46,11 @@ public class UserServiceImpl implements UserService {
 
     public void setClassification(User user, List<String> classification) {
         user.addAlertClassifications(classification);
+    }
+
+    @Override
+    public void setUserAlertData(User user, List<String> classification, List<String> indicators) {
+        user.setAlertClassifications(classification);
+        user.setIndicators(indicators);
     }
 }

@@ -67,7 +67,6 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
         List<User> users = new ArrayList<User>();
         while (smartPageIterator.hasNext()) {
             List<SmartRecord> smarts = smartPageIterator.next();
-
             smarts.stream().forEach(smart -> {
                 //TODO change this after new SMART POJO is ready
                 String userId = smart.getId();
@@ -76,16 +75,13 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
                     userEntity = userService.createUserEntity(userId);
                 }
                 Alert alertEntity = alertService.generateAlert(smart, userEntity);
-
-
                 if (alertEntity != null) {
-                    userService.setClassification(userEntity, alertEntity.getClassifications());
+                    userService.setUserAlertData(userEntity, alertEntity.getClassifications(), null);//TODO:change null to indicators when alert pojo will have indicators
                     alerts.add(alertEntity);
                 }
 
                 users.add(userEntity);
             });
-            break; //TODO !!! remove this once ADE Team will implement SmartPageIterator.hasNext(). currently only one page is returned.
         }
 
         storeAlerts(alerts);
