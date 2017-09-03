@@ -21,9 +21,7 @@ import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 
 @Ignore
@@ -97,7 +95,7 @@ public class UserPersistencyServiceTest {
     private User generateUser(List<String> classifications, String userName, String userId, String displayName, double score) {
         ArrayList<String> indicators = new ArrayList<String>();
         indicators.add("indicator");
-        return new User(userId, userName, displayName, score, classifications, indicators);
+        return new User(userId, userName, displayName, score, classifications, indicators, false);
     }
 
     @Test
@@ -131,8 +129,6 @@ public class UserPersistencyServiceTest {
 
     @Test
     public void testFindByQueryFilterByIndicatorsAndClassifications() {
-
-
         List<String> indicators = new ArrayList<String>();
 
         user3.setIndicators(indicators);
@@ -151,7 +147,7 @@ public class UserPersistencyServiceTest {
 
         List<String> sortFields = new ArrayList<>();
         sortFields.add(User.SCORE_FIELD_NAME);
-        //sortFields.add(User.USER_ID_FIELD_NAME);
+        sortFields.add(User.USER_ID_FIELD_NAME);
         UserQuery userQuery =
                 new UserQuery.UserQueryBuilder()
                         .filterByAlertClassifications(classificationFilter)
@@ -160,8 +156,29 @@ public class UserPersistencyServiceTest {
 
         Page<User> foundUsers = userPersistencyService.find(userQuery);
         assertThat(foundUsers.getTotalElements(), is(3L));
-        assertTrue(foundUsers.iterator().next().getUserScore() == 60d);
+        assertTrue(foundUsers.iterator().next().getUserScore() == 70d);
     }
 
+
+    @Test
+    public void testFindByIsUserAdmin_True() {
+        user1.setAdmin(true);
+        List<User> userList = new ArrayList<>();
+        userList.add(user1);
+        userList.add(user2);
+        userPersistencyService.save(userList);
+
+        List<String> sortFields = new ArrayList<>();
+        sortFields.add(User.SCORE_FIELD_NAME);
+        sortFields.add(User.USER_ID_FIELD_NAME);
+        UserQuery userQuery =
+                new UserQuery.UserQueryBuilder()
+                        .filterByUserAdmin(true)
+                        .build();
+
+        Page<User> foundUsers = userPersistencyService.find(userQuery);
+        assertThat(foundUsers.getTotalElements(), is(1L));
+        assertTrue(foundUsers.iterator().next().getAdmin());
+    }
 
 }

@@ -15,6 +15,7 @@ public class UserQuery {
     private boolean isPrefix;
     private Integer minScore;
     private Integer maxScore;
+    private Boolean isAdmin;
 
     // sort
     private final Sort sort;
@@ -35,6 +36,7 @@ public class UserQuery {
         this.filterByUserId = builder.filterByUserId;
         this.filterByUserName = builder.filterByUserName;
         this.isPrefix = builder.isPrefix;
+        this.isAdmin = builder.isAdmin;
     }
 
     public String getFilterByUserId() {
@@ -77,6 +79,10 @@ public class UserQuery {
         return maxScore;
     }
 
+    public Boolean getFilterByIsAdmin() {
+        return isAdmin;
+    }
+
     public static class UserQueryBuilder {
 
         // filters
@@ -87,6 +93,7 @@ public class UserQuery {
         private boolean isPrefix;
         private Integer minScore;
         private Integer maxScore;
+        private Boolean isAdmin;
 
 
         // sort
@@ -134,6 +141,11 @@ public class UserQuery {
 
         public UserQueryBuilder filterByUserId(String filterbyUserId) {
             this.filterByUserId = filterbyUserId;
+            return this;
+        }
+
+        public UserQueryBuilder filterByUserAdmin(Boolean isAdmin) {
+            this.isAdmin = isAdmin;
             return this;
         }
 

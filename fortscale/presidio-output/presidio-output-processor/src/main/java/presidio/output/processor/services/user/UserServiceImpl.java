@@ -32,7 +32,7 @@ public class UserServiceImpl implements UserService {
                 userDetails.getUserDisplayName(),
                 userScore,
                 alertClassifications,
-                indicators);
+                indicators, userDetails.isAdmin());
 
         return user;
     }
@@ -51,7 +51,8 @@ public class UserServiceImpl implements UserService {
         EnrichedEvent event = eventPersistencyService.findLatestEventForUser(userId);
         String userDisplayName = event.getUserDisplayName();
         String userName = event.getUserName();
-        return new UserDetails(userName, userDisplayName, userId);
+        Boolean isAdmin = Boolean.valueOf(event.getAdditionalInfo().get(EnrichedEvent.IS_USER_ADMIN));
+        return new UserDetails(userName, userDisplayName, userId, isAdmin);
     }
 
     public void setClassification(User user, List<String> classification) {

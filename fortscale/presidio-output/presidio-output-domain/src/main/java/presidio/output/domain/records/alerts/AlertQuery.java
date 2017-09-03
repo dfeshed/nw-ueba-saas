@@ -19,6 +19,7 @@ public class AlertQuery {
     private List<String> filterByTags;
     private List<String> filterByAlertsIds;
     private List<String> filterByIndicatorNams;
+    private final Boolean filterByIsUserAdmin;
 
     // sort
     private final Sort sort;
@@ -46,10 +47,12 @@ public class AlertQuery {
         this.filterByTags = builder.filterByTags;
         this.filterByAlertsIds = builder.filterByAlertsIds;
         this.filterByIndicatorNams = builder.filterByIndicatorNams;
+        this.filterByIsUserAdmin = builder.filterByIsUserAdmin;
     }
 
     public Sort getSort() {
         return sort;
+
     }
 
     public String getFilterByUserName() {
@@ -84,6 +87,10 @@ public class AlertQuery {
         return aggregateBySeverity;
     }
 
+    public Boolean getFilterByIsUserAdmin() {
+        return filterByIsUserAdmin;
+    }
+
     public static class AlertQueryBuilder {
 
         // filters
@@ -98,6 +105,7 @@ public class AlertQuery {
         private List<String> filterByTags;
         private List<String> filterByAlertsIds;
         private List<String> filterByIndicatorNams;
+        private Boolean filterByIsUserAdmin;
 
         // sort
         private Sort sort;
@@ -164,6 +172,11 @@ public class AlertQuery {
 
         public AlertQueryBuilder filterByEndDate(long filterByEndDate) {
             this.filterByEndDate = filterByEndDate;
+            return this;
+        }
+
+        public AlertQueryBuilder filterByIsUserAdmin(Boolean filterByIsUserAdmin) {
+            this.filterByIsUserAdmin = filterByIsUserAdmin;
             return this;
         }
 

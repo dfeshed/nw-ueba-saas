@@ -54,6 +54,11 @@ public class AlertElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<Al
             boolQueryBuilder.must(rangeQuery);
         }
 
+        // filter by is user admin
+        if (alertQuery.getFilterByIsUserAdmin() != null) {
+            boolQueryBuilder.must(matchQuery(Alert.IS_USER_ADMIN_FIELD_NAME, alertQuery.getFilterByIsUserAdmin()).operator(Operator.AND));
+        }
+
         if (boolQueryBuilder.hasClauses()) {
             super.withFilter(boolQueryBuilder);
         }

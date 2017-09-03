@@ -51,7 +51,7 @@ public class AlertServiceImpl implements AlertService {
         int indicatorsNum = smart.getAggregationRecords().size();
         AlertEnums.AlertSeverity severity = alertEnumsSeverityService.severity(score);
 
-        Alert alert = new Alert(user.getUserId(), classification, user.getUserName(), startDate, endDate, score, indicatorsNum, getStratgyfromSmart(smart), severity);
+        Alert alert = new Alert(user.getUserId(), classification, user.getUserName(), startDate, endDate, score, indicatorsNum, getStratgyfromSmart(smart), severity, user.getAdmin());
         userScoreService.increaseUserScoreWithoutSaving(alert, user);
         return alert;
     }
