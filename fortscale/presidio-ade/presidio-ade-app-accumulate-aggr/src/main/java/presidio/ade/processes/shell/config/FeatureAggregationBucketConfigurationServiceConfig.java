@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 
 
 @Configuration
-public class FeatureAggregationBucketConfigurationServiceConfig {//#1
+public class FeatureAggregationBucketConfigurationServiceConfig {
     @Value("${fortscale.feature.aggregation.bucket.conf.json.file.name}")
     private String bucketConfJsonFilePath;
     @Value("${fortscale.feature.aggregation.bucket.conf.json.overriding.files.path:#{null}}")

@@ -2,6 +2,8 @@ package presidio.ade.domain.store.smart;
 
 import fortscale.utils.mongodb.util.MongoDbBulkOpUtil;
 import fortscale.utils.pagination.ContextIdToNumOfItems;
+import fortscale.utils.ttl.TtlService;
+import fortscale.utils.ttl.TtlServiceAware;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
@@ -26,11 +28,12 @@ import static org.springframework.data.mongodb.core.query.Criteria.where;
  *
  * @author Lior Govrin
  */
-public class SmartDataStoreMongoImpl implements SmartDataStore {
+public class SmartDataStoreMongoImpl implements SmartDataStore, TtlServiceAware {
 
     private final MongoDbBulkOpUtil mongoDbBulkOpUtil;
     private final SmartDataToCollectionNameTranslator translator;
     private final MongoTemplate mongoTemplate;
+    private TtlService ttlService;
 
     public SmartDataStoreMongoImpl(MongoDbBulkOpUtil mongoDbBulkOpUtil, SmartDataToCollectionNameTranslator translator, MongoTemplate mongoTemplate) {
         this.mongoDbBulkOpUtil = mongoDbBulkOpUtil;
@@ -40,7 +43,9 @@ public class SmartDataStoreMongoImpl implements SmartDataStore {
 
     @Override
     public void storeSmartRecords(String smartRecordConfName, Collection<SmartRecord> smartRecords) {
-        mongoDbBulkOpUtil.insertUnordered(new ArrayList<>(smartRecords), translator.toCollectionName(smartRecordConfName));
+        String collectionName = translator.toCollectionName(smartRecordConfName);
+        mongoDbBulkOpUtil.insertUnordered(new ArrayList<>(smartRecords), collectionName);
+        ttlService.save(getStoreName(), collectionName);
     }
 
     @Override
@@ -103,5 +108,22 @@ public class SmartDataStoreMongoImpl implements SmartDataStore {
 
         return collections;
 
+    }
+
+    @Override
+    public void setTtlService(TtlService ttlService) {
+        this.ttlService = ttlService;
+    }
+
+    @Override
+    public void remove(String collectionName, Instant until) {
+        Query query = new Query()
+                .addCriteria(where(AdeRecord.START_INSTANT_FIELD).lte(until));
+        mongoTemplate.remove(query, collectionName);
+    }
+
+    @Override
+    public String getStoreName(){
+        return "smartDataStore";
     }
 }

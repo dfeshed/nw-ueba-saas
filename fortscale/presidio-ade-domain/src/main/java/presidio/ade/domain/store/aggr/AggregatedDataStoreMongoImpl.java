@@ -4,12 +4,15 @@ import com.mongodb.DBCollection;
 import fortscale.utils.mongodb.util.MongoDbBulkOpUtil;
 import fortscale.utils.pagination.PageIterator;
 import fortscale.utils.time.TimeRange;
+import fortscale.utils.ttl.TtlService;
+import fortscale.utils.ttl.TtlServiceAware;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.util.Assert;
 import presidio.ade.domain.pagination.aggregated.AggregatedDataPaginationParam;
 import presidio.ade.domain.pagination.aggregated.AggregatedRecordPaginationService;
+import presidio.ade.domain.record.AdeRecord;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.record.aggregated.AggregatedFeatureType;
 import presidio.ade.domain.record.aggregated.ScoredFeatureAggregationRecord;
@@ -19,17 +22,20 @@ import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static org.springframework.data.mongodb.core.query.Criteria.where;
+
 /**
  * @author Barak Schuster
  * @author Lior Govrin
  */
-public class AggregatedDataStoreMongoImpl implements AggregatedDataStore {
+public class AggregatedDataStoreMongoImpl implements AggregatedDataStore, TtlServiceAware {
     private static final String NULL_AGGREGATED_RECORD_PAGINATION_SERVICE = "pagination service must be set in order to read data in pages";
 
     private final MongoTemplate mongoTemplate;
     private final AggrDataToCollectionNameTranslator translator;
     private final MongoDbBulkOpUtil mongoDbBulkOpUtil;
     private AggregatedRecordPaginationService aggregatedRecordPaginationService;
+    private TtlService ttlService;
 
     public AggregatedDataStoreMongoImpl(MongoTemplate mongoTemplate, AggrDataToCollectionNameTranslator translator, MongoDbBulkOpUtil mongoDbBulkOpUtil) {
         this.mongoTemplate = mongoTemplate;
@@ -81,7 +87,9 @@ public class AggregatedDataStoreMongoImpl implements AggregatedDataStore {
         featureNameToAggregationRecords.keySet().forEach(featureName -> {
             List<? extends AdeAggregationRecord> aggregationRecords = featureNameToAggregationRecords.get(featureName);
             AggrRecordsMetadata metadata = new AggrRecordsMetadata(featureName, aggregatedFeatureType);
-            mongoDbBulkOpUtil.insertUnordered(aggregationRecords, translator.toCollectionName(metadata));
+            String collectionName = translator.toCollectionName(metadata);
+            mongoDbBulkOpUtil.insertUnordered(aggregationRecords, collectionName);
+            ttlService.save(getStoreName(), collectionName);
         });
     }
 
@@ -157,5 +165,23 @@ public class AggregatedDataStoreMongoImpl implements AggregatedDataStore {
         }
 
         return resolvedClass;
+    }
+
+
+    @Override
+    public void setTtlService(TtlService ttlService) {
+        this.ttlService = ttlService;
+    }
+
+    @Override
+    public void remove(String collectionName, Instant until) {
+        Query query = new Query()
+                .addCriteria(where(AdeRecord.START_INSTANT_FIELD).lte(until));
+        mongoTemplate.remove(query, collectionName);
+    }
+
+    @Override
+    public String getStoreName(){
+       return "aggrDataStore";
     }
 }
