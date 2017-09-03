@@ -91,6 +91,13 @@ public class SmartRecordConfService extends AslConfigurationService {
 	}
 
 	/**
+	 * @return a collection of all the {@link SmartRecordConf}s
+	 */
+	public Collection<SmartRecordConf> getSmartRecordConfs() {
+		return nameToSmartRecordConfMap.values();
+	}
+
+	/**
 	 * @param smartRecordConfName the name of the {@link SmartRecordConf}
 	 * @return a set of {@link AggregatedDataPaginationParam}s, one for each aggregation record configured
 	 *         in the corresponding {@link SmartRecordConf} (contains the aggregation record's name and type)
