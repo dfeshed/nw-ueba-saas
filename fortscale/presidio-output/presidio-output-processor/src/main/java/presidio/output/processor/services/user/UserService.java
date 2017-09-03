@@ -15,4 +15,6 @@ public interface UserService {
     void setClassification(User user, List<String> classification);
 
     User findUserById(String userId);
+
+    void setUserAlertData(User user, List<String> classification, List<String> indicators);
 }

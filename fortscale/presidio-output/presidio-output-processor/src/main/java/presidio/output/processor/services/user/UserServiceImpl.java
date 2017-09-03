@@ -58,4 +58,10 @@ public class UserServiceImpl implements UserService {
     public void setClassification(User user, List<String> classification) {
         user.addAlertClassifications(classification);
     }
+
+    @Override
+    public void setUserAlertData(User user, List<String> classification, List<String> indicators) {
+        user.setAlertClassifications(classification);
+        user.setIndicators(indicators);
+    }
 }
