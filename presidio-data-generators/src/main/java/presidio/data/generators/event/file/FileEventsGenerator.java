@@ -25,6 +25,7 @@ import java.util.List;
 
 public class FileEventsGenerator implements IEventGenerator {
     // DEFINE ALL ATTRIBUTE GENERATORS
+    private IStringGenerator eventIdGenerator;
     private TimeGenerator timeGenerator;
     private IStringGenerator dataSourceGenerator;
     private IUserGenerator userGenerator;
@@ -82,6 +83,13 @@ public class FileEventsGenerator implements IEventGenerator {
         this.timeGenerator = timeGenerator;
     }
 
+    public IStringGenerator getEventIdGenerator() {
+        return eventIdGenerator;
+    }
+
+    public void setEventIdGenerator(IStringGenerator eventIdGenerator) {
+        this.eventIdGenerator = eventIdGenerator;
+    }
 
     public IUserGenerator getUserGenerator() {
         return userGenerator;
