@@ -109,7 +109,7 @@ public class ModelingService {
 		if(rootGroupPath == null){
 			return null;
 		}
-		String path = StringUtils.isNotBlank(subGroupName)? rootGroupPath + subGroupName + ".json" : rootGroupPath + "*.json";
+		String path = StringUtils.isNotBlank(subGroupName)? rootGroupPath + subGroupName.toLowerCase() + ".json" : rootGroupPath + "*.json";
 		return aslResourceFactory.getResources(path);
 	}
 
