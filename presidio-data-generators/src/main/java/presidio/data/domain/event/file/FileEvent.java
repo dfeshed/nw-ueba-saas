@@ -41,7 +41,7 @@ public class FileEvent extends Event implements Serializable {
         this.fileSystemEntity = fileSystemEntity;
     }
 
-    public FileEvent(String eventId, Instant dateTime, User user, FileOperation fileOperation, String dataSource, FileSystemEntity fileSystemEntity, MachineEntity machineEntity) {
+    public FileEvent(User user, Instant dateTime, String eventId, FileOperation fileOperation, String dataSource, FileSystemEntity fileSystemEntity, MachineEntity machineEntity) {
         this.eventId = eventId;
         this.dateTime = dateTime;
         this.user = user;
