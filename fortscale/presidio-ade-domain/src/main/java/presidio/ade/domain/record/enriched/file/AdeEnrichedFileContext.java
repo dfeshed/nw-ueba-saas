@@ -1,6 +1,5 @@
 package presidio.ade.domain.record.enriched.file;
 
-
 import fortscale.domain.core.EventResult;
 import presidio.ade.domain.record.enriched.BaseEnrichedContext;
 
@@ -11,8 +10,8 @@ public class AdeEnrichedFileContext extends BaseEnrichedContext {
     private String userId;
     private EventResult result;
     private String operationType;
-    private Boolean isSrcDriveShared;
-    private Boolean isDstDriveShared;
+    private Boolean srcDriveShared;
+    private Boolean dstDriveShared;
 
     public AdeEnrichedFileContext() {
         super();
@@ -27,8 +26,8 @@ public class AdeEnrichedFileContext extends BaseEnrichedContext {
         this.userId = enrichedFileRecord.getUserId();
         this.result = enrichedFileRecord.getResult();
         this.operationType = enrichedFileRecord.getOperationType();
-        this.isSrcDriveShared = enrichedFileRecord.getSrcDriveShared();
-        this.isDstDriveShared = enrichedFileRecord.getDstDriveShared();
+        this.srcDriveShared = enrichedFileRecord.getSrcDriveShared();
+        this.dstDriveShared = enrichedFileRecord.getDstDriveShared();
         this.operationTypeCategories = enrichedFileRecord.getOperationTypeCategories();
     }
 
@@ -57,23 +56,26 @@ public class AdeEnrichedFileContext extends BaseEnrichedContext {
     }
 
     public Boolean getSrcDriveShared() {
-        return isSrcDriveShared;
+        return srcDriveShared;
     }
 
     public void setSrcDriveShared(Boolean srcDriveShared) {
-        isSrcDriveShared = srcDriveShared;
+        this.srcDriveShared = srcDriveShared;
     }
 
     public Boolean getDstDriveShared() {
-        return isDstDriveShared;
+        return dstDriveShared;
     }
 
     public void setDstDriveShared(Boolean dstDriveShared) {
-        isDstDriveShared = dstDriveShared;
+        this.dstDriveShared = dstDriveShared;
     }
-
 
     public List<String> getOperationTypeCategories() {
         return operationTypeCategories;
+    }
+
+    public void setOperationTypeCategories(List<String> operationTypeCategories) {
+        this.operationTypeCategories = operationTypeCategories;
     }
 }
