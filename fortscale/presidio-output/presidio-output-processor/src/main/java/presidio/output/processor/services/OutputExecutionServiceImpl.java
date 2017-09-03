@@ -89,7 +89,6 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
 
         storeAlerts(alerts);
         storeUsers(users);
-        this.userScoreService.updateSeveritiesForUsersList(users,true);
 
 
     }
@@ -104,6 +103,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
     private void storeUsers(List<User> users) {
         if (CollectionUtils.isNotEmpty(users)) {
             userService.save(users);
+            this.userScoreService.updateSeveritiesForUsersList(users,true);
         }
         logger.debug("{} output users were generated", users.size());
     }
