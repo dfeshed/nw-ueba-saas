@@ -3,6 +3,7 @@ package presidio.ade.modeling;
 import fortscale.aggregation.configuration.AslResourceFactory;
 import fortscale.common.general.Schema;
 import fortscale.utils.test.category.ModuleTestCategory;
+import org.apache.commons.lang.StringUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -26,7 +27,7 @@ import static java.util.Comparator.comparing;
 public class ModelingServiceApplicationModuleTest extends BaseAppTest {
     private static final String ENRICHED_RECORDS_LINE_FORMAT = "process --group_name enriched-record-models%s --session_id test-run --end_date 2017-01-01T00:00:00Z";
     private static final String ENRICHED_RECORDS_LINE = String.format(ENRICHED_RECORDS_LINE_FORMAT,"");
-    private static final String FEATURE_AGGREGATION_RECORDS_LINE_FORMAT = "process --group_name feature-aggregation-record-models --session_id test-run --end_date 2017-01-01T00:00:00Z";
+    private static final String FEATURE_AGGREGATION_RECORDS_LINE_FORMAT = "process --group_name feature-aggregation-record-models%s --session_id test-run --end_date 2017-01-01T00:00:00Z";
     private static final String FEATURE_AGGREGATION_RECORDS_LINE = String.format(FEATURE_AGGREGATION_RECORDS_LINE_FORMAT,"");
     private static final String SMART_RECORDS_LINE_FORMAT = "process --group_name smart-record-models --session_id test-run --end_date 2017-01-01T00:00:00Z";
     private static final String SMART_RECORDS_LINE = String.format(SMART_RECORDS_LINE_FORMAT,"");
@@ -68,18 +69,12 @@ public class ModelingServiceApplicationModuleTest extends BaseAppTest {
     }
 
     @Test
-    public void modeling_service_application_execute_file_records_sanity_test() {
-        executeAndAssertCommandSuccess(String.format(ENRICHED_RECORDS_LINE_FORMAT,".file"));
+    public void modeling_service_application_execute_enrich_records_specific_schema_capitalized_sanity_test() {
+        expectedSchemas.forEach(schema -> executeAndAssertCommandSuccess(String.format(ENRICHED_RECORDS_LINE_FORMAT,"." + schema)));
     }
-
     @Test
-    public void modeling_service_application_execute_authentication_records_sanity_test() {
-        executeAndAssertCommandSuccess(String.format(ENRICHED_RECORDS_LINE_FORMAT,".AUTHENTICATION"));
-    }
-
-    @Test
-    public void modeling_service_application_execute_active_directory_records_sanity_test() {
-        executeAndAssertCommandSuccess(String.format(ENRICHED_RECORDS_LINE_FORMAT,".Active_directory"));
+    public void modeling_service_application_execute_enrich_records_specific_schema_sanity_test() {
+        expectedSchemas.forEach(schema -> executeAndAssertCommandSuccess(String.format(ENRICHED_RECORDS_LINE_FORMAT,"." + StringUtils.capitalize(schema))));
     }
 
     @Test
@@ -88,18 +83,13 @@ public class ModelingServiceApplicationModuleTest extends BaseAppTest {
     }
 
     @Test
-    public void modeling_service_application_execute_file_feature_aggregation_records_sanity_test() {
-        executeAndAssertCommandSuccess(String.format(FEATURE_AGGREGATION_RECORDS_LINE_FORMAT,".FILE"));
+    public void modeling_service_application_execute_feature_aggregation_records_specific_schema_sanity_test() {
+        expectedSchemas.forEach(schema -> executeAndAssertCommandSuccess(String.format(FEATURE_AGGREGATION_RECORDS_LINE_FORMAT,"."+ schema)));
     }
 
     @Test
-    public void modeling_service_application_execute_authentication_feature_aggregation_records_sanity_test() {
-        executeAndAssertCommandSuccess(String.format(FEATURE_AGGREGATION_RECORDS_LINE_FORMAT,".Authentication"));
-    }
-
-    @Test
-    public void modeling_service_application_execute_active_directory_feature_aggregation_records_sanity_test() {
-        executeAndAssertCommandSuccess(String.format(FEATURE_AGGREGATION_RECORDS_LINE_FORMAT,".active_directory"));
+    public void modeling_service_application_execute_feature_aggregation_records_specific_schema_capitalized_sanity_test() {
+        expectedSchemas.forEach(schema -> executeAndAssertCommandSuccess(String.format(FEATURE_AGGREGATION_RECORDS_LINE_FORMAT,"."+ StringUtils.capitalize(schema))));
     }
 
 //    @Test
