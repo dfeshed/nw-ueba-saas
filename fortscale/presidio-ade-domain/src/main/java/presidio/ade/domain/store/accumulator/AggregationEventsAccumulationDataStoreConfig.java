@@ -22,7 +22,7 @@ public class AggregationEventsAccumulationDataStoreConfig {
     public MongoDbBulkOpUtil mongoDbBulkOpUtil;
 
     @Bean
-    public AggregationEventsAccumulationDataStore aggrDataStore()
+    public AggregationEventsAccumulationDataStore aggrAccumulationDataStore()
     {
         return new AggregationEventsAccumulationDataStoreMongoImpl(mongoTemplate,translator,mongoDbBulkOpUtil);
     }

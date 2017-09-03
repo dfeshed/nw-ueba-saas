@@ -68,7 +68,7 @@ public class User extends AbstractElasticDocument {
         this.userSeverity = userSeverity;
     }
 
-    public User() {
+    public User(){
         // empty const for JSON deserialization
         this.indicators = new ArrayList<String>();
         this.alertClassifications = new ArrayList<String>();
@@ -146,7 +146,7 @@ public class User extends AbstractElasticDocument {
     public void addAlertClassifications(List<String> alertClassifications) {
         Set<String> newAlertClassifications = new HashSet<String>(this.alertClassifications);
         newAlertClassifications.addAll(alertClassifications);
-        this.alertClassifications = new ArrayList<>();
+        this.alertClassifications=new ArrayList<>();
         this.alertClassifications.addAll(newAlertClassifications);
     }
 

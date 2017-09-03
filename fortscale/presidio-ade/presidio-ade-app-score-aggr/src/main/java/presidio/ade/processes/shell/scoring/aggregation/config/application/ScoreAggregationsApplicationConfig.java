@@ -7,6 +7,8 @@ import fortscale.common.shell.PresidioExecutionService;
 import fortscale.ml.scorer.enriched_events.EnrichedEventsScoringService;
 import fortscale.utils.monitoring.stats.config.NullStatsServiceConfig;
 import fortscale.utils.shell.BootShimConfig;
+import fortscale.utils.ttl.TtlService;
+import fortscale.utils.ttl.TtlServiceConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -35,6 +37,7 @@ import presidio.ade.processes.shell.scoring.aggregation.config.services.ScoreAgg
         EnrichedDataStoreConfig.class,
         AggregatedDataStoreConfig.class,
         BootShimConfig.class,
+        TtlServiceConfig.class,
         NullStatsServiceConfig.class, // todo: remove this
 })
 public class ScoreAggregationsApplicationConfig {
@@ -53,10 +56,12 @@ public class ScoreAggregationsApplicationConfig {
     @Autowired
     @Qualifier("modelBucketConfigService")
     private BucketConfigurationService bucketConfigurationService;
+    @Autowired
+    private TtlService ttlService;
 
     @Bean
     public PresidioExecutionService presidioExecutionService() {
         return new ScoreAggregationsExecutionServiceImpl(
-                enrichedEventsScoringService, enrichedDataStore, scoreAggregationsBucketService, aggregationRecordsCreator, aggregatedDataStore, aggregatedFeatureEventsConfService, bucketConfigurationService);
+                enrichedEventsScoringService, enrichedDataStore, scoreAggregationsBucketService, aggregationRecordsCreator, aggregatedDataStore, aggregatedFeatureEventsConfService, bucketConfigurationService, ttlService);
     }
 }
