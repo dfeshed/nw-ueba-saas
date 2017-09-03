@@ -5,17 +5,24 @@ import presidio.data.generators.common.CustomStringGenerator;
 
 public class FileSystemLogonIDGenerator extends CustomStringGenerator {
 
-    public FileSystemLogonIDGenerator(String userName) {
-        super(convertUserNameToHex(userName));
+    private final String username;
+
+    public FileSystemLogonIDGenerator(String username) {
+        this.username = username;
     }
 
-    public static String convertUserNameToHex(String userName) {
+    public String convertUserNameToHex() {
         String dictionary = "0123456789abcdef";
         StringBuilder build = new StringBuilder("0x0,0x");
-        for(int i = 0 ; i < userName.length() ; i++){
-            build.append(dictionary.charAt((int)userName.charAt(i)%16));
+        for(int i = 0 ; i < username.length() ; i++){
+            build.append(dictionary.charAt((int)username.charAt(i)%16));
         }
 
         return build.toString();
+    }
+
+    @Override
+    public String getNext() {
+        return convertUserNameToHex();
     }
 }
