@@ -49,7 +49,7 @@ public class User extends AbstractElasticDocument {
     @JsonProperty(INDICATORS_FIELD_NAME)
     private List<String> indicators;
 
-    @Field(type = FieldType.Auto, store = true)
+    @Field(type = FieldType.String, store = true)
     @JsonProperty(USER_SEVERITY_FIELD_NAME)
     private UserSeverity userSeverity;
 
