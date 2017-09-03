@@ -10,8 +10,6 @@ public class PatternReplacementConf {
 
 	public PatternReplacementConf(String pattern, String replacement, String preReplacementCondition, String postReplacementCondition) {
 
-		Assert.hasLength(pattern, "Pattern cannot be empty or null.");
-		Assert.notNull(replacement, "Replacement cannot be null.");
 		this.pattern = pattern;
 		this.replacement = replacement;
 		this.preReplacementCondition = preReplacementCondition;
