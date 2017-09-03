@@ -58,7 +58,7 @@
       "strategyName": "fixed_duration_hourly",
       "aggrFeatureConfs": [
         {
-          "name": "operationTypeHistogram",
+          "name": "operationTypeResultHistogram",
           "featureNamesMap": {
             "groupBy": [
               "result"
@@ -82,7 +82,7 @@
       "strategyName": "fixed_duration_hourly",
       "aggrFeatureConfs": [
         {
-          "name": "securitySensitiveOperationHistogram",
+          "name": "securitySensitiveOperationResultHistogram",
           "featureNamesMap": {
             "groupBy": [
               "result"

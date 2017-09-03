@@ -21,7 +21,7 @@
       }
     },
     {
-      "name" : "operationTypeHistogram.userIdSecuritySensitive.activeDirectory",
+      "name" : "userId.securitySensitive.activeDirectory",
       "selector" : {
         "type" : "feature_bucket_context_selector",
         "featureBucketConfName" : "operationTypeHistogramUserIdSecuritySensitiveActiveDirectoryDaily"
