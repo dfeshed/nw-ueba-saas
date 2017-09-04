@@ -7,6 +7,7 @@ import presidio.output.domain.records.users.User;
 import presidio.output.domain.records.users.UserQuery;
 import presidio.output.domain.repositories.UserRepository;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -24,7 +25,11 @@ public class UserPersistencyServiceImpl implements UserPersistencyService {
 
     @Override
     public Iterable<User> save(List<User> users) {
-        return userRepository.save(users);
+        if (users !=null && users.size()>0) {
+            return userRepository.save(users);
+        } else {
+            return Collections.EMPTY_LIST;
+        }
     }
 
     @Override

@@ -40,7 +40,10 @@ public class UserScoreServiceImplTest {
        mockPresistency = Mockito.mock(UserPersistencyServiceImpl.class);
 
         userScoreService = new UserScoreServiceImpl(mockPresistency,
+                null,
                 1000,
+                1000,
+                90,
                 75,
                 50,
                 25,

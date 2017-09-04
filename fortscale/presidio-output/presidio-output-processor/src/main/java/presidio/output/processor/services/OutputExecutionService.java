@@ -1,5 +1,7 @@
 package presidio.output.processor.services;
 
+import presidio.output.domain.records.alerts.AlertEnums;
+
 import java.time.Instant;
 
 /**
@@ -7,6 +9,7 @@ import java.time.Instant;
  */
 public interface OutputExecutionService {
     void run(Instant startDate, Instant endDate) throws Exception;
+    void recalculateUserScore() throws Exception;
 
     void clean(Instant startDate, Instant endDate) throws Exception;
 

@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import presidio.ade.domain.record.aggregated.SmartRecord;
 import presidio.ade.sdk.common.AdeManagerSdk;
 import presidio.output.domain.records.alerts.Alert;
+import presidio.output.domain.records.alerts.AlertEnums;
 import presidio.output.domain.records.users.User;
 import presidio.output.processor.services.alert.AlertService;
 import presidio.output.processor.services.user.UserScoreService;
@@ -89,6 +90,15 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
         this.userScoreService.updateSeveritiesForUsersList(users, true);
 
 
+    }
+
+    public void recalculateUserScore() throws Exception{
+        logger.info("Start Recalculating User Score");
+        this.userScoreService.updateAllUsersScores();
+        logger.info("Finish Recalculating User Score");
+        logger.info("Start Updating UserSeverity");
+        this.userScoreService.updateSeverities();
+        logger.info("Finish Updating Users Severity");
     }
 
     private void storeAlerts(List<Alert> alerts) {

@@ -2,6 +2,7 @@ package presidio.output.domain.records.alerts;
 
 
 import org.springframework.data.domain.Sort;
+import presidio.output.domain.records.users.UserQuery;
 
 import java.util.List;
 
@@ -183,6 +184,12 @@ public class AlertQuery {
         public AlertQueryBuilder sortField(Sort sort) {
             this.sort = sort;
             return this;
+        }
+
+        public AlertQueryBuilder sortField(String sortField, boolean ascendingOrder) {
+            Sort.Direction dir = ascendingOrder ? Sort.Direction.ASC : Sort.Direction.DESC;
+            Sort sort = new Sort(dir, sortField);
+            return sortField(sort);
         }
 
         public AlertQueryBuilder pageNumber(int pageNumber) {
