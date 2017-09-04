@@ -4,7 +4,9 @@ import fortscale.aggregation.configuration.AslConfigurationPaths;
 import fortscale.aggregation.configuration.AslResourceFactory;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.ttl.TtlService;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.core.io.Resource;
+import org.springframework.util.Assert;
 
 import java.time.Instant;
 import java.util.Collection;
@@ -59,23 +61,11 @@ public class ModelingService {
 	 * @param endInstant the end time of the models that are built
 	 */
 	public void process(String groupName, String sessionId, Instant endInstant) throws Exception {
+
 		try {
-			if (!groupNameToModelConfigurationPathsMap.containsKey(groupName)) {
-				logger.error("Group {} is not configured. Ending modeling service process.", groupName);
-				return;
-			}
+			List<ModelConf> modelConfs = getModelConfs(groupName);
 
-			AslConfigurationPaths modelConfigurationPaths = groupNameToModelConfigurationPathsMap.get(groupName);
-			ModelConfService modelConfService = new ModelConfService(
-					aslResourceFactory.getResources(modelConfigurationPaths.getBaseConfigurationPath()),
-					aslResourceFactory.getResources(modelConfigurationPaths.getOverridingConfigurationPath()),
-					aslResourceFactory.getResources(modelConfigurationPaths.getAdditionalConfigurationPath()));
-			modelConfService.loadAslConfigurations();
-			DynamicModelConfServiceContainer.setModelConfService(modelConfService);
-			List<ModelConf> modelConfs = modelConfService.getModelConfs();
-			logger.info("Created a modelConfService for group {} with {} modelConfs.", groupName, modelConfs.size());
 			logger.info("Running modeling engines with sessionId {} and endInstant {} as input.", sessionId, endInstant);
-
 			for (ModelConf modelConf : modelConfs) {
 				ModelingEngine modelingEngine = modelingEngineFactory.getModelingEngine(modelConf);
 				String modelConfName = modelConf.getName();
@@ -96,6 +86,44 @@ public class ModelingService {
 		{
 			logger.error("encountered error while building models for groupName={}, sessionId={}, endInstant={}",groupName, sessionId, endInstant,e);
 			throw e;
+		}
+	}
+
+	private List<ModelConf> getModelConfs(String groupName){
+		String[] groupNames = groupName.split("\\.");
+		Assert.isTrue(groupNames.length <= 2, "a group name is expected to contain at most root group and sub group.");
+		String rootGroupName = groupNames[0];
+		String subGroupName = groupNames.length < 2 ? "" : groupNames[1];
+
+		Assert.isTrue(groupNameToModelConfigurationPathsMap.containsKey(rootGroupName), String.format("Root group %s is not configured.", rootGroupName));
+
+		AslConfigurationPaths modelConfigurationPaths = groupNameToModelConfigurationPathsMap.get(rootGroupName);
+		ModelConfService modelConfService = new ModelConfService(
+				getResources(modelConfigurationPaths.getBaseConfigurationPath(), subGroupName),
+				getResources(modelConfigurationPaths.getOverridingConfigurationPath(), subGroupName),
+				getResources(modelConfigurationPaths.getAdditionalConfigurationPath(), subGroupName));
+		modelConfService.loadAslConfigurations();
+		DynamicModelConfServiceContainer.setModelConfService(modelConfService);
+		List<ModelConf> modelConfs = modelConfService.getModelConfs();
+		logger.info("Created a modelConfService for group {} with {} modelConfs.", groupName, modelConfs.size());
+		return modelConfs;
+	}
+
+	private Resource[] getResources(String rootGroupPath, String subGroupName){
+		if(rootGroupPath == null){
+			return null;
+		}
+		Resource[] resources = aslResourceFactory.getResources(rootGroupPath+ "*.json");
+		//The following code is until we find away to configure the resolver to be case insensitive.
+		if(StringUtils.isBlank(subGroupName)){
+			return resources;
+		} else {
+			for(Resource resource: resources){
+				if(resource.getFilename().equalsIgnoreCase(subGroupName+ ".json")){
+					return new Resource[]{resource};
+				}
+			}
+			return null;
 		}
 	}
 

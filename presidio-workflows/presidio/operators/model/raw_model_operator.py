@@ -28,8 +28,10 @@ class RawModelOperator(ModelOperator):
 
         self.data_source = data_source
 
-        super(RawModelOperator, self).__init__(command=command,session_id=session_id, group_name=RAW_MODEL_GROUP_NAME,task_id=task_id,*args,**kwargs)
+        super(RawModelOperator, self).__init__(command=command,session_id=session_id, group_name=self.get_group_name(),task_id=task_id,*args,**kwargs)
 
+    def get_group_name(self):
+        return '{}.{}'.format(RAW_MODEL_GROUP_NAME, self.data_source)
 
     def get_task_id(self):
         """

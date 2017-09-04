@@ -81,8 +81,8 @@ dags:
         xms: 70
     SmartModelOperator:
       jvm_args:
-        jar_path: ${general.deployment.bins.base_path}/test-mock-project-0.0.1-SNAPSHOT.jar
-        main_class: com.fortscale.test.TestMockProjectApplication
+        jar_path: ${general.deployment.bins.base_path}/presidio-ade-app-modeling-1.0.0-SNAPSHOT.jar
+        main_class: presidio.ade.modeling.ModelingServiceApplication
         xmx: 500
         xms: 70
 components:
