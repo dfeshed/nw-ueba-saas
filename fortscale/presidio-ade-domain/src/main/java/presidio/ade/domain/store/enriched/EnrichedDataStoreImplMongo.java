@@ -5,6 +5,8 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.pagination.ContextIdToNumOfItems;
+import fortscale.utils.ttl.TtlService;
+import fortscale.utils.ttl.TtlServiceAware;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
@@ -14,6 +16,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.util.ReflectionUtils;
 import presidio.ade.domain.record.AdeRecord;
+import presidio.ade.domain.record.aggregated.AdeContextualAggregatedRecord;
 import presidio.ade.domain.record.enriched.AdeEventTypeToAdeEnrichedRecordClassResolver;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.ade.domain.store.AdeDataStoreCleanupParams;
@@ -29,12 +32,13 @@ import static org.springframework.data.mongodb.core.aggregation.Aggregation.matc
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.newAggregation;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
-public class EnrichedDataStoreImplMongo implements EnrichedDataStore {
+public class EnrichedDataStoreImplMongo implements EnrichedDataStore, TtlServiceAware {
     private static final Logger logger = Logger.getLogger(EnrichedDataStoreImplMongo.class);
 
     private final MongoTemplate mongoTemplate;
     private final EnrichedDataAdeToCollectionNameTranslator translator;
     private final AdeEventTypeToAdeEnrichedRecordClassResolver adeEventTypeToAdeEnrichedRecordClassResolver;
+    private TtlService ttlService;
 
     public EnrichedDataStoreImplMongo(MongoTemplate mongoTemplate, EnrichedDataAdeToCollectionNameTranslator translator, AdeEventTypeToAdeEnrichedRecordClassResolver adeEventTypeToAdeEnrichedRecordClassResolver) {
         this.mongoTemplate = mongoTemplate;
@@ -47,6 +51,7 @@ public class EnrichedDataStoreImplMongo implements EnrichedDataStore {
         logger.info("storing by recordsMetadata={}", recordsMetadata);
         String collectionName = translator.toCollectionName(recordsMetadata);
         mongoTemplate.insert(records, collectionName);
+        ttlService.save(getStoreName(), collectionName);
     }
 
     @Override
@@ -202,5 +207,21 @@ public class EnrichedDataStoreImplMongo implements EnrichedDataStore {
         return fieldName;
     }
 
+    @Override
+    public void setTtlService(TtlService ttlService) {
+        this.ttlService = ttlService;
+    }
+
+    @Override
+    public void remove(String collectionName, Instant until) {
+        Query query = new Query()
+                .addCriteria(where(AdeRecord.START_INSTANT_FIELD).lte(until));
+        mongoTemplate.remove(query, collectionName);
+    }
+
+    @Override
+    public String getStoreName(){
+        return "enrichedDataStore";
+    }
 
 }

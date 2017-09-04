@@ -6,6 +6,8 @@ import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 import presidio.output.domain.records.AbstractElasticDocument;
 
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import java.util.*;
 
 /**
@@ -23,6 +25,7 @@ public class User extends AbstractElasticDocument {
     public static final String USER_ID_FIELD_NAME = "userId";
     public static final String USER_NAME_FIELD_NAME = "userName";
     public static final String USER_DISPLAY_NAME_FIELD_NAME = "userDisplayName";
+    public static final String IS_ADMIN_FIELD_NAME = "isAdmin";
 
 
     @Field(type = FieldType.String, store = true)
@@ -50,6 +53,7 @@ public class User extends AbstractElasticDocument {
     private List<String> indicators;
 
     @Field(type = FieldType.String, store = true)
+    @Enumerated(EnumType.STRING)
     @JsonProperty(USER_SEVERITY_FIELD_NAME)
     private UserSeverity userSeverity;
 
@@ -67,7 +71,7 @@ public class User extends AbstractElasticDocument {
         this.alertClassifications = new ArrayList<String>();
     }
 
-    public User(String userId, String userName, String userDisplayName, double userScore, List<String> alertClassifications, List<String> indicators) {
+    public User(String userId, String userName, String userDisplayName, double userScore, List<String> alertClassifications, List<String> indicators, Boolean isAdmin) {
         super();
         this.userId = userId;
         this.userName = userName;
@@ -75,6 +79,15 @@ public class User extends AbstractElasticDocument {
         this.userScore = userScore;
         this.alertClassifications = alertClassifications;
         this.indicators = indicators;
+        this.isAdmin = isAdmin;
+    }
+
+    public User(String userId, String userName, String userDisplayName, Boolean isAdmin) {
+        super();
+        this.userId = userId;
+        this.userName = userName;
+        this.userDisplayName = userDisplayName;
+        this.isAdmin = isAdmin;
     }
 
     public void setUserId(String userId) {
@@ -109,6 +122,9 @@ public class User extends AbstractElasticDocument {
         return userScore;
     }
 
+    @Field(type = FieldType.Boolean, store = true)
+    @JsonProperty(IS_ADMIN_FIELD_NAME)
+    private Boolean isAdmin;
 
 
     public List<String> getAlertClassifications() {
@@ -148,5 +164,13 @@ public class User extends AbstractElasticDocument {
     @Override
     public int hashCode() {
         return userId.hashCode();
+    }
+
+    public Boolean getAdmin() {
+        return isAdmin;
+    }
+
+    public void setAdmin(Boolean admin) {
+        isAdmin = admin;
     }
 }

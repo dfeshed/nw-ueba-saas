@@ -199,7 +199,7 @@
             "type": "aggr_feature_sum_func"
           },
           "filter": {
-            "jsonPath": "[?(@.operationType == 'FILE_MOVED' && @.isSrcDriveShared == 'true' && @.isDstDriveShared == 'false')]"
+            "jsonPath": "[?(@.operationType == 'FILE_MOVED' && @.srcDriveShared == 'true' && @.dstDriveShared == 'false')]"
           }
         }
       ]
@@ -222,7 +222,7 @@
             "type": "aggr_feature_sum_func"
           },
           "filter": {
-            "jsonPath": "[?(@.operationType == 'FILE_MOVED' && @.isSrcDriveShared == 'false' && @.isDstDriveShared == 'true')]"
+            "jsonPath": "[?(@.operationType == 'FILE_MOVED' && @.srcDriveShared == 'false' && @.dstDriveShared == 'true')]"
           }
         }
       ]

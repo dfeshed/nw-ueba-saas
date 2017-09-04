@@ -9,7 +9,7 @@ public class AlertEnums {
 
         private String value;
 
-        AlertSeverity(String name) {
+        AlertSeverity(String value) {
             this.value = value;
         }
     }
@@ -25,10 +25,10 @@ public class AlertEnums {
             }
             return null;
         }
-    }
 
-    public enum AlertType {
-        GLOBAL, DATA_EXFILTRATION, BRUTE_FORCE, ANOMALOUS_ADMIN_ACTIVITY, SNOOPING
+        public static AlertTimeframe getAlertTimeframe(String value) {
+            return AlertTimeframe.valueOf(value.toUpperCase());
+        }
     }
 
 }

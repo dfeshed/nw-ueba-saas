@@ -2,6 +2,8 @@ package presidio.ade.smart.config;
 
 import fortscale.smart.record.conf.SmartRecordConfService;
 import fortscale.utils.mongodb.util.MongoDbBulkOpUtilConfig;
+import fortscale.utils.ttl.TtlService;
+import fortscale.utils.ttl.TtlServiceConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -19,36 +21,40 @@ import presidio.ade.smart.SmartService;
  */
 @Configuration
 @Import({
-		// Mongo DB related configurations
-		MongoDbBulkOpUtilConfig.class,
-		// CLI commands related configurations
-		SmartApplicationCommands.class,
-		// Smart application related configurations
-		SmartApplicationSmartRecordConfig.class,
-		SmartApplicationAggregationDataReaderConfig.class,
-		SmartApplicationSmartScoringServiceConfig.class,
-		SmartDataStoreConfig.class
+        // Mongo DB related configurations
+        MongoDbBulkOpUtilConfig.class,
+        // CLI commands related configurations
+        SmartApplicationCommands.class,
+        // Smart application related configurations
+        SmartApplicationSmartRecordConfig.class,
+        SmartApplicationAggregationDataReaderConfig.class,
+        SmartApplicationSmartScoringServiceConfig.class,
+        SmartDataStoreConfig.class,
+        TtlServiceConfig.class,
 })
 public class SmartApplicationConfiguration {
-	@Value("${presidio.ade.aggregation.records.threshold:#{null}}")
-	private Double aggregationRecordsThreshold;
+    @Value("${presidio.ade.aggregation.records.threshold:#{null}}")
+    private Double aggregationRecordsThreshold;
 
-	@Autowired
-	private SmartRecordConfService smartRecordConfService;
-	@Autowired
-	private AggregatedDataReader aggregatedDataReader;
-	@Autowired
-	private SmartScoringService smartScoringService;
-	@Autowired
-	private SmartDataStore smartDataStore;
+    @Autowired
+    private SmartRecordConfService smartRecordConfService;
+    @Autowired
+    private AggregatedDataReader aggregatedDataReader;
+    @Autowired
+    private SmartScoringService smartScoringService;
+    @Autowired
+    private SmartDataStore smartDataStore;
+    @Autowired
+    private TtlService ttlService;
 
-	@Bean
-	public SmartService smartService() {
-		return new SmartService(
-				smartRecordConfService,
-				aggregationRecordsThreshold,
-				aggregatedDataReader,
-				smartScoringService,
-				smartDataStore);
-	}
+
+    @Bean
+    public SmartService smartService() {
+        return new SmartService(
+                smartRecordConfService,
+                aggregationRecordsThreshold,
+                aggregatedDataReader,
+                smartScoringService,
+                smartDataStore, ttlService);
+    }
 }

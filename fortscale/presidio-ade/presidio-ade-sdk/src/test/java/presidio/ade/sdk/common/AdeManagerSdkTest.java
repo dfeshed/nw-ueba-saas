@@ -8,6 +8,7 @@ import fortscale.utils.test.mongodb.MongodbTestConfig;
 import fortscale.utils.time.SystemDateService;
 import fortscale.utils.time.TimeRange;
 import fortscale.utils.time.impl.config.SystemDateServiceImplForcedConfig;
+import fortscale.utils.ttl.TtlServiceConfig;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -109,7 +110,8 @@ public class AdeManagerSdkTest {
             AdeManagerSdkConfig.class,
             SystemDateServiceImplForcedConfig.class,
             MockedEnrichedRecordGeneratorConfig.class,
-            ScoredEnrichedFileGeneratorConfig.class
+            ScoredEnrichedFileGeneratorConfig.class,
+            TtlServiceConfig.class
     })
     public static class springConfig {
         @Bean
@@ -117,7 +119,9 @@ public class AdeManagerSdkTest {
             Properties properties = new Properties();
             properties.put("streaming.event.field.type.aggr_event", "aggr_event");
             properties.put("streaming.aggr_event.field.context", "context");
-
+            properties.put("presidio.application.name", "test-app-name");
+            properties.put("presidio.default.ttl.duration", "PT48H");
+            properties.put("presidio.default.cleanup.interval", "PT24H");
             return new TestPropertiesPlaceholderConfigurer(properties);
         }
     }

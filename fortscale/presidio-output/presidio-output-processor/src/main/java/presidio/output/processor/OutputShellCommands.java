@@ -6,7 +6,6 @@ import org.springframework.shell.core.CommandMarker;
 import org.springframework.shell.core.annotation.CliCommand;
 import org.springframework.shell.core.annotation.CliOption;
 import org.springframework.stereotype.Component;
-import presidio.output.domain.records.alerts.AlertEnums;
 import presidio.output.processor.services.OutputExecutionService;
 
 import java.time.Instant;
@@ -31,12 +30,11 @@ public class OutputShellCommands implements CommandMarker {
             @CliOption(key = {CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME}, mandatory = true, help = "events with (logical) time smaller than specified end time will be processed")
             final Instant endTime,
 
-            @CliOption(key = {CommonStrings.COMMAND_LINE_TIME_FRAME_FIELD_NAME}, mandatory = true, help = "Timeframe- hourly / daily- run for hourly / daily alerts")
-            final String timeframe
+            @CliOption(key = {CommonStrings.COMMAND_LINE_FIXED_DURATION_FIELD_NAME}, help = "the internal time intervals that the processing will be done by")
+            final Double fixedDuration
 
     ) throws Exception {
-        AlertEnums.AlertTimeframe timeframeEnum = AlertEnums.AlertTimeframe.valueOfIgnoreCase(timeframe);
-           executionService.run(startTime, endTime,timeframeEnum);
+           executionService.run(startTime, endTime);
     }
 
     @CliCommand(value = "recalculate-user-score", help = "run daily calculation for output")

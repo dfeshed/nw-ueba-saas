@@ -23,6 +23,9 @@ import presidio.output.domain.services.users.UserPersistencyServiceImpl;
 import presidio.output.processor.services.user.UserScoreServiceImpl;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.*;
 
 /**
@@ -39,6 +42,8 @@ public class UserScoreServiceImplRecalculateScoresTest {
     private UserScoreServiceImpl userScoreService;
     private UserPersistencyService mockUserPresistency;
     private AlertPersistencyService mockAlertPresistency;
+
+    private Page<Alert> emptyAlertPage;
 
 
     @Before
@@ -58,6 +63,9 @@ public class UserScoreServiceImplRecalculateScoresTest {
                 ALERT_CONTRIBUTION_HIGH,
                 ALERT_CONTRIBUTION_MEDIUM,
                 ALERT_CONTRIBUTION_LOW);
+
+
+        emptyAlertPage = new PageImpl<Alert>(Collections.emptyList());
     }
 
     @Test
@@ -65,21 +73,27 @@ public class UserScoreServiceImplRecalculateScoresTest {
         Pageable pageable1=new PageRequest(0,10);
         List<Alert> mockAlerts;
 
-        long startTimeAWeekAgo = LocalDate.now().minusDays(7).toEpochDay();
+        LocalDateTime weekAgo = LocalDate.now().minusDays(7).atStartOfDay().plusHours(3);
 
-        mockAlerts = Arrays.asList(
-            new Alert("user1",null,null,startTimeAWeekAgo,0,95,0, null, AlertEnums.AlertSeverity.CRITICAL),
-            new Alert("user1",null,null,startTimeAWeekAgo,0,95,0, null, AlertEnums.AlertSeverity.HIGH),
-            new Alert("user1",null,null,startTimeAWeekAgo,0,95,0, null, AlertEnums.AlertSeverity.LOW),
-            new Alert("user2",null,null,startTimeAWeekAgo,0,95,0, null, AlertEnums.AlertSeverity.CRITICAL),
-            new Alert("user2",null,null,startTimeAWeekAgo,0,95,0, null, AlertEnums.AlertSeverity.CRITICAL)
+        long startTimeAWeekAgo = Date.from(weekAgo.atZone(ZoneId.systemDefault()).toInstant()).getTime();
+
+                mockAlerts = Arrays.asList(
+            new Alert("user1",null,null,startTimeAWeekAgo,0,95,0, null, AlertEnums.AlertSeverity.CRITICAL,false),
+            new Alert("user1",null,null,startTimeAWeekAgo,0,95,0, null, AlertEnums.AlertSeverity.HIGH,false),
+            new Alert("user1",null,null,startTimeAWeekAgo,0,95,0, null, AlertEnums.AlertSeverity.LOW,false),
+            new Alert("user2",null,null,startTimeAWeekAgo,0,95,0, null, AlertEnums.AlertSeverity.CRITICAL,false),
+            new Alert("user2",null,null,startTimeAWeekAgo,0,95,0, null, AlertEnums.AlertSeverity.CRITICAL,false)
          );
         Page<Alert> alertPage1= new PageImpl<Alert>(mockAlerts,pageable1,5);
         Mockito.when(this.mockAlertPresistency.find(Mockito.any(AlertQuery.class))).thenAnswer(new Answer<Page>() {
             @Override
             public Page answer(InvocationOnMock invocation) throws Throwable {
                 AlertQuery query = (AlertQuery)invocation.getArguments()[0];
-                return alertPage1;
+                if (query.getFilterByStartDate()<=startTimeAWeekAgo && query.getFilterByEndDate()>=startTimeAWeekAgo) {
+                    return alertPage1;
+                }else {
+                    return emptyAlertPage;
+                }
             }
         });
 
@@ -99,27 +113,29 @@ public class UserScoreServiceImplRecalculateScoresTest {
         List<Alert> mockAlertsPage1;
         List<Alert> mockAlertsPage2;
 
-        long startTimeAWeekAgo = LocalDate.now().minusDays(7).toEpochDay();
+        LocalDateTime weekAgo = LocalDate.now().minusDays(7).atStartOfDay().plusHours(3);
+
+        long startTimeAWeekAgo = Date.from(weekAgo.atZone(ZoneId.systemDefault()).toInstant()).getTime();
         long oldStartTime = LocalDate.now().minusDays(ALERT_EFFECTIVE_DURATION_IN_DAYS*2).toEpochDay();
 
         mockAlertsPage1 = Arrays.asList(
 
                 //Page1-one user which 3 alerts one user with 2 alrrts
-                new Alert("user1",null,null,startTimeAWeekAgo,0,95,0, null, AlertEnums.AlertSeverity.CRITICAL),
-                new Alert("user1",null,null,startTimeAWeekAgo,0,95,0, null, AlertEnums.AlertSeverity.HIGH),
-                new Alert("user1",null,null,oldStartTime,0,95,0, null, AlertEnums.AlertSeverity.LOW),
-                new Alert("user2",null,null,oldStartTime,0,95,0, null, AlertEnums.AlertSeverity.CRITICAL),
-                new Alert("user2",null,null,startTimeAWeekAgo,0,95,0, null, AlertEnums.AlertSeverity.CRITICAL)
+                new Alert("user1",null,null,startTimeAWeekAgo,0,95,0, null, AlertEnums.AlertSeverity.CRITICAL,false),
+                new Alert("user1",null,null,startTimeAWeekAgo,0,95,0, null, AlertEnums.AlertSeverity.HIGH,false),
+                new Alert("user1",null,null,oldStartTime,0,95,0, null, AlertEnums.AlertSeverity.LOW,false),
+                new Alert("user2",null,null,oldStartTime,0,95,0, null, AlertEnums.AlertSeverity.CRITICAL,false),
+                new Alert("user2",null,null,startTimeAWeekAgo,0,95,0, null, AlertEnums.AlertSeverity.CRITICAL,false)
         );
 
         mockAlertsPage2 = Arrays.asList(
 
                 //Page2-3  alerts that should be counted, and 2 alerts which should not be counted
-                new Alert("user1",null,null,startTimeAWeekAgo,0,95,0, null, AlertEnums.AlertSeverity.LOW),
-                new Alert("user1",null,null,startTimeAWeekAgo,0,95,0, null, AlertEnums.AlertSeverity.LOW),
-                new Alert("user1",null,null,oldStartTime,0,95,0, null, AlertEnums.AlertSeverity.LOW),
-                new Alert("user2",null,null,startTimeAWeekAgo,0,95,0, null, AlertEnums.AlertSeverity.HIGH),
-                new Alert("user3",null,null,startTimeAWeekAgo,0,95,0, null, AlertEnums.AlertSeverity.HIGH)
+                new Alert("user1",null,null,startTimeAWeekAgo,0,95,0, null, AlertEnums.AlertSeverity.LOW,false),
+                new Alert("user1",null,null,startTimeAWeekAgo,0,95,0, null, AlertEnums.AlertSeverity.LOW,false),
+                new Alert("user1",null,null,oldStartTime,0,95,0, null, AlertEnums.AlertSeverity.LOW,false),
+                new Alert("user2",null,null,startTimeAWeekAgo,0,95,0, null, AlertEnums.AlertSeverity.HIGH,false),
+                new Alert("user3",null,null,startTimeAWeekAgo,0,95,0, null, AlertEnums.AlertSeverity.HIGH,false)
         );
         Pageable pageable1=new PageRequest(0,5);
         Page<Alert> alertPage1= new PageImpl<Alert>(mockAlertsPage1,pageable1,10);
@@ -130,10 +146,14 @@ public class UserScoreServiceImplRecalculateScoresTest {
             @Override
             public Page answer(InvocationOnMock invocation) throws Throwable {
                 AlertQuery query = (AlertQuery)invocation.getArguments()[0];
-                if (query.getPageNumber()==0){
-                    return alertPage1;
+                if (query.getFilterByStartDate()<=startTimeAWeekAgo && query.getFilterByEndDate()>=startTimeAWeekAgo) {
+                    if (query.getPageNumber() == 0) {
+                        return alertPage1;
+                    } else {
+                        return alertPage2;
+                    }
                 } else {
-                    return alertPage2;
+                    return emptyAlertPage;
                 }
             }
         });
@@ -154,9 +174,9 @@ public class UserScoreServiceImplRecalculateScoresTest {
     @Test
     public void testUpdateUserScoreBatch() throws Exception {
         List<User> usersWithOldScore= Arrays.asList(
-                new User("user1",null,null,50,null,null),
-                new User("user2",null,null,50,null,null),
-                new User("user3",null,null,50,null,null)
+                new User("user1",null,null,50,null,null,false),
+                new User("user2",null,null,50,null,null,false),
+                new User("user3",null,null,50,null,null,false)
         );
 
         Pageable pageable1=new PageRequest(0,3);

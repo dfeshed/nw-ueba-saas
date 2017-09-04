@@ -2,6 +2,7 @@ package presidio.output.domain.services.users;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import presidio.output.domain.records.users.User;
 import presidio.output.domain.records.users.UserQuery;
 import presidio.output.domain.repositories.UserRepository;
@@ -40,6 +41,15 @@ public class UserPersistencyServiceImpl implements UserPersistencyService {
     public Iterable<User> findAll() {
         return userRepository.findAll();
     }
+
+    public Page<User> findByUserName(String userName, PageRequest pageRequest) {
+        return userRepository.findByUserName(userName, pageRequest);
+    }
+
+    public Page<User> findByUserId(String userId, PageRequest pageRequest) {
+        return userRepository.findByUserId(userId, pageRequest);
+    }
+
 
     @Override
     public Page<User> find(UserQuery userQuery) {

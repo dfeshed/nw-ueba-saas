@@ -5,6 +5,7 @@ import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.common.general.Schema;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.time.TimeRange;
+import fortscale.utils.ttl.TtlService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import presidio.ade.domain.store.accumulator.AggregationEventsAccumulationDataStore;
@@ -27,12 +28,13 @@ public class AccumulateAggregationsExecutionService {
     private final int maxGroupSize;
     private final AccumulateAggregationsBucketService accumulateAggregationsBucketService;
     private final AccumulationsCache accumulationsCache;
+    private final TtlService ttlService;
 
     public AccumulateAggregationsExecutionService(BucketConfigurationService bucketConfigurationService,
                                                   EnrichedDataStore enrichedDataStore,
                                                   AggregationEventsAccumulationDataStore aggregationEventsAccumulationDataStore,
                                                   AccumulateAggregationsBucketService accumulateAggregationsBucketService,
-                                                  AccumulationsCache accumulationsCache, int pageSize, int maxGroupSize) {
+                                                  AccumulationsCache accumulationsCache, TtlService ttlService, int pageSize, int maxGroupSize) {
         this.bucketConfigurationService = bucketConfigurationService;
         this.enrichedDataStore = enrichedDataStore;
         this.aggregationEventsAccumulationDataStore = aggregationEventsAccumulationDataStore;
@@ -40,6 +42,7 @@ public class AccumulateAggregationsExecutionService {
         this.maxGroupSize = maxGroupSize;
         this.accumulateAggregationsBucketService = accumulateAggregationsBucketService;
         this.accumulationsCache = accumulationsCache;
+        this.ttlService = ttlService;
     }
 
     public void run(Schema schema, Instant startDate, Instant endDate, Double fixedDuration, Double featureBucketStrategy) throws Exception {
@@ -50,6 +53,7 @@ public class AccumulateAggregationsExecutionService {
         AccumulateAggregationsService featureAggregationBucketsService = new AccumulateAggregationsService(fixedDurationStrategy, bucketConfigurationService, enrichedDataStore, aggregationEventsAccumulationDataStore, pageSize, maxGroupSize, strategy, accumulateAggregationsBucketService, accumulationsCache);
         TimeRange timeRange = new TimeRange(startDate, endDate);
         featureAggregationBucketsService.execute(timeRange, schema.getName());
+        ttlService.cleanupCollections(startDate);
     }
 
     public void clean(Schema schema, Instant startDate, Instant endDate) throws Exception {

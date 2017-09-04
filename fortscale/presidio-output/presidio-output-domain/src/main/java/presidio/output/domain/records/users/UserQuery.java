@@ -15,6 +15,9 @@ public class UserQuery {
     private Integer maxScore;
     private Collection<String> filterByUserIds;
     private Collection<String> filterByNotHaveAnyOfUserIds;
+    private boolean isPrefix;
+    private Boolean isAdmin;
+    private String filterByUserName;
 
     // sort
     private final Sort sort;
@@ -32,11 +35,14 @@ public class UserQuery {
 
         //Sort
         this.sort = builder.sort;
-
-        this.pageNumber =  builder.pageNumber;
-        this.pageSize =  builder.pageSize;
+        this.pageNumber = builder.pageNumber;
+        this.pageSize = builder.pageSize;
         this.minScore = builder.minScore;
         this.maxScore = builder.maxScore;
+
+        this.filterByUserName = builder.filterByUserName;
+        this.isPrefix = builder.isPrefix;
+        this.isAdmin = builder.isAdmin;
     }
 
     public List<String> getFilterByAlertClassifications() {
@@ -45,6 +51,13 @@ public class UserQuery {
 
     public List<String> getFilterByIndicators() {
         return filterByIndicators;
+    }
+    public String getFilterByUserName() {
+        return filterByUserName;
+    }
+
+    public boolean isPrefix() {
+        return isPrefix;
     }
 
     public Sort getSort() {
@@ -66,13 +79,16 @@ public class UserQuery {
     public Integer getMaxScore() {
         return maxScore;
     }
-
     public Collection<String> getFilterByUserIds() {
         return filterByUserIds;
     }
 
     public Collection<String> getFilterByNotHaveAnyOfUserIds() {
         return filterByNotHaveAnyOfUserIds;
+    }
+
+    public Boolean getFilterByIsAdmin() {
+        return isAdmin;
     }
 
     public static class UserQueryBuilder {
@@ -84,6 +100,9 @@ public class UserQuery {
         private Collection<String> filterByNotHaveAnyOfUserIds;
         private Integer minScore;
         private Integer maxScore;
+        private String filterByUserName;
+        private boolean isPrefix;
+        private Boolean isAdmin;
 
 
         // sort
@@ -114,13 +133,13 @@ public class UserQuery {
         }
 
         public UserQueryBuilder sort(Sort sort) {
-            this.sort=sort;
+            this.sort = sort;
             return this;
         }
 
         public UserQueryBuilder sortField(String sortField, boolean ascendingOrder) {
-            Sort.Direction dir=ascendingOrder? Sort.Direction.ASC: Sort.Direction.DESC;
-            Sort sort = new Sort(dir,sortField);
+            Sort.Direction dir = ascendingOrder ? Sort.Direction.ASC : Sort.Direction.DESC;
+            Sort sort = new Sort(dir, sortField);
             return sort(sort);
         }
 
@@ -128,6 +147,23 @@ public class UserQuery {
             this.minScore = minScore;
             return this;
         }
+
+        public UserQueryBuilder filterByUserName(String filterByUserName) {
+            this.filterByUserName = filterByUserName;
+            return this;
+        }
+
+        public UserQueryBuilder filterByUserNameWithPrefix(boolean prefixEnabled) {
+            this.isPrefix = prefixEnabled;
+            return this;
+        }
+
+
+        public UserQueryBuilder filterByUserAdmin(Boolean isAdmin) {
+            this.isAdmin = isAdmin;
+            return this;
+        }
+
 
         public UserQueryBuilder maxScore(Integer maxScore) {
             this.maxScore = maxScore;

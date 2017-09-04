@@ -1,4 +1,4 @@
-package presidio.webapp.controllers;
+package presidio.webapp.controllers.alerts;
 
 import fortscale.utils.logging.annotation.LogException;
 import io.swagger.annotations.Api;
@@ -6,7 +6,11 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.apache.http.HttpStatus;
 import org.springframework.data.domain.Page;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import presidio.webapp.dto.Alert;
 import presidio.webapp.dto.AlertListEntityResponseBean;
 import presidio.webapp.dto.AlertSingleEntityResponseBean;
@@ -16,14 +20,16 @@ import presidio.webapp.service.RestAlertService;
 import java.util.ArrayList;
 import java.util.List;
 
+
+@Deprecated
 @RestController
 @RequestMapping(value = "/alerts")
 @Api(value = "AlertController", description = "Alert Controller")
-public class AlertsController {
+public class AlertsControllerManualCreated implements AlertsApi {
 
     private final RestAlertService restAlertService;
 
-    public AlertsController(RestAlertService restAlertService) {
+    public AlertsControllerManualCreated(RestAlertService restAlertService) {
         this.restAlertService = restAlertService;
     }
 
@@ -51,7 +57,7 @@ public class AlertsController {
     public AlertListEntityResponseBean getAlerts(@ApiParam(name = "alertQuery", value = "Filter for Alerts") RestAlertQuery restAlertQuery) {
         AlertListEntityResponseBean responseBean = new AlertListEntityResponseBean();
         try {
-            Page<presidio.output.domain.records.alerts.Alert> alertsPage = restAlertService.getAlerts(restAlertQuery);
+            Page<presidio.output.domain.records.alerts.Alert> alertsPage = null;// restAlertService.getAlerts(restAlertQuery);
 
             List<Alert> alerts = new ArrayList<>();
             if (alertsPage.hasContent()) {
