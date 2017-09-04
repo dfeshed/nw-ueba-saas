@@ -21,10 +21,8 @@ public class EnrichedFileRecord extends EnrichedRecord {
     public static final String ABSOLUTE_SRC_FOLDER_FILE_PATH_FIELD = "absoluteSrcFolderFilePath";
     public static final String ABSOLUTE_DST_FOLDER_FILE_PATH_FIELD = "absoluteDstFolderFilePath";
     public static final String FILE_SIZE_FIELD = "fileSize";
-    public static final String IS_SRC_DRIVE_SHARED_FIELD = "isSrcDriveShared";
-    public static final String IS_DST_DRIVE_SHARED_FIELD = "isDstDriveShared";
-
-
+    public static final String SRC_DRIVE_SHARED_FIELD = "srcDriveShared";
+    public static final String DST_DRIVE_SHARED_FIELD = "dstDriveShared";
 
     @Indexed
     @Field(USER_ID_FIELD)
@@ -39,11 +37,10 @@ public class EnrichedFileRecord extends EnrichedRecord {
     private String absoluteDstFolderFilePath;
     @Field(FILE_SIZE_FIELD)
     private Long fileSize;
-    @Field(IS_SRC_DRIVE_SHARED_FIELD)
-    private Boolean isSrcDriveShared;
-    @Field(IS_DST_DRIVE_SHARED_FIELD)
-    private Boolean isDstDriveShared;
-
+    @Field(SRC_DRIVE_SHARED_FIELD)
+    private Boolean srcDriveShared;
+    @Field(DST_DRIVE_SHARED_FIELD)
+    private Boolean dstDriveShared;
 
     /**
      * C'tor.
@@ -103,30 +100,26 @@ public class EnrichedFileRecord extends EnrichedRecord {
     }
 
     public Boolean getSrcDriveShared() {
-        return isSrcDriveShared;
+        return srcDriveShared;
     }
 
     public void setSrcDriveShared(Boolean srcDriveShared) {
-        isSrcDriveShared = srcDriveShared;
+        this.srcDriveShared = srcDriveShared;
     }
 
     public Boolean getDstDriveShared() {
-        return isDstDriveShared;
+        return dstDriveShared;
     }
 
     public void setDstDriveShared(Boolean dstDriveShared) {
-        isDstDriveShared = dstDriveShared;
+        this.dstDriveShared = dstDriveShared;
     }
-
 
     @Override
     @Transient
     public String getAdeEventType() {
         return AdeFileRecord.FILE_STR;
     }
-
-
-
 
     @Transient
     public AdeEnrichedFileContext getContext() {

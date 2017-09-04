@@ -41,7 +41,7 @@
       "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "groupBy": [
-          "operationTypeHistogram"
+          "operationTypeResultHistogram"
         ]
       },
       "aggregatedFeatureEventFunction": {
@@ -58,7 +58,7 @@
       "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "groupBy": [
-          "operationTypeHistogram"
+          "operationTypeResultHistogram"
         ]
       },
       "aggregatedFeatureEventFunction": {
@@ -75,7 +75,7 @@
       "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "groupBy": [
-          "securitySensitiveOperationHistogram"
+          "securitySensitiveOperationResultHistogram"
         ]
       },
       "aggregatedFeatureEventFunction": {

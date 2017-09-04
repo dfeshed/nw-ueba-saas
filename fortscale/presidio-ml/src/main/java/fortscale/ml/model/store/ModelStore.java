@@ -5,6 +5,8 @@ import fortscale.ml.model.Model;
 import fortscale.ml.model.ModelConf;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimeRange;
+import fortscale.utils.ttl.TtlService;
+import fortscale.utils.ttl.TtlServiceAware;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -14,6 +16,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.util.StreamUtils;
 import org.springframework.util.CollectionUtils;
+import presidio.ade.domain.record.aggregated.AdeContextualAggregatedRecord;
 
 import java.time.Instant;
 import java.util.Arrays;
@@ -22,11 +25,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ModelStore {
+import static org.springframework.data.mongodb.core.query.Criteria.where;
+
+public class ModelStore implements TtlServiceAware {
 	private static final Logger logger = Logger.getLogger(ModelStore.class);
 	private static final String COLLECTION_NAME_PREFIX = "model_";
 
 	private MongoTemplate mongoTemplate;
+	private TtlService ttlService;
 
 	public ModelStore(MongoTemplate mongoTemplate) {
 		this.mongoTemplate = mongoTemplate;
@@ -47,7 +53,9 @@ public class ModelStore {
 
 	public void save(ModelConf modelConf, String sessionId, String contextId, Model model, TimeRange timeRange) {
 		ModelDAO modelDao = new ModelDAO(sessionId, contextId, model, timeRange.getStart(), timeRange.getEnd());
-		mongoTemplate.insert(modelDao, getCollectionName(modelConf));
+		String collectionName = getCollectionName(modelConf);
+		mongoTemplate.insert(modelDao, collectionName);
+		ttlService.save(getStoreName(), collectionName);
 	}
 
 	public List<ModelDAO> getAllContextsModelDaosWithLatestEndTimeLte(ModelConf modelConf, Instant eventEpochtime) {
@@ -85,5 +93,23 @@ public class ModelStore {
 
 	public static String getCollectionName(ModelConf modelConf) {
 		return COLLECTION_NAME_PREFIX + modelConf.getName();
+	}
+
+
+	@Override
+	public void setTtlService(TtlService ttlService) {
+		this.ttlService = ttlService;
+	}
+
+	@Override
+	public void remove(String collectionName, Instant until) {
+		Query query = new Query()
+				.addCriteria(where(ModelDAO.END_TIME_FIELD).lte(until));
+		mongoTemplate.remove(query, collectionName);
+	}
+
+	@Override
+	public String getStoreName(){
+		return "modelStore";
 	}
 }

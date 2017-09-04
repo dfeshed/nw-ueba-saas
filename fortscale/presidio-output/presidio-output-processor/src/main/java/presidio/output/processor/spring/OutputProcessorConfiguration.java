@@ -9,14 +9,10 @@ import org.springframework.context.annotation.Import;
 import presidio.ade.sdk.common.AdeManagerSdk;
 import presidio.ade.sdk.common.AdeManagerSdkConfig;
 import presidio.output.domain.services.users.UserPersistencyService;
-import presidio.output.domain.services.alerts.AlertPersistencyService;
-import presidio.output.domain.services.event.EventPersistencyService;
-import presidio.output.domain.services.users.UserPersistencyService;
 import presidio.output.processor.services.OutputExecutionService;
 import presidio.output.processor.services.OutputExecutionServiceImpl;
 import presidio.output.processor.services.alert.AlertService;
 import presidio.output.processor.services.user.UserScoreService;
-import presidio.output.processor.services.user.UserScoreServiceImpl;
 import presidio.output.processor.services.user.UserService;
 
 /**
@@ -25,10 +21,6 @@ import presidio.output.processor.services.user.UserService;
 @Configuration
 @Import({MongoConfig.class, AdeManagerSdkConfig.class, AlertServiceElasticConfig.class, UserServiceConfig.class})
 public class OutputProcessorConfiguration {
-
-
-
-
 
     @Autowired
     private AdeManagerSdk adeManagerSdk;
@@ -45,10 +37,14 @@ public class OutputProcessorConfiguration {
     @Autowired
     private UserScoreService userScoreService;
 
+    @Value("${smart.threshold.score}")
+    private int smartThreshold;
+
+    @Value("${smart.page.size}")
+    private int smartPageSize;
+
     @Bean
     public OutputExecutionService outputProcessService() {
-        return new OutputExecutionServiceImpl(adeManagerSdk, alertService, userService,userScoreService);
+        return new OutputExecutionServiceImpl(adeManagerSdk, alertService, userService, userScoreService, smartThreshold, smartPageSize);
     }
-
-
 }

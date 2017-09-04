@@ -6,6 +6,7 @@ import fortscale.ml.model.selector.IContextSelector;
 import fortscale.ml.model.selector.IContextSelectorConf;
 import fortscale.ml.model.store.ModelStore;
 import fortscale.utils.factory.FactoryService;
+import org.springframework.util.Assert;
 
 /**
  * Given a {@link ModelConf}, this factory creates the corresponding {@link ModelingEngine}
@@ -47,13 +48,23 @@ public class ModelingEngineFactory {
 	public ModelingEngine getModelingEngine(ModelConf modelConf) {
 		IContextSelector contextSelector = getContextSelector(modelConf);
 		AbstractDataRetriever dataRetriever = dataRetrieverFactoryService.getProduct(modelConf.getDataRetrieverConf());
+		Assert.notNull(dataRetriever, String.format("Null data retriever for model conf %s.", modelConf.getName()));
 		IModelBuilder modelBuilder = modelBuilderFactoryService.getProduct(modelConf.getModelBuilderConf());
+		Assert.notNull(modelBuilder, String.format("Null model builder for model conf %s.", modelConf.getName()));
 		return new ModelingEngine(modelConf, contextSelector, dataRetriever, modelBuilder, modelStore);
 	}
 
 	// If it's a global modelConf, a context selector is not configured
 	private IContextSelector getContextSelector(ModelConf modelConf) {
 		IContextSelectorConf contextSelectorConf = modelConf.getContextSelectorConf();
-		return contextSelectorConf == null ? null : contextSelectorFactoryService.getProduct(contextSelectorConf);
+
+		if (contextSelectorConf == null) {
+			return null;
+		} else {
+			IContextSelector contextSelector = contextSelectorFactoryService.getProduct(contextSelectorConf);
+			String message = String.format("Null context selector for model conf %s.", modelConf.getName());
+			Assert.notNull(contextSelector, message);
+			return contextSelector;
+		}
 	}
 }
