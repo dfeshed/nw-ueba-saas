@@ -1,7 +1,7 @@
 package presidio.output.processor.services.user;
 
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.SetUtils;
+import org.slf4j.Logger;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -16,6 +16,8 @@ import presidio.output.domain.services.users.UserPersistencyService;
 import org.apache.commons.math3.stat.descriptive.rank.Percentile;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -38,8 +40,12 @@ public class UserScoreServiceImpl implements UserScoreService{
 
     private AlertPersistencyService alertPersistencyService;
 
+    private Logger log = org.slf4j.LoggerFactory.getLogger(this.getClass());
+
     private int alertEffectiveDurationInDays;//How much days an alert can affect on the user score
     private int defaultAlertsBatchSize;
+
+    private static final int USERS_SAVE_PAGE_SIZE = 1000;
 
     public UserScoreServiceImpl(UserPersistencyService userPersistencyService,
                                 AlertPersistencyService alertPersistencyService,
@@ -117,10 +123,11 @@ public class UserScoreServiceImpl implements UserScoreService{
     public void updateSeverities(){
        final double[] scores= getScoresArray();
        final  UserScoreToSeverity severitiesMap = getSeveritiesMap(scores);
-       UserQuery.UserQueryBuilder userQueryBuilder = new UserQuery.UserQueryBuilder().pageNumber(0).pageSize(defaultUsersBatchSize);
+       UserQuery.UserQueryBuilder userQueryBuilder = new UserQuery.UserQueryBuilder().pageNumber(0).pageSize(defaultUsersBatchSize).sortField(User.SCORE_FIELD_NAME,true);
        Page<User> page = userPersistencyService.find(userQueryBuilder.build());
 
         while (page != null && page.hasContent()) {
+            log.info("Updating severity for page: "+page.toString());
             updateSeveritiesForUsersList(severitiesMap, page.getContent(),true);
             page = getNextUserPage(userQueryBuilder,page);
 
@@ -156,7 +163,14 @@ public class UserScoreServiceImpl implements UserScoreService{
         }
 
         //Persist users that the score changed
-        userPersistencyService.save(changedUsers);
+        log.info(changedUsers.size() + " users changed. Saving to database");
+
+        Double pages= Math.ceil(changedUsers.size()/(USERS_SAVE_PAGE_SIZE*1D));
+        for (int i=0; i<pages.intValue();i++){
+            List<User> page = changedUsers.subList(i*USERS_SAVE_PAGE_SIZE,Math.min((i+1)*USERS_SAVE_PAGE_SIZE,changedUsers.size()));
+            userPersistencyService.save(page);
+        }
+        log.info(changedUsers.size() + " users saved to database");
 
         //Clean users which not have alert in the last 90 days, but still have score
         clearUserScoreForUsersThatShouldNotHaveScore(aggregatedUserScore.keySet());
@@ -171,22 +185,28 @@ public class UserScoreServiceImpl implements UserScoreService{
      * @param excludedUsersIds is the list of users which should
      */
     private void clearUserScoreForUsersThatShouldNotHaveScore(Set<String> excludedUsersIds) {
+        log.info("Check if there are users without relevant alert and score higher then 0");
+
         UserQuery.UserQueryBuilder userQueryBuilder = new UserQuery.UserQueryBuilder().minScore(1)
-                                                                                        .filterByNotHaveAnyOfIds(excludedUsersIds)
+//                                                                                        .filterByNotHaveAnyOfUserIds(excludedUsersIds)
                                                                                         .pageSize(defaultUsersBatchSize)
                                                                                         .pageNumber(1);
         Page<User> usersPage = userPersistencyService.find(userQueryBuilder.build());
 
-
+        log.info("found "+ usersPage.getTotalElements()+" users which score that should be reset");
         List<User> clearedUsersList = new ArrayList<>();
         while (usersPage!=null && usersPage.hasContent()){
             usersPage.getContent().forEach(user-> {
-                user.setUserScore(0D);
-                clearedUsersList.add(user);
+                if (!excludedUsersIds.contains(user.getUserId())) {
+                    user.setUserScore(0D);
+                    user.setUserSeverity(null);
+                    clearedUsersList.add(user);}
             });
+
             usersPage = getNextUserPage(userQueryBuilder,usersPage);
         }
 
+        log.info("Reseting "+ clearedUsersList.size()+ " users scores and severity");
         userPersistencyService.save(clearedUsersList);
     }
 
@@ -197,32 +217,56 @@ public class UserScoreServiceImpl implements UserScoreService{
      * @return map of each user to his new score
      */
     private Map<String,Double> calculateUserScores() {
-        LocalDate fromDate = LocalDate.now().minusDays(this.alertEffectiveDurationInDays);
+//        LocalDate fromDate = LocalDate.now().minusDays(this.alertEffectiveDurationInDays);
+        List<LocalDateTime> days = getListOfLastXdays(this.alertEffectiveDurationInDays);
+
 
         Map<String, Double> aggregatedUserScore = new HashMap<>() ;
         //TODO: alsom filter by status >
-        AlertQuery.AlertQueryBuilder alertQueryBuilder = new AlertQuery.AlertQueryBuilder().filterByStartDate(fromDate.toEpochDay())
-                .sortField(Alert.START_DATE, true)
-                .pageSize(this.defaultAlertsBatchSize)
-                .pageNumber(0);
 
-        AlertQuery alertQuery = alertQueryBuilder.build();
+        if (days!=null && days.size()>0) {
+            days.forEach(startOfDay->{
+                log.info("Start Calculate user score for day "+startOfDay+ " (Calculation, without persistency");
+                long startTime = Date.from(startOfDay.atZone(ZoneId.systemDefault()).toInstant()).getTime();
+                LocalDateTime endOfDay = startOfDay.plusDays(1).minusSeconds(1);
+                long endTime = Date.from(endOfDay.atZone(ZoneId.systemDefault()).toInstant()).getTime();
 
-        Page<Alert> alertsPage = alertPersistencyService.find(alertQuery);
-        while (alertsPage != null && alertsPage.hasContent()) {
-            alertsPage.getContent().forEach(alert -> {
-                String userId = alert.getUserId();
-                AlertEnums.AlertSeverity severity = alert.getSeverity();
-                double userScoreContribution = this.alertSeverityToScoreContribution.get(severity);
-                aggregatedUserScore.compute(userId,(userIdKey,value)->{
-                  return value ==null? userScoreContribution:value+userScoreContribution;
-                } );
 
+                AlertQuery.AlertQueryBuilder alertQueryBuilder = new AlertQuery.AlertQueryBuilder()
+                        .filterByStartDate(startTime)
+                        .filterByEndDate(endTime)
+                        .sortField(Alert.START_DATE, true)
+                        .pageSize(this.defaultAlertsBatchSize)
+                        .pageNumber(0);
+
+                AlertQuery alertQuery = alertQueryBuilder.build();
+
+                Page<Alert> alertsPage = alertPersistencyService.find(alertQuery);
+                while (alertsPage != null && alertsPage.hasContent()) {
+                    alertsPage.getContent().forEach(alert -> {
+                        String userId = alert.getUserId();
+                        AlertEnums.AlertSeverity severity = alert.getSeverity();
+                        double userScoreContribution = this.alertSeverityToScoreContribution.get(severity);
+                        aggregatedUserScore.compute(userId, (userIdKey, value) -> {
+                            return value == null ? userScoreContribution : value + userScoreContribution;
+                        });
+
+                    });
+                    alertsPage = getNextAlertPage(alertQueryBuilder, alertsPage);
+                }
             });
-            alertsPage = getNextAlertPage(alertQueryBuilder, alertsPage);
         }
-
         return  aggregatedUserScore;
+    }
+    private List<LocalDateTime> getListOfLastXdays(int days){
+        LocalDate endDate = LocalDate.now();
+        LocalDate startTime = endDate.minusDays(days);
+        List<LocalDateTime> dates = new ArrayList<>();
+        for (LocalDate d = startTime; !d.isAfter(endDate);d=d.plusDays(1)){
+            LocalDateTime time = d.atStartOfDay();
+            dates.add(time);
+        }
+        return  dates;
     }
 
     /**
@@ -232,8 +276,9 @@ public class UserScoreServiceImpl implements UserScoreService{
      * @return  List of updated users
      */
     private List<User> updateUserScoreForBatch(Map<String, Double> aggregatedUserScore, Set<String> usersIDForBatch) {
+        log.info("Updating user batch (without persistence)- batch contain: "+usersIDForBatch.size()+" users");
         List<User> changedUsers=new ArrayList<>();
-        UserQuery.UserQueryBuilder userQueryBuilder = new UserQuery.UserQueryBuilder().filterByIds(usersIDForBatch)
+        UserQuery.UserQueryBuilder userQueryBuilder = new UserQuery.UserQueryBuilder().filterByUsersIds(usersIDForBatch)
                                                                                       .pageNumber(0)
                                                                                       .pageSize(usersIDForBatch.size());
         UserQuery userQuery = userQueryBuilder.build();
@@ -258,9 +303,14 @@ public class UserScoreServiceImpl implements UserScoreService{
     }
     private void updateSeveritiesForUsersList(UserScoreToSeverity severitiesMap, List<User> users, boolean persistChanges) {
         List<User> updatedUsers = new ArrayList<>();
+        if (users==null){
+            return;
+        }
         users.forEach(user -> {
             double userScore = user.getUserScore();
             UserSeverity newUserSeverity =  severitiesMap.getSeverity(userScore);
+
+            log.debug("Updating user severity for userId: "+user.getUserId());
             if (!newUserSeverity.equals(user.getUserSeverity())){
                 user.setUserSeverity(newUserSeverity);
                 updatedUsers.add(user); //Update user only if severity changes
@@ -315,7 +365,7 @@ public class UserScoreServiceImpl implements UserScoreService{
     private double[] getScoresArray() {
 
 
-        Sort sort = new Sort(Sort.Direction.ASC,"score");
+        Sort sort = new Sort(Sort.Direction.ASC,User.SCORE_FIELD_NAME);
         UserQuery.UserQueryBuilder userQueryBuilder = new UserQuery.UserQueryBuilder().minScore(1).pageNumber(0).pageSize(this.defaultUsersBatchSize).sort(sort);
         Page<User> page = userPersistencyService.find(userQueryBuilder.build());
         int numberOfElements = new Long(page.getTotalElements()).intValue();
