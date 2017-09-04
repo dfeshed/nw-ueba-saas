@@ -22,7 +22,7 @@ import presidio.webapp.model.Patch;
 import java.math.BigDecimal;
 import java.util.List;
 
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-03T07:54:56.866Z")
+@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-04T14:26:45.695Z")
 
 @Api(value = "alerts", description = "the alerts API")
 public interface AlertsApi {
@@ -96,8 +96,7 @@ public interface AlertsApi {
 
     @ApiOperation(value = "Use this end point to get alerts by various filters", notes = "By passing in the appropriate options, you can search for alerts", response = AlertsWrapper.class, tags = {"alerts",})
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "List of alerts and more general data", response = AlertsWrapper.class),
-            @ApiResponse(code = 400, message = "bad input parameter", response = AlertsWrapper.class)})
+            @ApiResponse(code = 200, message = "List of alerts and more general data", response = AlertsWrapper.class)})
     @RequestMapping(value = "/alerts",
             produces = "application/json",
             consumes = "application/json",

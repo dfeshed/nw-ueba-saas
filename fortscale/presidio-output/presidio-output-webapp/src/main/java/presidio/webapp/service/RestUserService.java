@@ -1,7 +1,6 @@
 package presidio.webapp.service;
 
 
-import org.springframework.data.domain.Page;
 import presidio.output.domain.records.users.UserQuery;
 import presidio.webapp.model.Alert;
 import presidio.webapp.model.User;
@@ -15,6 +14,6 @@ public interface RestUserService {
 
     User createResult(presidio.output.domain.records.users.User user);
 
-    Page<Alert> getAlertsByUserId(String userId);
+    List<Alert> getAlertsByUserId(String userId);
 
 }

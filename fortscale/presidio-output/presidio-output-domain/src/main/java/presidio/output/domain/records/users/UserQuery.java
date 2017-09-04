@@ -90,7 +90,7 @@ public class UserQuery {
         private List<String> filterByIndicators;
         private String filterByUserId;
         private String filterByUserName;
-        private boolean isPrefix;
+        private boolean isPrefix = false;
         private Integer minScore;
         private Integer maxScore;
         private Boolean isAdmin;
