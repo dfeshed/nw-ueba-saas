@@ -34,8 +34,6 @@ public abstract class AbstractAuditableDocument extends AbstractDocument {
         super(other);
         this.dateTime = other.dateTime;
         this.version = other.version;
-        this.creationTime = other.creationTime;
-        this.lastModified = other.lastModified;
     }
 
     public AbstractAuditableDocument() {

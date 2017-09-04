@@ -23,14 +23,14 @@
             },
             {
               "type": "list-conditional-scorer",
-              "name": "operationType.userIdSecuritySensitive.file.score",
+              "name": "userId.securitySensitive.file.score",
               "conditional-field": "operationTypeCategories",
               "conditional-value": "SECURITY_SENSITIVE_OPERATION",
               "scorer": {
                 "type": "category-rarity-model-scorer",
-                "name": "operationTypeHistogram.userIdSecuritySensitive.activeDirectory.score",
+                "name": "userId.securitySensitive.activeDirectory.score",
                 "model": {
-                  "name": "operationTypeHistogram.userIdSecuritySensitive.activeDirectory"
+                  "name": "userId.securitySensitive.activeDirectory"
                 },
                 "max-rare-count": 5,
                 "max-num-of-rare-features": 15,

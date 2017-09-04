@@ -7,11 +7,13 @@ public class UserDetails {
     private String userName;
     private String userDisplayName;
     private String userId;
+    private Boolean isAdmin;
 
-    public UserDetails(String userName, String userDisplayName, String userId) {
+    public UserDetails(String userName, String userDisplayName, String userId, Boolean isAdmin) {
         this.userName = userName;
         this.userDisplayName = userDisplayName;
         this.userId = userId;
+        this.isAdmin = isAdmin;
     }
 
     public String getUserName() {
@@ -24,5 +26,9 @@ public class UserDetails {
 
     public String getUserId() {
         return userId;
+    }
+
+    public Boolean isAdmin() {
+        return isAdmin;
     }
 }

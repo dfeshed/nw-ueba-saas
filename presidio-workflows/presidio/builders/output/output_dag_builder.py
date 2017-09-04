@@ -41,7 +41,6 @@ class OutputDagBuilder(PresidioDagBuilder):
         logging.info("populating the output dag, dag_id=%s ", output_dag.dag_id)
 
         java_args = {
-            'schema': self.data_sources[0],
         }
 
         # Create jar operator

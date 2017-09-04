@@ -20,9 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.mockito.Matchers.anyObject;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
@@ -62,8 +60,8 @@ public class RestAlertServiceTest {
         when(alertService.find(anyObject())).thenReturn(page);
 
         RestAlertQuery restAlertQuery = new RestAlertQuery();
-        Page<Alert> alerts = restAlertService.getAlerts(restAlertQuery);
-        Assert.assertEquals(1, alerts.getNumberOfElements());
+        List<presidio.webapp.model.Alert> alerts = restAlertService.getAlerts(restAlertQuery);
+        Assert.assertEquals(1, alerts.size());
     }
 
     @Test
@@ -76,8 +74,8 @@ public class RestAlertServiceTest {
 
         RestAlertQuery restAlertQuery = new RestAlertQuery();
         restAlertQuery.setUserName(firstAlert.getUserName());
-        Page<Alert> alerts = restAlertService.getAlerts(restAlertQuery);
-        Assert.assertEquals(1, alerts.getNumberOfElements());
+        List<presidio.webapp.model.Alert> alerts = restAlertService.getAlerts(restAlertQuery);
+        Assert.assertEquals(1, alerts.size());
     }
 
     @Test
@@ -88,14 +86,14 @@ public class RestAlertServiceTest {
 
         RestAlertQuery restAlertQuery = new RestAlertQuery();
         restAlertQuery.setUserName("someUserName");
-        Page<Alert> alerts = restAlertService.getAlerts(restAlertQuery);
-        Assert.assertEquals(0, alerts.getNumberOfElements());
+        List<presidio.webapp.model.Alert> alerts = restAlertService.getAlerts(restAlertQuery);
+        Assert.assertEquals(0, alerts.size());
     }
 
     private Alert createAlert() {
         List<String> classifications = new ArrayList<>(Arrays.asList("Mass Changes to Critical Enterprise Groups"));
-        return new Alert("userId", classifications,"username",
+        return new Alert("userId", classifications, "username",
                 Instant.parse("2017-01-01T00:00:00Z").toEpochMilli(), Instant.parse("2017-01-01T11:00:00Z").toEpochMilli(),
-                10, 10, AlertEnums.AlertTimeframe.DAILY, AlertEnums.AlertSeverity.CRITICAL);
+                10, 10, AlertEnums.AlertTimeframe.DAILY, AlertEnums.AlertSeverity.CRITICAL, false);
     }
 }

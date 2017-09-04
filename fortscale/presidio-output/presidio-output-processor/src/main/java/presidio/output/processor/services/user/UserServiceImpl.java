@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * Created by efratn on 22/08/2017.
  */
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
 
     private final EventPersistencyService eventPersistencyService;
     private final UserPersistencyService userPersistencyService;
@@ -24,21 +24,11 @@ public class UserServiceImpl implements UserService{
     @Override
     public User createUserEntity(String userId) {
         UserDetails userDetails = getUserDetails(userId);
-        List<String> alertClassifications = new ArrayList<>(); //TODO
-        List<String> indicators = new ArrayList<>(); //TODO
-        double userScore = 0d; //TODO temporary hard coded value, to be changed when we will calculate user score
-        User user = new User(userDetails.getUserId(),
-                userDetails.getUserName(),
-                userDetails.getUserDisplayName(),
-                userScore,
-                alertClassifications,
-                indicators);
-
-        return user;
+        return new User(userDetails.getUserId(), userDetails.getUserName(), userDetails.getUserDisplayName(), userDetails.isAdmin());
     }
 
     @Override
-    public User findUserById(String userId){
+    public User findUserById(String userId) {
         return userPersistencyService.findUserById(userId);
     }
 
@@ -51,8 +41,17 @@ public class UserServiceImpl implements UserService{
         EnrichedEvent event = eventPersistencyService.findLatestEventForUser(userId);
         String userDisplayName = event.getUserDisplayName();
         String userName = event.getUserName();
-        return new UserDetails(userName, userDisplayName, userId);
+        Boolean isAdmin = Boolean.valueOf(event.getAdditionalInfo().get(EnrichedEvent.IS_USER_ADMIN));
+        return new UserDetails(userName, userDisplayName, userId, isAdmin);
     }
 
+    public void setClassification(User user, List<String> classification) {
+        user.addAlertClassifications(classification);
+    }
 
+    @Override
+    public void setUserAlertData(User user, List<String> classification, List<String> indicators) {
+        user.setAlertClassifications(classification);
+        user.setIndicators(indicators);
+    }
 }

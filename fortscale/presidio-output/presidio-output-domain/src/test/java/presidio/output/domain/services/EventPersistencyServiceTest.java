@@ -36,7 +36,7 @@ public class EventPersistencyServiceTest {
 
     @Before
     public void before() {
-        mongoTemplate.dropCollection(toCollectionNameTranslator.toCollectionName(Schema.DLPFILE));
+        mongoTemplate.dropCollection(toCollectionNameTranslator.toCollectionName(Schema.FILE));
     }
 
     @Test

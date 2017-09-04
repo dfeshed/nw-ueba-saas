@@ -18,7 +18,7 @@
       }
     },
     {
-      "name": "sumOfHighestFilePermissionChangeScoresUserIdFilePermissionChangeFileHourly",
+      "name": "sumOfHighestOperationTypeScoresUserIdFilePermissionChangeFileHourly",
       "type": "P",
       "bucketConfName": "operationTypeToHighestScoreMapUserIdFilePermissionChangeFileHourly",
       "numberOfBuckets": 1,
@@ -37,7 +37,7 @@
       }
     },
     {
-      "name": "sumOfHighestFileActionUserIdFileHourly",
+      "name": "sumOfHighestOperationTypeScoresUserIdFileActionFileHourly",
       "type": "P",
       "bucketConfName": "operationTypeToHighestScoreMapUserIdFileActionFileHourly",
       "numberOfBuckets": 1,
