@@ -18,10 +18,28 @@ public class CountersUtil {
 
     private static Logger logger = LoggerFactory.getLogger(DateUtils.class);
 
+    private static final Object sourceLock = new Object();
+    private static final Object sinkLock = new Object();
+
+    private long propertyTimeout;
 
     public static final String SINK_COUNTERS_FOLDER_NAME = "sink";
     public static final String SOURCE_COUNTERS_FOLDER_NAME = "source";
     public static final String HOUR_IS_READY_MARKER = "READY";
+
+    public CountersUtil() {
+        propertyTimeout = 7L * 24 * 60 * 60 * 1000; //1 week
+    }
+
+
+    /**
+     * @param propertyTimeout if propertyTimeout>0 then properties older than propertyTimeout will ve deleted.
+     *                        propertyTimeout<=0 means no timeout.
+     *                        in Milliseconds
+     */
+    public CountersUtil(long propertyTimeout) {
+        this.propertyTimeout = propertyTimeout;
+    }
 
     /**
      * This method attributes the event to the relevant hour {@code time} (for hour-is-ready-detection) - meaning we will add {@code amount} to the counter
@@ -35,7 +53,9 @@ public class CountersUtil {
      * @throws IOException when the there a problem with the file
      */
     public int addToSourceCounter(Instant time, Schema schema, boolean canClosePreviousHour, int amount) throws IOException {
-        return addToCounter(time, schema, SOURCE_COUNTERS_FOLDER_NAME, canClosePreviousHour, amount);
+        synchronized (sourceLock) {
+            return addToCounter(time, schema, SOURCE_COUNTERS_FOLDER_NAME, canClosePreviousHour, amount);
+        }
     }
 
     /**
@@ -49,7 +69,9 @@ public class CountersUtil {
      * @throws IOException when the there a problem with the file
      */
     public int addToSinkCounter(Instant time, Schema schema, int amount) throws IOException {
-        return addToCounter(time, schema, SINK_COUNTERS_FOLDER_NAME, false, amount);
+        synchronized (sinkLock) {
+            return addToCounter(time, schema, SINK_COUNTERS_FOLDER_NAME, false, amount);
+        }
     }
 
     private int addToCounter(Instant timeDetected, Schema schema, String flumeComponentType, boolean canClosePreviousHour, int amount) throws IOException {
@@ -61,6 +83,7 @@ public class CountersUtil {
         try {
             /* Get the file stuff */
             File file = createFile(schema, flumeComponentType);
+            final String filePath = file.getAbsolutePath();
             channel = new RandomAccessFile(file, "rw").getChannel();
             lock = channel.lock(); // This method blocks until it can retrieve the lock.
 
@@ -72,8 +95,12 @@ public class CountersUtil {
             /* update count properties */
             newCount = updateCountProperties(timeDetected, canClosePreviousHour, countProperties, amount);
 
+            if (propertyTimeout > 0) {
+                countProperties = removeTimedOutProperties(flumeComponentType, countProperties);
+            }
+
             /* save new count properties */
-            out = new FileOutputStream(file.getAbsolutePath());
+            out = new FileOutputStream(filePath);
             countProperties.store(out, "hour counters for schema " + schema.getName());
             return newCount;
         } finally {
@@ -93,6 +120,26 @@ public class CountersUtil {
                 channel.close();
             }
         }
+    }
+
+    private Properties removeTimedOutProperties(String flumeComponentType, Properties countProperties) {
+        for (Object key : countProperties.keySet()) {
+            final Instant propertyAsTime;
+            final String propertyAsString;
+            try {
+                propertyAsString = (String) key;
+                propertyAsTime = Instant.parse(propertyAsString);
+            } catch (Exception e) {
+                logger.warn("Invalid property {}. This is an invalid state but the system can keep working."); //should not happen
+                return countProperties;
+            }
+            if (propertyAsTime.isBefore(Instant.now().minus(propertyTimeout, ChronoUnit.MILLIS))) {
+                logger.info("Remove timed out hour {} from {} counter file. timeout: {}", propertyAsString, flumeComponentType, propertyTimeout);
+                countProperties.remove(propertyAsString);
+            }
+        }
+
+        return countProperties;
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
