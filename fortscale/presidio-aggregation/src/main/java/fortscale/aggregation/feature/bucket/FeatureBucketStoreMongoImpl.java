@@ -3,28 +3,35 @@ package fortscale.aggregation.feature.bucket;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.mongodb.util.MongoDbUtilService;
 import fortscale.utils.time.TimeRange;
+import fortscale.utils.ttl.TtlService;
+import fortscale.utils.ttl.TtlServiceAware;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import presidio.ade.domain.record.aggregated.AdeContextualAggregatedRecord;
 
+import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import static org.springframework.data.mongodb.core.query.Criteria.where;
+
 /**
  * A Mongo based {@link FeatureBucketStore}.
  */
-public class FeatureBucketStoreMongoImpl implements FeatureBucketStore {
+public class FeatureBucketStoreMongoImpl implements FeatureBucketStore, TtlServiceAware {
 	private static final Logger logger = Logger.getLogger(FeatureBucketStoreMongoImpl.class);
 	public static final String COLLECTION_NAME_PREFIX = "aggr_";
 
 	private MongoTemplate mongoTemplate;
 	private MongoDbUtilService mongoDbUtilService;
 	private long defaultExpireAfterSeconds;
+	private TtlService ttlService;
 
 	/**
 	 * C'tor.
@@ -86,6 +93,7 @@ public class FeatureBucketStoreMongoImpl implements FeatureBucketStore {
 
 		try {
 			mongoTemplate.save(featureBucket, collectionName);
+			ttlService.save(getStoreName(), collectionName);
 		} catch (Exception e) {
 			logger.error("Failed storing Feature Bucket {} in Mongo collection {}.", featureBucket, collectionName, e);
 		}
@@ -131,4 +139,23 @@ public class FeatureBucketStoreMongoImpl implements FeatureBucketStore {
 	private static String getCollectionName(FeatureBucketConf featureBucketConf) {
 		return getCollectionName(featureBucketConf.getName());
 	}
+
+
+	@Override
+	public void setTtlService(TtlService ttlService) {
+		this.ttlService = ttlService;
+	}
+
+	@Override
+	public void remove(String collectionName, Instant until) {
+		Query query = new Query()
+				.addCriteria(where(FeatureBucket.START_TIME_FIELD).lte(until));
+		mongoTemplate.remove(query, collectionName);
+	}
+
+	@Override
+	public String getStoreName(){
+		return "featureBucketStore";
+	}
+
 }

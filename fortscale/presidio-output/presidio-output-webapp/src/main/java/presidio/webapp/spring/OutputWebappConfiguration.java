@@ -1,7 +1,6 @@
 package presidio.webapp.spring;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.context.embedded.EmbeddedServletContainerFactory;
 import org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletContainerFactory;
 import org.springframework.context.annotation.Bean;
@@ -9,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.output.domain.spring.PresidioOutputPersistencyServiceConfig;
-import presidio.webapp.controllers.AlertsController;
+import presidio.webapp.controllers.alerts.AlertsControllerManualCreated;
 import presidio.webapp.service.RestAlertService;
 import presidio.webapp.service.RestAlertServiceImpl;
 
@@ -26,8 +25,8 @@ public class OutputWebappConfiguration {
     }
 
     @Bean
-    AlertsController getAlertsController() {
-        return new AlertsController(restAlertService());
+    AlertsControllerManualCreated getAlertsController() {
+        return new AlertsControllerManualCreated(restAlertService());
     }
 
     @Bean

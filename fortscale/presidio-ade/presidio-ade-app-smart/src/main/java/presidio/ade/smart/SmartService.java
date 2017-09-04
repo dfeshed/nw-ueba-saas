@@ -7,6 +7,7 @@ import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.fixedduration.FixedDurationStrategyUtils;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimeRange;
+import fortscale.utils.ttl.TtlService;
 import presidio.ade.domain.pagination.aggregated.AggregatedDataPaginationParam;
 import presidio.ade.domain.pagination.aggregated.AggregatedDataReader;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
@@ -34,6 +35,7 @@ public class SmartService {
 	private final AggregatedDataReader aggregatedDataReader;
 	private final SmartScoringService smartScoringService;
 	private final SmartDataStore smartDataStore;
+	private final TtlService ttlService;
 
 	/**
 	 * C'tor.
@@ -50,13 +52,15 @@ public class SmartService {
 			Double aggregationRecordsThreshold,
 			AggregatedDataReader aggregatedDataReader,
 			SmartScoringService smartScoringService,
-			SmartDataStore smartDataStore) {
+			SmartDataStore smartDataStore,
+			TtlService ttlService) {
 
 		this.smartRecordConfService = smartRecordConfService;
 		this.aggregationRecordsThreshold = aggregationRecordsThreshold;
 		this.aggregatedDataReader = aggregatedDataReader;
 		this.smartScoringService = smartScoringService;
 		this.smartDataStore = smartDataStore;
+		this.ttlService = ttlService;
 	}
 
 	/**
@@ -80,5 +84,6 @@ public class SmartService {
 				smartDataStore.storeSmartRecords(smartRecordConfName, records);
 			});
 		}
+		ttlService.cleanupCollections(timeRange.getStart());
 	}
 }

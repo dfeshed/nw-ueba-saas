@@ -19,7 +19,7 @@ public class FileInputToOutputConverter implements InputOutputConverter {
         outputEvent.setResult(transformedEvent.getResult());
         outputEvent.setUserName(transformedEvent.getUserName());
         outputEvent.setUserDisplayName(transformedEvent.getUserDisplayName());
-        outputEvent.setAdditionalnfo(transformedEvent.getAdditionalInfo());
+        outputEvent.setAdditionalInfo(transformedEvent.getAdditionalInfo());
         outputEvent.setAbsoluteSrcFilePath(transformedEvent.getSrcFilePath());
         outputEvent.setAbsoluteSrcFolderFilePath(transformedEvent.getSrcFolderPath());
         outputEvent.setSrcDriveShared(transformedEvent.isSrcDriveShared());

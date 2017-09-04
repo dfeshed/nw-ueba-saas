@@ -27,7 +27,9 @@ public class ScoreAggregationsApplicationConfigTest extends ScoreAggregationsApp
 
         properties.put("fortscale.model.cache.futureDiffBetweenCachedModelAndEvent", "PT48H");
         properties.put("fortscale.model.cache.size", 100);
-
+        properties.put("presidio.application.name", "test-app-name");
+        properties.put("presidio.default.ttl.duration", "PT48H");
+        properties.put("presidio.default.cleanup.interval", "PT24H");
         return new TestPropertiesPlaceholderConfigurer(properties);
     }
 }

@@ -9,14 +9,10 @@ dags:
     args:
       hourly_smart_events_confs:
       - userId_hourly
-      data_sources:
-      - AUTHENTICATION
-      - FILE
-      - ACTIVE_DIRECTORY
+      data_sources: ${dataPipeline.schemas}
       command: run
     schedule_interval: timedelta(hours=1)
-    start_date: '2017-01-01 10:00:00'
-    end_date: '2017-01-01 11:00:00'
+    start_date: ${dataPipeline.startTime}
 
   tasks_instances:
     hourly_DLPFILE_feature_aggregations:

@@ -3,14 +3,14 @@
       "dags_configs": [
         {
           "dag_id": "some_dag_id",
-          "args": {},
+          "args": {"data_sources": "FILE"},
           "schedule_interval": "* * * * *",
           "start_date": "2010-05-08T01:00:00.000Z",
           "end_date": "2017-05-08T02:00:00.000Z"
         },
         {
           "dag_id": "some_dag_id2",
-          "args": {},
+          "args": {"data_sources": "FILE"},
           "schedule_interval": "*/2 * * * *",
           "start_date": "2015-05-08T01:00:00.000Z",
           "end_date": "2015-05-08T02:00:00.000Z"
