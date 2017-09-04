@@ -98,11 +98,7 @@ public class UserPersistencyServiceTest {
         indicators.add("indicator");
         return new User(userId, userName, displayName, score, classifications, indicators, false);
     }
-
-    @Test
-    public void clean(){
-
-    }
+    
 
     @Test
     public void testFindOne() {
