@@ -31,7 +31,6 @@ public class AlertsController implements AlertsApi {
             return new ResponseEntity(alert, HttpStatus.OK);
         }
         return new ResponseEntity(null, HttpStatus.BAD_REQUEST);
-        
     }
 
     @Override
