@@ -12,7 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Properties;
+import java.util.*;
 
 public class CountersUtil {
 
@@ -88,7 +88,7 @@ public class CountersUtil {
             lock = channel.lock(); // This method blocks until it can retrieve the lock.
 
             /* load existing count properties */
-            Properties countProperties = new Properties();
+            Properties countProperties = new OrderedProperties<>(String.class);
             in = new FileInputStream(file);
             countProperties.load(in);
 
@@ -192,5 +192,30 @@ public class CountersUtil {
         }
 
         return Integer.parseInt(newCount);
+    }
+
+    /**
+     * This class is a {@link Properties} implementation that reads and writes in a sorted manner (according to the <i>natural ordering</i> of its
+     * elements).
+     */
+    @SuppressWarnings("unused")
+    private static class OrderedProperties<T extends Comparable> extends Properties {
+
+        private final Class<T> keyType; //in order to keep the key type a comparable (POLA principle)
+
+        private OrderedProperties(Class<T> keyType) {
+            this.keyType = keyType;
+        }
+
+        @Override
+        @SuppressWarnings("NullableProblems") //due to intellij bug
+        public Set<Object> keySet() {
+            return Collections.unmodifiableSet(new TreeSet<>(super.keySet()));
+        }
+
+        @Override
+        public synchronized Enumeration<Object> keys() {
+            return Collections.enumeration(new TreeSet<>(super.keySet()));
+        }
     }
 }
