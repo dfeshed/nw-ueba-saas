@@ -42,7 +42,11 @@ public class AlertPersistencyServiceImpl implements AlertPersistencyService {
     }
 
     public Page<Alert> findByUserId(String userId, PageRequest pageRequest) {
-        return alertRepository.findByUserName(userId, pageRequest);
+        return alertRepository.findByUserId(userId, pageRequest);
+    }
+
+    public Page<Alert> findById(String id, PageRequest pageRequest) {
+        return alertRepository.findById(id, pageRequest);
     }
 
     public Page<Alert> find(AlertQuery alertQuery) {
